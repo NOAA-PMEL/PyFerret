@@ -1,6 +1,7 @@
 	SUBROUTINE POLYGON_SET_UP
      .			      ( memory,
      .				overlay, transpz, coord_ax, no_labels,
+     .				no_range, only_val,
      .				symbol, line_type,
      .				mr_list, cx_list, nmv,
      .				x_dat, y_dat, status )
@@ -69,7 +70,7 @@
 * V500: 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 *       5/99 *kob* - minor mod to remove improper comment line linux compiler
 *                    didn't like
-* V501: 6/99 - *jd* fix bug in 2 var form where x_dat(1) is reassigned
+*       6/99 - *jd* fix bug in 2 var form where x_dat(1) is reassigned
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -84,6 +85,7 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
 	include 'xtext_info.cmn'
 	include 'axis_inc.decl'       ! with axis lengths
 	include 'AXIS.INC'       ! with axis lengths	
@@ -115,12 +117,12 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL		overlay, transpz, no_labels
+	LOGICAL		overlay, transpz, no_labels, no_range
 	INTEGER		symbol, line_type, coord_ax, iunits,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
-	REAL            dummy_x_dat
+	REAL            dummy_x_dat, only_val
 
 * internal variable declarations:
 	LOGICAL         missing_polygon
@@ -129,7 +131,7 @@
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 	CHARACTER	VAR_UNITS*64, LEFINT*4,
-     .			x_ax*1, y_ax*1,buff*8, buff2*4
+     .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14
 	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
@@ -140,7 +142,8 @@
      .			plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
-     .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
+     .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
+     .			dt_min
 	REAL*8		vmin, vmax, delta
 
 * signal that plot set-up has begun
@@ -395,16 +398,27 @@
 
 	   if (overlay) SOVER = .true.
 
-*          Let PPL know what's going on
+* ... let PPL know what's going on
 	   makep = 'FILLPOL'
 
-	   if (missing_polygon) then
-	      CALL PPLLDX(0,mr_bad_data(mr_x),mr_bad_data(mr_y),1,
-     .    	   ' ',' ',1.0)	
-	   ELSE IF ( transpz ) THEN
-	      CALL PPLLDX(0,y_dat(start),x_dat(start),npts,' ',' ',1.0)
+* ... setup for possible overlay on a time axis plot
+	   IF (overlay .AND. has_time_axis) THEN
+	      dt_min  = saved_dt_min
+	      t1_date = saved_t1_date
 	   ELSE
-	      CALL PPLLDX(0,x_dat(start),y_dat(start),npts,' ',' ',1.0)
+              dt_min  = 1.0
+              t1_date = ' '
+	   ENDIF
+
+	   IF (missing_polygon) THEN
+	      CALL PPLLDX(0,mr_bad_data(mr_x),mr_bad_data(mr_y),1,
+     .    	          t1_date,' ',dt_min)	
+	   ELSE IF ( transpz ) THEN
+	      CALL PPLLDX(0,y_dat(start),x_dat(start),npts,
+     .		          t1_date,' ',dt_min)
+	   ELSE
+	      CALL PPLLDX(0,x_dat(start),y_dat(start),npts,
+     .			  t1_date,' ',dt_min)
 	   ENDIF
 
 * ... increment number of lines on plot
@@ -428,6 +442,7 @@ CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
 * pass the color value array to PLOT+ (use x_dat as a buffer)
 	if (nmv .eq. 2) then
 	   ncolor = 1
+	   x_dat(1) = 0.0
 	else
 	   CALL EXTRACT_LINE (	cx_color,
      .				memory( 1, mr_blk1(mr_color) ),
@@ -444,12 +459,16 @@ CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
  300	   x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
 	   ncolor = npolygon
 	ENDIF
-	IF (ncolor .NE. npolygon) GOTO 5220		! color array size doesn't match polygons 
+	IF (ncolor .NE. npolygon) GOTO 5220	! color array length wrong
+
+* pass back a summary about the range of colors
+	no_range = NO_LINE_RANGE(x_dat,
+     .				 ncolor, mr_bad_data(mr_color), only_val )
 
 	if (overlay) SOVER = .true.
 	makep = 'FILLPOL'
 
-	CALL PPLLDX(0,x_dat,x_dat,ncolor,' ',' ',1.0)
+	CALL PPLLDX(2,x_dat,x_dat,ncolor,t1_date,' ',dt_min)
 
 * turn on lon/lat axis formatting for polygon plots, otherwise off
 

@@ -67,6 +67,7 @@
 *               declaration line.
 * V450: 3/97 - support for curvilinear coordinate plots
 *		added args curvilinear and cx_curv
+* V500: 6/99 *sh* - save time axis infor to be used by PLOT/VS overlays
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -77,6 +78,7 @@
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
+	include 'xplot_state.cmn'
 * special equivalence needed only with risc compiler: bug fix
 	include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
@@ -104,6 +106,7 @@
 	LOGICAL		GEOG_LABEL, GEOG_VAR, use_nice, special
 	INTEGER		TM_LENSTR1, dlen, places, ndec, dummy, itax
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
+     .			INTERNAL_WHOI_DATE*14,
      .			fmt*4, date*4
 	REAL		res_del, dt_min, time_unit
 	REAL*8		TSTEP_TO_SECS
@@ -162,21 +165,17 @@
  3012	      FORMAT ('TAXIS ',G13.5,',ON')
 
 * ... TIME command (time axis limits)
-#ifdef unix
               rbuff(1) = WHOI_DATE(grid, lo_val )      ! f77 bug
               rbuff(2) = WHOI_DATE(grid, hi_val )
               rbuff(3) = WHOI_DATE(grid, 1.0D0  )
 	      WRITE ( ppl_buff, 3020 )	'W'//rbuff(1),
      .					'W'//rbuff(2),
      .					'W'//rbuff(3)
-#else
-	      WRITE ( ppl_buff, 3020 )	'W'//WHOI_DATE(grid, lo_val ),
-     .					'W'//WHOI_DATE(grid, hi_val ),
-     .					'W'//WHOI_DATE(grid, 1.0D0  )
-#endif
  3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-
+* ... save infor for PLOLT/VS/OVER
+	      saved_dt_min = dt_min
+	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, 1.0D0 )
 * ... TXTYPE and TXLINT commands (time axis style)
 	      CALL TAXIS_STYLE(	x_or_y, TSTEP_TO_SECS( grid, lo_val ),
      .				TSTEP_TO_SECS( grid, hi_val ), tstyle )

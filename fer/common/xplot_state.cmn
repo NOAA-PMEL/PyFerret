@@ -1,6 +1,7 @@
 * XPLOT_STATE.CMN
 * COMMON describing the state of GKS
 * 7/97 *sh* - increased max_viewport from 50 to 200
+* 6/99 *sh* - include info about the time axis currently on the screen
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -15,7 +16,8 @@
      .			wn_active,
      .			vp_opaque,
      .			pplus_started,
-     .			ppl_interrupted
+     .			ppl_interrupted,
+     .			has_time_axis
 
 	INTEGER		vp_num,
      .			vp_seg0,
@@ -29,9 +31,10 @@
      .			vp_xclip,
      .			vp_yclip,
      .			xlowlef,
-     .			ylowlef
+     .			ylowlef,
+     .			saved_dt_min
 
-	CHARACTER	vp_name*16
+	CHARACTER	vp_name*16, saved_t1_date*14
 
 	COMMON / XPLOT_STATE /
      .			pplus_started,
@@ -53,4 +56,11 @@
      .			vp_yclip( mvp_dflt:max_viewport ),
      .			vp_seg0 ( mvp_dflt:max_viewport ),
      .			vp_segn ( mvp_dflt:max_viewport ),
-     .			vp_opaque(mvp_dflt:max_viewport )
+     .			vp_opaque(mvp_dflt:max_viewport ),
+     .
+     .			has_time_axis,
+     .			saved_dt_min,
+     .			saved_t1_date
+
+
+

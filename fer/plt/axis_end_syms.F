@@ -1,4 +1,4 @@
-	SUBROUTINE AXIS_ENDS( plot_ax, dat_ax, grid, first, last, delta )
+	SUBROUTINE AXIS_END_SYMS( plot_ax, first, last )
 
 *
 *
@@ -35,20 +35,13 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* set up PPLUS to know the correct axis endpoints and tic interval
+* define symbols contining the plotted axis extremes (useful for scaling)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
-*
-* revision 0.0 - 7/21/87
-* revision 0.1 - 2/29/88 - allowed for non-inverted vertical Z axis
-* V300 10/93 - allow delta value to be passed into this routine
-* Linux Port *kob* 12/96 - had to add "external RANGE" because RANGE is an
-*			   intrinsic function for F90.
-* V500 - *jd* 5.3.99 Add axis extrema symbols
-*	 *sh* 6/99 - consolidated axis extrema symbols into AXIS_END_SYMS
-*             7/99 - use 7 digits of output precision
+
+* V500 - *sh* drawn from AXIS_ENDS
 
 #ifdef unix
 	include 'ferret.parm'
@@ -58,41 +51,21 @@
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 #endif
 
-* kob 12/96
-	EXTERNAL RANGE
 * calling argument declarations:
-	LOGICAL		BKWD_AXIS
 	CHARACTER*1	plot_ax		! X (horiz) or Y (vert) axis of plot
-	INTEGER		dat_ax, grid	! X,Y,Z or T axis of data
-	REAL*8		first, last, delta
+	REAL*8		first, last
 
-* internal variable declarations:
-	CHARACTER*44    val_buff
-	REAL		x1, x2, uminr, umaxr, dint
-
-* convert to single precision and reverse order if a depth plot on Y axis
-	IF ( plot_ax .EQ. 'Y'  .AND.  BKWD_AXIS(dat_ax, grid) ) THEN
-	   x2 = SNGL(first)
-	   x1 = SNGL(last)
-	ELSE
-	   x1 = SNGL(first)
-	   x2 = SNGL(last)
-	ENDIF
-
-* use Denbo's PPLUS routine to calculate the tic interval, dint
-	IF ( delta .EQ. unspecified_val8 ) THEN
-	   CALL RANGE( x1, x2, 10, uminr, umaxr, dint )
-	ELSE
-	   dint = delta
-	ENDIF
-
-* and send the actual limits requested together with this tic interval to PPLUS
-	WRITE ( val_buff, '(3(E14.7,1X))' ) x1, x2, dint
-	CALL PPLCMD ( from, line, 0, 
-     .				plot_ax//'AXIS '//val_buff , 1, 1 )
+! internal variable declarations:
+	CHARACTER*16  val_buff
 
 * Define symbols identifying axis limits
-	CALL AXIS_END_SYMS(plot_ax, first, last)
+	WRITE ( val_buff, '(1PG15.8)' ) first
+	CALL PPLCMD ( from, line, 0, 
+     .		'SET '//plot_ax//'AXIS_MIN '//val_buff , 1, 1 )
+
+	WRITE ( val_buff, '(1PG15.7)' ) last
+	CALL PPLCMD ( from, line, 0, 
+     .		'SET '//plot_ax//'AXIS_MAX '//val_buff , 1, 1 )
 
 	RETURN
       END

@@ -49,6 +49,7 @@
 * V200: 10/29/89 - "FULL" viewport is just like others.  Default is NONE
 * V230:  11/4/92 - 4 corner viewports (ll,lr,ul,ur) with clipping ON
 * V301:  22/2/94 - changed wn_scale(1) from 1.0 to 0.7
+* V500: 6/99 *sh* - added saved time axis information
 
 #ifdef unix
 	include	'ferret.parm'
@@ -153,5 +154,7 @@
      .		vp_yclip( 9 ) / 1.0 /
 
 	DATA	(vp_name(i),i=10,max_viewport) /mvp_maxm9*unspecified_name4/
+
+	DATA has_time_axis/.FALSE./
 
 	END

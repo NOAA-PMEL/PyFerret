@@ -92,6 +92,7 @@
 * V450: 3/97 - modified AXIS_FORMAT args for curvilinear coordinate plots
 * V500 *kob* 3/99- up VAR_CODE  and VAR_UNITS to 64 chars
 * V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
+*       6/99 - *sh* added logic to permit a PLOT/VS over a time series plot
 
 
 #ifdef unix
@@ -106,6 +107,7 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
 	include 'xtext_info.cmn'
         include 'axis_inc.decl'       ! with axis lengths
         include 'AXIS.INC'       ! with axis lengths	
@@ -410,11 +412,24 @@
               ENDIF
               t1_date = INTERNAL_WHOI_DATE( grid, 1.0D0 )
            ELSE
-              dt_min = 1.0
-              t1_date = ' '
+	      IF (overlay .AND. has_time_axis) THEN
+	         dt_min  = saved_dt_min
+	         t1_date = saved_t1_date
+	      ELSE
+                 dt_min  = 1.0
+                 t1_date = ' '
+	      ENDIF
            ENDIF
 
-	   if (overlay) SOVER = .true.
+	   IF (overlay) THEN
+	      SOVER = .true.
+	   ELSE
+	      has_time_axis = time_axis
+ 	      IF (has_time_axis) THEN
+	         saved_dt_min  = dt_min		! to re-use on PLOT/VS
+	         saved_t1_date = t1_date
+	      ENDIF
+	   ENDIF
 
 	   IF ( flip ) THEN
 	      CALL PPLLDX(0,dep_dat,indep_dat,npts2,t1_date,tref,dt_min)
@@ -460,6 +475,11 @@
 	      IF ( time_axis ) THEN
 	         IF ( pxlim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max )
 	         CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle )
+* (6/99) Note: The time axis extrema symbols are only approximately correct
+*		since PLOT+ rounds out the time ranges ...
+	         CALL AXIS_END_SYMS( indep_ax,
+     .				SECS_TO_TSTEP( grid1, ind_min ),
+     .				SECS_TO_TSTEP( grid1, ind_max ) )
 	      ELSE
 	         CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max, delta )

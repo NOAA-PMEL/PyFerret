@@ -100,6 +100,8 @@
 *       8/97 - added curvilinear check to make sure that args 2 and 3 lie in
 *              compatible planes with the variable to be plotted
 * V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
+*       6/99 - save time axis info in XPLOT_STATE to enable line plot overlays
+*		(with plot/vs and polygon)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -112,6 +114,7 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
 	include 'xpplus.cmn'
 	include 'xbox_bounds.cmn'
 	include 'xcurvilinear.cmn'
@@ -387,6 +390,7 @@
 	   haxlo = xaxlo	! save limits so overlays
 	   haxhi = xaxhi	! will know them
 	   time_axis = GEOG_LABEL( dim1, grid )
+	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
 	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta )
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi,
      .						curvilinear, cx_xpos,
@@ -413,6 +417,7 @@
 	   vaxlo = yaxlo	! save limits so overlays
 	   vaxhi = yaxhi	! will know them
 	   time_axis = GEOG_LABEL( dim2, grid )
+	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
 	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta )
 	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, 
      .						curvilinear, cx_ypos,

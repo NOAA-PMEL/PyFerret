@@ -5,13 +5,15 @@
 
 * V450: 1/97
 *	7/97 - slight reorg for external functions
-
+*       8/97 - type mismatch on axis_implied_from caught by 
+*              linux/aix compilers *kob*
 * calling argument declarations
 	INTEGER	ifcn, iarg, axis_source(4)
 
 * internal variable declarations
 	INTEGER	idim, iptr1,
-     .		axis_will_be(4), axis_implied_from(4)
+     .		axis_will_be(4)
+	LOGICAL axis_implied_from(4)
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'

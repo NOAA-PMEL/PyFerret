@@ -7,7 +7,7 @@
 ! Description: Fill between two curves or a curve and a constant value
 
 ! Usage:                   $1         $2   $3    $4
-! yes?  GO plot_fill polygon_command data axis [base]
+! yes?  GO fill_between polygon_command data axis [base]
 ! $1 - the polygon command with qualifiers (eg POLYGON/OVER/PALETTE=GREEN
 ! $2 - a variable -- as if it were being plotted
 ! $3 - the axis name for variable "data"
@@ -18,9 +18,9 @@
 !  let a = SIN(T[gt=tday]/10)
 !  let b = 0.4*cos(T[gt=tday]/4) - 2
 !  plot a, b
-!  go plot_fill poly/over/palette=red/line a tday b
-!  go plot_fill poly/over/palette=yellow a tday 1.
-!  go plot_fill poly/over/palette=green b tday -3
+!  go fill_between poly/over/palette=red/line a tday b
+!  go fill_between poly/over/palette=yellow a tday 1.
+!  go fill_between poly/over/palette=green b tday -3
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO  fill_between polygon_command data axis [base]"

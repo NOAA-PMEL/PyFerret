@@ -4,6 +4,7 @@
 
 * V450:
 * V500: 1/99 added gfcn_arg_type in support of string arguments
+* V533: 6/01 *sh* added gfcn_rtn_type in support of string functions
 
 	INTEGER		pmax_grid_chg_fcns,
      .			pmax_gfcn_args
@@ -16,6 +17,7 @@
      .				gfcn_num_reqd_args, 
      .				gfcn_arg_ptr,
      .				gfcn_arg_type, 
+     .				gfcn_rtn_type, 
      .				gfcn_axis_will_be, 
      .				gfcn_axis_reduction,
      .				gfcn_has_vari_args, 
@@ -50,6 +52,9 @@
 * number of arguments and possibility of variable arguments
 	INTEGER		gfcn_num_reqd_args    ( pmax_grid_chg_fcns )
 	LOGICAL		gfcn_has_vari_args    ( pmax_grid_chg_fcns )
+
+* data type of function return
+	INTEGER		gfcn_rtn_type	   ( pmax_gfcn_args )
 
 !* number of components in the result (not used in V450)
 !	INTEGER		gfcn_num_comps    ( pmax_grid_chg_fcns )

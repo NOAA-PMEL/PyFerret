@@ -11,7 +11,8 @@ c     It sets all of the dimensioning information for the work spaces in
 c     ef_mem_subsc.cmn.
 c     
 
-      SUBROUTINE EFCN_SET_WORK_ARRAY_DIMS(iarray,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+      SUBROUTINE EFCN_SET_WORK_ARRAY_DIMS(iarray,xlo,ylo,zlo,tlo,
+     .           xhi,yhi,zhi,thi)
 
       INCLUDE 'EF_mem_subsc.cmn'
 

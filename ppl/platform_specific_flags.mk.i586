@@ -32,7 +32,7 @@ CFLAGS          = -g -DX_REFRESH -DXT_CODE -Dunix \
 FPROFLAGS	= -Dunix -Dxgks -D__CYGWIN__ -DNO_OPEN_READONLY \
                   -DNO_OPEN_CARRIAGECONTROL -DUSE_NETCDF_V3 \
 		  -DFlarge_mem -static
-FFLAGS		= -debug:partial -nopdbfile \
+FFLAGS		= -nopdbfile \
 		   -iface:cref -iface:nomixed_str_len_arg\
 		   /fpp /align:dcommons /f77rtl\
 		   /align:dcommons /align:records \

@@ -1,0 +1,29 @@
+!  Sunspot example
+
+DEFINE AXIS/T="1-jul-1700":"1-jul-1997":1/unit=yr tsun
+DEFINE GRID/T=tsun gsun
+FILE/VAR=sunspot_index/skip=3/G=gsun/FORMAT=(6x,f6.1) yearssn.dat
+
+LET nd = sunspot_index[l=@NGD]
+LET nf = nd / 2
+LET yquist = 0.5
+LET freq1 = yquist/ nf
+
+DEFINE AXIS/t=`freq1`:`yquist`:`freq1`/UNITS=yr FAXIS
+DEFINE GRID/t=faxis gfreq
+SET GRID gfreq
+LET tpts = t
+
+LET fftsun = ffta(sunspot_index)
+
+
+
+let fa = fft_re(sunspot_index)
+let fb = fft_im(sunspot_index)
+let famp = (fa*fa + fb*fb)^0.5
+
+set view upper
+plot fftsun
+
+set view lower
+plot famp

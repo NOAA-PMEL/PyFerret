@@ -24,7 +24,7 @@ include fft_platform_specific_flags.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
-SUB_OBJS = fftsubs.o
+SUB_OBJS = fftinv_subs.o
 
 #
 # Rules
@@ -38,7 +38,7 @@ SUB_OBJS = fftsubs.o
 # Targets
 #
 
-all:	ferret_cmn fftsubs.o ffta_sample.so fftp_sample.so
+all:	ferret_cmn fftinv_subs.o fft_im.so fft_re.so fft_inverse.so lsl_lowpass.so
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

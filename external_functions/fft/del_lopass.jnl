@@ -1,0 +1,8 @@
+
+go delta_function 512 delta
+list/l=1:20 delta
+
+let lp9 = lsl_lowpass(delta, 35, 9)
+
+let fft9=ffta(lp9[l=5:1020])
+plot/line fft9

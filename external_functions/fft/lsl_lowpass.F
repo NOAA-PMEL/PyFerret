@@ -342,10 +342,10 @@ c
 c acm  explicitly define and type all variables
       integer n, i, j, ib, ie
       real*4 cutoff_period, missing_value
-      real*8 pi, d, omega_c, h0, con, summ, temp, x1, x2, d1, d2
+      real*8 pi, omega_c, h0, con, summ, temp, x1, x2, d1, d2
 
       integer filter_span, half_span
-      real*4 x(*), h(*), y(*), z
+      real*4 x(*), h(*), y(*)
 
 c      d(z) = sin(z)/z      ! define statement function  (doesnt work on osf)
 

@@ -44,10 +44,10 @@
 *  NOTE:
 *  IT IS GENERALLY ADVISABLE TO INCLUDE EXPLICIT LIMITS WHEN WORKING WITH
 *  FUNCTIONS THAT REPLACE AXES. FOR EXAMPLE, THE CONSIDER THE FUNCTION
-*  SORTL(v). THE EXPRESSION
-*  	LIST/L=6:10 SORTL(v)
+*  sortl(v). THE EXPRESSION
+*  	LIST/L=6:10 sortl(v)
 *  IS NOT EQUIVALENT TO
-*  	LIST SORTL(v[L=6:10])
+*  	LIST sortl(v[L=6:10])
 *  THE FORMER WILL LIST THE 6TH THROUGH 10TH SORTED INDICES FROM THE ENTIRE
 *  L RANGE OF VARIABLE V. THE LATTER WILL LIST ALL OF THE INDICES THAT
 *  RESULT FROM SORTING v[L=6:10].
@@ -110,7 +110,7 @@
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, ABSTRACT)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 2)
+      CALL ef_set_num_work_arrays(id, 3)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
@@ -158,10 +158,9 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      my_lo_l = 1
-      my_hi_l = 1
-
       arg = 1
+
+      my_lo_l = 1
       my_hi_l = arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1
 
       CALL ef_set_axis_limits(id, T_AXIS, my_lo_l, my_hi_l)
@@ -207,6 +206,9 @@
 * sort_indx
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
+* iwork
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, mtdat, 1, 1, 1)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -219,7 +221,8 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE sortl_compute(id, arg_1, result, sort_dat, sort_indx)
+      SUBROUTINE sortl_compute(id, arg_1, result, sort_dat, 
+     .                               sort_indx, iwork)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -249,8 +252,8 @@
 *                                                                     V
 
       INTEGER id
-      INTEGER m, m_indx, nsrt, nbad
-      INTEGER i,j,k
+      INTEGER m, nsrt, nbad
+      INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
 *  Dimension work arrays
@@ -259,6 +262,8 @@
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
       INTEGER sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+      INTEGER iwork(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -285,30 +290,29 @@
                   ELSE
                      nsrt = nsrt + 1
                      sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
-                     sort_indx(nsrt,1,1,1) = l1
 
                   END IF
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  100           CONTINUE
       
-*
-* Sort based on sort_dat.  sort_indx goes along for the ride,
-* elements moved when elements of sort_dat moved.
-*
-               IF (nsrt .GT. 1) CALL shell (sort_dat, sort_indx, nsrt)
+* Sort based on sort_dat.  sort_indx retured as rank.
 
-*
+               IF (nsrt .GT. 1) CALL MRGRNK (sort_dat, sort_indx, iwork,
+     .                                        nsrt )
+
 * Put sorted data in the array first, then bad flags.
 *
-
+               l = res_lo_ss(T_AXIS)
                DO 200 m = 1, nsrt
-                  result(i,j,k,m) = sort_indx(m,1,1,1)
+                  result(i,j,k,l) = sort_indx(m,1,1,1) + 
+     .                                     arg_lo_ss(T_AXIS,ARG1) - 1
+                  l = l + 1
  200           CONTINUE
 
                DO 300 m = 1, nbad
-                  m_indx = m + nsrt
-                  result(i,j,k,m_indx) = bad_flag_result
+                  result(i,j,k,l) = bad_flag_result
+                  l = l + 1
  300           CONTINUE
 
                k1 = k1 + arg_incr(Z_AXIS, ARG1)

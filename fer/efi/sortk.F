@@ -35,7 +35,9 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke
-* April 1998
+* April 1988
+* ACM 1/3/2001  implement with merge rank translated from f90, originally from 
+*   http://www.fortran-2000.com/rank/index.html#1.1
 *
 * This function sorts data on the z axis in increasing order.
 * Returns index of sorted values. 
@@ -108,7 +110,7 @@
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
      .     IMPLIED_BY_ARGS, ABSTRACT, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
-      CALL ef_set_num_work_arrays(id, 2)
+      CALL ef_set_num_work_arrays(id, 3)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
@@ -156,11 +158,9 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      my_lo_l = 1
-      my_hi_l = 1
-
       arg = 1
 
+      my_lo_l = 1
       my_hi_l = arg_hi_ss(Z_AXIS,arg) - arg_lo_ss(Z_AXIS,arg) + 1
 
       CALL ef_set_axis_limits(id, Z_AXIS, my_lo_l, my_hi_l)
@@ -207,6 +207,9 @@
 * sort_indx
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mzdat, 1, 1, 1)
 
+* iwork
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, mzdat, 1, 1, 1)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -219,7 +222,8 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE sortk_compute(id, arg_1, result, sort_dat, sort_indx)
+      SUBROUTINE sortk_compute(id, arg_1, result, sort_dat, 
+     .                               sort_indx, iwork)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -249,12 +253,14 @@
       INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
-*  Dimenstion work arrays
+*  Dimension work arrays
 
       REAL sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
       INTEGER sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+      INTEGER iwork(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -282,24 +288,23 @@
                   ELSE
                      nsrt = nsrt + 1
                      sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
-                     sort_indx(nsrt,1,1,1) = k1
 
                   END IF
 
                   k1 = k1 + arg_incr(Z_AXIS,ARG1)
  100           CONTINUE
       
-*
-* Sort based on sort_dat.  sort_indx goes along for the ride,
-* elements moved when elements of sort_dat moved.
-*
-               IF (nsrt .GT. 1) CALL shell (sort_dat, sort_indx, nsrt)
-*
+* Sort based on sort_dat.  sort_indx retured as rank.
+
+               IF (nsrt .GT. 1) CALL MRGRNK (sort_dat, sort_indx, iwork,
+     .                                        nsrt )
+
 * Put sorted data in the array first, then bad flags
-* 
+
                k = res_lo_ss(Z_AXIS)
                DO 200 m = 1, nsrt
-                  result(i,j,k,l) = sort_indx(m,1,1,1)
+                  result(i,j,k,l) = sort_indx(m,1,1,1) +
+     .                                       arg_lo_ss(Z_AXIS,ARG1) - 1
                   k = k + 1
  200           CONTINUE
 

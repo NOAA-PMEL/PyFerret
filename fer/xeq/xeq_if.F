@@ -52,6 +52,7 @@
 *
 * V420:  4/96
 *        5/96 - allow for multi-line IF clause inside of skipped clause
+* V500:  6/99 - bug fix for final quote in IF 1  THEN SAY "I is too big" ENDIF
 
 #ifdef unix
 	include	'ferret.parm'
@@ -77,7 +78,7 @@
 	INTEGER	STR_CASE_BLIND_COMPARE, STR_UPCASE,
      .		vax_code, if_type, iarg,
      .		true_clause_start, true_clause_end, false_clause_start,
-     .		false_clause_end, status, csp1, tmp_stat
+     .		false_clause_end, status, csp1, tmp_stat, end
 
 * 6/96: Are we really going to process this IF or merely register that
 * a (skipped) IF clause has been opened?
@@ -167,11 +168,25 @@
 
 * prepare the clause to be executed
  400	   IF ( condition ) THEN
+* ... 6/99 bug fix (hack) -- final quotation mark missed in
+*	IF 1 THEN SAY "I is too big" ENDIF
+*     because arg_start/arg_end are pre-trimmed wrt enclosing quotes
+	      end =  arg_end(true_clause_end)
+	      IF (end .LT. len_cmnd) THEN
+	         IF (cmnd_buff(end+1:end+1).EQ.'"') end = end + 1
+	      ENDIF
 	      cs_text(csp) = cmnd_buff(arg_start(true_clause_start):
-     .				       arg_end(true_clause_end))
+     .				       end)
 	   ELSEIF ( has_false_clause ) THEN
+* ... 6/99 bug fix (hack) -- final quotation mark missed in
+*	IF 1 THEN SAY "I is too big" ENDIF
+*     because arg_start/arg_end are pre-trimmed wrt enclosing quotes
+	      end =  arg_end(false_clause_end)
+	      IF (end .LT. len_cmnd) THEN
+	         IF (cmnd_buff(end+1:end+1).EQ.'"') end = end + 1
+	      ENDIF
 	      cs_text(csp) = cmnd_buff(arg_start(false_clause_start):
-     .				       arg_end(false_clause_end))
+     .				       end)
 	   ELSE
 * ... false condition and no ELSE clause
 	      CALL STACK_PTR_DN( csp, 0, tmp_stat )

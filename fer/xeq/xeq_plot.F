@@ -76,6 +76,8 @@
 *                      to resolve PPLUS issues with polymark first.
 * V550 *acm* 12/02  Restore dot_sym = 99 and warnings that /THICK and /SIZE 
 !                    do not apply to DOT
+* v554 *acm* 11/03  Bug fix: plot/sym/size=  didnt change the size; the size
+*                   was always being reset to the default, not just on sym=dot.
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 	include 'tmap_dims.parm'
@@ -212,9 +214,10 @@ CC       => Set values here instead.
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE. 0.0 ) GOTO 5210
 	      sym_size = val		! user-specified symbol
-              IF ( symbol .EQ. dot_sym) 
-     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
-              sym_size = 0.08
+              IF ( symbol .EQ. dot_sym) THEN
+                 CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
+                 sym_size = 0.08
+              ENDIF
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR=n

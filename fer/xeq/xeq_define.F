@@ -102,7 +102,6 @@
 * V450:  11/96 - Using reformulated version of INIT_UVAR (RPN not called
 *		 from here). Part of changes to support external function.
 *	  1/97 - Issue warning if DEFINE AXIS/UNIT=MONTH is used
-* $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V491+ - 7/98 *sh* - allow case-sensitive var name in DEFINE GRID/LIKE=varname
@@ -147,6 +146,12 @@
 *                         statements.  use an character constant instead 
 * v552: *acm* 4/03 Bug Fix: checking length of variable name. Length now 128
 * V553  *acm* 6/03 Use 'XX' or 'YY' for line_direction for non-lat/lon axes. 
+* v554 *acm* 11/03 reg_name had NOT been changed to *24, to match cx_name
+* v554 *acm* 11/03 Adjust definition of npoints, checking to see if the 
+*                  upper limit of the axis is include in the upper grid box.
+* v554 *acm* 11/03 def axis/units=yr  was not the same as def axis/units=year
+*                  Change this so yr and year mean a year in whatever calendar 
+*                  we are using.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -248,12 +253,12 @@
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
-     .            xoei,  yoei,   xcei,  ycei, scale
+     .            xoei,  yoei,   xcei,  ycei, scale, a
 
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear
-	CHARACTER reg_name*4, buff1*128, buff2*128, buff3*128, 
+	CHARACTER reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
      .		  mon_names(12)*3
@@ -717,8 +722,7 @@
 	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, 
-*       PECULIAR   Gregorian is the default, also may be called
-*       STANDARD.
+*       Gregorian is the default, also may be called STANDARD.
 
         cal_name = 'GREGORIAN'		! default
         dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
@@ -754,6 +758,14 @@
 	   IF ( iunit .EQ. 0 ) THEN
 	       CALL WARN('(fyi) units are not subject to auto-conversion: '
      .			//buff1)
+
+C /calendar=/unit=year gets length of year in that calendar.
+           ELSEIF (iunit .EQ. -6 .OR. iunit .EQ. -10) THEN  
+	      IF (cal_id .EQ. d360) iunit = -9
+	      IF (cal_id .EQ. julian) iunit = -12
+	      IF (cal_id .EQ. noleap) iunit = -11
+
+C /units=months  is 1/12 of the length of the year
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
               IF (cal_id .eq. gregorian) THEN
                  WRITE (err_string,3544) yeardays
@@ -771,6 +783,7 @@
 		 len_cal = TM_LENSTR1 (cal_name)
 		 buff1 = buff1(:slen)//'('//cal_name(:len_cal)//')'
               ENDIF
+	      
  3540         FORMAT 
      .        ('/UNIT=MONTHS  ... using 1/12 of ',F6.2,' days')
  3544         FORMAT 
@@ -1008,7 +1021,10 @@
 	       delta = cx_delta (orient,mods_cx)
 	       IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
 	       IF ( .NOT.its_calendar ) THEN
-	          npoints = ( (end - start) / delta ) + 1.9999
+	          npoints = INT(( (end - start) / delta ) + 1.9999)
+		  a = start + delta* (npoints-1)
+		  a = a - 0.5*delta
+		  IF (start + delta* (npoints-1) - 0.5*delta .GT. end) npoints = npoints-1
 	       ENDIF
 	     ELSEIF ( npoints .EQ. 1 ) THEN
 	       IF ( end .NE. start ) GOTO 5530

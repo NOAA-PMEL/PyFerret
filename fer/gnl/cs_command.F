@@ -71,7 +71,7 @@
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40,anim_win_id*16,GKS_X_CONID*16
-	INTEGER wsid, anim_id
+	INTEGER  anim_id
 
 #ifdef unix
 	include 'ferret.parm'

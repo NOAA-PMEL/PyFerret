@@ -87,3 +87,7 @@ GO err570_dollar_zero.jnl
 ! Fix for bug 596; list/i=0:300:0 var crashed Ferret
 GO bn_reset
 GO err570_illegal_stride.jnl
+
+! Fix for bug 1085; /THICK without color specifier caused all lines to revert to black
+GO bn_reset
+GO err570_thick_colors.jnl 

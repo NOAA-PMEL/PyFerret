@@ -1,0 +1,19 @@
+! err570_thick_colors.jnl  bug1085
+! /THICK without color specifier causes all lines to revert to black
+
+PLOT/THICK/I=1:100 cos(i/20), sin(i/30) 
+PLOT/OVER/THICK=3/I=1:100 cos(i/30)*sin(i/20)
+PLOT/OVER/THICK=1/I=1:100 cos(i/10), sin(i/50), cos(i/40)*sin(i/10)
+
+! time series
+USE gtsa056_2
+PLOT/THICK/X=180/Y=0/K=1 temp
+PLOT/OVER/THICK/X=180/Y=-1/K=1 temp
+PLOT/OVER/THICK/X=180/Y=1/K=1 temp
+
+! plot/vs
+PLOT/VS/LINE/THICK/I=1:314 i*cos(i/20), i*sin(i/20)
+PLOT/OVER/VS/LINE/THICK/I=1:314 i*cos(i/18), i*sin(i/18)
+PLOT/OVER/VS/LINE/THICK=3/I=1:314 i*cos(i/16), i*sin(i/16)
+PLOT/OVER/VS/LINE/THICK=1/I=1:314 i*cos(i/14), i*sin(i/14)
+

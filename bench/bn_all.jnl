@@ -417,6 +417,9 @@ GO bn_reset
 GO bn_mc_vary_scale.jnl
 
 GO bn_reset
+GO bn_plot_nokey.jnl
+
+GO bn_reset
 GO bn580_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

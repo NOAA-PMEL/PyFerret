@@ -85,6 +85,7 @@ C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 *       than the ERR= branch of a READ which fails on AIX/xlf
 
         LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
+        INTEGER i                        ! ** TMAP mod 6/03 to init INTIF
 C
 	LOGICAL FIRST
 C
@@ -92,7 +93,9 @@ C	Initialize output values
 C
 	LABEL = ' '
 	N=0
-	INTIF(1)=0
+        DO 90 I = 1, 20
+	INTIF(I)=0
+   90   CONTINUE
 	M=1
 	IF(ILEN.LE.0)THEN
 	    M=0

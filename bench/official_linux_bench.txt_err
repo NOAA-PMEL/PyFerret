@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja4/kobrien/official_releases/v5.00/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x   1 kobrien  tmap     18623313 May 28 12:43 /home/ja4/kobrien/official_releases/v5.00/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 kobrien  tmap     20697121 Jun  3 13:08 /home/ja4/kobrien/official_releases/v5.00/linux/FERRET/fer/ferretdods_gui
 Running benchmark version bn500
 Benchmark run by kob
-Note: final-test-for-v500beta1.1-release
-Beginning at Fri May 28 13:30:11 PDT 1999
+Note: final-test-for-v500beta1.1-release-linked-more-statically
+Beginning at Thu Jun 3 13:41:39 PDT 1999
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -411,4 +411,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri May 28 13:36:25 PDT 1999
+Ended at Thu Jun 3 13:47:45 PDT 1999

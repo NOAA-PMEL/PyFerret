@@ -1,27 +1,18 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja4/kobrien/official_releases/v5.00/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x   1 kobrien  tmap     18623313 May 28 12:43 /home/ja4/kobrien/official_releases/v5.00/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 kobrien  tmap     20697121 Jun  3 13:08 /home/ja4/kobrien/official_releases/v5.00/linux/FERRET/fer/ferretdods_gui
 Running benchmark version bn500
 Benchmark run by kob
-Note: final-test-for-v500beta1.1-release
-Beginning at Fri May 28 13:30:11 PDT 1999
+Note: final-test-for-v500beta1.1-release-linked-more-statically
+Beginning at Thu Jun 3 13:41:39 PDT 1999
  	NOAA/PMEL TMAP
  	Program FERRET (V500beta1.1)
- 	Version 5.00 - 05/28/99
- 	28-May-99 13:30     
+ 	Version 5.00 - 06/03/99
+ 	03-Jun-99 13:41     
 
 yes? !bn500_all_shell
 yes? 
-yes? ! this "shell" is used because the Unix redirection fails to echo commands
-
-
-yes? ! from the top level command file
-yes? ! ... havn't explored the reason ... they echo fine to the screen
-yes? ! *kob* 2/02/98 - newly created - copied from bn490_all_shell.jnl
-yes? 
-yes? 
-yes? GO bn_all
-SET MODE VERIFY
+yes? yes? yes? yes? yes? yes? yes? SET MODE VERIFY
 ! BN500_ALL.JNL
 ! - run all the benchmark tests
 ! - ordered (more or less) from least to most complex
@@ -9456,7 +9447,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET (V500beta1.1) Ver. 5.00"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "May 28 99 13:31:50"
+LAB3 = "Jun 03 99 13:43:17"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -15979,8 +15970,8 @@ set view v34
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984/trans sin(x/3)*sin(t/100)
  
 * non-calendar axis contours involving T
-set grid gform-rw-rw-r--   1 kobrien  tmap        14966 May 28 13:33 bench.mgm
--rw-rw-r--   1 kobrien  tmap       249683 May 28 13:33 bench.mgm
+set grid gform-rw-rw-r--   1 kobrien  tmap         5357 Jun  3 13:44 bench.mgm
+-rw-rw-r--   1 kobrien  tmap       790271 Jun  3 13:44 bench.mgm
 at
 cancel mode calendar
 set view v41
@@ -27088,7 +27079,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.00 (V500beta1.1) 28-May-99" ;
+		:history = "FERRET V5.00 (V500beta1.1) 03-Jun-99" ;
 
 data:
 
@@ -27182,7 +27173,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.00 (V500beta1.1) 28-May-99" ;
+		:history = "FERRET V5.00 (V500beta1.1) 03-Jun-99" ;
 
 data:
 
@@ -27384,7 +27375,7 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-Fri May 28 13:35:43 PDT 1999
+Thu Jun  3 13:47:04 PDT 1999
 GO err491_spawn_quotes.jnl
 ! err491_spawn_quotes.jnl
  
@@ -27600,8 +27591,8 @@ PPL plot 231  complete
 exit/command
  	NOAA/PMEL TMAP
  	Program FERRET (V500beta1.1)
- 	Version 5.00 - 05/28/99
- 	28-May-99 13:35     
+ 	Version 5.00 - 06/03/99
+ 	03-Jun-99 13:47     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 
@@ -27774,8 +27765,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	Program FERRET (V500beta1.1)
- 	Version 5.00 - 05/28/99
- 	28-May-99 13:36     
+ 	Version 5.00 - 06/03/99
+ 	03-Jun-99 13:47     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 
@@ -27890,4 +27881,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Fri May 28 13:36:25 PDT 1999
+Ended at Thu Jun 3 13:47:45 PDT 1999

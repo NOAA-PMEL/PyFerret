@@ -1,0 +1,14 @@
+SRCS_C = \
+batch_graphics.c\
+fermain_c.c\
+ferret_dispatch_c.c\
+ferret_query.c\
+grab_image_xwd.c\
+linux_routines_c.c\
+put_frame.c\
+save_arg_pointers.c\
+signal.c\
+wgif.c\
+whdf.c 
+LIB = ../../lib/libccr.a
+ 

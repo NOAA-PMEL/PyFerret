@@ -71,8 +71,8 @@
 *	           - expanded and reorganized the LIST heading
 * V552   2/03 *acm*- Increase line_buff to 10000
 * v553   9/03 *kob*- Increase GET_STRING_ELEMENT to 512 
-* V554   4/03 *acm*-For REPEAT/RANGE vars, add check for dset = unspecified_int4
-
+* V554   3/04 *acm*-For REPEAT/RANGE vars, add check for dset = unspecified_int4
+* v560   4/04 *acm* Very wide output needs a fix in the format specifier that is written.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -669,7 +669,7 @@
 	   WRITE ( col_head_format, 3020 ) cleft+1-(width-3)/2,
      .					      num_fields,  width
 	   WRITE ( line_buff, col_head_format ) ( i,i = lo1,hi1,del1 ) 
- 3020	   FORMAT ( '(',I2,'X,',I3,'I',I2,')' )	! eg. "( 8X, 10I 6)"
+ 3020	   FORMAT ( '(',I2,'X,',I5,'I',I2,')' )	! eg. "( 8X, 10I 6)"
 	   CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff, 0 )
 	ENDIF
 

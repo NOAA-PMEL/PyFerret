@@ -69,6 +69,10 @@
 *                  portions of the source axis that overlap the dest box.
 *                  Also, use src_lo_ss and src_hi_ss for the range on the src
 *                  axis rather than mr_lo_ss and mr_hi_ss
+* v570 *acm* 5/04 Range of subscripts might be negative, and contain 
+*                 -111 among them. Allow regridding, using the flags 
+*                 ok_negi111, ok_negj111 to distinguish this case from 
+*                 the flag unspecified_int4.
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -85,7 +89,7 @@
      .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * local variable declarations:
-	LOGICAL		GEOG_COS_FACTOR, need_cos
+	LOGICAL		GEOG_COS_FACTOR, need_cos, ok_negi111, ok_negj111
 
 	INTEGER		idst,isrc,jdst,jsrc,dim1,dim2,src_grid,dst_grid,k,l
 	INTEGER	     	isrc_lo,isrc_hi,jsrc_lo,jsrc_hi,
@@ -136,6 +140,19 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
      .			   jdst_lo, jdst_hi, dst_grid,
      .			   dim2, j21 )
 
+    
+* Range of subscripts might be negative, and contain -111 among them.
+* ok_negi111, ok_negj111 distinguish between this and the flag unspecified_int4.
+
+        ok_negi111 = ( (i21(idst_lo) .LE. unspecified_int4 .AND.
+     .                 i21(idst_hi) .GE. unspecified_int4) ) .AND.
+     .                (i21(idst_lo) .NE. i21(idst_hi) )
+
+        ok_negj111 = ( (j21(jdst_lo) .LE. unspecified_int4 .AND.
+     .                 j21(jdst_hi) .GE. unspecified_int4) ) .AND.
+     .                (j21(jdst_lo) .NE. j21(jdst_hi) )
+
+
 * loop over Z and T ranges of 4-D data
 	DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
@@ -151,10 +168,11 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 	   isrc_hi = i21(idst+1)
 
 *  check if requested region is out of source range
-           IF ( isrc_lo .EQ. unspecified_int4
-     .	  .OR.  isrc_hi .EQ. unspecified_int4
-     .	  .OR.  jsrc_lo .EQ. unspecified_int4
-     .	  .OR.  jsrc_hi .EQ. unspecified_int4 ) THEN
+           IF ( ((isrc_lo .EQ. unspecified_int4
+     .	  .OR.  isrc_hi .EQ. unspecified_int4) .AND. .NOT.ok_negi111)
+     .	  .OR.  ((jsrc_lo .EQ. unspecified_int4
+     .	  .OR.  jsrc_hi .EQ. unspecified_int4) .AND. .NOT.ok_negj111) ) 
+     .     THEN
 	      dst(idst,jdst,k,l) = bad_dst
 	      goto 60
 	   ENDIF

@@ -68,6 +68,10 @@
 *                  portions of the source axis that overlap the dest box.
 * v552  *acm* 4/03 Use src_lo_ss and src_hi_ss for the range on the src
 *                  axis, as a more complete fix of the above bug.
+* v570 *acm* 5/04 Range of subscripts might be negative, and contain 
+*                 -111 among them. Allow regridding, using the flag 
+*                 ok_neg111 to distinguish this case from the flag 
+*                 unspecified_int4.
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -83,7 +87,9 @@
      .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * local variable declarations:
-	INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l
+
+        LOGICAL         OK_neg111
+        INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l
 	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib,
      .                  src_cx, dst_cx
 
@@ -104,6 +110,14 @@
 c        srcss_lo = cx_lo_ss(src_cx,axis)
 c        srcss_hi = cx_hi_ss(src_cx,axis)
 
+
+* Range of subscripts might be negative, and contain -111 among them.
+* ok_neg111 distinguishes between this and the flag unspecified_int4.
+
+        ok_neg111 = srcss_lo .LE. unspecified_int4 .AND.
+     .              srcss_hi .GE. unspecified_int4 .AND.
+     .              srcss_lo .NE. srcss_hi
+
         dstss_lo = cx_lo_ss(cx_lims,axis)
         dstss_hi = cx_hi_ss(cx_lims,axis)
 
@@ -115,6 +129,9 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	CALL GET_AVE_LIMS( srcss_lo, srcss_hi, src_grid,
      .			   dstss_lo, dstss_hi, dst_grid,
      .			   axis, ss21 )
+
+* Range of subscripts might be negative, and contain -111 among them.
+* ok_neg111 distinguishes between this and the flag unspecified_int4.
 
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
@@ -128,8 +145,9 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
 *  check if requested region is out of source range
-              IF ( srcss_lo .EQ. unspecified_int4
-     .	     .OR.  srcss_hi .EQ. unspecified_int4 ) THEN
+              IF ( (srcss_lo .EQ. unspecified_int4
+     .	     .OR.  srcss_hi .EQ. unspecified_int4)
+     .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(dstss,j,k,l) = bad_dst
 	         goto 160
 	      ENDIF
@@ -197,8 +215,9 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
 *  check if requested region is out of source range
-              IF ( srcss_lo .EQ. unspecified_int4
-     .	     .OR.  srcss_hi .EQ. unspecified_int4 ) THEN
+              IF ( (srcss_lo .EQ. unspecified_int4
+     .	     .OR.  srcss_hi .EQ. unspecified_int4)
+     .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,dstss,k,l) = bad_dst
 	         goto 260
 	      ENDIF
@@ -265,9 +284,9 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
 *  check if requested region is out of source range
-              IF ( srcss_lo .EQ. unspecified_int4
-     .	     .OR.  srcss_hi .EQ. unspecified_int4 ) THEN
-	         dst(i,j,dstss,l) = bad_dst
+              IF ( (srcss_lo .EQ. unspecified_int4
+     .	     .OR.  srcss_hi .EQ. unspecified_int4)
+     .       .AND. .NOT.(ok_neg111) ) THEN
 	         goto 360
 	      ENDIF
 
@@ -333,8 +352,9 @@ c        srcss_hi = cx_hi_ss(src_cx,axis)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
 *  check if requested region is out of source range
-              IF ( srcss_lo .EQ. unspecified_int4
-     .	     .OR.  srcss_hi .EQ. unspecified_int4 ) THEN
+              IF ( (srcss_lo .EQ. unspecified_int4
+     .	     .OR.  srcss_hi .EQ. unspecified_int4)
+     .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,j,k,dstss) = bad_dst
 	         goto 460
 	      ENDIF

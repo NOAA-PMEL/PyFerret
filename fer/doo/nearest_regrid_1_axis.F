@@ -62,18 +62,16 @@
 * NOAA/PMEL,Seattle,WA - Tropical Modeling and Analysis Program
 
 * V530: 3/01 *sh* based on xact_regrid_1_axis
+* v570 *acm* 5/04 Range of subscripts might be negative, and contain 
+*                 -111 among them. Allow regridding, using the flag 
+*                 ok_neg111 to distinguish this case from the flag 
+*                 unspecified_int4.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
+
 
 * CALLING ARGUMENT DECLARATIONS:
 	INTEGER	  cx_lims, axis, dst_lo, dst_hi, msrc, mdst
@@ -83,7 +81,7 @@
      .          coef( dst_lo:dst_hi )
 
 * INTERNAL VARIABLE DECLARATIONS:
-	LOGICAL	found1
+	LOGICAL	found1, ok_neg111
 	INTEGER i, j, k, l,
      .		ss, src_lo, src_hi, src_grd, dst_grd
 	REAL	bad_src, bad_dst
@@ -107,27 +105,40 @@
      .				dst_lo, dst_hi, dst_grd,
      .				axis, ss12, coef )
 
+* Range of subscripts might be negative, and contain -111 among them.
+* ok_neg111 distinguishes between this and the flag unspecified_int4.
+
+        ok_neg111 = (ss12(dst_lo) .LT. unspecified_int4 .AND.
+     .               ss12(dst_hi) .GE. unspecified_int4) .OR.
+     .              (ss12(dst_lo) .GT. unspecified_int4 .AND.
+     .               ss12(dst_hi) .LE. unspecified_int4) 
+
 * convert linear interp subscript points to nearest subscript pointer
 ! ... determine the closer of the surrounding coefficients
 	DO 10 i = dst_lo, dst_hi
-	   IF ( ss12(i) .NE. unspecified_int4 ) THEN
+	   IF ( ss12(i) .NE. unspecified_int4 .OR. 
+     .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	      IF (coef(i) .GE. 0.5) ss12(i) =  ss12(i) + 1
 	   ENDIF
  10	CONTINUE
 * ... fill upper end of subscript list with highest available source ss
 	found1 = .FALSE.
 	DO i = dst_lo, dst_hi
-	   IF (ss12(i) .NE. unspecified_int4 ) found1 = .TRUE.
+	   IF (ss12(i) .NE. unspecified_int4 .OR. 
+     .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) found1 = .TRUE.
 	   IF ( found1 ) THEN
-	      IF (ss12(i) .EQ. unspecified_int4 ) ss12(i) = src_hi
+	      IF (ss12(i) .EQ. unspecified_int4 .AND.
+     .            .NOT. ok_neg111) ss12(i) = src_hi
 	   ENDIF
 	ENDDO
 * ... fill lower end of subscript list with lowest available source ss
 	found1 = .FALSE.
 	DO i = dst_hi, dst_lo, -1
-	   IF (ss12(i) .NE. unspecified_int4 ) found1 = .TRUE.
+	   IF (ss12(i) .NE. unspecified_int4 .OR. 
+     .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) found1 = .TRUE.
 	   IF ( found1 ) THEN
-	      IF (ss12(i) .EQ. unspecified_int4 ) ss12(i) = src_lo
+	      IF (ss12(i) .EQ. unspecified_int4 .AND.
+     .            .NOT. ok_neg111) ss12(i) = src_lo
 	   ENDIF
 	ENDDO
 
@@ -137,7 +148,8 @@
 
 	      ss = ss12(i)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4 .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
@@ -156,7 +168,8 @@
 
 	      ss = ss12(j)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4 .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 200 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 200 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 200 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -175,7 +188,8 @@
 
 	      ss = ss12(k)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4 .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 300 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -194,7 +208,8 @@
 
 	      ss = ss12(l)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4 .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 400 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 400 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 400 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)

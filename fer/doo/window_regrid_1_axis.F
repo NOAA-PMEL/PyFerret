@@ -61,18 +61,16 @@
 * V500: 4/99 *kob* bug fix:  fixed loops for y,z,t axis to loop
 *                            only to srcss_hi-1
 * V510: 1/00 *sh* bug fix to behavior at edges of region
+* v570 *acm* 5/04 Note: we do not need to use the ok_neg111 fix for 
+*                 when the range of subscripts might be negative, and 
+*                 contain -111 among them. Tests for unspecified_int4
+*                 are not used in this routine.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
+
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, trans, mdst,

@@ -59,18 +59,15 @@
 * 	revision 1.0 - 5.2.88
 * V205:   8/3/89 - major re-write (regrid along 1 axis only of 4D structure)
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
+* v570 *acm* 5/04 Range of subscripts might be negative, and contain 
+*                 -111 among them. Allow regridding, using the flag 
+*                 ok_neg111 to distinguish this case from the flag 
+*                 unspecified_int4.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * CALLING ARGUMENT DECLARATIONS:
 	INTEGER	  cx_lims, axis, dst_lo, dst_hi, msrc, mdst
@@ -80,6 +77,7 @@
      .		coef( dst_lo:dst_hi )
 
 * INTERNAL VARIABLE DECLARATIONS:
+        LOGICAL OK_neg111
 	INTEGER i, j, k, l,
      .		ss, src_lo, src_hi, src_grd, dst_grd
 	REAL	bad_src, bad_dst, z1, z2, c1, c2
@@ -107,6 +105,14 @@
 
 * CONVERT THE DATA TO dst_grd
 	IF ( axis .EQ. x_dim ) THEN
+
+* For a modulo longitude axis, the range of subscripts might be negative, 
+* and contain -111 among them. ok_neg111 distinguishes between this and 
+* the flag unspecified_int4.
+
+           ok_neg111 = ( (ss12(dst_lo) .LE. unspecified_int4 .AND.
+     .                 ss12(dst_hi) .GE. unspecified_int4) ) .AND.
+     .                (ss12(dst_lo) .NE. ss12(dst_hi) )
 	   DO 110 i = dst_lo, dst_hi
 
 * interpolation coefficients
@@ -121,7 +127,8 @@
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
  100	         dst(i,j,k,l) = src(ss,j,k,l)
 	         GOTO 110
-	      ELSEIF ( ss .EQ. unspecified_int4 ) THEN
+	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
+     .                 .NOT.(ok_neg111) ) THEN
 * ... this should never happen in FERRET 2.00+
 	         DO 102 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 102 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
@@ -207,7 +214,7 @@
 	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
  300	         dst(i,j,k,l) = src(i,j,ss,l)
 	         GOTO 310
-	      ELSEIF ( ss .EQ. unspecified_int4 ) THEN
+	      ELSEIF ( ss .EQ. unspecified_int4) THEN
 * ... this should never happen in FERRET 2.00+
 	         DO 302 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 302 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)

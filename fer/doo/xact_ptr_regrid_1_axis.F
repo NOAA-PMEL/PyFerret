@@ -56,6 +56,10 @@
 * NOAA/PMEL,Seattle,WA - Tropical Modeling and Analysis Program
 
 * V533: *sh* 6/01
+* v570 *acm* 5/04 Range of subscripts might be negative, and contain 
+*                 -111 among them. Allow regridding, using the flag 
+*                 ok_neg111 to distinguish this case from the flag 
+*                 unspecified_int4.
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -70,7 +74,7 @@
 	REAL    coef( dst_lo:dst_hi )
 
 * INTERNAL VARIABLE DECLARATIONS:
-	LOGICAL	TM_FPEQ
+	LOGICAL	TM_FPEQ, ok_neg111
 	INTEGER i, j, k, l,
      .		ss, src_lo, src_hi, src_grd, dst_grd
 
@@ -92,13 +96,22 @@
 	   IF ( .NOT.TM_FPEQ(coef(i),0.0) ) ss12(i) = unspecified_int4
  10	CONTINUE
 
+* Range of subscripts might be negative, and contain -111 among them.
+* ok_neg111 distinguishes between this and the flag unspecified_int4.
+
+        ok_neg111 = (ss12(dst_lo) .LT. unspecified_int4 .AND.
+     .               ss12(dst_hi) .GE. unspecified_int4) .OR.
+     .              (ss12(dst_lo) .GT. unspecified_int4 .AND.
+     .               ss12(dst_hi) .LE. unspecified_int4) 
+
 * transfer THE map-able DATA TO dst_grd
 	IF ( axis .EQ. x_dim ) THEN
 	   DO 110 i = dst_lo, dst_hi
 
 	      ss = ss12(i)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4  .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
@@ -117,7 +130,8 @@
 
 	      ss = ss12(j)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4  .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 200 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 200 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 200 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -136,7 +150,8 @@
 
 	      ss = ss12(k)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4  .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
 	         DO 300 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
@@ -155,7 +170,8 @@
 
 	      ss = ss12(l)
 
-	      IF ( ss .NE. unspecified_int4 ) THEN
+	      IF ( ss .NE. unspecified_int4  .OR. 
+     .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	         DO 400 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 	         DO 400 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 	         DO 400 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)

@@ -42,18 +42,12 @@
 * 	NOAA/PMEL,Seattle,WA - Tropical Modeling and Analysis Program
 
 * V230:  8/22/92
+* V570:  5/ 5/04  remove VMS includes
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * Calling argument declarations:
 	INTEGER	  cx_lims, axis, dst_lo, dst_hi, msrc, mdst

@@ -65,7 +65,7 @@
 *	  lost without it.
 * *sh*  - added commands PLOTPOL and FILLPOL
 * *jd*	- put in daxis after FILLPOL
-* *adm*	- 10/2000 add VECTOR/STREAMLINE, alias STREAMLINE
+* *adm*	- 10/2000 add VECTOR/STREAKLINE, alias STREAKLINE
 
 *****************************************************
 
@@ -226,14 +226,14 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
      *       makep.eq.'SHADE')  
      *	  .AND.JTYPE.EQ.1).OR.
      *	  ((MAKEP.EQ.'VECTOR').AND.JTYPE.GT.-1).OR.
-     *	  ((MAKEP.EQ.'STREAM').AND.JTYPE.GT.-1).OR.
+     *	  ((MAKEP.EQ.'STREAK').AND.JTYPE.GT.-1).OR.
      *	  ((MAKEP.EQ.'PLOT'.OR.MAKEP.EQ.'PLOTV'.OR.
      *	  MAKEP.EQ.'PLOTUV'.OR.MAKEP.EQ.'VELVCT'.OR.
      *	  MAKEP.EQ.'PLOTPOL'.OR.MAKEP.EQ.'FILLPOL')
      *	  .AND.JTYPE.NE.1))RETURN
 	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'
      *		.OR.MAKEP.EQ.'VECTOR'.or.makep.eq.'SHADE'   
-     *          .or.makep.eq.'STREAM'
+     *          .or.makep.eq.'STREAK'
      *          .or.makep.eq.'FILL'.or.makep.eq.'PIXEL'
 	CLEAR = .NOT.SOVER .AND. IMCNT.LE.1 .AND. .NOT.PLTOPN
 C	SETUP AXIS FOR ALL PLOT TYPES.
@@ -376,17 +376,17 @@ C
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 	    ENDIF
 ****
-C ACM Add streamline call based on VECFLD
+C ACM Add streakline call based on VECFLD
 
-	ELSE IF(MAKEP.EQ.'STREAM')THEN
+	ELSE IF(MAKEP.EQ.'STREAK')THEN
 	    IF(JTYPE.EQ.-1)THEN
-		CALL STREAMLINE(X(1),X(NX*NY+1), XF, YF)
+		CALL STREAKLINE(X(1),X(NX*NY+1), XF, YF)
 		IF ( interrupted ) GOTO 3333 
 	    ELSE
 		IP1=NX*NY+1
 		IP2=IP1+NX
 		IP3=IP2+NY
-  		CALL STREAMLINE(X(1),X(IP3), XF, YF)
+  		CALL STREAKLINE(X(1),X(IP3), XF, YF)
 		IF ( interrupted ) GOTO 3333
 	    ENDIF
         ELSE IF(MAKEP.EQ.'VELVCT')THEN

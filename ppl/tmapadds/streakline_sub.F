@@ -1,8 +1,8 @@
-      SUBROUTINE streamline_sub (u, v, startflag, siz, den, xf, yf)
+      SUBROUTINE streakline_sub (u, v, startflag, siz, den, xf, yf)
 
 
 C**
-C**    @(#)streamline_sub.F	    10/03/00
+C**    @(#)streakline_sub.F	    10/03/00
 C**
 C**
 C***********************************************************************
@@ -48,6 +48,7 @@ C**
 *
 *  ACM  From vecfld.F  9/00
 *       and from GrADS module gxstrm.c
+*       Draw streaklines based on a velocity field.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -198,8 +199,8 @@ C  Initialize the flag grid
          startflag(i) = 0
       ENDDO
 
-C   Loop through flag grid to look for start of streamlines.  
-C     To start requires no streams drawn within surrounding 
+C   Loop through flag grid to look for start of streaklines.  
+C     To start requires no streaks drawn within surrounding 
 C     flag boxes. 
 
       i2 = 1

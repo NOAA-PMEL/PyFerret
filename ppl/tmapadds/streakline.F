@@ -1,8 +1,8 @@
-        SUBROUTINE streamline (u, v, xf, yf)
+        SUBROUTINE streakline (u, v, xf, yf)
 	REAL u, v, xf, yf
 
 C**
-C**    @(#)streamline.F	    9/19/00
+C**    @(#)streakline.F	    9/19/00
 C**
 C**
 C***********************************************************************
@@ -47,7 +47,7 @@ C**
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *  ACM  implementing algorighm from grads -- gxstrm.c
-*       draw streamlines 
+*       draw streaklines 
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -141,7 +141,7 @@ C   Allocate memory for the flag grid
       CALL GET_MEMORY( 4*siz, mblk1,nblks1,status )
       IF ( status .NE. ferr_ok ) GOTO 5000
 
-      CALL streamline_sub (u, v, memory(1,mblk1), siz, density, xf, yf)
+      CALL streakline_sub (u, v, memory(1,mblk1), siz, density, xf, yf)
 
 * Cleanup
       CALL FREE_MEMORY( mblk1, nblks1 )

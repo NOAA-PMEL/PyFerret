@@ -33,6 +33,6 @@ c	vminln	minimum vector size
 c	armax	size for maximum head size
 c	armin	size for minimum head size
 c	hfact	size factor for head
-c       density density parameter for streamlines
+c       density density parameter for streaklines
 c
 c*******************************************************************

@@ -1,4 +1,5 @@
-	SUBROUTINE EZ_UPDATE_VAR( var )
+      INTEGER FUNCTION STR_SAME( str1, str2 )
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,54 +35,49 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*
-* Subroutine will update the XDSET and XSTEP common entries for a single
-* variable of an EZ_ data set
-*
-* revision 0.00 - 10/24/89 - extracted from EZ_UPDATE_COMMON
-* 4/03 *acm* - Use STR_SAME to compare strings
+* compare two strings disregarding spaces and case differences
 
-* Arguments:
-*	var		- variable number in COMMON
+* programmer - ANsley Manke (from str_case_blind_compare) 
 *
-	INTEGER		var
-*                                                 
-* Include files
-#include "gt_lib.parm"
-	include 'tmap_dims.parm'
-#include "tmap_dset.parm"
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-
+* revision 0.0 -  4/02/03
 
 * calling argument declarations:
+      CHARACTER*(*) str1, str2
 
-* Local definitions
-	INTEGER*4	STR_SAME, dset, lcnt, line
-*
-* Is it an EZ data set ?
-	dset = ds_var_setnum( var )
-        IF (STR_SAME(ds_type(dset), '  EZ') .NE. 0) GOTO 9000
-*
-* Update variable records
-	DO 100 lcnt = 1,4
-	  line = grid_line(lcnt,ds_grid_number(var))		! temporary var
-	  IF (line .EQ. mpsnorm) THEN
-	    ds_grid_start(lcnt,var) = 1
-	    ds_grid_end(lcnt,var)   = 1
-	  ELSEIF (line .EQ. mpsunkn ) THEN
-	    GOTO 9000
-	  ELSE
-	    ds_grid_start(lcnt,var) = 1
-	    ds_grid_end(lcnt,var)   = line_dim(line)
-	  ENDIF
-  100	CONTINUE
+* local variable declarations:
+      INTEGER      s1, s2, e1, e2
+      CHARACTER*1  c1, c2
 
-* All done
-	RETURN
-*
-* ERROR MESSAGES                   
- 9000	STOP 'EZ_UPDATE_VAR'
-	END                        
+* local parameter declarations:
+      INTEGER     STR_CASE_BLIND_COMPARE
+
+
+* local parameter declarations:
+        CHARACTER*1     tab
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
+
+      e1 = LEN(str1)
+      e2 = LEN(str2)
+
+* skip leading blanks
+
+      DO 100 s1 = 1, LEN(str1)
+         c1 = str1(s1:s1)
+         IF ( c1 .NE. ' ' .AND. c1 .NE. tab ) GOTO 200
+ 100  CONTINUE
+ 200  CONTINUE
+
+      DO 300 s2 = 1, LEN(str2)
+         c2 = str2(s2:s2)
+         IF ( c2 .NE. ' ' .AND. c2 .NE. tab ) GOTO 400
+  300 CONTINUE
+  400 CONTINUE
+
+      STR_SAME = STR_CASE_BLIND_COMPARE (str1(s1:e1), str2(s2:e2) )
+
+      RETURN
+      END

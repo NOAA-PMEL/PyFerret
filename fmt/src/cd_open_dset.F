@@ -62,6 +62,8 @@
 * *sh* 11/12/96 - changes to accomodate caching of DODS data 
 * *kob* 4/99 - increase size of TM_INQ_PATH, cdf_file and raw_file 
 *              to accomodate lenghty DODS dataset names
+* 4/03 *acm* - Use STR_SAME to compare strings
+
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *       cdfid   - returned pointer to open CDF file (or cache)
@@ -72,7 +74,6 @@
 	INTEGER	      dset, cdfid, remote_dods_id, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -88,19 +89,7 @@
         include 'xdset_info.cd_equiv'
 ! kob 7/95
 	include 'xsys_names.cmn_text'	            
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'XSTEP_FILES.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
+
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -108,7 +97,7 @@
       LOGICAL CD_GET_ATTRIB, CD_ISIT_EPIC, TM_HAS_STRING, got_it,
      .        do_warn, file_exists
       PARAMETER (do_warn = .TRUE. )
-      INTEGER TM_HASH_NAME, NCOPN, TM_LENSTR1,
+      INTEGER TM_HASH_NAME, NCOPN, TM_LENSTR1, STR_SAME,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
       INTEGER flen, iin, iout, ilast, dlen
       CHARACTER    TM_STRING*13, ch*1
@@ -176,7 +165,7 @@
 * check for mutli-file netcdf datasets then loop through the list
 * of stepfiles to find the first one that is on line    *kob* 7/95
 * * kob*  bug fix in loop logic 9/18/96
-	IF (ds_type(dset) .EQ. '  MC') THEN
+        IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
  		DO 100 i=1,maxstepfiles
 		     IF (sf_setnum(i) .NE. dset) GOTO 100
 		     cdf_file = TM_INQ_PATH(sf_name(i),tmap_tsteps,
@@ -199,7 +188,7 @@
 
 * Default contents as per TMAP "Background record"
 * if this is a MC data set, we don't want to reset these values
-	IF (ds_type(dset) .NE. '  MC') THEN
+        IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
 		ds_title(dset)		= ' '
 		ds_mod_title(dset)	= ' '
 		ds_forcing_set(dset)	= ' '
@@ -232,7 +221,7 @@
 * does it have a (readable) title ?
 * *kob* 6/96 - don't do this if we have a mc dataset - title comes
 *	       from the descriptor rather than the cdf file
-	IF (ds_type(dset) .NE. '  MC') THEN
+        IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
         	got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'title',
      .                     .NOT.do_warn, ' ', ds_title(dset), 80 )
 	ENDIF
@@ -279,7 +268,7 @@
 * Allocate a "step file" slot to save CDF id and filename
 * Find the next storage position for stepfiles in common
 * only if the file is not a multi-file netcdf dataset
-	IF (ds_type(dset) .NE. '  MC') THEN
+        IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
 c commented out diagnostic write statements
 c	  write(6,*) 'sf_setnum......',sf_setnum(1)
 c	  write(6,*) 'set_not_open...',set_not_open

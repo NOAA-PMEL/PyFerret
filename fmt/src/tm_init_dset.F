@@ -88,6 +88,7 @@
 *                   **also changes to descript.def**
 *      *acm*  5/02  When extension not specified, try .nc as well as .des, .cdf
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
+* 4/03 *acm* - Use STR_SAME to compare strings
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -137,7 +138,7 @@
 	CHARACTER*256   TM_INQ_PATH, des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
-	INTEGER*4	TM_LENSTR, TM_LENSTR1
+	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME,ic
 	LOGICAL		TM_HAS_STRING, match,
      .			opened, got_lun, dods_url, nocache,
      .                  explicit_ext                 ! 7/97
@@ -338,7 +339,11 @@
 
 * check to see if we know how to handle this data descriptor
 	DO 130 tcnt = 1,num_known
-	  IF (d_type .EQ. known_type(tcnt)) GOTO 140
+          ic = STR_SAME(d_type, known_type(tcnt))
+	  IF (ic .EQ. 0) THEN
+             d_type = known_type(tcnt)
+             GOTO 140
+          ENDIF
   130	CONTINUE
 	CALL TM_ERRMSG (merr_unktype, status, 'TM_INIT_DSET',
      .			dset_num, no_stepfile,
@@ -347,7 +352,11 @@
 
   140	DO 150 rcnt = 1,num_revs
 	DO 155 tcnt = 1,num_known
-	  IF (d_format .EQ. format_rev(rcnt,tcnt)) GOTO 160
+          ic = STR_SAME(d_format, format_rev(rcnt,tcnt))
+	  IF (ic .EQ. 0 ) THEN
+             d_format = format_rev(rcnt,tcnt)
+             GOTO 160
+          ENDIF
   155	CONTINUE
   150	CONTINUE
 * ... des_name used as a buffer ...

@@ -57,13 +57,13 @@
 *     *sh*  6/99 - added "perm" (permutation) argument
 * V510 *sh* 3/00 - added tregular argument
 *	    3/00 - convert to using dynamic grids and axes
+* 4/03 *acm* - Use STR_SAME to compare strings
 
 * argument declarations:
 	LOGICAL tregular
 	INTEGER	dset, perm(4), status
 
 * include files
-#ifdef unix
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -74,18 +74,10 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
-#else
-        include 'xbuild_grids.cmn'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
+
 
 * local variable declarations:
-      INTEGER cdfid, remote_dods_id,istat
+      INTEGER STR_SAME, cdfid, remote_dods_id,istat
 * 4/99 *kob* increase temp_axnams
       CHARACTER*64 temp_axnams(4,max_temp_grid)
       LOGICAL reversed(max_lines:line_ceiling)
@@ -137,7 +129,7 @@
 ! *kob* 11/97 - close cdf files which are a part of a multi-file netcdf set
 !* close the netCDF file
 ! 5/98 *kob* - reset sf_lunit as well
-      IF (ds_type(dset) .EQ. '  MC') THEN
+      IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
         CALL NCCLOS( cdfid, istat )
 	sf_lunit(dset) = file_not_open
       ENDIF

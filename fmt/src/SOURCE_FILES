@@ -67,6 +67,7 @@ lib_get_lun.F\
 mc_init_dset.F\
 mc_read.F\
 str_case_blind_compare.F\
+str_same.F\
 str_upcase.F\
 tm_abstract_axis.F\
 tm_add_message.F\

@@ -51,6 +51,7 @@
 *   3/92 - added CDF file reads using CD_READ (calling arg list chgd 10/92)
 *   3/93 - treat ECDF (EPIC) like CDF
 * V500 5/99 *sh* - added strides to CD_READ call
+* 4/03 *acm* - Use STR_SAME to compare strings
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -71,7 +72,6 @@
      .                            a_lo_t:a_hi_t)
 *
 * include files
-#ifdef unix
 	include 'tmap_dims.parm'		! data set dimension
 	include 'tmap_errors.parm'		! err code parm defs
 #include "gt_lib.parm"
@@ -80,22 +80,14 @@
 	include 'xdset_info.cmn_text'	! data set info common
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! err code PARM defs
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'		! Axis setup parameters
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'		! Grid info
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set info common
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
 
 * local definitions
-	INTEGER*4	lcnt, lline, ivar, tcnt, pcnt
+	INTEGER*4	STR_SAME, lcnt, lline, ivar, tcnt, pcnt
 	INTEGER*4	tmp_lo(4), tmp_hi(4)
 	REAL*8		tstep, TM_WORLD
 
 * Is it a GT data set?
-  110	IF (ds_type(dset_num) .EQ. '  GT') THEN
+  110	IF (STR_SAME(ds_type(dset_num), '  GT') .EQ. 0) THEN
 	  DO 120 pcnt = 1,3
 	    tmp_lo(pcnt) = use_lo(pcnt)
 	    tmp_hi(pcnt) = use_hi(pcnt)
@@ -112,7 +104,7 @@
 	    IF (status .NE. merr_ok) GOTO 9999
   130	  CONTINUE
 * Is it a MC data set?
-	ELSEIF (ds_type(dset_num) .EQ. '  MC') THEN
+	ELSEIF (STR_SAME(ds_type(dset_num), '  MC') .EQ. 0) THEN
 	    CALL MC_READ  ( dset_num, varpos,
      .			    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			    a_hi_x, a_hi_y, a_hi_z, a_hi_t,
@@ -120,15 +112,15 @@
      .			    data_grid, file_num, status )
 	    IF (status .NE. merr_ok) GOTO 9999
 * It's a TS data set
-	ELSEIF (ds_type(dset_num) .EQ. '  TS') THEN
+	ELSEIF (STR_SAME(ds_type(dset_num), '  TS') .EQ. 0) THEN
 	  CALL TS_READ ( dset_num, varpos,
      .			 a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			 a_hi_x, a_hi_y, a_hi_z, a_hi_t,
      .			 use_lo, use_hi,
      .			 data_grid, file_num, status )
 	  IF (status .NE. merr_ok) GOTO 9999
-	ELSEIF (ds_type(dset_num) .EQ. 'CDF'
-     .    .OR.  ds_type(dset_num) .EQ. 'ECDF') THEN
+	ELSEIF (STR_SAME(ds_type(dset_num), 'CDF') .EQ. 0
+     .    .OR.  STR_SAME(ds_type(dset_num), 'ECDF') .EQ. 0) THEN
 * It's a CDF or an EPIC CDF data set
           CALL CD_READ( dset_num, varpos,
      .			a_lo_x, a_lo_y, a_lo_z, a_lo_t,

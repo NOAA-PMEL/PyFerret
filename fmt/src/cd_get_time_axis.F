@@ -46,7 +46,7 @@
 *
 * 7/95 *kob* - added check for MC dataset to prevent clobbering of
 *	       stepfile time data already stored
-
+* 4/03 *acm* - Use STR_SAME to compare strings
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -54,11 +54,10 @@
 *	status	    - return status
 
 * include files
-#ifdef unix
-	include 'tmap_errors.parm'
-	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
@@ -66,22 +65,14 @@
         include 'xdset_info.cd_equiv'
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-        INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
+
 
 * argument declarations
 	INTEGER	 dset, recdim, status
 
 * local variable declarations:
       REAL*8  TM_WORLD
-      INTEGER tmvar, istep, grid, taxis
+      INTEGER STR_SAME, tmvar, istep, grid, taxis
 
 * locate the step file that belongs to this data set
       DO 100 istep = 1,maxstepfiles
@@ -101,7 +92,8 @@
 
 * no variables with time axes in the data set
 * *kob* 12/00 no need to do the below for MC datasets
-      IF ( ds_type(dset) .NE. '  MC') THEN
+
+      IF ( STR_SAME(ds_type(dset), '  MC') .NE. 0 ) THEN
 	 ds_time_axis(dset) = mpsnorm 
 	 sf_1step(istep)    = unspecified_val8
 	 sf_lastep(istep)   = unspecified_val8
@@ -111,7 +103,7 @@
 * save the time axis and its limits
 * add check for MC datasets....their sf_1step and sf_lastep are already
 * set...dont want to clobber them
- 300  IF (ds_type(dset) .NE. '  MC') then
+ 300  IF ( STR_SAME(ds_type(dset), '  MC') .NE. 0) then
          ds_time_axis(dset) = taxis
          sf_1step(istep)    = TM_WORLD( ds_grid_start(t_dim,tmvar),
      .                               grid, recdim, box_lo_lim )

@@ -65,6 +65,7 @@
 * V530 1/00 *kob* - mods for aggregating time_independent files in an MC
 *                   context
 * V541 2/02 *sh* - minor change to support line_modulo_len
+* 4/03 *acm* - Use STR_SAME to compare strings
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -72,7 +73,6 @@
 	INTEGER*4	dnum, status
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -83,15 +83,7 @@
 	external xgt_grid_data
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
+
 *
 * LOCAL DEFINITIONS
 * upstat, temp_t0time,STR_UPCASE added for implementation of time-independent
@@ -104,7 +96,7 @@
 	INTEGER*4	GT_GET_TIME_AXIS, TS_GET_TIME_AXIS,
      .			TM_FIND_LIKE_GRID, STR_UPCASE
 * local parameter declarations:
-        INTEGER*4 new
+        INTEGER*4 STR_SAME, new
         PARAMETER ( new = 0 )
 	LOGICAL all_normal
 
@@ -138,10 +130,10 @@
 *	and build a new 4D grid in position 0 with time info
 * *kob* 12/00 also do this if all the variables are time independent
 	    IF ( grid_line(4,ngrd) .EQ. mpsunkn .OR. 
-     .             (ds_type(dnum) .EQ. '  MC' .AND. 
+     .             ( (STR_SAME(ds_type(dnum), '  MC') .EQ. 0) .AND. 
      .              grid_line(4,ngrd) .NE. mpsnorm) .OR.
-     .	            (ds_type(dnum) .EQ. '  MC' .AND.
-     .		    all_normal) ) THEN
+     .	            (STR_SAME(ds_type(dnum), '  MC') .eq. 0) .AND.
+     .		    all_normal ) THEN
 * ... create a time axis from the descriptor information (*sh* 9/90)
 * ... IF statement added to check for time-independent data ----> kob 6/91
 * ...   and to make sure time_axis is set to normal for time independent data
@@ -150,10 +142,10 @@
                  upstat = STR_UPCASE(temp_t0time,ds_t0time(dnum))
                  IF (INDEX(temp_t0time,'INDEPENDENT') .GT. 0) THEN   ! kob -
                     ds_time_axis(dnum) = mpsnorm                     ! 6/91
-	         ELSEIF (ds_type(dnum) .EQ. '  GT' .OR. 
-     .                   ds_type(dnum) .EQ. '  MC' ) THEN
+	         ELSEIF ((STR_SAME(ds_type(dnum), '  GT') .EQ. 0) .OR. 
+     .                   (STR_SAME(ds_type(dnum), '  MC') .EQ. 0) ) THEN
 	           ds_time_axis(dnum) = GT_GET_TIME_AXIS(dnum,status)
-	         ELSEIF (ds_type(dnum) .EQ. '  TS') THEN
+	         ELSEIF (STR_SAME(ds_type(dnum), '  TS') .EQ. 0) THEN
 	           ds_time_axis(dnum) = TS_GET_TIME_AXIS(dnum,ivar,status)
 	         ELSE
 	           GOTO 9200

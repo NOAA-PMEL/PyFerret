@@ -1,19 +1,33 @@
 	#
-	# platform_specific_includes.mk.i386-linux
+	# platform_specific_includes.mk.i486-linux
 	#
 	# This file is included in other Makefiles and defines
 	# platform specific macros
 
 
 	INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include \
+			  -I../xgks/include \
 			  -I. -Ireadline \
+			  -I../../ppl/include/xgks \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
+			  -I../xgks/gif \
+			  -I../xgks/ps \
+			  -I../xgks/port \
+			  -I../xgks/src/lib \
+			  -I../xgks/src/lib/gksm \
+			  -I../../xgks/gif \
+			  -I../../xgks/ps \
+			  -I../../xgks/port \
+			  -I../../xgks/src/lib \
+			  -I../../xgks/src/lib/gksm \
 			  -I$(TMAP_LOCAL)/include \
+			  -Ipplinc/xgks \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline 
+			  -I. -I$(TMAP_LOCAL)/include/readline \
+			  -I/usr/local/src/netcdf-3.5.0/include
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -22,11 +36,6 @@
 
 	GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
 	 
-	GKS_INCLUDES	=-I../../ppl/include/xgks \
-			  -I../../xgks/src/lib \
-			  -Ipplinc/xgks \
-			  -I../../xgks/port 
-	
 	# New platform type var - *kob* 10/01
 	PLATFORM = Linux(g77) 2.4.20
 
@@ -52,12 +61,12 @@
 			  -DG77_SIGNAL -DG77 -DusingDODSf2cUnderscore \
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG
 
-	CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -march=i486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4
+	CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 	FFLAGS          =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 	PPLUS_FFLAGS    =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 
 
-        PROF_FLAGS      = -pg
+
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
@@ -74,7 +83,7 @@
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 	#GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
-	READLINELIB	= ../readline-4.1/libreadline.a 
+	READLINELIB	= -L../readline-4.1 -lreadline
 
 	HDFLIB		= -L/usr/local/src/HDF/lib  -ldf -ljpeg -lz
 
@@ -87,5 +96,5 @@
 	TERMCAPLIB 	=/usr/lib/libncurses.a
 
 	#
-	# End of platform_specific_includes.mk.i386-linux
+	# End of platform_specific_includes.mk.i486-linux
 #

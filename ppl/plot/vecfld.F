@@ -60,6 +60,8 @@ C**
 *                       ~ansley/ans_ferret/curvilinear/curv_coord_sub.F
 *       *acm* 10/01    Remove VMS includes
 *       *acm* 10/24/01 Call mark(99) to plot a point when a vector is too small.
+*       *acm*  5/02    Bug fix: alen for curvilinear vectors could be 0.
+
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -91,7 +93,7 @@ C
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
-	real thfact,xn,yn,xl,yl,dy,dx, alen, the_diff, this_len
+	real thfact,xn,yn,xl,yl,dy,dx, alen, close_len, this_len
 
 	integer ic,i,j,lnblk,iln, overedge
 
@@ -213,7 +215,7 @@ c           IF (mypen .GT. 15) mypen = 1
 
            curv_len = 0.0
            overedge = 0
-	   the_diff = cmzge
+	   close_len = cmzge
 
            DO 60, ii=1, 500
 
@@ -264,7 +266,10 @@ c           IF (mypen .GT. 15) mypen = 1
 C  save length in world coordinates, closest to VUSRLN.  For arrow key
 
            this_len = sqrt((xx1orig-xx2)**2+(yy1orig-yy2)**2)
-	   IF (ABS(vclen - vusrln) .LT. the_diff) alen = this_len
+	   IF (ABS(vclen - vusrln) .LT. close_len) THEN
+               alen = this_len
+               close_len = MIN(close_len, ABS(vclen - vusrln))
+           ENDIF
      
 C     DRAW ARROW HEADS
 
@@ -347,7 +352,7 @@ C	DRAW ARROW
 C
 	IF(alen.GT.ARMAX)THEN
 	    THFACT=ARMAX*HFACT/alen
-	ELSE IF(alen.LT.ARMIN)THEN
+	ELSE IF(alen.LT.ARMIN .AND. alen .GT. 1.e-6)THEN
 	    THFACT=ARMIN*HFACT/alen
 	ELSE
 	    THFACT=HFACT
@@ -375,5 +380,6 @@ C
 	YL = YY2 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
+
 	RETURN
 	END

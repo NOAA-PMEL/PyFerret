@@ -25,8 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-all	fer ppl fmt gksm2ps
-fer_src fer
-ppl_src ppl
-fmt_src fmt
-gksm2ps_src gksm2ps
+fer	fer
+fer_src fer/src
+fer_cmn fer/common
+fer_gui fer/gui

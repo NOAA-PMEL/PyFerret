@@ -96,7 +96,7 @@
 
 	IF ( interrupted ) THEN
 * *kob* if we are animating, stop and reset active window
-	   IF (animate .EQ. .TRUE.) THEN
+	   IF (animate .EQV. .TRUE.) THEN
 	      animate = .FALSE.
 	      CALL SWAP_ACTIVE_WINDOW
 	   ENDIF
@@ -118,7 +118,7 @@
 		 RETURN 1
 	      ELSE
 * *kob* repeat loop done so we are done animating.  reset active window
-		 IF (animate .EQ. .TRUE.) THEN
+		 IF (animate .EQV. .TRUE.) THEN
 		    animate = .FALSE.
 		    CALL SWAP_ACTIVE_WINDOW
 		 ENDIF
@@ -128,7 +128,7 @@
 	   ELSE
 *       kob 12/00 - before we grab the next command, if we are animating lets
 *             take the snapshot here
-	      IF (animate .EQ. .TRUE.) THEN
+	      IF (animate .EQV. .TRUE.) THEN
 		 wsid = win_id9
 		 anim_id = active_win_id
                  CALL COPY_BUFFERED_WINDOW(wsid, anim_id)

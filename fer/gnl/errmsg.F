@@ -205,7 +205,7 @@
 	   CALL TM_SPLIT_MESSAGE( ttout_lun, '** INTERRUPTED! **')
 	   CALL SET_CTRL_C( CTRLC_AST )
 * *kob*	if animating during an interrupt, lets clean up
-	   IF (animate .EQ. .TRUE.) THEN
+	   IF (animate .EQV. .TRUE.) THEN
 	      animate = .FALSE.
 	      CALL SWAP_ACTIVE_WINDOW
 	   ENDIF

@@ -51,6 +51,9 @@
 *
 *    5/2001    Let F(y,z) be a function of X and/or T
 *
+*  11/12/2002  Remove option 2) above: the spatial location of the scattered points
+*              is a 1-D list.
+
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of time.  
 * Output is gridded data in x, y and time.  Calls routine "gausswt2".
@@ -103,11 +106,11 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*126 fcn_desc
-      WRITE (fcn_desc, 10)
+      CHARACTER*126 buff
+      WRITE (buff, 10)
    10 FORMAT ('Use Gaussian weighting to grid scattered data to a ',
      .        'YZ grid.')
-      CALL ef_set_desc(id, fcn_desc)
+      CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 9)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
@@ -132,8 +135,10 @@
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      CALL ef_set_arg_desc(id, arg, 
-     .     'F(Y,Z)   3rd component of scattered input triples')
+      WRITE (buff,20) 
+   20 FORMAT ('F(X,T) 3rd component of scattered input triples. ',
+     .  'May be fcn of X and/or T')
+      CALL ef_set_arg_desc(id, arg, buff)
       CALL ef_set_axis_influence(id, arg, YES, NO, NO, YES)
 
       arg = 4
@@ -150,16 +155,16 @@
 
       arg = 6
       CALL ef_set_arg_name(id, arg, 'YSCALE')
-      WRITE (fcn_desc, 30)
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      WRITE (buff, 30)
+      CALL ef_set_arg_desc(id, arg, buff)
    30 FORMAT 
      .  ('Mapping scale in Y direction, data units (e.g. km or lat)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'ZSCALE')
-      WRITE (fcn_desc, 40)
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      WRITE (buff, 40)
+      CALL ef_set_arg_desc(id, arg, buff)
    40 FORMAT (
      .  'Mapping scale in Z direction, data units (e.g. m or km)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
@@ -167,16 +172,16 @@
 
       arg = 8
       CALL ef_set_arg_name(id, arg, 'YCUTOFF')
-      WRITE (fcn_desc, 50)
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      WRITE (buff, 50)
+      CALL ef_set_arg_desc(id, arg, buff)
    50 FORMAT 
      .  ('Weight cutoff in Y direction: Use pts within cutoff*scale')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 9
       CALL ef_set_arg_name(id, arg, 'ZCUTOFF')
-      WRITE (fcn_desc, 60)
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      WRITE (buff, 60)
+      CALL ef_set_arg_desc(id, arg, buff)
    60 FORMAT 
      .  ('Weight cutoff in X direction: Use pts within cutoff*scale')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
@@ -248,7 +253,7 @@
 
 *  arg_1  ypts \
 *  arg_2  zpts  > Scattered y,z,f(y,z) triples to be gridded.
-*  arg_3  fpts /    Can be fcn of t
+*  arg_3  fpts /    F can be fcn of x,t
 *  arg_4  yaxis of new grid
 *  arg_5  zaxis of new grid
 *  arg_6  interpolation parameter   yscale
@@ -574,7 +579,11 @@ C                     other end, and use in the gridding computation.
 
 900   CONTINUE
 
-      IF (nypts .NE. nzpts) WRITE (errtxt,20) nypts, nzpts
+      IF (nypts .NE. nzpts) THEN
+        WRITE (errtxt,20) nypts, nzpts
+      ELSE IF (nypts .EQ. 0) THEN
+        WRITE (errtxt, 30)
+      ENDIF
       GOTO 999 
 
  910  CONTINUE
@@ -598,6 +607,8 @@ C                     other end, and use in the gridding computation.
 
 
    20 FORMAT ('Input scattered y, z have different # of points', 2i8)
+
+   30 FORMAT ('No data in scattered y, z points')
 
    40 FORMAT (a1,
      .    ' Mapping scale parameter must be positive. Argument', I2)

@@ -97,11 +97,11 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*100 fcn_desc
-      WRITE (fcn_desc, 10)
+      CHARACTER*100 buff
+      WRITE (buff, 10)
    10 FORMAT ('Use Laplace interpolation to grid scattered data to ',
      .        'an XZ grid.')
-      CALL ef_set_desc(id, fcn_desc)
+      CALL ef_set_desc(id, buff)
 
       CALL ef_set_num_args(id, 7)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
@@ -126,10 +126,10 @@
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      WRITE (fcn_desc, 20) 
-   20 FORMAT ('F(X,Z) 3rd component of scattered input triples',
-     .  ' may be fcn of Y and/or time')
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      WRITE (buff, 20) 
+   20 FORMAT ('F(X,Z) 3rd component of scattered input triples. ',
+     .  'May be fcn of Y and/or T')
+      CALL ef_set_arg_desc(id, arg, buff)
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, YES)
 
       arg = 4
@@ -241,8 +241,8 @@
      .     zgridded, xscat, zscat, fscat)
 
 *  arg_1  xpts \
-*  arg_2  zpts  } scattered x,z,f(x,z) triples to be regridded.  Can be fcns of t
-*  arg_3  zpts /
+*  arg_2  zpts  } scattered x,z,f(x,z) triples to be gridded.  F can be fcn of y,t
+*  arg_3  fpts /
 *  arg_4  X axis of new grid
 *  arg_5  Z axis of new grid
 *  arg_6  interpolation parameter   cay

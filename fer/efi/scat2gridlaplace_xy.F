@@ -50,6 +50,9 @@
 *   12/7/2000  Add error checking on gridding parameters
 *    5/2001    Let F(x,y) be a function of Z and/or T
 *
+*  11/12/2002  Remove option 2) above: the spatial location of the scattered points
+*              is a 1-D list.
+
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -96,13 +99,13 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*100 fcn_desc
+      CHARACTER*100 buff
 
 
-      WRITE (fcn_desc, 10)
+      WRITE (buff, 10)
    10 FORMAT ('Use Laplace weighting to grid scattered data to an ',
      .        'XY grid.')
-      CALL ef_set_desc(id, fcn_desc)
+      CALL ef_set_desc(id, buff)
 
 
       CALL ef_set_num_args(id, 7)
@@ -128,10 +131,10 @@
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      WRITE (fcn_desc, 20) 
-   20 FORMAT ('F(X,Y) 3rd component of scattered input triples',
-     .  ' may be fcn of Z and/or time')
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      WRITE (buff, 20) 
+   20 FORMAT ('F(X,Y) 3rd component of scattered input triples. ',
+     .  'May be fcn of Z and/or T')
+      CALL ef_set_arg_desc(id, arg, buff)
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
 
       arg = 4
@@ -244,7 +247,7 @@
      .     zgridded, xscat, yscat, fscat)
 
 *  arg_1  xpts \
-*  arg_2  ypts  > scattered x,y,f(x,y) triples to be gridded. Can be fcns of z,t
+*  arg_2  ypts  > scattered x,y,f(x,y) triples to be gridded. F can be fcn of z,t
 *  arg_3  zpts /
 *  arg_4  xaxis of new grid
 *  arg_5  yaxis of new grid
@@ -336,12 +339,12 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
-*  scattered data points may lie on the X, Y, or Z axis of the input arguments.
+*  scattered data points may lie on the X, Y, Z or T axis of the input arguments.
 
       nxpts = 0
       nypts = 0
 
-      DO 100 m = X_AXIS, Z_AXIS
+      DO 100 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
             i1n = arg_hi_ss(m,ARG1)
@@ -349,7 +352,7 @@ C  variables for checking axis characteristics (modulo axes)
          ENDIF
  100  CONTINUE
 
-      DO 110 m = X_AXIS, Z_AXIS
+      DO 110 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG2)
             i2n = arg_hi_ss(m,ARG2)
@@ -512,8 +515,7 @@ C  Get coordinates of output axes.
 
    20 FORMAT('Input scattered x, y have different # of points', 2i8)
 
-   30 FORMAT ('Scattered points must be indexed I,J,or L.  Use RESHAPE',
-     .        ' to list them in I,J,or L.')
+   30 FORMAT ('No data in scattered x, y points')
 
    40 FORMAT ('Gridding parameter CAY must be nonnegative Argument 6')
 

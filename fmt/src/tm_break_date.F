@@ -65,12 +65,12 @@
         include 'calendar.decl'
         include 'calendar.cmn'
 #include "gt_lib.parm"
-#ELSE
+#else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
         INCLUDE 'TMAP_PPLV11INC:CALENDAR.DECL'
         INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#ENDIF
+#endif
 *
 * LOCAL DEFINITIONS
 	CHARACTER*20	fill_in

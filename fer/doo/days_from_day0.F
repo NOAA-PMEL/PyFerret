@@ -44,13 +44,14 @@
 *
 * V320 11/94 - in order to implement the DAY1900 function
 *		based on tm_secs_from_bc by Mark Verschell
+* V530 12/00 *sh* - bug fix: avoid crash if month is not in [1,12]
 
 * calling argument declarations:
 	REAL*8 date0_days
 	INTEGER year, month, day
 
 * Local Definition
-	INTEGER		days_in_month(12)
+	INTEGER		days_in_month(12), mnth
 	REAL*8		secs_in_day,
      .			secs_in_year, secs_in_century, total_secs
 
@@ -61,6 +62,15 @@
 	DATA days_in_month /   0,  31,  59,  90, 120, 151,
      .			     181, 212, 243, 273, 304, 334/
 
+* to avoid crash for out of bounds month
+	IF (month .GT. 12) THEN
+	   mnth = 12
+	ELSEIF (month .LT. 1) THEN
+	   mnth = 1
+	ELSE
+	   mnth = month
+	ENDIF
+
 * add lots of seconds for each century since 0 day
 	total_secs = secs_in_century * INT(year/100)
 * add a day for every 400 years (leap year at centennial)
@@ -70,9 +80,9 @@
 * add a day for each leap year since centennial (except for centennial)
 	total_secs = total_secs + secs_in_day*INT((MOD(year,100)-1)/4)
 * add seconds for number of months
-	total_secs = total_secs + days_in_month(month)*secs_in_day
+	total_secs = total_secs + days_in_month(mnth)*secs_in_day
 * add 1 day worth of seconds if this is leap year and past february
-	IF (month .GT. 2) THEN
+	IF (mnth .GT. 2) THEN
 	  IF (MOD(year,400) .EQ. 0) THEN
 	    total_secs = total_secs + secs_in_day
 	  ELSE

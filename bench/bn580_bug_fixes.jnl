@@ -48,3 +48,12 @@ GO err570_cnnn_multiline.jnl
 GO bn_reset
 GO err570_fine_grid_list.jnl
 
+! Range includes just one coordinate point on the axis
+! Plot using /HLIM
+GO bn_reset
+GO err570_hlimit_onepoint
+
+! Regridding between Gregorian and Julian time axes with @NRST
+! caused a segfault.
+GO bn_reset
+GO err570_index111.jnl

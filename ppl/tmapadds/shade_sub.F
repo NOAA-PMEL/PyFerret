@@ -84,6 +84,12 @@
 * v5.51*acm*  1/30/03  Comment out the cellarray implementation; xgks doesnt
 *                      completely implement it & has a precision bug for 
 *                      large plots.  see comment lines: c no_cellarray
+* V5.54 *acm* 2/11/04  For cellarray plots, if the data is all missing or
+*                      outside the range of the axes that have been plotted,
+*                      do not make the cellarray call.
+*  V5.54 *acm* 2/11/04 For cellarray plots, make sure the edges of the rectangle 
+*                      of data corresponds to the correct part of the box drawn
+*                      by the axes. (/hlim or /vlim plots)
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -116,13 +122,13 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
 	REAL		data(nx,ny),xc(nx),yc(ny),xs(nx+1),ys(ny+1)
 	REAL	 	w(4),v(4),ndc(4),uc(4)
-	REAL		xinv,yinv, cx1, cx2, cy1, cy2
+	REAL		xinv,yinv, cx1, cx2, cy1, cy2, half
 
 	logical		valid
 
         INTEGER		cells(*), pmax
 	LOGICAL		ITS_BATCH_GRAPHICS, REGULARLY_SPACED,
-     .                  batch, irregular
+     .                  batch, irregular, plot_cell
 
 * declarations for curvilinear coordinates
 	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES, BAD_XY_COORD,
@@ -132,6 +138,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	PARAMETER     ( maxpts = 200,
      .			maxpt_ov2 = maxpts / 2 )
 	REAL		px(maxpts), py(maxpts)
+
+        INTEGER nvertex,uprdn
 
 *	PARAMETER	(my_trans = 10)
 	EXTERNAL	GET_NDX
@@ -150,7 +158,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
 *	*jd* mod to allow shading single level fields 
 	IF (nlev2 .LT. 1) GOTO 1000
-	shd_levels = max (nlev2 - 1,1)
+	shd_levels = MAX (nlev2 - 1,1)
 
 * are we in no-X mode?
 	batch = ITS_BATCH_GRAPHICS()
@@ -282,6 +290,7 @@ c*       side from xeq_shade.
 
       IF (use_cell) THEN
 
+      
 * Collect color indices in cellarray cells array.
 
         cx1 = uc(1)*xinv   
@@ -294,6 +303,7 @@ c*       side from xeq_shade.
         mx = 0
         my = 0
 
+        plot_cell = .TRUE.
         DO 60 i = 1, nx
            IF (xc(i) .GE. cx1 .AND. xc(i) .LE. cx2) mx = mx + 1
   60    CONTINUE
@@ -301,7 +311,15 @@ c*       side from xeq_shade.
            IF (yc(j) .GE. cy1 .AND. yc(j) .LE. cy2) my = my + 1
   65    CONTINUE
 
+* none of the data is in the range of the axes we are plotting; 
+* dont make the cellarray call.
+
+        IF ( (mx .EQ. 0) .OR. (my .EQ. 0) ) plot_cell = .FALSE.
+
+* load the color array
+
         k = 0
+        pmax = 0
         DO 80 j = ny,1,-1
 	   DO 70 i = 1,nx
 
@@ -312,14 +330,13 @@ c*       side from xeq_shade.
 
               fill_ndx  = GET_NDX (data(i,j),fill_ndx)
               k = k + 1
-
-	      IF (fill_ndx .NE. -999) THEN
+ 
+              IF (fill_ndx .NE. -999) THEN
                  cells(k) = fill_ndx + lo_color_ndx(wsid)-2
                  pmax = max (cells(k), pmax)
 
               ELSE
                  cells(k) = 0
-
               ENDIF
 
            ENDIF
@@ -327,13 +344,30 @@ c*       side from xeq_shade.
 70         CONTINUE
 80      CONTINUE
 
-*  Render the field using the cellarray primitive call.
+c If all the data is missing don't make the cellarray call
 
-         DO 90 i = 0, pmax
-            CALL gsfaci (i)
-90       CONTINUE
+        IF (pmax .EQ. 0) plot_cell = .FALSE.
 
-         CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
+*  Render the field using the cellarray primitive call.  
+
+         IF (plot_cell) THEN
+            DO 90 i = 0, pmax
+               CALL gsfaci (i)
+90          CONTINUE
+
+* If the data rectangle doesnt take up the whole plot box, reset
+* the world coordinates of the corners to match the data rectangle.
+
+            half = (xc(2) - xc(1)) / 2.
+            IF (cx1 .LT. xc(1) + half) cx1 = xc(1)
+            IF (cx2 .GT. xc(nx) - half) cx2 = xc(nx)
+            half = (yc(2) - yc(1)) / 2.
+            IF (cy1 .LT. yc(1) + half ) cy1 = yc(1)
+            IF (cx2 .GT. yc(ny) - half) cy2 = yc(ny)
+
+            CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
+         ENDIF
+
       ELSE  ! non-cellarray:
 
 * Previous code for SHADE plot, when either a pattern is used or 

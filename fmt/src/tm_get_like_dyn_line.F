@@ -1,8 +1,6 @@
 	SUBROUTINE TM_GET_LIKE_DYN_LINE(idim, lo, hi, del, like, class,
      .					outline, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -51,6 +49,8 @@
 *			  because the last value was sometimes getting
 *			  truncated on linux, ie x[.1:1:.1] only listed
 *			  nine rather than ten points.
+* V533 *sh* 6/01 - save line_parent for regular stride axes, too
+*		   else the stride and delta cannot be recovered 
 
 * Arguments
 	INTEGER		idim, like, class, outline, status
@@ -64,7 +64,6 @@
 * in	lo,hi,del - description of line
 
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -72,26 +71,14 @@
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:IMPLICIT.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 *
 * Local definitions
-	LOGICAL		used_parent_line
-	INTEGER		inline, line_match
-	INTEGER		TM_FIND_LIKE_LINE, TM_FIND_LIKE_DYN_LINE
+	INTEGER		inline
+	INTEGER		TM_FIND_LIKE_DYN_LINE
 
 *kob 5/97
 	REAL*8 		dp_epsilon
 	PARAMETER 	( dp_epsilon = 1.D-10)
-
-* initialize
-	used_parent_line = .FALSE.
 
 * allocate a scratch line 
 	CALL TM_ALLO_DYN_LINE( inline, status )
@@ -134,7 +121,7 @@
 * ... every nth index of parent line
 	ELSEIF ( class .EQ. pline_class_stride ) THEN
 	   IF ( line_regular(like) ) THEN
-	      line_parent(inline)    = 0
+	      line_parent(inline)    = like
 	      line_start(inline)     = line_start(like)
      .				     + (lo-1)*line_delta(like)
 	      line_delta(inline)     = del * line_delta(like)
@@ -145,7 +132,6 @@
 	      ENDIF
 	   ELSE
 	      line_parent(inline)    = like
-	      used_parent_line	     = .TRUE.
 	      line_start(inline)     = lo			! integer
 	      line_delta(inline)     = del			! integer
 	      IF ( hi .GT. 0.0D0) THEN
@@ -159,13 +145,12 @@
 	ELSEIF ( class .EQ. pline_class_midpt ) THEN	! midpoints
 	   line_dim(inline)       = line_dim(like)-1
 	   IF ( line_regular(like) ) THEN
-	      line_parent(inline)    = 0
+	      line_parent(inline)    = like
 	      line_start(inline)     = line_start(like)
      .				     + 0.5*line_delta(like)
 	      line_delta(inline)     = line_delta(like)
 	   ELSE
 	      line_parent(inline)    = like
-	      used_parent_line	     = .TRUE.
 	      line_start(inline)     = 1			! integer
 	      line_delta(inline)     = 1			! integer
 	   ENDIF
@@ -184,7 +169,7 @@
 	   CALL TM_COPY_LINE( inline, outline )
 
 * ... make sure the parent line doesn't get deallocated while still in use
-	   IF ( used_parent_line ) CALL TM_USE_LINE( like )
+	   IF ( line_parent(inline) .NE. 0 ) CALL TM_USE_LINE(like)
 
 * ... name it "(AXnnn)"
 	   WRITE ( line_name(outline), 3000 ) outline - max_lines

@@ -101,7 +101,9 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
 	  buf[slen-1] = 0;  /* remove newline */
 
 	  /* make and save a permanent copy of the input line */
-	  if ( !(pmnt = (char *) malloc(sizeof(char) * (int)strlen(buf))) )
+	  /* BUG FIX *kob* v552 - need to add one to string 
+	     length for newline   */
+	  if ( !(pmnt = (char *) malloc(sizeof(char) * (int)(strlen(buf)+1))))
 	    {
 	      *stat = 1;
 	      return;
@@ -113,14 +115,14 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
 	      last_increment = increment;
 	      increment *= 2;
 	      if ( !(sarray = (char **) realloc( (void*) sarray,
-					  sizeof(char *) * increment )) )
+						 sizeof(char *) * increment ) ))
 		{
 		  *stat = 1;
 		  return;
 		}
 	      nincr = 0;
 	    }
-	  sarray[(*nlines)++] = pmnt;
+	  sarray[(*nlines)++] = pmnt; 
 	  nincr++;
 	 }
 
@@ -128,9 +130,17 @@ void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
     pclose(fpipe);
 
     /* always return at least one string (avoid FORTRAN probs) */
+    /* *kob* v552 - bug fix - still need to allocate space for the null string */
     if (*nlines == 0 ) 
       {
-	sarray[0] = " ";
+	if ( !(pmnt = (char *) malloc(sizeof(char) )))
+	  {
+	    *stat = 1;
+	    return;
+	  }
+	*pmnt = 0;
+	
+	sarray[0] = pmnt;
 	(*nlines)++;
       }
 

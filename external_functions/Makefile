@@ -10,7 +10,7 @@
 # Macro Definitions
 #
 
-DIRS = examples fft gridding sort v5d
+DIRS = examples  v5d
 
 #
 # Targets

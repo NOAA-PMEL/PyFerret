@@ -28,6 +28,8 @@
 *               - add function PPLGRID
 * V500: 10/26/98 - *jc* add CREATE_PERMUTATION section
 *        7/99 *sh* check ststus on retun from efvn_compute
+* V510: *sh* 3/00 - bug fix: com_mr was passed instead of mr_perm to the EFs
+*                 - eliminated old code as marked by jon
 
 #ifdef unix
 	include	'ferret.parm'
@@ -63,44 +65,23 @@
         INTEGER mr_arg_offset_array(10)
         REAL bad_flag_array(10)
 
-        INTEGER i, mr, ndim, perm(4), mr_perm(9)
+        INTEGER i, mr, perm(4), mr_perm(9)
 
 * internal parameter declarations:
 	REAL*8          pdays_by_1900
 	PARAMETER     ( pdays_by_1900 = 59958230400.0 / 
      .       (60.*60.*24.) )
 
+
+* initialize
         status = ferr_ok
 
-* JC_TODO: This section can be deleted if the CREATE_PERMUTATION
-* section works
-
-       mr_arg_offset_array(1)  = ( mr_blk1(mr1) - 1 ) * mem_blk_size
-       mr_arg_offset_array(2)  = ( mr_blk1(mr2) - 1 ) * mem_blk_size
-       mr_arg_offset_array(3)  = ( mr_blk1(mr3) - 1 ) * mem_blk_size
-       mr_arg_offset_array(4)  = ( mr_blk1(mr4) - 1 ) * mem_blk_size
-       mr_arg_offset_array(5)  = ( mr_blk1(mr5) - 1 ) * mem_blk_size
-       mr_arg_offset_array(6)  = ( mr_blk1(mr6) - 1 ) * mem_blk_size
-       mr_arg_offset_array(7)  = ( mr_blk1(mr7) - 1 ) * mem_blk_size
-       mr_arg_offset_array(8)  = ( mr_blk1(mr8) - 1 ) * mem_blk_size
-       mr_arg_offset_array(9)  = ( mr_blk1(mr9) - 1 ) * mem_blk_size
-* the result should always have index MAX_EF_ARGS+1
-       mr_arg_offset_array(10) = ( mr_blk1(mres) - 1 ) * mem_blk_size
-
-       bad_flag_array(1)  = mr_bad_data ( mr1 )
-       bad_flag_array(2)  = mr_bad_data ( mr2 )
-       bad_flag_array(3)  = mr_bad_data ( mr3 )
-       bad_flag_array(4)  = mr_bad_data ( mr4 )
-       bad_flag_array(5)  = mr_bad_data ( mr5 )
-       bad_flag_array(6)  = mr_bad_data ( mr6 )
-       bad_flag_array(7)  = mr_bad_data ( mr7 )
-       bad_flag_array(8)  = mr_bad_data ( mr8 )
-       bad_flag_array(9)  = mr_bad_data ( mr9 )
-* the result should always have index MAX_EF_ARGS+1
-       bad_flag_array(10) = mr_bad_data ( mres )
-
-* JC_TODO: End of section to be deleted
-
+* initialize all of the possible passed arguments just for good housekeeping
+        DO 5 i= 1, 9
+            mr_arg_offset_array(i)  = ( mr_blk1(dummy_mr)-1 )
+     .                              * mem_blk_size
+            bad_flag_array(i)  = mr_bad_data ( dummy_mr )
+ 5      CONTINUE
 
 * In order to pass arguments to the external function as continguous 
 * pieces of memory, we need to use CREATE_PERMUTATION.  
@@ -126,10 +107,13 @@
 
  100   CONTINUE
 
-       mr_arg_offset_array(10) = ( mr_blk1(mres) - 1 ) * mem_blk_size
-       bad_flag_array(10) = mr_bad_data ( mres )
+* store the restricted limits as known by mr_perm instead of com_mr
+        CALL NON_ARRAY_SUBSC( mr_perm, num_com )
 
-       call efcn_compute(fcn, num_com, com_cx, com_mr, mres, 
+        mr_arg_offset_array(10) = ( mr_blk1(mres) - 1 ) * mem_blk_size
+        bad_flag_array(10) = mr_bad_data ( mres )
+
+        call efcn_compute(fcn, num_com, com_cx, mr_perm, mres, 
      .      bad_flag_array, mr_arg_offset_array, memory, status)
         IF (status .NE. ferr_ok) CALL ERRMSG(ferr_ef_error, status,
      .          'error in external function', *190)

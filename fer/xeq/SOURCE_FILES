@@ -1,0 +1,30 @@
+SRCS_F = \
+xeq_cancel.F\
+xeq_contour.F\
+xeq_define.F\
+xeq_elif.F\
+xeq_else.F\
+xeq_endif.F\
+xeq_exit.F\
+xeq_frame.F\
+xeq_go.F\
+xeq_help.F\
+xeq_if.F\
+xeq_list.F\
+xeq_load.F\
+xeq_message.F\
+xeq_plot.F\
+xeq_pplus.F\
+xeq_query.F\
+xeq_repeat.F\
+xeq_set.F\
+xeq_shade.F\
+xeq_show.F\
+xeq_spawn.F\
+xeq_stat.F\
+xeq_user_command.F\
+xeq_vector.F\
+xeq_wire.F\
+xeq_write.F 
+LIB = ../../lib/libxeq.a
+ 

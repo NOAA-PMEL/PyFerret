@@ -1,0 +1,23 @@
+SRCS_F = \
+xalgebra_data.F\
+xcalc_vars_data.F\
+xcommand_data.F\
+xcontext_data.F\
+xcontrol_data.F\
+xdset_parms_data.F\
+xfr_grid_data.F\
+xgfdl_error_text_data.F\
+xgfdl_masks_data.F\
+xgks_devices_data.F\
+xgrid_chg_fcns_data.F\
+xgui_data.F\
+xonedim_data.F\
+xplot_setup_data.F\
+xplot_state_data.F\
+xprog_state_data.F\
+xrevision_data.F\
+xtext_info_data.F\
+xvariables_data.F\
+xwindow_state_data.F 
+LIB = ../../lib/libdat.a
+ 

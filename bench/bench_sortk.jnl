@@ -1,5 +1,7 @@
 ! Benchmark for sort and sample external Functions
 ! ACM 7/99
+! Changes with v5.81 and after, specifying context for arg 2 of SAMPLEK 
+!   see notes in Bugzilla under bug 1187.
 
 ! test sortk, samplek
  
@@ -7,9 +9,8 @@ can region
 use gt4d011
 set region/i=99/j=40/l=1
 
-
 let zsorted_indices = sortk(temp)
-let zsorted_temp = samplek(temp, zsorted_indices)
+let zsorted_temp = samplek(temp, zsorted_indices[i=99,j=40,l=1])
 list zsorted_temp
 
 
@@ -20,12 +21,12 @@ set region/i=70/j=90/l=1
 list temp
 
 let zsorted_indices = sortk(temp)
-let zsorted_temp = samplek(temp, zsorted_indices)
+let zsorted_temp = samplek(temp, zsorted_indices[i=70,j=90,l=1])
 list zsorted_temp
 
 ! this should bail out with indices out of range:
 
-let zsorted_indices = sortk(temp) - 100
+let zsorted_indices = sortk(temp[i=70,j=90,l=1]) - 100
 let zsorted_temp = samplek(temp, zsorted_indices)
 list zsorted_temp
 

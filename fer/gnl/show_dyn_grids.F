@@ -44,14 +44,20 @@
 * V420:  11/95
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V510 *sh* 4/00 - grids may also be allocated by data set variables
+*                  Use /DYNAMIC/ALL to see them.
+
 #ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
 	include 'xtm_grid.cmn_text'
 	include	'ferret.parm'
+	include	'slash.parm'
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+        include 'xfr_grid.cmn'   ! w/ mgrid_abstract
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -66,10 +72,18 @@
 	INTEGER mods_cx
 
 * local variable declarations:
-	INTEGER grid, line, dset, uvar, count, i, TM_LENSTR1
+        LOGICAL show_all, shown
+	INTEGER grid, line, dset, var, count, i, slash_all
 	CHARACTER sanity_msg*24
 
+* local parameter declarations
+        PARAMETER ( slash_all  = 1 + 0 )
+
+* initialize
+        show_all   = qual_given( slash_all ) .GT. 0
+
 * first show the dynamic grids
+        shown = .FALSE.
 	grid = grid_flink(max_grids)
  	IF ( grid .EQ. max_grids ) THEN
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
@@ -80,13 +94,22 @@
 	ENDIF
 * ... --- "while" loop
  100	IF ( grid .NE. max_grids ) THEN
-* ... sanity check the use count -- must be in use by user vars
+* ... is this an exlicit (netCDF) grid that shouldn't be shown 
+           IF (grid_name(grid)(1:1).NE.'(' .AND. .NOT.show_all) THEN
+               grid = grid_flink(grid)
+               GOTO 100
+           ENDIF
+* ... sanity check the use count -- must be in use by user vars or dset vars
 	   count = 0
-	   DO 125 uvar = 1, max_uvar	
+           IF (grid .EQ. mgrid_abstract) count = 1  ! is it SET GRID?
+	   DO 125 var = 1, max_uvar	
 	      DO 120 dset = 0, max_gfdl_dsets
-	         IF ( uvar_grid(uvar,dset) .EQ. grid ) count = count + 1
+	         IF ( uvar_grid(var,dset) .EQ. grid ) count = count + 1
  120	      CONTINUE
  125	   CONTINUE
+	   DO 135 var = 1, maxvars
+	      IF ( ds_grid_number(var) .EQ. grid ) count = count + 1
+ 135	   CONTINUE
 	   IF ( count .EQ. grid_use_cnt(grid) ) THEN
 	      sanity_msg = ' '
 	   ELSEIF ( count .GT. grid_use_cnt(grid) ) THEN
@@ -104,11 +127,15 @@
  3000	   FORMAT ( 4X,A,1X,A16,16X, 'use count:',I4,5x,A)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   CALL SHOW_GRID(grid, mods_cx)
+           shown = .TRUE.
 	   grid = grid_flink(grid)
 	ENDIF
 	IF (grid .NE.max_grids) GOTO 100
+        IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .					'    no implicit grids',21)
 
 * now the dynamic axes
+        shown = .FALSE.
 	line = line_flink(max_lines)
  	IF ( line .EQ. max_lines ) THEN
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
@@ -119,6 +146,11 @@
 	ENDIF
 * ... --- "while" loop
  200	IF ( line .NE. max_lines ) THEN
+* ... is this an exlicit (netCDF) grid that shouldn't be shown 
+           IF (line_name(line)(1:1).NE.'(' .AND. .NOT.show_all) THEN
+               line = line_flink(line)
+               GOTO 200
+           ENDIF
 * ... sanity check the use count -- must be in use by user vars
 	   count = 0
 * ... in use by static grids
@@ -152,10 +184,15 @@
 	   WRITE (risc_buff,3000) 'AXIS',line_name(line), line_use_cnt(line),
      .					sanity_msg
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+           shown = .TRUE.
 	   line = line_flink(line)
 	ENDIF
 	IF (line .NE.max_lines) GOTO 200
+        IF (.NOT.shown)  CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .					'    no implicit axes',20)
 
 	RETURN
 	END
+
+
 

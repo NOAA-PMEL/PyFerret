@@ -52,6 +52,8 @@
    revision history:
    10/95 - original
     5/99 *sh* - bug fix: modulo irregular axes get wrong memory subscript
+    V510: 4/00 *sh* - the arrays line_parent and line_class are now indexed
+                      from zero instead of from max_lines
 
    compile this with
    cc -c -g tm_world_recur.c
@@ -106,11 +108,11 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 */
   int recursive = axis > *max_lines;
   if ( recursive ) {
-    recursive = line_parent[axis-*max_lines] != 0;    /* could use "&&" */
+    recursive = line_parent[axis] != 0;    /* could use "&&" */
     if ( recursive ) {
       int new_ss, lo_ss, hi_ss, parent_len;
       int new_where;
-      switch (line_class[axis-*max_lines]) {
+      switch (line_class[axis]) {
       case PLINE_CLASS_STRIDE:
 /* 5/99 - in irreg axis striding the box edges cannot simply be read from
           the box edge array (think about it) So we have xtra logic here.
@@ -120,7 +122,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	if ( line_regular[axis] || *where_in_box==BOX_MIDDLE ) {
 
 	  tm_world = ENTRY_NAME(&new_ss,
-			      &(line_parent[axis-*max_lines]),
+			      &(line_parent[axis]),
 			      where_in_box,
 			      max_lines, line_mem, line_parent,
 			      line_class, line_dim,
@@ -141,13 +143,13 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	             +(*isubscript-0)*(int)line_delta[axis];
 	  }
 
-	  parent_len = line_dim[ line_parent[axis-*max_lines] ];
+	  parent_len = line_dim[ line_parent[axis] ];
 	  if ( line_modulo[axis] 
 	       || (lo_ss>=1 && hi_ss<=parent_len) ) {  /* interpolate */
 	    new_where = BOX_MIDDLE;
 	    tm_world = 0.5 * (
 			      ENTRY_NAME(&lo_ss,
-			      &(line_parent[axis-*max_lines]),
+			      &(line_parent[axis]),
 			      &new_where,
 			      max_lines, line_mem, line_parent,
 			      line_class, line_dim,
@@ -155,7 +157,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 			      line_subsc1, line_modulo,line_regular)
 	                  +   
 			      ENTRY_NAME(&hi_ss,
-			      &(line_parent[axis-*max_lines]),
+			      &(line_parent[axis]),
 			      &new_where,
 			      max_lines, line_mem, line_parent,
 			      line_class, line_dim,
@@ -165,7 +167,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	  } else if (*where_in_box ==  BOX_LO_LIM) { /* lower axis edge */
 	    new_ss = 1;
 	    tm_world = ENTRY_NAME(&new_ss,
-			      &(line_parent[axis-*max_lines]),
+			      &(line_parent[axis]),
 			      where_in_box,
 			      max_lines, line_mem, line_parent,
 			      line_class, line_dim,
@@ -174,7 +176,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	  } else {  /* upper axis edge */
 	    new_ss = parent_len;
 	    tm_world = ENTRY_NAME(&new_ss,
-			      &(line_parent[axis-*max_lines]),
+			      &(line_parent[axis]),
 			      where_in_box,
 			      max_lines, line_mem, line_parent,
 			      line_class, line_dim,

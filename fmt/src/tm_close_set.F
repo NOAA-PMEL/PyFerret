@@ -71,6 +71,8 @@
 *                      and ds_var_titl_mod w/ char_inits of proper new value
 * v500 - *kob* 4/99 - increase size of sf_name and ds_des_name for lengthly
 *	              DODS filenames
+* V510 *sh* 4/00 - deallocate grids and axes used by variables in this data set
+
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
 
@@ -148,6 +150,8 @@
 * Next clear variables associated with variable in that data set.
 	DO 120 ivar = 1,maxvars
 	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 120
+* ... deallocate grids and axes used by the dat aset
+	  CALL TM_DEALLO_DYN_GRID( ds_grid_number(ivar))
 	  ds_var_code(ivar)		=	char_init64
 	  ds_var_title(ivar)		=	char_init128
 	  ds_var_titl_mod(ivar)		=	char_init128

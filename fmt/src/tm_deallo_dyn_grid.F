@@ -40,6 +40,10 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * 9/13/95 for Ferret version 4.2
+* V510 *sh* 4/00 - remove actual deallocation of grid to tm_deallo_dyn_grid_sub
+*		 - this routine can now be called for static grids, too
+*		 - deallocate lines only for dynamic grids, since static grids
+*		   do not get deleted when their use count falls to zero
 
 * Include files
 #ifdef unix
@@ -63,42 +67,20 @@
 	INTEGER grid
 
 * Local definitions
-	INTEGER next_used_grid, idim
+	INTEGER idim
 
-* must be a dynamic grid
-	IF ( grid .LE. max_grids ) THEN
-	   CALL TM_NOTE('Intern err: TM_DEALLO_DYN_GRID:1 !!!', lunit_errors)
-	   RETURN
-	ENDIF
+* deallocate the grid, itself
+	CALL TM_DEALLO_DYN_GRID_SUB(grid)
 
-* decrement the used count for this grid
-	grid_use_cnt(grid) = grid_use_cnt(grid) - 1
-
-* does anyone still have a claim on this grid?
-	IF ( grid_use_cnt(grid) .GT. 0 ) THEN
-	   RETURN
-
-	ELSEIF ( grid_use_cnt(grid) .EQ. 0 ) THEN
+* if the grid was actually removed, then also deallocate the axes that it used
+	IF ( grid .GT. max_grids
+     . .AND. grid_use_cnt(grid) .EQ. 0 ) THEN
 
 *release claim to any dynamic lines this may use
 	   DO 100 idim = 1, 4
-	      IF ( grid_line(idim,grid) .GT. max_lines )
-     .			CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
+	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
  100	   CONTINUE
 
-* take this grid from the "used" list and put it on the "free" list
-* ... hook onto free list
-	   next_used_grid   = grid_flink(grid)
-	   grid_flink(grid) = grid_free_ptr  
-	   grid_free_ptr    = grid
-	   
-* ... unhook from used list
-	   grid_flink(grid_blink(grid)) = next_used_grid
-	   grid_blink(next_used_grid)   = grid_blink(grid)
-
-	ELSE
-* internal error -- the use count is negative!!
-	   CALL TM_NOTE('Intern err: TM_DEALLO_DYN_GRID:2 !!!', lunit_errors)
 	ENDIF
 
 * successful completion

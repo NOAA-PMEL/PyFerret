@@ -1,7 +1,6 @@
 	SUBROUTINE TM_INIT_DSET(dset_name,perm,dset_num,tregular,status)
 
 *
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -80,6 +79,7 @@
 *              to accomodate lenghty DODS dataset names
 * *sh*  6/99 - added "perm" (permutation) argument
 * V510 *sh* 3/00 - added tregular argumant
+*	    4/00 - converted to dynamic grids -- bump use counts here
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -145,7 +145,7 @@
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
 	INTEGER*4	TM_LENSTR, TM_LENSTR1
 	LOGICAL		TM_HAS_STRING, match,
-     .			file_exist, opened, got_lun, dods_url, nocache,
+     .			opened, got_lun, dods_url, nocache,
      .                  explicit_ext                 ! 7/97
 	DATA		known_type/'  GT','  TS','  MC','  MG','  MT'/
 	DATA		format_rev/'  1C',
@@ -422,10 +422,14 @@
 	  CALL GT_INIT_DSET(dset_num, lunit, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num, status)
+* ... bump the use counts on grids and axes used by variables in this data set
+	  CALL TM_DSET_USE_GRIDS( dset_num )
 	ELSE IF (d_type .EQ. '  TS') THEN
 	  CALL TS_INIT_DSET(dset_num, lunit, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num, status)
+* ... bump the use counts on grids and axes used by variables in this data set
+	  CALL TM_DSET_USE_GRIDS( dset_num )
 !*kob*
 	ELSE IF (d_type .EQ. '  MC') THEN
 	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, status)
@@ -436,6 +440,7 @@
 !	IF (d_type .EQ. '  MT') CALL MT_INIT_DSET(dset_num, lunit, status)
 	IF (status .NE. merr_ok) GOTO 9900
 
+* success
 	GOTO 9990
 
 * errors

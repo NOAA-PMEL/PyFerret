@@ -43,6 +43,7 @@
 * Include files
 	include 'tmap_dims.parm'
 #include 'tmap_dset.parm'
+	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	include 'xbuild_grids.cmn'
 
@@ -52,7 +53,8 @@
 * Local variable definitions
 	INTEGER	idim
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_grid_hook, grid, status )
+	CALL TM_ALLO_DYN_GRID_SUB( tmp_grid_hook, grid, status )
+	IF ( status .NE. merr_ok) RETURN
 
 * initialize grid to null state
 	grid_name(grid) = char_init16

@@ -1,7 +1,6 @@
 	SUBROUTINE CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams, status )
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -50,6 +49,8 @@
 *                     size of line_name
 *      - 4/99 *kob* - need to increase size of temp_axnams as well
 *      - 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
+* V510 *sh* 3/00 - convert to use of dynamic grids and axes
+*		 - use TM_GET_LINEMATCH to ensure that renamed axes also match
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -60,11 +61,11 @@
 
 * include files
 #ifdef unix
-        include 'xbuild_grids.cmn'
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'xdset_info.cmn_text'
@@ -88,11 +89,11 @@
       PARAMETER ( max_grd_per_cdf = 40 )
 
 * local variable declarations:
-      LOGICAL TM_SAME_LINE_DEF, TM_SAME_GRID_DEF,
-     .        dup_name, dup_guts, fix_axnam( 0:max_lines )
-      INTEGER TM_LENSTR1, TM_GET_LINENUM, TM_GET_GRIDNUM,
-     .        igrid, iaxis, vlen, count, idim, i_dup_name, ivar,
-     .        npts, cdfstat
+      LOGICAL TM_SAME_GRID_DEF,
+     .        dup_name, dup_guts, fix_axnam(max_lines:line_ceiling)
+      INTEGER  TM_GET_LINEMATCH,  TM_GET_LINENUM, TM_GET_GRIDNUM,
+     .        igrid, iaxis, count, idim, i_dup, ivar,
+     .        npts, cdfstat,  reused(max_lines:line_ceiling)
 * upped vname to 64 - also removed the *24 from the CHARACTER
       CHARACTER vname*64, buff*64
 
@@ -100,39 +101,20 @@
 * check for duplicate name / guts of axes
 * if completely identical (name and guts) then eliminate the new one
 * if new definition with already used name then flag this
-        DO 100 iaxis = firstax, lastax
-* ... temporarily eliminate name to look for duplicates
-          vname = line_name(iaxis)
-          vlen = TM_LENSTR1( vname )
-          line_name(iaxis) = char_init16
-
-          i_dup_name = TM_GET_LINENUM( vname(:vlen) )
-          dup_name = i_dup_name .NE. unspecified_int4
-          IF ( dup_name ) THEN
-             dup_guts = TM_SAME_LINE_DEF( i_dup_name, iaxis )
-          ELSE
-             dup_guts = .FALSE. ! ... well not necessarily but who cares ?
-          ENDIF
-
-* Save the axis name and line memory storage if it's unique
-          IF ( .NOT.dup_name ) THEN
-             line_name(iaxis) = vname
-             fix_axnam(iaxis)  = .FALSE.
-
-* Identical repeat of a previous definition - hose this axis
-          ELSEIF ( dup_guts ) THEN
-             fix_axnam(iaxis)  = .FALSE.
-
-* Duplicate name but  differing guts / save it for now - rename it at the end
-          ELSE
-             fix_axnam(iaxis)  = .TRUE.
-             line_name(iaxis) = vname
-          ENDIF
- 100   CONTINUE
+	iaxis = 0	! to get start of linked list
+ 100	CALL TM_NEXT_TMP_LINE( iaxis, *110)
+	  reused(iaxis) = TM_GET_LINEMATCH( iaxis, dup_name, dup_guts )
+	  IF ( dup_name .AND. .NOT.dup_guts ) THEN
+	     fix_axnam(iaxis) = .TRUE.	  ! new definition reuses old name
+	  ELSE
+	     fix_axnam(iaxis) = .FALSE.
+	  ENDIF
+	GOTO 100  ! like  100   CONTINUE
 
 * check that all the grids point to real axes
-        DO 250 igrid = firstgrid, lastgrid
-           count = igrid - firstgrid + 1 
+ 110	igrid = 0		! to get start of linked list
+ 250	CALL TM_NEXT_TMP_GRID( igrid, *260)
+	   count = tmp_nam_ptr(igrid)
            DO 240 idim = 1, 4 
               vname = temp_axnams(idim, count)
 !              IF ( vname .EQ. 'RECORD' ) THEN
@@ -142,35 +124,37 @@
                  grid_line(idim, igrid) = mpsnorm
               ELSE
 * ... first choose from the axis names just defined
-                 DO 200 iaxis = firstax, lastax
+	         iaxis = 0	! to get start of linked list
+ 200	         CALL TM_NEXT_TMP_LINE( iaxis, *202)
                     IF ( vname .EQ. line_name(iaxis) ) THEN
-                       grid_line(idim, igrid) = iaxis
+	               IF (reused(iaxis) .EQ. unspecified_int4 ) THEN
+                          grid_line(idim, igrid) = iaxis
+	               ELSE
+                          grid_line(idim, igrid) = reused(iaxis)
+	               ENDIF
                        GOTO 240
                     ENDIF
- 200             CONTINUE
-* ... failing that choose from axis names previously defined
-                 DO 210 iaxis = 1, max_lines   ! ok ??
-                    IF ( vname .EQ. line_name(iaxis) ) THEN
-                       grid_line(idim, igrid) = iaxis
-                       GOTO 240
-                    ENDIF
- 210             CONTINUE
-                 GOTO 5100    ! non-existent axis
+	         GOTO 200
+* ... not found? then this name was a duplicate definition. Reuse older defn
+ 202		 grid_line(idim, igrid) = reused(iaxis)
+	         IF (reused(iaxis) .EQ. unspecified_int4)
+     .						STOP 'cd_clean_crptn'
               ENDIF
  240       CONTINUE
- 250    CONTINUE
+	GOTO 250
                  
 * check for duplicate grid name / guts
-        DO 300 igrid = firstgrid, lastgrid
+ 260	igrid = 0		! to get start of linked list
+ 300	CALL TM_NEXT_TMP_GRID( igrid, *301)
 
 * ... eliminate this grid name to look for duplicates
            vname = grid_name(igrid)   ! temporary storage
            grid_name(igrid) = char_init
-           i_dup_name = TM_GET_GRIDNUM( vname )
-           dup_name = i_dup_name .NE. unspecified_int4
+           i_dup = TM_GET_GRIDNUM( vname )
+           dup_name = i_dup .NE. unspecified_int4
 
            IF ( dup_name ) THEN
-              dup_guts = TM_SAME_GRID_DEF( i_dup_name, igrid )
+              dup_guts = TM_SAME_GRID_DEF( i_dup, igrid )
            ELSE
               dup_guts = .FALSE. ! ... well not necessarily but who cares ?
            ENDIF
@@ -184,7 +168,7 @@
              grid_name(igrid) = char_init   ! throw it away
              DO 290 ivar = 1, maxvars
  290         IF ( ds_grid_number(ivar) .EQ. igrid )
-     .               ds_grid_number(ivar) = i_dup_name
+     .               ds_grid_number(ivar) = i_dup
 
 * Duplicate name - differing guts / make the grid name unique
           ELSE
@@ -193,18 +177,22 @@
              grid_name(igrid) = vname
           ENDIF
 
- 300    CONTINUE
+	GOTO 300	! like 300    CONTINUE
 
+* destroy any axis names that are duplicates both in name and defn
 * make unique any axis names that are duplicates but with new guts
-        DO 400 iaxis = firstax, lastax
-           IF ( fix_axnam(iaxis) ) THEN
-              CALL TM_NEW_LINE_NAME( line_name(iaxis), buff )
-              line_name(iaxis) = buff
-           ENDIF
- 400    CONTINUE
+ 301	iaxis = 0		! to get start of linked list
+ 400	CALL TM_NEXT_TMP_LINE( iaxis, *402)
+	  IF ( reused(iaxis) .NE. unspecified_int4 ) THEN
+	    line_name(iaxis) = char_init16   ! destroy new duplicate defn
+          ELSEIF ( fix_axnam(iaxis) ) THEN
+            CALL TM_NEW_LINE_NAME( line_name(iaxis), buff )
+            line_name(iaxis) = buff
+          ENDIF
+	GOTO 400	! like  400    CONTINUE
 
 * determine the "record" axis
-        IF ( ds_time_axis(dset) .LT. 1 ) THEN
+ 402	IF ( ds_time_axis(dset) .LT. 1 ) THEN
              ds_time_axis(dset) = unspecified_int4
         ELSE
            CALL NCDINQ( cdfid,ds_time_axis(dset),vname,npts,cdfstat )

@@ -196,7 +196,8 @@
       lasdim = 0
       DO 200 idim = 1, 4
          IF ( order(idim).EQ.0 ) THEN
-            lasdim = lasdim + 1
+*     need to use MOD to prevent more than 4 dimensions...*kob* 5/02
+            lasdim = MOD(lasdim,4) + 1
             order(idim) = lasdim
          ELSEIF (order(idim).NE.unspecified_int4 ) THEN
             lasdim = ABS(order(idim))

@@ -73,6 +73,8 @@
 *
 * 7/2000  acm -- merge Bernadettes and increment fix into this version
 * 5/2001  acm -- allow modulo axes
+* 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
+* 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -478,6 +480,8 @@ cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
             jtop = jbot + 1
          ENDIF
          IF (jbot .EQ. ef_unspecified_int4) jtop = jbot
+         IF (jtop .GE. arg_hi_ss(Y_AXIS,ARG1)) 
+     .                        jtop = arg_hi_ss(Y_AXIS,ARG1)        !10/2001 acm
 
          k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)

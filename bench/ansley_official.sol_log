@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxr-xr-x   1 ansley   tmap     59576188 Sep 21 15:02 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja8/ansley/FERRET_v_5_5_3_base_branch/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61104584 Nov 13 14:55 /home/ja8/ansley/FERRET_v_5_5_3_base_branch/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: fixes for colorbar key, for -script startup mode, and for XML output
+Note: bug fixes (on CVS bug-fix branch) for bugs 648 and 718, new benchmark scripts testing the
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Mon Sep 22 11:36:50 PDT 2003
+Beginning at Thu Nov 13 15:16:29 PST 2003
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 09/21/03
- 	22-Sep-03 11:36     
+ 	Solaris 5.6 - 11/13/03
+ 	13-Nov-03 15:16     
 
 yes? !bn500_all_shell
 yes? 
@@ -116,6 +116,8 @@ SET MODE VERIFY
 ! V5.52
 !  5/03 *acm* add bn_multi_line_labels.jnl, bn552_bug_fixes.jnl,
 !             bn_set_var_scale_off.jnl, bn_longvarnames.jnl, bn_shakey.jnl
+! v5.53
+!  9/03 *kob* added bn_test_nan
  
 GO bn_reset
 cancel mode verify
@@ -330,7 +332,7 @@ default region:
         Z/K is unspecified
         T/L is unspecified
 SHOW REGION SAVE
-region SAVE 
+region SAVE
         I=101:105
         J=46:48
         Z=0
@@ -341,12 +343,12 @@ default region:
         Y=-28.9:48.6
         Z/K is unspecified
         T/L is unspecified
-region SAVE 
+region SAVE
         I=101:105
         J=46:48
         Z=0
         L=1
-region W    
+region W
         X=130:290
         Y=-28.9:48.6
         Z/K is unspecified
@@ -370,7 +372,7 @@ default region:
         L=2:4
 DEFINE REGION/dX=5 W
 SHOW REGION W
-region W    
+region W
         X=135:295
         Y=-28.9:48.6
         Z/K is unspecified
@@ -10115,13 +10117,13 @@ GO bn_symbols	! added 6/22/95
  
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "344"
-PPL$YPIXEL = "344"
+PPL$XPIXEL = "431"
+PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "22-Sep-03"
-SESSION_TIME = "11:36"
+SESSION_DATE = "13-Nov-03"
+SESSION_TIME = "15:16"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10134,13 +10136,13 @@ define symbol t_($s1) = hi	! define "t_hello" as a symbol
  
 ! exercise SHOW SYMBOL
 show symbol/all
-PPL$XPIXEL = "344"
-PPL$YPIXEL = "344"
+PPL$XPIXEL = "431"
+PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "22-Sep-03"
-SESSION_TIME = "11:36"
+SESSION_DATE = "13-Nov-03"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10148,8 +10150,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "22-Sep-03"
-SESSION_TIME = "11:36"
+SESSION_DATE = "13-Nov-03"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10159,13 +10161,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "22-Sep-03"
-SESSION_TIME = "11:36"
+SESSION_DATE = "13-Nov-03"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "22-Sep-03"
-SESSION_TIME = "11:36"
+SESSION_DATE = "13-Nov-03"
+SESSION_TIME = "15:16"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10199,7 +10201,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.53"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Sep 22 2003 11:38:16 "
+LAB3 = "Nov 13 2003 15:18:12 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10295,13 +10297,13 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "344"
-PPL$YPIXEL = "344"
+PPL$XPIXEL = "431"
+PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "22-Sep-03"
-SESSION_TIME = "11:36"
+SESSION_DATE = "13-Nov-03"
+SESSION_TIME = "15:16"
  
  
 GO bn_reset
@@ -18302,7 +18304,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       17806 Sep 22 11:39 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23042 Nov 13 15:19 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18321,7 +18323,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      319286 Sep 22 11:39 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419281 Nov 13 15:20 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26471,7 +26473,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   22-Sep-03" ;
+		:history = "FERRET V5.53   13-Nov-03" ;
 data:
 
  T5 = 50757969 ;
@@ -26496,7 +26498,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   22-Sep-03" ;
+		:history = "FERRET V5.53   13-Nov-03" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26648,7 +26650,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Sep 22 11:41:01 PDT 2003
+Thu Nov 13 15:21:42 PST 2003
  
 GO bn_reset
 cancel mode verify
@@ -34938,7 +34940,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Sep 22 11:42 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Nov 13 15:23 testa.v5d
  
 can region
 use coads_climatology
@@ -34950,7 +34952,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Sep 22 11:42 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Nov 13 15:23 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35018,7 +35020,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.53   22-Sep-03" ;
+		:history = "FERRET V5.53   13-Nov-03" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35081,7 +35083,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.53   22-Sep-03" ;
+		:history = "FERRET V5.53   13-Nov-03" ;
 data:
 
  GFP3 = "" ;
@@ -35301,7 +35303,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.53   22-Sep-03" ;
+		:history = "FERRET V5.53   13-Nov-03" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -42324,8 +42326,8 @@ list ddat_a, ddat_b, ddat_c
 347   / 3:  1136.00  1136.00  1136.00
 348   / 4:  1141.00  1141.00     ....
 349   / 5:  1146.00  1146.00  1146.00
-350   / 6:  1156.00  1152.00  1156.00
-351   / 7:  1166.00     ....  1166.00
+350   / 6:  1156.00  1156.00  1156.00
+351   / 7:  1166.00  1166.00  1166.00
 352   / 8:     ....     ....     ....
 353   / 9:     ....     ....     ....
  
@@ -42358,6 +42360,7 @@ fill v2d_irr[t=1-jan-1990:1-jan-1995]
 use coads_clim_irreg
 fill/x=180 sst
  
+! ******** V5.53 Additions below ***********
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
@@ -42465,12 +42468,268 @@ SHO AXIS/XML time
 <modulo>yes</modulo>
 </axis>
  
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_test_nan.jnl
+!bn_test_nan.jnl
+! test to make sure that NaN is able to be set by user
+!  as bad value.  If this fails, Ferret will crash
+!  Test on a file which is nothing but NaN's, and use
+!  various spellings of NaN
+!
+! 9/03 *kob*
+!
+ 
+ 
+ 
+! test "nan"
+use test_nan.nc
+set var/bad=nan p1
+list p1
+             VARIABLE : Pressure (dbar)
+             FILENAME : test_nan.nc
+             SUBSET   : 10 points (TIME)
+ 13-OCT-2001 07:21:50 /  1:....
+ 13-OCT-2001 07:21:51 /  2:....
+ 13-OCT-2001 07:21:52 /  3:....
+ 13-OCT-2001 07:21:53 /  4:....
+ 13-OCT-2001 07:21:54 /  5:....
+ 13-OCT-2001 07:21:55 /  6:....
+ 13-OCT-2001 07:21:56 /  7:....
+ 13-OCT-2001 07:21:57 /  8:....
+ 13-OCT-2001 07:21:58 /  9:....
+ 13-OCT-2001 07:21:59 / 10:....
+can data/all
+can var/all
+ 
+! test "NaN"
+use test_nan.nc
+set var/bad=NaN p1
+list p1
+             VARIABLE : Pressure (dbar)
+             FILENAME : test_nan.nc
+             SUBSET   : 10 points (TIME)
+ 13-OCT-2001 07:21:50 /  1:....
+ 13-OCT-2001 07:21:51 /  2:....
+ 13-OCT-2001 07:21:52 /  3:....
+ 13-OCT-2001 07:21:53 /  4:....
+ 13-OCT-2001 07:21:54 /  5:....
+ 13-OCT-2001 07:21:55 /  6:....
+ 13-OCT-2001 07:21:56 /  7:....
+ 13-OCT-2001 07:21:57 /  8:....
+ 13-OCT-2001 07:21:58 /  9:....
+ 13-OCT-2001 07:21:59 / 10:....
+can data/all
+can var/all
+ 
+! test "NAN"
+use test_nan.nc
+set var/bad=NAN p1
+list p1
+             VARIABLE : Pressure (dbar)
+             FILENAME : test_nan.nc
+             SUBSET   : 10 points (TIME)
+ 13-OCT-2001 07:21:50 /  1:....
+ 13-OCT-2001 07:21:51 /  2:....
+ 13-OCT-2001 07:21:52 /  3:....
+ 13-OCT-2001 07:21:53 /  4:....
+ 13-OCT-2001 07:21:54 /  5:....
+ 13-OCT-2001 07:21:55 /  6:....
+ 13-OCT-2001 07:21:56 /  7:....
+ 13-OCT-2001 07:21:57 /  8:....
+ 13-OCT-2001 07:21:58 /  9:....
+ 13-OCT-2001 07:21:59 / 10:....
+can data/all
+can var/all
+ 
+ 
+ 
+ 
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn553_bug_fixes.jnl
+! bn553_bug_fixes.jnl
+! test various fixes that went into version 5.52
+! 9/03 *kob*
+!
+ 
+! Make sure numeric filenames works
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_numeric_filename.jnl
+! err553_numeric_filename.jnl
+! 9/03 kob
+ 
+ 
+! Use of a filename begining w/ a numberic was a problem
+! w/ g77 - just make sure it works where
+use 123456789000101_100101_test_numeric.nc
+ 
+list vwnd_clim
+             VARIABLE : VWND[GT=MONTH_REG@MOD]
+             FILENAME : 123456789000101_100101_test_numeric.nc
+             SUBSET   : 12 points (TIME)
+             LONGITUDE: 161W
+             LATITUDE : 39N
+                     161W    
+                       1
+ 16-JAN      /  1:  35.3667
+ 15-FEB      /  2:  20.2500
+ 17-MAR      /  3:  28.9000
+ 16-APR      /  4:  18.9000
+ 16-MAY      /  5:   9.0000
+ 16-JUN      /  6:  39.0000
+ 16-JUL      /  7:  -1.0000
+ 16-AUG      /  8:   5.6500
+ 15-SEP      /  9:  26.7250
+ 16-OCT      / 10: -24.3000
+ 15-NOV      / 11: -29.9000
+ 16-DEC      / 12:  18.8667
+ 
+ 
+ 
+! Make sure long string variables work
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_long_string_var_name.jnl
+! err553_long_string_var_name.jnl
+! 9/03 kob
+ 
+ 
+ 
+! test long string variables - the were being truncated
+! at 100 characters
+ 
+ 
+let a = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+ 
+list a
+             VARIABLE : "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+        "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+ 
+ 
+ 
+ 
+ 
+! Fixes for colorbar key labelling
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err551_colorkey.jnl
+ 
+! colorkey label bugs
+ 
+ 
+let zero = 0*x[i=1:10]+0*y[j=1:10]
+set view ul; shade zero            !This one is labeled correctly.
+set view ur; shade 1+zero          !So is this.
+set view ll; shade/lev=c zero      !But here colorkey is 1:1 instead of 0:0.
+ 
+! Here the zero level is labelled as -.3e-08 rather than 0. (linux)
+can view
+use coads_climatology
+shade/l=1/lev=30/set (sst-10)/10
+ppl axlen 6
+ppl shakey 1,1,.12
+ppl shade
+ 
+ 
+ 
+! ******** V5.54Additions below ***********
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn554_bug_fixes.jnl
+! bn554_bug_fixes.jnl
+! test various fixes that went into version 5.54
+! 11/03 *acm*
+!
+ 
+! Test use of longer strings in region names
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_regionname_lengths.jnl
+! In v5.50, we upped the region name storage to
+! allow 24-characters.  Wasnt fully implemented.
+ 
+SET MODE IGNORE_ERRORS
+ 
+def region/x=100e:150e/y=0:40 southeast_asia
+show region southeast_asia
+region southeast_asia
+        X=100E:150E
+        Y=0:40N
+        Z/K is unspecified
+        T/L is unspecified
+set region southeast_asia
+show region
+default region:
+        X=100E:150E
+        Y=0:40N
+        Z/K is unspecified
+        T/L is unspecified
+ 
+def region/x=150:210/y=-60:0 southwest_pacific
+show region/all
+default region:
+        X=100E:150E
+        Y=0:40N
+        Z/K is unspecified
+        T/L is unspecified
+region southeast_asia
+        X=100E:150E
+        Y=0:40N
+        Z/K is unspecified
+        T/L is unspecified
+region southwest_pacific
+        X=150E:150W
+        Y=60S:0
+        Z/K is unspecified
+        T/L is unspecified
+ 
+SET MODE/LAST IGNORE_ERRORS
+ 
+ 
+! Reqests for data at times outside range of data
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_timeregion.jnl
+! try to apply a region whose limits are both below,
+! or both above, the data bounds. In v5.53 the error
+! handling for this got broken for time axes (an error
+! in the fix for err551_no_taxis_errmsg)
+ 
+SET MODE IGNORE_ERRORS
+ 
+	use gt4d011.cdf
+list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
+ 
+ 
+SET MODE/LAST IGNORE_ERRORS
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 09/21/03
- 	22-Sep-03 11:45     
+ 	Solaris 5.6 - 11/13/03
+ 	13-Nov-03 15:27     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -42646,8 +42905,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 09/21/03
- 	22-Sep-03 11:46     
+ 	Solaris 5.6 - 11/13/03
+ 	13-Nov-03 15:28     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -42760,4 +43019,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Mon Sep 22 11:46:11 PDT 2003
+Ended at Thu Nov 13 15:28:13 PST 2003

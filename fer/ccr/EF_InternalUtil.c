@@ -366,11 +366,7 @@ int FORTRAN(efcn_gather_info)( int *id_ptr )
 
   ef_ptr->handle = dlopen(0, RTLD_LAZY);
 #endif
-  /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {*/
-  /* if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) { */
-  /* kob - commented out above line, and removed RTLD_GBAL check from below on
-     advice of jc - osf didn't have a definition for RTLD_GLOBAL */
-  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW)) == NULL ) {
+  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {
     fprintf(stderr, "\n\
 ERROR in External Function %s:\n\
 Dynamic linking call dlopen() returns --\n\

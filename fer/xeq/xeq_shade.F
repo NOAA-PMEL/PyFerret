@@ -321,6 +321,8 @@ c done in disp_set_up.
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'SHADE/LATCH/'//ppl_wait//' ', 1, 1 )
 	      end if
+              IF (use_cell) CALL PPLCMD (' ', ' ', 0, 'S_CELL 0', 1,1 )
+
 	   ENDIF
 
 * protect the new colors and restore the original color spectrum

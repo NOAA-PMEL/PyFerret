@@ -145,34 +145,33 @@
 
 * *** TIMES2 (debug) function ***
 ! commented out with ifdef 1/99 *sh*
-#ifdef 0
-	ELSEIF ( gcfcn .EQ. p_times2 ) THEN
+! old test code for internal gc func TIMES2 - generate custom t axis
+*	ELSEIF ( gcfcn .EQ. p_times2 ) THEN
 
 * T axis gets custom-inserted
-	   com1_cx = cx_list(1) 	! only one argument to function
-	   com1_grid = cx_grid(com1_cx)
+*	   com1_cx = cx_list(1) 	! only one argument to function
+*	   com1_grid = cx_grid(com1_cx)
 
 * check that result axis limits match the argument
 * ... argument range
-	   n_com1   = CX_DIM_LEN(t_dim, com1_cx)
-	   dlo_com1 = TM_WORLD(cx_lo_ss(com1_cx,t_dim), com1_grid, t_dim,
-     .						box_middle )
-	   dhi_com1 = TM_WORLD(cx_hi_ss(com1_cx,t_dim), com1_grid, t_dim,
-     .						box_middle )
+*	   n_com1   = CX_DIM_LEN(t_dim, com1_cx)
+*	   dlo_com1 = TM_WORLD(cx_lo_ss(com1_cx,t_dim), com1_grid, t_dim,
+*     .						box_middle )
+*	   dhi_com1 = TM_WORLD(cx_hi_ss(com1_cx,t_dim), com1_grid, t_dim,
+*     .						box_middle )
 
 * ... custom axis range
-	   n_grid   = CAXIS_LEN(t_dim, res_cx)
-	   dlo_grid = TM_WORLD(1,      res_grd, t_dim, box_middle )
-	   dhi_grid = TM_WORLD(n_grid, res_grd, t_dim, box_middle )
-
+*	   n_grid   = CAXIS_LEN(t_dim, res_cx)
+*	   dlo_grid = TM_WORLD(1,      res_grd, t_dim, box_middle )
+*	   dhi_grid = TM_WORLD(n_grid, res_grd, t_dim, box_middle )
+*
 * sanity checking -- messages to help with debugging
-	   IF (n_com1   .NE. n_grid  )
-     .			CALL WARN('TIMES2 grid size mismatch')
-	   IF (dlo_com1 .NE. dlo_grid)
-     .			CALL WARN('TIMES2 low limit mismatch')
-	   IF (dhi_com1 .NE. dhi_grid)
-     .			CALL WARN('TIMES2 high limit mismatch')
-#endif
+*	   IF (n_com1   .NE. n_grid  )
+*     .			CALL WARN('TIMES2 grid size mismatch')
+*	   IF (dlo_com1 .NE. dlo_grid)
+*     .			CALL WARN('TIMES2 low limit mismatch')
+*	   IF (dhi_com1 .NE. dhi_grid)
+*     .			CALL WARN('TIMES2 high limit mismatch')
 
 
 * *** RESHAPE function ***

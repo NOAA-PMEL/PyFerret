@@ -111,6 +111,7 @@
 * V500 - 4/16/99 *sh* use DELETE_USER_VAR to delete old definition when uvar
 *	name is redefined ... else child vars to not get removed
 *	 4/20/99 *sh* added DEFINE AXIS/EDGES
+*	 4/28/99 *sh* allow DEFINE AXIS with repeated values -> microadjust
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -202,7 +203,7 @@
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, dup_name, delta_given, create, irreg, its_reg,
-     .		  its_edges, its_calendar
+     .		  its_edges, its_calendar, has_repeated
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  STR_CASE_BLIND_COMPARE, CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -216,7 +217,7 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms)
 	REAL	  rbuff
-	REAL*8	  SECS_FROM_BC, bc_to_t0, start, delta, end
+	REAL*8	  SECS_FROM_BC, bc_to_t0, start, delta, end, micro_adj
 	CHARACTER FULL_UVAR_NAME*64,
      .		  reg_name*4, buff1*32, buff2*32, buff3*40, buff30*30,
      .            basic_orients(4)*2, err_string*255, replmsg*24
@@ -703,16 +704,47 @@
 	   CALL NON_ARRAY_SUBSC( mr, 1 )
 	   IF (its_edges) THEN
 * ... "/edges" definition - 4/99
-	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
-     .				 line_mem(frst_pt+n-1), idim, n )
 	      n = n - 1  ! edges array is one longer than points
+	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
+     .				 line_mem(frst_pt+n), idim, n+1 )
 	      npoints = n
+	      micro_adj = 1E-6 *
+     .		(line_mem(frst_pt+n+n) - line_mem(frst_pt+n))
+* ... are there repeated values?
+	      has_repeated = .FALSE.
+	      DO 515 i1 = frst_pt+1, frst_pt+n
+	         IF      (line_mem(i1+n-1) .GT. line_mem(i1+n)) THEN
+	           GOTO 5570
+	         ELSEIF  (line_mem(i1+n-1) .EQ. line_mem(i1+n)) THEN
+	           has_repeated = .TRUE.
+		 ENDIF
+ 515	      CONTINUE
+* ... make micro-adjustments if axis has repeated values (4/99)
+	   IF ( has_repeated ) THEN
+	      CALL WARN('Axis has repeated values -- micro-adjusting ...')
+	      IF (micro_adj .EQ. 0.D0) GOTO 5560
+	      DO 526  i1 = frst_pt+n+1, frst_pt+n+n
+	          IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
+*    ... locate end of repeating block
+	             DO 520 i2 = i1, frst_pt+n+n
+	                IF (line_mem(i2) .GT. line_mem(i1)) GOTO 521
+ 520		     CONTINUE
+	             i2 =  frst_pt+n+n+1    ! one beyond last value
+*    ... micro-adjust repeating values and edges from i1 to i2-1
+ 521		     DO 522 i3 = i1, i2-1
+	                line_mem(i3) = line_mem(i3) +
+     .				(i3-i1+1)*micro_adj
+ 522		     CONTINUE
+	             IF ( i2 .LE. frst_pt+n+n
+     .		    .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
+	          ENDIF
+ 526	       CONTINUE
+	   ENDIF
 * ... store points: midway between box boundaries ...
-	      DO 525 i1 = 1, n
-	         i2 = frst_pt + i1
-	         IF ( line_mem(i2+n-1) .GE. line_mem(i2+n) ) GOTO 5570
-	         line_mem(i2-1) = (line_mem(i2+n-1)+line_mem(i2+n)) * 0.5
- 525	      CONTINUE
+	      has_repeated = .FALSE.
+	      DO 528 i1 = frst_pt+1, frst_pt+n
+	         line_mem(i1-1) = (line_mem(i1+n-1)+line_mem(i1+n)) * 0.5
+ 528	      CONTINUE
 	      its_reg = .TRUE.	! until proven otherwise
 	      start = line_mem(frst_pt+n)
               delta = line_mem(frst_pt+n+1) - start
@@ -721,20 +753,53 @@
      .               SNGL(line_mem(i1)-line_mem(i1-1))) )
      .						its_reg = .FALSE.
  530	      CONTINUE
+
 	   ELSE
-* ... not edges -- points
+
+* NOT EDGES -- POINTS
+
 	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
      .				 line_mem(frst_pt), idim, n )
 	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
+	      micro_adj = 1E-6 *
+     .		(line_mem(frst_pt+n-1) - line_mem(frst_pt))
+* ... are there repeated values?
+	      has_repeated = .FALSE.
+	      DO 532 i1 = frst_pt+1, frst_pt+npoints-1
+	         IF      (line_mem(i1-1) .GT. line_mem(i1)) THEN
+	            GOTO 5570
+	         ELSEIF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
+	            has_repeated = .TRUE.
+	         ENDIF
+ 532		 CONTINUE
+* ... make micro-adjustments if axis has repeated values (4/99)
+	   IF ( has_repeated ) THEN
+	      CALL WARN('Axis has repeated values -- micro-adjusting ...')
+	      IF (micro_adj .EQ. 0.D0) GOTO 5560
+	      DO 538  i1 = frst_pt+1, frst_pt+npoints-1
+	          IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
+*    ... locate end of repeating block
+	             DO 534 i2 = i1, frst_pt+npoints-1
+	                IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
+ 534		     CONTINUE
+	             i2 =  frst_pt+npoints    ! one beyond last value
+*    ... micro-adjust repeating values from i1 to i2-1
+ 535		     DO 536 i3 = i1, i2-1
+	                line_mem(i3) = line_mem(i3) +
+     .				(i3-i1+1)*micro_adj
+ 536		     CONTINUE
+	             IF ( i2 .LT. frst_pt+npoints
+     .		    .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
+	          ENDIF
+ 538	       CONTINUE
+	   ENDIF
 * ... store initial box lower bound (start of axis)
 	      line_mem(frst_pt+npoints) = line_mem(frst_pt) -
      .			0.5 * ( line_mem(frst_pt+1) - line_mem(frst_pt) )
 * ... mid-axis box boundaries ...
-	      DO 535 i1 = 1, npoints-1
-	         i2 = frst_pt + i1
-	         IF ( line_mem(i2-1) .GE. line_mem(i2) ) GOTO 5570
-	         line_mem(i2+npoints) = (line_mem(i2-1)+line_mem(i2)) * 0.5
- 535	      CONTINUE
+	      DO 539 i1 = frst_pt+1, frst_pt+npoints-1
+	         line_mem(i1+npoints) = (line_mem(i1-1)+line_mem(i1)) * 0.5
+ 539	      CONTINUE
 * ... upper-most box bound (end of axis)
 	      i2 = frst_pt+npoints-1	! last box point
 	      line_mem(i2+npoints+1) = line_mem(i2) +
@@ -748,6 +813,7 @@
      .						its_reg = .FALSE.
  550	      CONTINUE
 	   ENDIF
+
 * ... check to see if it was regularly spaced after all
 	   IF ( its_reg ) THEN
 	      line_start    ( iline ) = start
@@ -819,14 +885,14 @@
 	   buff2 = '15-JAN-1901'		! default
 	   IF (its_calendar ) THEN
 	      i1 = 20
- 560	      bc_to_t0 = SECS_FROM_BC( buff2, status )      
+ 580	      bc_to_t0 = SECS_FROM_BC( buff2, status )      
 	      IF ( status .NE. ferr_ok ) GOTO 5540
 	      IF ( bc_to_t0 + start .GE. 0 ) THEN	! start is before T0?
 	         IF ( i1 .LE. 0 ) GOTO 5540
 	         i1 = i1 - 1
 	         WRITE (buff2,3560) i1
  3560	         FORMAT('01-JAN-',I2.2,'00')
-	         GOTO 560
+	         GOTO 580
 	      ENDIF
 	   ENDIF
 	ENDIF
@@ -1140,6 +1206,8 @@
      .		'/T0='//buff2(:TM_LENSTR1(buff2)), *5000 )
  5550	CALL ERRMSG( ferr_grid_definition, status,
      .		'inappropriate units:'//buff1(:TM_LENSTR1(buff1)), *5000 )
+ 5560	CALL ERRMSG( ferr_grid_definition, status,
+     .		'unrepairable repeated axis coords', *5000 )
  5570	CALL ERRMSG( ferr_grid_definition, status,
      .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonic', *5000 )
  5580	CALL ERRMSG( ferr_grid_definition, status,

@@ -54,9 +54,11 @@
 *	see err522_repeat_leftover.jnl
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control; reset repeat controls.
 * v560 3/04 *acm    reset last_cmnd_buff  when resetting repeat controls.
+*      6/04 ywei    change MATCH_NAME function
 
 * internal variable declarations:
-	INTEGER	LIB_FREE_LUN, stat, axis, ivar, cvar
+	INTEGER	LIB_FREE_LUN,stat,axis,ivar,cvar
+        INTEGER TM_LENSTR, len_test, len_mchars
         LOGICAL MATCH_NAME
 
 	include 'ferret.parm'
@@ -105,8 +107,11 @@
 * clean up counter variable 
 
            cvar = 0
+           len_test = TM_LENSTR(cs_repeatname(csp))
 	   DO 20 ivar =  num_counter_vars, 1, -1
-	      IF ( MATCH_NAME( cs_repeatname(csp), countervar_name(ivar) ) ) THEN
+              len_mchars = TM_LENSTR(countervar_name(ivar))
+	      IF ( MATCH_NAME( cs_repeatname(csp), len_test,
+     .           countervar_name(ivar), len_mchars ) ) THEN
                 cvar = ivar
                 GOTO 1000
               ENDIF

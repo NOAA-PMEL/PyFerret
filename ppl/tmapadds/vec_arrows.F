@@ -1,5 +1,4 @@
       SUBROUTINE vec_arrows (xx1, yy1, xx2, yy2, vel) 
-      REAL xx1, yy1, xx2, yy2, vel
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -37,25 +36,39 @@
 *
 
 *       *acm* 8/01/2001  based on strmar which came from NCAR streamline code.
-*             
+*    
 *  Called by vecfld.
 *  Plot arrowheads for vectors in vel in curvilinear coordinates.
 *  arguments xx1,yy1,xx2,yy2 are arrow ends in world coordinates.
 *  argument vclen is vector velocity, already in curvilinear system.
-            
+
+*  *acm*  12/7/01 Trap cases with dx=dy=0; atan2 fcn returns NAN under OSF.
+*                 Also remove VMS includes.
+*                 Declare all variables.
+
+*  Argument declarations.
+      REAL xx1, yy1, xx2, yy2, vel
+
+      REAL a160
       PARAMETER (a160 = 160.0*3.1416/180.0)
       REAL arrlen
-#ifdef unix
+
         include 'vector_inc.decl'
         include 'VECTOR.INC'
         include 'xcurvilinear.cmn'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_VECTOR.INC'
-#endif
 
 C     Curvilinear coordinates declarations
       INTEGER status
       REAL x_curv, y_curv
+
+      REAL small, dir, addx1, addy1, addx2, addy2, xxc, yyc, xxd, yyd
+
+      DATA small/1.e-6/
+
+*  If the points are too close together, return
+
+      IF (ABS(xx2-xx1) .LT. small   .AND. 
+     .    ABS(yy2-yy1) .LT. small) RETURN
 
 *  Set directions for arrows.
 
@@ -70,6 +83,8 @@ C     Curvilinear coordinates declarations
       CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
       xxd=x_curv
       yyd=y_curv
+
+*  Set arrow direction
 
       dir = atan2(yyc-yyd, xxc-xxd)
 

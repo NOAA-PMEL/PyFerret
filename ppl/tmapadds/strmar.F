@@ -37,11 +37,14 @@
 
 *       *acm* 8/2001 separated from flowline_sub.F
 *                    strmar came from NCAR streamline code.
+*  *acm*  12/7/01 Trap cases with dx=dy=0; atan2 fcn returns NAN under OSF.
+*                 Declare all variables.
 
 
+      REAL a160
       PARAMETER (a160 = 160.0*3.1416/180.0)
       REAL xf, yf
-      REAL arrlen, vel, dir, xx1, xx2, yy1, yy2
+      REAL arrlen, vel, dir, xx1, xx2, yy1, yy2, small
 
         include 'vector_inc.decl'
         include 'VECTOR.INC'
@@ -50,6 +53,14 @@
 C     Curvilinear coordinates declarations
       INTEGER status
       REAL x_curv, y_curv
+      REAL addx1, addy1, addx2, addy2, xxc, yyc, xxd, yyd, xxe, yye
+
+      DATA small/1.e-6/
+
+*  If the points are too close together, return
+
+      IF (ABS(xx2-xx1) .LT. small   .AND. 
+     .    ABS(yy2-yy1) .LT. small) RETURN
 
 *  Set directions for arrows.
 

@@ -46,6 +46,7 @@
 *  Sun Port 1/30/92 -kob-  added ifdef sun because uses BYTE whereas
 *  DECstation uses  INTEGER*1
 * 1/94 *sh* increased max read buffer len (blen) from 256 to 512
+* 4/01 *sh* increased blen again -- to 2048
 
 * calling argument declarations:
         CHARACTER*(*) prompt, buff
@@ -53,8 +54,10 @@
 #ifdef unix
 
 * internal variable declarations:
+! "blen" must exceed the longest read
         INTEGER plen, blen
-        PARAMETER (plen = 8, blen = 512 )
+        PARAMETER (plen = 8, blen = 2048 )
+
 #ifdef sun
         BYTE      hprompt(plen), hbuff(blen)
 #else

@@ -2,6 +2,8 @@
 !  6/01 because on systems w/out external functions support, the internal
 !  functions were not being tested - most notably win32   *kob*
 
+!  8/02/01 *acm* add bench_eof; now internally-linked.
+
 GO bn_reset
 go bench_fft
 
@@ -10,3 +12,6 @@ go bench_gridding
 
 GO bn_reset
 go bench_sort
+
+GO bn_reset
+go bench_eof

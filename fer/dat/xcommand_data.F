@@ -123,7 +123,9 @@
 *      10/00 *acm* - added VECTOR/STREAKLINE (alias STREAKLINE)
 *      1 /01 *sh* - added PLOT/STEP[=connected]
 *       1/01 *acm* - added /CALENDAR qualifier
-
+* V531: 5/01 *kob* - replace old ANIMATE alias which spawned a call
+*	             to what must be the now-defunct xds with new 
+*		     animate alias which uses internal double buffering
 #ifdef unix
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1360,8 +1362,8 @@
      .		alias_len(12)	/ 10 /,
      .		alias(12)	/ 'PPL %LABEL' /,
      .		alias_name(13)	/ 'ANIMATE' /,
-     .		alias_len(13)	/ 10 /,
-     .		alias(13)	/ 'SPAWN xds&' /,
+     .		alias_len(13)	/ 14 /,
+     .		alias(13)	/ 'REPEAT/ANIMATE' /,
      .		alias_name(14)	/ 'PATTERN' /,
      .		alias_len(14)	/ 19 /,
      .		alias(14)	/ 'PPL PATSET PATTERN=' /
@@ -1374,6 +1376,7 @@
      .		alias_name(17)	/ 'STREAKLI' /,
      .		alias_len(17)	/ 17 /,
      .		alias(17)	/ 'VECTOR/STREAKLINE' /
+	
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
      .                   / 133*unspecified_name4 /,

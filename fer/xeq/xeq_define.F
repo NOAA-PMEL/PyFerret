@@ -126,6 +126,8 @@
 *	4/00 *sh* - set use counts when defining grids and axes
 *	5/00 *sh* - support for LET/BAD=
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
+* v530  *acm* 2/01 - DEFINE AXIS/CALENDAR  calendar name for alternative 
+*                    calendar types.
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -144,7 +146,9 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xtext_info.cmn'
-	include 'xcommand.cmn'	
+	include 'xcommand.cmn'
+	include 'calendar.decl'
+	include 'calendar.cmn'	
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -176,6 +180,7 @@
      .		    slash_modulo,
      .		    slash_npoints,
      .		    slash_edges,
+     .		    slash_calendar,
      .		    slash_text,
      .		    slash_xlimits,
      .		    slash_ylimits,
@@ -200,6 +205,7 @@
      .		    slash_modulo = 1 + 10,
      .		    slash_npoints= 1 + 11,
      .		    slash_edges  = 1 + 12,
+     .		    slash_calendar = 1 + 13,
      .              slash_text   = 1 + 0,
      .		    slash_xlimits= 1 + 1,
      .		    slash_ylimits= 1 + 2,
@@ -225,17 +231,24 @@
      .		  TM_GET_LINENUM, TM_LENSTR1,
      .		  TM_GET_GRIDNUM, TM_UNIT_ID,
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
+     .            TM_GET_CALENDAR_ID,
      .		  tmap_status, npoints,
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
      .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen,
      .		  old_line, old_grid, frst_pt, dim(4), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
-     .		  at_start (maxatoms), at_end (maxatoms)
-	REAL	  rbuff, bad_flag
-	REAL*8	  SECS_FROM_BC, bc_to_t0, start, delta, end, micro_adj
-	CHARACTER reg_name*4, buff1*32, buff2*32, buff3*40, buff30*30,
-     .            basic_orients(4)*2, err_string*255, replmsg*24
+     .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
+     .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
+     .            mon_by_d(366), d_in_mon(12), len_cal
+
+	REAL	  rbuff, bad_flag, yeardays
+	REAL*8	  SECS_FROM_BC, bc_to_t0, start, new_ww, delta, end, 
+     .              micro_adj
+	CHARACTER reg_name*4, buff1*32, buff2*32, buff3*40, 
+     .            buff30*30, cal_name*32,
+     .            basic_orients(4)*2, err_string*255, replmsg*24,
+     .		  mon_names(12)*3
 
         CHARACTER*1 tab
         PARAMETER     ( tab = CHAR(9) )
@@ -654,6 +667,38 @@
 	ELSE
 	   buff1 = 'NONE'
 	ENDIF
+* is it a calendar axis definition?
+	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
+
+* *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360DAY, 
+*       PECULIAR   Gregorian is the default, also may be called
+*       STANDARD.
+
+        cal_name = 'GREGORIAN'		! default
+        dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
+	iqual = qual_given( slash_calendar )
+	IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      cal_name, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	ELSEIF ( orient .EQ. t_dim  .AND.  
+     .         ( qual_given(slash_T0) .GT. 0  .OR. 
+     .           cx_calendar(mods_cx)) ) THEN
+	   cal_name = 'GREGORIAN'
+	ENDIF
+
+* CF conventions have the calendar called 360 for a 360-day year.
+* Use 360DAY internally.  See cd_get_1_axis, cd_write_axis, xeq_define.
+
+        IF (cal_name .EQ. '360') cal_name = '360DAY' 
+        IF (cal_name .EQ. 'D360') cal_name = '360DAY' 
+        IF (cal_name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
+        IF (cal_name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
+        cal_id = TM_GET_CALENDAR_ID (cal_name)
+	IF (cal_id .LE. 0  .OR. cal_id .GT. max_calendars ) GO TO 5720
+        CALL tm_get_calendar_attributes (cal_id, nmonths, 
+     .                 ndays, yeardays, mon_names, d_in_mon, 
+     .                 d_before_mon, mon_by_d)
 
 * interpret the line units
 	IF ( buff1 .EQ. 'NONE' .OR. buff1 .EQ. ' ' ) THEN
@@ -664,8 +709,27 @@
 	   IF ( iunit .EQ. 0 ) THEN
 	       CALL WARN('unknown axis units: '//buff1)
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
-	         CALL WARN
-     .		('/UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days') 
+              IF (cal_id .eq. gregorian) THEN
+                 WRITE (err_string,3544) yeardays
+              ELSE
+                 WRITE (err_string,3540) yeardays
+                 IF (cal_id .eq. 2) THEN	! noleap
+                    iunit = -13
+                 ELSE IF (cal_id .eq. 3) THEN	! Julian
+		    iunit = -15
+		 ELSE IF (cal_id .eq. 4  .OR. cal_id .eq. 5) THEN	! 360DAY
+		    iunit = -14
+	         ENDIF
+*  Append calendar name to units string.
+		 slen = TM_LENSTR1 (buff1)
+		 len_cal = TM_LENSTR1 (cal_name)
+		 buff1 = buff1(:slen)//'('//cal_name(:len_cal)//')'
+              ENDIF
+ 3540         FORMAT 
+     .        ('/UNIT=MONTHS  ... using 1/12 of ',F6.2,' days')
+ 3544         FORMAT 
+     .        ('/UNIT=MONTHS is ambiguous ... using 1/12 of ',F8.4,' days')
+	         CALL WARN (err_string) 
 	   ELSE
 * ... Issue warning for inappropriate units like HOURS on X ax
 *     and render the units unconvertible
@@ -682,9 +746,6 @@
 	      ENDIF	      
 	   ENDIF
  	ENDIF
-
-* is it a calendar axis definition?
-	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
 
 * find a space to catalog it
 	status = ALLO_MANAGED_AXIS( iline )
@@ -849,9 +910,24 @@
 	   ENDIF
 	ELSE
 
-* ... start,end,delta specification for a REGULAR axis
+* ... start,end,delta specification for a REGULAR axis.  
+* acm These are properties of the line, so reset according to the calendar 
+
 	   start = cx_lo_ww(orient,mods_cx)
 	   end   = cx_hi_ww(orient,mods_cx)
+
+	   IF ( orient .EQ. t_dim .AND. cal_id .NE. 1) THEN
+	      CALL reset_secs_from_bc (-start, new_ww, dflt_cal_id, 
+     .                                 cal_id, status)
+	      start = -1. * new_ww
+
+	      CALL reset_secs_from_bc (-end, new_ww, dflt_cal_id, 
+     .                                 cal_id, status)
+	      IF ( status .NE. ferr_ok ) RETURN
+
+	      end = -1. * new_ww
+	   ENDIF
+
 	   IF ( its_edges ) THEN
 	     IF ( npoints .EQ. unspecified_int4 ) THEN
 	       delta = cx_delta (orient,mods_cx)
@@ -887,6 +963,7 @@
 	       IF ( delta .LE. 0.0D0 ) GOTO 5520
 	     ENDIF
 	   ENDIF
+
 	   line_start    ( iline ) = start
 	   line_delta    ( iline ) = delta
 	   line_regular  ( iline ) = .TRUE.
@@ -899,19 +976,21 @@
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )
 	   IF ( status .NE. ferr_ok ) RETURN
-	   CALL TM_BREAK_DATE( buff2, i1,i2,i3,i4,i5,i6, status )
+	   CALL TM_BREAK_DATE( buff2, cal_id, i1,i2,i3,i4,i5,i6, 
+     .                         status )
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
 	ELSE
-	   buff2 = '15-JAN-1901'		! default
+	   WRITE (buff2,3550) mon_names(1)
+ 3550      FORMAT ('15-', A3, '-1901')		! default
 	   IF (its_calendar ) THEN
 	      i1 = 20
- 580	      bc_to_t0 = SECS_FROM_BC( buff2, status )      
+ 580	      bc_to_t0 = SECS_FROM_BC( buff2, cal_id, status )      
 	      IF ( status .NE. ferr_ok ) GOTO 5540
 	      IF ( bc_to_t0 + start .GT. 0 ) THEN	! start is before T0?
 	         IF ( i1 .LT. 0 ) GOTO 5540
 	         i1 = i1 - 1
-	         WRITE (buff2,3560) i1
- 3560	         FORMAT('01-JAN-',I2.2,'00')
+	         WRITE (buff2,3560) mon_names(1), i1
+ 3560	         FORMAT('01-',A3,'-',I2.2,'00')
 	         GOTO 580
 	      ENDIF
 	   ENDIF
@@ -921,6 +1000,7 @@
 	line_dim      ( iline ) = npoints
 	line_units    ( iline ) = buff1	   
 	line_t0       ( iline ) = buff2
+	line_cal_name ( iline ) = cal_name
 	line_unit_code( iline ) = iunit
 	line_direction( iline ) = 'NA'
 	IF ( orient .EQ. t_dim ) line_tunit(iline) = un_convert( iunit )
@@ -945,7 +1025,7 @@
 * ... time axis specified as date strings  (ELSEIF mod 11/93 *sh*)
 	ELSEIF ( .NOT.irreg  .AND. its_calendar ) THEN
 	   line_direction(iline) = 'TI'
-	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), status )
+	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
 	   line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
 	   line_start(iline) = (-line_start(iline)-bc_to_t0)/line_tunit(iline)
 
@@ -1213,6 +1293,8 @@
 
  5710	CALL ERRMSG( ferr_prog_limit, status,
      .		'use CANCEL ALIAS to reclaim space', *5000 )
+ 5720	CALL ERRMSG( ferr_syntax, status,
+     .		'Invalid calendar name', *5000 )
 
 	END
 

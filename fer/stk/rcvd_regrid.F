@@ -1,5 +1,8 @@
-	SUBROUTINE RCVD_REGRID( src_cx, dst_cx, axis, work, ok_min, ok_max )
+	SUBROUTINE RCVD_REGRID( src_cx, dst_cx, axis, work, 
+     .				ok_min, ok_max, status )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -60,26 +63,34 @@
 * V510: 1/00 *sh* - bug fix: destination subscript limits chosen incorrectly
 *		for min, max, ave, etc.
 *		  - bigger work array for DO_WINDOW_REGRID
+* V530   3/01 *acm* alternative calendar axes:  Compare timesteps for source and
+*		    destination axes with respect to one of the calendars.
 * V530: 3/01 *sh* - added rgrd_nearest -- (unrestricted by source lims)
 
 * calling argument declarations:
-	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
+	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
 
 * internal variable declarations:
 	LOGICAL GEOG_LABEL, ITSA_MODULO_REGRID, calendar, modulo,
      .		need_margin_check
-	INTEGER ISUBSCRIPT, CAXIS_LEN,
+	INTEGER ISUBSCRIPT, CAXIS_LEN, TM_GET_CALENDAR_ID,
      .		dst_where_loest, dst_where_hiest, rgrd_trans,
      .		src_where_loest, src_where_hiest,
      .		dst_ss_min, dst_ss_max,
      .		dst_grid, src_grid,
-     .		dst_lo_ss, dst_hi_ss
+     .		dst_lo_ss, dst_hi_ss,
+     .          src_taxis, dst_taxis, src_cal_id, dst_cal_id
 	REAL*8	TWORLD, TM_WORLD, SECS_TO_TSTEP,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
-     .          tmp_lo_ww, tmp_hi_ww
+     .          tmp_lo_ww, tmp_hi_ww, s2d_lo_ww, s2d_hi_ww
+	CHARACTER*20 TM_SECS_TO_DATE, pdate
 
 #ifdef unix
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include	'ferret.parm'
+	include	'errmsg.parm'
 	include	'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -87,6 +98,7 @@
 #endif
 
 * initialize
+	status = ferr_ok
 	src_grid = cx_grid( src_cx )
 	dst_grid = cx_grid( dst_cx )
 * ... regrid calendar time axes? (src_grid was checked in rqst_regrid)
@@ -162,8 +174,33 @@
 * 9/97 *kob* convert time in secs since BC to time position on the 
 *             *source* time axis then call ISUBSCRIPT
 	IF ( calendar ) THEN	! fixed 8/95
-	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, src_lo_ww)
-	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, src_hi_ww)
+
+* 3/01 *acm* get timestep for source range relative to destination calendar.
+
+	   src_taxis = grid_line(axis, src_grid)
+	   src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis) )
+
+	   dst_taxis = grid_line(axis, dst_grid)
+	   dst_cal_id = TM_GET_CALENDAR_ID (line_cal_name(dst_taxis) )
+
+	   IF (src_cal_id .NE. dst_cal_id) THEN
+	      CALL reset_secs_from_bc (src_lo_ww, s2d_lo_ww, 
+     .                                 src_cal_id, dst_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      CALL reset_secs_from_bc (src_hi_ww, s2d_hi_ww, 
+     .                                 src_cal_id, dst_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	   ELSE
+              s2d_lo_ww = src_lo_ww
+              s2d_hi_ww = src_hi_ww
+	   ENDIF
+
+	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, s2d_lo_ww)
+	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, s2d_hi_ww)
+
+c	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, src_lo_ww)
+c	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, src_hi_ww)
+
 	   dst_lo_ss = ISUBSCRIPT( tmp_lo_ww,dst_grid,axis,round_up )
 	   dst_hi_ss = ISUBSCRIPT( tmp_hi_ww,dst_grid,axis,round_dn )
 	ELSE
@@ -179,9 +216,25 @@
 ! 1/00 removed this check for G=@MIN, MAX, ...
 !      IS IT NEEDED AT ALL???
 	IF ( need_margin_check ) THEN
-	   IF ( SNGL(dst_lo_ww) .LT. SNGL(src_lo_ww) )
+
+* 3/01 *acm* If different calendars, do comparison wrt dst calendar...
+
+           IF (calendar .AND. src_cal_id .NE. dst_cal_id) THEN
+	      CALL reset_secs_from_bc (src_lo_ww, tmp_lo_ww, 
+     .                                 src_cal_id, dst_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      CALL reset_secs_from_bc (src_hi_ww, tmp_hi_ww, 
+     .                                 src_cal_id, dst_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   ELSE
+	      tmp_lo_ww = src_lo_ww
+	      tmp_hi_ww = src_hi_ww
+	   ENDIF
+
+	   IF ( SNGL(dst_lo_ww) .LT. SNGL(tmp_lo_ww) )
      .	                                dst_lo_ss = dst_lo_ss + 1
-	   IF ( SNGL(dst_hi_ww) .GT. SNGL(src_hi_ww) )
+	   IF ( SNGL(dst_hi_ww) .GT. SNGL(tmp_hi_ww) )
      .                                  dst_hi_ss = dst_hi_ss - 1
 	ENDIF
 	IF ( dst_lo_ss .GT. dst_hi_ss ) dst_hi_ss = dst_lo_ss  !bug chk 5/93
@@ -204,8 +257,7 @@
 	dst_ss_max = cx_hi_ss(dst_cx,axis)
 
 * determine the limits that can actually be regridded
-	IF ( modulo
-     .  .OR. rgrd_trans .EQ. prgrd_nearest ) THEN
+	IF ( modulo ) THEN
            ok_min = dst_ss_min		! can always regrid to full request
 	   ok_max = dst_ss_max
 	ELSE
@@ -217,4 +269,6 @@
 * 1/00 times two to accomodate @MIN, @MAX needs
 	work = ( dst_hi_ss - dst_lo_ss + 2 ) * 2
 	RETURN
+* error exit
+ 5000	RETURN
 	END	

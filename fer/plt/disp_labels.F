@@ -1,4 +1,4 @@
-	SUBROUTINE DISP_LABELS( joint_cx, year )
+	SUBROUTINE DISP_LABELS( joint_cx, year, cal_id )
 
 *
 *
@@ -59,6 +59,7 @@
 * Unix/RISC port 5/91 *sh*: use data set name, only (full path is too long)
 * V401: 6/23/95 - tag the movable labels by passing ppl_movlab minus nnn
 * V510 *sh* 3/00 - add DODS URL label
+* V530 *acm* 3/01  add calendar name (if not Gregorian calendar)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -71,6 +72,8 @@
 	include 'xtext_info.cmn'
 	include 'axis_inc.decl'	! axis lengths
 	include 'AXIS.INC'	! axis lengths
+	include 'calendar.decl'
+	include 'calendar.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
@@ -84,14 +87,14 @@
 #endif
 
 * calling argument declarations:
-	INTEGER		joint_cx
+	INTEGER		joint_cx, cal_id
 	CHARACTER	year*4
 
 * internal variable declarations:
 	LOGICAL		show_year
-	CHARACTER	AX_TITLE*32,
-     .			line_buff*255, genl_buff*255
-	INTEGER		idim, len, lablen,
+	CHARACTER	AX_TITLE*32, TM_GET_CALENDAR_NAME*32,
+     .			line_buff*255, genl_buff*255, cal_buff*32
+	INTEGER		TM_LENSTR, idim, len, lablen,
      .			nlabs, dset_num, tlen
 	REAL 		ul_yspace, ul_labht,  ul_ypos, ul_ysqueeze
 	EQUIVALENCE	( ppl_buff, genl_buff )	! save space
@@ -100,6 +103,8 @@
 	nlabs = ul_nlabs
 	show_year = year .NE. unspecified_name4
 	IF ( show_year ) nlabs = nlabs + 1
+        IF (cal_id .GT. GREGORIAN .AND. cal_id .LT. max_calendars) 
+     .     nlabs = nlabs + 1
 
 * need to reduce size of upper left labels ?
 	IF     ( nlabs .LE. 2 ) THEN
@@ -142,7 +147,21 @@
      .			ul_labht,
      .			'YEAR : '//line_buff(:lablen),
      .			lab_loc_absolute, lab_loc_axlen_plus )
+	   ul_ypos = ul_ypos - ul_yspace
 	ENDIF
+
+* calendar label needed ?
+        IF (cal_id .GT. GREGORIAN .AND. cal_id .LT. max_calendars) THEN
+           cal_buff = TM_GET_CALENDAR_NAME (cal_id)
+           lablen = TM_LENSTR(cal_buff)
+
+	   CALL PUT_LABEL( ppl_movlab-ppl_calendar, ul_xorigin, ul_ypos,
+     .			   ppl_left_just,
+     .			   ul_labht,
+     .			   'CALENDAR: '//cal_buff(:lablen), 
+     .			   lab_loc_absolute, lab_loc_axlen_plus )
+	ENDIF
+
 
 * data set labels needed ?
 	dset_num = cx_data_set( joint_cx )
@@ -175,6 +194,7 @@
      .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
 	   ENDIF
 	ENDIF
+
 
 	RETURN
 	END

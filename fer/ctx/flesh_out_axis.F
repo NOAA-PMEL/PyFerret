@@ -68,7 +68,7 @@
 * V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
 *	*sh* 4/00 - since netCDF dsets now produce dynamic axes we cannot
 *		    use line .LT. max_lines as a test of an implicit axes
-
+* v5.3 *acm* 1/01 - line_cal_name is part of the data set information
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -81,6 +81,8 @@
 	include 'xprog_state.cmn'
 	include 'xfr_grid.cmn'
 	include 'xtext_info.cmn'
+	include 'xdset_info.cmn_text'
+	external xdset_info_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
@@ -100,6 +102,7 @@
 	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, point, lim_redundant
 	INTEGER	TM_LENSTR1, ISUBSCR_CX,
      .		ss, lo_ss, hi_ss, axis, grid, cat, var
+	INTEGER TM_GET_CALENDAR_ID, cal_id
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
 * kob 3/99 up VAR_CODE from 8 to 64 chars
 	CHARACTER	VAR_CODE*64, string*40
@@ -215,8 +218,10 @@
 
 * convert times given as seconds from BC to time step values
 * *kob* 8/97 - use cx_calender instead of cx_lo_ww
+
 	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
-              IF ( TM_DATE_OK( line_t0(axis) ) ) THEN
+             cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
+             IF ( TM_DATE_OK( line_t0(axis), cal_id ) ) THEN
 	         cx_lo_ww(idim,cx) =
      .                SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
 	         cx_hi_ww(idim,cx) =

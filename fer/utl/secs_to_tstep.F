@@ -43,6 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 7/27/88
+* V530: *acm* 12/00 add calendar types; cal_id
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -60,7 +61,7 @@
 	REAL*8	secs
 
 * internal variable declarations:
-	INTEGER		axis, status
+	INTEGER		TM_GET_CALENDAR_ID, axis, cal_id, status
 	CHARACTER*20	date
 	REAL*8		SECS_FROM_BC, bc_to_t0
 
@@ -70,8 +71,12 @@
 * valid time axis ?
 	IF ( line_direction( axis ) .EQ. 'TI' ) THEN
 
+* get calendar type
+
+	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+
 * seconds from BC to start of time axis
-	   bc_to_t0 = SECS_FROM_BC( line_t0(axis), status )
+	   bc_to_t0 = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
 * convert to units used on this time axis
 	   SECS_TO_TSTEP = ( secs - bc_to_t0 ) / line_tunit(axis)

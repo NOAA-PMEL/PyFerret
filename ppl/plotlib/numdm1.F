@@ -52,28 +52,26 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 
 *       J Davison 10.20.99   Modified to support multiple calendars.
+*  *acm* 12/00 Change calendars to match NetCDF standard 
 
-#ifdef unix
-        include 'calendar.cmn'
-#else
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#endif
-
+      INCLUDE 'calendar.decl'
+      INCLUDE 'calendar.cmn'
 
 C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
 
- 	character*(*) it
-
-******************************************************************************
-******************************************************************************
-
+      REAL yeardays
+      CHARACTER*(*) it
 
       call time3(it,iy,im,idd,ih,ix,isec,icen) 
+
+      CALL tm_get_calendar_attributes (calendar_id, num_months, 
+     .                 num_days, yeardays, month_names, days_in_month, 
+     .                 days_before_month, month_by_day)
 
 ******************************************************************************
 * HANDLE GREGORIAN CALENDAR FIRST
 ******************************************************************************
-       if (cal_id .eq. gregorian) then
+       if (calendar_id .eq. gregorian) then
          numdm1 = days_in_month(im) 
 
          if(im.eq.2.and.iy.eq.4*(iy/4)
@@ -83,13 +81,18 @@ C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
      .        numdm1=29         ! every 400 years is tho...
       
 ******************************************************************************
+* HANDLE JULIAN CALENDAR 
+******************************************************************************
+       else if (calendar_id .eq. julian) then
+         numdm1 = days_in_month(im) 
+
+         if(im.eq.2.and.iy.eq.4*(iy/4))  numdm1=29
+      
+******************************************************************************
 * ALL OTHER SUPPORTED AND REGULAR CALENDARS
 ******************************************************************************
-      else if (cal_id .eq. common   .or.
-     .         cal_id .eq. leap_yr  .or. 
-     .         cal_id .eq. days_360 .or. 
-     .         cal_id .eq. tmap_360 .or. 
-     .         cal_id .eq. peculiar) then
+       else if (calendar_id .gt. gregorian .and. 
+     .		calendar_id .le. max_calendars) then
 
          numdm1 = days_in_month(im) 
       else
@@ -98,4 +101,3 @@ C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
 
       return 
       end 
-

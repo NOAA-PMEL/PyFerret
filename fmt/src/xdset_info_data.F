@@ -59,6 +59,7 @@
 * v500 - *kob* 3/99 -  initialize ds_var_code, ds_var_units, ds_var_title
 *                      and ds_var_titl_mod w/ char_inits of proper new value
 * v500 - *kob* 4/99 - initialize ds_des_name with char_init256	
+* v530 - *acm* 1/01 - add ds_cal_name
 
 #ifdef unix
 #include "tmap_dset.parm"		
@@ -99,6 +100,7 @@
 	DATA	ds_aux_modnum		/maxdsets_aux*char_init04/
 	DATA	ds_parm_name		/maxdsets_parm*char_init20/
 	DATA	ds_parm_text		/maxdsets_parm*char_init80/
+	DATA	ds_cal_name		/maxdsets*'GREGORIAN'/
 ********************************************************************************
 	DATA	ds_alert_on_open	/maxdsets*.FALSE./
 	DATA	ds_alert_on_output	/maxdsets*.FALSE./

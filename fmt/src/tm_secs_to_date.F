@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION TM_SECS_TO_DATE ( num_secs )
+	CHARACTER*(*) FUNCTION TM_SECS_TO_DATE ( num_secs, cal_id )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -50,44 +50,44 @@
 *			     Added some error handling (STOP's)
 
 * V510 5/00 *sh* - trap attempt to translate a date before 0000
+* V530: *acm* 12/00 add calendar types; cal_id.  This routine is from
+*       Jerry's tm_calendars_secs_to_date
+*       *acm* 3/01  Treat Julian calendar as a separate case.
+* 
 
-* Argument definition
+
+* Argument definitions
 	REAL*8		num_secs
+	INTEGER		cal_id
 
 * Include files
 #ifdef unix
 	include 'tmap_errors.parm'
+        include 'calendar.decl'
+        include 'calendar.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
 #endif
 
 *
 * Local Definition
-	CHARACTER*3	cmon(12)
+
 	CHARACTER*20	tempstr
-	INTEGER		month_by_day(365), year, month, day, hour,
+	INTEGER		year, month, day, hour,
      .			minute, second, leapadj, cent_cnt, status,
      .			year_cnt, cent4_cnt, year4_cnt, tot_days,
-     .			tmp_days, days_before_month(12)
+     .			tmp_days
+	REAL		yeardays
 	REAL*8		secs_in_minute, secs_in_hour, secs_in_day,
-     .			secs_in_year, secs_in_4years, secs_in_cent,
-     .			secs_in_4cents, total_secs
+	1    secs_in_year, secs_in_4years, secs_in_cent,
+	2    secs_in_4cents, total_secs, leap_yr_days
 
-	PARAMETER	(secs_in_minute	 = 60.,
-     .			 secs_in_hour	 = secs_in_minute*60.,
-     .			 secs_in_day	 = secs_in_hour*24.,
-     .			 secs_in_year	 = secs_in_day*365.,
-     .			 secs_in_4years	 = secs_in_day*(3*365.+366.),
-     .			 secs_in_cent    = secs_in_day*(76*365.+24*366.),
-     .			 secs_in_4cents  = 4*secs_in_cent+secs_in_day)
+	PARAMETER	(secs_in_minute	= 60.0,
+	1    secs_in_hour   = secs_in_minute*60.0,
+	2    secs_in_day    = secs_in_hour*24.0)
 
-	DATA cmon /'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-     .		   'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
-
-	DATA month_by_day /31*01, 28*02, 31*03, 30*04, 31*05, 30*06,
-     .			   31*07, 31*08, 30*09, 31*10, 30*11, 31*12/
-	DATA days_before_month	/   0,  31,  59,  90, 120, 151,
-     .				  181, 212, 243, 273, 304, 334/
+C       CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 * trap invalid input
 	IF ( num_secs .LT. 0 ) THEN
@@ -95,74 +95,216 @@
 	   RETURN
 	ENDIF
 
-* Initialize
-	total_secs = num_secs
+C  Get calendar attributes
+        CALL TM_GET_CALENDAR_ATTRIBUTES (cal_id, num_months, 
+     .                      num_days, yeardays, month_names,
+     .                      days_in_month, days_before_month, 
+     .                      month_by_day)
 
-* Subtract year 0 off (it's a leap year)
-	total_secs = total_secs - secs_in_year - secs_in_day
+*******************************************************************************
+* HANDLE GREGORIAN CALENDAR FIRST  
+*******************************************************************************
+	if (cal_id .eq. gregorian) then
 
-* make sure we aren't working in year 0
-	IF (total_secs .GE. 0) THEN
+*          INITIALIZE
+	   leap_yr_days = num_days + 1.0
 
-* Decide which century it is
-	  cent4_cnt = INT(total_secs/secs_in_4cents)
-	  total_secs = total_secs - cent4_cnt*secs_in_4cents
-	  cent_cnt = INT(total_secs/secs_in_cent)
-* Dec 31 on leap century test (years 400,800,1200...)
-	  IF (cent_cnt .EQ. 4                         .AND.
-     .	      total_secs .GE. cent4_cnt-secs_in_day)   cent_cnt = 3
-	  total_secs = total_secs - cent_cnt*secs_in_cent
-	  year = 400*cent4_cnt + 100*cent_cnt
+	   secs_in_year	  = secs_in_day*num_days
+	   secs_in_4years = 
+	1	secs_in_day*(3*num_days + leap_yr_days)
+	   secs_in_cent   = 
+	1	secs_in_day*(76*num_days + 24*leap_yr_days)
+	   secs_in_4cents = 4*secs_in_cent+secs_in_day
+	   total_secs = num_secs
 
-* Decide what year it is exactly (1 year for year 0)
-	  year4_cnt = INT(total_secs/secs_in_4years)
-	  total_secs = total_secs - year4_cnt*secs_in_4years
-	  year_cnt = INT(total_secs/secs_in_year)
-* Dec 31 on leap year test (years 0,4,8,12...)
-	  IF (year_cnt .EQ. 4                         .AND.
-     .	      total_secs .GE. secs_in_4years-secs_in_day)   year_cnt = 3
-	  total_secs = total_secs - year_cnt*secs_in_year
-	  year = year + 4*year4_cnt + year_cnt + 1
+*          SUBTRACT YEAR 0 OFF (IT'S A LEAP YEAR)
+	   total_secs = total_secs - secs_in_year - secs_in_day
 
+*          MAKE SURE WE AREN'T WORKING IN YEAR 0
+	   IF (total_secs .GE. 0) THEN
+
+*             DECIDE WHICH CENTURY IT IS
+	      cent4_cnt = INT(total_secs/secs_in_4cents)
+	      total_secs = total_secs - cent4_cnt*secs_in_4cents
+	      cent_cnt = INT(total_secs/secs_in_cent)
+*             DEC 31 ON LEAP CENTURY TEST (YEARS 400,800,1200...)
+	      IF (cent_cnt .EQ. 4 .AND.
+	1	   total_secs .GE. cent4_cnt-secs_in_day)   cent_cnt = 3
+	      total_secs = total_secs - cent_cnt*secs_in_cent
+	      year = 400*cent4_cnt + 100*cent_cnt
+	  
+*             DECIDE WHAT YEAR IT IS EXACTLY (1 YEAR FOR YEAR 0)
+	      year4_cnt = INT(total_secs/secs_in_4years)
+	      total_secs = total_secs - year4_cnt*secs_in_4years
+	      year_cnt = INT(total_secs/secs_in_year)
+*             DEC 31 ON LEAP YEAR TEST (YEARS 0,4,8,12...)
+	      IF (year_cnt .EQ. 4 .AND.
+	1	   total_secs .GE. secs_in_4years-secs_in_day)   year_cnt = 3
+	      total_secs = total_secs - year_cnt*secs_in_year
+	      year = year + 4*year4_cnt + year_cnt + 1
+	      
+	   ELSE
+*             Year 0 stuff
+	      year = 0
+	      total_secs = total_secs + secs_in_year + secs_in_day
+	   ENDIF
+
+*          IS THIS A LEAP YEAR? (EVERY 4TH CENTURY IS, OTHERWISE CENTURY ISN'T)
+	   leapadj = 0
+	   IF (MOD(year,400) .EQ. 0) THEN
+	      leapadj = 1
+	   ELSE IF (MOD(year,4) .EQ. 0 .AND. MOD(year,100) .NE. 0) THEN
+	      leapadj = 1
+	   ENDIF
+
+*          HOW  MANY DAYS INTO YEAR IS THIS
+	   tot_days = INT(total_secs/secs_in_day)
+	   total_secs = total_secs - tot_days*secs_in_day
+	   
+*          DECIDE WHAT MONTH/DAY IT IS
+	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+	   IF (tmp_days .LT. 0) 
+	1	STOP 'negative subscript in TM_SECS_TO_DATE'
+	   month = month_by_day(tmp_days+1)
+	   leapadj = INT(month/12. +.75)*leapadj
+	   day = tot_days - (days_before_month(month)+leapadj) + 1
+	   
+*          CALCULATE NUMBER OF HOURS
+	   hour = INT(total_secs/secs_in_hour)
+*          SUBTRACT SECONDS FOR NUMBER OF HOURS
+	   total_secs = total_secs - secs_in_hour*(hour)
+*          CALCULATE NUMBER OF MINUTES
+	   minute = INT(total_secs/secs_in_minute)
+*          SUBTRACT SECONDS FOR NUMBER OF MINUTES
+	   total_secs = total_secs - secs_in_minute*(minute)
+*          CALCULATE NUMBER OF SECONDS
+	   second = total_secs
+
+*******************************************************************************
+* HANDLE JULIAN CALENDAR   
+*******************************************************************************
+	ELSE IF (cal_id .eq. julian) then
+
+*          INITIALIZE
+	   leap_yr_days = num_days + 1.0
+
+	   secs_in_year	  = secs_in_day*num_days
+	   secs_in_4years = 
+	1	secs_in_day*(3*num_days + leap_yr_days)
+	   total_secs = num_secs
+
+*          SUBTRACT YEAR 0 OFF (IT'S A LEAP YEAR)
+	   total_secs = total_secs - secs_in_year - secs_in_day
+
+
+*          MAKE SURE WE AREN'T WORKING IN YEAR 0
+	   IF (total_secs .GE. 0) THEN
+
+	      year = 0
+	  
+*             DECIDE WHAT YEAR IT IS EXACTLY (1 YEAR FOR YEAR 0)
+	      year4_cnt = INT(total_secs/secs_in_4years)
+	      total_secs = total_secs - year4_cnt*secs_in_4years
+
+	      year_cnt = INT(total_secs/secs_in_year)
+*             DEC 31 ON LEAP YEAR TEST (YEARS 0,4,8,12...)
+	      IF (year_cnt .EQ. 4 .AND.
+	1	   total_secs .GE. secs_in_4years-secs_in_day)   year_cnt = 3
+	      total_secs = total_secs - year_cnt*secs_in_year
+	      year = year + 4*year4_cnt + year_cnt + 1
+	      
+	   ELSE
+*             Year 0 stuff
+	      year = 0
+	      total_secs = total_secs + secs_in_year + secs_in_day
+	   ENDIF
+
+*          IS THIS A LEAP YEAR?
+	   leapadj = 0
+	   IF (MOD(year,4) .EQ. 0) leapadj = 1
+
+*          HOW  MANY DAYS INTO YEAR IS THIS
+	   tot_days = INT(total_secs/secs_in_day)
+	   total_secs = total_secs - tot_days*secs_in_day
+
+*          DECIDE WHAT MONTH/DAY IT IS
+	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+	   IF (tmp_days .LT. 0) 
+	1	STOP 'negative subscript in TM_SECS_TO_DATE'
+	   month = month_by_day(tmp_days+1)
+	   leapadj = INT(month/12. +.75)*leapadj
+	   day = tot_days - (days_before_month(month)+leapadj) + 1
+	   
+*          CALCULATE NUMBER OF HOURS
+	   hour = INT(total_secs/secs_in_hour)
+*          SUBTRACT SECONDS FOR NUMBER OF HOURS
+	   total_secs = total_secs - secs_in_hour*(hour)
+*          CALCULATE NUMBER OF MINUTES
+	   minute = INT(total_secs/secs_in_minute)
+*          SUBTRACT SECONDS FOR NUMBER OF MINUTES
+	   total_secs = total_secs - secs_in_minute*(minute)
+*          CALCULATE NUMBER OF SECONDS
+	   second = total_secs
+
+******************************************************************************
+* ALL OTHER SUPPORTED AND REGULAR CALENDARS
+******************************************************************************
+	ELSE IF (cal_id .GT. gregorian   .AND.  cal_id .NE. julian .AND.
+     .           cal_id .LE. max_calendars) THEN
+
+*          INITIALIZE
+	   secs_in_year	= secs_in_day*num_days
+	   secs_in_cent = 100*secs_in_year
+	   total_secs = num_secs
+
+*          SUBTRACT YEAR 0 OFF
+	   total_secs = total_secs - secs_in_year
+
+*          MAKE SURE WE AREN'T WORKING IN YEAR 0
+	   IF (total_secs .GE. 0) THEN
+
+*             DECIDE WHICH CENTURY IT IS
+	      cent_cnt = INT(total_secs/secs_in_cent)
+	      total_secs = total_secs - cent_cnt*secs_in_cent
+	      year = 100*cent_cnt
+	  
+*             DECIDE WHAT YEAR IT IS EXACTLY (1 YEAR FOR YEAR 0)
+	      year_cnt = INT(total_secs/secs_in_year)
+	      total_secs = total_secs - year_cnt*secs_in_year
+	      year = year + year_cnt + 1
+	      
+	   ELSE
+*             Year 0 stuff
+	      year = 0
+	      total_secs = total_secs + secs_in_year
+	   ENDIF
+
+*          HOW  MANY DAYS INTO YEAR IS THIS
+	   tot_days = INT(total_secs/secs_in_day)
+	   total_secs = total_secs - tot_days*secs_in_day
+	   
+*          DECIDE WHAT MONTH/DAY IT IS
+	   month = month_by_day(tot_days+1)
+	   day = tot_days - days_before_month(month) + 1
+	   
+*          CALCULATE NUMBER OF HOURS
+	   hour = INT(total_secs/secs_in_hour)
+*          SUBTRACT SECONDS FOR NUMBER OF HOURS
+	   total_secs = total_secs - secs_in_hour*(hour)
+*          CALCULATE NUMBER OF MINUTES
+	   minute = INT(total_secs/secs_in_minute)
+*          SUBTRACT SECONDS FOR NUMBER OF MINUTES
+	   total_secs = total_secs - secs_in_minute*(minute)
+*          CALCULATE NUMBER OF SECONDS
+	   second = total_secs
 	ELSE
-* Year 0 stuff
-	  year = 0
-	  total_secs = total_secs + secs_in_year + secs_in_day
-	ENDIF
-
-* Is this a leap year? (every 4th century is, otherwise century isn't)
-	leapadj = 0
-	IF (MOD(year,400) .EQ. 0) THEN
-	  leapadj = 1
-	ELSE IF (MOD(year,4) .EQ. 0 .AND. MOD(year,100) .NE. 0) THEN
-	  leapadj = 1
-	ENDIF
-
-* How many days into year is this
-	tot_days = INT(total_secs/secs_in_day)
-	total_secs = total_secs - tot_days*secs_in_day
-
-* Decide what month/day it is
-	tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
-	IF (tmp_days .LT. 0) STOP 'negative subscript in TM_SECS_TO_DATE'
-	month = month_by_day(tmp_days+1)
-	leapadj = INT(month/12. +.75)*leapadj
-	day = tot_days - (days_before_month(month)+leapadj) + 1
-
-* Calculate number of hours
-	hour = INT(total_secs/secs_in_hour)
-* Subtract seconds for number of hours
-	total_secs = total_secs - secs_in_hour*(hour)
-* Calculate number of minutes
-	minute = INT(total_secs/secs_in_minute)
-* Subtract seconds for number of minutes
-	total_secs = total_secs - secs_in_minute*(minute)
-* Calculate number of seconds
-	second = total_secs
+	   stop 'Illegal calendar in tm_secs_to_date()'
+	END IF
 
 * Put it in a string
-	WRITE (tempstr,1000,ERR=5000) day, cmon(month), year, hour,
-     .				      minute, second
+	WRITE (tempstr,1000,ERR=5000) day, month_names(month), 
+     .      year, hour, minute, second
+
 1000	FORMAT(I2.2,'-',A3,'-',I4.4,' ',2(I2.2,':'),I2.2)
 	TM_SECS_TO_DATE = tempstr
 	GOTO 9990

@@ -48,6 +48,7 @@
 * V230 - simplified (less intimidating) message
 *      7/20/92 - don't issue warning unless T0 is valid
 *              - (cleaned up unused variables)
+* V530  1/01 *acm* cal_id for alternative calendar axis types
 
 * calling argument declarations:
 	INTEGER	dset
@@ -55,6 +56,7 @@
 * internal variable declarations:
         LOGICAL TM_DATE_OK
 	INTEGER	i, grid, line
+        INTEGER TM_GET_CALENDAR_ID, cal_id
 	DOUBLE PRECISION TM_WORLD
 
 #ifdef unix
@@ -84,7 +86,9 @@
         IF ( line .EQ. mnormal ) RETURN
 
 * no warning for non-date axes - this way time can be a regular ol' axis
-        IF ( .NOT.TM_DATE_OK( line_t0(line) ) ) RETURN
+
+        cal_id = TM_GET_CALENDAR_ID (line_cal_name(line) )
+        IF ( .NOT.TM_DATE_OK( line_t0(line), cal_id) ) RETURN
 
 	IF ( TM_WORLD(1,grid,t_dim,box_middle) .LT. 0.0D0 ) THEN
 	   CALL WARN('Negative values in time axis'//

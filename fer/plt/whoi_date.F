@@ -45,6 +45,8 @@
 * V200:  1/31/90 - fixed bug with climatological axes (years "0000" and "0001"
 *		   but produce the same WHOI dates)
 * V420: 11/27/95 - 4-digit YEARS!!
+* v530  12/19/00 *acm* cal_id for alternative calendar axis types
+
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -64,6 +66,7 @@
 * internal variable declarations
 	INTEGER 	yr100, yr, mon, day, hr, min, sec,
      .			status, i, axis
+	INTEGER		TM_GET_CALENDAR_ID, cal_id
 	CHARACTER*20	TM_SECS_TO_DATE, date
 	REAL*8		start_secs, offset_secs, this_secs
 	REAL*8		SECS_FROM_BC
@@ -79,7 +82,9 @@
 	ENDIF
 
 * First find the offset from 01-JAN-0000 00:00:00 from the descriptor file
-	start_secs = SECS_FROM_BC( line_t0(axis), status )
+
+        cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+	start_secs = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
 * Find the number of seconds since start of data set for this time step
 	offset_secs = tstep*line_tunit( axis )
@@ -88,10 +93,11 @@
 	this_secs = start_secs + offset_secs
 
 * Convert to date
-	date = TM_SECS_TO_DATE(this_secs)
+	date = TM_SECS_TO_DATE(this_secs, cal_id)
 
 * break the date string into component integer values
-	CALL TM_BREAK_DATE( date, yr, mon, day, hr, min, sec, status )
+	CALL TM_BREAK_DATE( date, cal_id, yr, mon, day, hr, min,
+     .                      sec, status )
 	yr100 = yr/100		! 1980 --> 19
 	yr = yr - (yr100*100)	! 1982 --> 82
 

@@ -120,8 +120,9 @@
 *	5/00 *sh* - restored /PEN as a "denigrated" command
 * V520: 6/00 *sh* - added MESSAGE/ERROR
 * V530: 10/00 *sh* - added added SET DATA/EZ  /TYPE=/DELIMITERS=
-*      10/00 *AM* - added VECTOR/STREAMLINE (alias STREAMLINE)
+*      10/00 *acm* - added VECTOR/STREAKLINE (alias STREAKLINE)
 *      1 /01 *sh* - added PLOT/STEP[=connected]
+*       1/01 *acm* - added /CALENDAR qualifier
 
 #ifdef unix
 	include 'ferret.parm'
@@ -893,7 +894,7 @@
 		DATA qualifiers  (nqual_at10e+ 10)/ 'MODULO' /
 		DATA qualifiers  (nqual_at10e+ 11)/ 'NPOINTS' /
 		DATA qualifiers  (nqual_at10e+ 12)/ 'EDGES' /
-		DATA qualifiers  (nqual_at10e+ 13)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 13)/ 'CALENDAR' /
 		DATA qualifiers  (nqual_at10e+ 14)/ '****' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/
@@ -983,7 +984,7 @@
 		DATA qualifiers  (nqual_at13a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at13a+23)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at13a+25)/ 'STREAMLI'/  !/streamline
+		DATA qualifiers  (nqual_at13a+25)/ 'STREAKLI'/  !/streakline
 		DATA qualifiers  (nqual_at13a+26)/ 'DENSITY'/	!/density=
 		DATA qualifiers  (nqual_at13a+27)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
@@ -1370,9 +1371,9 @@
      .		alias_name(16)	/ 'WHERE' /,
      .		alias_len(16)	/ 10 /,
      .		alias(16)	/ 'PPL %WHERE' /
-     .		alias_name(17)	/ 'STREAMLI' /,
+     .		alias_name(17)	/ 'STREAKLI' /,
      .		alias_len(17)	/ 17 /,
-     .		alias(17)	/ 'VECTOR/STREAMLINE' /
+     .		alias(17)	/ 'VECTOR/STREAKLINE' /
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
      .                   / 133*unspecified_name4 /,

@@ -1,5 +1,5 @@
 	SUBROUTINE EQUAL_RANGE( string,idim,lo,hi,delta,formatted,
-     .				range_rqd, status )
+     .				range_rqd, cal_id, status )
 
 *
 *
@@ -49,10 +49,11 @@
 *               declaration line.
 * V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
 * V521 *sh* - added boolean "range_rqd" argument
+* V530 *acm* - send cal_id to TRANSLATE_LIMIT
 
 * calling argument declarations
 	LOGICAL		formatted, range_rqd
-	INTEGER		idim, status
+	INTEGER		idim, cal_id, status
 	REAL*8		lo, hi, delta
 	CHARACTER*(*)	string
 
@@ -130,18 +131,18 @@
 
 * translate the low limit
 	CALL TRANSLATE_LIMIT( string(equal_pos+1:colon1-1), idim,
-     .			      not_by_ss, lo, formatted, status )
+     .			      not_by_ss, lo, formatted, cal_id, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
 * translate the high limit
 	CALL TRANSLATE_LIMIT( string(colon1+1:end2), idim,
-     .			      not_by_ss, hi, formatted, status )
+     .			      not_by_ss, hi, formatted, cal_id, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
 * optionally translate the delta value
 	IF ( has_delta ) THEN
 	   CALL TRANSLATE_LIMIT( string(colon2+1:slen), idim,
-     .			      not_by_ss, delta, ldummy, status )
+     .			      not_by_ss, delta, ldummy, cal_id, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	ELSE
 	   delta = unspecified_val8

@@ -77,6 +77,7 @@
 * V510: *sh* 7/00 - added arg to EQUAL_RANGE 
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
 *	    1/01 - remove makep setting so segments are not pre-activated
+* V5.3 *ACM* 1/03  cal_id for alternative calendar axes.
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -139,10 +140,11 @@
      .			formatted, user_title, oneD_form, stack_up
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
-	CHARACTER	VAR_UNITS*64, LEFINT*6,
-     .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14
+	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
+     .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14,
+     .                  cal_name*32, cal_name_saved*32
 	INTEGER         TM_UNIT_ID
-	INTEGER		TM_LENSTR1, CX_DIM_LEN,
+	INTEGER		TM_LENSTR1, CX_DIM_LEN,	TM_GET_CALENDAR_ID, 
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
      .			slen, slen2, x_lab, y_lab, nline_in_mem, i,
      .			npoly, ncolor, ipoly, xrow, yrow, start, end,
@@ -150,7 +152,9 @@
      .			style, justify, ndim, dims(4), nfdim, fdims(4),
      .			plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y,
-     .			phlim, pvlim, pxdenig, pydenig
+     .			phlim, pvlim, pxdenig, pydenig,
+     .                  cal_id, tax
+
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .			dt_min
@@ -197,6 +201,7 @@
 	hiy = arbitrary_small_val4
 !	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
+	cal_id = 0
 
 * perform sanity checks on the arguments
 * ... check the X coordinate variable for shape
@@ -438,10 +443,16 @@
 * ... let PPL data loader know what's going on (kludge)
 	   makep = 'FILLPOL'
 
-* ... setup for possible overlay on a time axis plot
+* ... setup for possible overlay on a time axis plot  ? calendar_id here?
 	   IF (overlay .AND. has_time_axis) THEN
 	      dt_min  = saved_dt_min
 	      t1_date = saved_t1_date
+
+*  Check for calendar mismatch for time- overlay plots
+              tax = grid_line(t_dim,cx_grid(cx_x ))
+              cal_name = line_cal_name(tax)
+              cal_id = TM_GET_CALENDAR_ID ( cal_name )
+              IF (cal_id .NE. saved_calendar_id) GO TO 5360
 	   ELSE
               dt_min  = 1.0
               t1_date = ' '
@@ -506,6 +517,7 @@
 
 	makep = 'FILLPOL'   ! that PLOT+ kludge again
 	CALL PPLLDX(2,x_dat,x_dat,ncolor,t1_date,' ',dt_min)
+
 	makep = ' '   ! that PLOT+ kludge again
 
 * turn on lon/lat axis formatting for polygon plots, otherwise off
@@ -539,10 +551,13 @@
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
+              tax = grid_line(t_dim,cx_grid(cx_x ))
+              cal_name = line_cal_name(tax)
+              cal_id = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pxdenig):qual_end(pxdenig)),
      .			x_dim, vmin, vmax, delta,
-     .			formatted, range_rqd, status )
+     .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
      .			     vmin,vmax,delta)
@@ -563,10 +578,13 @@
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
+              tax = grid_line(t_dim,cx_grid(cx_x ))
+              cal_name = line_cal_name(tax)
+              cal_id = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pydenig):qual_end(pydenig)),
      .			y_dim, vmin, vmax, delta,
-     .			formatted, range_rqd, status )
+     .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			     vmin,vmax,delta)
@@ -609,7 +627,7 @@
      .			 lab_ht, style, lab_loc_absolute, lab_loc_absolute )
 	ELSE
 * ... basic position and data set labels
-	   CALL DISP_LABELS( cx_plot, unspecified_name4 )
+	   CALL DISP_LABELS( cx_plot, unspecified_name4, cal_id)
 * ... title
 	   IF ( user_title ) THEN     ! user over-ride of title
 	      CALL EQUAL_STR_LC
@@ -682,4 +700,17 @@ C	   slen = TM_LENSTR1( plot_title )
      .		'invalid argument to /COORD_AX=',
      .		*5000)
 
+              IF (cal_id .NE. saved_calendar_id) GO TO 5160
+
+
+ 5360	cal_name = TM_GET_CALENDAR_NAME(cal_id)
+        cal_name_saved = TM_GET_CALENDAR_NAME(saved_calendar_id)
+        slen = TM_LENSTR1 (cal_name_saved)
+        slen2 = TM_LENSTR1(cal_name)
+	CALL ERRMSG( ferr_inconsist_grid, status,
+     .          'Differing calendar axes: '//pCR//
+     .		'first variable is on '//cal_name_saved(:slen)//
+     .		' axis'//pCR//
+     .		'overlaid variable is on '//cal_name(:slen2)//
+     .		' axis', *5000 )
 	END

@@ -5,87 +5,32 @@ C	J Davison 10.99
 C	V 1.0
 C
 C	0.00000000000000000000000000000000000000000000000000000000000000001
-
-C	*******************************************************************
-C	Current calendar as known by PPL+
-C	*******************************************************************
-	character*16			cal_name
-	integer				cal_id,
-     .					loaded_calendar
-
-	common / current_calendar /	cal_name, 
-     .					cal_id,
-     .					loaded_calendar
-
-C	*******************************************************************
-C 	Parameters dimensioning calendar data structures
-C	*******************************************************************
-	integer		max_calendars,
-     .			max_months,
-     .			max_days
-	parameter      (max_calendars = 6,
-     .			max_months    = 12,
-     .			max_days      = 366)
-
-C	*******************************************************************
-C	Information about one calendar
-C	*******************************************************************
-	integer		num_months, num_days,
-     .			days_before_month(max_months),
-     .			month_by_day(max_days),
-     .			days_in_month(max_months)
-
-	character*3	month_names(max_months)
-
-	common / one_calendar_specs /
-     .			num_months, num_days,
-     .			days_in_month,
-     .			days_before_month,
-     .			month_by_day,
-     .			month_names
-
-C	*******************************************************************
-C	Calendar names as recognized in the PPL+ CALENDAR command
-C	*******************************************************************
-	character*16	calendar_names(max_calendars)
-	
-C	*******************************************************************
-C	Variables with specs for all calendars.  These define each calendar
-C	where month and year length are constant.  Exceptions as in the
-C	Gregorian calendar (in leap years) are handled in individual
-C	date/time subroutines: see these for that exception handling --
-C	
-C        fmt/src/tm_calendars_break_date.F
-C	 fmt/src/tm_calendars_secs_to_date.F
-C	 fmt/src/tm_calendars_secs_from_bc.F
-C	 ppl/plotlib/numdm1.F
-C	*******************************************************************
-	integer		cals_num_days(max_calendars),
-     .			cals_num_months(max_calendars),
-     .			cals_days_in_month(max_months,max_calendars)
-
-	character*3	cals_month_names(max_months,max_calendars)
-
-C	*******************************************************************
-C	Integers below have calendar names, see calendar_blkdat.F
-C	for value assignments.  They are used as calendar indices.
-C	*******************************************************************
-	integer		gregorian
-        integer		common
-        integer		leap_yr
-        integer		days_360
-        integer		tmap_360
-        integer		peculiar
+C *acm* 12/00  Split into calendar.cmn and calendar.decl
+C *acm* 1/ 01  add cals_days_before_month and cals_month_by_day
 
 	common / all_calendar_specs /
-     .			calendar_names,
+     .                  max_calendars,
+     .			max_months,
+     .			max_days,
+     .			num_months, 
+     .                  num_days,
+     .			days_before_month,
+     .			month_by_day,
+     .			days_in_month,
+     .                  yrdays,
+     .			month_names,
+
+     .			allowed_calendars,
      .			gregorian,
-     .			common,
-     .			leap_yr,
-     .			days_360,
-     .			tmap_360,
-     .			peculiar,
+     .			noleap,
+     .			julian,
+     .			d360,
      .                  cals_num_days,
+     .                  cals_yeardays,
      .			cals_num_months,
      .			cals_month_names,
-     .			cals_days_in_month
+     .			cals_days_in_month,
+     .                  cals_days_before_month,
+     .                  cals_month_by_day,
+     .			calendar_id
+

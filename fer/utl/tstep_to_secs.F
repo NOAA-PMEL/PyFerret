@@ -45,6 +45,7 @@
 * revision 0.0 - 7/27/88
 * V320: 12/94 - bug fix: not based on TSTEP_TODATE because the returned
 *	"date" string blanks out years 0000 and 0001 ==> cannot distinguish
+* V530: *acm* 12/00 add calendar types; cal_id
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -62,7 +63,7 @@
 	REAL*8	tstep
 
 * internal variable declarations:
-	INTEGER		axis, status
+	INTEGER		TM_GET_CALENDAR_ID, axis, status, cal_id
 !	CHARACTER*20	date
 	REAL*8		SECS_FROM_BC, start_secs, offset_secs
 
@@ -76,6 +77,10 @@
 * valid time axis ?
 	IF ( line_direction( axis ) .EQ. 'TI' ) THEN
 
+* determine time axis of grid
+
+	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+
 ! pre 12/94 algorithm
 !* convert time step to date of format dd-mmm-yyyy:hh:mm:ss
 !	   CALL TSTEP_TO_DATE ( grid, tstep, seconds, date )
@@ -84,7 +89,7 @@
 !	   TSTEP_TO_SECS = SECS_FROM_BC( date, status )
 
 * First find the offset from 01-JAN-0000 00:00:00 from the descriptor file
-	   start_secs = SECS_FROM_BC( line_t0(axis), status )
+	   start_secs = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
 * Find the number of seconds since start of data set for this time step
 	   offset_secs = tstep*line_tunit( axis )

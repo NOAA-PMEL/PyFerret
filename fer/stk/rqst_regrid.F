@@ -60,6 +60,8 @@
 *  *kob* 3/99- up VAR_CODE  to 64 chars 
 *        5/99 *sh* for netCDF vars of form var[I=1:10:3] pass along the
 *		  delta value in cx_delta to be used as a "stride" in I/O 
+* V530   3/01 *acm* alternative calendar axes:  Compare timesteps for source and
+*		    destination axes with respect to one of the calendars.
 * V530:  3/01 *sh* - added prgrd_nearest
 
 #ifdef unix
@@ -69,6 +71,7 @@
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
@@ -92,15 +95,16 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	GEOG_LABEL, ITSA_MODULO_REGRID,
-     .		src_modulo, calendar
-	INTEGER	ISUBSCRIPT, CAXIS_LEN, axis,
+     .		last_axis, src_modulo, calendar
+	INTEGER	ISUBSCRIPT, CAXIS_LEN, axis, TM_GET_CALENDAR_ID, TM_LENSTR1,
      .		dst_grid, src_grid, src_lo_ss, src_hi_ss,
      .		src_min_ss, src_max_ss, line, src_line,
-     .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans
-	REAL*8	TWORLD, SECS_TO_TSTEP,
+     .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans,
+     .	        dst_taxis, src_taxis, dst_cal_id, src_cal_id, dlen, slen
+	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
-     .          tmp_lo_ww, tmp_hi_ww
-	CHARACTER	VAR_CODE*6
+     .          tmp_lo_ww, tmp_hi_ww, d2s_lo_ww, d2s_hi_ww
+	CHARACTER	VAR_CODE*6, TM_SECS_TO_DATE*20, pdate*20
 
 * initialize
 	dst_grid = cx_grid( dst_cx )
@@ -114,10 +118,36 @@
 	IF ( grid_line(axis,src_grid) .EQ. mnormal ) GOTO 1000
 
 * determine if this is a calendar axis and trap illegal attempts
-* to regrid between calendar and non-calendar axes
+* to regrid between calendar and non-calendar axes.  
+* 3/01 *acm* If calendar axis, get calendar id for dest and source calendars.
+
 	IF ( rgrd_trans.NE.prgrd_associate .AND. axis.EQ.t_dim ) THEN
 	   calendar = GEOG_LABEL(t_dim,dst_grid)
 	   IF (GEOG_LABEL(t_dim,src_grid).NEQV.calendar) GOTO 5010
+	   IF (calendar) THEN
+	      src_taxis = grid_line(axis, src_grid)
+	      src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis) )
+	      dst_taxis = grid_line(axis, dst_grid)
+	      dst_cal_id = TM_GET_CALENDAR_ID (line_cal_name(dst_taxis) )
+	   ENDIF
+
+	ELSE
+	   calendar = .FALSE.
+	ENDIF
+
+* If this is a regridding between different calendars trap illegal attempts
+* to regrid with anything except @lin, @asn, or @near
+	IF ( calendar ) THEN
+	   dst_taxis = grid_line(t_dim, dst_grid )
+	   src_taxis = grid_line(t_dim, src_grid )
+
+	   dst_cal_id = TM_GET_CALENDAR_ID (line_cal_name(dst_taxis))
+	   src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis))
+           IF (dst_cal_id .NE. src_cal_id) THEN
+               IF (rgrd_trans .NE. prgrd_linear_interp .AND. 
+     .		   rgrd_trans .NE. prgrd_associate     .AND. 
+     .		   rgrd_trans .NE. prgrd_nearest )  GOTO 5020
+           ENDIF
 	ELSE
 	   calendar = .FALSE.
 	ENDIF
@@ -189,17 +219,33 @@
 
 * check to make sure destination region overlaps the source region
 * (temporarily use src_**_ww for axis extremes)
+* 3/01 *acm* If different calendars, do comparison wrt source calendar...
+
 	src_modulo = line_modulo( grid_line(axis,src_grid) )
 	IF ( .NOT. src_modulo ) THEN
 	   CALL GRID_SUBSCRIPT_EXTREMES(src_lo_ss, src_hi_ss, src_grid, axis)
 	   src_lo_ww = TWORLD( src_lo_ss,src_grid,axis,where_loest )
 	   src_hi_ww = TWORLD( src_hi_ss,src_grid,axis,where_hiest )
+
 ! (3/2)    IF ( dst_lo_ww.GE.src_hi_ww .OR. dst_hi_ww.LE.src_lo_ww ) GOTO 5100
 ! (3/93)   IF ( dst_lo_ww.GT.src_hi_ww .OR. dst_hi_ww.LT.src_lo_ww ) GOTO 5100
-           IF     ( dst_lo_ww .GT. src_hi_ww ) THEN   ! 3/93
+
+           IF (calendar .AND. src_cal_id .NE. dst_cal_id) THEN
+              CALL reset_secs_from_bc (dst_lo_ww, tmp_lo_ww, 
+     .                                 dst_cal_id, src_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      CALL reset_secs_from_bc (dst_hi_ww, tmp_hi_ww, 
+     .                                 dst_cal_id, src_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	   ELSE
+	      tmp_lo_ww = dst_lo_ww
+	      tmp_hi_ww = dst_hi_ww
+	   ENDIF
+
+           IF     ( tmp_lo_ww .GT. src_hi_ww ) THEN   ! 3/93
               src_lo_ss = src_hi_ss                   ! 3/93 request top point
               GOTO 500                                ! 3/93
-           ELSEIF ( dst_hi_ww .LT. src_lo_ww ) THEN   ! 3/93
+           ELSEIF ( tmp_hi_ww .LT. src_lo_ww ) THEN   ! 3/93
               src_hi_ss = src_lo_ss                   ! 3/93 request low point
               GOTO 500                                ! 3/93
            ENDIF
@@ -211,8 +257,23 @@
 * 9/97 *kob* convert time in secs since BC to time position on the 
 *             *source* time axis then call ISUBSCRIPT
 	IF ( calendar ) THEN
-	   tmp_lo_ww = SECS_TO_TSTEP( src_grid, dst_lo_ww)
-	   tmp_hi_ww = SECS_TO_TSTEP( src_grid, dst_hi_ww)
+
+* 3/01 *acm* Get timesteps for dst range wrt source calendar
+	   IF (dst_cal_id .NE. src_cal_id) THEN
+              CALL reset_secs_from_bc (dst_lo_ww, d2s_lo_ww, 
+     .                                 dst_cal_id, src_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+              CALL reset_secs_from_bc (dst_hi_ww, d2s_hi_ww, 
+     .                                 dst_cal_id, src_cal_id, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	   ELSE
+	      d2s_lo_ww = dst_lo_ww
+	      d2s_hi_ww = dst_hi_ww
+	   ENDIF
+
+	   tmp_lo_ww = SECS_TO_TSTEP( src_grid, d2s_lo_ww)
+	   tmp_hi_ww = SECS_TO_TSTEP( src_grid, d2s_hi_ww)
+
 	   src_lo_ss = ISUBSCRIPT( tmp_lo_ww,src_grid,axis,round_dn )
 	   src_hi_ss = ISUBSCRIPT( tmp_hi_ww,src_grid,axis,round_up )
 	ELSE
@@ -230,9 +291,20 @@
 * 10/95:  Avoid expanding beyond the axis limits.  This becomes necessary
 *  despite the call to CONFINE_AXIS because dynamic grids contexts are immune
 *  from CONFINE_CONTEXT as a result of uvar_given = uvlim_gvn_gnl
-	IF ( dst_lo_ww .LT. src_lo_ww
+
+* 3/01 *acm* If different calendars, do comparison wrt dst calendar...
+
+        IF (calendar .AND. dst_cal_id .NE. src_cal_id) THEN
+	   tmp_lo_ww = d2s_lo_ww
+	   tmp_hi_ww = d2s_hi_ww
+	ELSE
+	   tmp_lo_ww = dst_lo_ww
+	   tmp_hi_ww = dst_hi_ww
+	ENDIF
+
+	IF ( tmp_lo_ww .LT. src_lo_ww
      . .AND. src_lo_ss .GT. src_min_ss ) src_lo_ss = src_lo_ss - 1
-	IF ( dst_hi_ww .GT. src_hi_ww
+	IF ( tmp_hi_ww .GT. src_hi_ww
      . .AND. src_hi_ss .LT. src_max_ss ) src_hi_ss = src_hi_ss + 1
 
 * flesh out the resulting axis
@@ -277,6 +349,15 @@
      .		'only @ASN regridding between calendar and '//pCR
      .		//'non-calendar axes: '//
      .		VAR_CODE(cx_category(dst_cx),cx_variable(dst_cx)), *5000)
+ 5020	CONTINUE
+
+	slen = TM_LENSTR1 (line_cal_name(src_taxis))
+	dlen = TM_LENSTR1 (line_cal_name(dst_taxis))
+	WRITE (risc_buff, *) 'only @ASN, @LIN, or @NRST regridding ',
+     .		'between calendar types: ',
+     .		line_cal_name(src_taxis)(:slen),', ', 
+     .		line_cal_name(dst_taxis)(:dlen)
+	CALL ERRMSG( ferr_regrid, status, risc_buff, *5000)
 ! 5100	CALL ERRMSG( ferr_limits, status,
 !     .		'regrid region outside source data '//ww_dim_name(axis)//
 !     .		' axis range: '//

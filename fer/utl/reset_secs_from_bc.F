@@ -1,4 +1,6 @@
-	REAL*8 FUNCTION WHOI2BC( whoi )
+	SUBROUTINE reset_secs_from_bc( tstep, new_tstep, 
+     .                                 old_cal_id, new_cal_id, 
+     .                                 status )
 
 *
 *
@@ -35,47 +37,44 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Convert a WHOI-formatted date of yymmddhhmm to minutes since 1-JAN-0000
-*
-* Steve Hankin - NOAA/PMEL/TMAP
-*
-* version 0.0 - based on TM_SECS_FROM_BC by Mark Verschell
-* version 0.1 - calls TM_SECS_FROM_BC
-* version 0.2 - bug fix: add 1900 to year
-* Mod 11.22.95 J Davison for 4 digit year 
-*
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-* Mod J Davison 10.15.99 Add multi calendar support. Call new routine.
-*  *acm* 12/00 Change calendars to match NetCDF standard 
+* return a REAL*8 number giving the number of seconds since 1-JAN-0000:00:00
+* for tstep.  On input tstep is relative to calendar old_cal_id,
+* on output tstep is relative to the calendar indicated by new_cal_id
 
-      INCLUDE 'calendar.decl'
-      INCLUDE 'calendar.cmn'
-
-
-* Argument definitions
-	CHARACTER*(*)	whoi
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* Local Definition
+* revision 0.0 2/28/01
+
+* Calling argument declarations:
+	INTEGER		old_cal_id, new_cal_id, status
+	REAL*8		tstep, new_tstep
+
+* Local variable declarations:
 	INTEGER		year, month, day, hour, minute, second
-	INTEGER		century
 	REAL*8		TM_SECS_FROM_BC
+	CHARACTER*20	TM_SECS_TO_DATE, date
 
+#ifdef unix
+	include 'ferret.parm'
+	include 'errmsg.parm'
+#endif
+	IF (old_cal_id .EQ. new_cal_id ) THEN
+           new_tstep = tstep
+        ELSE
 
-	integer         status
+* Convert to date string
+	   date = TM_SECS_TO_DATE(tstep, old_cal_id)
+	   CALL TM_BREAK_DATE ( date, old_cal_id,
+     .			  year, month, day, hour, minute, second,
+     .			  status )
+	   IF (status .NE. ferr_ok) GO TO 9000
 
-****************************************************************************
+* Find the offset from 01-JAN-0000 00:00:00 for this date and calendar
 
-* read the WHOI-formatted string
-	READ ( whoi, 3000 ) year, month, day, hour, minute, second, century
- 3000	FORMAT (7I2.2)
-!!!!!	second = 0
-	year = year + century*100
+	   new_tstep = TM_SECS_FROM_BC (new_cal_id, year, month, day,
+     .				     hour, minute, second, status)
+	ENDIF
 
-* call TMAP library routine and convert seconds to minutes
-	WHOI2BC = TM_SECS_FROM_BC ( calendar_id,
-     .    year, month, day, hour, minute, second, status )
-     .		  / 60.D0
-
-	RETURN
+ 9000	RETURN
 	END

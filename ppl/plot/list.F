@@ -55,6 +55,8 @@ C                with "*(*)" for the linux port
 *       Modified to include RGB mapping status *jd* 10.98/1.99
 * V510: *sh* 3/00 - restrict LIST LINES to at most NLINES
 *                 - fixed up LIST STATS format
+* V530: *acm* 1/01- list the allowable calendar names; do not point to 
+*		    "the loaded calendar".  calendar type goes with each grid.
 
 #ifdef unix
         include 'parampl5_dat.decl'
@@ -110,6 +112,9 @@ C                with "*(*)" for the linux port
         include 'shade_vars.cmn'
         include 'aline.cmn'
         include 'gkscm2.cmn'
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
+        include 'calendar.decl'
         include 'calendar.cmn'
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
@@ -140,11 +145,10 @@ C                with "*(*)" for the linux port
         INCLUDE 'tmap_pplv11inc:tmap_shade_vars.INC'
         INCLUDE 'tmap_pplv11inc:tmap_aline.INC'
         INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
-        INCLUDE 'tmap_pplv11inc:calendar.cmn'
 #endif
 
 *3/99 *kob* had to move initialization of var solid off decl. line - for linux
-*           jerry should have known better.
+
 	integer		x_do_key,x_orient,solid
         DATA            solid/21/
 	logical		none
@@ -540,15 +544,9 @@ C	ALINE info
 10018   format (/9x,'SUPPORTED CALENDARS'/9x,'-------------------')
 
         do 2401 i = 1, max_calendars
-           if (cal_name .eq. calendar_names(i)) then
-              pointer1 = '--> '
-              pointer2 = ' Current calendar'
-           else
               pointer1 = ' '
               pointer2 = ' '
-           end if
-
-        write (llun,10019) pointer1, calendar_names(i), pointer2
+        write (llun,10019) pointer1, allowed_calendars(i), pointer2
  2401   end do
 
 10019   format(9x,a,a,a)

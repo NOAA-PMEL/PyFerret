@@ -43,6 +43,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/95  -- specifically for accessing CDC files
+* V530 *acm* 1/01 add calendar ID in TM_BREAK_DATE, TM_SECS_FROM_BC
+*	    	  calendar is assumed Gregorian
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -72,6 +74,8 @@
 * internal variable declarations:
       INTEGER cdfstat, mon, day, yr, hour, min, sec,
      .        t0year, t0mon, t0day, t0hour, t0min, t0sec
+
+      INTEGER cal_id
       REAL*8  TM_SECS_FROM_BC
       REAL*8  yymmdd, date_secs, start_secs, offset_secs
 
@@ -90,9 +94,13 @@
       CALL TM_YMD_TIME_CONVRT( yymmdd,
      .                         mon, day, yr, hour, min, sec)
 
-* determine seconds from BC
-      date_secs  = TM_SECS_FROM_BC (yr  , mon, day,
-     .                              hour, min, sec)
+* determine seconds from BC. 
+* For this routine set the calendar ID to gregorian always...
+
+      cal_id = 1
+      date_secs  = TM_SECS_FROM_BC (cal_id, yr  , mon, day,
+     .                              hour, min, sec, status)
+      IF (status .ne. merr_ok) GO TO 5000
 
 * determine the T0 value to use
       IF ( t0 .EQ. ' ' ) THEN 
@@ -105,12 +113,14 @@
          ENDIF
       ENDIF
 
-* break apart the T0 offset date
-      CALL TM_BREAK_DATE (t0, t0year, t0mon,
+* break apart the T0 offset date 
+      CALL TM_BREAK_DATE (t0, cal_id, t0year, t0mon,
      .                    t0day, t0hour, t0min, t0sec, status)
+      IF (status .ne. merr_ok) GO TO 5000
 
-      start_secs = TM_SECS_FROM_BC (t0year, t0mon, t0day,
-     .                              t0hour, t0min, t0sec)
+      start_secs = TM_SECS_FROM_BC (cal_id, t0year, t0mon, t0day,
+     .                              t0hour, t0min, t0sec, status)
+      IF (status .ne. merr_ok) GO TO 5000
 
 * Find the number of seconds since T0
       offset_secs = date_secs - start_secs

@@ -1,4 +1,4 @@
-	CHARACTER*14 FUNCTION ABS_WHOI_DATE( secsfrombc )
+	CHARACTER*14 FUNCTION ABS_WHOI_DATE( secsfrombc, cal_id )
 
 *
 *
@@ -42,6 +42,7 @@
 
 * V300: 10/93 *sh*  most of the code lifted from WHOI_DATE
 * V420: 11/27/95 - 4-digit YEARS!!
+* v530: 1/01  *acm*  calendar ID passed in for alternative calendar types
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -59,14 +60,16 @@
 
 * internal variable declarations
 	INTEGER 	yr100, yr, mon, day, hr, min, sec,
-     .			status, i, axis
+     .			status, i, axis, grid
+	INTEGER		cal_id
 	CHARACTER*20	TM_SECS_TO_DATE, date
 
 * Convert to date string
-	date = TM_SECS_TO_DATE(secsfrombc)
+	date = TM_SECS_TO_DATE(secsfrombc, cal_id)
 
 * break the date string into component integer values
-	CALL TM_BREAK_DATE( date, yr, mon, day, hr, min, sec, status )
+	CALL TM_BREAK_DATE( date, cal_id, yr, mon, day, hr, min, 
+     .                      sec, status )
 	yr100 = yr/100		! 1980 --> 19
 	yr = yr - (yr100*100)	! 1982 --> 82
 

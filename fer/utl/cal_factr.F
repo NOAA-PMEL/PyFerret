@@ -1,4 +1,4 @@
-	REAL*8 FUNCTION WHOI2BC( whoi )
+	REAL FUNCTION CAL_FACTR (cal_id)
 
 *
 *
@@ -35,47 +35,47 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Convert a WHOI-formatted date of yymmddhhmm to minutes since 1-JAN-0000
+* Find factor to adjust time units for different calendar axes.
+
+* programmer - Ansley Manke
 *
-* Steve Hankin - NOAA/PMEL/TMAP
-*
-* version 0.0 - based on TM_SECS_FROM_BC by Mark Verschell
-* version 0.1 - calls TM_SECS_FROM_BC
-* version 0.2 - bug fix: add 1900 to year
-* Mod 11.22.95 J Davison for 4 digit year 
-*
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-* Mod J Davison 10.15.99 Add multi calendar support. Call new routine.
-*  *acm* 12/00 Change calendars to match NetCDF standard 
+* revision 0.00 - 03-Mar-2001
 
-      INCLUDE 'calendar.decl'
-      INCLUDE 'calendar.cmn'
+* calling argument declarations:
+	INTEGER cal_id
 
+* local variable declarations
+	INTEGER cal_id_greg
+	REAL sec_per_year(6)
 
-* Argument definitions
-	CHARACTER*(*)	whoi
-*
-* Local Definition
-	INTEGER		year, month, day, hour, minute, second
-	INTEGER		century
-	REAL*8		TM_SECS_FROM_BC
+#ifdef unix
+	include 'tmap_dims.parm'
+	include 'xunits.cmn_text'
+#endif
+
+	DATA sec_per_year/31556952., 31536000., 31557600., 31104000.,
+     .                    31104000., 0./
+
+	cal_id_greg = 1		! Default gregorian calendar
+	CAL_FACTR = sec_per_year(cal_id_greg) / sec_per_year(cal_id)
 
 
-	integer         status
-
-****************************************************************************
-
-* read the WHOI-formatted string
-	READ ( whoi, 3000 ) year, month, day, hour, minute, second, century
- 3000	FORMAT (7I2.2)
-!!!!!	second = 0
-	year = year + century*100
-
-* call TMAP library routine and convert seconds to minutes
-	WHOI2BC = TM_SECS_FROM_BC ( calendar_id,
-     .    year, month, day, hour, minute, second, status )
-     .		  / 60.D0
+c from xunits_data.F:
+c	DATA	un_convert( -1)	/ 1.0		/,
+c     .		un_convert( -2)	/ 60.		/,
+c     .		un_convert( -3)	/ 3600.		/, ! sec per hour
+c     .		un_convert( -4)	/ 86400.	/, ! sec per day
+c     .		un_convert( -5)	/ 2629746.	/, ! 1/12 of 365.2425 year cal 1
+c     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year  cal 2
+c     .		un_convert( -7)	/ 44712.	/, ! sec per M2 cycle
+c     .		un_convert( -8)	/ 31622400.	/, ! sec per 366 day year
+c     .		un_convert( -9)	/ 31104000.	/, ! sec per 360 day year  cal 4,5
+c     .		un_convert(-10)	/ 31556952.	/, ! sec per 365.2425 year cal 1
+c     .		un_convert(-11)	/ 31557600.	/, ! sec per 365.25 day yr cal 3
+c     .          un_convert(-12) / 2628000.	/, ! 1/12 of 365 day year  cal 2	
+c     .          un_convert(-13) / 2635200.	/, ! 1/12 of 366 day year	
+c     .          un_convert(-14) / 2592000.	/, ! 1/12 of 360 day year  cal 4,5
+c     .		un_convert(-15)	/ 2629800.	/  ! 1/12 of 365.25 day yr cal 3
 
 	RETURN
 	END

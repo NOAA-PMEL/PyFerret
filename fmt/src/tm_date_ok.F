@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_DATE_OK( date )
+	LOGICAL FUNCTION TM_DATE_OK( date, cal_id )
 
 *
 *
@@ -41,9 +41,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * 7/92 *sh* 
+* V530: *acm* 12/00 alternative calendar types; cal_id
 
 * calling argument declarations:
       CHARACTER*(*) date
+      INTEGER cal_id
 
 * internal variable declarations:
       INTEGER	yr, mth, day, hr, min, sec, status
@@ -54,9 +56,9 @@
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 #endif
 
-      CALL TM_BREAK_DATE( date,
+      CALL TM_BREAK_DATE( date, cal_id,
      .                   yr, mth, day, hr, min, sec, status )
       TM_DATE_OK = status .EQ. merr_ok
 
-	RETURN
-	END
+      RETURN
+      END

@@ -1,5 +1,5 @@
-	REAL*8 FUNCTION TM_SECS_FROM_BC ( year, month, day,
-     .					   hour, minute, second)
+	REAL*8 FUNCTION TM_SECS_FROM_BC ( cal_id,
+     .    year, month, day, hour, minute, second, status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -41,53 +41,176 @@
 * Written 6/16/87 By Mark Verschell for PMEL/TMAP
 *
 * revision 0.00 - 06/16/87 - Initial Incarnation
-*
+* V530: *acm* 12/00 add calendar types; cal_id for time axes. This
+*                   routine is just Jerry's tm_calendars_secs_from_bc
+*       J Davison 10.20.99   Copied TM_SECS_FROM_BC() and modified to support
+*                            multiple calendars.
+*       *acm* 3/01  Treat Julian calendar as a separate case.
+
+* Include files
+#ifdef unix
+        include 'calendar.decl'
+        include 'calendar.cmn'
+	include 'tmap_errors.parm'
+#else
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
+#endif
+
 * Argument definition
-	INTEGER		year, month, day, hour, minute,second
+
+	INTEGER         cal_id,year, month, day, hour, minute, second,
+     .			status
 *
-* Local Definition
-	INTEGER		days_in_month(12)
+* Local Definitions
+	INTEGER		secstat
 	REAL*8		secs_in_minute, secs_in_hour, secs_in_day,
-     .			secs_in_year, secs_in_century, total_secs
+	1    secs_in_year, secs_in_century, total_secs,
+	2    leap_yr_days
 
-	PARAMETER	(secs_in_minute	 = 60.,
-     .			 secs_in_hour	 = secs_in_minute*60.,
-     .			 secs_in_day	 = secs_in_hour*24.,
-     .			 secs_in_year	 = secs_in_day*365.,
-     .			 secs_in_century = secs_in_day*36524.)
+	PARAMETER	(secs_in_minute	 = 60.0,
+	1    secs_in_hour	 = secs_in_minute*60.0,
+	2    secs_in_day	 = secs_in_hour*24.0)
 
-	DATA days_in_month /   0,  31,  59,  90, 120, 151,
-     .			     181, 212, 243, 273, 304, 334/
 
-* add lots of seconds for each century since 0 day
-	total_secs = secs_in_century * INT(year/100)
-* add a day for every 400 years (leap year at centennial)
-	total_secs = total_secs + secs_in_day*INT(year/400.+0.9975)
-* add a year for each year since turn of century
-	total_secs = total_secs + secs_in_year*MOD(year,100)
-* add a day for each leap year since centennial (except for centennial)
-	total_secs = total_secs + secs_in_day*INT((MOD(year,100)-1)/4)
-* add seconds for number of months
-	total_secs = total_secs + days_in_month(month)*secs_in_day
-* add 1 day worth of seconds if this is leap year and past february
-	IF (month .GT. 2) THEN
-	  IF (MOD(year,400) .EQ. 0) THEN
-	    total_secs = total_secs + secs_in_day
-	  ELSE
-	    IF (MOD(year,4) .EQ. 0 .AND. MOD(year,100) .NE. 0)
-     .	          total_secs = total_secs + secs_in_day
-	  ENDIF
+*****************************************************************************
+*****************************************************************************
+
+
+*****************************************************************************
+* HANDLE GREGORIAN CALENDAR FIRST
+*****************************************************************************
+	if (cal_id .eq. gregorian) then
+
+*	   INITIALIZE
+	   leap_yr_days = cals_num_days(cal_id) + 1.0
+
+	   secs_in_year	 = secs_in_day*cals_num_days(cal_id)
+	   secs_in_century = 
+	1	secs_in_day*(76*cals_num_days(cal_id) + 24*leap_yr_days)
+
+*          ADD LOTS OF SECONDS FOR EACH CENTURY SINCE 0 DAY
+	   total_secs = secs_in_century * INT(year/100)
+
+*          ADD A DAY FOR EVERY 400 YEARS (LEAP YEAR AT CENTENNIAL)
+	   total_secs = total_secs + secs_in_day*INT(year/400.+0.9975)
+
+*          ADD A YEAR FOR EACH YEAR SINCE TURN OF CENTURY
+	   total_secs = total_secs + secs_in_year*MOD(year,100)
+
+*          ADD A DAY FOR EACH LEAP YEAR SINCE CENTENNIAL(EXCEPT FOR CENTENNIAL)
+	   total_secs = 
+	1	total_secs + secs_in_day*INT((MOD(year,100)-1)/4)
+
+*          ADD SECONDS FOR NUMBER OF MONTHS
+	   total_secs = total_secs +
+     .       cals_days_before_month(month,cal_id)*secs_in_day
+
+*          ADD 1 DAY WORTH OF SECONDS IF THIS IS LEAP YEAR AND PAST FEBRUARY
+	   if (month .GT. 2) then
+	      if (MOD(year,400) .EQ. 0) then
+     	         total_secs = total_secs + secs_in_day
+	      else
+		 if (MOD(year,4) .EQ. 0 .AND. MOD(year,100) .NE. 0)
+     .	             total_secs = total_secs + secs_in_day
+	      endif
+	   endif
+*          ADD SECONDS FOR NUMBER OF DAYS
+	   total_secs = total_secs + secs_in_day*(day-1)
+
+*          ADD SECONDS FOR NUMBER OF HOURS
+	   total_secs = total_secs + secs_in_hour*(hour)
+
+*          ADD SECONDS FOR NUMBER OF MINUTES
+	   total_secs = total_secs + secs_in_minute*(minute)
+
+*          ADD SECONDS FOR NUMBER OF SECS FOR TOTAL NUMBER OF SECONDS
+	   total_secs = total_secs + second
+
+*****************************************************************************
+* HANDLE JULIAN CALENDAR FIRST
+*****************************************************************************
+	ELSE IF (cal_id .eq. julian) then
+
+*	   INITIALIZE
+	   leap_yr_days = cals_num_days(cal_id) + 1.0
+
+	   secs_in_year	 = secs_in_day*cals_num_days(cal_id)
+	   secs_in_century = 
+	1	secs_in_day*(75*cals_num_days(cal_id) + 25*leap_yr_days)
+
+*          ADD LOTS OF SECONDS FOR EACH CENTURY SINCE 0 DAY
+	   total_secs = secs_in_century * INT(year/100+0.9975)
+
+*          ADD A YEAR FOR EACH YEAR SINCE TURN OF CENTURY
+	   total_secs = total_secs + secs_in_year*MOD(year,100)
+
+*          ADD A DAY FOR EACH LEAP YEAR SINCE CENTENNIAL, PLUS 1 DAY FOR CENTENNIAL
+	   total_secs = 
+	1	total_secs + secs_in_day*(1+INT((MOD(year,100)-1)/4))
+
+*          ADD SECONDS FOR NUMBER OF MONTHS
+	   total_secs = total_secs +
+     .       cals_days_before_month(month,cal_id)*secs_in_day
+
+*          ADD 1 DAY WORTH OF SECONDS IF THIS IS LEAP YEAR AND PAST FEBRUARY
+	   if (month .GT. 2  .AND. MOD(year,4) .EQ. 0)
+     .         total_secs = total_secs + secs_in_day
+
+*          ADD SECONDS FOR NUMBER OF DAYS
+	   total_secs = total_secs + secs_in_day*(day-1)
+
+*          ADD SECONDS FOR NUMBER OF HOURS
+	   total_secs = total_secs + secs_in_hour*(hour)
+
+*          ADD SECONDS FOR NUMBER OF MINUTES
+	   total_secs = total_secs + secs_in_minute*(minute)
+
+*          ADD SECONDS FOR NUMBER OF SECS FOR TOTAL NUMBER OF SECONDS
+	   total_secs = total_secs + second
+
+
+******************************************************************************
+
+******************************************************************************
+* ALL OTHER SUPPORTED AND REGULAR CALENDARS
+******************************************************************************
+	ELSE IF (cal_id .GT. gregorian   .AND.  cal_id .NE. julian .AND.
+     .           cal_id .LE. max_calendars) THEN
+
+*	   INITIALIZE
+	   secs_in_year	   = secs_in_day*cals_num_days(cal_id)
+	   if (cal_id .eq. julian) secs_in_year	   = secs_in_day*365.25
+	   secs_in_century = 100*secs_in_year
+
+*          ADD LOTS OF SECONDS FOR EACH CENTURY SINCE 0 DAY
+	   total_secs = secs_in_century * INT(year/100)
+
+*          ADD A YEAR FOR EACH YEAR SINCE TURN OF CENTURY
+	   total_secs = total_secs + secs_in_year*MOD(year,100)
+
+*          ADD SECONDS FOR NUMBER OF MONTHS
+	   total_secs = total_secs + 
+     .            cals_days_before_month(month,cal_id)*secs_in_day
+
+*          ADD SECONDS FOR NUMBER OF DAYS
+	   total_secs = total_secs + secs_in_day*(day-1)
+
+*          ADD SECONDS FOR NUMBER OF HOURS
+	   total_secs = total_secs + secs_in_hour*(hour)
+
+*          ADD SECONDS FOR NUMBER OF MINUTES
+	   total_secs = total_secs + secs_in_minute*(minute)
+
+*          ADD SECONDS FOR NUMBER OF SECS FOR TOTAL NUMBER OF SECONDS
+	   total_secs = total_secs + second
+
+	ELSE
+           secstat = merr_syntax
+	   CALL ERRMSG (secstat, status, 
+     .       'Illegal calendar in tm_secs_from_bc()', *5000)
 	ENDIF
-* add seconds for number of days
-	total_secs = total_secs + secs_in_day*(day-1)
-* add seconds for number of hours
-	total_secs = total_secs + secs_in_hour*(hour)
-* add seconds for number of minutes
-	total_secs = total_secs + secs_in_minute*(minute)
-* add seconds for number of secs for total number of seconds
-	total_secs = total_secs + second
 
-* finished
-	TM_SECS_FROM_BC = total_secs
-	RETURN
-	END
+*       FINISHED
+	tm_secs_from_bc = total_secs
+5000	return
+	end

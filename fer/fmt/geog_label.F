@@ -50,6 +50,7 @@
 * v491: 2/23/98 *kob* - add check for undefined axis which can cause
 *                       a crash if REPEAT command doesn't have fully 
 *                       mature context to work with.
+* V530: *acm* 12/00 alternative calendar types; cal_id
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -76,7 +77,7 @@
 
 * internal variable declarations:
         LOGICAL         TM_DATE_OK
-	INTEGER		i, line
+	INTEGER		TM_GET_CALENDAR_ID, cal_id, i, line
 	CHARACTER*2	line_code
 
 * check for program bug	! temp
@@ -113,8 +114,11 @@
      .		   .AND. line_unit_code(line) .EQ. pun_decibars) )
         ELSE
 *  4/92 addition:  check for valid time axis T0
+
+*  1/01 addition: cal_id
+           cal_id = TM_GET_CALENDAR_ID (line_cal_name(line))
            GEOG_LABEL = line_code        .EQ. 'TI'
-     .            .AND. TM_DATE_OK( line_t0(line) )
+     .            .AND. TM_DATE_OK( line_t0(line), cal_id )
         ENDIF
 
 	RETURN

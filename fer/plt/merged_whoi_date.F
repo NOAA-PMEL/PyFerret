@@ -42,8 +42,16 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V420: 11/27/95 - 4-digit YEARS!!
+* V530:  1/01 *acm* cal_id for alternative calendar axis types
+
+*#ifdef unix
+*#	include 'ferret.parm'
+*#	include 'xcontext.cmn'
 
 #ifdef unix
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 #else
@@ -56,7 +64,8 @@
 
 * internal variable declarations
 	INTEGER 	yr100, yr, mon, day, hr, mn, sec,
-     .			status, i, grid, cx
+     .			status, i, grid, cx, axis
+        INTEGER		TM_GET_CALENDAR_ID, cal_id
 	CHARACTER*20	TM_SECS_TO_DATE, date
 	REAL*8		TSTEP_TO_SECS, bcsecs
 
@@ -74,16 +83,20 @@
 	      bcsecs = MIN( bcsecs,
      .		       TSTEP_TO_SECS( grid, cx_lo_ww(t_dim,cx) ) )
 	   ENDIF
- 100	CONTINUE
-
-* arbitrarily subtract a year -- needed cuz PLOT* rounds down the "tmin" value
-	bcsecs = MAX( 0.0D0, bcsecs - yrofsecs )
 
 * Convert to date
-	date = TM_SECS_TO_DATE(bcsecs)
+          axis = grid_line ( t_dim, grid)
+          cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis) )
+
+* arbitrarily subtract a year -- needed cuz PLOT* rounds down the "tmin" value
+ 	  bcsecs = MAX( 0.0D0, bcsecs - yrofsecs )
+	  date = TM_SECS_TO_DATE(bcsecs, cal_id)
+
+ 100	CONTINUE
 
 * break the date string into component integer values
-	CALL TM_BREAK_DATE( date, yr, mon, day, hr, mn, sec, status )
+	CALL TM_BREAK_DATE( date, cal_id, 
+     .                      yr, mon, day, hr, mn, sec, status )
 	yr100 = yr/100		! 1980 --> 19
 	yr = yr - (yr100*100)	! 1982 --> 82
 

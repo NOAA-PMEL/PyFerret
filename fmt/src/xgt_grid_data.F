@@ -59,6 +59,7 @@
 *                 and what was being included.  removed them
 * V510 *sh* 3/00 - initialize through line/grid_ceiling -- for dynamic netCDF
 *			grid and line management
+* V530*acm* 1/01 - add line_cal_name for alternative calendar types.
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -264,6 +265,10 @@
 
 	DATA	(line_tunit(i),i=1,line_ceiling)
      .			/line_ceiling*real4_init/
+
+	DATA	(line_cal_name(i),i=1,line_ceiling)
+     .			/line_ceiling*'GREGORIAN'/
+
 c comment out to speed compilation and decrease mem needs *kob* 7/92
 c	DATA	(line_mem(i),i=pline_mem_next,maxlinestore)
 c     .			/pline_mem_left*real8_init/

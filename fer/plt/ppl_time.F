@@ -1,4 +1,4 @@
-	SUBROUTINE PPL_TIME( lo_val, hi_val )
+	SUBROUTINE PPL_TIME( lo_val, hi_val, cal_id )
 
 *
 *
@@ -45,6 +45,7 @@
 * V450: 11/14/97 - the arbitrary tstart, 1 year before start of interval,
 *	causes the /XLIMITS=lo_date:hi_date to mis-represent the data
 *	(see err450_time_xlimits.jnl). Eliminated tstart.
+* V530  *acm* cal_id for alternative calendar axis types
 
 #ifdef unix
 	include 'ferret.parm'
@@ -62,6 +63,7 @@
 
 * calling argument declarations:
 	REAL*8	  lo_val, hi_val
+	INTEGER	  cal_id
 
 * internal variable declarations:
 !	REAL*8	  tstart
@@ -76,16 +78,19 @@
 
 * TIME command (time axis limits)
 #ifdef unix
-              rbuff(1) = ABS_WHOI_DATE( lo_val )      ! f77 bug
-              rbuff(2) = ABS_WHOI_DATE( hi_val )
-!              rbuff(3) = ABS_WHOI_DATE( tstart )
+              rbuff(1) = ABS_WHOI_DATE( lo_val, cal_id )      ! f77 bug
+              rbuff(2) = ABS_WHOI_DATE( hi_val, cal_id )
+!              rbuff(3) = ABS_WHOI_DATE( tstart, cal_id )
               WRITE ( ppl_buff, 3020 )  'W'//rbuff(1),
      .                                  'W'//rbuff(2)
 !     .                                  'W'//rbuff(3)
 #else
-	      WRITE ( ppl_buff, 3020 )	'W'//ABS_WHOI_DATE( lo_val ),
-     .					'W'//ABS_WHOI_DATE( hi_val )
-!     .					'W'//ABS_WHOI_DATE( tstart )
+	      WRITE ( ppl_buff, 3020 )	'W'//ABS_WHOI_DATE( lo_val, 
+     .                                                    cal_id ),
+     .					'W'//ABS_WHOI_DATE( hi_val, 
+     .                                                    cal_id )
+!     .					'W'//ABS_WHOI_DATE( tstart, 
+     .                                                    cal_id )
 #endif
 ! 3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
  3020	      FORMAT ('TIME ',A15,',',A15)

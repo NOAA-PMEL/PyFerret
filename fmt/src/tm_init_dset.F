@@ -81,6 +81,7 @@
 * V510 *sh* 3/00 - added tregular argumant
 *	    4/00 - converted to dynamic grids -- bump use counts here
 * v530 *kob* 1/00 - minor mods for remote mc aggregations
+* v530 *acm* 1/01 - initialize ds_cal_name  calendar name
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -385,6 +386,7 @@
 	ds_ntegrate_tstep(dset_num) = d_ntegrate_tstep
 	ds_ntuple(dset_num)         = d_ntuple
 	ds_time_run(dset_num)       = d_time_run
+        ds_cal_name(dset_num)       = 'GREGORIAN'
 
 	DO 200 aux_cnt = 1,num_aux
 	  ds_aux_modnum(aux_cnt,dset_num)    = d_aux_modnum(aux_cnt)

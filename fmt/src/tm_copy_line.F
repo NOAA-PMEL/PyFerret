@@ -40,6 +40,7 @@
 * revision 0.00 - 11/22/88
 * 10/95 - check to see if a dynamic line -- some variables don't get copied
 *  1/96 - repaired bug (incomplete test) in 10/95 check
+*  1/01 - *acm* add line_cal_name parallel with treatment of line_t0
 
 * Arguments
 	INTEGER*4	source, dest
@@ -69,6 +70,7 @@
 	line_delta(dest)     = line_delta(source) 
 	line_t0(dest)        = line_t0(source) 
 	line_tunit(dest)     = line_tunit(source) 
+	line_cal_name(dest)  = line_cal_name(source) 
 
 	IF ( dest.LE.max_lines .AND. source.LE.max_lines) THEN
 * non-dynamic lines, only

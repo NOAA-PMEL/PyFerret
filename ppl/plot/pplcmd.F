@@ -74,7 +74,8 @@ C**
 *       J Davison 10.14.99 Mod to add CALENDAR command for multiple calendars
 * V510: *sh* 3/0 - bug fix: TXLABP 0 was interpreted as TXLABP 1 cuz
 *		of SIGN() call near top of this routine
-*       ACM 10/2000  Add VECTOR/STREAMLINE, alias STREAMLINE  
+*       ACM 10/2000  Add VECTOR/STREAKLINE, alias STREAKLINE 
+* V530: *acm* 1/01 calendar info in calendar.cmn and calendar.decl
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -160,6 +161,8 @@ c
 	include 'PRMCOM.INC'
 	include 'gkscm2.cmn'
         include 'ARFILL.INC'
+	include 'calendar.decl'
+	include 'calendar.cmn'
 #else
         INCLUDE 'TMAP_PPLV11INC:tmap_comepl.inc'  ! Added 9.6.88 J Davison 
 	INCLUDE 'TMAP_PPLV11INC:tmap_comeps.inc'
@@ -310,7 +313,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
-     *  'STREAMLI'/
+     *  'STREAKLI'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -400,7 +403,7 @@ C
      .	  .or.makep .eq. 'PLOTUV'
      .	  .or.makep .eq. 'VELVCT'
      .	  .or.makep .eq. 'VECTOR'
-     .	  .or.makep .eq. 'STREAM'
+     .	  .or.makep .eq. 'STREAK'
      .	  .or.makep .eq. 'SHADE'
      .	  .or.makep .eq. 'FILL'
      .	  .or.makep .eq. 'PLOTPOL'
@@ -747,7 +750,8 @@ C     ORIGIN
 	SYM='*PPL$YORG'
 	CALL PUTVAL(SYM,YORG,4,IER)
 	if(pltopn)then
-	    call setax(x,nsize,xft,yft,xlt,ylt,xht,yht,nmxt,nmyt,xtit,xtlt)
+	    call setax(x,nsize,xft,yft,xlt,ylt,xht,yht,nmxt,nmyt,xtit,
+     .                 xtlt)
      	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10
@@ -1464,8 +1468,8 @@ C	VECTOR
 	IF(IFLG1)VSKPX=P(1)
 	IF(IFLG2)VSKPY=P(2)
 	GOTO 6001
-C       STREAMLINE (VECTOR/STREAMLINE)
-9390	MAKEP='STREAM'
+C       STREAKLINE (VECTOR/STREAKLINE)
+9390	MAKEP='STREAK'
 	IF(IFLG1)DENSITY=P(1)
 	GOTO 6001
 C	VECSET
@@ -1566,6 +1570,7 @@ c       area
  9174	call pattern_set
 	goto 10
 
+C  calendar
  9175	if(n.eq.0)then
 	   set_name='GREGORIAN'
 	else

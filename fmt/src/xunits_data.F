@@ -64,6 +64,8 @@
 * V520: 6/00 *sh* bug fix: exact matching in TM_UNIT_ID broke "seconds" match
 *		         - add "hr" as an abbreviation for hours
 *       1 day later: ops -- "hour" should be the standard, not "hr"
+* V530: 2/01 *acm* add units for alternative calendars, secs per various
+*		   years and 1/12 of those for "month"
 
 * local variable declarations
 !	INTEGER	i
@@ -109,6 +111,11 @@
      .		un_name( -8)	/ 'year366'     /,
      .		un_name( -9)	/ 'year360'     /,
      .		un_name(-10)	/ 'gregorian_ye'/
+     .		un_name(-11)	/ 'noleap_ye'/
+     .		un_name(-12)	/ 'julian_ye'/
+     .		un_name(-13)	/ 'mon_noleap'/
+     .		un_name(-14)	/ 'mon_360'/
+     .		un_name(-15)	/ 'mon_julian'/
 
 	DATA	un_convert( 1)	/ .01		/,
      .		un_convert( 2)	/ 1000.		/,
@@ -128,14 +135,20 @@
 
 	DATA	un_convert( -1)	/ 1.0		/,
      .		un_convert( -2)	/ 60.		/,
-     .		un_convert( -3)	/ 3600.		/,	! sec per hour
-     .		un_convert( -4)	/ 86400.	/,	! sec per day
-     .		un_convert( -5)	/ 2629746.	/,	! 1/12 of 365.2425 year
-     .		un_convert( -6)	/ 31536000.	/,	! sec per 365 day year
-     .		un_convert( -7)	/ 44712.	/,	! sec per M2 cycle
-     .		un_convert( -8)	/ 31622400.	/,      ! sec per 366 day year
-     .		un_convert( -9)	/ 31104000.	/,       ! sec per 360 day year
-     .		un_convert(-10)	/ 31556952.	/      ! sec per 365.2425 year
+     .		un_convert( -3)	/ 3600.		/, ! sec per hour
+     .		un_convert( -4)	/ 86400.	/, ! sec per day
+     .		un_convert( -5)	/ 2629746.	/, ! 1/12 of 365.2425 year
+     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year
+     .		un_convert( -7)	/ 44712.	/, ! sec per M2 cycle
+     .		un_convert( -8)	/ 31622400.	/, ! sec per 366 day year
+     .		un_convert( -9)	/ 31104000.	/, ! sec per 360 day year
+     .		un_convert(-10)	/ 31556952.	/  ! sec per 365.2425 year
+
+     .		un_convert(-11)	/ 31536000.	/ ! sec per 365.0 day year
+     .		un_convert(-12)	/ 31557600.	/ ! sec per 365.25 day year
+     .		un_convert(-13)	/ 2628000.	/ ! 1/12 of sec per 365 day year
+     .		un_convert(-14)	/ 2592000.	/ ! 1/12 of sec per 360 day year
+     .		un_convert(-15)	/ 2629800.	/ ! 1/12 of sec per 365.25 day year
 
 	DATA	un_alt_name ( 1) / 'centim'	/,
      .		un_alt_subsc( 1) / 1 /,

@@ -46,6 +46,7 @@
 * rev. 0.0 3/17/88 - based on TM_STEP_TO_DATE by *mv*
 * rev. 0.1 - 2/16/89 - TM_SECS_TO_DATE --> SECS_TO_DATE
 * V300 4/93 - crash if precision exceeds 6
+* V530: *acm* 12/00 add calendar types; cal_id
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -74,7 +75,8 @@
 *
 * Local definitions
 	CHARACTER*20	SECS_TO_DATE, buff
-	INTEGER		axis, status, prec
+	INTEGER		axis, status, prec,
+     .                  TM_GET_CALENDAR_ID, cal_id
 	REAL*8		start_secs, offset_secs, this_secs
 	REAL*8		SECS_FROM_BC
 
@@ -95,8 +97,12 @@
 	   RETURN
 	ENDIF
 
+* get the calendar type
+
+        cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+
 * First find the offset from 01-JAN-0000 00:00:00 from the descriptor file
-	start_secs = SECS_FROM_BC( line_t0(axis), status )
+	start_secs = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
 * Find the number of seconds since start of data set for this time step
 	offset_secs = tstep*line_tunit( axis )
@@ -109,7 +115,7 @@
 !	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
 
 * Convert to date
-	buff = SECS_TO_DATE(this_secs)
+	buff = SECS_TO_DATE(this_secs, cal_id)
 
 * Select the requested precision
 	IF ( prec .GT. 6 ) THEN		! full precision

@@ -62,7 +62,8 @@
 *			read using strides (check cx_delta of src cx)
 *		     Allow for the possibility of multiple axes
 * V530:  3/01 *sh* - added g=ax@nrst
-
+* V530:	 3/01 *acm* return a status flag from rcvd_regrid, tests for
+*                   valid calendar axes.
 #ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -178,7 +179,7 @@
 	ELSE
 	   cx_valid = cx_buff
 	   CALL RCVD_REGRID( src_cx, dst_cx, axis, wk_size,
-     .			  cx_lo_ss(cx_valid,axis), cx_hi_ss(cx_valid,axis) )
+     .		 cx_lo_ss(cx_valid,axis), cx_hi_ss(cx_valid,axis), status )
 	   cx_by_ss( axis, cx_valid ) = .TRUE.
            valid = cx_lo_ss(cx_valid,axis) .LE. cx_hi_ss(cx_valid,axis)  ! 3/93
            IF ( valid ) THEN   ! 3/93
@@ -187,7 +188,7 @@
            ENDIF
 	   IF ( xy_ave ) THEN
 	      CALL RCVD_REGRID( src_cx, dst_cx, y_dim, wk_size2,
-     .			     cx_lo_ss(cx_valid,y_dim),cx_hi_ss(cx_valid,y_dim))
+     .		cx_lo_ss(cx_valid,y_dim),cx_hi_ss(cx_valid,y_dim), status)
 	      cx_by_ss( y_dim, cx_valid ) = .TRUE.
               valid_y = cx_lo_ss(cx_valid,y_dim)
      .             .LE. cx_hi_ss(cx_valid,y_dim)

@@ -12,6 +12,7 @@ axis_intervals.F\
 bkwd_axis.F\
 box_bounds.F\
 box_size.F\
+cal_factr.F\
 caxis_len.F\
 check_neg_taxis.F\
 confine_axis.F\
@@ -96,6 +97,7 @@ permute.F\
 permute_ptr_sub.F\
 permute_sub.F\
 region_number.F\
+reset_secs_from_bc.F\
 reverse_grid_axis.F\
 reverse_grid_axis_sub.F\
 secs_from_bc.F\

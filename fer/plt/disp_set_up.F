@@ -107,28 +107,37 @@
 *	 5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 * V520   6/00 *sh* - bug fix: trap ndim>2 on overlays
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
+* V5.3 *ACM* 1/01  cal_id for alternative calendar axes.
+* V5.3 *ACM* 3/01  send cal_id to EQUAL_RANGE_T
 
+C replace includes with those from plot_set_up, 
+C plus those starting w/ xbox_bounds:
 #ifdef unix
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
-	include 'command.parm'
-	include 'xcommand.cmn'
 	include 'xplot_setup.cmn'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
-	include 'xpplus.cmn'
-	include 'xbox_bounds.cmn'
-	include 'xcurvilinear.cmn'
-	include 'axis_inc.decl'	! axis lengths
-	include 'AXIS.INC'	! axis lengths
+	include 'xtext_info.cmn'
+        include 'axis_inc.decl'       ! with axis lengths
+        include 'AXIS.INC'       ! with axis lengths	
         include 'ppldat_inc.decl'       ! with nsize
         include 'PPLDAT.INC'       ! with nsize
         include 'switch_inc.decl'
         include 'SWITCH.INC'
+
+	include 'xbox_bounds.cmn'
+	include 'xcurvilinear.cmn'
+	include 'command.parm'
+	include 'xcommand.cmn'
+	include 'xpplus.cmn'
 
 *kob 1/97
 	include 'xwindow_state.cmn'
@@ -164,7 +173,10 @@
 	CHARACTER*200	COMPOUND_TITLE, COMPOUND_KEY, plot_title
 	CHARACTER	TM_FMT*16, LEFINT*8,
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
-     .			letter*1
+     .			letter*1,
+     .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
+     .                  cal_name_2*32
+
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
      .			regrid_1, regrid_2, no_y_rng, edges_ok
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
@@ -174,7 +186,8 @@
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
      .			style, justify, ipen, ndim, dims(4), ptitl,
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
-     .			phlim, pvlim
+     .			phlim, pvlim,slen, slen2,
+     .			TM_GET_CALENDAR_ID, cal_id, tax
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
@@ -189,6 +202,8 @@
 	ctx       = cx_list  ( 1 )
 	grid	  = mr_grid( mvx )
 	bad_x	  = mr_bad_data( mvx )
+	cal_id    = 0
+
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
 	   cty	  = cx_list  ( 2 )
@@ -375,7 +390,7 @@
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
  3105	FORMAT('PEN 1,',I3)
 
-* set up the axis formats (use exact limits, if given by /XLIMITS or /YLIMITS)
+* set up the axis formats (use exact limits, if given by /HLIMITS or /VLIMITS)
 	IF ( .NOT.overlay ) THEN
 	   IF ( pxlim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
@@ -383,14 +398,16 @@
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
+              tax = grid_line(t_dim, grid)
+              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
      .				dim1, grid, xaxlo, xaxhi, delta,
-     .				status )
+     .				cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( phlim.GT.0 ) THEN
 	      CALL EQUAL_RANGE_T(cmnd_buff(qual_start(phlim):qual_end(phlim)),
      .				 bb_xaxis, grid, xaxlo, xaxhi, delta,
-     .				 status )
+     .				 cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
 	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_xpos) ), 
@@ -410,6 +427,16 @@
 	   haxhi = xaxhi	! will know them
 	   time_axis = GEOG_LABEL( dim1, grid )
 	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
+           IF (time_axis) THEN
+              tax = grid_line(t_dim, grid)
+              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
+	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
+	      ppl_buff = ' '
+	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
+              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+ 3004         FORMAT ('CALENDAR ', A7)
+	      saved_calendar_id = cal_id
+           ENDIF
 	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta )
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi,
      .						curvilinear, cx_xpos,
@@ -422,12 +449,12 @@
 	      ENDIF
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pylim):qual_end(pylim)),
      .				dim2, grid, yaxlo, yaxhi, delta,
-     .				status )
+     .				cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( pvlim.GT.0 ) THEN 
 	      CALL EQUAL_RANGE_T(cmnd_buff(qual_start(pvlim):qual_end(pvlim)),
      .				 bb_yaxis, grid, yaxlo, yaxhi, delta,
-     .				 status )
+     .				 cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
 	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_ypos) ),
@@ -539,7 +566,10 @@
 	      year = ppl_buff(:4)
 	   ENDIF
 * ... put on the basic position and data set labels
-	   CALL DISP_LABELS( cx_plot, year )
+
+* *ACM* if time axis, then cal_id is set to the calendar.  Label the
+*       plot with the calendar name if there is non-standard calendar
+	   CALL DISP_LABELS( cx_plot, year, cal_id )
 	ENDIF
 
 * special remarks for vector plots
@@ -595,4 +625,15 @@
      .		'in different plane from data to be plotted', *5100 )
  5500	CALL ERRMSG( ferr_no_range, status, letter//
      .				' coordinate field', *5000 )
+
+ 5660	cal_name_1 = TM_GET_CALENDAR_NAME(saved_calendar_id)
+        cal_name_2 = TM_GET_CALENDAR_NAME(cal_id)
+        slen = TM_LENSTR1 (cal_name_1)
+        slen2 = TM_LENSTR1(cal_name_2)
+	CALL ERRMSG( ferr_inconsist_grid, status,
+     .          'Differing calendar axes: '//pCR//
+     .		'first variable is on '//cal_name_1(:slen)//
+     .          ' axis'//pCR//
+     .		'subsequent variable is on '//cal_name_2(:slen2)//
+     .		' axis', *5000 )
 	END

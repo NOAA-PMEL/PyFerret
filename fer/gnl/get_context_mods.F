@@ -125,6 +125,7 @@
 *		     deallocate axes within implicit grids. Accomodate that.
 * V520: 6/00 *sh* bug fix: cx_grid_needs_dset is not set correctly when the
 *		   - syntax is X[Gx=var[D=dset]]
+* V530: 3/01 *acm* - Pass calendar ID, if available, to TRANSLATE_LIMIT
 
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
@@ -200,7 +201,7 @@
 	CHARACTER*1	tab
 	PARAMETER     ( tab = CHAR(9) )
 	INTEGER		looking_for_D, looking_for_eq, looking_for_name,
-     .			done_looking
+     .			done_looking, axis, cal_id, TM_GET_CALENDAR_ID
 	PARAMETER     ( looking_for_D = 1,
      .			looking_for_eq = 2,
      .			looking_for_name = 3,
@@ -214,6 +215,9 @@
 
 * initialize
 	dset = cx_data_set( dflt_cx)
+        axis = unspecified_int4
+        grid = unspecified_int4
+
         DO 10 idim = 1, 4    ! 8/92
 	kludge_gx_to_x(idim) = .FALSE.
 	set_implicitly(idim) = .FALSE.
@@ -642,6 +646,15 @@
 	   cx_delta ( idim, mods_cx ) =  unspecified_val8
         ENDIF
 
+*  See if we can find out the calendar, if grid/axis is known
+	IF (grid .EQ. unspecified_int4  .AND.  
+     .	    axis .EQ. unspecified_int4)  THEN 
+	   cal_id = 1
+	ELSE
+	   IF (axis .EQ. unspecified_int4) axis = grid_line(t_dim, grid)
+	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+	ENDIF
+
 * is there a first value given ?
 	IF ( lo_start .GT. lo_end ) THEN
 	   fmat_lo = .FALSE.
@@ -650,7 +663,7 @@
      .		      ( text_buff(lo_start:lo_end), idim,
      .			cx_by_ss( idim, mods_cx ),
      .			cx_lo_ww ( idim, mods_cx ),
-     .			fmat_lo, status )
+     .			fmat_lo, cal_id, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 * kob 8/97 - set cx_calender to true/false depending on whether date is
 *            a formated string or not
@@ -663,7 +676,7 @@
      .		      ( text_buff(hi_start:hi_end), idim,
      .			cx_by_ss( idim, mods_cx ),
      .			cx_hi_ww ( idim, mods_cx ),
-     .			fmat_hi, status )
+     .			fmat_hi, cal_id, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 * ... formatted longitudes: add 360 degrees if necessary
 	   IF ( idim .EQ. x_dim
@@ -694,7 +707,7 @@
      .		      ( text_buff(del_start:del_end), idim,
      .			cx_by_ss( idim, mods_cx ),
      .			cx_delta   ( idim, mods_cx ),
-     .			logical_dummy, status )
+     .			logical_dummy, cal_id, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 
 * get the dynamic regridding transformation, e.g. x=lo:hi:del@tran

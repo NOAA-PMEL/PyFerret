@@ -14,6 +14,8 @@
 *			  datasets
 * V530 *sh* 10/00 - added ds_var_type and ds_file_info_ptr
 
+* revision 1.07 - 12/00 - *acm* add line_cal_name for alternate calendar axes.
+	
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
      .		ds_delstep(maxdsets),
@@ -30,6 +32,7 @@
      .		ds_time_run(maxdsets),ds_aux_modnum(num_aux,maxdsets),
      .		ds_parm_name(num_parm,maxdsets),
      .		ds_parm_text(num_parm,maxdsets),
+     .		ds_cal_name(maxdsets),
 **************************************************************************
      .		ds_alert_on_open(maxdsets),ds_alert_on_output(maxdsets),
      .		ds_message(maxdsets),
@@ -67,6 +70,7 @@
 	INTEGER*4	ds_ntuple
 	LOGICAL		ds_time_modulo
 	REAL*4		ds_time_unit,ds_ntegrate_tstep
+	CHARACTER*32	ds_cal_name
 
 * "MESSAGE RECORD"
 	LOGICAL*2	ds_alert_on_open,ds_alert_on_output

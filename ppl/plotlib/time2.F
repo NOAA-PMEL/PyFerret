@@ -1,4 +1,4 @@
-      SUBROUTINE TIME2(ITIME,SYM)                                    
+      SUBROUTINE TIME2(ITIME,SYM)
 C** 
 C**    @(#)time2.f	1.1    3/10/88
 C**
@@ -47,19 +47,20 @@ C**
 *
 *	Mod 11.20.95 J Davison to accommodate 4 digit year, and seconds
 *       J Davison 10.15.99   Modified to support multiple calendars.
+* V530 1/01 *acm* split calendar.cmn into .cmn and .decl
 
       CHARACTER ITIME*(*),SYM*(*)
 C                                                                        
 
 #ifdef unix
+        include 'calendar.decl' 
         include 'calendar.cmn'
 #else
         INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
 #endif
 
 
-C     THIS ROUTINE TRANSLATES enhanced WOODSHOLE FORMATTED TIME          
-         
+C     THIS ROUTINE TRANSLATES enhanced WOODSHOLE FORMATTED TIME
 C     INTO A PLOTABLE TYPE FORMAT.                                       
 C         IE.  77081904590118 BECOMES 4:59:01 AUG 19, 1877
 C     IN THE GREGORIAN CALENDAR, WHERE MONTH 8 IS 'AUG'. THE VALUES OF

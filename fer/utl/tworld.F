@@ -46,6 +46,7 @@
 * revision 0.0 - 7/26/88
 * revision 0.1 -12/30/88 - added where_in_box
 * V230:  7/20/92 - check for valid time axis T0
+* V530: *acm* 12/00 alternative calendar types; cal_id
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -59,7 +60,8 @@
 #endif
 
 * calling argument declarations:
-	INTEGER	subsc, grid, idim, where_in_box
+	INTEGER	subsc, grid, idim, where_in_box, 
+     .          TM_GET_CALENDAR_ID, cal_id
 
 * internal variable declarations:
         LOGICAL TM_DATE_OK
@@ -73,8 +75,9 @@
 * special treatment of calendar time axis
 	IF ( idim .EQ. t_dim ) THEN
            line = grid_line( idim, grid )
-           IF ( TM_DATE_OK( line_t0(line) )  )
-     .          TWORLD = TSTEP_TO_SECS( grid, ww )
+           cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line) )
+           IF ( TM_DATE_OK( line_t0(line), cal_id )  )
+     .     TWORLD = TSTEP_TO_SECS( grid, ww )
 	ENDIF
 	RETURN
 	END

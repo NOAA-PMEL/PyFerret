@@ -72,8 +72,7 @@
 * V500 4/99 *kob*:  increase vname and vupcase from 24 to 64 chars 
 * V510 *sh* 3/00 - added tregular argument
 *		 - convert to dynamic grids and axes
-* V530 *sh* 1/01 - automatically flag as modulo any time axis that ends before
-*		   year 0002
+* V530 *acm* 12/00 attribute for different calendar types
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -100,6 +99,8 @@
 	external xgt_grid_data
 	include 'xunits.cmn_text'
 	external xunits_data
+        include 'calendar.decl'
+        include 'calendar.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:NETCDF.DECL'  ! untested
 #include "netcdf.inc"
@@ -130,7 +131,8 @@
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
-     .        edgid, spacing_atlen, epic_t2var, since_T0
+     .        edgid, spacing_atlen, epic_t2var, since_T0,
+     .        TM_GET_CALENDAR_ID, cal_id, slen, len_cal
       REAL    rbuff, delta, first_delta
       REAL*8  TM_LONW2LONE, tmp
       CHARACTER*12 TM_LEFINT
@@ -143,21 +145,13 @@
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
-      INTEGER   year, month, day, hour, minute, second
-      REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
-     .		t0_secs, last_secs, last_coord, firs_coord, yr_len
+      REAL*8   first, secs2firststep, secs1590, TM_SECS_FROM_BC
 
-* parameter declarations
-	REAL*8          psecs_per_day
-	PARAMETER     ( psecs_per_day = 60.*60.*24. )
 
 * initialize for EPIC
       do_warn = .NOT.its_epic     ! EPIC files can get away with anything
       west_lon = .FALSE.          ! assume longitudes are positive east
       iaxis = 0
-
-* gen; initialization
-      got_torg = .FALSE.
 
 * get the vital statistics of the axis
       CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
@@ -210,24 +204,61 @@
       line_dim( iaxis ) = npts
       IF ( npts .LE. 2 ) line_regular(iaxis) = .TRUE.
 
+* *ACM get the calendar name.
+
+      line_cal_name(iaxis) = 'GREGORIAN'   ! default
+      got_it = CD_GET_ATTRIB( cdfid, ivar, 'calendar', do_warn,
+     .                        vname(:vlen), buff, 48 )
+      IF (got_it) then
+	 istat = STR_UPCASE (buff, buff)
+         line_cal_name(iaxis) = buff
+         IF (line_cal_name(iaxis) .EQ. '360') 
+     .        line_cal_name(iaxis) = '360DAY' 
+         IF (line_cal_name(iaxis) .EQ. 'D360') 
+     .        line_cal_name(iaxis) = '360DAY' 
+         IF (line_cal_name(iaxis) .EQ. 'STANDARD') 
+     .        line_cal_name(iaxis) = 'GREGORIAN' 
+         IF (line_cal_name(iaxis)(1:6) .EQ. 'COMMON') 
+     .        line_cal_name(iaxis) = 'NOLEAP' 
+         cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
+      ENDIF
+
 * optional units for axis (may contain "tunits since T0_date" 2/95)
       line_units(iaxis) = ' '   ! default
       got_it = CD_GET_ATTRIB( cdfid, ivar, 'units', do_warn,
      .                        vname(:vlen), buff, 48 )
       since_T0 = MAX( INDEX(buff,'since'), INDEX(buff,'SINCE') )
       yyyymmdd_time = buff .EQ. 'yyyymmddhhmmss'
+
       IF ( since_T0 .GT. 2 ) THEN
          line_units(iaxis) = buff(:since_T0-1) 	! just the "tunits" part 
 	 IF ( TM_LENSTR1(buff) .GT. since_T0 + 5 ) THEN
             CALL TM_DATE_REFORMAT(buff(since_T0+6:),pdate_numslashnum,
-     .				  line_t0(iaxis), pdate_vax, status )
+     .				  cal_id, line_t0(iaxis), 
+     .				  pdate_vax, status )
             IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error 
+
+*  Append calendar name to units string.
+c	    IF (cal_id .GT. gregorian .AND. cal_id .le. max_calendars) THEN
+c		 slen = TM_LENSTR1 (line_units(iaxis))
+c		 len_cal = TM_LENSTR1 (line_cal_name(iaxis))
+c		 line_units(iaxis) = line_units(iaxis)(:slen)//
+c     .			'('//line_cal_name(iaxis)(:len_cal)//')'
+c	    ENDIF
+
 	    got_torg = .TRUE.
 	 ELSE
             since_t0 = 0	! flag that no T0 was present
          ENDIF
       ELSEIF ( yyyymmdd_time ) THEN
 	 line_units(iaxis) = 'days'
+*  Append calendar name to units string.
+c	 IF (cal_id .GT. gregorian .AND. cal_id .le. max_calendars) THEN
+c	    slen = TM_LENSTR1 (line_units(iaxis))
+c	    len_cal = TM_LENSTR1 (line_cal_name(iaxis))
+c	    line_units(iaxis) = line_units(iaxis)(:slen)//
+c     .			'('//line_cal_name(iaxis)(:len_cal)//')'
+c	  ENDIF
 	 line_t0(iaxis) = ' ' ! to be determined when coords are read
 	 got_torg = .TRUE.
       ELSE
@@ -392,8 +423,6 @@
          line_subsc1 (iaxis) = unspecified_int4
          line_regular(iaxis) = .TRUE.
          line_dim    (iaxis) = 1
-	 last_coord          = 1.0D0
-	 firs_coord          = 1.0D0
 
 * start/n/delta representation for "regular axes"
 * (no check is made on validity of the regularity claim)
@@ -445,8 +474,6 @@
             line_delta(iaxis) = 1
          ENDIF
          line_subsc1(iaxis) = unspecified_int4
-	 last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
-	 firs_coord = line_start(iaxis)
 
 * ============= START OF IRREGULAR AXIS PROCESSING ========================
       ELSE
@@ -500,8 +527,6 @@
 	      GOTO 1000
            ENDIF
   350	CONTINUE
-	last_coord = line_mem(ipte)
-	firs_coord = line_mem(ipt1)
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
         delta = line_mem(ipt1+1) - line_mem(ipt1)  ! sing. prec., only
@@ -515,20 +540,18 @@
         line_delta  (iaxis) = 
      .              (line_mem(ipte)-line_mem(ipt1))/(npts-1)
         line_subsc1 (iaxis) = unspecified_int4
-	last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
-	firs_coord = line_start(iaxis)
         GOTO 390
 
 * compute the default locations of boundaries between grid boxes (midpoints)
 * Note: this may be modified by a subsequent "EDGES" definition
  380    CALL TM_IRREGAX_MID( ipt1, npts )
-
       ENDIF
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
 
 * hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
  390	IF ( (since_T0.GT.2)
-     .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') ) THEN
+     .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
+     .  .AND.(cal_id .EQ. gregorian) ) THEN
 
 * ... get time step of L=1
 	   IF ( line_regular(iaxis) ) THEN
@@ -540,7 +563,8 @@
 * ... compute seconds from 1-jan-0001
 	   secs2firststep = un_convert(line_unit_code(iaxis)) * first
 * compute seconds from 1590
-	   secs1590 = TM_SECS_FROM_BC (1590,1,1,0,0,0)
+	   secs1590 = TM_SECS_FROM_BC (gregorian, 1590,1,1,0,0,0,status)
+            IF ( status .NE. merr_ok ) GOTO 5900
 
 * ... correct axis if crosses 1590 threshhold
 	   IF (secs2firststep .GT. secs1590) line_t0(iaxis)
@@ -627,25 +651,6 @@
 	      delta = line_mem(ipt1+2*npts) - line_mem(ipt1+npts)
 	   ENDIF
 	   IF ( TM_FPEQ(delta,360.0) ) line_modulo(iaxis) = .TRUE.
-	ENDIF
-
-* if it is a calendar time axis it might be implicitly MODULO
-* must have T0 in year 0000 or 0001, have a year length roughly correct,
-* and have a final tstep in year 0000 or 0001
-	IF (got_torg .AND. .NOT.line_modulo(iaxis)) THEN
-	   CALL TM_BREAK_DATE(line_t0(iaxis), year, month, day,
-     .                            hour, minute, second, istat)
-	   IF (istat.EQ.merr_ok .AND. year.LE.1) THEN
-	      t0_secs = TM_SECS_FROM_BC (year, month, day,
-     .                                   hour, minute, second)
-	      last_secs = t0_secs + last_coord*line_tunit(iaxis)
-	      yr_len = last_secs - 
-     .		       t0_secs + firs_coord*line_tunit(iaxis)
-	      IF ( yr_len.GE.359.*psecs_per_day
-     .	     .AND. yr_len.LE.367.*psecs_per_day) 
-     .		   line_modulo(iaxis)
-     .		         = last_secs .LE. 2.*366.*psecs_per_day
-	   ENDIF
 	ENDIF
 
 * successful completion

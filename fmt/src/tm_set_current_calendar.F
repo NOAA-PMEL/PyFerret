@@ -6,45 +6,49 @@ C
 C     Returns merr_varlim if calendar is invalid, merr_ok successful completion
 C     J Davison 10.99
 C     V 1.0
+
+C  11/29/00  Ansley Manke  revise to match just 3 characters of allowed_calendars
 C
 C     0.00000000000000000000000000000000000000000000000000000000000000001
 
 #ifdef unix
+      include 'calendar.decl'
       include 'calendar.cmn'
       include 'tmap_errors.parm'
 #else
-      INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
       INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
-      integer         end,ndx,tm_get_calendar_id, status
+#endif 
+      integer         end, ndx, status
       character*255   test_string
 
+      character*16    cal_name
       character*(*)   set_name
-
-      external        tm_get_calendar_id
 
 *************************************************************************
 
-C     MOVE INPUT STRING TO UPPER CASE
-      call upnsquish (set_name,test_string,end)
+C     Move input string to upper case
+      CALL upnsquish (set_name,test_string,end)
 
 C     LOCATE NAME IN CALENDAR TABLE
-      do 10 ndx = 1, max_calendars
-         if (test_string(1:end) .eq. calendar_names(ndx))
-     .        goto 100
- 10   end do
+      DO 10 ndx = 1, max_calendars
+         IF (test_string(1:3) .EQ. allowed_calendars(ndx)(1:3)) 
+     .        GOTO 100
+ 10   END DO
 
-C     ERROR: CALENDAR NOT FOUND
+C     error: calendar not found
+
       status = merr_varlim
       goto 1000
 
-C     CALENDAR FOUND, SET CURRENT CALENDAR
- 100  cal_name = test_string(1:end)
-      cal_id   = tm_get_calendar_id (cal_name)
+C     calendar found, set current calendar
 
-      call tm_load_calendar (cal_id, status)
+c 100  cal_name = test_string(1:end)
 
- 1000 return
+ 100  cal_name = allowed_calendars(ndx)
 
-      end
+      CALL tm_load_calendar (cal_name, status)
+
+ 1000 RETURN
+
+      END
 

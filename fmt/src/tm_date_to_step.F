@@ -43,6 +43,7 @@
 * revision 0.00	- 06/17/87 - initial incarnation
 * revision 0.01 - 07/08/88 - Returns status code, handles errors from
 *			     TM_BREAK_DATE
+* V5.3 *acm* 1/01  add cal_id for TM_BREAK_DATE
 *
 * Arguments:
 *	dset_num - data set number
@@ -72,24 +73,30 @@
 *
 	INTEGER		year, month, day, hour, minute, second, istat,
      .			t0year, t0mon, t0day, t0hour, t0min, t0sec
+
+	INTEGER		TM_GET_CALENDAR_ID, cal_id
 	REAL*8		date_secs, start_secs, offset_secs
 	REAL*8		TM_SECS_FROM_BC
 
 * Break up the date string to it's various components
-	CALL TM_BREAK_DATE ( date, year, month, day, hour, minute, second,
-     .	                     istat )
+
+        cal_id = TM_GET_CALENDAR_ID (ds_cal_name(dset_num) )
+	CALL TM_BREAK_DATE ( date, cal_id, year, month, day, 
+     .	                     hour, minute, second, istat)
 	IF ( istat .NE. merr_ok ) GOTO 9000
 
 * Find the offset from 01-JAN-0000 00:00:00 for this date
-	date_secs = TM_SECS_FROM_BC (year, month, day,
-     .				     hour, minute, second)
+	date_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
+     .				     hour, minute, second, status)
+	IF ( status .NE. merr_ok ) GOTO 9990
 
 * First find the offset from 01-JAN-0000 00:00:00 from the descriptor file
-	CALL TM_BREAK_DATE (ds_t0time(dset_num), t0year, t0mon,
-     .			    t0day, t0hour, t0min, t0sec, status)
+	CALL TM_BREAK_DATE (ds_t0time(dset_num), cal_id, t0year, 
+     .			    t0mon, t0day, t0hour, t0min, t0sec, istat)
 	IF ( istat .NE. merr_ok ) GOTO 9100
-	start_secs = TM_SECS_FROM_BC (t0year, t0mon, t0day,
-     .				      t0hour, t0min, t0sec)
+	start_secs = TM_SECS_FROM_BC (cal_id, t0year, t0mon, t0day,
+     .				      t0hour, t0min, t0sec, status)
+	IF ( status .NE. merr_ok ) GOTO 9990
 
 * Find the number of seconds since start of data set for this date
 	offset_secs = date_secs - start_secs

@@ -51,6 +51,7 @@
 * kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
+* V5.3  1/01 *acm* cal_id for alternative calendar types: call to TM_DATE_OK
 
 #ifdef unix
         include 'tmap_dims.parm'
@@ -100,6 +101,9 @@
      .		STR_CASE_BLIND_COMPARE, TM_GET_GRIDNUM, ISUBSCR_CX,
      .		i, n, dim, dset, cat, var, axis, grid, reg, modulo,
      .		calendar, dummy, istat, slen
+	INTEGER TM_GET_CALENDAR_ID, cal_id
+
+
 	REAL*8	TWORLD, TM_WORLD, lo, hi, delta
 	CHARACTER TM_FMT*16, buff1*32, buff2*32
 
@@ -431,7 +435,8 @@
 	   ELSE
 	      modulo = 0
 	   ENDIF
-	   IF ( TM_DATE_OK( line_t0(axis) )  ) THEN
+           cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis) )
+	   IF ( TM_DATE_OK( line_t0(axis), cal_id)  ) THEN
 	      calendar = 1
 	   ELSE
 	      calendar = 0
@@ -506,8 +511,10 @@
  2320	READ (cmnd_buff(arg_start(4):arg_end(4)), '(I)',ERR=5304) n ! delta
 #endif
 	IF ( ww_given ) THEN
+	   axis = grid_line(t_dim, grid)
+	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
  	   CALL TRANSLATE_LIMIT( cmnd_buff(arg_start(5):arg_end(5)),
-     .		                 dim, .FALSE., lo, formatted, status )
+     .		           dim, .FALSE., lo, formatted, cal_id, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5315
 	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_dn )
 	ELSE
@@ -561,8 +568,10 @@
  2420	READ (cmnd_buff(arg_start(4):arg_end(4)), '(I)',ERR=5304) n ! delta
 #endif
 	IF ( ww_given ) THEN
+	   axis = grid_line(t_dim, grid)
+	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
  	   CALL TRANSLATE_LIMIT( cmnd_buff(arg_start(5):arg_end(5)),
-     .		                 dim, .FALSE., lo, formatted, status )
+     .		           dim, .FALSE., lo, formatted, cal_id, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5315
 	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_dn )
 	ELSE

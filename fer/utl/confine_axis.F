@@ -60,6 +60,8 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars  and err_string from 48 to 64
 *                  and VAR_TITLE from 24 to 128
 * V520 *kob* 6/00 - had to had risc_buff text buffer for sgi output
+* V530 *acm* 1/01 - add cal_id for alternative calendar types
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -98,6 +100,8 @@
 * internal parameter declarations:
 	LOGICAL     full_precision
 	INTEGER	    err_ss_lims, err_ww_lims
+	INTEGER TM_GET_CALENDAR_ID, cal_id, dflt_cal_id
+	REAL*8      new_lo_ww, new_hi_ww
 	PARAMETER ( full_precision = .TRUE.,
      .		    err_ss_lims = -77,
      .		    err_ww_lims = -88 )
@@ -167,13 +171,26 @@
 	   IF ( cx_lo_ww( idim, cx ) .EQ. unspecified_val8 ) GOTO 1000
 * ... time/date strings are received as -1*(secs from BC)
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
-	   IF ( idim .EQ. t_dim 
-     .	  .AND.cx_calendar(cx) ) THEN
-	      bc_to_t0 = SECS_FROM_BC( line_t0(axis), istat )
-	      cx_lo_ww(idim,cx) = 
-     .			-(cx_lo_ww(idim,cx)+bc_to_t0)/line_tunit(axis)
-	      cx_hi_ww(idim,cx) = 
-     .			-(cx_hi_ww(idim,cx)+bc_to_t0)/line_tunit(axis)
+* 2/01 *acm* reset time step if axis is a different calendar than Gregorian.
+
+	   IF ( idim .EQ. t_dim .AND.cx_calendar(cx) ) THEN
+              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+	      bc_to_t0 = SECS_FROM_BC(line_t0(axis), cal_id, status)
+	      IF (status .ne. ferr_ok) GO TO 5000
+
+              dflt_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
+              CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), new_lo_ww, 
+     .			dflt_cal_id, cal_id, istat)
+	      IF (status .ne. ferr_ok) GO TO 5000
+              CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), new_hi_ww,  
+     .			dflt_cal_id, cal_id, istat)
+	      IF (status .ne. ferr_ok) THEN
+                 status = istat
+		 GO TO 5000
+	      ENDIF
+
+	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
+	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
 	      cx_calendar(cx) = .FALSE. 
 	   ENDIF
 * ... confine values to the limits of the defining grid

@@ -44,6 +44,7 @@
 * revision 0.0 - 8/1/88
 * V200:  9/22/89 - added "orient" for axes without particular orientations
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V530:  3/01    - indicate the calendar for non-Gregorian calendar types 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -54,6 +55,8 @@
 	include	'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
+	include 'calendar.decl'
+	include 'calendar.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
@@ -69,7 +72,8 @@
 
 * local variable declarations:
 	INTEGER		idim, orient
-	CHARACTER	t0_head*2, t0_col*20
+	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, len
+	CHARACTER	cal_name*32
 
 * determine orientation
 	DO 100 idim = 1, 5
@@ -91,8 +95,18 @@
 	IF ( brief ) RETURN
 
 * report /T0= for formatted time axis
-	IF ( line_direction(line) .EQ. 'TI' ) CALL SPLIT_LIST
+	IF ( line_direction(line) .EQ. 'TI' ) THEN
+	   CALL SPLIT_LIST
      .		(pttmode_explct, ttout_lun, 'T0 = '//line_t0(line), 0)
+
+	   cal_name = line_cal_name (line)
+	   cal_id = TM_GET_CALENDAR_ID (cal_name)
+	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
+	      len = TM_LENSTR1(cal_name)
+	      CALL SPLIT_LIST (pttmode_explct, 
+     .		          ttout_lun, 'CALENDAR = '//cal_name(:len), 0)
+	   ENDIF
+	ENDIF
 
 	RETURN
 	END

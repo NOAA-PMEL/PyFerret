@@ -1,4 +1,4 @@
-	SUBROUTINE PLOT_SET_UP( memory,
+      SUBROUTINE PLOT_SET_UP( memory,
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
      .				step_inc, mv_list, cx_list, nmv,
@@ -102,9 +102,10 @@
 * V521	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
 *	7/00 - *sh* new argument range_rqd needed on EQUAL_RANGE
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
+* V5.3 *ACM* 1/01  cal_id for alternative calendar axes.
 *      *sh* 1/01 - added argument step_inc for PLOT/STEP
 *	         - bug fix: PLOT+ mem limit check off by x2 --  X&Y components
-*       *kob*1/01 - changed declaration of variable i to integer from real
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -159,13 +160,18 @@
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14,
      .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
-     .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
+     .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14,
+     .                  TM_GET_CALENDAR_NAME*32, cal_name*32, 
+     .                  cal_name_new*32
+	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, i,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
-     .			slen2, slen3, tax, plot_mem_used, nload, i,
+     .			slen2, slen3, tax, plot_mem_used, nload,
      .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim
+
+	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
+     .			cal_id_old, cal_id_new
 	REAL		only_val, val1, dt_min,
      .			lo, hi, dep_len, ind_len,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
@@ -199,6 +205,8 @@
 	pylim = qual_given( slash_ylimits )	! deprecated
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
+	cal_id_1 = 0
+	cal_id_2 = 0
 
 * determine PLOT+ memory required
         plot_mem_used = 0
@@ -308,10 +316,14 @@
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
+* Get calendar name for equal_range (even if not time axis)
+              tax = grid_line(t_dim,cx_grid(cx_list(var1)) )
+              cal_name = line_cal_name(tax)
+              cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
-     .			formatted, range_rqd, status )
+     .			formatted, range_rqd, cal_id_1, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
 	      IF ( val1 .EQ. mr_bad_data(mv) ) THEN
@@ -337,13 +349,29 @@
 	   ito  = 0
 	   time_axis =	indep_dim.EQ.t_dim
 	   IF ( time_axis ) THEN	! 11/95: are ALL vars time vars?
+
+* and are all the calendar types the same?
+
+              tax = grid_line(t_dim,cx_grid(cx_list(var1)) )
+              cal_name = line_cal_name(tax)
+              cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
+
 	      DO 100 ipl = var1, nmv
 	         time_axis = time_axis
      .			.AND. GEOG_LABEL( t_dim, cx_grid(cx_list(ipl)) )
+                 tax = grid_line(t_dim,cx_grid(cx_list(ipl)) )
+                 cal_id_2 = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
+                 IF (cal_id_2 .NE. cal_id_1) THEN
+                    cal_id_old = cal_id_1
+                    cal_id_new = cal_id_2
+                    GO TO 5160
+                 ENDIF
  100	      CONTINUE
 	   ENDIF
+
 * ... (PLOT+ needs TAXIS,ON prior to PPLLDX calls)
 * ... PPLLDX computes axis endpoints if TIME is set to auto (no args given)
+
 	   IF ( time_axis ) THEN
 ! *sh* 11/92 added numerical dt_min argument to TAXIS call in PLOT+
 ! this fixes err230_ppl_taxis.jnl symptomatically but probably leaves an
@@ -356,14 +384,19 @@
 	      ELSE
 	         CALL PPLCMD ( from, line, 0, 'TAXIS/YAXIS 60,ON', 1, 1 )
 	      ENDIF
+
+	      ppl_buff = ' '
+	      WRITE ( ppl_buff, 3004 ) cal_name
+              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
 	   ENDIF
 	ENDIF
+ 3004   FORMAT ('CALENDAR ', A7)
 
 * set up PLOT5 to ignore bad data flag
 	IF ( versus ) THEN               ! 1/94
 	   ppl_buff = ' '
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
-	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1)
 	ENDIF
  3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
 
@@ -458,11 +491,20 @@
 	   WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), dep_ax
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   IF ( time_axis ) THEN
-              tax = grid_line(t_dim,grid)
               IF ( tax .EQ. mnormal .OR. tax .EQ. munknown ) THEN  ! 8/91 bug
                  dt_min = 1.0
               ELSE
 	         dt_min = line_tunit( grid_line(t_dim,grid) ) / 60.! sec-->min
+
+*  Check for calendar mismatch for time- overlay plots
+	         IF (overlay) THEN
+                    IF (cal_id_1 .NE. saved_calendar_id) THEN
+                       cal_id_old = saved_calendar_id
+                       cal_id_new = cal_id_1
+                       GO TO 5160
+	            ENDIF
+                 ENDIF
+
               ENDIF
               t1_date = INTERNAL_WHOI_DATE( grid, 1.0D0 )
            ELSE
@@ -480,15 +522,17 @@
 	   ELSE
 	      has_time_axis = time_axis
  	      IF (has_time_axis) THEN
-	         saved_dt_min  = dt_min		! to re-use on PLOT/VS
+	         saved_dt_min  = dt_min		! to re-use on PLOT/VS or POLYGON
 	         saved_t1_date = t1_date
+	         saved_calendar_id = cal_id_1
 	      ENDIF
 	   ENDIF
 
 	   IF ( flip ) THEN
-	      CALL PPLLDX(0,dep_dat,indep_dat,nload,t1_date,tref,dt_min)
+
+	      CALL PPLLDX(0,dep_dat,indep_dat,npts2,t1_date,tref,dt_min)
 	   ELSE
-	      CALL PPLLDX(0,indep_dat,dep_dat,nload,t1_date,tref,dt_min)
+	      CALL PPLLDX(0,indep_dat,dep_dat,npts2,t1_date,tref,dt_min)
 	   ENDIF
 * ... increment number of lines on plot
 	   nline_on     = nline_on     + 1
@@ -512,7 +556,7 @@
 	         CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
-     .			formatted, range_rqd, status )
+     .			formatted, range_rqd, cal_id_1, status )
 	         IF ( status .NE. ferr_OK ) GOTO 5000
 * convert time given in time steps to absolute units	   
 	         IF ( time_axis .AND. .NOT.formatted ) THEN
@@ -533,7 +577,8 @@
 	         ENDIF
 	      ENDIF
 	      IF ( time_axis ) THEN
-	         IF ( pindeplim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max )
+	         IF ( pindeplim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max,
+     .                                    cal_id_1)
 	         CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle )
 * (6/99) Note: The time axis extrema symbols are only approximately correct
 *		since PLOT+ rounds out the time ranges ...
@@ -560,7 +605,7 @@
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pdeplim):qual_end(pdeplim)),
      .			dep_dim, dep_min, dep_max, delta,
-     .			formatted, range_rqd, status )
+     .			formatted, range_rqd, cal_id_1, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
 	   ELSEIF ( all_1_dep ) THEN
@@ -606,11 +651,13 @@
            IF ( time_axis ) THEN 
 *    ... document the year where the axis, itself, doesn't 
               IF ( tstyle.EQ.'MON' .OR. tstyle.EQ.'DAY' ) THEN 
-                 ppl_buff = SECS_TO_DATE( ind_min ) 
+                 ppl_buff = SECS_TO_DATE( ind_min, cal_id_1 ) 
                  year = ppl_buff(8:11) 
               ENDIF 
            ENDIF 
-	   CALL DISP_LABELS( cx_plot, year )
+* *ACM* if time axis, then cal_id_1 is set to the calendar.  Label the
+*       plot with the calendar name if there is non-standard calendar
+	   CALL DISP_LABELS( cx_plot, year, cal_id_1 )
 * ... label dependent axis with units (over-written below if /vs)
 	   plot_title = VAR_UNITS( cx_list(var1) )
 	   slen = TM_LENSTR1( plot_title )
@@ -700,4 +747,15 @@
 	CALL ERRMSG( ferr_prog_limit, status,
      .          'Requested '//buff2(:slen2)//' words to plot'//pCR//
      .		'Plot buffer size is: '//buff3(:slen3), *5000 )
+
+ 5160	cal_name = TM_GET_CALENDAR_NAME(cal_id_old)
+        cal_name_new = TM_GET_CALENDAR_NAME(cal_id_new)
+        slen = TM_LENSTR1 (cal_name)
+        slen2 = TM_LENSTR1(cal_name_new)
+	CALL ERRMSG( ferr_inconsist_grid, status,
+     .          'Differing calendar axes: '//pCR//
+     .		'first variable is on '//cal_name(:slen)//
+     .          ' axis'//pCR//
+     .		'subsequent variable is on '//cal_name_new(:slen2)//
+     .		' axis', *5000 )
 	END

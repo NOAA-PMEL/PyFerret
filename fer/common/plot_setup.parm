@@ -1,6 +1,7 @@
 * PLOT_SETUP.PARM
 
 * V510 *sh* 3/00 - added ppl_dodsurl
+* V530 *acm* 3/01 - added ppl_calendar
 
 * parameters to communicate with PLOT+
 	INTEGER		ppl_centered,
@@ -30,6 +31,7 @@
      .			ppl_year,
      .			ppl_datitl,
      .			ppl_dodsurl,
+     .			ppl_calendar,
      .			ppl_offset
 	REAL		letsize_logo,
      .			letsize_title,
@@ -49,6 +51,7 @@
      .			ppl_datitl	= 8,
      .			ppl_offset	= 9,
      .			ppl_dodsurl     = 10,
+     .			ppl_calendar    = 11,
      .			letsize_logo	   = 0.06,
      .			letsize_title	   = 0.20,
      .			letsize_label	   = 0.12,

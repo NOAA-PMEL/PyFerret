@@ -71,6 +71,7 @@
 * V530; *sh* 12/00 - defer writing of axis coordinates and variable data values
 *		to a single consolidated point at the end -- to alleviate
 *		performance problems due to switching netCDF modes
+* V530 *acm* 3/01 pass calendar ID to EQUAL_RANGE
 
 #ifdef unix
         include 'netcdf.decl'
@@ -166,13 +167,14 @@
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
 * local parameter declarations
-        INTEGER         buff_size, sslimits0, wwlimits0
+        INTEGER         buff_size, sslimits0, wwlimits0, cal_id, tax
         LOGICAL         full_precision, DODS_cache, range_not_rqd
         PARAMETER     ( buff_size = 140,
      .			sslimits0 = 1+19-1,
      .			wwlimits0 = 1+23-1,
      .                  full_precision = .TRUE.,
      .			 range_not_rqd = .FALSE. )
+	CHARACTER*32	TM_GET_CALENDAR_ID, cal_name
 
 * initialize
 	 ivar = 1  ! just house-keeping -- make sure all is init'ed
@@ -225,6 +227,10 @@
      .                            varcode(:TM_LENSTR1(varcode))//"_"
            itsa_uvar = cat .EQ. cat_user_var
 
+           tax = grid_line(t_dim,grid)
+           cal_name = line_cal_name(tax)
+           cal_id = TM_GET_CALENDAR_ID ( cal_name )
+
 * allowed name?
            IF ( .NOT.TM_LEGAL_NAME(varcode) ) GOTO 5200
            CALL FIND_VAR_NAME ( pdset_irrelevant, varcode, cat1, var1 )
@@ -248,8 +254,8 @@
                  IF ( loc .GT. 0 ) THEN
 		    errloc = loc
 	            CALL EQUAL_RANGE_T(
-     .			cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                  idim, grid, user_lo, user_hi, delta, status )
+     .			cmnd_buff(qual_start(loc):qual_end(loc)), idim,
+     .                  grid, user_lo, user_hi, delta, cal_id, status )
                     IF ( status .NE. ferr_OK ) GOTO 5800
 	            CALL GRID_WORLD_EXTREMES( loest_ww, hiest_ww,
      .			grid, idim )
@@ -273,7 +279,7 @@
 	            CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(loc):qual_end(loc)),
      .                  idim, user_lo, user_hi, delta, formatted,
-     .			range_not_rqd, status )
+     .			range_not_rqd, cal_id, status )
                     IF ( status .NE. ferr_OK ) GOTO 5990
 	            make_lo(idim) = user_lo
 	            make_hi(idim) = user_hi

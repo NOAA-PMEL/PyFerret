@@ -1,4 +1,4 @@
-	REAL*8 FUNCTION SECS_FROM_BC( date, status )
+	REAL*8 FUNCTION SECS_FROM_BC( date, cal_id, status )
 
 *
 *
@@ -44,9 +44,10 @@
 * revision 0.0 4/7/88
 * revision 0.1 1/18/89 - BREAK_DATE --> TM_BREAK_DATE
 * V300: 2/93 - return **something** even if error exit (caught by f77 3.2)
+* V530: *acm* 12/00 add calendar types; cal_id
 
 * Calling argument declarations:
-	INTEGER		status
+	INTEGER		cal_id, status
 	CHARACTER*(*)	date
 
 * Local variable declarations:
@@ -62,7 +63,8 @@
 #endif
 
 * Break up the date string to it's various components
-	CALL TM_BREAK_DATE ( date,
+
+	CALL TM_BREAK_DATE ( date, cal_id,
      .			  year, month, day, hour, minute, second,
      .			  status )
 	IF ( status .NE. ferr_ok ) THEN
@@ -70,9 +72,14 @@
            RETURN               ! err not reported
         ENDIF
 
-* Find the offset from 01-JAN-0000 00:00:00 for this date
-	SECS_FROM_BC = TM_SECS_FROM_BC (year, month, day,
-     .				     hour, minute, second)
+* Find the offset from 01-JAN-0000 00:00:00 for this date and calendar
+	SECS_FROM_BC = TM_SECS_FROM_BC (cal_id, year, month, day,
+     .				     hour, minute, second, status)
+
+	IF ( status .NE. ferr_ok ) THEN
+           SECS_FROM_BC = -999
+           RETURN               ! err not reported
+        ENDIF
 
 	RETURN
 	END

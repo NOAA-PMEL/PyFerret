@@ -3,6 +3,7 @@
 * 7/97 *sh* - increased max_viewport from 50 to 200
 * 6/99 *sh* - include info about the time axis currently on the screen
 * 1/00 *kob* - add win_id9 for animate window id -always nine
+* 1/00 *acm* - include saved_calendar_id with the time axis info
 	INTEGER		max_windows,
      .			max_viewport,
      .			mvp_dflt,
@@ -24,7 +25,8 @@
 	INTEGER		vp_num,
      .			vp_seg0,
      .			vp_segn,
-     .			curr_seg_name
+     .			curr_seg_name,
+     .			saved_calendar_id
 
 	REAL		wn_scale,
      .			vp_size ,
@@ -42,6 +44,7 @@
      .			pplus_started,
      .			ppl_interrupted,
      .			curr_seg_name,
+     .			saved_calendar_id,
      .
      .			wn_open	 ( max_windows ),
      .			wn_active( max_windows ),
@@ -63,6 +66,3 @@
      .			has_time_axis,
      .			saved_dt_min,
      .			saved_t1_date
-
-
-

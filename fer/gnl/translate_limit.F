@@ -1,5 +1,6 @@
 	SUBROUTINE TRANSLATE_LIMIT
-     .		(string, idim, subscript, answer, formatted, status)
+     .		(string, idim, subscript, answer, formatted, cal_id, 
+     .		status)
 
 *
 *
@@ -60,6 +61,7 @@
 *		a thorough parser
 * V420 (IBM/AIX port of V411): 10/5/95 - buff for "READ(var,*"
 * V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
+* V53 *acm* - 3/01 calendar axes:  pass in calendar ID
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -74,6 +76,8 @@
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'xrisc.cmn'
+	include 'calendar.decl'
+	include 'calendar.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
@@ -88,7 +92,8 @@
 
 * internal variable declarations:
 	LOGICAL		TM_DIGIT, TM_DATE
-	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, slen
+	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, 
+     .                  slen, j, cal_id
 	REAL*8		SECS_FROM_BC, given_answer
 	CHARACTER	buff*32				! for AIX port 10/95
 
@@ -174,7 +179,9 @@
            IF ( TM_DATE( buff(:slen) ) ) THEN
 * ... time step cannot be evaluated until we know what axis this is on
 * ... save number of seconds from B.C. as a negative to flag later translation
-	      answer = -1.D0 * SECS_FROM_BC( buff(:slen), status )
+
+	      answer = -1.D0 * SECS_FROM_BC( buff(:slen), cal_id, 
+     .                                       status )
 	      formatted = .TRUE.
 	      IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE

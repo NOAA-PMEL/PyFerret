@@ -1,5 +1,6 @@
-	SUBROUTINE TM_BREAK_FMT_DATE (form, date, year, month, day,
-     .					 hour, minute, second, status)
+	SUBROUTINE TM_BREAK_FMT_DATE (form, date, cal_id, 
+     .                                year, month, day, hour, minute, 
+     .                                second, status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,14 +43,17 @@
 * *sh* 2/13/95
 * V500 *sh* 7/99 - if numslashnum reading fails, try dd-mmm-yyyy (VAX)
 *		to support LDEA files with "months since 01-jan"
+* V530 *acm* 12/00 - add cal_id for alternative calendar axes
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
 *  date  - date to process
+*  cal_id  integer code for which calendar to use
 *  day, month, year, hour, minute, second - obvious
 *  status - returned status
 	CHARACTER*(*)	date
-	INTEGER	form, day, month, year, hour, minute, second, status
+	INTEGER	form, day, month, year, hour, minute, second, status,
+     .          cal_id
 *
 * INCLUDE FILES
 #ifdef unix
@@ -76,21 +80,22 @@
 	dlen = TM_LENSTR1( date)
 
 	IF ( form .EQ. pdate_vax ) THEN
-	    CALL TM_BREAK_DATE( date, year, month, day,
+	    CALL TM_BREAK_DATE( date, cal_id, year, month, day,
      .			hour, minute, second, status)
 	    RETURN
 
 	ELSEIF ( form .EQ. pdate_numslashnum ) THEN
+
 * ... note:  this is a quick and dirty kludge parser.  Use the udunits package
 *	     for a more robust approach
 * ... the format looks like (e.g.) 1992-10-8 15:15:42.5 
 
 	   CALL TM_FTOC_STRNG( date(:dlen), dhol, slen)
-	   status = TM_BREAK_FMT_DATE_C(dhol, year, month, day,
-     .				        hour, minute, fsecond)
+	   status = TM_BREAK_FMT_DATE_C(dhol, year, month,
+     .				        day, hour, minute, fsecond)
 	   IF ( status .NE. 0 ) THEN
 * ... last attempt -- try VAX format
-	      CALL TM_BREAK_DATE( date, year, month, day,
+	      CALL TM_BREAK_DATE( date, cal_id, year, month, day,
      .			hour, minute, second, status)
 	      IF ( status .NE. merr_ok ) GOTO 5100
 	   ENDIF

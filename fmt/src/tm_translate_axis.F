@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
+* V530: *acm* 12/00 add calendar types; cal_id for time axes
+
 * possible formats for world coordinate values:
 *   x coord:  #  or #E  or  #W  for East, East, and West respectively
 *   y coord:  #  or #S  or  #N  for South, South, and North respectively
@@ -49,7 +51,8 @@
 *   t coord:  #  or dd-mmm-yyyy@hh:mm:ss  eg 14-JAN-1986@11:15
 *
 * revision 0.00 - 12/13/88 - from TRANSLATE_LIMITS by Steve Hankin
-*
+* V530: *acm* 12/00 add calendar types; cal_id 
+
 * Include files
 #ifdef unix
 	include 'tmap_errors.parm'
@@ -67,6 +70,8 @@
 * internal variable declarations:
 	INTEGER*4	end_pos, dy, mnth, yr, hr, mnt, scnd
 	INTEGER*4	TM_LENSTR1
+	INTEGER		TM_GET_CALENDAR_ID, cal_id
+
 	REAL*8		TM_SECS_FROM_BC
 
 * internal parameter declarations:
@@ -87,9 +92,16 @@
 	  READ (string(1:end_pos),*,ERR=200) answer
 	  GOTO 1000
 * ... is it a date/time string? (store as seconds for further processing)
-  200	  CALL TM_BREAK_DATE(string,dy,mnth,yr,hr,mnt,scnd,status)
+
+  200	  CONTINUE
+	  cal_id = 1
+          CALL TM_BREAK_DATE(string, cal_id, dy, mnth, yr, hr, 
+     .                       mnt, scnd, status)
+
 	  IF ( status .NE. merr_ok ) GOTO 9990 		! Report in call routine
-	  answer = -1.D0*TM_SECS_FROM_BC(dy,mnth,yr,hr,mnt,scnd,status)
+	  answer = -1.D0*TM_SECS_FROM_BC(cal_id, 
+     .                                   dy,mnth,yr,hr,mnt,scnd,status)
+	  IF (status .NE. merr_ok) GOTO 9990
 	ENDIF
 
 * successful completion

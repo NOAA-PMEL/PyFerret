@@ -61,6 +61,7 @@
 * V320: 12/20/94 - do not label "m" on Z axis -- in order to support the
 *		   meteorology community with millibars, etc.
 *	 1/27/95 - correct the longitude formatting of negative longitudes
+* V530: *acm* 12/00 alternative calendar types; cal_id
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -76,14 +77,14 @@
 #endif
 
 * calling argument declarations:
-	INTEGER		idim, ndec, grid
+	INTEGER		idim, ndec, grid, line
 	CHARACTER*(*)	string
 	REAL*8		val
 
 * internal variable declarations:
 	CHARACTER	SECS_TO_DATE*20, TM_FMT*24, code*1, xtra*16
-	INTEGER		FIELD_WIDTH, min_width, width, decim, numbers,
-     .                  line, n2
+	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, min_width, width, 
+     .                  decim, numbers, line, n2, cal_id
 	LOGICAL		GEOG_LABEL, TM_DATE_OK, fancy, use_sig_fig,
      .                  modulo
 	REAL		val4, val4_orig
@@ -103,12 +104,15 @@
         val4_orig  = val4
 	code	   = ' '
 	fancy	   = GEOG_LABEL( idim, grid )
+        line       = grid_line( t_dim, grid )
+
 ! removed next line 8/97 *kob* - use fancy as set above
 !        IF ( idim .EQ. t_dim .AND. val .LT. 0.0 ) fancy = .TRUE.  ! 2/3/93
 !removed        IF ( idim .EQ. t_dim .AND. .NOT.fancy ) THEN
 !2/3/93   * ... force date labelling if it is possible (why?? 7/92  )
 !      	           line = grid_line( idim, grid )
-!                  fancy = val .LT. 0.0D0 .AND. TM_DATE_OK( line_t0(line) ) 
+!                  fancy = val .LT. 0.0D0 .AND. 
+!     .                     TM_DATE_OK( line_t0(line)) 
 !               ENDIF
 ! Note (2/3/93): GEOG_LABEL contains the removed logic
 
@@ -161,7 +165,9 @@
 * t - create date/time string and exit
 *  ( negative times are used in stored regions as axis-independent dates )
 	      IF ( val .LT. 0.0D0 ) THEN
-	         string = SECS_TO_DATE( -val )
+                 line       = grid_line( t_dim, grid )
+                 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
+	         string = SECS_TO_DATE( -val, cal_id )
 	      ELSE
 	         CALL TSTEP_TO_DATE( grid, val, decim, string )
 	      ENDIF

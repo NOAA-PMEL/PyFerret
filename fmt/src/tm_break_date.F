@@ -1,4 +1,4 @@
-	SUBROUTINE TM_BREAK_DATE (date, year, month, day,
+	SUBROUTINE TM_BREAK_DATE (date, cal_id, year, month, day,
      .				  hour, minute, second, status)
 *
 *
@@ -49,32 +49,34 @@
 * revision 1.11 - 02/13/89 - Allows multiple blanks between date and hour
 * revision 1.12 - 02/20/89 - Allows dates of form "dd-mmm" - defaults to 0000
 * 3/22/95 - check for non-positive DAY value as an error
+* V530: *acm* 12/00 alternative calendar types; cal_id
 
 * ARGUMENT DEFINITIONS
 *  date  - date to process
 *  day, month, year, hour, minute, second - obvious
 *  status - returned status
 	CHARACTER*(*)	date
-	INTEGER*4	day, month, year, hour, minute, second, status
+	INTEGER*4	day, month, year, hour, minute, second, status,
+     .                  cal_id
 *
 * INCLUDE FILES
 #ifdef unix
 	include 'tmap_errors.parm'
+        include 'calendar.decl'
+        include 'calendar.cmn'
 #include "gt_lib.parm"
-#else
+#ELSE
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-#endif
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.DECL'
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
+#ENDIF
 *
 * LOCAL DEFINITIONS
-	CHARACTER*3	cmon(12)
 	CHARACTER*20	fill_in
-	INTEGER*4	out_state(7,22), in_state, pos, istat,
-     .			days_in_month(12), leapadj
+	INTEGER*4	out_state(7,22), in_state, pos, istat, leapadj
 	INTEGER*4	STR_CASE_BLIND_COMPARE, Class
-
-	DATA	cmon	/'JAN','FEB','MAR','APR','MAY','JUN',
-     .			 'JUL','AUG','SEP','OCT','NOV','DEC'/
+	REAL		yeardays
 
 * Table gives output state based on input state (right hand column)
 *	A = alphabetic	N = numeric	b = blank	- = minus sign
@@ -103,9 +105,6 @@
      .			    24, 22, 24, 24, 24, 24, 24,			!21
      .			    24, 24, 24, 24, 24, 24, 23/			!22
 
-	DATA	days_in_month	/31, 28, 31, 30, 31, 30,
-     .				 31, 31, 30, 31, 30, 31/
-
 * initialize
 	day = 0
 	month = 0
@@ -113,7 +112,7 @@
 	hour = 0
 	minute = 0
 	second = 0
-	fill_in = '01-JAN-0000:00:00:00'
+	fill_in = '01-'//month_names(1)//'-0000:00:00:00'
 	in_state = 1
 	pos = 0
 
@@ -121,7 +120,7 @@
   100	pos = pos + 1
 * . Calc next state
 	in_state = out_state(Class(date,pos),in_state)
-* . Process next character unless this is a change of class, then output
+* . Process next character unless this is a change of class, THEN output
 * STATUS       1   2   3   4   5   6   7   8   9   10  11  12  13  14
 	GOTO (100,100,100,100,120,100,100,100,100,130,140,100,150,100,
      .	      100,160,100,100,170,100,100,180,190,9000) in_state
@@ -155,37 +154,107 @@
 	READ (fill_in(13:14),'(I2)') hour
 	READ (fill_in(16:17),'(I2)') minute
 	READ (fill_in(19:20),'(I2)') second
+
+C  Get calendar attributes
+
+      CALL TM_GET_CALENDAR_ATTRIBUTES (cal_id, num_months, 
+     .                    num_days, yeardays, month_names, 
+     .                    days_in_month, days_before_month,
+     .                    month_by_day)
 	DO 200 month = 1,12
-	  istat = STR_CASE_BLIND_COMPARE( fill_in(4:6), cmon(month) )
+	  istat = STR_CASE_BLIND_COMPARE( fill_in(4:6), 
+	1	month_names(month) )
 	  IF (istat .EQ. str_match) GOTO 210
   200	CONTINUE
 	GOTO 9000
 
-* Check validity of dates
-* . days in month
-  210	IF (month .EQ. 2) THEN
-	  IF (MOD(year,400) .EQ. 0) THEN
-	    leapadj = 1
-	  ELSE IF (MOD(year,4).EQ.0 .AND. MOD(year,100).NE.0) THEN
-	    leapadj = 1
-	  ELSE
-	    leapadj = 0
-	  ENDIF
+ 210	continue
+
+C       ***************************************
+C       ******* CHECK VALIDITY OF DATES *******
+C       ***************************************
+
+
+******************************************************************************
+* HANDLE GREGORIAN CALENDAR FIRST
+******************************************************************************
+        IF (cal_id .EQ. gregorian) THEN
+
+*          DAYS IN MONTH
+	   IF (month .EQ. 2) THEN
+	      IF (mod(year,400) .EQ. 0) THEN
+		 leapadj = 1
+	      ELSE IF (mod(year,4).EQ.0 .AND. mod(year,100).NE.0) THEN
+		 leapadj = 1
+	      ELSE
+		 leapadj = 0
+	      ENDIF
+	   ELSE
+	      leapadj = 0
+	   ENDIF
+	   IF (day .GT. days_in_month(month)+leapadj
+	1	.OR. day .le. 0   ) GOTO 9000
+
+*          HOURS IN DAY, MINUTES IN HOUR, SECONDS IN MINUTE
+	   IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
+	1	GOTO 9000
+
+
+
+
+******************************************************************************
+* HANDLE JULIAN CALENDAR 
+******************************************************************************
+        ELSE IF (cal_id .EQ. julian) THEN
+
+*          DAYS IN MONTH
+	   IF (month .EQ. 2) THEN
+	      IF (mod(year,4) .EQ. 0) THEN
+		 leapadj = 1
+	      ELSE
+		 leapadj = 0
+	      ENDIF
+	   ELSE
+	      leapadj = 0
+	   ENDIF
+	   IF (day .GT. days_in_month(month)+leapadj
+	1	.OR. day .le. 0   ) GOTO 9000
+
+*          HOURS IN DAY, MINUTES IN HOUR, SECONDS IN MINUTE
+	   IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
+	1	GOTO 9000
+
+
+******************************************************************************
+* ALL OTHER SUPPORTED AND REGULAR CALENDARS
+******************************************************************************
+
+	ELSE IF (cal_id .GT. gregorian   .AND.  cal_id .NE. julian .AND.
+     .           cal_id .LE. max_calendars) THEN
+
+
+*          DAYS IN MONTH
+	   IF (day .GT. days_in_month(month) 
+	1	.OR. day .le. 0) GOTO 9000
+
+*          HOURS IN DAY, MINUTES IN HOUR, SECONDS IN MINUTE
+	   IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
+	1	GOTO 9000
 	ELSE
-	  leapadj = 0
-	ENDIF
-	IF (day .GT. days_in_month(month)+leapadj
-     . .OR. day .LE. 0   ) GOTO 9000
-* . hours in day, minutes in hour, seconds in minute
-	IF (hour .GT. 23 .OR. minute .GT. 59 .OR. second .GT. 59)
-     .	  GOTO 9000
+           status = merr_syntax
+	   CALL ERRMSG (status, status, 
+     .       'Illegal calendar in tm_break_date()', *9999)
+        END IF
+
 	GOTO 9990
 
 * Syntax error
+
  9000	status = merr_syntax
 	GOTO 9999
 
  9990	status = merr_ok
+
  9999	RETURN
 	END
 
@@ -241,7 +310,7 @@
 * Colon?
 	ELSE IF (chr .EQ. colon) THEN
 	  class = 5
-* Everything else
+* Everything ELSE
 	ELSE
 	  class = 6
 	ENDIF

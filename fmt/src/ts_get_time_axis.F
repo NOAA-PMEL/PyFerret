@@ -51,6 +51,8 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* V5.3  *acm*  adding calendar types: cal_id
+
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
 *	ivar - variable axis is being made for
@@ -87,6 +89,8 @@
 	INTEGER*4	scr, unused, nsteps, ilne, itime, ltime, iunit,
      .			i1, i2, i3, i4, i5, i6, old, nline
 	INTEGER*4	TM_FIND_LIKE_LINE
+        INTEGER TM_GET_CALENDAR_ID, cal_id
+
 
 	PARAMETER	( scr = 0 )
 
@@ -115,8 +119,13 @@
 	line_units(scr)     = ' '
 	line_unit_code(scr) = 0
 
+        line_cal_name(scr) = ds_cal_name(dset_num)
+
 * Check if time/date string conversion is possible
-  110	CALL TM_BREAK_DATE( line_t0(scr), i1,i2,i3,i4,i5,i6,status )
+  110	CONTINUE
+        cal_id = TM_GET_CALENDAR_ID (line_cal_name(scr))
+        CALL TM_BREAK_DATE( line_t0(scr), cal_id,
+     .                      i1,i2,i3,i4,i5,i6,status )
 	IF ( line_tunit(scr) .LE. 0       .OR.
      .	     line_t0(scr)    .EQ. ' '     .OR.
      .	     status          .NE. merr_ok      ) THEN

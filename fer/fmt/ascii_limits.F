@@ -52,11 +52,14 @@
 * revision 0.7 - 3/25/88 - increased LOHI_WORLD size for date/time strings
 * V200:  1/12/90 - "of nnn" text string non-integer transform args
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
+* v530  *acm* 3/01 - Show calendar name for alternative calendar types.
 
 #ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
+	include 'calendar.decl'
+	include 'calendar.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
@@ -72,10 +75,12 @@
 	PARAMETER     ( full_precision = .TRUE. )
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR, max_len, len_trans, llen, trans, i
-	CHARACTER*3	pts
-	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, TM_FMT*10,
-     .			trans_title*40
+	INTEGER		TM_LENSTR, TM_GET_CALENDAR_ID, 
+     .			max_len, len_trans, llen, trans, i,
+     .			grid, cal_id, len_cal
+	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, 
+     .			TM_FMT*10, TM_GET_CAL*32,
+     .			trans_title*40, cal_name*32
 	REAL		trans_arg
 
 * initialize
@@ -117,6 +122,21 @@
 	   ENDIF
 	   string = string(1:slen)//' ('//trans_title(:len_trans)//')'	
 	   slen = MIN( max_len, slen+len_trans+3 )
+	ENDIF
+
+* calendar name requiring comment ?
+
+	IF (idim .EQ. t_dim  .AND. 
+     .      cx_lo_ww( idim, cx ) .NE. unspecified_val8 ) THEN
+
+	   grid = cx_grid(cx)
+	   cal_name = TM_GET_CAL (grid)
+	   cal_id = TM_GET_CALENDAR_ID (cal_name)
+	   IF (cal_id .GT. gregorian .AND. cal_id .LT. max_calendars) THEN
+	      len_cal = TM_LENSTR(cal_name)
+	      string =  string(1:slen)//' '//cal_name(:len_cal)
+	      slen = MIN( max_len, slen+len_cal+1 )
+	   ENDIF
 	ENDIF
 
 	RETURN

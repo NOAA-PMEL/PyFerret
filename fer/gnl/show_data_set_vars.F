@@ -63,6 +63,7 @@
 *                    truly normal
 * V510: 4/00 *sh* - search dynamic grids for netCDF time axis
 * V530: 10/00 *sh* - added information about data typed
+* v530  *acm* 3/01 - Show calendar name for alternative calendar types.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -78,6 +79,8 @@
 	include	'xtext_info.cmn'
 	include	'xprog_state.cmn'
 	include	'xrisc.cmn'
+	include 'calendar.decl'
+	include 'calendar.cmn'
 
 * calling argument declarations:
 	LOGICAL	full
@@ -85,16 +88,20 @@
 	
 * local variable declarations:
 	LOGICAL		first_time, its_delimited
-	INTEGER 	TM_LENSTR1, ivar, i, dlen, len, grid, taxis,
-     .                  slen(4), tlen, nfields, kvar,
-     .			field_types(maxezvars)
-	CHARACTER	LEFINT*6, LOHI_STRING*48, TM_FMT*14, line*255
+	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, 
+     .			ivar, i, dlen, len, grid, taxis, slen(4), tlen, 
+     .			nfields, kvar, field_types(maxezvars), 
+     .			cal_id, len_cal
+	CHARACTER	LEFINT*6, LOHI_STRING*48, TM_FMT*14, 
+     .			TM_GET_CAL*32, 
+     .			line*255, cal_name*32
 	REAL*8		TM_WORLD, lo, hi
         CHARACTER       rbuff(8)*8, delims*128, c*1
 
 * internal parameter declarations:
         CHARACTER*1     tab
         PARAMETER     ( tab = CHAR(9) )
+
 
 * initiailze
 	its_delimited = ds_type(dset) .EQ. pds_type_ez
@@ -242,8 +249,19 @@
 	   hi = TM_WORLD( len, grid, t_dim, box_middle )
 	   line = LOHI_STRING( lo,hi,t_dim,grid,' to ',ax_dec_pt(i),dlen )
 	   CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
-	   CALL SPLIT_LIST(pttmode_explct, lun,
+
+* calendar name?  only if not Gregorian.
+	   cal_name = TM_GET_CAL (grid)
+	   cal_id = TM_GET_CALENDAR_ID (cal_name)
+	   IF (cal_id .GT. gregorian .AND. cal_id .LT. max_calendars) THEN
+	      len_cal = TM_LENSTR(cal_name)
+	      CALL SPLIT_LIST(pttmode_explct, lun,
+     .	       '  time range: '//line(:dlen)//
+     .	       ' Calendar:'//cal_name(:len_cal), 0) 
+	   ELSE
+	      CALL SPLIT_LIST(pttmode_explct, lun,
      .			'  time range: '//line(:dlen), 0) 
+	   ENDIF
 	ENDIF
 
 * show the data-set-specific user-defined variables

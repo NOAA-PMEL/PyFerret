@@ -44,6 +44,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V312:  6/2/94
+* V530: *acm* 12/00 alternative calendar types; cal_id
+*             return source and dest cal_ids for get_linear_coef
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -68,8 +70,9 @@
 
 * internal variable declarations:
 	LOGICAL TM_DATE_OK
-	INTEGER	src_line, dst_line
-	REAL*4	usrc, udst
+	INTEGER	TM_GET_CALENDAR_ID ,
+     .          src_line, dst_line, src_cal_id, dst_cal_id
+	REAL*4	CAL_FACTR, usrc, udst, factor
 	REAL*8  SECS_FROM_BC, at0src, at0dst
 
 * initialize
@@ -81,24 +84,44 @@
 * is possible
 	IF ( src_grid .EQ. unspecified_int4
      .	.OR. dst_grid .EQ. unspecified_int4 ) STOP 'TDEST_WORLD_INIT'
+
 	src_line = grid_line( t_dim, src_grid )
 	dst_line = grid_line( t_dim, dst_grid )
+
+        src_cal_id = TM_GET_CALENDAR_ID ( line_cal_name(src_line) )
+        dst_cal_id = TM_GET_CALENDAR_ID ( line_cal_name(dst_line) )
+
+
 	IF ( src_line .EQ. mnormal .OR. src_line .EQ. munknown
      .	.OR. dst_line .EQ. mnormal .OR. dst_line .EQ. munknown )
      .		CALL ERRMSG( ferr_internal, status,
      .				'date regrid on missing T axis', *5000 )
 	IF ( line_direction(src_line) .NE. 'TI'
      .	.OR. line_direction(dst_line) .NE. 'TI' ) RETURN
-	IF ( .NOT. (TM_DATE_OK(line_t0(src_line)) 
-     .	       .AND.TM_DATE_OK(line_t0(dst_line))) ) RETURN
+
+	IF ( .NOT. (TM_DATE_OK(line_t0(src_line), src_cal_id) 
+     .	       .AND.TM_DATE_OK(line_t0(dst_line), dst_cal_id)) ) RETURN
 
 * determine the units and absolute T0 for the two axes
 	usrc = un_convert( line_unit_code(src_line) )
 	udst = un_convert( line_unit_code(dst_line) )
-	at0src = SECS_FROM_BC( line_t0(src_line), status )
+
+	at0src = SECS_FROM_BC( line_t0(src_line), src_cal_id, status )
 	IF ( status .NE. ferr_ok ) RETURN
-	at0dst = SECS_FROM_BC( line_t0(dst_line), status )
+	at0dst = SECS_FROM_BC( line_t0(dst_line), dst_cal_id, status )
 	IF ( status .NE. ferr_ok ) RETURN
+
+        IF (dst_cal_id .NE. 1) THEN
+           factor = CAL_FACTR (dst_cal_id)
+	   udst = udst* factor
+	   at0dst = at0dst* factor
+	ENDIF
+
+        IF (src_cal_id .NE. 1) THEN
+	   factor = CAL_FACTR (src_cal_id)
+	   usrc = usrc* factor
+	   at0src = at0src* factor
+	ENDIF
 
 * determine the slope and intercept to be used in TDST_WORLD regridding
 	tcnvrt_slope = usrc/udst

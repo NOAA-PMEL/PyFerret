@@ -17,10 +17,12 @@
 *		 - remove line_parm1 (unused)
 *		 - dimension line_parent and line_class for all lines
 *	*sh* 5/00 - add line_keep_flag for "solo" lines defined by a file
+*  * acm* 12/00  - add line_cal_name for alternative calendar types
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
 	CHARACTER*64	line_name
+	CHARACTER*32	line_cal_name
 	CHARACTER*16	line_units, grid_name
 	CHARACTER*2	line_direction, axis_orients
 	INTEGER		line_subsc1, line_dim, line_unit_code, grid_line,
@@ -59,6 +61,7 @@
      .			line_keep_flag  ( 0:line_ceiling ),
      .			line_free_ptr,
      .			max_line_used,
+     .			line_cal_name  ( 0:line_ceiling ),
      .
      .			grid_name	( 0:grid_ceiling ),
      .			grid_line	( 4, 0:grid_ceiling ),

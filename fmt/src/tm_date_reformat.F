@@ -1,4 +1,4 @@
-	SUBROUTINE TM_DATE_REFORMAT( indate,  inform,
+	SUBROUTINE TM_DATE_REFORMAT( indate,  inform, cal_id, 
      .				     outdate, outform, status)
 *
 *
@@ -39,16 +39,18 @@
 * format outform
 
 * *sh* 2/13/95
+* *acm* needs cal_id to pass to tm_break_fmt_date
 *
 * Arguments:
 *	indate	 - input date string
 *	inform	 - code for input format
+*       cal_id id for calendar type of input date
 *	outdate	 - output date string
 *	outform	 - code for output format
 *	status   - returning status
 *
 	CHARACTER*(*)	indate, outdate
-	INTEGER		inform, outform, status
+	INTEGER		inform, outform, status, cal_id
 *
 * Inclusions
 *
@@ -63,9 +65,9 @@
 *
 	INTEGER	year, month, day, hour, minute, second, dlen
 
-* Break up the input date string to it's various components
-	CALL TM_BREAK_FMT_DATE ( inform, indate, year, month, day,
-     .				    hour, minute, second, status )
+* Break up the input date string to its various components
+	CALL TM_BREAK_FMT_DATE ( inform, indate, cal_id, year, 
+     .                        month, day, hour, minute, second, status )
 	IF ( status .NE. merr_ok ) GOTO 9000
 
 * and reassemble it into the desired output format

@@ -60,7 +60,7 @@
 *                    name to 64 from 24 to match longer line_name
 * V530 *sh* 12/00 - avoid performance problems of switching between netCDF
 *	DEFINE and DATA mode by deferring actual coordinate writes until later
-
+* v530 *acm* 1/01  calendar axes: write the calendar name if non-Gregorian
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -111,6 +111,7 @@ xx        include 'netcdf.decl'  ! untested
       INTEGER TM_LENSTR1, CD_AXLEN, NCDID, NCVID, NCDDEF, NCVDEF,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, npts
+      INTEGER TM_GET_CALENDAR_ID, cal_id
 !      INTEGER vartype, nvdims, vdims(6), nvatts
 !      LOGICAL condensed
 !      REAL rlen
@@ -202,8 +203,13 @@ xx        include 'netcdf.decl'  ! untested
 !         CALL NCAPT( cdfid, axid, 'true_size', NCLONG, 1, npts,
 !     .        cdfstat )
 !      ENDIF
+      
       IF ( line_units(iaxis) .NE. ' ' ) THEN
 	 units = line_units(iaxis)	 
+
+         IF ( line_direction(iaxis) .EQ. 'TI') 
+     .        cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
+
 	 IF ( line_direction(iaxis) .EQ. 'WE'
      .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
 	    units = 'degrees_east'
@@ -211,26 +217,42 @@ xx        include 'netcdf.decl'  ! untested
      .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
 	    units = 'degrees_north'
 	ELSEIF ( line_direction(iaxis) .EQ. 'TI'
-     . .AND. TM_DATE_OK( line_T0(iaxis) )    ) THEN
+     . .AND. TM_DATE_OK( line_T0(iaxis),cal_id )    ) THEN
             slen = TM_LENSTR1( line_units(iaxis) )
 	    units = line_units(iaxis)(:slen)//' since '
-	    CALL TM_DATE_REFORMAT(line_T0(iaxis),pdate_vax,
+	    CALL TM_DATE_REFORMAT(line_T0(iaxis),pdate_vax,cal_id,
      .				  units(slen+8:),pdate_numslashnum,
      .				  status )
+
+C  ACM  kludge just for testing!!!
+      IF (line_cal_name(iaxis) .EQ. 'TMAP_360')
+     .                                     line_t0(iaxis)(4:6)  = 'JER'
+
 	    IF ( status .NE. merr_ok ) GOTO 5900
 	ENDIF
         slen = TM_LENSTR1( units )
         CALL NCAPTC( cdfid, axid, 'units', NCCHAR, slen,
      .        	      units(:slen), cdfstat )
+
       ENDIF
       IF ( idim .EQ. t_dim ) THEN                  ! 4/93 update
+        cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
 	IF ( line_direction(iaxis) .EQ. 'TI'
-     . .AND. TM_DATE_OK( line_T0(iaxis) )    ) THEN
+     . .AND. TM_DATE_OK( line_T0(iaxis), cal_id )    ) THEN
             slen = TM_LENSTR1( line_T0(iaxis) )
             CALL NCAPTC( cdfid, axid, 'time_origin', NCCHAR, slen,
      .           line_T0(iaxis)(:slen), cdfstat )
 	ENDIF
+
+!  Write the calendar name
+
+        IF (cal_id .NE. 1) THEN
+          slen = TM_LENSTR1( line_cal_name(iaxis) )
+          CALL NCAPTC( cdfid, axid, 'calendar', NCCHAR, slen,
+     .        	      line_cal_name(iaxis)(:slen), cdfstat )
+        ENDIF
       ENDIF
+
       IF ( line_modulo(iaxis) ) THEN
          CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
       ENDIF

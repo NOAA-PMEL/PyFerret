@@ -1,4 +1,5 @@
-	SUBROUTINE EQUAL_RANGE_T( string,idim,grid,lo,hi,delta,status )
+	SUBROUTINE EQUAL_RANGE_T( string,idim,grid,lo,hi,delta,cal_id,
+     .				status )
 
 *
 *
@@ -48,9 +49,10 @@
 
 * V3.00  20/10/93 - *sh*
 * V522 7/00 *sh* - added add'l argument to EQUAL_RANGE
+* V5.3 *ACM* 3/01  send cal_id to EQUAL_RANGE_T
 
 * calling argument declarations
-	INTEGER		idim, grid, status
+	INTEGER		idim, grid, cal_id, status
 	REAL*8		lo, hi, delta
 	CHARACTER*(*)	string
 
@@ -70,9 +72,9 @@
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 #endif
 
-* first get EQUALL_RANGE to convert the data normally
+* first get EQUAL_RANGE to convert the data normally
 	CALL EQUAL_RANGE( string, idim, lo, hi, delta,
-     .			  formatted,  range_rqd, status )
+     .			  formatted,  range_rqd, cal_id, status )
 	IF ( status .NE. ferr_OK ) RETURN
 
 	IF ( idim .EQ. t_dim ) THEN

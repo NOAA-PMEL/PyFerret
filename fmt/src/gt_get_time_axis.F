@@ -72,6 +72,8 @@
 *				     a problem in linux/nag f90, so we added a small
 *				     number (dp_epsilon = 1.d-10) to make sure INT operation
 *			   	     would give the correct integer.
+* 12/00  *acm*		add cal_id for alternative calendar axes.
+
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
 *	status  - the returning status
@@ -112,6 +114,7 @@
      .			i1, i2, i3, i4, i5, i6, iunit, nline,
      .			nsteps_in_file,i			!*kob*
 	INTEGER*4	TM_FIND_LIKE_LINE
+        INTEGER         TM_GET_CALENDAR_ID, cal_id
 	LOGICAL		TM_FPEQ, TM_CHECK_BOX_LOC
 	REAL*8		delta, prev_lastep, itt		!*kob* 8/96
 	REAL *8		dp_epsilon			!*kob* 5/97
@@ -194,6 +197,9 @@
 * ... name?
 	CALL TM_NEW_LINE_NAME('TIME',line_name(scr))
 
+* ... calendar name?
+	line_cal_name(scr) = ds_cal_name(dset_num)
+
 * ...Time_step units
 	line_t0(scr)        = ds_t0time(dset_num)
 	line_tunit(scr)     = ds_time_unit(dset_num)
@@ -211,7 +217,10 @@
  140	line_modulo(scr)    = .FALSE.
 
 * ...Check if time/date string conversion is possible
-	CALL TM_BREAK_DATE( line_t0(scr), i1,i2,i3,i4,i5,i6,status )
+
+        cal_id = TM_GET_CALENDAR_ID (line_cal_name(scr))
+	CALL TM_BREAK_DATE( line_t0(scr),cal_id,
+     .                      i1,i2,i3,i4,i5,i6,status )
 	IF ( line_tunit(scr) .LE. 0       .OR.
      .	     line_t0(scr)    .EQ. ' '     .OR.
      .	     status          .NE. merr_ok      ) THEN

@@ -1,4 +1,4 @@
-	CHARACTER*(*) FUNCTION SECS_TO_DATE ( num_secs )
+	CHARACTER*(*) FUNCTION SECS_TO_DATE ( num_secs, cal_id )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -44,16 +44,18 @@
 *
 * revision 0.0 - code pulled from TM_SECS_TO_DATE
 * revision 1.0 - 2/22/89 - calls TM_SECS_TO_DATE
+* V530: *acm* 12/00 add calendar types; cal_id
 
 * Calling argument declarations:
 	REAL*8		num_secs
+	INTEGER		cal_id
 
 * internal variable declarations
 	INTEGER		year
 	CHARACTER	TM_SECS_TO_DATE*20, temp_str*20
 
 * convert to date string always including year
-	temp_str = TM_SECS_TO_DATE( num_secs )
+	temp_str = TM_SECS_TO_DATE( num_secs, cal_id )
 
 * determine year from dd-mmm-$_:hh:mm:ss
 	READ ( temp_str, '(7X,I4)', ERR=5000 ) year

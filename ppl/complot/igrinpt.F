@@ -1,6 +1,15 @@
-      FUNCTION IGRNPT(X,Y)
+      FUNCTION IGRNPT(show_menu, X,Y)
 C** 
 C**    @(#)igrinpt.F	1.2    3/27/88
+
+*    modified 6/99 for Ferret V500 *sh* -- added new arguments and
+*       return COMMON XGRINPT with information about what was digitized
+*       New arguments:
+*               show_menu
+*    Note: this routine should really be split into two -- one to put up
+*       the choice menu, another to get the position input. Taking the lazy
+*       approach now ...
+
 C**
 C**
 C***********************************************************************
@@ -75,6 +84,7 @@ C
 
 C
 C
+        LOGICAL show_menu
 #ifndef core
 C
 C	GKS DATA FOR CHOICE AND LOCATOR INPUT
@@ -105,6 +115,7 @@ c
 C
 #ifdef unix
 	include 'PLTCOM.DAT'
+        include 'xgrinpt.cmn'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif
@@ -129,6 +140,8 @@ CC	Linux port:
 #else
 	data 	octal37/'37'O/
 #endif
+
+        DATA has_new_mouse/ .FALSE. /   ! at program initialization
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
@@ -216,12 +229,12 @@ C
 	    STRING(4) = 'Center'
 	    STRING(3) = 'Right'
 	    STRING(2) = 'Line'
-	    STRING(1) = 'Fancy line'
+	    STRING(1) = 'Arrow'
 	    SIZES(5) = 4
 	    SIZES(4) = 6
 	    SIZES(3) = 5
 	    SIZES(2) = 4
-	    SIZES(1) = 10
+	    SIZES(1) = 5
 
 #ifndef xgks
 	    PET = 1
@@ -244,8 +257,11 @@ C
 	    CALL GINCH(1,1,1,5,PET,EAREA(1),EAREA(2),EAREA(3),
      *	    EAREA(4),LDR,RECORD)
 
-	    CALL GRQCH(1,1,ISTAT,ICHOICE)
-
+        IF (show_menu) THEN     ! **************
+	    CALL GRQCH(1,1,ISTAT,ICHOICE)       ! put up menu and get answer
+        ELSE
+            ichoice = 5         ! always left justified
+        ENDIF                   ! **************
 	    IGRNPT=CHCE(ICHOICE)
 	    CALL GSVPIP(1,0,0)
 	    CALL GQLCS(1,1,1,7,ERRIND,MODE,ESW,XFORM,LOCX,LOCY,
@@ -261,7 +277,7 @@ C
      *	    EAREA(3),EAREA(4),LDR,RECORD)
 #endif
 	    CALL GSLCM(1,1,0,1)
-	    CALL GRQLC(1,1,ISTAT,XFORM,LOCX,LOCY)
+	    CALL GRQLC(1,1,ISTAT,XFORM,LOCX,LOCY)  ! get mouse click (X,Y)
 	    CALL GQNT(XFORM,ERRIND,WIND,VIEW)
 	    AOLD= LOCX
 	    BOLD= LOCY
@@ -453,6 +469,12 @@ C
       SAVEF = .TRUE.
       X = XNEW / XSCALE
       Y = YNEW / YSCALE
+
+* 6/99 send the results back to Ferret through COMMON
+        has_new_mouse = .TRUE.
+        xmouse = x
+        ymouse = y
+
 C
 C     RESET THE GRAPHICS FLAG.
 C

@@ -1,0 +1,6 @@
+* information about mouse actions that have just occured
+
+        COMMON / XGRINPT / has_new_mouse, xmouse, ymouse
+        LOGICAL has_new_mouse
+	REAL	xmouse, ymouse
+

@@ -46,6 +46,7 @@ C**
 *
 *
 *     MOD *JD* 10.91 to eliminate PLOT COMPLETE msg if in ferret
+*     MOD *sh* 6/99 with changes to IGRNPT call
 
 #ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
@@ -137,7 +138,7 @@ C**
      *	    LLTYPE(I),SHFT,XMN,CS,SN,XF,YF,HLB)
 	    GOTO 70
 	ENDIF
-	ICHAR=IGRNPT(XL,YL)
+	ICHAR=IGRNPT(.TRUE., XL,YL)	! show the choice menu
 	LTY=-1
 	IF(ICHAR.EQ.67.OR.ICHAR.EQ.99)THEN
 	    LTY=0
@@ -151,7 +152,7 @@ C**
 	    XL2=XL
 	    YL2=YL
 	    ICHARO=ICHAR
-	    ICHAR=IGRNPT(XL,YL)
+	    ICHAR=IGRNPT(.FALSE., XL,YL) ! do not show the choice menu again
 	    IF(ICHAR.EQ.67.OR.ICHAR.EQ.99)THEN
 		SHFT=-XMN*.5
 		LTY=0

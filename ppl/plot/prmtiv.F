@@ -35,6 +35,11 @@
 *
 *
 C**    @(#)prmtiv.F	1.1    3/10/88
+
+* modified 6/99 *sh*
+*	added mouse input (CALL IGRNPT) to %LABEL
+*	added %WHERE mouse input command
+
 C**
 C**
 C***********************************************************************
@@ -104,6 +109,9 @@ c		ipos		-1 left, 0 none, +1 right of label
 c		csize		character size inches
 c		frmt		axis format char*20
 c
+c	%WHERE
+c		N/A
+
 	DIMENSION X(NXS)
 C
 #ifdef unix
@@ -154,6 +162,10 @@ C
 C
 	CHARACTER FRMTX*20,SYM*30
 	LOGICAL SVQIET,SVLOG,CLEAR
+
+	LOGICAL mouse_input, need_justify, need_arrow
+	INTEGER	IGRNPT, idummy, ichoice, iat
+	REAL xp, yp
 C
 
 	EXTERNAL range, scale, size
@@ -440,6 +452,44 @@ C***	%LABEL
 C
 	ELSE IF(ICOM.EQ.'%LABEL')THEN
 	    IF(N.EQ.0)RETURN
+
+* get missing inputs interactively -- through mouse input (6/99)
+* ... if the user **explicitly** omits the justification (iflg(3)) then
+*	put up menu (including arrow options)
+	    mouse_input = m.LE.2 .OR. iflg(1).EQ.0 .OR. iflg(2).EQ.0
+	    need_arrow = .FALSE.
+	    IF ( mouse_input ) THEN
+	      need_justify = m.GE.3 .AND. iflg(3).EQ.0
+	      ichoice = IGRNPT(need_justify, xp, yp)	! mouse input
+	      need_arrow =   ichoice.EQ.70 .OR. ichoice.EQ.102
+     .			.OR. ichoice.EQ.76 .OR. ichoice.EQ.108
+	      IF (need_arrow) THEN
+* ... user wants a line pointing to the text
+	         idummy = IGRNPT(.FALSE., p(1), p(2))
+	         p(3) = -1	! left justify
+	         IF( ichoice.EQ.70 .OR. ichoice.EQ.102 )THEN	 ! arow head?
+	           iat = 2
+	         ELSE
+	           iat = 1
+	         ENDIF
+	      ELSE
+* ... user just wants text
+	         p(1) = xp
+	         p(2) = yp
+	         IF (ichoice .EQ. 67 .OR. ichoice.EQ.99) THEN
+	           p(3) = 0	! center
+	         ELSE  IF (ichoice .EQ. 82 .OR. ichoice.EQ.114) THEN
+	           p(3) = 1	! right justify
+	         ELSE	
+	           p(3) = -1	! left justify
+	         ENDIF
+	      ENDIF
+	      iflg(1) = 1
+	      iflg(2) = 1
+	      iflg(3) = 1
+	      IF (m.LT.3) m = 3
+	    ENDIF
+
 C
 C	SET SCALE FOR LABEL
 C
@@ -459,7 +509,7 @@ C
 	    ELSE
 	    	CHSIZE=HLAB1
 	    ENDIF
-	    IF(SUSER)THEN
+	    IF(SUSER .OR. mouse_input)THEN	! mouse is always /USER
 	    	XFUSER=1.
 		YFUSER=1.
 		YLOUSR=0.
@@ -481,8 +531,17 @@ C
 	    ENDIF
 	    XT=P(1)/XFUSER+XLOUSR+SHFT*CS/XFF
 	    YT=P(2)/YFUSER+YLOUSR+SHFT*SN/YFF
+	    IF (need_arrow) CALL ARROW(p(1),p(2),xp,yp,
+     .				IAT,SHFT,XMN,CS,SN,XFF,YFF,chsize)
 	    CALL SYMBEL(XT,YT,ANG,CHSIZE,N,LABEL)
-	ENDIF
 C
+C
+C***	%WHERE
+C
+	ELSE IF(ICOM.EQ.'%WHERE')THEN
+	    idummy = IGRNPT(.FALSE., p(1), p(2))	! mouse input
+
+	ENDIF
+
 	RETURN
 	END

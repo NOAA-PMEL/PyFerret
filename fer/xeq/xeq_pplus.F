@@ -46,15 +46,19 @@
 * revision 0.1 - 9/8/88 - added /RESET option
 * revision 0.2 - 1/31/89 - added PPLUS interruptibility
 * Unix/RISC port - 10/9/91 - check to see if user changes ylen or yorg
+* V500 *sh* 6/99 - for commands %LABEL and %WHERE define PLOT+ symbols
+*			mode verify output, and journal file comments
 
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
+	include	'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xplot_setup.cmn'    ! added 10/9/91
         include 'axis_inc.decl'  ! added 10/9/91 for ylen,yorg
         include 'AXIS.INC'            ! added 10/9/91 for ylen,yorg
+	include 'xgrinpt.cmn'	! 6/99 w/ mouse input
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -66,7 +70,10 @@
 #endif
 	
 * local variable declarations:
+	LOGICAL	ver_out, jnl_out
+	INTEGER TM_LENSTR1, slen
         REAL temp_ylen, temp_yorg
+	CHARACTER*16 vbuff
 
 * local parameter declarations:
 	INTEGER		slash_reset
@@ -96,6 +103,42 @@
 	   ppl_interrupted = .FALSE.			! since interactive
 	ENDIF
 
+* check to see if mouse input was done -- take action if so (6/99)
+	IF (has_new_mouse) THEN
+	   jnl_out = mode_journal .AND. jrnl_lun .NE. unspecified_int4
+	   ver_out = mode_verify 
+* ... define symbols and output them as comments to user and journal file
+	   vbuff = ' '
+	   WRITE ( vbuff, '(1PG16.7)' ) xmouse
+           WRITE ( ppl_buff, 3100 ) 'X', vbuff
+           CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	   WRITE ( ppl_buff, 3200 ) 'X', vbuff
+	   slen = TM_LENSTR1(ppl_buff)
+           IF (jnl_out) WRITE (jrnl_lun,'(A)') ppl_buff(:slen)
+	   IF (ver_out) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .					ppl_buff, slen )
+
+	   vbuff = ' '
+	   WRITE ( vbuff, '(1PG16.7)' ) ymouse
+           WRITE ( ppl_buff, 3100 ) 'Y', vbuff
+           CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	   WRITE ( ppl_buff, 3200 ) 'Y', vbuff
+	   slen = TM_LENSTR1(ppl_buff)
+           IF (jnl_out) WRITE (jrnl_lun,'(A)') ppl_buff(:slen)
+	   IF (ver_out) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .					ppl_buff, slen )
+* ... house-keeping
+	   has_new_mouse = .FALSE.		! RESET !!
+	   IF (jnl_out) THEN
+#ifdef AIX_XLF
+              CALL FLUSH(jrnl_lun)
+#endif
+#ifdef solaris
+              CALL FLUSH(jrnl_lun)
+#endif
+	   ENDIF
+	ENDIF
+
 * check to see if ylen or yorg has been changed
 * if so, parameters saved prior to distorting yaxis are invalidated
         IF ( ylen .NE. temp_ylen ) ppl_saved_yaxlen = ylen
@@ -103,5 +146,7 @@
 
 	RETURN
 
+ 3100   FORMAT('SET ',A1,'MOUSE ', A)       ! "SET ?MOUSE position_string"
+ 3200	FORMAT(' !-> DEFINE SYMBOL ',A1,'MOUSE = ',A)
 	END
 

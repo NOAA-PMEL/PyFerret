@@ -1,0 +1,74 @@
+\cancel mode verify
+! mp_mask_outline.jnl
+! 
+! *acm 6/01 
+
+! Description: For a plot using map projections, define a contour field with 
+!              squared off lines for a 1-0 mask
+!              See mask_outline.jnl for a description of the technique.
+
+!usage: GO mp_mask_outline mask [xax_start] [yax_start] x_page y_page
+! xax_start - optional argument giving the lower bound of the first (I=1) grid
+!             cell on the X axis of the mask. If omitted the default value
+!             used will be X[I=1] - XBOX[I=1]/2 -- i.e. the assumption is that
+!             the first point on the X axis is centered within its grid cell
+! yax_start - ditto for the y axis
+! x_page      map projection coordinates
+! y_page      map projection coordinates
+
+
+! example with map projection
+!   yes? use etopo60
+!   yes? set region/x=90w:20e/y=15s:55n
+!   yes? go mp_orthographic 315 35
+!   yes? set grid rose
+!   yes? go mp_aspect
+!   yes? shade rose, x_page, y_page
+!
+!   yes? let ocean_mask = IF rose LT 0 THEN 1 ELSE 0 
+!   yes? GO mp_mask_outline ocean_mask, , , x_page, y_page
+!   yes? mp_ovmo
+
+! if the final line segments at the north and east of the plot are missing
+!   yes? cancel region
+!   yes? mp_ovmo
+
+! use "yes? SHOW ALIAS *ovmo" to see or modify the contour command
+
+
+!Set up to call mask_outline.jnl
+
+!  See if the second and third arguments were specified -- call with null
+!  arguments if not.
+
+def symbol secondarg = $2"null2"
+def symbol thirdarg  = $3"null3"
+
+IF ($secondarg%|null2>TRUE|%) THEN
+   IF ($thirdarg%|null3>TRUE|%) THEN
+     GO mask_outline $1, , ,  $4, $5
+   ELSE
+     GO mask_outline $1, , $3, $4, $5 
+   ENDIF
+ELSE
+   IF ($thirdarg%|null3>TRUE|%) THEN
+     GO mask_outline $1, $2, $3, $4, $5
+   ELSE
+     GO mask_outline $1, $2, , $4, $5 
+   ENDIF
+ENDIF
+
+! Regrid x_page and y_page to x_page_mo and y_page_mo
+
+let $4_mo = $4[GX=MO_XAXIS,GY=MO_YAXIS]
+let $5_mo = $5[GX=MO_XAXIS,GY=MO_YAXIS]
+
+DEFINE ALIAS mp_ovmo "ovmo , $4_mo, $5_mo"
+
+say *** Use the command alias "mp_ovmo" to overlay the mask outline on a map projection***
+
+! clean up
+cancel variables mo_*
+cancel symbols mo_*
+
+set mode/last verify

@@ -1,8 +1,6 @@
 	SUBROUTINE INTERP_STACK ( memory, isp_base, dflt_cx,
      .				  name_code, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -86,6 +84,10 @@
 *		(cx_delta is now used by netCDF vars to signal that the
 *		read_tm should use strides)
 * V510: 8/99 *sh* handle isact_sample
+* V530: 11/00 *sh* - perform RESTRICT_FILE_LIMITS before recheck FIND_MEM_VAR
+*		for improved cache hits (case; ASCII file reads where EZ axis
+*		exceeds actual file size misses cache because
+*		COMPLETE_MISSING_LIMITS inserts full EZ ax limits)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -366,9 +368,13 @@
 	ELSEIF ( cat .EQ. cat_file_var
      .	.OR.     cat .EQ. cat_file_rev	) THEN
 
-* ... kludge to avoid re-reading when regions aren't fully specified 2/90
 	   IF ( cat .EQ. cat_file_var ) THEN
-	      look_again = .FALSE.
+
+* ... trim context limits to what is available in file (ds_grid_start/end)
+	      CALL RESTRICT_FILE_LIMITS( cx, look_again, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+
+* ... kludge to avoid re-reading when regions aren't fully specified 2/90
 	      DO 300 idim = 1, 4
 	         IF ( cx_lo_ss( cx, idim ) .EQ. unspecified_int4 ) THEN
 		    IF ( CGRID_AXIS(idim,cx) .EQ. mnormal ) GOTO 300
@@ -387,10 +393,6 @@
 	         ENDIF
 	      ENDIF
 	   
-* ... trim context limits to what is available in file (ds_grid_start/end)
-	      CALL RESTRICT_FILE_LIMITS( cx, status )
-	      IF ( status .NE. ferr_ok ) GOTO 5000
-
 * ... check to see if any axes need reversal
 	      IF ( TM_AXES_REVERSED(var,rev_axes) .GT. 0 ) THEN
 	         CALL IS_STRIP( isact_class_reverse, 1, *10, status )

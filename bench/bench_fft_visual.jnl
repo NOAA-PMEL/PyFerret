@@ -4,6 +4,8 @@
 !   FFTA function computes the FFT amplitude spectrum.  
 !   FFTP function computes the FFT phase
 
+SET MODE IGNORE_ERRORS
+
 SAY The message *** NOTE: unknown axis units: FREQ  is informational.  fcn still works.
 
 SET WIND/CLEAR
@@ -85,3 +87,5 @@ LET vw_fft = ffta(vw_tim[l=2:23])
 
 SAY This one is ok
 PLOT vw_fft
+
+CANCEL MODE IGNORE_ERRORS

@@ -10,7 +10,7 @@
 # Macro Definitions
 #
 
-DIRS = examples  v5d
+DIRS = examples
 
 #
 # Targets

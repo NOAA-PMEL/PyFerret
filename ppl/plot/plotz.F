@@ -71,8 +71,9 @@ C
 * V540 10/01 *acm Set LWGT, LDIG when using previously defined levels; have 
 *                 not been set if previous call was SHADE
 * V540 10/01 *acm remove VMS include statements
-
 * V540 12/01 *acm* do NOT set LWGT, LDIG here; set them in SHADE
+* V541  5/02 *acm* Check that number levels not greater than size of 
+*                  LWGT, LDIG, and ZLEV; issue an error message.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -87,9 +88,12 @@ C
 	INCLUDE 'LINES.INC'
 	INCLUDE 'PLTL.INC'
 	include 'xcurvilinear.cmn'
+        INCLUDE 'errmsg.parm'
 
 **	DIMENSION Z(NX,NY)
 	REAL	  Z(NX,NY)
+        INTEGER   status, slen1, slen2
+        CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
@@ -183,6 +187,8 @@ C       lwgt()
 C       =1 standard line
 C       =2 heavy line
 C       =3 dashed line
+
+              IF (NLEV2 .GT. ICNLEV) GO TO 5000
 
 	      DO 100 I=1,NLEV2
 		 LWGT(I)=2
@@ -408,4 +414,16 @@ C
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 
 	RETURN
+
+C  Error exit when too many levels specified.
+C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
+
+ 5000   ii = ICNLEV
+        buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
+        buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
+        err_msg = '# of contour levels > '// buff1(1:slen1) //
+     .          '  (' // buff2(1:slen2) // ')'
+        CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
+ 5002   return
+
 	END

@@ -93,8 +93,9 @@
 	INTEGER next_free_line
 
 * take a line from the "free" list and put it on the "used" list
-	IF ( line .NE. 0 ) THEN
+	IF ( line_free_ptr .NE. 0 ) THEN
 * ... unhook from free list
+	   line			= line_free_ptr
 	   next_free_line  	= line_flink(line)
 	   line_free_ptr	= next_free_line
 * ... hook onto front of used list
@@ -105,8 +106,7 @@
 	ELSE
 	   CALL TM_ERRMSG (merr_linelim, status,
      .                  'TM_ALLO_DYN_LINE', no_descfile, no_stepfile,
-     .                  '>num_dyn_lines dynamic lines',
-     .                  no_errstring, *9999)
+     .                  no_errstring, no_errstring, *9999)
 	ENDIF
 
 * flag it as in NOT use - its use count gets bumbed when used by a grid or

@@ -40,6 +40,8 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 *
 * 9/13/95 for Ferret version 4.2
+* V510 *sh* 3/00 - initialize "hooks" for managing temporary grids and lines
+*      *sh* 5/00 - set line_keep_flag everywhere to FALSE
 
 * Include files
 #ifdef unix
@@ -67,6 +69,9 @@
 * grid(max_grids) is used as the chain start for the "in-use" grids
 	grid_flink(max_grids) = max_grids	! points to self: empty chain
 
+* grid(tmp_grid_hook) is used as the chain start for the "temporary" grids
+	grid_flink(tmp_grid_hook) = tmp_grid_hook  ! points to self: empty
+
 * no "dynamic" grids (above max_grids) are "used" (yet)
 	DO 100 i = 1, max_dyn_grids
  100	grid_use_cnt(i) = 0
@@ -81,10 +86,14 @@
 * line(max_lines) is used as the chain start for the "in-use" lines
 	line_flink(max_lines) = max_lines	! points to self: empty chain
 
+* line(tmp_line_hook) is used as the chain start for the "temporary" lines
+	line_flink(tmp_line_hook) = tmp_line_hook  ! points to self: empty
+
 * no "dynamic" lines (above max_lines) are "used" (yet)
 	DO 300 i = 1, max_dyn_lines
 	   line_use_cnt  (i) = 0
 	   line_has_edges(i) = .FALSE.
+	   line_keep_flag(i) = .FALSE.
  300	CONTINUE
 	DO 310 i = max_lines+1, max_dyn_lines
 	   line_parent(i) = 0

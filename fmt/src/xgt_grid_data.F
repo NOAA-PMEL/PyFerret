@@ -57,9 +57,12 @@
 *			       to speed compilation and decrease mem needs.
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+* V510 *sh* 3/00 - initialize through line/grid_ceiling -- for dynamic netCDF
+*			grid and line management
 
 #ifdef unix
 	include 'tmap_dims.parm'
+	include 'implicit.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xunits.cmn_text'
@@ -78,8 +81,8 @@
 
 	PARAMETER	(ngrd_def	= 5,
      .			 nlne_def	= 6,
-     .			 grids_left	= max_grids-ngrd_def,
-     .			 lines_left	= max_lines-nlne_def,
+     .			 grids_left	= grid_ceiling-ngrd_def,
+     .			 lines_left	= line_ceiling-nlne_def,
      .			 grid_lines_left= 4*grids_left,
      .			 pline_mem_next	= 514,
      .			 pline_mem_left = maxlinestore-pline_mem_next+1 )
@@ -223,52 +226,58 @@
 * initialize the unused grid common locations
 	DATA	grid_filename	/maxgridfiles*char_init128/
 
-	DATA	(line_name(i),i=nlne_def+1,max_lines)
+	DATA	(line_parent(i),i=1,line_ceiling)
+     .			/line_ceiling*0/
+
+	DATA	(line_class(i),i=1,line_ceiling)
+     .			/line_ceiling*pline_class_basic/
+
+	DATA	(line_name(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*char_init16/
 
-	DATA	(line_subsc1(i),i=nlne_def+1,max_lines)
+	DATA	(line_subsc1(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*int4_init/
 
-	DATA	(line_dim(i),i=nlne_def+1,max_lines)
+	DATA	(line_dim(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*int4_init/
 
-	DATA	(line_units(i),i=nlne_def+1,max_lines)
+	DATA	(line_units(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*char_init16/
 
-	DATA	(line_unit_code(i),i=nlne_def+1,max_lines)
+	DATA	(line_unit_code(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*int4_init/
 
-	DATA	(line_direction(i),i=nlne_def+1,max_lines)
+	DATA	(line_direction(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*char_init02/
 
-	DATA	(line_start(i),i=nlne_def+1,max_lines)
+	DATA	(line_start(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*real8_init/
 
-	DATA	(line_delta(i),i=nlne_def+1,max_lines)
+	DATA	(line_delta(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*real8_init/
 
-	DATA	(line_regular(i),i=nlne_def+1,max_lines)
+	DATA	(line_regular(i),i=nlne_def+1,line_ceiling)
      .			/lines_left*.FALSE./
 
-	DATA	(line_t0(i),i=1,max_lines)
-     .			/max_lines*char_init20/
+	DATA	(line_t0(i),i=1,line_ceiling)
+     .			/line_ceiling*char_init20/
 
-	DATA	(line_tunit(i),i=1,max_lines)
-     .			/max_lines*real4_init/
+	DATA	(line_tunit(i),i=1,line_ceiling)
+     .			/line_ceiling*real4_init/
 c comment out to speed compilation and decrease mem needs *kob* 7/92
 c	DATA	(line_mem(i),i=pline_mem_next,maxlinestore)
 c     .			/pline_mem_left*real8_init/
 
-	DATA	(grid_name(i),i=ngrd_def+1,max_grids)
+	DATA	(grid_name(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*char_init16/
 
-	DATA	((grid_line(i,j),i=1,4),j=ngrd_def+1,max_grids)
+	DATA	((grid_line(i,j),i=1,4),j=ngrd_def+1,grid_ceiling)
      .			/grid_lines_left*int4_init/
 
-	DATA	(grid_rotation(i),i=ngrd_def+1,max_grids)
+	DATA	(grid_rotation(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*real4_init/
 
-	DATA	((grid_out_prod(i,j),i=1,4),j=ngrd_def+1,max_grids)
+	DATA	((grid_out_prod(i,j),i=1,4),j=ngrd_def+1,grid_ceiling)
      .			/grid_lines_left*.FALSE./
 
 * DEFINE LINE AND BOX COORDS NEXT TO LAST

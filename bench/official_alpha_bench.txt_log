@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v550
--rwx------   1 kobrien  tmap     44228608 Feb 11 13:51 /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v550
+Running FERRET version /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v551
+-rwx------   1 kobrien  tmap     44228608 Feb 28 12:05 /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v551
 Using external functions from /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/bin
 Benchmark run by kob
-Note: v550 built using osf v4.0 - linked on mambo
+Note: v551 final version - compiled on OSF v4
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/bench
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/alpha
@@ -18,11 +18,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/alpha/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/bin
-Beginning at Tue Feb 11 14:06:56 PST 2003
+Beginning at Fri Feb 28 13:40:14 PST 2003
  	NOAA/PMEL TMAP
- 	FERRET v5.50  
- 	Tru64 V4.0E - 02/11/03
- 	11-Feb-03 14:06     
+ 	FERRET v5.51  
+ 	Tru64 V4.0E - 02/28/03
+ 	28-Feb-03 13:40     
 
 yes? !bn500_all_shell
 yes? 
@@ -10112,10 +10112,10 @@ show symbols/all
 PPL$XPIXEL = "806"
 PPL$YPIXEL = "806"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.50"
+FERRET_VERSION = " 5.51"
 FERRET_PLATFORM = "Tru64 V4.0E"
-SESSION_DATE = "11-Feb-03"
-SESSION_TIME = "14:06"
+SESSION_DATE = "28-Feb-03"
+SESSION_TIME = "13:40"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10131,10 +10131,10 @@ show symbol/all
 PPL$XPIXEL = "806"
 PPL$YPIXEL = "806"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.50"
+FERRET_VERSION = " 5.51"
 FERRET_PLATFORM = "Tru64 V4.0E"
-SESSION_DATE = "11-Feb-03"
-SESSION_TIME = "14:06"
+SESSION_DATE = "28-Feb-03"
+SESSION_TIME = "13:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10142,8 +10142,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "11-Feb-03"
-SESSION_TIME = "14:06"
+SESSION_DATE = "28-Feb-03"
+SESSION_TIME = "13:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10153,13 +10153,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "11-Feb-03"
-SESSION_TIME = "14:06"
+SESSION_DATE = "28-Feb-03"
+SESSION_TIME = "13:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "11-Feb-03"
-SESSION_TIME = "14:06"
+SESSION_DATE = "28-Feb-03"
+SESSION_TIME = "13:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10191,9 +10191,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 5.50"
+LAB1 = "FERRET Ver. 5.51"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Feb 11 2003 14:07:13 "
+LAB3 = "Feb 28 2003 13:41:35 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10292,10 +10292,10 @@ show symbols/all
 PPL$XPIXEL = "806"
 PPL$YPIXEL = "806"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.50"
+FERRET_VERSION = " 5.51"
 FERRET_PLATFORM = "Tru64 V4.0E"
-SESSION_DATE = "11-Feb-03"
-SESSION_TIME = "14:06"
+SESSION_DATE = "28-Feb-03"
+SESSION_TIME = "13:40"
  
  
 GO bn_reset
@@ -18296,7 +18296,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 kobrien  tmap       22971 Feb 11 14:07 bench.mgm
+-rw-rw-r--   1 kobrien  tmap       22969 Feb 28 13:43 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18315,7 +18315,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 kobrien  tmap      417918 Feb 11 14:07 bench.mgm
+-rw-rw-r--   1 kobrien  tmap      417752 Feb 28 13:43 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26467,7 +26467,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.50   11-Feb-03" ;
+		:history = "FERRET V5.51   28-Feb-03" ;
 data:
 
  T5 = 50757969 ;
@@ -26491,7 +26491,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.50   11-Feb-03" ;
+		:history = "FERRET V5.51   28-Feb-03" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26643,7 +26643,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Feb 11 14:08:07 PST 2003
+Fri Feb 28 13:45:05 PST 2003
  
 GO bn_reset
 cancel mode verify
@@ -32645,12 +32645,12 @@ list my_data[t="27-feb-1988":"1-mar-1988"]
  01-MAR-1988 00 / 61: -0.966118
  
 define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=gregorian tdays
+Replacing definition of axis TDAYS
 define grid/t=tdays tgrid
 let my_data = sin(l[g=tgrid])
 list my_data[t="27-feb-1988":"1-mar-1988"]
              VARIABLE : SIN(L[G=TGRID])
              SUBSET   : 4 points (TIME)
-             CALENDAR : JULIAN
  27-FEB-1988 00 / 58:  0.992873
  28-FEB-1988 00 / 59:  0.636738
  29-FEB-1988 00 / 60: -0.304811
@@ -34919,7 +34919,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 kobrien  tmap       12704 Feb 11 14:08 testa.v5d
+-rw-rw-r--   1 kobrien  tmap       12704 Feb 28 13:45 testa.v5d
  
 can region
 use coads_climatology
@@ -34931,7 +34931,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 kobrien  tmap       12704 Feb 11 14:08 test.v5d
+-rw-rw-r--   1 kobrien  tmap       12704 Feb 28 13:45 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -34999,7 +34999,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.50   11-Feb-03" ;
+		:history = "FERRET V5.51   28-Feb-03" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35062,7 +35062,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.50   11-Feb-03" ;
+		:history = "FERRET V5.51   28-Feb-03" ;
 data:
 
  GFP3 = "" ;
@@ -35282,7 +35282,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.50   11-Feb-03" ;
+		:history = "FERRET V5.51   28-Feb-03" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -36965,6 +36965,8 @@ GO err540_axis_symbols
 ! Define YAXIS_MIN and YAXIS_MAX after PPLUS auto-scaling is done.
 ! e.g. polytube failed overlaying on PLOT/VS plots, because symbols
 ! YAXIS_MIN and YAXIS_MAX or the XAXIS symbols aren't set.
+! Note: when running in the benchmark suite, the go polytube command
+!       causes the job to hang.
  
 can var/all
  
@@ -38288,8 +38290,8 @@ show axis/all
  ZAX       DEPTH (m)           26 r-  0                    1000
  Y1                             4 r   1                    4
  X2                             4 r   1                    7
- JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
  TMONTHS   TIME                 6 r   18-AUG-1982 00:00    18-JAN-1983 00:00
+ JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
  TWEEKS    TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
  TDAYS     TIME               135 r   20-AUG-1982 00:00    01-JAN-1983 00:00
  TAX_NEG   TIME                 3 r   29-DEC-1979 00:00    31-DEC-1979 00:00
@@ -38462,8 +38464,8 @@ show axis/all
  ZAX       DEPTH (m)           26 r-  0                    1000
  Y1                             4 r   1                    4
  X2                             4 r   1                    7
- JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
  TMONTHS   TIME                 6 r   18-AUG-1982 00:00    18-JAN-1983 00:00
+ JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
  TWEEKS    TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
  TDAYS     TIME               135 r   20-AUG-1982 00:00    01-JAN-1983 00:00
  TAX_NEG   TIME                 3 r   29-DEC-1979 00:00    31-DEC-1979 00:00
@@ -39328,9 +39330,9 @@ set mode diag
 set mode stupid  ! always re-read and recompute
 lsx $1  ! default avoids void points
  !-> list/order=x vreg
- dealloc  dynamic grid GIG3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid GIG1            XAX_SUBSPANORMAL    NORMAL    NORMAL
+ allocate dynamic grid GFJ1            XAX_SUBSPANORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  reading VREG     M:  2 I:    1    6  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : X[GX=XAX_SUBSPAN] -40 + 10
@@ -39622,7 +39624,7 @@ l200n/order=x $2[l=1,i=0:14]
              ....  11.0000  12.0000  13.0000  14.0000  15.0000  16.0000     ....  11.0000  12.0000  13.0000  14.0000  15.0000  16.0000     ....
 set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:2]
- dealloc  dynamic grid GIG3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G004)          (AX011)   NORMAL    NORMAL    TAX_SUBSPA
  dealloc  dynamic grid (G004)          (AX011)   NORMAL    NORMAL    TAX_SUBSPA
@@ -39859,9 +39861,9 @@ set mode diag
 set mode stupid  ! always re-read and recompute
 lsx $1  ! default avoids void points
  !-> list/order=x virr
- dealloc  dynamic grid GIG4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid GFJ4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid GIG2            XIRREG_SUBNORMAL    NORMAL    NORMAL
+ allocate dynamic grid GFJ2            XIRREG_SUBNORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  reading VIRR     M: 78 I:    1    6  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : X[GX=XIRREG_SUBSPAN] -40 + 10
@@ -40153,7 +40155,7 @@ l200n/order=x $2[l=1,i=0:14]
              ....  11.0000  12.0000  12.1000  14.0000  15.0000  16.0000     ....  11.0000  12.0000  12.1000  14.0000  15.0000  16.0000     ....
 set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:2]
- dealloc  dynamic grid GIG4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid GFJ4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G014)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
  dealloc  dynamic grid (G014)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
@@ -40615,12 +40617,274 @@ shade pc
 poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}
  
  
+! ******** V5.51 Additions below ***********
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn551_bug_fixes
+! bn551_bug_fixes.jnl
+! test various fixes that went into version 5.51
+! 2/03 *acm*
+!
+ 
+! FILL plots in viewports defined with /AXES, fix clipping bug,
+! and allow color keys to plot beyond viewport limits.
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_view_axes_fill.jnl
+! err550_view_axes_fill.jnl
+! acm 2/5/03
+! Test FILL plots in viewports defined with /AXES;
+! also let the color keys be plotted in these viewports, unless
+! removed with /nokey
+ 
+can mode logo
+set win/asp=.5/siz=0.5
+ 
+define axis/x=-10:10:1 xtest
+define axis/y=-10:10:1 ytest
+ 
+let test=x[gx=xtest]^2+y[gy=ytest]^2
+ 
+def vi/x=.1:.9/y=.1:.3/axes bot
+def vi/x=.1:.9/y=.4:.6/axes mid
+Re-defining viewport MID
+def vi/x=.1:.9/y=.6:1 top
+def vi/x=0:.1/y=.1:.3/axes bot1
+def vi/x=0:.1/y=.4:.6/axes mid1
+def vi/x=0:.1/y=.6:1 top1
+ 
+set vi bot1
+fill/nokey test
+contour/over test
+ 
+set vi bot
+fill test
+contour/over test
+ 
+set vi mid1
+shade/nokey test
+contour/over test
+ 
+set vi mid
+shade test
+contour/over test
+ 
+set vi top1
+fill/nokey test
+contour/over test
+ 
+set vi top
+fill test
+contour/over test
+ 
+ 
+can view
+set win/asp=2/siz=0.3
+set vi bot1
+fill/nokey test
+contour/over test
+ 
+set vi bot
+fill test
+contour/over test
+ 
+set vi mid1
+shade/nokey test
+contour/over test
+ 
+set vi mid
+shade test
+contour/over test
+ 
+set vi top1
+fill/nokey test
+contour/over test
+ 
+set vi top
+fill test
+contour/over test
+ 
+can view
+set win/clear
+set win/aspect=0.75
+ 
+ 
+! position on page was incorrect, of first viewport plotted when
+! defined as a VIEW/AXES viewport.
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_view_axes_position.jnl
+! err550_view_axes_position.jnl
+! acm 2/5/03
+ 
+! position on page was incorrect, of first viewport plotted when defined
+! as a VIEW/AXES viewport.
+ 
+def view/x=.1:.5/y=.4:.6/axes mid1
+Re-defining viewport MID1
+def view/x=.5:.9/y=.4:.6/axes mid2
+Re-defining viewport MID2
+ 
+set view mid1
+shade/x=1:10/y=1:10 x+y
+set view mid2
+shade/x=1:10/y=1:10 x-y
+ 
+can view
+ 
+! SHADE bug: hlimits, vlimits without effect
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_shade_limits.jnl
+! err550_shade_limits.jnl
+! acm 2/5/03
+ 
+! SHADE bug: hlimits, vlimits without effect
+ 
+use coads_climatology
+set view upper; shade sst[l=1]
+ 
+set view lower; shade/hlimits=212:324/vlimits=-34:23 sst[l=1]
+ 
+can view
+ 
+! Redefining an axis with a new calendar definition
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_redefine_calendar_axis.jnl
+! err550_redefine_calendar_axis.jnl
+! different calendar axis not recognized as a different specifier,
+! requiring the axis to be redefined.
+ 
+def axis/cal=gregorian/t=1-jan-2000:1-jan-2001:1/unit=days tax
+Replacing definition of axis TAX
+sh axis tax
+ name       axis              # pts   start                end
+ TAX       TIME               367 r   01-JAN-2000 00:00    01-JAN-2001 00:00
+T0 = 15-JAN-1901
+   Axis span (to cell edges) = 367
+def axis/cal=julian/t=1-jan-2000:1-jan-2001:1/unit=days tax
+Replacing definition of axis TAX
+sh axis tax
+ name       axis              # pts   start                end
+ TAX       TIME               367 r   01-JAN-2000 00:00    01-JAN-2001 00:00
+T0 = 15-JAN-1901
+CALENDAR = JULIAN
+   Axis span (to cell edges) = 367
+ 
+ 
+! Bug in defining axis from an expression.
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_define_axis_expression.jnl
+! err550_define_axis_expression.jnl
+! reported by A. Wittenberg.
+!  Axes defined from an expression only took the first part of the
+!  expression The first two axis defines get it wrong (fix in xeq_define.F)
+ 
+let a = {1,2,3}
+let b = {2,3,4}
+ 
+def ax/x xax = a/2 + b/2
+Replacing definition of axis XAX
+list x[gx=xax]
+             VARIABLE : X
+                        axis XAX
+             SUBSET   : 3 points (X)
+ 1.5 / 1:  1.50000
+ 2.5 / 2:  2.50000
+ 3.5 / 3:  3.50000
+ 
+def ax/x xax = (a/2) + (b/2)
+list x[gx=xax]
+             VARIABLE : X
+                        axis XAX
+             SUBSET   : 3 points (X)
+ 1.5 / 1:  1.50000
+ 2.5 / 2:  2.50000
+ 3.5 / 3:  3.50000
+ 
+def ax/x xax = (a/2 + b/2)
+list x[gx=xax]
+             VARIABLE : X
+                        axis XAX
+             SUBSET   : 3 points (X)
+ 1.5 / 1:  1.50000
+ 2.5 / 2:  2.50000
+ 3.5 / 3:  3.50000
+ 
+ 
+!  Note (acm)  The older syntax defines the axis correctly
+ 
+def axis/from_data/x/name=xax a/2 + b/2
+list x[gx=xax]
+             VARIABLE : X
+                        axis XAX
+             SUBSET   : 3 points (X)
+ 1.5 / 1:  1.50000
+ 2.5 / 2:  2.50000
+ 3.5 / 3:  3.50000
+ 
+! Bug in reading seconds from time origin in nc file.
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_nc_seconds.jnl
+! err550_nc_seconds.jnl
+! 2/12/03 ACM
+ 
+! When the time origin is specified in a NetCDF file as
+! "10-JUN-1996 04:03:36", the seconds are read incorrectly.
+! If it's written as "1996-06-10 04:03:36" it is read OK
+ 
+use time_axis_seconds.nc
+ 
+sp "ncdump time_axis_seconds.nc | grep origin"
+		TIME:time_origin = "10-JUN-1996 04:03:36" ;
+list t[gt=height]    ! Seconds should be 36, 37, 38...
+             VARIABLE : T
+                        axis TIME3
+             FILENAME : time_axis_seconds.nc
+             SUBSET   : 5 points (TIME)
+ 10-JUN-1996 04:03:36 / 1:  0.00000
+ 10-JUN-1996 04:03:37 / 2:  1.00000
+ 10-JUN-1996 04:03:38 / 3:  2.00000
+ 10-JUN-1996 04:03:39 / 4:  3.00000
+ 10-JUN-1996 04:03:40 / 5:  4.00000
+ 
+! Bug in plotting polymarker dots with pen numbers gt 6
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err550_dots_thickpens.jnl
+! err550_dots_thickpens.jnl
+! For pen code higher than 6, get *  rather than dot.
+! also for vector plots having short vectors that are plotted with dots.
+ 
+plot/sym=dot/color=8/i=1:10 i
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.50  
- 	Tru64 V4.0E - 02/11/03
- 	11-Feb-03 14:08     
+ 	FERRET v5.51  
+ 	Tru64 V4.0E - 02/28/03
+ 	28-Feb-03 13:48     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -40795,9 +41059,9 @@ plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
 frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.50  
- 	Tru64 V4.0E - 02/11/03
- 	11-Feb-03 14:08     
+ 	FERRET v5.51  
+ 	Tru64 V4.0E - 02/28/03
+ 	28-Feb-03 13:48     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -40910,4 +41174,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Tue Feb 11 14:08:48 PST 2003
+Ended at Fri Feb 28 13:49:01 PST 2003

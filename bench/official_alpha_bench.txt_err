@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v550
--rwx------   1 kobrien  tmap     44228608 Feb 11 13:51 /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v550
+Running FERRET version /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v551
+-rwx------   1 kobrien  tmap     44228608 Feb 28 12:05 /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/fer/ferret_v551
 Using external functions from /home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/bin
 Benchmark run by kob
-Note: v550 built using osf v4.0 - linked on mambo
+Note: v551 final version - compiled on OSF v4
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/bench
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/alpha
@@ -18,7 +18,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/alpha/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/kobrien/BETA_BUILDS/alpha/FERRET/bin
-Beginning at Tue Feb 11 14:06:56 PST 2003
+Beginning at Fri Feb 28 13:40:14 PST 2003
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -498,4 +498,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Feb 11 14:08:48 PST 2003
+Ended at Fri Feb 28 13:49:01 PST 2003

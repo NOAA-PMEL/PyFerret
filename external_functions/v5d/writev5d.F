@@ -77,7 +77,7 @@
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 1)
+      CALL ef_set_num_work_arrays(id, 2)
 
 *  All variables should be on the same grid (except for the vertical 
 *  component). There is no result variable sent back to FERRET - a
@@ -162,7 +162,7 @@
 
       INTEGER max_row, min_col, max_col, min_lev, max_lev
       INTEGER array_num, unspecified_int4
-      INTEGER nwork
+      INTEGER nwork, nax
 
 
 *  Set work array size. gwork is a work array whose output dimensions
@@ -230,10 +230,20 @@
       ENDIF
       IF (max_lev_all .eq. 0) max_lev_all = 1
 
+*  gwork
+
       nwork = max_row* max_col* max_lev_all
+
       array_num = 1
       CALL ef_set_work_array_dims(id, array_num, 1, 1, 1, 1, 
      .     NWORK, 1, 1, 1)
+
+*  ax_vals
+
+      nax = 4* max( max_row, max_col, max_lev_all)
+      array_num = 2
+      CALL ef_set_work_array_dims(id, array_num, 1, 1, 1, 1, 
+     .     nax, 1, 1, 1)
 
 
 *                                                                      ^
@@ -248,7 +258,8 @@
 * In this subroutine we compute the result
 *
       SUBROUTINE writev5d_compute (id, arg_1, arg_2, arg_3,
-     .   arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, gwork)
+     .   arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
+     .   gwork, ax_vals)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -280,7 +291,8 @@
       REAL gwork(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
 
-
+      REAL*8 ax_vals(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -354,7 +366,6 @@
       CALL ef_get_arg_subscripts (id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags (id, bad_flag, bad_flag_result)
 
-
 *  Get coordinate axes.  Note Ferret lists x axis in East longitude and
 *  Vis5D assumes West longitude.
 
@@ -381,7 +392,7 @@
 *  Set number of elements in each direction.  Make a NORMAL axis have 
 *  one element.
 
-      CALL checkxy (id, numvars, xax, yax, nr, nc, dx, dy, gwork, 
+      CALL checkxy (id, numvars, xax, yax, nr, nc, dx, dy, ax_vals, 
      .              err_msg, ier)
       IF (ier .EQ. 0) GO TO 999
 
@@ -420,7 +431,7 @@ C  Get  variable names, and variable units from ferret internal definitions
 C  Set time steps.
 
       CALL settimes (id, numvars, numtimes, timestamp, datestamp, 
-     .               gwork, err_msg, ier)
+     .               ax_vals, err_msg, ier)
 
       IF (ier .EQ. 0) GO TO 999
 
@@ -654,7 +665,7 @@ c
 ************************************************************************
 
       SUBROUTINE checkxy (id, numvars, xax, yax, nr, nc, dx, dy, 
-     .         gwork, err_msg, ier)
+     .         ax_vals, err_msg, ier)
 
 *  Check that there is at least one variable to write to the Vis5D file.
 *  Check the x and y axes for the variables: they must agree with xax, yax
@@ -677,7 +688,7 @@ c
       INTEGER i, j, m
       INTEGER numvars, nc, nr, ncm, nrm
 
-      REAL*8 xax(*), yax(*), gwork(*)
+      REAL*8 xax(*), yax(*), ax_vals(*)
       REAL   dx, dy
 
       CHARACTER*(*) err_msg
@@ -766,11 +777,13 @@ C  Check number of columns and rows against Vis5D maxima.
 
             IF (ncm .GT. MAXCOLUMNS) ier = 0
             IF (ncm .NE. nc) ier = 0
+
             CALL ef_get_coordinates (id, m, X_AXIS, 
-     .        arg_lo_ss(X_AXIS, m), arg_hi_ss(X_AXIS, m), gwork)
+     .        arg_lo_ss(X_AXIS, m), arg_hi_ss(X_AXIS, m), ax_vals)
+           
 
             DO 300 i = 1, nc
-               IF (xax(i) .NE. gwork(i)) ier = 0
+               IF (xax(i) .NE. ax_vals(i)) ier = 0
  300        CONTINUE
 
  400     CONTINUE  
@@ -781,7 +794,6 @@ C  Check number of columns and rows against Vis5D maxima.
             go to 999
          ENDIF
 
-
          DO 600 m = 2, numvars
             nrm = 
      .        (arg_hi_ss(Y_AXIS,m) - arg_lo_ss(Y_AXIS,m) + 1)/ 
@@ -790,11 +802,11 @@ C  Check number of columns and rows against Vis5D maxima.
             IF (nrm .GT. MAXROWS) ier = 0
             IF (nrm .NE. nr) ier = 0
 
-            CALL ef_get_coordinates (id, m, Y_AXIS, 
-     .         arg_lo_ss(Y_AXIS, m), arg_hi_ss(Y_AXIS, m), gwork)
+           CALL ef_get_coordinates (id, m, Y_AXIS, 
+     .         arg_lo_ss(Y_AXIS, m), arg_hi_ss(Y_AXIS, m), ax_vals)
 
             DO 500 j = 1, nr
-               IF (yax(j) .NE. gwork(j)) ier = 0
+               IF (yax(j) .NE. ax_vals(j)) ier = 0
  500        CONTINUE
 
  600     CONTINUE  
@@ -815,7 +827,7 @@ C  Check number of columns and rows against Vis5D maxima.
 ************************************************************************
 
       SUBROUTINE settimes (id, numvars, numtimes, timestamp, datestamp, 
-     .                     gwork, err_msg, ier)
+     .                     ax_vals, err_msg, ier)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -832,7 +844,7 @@ C  Check number of columns and rows against Vis5D maxima.
       INTEGER iarg, ier, m, nlm, l, icentury
       INTEGER numtimes, numvars
 
-      REAL*8 tax(MAXTIMES), gwork(*)
+      REAL*8 tax(MAXTIMES), ax_vals(*)
 
       INTEGER iyear, ihour, iminute, isec
       CHARACTER*3 cmon
@@ -887,10 +899,10 @@ C  Check number of columns and rows against Vis5D maxima.
          END IF
 
          CALL ef_get_coordinates (id, m, T_AXIS, 
-     .       arg_lo_ss(T_AXIS, m), arg_hi_ss(T_AXIS, m), gwork)
+     .       arg_lo_ss(T_AXIS, m), arg_hi_ss(T_AXIS, m), ax_vals)
 
          DO 100 l = 1, numtimes
-            IF (tax(l) .NE. gwork(l)) GO TO 999
+            IF (tax(l) .NE. ax_vals(l)) GO TO 999
  100     CONTINUE
 
  200  CONTINUE  
@@ -1078,8 +1090,9 @@ c     .  ', numbers 1 to ', numtimes
          IF (arg_hi_ss(Z_AXIS,m) .EQ. arg_lo_ss(Z_AXIS,m)) THEN 
             ndep(m) = 1 
             vert(m) = 0
-            all_levs(1,m) = 0.	! Put DATA for a var w/normal axis at
-				! the surface.
+
+*  Put DATA for a var w/normal axis at the surface.
+            all_levs(1,m) = 0.	
          ELSE
 
             vertical = 2

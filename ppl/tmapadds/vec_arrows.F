@@ -83,13 +83,6 @@ C     Curvilinear coordinates declarations
 
       IF (curvilinear) THEN
 
-          x_curv = xx2
-          y_curv = yy2
-          CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
-          xxc=x_curv
-          yyc=y_curv
-          CALL plot (xxc, yyc, 0, 0)
-
           CALL plot (xxc, yyc, 0, 0)
           CALL plot (xxc+addx1, yyc+addy1, 1, 0)
           CALL plot (xxc, yyc, 0, 0)

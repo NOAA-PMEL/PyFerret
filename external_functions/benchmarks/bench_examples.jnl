@@ -1,0 +1,15 @@
+set mode ignore_error
+show func/ext
+go bench_add_9
+go bench_avet
+go bench_pass_thru
+go bench_storage
+go bench_subtract
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!
+!
+! YAY!! End of Benchmark without crashing!!!!
+!
+!!!!!!!!!!!!!!!!!!!!!!

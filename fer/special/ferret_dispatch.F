@@ -110,6 +110,7 @@
 * Linux Port *kob* 1/97 - Added external for XWINDOW_STATE_DATA block data
 * V450: 7/7/97 - added external for XGRID_CHG_FCNS block data
 * V500: 2/99 *sh* - added POLYGON command
+* V530: 10/00 *sh* - added external declaration for new xez_info_data
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -164,7 +165,8 @@
 * kob 1/97
 	EXTERNAL XWINDOW_STATE_DATA
 * sh 7/97
-	EXTERNAL XGRID_CHG_FCNS_DATA
+	EXTERNAL XGRID_CHG_FCNS_DATA,
+     .		 XEZ_INFO_DATA
 
 * temporarily we simply declare the "memory" array right here
 * calling argument declarations

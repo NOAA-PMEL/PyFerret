@@ -169,7 +169,7 @@
      .			max_mr_avail = max_mrs - 1,
      .			pmem_blk_size = 2*(160*100*4/10), !2* 9/01 see ferret.h
      .			pmax_mem_blks   = 500,
-     .			pmv_npiles     = 11,	! prime # of hash piles
+     .			pmv_npiles     = 149,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,
      .			pmv_work_var_pile = -pmv_npiles - 2,
      .			pmv_adjoint_var_pile = -pmv_npiles - 3,
@@ -240,10 +240,29 @@
      .		uvar_bad_data	 ( max_uvar ),
      .		uvar_title	 ( max_uvar ),
      .		uvar_title_w_text( max_uvar ),
+     .
+     .          uvar_name_code_head,
+     .          uvar_name_code_array_size,
+     .          uvar_name_code_string_size,
+     .          uvar_name_code_ptr_array,
+     .          uvar_name_code_hash_table,
+     .          uvar_name_code_string_array,
+     .          uvar_name_code_strlen_array,
      .		uvar_name_code	 ( max_uvar ),
+     .          uvar_name_code_strlen ( max_uvar ),
+     .
      .		uvar_units	 ( max_uvar ),
      .		uvar_text	 ( max_uvar ),
+     .
+     .          uvar_num_items_head,
+     .          uvar_num_items_array_size,
+     .          uvar_num_items_deleted_value,
+     .          uvar_num_items_ptr_table,
+     .          uvar_num_items_del_list_head,
+     .          uvar_num_items_undel_list_head,
+     .          uvar_num_items_array,
      .		uvar_num_items   ( max_uvar ),
+     .
      .		uvar_need_dset	 ( max_uvar ),
      .		uvar_parent	 ( max_uvar ),
      .		uvar_grid	 ( max_uvar, 0:max_gfdl_dsets ),
@@ -264,7 +283,10 @@
      .		is_axis 	( max_intrp ),
      .		is_uvar 	( max_intrp ),
      .		is_mr		( max_intrp ),
-     .		is_sum  	( max_intrp )
+     .		is_sum  	( max_intrp ),
+     .
+     .          deleted_list_result (max_uvar),
+     .          string_array_result (max_uvar)
 
 ********************************************************************************
 ******			COMMON VARIABLE TYPE DECLARATIONS		  ******
@@ -298,6 +320,10 @@
      .			mr_delta	,
      .			uvar_lo_ww	,
      .			uvar_hi_ww	,
+     .                  uvar_num_items_ptr_table,
+     .                  uvar_num_items_del_list_head,
+     .                  uvar_num_items_undel_list_head,
+     .                  uvar_num_items_array,
      .			mr_c_pointer      ! see note
 ! Note: the actual data type for mr_c_pointer is **char
 ! we allocate 8 bytes to be safe
@@ -322,7 +348,14 @@
      .			uvar_need_dset,
      .			uvar_mod_pseudo,
      .			uvar_by_ss
-	INTEGER		uvar_num_items  ,
+	INTEGER         uvar_name_code_head,
+     .                  uvar_name_code_array_size,
+     .                  uvar_name_code_string_size,
+     .                  uvar_name_code_strlen,
+     .                  uvar_num_items_head,
+     .                  uvar_num_items_array_size,
+     .                  uvar_num_items_deleted_value,
+     .   		uvar_num_items  ,
      .			uvar_grid	,
      .			uvar_data_type	,
      .			uvar_item_start	,
@@ -331,7 +364,9 @@
      .			uvar_given	,
      .			uvar_parent	,
      .			uvar_lo_ss	,
-     .			uvar_hi_ss
+     .			uvar_hi_ss      ,
+     .                  deleted_list_result,
+     .                  string_array_result
 
 	INTEGER		isp,
      .			is_act  ,
@@ -343,6 +378,10 @@
      .			is_uvar ,
      .			is_mr
 	REAL		is_sum
+        REAL*8          uvar_name_code_ptr_array,
+     .                  uvar_name_code_hash_table,
+     .                  uvar_name_code_string_array,
+     .                  uvar_name_code_strlen_array
 
 * equivalences to assist with declaration statements
 	INTEGER mr_lo_s1( max_mrs ),

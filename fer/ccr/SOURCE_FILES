@@ -48,4 +48,5 @@ sizeof_pointer.c\
 unmap_animate_window.c\
 wgif.c\
 whdf.c\
+write_dods.c\
 xfer_c_ptrs.c

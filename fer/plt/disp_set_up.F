@@ -105,6 +105,8 @@
 * V510	12/99 - *sh* plot of all bad data no longer an error
 *        3/00 - *sh* /NOLABELS to avoid xlab & ylab
 *	 5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
+* V520   6/00 *sh* - bug fix: trap ndim>2 on overlays
+
 
 #ifdef unix
 	include 'ferret.parm'
@@ -231,6 +233,7 @@
 
 * check for valid data plane
 	CALL GET_CX_DIMS( ctx, ndim, dims )
+	IF ( ndim .NE. 2 ) GOTO 5160
 	IF ( overlay ) THEN
 * *sh* 1/93 - restrictions less: coords merely have to be valid in 2D plane
            IF ( cx_lo_ss(ctx,dim1) .EQ. unspecified_int4
@@ -239,8 +242,6 @@
      .     .OR. cx_lo_ww(dim2,ctx) .GE. cx_hi_ww(dim2,ctx) ) GOTO 5150
 	ELSEIF ( vector) THEN     ! 1/94
 	   IF ( nplot_axis .NE. 2 ) GOTO 5160
-	ELSE
-	   IF ( ndim .NE. 2 ) GOTO 5160
 	ENDIF
 
 * check # of variables and consistency in X and Y component dimensions
@@ -576,7 +577,7 @@
      .			'overlay not valid in plane of plot'//pCR//
      .					cmnd_buff(:len_cmnd), *5100 )
  5160	CALL ERRMSG( ferr_dim_underspec, status, 
-     .			'can only contour or vector a 2D region'//pCR//
+     .			'must be a 2D region'//pCR//
      .					cmnd_buff(:len_cmnd), *5100 )
  5170   buff = LEFINT( INT(0.99*nsize), lo1 )
         cmnd_name = LEFINT( plot_mem_used, lo2 )   ! used as buffer

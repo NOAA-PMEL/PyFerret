@@ -59,22 +59,14 @@
 *	 1/18/94 - added SET MODE VERIFY:ALWAYS (iarg=3)
 *		   (bug fix for MODE VERIFY:garbage error msgs 2/3/95)
 * V500: 4/99 *sh* - added MODE STUPID:weak_cache
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'	
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'          ! for RISC/FORTRAN
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'	
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! for RISC/FORTRAN
-#endif
 
 * calling argument declarations
 	INTEGER		mode, arg, status
@@ -150,10 +142,11 @@
            ELSE
 	      GOTO 5010
            ENDIF
-
-	ELSE
+* ... SET MODE GRAT:graticule argument
+	ELSEIF ( mode .EQ. pmode_grat ) THEN
+            mode_grat_buff = text
+        ELSE
 	   GOTO 5010	! mode does not accept argument
-
 	ENDIF
 
 * successful completion

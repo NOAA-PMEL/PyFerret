@@ -43,6 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * Ferret v5.54   2/04
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -58,9 +59,9 @@
 * internal variable declarations:
 	LOGICAL linetype, dashtype, thick, colr, small
 
-	INTEGER	TM_LENSTR1, str_len, ii, i1, i2, i3, i4, 
+	INTEGER	TM_LENSTR1, STR_UPCASE, str_len, ii, i1, i2, i3, i4, 
      .      i5, i6, index1, index2, s1, s2, 
-     .      colorcode, tic1, ntic, itic
+     .      colorcode, tic1, ntic, itic, iflag
 
         REAL thickness
 
@@ -72,6 +73,8 @@
 	PARAMETER (ncolors = 6)
 
 ! Default, standard tics, no lines across plot.
+
+        buff = ' '
 
         DO 100 ii = 1, 4
           hgrat(ii,1) = 0.
@@ -85,16 +88,24 @@
         vcolor(1) = 1
         vcolor(2) = 1
 
-* HGRAT
+* If MODE GRAT was set, make those settings.  Any settings
+* made on the command line will override these.
 
+        IF (grat_on .AND. ((loch .EQ. 0) .AND. (locv .EQ. 0)) ) THEN
+           DO 101 ii = 1, 4
+             hgrat(ii,1) = -1.
+             hgrat(ii,2) = 0.
+             vgrat(ii,1) = -1.
+             vgrat(ii,2) = 0.
+101        CONTINUE
+
+           iflag = STR_UPCASE (buff, mode_grat_buff)
+        ENDIF
+
+* HGRAT
         IF (loch .GT. 0) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(loch):qual_end(loch)),
      .                     buff, status )
-           str_len = TM_LENSTR1(buff)
-
-           i1 = 1
-           IF (buff(1:1) .EQ. '(') i1 = 2
-           i2 = str_len
 
 * /HGRAT with no argument defaults to lines at large tic marks.
 
@@ -102,11 +113,14 @@
              hgrat(ii,1) = -1.
 105        CONTINUE
 
-        ELSE
-           GOTO 4999   ! do vgrat
         ENDIF
 
-	IF ( buff .EQ. ' ' ) GOTO 4999
+        IF ( buff .EQ. ' ' ) GOTO 4999
+
+        str_len = TM_LENSTR1(buff)
+        i1 = 1
+        IF (buff(1:1) .EQ. '(') i1 = 2
+        i2 = str_len
 
         tic1 = 1   ! LARGE tics by default
         ntic = 1
@@ -244,19 +258,17 @@
 
 *  /VGRAT
 
-
         IF (locv .GT. 0) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(locv):qual_end(locv)),
      .                     buff, status )
-           str_len = TM_LENSTR1(buff)
 
-           i1 = 1
-           IF (buff(1:1) .EQ. '(') i1 = 2
-           i2 = str_len
-
-        ELSE
-           GOTO 5000   ! done
         ENDIF
+	IF ( buff .EQ. ' ' ) GOTO 5000  ! done
+
+        str_len = TM_LENSTR1(buff)
+        i1 = 1
+        IF (buff(1:1) .EQ. '(') i1 = 2
+        i2 = str_len
 
         tic1 = 1   ! LARGE tics by default
         ntic = 1

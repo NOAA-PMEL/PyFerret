@@ -137,7 +137,13 @@
 	IF ( .NOT. do_init ) THEN
 	   init_command(1) = 0
 	ELSE
+* *kob* 2/03 - g77 port - need to check to see if compiler needs double
+*                         slash or not 
+#ifdef NO_DOUBLE_ESCAPE_SLASH
 	   home_path = '\GO "$HOME/.ferret" '
+#else
+	   home_path = '\\GO "$HOME/.ferret" '
+#endif
 	   DO 5 i = 1, 20
  5	   init_command(i) = ICHAR( home_path(i:i) )
 	   init_command(21) = 0

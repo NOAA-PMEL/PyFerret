@@ -37,11 +37,12 @@
    Return length of string argument
    
    V541: *kob* 3/02
+   V552: *kob* 4/03 - change func type to void
 */
 
 #include <stdlib.h>
 
-size_t c_strlen_(in_ptr, out_ptr)
+void c_strlen_(in_ptr, out_ptr)
      char** in_ptr;
      int* out_ptr;
 {

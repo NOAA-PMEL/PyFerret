@@ -37,6 +37,8 @@
    Find first occurence of substring in string
 
    v5.41: *kob* 3/02
+   V552: *kob* 4/03 - change func type to void
+
 */
 
 #include <assert.h>
@@ -44,7 +46,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char c_strindex_(in_ptr1, in_ptr2, out_ptr)
+void c_strindex_(in_ptr1, in_ptr2, out_ptr)
      char** in_ptr1;
      char** in_ptr2;
      int* out_ptr;

@@ -38,6 +38,7 @@
    from the right
    
    *kob* 3/02
+   V552: *kob* 4/03 - change func type to void
 
 */
 
@@ -46,7 +47,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-float c_strrindex_(in_ptr1, in_ptr2, out_ptr)
+void c_strrindex_(in_ptr1, in_ptr2, out_ptr)
      char** in_ptr1;
      char** in_ptr2;
      int* out_ptr;

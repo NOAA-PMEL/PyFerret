@@ -69,6 +69,8 @@
 * V500: 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 *       5/99 *kob* - minor mod to remove improper comment line linux compiler
 *                    didn't like
+* V501: 6/99 - *jd* fix bug in 2 var form where x_dat(1) is reassigned
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -118,6 +120,7 @@
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
+	REAL            dummy_x_dat
 
 * internal variable declarations:
 	LOGICAL         missing_polygon
@@ -152,7 +155,6 @@
 	   CALL INIT_EMPTY_CONTEXT(cx_buff)
 *       ignore status ... always OK
 	   CALL CONSTANT_CONTEXT("0", cx_buff, cx_buff, status)
-	   memory(1, mr_blk1(dummy_mr)) = 0 ! just for good house-keeping ...
 	   cx_color = cx_buff
 	   mr_color = dummy_mr
         ELSE
@@ -425,7 +427,6 @@ CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
 
 * pass the color value array to PLOT+ (use x_dat as a buffer)
 	if (nmv .eq. 2) then
-	   x_dat(1) = 0
 	   ncolor = 1
 	else
 	   CALL EXTRACT_LINE (	cx_color,

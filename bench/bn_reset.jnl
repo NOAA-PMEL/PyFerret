@@ -3,6 +3,7 @@ cancel mode verify
 ! 11/99 *sh* for V5.1 - added CANCEL MODE DIAGNOSTIC
 !		-- outputs were getting too long and difficult to read
 !		-- individual benchmarks must now specify MODE DIAG if needed
+!  5/00 *acm* added CANCEL MODE IGNORE_ERRORS
 
 ! reset FERRET to prepare for another benchmark test
 CANCEL REGION/ALL
@@ -11,5 +12,6 @@ CANCEL VARIABLES/ALL
 CANCEL MEMORY/ALL
 SET GRID ABSTRACT
 CANCEL MODE DIAGNOSTIC
+CANCEL MODE IGNORE_ERRORS
 
 set mode/last verify

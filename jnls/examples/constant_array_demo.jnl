@@ -38,7 +38,7 @@ pause
 
   LET xtriangle = {0,.5,1}
   LET ytriangle = {0,1,0}
-  POLYGON/COLOR=red/THICKNESS=2 triangle, ytriangle, 0
+  POLYGON/COLOR=red/THICKNESS=2 xtriangle, ytriangle, 0
 
 pause
 
@@ -55,8 +55,8 @@ pause
 ! Ex 3) Sample Jan, June, and December from sst in coads_climatology
 
   USE  coads_climatology
-  LET  my_sst_winter = SAMPLEL({1,2,12},sst[Y=0:90N])
-  LET  my_sst_summer = SAMPLEL({6,7,8}, sst[Y=0:90N])
+  LET  my_sst_winter = SAMPLEL(sst[Y=0:90N], {1,2,12})
+  LET  my_sst_summer = SAMPLEL(sst[Y=0:90N], {6,7,8})
   STAT/BRIEF my_sst_winter
   STAT/BRIEF my_sst_summer
 

@@ -42,6 +42,7 @@
 *         Times may be oriented along any axis; 
 *         Result is abstract on the sampled axis.
 * 3/1/00  ACM fixed bug in definition of the work array datebuf
+* 7/2000  ACM inherit axes only from the data variable, not dates!
 *
 *
 * In this subroutine we provide information about
@@ -113,32 +114,32 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'YR')
       CALL ef_set_arg_desc(id, arg, 'Year(s) yyyy')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'MO')
       CALL ef_set_arg_desc(id, arg, 'Month(s), integer mm')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'DAY')
       CALL ef_set_arg_desc(id, arg, 'Day(s) of month dd')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'HR')
       CALL ef_set_arg_desc(id, arg, 'Hour(s) hh')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 6
       CALL ef_set_arg_name(id, arg, 'MIN')
       CALL ef_set_arg_desc(id, arg, 'Minute(s) mm')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'SEC')
       CALL ef_set_arg_desc(id, arg, 'Second(s) ss')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                     ^
 *                                                                     |

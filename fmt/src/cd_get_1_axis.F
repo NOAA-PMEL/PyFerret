@@ -290,9 +290,9 @@ c  This is the simple conversion; but we will reset the origin to 1901.
 c               buff = 'DAYS since 1968-05-23 00:00:00'
 c               days_neg4713 = 2440000.D0
 
-               buff = 'DAYS since 1900-01-01 00:00:00'
+               buff = 'DAYS since 1901-01-15 00:00:00'
                secs_to_1901 = TM_SECS_FROM_BC 
-     .                        (GREGORIAN, 1901,1,1,0,0,0,status)
+     .                        (GREGORIAN, 1901,1,15,0,0,0,status)
                secs_to_1968 = TM_SECS_FROM_BC 
      .                        (GREGORIAN, 1968,5,23,0,0,0,status)
                days_1901_may68 = (secs_to_1968 - secs_to_1901)/

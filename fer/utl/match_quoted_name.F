@@ -60,20 +60,25 @@
 
 * internal variable declarations:
 	LOGICAL         is_quoted
-	INTEGER		len_model, i
+	INTEGER		len_model, i, len_test1
         LOGICAL         result
 
 	len_model	= LEN( model_string )
 
 * (7/98) is test string in quotations?
+
 	is_quoted = test_string(1:1) .EQ. "'" 
 	IF (is_quoted) is_quoted = test_string(len_test:len_test) .EQ. "'"
-	IF (is_quoted) len_test = len_test - 2
+	IF (is_quoted) THEN
+           len_test1 = len_test - 2
+        ELSE
+           len_test1 = len_test
+        ENDIF
 
 * test string cannot be shorter than model or longer than fully terminated model
-	IF (   len_test        .LT. len_model_chars
+	IF (   len_test1        .LT. len_model_chars
      .	 .OR.( len_model_chars .LT. len_model		! fully terminated ?
-     .	 .AND. len_test	       .GT. len_model_chars )	) GOTO 200
+     .	 .AND. len_test1       .GT. len_model_chars )	) GOTO 200
 
 
 	IF (is_quoted) THEN

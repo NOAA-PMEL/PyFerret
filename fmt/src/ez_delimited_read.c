@@ -56,9 +56,88 @@
 
 #include "ez_delimited_read.h"
 
+
 /*
  *
- decode_file_ - skip header & read an entire file based upon analysis suppied
+ decode_file - skip header & read an entire file based upon analysis suppied
+ decode_file_ arguments
+ fname - input filename (null terminated)
+ recptr - buffer to hold file records
+ reclen - size of record buffer
+ delims - string containing delimiter in file (note that blank is
+          considered a special delimiter representing any number of blanks)
+ skip - number of heading record in file to be skipped
+ maxrec - maximum number of records to read (beyond skipped header)
+ nrec - out number of records actually read
+ nfields - number of fields to decode on each record
+ field_types - type of each field (input)
+ mrlist - list of integers pointing to Ferret memory blocks
+ memptr - pointer to base of Ferret "heap" storage
+ mr_blk1 - memory chunk numbers indexed by mr_list
+ mblk_size - chunk size within Ferret heap
+ mr_bad_flags - missing value flags indexed by mr_list
+ *
+ */
+void FORTRAN(decode_file_jacket)
+		( char* fname, char *recptr, char *delims, int *skip,
+		  int* maxrec, int* reclen, int* nfields,
+		  int field_type[], int* nrec,
+		  int mrlist[], float *memptr, int mr_blk1[], int* mblk_size,
+		  float mr_bad_flags[], char ***mr_c_ptr)
+{
+  float **numeric_fields  = (float **) malloc(sizeof(float*) * (*nfields));
+  char ***text_fields     = (char ***) malloc(sizeof(char**) * (*nfields));
+  float *bad_flags        = (float *)  malloc(sizeof(float) * (*nfields));
+  int i, mr;
+  int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
+
+  for (i=0; i<(*nfields); i++)
+    {
+      mr = mrlist[i] - 1;  /* -1 for C indexing */
+      /* 
+	 compute separate pointer arrays for numeric and text fields
+      */
+      numeric_fields[i] = (float *) NULL;
+      text_fields[i] = (char**) NULL;
+      
+      if (field_type[i] == FTYP_CHARACTER )
+	{
+	  text_fields[i] = (char**) memptr + (mr_blk1[mr]-1)*(*mblk_size);
+	  mr_c_ptr[mr*pinc] = text_fields[i];
+	}
+      else if (field_type[i] != FTYP_MISSING )
+	{
+	  numeric_fields[i] = memptr + (mr_blk1[mr]-1)*(*mblk_size);
+	  mr_c_ptr[mr*pinc] = (char**) NULL;
+	}
+      /*
+	isolate the bad data flags that correspond to the numeric fields
+      */
+      if ( (field_type[i]!=FTYP_MISSING) && (field_type[i]!=FTYP_CHARACTER) )
+	bad_flags[i] = mr_bad_flags[mr];
+      else
+	bad_flags[i] = 0.0;
+    }
+
+  /*
+    at last we actually read the file
+  */
+  decode_file (fname, recptr, delims, skip, 
+	       maxrec, reclen, nfields,
+	       field_type, nrec,
+	       numeric_fields, text_fields, bad_flags);
+
+  free(numeric_fields);
+  free(text_fields);
+  free(bad_flags);
+
+  return;
+}
+
+
+/*
+ *
+ decode_file - skip header & read an entire file based upon analysis suppied
  decode_file_ arguments
  fname - input filena0me
  recptr - buffer to hold file records
@@ -78,14 +157,15 @@
  *
  */
 
-int decode_file_(char* fname, char *recptr, char *delims, int *skip, 
-	       int* maxrec, int* reclen, int* nfields,int field_type[], int* nrec,
-	       float** numeric_fields, char*** text_fields, float bad_flags[])
+int decode_file (char* fname, char *recptr, char *delims, int *skip, 
+			  int* maxrec, int* reclen, int* nfields,
+			  int field_type[], int* nrec, float** numeric_fields,
+			  char*** text_fields, float bad_flags[])
 {
 
   FILE *fp;
   int slen, i;
-  int pinc = 8/sizeof(char*);  /* pointers spacd 8 bytes apart */
+  int pinc = 8/sizeof(char*);  /* pointers spaced 8 bytes apart */
 
   *nrec = 0;
 
@@ -110,13 +190,15 @@ int decode_file_(char* fname, char *recptr, char *delims, int *skip,
 	  
 	  decodeRec(recptr, delims, nfields, field_type, *nrec,
 		    numeric_fields, text_fields, bad_flags);
-	  
+
+#ifdef diagnostic_output	  /* ************* */
 	  for (i=0; i<(*nfields); i++)
 	    if (field_type[i] == FTYP_CHARACTER )
 	      printf( "%d character: %s\n",i, (*(text_fields+i))[(*nrec)*pinc] );
 	    else if (field_type[i] != FTYP_MISSING)
 	      printf( "%d numeric: %f\n",i,(*(numeric_fields+i))[(*nrec)] );
-	  
+#endif                            /* ************* */
+
 	  (*nrec)++;
 	}
     }
@@ -146,8 +228,9 @@ int decode_file_(char* fname, char *recptr, char *delims, int *skip,
  *
  */
 
-int anal_file_(char* fname, char *recptr, char *delims, int* skip, int* maxrec, 
-	     int* reclen, int* nfields, int field_type[], int max_fields)     
+int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
+			int* maxrec, int* reclen, int* nfields,
+			int field_type[], int *max_fields)     
 {
 
   FILE *fp;
@@ -163,7 +246,7 @@ int anal_file_(char* fname, char *recptr, char *delims, int* skip, int* maxrec,
     }
 
   /* initially set all field types to missing (no information) */
-  for (i=0; i<max_fields; i++)
+  for (i=0; i<(*max_fields); i++)
     field_type[i] = FTYP_MISSING;
   *nfields = 0;
 
@@ -178,7 +261,7 @@ int anal_file_(char* fname, char *recptr, char *delims, int* skip, int* maxrec,
 	  if ((slen = strlen(recptr)) > 0)
 	    recptr[slen-1] = NULL;
 	  
-	  analRec(recptr, delims, nfields, field_type, max_fields);
+	  analRec(recptr, delims, nfields, field_type, *max_fields);
 
 	  /* check for unknown field types */
 	  i = 0;
@@ -443,7 +526,9 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
       /* any other text */
       field_type[(*nfields)] = FTYP_CHARACTER;
       
+#ifdef diagnostic_output	  /* ************* */
     printf("%d %s:  %d\n", *nfields, p, field_type[(*nfields)]);
+#endif                            /* ************* */
 
     if ( *nfields < max_fields )
       {    
@@ -501,3 +586,58 @@ char *nexstrtok(char *s1, char *s2)
       return p2+1;
     }
 }
+
+/*
+ *
+ save_delimited_info - allocate struct memoro and save special info needed
+                       for delimited file reads
+	nfields - number of fields (variables) in file
+	field_type - field types for each variable
+	delim - list of delimiters to use when reading the file
+	ptr - returned pointer to structure
+ *
+ */
+void FORTRAN(save_delimited_info) (int *nfields, int field_type[],
+				   char *delim, DelimFileInfo **ptr)
+{
+  DelimFileInfo *fi = (DelimFileInfo *) calloc(1, sizeof(DelimFileInfo));
+  int* _field_type  = (int *) malloc(sizeof(int) * (*nfields));
+  char* _delim      = (char *) malloc(sizeof(char) * (int)strlen(delim));
+  int i;
+
+  for (i=0; i<*nfields; i++)
+    _field_type[i] = field_type[i];
+
+  strcpy(_delim, delim);
+
+  fi->nfields = *nfields;
+  fi->fieldType = _field_type;
+  fi->delim = _delim;
+
+  *ptr = fi;
+  return;
+}
+
+void FORTRAN(get_delimited_info) (int *nfields, int field_type[],
+				   char *delim, DelimFileInfo **ptr)
+{
+
+  int i,iout;
+  DelimFileInfo *fi = *ptr;
+
+  *nfields = fi->nfields;
+  for (i=0; i<*nfields; i++)
+    field_type[i] = (fi->fieldType)[i];
+  strcpy(delim, fi->delim);
+  return;
+}
+
+void FORTRAN(delete_delimited_info) (DelimFileInfo **ptr)
+{
+  DelimFileInfo *fi = *ptr;
+  free(fi->fieldType);
+  free(fi->delim);
+  free(fi);
+  return;
+}
+

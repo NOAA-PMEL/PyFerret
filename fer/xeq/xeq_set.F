@@ -1,7 +1,5 @@
 	SUBROUTINE XEQ_SET( memory, reconfig )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -119,6 +117,7 @@
 * V510: 3/00 *sh* - remove check for negative values on time axis
 *		  - add qualifier /TREGULAR to SET DATA for netCDF data sets
 *	4/00 *sh* - documentation enhancement, only
+* V530:10/00 *sh* - added FILE/FORMAT=delimited/TYPE=/DELIMITERS=
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -345,6 +344,7 @@ c *kob* 4/97
            IF ( status .NE. ferr_ok ) GOTO 5000
            do_ez = data_form(:3) .EQ. 'UNF'
      .       .OR.  data_form(:3) .EQ. 'FRE'
+     .       .OR.  data_form(:3) .EQ. 'DEL'
      .       .OR.  ( INDEX( data_form, '(' ) .GT. 0 )
         ELSE
            do_ez = .FALSE.

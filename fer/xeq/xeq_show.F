@@ -210,11 +210,11 @@
      .          sxml
 	INTEGER TM_LENSTR1, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
-     .		EFCN_MATCH_TEMPLATE,
+     .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
-     .		rqst_dset, tmp_grid
+     .		rqst_dset, tmp_grid, num_predefined_axes
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
@@ -400,7 +400,8 @@
 	ELSE
 
 * show all the defined axes
-*  ... first show the static lines (but not for XML output)
+*  ... first show the static lines (for XML output skip pre-defined axes)
+           num_predefined_axes = TM_GET_LINENUM('EZ')
 	   DO 450 line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
@@ -408,6 +409,8 @@
               IF (.NOT. sxml) THEN
                  CALL SHOW_LINE( line, brief )
               ENDIF
+              IF (sxml .AND. line .GT. num_predefined_axes)
+     .           CALL SHOW_LINE_XML( ttout_lun, line)
  450	   CONTINUE
 *  ... then show the dynamic lines
            line = 0

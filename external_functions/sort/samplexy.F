@@ -170,8 +170,13 @@
 
 *  Allocate double the length of the axes for REAL*8 work arrays.
 
-      mxh = arg_hi_ss(X_AXIS,ARG1)* 2
-      myh = arg_hi_ss(Y_AXIS,ARG1)* 2
+      mxl = arg_lo_ss(X_AXIS,ARG1)
+      myl = arg_lo_ss(Y_AXIS,ARG1)
+
+      mxh = arg_lo_ss(X_AXIS,ARG1) + 
+     .     2* (arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1)
+      myh = arg_lo_ss(Y_AXIS,ARG1) + 
+     .     2* (arg_hi_ss(Y_AXIS,ARG1)  - arg_lo_ss(Y_AXIS,ARG1) + 1)
 
 *  xaxdat
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxh, 1, 1, 1)
@@ -263,14 +268,7 @@
          GO TO 999
       ENDIF
 
-      IF (nx .EQ. 0  .OR.  ny .EQ. 0) THEN
-         WRITE (err_msg, 20)
-         GO TO 999
-      ENDIF
-
    10 FORMAT('SAMPLEXY Arguments 2 and 3 must be lists of equal length')
-   20 FORMAT ('SAMPLEXY Arguments 2 and 3 must lists of X and Y ',
-     . 'coordinates on the X or Y axis only')
 
 *  Get x and y coordinates of the data to be sampled.
 
@@ -296,18 +294,14 @@
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          ibot = arg_lo_ss(X_AXIS,ARG1)
-         indx = 1
          DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1) 
-             IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(indx,1,1,1)) ibot = i1
-             indx = indx + 1
+            IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(i1,1,1,1)) ibot = i1
   100    CONTINUE
          itop = ibot + 1
                 
          jbot = arg_lo_ss(Y_AXIS,ARG1)
-         indx = 1
          DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1) 
-            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(indx,1,1,1) ) jbot = j1
-             indx = indx + 1
+            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) jbot = j1
   200    CONTINUE
          jtop = jbot+ 1
 
@@ -343,11 +337,10 @@
 
 *  Now interpolate in y, getting value at (x,y)
 
-                     IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND. 
+                    IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND. 
      .                   jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
-
-                        ybot = yaxdat(jbot,1,1,1)
-                        ytop = yaxdat(jtop,1,1,1)
+                       ybot = yaxdat(jbot,1,1,1)
+                       ytop = yaxdat(jtop,1,1,1)
 
                         frac = (arg_3(i3,j3,k3,l3) - ybot)/ (ytop-ybot)
 

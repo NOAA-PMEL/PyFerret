@@ -50,6 +50,9 @@
 *	7/97 - slight reorg for external functions
 * V491: 1/98 - make test function TIMES2 impose its T axis
 *       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
+* V500: 7/99 *sh* - use of "grid_line(1,mgrid_abstract)" changed to
+*               "grid_line(1,mgrid_xabstract)" since mgrid_abstract changes
+*               with SET GRID
 
 
 * calling argument declarations
@@ -108,7 +111,7 @@
 *	NORMAL, and ABSTRACT ... but not IMPOSED ("supplied herein")
 	DO 100 idim = 1, 4
 	   IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract) THEN
-	      axes(idim) = grid_line(1,mgrid_abstract)
+	      axes(idim) = grid_line(1,mgrid_xabstract)         ! 7/99 mod
 	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
 	      axes(idim) = mnormal
 	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args) 

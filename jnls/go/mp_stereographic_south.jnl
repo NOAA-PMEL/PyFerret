@@ -68,7 +68,7 @@ let/quiet mp_rho = 2 * mp_R * mp_k0 * tan(Pi/4 + mp_phi/2)     ! eqn (116)
 let/quiet x_page = mp_rho * sin(mp_lambda-mp_lambda0)          ! eqn (108)
 let/quiet y_page = (-1.0) * mp_rho * cos(mp_lambda-mp_lambda0) ! eqn (109)
 
-let/quiet mp_mask = if y le 0 then 1
+let/quiet mp_mask = 1
 
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 set mode/last verify

@@ -73,6 +73,13 @@
 * V540 *acm*  2/02  restore persistence of PPL AXSET settings
 * V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
 *                   done with qualifiers /AXES= or /NOAXES
+*      *acm*  4/02  If this is an overlay, and there is no valid data, 
+*                   do not put "No Valid Data" across the middle of the plot.
+*                   Instead (in disp_set_up) add this information to the
+*                   variable name in the key below the plot.
+* v541 *acm*  5/02 add option to control outline on the shade key boxes 
+*                   /KEY=continuous
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -102,7 +109,7 @@
 	CHARACTER TM_FMT*12, fname*128, buff*25
 
 * internal parameter declarations:
-	LOGICAL		norm_dims_only, not_vector
+	LOGICAL		norm_dims_only, not_vector, cont_key
 	PARAMETER     ( norm_dims_only  = .FALSE.,
      .			not_vector	= .FALSE. )
 
@@ -171,9 +178,27 @@
 	   IF (qual_given(slash_shad_nokey) .gt. 0) do_key = .FALSE.
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
+
+* ... /KEY[=continouus] ?
+              loc = qual_given( slash_shad_key )
+              IF ( loc .GT. 0) THEN
+	         CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+	         IF ( buff(1:3) .EQ. 'con' ) THEN
+                    cont_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
+                 ENDIF
+              ENDIF
+
            ELSE
               CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
-              IF (no_data) CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
+
+c when it's an overlay, 'No Valid Data' is part of the plot key,
+c done in disp_set_up.
+
+              IF (.NOT. overlay .AND. no_data) 
+     .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
      .                  ppl_centered, letsize_title,
      .                  'No Valid Data',
      .                  lab_loc_axlen_times, lab_loc_axlen_times )
@@ -301,6 +326,9 @@
 * restore axes? (5/29/97  revised 3/2002
 
         IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+
+* restore default (non-continuous) key style?
+        IF (cont_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

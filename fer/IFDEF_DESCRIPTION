@@ -1,0 +1,97 @@
+
+IFDEFS found in Fortran code
+----------------------------
+
+aix - specific to aix in pplus routine cmdini.F to not execute a line of
+      code which didn't work on aix systems
+AIX_XLF - things specific to usin AIX XLF fortran compiler
+atc_gks - specific to commercial atc release of the xgks library
+call_handler_each_time - gets defined automatically on solaris and aix 
+		         systems - maybe not needed in this list then?
+core - pplus only - not sure what it's for - doesn't seem to get used
+crptd_cat_argument - sgi only (??) problem w/ appending using "//" in 
+		     symbol_command.F
+debug_dyn_grids - used only for debugging dynamic grid code
+DEC_FORTRAN - items specific to DEC Fortran
+F90_DATE_TIME - use the F90 routine date_and_time rather than the 
+		f77 routine date.  currently only used for linux
+F90_NO_FPUTC - F90 didn't have a "fputc" routine, so had to use a
+	       write statement
+F90_OPEN_FILE_APPEND - For F90, open files w/ POSITION=APPEND rather
+		       than ACCESS=APPEND  
+F90_SYSTEM_ERROR_CALLS - Use F90 specific error calls
+FORTRAN_90 - General F90 switch
+hp - General switch when compiling on HP's
+HP_ADDS - Additional needs for HP compilers
+inquire_not_nfs_compatible - probably obselete option which was needed when
+			     using DEC f772.1 and multinet
+MANDATORY_FORMAT_WIDTHS - AIX only - needs explicit format widths
+NEED_BYTE - for compilers which user BYTE rather than INTEGER*1
+NEED_IAND - for compilers which user intrinsic function IAND 
+	    rather than AND 
+need_underscore - aix specific - intrinsic function SIGNAL_ needed
+		  underscore appended to it. 
+NINT_WRITE_UNMATCH - probably obselete switch which was used to isolate
+		     an older portion of code which was originally written
+		     to fix a VAX bug
+NO_ACCESS_APPEND - For compilers whose OPEN statement doesn't 
+		   allow ACCESS=APPEND
+NO_DOUBLE_ESCAPE_SLASH - for compilers which don't require two
+		         backslashes "\\" when escaping the "!" char
+NO_OPEN_CARRIAGECONTROL - For compilers whose OPEN statement doesn't 
+			  allow CARRIAGECONTROL option
+NO_OPEN_READONLY - For compilers whose OPEN statement doesn't 
+		   allow READONLY option
+NO_OPEN_RECORDTYPE - For compilers whose OPEN statement doesn't 
+		     allow RECORDTYPE option
+NO_OPEN_SHARED - For compilers whose OPEN statement doesn't 
+		 allow SHARED option
+NO_PASSED_CONCAT - used when the compiler has a problem passing 
+		   concatenated strings to subroutines as arguments
+NO_PREPEND_STRING - used for compilers which have a problem prepending
+		    strings used in variable assignments
+NO_SNGL  - necessary for compilers which do not have the intrinsic 
+	   function SNGL
+READONLY_ALLOWED - For compiles which allow READONLY in their OPEN
+		   statement
+reclen_in_bytes - For compilers which use bytes as the default record 
+		  length calculator, especially in open statments
+sgi  - IRIX specific switch
+solaris - Solaris specific switch
+STAR_1_SUPPORTED - USed if Integer*1 is supported - used only in pplus 
+		   code - same idea as NEED_BYTE
+STDERR_UNIT_SEVEN - FOR HP, the stderr unit was 7, instead of 0
+sun - sunOS (solaris 1.x) specific switches
+ultrix - Ultrix (no longer supported) specific switches
+unix - general Unix switch
+xgks - Switch to use Xgks
+X_REFRESH - For systems which do not have backing store, this Should be 
+	    set/used to force screen refreshes of plots
+
+
+IFDEFS found in C code
+-----------------------
+BELL - switch to turn on the bell to notify user when X snapshot is
+       being taken
+CHODEBUG - XGKS debugging switch
+DESIGN_TIME -  GUI specific switch - not needed
+ESCAPEDEBUG - Another XGKS debugging switch
+FULL_GUI_VERSION - Full functionality of GUI - should probably be
+		   on by default
+HP_SIGNALS - HP specific signal handling
+LINK_GUI_AS_MAIN - Link in the gui to Ferret.  W/out this the gui will
+		   will not be a part of ferret
+MIXING_NAG_F90_AND_C - Needed when using NAG F90 to call some fortran
+		       i/o setup routines - necessary w/ c main
+		       program
+NO_ENTRY_NAME_UNDERSCORES - Whether or not to append an underscore "_"
+			    to the name of a subroutine
+PSDEBUG - Switch for debugging postscript output
+QUERY_DEBUG - Another debugging switch, used in the ferret_query.c routine
+SEGMENTDEBUG - Another Xgks debugging switch
+SGI_POPUPS - SGI switch in order for menu's to function correctly in GUI
+XT_CODE - SWitch to have GUI use Xt library - probably should be default
+X_REFRESH - Switch to have set mode refresh on by default - needed on 
+	    systems that don't have backing store (ie, SGI)
+_NO_PROTO - Switch to allow function prototyping
+

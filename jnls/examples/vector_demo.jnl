@@ -160,7 +160,7 @@ sp rm -f vdtmp_*
 ! ***********************************************************
 say ...
 say To complete the demonstration we will try a more challenging display.
-say We will use FERRET's ability to sub-sample from a data set to generate
+say We will use FERRETs ability to sub-sample from a data set to generate
 say a scatter of vector wind speeds on North Atlantic coasts.
 say Then we will use the tool "GO scattered_vectors" to display them.
 say

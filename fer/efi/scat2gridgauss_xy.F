@@ -428,8 +428,7 @@
 
 999   CONTINUE
 
-   20 FORMAT('scat2gridgauss_xy; Input x, y have different ',
-     .       '# of points', 2i8)
+   20 FORMAT('Input x, y have different # of points', 2i8)
 
       WRITE (errtxt,20) nxpts, nxpts
 

@@ -26,6 +26,8 @@
 *        7/97 - complete the ZAXREPLACE function
 *       7/25/97 - increase number of args from 4 to 9
 *               - add function PPLGRID
+*       10/30/97 - fixed bug in UNRAVEL introduced in 7/25 changes
+*                       "m5lox" --> "m10lox", etc.
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -150,16 +152,16 @@
      .								  ) fcn
 
 * "UNRAVEL" - reshape/flatten the input into a line in X
- 1100	i2 = m5lox
+ 1100	i2 = m10lox
 	DO 1110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
 	 DO 1110 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
 	  DO 1110 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
 	   DO 1110 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 
 	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i2,m5loy,m5loz,m5lot) = bad_res
+	      res(i2,m10loy,m10loz,m10lot) = bad_res
 	   ELSE
-	      res(i2,m5loy,m5loz,m5lot) = com1(i,j,k,l)
+	      res(i2,m10loy,m10loz,m10lot) = com1(i,j,k,l)
 	   ENDIF
 	   i2 = i2 + 1
 

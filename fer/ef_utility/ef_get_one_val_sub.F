@@ -10,9 +10,12 @@ c* check to see if we can still return the value of a constant arg
 
 c* This subroutine is called by an external function which wishes
 c* to get the value of a 1x1x1x1 variable.
-c*
-c* JC_TODO: Currently, no checking is done.
-c*
+
+c* Note that grabbing a constant array during grid creation time is more
+c* difficult (though not impossible). The EVAL_EXPR routine cannot safely be
+c* called since the stacks would get re-initialized and the {,,,} would need
+c* to be parsed
+
 
       SUBROUTINE EF_GET_ONE_VAL_SUB(id, memory, iarg, value)
 

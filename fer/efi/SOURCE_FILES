@@ -23,6 +23,12 @@ scat2gridgauss_yz.F\
 scat2gridlaplace_xy.F\
 scat2gridlaplace_xz.F\
 scat2gridlaplace_yz.F\
+scat2gridgauss_xt.F\
+scat2gridgauss_yt.F\
+scat2gridgauss_zt.F\
+scat2gridlaplace_xt.F\
+scat2gridlaplace_yt.F\
+scat2gridlaplace_zt.F\
 sorti.F\
 sortj.F\
 sortk.F\

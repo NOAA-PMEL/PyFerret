@@ -248,6 +248,24 @@ void FORTRAN(scat2gridgauss_yz_compute)(int *, float *, float *, float *,
                            float *, float *, float *, float *, float *, 
                            float *, float *, float *);
 
+void FORTRAN(scat2gridgauss_xt_init)(int *);
+void FORTRAN(scat2gridgauss_xt_work_size)(int *);
+void FORTRAN(scat2gridgauss_xt_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_yt_init)(int *);
+void FORTRAN(scat2gridgauss_yt_work_size)(int *);
+void FORTRAN(scat2gridgauss_yt_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
+void FORTRAN(scat2gridgauss_zt_init)(int *);
+void FORTRAN(scat2gridgauss_zt_work_size)(int *);
+void FORTRAN(scat2gridgauss_zt_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *, float *);
+
 void FORTRAN(scat2gridlaplace_xy_init)(int *);
 void FORTRAN(scat2gridlaplace_xy_work_size)(int *);
 void FORTRAN(scat2gridlaplace_xy_compute)(int *, float *, float *, float *, 
@@ -265,6 +283,26 @@ void FORTRAN(scat2gridlaplace_yz_work_size)(int *);
 void FORTRAN(scat2gridlaplace_yz_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *);
+
+
+void FORTRAN(scat2gridlaplace_xt_init)(int *);
+void FORTRAN(scat2gridlaplace_xt_work_size)(int *);
+void FORTRAN(scat2gridlaplace_xt_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *);
+
+void FORTRAN(scat2gridlaplace_yt_init)(int *);
+void FORTRAN(scat2gridlaplace_yt_work_size)(int *);
+void FORTRAN(scat2gridlaplace_yt_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *);
+
+void FORTRAN(scat2gridlaplace_zt_init)(int *);
+void FORTRAN(scat2gridlaplace_zt_work_size)(int *);
+void FORTRAN(scat2gridlaplace_zt_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *, 
+                           float *, float *);
+
 
 void FORTRAN(sorti_init)(int *);
 void FORTRAN(sorti_result_limits)(int *);
@@ -402,7 +440,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 28
+#define N_INTEF 34
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -416,26 +454,32 @@ struct {
    strcpy(I_EFnames[5].funcname, "scat2gridgauss_xy");
    strcpy(I_EFnames[6].funcname, "scat2gridgauss_xz");
    strcpy(I_EFnames[7].funcname, "scat2gridgauss_yz");
-   strcpy(I_EFnames[8].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[9].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[10].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[11].funcname, "sorti");
-   strcpy(I_EFnames[12].funcname, "sortj");
-   strcpy(I_EFnames[13].funcname, "sortk");
-   strcpy(I_EFnames[14].funcname, "sortl");
-   strcpy(I_EFnames[15].funcname, "tauto_cor");
-   strcpy(I_EFnames[16].funcname, "xauto_cor");
-   strcpy(I_EFnames[17].funcname, "eof_stat");
-   strcpy(I_EFnames[18].funcname, "eof_tfunc");
-   strcpy(I_EFnames[19].funcname, "eof_space");
-   strcpy(I_EFnames[20].funcname, "compressi");
-   strcpy(I_EFnames[21].funcname, "compressj");
-   strcpy(I_EFnames[22].funcname, "compressk");
-   strcpy(I_EFnames[23].funcname, "compressl");
-   strcpy(I_EFnames[24].funcname, "compressi_by");
-   strcpy(I_EFnames[25].funcname, "compressj_by");
-   strcpy(I_EFnames[26].funcname, "compressk_by");
-   strcpy(I_EFnames[27].funcname, "compressl_by");
+   strcpy(I_EFnames[8].funcname, "scat2gridgauss_xt");
+   strcpy(I_EFnames[9].funcname, "scat2gridgauss_yt");
+   strcpy(I_EFnames[10].funcname, "scat2gridgauss_zt");
+   strcpy(I_EFnames[11].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[12].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[13].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[14].funcname, "scat2gridlaplace_xt");
+   strcpy(I_EFnames[15].funcname, "scat2gridlaplace_yt");
+   strcpy(I_EFnames[16].funcname, "scat2gridlaplace_zt");
+   strcpy(I_EFnames[17].funcname, "sorti");
+   strcpy(I_EFnames[18].funcname, "sortj");
+   strcpy(I_EFnames[19].funcname, "sortk");
+   strcpy(I_EFnames[20].funcname, "sortl");
+   strcpy(I_EFnames[21].funcname, "tauto_cor");
+   strcpy(I_EFnames[22].funcname, "xauto_cor");
+   strcpy(I_EFnames[23].funcname, "eof_stat");
+   strcpy(I_EFnames[24].funcname, "eof_tfunc");
+   strcpy(I_EFnames[25].funcname, "eof_space");
+   strcpy(I_EFnames[26].funcname, "compressi");
+   strcpy(I_EFnames[27].funcname, "compressj");
+   strcpy(I_EFnames[28].funcname, "compressk");
+   strcpy(I_EFnames[29].funcname, "compressl");
+   strcpy(I_EFnames[30].funcname, "compressi_by");
+   strcpy(I_EFnames[31].funcname, "compressj_by");
+   strcpy(I_EFnames[32].funcname, "compressk_by");
+   strcpy(I_EFnames[33].funcname, "compressl_by");
 
 
 /*    
@@ -2247,6 +2291,21 @@ else if ( !strcmp(name,"scat2gridgauss_yz_init_") ) return (void *)FORTRAN(scat2
 else if ( !strcmp(name,"scat2gridgauss_yz_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yz_work_size);
 else if ( !strcmp(name,"scat2gridgauss_yz_compute_") ) return (void *)FORTRAN(scat2gridgauss_yz_compute);
 
+/* scat2gridgauss_xt.F */
+else if ( !strcmp(name,"scat2gridgauss_xt_init_") ) return (void *)FORTRAN(scat2gridgauss_xt_init);
+else if ( !strcmp(name,"scat2gridgauss_xt_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xt_work_size);
+else if ( !strcmp(name,"scat2gridgauss_xt_compute_") ) return (void *)FORTRAN(scat2gridgauss_xt_compute);
+
+/* scat2gridgauss_yt.F */
+else if ( !strcmp(name,"scat2gridgauss_yt_init_") ) return (void *)FORTRAN(scat2gridgauss_yt_init);
+else if ( !strcmp(name,"scat2gridgauss_yt_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yt_work_size);
+else if ( !strcmp(name,"scat2gridgauss_yt_compute_") ) return (void *)FORTRAN(scat2gridgauss_yt_compute);
+
+/* scat2gridgauss_zt.F */
+else if ( !strcmp(name,"scat2gridgauss_zt_init_") ) return (void *)FORTRAN(scat2gridgauss_zt_init);
+else if ( !strcmp(name,"scat2gridgauss_zt_work_size_") ) return (void *)FORTRAN(scat2gridgauss_zt_work_size);
+else if ( !strcmp(name,"scat2gridgauss_zt_compute_") ) return (void *)FORTRAN(scat2gridgauss_zt_compute);
+
 /* scat2gridlaplace_xy.F */
 else if ( !strcmp(name,"scat2gridlaplace_xy_init_") ) return (void *)FORTRAN(scat2gridlaplace_xy_init);
 else if ( !strcmp(name,"scat2gridlaplace_xy_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_xy_work_size);
@@ -2261,6 +2320,21 @@ else if ( !strcmp(name,"scat2gridlaplace_xz_compute_") ) return (void *)FORTRAN(
 else if ( !strcmp(name,"scat2gridlaplace_yz_init_") ) return (void *)FORTRAN(scat2gridlaplace_yz_init);
 else if ( !strcmp(name,"scat2gridlaplace_yz_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_yz_work_size);
 else if ( !strcmp(name,"scat2gridlaplace_yz_compute_") ) return (void *)FORTRAN(scat2gridlaplace_yz_compute);
+
+/* scat2gridlaplace_xt.F */
+else if ( !strcmp(name,"scat2gridlaplace_xt_init_") ) return (void *)FORTRAN(scat2gridlaplace_xt_init);
+else if ( !strcmp(name,"scat2gridlaplace_xt_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_xt_work_size);
+else if ( !strcmp(name,"scat2gridlaplace_xt_compute_") ) return (void *)FORTRAN(scat2gridlaplace_xt_compute);
+
+/* scat2gridlaplace_yt.F */
+else if ( !strcmp(name,"scat2gridlaplace_yt_init_") ) return (void *)FORTRAN(scat2gridlaplace_yt_init);
+else if ( !strcmp(name,"scat2gridlaplace_yt_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_yt_work_size);
+else if ( !strcmp(name,"scat2gridlaplace_yt_compute_") ) return (void *)FORTRAN(scat2gridlaplace_yt_compute);
+
+/* scat2gridlaplace_zt.F */
+else if ( !strcmp(name,"scat2gridlaplace_zt_init_") ) return (void *)FORTRAN(scat2gridlaplace_zt_init);
+else if ( !strcmp(name,"scat2gridlaplace_zt_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_zt_work_size);
+else if ( !strcmp(name,"scat2gridlaplace_zt_compute_") ) return (void *)FORTRAN(scat2gridlaplace_zt_compute);
 
 /* sorti.F */
 else if ( !strcmp(name,"sorti_init_") ) return (void *)sorti_init_;

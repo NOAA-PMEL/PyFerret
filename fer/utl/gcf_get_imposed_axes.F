@@ -49,6 +49,7 @@
 * V450: 1/97
 *	7/97 - slight reorg for external functions
 * V491: 1/98 - make test function TIMES2 impose its T axis
+*       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
 
 
 * calling argument declarations
@@ -125,8 +126,8 @@
 	   ENDIF
  100	CONTINUE
 
-* *** UNRAVEL function ***
-* The result of this function is a grid of ABSTRACT NORMAL NORMAL NORMAL
+* *** XUNRAVEL, YUNRAVEL, ZUNRAVEL, and TUNRAVEL functions ***
+* The result of these functions are grids of ABSTRACT and NORMAL axes
 *   .... 7/97 changes -- handled entirely within "typical" cases above
 
 	IF ( gcfcn .EQ. p_reshape ) THEN

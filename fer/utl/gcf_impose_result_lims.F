@@ -58,6 +58,7 @@
 *                see err491_reshape_limits.jnl
 * V500:  1/99 *sh* remove test code regarding function TIMES2
 *       a.k.a. "ECHO"  now used for string argument testing
+*       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
 
 
 * debug declarations for TIMES2
@@ -131,8 +132,8 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
  100	CONTINUE
 
-* *** UNRAVEL function ***
-	IF ( gcfcn .EQ. p_unravel ) THEN
+* *** XUNRAVEL function ***
+	IF ( gcfcn .EQ. p_xunravel ) THEN
 * X axis is imposed as ABSTRACT
 * size of output on X is total size of input of component
 	   com1_cx = cx_list(1) 	! only one argument to function
@@ -142,6 +143,41 @@
 	   CALL FLESH_OUT_AXIS( x_dim, res_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	
+* *** YUNRAVEL function ***
+	ELSEIF ( gcfcn .EQ. p_yunravel ) THEN
+* Y axis is imposed as ABSTRACT
+* size of output on Y is total size of input of component
+	   com1_cx = cx_list(1) 	! only one argument to function
+	   cx_lo_ss(res_cx,y_dim) = 1
+	   cx_hi_ss(res_cx,y_dim) = CGRID_SIZE(com1_cx)
+	   cx_by_ss(y_dim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( y_dim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+
+* *** ZUNRAVEL function ***
+	ELSEIF ( gcfcn .EQ. p_zunravel ) THEN
+* Z axis is imposed as ABSTRACT
+* size of output on Z is total size of input of component
+	   com1_cx = cx_list(1) 	! only one argument to function
+	   cx_lo_ss(res_cx,z_dim) = 1
+	   cx_hi_ss(res_cx,z_dim) = CGRID_SIZE(com1_cx)
+	   cx_by_ss(z_dim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( z_dim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+
+* *** TUNRAVEL function ***
+	ELSEIF ( gcfcn .EQ. p_tunravel ) THEN
+* T axis is imposed as ABSTRACT
+* size of output on T is total size of input of component
+	   com1_cx = cx_list(1) 	! only one argument to function
+	   cx_lo_ss(res_cx,t_dim) = 1
+	   cx_hi_ss(res_cx,t_dim) = CGRID_SIZE(com1_cx)
+	   cx_by_ss(t_dim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( t_dim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
 
 * *** TIMES2 (debug) function ***
 ! commented out with ifdef 1/99 *sh*

@@ -13,12 +13,16 @@
 * V450:
 * V500: 1/99 added parg_type in support of string arguments
 
-	INTEGER		p_unravel, p_times2, p_reshape, p_zlayer
+	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
+     .			p_yunravel, p_zunravel, p_tunravel
 
-	PARAMETER     ( p_unravel = 1,
-     .			p_times2  = p_unravel  + 1,
-     .			p_reshape = p_times2   + 1,
-     .			p_zlayer  = p_reshape  + 1 )
+	PARAMETER     ( p_xunravel = 1,
+     .			p_times2   = p_xunravel  + 1,
+     .			p_reshape  = p_times2   + 1,
+     .			p_zlayer   = p_reshape  + 1,
+     .			p_yunravel = p_zlayer   + 1,
+     .			p_zunravel = p_yunravel + 1,
+     .			p_tunravel = p_zunravel + 1 )
 
 
 * parameters to control the passing of context information

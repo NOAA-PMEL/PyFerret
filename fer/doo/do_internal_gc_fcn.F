@@ -71,6 +71,7 @@
 *       need to recognize the missing value flags of the first arg
 * V500:  1/99 *sh* comandeered the TIMES2 function for string argument testing
 *               renamed it to ECHO
+*       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -195,7 +196,7 @@
      .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000
      .								  ) fcn
 
-* "UNRAVEL" - reshape/flatten the input into a line in X
+* "XUNRAVEL" - reshape/flatten the input into a line in X
  1100	i2 = m10lox
 	DO 1110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
 	 DO 1110 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
@@ -363,9 +364,59 @@
         CALL RELEASE_WORK_SPC
         RETURN
 
- 1500	CONTINUE
- 1600	CONTINUE
- 1700	CONTINUE
+* "YUNRAVEL" - reshape/flatten the input into a line in Y
+ 1500	i2 = m10loy
+	DO 1510 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	 DO 1510 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO 1510 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	   DO 1510 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+
+	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
+	      res(m10lox,i2,m10loz,m10lot) = bad_res
+	   ELSE
+	      res(m10lox,i2,m10loz,m10lot) = com1(i,j,k,l)
+	   ENDIF
+	   i2 = i2 + 1
+
+ 1510	CONTINUE
+	RETURN
+
+
+* "ZUNRAVEL" - reshape/flatten the input into a line in Z
+ 1600	i2 = m10loz
+	DO 1610 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	 DO 1610 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO 1610 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	   DO 1610 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+
+	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
+	      res(m10lox,m10loy,i2,m10lot) = bad_res
+	   ELSE
+	      res(m10lox,m10loy,i2,m10lot) = com1(i,j,k,l)
+	   ENDIF
+	   i2 = i2 + 1
+
+ 1610	CONTINUE
+	RETURN
+
+
+* "TUNRAVEL" - reshape/flatten the input into a line in T
+ 1700	i2 = m10lot
+	DO 1710 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	 DO 1710 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO 1710 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	   DO 1710 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+
+	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
+	      res(m10lox,m10loy,m10loz,i2) = bad_res
+	   ELSE
+	      res(m10lox,m10loy,m10loz,i2) = com1(i,j,k,l)
+	   ENDIF
+	   i2 = i2 + 1
+
+ 1710	CONTINUE
+	RETURN
+
  1800	CONTINUE
  1900	CONTINUE
  2000	CONTINUE

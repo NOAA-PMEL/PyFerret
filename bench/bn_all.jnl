@@ -56,11 +56,17 @@ SET MODE VERIFY
 !			bn_cache_hits.jnl, .sub
 !			bn_strides_revs_perms.jnl
 !			bn_regrid_to_user.jnl
-! V5.3:
+! V5.33:
+! 6/01 *sh* -- added bn_modulo_strides.jnl
 ! 6/01 *acm*  -- add	bn_calendar
 !			bn_dash_dot
 !			bn_flowlines
 ! 6/08 *kob*  -- add	bn_internal_external_functions
+!
+! V5.40:
+! 9/01 *sh* -- added bn_axis_viewports
+!           -- added bn_strings
+
 GO bn_reset
 GO bn_syntax
 cancel mode metafile      !9/97
@@ -236,7 +242,6 @@ GO bn_cache_hits		! cache hits on unspecified (full) regions
 GO bn_reset
 GO bn_regrid_to_user		! G=user_var and related
 
-
 ! ******** V53 Additions below ***********
 
 GO bn_reset
@@ -257,6 +262,17 @@ GO bn_logaxes
 !       the bn_external_function jnl file.  
 GO bn_reset
 GO bn_internal_external_functions
+
+GO bn_reset
+GO bn_modulo_strides
+
+! ******** V54 Additions below ***********
+
+GO bn_reset
+GO bn_axis_viewports
+
+GO bn_reset
+GO bn_strings
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

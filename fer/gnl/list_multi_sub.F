@@ -59,6 +59,8 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
+
 #ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -104,6 +106,8 @@
 	INTEGER		pt_blk(ws), size(4,ws), msize(ws), width(ws)
 	REAL		out(ws), bad(ws)
 * ss_save removed from integer declaration and put in logical decl.  *kob* 8/94	
+* V500 *kob* 3/99- up VAR_CODE and vcode decl's to 64 chars and KEY_STRING
+*                  to 128 and VAR_UNITS to 64
 * local variable declarations:
 	LOGICAL		all_bad, do_unform,ss_save
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN, CGRID_AXIS,
@@ -118,15 +122,15 @@
      .			ivar, point, word, block, iwd, iblk, dset, ax, new_ax,
      .			min_width, row_ww_wid
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
-	CHARACTER	KEY_STRING*64, AX_TITLE*32, VAR_UNITS*32, LEFINT*8,
-     .			CX_DIM_STR*16, VAR_CODE*24,
+	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
+     .			CX_DIM_STR*16, VAR_CODE*64,
      .			buff1*16, buff2*16, buff3*16, line_buff*200,
      .			good_data_form*10, row_ss_fmt*14, bad_ax*5,
      .			bad_data_form*10, col_head_format*32, sep*1
 	REAL		BOX_SIZE, big, small, biggest, value
 	REAL*8		TM_WORLD, val8
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
-     .			vcode(max_intrp)*24
+     .			vcode(max_intrp)*64
 #ifdef DEC_FORTRAN
 	INTEGER		ios
 #endif

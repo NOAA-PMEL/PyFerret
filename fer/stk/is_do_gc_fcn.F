@@ -6,6 +6,7 @@
 
 * V450:  1/97 - based on IS_DO_OP
 *        7/97 - added status and memory args to DO_INTERNAL_GC_FCN call
+*       7/25/97 - increase number of args allowed from 5 to 10
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -37,13 +38,15 @@
 	INTEGER	CX_DIM_LEN, STR_MATCH, GCF_FIND_FCN, GCF_NUM_ARGS,
      .		CGRID_AXIS,
      .		ifcn, iop, ilogic, icom, idim, num_com, mr, res_cx,
-     .		mr1, mr2, mr3, mr4, impl_grid,
+     .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .		frame_bottom, res_len, com_len, com_cx, res_mr
 
 * convenience equivalences
-	INTEGER	com(5)
+	INTEGER	com(10)
 	EQUIVALENCE (com(1),mr1), (com(2),mr2), (com(3),mr3), (com(4),mr4),
-     .              (com(5),res_mr)
+     .              (com(5),mr5),
+     .		    (com(6),mr6), (com(7),mr7), (com(8),mr8), (com(9),mr9),
+     .              (com(10),res_mr)
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -88,14 +91,14 @@
 	mr_variable( res_mr ) = res_mr	! cat_temp_var vars point to themselves
 
 * point to the memory resident components
-* (if fewer than 4 components default extras to dummy)
+* (if fewer than 9 components default extras to dummy)
 	DO 300 icom = 1, num_com
  300	com(icom) = is_mr(frame_bottom+icom-1)
-	DO 310 icom = num_com+1, 4
+	DO 310 icom = num_com+1, 9
  310	com(icom) = dummy_mr
 
 * set up 4D array limits as unsubscripted variables in COMMON
-	CALL NON_ARRAY_SUBSC( com, 5 )
+	CALL NON_ARRAY_SUBSC( com, 10 )
 
 * perform the operation
 	CALL DO_INTERNAL_GC_FCN( memory,
@@ -104,6 +107,11 @@
      .			memory(1, mr_blk1(mr2) ),   mr2,
      .			memory(1, mr_blk1(mr3) ),   mr3,
      .			memory(1, mr_blk1(mr4) ),   mr4,
+     .			memory(1, mr_blk1(mr5) ),   mr5,
+     .			memory(1, mr_blk1(mr6) ),   mr6,
+     .			memory(1, mr_blk1(mr7) ),   mr7,
+     .			memory(1, mr_blk1(mr8) ),   mr8,
+     .			memory(1, mr_blk1(mr9) ),   mr9,
      .			memory(1, mr_blk1(res_mr)), res_mr,
      .			status )
 	IF ( status .NE. ferr_ok ) GOTO 5100

@@ -148,6 +148,8 @@
 * V554:  1/04 *acm* - add REPEAT/RANGE=/NAME= qualifiers
 * V554:  2/04 *acm* - add /HGRAT=/VGRAT qualifiers to plot commands, setting 
 *                     graticule lines at tic marks
+* V570:  5/04 *acm* - Add DEFINE AXIS/BOUNDS 
+*                     and LIST/EDGES, LIST/BOUNDS (for NetCDF output only)
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -757,6 +759,10 @@
 		DATA qualifiers  (nqual_at5a+27)/ 'CLOBBER'/
 		DATA qualifiers  (nqual_at5a+28)/ 'QUIET'/
 		DATA qualifiers  (nqual_at5a+29)/ 'WIDTH'/
+		DATA qualifiers  (nqual_at5a+30)/ 'EDGES'/
+		DATA qualifiers  (nqual_at5a+31)/ 'BOUNDS'/
+		DATA qualifiers  (nqual_at5a+32)/ '****'/
+		DATA qualifiers  (nqual_at5a+33)/ '****'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
@@ -937,7 +943,7 @@
 		DATA qualifiers  (nqual_at10e+ 11)/ 'NPOINTS' /
 		DATA qualifiers  (nqual_at10e+ 12)/ 'EDGES' /
 		DATA qualifiers  (nqual_at10e+ 13)/ 'CALENDAR' /
-		DATA qualifiers  (nqual_at10e+ 14)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 14)/ 'BOUNDS' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at10 + 5)/ nqual10f	/

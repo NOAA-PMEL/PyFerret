@@ -51,6 +51,7 @@
 * V533: *sh* 6/01 - added logic to cope with strides
 * V541: *sh*  2/02 - support for subspan modulo axes
 *	See NOTE in code below
+* 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -109,7 +110,7 @@
 	IF (cx_delta(idim,res_cx) .EQ. unspecified_val8) THEN
 	   idel = 1
 	ELSE
-	   idel = cx_delta(idim,res_cx)
+	   idel = NINT(cx_delta(idim,res_cx))
 	ENDIF
 
 * initialize the modulo shifting

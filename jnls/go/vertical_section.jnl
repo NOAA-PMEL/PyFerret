@@ -4,6 +4,9 @@
 
 ! Description: Create an arbitrary 2D vertical section from a 3D field
 
+! NOTE: Also see the script samplexy_demo.jnl for a more flexible method
+!       of creating vertical cross-sections
+
 ! usage:
 !                             arg1   arg2   a3  a4  a5  a6  a7 a8
 !	GO vertical_section variable zaxis xlo,ylo,xhi,yhi  nx,nz

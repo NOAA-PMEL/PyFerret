@@ -91,8 +91,9 @@
 *			MERGE_WHOI_CONTEXT
 * V450: 3/97 - modified AXIS_FORMAT args for curvilinear coordinate plots
 * V500 *kob* 3/99- up VAR_CODE  and VAR_UNITS to 64 chars
-* V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
+*       4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
 *       6/99 - *sh* added logic to permit a PLOT/VS over a time series plot
+* V510 10/99 - *sh* plot/i=1:10 i/0 is not an error -- scale axis to -1:1
 
 
 #ifdef unix
@@ -385,12 +386,12 @@
 * ... when all the variables are considered together
 	all_1_dep = all_1_dep .AND. 
      .		NO_LINE_RANGE( dep_dat, npts2, mr_bad_data(mv), val1 )
-	IF ( val1 .EQ. mr_bad_data(mv) ) CALL ERRMSG( ferr_no_range, status,
-     .		'all data points are bad: '//VAR_CODE(mr_category(mv),
-     .						      mr_variable(mv) ),*5000)
+! 10/99	IF ( val1 .EQ. mr_bad_data(mv) ) CALL ERRMSG( ferr_no_range, status,
+!     .		'all data points are bad: '//VAR_CODE(mr_category(mv),
+!     .						      mr_variable(mv) ),*5000)
 	IF ( all_1_dep ) THEN
 	   IF ( only_val .EQ. bad_val4 ) THEN
-	      only_val = val1
+	      IF ( val1 .NE. mr_bad_data(mv) ) only_val = val1
 	   ELSE
 	      all_1_dep = all_1_dep .AND. only_val .EQ. val1
 	   ENDIF
@@ -499,6 +500,7 @@
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
 	   ELSEIF ( all_1_dep ) THEN
+	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
 	      CALL AXIS_ENDS( dep_ax, t_dim, grid,val1-1.D0,val1+1.D0,1.D0 )
 	   ENDIF
 	ENDIF

@@ -1,2 +1,1 @@
-LIB =
- 
+LIB = ../../lib/libpplp_only.a

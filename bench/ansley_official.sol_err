@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version  /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     64392688 Apr  4 13:55 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     64383964 Apr  6 12:22 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: fixes for bugs 1203 (STOP on syntax error) and 1207 ( index range for CIA, CDA, CIB, CDB )
+Note:  fix for bug1214; set meta_actv false on a PPL CLSPLT
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,8 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Mon Apr 4 14:22:34 PDT 2005
+FER_LOCAL_EXTFCNS=/home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
+Beginning at Wed Apr 6 12:49:05 PDT 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -619,4 +620,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Apr 4 14:30:11 PDT 2005
+Ended at Wed Apr 6 12:56:34 PDT 2005

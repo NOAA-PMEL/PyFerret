@@ -51,6 +51,7 @@
 * 3/12/92 *sh* : added netCDF support - changed text of merr_badsubscr
 *                                     - and merr_gridpredef
 * 3/12/93 *sh* : allow unlimited columns in EZ data set
+* 11/99 *sh* - change "grid lines" to "axes" in error message
 
 #ifdef unix
 	include 'tmap_errors.parm'		! parameter definitions
@@ -110,7 +111,7 @@
      .	msg_regular(merr_gridlim - pregular)
      .		/'limit on number of grids has been reached         '/,
      .	msg_regular(merr_linelim - pregular)
-     .		/'limit on number of grid lines has been reached    '/,
+     .		/'limit on number of axes has been reached          '/,
      .	msg_regular(merr_keynf - pregular)
      .		/'requested key not found in search list            '/,
      .	msg_regular(merr_gridpredef - pregular)

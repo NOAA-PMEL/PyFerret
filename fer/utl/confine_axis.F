@@ -65,6 +65,9 @@
 *                   were mis-defined.
 * V554 *acm* 11/03 -Fix bug in the change just above: if times requested
 *                   are outside the data bounds, give error message.
+* V561 *acm*  4/04 -Fix bug plotting a noleap time axis: cx_lo_ww and cx_hi_ww
+*                   are originally set without knowledge of calendar, so when
+*                   resetting time step here, also reset the limits for cx_cmnd
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -174,7 +177,9 @@
               dflt_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
               CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), new_lo_ww, 
      .			dflt_cal_id, cal_id, istat)
-	      IF (istat .ne. ferr_ok) GO TO 5000
+
+c              status = err_ww_lims
+              IF (istat .ne. ferr_ok) GO TO 5000
               CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), new_hi_ww,  
      .			dflt_cal_id, cal_id, istat)
 	      IF (istat.ne. ferr_ok) GO TO 5000
@@ -182,10 +187,16 @@
 	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
 	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
 	      cx_calendar(cx) = .FALSE. 
-             
-              status = ferr_ok
-              status = err_ww_lims
-	   ENDIF
+
+* also fix the world limits for cx_cmnd, if they were originally set 
+* using default calendar
+
+              IF (cal_id .NE. dflt_cal_id) THEN   
+                  cx_lo_ww(idim,cx_cmnd) = -1*new_lo_ww
+                  cx_hi_ww(idim,cx_cmnd) = -1*new_hi_ww
+              ENDIF
+
+           ENDIF
 * ... confine values to the limits of the defining grid
  4000	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )
 	   lo_ww = MAX( cx_lo_ww( idim, cx ), min_ww )

@@ -82,6 +82,8 @@
 #		   necessary due to new curvilinear coordinate stuff
 # 7/7/97 *kob* - updated solaris sections for ferret v5
 
+# 7/24/97 *kob* - add a FER_LINK_DIR so that CVS makes wil now work
+FER_LINK_DIR=..
 GUI =no GUI
 DEBUG =
 GFLAG =

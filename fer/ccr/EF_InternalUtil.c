@@ -196,9 +196,15 @@ int efcn_scan_( int *gfcn_num_internal )
  
       while ( fgets(file, EF_MAX_NAME_LENGTH, file_ptr) != NULL ) {
 
+        char *extension;
+
 	file[strlen(file)-1] = '\0';   /* chop off the carriage return */
-	if ( strstr(file, ".so") != NULL ) {
-	  *strstr(file, ".so") = '\0'; /* chop off the ".so" */
+	extension = &file[strlen(file)-3];
+	if ( strcmp(extension, ".so") == 0 ) {
+      file[strlen(file)-3] = '\0'; /* chop off the ".so" */
+/*	if ( strstr(file, ".so") != NULL ) {
+	  *strstr(file, ".so") = '\0'; *//* chop off the ".so" *//*
+*/
 	  strcpy(ef.path, path);
 	  strcpy(ef.name, file);
 	  ef.id = *gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
@@ -487,7 +493,7 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
       (*f6arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
 		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], 
-		memory + mr_arg_offset_ptr[EF_MAX_ARGS+1] );
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 7:
@@ -541,7 +547,7 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
  * Find an external function based on its name and
  * fill in the integer ID associated with that funciton.
  */
-int efcn_get_id_( char *name )
+int efcn_get_id_( char name[] )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -574,7 +580,7 @@ int efcn_get_id_( char *name )
  * fill in the integer ID associated with first function
  * that matches the template.
  */
-int efcn_match_template_( char *name )
+int efcn_match_template_( char name[] )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -858,7 +864,7 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
   if ( printable ) {
     strcpy(string, ef_ptr->internals_ptr->arg_name[index]);
   } else {
-    strcpy(string, "X");
+    strcpy(string, "--");
   }
 
   return;
@@ -1022,6 +1028,8 @@ void EF_force_linking(int I_should_do_it)
 
     ef_get_coordinates_( &i, &i, &i, &i, &i, &f );
     ef_get_box_size_( &i, &i, &i, &i, &i, &f );
+
+    ef_get_hidden_variables_( &i, &i );
   }
 }
 
@@ -1078,14 +1086,20 @@ int EF_ListTraverse_FoundName( char *data, char *curr )
 }
 
 
-int EF_ListTraverse_MatchTemplate( char *data, char *curr )
+int EF_ListTraverse_MatchTemplate( char data[], char *curr )
 {
   ExternalFunction *ef_ptr=(ExternalFunction *)curr; 
 
   int i=0, star_skip=FALSE;
+  char upname[EF_MAX_DESCRIPTION_LENGTH];
   char *t, *n;
 
-  n = ef_ptr->name;
+  for (i=0; i<strlen(ef_ptr->name); i++) {
+    upname[i] = toupper(ef_ptr->name[i]);
+  }
+  upname[i] = '\0';
+
+  n = upname;
 
   for (i=0, t=data; i<strlen(data); i++, t++) {
 
@@ -1116,8 +1130,10 @@ int EF_ListTraverse_MatchTemplate( char *data, char *curr )
     } else if ( *n == '\0' ) /* end of name */
       return TRUE; /* no match */
 
-    else if ( *t == *n )
+    else if ( *t == *n ) {
+      n++;
       continue;
+    }
 
     else
       return TRUE; /* no match */

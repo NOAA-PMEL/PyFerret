@@ -51,7 +51,7 @@
 	DATA	has_new_mouse/ .FALSE. /   ! at program initialization
 	end
 #else
-	subroutine yabd_foobar
+	subroutine xgrinpt_foobar
 	return
 	end
 #endif

@@ -5,7 +5,7 @@
 # platform specific macros.  Changed by jimp 01/20/99.
 # NOTE:  SGI compilation requires the -Dsun flag to be set for compilation
 
-TMAP_LOCAL = /local/tmp/sch/FERRET
+TMAP_LOCAL = /home/sch/FERRET
 RANLIB = /bin/touch
 INCLUDES        = -I$(TMAP_LOCAL)/xgks/include \
                   -I/usr/local/xgks/include \
@@ -23,41 +23,44 @@ INCLUDES        = -I$(TMAP_LOCAL)/xgks/include \
 		  -I$(TMAP_LOCAL)/fmt/cmn \
 		  -I/usr/local/include \
 		  -I. -I$(TMAP_LOCAL)/readline-4.1 \
-		  -I$(TMAP_LOCAL)
+		  -I$(TMAP_LOCAL) 
 
 FINCLUDES       = -I../../ppl/tmap_inc \
 		  -I../include -I../../fmt/cmn \
 		  -I../common \
 	 	 -I../../ppl/include  -I../../fer/common
 
+# New platform type var - *kob* 10/01
+PLATFORM = IRIX64 6.5 
+
 
 C = /usr/bin/cc
-CFLAGS = -n32 -O2 -Dunix -Dsun -Dsgi -DXT_CODE -DSGI_SIGNALS -DLINK_GUI_AS_MAIN -DFULL_GUI_VERSION $(INCLUDES) -I/usr/local/include -I../gui
+CFLAGS = -n32 -mips3  -O0   -Dunix -Dsgi -DXT_CODE -DSGI_SIGNALS -DLINK_GUI_AS_MAIN -DFULL_GUI_VERSION $(INCLUDES) -I/usr/local/include -I../gui
 
 FC = /usr/bin/f77
-FFLAGS = -n32 -O3 -Dunix -Dsgi  -Dsun -Dreclen_in_bytes -DusingDODSf2cUnderscore $(INCLUDES)
-#FFLAGS = -n32 -O3 -Dunix -Dsgi -DX_REFRESH -Dsun -Dreclen_in_bytes -DusingDODSf2cUnderscore $(INCLUDES)
-#FFLAGS = -n32 -O3 -Dunix -Dsgi -DX_REFRESH -Dsun -Dreclen_in_bytes  $(INCLUDES)
-#PPLUS_FFLAGS = -n32 -Dunix -Dsgi -Dxgks -static -DNO_ACCESS_DEPEND -DNO_OPEN_RECORDTYPE -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_OPEN_CARRIAGECONTROL -DSTAR_1_SUPPORTED -DNO_OPEN_READONLY -Dsun  -DX_REFRESH -Dreclen_in_bytes $(FINCLUDES)
+FFLAGS = -n32 -mips3  -O0  -DusingDODSf2cUnderscore  -DNO_DOUBLE_ESCAPE_SLASH -DNEED_IAND -Dunix -Dsgi  -Dreclen_in_bytes -DusingDODSf2cUnderscore -DFORTRAN_90 -F90_OPEN_FILE_APPEND -extend_source$(INCLUDES)
 
-PPLUS_FFLAGS = -n32 -Dunix -Dsgi -Dxgks -static -DNO_ACCESS_DEPEND -DNO_OPEN_RECORDTYPE -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_OPEN_CARRIAGECONTROL -DSTAR_1_SUPPORTED -DNO_OPEN_READONLY -Dsun -Dreclen_in_bytes $(FINCLUDES)
+PPLUS_FFLAGS =  -O0 -mips3 -n32 -DusingDODSf2cUnderscore  -DNO_DOUBLE_ESCAPE_SLASH -Dunix -DNEED_IAND -Dsgi -Dxgks -static -DNO_ACCESS_APPEND -DNO_OPEN_RECORDTYPE -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_OPEN_CARRIAGECONTROL -DSTAR_1_SUPPORTED -DNO_OPEN_READONLY  -Dreclen_in_bytes -DF90_SYSTEM_ERROR_CALLS -DFORTRAN_90  -DNO_OPEN_SHARED -DNO_PREPEND_STRING -extend_source $(FINCLUDES)
 
-#
+#PPLUS_FFLAGS =  -O0 -mips3 -n32 -DusingDODSf2cUnderscore  -DNO_DOUBLE_ESCAPE_SLASH -Dunix -DNEED_IAND -Dsgi -Dxgks -static -DNO_ACCESS_DEPEND -DNO_OPEN_RECORDTYPE -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_OPEN_CARRIAGECONTROL -DSTAR_1_SUPPORTED -DNO_OPEN_READONLY  -Dreclen_in_bytes -DF90_SYSTEM_ERROR_CALLS -DFORTRAN_90 -DF90_OPEN_FILE_APPEND -DNO_OPEN_SHARED -DNO_PREPEND_STRING -extend_source $(FINCLUDES)
+
+#-L/opt/MIPSpro/7312m/usr/lib32
 # Below this line are macro definitions used only for the final linking of the executable
 #
 
 LD		= cc
-LDFLAGS		=  -v -IPA -n32
+LDFLAGS		=  -v -IPA -n32 -mips3 -L/opt/MIPSpro/7312m/usr/lib32/mips3
 
-SYSLIB		= -ldl -lXm -lXt -lX11 -lsun -lftn -lm -lc   /usr/lib32/crtn.o -L$(TMAP_LOCAL)/lib
+SYSLIB		=  -L/usr/lib32/mips3 -ldl -lXpm -lXm -lXt -lX11 -lsun -lftn -lm -lc /usr/lib32/mips3/crtn.o  -L$(TMAP_LOCAL)/lib  -lfortran -lffio
 
-TMLIB		= -L//tmp/ferret_tmp/lib  ../lib/tmap_lib.a
+#SYSLIB		= -L/usr/lib64 -L/usr/lib -ldl -lXm -lXt -lX11 -lsun -lftn -lm #-lc /usr/lib64/crtn.o /usr/lib64/crt1.o -L$(TMAP_LOCAL)/lib
 
-READLINELIB	= -L/local/tmp/sch/FERRET/readline-4.1 -lreadline
+TMLIB		= ../lib/tmap_lib.a
 
-GKSLIB		= $(TMAP_LOCAL)/lib/libxgks.a
+READLINELIB	= -L/home/sch/FERRET/readline-4.1 -lreadline
 
-#HDFLIB		= -L/net/hnv/lib/IRIX6 -ldf -ljpeg -lmfhdf -lz
+GKSLIB	        = /home/sch/FERRET/xgks/src/lib/libxgks.a
+
 HDFLIB		= -L/net/hnv/lib/IRIX6 -ldf -ljpeg -lz
 
 CDFLIB		= /net/hnv/lib/IRIX6/libnetcdf-3.4.a

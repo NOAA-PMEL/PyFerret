@@ -60,15 +60,14 @@
 * V530 *acm 5/01 - added args do_dash and dashstyle for 
 *		   PLOT/DASH[=(dn1,up1,dn2,up2)]
 
-#ifdef unix
 	include	'slash.parm'
 	include	'plot_setup.parm'
 	include	'xplot_setup.cmn'
-#else
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE	'FERRET_CMN:XPLOT_SETUP.CMN'
-#endif
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        include 'ppl_dash_save.cmn'
 
 * calling argument declarations
 	LOGICAL use_line
@@ -85,7 +84,7 @@
 	PARAMETER     ( num_line = num_plain*num_sym )
 
 * internal variable declarations
-	INTEGER	itype, imark, style0, sym(num_sym)
+	INTEGER	ityp, imrk, style0, sym(num_sym)
         LOGICAL setdash
 	DATA	sym/1,3,17,19,21,23,25,27,29,31,33,35,39,41,43,47,51/
 
@@ -113,44 +112,44 @@
 * select line type and symbols
         IF ( unique_symbol .OR. symbol_only1 ) THEN 
            IF (color.GT.0) THEN
-	      itype = color		! turn on symbol color 3/00
+	      ityp = color		! turn on symbol color 3/00
 	   ELSE
-	      itype = 1
+	      ityp = 1
 	   ENDIF
-           imark = MOD(sym_so_far,num_sym) + 1
+           imrk = MOD(sym_so_far,num_sym) + 1
            sym_so_far = sym_so_far + 1
 	ELSEIF ( select_lines .AND. style .LE. num_fancy_lines ) THEN  ! 1/94
-	   itype = style
-	   imark = 0
+	   ityp = style
+	   imrk = 0
 	ELSEIF ( style .LE. num_plain ) THEN
-	   itype = style
-	   imark = 0
+	   ityp = style
+	   imrk = 0
 	ELSEIF ( style .LE. num_line ) THEN
 	   style0 = (style-num_plain) - 1
-	   itype  = MOD(style0,num_plain) + 1
-	   imark  = MOD(style0/num_plain,num_sym) + 1
-           sym_so_far = MAX( sym_so_far, imark )    ! ... *sh* 10/91
+	   ityp  = MOD(style0,num_plain) + 1
+	   imrk  = MOD(style0/num_plain,num_sym) + 1
+           sym_so_far = MAX( sym_so_far, imrk )    ! ... *sh* 10/91
 	ELSE
-	   itype = 1
-	   imark = 0
+	   ityp = 1
+	   imrk = 0
 	ENDIF	   
 * replace selections with forced values if supplied
 	IF ( symbol    .GT. 0 ) THEN
-	  imark = symbol
+	  imrk = symbol
 	ELSEIF ( symbol .EQ. qual_off ) THEN
-          imark = 0                       ! 7/92
-	ELSEIF ( imark .NE. 0 ) THEN
-	  imark = sym(imark)
+          imrk = 0                       ! 7/92
+	ELSEIF ( imrk .NE. 0 ) THEN
+	  imrk = sym(imrk)
 	ENDIF
-	IF ( color .GT. 0 ) itype = color
+	IF ( color .GT. 0 ) ityp = color
 
-	WRITE ( ppl_buff, 3000 ) line_number, itype
+	WRITE ( ppl_buff, 3000 ) line_number, ityp
  3000	FORMAT('PEN ',2I4)
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 
-	IF ( imark .GT. 0 ) THEN
+	IF ( imrk .GT. 0 ) THEN
 * ... "LINE 8 3 1" - symbol number 3 on line 8
-	   WRITE ( ppl_buff, 3100 ) line_number, imark, ppl_draw_line
+	   WRITE ( ppl_buff, 3100 ) line_number, imrk, ppl_draw_line
  3100	   FORMAT ('LINE ',3I4)
 	ELSE
 * ... "LINE 4 1 0" - no symbols on line 4
@@ -158,7 +157,7 @@
  3200	   FORMAT ('LINE ',I4,' 1 0')
 	ENDIF
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-	IF ( imark .GT. 0 ) THEN
+	IF ( imrk .GT. 0 ) THEN
 * ... "MARKH 8 0.08" - symbol size 0.08 on line 8
 	   WRITE ( ppl_buff, 3300 ) line_number, sym_size
  3300	   FORMAT ('MARKH ',I4,F8.3)
@@ -166,8 +165,17 @@
 	ENDIF
 
 *  User-requested dash overrides automatic selections
+        dash_changed(line_number) = .FALSE.
+        linenum_save = 0
         IF (do_dash .EQ. 1) THEN
-	   itype = 4
+	   ityp = 4
+
+           dash_changed(line_number) = .TRUE.
+           dashsave(line_number,1) = dn1(line_number)
+           dashsave(line_number,2) = up1(line_number)
+           dashsave(line_number,3) = dn2(line_number)
+           dashsave(line_number,4) = up2(line_number)
+           linenum_save = line_number
 
 * communicate this to PLOT+
            setdash = .FALSE.
@@ -175,10 +183,10 @@
               IF (dashstyle(i) .NE. 0.) setdash = .TRUE.
   100	   CONTINUE
            IF (setdash) THEN
-              WRITE (ppl_buff, 3400) line_number, itype, (dashstyle(i),i=1,4)
+              WRITE (ppl_buff, 3400) line_number, ityp, (dashstyle(i),i=1,4)
  3400         FORMAT ('LINE ', I4, ' 0 ', I4, ' 0 0 ',4F7.3)
            ELSE 
-              WRITE (ppl_buff, 3500) line_number, itype
+              WRITE (ppl_buff, 3500) line_number, ityp
  3500         FORMAT ('LINE ', I4, ' 0 ', I4)
            ENDIF
 

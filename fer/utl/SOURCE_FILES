@@ -32,6 +32,7 @@ copy_ptr_grid_sub.F\
 count_number_list.F\
 cstring_insert.F\
 de_escape_string.F\
+deallo_all_axes.F\
 deallo_all_grids.F\
 deallo_grid.F\
 deallo_unformed_grid.F\
@@ -102,6 +103,7 @@ permute.F\
 permute_ptr_sub.F\
 permute_sub.F\
 region_number.F\
+remove_axis.F\
 reset_secs_from_bc.F\
 reverse_grid_axis.F\
 reverse_grid_axis_sub.F\

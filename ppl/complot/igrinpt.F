@@ -9,7 +9,10 @@ C**    @(#)igrinpt.F	1.2    3/27/88
 *    Note: this routine should really be split into two -- one to put up
 *       the choice menu, another to get the position input. Taking the lazy
 *       approach now ...
-
+*
+* v5.11 *kob* 5/00 - added ifdef to check for f90 - if so have to
+*                    initialize has_new_mouse w/in block data since it
+*                    exists in common
 C**
 C**
 C***********************************************************************
@@ -141,7 +144,11 @@ CC	Linux port:
 	data 	octal37/'37'O/
 #endif
 
+#ifdef FORTRAN_90
+        external XGRINPT_BLKDAT
+#else
         DATA has_new_mouse/ .FALSE. /   ! at program initialization
+#endif
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 

@@ -1,0 +1,66 @@
+! test internal string functions:
+!       strlen
+!	upcase
+!	dncase
+!	strindex
+!	strrindex
+!	substring
+!	strcat 
+!	float  - return float value from string
+!
+!	*kob*  6/02   Ferret v5.41
+
+
+! STRLEN
+! Result should be 35
+list strlen("This string should be 35 characters")
+! Result should be 0
+list strlen("")
+
+
+! UPCASE
+! Result should be in all caps
+list upcase ("this String sHould be iN aLl Caps")
+
+! DNCASE
+! Result should be all lower case
+list dncase ("this String sHould be iN loWer caSE")
+
+! STRINDEX
+! Find first occurence string "fun" in longer string 
+! Result should be 11
+list strindex("Ferret is fun for the whole family - real fun, family fun", "fun");
+
+! STRRINDEX
+! Find last occurence string "fun" in longer string 
+! Result should be 55
+list strrindex("Ferret is fun for the whole family - real fun, family fun", "fun");
+
+! SUBSTRING
+! Clip a substring from a string - result should be "ferret"
+list substring("Have you fed your ferret today", 19, 6)
+! Ask for offset greater than string lenght - result should be ""
+list substring("Have you fed your ferret today", 50, 6)
+! Ask for more chars than in string - result should be "ferret today"
+list substring("Have you fed your ferret today", 19, 60)
+
+
+! STRCAT
+! concatenate two strings
+list strcat ("All work and no play", " makes Ferret a dull boy")
+
+
+! FLOAT
+! return float value - result should be 7.85
+list (strfloat("3.14")*10)/4
+
+
+! the below are deliberate errors for incorrect argument detection 
+set mode ignore
+list strindex("Ferret is fun for the whole family - real family fun");
+list strrindex("Ferret is fun for the whole family - real family fun");
+list substring("Have you fed your ferret today", 19)
+list substring("Have you fed your ferret today")
+list strcat ("All work and no play")
+
+set mode/last ignore

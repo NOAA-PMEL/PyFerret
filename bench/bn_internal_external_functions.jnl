@@ -4,6 +4,7 @@
 
 !  8/02/01 *acm* add bench_eof; now internally-linked.
 ! 10/22/01 *acm* add bench_compress_by (compressi_by, compressj_by, ...)
+! 06/02 *kob* add bench_internal_string_functions (strlen, strcat, strindex, etc)
 
 GO bn_reset
 go bench_fft
@@ -19,3 +20,7 @@ go bench_eof
 
 GO bn_reset
 go bench_compress_by
+
+GO bn_reset
+GO bench_internal_string_functions
+

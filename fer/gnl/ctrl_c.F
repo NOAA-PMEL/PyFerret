@@ -64,6 +64,7 @@
 *               declaration line. Used DATA rather than PARAMETER
 *		statement because variable modified later in routine
 *	      - put a ! in front of "D" for disabled lines
+* 1/03 *kob* - g77 port - g77 needs to call SIGNAL with only two arguments
 
 * argument: CTRLC_AST
 *	name of routine to be called if operator hits ^C
@@ -79,7 +80,7 @@
         DATA	 	first_call/.TRUE./    !kob 12/96
 #ifdef unix
 * ************************ UNIX ******************************
-#ifdef AIX_XLF
+#if defined AIX_XLF 
       INTEGER SIGNAL_, old_handler, sigint
 #else
       INTEGER SIGNAL, old_handler, sigint
@@ -91,8 +92,7 @@
 
 
 *set up new defines *kob* 1/96
-#ifdef AIX_XLF
-# define need_underscore
+#ifdef AIX_XLF 
 # define call_handler_each_time
 #endif
 #ifdef solaris
@@ -103,13 +103,22 @@
 !D     GOTO 888
 * use newly named condition tests *kob* 1/96
 #ifdef call_handler_each_time
-#  ifdef need_underscore
+#  ifdef NEED_SIGNAL_UNDERSCORE
       old_handler = SIGNAL_( 2, CTRLC_AST, -1 )    ! on AIX call every time
+#  elif defined G77_SIGNAL
+      old_handler = SIGNAL( 2, CTRLC_AST)    !! on solaris call every time
 #  else
       old_handler = SIGNAL( 2, CTRLC_AST, -1 )    ! on solaris call every time
+
 #  endif
 #else
+#  ifdef NEED_SIGNAL_UNDERSCORE
+      IF (first_call) old_handler = SIGNAL_( 2, CTRLC_AST, -1 )
+#  elif defined G77_SIGNAL
+      old_handler = SIGNAL( 2, CTRLC_AST)    
+#  else 
       IF (first_call) old_handler = SIGNAL( 2, CTRLC_AST, -1 )
+#  endif	
 #endif
 !D 888 CONTINUE
 #else

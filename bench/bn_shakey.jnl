@@ -1,0 +1,71 @@
+! Changes to shade key:
+! - Default size is a little bigger
+! - To put key labels on the left or bottom of the key, multiply the size by -1
+! - Previously ALL OF kx_lo, kx_hi,ky_lo, ky_hi had to be set, or none of them 
+!   were applied. With changes as of 3/3/03 can set any of these independently.  
+!   If, say only x1 and y1 are set, the other corners are set, keeping the default 
+!   width and/or height.
+
+use ocean_atlas_temp
+set region/x=130:290/y=-45:45
+
+shade/title="shift shakey left and up"/set temp[l=1]
+
+let x1 = `($ppl$xorg)+($ppl$xlen)`
+let y1 = `($ppl$yorg)+.4`
+
+ppl shakey ,,.12,,,,`x1`,,`y1`
+ppl shade
+ppl list shakey
+
+shade/title="set only x2,y2"/set temp[l=1]
+
+let x2 = `($ppl$xorg)+($ppl$xlen)`
+let y2 = `($ppl$yorg)+($ppl$ylen) - .4`
+
+ppl shakey ,,.12,,,,,`x2`,,`y2`
+ppl shade
+ppl list shakey
+
+
+! resetting location of horizontal shade keys
+
+shade/title="shakey labels above it"/set temp[l=1]
+
+let x1 = `($ppl$xorg)+0.1`
+let y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
+let y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
+
+ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
+go unlabel 4
+go unlabel 5
+ppl shade
+ppl list shakey
+
+
+let x1 = `($ppl$xorg)+1`
+let x2 = `($ppl$xorg)+($ppl$xlen)-1`
+let y1 = `($ppl$yorg)`
+shade/title="shorter, at bottom"/set temp[l=1]
+ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
+ppl shade
+ppl list shakey
+
+shade/title="on left, labelled on left"/set temp[l=1]
+ppl axlabp, 1,1
+
+let x1 = `($ppl$xorg)`  - .5
+let x2 = `($ppl$xorg)`  - 0.1
+ppl shakey ,1,-.1,2,,,`x1`,`x2`
+ppl shade
+
+ppl axlabp, -1, -1
+
+set view upper
+ppl window off
+let y1 = -1* `($ppl$yorg)`
+shade/title="In viewport, shakey located anywhere on page"/set temp[l=1]
+ppl shakey ,0,-.1,2,,,,,`y1`
+ppl shade
+ppl list shakey
+

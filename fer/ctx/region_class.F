@@ -1,7 +1,5 @@
 	INTEGER FUNCTION REGION_CLASS( idim, cx )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -55,6 +53,7 @@
 * V230:  1/27/92 - changed uvlim_*_hi (unused) to uvlim_*_lohi to describe
 *                  @WEQ - exaxt limits required but a range of data
 *                - also added @RSUM (like @IIN)
+* V533: *sh* 6/01 - added trans_event_mask
 	
 #ifdef unix
 	include 'ferret.parm'
@@ -70,7 +69,8 @@
 	IF ( cx_trans( idim, cx ) .GT. trans_compress_code ) THEN
 	   REGION_CLASS = 3    ! uvlim_*_xact
 	ELSEIF ( cx_trans( idim,cx ) .EQ. trans_integ_indef
-     .      .OR. cx_trans( idim,cx ) .EQ. trans_run_sum ) THEN
+     .      .OR. cx_trans( idim,cx ) .EQ. trans_run_sum
+     .      .OR. cx_trans( idim,cx ) .EQ. trans_event_mask ) THEN
 	   REGION_CLASS = 1    ! uvlim_*_lo
 	ELSEIF ( cx_trans( idim,cx ) .EQ. trans_wgted_eq ) THEN
            REGION_CLASS = 2    ! uvlim_*_lohi

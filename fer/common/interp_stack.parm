@@ -2,6 +2,7 @@
 * parameters needed for the functioning of the interpretation stack, only
 *
 * 10/98 *jc* added isact_reduce
+* 6/01 *sh* added isact_event_mask
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -101,7 +102,8 @@
 	INTEGER		isact_nrst_dist_abv,
      .			isact_nrst_dist_blw,
      .			isact_nrst_indx_abv,
-     .			isact_nrst_indx_blw
+     .			isact_nrst_indx_blw,
+     .			isact_event_mask
 
 	PARAMETER (
      .		isact_interp		= isact_trans_code + trans_interpolate,
@@ -140,7 +142,8 @@
      .		isact_nrst_dist_abv = isact_trans_code + trans_nrst_dist_abv,
      .		isact_nrst_dist_blw = isact_trans_code + trans_nrst_dist_blw,
      .		isact_nrst_indx_abv = isact_trans_code + trans_nrst_indx_abv,
-     .		isact_nrst_indx_blw = isact_trans_code + trans_nrst_indx_blw )
+     .		isact_nrst_indx_blw = isact_trans_code + trans_nrst_indx_blw,
+     .		isact_event_mask    = isact_trans_code + trans_event_mask)
 
 * classes of stack objects
 	INTEGER		isobj_uvar,

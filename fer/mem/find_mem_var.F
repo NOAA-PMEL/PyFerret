@@ -1,7 +1,5 @@
 	SUBROUTINE FIND_MEM_VAR( cx, mr, by_value )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -71,6 +69,7 @@
 *        1/99 *sh* - added support for cat_string (uncached)
 *	 4/99 *sh* - check mode_arg for mode_stupid
 * V510: 12/99 *sh* - modulo axis to not prevent uvlin_gvn_xact hit
+* V533: 6/01 *sh* - added @EVNT - check as in trans_run_sum
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -122,7 +121,7 @@
 * internal variable declarations:
 	LOGICAL		has_trans, itsa_uvar, normal(4), non_modulo(4)
 	INTEGER		HASH_CX, line,
-     .			mv, defining_grid, idim, new_mr, var, status
+     .			mv, defining_grid, idim, var
         REAL*8          TM_WORLD, ww_hi_bound
 
 * in "STUPID" mode the program can't find anything in memory
@@ -283,7 +282,9 @@
 	         IF ( mr_hi_ww(idim,mv).NE.cx_hi_ww(idim,cx) )	GOTO 100
 	      ENDIF
 * ... @RSUM must match lower subscript exactly (1/92)
-	      IF ( cx_trans( idim, cx ) .EQ. trans_run_sum ) THEN
+* ... @EVNT ditto (6/01)
+	      IF ( cx_trans( idim, cx ) .EQ. trans_run_sum
+     .        .OR. cx_trans( idim, cx ) .EQ. trans_event_mask ) THEN
                  IF ( mr_lo_ss(mv,idim).NE.cx_lo_ss(cx,idim) )  GOTO 100
               ENDIF
 * ... @WEQ must match both hi and lo subscripts (1/92)

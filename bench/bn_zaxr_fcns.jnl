@@ -1,0 +1,31 @@
+
+! bn_zaxr_functions.jnl
+! Compare the various zaxreplace functions
+
+
+! Define some original source data:
+
+let ddat = zsequence({1126,1136,1146,1156,1166})
+let cycle = zsequence({346, 347, 349, 350, 351})
+
+! Put that data on the following original source grid:
+
+Define axis/z=10:50:10 zaxis_orig
+
+let cycle_orig = cycle[gz=zaxis_orig@asn]
+let ddat_orig = ddat[gz=zaxis_orig@asn]
+
+! Define a destination axis
+
+define axis/z=345:353:1 zaxis_des
+let dummy = z[GZ=zaxis_des]
+
+let ddat_a = zaxreplace(ddat_orig, cycle_orig, dummy)
+
+let ddat_b = zaxreplace_avg(ddat_orig, cycle_orig, dummy)
+
+let ddat_c = zaxreplace_bin(ddat_orig, cycle_orig, dummy)
+
+! Compare result of zaxreplace, zaxreplace_avg, zaxreplace_bin
+list ddat_a, ddat_b, ddat_c
+

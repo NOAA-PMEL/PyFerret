@@ -11,9 +11,12 @@ cancel axis month_irreg
 show axis/all
 
 ! Pre V5.42, this causes a crash: axes were cancelled, but not fully.
+SET MODE IGNORE_ERROR
 cancel axis/all
 show axis/all
 
 cancel var tt
 cancel axis/all
+SET MODE/LAST IGNORE_ERROR
+
 show axis/all

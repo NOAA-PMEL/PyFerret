@@ -3,11 +3,10 @@
 void my_close_(void ** lun)
 {
    FILE * fp;
-   fp = (FILE*)(*lun);
-   //   printf("\nclose fp=%p", fp);
+   fp = *((FILE**)lun);
    if(fp!=NULL){
       fclose(fp);
-      (FILE*)(*lun)=NULL;
+      *((FILE**)lun) = NULL;
    }
 }
 

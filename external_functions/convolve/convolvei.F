@@ -86,7 +86,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Convolve J component of variable with weight function')
+   10 FORMAT ('Convolve I component of variable with weight function')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -104,8 +104,7 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'WEIGHT')
-      CALL ef_set_arg_desc(id, arg,
-     .       'Weight function, defined on the x axis')
+      CALL ef_set_arg_desc(id, arg, 'Weight function')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                     ^
 *                                                                     |

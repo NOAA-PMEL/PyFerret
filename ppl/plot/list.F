@@ -139,7 +139,10 @@ C                with "*(*)" for the linux port
         INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
 
-	integer		x_do_key,x_orient,solid/21/
+*3/99 *kob* had to move initialization of var solid off decl. line - for linux
+*           jerry should have known better.
+	integer		x_do_key,x_orient,solid
+        DATA            solid/21/
 	logical		none
 	character*5	drafts_txt
 	character*6	x_user
@@ -516,8 +519,9 @@ C	ALINE info
 	goto 5000
 
 *       LIST AVAILABLE PATTERNS
+* 3/99  *kob* fix up format statment - caught by nag f90
  2300   write (llun,10016)
-10016   format (/9x,'AVAILABLE PATTERNS'/9x'------------------')
+10016   format (/9x,'AVAILABLE PATTERNS'/9x,'------------------')
 
  2301   write (llun,10017) pattern_list(solid)
         do 2302 i = 1,20

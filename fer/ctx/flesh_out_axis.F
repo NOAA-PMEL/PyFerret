@@ -1,7 +1,5 @@
 	SUBROUTINE FLESH_OUT_AXIS( idim, cx, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -69,6 +67,8 @@
 *	*sh* 4/00 - since netCDF dsets now produce dynamic axes we cannot
 *		    use line .LT. max_lines as a test of an implicit axes
 * v5.3 *acm* 1/01 - line_cal_name is part of the data set information
+* V530: *sh* 4/01 - added comment about in_get_grid_mode
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -156,7 +156,8 @@
 
 ****
 * 7/92 kludge:
-* this routine is called by is_uvar_grid (while determining the grid)
+* NOTE (4/01): logical variable in_get_grid_mode would be a more reliable soln
+* This routine is called by is_uvar_grid (while determining the grid)
 * BEFORE uvar_given has been determined.  When called from there lim_redundant
 * may be invalid.  Since uvar_given is initialized to uvlim_irrelevant we will
 * use this as value a test of whether the call is from is_uvar_grid

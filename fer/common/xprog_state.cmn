@@ -19,6 +19,7 @@
 * V510: 5/00 *sh* - added denig_xylim_msg_done. increased max_qual_list
 * V530:10/00 *sh* - increased input command buffer size to 2048
 *		  - increased max_item_list 25 -> 250
+*       4/01 *sh* - added in_get_grid_mode (for future use)
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -115,7 +116,8 @@
      .		interactive,
      .		if_conditional,
      .		denig_xylim_msg_done,
-     .		denig_pen_msg_done
+     .		denig_pen_msg_done,
+     .		in_get_grid_mode
 
 ! Note: available_char_var is unused
 	CHARACTER
@@ -144,7 +146,8 @@
      .		interactive, prompt, prompt_len, 
      .		input_source, mouse_input,
      .		if_conditional, ifstk, if_cs, if_doing,
-     .		cmnd_buff, len_cmnd, cmnd_num, subcmnd_num,
+     .		cmnd_buff,
+     .		len_cmnd, cmnd_num, subcmnd_num,
      .		num_qualifiers, qualifier_list(max_qual_list),
      .		qual_start(max_qual_list), qual_end(max_qual_list),
      .		qual_given(max_qual_list),
@@ -157,8 +160,8 @@
      .		mode_state, mode_arg,
      .		saved_dset,
      .		saved_abstract_grid,
-     .		denig_xylim_msg_done,
-     .		denig_pen_msg_done,
+     .		denig_xylim_msg_done, denig_pen_msg_done,
+     .		in_get_grid_mode,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,

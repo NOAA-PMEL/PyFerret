@@ -49,6 +49,8 @@
 * is the business of this routine.
 
 * V450: 1/97
+* V500: 10/98 - *jc* We need to remove the @RDC transform from
+*       contexts when the parent is also a grid changing variable.
 * V490: 11/97 - bug fix: when wiping out context axis wipe ww lims, too
 * V491:  3/98 - bug fix: crashed because pseudo-variables did not have
 *		valid grids when this routine was called. Changed to use
@@ -85,6 +87,13 @@
 
 * initialize
 	CALL TRANSFER_CONTEXT ( cx_in, cx_out )
+
+* 10/98 fix
+	DO 10 idim = 1, 4
+           IF ( cx_trans(idim, cx_out) .EQ. trans_reduced ) THEN
+              cx_trans(idim, cx_out) = trans_no_transform
+           ENDIF
+ 10     CONTINUE
 
 * which grid changing function does this uvar have?
 	gcfcn = WHICH_GCFCN(uvar)

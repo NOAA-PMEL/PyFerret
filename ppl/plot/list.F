@@ -1,17 +1,5 @@
       SUBROUTINE LIST(LLUN,X,NSIZE,ARG)
 	DIMENSION X(NSIZE)
-C**
-C**    @(#)list.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -45,7 +33,17 @@ C**
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
+C**
+C**    @(#)list.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *	Modified to include SHADE and ALINE parameter listing J Davison
 *	11.9.89
 *	*jd* 3.19.93 Mod to include listing of T Craig's spline and draftsman
@@ -53,6 +51,8 @@ C**
 *	*jd* 11.20.95 Mod to accommodate 14 digit time string (format 9984).
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+*	Modified to include PATTERN  parameter listing J Davison 10.26.98
+*       Modified to include RGB mapping status *jd* 10.98/1.99
 
 #ifdef unix
         include 'tmap_pplv11inc/parampl5_dat.decl'
@@ -139,21 +139,23 @@ C                with "*(*)" for the linux port
         INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
 
-	integer		x_do_key,x_orient
+	integer		x_do_key,x_orient,solid/21/
 	logical		none
 	character*5	drafts_txt
 	character*6	x_user
+        character*10    mapping
 
 	COMMON/PLTCM2/PMODE,FILEZ,FILET
 	CHARACTER PMODE*1,FILEZ*81,FILET*81
-	CHARACTER ARG*(*),LST(21)*10,AUTO(2)*6,TYPEL(6)*12,CLEV(0:3)*4
+	CHARACTER ARG*(*),LST(23)*10,AUTO(2)*6,TYPEL(6)*12,CLEV(0:3)*4
 	CHARACTER TYPE(3)*7,JTY(-2:2)*30,TIC(-1:1)*7
 	CHARACTER LT(-1:1)*6,AT(0:2)*7,IZT(0:3)*8,TAXTYP(-1:1)*5
 	CHARACTER SYM*21,SYM2*21,SYM3*21,ONOFF(0:1)*3
 
 	DATA LST/'XAXIS','YAXIS','LINES','LABELS','STATS','LEVELS',
      *'READ','CONSET','LABSET','TAXIS','TICS','DATA','PLOT','DATPT',
-     *'TRANSXY','LIMITS','VECTOR','SHASET','SHAKEY','ALINE','PLTNME'/
+     *'TRANSXY','LIMITS','VECTOR','SHASET','SHAKEY','ALINE','PLTNME',
+     *'PATSET','APATTERNS'/
 
 	DATA AUTO/'MANUAL','AUTO'/,ONOFF/'OFF','ON'/
 	DATA TAXTYP/'YAXIS','OFF','XAXIS'/
@@ -165,16 +167,25 @@ C                with "*(*)" for the linux port
      *		'LINES','CONTOUR VARIABLE GRID'/
 	DATA TYPE/'NORMAL','LOG','INV LOG'/
 	DATA LT/'LEFT','CENTER','RIGHT'/,AT/'NO LINE','LINE','FANCY'/
+
+***************************************************************************
+
 	IF(QUIETF)RETURN
+
 	CALL UPPER(ARG,30)
-	DO 10 I=1,21
-	IF(ARG.EQ.LST(I))GOTO 11
-10    CONTINUE
-      WRITE(LTTOUT,9986) ARG
-9986  FORMAT(' ILLEGAL LIST OPTION',2X,A10)
-      GOTO 5000
-11    GOTO (100,200,300,400,500,600,700,800,900,1000,1100,500,1300,
-     *	1400,1500,1600,1700,1800,1900,2000,2100),I
+
+	DO 10 I=1,23
+           IF(ARG.EQ.LST(I))GOTO 11
+ 10     CONTINUE
+
+        WRITE(LTTOUT,9986) ARG
+ 9986   FORMAT(' ILLEGAL LIST OPTION',2X,A10)
+        GOTO 5000
+
+ 11     GOTO (100,200,300,400,500,600,700,800,900,1000,1100,500,1300,
+     *       1400,1500,1600,1700,1800,1900,2000,2100,2200,2300),I
+
+
 C     XAXIS
 100   WRITE(LLUN,'(//9X,''XAXIS QUALITIES'')')
       WRITE(LLUN,9999)XLO,XHI,XTIC,XLEN,XCSIZE,
@@ -388,19 +399,44 @@ C	SHASET info
 	   write (llun,10011)
 	   goto 5000
 	end if
-10011	format (//9x,'DEVICE DEFAULT COLORS ARE SET')
+10011	format (/9x/,'DEVICE DEFAULT COLORS ARE SET')
 
-	write (llun,10001)
-10001	format (//9x,'SET POINT',7x,'RED',7x,'GREEN',8x,'BLUE')
-	do 1801 i = 1,ncl
-	   write (llun,10002) slvl(i),sr(i)*100.0,sg(i)*100.0,sb(i)*100.0 
-1801	continue
-10002	format (9x,f9.1,5x,f5.1,7x,f5.1,7x,f5.1)
+        if (rgb_mapping .eq. percent) then
+            mapping = 'Percent'
+          else if (rgb_mapping .eq. by_value) then
+            mapping = 'By_value'
+          else if (rgb_mapping .eq. by_level) then
+            mapping = 'By_level'
+        end if
+
+        if (rgb_mapping .ne. by_level) then
+           write (llun,10001) mapping
+10001      format (/9x, 'RGB_MAPPING ', a,
+     .       //9x,'SET POINT',7x,'RED',7x,'GREEN',8x,'BLUE')
+        else
+           write (llun,11001) mapping
+11001      format (/9x, 'RGB_MAPPING ', a,
+     .       //9x,'    LEVEL',7x,'RED',7x,'GREEN',8x,'BLUE')
+        end if
+
+	if (rgb_mapping .ne. by_level) then
+           do 1801 i = 1,ncl
+              write (llun,10002) 
+     .             slvl(i),sr(i)*100.0,sg(i)*100.0,sb(i)*100.0 
+ 1801      continue
+10002      format (9x,f9.1,5x,f5.1,7x,f5.1,7x,f5.1)
+        else
+           do 1802 i = 1,ncl
+              write (llun,11002) 
+     .             i,sr(i)*100.0,sg(i)*100.0,sb(i)*100.0 
+ 1802      continue
+11002      format (9x,i9,5x,f5.1,7x,f5.1,7x,f5.1)
+        end if
 	goto 5000
 
 C	SHAKEY info
 1900	write (llun,10003) 
-10003	format (//9x,'DO KEY',2x,'ORIENT',2x,'LAB SIZE',2x,
+10003	format (/9x,'DO KEY',2x,'ORIENT',2x,'LAB SIZE',2x,
      .	'LAB INC',2x,'LAB DIG',2x,'LAB LEN')
 		
 	if (do_key) then                             
@@ -464,8 +500,31 @@ C	ALINE info
 
 *	PLTNME listing
 2100	write (llun,10012) meta_file
+
+10012   format (/9x,'METAFILE NAME'/9x,a)
 	goto 5000
-10012	format (/9x,'METAFILE NAME'/9x,a)
+
+*       LIST CURRENT PATTERNS
+ 2200   write (llun,10014) 
+10014   format (/9x,'PATTERN ORDER',2x,'PATTERN NAME')
+
+	do 2201 i = 1,npat
+	   write (llun,10015) i, pattern_list(patterns(i))
+ 2201   end do
+10015   format (19x,i3,2x,a25)
+
+	goto 5000
+
+*       LIST AVAILABLE PATTERNS
+ 2300   write (llun,10016)
+10016   format (/9x,'AVAILABLE PATTERNS'/9x'------------------')
+
+ 2301   write (llun,10017) pattern_list(solid)
+        do 2302 i = 1,20
+	   write (llun,10017) pattern_list(i)
+ 2302   end do
+10017   format (9x,a25)
+	goto 5000
 
 5000	RETURN
       END

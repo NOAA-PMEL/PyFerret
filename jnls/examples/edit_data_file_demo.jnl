@@ -34,6 +34,7 @@ plot/vs/over/symb=2/color=green x[x=81w],y[y=27n]
 plot/vs/over/symb=2/color=green x[x=81w],y[y=23n]
 plot/vs/over/symb=2/color=green x[x=77w],y[y=21n]
 
+pause
 ! Now we'll save a 1 for land over these locations
 ! We need to use the SAME variable name, ocean,  so that SAVE will overwrite
 ! regions of the previous variable definition

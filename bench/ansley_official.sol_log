@@ -1,11 +1,11 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61943340 Jun 18 15:16 /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
-Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
+Running FERRET version  /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61728924 Jul  7 12:24 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
+Using external functions from  /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: everything checked in for v57beta2, and changes to cd_get_1_axis so EDGES attribute treated exactly as in previous versio
+Note: fix to single-level polygon fill, fix to key labels for shade/fill plots for user-set colorbars; new benchmark tests for these
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja8/ansley/FERRET_v_5_6_0_release/bench
+PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
 CVSROOT=/home/ja9/tmap/FERRET_ROOT
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Fri Jun 18 15:20:59 PDT 2004
+Beginning at Wed Jul 7 12:58:06 PDT 2004
  	NOAA/PMEL TMAP
  	FERRET v5.70  
- 	Solaris 5.6 - 06/18/04
- 	18-Jun-04 15:20     
+ 	Solaris 5.6 - 07/07/04
+ 	 7-Jul-04 12:58     
 
 yes? !bn500_all_shell
 yes? 
@@ -10125,8 +10125,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.70"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "18-Jun-04"
-SESSION_TIME = "15:20"
+SESSION_DATE = " 7-Jul-04"
+SESSION_TIME = "12:58"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10144,8 +10144,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.70"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "18-Jun-04"
-SESSION_TIME = "15:20"
+SESSION_DATE = " 7-Jul-04"
+SESSION_TIME = "12:58"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10153,8 +10153,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "18-Jun-04"
-SESSION_TIME = "15:20"
+SESSION_DATE = " 7-Jul-04"
+SESSION_TIME = "12:58"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10164,13 +10164,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "18-Jun-04"
-SESSION_TIME = "15:20"
+SESSION_DATE = " 7-Jul-04"
+SESSION_TIME = "12:58"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "18-Jun-04"
-SESSION_TIME = "15:20"
+SESSION_DATE = " 7-Jul-04"
+SESSION_TIME = "12:58"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10204,7 +10204,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.70"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jun 18 2004 15:22:31 "
+LAB3 = "Jul  7 2004 12:59:31 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10305,8 +10305,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.70"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "18-Jun-04"
-SESSION_TIME = "15:20"
+SESSION_DATE = " 7-Jul-04"
+SESSION_TIME = "12:58"
  
  
 GO bn_reset
@@ -18327,7 +18327,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23050 Jun 18 15:23 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23035 Jul  7 13:00 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18346,7 +18346,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419444 Jun 18 15:24 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419113 Jul  7 13:01 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26505,7 +26505,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26530,7 +26530,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26682,7 +26682,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Jun 18 15:25:47 PDT 2004
+Wed Jul  7 13:02:27 PDT 2004
  
 GO bn_reset
 cancel mode verify
@@ -34975,7 +34975,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Jun 18 15:27 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jul  7 13:03 testa.v5d
  
 can region
 use coads_climatology
@@ -34987,7 +34987,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Jun 18 15:27 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jul  7 13:03 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35055,7 +35055,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35118,7 +35118,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  GFP3 = "" ;
@@ -35338,7 +35338,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -44842,7 +44842,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44905,7 +44905,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44963,7 +44963,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45043,7 +45043,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -45266,7 +45266,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45335,7 +45335,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45412,7 +45412,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.70   18-Jun-04" ;
+		:history = "FERRET V5.70    7-Jul-04" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -46296,12 +46296,120 @@ plot v[gt=tax@asn]
 def axis/t=07-feb-0599:07-feb-0600:1/units=years tt
 plot t[gt=tt]
  
+! ******** V5.8 Additions below ***********
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn580_bug_fixes.jnl
+! bn580_bug_fixes.jnl
+! test various fixes that went into version 5.80
+! 7/04 *acm*
+!
+ 
+! POLYGON (or SHADE) plots with a single level had no fill color
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err570_fill_singlecolor.jnl
+! err570_fill_singlecolor.jnl
+! 7/6/2004
+ 
+! See bug 901. When a single fill color is sent to
+! the POLYGON, SHADE, or FILL, the code sends the command
+! PPL LEV (val).  But, the value was formatted so that the
+! value got rounded off, so the precise value wasnt specified
+! and the graphics call then didn't find the value.
+ 
+! This polygon was filled
+let a = 111
+poly/fill/line {0,1,2},{1,2,1},a
+ 
+! This polygon was not filled
+let a = 111.55
+poly/fill/over/line {0,1,2},{2,1,2},a
+ 
+! This shade plot did not fill in.
+define axis/x=1:10:1 xax
+Replacing definition of axis XAX
+define axis/y=1:12:1 yax
+Replacing definition of axis YAX
+let b = x[gx=xax] + y[gy=yax]
+shade/y=0:90 a + 0*b
+ 
+! FILL doesnt make the graphics call to do the fil plot
+! when there is just one level ...
+ 
+! colorbar labels too close to the bar, when user sets bar location
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err570_shakeylab.jnl
+ 
+! err570_shakeylab.jnl
+! 7/6/2004
+ 
+!  When user defines the location of the color key, the key
+!  labels are too close to the edge of the key.
+ 
+! Test with both SHADE and FILL, as some of the scaling is
+! different internally.
+ 
+ 
+use coads_climatology
+ppl dfltfnt cr
+ 
+define viewport/axes/text=1/xlim=0.1:0.85/ylim=`1/3`:`2/3` vp_1
+ !-> define viewport/axes/text=1/xlim=0.1:0.85/ylim=0.33333:0.66667 vp_1
+set viewport vp_1
+ 
+fill/set/L=2 sst
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ppl fill
+ 
+fill/set/L=2 sst* 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ppl fill
+ 
+fill/set/L=2 sst/ 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ppl fill
+ 
+!
+ 
+define viewport/axes/text=1/xlim=0.1:0.85/ylim=`1/3`:`2/3` vp_1
+ !-> define viewport/axes/text=1/xlim=0.1:0.85/ylim=0.33333:0.66667 vp_1
+Re-defining viewport VP_1
+set viewport vp_1
+ 
+shade/set/L=2 sst
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ppl shade
+ 
+shade/set/L=2 sst* 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ppl shade
+ 
+shade/set/L=2 sst/ 10000
+ppl shakey 1, 1, 0.1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($ppl$xlen)+0.6`, `($ppl$yorg)`, `($ppl$yorg)+($ppl$ylen)`
+ !-> ppl shakey 1, 1, 0.1, 0, -2, 8,  8.97,  9.27, 1.4, 4.333
+ppl shade
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.70  
- 	Solaris 5.6 - 06/18/04
- 	18-Jun-04 15:32     
+ 	Solaris 5.6 - 07/07/04
+ 	 7-Jul-04 13:09     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -46477,8 +46585,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.70  
- 	Solaris 5.6 - 06/18/04
- 	18-Jun-04 15:33     
+ 	Solaris 5.6 - 07/07/04
+ 	 7-Jul-04 13:09     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -46591,4 +46699,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Fri Jun 18 15:33:08 PDT 2004
+Ended at Wed Jul 7 13:09:34 PDT 2004

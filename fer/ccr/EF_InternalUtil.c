@@ -242,7 +242,7 @@ int efcn_already_have_internals_( int *id_ptr )
 int efcn_gather_info_( int *id_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK, i=0;
+  int status=LIST_OK, i=0, j=0;
   char ef_object[1024]="", tempText[EF_MAX_NAME_LENGTH]="", *c;
 
   void *handle;
@@ -302,7 +302,7 @@ int efcn_gather_info_( int *id_ptr )
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
     strcat(tempText, "_get_info_");
-    finfoptr  = (void (*)(float *, char (*)[128], int *, int *, int (*)[4], int (*)[4]))dlsym(ef_ptr->handle, tempText);
+    finfoptr  = (void (*)(float *, char (*)[EF_MAX_DESCRIPTION_LENGTH], int *, int *, int (*)[4], int (*)[4]))dlsym(ef_ptr->handle, tempText);
     if (finfoptr == NULL) {
       fprintf(stderr, "ERROR in efcn_gather_info(): %s\n", dlerror());
       return -1;
@@ -313,7 +313,10 @@ int efcn_gather_info_( int *id_ptr )
 
     /* trim white space at the end */
     c = &(ptr->description[EF_MAX_DESCRIPTION_LENGTH-1]); 
-    while ( isspace(*c) ) { c--; } *(++c) = '\0';
+    for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
+      if (isspace(*c)) { c--; }
+    }
+    *++c = '\0';
 
     for (i=0; i<ptr->num_reqd_args; i++) {
       int j = i+1;
@@ -332,13 +335,23 @@ int efcn_gather_info_( int *id_ptr )
 
       /* trim white space at the end */
       c = &(ptr->arg_name[i][EF_MAX_NAME_LENGTH-1]); 
-      while ( isspace(*c) ) { c--; } *(++c) = '\0';
+      for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
+	if (isspace(*c)) { c--;	}
+      }
+      *++c = '\0';
 
       c = &(ptr->arg_units[i][EF_MAX_NAME_LENGTH-1]); 
-      while ( isspace(*c) ) { c--; } *(++c) = '\0';
+      for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
+	if (isspace(*c)) { c--;	}
+      }
+      *++c = '\0';
 
       c = &(ptr->arg_descr[i][EF_MAX_DESCRIPTION_LENGTH-1]); 
-      while ( isspace(*c) ) { c--; } *(++c) = '\0';
+      for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
+	if (isspace(*c)) { c--;	}
+      }
+      *++c = '\0';
+
     }
 
   }
@@ -965,6 +978,7 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
+  int i=0, printable=FALSE;
 
   status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
@@ -979,7 +993,24 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
 
   ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
   
-  strcpy(string, ef_ptr->internals_ptr->arg_name[index]);
+  /*
+   * JC_NOTE: if the argument has no name then memory gets overwritten, corrupting
+   * the address of iarg_ptr annd causing a core dump.  I need to catch that case
+   * here.
+   */
+
+  for (i=0;i<strlen(ef_ptr->internals_ptr->arg_name[index]);i++) {
+    if (isgraph(ef_ptr->internals_ptr->arg_name[index][i])) {
+      printable = TRUE;
+      break;
+    }
+  }
+
+  if ( printable ) {
+    strcpy(string, ef_ptr->internals_ptr->arg_name[index]);
+  } else {
+    strcpy(string, "X");
+  }
 
   return;
 }

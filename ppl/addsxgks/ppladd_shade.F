@@ -16,6 +16,7 @@
 *			is centered as well.
 *	*jd* 5.96 Fix bug where if shade/lev=N option is used with constant 
 *	field, no shade results
+*       *jd* 1.98 Fix bug: shade misses top level, when top level is lt 0.
 
 #ifdef unix
 	include		'tmap_pplv11inc/parampl5_dat.decl'
@@ -52,6 +53,8 @@
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
 	integer		i,j
+	
+        parameter       (epsilon = 1e-6)
 
 C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn
         external range
@@ -115,10 +118,16 @@ C       Set levels centered about zero if centered is .true.
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 
 
-C       Handle rounding errors *jd* 6.27.95
-C       JC_TODO This is where the rounding error for negative plots probably exists
+C       Handle rounding errors *jd* 6.27.95/12.30.97
 
-	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
+	      IF (ZMP .GT. 0.0) THEN
+		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) 
+	1	      NLEV2 = NLEV2 + 1
+	      ELSE
+		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
+	1	     ABS(EPSILON*ZMP)) 
+	1	      NLEV2 = NLEV2 + 1
+	      ENDIF
 
 	      DO 100 I=1,NLEV2 
 		 ZLEV(I)=ZNP+DZ*FLOAT(I-1) 
@@ -182,3 +191,7 @@ c       this bombed aix compiler, though it seems to work on others
 
 	RETURN
 	END
+
+
+
+

@@ -47,6 +47,9 @@
 *	      - If the result is "pathological" then flag it as "un-cached"
 *		so it will not be reused.
 * V533: *sh* 6/01 - allow modulo of variables with strides (cx_delta) 
+* V550: *sh* 2/02 - added support for subspan modulo axes
+*		    by CAXIS_LEN -> CAXIS_MODLEN
+*		  - pre-fill strings with null strings as with FILL_MEMORY
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -69,8 +72,9 @@
 *	 isp	<--	current stack level (for moduloing )
 
 * internal variable declarations:
-!	LOGICAL	nonfactorstride
-	INTEGER CAXIS_LEN, CX_DIM_LEN, MODULO_PARITY, MGRID_SIZE_DELTA,
+	LOGICAL	TM_ITS_SUBSPAN_MODULO
+	INTEGER CAXIS_MODLEN, CX_DIM_LEN, MODULO_PARITY, MGRID_SIZE_DELTA,
+     .		CGRID_AXIS,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
      .		npts, idim, i, phase, res_lo, res_hi, xlate, nmod,
      .		tmp_mr, nrepl, rqst_cx, idel, lo_parity
@@ -115,7 +119,7 @@
 	rqst_cx    = is_big_cx( res_isp )
 	com_cx     = is_cx( com_isp )
 	idim       = is_axis( res_isp )
-	npts	   = CAXIS_LEN( idim, com_cx )
+	npts	   = CAXIS_MODLEN( idim, com_cx )
 	phase	   = is_phase(isp)
 	IF (cx_delta(idim,res_cx) .EQ. unspecified_val8) THEN
 	   idel = 1
@@ -148,6 +152,8 @@
 	      CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
      .                               memory(1, mr_blk1(res_mr)),
      .                               mr_c_pointer(res_mr)      )
+	      CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
+     .                                     MGRID_SIZE_DELTA(res_mr) )
 	   ENDIF
 
 * 11/95: if there might be voids in the result pre-fill with missing data flags
@@ -155,7 +161,8 @@
      .	  .AND. mr_type(res_mr) .EQ. ptype_float  ) CALL FILL_MEMORY
      .				( memory,mr_blk1(res_mr),mr_nblks(res_mr),
      .                            mr_bad_data(res_mr) )
-	ENDIF
+
+	   ENDIF
 
 * If the component received (com_cx) does not match the component requested
 * (rqst_cx) then we can proceed with the modulo but other calculations
@@ -205,16 +212,26 @@
 	IF( phase .EQ. isphase_1 ) THEN
 * ... update the original rqst_cx to make new request
 *     note: the variable EX#N may have become category file variable in com_cx 
-	   nmod = cx_hi_ss(res_cx, idim) / npts
+
+* to support subspan modulo axes allow for void points at axis ends
+	   res_lo = cx_lo_ss(res_cx,idim)
+	   res_hi = cx_hi_ss(res_cx,idim)
+	   IF ( TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim,res_cx)) ) THEN
+	      IF (MOD(res_lo,npts) .EQ. 0) res_lo = res_lo + 1
+	      IF (MOD(res_hi,npts) .EQ. 0) res_hi = res_hi - 1
+	   ENDIF
+
+* calculate modulo translation
+	   nmod = res_hi / npts
+	   IF ( res_hi .LE. 0 ) nmod = nmod - 1
 	   xlate = nmod * npts
 
 * set lo to the parity of the first point needed in the right hand modulo
-	   lo_parity = MODULO_PARITY(cx_lo_ss(res_cx,idim), npts, idel)
-	   i = cx_lo_ss(res_cx,idim)+((npts-lo_parity)/idel+1)*idel
-	   IF ((cx_lo_ss(res_cx,idim)/npts)*npts .EQ. cx_lo_ss(res_cx,idim))
-     .		i = i - idel
+	   lo_parity = MODULO_PARITY(res_lo, npts, idel)
+	   i = res_lo+((npts-lo_parity)/idel+1)*idel
+	   IF ((res_lo/npts)*npts .EQ. res_lo) i = i - idel
 	   cx_lo_ss(rqst_cx, idim) = MODULO_PARITY(i, npts, idel)
-	   cx_hi_ss(rqst_cx, idim) = cx_hi_ss(res_cx, idim) - xlate
+	   cx_hi_ss(rqst_cx, idim) = res_hi - xlate
 	   cx_by_ss(idim,rqst_cx) = .TRUE.
 	   CALL FLESH_OUT_AXIS( idim, rqst_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5900

@@ -99,6 +99,7 @@
 * V450: 3/97 - support for curvilinear coordinate plots
 *       8/97 - added curvilinear check to make sure that args 2 and 3 lie in
 *              compatible planes with the variable to be plotted
+* V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
 
 #ifdef unix
 	include 'ferret.parm'
@@ -118,6 +119,9 @@
 	include 'AXIS.INC'	! axis lengths
         include 'ppldat_inc.decl'       ! with nsize
         include 'PPLDAT.INC'       ! with nsize
+        include 'switch_inc.decl'
+        include 'SWITCH.INC'
+
 *kob 1/97
 	include 'xwindow_state.cmn'
 #else
@@ -137,7 +141,7 @@
 	INCLUDE 'PPLV11INC:AXIS.INC'	! axis lengths
         INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
         INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
-
+        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
 #endif
 
 
@@ -435,6 +439,8 @@
      .				  cx_xpos, cx_ypos, ctx, status)
 	   IF ( status .NE. ferr_ok) GOTO 5100
 	ENDIF
+
+	if (overlay) SOVER = .true.
 
 * load contour data into PPLUS and (possibly) regrid to regular grid
 	CALL PPLLDC ( icode, memory(1, xblk1), size1, size2,

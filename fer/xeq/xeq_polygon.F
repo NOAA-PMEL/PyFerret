@@ -54,6 +54,16 @@
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xplot_setup.cmn'
+        include 'switch_inc.decl'
+        include 'SWITCH.INC'
+        include 'data_inc.decl'
+        include 'DATA.INC'
+        include 'ppldat_inc.decl'
+        include 'PPLDAT.INC'
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -65,6 +75,15 @@
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
 	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
+        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
+        INCLUDE 'TMAP_PPLV11INC:DATA_INC.DECL'
+        INCLUDE 'PPLV11INC:DATA.INC'
+        INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL'
+        INCLUDE 'PPLV11INC:PPLDAT.INC'
+        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
+        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
+        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
+        INCLUDE 'PPLV11INC:LINES.INC'
 #endif
 	
 * calling argument declarations:
@@ -88,8 +107,23 @@
      .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
-* initialize
+
+* Initialize the lines buffer in PPL before setting up
 	overlay   = qual_given( slash_plot_over_plot ).GT.0
+	if (overlay) SOVER = .true.
+
+	if (sover) then
+CC      *jd* NLINES initializes SOVER, and resets MIN/MAX. Don't execute. 
+CC       => Set values here instead.
+	   LINEN=0
+	   IBASE=1
+	   PBUF=0
+	   LNUM=1
+	else
+	   CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )
+	endif
+
+* initialize
 	no_labels = qual_given( slash_plot_nolabels  ).GT.0
 	transpz   = qual_given( slash_plot_transpz   ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
@@ -154,9 +188,7 @@
 	   ENDIF
 	ENDIF
 
-* Initialize the lines buffer in PPL before setting up
-	   CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )
-
+	if (overlay) sover = .true.
 * set up the axes and title and load the data into PPLUS
 	CALL POLYGON_SET_UP   ( memory,
      .				overlay,
@@ -179,6 +211,7 @@
      .          'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
 
 * default key
+
 	do_key =  (qual_given(slash_polygon_key)  .GT. 0)
      .          .OR. ( fill_it .AND. .NOT.overlay )
 	IF (qual_given(slash_polygon_nokey) .gt. 0) do_key = .FALSE.

@@ -91,6 +91,9 @@
 *			MERGE_WHOI_CONTEXT
 * V450: 3/97 - modified AXIS_FORMAT args for curvilinear coordinate plots
 * V500 *kob* 3/99- up VAR_CODE  and VAR_UNITS to 64 chars
+* V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
+
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -108,6 +111,8 @@
         include 'AXIS.INC'       ! with axis lengths	
         include 'ppldat_inc.decl'       ! with nsize
         include 'PPLDAT.INC'       ! with nsize
+        include 'switch_inc.decl'
+        include 'SWITCH.INC'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
@@ -124,6 +129,7 @@
         INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
         INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
         INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
+        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
 #endif
 
 * calling argument declarations:
@@ -407,6 +413,9 @@
               dt_min = 1.0
               t1_date = ' '
            ENDIF
+
+	   if (overlay) SOVER = .true.
+
 	   IF ( flip ) THEN
 	      CALL PPLLDX(0,dep_dat,indep_dat,npts2,t1_date,tref,dt_min)
 	   ELSE

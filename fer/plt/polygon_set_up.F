@@ -86,6 +86,8 @@
 	include 'AXIS.INC'       ! with axis lengths	
 	include 'ppldat_inc.decl'       ! with nsize
 	include 'PPLDAT.INC'       ! with nsize
+        include 'switch_inc.decl'
+        include 'SWITCH.INC'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
@@ -102,6 +104,7 @@
 	INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
 	INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
 	INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
+        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
 #endif
 
 * calling argument declarations:
@@ -366,6 +369,9 @@
 	   IF (hi .GT. hiy) hiy = hi
 
 * ... pass the data to PLOT+
+
+	   if (overlay) SOVER = .true.
+
 	   IF ( transpz ) THEN
 	      CALL PPLLDX(0,y_dat(start),x_dat(start),npts,' ',' ',1.0)
 	   ELSE
@@ -404,6 +410,8 @@
 	   ncolor = npolygon
 	ENDIF
 	IF (ncolor .NE. npolygon) GOTO 5220		! color array size doesn't match polygons 
+
+	if (overlay) SOVER = .true.
 	CALL PPLLDX(0,x_dat,x_dat,ncolor,' ',' ',1.0)
 
 * turn off axis formatting for polygon plots

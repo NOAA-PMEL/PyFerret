@@ -323,10 +323,12 @@ C  Get cell boundaries
 
         IF ( tt  .NE. bad_flag(ARG3) ) THEN
            DO 400 L = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
-               IF (n .EQ. 1 .AND. tt .EQ. tax(L,1,1,1) )
-     .            result(i,j,k,l) = result(i,j,k,l) + 1.
-               IF (tt .GT. tax(L,1,1,1) .AND. tt .LE. tax(L+1,1,1,1) )
-     .            result(i,j,k,l) = result(i,j,k,l) + 1.
+              IF (n .EQ. 1 .AND. tt .EQ. tax(L,1,1,1) ) THEN
+                 result(i,j,k,l) = result(i,j,k,l) + 1.
+              ELSE IF (tt .GT. tax(L,1,1,1) .AND. 
+     .                 tt .LE. tax(L+1,1,1,1) ) THEN
+                result(i,j,k,l) = result(i,j,k,l) + 1.
+              ENDIF
   400      CONTINUE
 
          ENDIF

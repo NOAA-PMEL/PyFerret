@@ -1,7 +1,5 @@
 	SUBROUTINE XEQ_EXIT( * )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -57,23 +55,17 @@
 *			 exit/program
 *                     With these new qualifiers, the routine has been
 *                     reworked as well.
+* V540: *sh* 11/01 - bug fix to logic in V5.33 change:
+*	  "quit" in a command file was ignored
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'command.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
 	include 'xcontrol.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 	INTEGER status
-	LOGICAL slash_command_file
-
 	INTEGER i, pop
 
 * make sure no arguments were given
@@ -97,7 +89,7 @@
 	ELSE IF (qual_given(slash_exit_prompt) .GT. 0) THEN
 * Exit to Ferret prompt
 	   pop = csp
-	   goto 400
+	   GOTO 400
 	ELSE IF (qual_given(slash_exit_program) .GT. 0    .OR.
      .  	  (qual_given(slash_exit_command) .GT. 0) .OR.
      .            input_source .NE. input_from_file) THEN
@@ -106,6 +98,10 @@
 	   CALL TM_EXIT		! close TMAP data sets
 	   RETURN 1
 !	   IF ( frame_on ) CALL MOVIE_CLOSE( frame_lun, status )! end movie
+	ELSE
+* no qualifier supplied on a "quit" in a command file: Exit current script
+	   CALL POP_CS
+	   RETURN
 	ENDIF
 
 * Here is where we'll pop the stack once for each level we need to move down
@@ -118,4 +114,8 @@
  5000	RETURN
 
 	END
+
+
+
+
 

@@ -120,6 +120,7 @@
 *	12/99 *sh* - save info about formatting of inputs in cx_formatted
 *	12/99 *sh* - added ugly hack to allow multiple axes as in "GXY=gg"
 *	12/99 *sh* bug fix: g=user_var failed if user_var was pure abstract
+*	3/00  *sh* - remove old trap for mixed dates and time steps
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -179,15 +180,15 @@
      .			TM_GET_GRIDNUM, KNOWN_GRID, FIND_DSET_NUMBER,
      .			REGION_NUMBER, TM_GET_LINENUM, TM_AXIS_DIRECTION,
      .			equal_pos, colon_pos, atsin_pos, atcolon_pos, grid,
-     .			suborval, int_arg, lo_start, lo_end, namlen,
+     .			suborval, lo_start, lo_end, namlen,
      .			hi_start, hi_end, item, idim, del_start, del_end,
-     .			ichar2, colon2_pos, vax_code, istart, iend, itrans,
+     .			colon2_pos, vax_code, istart, iend, itrans,
      .			dset, variable, category, name_end, next_char, i,
      .			impl_grid, axis, other, naxes
-	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2), axnam,
+	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2),
      .			letter, letter2
-	CHARACTER	LEFINT*6, name*48, comment*12, transnam*6, buff*32
-	REAL*8		epsilon2_factor, temp
+	CHARACTER	name*48, comment*12, transnam*6, buff*32
+	REAL*8		temp
 	INTEGER		dstart, dend, lbrac, state, gdset
 
 * internal parameter declarations:
@@ -733,8 +734,6 @@
 * 8/97 *kob* check cx_calendar rather than if fmat_hi or fmat_lo is set to 
 *            see if time is a date
 	IF (  idim .EQ. t_dim .AND. cx_calendar(mods_cx) ) THEN
-	   IF ( cx_lo_ww(idim,mods_cx) .LT. 0.0D0 
-     .	 .NEQV. cx_hi_ww(idim,mods_cx) .LT. 0.0D0 ) GOTO 5070
 	   IF ( cx_hi_ww(idim,mods_cx) .GT. 
      .				cx_lo_ww(idim,mods_cx) ) THEN
 	      temp = cx_lo_ww( idim, mods_cx )
@@ -844,8 +843,6 @@
      .	 'invalid nested brackets: '//risc_buff(:len_rbuff),*5000)
  5060	CALL ERRMSG( ferr_invalid_command, status, 
      .	 'use @SHF only with IJK or L: '//risc_buff(:len_rbuff),*5000)
- 5070	CALL ERRMSG( ferr_syntax, status, 
-     .	 'mixed dates and time steps: '//risc_buff(:len_rbuff),*5000)
  5100	CALL ERRMSG( ferr_syntax, status, 
      .	 'unknown region name: '//risc_buff(:len_rbuff),*5000)
  5110	CALL ERRMSG( ferr_syntax, status, 

@@ -1,4 +1,7 @@
 * PLOT_SETUP.PARM
+
+* V510 *sh* 3/00 - added ppl_dodsurl
+
 * parameters to communicate with PLOT+
 	INTEGER		ppl_centered,
      .			ppl_left_just,
@@ -26,6 +29,7 @@
      .			ppl_aspect,
      .			ppl_year,
      .			ppl_datitl,
+     .			ppl_dodsurl,
      .			ppl_offset
 	REAL		letsize_logo,
      .			letsize_title,
@@ -44,6 +48,7 @@
      .			ppl_year	= 7,
      .			ppl_datitl	= 8,
      .			ppl_offset	= 9,
+     .			ppl_dodsurl     = 10,
      .			letsize_logo	   = 0.06,
      .			letsize_title	   = 0.20,
      .			letsize_label	   = 0.12,

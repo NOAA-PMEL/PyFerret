@@ -66,6 +66,7 @@
 *		  (requested by subtracting axis number from ppl_movlab)
 * V420: 2/1/96  - *sh* If "string" is blank output "<ESC>@AC" to wipe out
 *		   previous label
+* V510: *sh8 3/00 - add DODS URL label
 
 #ifdef unix 
 	include 'plot_setup.parm'
@@ -95,7 +96,7 @@
 
 * internal variable declarations:
 	INTEGER		flen, lsym, ii
-	CHARACTER	TM_FMT*4, font*3, labname(ppl_dset:ppl_offset)*6
+	CHARACTER	TM_FMT*4, font*3, labname(ppl_dset:ppl_dodsurl)*6
 	REAL 		xp, yp
 
 * local parameter declarations:
@@ -109,7 +110,8 @@
      .	     labname(ppl_aspect)/'ASPECT'/,
      .	     labname(ppl_year)/'YEAR'/,
      .	     labname(ppl_datitl)/'DATITL'/,
-     .	     labname(ppl_offset)/'OFFSET'/
+     .	     labname(ppl_offset)/'OFFSET'/,
+     .	     labname(ppl_dodsurl)/'DODS'/
 
 * initialize fixed length string for RISC
 	risc_buff = string
@@ -190,7 +192,7 @@
 	      WRITE ( ppl_buff, 3500 )
      .			"num_"//ww_dim_name(ii), risc_buff(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-	   ELSEIF ( ii.GE.ppl_dset  .AND. ii.LE.ppl_offset ) THEN
+	   ELSEIF ( ii.GE.ppl_dset  .AND. ii.LE.ppl_dodsurl ) THEN
 	      WRITE ( ppl_buff, 3500 )
      .			"num_"//labname(ii), risc_buff(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )

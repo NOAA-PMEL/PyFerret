@@ -58,6 +58,7 @@
 *	  1/4/89 - major revisions incorporating keys
 * Unix/RISC port 5/91 *sh*: use data set name, only (full path is too long)
 * V401: 6/23/95 - tag the movable labels by passing ppl_movlab minus nnn
+* V510 *sh* 3/00 - add DODS URL label
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -90,9 +91,8 @@
 	LOGICAL		show_year
 	CHARACTER	AX_TITLE*32,
      .			line_buff*255, genl_buff*255
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, 
-     .			idim, len, lablen,
-     .			nlabs, i, dset_num, tlen
+	INTEGER		idim, len, lablen,
+     .			nlabs, dset_num, tlen
 	REAL 		ul_yspace, ul_labht,  ul_ypos, ul_ysqueeze
 	EQUIVALENCE	( ppl_buff, genl_buff )	! save space
 
@@ -162,6 +162,18 @@
      .			   0.5, 0.3, 0.75*xlen, 1.5*letsize_dset_title,
      .			   letsize_dset_title, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
+* ... DODS URL of data set
+	   IF ( ds_des_name(dset_num)(1:7) .EQ. 'http://' ) THEN
+	      lablen = INDEX(ds_des_name(dset_num)(8:),'/')
+	      lablen = INDEX(ds_des_name(dset_num)(8+lablen:),'/')
+     .		     + 7 + lablen
+	      CALL PUT_LABEL( ppl_movlab-ppl_dodsurl, 0.0,
+     .			   ul_yorigin + 1.1*ul_yspace,
+     .			   ppl_right_just,
+     .			   0.75*ul_labht0,
+     .			   'DODS URL: '//ds_des_name(dset_num)(:lablen), 
+     .			   lab_loc_axlen_plus, lab_loc_axlen_plus )
+	   ENDIF
 	ENDIF
 
 	RETURN

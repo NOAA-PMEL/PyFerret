@@ -41,26 +41,19 @@
 * and "linenum" returns with the number of the new slot.
 *
 * revision 0.00 - 11/22/88
+* V541 set status to OK if we find a match.
 *
 * Arguments
 	INTEGER*4	newline, linenum, status
 	CHARACTER*(*)	newname
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 *
 * Local definitions
 	INTEGER*4	line_match
@@ -70,6 +63,7 @@
 	line_match = TM_FIND_LIKE_LINE ( newline )
 	IF (line_match .NE. unspecified_int4) THEN
 	  linenum = line_match
+	  status = merr_ok
 	  GOTO 9000
 	ENDIF
 *

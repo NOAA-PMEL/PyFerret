@@ -3,6 +3,7 @@
 ! *sh* 2/01
 ! *sh* 3/01 - enhanced to support irregularly spaced axes
 !(*acm 6/01 - checked into directory jnls/go rather than jnls)
+! *acm 6/01 - correct bug: name of region now mo_reg throughout
 
 ! Description: define a contour field with squared off lines for a 1-0 mask
 
@@ -69,7 +70,7 @@
 ! ***
 
 ! Save the current region -- to be restored at the end
-DEFINE REGION/DEFAULT mo_rg
+DEFINE REGION/DEFAULT mo_reg
 CANCEL REGION
 
 ! define the modified X axis and cluster the mask values at the cell boundaries
@@ -100,7 +101,7 @@ define axis/Y/units="`$1,return=yunits`" mo_yaxis = mo_ypoints
 let $1_mo = INT($1[gx=mo_xaxis@ave,gy=mo_yaxis@ave]+.01) ! round to be safe
 
 ! define an alias the user can type for easy plotting
-define alias ovmo cont/ov/lev=(0.5,0.5,1,-3)/nolab/color=black $1_mo
+define alias ovmo cont/over/lev=(0.5,0.5,1,-3)/nolab/color=black $1_mo
 say *** Use the command alias "ovmo" to overlay the mask outline ***
 
 ! clean up

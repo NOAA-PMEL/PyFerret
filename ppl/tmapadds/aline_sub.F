@@ -39,19 +39,16 @@
 *	where a line is drawn of a particular type as specified.
 *	J Davison 10.4.89
 
+*  v5.4 *acm* 10/18/01  When plotting SYM=DOT clear buffer at end: doit_makedot
+*                       Remove VMS include statements
+
 *****************************************************
 * local variable declarations for PLTIT (for TMAP)
 	REAL  	x
 	INTEGER nxs
 * TMAP include files with explicit type declarations:
-#ifdef unix
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-	INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-#endif
-
 
 CCCCC	VIRTUAL X(NXS)		(*jd* 12.96 for linux port) 
 	dimension X(NXS)     
@@ -63,7 +60,6 @@ CCCCC	VIRTUAL X(NXS)		(*jd* 12.96 for linux port)
 
 
 C	KTYPE = 1 -XY  0 -Z  2-VECTOR
-#ifdef unix
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
@@ -95,39 +91,7 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	include 'cont_inc.decl'  !added to get ivcomp v1.1
 	include 'CONT.INC'  !added to get ivcomp v1.1
         include 'gkscm2.cmn' ! jd 3.22.89
-#else
-	INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-	INCLUDE 'PPLV11INC:LINES.INC'
-	INCLUDE 'TMAP_PPLV11INC:PEN_INC.DECL'
-	INCLUDE 'PPLV11INC:PEN.INC'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'
-	INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
-	INCLUDE 'PPLV11INC:HD.INC'
-	INCLUDE 'TMAP_PPLV11INC:TAXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:TAXIS.INC'
-	INCLUDE 'TMAP_PPLV11INC:AXISL_INC.DECL'
-	INCLUDE 'PPLV11INC:AXISL.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'
-	INCLUDE 'PPLV11INC:PLT.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
-	INCLUDE 'PPLV11INC:PLTL.INC'
-	INCLUDE 'TMAP_PPLV11INC:MPLOT_INC.DECL'
-	INCLUDE 'PPLV11INC:MPLOT.INC'
-	INCLUDE 'TMAP_PPLV11INC:CMRD_INC.DECL'
-	INCLUDE 'PPLV11INC:CMRD.INC'
-	INCLUDE 'TMAP_PPLV11INC:PRMCOM_INC.DECL'
-	INCLUDE 'PPLV11INC:PRMCOM.INC'
-	INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
-	INCLUDE 'PPLV11INC:MISS.INC'
-	INCLUDE 'TMAP_PPLV11INC:SWITCH_INC.DECL'
-	INCLUDE 'PPLV11INC:SWITCH.INC'
-	INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
-	INCLUDE 'PPLV11INC:SYSTEM.INC'
-	INCLUDE 'TMAP_PPLV11INC:CONT_INC.DECL'  !Added to get IVCOMP v1.1
-	INCLUDE 'PPLV11INC:CONT.INC'  !Added to get IVCOMP v1.1
-        INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' ! JD 3.22.89
-#endif
+        INCLUDE 'makedot.cmn'    ! 10/01 *acm*
 
 	CALL COLOR(IPEN(0))
 !	CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
@@ -200,5 +164,12 @@ C
 !	    YHI=XTI
 !	    YLO=XTL
 !	ENDIF
+
+
+c          IF (imark(a_line) .eq. 99) THEN
+c             CALL doit_makedot(IPT,XDOT,YDOT)
+c             IPT = 0
+c          ENDIF
+
 	RETURN
 	END

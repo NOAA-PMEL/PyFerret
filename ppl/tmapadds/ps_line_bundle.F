@@ -63,7 +63,7 @@
         integer         ltype(6)
         data            ltype/1,-5,3,4,-3,-1/
 #endif
-	real		thickness
+	real		thickness, dotsize
         integer		marktype
 
 C	For linux *jd* 12.96 put initialization in data statements
@@ -73,10 +73,11 @@ C	For linux *jd* 12.96 put initialization in data statements
         marktype = 1    ! polymarker type 1=dot, (4=circle)
 	do 20 j = 1,3
 	   thickness = real (j)*2.0 - 1.0
+           dotsize = thickness/ 2.
 
 	   do 10 i = 1,6
 	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gspmr (zwsid,i+6*(j-1),marktype,thickness,1) 
+	      call gspmr (zwsid,i+6*(j-1),marktype,dotsize,1) 
 
 10	   continue
 20	continue

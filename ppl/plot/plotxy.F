@@ -59,17 +59,11 @@ C
 
 *  ACM  8-30-2000 Go back to calling the line dash subroutine.   
 
-#ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
 	DIMENSION X(NXS)
 
-#ifdef unix
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'axis_inc.decl'
@@ -93,19 +87,7 @@ C
         include 'gkscm2.cmn' ! jd 3.22.89
         include 'gkspar.inc'	! sh 11/97
         include 'shade_vars.cmn'	! sh 11/97
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PLTL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_TAXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_AXISL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' ! JD 3.22.89
-#endif
+        INCLUDE 'makedot.cmn'    ! 10/01 *acm*
 
 	REAL MAXVEL
 
@@ -228,7 +210,10 @@ C     DRAW VECTORS
 	    ELSE
 	      CALL VECTRS
 	    END IF
-	    IF(ITYPE(I).EQ.3)CALL POINTS
+	    IF(ITYPE(I).EQ.3)THEN 
+               CALL POINTS
+               IF (imark(i) .eq. 99) ipt = 0
+            ENDIF
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
 	      CALL TRANS(I,X(IBASE+1),X(IY+IBASE+1),XT,YT)
@@ -282,13 +267,23 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 	  END IF
 
+          IF (imark(i) .eq. 99) THEN
+             CALL doit_makedot(IPT,XDOT,YDOT)
+             IPT = 0
+          ENDIF
 	if (interrupted) go to 51 !*jd* 8.3.92
 50	IBASE=IBASE+LLENG(I)
 
 ******** END OF LOOP OVER LINES STORED
 
 *** FINALIZE
- 51	CALL COLOR(IPEN(0))
+ 51	CONTINUE
+        IF (imark(i) .eq. 99) THEN
+          CALL doit_makedot(IPT,XDOT,YDOT)
+          IPT = 0
+        ENDIF
+
+        CALL COLOR(IPEN(0))
 	RETURN
 
 **************************************

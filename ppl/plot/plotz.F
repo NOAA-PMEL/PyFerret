@@ -68,8 +68,10 @@ C
 *       *jc* 4.97 Major clean up and commenting
 *       *jc* 5.97 Added code for curvilinear coordinates
 * V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
+* V540 10/01 *acm Set LWGT, LDIG when using previously defined levels; have 
+*                 not been set if previous call was SHADE
+* V540 10/01 *acm remove VMS include statements
 
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
 	INCLUDE 'ZGRID.INC'
@@ -83,20 +85,7 @@ C
 	INCLUDE 'LINES.INC'
 	INCLUDE 'PLTL.INC'
 	include 'xcurvilinear.cmn'
-#else
-	INCLUDE 'pplinc:PARAMPL5.DAT'
-	INCLUDE 'pplinc:ZGRIDD.INC'
-	INCLUDE 'pplinc:ZGRID.INC'
-	INCLUDE 'pplinc:AXIS.INC'
-	include	'tmap_pplv11inc:cont_inc.decl'
-	INCLUDE 'pplinc:CONT.INC'
-	INCLUDE 'pplinc:HD.INC'
-	INCLUDE 'pplinc:TAXIS.INC'
-	INCLUDE 'pplinc:AXISL.INC'
-	INCLUDE 'pplinc:PEN.INC'
-	INCLUDE 'pplinc:LINES.INC'
-	INCLUDE 'pplinc:PLTL.INC'
-#endif
+
 **	DIMENSION Z(NX,NY)
 	REAL	  Z(NX,NY)
 
@@ -218,6 +207,35 @@ C
 	   ELSE
 	      NLEV2=NLEV
 	   ENDIF
+
+C *acm* 10/01----------------
+C set LWGT, LDIG; not set if previous call was SHADE 
+C       lwgt()
+C       =1 standard line
+C       =2 heavy line
+C       =3 dashed line
+
+           ZMP = ZLEV(NLEV2)
+           ZNP = ZLEV(1)
+
+           DZ = 0
+           IF (NLEV2 .GE. 2) DZ = ZLEV(2) - ZLEV(1)
+
+	   JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
+	   IF (JJ.LE.0) JJ=-1
+
+           DO 110 I=1,NLEV2
+	      LWGT(I)=2
+	      LDIG(I)=-1
+	      IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 110
+	      IF (ZLEV(I).GT.0.) THEN
+	         LWGT(I)=1
+	      ELSE
+	         LWGT(I)=3
+	      END IF
+	      LDIG(I)=JJ
+ 110	   CONTINUE
+C *acm* 10/01----------------
 
 	END IF
 

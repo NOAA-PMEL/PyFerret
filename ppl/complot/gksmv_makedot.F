@@ -43,6 +43,7 @@
 *  Version of GKSMV to be called by make_dot.  Call GPM for polymarker
 *  rather than GPL (polyline) 
 *
+*  10/2001 Buffer calls to GPM.  Rename X and Y to xdot, ydot for clarity.
 C
 C	This routine creates a binary file that can be used to
 c	construct device dependent plotting code
@@ -82,43 +83,34 @@ C
             call moveabs2(xn,yn)
         endif
 #else
-*	*jd* 1.9.90  Max was 10,000
-	integer	max
-	parameter (max=10000)	! acm 8/20 test: back to max=10000 
-				! for polymarker (no perceptible speedup)
-				! plot/sym=dot IS faster than plot/sym=22
-*	*jd* 1.9.90
-
-	DIMENSION X(max),Y(max)
-
-	DATA IPT/0/
+        INCLUDE         'makedot.cmn'    ! 10/01 *acm*
 
 	IF(IP.EQ.0)THEN
-	    CALL DOIT_makedot(IPT,X,Y)
+	    CALL DOIT_makedot(ipt,xdot,ydot)
 	    IPT=1
 	ELSE
 	    IPT=IPT+1
-	    IF(IPT.GT.max)THEN
-		CALL DOIT_makedot(max,X,Y)
+	    IF(ipt.GE.max)THEN
+		CALL DOIT_makedot(ipt,xdot,ydot)
 		IPT=2
-		X(1)=X(max)
-		Y(1)=Y(max)
+		xdot(1)=xdot(max)
+		ydot(1)=ydot(max)
 	    ENDIF
 	ENDIF
-	X(IPT)=XN
-	Y(IPT)=YN
+	xdot(IPT)=XN
+	ydot(IPT)=YN
 #endif
 	RETURN
         END
 
-	SUBROUTINE DOIT_makedot(IPT,X,Y)
-	DIMENSION X(*),Y(*)
+	SUBROUTINE DOIT_makedot(IPT,xdot,ydot)
+	DIMENSION xdot(*),ydot(*)
 	IF(IPT.LE.0)RETURN
 	IF(IPT.EQ.1)THEN
-	    X(2)=X(1)
-	    Y(2)=Y(1)
+	    xdot(2)=xdot(1)
+	    ydot(2)=ydot(1)
 	    IPT=2
 	ENDIF
-	CALL GPM(IPT,X,Y)
+	CALL GPM(IPT,xdot,ydot)
 	RETURN
 	END

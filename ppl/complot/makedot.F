@@ -38,6 +38,7 @@
 C  Ansley Manke 8/2001
 C  Plot a single point making polymark calls rather than polyline
 C  based on XYZPLT
+C  10/2001 simplifications that go with buffering the GPM calls
 C  
 C     THIS SUBROUTINE PERFORMS WINDOW CLIPPING IAND THEN MOVES THE
 C     PEN FROM THE CURRENT POSITION TO A NEW POINT.
@@ -57,38 +58,18 @@ C      DIMENSION XMXMN(2),YMXMN(2)
 #endif
 C end of FERRET mod
 ******************************************************************
-C     CHECK THE PLOTTING MODE.
+C     Check the plotting mode.
 
       IF(PMODE .EQ. ALPHA)GO TO 30
 
-C     CHECK THE PEN POSITION.
-
-      IF(PENF)GO TO 10
-
-C     TEMPORARILY STORE THE NEW POSITION.
 
       XNEW = XTEMP
       YNEW = YTEMP
       ZNEW = ZTEMP
-      SAVEF = .TRUE.
-      RETURN
 
-C     CHECK THE PLOTTING MODE.
-
-  10  IF(PMODE .NE. POINT)GO TO 20
-      XNEW = XTEMP
-      YNEW = YTEMP
-      ZNEW = ZTEMP
-      GO TO 30
-
-C     IF THE LAST POINT WAS NOT PLOTTED BECAUSE THE PEN WAS UP,
-C     PLOT THE POINT NOW.
-
-  20  IF(.NOT. SAVEF)GO TO 60
-      PENF = .FALSE.
   30  IF(.NOT. WINDOF)GO TO 40
 
-C     CALCULATE THE NEW OFF-WINDOW FLAG.
+C     Calculate the new off-window flag.
 
       OWFLG = 0
       IF(XNEW .GT. XMAX)OWFLG = 1
@@ -101,7 +82,7 @@ C     THE WINDOW.  IF NOT, DO NOT PLOT IT.
 
       IF(OWFLG .NE. 0)GO TO 50
 
-C     TRANSFORM THE POINT TO THE SCREEN COORDINATE SYSTEM.
+C     Transform the point to the screen coordinate system.
 
   40  CALL TFORM(XNEW,YNEW,ZNEW)
 
@@ -109,7 +90,7 @@ C     Plot the point.
 
       CALL ABPLT_makedot
 
-C     MOVE THE COORDINATES OF THE NEW POINT TO THE OLD POINT.
+C     Move the coordinates of the new point to the old point.
 
   50  XOLD = XNEW
       YOLD = YNEW

@@ -71,7 +71,7 @@
 	integer		max_pattern,max_color,error
 	integer		fktr, marktype
                                        
-	real		thickness
+	real		thickness, dotsize
 
 *******************************************************************************
 
@@ -96,8 +96,10 @@
 
 	do 20 j = 1,6 ! colors
 	   do 10 fktr = 1,3
-	      call gsplr (zwsid,(fktr-1)*6+j,1,real(fktr),j)
-	      call gspmr (zwsid,(fktr-1)*6+j,marktype,real(fktr),j)
+              thickness = real(fktr)
+              dotsize = thickness/2.
+	      call gsplr (zwsid,(fktr-1)*6+j,1,thickness,j)
+	      call gspmr (zwsid,(fktr-1)*6+j,marktype,dotsize,j)
 10	   continue
 20	continue
 
@@ -106,9 +108,10 @@
 *	MONOCHROME WORKSTATIONS:
 100	do 120 j = 1,3
 	   thickness = real (j)
+           dotsize = thickness/2.
 	   do 110 i = 1,6
 	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gspmr (zwsid,i+6*(j-1),marktype,real(fktr),1)
+	      call gspmr (zwsid,i+6*(j-1),marktype,dotsize,1)
 110	   continue
 120	continue                   
 

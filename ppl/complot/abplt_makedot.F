@@ -45,6 +45,7 @@
 *  Simplified version of ABPLT to be called by make_dot.  no need
 *  to compute intercepts for points off-screen.  If off-screen do
 *  not plot
+*  10/2001 acm do buffering on GKS calls.  Also remove VMS includes.
 
 ****************************************************************
 *     CALL ABPLT
@@ -53,13 +54,9 @@
 *     PEN FROM THE CURRENT POSITION TO A NEW POINT.
 
 
-#ifdef unix
       include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
-#else
-      INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-      INCLUDE 'pplv11inc:pltcom.dat'
-#endif
+
 C end of FERRET mod
 ******************************************************************
 
@@ -95,8 +92,8 @@ C     PLOT TO THE POINT WITH THE PEN UP AND THEN DRAW A DOT.
 
       A = ANEW - AMIN
       B = BNEW - BMIN
-      PEN = .FALSE.
-      CALL ABMV_makedot
+c      PEN = .FALSE.
+c      CALL ABMV_makedot
       PEN = .TRUE.
       CALL ABMV_makedot
       GO TO 100

@@ -1,0 +1,13 @@
+C   Common block for makedot GKS polymarker routines: gkplt_makedot, and plotxy
+C   (lines of code from gkplt_makedot; keep in common so X and Y are buffers)
+C   ACM 10/17/01
+
+*	*jd* 1.9.90  Max was 10,000
+	integer	max, ipt
+	parameter (max=10000)	! acm 8/20 test: back to max=10000
+				! for polymarker (no perceptible speedup)
+				! plot/sym=dot IS faster than plot/sym=22
+    
+	REAL xdot(max),ydot(max)
+        COMMON/MAKEDOT_CMN/ipt, xdot, ydot
+

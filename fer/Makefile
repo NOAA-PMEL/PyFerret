@@ -105,7 +105,7 @@ fortran: .FRC
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
 
 
-ferret:	update
+ferret:	
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
 	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
 		$(FERMAIN) \
@@ -130,10 +130,12 @@ ferret:	update
 
 update: .FRC
 	${MAKE} update_date DATE=`/bin/date +%D`
+	rm -f special/xrevision_type_data.[Ffo]
 	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	(cd special;make)
 
 update_date:
+	rm -f special/xmake_date_data.[Ffo]
 	sed "s&xxxxxxxx&$(DATE)&" <special/xmake_date_data.template >special/xmake_date_data.F
 
 

@@ -59,9 +59,10 @@
 * Unix/RISC port 5/91 *sh*: use data set name, only (full path is too long)
 * V401: 6/23/95 - tag the movable labels by passing ppl_movlab minus nnn
 * V510 *sh* 3/00 - add DODS URL label
-* V530 *acm* 3/01  add calendar name (if not Gregorian calendar)
+* V530 *acm* 3/01 - add calendar name (if not Gregorian calendar)
+* v533 *acm* 8/01 - test for calendar label had .LT. max_calendars; needs .LE.
+*      *acm* 10/01  remove VMS includes
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -74,17 +75,6 @@
 	include 'AXIS.INC'	! axis lengths
 	include 'calendar.decl'
 	include 'calendar.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'	! axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC'	! axis lengths
-#endif
 
 * calling argument declarations:
 	INTEGER		joint_cx, cal_id
@@ -103,7 +93,7 @@
 	nlabs = ul_nlabs
 	show_year = year .NE. unspecified_name4
 	IF ( show_year ) nlabs = nlabs + 1
-        IF (cal_id .GT. GREGORIAN .AND. cal_id .LT. max_calendars) 
+        IF (cal_id .GT. GREGORIAN .AND. cal_id .LE. max_calendars) 
      .     nlabs = nlabs + 1
 
 * need to reduce size of upper left labels ?
@@ -151,7 +141,7 @@
 	ENDIF
 
 * calendar label needed ?
-        IF (cal_id .GT. GREGORIAN .AND. cal_id .LT. max_calendars) THEN
+        IF (cal_id .GT. GREGORIAN .AND. cal_id .LE. max_calendars) THEN
            cal_buff = TM_GET_CALENDAR_NAME (cal_id)
            lablen = TM_LENSTR(cal_buff)
 

@@ -6,9 +6,12 @@
 #define NaN (0.0/0.0)		/* Anyone know a better way? */
 
 static Engine *ep = 0;
+/*
+ * JS Changed coord arguments to double as external function API changed
+ */
 int matlab_demo_(float *data,
-		 float *xcoords, int *xsize,
-		 float *ycoords, int *ysize,
+		 double *xcoords, int *xsize,
+		 double *ycoords, int *ysize,
 		 float *bad_flag) {
   mxArray *T = NULL, *result = NULL;
   mxArray *mX = NULL, *mY = NULL;
@@ -47,12 +50,8 @@ int matlab_demo_(float *data,
       }
     }
 
-    for (i=0; i < *xsize; ++i){
-      mxData[i] = xcoords[i];
-    }
-    for (i=0; i < *ysize; ++i){
-      myData[i] = ycoords[i];
-    }
+    memcpy(mxData, xcoords, sizeof(double)* *xsize);
+    memcpy(myData, ycoords, sizeof(double)* *ysize);
   }
 
   /* Place the variables into the MATLAB workspace */

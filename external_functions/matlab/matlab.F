@@ -113,7 +113,6 @@ C ACM  change m1lox to mem1lox, etc.
 C ACM  call ef_get_coordinates with REAL*8 arrays to get coord values
 
       REAL*8 xcoords(8192), ycoords(8192)
-      REAL xcoords4(8192), ycoords4(8192)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -145,15 +144,6 @@ C ACM  call ef_get_coordinates with REAL*8 arrays to get coord values
       xsize = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
       ysize = arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) + 1
 
-C ACM  Stick the coordinates in REAL arrays.
-
-      DO i = 1, xsize
-         xcoords4(i) = xcoords(i)
-      ENDDO
-      DO j = 1, ysize
-         ycoords4(j) = ycoords(j)
-      ENDDO
-
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
@@ -174,7 +164,7 @@ C ACM  Stick the coordinates in REAL arrays.
          END DO
          i1 = i1 + arg_incr(X_AXIS,ARG1)
       END DO
-      call matlab_demo(arg_1, xcoords4, xsize, ycoords4, ysize, 
+      call matlab_demo(arg_1, xcoords, xsize, ycoords, ysize, 
      1      bad_flag(1))
      
 *                                                                      ^

@@ -1,0 +1,12 @@
+! err491_grid_from_name.jnl
+! *sh* 3/99
+
+! implicit grid, such as "Z[gz=zax]", are allowed in places they shouldn't be
+
+! fixed with change to GRID_FROM_NAME (and PARSE_NAM_DSET_GRD)
+
+set mode ignore
+define axis/z=1:10:1 z10
+set grid z[gz=z10]
+show grid
+can mode ignore

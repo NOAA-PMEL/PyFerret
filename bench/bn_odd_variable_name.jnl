@@ -1,0 +1,21 @@
+use weird_name1.cdf
+sh data
+set mode ignore
+list v1
+list 'v1'
+list v2-and-minus    		! Deliberate error 
+list 'v2-and-minus'  		! Now the proper syntax
+list x 				! Deliberate error
+list 'X'			! Now the proper syntax
+list i  			! Deliberate error
+list 'i'  			! Deliberate error
+list 'I'			! Now the proper syntax
+list 'V1' - 'v1'
+list 'I'[i=6:15@sbx:10] - 'X'[i=6:15@ave]
+list v1[i=6:15@sbx:3]
+list 'v1'[i=6:15@sbx:3]
+list 'I'-'X'/'v2-and-minus'
+list v1[i=@max]
+list 'v1'[i=@max] 
+list v2-and-minus[i=5:15@ddc] 	! Deliberate error
+list 'v2-and-minus'[i=5:15@ddc] ! Now the proper syntax

@@ -1,0 +1,214 @@
+SET MODE VERIFY
+! BN500_ALL.JNL
+! - run all the benchmark tests
+! - ordered (more or less) from least to most complex
+! V2.30: uses BN230_syntax instead of BN200_syntax
+!        added BN230_cdf
+!	 added BN230_regrid_transforms 8/92
+! V3.00: uses BN300_syntax instead of BN230_syntax
+! 	 added bn300_dollar 4/93
+! V3.01: adds bn301_axis_limits and ppl echo ON
+! V3.11: adds bn311_ez_order (/ORDER and /FORMAT=STREAM)
+! V3.12: adds bn312_user (tests SAMPLE and OBJECTIVE)
+! V3.13: for AIX testing: removed mem_mgmt & ignore errors during bn200_output
+! V3.20: to test SAVE/HEADING=enhanced (new BN320_cdf)
+! V4.00: added "*" tests to bnxxx_dollar and added new test bn400_grave
+!    6/95 - added bn401_symbols
+!    7/95 - modified bn*_syntax: bn401_syntax has var1[G=var2[d=dset]]
+!    8/95 - modified bn*_ez: bn401_ez tests FORM=unf
+! V4.20: 
+!    9/95 - added test of LET/D and LIST/FORMAT=STREAM
+!	  - slightly modified syntax in bn420_regrid_transforms
+!	  - added bn420_dynamic_grids and bn420_comma_delimited
+!	  - added 2 small additional tests in bn420_grave
+!	  - added a small syntax test in bn420_syntax
+!	  - tested for commas inside args in bn420_dollar
+!	  - tested for enclosing parens in bn420_symbol
+! V4.30:
+!   5/96  - added IF tests
+!   9/96  - added MC data tests *kob*
+! V4.50:
+!   1/97  - eliminated MODE POLISH
+!	    (bn301_expressions.jnl -> bn450_expressions.jnl)
+!   8/97  - bn430_if -> bn450_if: added symbol substitution test
+!10/97*kob*- cancel metafile creation after bn420_syntax and turn it
+!	    on only before bn450_plot (upgraded from bn320_plot)
+!	   - also add test for negative time steps (bn450_negative_t)
+!	   - also add test for cuvilinear stuff
+!          - also added steve's "exact match" regridding
+!11/97 *kob* - added bn450_gc_functions
+! V4.91:
+!    1/98  - corrected bug in this script -- need to cancel viewports after
+!	     bn312_user or the plots which follow come up in a small viewport
+!    2/98 *kob* - moved bn450_curv.jnl up to right after bn450_plot.jnl in 
+!		  order to have those metafiles saves as well for checking
+!		  also renamed it to bn491_curv.jnl and added some minor 
+!		  cosmetic changes
+!    2/98 *kob* - add in bn491_bug_fixes.jnl
+!    4/98 *sh*  - replaced bn420_dynamic_grids with bn491_... (minor chg)
+! V5.00:
+!   2/99 *sh* -- bn420_regrid_transform ==> bn500_regrid_transform
+!   3/1/99 *kob* - removed bn200_budget from distributable benchmarks 
+!   5/99 *kob* - added V50 bench files
+
+GO bn_reset
+GO bn_syntax
+cancel mode metafile      !9/97
+
+GO bn_reset
+GO bn_dollar hello    ! test command arg
+
+! added in bn400
+GO bn_reset
+GO bn_grave
+
+! added in bn420
+GO bn_reset
+GO bn_letd
+
+! added in bn430
+GO bn_reset
+GO bn_if
+
+GO bn_reset
+GO bn_expressions
+
+GO bn_reset
+GO bn_geometry
+
+GO bn_reset
+set mode ignore		! needed for AIX   11/94
+GO bn_output
+cancel list/format
+can mode ignore		! needed for AIX
+
+GO bn_reset
+GO bn_in_plane
+
+GO bn_reset
+GO bn_compress
+
+GO bn_reset
+GO bn_interpolate
+
+GO bn_reset
+GO bn_regrid
+
+GO bn_reset
+GO bn_ez		! changed from bn200_ez 8/10/95
+
+! ****
+! remove bn200_budgets for portable benchmarks *kob* 5/99
+! ****
+
+PPL ECHO ON		! added 10/27/93
+
+! 10/97 *kob* now set mode metafile
+set mode metafile bnplot.plt
+GO bn_reset
+GO bn_plot		! upgraded from bn320_plot 10/1/97 *kob*
+
+
+!added in bn450 10/97 *kob*
+! moved to right after bn450_plot to capture metafiles *kob* 2/98
+GO bn_reset
+! 2/98 changed bn450_curv to bn491_curv - just some cosmetic changes *kob*
+GO bn_curv
+
+SET WINDOW/CLEAR/SIZE=0.2 ! 8/25/92
+!CANCEL WINDOW/ALL    ! added 7/27/92
+! 10/97 *kob* now cancel mode metafile
+cancel mode metafile
+
+GO bn_reset
+GO bn_symbols	! added 6/22/95
+
+GO bn_reset
+GO bn_comma_delimited	! added 10/2/95
+
+GO bn_reset
+GO bn_dynamic_grids	! added 9/27/95, V420 ->V491 4/98
+
+GO bn_reset
+GO bn_cdf
+
+GO bn_reset
+GO bn_regrid_transforms
+
+GO bn_reset		! reordered reset before next test: 2/94
+GO bn_axis_limits	! added 10/27/93
+SET WINDOW/CLEAR/SIZE=0.2 ! added 2/94
+
+!GO bn_reset
+!GO bn301_mem_mgmt
+MESSAGE/CONTINUE  ***** bn301_mem_mgmt has been removed from run_all.
+MESSAGE/CONTINUE  ***** Its too slow!!!
+MESSAGE/CONTINUE  ***** Remember to run it separately
+
+GO bn_reset
+GO bn_movie
+
+! added in bn311
+GO bn_reset
+GO bn_ez_order	! was bn311 until 9/95
+
+! added in bn312  6/3/94
+GO bn_reset
+! cancel mode metafile   ! needed temporarily 6/94: PLOT+/XGKS interaction bug
+GO bn_user
+cancel viewports	! clean up
+set window 1		! clean up
+
+! added in bn420  1/96
+GO bn_reset
+GO bn_stream
+
+!added in bn430 9/96 *kob*
+GO bn_reset
+GO bn_mc
+
+!added in bn450 10/97 *kob*
+GO bn_reset
+GO bn_negative_t
+
+
+!added in bn450 10/97 *kob*
+GO bn_reset
+GO bn_xact_regrid
+
+!added in bn450 11/97 *kob*
+! replace w/ bn500 *kob* 5/99
+GO bn_reset
+GO bn_gc_functions
+
+!added in bn491 - originally had this in run_all, but moved it here to 
+! properly echo commands  *kob*
+GO bn_reset
+GO bn491_bug_fixes.jnl
+
+! ******** V500 Additions below ***********
+
+GO bn_reset
+GO bn_odd_variable_name
+
+GO bn_reset
+GO bn_test_stream
+
+GO bn_reset
+GO bn_define_axes
+
+GO bn_reset
+GO bn_external_functions
+
+GO bn_reset
+GO bn_pattern
+
+GO bn_reset
+GO bn_polygon
+
+GO bn_reset
+GO bn500_bug_fixes
+
+! version 2.3 requires exit/command *sh* 3/92
+exit/command
+

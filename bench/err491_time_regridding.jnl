@@ -1,0 +1,30 @@
+! err491_time_regridding.jnl
+! from Jon 10/16/98
+
+! this core dumps ... it is unable to reconcile the
+! l=13:48 in the current region with the t=15-jan-1995:15-jan-1998
+! (which corresponds to L=1:37) in the definition of "bad"
+
+!set mode diag
+set wind/siz=.3
+
+set data TAO_SST_clim.cdf
+
+define axis/t=15-jan-1995:15-dec-1999:1/unit=mon my_t_axis
+
+let good = sst_clim[gt=my_t_axis]
+let bad  = sst_clim[gt=my_t_axis,t=15-jan-1995:15-jan-1998]
+
+set region/x=125w/y=0n/l=13:48
+
+plot     good[x=@sbx:3]
+plot/over     good[y=@sbx:3]
+plot/over     good[z=@sbx:3]
+plot/over     good[t=@sbx:3]
+
+
+cancel memory/all
+plot/over bad[x=@sbx:3]
+plot/over bad[y=@sbx:3]
+plot/over bad[z=@sbx:3]
+plot/over bad[t=@sbx:3]

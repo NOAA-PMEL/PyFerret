@@ -1,0 +1,127 @@
+! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
+! upgraded from bn320 to provide method for testing batch mode.  Also remove
+! all labels to create "master" gif and ps files to compare against
+! *kob*
+
+! define a 6 viewport window (modified definitions 11/92)
+def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
+def view/text=.2/xlim=0,.333/ylim=.5,1    ul6
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6
+def view/text=1.5/xlim=.666,1/ylim=0,.5   lr6
+def view/xlim=.666,1/ylim=.5,1            ur6     ! auto /TEXT
+show view
+
+! some variables for plotting
+let a = 0.8*sin(l/10)
+let b = 0.6*cos(l/10)
+let c = sin(100/(l+k))
+let d = l/50
+let e = k-(l/25)
+let f = -.5+(l/125)
+let g = (l-25)/(k*35)
+let h = 0.1
+let m = 0.2
+
+! illegal plot commands
+set mode ignore
+plot/i=1:10/j=1:20/nolabel i+j			! not a line
+plot/i=1:10/j=1:20/nolabel i,i+j		! not a line
+plot/i=1:10/j=1:20/nolabel i+j,i		! not a line
+plot/i=1:10/j=1:20/nolabel j,i			! differing axes
+plot/i=1:10/j=1:20/vs/line/nolabel j,i		! unequal lengths
+contour/i=1:10/j=1:20/nolabel i			! only 1 D
+contour/i=1:10/j=1:20/nolabel i/j,j/i		! multiple fields
+vector/i=1:10/j=1:20/nolabel i/j		! only 1 field
+vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j	! 3 fields
+set mode/last ignore
+
+! notice the default window size is 10.2,width x 8.8,height
+ppl list plot
+
+! enlarge it to accomodate an additional 50% width
+ppl size 15.3,8.8
+
+! turn on metafile (enabled 10/29/91)
+! commented out 9/97 - instead set in bn450_all.jnl
+! set mode metafile
+
+! draw a plot into a viewport - to be deleted (check hard copy)
+set view ll6
+contour/i=1:50/j=1:50/nolabel i/(j+20)
+
+! 4 frames testing PLOT output
+set view ul6
+plot/l=1:50/k=1/trans/nolabel a,b,c
+plot/l=1:50/k=1/trans/over/line=6/nolabel d
+plot/l=1:50/k=1/trans/over/symbol=88/nolabel e
+plot/l=1:50/k=1/trans/over/symbol=47/line/nolabel f
+def view/text=.1/xlim=.333,1/ylim=0,.5 lm6   ! redefine longer in x (11/92)
+set view lm6
+!ppl axlen 16
+set region/k=1
+plot/l=1:50/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+def view/text=.6/xlim=.333,1/ylim=.5,1 um6    ! redefine it longer in x (11/92)
+set view um6
+!ppl axlen 17,5
+plot/l=1:50/nolabel sin(100/(l+5))
+plot/l=1:50/over/nolabel a,b,c,d,e,f,g[k=1],g[k=2],a+h,b+h,c+h,d+h,e+h,f+h,g[k=1]+h,g[k=2]+h,a+m,b+m,c+m
+set view ll6
+!ppl axlen 8,6
+plot/l=1:99000/nolabel sin(200000/(l+10000))
+
+! reset to normal axis lengths and prepare for a new piccie
+!ppl axlen 8
+set wind/clear
+
+! draw six frames
+set view ll6
+contour/i=1:50/j=1:50/levels=(0,2.5,.25)/nolabel i/(j+20)
+plot/over/nolab/vs/line/i=1:50/j=1:50/nolabel 6*i/j,5*j/i
+set view ul6
+vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+def view/text=.1/xlim=.333,.666/ylim=0,.5 lm6  ! redefine it (11/92)
+set view lm6
+shade/i=1:50/j=1:50/nolabel i/(j+20)
+set view lr6
+ppl lev () (0,2.5,.1)
+shade/i=1:50/j=1:50/line/level/nolabel i/(j+20)
+set view ur6
+let icomp = (sin(i/20)*10+j-20)
+let jcomp = (-1*cos(j/10)*10+i-20)
+contour/i=1:50/j=1:50/nolabel icomp^2+jcomp^2
+contour/i=1:50/j=1:50/over/level/nolabel icomp^2+(-1*cos(i/10)*80)^2
+! note: "i-i" and "j-j" are needed to create 2D structures
+vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
+vector/i=1:50/j=1:50/overlay/length/nolabel i-20+(j-j),40-j+(i-i)
+def view/text=.6/xlim=.333,.666/ylim=.5,1 um6    ! redefine it (11/92)
+set view um6
+shade/i=1:50/j=1:50/nolabel i/(j+20)
+contour/i=1:50/j=1:50/over/nolabel (sin(i/20)+j-20)^2+(-1*cos(j/10)+i-20)^2
+vector/i=1:50/j=1:50/overlay/nolabel j-20+(i-i),i-20+(j-j)
+
+! additions for version 3.01 "/TITLE=" controls
+cancel viewports
+set view ul6
+plot/title="My Custom Title"/i=1:100/nolabel sin(i/6)
+plot/title="My Custom Key"/i=1:100/over/nolabel sin(i/5)
+set view um6
+plot/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9)
+plot/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view ur6
+plot/vs/line/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9)
+plot/vs/line/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view ll6
+plot/vs/line/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
+plot/vs/line/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
+set view lm6
+contour/i=1:20/j=1:20/title="My Contour Title"/nolabel sin(i/3)*cos(j/4)
+contour/over/i=5:30/j=5:30/title="My Contour Overlay"/nolabel sin(i/2)*cos(j/3)
+set view lr6
+wire/view=0,0,2/i=1:20/j=1:20/title="My Egg Carton"/nolabel sin(i/3)*cos(j/4)
+
+! addition for 3.20 showing changed default behavior of plot/vs
+! return to window and redraw with symbols
+set view ll6
+plot/vs/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
+plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)

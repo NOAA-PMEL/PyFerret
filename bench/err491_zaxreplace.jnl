@@ -1,0 +1,46 @@
+! April 98
+! this script, provided by Denise Worthen, demonstrates misbehavior
+! of the ZAXREPLACE function.
+! 5 kinds of misbehavior:
+!    1) crashes if the argument K limits don't begin at subscript 1
+!	(fixed in extract_z_line)
+!    2) ignoring missing value flag in arg 1 (temperature)
+!	(fixed in do_internal_gc_fcn)
+!    3) using the cached (mr) arg Z size rather that the requested (cx)
+!	(fixed with new calling arg in EXTRACT_Z_LINE)
+!    4) inconsistent behavior -- pre-loading effected behavior
+!	(fixed by changes Jon made to gcf_impose_arg_lim_dflts.F or
+!		possibly init_empty_context.F)
+!    5) SET REGION/I=lo:hi ignored
+!	( fixed somehow in the course of other changes ...)
+
+set mode diag
+
+use dlw
+
+define axis/z=0:5000:100/units=meter/depth zdepth
+
+! failure to preload gets wrong answer
+!load/y=24 temp[k=1:20]
+!load/y=24 hsigc[k=1:20]
+shade/y=24 ZAXREPLACE(TEMP[k=1:20],HSIGC[k=1:20],Z[GZ=ZDEPTH])
+
+! crash
+!set region/x=25:28
+set mode ignore
+shade/y=24 ZAXREPLACE(TEMP[k=13:15],HSIGC[k=13:15],Z[GZ=ZDEPTH,k=3:5])
+cancel mode ignore
+
+! note that the same plot is mistakenly re-drawn (K=1:15 ignored)
+shade/y=24 ZAXREPLACE(TEMP[k=1:15],HSIGC[k=1:15],Z[GZ=ZDEPTH])
+
+! the set region is ignored
+set region/i=1:10
+shade/y=24 ZAXREPLACE(TEMP[k=1:15],HSIGC[k=1:15],Z[GZ=ZDEPTH])
+
+! now here's the correct plot
+quit
+canc mem/all
+shade/y=24 ZAXREPLACE(TEMP[k=1:15],HSIGC[k=1:15],Z[GZ=ZDEPTH])
+
+

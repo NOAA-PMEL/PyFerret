@@ -1,0 +1,134 @@
+! bn450_expressions.JNL
+! test all manner of expressions
+! V450 - commented out MODE POLISH test -- mode was eliminated
+
+! test infix expressions
+! 1/96 - commented out: CANCEL MODE POLISH
+
+! test grid creation for a variety of combos
+let c1 = 2
+let i1 = i
+let k1 = k
+
+! . . . constants
+list 4
+list 2 + 2
+list c1 + 2
+list 2 + c1
+list c1 + c1
+
+! ... constant plus variable or pseudovariable
+set reg/i=1:3
+list/order=x i + 2
+list/order=x 2 + i
+list/order=x i1 + 2
+list/order=x 2 + i1
+list/order=x i + c1
+list/order=x c1 + i
+list/order=x i1 + c1
+list/order=x c1 + i1
+
+! ... constant plus variable or pseudovariable with modified region
+set reg/i=11:13
+list/order=x i[i=1:3] + 2
+list/order=x 2 + i[i=1:3]
+list/order=x i1[i=1:3] + 2
+list/order=x 2 + i1[i=1:3]
+list/order=x i[i=1:3] + c1
+list/order=x c1 + i[i=1:3]
+list/order=x i1[i=1:3] + c1
+list/order=x c1 + i1[i=1:3]
+
+! ... two variables or pseudovariables
+set reg/i=1:3/k=2
+list/order=x i + k
+list/order=x i + k1
+list/order=x k1 + i
+
+! ... two variables or pseudovariables with modified region
+set reg/i=1:3/k=1
+list/order=x i + k[k=2]
+list/order=x i + k1[k=2]
+! ... crash here ...
+list/order=x k1[k=2] + i
+
+
+! operators
+CANCEL REGION
+SET REGION/I=1:5/J=1:5
+LIST 10+2
+LIST/ORDER=X  I
+LIST/ORDER=X  I*3
+LIST/ORDER=X  I/3
+LIST/ORDER=X  I+3
+LIST/ORDER=X  I-3
+LIST/ORDER=X  I^3
+LIST/ORDER=X  I EQ 3
+LIST/ORDER=X  I NE 3
+LIST/ORDER=X  I GT 3
+LIST/ORDER=X  I GE 3
+LIST/ORDER=X  I LT 3
+LIST/ORDER=X  I LE 3
+LIST/ORDER=X  (I LT 3) OR (I GT 3)
+LIST/ORDER=X  (I LE 3) AND (I GE 3)
+LIST/ORDER=X  (I+3)*3 - 9 - (I+I+I)
+LIST/ORDER=X  J * ( (I+3)*3 - 9 - (I+I+I) )
+
+! IF, THEN, ELSE
+LIST/ORDER=X  IF I GT 3 THEN I
+LIST/ORDER=X  IF I GT 3 THEN I ELSE 0
+! error: nested IF tests
+SET MODE IGNORE_ERRORS
+LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333	! err
+LET A = IF I LT 5 THEN I ELSE -9					! err
+SET MODE/LAST IGNORE_ERRORS
+LET A = IF I LT 5 THEN I ELSE (-9)
+LIST/ORDER=X  IF I GT 3 THEN ( A ) ELSE .333
+
+! functions
+LIST/ORDER=X  MAX(I,3)
+LIST/ORDER=X  MIN(I,3)
+LIST/ORDER=X  INT(I/3)
+LIST/ORDER=X  ABS(I-3)
+LIST/ORDER=X  EXP(I)
+LIST/ORDER=X  LN(I)
+LIST/ORDER=X  LN(EXP(I))
+LIST/ORDER=X  EXP(LN(I))
+LIST/ORDER=X  LOG(I)
+LIST/ORDER=X  LOG(10^I)
+LIST/ORDER=X  10^LOG(I)
+LIST/ORDER=X  SIN(I)
+LIST/ORDER=X  ASIN(SIN(I/3))
+LIST/ORDER=X  COS(I)
+LIST/ORDER=X  ACOS(COS(I/3))
+LIST/ORDER=X  TAN(I)
+LIST/ORDER=X  ATAN(TAN(I/3))
+LIST/J=1:3    ATAN2(J-1,I-1)
+LIST/ORDER=X  MOD(I,3)
+LIST/ORDER=X  IGNORE0(I-3)
+LIST/ORDER=X  MISSING( IGNORE0(I-3),-9 )
+LIST/ORDER=X  RANDU(I)
+LIST/ORDER=X  RANDN(I)
+
+! syntax errors
+SET MODE IGNORE_ERRORS
+load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
+SET MODE/LAST IGNORE_ERRORS
+
+! commented out 1/96
+!! test a little postfix, too
+!SET MODE POLISH
+!SET REGION/I=1:5/J=1:5
+!LIST/ORDER=X  I 3 LE I 3 GE AND
+!LIST/ORDER=X  I 3 + 3 * 9 - I I I + + -
+!LIST/J=1:3    J 1 - I 1 - ATAN2
+!! ... bug - negative constants not processed properly ...
+!SET MODE IGNORE_ERRORS
+!LIST/ORDER=X  I 3 - IGNORE0 -9 MISSING
+!SET MODE/LAST IGNORE_ERRORS
+!LIST/ORDER=X  I 3 - IGNORE0 0 9 - MISSING
+!CANCEL MODE POLISH
+
+! test formatted output where the output field is too small
+LIST/I=1:3/FORMAT=(F6.2) 1/(i-2)		! single column test
+LIST/I=1:3/FORMAT=(2F6.2) 1/(i-2),2/(i-2)	! multi-column test

@@ -1,0 +1,13 @@
+! err491_long_gif_name.jnl
+! *sh* 4/99 - test 175 character gif name
+
+! name length extended with changes to save_frame.F and xeq_frame.F
+
+set wind/siz=0.03
+go ptest
+
+sp rm -f abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy*
+
+frame/file="abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif"
+
+spawn ls abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy*

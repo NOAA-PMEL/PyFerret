@@ -1,0 +1,129 @@
+! bn200_regrid.JNL
+! test regridding
+! first test consists of regridding and re-regridding back and comparing
+! when the variable, v is linear along all axes results should be exact
+
+! second test checks area-averaging regridding
+! both with and without COS(latitude) factors computed
+
+! third test consists of time axis regridding with differing time steps
+
+set mode latit_label -4
+set mode long_label -4
+
+define axis/x=2:20:2 xeven
+define axis/x=1:19:2 xodd
+define axis/y=2:20:2 yeven
+define axis/y=1:19:2 yodd
+define axis/z=2:20:2 zeven
+define axis/z=1:19:2 zodd
+define axis/t=2:20:2/t0="1-jan-1980"/unit=days teven
+define axis/t=1:19:2/t0="1-jan-1980"/unit=days todd
+
+! default grid
+define grid/x=xeven/y=yeven/z=zeven/t=teven even
+
+! 1 axis different
+define grid/x=xodd/y=yeven/z=zeven/t=teven g1
+define grid/x=xeven/y=yodd/z=zeven/t=teven g2
+define grid/x=xeven/y=yeven/z=zodd/t=teven g3
+define grid/x=xeven/y=yeven/z=zeven/t=todd g4
+
+! 2 axes different
+define grid/x=xodd/y=yodd/z=zeven/t=teven g12
+define grid/x=xodd/y=yeven/z=zodd/t=teven g13
+define grid/x=xodd/y=yeven/z=zeven/t=todd g14
+define grid/x=xeven/y=yodd/z=zodd/t=teven g23
+define grid/x=xeven/y=yodd/z=zeven/t=todd g24
+define grid/x=xeven/y=yeven/z=zodd/t=todd g33
+
+! 3 axes different
+define grid/x=xeven/y=yodd/z=zodd/t=todd g234
+define grid/x=xodd/y=yeven/z=zodd/t=todd g134
+define grid/x=xodd/y=yodd/z=zeven/t=todd g124
+define grid/x=xodd/y=yodd/z=zodd/t=teven g123
+
+! all axes different
+define grid/x=xodd/y=yodd/z=zodd/t=todd g1234
+
+LET veven = 1000*i[g=even] + 100*j[g=even] + 10*k[g=even] + l[g=even]
+
+LET v1    = veven[g=g1]
+LET v2    = veven[g=g2]
+LET v3    = veven[g=g3]
+LET v4    = veven[g=g4]
+LET v12   = veven[g=g12]
+LET v13   = veven[g=g13]
+LET v14   = veven[g=g14]
+LET v23   = veven[g=g23]
+LET v24   = veven[g=g24]
+LET v33   = veven[g=g33]
+LET v234  = veven[g=g234]
+LET v134  = veven[g=g134]
+LET v124  = veven[g=g124]
+LET v123  = veven[g=g123]
+LET v1234 = veven[g=g1234]
+
+SET REGION/X=4.01:8.99/Y=4.01:8.99/Z=4.01:8.99/T=4.01:8.99
+
+! background
+list veven
+list v1234
+stat veven
+
+! first all from one memory variable
+load/x=1:11/y=1:11/z=1:11/t=1:11 veven
+GO bn_regrid.sub
+
+! and now with recalculations at every step
+CANCEL MEMORY/ALL
+SET MODE STUPID
+GO bn_regrid.sub
+
+!****************** area-averaging regrids *******************
+! check easily computable area-averaged regrid
+LET vfine = X+Y
+LET vcoarse = vfine[g=gcoarse]
+
+! first test without COS(latitude) corrections
+define axis/x=1:100:1/unit=cm xfine
+define axis/x=5.5:95.5:10/unit=cm xcoarse
+define axis/y=1:100:1/unit=cm yfine
+define axis/y=5.5:95.5:10/unit=cm ycoarse
+define grid/x=xfine/y=yfine gfine
+define grid/x=xcoarse/y=ycoarse gcoarse
+
+set grid gfine
+set reg/x=20.5:80.5/y=20.5:80.5
+list vcoarse
+stat vcoarse,vfine
+list vcoarse[x=@ave,y=@ave],vfine[x=@ave,y=@ave]
+
+! then test with COS(latitude) corrections
+define axis/x=1:100:1/unit=degrees xfine
+define axis/x=5.5:95.5:10/unit=degrees xcoarse
+define axis/y=1:100:1/unit=degrees yfine
+define axis/y=5.5:95.5:10/unit=degrees ycoarse
+define grid/x=xfine/y=yfine gfine
+define grid/x=xcoarse/y=ycoarse gcoarse
+
+set grid gfine
+set reg/x=20.5:80.5/y=20.5:80.5
+list vcoarse
+stat vcoarse,vfine
+list vcoarse[x=@ave,y=@ave],vfine[x=@ave,y=@ave]
+
+!****************** time axis regridding *******************
+define axis/t="1-jan-1980":"1-jan-1982":24/t0="1-jan-1970" tax24
+define axis/t="1-jan-1980":"1-jan-1982":48/t0="1-jan-1920" tax48
+define grid/t=tax24 g24
+define grid/t=tax48 g48
+!show grid/l=1:4 g24,g48    ! requires blank separators: 11/1/91 *sh*
+show grid/l=1:4 g24 g48
+set region/t="1-jan-1980":"8-jan-1980"
+let a24 = t[g=g24]
+let a48 = t[g=g48]
+list a24
+list a48
+list a24[g=g48]
+list a24[g=g48]-a48

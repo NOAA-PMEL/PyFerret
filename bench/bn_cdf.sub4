@@ -1,0 +1,78 @@
+! bn230_cdf
+! benchmark to test netCDF input and output of TMAP data set variables
+! requires version 2.30 or later
+! 6/92
+
+cancel data/all
+cancel variables/all
+cancel region
+
+use gtbc011
+
+let i1 = x[g=temp,i=1:10]
+let j1 = y[g=temp,j=5:10]
+let k1 = z[g=u,k=5:15]
+let l1 = l[g=u,l=1:3]
+let l2 = l
+let ij = taux[l=@ave]
+let ik = i1+k1
+let il = i1+l1
+let jk = j1+k1
+let jl = j1+l1
+let kl = k1+l1
+let ijk = temp[l=@ave]
+let ikl = temp[j=@ave]
+let ijl = temp[k=@ave]
+let jkl = temp[i=@ave]
+let ijkl = u
+let ijk2 = temp
+let iavejkl = ijkl[i=@ave]
+let ijavekl = ijkl[j=@ave]
+let ijkavel = ijkl[k=@ave]
+let ijklave = ijkl[l=@ave]
+
+set region/l=1:2  ! i,j, and k unspecified
+
+! a bunch of basic geometries
+! 1d
+list/format=cdf/file=test_fil.cdf i1        ! not /APPEND - must be new
+list/format=cdf/append/file=test_fil.cdf j1
+list/format=cdf/append/file=test_fil.cdf k1
+list/format=cdf/append/file=test_fil.cdf l1           ! record axis
+list/format=cdf/append/file=test_fil.cdf l2          ! rigid axis
+
+! 2D
+list/format=cdf/append/file=test_fil.cdf ij
+list/format=cdf/append/file=test_fil.cdf ik
+list/format=cdf/append/file=test_fil.cdf il
+list/format=cdf/append/file=test_fil.cdf jk
+
+!3D
+list/format=cdf/append/file=test_fil.cdf ijk
+list/format=cdf/append/file=test_fil.cdf ikl
+list/format=cdf/append/file=test_fil.cdf ijl
+list/format=cdf/append/file=test_fil.cdf jkl
+
+!4D
+list/format=cdf/append/file=test_fil.cdf ijkl
+
+! extend along time axis and write sub-regions
+! (note: this may leave undefined regions in other variables)
+list/format=cdf/append/file=test_fil.cdf/j=1:50/l=2:3 ijl
+list/format=cdf/append/file=test_fil.cdf/j=51:100/l=2:3 ijl
+
+! rewrite a sub-region in the middle of the data
+list/format=cdf/append/file=test_fil.cdf/j=30:40/k=5/l=1:3 ijkl
+
+! check documentation of transforms
+list/format=cdf/append/file=test_fil.cdf iavejkl
+list/format=cdf/append/file=test_fil.cdf ijavekl
+list/format=cdf/append/file=test_fil.cdf ijkavel
+list/format=cdf/append/file=test_fil.cdf ijklave
+
+! look at what we've created - time axis should be regular
+set data/format=cdf test_fil
+show data/full
+cancel variable ijkl
+show grid ijkl
+cancel data test_fil

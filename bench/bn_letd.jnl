@@ -1,0 +1,89 @@
+! bn420_letd.jnl
+! 9/1/95
+
+! test LET definitions with the /D qualifier:  LET, SHOW, SET VAR, CANCEL
+! .. not a particularly inspired benchmark, but, what the heck
+
+sp touch snoopy.dat
+
+! set and show 3 types of variables
+let a = global_pre-empt
+show var
+show var/d
+let/d a = global_default
+show var
+show var/d
+USE clim_airt_lev
+let/d=clim_airt_lev a = clim_airt_lev-specific
+set mode ignore; let/d=noexist a = b; set mode/last ignore
+show var
+show var/d=clim_airt_lev
+show data clim_airt_lev
+use gt4d011
+let/d=2 a = specific-to-gt4d
+show var
+show var/d=clim_airt_lev
+show var airt
+list/l=1/x=180/y=0 airt[d=clim_airt_lev]
+
+! data set-specific definition
+let/d=clim_airt_lev airt = 1
+list/l=1/x=180/y=0 airt[d=clim_airt_lev]
+set mode ignore; list/l=1/x=180/y=0 airt[d=gt4d011]; set mode/last ignore
+
+! default definition where no data set variable exists
+let/d airt = 2
+list/l=1/x=180/y=0 airt[d=clim_airt_lev]
+list/l=1/x=180/y=0 airt[d=gt4d011]
+
+! global def'n replacing all file variables (but not data-set specific uvars)
+let airt = 2
+list/l=1/x=180/y=0 airt[d=clim_airt_lev]
+list/l=1/x=180/y=0 airt[d=gt4d011]
+canc data/all
+list/l=1/x=180/y=0 airt
+show var
+
+! SET VARIABLE testing
+USE clim_airt_lev
+let t1 = 1
+let/d t2 = 2
+let/d=clim_airt_lev t3 = 3
+file/var=t4,t3 snoopy.dat
+set var/titl=test1 t1
+set var/titl=test2 t2
+set var/titl=test3 t3[d=clim_airt_lev]
+set var/titl=test4 t4[d=snoopy.dat]
+set var/titl=test3 t3[d=snoopy.dat]
+show data
+show data/full 1
+show var
+
+! selective cancelling
+canc var/d/all
+show var	! LET/D, only, deleted
+can var t3[d=clim_airt_lev]
+show var
+set mode ignore; can var; set mode/last ignore
+can var/all
+show var
+
+! cancelling various categiries in various ways
+let/d=clim_airt_lev t1 = 1
+let/d=clim_airt_lev t2 = 2
+let/d=clim_airt_lev t3 = 3
+show var
+can var/d=clim_airt_lev t1
+show var
+can var/all/d=clim_airt_lev
+show var
+let/d=clim_airt_lev t1 = 1
+let/d=clim_airt_lev t2 = 2
+let/d=clim_airt_lev t3 = 3
+can var/d=clim_airt_lev	! implied "/all"
+show var
+let/d t1 = 1
+let/d t2 = 2
+let/d t3 = 3
+can var/d	! implied/d/all
+show var

@@ -1,0 +1,64 @@
+! bn450_negative_t - 10/97
+
+! test behavior of negative time step values (unsupported except as absolute
+! dates prior to Ferret version 4.5)
+
+
+! define an axis of negative and positive time steps and test all
+! transformation on it over various ranges
+
+DEFINE AXIS/T=-10:10:2 tax
+LET tvar = t[gt=tax]
+LET tgap = IF MOD(T,4) eq 0 then  tvar
+
+! ****** test transformations ********
+
+GO bn_negative_t.sub tvar ave  ! like var and din
+GO bn_negative_t.sub tvar iin
+GO bn_negative_t.sub tvar sum
+GO bn_negative_t.sub tvar rsu
+GO bn_negative_t.sub tvar shf
+GO bn_negative_t.sub tvar min   ! like @max
+GO bn_negative_t.sub tvar ddf
+GO bn_negative_t.sub tvar ddb   ! @ddc like ddf and ddb
+GO bn_negative_t.sub tvar sbx  ! like sbn, swl, shn, spz
+GO bn_negative_t.sub tvar loc:-2.2
+GO bn_negative_t.sub tvar weq:-2.2
+
+! transformations requiring gappy data to test
+LIST tgap
+GO bn_negative_t.sub tgap ngd   ! like @nbd
+GO bn_negative_t.sub tgap fav  ! like fln (fnr not implemented)
+
+LIST tvar[t=-2.2@itp]	! test "@itp"
+
+
+! ****** test regridding ********
+
+! source axis
+DEFINE AXIS/t=-9:9:1 tsrc
+LET a  = t[gt=tsrc]
+
+! destination axis
+DEFINE AXIS/t=-10:10:2 tdst
+
+! regrid by various means
+LET blin = a[gt=tdst@lin]
+LET bave = a[gt=tdst@ave]
+LET basn = a[gt=tdst@asn]
+
+! test each of these over various ranges
+GO bn_negative_t.sub blin nul
+GO bn_negative_t.sub bave nul
+GO bn_negative_t.sub basn nul
+
+! true calendar axis
+DEFINE AXIS/t=1-jan-1980:30-jan-1980:24/UNITS=hours tcal
+! we can regrid by association
+LIST a[gt=tcal@asn]
+LIST/t=1-jan-1980:30-jan-1980 a[gt=tcal@asn]
+! but any other regridding operation is nonsense
+SET MODE ignore_error
+LIST a[gt=tcal]		! deliberate error
+CANCEL MODE ignore_error
+

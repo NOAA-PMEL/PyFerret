@@ -1,0 +1,42 @@
+! bn320_cdf
+! benchmark to test netCDF input and output
+! requires version 3.20 or later
+! updated from version 2.3 1/26/95
+!      added reverse-axis tests 3/2/95
+
+! test many simultaneous netCDF files
+GO bn_cdf.sub1
+
+! test abstract variable io
+GO bn_cdf.sub2
+
+! list long time series using a rigid (non-record axis) time axis --> FAST
+list/format=cdf/l=1:300000/rigid/file=test2.cdf l  ! without record dimension
+! list time series using the record dimension --> SLOW (1/50th as long axis)
+list/format=cdf/l=1:5000 l                               ! auto-filename
+list/format=cdf/t="1-jan-1902":"1-jan-2010"/rigid tlong  ! auto-filename
+
+! deliberate errors
+set mode ignore
+list/format=cdf/l=1:10/file=test_abs.cdf l    ! file exists error
+list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il  ! inconsistent i limits
+list/format=cdf/i=1:10/j=20:25/append/file=test_abs.cdf ij ! inconsistent j limits
+list/format=cdf/append/file=test_abs.cdf ijl2              ! i and j not avg'd
+list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]      ! k axis averaged
+list/format=cdf/l=13/append/file=test_abs.cdf l1           ! inconsistent time pt
+set data/format=cdf test0a, test0b, test0c, test0d, test0e, test0f, test0g, test0h, test0i, test0j, test0k, test0l, test0n, test0m, test0o, test0p
+list/format=cdf/i=1:10 i                                ! too many netcdf files
+canc data/all
+cancel mode ignore
+
+! show the grids created
+cancel variables/all
+set data/format=cdf test_abs
+show grid j1 jkl jkl2 iavejkl ijkl
+cancel data test_abs
+
+! test TMAP data io
+GO bn_cdf.sub3 	! matches old outputs by using /HEADING=enhanced
+! 5/99 moved old bn230_cdf.sub3 to bn_cdf.sub4 to stay inline w/ old benchmarks *kob*
+GO bn_cdf.sub4  
+GO bn_cdf_reversed.sub

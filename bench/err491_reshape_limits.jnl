@@ -1,0 +1,24 @@
+
+! err491_reshape - 10/98 *sh*
+! RESHAPE function producing impossible result: 540 points in X
+
+! reason is that GCF_IMPOSE_RESULT_LIMS, when computing the RESHAPE
+! output limits, does not trim result context to limits of axis
+
+! ==> need CONFINE_AXIS call inside DO 370 loop
+
+
+use coads_climatology
+
+define axis/x=1:360:1 x360
+define grid/like=sst/x=x360 gg
+
+let sst2 = reshape(sst[x=1:180,y=5s:5n,l=1],x[g=gg])
+
+stat sst[x=1:180,y=5s:5n,l=1]
+
+! 540 points in X ??
+stat sst2
+show grid
+
+

@@ -1,0 +1,48 @@
+#!/bin/csh -f
+# script to check metafiles (.plt*, .gif* and .ps) created after a run of the 
+# benchmark routine against master metafiles. 
+# kob  10/97
+
+set plt_files = ( bn*.plt* pattern*.plt polygon*.plt )
+set gif_files = ( bn*.gif* )
+set ps_files = (bn*.ps*)
+set num_plt_files = `ls -l *.plt*| wc -l `
+
+set err_plt = 0
+foreach plt_file ($plt_files)
+ set size = `ls -l $plt_file | cut -b 26-32`
+ set size2 = `ls -l metafile_masters_v500/$plt_file | cut -b 26-32`
+ if ($size != $size2) set err_plt = 1
+ if ($num_plt_files != 11 ) set err_plt = 1
+end
+
+set err_gif = 0
+foreach gif_file ($gif_files)
+ set size = `ls -l $gif_file | cut -b 26-32`
+ set size2 = `ls -l metafile_masters_v500/$gif_file | cut -b 26-32`
+ if ($size != $size2) set err_gif = 1
+end
+ 
+set err_ps = 0
+foreach ps_file ($ps_files)
+ set size = `ls -l $ps_file | cut -b 26-32`
+ set size2 = `ls -l metafile_masters_v500/$ps_file | cut -b 26-32`
+ if ($size != $size2) set err_ps = 1
+end
+
+if ($err_plt) then
+	echo "CHECK PLT FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "PLT files look good....."
+endif 
+if ($err_gif) then
+	echo "CHECK GIF FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "GIF files look good....."
+endif
+if ($err_ps) then
+	echo "CHECK PS FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "PS files look good......"
+endif
+

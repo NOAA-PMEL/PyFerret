@@ -1,0 +1,187 @@
+! bn500_regrid_transforms
+! benchmark to test regridding transformations and syntax
+! requires version 2.30 or later
+! 8/92
+
+! 9/95 - modified reflecting the new interpretation of var[GX=u]
+!	 previously this meant to fully regrid to U
+! 	 Now it means to regrid only the X axis to U (other axes as in "var")
+!	 ==> this is an implicit grid creation
+! 2/99 *sh* - The behavior of regridding in cases where the region is
+!	unspecified has been changed in V.5 of Ferret. The behavior is now to
+!	attempt to obtain the full destination axis span. This means that 
+!	an unspecified region regrid request applied to a sliced TMAP data
+!	set will error: Requested data range is outside of data set limits
+!	A "SET MODE IGNORE" has been added in this benchmark script fo rthese
+!	cases. (The proper fix to this is in tm_read ... to trim the region
+!	when a sliced data set is being read.
+
+!set data gtsa056
+!use gtsa056
+use gtsa056_1
+use gtsa056_2
+set mode diag
+
+define axis/t=15-jan-1982:15-mar-1984:120/unit=hour tax5day
+define axis/x=120e:60w:10/unit=degrees xax10
+define grid/like=u/t=tax5day g5day
+define grid/like=u/x=xax10/z=w/t=tax5day g5_10
+
+set reg/x=130w:125w/y=0:1.5/z=0:15/t=21-JAN-1982:24-jan-1982
+!set reg/i=101:105/j=41:42/k=1:2/l=3:4
+
+use gtsa056_1    	!kob 4/99
+
+! deliberate errors
+set mode ignore
+load temp[g=@lin]    ! no target grid specified
+load temp[gx=@ave]   ! no target grid specified
+load temp[g=u,g=w]   ! more than 1 target grid
+load temp[g=x]       ! g=user-or-pseudo-var not allowed
+set mode/last ignore
+
+! valid syntax tests
+load temp
+load temp[g=u]
+load temp[g=u@lin]
+load temp[g=u@ave,gy=@asn]
+load temp[g=u@lin,gy=@asn]
+load temp[g=u,gx=@ave,gy=@asn]
+load temp[gx=u]  		! changed V4.20 --> implicit regrid
+stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]  ! == 0
+stat temp[g=u,gx=@ave] - temp[gx=@ave,g=u]    ! == 0
+
+! basic regrid tests
+LIST temp[g=u@ave]
+LIST temp[g=u,gx=u@ave]	! V4.20 mod
+LIST temp[g=u,gy=u@ave]	! V4.20 mod
+LIST temp[g=u,gz=u@ave]	! V4.20 mod
+LIST temp[g=u,gt=u@ave]	! V4.20 mod, etc --> many more similar syntax chgs
+
+LIST temp[g=u]
+LIST temp[g=u@asn]
+LIST temp[g=u,gx=u@asn]
+LIST temp[g=u,gy=u@asn]
+LIST temp[g=u,gz=u@asn]
+LIST temp[g=u,gt=u@asn]
+
+! Z and T axes different
+LIST temp[g=g5day@ave]
+LIST temp[g=g5day,gx=g5day@ave]
+LIST temp[g=g5day,gy=g5day@ave]
+LIST temp[g=g5day,gz=g5day@ave]
+LIST temp[g=g5day,gt=g5day@ave]
+
+LIST temp[g=g5day]
+LIST temp[g=g5day@asn]
+LIST temp[g=g5day,gx=g5day@asn]
+LIST temp[g=g5day,gy=g5day@asn]
+LIST temp[g=g5day,gz=g5day@asn]
+LIST temp[g=g5day,gt=g5day@asn]
+
+! all 4 axes different
+LIST temp[g=g5_10@ave]
+LIST temp[g=g5_10,gx=g5_10@ave]
+LIST temp[g=g5_10,gy=g5_10@ave]
+LIST temp[g=g5_10,gz=g5_10@ave]
+LIST temp[g=g5_10,gt=g5_10@ave]
+
+LIST temp[g=g5_10@asn]
+LIST temp[g=g5_10,gx=g5_10@asn]
+LIST temp[g=g5_10,gy=g5_10@asn]
+LIST temp[g=g5_10,gz=g5_10@asn]
+LIST temp[g=g5_10,gt=g5_10@asn]
+
+! unspecified regions
+SET MODE IGNORE	! V.5 change
+canc reg
+set reg/l=1:3  ! x,y,z unspecified
+load temp
+load temp[g=u]
+load temp[g=u@lin]
+
+load temp[g=u@ave]
+load temp[g=u,gx=u@ave]
+load temp[g=u,gy=u@ave]
+
+load temp[g=u@asn]
+load temp[g=u,gx=u@asn]
+load temp[g=u,gy=u@asn]
+
+canc reg
+use gtsa056_2		!kob 4/99
+set reg/i=101:105/j=41:42  ! z,t unspecified
+load temp[g=u]
+
+load temp[g=u@ave]
+load temp[g=u,gz=u@ave]
+load temp[g=u,gt=u@ave]
+
+load temp[g=u@asn]
+load temp[g=u,gz=u@asn]
+load temp[g=u,gt=u@asn]
+SET MODE/LAST IGNORE	! V.5 change
+
+! plot verifications
+set mode interp    ! regridding is also an interpolation
+cancel viewports
+set window/size=.5/aspect=.4 1
+
+! X axis
+use gtsa056_1 		!kob 4/99
+set region/x=130E:90W/y=0/z=5/t=21-JAN-1982
+plot temp
+plot/over temp[g=u]
+plot/over temp[g=g5day]
+plot/over temp[g=g5_10]
+plot/over temp[g=u@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5_10@ave]
+plot/over temp[g=u@asn]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=u,gx=u@ave]
+plot/over temp[g=g5day,gx=g5day@ave]
+plot/over temp[g=g5_10,gx=g5_10@ave]
+plot/over temp[g=g5_10@asn]   ! invalid interpretation of data
+
+! Y axis
+set region/x=180/y=20s:20n/z=5/t=21-JAN-1982
+plot temp
+plot/over temp[g=u]
+plot/over temp[g=g5day]
+plot/over temp[g=g5_10]
+plot/over temp[g=u@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5_10@ave]
+plot/over temp[g=u@asn]
+plot/over temp[g=g5day@asn]
+plot/over temp[g=u,gy=u@ave]
+plot/over temp[g=g5day,gy=g5day@ave]
+plot/over temp[g=g5_10,gy=g5_10@ave]
+plot/over temp[g=g5_10@asn]  ! invalid interpretation of data
+
+! T axis
+use gtsa056_2	!kob  4/99
+set region/x=180W/y=0/z=5/t=21-JAN-1982:13-JUN-1983
+load temp[i=50:51,j=45:56,k=1:2,l=1:172]  ! preload to save time
+plot temp
+plot/over temp[g=u]
+plot/over temp[g=g5day]
+plot/over temp[g=g5_10]
+plot/over temp[g=u@ave]
+plot/over temp[g=g5day@ave]
+plot/over temp[g=g5_10@ave]
+plot/over temp[g=u@asn]
+plot/over temp[g=g5_10@asn]
+plot/over temp[g=u,gt=u@ave]
+plot/over temp[g=g5day,gt=g5day@ave]
+plot/over temp[g=g5_10,gt=g5_10@ave]
+plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
+
+set mode/last interp
+set mode/last diag
+
+
+
+
+

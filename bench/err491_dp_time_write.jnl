@@ -1,0 +1,16 @@
+! err491_dp_time_write.jnl
+! *sh* 10/98
+
+
+! when appending ("synchronizing") a new output time to an existing
+! netCDF file, Ferret fails to do a valid double precision comparison
+
+
+define axis/t="18-jul-1997:14:09":"20-jul-1997:00:09":5/units=min t5
+LET my_var = t[gt=t5]
+
+save/clobber/file=out.cdf my_var[l=1]
+spawn "ncdump out.cdf"
+
+save/append/file=out.cdf my_var[l=2]
+spawn "ncdump out.cdf"

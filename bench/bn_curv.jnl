@@ -1,0 +1,81 @@
+cancel mode ignore
+!
+! Your basic map projection
+!
+! v 4.91 - *kob* 2/98 - just clean up window a bit before plotting and remove
+!		        all the ferret labels in order to be able to automate
+!			metafile checking.
+can view all
+! 2/98 *kob* just clean up the window a bit
+set view full
+set wind/clear/asp=1 
+
+use coads_climatology
+set region/l=3
+go mp_sinusoidal
+set grid sst
+shade/nolabel sst, x_page, y_page
+
+!
+! A more complex projection
+!
+go mp_orthographic 210 45
+set grid sst
+let masked_sst = sst * mp_mask
+fill/nolabel/title="Orthographic View" masked_sst, x_page, y_page
+
+!
+! Some of the utility functions
+!
+!go mp_fland
+go mp_land
+go mp_label 237.7 47.6 -1 0 .1 @IISeattle
+go mp_label 204.4 19.5 -1 0 .1 @IIHawaii
+go mp_graticule
+go mp_graticule 160 200 40 50 65 15 11
+go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
+
+!
+! What can go wrong
+!
+
+! Do we catch incorrect region specifications?
+can region
+go mp_sinusoidal
+set grid sst
+set region/x=145
+set mode ignore
+shade/nolabel sst, x_page, y_page ! DELIBERATE ERROR
+can region
+
+! Crazy stuff with the transformation fields:
+set region/l=1
+let phi = y * deg2rad 
+shade/nolabel sst, 0*x_page, y_page ! DELIBERATE ERROR
+shade/nolabel sst, x_page, 0*y_page ! DELIBERATE ERROR
+shade/nolabel sst, x_page, sin(y_page)
+shade/nolabel sst, randn(x_page), randn(y_page)
+!2/98 *kob* - can mode meta before this plot
+can mode meta
+shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
+shade/nolabel sst, x_page, asin(y_page) ! DELIBERATE ERROR
+
+shade/nolabel sst, x_page, y_page ! DELIBERATE gsetviewport() ERROR
+
+
+can win 1
+set win 1
+
+!2/98 *kob* - set mode meta again
+set mode meta bnplot.plt
+let phi = l * deg2rad
+shade/nolabel sst, x_page, y_page
+shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
+can mode ignore
+
+!!!!!!!!!!!!!!!!!!!!!!
+!
+! YAY!! End of Benchmark without crashing!!!!
+!
+!!!!!!!!!!!!!!!!!!!!!!
+

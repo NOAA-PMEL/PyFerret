@@ -1,0 +1,47 @@
+!bn430_mc.jnl
+! kob - 9/5/96
+!     - simple test of mc data access for both irregular and regular time
+!       axis
+!     - 9/6/96 - add tests for bad delta, out of order stepfiles, missing first step file
+!		 and missing step file other than the first
+!     - 11/06/97 - added a set mode/last verify
+CAN MODE VERIFY
+
+!look at data set with regular time axis
+set data coads_clim
+sh data/var 
+sh grid/t sst
+list/x=140w/y=-8:8 sst
+list/y=0/x=180e:140w sst
+stat sst
+
+! move next to irregular data set
+set data coads_clim_irreg
+sh data/var
+sh grid/t sst
+list/x=140w/y=-8:8 sst
+list/y=0/x=180e:140w sst
+stat sst
+
+! now test a delta in the descriptor equal to zero...should get an error message
+set mode ignore
+set data coads_clim_bad_delta
+
+!now test out of order stpe file
+set data coads_clim_step_order
+
+!Now check for missing first step file
+can data/all
+set data coads_clim_missing_step1
+sh data/var
+list sst
+
+!Now check for a missing step file other than the first
+can data/all
+set data coads_clim_missing_stepN
+sh data/var
+list sst
+can mode ignore
+set mode/last verify
+
+

@@ -1,0 +1,62 @@
+! Benchmark Ferret script for FFT.  Uses analytic function of time.
+
+! 5/99  ACM
+!   FFTA function computes the FFT amplitude spectrum.  
+!   FFTP function computes the FFT phase
+
+DEFINE AXIS/t=1-Jan-1990:31-Dec-1990:24 dayt
+DEFINE GRID/T=dayt  tgrid
+SH GRID tgrid
+SET GRID tgrid
+
+LET fcn1 = sin(kt*tpts - phase) /2.
+LET fcn2 = cos(pt*tpts)
+LET phase = 6.
+LET kt = 0.5
+LET pt = 0.3
+
+!  Plot an analytic function.
+
+LET sample_function = fcn1 - fcn2
+
+LET tpts = t
+SET VIEW ul
+PLOT/TITLE="An analytic function of time" sample_function
+
+LET days_fft = ffta(sample_function[l=1:365])
+
+SET VIEW ur
+PLOT/SET_UP days_fft
+PPL YLAB Amplitude Spectrum
+PPL PLOT FFTA
+
+
+!  Compute the inverted axis and plot the spectrum in period; months/cycle
+
+LET FFT_nf = `days_fft,return=lend`
+LET FFT_nyquist = 0.5
+LET FFT_freq1 = FFT_nyquist/ FFT_nf
+
+DEFINE AXIS/T=`FFT_freq1`:`FFT_nyquist`:`FFT_freq1` FAXIS
+DEFINE GRID/T=FAXIS gfftfreq
+LET a = T[g=gfftfreq]
+
+LET per = 1./a
+
+SET VIEW ll
+plot/vs/line/set_up per[l=1:`FFT_nf`],days_fft
+PPL XAXIS, 0, 30, 1
+PPL XFOR (I2)
+PPL XLAB Period, days/cycle
+PPL YLAB Amplitude Spectrum
+PPL PLOT FFT
+
+LET days_fftp = fftp(sample_function[l=1:365])
+
+set view lr
+
+PLOT/SET_UP days_fftp
+PPL YLAB Phase Spectrum
+PPL PLOT FFTP
+set view full
+set wind/clear

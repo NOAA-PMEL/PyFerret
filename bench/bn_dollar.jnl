@@ -1,0 +1,77 @@
+! test this with GO journal hello
+
+set mode ignore
+message/continue $1
+
+message/continue here is: $1"some text" and some more stuff
+
+message/cont here is a big $1 and $3&some text&      ! default provided
+
+message/cont $3			! error - no default
+
+message/cont $3"<my error message"	! error - with message
+
+message/cont $*
+
+message/continue here is: $*"some text" and some more stuff
+
+message/continue $no_digit_text   ! no substitution
+
+!!!!!!!!!!!!!!!!!!
+
+message/cont $1"|hello|goodbye<my error message"
+
+message/cont $1"greetings|hello|goodbye"
+
+message/cont $1">greetings|hello|goodbye"
+
+message/cont $1">greetings|hello|goodbye<my error message"
+
+message/cont $1">greetings|hello>replacement text|goodbye<my error message"
+
+! doesn't match on "hello"
+
+message/cont $1"|xxxxx|goodbye<my error message"
+
+message/cont $1"greetings|xxxxx|goodbye"
+
+message/cont $1">greetings|xxxxx|goodbye"
+
+message/cont $1">greetings|xxxxx|goodbye<my error message"
+
+message/cont $1">greetings|xxxxx>replacement text|goodbye<my error message"
+
+! no argument supplied
+
+message/cont $3"|hello|goodbye<my error message"
+
+message/cont $3"greetings|hello|goodbye"
+
+message/cont $3">greetings|hello|goodbye"
+
+message/cont $3">greetings|hello|goodbye<my error message"
+
+message/cont $3">greetings|hello>replacement text|goodbye<my error message"
+
+! pathological examples
+!*********
+! works ok with 500 character input buffer
+message/cont here is a very long text $1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx the end 1234567890 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy 1234567890
+message/cont here is a very long text $1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx the end 1234567890 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy 1234567890
+message/cont $3""
+message/cont $3"<"
+message/cont $3"||"
+message/cont $3">"
+message/cont $3"|>|"
+message/cont $3">|"
+message/cont $3"|<"
+message/cont $3"|>"
+
+! bn420 10/95 - added tests that arguments don't get incorrectly broken up
+! ==> EACH OF THESE SHOULD PASS AS A SINGLE ARGUMENT!!!
+go bn_dollar.sub VAR[x=1,y=1]	! should be interpreted as a single arg
+go bn_dollar.sub VAR[x=1,g=var2[d=d1],y=1]	!  a single arg
+go bn_dollar.sub ((x+y)/(x-5))	! ignore slash, get single arg
+go bn_dollar.sub ((x+y),(x-5))	! ignore comma, get single arg
+
+set mode/last ignore

@@ -1,0 +1,10 @@
+cancel mode verify
+
+! reset FERRET to prepare for another benchmark test
+CANCEL REGION/ALL
+CANCEL DATA/ALL
+CANCEL VARIABLES/ALL
+CANCEL MEMORY/ALL
+SET GRID ABSTRACT
+
+set mode/last verify

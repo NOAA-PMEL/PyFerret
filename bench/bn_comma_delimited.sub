@@ -1,0 +1,37 @@
+! bn420_comma_delimited.sub
+! 10/95 benchmark various permutations for FERRET listed output
+
+! similar to bn200_permute except that a "format" argument can be passed
+! and the region and expression information are external
+
+! usage:
+!	SET REGION/xxxx
+!	GO bn420_permute tab_delimited  TEMP
+
+LOAD $2
+
+LIST/ORDER=XYZT $1" |*>/FORMAT=*" $2
+LIST/ORDER=XYTZ $1" |*>/FORMAT=*" $2
+LIST/ORDER=XZYT $1" |*>/FORMAT=*" $2
+LIST/ORDER=XZTY $1" |*>/FORMAT=*" $2
+LIST/ORDER=XTYZ $1" |*>/FORMAT=*" $2
+LIST/ORDER=XTZY $1" |*>/FORMAT=*" $2
+LIST/ORDER=YXZT $1" |*>/FORMAT=*" $2
+LIST/ORDER=YXTZ $1" |*>/FORMAT=*" $2
+LIST/ORDER=YZXT $1" |*>/FORMAT=*" $2
+LIST/ORDER=YZTX $1" |*>/FORMAT=*" $2
+LIST/ORDER=YTXZ $1" |*>/FORMAT=*" $2
+LIST/ORDER=YTZX $1" |*>/FORMAT=*" $2
+LIST/ORDER=ZXYT $1" |*>/FORMAT=*" $2
+LIST/ORDER=ZXTY $1" |*>/FORMAT=*" $2
+LIST/ORDER=ZYXT $1" |*>/FORMAT=*" $2
+LIST/ORDER=ZYTX $1" |*>/FORMAT=*" $2
+LIST/ORDER=ZTXY $1" |*>/FORMAT=*" $2
+LIST/ORDER=ZTYX $1" |*>/FORMAT=*" $2
+LIST/ORDER=TXYZ $1" |*>/FORMAT=*" $2
+LIST/ORDER=TXZY $1" |*>/FORMAT=*" $2
+LIST/ORDER=TYXZ $1" |*>/FORMAT=*" $2
+LIST/ORDER=TYZX $1" |*>/FORMAT=*" $2
+LIST/ORDER=TZXY $1" |*>/FORMAT=*" $2
+LIST/ORDER=TZYX $1" |*>/FORMAT=*" $2
+

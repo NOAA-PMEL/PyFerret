@@ -1,0 +1,199 @@
+! bn401_syntax.JNL
+! - test syntax interpretation of Program FERRET
+! - major changes for FERRET ver 2.00 5/90
+! - changed mode REMOTE to mode STUPID - REMOTE removed in V2.30
+! - added semicolon-separated command group processing in V3.00 2/93
+! - added mode journal and mode ppllist tests
+! - extended mode journal, ppllist, and metafile tests to include paths
+! for V4.01 added var1[G=var2[d=dset]] (nested brackets) syntax
+! for V4.20 added blanks surrounding colons
+!	and tests of "escapes" using back slashes
+
+! SET - SHOW - CANCEL DATA
+USE gtbc011
+SHOW DATA/BRIEF
+SHOW DATA
+SHOW DATA/VARIABLES
+SHOW DATA/FILES
+SHOW DATA/FULL
+CANCEL DATA 1
+SHOW DATA
+USE gtbc011
+USE gt4d011
+SHOW DATA/BRIEF
+SHOW DATA/BRIEF gtbc011
+! ... save and restore data set
+SET DATA 1
+SET DATA/SAVE
+SHOW DATA/BRIEF
+SET DATA 2
+SHOW DATA/BRIEF
+SET DATA/RESTORE
+CANCEL DATA/ALL
+! ... EZ data sets
+FILE snoopy.dat
+SHOW DATA/FULL
+FILE/TITLE="quick and dirty" snoopy.dat
+SHOW DATA
+SET MODE IGNORE_ERROR
+SET DATA/EZ/VAR="P,Q" 1
+FILE/TITLE="quick and dirty"/VAR="P,Q"/COL=4/GRID=ABSTRACT/FORM=UNF/SKIP=2 snoopy.dat
+SET MODE/LAST IGNORE_ERROR
+CANCEL DATA 1
+FILE/TITLE="quick and dirty"/VAR="P,Q"/COL=4/GRID=ABSTRACT/FORM=UNF/SKIP=2 snoopy.dat
+SET VARIABLE/TITLE="my P variable" P
+SHOW DATA/FULL
+
+! SET - SHOW - CANCEL - DEFINE REGION
+SHOW REGION
+SET REGION/I=101:105/J=46:48/Z=0/L=1
+SHOW REGION
+DEFINE REGION SAVE
+CANCEL REGION
+SHOW REGION
+DEFINE REGION/X=130E:70W/Y=28.9S:48.6N W	! re-define to default
+SET REGION/@W
+SHOW REGION
+SHOW REGION SAVE
+SHOW REGION/ALL
+SET REGION SAVE
+SHOW REGION
+! delta regions
+CANCEL REGION
+SET REGION/L=1
+SET REGION/DL=1:3
+SHOW REGION
+DEFINE REGION/dX=5 W
+SHOW REGION W
+
+! SET - SHOW - CANCEL  MODE
+SHOW MODES
+SET MODE IGNORE_ERROR
+SHOW MODES
+CANCEL MODE IGNORE_ERROR
+SHOW MODES
+SHOW MODE STUPID
+SET MODE STUPID
+SHOW MODE STUPID
+SET MODE/LAST STUPID
+SHOW MODE STUPID
+
+! new modes 5/93
+set mode journal newjournal.jnl
+show mode journal
+set mode journal ferret.jnl
+ppl list plot
+set mode ppllist:ppllist.out
+show mode ppllist
+ppl list plot
+ppl listsym
+cancel mode ppllist
+ppl list plot
+cancel mode journal
+show mode journal
+
+! new 1/94  (syntax check also applies to modes journal and ppllist)
+show mode metafile
+set mode metafile newmetafile1.plt
+show mode metafile
+set mode metafile:newmetafile2.plt
+show mode metafile
+set mode metafile: newmetafile3.plt
+show mode metafile
+set mode metafile: "newmetafile4.plt"
+show mode metafile
+set mode metafile: "./newmetafile5.plt"
+show mode metafile
+set mode metafile: ./newmetafile6.plt
+show mode metafile
+set mode metafile newmetafile7.plt
+show mode metafile
+set mode metafile "newmetafile8.plt"
+show mode metafile
+set mode metafile "./newmetafile9.plt"
+show mode metafile
+set mode metafile ./newmetafile10.plt
+show mode metafile
+set mode metafile metafile.plt
+
+! SET - SHOW - CANCEL EXPRESSION
+SHOW EXPRESSION
+CANCEL EXPRESSION
+SHOW EXPRESSION
+SET EXPRESSION i+5,i-j
+SHOW EXPRESSION
+LIST/i=1:3/j=6:8
+
+! SET,SHOW GRID
+USE gt4d011
+SHOW GRID
+LIST/I=101:105/J=50/K=1/L=5 SALT
+SHOW GRID
+SET GRID/SAVE
+SET GRID ABSTRACT
+SHOW GRID
+SHOW GRID/X=180:165W SALT
+SET GRID/RESTORE
+SHOW GRID
+
+! SHOW VARIABLES
+SHOW VARIABLES/DIAGNOSTIC	! alphabetical list
+SHOW VARIABLES/DIAGNOSTIC  Q
+LET A=i
+SHOW VARIABLES
+CANC VARIABLES/ALL
+SHOW VARIABLES
+
+! SHOW MEMORY , LOAD
+SHOW MEMORY
+SHOW MEMORY/TEMPORARY
+SHOW MEMORY/PERMANENT
+SHOW MEMORY/ALL
+
+LET A=i
+LOAD/PERM/I=1:5 A
+SHOW MEMORY
+SHOW MEMORY/FREE
+LOAD/TEMPORARY/I=1:5 A
+SHOW MEMORY
+SHOW MEMORY/FREE
+
+! REPEAT
+REPEAT/L=1:3 LIST/I=1:6/ORDER=X 1/(I+L)
+
+! semicolon-separated command groups
+cancel region
+cancel data/all
+(show data)
+show data;show data
+set region/l=99;show region;repeat/l=1:3 (show data;sh reg);can reg;show reg
+((show wind;show reg);repeat/l=1:2 (show reg;list/i=1:3/ord=x (i+5)))
+
+
+! nested brackets (7/95 - version 4.01)
+use gtbc011,gt4d011
+stat/k=1/l=1/j=40/i=70/d=2 temp[d=1]
+stat/k=1/l=1/j=40/i=70/d=2 temp[d=1,g=u]
+! ... note that since the data set times do not overlap the regrid request
+!	produces only a single missing value flag
+stat/k=1/l=1/j=40/i=70/d=2 temp[d=1,g=u[d=2]]
+stat/k=1/l=1/j=40/i=70/d=2 temp[d=gtbc011,g=u[d=gt4d011]]
+
+! test blanks surrounding colons (bn420 - 10/95)
+list/nohead/i=1 : 3 i
+
+! test escapes using back slashes (bn420 - 11/95)
+! (moved to bn420_grave)
+
+say \/help	! "/" should pass through
+set mode ignore
+say /help
+canc mode ignore
+
+say this\;that	! ";" should pass through
+set mode ignore
+say this;that
+canc mode ignore
+
+say yes\! "\!" passes through
+say yes! "!" passes through

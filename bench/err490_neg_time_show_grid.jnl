@@ -1,0 +1,8 @@
+! err490_neg_time_show_grid
+
+! V4.9 fails to show the invividual grid points, so the below request would
+! only show column headings, but no data.  make sure data is there
+
+set data gtsa056_2
+show grid/t=15-JAN-1982:15-JAN-1983 temp
+

@@ -1,0 +1,169 @@
+********************************************************************************
+*        NOAA/PMEL Tropical Modeling and Analysis Program, Seattle, WA.        *
+********************************************************************************
+*	---  north/south slab at 160W   ---
+ $FORMAT_RECORD
+	d_type            = '  GT',
+	d_format          = '  1C',
+	d_source_class    = 'MODEL OUTPUT',
+	d_source          = 'PHIL/SIEG',
+	d_subsource       = 'TROPICAL PACIFIC',
+ $END
+ $BACKGROUND_RECORD
+	d_expnum          = '0011',
+	d_modnum          = '  BC',
+	d_title           = 'NMC diagnostic run with momentum terms',     
+	d_mod_title       = ' ',
+	d_forcing_set     = 'NMC',
+	d_t0time          = '14-JAN-1980 14:00:00',
+	d_time_unit       = 3600.,
+	d_ntegrate_tstep  = 1.0,
+	d_ntuple          = 1,
+	d_time_run        = '13-APR-87 00:00:00',
+	d_who_ranit       = 'MARK VERSCHELL',
+	d_time_made       = '12-DEC-1986 00:00:00',
+	d_who_madeit	  = 'MARK VERSCHELL',
+	d_aux_modnum      = ' ',' ',' ',' ',' ',' ',
+	d_add_parm        = 'NTS30 WIND STRESS MOD',' ',' ',' ',' ',' ',
+	d_grid_filename   = ' ',' ',' ',' ',' ',' ',
+ $END
+ $MESSAGE_RECORD
+	d_message         = 'Exp 11 - 3 vertical slabs at 160W, T=27740:42',
+	d_alert_on_open   = .TRUE.,
+	d_alert_on_output = .FALSE.,
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'TEMP',
+	d_var_title       = 'TEMPERATURE',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'deg. C',
+	d_grid_name       = 'PS3DT',
+	d_missing_flag    = 0.0,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 70,  1,  1, -1,
+	d_grid_end        = 72, 100, 27, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'SALT',
+	d_var_title       = '(SALINITY(ppt) - 35) /1000',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'frac. by wt. less .035',
+	d_grid_name       = 'PS3DT',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = .01,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 70,   1,  1, -1,
+	d_grid_end        = 71, 100, 27, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'U   ',
+	d_var_title       = 'ZONAL VELOCITY',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'cm/sec',
+	d_grid_name       = 'PS3DU',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 69,   1,  1, -1,
+	d_grid_end        = 72, 100, 27, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'V   ',
+	d_var_title       = 'MERIDIONAL VELOCITY',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'cm/sec',
+	d_grid_name       = 'PS3DU',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 69,   1,  1, -1,
+	d_grid_end        = 72, 100, 27, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'W   ',
+	d_var_title       = 'VERTICAL VELOCITY',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'cm/sec',
+	d_grid_name       = 'PS3DW',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 70,   1,  1, -1,
+	d_grid_end        = 71, 100, 27, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'TAUX',
+	d_var_title       = 'ZONAL WIND STRESS',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'dynes/cm**2',
+	d_grid_name       = 'PS2DU',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 69,   1,  1, -1,
+	d_grid_end        = 71, 100,  1, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'TAUY',
+	d_var_title       = 'MERIDIONAL WIND STRESS',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'dynes/cm**2',
+	d_grid_name       = 'PS2DU',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 69,   1,  1, -1,
+	d_grid_end        = 71, 100,  1, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = 'PSI',
+	d_var_title       = 'STREAM FUNCTION',
+	d_var_titl_mod    = ' ',
+	d_var_units       = 'cm**3/sec',
+	d_grid_name       = 'PS2DU',
+	d_missing_flag    = -1E+34,
+	d_bad_flag        = -1E+34,
+	d_ordering        = 'SN','WE','UD','TI',
+	d_grid_start      = 69,   1,  1, -1,
+	d_grid_end        = 73, 100,  1, -1,
+	d_precision       = 'SINGLE',
+	d_aux_set_num     = 0,
+ $END
+ $VARIABLE_RECORD
+	d_var_code        = '**END OF VARS**',
+ $END
+ $EXTRA_RECORD
+ $END
+ $STEPFILE_RECORD
+	s_filename        = 'gtbc011.001',
+	s_aux_set_num     = 0,
+	s_start           = 27740.,
+	s_end             = 27742.,
+	s_delta           = 1.,
+	s_num_of_files    = 1,
+	s_regvarflag      = ' ',
+	s_index           = ' ',
+ $END
+ $STEPFILE_RECORD
+	s_filename        = '**END OF STEPFILES**',
+ $END

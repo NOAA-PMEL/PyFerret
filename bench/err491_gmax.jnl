@@ -1,0 +1,12 @@
+! err491_gmax.jnl
+! 9 Dec. 1998 *sh*
+
+! .. crash when attempting a time regridding with g=@MAX
+
+let ts = RANDU(T[T=1-jan-1990:15-jan-1990:1])
+plot ts
+define axis/t="1-jan-1990:12:00":"15-jan-1990:12:00":24/unit=hours t24
+plot/over ts[gt=t24@ave]
+
+! crash when attempting an @MAX regridding
+load ts[gt=t24@max]

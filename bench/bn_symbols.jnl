@@ -1,0 +1,96 @@
+! bn420_symbols
+! benchmark to test machinery of symbol definition and use
+! requires FERRET version 4.00 or later
+
+! note on max number of symbols:
+! As of 6/95 (version 4.01) an attempt to define more that 1000 symbols
+! will encounter a PLOT+   "STOP 'exceeded symbol storage'"
+
+! bn420 - 10/95 -- make sure that symbols at start and end aren't
+!		confused with enclosing parens
+!	  4/96 -- test symbol editing in the style of dollar args
+!	       -- use template notation for SHOW SYMBOL and CANCEL SYMBOL
+
+cancel symbols/all
+show symbols/all
+
+! define some symbols ... syntax variations
+define symbol s1 = hello
+define symbol s2 = "hello"
+define symbol s3  "hello and goodbye"
+define symbol num = 3
+define symbol t$dollar = hi
+define symbol t_($s1) = hi	! define "t_hello" as a symbol
+
+! exercise SHOW SYMBOL
+show symbol/all
+show symbol s*
+show symbol s2
+
+! exercise CANCEL SYMBOL
+cancel symbol s2
+show symbol s*
+show symbol S*
+cancel symbol s2	! already deleted
+
+! exercise symbol translation
+message/continue ($s1)
+message/continue ($s1) and ($S3)
+message/continue ($s1) and ($s`3`)	! no good - grave accent evaluated AFTER
+message/continue ($s1) and ($s($num))	! nested symbol translation gets ($S3)
+
+! demonstrate the 30 character cap on symbol length
+define symbol q23456789012345678901234567890 = 4
+show symbol q*
+define symbol q23456789012345678901234567890aaaaa = 5
+define symbol q23456789012345678901234567xxxaaaaa = 6
+show symbol q*
+
+! show the upper left coordinate limits labels as symbols
+plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
+show symbol lab*
+message/continue Z value saved as  ($LAB($LABNUM_Z))
+message/continue Y value saved as "($LAB($LABNUM_Y))"
+message/continue No T value saved: "($LAB($LABNUM_T))"
+
+! template tests (4/23/96)
+cancel symbol lab?
+show symbol lab*
+show symbol lab*y
+
+! deliberate errors
+set mode ignore_errors
+define symbol test* = hello
+define symbol t$5 = hi
+set mode/last ignore_errors
+
+! bn420 - check enclosing parens
+define symbol cmnd "show symbol"; define symbol arg "cmnd"
+($cmnd) ($arg)
+
+! bn420 - check symbol editing
+define symbol test I'm here
+define symbol t2 hello
+cancel symbol test2
+message/continue ($test)
+message/continue ($test"default")
+message/continue ($test2"default")
+
+message/continue ($t2"|hello|bye|")
+message/continue ($t2"|hello>really hello|bye|")
+message/continue ($t2"|hello>you said: *|bye|")
+message/continue ($test"|*>you said: *|bye|")
+
+! deliberate errors
+set mode ignore_errors
+message/continue ($test2"<error message")
+message/continue ($test2"|hello|bye|")
+message/continue ($test2"|hello|bye|<error message")	! silent error
+message/continue ($t2"|solong>really hello|bye|")
+set mode/last ignore_errors
+
+
+! cleanup
+cancel symbols/all
+show symbols/all
+

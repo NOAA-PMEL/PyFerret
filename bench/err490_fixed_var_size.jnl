@@ -1,0 +1,45 @@
+! 1/2/98 *sh*
+
+! Situation: the component (variable) size is fixed in the definition.
+! The requested result size is separately specified
+! by a command qualifier. Leads to a crash.
+
+! The "doo" transformations (convolve.F, do_run_sum_sub.F, etc. ) are guided
+! by the size of the component rather than the size of the result.
+! (Under other circumstances this is to allow "bad edges" to be filled in
+! when the component is too small for the result.)
+
+! In IS_TRANS we need to catch this problem and avoid it ...
+! but it is fraught with pitfalls as it involves changing the apparent
+! component (cx) size passed into IS_TRANS (normally considered read-only)
+! Further, Ferret regards the result as self-describing on this axis
+! (uvar_gvn<uvlim_gvn_xact) so exact limits are not checked when looking in
+! cache. Since we are violating the assumption of self-describing we need to
+! un-cache the result.
+!  ==> THE FIX IS IS A KLUDGE: The "right" solution is that the full limits
+!	of the variable should be computed and the requested limits used to
+!	clip the result. But this would be costly in memory xxxxx
+!	should never get applied to cx ... but this is too difficult to
+!	implement in GET_VAR_CONTEXT and PARSE_VAR_NAME
+
+
+set mode diag
+
+let vx = SIN(X[X=1:60:1])
+stat vx
+list/i=13:18 vx[x=@sbx:3]	! CRASH in V4.90
+list/i=13:18 vx[x=@rsum]	! CRASH in V4.90
+
+list/i=11:20 vx[x=@sbx:3]	! wrong result if pulled from cache
+list/i=11:20 vx[x=@rsum]	! wrong result if pulled from cache
+
+! now test a special problem that can occur with filling transforms -- 
+! special because in IS_TRANS they require OFFSETS but do not require filling
+! "bad edges" in the result
+
+DEFINE AXIS/T=-10:10:2 tax
+LET tvar = t[gt=tax]
+LET tgap = IF MOD(T,4) eq 0 then  tvar
+list tgap
+list tgap[l=2:7@fav]    ! value at L=7 should be 2
+list tgap[t=-5:-8@fav]  ! value at T=-6 should be -6

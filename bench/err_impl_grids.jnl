@@ -1,0 +1,5 @@
+set dat gtsa056
+set reg/l=1/k=1/i=101:105/j=46:50
+set mode diag
+
+LIST temp[g=u,gt=u@ave]

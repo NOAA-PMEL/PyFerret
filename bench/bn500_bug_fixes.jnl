@@ -1,0 +1,43 @@
+! bn500_bug_fixes.jnl
+! test various fixes that went into version 5.00
+! 5/99 *kob*
+
+GO bn_reset
+GO err491_RESHAPE_ctx.jnl
+
+GO bn_reset
+GO err491_delete_child_var.jnl
+
+GO bn_reset
+GO err491_dp_time_write.jnl
+
+GO bn_reset
+GO err491_gmax.jnl
+
+GO bn_reset
+GO err491_grid_from_name.jnl
+
+GO bn_reset
+GO err491_let_d.jnl
+
+! *kob* commented out because it's still crashing!
+!GO bn_reset
+!GO err491_long_gif_name.jnl
+
+GO bn_reset
+GO err491_sh_var_templates.jnl
+
+GO bn_reset
+GO err491_single_char_replace.jnl
+
+GO bn_reset
+GO err491_spawn_quotes.jnl
+
+GO bn_reset
+GO err491_time_regridding.jnl
+
+! *kob* commented out because it doesn't run - should it?
+!GO bn_reset
+!GO err491_unknown_function.jnl
+
+

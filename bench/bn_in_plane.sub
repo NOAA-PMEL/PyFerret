@@ -1,0 +1,27 @@
+! BN200_COMPRESS.SUB_V
+! list the variable v averaged on various geometries
+
+! this routine assumes that a 4-D region and an expression are already set
+
+! full data region
+LIST v[x=@sbx,y=@sbx,z=@sbx,t=@sbx]
+
+! cubes of data
+LIST v[x=@sbx,y=@sbx,z=@sbx,l=@ave]
+LIST v[x=@sbx,y=@sbx,t=@sbx,k=@ave]
+LIST v[x=@sbx,z=@sbx,t=@sbx,j=@ave]
+LIST v[y=@sbx,z=@sbx,t=@sbx,i=@ave]
+
+! planes of data
+LIST v[x=@sbx,y=@sbx,k=@ave,l=@ave]	!XY
+LIST v[x=@sbx,z=@sbx,j=@ave,l=@ave]	!XZ
+LIST v[x=@sbx,t=@sbx,j=@ave,k=@ave]	!XT
+LIST v[y=@sbx,z=@sbx,i=@ave,l=@ave]	!YZ
+LIST v[y=@sbx,t=@sbx,i=@ave,k=@ave]	!YT
+LIST v[z=@sbx,t=@sbx,i=@ave,j=@ave]	!ZT
+
+! lines of data
+LIST/ORDER=X v[x=@sbx,j=@ave,k=@ave,l=@ave]
+LIST/ORDER=Y v[y=@sbx,i=@ave,k=@ave,l=@ave]
+LIST/ORDER=Z v[z=@sbx,i=@ave,j=@ave,l=@ave]
+LIST/ORDER=T v[t=@sbx,i=@ave,j=@ave,k=@ave]

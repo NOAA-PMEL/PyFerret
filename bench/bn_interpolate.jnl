@@ -1,0 +1,20 @@
+! bn200_interpolate.JNL
+! benchmark interpolation along various axes
+
+SET LIST/PRECISION=6
+SET MODE LATITUDE:4
+
+LET v = x + 10*y + 100*z + 1000*t
+SET REGION/I=1:3/J=1:3/K=1:3/L=1:3
+DEF REG/x=1.5 xpt
+DEF REG/y=1.05 ypt
+DEF REG/z=1.005 zpt
+DEF REG/t=1.0005 tpt
+
+! first without interpolation
+CANCEL MODE INTERPOLATE
+GO bn_interpolate.sub
+
+! then with interpolation
+SET MODE INTERPOLATE
+GO bn_interpolate.sub

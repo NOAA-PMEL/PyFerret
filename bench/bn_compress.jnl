@@ -1,0 +1,23 @@
+! bn200_compress.JNL
+! benchmark various geometries obtained by compressing FERRET data with @AVE
+! similar tests are performed on:
+!	abstract variable
+!	file variable
+!	diagnostic variable
+
+! ******** abstract variable ************
+LET v = i + 10*j + 100*k + 1000*l
+SET REGION/I=1:3/J=1:3/K=1:3/L=1:3
+GO bn_compress.sub_v
+
+! ******** file variable ************
+CANCEL VARIABLE V
+USE gt4d011
+CANCEL MEMORY/ALL
+SET REGION/I=101:103/J=46:48/K=1:3/L=1:3
+SET EXPRESSION v
+GO bn_compress.sub_v
+
+! ****
+! remove call to bn200_compress.sub_qady for portable benchmarks *kob* 5/99
+! ****

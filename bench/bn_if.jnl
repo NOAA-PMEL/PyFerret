@@ -1,0 +1,166 @@
+! bn430_if
+! 5/6/96
+! 5/22/96 - added nested multi-line IF with nesting in REJECTED clause
+
+! 8/97 bn430_if -> bn450_if: added test of symbol substitution with IF
+
+CANC MODE VERIFY
+
+! various syntaxes for TRUE
+if yes then say ---->CORRECT
+if YES then say ---->CORRECT
+if y then say ---->CORRECT
+if true then say ---->CORRECT
+if T then say ---->CORRECT
+if 1 then say ---->CORRECT
+if `2+2` then say ---->CORRECT
+say ---->all is well after checking TRUE
+
+! various syntaxes for FALSE
+if no then say -->WRONG ELSE say ---->CORRECT
+if n then say -->WRONG ELSE say ---->CORRECT
+if f then say -->WRONG ELSE say ---->CORRECT
+if FALSE then say -->WRONG ELSE say ---->CORRECT
+if bad then say -->WRONG ELSE say ---->CORRECT
+if missing then say -->WRONG ELSE say ---->CORRECT
+if 0 then say -->WRONG ELSE say ---->CORRECT
+if `1/0` then say -->WRONG ELSE say ---->CORRECT
+say ---->all is well after checking FALSE
+
+! single line IF tests
+if yes then say ---->CORRECT
+if yes then say ---->CORRECT endif
+if yes then say ---->CORRECT else say goodbye
+if yes then say ---->CORRECT else say goodbye endif
+if no then say -->WRONG
+if no then say -->WRONG endif
+if no then say -->WRONG else say ---->CORRECT
+if no then say -->WRONG else say ---->CORRECT endif
+say ---->all is well after checking single line IFs
+
+! IF combined with command groups
+if yes then (say ---->CORRECT; say ---->CORRECT, again) ENDIF
+set reg/i=3; if `i` then (set reg/i=100; say `i`); cancel region
+set reg/i=100;if `i` then (set reg/i=2;repeat/j=1:`i` say `j`); cancel region
+say ---->all is well after command group and loop tests
+
+! IF combined with symbols (8/97)
+define symbol TEST_IF $1%no%
+if ($TEST_IF"|yes>1|no>0|*>0") then say ERROR:sym sub else say CORRECT:sym sub
+
+! multi-line IF tests
+IF yes THEN
+  say ---->CORRECT
+  say ---->CORRECT again
+ELSE
+  SAY ---->WRONG
+ENDIF
+say ---->all is well
+
+IF yes THEN
+  say ---->CORRECT
+ENDIF
+say ---->all is well
+
+IF no THEN
+  say ----> WRONG: took first clause
+ELSE
+  SAY ---->CORRECT: took ELSE
+  say ---->CORRECT again
+ENDIF
+say ---->all is well
+
+IF no THEN
+  say ----> WRONG: took first clause
+ELIF yes THEN
+  say ---->CORRECT: took ELIF
+ELSE
+  SAY ---->WRONG: took ELSE
+ENDIF
+say ---->all is well
+
+IF no THEN
+  say ---->WRONG: took first clause
+ELIF no THEN
+  say ---->WRONG: took ELIF
+ELSE
+  SAY ---->CORRECT
+ENDIF
+say ---->all is well following multi-line IF tests
+
+! pathological use of multi-line IF
+!(IF yes THEN; say -->CORRECT; say CORRECT, again; ELSE say --> WRONG; ENDIF)
+say ---->all is well following weird multi-line IF
+
+! nested single line IF's
+IF yes THEN (IF no THEN say --->WRONG ELSE say -->CORRECT: nested single line IFs ENDIF) 
+IF yes THEN (IF no THEN say --->WRONG ELSE say -->CORRECT: nested single line IFs ENDIF) ENDIF
+IF yes THEN (IF no THEN say --->WRONG ELSE say -->CORRECT: nested single line IFs ENDIF) ELSE say -->WRONG ENDIF
+
+! nested multi-line IF's
+! case 1: nested IF inside ACCEPTED clause
+IF no THEN
+  say ----> WRONG: took first clause
+ELIF yes THEN
+  say ---->CORRECT: took ELIF -- starting nested IF
+  IF no THEN
+    say ----> WRONG: took first clause
+  ELIF no THEN
+    SAY ---->WRONG: took ELSE
+  ELSE
+    say ---->CORRECT: took ELSE inside nested IF
+  ENDIF
+ELSE
+  SAY ---->WRONG: took ELSE
+ENDIF
+! case 2: nested IF inside REJECTED clause
+IF yes THEN
+  say ----> CORRECT: took non-nested IF clause
+ELIF yes THEN
+  say ---->WRONG: took ELIF
+  IF no THEN
+    say ----> WRONG: took first clause
+  ELIF no THEN
+    SAY ---->WRONG: took ELSE
+  ELSE
+    say ---->CORRECT: took ELSE inside nested IF
+  ENDIF
+ELSE
+  SAY ---->WRONG: took ELSE
+ENDIF
+say ---->all is well following nested multi-line IF
+
+! single line IF nested into multi-line
+IF no THEN
+  say ----> WRONG: took first clause
+ELIF no THEN
+  SAY ---->WRONG: took ELIF
+ELSE
+  say ---->CORRECT: took ELIF -- starting single line nested IF
+  IF no THEN say ---> WRONG: ELSE say ---->CORRECT: took inside nested IF
+ENDIF
+say ---->all is well following embedded single line IF
+
+! test command control source nesting with IF's
+GO bn_if.sub
+IF yes THEN
+  say ---->CORRECT
+ELSE
+  SAY ---->WRONG
+ENDIF
+say ---->all is well following unclosed nested IF
+
+SAY ">>> DELIBERATE ERRORS <<<"
+set mode ignore
+else
+endif
+elif
+cancel mode ignore
+set mode/last verify
+SAY ">>> --> DELIBERATE WARNING: UNCLOSED IF <<<"
+IF yes THEN
+  say ---->... now inside of IF clause
+
+
+
+

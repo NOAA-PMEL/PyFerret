@@ -1,0 +1,54 @@
+! bn491_bug_fixes.jnl
+! test various fixes that went into version 4.91
+! 2/98 *kob*
+!
+! 3/98 - replaced err490_repeat w/ err490_repeat_first_echo - simpler test
+! 3/98 - *kob* removed err490_tilde because it was a silly test.  some systems
+!         allowed use of go "~/xx" and others didnt.
+! 4/98 - added err491_asn.jnl - regrid by association problem
+! 4/98 - added err491_attrib_dp.jnl - problem w/ double precision attributes
+
+set mode/last verify
+can viewport
+can win/all
+set window 1
+
+!netcdf write error 
+GO err490_cdf_childax
+
+! command parser
+GO bn_reset
+GO err490_command_parser
+
+! tilde error
+!GO bn_reset
+!GO err490_tilde
+
+
+!repeat error
+GO bn_reset
+GO err490_repeat_first_echo
+
+! fixed variable size
+!GO bn_reset
+GO err490_fixed_var_size
+
+! l=@ave compression failure
+GO bn_reset
+GO err490_l_ave.jnl 
+
+! neg time axis grid failure
+GO bn_reset
+GO err490_neg_time_show_grid.jnl
+
+!explicit limit problem
+GO bn_reset
+GO err491_explicit_limits.jnl
+
+!regridding by association problem  *kob* 4/98
+GO bn_reset
+GO err491_asn.jnl
+
+!double precision attribute problem *kob* 4/98
+GO bn_reset
+GO err491_attrib_dp.jnl

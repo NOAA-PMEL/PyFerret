@@ -1,0 +1,51 @@
+\cancel mode verify
+! objective.jnl  11/93 *sh*
+! Description: 2D objective analysis of scattered data
+! usage:
+!  GO objective xpts ypts zpts "xlo:xhi:xdel" "ylo:yhi:ydel" [cay] [nrng]
+!							[filename] [append]
+! where
+!1-3	xpts ypts zpts 	- 3 arrays representing (X,Y,value) triples
+!4	xlo:xhi:xdel 	- output axis specification for first coordinate
+!5	ylo:yhi:ydel 	- output axis specification for second coordinate
+!6 optional	cay	- interpolation scheme (see PLOT+ CONSET command)
+! 			  0.0->Laplacian; large cay->Spline [default=5.0]
+!7 optional	nrng	- include points within nrng output grid cells in the
+!			  interpolation (see PLOT+ CONSET command) [dflt=5]
+!8 optional	filename- file name to receive output [dflt=fer_objective.unf]
+!9 optional	append	- "append" to old or create "new" file [default="new"]
+
+! example: Put scattered (long, lat, sst) triples (in variables lons,lats,ssts)
+!	   onto a grid that is 1x1 degree on 160E:160W and 20S:20N with
+!	   interpolations based on points within 8 grid points (degrees) and
+!	   output into file sst_grid.unf
+!
+!   yes? GO objective lons lats ssts "160:200:1" "-20:20:1" " " 8 sst_grid.unf
+ 
+! check that 5 mandatory arguments are provided and that arg 9 is valid
+query/ignore $5%<Use: GO objective xp yp zp "xlo:hi:dx" "ylo:hi:dy" [cay] [nrng] [ofile] ["append"]%
+query/ignore $9%new|new|append|delete|<specify "new" or "append" for argument 9%
+
+! remove (spawn rm) old file unless "append" is specified
+$9"sp rm -f|new>sp rm -f|append>sp touch|delete>sp rm -f" $8"fer_objective.unf"
+
+! if this output file is already in use via SET DATA then cancel it
+CANCEL DATA/NOERROR $8"fer_objective.unf"
+
+! define a grid as per the desired output
+define axis/x=$4 obj_xax
+define axis/y=$5 obj_yax
+define grid/x=obj_xax/y=obj_yax obj_grid
+
+! a message to the user ...
+say Your result will be variable "gridded" in data set $8"fer_objective.unf".
+
+! perform the objective alanysis
+USER/COMMAND=OBJECTIVE/opt1=$4,$5,$6"5.0",$7"5"/file=$8"fer_objective.unf" $1,$2,$3
+
+! prepare to use the new variable "gridded"
+file/grid=obj_grid/format=unf/variable=gridded $8"fer_objective.unf"
+set variable/bad=1E35 gridded
+say "gridded" is ready to use - set your region and issue >>SHADE gridded<<
+
+set mode/last verify

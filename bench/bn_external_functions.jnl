@@ -1,0 +1,22 @@
+! Jon's benchmarks
+go bench_examples
+
+!Ansley's benchmarks
+
+GO bn_reset
+go bench_fft
+
+GO bn_reset
+go bench_gridding 
+
+GO bn_reset
+go bench_sort
+
+GO bn_reset
+go bench_v5d 
+
+!!!!!!!!!!!!!!!!!!!!!!
+!
+! YAY!! End of Benchmark without crashing!!!!
+!
+!!!!!!!!!!!!!!!!!!!!!!

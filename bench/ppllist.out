@@ -1,0 +1,24 @@
+         WIDTH=   10.20  HEIGHT=    8.80  TKTYPE= 4010  BAUD=  110
+         WINDOW= ON   BOX= OFF  CROSS= 0  PLTYPE=  3
+         PLOT MODE=   A
+         PLOT FILE= metafile.plt                                                                                                                    
+    1  PPL$FORMAT                       (3F10.2)
+    2  PPL$PLTNME                       metafile.plt
+    3  PPL$TEKNME                       /dev/tty
+    4  PPL$XLEN                         8.000
+    5  PPL$YLEN                         6.000
+    6  PPL$XORG                         1.200
+    7  PPL$YORG                         1.400
+    8  PPL$WIDTH                        10.20
+    9  PPL$HEIGHT                       8.800
+   10  PPL$LINE_COUNT                   0
+   11  PPL$XFACT1                       1.000
+   12  PPL$XOFF1                        0.0000E+00
+   13  PPL$YFACT1                       1.000
+   14  PPL$YOFF1                        0.0000E+00
+   15  PPL$VIEW_X                       0.000
+   16  PPL$VIEW_Y                       0.000
+   17  PPL$VIEW_Z                       0.000
+   18  PPL$COMMAND_FILE                 $$MEMBUF$$
+   19  VP_WIDTH                         10.2
+   20  VP_HEIGHT                        8.8

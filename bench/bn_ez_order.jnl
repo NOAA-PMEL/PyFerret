@@ -1,0 +1,177 @@
+! bn420_ez_order
+! updated from bn311_ez_order 9/95 - improved testing of /FORMAT=STREAM
+
+! create test files
+sp rm -f test_perm*.dat
+list/i=1:10/nohead/form=(f4.0)/file=test_perm10.dat i
+list/i=1:24/nohead/form=(f4.0)/file=test_perm24.dat i
+list/i=1:48/nohead/form=(f4.0)/file=test_perm48.dat i
+list/i=1:48/nohead/form=(10f8.0)/file=test_perm48_10.dat i*1000,i*500,i*200,i*100,i*50,i*20,i*10,i*5,i*2,i
+
+! create test axes
+define axis/x=1:2:1 x2
+define axis/x=1:3:1 x3
+define axis/x=1:4:1 x4
+define grid/x=x2/y=x3 g6
+define grid/y=x2/t=x3 g6yt
+define grid/x=x2/y=x3/z=x2 g12
+define grid/x=x2/y=x3/z=x2/t=x2 g24
+
+! basic permutations, single variable
+! *** 2D
+file/grid=g6 test_perm48.dat
+list v1
+file/grid=g6/order=yx test_perm48.dat
+list v1
+file/grid=g6yt test_perm48.dat
+list v1
+file/grid=g6yt/order=ty test_perm48.dat
+list v1
+file/grid=g6yt/order=xtyz test_perm48.dat
+list v1  ! should be just the same as the last
+
+! *** 3D
+file/grid=g12 test_perm48.dat
+list v1
+file/grid=g12/order=xzy test_perm48.dat
+list v1
+file/grid=g12/order=yxz test_perm48.dat
+list v1
+file/grid=g12/order=yzx test_perm48.dat
+list v1
+file/grid=g12/order=zxy test_perm48.dat
+list v1
+file/grid=g12/order=zyx test_perm48.dat
+list v1
+
+
+! *** 4D  (incomplete - 24 in all)
+file/grid=g24 test_perm48.dat
+list v1
+file/grid=g24/order=xytz test_perm48.dat
+list v1
+file/grid=g24/order=xzyt test_perm48.dat
+list v1
+file/grid=g24/order=xtyz test_perm48.dat
+list v1
+file/grid=g24/order=xtzy test_perm48.dat
+list v1
+file/grid=g24/order=ytzx test_perm48.dat
+list v1
+file/grid=g24/order=zytx test_perm48.dat
+list v1
+file/grid=g24/order=tyzx test_perm48.dat
+list v1
+file/grid=g24/order=tzyx test_perm48.dat
+list v1
+
+
+! basic permutations, 10 variables
+! *** 2D
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g6 test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g6/order=yx test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g6yt test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g6yt/order=ty test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g6yt/order=xtyz test_perm48_10.dat
+list v10 ! should be just the same as the last
+
+! *** 3D
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g12 test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g12/order=xzy test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g12/order=yxz test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g12/order=yzx test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g12/order=zxy test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g12/order=zyx test_perm48_10.dat
+list v10
+! *** 4D  (incomplete - 24 in all)
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24 test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=xytz test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=xzyt test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=xtyz test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=xtzy test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=ytzx test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=zytx test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=tyzx test_perm48_10.dat
+list v10
+file/var="v1,v2,v3,v4,v5,v6,v7,v8,v9,v10"/grid=g24/order=tzyx test_perm48_10.dat
+list v10
+
+
+! test grids that have more points than the data
+cancel data/all
+file/grid=g12/order=xzy test_perm10.dat
+list v1
+show data
+
+file/grid=g24/order=xytz test_perm10.dat
+list v1
+show data
+
+file/grid=g24/order=xzyt test_perm10.dat
+list v1
+show data
+
+
+
+! limited testing of /FORMAT=STREAM
+! note that as of 5/16/94 this is a fragile capability that will blow up
+! NO ==> 1) on attempt to read more data than the file has
+!	("BACKSPACE error" not trapped by ERR= branch)
+! (This behavior was fixed 9/7/95 in ez_read.F)
+! 2) on many attempts to process record length information (contained
+!	at the start and end of each variable length record) as data
+!	(?? illegal floating point value - formats as zero but computes as
+!	something else)
+
+! simple test - write a single record of 16 floating point values (encased
+!	in record length information) and read it back as a 2x2x2x2 grid
+sp rm -f test_stream.unf
+list/file=test_stream.unf/format=unf/order=x/i=1:16 i/100  ! was "i" until 9/95
+define grid/x=x2/y=x2/z=x2/t=x2 g2222
+file/grid=g2222/form=stream/skip=1 test_stream.unf
+list v1 
+! /ORDER= applies here, too
+file/grid=g2222/form=stream/skip=1/order=yzxt test_stream.unf
+list v1
+
+! 9/95 - also thest the **WRITING** of STREAM-formatted files (added 12/28/94)
+sp rm -f test_stream.unf
+list/file=test_stream.unf/format=stream/order=x/i=1:16 i/100
+file/grid=g2222/form=stream test_stream.unf
+list v1 
+! /ORDER= applies here, too
+file/grid=g2222/form=stream/order=yzxt test_stream.unf
+list v1
+
+! and test /ORDER on the STREAM output listing
+! ... first the default order
+sp rm -f test_stream.unf
+list/file=test_stream.unf/format=stream/i=1:2/j=3:4/k=5:6/l=7:8 (((((i*10)+j)*10)+k)*10)+l
+file/grid=g2222/form=stream test_stream.unf
+list v1
+file/grid=g2222/form=stream/order=yzxt test_stream.unf
+list v1
+! ... then re-order on write and reverse the re-ordering on read
+sp rm -f test_stream.unf
+list/file=test_stream.unf/format=stream/order=yzxt/i=1:2/j=3:4/k=5:6/l=7:8 (((((i*10)+j)*10)+k)*10)+l
+file/grid=g2222/form=stream/order=yzxt test_stream.unf
+list v1
+
+! clean up
+CANCEL DATA/ALL

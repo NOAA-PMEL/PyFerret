@@ -1,0 +1,344 @@
+! bn420_dynamic_grids
+! 9/95-9/11/95 - test the creation, destruction, and use of dynamic grids
+! 2/96 - added GX=lo:hi:delta notation
+! 4/98 *sh* changes once again to confine_axis -- earlier trapped error is once
+!		again an error
+
+! deliberate dynamic grid errors
+
+can mode diag
+
+use gtsa056_1
+
+set region/l=1/k=1/i=101:105/j=46:50
+
+! what the implicit grids look like
+load temp[gx=u]
+show grid/dynamic
+
+
+set mode ignore_errors
+
+list temp[gx=noexist]		! err during get_context_mods
+show grid/dynamic
+
+list temp[gx=u,p=noexist]	! err during get_context_mods
+show grid/dynamic
+
+! new error checks 2/96
+list temp[gx=130e:80w:10,x=160e:160w]	! err during get_context_mods
+list temp[gx=130e:80w:10,i=2:5]		! err during get_context_mods
+list temp[i=2:5,gx=130e:80w:10]		! err during get_context_mods
+list temp[gx=130e:80w]			! err during get_context_mods
+
+list temp[gx=u]	+ noexist 	! err during is_algebra
+show grid/dynamic
+
+list temp[gx=u,k=30]		! err during get_var_context
+show grid/dynamic
+
+list temp[gx=u,k=20]		! err during read
+show grid/dynamic
+
+list temp[gx=psyu]		! err during get_context_grid - axis mismatch
+show grid/dynamic
+
+list/i=3:6 X[gx=PSYT]		! same err but on pseudo-variable
+show grid/dynamic
+
+! now similar error tests but nested one level down on stack
+
+let a = u
+list temp[gx=a]			! uvar for grid name
+show grid/dynamic
+
+let  tu = temp[gx=noexist]
+list tu				! err during get_context_mods
+show grid/dynamic
+
+let  tu = temp[gx=u,p=noexist]
+list tu				! err during get_context_mods
+show grid/dynamic
+
+let  tu = temp[gx=u] + noexist
+list tu			 	! err during is_algebra
+show grid/dynamic
+
+let  tu = temp[gx=u,k=30]
+list tu				! err during get_var_context
+show grid/dynamic
+
+let  tu = temp[gx=u,k=20]
+list tu				! err during read
+show grid/dynamic
+
+let  tu = temp[gx=psyu]
+list tu				! err during get_context_grid - axis mismatch
+show grid/dynamic
+
+define axis/z=5:15/npoints=999999/unit=meters/depth z999999
+list temp[gz=z999999,z=5:15]	! err during regrid
+show grid/dynamic
+
+shade 1/0 * temp[gx=u]		! err during plot
+show grid/dynamic
+
+set mode/last ignore
+
+! =================================
+
+! basic implicit grid accesses
+list temp[gx=psxu]
+show grid/dyn
+
+list temp[gy=psyu]
+
+list temp[gx=u]
+show grid/dyn
+
+list temp[gx=w]
+
+list  temp[gx=psxu] + 5
+show grid/dyn
+
+list  5 + temp[gx=psxu]
+show grid/dyn
+
+let tu = temp[gx=psxu]
+list tu
+show grid/dyn
+show grid tu
+
+let tu = temp[gx=psxu] + 5
+list tu
+show grid/dyn
+
+
+! implicit grid conformability
+set reg/x=180:175w/y=0:2n/z=0/l=1
+list taux[g=temp]		! grid to temp w/out Z axis
+list temp[g=taux]		! grid to taux w/ Z axis (same grid as "U")
+list temp[gx=taux,gy=taux]
+list temp[gx=taux]		! X only
+show grid/dynamic
+
+! regridding between grids with mutually exclusive axes
+cancel region
+define grid/y=ps3dt gy
+define grid/x=ps3dt gx
+LET/QUIET a = x[g=gx]
+list/i=1:4 a,a[g=gy]   ! nothing to regrid - both are same
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!
+! pseudo-variables
+set data gtsa056_1
+
+list/i=3:6 X		! abstract
+list/i=3:6 X[g=u]	! PS3DU
+list/i=3:6 X[gx=u]	! PS3DU
+list/i=3:6 X[gx=PSXT]	! PS3DT
+
+let ax = x
+list/i=3:6 ax		! abstract
+let ax = X[g=u]
+list/i=3:6 ax		! PS3DU
+let ax = X[gx=u]
+list/i=3:6 ax		! PS3DU
+let ax = X[gx=PSXT]
+list/i=3:6 ax		! PS3DT
+show grid/dyn
+
+!!!!!!!!!!!!!!!!!!!!!!!!
+! dynamic axes
+! * * * dynamic generation of pseudo-variables * * *
+list x[x=.1:1:.1]			! dynamic abstract
+list x[gx=psxu,x=130:150:2.5]		! dynamic based on named axis
+! abstract variables
+cancel region
+LET/QUIET a = x[x=0.1:10:1.5] + y[y=101:110:1]
+list a
+list a[i=1:10:3]
+list a[i=-1:20:5]		! clips to allowed limits
+list a[y=102:105:.5]
+list a[y=95:115:7]
+show grid/dyn
+
+! ambiguous coordinate tests
+list/order=x  x[x=0.1:10:1.5] +  x[x=1.1:11:1.5]
+LET/QUIET a = x[x=0.1:10:1.5] +  x[x=1.1:11:1.5]
+list/order=x a
+show grid/dyn
+
+! box size on dynamic axes
+cancel region
+define axis/from/x/name=xirreg x[x=1:100:10]^2
+define grid/x=xirreg girreg
+let/quiet a = xbox[gx=xirreg]
+list a    ! "normal" irregular axis
+let/quiet b = a[i=1:10:2]
+load b     ! "child" irregular axis
+show grid/x
+
+use gtsa056_1
+list/i=1:10 x[gx=temp]			! from named variable
+list x[g=temp,x=150w:130w:2.5]		! dynamic based on named variable
+list x[gx=temp,x=150w:130w:2.5]		! dynamic based on named variable
+
+list/i=101:105/j=46:50/l=1/k=1 temp+x	! grid inherited from expression
+show grid/dyn
+
+! this expression does NOT inherit the X axis -- the result is
+!	i) ambiguous X axis coordinates
+!	ii) 2 dynamic axes are created in the course of processing
+list/j=46:50/l=1/k=1 temp[i=101:120:4]+x[i=101:120:4]	! NOT !!!
+show grid/dynamic
+
+list/j=46:50/l=1/k=1 temp[i=101:120:4]+x[g=temp,i=101:120:4]
+
+
+! * * * dynamic axis generation used to regrid variables * * *
+SET REGION/I=101:105/J=46:50/l=1/k=1
+
+! deliberate errors:  ****
+list x[i=5:1:1]		! not an error: inverted order
+set mode ignore
+list x[i=1:5:-1]	! error: negative delta
+list x[i=1:5:0]		! error: delta=0
+list x[x=1:5:-1]	! error: negative delta
+list x[x=1:5:0]		! error: delta=0
+list temp[i=200:210:2]	! completely out of range
+list temp[i=-200:-190:2]! completely out of range
+canc mode ignore
+show grid/dyn
+
+! regular dynamic axis
+! ... by subscript
+list temp[i=100:110:2]
+! ... by world coord
+list temp[x=130w:120W:3]
+
+! irregular dynamic axis (Y axis of model grid)
+! ... by subscript
+list temp[j=45:55:3]
+! ... by world coord
+list temp[y=0.5s:5n:1.5]
+show grid/dyn
+
+! ========
+! 2/96: repeat the very same commands using GX=lo:hi:delta notation
+! regular dynamic axis
+! ... by subscript
+list temp[gi=100:110:2]
+! ... by world coord
+list temp[gx=130w:120W:3]
+
+! irregular dynamic axis (Y axis of model grid)
+! ... by subscript
+list temp[gj=45:55:3]
+! ... by world coord
+list temp[gy=0.5s:5n:1.5]
+
+! and a few more for pseudo-variables
+list/nohead X[GX=130e:80w:40]
+list/nohead Y[GY=10s:10n:8]
+list/nohead Z[GZ=0:100:30]
+list/nohead T[GT=0:100:30]
+list/nohead i[gi=1:11:5]
+list/nohead j[gj=1:11:5]
+list/nohead k[gk=1:11:5]
+list/nohead l[gl=1:11:5]
+
+! ========
+
+! multiple axes, simultaneously
+list temp[i=100:110:2,j=45:55:3]
+list temp[i=100:110:2,y=0.5s:5n:1.5]
+list temp[x=130w:120W:3,j=45:55:3]
+list temp[x=130w:120W:3,y=0.5s:5n:1.5]
+show grid/dyn
+
+! the same tests but now on a nested definition
+! regular dynamic axis
+! ... by subscript
+LET/QUIET a temp[i=90:110:2]
+! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
+! changes on 4/98 in CONFINE_AXIS this is once again an error
+set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+list a[i=1:6]
+list a[i=1:6:2]
+list a[i=-2:8:2]		! clips to allowed limits
+list a[x=135w:125w]
+list a[x=135w:125w:3]
+! ... by world coord
+LET/QUIET a = temp[x=130w:120W:3]
+! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
+! changes on 4/98 in CONFINE_AXIS this is once again an error
+set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+list a[i=1:4]
+list a[i=1:4:2]
+list a[i=-2:8:2]		! clips to allowed limits
+list a[x=129w:120w:2]
+list a[x=138w:110w:5]
+show grid/dyn
+
+! irregular dynamic axis
+! ... by subscript
+LET/QUIET a = temp[j=45:65:3]
+! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
+! changes on 4/98 in CONFINE_AXIS this is once again an error
+set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+list a[j=1:6]
+list a[j=1:6:2]
+list a[j=-2:8:2]		! clips to allowed limits
+list a[y=1S:8N:2]
+! ... by world coord
+LET/QUIET a = temp[y=3.5s:5n:1.5]
+list a[j=1:6:2]
+list a[j=-2:8:2]
+list a[y=1S:8N:2]
+
+! modulo (regular) dynamic axis
+set axis/modulo psxt
+! ... by subscript
+list temp[i=155:170:2]
+! ... by world coord
+list temp[x=90w:60W:4]
+show grid/dyn
+
+! nested modulo (the dynamic axis is **NOT** modulo)
+! ... by subscript
+LET/QUIET a temp[i=155:170:2]
+! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
+! changes on 4/98 in CONFINE_AXIS this is once again an error
+set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+list a[i=1:6]
+list a[i=1:6:2]
+list a[i=-2:8:2]		! clips to allowed limits
+list a[x=75w:65w]		! limits ignored --> behavior could be improved
+list a[x=85w:45w:5]
+! ... by world coord
+LET/QUIET a = temp[x=90w:60W:4]
+! changes on 11/29 in CONFINE_AXIS this no longer an error ... a bit mysterious
+! changes on 4/98 in CONFINE_AXIS this is once again an error
+set mode ignore; list a; cancel mode ignore	! SET REGION mis-applied
+list a[i=1:6]
+list a[i=1:6:2]
+list a[i=-2:8:2]
+list a[x=129w:120w:2]		! no overlap
+list a[x=92w:75w:3]
+list a[x=101w:50w:6]
+cancel axis/modulo psxt
+show grid/dyn
+
+! calendar axes
+list/k=1/y=0/x=180 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]   ! 6-day ave
+! ... note that the "explicit limits" changes to Ferret V4.20 mean that
+! ... an explicit L=1 qualifying the command **WILL** apply
+list/k=1/y=0/x=180/l=1 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]
+list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:`24*2`]			! pseudo-var
+
+cancel var/all
+show grid/dyn
+
+set mode/last diag

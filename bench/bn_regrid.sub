@@ -1,0 +1,18 @@
+! BN200_REGRID.SUB
+! compare various regriddings to the original data
+
+stat v1[g=even]-veven, v1
+stat v2[g=even]-veven, v2
+stat v3[g=even]-veven, v3
+stat v4[g=even]-veven, v4
+stat v12[g=even]-veven, v12
+stat v13[g=even]-veven, v13
+stat v14[g=even]-veven, v14
+stat v23[g=even]-veven, v23
+stat v24[g=even]-veven, v24
+stat v33[g=even]-veven, v33
+stat v234[g=even]-veven, v234
+stat v134[g=even]-veven, v134
+stat v124[g=even]-veven, v124
+stat v123[g=even]-veven, v123
+stat v1234[g=even]-veven, v1234

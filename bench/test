@@ -1,0 +1,73 @@
+! bn200_budgets
+! benchmark to compute balance errors in heat and momentum equations
+! 3/12/90
+SET DATA clim_airt_lev
+USE gt160w001    
+
+set reg/l=2/i=71/k=1:27
+
+! HEAT BUDGET
+! this budget includes Newtonian Damping errors (not computed) and convective adjustment errors
+list/j=1:100 qad+qdf-dtdt
+stat/j=1:100 qad+qdf-dtdt
+
+! now knock out the Newtonian damping region
+list/j=10:90 qad+qdf-dtdt
+stat/j=10:90 qad+qdf-dtdt
+
+! now knock out the obvious convective adjustment
+list/j=10:90 (qad+qdf-dtdt) * cmsk[l=@sbx]
+stat/j=10:90 (qad+qdf-dtdt) * cmsk[l=@sbx]
+
+! convective adjustment has to consider a level above and a level below because it propagates through derivatives ???
+list/j=10:90 (qad+qdf-dtdt) * cmsk[l=@sbx]*cmsk[l=1,k=@sbx]
+stat/j=10:90 (qad+qdf-dtdt) * cmsk[l=@sbx]*cmsk[l=1,k=@sbx]
+
+! percentage errors (increase with depth is because qmax gets smaller)
+let qmax = MAX( MAX(ABS(qad),ABS(qdf)), ABS(dtdt) )
+list/j=10:90 ((qad+qdf-dtdt) * cmsk[l=@sbx]*cmsk[l=1,k=@sbx])/qmax
+stat/j=10:90 ((qad+qdf-dtdt) * cmsk[l=@sbx]*cmsk[l=1,k=@sbx])/qmax
+
+
+! MOMENTUM BUDGET
+! note: as of 3/90 errors still remain in the momentum balance near the
+! surface.  The steps below are an INCOMPLETE attempt to explain the errors
+! The role of convective adjustment must be examined further: how do convective
+! adjustment errors propagate to surrounding grid points in space and time
+
+set reg/l=2/X=160W/j=1:100/k=1:27
+LET A = UDF + UAD + UCOE + UBPI - DUDT
+list/j=1:100 a
+list/j=61:65 a
+
+! now the error terms, only - using K=25 as the reference level
+list/j=10:90 a-a[k=25]
+list/j=61:65 a-a[k=25]
+stat/j=10:90 a-a[k=25]
+
+! errors normalized by the magnitutes of the component terms
+let b1 = max( abs(udf),abs(uad))
+let b2 = max( b1, abs(ucoe))
+let b3 = max (b2,abs(ubpi))
+let b4 = max( b3,abs(dudt))
+let knorm = b4 / b4[k=25]
+!let scale = b4[j=@ave]
+list/j=10:90 (a-a[k=25]) / knorm
+list/j=61:65 (a-a[k=25]) / knorm
+stat/j=10:90 (a-a[k=25]) / knorm
+!plot/j=10:90 (a-a[k=25]) / knorm
+
+! convective adjustment (temp and salt, only) can effect momentum balance:
+! 1) UBPI: wrong densities (small errors since total mass is conserved)
+! 2) UDFZ: Richardson number-dependent mixing coefficient depends on vertical
+! 	density gradient.  Conv. adj. distorts this (often to zero) !!
+! ... further: since the convective adjustment errors are on the TEMP grid
+! they are spread over a region of 3 points in I in J and and in K by
+! conversion to the PCDZ grid.  Diffusion is based on the state at
+! L-1 and pressure adjustments are at L.
+let cmsk_pcd   = cmsk[g=pcdz]
+let cmsk_df   = cmsk_pcd[g=u,l=1]
+let cmsk_bp  = cmsk[g=u,l=2]
+list/j=10:90 ( (a-a[k=25]) / knorm ) * cmsk_df * cmsk_bp
+list/j=61:65 ( (a-a[k=25]) / knorm ) * cmsk_df * cmsk_bp
+stat/j=10:90 ( (a-a[k=25]) / knorm ) * cmsk_df * cmsk_bp

@@ -1,0 +1,16 @@
+! err490_command_parser.jnl 12/1/98 - reported by billy kessler
+
+! ERROR Fixed:  command parser fix
+! the following caused an abort of ferret to occur
+! 
+! routines modifed:  gnl/parse_command.F
+!	     	     rpn/init_uvar_sub.F
+!                    common/xvariables.cmn
+
+go ptest
+label/nou `($ppl$xlen)-.3`  -1.1 0 0 .16 a b c d e f g h i j k l m n o p
+
+! the following also caused an abort of ferret
+let sstb = if ( (i eq 172 and j eq 36) or (i ge 173 and i le 175 and j eq 35) or (i ge 176 and i le 178 and j eq 36) or (i eq 178 and j eq 35) ) then 1.e35 else sst
+message/continue ****Variable defined successfully******
+

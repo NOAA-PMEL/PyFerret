@@ -1,0 +1,12 @@
+! err491_unknown_function
+! 3/99 *sh*
+
+! when unknown function occurs in the 2nd (or higher) expression in a line
+! a crash occurs
+
+! crash occurs processing error message in subroutine RPN.
+! Cause is incorrect string limits passed from INIT_UVAR_SUB.
+
+set mode ignore 
+stat i, noname(i)
+can mode ignore

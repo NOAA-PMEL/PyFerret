@@ -1,0 +1,27 @@
+! BN200_INTERPOLATE.SUB
+! interpolate in various geometries
+
+! this routine assumes that a 4-D region and an expression are already set
+
+! cubes of data
+LIST v[@xpt]
+LIST v[@ypt]
+LIST v[@zpt]
+LIST v[@tpt]
+
+! planes of data
+LIST v[@zpt,@tpt]	!XY
+LIST v[@ypt,@tpt]	!XZ
+LIST v[@ypt,@zpt]	!XT
+LIST v[@xpt,@tpt]	!YZ
+LIST v[@xpt,@zpt]	!YT
+LIST v[@xpt,@ypt]	!ZT
+
+! lines of data
+LIST/ORDER=T v[@xpt,@ypt,@zpt]	! T
+LIST/ORDER=Z v[@xpt,@ypt,@tpt]	! Z
+LIST/ORDER=Y v[@xpt,@zpt,@tpt]	! Y
+LIST/ORDER=X v[@ypt,@zpt,@tpt]	! X
+
+! point of data
+LIST v[@xpt,@ypt,@zpt,@tpt]

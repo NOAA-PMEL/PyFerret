@@ -1,0 +1,35 @@
+#!/bin/csh
+# This shell script is designed to take an existing descriptor file
+# and translate it into an acceptable format for linux Ferret.  The reason this
+# needs to be done is because linux Ferret was compiled w/ F90, and it 
+# uses different formats for namelist reads than does F77.  The usage for
+# this script is:
+#   
+#          linuxize_descriptors descriptor_name > new_descriptor_name
+#
+# Without the redirect, the new descriptor is written to stdout.  
+# 
+# It is also possible that the "filter" below will not completely linuxize 
+# every descriptor out there.  Some non-TMAP customizations may be missed, and 
+# will cause errors when attempting to read the descriptor into ferret.  
+# In that case, edits will need to be made to the sed command below to include
+# the required substitution, deletion, etc.
+#
+# kob  6/97 - kobrien@pmel.noaa.gov
+
+if ( $#argv != 1 ) then
+	echo "    Usage:  linuxize_descriptors descriptor_name"
+	echo "    Example:  linuxize_descriptors coads.des"
+	exit 1
+endif
+
+ls $argv[1]  >& /dev/null
+
+if ($status) then
+	echo "File "$argv[1]" does not seem to exist. "
+	echo "Exiting..............."
+	exit 1
+endif
+
+sed -e '/\*\*\*/d' -e '/^*/d' -e 's/\$/\&/g' -e 's#\&END#/#g' -e '/\* /d' -e '     s/        / /g' -e '/\-\-/d' -e '/D_ADD_PARM/d' -e '/d_add_parm/d' $argv[1]
+

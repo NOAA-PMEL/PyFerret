@@ -1,0 +1,21 @@
+! bn301_movie.JNL
+! - test on-HDF movie creation by Program FERRET
+! - FERRET ver 3.10 10/93
+
+! ===> NOTE:  This may fail with an X error if the movie window is iconified
+
+sp rm bench.mgm
+SHOW MOVIE
+SET MOVIE/FILE=bench.mgm
+SHOW MOVIE
+SET WIND/SIZE=.2
+
+contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10)*cos(j/7)
+contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
+FRAME
+
+sp ls -l bench.mgm
+
+REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
+
+sp ls -l bench.mgm

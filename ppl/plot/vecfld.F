@@ -66,6 +66,8 @@ C**
 *       *acm*  9/02    Yet another tweak on the length of curvlinear vectors.
 *                      Fix the computation of curv_len, page length of vector as 
 *                      it is drawn.
+*       *acm* 12/02    Restore call to mark(99) polymarker call when vector is
+*                      small.  Call doit_makedot after the loop, to plot points in the buffer.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -94,6 +96,7 @@ C
         include 'vector_inc.decl'
         include 'VECTOR.INC'
         include 'xcurvilinear.cmn'
+        include 'makedot.cmn'
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
@@ -172,8 +175,15 @@ C
 !*sh*	DY=(ytx-ytm)/(NY-1)
 	DX=(xtx-xtm)/MAX(NX-1,1)
 	DY=(ytx-ytm)/MAX(NY-1,1)
+        IPT = 0
 	DO 100 I=1,NX,VSKPX
 	DO 100 J=1,NY,VSKPY
+
+        IF (IPT .GT. maxdot) THEN
+           CALL doit_makedot(IPT,XDOT,YDOT)
+           IPT = 0
+        ENDIF
+
 	XX2=U(I,J)
 	YY2=V(I,J)
 C
@@ -298,7 +308,7 @@ C
            IF(VCLEN .LT. VMINLN)THEN
 	      CALL PLOT(XX1,YY1,0,0)
 	      CALL PLOT(XX1,YY1,1,0)
-c              CALL MARK(99)
+              CALL MARK(99)
 	      GOTO 100
            ENDIF
 C
@@ -329,6 +339,9 @@ C
 
 100	IF (interrupted) goto 3333 ! *jd* 8.3.92
 	CONTINUE
+        CALL doit_makedot(IPT,XDOT,YDOT)
+        IPT = 0
+
 C
 C	DRAW SCALE  MAKE SCALE .5 INCH LONG AT XT,YT
 C

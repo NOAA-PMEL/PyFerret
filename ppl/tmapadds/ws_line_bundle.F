@@ -47,19 +47,12 @@
 *                     13-18 are larger circles.  /THICK makes them thicker.
 
 * gsplr: wkid, line index, line type, linewidth scale factor, color index
-* gspmr: wkid, marker index, marker type(dot=1), 
-*        size scale factor (const for dot), color index
+* gspmr: wkid, marker index, marker type(dot=1), size (const for dot), color index
 
-*        NOTE: as of 10/3/01  this is not working consistently. With 
-*        marktype=1, the documentation says the symbol will be a "point"
-*        and that the mark size is ignored.  In fact the mark size is not 
-*        ignored, and if I use the argument as in the /THICKNESS qualifier 
-*        for lines, we get three different sizes for the marks. The marks 
-*        are not round dots however.  Also, when saving the plot to a metafile, 
-*        the postscript image has the dots looking much smaller than they 
-*        do on the Ferret window or in a gif image.  They are so small they 
-*        are invisible in ghostview except for the largest size. They do print 
-*        as tiny dots.
+*        *acm* 12/4/02 NOTE: With changes to gksm2ps.c which multiply the 
+*              size of the dots by 4, the output is consistent from 
+*              ferret metafiles transformed to postscript, from 
+*              "ferret -batch" output, and gif files.
 
 	integer		zwsid,zwstype,i,j
 
@@ -73,7 +66,7 @@
 
 	integer		max_pline,max_pmark,max_text,max_fill_area
 	integer		max_pattern,max_color,error
-	integer		fktr, marktype(3)
+	integer		fktr, marktype
                                        
 	real		thickness, dotsize
 
@@ -84,9 +77,8 @@
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
 
-        marktype(1) = 1    ! polymarker type 1=dot
-        marktype(2) = 4    ! polymarker type 4=circle
-        marktype(3) = 4
+        marktype = 1    ! polymarker type 1=dot
+        dotsize = 1
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100
@@ -100,13 +92,13 @@
         call gscr (zwsid,6,1.0,0.0,1.0)
 #endif
 
-	do 20 j = 1,6 ! colors
-	   do 10 fktr = 1,3
+	do 20 j = 1,6           ! colors
+	   call gspmr (zwsid,j,marktype,dotsize,j)
+	    
+	   do 10 fktr = 1,3     ! thickness
               thickness = real(fktr)
-              dotsize = thickness/12.
-              if (fktr .eq. 2) dotsize = real(fktr-1)/12.
 	      call gsplr (zwsid,(fktr-1)*6+j,1,thickness,j)
-	      call gspmr (zwsid,(fktr-1)*6+j,marktype(fktr),dotsize,j)
+       
 10	   continue
 20	continue
 
@@ -115,10 +107,9 @@
 *	MONOCHROME WORKSTATIONS:
 100	do 120 j = 1,3
 	   thickness = real (j)
-           dotsize = thickness/12.
 	   do 110 i = 1,6
 	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gspmr (zwsid,i+6*(j-1),marktype(fktr),dotsize,1)
+	      call gspmr (zwsid, i, marktype, dotsize, 1)
 110	   continue
 120	continue                   
 

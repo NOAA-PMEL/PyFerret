@@ -1,4 +1,5 @@
-	SUBROUTINE SHADE (z)
+	SUBROUTINE SHADE (z, pixel)
+
 
 *
 *
@@ -50,15 +51,13 @@
 *	field, no shade results
 *       *jd* 1.98 Fix bug: shade misses top level, when top level is lt 0.
 * V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
+* V550 11/02*acm* To use cellarray calls for rectangular shade plots, pass 
+*                 pixel in as a work array.  Remove VAX includes
+* V%50 12/02*acm* After levels are set, call setlab_syms to create the LEVELS symbols
 
-#ifdef unix
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'
-#endif
 
-#ifdef unix
 	include		'axis_inc.decl'
 	include		'AXIS.INC'
 	include		'plt_inc.decl'
@@ -73,20 +72,12 @@
 	include		'ZGRID.INC'
 	include		'zgridd_inc.decl'
 	include		'ZGRIDD.INC'
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_plt.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_miss.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_hd.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_cont.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_zgrid.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_zgridd.inc'
-#endif
 
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
 	integer		i,j
-	
+	integer         pixel(*)
+
         parameter       (epsilon = 1e-6)
 
 C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn
@@ -202,7 +193,11 @@ C       CONTOUR requires more than one level to work but SHADE doesn't
 
 	   NLEV2=NLEV
 
-	END IF 
+	END IF  
+
+* Now that the levels are set, create the LEVELS symbols
+
+        CALL setlab_syms (ZLEV, NLEV2)
 
 
 C       DRAW
@@ -222,7 +217,8 @@ C       are also stored in the Z array.  Pass them to shade_sub.
 
 	IF (JTYPE.EQ.2 .OR. JTYPE.EQ.-2) THEN
 
-	   CALL SHADE_SUB(Z,Z(1,NY+1),Z(1,NY+2),XX(IZSE-NX-1),YY(IZSE-NY-1))
+	   CALL SHADE_SUB(Z,Z(1,NY+1),Z(1,NY+2),XX(IZSE-NX-1),
+     .        YY(IZSE-NY-1), pixel)
 
 C       For all other plot types fill in XX() and YY() by
 C       multiplying the index value by the DX or DY delta values.
@@ -242,7 +238,7 @@ C       multiplying the index value by the DX or DY delta values.
 c *kob* 8/97 had to move the conintation marker to col 5 - it was in col 8
 c       this bombed aix compiler, though it seems to work on others
 	   CALL SHADE_SUB(Z,XX(IZLEN+1),YY(IZLEN+1),XX(IZLEN+NX+1),
-     1	       YY(IZLEN+NY+1))
+     1	       YY(IZLEN+NY+1), pixel)
 
 	ENDIF
 

@@ -39,11 +39,18 @@
 ! arg10 - minimum y to plot, in page-coordinates
 ! arg11 - maximum y to plot, in page-coordinates
 !
-! examples:
-!         go mp_graticule                         ! default - whole world in black
-!         go mp_graticule 120 220 20 35 65 2.5 5  ! graticule over northern Pacific in cyan
+! example:  Limit the plot to a square, in terms of plot page coordinates.
+!   use coads_climatology
+!   set region/y=0:90
+!   go mp_stereographic_north
+!   set grid sst
+!   go mp_aspect
+!   shade/l=1/hlim=-1:1/vlim=-1:1/noax/nolab sst,x_page,y_page
+!   go mp_graticule " ", " ", " ", " ", " ", " ", " ", -1,1,-1,1
+!   plot/over/vs/line/nolabel/color=black {-1,1,1,-1,-1}, {-1,-1,1,1,-1}
 !
-! Note:   If overlaying on a basemap or in any case where a SET GRID has
+!
+!   ! Note:   If overlaying on a basemap or in any case where a SET GRID has
 !         not been issued, the current default region will determine
 !	  the region to be plotted.
 

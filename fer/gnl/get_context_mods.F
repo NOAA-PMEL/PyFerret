@@ -9,8 +9,6 @@
      .			report_unknown,
      .			status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -126,6 +124,7 @@
 * V520: 6/00 *sh* bug fix: cx_grid_needs_dset is not set correctly when the
 *		   - syntax is X[Gx=var[D=dset]]
 * V530: 3/01 *acm* - Pass calendar ID, if available, to TRANSLATE_LIMIT
+* V532 5/01 *sh*: minor bug fix: detect extra colon in "i=1:5:2:"
 
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
@@ -601,6 +600,8 @@
 	   IF ( colon2 ) THEN
 	      colon2_pos = colon2_pos + colon_pos
 	      hi_end     = colon2_pos - 1
+	     IF (INDEX(text_buff(colon2_pos+1:del_end),':').GT.0)
+     .							GOTO 5150
 	   ELSE
 	      hi_end     = del_end
 	   ENDIF

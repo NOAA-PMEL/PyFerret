@@ -173,8 +173,8 @@
 
       INCLUDE 'v5df_fer.h'
 
-      INTEGER i, m
-      INTEGER numtimes, nlev, numvars, nr, nc, ier, irr
+      INTEGER i, n, m
+      INTEGER numtimes, nlev, numvars, nr, nc, nchar, ier, irr
 
       CHARACTER*255 err_msg
 
@@ -436,7 +436,6 @@ c
       REAL baddat, argdat
 
       CHARACTER*(*) err_msg
-      integer ier
 
 *  Set output array.
 
@@ -709,7 +708,7 @@ C  Check number of columns and rows against Vis5D maxima.
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER ier, m, nlm, l, icentury
+      INTEGER ier, iarg, m, nlm, l, icentury
       INTEGER numtimes, numvars
 
       REAL*8 tax(MAXTIMES), gwork(*)
@@ -718,6 +717,7 @@ C  Check number of columns and rows against Vis5D maxima.
       CHARACTER*3 cmon
       INTEGER day_of_mon, day_of_year
       CHARACTER*20 datebuf(MAXTIMES)
+      CHARACTER*255 err_msg
 
       INTEGER timestamp(*), datestamp(*)
 

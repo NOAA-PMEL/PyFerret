@@ -1,7 +1,7 @@
 \cancel mode verify
 ! 2/94 - polar_vector.jnl
 ! 3/96 - bug fix: vectors in South projection were mis-oriented
-
+ 
 
 ! NOTE: The map projection capabilities beginning with Ferret v5.0
 ! provide far more flexibility for making plots with curvilinear coordinates.

@@ -1,4 +1,4 @@
-\cancel mode verify
+\cancel mode verify 
 ! 2/94 - convert_to_polar_2d.jnl
 
 
@@ -22,7 +22,7 @@
 !			bordering on missing values should be treated
 ! (optional) file:	name of file to receive the sampled points
 !			Default = polar_sampled_points.dat
-!			Note: the format of this file will be unformatted
+!			Note: the format of this file will be unformatted 
 !			with #_points columns per record.
 
 

@@ -2,7 +2,7 @@
 ! polar_fland.jnl - overlay a land mask on a polar stereographic plot
 ! (default 60 minute resolution)
 ! 2/94
-
+ 
 
 ! NOTE: The map projection capabilities beginning with Ferret v5.0
 ! provide far more flexibility for making plots with curvilinear coordinates.

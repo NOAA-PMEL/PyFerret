@@ -45,6 +45,8 @@
 * v200: Unix/RISC port - 3/12/91 - coach for "^z" on Unix
 * V230 6/92 - allow "system" calls for unix
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V500:  1/99 - correct the handing of qutes as in SPAWN "date"
+*		with call to ALL_1_ARG
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -57,8 +59,9 @@
 #endif
 
 # ifdef unix
+	CALl ALL_1_ARG
 	IF ( num_args .GT. 0 ) THEN
-	   call system( cmnd_buff(arg_start(1):len_cmnd) )
+	   call system( cmnd_buff(arg_start(1):arg_end(1)) )
 	ELSE
 * user can get choice of shells with "SPAWN csh", or whatever.
 	   CALL SPLIT_LIST(pttmode_help, ttout_lun,

@@ -1,5 +1,6 @@
 SRCS_F = \
 asn_regrid_1_axis.F\
+asn_ptr_regrid_1_axis.F\
 ave_regrid_1_axis.F\
 binom_wt.F\
 convolve.F\
@@ -52,6 +53,7 @@ do_smth_box.F\
 do_smth_hanng.F\
 do_smth_parzn.F\
 do_smth_welch.F\
+do_string_shift.F\
 do_sum.F\
 do_var_sub.F\
 do_variance.F\
@@ -63,6 +65,7 @@ get_linear_coef.F\
 hanng_wt.F\
 lin_regrid_1_axis.F\
 modulo_regrid.F\
+nearest_ptr_regrid_1_axis.F\
 nearest_regrid_1_axis.F\
 normalize.F\
 parzn_wt.F\
@@ -71,5 +74,6 @@ rho_unesco.F\
 theta_foff.F\
 welch_wt.F\
 window_regrid_1_axis.F\
+xact_ptr_regrid_1_axis.F\
 xact_regrid_1_axis.F\
 xyave_regrid.F 

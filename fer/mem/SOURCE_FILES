@@ -3,6 +3,7 @@ allo_grid_to_cx.F\
 assign_mr_cx.F\
 assign_temp_var.F\
 assign_variable.F\
+cgrid_size_delta.F\
 create_mem_var.F\
 create_permutation.F\
 create_temp_mem_var.F\
@@ -30,6 +31,7 @@ hash_name.F\
 init_grid.F\
 its_un_cached.F\
 mgrid_size.F\
+mgrid_size_delta.F\
 mr_available.F\
 mr_dim_len.F\
 mr_in_use.F\

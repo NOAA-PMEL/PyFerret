@@ -116,6 +116,8 @@
 *      *acm* 12/01  Allocate PPLUS memory for the flag array used by
 *                   flowline.
 * V541 *acm*  4/02  for flowlines, more PPLUS memory was allocated than needed.
+*      *acm*  4/02  If this is an overlay, and there is no valid data, add
+*                   this information variable name in the key below the plot.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -582,11 +584,16 @@ C ACM added 8/2001 save cal id if vertical time axis
 	ENDIF
 	IF ( overlay ) THEN
 * ... cook up a key label for this variable only (or pair for VECTOR)
+*     If no valid data (no_x_rng) add this info to the label.
 	   use_keys = .TRUE.
 	   IF ( .NOT.user_title ) THEN
 	      CALL OV_GRP_CX_DOC( cx_list, nmv, cx_xtra_doc )
 	      plot_title = COMPOUND_KEY( cx_list, nvars, cx_xtra_doc, slen )
 	   ENDIF
+           IF (no_x_rng) THEN
+              plot_title(slen+1:slen+14) = ' No Valid Data'
+              slen = slen + 14
+           ENDIF
 	   CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			 lab_ht, style, justify )
 	   CALL PUT_CMND_KEY( cmnd_num, plot_title(:slen),

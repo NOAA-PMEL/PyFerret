@@ -12,6 +12,7 @@
 # 8/99 *acm* - Add EFUOBJS and ef_utility to DIRS and LIBS so to include 
 #              External Functions utility functions in the executable.
 #              (see note in ef_utility/Makefile: Don't put these in a library.)
+# 12/99 *sh* - changed "debug" to "alpha" as DEBUG_TITLE
 
 # include platform specific macro definitions
 #
@@ -73,7 +74,7 @@ all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
-	$(MAKE) "DEBUG_TITLE=debug" update
+	$(MAKE) "DEBUG_TITLE=alpha" update
 	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug: .FRC
@@ -87,7 +88,7 @@ gui_debug: .FRC
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
-		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" \
+		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=alpha" \
 		"GUI_FAKES="  all
 
 DODS_gui_debug: .FRC
@@ -98,7 +99,7 @@ DODS_gui_debug: .FRC
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
 		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
-		"DEBUG_TITLE=debug" all
+		"DEBUG_TITLE=alpha" all
 DODS_gui: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\

@@ -1,0 +1,23 @@
+! err570_fine_grid_list.jnl
+! ACM 10/2004
+
+! For a very fine grid in longitude and latitude, the coordinates
+! are not listed with enough precision to resolve them.
+
+let hlon= {204.89923, 204.89975, 204.90025, 204.90076, 204.90126}
+let hlat = { 19.70020, 19.70071, 19.70122, 19.70173, 19.70223, 19.70274}
+
+def axis/x/units=lon xfine = hlon
+def axis/y/units=lat yfine = hlat
+
+let myvar = x[gx=xfine] + y[gy=yfine]
+
+set list/prec=8
+list/form=tab myvar
+
+set list/prec=8
+list/form=comma myvar
+
+list/clobber/head=enh/form=(f9.5)/file=fine.dat myvar
+sp more fine.dat
+sp rm -f fine.dat

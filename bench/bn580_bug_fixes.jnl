@@ -38,3 +38,13 @@ GO err570_list_tab_coords.jnl
 ! Fix bug in HASH_CX for large numbers of varibles
 GO bn_reset
 GO err570_many_variables.jnl
+
+
+! Fix bug in @CNNN within multi-line labels
+GO bn_reset
+GO err570_cnnn_multiline.jnl
+
+! For a very fine grid, coordinates not listed with enough precision.
+GO bn_reset
+GO err570_fine_grid_list.jnl
+

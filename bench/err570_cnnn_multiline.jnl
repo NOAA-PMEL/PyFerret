@@ -1,0 +1,9 @@
+! Changing pen with @Cnnn did not work in 
+! multi-line labels    
+
+plot/hl=0:1/vl=0:1/vs 0,0
+label 0.2, 0.7, 0, 0, 0.2, "@p2This<NL>@P3works<NL>@p4fine."
+label 0.5, 0.7, 0, 0, 0.2, "@C002this<NL>@c003does<NL>@C004not."
+label 0.8, 0.7, 0, 0, 0.2, "@C002this<NL>does<NL>not @C004either."
+
+label 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL<NL>works"

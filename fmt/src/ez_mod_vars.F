@@ -1,4 +1,5 @@
-	SUBROUTINE EZ_Mod_Vars(dset,vpos,title,units,grid,bad,status)
+	SUBROUTINE EZ_Mod_Vars( dset, vpos,
+     .			name, title, units, grid, bad, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -44,22 +45,23 @@
 * revision 0.11 - 04/25/91 *sh* Unix/RISC port: longer des name
 * V530: change to xez_info.cmn requires ez_lib.parm first
 * V532 5/01 *sh* - when the grid is modified must handle dynamic allocation
+* V533 6/01 *sh* - added argument "name"
 
 * Arguments:
 *	dset	- data set number
 *	vpos	- variable number within COMMON/XDSET_INFO
+*	name	- variable name
 *	title	- variable title
 *	units	- variable units
 *	grid	- grid data is on for this variable
 *	bad	- bad data flag
 *	status	- (output)
 *
-	CHARACTER*(*)	title, units
+	CHARACTER*(*)	name, title, units
 	INTEGER*4	dset, vpos, grid, status
 	REAL*4		bad
 *
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'  
 	include 'ez_lib.parm'  
 #include "tmap_dset.parm"  
@@ -71,15 +73,7 @@
 	external xdset_info_data
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'  
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'  
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XEZ_INFO.CMN'  
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'  
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
+
 *
 * Local definitions
 *
@@ -91,6 +85,9 @@
 *
 * Defining variable units?
 	IF (units .NE. char_init16) ds_var_units(vpos) = units
+*
+* Defining variable name?
+	IF (name .NE. char_init16) ds_var_code(vpos) = name
 *
 * Defining grid number?
 	IF (grid .NE. int4_init) THEN

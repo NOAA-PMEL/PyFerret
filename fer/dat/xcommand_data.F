@@ -1,7 +1,5 @@
 	BLOCK DATA XCOMMAND_DATA
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -41,7 +39,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/20/86
 * V200:   7/5/89 - added CANCEL VARIABLE
@@ -128,6 +125,8 @@
 * V531: 5/01 *kob* - replace old ANIMATE alias which spawned a call
 *	             to what must be the now-defunct xds with new 
 *		     animate alias which uses internal double buffering
+* V533: 6/01 *sh* - added SET VARIABLE/NAME=
+
 #ifdef unix
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -247,7 +246,7 @@
 		DATA qualifiers  (nqual_at1j+2)	/ 'GRID'	/
 		DATA qualifiers  (nqual_at1j+3)	/ 'BAD'	/
 		DATA qualifiers  (nqual_at1j+4)	/ 'DATASET'	/
-		DATA qualifiers  (nqual_at1j+5)	/ '****'	/
+		DATA qualifiers  (nqual_at1j+5)	/ 'NAME'	/
 		DATA qualifiers  (nqual_at1j+6)	/ '****'	/
 * SET GRID
 	   DATA subcommands      (nsub_at1 +10)	/ 'GRID'	/

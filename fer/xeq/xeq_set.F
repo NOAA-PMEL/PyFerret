@@ -118,8 +118,8 @@
 *		  - add qualifier /TREGULAR to SET DATA for netCDF data sets
 *	4/00 *sh* - documentation enhancement, only
 * V530:10/00 *sh* - added FILE/FORMAT=delimited/TYPE=/DELIMITERS=
+* V533 6/01 *sh* - bug fix "SET GRID" w/out arg didn't check for -111
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
 #	include "tmap_dset.parm"
@@ -151,36 +151,6 @@
 	include	'SWITCH.INC'	! with deflts
         include 'LUNITS.INC'          ! with lttout
         include 'lunits_inc.decl'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDIAG_CTRL.CMN'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:MOVIES.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XREVISION.CMN'
-	INCLUDE 'FERRET_CMN:XTODAY.CMN'
-	INCLUDE 'FERRET_CMN:XVIDEO.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-	INCLUDE	'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	! with gksopn
-	INCLUDE	'TMAP_PPLV11INC:SWITCH_INC.DECL/LIST'	! with deflts
-	INCLUDE	'PPLV11INC:SWITCH.INC/LIST'	! with deflts
-        INCLUDE 'PPLV11INC:LUNITS.INC'          ! WITH LTTOUT
-        INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
-#endif
 
 * calling argument declarations:
 	INTEGER	reconfig
@@ -670,6 +640,7 @@ c *kob* 4/97
 	   cx = is_cx( 1 )
 	   IF ( cx.EQ.0 .OR. cx.EQ.unspecified_int4 )	GOTO 5120
 	   grid = cx_grid( cx )
+	   IF ( grid .EQ. unspecified_int4 )	GOTO 5120
 	ENDIF
 * ... adjust the use count
 	CALL TM_USE_DYN_GRID(grid)

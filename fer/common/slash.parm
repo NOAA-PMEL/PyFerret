@@ -8,6 +8,7 @@
 *	*sh* 1/01 - added slash_plot_step
 * V530 *kob* 1/01 - added slash_repeat_animate, slash_repeat_loop
 * V530 *acm* 5/01 - added slash_plot_dash
+* V533 *sh* 6/01 - added slash_set_var_name
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -74,6 +75,7 @@
      .			slash_set_var_unit,
      .			slash_set_var_grid,
      .			slash_set_var_bad,
+     .			slash_set_var_name,
      .
      .			slash_set_grid_save,
      .			slash_set_grid_restore,
@@ -229,6 +231,7 @@
      .			slash_set_var_unit	= 2,
      .			slash_set_var_grid	= 3,
      .			slash_set_var_bad	= 4,
+     .			slash_set_var_name	= 6,
      .
      .			slash_set_grid_save	= 1,
      .			slash_set_grid_restore	= 2,

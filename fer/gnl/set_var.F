@@ -1,7 +1,5 @@
 	SUBROUTINE SET_VAR( vname, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -55,8 +53,9 @@
 * V510 5/00 *sh* - allow SET VARIABLE/BAD applied to user variables
 *		 - on file variables (e.g. netCDF) interchange the 2 missing
 *		   flags so that the output will inherit the manually set value
+* V533 6/01 *sh* - added SET VARIABLE/NAME
+*		 - increased units char buffer to 64
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'
@@ -68,29 +67,17 @@
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER		status
 	CHARACTER	vname*(*)
 
 * internal variable declarations:
-	LOGICAL		VALID_GRID, have_mods, ez
+	LOGICAL		VALID_GRID, TM_LEGAL_NAME, have_mods, ez
 	INTEGER		GRID_FROM_NAME, mod_cx, 
      .			dset, grid, cat, var, loc, TMAP_status
 	REAL		bad
-	CHARACTER	grid_name*16, title*128, units*24
+	CHARACTER	grid_name*16, title*128, units*64, newname*64
 
 * decode specified variable name of form VNAME[D=dset]
 	dset = unspecified_int4			! default is global variable
@@ -113,6 +100,16 @@
 	ENDIF
 
 * process qualifiers given
+	loc = qual_given( slash_set_var_name )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+           CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      newname, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	   IF ( .NOT.TM_LEGAL_NAME(newname) ) GOTO 5200
+	ELSE
+	   newname = char_init80
+	ENDIF
 	loc = qual_given( slash_set_var_title )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -164,7 +161,8 @@
 	   IF ( have_mods ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
-	      CALL EZ_MOD_VARS( dset,var,title,units,grid,bad,tmap_status )
+	      CALL EZ_MOD_VARS( dset,var,
+     .			        newname,title,units,grid,bad,tmap_status )
 	      IF ( tmap_status .NE. merr_ok ) THEN
 	         status = ferr_TMAP_error
 	         RETURN
@@ -179,13 +177,15 @@
 	      ds_missing_flag(var) = ds_bad_flag(var)
 	      ds_bad_flag    (var) = bad
 	   ENDIF
+	   IF (newname.NE. char_init16 ) ds_var_code ( var ) = newname
 	   IF ( units .NE. char_init16 ) ds_var_units( var ) = units
 	   IF ( title .NE. char_init80 ) ds_var_title( var ) = title
 	ELSE
 * ... user-defined var
 	   IF ( grid .NE. int4_init   ) GOTO 5110
-	   IF ( units .NE. char_init16 ) uvar_units( var ) = units
-	   IF ( title .NE. char_init80 ) uvar_title( var ) = title
+	   IF (newname.NE. char_init16 ) uvar_name_code(var)= newname
+	   IF ( units .NE. char_init16 ) uvar_units( var )  = units
+	   IF ( title .NE. char_init80 ) uvar_title( var )  = title
 	   IF ( bad  .NE. real4_init  ) THEN
 	      CALL PURGE_ALL_UVARS	 ! delete invalidated uvars
 	      uvar_bad_data(var) = bad
@@ -213,11 +213,16 @@
  5100	CALL ERRMSG( ferr_erreq, status,
      .		cmnd_buff(qual_start(loc):qual_end(loc)), *5000 )
  5110   CALL ERRMSG( ferr_invalid_command, status,
-     .               'cannot specify grid for '//risc_buff(:len_rbuff)//pCR//
+     .               'cannot specify grid for '//risc_buff(:len_rbuff)//
+     .		      pCR//
      .               'Grid for a user-defined variable is implied '//
      .               'by its definition', *5000 )
  5112   CALL ERRMSG( ferr_invalid_command, status,
      .               'cannot specify grid for '//risc_buff(:len_rbuff),
+     .               						*5000 )
+ 5200	CALL ERRMSG( ferr_invalid_command, status,
+     .               'illegal new name given for '
+     .			//risc_buff(:len_rbuff),
      .               						*5000 )
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
 	END

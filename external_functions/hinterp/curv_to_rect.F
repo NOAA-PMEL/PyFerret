@@ -173,19 +173,22 @@
 
 ! Consistency check; CURV_TO_RECT_MAP saves nlon_src and lnat_src
 
-      nlon_chk = arg_2(1,1,2,1)
-      nlat_chk = arg_2(1,1,3,1)
+c      nlon_chk = arg_2(1,1,2,1)
+c      nlat_chk = arg_2(1,1,3,1)
+
+c      nlon_src = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
+c      nlat_src = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1
+
+c      IF (nlon_chk .NE. nlon_src .OR. nlat_chk .NE. nlat_src) THEN
+c         WRITE(err_msg,100) nlon_src,nlat_src,nlon_chk,nlat_chk
+c 100     FORMAT ('Dimensions of arg1 inconsistent with source ',
+c     .           'dimensions saved in arg2: arg1 (', i4, ',', i4, 
+c     .           ') saved dimensions (', i4, ',', i4,')')
+c         CALL ef_bail_out (id, err_msg)
+c      ENDIF
 
       nlon_src = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
       nlat_src = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1
-
-      IF (nlon_chk .NE. nlon_src .OR. nlat_chk .NE. nlat_src) THEN
-         WRITE(err_msg,100) nlon_src,nlat_src,nlon_chk,nlat_chk
- 100     FORMAT ('Dimensions of arg1 inconsistent with source ',
-     .           'dimensions saved in arg2: arg1 (', i4, ',', i4, 
-     .           ') saved dimensions (', i4, ',', i4,')')
-         CALL ef_bail_out (id, err_msg)
-      ENDIF
 
       nlon_dst = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1
       nlat_dst = arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1
@@ -277,13 +280,13 @@
                     i2 = 0  ! what is wt(m,n,k) ??
                   endif
                   if (i.GT.0 .and. j.GT.0) THEN
-                     IF (data_in(i,j) .ne. bad_flag_in ) THEN
+                     IF (data_in(i,j) .NE. bad_flag_in ) THEN
                         data_out(m,n) = data_out(m,n)+
      .                                  data_in(i,j)*wt(m,n,k)
                         COUNT = COUNT + 1
                      ENDIF
                   else
-                    data_out(m,n) = bad_flag_out
+                     data_out(m,n) = bad_flag_out
                   endif
                enddo
             else

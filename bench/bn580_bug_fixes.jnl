@@ -83,3 +83,7 @@ GO err570_coaching hello
 ! name of the script
 GO bn_reset
 GO err570_dollar_zero.jnl
+
+! Fix for bug 596; list/i=0:300:0 var crashed Ferret
+GO bn_reset
+GO err570_illegal_stride.jnl

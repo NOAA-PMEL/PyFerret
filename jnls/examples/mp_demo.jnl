@@ -1,19 +1,25 @@
+! mp_demo.jnl
+! *jc* -- edited 6/99 *sg*
+
+! Description: demonstrate basic map projection techniques
+
+set mode verify
+
 !
 ! Here is your basic Ferret plot:
 !
 !
-message
 
 use coads_climatology
 set region/x=0:360/y=-90:90/l=1
 shade/title="Standard Plot" sst
 go fland
+\pause
 
 !
 ! Here is a sampling of what you can do with map
 ! projections.  In this case:  a view from space.
 !
-message
 
 set win/aspect=1:ax 2
 go mp_orthographic 210 45
@@ -39,12 +45,12 @@ go mp_label 204.4 19.5 -1 0 .1 @p5@IIHawaii
 go mp_graticule
 go mp_graticule 160 200 40 50 65 15 11
 go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
+\pause
 
 !
 ! Now a menagerie of projections from among
 ! those provided with Ferret.
 !
-message
 
 set win/aspect=1:ax 3
 
@@ -134,11 +140,11 @@ shade/nolab/nokey sst, x_page, y_page
 go mp_graticule 0 360 30 0 90 15
 go mp_fland 120 gray
 label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
+\pause
 
 !
 ! Finally, we'll create a fancy strip map centered on the Pacific.
 !
-message
 
 set win/size=.4/aspect=.5 3
 go mp_hammer

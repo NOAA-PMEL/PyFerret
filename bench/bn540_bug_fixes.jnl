@@ -69,3 +69,7 @@ GO err540_data_type.jnl
 ! gridding scattered points to modulo axis had bug
 go bn_reset
 GO err540_modscat.jnl
+
+! make sure the USE bug reported 5/01 by A Wittenberg is fixed
+GO bn_reset
+GO err540_use.jnl

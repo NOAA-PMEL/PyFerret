@@ -1,5 +1,5 @@
 	SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
-	1      cx_list, res_cx, status )
+     .          cx_list, res_cx, status )
 
 * Complete the context for the result of a grid-changing function.
 * Fill in the limits for those axes of the grid changing function which
@@ -17,18 +17,7 @@
 
 * V450: 1/97
 * *jc* 12/97 adding external function capabilities
-
-* calling argument declarations
-	INTEGER	gcfcn, cx_list(*), mr_list(*), res_cx, status
-	REAL	memory( mem_blk_size, max_mem_blks )
-
-* internal variable declarations
-	LOGICAL fix_me(4)
-	INTEGER	CGRID_SIZE, CAXIS_LEN, CGRID_AXIS, CX_DIM_LEN,
-     .		com1_cx, com2_cx, idim, filled, size, uvar,
-     .		res_grd, outlen(4), accum(2:4),
-     .		lo_off(4),  hi_off(4), action(4),
-     .		axis_will_be(4), lo_lim, hi_lim
+* *jc* 01/98 put includes first
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -46,9 +35,22 @@
 	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
 #endif
 
+* calling argument declarations
+	INTEGER	gcfcn, cx_list(*), mr_list(*), res_cx, status
+	REAL	memory( mem_blk_size, max_mem_blks )
+
+* internal variable declarations
+	LOGICAL fix_me(4)
+	INTEGER	CGRID_SIZE, CAXIS_LEN, CGRID_AXIS, CX_DIM_LEN,
+     .		com1_cx, com2_cx, idim, filled, size, uvar,
+     .		res_grd, outlen(4), accum(2:4),
+     .		lo_off(4),  hi_off(4), action(4),
+     .		axis_will_be(4), lo_lim, hi_lim
+
 * initialize
 	uvar = cx_variable(res_cx)
 	res_grd = cx_grid(res_cx)
+
 
 * Fill in the limits for those axes of the grid changing function which
 * were "imposed" by the function.
@@ -151,6 +153,10 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
  370	   CONTINUE
 
+*
+* THIS NEXT SECTION DEALS WITH EXTERNAL FUNCTIONS
+*
+
 	ELSEIF ( gcfcn .GT. gfcn_num_internal ) THEN
 
 * ... does the external function need to impose special size limits
@@ -158,7 +164,7 @@
 * ... If so, impose 'em here
 
 * What kind of axes are we dealing with?
-	   call efcn_get_axis_will_be(gcfcn, axis_will_be)
+	   CALL EFCN_GET_AXIS_WILL_BE(gcfcn, axis_will_be)
 
 	   DO 450 idim = 1, 4
 
@@ -169,8 +175,8 @@
 
 	      IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract)	THEN
 
-		 call efcn_get_axis_abstract(gcfcn, memory, mr_list, 
-	1	      cx_list, idim, lo_lim,hi_lim)
+		 CALL EFCN_GET_AXIS_ABSTRACT(gcfcn, memory, mr_list, 
+     .           cx_list, idim, lo_lim,hi_lim)
 		 cx_lo_ss(res_cx,idim) = lo_lim
 		 cx_hi_ss(res_cx,idim) = hi_lim
 		 cx_by_ss(idim, res_cx) = .TRUE.
@@ -187,16 +193,16 @@
 * If the axis is custom ... not supported yet
 
 	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein)
-	1	      THEN
+     .                THEN
 		 CALL ERRMSG( ferr_internal, status,
-	1	      'gcf_imposes_result_lims: external function 
-	2	      custom axes not supported', *5000 )
+     .                'gcf_impose_result_lims: external function' 
+     .                //'custom axes not supported', *5000 )
 
 
 * If the axis is implied_by_args ... nothing needs to be done
 
 *	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args)
-*	1	      THEN
+     .             THEN
 *       do nothing
 
 	      ENDIF
@@ -208,6 +214,10 @@
 	   CONTINUE	! this function does not impose any limits
 
 	ENDIF
+
+c* *jc* 01/98 Removing this section to allow for arguments which are constants.
+c*
+	RETURN
 
 ********************************
 * Reconcile the limits of the arguments with the limits of the result where
@@ -225,6 +235,7 @@
 * argument limits are available at the same moment.
 
 * is the result context incomplete?
+
 	DO 1000 idim = 1, 4
 	   IF ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8 ) THEN
 * only UVARs end up in this routine so uvar_given is available

@@ -119,6 +119,9 @@ C                with "*(*)" for the linux port
 
 *3/99 *kob* had to move initialization of var solid off decl. line - for linux
 
+*3/03 *acm* for SHAKEY info, write out location of key, whether it is 
+*           user-located or automatically set
+
 	integer		x_do_key,x_orient,solid
         DATA            solid/21/
 	logical		none
@@ -436,14 +439,17 @@ C	SHAKEY info
 	write (llun,10004) x_do_key,x_orient,klab_size,klab_incr,
      .				klab_dig,klab_len
 10004	format (9x,i6,2x,i6,2x,f8.2,2x,i7,2x,i7,2x,i7)
+c
+c  Write out location of key, whether it is 
+c  user-located or automatically set
 
-	if (kuser_loc) then
+c	if (kuser_loc) then
 	   write (llun,10005) 
 	   write (llun,10006) kx_lo/1000.0,kx_hi/1000.0,     
      .		              ky_lo/1000.0,ky_hi/1000.0
-	else
-	   write (llun,10007)
-	end if
+c	else
+c	   write (llun,10007)
+c	end if
 10005	format (//9x,'X LO',5x,'X HI',5x,'Y LO',5x,'Y HI')
 10006	format (4x,4f9.2)
 10007	format (//9x,'DEFAULT KEY POSITIONING')

@@ -46,15 +46,14 @@
 *       J Davison 10.20.99   Copied TM_SECS_FROM_BC() and modified to support
 *                            multiple calendars.
 *       *acm* 3/01  Treat Julian calendar as a separate case.
+*       *acm* 8/02  Fix bug in Julian calendar computations where leap day was
+*                   added twice for case where we are at the first year of a
+*                   century.
 
 * Include files
-#ifdef unix
         include 'calendar.decl'
         include 'calendar.cmn'
 	include 'tmap_errors.parm'
-#else
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#endif
 
 * Argument definition
 
@@ -127,7 +126,7 @@
 	   total_secs = total_secs + second
 
 *****************************************************************************
-* HANDLE JULIAN CALENDAR FIRST
+* HANDLE JULIAN CALENDAR 
 *****************************************************************************
 	ELSE IF (cal_id .eq. julian) then
 
@@ -144,17 +143,23 @@
 *          ADD A YEAR FOR EACH YEAR SINCE TURN OF CENTURY
 	   total_secs = total_secs + secs_in_year*MOD(year,100)
 
-*          ADD A DAY FOR EACH LEAP YEAR SINCE CENTENNIAL, PLUS 1 DAY FOR CENTENNIAL
+*          ADD A DAY FOR EACH LEAP YEAR SINCE CENTENNIAL, PLUS 1 DAY FOR 
+*          CENTENNIAL
+*          !! IF THIS IS CENTENNIAL YEAR, THIS YEARS LEAP SECONDS ADDED BELOW
+
 	   total_secs = 
-	1	total_secs + secs_in_day*(1+INT((MOD(year,100)-1)/4))
+	1	total_secs + secs_in_day*(INT((MOD(year,100)-1)/4))
+	   IF (MOD(year,100) .NE. 0) total_secs = 
+	1	total_secs + secs_in_day
 
 *          ADD SECONDS FOR NUMBER OF MONTHS
 	   total_secs = total_secs +
      .       cals_days_before_month(month,cal_id)*secs_in_day
 
 *          ADD 1 DAY WORTH OF SECONDS IF THIS IS LEAP YEAR AND PAST FEBRUARY
+
 	   if (month .GT. 2  .AND. MOD(year,4) .EQ. 0)
-     .         total_secs = total_secs + secs_in_day
+     .             total_secs = total_secs + secs_in_day
 
 *          ADD SECONDS FOR NUMBER OF DAYS
 	   total_secs = total_secs + secs_in_day*(day-1)

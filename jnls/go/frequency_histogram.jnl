@@ -32,8 +32,9 @@
 
 ! Sample usage:
 !	yes? SET DATA levitus_climatology
-!	yes? SET REGION/X=0:360/Y=0:45N/Z=0 
-!	yes? GO  frequency_histogram temp 0 32 0.5
+!	yes? GO  frequency_histogram temp[X=0:360,Y=0:45N,Z=0] 0 32 0.5
+!
+!	yes? GO  frequency_histogram temp[X=0:360,Y=0:45N,Z=0] 0 32 0.5 " " y 1
 
 
 ! The optional "weight" parameter multiplies each grid cell by the variable

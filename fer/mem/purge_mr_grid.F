@@ -47,6 +47,7 @@
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V500 *sh* 7/99 - issue warning, only, if grid is in-use in a data set
+* V510: 5/00 *sh* - BUG fix: special grids exceed "6"
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -58,6 +59,7 @@
 	external xgt_grid_data
 	include	'ferret.parm'
 	include	'errmsg.parm'
+	include	'xfr_grid.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -85,7 +87,7 @@
 !	INTEGER	TM_LENSTR1, mr, ivar, cvar, dset, glen, done_dset
 
 * the lowest grids are protected
-	IF ( grid .LE. 6 ) GOTO 5200
+	IF ( grid .LE. mgrid_tabstract ) GOTO 5200
 
 * initialize
 	done_dset = 0

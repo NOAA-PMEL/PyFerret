@@ -36,10 +36,10 @@
 !	yes? GO trackplot plot/vs/over/line=4/title="scaled" xpts, ypts, val 3
 
 ! argument check
-QUERY/IGNORE $1"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [smooth]"
-QUERY/IGNORE $2"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [smooth]"
-QUERY/IGNORE $3"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [smooth]"
-QUERY/IGNORE $4"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [smooth]"
+QUERY/IGNORE $1"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [baseline] [smooth]"
+QUERY/IGNORE $2"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [baseline] [smooth]"
+QUERY/IGNORE $3"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [baseline] [smooth]"
+QUERY/IGNORE $4"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [baseline] [smooth]"
 
 ! save the input expressions into simple variable definitions
 LET/QUIET TRKx = ($2)

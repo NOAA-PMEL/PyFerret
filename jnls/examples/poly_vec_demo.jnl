@@ -49,11 +49,6 @@ GO poly_vectors.jnl x_vec y_vec u_vec v_vec 5 "arrow"
 LET press = YSEQUENCE(slp[X=120:180,Y=20:60])
 POLYGON/OVER/NOAX/NOLAB/KEY/LINE/PAL=rainbow plt_x_arrow, plt_y_arrow, press
 
-! You will see the informational message: 
-!    *** NOTE: Ambiguous coordinates on Y axis: PRESS
-! This is fine.  It simply indicates that the list of values in the
-! variable press are not onthe same grid as plt_x_arrow and plt_y_arrow.
-
 ! Make a vector arrow key.
 PAUSE
 
@@ -131,7 +126,7 @@ GO mp_stereographic_north  `mp_central_meridian` `mp_standard_parallel`
 
 ! Set up the vectors to be plotted as polygons
 
-GO mp_poly_vectors x_vec y_vec u_vec v_vec 4 "stick"
+GO mp_poly_vectors x_vec y_vec u_vec v_vec 4 "arrow"
 
 ! Draw the polygons, colored by SLP
 

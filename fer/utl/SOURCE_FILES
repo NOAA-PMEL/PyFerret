@@ -104,6 +104,7 @@ permute.F\
 permute_ptr_sub.F\
 permute_sub.F\
 region_number.F\
+regularly_spaced.F\
 remove_axis.F\
 reset_secs_from_bc.F\
 reverse_grid_axis.F\

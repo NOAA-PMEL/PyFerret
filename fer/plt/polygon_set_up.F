@@ -89,6 +89,14 @@
 * v540 *acm* 12/01  IF (missing_polygon) THEN don't call PPLLDX_envelope; calling
 *                   with missing data for time-axis data results in trying to 
 *                   compute a time axis (elsewhere) with out-of-range values.
+* v541 *acm*  3/02  The above fix is too broad.  Apply it only to time-axis 
+*                   overlays.
+* v541 *acm*  3/02  Compute and allocate the ammount of PPLUS memory that'll
+*                   be needed for this plot, before the loop that loads polygons.
+* v541 *acm*  3/02  set twodee_on to .TRUE. (as in disp_init) so we can overlay on 
+*                   polygon plots
+* v541 *acm*  4/02  If we have a depth axis, multiply the corresponding 
+*                   vertices by -1.  Else the polygons arent plotted.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -124,7 +132,7 @@
 	REAL            only_val, dashstyle(4)
 
 * internal variable declarations:
-	LOGICAL         missing_polygon
+	LOGICAL         missing_polygon, first_polygon
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up,
      .			x_is_log, y_is_log
@@ -196,11 +204,15 @@
 	hix = arbitrary_small_val4
 	loy = arbitrary_large_val4
 	hiy = arbitrary_small_val4
-!	ind_dim = plot_axis(1)
+c	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
 	cal_id = 0
 	x_axtyp = 1
 	y_axtyp = 1
+
+* *acm* 3/02  set flag indicating a 2D plot is on the screen
+*             (so we can overlay other plots on a polygon plot)
+	twodee_on = .TRUE.
 
 * perform sanity checks on the arguments
 * ... check the X coordinate variable for shape
@@ -354,10 +366,26 @@
  	WRITE ( ppl_buff, 3005 ) mr_bad_data( mr_color ), 'Z'
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
  3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
-	
+
+
+* need number of polygons and points in each. On the first polyon we will
+* check that we have enough PPLUS memory and allocate more if needed.
+
+        npoly = 0
+        first_polygon = .TRUE.
+
+* ...  point to the first polygon 
+       IF ( oneD_form ) THEN
+*    ... coords are 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,...
+          npoly = cx_hi_ss(cx_buff_x,coord_dim) - 
+     .                cx_lo_ss(cx_buff_x,coord_dim)
+	ELSE
+*    ... coords are 2D arrays of color_dim X coord_dim
+           npoly = cx_hi_ss(cx_x,color_dim)
+	ENDIF
+
 * loop through all the polygons variables loading them into PPLUS
 * construct a funky FORTRAN 77 DO-WHILE loop
-	npoly = 0
 * ---- 
 200	CONTINUE
 
@@ -402,6 +430,40 @@
      .				npts,
      .				status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+*  Now we have npts in each polygon; check PPLUS memory and if needed, 
+*  allocate more.  Multiply by 2 because we have X and Y vertices of 
+*  polygons, and by 2 again because the call below to 
+*       PPLLDX_envelope(2,x_dat,x_dat,ncolor...  
+*  loads polygon data after all the previous data.
+* 
+
+	   IF (first_polygon) THEN
+              plot_mem_used = 4* npts* npoly
+              CALL reallo_envelope(plot_mem_used)
+
+              first_polygon = .FALSE.
+              plot_mem_used = 0
+              npoly = 0
+           ENDIF
+
+* If one of the axes is a depth axis, multiply the corresponding 
+* vertices by -1.  Else they don't show up on the plot.
+* xlo, xhi, ylo, yhi are from AXIS.INC
+
+           IF ( xlo .GT. xhi )  THEN
+              DO 201 i = 1, npts
+                 IF ( x_dat(i) .NE. mr_bad_data(mr_x) )
+     .             x_dat(i) = -1.* x_dat(i)
+  201         CONTINUE
+           ENDIF
+
+           IF ( ylo .GT. yhi )  THEN
+              DO 202 i = 1, npts
+                 IF ( y_dat(i) .NE. mr_bad_data(mr_y) )
+     .             y_dat(i) = -1.* y_dat(i)
+  202         CONTINUE
+           ENDIF
 
 * When using log axis transform to log(x).  Scale the points of the
 * polygon within the log axis range xlo, xhi to keep something like
@@ -503,9 +565,9 @@
 
 * ... check for adequate PLOT+ memory
  250	   npts = end-start+1
-	   plot_mem_used = plot_mem_used + npts
+!	   plot_mem_used = plot_mem_used + npts
 !	   IF ( plot_mem_used .GT. 0.99*pplmem_nsize ) GOTO 5150  ! test is now in
-                                                                 ! pplldx_envelope
+! 								    pplldx_envelope
 	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling
@@ -539,9 +601,10 @@
 	   ENDIF
 
 	   IF (missing_polygon) THEN
-c	      CALL PPLLDX_envelope(0,mr_bad_data(mr_x),mr_bad_data(mr_y),
-c     .    	          1, t1_date, ' ', dt_min, plot_mem_used)
-              i = 1   ! dummy statememt
+! for time series overlays, dont load the data
+              IF (.NOT. (has_time_axis .AND. overlay)) 
+     .    	  CALL PPLLDX_envelope(0,mr_bad_data(mr_x),
+     .            mr_bad_data(mr_y),1,t1_date,' ',dt_min,plot_mem_used)
 	   ELSE IF ( transpz ) THEN
 	      CALL PPLLDX_envelope(0,y_dat(start),x_dat(start),npts,
      .		           t1_date, ' ', dt_min, plot_mem_used)

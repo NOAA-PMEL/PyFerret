@@ -136,8 +136,10 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm*  1/02 Change SHOW FUNC so that shared object files are 
 *                  not listed on the command: SHO FUNC/INTERNAL func_name
-* V553 *acm* 8/03  New calls to make XML-style output for SHOW DATA, SHOW DATA/VAR
+* V554 *acm* 8/03  New calls to make XML-style output for SHOW DATA, SHOW DATA/VAR
 *                  SHOW AXIS, SHOW GRID
+* V554 *acm* 9/03  Add output for SHOW AXIS in /DODS binary format, 
+*                  see the flag do_dods
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -182,7 +184,12 @@
      .		    slash_internal,
      .		    slash_xml,
      .              slash_grid_xml,
-     .              slash_axis_xml
+     .              slash_axis_xml,
+     .              slash_axis_dods,
+     .              slash_axis_file,
+     .              slash_axis_append,
+     .              slash_axis_clobber,
+     .              slash_axis_shedges
 	PARAMETER ( len_show_str = 132,		! length of output line buffer
      .		    brief	 = .TRUE.,
      .		    slash_mem_temp = 1 + 2,
@@ -198,7 +205,12 @@
      .		    slash_internal = 1 + 3,
      .		    slash_xml      = 1 + 5,
      .		    slash_grid_xml = 1 + 10,
-     .		    slash_axis_xml = 1 + 9 )
+     .		    slash_axis_xml = 1 + 9,
+     .		    slash_axis_dods = 1 + 10,
+     .		    slash_axis_file = 1 + 11,
+     .		    slash_axis_append = 1 + 12,
+     .		    slash_axis_clobber = 1 + 13,
+     .		    slash_axis_shedges = 1 + 14 )
 
 * calling argument declarations:
 	REAL memory( mem_blk_size, max_mem_blks )
@@ -207,17 +219,22 @@
 	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE,
      .		slash_all, limited_show, nothing, sdetail,
      .		only_1, done_1, sfull, svars, sfile, sbrief, first,
-     .          sxml
+     .          sxml, do_dods, clobber, fexist, list_at_eof, sho_edges
 	INTEGER TM_LENSTR1, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
-     .		rqst_dset, tmp_grid, num_predefined_axes
+     .		rqst_dset, tmp_grid, num_predefined_axes, qfile, 
+     .          flen, wsize, wkblk
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
+	CHARACTER	AUTO_FILENAME*2048, filename*2048,raw_name*2048,
+     .			fstatus*8, faccess*12, fformatted*12,
+     .			cdf_recax*1,
+     .			fposition*12
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
 
@@ -317,6 +334,12 @@
 	   RETURN
 	ENDIF
  	sxml  = qual_given( slash_axis_xml  ) .GT. 0 
+ 	do_dods  = qual_given( slash_axis_dods  ) .GT. 0 
+        clobber = qual_given( slash_axis_clobber  ) .GT. 0
+        sho_edges = qual_given( slash_axis_shedges  ) .GT. 0
+        qfile = qual_given( slash_axis_file ) 
+	list_at_eof  = list_append .OR. 
+     .           qual_given( slash_axis_append ) .GT. 0
 
 * decode the limit qualifiers
 	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
@@ -338,8 +361,38 @@
         tmp_grid =  max_grids-2  ! see docs in TM_ALLO_DYN_GRID.F
         CALL INIT_GRID( tmp_grid, char_init16, mnormal )
 
+*  For DODS output, always write to a file
+
+* ... output to a file
+	IF (do_dods ) THEN
+           fformatted = 'UNFORMATTED'
+* ... get full file name - from LIST/FILE= or from SET LIST/FILE=
+           raw_name = 'FERRET.DAT'
+           IF ( qfile .GT. 0) THEN
+#ifdef unix
+* preserve case of filename for unix
+              CALL EQUAL_STR_LC(
+     .		cmnd_buff(qual_start(qfile):qual_end(qfile)),
+     .		raw_name, status )
+#else
+* VMS filenames in upper case always
+              CALL EQUAL_STRING(
+     .			cmnd_buff(qual_start(qfile):qual_end(qfile)),
+     .                  raw_name, status )
+#endif
+           ENDIF
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   INQUIRE( FILE = raw_name, NAME = raw_name, EXIST = fexist )
+	   flen = TM_LENSTR1( raw_name )
+* ... append or not ?
+	   IF ( fexist .AND. list_at_eof ) clobber = .false.
+
+	ENDIF
+
+
+
 * write column headings
-        IF (.NOT. sxml) THEN
+        IF (.NOT.sxml .AND. .NOT.do_dods) THEN
 	   WRITE ( risc_buff, 3000 )
  3000	   FORMAT ( T2,'name',T13,'axis',T31,'# pts',T39,
      .           'start',T60,'end' )
@@ -360,6 +413,34 @@
 
                    IF (sxml) THEN
                       CALL SHOW_LINE_XML( ttout_lun, line)
+                   ELSE IF (do_dods) THEN
+	              DO 402 i2 = 1, 4
+	                IF (qual_given( slash_show_grid_x0+i2).GT.0
+     .                 .OR. qual_given( slash_show_grid_i0+i2).GT.0)THEN
+                           grid_line(i2,tmp_grid) = line
+
+
+* reserve working array; need length of axis; 2* because we will 
+* retain double precision of the coordinates for DODS binary output,
+* add 1 for extra point in edges definitions.
+
+	                   wsize =  2*(1+line_dim(line))  
+                           CALL GET_WORK_SPC( wsize, wkblk, status )
+			   IF (sho_edges) THEN
+                              CALL show_line_edges_dods (
+     .                              tmp_grid, mods_cx, 
+     .                              i2, memory(1,wkblk), clobber, 
+     .                              raw_name, status )
+                           ELSE
+                              CALL show_line_coords_dods (
+     .                              tmp_grid, mods_cx, 
+     .                              i2, memory(1,wkblk), clobber, 
+     .                              raw_name, status )
+                           ENDIF
+ 	                   CALL RELEASE_WORK_SPC
+                        ENDIF
+ 402                  CONTINUE
+
                    ELSE
                       CALL SHOW_LINE( line, .NOT.brief )
 	              DO 405 i2 = 1, 4
@@ -382,6 +463,36 @@
 
                    IF (sxml) THEN
                       CALL SHOW_LINE_XML( ttout_lun, line)
+                   ELSE IF (do_dods) THEN
+
+	              DO 411 i2 = 1, 4
+	                IF (qual_given( slash_show_grid_x0+i2).GT.0
+     .                 .OR. qual_given( slash_show_grid_i0+i2).GT.0)THEN
+                           grid_line(i2,tmp_grid) = line
+
+* reserve working array; need length of axis; 2* because we will 
+* retain double precision of the coordinates for DODS binary output.
+* add 1 for extra point in edges definitions.
+
+	                   wsize =  2*(1+line_dim(line))  
+                           CALL GET_WORK_SPC( wsize, wkblk, status )
+			   IF (sho_edges) THEN
+                              CALL show_line_edges_dods (
+     .                              tmp_grid, mods_cx, 
+     .                              i2, memory(1,wkblk), clobber, 
+     .                              raw_name, status )
+                           ELSE
+                              CALL show_line_coords_dods (
+     .                              tmp_grid, mods_cx, 
+     .                              i2, memory(1,wkblk), clobber, 
+     .                              raw_name, status )
+                           ENDIF
+ 	                   CALL RELEASE_WORK_SPC
+
+
+                        ENDIF
+ 411                  CONTINUE 
+
                    ELSE
                       CALL SHOW_LINE( line, .NOT.brief )
 	              DO 412 i2 = 1, 4
@@ -406,11 +517,12 @@
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	      IF ( line_name(line) .EQ. char_init16) GOTO 450
-              IF (.NOT. sxml) THEN
+              IF (.NOT.sxml .AND. .NOT.do_dods) THEN
                  CALL SHOW_LINE( line, brief )
               ENDIF
               IF (sxml .AND. line .GT. num_predefined_axes)
      .           CALL SHOW_LINE_XML( ttout_lun, line)
+
  450	   CONTINUE
 *  ... then show the dynamic lines
            line = 0
@@ -419,6 +531,7 @@
      .			( ferr_interrupt, status, ' ', *5000 )
               IF (sxml) THEN
                  CALL SHOW_LINE_XML( ttout_lun, line)
+
               ELSE
 	         CALL SHOW_LINE( line, brief )
               ENDIF
@@ -1240,6 +1353,10 @@
 
 * error exit
  5000	RETURN
+ 5010	CALL ERRMSG( ferr_erreq,status,filename(:flen),*5000 )
+ 5050	CALL ERRMSG( ferr_invalid_command, status,
+     .			'/CLOBBER not specified and file exists: '
+     .			//raw_name, *1000 )
  5071	CALL ERRMSG( ferr_unknown_data_set, status,
      .			name(:TM_LENSTR1(name)), *5000 )
  5100	CALL ERRMSG( ferr_unknown_variable, status, arg, *5000 )

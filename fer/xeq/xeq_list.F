@@ -82,7 +82,7 @@
 *	  10/93 - ALPHA port - explicit error message if file exists because
 *		  OSF/1 error message is "Bad magic number"
 * V314:	8/24/94 *kob* IBM port - RECORDTYPE not allowed in open statments under
-*				 AIX fortran.  Add ifdef NO_OPEN_RECORDTYPE.
+*				 AIX fortran.  Add ifdef 1.
 *	11/3/94 *sh* IBM port - ACCESS=APPEND isn't allowed but STATUS=OLD
 *				defaults to this behavior
 *	11/5/94 *sh* IBM port - disable GT format output on IBM.  Unable to
@@ -104,7 +104,7 @@
 *			  this had to be done in order for a new file to have 
 *			  a valid "position" for f90 opens.
 * V430	 7/96 - *kob* reclen_in_bytes not appropriate for sgi..added 
-*		      "ifndef sgi" to prevent reclen_in_bytes being set
+*		      "ifndef sgi" to prevent 1 being set
 * V450	11/96 - added LIST/CLOBBER
 *		added pcdf_mode_cache for DODS caching
 *       7/98 *js* Changed size of perm to 5 to support parsing of 
@@ -121,9 +121,9 @@
 * v542  *kob* 10/02 - add F90_OPEN_FILE_CLOBBER option to make sure that the F90 
 *                     OPEN POSITION directive is not blank when opening an 
 *                     existing file for rewrite.  This causes an F90 OPEN error
-*
+* V554 *acm* 9/03  Add output in /DODS binary format for list/format=DODS, 
+*                  see the flag do_dods
 
-#ifdef unix
         include 'tmap_errors.parm'
 	include	'ferret.parm'
 	include	'slash.parm'
@@ -133,17 +133,6 @@
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 	include 'xinterrupt.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-        INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -151,7 +140,7 @@
 * local variable declarations
 	LOGICAL		normal_file, fexist, heading, list_to_tty, do_multi,
      .			do_epic, do_gt, do_cdf, do_unform, do_stream,
-     .			do_comma_del, do_tab_del,
+     .			do_comma_del, do_tab_del, do_dods,
      .			permute, all_at_once, list_at_eof, head_enh,
      .			clobber, quiet
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
@@ -160,7 +149,7 @@
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars
-	CHARACTER	AUTO_FILENAME*200, filename*200, raw_name*200,
+	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*80, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
      .			fposition*12
@@ -214,15 +203,16 @@
 	do_gt	     = list_fmt_type .EQ. plist_gt
 	do_cdf	     = list_fmt_type .EQ. plist_cdf
         do_unform    = list_fmt_type .EQ. plist_unformatted
+        do_dods      = list_fmt_type .EQ. plist_dods
         do_stream    = list_fmt_type .EQ. plist_stream
         do_tab_del   = list_fmt_type .EQ. plist_tab_del
         do_comma_del = list_fmt_type .EQ. plist_comma_del
         do_stream_phase = 0		! for multi-variable stream
 	list_to_tty  = qual_given( slash_file ) .EQ. 0
      .            .AND. .NOT.(do_epic.OR.do_gt.OR.do_unform
-     .			  .OR.do_cdf.OR.do_stream)
+     .			  .OR.do_cdf.OR.do_stream .OR. do_dods)
 	normal_file  = .NOT.( list_to_tty .OR. do_epic .OR. do_cdf
-     .			 .OR. do_stream ) 
+     .			 .OR. do_stream .OR. do_dods) 
 	permute      = qual_given( slash_permute ) .GT. 0
         npermuted    = 0
 	recsofar     = 0
@@ -414,7 +404,9 @@
 	   ENDIF
 * ... open or create it
 * only output listing message if user didn't specify quiet *kob* 2/99
-	   IF (.NOT.(do_EPIC) .AND. do_stream_phase.EQ.0 
+* For dods output, file is opened in the C routine called by write_dods_fmt.
+
+           IF (.NOT.(do_EPIC) .AND. do_stream_phase.EQ.0 
      .                    .AND. .NOT.(quiet) )
      . 	          CALL SPLIT_LIST(pttmode_bull, ttout_lun,
      .		  ' LISTing to file '//raw_name(1:TM_LENSTR1(raw_name))
@@ -531,6 +523,12 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 	   wsize = 1
 	   DO 112 idim = 1, 4
  112	   wsize = MAX( wsize, CX_DIM_LEN(idim,cx))
+	   IF (do_dods)THEN
+              wsize = 1
+              DO 113 idim = 1, 4
+ 113	        IF (CX_DIM_LEN(idim,cx) .GE. 1) 
+     .             wsize = wsize * CX_DIM_LEN(idim,cx)
+	   ENDIF
 	ENDIF
 	CALL GET_WORK_SPC( wsize, wkblk, status )
 	IF ( status .NE. ferr_ok ) GOTO 1000
@@ -592,7 +590,8 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	   CALL NON_ARRAY_SUBSC( mr_perm, 1 )
 	   CALL LIST_CMND_DATA( memory(1, mr_blk1(mr_perm(1))), mr_perm,
      .				cx, memory(1, wkblk), heading, head_enh,
-     .				recsofar, perm, clobber, status )
+     .				recsofar, perm, clobber, raw_name, 
+     .                          status)
 	ENDIF
 
 * EXIT sequence

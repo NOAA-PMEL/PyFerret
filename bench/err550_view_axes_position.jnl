@@ -1,0 +1,15 @@
+! err550_view_axes_position.jnl
+! acm 2/5/03
+
+! position on page was incorrect, of first viewport plotted when defined
+! as a VIEW/AXES viewport.
+
+def view/x=.1:.5/y=.4:.6/axes mid1
+def view/x=.5:.9/y=.4:.6/axes mid2
+
+set view mid1
+shade/x=1:10/y=1:10 x+y
+set view mid2
+shade/x=1:10/y=1:10 x-y
+
+can view

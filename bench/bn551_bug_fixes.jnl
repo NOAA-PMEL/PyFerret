@@ -1,0 +1,20 @@
+! bn551_bug_fixes.jnl
+! test various fixes that went into version 5.51
+! 2/03 *acm*
+!
+
+! FILL plots in viewports defined with /AXES, fix clipping bug,
+! and allow color keys to plot beyond viewport limits.
+
+GO bn_reset
+GO err550_view_axes_fill.jnl
+
+
+! position on page was incorrect, of first viewport plotted when 
+! defined as a VIEW/AXES viewport.
+GO bn_reset
+GO err550_view_axes_position.jnl
+
+! SHADE bug: hlimits, vlimits without effect
+GO bn_reset
+GO err550_shade_limits.jnl

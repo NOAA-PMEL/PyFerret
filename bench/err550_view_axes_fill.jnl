@@ -1,0 +1,75 @@
+! err550_view_axes_fill.jnl
+! acm 2/5/03
+! Test FILL plots in viewports defined with /AXES;
+! also let the color keys be plotted in these viewports, unless
+! removed with /nokey
+
+can mode logo
+set win/asp=.5/siz=0.5
+
+define axis/x=-10:10:1 xtest
+define axis/y=-10:10:1 ytest
+
+let test=x[gx=xtest]^2+y[gy=ytest]^2
+
+def vi/x=.1:.9/y=.1:.3/axes bot
+def vi/x=.1:.9/y=.4:.6/axes mid
+def vi/x=.1:.9/y=.6:1 top
+def vi/x=0:.1/y=.1:.3/axes bot1
+def vi/x=0:.1/y=.4:.6/axes mid1
+def vi/x=0:.1/y=.6:1 top1
+
+set vi bot1
+fill/nokey test
+contour/over test
+
+set vi bot
+fill test
+contour/over test
+
+set vi mid1
+shade/nokey test
+contour/over test
+
+set vi mid
+shade test
+contour/over test
+
+set vi top1
+fill/nokey test
+contour/over test
+
+set vi top
+fill test
+contour/over test
+
+
+can view
+set win/asp=2/siz=0.3
+set vi bot1
+fill/nokey test
+contour/over test
+
+set vi bot
+fill test
+contour/over test
+
+set vi mid1
+shade/nokey test
+contour/over test
+
+set vi mid
+shade test
+contour/over test
+
+set vi top1
+fill/nokey test
+contour/over test
+
+set vi top
+fill test
+contour/over test
+
+can view
+set win/clear
+set win/aspect=0.75

@@ -308,7 +308,9 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	IPV=3
 	nl = lnum
 	STOP  'PLOTPOL not yet implemented'
-	GOTO 1000
+* 4/99 *kob* removed this goto - solaris f77 didn't like it and it's not 
+*       really clear why its here - to me anyway
+* 	GOTO 1000
 
 	END
 

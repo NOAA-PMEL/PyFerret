@@ -108,7 +108,8 @@ C
 	    WRITE(ECHLUN,998)'C',LINE(:ILEN)
 	    IF(IPOS.LE.ILEN)WRITE(ECHLUN,FRMT)'C'
 	ENDIF
-	IF(BATCHF)CALL EXIT
+C *kob* 4/99 minor mod - add (0) to exit call
+	IF(BATCHF)CALL EXIT(0)
 	IF(.NOT.TERMF)THEN
 C
 C	     If not interactive abort command file

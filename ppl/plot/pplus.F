@@ -238,7 +238,8 @@ C
 C	IF PPLCMD RETURNS THEN EXIT 
 C
 	CALL CLSPPL
-	CALL EXIT
+C *kob* 4/99 minor mod - add (0) to exit call
+	CALL EXIT(0)
 	END
 
 

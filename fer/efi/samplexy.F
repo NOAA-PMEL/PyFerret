@@ -1,39 +1,6 @@
 *
 * samplexy.F
 *
-*
-*  This software was developed by the Thermal Modeling and Analysis
-*  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
-*  hereafter referred to as NOAA/PMEL/TMAP.
-*
-*  Access and use of this software shall impose the following
-*  obligations and understandings on the user. The user is granted the
-*  right, without any fee or cost, to use, copy, modify, alter, enhance
-*  and distribute this software, and any derivative works thereof, and
-*  its supporting documentation for any purpose whatsoever, provided
-*  that this entire notice appears in all copies of the software,
-*  derivative works and supporting documentation.  Further, the user
-*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
-*  the use of this software or in any product that includes this
-*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
-*  in any advertising or publicity to endorse or promote any products
-*  or commercial entity unless specific written permission is obtained
-*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
-*  is not obligated to provide the user with any support, consulting,
-*  training or assistance of any kind with regard to the use, operation
-*  and performance of this software nor to provide the user with any
-*  updates, revisions, new versions or "bug fixes".
-*
-*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
-*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
-*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
-*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
 * Ansley Manke
 *
 * This function samples 4-d data on the x and y axes indicated by args 2 and 3
@@ -43,6 +10,7 @@
 *
 * 1/13/2000 acm -- fix so that xpts and/or ypts can be on any axis.
 * 3/ 1/2000 ACM -- fix bug in the definition of the work arrays
+* 6/ 8/2000 ACM -- fix bug in incrementing k2, k3, l2, l3
 *
 *
 * In this subroutine we provide information about
@@ -92,8 +60,8 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns data sampled at a set of ',
-     .   '(X,Y) points, using linear interpolation')
+   10 FORMAT ('Returns data sampled at a set of (X,Y) points, ',
+     .   'using linear interpolation')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
@@ -112,12 +80,12 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'XPTS')
-      CALL ef_set_arg_desc(id, arg, 'X coordinates of sample points')
+      CALL ef_set_arg_desc(id, arg, 'X indices of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'YPTS')
-      CALL ef_set_arg_desc(id, arg, 'Y coordinates of sample points')
+      CALL ef_set_arg_desc(id, arg, 'Y indices of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                     ^
 *                                                                     |
@@ -306,7 +274,8 @@
          GO TO 999
       ENDIF
 
-   10 FORMAT('SAMPLEXY Arguments 2 and 3 must be lists of equal length')
+   10 FORMAT(
+     . 'samplexy Arguments 2 and 3 must be lists of equal length')
 
 *  Get x and y coordinates of the data to be sampled.
 
@@ -325,10 +294,12 @@
       k3 = arg_lo_ss(Z_AXIS,ARG3)
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
+
+
 *  For each (xpt,ypt) pair, search the data array arg_1 for the nearest higher
 *  (x,y) grid coordinates.  Interpolate in 2 directions for the result.
 
-      DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      j = res_lo_ss(Y_AXIS)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          ibot = arg_lo_ss(X_AXIS,ARG1)
@@ -347,6 +318,8 @@
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             l1 = arg_lo_ss(T_AXIS,ARG1)
+            l2 = arg_lo_ss(T_AXIS,ARG2)
+            l3 = arg_lo_ss(T_AXIS,ARG3)
             DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
 *  First interpolate in x, getting values of the fcn at (x,jbot)  and (x,jtop)
@@ -393,22 +366,22 @@
 
 
                l1 = l1 + arg_incr(T_AXIS,ARG1)
-               l2 = l2 + arg_incr(T_AXIS,ARG2)
-               l3 = l3 + arg_incr(T_AXIS,ARG2)
+
  300        CONTINUE
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
-            k2 = k2 + arg_incr(Z_AXIS,ARG2)
-            k3 = k3 + arg_incr(Z_AXIS,ARG3)
  400     CONTINUE
 
          i2 = i2 + arg_incr(X_AXIS,ARG2)
-         i3 = i3 + arg_incr(X_AXIS,ARG3)
- 500  CONTINUE
-
          j2 = j2 + arg_incr(Y_AXIS,ARG2)
+         k2 = k2 + arg_incr(Z_AXIS,ARG2)
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+
+         i3 = i3 + arg_incr(X_AXIS,ARG3)
          j3 = j3 + arg_incr(Y_AXIS,ARG3)
- 600  CONTINUE
+         k3 = k3 + arg_incr(Z_AXIS,ARG3)
+         l3 = l3 + arg_incr(T_AXIS,ARG3)
+500   CONTINUE
 
       RETURN
  999  CALL ef_bail_out (id, err_msg)

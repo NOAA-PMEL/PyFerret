@@ -73,6 +73,7 @@
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
 * V450:  5/29/97 - added /NOAXES qualifier (useful in curvilinear plots)
+* V491:  12.98   - added /PATTERN qualifier *jd*
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -103,10 +104,10 @@
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
-     .            do_key, spectrum, set_up, noaxes
+     .            do_key, spectrum, set_up, noaxes, pattern
 	INTEGER	  TM_LENSTR1, status, mr, cx, icntr, slen, sp, ipen,
      .		  ax1_blks, ax1_start, limit, loc,
-     .		  ax2_blks, ax2_start
+     .		  ax2_blks, ax2_start, patt
 	REAL	  vbuf, only_val, aspect
 	PARAMETER (aspect = 0.0)			!kob 12/96
 	CHARACTER TM_FMT*12, LEFINT*4, fname*128
@@ -134,6 +135,10 @@
 	noaxes    = qual_given( slash_noaxes         ).GT.0
         sp        = qual_given( slash_cont_spectrum  )
         spectrum  = sp .GT. 0 .AND. fill
+
+        patt     = qual_given( slash_cont_pattern  )
+        pattern  = patt .GT. 0 .AND. fill
+
 	usa_line  = .NOT.fill
      .          .OR. qual_given( slash_cont_line      ).GT.0
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,
@@ -208,6 +213,17 @@
               CALL PPL_SHASET( 'SPECTRUM='//fname(1:TM_LENSTR1(fname)) )
            ENDIF
 
+* save old and set to new pattern if requested (a la spectrum)
+           IF ( pattern ) THEN
+              CALL EQUAL_STR_LC( 
+     .             cmnd_buff(qual_start(patt):qual_end(patt)),
+     .             fname, status )
+              IF ( status .NE. ferr_ok ) RETURN
+              IF ( fname .EQ. ' ' ) fname = 'default'
+              CALL PPL_PATSET( 'SAVE' )
+              CALL PPL_PATSET( 'PATTERN='//fname(1:TM_LENSTR1(fname)) )
+           ENDIF
+
 * turn off axes? (5/29/97)
 	IF ( noaxes ) CALL PPL_AXES_OFF(set_up)
 
@@ -255,6 +271,11 @@
            IF ( spectrum ) THEN
               CALL PPL_SHASET( 'PROTECT' )
               CALL PPL_SHASET( 'SPECTRUM' )
+           ENDIF
+
+* restore the original pattern
+           IF ( pattern ) THEN
+              CALL PPL_PATSET( 'PATTERN' )
            ENDIF
 
 * restore axes? (5/29/97)

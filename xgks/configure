@@ -121,7 +121,6 @@ fi
     esac
   done
 CPPFLAGS=${CPPFLAGS-"-DNDEBUG"}
-
  CFLAGS=${CFLAGS-"-O"}
 
  

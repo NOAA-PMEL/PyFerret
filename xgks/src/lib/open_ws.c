@@ -217,6 +217,12 @@ gopenws(ws_id, connection, ws_type)
     if (connection == (char *) NULL)
 	connection = getenv("DISPLAY");
 
+    /* Allocate default connection to DISPLAY */
+    if (STRLEN(connection) == 0){
+      connection = malloc(strlen(":0")+1);
+      strcpy(connection, ":0");
+    }
+
     GKSERROR((STRLEN(connection) == 0), 21, errgopenws);
 
     /*
@@ -515,13 +521,9 @@ XgksWsTypeToEnum(ws_type)
 	return MO;
     } else if (STRCMP(ws_type, "WISS") == 0) {
 	return WISS;
-    } else if (ws_type == NULL) {
-	return X_WIN;
-    } else if (strchr(ws_type, ':') != 0) {
-	return X_WIN;
     } else {
-	return WST_INVALID;
-    }
+	return X_WIN;
+    } 
 }
 
 

@@ -53,6 +53,7 @@
  * 2.17.98 Modified workstation initialization code to use XgksMaxColours
  * to avoid setting the number of colors used in two places *js* 
  * 
+ * 2.99 Print error message if no connection to X server obtained *js*
  */
 
 /*LINTLIBRARY*/
@@ -214,6 +215,13 @@ InsureConn(wk)
 	wk->wclmp = wk_p->dclmp;
     } else {					/* Open a new display */
 	if ((wk->dpy = XOpenDisplay(wk->conn)) == NULL) {
+	  if (wk->conn == NULL){
+	    fprintf(stderr, "\nNo DISPLAY environment variable has been defined\n");
+	  } else {
+	    fprintf(stderr, "\nCan't connect to X Server %s\n", wk->conn);
+	  }
+	  fprintf(stderr, "Your DISPLAY environment variable must be set to\n");
+	  fprintf(stderr, "point to a working X server.\n\n");
 	    status = 26;
 	} else {
 	    char           *ptr = DisplayString(wk->dpy);

@@ -18,7 +18,7 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I../gui \
 		  -I../../fmt/cmn \
 		  -I../../ppl/include \
-		  -I. -Ireadline 
+		  -I. -I$(TMAP_LOCAL)/include/readline
 
 FINCLUDES	= -I../../ppl/tmap_inc \
 		   -I../include -I../../fmt/cmn \
@@ -59,6 +59,8 @@ ostLIB 	 = /usr/lib/libost.a
 SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) $(otsLIB) -lX11 -llist $(dnetLIB) $(SMLIB) $(ICELIB) 
 
 TMLIB		= ../lib/tmap_lib.a
+
+READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 

@@ -131,6 +131,7 @@ ferret:
 		$(PPLLIBS) \
 		$(MOVIELIB) \
 		$(TMLIB) \
+		$(READLINELIB) \
 		-ltermcap \
 		$(CDFLIB) \
 		$(HDFLIB) \

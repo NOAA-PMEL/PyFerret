@@ -1,0 +1,11 @@
+! err550_nc_seconds.jnl
+! 2/12/03 ACM
+
+! When the time origin is specified in a NetCDF file as 
+! "10-JUN-1996 04:03:36", the seconds are read incorrectly. 
+! If it's written as "1996-06-10 04:03:36" it is read OK
+
+use time_axis_seconds.nc
+
+sp "ncdump time_axis_seconds.nc | grep origin"
+list t[gt=height]

@@ -25,5 +25,8 @@ GO err550_redefine_calendar_axis.jnl
 
 ! Bug in defining axis from an expression.
 GO bn_reset
-GO err550_redefine_calendar_axis.jnl
+GO err550_define_axis_expression.jnl
 
+! Bug in reading seconds from time origin in nc file.
+GO bn_reset
+GO err550_nc_seconds.jnl

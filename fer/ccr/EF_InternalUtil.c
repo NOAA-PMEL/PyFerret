@@ -55,8 +55,12 @@
  *  1.  Function declaration lines.  Need to edit these to have
  *      the correct number of arguments for the _compute subroutines.
  *  2.  definition of N_INTEF and structure I_EFnames
- *  3.  
+ *  3.  internal_dlsym lines at the end
 
+* Jonathan Callahan and Ansley Manke  30-May-2000
+ * Fix memory leak:  already_have_internals needs to be tested for when 
+ * we find the external function in efcn_gather_info  and set TRUE once
+ * the internals have been set for the first time, also in efcn_gather_info.
 
 /* .................... Includes .................... */
  
@@ -541,6 +545,8 @@ void *internal_dlsym(char *);
 
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
 
+  if (ef_ptr->already_have_internals)  { return return_val; }
+
   if ( (!strcmp(ef_ptr->path,"internally_linked")) ) {internally_linked = TRUE; }
 
   /*
@@ -619,6 +625,8 @@ void *internal_dlsym(char *);
     }
 
     (*f_init_ptr)(id_ptr);
+
+    ef_ptr->already_have_internals = TRUE;
 
     /*
      * Restore the old signal handlers.

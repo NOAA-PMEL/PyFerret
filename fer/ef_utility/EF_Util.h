@@ -6,6 +6,7 @@
  * This is the header file to be included by routines which
  * are part of the Ferret External Function library.
  *
+ * 990422 *jc* Changed "work_array_len" to "work_array_lo/hi"
  */
  
  
@@ -30,7 +31,7 @@
 #define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
 #define FERR_EF_ERROR 437  /* This should match the ferr_ef_error parameter in errmsg.parm. */
 
-#define EF_VERSION 1.2
+#define EF_VERSION 1.3
 
 #define EF_MAX_NAME_LENGTH 40
 #define EF_MAX_DESCRIPTION_LENGTH 128
@@ -74,7 +75,8 @@ typedef struct {
   int  language;
   int  num_reqd_args, has_vari_args;
   int  num_work_arrays;
-  int  work_array_len[EF_MAX_WORK_ARRAYS][4];
+  int  work_array_lo[EF_MAX_WORK_ARRAYS][4];
+  int  work_array_hi[EF_MAX_WORK_ARRAYS][4];
   int  axis_will_be[4];
   int  axis_reduction[4];
   int  piecemeal_ok[4];

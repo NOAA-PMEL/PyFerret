@@ -2015,10 +2015,12 @@ void DatasetNameList_AddDODS()
       while (fscanf(fp,"%s",dset) == 1) {
 	list_insert_after(GLOBAL_DatasetNameList, dset, sizeof(dset));
       }
+      /* close the $HOME/.ferret_dods_data file */
+      /* 5/00 v5.11 *kob* only close the file if its actually been
+	 opened   */
+      if (fclose(fp) != 0) 
+	fprintf (stderr, "Error closing .ferret_dods_data file");
     }
-    /* close the $HOME/.ferret_dods_data file */
-    if (fclose(fp) != 0) 
-      fprintf (stderr, "Error closing .ferret_dods_data file");
   }
 }
 

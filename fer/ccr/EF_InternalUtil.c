@@ -145,6 +145,7 @@ void FORTRAN(efcn_get_arg_desc)( int *, int *, char * );
 
 /* Fortran routines from the efn/ directory */
 void FORTRAN(efcn_copy_array_dims)(void);
+void FORTRAN(efcn_set_work_array_dims)(int *, int *, int *, int *, int *);
 void FORTRAN(efcn_get_workspace_addr)(float *, int *, float *);
 
 static void EF_signal_handler(int);
@@ -784,6 +785,15 @@ ERROR in efcn_compute() accessing %s\n", tempText);
       (*fptr)( id_ptr );
 
       for (j=0; j<i_ptr->num_work_arrays; i++, j++) {
+
+        int iarray,xlen,ylen,zlen,tlen;
+        iarray = j+1;
+        xlen = i_ptr->work_array_len[j][0];
+        ylen = i_ptr->work_array_len[j][1];
+        zlen = i_ptr->work_array_len[j][2];
+        tlen = i_ptr->work_array_len[j][3];
+
+        FORTRAN(efcn_set_work_array_dims)(&iarray,&xlen,&ylen,&zlen,&tlen);
 
         size = sizeof(float);
         for (xyzt=0; xyzt<4; xyzt++) {

@@ -46,14 +46,10 @@
 * V450: 12/96 - add check for grid changing functions
 * V500: 12/98 *sh* - add check for alg_const_var (like "{1,3,5}")
 *	 1/99 *sh* - add check for alg_string
+* v554:  1/04 *acm* - add check for alg_counter_var
 
-#ifdef unix
 	include		'ferret.parm'
 	include		'rpn.parm'
-#else
-	INCLUDE		'FERRET_CMN:FERRET.PARM'
-	INCLUDE		'FERRET_CMN:RPN.PARM'
-#endif
 
 	integer 	ndx,ptr,atom_type(*),atom_id(*)
 
@@ -65,7 +61,7 @@
      .			3,4,9,10,9,10,9,10,9,10,9,10,7,8/
 	integer		punc_prc(2,3)
 	DATA		punc_prc/0,-999,23,0,0,-999/
-	integer		atom_prc(2,alg_string) ! (2,14->16) for V500 
+	integer		atom_prc(2,alg_counter_var)
 
 ! V450: 12/96 - added initializations for alg_grid_chg_fcn and alg_child_var
 	DATA	(atom_prc(i,alg_operator),i=1,2)/-888,-888/,
@@ -81,6 +77,7 @@
      .		(atom_prc(i,alg_child_var),i=1,2)/21,22/,
      .		(atom_prc(i,alg_const_var),i=1,2)/21,22/,
      .		(atom_prc(i,alg_string),i=1,2)/21,22/
+     .		(atom_prc(i,alg_counter_var),i=1,2)/21,22/
 
 ********************************************************************************
 

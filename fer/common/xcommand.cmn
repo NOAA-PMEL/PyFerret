@@ -17,6 +17,8 @@
 * V540: 10/01 *sh* - added alias COLUMNS for SET DATA/FORMAT=Delimited
 *       10/01*acm*- increased number of qualifiers for CONTOUR  (/AXES=)
 *       10/01 *kob* - increase number of qualifiers for EXIT (LOOP/SCRIPT, etc)
+* V553   9/03 *acm* - increased number of qualifiers for SHOW AXIS
+* V554   1/04 *acm* - increased number of quals for REPEAT command
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -125,7 +127,7 @@
      .			nqual2a = 1, nqual_at2b = nqual_at2a + nqual2a,	!'    '
      .			nqual2b = 1, nqual_at2c = nqual_at2b + nqual2b,	!'WIND'
      .			nqual2c = 1, nqual_at2d = nqual_at2c + nqual2c,	!'REGI'
-     .			nqual2d =12, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
+     .			nqual2d =16, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
      .			nqual2e = 1, nqual_at2f = nqual_at2e + nqual2e,	!'EXPR'
      .			nqual2f = 1, nqual_at2g = nqual_at2f + nqual2f,	!'LIST'
      .			nqual2g =10, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
@@ -207,7 +209,7 @@
 	INTEGER		nsub6      , nsub_at7  ,
      .			nqual6a    , nqual_at7a
 	PARAMETER    (	nsub6   = 1, nsub_at7   = nsub_at6   + nsub6,
-     .			nqual6a =34, nqual_at7a = nqual_at6a + nqual6a  )
+     .			nqual6a =38, nqual_at7a = nqual_at6a + nqual6a  )
 
 * GO		 - commmand # 7
 	INTEGER		nsub7      , nsub_at8   ,
@@ -263,7 +265,7 @@
 	INTEGER		nsub13       , nsub_at14 ,
      .			nqual13a     ,nqual_at14a
 	PARAMETER    (	nsub13   = 1, nsub_at14    = nsub_at13   + nsub13,
-     .			nqual13a = 34,nqual_at14a  = nqual_at13a + nqual13a  )
+     .			nqual13a = 38,nqual_at14a  = nqual_at13a + nqual13a  )
 
 * PPLUS		 - commmand # 14
 	INTEGER		nsub14      , nsub_at15 ,
@@ -281,7 +283,7 @@
 	INTEGER		nsub16       , nsub_at17 ,
      .			nqual16a     ,nqual_at17a
 	PARAMETER    (	nsub16   = 1, nsub_at17    = nsub_at16   + nsub16,
-     .			nqual16a =13,nqual_at17a  = nqual_at16a + nqual16a  )
+     .			nqual16a =17,nqual_at17a  = nqual_at16a + nqual16a  )
 
 * STATISTICS		 - commmand # 17
 	INTEGER		nsub17       , nsub_at18 ,
@@ -347,7 +349,7 @@
 	INTEGER		nsub27       , nsub_at28 ,
      .			nqual27a     ,nqual_at28a
 	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
-     .			nqual27a = 34,nqual_at28a  = nqual_at27a + nqual27a  )
+     .			nqual27a = 40,nqual_at28a  = nqual_at27a + nqual27a  )
 
 * ****/****/**** - command number 28
 	INTEGER		nsub28       , nsub_at29 ,

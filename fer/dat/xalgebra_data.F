@@ -80,6 +80,7 @@
 * V533   6/01 - *sh* - added transformation @EVNT
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use character constant instead
+* V554 1/04 *acm* - additions for /RANGE repeat loop control; alg_cvar, countervar_name
 
 #ifdef unix
 	include	'ferret.parm'
@@ -358,6 +359,8 @@
      .       alg_pvar	( 18 ) / 'YBOXHI  ' /,
      .       alg_pvar	( 19 ) / 'ZBOXHI  ' /,
      .       alg_pvar	( 20 ) / 'TBOXHI  ' /
+        DATA alg_cvar        /60*unspecified_name4/
+        DATA countervar_name /60*unspecified_name4/
 
 	DATA
      .		alg_trans_text ( 1 )	/ 'AV4' 		/, 

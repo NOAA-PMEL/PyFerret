@@ -55,8 +55,8 @@
 *       don't get confused
 * V510 5/00 *sh* - don't match on a cvar unless the data set indicates
 *	Philander-Seigel
+* V554 1/04 *acm* Add category cat_counter_var
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -66,15 +66,6 @@
 	include 'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
 	include	'xdset_parms.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		dset_num, category, variable
@@ -87,14 +78,23 @@
 * initialize
 	single_dset = dset_num .NE. unspecified_int4
 
-* start by checking pseudo-variables names
-	DO 10 ivar = 1, num_pseudo_vars
+* start by checking counter variable names
+	DO 10 ivar = 1, num_counter_vars
+	   IF ( MATCH_NAME( test_name, countervar_name(ivar) ) ) THEN
+	      category = cat_counter_var
+	      variable = ivar
+	      RETURN
+	   ENDIF
+ 10	CONTINUE
+
+* check pseudo-variables names
+	DO 20 ivar = 1, num_pseudo_vars
 	   IF ( MATCH_NAME( test_name, alg_pvar(ivar) ) ) THEN
 	      category = cat_pseudo_var
 	      variable = ivar
 	      RETURN
 	   ENDIF
- 10	CONTINUE
+ 20	CONTINUE
 
 * check data user-defined variables
 * ... first check for an explicitly named data set

@@ -22,6 +22,7 @@ is_algebra.F\
 is_calc.F\
 is_constant.F\
 is_const_var.F\
+is_counter_var.F\
 is_do_gc_fcn.F\
 is_do_op.F\
 is_gather.F\

@@ -90,6 +90,7 @@
 *		COMPLETE_MISSING_LIMITS inserts full EZ ax limits)
 * V533: 6/01 *sh* - added @EVNT
 * V541: 2/02 *sh* - added support for modulo lengths (subspan modulo)
+* V554 1/04 *acm* - additions for /RANGE repeat loop control
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -266,13 +267,17 @@
 	cat = cx_category( cx )
 	var = cx_variable( cx )
 
-* constants and pseudo-variables may be handled immediately
+* constants and pseudo-variables and counter variables may be handled immediately
 * ... get user variable grids if unknown
 	IF     ( cat .EQ. cat_pseudo_var ) THEN
 	   CALL IS_PSEUDO ( memory, *2000, status )
 	   GOTO 5000
 	ELSEIF ( cat .EQ. cat_constant ) THEN
 	   CALL IS_CONSTANT( memory, *2000, status )
+	   GOTO 5000
+* ... get a counter variable
+	ELSEIF ( cat .EQ. cat_counter_var ) THEN
+	   CALL IS_COUNTER_VAR   (var, memory, *2000, status )
 	   GOTO 5000
 	ENDIF
 
@@ -424,6 +429,11 @@
 	ELSEIF ( cat .EQ. cat_string	) THEN
 	   CALL IS_STRING   ( memory, *10, *2000, status )
 	   GOTO 5000
+
+* ... get a counter variable
+c	ELSEIF ( cat .EQ. cat_counter_var ) THEN
+c	   CALL IS_COUNTER_VAR   ( var, memory, *10, *2000, status )
+c	   GOTO 5000
 
 	ELSE
 	   STOP 'is_unkn_object'

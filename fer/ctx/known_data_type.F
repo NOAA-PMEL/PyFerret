@@ -39,6 +39,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V533:  7/01
+* V554 1/04 *acm* - add counter_var 
 
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -82,6 +83,11 @@
 	ELSEIF ( category .EQ. cat_temp_var ) THEN
 
 	   cx_type(cx) = mr_type( variable )
+
+
+	ELSEIF ( category .EQ. cat_counter_var ) THEN
+
+	   cx_type(cx) = ptype_float
 
 	ELSE
 

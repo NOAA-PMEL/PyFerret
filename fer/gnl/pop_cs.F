@@ -52,25 +52,20 @@
 *	(The need to do this represents a bug somewhere up the line -- region
 *		information is used without regard to cx_by_ss)
 *	see err522_repeat_leftover.jnl
- 
-* internal variable declarations:
-	INTEGER	LIB_FREE_LUN, stat, axis
+* V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control; reset repeat controls.
 
-#ifdef unix
+* internal variable declarations:
+	INTEGER	LIB_FREE_LUN, stat, axis, ivar, cvar
+        LOGICAL MATCH_NAME
+
 	include 'ferret.parm'
 	include 'command.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xcontrol.cmn'
         include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-        INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
+        include 'xalgebra.cmn'
+
 
 * internal error ?
 	IF ( csp .LT. 1 ) STOP 'csp_undflw'
@@ -105,6 +100,25 @@
               cx_lo_ss (cx_last,axis) = unspecified_int4
               cx_hi_ss (cx_last,axis) = unspecified_int4
            ENDIF
+
+* clean up counter variable 
+
+           cvar = 0
+	   DO 20 ivar =  num_counter_vars, 1, -1
+	      IF ( MATCH_NAME( cs_repeatname(csp), countervar_name(ivar) ) ) THEN
+                cvar = ivar
+                GOTO 1000
+              ENDIF
+  20	   CONTINUE
+1000       CONTINUE
+
+           IF (cvar .GT. 0) THEN
+              countervar_name(cvar) = unspecified_name4
+              alg_cvar( cvar ) = unspecified_name4
+              cs_repeatname( csp ) = unspecified_name4
+              csp_cvar( csp ) = unspecified_int4
+           ENDIF
+
 	ENDIF
 	csp = csp - 1
 

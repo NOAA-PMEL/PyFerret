@@ -54,20 +54,14 @@
 *                 need to put single  tick between double quotes  *kob*
 * V500: 12/98 - allow "{1,3,5}" notation
 *	 1/99 - allow strings in double quotes (as args to function)
+* V553:1/04   - check variable to see if its a counter_var.
+* V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'rpn.parm'
 	include 'xalgebra.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		natom, at_start(maxatoms), at_end(maxatoms),
@@ -75,9 +69,9 @@
 	CHARACTER*(*)	text
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_LEGAL_NAME
+	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, MATCH_NAME
 	INTEGER		STR_MATCH, GCF_FIND_FCN,
-     .			imatch, i, i2, brac_pos, aend
+     .			imatch, i, i2, j, brac_pos, aend
 
 	DO 100 i = 1, natom
 
@@ -189,6 +183,20 @@
 	      ENDIF
 	   ENDIF
  200	CONTINUE
+
+* Just see if it is in the list of counter variables.  These need to be
+* treated as a constant at the start of interp_stack (in is_uvar_grid and so on)
+
+* start by checking counter variable names
+	DO 240 i = 1, natom
+           DO 220 j = 1, num_counter_vars
+              IF ( MATCH_NAME(text(at_start(i):at_end(i)), 
+     .             countervar_name(j) ) ) THEN
+	         at_type(i) = alg_counter_var
+	         at_id(i)   = unspecified_int4
+	      ENDIF
+ 220	   CONTINUE
+ 240	CONTINUE
 
 * 12/96 kludge ...
 * In ALG_BREAK_UP the operators EQ, LT, GT, ... are just names so that routine

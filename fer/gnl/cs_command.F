@@ -67,6 +67,8 @@
 *                   flushed to the screen
 * v541 *kob* 8/02 - for animating, check for Xserver backingstore and
 *                   don't animate if it's not set
+* V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
+
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
 * RETURN 1 - used when no command can be supplied
@@ -74,9 +76,11 @@
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40,anim_win_id*16,GKS_X_CONID*16
-	INTEGER  anim_id, bs, ws_id
-	
-#ifdef unix
+	INTEGER  TM_LENSTR1, slen, anim_id, bs, ws_id
+        CHARACTER*10 TM_FMT, out_buff
+        REAL    val
+        LOGICAL range
+
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
@@ -90,16 +94,6 @@
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	                ! with gks common
 
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
-
 	IF ( interrupted ) THEN
 * *kob* if we are animating, stop and reset active window
 	   IF (animate .EQV. .TRUE.) THEN
@@ -112,6 +106,7 @@
 
 ***** REPEAT loop *******
 * done yet ?
+           range = .FALSE.
 	   IF ( (cs_limit(csp)-cs_phase(csp))*cs_delta(csp)
      .          .LT. 0.0 ) THEN
 * ... yes
@@ -185,15 +180,29 @@
 *       ... no - get the next command
 	      cmnd_line = cs_text( csp )
 * ... set up the default context to evaluate the command
-	      CALL CS_SET_CONTEXT
+              range = (cs_repeatname( csp ) .NE. unspecified_name4)
+	      IF (.NOT. range) CALL CS_SET_CONTEXT
+              IF (range) THEN
+                 val = cs_phase( csp )
+                 out_buff = TM_FMT(val,10,10,len_rbuff)
+              ENDIF
+
 * ... prepare for next time around	   
-	   cs_phase( csp ) = cs_phase( csp ) + cs_delta( csp )
+	      cs_phase( csp ) = cs_phase( csp ) + cs_delta( csp )
 	   ENDIF
 
 * ... echo the progress so the operator can monitor
            IF ( mode_verify ) THEN
-              risc_buff = CX_DIM_STR( cs_axis(csp), cx_last, ':',
+              IF (.NOT. range) THEN
+                 risc_buff = CX_DIM_STR( cs_axis(csp), cx_last, ':',
      .             .TRUE., len_rbuff )
+              
+              ELSE
+                 slen = TM_LENSTR1(cs_repeatname(csp))
+                 risc_buff = cs_repeatname(csp)(1:slen)//':'//out_buff(1:len_rbuff)
+                 len_rbuff = TM_LENSTR1(risc_buff)
+               ENDIF
+
 	      CALL SPLIT_LIST(pttmode_ops, ttout_lun, '!-> REPEAT: '
      .                           //risc_buff(1:len_rbuff), 12+len_rbuff)
            ENDIF

@@ -31,6 +31,7 @@ copy_ptr_into_sub.F\
 copy_into_sub.F\
 copy_ptr_grid_sub.F\
 count_number_list.F\
+create_counter_list.F\
 cstring_insert.F\
 de_escape_string.F\
 deallo_all_axes.F\

@@ -87,6 +87,7 @@
 *                   i.e. for a transformation specifier)
 * v552: 5/03 *acm*  Use just the current item when dealing w/ G=uvar with 
 *                   target grid not yet known (intermediate variable buff)
+* v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 
 * calling argument declarations:
 	INTEGER	status
@@ -160,6 +161,8 @@
 	   GOTO 400
 	ELSEIF ( itype .EQ. alg_constant    ) THEN
 	   GOTO 410
+	ELSEIF ( itype .EQ. alg_counter_var   ) THEN
+	   GOTO 420
 	ELSEIF ( itype .EQ. alg_then_marker ) THEN  ! marks where the IF was
 	   GOTO 450
 	ELSE
@@ -272,6 +275,24 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	   hi_cx = cx_stack_ptr
            CALL CONSTANT_CONTEXT ( uvar_text(uvar)(start:end),
+     .                             lo_cx,
+     .                             hi_cx,
+     .                             status )
+           IF ( status .NE. ferr_ok ) RETURN
+	   cx_type(big_cx) = cx_type(hi_cx)
+	   cx_stack_ptr = cx_stack_ptr - 1
+	ENDIF
+	GOTO 100
+
+* counter variable (repeat/range=)
+* this block is only for the purpose of setting the data type of the result
+! ... The grid is unspecified for a constant
+ 420	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
+	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   hi_cx = cx_stack_ptr
+           name = '1'
+           CALL CONSTANT_CONTEXT ( name,
      .                             lo_cx,
      .                             hi_cx,
      .                             status )

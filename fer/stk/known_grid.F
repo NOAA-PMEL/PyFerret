@@ -44,21 +44,15 @@
 *
 * V200:   7/6/89 - based on IGRID
 * V230:  7/21/92 - check for unspecified data set on calc_var
+* v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
 	include	'xvariables.cmn'
 	include	'xcalc_vars.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-#endif
+        include 'xfr_grid.cmn'
 
 * calling argument declarations:
 	INTEGER	data_set, category, variable
@@ -92,13 +86,13 @@
 	   ENDIF
 	   KNOWN_GRID = uvar_grid( variable, dset )
 
-
-
 	ELSEIF ( category .EQ. cat_temp_var ) THEN
 
 	   KNOWN_GRID = mr_grid( variable )
 
+	ELSEIF ( category .EQ. cat_counter_var ) THEN
 
+	   KNOWN_GRID = mgrid_xabstract
 
 	ELSE
 

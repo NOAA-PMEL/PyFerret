@@ -53,6 +53,7 @@
 * v553 *kob* 9/03- need to add buff, slen for assignment of VAR_UNITS - 
 *                  g77 bug would cause crash when trying to prepend chars
 *                  onto CHAR function variable 
+* v554 *acm* 1/04 - add variable category cat_counter_var
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -104,7 +105,8 @@
 	ELSEIF ( category .EQ. cat_pseudo_var 
      .	   .OR.  category .EQ. cat_constant
      .	   .OR.  category .EQ. cat_string
-     .	   .OR.  category .EQ. cat_const_var ) THEN
+     .	   .OR.  category .EQ. cat_const_var
+     .	   .OR.  category .EQ. cat_counter_var ) THEN
 
 	   VAR_UNITS = ' '
 

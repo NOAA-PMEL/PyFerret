@@ -46,16 +46,11 @@
 * V450: 12/96 - add checks for grid changing functions and child variables
 * V500: 12/98 *sh*  added alg_const_var -- for fixed arrays such as "{1,3,5}"
 *	 1/99 - added alg_string   
+* V554 1/04 *acm* Add category alg_counter_var for counter variables; REPEAT/RANGE=/NAME=
 
-#ifdef unix
 	include		'ferret.parm'
 	include		'rpn.parm'
 	include		'xalgebra.cmn'
-#else
-	INCLUDE		'FERRET_CMN:FERRET.PARM'
-	INCLUDE		'FERRET_CMN:RPN.PARM'
-	INCLUDE		'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 	CHARACTER	punct*1
 	integer		las_ptr,inf_ptr,atom_type(*),atom_id(*)
@@ -100,7 +95,8 @@
      .	   .or.	atom_type(atom(i)) .eq. alg_const_var
      .	   .or.	atom_type(atom(i)) .eq. alg_string
      .	   .or.	atom_type(atom(i)) .eq. alg_child_var
-     .	   .or. atom_type(atom(i)) .eq. alg_operand ) then
+     .	   .or. atom_type(atom(i)) .eq. alg_operand
+     .	   .or. atom_type(atom(i)) .eq. alg_counter_var ) then
 	      ndx(i) = 3
 	      goto 100
 	   end if

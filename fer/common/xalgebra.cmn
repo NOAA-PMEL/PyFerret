@@ -5,10 +5,12 @@
 * V430: added trans_4d
 * V450: added descriptions of functions
 * V510: *sh* reordered elements to avoid "padding before alg_4d_trans"
+* V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,
-     .			num_transforms,  max_4d_trans, max_fcn_args
+     .			num_transforms,  max_4d_trans, max_fcn_args,
+     .                  num_counter_vars, cvar_text_len
 	PARAMETER     (	num_operators   = 18,
      .			num_functions   = 25,
      .			num_pseudo_vars = 20,
@@ -16,7 +18,9 @@
      .			num_punctuations = 3,
      .			num_transforms	= 60,
      .			max_4d_trans    = 10,
-     .			max_fcn_args    = 75 )
+     .			max_fcn_args    = 75,
+     .                  num_counter_vars = 60,
+     .                  cvar_text_len    = 128)
 
 	INTEGER		offset_operators, offset_functions, offset_logic_struc
 	PARAMETER     (	offset_operators   = 0,
@@ -45,7 +49,10 @@
      .				alg_fcn_descr,
      .				alg_arg_name,
      .				alg_arg_units,
-     .				alg_arg_descr
+     .				alg_arg_descr,
+     .                          alg_cvar,
+     .                          countervar_name,
+     .                          csp_cvar
 
 	INTEGER		alg_num_fcn_args ( num_functions ),
      .			alg_fcn_arg_ptr  ( num_functions )
@@ -59,6 +66,9 @@
 	CHARACTER*1	alg_punct	 ( num_punctuations )
 	CHARACTER*8	alg_struct	 ( num_log_structs )
 	CHARACTER*8	alg_pvar         ( num_pseudo_vars )
+	CHARACTER*128	alg_cvar         ( num_counter_vars )
+        CHARACTER*128   countervar_name  ( num_counter_vars )
+        INTEGER         csp_cvar         ( num_counter_vars )
 	CHARACTER*3	alg_trans_text	 ( num_transforms )
 	CHARACTER*20	alg_trans_title	 ( num_transforms )
 !	CHARACTER*3	alg_regrid_code	 ( max_regrid_trans )   ! chg 11/95

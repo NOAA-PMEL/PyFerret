@@ -39,6 +39,7 @@
 
 
 * V533 *sh* 7/01
+* v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 
 * calling argument declarations
 	INTEGER	uvar
@@ -77,7 +78,8 @@
 
 * constants and pseudo-variables are known to be numeric
 	  IF   ( itype .EQ. alg_constant   
-     .	  .OR.   itype .EQ. alg_pseudo_var ) THEN
+     .	  .OR.   itype .EQ. alg_pseudo_var 
+     .	  .OR.   itype .EQ. alg_counter_var ) THEN
 	     GOTO 1000
 
 	  ELSEIF (

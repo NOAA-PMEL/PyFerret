@@ -49,18 +49,12 @@
 * V500: 12/98 *sh* - update this neglected, untested routine to recognize
 *	alg_grid_chg_fcn, alg_child_var, and alg_const_var
 *        1/99 -- and alg_string
+* V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'rpn.parm'
 	include 'xalgebra.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		atom_type(maxatoms),atom_id(maxatoms),
@@ -97,7 +91,8 @@
      .	   .OR.  atom_type(atom) .EQ. alg_grid_chg_fcn
      .	   .OR.  atom_type(atom) .EQ. alg_child_var
      .	   .OR.  atom_type(atom) .EQ. alg_string
-     .	   .OR.  atom_type(atom) .EQ. alg_const_var ) THEN
+     .	   .OR.  atom_type(atom) .EQ. alg_const_var
+     .	   .OR.  atom_type(atom) .EQ. alg_counter_var ) THEN
 	   GOTO 10	
 	ENDIF
 	STOP 'NOT_RPN'

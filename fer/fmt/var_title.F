@@ -62,6 +62,7 @@
 * v553 *kob* 9/03- need to add buff, slen for assignment of VAR_TITLE - 
 *                  g77 bug would cause crash when trying to prepend chars
 *                  onto CHAR function variable 
+* v554 *acm* 1/04 - add variable category cat_counter_var
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -154,6 +155,10 @@
            start = uvar_item_start( item, uvar )
            end   = uvar_item_end  ( item, uvar )
 	   var_title = uvar_text(uvar)(start:end)
+
+	ELSEIF ( cat .EQ. cat_counter_var ) THEN
+
+	   var_title = 'counter'
 
 	ELSE
 

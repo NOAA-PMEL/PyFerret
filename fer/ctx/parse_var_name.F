@@ -61,6 +61,7 @@
 *		from the COMMON area.
 * V530:  8/00 *sh* - set the variables data type
 * V550: 10/02 *acm*- Look for @ in full_var_name when determining name_len
+* V554 1/04 *acm* - add category cat_counter_var
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -169,6 +170,8 @@
 	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
 	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
 	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
+	   cx_type(var_cx) = ptype_float
+	ELSEIF (cx_category(var_cx) .EQ. cat_counter_var ) THEN
 	   cx_type(var_cx) = ptype_float
 	ELSE
 	   cx_type(var_cx) = unspecified_int4 ! inheritedt from definition

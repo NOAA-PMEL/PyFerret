@@ -88,6 +88,7 @@
 * v552: 4/03 *acm*  Increase length of variable names to 128 characters
 *                   (variables are up to 128, so **name** needs extra space
 *                   i.e. for a transformation specifier)
+* v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -96,6 +97,9 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
+        include 'xcontrol.cmn'
+        include 'xalgebra.cmn'
+
 
 * calling argument declarations:
 	INTEGER	isp_base, status
@@ -112,8 +116,10 @@
      .		MGRID_SIZE, hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
      .		start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
-     .		nitem, new_mr, len_name
-	CHARACTER name*150
+     .		nitem, new_mr, len_name, idig, csp1, cat, cvar
+        REAL    counter_const
+
+	CHARACTER TM_FMT*150,name*150
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -259,6 +265,8 @@
 	ELSEIF ( itype .EQ. alg_if_marker
      .	    .OR. itype .EQ. alg_then_marker ) THEN
 	   GOTO 100
+	ELSEIF ( itype .EQ. alg_counter_var ) THEN
+	   GOTO 210
 	ELSE
 	   STOP 'unknown algebraic category'
 	ENDIF
@@ -269,6 +277,31 @@
 	IF ( status .NE. ferr_ok ) RETURN
 	hi_cx = cx_stack_ptr
 	CALL CONSTANT_CONTEXT   ( uvar_text(uvar)(start:end),
+     .				  lo_cx,
+     .				  hi_cx,
+     .				  status )
+	IF ( status .NE. ferr_ok ) RETURN
+* ... request this constant on the interpretation stack ( via RETURN 1 )
+	CALL PUSH_INTERP_STACK( isp, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	is_cx ( isp ) = hi_cx
+	is_obj( isp ) = lo_isp	! claimed by this level
+	RETURN 1
+        
+* counter (REPEAT/RANGE=/NAME=)
+* ... allocate a context buffer, dummy constant value which is replaced
+* ... later when the counter is evaluated.
+ 210	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	hi_cx = cx_stack_ptr
+        
+* as in cs_command 
+        
+        CALL find_var_name (dset, uvar_text(uvar)(start:end), cat, cvar)
+        csp1 = csp_cvar(cvar)
+	counter_const = cs_phase( csp1 ) - cs_delta( csp1 )
+        name = TM_FMT(counter_const, idig, 150, len_name)
+	CALL CONSTANT_CONTEXT   ( name,
      .				  lo_cx,
      .				  hi_cx,
      .				  status )

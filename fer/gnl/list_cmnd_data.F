@@ -71,6 +71,7 @@
 *	           - expanded and reorganized the LIST heading
 * V552   2/03 *acm*- Increase line_buff to 10000
 * v553   9/03 *kob*- Increase GET_STRING_ELEMENT to 512 
+* V554   4/03 *acm*-For REPEAT/RANGE vars, add check for dset = unspecified_int4
 
 
 	include 'tmap_dims.parm'
@@ -212,7 +213,8 @@
 
 * ... then DATA SET
 	dset = cx_data_set(cx)
-	IF ( dset .NE. pdset_irrelevant ) THEN
+	IF ( dset .NE. pdset_irrelevant .AND.        ! for REPEAT/RANGE vars, add 
+     .       dset .NE. unspecified_int4) THEN        ! check for unspecified_int4
 * ... title
 	   CALL GET_DSET_TITLE( cx_data_set(cx), line_buff, slen )
 	   IF (line_buff .NE. ' ') THEN

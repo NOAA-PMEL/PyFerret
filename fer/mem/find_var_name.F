@@ -55,8 +55,9 @@
 *       don't get confused
 * V510 5/00 *sh* - don't match on a cvar unless the data set indicates
 *	Philander-Seigel
-* V554 1/04 *acm* Add category cat_counter_var
+* V54 1/04 *acm* Add category cat_counter_var
 *  ywei 05/04 change MATCH_NAME and MATCH_QUOTED_NAME function calls to speed up
+* v570  06/04 changes to continuation lines for Solaris compiler
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -84,7 +85,7 @@
 	DO 10 ivar = 1, num_counter_vars
            len_mchars = TM_LENSTR(countervar_name(ivar))
 	   IF ( MATCH_NAME( test_name, len_test,
-        1	   countervar_name(ivar),len_mchars ) ) THEN
+     1	      countervar_name(ivar),len_mchars ) ) THEN
 	      category = cat_counter_var
 	      variable = ivar
 	      RETURN
@@ -95,7 +96,7 @@
 	DO 20 ivar = 1, num_pseudo_vars
            len_mchars = TM_LENSTR(alg_pvar(ivar))
 	   IF ( MATCH_NAME( test_name, len_test, alg_pvar(ivar),len_mchars)) 
-        1	   THEN
+     1	        THEN
 	      category = cat_pseudo_var
 	      variable = ivar
 	      RETURN
@@ -110,7 +111,7 @@
 	      IF ( uvar_dset( ivar ) .NE. dset_num ) GOTO 40
               len_mchars = TM_LENSTR(uvar_name_code(ivar))
 	      IF ( MATCH_QUOTED_NAME(test_name,len_test, uvar_name_code(ivar), len_mchars))
-	1	   THEN
+     1  	   THEN
 	         category = cat_user_var
 	         variable = ivar
 	         RETURN
@@ -125,7 +126,7 @@
 	         IF ( uvar_dset( ivar ) .NE. uvdset ) GOTO 60
                  len_mchars = TM_LENSTR(uvar_name_code(ivar))
 	         IF ( MATCH_QUOTED_NAME( test_name,len_test, uvar_name_code(ivar),len_mchars))
-	1	      THEN
+     1  	      THEN
 	            category = cat_user_var
 	            variable = ivar
 	            RETURN
@@ -140,7 +141,7 @@
 	   IF ( uvar_dset( ivar ) .NE. unspecified_int4 ) GOTO 100
            len_mchars = TM_LENSTR(uvar_name_code(ivar))
 	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars) )
-	1	THEN
+     1  	THEN
 	      category = cat_user_var
 	      variable = ivar
 	      RETURN
@@ -152,7 +153,7 @@
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
            len_mchars = TM_LENSTR(ds_var_code(ivar))
 	   IF ( MATCH_QUOTED_NAME( test_name,len_test, ds_var_code( ivar ),len_mchars)) 
-        1    THEN
+     1         THEN
 	      category = cat_file_var
 	      variable = ivar
 	      RETURN
@@ -179,7 +180,7 @@
 	      DO 300 ivar = 1, num_calc_vars
                  len_mchars = TM_LENSTR(cvar_name_code(ivar)//'    ')
 	         IF (MATCH_QUOTED_NAME(test_name,len_test,cvar_name_code(ivar)//'    ',len_mchars))
-	1	      THEN
+     1  	      THEN
 	            category = cat_calc_var
 	            variable = ivar
 	            RETURN

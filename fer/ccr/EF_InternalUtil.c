@@ -85,7 +85,7 @@ void efcn_get_arg_desc_( int *, int *, char * );
 
 /* ... Functions called internally .... */
 
-void EF_force_linking(void);
+void EF_force_linking(int);
 
 void EF_store_globals(float *, int *, int *, float *);
 
@@ -131,7 +131,7 @@ int efcn_scan_( int *gfcn_num_internal )
    * We need to generate calls to all the functions in EF_ExternalUtil.c
    * in order to have Solaris link these symbols into the final executable.
    */
-  EF_force_linking();
+  EF_force_linking(0);
 
   if ( I_have_scanned_already ) {
     return_val = list_size(GLOBAL_ExternalFunctionList);
@@ -957,9 +957,9 @@ void EF_store_globals(float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, flo
  * Generate calls to all of the EF_ExternalUtil.c code in order to 
  * force linking of these routines on Solaris.
  */
-void EF_force_linking(void)
+void EF_force_linking(int I_should_do_it)
 {
-  if ( FALSE ) {
+  if ( I_should_do_it ) {
     int i = 5;
     float f = 5.0;
     char c = NULL;

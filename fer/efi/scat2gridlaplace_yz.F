@@ -103,21 +103,24 @@
 * Y-Z is determined by arguments 4 and 5, the result's y and z axes. 
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'Y')
+      CALL ef_set_arg_name(id, arg, 'YPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'Y coordinates of scattered input triples')
+     .'y-coordinates of scattered input triples, may be fcn of time')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'Z')
+      CALL ef_set_arg_name(id, arg, 'ZPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'Z coordinates of scattered input triples')
+     .'z-coordinates of scattered input triples, may be fcn of time')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      CALL ef_set_arg_desc(id, arg, 
-     .     'Z = F(y,z)  of scattered input triples')
+      WRITE (fcn_desc, 20) 
+   20 FORMAT ('F(Y,Z) 3rd component of scattered input triples',
+     .  ' may be fcn of time')
+      CALL ef_set_arg_desc(id, arg, fcn_desc)
+
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 4

@@ -35,6 +35,8 @@
      .		cs_repeatname ( cs_max ),
      .		cmnd_copy
 
+        CHARACTER*256 my_cbuff
+
 	COMMON / XCONTROL /
      .		cs_limit   ,
      .		cs_delta   ,
@@ -55,7 +57,8 @@
      .          cs_is_calendar,
      .          cs_repeatname,
      .		has_continuation_cmnd,
-     .		len_cmnd_copy
+     .		len_cmnd_copy,
+     .          my_cbuff
 
 
 

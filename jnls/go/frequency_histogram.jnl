@@ -75,7 +75,7 @@ LET/QUIET wt_index = $5"1"
 sp rm -f frequency_h.raw frequency_h.dat
 list/nohead/form=(F10.0,1PG14.7)/file=frequency_h.raw index, wt_index
 list/nohead/form=(F10.0,1PG14.7)/file=frequency_h.raw/append vn+1,0  ! MAX index + 1
-sp sort -n frequency_h.raw | awk -f ./freq.awk > frequency_h.dat
+sp sort -n frequency_h.raw | awk -f $FER_DIR/go/frequency.awk > frequency_h.dat
 
 define axis/$6"y|X|Y|Z|T"=$2:$3:$4 yax
 define grid/$6"y|X|Y|Z|T"=yax gindex

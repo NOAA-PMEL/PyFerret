@@ -13,7 +13,8 @@
 * *kob*  6/97 - rpn_order was erroneously declared as array of size 
 *               max_exp, changed it to maxatoms
 * V450:  7/97 - save the value of parent_uvar in uvar_parent
-
+* V491:  12/97 - add check to ensure natom_rpn returned from RPN isn't
+*                greater than max_uvar_items  *kob*
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
 	include 'ferret_cmn/errmsg.parm'	
@@ -51,6 +52,8 @@
      .            natom, natom_rpn, rpn_order,
      .            status, err_string)
 	IF ( status .NE. ferr_ok ) GOTO 5440
+* kob 12/97 - natom_rpn cannot be greater than max_uvar_items
+	IF (natom_rpn .GE. max_uvar_items) GOTO 5500
 
 * copy name code and text into slot and change to all upper case
 	vax_code = STR_UPCASE( uvar_name_code( uvar ), name )
@@ -101,4 +104,8 @@
  5000	RETURN
  5440   CALL ERRMSG( ferr_syntax, status,
      .                  text(txstart:txend)//pCR//err_string, *5000 )
+* 12/97 *kob*
+ 5500   CALL ERRMSG( ferr_expr_too_complex, status,
+     .                  text(txstart:txend), *5000 )
+
 	END

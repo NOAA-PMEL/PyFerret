@@ -19,7 +19,7 @@
 #include <setjmp.h>             /* required for jmp_buf */
 
 #include "EF_Util.h"
-#include "/home/r3/tmap/local/sun/include/list.h"  /* locally added list library */
+#include "list.h"       /* locally added list library */
 
 
 /* ................ Global Variables ................ */
@@ -55,6 +55,7 @@ void ef_version_test_( float * );
 void ef_set_num_args_( int *, int * );
 void ef_set_num_work_arrays_( int *, int * );
 void ef_set_work_array_lens_( int *, int *, int *, int *, int *, int * );
+void ef_set_work_array_dims_( int *, int *, int *, int *, int *, int *, int *, int *, int *, int * );
 void ef_set_has_vari_args_( int *, int * );
 void ef_set_axis_inheritance_( int *, int *, int *, int *, int * );
 void ef_set_piecemeal_ok_( int *, int *, int *, int *, int * );
@@ -155,10 +156,41 @@ void ef_set_work_array_lens_(int *id_ptr, int *iarray, int *xlen,
 
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  ef_ptr->internals_ptr->work_array_len[array_id][0] = *xlen;
-  ef_ptr->internals_ptr->work_array_len[array_id][1] = *ylen;
-  ef_ptr->internals_ptr->work_array_len[array_id][2] = *zlen;
-  ef_ptr->internals_ptr->work_array_len[array_id][3] = *tlen;
+  ef_ptr->internals_ptr->work_array_lo[array_id][0] = 1;
+  ef_ptr->internals_ptr->work_array_lo[array_id][1] = 1;
+  ef_ptr->internals_ptr->work_array_lo[array_id][2] = 1;
+  ef_ptr->internals_ptr->work_array_lo[array_id][3] = 1;
+
+  ef_ptr->internals_ptr->work_array_hi[array_id][0] = *xlen;
+  ef_ptr->internals_ptr->work_array_hi[array_id][1] = *ylen;
+  ef_ptr->internals_ptr->work_array_hi[array_id][2] = *zlen;
+  ef_ptr->internals_ptr->work_array_hi[array_id][3] = *tlen;
+
+  return;
+}
+
+
+/*
+ * Set the requested lo and hi dimensions for a specific work array.
+ */
+void ef_set_work_array_dims_(int *id_ptr, int *iarray, 
+    int *xlo, int *ylo, int *zlo, int *tlo,
+    int *xhi, int *yhi, int *zhi, int *thi)
+{
+  ExternalFunction *ef_ptr=NULL;
+  int array_id = *iarray - 1;      /* F to C conversion */
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  ef_ptr->internals_ptr->work_array_lo[array_id][0] = *xlo;
+  ef_ptr->internals_ptr->work_array_lo[array_id][1] = *ylo;
+  ef_ptr->internals_ptr->work_array_lo[array_id][2] = *zlo;
+  ef_ptr->internals_ptr->work_array_lo[array_id][3] = *tlo;
+
+  ef_ptr->internals_ptr->work_array_hi[array_id][0] = *xhi;
+  ef_ptr->internals_ptr->work_array_hi[array_id][1] = *yhi;
+  ef_ptr->internals_ptr->work_array_hi[array_id][2] = *zhi;
+  ef_ptr->internals_ptr->work_array_hi[array_id][3] = *thi;
 
   return;
 }

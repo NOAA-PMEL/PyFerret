@@ -14,9 +14,9 @@ c
       SUBROUTINE EF_SET_CUSTOM_AXIS(id, axis, lo, hi, del,
      .     unit, modulo)
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/errmsg.parm'
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'errmsg.parm'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, axis, modulo
       REAL    lo, hi, del

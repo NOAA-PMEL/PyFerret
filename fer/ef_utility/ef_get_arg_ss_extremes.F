@@ -11,9 +11,9 @@ c*
 
       SUBROUTINE EF_GET_ARG_SS_EXTREMES(id, num_args, ss_min, ss_max)
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/xcontext.cmn'
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xcontext.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, num_args, ss_min(4,EF_MAX_ARGS), 
      .     ss_max(4,EF_MAX_ARGS)

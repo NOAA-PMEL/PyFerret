@@ -13,11 +13,11 @@ c*
 
       SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/xcontext.cmn'
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'tmap_format/tmap_dims.parm'
-      INCLUDE 'tmap_format/xtm_grid.cmn_text'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xcontext.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'tmap_dims.parm'
+      INCLUDE 'xtm_grid.cmn_text'
 
       INTEGER id, iarg, l
       INTEGER grid

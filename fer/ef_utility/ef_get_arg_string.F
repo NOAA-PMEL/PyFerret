@@ -15,11 +15,11 @@ c*  declared in xvariables.cmn.)
 
       SUBROUTINE EF_GET_ARG_STRING(id, iarg, text)
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/errmsg.parm'
-      INCLUDE 'ferret_cmn/xvariables.cmn'
-      INCLUDE 'ferret_cmn/xcontext.cmn'
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'errmsg.parm'
+      INCLUDE 'xvariables.cmn'
+      INCLUDE 'xcontext.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, iarg, mr
       CHARACTER*(*) text

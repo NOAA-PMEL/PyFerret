@@ -15,10 +15,10 @@ c*
 
       SUBROUTINE EF_GET_ONE_VAL_SUB(memory, iarg, value)
 
-      include 'ferret_cmn/ferret.parm'
-      include 'ferret_cmn/xvariables.cmn'
-      include 'ferret_cmn/xmem_subsc.cmn'
-      include 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xvariables.cmn'
+      INCLUDE 'xmem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       REAL    value
 

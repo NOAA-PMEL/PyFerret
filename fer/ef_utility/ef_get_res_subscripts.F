@@ -13,9 +13,9 @@ c*
       SUBROUTINE EF_GET_RES_SUBSCRIPTS(id, res_lo_ss,
      .     res_hi_ss, res_incr)
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/xvariables.cmn'
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xvariables.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, res_lo_ss(4), res_hi_ss(4), res_incr(4)
       INTEGER idim

@@ -13,9 +13,9 @@ c
 
       SUBROUTINE EF_BAIL_OUT(id, text)
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/errmsg.parm'
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'errmsg.parm'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id
       CHARACTER*(*) text

@@ -34,10 +34,13 @@ EFN_OBJS = efn/*.o
 # Targets
 #
 
-all:	ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so storage_nxy.so strings.so subtract.so times_table.so
+all:	efn ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so storage_nxy.so strings.so string_arg.so subtract.so times_table.so
+
+efn:
+	ln -s ../efn efn
 
 ferret_cmn:
-	ln -s efn/ferret_cmn ferret_cmn
+	ln -s ../efn/ferret_cmn ferret_cmn
 
 clean:
 	-rm -f *.o *.so core a.out temp.* ferret_cmn

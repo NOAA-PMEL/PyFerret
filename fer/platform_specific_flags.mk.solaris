@@ -42,9 +42,9 @@ TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
-HDFLIB		= /opt/lib/libdf.a
+HDFLIB		= /opt/local/lib/libdf.a
 
-CDFLIB		= /opt/lib/libnetcdf.a
+CDFLIB		= /opt/local/lib/libnetcdf.a
 
 #
 # End of platform_specific_includes.mk.solaris

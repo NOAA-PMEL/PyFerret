@@ -180,13 +180,13 @@ fer_libraries: .FRC
 	for i in $(LIBS) ; \
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; \
-        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(DEBUG) $(CFLAGS)" \
+        $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(DEBUG) $(CFLAGS) $(GKS_INCLUDES)" \
                 "FFLAGS=$(DEBUG) $(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
         done
 
 
 ppl_libraries: .FRC
-	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS)" all);
+	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS) $(GKS_INCLUDES)" all);
 
 
 special_code: .FRC

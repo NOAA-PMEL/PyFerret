@@ -52,7 +52,8 @@
 * V4.20 - 10/95 - remove references to line_mem to permit recursive line defs
 *	   1/96 - bug fix: only look at line_parent for dynamic lines
 *		           (code would be sweeter if ALL lines had line_parent)
-* V510 4/00 *sh -- all lines now DO have line_parent
+* V510 4/00 *sh* -- all lines now DO have line_parent
+*      6/00 *sh* -- bug fix: children of irregular modulo axes 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -71,7 +72,7 @@
 	INTEGER	isubscript, grid, idim
 
 * internal variable declarations:
-	LOGICAL recursive
+	LOGICAL recursive, modulo
 	INTEGER	iaxis, isub0
 	REAL*8	TM_WORLD, lo_point, hi_point
 
@@ -101,17 +102,23 @@
 * (since FORTRAN doesn't protect "AND" clauses this test in 2 steps)
 	   recursive = line_parent(iaxis) .NE. 0 
 
+* use modulo logic if the parent line is modulo (6/00)
+	   modulo = line_modulo(iaxis)
+	   IF (recursive) THEN
+	      modulo = modulo .OR.
+     .		       line_modulo( line_parent(iaxis) )
+	   ENDIF
+
 * use TM_WORLD to compute BOX_SIZE for recursive defs (10/95)
 	   IF ( recursive ) THEN
 * ... every nth point from an irregular axis --> use midpoints as box bounds
-	      IF (isub0.EQ.1 .AND. .NOT.line_modulo(iaxis) ) THEN
+	      IF (isub0.EQ.1 .AND. .NOT.modulo ) THEN
 	         lo_point =  TM_WORLD(isub0,   grid, idim, box_lo_lim)
 	      ELSE
 	         lo_point = (TM_WORLD(isub0,   grid, idim, box_middle) 
      .			  +  TM_WORLD(isub0-1, grid, idim, box_middle)) / 2
 	      ENDIF
-	      IF ( isub0.EQ.line_dim(iaxis) 
-     .	     .AND. .NOT.line_modulo(iaxis) ) THEN
+	      IF ( isub0.EQ.line_dim(iaxis) .AND. .NOT.modulo ) THEN
 	         hi_point =  TM_WORLD(isub0,   grid, idim, box_hi_lim)
 	      ELSE
 	         hi_point = (TM_WORLD(isub0,   grid, idim, box_middle) 

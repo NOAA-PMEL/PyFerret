@@ -29,7 +29,8 @@
      .			next_line_mem_pos, grid_use_cnt, grid_flink,
      .			grid_blink, grid_free_ptr, max_grid_used,
      .			line_parent, line_use_cnt, line_flink, line_blink,
-     .			line_class, line_free_ptr, max_line_used
+     .			line_class, line_free_ptr, max_line_used,
+     .                  pline_mem_init
 	LOGICAL		grid_out_prod, line_regular, line_modulo,
      .			line_has_edges, line_keep_flag
 	REAL		line_tunit, grid_rotation
@@ -62,6 +63,7 @@
      .			line_free_ptr,
      .			max_line_used,
      .			line_cal_name  ( 0:line_ceiling ),
+     .                  pline_mem_init,
      .
      .			grid_name	( 0:grid_ceiling ),
      .			grid_line	( 4, 0:grid_ceiling ),

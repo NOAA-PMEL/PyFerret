@@ -48,7 +48,7 @@ CPP_FLAGS       = $(INCLUDES)-P -Dunix -DNEED_IAND -DFORTRAN_90 \
 		  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
 		  -DF90_NO_FPUTC -DF90_NO_UNLINK -DF90_NO_GETLOG \
 		  -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH \
-		  -DXT_CODE -Dsun4 -DLINUX -DusingDODSf2cUnderscore
+		  -DXT_CODE -Dsun4 -DLINUX 
 
 # Below this line are macro definitions used only for the final linking of the executable
 #

@@ -172,7 +172,8 @@
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                     value, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-	   line_length  = MIN(ABS(value),max_line_len)
+	   i = value
+	   line_length  = MIN(ABS(i),max_line_len)
 	ELSE
 	   line_length  = 130
 	ENDIF

@@ -67,6 +67,8 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 *      *sh*  5/99 - incorporate logic for netCDF strides. Allow for multi-axes
 *		    use same framework to handle XY averaging
+*	*sh* 4/00 - all grids and axes now maintain use counts and have
+*			line_class available
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -165,13 +167,9 @@
 	    IF (dst_axis.EQ.var_axis) GOTO 100
 	    IF (cx_regrid_trans(idim,dst_cx).EQ.prgrd_linear_interp
      .     .OR. cx_regrid_trans(idim,dst_cx).EQ.prgrd_exact) THEN
-	      IF ( dst_axis .GE. max_lines ) THEN  ! implicit axis ?
-	        IF ( line_class(dst_axis) .EQ. pline_class_stride ) THEN
-	          IF (idim .NE. axis) naxis = naxis + 1
-	          axis_list(naxis) = idim
-	        ELSE
-	          GOTO 110	! abort
-	        ENDIF
+	      IF ( line_class(dst_axis) .EQ. pline_class_stride ) THEN
+	        IF (idim .NE. axis) naxis = naxis + 1
+	        axis_list(naxis) = idim
 	      ELSE
 	        GOTO 110	! abort
 	      ENDIF
@@ -203,18 +201,14 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   CALL TM_COPY_GRID_W_LINE_USE( dst_grid, src_grid ) 
 	   grid_name( src_grid ) = ww_dim_name(axis)//'NTERMED'	! for diag out
-	   IF (grid_line(axis,src_grid) .GT. max_lines) CALL
-     .				TM_DEALLO_DYN_LINE(grid_line(axis,src_grid))
+	   CALL TM_DEALLO_DYN_LINE(grid_line(axis,src_grid))
 	   grid_line( axis, src_grid ) = grid_line( axis, var_grid )
-	   IF (grid_line(axis,var_grid) .GT. max_lines) CALL
-     .				TM_USE_LINE(grid_line(axis,var_grid)) ! 9/96
+	   CALL TM_USE_LINE(grid_line(axis,var_grid)) ! 9/96
 	   IF (xy_ave) THEN
 ! 9/96: changed DEALLO grid_line(axis,src_grid) to grid_line(y_dim,src_grid)
-	      IF (grid_line(y_dim,src_grid) .GT. max_lines) CALL
-     .				TM_DEALLO_DYN_LINE(grid_line(y_dim,src_grid))
+	      CALL TM_DEALLO_DYN_LINE(grid_line(y_dim,src_grid))
 	      grid_line(y_dim,src_grid) = grid_line(y_dim,var_grid)
-	      IF (grid_line(y_dim,var_grid) .GT. max_lines) CALL
-     .				TM_USE_LINE(grid_line(y_dim,var_grid)) !9/96
+	      CALL TM_USE_LINE(grid_line(y_dim,var_grid)) !9/96
 	   ENDIF
 	   is_phase( isp ) = prgrd_from_ntrmed
 	ENDIF

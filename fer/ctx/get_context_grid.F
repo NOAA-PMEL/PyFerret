@@ -97,6 +97,7 @@
 * lines is indicated in line_parent.  The responsibility for the line
 * may be transferred from one grid to another (see calls to
 * TM_COPY_GRID_W_LINE_USE)
+* Note: as of 4/00 ALL grids and axes maintain use counts
 
 *************************************
 
@@ -124,6 +125,8 @@
 *		if cx_unstand_grid is FALSE on coming into this routine
 *		then the basic grid for the result shoud be std_grid. The
 *		value of use_grid upon entry cannot be trusted to be correct
+*	*sh* 4/00 - since netCDF dsets use dynamic grids now, all grids and
+*		  lines maintain a use count
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -320,8 +323,7 @@
 
 * increment the use count of dynamic axes that are in-use by the temporary grid
 	   DO 60 idim = 1, 4
- 60	   IF (grid_line(idim,impl_grid) .GT. max_lines) CALL
-     .				TM_USE_LINE(grid_line(idim,impl_grid))
+ 60	   CALL TM_USE_LINE(grid_line(idim,impl_grid))
 	ENDIF
 
 * 9/95 check for incompatibilities in grid geometry -- requiring implicit grid
@@ -342,11 +344,9 @@
      .              ('allocate', isact_class_impl_grid, impl_grid, 0)
 #endif
 	      ENDIF
-	      IF (grid_line(idim,impl_grid) .GT. max_lines) CALL
-     .				TM_DEALLO_DYN_LINE(grid_line(idim,impl_grid))
+	      CALL TM_DEALLO_DYN_LINE(grid_line(idim,impl_grid))
 	      grid_line(idim,impl_grid) = grid_line(idim,std_grid)
-	      IF (grid_line(idim,impl_grid) .GT. max_lines) CALL
-     .				TM_USE_LINE(grid_line(idim,impl_grid))
+	      CALL TM_USE_LINE(grid_line(idim,impl_grid))
 	   ENDIF
  70	CONTINUE
 

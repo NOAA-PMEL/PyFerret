@@ -42,6 +42,8 @@
 
 * V420:	 11/1/95 - based on VAR_TITLE_MOD code
 * V450: 1/97 - corrected problem of missing blank when no units were defined
+* V510: 4/00 *sh* - netCDF grids are now dynamic, so "(" as first character
+*		    of name is basis for not using the associated variable
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -95,7 +97,7 @@
 	add_on = .FALSE.
 
 * static (named) grids are documented by name
-	stat_grid =  cx_grid(cx) .LT. max_grids
+	stat_grid =  grid_name(cx_grid(cx))(1:1) .NE. '('
 	IF ( stat_grid ) THEN
 	   REGRID_COMMENTS = GNAME_FROM_NUMBER(dset, cx_grid(cx), mlen)
 	   mlen = mlen + 1	! blank at end in case there's more

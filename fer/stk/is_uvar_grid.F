@@ -73,6 +73,8 @@
 * V510: 8/99 *sh* - allow G=uvar on both uvars and pseudo-vars.
 *			If uvar grid is unknown, go get it!
 *	1/00 *sh* - bug fix for nested GC variables 
+*	4/00 *sh* - netCDF grids are now dynamic so 2nd pass check to deallo
+*			dynamic grid needs logic change
 
 * calling argument declarations:
 	INTEGER	status
@@ -126,6 +128,7 @@
 * initialize
 	lo_cx  = is_cx( isp )
 	big_cx = is_big_cx( isp )
+	grid   = cx_grid(big_cx)
 	uvar   = is_uvar( isp )
 	dset   = cx_data_set( lo_cx )
 	nitem  = uvar_num_items( uvar )
@@ -351,6 +354,7 @@
 	      ENDIF
 	   ENDIF
 	   gnum = mgrid_abstract
+	   CALL TM_USE_DYN_GRID( mgrid_abstract )
 	   GOTO 2000
 	ELSEIF (uvar_grid(uvar,pdset_irrelevant).EQ.mgrid_abstract) THEN
 * ... abstract grid after second pass
@@ -395,9 +399,16 @@
 	   need_another_pass = .FALSE.
 	   pass_number = pass_number + 1
 	   cx_grid( lo_cx ) = gnum	! set default for pseudo-vars
-* ... if the grid so far is dynamic then deallocate it since it will be
+* ... deallocate the grid just obtained since it will be
 *     allocated again on the next pass
-	   IF (gnum .GT. max_grids) CALL TM_DEALLO_DYN_GRID( gnum )
+! pre-4/00 IF (gnum .GT. max_grids ) CALL TM_DEALLO_DYN_GRID( gnum )
+	   CALL TM_DEALLO_DYN_GRID( gnum )
+* ... release the use-count hold that the temporary grid has on the axes
+*	since it will be re-asserted on the second pass
+*	We need to retain the grid, itself, because it is used on pass 2
+	   DO 1120 i = 1, 4
+	      CALL TM_DEALLO_DYN_LINE(grid_line(i,grid))
+ 1120	   CONTINUE
 	   IF ( mode_diagnostic ) THEN
 	      CALL DIAG_OP('dealloc ',isact_class_impl_grid,gnum,0)
 	      CALL DIAGNOSTIC_OUT( 'pass #2', lo_cx, point_to_cx )

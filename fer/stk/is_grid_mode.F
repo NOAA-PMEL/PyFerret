@@ -44,6 +44,7 @@
 * V200:  6/28/89
 * V420:  1/95 - need to init cx_delta since it is used by dynamic axes
 * V491:  12/97 - bug fix: need to initialize 
+* V510: *sh* 4/00 - initialize the grid that is allocated to 
 
 * calling argument declarations:
 	INTEGER	status
@@ -55,6 +56,7 @@
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
+#       include "tmap_dset.parm"
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
@@ -95,6 +97,7 @@
 	is_big_cx( isp ) = big_cx
 	CALL ALLO_GRID( cx_grid(big_cx), status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+	CALL INIT_GRID( cx_grid(big_cx), char_init16, mnormal )
 
 * set flag indicating that the first component grid has not yet been encountered
 	is_sum( isp ) = isalg_transfer

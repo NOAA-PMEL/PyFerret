@@ -1,7 +1,5 @@
-	SUBROUTINE DEALLO_UVAR_GRIDS( uvar )
+	INTEGER FUNCTION TM_GET_LINEMATCH (gvn_line, dup_name, dup_guts)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,52 +33,66 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* deallocate all dynamic grids associated with this user variable
-* (clearing any memory references to this grid)
+* Searches the list of pre-defined line_name's and returns the number
+* associated with a "match" on lname. A match means that the the characters
+* of lname are all found plus, optionally, digits. If no match is found
+* the value unspecified_int4 is returned.
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-*
-* V420 9/8/95 - new
-* V510 *sh* 4/00 - deallocate any grid, not just dynamic ones
+* dup_name - returned TRUE if there is an identical name match OR (there
+*	     is a pattern name match AND the guts are identical)
+* dup_guts - returned TRUE if there is a pattern name match AND the guts
+*	     are identica
 
+
+* V510 *sh* 4/00
+
+* Include files
 #ifdef unix
-	include 'tmap_dims.parm'
-	include	'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'ferret.parm'
-	include 'xvariables.cmn'
+#include "tmap_dset.parm"	
+	include 'tmap_dims.parm'	! 
+#include "gt_lib.parm"
 #else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'	! Data set constants
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'	! 
+	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'	! 
+	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'	! pre-defined grid common
 #endif
 
-* calling argument declarations
-	INTEGER	uvar
+* argument variables
+	LOGICAL		dup_name, dup_guts
+	INTEGER		gvn_line
 
-* local declarations
-	INTEGER i
+* local variable declarations
+	LOGICAL		xact_name
+	INTEGER*4	i
 
+* initialize
+	dup_name = .FALSE.
 
-* loop through all of the grids that may be associated with this
-* note: could be more efficient:  check to see if this is a data set
-*	dependent variable (or "EX#n") and delete only the single data set grid
-
-	DO 100 i = 0, max_gfdl_dsets
-
-* Remove the grid
-* (and possibly all memory resident variables that depend on it)
-	   IF ( uvar_grid(uvar,i) .GE. 1
-     .   .AND.  uvar_grid(uvar,i) .LE. max_dyn_grids ) THEN
-	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,i))
-	   ENDIF
-
-* set the grid pointer to its initialized state
-	uvar_grid( uvar, i ) = unspecified_int4
-
+* check the static axes
+	DO 100 i=1,max_lines
+	  CALL TM_GET_LINEMATCH_SUB(gvn_line, i, xact_name, dup_guts)
+	  IF (dup_guts) THEN
+	     TM_GET_LINEMATCH = i
+	     RETURN
+	  ELSEIF (xact_name) THEN
+	     dup_name = .TRUE.
+	  ENDIF
  100	CONTINUE
+ 
+* check the dynamic grids
+	i = 0
+ 200	CALL TM_NEXT_DYN_LINE( i, *299)
+	  CALL TM_GET_LINEMATCH_SUB(gvn_line, i, xact_name, dup_guts)
+	  IF (dup_guts) THEN
+	     TM_GET_LINEMATCH = i
+	     RETURN
+	  ELSEIF (xact_name) THEN
+	     dup_name = .TRUE.
+	  ENDIF
+	GOTO 200
 
+* not found
+ 299	TM_GET_LINEMATCH = unspecified_int4
 	RETURN
 	END

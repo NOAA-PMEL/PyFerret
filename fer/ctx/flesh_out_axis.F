@@ -66,12 +66,15 @@
 *      *sh*  5/99 - go ahead and flesh out implicit axes (to improve cache hits
 *		    when netCDF strides are invoked)
 * V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
+*	*sh* 4/00 - since netCDF dsets now produce dynamic axes we cannot
+*		    use line .LT. max_lines as a test of an implicit axes
 
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
+	include 'implicit.parm'
 	include 'errmsg.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
@@ -96,10 +99,10 @@
 * internal variable declarations:
 	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, point, lim_redundant
 	INTEGER	TM_LENSTR1, ISUBSCR_CX,
-     .		ss, lo_ss, hi_ss, axis, grid, cat, var, slen
+     .		ss, lo_ss, hi_ss, axis, grid, cat, var
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
 * kob 3/99 up VAR_CODE from 8 to 64 chars
-	CHARACTER	VAR_TRANS*40, VAR_CODE*64, string*40
+	CHARACTER	VAR_CODE*64, string*40
 
 * initialize
 	var  = cx_variable( cx )
@@ -143,8 +146,11 @@
 * fleshing out implicit axes (e.g. a[i=10:100:10])
 * to improve the cache hit rate when netCDF strides are used. Note the peril
 * in this is the behavior of a[i=3:5] where a=b[i=10:100:10]
+* 4/00: use line_class instead of max_lines as the test
 	ELSEIF ( .NOT.cx_given(idim,cx) .AND. lim_redundant
-     .		.AND. axis .LT. max_lines ) THEN
+     .		.AND. line_class(axis) .NE. pline_class_stride ) THEN
+!pre 4/00     .		.AND. axis .LT. max_lines ) THEN
+
 ****
 * 7/92 kludge:
 * this routine is called by is_uvar_grid (while determining the grid)

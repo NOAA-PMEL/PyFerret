@@ -1,7 +1,5 @@
-	SUBROUTINE DEALLO_UVAR_GRIDS( uvar )
+	SUBROUTINE TM_GET_LINEMATCH_SUB (gvn, tst, dup_name, dup_guts)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,52 +33,70 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* deallocate all dynamic grids associated with this user variable
-* (clearing any memory references to this grid)
+* Searches the list of pre-defined line_name's and returns the number
+* associated with a "match" on lname. A match means that the the characters
+* of lname are all found plus, optionally, digits. If no match is found
+* the value unspecified_int4 is returned.
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-*
-* V420 9/8/95 - new
-* V510 *sh* 4/00 - deallocate any grid, not just dynamic ones
+* dup_name - returned TRUE if there is an identical name match
+* dup_guts - returned TRUE if there is a pattern name match AND the guts
+*	     are identica
 
+
+* V510 *sh* 4/00
+
+* Include files
 #ifdef unix
-	include 'tmap_dims.parm'
-	include	'xtm_grid.cmn_text'
+#include "tmap_dset.parm"	
+	include 'tmap_dims.parm'	! 
+#include "gt_lib.parm"
+	include 'xtm_grid.cmn_text'	! pre-defined grid common
 	external xgt_grid_data
-	include 'ferret.parm'
-	include 'xvariables.cmn'
 #else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'	! Data set constants
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'	! 
+	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'	! 
+	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'	! pre-defined grid common
 #endif
 
-* calling argument declarations
-	INTEGER	uvar
+* argument variables
+	LOGICAL		dup_name, dup_guts
+	INTEGER		gvn, tst
 
-* local declarations
-	INTEGER i
+* local variable declarations
+	LOGICAL		TM_SAME_LINE_DEF
+	INTEGER*4	TM_LENSTR1, STR_CASE_BLIND_COMPARE
+	INTEGER*4	gvn_len, tst_len, istat, ic
+	CHARACTER	lname*128, c*1
 
+* initiaslize
+	gvn_len  = TM_LENSTR1(lname)
+	dup_name = .FALSE.
+	dup_guts = .FALSE.
+	lname    = line_name(gvn)
 
-* loop through all of the grids that may be associated with this
-* note: could be more efficient:  check to see if this is a data set
-*	dependent variable (or "EX#n") and delete only the single data set grid
+* screen out obvious rejection criteria
+	IF ( tst .EQ. gvn ) GOTO 1000	! don't compare to self
+	IF ( line_name(tst)  .EQ. char_init16 ) GOTO 1000
+	tst_len = TM_LENSTR1( line_name(tst) )
+	IF ( tst_len .LT. gvn_len ) GOTO 1000
 
-	DO 100 i = 0, max_gfdl_dsets
+* test for base name match
+	istat = STR_CASE_BLIND_COMPARE
+     .			(line_name(tst)(:gvn_len),lname(:gvn_len))
+	IF (istat .NE. str_match) GOTO 1000
+	IF (tst_len .EQ. gvn_len) dup_name = .TRUE.
 
-* Remove the grid
-* (and possibly all memory resident variables that depend on it)
-	   IF ( uvar_grid(uvar,i) .GE. 1
-     .   .AND.  uvar_grid(uvar,i) .LE. max_dyn_grids ) THEN
-	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,i))
-	   ENDIF
+* test that only extra digits were added
+	DO 90 ic = gvn_len+1, tst_len
+	  c = line_name(tst)(ic:ic)
+	  IF (  c .LT. '0' .OR. c .GT. '9' ) GOTO 1000
+ 90	CONTINUE
 
-* set the grid pointer to its initialized state
-	uvar_grid( uvar, i ) = unspecified_int4
+* found a name pattern match.  Now check if the guts match, too
+	dup_guts = TM_SAME_LINE_DEF( gvn, tst )
 
- 100	CONTINUE
+* not a duplicate definition
+ 1000	RETURN
 
-	RETURN
 	END

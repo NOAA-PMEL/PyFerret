@@ -44,12 +44,15 @@
 *       *sh* 4/99 - bug fix: ABSTRACT axes completed on some user vars
 *	*sh* 4/99 - add mode_stupid check
 *	*sh* 5/99 - complete limits on implicit axes
+*  V510 *sh* 4/00 - netCDF variables may now have dynamic axes, so chg the
+*		    logic that checked for these
 
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
+	include 'implicit.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
@@ -107,8 +110,13 @@
 * WARNING: For b=a[i=10:100:10];c=b[i=3:5] we have an implicit axis where the
 * axis length is NOT applicable. HOPEFULL completing these limits will not
 * cause a problem.
+* Note: 4/00 Since netCDF axes are now dynamic we can no longer use max_lines
+*	as a test of anything significant. I replaced the restriction 
+*	    " .	    .AND.  line .LT. max_lines ) THEN"
+*	with a test on line_parent. ALERT!
+
 	      IF ( needs_limits .AND. cat.EQ.cat_user_var
-     .	    .AND.  line .LT. max_lines ) THEN
+     .	    .AND.  line_class(line) .NE. pline_class_stride ) THEN
 	         needs_limits = uvar_given(idim,var) .GE. uvlim_needed
 	      ENDIF
 

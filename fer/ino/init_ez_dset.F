@@ -63,6 +63,7 @@
 * 3/99 *kob* - nag F90 wants to use eqv for logical expressions
 * 5/99 *sh* - added arguments to EQUAL_PERMUTE call
 * V510 *sh* 3/00 - increased allowable filename length
+*	    4/00 - bump use counts on grids and axes used by this data set
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -281,6 +282,10 @@ c       /swap
 	call toChar(type, ctype)
 	if (BR_SET_TYPE(ctype) .EQ. 0) goto 5600
 	call BR_SET_ATTS(order, swap)
+
+* bump use counts on grids and axes used by this data set
+	CALL TM_DSET_USE_GRIDS( dset )
+
 * successful completion
 	status = ferr_ok
 	RETURN

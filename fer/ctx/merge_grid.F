@@ -104,6 +104,7 @@
 *	*sh* 12/99 - set the uvar_lo/hi limits along with uvar_given
 *	*sh* 12/99 - bug fix: rules for merging embodied in joint_match were
 *			wrong when new component is xact
+*	*sh*  4/00 - all grids and axes now maintain use counts 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -419,8 +420,8 @@
 	   grid_name(mrg_grd) = 'AMBG'
 
 * impose explicit limits from component that gave them (e.g. U[K=5])
- 100	   IF ( com_ax .GT. max_lines ) CALL TM_USE_LINE(com_ax)
-	   IF ( mrg_ax .GT. max_lines ) CALL TM_DEALLO_DYN_LINE(mrg_ax)
+ 100	   CALL TM_USE_LINE(com_ax)
+	   CALL TM_DEALLO_DYN_LINE(mrg_ax)
 	   grid_line( idim, mrg_grd ) = com_ax
 	   cx_lo_ss( mrg_cx, idim ) = cx_lo_ss( com_cx, idim )
 	   cx_hi_ss( mrg_cx, idim ) = cx_hi_ss( com_cx, idim )
@@ -435,8 +436,8 @@
 	   grid_name(mrg_grd) = 'AMBG'
 
 * impose an axis with implicit coordinates (inferred from the context)
- 200	   IF ( com_ax .GT. max_lines ) CALL TM_USE_LINE(com_ax)
-	   IF ( mrg_ax .GT. max_lines ) CALL TM_DEALLO_DYN_LINE(mrg_ax)
+ 200	   CALL TM_USE_LINE(com_ax)
+	   CALL TM_DEALLO_DYN_LINE(mrg_ax)
 	   grid_line( idim, mrg_grd ) = com_ax
 
 * save implications about how limits are given in thi uvar_given(idim,uvar) .EQ. uvlim_s component

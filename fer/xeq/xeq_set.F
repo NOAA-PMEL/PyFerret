@@ -118,6 +118,7 @@
 *	    8/99 *sh* - bug fix: adjust grid_use_count
 * V510: 3/00 *sh* - remove check for negative values on time axis
 *		  - add qualifier /TREGULAR to SET DATA for netCDF data sets
+*	4/00 *sh* - documentation enhancement, only
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -650,6 +651,7 @@ c *kob* 4/97
 	RETURN
 
 * SET GRID
+* NOTE: for historical reasons mgrid_abstract is the name of the SET GRID
  1100	IF ( qual_given(slash_set_grid_save) .GT. 0 ) THEN
 	   saved_abstract_grid = mgrid_abstract
 	   RETURN
@@ -669,10 +671,9 @@ c *kob* 4/97
 	   IF ( cx.EQ.0 .OR. cx.EQ.unspecified_int4 )	GOTO 5120
 	   grid = cx_grid( cx )
 	ENDIF
-* ... adjust the use count if this is a dynamic grid (8/99)
-	IF (grid .GT. max_grids) CALL TM_USE_DYN_GRID(grid)
-	IF (mgrid_abstract .GT. max_grids) 
-     .				CALL TM_DEALLO_DYN_GRID(mgrid_abstract)
+* ... adjust the use count
+	CALL TM_USE_DYN_GRID(grid)
+	CALL TM_DEALLO_DYN_GRID(mgrid_abstract)
 * ... eliminate all memory-resident user-defined vars and their uvar_grid 's
 	CALL PURGE_ALL_UVARS
 	mgrid_abstract = grid

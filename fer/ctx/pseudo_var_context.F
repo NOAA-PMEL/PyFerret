@@ -64,6 +64,7 @@
 *		... having the text position of uvar encoded in it
 *		... exit out earliy in this case
 *	12/99 *sh* - for formatted lat or lon (e.g. Y[y=0:20n:2]), set units
+*	 4/00 *sh* - all grids and axes now maintain use counts
 
 #ifdef unix
 	include	'ferret.parm'
@@ -274,8 +275,7 @@
 	IF ( cx_has_impl_grid(pvar_cx) ) THEN
 * increment the use count of dynamic axes that are in-use by the temporary grid
 	   DO 25 idim = 1, 4
- 25	   IF (grid_line(idim,impl_grid) .GT. max_lines) CALL
-     .				TM_USE_LINE(grid_line(idim,impl_grid))
+ 25	   CALL TM_USE_LINE(grid_line(idim,impl_grid))
 
 * catalog the temporary grid as a dynamic grid checking for existing like grid
 * ... catalog it or reuse a previously cataloged version

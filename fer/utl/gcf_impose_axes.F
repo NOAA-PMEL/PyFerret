@@ -45,6 +45,7 @@
 *	- 1) imposing an axis always makes limits on that axis uvlim_irrelevant
 *	- 2) context limits on axes that do inherit must match exactly (cuz
 *			we have no idea what goes on inside the EF)
+*	*sh*  4/00 - all axes now maintain use counts, not just dynamic
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -105,9 +106,8 @@
 	   ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
 	      imp_ax = imposed_axes(idim)
 * ... since new axis is imposed old axis need not be allocated to result
-	      IF ( imp_ax .GT. max_lines ) CALL TM_USE_LINE(imp_ax)
-	      IF ( mrg_ax .GT. max_lines ) CALL
-     .             TM_DEALLO_DYN_LINE(mrg_ax)
+	      CALL TM_USE_LINE(imp_ax)
+	      CALL TM_DEALLO_DYN_LINE(mrg_ax)
 	      grid_line( idim, mrg_grd ) = imp_ax
 * ... imposing an axis implies that the gcvar doesn't depend on the axis cx
 	      IF ( imp_ax .EQ. mnormal ) THEN

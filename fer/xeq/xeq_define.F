@@ -123,6 +123,9 @@
 *		is called on new
 *	3/00 *sh* - remove backslash escape characters from DEFINE SYMBOL
 *	     *sh* - allow automatic generation of T0=1-jan-0000
+*	4/00 *sh* - set use counts when defining grids and axes
+*	5/00 *sh* - support for LET/BAD=
+
 #ifdef unix
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -181,7 +184,8 @@
      .		    slash_let_title,
      .		    slash_let_units,
      .		    slash_let_quiet,
-     .		    slash_let_dset
+     .		    slash_let_dset,
+     .		    slash_let_bad
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 9,
      .		    slash_file   = 1 + 4,
@@ -205,6 +209,7 @@
      .		    slash_let_units  = 1 + 1,
      .		    slash_let_quiet  = 1 + 2,
      .		    slash_let_dset   = 1 + 3,
+     .		    slash_let_bad    = 1 + 4,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -226,7 +231,7 @@
      .		  old_line, old_grid, frst_pt, dim(4), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms)
-	REAL	  rbuff
+	REAL	  rbuff, bad_flag
 	REAL*8	  SECS_FROM_BC, bc_to_t0, start, delta, end, micro_adj
 	CHARACTER reg_name*4, buff1*32, buff2*32, buff3*40, buff30*30,
      .            basic_orients(4)*2, err_string*255, replmsg*24
@@ -356,6 +361,7 @@
 	IF ( .NOT.TM_LEGAL_NAME(buff3) ) GOTO 5100
 	old_grid = TM_GET_GRIDNUM( buff3 ) 
 	dup_name = old_grid .NE. unspecified_int4
+	IF (dup_name .AND. old_grid .GT. max_grids ) GOTO 5310
 
 * was a /LIKE= given ? ... set up a grid template
 	iqual = qual_given( slash_like )
@@ -416,8 +422,7 @@
 	      IF ( status .NE. merr_ok ) GOTO 5000
 * ... deallocate dynamic axes used in previous definition of this grid
 	      DO 330 idim = 1,4
-	         IF ( grid_line(idim,old_grid) .GT. max_lines ) CALL
-     .              TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
+	         CALL TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
  330	      CONTINUE
 	      grid_name( old_grid ) = char_init16
 	   ENDIF
@@ -485,6 +490,16 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	ENDIF
 
+* bad flag given ?
+	iqual = qual_given( slash_let_bad )
+	IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .                     bad_flag, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	ELSE
+	   bad_flag = bad_val4
+	ENDIF
+
 * break the expression into atoms and identify them
 	CALL ALG_BREAK_UP( cmnd_buff(pos:len_cmnd),at_start,at_end,natom,
      .			   err_string,status )
@@ -532,7 +547,7 @@
 
 * now file the expression in the user-defined variable area
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,
-     .			 explct_defn, uvar,
+     .			 bad_flag, explct_defn, uvar,
      .			 at_type, at_id, at_start, at_end,
      .			 natom, 1, len_cmnd-pos+1, status )
 	IF ( status .NE. ferr_ok ) RETURN
@@ -948,6 +963,7 @@
      .			replmsg//'axis '//line_name( old_line ), 0)
 	      CALL PURGE_MR_AXIS( old_line, iline, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      CALL TM_DEALLO_DYN_LINE( old_line )
 	   ENDIF
 	ENDIF
 

@@ -61,6 +61,8 @@
 *                    than a 1:1 or 100:100
 *       4/99 *kob* - bug fix to above - check grid_line to see if axis is
 *                    truly normal
+* V510: 4/00 *sh* - search dynamic grids for netCDF time axis
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -196,10 +198,16 @@
 
 * describe the time range (uses "grid" from last variable displayed)
 	taxis = ds_time_axis(dset)
+* ... check among the static grids
         DO 500 grid = 1, max_grids
- 500    IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 510
-        grid = 1                       !  internal error if we get here !!
- 510    IF ( full .AND. taxis.NE.mnormal
+ 500    IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
+* ... check among the dynamic grids
+	grid = 0
+ 510	CALL TM_NEXT_DYN_GRID( grid, *515)
+	  IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
+	GOTO 510
+ 515	grid = 1		!  internal error if we get here !!
+ 520    IF ( full .AND. taxis.NE.mnormal
      .		  .AND. taxis.NE.unspecified_int4) THEN    ! bug fix: 3/94
 	   len = line_dim( ds_time_axis(dset) )
 	   lo = TM_WORLD( 1,   grid, t_dim, box_middle )
@@ -229,5 +237,8 @@
 
 	RETURN
 	END
+
+
+
 
 

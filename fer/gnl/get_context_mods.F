@@ -121,6 +121,8 @@
 *	12/99 *sh* - added ugly hack to allow multiple axes as in "GXY=gg"
 *	12/99 *sh* bug fix: g=user_var failed if user_var was pure abstract
 *	3/00  *sh* - remove old trap for mixed dates and time steps
+*	4/00  *sh* - since netCDF uses dynamic grids now, DEALLOC will
+*		     deallocate axes within implicit grids. Accomodate that.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -459,6 +461,8 @@
      .				 - (equal_pos+1 + 2000*iend)
 		      IF (cx_has_impl_grid(mods_cx)) THEN
 *       A any previous gx= info becomes irrelevant
+	                 CALL INIT_GRID( cx_impl_grid(mods_cx),
+     .		                        '(implicit)', unspecified_int4 )
 		         cx_has_impl_grid(mods_cx) = .FALSE.
 			 cx_impl_grid(mods_cx) = unspecified_int4
 		         CALL DEALLO_GRID(status)
@@ -625,7 +629,7 @@
 	   GOTO 5220
         ELSEIF ( .NOT.set_implicitly(idim) ) THEN  ! 8/92 modified 2/23/92
 * ... initialize this dimension if it's the first reference to it
-	   CALL DEL_CX_DIM ( idim, mods_cx )	! coords and transforms
+
 	   cx_given ( idim, mods_cx ) = .TRUE.
 	   cx_delta ( idim, mods_cx ) =  unspecified_val8
         ENDIF
@@ -812,7 +816,11 @@
 	RETURN
 
 * error exits
- 5000	RETURN
+* ... clear implicit grids so axes within them don't get deallocated
+ 5000	IF (cx_has_impl_grid(mods_cx)) CALL INIT_GRID(
+     .		cx_impl_grid(mods_cx), '(implicit)',
+     .          unspecified_int4 )
+	RETURN
  5010	CALL ERRMSG( ferr_syntax, status, risc_buff(:len_rbuff), *5000 )
  5015	risc_buff = text_buff(istart-1:iend)		! for RISC/FORTRAN
 	len_rbuff = MIN(48, iend-istart)		! for RISC/FORTRAN

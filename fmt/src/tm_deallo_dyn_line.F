@@ -40,6 +40,7 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * 10/3/95 for Ferret version 4.2
+* V5.1 *sh* 4/00 - allow static lines to be deallocated, too
 
 * Since FORTRAN is not recursive this routine implements a poor man's
 * recursion so that the deallocation can trace down the lineage of
@@ -71,7 +72,7 @@
 
 * quasi-recursive loop
  10	gonner = TM_DEALLO_DYN_LINE_SUB( gonner )
-	IF (gonner.GT.max_lines .AND. gonner.NE.0) GOTO 10
+	IF (gonner.NE.0) GOTO 10
 
 * successful completion
 	RETURN

@@ -130,6 +130,8 @@
 *                     so that multiple functions are shown
 *       4/99 *sh* - added MODE STUPID:weak_cache
 *       4/99 *sh* - added SHOW AXIS/lims=lo:hi
+* V510 4/00 *sh* - netCDF grids are now dynamic
+*      5/00 *sh* - added SHOW FUNC/DETAILS
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -218,16 +220,15 @@
 
 * local variable declarations:
 	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE,
-     .		slash_all, limited_show, nothing,
+     .		slash_all, limited_show, nothing, sdetail,
      .		only_1, done_1, sfull, svars, sfile, sbrief, first
-	INTEGER TM_LENSTR1, UVAR_NUMBER, ALIAS_ID, STR_UPCASE,
+	INTEGER TM_LENSTR1, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
-     .		TM_GET_LINENUM, VIEWPORT_NUMBER, STR_CASE_BLIND_COMPARE,
-     .		GCF_FIND_FCN, EFCN_MATCH_TEMPLATE,
+     .		EFCN_MATCH_TEMPLATE,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
-     .		vax_code, rqst_dset, tmp_grid
+     .		rqst_dset, tmp_grid
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
@@ -353,10 +354,12 @@
 	   DO 420 i = 1, num_items
 * show the named line(s)
 	      i1 = STR_UPCASE(name,cmnd_buff(item_start(i):item_end(i)))
+*  ... first show the static lines
 	      DO 410 line = 1, max_lines
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	         IF ( line_name(line) .EQ. char_init16 ) GOTO 410
+	         IF ( line_name(line)(1:1) .EQ. '(' ) GOTO 410
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
                    CALL SHOW_LINE( line, .NOT.brief )
 	           DO 405 i2 = 1, 4
@@ -368,17 +371,42 @@
  405               CONTINUE
                  ENDIF
  410	      CONTINUE
+*  ... then show the dynamic lines
+              line = 0
+ 414          CALL TM_NEXT_DYN_LINE( line, *416)
+	         IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
+                   CALL SHOW_LINE( line, .NOT.brief )
+	           DO 412 i2 = 1, 4
+	             IF (qual_given( slash_show_grid_x0+i2).GT.0
+     .              .OR. qual_given( slash_show_grid_i0+i2).GT.0) THEN
+                      grid_line(i2,tmp_grid) = line
+                      CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
+                    ENDIF
+ 412             CONTINUE
+                 ENDIF
+	         GOTO 414
+ 416          CONTINUE
  420	   CONTINUE
 	ELSE
 
 * show all the defined axes
+*  ... first show the static lines
 	   DO 450 line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	      IF ( line_name(line) .EQ. char_init16) GOTO 450
 	      CALL SHOW_LINE( line, brief )
  450	   CONTINUE
-
+*  ... then show the dynamic lines
+           line = 0
+ 460       CALL TM_NEXT_DYN_LINE( line, *470)
+	      IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+	      CALL SHOW_LINE( line, brief )
+              GOTO 460
+ 470       CONTINUE
 	ENDIF
 	IF ( limited_show ) RETURN
 
@@ -809,6 +837,7 @@
 	   DO 1350 ivar = 1, num_items
 	      i1 = STR_UPCASE(arg,cmnd_buff(item_start(ivar):item_end(ivar)))
 	      IF ( IS_TEMPLATE( arg ) ) THEN
+*    ... first check static grids
 	         DO 1340 grid = 1, max_grids
 	            IF ( grid_name(grid) .EQ. char_init16 ) GOTO 1340
 	            IF (MATCH_TEMPLATE(grid_name(grid) ,arg)) THEN
@@ -818,6 +847,17 @@
 	               risc_buff = ' '
 	            ENDIF
  1340	         CONTINUE
+*    ... then check dynamic grids
+                 grid = 0
+ 1344            CALL TM_NEXT_DYN_GRID( grid, *1346 )
+	            IF (MATCH_TEMPLATE(grid_name(grid) ,arg)) THEN
+	               WRITE ( risc_buff, 4220 ) '  '//grid_name(grid)
+	               CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .				risc_buff, 0)
+	               risc_buff = ' '
+	            ENDIF
+	            GOTO 1344
+ 1346               CONTINUE
 	      ELSE
 	         grid = GRID_FROM_NAME
      .                    ( cmnd_buff(item_start(ivar):item_end(ivar)),
@@ -843,15 +883,24 @@
 	   WRITE ( risc_buff, 4220 ) '** GRIDS NAMES **'
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   risc_buff = ' '
-	   DO 1310 grid = 1, max_grids
+	   DO 1360 grid = 1, max_grids
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	      IF ( grid_name( grid ) .EQ. char_init16 ) GOTO 1310
+	      IF ( grid_name( grid ) .EQ. char_init16 ) GOTO 1360
 	      WRITE ( risc_buff, 4220 ) '  '//grid_name( grid )
 	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	      risc_buff = ' '
  4220	      FORMAT (4X,A)
- 1310	   CONTINUE
+ 1360	   CONTINUE
+*    ... then check dynamic grids
+           grid = 0
+ 1370      CALL TM_NEXT_DYN_GRID( grid, *1379 )
+	      IF ( grid_name(grid)(1:1) .EQ. '(' ) GOTO 1370
+	      WRITE ( risc_buff, 4220 ) '  '//grid_name( grid )
+	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	      risc_buff = ' '
+	      GOTO 1370
+ 1379      CONTINUE
 
 	ELSE
 !	   IF ( mgrid_abstract .EQ. unspecified_int4 ) THEN
@@ -1027,7 +1076,8 @@
 * SHOW FUNCTIONS
  2100   CONTINUE
 * /BRIEF or full description?
- 	sbrief = qual_given( slash_brief ) .GT. 0 
+ 	sbrief  = qual_given( slash_brief ) .GT. 0 
+ 	sdetail = qual_given( slash_show_func_detail ) .GT. 0 
 
 * show a whole list or named functions, only?
 	IF ( num_args .GT. 0 ) THEN
@@ -1042,14 +1092,16 @@
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	         IF (MATCH_TEMPLATE(alg_fcn(i2),arg(:len0)))
-     .           CALL SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i2)
+     .           CALL SHOW_1_FUNCTION(ttout_lun, .FALSE.,
+     .                                sbrief, sdetail, i2)
  2104         CONTINUE
 * ... second try internal, grid-changing functions
 	      DO 2106 i2 = 1, gfcn_num_internal
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
               IF ( MATCH_TEMPLATE(gfcn_name(i2),arg(:len0)) ) CALL
-     .                SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i2)
+     .                SHOW_1_FUNCTION(ttout_lun, .TRUE.,
+     .                                sbrief, sdetail, i2)
  2106         CONTINUE
 * ... third try external functions
 	      DO 2108 i2 = gfcn_num_internal+1, gfcn_num_internal+
@@ -1058,7 +1110,8 @@
      .			( ferr_interrupt, status, ' ', *5000 )
               CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
               IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
-     .            SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i2)
+     .            SHOW_1_FUNCTION(ttout_lun, .TRUE.,
+     .                            sbrief, sdetail, i2)
  2108         CONTINUE
  2110      CONTINUE
 
@@ -1073,11 +1126,13 @@
      .			'Functions internal to Ferret:', 0)
 	      DO 2120 i = 1, num_functions
 	         IF ( alg_fcn(i) .NE. unspecified_name4 ) CALL
-     .                SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i)
+     .                SHOW_1_FUNCTION(ttout_lun, .FALSE.,
+     .                  sbrief, sdetail, i)
  2120         CONTINUE
 * ... internal grid-changing functions
 	      DO 2130 i = 1, gfcn_num_internal
-	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i)
+	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE.,
+     .                  sbrief, sdetail, i)
  2130         CONTINUE
 	   ENDIF
 
@@ -1092,7 +1147,8 @@
      .             0)
 	      DO 2140 i = gfcn_num_internal+1, gfcn_num_internal+
      .             efcn_scan(gfcn_num_internal)
-	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i)
+	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE.,
+     .                  sbrief, sdetail, i)
  2140	      CONTINUE
 	   ENDIF
 

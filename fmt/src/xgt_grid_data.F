@@ -155,6 +155,10 @@
      .		line_start	(mpszw)	/ unspecified_val8 /,
      .		line_delta	(mpszw)	/ unspecified_val8 /
 
+* 7/99 *kob* add in initialization for line_name and mpsnorm.  
+*            needed for v3.4 of netcdf use
+	DATA    line_name       (mpsnorm) /''/
+
 * DEFINE GRIDS NEXT
 * 2 dimensional defining grid for wind stress magnitude
 	DATA	grid_name  (mps2dt)    / 'PS2DT'	/,

@@ -60,6 +60,8 @@
 *			    didn't exist in nag F90
 *			  - f90 doesnt accept "D" in col 1 as a debug thing
 *			    so ifdef around it
+* V500 - *kob* 7/99 - update error codes to handle netCDF V3.4 differences
+*
 * arguments:
 *	status_in	- error code from calling program
 *	status_out	- error code (echoed) back to calling program
@@ -176,16 +178,17 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 1000	  FORMAT(' **TMAP ERR: ',A)
 
 * output a netCDF error (note: CDF uses error code -1)
-	ELSEIF ( (status_in .GE. pcdferr-1) .AND.
+* *kob* 7/99 - Update for netCDF v3.4
+	ELSEIF ( (status_in .GE. pcdferr-100) .AND.
      .		 (status_in .LE. pcdferr + pcdferrmax) ) THEN
 * xxxxx can we get filename from netCDF call ???           
 * xxxxx cdfid and varid are available as dset_num, sf_num
            cdferr = status_in - pcdferr
-           IF ( cdferr.LE.1 ) THEN
+           IF ( cdferr.EQ.-33 ) THEN
               WRITE (errbuf,1008) 'NCSYSERR'
            ELSEIF ( cdferr.EQ.0 ) THEN
               WRITE (errbuf,1008) 'No error'
-           ELSEIF ( cdferr.LE.19) THEN
+           ELSEIF ( cdferr.GE. -66 .AND. cdferr.LE. -33) THEN
               WRITE (errbuf,1008) cdferrmsg(cdferr)
            ELSEIF ( cdferr .EQ. pcdferrmax ) THEN
               WRITE (errbuf, * ) 'error in netCDF file'

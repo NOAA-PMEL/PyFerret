@@ -217,11 +217,61 @@
        hiss_array(4,3) = m4hiz
        hiss_array(4,4) = m4hit
 
+       loss_array(5,1) = m5lox
+       loss_array(5,2) = m5loy
+       loss_array(5,3) = m5loz
+       loss_array(5,4) = m5lot 
+       hiss_array(5,1) = m5hix
+       hiss_array(5,2) = m5hiy
+       hiss_array(5,3) = m5hiz
+       hiss_array(5,4) = m5hit
+
+       loss_array(6,1) = m6lox
+       loss_array(6,2) = m6loy
+       loss_array(6,3) = m6loz
+       loss_array(6,4) = m6lot 
+       hiss_array(6,1) = m6hix
+       hiss_array(6,2) = m6hiy
+       hiss_array(6,3) = m6hiz
+       hiss_array(6,4) = m6hit
+
+       loss_array(7,1) = m7lox
+       loss_array(7,2) = m7loy
+       loss_array(7,3) = m7loz
+       loss_array(7,4) = m7lot 
+       hiss_array(7,1) = m7hix
+       hiss_array(7,2) = m7hiy
+       hiss_array(7,3) = m7hiz
+       hiss_array(7,4) = m7hit
+
+       loss_array(8,1) = m8lox
+       loss_array(8,2) = m8loy
+       loss_array(8,3) = m8loz
+       loss_array(8,4) = m8lot 
+       hiss_array(8,1) = m8hix
+       hiss_array(8,2) = m8hiy
+       hiss_array(8,3) = m8hiz
+       hiss_array(8,4) = m8hit
+
+       loss_array(9,1) = m9lox
+       loss_array(9,2) = m9loy
+       loss_array(9,3) = m9loz
+       loss_array(9,4) = m9lot 
+       hiss_array(9,1) = m9hix
+       hiss_array(9,2) = m9hiy
+       hiss_array(9,3) = m9hiz
+       hiss_array(9,4) = m9hit
+
 
        mr_arg_offset_array(1) = ( mr_blk1(mr1) - 1 ) * mem_blk_size
        mr_arg_offset_array(2) = ( mr_blk1(mr2) - 1 ) * mem_blk_size
        mr_arg_offset_array(3) = ( mr_blk1(mr3) - 1 ) * mem_blk_size
        mr_arg_offset_array(4) = ( mr_blk1(mr4) - 1 ) * mem_blk_size
+       mr_arg_offset_array(5) = ( mr_blk1(mr5) - 1 ) * mem_blk_size
+       mr_arg_offset_array(6) = ( mr_blk1(mr6) - 1 ) * mem_blk_size
+       mr_arg_offset_array(7) = ( mr_blk1(mr7) - 1 ) * mem_blk_size
+       mr_arg_offset_array(8) = ( mr_blk1(mr8) - 1 ) * mem_blk_size
+       mr_arg_offset_array(9) = ( mr_blk1(mr9) - 1 ) * mem_blk_size
        mr_arg_offset_array(num_com+1) = ( mr_blk1(mres) - 1 ) * 
      .      mem_blk_size
 
@@ -229,11 +279,16 @@
         bad_flag_array(2) = mr_bad_data ( mr2 )
         bad_flag_array(3) = mr_bad_data ( mr3 )
         bad_flag_array(4) = mr_bad_data ( mr4 )
+        bad_flag_array(5) = mr_bad_data ( mr5 )
+        bad_flag_array(6) = mr_bad_data ( mr6 )
+        bad_flag_array(7) = mr_bad_data ( mr7 )
+        bad_flag_array(8) = mr_bad_data ( mr8 )
+        bad_flag_array(9) = mr_bad_data ( mr9 )
         bad_flag_array(num_com+1) = mr_bad_data ( mres )
 
         mr_res_offset = ( mr_blk1(mres) - 1 ) * mem_blk_size
 
-        call efcn_compute(fcn, num_com, loss_array, hiss_array,
+        call efcn_compute(fcn, num_com, com_cx,
      .       bad_flag_array, mr_arg_offset_array, mr_res_offset, 
      .       memory)
 

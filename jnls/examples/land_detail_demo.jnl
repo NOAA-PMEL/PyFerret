@@ -4,9 +4,10 @@ CAN MODE logo
 PPL AXLEN,7.8
 
 ! U.S.  State boundaries are available in the North and South
-! America. Here we use pen-color codes 8 and 9 for national
-! and state boundaries in red and green, so that the rivers
-! show up on top of the national or state boundary lines.
+! America. Here we use pen-color codes 8 and 9 for thick lines
+! along the national and state boundaries in red and green, so 
+! that the rivers, drawn with thinner lines, show up on top of 
+! the national or state boundary lines.
 
 go fland 40 white basemap solid x=232:241 y=44:50
 go land_detail black overlay 8 9 blue lightblue

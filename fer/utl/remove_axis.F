@@ -55,28 +55,36 @@
         INTEGER axis
 
 * Local declarations
-	INTEGER  iaxis, imem, first_pt, npoints, last_mem
+	INTEGER  TM_GET_LINENUM, iaxis, imem, first_pt, npoints, 
+     .           last_mem, num_protected_axes
+
+	num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
+
+        IF (num_protected_axes .EQ. unspecified_int4 .OR.
+     .      num_protected_axes .LE. 0) num_protected_axes = 1
+
+* First index in this line, number of points in line
 
         first_pt = line_subsc1 ( axis )
         npoints = 2*line_dim(axis) + 1
 
-        last_mem = next_line_mem_pos - 1
+        last_mem = maxlinestore - npoints
 
 *  Recover space in line_mem array that defines point locations, box sizes.
 
         IF (first_pt .NE. unspecified_int4  .AND. 
      .      last_mem .NE. unspecified_int4 ) THEN
 
-           DO 200 imem = first_pt, last_mem
+           DO 200 imem = first_pt, last_mem 
               line_mem(imem) = line_mem(imem+npoints)
   200      CONTINUE
 
         ENDIF
 
-*  For all axes above this axis, whose line_mem entries were moved, 
-*  also move the pointer into line_mem
+*  For all axes whose line_mem entries were moved, also move the pointer 
+*  into line_mem
 
-        DO 300 iaxis = axis+1, line_ceiling 
+        DO 300 iaxis = num_protected_axes+1, line_ceiling 
            IF ( (.NOT. line_regular(iaxis) ) .AND. 
      .              (line_subsc1(iaxis) .NE. unspecified_int4) ) THEN
 
@@ -88,7 +96,7 @@
 
         line_subsc1(axis) = unspecified_int4
 
-        next_line_mem_pos = next_line_mem_pos - npoints
+        next_line_mem_pos = next_line_mem_pos - npoints 
 
 	RETURN
 	END

@@ -15,3 +15,6 @@ GO err570_shakeylab.jnl
 GO bn_reset
 GO err570_null_symbol.jnl
 
+! Replace text expression with its value: string variable was too short
+GO bn_reset
+GO err570_parse_labelcommand.jnl

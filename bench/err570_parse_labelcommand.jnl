@@ -1,0 +1,22 @@
+! err570_parse_labelcommand.jnl
+! fix for bug 956.
+!
+! When a command is issued with an argument being a variable containing
+! a long string, the string is cut off when the command is parsed to 
+! substitude the value of the variable.
+! (bug fix is lengthening the length of variable repl in repl_exprns.F)
+
+can view
+pplus/reset
+PLOT/i=1:10  1/i
+
+let line1 = "1234567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567890"
+let line2 = "<nl>abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+let tsulab = strcat(line1, line2)
+list tsulab
+
+! Previously when the value of tsulab is replaced in the command and
+! echoed back to the terminal, the string was truncated, with bad appended
+! to the end of the shortened second line.
+
+label/nouser 3.6,`($ppl$ylen)+0.2`,0,0,0.08, `tsulab`

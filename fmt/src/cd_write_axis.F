@@ -62,6 +62,7 @@
 *	DEFINE and DATA mode by deferring actual coordinate writes until later
 * v530 *acm* 1/01  calendar axes: write the calendar name if non-Gregorian
 * v541 *sh* 2/02 - added support for line_modulo_len
+* V550 *ACM* 12/02 Write AXIS attribute to output files.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -225,10 +226,6 @@ xx        include 'netcdf.decl'  ! untested
      .				  units(slen+8:),pdate_numslashnum,
      .				  status )
 
-C  ACM  kludge just for testing!!!
-      IF (line_cal_name(iaxis) .EQ. 'TMAP_360')
-     .                                     line_t0(iaxis)(4:6)  = 'JER'
-
 	    IF ( status .NE. merr_ok ) GOTO 5900
 	ENDIF
         slen = TM_LENSTR1( units )
@@ -291,6 +288,30 @@ C  ACM  kludge just for testing!!!
            ENDIF
         ENDIF
 
+
+
+* Write AXIS attribute
+
+      slen = TM_LENSTR1( 'X' )
+      IF (idim .eq. x_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
+     .        	      slen, 'X', cdfstat )
+      ENDIF
+      IF (idim .eq. y_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
+     .        	      slen, 'Y', cdfstat )
+      ENDIF
+      IF (idim .eq. z_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
+     .        	      slen, 'Z', cdfstat )
+      ENDIF
+      IF (idim .eq. t_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
+     .        	      slen, 'T', cdfstat )
+      ENDIF
+
+
+
 * set up for deferref writing of coordinate values (12/00)
 	CALL CD_DEFER_COORD_WRITE(axid, grid, idim, lo, hi,
      .				  pcd_defer_points)
@@ -326,7 +347,7 @@ C  ACM  kludge just for testing!!!
  5100 CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
      .   unspecified_int4,
-     .  'axis '//name(:nlen)//' doesnt match CDF file',
+     .  'AXIS '//name(:nlen)//' doesnt match CDF file',
      .  no_errstring, *5900 )
 
  5200        CALL TM_ERRMSG

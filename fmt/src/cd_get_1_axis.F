@@ -80,6 +80,8 @@
 *      *acm* 10/01  remove VMS includes
 * V550 *sh*  2/02 - added support for line_modulo_len
 *      *sh* 11/02 - automatically detect subspan modulo longitude and time axes
+* V550 *acm*12/0s - AXIS and CARTESIAN_AXIS attributes, and modifications to
+*                   order of precedence for axis orientation.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -136,6 +138,7 @@
      .        spacing_attr*14
       CHARACTER*13 TM_STRING
       CHARACTER*132 buff
+      CHARACTER*1 axis_dir
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -322,7 +325,52 @@ c         ENDIF
 
 * try to determine the orientation and direction of the axis
       line_direction(iaxis) = 'NA'
-* ... first check units
+
+* ... First check for an AXIS attribute
+
+      axis_dir = char_init01
+      got_it = CD_GET_ATTRIB(cdfid, ivar, 'axis',
+     .              do_warn, vname(:vlen), axis_dir, 1)
+      IF (got_it) THEN
+         IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
+            line_direction(iaxis) = 'TI'  ! time
+         ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
+            line_direction(iaxis) = 'WE'
+         ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
+            line_direction(iaxis) = 'SN'
+         ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
+            line_direction(iaxis) = 'DU'
+         ENDIF
+      ELSE
+         axis_dir = char_init01
+      ENDIF
+
+
+* ... check for a CARTESIAN_AXIS attribute, if still undetermined
+
+      IF (line_direction(iaxis) .EQ. 'NA') THEN
+
+         got_it = CD_GET_ATTRIB(cdfid, ivar, 'cartesian_axis',
+     .              do_warn, vname(:vlen), axis_dir, 1)
+         IF (got_it) THEN
+            IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
+               line_direction(iaxis) = 'TI'  ! time
+            ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
+               line_direction(iaxis) = 'WE'
+            ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
+               line_direction(iaxis) = 'SN'
+            ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
+               line_direction(iaxis) = 'DU'
+            ENDIF
+         ELSE
+            axis_dir = char_init01
+         ENDIF
+      ENDIF
+
+
+* ... next check units
+      IF (line_direction(iaxis) .EQ. 'NA') THEN
+
       IF ( units .LT. 0 ) THEN
          line_direction(iaxis) = 'TI'  ! time
       ELSEIF ( units .EQ. 4 ) THEN     ! degrees
@@ -369,6 +417,10 @@ c         ENDIF
       ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN
          line_direction(iaxis) = 'WE'
       ENDIF
+
+      ENDIF      ! IF (line_direction(iaxis) .EQ. 'NA') THEN
+
+
 * Note: there are some unfortunate ambiguities about how the TMAP library
 *     uses line_direction:  it refers both to orientation and to the formatting
 *     that should be used for the axis.  Thus an axis name of X* is sufficient
@@ -390,10 +442,13 @@ c         ENDIF
             line_direction(iaxis) = 'WE'
          ELSEIF( STR_CASE_BLIND_COMPARE('up',buff(:2))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'DU'
+            IF (axis_dir  .EQ. 'Z' .OR. 
+     .      axis_dir .EQ. char_init01) line_direction(iaxis) = 'DU'
+
          ELSEIF( STR_CASE_BLIND_COMPARE('down',buff(:4))
      .                                     .EQ.str_eq) THEN
-            line_direction(iaxis) = 'UD'
+            IF (axis_dir  .EQ. 'Z' .OR. 
+     .      axis_dir .EQ. char_init01) line_direction(iaxis) = 'UD'
          ENDIF
       ENDIF
 

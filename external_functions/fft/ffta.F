@@ -79,14 +79,15 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id,'Computes fft amplitude spectra  v5.1' )
+      CALL ef_set_desc(id,
+     .      'Computes fft amplitude spectra, unnormalized' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, CUSTOM)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 5)
+      CALL ef_set_num_work_arrays(id, 4)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
@@ -146,7 +147,7 @@
       ENDIF
 
       arg = 1
-      nd = (arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1)
+      nd = (nfreq_hi_l - nfreq_lo_l + 1)
 
       nfreq = nd/ 2
 
@@ -160,6 +161,7 @@
       freqn = yquist
 
       outunits = 'FREQ'
+
       CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
      .   outunits, NO)
 
@@ -267,9 +269,6 @@
 * ts
       CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
-* ws
-      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, mtdat, 1, 1, 1)
-
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -282,8 +281,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE ffta_compute(id, arg_1, result, creal, cimag, wft, 
-     .                ts, ws)
+      SUBROUTINE ffta_compute(id, arg_1, result, creal, cimag, wft, ts)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -312,7 +310,7 @@
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
 
-*  Dimenstion work arrays
+*  Dimension work arrays
 
       REAL creal(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
@@ -322,8 +320,6 @@
      .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
       REAL ts(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
      .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
-      REAL ws(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
-     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
 
       REAL rr, ri
       INTEGER nd, nf
@@ -357,11 +353,8 @@
       ENDIF
 
 *  Set WFT for fft; prime factorization of ND and trig functions.
-*  Set weights for 10%, 5%  or 1% cosine window.  
-*  Or CALL PROLATE (WS, ND, IP) w/ IP=1 OR 4  for pi or 4pi prolate window.)
 
       CALL rffti (nd, wft)
-      CALL coswindow (ws, nd, 5)
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -382,7 +375,7 @@
                      GO TO 999 
                   ENDIF
 
-                  ts(l,1,1,1) = ws(l,1,1,1)* arg_1(i1,j1,k1,l1)
+                  ts(l,1,1,1) = arg_1(i1,j1,k1,l1)
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  100           CONTINUE
 

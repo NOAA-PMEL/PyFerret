@@ -52,7 +52,6 @@
 * V200:  6/15/89 - eliminated "d" notation and "relative" logic
 * Unix/RISC port - 1/91 - cant use "/star" in documentation
 * V230:  7/23/92 - added cs_save_* to restore context after REPEAT loops
-* $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate 
 *         whether time is date or timesteps
 * 12/97 *kob* - use new logical cs_is_calendar

@@ -2,6 +2,7 @@
 ! or both above, the data bounds. In v5.53 the error 
 ! handling for this got broken for time axes (an error 
 ! in the fix for err551_no_taxis_errmsg)
+! acm 11/03
 
 SET MODE IGNORE_ERRORS
 

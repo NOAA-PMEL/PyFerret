@@ -1,5 +1,6 @@
 ! In v5.50, we upped the region name storage to 
 ! allow 24-characters.  Wasnt fully implemented.
+! acm 11/03
 
 SET MODE IGNORE_ERRORS
 

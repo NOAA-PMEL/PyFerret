@@ -1,4 +1,4 @@
-      SUBROUTINE TM_LOAD_CALENDAR (cal_id, status)
+      SUBROUTINE TM_LOAD_CALENDAR (cal_name, status)
 
 C     Loads data for the calendar given  into common.  These values are
 C     accessed by the date/time functions for all calendar-using plots.
@@ -22,9 +22,12 @@ C     0.00000000000000000000000000000000000000000000000000000000000000001
       INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 #endif
 
-      integer         cal_id,status,i,j,k
+      integer         TM_GET_CALENDAR_ID, cal_id,status,i,j,k
+      character*(*)   cal_name
 
 *************************************************************************
+
+      cal_id = TM_GET_CALENDAR_ID (cal_name)
 
 C     OK CALENDAR ID?
       if (cal_id .lt. 1 .or. 
@@ -63,7 +66,7 @@ C     SET MONTH_BY_DAY
  140     end do
  150  end do
 
-C     IDENTIFY LOADED CALENDAR
+C  IDENTIFY LOADED CALENDAR
       calendar_id = cal_id
 
       status = merr_ok

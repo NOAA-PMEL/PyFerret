@@ -1,0 +1,78 @@
+!  Starting with Ferret v5.53, we can send multi-line labels
+!  to plots, including the title, axis labels, and moveable labels.
+!  Separate  the lines using the separator <NL>, which can be 
+!  uppercase or lowercase.
+     
+set win/siz=0.5
+set view full
+
+plot/i=1:100/title="multi line title<nl>with the second line pretty long: \
+so Ferret will resize the entire title. Titles are \
+<nl>sized according to the longest line <nl>and lines are centered individually" i*cos(i/8)
+plot/over/i=1:100 i*sin(i/8)
+
+pause
+plot/i=1:100/title="@p2TWO-LINE<NL>RED TITLE"/set i*cos(i/8)
+ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
+ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
+ppl plot
+
+Message "For overlay plots the title is used for a key at the lower left"
+ 
+plot/over/i=1:100/title="short two-line<nl>title for the overlay line" i*sin(i/8)
+plot/over/i=1:100/title="here is the key for the<nl>second overlay line" i*sin(i/4)
+
+message "Now some moveable labels with the LABEL command."
+label 10,80,-1,-20,0.2,"@CSfonts and @p2colors<nl>a@p1nd at an angle<NL>\
+no@p3w green and @CRCR font<NL>back@CS to script"
+
+label 30,-70,-1,40,0.2,"first line, then blank<NL> <NL>third line, all rotated"
+
+label/nouser 6.5,6,1,90,0.2,"@p2Another @CImoveable label<nl>Set to @CRCR and @p4P4\
+<NL>at 90 degrees"
+ 
+message "a set of multi-line key labels."
+plot/title="multi-line key labels"/i=1:100 i*sin(i/12)
+plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 1" i*sin(i/6)
+plot/over/i=1:100/title="Two-lines<nl>overlay 2" i*cos(i/6)
+plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 3" -1*cos(i/10)
+plot/over/i=1:100/title="One-line" i*cos(i/8)
+plot/over/i=1:100/title="Three-line<nl>second<nl>overlay5" i*cos(i/14)
+plot/over/i=1:100/title="Two-line<nl>overlay6" i*cos(i/20)
+plot/over/i=1:100/title="Three-line<nl>second<nl>overlay7" i*sin(i/12)
+
+   
+message "now a very long bunch of text.  The maximum for a single label is 2048 characters."
+plot/i=1:100 i*cos(i/8)
+
+label 3,95,-1,0,0.14,\
+"@CRHere is a long label, made with the LABEL command:<NL>\
+ <NL> Ferret is an interactive computer visualization and analysis<NL>\
+environment designed to meet the needs of oceanographers and<NL>\
+meteorologists analyzing large and complex gridded data sets. It<NL>\
+runs on most Unix systems, and on Windows NT/9x using X<NL>\
+windows for display. It can be installed to run from a Web<NL>\
+browser (WebFerret) for use while away from your desk or<NL>\
+from a system lacking X windows software. It can transparently<NL>\
+access extensive remote Internet data bases using OPeNDAP,<NL>\
+formerly known as DODS. See the dods webpage\
+<NL> <NL>\
+Ferret was developed by the Thermal Modeling and Analysis<NL>\
+Project (TMAP) at PMEL in Seattle to analyze the outputs of its<NL>\
+numerical ocean models and compare them with gridded,<NL>\
+observational data. The model data sets are generally multi-<NL>\
+gigabyte in size with mixed 3 and 4-dimensional variables defined<NL>\
+on staggered grids. Ferret offers a Mathematica-like approach to<NL>\
+analysis, new variables may be defined interactively as<NL>\
+mathematical expressions involving data set variables.<NL>\
+Calculations may be applied over arbitrarily shaped regions. Fully<NL>\
+documented graphics are produced with a single command.\
+<NL> <NL>\
+Many excellent software packages have been developed recently<NL>\
+for @p2scientific visualization@p1. The features that make Ferret distinctive<NL>\
+among these packages are Mathematica-like flexibility,<NL>\
+geophysical formatting, intelligent connection to its data base,<NL>\
+memory management for very large calculations, and symmetrical<NL>\
+processing in 4 dimensions."
+
+

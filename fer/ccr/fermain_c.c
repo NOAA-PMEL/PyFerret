@@ -115,6 +115,10 @@
 *     8/22/03 *acm* New -script command-line switch: run the named script and exit.
 *                   This mode also sets -nojnl and -server, as well as the new
 *                   -noverify switch.  It also supresses the banner lines.
+*     3/24/03 *acm* The -script switch interacts with any SET MEMORY commands
+*                   within the script.  Set a flag when this occurs, so that
+*                   ferret_dispatch can be called correctly after the memory reset, 
+*                   continuing to execute the commands from the script
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
@@ -263,7 +267,7 @@ main (int oargc, char *oargv[])
 				j++;
 			}
 			if (i+1 < argc && argv[i+1][0] != '-') {
-				strcat(script_args, ",");
+				strcat(script_args, " ");
 				arg_pos = arg_pos+1;
 		   }
 		   i = i+1;
@@ -333,6 +337,7 @@ static void command_line_run(float **memory){
   int ipath = 0;
   int len_str = 0;
   int j = 0;
+  int script_resetmem = 0;
 
 
   /* turn on ^C interrupts  */
@@ -385,10 +390,22 @@ static void command_line_run(float **memory){
   /* run the initialization file
      * Note 1: do not pass a fixed string as the command - FERRET needs to blank it
      * Note 2: if not under GUI control we will not normally exit FERRET_DISPATCH
-     *	  until we are ready to exit FERRET */
+     *	  until we are ready to exit FERRET 
+     * Note 3: in -script mode, a SET MEM command executes commands in this
+	      routine to reset memory.  Once this has been done, call ferret_dispatch_c
+		  with blank second argument to continue executing commands in the script.
+		  Reset the flag script_resetmem so that further SET MEM commands are executed
+		  as well.*/
   while ( 1) {
     /*    ferret_dispatch_( memory, init_command, rtn_buff );  FORTRAN version */
-    ferret_dispatch_c( *memory, init_command, sBuffer );
+
+	if ( script_resetmem == 0 )
+	  {
+      ferret_dispatch_c( *memory, init_command, sBuffer );
+	  } else {
+	  ferret_dispatch_c( *memory, " ", sBuffer );
+	  script_resetmem = 0;
+	  }
 
     /* debugging flow control checks */
     /*
@@ -422,6 +439,8 @@ static void command_line_run(float **memory){
 	}
       }
       FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
+	  if (its_script)
+		{script_resetmem = 1;}
     }
 
     /* ***** EXIT ***** */

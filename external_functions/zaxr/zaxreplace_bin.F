@@ -35,13 +35,14 @@
 *
 * Ansley Manke
 * Oct 1999
+* 11/2001  clarify function description
 *
 * Replace Z axis, using unweighted averaging over bins.
-* Find the source points in each destination box, average them.
+* Find the source points within each destination box, average them.
 
 * Points that match a destination box edge are arbitrarily put in the
-* box whose lower bound they match: 500 is put in a 500-600 box not
-* the 400-500 box. 
+* box whose lower bound they match, e.g. 500 is put in the500-600 box 
+* not the 400-500 box. 
 *
 
 
@@ -95,10 +96,10 @@
       CHARACTER*100 fcn_desc
 
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Average within bins to put var V onto Z axis of ',
-     . ' ZAX using Zvalues in ZVALS' )
+   10 FORMAT 
+     .  ('regrid V onto Z axis of ZAX based on Z values in ZVALS ',
+     .    'using unweighted average' )
       CALL ef_set_desc(id, fcn_desc)
-
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
@@ -111,18 +112,20 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
-      CALL ef_set_arg_desc(id, arg, 'Function values F(x,y,z,t)')
+      CALL ef_set_arg_desc(id, arg,
+     .        'Variable on native z axis')
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZVALS')
       CALL ef_set_arg_desc(id, arg, 
-     .        'Destination Z axis as a fcn of source Z axis')
+     .        'Destination Z axis values as a fcn of source Z axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'ZAX')
-      CALL ef_set_arg_desc(id, arg, 'Destination Z axis ')
+      CALL ef_set_arg_desc(id, arg, 
+     .'Variable with desired z (depth) axis points')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, NO)
 
 *                                                                     ^

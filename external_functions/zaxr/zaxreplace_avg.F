@@ -35,10 +35,10 @@
 *
 * Ansley Manke
 * Oct 1998
+* 11/2001  clarify function description
 *
-* Replace Z axis, using averaging over bins
+* Replace Z axis, using weighted averaging over bins
 *
-
 
 *
 * In this subroutine we provide information about
@@ -81,16 +81,17 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id, arg
-      CHARACTER*100 fcn_desc
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+      CHARACTER*100 fcn_desc
 
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Average to interpolate V onto Z axis of ZAX using Z ',
-     . ' values in ZVALS' )
+   10 FORMAT 
+     .  ('regrid V onto Z axis of ZAX based on Z values in ZVALS ',
+     .    'using weighted average' )
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
@@ -104,18 +105,20 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
-      CALL ef_set_arg_desc(id, arg, 'Function values F(x,y,z,t)')
+      CALL ef_set_arg_desc(id, arg, 
+     .        'Variable on native z axis')
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZVALS')
       CALL ef_set_arg_desc(id, arg, 
-     .        'Destination Z axis as a fcn of source Z axis')
+     .        'Destination Z axis values as a fcn of source Z axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'ZAX')
-      CALL ef_set_arg_desc(id, arg, 'Destination Z axis ')
+      CALL ef_set_arg_desc(id, arg, 
+     .'Variable with desired z (depth) axis points')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, NO)
 
 *                                                                     ^
@@ -246,7 +249,7 @@
 
       INTEGER i, j, k, l
       INTEGER i1, j1, l1, i2, j2, l2, i3, j3, l3
-      INTEGER ifirst, iw, nbox, nsrc, nothing
+      INTEGER ifirst, iw, nbox, nsrc
       INTEGER nsrc_lo, nsrc_hi
       REAL frac, xsrc_min, xsrc_max, xsrc_lo, xsrc_hi, xsrcdiff
       REAL wtd, arg1_val, arg1_val_last, wtd_last
@@ -438,12 +441,6 @@ c      CHARACTER*132 err_msg
 
                   IF (wtdsum .NE. 0.) THEN
                      result(i,j,k,l) = sum / wtdsum
-                     if (abs(result(i,j,k,l)) .gt. 200. ) then
-                        nothing = 0
-                     endif
-                     if (abs(result(i,j,k,l)) .lt. 0. ) then
-                        nothing = 0
-                     endif
 
 *  Start next average with remaining weighted part of the last box with
 *  was not within the destination box.

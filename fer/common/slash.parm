@@ -3,9 +3,6 @@
 * v491:  12.98 - added pattern for contour and shade *jd*
 * v500:  03.99 - added qualifiers for polygon *jd*
 * V510 *sh* 3/00 - added slash_set_data_tregular, slash_plot_color
-* V522+ *acm* 10/00 - added VECTOR/STREAMLINE (alias STREAM)
-* V530 *sh* 10/00 - added slash_set_data_type, slash_set_data_delimiters
-
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -65,7 +62,6 @@
      .			slash_set_data_type,
      .			slash_set_data_swap,
      .			slash_set_data_tregular,
-     .			slash_set_data_delimiters,
      .
      .			slash_set_var_title,
      .			slash_set_var_unit,
@@ -105,8 +101,16 @@
      .			slash_vect_xskip,
      .			slash_vect_yskip,
      .			slash_vect_thick,
-     .			slash_vect_streamline,
-     .			slash_vect_density,
+     .
+     .			slash_strm_over_plot,
+     .			slash_strm_set_up,
+     .			slash_strm_frame,
+     .			slash_strm_transpz,
+     .			slash_strm_aspect,
+     .			slash_strm_nolabels,
+     .			slash_strm_density,
+     .			slash_strm_arrwsize,
+     .			slash_strm_thick,
      .
      .			slash_shad_over_plot,
      .			slash_shad_set_up,
@@ -204,7 +208,6 @@
      .			slash_set_data_type     = 11,
      .			slash_set_data_swap     = 12,
      .			slash_set_data_tregular = 13,
-     .			slash_set_data_delimiters = 14,
      .
      .			slash_set_var_title	= 1,
      .			slash_set_var_unit	= 2,
@@ -244,8 +247,16 @@
      .			slash_vect_xskip	= 18,
      .			slash_vect_yskip	= 19,
      .			slash_vect_thick	= 20,
-     .			slash_vect_streamline   = 1+25,
-     .			slash_vect_density      = 1+26,
+     .
+     .			slash_strm_over_plot	= 9,
+     .			slash_strm_set_up	= 10,
+     .			slash_strm_frame	= 11,
+     .			slash_strm_transpz	= 13,
+     .			slash_strm_aspect	= 15,
+     .			slash_strm_nolabels	= 16,
+     .			slash_strm_density	= 18,
+     .			slash_strm_arrwsize	= 19,
+     .			slash_strm_thick	= 20,
      .
      .			slash_shad_over_plot	= 1+8,
      .			slash_shad_set_up	= 1+9,

@@ -1,6 +1,7 @@
 * COMMAND.PARM
 * command numbers
 * V500 *sh* 2/99 -- added POLYGON command
+* V500 *sh* 2/99 -- added STREAMLN command
 
 	INTEGER		cmnd_set,
      .			cmnd_show,
@@ -29,7 +30,8 @@
      .			cmnd_elif,
      .			cmnd_endif,
      .			cmnd_polygon,
-     .			cmnd_semicolon
+     .			cmnd_semicolon,
+     .			cmnd_streamln
 	INTEGER		subcmnd_variable,
      .			subcmnd_set_data,
      .			subcmnd_set_window,
@@ -63,6 +65,7 @@
      .			cmnd_elif    = 25,
      .			cmnd_endif   = 26,
      .			cmnd_polygon = 27,
+     .			cmnd_streamln = 28,
      .			cmnd_semicolon = -123 ) ! not a real command
 	PARAMETER     (	subcmnd_variable = 4,
      .			subcmnd_set_data = 6,

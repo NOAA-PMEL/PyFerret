@@ -46,6 +46,8 @@
 *		1/95  - change in "parent" argument to cd_write_axis (now int)
 *   11/95 - *sh* use CD_AXIS_NAME rather than line_name for dynamic lines
 *    2/96 - *sh* same deal for dynamic grids ... a quick fix right here
+* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+*                    lname to 64 from 24 to match longer line_name
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -88,8 +90,10 @@ xx        include 'netcdf.decl'  ! untested
       LOGICAL gmod
       INTEGER TM_LENSTR1, NCDID, NCVID, NCVDEF, NCDDEF,
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
-      CHARACTER CD_CHILDAX_NAME*24, CD_AXIS_NAME*24,
-     .		names*132, lname*24
+* *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+*                    lname to 64 from 24 to match longer line_name
+      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
+     .		names*132, lname*64
       CHARACTER*1 ww_dim_name(4)
       DATA ww_dim_name/'X', 'Y', 'Z', 'T'/
 

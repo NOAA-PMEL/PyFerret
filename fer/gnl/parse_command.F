@@ -90,6 +90,8 @@
 *	       need two of them together for escapes
 * v4.91 12/97 *kob* - added parameter decl. for local_max_arg_list to use as
 *                     number of elements for itsa_qualifer logical array
+* V500 *sh* 4/99 - Increased nsubst_passes to 100 for detecting recursion
+*		- so large numbers of grave accents can be in a single line
 *
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -282,7 +284,7 @@
 * and return to re-process command if substitution occurs (4/93)
 * Note: could have been done as a command stack operation ... maybe cleaner 
 	nsubst_passes = nsubst_passes + 1 ! guard against recursion (4/93)
-	IF ( nsubst_passes .GT. 20 ) GOTO 5060
+	IF ( nsubst_passes .GT. 100 ) GOTO 5060
 	IF ( cs_in_control ) THEN
 	   IF ( INDEX(cmnd_buff(:cmnd_len),'$') .GT. 0 ) THEN
 * ... search backwards for a GO command in charge of the command stack
@@ -593,7 +595,7 @@
 * the command qualifiers (which may contain region information) will have
 * been identified and can be used while evaluating the grave expressions
 	nsubst_passes = nsubst_passes + 1 ! guard against recursion (4/93)
-	IF ( nsubst_passes .GT. 50 ) GOTO 5060
+	IF ( nsubst_passes .GT. 100 ) GOTO 5060
 * For REPEAT commands the grave accented expressions INSIDE the REPEAT loop
 * must be deferred until later
 	IF ( INDEX(cmnd_buff(:cmnd_len),'`') .GT. 0 ) THEN

@@ -72,6 +72,8 @@
 *			compiler did not like it...
 *		      - added ifdef to use linux perror c routine rather than
 *			fortran perror.  3.11.97
+* *kob* 1/00 - v5.30 - add xplot_setup for animate logical.  if ctrl-c
+*                      interrupt during animation, clean things up
 * arguments:
 *	status	- error code from calling program
 *	status_out	- error code (echoed) back to calling program
@@ -86,6 +88,7 @@
 	include 'xerrmsg_text.cmn'
         include 'xrisc.cmn'
         include 'xgui.cmn'
+	include 'xplot_setup.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -201,7 +204,11 @@
 	ELSEIF ( status .EQ. ferr_interrupt ) THEN
 	   CALL TM_SPLIT_MESSAGE( ttout_lun, '** INTERRUPTED! **')
 	   CALL SET_CTRL_C( CTRLC_AST )
-
+* *kob*	if animating during an interrupt, lets clean up
+	   IF (animate .EQ. .TRUE.) THEN
+	      animate = .FALSE.
+	      CALL SWAP_ACTIVE_WINDOW
+	   ENDIF
 	ELSEIF ( status .EQ. ferr_interrupt ) THEN
 * silent error code ?
 	ELSEIF ( status .EQ. ferr_silent ) THEN

@@ -51,7 +51,9 @@
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
 *           12/00*acm* - cleanup: TM_DATE_OK declared but never called
-#ifdef unix
+* V533      8/01 *acm* - calendar axis additions: SECS_FROM_BC needs cal_id
+*      *acm* 10/01  remove VMS includes
+
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
         include 'xdset_info.cmn_text'
@@ -69,22 +71,7 @@
 	include 'xalgebra.cmn'
 	include 'xgui.cmn'
 	include 'xvariables.cmn' ! JC_ADDITION
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-#endif
+
 
 * calling argument declarations
 	INTEGER query, nflags, flags(nflags), num_strings, num_vals, ntext,
@@ -100,9 +87,9 @@
 * local variable declarations:
 	LOGICAL GEOG_LABEL
 	INTEGER	TM_LENSTR1, FIND_DSET_NUMBER, IGRID, TM_GET_LINENUM,
-     .		TM_GET_GRIDNUM,
+     .		TM_GET_GRIDNUM, TM_GET_CALENDAR_ID,
      .		i, i2, n, dim, dset, cat, var, axis, grid,
-     .		slen, insert_pt, stride, status
+     .		slen, insert_pt, stride, status, cal_id
 	REAL*8	TWORLD, TM_WORLD, SECS_FROM_BC, lo, hi, delta
 	CHARACTER AX_TITLE*32, TM_FMT*16, buff1*32,
      .		  farg1*80, farg2*80, farg3*80, farg4*80, farg5*80
@@ -440,7 +427,17 @@
 	num_vals = 3
 * ... and finially special stuff for calendar axis formatting
 	IF ( dim.EQ.t_dim .AND. flags(2).EQ.1 ) THEN
-	   nums(4) = SECS_FROM_BC( line_t0(axis), status )
+
+*  See if we can find out the calendar, if grid/axis is known
+	IF (grid .EQ. unspecified_int4  .AND.  
+     .	    axis .EQ. unspecified_int4)  THEN 
+	   cal_id = 1
+	ELSE
+	   IF (axis .EQ. unspecified_int4) axis = grid_line(t_dim, grid)
+	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
+	ENDIF
+
+	   nums(4) = SECS_FROM_BC( line_t0(axis), cal_id, status )
 	   nums(5) = line_tunit(axis)
 	ENDIF
 	RETURN

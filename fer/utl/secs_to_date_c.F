@@ -40,6 +40,10 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
+* v5.33 *acm* SECS_TO_DATE needs arg cal_id. Use Gregorian - these calls
+*             are used in converting today's date for labels, etc.  See
+*             gui/Utility.c and gui/JC_Utility.c
+
 * V400: 11/94 
 
 	include	'ferret.parm'
@@ -54,11 +58,13 @@
 #endif
 
 * local variable declarations
-	INTEGER	  TM_LENSTR1, slen
+	INTEGER	  TM_LENSTR1, slen, cal_id
 	CHARACTER SECS_TO_DATE*20, temp_str*20
 
+	cal_id = 1	! Gregorian (default) calendar
+
 * do the conversion using FORTRAN CHARACTER variables
-	temp_str = SECS_TO_DATE(bcsecs)
+	temp_str = SECS_TO_DATE(bcsecs, cal_id)
 
 * now convert the result into a C string
 	slen = TM_LENSTR1( temp_str )

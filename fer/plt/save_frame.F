@@ -47,6 +47,7 @@
 *	1/95 - major revamp using entirely X code instead of GKS (much faster)
 *		and incorporating GIF output
 *       9/97 - now supports batch mode
+* V500: 4/99 *sh* increased filename string length from 128 to 255
 
 * calling argument declarations:
 	INTEGER		status
@@ -70,7 +71,7 @@
 #endif
 
         INTEGER slen
-        PARAMETER  ( slen = 128 )
+        PARAMETER  ( slen = 255 )
 
 * declarations for C-calling machinery
 #ifdef sun

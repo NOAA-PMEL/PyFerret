@@ -52,6 +52,7 @@
 *		of GIF images
 * V320: 1/95 - use gif_frame routine for both HDF and GIF
 *	call TM_PARK_LAST_VERSION for names
+* V500: 4/99 *sh* increased filename string length from 128 to 255
 
 #ifdef unix
 	include 'ferret.parm'
@@ -70,7 +71,7 @@
 * internal variable declarations:
 	LOGICAL		is_format, is_file
 	INTEGER		TM_LENSTR1, status, loc, flen
-	CHARACTER	format*3, filename*128
+	CHARACTER	format*3, filename*255
 
 * initialize
 	is_format = qual_given( slash_frame_format ).GT.0

@@ -35,6 +35,7 @@
 *
 * Ansley Manke
 * Nov 12, 2002 from scat2gridlaplace_xy
+* 2/3/02 bug fix: def of nin in work_size subroutine.
 *
 * Returns variable interpolated onto an equally-spaced Z-T grid.  
 * Input is scattered triples: (z, t, f(x,t)); f may be function of x,y  
@@ -192,7 +193,7 @@
       nyin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
       nzin = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
       ntin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
-      nin = 3* max(nzin,nyin,nzin,ntin)
+      nin = 3* max(nxin,nyin,nzin,ntin)
 
       nzout = 1 + arg_hi_ss(Z_AXIS,ARG4) - arg_lo_ss(Z_AXIS,ARG4)
       ntout = 1 + arg_hi_ss(T_AXIS,ARG5) - arg_lo_ss(T_AXIS,ARG5)

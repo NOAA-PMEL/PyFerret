@@ -34,8 +34,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 # Targets
 #
-#all:    ferret_cmn sampleyz.so samplexz.so packx.so packt.so
-all:    ferret_cmn is_element_of.so bin_index_wt.so
+#all:    ferret_cmn bin_index_wt.so 
+all:    ferret_cmn is_element_of.so sampleyz.so samplexz.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

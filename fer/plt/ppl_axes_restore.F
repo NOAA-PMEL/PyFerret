@@ -40,6 +40,7 @@
 * V450:  
 * V541: 3/02  *acm* restore of PPL AXLABP settings too
 *       3/25  Put the common block in a separate include file.
+* v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 
 	include 'plot_setup.parm'
 	include 'axis_inc.decl'
@@ -72,6 +73,8 @@
   94	   FORMAT ('TXLABP ', i2, ',', I2 )
 	   CALL PPLCMD (from, line, 0, buff, 1, 1)
 	ENDIF
+
+        iaxset = 0
 
 	RETURN
 	END

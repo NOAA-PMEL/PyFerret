@@ -45,6 +45,7 @@
 
 * v540 *acm*  2/02 save the state of the axes; so can restore PPL AXSEST settings
 *             3/25  Put the common block in a separate include file.
+c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 
 
 	include 'tmap_dims.parm'
@@ -59,6 +60,7 @@
 	CHARACTER*25	buff
 
 * save previous axis state
+
 	DO 10 i = 1, 4
  10	save_iaxon(i) = iaxon(i)
         save_labx = labelx
@@ -108,6 +110,8 @@
   94	   FORMAT ('TXLABP ', i2, ',', I2 )
 	   CALL PPLCMD (from, line, 0, buff, 1, 1)
 	ENDIF
+
+        iaxset = 1
 
 	RETURN
 	END

@@ -11,12 +11,13 @@ C**
 C***********************************************************************
 C**
 C**
+c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 c
 	COMMON/AXIS/ XLO,XHI,XTIC,XLEN,XCSIZE, 
      *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG, 
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,
-     *	IAXON(4)
+     *	IAXON(4),IAXSET
 c
 c**	x axis variables
 c
@@ -61,7 +62,8 @@ c	nticy	number of large tics to try for if iautoy=1
 c	yorg	position of bottom end of axis from bottom boundry (inches)
 c
 c**	axis flags
-c
+c       iaxset          =1 if axes have been reset (needed if plot/set/axes=,
+c                       so we can reset after the ppl plot)
 c	iaxon(1:4)	four flags controlling the plotting of each axis
 c			=0 suppress plotting of axis and character label
 c			=1 plot axis and character label

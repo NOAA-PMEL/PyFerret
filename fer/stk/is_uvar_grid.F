@@ -421,12 +421,17 @@
 * point uvar to its grid (possibly need different grid for each dset)
 * ... 8/95 check uvar_dset: LET/D variable needs uvar_need_dset always true 
 * ... 3/99 but LET/D ("default") needs uvar_need_dset FALSE 
-        IF ( uvar_dset(uvar).EQ.unspecified_int4 ) THEN
-           uvar_need_dset(uvar) = .NOT.cx_dset_gvn(big_cx)
-        ELSEIF ( uvar_dset(uvar).EQ.pdset_irrelevant ) THEN
-           uvar_need_dset(uvar) = .FALSE.
-        ENDIF
-	IF ( uvar_need_dset(uvar) ) THEN
+* ... 11/02 LET/D needs uvar_need_dset FALSE only when there is no dataset
+*           associated with the variable.  In the case where LET/D wants the
+*           default dataset associated with the variable, it should be true
+*           so remove the 3/99 additions - which fixed a bug which occured
+*           only when a let/d was done and no dataset was initialized.  This
+*           was the incorrect place to fix that bug.
+
+        IF ( uvar_dset(uvar).EQ.unspecified_int4 )
+     .            uvar_need_dset(uvar) = .NOT.cx_dset_gvn(big_cx)
+
+	IF ( uvar_need_dset(uvar) .AND. dset .NE. unspecified_int4) THEN
 	   this_dset = dset
 	ELSE
 	   this_dset = pdset_irrelevant

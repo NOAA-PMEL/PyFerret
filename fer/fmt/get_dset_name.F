@@ -72,7 +72,9 @@
 	len_name  = LEN( name )
 
 * consider the options
-	IF     ( dset_num .EQ. pdset_irrelevant	)	THEN	! no name
+* 11/02 *kob* Also need to make sure that dset_num isn't undefined
+	IF     ( dset_num .EQ. pdset_irrelevant	.OR. 
+     .              dset_num .EQ. unspecified_int4)	THEN	! no name
 	   name(1:len_name) = 'N/A'
 	   len_text = 3
 

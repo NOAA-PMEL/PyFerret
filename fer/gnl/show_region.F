@@ -48,20 +48,13 @@
 *		          eliminated using temporary buffer for cx_dim_str
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V550: *acm*10/02- Changed cx_name to char*24, so use TM_LENSTR1 with it.
+*       *ACM*11/02- Did NOT need the above change with TM_LENSTR1.
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	cx
@@ -71,7 +64,7 @@
 	PARAMETER ( full_precision = .TRUE. )
 
 * local variable declarations:
-	INTEGER  TM_LENSTR1, slen, idim
+	INTEGER  idim, slen
 	CHARACTER cx_DIM_STR*48
 
 * write region name
@@ -79,9 +72,8 @@
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .				'default region:',15)
 	ELSE
-           slen = TM_LENSTR1(cx_name(cx))
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .		'region '//cx_name(cx)(:slen)//':',12)
+     .		'region '//cx_name(cx)//':',12)
 	ENDIF
 
 * describe each axis - produce lines as complex as:"X=lo:hi@xxx:nn (transform)"

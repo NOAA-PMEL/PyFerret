@@ -1,6 +1,7 @@
 	SUBROUTINE WINDOW_REGRID_1_AXIS( cx_lims, axis, trans,
      .				 dst_lox, dst_hix, dst_loy, dst_hiy,
-     .				 src, msrc, dst, mdst, ss21, wksize )
+     .				 src, msrc, dst, mdst, sslo, sshi,
+     .				 wksize )
 
 *
 *
@@ -59,6 +60,8 @@
 * V420: 1/96 - removed SUM and NGD from here to ave_regrid_1_axis (weighted)
 * V500: 4/99 *kob* bug fix:  fixed loops for y,z,t axis to loop
 *                            only to srcss_hi-1
+* V510: 1/00 *sh* bug fix to behavior at edges of region
+
 #ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -74,14 +77,15 @@
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, trans, mdst,
      .          dst_lox, dst_hix, dst_loy, dst_hiy , wksize
-	INTEGER	ss21(wksize)
+	INTEGER	sslo(wksize), sshi(wksize)
 
 	REAL    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
      .		dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * local variable declarations:
 	INTEGER		npts, dstss,srcss,src_grid,dst_grid,i,j,k,l
-	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ssfill
+	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi,
+     .		        src_lo, src_hi
 
 	REAL		accum, bad_src, bad_dst
 
@@ -103,25 +107,10 @@
         bad_dst = mr_bad_data(mdst)
 
 * determine the source grid boxes containing the destination boxes
-	CALL GET_AVE_LIMS ( srcss_lo, srcss_hi, src_grid,
+	CALL GET_WINDOW_LIMS ( srcss_lo, srcss_hi, src_grid,
      .			   dstss_lo, dstss_hi, dst_grid,
-     .			   axis, ss21 )
+     .			   axis, sslo, sshi )
 
-* add 1 to top subscript since destination points are computed using
-* ss(i) to ss(i+1)-1.  Also,
-* since partial source data in a destination box can still give an answer
-* setup to use whatever is available in the lo and hi destination boxes
-	ssfill = srcss_hi+1		! filler for high end
-	DO 10 i = dstss_hi+1, dstss_lo,-1
-	   IF ( ss21(i-dstss_lo+1) .EQ. unspecified_int4 ) THEN
-	      ss21(i-dstss_lo+1) = ssfill
-	   ELSEIF ( ssfill .EQ.  srcss_hi+1 ) THEN
-	      ss21(i-dstss_lo+1) = ss21(i-dstss_lo+1) + 1    ! add 1 to top ss
-	      ssfill = srcss_lo		! filler for low end
-	   ELSE
-	      ssfill = srcss_lo		! filler for low end
-	   ENDIF
- 10	CONTINUE
 
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
@@ -131,8 +120,9 @@
 
 * loop through the each destination grid box
 	   DO 160 dstss = dstss_lo,dstss_hi
-	      srcss_lo = ss21(dstss-dstss_lo+1)
-	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+	      src_lo = sslo(dstss-dstss_lo+1)
+	      src_hi = sshi(dstss-dstss_lo+1)
 
 	      IF     ( trans .EQ. prgrd_min ) THEN
 	         accum = arbitrary_large_val4
@@ -140,7 +130,7 @@
 	         accum = arbitrary_small_val4
 	      ENDIF
 	      npts = 0
-	      DO 110 srcss = srcss_lo, srcss_hi-1
+	      DO 110 srcss = src_lo, src_hi
 
 * ... ignore missing source data
 	         IF ( src(srcss, j, k, l) .EQ. bad_src ) GOTO 110
@@ -172,8 +162,9 @@
 
 * loop through the each destination grid box
 	   DO 260 dstss = dstss_lo,dstss_hi
-	      srcss_lo = ss21(dstss-dstss_lo+1)
-	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+	      src_lo = sslo(dstss-dstss_lo+1)
+	      src_hi = sshi(dstss-dstss_lo+1)
 
 	      IF     ( trans .EQ. prgrd_min ) THEN
 	         accum = arbitrary_large_val4
@@ -182,7 +173,7 @@
 	      ENDIF
 	      npts = 0
 
-	      DO 210 srcss = srcss_lo, srcss_hi-1
+	      DO 210 srcss = src_lo, src_hi
 
 * ... ignore missing source data
 	         IF ( src(i, srcss, k, l) .EQ. bad_src ) GOTO 210
@@ -214,8 +205,9 @@
 
 * loop through the each destination grid box
 	   DO 360 dstss = dstss_lo,dstss_hi
-	      srcss_lo = ss21(dstss-dstss_lo+1)
-	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+	      src_lo = sslo(dstss-dstss_lo+1)
+	      src_hi = sshi(dstss-dstss_lo+1)
 
 	      IF     ( trans .EQ. prgrd_min ) THEN
 	         accum = arbitrary_large_val4
@@ -224,7 +216,7 @@
 	      ENDIF
 	      npts = 0
 
-	      DO 310 srcss = srcss_lo, srcss_hi-1
+	      DO 310 srcss = src_lo, src_hi
 
 * ... ignore missing source data
 	         IF ( src(i, j, srcss, l) .EQ. bad_src ) GOTO 310
@@ -256,8 +248,9 @@
 
 * loop through the each destination grid box
 	   DO 460 dstss = dstss_lo,dstss_hi
-	      srcss_lo = ss21(dstss-dstss_lo+1)
-	      srcss_hi = ss21(dstss-dstss_lo+2)
+
+	      src_lo = sslo(dstss-dstss_lo+1)
+	      src_hi = sshi(dstss-dstss_lo+1)
 
 	      IF     ( trans .EQ. prgrd_min ) THEN
 	         accum = arbitrary_large_val4
@@ -266,7 +259,7 @@
 	      ENDIF
 	      npts = 0
 
-	      DO 410 srcss = srcss_lo, srcss_hi-1
+	      DO 410 srcss = src_lo, src_hi
 
 * ... ignore missing source data
 	         IF ( src(i, j, k, srcss) .EQ. bad_src ) GOTO 410

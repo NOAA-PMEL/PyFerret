@@ -1,6 +1,6 @@
 	SUBROUTINE GET_WINDOW_LIMS( src_lo, src_hi, src_grid,
      .				 dst_lo, dst_hi, dst_grid,
-     .				 idim, subsc )
+     .				 idim, sslo, sshi )
 
 *
 *
@@ -55,37 +55,40 @@
 
 * calling argument declarations:
 	INTEGER src_lo, src_hi, dst_lo, dst_hi, src_grid, dst_grid, idim
-	INTEGER subsc(dst_lo:dst_hi+1)
+	INTEGER sslo(dst_lo:dst_hi+1),sshi(dst_lo:dst_hi+1)
 
 * internal variable declarations:
-	INTEGER	ISUBSCRIPT, ii, src_ss, status
-	REAL*8	TDEST_WORLD, xdst
+	INTEGER	ISUBSCRIPT, ii, dst_ss, status
+	REAL*8	TDEST_WORLD, src_ww
 
 * initialize
         IF ( idim .EQ. t_dim ) THEN
-*         TDST_WORLD gives dates from the source axis as they would be
-*         encoded on the destination axis 
-*   ==>   ALL TIME/DATE CALCULATIONS ARE DONE IN THE SOURCE AXIS ENCODING
-           CALL TDEST_WORLD_INIT ( dst_grid, src_grid, status ) ! src<->dst
+*         TDST_WORLD gives dates from the destination axis as they would be
+*         encoded on the source axis 
+*   ==>   ALL TIME/DATE CALCULATIONS ARE DONE IN THE DESTINATION AXIS ENCODING
+           CALL TDEST_WORLD_INIT ( src_grid, dst_grid, status ) ! src<->dst
            IF ( status .NE. ferr_ok ) RETURN   ! note - status not passed!!!
         ENDIF
 
-* find lower bounds of destination grid boxes on source axis
-	DO 100 ii = dst_lo, dst_hi
+* pre-set the output to reflect no source points in any destination cell
+	DO 10 ii = dst_lo, dst_hi
+	   sslo(ii) = src_hi+1
+	   sshi(ii) = src_lo-1
+ 10	CONTINUE
 
-	   xdst    = TDEST_WORLD( ii, dst_grid, idim, box_lo_lim )
-	   src_ss  = ISUBSCRIPT( xdst, src_grid, idim, round_up)
+* loop through the source points identifying which cell each belongs in
+	DO 100 ii = src_lo, src_hi
 
-	   IF ( src_ss.LT.src_lo .OR. src_ss.GT.src_hi ) THEN
-	      subsc(ii) = unspecified_int4
-	   ELSE
-	      subsc(ii) = src_ss
+* ... find the destination cell containing the source point
+	   src_ww = TDEST_WORLD( ii, src_grid, idim, box_middle )
+	   dst_ss = ISUBSCRIPT( src_ww, dst_grid, idim, round_up)
+
+	   IF ( dst_lo.LE.dst_ss .AND. dst_ss.LE.dst_hi ) THEN
+	      sslo(dst_ss) = MIN(sslo(dst_ss), ii)
+	      sshi(dst_ss) = ii   ! MAX() not needed -> ii strictly increasing
 	   ENDIF
 
  100	CONTINUE
-
-* top dest box always searches all the way to the top of the source list
-	subsc( dst_hi+1 ) = src_hi
 
 	RETURN
 	END	

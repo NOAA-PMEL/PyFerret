@@ -43,10 +43,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V420:  10/95 - based on DO_AVE_REGRID
+* V510: *sh* 1/00 - 2 work arrays passed out instead of one
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, trans, msrc, mdst, itot
-	REAL	src(*), dst(*), work(itot)
+	REAL	src(*), dst(*), work(2*itot)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -60,7 +61,7 @@
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
      .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
      .			   src, msrc, dst, mdst,
-     .			   work(1), itot )
+     .			   work(1), work(itot+1), itot )
 
 	RETURN
 	END	

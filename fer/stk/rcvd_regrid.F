@@ -59,17 +59,22 @@
 * V491:4/98  *sh* - bug fix: @ASN could lead to hi<lo limits
 * V500: 2/99 *sh* - modified behavior when dest region is unspecified -- 
 *		provide full dest axis limits rather than source-data driven
+* V510: 1/00 *sh* - bug fix: destination subscript limits chosen incorrectly
+*		for min, max, ave, etc.
+*		  - bigger work array for DO_WINDOW_REGRID
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
 
 * internal variable declarations:
-	LOGICAL GEOG_LABEL, ITSA_MODULO_REGRID, calendar, modulo
+	LOGICAL GEOG_LABEL, ITSA_MODULO_REGRID, calendar, modulo,
+     .		need_margin_check
 	INTEGER ISUBSCRIPT, CAXIS_LEN,
-     .		where_loest, where_hiest, rgrd_trans,
+     .		dst_where_loest, dst_where_hiest, rgrd_trans,
+     .		src_where_loest, src_where_hiest,
      .		dst_ss_min, dst_ss_max,
      .		dst_grid, src_grid,
-     .		src_lo_ss, src_hi_ss, dst_lo_ss, dst_hi_ss
+     .		dst_lo_ss, dst_hi_ss
 	REAL*8	TWORLD, TM_WORLD, SECS_TO_TSTEP,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww
@@ -116,28 +121,42 @@
 * for "window"ing   we need source area   containing  the destination area
 * for exact match   we need source points aligning w/ the destination points
 	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
-	   where_loest = box_middle
-	   where_hiest = box_middle
-	ELSEIF ( rgrd_trans.GE.prgrd_min
-     .	   .OR.  rgrd_trans.EQ.prgrd_max ) THEN
-	   where_loest = box_lo_lim			! unweighted
-	   where_hiest = box_hi_lim
+	   dst_where_loest = box_middle
+	   dst_where_hiest = box_middle
+	   src_where_loest = box_middle
+	   src_where_hiest = box_middle
+	   need_margin_check = .TRUE.
+	ELSEIF ( rgrd_trans .EQ. prgrd_min
+     .	    .OR. rgrd_trans .EQ. prgrd_max ) THEN
+	   dst_where_loest = box_lo_lim
+	   dst_where_hiest = box_hi_lim
+	   src_where_loest = box_middle
+	   src_where_hiest = box_middle
+	   need_margin_check = .FALSE.
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave
      .      .OR. rgrd_trans .EQ. prgrd_variance
      .      .OR. rgrd_trans .EQ. prgrd_sum
      .      .OR. rgrd_trans .EQ. prgrd_good_pt
      .	    .OR. rgrd_trans .EQ. prgrd_average ) THEN
-	   where_loest = box_lo_lim
-	   where_hiest = box_hi_lim
+	   dst_where_loest = box_lo_lim
+	   dst_where_hiest = box_hi_lim
+	   src_where_loest = box_lo_lim
+	   src_where_hiest = box_hi_lim
+	   need_margin_check = .FALSE.
 	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN	! 10/97
-	   where_loest = box_middle
-	   where_hiest = box_middle
+	   dst_where_loest = box_middle
+	   dst_where_hiest = box_middle
+	   src_where_loest = box_middle
+	   src_where_hiest = box_middle
+	   need_margin_check = .TRUE.
 	ENDIF
 
 * find the available source region for regridding
 * NOTE:  times expressed as seconds since BC
-	src_lo_ww = TWORLD(cx_lo_ss(src_cx,axis),src_grid,axis,where_loest)
-	src_hi_ww = TWORLD(cx_hi_ss(src_cx,axis),src_grid,axis,where_hiest)
+	src_lo_ww = TWORLD(cx_lo_ss(src_cx,axis),src_grid,axis,
+     .			   src_where_loest)
+	src_hi_ww = TWORLD(cx_hi_ss(src_cx,axis),src_grid,axis,
+     .			   src_where_hiest)
 
 * find the corresponding subscripts on the destination grid
 * 9/97 *kob* convert time in secs since BC to time position on the 
@@ -155,13 +174,17 @@
 
 * determine whether destination edges can actually be regridded
 * changed to sing. prec 5/93
-	dst_lo_ww = TWORLD(dst_lo_ss,dst_grid,axis,where_loest)
-	dst_hi_ww = TWORLD(dst_hi_ss,dst_grid,axis,where_hiest)
-	IF ( SNGL(dst_lo_ww) .LT. SNGL(src_lo_ww) )
+	dst_lo_ww = TWORLD(dst_lo_ss,dst_grid,axis,dst_where_loest)
+	dst_hi_ww = TWORLD(dst_hi_ss,dst_grid,axis,dst_where_hiest)
+! 1/00 removed this check for G=@MIN, MAX, ...
+!      IS IT NEEDED AT ALL???
+	IF ( need_margin_check ) THEN
+	   IF ( SNGL(dst_lo_ww) .LT. SNGL(src_lo_ww) )
      .	                                dst_lo_ss = dst_lo_ss + 1
-	IF ( SNGL(dst_hi_ww) .GT. SNGL(src_hi_ww) )
+	   IF ( SNGL(dst_hi_ww) .GT. SNGL(src_hi_ww) )
      .                                  dst_hi_ss = dst_hi_ss - 1
-	IF ( dst_lo_ss .GT. dst_hi_ss ) dst_hi_ss = dst_lo_ss  ! bug check 5/93
+	ENDIF
+	IF ( dst_lo_ss .GT. dst_hi_ss ) dst_hi_ss = dst_lo_ss  !bug chk 5/93
 
 * if destination limits were unspecified set them to the full axis span
  500    IF ( cx_hi_ss(dst_cx,axis) .EQ. unspecified_int4 ) THEN
@@ -190,6 +213,7 @@
 	ENDIF
 
 * size of working arrays needed for later regridding
-	work = dst_hi_ss - dst_lo_ss + 2
+* 1/00 times two to accomodate @MIN, @MAX needs
+	work = ( dst_hi_ss - dst_lo_ss + 2 ) * 2
 	RETURN
 	END	

@@ -27,6 +27,7 @@ copy_into_mapped_sub.F\
 copy_into_sub.F\
 count_number_list.F\
 cstring_insert.F\
+de_escape_string.F\
 deallo_all_grids.F\
 deallo_grid.F\
 dense_contig_region.F\
@@ -48,9 +49,11 @@ gcf_impose_axes.F\
 gcf_impose_result_lims.F\
 gcf_name.F\
 gcf_num_args.F\
+gcf_parent_char.F\
 gcf_parent_uvar.F\
 geog_var.F\
 get_ave_lims.F\
+get_window_lims.F\
 getunit.F\
 gname_from_number.F\
 grid_from_name.F\

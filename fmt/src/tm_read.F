@@ -58,6 +58,8 @@
 * *sh* 7/98 V4.91 - want to allow case-sensitive variables in single quotes
 *       so dont upcase the variable name when comparing (why was it
 *       upcased, anyway??)
+* V500 4/99 *kob*: increase upcase_var from 24 to 64 chars - to match passed in vname
+*
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -107,7 +109,7 @@
      .			iadj, jadj, kadj, ladj
 	INTEGER		tmp_lo(4), tmp_hi(4), adj_lo(4), adj_hi(4),
      .			adj(4), actual_lo(4), actual_hi(4)
-        CHARACTER*24    upcase_var     ! (was *8 until 11/92 *sh*)
+        CHARACTER*64    upcase_var     ! (was *24 until 4/99 *kob*)
 	EQUIVALENCE	(tmp_lo(1),i_lo),
      .			(tmp_lo(2),j_lo),
      .			(tmp_lo(3),k_lo),

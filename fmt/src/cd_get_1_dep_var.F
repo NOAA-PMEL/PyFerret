@@ -45,7 +45,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500 3/99 *sh* -- new with code extracted from cd_scan_vars.F
-
+*      4/99 *kob*: increase size of vname from 24 to 64 chars
+ 
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -95,7 +96,8 @@
      .        ndims, nvars, cdfstat, first_pos, idim,
      .        vartyp, nvdim, vdims(6), nvatts, i, vlen,
      .        ngatts, recdim, istat, npts, lasdim, attype
-      CHARACTER    vname*24, buff*64
+* 4/99 *kob* increase size of vname
+      CHARACTER    vname*64, buff*64
       CHARACTER*13 TM_STRING
 
       INTEGER tt  ! nice short name

@@ -127,7 +127,8 @@
      .        ndims, nvars, cdfstat, las_pos, first_pos, idim, iaxis,
      .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
      .        ngatts, recdim, istat, npts, lasdim, attype, epic_t2
-      CHARACTER    vname*24, name*16, buff*64
+* 4/99 *kob*
+      CHARACTER    vname*64, name*16, buff*64
       CHARACTER*13 TM_STRING
       REAL*4  global_bad
 

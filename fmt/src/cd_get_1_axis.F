@@ -69,6 +69,7 @@
 *              w/ ferret.  
 * V500 3/99 *sh*: instead of erroring out, simply return iaxis=0 for an
 *	invalid coordinate axis -- to be handled by calling program
+* V500 4/99 *kob*:  increase vname and vupcase from 24 to 64 chars 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -129,7 +130,8 @@
       REAL    rbuff, delta, first_delta
       REAL*8  TM_LONW2LONE, tmp
       CHARACTER*12 TM_LEFINT
-      CHARACTER vname*24, ename*30, vupcase*24, words(8)*24,
+* 4/99 *kob* increase vname and vupcase from 24 to 64 chars 
+      CHARACTER vname*64, ename*30, vupcase*64, words(8)*24,
      .        spacing_attr*14
       CHARACTER*13 TM_STRING
       CHARACTER*132 buff

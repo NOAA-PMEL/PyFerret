@@ -43,7 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/92
-
+* V500 4/99 *kob*: increase upcase_var from 24 to 64 chars - to match passed in vname
 * calling argument declarations
 	INTEGER		dset
 	CHARACTER*(*)	vname
@@ -64,7 +64,8 @@
 
 * local variable declarations:
       INTEGER STR_UPCASE, TM_LENSTR1, istat, slen, ivar
-      CHARACTER upcase_var*24
+* 4/99 *kob*
+      CHARACTER upcase_var*64
 
 * convert to upper case
       istat = STR_UPCASE( upcase_var, vname )     ! 4/91

@@ -51,8 +51,7 @@
 * 		instead of 0.
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
-
-
+* V500 4/99 *kob*: increase size of vname and buff from 24 to 64
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -93,7 +92,7 @@
      .        vartyp, nvdim, vdims(6), nvatts, vlen,
      .        ngatts, npts, recdim
       REAL    r4_lo(4), r4_hi(4)
-      CHARACTER vname*24, buff*24
+      CHARACTER vname*64, buff*64
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)

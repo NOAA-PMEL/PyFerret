@@ -48,7 +48,7 @@
 *  11/96 *kob* - Linux Port - had to use F90 intrinsic function TRANSFER
 *			    - to properly pass cvdim variable (not array)
 *		   	      to the NCVINQ routine.
-
+* V500 4/99 *kob*: increase size of vname and axnam from 24 to 64 - for wacky DODS variables
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -93,7 +93,8 @@
      .        idim, vartyp, nvdim,
      .        ndims, cdfstat, vdims(6), nvatts,
      .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset
-      CHARACTER vname*24, axnam*24
+* 4/99 *kob* 
+      CHARACTER vname*64, axnam*64
       REAL*8 TM_WORLD, file_val, mem_val
 
 * determine if this variable uses the record dimension

@@ -52,7 +52,7 @@
 *		declaration line.
 * V500: 3/99 *sh* - if an axis doesn't exist matching the dimension name, then
 *	create a 1,2,3...n axis without error message
-*       4/99 *kob* - increase size of temp_axnams to 64
+*       4/99 *kob* - increase size of temp_axnams, vname and name to 64
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -111,7 +111,7 @@ xx        include 'netcdf.decl'  ! untested
      .        NCVID, igrid, iaxis, grid_cnt, cdfstat, istat, idim,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
      .        axid, tmvar, tmpgrid, npts, dim, tmplines(4)
-      CHARACTER name*24, vname*24	! 7/96: name was 16 chars
+      CHARACTER name*64, vname*64	! 4/99:both were  16 chars
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)

@@ -46,7 +46,7 @@
 *              - based on TM_READ_GRIDFILE
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
-* V500: 4/99 *kob* - increase size of temp_axnams to 64
+* V500: 4/99 *kob* - increase size of temp_axnams and vname to 64
 
 * argument definitions:
 *	cdfid	       - netCDF id number for already opened CDF file
@@ -104,7 +104,8 @@ xx        include 'netcdf.decl'  ! untested
      .        ndims, nvars, ngatts, recdim, igrid, vback,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
      .        grid_cnt, cdfstat, istat, idim, npts
-      CHARACTER*24 vname, words(8)
+* 4/99 *kob*
+      CHARACTER vname*64, words(8)*24
       CHARACTER*132 TM_CMPRSS, buff, cbuff
 
       INTEGER tt  ! nice short name

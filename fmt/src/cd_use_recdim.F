@@ -46,6 +46,9 @@
 *
 * 2jun94 *kob* initialization of cd_use_recdim needs to be boolean .FALSE
 * 		instead of 0
+* V500 4/99 *kob*: increase size of vname from32 to 64
+
+
 * argument definitions:
 *       cdfid   - returned pointer to open CDF file
 *       varid   - netCDF variable id
@@ -68,7 +71,8 @@
 * local variable declarations:
       INTEGER ndims, nvars, ngatts, recdim, cdfstat, vartyp, nvdims,
      .        vdims(6), nvatts
-      CHARACTER vname*32
+* 4/99 *kob*
+      CHARACTER vname*64
 
 *initialize
 * 2jun94 *kob* changed initialization from 0 to .FALSE.

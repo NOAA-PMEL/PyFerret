@@ -46,6 +46,7 @@
 * V530:  8/00 *sh* - check on string data type -- not category
 * V533:  6/01 *sh* - support for args that may be string or float
 * V540: *sh* 10/01 - use improved data typing general parameter parg_type_* defs
+* 1/03 *kob* g77 port requires risc buff for arbitrary string concats
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -57,6 +58,7 @@
 	include	'xtext_info.cmn'
 	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 	include 'xgrid_chg_fcns.cmn'
+	include 'xrisc_buff.cmn'
 
 * calling arguments
 	INTEGER		uvar, lo_isp, status
@@ -247,8 +249,10 @@
 * error exit
  5000	RETURN
  5100	CALL DELETE_VARIABLE(res_mr)
-	GOTO 5000
- 5200	CALL ERRMSG( ferr_invalid_command, status,
-     .		'string/numeric data type mix-up: '//alg_text, *5000 )
+	GOTO 5000	
+* 1/03 *kob* g77 port requires risc buff for arbitrary string concats
+ 5200	risc_buff = alg_text
+	CALL ERRMSG( ferr_invalid_command, status,
+     .		'string/numeric data type mix-up: '//risc_buff, *5000 )
 	END
 

@@ -48,11 +48,13 @@
 * V500 7/98 *sh* - allow case-sensitive variable names in single quotes 
 *      3/99 *sh* - disallow implicit grids (e.g. "Z[gz=zax]")
 * V532 5/01 *sh* - use EVAL_CONTEXT to get grid of expression
+* 1/03 *kob* g77 port requires risc buff for arbitrary string concats
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
+	include 'xrisc_buff.cmn'
 
 * calling argument declarations:
 	INTEGER		dflt_cx, status
@@ -87,7 +89,8 @@
 * error exit(s)
  5000	GRID_FROM_NAME = unspecified_int4     ! added 2/93
   	RETURN
- 5100	CALL ERRMSG(ferr_invalid_command, status,
-     .			'disallowed usage of '//lc_name, *5000)
+ 5100	risc_buff = lc_name
+	CALL ERRMSG(ferr_invalid_command, status,
+     .			'disallowed usage of '//risc_buff, *5000)
 
 	END

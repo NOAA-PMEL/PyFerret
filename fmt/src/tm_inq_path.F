@@ -67,6 +67,7 @@
 *			    between 1 and 500.
 *			 : CHARACTER*(*) variables cannot be used in concatenations,
 *			   so I used risc_buff.
+* v530 *kob* 1/00 - minor mods for remote mc aggregations
 
 * arguments:
 *	fname	   - filename - possibly lacking extension
@@ -148,6 +149,11 @@
       ELSEIF ( path .EQ. ' ' ) THEN
          path_list = ' '
          plen = 1
+* *kob* 11/00 Allow DODS files as MC sets - just use full http address
+      ELSEIF ( fname(1:4) .EQ. 'http') THEN
+         TM_INQ_PATH=fname(:flen)
+         status = merr_ok
+         GOTO 9900
       ELSEIF ( INDEX( fname ,PathSeparator ) .GT. 0 ) THEN
          DO 10 i = flen-1,1,-1
             IF ( fname(i:i) .EQ. PathSeparator ) THEN

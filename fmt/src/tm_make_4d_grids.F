@@ -63,6 +63,8 @@
 * V510 5/00 *sh* - adapt to dynamic grids and axes for netCDF files
 *      6/00 *sh* bug fix: T axis ds_grid_start/end set only on first var using
 *		each grid
+* V530 1/00 *kob* - mods for aggregating time_independent files in an MC
+*                   context
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -104,12 +106,26 @@
 * local parameter declarations:
         INTEGER*4 new
         PARAMETER ( new = 0 )
+	LOGICAL all_normal
 
 * initialize
 	use_ext_tax = .TRUE.	! assume auto axis isn't needed
 
-* Loop through all variables
-	DO 150 ivar = 1,maxvars
+* *kob* 12/00 - loop through all variables and check them all 
+*               for time indepedence.   
+	all_normal = .TRUE.
+	DO 50 ivar = 1,maxvars
+	   ngrd = ds_grid_number(ivar)
+	   IF (ds_var_setnum(ivar) .EQ. dnum) THEN
+	      IF ( grid_line(4,ngrd) .NE. mpsnorm) THEN
+		 all_normal = .FALSE.
+		 GOTO 70
+	      ENDIF
+	   ENDIF
+ 50	CONTINUE
+
+*       Loop through all variables
+ 70	DO 150 ivar = 1,maxvars
 	  IF (ds_var_setnum(ivar) .EQ. dnum) THEN
 
 * . Are any non-time axes defined as mpsunkn ?
@@ -120,9 +136,12 @@
 
 * .. If time axis unknown create an auto time axis (once, only)
 *	and build a new 4D grid in position 0 with time info
+* *kob* 12/00 also do this if all the variables are time independent
 	    IF ( grid_line(4,ngrd) .EQ. mpsunkn .OR. 
      .             (ds_type(dnum) .EQ. '  MC' .AND. 
-     .              grid_line(4,ngrd) .NE. mpsnorm)) THEN
+     .              grid_line(4,ngrd) .NE. mpsnorm) .OR.
+     .	            (ds_type(dnum) .EQ. '  MC' .AND.
+     .		    all_normal) ) THEN
 * ... create a time axis from the descriptor information (*sh* 9/90)
 * ... IF statement added to check for time-independent data ----> kob 6/91
 * ...   and to make sure time_axis is set to normal for time independent data

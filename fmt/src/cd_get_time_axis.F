@@ -100,9 +100,12 @@
  200  CONTINUE
 
 * no variables with time axes in the data set
-      ds_time_axis(dset) = mpsnorm 
-      sf_1step(istep)    = unspecified_val8
-      sf_lastep(istep)   = unspecified_val8
+* *kob* 12/00 no need to do the below for MC datasets
+      IF ( ds_type(dset) .NE. '  MC') THEN
+	 ds_time_axis(dset) = mpsnorm 
+	 sf_1step(istep)    = unspecified_val8
+	 sf_lastep(istep)   = unspecified_val8
+      ENDIF
       GOTO 1000
 
 * save the time axis and its limits

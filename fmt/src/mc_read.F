@@ -54,7 +54,9 @@
 *                      hasn't already been opened
 *           *sh* - added strides to CD_READ call
 * V510 *sh* 3/00 - increase allowable path name length
-
+* v522 *kob* 12/00 - added xprog_state common file in order to check for
+*                    mode diagnostic.  only do sanity checking on step
+*                    files if mode diag is turned on.
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -88,6 +90,7 @@
 	external xstep_files_data
         include 'xdset_info.cd_equiv'
 	include 'xtm_grid.cmn_text'
+	include 'xprog_state.cmn'
 #ifdef sun
         include 'xmachine_byte.cmn'
 #else
@@ -163,7 +166,8 @@
 * 7/97 - *kob* error check as in tm_choose_read.F
 	   if (status .NE. merr_ok) GOTO 5000
 *5/98 - *kob* sf_lunit needs to reflect the above cdf close
-	   sf_lunit(sfcnt) = file_not_open
+*12/00- *kob* bug - use mc_init_stepfile not sfcnt - latter not set yet
+	   sf_lunit(mc_init_stepfile) = file_not_open
 
 	
 
@@ -237,36 +241,43 @@
 	   a_hi_t_offset = end_read_lstep - offset
 
 
-* now verify the timestep value in the netcdf file
-	   IF (.NOT. sf_valid(sfcnt)) THEN
-	      CALL NCDINQ( cdfid, vdims(nvdims), dim_name, npts, cdfstat )
-	      var_id = NCVID(cdfid, dim_name, cdfstat)
-* *kob* had to add an ncvinq to find out variable type of dimension because'
-*       NCFLOAT dimensions were causing core dumps. 
-	      CALL NCVINQ(cdfid, var_id, dim_name, vartype, nvdims, 
-     .                    vdims,nvatts,cdfstat)
-	      CALL CD_RD_R8_1(cdfid,var_id,a_lo_t_offset,vartype,'Error',
-     .                         r8buff,status)
-	      IF ( status .NE. merr_ok) GOTO 5000
-
-*	      IF ( vartype .EQ. NCDOUBLE) THEN
-*		CALL NCVGT1(cdfid, var_id,a_lo_t_offset,r8buff,cdfstat)
-*	      ELSE
-*	      ENDIF
-* if an error is found, announce to user but continue on	
-	      IF (.NOT. TM_FPEQ(SNGL(r8buff), SNGL(start_read_tstep))) THEN
-		 CALL TM_ERRMSG (merr_stpmtch, status, 'MC_READ',
-     . 	            sf_setnum(sfcnt), sfcnt,
-     . 	           TM_STRING(start_read_tstep), TM_STRING(r8buff),*70)
+* 12/00 *kob* do no sanity checking unless mode diagnostic is turned
+*             on.  This necessary for dods hdf-->nc translated files
+	   IF (.NOT. mode_diagnostic) THEN
+	      sf_valid(sfcnt) = .TRUE.
+*       now verify the timestep value in the netcdf file
+	   ELSE
+	      IF (.NOT. sf_valid(sfcnt)) THEN
+		 CALL NCDINQ( cdfid, vdims(nvdims), dim_name, 
+     .                           npts, cdfstat )
+		 var_id = NCVID(cdfid, dim_name, cdfstat)
+* *kob* had to add an ncvinq to find out variable type of dimension because
+*		 NCFLOAT dimensions were causing core dumps. 
+		 CALL NCVINQ(cdfid, var_id, dim_name, vartype, nvdims, 
+     .      	      vdims,nvatts,cdfstat)
+		 CALL CD_RD_R8_1(cdfid,var_id,a_lo_t_offset,vartype,'Error',
+     .      	      r8buff,status)
+		 IF ( status .NE. merr_ok) GOTO 5000
+		 
+		 IF ( vartype .EQ. NCDOUBLE) THEN
+		    CALL NCVGT1(cdfid, var_id,a_lo_t_offset,r8buff,cdfstat)
+		 ELSE
+		 ENDIF
+*       if an error is found, announce to user but continue on	
+		 IF (.NOT. TM_FPEQ(SNGL(r8buff), 
+     .                        SNGL(start_read_tstep))) THEN
+		    CALL TM_ERRMSG (merr_stpmtch, status, 'MC_READ',
+     .           	 sf_setnum(sfcnt), sfcnt,
+     .  		 TM_STRING(start_read_tstep), TM_STRING(r8buff),*70)
 *Now check to make sure that the number of files in this stepfile pulled 
 *from the descriptor agree with the number of points on the time axis
-	      ELSE IF ( npts .NE. nsteps_in_file) THEN
-		 sf_valid(sfcnt) = .FALSE.
-	      ELSE
-		 sf_valid(sfcnt) = .TRUE.
+		 ELSE IF ( npts .NE. nsteps_in_file) THEN
+		    sf_valid(sfcnt) = .FALSE.
+		 ELSE
+		    sf_valid(sfcnt) = .TRUE.
+		 ENDIF
 	      ENDIF
 	   ENDIF
-
 * determine local start and end indices
  70	   tmp_lo(4) = start_read_lstep -offset
 	   tmp_hi(4) = tmp_lo(4) + (end_read_lstep - start_read_lstep)

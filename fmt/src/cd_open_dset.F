@@ -113,7 +113,8 @@
       INTEGER flen, iin, iout, ilast, dlen
       CHARACTER    TM_STRING*13, ch*1
 * *kob* 4/99
-      CHARACTER*256 TM_INQ_PATH, cdf_file, raw_file
+* *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
+      CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
 
 #ifdef FORTRAN_90
 	INTEGER HEX40

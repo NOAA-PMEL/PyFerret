@@ -80,6 +80,7 @@
 * *sh*  6/99 - added "perm" (permutation) argument
 * V510 *sh* 3/00 - added tregular argumant
 *	    4/00 - converted to dynamic grids -- bump use counts here
+* v530 *kob* 1/00 - minor mods for remote mc aggregations
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -435,6 +436,8 @@
 	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num,status)
+* 1/00 - need to do this for remote mc aggregations
+	  CALL TM_DSET_USE_GRIDS( dset_num )
 	ENDIF
 !	IF (d_type .EQ. '  MG') CALL MG_INIT_DSET(dset_num, lunit, status)
 !	IF (d_type .EQ. '  MT') CALL MT_INIT_DSET(dset_num, lunit, status)

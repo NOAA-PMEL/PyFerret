@@ -76,6 +76,10 @@
 *		if arg order was reversed, but the function already existed
 *	10/99 *sh* repair of bug introduced by 3/99 change for RESHABE, above
 *		see "ugly hack" in code
+*	1/00 *sh* error check bug corrected for GC functions (esp. RESHAPE) 
+*	1/00 *sh* naming bug corrected for nested GC functions
+*	2/00 *sh* bug in check for SAMPLE finctions -- use nitem not "3"
+*	3/00 *sh* bug in ERRMSG call at 5900 - extra comma in args
 
 #ifdef unix
 	include	'ferret.parm'
@@ -104,8 +108,8 @@
 * internal variable declarations:
 	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, its_gc, its_sample,
      .		start_sampling
-	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_FIND_FCN,
-     .		GCF_ARG_EVAL_ORDER,
+	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR,
+     .		GCF_FIND_FCN, GCF_ARG_EVAL_ORDER, GET_VAR_GRID,
      .		hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
      .		start, end, saved_grid, ifcn,
      .		dset, lo_isp, uvar, item, itype, idim,
@@ -206,8 +210,8 @@
 
 * is it a SAMPLE* function? (8/99)
 	IF ( its_gc ) THEN
-	   start = uvar_item_start( 3, uvar )  ! item 3 is the fcn itself
-	   end   = uvar_item_end  ( 3, uvar )
+	   start = uvar_item_start( nitem, uvar )  ! nitem has the fcn itself
+	   end   = uvar_item_end  ( nitem, uvar )
 	   ifcn = GCF_FIND_FCN( uvar_text(uvar)(start:end) )
 	   its_sample = ifcn .GE. p_samplei
      .		.AND.   ifcn .LE. p_samplel
@@ -277,7 +281,8 @@
 * its position and its parent variable
 * example: for the definition	LET A = 5 * GCFUNC(b,c)
 *    the string "GCFUNC(b,c)" is processed as a child variable
- 300	CALL GCF_CHILD_VAR_NAME( GCF_PARENT_UVAR(uvar), start, name )
+ 300	CALL GCF_CHILD_VAR_NAME( GCF_PARENT_UVAR(uvar),
+     .				 GCF_PARENT_CHAR(uvar,start), name )
 	len_name = TM_LENSTR1(name)
 	GOTO 310
 
@@ -288,20 +293,25 @@
  310	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) RETURN
 	hi_cx = cx_stack_ptr
-	CALL GET_VAR_CONTEXT (  name(:len_name),
-     .				lo_cx,
-     .				hi_cx,
-     .				status )
-	IF ( status .NE. ferr_ok ) RETURN
+	IF ( .NOT. its_gc ) THEN
+	   CALL GET_VAR_CONTEXT (  name(:len_name),
+     .				   lo_cx,
+     .				   hi_cx,
+     .				   status )
+	   IF ( status .NE. ferr_ok ) RETURN
 
-	IF (its_gc ) THEN
+	ELSE
 * ... for GC variables the default context may get modified before using it
 *     to get an argument (e.g. for a fcn equivalent to x=@sbx:5 we'd have
 *     LIST/I=5:10 XSBX5(b) requiring I=3:12 of argument "b".
 *     BUT: for RESHAPE the grid must already be known to guide this process 
 * ... ugly hack: temporarily insert grid into lo_cx
 	   saved_grid = cx_grid(lo_cx)
-	   cx_grid(lo_cx) = cx_grid(hi_cx)
+	   cx_grid(lo_cx) = GET_VAR_GRID(name(:len_name),
+     .				         lo_cx,
+     .				         hi_cx,
+     .				         status )
+	   IF ( status .NE. ferr_ok ) RETURN
 	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   dflt_cx = cx_stack_ptr
@@ -455,7 +465,8 @@
      .			   ifcn, big_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 * ... setup to grab first chunk of sampling data
-	CALL IS_SAMPLE( memory, *910, *5900, status )
+	CALL IS_SAMPLE( memory, *910, *5900, status ) !	RETURN 2 means all done
+	GOTO 5900
  910	RETURN 1
 
 
@@ -557,9 +568,9 @@
 * error exit
  5000	RETURN
  5100	CALL ERRMSG(ferr_not_implemented, status,
-     .		'Quoted strings may only be function arguments'
-     .		, *5000)
+     .		'Quoted strings may only be function arguments', 
+     .		*5000)
  5900	CALL ERRMSG( ferr_internal, status, 'SAMPLE* not startable',
-     .		, *5000)
+     .		*5000)
 
 	END	

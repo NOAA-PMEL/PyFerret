@@ -98,6 +98,8 @@
 *                   convention (different from our Julian calendar).  The 
 *                   simple conversion is that May 23,1968 equals
 *                   2440000 days.
+* V554  *acm 12/03 Restore the last-ditch determination of line_direction
+*                        using the starting letter of the axis.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -344,6 +346,15 @@ c         ENDIF
 
 * ... decode the units
       units = TM_UNIT_ID( line_units(iaxis) )
+
+* Named calendar with unit=year gets length of year in that calendar.
+
+      IF (units .EQ. -6 .OR. units .EQ. -10) THEN
+         IF (cal_id .EQ. d360) units = -9
+         IF (cal_id .EQ. julian) units = -12
+	 IF (cal_id .EQ. noleap) units = -11
+      ENDIF
+
       line_unit_code(iaxis) = units
       IF  ( units.EQ.0 .AND. line_units(iaxis) .NE. ' ' ) THEN
          CALL TM_NOTE('Units on axis "'//vname(:vlen)//
@@ -537,13 +548,12 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 ! 8/97: "Y" anywhere in name as a last ditch attempt to id it
             ELSEIF ( INDEX(vupcase, 'Y')   .GT. 0 ) THEN
                line_direction(iaxis) = 'SN'
-            ELSEIF ( INDEX(vupcase, 'Z'   ) .GT. 0  ) THEN
-               line_direction(iaxis) = 'DU'
             ELSE
                line_direction(iaxis) = 'WE'
             ENDIF
          ENDIF
       ENDIF
+      
 
 * Note: there are some unfortunate ambiguities about how the TMAP library
 *     uses line_direction:  it refers both to orientation and to the formatting
@@ -582,13 +592,22 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
       ENDIF
 
+* If still undefined, try the starting letter.
+
+      IF (line_direction(iaxis) .EQ. 'NA') THEN
+         IF ( INDEX(vupcase(1:1), 'X') .GT. 0 ) line_direction(iaxis) = 'XX'
+         IF ( INDEX(vupcase(1:1), 'Y') .GT. 0 ) line_direction(iaxis) = 'YY'
+         IF ( INDEX(vupcase(1:1), 'Z') .GT. 0 ) line_direction(iaxis) = 'DU'
+         IF ( INDEX(vupcase(1:1), 'T') .GT. 0 ) line_direction(iaxis) = 'TI'
+      ENDIF
+
 * longitude axes may be encoded "west" (discontinuous at 180, East negative,
 *       West positive) or "east" (standard - 0->360 east from Greenwhich)
       west_lon = west_lon 
      .  .OR.    ( line_direction(iaxis) .EQ. 'WE'
      .      .AND. TM_HAS_STRING(line_units(iaxis),'west') )
      .  .OR.    ( its_epic
-     .      .AND. vupcase .EQ. 'LON'
+     .      .AND. (INDEX(vupcase, 'LON') .GT. 0)
      .      .AND. .NOT.TM_HAS_STRING(line_units(iaxis),'east') )
 
 

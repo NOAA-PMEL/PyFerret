@@ -46,10 +46,12 @@
 *                     or YAXIS_MIN, YAXIS_MAX
 *               Also remove VMS include statements.
 * v5.41 *acm*   6/20/02 remove unneeded calls to GETSYM.
+* V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
+*                  curvlinear coordinates. See also pltit.F, plotz.F
 
-
-        real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl,xf,xl,xh  
-        real            xmn,xmx,xt,yf,yl,yh,yt                        
+        real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl
+        real            xmn,xmx,xt,yt
+        real*8		dxl, dxh, dxf, dyl, dyh, dyf
                                                                       
         integer         nxs,iy,nmx,i,ibasex,ibasey,len,j,nmy          
                                                                       
@@ -101,8 +103,15 @@ C	KTYPE = 0 -XY  1 -Z  2-VECTOR
 	CHARACTER IT1TMP*14,IT2TMP*14
 
 C	SETUP AXIS FOR ALL PLOT TYPES.
-	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.makep.eq.'SHADE'
-     *	.OR.MAKEP.EQ.'VECTOR'
+c	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.makep.eq.'SHADE'
+c     *	.OR.MAKEP.EQ.'VECTOR'
+
+	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'
+     *		.OR.MAKEP.EQ.'VECTOR'.or.makep.eq.'SHADE'   
+     *          .or.makep.eq.'FLOWLINE'
+     *          .or.makep.eq.'FILL'.or.makep.eq.'PIXEL'
+
+
 	VECTR=MAKEP.EQ.'PLOTV'.OR.MAKEP.EQ.'PLOTUV'
      *	.OR.MAKEP.EQ.'VELVCT'
 	IY=NXS/2
@@ -141,10 +150,10 @@ C
 	    XTL=XLO
 	    XHI=THI
 	    XLO=TLO
-	    XF=XLEN/(XHI-XLO)
+	    DXF=XLEN/(XHI-XLO)
 	    IF(CONTR)THEN
-		XL=(xtm-XLO)*XF
-		XH=XLEN+(xtx-XHI)*XF
+		DXL=(xtm-XLO)*DXF
+		DXH=XLEN+(xtx-XHI)*DXF
 	    ENDIF
 	ELSE
 	    IF(CONTR)THEN
@@ -158,15 +167,16 @@ C	CONTOUR PLOT
 			CALL RANGE(xtm,xtx,NTICX,XLO,XHI,XTIC)
 		    ENDIF
 		    IF(xtm.gt.xtx)THEN
-			XF=XLO
+			DXF=XLO
 			XLO=XHI
-			XHI=XF
+			XHI=DXF
 			XTIC=-XTIC
 		    ENDIF
 		ENDIF
-		XF=XLEN/(XHI-XLO)
-		XL=(xtm-XLO)*XF
-		XH=XLEN+(xtx-XHI)*XF
+		DXF=XLEN/(XHI-XLO)
+		DXL=(xtm-XLO)*DXF
+		DXL=(xtm-XLO)*DXF
+		DXH=XLEN+(xtx-XHI)*DXF
 		NMX=NMTCX              
 	    ELSE
 		IF(IAUTOX.EQ.0)GOTO 100
@@ -206,7 +216,7 @@ C	CONTOUR PLOT
 		    CALL RANGE(XMN,XMX,NTICX,XLO,XHI,XTIC)
 		ENDIF
 	    ENDIF
-100	    XF=XLEN/(XHI-XLO)
+100	    DXF=XLEN/(XHI-XLO)
 	    NMX=NMTCX
 	ENDIF
 C	YAXIS
@@ -215,10 +225,10 @@ C	YAXIS
 	    XTL=YLO
 	    YHI=THI
 	    YLO=TLO
-	    YF=YLEN/(YHI-YLO)
+	    DYF=YLEN/(YHI-YLO)
 	    IF(CONTR)THEN
-		YL=(ytm-YLO)*YF
-		YH=YLEN+(ytx-YHI)*YF
+		DYL=(ytm-YLO)*DYF
+		DYH=YLEN+(ytx-YHI)*DYF
 	    ENDIF
 	ELSE
 	    IF(CONTR)THEN
@@ -232,15 +242,15 @@ C CONTOUR DATA
 			CALL RANGE(ytm,ytx,NTICY,YLO,YHI,YTIC)
 		    ENDIF
 		    IF(ytm.gt.ytx)THEN
-			YF=YLO
+			DYF=YLO
 			YLO=YHI
-			YHI=YF
+			YHI=DYF
 			YTIC=-YTIC
 		    ENDIF
 		ENDIF
-		YF=YLEN/(YHI-YLO)
-		YL=(ytm-YLO)*YF
-		YH=YLEN+(ytx-YHI)*YF
+		DYF=YLEN/(YHI-YLO)
+		DYL=(ytm-YLO)*DYF
+		DYH=YLEN+(ytx-YHI)*DYF
 		NMY=NMTCY
 	    ELSE
 		IF(IAUTOY.EQ.0)GOTO 200
@@ -276,7 +286,7 @@ C CONTOUR DATA
 		ELSE
 		    CALL RANGE(XMN,XMX,NTICY,YLO,YHI,YTIC)
 		ENDIF
-200		YF=YLEN/(YHI-YLO)
+200		DYF=YLEN/(YHI-YLO)
 		NMY=NMTCY
 	    ENDIF
 	ENDIF
@@ -284,6 +294,11 @@ C CONTOUR DATA
         IF (IAUTOX .NE. 0) CALL setax_syms('X', xlo, xhi)
         IF (IAUTOY .NE. 0) CALL setax_syms('Y', ylo, yhi)
 
-
+	XF = DXF
+	YF = DYF
+	XL = DXL
+	YL = DYL
+	XH = DXH
+	YH = DYH
 	RETURN
 	END

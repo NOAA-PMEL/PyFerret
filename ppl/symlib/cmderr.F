@@ -76,6 +76,8 @@ C  	    Written:
 C  		5-JAN-86	by Donald W. Denbo
 C  	    Modified:
 C  
+C       11-Dec-2003 ACM Add the string **ERROR before the error message,
+C                       to be consistent with Ferret error messages.
 C  
 #ifdef unix
 	INCLUDE 'SYSTEM.INC'
@@ -94,8 +96,8 @@ C
      *	'Unmatched "','WHILE levels improperly nested',
      *	'Syntax error','Unmatched (','Maximum no. levels exceeded'/
 	IF(IER.EQ.0)RETURN
-	WRITE(LTTOUT,999)' ',ERRMES(IER)
-999	FORMAT(A1,1X,A30)
+	WRITE(LTTOUT,999)' **ERROR',ERRMES(IER)
+999	FORMAT(A8,1X,A30)
 	WRITE(LTTOUT,998)' ',LINE(:ILEN)
 998	FORMAT(A1,1X,A)
 	IF(IPOS.LE.ILEN)THEN
@@ -104,7 +106,7 @@ C
 	    WRITE(LTTOUT,FRMT)' '
 	ENDIF
 	IF(ECHOF)THEN
-	    WRITE(ECHLUN,999)'C',ERRMES(IER)
+	    WRITE(ECHLUN,999)'C ERROR',ERRMES(IER)
 	    WRITE(ECHLUN,998)'C',LINE(:ILEN)
 	    IF(IPOS.LE.ILEN)WRITE(ECHLUN,FRMT)'C'
 	ENDIF
@@ -122,7 +124,7 @@ C	     If not interactive abort command file
 C	     Return to lowest level
 C
 	    IF(.NOT.ECHOF)THEN
-		WRITE(ECHLUN,999)'C',ERRMES(IER)
+		WRITE(ECHLUN,999)'C **ERROR',ERRMES(IER)
 		WRITE(ECHLUN,998)'C',LINE(:ILEN)
 		IF(IPOS.LE.ILEN)WRITE(ECHLUN,FRMT)'C'
 	    ENDIF

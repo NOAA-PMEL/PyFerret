@@ -42,6 +42,8 @@
 * *sh*  - 2/13/89 - added MOD 360. to LONE formatting
 *		  ... no explicit declarations (too much trouble !) so it must
 *		      be compiled with /WARNINGS=NODECLARATIONS
+* *acm* - 1/ 6/04 - For longitude axes, do not label 0 degrees with E
+*                   (so they are now consistent with latitude axes)
 C**
 C**    @(#)numcde.f	1.1    3/10/88
 C**
@@ -107,8 +109,10 @@ C
 	    ELSE IF (X .LT. 0.) THEN
 	      FRMT (ILONE+1:) = '''#W'')'
 	      X = -X
-	    ELSE
+	    ELSE IF (X .NE. 0.) THEN
 	      FRMT (ILONE+1:) = '''#E'')'
+            ELSE
+	      FRMT (ILONE+1:) = '''#'')'
 	    ENDIF
 	  ENDIF
 	ENDIF

@@ -77,6 +77,7 @@
 *                     axis.  Previous use of mr_lo_ss and mr_hi_ss can result
 *                     in incorrect results when a larger then needed chunk
 *                     of source data is already in4/15/03 memory
+* V554:  3/04 *acm* Fix the check for done_by_strides.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -144,10 +145,15 @@
 * the regridding already performed there. The src cx then contains the
 * limits appropriate to netCDF ... not to Ferret. So, make the source cx
 * into a clone of the final result.
+
+* (3/04) do not check for has_impl_grid: when we have done a DEFINE GRID/like=var
+* for later comparisons, this grid was stored as a static grid, but we have still 
+* read the data using strides, and therefore do not need to do a regridding operation.
+
 	IF ( cx_category(dst_cx) .EQ. cat_file_var ) THEN
 	   done_by_strides = 
      .		TM_ITS_CDF(cx_data_set(dst_cx), dtype )
-     .    .AND. cx_has_impl_grid(dst_cx)
+c     .    .AND. cx_has_impl_grid(dst_cx)
      .	  .AND. cx_delta(axis,src_cx) .NE. unspecified_val8
 	ELSE
 	   done_by_strides = .FALSE.

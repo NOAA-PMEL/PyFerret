@@ -67,6 +67,7 @@
 * V530: 2/01 *acm* add units for alternative calendars, secs per various
 *		   years and 1/12 of those for "month"
 * V532: 5/01 *sh* - added "metre"
+* V554: 2/04 *acm*  default year length is 365.2425 days
 
 * local variable declarations
 !	INTEGER	i
@@ -139,7 +140,10 @@
      .		un_convert( -3)	/ 3600.		/, ! sec per hour
      .		un_convert( -4)	/ 86400.	/, ! sec per day
      .		un_convert( -5)	/ 2629746.	/, ! 1/12 of 365.2425 year
-     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year
+
+c     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year (OLD default)
+     .		un_convert( -6)	/ 31556952.	/  ! sec per 365.2425 year
+
      .		un_convert( -7)	/ 44712.	/, ! sec per M2 cycle
      .		un_convert( -8)	/ 31622400.	/, ! sec per 366 day year
      .		un_convert( -9)	/ 31104000.	/, ! sec per 360 day year
@@ -147,6 +151,7 @@
 
      .		un_convert(-11)	/ 31536000.	/ ! sec per 365.0 day year
      .		un_convert(-12)	/ 31557600.	/ ! sec per 365.25 day year
+
      .		un_convert(-13)	/ 2628000.	/ ! 1/12 of sec per 365 day year
      .		un_convert(-14)	/ 2592000.	/ ! 1/12 of sec per 360 day year
      .		un_convert(-15)	/ 2629800.	/ ! 1/12 of sec per 365.25 day year

@@ -56,6 +56,8 @@
 * V550 12/02*acm* After levels are set, call setlab_syms to create the LEVELS symbols
 * V552  3/03*acm* Check for too many levels, as is done for FILL and CONTOUR plots.
 * v552  6/03*acm* Rename the array used for cellarray call.
+* v554  3/04*acm* In the section marked correction for rounding errors, under g77 
+*                 on linux this incorrectly uses low-order bits to reset NLEV2
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -157,14 +159,20 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 C       Handle rounding errors *jd* 6.27.95/12.30.97
 
-	      IF (ZMP .GT. 0.0) THEN
-		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) 
-	1	      NLEV2 = NLEV2 + 1
-	      ELSE
-		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
-	1	     ABS(EPSILON*ZMP)) 
-	1	      NLEV2 = NLEV2 + 1
-	      ENDIF
+c *acm* 3/04 under g77 on linux this incorrectly uses
+c            low-order bits to reset NLEV2 example:
+*             yes?shade/lev=c {-1.1, 1.1}* ysequence({1,1})
+
+c	      IF (ZMP .GT. 0.0) THEN
+c		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) THEN
+c	            NLEV2 = NLEV2 + 1
+c                 ENDIF
+c	      ELSE
+c		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
+c     .            ABS(EPSILON*ZMP)) THEN
+c		      NLEV2 = NLEV2 + 1
+c                 ENDIF
+c	      ENDIF
 
               IF (NLEV2 .GT. ICNLEV) GO TO 5000
 

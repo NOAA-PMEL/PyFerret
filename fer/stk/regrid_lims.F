@@ -70,6 +70,10 @@
 * V533 *sh* 6/01 - allow strides and modulo to be combined
 * V550 *sh*  2/02 - support for subspan modulo axes
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars 
+* v554 *acm* 3/04 - When a strides request is made, and a grid had been defined
+*                   for use in comparisons (define grid/like=var), the request 
+*                   got turned into a regrid instead of a stride. Change the test
+*                   for may_have_strides.
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -142,9 +146,13 @@
 * is 1:360 degrees by one degree, then V[I=1:720:7] will select different
 * points in the 1:360 range than in the 361:720 range.
 	may_have_strides =  cx_category(dst_cx) .EQ. cat_file_var
+
 	IF (may_have_strides) THEN
+!	   may_have_strides = TM_ITS_CDF(cx_data_set(dst_cx), dtype )
+!     .                  .AND. cx_has_impl_grid(dst_cx) 
+
 	   may_have_strides = TM_ITS_CDF(cx_data_set(dst_cx), dtype )
-     .                  .AND. cx_has_impl_grid(dst_cx)
+
 	ENDIF
  50	naxis = 1
 	axis_list(1) = axis	
@@ -253,6 +261,7 @@
 	ENDIF
 
 * success
+        status = ferr_ok
 	RETURN
 
 * error exit

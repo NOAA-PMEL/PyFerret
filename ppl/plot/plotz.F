@@ -77,6 +77,8 @@ C
 * V550 11/02 *acm* For fine grids, XLPLOT, XHPLOT, YLPLOT, YHPLOT computations
 *                  need to be done in double precision.
 * V550 11/02 *acm* New call to create LEVELS symbols, routine setlab_syms
+* V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
+*                  curvlinear coordinates. See also pltit.F, setax.F
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -99,6 +101,8 @@ C
         CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
         REAL      XF,YF
         REAL*8    XLPLOT,YLPLOT,XHPLOT,YHPLOT
+        REAL*8    DXFF, DXOF, DYFF, DYOF
+        REAL      XFF, XOF, YFF, YOF
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
@@ -358,10 +362,15 @@ C       ~OF - page offset to the beginning of an axis?
 
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
-	XFF = REAL(XHPLOT - XLPLOT)/(xtx-xtm)
-	XOF = REAL(XLPLOT) - XFF*xtm
-	YFF = REAL(YHPLOT - YLPLOT)/(ytx-ytm)
-	YOF = REAL(YLPLOT) - YFF*ytm
+	DXFF = (XHPLOT - XLPLOT)/(xtx-xtm)
+	DXOF = (XLPLOT) - DXFF*xtm
+	DYFF = (YHPLOT - YLPLOT)/(ytx-ytm)
+	DYOF = (YLPLOT) - DYFF*ytm
+
+	XFF = DXFF
+	XOF = DXOF
+	YFF = DYFF
+	YOF = DYOF
 
 
 C       If this is a 2-D plot on an irregular grid, use TRANS() to 

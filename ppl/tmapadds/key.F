@@ -69,6 +69,11 @@
 *           Check whether the numbers for the labels are all small,
 *           in which case we leave things alone; otherwise use TM_FPEQ
 *           to see if the value should be exactly 0.  
+* V554 *acm* 11/03 Call tm_fmt_digits rather than tm_fmt: if the shakey
+*                  parameter klab_dig is negative, requesting an exact
+*                  number of decimal places.  The change is to force the
+*                  same number of digits for all labels. -- more consistent 
+*                  output, better justification.
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -101,10 +106,10 @@
 
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del
-	character*12	text,tm_fmt, txt_out, blanks
+	character*12	text,tm_fmt, TM_FMT_DIGITS, txt_out, blanks
 	logical		TM_FPEQ, ITSA_AXIS_VIEW, windof_hold, check_0
 
-	external	TM_FMT
+	external	TM_FMT, TM_FMT_DIGITS
 
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
@@ -195,7 +200,7 @@
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
-	text = tm_fmt (zlev(1),klab_dig,klab_len,str_len)  
+	text = TM_FMT_DIGITS (zlev(1),klab_dig,klab_len,str_len)  
         if (max_len .lt. str_len) max_len = str_len	   
 
 	do 10 ndx = 2, max (2,shd_levels + 1)
@@ -230,7 +235,7 @@
 
            val = zlev(ndx)
            IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	   text = tm_fmt (val,klab_dig,klab_len,str_len)
+	   text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	   
 10	continue
 
@@ -257,11 +262,11 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = tm_fmt (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = tm_fmt (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
 	   end if
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
@@ -360,7 +365,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
-	text = tm_fmt (zlev(1),klab_dig,klab_len,str_len)
+	text = TM_FMT_DIGITS (zlev(1),klab_dig,klab_len,str_len)
 	if (max_len .lt. str_len) max_len = str_len	
 
 	do 1010 ndx = 2, max (2,shd_levels + 1)
@@ -395,7 +400,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
            val = zlev(ndx)
            IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	   text = tm_fmt (val,klab_dig,klab_len,str_len)
+	   text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	
 1010	continue
 
@@ -420,11 +425,11 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = tm_fmt (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = tm_fmt (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
 	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 

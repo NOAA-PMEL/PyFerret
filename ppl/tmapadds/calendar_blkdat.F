@@ -15,6 +15,7 @@ C
 C   5/1/2001  *acm* shorten data statement for cals_month_by_day for some compilers
 C  10/1/2001  *acm* change name of 360-day calendar to 360_DAY
 *      *acm* 10/01  remove VMS includes
+C   v554 2/3/2004  *acm* add an index to identify calendar type of d360
 
         include 'calendar.decl'
         include 'calendar.cmn'
@@ -46,6 +47,7 @@ C	Calendar index corresponding to calendar names:
 	data    gregorian   /1/
         data    noleap      /2/
         data    julian      /3/
+        data    d360        /4/
 
 C	*******************************************************************
 C	Array values are ordered by calendar indices.  Each row specifies

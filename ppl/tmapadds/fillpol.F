@@ -65,6 +65,7 @@ C
 * V553 *acm*  6/03  For polygons, store the # of points in each polygon in the PPLUS
 *                   memory buffer, rather than in lleng.  This way the number of
 *                   polygons that may be plotted is unlimited. 
+* v554 *acm*  2/04  After levels are set, call setlab_syms to set the LEVELS symbols
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -322,8 +323,11 @@ C       CONTOUR requires more than one level to work but SHADE doesn't
 
 C ------------
 
-
         IF (NLEV2 .GT. ICNLEV) GO TO 5000
+
+* Now that the levels are set, create the LEVELS symbols
+
+        CALL setlab_syms (ZLEV, NLEV2)
 
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
 

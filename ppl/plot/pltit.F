@@ -78,6 +78,12 @@
 *            key having 3 points.
 * *acm*   v552  3/03 add word POLYGON so can say PPL FILLPOL, or PPL POLY
  
+* V554  9/03 *acm* Compute XLPLOT etc in double precision: for fine
+*                  grids in curvlinear coordinates; xtm, xtx are axis indices
+*                  (like 4000) and xhi, xlo are in the final curvilinear 
+*                  coordinates (like 0.0218) so adding xtm+xlo as R*4 loses 
+*                  the precision in xtm. See also plotz.F, setax.F
+
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
@@ -185,7 +191,6 @@
 !	INCLUDE 'cmdinc:SWITCH.INC'
 !	INCLUDE 'cmdinc:SYSTEM.INC'
 
-
 	LOGICAL CLEAR,CONTR,no_vpt_flag
 
 *	*jd* linux port 12.96 Add external stmt below
@@ -271,6 +276,14 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 		XHPLOT=DBLE(XH)
 		YLPLOT=DBLE(YL)
 		YHPLOT=DBLE(YH)
+
+		call trans (0,xmin,ymin,xtm,ytm)
+		call trans (0,xmax,ymax,xtx,ytx)
+
+		XLPLOT=(DBLE(xtm)-DBLE(XLO) )*DBLE(XF) 
+		XHPLOT=DBLE(XLEN)+(DBLE(xtx)-DBLE(XHI) )*DBLE(XF)
+		YLPLOT=(DBLE(ytm)-DBLE(YLO) )*DBLE(YF)
+		YHPLOT=DBLE(YLEN)+(DBLE(ytx)-DBLE(YHI) )*DBLE(YF)
 
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
 	ELSE

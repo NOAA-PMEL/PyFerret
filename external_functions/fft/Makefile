@@ -28,9 +28,6 @@ SUB_OBJS = fftsubs.o
 # Rules
 #
 
-.f.o:
-	$(F77) $(FFLAGS) -c $<
-
 .F.so:
 	f77  $(FFLAGS) -c -u  $<
 	$(LD) $(LD_DYN_FLAGS)   $(SUB_OBJS) $*.o -o $*.so 

@@ -1,7 +1,5 @@
 	SUBROUTINE DIAGNOSTIC_OUT( action, isub, pointer_type )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -51,13 +49,14 @@
 *			   because it needed a preprocessor.
 * V450: 7/7/97 - make a readable short name from VAR_CODE
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars and change buff24 to buff64
+* V530 9/00 *sh* - output context or mr pointer rather than data set
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
 	CHARACTER*(*)	action
 
 * internal argument declarations:
-	INTEGER	    TM_LENSTR1, lenbuff, i, dset
+	INTEGER	    TM_LENSTR1, lenbuff, i
 	CHARACTER   VAR_CODE*64, buff64*64, buff8*8
 
 #ifdef unix
@@ -100,32 +99,21 @@
 	ENDIF
 
 	IF ( pointer_type .EQ. point_to_cx ) THEN
-	   IF ( cx_data_set(isub) .EQ. unspecified_int4 ) THEN
-	      dset = -9	! full -9999 won't fit in output field
-	   ELSE
-	      dset = cx_data_set(isub)
-	   ENDIF
 	   WRITE ( risc_buff,3000 )
      .			action,
      .		 	buff8,
-     .			dset,
+     .			'C',isub,
      .			(cx_lo_ss(isub,i),cx_hi_ss(isub,i),i=1,4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 	ELSE
-	   IF ( mr_category(isub) .EQ. cat_constant
-     .	   .OR. mr_category(isub) .EQ. cat_pseudo_var ) THEN
-	      dset = -9
-	   ELSE
-	      dset = mr_data_set( isub )
-	   ENDIF
 	   WRITE ( risc_buff,3000 )
      .			action,
      .			buff8,
-     .			dset,
+     .			'M',isub,
      .			(mr_lo_ss(isub,i),mr_hi_ss(isub,i),i=1,4)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 	ENDIF
- 3000	FORMAT (1X,A,1X,A8,' D:',I2,
-     .				'  I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5)
+ 3000	FORMAT (1X,A,1X,A8,1X,A1,':',I3,
+     .				' I:',2I5,'  J:',2I5,'  K:',2I5,'  L:',2I5)
 	RETURN
 	END	

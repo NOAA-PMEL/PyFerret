@@ -86,6 +86,7 @@
 *                    to RETURN=
 * v552: *acm* 4/03 - Add RETURN=dsettitle
 *       *acm* 4/03 - Add RETURN=nc_scale, nc_off[set], user_scale, user_off[set]
+* V570  *acm* 6/04 - Add RETURN=CALENDAR
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -302,7 +303,8 @@
            WRITE (return_errmsg,*)  
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
      .	     '      dsetnum,dsetpath,dsettitle,*size,*start,*end,',
-     .       '*units,*axis,nc_scale,nc_offset,user_scale,user_offset'
+     .       '*units,*axis,nc_scale,nc_offset,user_scale,user_offset,',
+     .       'calendar'
 
 * ... RETURN=SHAPE
 
@@ -327,6 +329,16 @@
 	      IF ( axis.NE.mnormal) THEN
 	          IF (line_direction(axis) .EQ. 'TI')
      .		      repl = line_T0(axis)
+	      ENDIF
+              
+* ... RETURN=CALENDAR
+	   ELSEIF ( repl(1:3) .EQ. "CAL" ) THEN
+	      repl = ' '	! default
+	      axis = CGRID_AXIS ( T_dim, cx )
+	      IF ( axis.NE.mnormal) THEN
+	          IF (line_direction(axis) .EQ. 'TI' .OR.
+     .                line_direction(axis) .EQ. 'TT')
+     .		      repl = line_cal_name(axis)
 	      ENDIF
 
 * ... RETURN=UNITS

@@ -84,7 +84,8 @@
 *            - Need to use risc_buff for arbitrary concatenations
 * v552: *acm* 4/03 - Issue a complete error message for wrong arguments
 *                    to RETURN=
-* v552: *acm* 4/03 - Add RETURN=DSETTITLE
+* v552: *acm* 4/03 - Add RETURN=dsettitle
+*       *acm* 4/03 - Add RETURN=nc_scale, nc_off[set], user_scale, user_off[set]
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -94,6 +95,9 @@
 	include 'xtext_info.cmn'
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
+	include 'xdset_info.cmn_text'
+	external xdset_info_data
+        include 'xdset_info.cd_equiv'
 
 * calling argument declarations:
 	LOGICAL	  did_sub, info_query, itsa_subsc
@@ -298,7 +302,7 @@
            WRITE (return_errmsg,*)  
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
      .	     '      dsetnum,dsetpath,dsettitle,*size,*start,*end,',
-     ,       '*units,*axis'
+     .       '*units,*axis,nc_scale,nc_offset,user_scale,user_offset'
 
 * ... RETURN=SHAPE
 
@@ -367,6 +371,27 @@
 	      result = cx_bad_data ( cx )
 	      repl = TM_FMT( result, use_digits, max_len, str_len )
 
+* ... RETURN=nc_scale, nc_offset
+	   ELSEIF ( repl(1:3) .EQ. "NC_" ) THEN
+              IF ( repl .EQ. "NC_SCALE" ) THEN
+	         CALL GET_NC_SCALE (cx, result)
+	      ELSEIF ( repl(1:6) .EQ. "NC_OFF" ) THEN
+	         CALL GET_NC_OFFSET (cx, result)
+	      ELSE 
+	         GOTO 5520
+	      ENDIF
+	      repl = TM_FMT( result, use_digits, max_len, str_len )
+
+* ... RETURN=user_scale, user_offset
+	   ELSEIF ( repl(1:5) .EQ. "USER_" ) THEN
+              IF ( repl .EQ. "USER_SCALE" ) THEN
+	         CALL GET_USER_SCALE (cx, result)
+	      ELSEIF ( repl(1:8) .EQ. "USER_OFF" ) THEN
+                 CALL GET_USER_OFFSET (cx, result)
+	      ELSE 
+	         GOTO 5520
+	      ENDIF
+	      repl = TM_FMT( result, use_digits, max_len, str_len )
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	

@@ -14,8 +14,12 @@ geog_label.F\
 get_dset_name.F\
 get_dset_title.F\
 get_prec_digits.F\
+get_nc_offset.F\
+get_nc_scale.F\
 get_short_dset_name.F\
 get_sig_digits.F\
+get_user_offset.F\
+get_user_scale.F\
 lefint.F\
 left_just.F\
 left_real.F\

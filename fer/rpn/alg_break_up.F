@@ -1,7 +1,5 @@
 	SUBROUTINE ALG_BREAK_UP( text,at_start,at_end,natom,
      .                           err_string,status )
-
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -49,6 +47,7 @@
 *       7/23 - fixed problem missed the first time. brackets: 'X'[stuff]
 * V500: 12/98 - allow {1,3,5} notation for lists of constants
 *	 1/99 - allow strings in double quotes (as fcn args)
+* V530: //8/00 *sh* - allow {"string", "string"}
 
 #ifdef unix
 	include	'ferret.parm'
@@ -67,7 +66,7 @@
 * internal variable declarations:
 	LOGICAL		was_operand, atom_open,
      .			requires_closure(num_state)
-	INTEGER		ALG_STATE, ALG_CLASS, TM_LENSTR1,
+	INTEGER		ALG_CLASS, TM_LENSTR1,
      .			tlen, p, state, last_state, class,
      .			i, next_state(num_class,num_state),
      .			brkt_nest_level
@@ -130,7 +129,7 @@
 	DATA (next_state(i,10),i=1,num_class)
 	1    / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
 	DATA (next_state(i,11),i=1,num_class)
-	1    /11,11,-1,-1,-1,11,11,11,11, 11,11,-1, 5,11,11/
+	1    /11,11,11,11,11,11,11,11,11, 11,11,11, 5,11,11/
 	DATA (next_state(i,12),i=1,num_class)
 	1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
 

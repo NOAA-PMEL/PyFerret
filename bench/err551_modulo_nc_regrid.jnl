@@ -1,0 +1,30 @@
+! data from nc file with time axis having modulo=value, when regridded
+! to another time axis, some times have missing data 
+
+! First write a file with a monthly climatology:
+
+use coads_vwnd 
+set region/x=161w/y=39n
+use climatological_axes
+can data climatological_axes
+
+let vwnd_clim = vwnd[gt=month_reg@mod]
+
+save/clobber/file=clim.nc vwnd_clim
+
+! File clim.nc is a climatology with the attribute 
+!		MONTH_REG:modulo = 8765.82 ;
+
+! The data is ok if we now regrid to the monthly_navy_winds time axis
+list/l=23:27 vwnd_clim[gt=vwnd[d=1]]
+
+! now use the climatology data file; note that when regridded to the
+! time axis of vwnd, some times have missing data 
+
+can data/all
+can var/all
+
+use coads_vwnd 
+use clim
+list/l=23:27 vwnd_clim[gt=vwnd[d=1]]
+

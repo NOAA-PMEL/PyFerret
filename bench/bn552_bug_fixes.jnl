@@ -40,3 +40,8 @@ GO err551_regrid_undef_grid.jnl
 ! Symbol substituted on each repetition of REPEAT
 GO bn_reset
 GO err551_repeat_sym.jnl
+
+! data from nc file with time axis modulo=value, when regridded to 
+! another time axis, some times have missing data 
+GO bn_reset
+GO err551_modulo_nc_regrid.jnl

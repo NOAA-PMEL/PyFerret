@@ -2,7 +2,7 @@
 ! labelvalues
 ! *10/02 *acm* 
 
-! Description: Label locations on a 2-D plot with a number and optional text
+! Description: Label locations on a 2-D plot with values and optional text
 !
 !   usage:
 !       GO labelvalues xloc yloc value [size] [location] [prefix] [suffix] [ndigits] [offset]
@@ -15,20 +15,24 @@
 !       prefix    text and/or a font setting, to preceed each label
 !       suffix    text following each label
 !       ndigits   maximum number of digits to the right of the decimal point
-!       offset    space, in inches, to add separating the label from the point
-!
+!       offset    space, in inches, to separate the label from the point
+!                   in the direction of the label position, e.g. labels
+!                   that are "below" with an offset of 0.5 will be half
+!                   and inch below the points.
 !
 ! example:
 !       yes? USE coads_climatology
-!       yes? SET REGION/L=1/X=100:360/Y=-20:60
-!       yes? FILL sst
+!       yes? FILL/L=1/X=100:360/Y=-20:60 sst
 !       yes? LET xpts = {123, 198, 245, 260, 330}
 !       yes? LET ypts = {-10,  10, -10,  10, -10}
-!       yes? LET vals = SAMPLEXY(sst, xpts, ypts)
+!       yes? LET vals = SAMPLEXY(sst[L=1], xpts, ypts)
 !       yes? GO labelvalues.jnl xpts ypts vals 0.14 "left" " " " Deg C" 1
 !
 !       yes? ! or, to set a color and font, for example,
 !       yes? GO labelvalues.jnl xpts ypts vals 0.10 "right" "@P5@TR" " C" 0
+
+!       yes? ! all arguments
+!       yes? GO labelvalues.jnl xpts ypts vals 0.10 "above" "@TR" "Deg C" 1 0.1
 
 ! check arguments
 QUERY/IGNORE $1%<Usage: GO labelvalues  xpts ypts var [size] [justify] [prefix] [suffix] [ndigits]%

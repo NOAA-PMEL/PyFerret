@@ -39,6 +39,13 @@ FFLAGS		= -nopdbfile \
 		   -assume:nosource_include \
 		   -assume:underscore -names:lowercase \
 		   $(FINCLUDES)
+PPLUS_FFLAGS		= -nopdbfile \
+		   -iface:cref -iface:nomixed_str_len_arg\
+		   /fpp /align:dcommons /f77rtl\
+		   /align:dcommons /align:records \
+		   -assume:nosource_include \
+		   -assume:underscore -names:lowercase \
+		   $(FINCLUDES) $(FPROFLAGS)
 
 .c.o:
 	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))

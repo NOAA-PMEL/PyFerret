@@ -1,31 +1,20 @@
+! Bench_avet.jnl
+!  ACM  8/99
+!  benchmark script for testing external function avet.
+! Note: bench_avet_visual.jnl contains plots of similar computations
+
 set mode ignore_errors
 
 can region
 use coads_climatology
+set region/x=151E:179E/y=0
+
 let a = avet(sst)
-shade a
-shade a - sst[l=@ave]
-shade a[l=1:3]
-set region/l=3
-shade a
+list a
+list a - sst[l=@ave]
 
 can region
-plot a[x=180]
-plot a                     ! DELIBERATE ERROR
-plot a[y=10s:10n@ave]
-
-set region/x=90:120/y=-90:-80
-shade a                    ! DELIBERATE ERROR
-
-set region/@w
-shade a
-shade a[x=180]             ! DELIBERATE ERROR
-let b = a[x=180:170w@min,l=1:3@sbx]
-shade b
-
-can region
-let a = x[i=1:30,k=1:10] + t[l=1:10]
-let b = x[i=1:30,k=1:10]
+let a = x[i=1:9,k=1:5] + t[l=1:5]
+let b = x[i=1:9,k=1:5]
 let c = avet(a)
-plot b
-plot/over c
+list b, c

@@ -40,13 +40,16 @@ message
 ! FERRET regridding is controlled by "g=...".
 ! By default regridding is done via multi-linear interpolation.
 ! Note that interpolation may produce some undesirable effects
-!      e.g. eliminating much of Florida.
-! (Future versions will support other algorithms.)
+!      e.g. eliminating much of Florida.  
 
 DEFINE AXIS/X=160W:40W:.5/UNIT=LONGITUDE xfine
 DEFINE AXIS/Y=20N:70N:.5/UNIT=LATITUDE   yfine
 DEFINE GRID/X=xfine/Y=yfine gfine
 SHADE/X=160W:40W/Y=20N:70N rose[g=gfine]
+
+message The @AVE transformation improves this behavior for this case
+
+SHADE/X=160W:40W/Y=20N:70N rose[g=gfine@AVE]
 
 message
 

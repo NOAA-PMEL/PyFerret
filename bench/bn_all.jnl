@@ -360,7 +360,14 @@ GO bn_eof_4d.jnl
 GO bn_reset
 GO bn_abstract_axis_names.jnl
 
+GO bn_reset
 GO bn_many_polygons.jnl
+
+GO bn_reset
+GO bn_zaxr_fcns.jnl
+
+GO bn_reset
+GO bn_fill_irregular.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

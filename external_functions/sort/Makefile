@@ -34,7 +34,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:    ferret_cmn compressi.so compressj.so compressk.so compressl.so 
+all:    ferret_cmn compressi.so compressj.so compressk.so compressl.so pickx.so picky.so pickz.so pickt.so
 
 
 ferret_cmn:

@@ -2,5 +2,7 @@
 # v5d_platform_specific_includes.mk.i486-linux
 #
 # This file is included in the Vis5D External Function Makefiles and defines
-# platform specific macros (none for linux)
+# platform specific macros 
 
+
+V5DFLAGS          = -DLITTLE

@@ -17,7 +17,12 @@
 
 * V450: 1/97
 * *jc* 12/97 adding external function capabilities
+* V491: 1/98 - added TIMES2, which imposes its T axis
 * *jc* 01/98 put includes first
+
+* debug declarations for TIMES2
+	INTEGER	n_com1, n_grid, com1_grid
+	REAL*8	TM_WORLD, dlo_com1, dlo_grid, dhi_com1, dhi_grid
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -55,6 +60,32 @@
 * Fill in the limits for those axes of the grid changing function which
 * were "imposed" by the function.
 
+* (1/98)  *** all CUSTOM axes ***
+* If the function creates and imposes a custom axis (see GCF_GET_IMPOSED_AXES)
+*     then result lims are assumed BY DEFAULT to fill the limits of that axis
+* The function itself may over-ride this assumption and impose other limits
+*     or detect an error.
+	DO 100 idim = 1, 4
+	   IF (gcfcn .LE. gfcn_num_internal ) THEN
+* ... internal function imposing custom axis?
+	     IF (  gfcn_axis_will_be(idim,gcfcn)
+     .	      .NE. pgc_axis_supplied_herein) GOTO 100	! 100 if not custom
+	   ELSE
+* ... external function imposing custom axis?
+	      STOP 'EF code must GOTO 100 if not custom axis'
+	   ENDIF
+
+* get size of custom output axis
+	   size = CAXIS_LEN ( idim, res_cx )
+
+* impose full length on result
+	   cx_lo_ss(res_cx, idim) = 1
+	   cx_hi_ss(res_cx, idim) = size
+	   cx_by_ss(idim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( idim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+ 100	CONTINUE
+
 * *** UNRAVEL function ***
 	IF ( gcfcn .EQ. p_unravel ) THEN
 * X axis is imposed as ABSTRACT
@@ -66,6 +97,35 @@
 	   CALL FLESH_OUT_AXIS( x_dim, res_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	
+
+* *** TIMES2 (debug) function ***
+	ELSEIF ( gcfcn .EQ. p_times2 ) THEN
+* T axis gets custom-inserted
+	   com1_cx = cx_list(1) 	! only one argument to function
+	   com1_grid = cx_grid(com1_cx)
+
+* check that result axis limits match the argument
+* ... argument range
+	   n_com1   = CX_DIM_LEN(t_dim, com1_cx)
+	   dlo_com1 = TM_WORLD(cx_lo_ss(com1_cx,t_dim), com1_grid, t_dim,
+     .						box_middle )
+	   dhi_com1 = TM_WORLD(cx_hi_ss(com1_cx,t_dim), com1_grid, t_dim,
+     .						box_middle )
+
+* ... custom axis range
+	   n_grid   = CAXIS_LEN(t_dim, res_cx)
+	   dlo_grid = TM_WORLD(1,      res_grd, t_dim, box_middle )
+	   dhi_grid = TM_WORLD(n_grid, res_grd, t_dim, box_middle )
+
+* sanity checking -- messages to help with debugging
+	   IF (n_com1   .NE. n_grid  )
+     .			CALL WARN('TIMES2 grid size mismatch')
+	   IF (dlo_com1 .NE. dlo_grid)
+     .			CALL WARN('TIMES2 low limit mismatch')
+	   IF (dhi_com1 .NE. dhi_grid)
+     .			CALL WARN('TIMES2 high limit mismatch')
+
+
 
 * *** RESHAPE function ***
 * Determine how far the input data will fill the result grid
@@ -202,7 +262,7 @@
 * If the axis is implied_by_args ... nothing needs to be done
 
 *	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args)
-     .             THEN
+*     .             THEN
 *       do nothing
 
 	      ENDIF
@@ -219,6 +279,7 @@ c* *jc* 01/98 Removing this section to allow for arguments which are constants.
 c*
 	RETURN
 
+#ifdef (0)
 ********************************
 * Reconcile the limits of the arguments with the limits of the result where
 * offsets are imposed.
@@ -250,12 +311,13 @@ c*
 *     limits
 
 	      CALL ERRMSG( ferr_internal, status,
-     .			'gcf_impose_result_lims: incomplete cx', *5000 )
+     .			'gcf_get_result_lims: incomplete cx', *5000 )
 
 	   ENDIF
  1000	CONTINUE
 
 	RETURN
+#endif
 
 * error exit
  5000	RETURN

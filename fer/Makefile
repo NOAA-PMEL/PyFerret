@@ -21,6 +21,11 @@
 #  v5.4 10/01*kob* - removed explicit reference to libXpm.a  - move it instead 
 #                  to system specific SYS_LIBS macro in platform specific files
 #  v5.4 10/01 *kob* - add the removal of .f files - for linux
+#  v5.41 4/02 *acm* - HACK: add -g flag for debug compiles of C code.  
+#                     "DEBUG=-g" "CFLAGS = -g $(CFLAGS)"  applies the flag 
+#                     for fer/ccr code, but does NOT apply -g when compiling 
+#                     ppl/tmapadds/*.c
+#                     
 
 # include platform specific macro definitions
 #
@@ -84,7 +89,9 @@ all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
 	$(MAKE) "DEBUG_TITLE=alpha" update
-	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
+	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug"  \
+		"CFLAGS = -g $(CFLAGS)" \
+		"GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
@@ -96,16 +103,16 @@ gui_nodebug: .FRC
 gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
-	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
+	$(MAKE) "DEBUG=-g" "CFLAGS = -g $(CFLAGS)" -DLINK_GUI_AS_MAIN"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=" "EXECNAME=ferretgui_c" \
-		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=alpha" \
-		"GUI_FAKES="  all
+		"FFLAGS = $(FFLAGS) -Ddebug" \
+		"GUI=GUI" "DEBUG_TITLE=alpha" "GUI_FAKES="  all
 
 DODS_gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
-	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
+	$(MAKE) "DEBUG=-g" "CFLAGS = -g $(CFLAGS)" -DLINK_GUI_AS_MAIN" \
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB="  \

@@ -2,13 +2,14 @@
 * the letters "CS" refer to "control stack"
 * *sh* 7/92 - added cs_save_*
 * *sh* 2/94 - increased cs_text size to match cmnd_buff
-
+* *kob* 12/97 - added  logical cs_is_calendar
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 10 )
 
 	LOGICAL	cs_in_control,
      .		cs_by_ss( cs_max ),
-     .		cs_save_by_ss( cs_max )
+     .		cs_save_by_ss( cs_max ),
+     .          cs_is_calendar(cs_max)
 	INTEGER	csp,			! control stack pointer
      .		cs_lun     ( cs_max ),
      .		cs_cmnd_num( cs_max ),
@@ -34,5 +35,7 @@
      .		cs_by_ss   ,
      .		cs_save_by_ss,
      .		cs_lun     ,
-     .		cs_text 
+     .		cs_text ,
+     .          cs_is_calendar
+
 

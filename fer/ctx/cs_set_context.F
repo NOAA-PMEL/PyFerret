@@ -10,6 +10,7 @@
 * V200:  6/15/89 - reordered lo/hi_ss args
 * 9/97 *kob* - need to reset cx_calendar to false if cx_lo/hi_ww are
 *              not used
+* 12/97 *kob* - and set  cx_calendar to true if they are used....
 * internal variable declarations:
 	INTEGER	idim
 
@@ -38,11 +39,15 @@
 	   IF (idim .eq. t_dim) 
      .                cx_calendar(cx_last) = .FALSE.
 	ELSE
-	   cx_lo_ss( cx_last, idim ) = unspecified_int4
+* kob 12/97 - i need to set cx_calendar to true here
+ 	   cx_lo_ss( cx_last, idim ) = unspecified_int4
 	   cx_hi_ss( cx_last, idim ) = unspecified_int4
 	   cx_lo_ww( idim, cx_last ) = cs_phase( csp )
 	   cx_hi_ww( idim, cx_last ) = cs_phase( csp )
+	   IF (idim .eq. t_dim) 
+     .                cx_calendar(cx_last) = cs_is_calendar(csp)
 	ENDIF
 	   
 	RETURN
 	END
+

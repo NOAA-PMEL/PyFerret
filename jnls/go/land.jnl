@@ -43,8 +43,6 @@ query/ignore $2%default|basemap|overlay|fast|<argument 2 can be "basemap", "over
 query/ignore $3%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 query/ignore $4%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
-set data/save
-
 
 ! introduce the outline data set
 set data/save

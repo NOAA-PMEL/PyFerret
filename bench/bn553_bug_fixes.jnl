@@ -1,6 +1,6 @@
 ! bn553_bug_fixes.jnl
 ! test various fixes that went into version 5.52
-! 9/03 *acm*
+! 9/03 *kob*
 !
 
 ! Make sure numeric filenames works
@@ -8,3 +8,6 @@ GO bn_reset
 GO err553_numeric_filename.jnl
 
 
+! Make sure long string variables work
+GO bn_reset
+GO err553_long_string_var_name.jnl

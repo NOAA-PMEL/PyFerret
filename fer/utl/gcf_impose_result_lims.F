@@ -297,10 +297,10 @@ c*
 
 * is the result context incomplete?
 
-JC	DO 1000 idim = 1, 4
-JC	   IF ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8 ) THEN
+*JC	DO 1000 idim = 1, 4
+*JC	   IF ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8 ) THEN
 * only UVARs end up in this routine so uvar_given is available
-JC	      IF (uvar_given(idim,uvar).EQ.uvlim_irrelevant) GOTO 1000
+*JC	      IF (uvar_given(idim,uvar).EQ.uvlim_irrelevant) GOTO 1000
 
 * ... logic for offsets not yet implemented -- take internal error
 * some ideas:
@@ -310,13 +310,13 @@ JC	      IF (uvar_given(idim,uvar).EQ.uvlim_irrelevant) GOTO 1000
 *iii) if ambiguous at edges how to resolve??? Need to know the **requested**
 *     limits
 
-JC	      CALL ERRMSG( ferr_internal, status,
-JC     .			'gcf_get_result_lims: incomplete cx', *5000 )
+*JC	      CALL ERRMSG( ferr_internal, status,
+*JC     .			'gcf_get_result_lims: incomplete cx', *5000 )
 
-JC	   ENDIF
-JC 1000	CONTINUE
+*JC	   ENDIF
+*JC 1000	CONTINUE
 
-JC	RETURN
+*JC	RETURN
 
 
 * error exit

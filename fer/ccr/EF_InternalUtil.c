@@ -29,7 +29,7 @@
 
 static LIST *GLOBAL_ExternalFunctionList;
 static int I_have_scanned_already = FALSE;
-static int I_have_warned_already = FALSE;
+static int I_have_warned_already = TRUE;
 
 
 /* ............. Function Declarations .............. */
@@ -50,7 +50,7 @@ int efcn_gather_info_( int * );
 void efcn_get_axis_abstract_( int *, float *, int *, int *, int *, int *, int * );
 void efcn_get_axis_custom_( int * );
 
-void efcn_compute( int *, int *, int *, int *, float *, int *, int *, float *);
+void efcn_compute( int *, int *, int *, float *, int *, int *, float *);
 
 int  efcn_get_id_( char * );
 int  efcn_match_template_( char * );
@@ -121,7 +121,7 @@ int efcn_scan_( int *gfcn_num_internal )
   }
 
   /*
-   * - Get all the paths from the "FER_EF" environment variable.
+   * - Get all the paths from the "FER_EXTERNAL_FUNCTIONS" environment variable.
    *
    * - While there is another path:
    *    - get the path;
@@ -130,16 +130,16 @@ int efcn_scan_( int *gfcn_num_internal )
    *
    */
 
-  if ( !getenv("FER_EF") ) {
+  if ( !getenv("FER_EXTERNAL_FUNCTIONS") ) {
     if ( !I_have_warned_already ) {
-      fprintf(stderr, "\nWARNING: environment variable FER_EF not defined.\n\n");
+      fprintf(stderr, "\nWARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
       I_have_warned_already = TRUE;
     }
     return_val = 0;
     return return_val;
   }
 
-  sprintf(paths, "%s", getenv("FER_EF"));
+  sprintf(paths, "%s", getenv("FER_EXTERNAL_FUNCTIONS"));
     
   path = strtok(paths, " \t");
     
@@ -148,7 +148,7 @@ int efcn_scan_( int *gfcn_num_internal )
 
   if ( path == NULL ) {
  
-    fprintf(stderr, "\nWARNING:No paths were found in the environment variable FER_EF\n\n");
+    fprintf(stderr, "\nWARNING:No paths were found in the environment variable FER_EXTERNAL_FUNCTIONS\n\n");
 
     return_val = 0;
     return return_val;
@@ -427,8 +427,7 @@ void efcn_get_axis_custom_( int *id_ptr )
  * pass the necessary information and the data and tell
  * the function to calculate the result.
  */
-void efcn_compute_( int *id_ptr, int *narg_ptr, int *loss_ptr, 
-		    int *hiss_ptr, float *bad_flag_ptr,
+void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, float *bad_flag_ptr,
 		    int *mr_arg_offset_ptr, int *mr_res_offset_ptr, float *memory )
 {
   ExternalFunction *ef_ptr=NULL;
@@ -438,10 +437,21 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *loss_ptr,
   char tempText[EF_MAX_NAME_LENGTH]="";
 
   int (*fptr)(int, void *);
-  void (*f1arg)(float *, float *, float *);
-  void (*f2arg)(float *, float *, float *, float *);
-  void (*f3arg)(float *, float *, float *, float *, float *);
-  void (*f4arg)(float *, float *, float *, float *, float *, float *);
+  void (*f1arg)(int *, float *, float *, float *, float *);
+  void (*f2arg)(int *, float *, float *, float *, float *, float*);
+  void (*f3arg)(int *, float *, float *, float *, float *, float *, float *);
+  void (*f4arg)(int *, float *, float *, float *, float *, float *, float *,
+		float *);
+  void (*f5arg)(int *, float *, float *, float *, float *, float *, float *,
+		float *, float *);
+  void (*f6arg)(int *, float *, float *, float *, float *, float *, float *,
+		float *, float *, float *);
+  void (*f7arg)(int *, float *, float *, float *, float *, float *, float *,
+		float *, float *, float *, float *);
+  void (*f8arg)(int *, float *, float *, float *, float *, float *, float *,
+		float *, float *, float *, float *, float *);
+  void (*f9arg)(int *, float *, float *, float *, float *, float *, float *,
+		float *, float *, float *, float *, float *, float *);
 
   status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
@@ -465,40 +475,88 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *loss_ptr,
     switch ( ef_ptr->internals_ptr->num_reqd_args ) {
 
     case 1:
-      f1arg  = (void (*)(float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f1arg)( bad_flag_ptr, memory + mr_arg_offset_ptr[0], memory + mr_arg_offset_ptr[1]);
+      f1arg  = (void (*)(int *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f1arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+1, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1] );
       break;
 
     case 2:
-      f2arg  = (void (*)(float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f2arg)( bad_flag_ptr, memory + mr_arg_offset_ptr[0], memory + mr_arg_offset_ptr[1], 
-		memory + mr_arg_offset_ptr[2]);
+      f2arg  = (void (*)(int *, float *, float *, float *, float *, float*))dlsym(ef_ptr->handle, tempText);
+      (*f2arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+1, memory + mr_arg_offset_ptr[0],
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2] );
       break;
 
     case 3:
-      f3arg  = (void (*)(float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f3arg)( bad_flag_ptr, memory + mr_arg_offset_ptr[0], memory + mr_arg_offset_ptr[1],
-		memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3]);
+      f3arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f3arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+3, memory + mr_arg_offset_ptr[0],
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3] );
       break;
 
     case 4:
-      f4arg  = (void (*)(float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f4arg)( bad_flag_ptr, memory + mr_arg_offset_ptr[0], memory + mr_arg_offset_ptr[1],
-		memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], memory + mr_arg_offset_ptr[4]);
+      f4arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
+			 float*))dlsym(ef_ptr->handle, tempText);
+      (*f4arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+4, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4] );
+      break;
+
+    case 5:
+      f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f5arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+5, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5] );
+       break;
+
+    case 6:
+      f6arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f6arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+6, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6] );
+      break;
+
+    case 7:
+      f7arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f7arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+7, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
+		memory + mr_arg_offset_ptr[7] );
+      break;
+
+    case 8:
+      f8arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f8arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+8, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
+		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[8] );
+      break;
+
+    case 9:
+      f9arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f9arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+9, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
+		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[8], memory + mr_arg_offset_ptr[9] );
       break;
 
     default:
-      fprintf(stderr, "\nNOTICE: External functions with more than 4 arguments are not implemented yet.\n\n");
+      fprintf(stderr, "\nNOTICE: External functions with more than %d arguments are not implemented yet.\n\n", EF_MAX_ARGS);
       break;
 
     }
 
   } else if ( ef_ptr->language == EF_C ) {
 
+    fprintf(stderr, "\nERROR: EF_C is not a supported language for External Functions.\n\n");
+
     /*
      * Copy the data passed by reference to the 'ComputeInfo' structure.
      */
-
+    /*
     compute_info.narg = *narg_ptr;
     compute_info.num_datapoints = 0;
 
@@ -514,13 +572,13 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *loss_ptr,
       compute_info.data[i] = memory + mr_arg_offset_ptr[i];
     }
 
-    compute_info.bad_flag[*narg_ptr] = bad_flag_ptr[*narg_ptr]; /* this is the bad flag for the result */
-    compute_info.data[*narg_ptr] = memory + mr_arg_offset_ptr[*narg_ptr]; /* this is the memory address for the result */
+    compute_info.bad_flag[*narg_ptr] = bad_flag_ptr[*narg_ptr]; *//* this is the bad flag for the result *//*
+    compute_info.data[*narg_ptr] = memory + mr_arg_offset_ptr[*narg_ptr]; *//* this is the memory address for the result *//*
 
     fptr  = (int (*)(int, void *))dlsym(ef_ptr->handle, ef_ptr->name);
 
     (*fptr)(COMPUTE, (void *)(&compute_info));
-
+    */
   }
   
   return;

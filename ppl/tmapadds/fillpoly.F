@@ -72,11 +72,13 @@ C
 *                'x' and 'y' are  arrays of 50 to match xt, yt, etc.
 *                (What is the maximum number of vertices in a polygon?)
 *       Mod *jd* 02.16.99 Make arrays 128 not 50 for better FILL optimization
+*     v5.51 *acm* 2/3/03 Get viewport sizing as in shade routines, using
+*                        gks calls; else the clipping is wrong for fill 
+*                        plots in viewports that were defined with /AXES.
 
       real x(128),y(128),xt(128),yt(128),xc(128),yc(128),xtrns,ytrns
       integer i,nout,fill_ndx
 
-#ifdef unix
 	include 'PLTCOM.DAT'
 	include 'pltcom_dat.decl'
 	include 'shade_vars.cmn'
@@ -85,33 +87,36 @@ C
         include 'gkscm1_inc.decl'
         include 'GKSCM1.INC'
         include 'gkscm2.cmn' 
+        INCLUDE 'gkspar.inc'
         include 'xcurvilinear.cmn'
+	include 'ppl_in_ferret.cmn'	
 
-#else
-	include 'pplv11inc:PLTCOM.DAT'
-	include 'tmap_pplv11inc:pltcom_dat.decl'
-	include 'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE 'tmap_pplv11inc:tmap_axis.inc'
-        INCLUDE 'tmap_pplv11inc:tmap_gkscm1.inc'
-        INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
-
-#ifdef unix
-	include 	'ppl_in_ferret.cmn'	
-#else
-	INCLUDE 	'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'	
-#endif
-c
       common/plyclp/acmin,acmax,bcmin,bcmax
       real acmin,acmax,bcmin,bcmax
 
       real vwidth,vheight,amax2,bmax2
 
+*  From shade_sub; to use GKS calls to get scaling 
+
+	INTEGER		error, trans_no
+	REAL	 	w(4), v(4), wc(4)
+
 *     Get viewport width and height in ferret; otherwise leave it alone
-      if (ppl_in_ferret) then
-	 call get_view_size(vwidth,vheight)
-	 amax2 = vwidth * factor
-	 bmax2 = vheight* factor
+
+      IF (ppl_in_ferret) THEN
+
+*    Do scaling as in shade_sub, using gks calls.
+*    Get proper scaling, world coordinates, etc for fill
+
+	CALL gqcntn (error,trans_no)
+	IF (error .NE. 0) GOTO 1000
+	CALL gqnt (trans_no,error,w,v)
+	IF (error .NE. 0) GOTO 1000
+
+*     Get world coordinates for for clipping region.
+
+	CALL get_world_coords (w,v,wc)
+
       else
 	 amax2 = amax
 	 bmax2 = bmax
@@ -176,28 +181,10 @@ c
 c find clipping region
 c
       if(windof)then
-         call tform(xmin,ymin,ztemp)
-         if(anew .gt. amin) then
-            acmin = anew
-         else
-            acmin = amin
-         endif
-         if(bnew .gt. bmin) then
-            bcmin = bnew
-         else
-            bcmin = bmin
-         endif
-         call tform(xmax,ymax,ztemp)
-         if(anew .lt. amax2) then
-            acmax = anew
-         else
-            acmax = amax2
-         endif
-         if(bnew .lt. bmax2) then
-            bcmax = bnew
-         else
-            bcmax = bmax2
-         endif
+         acmin = wc(1)
+         acmax = wc(2)
+         bcmin = wc(3)
+         bcmax = wc(4)
       else
          acmin = amin
          acmax = amax2
@@ -275,7 +262,9 @@ c
 *jd end
 
  50   return
-      end
+*     FATAL ERROR
+1000  RETURN
+      END
 c
       subroutine clippoly(xt,yt,npts,xc,yc,nout)
       real xt(*),yt(*),xc(*),yc(*)
@@ -284,7 +273,7 @@ c
       real x,y
       logical inregion
       integer i0,i1
-c
+
       nout = 0
       do 10 i0 = 1,npts
          i1 = i0+1
@@ -305,7 +294,7 @@ c
             endif
          endif
  10   continue
-c
+
       if(nout .le. 2) nout = 0
       return
       end

@@ -157,8 +157,8 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
-      INTEGER id, arg
-      REAL bad_flag(EF_MAX_ARGS), bad_flag_result
+      INTEGER id
+      REAL bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
 
@@ -169,9 +169,9 @@
 * for the result axes.  The 'arg_' arrays will contain the indexing 
 * information for each variable's axes. 
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+!      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
+!      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+!     .     arg_incr(4,EF_MAX_ARGS)
  
 
 ************************************************************************

@@ -141,27 +141,34 @@
 
 * Half the weighting function; weights from -hlen to hlen.
 
-      hlen = (arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1) / 2.
+
+      xlen = (arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1) 
+      ylen = (arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1) 
+      zlen = (arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2) + 1) 
+      tlen = (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1) 
+
+      wlen = max(xlen, ylen, zlen, tlen)
+      IF  (MOD(wlen,2) .EQ. 0) wlen = wlen + 1
+      hlen = wlen/ 2
 
       j1 = arg_lo_ss(Y_AXIS,ARG1)
-      j2 = arg_lo_ss(Y_AXIS,ARG2)
       DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
          k1 = arg_lo_ss(Z_AXIS,ARG1)
-         k2 = arg_lo_ss(Z_AXIS,ARG2)
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
             DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
        
                i1 = arg_lo_ss(X_AXIS,ARG1)
                DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
 
                   sum = 0.0
-                  DO 100 i2 = arg_lo_ss(X_AXIS,ARG2),
-     .                arg_hi_ss(X_AXIS,ARG2)
-                     ii = i2 - hlen
+                  i2 = arg_lo_ss(X_AXIS,ARG2)
+                  j2 = arg_lo_ss(Y_AXIS,ARG2)
+                  k2 = arg_lo_ss(Z_AXIS,ARG2)
+                  l2 = arg_lo_ss(T_AXIS,ARG2)
+                  DO 100 ii = -hlen, hlen
 
                      IF (i1+ii .LT. arg_lo_ss(X_AXIS,ARG1)  .OR.
      .                   i1+ii .GT. arg_hi_ss(X_AXIS,ARG1) ) THEN
@@ -179,6 +186,11 @@
                         ENDIF
                      ENDIF
 
+                     i2 = i2 + arg_incr(X_AXIS,ARG2)
+                     j2 = j2 + arg_incr(Y_AXIS,ARG2)
+                     k2 = k2 + arg_incr(Z_AXIS,ARG2)
+                     l2 = l2 + arg_incr(T_AXIS,ARG2)
+
  100                 CONTINUE
                      result(i,j,k,l) = sum
 
@@ -186,15 +198,12 @@
  200              CONTINUE
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
-                  l2 = l2 + arg_incr(T_AXIS,ARG2)
  300           CONTINUE
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
-            k2 = k2 + arg_incr(Z_AXIS,ARG2)
  400     CONTINUE
 
          j1 = j1 + arg_incr(Y_AXIS,ARG1)
-         j2 = j2 + arg_incr(Y_AXIS,ARG2)
  500  CONTINUE
 
       RETURN

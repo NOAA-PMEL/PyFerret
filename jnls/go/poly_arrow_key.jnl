@@ -8,8 +8,8 @@
 ! 2 vector scale, units per half inch
 ! 3 key color, default black
 ! 4 LINE to outline the key
-! 5 xpos - inches from left, or C to center  	(default lower left)
-! 6 ypos - inches from bottom, or C to center	(default lower left)
+! 5 xpos - inches from left of page, or C to center  	(default lower left)
+! 6 ypos - inches from bottom of page, or C to center	(default lower left)
 ! 7 size - label text size in inches 		(default 0.12)
 
 ! EXAMPLES (see poly_vec_demo.jnl for full examples)
@@ -78,4 +78,5 @@ if `keytitle_exists EQ 1` THEN label `xloc-.1*xsc`, `yloc-yoff`, 1, 0, `labsize`
 
 label `xloc+0.6*xsc`, `yloc-yoff`, -1, 0, `labsize`, ($keyscale)
 
+ppl window on
 set mode/last verify

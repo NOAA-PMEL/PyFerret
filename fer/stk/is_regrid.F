@@ -66,6 +66,8 @@
 *                   valid calendar axes.
 * V533:	 6/01 *sh* - some regridding ops not allowed for string arrays
 *		   - mr_delta changes the handling of stride regridding
+* v541:  2/02 *kob*- on hankin request add an initialization line for
+*                    cx_delta in loop 500
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -160,6 +162,7 @@
 	   idim = axis_list(i)
 	   CALL TRANSFER_AXIS( idim, dst_cx, cx_buff )
 	   cx_regrid_trans( idim, cx_buff ) = cx_regrid_trans( idim, dst_cx )
+	   cx_delta(idim,cx_buff) = unspecified_val8
  500	CONTINUE
 	cx_grid( cx_buff ) = cx_grid( dst_cx )
 	cx_unstand_grid( cx_buff ) = .TRUE.

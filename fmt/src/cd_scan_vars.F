@@ -296,7 +296,11 @@
 	    IF (.NOT.TM_LEGAL_NAME(ds_var_code(ivtm))) GOTO 310  ! leave as-is
 * ... see if this name case-blind duplicates any other in the data set
 	    DO 300 i = first_pos,las_pos
-	      IF ( i .EQ. ivtm ) GOTO 300
+* ... *kob* v541 8/02 - need to also check and make sure we are still dealing with the
+*     same dataset.  if not, when variables from different data sets are interleaved 
+*     in ds_var_code this can cause Ferret to not properly upcase variables from 
+*     one dset that have the same name as variables in another dset. 
+	      IF ( i .EQ. ivtm .OR. ds_var_setnum(i) .NE. dset) GOTO 300
 	      istat = STR_CASE_BLIND_COMPARE(ds_var_code(ivtm),
      .                                       ds_var_code(i)    )
 	      IF ( istat .EQ. str_eq ) GOTO 310                  ! leave as-is

@@ -8,6 +8,7 @@ c* are part of the Ferret External Function library.
 c*
 
 	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
+     .  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9,
      .  t_axis, custom, implied_by_args, normal, abstract,
      .	ef_max_args, ef_max_name_length, ef_max_description
 
@@ -19,6 +20,15 @@ c*
      .	y_axis=2, 
      .	z_axis=3, 
      .	t_axis=4, 
+     .  arg1 = 1,
+     .  arg2 = 2,
+     .  arg3 = 3,
+     .  arg4 = 4,
+     .  arg5 = 5,
+     .  arg6 = 6,
+     .  arg7 = 7,
+     .  arg8 = 8,
+     .  arg9 = 9,
      .	custom = 101, 
      .	implied_by_args=102, 
      .	normal = 103, 

@@ -129,7 +129,7 @@ int  FORTRAN(efcn_already_have_internals)( int * );
 
 int  FORTRAN(efcn_gather_info)( int * );
 void FORTRAN(efcn_get_custom_axes)( int *, int *, int * );
-void FORTRAN(efcn_get_result_limits)( int *, float *, int *, int * );
+void FORTRAN(efcn_get_result_limits)( int *, float *, int *, int *, int * );
 void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, float *, int *, float *, int * );
 
 
@@ -602,6 +602,20 @@ void *internal_dlsym(char *);
     if ( EF_Util_setsig("efcn_gather_info")) {
        return;
     }
+
+    /*
+     * Set the signal return location and process jumps
+     */
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      return;
+    }
+
+    /*
+     * Set the bail out return location and process jumps
+     */
+    if (setjmp(jumpbuffer) != 0) {
+      return;
+    }
     
     canjump = 1;
 
@@ -684,7 +698,23 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
       *status = FERR_EF_ERROR;
        return;
     }
-    
+
+    /*
+     * Set the signal return location and process jumps
+     */
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      *status = FERR_EF_ERROR;
+      return;
+    }
+
+    /*
+     * Set the bail out return location and process jumps
+     */
+    if (setjmp(jumpbuffer) != 0) {
+      *status = FERR_EF_ERROR;
+      return;
+    } 
+   
     canjump = 1;
 
     sprintf(tempText, "");
@@ -721,16 +751,19 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
  * Query the function about abstract axes. Pass memory,
  * mr_list and cx_list info into the external function.
  */
-void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr )
+void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
   int internally_linked = FALSE;
 
-  int *status;   /* currently unused; pass to bailout-set-restore */
-
   void (*fptr)(int *);
   void *internal_dlsym(char *);
+
+  /*
+   * Initialize the status
+   */
+  *status = FERR_OK;
 
   /*
    * Store the memory pointer and various lists globally.
@@ -756,7 +789,24 @@ void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_p
 
 
     if ( EF_Util_setsig("efcn_get_result_limits")) {
+      *status = FERR_EF_ERROR;
        return;
+    }
+
+    /*
+     * Set the signal return location and process jumps
+     */
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      *status = FERR_EF_ERROR;
+      return;
+    }
+
+    /*
+     * Set the bail out return location and process jumps
+     */
+    if (setjmp(jumpbuffer) != 0) {
+      *status = FERR_EF_ERROR;
+      return;
     }
 
     canjump = 1;
@@ -977,6 +1027,22 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
      */   
 
     if ( EF_Util_setsig("efcn_compute")) {
+      *status = FERR_EF_ERROR;
+      return;
+    }
+
+    /*
+     * Set the signal return location and process jumps
+     */
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      *status = FERR_EF_ERROR;
+      return;
+    }
+
+    /*
+     * Set the bail out return location and process jumps
+     */
+    if (setjmp(jumpbuffer) != 0) {
       *status = FERR_EF_ERROR;
       return;
     }
@@ -2003,20 +2069,10 @@ int EF_Util_setsig(char fcn_name[])
       return 1;
     }
 
-    /*
-     * Set the signal return location and process jumps
+    /* the setjmp and sigsetjmp code moved to in-line 10/00 --
+     * longjump returns cannot be made reliably into a subroutine that may
+     *no longer be active on the stack
      */
-    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-      /* (?huh? *sh* ==> Warning message printed by signal handler. */
-      return 1;
-    }
-
-    /*
-     * Set the bail out return location and process jumps
-     */
-    if (setjmp(jumpbuffer) != 0) {
-      return 1;
-    }
 
     return 0;
 }

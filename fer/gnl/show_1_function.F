@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_1_FUNCTION( lun, its_gc, brief, ifcn )
+	SUBROUTINE SHOW_1_FUNCTION( lun, its_gc, brief, detail, ifcn )
 
 *
 *
@@ -47,12 +47,14 @@
 * V450: 7/97
 * 97.07.30 *jc* added code to enable external functions
 * V500: 1/99 *sh* added support for string arguments to functions
+* V510: 5/00 *sh* added argument "detail"
 
 #ifdef unix
 	include	'ferret.parm'
 	include	'grid_chg_fcns.parm'
 	include	'xalgebra.cmn'
 	include	'xgrid_chg_fcns.cmn'
+	include	'xtext_info.cmn'
 	include	'xrisc.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -62,15 +64,17 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL	its_gc, brief
+	LOGICAL	its_gc, brief, detail
 	INTEGER	lun, ifcn
 	
 * local variable declarations:
+	LOGICAL	its_reshape
 	INTEGER TM_LENSTR, TM_LENSTR1, GCF_ARG_TYPE,
-     .		ll, ll2, llsave, itype, narg, i, iarg, iarg2
+     .		ll, ll2, llsave, itype, narg, i, iarg, iarg2, idim
 	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*80, 
-	1    ef_units*40
-	integer efcn_scan, efcn_get_num_reqd_args, efcn_gather_info
+	1    ef_units*40, ax_remark*64
+	INTEGER EFCN_SCAN, EFCN_GET_NUM_REQD_ARGS, EFCN_GATHER_INFO,
+     .		axis_will_be(4)
 
 * local parameter definitions
 	CHARACTER*4 indent
@@ -86,6 +90,7 @@
  
 * initialize
 	len_rbuff = LEN(risc_buff)	! maximum length
+	its_reshape = ifcn .EQ. p_reshape
 
 * 1st line -- function name with args in parens
 * ... name
@@ -170,6 +175,36 @@
 	IF ( risc_buff .NE. ' ') CALL SPLIT_LIST
      .			(pttmode_explct, lun, indent//risc_buff, 0)
 
+* tell about the result grid
+	IF ( its_gc .AND. detail ) THEN
+	   CALL SPLIT_LIST( pttmode_explct, lun,
+     .		'        Axes of result:', 23)
+	   IF ( ifcn .LE. gfcn_num_internal ) THEN
+	      DO 210 idim = 1, 4
+ 210          axis_will_be(idim) = gfcn_axis_will_be(idim,ifcn)
+	   ELSE
+	      CALL EFCN_GET_AXIS_WILL_BE(ifcn, axis_will_be)
+	   ENDIF
+	   DO 220 idim = 1,4
+	      IF (its_reshape) THEN
+	         ax_remark = 'inferred from argument B'
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_abstract) THEN
+                 ax_remark =
+     .			'ABSTRACT (result will occupy indices 1...N)'
+	      ELSEIF(axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
+                 ax_remark = 'NORMAL (no axis)'
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args) THEN
+                 ax_remark = 'inherited from argument(s)'
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) THEN
+	         ax_remark = 'created by this function'
+	      ELSE
+	         ax_remark = '???'
+	      ENDIF
+	      CALL SPLIT_LIST (pttmode_explct, lun,
+     .		'          '//ww_dim_name(idim)//': '//ax_remark, 0)
+ 220	   CONTINUE
+	ENDIF
+
 * write list of arguments and their definitions
 * ... "argname: description (units)"
 	DO 500 i = 1, narg
@@ -228,6 +263,31 @@
 * ... write the line
  400	   IF (ll .GT. llsave) CALL SPLIT_LIST
      .			(pttmode_explct, lun, indent//risc_buff, 4+ll)
+
+* tell how the grid inheritance works
+	IF ( its_gc .AND. detail ) THEN
+	   CALL SPLIT_LIST( pttmode_explct, lun,
+     .			'        Influence on output axes:', 0)
+	   CALL GCF_GET_AXIS_SRCS(ifcn, i, axis_will_be)
+	   DO 420 idim = 1,4
+	      IF (its_reshape) THEN
+	         IF (i .EQ. 1) THEN
+	            ax_remark =
+     .	'none (if axis doesnt match B indicate arg limits with "[]")'
+	         ELSE
+	            ax_remark =
+     .	'passed to result grid (use [] limits to define output region)'
+	         ENDIF
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_merge_axis ) THEN
+                 ax_remark = 'passed to result grid'
+	      ELSE
+	         ax_remark =
+     .			'no influence (indicate argument limits with "[]")'
+	      ENDIF
+	      CALL SPLIT_LIST (pttmode_explct, lun,
+     .		'          '//ww_dim_name(idim)//': '//ax_remark, 0)
+ 420	   CONTINUE
+	ENDIF	
 
 * ... go back for the next argument
 	   iarg = iarg + 1      ! point to next arg

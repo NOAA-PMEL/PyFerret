@@ -47,6 +47,8 @@
 * V530  8/00 *sh* - bug (feature) fix so that SHOW SYM doesn't eveluate
 *			PPL$XPIXEL
 *      12/00 *sh* - added symbols SESSION_DATE and SESSION_TIME
+*      10/01 *kob*- add symbol FERRET_PLATFORM to display the platform
+*                   the executable was built on. 
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -54,10 +56,10 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 6)
+	PARAMETER (nspecial = 7)
 
 * internal variable declarations:
-	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix
+	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix, TM_LENSTR
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16
 
@@ -66,14 +68,16 @@
      .	     special(2)/ 'PPL$YPIXEL' /,
      .	     special(3)/ 'BYTEORDER' /,
      .	     special(4)/ 'FERRET_VERSION' /,
-     .	     special(5)/ 'SESSION_DATE' /,
-     .	     special(6)/ 'SESSION_TIME' /
+     .	     special(5)/ 'FERRET_PLATFORM' /,
+     .	     special(6)/ 'SESSION_DATE' /,
+     .	     special(7)/ 'SESSION_TIME' /
 
 #ifdef unix
 	include 'ferret.parm'
 	include 'xplot_state.cmn'	! for PPL$XPIXEL
 	include 'xrevision.cmn'
 	include 'xtoday.cmn'
+	include 'xplatform_type.cmn'
 * #ifdef for endianness info.
 #ifdef sun
 	include 'xmachine_byte.cmn'
@@ -105,7 +109,7 @@
 	slen = 0
 	RETURN
 
- 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600) i
+ 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -141,13 +145,18 @@
 	slen = 5
 	RETURN
 
+* PLATFORM_TYPE  *kob* 10/01
+ 1500	value = platform_type
+	slen = TM_LENSTR(platform_type)
+	RETURN
+
 * SESSION_DATE
- 1500	value = today_date
+ 1600	value = today_date
 	slen = 9
 	RETURN
 
 * SESSION_TIME
- 1600	value = today_time
+ 1700	value = today_time
 	slen = 5
 	RETURN
 

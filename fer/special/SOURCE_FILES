@@ -10,4 +10,6 @@ ferret_query_f.F\
 gui_fakes.F\
 linux_routines.F\
 xmake_date_data.F\
-xrevision_type_data.F 
+xrevision_type_data.F\
+xplatform_type_data.F
+

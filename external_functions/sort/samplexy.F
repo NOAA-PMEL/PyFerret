@@ -174,12 +174,10 @@
       myh = arg_hi_ss(Y_AXIS,ARG1)* 2
 
 *  xaxdat
-      CALL ef_set_work_array_dims (id, 1, arg_lo_ss(X_AXIS,ARG1), 
-     .                             1, 1, 1, mxh, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxh, 1, 1, 1)
 
 *  yaxdat
-      CALL ef_set_work_array_dims (id, 2, arg_lo_ss(Y_AXIS,ARG1), 
-     .                             1, 1, 1, myh, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, myh, 1, 1, 1)
 
 
 *                                                                      ^
@@ -298,14 +296,18 @@
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          ibot = arg_lo_ss(X_AXIS,ARG1)
+         indx = 1
          DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1) 
-             IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(i1,1,1,1)) ibot = i1
+             IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(indx,1,1,1)) ibot = i1
+             indx = indx + 1
   100    CONTINUE
          itop = ibot + 1
                 
          jbot = arg_lo_ss(Y_AXIS,ARG1)
+         indx = 1
          DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1) 
-            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) jbot = j1
+            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(indx,1,1,1) ) jbot = j1
+             indx = indx + 1
   200    CONTINUE
          jtop = jbot+ 1
 

@@ -61,7 +61,8 @@ C**
 *       *acm* 10/01    Remove VMS includes
 *       *acm* 10/24/01 Call mark(99) to plot a point when a vector is too small.
 *       *acm*  5/02    Bug fix: alen for curvilinear vectors could be 0.
-
+*       *ACM*  8/02    remove the call to plot a point with mark(99) -- need
+*                      to resolve PPLUS issues with polymark first.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -296,8 +297,8 @@ C	IF VECTOR IS TOO SMALL PLOT A POINT
 C
            IF(VCLEN .LT. VMINLN)THEN
 	      CALL PLOT(XX1,YY1,0,0)
-c	      CALL PLOT(XX1,YY1,1,0)
-              CALL MARK(99)
+	      CALL PLOT(XX1,YY1,1,0)
+c              CALL MARK(99)
 	      GOTO 100
            ENDIF
 C

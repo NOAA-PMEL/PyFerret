@@ -72,6 +72,8 @@
 * V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
 *                   done with qualifiers /AXES= or /NOAXES
 * V541 *acm*  3/02  Allow PLOT/VS/LINE/DASH
+* V541 *ACM*  8/02  Remove the call with dot_sym=99 for PLOT/SYM=DOT-- need
+*                      to resolve PPLUS issues with polymark first.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -173,7 +175,8 @@ CC       => Set values here instead.
      .                        buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF (buff .EQ. 'dot') THEN
-              symbol = dot_sym
+c              symbol = dot_sym
+              GO TO 5460
            ELSE
 
 	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -461,5 +464,8 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5460	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'/SYMBOL=DOT not implemented in this version of Ferret', *1000 )
 
 	END

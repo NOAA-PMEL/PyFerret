@@ -68,12 +68,12 @@ i486-linux:
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-L/usr/X11R6/lib -lX11static -lm"
 
-i686-cygwin:
+i586:
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-cygwin/2.95.3-4/include/ -I$(TMAP_LOCAL)/xgks/port -I$(TMAP_LOCAL)/xgks/src/lib -I$(TMAP_LOCAL)/xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-cygwin/2.95.3-5/include/ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
-		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
+		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6.4/lib -lX11 -lm"
 
 gksm2ps:	gksm2ps.o xpreview.o \

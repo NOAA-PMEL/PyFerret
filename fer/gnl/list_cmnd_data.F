@@ -65,6 +65,7 @@
 *		- line_buff increased hugely (from 132) to accomodate
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -123,7 +124,8 @@
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, idum, axis, lp
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
-	CHARACTER	AX_TITLE*32, VAR_UNITS*32, LEFINT*8, TM_FMT*16,
+* V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
+	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
      .			line_buff*3600,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32

@@ -65,6 +65,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500: 2/99 - based on plot_set_up.F
+* V500: 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -113,7 +114,8 @@
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
-	CHARACTER	VAR_UNITS*32, LEFINT*4,
+* 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
+	CHARACTER	VAR_UNITS*64, LEFINT*4,
      .			x_ax*1, y_ax*1,buff*8, buff2*4
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,

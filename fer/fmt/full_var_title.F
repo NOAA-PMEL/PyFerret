@@ -48,13 +48,13 @@
 * revision 0.1 - 8/29/87 - added parend around title mod
 * revision 0.2 - 4/11/88 - added units
 * V200:   1/3/89 - mr --> cx
-
+* V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 * calling argument declarations:
 	INTEGER	cx, tlen
 
 * internal variable declarations:
 	CHARACTER*200	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND
-	CHARACTER	VAR_UNITS*32
+	CHARACTER	VAR_UNITS*64
 	INTEGER		TM_LENSTR1, maxlen, slen
 
 #ifdef unix

@@ -45,7 +45,9 @@
 * V500 3/99 *sh* -- new with code extracted from cd_scan_vars.F
 *      4/99 *kob*: increase size of vname from 24 to 64 chars
 * V533 6/01 *sh* -- set the variables data type
- 
+* V542 11/02*acm*  For 4-D string NetCDF files, allow nvdim to be 5 when
+*                  code checks for "Unsupported netCDF # of axes".
+
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -159,7 +161,7 @@
 	  ds_var_type(ivtm) = TM_FERRET_VARTYPE(vartyp)  ! 6/01
 
 * is it a supported dimensionality ?
-          IF ( nvdim .GT. 4 ) THEN
+          IF ( nvdim .GT. 5 ) THEN
              CALL TM_NOTE('Unsupported netCDF # of axes for variable '
      .             //vname(:vlen), tt )
              GOTO 200

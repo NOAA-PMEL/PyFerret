@@ -56,6 +56,10 @@
 			typedef'd as different things under solaris and 
 			compaq Tru64, for example
 
+
+     V542: 11/02 *acm*  Need start and count to be length [5] to allow for
+			string dimension.  Same for stride[5], imap[5]
+
     compile this with
     cc -c -g -I/opt/local/netcdf-3.4/include cd_read_sub.c
 */ 
@@ -88,8 +92,8 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
            as is predfined for each O.S.
   */
 
-  size_t start[4], count[4];
-  ptrdiff_t stride[4], imap[4];
+  size_t start[5], count[5];
+  ptrdiff_t stride[5], imap[5];
 
   int tmp, i, maxstrlen, ndimsp, *dimids;
   size_t bufsiz;

@@ -90,13 +90,16 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
      *kob*  11/01 need start and count  variables of the same type
                   as is predfined for each O.S.
 
+     V542: 11/02 *acm*  Need start and count to be length [5] to allow for
+			string dimension.
   */
 
-  size_t start[4], count[4];
+  size_t start[5], count[5];
   int tmp, i, maxstrlen;
   size_t bufsiz;
   char *pbuff;
-  int ndim = *dims - 1; /* C referenced to zero */
+  int ndim = *dims - 1; /* C referenced to zero */  
+/*  int ndim = *dims ; /* C referenced to zero */
   int vid = *varid;
   int did = *strdim;
   vid--;
@@ -104,7 +107,7 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 
   /* cast passed in int values (from fortran) to proper types, which can
      be different depending on o.s       *kob* 11/01 */
-  for (i=0;i<=ndim;i++) {
+  for (i=0;i<=ndim+1;i++) {
     start[i] = (size_t)tmp_start[i];
     count[i] = (size_t)tmp_count[i];
   }

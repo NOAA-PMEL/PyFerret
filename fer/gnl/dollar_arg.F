@@ -1,7 +1,5 @@
 	SUBROUTINE DOLLAR_ARG( carg, goline, arg, lenarg, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -44,10 +42,11 @@
 * V300: 4/21/93
 * V420:  avoid breaking apart "[]" as at the comma in "var[x=1,y=2]"
 * V510: 3/00 *sh* - allow backslash escapes to protect quotations
+* V531 *sh* 4/01 - allow 2-digit argument numbers and enclosing parens
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
-	CHARACTER carg*1, goline*(*), arg*(*)
+	CHARACTER carg*2, goline*(*), arg*(*)
 
 * internal variable declarations:
 	LOGICAL quote, found_comma, bslash
@@ -74,14 +73,13 @@
 	found_comma = .FALSE.
 
 * which argument has been requested?
-	IF ( carg .EQ. '*' ) THEN
+	IF ( carg .EQ. ' *' ) THEN
 	   karg = 1               ! locate start of arg #1
-	ELSEIF ( carg .EQ. '<' ) THEN
+	ELSEIF ( carg .EQ. ' <' ) THEN
 	   GOTO 5100     ! implement later
-	ELSEIF ( carg.LT.'0' .OR. carg.GT.'9' ) THEN
-	   GOTO 5100
 	ELSE
-	   READ ( carg, '(I1)' ) karg	   
+	   READ ( carg, '(I2)', ERR=5100 ) karg
+	   IF (karg.LE.0 .OR. karg.GE.100) GOTO 5100  
 	ENDIF
 
 * locate the start and end of argument number karg
@@ -153,7 +151,7 @@
  500	CONTINUE
 
 * return the requested argument string
-	IF ( carg .EQ. '*' .AND. end .NE. lengo ) THEN
+	IF ( carg .EQ. ' *' .AND. end .NE. lengo ) THEN
 	   end = lengo
 	ELSEIF ( goline(start:start) .EQ. '"'
      .     .AND. goline(end:end)     .EQ. '"' ) THEN

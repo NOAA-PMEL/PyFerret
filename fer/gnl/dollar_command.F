@@ -1,7 +1,5 @@
 	SUBROUTINE DOLLAR_COMMAND( cmnd,lencmnd,goline,did_sub,status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -42,6 +40,7 @@
 *	$n 		- argument n (1 through max)
 *	$0		- name of Go file
 *	$*		- all arguments, 1 through max
+*       ($nn)	        - to allow 2-digit argument numbers
 * these may be followed by the coached string substitution options
 * described in coached_str_sub.F
 
@@ -59,6 +58,8 @@
 * V420	2/29/96	- detach the "coaching" code into a separate routine so it
 *		can be used in symbol substitution as well
 * V510: 3/00 *sh* bug fix - in the syntax "$1" the final " caused iptr mis-set
+* V531: 4/01 *sh* - allow 2-digit argument numbers
+*		  - increased argument buffers 255 -> 511
 
 * calling argument declarations:
 	LOGICAL   did_sub
@@ -71,14 +72,16 @@
 * o options string
 * r replacement strings
 
-	LOGICAL coaching, in_squote
+	LOGICAL coaching, in_squote, has_parens
 	INTEGER	TM_LENSTR1,
-     .		lenbuff, iptr, dollar, lenarg
-        CHARACTER*255 arg*255, passed_arg*255, c1*1, carg*1
+     .		lenbuff, iptr, dollar, lenarg, nexchar, idig
+        CHARACTER arg*511, passed_arg*511, c1*1, carg*2
 
 * local parameter declarations
         CHARACTER*1     sing_quote
         PARAMETER     ( sing_quote = CHAR(39) )
+        CHARACTER*1	tab
+        PARAMETER     ( tab = CHAR(9) )
 
 #ifdef unix
 	include 'ferret.parm'
@@ -94,7 +97,7 @@
 #endif
 
 * initialize
-	iptr = 0
+	nexchar = 1
 	did_sub = .FALSE.
 	status = ferr_ok
         lenbuff = LEN( cmnd )
@@ -105,7 +108,7 @@
 	in_squote = .FALSE.
 
 * locate the next dollar sign  (ignore "$" as last character in command)
-	DO 50 dollar = iptr+1, lencmnd-1
+	DO 50 dollar = nexchar, lencmnd-1
 	   c1 = cmnd(dollar:dollar)
 	   IF ( c1 .EQ. sing_quote ) THEN
 	      in_squote = .NOT.in_squote
@@ -125,22 +128,73 @@
 * found a significant "$"
  60	CONTINUE
 
+* note: multiple digit argument number must be enclosed in parentheses.
+* this because $15 might legitimately be "$1" prepended to "5"
+
+* is this a paren-surrounded argument number?
+* Note: the parsing actually gets done twice ... this is an add-on hack!
+* check syntax: ($nn%stuff%)
+	has_parens = .FALSE.
+	IF (dollar .GT. 1) THEN
+	   IF (cmnd(dollar-1:dollar-1) .NE. '(') GOTO 65
+	   IF (carg.LT.'0' .OR. carg.GT.'9') GOTO 65
+	   iptr = dollar+2
+	   IF (iptr .GT. lencmnd) GOTO 65
+	   c1 = cmnd(iptr:iptr)
+	   IF (c1.GE.'0' .AND. c1.LE.'9') iptr = iptr + 1
+	   IF (iptr .GT. lencmnd) GOTO 65
+	   c1 = cmnd(iptr:iptr)
+           coaching = c1.GE.'!' .AND. c1.LE.'&'
+	   IF (coaching) THEN
+             DO 62 iptr = iptr+1, lencmnd
+                 IF ( cmnd(iptr:iptr) .EQ. c1 ) GOTO 64
+ 62	      CONTINUE
+              GOTO 65       ! unterminated option string - red herring?
+ 64	      iptr = iptr + 1
+	      IF (iptr .GT. lencmnd) GOTO 65
+	      c1 = cmnd(iptr:iptr)
+	   ENDIF
+	   IF (c1 .NE. ')') GOTO 65
+	   has_parens = .TRUE.
+	ENDIF
+ 65	CONTINUE
+
+* find a second digit, if any
+	nexchar = dollar + 2
+	IF (carg.GE.'0' .AND. carg.LE.'9'
+     .	.AND. lencmnd .GT. dollar+1 ) THEN
+	   DO 70 iptr = dollar+2, lencmnd
+	     IF (cmnd(iptr:iptr).LT.'0'.OR.cmnd(iptr:iptr).GT.'9') GOTO 72
+ 70	   CONTINUE
+ 72	   carg = ' '
+	   idig = iptr-dollar-1
+	   IF ( idig.GT.2 ) GOTO 5150
+	   carg(dollar-iptr+4:2) = cmnd(dollar+1:iptr-1) ! right justify
+	   nexchar = iptr  ! next character after digits (changes later)
+	ELSE
+	   idig = 1
+	   c1 = carg(1:1)
+	   carg = ' '
+	   carg(2:2) = c1  ! right justify
+	ENDIF
+
+	IF (has_parens) THEN
+	   dollar = dollar - 1 ! text to replace starts at "("
+	ENDIF
+
 * is there a coaching string following  "$x" ?  (e.g. $1"default string")
-        coaching = dollar+3 .LE. lencmnd
+        coaching = nexchar+1 .LE. lencmnd
         IF ( coaching ) THEN
-           c1 = cmnd(dollar+2:dollar+2)
+           c1 = cmnd(nexchar:nexchar)
            coaching = c1.GE.'!' .AND. c1.LE.'&'
         ENDIF
 
 * locate the matching terminator of the coaching string
         IF ( coaching ) THEN
-           DO 100 iptr = dollar+3, lencmnd
+           DO 100 iptr = nexchar+1, lencmnd
               IF ( cmnd(iptr:iptr) .EQ. c1 ) GOTO 200
  100       CONTINUE
            coaching = .FALSE.       ! unterminated option string - red herring?
-           iptr = dollar + 1	! 3/00 bug fix
-        ELSE
-           iptr = dollar + 1
         ENDIF
 
 * get the argument given on the command line
@@ -150,26 +204,42 @@
 
 * modify the argument if coaching was provided
 	IF ( coaching ) THEN
-	   IF (dollar+3 .GT. iptr-1) GOTO 5400
-	   CALL COACHED_STR_SUB('argument $'//carg, passed_arg,
-     .		cmnd(dollar+3:iptr-1), arg, lenarg, status ) 
+	   IF (nexchar+1 .GT. iptr-1) GOTO 5400
+	   CALL COACHED_STR_SUB('argument $'//carg(3-idig:), passed_arg,
+     .		cmnd(nexchar+1:iptr-1), arg, lenarg, status ) 
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   nexchar = iptr+1   ! after termination of coaching
 	ELSEIF ( arg .EQ. " " ) THEN
 	   GOTO 5500
 	ENDIF
 
+* move past closinging paren
+	IF (has_parens) THEN
+	   DO 210 iptr = nexchar, lencmnd
+	      IF ( cmnd(iptr:iptr) .EQ. ')' ) THEN
+	        nexchar = iptr + 1
+	        GOTO 300
+	      ELSEIF ( cmnd(iptr:iptr) .NE. ' '
+     .	       .AND.   cmnd(iptr:iptr) .NE. tab ) THEN
+	        GOTO 5300   ! should never arrive here
+	      ENDIF
+ 210	   CONTINUE
+	   GOTO 5300
+	ENDIF
+
 * replace "$n..." with argument text or coached alternative
- 500    IF ( (dollar-1)+lenarg+(lencmnd-iptr) .GT. lenbuff ) THEN
+ 300	IF ( (dollar-1)+lenarg+(lencmnd-nexchar-1) .GT. lenbuff ) THEN
            GOTO 5100
         ELSE
+	   iptr = lencmnd ! temporary buffer
 #ifdef AIX_XLF
-	   risc_buff = cmnd(iptr+1:)
+	   risc_buff = cmnd(nexchar:)
            cmnd(dollar:) = arg(1:lenarg) // risc_buff
-           lencmnd = (dollar-1) + lenarg + (lencmnd-iptr)   ! new length
 #else
-           cmnd(dollar:) = arg(1:lenarg) // cmnd(iptr+1:)
-           lencmnd = (dollar-1) + lenarg + (lencmnd-iptr)   ! new length
+           cmnd(dollar:) = arg(1:lenarg) // cmnd(nexchar:)
 #endif
+           lencmnd = (dollar-1) + lenarg + (lencmnd-nexchar+1)   ! new length
+	   nexchar = nexchar + (lencmnd-iptr) ! shift by increase of cmnd len
         ENDIF
 
 * go back for the next argument
@@ -180,10 +250,14 @@
  5000   RETURN
  5100   CALL ERRMSG( ferr_invalid_command, status,
      .       'command argument strings are too long', *5000)
+ 5150   CALL ERRMSG( ferr_syntax, status,
+     .       'arg number not in 1-99 range: '//cmnd(dollar:iptr), *5000 )
+ 5300   CALL ERRMSG( ferr_syntax, status,
+     .       'missing closing paren: '//cmnd(dollar:iptr), *5000 )
  5400   CALL ERRMSG( ferr_syntax, status,
      .       'empty argument replacement string: '//cmnd(dollar:iptr),
      .		 *5000 )
  5500   CALL ERRMSG( ferr_invalid_command, status,
-     .       'Value needed for argument '//carg//' in command'//
+     .       'Value needed for argument '//carg(3-idig:)//' in command'//
      .        pCR//'GO '//goline(:TM_LENSTR1(goline)), *5000)
 	END

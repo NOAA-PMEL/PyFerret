@@ -43,6 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 2/19/87
+* V510: *sh 1/2000 - bug fix when unable to allocate requested work space
 
 * calling argument declarations:
 	INTEGER	size, start_block, status
@@ -66,7 +67,11 @@
 	ELSE
 	   CALL RELEASE_WORK_SPC
 	   CALL GET_MEMORY( size, sp_start_block, sp_num_blocks, status )
-	   sp_last_size = sp_num_blocks * mem_blk_size
+	   IF ( status .EQ. ferr_ok ) THEN
+	      sp_last_size = sp_num_blocks * mem_blk_size
+	   ELSE
+	      sp_last_size = 0
+	   ENDIF
 	ENDIF
 
 	start_block = sp_start_block

@@ -36,7 +36,7 @@
 * Steve Hankin
 * Jan, 2001
 *
-* 12/12/02 *acm* bug fix: declare the REAL*8 parameter  psecsto1900 as a 
+* 12/12/02 *acm* bug fix: define the REAL*8 parameter  psecsto1900 using a 
 *                double precision constant .D0; the constant lost precision
 *                under linux.
 

@@ -104,6 +104,8 @@
 *                  also the name "365_DAY" as an equivalent to "NOLEAP" 
 * V570 *acm* 5/04  Allow "bounds" attribute for defining an irregular axis.  Store
 *                  all irregular axis intervals as Nx2 bounds rather than Nx1 edges.
+*      *acm* 6/04  for compiler on rh7, need to pass dimensions of array into cd_rd_r8_bnds 
+*                  as scalar integers not array elements.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -157,7 +159,7 @@
      .        edgid, spacing_atlen, epic_t2var, since_T0,
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), i1, next_line_storage,
-     .        newaxis, nlen
+     .        newaxis, nlen, d1s, d1e, d2s, d2e
 
 
       REAL    rbuff, delta, first_delta
@@ -846,8 +848,15 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         numpts(1) = 2
         numpts(2) = npts
 
+
+        d1s = startpts(1)
+        d1e = numpts(1)
+        d2s = startpts(2)
+        d2s = numpts(2)
+
         CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartype, 
-     .                    bname(:blen), line_mem(ipt1+npts), status )
+     .                    bname(:blen), line_mem(ipt1+npts),  
+     .                    d1s, d1e, d2s, d2e, status )
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too 

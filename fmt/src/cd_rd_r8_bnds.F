@@ -1,5 +1,5 @@
 	SUBROUTINE CD_RD_R8_BNDS( cdfid, varid, start, npts, dtype, errstr,
-     .                           dvals, status )
+     .                           dvals, d1s, d1e, d2s, d2e, status )
 
 *
 *
@@ -40,10 +40,10 @@
 * double prec.
 * The variable must be a simple array (e.g. an axis)
 
-* Programmer Steve Hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 2/92
+* From cd_rd_r8_arr.F
+* 6/2004
+* 6/04  *acm* for compiler on rh7, need to pass dimensions of array dvals 
+*        into this routine as scalar integers not array elements.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -56,8 +56,10 @@
 *       status   - TMAP library return status
 
 * argument declarations
-      INTEGER cdfid, varid, start(2), npts(2), dtype, status
-      REAL*8  dvals( start(1):npts(1), start(2):npts(2) )
+      INTEGER cdfid, varid, start(2), npts(2), dtype, status,
+     .        d1s, d1e, d2s, d2e
+c      REAL*8  dvals( start(1):npts(1), start(2):npts(2) )
+      REAL*8  dvals( d1s:d1e, d2s:d2e )
       CHARACTER*(*) errstr
 
 #ifdef unix

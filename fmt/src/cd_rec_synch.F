@@ -63,6 +63,8 @@
 *                  axis cell boundaries.  Check whether there is a gap
 *                  between the high box-bound of the existing axis and
 *                  the low box-bound of the new axis to be appended.
+*      *acm* 6/04  for compiler on rh7, need to pass dimensions of array into cd_rd_r8_bnds 
+*                  as scalar integers not array elements.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -94,7 +96,7 @@
      .        ndims, nvars, cdfstat,
      .        nvdim, vdims(6), nvatts,
      .        ngatts, npts, recdim, blen, bndid,
-     .        startpts(2), numpts(2)
+     .        startpts(2), numpts(2),  d1s, d1e, d2s, d2e
       CHARACTER axnam*128, buff*16, bname*30
       CHARACTER*1     dimnam(4)
       DATA dimnam/'I','J','K','L'/
@@ -224,8 +226,13 @@
           startpts(2) = start-1  
           numpts(2) = 1
 
+          d1s = startpts(1)
+          d1e = numpts(1)
+          d2s = startpts(2)
+          d2s = numpts(2)
           CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartyp, 
-     .                    bname(:blen), old_box_hi, status )
+     .                    bname(:blen), old_box_hi, d1s, d1e, d2s, d2e,  
+     .                    status )
 
 * Get lower bound of first point to be output
 

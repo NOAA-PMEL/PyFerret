@@ -2,6 +2,7 @@
 ! upgraded from bn320 to provide method for testing batch mode.  Also remove
 ! all labels to create "master" gif and ps files to compare against
 ! *kob*
+! V530 - added tests of PLOT/STEP[=connected] to existing plots
 
 ! define a 6 viewport window (modified definitions 11/92)
 def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
@@ -134,8 +135,8 @@ plot/i=1:10/ylimits=1:40/nolabel i      ! note that /nolabel supresses XLAB
 plot/i=1:10/over/sym=2 i^1.1
 plot/i=1:10/over/sym=2/size=.12 i^1.2
 plot/i=1:10/over/sym=2/color=red i^1.3
-plot/i=1:10/over/thick i^1.4
-plot/i=1:10/over/thick/color=blue i^1.5
+plot/i=1:10/over/thick/step i^1.4
+plot/i=1:10/over/thick/color=blue/step=connected i^1.5
 plot/i=1:10/over/thick=3/color=purple/size=.14 i^1.6
 
 ! deliberate error

@@ -1,0 +1,3 @@
+#! /bin/csh
+echo Please use the Fprint command to get hardcopy!
+

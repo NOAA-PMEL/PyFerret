@@ -1,0 +1,152 @@
+#! /bin/csh -f
+# Fgo go_file_template    
+# determine if files matching go_file_template are currently on-line by
+# searching the paths in FER_GO
+
+# 8/92 bug fix: on SUNs /bin/test can accept only one arg.  Use nonomatch
+# to resolve the list of files matching template and pass only one name to test
+#
+# utterly modified for osf port.  11.8.93 *kob* Allow inclusion of 
+#  "-help", "-l", and "-more" options.  Also allows for desired file
+# to end in ".jnl"
+# 21mar94 *kob* Solaris port -----
+#		  /bin/test doesn't exist on solaris (sunos 5.x) so had to 
+#		  do a check for that OS and then point it to /usr/ucb/test
+# 5may94 *kob* 	Ultrix bug - no /usr/bin/grep
+#		 should have been /bin/grep
+# 30may97 *kob* Linux port - test is in /usr/bin/test
+
+#check for proper amount of args.  One arg is the filename or template. 
+if ($#argv == 0 || $#argv > 2) then
+  echo " "
+  echo "Usage: Fgo [-help] [-l] [-more]  go_file[_template]"
+  echo "Type Fgo -help for a full description"
+  echo " "
+  exit 1
+endif
+
+# print out help message
+if ('$argv[1]' =~ *h*) then
+usage:
+  echo " "
+  echo "Usage:"
+  echo "        Fgo [-help] [-l] [-more]  go_file[_template]"
+  echo  " "
+  echo "where options include: "
+  echo "   -help	print this message, option not valid with any other"
+  echo "   -l		generate long listing, without description of tool"
+  echo "   -more	more files matching given template"
+  echo " "
+  echo "These options precede either the go file, if it is known,"
+  echo "or a go file template.  All files found matching the given template"
+  echo "are then listed, or more'd if the -more option is passed. All options"
+  echo "are mutually exclusive. To see all of the Go tools/journal files"
+  echo "available, enter: "
+  echo "       Fgo '*'"
+  echo "It is important to have the single quotes around the asterisk."
+  echo " " 
+  exit 1
+endif
+
+#set some variables
+set num_args = $#argv
+set nonomatch
+set found = 0
+
+#check for sunos 5.x
+if (`uname` =~ *Sun* && `uname -r` =~ *5.*) then
+	set TEST = /usr/ucb/test
+else if (`uname` =~ *inux* ) then
+	set TEST = /usr/bin/test
+else
+	set TEST = /bin/test
+endif
+
+# check to see if file contains .jnl or not
+if ($argv[$num_args] =~ *.jnl*) then
+	set tag = 1
+else
+	set tag = 0
+endif
+
+
+# if there is only one argument, it must be the file name, otherwise it
+# is a usage error
+if ($num_args == 1) then
+#check for usage error
+  if ($argv[1] =~ *-l* || $argv[1] =~ *-hel* || $argv[1] =~ *-mor*) goto usage
+  foreach path ($FER_GO)
+	cd $path
+# check for existance of an extension.  If no extension, apply .jnl default
+	if ($tag) then
+		set flist = *$argv*
+	else
+		set flist = *$argv*.jnl
+	endif
+	$TEST -f $flist[1]
+	if ($status == 0) then   
+      		echo "* * * * * * * * in $path"
+		foreach file ($flist)
+		echo `/bin/ls $file`: `/usr/bin/egrep '[ ][dD][eE][sS][cC][rR][iI][p	P][tT][iI][oO][nN]:[ ]' $file ` | /bin/sed -e "s/\![ ][dD][eE][sS][cC][rR][iI][pP][tT][iI][oO][nN]:[ ]//"
+		end
+		set found = 1
+      		echo " " 
+   	endif
+   end
+	goto the_end
+#if num_args is two, then we either have to do an ls -l, or a more.
+#cannot do both.
+else if ( $num_args == 2 ) then
+#do a long listing
+	switch ($argv[1]) 
+	  case '*l*' :
+		foreach path ($FER_GO)
+   			cd $path
+   			set flist = *$argv[2]*
+    			$TEST -f $flist[1] >& /dev/null
+    			if ($status == 0) then    
+      			   echo "* * * * * * * * in $path"
+			   if ($tag) then
+      			   	/bin/ls -l $argv[2]
+			   else	
+				/bin/ls -l *$argv[2]*.jnl
+			   endif
+      			   set found = 1
+      		 	   echo " " 
+   			endif
+		end
+	     breaksw
+	  case '*mor*':
+# more each file we come across which matches the template.
+		foreach path ($FER_GO)
+   			cd $path
+   			set flist = *$argv[2]*
+    			$TEST -f $flist[1] >& /dev/null
+			if ($status == 0) then    
+      			   echo "* * * * * * * * in $path"
+			   if ($tag) then
+      			   	/usr/ucb/more $argv[2]
+			   else	
+				/usr/ucb/more *$argv[2]*.jnl
+			   endif
+      			   set found = 1
+      		 	   echo " " 
+   			endif
+		end
+	     breaksw
+	  default:
+	     go to usage
+	endsw	     
+ 	goto the_end
+endif
+
+
+the_end:
+if ( $found == 0 ) then
+   if ($tag) then
+	   echo "No files matching $argv are on line"
+   else
+	   echo "No files matching $argv.jnl are on line"
+   endif
+endif
+

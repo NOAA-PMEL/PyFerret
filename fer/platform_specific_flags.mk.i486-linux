@@ -38,7 +38,8 @@ CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -
 FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
 PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
-CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
+CPP_FLAGS       = $(INCLUDES)-P -Dunix -DNEED_IAND -DFORTRAN_90 \
+		  -DNO_OPEN_SHARED \
 		  -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME \
 		  -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS \
 		  -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH \
@@ -54,7 +55,9 @@ CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
 LD		= cc
 LDFLAGS		= -v -static
  
-SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/lotus/kobrien/src/f2c/libF77/libF77.a /home/lotus/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm -ldl $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
+
+
+SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /usr/local/lib/f90/libf90.a -lm -ldl $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 

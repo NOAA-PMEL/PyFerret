@@ -68,13 +68,16 @@
 * *acm*	- 10/2000 add VECTOR/FLOWLINE, alias FLOWLINE
 * *acm* - 12/2001 send third argument to FLOWLINE, work array for the
 *         flag grid, now allocated in disp_set_up.F
-
+* *acm* - 10/02 After FILL plot (plotz) call WINDOW to restore values of
+*         XMIN, XMAX, YMIN, YMAX. Else DAXIS plot calls are not in range.
+* *acm* - 10/02 bug fix: start index of X as the third argument to FLOWLINE
+*         was icorrect for irregular-grid case (JTYPE .ne. -1) See PPLLDC.
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
 	REAL	DIFF, x, xf, yf, xl, yl, xh, yh, xti, xtl, thi
 	real	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
-	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, a_line
+	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line
 * TMAP include files with explicit type declarations:
 #ifdef unix
 	include 'parampl5_dat.decl'
@@ -119,7 +122,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-#ifdef unix
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
@@ -148,42 +150,7 @@
 	include 'SYSTEM.INC'
 	include 'cont_inc.decl'  !added to get ivcomp v1.1
 	include 'CONT.INC'  !added to get ivcomp v1.1
-#else
-	INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-	INCLUDE 'PPLV11INC:LINES.INC'
-	INCLUDE 'TMAP_PPLV11INC:PEN_INC.DECL'
-	INCLUDE 'PPLV11INC:PEN.INC'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'
-	INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
-	INCLUDE 'PPLV11INC:HD.INC'
-	INCLUDE 'TMAP_PPLV11INC:TAXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:TAXIS.INC'
-	INCLUDE 'TMAP_PPLV11INC:AXISL_INC.DECL'
-	INCLUDE 'PPLV11INC:AXISL.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'
-	INCLUDE 'PPLV11INC:PLT.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
-	INCLUDE 'PPLV11INC:PLTL.INC'
-	INCLUDE 'TMAP_PPLV11INC:MPLOT_INC.DECL'
-	INCLUDE 'PPLV11INC:MPLOT.INC'
-	INCLUDE 'TMAP_PPLV11INC:CMRD_INC.DECL'
-	INCLUDE 'PPLV11INC:CMRD.INC'
-	INCLUDE 'TMAP_PPLV11INC:PRMCOM_INC.DECL'
-	INCLUDE 'PPLV11INC:PRMCOM.INC'
-	INCLUDE 'TMAP_PPLV11INC:SWITCH_INC.DECL'
-	INCLUDE 'PPLV11INC:SWITCH.INC'
-	INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
-	INCLUDE 'PPLV11INC:SYSTEM.INC'
-	INCLUDE 'TMAP_PPLV11INC:CONT_INC.DECL'  !Added to get IVCOMP v1.1
-	INCLUDE 'PPLV11INC:CONT.INC'  !Added to get IVCOMP v1.1
-#endif
-
-#ifdef unix
 	include 'xinterrupt.cmn'	! 1/89 *sh* - interrupts
-#else
-	INCLUDE 'TMAP_PPLV11INC:XINTERRUPT.CMN'	! 1/89 *sh* - interrupts
-#endif
 
 * special COMMON to let this routine know if FERRET is in control
 #ifdef unix
@@ -338,8 +305,15 @@ C
 	    ENDIF
 	    CALL PLOTZ(X(IVLOC),XF,YF,XL,YL,XH,YH)
 *!	    IF(MAKEP.EQ.'AREA') CALL DAXIS(XF,YF,NMX,NMY) NAME CHANGE *jd*
-	    IF(MAKEP.EQ.'FILL') CALL DAXIS(XF,YF,NMX,NMY)
-	    IF(MAKEP.EQ.'FILL') CALL DAXIS_BOX
+
+C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX. Plot axis again
+C  so any tics inside the box show up.  
+
+	    IF(MAKEP.EQ.'FILL') THEN
+               IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
+               CALL DAXIS(XF,YF,NMX,NMY)
+	       CALL DAXIS_BOX
+            ENDIF
 
 
 	ELSE IF(MAKEP.EQ.'PLOT') THEN
@@ -382,14 +356,15 @@ C ACM Add FLOWLINE call based on VECFLD
 
 	ELSE IF(MAKEP.EQ.'FLOW')THEN
 	    IF(JTYPE.EQ.-1)THEN
-		CALL FLOWLINE(X(1),X(NX*NY+1),X(2*NX*NY+1),NX,NY,X(1),
-     .             X(1),XF,YF)
+		CALL FLOWLINE(X(1),X(NX*NY+1),X(2*NX*NY+1),
+     .            NX,NY,X(1),X(1),XF,YF)
 		IF ( interrupted ) GOTO 3333 
 	    ELSE
 		IP1=NX*NY+1
 		IP2=IP1+NX
 		IP3=IP2+NY
-  		CALL FLOWLINE(X(1),X(IP3),X(IP3+NX+NY),NX,NY,X(IP1),
+                IP4=2*NX*NY + 2*(NX+NY)
+  		CALL FLOWLINE(X(1),X(IP3),X(IP4),NX,NY,X(IP1),
      .             X(IP2),XF,YF)
 		IF ( interrupted ) GOTO 3333
 	    ENDIF

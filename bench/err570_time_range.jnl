@@ -1,0 +1,16 @@
+! err570_time_range.jnl  bug1080
+! time request out of range with calendar axis and RETURN=
+
+def axis/t="16-Jan-1861 12:00:00":"16-mar-1881 12:00:00":1/units=months/calendar=noleap tax
+let a = t[gt=tax]
+save/clob/file=aa.nc a
+save/clob/file=cc.nc a
+use aa
+use cc
+
+define grid/like=a[d=1] var1_grid_
+let var1_ = a[d=1,t="16-Jan-1861 12:00:00"]
+let var2_ = a[gx=var1_grid_,gy=var1_grid_,d=2,t="16-Jan-1861 12:00:00"]
+set var/units="`a[d=1,t="16-Jan-1861 12:00:00"],return=units`" var1_
+set var/units="`a[gx=var1_grid_,gy=var1_grid_,d=2,t="16-Jan-1861 12:00:00"],return=units`" var2_
+!  error message on this last command; noleap calendar not treated correctly.

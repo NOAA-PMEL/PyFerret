@@ -9,6 +9,8 @@
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
 # 2/2001  debug macros
+# 1/2002  need $(F77) in .F.so rule
+#         and compile ffta_sample, fftp_sample functions
 #
 # include platform specific macro definitions
 #
@@ -29,14 +31,14 @@ SUB_OBJS = fftsubs.o
 #
 
 .F.so:
-	f77  $(FFLAGS)  $<
+	$(F77)  $(FFLAGS)  $<
 	$(LD) $(LD_DYN_FLAGS)   $(SUB_OBJS) $*.o -o $*.so 
 
 #
 # Targets
 #
 
-all:	ferret_cmn fftsubs.o ffta.so fftp.so
+all:	ferret_cmn fftsubs.o ffta_sample.so fftp_sample.so
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

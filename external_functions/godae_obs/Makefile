@@ -25,13 +25,12 @@ GOB_OBJS = ocn_obs.o
 # Rules
 #
 
-.c.o:
+.c.so:
 	cc ${GOBFLAGS} ${CFLAGS} $<
+	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
-.F.o:
+.F.so:
 	$(F77) $(FFLAGS) $<
-
-.o.so:
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
 #

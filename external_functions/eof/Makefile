@@ -27,11 +27,8 @@ SUB_OBJS = eofsubs.o
 # Rules
 #
 
-.f.o:
+.f.so:
 	$(F77) $(FFLAGS)  $<
-
-.F.so:
-	$(F77) $(FFLAGS) $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #

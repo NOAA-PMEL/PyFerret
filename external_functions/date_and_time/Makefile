@@ -28,13 +28,12 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 # Rules
 #
 
-.c.o:
+.c.so:
 	cc ${DATFLAGS} ${CFLAGS} $<
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
-.F.o:
+.F.so:
 	$(F77) $(FFLAGS) $<
-
-.o.so:
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 #

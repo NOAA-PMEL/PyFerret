@@ -1,8 +1,0 @@
-! err553_0_lon_label.jnl
-! 2/2004 ACM
-! 
-! The label at 0 degrees longitude should have neither an E nor a W
-! (to match wat was already done for latitude).
-!
-use coads_climatology
-shade/x=-20:20/y=-20:20/l=1/title="Label at 0 longitude has no E or W" sst

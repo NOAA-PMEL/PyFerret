@@ -1,4 +1,4 @@
-	SUBROUTINE CD_SCAN_VARS ( dset, cdfid, status )
+	SUBROUTINE CD_SCAN_VARS ( dset, cdfid, reversed, status )
 
 *
 *
@@ -35,8 +35,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Loads common blocks XDSET_INFO and XSTEP_FILES with vital system and
-* background information from a netCDF file
+* Loads common blocks XDSET_INFO, XSTEP_FILES, and grid COMMON with vital
+* system and background information from a netCDF file
 * It processes FERRET special attributes without regard to whether variables
 * are "generic" or "FERRET"
 
@@ -62,15 +62,17 @@
 * 1/99 *sh* - fixed bug introduced in 7/98 changes -- blows up when file has
 *		only coord variables (e.g. climatological_axes)
 * 2/99 *kob* - adding call to SWITCH_NAN for NaN recognition
+* V500 3/99 *sh* -- most of this routine removed to cd_get_1_dep_var
+*	and this routine consolidated with cd_get_axes. The consolidation
+*	allows us to process invalid axes as dependent variables rather than
+*	rejecting the netCDF file 
 * 3/99 *kob* - make sure to pass the correct string length for newly upped
 *              parameter values
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
+*	reversed    - logical array to record which axes have reversed coords
 *	status	- return status
-
-* argument declarations:
-	INTEGER	      dset, cdfid, status
 
 * include files
 #ifdef unix
@@ -81,6 +83,11 @@
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
+
+	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xbuild_grids.cmn'
+
 	external xdset_info_data
         include 'xdset_info.cd_equiv'
         include 'xio.cmn_text'
@@ -98,30 +105,34 @@
         EXTERNAL XIO_DATA
 #endif
 
+* argument declarations:
+	LOGICAL       reversed(0:max_lines)
+	INTEGER	      dset, cdfid, status
+
+* local parameter definitions:
+	LOGICAL	    do_warn
+	INTEGER     str_eq
+	PARAMETER ( str_eq = 0,
+     .		    do_warn = .TRUE. )
+
 * local variable declarations:
 *  ivtm - TMAP library variable ID
 *  ivcd - netCDF file variable ID
-* *kob* explicit definitions not allowed on decl line in linux...
-*       moved it to parameter line 10/96
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, CD_GET_BOUNDS,
      .        TM_LEGAL_NAME,
      .        got_it, got_bad, got_missing, tf2, its_epic, 
-     .        do_warn, got_a_variable
-      PARAMETER (do_warn = .TRUE. )
-      INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
-     .        ndims, nvars, cdfstat, las_pos, first_pos, idim,
-     .        ivcd, ivtm, vartyp, nvdim, vdims(6), nvatts, i, vlen,
-     .        ngatts, recdim, istat, npts, lasdim, attype
-      CHARACTER    vname*24, buff*64
+     .        got_a_variable, failed_axis
+      INTEGER TM_FIND_GRID_SLOT, TM_FIND_LINE_SLOT, NCVID,
+     .	      STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
+     .        ndims, nvars, cdfstat, las_pos, first_pos, idim, iaxis,
+     .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
+     .        ngatts, recdim, istat, npts, lasdim, attype, epic_t2
+      CHARACTER    vname*24, name*16, buff*64
       CHARACTER*13 TM_STRING
       REAL*4  global_bad
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
-
-* local parameter definitions:
-      INTEGER     str_eq
-      PARAMETER ( str_eq = 0 )
 
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv because "BYTE"
 * isn't supported on DECstation
@@ -142,6 +153,24 @@
       EQUIVALENCE ( r4_grid_end,   ds_grid_end ),
      .            ( r4_grid_start, ds_grid_start )
 
+* initialize: save the state of grid memory prior to any new definitions
+* ... save original start of free line memory
+	orig_line_mem = next_line_mem_pos
+
+* ... flag all axes as non-reversed as the default
+	DO 10 i = 0, max_lines
+ 10	reversed(i) = .FALSE.
+
+* ... how many grid spaces used before we start ?
+	status = TM_FIND_GRID_SLOT ( firstgrid )
+        lastgrid = firstgrid - 1
+	IF (status .NE. merr_ok) GOTO 5900
+
+* ... how many line spaces used before we start ?
+	status = TM_FIND_LINE_SLOT ( firstax )
+        lastax = firstax - 1
+	IF (status .NE. merr_ok) GOTO 5900
+
 * get the vital statistics for the CDF file
         CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
         IF ( cdfstat .NE. NCNOERR ) GOTO 5200
@@ -158,10 +187,17 @@
            ENDIF
         ENDIF
 
-* loop through all variables in the net CDF file
+*   * * * loop through all variables in the net CDF file * * *
+* classify each as a coordinate variable (axis) or as a dependent
+* variable. If a coordinate variable then TRY to interpret it,
+* (in cd_get_1_axis) but if it proves to be invalid, then process
+* it, instead, as a dependent varoable
 	las_pos  = 1    ! reduces redundant search for space
 	got_a_variable = .FALSE.
-	DO 200 ivcd = 1,nvars
+	DO 1000 ivcd = 1,nvars
+
+* initialize
+	   failed_axis = .FALSE.
 
 * get the vital statistics for this variable
            CALL NCVINQ(cdfid, ivcd, vname, vartyp, nvdim, vdims,
@@ -169,156 +205,83 @@
            IF ( cdfstat .NE. NCNOERR ) GOTO 5200
            vlen = TM_LENSTR1(vname)
 
-* is it a "real" variable or an CDF axis variable?
-           i = NCDID( cdfid, vname(:vlen), cdfstat )
-           IF (cdfstat .EQ. NCNOERR ) GOTO 200
 
-* is it a real variable or a parent "grid" definition ?
-          CALL NCDINQ( cdfid, vdims, buff, npts, cdfstat )
-          istat = STR_CASE_BLIND_COMPARE('grid_definition', buff(:15) )
-          IF ( istat .EQ. str_eq ) GOTO 200
+*** CHECK A NUMBER OF REASONS TO IGNORE THIS VARIABLE
+* is the dimension name "grid_definition" ? If so, handled elsewhere
+	   CALL NCDINQ( cdfid, vdims, buff, npts, cdfstat )
+           istat = STR_CASE_BLIND_COMPARE('grid_definition', buff(:15) )
+           IF ( istat .EQ. str_eq ) GOTO 1000
 
-* or is it really an edge definition ?
+* or is it milliseconds for an an EPIC time axis? If so, handled with "time"
+           IF ( its_epic .AND. vname(:vlen).EQ.'time2' ) GOTO 1000
+
+* Is it an edge definition ? If so, process w/ corresponding axis
            got_it = CD_GET_ATTRIB( cdfid, ivcd, 'edges',
      .                            do_warn, vname(:vlen), buff, 64 ) !linenamlen
-           IF ( got_it .AND. buff.EQ.' ' ) GOTO 200
+           IF ( got_it .AND. buff.EQ.' ' ) GOTO 1000
 
-* or is it milliseconds for an an EPIC time axis
-           IF ( its_epic .AND. vname(:vlen).EQ.'time2' ) GOTO 200
+* or is it really a child axis (avail for. generic CDF apps but not needed) ?
+           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'child_axis',
+     .                            do_warn, vname(:vlen), name, 16 ) !linenamlen
+           IF ( got_it ) GOTO 1000
 
-* find the next storage position in TMAP common
-	  DO 150 ivtm = las_pos,maxvars
-	    IF (ds_var_setnum(ivtm) .EQ. set_not_open) GOTO 151
-  150     CONTINUE
-* oops - no room left for new variables
-	  GOTO 5100
 
- 151      las_pos = ivtm
-	  IF (.NOT.got_a_variable) first_pos = ivtm
-	  got_a_variable = .TRUE.
-* set obvious defaults for this variable
-          cd_varid(ivtm)        = ivcd ! netCDF variable ID
-          ds_var_setnum(ivtm  ) = dset
-          ds_var_title(ivtm)    = ' '
-          ds_var_titl_mod(ivtm) = ' '
-          ds_var_units(ivtm)    = ' '
-	  ds_missing_flag(ivtm)	= global_bad
-	  ds_bad_flag(ivtm)	= ds_missing_flag(ivtm)
-	  ds_precision(ivtm)	= 'SINGLE'
-          cd_scale_factor(ivtm) = 1.0
-          cd_add_offset(ivtm)   = 0.0
-          cd_scaled(ivtm)       = .FALSE.
-	  DO 160 idim = 1,4
-             ds_grid_start(idim,ivtm)= unspecified_int4
-             ds_grid_end  (idim,ivtm)= unspecified_int4
-  	     ds_ordering(idim,ivtm)= unspecified_int4
- 160      CONTINUE
+*** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
+* if it is not 1D it must be a dependent variable (3/99)
+	   IF ( nvdim .NE. 1 ) GOTO 500
 
-* is it a supported data type ?
-          cd_data_type(ivtm) = vartyp
-! DOUBLE supported as of 5/2/94
-!          IF ( vartyp .EQ. NCDOUBLE ) THEN
-!              CALL TM_NOTE('Unsupported netCDF data type for variable '
-!     .             //vname(:vlen), tt )
-!          ENDIF
+* if for some reason it is desirable for an axis name not to match its dim
+* name then the "parent_axis" attribute can flag that it is a parent axis 
+           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'parent_axis',
+     .                            do_warn, vname(:vlen), name, 16 )
+           IF ( got_it ) GOTO 100
 
-* is it a supported dimensionality ?
-          IF ( nvdim .GT. 4 ) THEN
-             CALL TM_NOTE('Unsupported netCDF # of axes for variable '
-     .             //vname(:vlen), tt )
-             GOTO 200
-          ENDIF
+* if var name doesn't match a dim name it isn't a coordinate var
+	   i = NCDID( cdfid, vname(:vlen), cdfstat )
+           IF (cdfstat .NE. NCNOERR ) GOTO 500
 
-* see what generic attributes can be read: long_name, units, missing_value
-* 3/99 *kob* - up passed lenght to correspond w/ updated paramter lenghts
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'long_name',
-     .                      .NOT.do_warn, ' ', ds_var_title(ivtm), 128 )
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'long_name_mod',
-     .                  .NOT.do_warn, ' ', ds_var_titl_mod(ivtm), 128 )
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'units',
-     .                 do_warn, vname(:vlen), ds_var_units(ivtm), 64 )
-          got_it = CD_GET_ATTVAL( cdfid, ivcd, 'scale_factor',
-     .             do_warn,vname(:vlen),cd_scale_factor(ivtm),1,istat )
-          tf2    = CD_GET_ATTVAL( cdfid, ivcd, 'add_offset',
-     .             do_warn,vname(:vlen),cd_add_offset(ivtm),1,istat )
-          cd_scaled(ivtm) = got_it .OR. tf2
+* PROCESS AN AXIS	   
+ 100        CALL CD_GET_1_AXIS(cdfid, ivcd, iaxis,
+     .                         its_EPIC, reversed, status)
+           IF ( status .NE. merr_ok ) GOTO 5900
+	   IF (iaxis .NE. 0) GOTO 1000		! iaxis>0 if axis was made
+	   failed_axis = .TRUE.			! go on and treat as a dep. var
 
-* netCDF files may use "standard" attributes missing_value and/or
-* _FillValue to flag bad data
-* For the NOAA COOP standard the missing_value flag must be stored in the
-* packed data type.  If so it must be unpacked.  (2/95)
-          got_bad = CD_GET_ATTVAL( cdfid, ivcd, 'missing_value',
-     .             do_warn, vname(:vlen), ds_bad_flag(ivtm), 1, istat )
-          got_missing = CD_GET_ATTVAL( cdfid, ivcd, '_FillValue',
-     .             do_warn, vname(:vlen), ds_missing_flag(ivtm),1,istat)
-* ... need to unpack the missing_value flag?
-*     (note that the netCDF library insists on _FillValue's data type)
-          IF ( vartyp.LE.NCLONG .AND. cd_scaled(ivtm) ) THEN
-             IF ( got_bad ) THEN
-	        CALL NCAINQ(cdfid, ivcd, 'missing_value', attype,
-     .			    i, istat )
-	        IF ( attype .EQ. vartyp ) ds_bad_flag(ivtm) =
-     .			ds_bad_flag(ivtm)*cd_scale_factor(ivtm)
-     .			+ cd_add_offset(ivtm)
+* PROCESS A DEPENDENT VARIANLE
+ 500	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
+     .				   ivtm, status )
+	   IF (status .NE. merr_ok) GOTO 5900
+	   IF ( ivtm .NE. 0 ) THEN
+	      las_pos = ivtm	! optimizes next hunt for slot
+	      IF (.NOT.got_a_variable) THEN
+	         first_pos = ivtm
+	         got_a_variable = .TRUE.
+	      ENDIF
+	   ENDIF
+	   IF ( failed_axis ) ds_var_titl_mod(ivtm) = 
+     .				'invalid coordinate axis'
+
+* EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
+* "TIME" as a dependent variable, but also "TIME2"
+	   IF ( its_epic .AND. vname(:vlen).EQ.'time' ) THEN
+	      epic_t2 = NCVID( cdfid, 'time2', cdfstat )
+	      IF ( cdfstat .EQ. NCNOERR ) THEN
+	        CALL CD_GET_1_DEP_VAR (dset,cdfid, epic_t2,
+     .			las_pos, global_bad, ivtm, status )
+	        IF (status .NE. merr_ok) GOTO 5900
+	        IF ( ivtm .NE. 0 ) THEN
+	          las_pos = ivtm	! optimizes next hunt for slot
+	          IF (.NOT.got_a_variable) THEN
+	            first_pos = ivtm
+	            got_a_variable = .TRUE.
+	          ENDIF
+	        ENDIF
+	         ds_var_titl_mod(ivtm) = 'invalid EPIC time axis'
 	     ENDIF
-          ENDIF
-          IF ( got_bad .AND. .NOT.got_missing )
-     .        ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
-          IF ( got_missing .AND. .NOT.got_bad )
-     .        ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
+	   ENDIF
 
-*  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
-	  CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))
-
-* see what special FERRET attributes can be read: axis ordering and
-* sub-hyperslab bounds
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'axis_order',
-     .             do_warn,vname(:vlen),buff,4 )
-          lasdim = 0
-          IF (got_it) THEN
-             DO 170 idim = 1, 4
-               IF ( buff(idim:idim) .EQ. ' ' ) THEN
-                  ds_ordering(idim,ivtm) = 0
-                  GOTO 170
-               ELSEIF ( buff(idim:idim) .EQ. 'T' ) THEN
-                  ds_ordering(idim,ivtm) = 4
-               ELSE
-                  ds_ordering(idim,ivtm) = ICHAR(buff(idim:idim))-87 ! XYZ->123
-               ENDIF
-               IF ( ds_ordering(idim,ivtm) .LT. 0
-     .         .OR. ds_ordering(idim,ivtm) .GT. 4 ) THEN 
-                  CALL TM_NOTE(
-     .                  'Illegal netCDF "axis_order" for variable '
-     .                  //vname(:vlen), tt )
-                  GOTO 200
-                ENDIF
-                IF ( ds_ordering(idim,ivtm) .LE. lasdim ) THEN
-                   CALL TM_NOTE(
-     .                     '"axis_order" permutations not supported: '
-     .                     //vname(:vlen), tt )
-                   GOTO 200
-                ENDIF
-                lasdim = ds_ordering(idim,ivtm)
- 170         CONTINUE
-          ENDIF
-
-* does this variable have a FERRET "parent grid" ?
-* if so check for explicit hyperslab limits
-          buff = ' '   ! problems from characters beyond 16
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'parent_grid',
-     .                           do_warn, vname(:vlen), buff, 16 )!gridnamlen
-          IF ( got_it ) THEN
-             got_it = CD_GET_BOUNDS(cdfid, ivcd, ds_grid_start(1,ivtm),
-     .                           ds_grid_end(1,ivtm), recdim, status )
-             IF ( status .NE. merr_ok ) GOTO 5900
-          ENDIF
-
-* officially claim this variable slot
-* 7/98 - save in case-sensitive form at this point -- will check over later
-!        istat = STR_UPCASE( ds_var_code(ivtm), vname(:vlen) )
-        ds_var_code(ivtm) = vname
-
- 200    CONTINUE
+ 1000    CONTINUE
+*   * * * * * * * * * * * * * * * * * * * * * * * * 
 
 * pass through the variable names making sure that case-sensitive
 * duplicates (e.g. 'var' and 'VAR') retain case and that names which
@@ -344,11 +307,6 @@
 	RETURN
 
 * ERROR MESSAGES
- 5100	CALL TM_ERRMSG ( merr_varlim, status, 'CD_SCAN_VARS',
-     .			 dset, no_stepfile,
-     .			 'MAX='//TM_STRING(DBLE(maxvars)),
-     .			 no_errstring, *5900)
-
  5200   CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_SCAN_VARS', cdfid,
      .        no_varid, no_errstring, no_errstring, *5900 )

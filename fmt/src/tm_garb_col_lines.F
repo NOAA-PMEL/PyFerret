@@ -43,8 +43,13 @@
 * revision 0.0 - 2/92
 *
 * IBM PORT 14apr94 *kob* : Port to IBM revealed a transfer controll problem at 
-*			   around label 200.  A "goto" statment was passing control to
-*			   a continue statment.
+*			   around label 200.  A "goto" statment was passing
+*			   control to a continue statment.
+* V500: 7/99 *sh* - bug fix: need consistent use of char_init16 on line_name
+*		    bug fix: invalid branch at 4/94 fix -- was hidden all
+*			     this time because line_name check was invalid
+*			     so code was never executed
+
 * argument definitions:
 *       first   - highest number line to check
 *       last    - lowest number line to check
@@ -79,9 +84,10 @@
 !  like: DO 400 iaxis = first, last   but hiaxis keeps shifting down
       iaxis = first
       hiaxis = last
+      IF (first .GT. last) RETURN
 
 * is this a hole ?
- 10     IF ( line_name(iaxis) .NE. char_init ) GOTO 400
+ 10     IF ( line_name(iaxis) .NE. char_init16 ) GOTO 400
 
 * modify axis pointer saved in the grids
            DO 110 igrid = 1, max_grids
@@ -98,7 +104,8 @@
 * is there line memory to free ?
 * this next goto was 200, but the IBM compiler wouldn't accept a 
 * transfer of control to a continue statment.  *kob* 14apr94
-           IF ( line_regular(iaxis) ) GOTO 205
+* 7/99 *sh* for regular lines skip over line_subsc and line_mem code
+           IF ( line_regular(iaxis) ) GOTO 295	! was 205 pre 7/00 (bug)
 
 * look ahead to the next line with uneven point spacing 
            DO 200 i = iaxis+1, hiaxis
@@ -123,11 +130,11 @@
            next_line_mem_pos = next_line_mem_pos - freed_mem
            
 * shift all the definitions back to fill the hole
-           DO 300 i = iaxis+1, hiaxis
+ 295	   DO 300 i = iaxis+1, hiaxis
  300       CALL TM_COPY_LINE( i, i-1 )
 
 * initialize new hole at end
-           line_name(hiaxis) = char_init
+           line_name(hiaxis) = char_init16
            line_subsc1(hiaxis) = unspecified_int4
            hiaxis = hiaxis - 1
            iaxis = iaxis - 1   ! nullify decrement below

@@ -49,6 +49,8 @@
 * v500 - 3/99 *kob* - up length of variable vname to correspond w/ increased
 *                     size of line_name
 *      - 4/99 *kob* - need to increase size of temp_axnams as well
+*      - 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
+
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid	- netCDF id number for already opened CDF file
@@ -102,7 +104,7 @@
 * ... temporarily eliminate name to look for duplicates
           vname = line_name(iaxis)
           vlen = TM_LENSTR1( vname )
-          line_name(iaxis) = char_init
+          line_name(iaxis) = char_init16
 
           i_dup_name = TM_GET_LINENUM( vname(:vlen) )
           dup_name = i_dup_name .NE. unspecified_int4

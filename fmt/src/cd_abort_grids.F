@@ -44,6 +44,7 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* V500: 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
 
 * include files
 #ifdef unix
@@ -69,7 +70,7 @@
 
 * restore axis names to their "unused" markers
         DO 300 iaxis = firstax, lastax
-	    line_name  (iaxis) = char_init
+	    line_name  (iaxis) = char_init16
 	    line_subsc1(iaxis) = unspecified_int4
  300    CONTINUE
 

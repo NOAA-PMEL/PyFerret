@@ -13,8 +13,10 @@
 * 10/95 *sh* : added dynamic line creation in a similar style
 * 11/95 *sh* : increased max_grids from 200 to 500
 * 7/97 *sh*  : increased maxvars, max_lines, and maxlinestore
-* 7/99 *kob* : double maxlinestore - this was done before for Ned C. but 
+* V500 7/99 *kob* : double maxlinestore - this was done before for Ned C. but 
 *              somehow didn't get into the official cvs area
+*      7/99 *sh*: increased maxlinestore, max_grids, and max_lines
+
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
      .		maxstepfiles,maxvars,maxaux,max_grids,max_lines,
@@ -35,19 +37,21 @@
 	PARAMETER (maxaux = 50)		! max # of ALL auxiliary sets
 !	PARAMETER (max_grids = 60)	! max # of grids *parmchg: pre 7/92
 !	PARAMETER (max_grids = 200)	! max # of grids *parmchg: pre 11/95
-	PARAMETER (max_grids = 500)	! max # of **static** grids
+!	PARAMETER (max_grids = 500)	! max # of **static** grids: pre 7/99
+	PARAMETER (max_grids = 1000)	! max # of **static** grids
 	PARAMETER (num_dyn_grids = 100)! max # of "implicit" grids (9/95)
 	PARAMETER (max_dyn_grids = max_grids + num_dyn_grids)
 !	PARAMETER (max_lines = 100)	! max # of lines *parmchg: pre 7/92
 !	PARAMETER (max_lines = 200)	! max # of lines *parmchg: pre 7/97
-	PARAMETER (max_lines = 500)	! max # of lines
+!	PARAMETER (max_lines = 500)	! max # of lines: pre 7/99
+	PARAMETER (max_lines = 2500)	! max # of lines
 	PARAMETER (num_dyn_lines = 100)! max # of "implicit" liness (10/95)
 	PARAMETER (max_dyn_lines = max_lines + num_dyn_lines)
 !	PARAMETER (maxlinestore = 10000)! max # of coords *parmchg: pre 7/92
 !	PARAMETER (maxlinestore = 20000)! max # of coords *parmchg: pre 10/95
 !	PARAMETER (maxlinestore = 50000)! max # of coords *parmchg: pre 7/97
-!	PARAMETER (maxlinestore = 100000)! max # of coords *parmchg: pre 7/99
-	PARAMETER (maxlinestore = 200000)! max # of coords
+!	PARAMETER (maxlinestore = 100000)! max # of coords : pre 7/99
+	PARAMETER (maxlinestore = 250000)! max # of coords
 	PARAMETER (maxgridfiles = 10)	! maximum number of grids
 	PARAMETER (max_axis_orients = 9)! maximum number of axis orients
 	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor

@@ -6,7 +6,9 @@
 * revision 0.01 - 11/21/88 - Changed variable initialization to char_initXX
 * revision 0.02 - 3/99 - *kob* added char_init64
 * revision 0.03 - 4/99 - *kob* added char_init256
- 
+* V500 - 7/99 *sh* ==> changed char_init to "%%" so that all of the
+*			char_init*N are effectively the same definition
+
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
 	PARAMETER      (set_not_open = -9)	! shows available set storage
@@ -38,7 +40,11 @@
 	REAL*4		real4_init
 	REAL*8		real8_init
 	PARAMETER	(sevens = '77777777777777777777')
-	PARAMETER	(char_init = sevens//sevens//sevens//sevens)
+! changed this definition because use of char_init and char_initN was
+! inconsistent in the code. This way makes all the definitions the same
+! (except char_init01)
+!	PARAMETER	(char_init = sevens//sevens//sevens//sevens)
+	PARAMETER	(char_init = '%%')
 	PARAMETER	(char_init01 = char_init)
 	PARAMETER	(char_init02 = char_init)
 	PARAMETER	(char_init04 = char_init)

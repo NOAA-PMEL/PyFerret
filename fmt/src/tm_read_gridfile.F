@@ -78,6 +78,7 @@
 * *sh* 9/95 (for V420): axes need not have T0 to be valid.  Disable this check.
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* V500: 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
 
 * arguments
 	CHARACTER*(*)	gfile_name
@@ -606,7 +607,7 @@
 	ENDIF
 	IF (nline .GT. l_used) THEN
 	  DO 360 i = l_used+1, nline
-	    line_name(i)   = char_init
+	    line_name(i)   = char_init16
 	    line_subsc1(i) = unspecified_int4
   360	  CONTINUE
 	ENDIF

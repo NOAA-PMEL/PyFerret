@@ -41,6 +41,9 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/92
+* V5.0 *sh* 7/99 - with the change in definition to char_init this routine
+*		may **for the first time** be doing work!!
+*		Found a logic bug in the loop that re-assigns ds_grid_number
 
 * argument definitions:
 *       first   - highest number grid to check
@@ -82,8 +85,9 @@
 
 * modify grid pointers saved in the variables
            DO 100 i = 1, maxvars
-              IF ( ds_grid_number(i) .LT. igrid
-     .       .AND. ds_grid_number(i) .GE. higrid ) 
+* ... pre-7/99 ds_grid_number was **never** reassigned (was .LT., .GE., below)
+              IF ( ds_grid_number(i) .GT. igrid
+     .       .AND. ds_grid_number(i) .LE. higrid ) 
      .                ds_grid_number(i) = ds_grid_number(i) - 1
  100       CONTINUE
 

@@ -62,7 +62,8 @@
 * 1/99 *sh* - fixed bug introduced in 7/98 changes -- blows up when file has
 *		only coord variables (e.g. climatological_axes)
 * 2/99 *kob* - adding call to SWITCH_NAN for NaN recognition
-
+* 3/99 *kob* - make sure to pass the correct string length for newly upped
+*              parameter values
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -229,12 +230,13 @@
           ENDIF
 
 * see what generic attributes can be read: long_name, units, missing_value
+* 3/99 *kob* - up passed lenght to correspond w/ updated paramter lenghts
           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'long_name',
-     .                      .NOT.do_warn, ' ', ds_var_title(ivtm), 40 )
+     .                      .NOT.do_warn, ' ', ds_var_title(ivtm), 128 )
           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'long_name_mod',
-     .                  .NOT.do_warn, ' ', ds_var_titl_mod(ivtm), 40 )
+     .                  .NOT.do_warn, ' ', ds_var_titl_mod(ivtm), 128 )
           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'units',
-     .                 do_warn, vname(:vlen), ds_var_units(ivtm), 24 )
+     .                 do_warn, vname(:vlen), ds_var_units(ivtm), 64 )
           got_it = CD_GET_ATTVAL( cdfid, ivcd, 'scale_factor',
      .             do_warn,vname(:vlen),cd_scale_factor(ivtm),1,istat )
           tf2    = CD_GET_ATTVAL( cdfid, ivcd, 'add_offset',

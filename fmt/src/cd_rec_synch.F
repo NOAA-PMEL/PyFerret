@@ -268,7 +268,7 @@
 * Check whether we are outputting the next point on a regularly spaced axis.
 * If we are skipping points, issue a warning.
 
-          IF (new_coord .GT. hi_val) THEN  
+          IF (new_coord .GT. hi_val .AND. npts .GT. 1) THEN  
 
               CALL CD_RD_R8_1( cdfid, axid, npts-1, vartyp,
      .              'axis: '//axnam(:alen), hi_val_1, cdfstat )

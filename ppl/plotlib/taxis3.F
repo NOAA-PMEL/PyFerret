@@ -56,6 +56,8 @@
 *		long.
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* *sh* 9/99 - bug fix to "century axis" -- major tic interval (IYDB) may be
+*               equal to zero
 C**
 C**    @(#)taxis3.f	1.1    3/10/88
 C**
@@ -176,13 +178,14 @@ C     SET PARAMETERS.
 *       Century axis mod
 	IF (cenflag) THEN
 	   IF (IMON.NE.1) GOTO 10
-	
-	   IF (MOD(ICEN*100+IYR,IYDB).EQ.0) THEN
-	      CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
-	   ELSE
-	      IF(NOT_ZERO_SIZE) ! Don't plot zero length tic
-     .		CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
-	   ENDIF
+	   IF (IYDB .GT. 0) THEN
+	      IF (MOD(ICEN*100+IYR,IYDB).EQ.0) THEN
+	         CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
+	      ELSE
+	         IF(NOT_ZERO_SIZE) ! Don't plot zero length tic
+     .		   CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
+	      ENDIF
+           ENDIF
 	ELSE
 	   IF(IMON.EQ.1)THEN
 	      CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
@@ -204,12 +207,14 @@ C     LOOP:
 	IF (cenflag) THEN
 	   IF (IMON3.NE.1) GOTO 11
 	
-	   IF (MOD(ICEN3*100+IYR3,IYDB).EQ.0) THEN
-	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
-	   ELSE
-	      IF(NOT_ZERO_SIZE)
-     .		CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
-	   ENDIF
+	   IF (IYDB .GT. 0) THEN
+	      IF (MOD(ICEN3*100+IYR3,IYDB).EQ.0) THEN
+	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
+	      ELSE
+	         IF(NOT_ZERO_SIZE)
+     .		   CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
+	      ENDIF
+           ENDIF
 	ELSE
 	   IF(IMON3.EQ.1)THEN
 	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)

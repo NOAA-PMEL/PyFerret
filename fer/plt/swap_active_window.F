@@ -41,16 +41,14 @@
 *               animation is being copied to.  The active window is the
 *               unmapped window in which the plots/shades are being drawn.
 
-      INTEGER wsid, anim_id
 
 #ifdef unix
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xinterrupt.cmn'
 	include 'plot_setup.parm'
- 10     include 'xplot_setup.cmn'
+        include 'xplot_setup.cmn'
 	include 'xplot_state.cmn'
-        include 'plt_inc.decl'     ! with width/height
 	include	'pltcom_dat.decl' 
 	include	'PLTCOM.DAT'         	  ! with asize,bsize
         include 'plt_inc.decl'     ! with width/height
@@ -69,13 +67,15 @@
 #endif
         REAL  xln, yln, dmaxx, dmaxy, fctx, fcty
         INTEGER ier, id, itype, imeter, irx, iry,i, idim,
-     .          iseg
+     .          iseg, anim_id, status
+        LOGICAL new_window
 
 
 *    calculate size of the window open
 *     - taken from set_window.F
 
-*        CALL SYMBEL(0,0,0,.01,20,' ')
+        IF (WKXMX .EQ. 0 .AND. WKYMX .EQ. 0) new_window = .TRUE.
+
         IF(ASIZE.GT.BSIZE)THEN
            FCTY=BSIZE/ASIZE
            FCTX=1.0
@@ -99,7 +99,7 @@
         WKYMX=WKYMN+YLN
 
 * Check if animation is being turned on, or if we're done
-        IF (animate .EQ. .TRUE.) THEN 
+        IF (animate .EQV. .TRUE.) THEN 
 * Find the currently active window
            DO wsid = 1,max_windows
               IF (wn_active(wsid) ) GOTO 50
@@ -118,27 +118,28 @@
            CALL GACWK( wsid)
            wn_active(wsid) = .TRUE.
            CALL CLEAR_WINDOW( wsid )
-           
-*     if wkxms and wkymx are not zero, then we've already done a plot
-*     so set window size accordingly
-           IF (WKXMX .NE. 0 .AND. WKYMX .NE. 0) THEN
+
+*     if we've already done a plot set window size accordingly
+           IF (.NOT. new_window) THEN
 *     set its correct size if we've done a plot
               CALL GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
               CALL SET_WINDOW_SIZE (wsid,WKXMN,WKXMX,WKYMN,WKYMX)
-*              CALL GSWKWN(anim_id,0.0,FCTX,0.0,FCTY)
-*              CALL SET_WINDOW_SIZE (anim_id,WKXMN,WKXMX,WKYMN,WKYMX)
+              CALL GSWKWN(anim_id,0.0,FCTX,0.0,FCTY)
+              CALL SET_WINDOW_SIZE (anim_id,WKXMN,WKXMX,WKYMN,WKYMX)
            ELSE
               CALL GSELNT(wsid)
-              CALL GSELNT(anim_id)
+*              CALL GSELNT(anim_id)
            ENDIF
 
-        CALL XGKS_X_EVENTS
+           CALL XGKS_X_EVENTS
+
 
         ELSE 
+* done animating
            CALL CLEAR_WINDOW( wsid )
            IF ( vp_num .EQ. mvp_dflt ) THEN
 *     return to full screen - clear away everything
-              DO 100 i = mvp_dflt, max_viewport
+              DO 100 iseg = mvp_dflt, max_viewport
                  IF (iseg .gt. 0) THEN
                     vp_seg0(iseg) = 0
                     vp_segn(iseg) = 0
@@ -171,11 +172,11 @@
            wn_active(wsid) = .TRUE.
 *     kludge to get window in proper state for next plot - otherwise 
 *     it doesn't clear upon next plotting commmand
-           CALL SYMBEL(0,0,0,.01,20,' ')
+           CALL SYMBEL(0,0,0,.00001,20,'Done')
 *     set up workstation and window sizes
            CALL GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
            CALL SET_WINDOW_SIZE (wsid,WKXMN,WKXMX,WKYMN,WKYMX)
-             
+
               
            ENDIF
            

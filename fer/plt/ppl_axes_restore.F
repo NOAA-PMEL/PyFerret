@@ -38,16 +38,13 @@
 * restore the PLOT+ axes after they have been turned off by PPL_AXES_OFF
 
 * V450:  
+* V541: 3/02  *acm* restore of PPL AXLABP settings too
+*       3/25  Put the common block in a separate include file.
 
-#ifdef unix
 	include 'plot_setup.parm'
 	include 'axis_inc.decl'
 	include 'AXIS.INC'		! variable iaxon
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'	
-#endif
+        include 'ppl_ax_save.cmn'
 
 * calling argument declarations
 
@@ -55,16 +52,26 @@
 	INTEGER i
 	CHARACTER buff*16
 
-* static storage in COMMON
-	INTEGER save_iaxon(4)
-	COMMON /XAXIS_STATE/ save_iaxon
-
 * convert 4 axis integers to character as arg to the AXSET command
 	buff = ' '
 	WRITE (buff, '(4I3)' ) (save_iaxon(i), i=1, 4)
 
 * restore axis state
 	CALL PPLCMD ( from, line, 0, 'AXSET '//buff, 1, 1 )
+
+* restore axis labelling
+
+        IF (change_axlab) THEN
+           WRITE (buff,92) save_labx, save_laby
+  92	   FORMAT ('AXLABP ', i2, ',', I2 )
+	   CALL PPLCMD (from, line, 0, buff, 1, 1)
+        ENDIF
+
+	IF ( time_axis .AND. change_axlab) THEN
+	   WRITE (buff,94) save_labx, save_laby
+  94	   FORMAT ('TXLABP ', i2, ',', I2 )
+	   CALL PPLCMD (from, line, 0, buff, 1, 1)
+	ENDIF
 
 	RETURN
 	END

@@ -44,28 +44,25 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * v540 *acm*  2/02 save the state of the axes; so can restore PPL AXSEST settings
+*             3/25  Put the common block in a separate include file.
 
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'plot_setup.parm'
-	include 'xplot_setup.cmn'
+        include 'xplot_setup.cmn'
         include 'axis_inc.decl'
         include 'AXIS.INC'
-#endif
+        include 'ppl_ax_save.cmn'
 
-	LOGICAL		time_axis
 	INTEGER		i, iax(4), indep_dim, dep_dim, labx, laby
 	CHARACTER*25	buff
-
-* static storage in COMMON  (see ppl_axes_off.F)
-	INTEGER save_iaxon(4)
-	COMMON /XAXIS_STATE/ save_iaxon
 
 * save previous axis state
 	DO 10 i = 1, 4
  10	save_iaxon(i) = iaxon(i)
+        save_labx = labelx
+        save_laby = labely
 
 	WRITE (buff,90) (iax(i), i=1,4)
   90	FORMAT ('AXSET ', 3(i2,','), I2 )
@@ -83,13 +80,22 @@
 *  When only top or right axis plotted, labels wouldnt appear. 
 *  Turn them on.
 
-	labx = -1
-        laby = -1
-        IF (iax(1) .EQ. 1  .AND. iax(2) .EQ. 0) labx = 1
-	IF (iax(3) .EQ. 0  .AND. iax(4) .EQ. 1) laby = 1
-	WRITE (buff,92) labx, laby
-  92	FORMAT ('AXLABP ', i2, ',', I2 )
-	CALL PPLCMD (from, line, 0, buff, 1, 1)
+        labx = labelx
+        laby = labely
+        change_axlab = .FALSE.
+        IF (iax(1) .EQ. 1  .AND. iax(2) .EQ. 0) THEN
+           labx = 1
+           change_axlab = .TRUE.
+	ENDIF
+        IF (iax(3) .EQ. 0  .AND. iax(4) .EQ. 1) THEN
+           laby = 1
+           change_axlab = .TRUE.
+        ENDIF
+        IF (change_axlab) THEN
+           WRITE (buff,92) labx, laby
+  92	   FORMAT ('AXLABP ', i2, ',', I2 )
+	   CALL PPLCMD (from, line, 0, buff, 1, 1)
+        ENDIF
 
 *  What if one is a time axis?  
 
@@ -97,7 +103,7 @@
 	dep_dim = plot_axis(2)
 	time_axis = (indep_dim.EQ.t_dim  .OR. dep_dim.EQ.t_dim)
 
-	IF ( time_axis ) THEN
+	IF ( time_axis .AND. change_axlab) THEN
 	   WRITE (buff,94) labx, laby
   94	   FORMAT ('TXLABP ', i2, ',', I2 )
 	   CALL PPLCMD (from, line, 0, buff, 1, 1)

@@ -57,7 +57,7 @@
 
 * internal parameter declarations
 	CHARACTER*1 tab
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 * how long are the strings ?
 	slen = LEN( source )

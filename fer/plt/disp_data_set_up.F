@@ -52,6 +52,8 @@
 *		   during set-up of plots
 * V312: 5/94 - array "memory" as a calling argument
 * V500: 2/99 *sh* - added support for POLYGON command -- working storage needs
+*       2/99 *sh* - bug fix: plot working storage based on cx(1) only
+*			can overflow for PLOT v1,v2  if v2 is bigger
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -75,7 +77,7 @@
 
 * internal variable declarations:
 	INTEGER	MR_DIM_LEN, CGRID_SIZE,
-     .		idim, ndim, dim(4), arg_num, mr1, ax_len, cx
+     .		idim, ndim, dim(4), arg_num, mr1, ax_len, cx, ivar
 
 * get the requested data somehow  (and leave it protected 1/94)
 	CALL GET_PROT_CMND_DATA ( memory, cx_last, status )
@@ -95,11 +97,15 @@
 	ELSE
 * ... allocate memory used for single precision axes
 *     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
-	   mr1 = is_mr( 1 )
-	   CALL GET_CX_DIMS( is_cx(1), ndim, dim )
-	   ax_len = MAX( MR_DIM_LEN( dim(1), mr1 ),
-     .		         MR_DIM_LEN( dim(2), mr1 ),
-     .		         CGRID_SIZE( is_cx(1) )    )
+* (2/99: loop over all arguments to find largest requirement)
+* ?? why is CGRID_SIZE needed ... could get very large ??
+	   DO 200 ivar = 1, num_uvars_in_cmnd
+	      mr1 = is_mr( ivar )
+	      CALL GET_CX_DIMS( is_cx(1), ndim, dim )
+	      ax_len = MAX( MR_DIM_LEN( dim(1), mr1 ),
+     .		            MR_DIM_LEN( dim(2), mr1 ),
+     .		            CGRID_SIZE( is_cx(ivar) )    )
+ 200	   CONTINUE
 	ENDIF
 
 * allocate working storage
@@ -117,3 +123,7 @@
  5020	CALL UNPROTECT_CMND_DATA	! added 2/99
  5100	RETURN
 	END
+
+
+
+

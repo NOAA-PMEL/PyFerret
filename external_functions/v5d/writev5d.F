@@ -4,14 +4,17 @@
 * Ansley Manke
 * June 30 1998
 *
-* This function takes up to 9 variables from ferret data sets
+* This function takes up to 8 variables from ferret data sets
 * and writes them in Vis5D format.  Send in variables to write in the
-* first several parameter positions; fill the remaining 9 positions with "0"
+* first several parameter positions; fill the remaining positions with "0"
+* and the name of the file to write in the 9th argument. 
 * Requires variables to be on the same x-y grid, grids can vary in depth.
 *
 *  Use v5dcreate, v5dwrite, v5dclose from the v5d utility functions; these
 *  are in binio.c and v5d.c
-
+*
+*  ACM  25-Mar-1999  put in filename as an argument.
+*
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -60,53 +63,56 @@
 *                                                                      V
 
       CALL ef_set_desc (id,
-     .   'Write up to 9 variables to a Vis5D-formatted file (v1.1)' )
+     .   'Write up to 8 variables to a Vis5D-formatted file' )
 
       CALL ef_set_num_args(id, 9)
-      CALL ef_set_axis_inheritance(id, NORMAL, NORMAL, NORMAL, NORMAL)
+      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
+     .       IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-*  All arguments should be on the same grid (except for the vertical 
+*  All variables should be on the same grid (except for the vertical 
 *  component). There is no result variable sent back to FERRET - a
 *  Vis5D file is written.
 
       arg = 1
       CALL ef_set_arg_name (id, arg, 'V1')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name (id, arg, 'V2')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 3
       CALL ef_set_arg_name (id, arg, 'V3')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 4
       CALL ef_set_arg_name (id, arg, 'V4')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 5
       CALL ef_set_arg_name (id, arg, 'V5')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 6
       CALL ef_set_arg_name (id, arg, 'V6')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 7
       CALL ef_set_arg_name (id, arg, 'V7')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 8
       CALL ef_set_arg_name (id, arg, 'V8')
-      CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence (id, arg, YES, YES, YES, YES)
 
       arg = 9
-      CALL ef_set_arg_name (id, arg, 'V9')
+      CALL ef_set_arg_type(id, arg, STRING_ARG)
+      CALL ef_set_arg_name (id, arg, 'FILENAME')
+      CALL ef_set_arg_unit(id, arg, 'none')
+      CALL ef_set_arg_desc(id, arg, 'Name of the Vis5D file to write')
       CALL ef_set_axis_influence (id, arg, NO, NO, NO, NO)
-
 
 *                                                                      ^
 *                                                                      |
@@ -126,7 +132,7 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
-      INTEGER id
+      INTEGER id, arg
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
@@ -159,10 +165,6 @@
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
  
-      CHARACTER arg_name*24, arg_title*128, arg_units*32
-
-      CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulo(4), regular(4)
 
 ************************************************************************
 *                                            USER CONFIGURABLE PORTION |
@@ -173,8 +175,14 @@
 
       INCLUDE 'v5df_fer.h'
 
-      INTEGER i, n, m
-      INTEGER numtimes, nlev, numvars, nr, nc, nchar, ier, irr
+      CHARACTER v5d_filename*160
+      CHARACTER arg_name*24, arg_title*128, arg_units*32
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4)
+
+      INTEGER i, m
+      INTEGER numtimes, nlev, numvars, nr, nc, ier
 
       CHARACTER*255 err_msg
 
@@ -184,12 +192,14 @@
 
       REAL*8 xax(MAXCOLUMNS), yax(MAXROWS) 
 
+      PARAMETER (MAXVARS_OUT = EF_MAX_ARGS - 1)
+
       INTEGER NWORK
       PARAMETER (NWORK=MAXROWS*MAXCOLUMNS*MAXLEVELS)
       REAL*4 gwork(NWORK)
 
       INTEGER timestamp(MAXTIMES), datestamp(MAXTIMES)
-      INTEGER ndep(EF_MAX_ARGS)
+      INTEGER ndep(MAXVARS_OUT)
 
 *  Initialize the variables to missing values
 
@@ -204,9 +214,9 @@
 
 *  Initialize the variable names
 
-      CHARACTER*10 varname(EF_MAX_ARGS)
+      CHARACTER*10 varname(MAXVARS_OUT)
       DATA varname/'var1', 'var2', 'var3', 'var4', 'var5', 'var6', 
-     .          'var7', 'var8', 'var9'/
+     .          'var7', 'var8'/
  
 *  Names of Vis5D utility functions.
 
@@ -216,14 +226,14 @@
 
 *  names, units, characteristics of variables to send to Vis5D utility functions.
 
-      CHARACTER*24 zaxis_units(EF_MAX_ARGS)
-      CHARACTER var_units(EF_MAX_ARGS)*32
-      CHARACTER symname*30, v5d_file_name*255
-      LOGICAL ibkwd(EF_MAX_ARGS)
+      CHARACTER*24 zaxis_units(MAXVARS_OUT)
+      CHARACTER var_units(MAXVARS_OUT)*32
+      LOGICAL ibkwd(MAXVARS_OUT)
 
       CALL ef_get_res_subscripts (id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts (id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags (id, bad_flag, bad_flag_result)
+
 
 *  Get coordinate axes.  Note Ferret lists x axis in East longitude and
 *  Vis5D assumes West longitude.
@@ -237,7 +247,7 @@
 
       numvars = 0
 
-      DO 100 m = 1, EF_MAX_ARGS
+      DO 100 m = 1, MAXVARS_OUT
          idx = max(arg_incr(X_AXIS,m), 1)
          idy = max(arg_incr(Y_AXIS,m), 1)
 
@@ -263,13 +273,15 @@ C  Set projection arguments for the Vis5D file.
       proj_args(4) = dx
 
 
-C  Get file name, variable names, and variable units from ferret internal 
+C  Get file name. variable names, and variable units from ferret internal 
 C  definitions
 
-      symname = "VIS5D_FILENAME"
-      CALL getsym (symname, v5d_file_name, nchar, irr)
+      arg = 9
+      CALL ef_get_arg_string(id, arg, v5d_filename)
 
-      IF (irr .EQ. 1) v5d_file_name = 'v5d_ferret_file.v5d'		
+      IF (v5d_filename .EQ. " ") v5d_filename = 'v5d_ferret_file.v5d'		
+
+C  Get  variable names, and variable units from ferret internal definitions
 
       DO 50 n = 1, numvars
 
@@ -307,7 +319,7 @@ C  Set time steps.
 
 *  Create the Vis5D file
       
-      ier = v5dcreate (v5d_file_name, numtimes, numvars, nr, nc, 
+      ier = v5dcreate (v5d_filename, numtimes, numvars, nr, nc, 
      .             ndep, varname, timestamp, datestamp, compress, 
      .             projection, proj_args, vertical, vert_args)
 
@@ -338,7 +350,7 @@ c      END IF
 *  Fill the data array and write to the Vis5D file for each timestep.
 
       CALL wrt_v5d_steps (id, nr, nc, ndep, nlev, numvars, arg_1, 
-     .      arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, 
+     .      arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8,  
      .      result, gwork, err_msg, ier)
       IF (ier .EQ. 0) THEN
          GO TO 999
@@ -369,7 +381,7 @@ c      END IF
 ************************************************************************
 
       SUBROUTINE wrt_v5d_steps (id, nr, nc, ndep, nlev, numvars, arg_1, 
-     .     arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, 
+     .     arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8,  
      .      result, g, err_msg, ier)
 
 
@@ -407,8 +419,6 @@ c
      .     mem7lot:mem7hit)
       REAL arg_8(mem8lox:mem8hix, mem8loy:mem8hiy, mem8loz:mem8hiz, 
      .     mem8lot:mem8hit)
-      REAL arg_9(mem9lox:mem9hix, mem9loy:mem9hiy, mem9loz:mem9hiz, 
-     .     mem9lot:mem9hit)
 
 
       REAL result(memreslox:memreshix, memresloy:memreshiy,  
@@ -430,12 +440,13 @@ c
 
       INCLUDE 'v5df_fer.h'
 
-      INTEGER numvars, nr, nc, nl, ier
+      INTEGER numvars, nr, nc, nl
       INTEGER ndep(*), nlev
 
       REAL baddat, argdat
 
       CHARACTER*(*) err_msg
+      integer ier
 
 *  Set output array.
 
@@ -479,7 +490,6 @@ c
                      IF (m .EQ. 6) argdat = arg_6(i1,j1,k1,l1) 
                      IF (m .EQ. 7) argdat = arg_7(i1,j1,k1,l1) 
                      IF (m .EQ. 8) argdat = arg_8(i1,j1,k1,l1) 
-                     IF (m .EQ. 9) argdat = arg_9(i1,j1,k1,l1) 
 
 
                      IF (argdat .EQ. baddat) THEN
@@ -708,7 +718,7 @@ C  Check number of columns and rows against Vis5D maxima.
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER ier, iarg, m, nlm, l, icentury
+      INTEGER ier, m, nlm, l, icentury
       INTEGER numtimes, numvars
 
       REAL*8 tax(MAXTIMES), gwork(*)
@@ -717,7 +727,6 @@ C  Check number of columns and rows against Vis5D maxima.
       CHARACTER*3 cmon
       INTEGER day_of_mon, day_of_year
       CHARACTER*20 datebuf(MAXTIMES)
-      CHARACTER*255 err_msg
 
       INTEGER timestamp(*), datestamp(*)
 

@@ -61,20 +61,12 @@
 *			grid and line management
 * V530*acm* 1/01 - add line_cal_name for alternative calendar types.
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xunits.cmn_text'
 	include 'xtm_grid.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE	'TMAP_FORMAT:XUNITS.CMN_TEXT'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-#endif
 
 	INTEGER		ngrd_def, nlne_def, grids_left, lines_left,
      .			grid_lines_left, i, j,
@@ -85,11 +77,12 @@
      .			 grids_left	= grid_ceiling-ngrd_def,
      .			 lines_left	= line_ceiling-nlne_def,
      .			 grid_lines_left= 4*grids_left,
-     .			 pline_mem_next	= 514,
-     .			 pline_mem_left = maxlinestore-pline_mem_next+1 )
+     .                   pline_mem_next = 514,
+     .                   pline_mem_left = maxlinestore-pline_mem_next+1)
 
 * LAST LINE_MEM POSITION + 1
 	DATA	next_line_mem_pos  /pline_mem_next/
+        DATA    pline_mem_init / pline_mem_next/
 
 * DEFINE LINES FIRST
 	DATA

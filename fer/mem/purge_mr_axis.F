@@ -48,8 +48,9 @@
 * V450: 11/14/97 - check dynamic grids as well as static grids
 *		(err450_redefine_axis_in_dyn_grid.jnl)
 * V510 4/00 *sh* - netCDF data sets using dynamic grids, too
+* V541 6/02 *acm*  call remove_axis to recover line_mem storage when irregular
+*                  axis is cancelled.
 
-#ifdef unix
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_errors.parm'
@@ -57,24 +58,17 @@
 	external xgt_grid_data
 	include	'ferret.parm'
 	include	'errmsg.parm'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * calling argument declaration:
 	INTEGER	old_axis, new_axis, status
 
 * internal variable declarations:
-	INTEGER	grid, idim
+	INTEGER	TM_GET_LINENUM, grid, idim, num_protected_axes
 	CHARACTER	I6*6
 
 * the lowest axes are protected
-	IF ( old_axis .LE. 7 ) GOTO 5200
+	num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
+	IF ( old_axis .LE. num_protected_axes ) GOTO 5200
 
 * only regular axes may be re-defined
 * (to avoid dealing with messy memory pointers)
@@ -111,9 +105,10 @@
 
 * delete the old axis
 	IF ( .NOT.line_regular(old_axis) ) THEN
-	   WRITE ( I6,'(I6)' ) line_dim(old_axis)
-	   CALL WARN( I6//' words of axis coordinate storage lost' )
-	   line_subsc1( old_axis ) = unspecified_int4
+           CALL remove_axis(old_axis)
+c	   WRITE ( I6,'(I6)' ) line_dim(old_axis)
+c	   CALL WARN( I6//' words of axis coordinate storage lost' )
+c	   line_subsc1( old_axis ) = unspecified_int4
 	ENDIF
 	line_use_cnt(old_axis) = 0
 	line_name( old_axis ) = char_init16

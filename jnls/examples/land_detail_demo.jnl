@@ -1,0 +1,34 @@
+
+SET WINDOW/SIZE=0.6
+CAN MODE logo
+PPL AXLEN,7.8
+
+! U.S.  State boundaries are available in the North and South
+! America. Here we use pen-color codes 8 and 9 for national
+! and state boundaries in red and green, so that the rivers
+! show up on top of the national or state boundary lines.
+
+!go fland 40 white basemap solid x=232:295 y=24:50
+go fland 40 white basemap solid x=232:241 y=44:50
+go land_detail black overlay 8 9 blue lightblue
+frame/file=land_detail_1.gif
+pause
+
+! Showing national boundaries and rivers.
+
+use etopo5
+fill/lev=(0,10000,10000)/pal=tan/x=0:24/y=30:46 rose
+fill/over/lev=(-5000,-1000,500)(-1000,0,50)/pal=topo/x=0:24/y=30:46 rose
+go land_detail black overlay red green blue blue
+frame/file=land_detail_2.gif
+
+pause
+! Showing international marine boundaries
+
+use etopo20
+fill/x=80:240/y=-50:20/pal=land_sea/lev=(-9000,9000,500) rose
+
+! Show continental, national and international marine boundaries
+
+go land_detail black overlay red " " " " " " red
+frame/file=land_detail_3.gif

@@ -3,6 +3,8 @@
      .                      zmaxlist, nzmax)
 C
 C  based on NCAR routine MINMAX, return maxima
+C  From the NCAR graphics library at http://ngwww.ucar.edu version 4.2
+C  Modified by Ansley Manke to regurn only the maxima for subroutine findhi.F
 C
 C-------------------------------------------------------------
 C	$Id$

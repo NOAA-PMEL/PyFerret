@@ -184,6 +184,7 @@
       REAL*8 xax(NAX), yax(NAX)
 
       REAL grid(NAX, NAX, 1), wate(NAX, NAX, 1)
+      CHARACTER*100 errtxt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -210,11 +211,7 @@
          ENDIF
  110  CONTINUE
 
-      IF (nypts .NE. nxpts ) then
-         WRITE (*,*) 'Input x, y have differing numbers of points'
-         WRITE (*,*) 'nxpts, nypts,', nxpts, nypts
-         GOTO 999
-      ENDIF
+      IF (nypts .NE. nxpts ) GOTO 999
 
       nscat = nxpts
 
@@ -355,9 +352,14 @@ c      yf = yax(ny) - dy/2.
       RETURN
 
 999   CONTINUE
-      WRITE (*, *) 'ERROR RETURN  SCATTER2GRIDGAUSS_XY'
 
-      
+   20 FORMAT('SCATTER2GRIDGAUSS_XY; Input x, y have different ',
+     .       '# of points', 2i8)
+      WRITE (errtxt,20) nxpts, nypts
+
+      CALL EF_BAIL_OUT(id, errtxt)
+
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

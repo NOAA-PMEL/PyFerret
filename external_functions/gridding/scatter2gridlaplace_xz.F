@@ -190,6 +190,7 @@
       REAL*8 xax(NAX), zax(NAX)
 
       REAL zgridded(NWORK)
+      CHARACTER*100 errtxt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -216,11 +217,7 @@
          ENDIF
  110  CONTINUE
 
-      IF (nzpts .NE. nxpts) then
-         WRITE (*,*) 'Input x, z  have differing numbers of points'
-         WRITE (*,*) 'nxpts, nzpts ', nxpts, nzpts
-         GOTO 999
-      ENDIF
+      IF (nzpts .NE. nxpts) GOTO 999
 
       nscat = nxpts
 
@@ -321,7 +318,12 @@
       RETURN
 
 999   CONTINUE
-      WRITE (*, *) 'ERROR RETURN SCATTER2GRIDLAPLACE_XZ'
+   20 FORMAT('SCATTER2GRIDLAPLACE_XZ; Input x, z have different ',
+     .       '# of points', 2i8)
+      WRITE (errtxt,20) nxpts, nzpts
+
+      CALL EF_BAIL_OUT(id, errtxt)
+
 
       
 *                                                                      ^

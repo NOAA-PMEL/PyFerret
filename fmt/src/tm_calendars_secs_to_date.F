@@ -52,6 +52,7 @@
 *
 *       J Davison 10.15.99   Copied TM_SECS_TO_DATE() and modified to support
 *                            multiple calendars.
+* V520 6/00 *sh* - trap attempt to translate a date before 0000
 
 
 * Argument definition
@@ -85,6 +86,12 @@
 	integer         calendar_id
 
 C       CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+* trap invalid input
+	IF ( num_secs .LT. 0 ) THEN
+	   TM_CALENDARS_SECS_TO_DATE = '01-JAN-0000:00:00:00'
+	   RETURN
+	ENDIF
 
 *******************************************************************************
 * HANDLE GREGORIAN CALENDAR FIRST  

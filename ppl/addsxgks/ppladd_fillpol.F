@@ -40,10 +40,10 @@ C
         include 'pplv11inc/PEN.INC'
         include 'tmap_pplv11inc/pltl_inc.decl'
         include 'pplv11inc/PLTL.INC'
-        include 'tmap_pplv11inc/hd_inc.decl'
-        include 'pplv11inc/HD.INC'
         include 'tmap_pplv11inc/miss_inc.decl'
         include 'pplv11inc/MISS.INC'
+        include 'tmap_pplv11inc/hd_inc.decl'
+        include 'pplv11inc/HD.INC'
         include 'tmap_pplv11inc/taxis_inc.decl'
         include 'pplv11inc/TAXIS.INC'
         include 'tmap_pplv11inc/axisl_inc.decl'
@@ -74,10 +74,10 @@ C
 	INTEGER GET_NDX
 
 * GKS initialization vars
+* v491 *kob* removed unnecessary variable declarations
 	integer		error,trans_no,cflag
         integer         my_trans
         data            my_trans/20/
-	real		data(nx,ny),xc(nx),yc(ny),xs(nx+1),ys(ny+1)
 	real	 	w(4),v(4),ndc(4),uc(4)
 	real		xinv,yinv
 
@@ -114,7 +114,9 @@ C
 	call get_user_coords (w,v,ndc,uc,xinv,yinv)
 
 *	NOW SET THE CLIPPING RECTANGLE AROUND THEM AND PATTERN SIZE
-	call gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)	       call gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
+* v4.91 *kob* had to add <cr> after first line below
+	call gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
+        call gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
 	call gselnt (my_trans)
 
 	call gqclip (error,cflag,ndc)

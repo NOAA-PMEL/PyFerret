@@ -61,6 +61,8 @@
 * V500 - 12/98 *sh* - still in development as of this date
 * V510 - 10/99 *sh*
 * V511 - 05/00 *kob*
+* V521 - *sh* minor bug fixes from V520
+
 
 #ifdef unix
 	include	'xrevision.cmn'
@@ -71,7 +73,7 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.20    /
+	DATA revision_level	/  5.21    /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

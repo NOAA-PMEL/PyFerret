@@ -28,8 +28,8 @@ static void calc_points(int x1, int y1, int x2, int y2, int width,
     if (hypot != 0){
       wsin2t = width * dy/hypot/2.;
       wcos2t = width * dx/hypot/2.;
-      sinFudge = 0.5 * SGN(wsin2t);
-      cosFudge = 0.5 * SGN(wcos2t);
+/*       sinFudge = 0.5 * SGN(wsin2t); */
+/*       cosFudge = 0.5 * SGN(wcos2t); */
     }
     pts[0].x = x1 - wsin2t - sinFudge;;
     pts[0].y = y1 + wcos2t + cosFudge;

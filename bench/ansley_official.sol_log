@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja9/tmap/ferret/solaris/bin/ferret
-lrwxrwxrwx   1 root     other         11 Apr 13 09:07 /home/ja9/tmap/ferret/solaris/bin/ferret -> ferret_v560
+Running FERRET version /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61902584 Jun  8 10:33 /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: Official 5.6 release, with jnl directories updated
+Note: bug fixes checked in through 6/1/04, bounds attribute on input/output, mode graticule, Yonghua's optimization changes
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET_v_5_6_0_release/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Fri May 21 08:28:11 PDT 2004
+Beginning at Tue Jun 8 11:40:34 PDT 2004
  	NOAA/PMEL TMAP
  	FERRET v5.60  
- 	Solaris 5.6 - 04/09/04
- 	21-May-04 08:28     
+ 	Solaris 5.6 - 06/08/04
+ 	 8-Jun-04 11:40     
 
 yes? !bn500_all_shell
 yes? 
@@ -402,6 +402,7 @@ SHOW MODES
       GUI           CANCELLED
       LOGO             SET
       LABELS           SET
+      GRATICULE     CANCELLED
 SET MODE IGNORE_ERROR
 SHOW MODES
       MODE            STATE        ARGUMENT
@@ -426,6 +427,7 @@ SHOW MODES
       GUI           CANCELLED
       LOGO             SET
       LABELS           SET
+      GRATICULE     CANCELLED
 CANCEL MODE IGNORE_ERROR
 SHOW MODES
       MODE            STATE        ARGUMENT
@@ -450,6 +452,7 @@ SHOW MODES
       GUI           CANCELLED
       LOGO             SET
       LABELS           SET
+      GRATICULE     CANCELLED
 SHOW MODE STUPID
       MODE            STATE        ARGUMENT
       STUPID        CANCELLED
@@ -10122,8 +10125,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "21-May-04"
-SESSION_TIME = "08:28"
+SESSION_DATE = " 8-Jun-04"
+SESSION_TIME = "11:40"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10141,8 +10144,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "21-May-04"
-SESSION_TIME = "08:28"
+SESSION_DATE = " 8-Jun-04"
+SESSION_TIME = "11:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10150,8 +10153,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "21-May-04"
-SESSION_TIME = "08:28"
+SESSION_DATE = " 8-Jun-04"
+SESSION_TIME = "11:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10161,13 +10164,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "21-May-04"
-SESSION_TIME = "08:28"
+SESSION_DATE = " 8-Jun-04"
+SESSION_TIME = "11:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "21-May-04"
-SESSION_TIME = "08:28"
+SESSION_DATE = " 8-Jun-04"
+SESSION_TIME = "11:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10201,7 +10204,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.60"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "May 21 2004 08:29:43 "
+LAB3 = "Jun  8 2004 11:41:58 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10302,8 +10305,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "21-May-04"
-SESSION_TIME = "08:28"
+SESSION_DATE = " 8-Jun-04"
+SESSION_TIME = "11:40"
  
  
 GO bn_reset
@@ -13742,34 +13745,49 @@ sp rm -f test0[a-p].cdf
 list/format=cdf/append/l=1:500/file=test0a.cdf l
  LISTing to file test0a.cdf
 list/format=cdf/append/l=1:500/file=test0b.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0b.cdf
 list/format=cdf/append/l=1:500/file=test0c.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0c.cdf
 list/format=cdf/append/l=1:500/file=test0d.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0d.cdf
 list/format=cdf/append/l=1:500/file=test0e.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0e.cdf
 list/format=cdf/append/l=1:500/file=test0f.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0f.cdf
 list/format=cdf/append/l=1:500/file=test0g.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0g.cdf
 list/format=cdf/append/l=1:500/file=test0h.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0h.cdf
 list/format=cdf/append/l=1:500/file=test0i.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0i.cdf
 list/format=cdf/append/l=1:500/file=test0j.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0j.cdf
 list/format=cdf/append/l=1:500/file=test0k.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0k.cdf
 list/format=cdf/append/l=1:500/file=test0l.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0l.cdf
 list/format=cdf/append/l=1:500/file=test0m.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0m.cdf
 list/format=cdf/append/l=1:500/file=test0n.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0n.cdf
 list/format=cdf/append/l=1:500/file=test0o.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0o.cdf
 list/format=cdf/append/l=1:500/file=test0p.cdf/rigid l
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test0p.cdf
  
 ! initialize all at once
@@ -14047,6 +14065,9 @@ cancel data test_abs
 ! make the time axis irregular by leaving out l=13
 list/format=cdf/l=14:16/append/file=test_abs.cdf l1
  LISTing to file test_abs.cdf
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
+ *** NOTE: Write the data initially with the /BOUNDS qualifier
 set data/format=cdf test_abs
 show data/full
      currently SET data sets:
@@ -14141,11 +14162,13 @@ show grid ijkl
  
 ! list long time series using a rigid (non-record axis) time axis --> FAST
 list/clobber/format=cdf/l=1:300000/rigid/file=test2.cdf l  ! without record dimension
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file test2.cdf
 ! list time series using the record dimension --> SLOW (1/50th as long axis)
 list/clobber/format=cdf/l=1:5000 l                               ! auto-filename
  LISTing to file FL.cdf
 list/clobber/format=cdf/t="1-jan-1902":"1-jan-2010"/rigid tlong  ! auto-filename
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
  LISTing to file FTLON.cdf
  
 ! deliberate errors
@@ -18304,7 +18327,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23057 May 21 08:30 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23056 Jun  8 11:43 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18323,7 +18346,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419535 May 21 08:31 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419457 Jun  8 11:43 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26482,7 +26505,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.60   21-May-04" ;
+		:history = "FERRET V5.60    8-Jun-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26507,7 +26530,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.60   21-May-04" ;
+		:history = "FERRET V5.60    8-Jun-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26659,7 +26682,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri May 21 08:32:37 PDT 2004
+Tue Jun  8 11:44:50 PDT 2004
  
 GO bn_reset
 cancel mode verify
@@ -32767,7 +32790,7 @@ sh grid ndata
     GRID GSH1
  name       axis              # pts   start                end
  PSXT191_100 LONGITUDE         10mr   139.5W               130.5W
- PSYT39_51 LATITUDE            13 r   2.166S               1.833N
+ PSYT39_51 LATITUDE            13 i   2.166S               1.833N
  PSZT1_1   DEPTH (m)            1 r-  5                    5
  TWEEKS1   TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
 sh axis tweeks
@@ -32900,6 +32923,9 @@ T0 = 1-JAN-1980
        1>  29-DEC-1979 00:00:00  1         28-DEC-1979 12:00:00    -3
        2>  30-DEC-1979 00:00:00  1         29-DEC-1979 12:00:00    -2
        3>  31-DEC-1979 00:00:00  1         30-DEC-1979 12:00:00    -1
+ 
+! also see bn_all_leap.jnl, 6/2004
+! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
  
 GO bn_reset
 cancel mode verify
@@ -34949,7 +34975,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 May 21 08:33 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jun  8 11:45 testa.v5d
  
 can region
 use coads_climatology
@@ -34961,7 +34987,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 May 21 08:33 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jun  8 11:45 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35029,7 +35055,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.60   21-May-04" ;
+		:history = "FERRET V5.60    8-Jun-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35092,7 +35118,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.60   21-May-04" ;
+		:history = "FERRET V5.60    8-Jun-04" ;
 data:
 
  GFP3 = "" ;
@@ -35312,7 +35338,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.60   21-May-04" ;
+		:history = "FERRET V5.60    8-Jun-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -40517,6 +40543,7 @@ show modes
       GUI           CANCELLED
       LOGO          CANCELLED
       LABELS        CANCELLED
+      GRATICULE     CANCELLED
 contour/i=1:10/j=1:10 i/j
  
 ! restore the labels, logo still gone
@@ -42655,7 +42682,7 @@ ppl shade
  
  
  
-! ******** V5.54Additions below ***********
+! ******** V5.6Additions below ***********
  
 GO bn_reset
 cancel mode verify
@@ -42746,6 +42773,28 @@ Replacing definition of axis TAX
 plot/thick/grat="large(line,color=blue),small(line,color=lightblue)" b
 plot/trans/thick/vg="(line,color=blue)"/hg="large(line,color=blue),small(line,color=lightblue)" b
  
+! Tests for MODE GRATICULE  added in Ferret v5.7
+show mode graticule
+      MODE            STATE        ARGUMENT
+      GRATICULE     CANCELLED
+set mode graticule
+show mode graticule
+      MODE            STATE        ARGUMENT
+      GRATICULE        SET
+ 
+PLOT/i=1:100 sin(i/5)
+can mode graticule
+ 
+PLOT/i=1:100 cos(i/5)
+ 
+set mode graticule:color=red
+PLOT/i=1:100 cos(i/5)
+set mode graticule:(thick,color=red)
+PLOT/i=1:100 cos(i/5)
+ 
+set mode graticule:(dash,color=blue)
+PLOT/i=1:100 cos(i/5)
+can mode graticule
  
 GO bn_reset
 cancel mode verify
@@ -43151,16 +43200,16 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- constan cnst     M:129 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ constan cnst     M:131 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE cnst     M:128 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  !-> list sst[x=280:360@ave,y=@ave]
- -DELETE cnst     M:129 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:131 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -111 -111  J:   46   70  K: -111 -111  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
- reading SST      M:129 I:  131  170  J:   46   70  K: -111 -111  L:    1    1
+ reading SST      M:131 I:  131  170  J:   46   70  K: -111 -111  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -44750,12 +44799,1104 @@ list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
  
 can mode ignore
  
+ 
+! ******** V5.7 Additions below ***********
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_bounds.jnl
+ 
+! bn_bounds.jnl
+! testing CDF read and write of file with irregular axes and bounds
+! and DEFINE AXIS/BOUNDS
+ 
+ 
+! Output data on irregular record axis. No need for:
+! save/clobber/RIGID/HEADING=ENHANCED/LLIMITS=1:3/file=a.nc v
+ 
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+let v = t[gt=month_irreg]
+save/clobber/file=a.nc v
+ LISTing to file a.nc
+ 
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	MONTH_IRREG = UNLIMITED ; // (12 currently)
+	bnds = 2 ;
+variables:
+	double MONTH_IRREG(MONTH_IRREG) ;
+		MONTH_IRREG:units = "DAYS since 0000-01-01 00:00:00" ;
+		MONTH_IRREG:time_origin = "01-JAN-0000 00:00:00" ;
+		MONTH_IRREG:modulo = " " ;
+		MONTH_IRREG:axis = "T" ;
+		MONTH_IRREG:bounds = "MONTH_IRREG_bnds" ;
+	double MONTH_IRREG_bnds(MONTH_IRREG, bnds) ;
+	float V(MONTH_IRREG) ;
+		V:missing_value = -1.e+34f ;
+		V:_FillValue = -1.e+34f ;
+		V:long_name = "T[GT=MONTH_IRREG]" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
+    196.7425, 227.7425, 258.2425, 288.7425, 319.2425, 349.7425 ;
+
+ MONTH_IRREG_bnds =
+  0, 31,
+  31, 59.2425,
+  59.2425, 90.2425,
+  90.2425, 120.2425,
+  120.2425, 151.2425,
+  151.2425, 181.2425,
+  181.2425, 212.2425,
+  212.2425, 243.2425,
+  243.2425, 273.2425,
+  273.2425, 304.2425,
+  304.2425, 334.2425,
+  334.2425, 365.2425 ;
+
+ V = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 196.7425, 
+    227.7425, 258.2425, 288.7425, 319.2425, 349.7425 ;
+}
+can data/all
+can var v
+ 
+! Now use coads with long irregular time axis.
+ 
+can data/all
+use coads_vwnd
+let v = missing(vwnd,28.5)
+save/clobber/file=a.nc/x=199/y=41/l=40:44 v
+ LISTing to file a.nc
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	COADSX90_90 = 1 ;
+	COADSY66_66 = 1 ;
+	TCOADS = UNLIMITED ; // (5 currently)
+	bnds = 2 ;
+variables:
+	double COADSX90_90(COADSX90_90) ;
+		COADSX90_90:units = "degrees_east" ;
+		COADSX90_90:modulo = 360. ;
+		COADSX90_90:point_spacing = "even" ;
+		COADSX90_90:axis = "X" ;
+	double COADSY66_66(COADSY66_66) ;
+		COADSY66_66:units = "degrees_north" ;
+		COADSY66_66:point_spacing = "even" ;
+		COADSY66_66:axis = "Y" ;
+	double TCOADS(TCOADS) ;
+		TCOADS:units = "DAYS since 1700-01-01 00:00:00" ;
+		TCOADS:time_origin = "01-JAN-1700 00:00:00" ;
+		TCOADS:axis = "T" ;
+		TCOADS:bounds = "TCOADS_bnds" ;
+	double TCOADS_bnds(TCOADS, bnds) ;
+	float V(TCOADS, COADSY66_66, COADSX90_90) ;
+		V:missing_value = -1.e+34f ;
+		V:_FillValue = -1.e+34f ;
+		V:long_name = "MISSING(VWND,28.5)" ;
+		V:history = "From coads_vwnd" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ COADSX90_90 = 199 ;
+
+ COADSY66_66 = 41 ;
+
+ TCOADS = 91050, 91080.5, 91111, 91141.5, 91172.5 ;
+
+ TCOADS_bnds =
+  91035, 91065,
+  91065, 91096,
+  91096, 91126,
+  91126, 91157,
+  91157, 91188 ;
+
+ V =
+  41,
+  20.5,
+  43.5,
+  17.6,
+  -0.3 ;
+}
+ 
+! Append later time steps: we add a void point between non-contiguous bounds
+ 
+save/append/file=a.nc/x=199/y=41/l=50:53 v
+ LISTing to file a.nc
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	COADSX90_90 = 1 ;
+	COADSY66_66 = 1 ;
+	TCOADS = UNLIMITED ; // (10 currently)
+	bnds = 2 ;
+variables:
+	double COADSX90_90(COADSX90_90) ;
+		COADSX90_90:units = "degrees_east" ;
+		COADSX90_90:modulo = 360. ;
+		COADSX90_90:point_spacing = "even" ;
+		COADSX90_90:axis = "X" ;
+	double COADSY66_66(COADSY66_66) ;
+		COADSY66_66:units = "degrees_north" ;
+		COADSY66_66:point_spacing = "even" ;
+		COADSY66_66:axis = "Y" ;
+	double TCOADS(TCOADS) ;
+		TCOADS:units = "DAYS since 1700-01-01 00:00:00" ;
+		TCOADS:time_origin = "01-JAN-1700 00:00:00" ;
+		TCOADS:axis = "T" ;
+		TCOADS:bounds = "TCOADS_bnds" ;
+	double TCOADS_bnds(TCOADS, bnds) ;
+	float V(TCOADS, COADSY66_66, COADSX90_90) ;
+		V:missing_value = -1.e+34f ;
+		V:_FillValue = -1.e+34f ;
+		V:long_name = "MISSING(VWND,28.5)" ;
+		V:history = "From coads_vwnd" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ COADSX90_90 = 199 ;
+
+ COADSY66_66 = 41 ;
+
+ TCOADS = 91050, 91080.5, 91111, 91141.5, 91172.5, 91264.5, 91355, 91384.5, 
+    91415, 91445.5 ;
+
+ TCOADS_bnds =
+  91035, 91065,
+  91065, 91096,
+  91096, 91126,
+  91126, 91157,
+  91157, 91188,
+  91188, 91341,
+  91341, 91369,
+  91369, 91400,
+  91400, 91430,
+  91430, 91461 ;
+
+ V =
+  41,
+  20.5,
+  43.5,
+  17.6,
+  -0.3,
+  _,
+  -9.699999,
+  34.6,
+  -37.7,
+  40.4 ;
+}
+can data/all
+can var/all
+ 
+! SAVE on irregular time axis, multi-dimensional save.
+! Void point is one time, all X and Y
+ 
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+use coads_climatology
+let v = missing(sst[gt=month_irreg], 28)
+save/clobber/x=181:185/y=1:7/L=1:5/file=a.nc v
+ LISTing to file a.nc
+save/append/x=181:185/y=1:7/L=8:9/file=a.nc v
+ LISTing to file a.nc
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	COADSX81_83 = 3 ;
+	COADSY46_49 = 4 ;
+	MONTH_IRREG = UNLIMITED ; // (8 currently)
+	bnds = 2 ;
+variables:
+	double COADSX81_83(COADSX81_83) ;
+		COADSX81_83:units = "degrees_east" ;
+		COADSX81_83:modulo = 360. ;
+		COADSX81_83:point_spacing = "even" ;
+		COADSX81_83:axis = "X" ;
+	double COADSY46_49(COADSY46_49) ;
+		COADSY46_49:units = "degrees_north" ;
+		COADSY46_49:point_spacing = "even" ;
+		COADSY46_49:axis = "Y" ;
+	double MONTH_IRREG(MONTH_IRREG) ;
+		MONTH_IRREG:units = "DAYS since 0000-01-01 00:00:00" ;
+		MONTH_IRREG:time_origin = "01-JAN-0000 00:00:00" ;
+		MONTH_IRREG:modulo = " " ;
+		MONTH_IRREG:axis = "T" ;
+		MONTH_IRREG:bounds = "MONTH_IRREG_bnds" ;
+	double MONTH_IRREG_bnds(MONTH_IRREG, bnds) ;
+	float V(MONTH_IRREG, COADSY46_49, COADSX81_83) ;
+		V:missing_value = -1.e+34f ;
+		V:_FillValue = -1.e+34f ;
+		V:long_name = "MISSING(SST[GT=MONTH_IRREG], 28)" ;
+		V:history = "From coads_climatology" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ COADSX81_83 = 181, 183, 185 ;
+
+ COADSY46_49 = 1, 3, 5, 7 ;
+
+ MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 181.7425, 
+    227.7425, 258.2425 ;
+
+ MONTH_IRREG_bnds =
+  0, 31,
+  31, 59.2425,
+  59.2425, 90.2425,
+  90.2425, 120.2425,
+  120.2425, 151.2425,
+  151.2425, 212.2425,
+  212.2425, 243.2425,
+  243.2425, 273.2425 ;
+
+ V =
+  283.8499, 285.1463, 280.1619,
+  280.7654, 283.5383, 283.8074,
+  283.4392, 281.6397, 285.0989,
+  279.9881, 282.0241, 278.2899,
+  285.16, 285.0182, 281.2232,
+  284.5642, 285.1167, 280.9819,
+  280.9751, 282.6391, 282.1465,
+  280.6653, 278.4976, 279.3159,
+  281.6367, 276.9066, 278.3806,
+  280.4182, 281.0355, 278.2379,
+  279.9884, 279.7297, 280.3247,
+  279.43, 279.183, 280.0892,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  _, _, _,
+  _, _, _,
+  _, _, _,
+  _, _, _,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28,
+  28, 28, 28 ;
+}
+can var v
+ 
+use a.nc
+list/y=3 v
+             VARIABLE : MISSING(SST[GT=MONTH_IRREG], 28)
+             FILENAME : a.nc
+             SUBSET   : 3 by 8 points (LONGITUDE-TIME)
+             LATITUDE : 3N
+                       179W     177W     175W    
+                         1        2        3
+ 16-JAN      12 / 1:  280.765  283.538  283.807
+ 15-FEB      02 / 2:  284.564  285.117  280.982
+ 15-MAR      17 / 3:  280.418  281.035  278.238
+ 15-APR      05 / 4:   28.000   28.000   28.000
+ 15-MAY      17 / 5:   28.000   28.000   28.000
+ 30-JUN      17 / 6:     ....     ....     ....
+ 15-AUG      17 / 7:   28.000   28.000   28.000
+ 15-SEP      05 / 8:   28.000   28.000   28.000
+list/x=177w v
+             VARIABLE : MISSING(SST[GT=MONTH_IRREG], 28)
+             FILENAME : a.nc
+             SUBSET   : 4 by 8 points (LATITUDE-TIME)
+             LONGITUDE: 177W
+                        1N       3N       5N       7N     
+                         1        2        3        4
+ 16-JAN      12 / 1:  285.146  283.538  281.640  282.024
+ 15-FEB      02 / 2:  285.018  285.117  282.639  278.498
+ 15-MAR      17 / 3:  276.907  281.035  279.730  279.183
+ 15-APR      05 / 4:   28.000   28.000   28.000   28.000
+ 15-MAY      17 / 5:   28.000   28.000   28.000   28.000
+ 30-JUN      17 / 6:     ....     ....     ....     ....
+ 15-AUG      17 / 7:   28.000   28.000   28.000   28.000
+ 15-SEP      05 / 8:   28.000   28.000   28.000   28.000
+can data/all
+can var/all
+ 
+! Define an axis using edges
+def axis/t/edges tax={0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+Replacing definition of axis TAX
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+             T: 0.5 to 9.5
+ Column  1: T is T (axis TAX)
+ Column  2: TBOXLO is TBOXLO (axis TAX)
+ Column  3: TBOXHI is TBOXHI (axis TAX)
+ Column  4: TBOX is TBOX (axis TAX)
+               T   TBOXLO   TBOXHI     TBOX 
+1   / 1:  1.00000  0.50000  1.50000  1.00000
+2   / 2:  2.00000  1.50000  2.50000  1.00000
+3   / 3:  3.00000  2.50000  3.50000  1.00000
+5   / 4:  5.00000  3.50000  6.50000  3.00000
+7   / 5:  7.00000  6.50000  7.50000  1.00000
+8   / 6:  8.00000  7.50000  8.50000  1.00000
+9   / 7:  9.00000  8.50000  9.50000  1.00000
+ 
+! Define an axis using bounds.  Note the coordinates need not be
+! centered in the axis cells.
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+Replacing definition of axis TAX
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+             T: 0.5 to 9.5
+ Column  1: T is T (axis TAX)
+ Column  2: TBOXLO is TBOXLO (axis TAX)
+ Column  3: TBOXHI is TBOXHI (axis TAX)
+ Column  4: TBOX is TBOX (axis TAX)
+               T   TBOXLO   TBOXHI     TBOX 
+1.2 / 1:  1.20000  0.50000  1.50000  1.00000
+2   / 2:  2.00000  1.50000  2.50000  1.00000
+3.2 / 3:  3.20000  2.50000  3.50000  1.00000
+5   / 4:  5.00000  3.50000  6.50000  3.00000
+7   / 5:  7.00000  6.50000  7.50000  1.00000
+8.4 / 6:  8.40000  7.50000  8.50000  1.00000
+9   / 7:  9.00000  8.50000  9.50000  1.00000
+ 
+! Define an axis using bounds, with discontinuity between bounds,
+! detected and changed to contiguous bounds, using lower bound for all cells.
+def axis/t/bounds tax={1,2,3,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,4.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ *** NOTE: Axis definition error on axis: TAX
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+Replacing definition of axis TAX
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+             T: 0.5 to 9.5
+ Column  1: T is T (axis TAX)
+ Column  2: TBOXLO is TBOXLO (axis TAX)
+ Column  3: TBOXHI is TBOXHI (axis TAX)
+ Column  4: TBOX is TBOX (axis TAX)
+               T   TBOXLO   TBOXHI     TBOX 
+1   / 1:  1.00000  0.50000  1.50000  1.00000
+2   / 2:  2.00000  1.50000  2.50000  1.00000
+3   / 3:  3.00000  2.50000  3.50000  1.00000
+5   / 4:  5.00000  3.50000  6.50000  3.00000
+7   / 5:  7.00000  6.50000  7.50000  1.00000
+8   / 6:  8.00000  7.50000  8.50000  1.00000
+9   / 7:  9.00000  8.50000  9.50000  1.00000
+ 
+! intentional errors
+! coordinate point not inside bounds
+set mode ignore
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! First coordinate lower than first lower bound
+def axis/t/bounds tax={0.1,2,3.2,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! Last coordinate higher than last upper bound
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! Too few or too many bounds values
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+ 
+cancel axis tax
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+can mode ignore
+ 
+! SAVE on regular time axis with bounds and edges attributes
+ 
+use coads_climatology
+list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
+             DATA SET: ./coads_climatology.cdf
+             TIME: JAN to APR
+             LONGITUDE: 179W
+             LATITUDE: 1N
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: T is T (axis TIME4)
+ Column  3: TBOXLO is TBOXLO (axis TIME4)
+ Column  4: TBOXHI is TBOXHI (axis TIME4)
+283.84  366.0000    0.7575  731.2425
+285.19 1096.4850  731.2425 1461.7275
+281.47 1826.9700 1461.7275 2192.2124
+ 
+save/clobber/bounds/file=a.nc/x=181/y=1 sst
+ LISTing to file a.nc
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	COADSX81_81 = 1 ;
+	bnds = 2 ;
+	COADSY46_46 = 1 ;
+	TIME4 = UNLIMITED ; // (3 currently)
+variables:
+	double COADSX81_81(COADSX81_81) ;
+		COADSX81_81:units = "degrees_east" ;
+		COADSX81_81:modulo = 360. ;
+		COADSX81_81:point_spacing = "even" ;
+		COADSX81_81:axis = "X" ;
+		COADSX81_81:bounds = "COADSX81_81_bnds" ;
+	double COADSX81_81_bnds(COADSX81_81, bnds) ;
+	double COADSY46_46(COADSY46_46) ;
+		COADSY46_46:units = "degrees_north" ;
+		COADSY46_46:point_spacing = "even" ;
+		COADSY46_46:axis = "Y" ;
+		COADSY46_46:bounds = "COADSY46_46_bnds" ;
+	double COADSY46_46_bnds(COADSY46_46, bnds) ;
+	double TIME4(TIME4) ;
+		TIME4:units = "hour since 0000-01-01 00:00:00" ;
+		TIME4:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME4:modulo = 8765.81982421875 ;
+		TIME4:axis = "T" ;
+		TIME4:bounds = "TIME4_bnds" ;
+	double TIME4_bnds(TIME4, bnds) ;
+	float SST(TIME4, COADSY46_46, COADSX81_81) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ COADSX81_81 = 181 ;
+
+ COADSX81_81_bnds =
+  180, 182 ;
+
+ COADSY46_46 = 1 ;
+
+ COADSY46_46_bnds =
+  0, 2 ;
+
+ TIME4 = 366, 1096.485, 1826.97 ;
+
+ TIME4_bnds =
+  0.757499999999993, 731.2425,
+  731.2425, 1461.7275,
+  1461.7275, 2192.2125 ;
+
+ SST =
+  283.8389,
+  285.1851,
+  281.468 ;
+}
+ 
+save/clobber/edges/file=a.nc/x=181/y=1 sst
+ LISTing to file a.nc
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	COADSX81_81 = 1 ;
+	COADSX81_81edges = 2 ;
+	COADSY46_46 = 1 ;
+	COADSY46_46edges = 2 ;
+	TIME4 = UNLIMITED ; // (3 currently)
+	TIME4edges = 4 ;
+variables:
+	double COADSX81_81(COADSX81_81) ;
+		COADSX81_81:units = "degrees_east" ;
+		COADSX81_81:modulo = 360. ;
+		COADSX81_81:point_spacing = "even" ;
+		COADSX81_81:axis = "X" ;
+		COADSX81_81:edges = "COADSX81_81edges" ;
+	double COADSX81_81edges(COADSX81_81edges) ;
+		COADSX81_81edges:edges = " " ;
+	double COADSY46_46(COADSY46_46) ;
+		COADSY46_46:units = "degrees_north" ;
+		COADSY46_46:point_spacing = "even" ;
+		COADSY46_46:axis = "Y" ;
+		COADSY46_46:edges = "COADSY46_46edges" ;
+	double COADSY46_46edges(COADSY46_46edges) ;
+		COADSY46_46edges:edges = " " ;
+	double TIME4(TIME4) ;
+		TIME4:units = "hour since 0000-01-01 00:00:00" ;
+		TIME4:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME4:modulo = 8765.81982421875 ;
+		TIME4:axis = "T" ;
+		TIME4:edges = "TIME4edges" ;
+	double TIME4edges(TIME4edges) ;
+		TIME4edges:edges = " " ;
+	float SST(TIME4, COADSY46_46, COADSX81_81) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ COADSX81_81 = 181 ;
+
+ COADSX81_81edges = 180, 182 ;
+
+ COADSY46_46 = 1 ;
+
+ COADSY46_46edges = 0, 2 ;
+
+ TIME4 = 366, 1096.485, 1826.97 ;
+
+ TIME4edges = 0.757499999999993, 731.2425, 1461.7275, 2192.2125 ;
+
+ SST =
+  283.8389,
+  285.1851,
+  281.468 ;
+}
+ 
+! Intentional errors; combinations of qualifiers on SAVE
+set mode ignore
+ 
+use coads_climatology
+save/clobber/rigid/heading=enhanced/llimits=1:3/bounds/file=a.nc/x=181/y=1 sst
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ *** NOTE: Cannot have both /BOUNDS and /RIGID Ignoring /RIGID
+ LISTing to file a.nc
+save/clobber/edges/bounds/file=a.nc/x=181/y=1 sst
+ *** NOTE: Cannot have both /BOUNDS and /EDGES Ignoring /EDGES
+ LISTing to file a.nc
+can mode ignore
+ 
+can data/all
+ 
+! outputting bounds on all irregular axes
+! test of DEPTH axis
+ 
+def axis/x xax = {1,2,5,6,7,8}
+Replacing definition of axis XAX
+def axis/z/depth/bounds zax = {0,20,50,75,120}, {0, 10, 10, 30, 30, 60, 60, 90, 90, 150}
+Replacing definition of axis ZAX
+def axis/t tax = {1,2,9,10,11}
+Replacing definition of axis TAX
+let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
+save/clobber/file=irrxzt.nc v
+ LISTing to file irrxzt.nc
+sp ncdump irrxzt.nc
+netcdf irrxzt {
+dimensions:
+	XAX = 6 ;
+	bnds = 2 ;
+	ZAX = 5 ;
+	TAX = UNLIMITED ; // (5 currently)
+variables:
+	double XAX(XAX) ;
+		XAX:point_spacing = "uneven" ;
+		XAX:axis = "X" ;
+		XAX:bounds = "XAX_bnds" ;
+	double XAX_bnds(XAX, bnds) ;
+	double ZAX(ZAX) ;
+		ZAX:positive = "down" ;
+		ZAX:point_spacing = "uneven" ;
+		ZAX:axis = "Z" ;
+		ZAX:bounds = "ZAX_bnds" ;
+	double ZAX_bnds(ZAX, bnds) ;
+	double TAX(TAX) ;
+		TAX:axis = "T" ;
+		TAX:bounds = "TAX_bnds" ;
+	double TAX_bnds(TAX, bnds) ;
+	float V(TAX, ZAX, XAX) ;
+		V:missing_value = -1.e+34f ;
+		V:_FillValue = -1.e+34f ;
+		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
+
+// global attributes:
+		:history = "FERRET V5.60    8-Jun-04" ;
+data:
+
+ XAX = 1, 2, 5, 6, 7, 8 ;
+
+ XAX_bnds =
+  0.5, 1.5,
+  1.5, 3.5,
+  3.5, 5.5,
+  5.5, 6.5,
+  6.5, 7.5,
+  7.5, 8.5 ;
+
+ ZAX = 0, 20, 50, 75, 120 ;
+
+ ZAX_bnds =
+  0, 10,
+  10, 30,
+  30, 60,
+  60, 90,
+  90, 150 ;
+
+ TAX = 1, 2, 9, 10, 11 ;
+
+ TAX_bnds =
+  0.5, 1.5,
+  1.5, 5.5,
+  5.5, 9.5,
+  9.5, 10.5,
+  10.5, 11.5 ;
+
+ V =
+  2, 3, 6, 7, 8, 9,
+  22, 23, 26, 27, 28, 29,
+  52, 53, 56, 57, 58, 59,
+  77, 78, 81, 82, 83, 84,
+  122, 123, 126, 127, 128, 129,
+  3, 4, 7, 8, 9, 10,
+  23, 24, 27, 28, 29, 30,
+  53, 54, 57, 58, 59, 60,
+  78, 79, 82, 83, 84, 85,
+  123, 124, 127, 128, 129, 130,
+  10, 11, 14, 15, 16, 17,
+  30, 31, 34, 35, 36, 37,
+  60, 61, 64, 65, 66, 67,
+  85, 86, 89, 90, 91, 92,
+  130, 131, 134, 135, 136, 137,
+  11, 12, 15, 16, 17, 18,
+  31, 32, 35, 36, 37, 38,
+  61, 62, 65, 66, 67, 68,
+  86, 87, 90, 91, 92, 93,
+  131, 132, 135, 136, 137, 138,
+  12, 13, 16, 17, 18, 19,
+  32, 33, 36, 37, 38, 39,
+  62, 63, 66, 67, 68, 69,
+  87, 88, 91, 92, 93, 94,
+  132, 133, 136, 137, 138, 139 ;
+}
+ 
+can data/all
+can var/all
+use irrxzt
+list/x=5/t=5 v, z[gz=v] , zboxlo[gz=v], zboxhi[gz=v]
+             DATA SET: ./irrxzt.nc
+             Z: 0 to 150
+             X: 5
+             T: 2
+ Column  1: V is X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]
+ Column  2: Z is Z (axis ZAX1)
+ Column  3: ZBOXLO is ZBOXLO (axis ZAX1)
+ Column  4: ZBOXHI is ZBOXHI (axis ZAX1)
+                 V        Z   ZBOXLO   ZBOXHI 
+0     / 1:    71.00    0.000   0.0000   10.000
+20    / 2:   271.00   20.000  10.0000   30.000
+50    / 3:   571.00   50.000  30.0000   60.000
+75    / 4:   821.00   75.000  60.0000   90.000
+120   / 5:  1271.00  120.000  90.0000  150.000
+can data/all
+ 
+! RIGID/HEAD=ENHANCED works the same; issues a note
+ 
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+use coads_climatology
+let v = sst[gt=month_irreg]
+save/clobber/rigid/head=enh/llimits=1:3/x=181:191/y=1:7/l=1:3/file=a.nc v
+ *** NOTE: /RIGID is deprecated. By default axis bounds are written for irregular axes.
+ LISTing to file a.nc
+ 
+! Saving data with regular axes
+! First save without the bounds attribute, result is a file with
+! irregular time axis, possibly unintended large boxes.
+ 
+use climatological_axes
+use coads_climatology
+let v = missing(sst[gt=month_reg], 28)
+ 
+save/clobber/file=a.nc/x=181/y=1/L=1:4 v
+ LISTing to file a.nc
+save/append/file=a.nc/x=181/y=1/L=8:10 v
+ LISTing to file a.nc
+ *** NOTE: Appending to NetCDF record axis which has no bounds attribute.
+ *** NOTE: This will result in incorrect box sizes on record axis: MONTH_REG
+ *** NOTE: Write the data initially with the /BOUNDS qualifier
+can data/all
+can var v
+use a.nc
+list v, t[gt=v], tbox[gt=v]
+             DATA SET: ./a.nc
+             TIME: JAN to OCT
+             LONGITUDE: 179W
+             LATITUDE: 1N
+ Column  1: V is MISSING(SST[GT=MONTH_REG], 28)
+ Column  2: T is T (axis MONTH_REG1)
+ Column  3: TBOX is TBOX (axis MONTH_REG1)
+                       V        T     TBOX 
+16-JAN      / 1:  2839.39   366.00   730.48
+15-FEB      / 2:  2852.85  1096.48   730.48
+17-MAR      / 3:  2815.68  1826.97   730.48
+16-APR      / 4:   281.00  2557.46  1826.21
+16-AUG      / 5:   281.00  5479.40  1826.21
+15-SEP      / 6:   281.00  6209.88   730.48
+16-OCT      / 7:   281.00  6940.37   730.48
+can data a
+ 
+! Now save with /bounds
+ 
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+use coads_climatology
+let v = missing(sst[gt=month_reg], 28)
+save/clobber/BOUNDS/file=a.nc/x=181/y=1/L=1:4 v
+ LISTing to file a.nc
+save/append/file=a.nc/x=181/y=1/L=8:10 v
+ LISTing to file a.nc
+can data/all
+can var v
+use a.nc
+ 
+list v, t[gt=v], tbox[gt=v]
+             DATA SET: ./a.nc
+             TIME: JAN to OCT
+             LONGITUDE: 179W
+             LATITUDE: 1N
+ Column  1: V is MISSING(SST[GT=MONTH_REG], 28)
+ Column  2: T is T (axis MONTH_REG1)
+ Column  3: TBOX is TBOX (axis MONTH_REG1)
+                       V        T     TBOX 
+16-JAN      / 1:  2839.39   366.00   730.48
+15-FEB      / 2:  2852.85  1096.48   730.48
+17-MAR      / 3:  2815.68  1826.97   730.48
+16-APR      / 4:   281.00  2557.46   730.48
+16-JUN      / 5:     ....  4018.43  2191.46
+16-AUG      / 6:   281.00  5479.40   730.48
+15-SEP      / 7:   281.00  6209.88   730.48
+16-OCT      / 8:   281.00  6940.37   730.48
+can data/all
+ 
+! gappy_bounds.nc has discontiguous bounds
+! We use the LOWER bound of all axis cells.
+ 
+use gappy_bounds.nc
+ *** NOTE: Axis definition error on axis: TGAP
+ *** NOTE: Bounds given describe non-contiguous axis cells
+ *** NOTE: Using the LOWER bound specified for each axis cell
+list a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
+             DATA SET: ./gappy_bounds.nc
+             TIME: JAN-1990 to JAN-1990
+ Column  1: A is SST[X=150:180@AVE,Y=-10:0@AVE]
+ Column  2: T is T (axis TGAP)
+ Column  3: TBOXLO is TBOXLO (axis TGAP)
+ Column  4: TBOXHI is TBOXHI (axis TGAP)
+                          A        T   TBOXLO   TBOXHI 
+02-JAN-1990 00 / 1:  297.970  1.00000  0.50000  1.50000
+03-JAN-1990 00 / 2:  294.710  2.00000  1.50000  2.50000
+04-JAN-1990 00 / 3:  292.157  3.00000  2.50000  3.50000
+08-JAN-1990 00 / 4:  293.921  7.00000  3.50000  7.50000
+09-JAN-1990 00 / 5:  289.983  8.00000  7.50000  8.50000
+10-JAN-1990 00 / 6:  290.383  9.00000  8.50000  9.50000
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_all_leap.jnl
+! bn_all_leap.jnl
+! ACM 6/2004
+! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
+! leap year every year
+ 
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=366_DAY tdays
+define grid/t=tdays tgrid
+Replacing definition of grid TGRID
+let my_data = sin(l[g=tgrid])
+list my_data[t="27-feb-1988":"1-mar-1988"]
+             VARIABLE : SIN(L[G=TGRID])
+             SUBSET   : 4 points (TIME)
+             CALENDAR : ALL_LEAP
+ 27-FEB-1988 00 / 58:  0.992873
+ 28-FEB-1988 00 / 59:  0.636738
+ 29-FEB-1988 00 / 60: -0.304811
+ 01-MAR-1988 00 / 61: -0.966118
+list my_data[t="27-feb-1989":"1-mar-1989"]
+             VARIABLE : SIN(L[G=TGRID])
+             SUBSET   : 4 points (TIME)
+             CALENDAR : ALL_LEAP
+ 27-FEB-1989 00 / 424:  0.114755
+ 28-FEB-1989 00 / 425: -0.773910
+ 29-FEB-1989 00 / 426: -0.951045
+ 01-MAR-1989 00 / 427: -0.253794
+ 
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=all_leap tdays
+ 
+list my_data[t="27-feb-1988":"1-mar-1988"]
+             VARIABLE : SIN(L[G=TGRID])
+             SUBSET   : 4 points (TIME)
+             CALENDAR : ALL_LEAP
+ 27-FEB-1988 00 / 58:  0.992873
+ 28-FEB-1988 00 / 59:  0.636738
+ 29-FEB-1988 00 / 60: -0.304811
+ 01-MAR-1988 00 / 61: -0.966118
+list my_data[t="27-feb-1989":"1-mar-1989"]
+             VARIABLE : SIN(L[G=TGRID])
+             SUBSET   : 4 points (TIME)
+             CALENDAR : ALL_LEAP
+ 27-FEB-1989 00 / 424:  0.114755
+ 28-FEB-1989 00 / 425: -0.773910
+ 29-FEB-1989 00 / 426: -0.951045
+ 01-MAR-1989 00 / 427: -0.253794
+ 
+! Check the error message
+set mode ignore_error
+def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
+ 
+can mode ignore
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn570_bug_fixes.jnl
+! bn554_bug_fixes.jnl
+! test various fixes that went into version 5.70
+! 11/03 *acm*
+!
+ 
+! Test use of automatic levels in SHADE
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err560_shade_levels.jnl
+! err560_shade_levels.jnl  *acm* 4/28/04
+! Missing levels on SHADE auto-level
+ 
+! Fix for bug 801 went too far: shade levels need adjusting
+! (and were wrong always for negative levels)
+ 
+! Here is a simpler example (acm)
+set view upper; shade/i=1:10/j=1:10 i*j*0.0034   !levels only go up to 0.003
+set view lower; shade/i=1:10/j=1:10 -1*i*j*0.0034
+ 
+can view
+ 
+! Test use of reading irregular-time mc datasets
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err560_mc_irreg_t.jnl
+! err560_mc_irreg_t.jnl
+! 4/2004  ACM
+ 
+! Under Solaris, crashes Ferret;
+! Under linux get a NC error.
+! Its  a precision bug in mc_read.F, determining what
+! stepfile to read from, when the point requested is
+! just at or between the range of the stepfiles.
+ 
+set data coads_clim_irreg
+list/x=180/y=0/t=1-apr-1900 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             DATA SET : COAD
+             FILENAME : coads_clim_irreg.des
+             LONGITUDE: 179E
+             LATITUDE : 1S
+             TIME     : FEB-1900
+          284.646
+ 
+can mem/all
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+can data/all
+set data coads_clim_irreg
+list/x=180/y=0/t=2000 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             DATA SET : COAD
+             FILENAME : coads_clim_irreg.des
+             LONGITUDE: 179E
+             LATITUDE : 1S
+             TIME     : FEB-1900
+          284.646
+ 
+ 
+! Crashed on SHADE of variable with NOLEAP axis, and subregion.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err560_shade_noleap.jnl
+! err560_shade_noleap.jnl
+! 4/30/04 ACM
+ 
+! Crashes on SHADE of variable with NOLEAP axis, and subregion.
+ 
+def axis/t/t0=1-jan-2000/units=months/calendar=noleap tax = {1,3,4,5,6,8,9,12}
+ *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.00 days
+Replacing definition of axis TAX
+def axis/depth/z=0:1000:15 zax
+Replacing definition of axis ZAX
+let a = z[gz=zax] + t[gt=tax]
+ 
+shade/t=4-jan-2000:10-nov-2000 a
+ 
+! err560_regriding_gaps.jnl
+! If the index has a negative range including the value
+! -111, was treated as missing rather than a valid index.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err560_regridding_gaps.jnl
+! err560_regrid
+!
+! If the index has a negative range including the value
+! -111, was treated as missing rather than a valid index.
+ 
+def axis/modulo/x=1:360:1/units=lon xax
+Replacing definition of axis XAX
+def axis/modulo/x=-180:179:1/units=lon xaxshift
+ 
+let a = x[gx=xax]
+let b = x[gx=xaxshift]
+save/clobber/file=xlong.nc a
+ LISTing to file xlong.nc
+save/clobber/file=xlongshift.nc b
+ LISTing to file xlongshift.nc
+ 
+can data/all
+can var/all
+use xlongshift
+use xlong
+ 
+list/x=115w:108w a[gx=b[d=1]]
+             VARIABLE : X[GX=XAX]
+                        regrid: B[D=xlongshift]
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  245.000
+ 114W   / 427:  246.000
+ 113W   / 428:  247.000
+ 112W   / 429:  248.000
+ 111W   / 430:  249.000
+ 110W   / 431:  250.000
+ 109W   / 432:  251.000
+ 108W   / 433:  252.000
+ 
+list/x=115w:108w a[gx=b[d=1]@ave]
+             VARIABLE : X[GX=XAX]
+                        regrid: B[D=xlongshift] on X@AVE
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  245.000
+ 114W   / 427:  246.000
+ 113W   / 428:  247.000
+ 112W   / 429:  248.000
+ 111W   / 430:  249.000
+ 110W   / 431:  250.000
+ 109W   / 432:  251.000
+ 108W   / 433:  252.000
+ 
+list/x=115w:108w a[gx=b[d=1]@ave]
+             VARIABLE : X[GX=XAX]
+                        regrid: B[D=xlongshift] on X@AVE
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  245.000
+ 114W   / 427:  246.000
+ 113W   / 428:  247.000
+ 112W   / 429:  248.000
+ 111W   / 430:  249.000
+ 110W   / 431:  250.000
+ 109W   / 432:  251.000
+ 108W   / 433:  252.000
+ 
+list/x=115w:108w a[gx=b[d=1]@sum]
+             VARIABLE : X[GX=XAX]
+                        regrid: B[D=xlongshift] on X@SUM
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  245.000
+ 114W   / 427:  246.000
+ 113W   / 428:  247.000
+ 112W   / 429:  248.000
+ 111W   / 430:  249.000
+ 110W   / 431:  250.000
+ 109W   / 432:  251.000
+ 108W   / 433:  252.000
+ 
+list/x=115w:108w a[gx=b[d=1]@ngd]
+             VARIABLE : X[GX=XAX] (# of points)
+                        regrid: B[D=xlongshift] on X@NGD
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  1.00000
+ 114W   / 427:  1.00000
+ 113W   / 428:  1.00000
+ 112W   / 429:  1.00000
+ 111W   / 430:  1.00000
+ 110W   / 431:  1.00000
+ 109W   / 432:  1.00000
+ 108W   / 433:  1.00000
+ 
+list/x=115w:108w a[gx=b[d=1]@nrst]
+             VARIABLE : X[GX=XAX]
+                        regrid: B[D=xlongshift] on X@NRST
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  245.000
+ 114W   / 427:  246.000
+ 113W   / 428:  247.000
+ 112W   / 429:  248.000
+ 111W   / 430:  249.000
+ 110W   / 431:  250.000
+ 109W   / 432:  251.000
+ 108W   / 433:  252.000
+ 
+list/x=115w:108w a[gx=b[d=1]@xact]
+             VARIABLE : X[GX=XAX]
+                        regrid: B[D=xlongshift] on X@XACT
+             FILENAME : xlong.nc
+             SUBSET   : 8 points (LONGITUDE)
+ 115W   / 426:  245.000
+ 114W   / 427:  246.000
+ 113W   / 428:  247.000
+ 112W   / 429:  248.000
+ 111W   / 430:  249.000
+ 110W   / 431:  250.000
+ 109W   / 432:  251.000
+ 108W   / 433:  252.000
+ 
+sp rm xlong.nc
+sp rm xlongshift.nc
+ 
+! err560_leap_years.jnl
+! inconsistency in computing whether year is a leap year;
+! bug in drawing the time axis.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err560_leap_years.jnl
+! err560_leap_years.jnl
+! Fixes for bug 882, inconsistency in computing whether
+! year is a leap year.
+ 
+def axis/t="07-FEB-1899:12:00":"07-FEB-1900:12:00":365.2425/units=days/t0="1-jan-1800" tax
+Replacing definition of axis TAX
+let v = tsequence({55,65})
+plot v[gt=tax@asn]
+ 
+! err560_dyn_grids.jnl
+!  plot missing in upper plot; error counting dynamic grids
+! GO bn_reset
+! GO err560_dyn_grids.jnl
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.60  
- 	Solaris 5.6 - 04/09/04
- 	21-May-04 08:38     
+ 	Solaris 5.6 - 06/08/04
+ 	 8-Jun-04 11:51     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44931,8 +46072,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.60  
- 	Solaris 5.6 - 04/09/04
- 	21-May-04 08:38     
+ 	Solaris 5.6 - 06/08/04
+ 	 8-Jun-04 11:51     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -45045,4 +46186,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Fri May 21 08:38:56 PDT 2004
+Ended at Tue Jun 8 11:51:34 PDT 2004

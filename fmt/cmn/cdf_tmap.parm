@@ -12,3 +12,13 @@
      .          pcd_reset_data   = -pcd_mode_data,
      .		pcd_reset_define = -pcd_mode_define )
 
+	INTEGER
+     .		pcd_defer_init,
+     .		pcd_defer_points,
+     .		pcd_defer_edges
+
+	PARAMETER (
+     .		pcd_defer_init = 0,
+     .		pcd_defer_points = 1,
+     .		pcd_defer_edges = 2 )
+

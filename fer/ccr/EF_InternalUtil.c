@@ -327,7 +327,10 @@ int efcn_gather_info_( int *id_ptr )
   strcat(ef_object, ".so");
 
   /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {*/
-  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) {
+  /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) { */
+  /* kob - commented out above line, and removed RTLD_GBAL check from below on
+     advice of jc - osf didn't have a definition for RTLD_GLOBAL */
+  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW)) == NULL ) {
     fprintf(stderr, "\n\
 ERROR in efcn_gather_info:\n\
 dlopen(%s, RTLD_LAZY) generates the error:\n\

@@ -1,0 +1,17 @@
+! bn552_bug_fixes.jnl
+! test various fixes that went into version 5.52
+! 3/03 *acm*
+!
+
+! Default behavior (all axes on) was not reset after a plot/set/AXES=
+GO bn_reset
+GO err551_axes_set.jnl
+
+! Test whether too many levels specified. Previous to v552, no
+! test on SHADE and POLYGON plots, and these crashed Ferret.
+GO bn_reset
+GO err551_num_levels.jnl
+
+! Check for invalid value of calendar attribute on reading NetCDF files.
+GO bn_reset
+GO err551_invalid_calendar.jnl

@@ -1,0 +1,6 @@
+! check on input for invalid calendar name
+! If file gives calendar attribute with unrecognized name, 
+! give an error message and use an abstract axis.
+
+set data err_calendar.nc
+sh data

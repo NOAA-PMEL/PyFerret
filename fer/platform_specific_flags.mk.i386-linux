@@ -57,7 +57,7 @@
 	PPLUS_FFLAGS    =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 
 
-
+        PROF_FLAGS      = -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#

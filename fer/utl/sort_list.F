@@ -1,4 +1,6 @@
-	SUBROUTINE SORT_LIST(n, bad_flag_in, bad_flag_out, list, indices)
+	SUBROUTINE SORT_LIST(n, valid_min, valid_max,
+     .			     bad_flag_in, bad_flag_out,
+     .			     list, indices, nvalid)
 
 *
 *
@@ -51,11 +53,11 @@
 #endif
 
 * calling argument declarations:
-	INTEGER n
+	INTEGER n, valid_min, valid_max, nvalid
 	REAL bad_flag_in, bad_flag_out, list(n), indices(n)
 
 * internal variable declarations:
-	LOGICAL jossled
+	LOGICAL jossled, invalid
 	INTEGER i, j
 	REAL tmp
 
@@ -65,10 +67,16 @@
 
 * primitive bubble sort (could be replaced)
 * sort into ascending order -- "j" is always the lower index
+* missing values and out-of-valid-range indices are all sorted to the top
 	DO 200 j = 1, n-1
 	  jossled = .FALSE.
 	  DO 100 i = 2, n-(j-1)
-	    IF (list(i-1).EQ.bad_flag_in 
+	    invalid = 
+     .	        list(i-1) .EQ. bad_flag_in
+     .	   .OR. list(i-1) .GT. valid_max
+     .	   .OR. list(i-1) .LT. valid_min
+
+	    IF ( invalid
      .     .OR.(list(i).NE.bad_flag_in.AND.list(i-1).GT.list(i)) ) THEN
 * ... intercahange order in both output arrays
 	      tmp = list(i-1)
@@ -80,13 +88,24 @@
 	      jossled = .TRUE.
 	    ENDIF
  100	  CONTINUE
-	  IF (.NOT.jossled) RETURN
+	  IF (.NOT.jossled) GOTO 300
  200	CONTINUE
 
-* reconcile bad flags
+* count valid points
+ 300	nvalid = n
+	DO 400 i = 1,n
+	   invalid = 
+     .	        list(i) .EQ. bad_flag_in
+     .	   .OR. list(i) .GT. valid_max
+     .	   .OR. list(i) .LT. valid_min
+	   IF ( invalid ) nvalid = nvalid - 1
+ 400	   CONTINUE
+
+* reconcile bad flags and count valid points
 	IF ( bad_flag_in .NE. bad_flag_out ) THEN
 	   DO 500 i = 1,n
- 500	   IF ( list(i).EQ.bad_flag_in ) list(i) = bad_flag_out
+	      IF ( list(i).EQ.bad_flag_in ) list(i) = bad_flag_out
+ 500	   CONTINUE
 	ENDIF
 
 	RETURN

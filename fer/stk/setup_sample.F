@@ -74,14 +74,16 @@
 
 * internal variable declarations:
 	INTEGER CGRID_SIZE
-	INTEGER n, dims(4), ndim, hold_isp, mr_holder, cx_holder,
-     .		mr_sorted_indices, mr_index_map, axis
+	INTEGER n, dims(4), ndim, hold_isp, cx_holder,
+     .		min_ss, max_ss, res_grid,
+     .		mr_sorted_indices, mr_index_map, axis, nvalid
 
 * --- end of introductory code ---
 
 * initialize
-	hold_isp = isp
-	cx_holder  = is_cx( hold_isp )
+	hold_isp  = isp
+	cx_holder = is_cx( hold_isp )
+	res_grid  = cx_grid( cx_holder )
 
 * Check that index list is 1D.
 	CALL GET_CX_DIMS(cx_indices, ndim, dims)
@@ -106,15 +108,22 @@
      .                      status      )
         IF ( status .NE. ferr_ok ) GOTO 5000
 
-* sort the list of indices and store with a map of the sort
-	CALL SORT_LIST(n,  mr_bad_data(mr_indices),
-     .			   mr_bad_data(mr_sorted_indices),
-     .			   memory(1,mr_blk1(mr_sorted_indices)),
-     .			   memory(1,mr_blk1(mr_index_map)) )
-
 * which axis is the sampling along?
 	axis = ifcn - p_samplei + 1
 	is_axis( hold_isp ) = axis
+
+* sort the list of indices and store with a map of the sort
+	CALL GRID_SUBSCRIPT_EXTREMES(min_ss, max_ss, res_grid, axis)
+	CALL SORT_LIST(n, min_ss, max_ss,  
+     .			   mr_bad_data(mr_indices),
+     .			   mr_bad_data(mr_sorted_indices),
+     .			   memory(1,mr_blk1(mr_sorted_indices)),
+     .			   memory(1,mr_blk1(mr_index_map)), nvalid )
+
+* pass the number of valid points through the (irrelevant) T axis indices
+* of the (one-dimensional) mr_index_map array
+	mr_lo_ss( mr_index_map, t_dim ) = nvalid
+	mr_hi_ss( mr_index_map, t_dim ) = nvalid
 
 * encode both the sorted indices and the index map into the hold_isp stack
 	is_sum( hold_isp )  = mr_sorted_indices + 10000*mr_index_map

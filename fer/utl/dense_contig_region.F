@@ -1,4 +1,5 @@
-	INTEGER FUNCTION DENSE_CONTIG_REGION(index_list, istart, n,
+	INTEGER FUNCTION DENSE_CONTIG_REGION(index_list, 
+     .				istart, n,
      .				bad_flag, lo_cx_lim, hi_cx_lim )
 
 *
@@ -55,29 +56,21 @@
 	REAL index_list(n), bad_flag
 
 * internal variable declarations:
-	INTEGER i, nn
+	INTEGER i
 
 * interpal parameter declarations
 	REAL useful_fraction
 	PARAMETER (useful_fraction  = .6) !  1,3,5 ok, but 1,3,5,7 not
 
-* skip missing value flags at top of sorted index buffer
-	DO 10 i = n, istart, -1
-	   IF ( index_list(i) .NE. bad_flag ) THEN
-	      nn = i
-	      GOTO 50
-	   ENDIF
- 10	CONTINUE
-	nn = 0
 
 * is there anything left in the index buffer?
- 50	IF (istart .GT. nn) THEN
+ 50	IF (istart .GT. n) THEN
 	   DENSE_CONTIG_REGION = 0
 	   RETURN
 	ENDIF
 
 * work from the back forward to get the largest possible region
-	DO 100 i = nn, istart, -1
+	DO 100 i = n, istart, -1
 	  IF ( ((i-istart+1) / (index_list(i)-index_list(istart)+1))
      .		.GE. useful_fraction ) GOTO 1000
  100	CONTINUE

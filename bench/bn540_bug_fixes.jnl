@@ -1,0 +1,58 @@
+! bn541_bug_fixes.jnl
+! test various fixes that went into version 5.41
+! 3/02 *acm*
+!
+go bn_reset
+
+! tics on horiz log axes were wrong; (plot only)
+! GO bn_reset
+! tested in bn_logaxes (the plots will be different in 5.40 and 5.41)
+
+
+!missing vertices in polygon call
+GO bn_reset
+GO err540_polymissing
+
+! dynamic memory setup for POLYGON
+! GO bn_reset
+! see ~ansley/ans_ferret/users/brockmann/err540/err540_polygon2.jnl
+
+! formatting axis label numbers
+GO bn_reset
+GO err540_ill_format.jnl
+
+
+! variable permutation in netCDF writes
+GO bn_reset
+GO err540_write_order
+
+!@AVE error when plotting unlike grids together
+GO bn_reset
+GO err540_ax_ave
+
+!Make PPL AXSET settings persist, but not settings made w/ qualifiers /AXES= or /NOAXES
+GO bn_reset
+GO err540_axset
+
+!Previously couldn't do PLOT/VS/DASH, but no reason not to allow it.
+GO bn_reset
+GO err540_vs_dash
+
+!overlay on polygon plots
+GO bn_reset
+GO err540_poly_overlay
+
+!polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
+GO bn_reset
+GO err540_axis_symbols
+
+!nested repeat loops and parsing parentheses
+GO bn_reset
+GO err540_parse_repeat
+
+! appending a scalar to NetCDF file
+GO bn_reset
+GO err540_cd_use_recdim
+
+!missing data in xpts,ypts sample points wasnt checked 
+GO err540_samplexy_missing

@@ -1,9 +1,10 @@
 ! err540_dods_set_bad.jnl
 ! reported by Joe Sirott  4/02
+! 11/2004 change address from old ferret.wrc to www.ferret.noaa.gov
 
 set mode diag
 
-use "http://ferret.wrc.noaa.gov/cgi-bin/nph-nc/data/S19972441997273.L3m_MO_CHLO.hdf"
+use "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/S19972441997273.L3m_MO_CHLO.hdf"
 set var/bad=0 L3M_DATA  ! if omitted it works fine
 stat L3M_DATA[i=1:4096:16,j=1:2048:16]
 quit

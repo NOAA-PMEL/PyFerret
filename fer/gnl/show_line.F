@@ -44,6 +44,7 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V530:  3/01    - indicate the calendar for non-Gregorian calendar types 
 * V541 *sh*  2/02 - describe axis span and modulo length
+* V553 *acm* 6/03 - Allow for line_direction code of 'XX' or 'YY'
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -74,6 +75,22 @@
 	      GOTO 110
 	   ENDIF
  100	CONTINUE
+        IF (line_direction(line) .EQ. 'XX') THEN
+           orient = 1
+           idim = 1
+           GOTO 110
+        ENDIF
+        IF (line_direction(line) .EQ. 'YY') THEN
+           orient = 2
+           idim = 2
+           GOTO 110
+        ENDIF
+        IF (line_direction(line) .EQ. 'TT') THEN
+           orient = 4
+           idim = 4
+           GOTO 110
+        ENDIF
+
 	orient = 0
 	idim   = 1			! use X slot for non-oriented
  110	IF ( idim .EQ. 5 ) idim = 3	! DU --> UD on Z axis

@@ -43,18 +43,15 @@
 * revision 0.0 3/92 for TMAP library
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* v553 6/03 *acm*  cd_read_1_axis may assign 'XX' or 'YY' to line_direction
+*                  based on value of AXIS attribute. Or DEFINE_AXIS may 
+*                  use these for non-lat/lon axes. Assign the axis the 
+*                  corresponding direction.
 
-#ifdef unix
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
         include 'xtm_grid.cmn_text'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-#endif
 
 * calling argument declarations:
       INTEGER  iaxis
@@ -83,6 +80,12 @@
          TM_AXIS_DIRECTION = z_dim
       ELSEIF (orient .EQ. 'EW' ) THEN
          TM_AXIS_DIRECTION = x_dim
+      ELSEIF (orient .EQ. 'XX' ) THEN
+         TM_AXIS_DIRECTION = x_dim
+      ELSEIF (orient .EQ. 'YY' ) THEN
+         TM_AXIS_DIRECTION = y_dim
+      ELSEIF (orient .EQ. 'TT' ) THEN
+         TM_AXIS_DIRECTION = t_dim
       ELSE
          TM_AXIS_DIRECTION = 0
       ENDIF

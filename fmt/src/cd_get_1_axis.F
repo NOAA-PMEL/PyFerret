@@ -85,7 +85,10 @@
 * V550 *acm* 1/03 - Account for differences in behavior of CD_GET_ATTVALC
 *                   under OSF and PC.
 * V552 *acm* 1/03 - error checking on value of calendar attribute.
-* V552 *acm* 5/03   increase vname and vupcase to 128 chars 
+* V552 *acm* 5/03 - increase vname and vupcase to 128 chars 
+* V552 *acm* 6/03 - If AXIS attribute is set, put XX or YY in line_direction
+*                   at first, then determine if the axis is longitude/latitude
+* V552 *acm* 6/03 - calculate secsperyear using double precision arithmetic.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -128,7 +131,7 @@
      .        CD_GET_ATTVAL_L, 
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
-     .        got_mod, mod_tf, setmodfalse, ok_cal
+     .        got_mod, mod_tf, setmodfalse, ok_cal, ok
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
@@ -378,6 +381,7 @@ c         ENDIF
       ENDIF
 
 * try to determine the orientation and direction of the axis
+
       line_direction(iaxis) = 'NA'
 
 * ... First check for an AXIS attribute
@@ -387,11 +391,13 @@ c         ENDIF
      .              do_warn, vname(:vlen), axis_dir, 1)
       IF (got_it) THEN
          IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
-            line_direction(iaxis) = 'TI'  ! time
-         ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
-            line_direction(iaxis) = 'WE'
+            line_direction(iaxis) = 'TT'  ! time
+          ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
+c            line_direction(iaxis) = 'WE'
+            line_direction(iaxis) = 'XX'
          ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
-            line_direction(iaxis) = 'SN'
+c            line_direction(iaxis) = 'SN'
+            line_direction(iaxis) = 'YY'
          ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
             line_direction(iaxis) = 'DU'
          ENDIF
@@ -408,11 +414,13 @@ c         ENDIF
      .              do_warn, vname(:vlen), axis_dir, 1)
          IF (got_it) THEN
             IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
-               line_direction(iaxis) = 'TI'  ! time
+               line_direction(iaxis) = 'TT'  ! time
             ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
-               line_direction(iaxis) = 'WE'
+c            line_direction(iaxis) = 'WE'
+            line_direction(iaxis) = 'XX'
             ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
-               line_direction(iaxis) = 'SN'
+c            line_direction(iaxis) = 'SN'
+             line_direction(iaxis) = 'YY'
             ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
                line_direction(iaxis) = 'DU'
             ENDIF
@@ -423,7 +431,10 @@ c         ENDIF
 
 
 * ... next check units
-      IF (line_direction(iaxis) .EQ. 'NA') THEN
+
+      IF (line_direction(iaxis) .EQ. 'NA' .OR. 
+     .    line_direction(iaxis) .EQ. 'XX' .OR.
+     .    line_direction(iaxis) .EQ. 'YY') THEN
 
       IF ( units .LT. 0 ) THEN
          line_direction(iaxis) = 'TI'  ! time
@@ -436,25 +447,17 @@ c         ENDIF
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'WEST')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN 
             line_direction(iaxis) = 'WE'
-         ELSEIF ( vupcase(1:1) .EQ. 'Y'
-     .   .OR. INDEX(vupcase, 'LAT') .GT. 0 ) THEN
-            line_direction(iaxis) = 'SN'
-         ELSEIF ( vupcase(1:1) .EQ. 'X'
-     .   .OR. INDEX(vupcase, 'LON') .GT. 0 ) THEN
-            line_direction(iaxis) = 'WE'
-! 8/97: "Y" anywhere in name as a last ditch attempt to id it
-         ELSEIF ( INDEX(vupcase, 'Y')   .GT. 0 ) THEN
-            line_direction(iaxis) = 'SN'
-         ELSE
-            line_direction(iaxis) = 'WE'
-         ENDIF
+        ENDIF
+
       ELSEIF ( units .EQ. pun_millibars
      .   .OR.  units .EQ. pun_decibars ) THEN 
          line_direction(iaxis) = 'UD'
       ELSEIF ( units .EQ. 14
      .   .OR.  units .EQ. 15   ) THEN         ! layer or level
          line_direction(iaxis) = 'UD'
+
 * ... then check axis name for clues
+
       ELSEIF ( INDEX(vupcase, 'TIME') .GT. 0
      .   .OR.  INDEX(vupcase, 'DATE') .GT. 0
      .   .OR.  vupcase .EQ. 'T'               ) THEN
@@ -462,8 +465,7 @@ c         ENDIF
       ELSEIF ( INDEX(vupcase, 'DEPTH') .GT. 0 ) THEN
          line_direction(iaxis) = 'UD'
       ELSEIF ( INDEX(vupcase, 'ELEV') .GT. 0
-     .   .OR.  INDEX(vupcase, 'HEIGHT') .GT. 0
-     .   .OR.  INDEX(vupcase, 'Z'   ) .GT. 0  ) THEN
+     .   .OR.  INDEX(vupcase, 'HEIGHT') .GT. 0 ) THEN
          line_direction(iaxis) = 'DU'
 * ... then check stray clues
       ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN
@@ -474,6 +476,27 @@ c         ENDIF
 
       ENDIF      ! IF (line_direction(iaxis) .EQ. 'NA') THEN
 
+
+! Try variable name clues
+
+      IF (units .EQ. 4) THEN    ! degrees
+         IF (line_direction(iaxis) .EQ. 'NA' ) THEN
+            IF ( vupcase(1:1) .EQ. 'Y'
+     .      .OR. INDEX(vupcase, 'LAT') .GT. 0 ) THEN
+               line_direction(iaxis) = 'SN'
+            ELSEIF ( vupcase(1:1) .EQ. 'X'
+     .      .OR. INDEX(vupcase, 'LON') .GT. 0 ) THEN
+               line_direction(iaxis) = 'WE'
+! 8/97: "Y" anywhere in name as a last ditch attempt to id it
+            ELSEIF ( INDEX(vupcase, 'Y')   .GT. 0 ) THEN
+               line_direction(iaxis) = 'SN'
+            ELSEIF ( INDEX(vupcase, 'Z'   ) .GT. 0  ) THEN
+               line_direction(iaxis) = 'DU'
+            ELSE
+               line_direction(iaxis) = 'WE'
+            ENDIF
+         ENDIF
+      ENDIF
 
 * Note: there are some unfortunate ambiguities about how the TMAP library
 *     uses line_direction:  it refers both to orientation and to the formatting
@@ -777,7 +800,11 @@ c         ENDIF
 * if it is a calendar time axis and the first point is in year 0000 or 0001
 * then it is implicitly MODULO
         IF (got_torg) THEN
-          secsperyear = cals_yeardays(cal_id) * (24*60*60)
+           line_direction(iaxis) = 'TI'
+c          secsperyear = cals_yeardays(cal_id)* 24*60*60
+          tmp = cals_yeardays(cal_id)
+          secsperyear = tmp * (24.D0*60.D0*60.D0)
+
           CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, year, month, day,
      .                       hour, minute, second, istat)
           t0_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
@@ -798,7 +825,8 @@ c         ENDIF
         IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
            IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
              line_modulo_len(iaxis) = 0.0D0
-             IF (.NOT. TM_DFPEQ(axwwlen, line_modulo_len(iaxis)))
+             ok = TM_DFPEQ(axwwlen, line_modulo_len(iaxis)) 
+             IF (.NOT.  ok)
      .          CALL TM_NOTE(
      .          'Ignored modulo length exceeding axis length: '
      .          //vname(:vlen), tt )

@@ -288,35 +288,32 @@ xx        include 'netcdf.decl'  ! untested
            ENDIF
         ENDIF
 
-
-
-* Write AXIS attribute
-
-      slen = TM_LENSTR1( 'X' )
-      IF (idim .eq. x_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
-     .        	      slen, 'X', cdfstat )
-      ENDIF
-      IF (idim .eq. y_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
-     .        	      slen, 'Y', cdfstat )
-      ENDIF
-      IF (idim .eq. z_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
-     .        	      slen, 'Z', cdfstat )
-      ENDIF
-      IF (idim .eq. t_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'AXIS', NCCHAR, 
-     .        	      slen, 'T', cdfstat )
-      ENDIF
-
-
-
 * set up for deferref writing of coordinate values (12/00)
 	CALL CD_DEFER_COORD_WRITE(axid, grid, idim, lo, hi,
      .				  pcd_defer_points)
 
       ENDIF
+
+* Write AXIS attribute
+
+      slen = TM_LENSTR1( 'X' )
+      IF (idim .eq. x_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
+     .        	      slen, 'X', cdfstat )
+      ENDIF
+      IF (idim .eq. y_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
+     .        	      slen, 'Y', cdfstat )
+      ENDIF
+      IF (idim .eq. z_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
+     .        	      slen, 'Z', cdfstat )
+      ENDIF
+      IF (idim .eq. t_dim) THEN
+          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
+     .        	      slen, 'T', cdfstat )
+      ENDIF
+
 
 * does it need axis box edge definitions ?
       IF (  (ax_type .EQ. pcdf_full_span
@@ -347,7 +344,7 @@ xx        include 'netcdf.decl'  ! untested
  5100 CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
      .   unspecified_int4,
-     .  'AXIS '//name(:nlen)//' doesnt match CDF file',
+     .  'axis '//name(:nlen)//' doesnt match CDF file',
      .  no_errstring, *5900 )
 
  5200        CALL TM_ERRMSG

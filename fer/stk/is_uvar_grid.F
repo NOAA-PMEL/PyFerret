@@ -79,6 +79,9 @@
 * V533 7/01 *sh* - save the data type of the result
 *	         - process alg_if_marker in support of IF cond THEN string
 * V540 10/01 *sh* - fix bug in IF-THEN hack when 2nd pass is required
+* V541  4/02 *sh* - fix bug in IF-THEN: err540_data_type.jnl
+*                   constants were not processed, so PLOT IF X GT 5 THEN 1
+*                   failed to pick up the data type of the constant 1
 
 * calling argument declarations:
 	INTEGER	status
@@ -150,7 +153,9 @@
 	   GOTO 305
 	ELSEIF ( itype .EQ. alg_string      ) THEN
 	   GOTO 400
-	ELSEIF ( itype .EQ. alg_then_marker ) THEN
+	ELSEIF ( itype .EQ. alg_constant    ) THEN
+	   GOTO 410
+	ELSEIF ( itype .EQ. alg_then_marker ) THEN  ! marks where the IF was
 	   GOTO 450
 	ELSE
 	   GOTO 100
@@ -252,6 +257,24 @@
      .                          status )
         IF ( status .NE. ferr_ok ) RETURN
 	GOTO 500		! go merge it
+
+* constant (float)
+* this block is only for the purpose of setting the data type of the result
+* ... in case the result is only a constant (in an IF-THEN expression)
+! ... The grid is unspecified for a constant
+ 410	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
+	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   hi_cx = cx_stack_ptr
+           CALL CONSTANT_CONTEXT ( uvar_text(uvar)(start:end),
+     .                             lo_cx,
+     .                             hi_cx,
+     .                             status )
+           IF ( status .NE. ferr_ok ) RETURN
+	   cx_type(big_cx) = cx_type(hi_cx)
+	   cx_stack_ptr = cx_stack_ptr - 1
+	ENDIF
+	GOTO 100
 
 * "IF" marker in an "IF condition THEN result1 ELSE result2" structure
 * ... The data type of the result depends only on the result clauses

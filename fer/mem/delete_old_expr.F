@@ -1,7 +1,5 @@
 	SUBROUTINE DELETE_OLD_EXPR
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -50,16 +48,13 @@
 * revision 1.1 - 5/6/87  - corrected bug in UVAR_NUMBER (status) call
 * V200:   7/7/89 - expression may have been deleted outside this routine
 * 	 2/19/90 - major rewrite: loop through ALL user vars deleting "EX#"
+* V540:  11/01 - initialize last_cmnd_buff
+*	         (formerly local array in get_prot_cmnd_data)
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
+	include 'xprog_state.cmn'
 
 * internal variable declarations:
 	INTEGER	uvar
@@ -70,6 +65,10 @@
 	   IF ( uvar_name_code(uvar)(:3) .EQ. 'EX#' )
      .					CALL DELETE_USER_VAR( uvar )
  100	CONTINUE
+
+* remove memory of previous expressions
+	last_cmnd_buff = ' '
+	len_last_cmnd = 1
 
 	RETURN
 	END

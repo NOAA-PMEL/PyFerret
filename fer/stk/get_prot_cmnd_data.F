@@ -86,8 +86,8 @@
 *		Added call to ALL_1_ARG
 * V530: *sh* 9/00 - added data type ad an argument
 *		  - increased size of "last" stored command
+* V540: *sh* 11/00 - "last" var init moved to DELETE_OLD_EXPR
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -95,30 +95,14 @@
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	dflt_cx, dtype, status
 	REAL	memory(*) 
 
 * local variable declarations
-	INTEGER		TM_LENSTR1, nu, cx_expr, laslen
-	DATA	 	laslen/200/
-	CHARACTER	EXPR_NAME*8, VAR_CODE*32, last*2048, buff*32
-
-* for compilers that put variables on stacks:
-* not for f90 *kob* 12/96
-#ifndef FORTRAN_90
-        SAVE  last, laslen
-#endif
+	INTEGER		TM_LENSTR1, nu, cx_expr
+	CHARACTER	EXPR_NAME*8, VAR_CODE*32, buff*32
 
 * initialize grid stack pointer (pushes down from top)
 	grd_stk_ptr = max_grids
@@ -139,11 +123,12 @@
 * ... eg. LIST U^2,V^2 breaks into "U^2" and "V^2"
 * ... or re-use the last expression ?
 	IF ( num_args .GT. 0 ) THEN
-	   IF ( last(:laslen) .NE. cmnd_buff(arg_start(1):arg_end(1)) 
+	   IF ( last_cmnd_buff(:len_last_cmnd)
+     .     .NE.      cmnd_buff(arg_start(1):arg_end(1)) 
      .	   .OR. num_uvars_in_cmnd .EQ. cmnd_uvars_not_given 		) THEN
-	      last = cmnd_buff(arg_start(1):arg_end(1))
-	      laslen = arg_end(1) - arg_start(1) + 1
 	      CALL DELETE_OLD_EXPR
+	      last_cmnd_buff = cmnd_buff(arg_start(1):arg_end(1))
+	      len_last_cmnd  = arg_end(1) - arg_start(1) + 1
 	      CALL BREAK_UP_EXPR( cmnd_buff(arg_start(1):arg_end(1)),
      .				  num_uvars_in_cmnd, status )
 	      IF ( status .NE. ferr_ok ) THEN

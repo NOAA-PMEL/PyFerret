@@ -21,6 +21,7 @@
 *		  - increased max_item_list 25 -> 250
 *       4/01 *sh* - added in_get_grid_mode (for future use)
 *      10/01 *acm*- increased max_qual_list; CONTOUR needed more with /AXES=
+* V540:11/00 *sh* - added array last_cmnd_buff (formerly in get_prot_cmnd_data)
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -95,7 +96,7 @@
 	INTEGER
      .		prompt_len,
      .		input_source,
-     .		cmnd_num, len_cmnd, subcmnd_num,
+     .		cmnd_num, len_cmnd, len_last_cmnd, subcmnd_num,
      .		num_qualifiers, qualifier_list, qual_start, qual_end,
      .		qual_given,
      .		num_args,  arg_start,  arg_end,
@@ -123,6 +124,7 @@
 ! Note: available_char_var is unused
 	CHARACTER
      .		cmnd_buff*2048,
+     .		last_cmnd_buff*2048,
      .		prompt*8,
      .		list_format*200, list_file*200,
      .		mode_name( max_modes )*12,
@@ -147,8 +149,8 @@
      .		interactive, prompt, prompt_len, 
      .		input_source, mouse_input,
      .		if_conditional, ifstk, if_cs, if_doing,
-     .		cmnd_buff,
-     .		len_cmnd, cmnd_num, subcmnd_num,
+     .		cmnd_buff, last_cmnd_buff,
+     .		len_cmnd, len_last_cmnd, cmnd_num, subcmnd_num,
      .		num_qualifiers, qualifier_list(max_qual_list),
      .		qual_start(max_qual_list), qual_end(max_qual_list),
      .		qual_given(max_qual_list),

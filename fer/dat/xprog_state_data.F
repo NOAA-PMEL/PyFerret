@@ -1,7 +1,5 @@
 	BLOCK DATA XPROG_STATE_DATA
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -91,6 +89,7 @@
 * V420:	 4/28/96 - added initialization for IF-stack (ifstk)
 * V450:	 11/19/96 - eliminated MODE POLISH
 * V510 5/00 *sh* - added denig_x/ylim_msg_done
+* V540 11/01 *sh* - initialize last_cmnd_buff
 
 #ifdef unix
 	include 'ferret.parm'
@@ -111,6 +110,9 @@
 
 	DATA	input_source	/ input_from_tty /,
      .		mouse_input 	/.FALSE./
+
+	DATA	last_cmnd_buff/' '/,
+     .		len_last_cmnd/1/
 
 * I/O logical unit numbers
 #ifdef unix

@@ -168,27 +168,31 @@
 
 *	NO PARAMETERS RESETS SPECTRUM TO GRAY SCALE
 	if (m .eq. 0) then
-
            if (rgb_mapping .eq. by_value) then
               ncl = 0
            else
               ncl = 2
-              slvl(1) = 0.0
-              slvl(2) = 100.0
+              if (rgb_mapping .eq. by_level) then
+                 slvl(1) = 1.0
+                 slvl(2) = 2.0
+              else
+                 slvl(1) = 0.0
+                 slvl(2) = 100.0
+              end if
            end if
-                   
-	   sr(1) = 0.0
-	   sg(1) = 0.0
-	   sb(1) = 0.0
-
-	   sr(2) = 1.0
-	   sg(2) = 1.0
-	   sb(2) = 1.0
-
-	   return
-	end if
-
-*	LISTING ONLY THE FIRST PARAMETER DELETES THAT LEVEL
+           
+           sr(1) = 0.0
+           sg(1) = 0.0
+           sb(1) = 0.0
+           
+           sr(2) = 1.0
+           sg(2) = 1.0
+           sb(2) = 1.0
+           
+           return
+        end if
+        
+*       LISTING ONLY THE FIRST PARAMETER DELETES THAT LEVEL
 	if (m .eq. 1) then
            if (rgb_mapping .eq. percent .and. 
      .          (p(1) .eq. 0.0 .or. abs(p(1)) .ge. 100.0)) return
@@ -323,7 +327,7 @@
 	end if
 
         if (index (str, 'BY_LEVEL') .ne. 0) then
-           rgb_mapping = 2
+           rgb_mapping = by_level
            goto 10
 	end if
 
@@ -444,23 +448,27 @@
            if (level .ne. 0)      rgb_mapping = by_level
 
 *	   RESET SPECTRUM TO GRAY SCALE
-
            if (rgb_mapping .eq. by_value) then
               ncl = 0
            else
               ncl = 2
-              slvl(1) = 0.0
-              slvl(2) = 100.0
+              if (rgb_mapping .eq. by_level) then
+                 slvl(1) = 1.0
+                 slvl(2) = 2.0
+              else
+                 slvl(1) = 0.0
+                 slvl(2) = 100.0
+              end if
            end if
-                   
-	   sr(1) = 0.0
-	   sg(1) = 0.0
-	   sb(1) = 0.0
-
-	   sr(2) = 1.0
-	   sg(2) = 1.0
-	   sb(2) = 1.0
-
+           
+           sr(1) = 0.0
+           sg(1) = 0.0
+           sb(1) = 0.0
+           
+           sr(2) = 1.0
+           sg(2) = 1.0
+           sb(2) = 1.0
+           
            goto 10
         end if
         

@@ -4,14 +4,13 @@
 
 ! Description: Overlay error bars on a plot
 
-! Usage:                   $1      $2 $3   $4       $5          $6
-! yes?  GO error_bars plot_command xp yp errors [err_down] ["transpose"]
+! Usage:                   $1       $2   $3       $4           $5
+! yes?  GO error_bars plot_command base errors [err_down] ["transpose"]
 ! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/LINE=2)
-! $2 - X coordinates of points to be marked
-! $3 - Y coordinates of points to be marked
-! $4 - error values associated with points (or error limit above)
-! $5 - [optional] error limit below (if different that $4)
-! $6 - [optional] "transpose" to interchange X and Y axes
+! $2 - underlying points to be marked with error bars
+! $3 - error values associated with points (or error limit above)
+! $4 - [optional] error limit below (if different that $4)
+! $5 - [optional] "transpose" to interchange X and Y axes
 
 ! example
 ! Define synthetic data
@@ -25,28 +24,34 @@
 !	yes? GO error_bars poly/line=2 xpts ypts errup errdn
 
 ! argument check
-QUERY/IGNORE $1"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
-QUERY/IGNORE $2"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
-QUERY/IGNORE $3"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
-QUERY/IGNORE $4"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
+QUERY/IGNORE $1%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%
+QUERY/IGNORE $2%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%
+QUERY/IGNORE $3%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%
 
 ! save the input expressions into simple variable definitions
-LET/QUIET ERBx = ($2)
-LET/QUIET ERBy = ($3)
-LET/QUIET ERBerr_up = ($4)
-IF $5"0|*>1" THEN
-   LET/QUIET ERBerr_dn = ($5)
+LET/QUIET ERBy = ($2)
+LET/QUIET ERBerr_up = ($3)
+IF $4"0|*>1" THEN
+   LET/QUIET ERBerr_dn = ($4)
 ELSE
    LET/QUIET ERBerr_dn = ERBerr_up
 ENDIF
-DEFINE SYMBOL ERBis_transposed  $6"0|*>1"
+DEFINE SYMBOL ERBis_transposed  $5"0|*>1"
 
 ! determine the orientation of the data (and check that it is 1D)
-DEFINE SYMBOL ERBdim `ERBx,return=shape`
-DEFINE SYMBOL ERBbar_dim ($ERBdim"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+DEFINE SYMBOL ERBax `ERBy,return=shape`
+DEFINE SYMBOL ERBbar_dim ($ERBax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+DEFINE SYMBOL ERBiax ($ERBax"|X>i|Y>j|Z>k|T>l")
+
+! get the dependent coordinates -- needed since POLYGON is like PLOT/VS
+! typically, "0*ERBy + X[i=lo:hi]", so X is inherited from ERBy
+DEFINE SYMBOL ERBilo `ERBy,return=($ERBiax)start`
+DEFINE SYMBOL ERBihi `ERBy,return=($ERBiax)end`
+LET/QUIET ERBx_raw =  0*ERBy + ($ERBax)
+LET/QUIET ERBx = ERBx_raw[($ERBiax)=($ERBilo):($ERBihi)]
 
 ! Z axis plots have a reversed sense of "transposed"
-IF ($ERBdim"|Z>1|*>0") THEN
+IF ($ERBax"|Z>1|*>0") THEN
    DEFINE SYMBOL ERBis_transposed  ($ERBis_transposed"|0>1|1>0")
 ENDIF
 IF ($ERBis_transposed) THEN

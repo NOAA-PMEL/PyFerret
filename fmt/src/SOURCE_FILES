@@ -96,6 +96,7 @@ tm_dfpeq.F\
 tm_digit.F\
 tm_dset_number.F\
 tm_errmsg.F\
+tm_exit.F\
 tm_exp_code.F\
 tm_f7721bug_inquire.F\
 tm_fill.F\

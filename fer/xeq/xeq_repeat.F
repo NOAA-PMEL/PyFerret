@@ -56,6 +56,8 @@
 *         whether time is date or timesteps
 * 12/97 *kob* - use new logical cs_is_calendar
 * V554 1/04 *acm* - additions for /RANGE repeat loop control
+* V56  3/04 *acm* - initialize cat flag before error checks; change messages when
+*                   user attempts to use a pseudo-variables for /NAME=
 
 	include	'ferret.parm'
 	include	'command.parm'
@@ -77,11 +79,11 @@
 	INTEGER	INDEX, i, idim, limits_cx, status, csp1, rlo, rhi, rdel
 	REAL*8	temp
  
-	INTEGER STR_UPCASE, loc, equal_pos, last_pos, dflt_cx, cvar,
-     .          istart, iflag, locr, cat, var
+	INTEGER STR_UPCASE, TM_LENSTR1, loc, equal_pos, last_pos, 
+     .          dflt_cx, cvar, istart, iflag, locr, cat, var, slen
 	REAL val
 	CHARACTER GKS_X_CONID*16, anim_win_id*16, counter_name*128
-	LOGICAL loop
+	LOGICAL MATCH_NAME, loop
 
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
@@ -140,10 +142,22 @@
              IF ( status .NE. ferr_ok ) GOTO 5000
 
 * Check for legal name: not already defined, not a pseudo-var
+* Only check for pseudo_vars I,J,K,L, X,Y,Z,T.  These cannot
+* be used as counter vars.
 
+             cat = 0
 	     CALL FIND_VAR_NAME ( pdset_irrelevant, counter_name, 
      .                            cat, var )
-             IF ( cat .EQ. cat_pseudo_var   ) GOTO 5200
+             IF ( cat .EQ. cat_pseudo_var   ) THEN  
+                DO var = 1, 9
+                  IF (MATCH_NAME(counter_name, alg_pvar(var) ) )
+     .                 GOTO 5200
+                ENDDO
+                DO var = 10, num_pseudo_vars
+                  IF (MATCH_NAME(counter_name, alg_pvar(var) ) )
+     .                 GOTO 5250
+                ENDDO
+             ENDIF
              IF ( cat .EQ. cat_counter_var   ) GOTO 5400
 
           ENDIF
@@ -389,10 +403,17 @@
  5100	CALL ERRMSG( ferr_invalid_command, status,
      .		'REPEAT/NAME requires /RANGE', *5000 )
  5200   CALL ERRMSG( ferr_syntax,status,
-     .  'cannot use pseudo-variable name for repeat counter: '
-     .              //counter_name,*5000 )
+     .  counter_name(1:1)//
+     . ' is a pseudo-variable; '
+     . //'cannot use with REPEAT/RANGE/NAME.'
+     . //' Instead use REPEAT/'//counter_name(1:1)//'=',*5000 )
+ 5250  slen = TM_LENSTR1(counter_name)
+       CALL ERRMSG( ferr_syntax,status,
+     .  counter_name(1:slen)//' is a pseudo-variable; '
+     . //'cannot use with REPEAT/RANGE/NAME=',*5000 )
  5300   CALL ERRMSG( ferr_syntax,status,
-     .  'REPEAT/RANGE cannot be used with an axis qualifier '//cmnd_buff ,*5000 )
+     .  'REPEAT/RANGE cannot be used with an axis qualifier '//
+     .  cmnd_buff ,*5000 )
 
  5400   CALL ERRMSG( ferr_syntax,status,
      .  'nested REPEAT loops with the same counter name '

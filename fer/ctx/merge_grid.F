@@ -55,6 +55,10 @@
 *		   Maintain cx_given for the merged data set.
 *		   Added a row to the ax_choice table to deal with merged
 *			axis that was "uvlim_irrelevant"
+* V491:   2/98   - 1/97 check at line 400 for unspec cx_lo_ww introduced a bug
+*                 in cases like LET p=i[i=1:5]; LET q=i[i=1:5]; LET pq=p*q;
+*                 uvar_given for pq was set to uvlim_irrelevant instead of 
+*                 uvlim_gvn_gnl
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -278,6 +282,7 @@
 * inside of the component definition.
 * Now we use expl_com_lim instead.
 * 1/97: avoid uvlim_irrelevant mistakenly implying expl_com_lims is TRUE
+*       by performing a more careful check on uvar_given than was done
 	   expl_com_lim = cx_given(idim,com_cx)
 	   IF ( nest ) expl_com_lim = expl_com_lim .OR. 
      .		    (     uvar_given(idim,com_uvar).LE.uvlim_gvn_xact     
@@ -389,8 +394,17 @@
 * com_class encodes the way limits are given in this component
 * uv_class is an intermediate for computing uvar_lim
 * ... first the a/b option in the joint_limit_match table
- 400	   IF ( cx_lo_ww(idim,com_cx) .EQ. unspecified_val8 ) GOTO 500  ! 1/97
+
+* ... first screen out irrelevant cases
+* 2/98 - for a component which is a uvar uvar_given tells if it is irrelevant  
+*        For a component which is not, cx_lo_ww was already used prior to 2/98
+ 400	   IF ( nest ) THEN
+	      IF (uvar_given(idim,com_uvar).EQ.uvlim_irrelevant) GOTO 500
+	   ELSE
+	      IF (cx_lo_ww(idim,com_cx) .EQ. unspecified_val8) GOTO 500 ! 1/97
+	   ENDIF
 	   IF ( uvar_given(idim,uvar) .EQ. uvlim_need_xact ) GOTO 500
+
 * get limits-region class of new component
 	   IF ( nest ) THEN
 	      com_class = NEST_REGION_CLASS( idim, com_cx, com_uvar )

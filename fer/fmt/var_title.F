@@ -59,6 +59,9 @@
 * V500 *kob* 3/99- up VAR_CODE to 64 chars
 * V530  8/00 *sh8 - added support for cat_string
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+* v553 *kob* 9/03- need to add buff, slen for assignment of VAR_TITLE - 
+*                  g77 bug would cause crash when trying to prepend chars
+*                  onto CHAR function variable 
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -88,10 +91,10 @@
 * internal variable declarations
 	LOGICAL 	UNIT_CHG_AX
 	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
-     .			uvar, item, start, end
+     .			uvar, item, start, end, slen
 	CHARACTER	AX_TITLE*32, VAR_CODE*128, TM_FMT*10,
      .                  REPLACE_DEQ*180,   ! .GT. uvar_text_len
-     .                  buff1*32, buff2*10
+     .                  buff1*32, buff2*10, buff*2048
 
 * initialize
 	var = cx_variable( cx )
@@ -166,7 +169,9 @@
 	      VAR_TITLE = buff1(:tlen)//' of '//buff2(:llen)//' in '//
      .		          VAR_TITLE
 	   ELSEIF ( trans .EQ. punit_mod_variance ) THEN
-	      VAR_TITLE = 'Variance of '//VAR_TITLE
+	      buff = VAR_TITLE
+	      slen = TM_LENSTR1(buff)		
+	      VAR_TITLE = 'Variance of '//buff(:slen)
 	   ELSEIF ( trans .EQ. punit_mod_npoints ) THEN
 	      CONTINUE		! units take care of this
 	   ENDIF	      

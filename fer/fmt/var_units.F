@@ -50,6 +50,9 @@
 * V420: variable units may be modified by regrid transforms of the variable
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 * V530  8/00 *sh* - added support for cat_string
+* v553 *kob* 9/03- need to add buff, slen for assignment of VAR_UNITS - 
+*                  g77 bug would cause crash when trying to prepend chars
+*                  onto CHAR function variable 
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -79,7 +82,7 @@
 * internal variable declarations
 	LOGICAL UNIT_CHG_AX
 	INTEGER	TM_LENSTR1, slen, category, variable, idim, axis, trans
-
+	CHARACTER*2048 buff
 
 * initialize
 	category = cx_category( cx )
@@ -119,7 +122,8 @@
 	   ELSEIF ( trans .EQ. punit_mod_variance ) THEN
 	      IF ( VAR_UNITS .NE. ' ' ) THEN
 	         slen = TM_LENSTR1(VAR_UNITS)
-	         VAR_UNITS = '('//VAR_UNITS(:slen) // ')^2'
+		 buff = VAR_UNITS
+	         VAR_UNITS = '('//buff(:slen) // ')^2'
 	      ENDIF
 	   ELSEIF ( trans .EQ. punit_mod_npoints ) THEN
 	      VAR_UNITS = '# of points'

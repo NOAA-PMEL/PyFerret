@@ -40,6 +40,9 @@
 *			(eg.) TEMP[D=n,G=gname] (with optional region info)
 * return context information describing variable and data set
 
+* NOTE: THIS ROUTINE MAY CREATE AN IMPLICIT GRID that needs to be managed
+*	Check cx_has_impl_grid(mods_cx) in calling routine
+
 * Note that "dset" is both an input and output:  on input it is the
 *		default data set to be searched.  On output it is the
 *		data set that is correct.
@@ -51,6 +54,7 @@
 * V450: 1/97 - use local variables instead of xPROG_STATE vars for item_start
 *		etc. to avoid conflict. (But share the max_item_list parameter
 *		from the COMMON area.
+* V500: *sh* 3/99 -- added comment WATCH IMPLICIT GRID MANAGEMENT
 	
 #ifdef unix
 	include	'ferret.parm'

@@ -29,7 +29,6 @@ fer	fer
 ppl	ppl
 fmt 	fmt
 gksm2ps gksm2ps
-fer_all fer ppl fmt gksm2ps
 
 #new one
 corba 	corba

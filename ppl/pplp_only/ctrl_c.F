@@ -53,6 +53,8 @@
 *
 * revision 0.00 - 11/27/87 SH based on QINTERRUPT from program PRNT 8/2/85
 * Unix/RISC port 3/18/91
+* 
+* 1/03 *kob* - g77 port - SIGNAL function for g77 only requires two arguments
 
 * argument: CTRLC_AST
 *	name of routine to be called if operator hits ^C
@@ -70,7 +72,11 @@ CC	Fix for fortran 90 -- initialize in data stmt
 
 #ifdef unix
 * ************************ UNIX ******************************
+#ifdef NEED_SIGNAL_UNDERSCORE
+      INTEGER SIGNAL_, old_handler, sigint
+#else
       INTEGER SIGNAL, old_handler, sigint
+#endif
 * (see unix man signal or the include file < signal.h >)
       PARAMETER ( sigint = 2 )
 
@@ -84,7 +90,13 @@ C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C Comment out the D lines FORTRAN_90 *jd* 1.21.97
 C "D" lines to disable disabled
 CD     GOTO 888
+#ifdef NEED_SIGNAL_UNDERSCORE
+      IF (first_call) old_handler = SIGNAL_( 2, CTRLC_AST, -1 )
+#elif defined G77_SIGNAL
+      IF (first_call) old_handler = SIGNAL( 2, CTRLC_AST)
+#else 
       IF (first_call) old_handler = SIGNAL( 2, CTRLC_AST, -1 )
+#endif
 CD 888 CONTINUE
 #else
 * ************************ VMS ******************************

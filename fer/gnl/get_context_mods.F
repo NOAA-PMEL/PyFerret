@@ -132,6 +132,9 @@
 *              constant equivalent - needed for g77 port
 * V552 3/03 *acm* - variable "name" may be the name of a dataset, 
 *                    increase its length from 48 to 512 characters.
+* V552 5/03 *acm* - bug fixes for parsing mulit-axis regrids, when uvar is
+*                   not loaded [gxy=var]  and [gxy=var[d=dset]]
+
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
 * the specifiers may be of any of the following forms:
@@ -185,7 +188,7 @@
      .			letter, letter2
 	CHARACTER	name*512, comment*12, transnam*6, buff*32
 	REAL*8		temp
-	INTEGER		dstart, dend, lbrac, state, gdset
+	INTEGER		dstart, dend, lbrac, state, gdset, itest, nend
 
 * internal parameter declarations:
 	CHARACTER*1	tab
@@ -331,6 +334,7 @@
 	   ELSE
 	      name_end = namlen
 	   ENDIF
+	   nend = name_end
 
 * allow multiple axes at once as in "GXY=ggg" (12/99 hack)
 	   IF (.NOT.single_char) THEN
@@ -343,6 +347,7 @@
  102          CONTINUE
 ! can never get here ...
  103	      naxes = i - istart - 1
+c	      next_char = istart + naxes - 1
 	      next_char = istart
 	   ENDIF
 
@@ -402,6 +407,9 @@
 *	or pseudo-variable context.  A new hi_cx has to be set up for the g=
 *	user variable and then RETURN to get that component
 *    7/95: allow embedded data set info "vname[D=dset]"
+*    5/03: bug fix: [gxy=var[d=dset]] failed because name_end was reset in this
+*                   section, but is needed when we go back for next axis: use nend
+
 	         lbrac = INDEX(name(:name_end),"[")
 *33333333333333333
 	         IF (lbrac .GT. 0) THEN
@@ -409,7 +417,7 @@
 	            IF ( lbrac .EQ. name_end ) GOTO 5056
 	            dend = INDEX(name(lbrac+1:name_end),"]")
 	            IF ( dend .EQ. 0 ) GOTO 5056
-	            name_end = lbrac-1		! variable name end
+	            nend = lbrac-1		! variable name end
 	            dend   = dend + lbrac - 1	! embedded data set name end
 * ... parse "[D=dset]"
 	            state = looking_for_D
@@ -447,7 +455,7 @@
 	         ENDIF
 * ... end of 7/95 additions
 * ... which variable (from which to borrow grid)?
-	         CALL FIND_VAR_NAME( gdset, name(:name_end),
+	         CALL FIND_VAR_NAME( gdset, name(:nend),
      .                               category, variable )
 	         IF ( category .EQ. cat_pseudo_var ) GOTO 5055
 *33333333333333333
@@ -463,7 +471,16 @@
 * ... 8/99 -- allow G=uvar where uvar may be unknown at this point
 		    IF ( grid     .EQ. unspecified_int4
      .		   .AND. category .EQ. cat_user_var ) THEN	! g=??uvar??
-	              IF (cx_grid(mods_cx) .NE. unspecified_int4) GOTO 5022
+	              IF (cx_grid(mods_cx) .NE. unspecified_int4 .AND.
+     .                  naxes .GT. 1) THEN
+
+* ... 3/03 -- Have we already encoded start/end limits of the uvar name on a  
+*             previous reference to the same uvar?  Needed for [gxy=uvar]
+
+                         itest = unspecified_int4 - (equal_pos+1 + 2000*iend)
+                         IF (cx_grid(mods_cx) .NE. itest ) GOTO 5022
+                      ENDIF
+
 		      has_g_eq_unkn_uvar = .TRUE.
 *       HACK!: encode the start/end limits of the uvar name into the grid !!!
 		      cx_grid(mods_cx) = unspecified_int4
@@ -496,6 +513,7 @@
 *33333333333333333
 	         ELSE
 * ... as a last resort maybe it is an axis name (9/95)
+c	            axis = TM_GET_LINENUM( name(:nend) )
 	            axis = TM_GET_LINENUM( name(:name_end) )
 		    IF ( axis .EQ. unspecified_int4 ) THEN
 	               GOTO 5050	! final defeat

@@ -5,7 +5,8 @@
 # platform specific macros
 
 
-INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
+		  -I$(TMAP_LOCAL)/src/xgks/include \
   		  -I../../ppl/include/xgks \
 		  -I/usr/local/include \
 		  -I$(TMAP_LOCAL)/src/xgks/port \
@@ -45,7 +46,7 @@ GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
 HDFLIB		= -L/usr/local/lib -ldf -ljpeg -lz
 
-CDFLIB		= -lnetcdf
+CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
 
 
 #

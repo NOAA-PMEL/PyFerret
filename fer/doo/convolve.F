@@ -50,7 +50,9 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  6/2/89
-*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
+*	10/11/89 - modified array declarations using XMEM_SUBSC.CMN 
+* V500: bug fix *sh* & *kob* 4/99 -  add code to make sure that component
+*                                    limits are adequate
 
 #ifdef unix
 	include	'ferret.parm'
@@ -90,8 +92,6 @@
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
  10	CONTINUE
-	lo_sub(idim) = cx_lo_ss(com_cx,idim) + hlen
-	hi_sub(idim) = cx_hi_ss(com_cx,idim) - hlen
 
 * !temp - not optimized for speed yet
 * ... though treating each axis separately is to avoid testing inside the loop
@@ -103,7 +103,15 @@
 	   DO 110 i = lo_s1, hi_s1
 	      sum = 0.0
 	      DO 100 ii = -hlen, hlen
-	         comp = com(i+ii,j,k,l)	! the only line different w/ each axis
+* test limits of component data before using
+                 IF ( i+ii .GE. cx_lo_ss(com_cx,idim)
+     .          .AND. i+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                    comp = com(i+ii,j,k,l)
+                 ELSE
+                    res(i,j,k,l) = bad_res
+                    GOTO 110
+                 ENDIF
+
 	         IF ( comp .EQ. bad_com ) THEN
 	            res(i,j,k,l) = bad_res
 	            GOTO 110
@@ -122,7 +130,15 @@
 	   DO 210 i = lo_s1, hi_s1
 	      sum = 0.0
 	      DO 200 ii = -hlen, hlen
-	         comp = com(i,j+ii,k,l)	! the only line different w/ each axis
+* test limits of component data before using
+                 IF ( j+ii .GE. cx_lo_ss(com_cx,idim)
+     .          .AND. j+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                    comp = com(i,j+ii,k,l)
+                 ELSE
+                    res(i,j,k,l) = bad_res
+                    GOTO 210
+                 ENDIF
+
 	         IF ( comp .EQ. bad_com ) THEN
 	            res(i,j,k,l) = bad_res
 	            GOTO 210
@@ -141,7 +157,15 @@
 	   DO 310 i = lo_s1, hi_s1
 	      sum = 0.0
 	      DO 300 ii = -hlen, hlen
-	         comp = com(i,j,k+ii,l)	! the only line different w/ each axis
+* test limits of component data before using
+                 IF ( k+ii .GE. cx_lo_ss(com_cx,idim)
+     .          .AND. k+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                    comp = com(i,j,k+ii,l)
+                 ELSE
+                    res(i,j,k,l) = bad_res
+                    GOTO 310
+                 ENDIF
+
 	         IF ( comp .EQ. bad_com ) THEN
 	            res(i,j,k,l) = bad_res
 	            GOTO 310
@@ -160,7 +184,15 @@
 	   DO 410 i = lo_s1, hi_s1
 	      sum = 0.0
 	      DO 400 ii = -hlen, hlen
-	         comp = com(i,j,k,l+ii)	! the only line different w/ each axis
+* test limits of component data before using
+                 IF ( l+ii .GE. cx_lo_ss(com_cx,idim)
+     .          .AND. l+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                    comp = com(i,j,k,l+ii)
+                 ELSE
+                    res(i,j,k,l) = bad_res
+                    GOTO 410
+                 ENDIF
+
 	         IF ( comp .EQ. bad_com ) THEN
 	            res(i,j,k,l) = bad_res
 	            GOTO 410

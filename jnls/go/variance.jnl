@@ -4,6 +4,12 @@
 
 ! Description:  define FERRET variables for covariance and correlation
 
+! example:
+!   yes? SET DATA coads_climatology
+!   yes? LET p = sst[x=180,y=0]; LET q = airt[x=180,y=0]
+!   yes? GO variance
+!   yes? list p, q
+
 SAY ... Variance and Covariance: Instructions:
 SAY Use the LET/QUIET command to define the variable(s) P (and Q) as
 SAY your variable(s) of interest (e.g. yes? LET/QUIET P = u[x=180,y=0])

@@ -1,6 +1,9 @@
 \cancel mode verify
 ! objective.jnl  11/93 *sh*
 ! Description: 2D objective analysis of scattered data
+
+! NOTE: See external functions scatter2grid* for options on gridding data
+
 ! usage:
 !  GO objective xpts ypts zpts "xlo:xhi:xdel" "ylo:yhi:ydel" [cay] [nrng]
 !							[filename] [append]

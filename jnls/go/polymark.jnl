@@ -19,8 +19,18 @@
 !           circle             star            plus
 !           ex
 
-! example
+! examples
 !       GO polymark polygon/over/key lon lat sst diamond
+
+! In detail, set cruise track and plot on a map:
+!       yes? LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+!       yes? LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+!       yes? LET sst = 25 - ypts + RANDN(ypts)
+
+!       yes? GO basemap x=120:250 Y=25s:65n 20
+!
+!       yes? GO polymark polygon/over/key/title="SST"  xpts,ypts,sst,ex, 0.5 
+
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"

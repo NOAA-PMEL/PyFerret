@@ -31,3 +31,7 @@ GO err570_long_label.jnl
 GO bn_reset
 GO err570_ppl_poly.jnl
 
+! Fix formatting of coordinates on LIST/FORMAT=tab or /FORMAT=comma 
+GO bn_reset
+GO err570_list_tab_coords.jnl
+

@@ -1,0 +1,12 @@
+! err570_list_tab_coords.jnl
+! acm 9/7/04
+! LIST/FORMAT=tab or /FORMAT=comma listed
+! coordinates in a fixed format not sufficient
+! to distinguish finely spaced coordinates
+
+def axis/x=100:100.25:0.05/units=deg xax
+def axis/y=0.11:0.25:0.018/units=deg yax
+let aa = (x[gx=xax] + y[gy=yax])/100
+list/form=tab aa
+def axis/x=100:100.11:0.033/units=deg xax
+list/form=comma aa

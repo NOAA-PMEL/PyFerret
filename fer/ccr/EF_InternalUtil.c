@@ -114,13 +114,13 @@ int  efcn_already_have_internals_( int * );
 int  efcn_gather_info_( int * );
 void efcn_get_custom_axes_( int *, int * );
 void efcn_get_result_limits_( int *, float *, int *, int * );
-void efcn_compute_( int *, int *, int *, int *, float *, int *, float *, int * );
+void efcn_compute_( int *, int *, int *, int *, int *, float *, int *, float *, int * );
 
 
 void efcn_get_custom_axis_sub_( int *, int *, float *, float *, float *, char *, int * );
 
 int  efcn_get_id_( char * );
-int  efcn_match_template_( char * );
+int  efcn_match_template_( int *, char * );
 
 void efcn_get_name_( int *, char * );
 void efcn_get_version_( int *, float * );
@@ -135,6 +135,7 @@ void efcn_get_axis_implied_from_( int *, int *, int * );
 void efcn_get_axis_extend_lo_( int *, int *, int * );
 void efcn_get_axis_extend_hi_( int *, int *, int * );
 void efcn_get_axis_limits_( int *, int *, int *, int * );
+int  efcn_get_arg_type_( int *, int *);
 void efcn_get_arg_name_( int *, int *, char * );
 void efcn_get_arg_unit_( int *, int *, char * );
 void efcn_get_arg_desc_( int *, int *, char * );
@@ -147,9 +148,13 @@ void efcn_copy_array_dims_(void);
 void efcn_get_workspace_addr_(float *, int *, float *);
 
 static void EF_signal_handler(int);
+static void (*fpe_handler)(int);
+static void (*segv_handler)(int);
+static void (*int_handler)(int);
+static void (*bus_handler)(int);
+
 
 void ef_err_bail_out_(int *, char *);
-void ef_err_not_found(int);
 
 void EF_store_globals(float *, int *, int *, int *, float *);
 
@@ -332,6 +337,7 @@ int efcn_gather_info_( int *id_ptr )
   void *handle;
   void (*f_init_ptr)(int *);
 
+
   /*
    * Find the external function.
    */
@@ -365,9 +371,9 @@ int efcn_gather_info_( int *id_ptr )
      advice of jc - osf didn't have a definition for RTLD_GLOBAL */
   if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW)) == NULL ) {
     fprintf(stderr, "\n\
-ERROR in efcn_gather_info:\n\
-dlopen(%s, RTLD_NOW) generates the error:\n\
-\t\"%s\"\n", ef_object, dlerror());
+ERROR in External Function %s:\n\
+Dynamic linking call dlopen() returns --\n\
+\"%s\".\n", ef_ptr->name, dlerror());
     return -1;
   }
   
@@ -400,19 +406,19 @@ dlopen(%s, RTLD_NOW) generates the error:\n\
      * environment with sigsetjmp (for the signal handler) and setjmp 
      * (for the "bail out" utility function).
      */   
-    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
+    if ( (fpe_handler = signal(SIGFPE, EF_signal_handler)) == SIG_ERR ) {
       fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGFPE.\n");
       return;
     }
-    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
+    if ( (segv_handler = signal(SIGSEGV, EF_signal_handler)) == SIG_ERR ) {
       fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGSEGV.\n");
       return;
     }
-    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
+    if ( (int_handler = signal(SIGINT, EF_signal_handler)) == SIG_ERR ) {
       fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGINT.\n");
       return;
     }
-    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
+    if ( (bus_handler = signal(SIGBUS, EF_signal_handler)) == SIG_ERR ) {
       fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGBUS.\n");
       return;
     }
@@ -437,21 +443,21 @@ dlopen(%s, RTLD_NOW) generates the error:\n\
     (*f_init_ptr)(id_ptr);
 
     /*
-     * Restore the default signal handlers.
+     * Restore the old signal handlers.
      */
-    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
+    if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
       fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGFPE handler.\n");
       return;
     }
-    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
+    if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
       fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGSEGV handler.\n");
       return;
     }
-    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
+    if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
       fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGINT handler.\n");
       return;
     }
-    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
+    if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
       fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGBUS handler.\n");
       return;
     }
@@ -492,20 +498,20 @@ void efcn_get_custom_axes_( int *id_ptr, int *cx_list_ptr )
      * environment with sigsetjmp (for the signal handler) and setjmp 
      * (for the "bail out" utility function).
      */   
-    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGFPE.\n");
+    if ( (fpe_handler = signal(SIGFPE, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGFPE.\n");
       return;
     }
-    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGSEGV.\n");
+    if ( (segv_handler = signal(SIGSEGV, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGSEGV.\n");
       return;
     }
-    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGINT.\n");
+    if ( (int_handler = signal(SIGINT, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGINT.\n");
       return;
     }
-    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGBUS.\n");
+    if ( (bus_handler = signal(SIGBUS, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGBUS.\n");
       return;
     }
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
@@ -522,22 +528,22 @@ void efcn_get_custom_axes_( int *id_ptr, int *cx_list_ptr )
     (*fptr)( id_ptr );
 
     /*
-     * Restore the default signal handlers.
+     * Restore the old signal handlers.
      */
-    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGFPE handler.\n");
+    if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGFPE handler.\n");
       return;
     }
-    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGSEGV handler.\n");
+    if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGSEGV handler.\n");
       return;
     }
-    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGINT handler.\n");
+    if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGINT handler.\n");
       return;
     }
-    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGBUS handler.\n");
+    if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGBUS handler.\n");
       return;
     }
 
@@ -581,20 +587,20 @@ void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int 
      * environment with sigsetjmp (for the signal handler) and setjmp 
      * (for the "bail out" utility function).
      */   
-    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGFPE.\n");
+    if ( (fpe_handler = signal(SIGFPE, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGFPE.\n");
       return;
     }
-    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGSEGV.\n");
+    if ( (segv_handler = signal(SIGSEGV, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGSEGV.\n");
       return;
     }
-    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGINT.\n");
+    if ( (int_handler = signal(SIGINT, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGINT.\n");
       return;
     }
-    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGBUS.\n");
+    if ( (bus_handler = signal(SIGBUS, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGBUS.\n");
       return;
     }
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
@@ -611,22 +617,22 @@ void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int 
     (*fptr)( id_ptr);
 
     /*
-     * Restore the default signal handlers.
+     * Restore the old signal handlers.
      */
-    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGFPE handler.\n");
+    if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGFPE handler.\n");
       return;
     }
-    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGSEGV handler.\n");
+    if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGSEGV handler.\n");
       return;
     }
-    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGINT handler.\n");
+    if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGINT handler.\n");
       return;
     }
-    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGBUS handler.\n");
+    if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGBUS handler.\n");
       return;
     }
 
@@ -645,7 +651,7 @@ void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int 
  * pass the necessary information and the data and tell
  * the function to calculate the result.
  */
-void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
+void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_ptr, int *mres_ptr,
 	float *bad_flag_ptr, int *mr_arg_offset_ptr, float *memory, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
@@ -708,7 +714,7 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
    * Store the memory pointer and various lists globally.
    */
   efcn_copy_array_dims_();
-  EF_store_globals(memory, mr_arg_offset_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
+  EF_store_globals(memory, mr_list_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
 
   /*
    * Find the external function.
@@ -801,23 +807,23 @@ ERROR in efcn_compute() allocating %d words of memory\n", size);
      * environment with sigsetjmp (for the signal handler) and setjmp 
      * (for the "bail out" utility function).
      */   
-    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() catching SIGFPE.\n");
+    if ( (fpe_handler = signal(SIGFPE, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGFPE.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() catching SIGSEGV.\n");
+    if ( (segv_handler = signal(SIGSEGV, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGSEGV.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() catching SIGINT.\n");
+    if ( (int_handler = signal(SIGINT, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGINT.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() catching SIGBUS.\n");
+    if ( (bus_handler = signal(SIGBUS, EF_signal_handler)) == SIG_ERR ) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGBUS.\n");
       *status = FERR_EF_ERROR;
       return;
     }
@@ -1010,25 +1016,25 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
     }
 
     /*
-     * Restore the default signal handlers.
+     * Restore the old signal handlers.
      */
-    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGFPE handler.\n");
+    if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGFPE handler.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGSEGV handler.\n");
+    if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGSEGV handler.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGINT handler.\n");
+    if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGINT handler.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGBUS handler.\n");
+    if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGBUS handler.\n");
       *status = FERR_EF_ERROR;
       return;
     }
@@ -1063,14 +1069,34 @@ ERROR: External Functions may not yet be written in C.\n\n");
  */
 static void EF_signal_handler(int signo) {
 
-  if (canjump == 0) return;
+  if (canjump == 0) return; /* unexpected signal, ignore */
+
+  /*
+   * Restore the old signal handlers.
+   */
+  if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
+    fprintf(stderr, "\nERROR in EF_signal_handler() restoring old SIGFPE handler.\n");
+    return;
+  }
+  if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
+    fprintf(stderr, "\nERROR in EF_signal_handler() restoring old SIGSEGV handler.\n");
+	return;
+  }
+  if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
+    fprintf(stderr, "\nERROR in EF_signal_handler() restoring old SIGINT handler.\n");
+    return;
+  }
+  if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
+    fprintf(stderr, "\nERROR in EF_signal_handler() restoring old SIGBUS handler.\n");
+    return;
+  }
 
   if (signo == SIGFPE) {
-    fprintf(stderr, "\n\nERROR inexternal function: Floating Point Error\n");
+    fprintf(stderr, "\n\nERROR in external function: Floating Point Error\n");
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   } else if (signo == SIGSEGV) {
-    fprintf(stderr, "\n\nERROR inexternal function: Segmentation Violation\n");
+    fprintf(stderr, "\n\nERROR in external function: Segmentation Violation\n");
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   } else if (signo == SIGINT) {
@@ -1078,11 +1104,11 @@ static void EF_signal_handler(int signo) {
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   } else if (signo == SIGBUS) {
-    fprintf(stderr, "\n\nERROR inexternal function: Hardware Fault\n");
+    fprintf(stderr, "\n\nERROR in external function: Hardware Fault\n");
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   } else {
-    fprintf(stderr, "\n\nERROR inexternal function: signo = %d\n", signo);
+    fprintf(stderr, "\n\nERROR in external function: signo = %d\n", signo);
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   }
@@ -1092,7 +1118,7 @@ static void EF_signal_handler(int signo) {
 
 /*
  * Find an external function based on its name and
- * fill in the integer ID associated with that funciton.
+ * return the integer ID associated with that funciton.
  */
 int efcn_get_id_( char name[] )
 {
@@ -1123,31 +1149,30 @@ int efcn_get_id_( char name[] )
 
 
 /*
- * Find an external function based on a template and
- * fill in the integer ID associated with first function
- * that matches the template.
+ * Determine whether a function name matches a template.
+ * Return 1 if the name matchs.
  */
-int efcn_match_template_( char name[] )
+int efcn_match_template_( int *id_ptr, char template[] )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
+  int EF_LT_MT_return;
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, name, EF_ListTraverse_MatchTemplate, 
-			 (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
 
-  /*
-   * If the search failed, set the id_ptr to 0
+  EF_LT_MT_return = EF_ListTraverse_MatchTemplate((char *)template, (char *)ef_ptr);
+  
+  /* The list package forces 'list traversal' functions to return
+   * 0 whenever a match is found.  We want to return a more reasonable
+   * 1 (=true) if we find a match.
    */
-  if ( status != LIST_OK ) {
-    return_val = ATOM_NOT_FOUND;
-    return return_val;
+  if ( EF_LT_MT_return == FALSE ) {
+	return_val = 1;
+  } else {
+    return_val = 0;
   }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-
-  return_val = ef_ptr->id;
 
   return return_val;
 }
@@ -1177,7 +1202,7 @@ void efcn_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float
 
 /*
  * Find an external function based on its integer ID and
- * fill in the name.
+ * return the name.
  */
 void efcn_get_name_( int *id_ptr, char *name )
 {
@@ -1193,7 +1218,7 @@ void efcn_get_name_( int *id_ptr, char *name )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the version number.
+ * return the version number.
  */
 void efcn_get_version_( int *id_ptr, float *version )
 {
@@ -1209,7 +1234,7 @@ void efcn_get_version_( int *id_ptr, float *version )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the description.
+ * return the description.
  */
 void efcn_get_descr_( int *id_ptr, char *descr )
 {
@@ -1225,7 +1250,7 @@ void efcn_get_descr_( int *id_ptr, char *descr )
 
 /*
  * Find an external function based on its integer ID and
- * fill return the number of arguments.
+ * return the number of arguments.
  */
 int efcn_get_num_reqd_args_( int *id_ptr )
 {
@@ -1243,7 +1268,7 @@ int efcn_get_num_reqd_args_( int *id_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the flag stating whether the function has
+ * return the flag stating whether the function has
  * a variable number of arguments.
  */
 void efcn_get_has_vari_args_( int *id_ptr, int *has_vari_args_ptr )
@@ -1260,7 +1285,7 @@ void efcn_get_has_vari_args_( int *id_ptr, int *has_vari_args_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the axis sources (merged, normal, abstract, custom).
+ * return the axis sources (merged, normal, abstract, custom).
  */
 void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
 {
@@ -1279,7 +1304,7 @@ void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the axis_reduction (retained, reduced) information.
+ * return the axis_reduction (retained, reduced) information.
  */
 void efcn_get_axis_reduction_( int *id_ptr, int *array_ptr )
 {
@@ -1298,7 +1323,7 @@ void efcn_get_axis_reduction_( int *id_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the piecemeal_ok information.  This lets Ferret
+ * return the piecemeal_ok information.  This lets Ferret
  * know if it's ok to break up a calculation along an axis
  * for memory management reasons.
  */
@@ -1319,7 +1344,7 @@ void efcn_get_piecemeal_ok_( int *id_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the (boolean) 'axis_implied_from' information for
+ * return the (boolean) 'axis_implied_from' information for
  * a particular argument to find out if its axes should
  * be merged in to the result grid.
  */
@@ -1342,7 +1367,7 @@ void efcn_get_axis_implied_from_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the 'arg_extend_lo' information for a particular
+ * return the 'arg_extend_lo' information for a particular
  * argument which tells Ferret how much to extend axis limits
  * when providing input data (e.g. to compute a derivative).
  */
@@ -1364,7 +1389,7 @@ void efcn_get_axis_extend_lo_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the 'arg_extend_lo' information for a particular
+ * return the 'arg_extend_hi' information for a particular
  * argument which tells Ferret how much to extend axis limits
  * when providing input data (e.g. to compute a derivative).
  */
@@ -1386,9 +1411,8 @@ void efcn_get_axis_extend_hi_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the 'arg_extend_lo' information for a particular
- * argument which tells Ferret how much to extend axis limits
- * when providing input data (e.g. to compute a derivative).
+ * return the 'axis_limits' information for a particular
+ * argument.
  */
 void efcn_get_axis_limits_( int *id_ptr, int *axis_ptr, int *lo_ptr, int *hi_ptr )
 {
@@ -1406,7 +1430,27 @@ void efcn_get_axis_limits_( int *id_ptr, int *axis_ptr, int *lo_ptr, int *hi_ptr
 
 /*
  * Find an external function based on its integer ID and
- * fill in the name of a particular argument.
+ * return the 'arg_type' information for a particular
+ * argument which tells Ferret whether an argument is a 
+ * float or a string.
+ */
+int efcn_get_arg_type_( int *id_ptr, int *iarg_ptr )
+{
+  ExternalFunction *ef_ptr=NULL;
+  static int return_val=0; /* static because it needs to exist after the return statement */
+  int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  
+  return_val = ef_ptr->internals_ptr->arg_type[index];
+  
+  return return_val;
+}
+
+
+/*
+ * Find an external function based on its integer ID and
+ * return the name of a particular argument.
  */
 void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
 {
@@ -1418,7 +1462,7 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
   
   /*
    * JC_NOTE: if the argument has no name then memory gets overwritten, corrupting
-   * the address of iarg_ptr annd causing a core dump.  I need to catch that case
+   * the address of iarg_ptr and causing a core dump.  I need to catch that case
    * here.
    */
 
@@ -1441,7 +1485,7 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the units for a particular argument.
+ * return the units for a particular argument.
  */
 void efcn_get_arg_unit_( int *id_ptr, int *iarg_ptr, char *string )
 {
@@ -1460,7 +1504,7 @@ void efcn_get_arg_unit_( int *id_ptr, int *iarg_ptr, char *string )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the description of a particular argument.
+ * return the description of a particular argument.
  */
 void efcn_get_arg_desc_( int *id_ptr, int *iarg_ptr, char *string )
 {
@@ -1480,19 +1524,11 @@ void ef_err_bail_out_(int *id_ptr, char *text)
 {
   ExternalFunction *ef_ptr=NULL;
 
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { ef_err_not_found(*id_ptr); return; }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   fprintf(stderr, "\n\
 Bailing out of external function \"%s\":\n\
 \t%s\n", ef_ptr->name, text);
-
-  longjmp(jumpbuffer, 1);
-}
-
-
-void ef_err_not_found(int id)
-{
-  fprintf(stderr, "\nERROR: external function id [%d] not found.\n", id);
 
   longjmp(jumpbuffer, 1);
 }
@@ -1562,6 +1598,7 @@ int EF_New( ExternalFunction *this )
       i_ptr->axis_extend_lo[i][j] = 0;
       i_ptr->axis_extend_hi[i][j] = 0;
     }
+    i_ptr->arg_type[i] = FLOAT_ARG;
     strcpy(i_ptr->arg_name[i], "");
     strcpy(i_ptr->arg_unit[i], "");
     strcpy(i_ptr->arg_desc[i], "");

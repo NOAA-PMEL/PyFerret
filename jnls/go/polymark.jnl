@@ -19,6 +19,9 @@
 !           circle             star            plus
 !           ex
 
+! example
+!       GO polymark polygon/over/key lon lat sst diamond
+
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
 QUERY/IGNORE $2"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"

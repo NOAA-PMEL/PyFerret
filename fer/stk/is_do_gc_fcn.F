@@ -17,6 +17,7 @@
 	include	'ferret_cmn/xalgebra.cmn'
 	include	'ferret_cmn/xtext_info.cmn'
 	include	'ferret_cmn/xfr_grid.cmn'	! w/ mgrid_abstract
+	include 'ferret_cmn/xgrid_chg_fcns.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
@@ -26,6 +27,7 @@
 	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
 	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
 	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'	! W/ MGRID_ABSTRACT
+	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
 #endif
 
 * calling arguments
@@ -80,8 +82,8 @@
 	res_cx = is_big_cx(lo_isp)
 
 * need to fill in those axes that the function "imposes"
-	CALL GCF_IMPOSE_RESULT_LIMS( ifcn,
-     .					is_cx(lo_isp+1), res_cx, status )
+	CALL GCF_IMPOSE_RESULT_LIMS( ifcn, memory, is_mr(lo_isp+1),
+     .			 is_cx(lo_isp+1), res_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * allocate memory space for result
@@ -101,6 +103,9 @@
 	CALL NON_ARRAY_SUBSC( com, 10 )
 
 * perform the operation
+
+	IF (IFCN .LE. GFCN_NUM_INTERNAL) THEN
+
 	CALL DO_INTERNAL_GC_FCN( memory,
      .			ifcn, num_com, is_cx(frame_bottom),
      .			memory(1, mr_blk1(mr1) ),   mr1,
@@ -116,8 +121,27 @@
      .			status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
-* clean up 
+	ELSE 
 
+	CALL DO_EXTERNAL_GC_FCN( memory,
+     .			ifcn, num_com, is_cx(frame_bottom),
+     .			memory(1, mr_blk1(mr1) ),   mr1,
+     .			memory(1, mr_blk1(mr2) ),   mr2,
+     .			memory(1, mr_blk1(mr3) ),   mr3,
+     .			memory(1, mr_blk1(mr4) ),   mr4,
+     .			memory(1, mr_blk1(mr5) ),   mr5,
+     .			memory(1, mr_blk1(mr6) ),   mr6,
+     .			memory(1, mr_blk1(mr7) ),   mr7,
+     .			memory(1, mr_blk1(mr8) ),   mr8,
+     .			memory(1, mr_blk1(mr9) ),   mr9,
+     .			memory(1, mr_blk1(res_mr)), res_mr,
+     .			status )
+
+
+	ENDIF
+
+* clean up 
+ 
 * ... if any components were un_cached we must uncache the result
 	not_reusable = .FALSE.
 	DO 2050 icom = isp, frame_bottom, -1

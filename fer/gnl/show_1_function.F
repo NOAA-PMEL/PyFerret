@@ -39,7 +39,7 @@
 	CHARACTER*4 indent
 	PARAMETER ( indent = '    ' )
         INTEGER      slen
-        PARAMETER  ( slen = 40 )
+        PARAMETER  ( slen = 80 )
 
 #ifdef sun
         BYTE      fhol(slen)    ! c-type Hollerith string buffer

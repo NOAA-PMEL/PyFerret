@@ -292,7 +292,7 @@
 	      slen = TM_LENSTR(cal_name)
 	      CALL SPLIT_LIST( pttmode_explct, list_lun,
      .                  '             CALENDAR : '
-     .			//cal_name(:slen), alen+slen+24)
+     .			//cal_name(:slen), slen+24)
 	   ENDIF
 	ENDDO
 

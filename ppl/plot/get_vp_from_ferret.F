@@ -1,8 +1,6 @@
 	SUBROUTINE GET_VP_FROM_FERRET(  xorg, yorg,
      .					size, scale, xclip, yclip, xll, yll )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,24 +44,19 @@
 * revision 0.0 -  1/20/89
 * V200:  3/13/90 - allow wsid.eq.0 for all windows cancelled (metafile open)
 * V300:  3/20/93 - use ABS() to avoid negative size passed to PLOT+
+* V540:  *sh* 9/01 - call VP_AXLIM2LIM to translate axis-relative VP limits
 
-#ifdef unix
 	include 'ferret.parm'		! with unspecified_val4
 	include 'xplot_state.cmn'		! viewport info
 	include 'gkscm1_inc.decl'	! with wsid
 	include 'GKSCM1.INC'	! with wsid
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'		! with unspecified_val4
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'		! viewport info
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'	! with WSID
-	INCLUDE 'PPLV11INC:GKSCM1.INC'	! with WSID
-#endif
 
 * calling argument declarations:
 	REAL xorg, yorg, size, scale, xclip, yclip, xll, yll
 
 * internal variable declarations:
 	LOGICAL clip
+	REAL  xoei,  yoei,  xcei,  ycei
 
 	xorg  = vp_xorg(vp_num)
 	yorg  = vp_yorg(vp_num)
@@ -82,6 +75,14 @@
 
 	xll = xlowlef(1)
 	yll = ylowlef(1)
+
+* 9/01 additions
+	IF (vp_by_axis( vp_num )) THEN
+* ... adjust limits given as axis positions to limits of viewport
+	   CALL VP_AXLIM2LIM( scale, xorg, yorg, xclip, yclip,
+     .                               xorg, yorg, xclip, yclip,
+     .                               xoei,  yoei,  xcei,  ycei )
+	ENDIF
 
 	RETURN
 	END

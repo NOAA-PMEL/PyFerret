@@ -375,6 +375,8 @@ C   set up memory for the flag grid
 	IF ( transpz ) THEN
 	   dim2 = plot_axis(1)
 	   dim1 = plot_axis(2)
+	   axis1 = grid_line(dim1, grid)
+	   axis2 = grid_line(dim2, grid)
 	ENDIF
 	lo1  = cx_lo_ss( ctx, dim1 )
 	hi1  = cx_hi_ss( ctx, dim1 )

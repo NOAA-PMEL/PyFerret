@@ -57,6 +57,11 @@
 *              irregular when in fact they arent).
 * V553: 6/03 - the calculation of d_regrid for regular axes was wrong if 
 *              theres a subspan-modulo void point
+* v553: 7/03 - The initial d_regrid does need to start with 
+*                axis( lo_cx + 1 ) - axis( lo_cx )
+*              or it may miss an irregular part of the grid; the calculation
+*              should be correct and not hit the subspan-modulo void point,
+*              (how to test this???)
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -108,13 +113,12 @@
 
 * The above calculation of d_regrid is wrong if theres a subspan-modulo void point
 
-        IF (lo_cx + 2 .LT. hi_cx) 
-     .      d_regrid = axis( lo_cx + 2 ) - axis( lo_cx + 1)
+c        IF (lo_cx + 2 .LT. hi_cx) 
+c     .      d_regrid = axis( lo_cx + 2 ) - axis( lo_cx + 1)
 
         IF (irregular) THEN
 	   DO 200 i = lo_cx+1, hi_cx-1
 * ... test within precision limits that may be visible in a plot
-
 	      IF (ABS((axis(i+1)-axis(i))/d_regrid - 1.0) .GT. 3.E-6) THEN
 		   regrid = .TRUE.
 		   d_regrid = MIN( d_regrid, axis(i+1)-axis(i) )

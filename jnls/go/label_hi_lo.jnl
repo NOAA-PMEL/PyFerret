@@ -82,7 +82,7 @@ IF $2"|label>1|*>0|" THEN
   REPEAT/K=1:`nhi` (LET/QUIET xp=xph[i=`k`]; LET/QUIET yp=yph[i=`k`]; LET/QUIET zp=zph[i=`k`]; label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 
   GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle,1.8
-  REPEAT/K=1:`nlo` (LET/QUIET xp=xpl[i=`k`]; LET/QUIET yp=ypl[i=`k`]; LET/QUIET zp=zpl[i=`k`]; label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  REPEAT/K=1:`nlo` (LET/QUIET xp=xpl[i=`k`]; LET/QUIET yp=ypl[i=`k`]; LET/QUIET zp=zpl[i=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 ENDIF
 
 IF $2"|mark>1|*>0|" THEN

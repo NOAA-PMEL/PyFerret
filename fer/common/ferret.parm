@@ -4,6 +4,8 @@
 * 12/96: added pfcn_axis_* (for grid-changing functions)
 *	   and alg_grid_chg_fcn
 *  1/97: added "pcg_" parameters for grid changing functions
+*  9/97: added @NRDA,NRDB,NRIA,NRIB transforms
+* 10/97: added prgrd_xact_pts (eliminated prgrd_nearest)
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -219,6 +221,11 @@
      .                  trans_4d_var,
      .                  trans_4d_good_pt,
      .                  trans_4d_bad_pt
+	INTEGER		trans_nrst_dist_abv,
+     .			trans_nrst_dist_blw,
+     .			trans_nrst_indx_abv,
+     .			trans_nrst_indx_blw
+
 	PARAMETER     ( trans_compress_code = 30,
      .			trans_no_transform = 1,
      .			trans_integ_indef  = 2,
@@ -237,8 +244,12 @@
      .                  trans_run_sum	   = 15,
      .                  trans_std_dev      = 16,
      .			trans_fill_interp  = 17,
-     .			trans_fill_near    = 18,
-     .			max_plane_transform = trans_fill_near )
+     .			trans_fill_near    = 18 )
+	PARAMETER     (	trans_nrst_dist_abv = 19,
+     .			trans_nrst_dist_blw = 20,
+     .			trans_nrst_indx_abv = 21,
+     .			trans_nrst_indx_blw = 22,
+     .			max_plane_transform = trans_nrst_indx_blw )
 
 	PARAMETER     ( trans_average      = trans_compress_code + 1,
      .			trans_interpolate  = trans_compress_code + 2,
@@ -266,7 +277,7 @@
      .			prgrd_linear_interp,
      .			prgrd_average,
      .			prgrd_xy_ave,
-     .			prgrd_nearest,
+     .			prgrd_xact_pts,
      .			prgrd_associate,
      .			prgrd_variance,
      .			prgrd_min,
@@ -287,7 +298,7 @@
      .			prgrd_linear_interp	= 2,
      .			prgrd_average		= 3,
      .			prgrd_xy_ave		= 4,
-     .			prgrd_nearest		= 5,
+     .			prgrd_xact_pts		= 5,
      .			prgrd_associate		= 6,
      .			prgrd_variance		= 7,
      .			prgrd_min		= 8,

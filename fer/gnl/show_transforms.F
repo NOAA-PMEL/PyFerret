@@ -9,6 +9,7 @@
 *	       - and SHOW LIST (tab and comma delimited formats)
 *	 12/95 - show explicit ITP as well (start at index 3 instead of 4)
 * V430:   7/96 - incorporate 4D transformations: AVE, VAR, DIN, NDG, NBD
+* V446:   9/97 - bug showed up with addition of new xforms
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -79,7 +80,7 @@
 	      IF ( alg_trans_num( i2 ) .EQ. trans_no_transform) GOTO 130
 * ... skip hidden transforms (e.g. 4D internal implementations)
 	      DO 129 i4d = 1, num_4d_trans
-	         IF (alg_trans_num( i1 ) .EQ. alg_4d_trans(i4d)) GOTO 130
+	         IF (alg_trans_num( i2 ) .EQ. alg_4d_trans(i4d)) GOTO 130 !9/97
  129	      CONTINUE
 	      GOTO 131
  130	   CONTINUE

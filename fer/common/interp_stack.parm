@@ -90,6 +90,10 @@
      .			isact_npoints,   ! unused
      .			isact_good_pt,
      .			isact_bad_pt
+	INTEGER		isact_nrst_dist_abv,
+     .			isact_nrst_dist_blw,
+     .			isact_nrst_indx_abv,
+     .			isact_nrst_indx_blw
 
 	PARAMETER (
      .		isact_interp		= isact_trans_code + trans_interpolate,
@@ -124,6 +128,11 @@
      .		isact_bad_pt		= isact_trans_code + trans_bad_pt,
      .		isact_fill_interp	= isact_trans_code + trans_fill_interp,
      .		isact_fill_near		= isact_trans_code + trans_fill_near )
+	PARAMETER (
+     .		isact_nrst_dist_abv = isact_trans_code + trans_nrst_dist_abv,
+     .		isact_nrst_dist_blw = isact_trans_code + trans_nrst_dist_blw,
+     .		isact_nrst_indx_abv = isact_trans_code + trans_nrst_indx_abv,
+     .		isact_nrst_indx_blw = isact_trans_code + trans_nrst_indx_blw )
 
 * classes of stack objects
 	INTEGER		isobj_uvar,

@@ -27,6 +27,7 @@
 *        8/23/92 - changes to accomodate regridding transforms
 * V420:	 9/25/95 - use REGRID_COMMENTS
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
+* V455:  9/97 - modify labeling of xforms @CIA,CIB,CDA,CDB to avoid "by n pts"
 
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
@@ -205,6 +206,8 @@
      .                TM_FMT( cx_trans_arg(idim,cx), 4, 12, slen )
                  t_len = t_len + 4 + slen
 	      ELSEIF ( cx_trans_arg( idim, cx ) .NE. bad_val4 ) THEN
+	         IF ( trans .GE. trans_nrst_dist_abv
+     .        .AND.   trans .LE. trans_nrst_indx_blw ) GOTO 95	!9/97 @CIA trap
 * ... add "by nnn pts"
 	         trans_title = trans_title(:t_len)//' by '//
      .			TM_FMT( cx_trans_arg(idim,cx), 4, 8, slen )
@@ -212,7 +215,7 @@
 	         trans_title = trans_title(:t_len)//' pts'
 	         t_len = t_len + 4
 	      ENDIF
-	      var_title_mod = var_title_mod(:mlen) // trans_title(:t_len) //
+ 95	      var_title_mod = var_title_mod(:mlen) // trans_title(:t_len) //
      .		' on ' // ww_dim_name( idim )
 	      mlen = MIN( maxlen, mlen+t_len+5 )
 	   ENDIF

@@ -62,10 +62,11 @@ C
         DIMENSION HEADR(145),LINE1(11),LINE2(15)
 #ifdef unix
 	CHARACTER FDTE*24
-#ifdef FORTRAN_90
+* 1/03 *kob* need to equiv blnk to iblnk for g77 as well
+#if defined FORTRAN_90 || defined G77
 	integer iblnk
-	data iblnk/Z'20202020'/
 	equivalence (blnk,iblnk)
+	data iblnk/Z'20202020'/
 #else
 	data blnk/'    '/
 #endif
@@ -134,11 +135,11 @@ C
         INCLUDE 'pplinc:BIBO.COM'
 #endif
 
-
-#ifdef FORTRAN_90
+* 1/03 *kob* need to equiv blnk to iblnk for g77 as well
+#if defined FORTRAN_90 || defined G77
 	integer iblnk
-	data iblnk/Z'20202020'/
 	equivalence (blnk,iblnk)
+	data iblnk/Z'20202020'/
 #else
 	data blnk/'    '/
 #endif
@@ -318,10 +319,10 @@ C*F45V1P0*
       DIMENSION TABLE(8,N),STRING(11)
 	character str*44
 	real blnk
-#ifdef FORTRAN_90
+#if defined FORTRAN_90 || defined G77
 	integer iblnk
-	data iblnk/Z'20202020'/
 	equivalence (blnk,iblnk)
+	data iblnk/Z'20202020'/
 #else
 	data blnk/'    '/
 #endif

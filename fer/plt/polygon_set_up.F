@@ -65,6 +65,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500: 2/99 - based on plot_set_up.F
+*       3/99 - *jd* mods to complete the command
 * V500: 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 
 #ifdef unix
@@ -472,7 +473,8 @@
 	   ENDIF
 	   CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			 lab_ht, style, justify )
-	   CALL PUT_KEY( nline_in_mem, plot_title(:slen),
+*          Key uses line 1
+	   CALL PUT_KEY( 1, plot_title(:slen),
      .			 xkeypos, ykeypos, xkeysize, ykeysize,
      .			 lab_ht, style, lab_loc_absolute, lab_loc_absolute )
 	ELSE
@@ -494,15 +496,21 @@
      .			 letsize_title, ppl_centered,
      .			 lab_loc_absolute, lab_loc_absolute )
 * ... label axis labels:  units from the polygon coordinates
-	   plot_title = VAR_UNITS( cx_x )
-	   slen = TM_LENSTR1( plot_title )
+
+	   plot_title = FULL_VAR_TITLE( cx_x, slen )
+
+C	   plot_title = VAR_UNITS( cx_x )
+C	   slen = TM_LENSTR1( plot_title )
 	   CALL BOX_LABEL( x_lab,
      .			 plot_title(:slen),
      .			 0.0, 0.0, 0.6*x_len, letsize_label,
      .			 letsize_label, ppl_centered,
      .			 lab_loc_absolute, lab_loc_absolute )
-	   plot_title = VAR_UNITS( cx_y )
-	   slen = TM_LENSTR1( plot_title )
+
+	   plot_title = FULL_VAR_TITLE( cx_y, slen )
+
+C	   plot_title = VAR_UNITS( cx_y )
+C	   slen = TM_LENSTR1( plot_title )
 	   CALL BOX_LABEL( y_lab,
      .			 plot_title(:slen),
      .			 0.0, 0.0, 0.6*y_len, letsize_label,

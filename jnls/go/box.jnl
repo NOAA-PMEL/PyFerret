@@ -1,6 +1,8 @@
 \cancel mode verify
 ! box.jnl - draw a box using the indicated corners
 ! 8/94
+! 1/03 bug fix: with v5.5 Ferret, possible negative numbers in arguments 
+!               need to be in parentheses within the IF THEN statements
 
 ! Description: Overlay a colored box outline given the corner coordinates
 
@@ -17,10 +19,10 @@ query/ignore $3%<Usage: GO box xlo xhi ylo yhi [pen_number]%
 query/ignore $4%<Usage: GO box xlo xhi ylo yhi [pen_number]%
 query/ignore $5%1|red>1|green>1|blue>1|thick>1|0>1|1>1|2>1|3>1|4>1|5>1|6>1|7>1|8>1|9>1|10>1|11>1|12>1|13>1|14>1|15>1|16>1|17>1|18>1|<GO box xlo xhi ylo yhi pen with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
-LET/QUIET XBOX_CORNERS = IF I LE 2 THEN ($1) ELSE XBOX_CORNER2
-LET/QUIET XBOX_CORNER2 = IF I LE 4 THEN ($2) ELSE ($1)
-LET/QUIET YBOX_CORNERS = IF I EQ 1 THEN ($4) ELSE YBOX_CORNER2
-LET/QUIET YBOX_CORNER2 = IF I LE 3 THEN ($3) ELSE ($4)
+LET/QUIET XBOX_CORNERS = IF I LE 2 THEN (($1)) ELSE XBOX_CORNER2
+LET/QUIET XBOX_CORNER2 = IF I LE 4 THEN (($2)) ELSE ($1)
+LET/QUIET YBOX_CORNERS = IF I EQ 1 THEN (($4)) ELSE YBOX_CORNER2
+LET/QUIET YBOX_CORNER2 = IF I LE 3 THEN (($3)) ELSE ($4)
 
 ! set up PLOT+
 PLOT/VS/NOLAB/OVER/line=1/SET_UP/I=1:5 XBOX_CORNERS, YBOX_CORNERS

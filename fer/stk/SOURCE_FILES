@@ -7,6 +7,7 @@ const_var_context.F\
 diagnostic_out.F\
 eval_expr.F\
 explicit_uvar.F\
+gcf_arg_eval_order.F\
 get_axis_speed.F\
 get_cmnd_data.F\
 get_prot_cmnd_data.F\
@@ -30,6 +31,7 @@ is_regrid.F\
 is_reverse.F\
 is_string.F\
 is_strip.F\
+is_sample.F\
 is_trans.F\
 is_uvar_grid.F\
 known_grid.F\
@@ -45,6 +47,7 @@ randu.F\
 rcvd_regrid.F\
 regrid_lims.F\
 rqst_regrid.F\
+setup_sample.F\
 stack_ptr_dn.F\
 stack_ptr_up.F\
 string_context.F\

@@ -51,6 +51,7 @@
 *	   1/96 - bug fix: implicit grid kludge use of cx for gridnum crashes
 *		- use "strip" to determine if reconcilliation axis is relevant
 * V500 *kob* 3/99- up VAR_CODE and var decl's from 8 to 64 chars
+* V510 *sh* 8/99 - added isact_class_sample
 
 * calling argument declarations:
 	INTEGER	act_class, idim, cx
@@ -115,6 +116,14 @@
      .                  ww_dim_name( idim ),
      .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
  3030	   FORMAT (1X,A5,' gathering ',A,' on ',A1,' axis:',2I6)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+
+* SAMPLING (SAMPLE* functions)
+	ELSEIF( act_class .EQ. isact_class_sample ) THEN
+	   WRITE ( risc_buff, 3035 ) doing, var(1:slen),
+     .                  ss_dim_name( idim ),
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
+ 3035	   FORMAT (1X,A5,' sampling ',A,' on ',A1,' axis:',2I6)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 * ASSEMBLING MODULO COMPONENTS

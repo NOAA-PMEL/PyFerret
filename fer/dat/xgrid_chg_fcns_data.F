@@ -45,6 +45,7 @@
 *       3/99 *kob* fixed bugs in above additions - parameter references
 *	incorrect
 *	3/99 *sh* added a numerical argument to ECHO to debug stack problem
+* V510: added SAMPLE* functions as *internal* GC functions
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -364,14 +365,215 @@
      .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
 
 
+* SAMPLEI - sample argument 2 at the indices indicated in arg 2
+	INTEGER		p_samplei_arg_start, p_samplei_num_args 
+	PARAMETER     ( p_samplei_arg_start = p_tunravel_arg_start +
+     .					      p_tunravel_num_args,
+     .			p_samplei_num_args  = 2 )
+
+	DATA gfcn_name         (p_samplei) /'SAMPLEI'/
+	DATA gfcn_version      (p_samplei) / 1.0 /
+	DATA gfcn_descr        (p_samplei)
+     .		/ 'sample a field at a list of X indices' /
+	DATA gfcn_num_reqd_args(p_samplei) /p_samplei_num_args/
+	DATA gfcn_has_vari_args(p_samplei) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_samplei),i=1,4)/
+     .					pgc_axis_is_abstract,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args /
+	DATA (gfcn_piecemeal_ok(i,p_samplei),i=1,4) / .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE. /
+	DATA gfcn_arg_ptr(p_samplei) /p_samplei_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_samplei_arg_start+0)/'TO_BE_SAMPLED'/
+	DATA gfcn_arg_type(p_samplei_arg_start+0)/parg_type_float/
+	DATA gfcn_arg_units(p_samplei_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_samplei_arg_start+0)
+     .			/'data to sample at list of X indices supplied '/
+	DATA (gfcn_arg_extend_lo (i,p_samplei_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplei_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA gfcn_arg_name(p_samplei_arg_start+1)/'X_INDICES'/
+	DATA gfcn_arg_type(p_samplei_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_samplei_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_samplei_arg_start+1)
+     .			/'list of X indices at which to sample'/
+	DATA (gfcn_arg_extend_lo (i,p_samplei_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplei_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_samplei_arg_start+0),i=1,4)
+     .		/.FALSE., .TRUE., .TRUE.,.TRUE. /
+* ... by argument 2?
+	DATA (gfcn_axis_implied_from(i, p_samplei_arg_start+1),i=1,4)
+     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+
+
+* SAMPLEJ - sample argument 2 at the indices indicated in arg 2
+	INTEGER		p_samplej_arg_start, p_samplej_num_args 
+	PARAMETER     ( p_samplej_arg_start = p_samplei_arg_start +
+     .					      p_samplei_num_args,
+     .			p_samplej_num_args  = 2 )
+
+	DATA gfcn_name         (p_samplej) /'SAMPLEJ'/
+	DATA gfcn_version      (p_samplej) / 1.0 /
+	DATA gfcn_descr        (p_samplej)
+     .		/ 'sample a field at a list of Y indices' /
+	DATA gfcn_num_reqd_args(p_samplej) /p_samplej_num_args/
+	DATA gfcn_has_vari_args(p_samplej) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_samplej),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_is_abstract,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args /
+	DATA (gfcn_piecemeal_ok(i,p_samplej),i=1,4) / .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE. /
+	DATA gfcn_arg_ptr(p_samplej) /p_samplej_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_samplej_arg_start+0)/'TO_BE_SAMPLED'/
+	DATA gfcn_arg_type(p_samplej_arg_start+0)/parg_type_float/
+	DATA gfcn_arg_units(p_samplej_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_samplej_arg_start+0)
+     .			/'data to sample at list of Y indices supplied '/
+	DATA (gfcn_arg_extend_lo (i,p_samplej_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplej_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA gfcn_arg_name(p_samplej_arg_start+1)/'Y_INDICES'/
+	DATA gfcn_arg_type(p_samplej_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_samplej_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_samplej_arg_start+1)
+     .			/'list of Y indices at which to sample'/
+	DATA (gfcn_arg_extend_lo (i,p_samplej_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplej_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_samplej_arg_start+0),i=1,4)
+     .		/.TRUE., .FALSE., .TRUE.,.TRUE. /
+* ... by argument 2?
+	DATA (gfcn_axis_implied_from(i, p_samplej_arg_start+1),i=1,4)
+     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+
+
+* SAMPLEK - sample argument 2 at the indices indicated in arg 2
+	INTEGER		p_samplek_arg_start, p_samplek_num_args 
+	PARAMETER     ( p_samplek_arg_start = p_samplej_arg_start +
+     .					      p_samplej_num_args,
+     .			p_samplek_num_args  = 2 )
+
+	DATA gfcn_name         (p_samplek) /'SAMPLEK'/
+	DATA gfcn_version      (p_samplek) / 1.0 /
+	DATA gfcn_descr        (p_samplek)
+     .		/ 'sample a field at a list of Z indices' /
+	DATA gfcn_num_reqd_args(p_samplek) /p_samplek_num_args/
+	DATA gfcn_has_vari_args(p_samplek) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_samplek),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_is_abstract,
+     .					pgc_axis_implied_by_args /
+	DATA (gfcn_piecemeal_ok(i,p_samplek),i=1,4) / .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE. /
+	DATA gfcn_arg_ptr(p_samplek) /p_samplek_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_samplek_arg_start+0)/'TO_BE_SAMPLED'/
+	DATA gfcn_arg_type(p_samplek_arg_start+0)/parg_type_float/
+	DATA gfcn_arg_units(p_samplek_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_samplek_arg_start+0)
+     .			/'data to sample at list of Z indices supplied '/
+	DATA (gfcn_arg_extend_lo (i,p_samplek_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplek_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA gfcn_arg_name(p_samplek_arg_start+1)/'Z_INDICES'/
+	DATA gfcn_arg_type(p_samplek_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_samplek_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_samplek_arg_start+1)
+     .			/'list of Z indices at which to sample'/
+	DATA (gfcn_arg_extend_lo (i,p_samplek_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplek_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_samplek_arg_start+0),i=1,4)
+     .		/ .TRUE., .TRUE., .FALSE., .TRUE. /
+* ... by argument 2?
+	DATA (gfcn_axis_implied_from(i, p_samplek_arg_start+1),i=1,4)
+     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+
+
+* SAMPLEL - sample argument 2 at the indices indicated in arg 2
+	INTEGER		p_samplel_arg_start, p_samplel_num_args 
+	PARAMETER     ( p_samplel_arg_start = p_samplek_arg_start +
+     .					      p_samplek_num_args, 
+     .			p_samplel_num_args  = 2 )
+
+	DATA gfcn_name         (p_samplel) /'SAMPLEL'/
+	DATA gfcn_version      (p_samplel) / 1.0 /
+	DATA gfcn_descr        (p_samplel)
+     .		/ 'sample a field at a list of T indices' /
+	DATA gfcn_num_reqd_args(p_samplel) /p_samplel_num_args/
+	DATA gfcn_has_vari_args(p_samplel) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_samplel),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_is_abstract/
+	DATA (gfcn_piecemeal_ok(i,p_samplel),i=1,4) / .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE.,
+     .						      .FALSE. /
+	DATA gfcn_arg_ptr(p_samplel) /p_samplel_arg_start/
+
+* ... description of arguments
+	DATA gfcn_arg_name(p_samplel_arg_start+0)/'TO_BE_SAMPLED'/
+	DATA gfcn_arg_type(p_samplel_arg_start+0)/parg_type_float/
+	DATA gfcn_arg_units(p_samplel_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_samplel_arg_start+0)
+     .			/'data to sample at list of T indices supplied '/
+	DATA (gfcn_arg_extend_lo (i,p_samplel_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplel_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA gfcn_arg_name(p_samplel_arg_start+1)/'T_INDICES'/
+	DATA gfcn_arg_type(p_samplel_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_samplel_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_samplel_arg_start+1)
+     .			/'list of T indices at which to sample'/
+	DATA (gfcn_arg_extend_lo (i,p_samplel_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_samplel_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_samplel_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE., .FALSE. /
+* ... by argument 2?
+	DATA (gfcn_axis_implied_from(i, p_samplel_arg_start+1),i=1,4)
+     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+
+
+
 * internal parameters helpful for initialization
-	DATA gfcn_num_internal/p_tunravel/
+	DATA gfcn_num_internal/p_samplel/
 
 * template for next function ...
 	INTEGER		p_next, p_next_arg_start, p_next_num_args 
-	PARAMETER     ( p_next = p_tunravel + 1,
-     .			p_next_arg_start = p_tunravel_arg_start +
-     .					   p_tunravel_num_args,
+	PARAMETER     ( p_next = p_samplel + 1,
+     .			p_next_arg_start = p_samplel_arg_start +
+     .					   p_samplel_num_args,
      .			p_next_num_args  = 1 )
 
 	END

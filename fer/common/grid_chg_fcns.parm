@@ -12,18 +12,23 @@
 
 * V450:
 * V500: 1/99 added parg_type in support of string arguments
+* V510: 8/99 added SAMPLE* functions
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
-     .			p_yunravel, p_zunravel, p_tunravel
+     .			p_yunravel, p_zunravel, p_tunravel,
+     .			p_samplei, p_samplej, p_samplek, p_samplel
 
 	PARAMETER     ( p_xunravel = 1,
-     .			p_times2   = p_xunravel  + 1,
+     .			p_times2   = p_xunravel + 1,
      .			p_reshape  = p_times2   + 1,
      .			p_zlayer   = p_reshape  + 1,
      .			p_yunravel = p_zlayer   + 1,
      .			p_zunravel = p_yunravel + 1,
-     .			p_tunravel = p_zunravel + 1 )
-
+     .			p_tunravel = p_zunravel + 1,
+     .			p_samplei  = p_tunravel + 1,
+     .			p_samplej  = p_samplei  + 1,
+     .			p_samplek  = p_samplej	+ 1,
+     .			p_samplel  = p_samplek 	+ 1 )
 
 * parameters to control the passing of context information
 	INTEGER		pset_to_unspec, ppass_along

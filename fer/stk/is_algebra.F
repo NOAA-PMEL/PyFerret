@@ -69,11 +69,19 @@
 *		call TRANSFER_CONTEXT(big_cx, lo_cx) at end of
 *		EXPLICIT_UVAR, too, since changes to handling unspecified
 *		limits (see COMPLETE_MISSING_LIMITS)
+* V510: 8/99 *sh* - added SAMPLE*. Logic in this routine is because the
+*		2nd arg to SAMPLE* controls the request for the 1st --
+*		here we detect that, interchange the ordering, and
+*		call IS_SAMPLE for arg 1 (Note: would have been much simpler
+*		if arg order was reversed, but the function already existed
+*	10/99 *sh* repair of bug introduced by 3/99 change for RESHABE, above
+*		see "ugly hack" in code
 
 #ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
+	include	'grid_chg_fcns.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
@@ -94,14 +102,15 @@
 * exit #2 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, its_gc
-	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR,
+	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, its_gc, its_sample,
+     .		start_sampling
+	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_FIND_FCN,
+     .		GCF_ARG_EVAL_ORDER,
      .		hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
-     .		operator, start, end, saved_grid,
-     .		i, dset, lo_isp, uvar, item, itype, mr_constant, idim,
-     .		nitem, grid, new_mr, len_name
-	REAL	constant
-	CHARACTER const_buff*20, name*128
+     .		start, end, saved_grid, ifcn,
+     .		dset, lo_isp, uvar, item, itype, idim,
+     .		nitem, new_mr, len_name
+	CHARACTER name*128
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -168,7 +177,7 @@
 *	multi-component expressions. "LIST A" should document "A", not "E315"
 	      is_sum( lo_isp ) = isalg_merge_n
 	   ENDIF
-	   item = is_phase(lo_isp)			! points into uvar_text
+	   item = GCF_ARG_EVAL_ORDER( ifcn, is_phase(lo_isp) )
 	   itype = uvar_item_type ( item, uvar )
 	   start = uvar_item_start( item, uvar )
 	   end   = uvar_item_end  ( item, uvar )
@@ -186,7 +195,7 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      is_sum( lo_isp ) = isalg_merge_n
 	   ENDIF
-	   item = is_phase(lo_isp)			! points into uvar_text
+	   item = is_phase(lo_isp)		! points into uvar_text
 	   itype = uvar_item_type ( item, uvar )
 	   start = uvar_item_start( item, uvar )
 	   end   = uvar_item_end  ( item, uvar )
@@ -195,10 +204,29 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	ENDIF
 
+* is it a SAMPLE* function? (8/99)
+	IF ( its_gc ) THEN
+	   start = uvar_item_start( 3, uvar )  ! item 3 is the fcn itself
+	   end   = uvar_item_end  ( 3, uvar )
+	   ifcn = GCF_FIND_FCN( uvar_text(uvar)(start:end) )
+	   its_sample = ifcn .GE. p_samplei
+     .		.AND.   ifcn .LE. p_samplel
+	ELSE
+	   its_sample = .FALSE.
+	ENDIF
+	start_sampling = .FALSE.
+
 * ****** (continue) LOOP through expression ***********************************
 * process the next item in the expression from the uvar buffer
  100	is_phase(lo_isp) = is_phase(lo_isp) + 1
-	item = is_phase(lo_isp)			! points into uvar_text
+	IF ( its_gc ) THEN
+	   item = GCF_ARG_EVAL_ORDER( ifcn, is_phase(lo_isp) )
+	ELSE
+	    item = is_phase(lo_isp)		! points into uvar_text
+	ENDIF
+	IF ( its_sample ) THEN		! kludge for SAMPLE*
+	   start_sampling = item .EQ. 1
+	ENDIF  
 	IF ( item .GT. nitem ) GOTO 1000
 	itype = uvar_item_type ( item, uvar )
 	start = uvar_item_start( item, uvar )
@@ -287,6 +315,9 @@
      .				status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   cx_stack_ptr = cx_stack_ptr - 1	! release dflt_cx
+	   IF (cx_has_impl_grid(hi_cx)) THEN	! 10/99
+	     CALL DEALLO_DYN_GRID(cx_grid(hi_cx))
+	   ENDIF
 	ENDIF
 * ... request this variable on the interpretation stack ( via RETURN 1 )
 	CALL PUSH_INTERP_STACK( isp, status )
@@ -297,6 +328,7 @@
 * ... special action if this component variable is user-defined (uvar)
 	   is_uvar( isp ) = cx_variable( hi_cx )
 	ENDIF
+	IF ( start_sampling ) GOTO 900
 	RETURN 1
 
 * pseudo-variable: parse mods, update full expression context and evaluate
@@ -342,6 +374,7 @@
 	IF ( status .NE. ferr_ok ) RETURN
 	is_cx ( isp ) = hi_cx
 	is_obj( isp ) = lo_isp	! claimed by this level
+	IF ( start_sampling ) GOTO 900
 	RETURN 1
 
 * function logic structure or operator:
@@ -389,6 +422,7 @@
 * ... special action if this component variable is user-defined (uvar)
 	   is_uvar( isp ) = cx_variable( hi_cx )
 	ENDIF
+	IF ( start_sampling ) GOTO 900
 	RETURN 1
 
 * "string"
@@ -412,6 +446,17 @@
 	   is_uvar( isp ) = cx_variable( hi_cx )
 	ENDIF
 	RETURN 1
+
+* "SAMPLEI" (and its family)
+* at this point the list of indices has been evaluated and is on the isp stack
+* (at lo_isp+1). Setup "sampling" activity on the stack, using that list to
+* guide obtaining the other arg
+ 900	CALL SETUP_SAMPLE( memory, is_cx(lo_isp+1), is_mr(lo_isp+1),
+     .			   ifcn, big_cx, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+* ... setup to grab first chunk of sampling data
+	CALL IS_SAMPLE( memory, *910, *5900, status )
+ 910	RETURN 1
 
 
 * DONE - clean up
@@ -514,4 +559,7 @@
  5100	CALL ERRMSG(ferr_not_implemented, status,
      .		'Quoted strings may only be function arguments'
      .		, *5000)
+ 5900	CALL ERRMSG( ferr_internal, status, 'SAMPLE* not startable',
+     .		, *5000)
+
 	END	

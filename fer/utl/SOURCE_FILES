@@ -2,6 +2,7 @@ SRCS_F = \
 add_2_grids.F\
 add_2_grids_sub.F\
 add_c_2_grid.F\
+adjust_copy_limits.F\
 allo_grid.F\
 allo_managed_axis.F\
 allo_managed_grid.F\
@@ -21,11 +22,14 @@ copy_grid_sub.F\
 copy_grid_trans.F\
 copy_grid_trans_sub.F\
 copy_into.F\
+copy_into_mapped.F\
+copy_into_mapped_sub.F\
 copy_into_sub.F\
 count_number_list.F\
 cstring_insert.F\
 deallo_all_grids.F\
 deallo_grid.F\
+dense_contig_region.F\
 extract_dp_line.F\
 extract_line.F\
 extract_line_sub.F\
@@ -85,6 +89,7 @@ secs_from_bc.F\
 secs_to_date.F\
 secs_to_date_c.F\
 secs_to_tstep.F\
+sort_list.F\
 short_mod_copy.F\
 split_list.F\
 ss_neighbors.F\

@@ -14,14 +14,16 @@
      .			isact_class_modulo,
      .			isact_class_reverse,
      .			isact_class_impl_grid,
-     .			isact_class_reconcile
+     .			isact_class_reconcile,
+     .			isact_class_sample
 	PARAMETER     ( isact_class_trans    = 1,
      .			isact_class_regrid   = 2,
      .			isact_class_gather   = 3,
      .			isact_class_modulo   = 4,
      .			isact_class_reverse  = 5,
      .			isact_class_impl_grid  = 6,
-     .			isact_class_reconcile  = 7 )
+     .			isact_class_reconcile  = 7,
+     .			isact_class_sample   = 8 )
 
 * to help in defining classes of activity codes ...
 	INTEGER		isact_trans_code
@@ -43,7 +45,8 @@
      .			isact_reverse,
      .			isact_impl_grid,
      .			isact_reconcile,
-     .			isact_reduce
+     .			isact_reduce,
+     .			isact_sample
 	PARAMETER     ( isact_request		= 1,
      .			isact_algebra		= 2,
      .			isact_rotate		= 3,
@@ -59,7 +62,8 @@
      .			isact_reverse		= 13,
      .			isact_impl_grid		= 14,
      .			isact_reconcile		= 15,
-     .          isact_reduce = 16 ) ! never used since GC fcns perform axis reduction
+     .			isact_sample		= 17,
+     .          	isact_reduce = 16 ) ! never used: GC fcns perform axis reduction
 
 * transformations (which are also stack activities)
 	INTEGER		isact_interp,

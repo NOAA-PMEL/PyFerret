@@ -9,6 +9,7 @@
 * 10/98: *jc* added pgc_span_*, trans_reduced (for grid-changing functions)
 * 12/98: added cat_const_var and alg_const_var
 *  1/99: added cat_string and alg_string
+*  8/99: *sh* added cat_work_mr
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -93,13 +94,15 @@
 
 * codes regarding the categories of variables used by the program
 *    "cat" - "categories" of variables ("file","calc","user"...)
-	INTEGER		cat_file_var, cat_calc_var,
+	INTEGER		cat_work_mr,
+     .			cat_file_var, cat_calc_var,
      .			cat_user_var, cat_dummy_var,
      .			cat_expr_var, cat_axis_var,
      .			cat_temp_var, cat_pseudo_var,
      .			cat_constant, cat_file_rev,
      .			cat_const_var,cat_string
-	PARAMETER     ( cat_file_var = 1,
+	PARAMETER     ( cat_work_mr  = -9,
+     .			cat_file_var = 1,
      .			cat_calc_var = 2,
      .			cat_user_var = 3,
      .			cat_dummy_var= 4,

@@ -23,6 +23,7 @@ find_var_name.F\
 free_memory.F\
 fvar_number.F\
 get_memory.F\
+get_work_mr.F\
 get_work_spc.F\
 hash_cx.F\
 hash_name.F\

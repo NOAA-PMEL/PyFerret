@@ -44,6 +44,7 @@
 *
 * revision 0.0 - 7/21/88
 * V200:  7/12/89 - special treatment for cat_temp_var
+* V510: 8/99 *sh* special treatment for cat_work_mr
 
 
 #ifdef unix
@@ -70,6 +71,9 @@
      .  .OR. cat .EQ. cat_temp_var
      .  .OR. cat .EQ. cat_pseudo_var ) THEN
 	   HASH_CX = -1
+	   RETURN
+	ELSEIF ( cat .EQ. cat_work_mr ) THEN
+	   HASH_CX = pmv_work_var_pile
 	   RETURN
 	ENDIF	   
 	

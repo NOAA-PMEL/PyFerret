@@ -73,6 +73,8 @@
 *               renamed it to ECHO
 *       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
 *       3/99 - made ECHO into a 2 argument function
+* V510: 8/99 *sh* - added SAMPLE* functions (just copy arg 2 to result here --
+*               the work is done in IS_ALGEBRA and IS_SAMPLE
 
 #ifdef unix
 	include	'ferret.parm'
@@ -105,7 +107,6 @@
      .					  m10loz:m10hiz,m10lot:m10hit )
 
 * internal variable declarations:
-	LOGICAL	first
 	INTEGER CX_DIM_LEN,  CGRID_SIZE, count, size,
      .		i, j, k, l, icom, idim,
      .		cx1, cx2, cx3, cx4, cx5, cx6, cx7, cx8, cx9,
@@ -118,11 +119,10 @@
      .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
      .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4,
      .		si5, sj5, sk5, sl5, si6, sj6, sk6, sl6
-        INTEGER klo, khi, ndim, ndx_lo, wkblk
+        INTEGER klo, khi, ndx_lo, wkblk
         INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
 
-	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
-     .		DAYS_FROM_DAY0, bad_res,
+	REAL    bad_res,
      .          bad1, bad2, bad3, bad4, bad5, bad6, bad7, bad8, bad9
         REAL    zval, frac
 
@@ -418,10 +418,24 @@
  1710	CONTINUE
 	RETURN
 
- 1800	CONTINUE
- 1900	CONTINUE
- 2000	CONTINUE
- 2100	CONTINUE
+* "SAMPLEI" - just copy arg 2 to result
+ 1900   CONTINUE        ! SAMPLEJ
+ 2000   CONTINUE        ! SAMPLEK
+ 2100   CONTINUE        ! SAMPLEL
+ 1800	DO 1810 l = cx_lo_s4(cx2), cx_hi_s4(cx2)
+	 DO 1810 k = cx_lo_s3(cx2), cx_hi_s3(cx2)
+	  DO 1810 j = cx_lo_s2(cx2), cx_hi_s2(cx2)
+	   DO 1810 i = cx_lo_s1(cx2), cx_hi_s1(cx2)
+
+	   IF ( com2(i,j,k,l) .EQ. bad2 ) THEN
+	      res(i,j,k,l) = bad_res
+	   ELSE
+	      res(i,j,k,l) = com2(i,j,k,l)
+	   ENDIF
+
+ 1810	CONTINUE
+	RETURN
+
  2200	CONTINUE
  2300	CONTINUE
  2400	CONTINUE

@@ -59,6 +59,7 @@
 * V500:  1/99 *sh* remove test code regarding function TIMES2
 *       a.k.a. "ECHO"  now used for string argument testing
 *       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
+*V510: 9/99 *sh* - added SAMPLE* functions
 
 
 * debug declarations for TIMES2
@@ -178,6 +179,20 @@
 	   CALL FLESH_OUT_AXIS( t_dim, res_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
+
+* *** SAMPLE* functions ***
+	ELSEIF ( gcfcn .GE. p_samplei 
+     .    .AND.  gcfcn .LE. p_samplel ) THEN
+* specified axis is imposed as ABSTRACT
+* size of output on that axis is total size of component 1, the index list
+	   com1_cx = cx_list(1) 	! only one argument to function
+           idim =  gcfcn - p_samplei + 1
+	   cx_lo_ss(res_cx,idim) = 1
+	   cx_hi_ss(res_cx,idim) = CGRID_SIZE(com1_cx)
+	   cx_by_ss(idim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( idim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	
 
 * *** TIMES2 (debug) function ***
 ! commented out with ifdef 1/99 *sh*

@@ -120,7 +120,10 @@
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
-
+* V510: *sh* 9/99 - bug revealed while implementing SAMPLE* functions
+*		if cx_unstand_grid is FALSE on coming into this routine
+*		then the basic grid for the result shoud be std_grid. The
+*		value of use_grid upon entry cannot be trusted to be correct
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -159,11 +162,11 @@
 
 * internal variable declarations:
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL,
-     .		  its_dyn, has_impl_axis
-	INTEGER	  KNOWN_GRID, TM_FIND_LIKE_GRID, TM_FIND_LIKE_DYN_GRID,
-     .		  use_grid, ilo, ihi, n,
+     .		  its_dyn, has_impl_axis, explicit_unstd
+	INTEGER	  KNOWN_GRID, 
+     .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
-     .		  base_grid, impl_grid, catlg_grid, slen
+     .		  base_grid, impl_grid
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
 * V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
 	CHARACTER VAR_CODE*64
@@ -173,6 +176,7 @@
 	var  = cx_variable( cx )
 	dset = cx_data_set( cx )
         use_grid = cx_grid( cx )
+	explicit_unstd = cx_unstand_grid( cx ) ! 9/99
 
 * by this point the variable and data set must be known
 	IF ( var .EQ. unspecified_int4 )	CALL ERRMSG
@@ -207,7 +211,6 @@
 	   ENDIF
  10	CONTINUE
 	IF ( has_impl_axis ) THEN
-
 
 * ... we need an implicit grid to hold the axes so make it if we don't have one
 	   IF ( .NOT.cx_has_impl_grid(cx) ) THEN
@@ -300,8 +303,9 @@
 
 * handle implicit (dynamic) grid creation
 	IF ( cx_has_impl_grid(cx) ) THEN
-* ... build a (temporary) implicit grid
-	   IF ( use_grid .NE. unspecified_int4 ) THEN
+* ... build a (temporary) implicit grid (9/99 logic mod)
+	   IF ( explicit_unstd
+     .	  .AND. use_grid .NE. unspecified_int4 ) THEN
 	      base_grid = use_grid
 	   ELSE
 	      base_grid = std_grid

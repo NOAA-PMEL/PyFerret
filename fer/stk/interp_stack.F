@@ -85,6 +85,7 @@
 *	 5/99 *sh* remove delta values error trap
 *		(cx_delta is now used by netCDF vars to signal that the
 *		read_tm should use strides)
+* V510: 8/99 *sh* handle isact_sample
 
 #ifdef unix
 	include	'ferret.parm'
@@ -113,9 +114,8 @@
      .			look_again, modulo_axes(4), explicit_qualifiers
 	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, CAXIS_LEN,
      .			TM_AXES_REVERSED, rev_axes(4),
-     .			cx, mr, idim, id, cat, trans, act, uvar_pointer,
+     .			cx, mr, idim, cat, act, uvar_pointer,
      .			com_mr, var
-	CHARACTER*1	expr_num
 
 * external routines passed
 	EXTERNAL	DO_SHIFT, DO_SMTH_BOX, DO_FILL_AVE, DO_AVERAGE,
@@ -427,8 +427,12 @@
 * it will now be flagged as a component of a higher level operation
 * if it has just been created it is not on the delete chain so just set
 * its protection with one claim of "in-use".
+* (9/99) when evaluating the SAMPLEI function, the intermediate result
+* returned here might be a temporary variable. If so, leave it alone
  2000	mr = is_mr( isp )
-	IF ( mr_protected(mr) .EQ. mr_in_progress ) THEN
+	IF ( mr_protected(mr) .EQ. mr_temporary ) THEN
+	   CONTINUE	! 9/99 - container result for SAMPLE* function
+	ELSEIF ( mr_protected(mr) .EQ. mr_in_progress ) THEN
 	   mr_protected(mr) = mr_not_protected + 1
 	ELSEIF ( mr_protected(mr) .NE. mr_perm_protected ) THEN
 	   CALL MR_IN_USE( mr )
@@ -474,6 +478,8 @@
 	      CALL IS_REVERSE( memory, *10, *2500, status )     ! 2/95
 	   ELSEIF ( act .EQ. isact_gather		) THEN
 	      CALL IS_GATHER( memory, *10, *2500, status )
+	   ELSEIF ( act .EQ. isact_sample		) THEN
+	      CALL IS_SAMPLE( memory, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_interp		) THEN
 	      CALL IS_TRANS( memory, DO_INTERPOLATE, *2500, status )
 	   ELSEIF ( act .EQ. isact_average		) THEN

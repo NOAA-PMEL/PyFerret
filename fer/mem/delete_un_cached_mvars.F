@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V420: 11/95
+* V510: 8/99 *sh* -- added deletion of pmv_work_var_pile
 
 #ifdef unix
 	include 'ferret.parm'
@@ -57,7 +58,7 @@
 * internal variable declarations:
 	INTEGER	mr
 
-* initialize linked list search
+* initialize linked list search of "nocache" variables
 	mr =  mv_flink( pmv_nocache_pile )
 
 * gobble up the linked list
@@ -67,6 +68,20 @@
 	   CALL DELETE_VARIABLE( mr )		! delete head of list
 	   mr =  mv_flink( pmv_nocache_pile )	! new head of list
 	   GOTO 100
+	ENDIF
+	   
+* ---
+
+* initialize linked list search of "work_var" variables
+	mr =  mv_flink( pmv_work_var_pile )
+
+* gobble up the linked list
+ 200	IF ( mr .EQ. pmv_work_var_pile ) THEN
+	   RETURN
+	ELSE
+	   CALL DELETE_VARIABLE( mr )		! delete head of list
+	   mr =  mv_flink( pmv_work_var_pile )	! new head of list
+	   GOTO 200
 	ENDIF
 	   
 	END

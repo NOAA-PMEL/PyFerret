@@ -23,6 +23,7 @@
 *	        increased max_uvar to 250
 * V301: increased mem_blk_size x4  !!!
 * V312: 5/17/94  removed "memory" array from COMMON altogether
+* V510: 8/99 *sh* allow other categories of cached mvars (mpv_nocache area)
 
 *	"mr"	- "memory resident"
 *	("mv")	  table of information about variables currently stored in
@@ -140,6 +141,9 @@
      .			pmax_mem_blks,
      .			pmv_npiles,
      .			pmv_nocache_pile,
+     .			pmv_work_var_pile,
+     .			pmv_adjoint_var_pile,
+     .			pmv_lowest_head,
      .			dummy_mr
 	PARAMETER     ( max_mrs   = 151,
      .			dummy_mr  = max_mrs,
@@ -147,7 +151,11 @@
      .			pmem_blk_size   = 160*100*4 / 10,  ! added "*4" 1/25/94
      .			pmax_mem_blks   = 500,
      .			pmv_npiles     = 11,	! prime # of hash piles
-     .			pmv_nocache_pile = -pmv_npiles - 1 )
+     .			pmv_nocache_pile = -pmv_npiles - 1,
+     .			pmv_work_var_pile = -pmv_npiles - 2,
+     .			pmv_adjoint_var_pile = -pmv_npiles - 3,
+     .			pmv_lowest_head = -pmv_npiles - 5)  ! -4, -5 unused
+! pmv_adjoint_pile reserved for future EF's returning multiple results
 
 	INTEGER		max_uvar,
      .			max_uvar_items,
@@ -194,8 +202,8 @@
      .
      .		num_uvars_in_cmnd,
      .
-     .		mv_flink( pmv_nocache_pile:max_mrs ),
-     .		mv_blink( pmv_nocache_pile:max_mrs ),
+     .		mv_flink( pmv_lowest_head:max_mrs ),
+     .		mv_blink( pmv_lowest_head:max_mrs ),
      .
      .		mr_del_flink( 0:max_mrs ),
      .		mr_del_blink( 0:max_mrs ),

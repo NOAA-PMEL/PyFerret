@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61902584 Jun  8 10:33 /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61923444 Jun 10 14:07 /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: bug fixes checked in through 6/1/04, bounds attribute on input/output, mode graticule, Yonghua's optimization changes
+Note: bug fixes checked in through 6/1/04, bounds attribute on input/output, mode graticule, Yonghua's optimization changes, calls to cd_rd_r8_bnds.F changed for rh7 compiler
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET_v_5_6_0_release/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Tue Jun 8 11:40:34 PDT 2004
+Beginning at Thu Jun 10 14:11:28 PDT 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -568,4 +568,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Jun 8 11:51:34 PDT 2004
+Ended at Thu Jun 10 14:22:35 PDT 2004

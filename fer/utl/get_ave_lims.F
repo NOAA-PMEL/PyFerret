@@ -46,6 +46,8 @@
 * revision 0.0 -  1/9/89
 * V230: 8/23/92 - bug fix: time axes require special treatment
 * V312:	 6/7/94 - use TDST_WORLD for simpler, faster date conversions
+* V510: *sh* 1/00 - modify axis end point behavior so that partially filled
+*		destination cells also get processed
 
 #ifdef unix
 	include 'ferret.parm'
@@ -60,8 +62,8 @@
 	INTEGER subsc(dst_lo:dst_hi+1)
 
 * internal variable declarations:
-	INTEGER	ISUBSCRIPT, isrc, ii, status
-	REAL*8	TM_WORLD, TDEST_WORLD, xsrc, xdst, xmin, xmax
+	INTEGER	ISUBSCRIPT, ii, status
+	REAL*8	TM_WORLD, TDEST_WORLD, xdst, xmin, xmax
 
 * initialize
 	IF ( idim .EQ. t_dim ) THEN
@@ -92,12 +94,21 @@
 
  100	CONTINUE
 
+* correct first destination point if has a partial fill
+	IF ( subsc(dst_lo) .EQ. unspecified_int4 ) THEN
+	   xdst = TDEST_WORLD( dst_lo, dst_grid, idim, box_hi_lim )
+	   IF ( xmin .LT. xdst )  THEN
+	      subsc( dst_lo ) = src_lo
+	   ENDIF
+	ENDIF
+
+
 * find upper bound of top destination grid box on source axis
-	   xdst = TDEST_WORLD( dst_hi, dst_grid, idim, box_hi_lim )
-	   IF ( xdst .GT. xmax ) THEN
+	   xdst = TDEST_WORLD( dst_hi, dst_grid, idim, box_lo_lim )
+	   IF ( xdst .GE. xmax ) THEN
 	      subsc( dst_hi+1 ) = unspecified_int4
            ELSE
-	      subsc( dst_hi+1 ) = ISUBSCRIPT( xdst, src_grid, idim, round_dn )
+	      subsc( dst_hi+1 ) = src_hi
 	   ENDIF
 
 	RETURN

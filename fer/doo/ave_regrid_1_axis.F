@@ -59,6 +59,8 @@
 *	speed other axes, too, by not using AXIS_DISTANCE (units divide out)
 * V420: 10/95 - handles regridding by @VAR, as well
 *	 1/96 - handles @SUM and @NGD as well
+* V510: *sh* 1/00 variance of a grid box with only a single value
+*	contributing is undefined
 
 #ifdef unix
 	include 'ferret.parm'
@@ -82,9 +84,9 @@
 
 * local variable declarations:
 	INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l
-	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi
+	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib
 
-	REAL		ddist, ydist, bad_src, bad_dst
+	REAL		ddist, bad_src, bad_dst
 	REAL*8		TM_WORLD, TDEST_WORLD, sum, distance, dev,
      .			xsrc_min, xsrc_max, xsrc_lo, xsrc_hi,
      .			xdst_lo, xdst_hi
@@ -408,6 +410,7 @@
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
+	      ncontrib = 0
 	      DO 510 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
@@ -420,14 +423,21 @@
 	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         dev = DBLE(src(srcss, j, k, l)) - DBLE(dst(dstss, j, k, l))
-	         sum   = sum  + ddist * dev*dev
+ 	         IF (ddist .GT. 0.0) THEN
+	           ncontrib = ncontrib + 1
+	           distance  = distance + ddist
+	           dev = DBLE(src(srcss, j, k, l)) - DBLE(dst(dstss, j, k, l))
+	           sum = sum  + ddist * dev*dev
+	         ENDIF
 
  510	      CONTINUE
 
 * ... divide by weight to get variance
-	      dst(dstss, j, k, l) = sum / distance
+	      IF (ncontrib .GT. 1) THEN
+	         dst(dstss, j, k, l) = sum / distance
+	      ELSE
+	         dst(dstss, j, k, l) = bad_dst
+	      ENDIF
 
  560	   CONTINUE
  590	   CONTINUE
@@ -453,6 +463,7 @@
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
+	      ncontrib = 0
 	      DO 610 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
@@ -465,14 +476,21 @@
 	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         dev = DBLE(src(i, srcss, k, l)) - DBLE(dst(i, dstss, k, l))
-	         sum   = sum  + ddist * dev*dev
+	         IF (ddist .GT. 0.0) THEN 
+	           ncontrib = ncontrib + 1
+	           distance  = distance + ddist
+	           dev = DBLE(src(i, srcss, k, l)) - DBLE(dst(i, dstss, k, l))
+	           sum   = sum  + ddist * dev*dev
+	         ENDIF
 
  610	      CONTINUE
 
 * ... divide by weight to get variance
-	      dst(i, dstss, k, l) = sum / distance
+	      IF (ncontrib .GT. 1) THEN
+	         dst(i, dstss, k, l) = sum / distance
+	      ELSE
+	         dst(i, dstss, k, l) = bad_dst
+	      ENDIF
 
  660	   CONTINUE
  690	   CONTINUE
@@ -498,6 +516,7 @@
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
+	      ncontrib = 0
 	      DO 710 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
@@ -510,14 +529,22 @@
 	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         dev = DBLE(src(i, j, srcss, l)) - DBLE(dst(i, j, dstss, l))
-	         sum   = sum  + ddist * dev*dev
+ 	         IF (ddist .GT. 0.0) THEN
+	           ncontrib = ncontrib + 1
+	           distance  = distance + ddist
+	           dev = DBLE(src(i, j, srcss, l)) - DBLE(dst(i, j, dstss, l))
+	           sum = sum  + ddist * dev*dev
+	         ENDIF
 
  710	      CONTINUE
 
-* ... divide by weight to get variance
-	      dst(i, j, dstss, l) = sum / distance
+* ... divide by weight to get variance	      IF (ncontrib .GT. 1) THEN
+	      IF (ncontrib .GT. 1) THEN
+	         dst(i, j, dstss, l) = sum / distance
+	      ELSE
+	         dst(i, j, dstss, l) = bad_dst
+	      ENDIF
+
 
  760	   CONTINUE
  790	   CONTINUE
@@ -546,6 +573,7 @@
 * add all partial or complete boxes of data from the source grid
 	      sum = 0.0D0
 	      distance = 0.0D0
+	      ncontrib = 0
 	      DO 810 srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
@@ -558,13 +586,21 @@
 	         ddist   = xsrc_hi - xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         dev = DBLE(src(i, j, k, srcss)) - DBLE(dst(i, j, k, dstss))
-	         sum   = sum  + ddist * dev*dev
+ 	         IF (ddist .GT. 0.0) THEN
+	           ncontrib = ncontrib + 1
+	           distance  = distance + ddist
+	           dev = DBLE(src(i, j, k, srcss)) - DBLE(dst(i, j, k, dstss))
+	           sum = sum  + ddist * dev*dev
+	         ENDIF
+
  810	      CONTINUE
 
 * ... divide by weight to get variance
-	      dst(i, j, k, dstss) = sum / distance
+	      IF (ncontrib .GT. 1) THEN
+	         dst(i, j, k, dstss) = sum / distance
+	      ELSE
+	         dst(i, j, k, dstss) = bad_dst
+	      ENDIF
 
  860	   CONTINUE
  890	   CONTINUE

@@ -1,5 +1,4 @@
 SRCS_F = \
-temp_show_ef_string.F\
 bad_edges.F\
 bad_edges_sub.F\
 clean_stack.F\

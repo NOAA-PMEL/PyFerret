@@ -3,8 +3,6 @@
      .					res, res_mr, res_cx,
      .					buff	)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -42,17 +40,18 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V230:  3/23/92 - based on DO_FILL_AVE
-*         7/2/92 - changed logic so if 2 equi-distant points use the mean
+* V???:  3/23/99 - based on DO_FILL_AVE
+*         7/2/99 - changed logic so if 2 equi-distant points use the mean
 *                - corrected subscriptong bug in L axis search
+* V550 *sh* 8/02 - support for modulo lengths. ensure that filling 
+*		   does not operate acros the subspan modulo void point
+*	   11/02 - change no_point to a very negative nalue (was -1)
 
-* Note:  this routine could be made simpler and faster by arranginr single
-*        inner llops that looped "loop=1,edge" looking at index-loop and
+* Note:  this routine could be made simpler and faster by arranging single
+*        inner loops that looped "loop=1,edge" looking at index-loop and
 *        index+loop to find the first valid point(s)
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -60,15 +59,6 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -77,9 +67,12 @@
      .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * internal variable declarations:
-	INTEGER i, j, k, l, ii, jj, kk, ll, lo_sub(4), hi_sub(4),
-     .		ii_com, lo_edge, hi_edge, lo_pos, hi_pos, edge
-	REAL	bad_res, lo_coord, hi_coord, coord, lo_val, hi_val
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, has_mod_void
+	INTEGER TM_MODULO_LINE_DIM, CGRID_AXIS,
+     .		i, j, k, l, ii, jj, kk, ll, lo_sub(4), hi_sub(4),
+     .		lo_edge, hi_edge, lo_pos, hi_pos, edge,
+     .		npts, line
+	REAL	bad_res, lo_val, hi_val
 
 * internal (convenience) equivalences
 	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, hi_s1, hi_s2, hi_s3, hi_s4
@@ -90,7 +83,7 @@
 
 * local parameter declarations
 	INTEGER     no_point
-	PARAMETER ( no_point = -1 )
+	PARAMETER ( no_point = -99999 )
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -99,6 +92,9 @@
 * initialize
 	bad_res = mr_bad_data( com_mr )
 	edge = arg
+	line = CGRID_AXIS(idim, com_cx)
+	has_mod_void = TM_ITS_SUBSPAN_MODULO(line)
+	npts = TM_MODULO_LINE_DIM(line)
 
 * compute limits within which calculation is straightforward
 	DO 10 ii = 1, 4
@@ -140,7 +136,17 @@
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
- 108          IF ( lo_pos.EQ.no_point ) THEN
+ 108          IF ( has_mod_void ) THEN
+*    ... forbid crossing a subspan modulo void point
+	         IF (lo_pos.NE.no_point) THEN
+	           IF (i/npts .NE. lo_pos/npts) lo_pos=no_point
+	         ENDIF
+	         IF (hi_pos.NE.no_point) THEN
+	           IF (i/npts .NE. hi_pos/npts) hi_pos=no_point
+	         ENDIF
+	      ENDIF
+
+	      IF ( lo_pos.EQ.no_point ) THEN
                  IF ( hi_pos.EQ.no_point ) THEN
                     res(i,j,k,l) = bad_res
                  ELSE
@@ -157,6 +163,9 @@
                     res(i,j,k,l) = hi_val
                  ENDIF
               ENDIF
+	      IF (has_mod_void) THEN
+	         IF (MOD(i,npts) .EQ. 0)  res(i,j,k,l) = com(i,j,k,l)
+	      ENDIF
  110	   CONTINUE
 
 * FILL ALONG Y AXIS
@@ -191,7 +200,17 @@
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
- 208          IF ( lo_pos.EQ.no_point ) THEN
+ 208          IF ( has_mod_void ) THEN
+*    ... forbid crossing a subspan modulo void point
+	         IF (lo_pos.NE.no_point) THEN
+	           IF (j/npts .NE. lo_pos/npts) lo_pos=no_point
+	         ENDIF
+	         IF (hi_pos.NE.no_point) THEN
+	           IF (j/npts .NE. hi_pos/npts) hi_pos=no_point
+	         ENDIF
+	      ENDIF
+
+             IF ( lo_pos.EQ.no_point ) THEN
                  IF ( hi_pos.EQ.no_point ) THEN
                     res(i,j,k,l) = bad_res
                  ELSE
@@ -208,6 +227,9 @@
                     res(i,j,k,l) = hi_val
                  ENDIF
               ENDIF
+	      IF (has_mod_void) THEN
+	         IF (MOD(j,npts) .EQ. 0)  res(i,j,k,l) = com(i,j,k,l)
+	      ENDIF
  210	   CONTINUE
 
 * FILL ALONG Z AXIS
@@ -242,7 +264,17 @@
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
- 308          IF ( lo_pos.EQ.no_point ) THEN
+ 308          IF ( has_mod_void ) THEN
+*    ... forbid crossing a subspan modulo void point
+	         IF (lo_pos.NE.no_point) THEN
+	           IF (k/npts .NE. lo_pos/npts) lo_pos=no_point
+	         ENDIF
+	         IF (hi_pos.NE.no_point) THEN
+	           IF (k/npts .NE. hi_pos/npts) hi_pos=no_point
+	         ENDIF
+	      ENDIF
+
+              IF ( lo_pos.EQ.no_point ) THEN
                  IF ( hi_pos.EQ.no_point ) THEN
                     res(i,j,k,l) = bad_res
                  ELSE
@@ -259,6 +291,9 @@
                     res(i,j,k,l) = hi_val
                  ENDIF
               ENDIF
+	      IF (has_mod_void) THEN
+	         IF (MOD(k,npts) .EQ. 0)  res(i,j,k,l) = com(i,j,k,l)
+	      ENDIF
  310	   CONTINUE
 
 * FILL ALONG T AXIS
@@ -299,7 +334,17 @@
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
- 408          IF ( lo_pos.EQ.no_point ) THEN
+ 408          IF ( has_mod_void ) THEN
+*    ... forbid crossing a subspan modulo void point
+	         IF (lo_pos.NE.no_point) THEN
+	           IF (l/npts .NE. lo_pos/npts) lo_pos=no_point
+	         ENDIF
+	         IF (hi_pos.NE.no_point) THEN
+	           IF (l/npts .NE. hi_pos/npts) hi_pos=no_point
+	         ENDIF
+	      ENDIF
+
+              IF ( lo_pos.EQ.no_point ) THEN
                  IF ( hi_pos.EQ.no_point ) THEN
                     res(i,j,k,l) = bad_res
                  ELSE
@@ -316,6 +361,9 @@
                     res(i,j,k,l) = hi_val
                  ENDIF
               ENDIF
+	      IF (has_mod_void) THEN
+	         IF (MOD(l,npts) .EQ. 0)  res(i,j,k,l) = com(i,j,k,l)
+	      ENDIF
  410	   CONTINUE
 	ENDIF
 

@@ -63,8 +63,8 @@
 * V510 *sh* 3/00 - increased allowable filename length
 *	    4/00 - bump use counts on grids and axes used by this data set
 * V530 *sh* 10/00 - added /FORMAT=delimited/TYPE=data_types
+* V533 *sh* 7/01 - bug fix: filenames beginning with digits
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'
@@ -76,18 +76,6 @@
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER		dset, status, i
@@ -125,31 +113,34 @@
 	   by_number = .TRUE.
 	   already_init = .TRUE.
 	   dset = cx_data_set(cx_last)
+	   GOTO 200
 	ELSEIF ( TM_DIGIT(dset_name) ) THEN
-	   by_number = .TRUE.
-	   already_init = .TRUE.
 * *kob* 4/97
 #ifdef MANDATORY_FORMAT_WIDTHS
-	   READ (dset_name,*,ERR=5050) dset	! 10/95
+	   READ (dset_name,*,ERR=100) dset	! 10/95
 #else
-	   READ (dset_name,'(I)',ERR=5050) dset	! 10/95
+	   READ (dset_name,'(I)',ERR=100) dset	! 10/95
 #endif
-	ELSE
-	   by_number = .FALSE.
-#ifdef unix
-           path_name = TM_INQ_PATH( dset_name, 'FER_DATA', '    ',
-     .                                   .TRUE., TMAP_status )
-#else
-	   path_name = TM_INQ_PATH( dset_name, 'FER_DATA', 'data.dat', .TRUE.,
-     .					  TMAP_status )
-#endif
-	   IF ( TMAP_status .EQ. merr_notmounted ) GOTO 5400
-	   IF ( TMAP_status .NE. merr_ok ) GOTO 5900
-	   dset = TM_DSET_NUMBER( path_name )
-	   already_init = dset .NE. unspecified_int4
+	   by_number = .TRUE.
+	   already_init = .TRUE.
+	   GOTO 200
 	ENDIF
 
-	IF ( by_number ) THEN
+* open data set by name
+ 100	by_number = .FALSE.
+#ifdef unix
+        path_name = TM_INQ_PATH( dset_name, 'FER_DATA', '    ',
+     .                                   .TRUE., TMAP_status )
+#else
+	path_name = TM_INQ_PATH( dset_name, 'FER_DATA', 'data.dat', .TRUE.,
+     .					  TMAP_status )
+#endif
+	IF ( TMAP_status .EQ. merr_notmounted ) GOTO 5400
+	IF ( TMAP_status .NE. merr_ok ) GOTO 5900
+	dset = TM_DSET_NUMBER( path_name )
+	already_init = dset .NE. unspecified_int4
+
+ 200	IF ( by_number ) THEN
 	   IF   ( dset .LT. 1
      .	   .OR.   dset .GT. maxdsets
      .	   .OR.   dset .GT. max_gfdl_dsets )		GOTO 5300

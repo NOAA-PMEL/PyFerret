@@ -18,6 +18,9 @@
 *		LET A=I[i=1:5:1] (dynamic axis) the expression A[I=10] should
 *		be an error
 *	      - allow explicit Z=100@ITP to pass through
+* $Id$ 
+*       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
+*         is date or timesteps
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -115,13 +118,15 @@
 * ... is there valid position data for this axis ?
 	   IF ( cx_lo_ww( idim, cx ) .EQ. unspecified_val8 ) GOTO 1000
 * ... time/date strings are received as -1*(secs from BC)
+* 8/97 *kob* use cx_calender to check if time is date rather than time step
 	   IF ( idim .EQ. t_dim 
-     .	  .AND. cx_lo_ww(idim,cx) .LT. 0.0D0 ) THEN
+     .	  .AND.cx_calendar(cx) ) THEN
 	      bc_to_t0 = SECS_FROM_BC( line_t0(axis), istat )
 	      cx_lo_ww(idim,cx) = 
      .			-(cx_lo_ww(idim,cx)+bc_to_t0)/line_tunit(axis)
 	      cx_hi_ww(idim,cx) = 
      .			-(cx_hi_ww(idim,cx)+bc_to_t0)/line_tunit(axis)
+	      cx_calendar(cx) = .FALSE. 
 	   ENDIF
 * ... confine values to the limits of the defining grid
 	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )

@@ -13,6 +13,8 @@
 * V320:  3/2/95 - trim the 1/2 grid box fringe around CONTOUR and FILL plots
 *               This is OK to do because /xlimits and /ylimits offer explicit
 *               over-ride options
+*       8/97 - *kob*  - check cx_calender rather than ww_low to see if time entered is a
+*                       date string or a time step
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -79,9 +81,10 @@
 	      RETURN
 	   ELSE
 * ... explicit limits can further restrict, but not expand
+* 8/97 *kob* - check cx_calender for a date time rather than ww_low
 	      ww_low = cx_lo_ww( idim, exp_cx )
 	      ww_hiw = cx_hi_ww( idim, exp_cx )
-	      IF ( idim.EQ.t_dim .AND. ww_low.LT.0 ) THEN
+	      IF ( idim.EQ.t_dim .AND. cx_calendar(exp_cx) ) THEN
 	         ww_low = SECS_TO_TSTEP( grid, -ww_low )  
 	         ww_hiw = SECS_TO_TSTEP( grid, -ww_hiw )  
 	      ENDIF                                     

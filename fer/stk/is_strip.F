@@ -25,6 +25,9 @@
 *	 	 - added isact_class_reconcile for command qualifiers
 *		 - check for explicit limits with @ITP 
 * V430:     7/96 - incorporate 4D transformations:  AVE, VAR, DIN, NDG, NBD
+* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+*               to have access to context information - needed for negative
+*               time step processing
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
@@ -33,7 +36,7 @@
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, itsa_uvar, modulo_dest_regrid
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CX_DIM_LEN, POTENT_SIZE,
-     .		ISUBSCRIPT, TM_AXES_REVERSED, CGRID_SIZE,
+     .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE,
      .		nrev, reversed(4),
      .		trans, xtrans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, lo_mr, int_arg, i, axis,
@@ -119,7 +122,7 @@
      .			//'e.g. "Z=@57@ITP" is OK but "Z=@ITP" is not',
      .								*5000 )
 	         ww_given = cx_lo_ww(axis,hi_cx)
-	         ss = ISUBSCRIPT(ww_given,grid,axis,round_dn)
+	         ss = ISUBSCR_CX(ww_given,grid,axis,hi_cx,round_dn)
 	         ww_nrst = TM_WORLD( ss, grid, axis, box_middle )
 	         CALL GRID_SUBSCRIPT_EXTREMES( lo_ss, hi_ss, grid, axis )
 	         cx_by_ss(axis,hi_cx) = .TRUE.

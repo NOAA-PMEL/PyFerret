@@ -19,6 +19,7 @@
 *			such as min, max, ...
 *	   11/95 - modulo regridding - source region independent of result
 *	 1/96    - shifted @SUM and @NGD to weighted calcs like @AVE
+*     9/97 *kob* - mods to include negative time axis processing
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
@@ -30,8 +31,9 @@
      .		dst_ss_min, dst_ss_max,
      .		dst_grid, src_grid,
      .		src_lo_ss, src_hi_ss, dst_lo_ss, dst_hi_ss
-	REAL*8	TWORLD, TM_WORLD,
-     .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww
+	REAL*8	TWORLD, TM_WORLD, SECS_TO_TSTEP,
+     .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
+     .          tmp_lo_ww, tmp_hi_ww
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -89,17 +91,23 @@
 	ENDIF
 
 * find the available source region for regridding
+* NOTE:  times expressed as seconds since BC
 	src_lo_ww = TWORLD(cx_lo_ss(src_cx,axis),src_grid,axis,where_loest)
 	src_hi_ww = TWORLD(cx_hi_ss(src_cx,axis),src_grid,axis,where_hiest)
 
 * find the corresponding subscripts on the destination grid
+* 9/97 *kob* convert time in secs since BC to time position on the 
+*             *source* time axis then call ISUBSCRIPT
 	IF ( calendar ) THEN	! fixed 8/95
-	   dst_lo_ss = ISUBSCRIPT( -src_lo_ww,dst_grid,axis,round_up )
-	   dst_hi_ss = ISUBSCRIPT( -src_hi_ww,dst_grid,axis,round_dn )
+	   tmp_lo_ww = SECS_TO_TSTEP(dst_grid, src_lo_ww)
+	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, src_hi_ww)
+	   dst_lo_ss = ISUBSCRIPT( tmp_lo_ww,dst_grid,axis,round_up )
+	   dst_hi_ss = ISUBSCRIPT( tmp_hi_ww,dst_grid,axis,round_dn )
 	ELSE
 	   dst_lo_ss = ISUBSCRIPT( src_lo_ww,dst_grid,axis,round_up )
 	   dst_hi_ss = ISUBSCRIPT( src_hi_ww,dst_grid,axis,round_dn )
 	ENDIF
+
 
 * determine whether destination edges can actually be regridded
 * changed to sing. prec 5/93

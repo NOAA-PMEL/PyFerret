@@ -8,7 +8,7 @@
 *
 * revision 0.0 - 9/23/87
 * V200:  5/19/89 - reordered _ss dims
-
+* 9/97 *kob* - eliminate newly create cx_calendar
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/xcontext.cmn'
@@ -26,6 +26,8 @@
 	cx_hi_ww    ( idim, cx ) = unspecified_val8
 	cx_trans    ( idim, cx ) = trans_no_transform
 	cx_trans_arg( idim, cx ) = bad_val4
+	if (idim .EQ. t_dim) 
+     .      cx_calendar(cx) = .FALSE.
 
 	RETURN
 	END

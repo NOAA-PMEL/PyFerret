@@ -75,6 +75,10 @@
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V450:  7/17/97 - GX=grid_name does not generate X-only regridding
+*       8/97 - *kob* - add set of cx_calendar to show whether a time was entered
+*                      as a date string.
+*                    - also check cx_calender rather than fmat_lo or fmat_hi
+*                      
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -185,6 +189,9 @@
 	            cx_hi_ss ( mods_cx, idim ) = cx_hi_ss ( ict, idim )
 	            cx_lo_ww ( idim, mods_cx ) = cx_lo_ww ( idim, ict )
 	            cx_hi_ww ( idim, mods_cx ) = cx_hi_ww ( idim, ict )
+* kob 9/97 - set cx_calendar as well
+		    IF (idim .EQ. t_dim) 
+     .                 cx_calendar(mods_cx) = cx_calendar(ict)
 	            cx_trans ( idim, mods_cx ) = cx_trans   ( idim, ict )
 	            cx_trans_arg(idim, mods_cx ) = cx_trans_arg(idim, ict )
 	            cx_by_ss ( idim, mods_cx ) = cx_by_ss( idim, ict )
@@ -541,6 +548,9 @@
      .			cx_lo_ww ( idim, mods_cx ),
      .			fmat_lo, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+* kob 8/97 - set cx_calender to true/false depending on whether date is
+*            a formated string or not
+	   IF (idim.EQ.t_dim) cx_calendar(mods_cx) = fmat_lo
 	ENDIF
 
 * is there a second value given ?
@@ -626,8 +636,10 @@
 	
 * make sure low limit is less than high
 * ... date strings: stored negatively as seconds since BC
-	IF (  idim .EQ. t_dim .AND. (fmat_hi.OR.fmat_lo) ) THEN
-	   IF ( cx_lo_ww(idim,mods_cx) .LT. 0.0D0
+* 8/97 *kob* check cx_calendar rather than if fmat_hi or fmat_lo is set to 
+*            see if time is a date
+	IF (  idim .EQ. t_dim .AND. cx_calendar(mods_cx) ) THEN
+	   IF ( cx_lo_ww(idim,mods_cx) .LT. 0.0D0 
      .	 .NEQV. cx_hi_ww(idim,mods_cx) .LT. 0.0D0 ) GOTO 5070
 	   IF ( cx_hi_ww(idim,mods_cx) .GT. 
      .				cx_lo_ww(idim,mods_cx) ) THEN
@@ -654,6 +666,9 @@
 	   cx_hi_ss(mods_cx,idim) = NINT( cx_hi_ww(idim,mods_cx) )
 	   cx_lo_ww( idim, mods_cx ) = unspecified_val8
 	   cx_hi_ww( idim, mods_cx ) = unspecified_val8
+* 9/97 *kob* cx_calendar must reflect these changes as well	  
+	   IF (idim .eq. t_dim) 
+     .                cx_calendar(mods_cx) = .FALSE.
 	ENDIF
 
 * SPECIAL CASES for individual axes

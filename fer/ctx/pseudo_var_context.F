@@ -20,6 +20,8 @@
 * V420: 9/27/95 - allow implicit grids underlying pseudo-var
 *	10/95	- allow implicit axes like i[i=1:10:2]
 *	11/95   - code to deal with T[T=date:date:delta]
+* 
+* kob  8/25/97 - use newly created cx_calender to check whether time is a date or time_step
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -164,7 +166,8 @@
 * ... special processing for calendar pseudo-variables
 *    (there should be similar processing for X[X=160E:160W:2] but the support
 *	for it needs to be in GET_CONTEXT_MODS and elsewhere )
-	      calendar = pvdim.EQ.t_dim .AND. cx_lo_ww(pvdim,pvar_cx).LT.0.0D0
+* *kob* 8/97 check cx_calendar rather then cx_lo_ww
+	      calendar = pvdim.EQ.t_dim .AND. cx_calendar(pvar_cx)
 	      IF ( calendar ) THEN
 * ... note: a minor misbehavior:  for the pseudo-variable
 * 	"T[g=temp,t=[t=1-jan-1982:1-jan-1983:24]" it would be nice to inherit
@@ -173,6 +176,8 @@
      .					/(-1 * daysinsecs)	! days since BC
 	         cx_hi_ww(pvdim,pvar_cx) = cx_hi_ww(pvdim,pvar_cx)
      .					/(-1 * daysinsecs)	! days since BC
+* *kob* 9/997 - reset cx_calendar after conversion
+		 cx_calendar(pvar_cx) = .FALSE.
 	         cx_delta(pvdim,pvar_cx) = cx_delta(pvdim,pvar_cx)/24.
 	         CALL TM_ALLO_DYN_LINE( tmp, status )
 	         IF ( status .NE. ferr_ok ) GOTO 5000

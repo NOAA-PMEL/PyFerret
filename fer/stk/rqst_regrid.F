@@ -21,6 +21,7 @@
 *		   (1/96 - set cx_given to FALSE ... omitted earlier)
 *	 1/96    - shifted @SUM and @NGD to weighted calcs like @AVE
 *	 2/96    - issue warning that G=@NRS is not implemented
+*     9/97 *kob* - mods to include negative time axis processing
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -56,7 +57,8 @@
      .		src_min_ss, src_max_ss,
      .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans
 	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
-     .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww
+     .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
+     .          tmp_lo_ww, tmp_hi_ww
 	CHARACTER	VAR_CODE*24
 
 * initialize
@@ -133,6 +135,7 @@
            ENDIF
            GOTO 500
         ELSE
+* NOTE:  times expressed as seconds since BC
            dst_lo_ww = TWORLD( dst_lo_ss,dst_grid,axis,where_loest ) 
 	   dst_hi_ww = TWORLD( dst_hi_ss,dst_grid,axis,where_hiest )
         ENDIF
@@ -158,13 +161,19 @@
 * which source grid boxes contain the destination region
 * 	(not necessarily adequate for regridding)
 !	IF ( axis .EQ. t_dim ) THEN	! pre-8/95
+* 9/97 *kob* convert time in secs since BC to time position on the 
+*             *source* time axis then call ISUBSCRIPT
 	IF ( calendar ) THEN
-	  src_lo_ss = ISUBSCRIPT( -dst_lo_ww,src_grid,axis,round_dn )
-	  src_hi_ss = ISUBSCRIPT( -dst_hi_ww,src_grid,axis,round_up )
+	   tmp_lo_ww = SECS_TO_TSTEP( src_grid, dst_lo_ww)
+	   tmp_hi_ww = SECS_TO_TSTEP( src_grid, dst_hi_ww)
+	   src_lo_ss = ISUBSCRIPT( tmp_lo_ww,src_grid,axis,round_dn )
+	   src_hi_ss = ISUBSCRIPT( tmp_hi_ww,src_grid,axis,round_up )
 	ELSE
-	  src_lo_ss = ISUBSCRIPT( dst_lo_ww,src_grid,axis,round_dn )
-	  src_hi_ss = ISUBSCRIPT( dst_hi_ww,src_grid,axis,round_up )
+	   src_lo_ss = ISUBSCRIPT( dst_lo_ww,src_grid,axis,round_dn )
+	   src_hi_ss = ISUBSCRIPT( dst_hi_ww,src_grid,axis,round_up )
 	ENDIF
+* 9/97 *kob* now convert to ss values
+
 
 * determine the maximum regriddable region from this source data
 	src_lo_ww = TWORLD( src_lo_ss, src_grid, axis, where_loest )
@@ -197,6 +206,10 @@
 	cx_lo_ww( axis, src_cx )	= unspecified_val8
 	cx_hi_ww( axis, src_cx )	= unspecified_val8
 	cx_given( axis, src_cx )	= .FALSE.
+* 9/97 *kob* - cx_calendar needs to also reflect these changes
+	IF (axis .eq. t_dim)
+     .      cx_calendar(src_cx) = .FALSE.
+
 	RETURN
 
 * error exit

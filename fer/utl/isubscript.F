@@ -27,7 +27,8 @@
 * V420: 10/95 - for axes which are children of others avoid direct use of
 *		line_mem -- instead use TM_WORLD
 *	 1/96 - bug fix: many references to sub0 remained despite 10/95 chgs
-
+* 9/97 *kob* - w/ negative time axis capablities, this routine will not have
+*	      to worry about date strings...
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 	include	'tmap_format/xtm_grid.cmn_text'
@@ -64,13 +65,16 @@
 	   ISUBSCRIPT = unspecified_int4
 	   RETURN
 	ENDIF
-
+* 9/97 *kob* removed below block of code w/ advent of negative time
+*            axis capabilities
 * time expressed as seconds since BC ?
-	IF ( idim .EQ. t_dim .AND. world_coord .LT. 0.0D0 ) THEN
-	   wcoord = SECS_TO_TSTEP( grid, -world_coord )
-	ELSE
+*	IF ( idim .EQ. t_dim .AND. world_coord .LT. 0.0D0 ) THEN
+*	   wcoord = SECS_TO_TSTEP( grid, -world_coord )
+*	ELSE
+*	   wcoord = world_coord
+*	ENDIF
+
 	   wcoord = world_coord
-	ENDIF
 
 * initialize pointers for axes with irregularly spaced points
 	IF ( .NOT.line_regular( iaxis ) ) THEN

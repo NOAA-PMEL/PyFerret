@@ -23,6 +23,9 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 *	  1/5/95 - changed default precision from 5 to 7  (and for
 *		   dates to seconds) 
+* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+*               to have access to context information - needed for negative
+*               time step processing
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -53,7 +56,7 @@
 
 * local variable declarations:
 	LOGICAL	GEOG_LABEL, calendar
-	INTEGER ISUBSCRIPT, TM_LENSTR, 
+	INTEGER ISUBSCR_CX, TM_LENSTR, 
      .		lo, hi, idim, i, line, loest, hiest, dlen,
      .		ndec, status, delta
 	CHARACTER TM_FMT*14, buff*14, lo_str*20, hi_str*20, extra*30
@@ -103,10 +106,10 @@
 	         lo = MAX( loest, cx_lo_ss( cx, idim ) )
 	         hi = MIN( hiest, cx_hi_ss( cx, idim ) )
 	      ELSE
-	         lo = ISUBSCRIPT( cx_lo_ww(idim,cx),
-     .						grid, idim, round_dn )
-	         hi = ISUBSCRIPT( cx_hi_ww(idim,cx),
-     .						grid, idim, round_up )
+	         lo = ISUBSCR_CX( cx_lo_ww(idim,cx),
+     .						grid, idim, cx, round_dn )
+	         hi = ISUBSCR_CX( cx_hi_ww(idim,cx),
+     .						grid, idim, cx, round_up )
 	      ENDIF
 
 * determine delta increment for listing

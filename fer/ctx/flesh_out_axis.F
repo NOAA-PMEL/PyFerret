@@ -25,6 +25,8 @@
 * V450:   1/97   - fix to never-observed bug: the check
 *		        "uvar_given(idim,var) .LE. uvlim_gvn_xact"
 *		   ignores the possibility of uvlim_irrelevant
+*  *KOB* 9/97    - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in 
+*                  order to use cx_calendar to determine style of taxis
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 	include 'tmap_format/xtm_grid.cmn_text'
@@ -53,7 +55,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, point, lim_redundant
-	INTEGER	ISUBSCRIPT, TM_LENSTR1,
+	INTEGER	TM_LENSTR1, ISUBSCR_CX,
      .		ss, lo_ss, hi_ss, axis, grid, cat, var, slen
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
 	CHARACTER	VAR_TRANS*40, VAR_CODE*8, string*40
@@ -89,6 +91,9 @@
 	   cx_hi_ww( idim, cx ) = unspecified_val8
 	   cx_delta( idim, cx ) = unspecified_val8
 	   cx_trans( idim, cx ) = trans_no_transform
+* kob 9/97 - need to reset cx_calendar as well
+	   IF (idim .eq. t_dim) 
+     .                cx_calendar(cx) = .FALSE.
 
 * axes with fully "given" regions will have their regions determined via
 * MERGE_CONTEXT (when computed) or PASS_AMBIG_LIMS (when found in memory)
@@ -116,6 +121,9 @@
 	   cx_hi_ww( idim, cx ) = unspecified_val8
 	   cx_delta( idim, cx ) = unspecified_val8
 	   cx_trans( idim, cx ) = trans_no_transform
+* kob 9/97 - need to reset cx_calendar as well
+	   IF (idim .eq. t_dim) 
+     .                cx_calendar(cx) = .FALSE.
 
 	ELSEIF ( cx_by_ss( idim, cx ) ) THEN
 * POSITIONS WERE SPECIFIED BY SUBSCRIPT
@@ -153,19 +161,21 @@
 	   point = cx_lo_ww(idim,cx) .EQ. cx_hi_ww(idim,cx)
 
 * convert times given as seconds from BC to time step values
-	   IF ( idim.EQ.t_dim .AND. cx_lo_ww(idim,cx).LT.0 ) THEN
+* *kob* 8/97 - use cx_calender instead of cx_lo_ww
+	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
               IF ( TM_DATE_OK( line_t0(axis) ) ) THEN
 	         cx_lo_ww(idim,cx) =
      .                SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
 	         cx_hi_ww(idim,cx) =
      .                SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
+		 cx_calendar(cx) = .FALSE.
               ENDIF
 	   ENDIF
 	      
 * world coordinate is a single point
 	   IF ( point ) THEN
 	      ww_given = cx_lo_ww(idim,cx)
-	      ss = ISUBSCRIPT(ww_given,grid,idim,round_dn)
+	      ss = ISUBSCR_CX(ww_given,grid,idim,cx,round_dn)
 	      ww_nrst = TM_WORLD( ss, grid, idim, box_middle )
 	      CALL GRID_SUBSCRIPT_EXTREMES( lo_ss, hi_ss, grid, idim )
 ! ???	      CALL VAR_SS_LIMS( idim, cx, lo_ss, hi_ss )
@@ -193,10 +203,10 @@
 
 * world coordinates span a range
 * ... compute subscripts ( rounding inward to resolve ambiguities )
-	      cx_lo_ss( cx, idim ) = ISUBSCRIPT
-     .				(cx_lo_ww(idim, cx), grid, idim, round_up)
-	      cx_hi_ss( cx, idim ) = ISUBSCRIPT
-     .				(cx_hi_ww(idim, cx), grid, idim, round_dn)
+	      cx_lo_ss( cx, idim ) = ISUBSCR_CX
+     .				(cx_lo_ww(idim, cx), grid, idim, cx,round_up)
+	      cx_hi_ss( cx, idim ) = ISUBSCR_CX 
+     .				(cx_hi_ww(idim, cx), grid, idim, cx,round_dn)
 	   ENDIF
 	ENDIF
 

@@ -27,7 +27,8 @@
 * V420: 9/95	 - Support for implicit grids
 *	10/95	 - xfer delta specifications whenever mods to axis are explicit
 *		 - also xfer cx_regrid_trans since dynamic axes may use
-
+* *kob* 9/97 - support for negative time steps - make sure cx_calendar
+*              gets transfered
 #ifdef unix
 	include 'ferret_cmn/errmsg.parm'
 	include 'ferret_cmn/ferret.parm'
@@ -90,11 +91,17 @@
 	         cx_hi_ss( dest_cx ,idim) = cx_hi_ss( mods_cx,idim)
 	         cx_lo_ww( idim,dest_cx ) = unspecified_val8
 	         cx_hi_ww( idim,dest_cx ) = unspecified_val8
+* kob 9/97 - need to reset cx_calendar as well
+		 IF (idim .eq. t_dim) 
+     .                cx_calendar(dest_cx) = .FALSE.
 	      ELSE
 	         cx_lo_ww( idim,dest_cx ) = cx_lo_ww( idim,mods_cx)
 	         cx_hi_ww( idim,dest_cx ) = cx_hi_ww( idim,mods_cx)
 	         cx_lo_ss( dest_cx ,idim) = unspecified_int4
 	         cx_hi_ss( dest_cx ,idim) = unspecified_int4
+* kob 9/97 - need to transfer cx_calendar as well
+		 IF (idim .eq. t_dim) 
+     .                cx_calendar(dest_cx) = cx_calendar(mods_cx)
 	      ENDIF
 	      cx_delta( idim, dest_cx )   = cx_delta( idim, mods_cx ) ! 10/95
 	   ENDIF

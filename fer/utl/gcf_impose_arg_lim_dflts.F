@@ -14,6 +14,9 @@
 * is the business of this routine.
 
 * V450: 1/97
+* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+*               to have access to context information - needed for negative
+*               time step processing
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -43,7 +46,7 @@
 
 * local variable declarations
 	LOGICAL CGRID_AXIS
-	INTEGER	TM_LENSTR1, ISUBSCRIPT, KNOWN_GRID,
+	INTEGER	TM_LENSTR1, ISUBSCR_CX, KNOWN_GRID,
      .		gcfcn, idim, arg_grd, mods_cx, tmp_var_cx,
      .		lo_off(4), hi_off(4), action(4), uvgrid,
      .          WHICH_GCFCN
@@ -115,11 +118,11 @@
 * ... expand the subscript range by the offsets requested
 	         IF ( cx_hi_ww(idim,cx_out).NE.unspecified_val8 ) THEN
 	            cx_lo_ss(cx_out,idim) =
-     .				ISUBSCRIPT(cx_lo_ww(idim,cx_out),
-     .					   arg_grd, idim, round_up)
+     .				ISUBSCR_CX(cx_lo_ww(idim,cx_out),
+     .					   arg_grd, idim, cx_out,round_up)
 	            cx_hi_ss(cx_out,idim) = 
-     .				ISUBSCRIPT(cx_hi_ww(idim,cx_out),
-     .					   arg_grd, idim, round_dn)
+     .				ISUBSCR_CX(cx_hi_ww(idim,cx_out),
+     .					   arg_grd, idim, cx_out,round_dn)
 	            cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
      .					  + lo_off(idim)
 	            cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)

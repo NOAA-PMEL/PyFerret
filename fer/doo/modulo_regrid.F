@@ -18,7 +18,9 @@
 
 * V420:	 11/95
 * V450:	 1/97 - bug fix: error in nfold calculation
-
+* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+*               to have access to context information - needed for negative
+*               time step processing
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 	include 'tmap_format/xtm_grid.cmn_text'		! for line_dim
@@ -46,7 +48,7 @@
      .		ave( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit )
 
 * local variable declarations:
-	INTEGER	ISUBSCRIPT, 
+	INTEGER	ISUBSCR_CX, 
      .		dstss, srcss, src_grid, dst_grid,
      .		i, j, k, l, nmod, nfold, dst_start,
      .		srcss_lo, srcss_hi, dstss_lo, dstss_hi, status
@@ -113,7 +115,7 @@
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -160,7 +162,7 @@
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -207,7 +209,7 @@
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -259,7 +261,7 @@
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -334,7 +336,7 @@
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -367,7 +369,7 @@
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims,round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -400,7 +402,7 @@
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold
@@ -434,7 +436,7 @@
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle )
-	      dstss = ISUBSCRIPT(dstww, dst_grid, axis, round_up )     
+	      dstss = ISUBSCR_CX(dstww, dst_grid, axis, cx_lims, round_up )
 
 * map that index, modulo-style, to the first target destination point
 	      dst_start = MOD(dstss-1,nmod)+1 + nfold

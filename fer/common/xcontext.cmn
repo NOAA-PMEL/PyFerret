@@ -64,7 +64,7 @@
      .		cx_by_ss	( 4, min_context:max_cx ),
      .		cx_given	( 4, min_context:max_cx ),
      .		cx_dset_gvn	( max_cx ),
-     .		cx_calendar	( max_cx ),
+     .		cx_calendar	( min_context:max_cx ),
      .		cx_grid_needs_dset,
      .		cx_xtra_doc	( 0:10 ),
      .		cx_has_impl_grid( max_cx )

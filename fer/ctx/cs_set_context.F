@@ -8,7 +8,8 @@
 
 * revision 0.0 - 5/1/87
 * V200:  6/15/89 - reordered lo/hi_ss args
-
+* 9/97 *kob* - need to reset cx_calendar to false if cx_lo/hi_ww are
+*              not used
 * internal variable declarations:
 	INTEGER	idim
 
@@ -33,6 +34,9 @@
 	   cx_hi_ss( cx_last, idim ) = cs_phase( csp )
 	   cx_lo_ww( idim, cx_last ) = unspecified_val8
 	   cx_hi_ww( idim, cx_last ) = unspecified_val8
+* kob 9/97 - need to reset cx_calendar as well
+	   IF (idim .eq. t_dim) 
+     .                cx_calendar(cx_last) = .FALSE.
 	ELSE
 	   cx_lo_ss( cx_last, idim ) = unspecified_int4
 	   cx_hi_ss( cx_last, idim ) = unspecified_int4

@@ -17,6 +17,9 @@
 * V200:  6/15/89 - eliminated "d" notation and "relative" logic
 * Unix/RISC port - 1/91 - cant use "/star" in documentation
 * V230:  7/23/92 - added cs_save_* to restore context after REPEAT loops
+* $Id$ 
+*       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
+*         is date or timesteps
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -109,9 +112,10 @@
 
 * special check for the validity of time axis limits: calendar dates are
 * stored as negative seconds since 1-jan-0000:00:00:00
+* 8/97 *kob* use cx_calender to check if time is date rather than time step
 	by_date = ( idim .EQ. t_dim )
      .	.AND. ( .NOT.cx_by_ss(idim,limits_cx) )
-     .	.AND. ( cx_lo_ww(idim,limits_cx) .LT. 0.0D0 )
+     .	.AND. ( cx_calendar(limits_cx) )
 * ... delta value in hours: hours-->seconds (to add to secs from BC)
 	IF ( by_date ) cs_delta(csp1) =  -3600. * cs_delta(csp1)
 

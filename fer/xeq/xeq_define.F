@@ -69,6 +69,9 @@
 * V450:  11/96 - Using reformulated version of INIT_UVAR (RPN not called
 *		 from here). Part of changes to support external function.
 *	  1/97 - Issue warning if DEFINE AXIS/UNIT=MONTH is used
+* $Id$ 
+*       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
+*         is date or timesteps
 
 #ifdef unix
 	include	'tmap_format/tmap_errors.parm'
@@ -576,8 +579,9 @@
      .			      buff1, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	ELSEIF ( orient .EQ. t_dim
+* 8/97 *kob* use cx_calender to check if time is date rather than time step
      .  .AND.  (     qual_given(slash_T0) .GT. 0
-     .		.OR. cx_lo_ww(orient,mods_cx) .LT. 0.0D0 ) ) THEN
+     .		.OR. cx_calendar(mods_cx))) THEN
 	   buff1 = 'HOURS'
 	ELSE
 	   buff1 = 'NONE'
@@ -692,11 +696,14 @@
 	   IF ( npoints .EQ. unspecified_int4 ) THEN
 	      delta = cx_delta (orient,mods_cx)
 	      IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
-	      IF ( .NOT.(orient.EQ.t_dim .AND. start.LT.0.0D0) )
+* 9/97 *kob* - check for negative time axis using cx_calendar
+*	      IF ( .NOT.(orient.EQ.t_dim .AND. start.LT.0.0D0) )
+	      IF ( .NOT.(orient.EQ.t_dim .AND. cx_calendar(mods_cx)) )
      .			npoints = ( (end - start) / delta ) + 1.9999
 	   ELSEIF ( npoints .EQ. 1 ) THEN
 	      delta = 1.D0
-	   ELSEIF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN
+c	   ELSEIF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN
+	   ELSEIF ( orient.EQ.t_dim .AND. cx_calendar(mods_cx) ) THEN
 	      delta = (start - end) / ( (npoints-1)*un_convert(iunit) )
 	      IF ( delta .LE. 0.0D0 ) GOTO 5520
 	   ELSE
@@ -720,7 +727,8 @@
 	ELSE
 	   buff2 = '15-JAN-1901'		! default
 * 11/95 - shift the default T0 to a value that is early enough
-	   IF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN
+*	   IF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN 
+	   IF ( orient.EQ.t_dim .AND. cx_calendar(mods_cx) ) THEN
 	      i1 = 20
  560	      bc_to_t0 = SECS_FROM_BC( buff2, status )      
 	      IF ( status .NE. ferr_ok ) GOTO 5540
@@ -761,7 +769,8 @@
 
 * ... time axis specified as date strings  (ELSEIF mod 11/93 *sh*)
 	ELSEIF ( .NOT.irreg
-     .	    .AND. orient .EQ. t_dim .AND. start .LT. 0.0D0 ) THEN
+c     .	    .AND. orient .EQ. t_dim .AND. start .LT. 0.0D0 ) THEN
+     .	    .AND. orient .EQ. t_dim .AND. cx_calendar(mods_cx) ) THEN
 	   line_direction(iline) = 'TI'
 	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), status )
 	   line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999

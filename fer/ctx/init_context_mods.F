@@ -11,7 +11,9 @@
 * V200:  6/28/89 - 4D symmetrical - init trans_arg, too, eliminate %%_relative
 *		 - init cx_dset_gvn, cx_grid_needs_dset
 * V420: 9/8/95 - added initializations for implicit grid creation
-
+* 
+*       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
+*                    contains a string 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 	include	'ferret_cmn/xcontext.cmn'
@@ -35,6 +37,7 @@
 	cx_unstand_grid( cx ) = .FALSE.
 	cx_grid_needs_dset    = .FALSE.
 	cx_has_impl_grid( cx ) = .FALSE.
+	cx_calendar(cx) = .FALSE.
 
 * initialize region
 * note: ss specifications are not used in storing modifications

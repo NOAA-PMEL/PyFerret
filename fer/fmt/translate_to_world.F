@@ -68,7 +68,8 @@
         val4_orig  = val4
 	code	   = ' '
 	fancy	   = GEOG_LABEL( idim, grid )
-        IF ( idim .EQ. t_dim .AND. val .LT. 0.0 ) fancy = .TRUE.  ! 2/3/93
+! removed next line 8/97 *kob* - use fancy as set above
+!        IF ( idim .EQ. t_dim .AND. val .LT. 0.0 ) fancy = .TRUE.  ! 2/3/93
 !removed        IF ( idim .EQ. t_dim .AND. .NOT.fancy ) THEN
 !2/3/93   * ... force date labelling if it is possible (why?? 7/92  )
 !      	           line = grid_line( idim, grid )

@@ -3,7 +3,7 @@
 * set up a "null" context suitable to merge other contexts on top of
 
 * V450: 1/97 - part of changes to accomodate grid-changing functions
-
+* 9/97 *kob* - initialize cx_calendar as well
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/xcontext.cmn'
@@ -42,6 +42,10 @@
 
 	cx_unstand_grid ( cx ) = .FALSE.
 	cx_impl_grid    ( cx ) = unspecified_int4
+
+* kob 9/97 - need to initialize cx_calendar as well
+		 IF (idim .eq. t_dim) 
+     .                cx_calendar(cx) = .FALSE.
 
 * (*) initialized to TRUE so that ANDing with another context will yield
 *	TRUE only if "given" in that context

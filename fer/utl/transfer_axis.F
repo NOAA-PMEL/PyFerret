@@ -8,7 +8,8 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  5/31/89 - extracted from TRANSFER_CONTEXT
-
+* $Id$ 
+*       - *kob* need to now copy cx_calender as well
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/xcontext.cmn'
@@ -27,6 +28,10 @@
 	cx_by_ss ( idim, dest )   = cx_by_ss ( idim, source )
 	cx_given ( idim, dest )   = cx_given ( idim, source )
 	cx_trans_arg(idim, dest)  = cx_trans_arg(idim, source)
+* 8/97 *kob* 	
+	IF (idim .EQ. t_dim) 
+     .        cx_calendar(dest) = cx_calendar(source)
+
 
 	RETURN
 	END

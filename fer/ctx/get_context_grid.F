@@ -81,6 +81,9 @@
 *		  into implicit grid
 *	 1/96	- idim subscripting bug fixed 1/96 ... how did it escape?
 
+* $Id$ 
+*       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
+*         is date or timesteps
 #ifdef unix
 	include 'ferret_cmn/errmsg.parm'
 	include 'ferret_cmn/ferret.parm'
@@ -215,7 +218,8 @@
 	            dhi = cx_hi_ww(idim,cx)
 	            delta = cx_delta(idim,cx)
 	            IF ( idim .EQ. t_dim ) THEN
-	               IF ( cx_lo_ww(idim,cx).LT.0.0D0 ) THEN
+* 8/97 *kob* use cx_calender to check if time is date rather than time step
+	               IF ( cx_calendar(cx) ) THEN
 	                  IF (.NOT.GEOG_LABEL(idim,std_grid)) GOTO 5400
 	                  dlo = SECS_TO_TSTEP(std_grid,-1.*cx_lo_ww(idim,cx))
 	                  dhi = SECS_TO_TSTEP(std_grid,-1.*cx_hi_ww(idim,cx))

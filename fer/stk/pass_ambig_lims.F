@@ -141,6 +141,9 @@
 	      cx_hi_ss(cx,idim) = unspecified_int4
 	      cx_lo_ww(idim,cx) = unspecified_val8
 	      cx_hi_ww(idim,cx) = unspecified_val8
+* 9/97 *kob* cx_calendar must reflect these changes as well	  
+	      IF (idim .eq. t_dim) 
+     .                cx_calendar(cx) = .FALSE.
 
 * context limits unspecified but untransformed data limits available anyway
 	   ELSEIF ( cx_lo_ss(cx,idim) .EQ. unspecified_int4 ) THEN

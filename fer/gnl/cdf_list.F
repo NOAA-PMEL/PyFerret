@@ -29,6 +29,9 @@
 *                     BYTE or INTEGER*1
 *		    - create equivalences so that all CD_WRITEVAL calls have
 *			the same arg daat types
+* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+*               to have access to context information - needed for negative
+*               time step processing
 
 #ifdef unix
         include 'tmap_format/netcdf.decl'
@@ -78,7 +81,7 @@
 * internal variable declarations:
         LOGICAL         TM_LEGAL_NAME, 
      .			itsa_uvar, need_doc, new, formatted
-	INTEGER		TM_LENSTR1, ISUBSCRIPT,
+	INTEGER		TM_LENSTR1, ISUBSCR_CX,
      .			cx, mr, dset, grid, cdfid, ivar,
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
@@ -201,11 +204,11 @@
 	            IF ( .NOT.line_modulo(iaxis) 
      .		   .AND. ( user_lo .LT. loest_ww
      .		      .OR. user_hi .GT. hiest_ww ) ) GOTO 5300
-	            make_lo(idim) = ISUBSCRIPT
-     .			( user_lo, grid, idim, round_up )
-	            make_hi(idim) = ISUBSCRIPT
-     .			( user_hi, grid, idim, round_dn )
-	            IF ( .NOT.line_modulo(iaxis) 
+	            make_lo(idim) = ISUBSCR_CX
+     .			( user_lo, grid, idim, cx, round_up )
+	            make_hi(idim) = ISUBSCR_CX 
+     .			( user_hi, grid, idim, cx, round_dn )
+	            IF ( .NOT.line_modulo(iaxis)  
      .		   .AND. ( make_hi(idim) .GT. line_dim(iaxis)
      .	              .OR. make_lo(idim) .LT. 1 )	   )	GOTO 5300
 	            IF ( make_lo(idim) .GT. write_lo(idim)

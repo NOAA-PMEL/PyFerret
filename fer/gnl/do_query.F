@@ -13,6 +13,9 @@
 * V420: 11/95 - bug in QUERY GRID if grid unknown:  LET A = I; QUERY GRID 1 A
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+*               to have access to context information - needed for negative
+*               time step processing
 
 #ifdef unix
         include 'tmap_format/tmap_dims.parm'
@@ -59,7 +62,7 @@
 * local variable declarations:
 	LOGICAL TM_DATE_OK, done, formatted, ww_given
 	INTEGER	TM_LENSTR1, FIND_DSET_NUMBER, IGRID, TM_GET_LINENUM,
-     .		STR_CASE_BLIND_COMPARE, TM_GET_GRIDNUM, ISUBSCRIPT,
+     .		STR_CASE_BLIND_COMPARE, TM_GET_GRIDNUM, ISUBSCR_CX,
      .		i, n, dim, dset, cat, var, axis, grid, reg, modulo,
      .		calendar, dummy, istat, slen
 	REAL*8	TWORLD, TM_WORLD, lo, hi, delta
@@ -471,7 +474,7 @@
  	   CALL TRANSLATE_LIMIT( cmnd_buff(arg_start(5):arg_end(5)),
      .		                 dim, .FALSE., lo, formatted, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5315
-	   i = ISUBSCRIPT( lo, grid, dim, round_dn )
+	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_dn )
 	ELSE
 #ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too
@@ -526,7 +529,7 @@
  	   CALL TRANSLATE_LIMIT( cmnd_buff(arg_start(5):arg_end(5)),
      .		                 dim, .FALSE., lo, formatted, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5315
-	   i = ISUBSCRIPT( lo, grid, dim, round_dn )
+	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_dn )
 	ELSE
 #ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too

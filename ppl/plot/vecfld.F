@@ -1,4 +1,4 @@
-	SUBROUTINE VECFLD(U,V,NXS,NYS,PX,PY,XF,YF)
+        SUBROUTINE VECFLD(U,V,NXS,NYS,PX,PY,XF,YF)
 	real u,v,px,py,xf,yf
 	integer nxs,nys
 C**
@@ -79,6 +79,7 @@ C
         include 'LABCOM.INC'
         include 'vector_inc.decl'
         include 'VECTOR.INC'
+        include 'xcurvilinear.cmn'
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
@@ -101,6 +102,12 @@ C
 C
 C	VECTOR,X,Y,VFACT,LABEL
 C
+
+C     Curvilinear coordinates declarations
+        integer icurv, status, ii
+        real x_curv(12), y_curv(12), curv_len
+        real tail_i, tail_j, head_i, head_j
+        real arrow_i, arrow_j
 
 #ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -189,11 +196,117 @@ C
 	ELSE
 	    call trans(0,px(i),py(j),xx1,yy1)
 	ENDIF
+
+ 50    IF (curvilinear) THEN
+           tail_i = xx1
+           tail_j = yy1
+           x_curv(1)=xx1
+           y_curv(1)=yy1
+
+           CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+
+           xx1=x_curv(1)
+           yy1=y_curv(1)
+
+        ENDIF
+
+        IF (curvilinear) THEN
+
+           vclen = SQRT(U(I,J)**2 + V(I,J)**2)
+
+           IF (vclen .GT. 1.0) THEN
+
+              curv_len = 0.0
+              DO 60, ii=1, 500
+
+                 head_i = tail_i + U(I,J)/10
+                 head_j = tail_j + V(I,J)/10
+
+                 x_curv(1)=head_i
+                 y_curv(1)=head_j
+
+                 CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status)
+
+                 xx2=x_curv(1)
+                 yy2=y_curv(1)
+                 
+                 CALL PLOT(XX1,YY1,0,0)    
+                 CALL PLOT(XX2,YY2,1,0)
+
+                 curv_len = curv_len + SQRT((xx2-xx1)**2 + (yy2-yy1)**2)
+
+                 tail_i = head_i
+                 tail_j = head_j
+                 xx1 = xx2
+                 yy1 = yy2
+                 
+                 IF (curv_len*2 .GE. vclen*VFACT) GOTO 70
+
+ 60           CONTINUE
+
+C     Now for the arrowhead
+
+
+C     
+C     CALC REAL LENGTH
+C     
+ 70           VX=U(I,J)
+              VY=V(I,J)
+C     
+C     SET UP THE ARROW FACTOR HEAD LENGTH SCALE
+C     
+              IF(VCLEN.GT.ARMAX)THEN
+                 THFACT=ARMAX*HFACT/VCLEN
+              ELSE IF(VCLEN.LT.ARMIN)THEN
+                 THFACT=ARMIN*HFACT/VCLEN
+              ELSE
+                 THFACT=HFACT
+              ENDIF
+C     
+C     DRAW ARROW HEADS
+C     
+              arrow_i = head_i + (-VX-.35*VY)*THFACT/XF * 20
+              arrow_j = head_j + (-VY+.35*VX)*THFACT/YF * 20
+              CALL CURV_COORD(arrow_i, arrow_j, 1, 1.0, 1.0, status)
+              CALL PLOT(arrow_i, arrow_j,1,0)
+              CALL PLOT(XX2,YY2,1,0)
+C     
+              arrow_i = head_i + (-VX+.35*VY)*THFACT/XF * 20
+              arrow_j = head_j + (-VY-.35*VX)*THFACT/YF * 20
+              CALL CURV_COORD(arrow_i, arrow_j, 1, 1.0, 1.0, status)
+              CALL PLOT(arrow_i, arrow_j,1,0)
+              CALL PLOT(XX2,YY2,1,0)
+
+           ENDIF
+
+           GOTO 100
+
+        ENDIF
+
 C
 C	HEAD LOCATION USER UNITS
 C
-	XX2 = XX1 + XX2*VFACT/XF
-	YY2 = YY1 + YY2*VFACT/YF
+
+        IF (curvilinear) THEN
+
+           head_i = tail_i + xx2
+           head_j = tail_j + yy2
+
+           x_curv(1)=head_i
+           y_curv(1)=head_j
+
+           CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+
+           xx2=x_curv(1)
+           yy2=y_curv(1)
+
+        ELSE
+
+           XX2 = XX1 + XX2*VFACT/XF
+           YY2 = YY1 + YY2*VFACT/YF
+
+        ENDIF
+
 C
 C	CALC REAL LENGTH
 C

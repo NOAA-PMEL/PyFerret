@@ -67,7 +67,8 @@
 *  8/97: bug: X axis with "y" in axis name is mis-identified 
 * 5/98 *kob* : mod so that CDC datafiles w/ two day offsets are compatible
 *              w/ ferret.  
-
+* V500 3/99 *sh*: instead of erroring out, simply return iaxis=0 for an
+*	invalid coordinate axis -- to be handled by calling program
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -142,16 +143,17 @@
 * initialize for EPIC
       do_warn = .NOT.its_epic     ! EPIC files can get away with anything
       west_lon = .FALSE.          ! assume longitudes are positive east
+      iaxis = 0
 
 * get the vital statistics of the axis
       CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
      .            nvatts,cdfstat)
       IF (cdfstat.NE.NCNOERR) GOTO 5100
       vlen = TM_LENSTR1(vname)
-      IF ( nvdims .NE. 1 ) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferrmax, status, 'CD_GET_1_AXIS', cdfid, ivar,
-     .     vname(:vlen), 'not a 1D variable', *5900 )
       istat = STR_UPCASE( vupcase, vname )
+!      IF ( nvdims .NE. 1 ) CALL TM_ERRMSG
+!     .     ( cdfstat+pcdferrmax, status, 'CD_GET_1_AXIS', cdfid, ivar,
+!     .     vname(:vlen), 'not a 1D variable', *5900 )
 
 * get axis length:
       CALL NCDINQ( cdfid, vdims, buff, npts_cdf, cdfstat )
@@ -206,7 +208,7 @@
 	 IF ( TM_LENSTR1(buff) .GT. since_T0 + 5 ) THEN
             CALL TM_DATE_REFORMAT(buff(since_T0+6:),pdate_numslashnum,
      .				  line_t0(iaxis), pdate_vax, status )
-            IF ( status .NE. merr_ok ) GOTO 5900 
+            IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error 
 	    got_torg = .TRUE.
 	 ELSE
             since_t0 = 0	! flag that no T0 was present
@@ -379,7 +381,7 @@
             CALL CD_RD_EP_1( cdfid, ivar,  epic_t2var, line_t0(iaxis),
      .                       line_tunit(iaxis), 1, 
      .                       line_start(iaxis), status )
-            IF ( status .NE. merr_ok ) GOTO 5900
+            IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error
             CALL CD_RD_EP_1( cdfid, ivar,  epic_t2var, line_t0(iaxis),
      .                       line_tunit(iaxis), npts_cdf, 
      .                       line_delta(iaxis), status )
@@ -387,18 +389,18 @@
             CALL CD_RD_YMD_1( cdfid, ivar, line_t0(iaxis),
      .                       line_tunit(iaxis), 1, 
      .                       line_start(iaxis), status )
-            IF ( status .NE. merr_ok ) GOTO 5900
+            IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error
             CALL CD_RD_YMD_1( cdfid, ivar,  line_t0(iaxis),
      .                       line_tunit(iaxis), npts_cdf, 
      .                       line_delta(iaxis), status )
          ELSE
             CALL CD_RD_R8_1( cdfid, ivar,   1, vartype, vname(:vlen),
      .                       line_start(iaxis), status )
-            IF ( status .NE. merr_ok ) GOTO 5900
+            IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error
             CALL CD_RD_R8_1( cdfid,ivar,npts_cdf,vartype,vname(:vlen),
      .                       line_delta(iaxis), status )
          ENDIF
-         IF ( status .NE. merr_ok ) GOTO 5900
+         IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error
          IF ( west_lon ) THEN
             line_start(iaxis) = TM_LONW2LONE( line_start(iaxis) ) 
             line_delta(iaxis) = TM_LONW2LONE( line_delta(iaxis) ) 
@@ -421,11 +423,13 @@
             line_delta(iaxis) = 1
          ENDIF
          line_subsc1(iaxis) = unspecified_int4
+
+* ============= START OF IRREGULAR AXIS PROCESSING ========================
       ELSE
 * adequate storage for the irregular coordinates and box edges ?
 	 line_start(iaxis) = unspecified_val8
 	 line_delta(iaxis) = unspecified_val8
-	 IF ((next_line_mem_pos+2*npts).GT.maxlinestore)GOTO 5300
+	 IF ((next_line_mem_pos+2*npts).GT.maxlinestore) GOTO 5300
 
 * read the CDF coordinate values into double precision axis storage
          ipt1 = next_line_mem_pos
@@ -442,7 +446,7 @@
             CALL CD_RD_R8_ARR( cdfid, ivar, 1, npts_cdf, vartype,
      .                         vname(:vlen), line_mem(ipt1), status )
          ENDIF
-         IF ( status .NE. merr_ok ) GOTO 5900
+         IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error
          IF ( west_lon ) THEN
             DO 340 i=ipt1,ipte
  340        line_mem(i) = TM_LONW2LONE( line_mem(i) ) 
@@ -460,11 +464,8 @@
 	 ENDIF
 	    
 * Check for non-monotonic ordering of data
-	 nmsg = 0
 	 DO 350 i=ipt1+1,ipte
-	   IF (line_mem(i) .LE. line_mem(i-1)
-     .	  .AND. nmsg .LT. 2 ) THEN
-	      nmsg = nmsg + 1
+	   IF (line_mem(i) .LE. line_mem(i-1) ) THEN
 * out of order axis coordinates
               words(1) = TM_LEFINT(i-ipt1+1, istat)
               CALL TM_NOTE(
@@ -472,10 +473,11 @@
      .              //vname(:vlen)//' at subscript '//words(1), tt)
               CALL TM_NOTE(
      .             'A dummy axis of subscripts will be used', tt)
-              line_start  (iaxis) = 1.0D0
-              line_delta  (iaxis) = 1.0D0
-              line_subsc1 (iaxis) = unspecified_int4
-              line_regular(iaxis) = .TRUE.
+	      GOTO 1000
+!              line_start  (iaxis) = 1.0D0
+!              line_delta  (iaxis) = 1.0D0
+!              line_subsc1 (iaxis) = unspecified_int4
+!              line_regular(iaxis) = .TRUE.
            ENDIF
   350	CONTINUE
 
@@ -497,6 +499,7 @@
 * Note: this may be modified by a subsequent "EDGES" definition
  380    CALL TM_IRREGAX_MID( ipt1, npts )
       ENDIF
+* ============= END OF IRREGULAR AXIS PROCESSING ========================
 
  390	IF ( (since_T0.GT.2)
      .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') ) THEN
@@ -571,7 +574,7 @@
         ipt1 = line_subsc1(iaxis)
         CALL CD_RD_R8_ARR( cdfid, edgid, 1, npts, vartype, vname(:vlen),
      .                     line_mem(ipt1+npts-1), status )
-        IF ( status .NE. merr_ok ) GOTO 5900
+        IF ( status .NE. merr_ok ) GOTO 1000	! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too
 	 IF ( first_delta .LT. 0.0 ) THEN
@@ -604,6 +607,11 @@
 	status = merr_ok
         RETURN
 
+* 3/99-style "soft" error - invalid axis but CDF file need not be rejected
+ 1000	iaxis = 0
+	status = merr_ok
+	RETURN
+
 * error messages
  5000   CALL TM_NOTE( 'netCDF parent axis definition error', tt )
         IF ( soft_err .EQ. 1 ) THEN
@@ -634,7 +642,7 @@
  5300	CALL TM_ERRMSG (merr_linstorlim, status, 'CD_GET_1_AXIS',
      .			no_descfile, no_stepfile,
      .			'MAX='//TM_STRING(DBLE(maxlinestore)),
-     .			no_errstring, *5900)
+     .			no_errstring, *1000)			! 3/99 soft error
 
 * error exit
  5900   RETURN

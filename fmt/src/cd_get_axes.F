@@ -51,6 +51,7 @@
 * 2/95 - added support for reverse-ordered coordinate axes
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* V500 3/99 *sh* -- check for coordinate variables that are actually multi-D
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -132,6 +133,9 @@ xx        include 'netcdf.decl'  ! untested
      .                 nvatts,cdfstat)
            IF ( cdfstat .NE. NCNOERR ) GOTO 5100
            vlen = TM_LENSTR1(vname)
+
+* it must be 1D to be a coordinate variable (3/99)
+	   IF ( nvdim .NE. 1 ) GOTO 100
 
 * if for some reason it is desirable for this axis name not to match its dim
 * name then the "parent_axis" attribute can flag it is a parent axis. 

@@ -52,6 +52,7 @@
 * 4/98 *kob* - need to explicitely declare istat
 * 5/98 *kob* - make sure that the sf_lunit is reset to file_not_open
 *              when cdf file is closed - for mc datasets only
+* V500 *sh* 3/99 - consolidated cd_scan_vars and cd_get_axes
 
 * argument declarations:
 	INTEGER	dset, status
@@ -91,13 +92,9 @@
       CALL CD_GET_TMAP_PARMS ( dset, cdfid, status )
       IF ( status .NE. merr_ok ) GOTO 5980
 
-* read through the netCDF variables to determine which are TMAP axes
-* and to read variable attributes
-      CALL CD_SCAN_VARS( dset, cdfid, status )
-      IF ( status .NE. merr_ok ) GOTO 5900
-
-* read through the netCDF variables to load the TMAP axes
-      CALL CD_GET_AXES ( dset, cdfid, reversed, status )
+* read through the netCDF variables to read variable attributes
+* and  load the TMAP axes
+      CALL CD_SCAN_VARS( dset, cdfid, reversed, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables w/out parent grids and associate with variables

@@ -50,6 +50,8 @@
 *	(still dimension names cannot be 24 chars --> line names in COMMON)
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* V500: 3/99 *sh* - if an axis doesn't exist matching the dimension name, then
+*	create a 1,2,3...n axis without error message
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -156,17 +158,11 @@ xx        include 'netcdf.decl'  ! untested
  100          CONTINUE
 
 * ... axis doesn't exist - perhaps it is a dimension with no variable defn
-              axid = NCVID( cdfid, name, cdfstat ) 
-              IF (cdfstat.NE.NCNOERR) THEN
-                 CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
-     .                                    iaxis, status )
-                 IF ( status .NE. merr_ok ) GOTO 5900
-              ELSE
-                 CALL TM_NOTE('Internal TMAP/CDF error: mystery axis: '
-     .                //name, tt )
-                 status = 0
-                 GOTO 5900
-              ENDIF
+* *sh* 3/99: or perhaps it is a 2D variable with name matching the dimension name
+*  either way -- not an error condition if we need to synthesize an axis ...
+              CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
+     .                                 iaxis, status )
+              IF ( status .NE. merr_ok ) GOTO 5900
 
 * save a pointer to the axis just found
  150          IF (idim.LE.4) tmplines(idim) = iaxis

@@ -1,7 +1,5 @@
-	SUBROUTINE RESTRICT_FILE_LIMITS ( cx, status )
+	SUBROUTINE RESTRICT_FILE_LIMITS ( cx, modified, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -47,25 +45,15 @@
 *		unspecified_int4.
 *		NOTE: possible bug introduced with strides since the region
 *			checks here are bypassed altogether
+* V530: 11/00 *sh* - return "modified" flag
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
+	LOGICAL	modified
 	INTEGER	cx, status
 
 * internal variable declarations:
@@ -82,6 +70,7 @@
 * --- end of introductory code ---
 
 * initialize
+	modified = .FALSE.
 	category = cx_category( cx )
 	variable = cx_variable( cx )
 
@@ -99,6 +88,7 @@
 	      cx_by_ss(idim, cx) = .TRUE.
 	      CALL FLESH_OUT_AXIS( idim, cx, status )
 	      IF ( status.NE.ferr_ok ) GOTO 5900
+	      modified = .TRUE.
 	   ENDIF
  10	CONTINUE
 

@@ -9,7 +9,7 @@
 # include platform specific macro definitions
 #
 
-include platform_specific_flags.mk.$(HOSTTYPE)
+include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
  
 
 #
@@ -34,7 +34,7 @@ EF_OBJS = ef_utility/*.o
 # Targets
 #
 
-all:	ef_utility ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so storage_nxy.so strings.so string_arg.so subtract.so times_table.so
+all:	ef_utility ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so strings.so subtract.so times_table.so
 
 ef_utility:
 	ln -s ../ef_utility ef_utility

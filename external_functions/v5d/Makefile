@@ -9,7 +9,7 @@
 # include platform specific macro definitions
 #
 
-include ../examples/platform_specific_flags.mk.$(HOSTTYPE)
+include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
  
 
 #

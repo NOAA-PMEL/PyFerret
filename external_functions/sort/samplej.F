@@ -111,6 +111,7 @@
 
       COMMON / samplei / my_lo_l, my_hi_l
       INTEGER my_lo_l, my_hi_l
+      INTEGER nx, ny, nz, nt
 
 *     Use utility functions to get context information about the 
 *     1st argument, to set the abstract axis lo and hi indices.

@@ -82,6 +82,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
+      CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 'data to be checked')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 *                                                                      ^

@@ -17,7 +17,8 @@ plot/over/nolab/thickness=2 mean
 \pause
 
 ! example 2 -- 3 colored time series
-let base =  T[T=1-jan-1990:1-feb-1990:24] - T[T=1-jan-1990]
+define axis/T/T=1-jan-1990:1-feb-1990:1/UNITS=DAYS/T0=1-jan-1990 tax
+let base = t[gt=tax]
 let y1 = base^0.5
 let y2 = base
 let y3 = base^1.1

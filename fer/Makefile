@@ -18,6 +18,9 @@
 #	        update the date for each make.  this was also necessary when
 #		compiling Ferret initially in order to create 
 #	        special/xmake_date_data.F  and special/xrevision_type_data.F
+#  v5.4 10/01*kob* - removed explicit reference to libXpm.a  - move it instead 
+#                  to system specific SYS_LIBS macro in platform specific files
+#  v5.4 10/01 *kob* - add the removal of .f files - for linux
 
 # include platform specific macro definitions
 #
@@ -88,14 +91,14 @@ gui_nodebug: .FRC
 	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
-		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
+		"MOVIELIB=" "EXECNAME=ferretgui_c" \
 		"GUI=GUI" all
 gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g -C"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
-		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
+		"MOVIELIB=" "EXECNAME=ferretgui_c" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=alpha" \
 		"GUI_FAKES="  all
 
@@ -105,7 +108,7 @@ DODS_gui_debug: .FRC
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
-		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
+		"MOVIELIB="  \
                 "LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww  -lz -lrx" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=alpha" all
@@ -115,7 +118,7 @@ DODS_gui: .FRC
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
-		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
+		"MOVIELIB="  \
                 "LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww  -lz -lrx" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
 		"DEBUG_TITLE=" all
@@ -194,7 +197,7 @@ ppl_clean: .FRC
 fer_clean: .FRC
 	for i in $(CLEANDIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; $(MAKE) clean); \
+        (cd $$i ; echo "making" $@ "in $$i..."; rm -f *.f; $(MAKE) clean); \
         done
 
 fmt_clean: .FRC

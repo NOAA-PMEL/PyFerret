@@ -39,7 +39,9 @@
 * Will take date strings of various formats and break them into their
 * various components.
 
-* *SH* 2/13/95
+* *sh* 2/13/95
+* V500 *sh* 7/99 - if numslashnum reading fails, try dd-mmm-yyyy (VAX)
+*		to support LDEA files with "months since 01-jan"
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
@@ -86,7 +88,12 @@
 	   CALL TM_FTOC_STRNG( date(:dlen), dhol, slen)
 	   status = TM_BREAK_FMT_DATE_C(dhol, year, month, day,
      .				        hour, minute, fsecond)
-	   IF ( status .NE. 0 ) GOTO 5100
+	   IF ( status .NE. 0 ) THEN
+* ... last attempt -- try VAX format
+	      CALL TM_BREAK_DATE( date, year, month, day,
+     .			hour, minute, second, status)
+	      IF ( status .NE. merr_ok ) GOTO 5100
+	   ENDIF
 	   second = NINT(fsecond)	! information loss ... 
 	ELSE
 	   STOP 'Unknown date format code'

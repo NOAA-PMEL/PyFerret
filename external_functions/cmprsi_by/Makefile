@@ -20,10 +20,9 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.o:
-	$(F77) $(FFLAGS) -g -u -c $<
+	$(F77) $(FFLAGS) -u -c $<
 
-.F.so:
-	$(F77) $(FFLAGS) -c -g -u $<
+.o.so:
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
 
 #
@@ -31,6 +30,9 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 all:	ferret_cmn cmprsi_by.so
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -C -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

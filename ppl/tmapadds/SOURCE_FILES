@@ -62,3 +62,4 @@ resize_xgks_window.c\
 set_background.c\
 wait_on_resize.c\
 xgks_x_events.c 
+

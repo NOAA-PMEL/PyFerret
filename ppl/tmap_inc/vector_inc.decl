@@ -10,4 +10,5 @@
 	REAL	ARMAX
 	REAL	ARMIN
 	REAL	HFACT
+        INTEGER DENSITY
 * requires: INCLUDE 'PPLV11INC:VECTOR.INC'                                  

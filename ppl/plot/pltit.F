@@ -1,5 +1,5 @@
 	SUBROUTINE PLTIT(X,NXS)
-*
+*   
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric

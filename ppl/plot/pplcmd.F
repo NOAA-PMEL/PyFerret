@@ -3,7 +3,7 @@
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
-*  hereafter referred to as NOAA/PMEL/TMAP.
+*  hereafter referred to as NOAA/PMEL/TMAP.   
 *
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the

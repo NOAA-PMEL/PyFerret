@@ -13,9 +13,9 @@ C**
 C**
 c
 	COMMON/VECTOR/VLEN,VUSRLN,VAUTO,VXLOC,VYLOC,VUSER,VKEY,
-     *	VPOS,VFRMT,VSKPX,VSKPY,VMINLN,ARMAX,ARMIN,HFACT
+     *	VPOS,VFRMT,VSKPX,VSKPY,VMINLN,ARMAX,ARMIN,HFACT,DENSITY
 	LOGICAL VAUTO,VKEY,VUSER
-	INTEGER VSKPX,VSKPY
+	INTEGER VSKPX,VSKPY,DENSITY
 	CHARACTER VFRMT*20
 c
 c	vlen	vector length (inches) used for key length
@@ -33,5 +33,6 @@ c	vminln	minimum vector size
 c	armax	size for maximum head size
 c	armin	size for minimum head size
 c	hfact	size factor for head
+c       density density parameter for streamlines
 c
 c*******************************************************************

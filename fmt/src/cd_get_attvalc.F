@@ -43,6 +43,18 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * 2/02  *sh*
+* 1/03 **ACM** add this note: (no code changes)
+*      Note that under OSF (and PC? ) CD_GET_ATTVALC returns TRUE when 
+*      the value of the attribute contains a non-numeric string, say "F".  
+*      Under Solaris and Linux, returns FALSE. If the value of the modulo 
+*      attribute is type character, this function tries to read a numeric 
+*      value from a character buffer . For solaris, linux, this read:
+*
+*      	     READ (buff,*,ERR=5000) val  ! convert text to value
+*
+*      returns an error and goes to 5000 if the contents of buff is not  
+*      a number.  For OSF, reads anyway, returning -1 when the character 
+*      string is T, or 0 for all other characters. 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -77,6 +89,7 @@
       IF ( cdfstat .EQ. NCNOERR ) THEN
 	IF (attype .EQ. NCCHAR) THEN
 * get a text attribute as a value
+
 	   CD_GET_ATTVALC = CD_GET_ATTRIB(cdfid,varid,attrib(:lena),
      .                                    do_warn,vname,buff,132 )
 	   IF (.NOT.CD_GET_ATTVALC) THEN

@@ -80,8 +80,10 @@
 *      *acm* 10/01  remove VMS includes
 * V550 *sh*  2/02 - added support for line_modulo_len
 *      *sh* 11/02 - automatically detect subspan modulo longitude and time axes
-* V550 *acm*12/0s - AXIS and CARTESIAN_AXIS attributes, and modifications to
+* V550 *acm*12/02 - AXIS and CARTESIAN_AXIS attributes, and modifications to
 *                   order of precedence for axis orientation.
+* V550 *acm* 1/03 - Account for differences in behavior of CD_GET_ATTVALC
+*                   under OSF and PC.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -298,16 +300,26 @@ c         ENDIF
 * optional "modulo" flag (and optionally the associated length)
       
       rbuff = 0.
+
+*  **ACM** Note that under OSF (and PC? ) CD_GET_ATTVALC returns TRUE 
+*      when the value of the attribute is, say, "F".  Under Solaris and 
+*      Linux, returns FALSE  Reads a value from a character buffer if 
+*      the value of the modulo attribute is type character. For solaris, 
+*      linux, if the value of the attribue is non-numeric string, returns 
+*      false, and rbuff=0. For OSF, returns true and rbuff = 0 or -1.
+
       line_modulo(iaxis) = CD_GET_ATTVALC( cdfid, ivar, 'modulo',
      .                             do_warn, vname(:vlen), rbuff, 0.0 )
       line_modulo_len(iaxis) = rbuff
+      IF (line_modulo_len(iaxis) .LT. 0.) line_modulo_len(iaxis) = 0.
 
-* See if there is modulo attrib, with yes, true, false, etc.
+* See if there is a logical modulo attrib, with yes, true, false, etc.
 
       got_mod = .FALSE.
       mod_tf = .TRUE.
 
-      IF (.NOT. line_modulo(iaxis)) THEN 
+      IF (.NOT. line_modulo(iaxis) .OR. 
+     .     line_modulo_len(iaxis) .LE. 0.) THEN
          got_mod = CD_GET_ATTVAL_L( cdfid, ivar, 'modulo',
      .                             do_warn, vname(:vlen),mod_tf)
          IF (got_mod) line_modulo(iaxis) = mod_tf

@@ -41,7 +41,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * 12/02  *acm*
-
+* V550 *acm* 1/03 - Check for value of attribute " ", return TRUE if so.
+* 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
 *       varid    - variable id in netCDF file
@@ -81,11 +82,12 @@
 	     RETURN
 
 	   ELSE
+
              CALL STR_UPCASE (upbuff, buff)	     
 
              IF ( upbuff .EQ. 'Y' .OR. upbuff .EQ. 'YES' .OR.
      .            upbuff .EQ. 'T' .OR. upbuff .EQ. 'TRUE' .OR.
-     .            upbuff .EQ. 'ON' ) THEN
+     .            upbuff .EQ. 'ON' .OR. upbuff .EQ. ' ') THEN
 	       CD_GET_ATTVAL_L = .TRUE.
                val = .TRUE.
 

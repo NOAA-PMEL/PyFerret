@@ -22,7 +22,8 @@ float *y;
 
   ws  = OPEN_WSID (*ws_id);
 
-  XResizeWindow (ws->dpy,ws->win,x,y);
+  /* 3/02 *kob* need to cast x and y for IRIX */
+  XResizeWindow (ws->dpy,ws->win,(unsigned int)x,(unsigned int)y);
 
  
 }

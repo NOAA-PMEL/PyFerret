@@ -8,4 +8,4 @@
 use time_axis_seconds.nc
 
 sp "ncdump time_axis_seconds.nc | grep origin"
-list t[gt=height]
+list t[gt=height]    ! Seconds should be 36, 37, 38...

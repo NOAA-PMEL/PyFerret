@@ -32,4 +32,6 @@ gksm2ps gksm2ps
 
 #new one
 corba 	corba
+CGIservlet corba/CGIservlet
+
 

@@ -85,9 +85,9 @@
 	INTEGER	i, idim, limits_cx, status, csp1
 	REAL*8	temp
 *kob*
-	INTEGER anim_win_id, loc
+	INTEGER loc
 	REAL val
-	CHARACTER GKS_X_CONID*16
+	CHARACTER GKS_X_CONID*16, anim_win_id*16
 	LOGICAL loop
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
@@ -220,7 +220,6 @@
 	   ENDIF
 	   IF (.NOT. wn_open(win_id9)) THEN 
 * open an unmapped window
-* minor kludge - send some info to pplus to get graphics in order
 	      CALL UNMAP_ANIMATE_WINDOW
 	      anim_win_id = GKS_X_CONID( win_id9 )
 	      CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
@@ -229,8 +228,6 @@
 * swap active windows so the unampped window becomes the active
 * window, and the newly created window is the animating window
 	      CALL SWAP_ACTIVE_WINDOW
-	      CALL SYMBEL(0,0,0,.01,20,' ')
-	      CALL PROCESS_X_EVENTS
 	   ELSE 
 	      CALL CLEAR_WINDOW(win_id9)
 	   ENDIF

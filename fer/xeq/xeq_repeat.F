@@ -61,10 +61,15 @@
 	include	'ferret.parm'
 	include	'command.parm'
 	include 'errmsg.parm'
+	include 'slash.parm'
 	include 'xcontext.cmn'
 	include 'xcontrol.cmn'
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
+	include 'xplot_state.cmn'
+	include 'xplot_setup.cmn'
+	include	'gkscm1_inc.decl'	! with gks common
+	include	'GKSCM1.INC'	                ! with gks common
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:COMMAND.PARM'
@@ -76,10 +81,14 @@
 #endif
 
 * local variable declarations
-	LOGICAL	by_date
+	LOGICAL	by_date, report_unknown
 	INTEGER	i, idim, limits_cx, status, csp1
 	REAL*8	temp
-
+*kob*
+	INTEGER anim_win_id, loc
+	REAL val
+	CHARACTER GKS_X_CONID*16
+	LOGICAL loop
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
      .			( ferr_invalid_command, status, 'REPEAT what ?', *5000 )
@@ -87,6 +96,8 @@
 * get the limits for repeating
 *  eg. "REPEAT/X=160E:140W:10 LIST/X=-5D:+5D/Y=0D:5D TEMP"
 	limits_cx = cx_stack_ptr_base + 1
+* *kob* 1/00 - dont report unknown command qualifiers
+	report_unknown = .FALSE.
 	CALL INIT_CONTEXT_MODS ( limits_cx )
 	CALL GET_CONTEXT_MODS ( cx_last,
      .				cmnd_buff,
@@ -95,7 +106,7 @@
      .				num_qualifiers,
      .				qual_start,
      .				qual_end,
-     .				unknown_qual_bad,
+     .				report_unknown,
      .				status	)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
@@ -185,9 +196,51 @@
 * success - tell 'em we've taken over and start workin'
 	cs_in_control = .TRUE.
 	input_source  = input_from_cs
+
+* kob 1/01 - check to see if there is a loop in the repeat command.  if so, set
+*            cs_loop accordingly
+	   loc = qual_given(slash_repeat_loop)
+	   IF (loc .GT. 0) THEN
+	      loop = .TRUE.
+	      cs_start(csp1) = cs_phase(csp1)
+	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .	           val, status ) ! syntax check
+	      IF ( val .NE. unspecified_val4 .AND. val .NE. 0) THEN
+		 cs_loop(csp1) = INT(val)
+	      ELSE
+		 cs_loop(csp1) = 1
+	      ENDIF
+	   ENDIF
+*kob 1/01 check to see if we are in an animation repeat loop
+	animate = qual_given(slash_repeat_animate) .GT. 0
+        IF (animate) THEN
+*       first time through, create a clone window
+	   IF ( .NOT.pplus_started ) THEN
+	      CALL START_PPLUS
+	   ENDIF
+	   IF (.NOT. wn_open(win_id9)) THEN 
+* open an unmapped window
+* minor kludge - send some info to pplus to get graphics in order
+	      CALL UNMAP_ANIMATE_WINDOW
+	      anim_win_id = GKS_X_CONID( win_id9 )
+	      CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
+	      if (status .EQ. ferr_ok) wn_open(win_id9) = .TRUE.
+	      CALL SETUP_LINE_BUNDLES( win_id9, wstype )
+* swap active windows so the unampped window becomes the active
+* window, and the newly created window is the animating window
+	      CALL SWAP_ACTIVE_WINDOW
+	      CALL SYMBEL(0,0,0,.01,20,' ')
+	      CALL PROCESS_X_EVENTS
+	   ELSE 
+	      CALL CLEAR_WINDOW(win_id9)
+	   ENDIF
+	ENDIF
+
 	RETURN
 
 * error exit
 * ... control stack pointer, CSP, corrected in GFD_ERROR_HANDLER
  5000	RETURN
 	END
+
+

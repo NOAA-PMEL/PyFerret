@@ -55,6 +55,7 @@ getunit.F\
 gname_from_number.F\
 grid_from_name.F\
 grid_subscript_extremes.F\
+grid_subscript_extremes_no_mod.F\
 grid_world_extremes.F\
 hunt_r4.F\
 igrid.F\
@@ -100,7 +101,9 @@ t_deriv.F\
 tdest_world.F\
 tdest_world_init.F\
 transfer_axis.F\
+transfer_cx_axis_to_uv.F\
 transfer_grid.F\
+transfer_uv_axis_to_uv.F\
 true_or_false.F\
 tstep_to_date.F\
 tstep_to_secs.F\

@@ -27,6 +27,14 @@ plot/xlimits="1-jan-1990:12:00":10-JAN-1990/title="time series" yp3
 GO error_bars polygon/line=8/nolab yp3[l=1:50:5] errors[l=1:50:5]
 \pause
 
+! on a log vertical axis
+ppl axtype 1,2
+let exp_yp3 = EXP(yp3)
+plot/xlimits="1-jan-1990:12:00":10-JAN-1990/title="log axis" exp_yp3
+GO error_bars polygon/line=8/nolab exp_yp3[l=1:50:5] errors[l=1:50:5]
+\pause
+ppl axtype 1,1		! restore normal axes
+
 ! on (vertical) Z axis
 define axis/z=1:15:1/depth/units=meters z5
 let/quiet xp4 = Z[gz=z5]

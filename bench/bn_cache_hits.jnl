@@ -3,6 +3,8 @@
 ! 3/99 *sh*
 ! Test the success of Ferret in recalling past results
 
+! 7/01 -- added bn_cache_hits_gcfcn.sub
+
 define alias CONFUSE load/i=1:5 i
 
 set mode diag
@@ -13,6 +15,8 @@ GO bn_cache_hits.sub sst
 
 LET sst5 = sst+5
 GO bn_cache_hits.sub sst5
+
+GO bn_cache_hits_gcfcn.sub
 
 EXIT
 

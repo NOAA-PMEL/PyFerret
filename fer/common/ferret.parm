@@ -6,6 +6,7 @@
 *  1/97: added "pcg_" parameters for grid changing functions
 *  9/97: added @NRDA,NRDB,NRIA,NRIB transforms
 * 10/97: added prgrd_xact_pts (eliminated prgrd_nearest)
+* 10/98: *jc* added pgc_span_*, trans_reduced (for grid-changing functions)
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -220,7 +221,8 @@
      .                  trans_bad_pt,
      .                  trans_4d_var,
      .                  trans_4d_good_pt,
-     .                  trans_4d_bad_pt
+     .                  trans_4d_bad_pt,
+     .                  trans_reduced
 	INTEGER		trans_nrst_dist_abv,
      .			trans_nrst_dist_blw,
      .			trans_nrst_indx_abv,
@@ -266,7 +268,8 @@
      .                  trans_bad_pt       = trans_compress_code + 13,
      .                  trans_4d_var	   = trans_compress_code + 14,
      .                  trans_4d_good_pt   = trans_compress_code + 15,
-     .                  trans_4d_bad_pt	   = trans_compress_code + 16)
+     .                  trans_4d_bad_pt	   = trans_compress_code + 16,
+     .                  trans_reduced 	   = trans_compress_code + 17)
 
 * codes to designate regridding transformations
 ! unused but required to compile V4.11 code:
@@ -518,3 +521,19 @@
      .			pgc_axis_implied_by_args = 102,
      .			pgc_axis_is_normal       = 103,
      .			pgc_axis_is_abstract     = 104 )
+
+* ... to specify axis reduction in a grid changing function
+*     These are the possible values of the gfcn_axis_reduction()
+*     property described in xgrid_chg_fcns.cmn.
+*     As an example, suppose an external function result returns a
+*     single value as a flag.  You might want "SET REGION"
+*     information, normally applied to the result context, to be
+*     used to determine the argument contexts.  In this case, some
+*     of the axes would specify
+*
+*     gfcn_axis_reduction(idim, iptr) = pgc_span_reduced
+ 
+	INTEGER		pgc_span_retained,
+     .          pgc_span_reduced
+	PARAMETER ( pgc_span_retained = 201,
+	            pgc_span_reduced  = 202 )

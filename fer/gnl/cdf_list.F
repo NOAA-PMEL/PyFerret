@@ -1,6 +1,6 @@
 	SUBROUTINE CDF_LIST ( memory, fname, append, crecdim, nvars,
      .			      mr_list, cx_list, title, enhead, mode,
-     .			      clobber, status )
+     .			      clobber, edges_flag, do_bounds, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -95,9 +95,9 @@
 	include 'xinterrupt.cmn'
 
 * calling argument declarations:
-        LOGICAL         append, enhead, clobber
+        LOGICAL         append, enhead, clobber, do_bounds
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
-     .			status
+     .			edges_flag, status
 	REAL		memory( mem_blk_size, max_mem_blks )
         CHARACTER*(*)   fname, title
         CHARACTER*1     crecdim
@@ -169,7 +169,7 @@
 	 flushed = .FALSE. ! on error, whether OK variables were written
 	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
-         CALL CD_DEFER_COORD_WRITE(0,0,0,0,0, pcd_defer_init)
+         CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
 * open/create the file
          CALL CD_OPEN_OUT( fname, append, cdfid, clobber, status )
@@ -318,7 +318,8 @@
 
 * create the variable and its grid (coordinate output gets deferred)
            CALL CD_MAKE_VAR( cdfid, varcode, type, maxstrlen, grid,
-     .               make_lo, make_hi, recdim, enhead, new, status )
+     .               make_lo, make_hi, recdim, enhead, new, 
+     .               edges_flag, do_bounds, status )
            IF ( status .NE. merr_ok ) GOTO 5800
 
 * if its a newly-created variable write attributes
@@ -446,8 +447,9 @@
            IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
 
 * write the data for this variable
-           CALL CD_WRITE_VAR ( cdfid, varcode, grid, write_lo, write_hi,
-     .                         memory(1,mr_blk1(mr)), status )
+           CALL CD_WRITE_VAR ( memory, cdfid, varcode, grid, write_lo, write_hi,
+     .                         memory(1,mr_blk1(mr)), edges_flag, do_bounds, 
+     .                         status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

@@ -1,7 +1,5 @@
 	BLOCK DATA XALGEBRA_DATA
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -78,6 +76,7 @@
 *         1/00 - *acm* Corrected the order of argument listing for THETA_FO to 
 *                      match how the function is actually called.
 * V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
+*	 3/01 - *sh* - adde g=ax@nrst
 
 #ifdef unix
 	include	'ferret.parm'
@@ -625,10 +624,12 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_regrid_code ( prgrd_modmin )	/ 'MODMIN'	/
      .		alg_regrid_title( prgrd_modmax )	/ 'modulo min'	/,
      .		alg_regrid_code ( prgrd_modmax )	/ 'MODMAX'	/
-     .		(alg_regrid_title(i),i=prgrd_modmax+1,max_regrid_trans)
-     .				/13*unspecified_name4/,
-     .		(alg_regrid_code (i),i=prgrd_modmax+1,max_regrid_trans)
-     .				/13*unspecified_name4/
+     .		alg_regrid_title( prgrd_nearest )	/ 'nearst coord'/,
+     .		alg_regrid_code ( prgrd_nearest )	/ 'NRST'	/
+     .		(alg_regrid_title(i),i=prgrd_nearest+1,max_regrid_trans)
+     .				/12*unspecified_name4/,
+     .		(alg_regrid_code (i),i=prgrd_nearest+1,max_regrid_trans)
+     .				/12*unspecified_name4/
 
 * translation table for substituting 1D transformations with 4D transforms
 	DATA	num_4d_trans/ 5 /

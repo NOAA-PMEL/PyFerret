@@ -1,7 +1,5 @@
 	SUBROUTINE RCVD_REGRID( src_cx, dst_cx, axis, work, ok_min, ok_max )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -62,6 +60,7 @@
 * V510: 1/00 *sh* - bug fix: destination subscript limits chosen incorrectly
 *		for min, max, ave, etc.
 *		  - bigger work array for DO_WINDOW_REGRID
+* V530: 3/01 *sh* - added rgrd_nearest -- (unrestricted by source lims)
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
@@ -143,7 +142,8 @@
 	   src_where_loest = box_lo_lim
 	   src_where_hiest = box_hi_lim
 	   need_margin_check = .FALSE.
-	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN	! 10/97
+	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts
+     .	    .OR. rgrd_trans .EQ. prgrd_nearest ) THEN
 	   dst_where_loest = box_middle
 	   dst_where_hiest = box_middle
 	   src_where_loest = box_middle
@@ -204,7 +204,8 @@
 	dst_ss_max = cx_hi_ss(dst_cx,axis)
 
 * determine the limits that can actually be regridded
-	IF ( modulo ) THEN
+	IF ( modulo
+     .  .OR. rgrd_trans .EQ. prgrd_nearest ) THEN
            ok_min = dst_ss_min		! can always regrid to full request
 	   ok_max = dst_ss_max
 	ELSE

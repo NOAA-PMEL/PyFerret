@@ -1,7 +1,5 @@
 	SUBROUTINE IS_REGRID( memory, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -63,6 +61,7 @@
 * V500:  5/99 *sh* - check if implicit regridding was already done by netCDF
 *			read using strides (check cx_delta of src cx)
 *		     Allow for the possibility of multiple axes
+* V530:  3/01 *sh* - added g=ax@nrst
 
 #ifdef unix
 	include	'ferret.parm'
@@ -89,10 +88,10 @@
 * internal variable declarations:
 	LOGICAL	TM_ITS_CDF,
      .		xy_ave, valid, valid_y, has_impl_save, done_by_strides
-	INTEGER ISUBSCRIPT, hi_isp, lo_isp, span, axis, cx_valid, idim,
+	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(4), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		tot, blk1, i21, t, axis_list(4), naxis, i
+     .		blk1, axis_list(4), naxis, i
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
@@ -264,6 +263,11 @@
      .			memory(1, blk1), wk_size+1, 2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN
 	   CALL DO_XACT_REGRID( cx_valid, axis,
+     .			memory(1,mr_blk1(src_mr)), src_mr,
+     .			memory(1,mr_blk1(dst_mr)), dst_mr,
+     .			memory(1, blk1), wk_size+1, 2*wk_size )
+	ELSEIF ( rgrd_trans .EQ. prgrd_nearest ) THEN
+	   CALL DO_NEAREST_REGRID( cx_valid, axis,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), wk_size+1, 2*wk_size )

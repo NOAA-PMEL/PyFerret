@@ -60,6 +60,7 @@
 *  *kob* 3/99- up VAR_CODE  to 64 chars 
 *        5/99 *sh* for netCDF vars of form var[I=1:10:3] pass along the
 *		  delta value in cx_delta to be used as a "stride" in I/O 
+* V530:  3/01 *sh* - added prgrd_nearest
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -91,12 +92,12 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	GEOG_LABEL, ITSA_MODULO_REGRID,
-     .		last_axis, src_modulo, calendar
+     .		src_modulo, calendar
 	INTEGER	ISUBSCRIPT, CAXIS_LEN, axis,
      .		dst_grid, src_grid, src_lo_ss, src_hi_ss,
      .		src_min_ss, src_max_ss, line, src_line,
      .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans
-	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
+	REAL*8	TWORLD, SECS_TO_TSTEP,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww
 	CHARACTER	VAR_CODE*6
@@ -143,7 +144,8 @@
 	   where_hiest = box_hi_lim
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN
            CONTINUE
-	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN	! 10/97
+	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts
+     .	    .OR. rgrd_trans .EQ. prgrd_nearest ) THEN
 	   where_loest = box_middle
 	   where_hiest = box_middle
 	ELSE

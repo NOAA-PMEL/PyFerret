@@ -14,6 +14,7 @@
 * V510 *sh* 1/00 - added uvar_on_hold
 * V530: *sh* 8/00 -- added ptype_* - data types
 *	*sh* 10/00 - increased max_context to support more complex expressions
+*	*sh* 3/00 -- added g=ax@near
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -309,6 +310,7 @@
      .			prgrd_modsum,
      .			prgrd_modmin,
      .			prgrd_modmax,
+     .			prgrd_nearest,
      .			prgrd_from_source,
      .			prgrd_from_ntrmed,
      .			pinterpolate
@@ -330,6 +332,7 @@
      .			prgrd_modsum		= 15,
      .			prgrd_modmin		= 16,
      .			prgrd_modmax		= 17,
+     .			prgrd_nearest		= 18,
      .			prgrd_from_source	= -6,
      .			prgrd_from_ntrmed	= -7,
      .			pinterpolate		= 0 )

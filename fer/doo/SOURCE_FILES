@@ -40,6 +40,7 @@ do_nearest_dist_above.F\
 do_nearest_dist_below.F\
 do_nearest_index_above.F\
 do_nearest_index_below.F\
+do_nearest_regrid.F\
 do_ngood.F\
 do_points.F\
 do_run_sum.F\
@@ -61,6 +62,7 @@ get_linear_coef.F\
 hanng_wt.F\
 lin_regrid_1_axis.F\
 modulo_regrid.F\
+nearest_regrid_1_axis.F\
 normalize.F\
 parzn_wt.F\
 regrid_comments.F\

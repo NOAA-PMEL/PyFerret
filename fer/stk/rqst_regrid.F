@@ -63,6 +63,7 @@
 * V530   3/01 *acm* alternative calendar axes:  Compare timesteps for source and
 *		    destination axes with respect to one of the calendars.
 * V530:  3/01 *sh* - added prgrd_nearest
+*        6/01 *acm* remove redundant calendar=.FALSE. after line 134
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -148,8 +149,6 @@
      .		   rgrd_trans .NE. prgrd_associate     .AND. 
      .		   rgrd_trans .NE. prgrd_nearest )  GOTO 5020
            ENDIF
-	ELSE
-	   calendar = .FALSE.
 	ENDIF
 
 * modulo regridding always requests the entire source region

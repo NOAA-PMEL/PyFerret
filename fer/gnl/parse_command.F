@@ -535,11 +535,13 @@
 * end of buffer has been reached with no word terminator - assume the word ends
  415	ptr = cmnd_len + 1
 
-* we have found the end of the word
+* we have found the end of the word.  
  420    IF ( surround_quote ) THEN
 	   arg_start(word_num) = arg_start(word_num) + 1
            arg_end  (word_num) = quote_end - 1
-           IF ( arg_start(word_num) .GT. arg_end(word_num) ) GOTO 5015
+cc           IF ( arg_start(word_num) .GT. arg_end(word_num) ) GOTO 5015
+cc  Allow it to be zero-length
+           IF ( arg_start(word_num) .GT. arg_end(word_num)+1 ) GOTO 5015
 	ELSE
 	   arg_end (word_num) = ptr - 1
 	ENDIF

@@ -7,7 +7,7 @@
 CCSHFLAG        = -K PIC
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -c -g $(CCSHFLAG)
+CFLAGS          = -c $(CCSHFLAG)
 F77             = f77
 F77SHFLAG       = -PIC
 FFLAGS          = -c -u $(F77SHFLAG)

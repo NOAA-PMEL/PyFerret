@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read special TMAP global attributes from the open netCDF file
 * these attributes are:
 * TMAP_expnum = "0056"
 * TMAP_slice = "  SA"

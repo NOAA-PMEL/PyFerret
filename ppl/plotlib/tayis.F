@@ -1,5 +1,17 @@
 	SUBROUTINE TAYIS(IT,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
      *	YF,XHI,XF,TCSIZE)
+C** 
+C**    @(#)tayis.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,17 +47,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)tayis.f	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-
 * 	Mod 11.27.95 For 4 digit years J Davison
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 

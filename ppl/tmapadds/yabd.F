@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Yet another block data, for linux/f90 install
 *	Initialize ppl_in_ferret here
 *	*jd* 12.96
 

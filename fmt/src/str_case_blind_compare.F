@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* FORTRAN-coded version of VAX runtime library
 * compare two strings disregarding case differences
 
 * programmer - steve hankin

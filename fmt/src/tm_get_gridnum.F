@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Searches the list of predefined and user-defined grid_names and returns the
 * number associated with the grid_name given by the user. If no match is found
 * the value unspecified_int4 is returned.
 *

@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Subroutine will update the XDSET and XSTEP common entries for a single
 * variable of an EZ_ data set
 *

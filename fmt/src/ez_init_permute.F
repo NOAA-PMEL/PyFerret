@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* work routine for EZ_READ when /ORDER is not the default X-Y-Z-T
 * Initialize the variables used to translate the permuted subscripts
 * into the 1D array index
 

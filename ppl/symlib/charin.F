@@ -1,4 +1,36 @@
 	SUBROUTINE CHARIN(STR,IN,PRMT,INPL)
+C** 
+C**    @(#)charin.F	1.2    5/26/88
+C**
+C**
+C***********************************************************************
+C**
+C**		    PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C**	Subprogram called:
+C**		CALL CHARIN(STR,IN,PRMP,INP)
+C**
+C**	Parameters:
+C**		STR -- Output string (char*IN or byte(IN))
+C**		IN -- Maximum input string length
+C**		PRMP -- Prompt for terminal input
+C**		INP -- Prompt lenght in characters
+C**
+C**	Description:
+C**		CHARIN prompts the user for input from the terminal.
+C**
+C**	History:
+C**	    Written: 
+C**		15-DEC-1985	by Donald W. Denbo
+C**	    Modified:
+C**		30-MAY-1986	by Donald W. Denbo
+C**		  Changes made for VAX/VMS version
+C**
+C**
+C     Mod *JD* 3.5.91 problems with buffered terminal output in unix
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,37 +66,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)charin.F	1.2    5/26/88
-C**
-C**
-C***********************************************************************
-C**
-C**		    PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C**	Subprogram called:
-C**		CALL CHARIN(STR,IN,PRMP,INP)
-C**
-C**	Parameters:
-C**		STR -- Output string (char*IN or byte(IN))
-C**		IN -- Maximum input string length
-C**		PRMP -- Prompt for terminal input
-C**		INP -- Prompt lenght in characters
-C**
-C**	Description:
-C**		CHARIN prompts the user for input from the terminal.
-C**
-C**	History:
-C**	    Written: 
-C**		15-DEC-1985	by Donald W. Denbo
-C**	    Modified:
-C**		30-MAY-1986	by Donald W. Denbo
-C**		  Changes made for VAX/VMS version
-C**
-C**
-C     Mod *JD* 3.5.91 problems with buffered terminal output in unix
 *     Mod *jd* 8.30.93 to handle FORTRAN read error you get w XGKS if the 
 *	window is clicked with the mouse.
 C *kob* 04/07/96 passed in character strings had to be declared 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* increment the usage count on a line
 * see docs in tm_allo_dyn_line
 
 * Steve Hankin  NOAA/PMEL/TMAP

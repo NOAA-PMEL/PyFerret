@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Deallocate a line from the dynamic line area (above max_lines)
 
 * Steve Hankin  NOAA/PMEL/TMAP
 

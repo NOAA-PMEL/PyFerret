@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Loads common blocks XDSET_INFO and XSTEP_FILES with vital system and
 * background information from a netCDF file
 * It processes FERRET special attributes without regard to whether variables
 * are "generic" or "FERRET"

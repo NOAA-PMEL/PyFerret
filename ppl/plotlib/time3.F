@@ -1,4 +1,15 @@
       SUBROUTINE TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)              
+C** 
+C**    @(#)time3.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +45,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)time3.f	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *	Mod 11.20.95 J Davison to accommodate 4 digit year, and seconds
 
 

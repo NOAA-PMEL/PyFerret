@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Searches the list of pre-defined line_name's and returns the number
 * associated with the line_name given by the user. If no match is found
 * the value unspecified_int4 is returned.
 *

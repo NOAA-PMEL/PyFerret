@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Deallocate a grid from the dynamic grid area (above max_grids)
 
 * Steve Hankin  NOAA/PMEL/TMAP
 

@@ -1,4 +1,15 @@
 	subroutine opndev(termf,clear)
+C**
+C**    @(#)opndev.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +45,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)opndev.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 * revised for TMAP
 * from PPLUS :
 *       Directory PMEL:[PLOT5.PPLV11.COMPLOT]OPNDEV.F -->.FOR via "PREPRS"

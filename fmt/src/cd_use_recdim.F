@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Does the indicated variable use the netCDF record dim ?
 
 * Programmer Steve Hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

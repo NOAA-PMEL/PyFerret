@@ -1,22 +1,5 @@
       SUBROUTINE ABPLT
                 
-****************************************************************
-* revised for FERRET
-* from PPLUS :
-*	Directory PMEL:[PLOT5.LIBRARY.COMPLOT]
-*	ABPLT.FOR;2               9   5-FEB-1985 11:33 
-* search for "FERRET" to find all revisions
-* *sh* 9/13/88 - rev 1.0 for FERRET 1.10+
-*	- if GKS (ptype>2) then bypass clipping at screen limits
-****************************************************************
-*     CALL ABPLT
-
-*     THIS SUBROUTINE PERFORMS SCREEN CLIPPING AND THEN MOVES THE
-*     PEN FROM THE CURRENT POSITION TO A NEW POINT.
-
-
-******************************************************************
-* FERRET mod - for explicit declarations - 9-13-88
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -52,6 +35,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+****************************************************************
+* revised for FERRET
+* from PPLUS :
+*	Directory PMEL:[PLOT5.LIBRARY.COMPLOT]
+*	ABPLT.FOR;2               9   5-FEB-1985 11:33 
+* search for "FERRET" to find all revisions
+* *sh* 9/13/88 - rev 1.0 for FERRET 1.10+
+*	- if GKS (ptype>2) then bypass clipping at screen limits
+****************************************************************
+*     CALL ABPLT
+
+*     THIS SUBROUTINE PERFORMS SCREEN CLIPPING AND THEN MOVES THE
+*     PEN FROM THE CURRENT POSITION TO A NEW POINT.
+
+
+******************************************************************
+* FERRET mod - for explicit declarations - 9-13-88
+C     DIMENSION AMXMN(2),BMXMN(2)
       REAL AMXMN(2),BMXMN(2), binter, ainter
       EQUIVALENCE (AMXMN(1),AMAX),(BMXMN(1),BMAX)
 

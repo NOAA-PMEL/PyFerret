@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Returns a line matching the input description.
 * Will create a line description based on the input arguments and
 * compare it to other line definitions in common. Unlike
 * tm_get_like_line (and unlike TM_GET_LIKE_DYN_GRID) this will check

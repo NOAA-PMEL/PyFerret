@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a "world" coordinate into the subscript value on an axis by finding
 * the grid box that contains the world coordinate.
 * A clue may be provided to speed processing of irregular axes
 

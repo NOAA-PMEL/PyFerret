@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Find the full path name of the given file
 * failure to find a file in a status of merr_not_mounted
 * depending on the logical do_errmsg an error message may be issued

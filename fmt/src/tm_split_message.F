@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* depending on the state of alt_messages either write this string to the
 * given unit number or save it in a GUI buffer
 
 * programmer - steve hankin

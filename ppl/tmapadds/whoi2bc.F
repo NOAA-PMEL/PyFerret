@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Convert a WHOI-formatted date of yymmddhhmm to minutes since 1-JAN-0000
 *
 * Steve Hankin - NOAA/PMEL/TMAP
 *

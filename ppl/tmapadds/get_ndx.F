@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Gets bundle index for fill area calls
 *	J Davison 5.17.90
 *	Mod *jd* 10.1.92 to use 1 fill index                    
 

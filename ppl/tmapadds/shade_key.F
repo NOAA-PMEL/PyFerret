@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       Sets the options for SHADE key -- size,location,etc
 *       J Davison JISAO/PMEL/TMAP 8.24.88
 
 #ifdef unix

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Check to see if two lines share an identical definition
 *
 * by M. Verschell PMEL/TMAP
 *

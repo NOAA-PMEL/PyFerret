@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	J Davison 3.15.89 JISAO/PMEL/TMAP
 *	Routine to convert variable length string to upper case
 *	and left justify, throwing away all blanks, and returning 
 *	the length of the resulting string.  

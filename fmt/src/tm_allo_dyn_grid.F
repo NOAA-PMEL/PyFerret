@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Allocate a grid from the dynamic grid area (above max_grids)
 
 * The grids in xtm_grid.cmn fall into three categories (ideally they could
 * and should all be category 3, but the development was historical)

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Initialize a TMAP data set:  GT, TS, or CDF
 * For GT and TS: opens dataset DESCRIPTOR/SET file,reads the FORMAT_RECORD and
 * BACKGROUND_RECORD, reads in any GRID files given, then determines correct
 * reading routine to load common blocks XDOtSET_INFO and XSTEP_FILES with vital

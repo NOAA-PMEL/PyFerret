@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Sets fill index appropriately.  DEC uses bundled indices,
 *	at this date ATC has too few to use them, so must use individual
 *	attributes.
 

@@ -34,16 +34,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)gksmv.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *
 *	Mod 1.9.90 J Davison to reduce the maximum #pts in any one call to 
 *	polyline to 100 as GKS 4.0 under VMS 5.2, i.e., DECWindows, blows up

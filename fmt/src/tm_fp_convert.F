@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert VAX or IEEE big/little endian into the currently active CPU
 * representation
 
 * programmer - steve hankin

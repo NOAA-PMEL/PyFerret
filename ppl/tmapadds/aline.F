@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Processes ALINE command buffer and manages aline database
 *	J Davison 10.16.89
 *	11.9.93 Mod to put immediate mode output in segments
 

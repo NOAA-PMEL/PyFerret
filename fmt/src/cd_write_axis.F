@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Write an axis definition out to the current output netCDF file
 * May be a full "parent" definition, a sub_axis, or a "child" (a sub-axis
 * which points to the full axis)
 

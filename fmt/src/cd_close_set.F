@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Close a netCDF file 
 
 * Programmer Steve Hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Remote DODS file open has just been simulated using a local cache
 * Now pass control over to the remote file to create the illusion that
 * it was legitimately opened
 

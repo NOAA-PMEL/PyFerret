@@ -1,12 +1,6 @@
 	subroutine   arc(x,y,nask,eps,xx,yy,nret,
      ,      ks,kmax,xl,yl,splxp,splyp,spls,spline_tension)
 
-* revised for TMAP
-*
-* *sh*  - 1/26/93 modified routine to call spline under tension fit
-*                 if spline_tension is not zero.  otherwise, it will
-*		  use the fit that this algorithm calculates (cubic).
-*******************************************************************
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,6 +36,13 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+*
+* *sh*  - 1/26/93 modified routine to call spline under tension fit
+*                 if spline_tension is not zero.  otherwise, it will
+*		  use the fit that this algorithm calculates (cubic).
+*******************************************************************
+C** 
 C**    @(#)arc.f	1.1    3/10/88
 C**
 C**

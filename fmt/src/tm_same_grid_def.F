@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Check to see if the guts of the two grids are identical
 
 * revision 0.00 - Steve Hankin - based on TM_FIND_LIKE_GRID by  M. Verschell
 * 12/3/92 *sh* - on mpsnorm axes ignore inner/outer

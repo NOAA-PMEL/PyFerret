@@ -1,4 +1,28 @@
 	SUBROUTINE LEV
+C** 
+C**    @(#)lev.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+#ifdef unix
+	INCLUDE 'pplinc/PARAMPL5.DAT'
+	INCLUDE 'pplinc/CMRDL.INC'
+	INCLUDE 'pplinc/CMRD.INC'
+	INCLUDE 'pplinc/CONT.INC'
+#else
+        INCLUDE 'pplinc:PARAMPL5.DAT'
+        INCLUDE 'pplinc:CMRDL.INC'
+        INCLUDE 'pplinc:CMRD.INC'
+        INCLUDE 'pplinc:CONT.INC'
+#endif
+	CHARACTER PRSE*255
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,29 +58,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)lev.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-#ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/CONT.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CONT.INC'
-#endif
-	CHARACTER PRSE*255
-
 *       *jd* rename variable IF to INTIF for MAC 7.92
 * 	*jd* 5.6.96 Add code to fix bug in specification of levels
 *	where level should be zero but round off error results in near but

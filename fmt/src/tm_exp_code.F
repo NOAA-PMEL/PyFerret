@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 *  Returns a unique exp_code for use in looking at experiment documentation
 *  files. This code is based on ds_type and ds_expnum. This is 12222, where
 *  1 and 2 indicate one character of ds_type and ds_expnum respectively.

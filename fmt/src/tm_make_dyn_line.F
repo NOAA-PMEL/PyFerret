@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Create a dynamic (always) line base on the input description
 * To create a dynamic line that is based on another line use
 * TM_GET_LIKE_DYN_LINE, instead
 * Will create a line description based on the input arguments and

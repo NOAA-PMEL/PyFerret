@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * convert an ascii representation of a latitude or longitude value into 
 * a floating point value using special format rules
 *

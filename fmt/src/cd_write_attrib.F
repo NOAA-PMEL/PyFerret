@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Write a character string attribute to a netCDF file
 * If the variable is equal to the parameter pcdf_global then make it a
 * global attribute.
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Open a netCDF file for output
 * if appending then the file must already exist
 * leave it in definition mode
 

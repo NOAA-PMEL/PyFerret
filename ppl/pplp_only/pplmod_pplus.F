@@ -1,4 +1,18 @@
 	PROGRAM PPLUS
+C** 
+C**    @(#)pplus.F	1.2    9/8/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     Mod *JD* 3.5.91 to use unit 6 rather than 5 for unix terminal lun
+C     Had problem with buffered output.  See also opnppl
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,19 +48,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)pplus.F	1.2    9/8/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C
-C     Mod *JD* 3.5.91 to use unit 6 rather than 5 for unix terminal lun
-C     Had problem with buffered output.  See also opnppl
 *     Mod *jd* 8.3.92 to add interruptability
 * 	  *jd* 2.93 add date info to output header
 

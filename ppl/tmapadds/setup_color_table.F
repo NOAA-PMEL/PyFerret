@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Sets the color map between ndx_lo and ndx_hi -- GKS FORTRAN binding
 *	J Davison JISAO/PMEL/TMAP 4.29.88/6.15.88
 
 *	Completely rewritten J Davison 7.27.89

@@ -3,7 +3,6 @@ OPTIONS /CHECK=NOBOUNDS		! ROUTINE OVERFLOWS BOUNDS (see below)
 #endif
       SUBROUTINE XYZPLT
 
-****************************************************************
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,6 +38,8 @@ OPTIONS /CHECK=NOBOUNDS		! ROUTINE OVERFLOWS BOUNDS (see below)
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+****************************************************************
+C revised for FERRET
 C from PPLUS :
 C	Directory PMEL:[PLOT5.LIBRARY.COMPLOT]
 C	ABPLT.FOR;2               9   5-FEB-1985 11:33 

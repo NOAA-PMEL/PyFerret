@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * convert an ascii representation of an axis limit into a floating point 
 * representation using special format rules
 *

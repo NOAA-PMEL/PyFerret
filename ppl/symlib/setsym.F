@@ -1,4 +1,37 @@
 	SUBROUTINE SETSYM(LINE,ILEN,IER,IST)
+C** 
+C**    @(#)setsym.f	1.2    5/26/88
+C**
+C**
+C***********************************************************************
+C**
+C**		    PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C**	Subprogram called:
+C**		CALL SETSYM(LINE,ILEN,IER,IST)
+C**
+C**	Parameters:
+C**		LINE -- Line containing symbol and value (char*255)
+C**		ILEN -- Length of LINE
+C**		IER  -- Error code
+C**			0 = success
+C**			1 = symbol not found
+C**		IST -- relative position of sym in LINE
+C**
+C**	Description:
+C**		Parses LINE and sets the symbol defined with the value
+C**		specified.
+C**
+C**	History:
+C**	    Written:
+C**		22-DEC-85	by Donald W. Denbo
+C**	    Modified:
+C**
+C**
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,38 +67,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)setsym.f	1.2    5/26/88
-C**
-C**
-C***********************************************************************
-C**
-C**		    PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C**	Subprogram called:
-C**		CALL SETSYM(LINE,ILEN,IER,IST)
-C**
-C**	Parameters:
-C**		LINE -- Line containing symbol and value (char*255)
-C**		ILEN -- Length of LINE
-C**		IER  -- Error code
-C**			0 = success
-C**			1 = symbol not found
-C**		IST -- relative position of sym in LINE
-C**
-C**	Description:
-C**		Parses LINE and sets the symbol defined with the value
-C**		specified.
-C**
-C**	History:
-C**	    Written:
-C**		22-DEC-85	by Donald W. Denbo
-C**	    Modified:
-C**
-C**
-
 ** TMAP mod **
 * *sh* 10/27/94 - modified for AIX port
 *	Modification uses TM_NUMBER to determine if "value" is a number rather

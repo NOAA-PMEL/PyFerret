@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Converts a point (x,y) in /nouser coordinates to /user
 *	J Davison 10.17.89
 
 #ifdef unix

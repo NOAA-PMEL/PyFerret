@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Is the indicated is the indicated axis of the grid the netCDF record axis?
 * Or can it never become the record axis ?
 * Or are both it and the record axis as-yet undefined?
 

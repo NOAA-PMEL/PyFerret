@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine if this netCDF file is an EPIC file
 * the following approach is taken to determine if this is an EPIC file:
 * 1) locate one of the axes, "time" or "lat"
 * 2) check for the attribute "epic_code"

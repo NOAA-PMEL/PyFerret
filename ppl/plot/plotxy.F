@@ -1,4 +1,22 @@
 	SUBROUTINE PLOTXY(X,NXS,XF,YF)
+C** 
+C**    @(#)plotxy.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C  ARRAY X HOLDS X AND Y'S FOR ALL LINES.  DIMENSIONED FOR NXS.
+C  ORDER AS FOLLOWS:  ALL X'S FOR LINE1, ALL X'S FOR LINE2,...
+C                     STARTING AT X(NXS/2+1), ALL Y'S FOR LINE1,
+C                     ALL Y'S FOR LINE2...
+C  XF AND YF ARE FACTORS TO CONVERT TO INCHES FROM USER UNITS
+C
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,23 +52,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)plotxy.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C
-C  ARRAY X HOLDS X AND Y'S FOR ALL LINES.  DIMENSIONED FOR NXS.
-C  ORDER AS FOLLOWS:  ALL X'S FOR LINE1, ALL X'S FOR LINE2,...
-C                     STARTING AT X(NXS/2+1), ALL Y'S FOR LINE1,
-C                     ALL Y'S FOR LINE2...
-C  XF AND YF ARE FACTORS TO CONVERT TO INCHES FROM USER UNITS
-C
 *	Modified *jd* J Davison JISAO/PMEL/TMAP 3.22.89
 *	To exlude Denbo line dashing in favor of GKS line bundles 
 *	Mod *jd* 8.3.92 to add interrupts 

@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get numerical attributes from a netCDF file if the attribute exists
 * convert all attribute values to floating point
 * the netCDF file is assumed to be open
 * Note: this routine is "quick and dirty" - long arrays of non-float type

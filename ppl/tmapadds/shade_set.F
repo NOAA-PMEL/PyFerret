@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       Sets the options for SHADE -- fill_missing, custom_colors
 *       J Davison JISAO/PMEL/TMAP 8.24.88
 *	Completely rewritten J Davison 7.27.89
 *       *JD* 4.22.91 Take out fill area rep setting for metafiles -- 

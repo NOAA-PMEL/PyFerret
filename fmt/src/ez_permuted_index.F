@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* work routine for EZ_READ when /ORDER is not the default X-Y-Z-T
 * Determine the single-dimensioned array index equivalent to the 4D
 * (i,j,k,l) of the "next" word to be stored
 

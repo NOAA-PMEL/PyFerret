@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*     With use if ATC GKS modification to display size query GQDSP
 *     is needed. This routine handles both ATC and DEC GKS queries.
 *     J Davison 3.24.92
 *     Mod 8.27.93 *jd* to deal w xgks

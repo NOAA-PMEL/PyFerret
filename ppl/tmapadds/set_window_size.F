@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to handle resizing windows -- uses GSWKVP for DEC GKS and 
 *	GUESC -5304 in ATC GKS.  ATC doesn't resize the window with GSWKVP.
 *	J Davison 3.24.92
 *	Mod 8.27.93 to handle XGKS resizing

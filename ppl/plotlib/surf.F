@@ -1,14 +1,6 @@
       SUBROUTINE SURF(V,A,XMIN,XMAX,M,YMIN,YMAX,N,ZMIN,ZMAX,
      1DX,DY,DZ)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]SURF.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -44,6 +36,15 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]SURF.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+C**
 C**    @(#)surf.F	1.1    3/10/88
 C**
 C**

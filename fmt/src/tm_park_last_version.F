@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* rename any existing file of name fname to the current highest version of
 * that filename plus one
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert minutes since 01-JAN-0000 00:00:00 to a WHOI-formatted of the form
 * yymmddhhmm
 
 * Written 9/20/88 By Steve Hankin for PMEL/TMAP

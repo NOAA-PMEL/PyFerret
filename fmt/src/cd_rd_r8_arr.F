@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a series of values from a netCDF variable and return them as 
 * double prec.
 * The variable must be a simple array (e.g. an axis)
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Finds user coordinates given world coordinates and ancillary ppl info.
 *	J Davison 5.17.90
 
 #ifdef unix

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Loads the common block XGRID with explicitly given grid definitions from a
 * netCDF file - i.e. grid definitions for variables that have a
 * "parent_grid = name" attribute
 

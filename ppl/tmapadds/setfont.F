@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Created 1.28.97 *kob*
 *
 *	Code in this routine taken from old pplmod_symbel.F routine.  This
 *	was necessary to reorganize the symbel routine to remove an illegal

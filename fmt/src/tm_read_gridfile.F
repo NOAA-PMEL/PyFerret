@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Reads in grid and line definitions and coordinates from a specified .GRD file
 *
 * revision 0.00 - 05/07/87 - by Mark Verschell for PMEL/TMAP
 * revision 1.00 - 05/17/87 - by Mark Verschell for PMEL/TMAP

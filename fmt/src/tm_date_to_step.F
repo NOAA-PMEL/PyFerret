@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* This function will return a REAL*8 number giving the time step for a given
 * date for a particular data set. This is done by figuring the offset from
 * 01-JAN-0000 00:00:00 in seconds, and then calculating the timestep.
 *

@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * determine whether a particular string is a "legal" Unix path name
 *
 * programmer - steve hankin

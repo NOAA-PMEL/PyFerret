@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* garbage collect wasted space in newly defined grids
 
 * Programmer Steve Hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

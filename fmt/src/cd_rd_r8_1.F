@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a single value from a netCDF variable and return it as a double prec.
 * The variable must be a simple array (e.g. an axis)
 
 * Programmer Steve Hankin

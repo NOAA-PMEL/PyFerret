@@ -1,4 +1,15 @@
 	FUNCTION DIFF(IT1,IT2)
+C** 
+C**    @(#)diff.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +45,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)diff.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *	Mod J Davison 11.20.95 for 4 digit year and seconds
 
 	CHARACTER*(*) IT1,IT2

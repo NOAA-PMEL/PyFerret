@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Modified of PLOTZ to get data into proper grids for 
 *	SHADE command
 
 *	J Davison 8.26.88

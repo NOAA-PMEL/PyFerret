@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* send appropriate signals to indicate an interrupt has taken place
 * always take "abnormal" return
 
 * ... FERRET version ( different version for PPLUS )

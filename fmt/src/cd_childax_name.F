@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Determine the name to use for a "child axis" (sub-region) of a parent axis
 
 * Programmer Steve Hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

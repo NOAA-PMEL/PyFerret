@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read an array of time values from a "yymmddhhmmss" time axis
 * if T0 is not yet known determine an appropriate value
 * return time values as a double precision time relative to t0
 

@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Check to see if grid1 is identical to grid2
 *
 * by M. Verschell PMEL/TMAP

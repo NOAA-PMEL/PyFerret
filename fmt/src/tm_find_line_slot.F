@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Locates an unused space in XGRID common for a new line. If no space available,
 * returns error.
 *

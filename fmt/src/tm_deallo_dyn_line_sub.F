@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Deallocate a line from the dynamic line area (above max_lines)
 * Called quasi-recursively by tm_deallo_dyn_line
 
 * Steve Hankin  NOAA/PMEL/TMAP

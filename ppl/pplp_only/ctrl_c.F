@@ -1,34 +1,5 @@
 	SUBROUTINE SET_CTRL_C (CTRLC_AST)
 
-* turn on facility to trap keyboard interrupts
-* the interrupt handler defined here simply sets the common variable
-* "interrupted" to .TRUE.
-
-* on VMS:
-* queue a VMS "asynchronous system trap" to catch user interrupts via ^C
-* note that this routine must be called again following each interrupt
-* this code is based on page 8-47 of Guide to Programming on VAX/VMS (Fortran)
-
-* on Unix:
-* use routine "SIGNAL" to define the interrupt handler
-
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* revision 0.00 - 11/27/87 SH based on QINTERRUPT from program PRNT 8/2/85
-* Unix/RISC port 3/18/91
-
-* argument: CTRLC_AST
-*	name of routine to be called if operator hits ^C
-*	(or call with argument %VAL(0) to return to normal VMS ^C processing)
-
-* include the following lines in the routine requiring ^C interrupts:
-*	INCLUDE 'XINTERRUPT.CMN'
-*
-*	IF ( interrupt ) THEN ...
-
-	EXTERNAL	CTRLC_AST
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -64,6 +35,36 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* turn on facility to trap keyboard interrupts
+* the interrupt handler defined here simply sets the common variable
+* "interrupted" to .TRUE.
+
+* on VMS:
+* queue a VMS "asynchronous system trap" to catch user interrupts via ^C
+* note that this routine must be called again following each interrupt
+* this code is based on page 8-47 of Guide to Programming on VAX/VMS (Fortran)
+
+* on Unix:
+* use routine "SIGNAL" to define the interrupt handler
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.00 - 11/27/87 SH based on QINTERRUPT from program PRNT 8/2/85
+* Unix/RISC port 3/18/91
+
+* argument: CTRLC_AST
+*	name of routine to be called if operator hits ^C
+*	(or call with argument %VAL(0) to return to normal VMS ^C processing)
+
+* include the following lines in the routine requiring ^C interrupts:
+*	INCLUDE 'XINTERRUPT.CMN'
+*
+*	IF ( interrupt ) THEN ...
+
+	EXTERNAL	CTRLC_AST
+CC	Fix for fortran 90 -- initialize in data stmt
 	LOGICAL		first_call
 	DATA		first_call/.TRUE./
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a null-terminated Hollerith (suitable for passing to a c routine) to
 * a FORTRAN-style character string 
 * normally the c string should be at least 1 byte longer than the FORTRAN
 *    string to accomodate the null terminator

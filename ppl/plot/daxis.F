@@ -1,12 +1,5 @@
       SUBROUTINE DAXIS(XF,YF,NMX,NMY)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOT]DAXIS.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection from interrupts in lower routines
-*	  	  no explicit declarations - use FORT/WARN=NODECLARATIONS
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,6 +35,14 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOT]DAXIS.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection from interrupts in lower routines
+*	  	  no explicit declarations - use FORT/WARN=NODECLARATIONS
+C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
 C**

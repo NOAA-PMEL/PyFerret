@@ -1,4 +1,33 @@
 	SUBROUTINE SYMCNV(SYM,SYS)
+C** 
+C**    @(#)symcnv.f	1.2    5/26/88
+C**
+C**
+C***********************************************************************
+C**
+C**		    PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C**	Subprogram called:
+C**		CALL SYMCNV(SYM,SYS)
+C**
+C**	Parameters:
+C**		SYM -- Symbol name (char*30)
+C**		SYS -- Symbol is SYSTEM type (logical)
+C**
+C**	Description:
+C**		Converts the symbol name to upper case and evaluates the
+C**		form SYM(#) to SYM#.
+C**
+C**	History:
+C**	    Written:
+C**		15-DEC-1985	by Donald W. Denbo
+C**	    Modified:
+C**
+C**
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,34 +63,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)symcnv.f	1.2    5/26/88
-C**
-C**
-C***********************************************************************
-C**
-C**		    PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C**	Subprogram called:
-C**		CALL SYMCNV(SYM,SYS)
-C**
-C**	Parameters:
-C**		SYM -- Symbol name (char*30)
-C**		SYS -- Symbol is SYSTEM type (logical)
-C**
-C**	Description:
-C**		Converts the symbol name to upper case and evaluates the
-C**		form SYM(#) to SYM#.
-C**
-C**	History:
-C**	    Written:
-C**		15-DEC-1985	by Donald W. Denbo
-C**	    Modified:
-C**
-C**
-
 *       *jd* 11.94 - modified for AIX port
 *       Modification uses TM_NUMBER to determine if "value" is a number rather
 *       than the ERR= branch of a READ which fails on AIX/xlf

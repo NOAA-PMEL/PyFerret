@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Define a variable for the current output netCDF file
 
 * Programmer Steve Hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

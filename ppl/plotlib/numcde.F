@@ -1,12 +1,4 @@
 	SUBROUTINE NUMCDE(XZ,STR,NC,FRMTZ)
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]NUMCDE.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 2/13/89 - added MOD 360. to LONE formatting
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -42,6 +34,15 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]NUMCDE.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 2/13/89 - added MOD 360. to LONE formatting
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+C**
 C**    @(#)numcde.f	1.1    3/10/88
 C**
 C**

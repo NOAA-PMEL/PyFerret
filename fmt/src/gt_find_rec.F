@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find the starting record number of the specified variable for time_step
 * in the indicated file
 * this routine assumes that the file has already been OPENed via GT_OPEN_STEP
 

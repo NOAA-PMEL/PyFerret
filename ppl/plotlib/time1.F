@@ -1,4 +1,8 @@
       SUBROUTINE TIME1(I1,ITIME1,I2,ITIME2,I3,ITIME3,DT)               
+C start of FERRET mod
+C given a time, itime1, in WHOI format (ie, a date) and its corresponding time
+C step value, i1 - compute either the date (itime3)  corresponding to another
+C time step (i2) or the time step (i3) corresponding to another date (itime2)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,9 +38,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C given a time, itime1, in WHOI format (ie, a date) and its corresponding time
-C step value, i1 - compute either the date (itime3)  corresponding to another
-C time step (i2) or the time step (i3) corresponding to another date (itime2)
 * note DAYJ is not included in this module although it is in the TIME1.FOR file
 * from PPLUS :
 C	Directory PMEL:[PLOT5.LIBRARY.MILELIB]

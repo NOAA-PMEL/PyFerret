@@ -1,4 +1,16 @@
       SUBROUTINE BOX 
+C** 
+C**    @(#)box.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,17 +46,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)box.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-
 *     11.6.92 *jd* Mod to use viewport sizes when in FERRET
 
 #ifdef unix

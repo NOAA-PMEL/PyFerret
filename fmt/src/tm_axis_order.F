@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* based on 1 to 4 axes pointed to by lines4 try to determine how to place
 * this object in 4 dimensional space
 * e.g. if the axes are X,Y and T then slot 3 should probably be NORMAL
 * suppose further that axis 2 has no units or clues to its orientation

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Generates color/gray scale key
 * 	J Davison JISAO/PMEL/NOAA
 *	7.20.88
 

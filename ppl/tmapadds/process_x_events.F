@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Update ATC GKS workstations if necessary.  First attempt to
 *	determine if this works and is a bit heavy handed.
 
 *	J Davison 4.29.92

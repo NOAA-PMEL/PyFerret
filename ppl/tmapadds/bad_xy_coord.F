@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Screens 2D plot points where the coordinates of the grid cell are
 *	invalid
 
 *	*sh* 4/97 - extracted from "get_ndx" which previously checked both

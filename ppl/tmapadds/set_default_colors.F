@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Sets the color map between ndx_lo and ndx_hi to ws default
 *	J Davison JISAO/PMEL/TMAP 8.1.89
 
 #ifdef unix

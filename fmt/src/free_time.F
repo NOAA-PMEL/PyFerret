@@ -39,6 +39,7 @@ c  kob 5/92
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 4/94 *sh* change "atc_update" to "PROCESS_X_EVENTS" to accomodate
 *	Solaris/XGKS update needs (failure to redraw window)
 *
 * IBM PORT 14apr94 *kob* : IBM wouldn't allow c-like logical statment

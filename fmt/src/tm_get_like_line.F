@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Will compare "newline" to other line definitions in common. If there is a
 * match then "linenum" returns with the number of the match. If there is no
 * match, then a new slot is located and the name "newname" is used to name it,

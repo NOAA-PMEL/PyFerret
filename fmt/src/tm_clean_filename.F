@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* remove the directory path and the extension from a full pathname leaving
 * only the filename
 
 *  written 6/92 by S.H. for PMEL/TMAP

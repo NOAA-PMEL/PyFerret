@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Test to see if a string is a valid number
 * J Davison 11.8.94
 
 	integer		length, tm_lenstr1

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Load the common block XGRID with a single axis definition from a
 * netCDF file
 
 * Programmer Steve Hankin

@@ -1,4 +1,17 @@
 	SUBROUTINE SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
+C** 
+C**    @(#)symbel.tplate.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
+C       *jd* 7.92 variable IF renamed to KIF for MAC
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,18 +47,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)symbel.tplate.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
-C       *jd* 7.92 variable IF renamed to KIF for MAC
 *       *jd* 11.94 
 *       Modification uses TM_NUMBER to determine if "value" is a number rather
 *       than the ERR= branch of a READ which fails on AIX/xlf

@@ -1,5 +1,16 @@
       SUBROUTINE LIST(LLUN,X,NSIZE,ARG)
 	DIMENSION X(NSIZE)
+C**
+C**    @(#)list.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,16 +46,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)list.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *	Modified to include SHADE and ALINE parameter listing J Davison
 *	11.9.89
 *	*jd* 3.19.93 Mod to include listing of T Craig's spline and draftsman

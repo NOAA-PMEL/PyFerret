@@ -1,16 +1,6 @@
       SUBROUTINE TAXIS1(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IDDB,IMDB,
      1    TFACT,Y,YFACT,CSIZE)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAXIS1.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-
-* *jd* Mod for 4 digit years
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -46,6 +36,17 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAXIS1.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+
+* *jd* Mod for 4 digit years
+C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C**
 C**    @(#)taxis1.f	1.1    3/10/88

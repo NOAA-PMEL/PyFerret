@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	PPLADD_METAFILE_WRITES
 
 *	Write private item data records to metafile
 *	J Davison JISAO/PMEL/TMAP

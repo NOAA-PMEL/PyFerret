@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* identical function to the INQUIRE EXIST=... statement from FORTRAN
 * this routine is provided only to compensate for a bug in f772.1
 
 * programmer - steve hankin

@@ -1,4 +1,28 @@
 	subroutine fixtim (it1,it2,itnew1,itnew2,itype)
+C** 
+C**    @(#)fixtim.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************        C**
+C**                 EPIC
+C**
+C***********************************************************************        C**
+C**
+c
+c  Input:
+c	it1,it2 = input range of times in PLOT5's WHOI format (yyddmmhhmm)
+c	itype   = PLOT5 axis type 0 even hours		ending     00
+c                                 1 even days		ending   0000
+c                                 3 even months		ending 010000
+c  Output:
+c	itnew1,itnew2 = range of times which suit the input axis type and
+c                       include the input range of times (yymmddhhmm)
+c
+c  Uses subroutines TIME1 (sequence # <--> WHOI times and NUMDM1
+c  (# days in month) from PLOT5's MILELIB.
+c
+c  Programmed by N. Soreide, May 86.
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,29 +58,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)fixtim.f	1.1    3/10/88
-C**
-C**
-C***********************************************************************        C**
-C**                 EPIC
-C**
-C***********************************************************************        C**
-C**
-c
-c  Input:
-c	it1,it2 = input range of times in PLOT5's WHOI format (yyddmmhhmm)
-c	itype   = PLOT5 axis type 0 even hours		ending     00
-c                                 1 even days		ending   0000
-c                                 3 even months		ending 010000
-c  Output:
-c	itnew1,itnew2 = range of times which suit the input axis type and
-c                       include the input range of times (yymmddhhmm)
-c
-c  Uses subroutines TIME1 (sequence # <--> WHOI times and NUMDM1
-c  (# days in month) from PLOT5's MILELIB.
-c
-c  Programmed by N. Soreide, May 86.
-
 * Mod J Davison 11.21.95 For 4 digit years
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 

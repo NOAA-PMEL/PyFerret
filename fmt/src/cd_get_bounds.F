@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Get the bounds of the hyperslab of the given netCDF variable relative
 * to its parent grid in the TMAP Common
 
 * Programmer Steve Hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a variable name supposed to be in the indicated data set return the
 * TMAP variable ID
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* remove blanks and tabs from the designated portion of the string
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program

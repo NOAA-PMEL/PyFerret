@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Will convert a date of yyyy-mm-dd hh:mm:ss to seconds since
 * 0000-01-01 00:00:00
 *
 * Written 6/16/87 By Mark Verschell for PMEL/TMAP

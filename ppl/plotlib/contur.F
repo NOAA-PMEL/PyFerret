@@ -5,32 +5,6 @@
 	subroutine contur(z,nxs,nys,px,py,nx,ny,xf,xoff,yf,yoff,
      *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xct,yct)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]CONTUR.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-* *sh*  - 2/15/89 corrected ATAN error for vertical labels
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-* !!! ALSO :  Routine overflows bounds at line
-*		610	xx(l)= px(il)*xf + xoff
-*	      ...bounds checking is OFF to match Denbo's compile stmt
-* *sh*  - applied Don's 12/9/88 mods (creating v1.4 of code CONTUR)
-*		... replaced earlier ATAN patch with Don's version
-*
-* *tc*  - 1/15/93 put in option for 'draftsman' style (horz) contour labels, 
-*            ...logical variable draftsman turns on or off
-* *tc*  - 1/26/93 put in spline under tension fit for contour lines.  uses
-*                 spline_tension variable to determine tension.
-* *tc*  - 5/04/93 mod to correct bug resulting zag near labels, with tension
-*		  > 0, and recapture original behavior w tension=0.
-*
-* *jd	- 3/29/94 fix bug where specification of zero height contour labels
-*		  bombs out on ALPHA machines (divide by zero)
-
-****************************************************************************
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -66,6 +40,33 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]CONTUR.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+* *sh*  - 2/15/89 corrected ATAN error for vertical labels
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+* !!! ALSO :  Routine overflows bounds at line
+*		610	xx(l)= px(il)*xf + xoff
+*	      ...bounds checking is OFF to match Denbo's compile stmt
+* *sh*  - applied Don's 12/9/88 mods (creating v1.4 of code CONTUR)
+*		... replaced earlier ATAN patch with Don's version
+*
+* *tc*  - 1/15/93 put in option for 'draftsman' style (horz) contour labels, 
+*            ...logical variable draftsman turns on or off
+* *tc*  - 1/26/93 put in spline under tension fit for contour lines.  uses
+*                 spline_tension variable to determine tension.
+* *tc*  - 5/04/93 mod to correct bug resulting zag near labels, with tension
+*		  > 0, and recapture original behavior w tension=0.
+*
+* *jd	- 3/29/94 fix bug where specification of zero height contour labels
+*		  bombs out on ALPHA machines (divide by zero)
+
+****************************************************************************
+C**
 C**    @(#)contur.F	1.2    7/30/88
 C**
 C**

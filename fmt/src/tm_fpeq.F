@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* test to see if REAL*4 floating point numbers are equal to within
 * "reasonable" accuracy
 * REAL*4 (F_floating) machine error on the VAX is "approximately one part in
 * 2**23" or 1.2E-7.  Allow 4.E-7 as machine error after many typical roundoffs.

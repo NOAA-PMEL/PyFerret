@@ -1,4 +1,30 @@
 	subroutine pplldx(icode,xt,yt,npts,tstrt,tref,xdt)
+C**
+C**    @(#)pplldx.F	1.2    9/8/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+c
+c	icode	0 use both x and y
+c		1 use x only
+c		2 use y only
+c	xt	x data
+c	yt	y data
+c	npts	number of xt and yt points
+c	tstrt	start time, corresponds to a value of xt=1.0
+c 	tref	added 11.95, a reference time (~tstart) ferret will set
+c	xdt	sample rate in minutes for x
+c
+c	tstrt and xdt are used only for TAXIS,ON.
+c
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,31 +60,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)pplldx.F	1.2    9/8/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-c
-c	icode	0 use both x and y
-c		1 use x only
-c		2 use y only
-c	xt	x data
-c	yt	y data
-c	npts	number of xt and yt points
-c	tstrt	start time, corresponds to a value of xt=1.0
-c 	tref	added 11.95, a reference time (~tstart) ferret will set
-c	xdt	sample rate in minutes for x
-c
-c	tstrt and xdt are used only for TAXIS,ON.
-c
 *............. I changed the logicals on the includes - no impact ...sh
 * revised for FERRET
 * from PPLUS :

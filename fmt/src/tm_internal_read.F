@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*Will take a fortran character array and extract the floating point value
 * it contains.  Needed for IBM-only internal reads
 *
 *       -kob- 10/95

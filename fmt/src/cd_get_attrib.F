@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get an attribute string from a netCDF file if the attribute exists and
 * is of the right data type
 * the netCDF file is assumed to be open
 

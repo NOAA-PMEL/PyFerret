@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * This subroutine will "break up" the variable instring into 'numwords'
 * strings and place them in the character array outstrings. The breaks
 * occur at spaces and tabs.

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Modified PPLMOD_PLTIT and PPLMOD_PLOTXY to execute the ALINE command 
 *	where a line is drawn of a particular type as specified.
 *	J Davison 10.4.89
 

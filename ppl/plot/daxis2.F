@@ -1,4 +1,15 @@
 	SUBROUTINE DAXIS2(XF,YF,NMX,NMY)
+C** 
+C**    @(#)daxis2.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +45,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)daxis2.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *     MOD *JD* 10.91 to eliminate PLOT COMPLETE msg if in ferret
 
 #ifdef unix

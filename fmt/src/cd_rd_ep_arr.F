@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read an array of time values from a 2-integer EPIC time axis
 * and return it as double precision time relative to t0
 
 * NOTE:  This routine could be grestly optimized for performance.

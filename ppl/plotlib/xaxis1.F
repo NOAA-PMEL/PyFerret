@@ -1,17 +1,6 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
      *    IFORMT,XFACT,Y,YFACT,CSIZE)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]XAXIS1.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-*	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
-*			in small non-zero values
-
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -47,6 +36,18 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]XAXIS1.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+*	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
+*			in small non-zero values
+
+C**
 C**    @(#)xaxis1.f	1.1    3/10/88
 C**
 C**

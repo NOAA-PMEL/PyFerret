@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* test to see if the first character of "string" is the first character
 * of a number
 
 * programmer - steve hankin

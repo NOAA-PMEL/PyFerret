@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check for errors and eliminate duplication from newly defined grids and axes
 * When the routine exits there will be no duplicate axis names although there
 * will be holes in line_memory from deleted axes.
 * When the routine exits there will still be duplicate grid names among the

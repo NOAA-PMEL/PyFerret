@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Initialize wstype constants for either DEC or ATC GKS
 *	J Davison 2.13.92
 *	Mod to support XGKS *jd* 8.10.93
 

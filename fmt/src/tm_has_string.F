@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check in a case-independent search to see if "substring" is in "string"
 * note: string and substring can be at most 80 characters
 
 * programmer - steve hankin

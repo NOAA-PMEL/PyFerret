@@ -1,8 +1,5 @@
 	SUBROUTINE OPNPPL(EFILE,ELUN,DLUN,MLUN,CLUN,LTT,
      *			  KEY1,KEY2,EPLUN1,EPLUN2)
-*	Mod to set SYM='*PPL$PLTNME' to metafile.plt by default *jd* 1.7.94
-*	Mod to not reference "getlog" routine for linux port *kob* 3.11.97	
-*       Mod to set SYM='*PPL$PLTNME' to value of meta_file *js* 7.25.97
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -38,6 +35,10 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Mod to set SYM='*PPL$PLTNME' to metafile.plt by default *jd* 1.7.94
+*	Mod to not reference "getlog" routine for linux port *kob* 3.11.97	
+*       Mod to set SYM='*PPL$PLTNME' to value of meta_file *js* 7.25.97
+C**
 C**    @(#)opnppl.F	1.1    3/10/88
 C**
 C**

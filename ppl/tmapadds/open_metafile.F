@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to open GKS metafile
 *	J Davison JISAO/PMEL/TMAP
 *	3.15.89
 *	12.20.89 *sh* - added GKS_X_CONID code for FERRET

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* is this an axis that is so long it only the "used" portion of its
 * length should be represented under some circumstances
 * (an "abstract" axis in FERRET)
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to set polyline indices bundled and set up the bundles
 *	for WS zwsid of type zwstype.
 *	J Davison JISAO/PMEL/TMAP 3.23.89
 *	*jd* 2.19.92 mod to support atc gks

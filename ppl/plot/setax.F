@@ -1,27 +1,6 @@
 	SUBROUTINE SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,
      *	XTI,XTL)
 *
-*	Modified J Davison 11.28.88 for compatibility to v1.1 PPL
-*
-*       Declarations added 9.6.88 J Davison                           
-*	Mod for 4 year digits *jd* 11.21.95
-
-
-        real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl,xf,xl,xh  
-        real            xmn,xmx,xt,yf,yl,yh,yt                        
-                                                                      
-        integer         nxs,iy,nmx,i,ibasex,ibasey,len,j,nmy          
-                                                                      
-        external        diff                                          
-*       End declarations 9.6.88
-*	
-*	Declarations added 11.28.88
-	real		xtx,ytx,xtm,ytm
-*	End declarations 11.28.88
-
-	external RANGE
-
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -56,6 +35,28 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
+*	Modified J Davison 11.28.88 for compatibility to v1.1 PPL
+*
+*       Declarations added 9.6.88 J Davison                           
+*	Mod for 4 year digits *jd* 11.21.95
+
+
+        real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl,xf,xl,xh  
+        real            xmn,xmx,xt,yf,yl,yh,yt                        
+                                                                      
+        integer         nxs,iy,nmx,i,ibasex,ibasey,len,j,nmy          
+                                                                      
+        external        diff                                          
+*       End declarations 9.6.88
+*	
+*	Declarations added 11.28.88
+	real		xtx,ytx,xtm,ytm
+*	End declarations 11.28.88
+
+	external RANGE
+
+C**
 C**    @(#)setax.F	1.2    9/8/88
 C**
 C**

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert an array of INTEGER*4 values into REAL*8
 * use backwards loop so input and output can be same array
 
 * Programmer Steve Hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Set the netCDF mode to DATA or DEFINE
 * but first check to see if it is already in the desired mode
 
 * Programmer Steve Hankin

@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Takes multiple blanks and tabs in a string and replaces them with a
 * single blank.
 *

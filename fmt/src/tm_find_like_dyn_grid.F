@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Locate a grid from the dynamic grid area (above max_grids)
 * that matches the target grid
 
 * Steve Hankin  NOAA/PMEL/TMAP

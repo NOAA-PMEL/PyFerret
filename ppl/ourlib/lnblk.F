@@ -1,5 +1,4 @@
       FUNCTION LNBLK(STRING, NCHAR)
-** 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,6 +34,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+** 
+C**    @(#)lnblk.f	1.1    3/10/88
 C**
 C**
 C***********************************************************************

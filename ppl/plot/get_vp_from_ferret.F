@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get viewport and window information from FERRET common
 * (this routine to hide FERRET common from PPLUS)
 
 * programmer - steve hankin

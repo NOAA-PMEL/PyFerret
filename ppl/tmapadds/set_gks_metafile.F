@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	J Davison JISAO/PMEL/TMAP
 *	3.15.89
 
 *	For GKS plots (pltype = 3 or 4) captures WS type and whether to open a

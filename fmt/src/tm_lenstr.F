@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the length of a character string as the position of the last 
 * non-blank character (return 0 if all blanks)
 * note: remember to declare function name INTEGER in calling program
 * programmer - steve hankin

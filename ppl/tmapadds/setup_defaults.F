@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       Sets ppl+ defaults & the options for SHADE for initial calls 
 *       J Davison JISAO/PMEL/TMAP 8.24.88/7.27.89
 *	*jd* 2.11.92 Initialize item_* variables here
 *	*jd* 5.28.92 Inititalize sqfill to on for AREA command

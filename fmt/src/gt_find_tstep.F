@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Locates and opens (if not already open) the correct data file containing
 * the specified timestep and variable. Calls GT_FIND_REC to locate the
 * starting record of the specified variable.

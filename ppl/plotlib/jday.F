@@ -1,4 +1,15 @@
 	INTEGER*4 FUNCTION JDAY(IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+C** 
+C**    @(#)jday.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +45,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)jday.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *	Mod J Davison 11.22.95 For 4 digit year
 
 *       Year to be calendar year - 1900, eg, 1880 = -20, 2001 = 101

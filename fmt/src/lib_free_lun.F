@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* dummy routine for Ultrix/VMS compatibility
 * this routine is paired with LIB_GET_LUN
 
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Determine the designated "time axis" for this data set
 * and save its lo/hi limits in stepfile common
 * This is needed for compatibility with GT and TS formats
 

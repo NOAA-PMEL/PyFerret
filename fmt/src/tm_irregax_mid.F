@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Fill in the midpoint values as the default boundaries between grid
 * boxes
 
 * Programmer Steve Hankin

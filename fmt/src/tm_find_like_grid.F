@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Check to see if an existing grid is identical to the grid pointed to by
 * "gridnum".
 *

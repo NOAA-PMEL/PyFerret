@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Reclaim a data set by re-initializing all associated common variables.
 * Initialize all the variables with the set up values, except for:
 *	ds_var_setnum		= set_not_open

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Initialize machinery for dynamic grids and lines
 
 * Steve Hankin  NOAA/PMEL/TMAP
 *

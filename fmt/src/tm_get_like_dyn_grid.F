@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Will compare "ingrid" to other grid definitions in common. Unlike
 * tm_get_like_grid this will check both static and dynamic grids.
 * If there is a match then "outgrid" returns with the number of the match.
 * The variable its_dyn tells if it is dynamic

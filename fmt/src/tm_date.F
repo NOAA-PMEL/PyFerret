@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* naive test to see if the given string may be a date
 * complete date format is dd-mmm-yy:hh:mm:ss where mmm is a string
 * naive test insists that
 *     1) first character is a digit

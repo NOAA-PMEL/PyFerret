@@ -52,6 +52,7 @@ C
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	*sh* 11/97 based on SHADESUB and PLOTXY
 
 #ifdef unix
         include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*

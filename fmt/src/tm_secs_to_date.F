@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Will convert secs since 01-JAN-0000 00:00:00 to a date of the form
 * yyyy-mm-dd hh:mm:ss
 *
 * Written 6/16/87 By Mark Verschell for PMEL/TMAP

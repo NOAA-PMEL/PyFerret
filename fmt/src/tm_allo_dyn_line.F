@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Allocate a line from the dynamic line area (above max_lines)
 
 * The lines in xtm_grid.cmn fall into two categories (ideally they could
 * and should all be category 2, but the development was historical)

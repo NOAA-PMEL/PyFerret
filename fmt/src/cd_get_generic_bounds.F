@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Get the bounds of the hyperslab of the given netCDF variable
 * from its (generic) dimension limits
 
 * Programmer Steve Hankin

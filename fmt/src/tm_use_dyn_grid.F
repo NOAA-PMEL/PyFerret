@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Increment the usage count for this grid
 
 * Steve Hankin  NOAA/PMEL/TMAP
 

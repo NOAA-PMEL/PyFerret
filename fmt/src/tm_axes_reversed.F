@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return an array of length 4 indicating containing the axes that are reversed
 * and the value of the function is the number that are reversed
 
 * ... to hide TMAP COMMON from FERRET

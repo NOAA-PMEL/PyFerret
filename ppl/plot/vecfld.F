@@ -1,6 +1,17 @@
 	SUBROUTINE VECFLD(U,V,NXS,NYS,PX,PY,XF,YF)
 	real u,v,px,py,xf,yf
 	integer nxs,nys
+C**
+C**    @(#)vecfld.F	1.5    9/21/89
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -36,16 +47,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)vecfld.F	1.5    9/21/89
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *	*sh* 04-16-90 	Mod to retain VUSRLN for user defined vector lengths
 *       *jd* 8.3.92     Mod to add interrupts
 *	*jd* 12.92	Mod to handle fields of 0 length vectors

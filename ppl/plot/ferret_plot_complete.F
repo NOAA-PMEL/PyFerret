@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Display a diagnostic message indicating that PLOT+ has completed its plot.
 * This routine is to be called directly from PLOT+.
 * It requires an External declaration in the main program to ensure
 * that it is loaded at link time.

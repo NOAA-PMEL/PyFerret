@@ -1,23 +1,6 @@
 	SUBROUTINE TAYIS3(TLO,ITIME1,ITIME2,DT,NDAY,LABEL,IMDB,IYDB,
      *	TFACT,X,XFACT,CSIZE)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAYIS0.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-
-* *jd* Mod for 4 digit years 11.27.95
-* *jd* 11.29.95	Mod century axis
-* *jd* 2.8.96 Exclude consideration of seconds when comparing times and
-*		deciding whether to continue drawing time axis.  Ferret uses
-*		PPLLDX to compute time axis locations rather than the PPL
-*		TIME command.  It uses single precision reals which can be
-*		rounded.  Rounding can lead to the time axis being drawn too
-*		long.
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -53,6 +36,24 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAYIS0.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+
+* *jd* Mod for 4 digit years 11.27.95
+* *jd* 11.29.95	Mod century axis
+* *jd* 2.8.96 Exclude consideration of seconds when comparing times and
+*		deciding whether to continue drawing time axis.  Ferret uses
+*		PPLLDX to compute time axis locations rather than the PPL
+*		TIME command.  It uses single precision reals which can be
+*		rounded.  Rounding can lead to the time axis being drawn too
+*		long.
+C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
 C**

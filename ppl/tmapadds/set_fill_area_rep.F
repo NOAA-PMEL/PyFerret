@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Setup the fill area indices for patterns or colors depending on
 *	workstation characteristics
 
 *	J Davison JISAO/PMEL/TMAP

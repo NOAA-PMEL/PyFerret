@@ -1,14 +1,5 @@
 	SUBROUTINE STMNMX(X,NSIZE,XMIN1,XMAX1,YMIN1,YMAX1)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOT]MINMAX.FOR
-
-* search for "TMAP" to find all revisions
-* *sh* - 1/27/89 corrected bug: min/max search improperly rejects LIMITs points
-* *sh* - 12/8/93 corrected bug: vectors blow on divied by zero attempt
-
-	DIMENSION X(NSIZE)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -44,6 +35,16 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOT]MINMAX.FOR
+
+* search for "TMAP" to find all revisions
+* *sh* - 1/27/89 corrected bug: min/max search improperly rejects LIMITs points
+* *sh* - 12/8/93 corrected bug: vectors blow on divied by zero attempt
+
+	DIMENSION X(NSIZE)
+C**
 C**    @(#)minmax.F	1.1    3/10/88
 C**
 C**

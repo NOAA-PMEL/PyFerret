@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Sets the pattern size for patterned fill area calls -- needed
 *	to keep sizes appropriate to the output device. 
 
 *	XSIZE,YSIZE are x and y pattern size in pixels

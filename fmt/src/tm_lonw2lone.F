@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a longitude representation which has west positive, discontinuous
 * at the dateline (as in EPIC netCDF) to one which has east positive and is
 * discontinuous at Greenwhich
 

@@ -1,5 +1,29 @@
 	SUBROUTINE PLOTZ(Z,XF,YF,XLPLOT,YLPLOT,XHPLOT,YHPLOT)
 
+C**     
+C**     @(#)plotz.F	1.4    9/9/88
+C**     
+C**     
+C***********************************************************************
+C**     
+C**     PLOT+ Scientific Graphics System
+C**     
+C***********************************************************************
+C**     
+C**     
+C       lots of places ---> PPLMOD_PPLCMD ---> PPLMOD_PLTIT ---> PPLMOD_PLOTZ
+C       
+C       This subroutine is called for CONTOUR, SHADE and FILL plots
+C       and puts the data on the proper grid and then plots it.
+C 
+C       Z      - actual 2D data array
+C       XF     - X factor ( page? length / X range )
+C       YF     - Y factor
+C       XLPLOT - lower X page? coordinate
+C       YLPLOT - lower Y page? coordinate
+C       XHPLOT - upper X page? coordinate
+C       YHPLOT - upper Y page? coordinate
+C       
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,29 +59,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**     @(#)plotz.F	1.4    9/9/88
-C**     
-C**     
-C***********************************************************************
-C**     
-C**     PLOT+ Scientific Graphics System
-C**     
-C***********************************************************************
-C**     
-C**     
-C       lots of places ---> PPLMOD_PPLCMD ---> PPLMOD_PLTIT ---> PPLMOD_PLOTZ
-C       
-C       This subroutine is called for CONTOUR, SHADE and FILL plots
-C       and puts the data on the proper grid and then plots it.
-C 
-C       Z      - actual 2D data array
-C       XF     - X factor ( page? length / X range )
-C       YF     - Y factor
-C       XLPLOT - lower X page? coordinate
-C       YLPLOT - lower Y page? coordinate
-C       XHPLOT - upper X page? coordinate
-C       YHPLOT - upper Y page? coordinate
-C       
 *       MOD *JD* to include AREA in TMAP PPL+
 *       MOD *JD* moved dimension z(nx,ny) from below subroutine statement to
 *       below includes so that CONTOUR will work on the MAC -- Ed Flinchem

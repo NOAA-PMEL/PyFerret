@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Will take date string composed of DD-MMM-YYYY:HH:MM:SS with optional format:
 * DD-MMM:HH:MM:SS and break it up to it's various components.
 *

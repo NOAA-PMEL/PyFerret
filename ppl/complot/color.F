@@ -1,4 +1,24 @@
       SUBROUTINE COLOR(ICODE)
+C**
+C**    @(#)color.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL COLOR(ICODE)
+C
+C     THIS SUBROUTINE SELECTS A PEN ON THE TEKTRONIX 4663 PLOTTER,
+C     THE HP PLOTTER, AND THE ZETA PLOTTER AND CONTROLS THE SIX-
+C     POSITION TURRET HEAD ON THE GERBER PLOTTER.  IT CAN BE USED
+C     TO CHANGE THE COLOR OF THE INK USED FOR PLOTTING.
+C
+C
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,25 +54,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)color.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C
-C     CALL COLOR(ICODE)
-C
-C     THIS SUBROUTINE SELECTS A PEN ON THE TEKTRONIX 4663 PLOTTER,
-C     THE HP PLOTTER, AND THE ZETA PLOTTER AND CONTROLS THE SIX-
-C     POSITION TURRET HEAD ON THE GERBER PLOTTER.  IT CAN BE USED
-C     TO CHANGE THE COLOR OF THE INK USED FOR PLOTTING.
-C
-C
 *	Modified J Davison JISAO/PMEL/TMAP 3.23.89
 *	To accomodate GKS changes to bundled line attributes
  

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert the value val to a formatted string, left justified, not exceeding
 * max_len in length and with the shortest possible format( unnecerssary zeros
 * eliminated )
 

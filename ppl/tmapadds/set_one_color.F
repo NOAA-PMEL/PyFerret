@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       Sets the RGB values for a single color index
 *       J Davison JISAO/PMEL/TMAP 11.15.91
 *       *jd* 3.10.92 Brought over to Sun
 *	*jd* 1.14.94 Mod for background setting in xgks

@@ -1,31 +1,5 @@
 	SUBROUTINE CLSPPL
 
-*	Modified 9.27.88 J Davison TMAP/JISAO/PMEL
-*	to close GKS properly if it is opened.
-*	J Davison 11.28.88 modified for compatibility to v1.1 PPL
-*	k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
-#ifdef unix
-	include 'tmap_pplv11inc/symkey_inc.decl'
-	include 'pplv11inc/SYMKEY.INC'
-	include 'tmap_pplv11inc/cmdcom_inc.decl'
-	include 'pplv11inc/CMDCOM.INC'
-	include 'tmap_pplv11inc/lunits_inc.decl'
-	include 'pplv11inc/LUNITS.INC'
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
-#else
-	INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
-	INCLUDE 'PPLV11INC:SYMKEY.INC'
-	INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
-	INCLUDE 'PPLV11INC:CMDCOM.INC'
-	INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
-	INCLUDE 'PPLV11INC:LUNITS.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'
-#endif
-#ifdef core
-        include 'pltinc/CORECM.INC'
-#endif
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -61,6 +35,33 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Modified 9.27.88 J Davison TMAP/JISAO/PMEL
+*	to close GKS properly if it is opened.
+*	J Davison 11.28.88 modified for compatibility to v1.1 PPL
+*	k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
+#ifdef unix
+	include 'tmap_pplv11inc/symkey_inc.decl'
+	include 'pplv11inc/SYMKEY.INC'
+	include 'tmap_pplv11inc/cmdcom_inc.decl'
+	include 'pplv11inc/CMDCOM.INC'
+	include 'tmap_pplv11inc/lunits_inc.decl'
+	include 'pplv11inc/LUNITS.INC'
+	include 'tmap_pplv11inc/pltcom_dat.decl'
+	include 'pplv11inc/PLTCOM.DAT'
+#else
+	INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
+	INCLUDE 'PPLV11INC:SYMKEY.INC'
+	INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
+	INCLUDE 'PPLV11INC:CMDCOM.INC'
+	INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
+	INCLUDE 'PPLV11INC:LUNITS.INC'
+	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
+	INCLUDE 'PPLV11INC:PLTCOM.DAT'
+#endif
+#ifdef core
+        include 'pltinc/CORECM.INC'
+#endif
+C
 C	CLOSES FILES USED BY PLOT5+
 C
 	CALL ATFLSH

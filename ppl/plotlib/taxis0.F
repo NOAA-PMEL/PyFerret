@@ -1,19 +1,6 @@
       SUBROUTINE TAXIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
      1    TFACT,Y,YFACT,CSIZE)
 
-* revised for TMAP
-* from PPLUS :
-*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAXIS0.FOR
-
-* search for "TMAP" to find all revisions
-* *sh*  - 1/23/89 added interrupt detection
-*		  ... no explicit declarations (too much trouble !) so it must
-*		      be compiled with /WARNINGS=NODECLARATIONS
-* *sh*  - 4/19/89 FERRET 1.21  (repeat of correction made earlier)
-*       - changed "mon" to "date" in calls to SYMWID and SYMBEL.
-*         "mon" is the wrong data type                          
-                                                                
-* *jd* Mod for 4 digit years 11.27.95
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -49,6 +36,20 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAXIS0.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+* *sh*  - 4/19/89 FERRET 1.21  (repeat of correction made earlier)
+*       - changed "mon" to "date" in calls to SYMWID and SYMBEL.
+*         "mon" is the wrong data type                          
+                                                                
+* *jd* Mod for 4 digit years 11.27.95
+C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
 C**

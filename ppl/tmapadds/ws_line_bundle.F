@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to set up the line bundles for generic WS's.
 *	J Davison JISAO/PMEL/TMAP 3.23.89
 *	*jd* 2.19.92 mod to support atc gks
 *	*jd* 8.10.93 mod to support XGKS line colors -- force setting

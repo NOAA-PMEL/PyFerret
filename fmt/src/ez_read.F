@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 
 * Subroutine uses the COMMON info for the initalized EZ data set (ASCII and
 * unformatted non_TMAP data files) to read in the entire data file and transfer 
 * it to the variable arrays d0 .. d19.

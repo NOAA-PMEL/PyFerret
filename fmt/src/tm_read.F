@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*
 * Determines if a read request for a 4-D block of data (3D, 2D being degenerate
 * cases w/ 1 dimension being 1 time series) from TMAP data sets contains a 
 * modulo axis. Arranges calls to TM_CHOOSE_READ accordingly.

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to open GKS if not open, the workstation.
 *	Taken out of SIZE2 and modified for metafile.
 *	J Davison JISAO/PMEL/TMAP
 *	3.15.89

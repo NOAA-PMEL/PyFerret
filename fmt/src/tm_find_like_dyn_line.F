@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Locate a line from the dynamic line area (above max_lines)
 * that matches the target line
 
 * Steve Hankin  NOAA/PMEL/TMAP

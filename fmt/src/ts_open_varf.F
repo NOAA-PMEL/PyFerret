@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Open a var file. If the validity of the file hasn't been checked yet
 * check its firt 4 bytes as an indication of the right file
 * type. If the file doesn't exist return status but DONT call ERRMSG
 

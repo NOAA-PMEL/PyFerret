@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a subscript value on a grid into a "world" coordinate
 * position within the grid box corresponding to the given subscript is
 * determined by the value where_in_box
 

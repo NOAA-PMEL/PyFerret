@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get the length of an axis (netCDF coordinate variable)
 * the axis is presumed to exist and to be a 1D variable
 
 * Programmer Steve Hankin

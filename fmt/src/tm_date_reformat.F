@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* This function will convert a date in format inform into a date in
 * format outform
 
 * *sh* 2/13/95

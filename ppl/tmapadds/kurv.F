@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*     *tc* 1.26.93  added this 'spline under tension' package.
 *                   called by pplmod_contur and pplmod_arc to interpolate 
 *                   on contour lines.
 

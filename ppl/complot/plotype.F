@@ -34,7 +34,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)plotype.f	1.1    3/10/88
 *
 *	Modified 3.15.89 J Davison JISAO/PMEL/TMAP
 *	For GKS plots (pltype = 3 or 4) captures decision to write to

@@ -76,6 +76,8 @@ C                with "*(*)" for the linux port
 	CHARACTER LABEL*(*),LINE*(*),FRMT*30
 	DIMENSION X(*),INTIF(*)
 
+*
+*
 *     *jd* variable IF renamed to INTIF for MAC 7.92
 *     *jd* 11.94 -  modified for AIX port
 *       Modification uses TM_NUMBER to determine if "value" is a number rather

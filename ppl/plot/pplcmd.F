@@ -1,4 +1,17 @@
 	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
+C**
+
+C**    @(#)pplcmd.F   1.4    11/8/88 !Mod added 12.6.88 JD
+C**    @(#)pplcmd.F   1.3     9/8/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,18 +47,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-
-C**    @(#)pplcmd.F   1.4    11/8/88 !Mod added 12.6.88 JD
-C**    @(#)pplcmd.F   1.3     9/8/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *       Modified 8.12.88 J Davison TMAP/JISAO/PMEL   
 *       to include SHADE command.                    
 *	J Davison 11.28.88 Modified for compatibility to v1.1 PPL

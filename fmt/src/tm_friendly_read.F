@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get a line of input allowing full gnu-readline line editing
 * take abnormal return if eof is encountered
 
 * programmer - steve hankin

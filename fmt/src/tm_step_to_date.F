@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* This function will return a string giving the date for a particular timestep
 * for a particular data set. This is done by figuring the offset from
 * 01-JAN-0000 00:00:00 in seconds, and then calculating the date.
 *

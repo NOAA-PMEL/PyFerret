@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find the full range of the indicated grid on the indicated axis in SUBSCRIPT
 * values
 
 * programmer - mark verschell (from GRID_SUBSCRIPT_EXTREMES by steve hankin)

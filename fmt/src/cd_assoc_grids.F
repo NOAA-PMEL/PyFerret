@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Creates the association of the FERRET variables with their parent grids
 * within a netCDF file
 * Checks that all variables in the data set have associated grids.
 

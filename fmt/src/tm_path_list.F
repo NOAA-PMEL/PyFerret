@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* locate the file, filename, with default file extension, def_ext
 * (it is acceptable for fname to be blank with the full path given in
 *  path_list )
 

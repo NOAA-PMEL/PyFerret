@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Determine if a particular data set represents a TMAP model run based on its
 * name, only.
 
 * Steve Hankin  NOAA/PMEL/TMAP

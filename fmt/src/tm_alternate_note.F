@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* send a warning message to an alternative source
 * this routine can be replaced by a routine of choice as needed
 
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* names and sizes of predefined grids for program GFDL
 
 * programmer - mark verschell (from a program by steve hankin)
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

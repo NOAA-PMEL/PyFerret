@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Setup the fill area indices for colors on TEK 4107 WS
 
 *	J Davison JISAO/PMEL/TMAP
 *	9.2.88/3.15.89

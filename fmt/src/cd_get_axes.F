@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Loads the common block XGRID with all of the axis definitions from a
 * netCDF file.
 * An "axis" is a 1D CDF variable where its dimension name is also its
 * variable name.

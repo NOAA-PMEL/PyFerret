@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a single time value from a 2-integer EPIC time axis
 * and return it as a double precision time relative to t0
 
 * Programmer Steve Hankin

@@ -1,4 +1,15 @@
 	SUBROUTINE LEVPRS(PRSE,VAL,INTIF,IER,IPOS)
+C** 
+C**    @(#)levprs.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,16 +45,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)levprs.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
 *	*jd* MOD 3.29.93 READ fails on SGI with comma in string.  Eliminate.
 *	*jd* MOD 11.1.94 READ fails on IBM AIX without it.  Put back in.
 C *kob* 04/07/96 passed in character strings had to be declared 

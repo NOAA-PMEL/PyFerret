@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the length of a character string as the position of the last 
 * non-blank character
 * unlike TM_LENSTR this routine will return a length of 1 (vs. 0) if the string
 * is all blanks

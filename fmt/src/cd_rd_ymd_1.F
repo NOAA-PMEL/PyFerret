@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a single time value from a "yymmddhhmmss" time axis
 * if T0 is not yet known determine an appropriate value
 * return time value as a double precision time relative to t0
 

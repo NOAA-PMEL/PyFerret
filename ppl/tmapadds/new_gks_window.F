@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*     Modifies connection id string, opens GKS workstation.  Permits multiple 
 *     windows on workstation screen.  Modified from GKS-3D FORTRAN Binding
 *     Manual example 19-1.  For VMS simply open the workstation.
 *     J Davison 5.13.91

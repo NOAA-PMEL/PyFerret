@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Determine where along the record axis to write data in a netCDF
 * output file
 * Extend the record axis if the coordinates given fit into the
 * axis ordering

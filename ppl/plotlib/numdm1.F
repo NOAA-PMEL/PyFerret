@@ -1,4 +1,16 @@
       FUNCTION NUMDM1(IT) 
+C** 
+C**    @(#)numdm1.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -34,17 +46,6 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-C**    @(#)numdm1.f	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-
 * 	Mod J Davison 11.22.95 for 4 digit years
 * 	Mod J Davison  2.6.96  fix bug re 400 year biz
 C *kob* 04/07/96 passed in character strings had to be declared 

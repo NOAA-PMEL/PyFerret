@@ -39,6 +39,9 @@
    V530 - *sh* added ability to read dates formatted as YYYYMMDD
    V540 *sh* 10/01 - when analyzing a file insist on ENUF_IN_A_ROW records
                      successfully evaluated
+   v542 *kob* 10/02 - fix up FTYP_DATE and FTYP_EURODATE so that it can
+                      handle four digit years.  Also allow date in euro
+		      format yyyyddmm to be acceptable
 */
 
 /*
@@ -392,15 +395,20 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	
 	/* date */
       case FTYP_DATE:
-	if (sscanf(p,"%d/%d/%d%1s",&idummy1,&idummy2,&idummy3,errstr) == 3) {
-	  if (idummy3 < 20)   /* will break after 2019 or before 1920 */
-	    idummy3 += 2000;
-	  else
-	    idummy3 += 1900;
+	if (sscanf(p,"%d/%d/%d%1s",
+		   &idummy1,&idummy2,&idummy3,errstr) == 3) {
+	  /* need to check for 4 digit year - mm/dd/yyyy *kob* */
+	  if (idummy3 < 100) {
+	    if (idummy3 < 20)   /* will break after 2019 or before 1920 */
+	      idummy3 += 2000;
+	    else
+	      idummy3 += 1900;
+	  }
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2);
-	} else if (sscanf(p,"%d-%d-%d%1s",
-			  &idummy1,&idummy2,&idummy3,errstr) == 3)
+	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
+	} else if (sscanf(p,"%4d-%2d-%2d%1s",
+			  &idummy1,&idummy2,&idummy3,errstr) == 3) 
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
 	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
@@ -416,16 +424,28 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	/* date */
       case FTYP_EURODATE:
 	if (sscanf(p,"%d/%d/%d%1s",&idummy1,&idummy2,&idummy3,errstr) == 3) {
-	  if (idummy3 < 20)   /* will break after 2019 or before 1920 */
-	    idummy3 += 2000;
-	  else
-	    idummy3 += 1900;
+	  /* need to check to see if idummy3 which contains the year is in 
+	     the form YY or YYYY     *kob*  10/02  */
+	  if (idummy3 < 100) { 
+	    if (idummy3 < 20)   /* will break after 2019 or before 1920 */
+	      idummy3 += 2000;
+	    else
+	      idummy3 += 1900;
+	  }
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2);
-	} else if (sscanf(p,"%d-%d-%d%1s",
+	    days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1);
+	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
+	} else if (sscanf(p,"%4d-%2d-%2d%1s",
 			  &idummy1,&idummy2,&idummy3,errstr) == 3)
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
+	/* add check for yyyyddmm euro date *kob* */
+	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
+	      && idummy1>0
+	      && idummy3>=1 && idummy3<=12
+	      && idummy2>=1 && idummy2<=31 )
+	  (*(numeric_fields+i))[rec] =
+	    days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2);
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;

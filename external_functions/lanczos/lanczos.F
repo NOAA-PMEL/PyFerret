@@ -50,15 +50,15 @@
 ! axis_extend       How much does Ferret need to extend arg limits relative to result 
 !
 
-      
+
       SUBROUTINE lanczos_init(id)
-      
-        INCLUDE 'ferret_cmn/EF_Util.cmn'
-      
-        INTEGER id, arg
-      
-        CALL ef_version_test(ef_version)
-      
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+
+      INTEGER id, arg
+
+      CALL ef_version_test(ef_version)
+
 ! **********************************************************************
 !                                            USER CONFIGURABLE PORTION |
 !                                                                      |
@@ -66,7 +66,7 @@
 
       CALL ef_set_desc(id, 
      .      'Bandpass filters data in time using a Lanczos filter' )
-      
+
       CALL ef_set_num_args(id, 4)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
      .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
@@ -77,29 +77,29 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      
+
       CALL ef_set_arg_desc(id, arg, 
      .      'Data to be filtered in time (may also vary in x,y,z)')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
-      
+
       arg = 2
       CALL ef_set_arg_name(id, arg, 'F1')
       CALL ef_set_arg_unit(id, arg, ' ')
-      
+
       CALL ef_set_arg_desc(id, arg,'Low frequency cutoff')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
-      
+
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F2')
       CALL ef_set_arg_unit(id, arg, ' ')
-      
+
       CALL ef_set_arg_desc(id, arg,'High frequency cutoff')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
-      
+
       arg = 4
       CALL ef_set_arg_name(id, arg, 'N')
       CALL ef_set_arg_unit(id, arg, ' ')
-      
+
       CALL ef_set_arg_desc(id, arg,'Number of weights (must be odd)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 !                                                                      ^
@@ -141,7 +141,6 @@
       nn = val
 
       array_num = 1
-      print *, ' val, nn', val, nn
 
 ! dimensions for weight array: nn = arg4
 
@@ -162,12 +161,12 @@
 
       SUBROUTINE lanczos_compute(id, arg_1, arg_2, arg_3, arg_4, 
      .                           result, weight)
-      
+
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
-      
+
       INTEGER id
-      
+
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .       mem1loz:mem1hiz, mem1lot:mem1hit),     
@@ -199,13 +198,14 @@
       INTEGER i1, j1, k1, l1
       integer m,nn
       real aa,bb,f1,f2,pi,pik,sigma
+      real da
 
       pi  = acos(-1.)
-      
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-      
+
 ! Get the counter values to cycle through, nw=2*nn+1...
       i = arg_lo_ss(X_AXIS,ARG4)
       j = arg_lo_ss(Y_AXIS,ARG4)
@@ -216,21 +216,21 @@
       else
          nn = ( arg_4(i,j,k,l)-1 )/2
       endif
-      
+
 ! Calculate the weights...
-      
+
       i  = arg_lo_ss(X_AXIS,ARG2)
       j  = arg_lo_ss(Y_AXIS,ARG2)
       k  = arg_lo_ss(Z_AXIS,ARG2)
       l  = arg_lo_ss(T_AXIS,ARG2)
       f1 = arg_2(i,j,k,l)
-      
+
       i  = arg_lo_ss(X_AXIS,ARG3)
       j  = arg_lo_ss(Y_AXIS,ARG3)
       k  = arg_lo_ss(Z_AXIS,ARG3)
       l  = arg_lo_ss(T_AXIS,ARG3)
       f2 = arg_3(i,j,k,l)
-      
+
       weight(0,0,0,0)  = 2.*(f2-f1)
       do k = 1,nn
          pik   = pi*k
@@ -240,22 +240,22 @@
          bb    = 2.*pik*f2
          weight( k,0,0,0) = ( sin(bb)/pik - sin(aa)/pik )*sigma
       end do
-      
-      print*,'Weights for k=0,...,n:'
-      print*,(weight(k,0,0,0), k=0,nn)
-      
-!!$! For testing, calculate the response function...
-!!$  da = .0005
-!!$  aa = 0.0
-!!$  do while( aa < .5 )
-!!$     bb = 0.
-!!$     do i = 1,nn
-!!$        bb = bb + weight(i,0,0,0)*cos(2.*pi*aa*float(i))
-!!$     end do
-!!$     bb = weight(0,0,0,0) + 2.*bb
-!!$     write(11,*) aa,bb
-!!$     aa = aa+da
-!!$  end do
+
+c      print*,'Weights for k=0,...,n:'
+c      print*,(weight(k,0,0,0), k=0,nn)
+
+! For testing, calculate the response function...
+c      da = .0005
+c      aa = 0.0
+c      do while( aa .LT. .5 )
+c         bb = 0.
+c         do i = 1,nn
+c            bb = bb + weight(i,0,0,0)*cos(2.*pi*aa*float(i))
+c         end do
+c         bb = weight(0,0,0,0) + 2.*bb
+c         write(11,*) aa,bb
+c         aa = aa+da
+c      end do
 
       if( res_hi_ss(T_AXIS) - res_lo_ss(T_AXIS) .LT. 2*nn ) then
          CALL EF_BAIL_OUT(id, 
@@ -266,19 +266,19 @@
          print*,'WARNING: The input and result time indexes differ.'
          print*,'       Beware of the result!'
       endif
-      
+
 ! Apply the weights to the data...
 ! NOTE:  The array indexes are setup inefficiently, but that's 
 !        how the Ferret folks set it up.
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-      
+
          j1 = arg_lo_ss(Y_AXIS,ARG1)
          DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      
+
             k1 = arg_lo_ss(Z_AXIS,ARG1)
             DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      
+
              do l=res_lo_ss(T_AXIS),res_lo_ss(T_AXIS)+nn-1
                 result(i,j,k,l) = bad_flag_result
              end do
@@ -292,7 +292,7 @@
                    GOTO 100
                 end if
                 result(i,j,k,l) = weight(0,0,0,0)*arg_1(i1,j1,k1,l)
-      
+
                 do m = 1,nn
                    if( arg_1(i1,j1,k1,l-m) .EQ. bad_flag(1) 
      .                   .or. arg_1(i1,j1,k1,l+m) .EQ. bad_flag(1))then
@@ -303,7 +303,7 @@
      .                   ( arg_1(i1,j1,k1,l-m) + arg_1(i1,j1,k1,l+m) )
                 end do
 110             continue
-      
+
 100          end do
 
              k1 = k1 + arg_incr(Z_AXIS,ARG1)

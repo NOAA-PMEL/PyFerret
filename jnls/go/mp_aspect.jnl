@@ -30,9 +30,9 @@ let/quiet x_axis_range = `x_page[i=@max,j=@max]` - `x_page[i=@min,j=@min]`
 let/quiet y_axis_range = `y_page[i=@max,j=@max]` - `y_page[i=@min,j=@min]`
 let/quiet y_over_x = y_axis_range / x_axis_range
 
-if `$1%1% eq 0` then
+if `$1"1|PRINT>0|LIST>0|SHOW>0|DISPLAY>0|<'go mp_aspect LIST' to display the ratio without setting it" eq 0` then
     message/cont The appropriate aspect ratio is `y_over_x`
-elif `$1%1% eq 1` then
+elif `$1"1|PRINT>0|LIST>0|SHOW>0|DISPLAY>0|<'go mp_aspect LIST' to display the ratio without setting it" eq 1` then
     set win/aspect=`y_over_x`:axis
 endif
 

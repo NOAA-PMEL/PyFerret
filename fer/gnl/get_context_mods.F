@@ -117,6 +117,9 @@
 *                    e.g. gt="1-jan-1990:12:00":"15-jan-1990:12:00":120
 *                    and allow special check for leading quotation mark
 * V510: 8/99 *sh* - allow g=uvar and return encoded char pos of uvar
+*	12/99 *sh* - save info about formatting of inputs in cx_formatted
+*	12/99 *sh* - added ugly hack to allow multiple axes as in "GXY=gg"
+*	12/99 *sh* bug fix: g=user_var failed if user_var was pure abstract
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -179,8 +182,8 @@
      .			suborval, int_arg, lo_start, lo_end, namlen,
      .			hi_start, hi_end, item, idim, del_start, del_end,
      .			ichar2, colon2_pos, vax_code, istart, iend, itrans,
-     .			dset, variable, category, name_end, next_start, i,
-     .			impl_grid, axis, other
+     .			dset, variable, category, name_end, next_char, i,
+     .			impl_grid, axis, other, naxes
 	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2), axnam,
      .			letter, letter2
 	CHARACTER	LEFINT*6, name*48, comment*12, transnam*6, buff*32
@@ -284,6 +287,7 @@
      .	       .OR. letter2 .EQ. tab ) THEN
 * ... is it a region specifier (single character) ?
                  single_char = .TRUE.
+	         naxes = 1
                  DO 54 suborval = 1,2
 	         DO 54 idim     = 1,4
 	            IF ( letter.EQ.region_qual(idim,suborval) ) GOTO 200
@@ -323,6 +327,34 @@
 	   ELSE
 	      name_end = namlen
 	   ENDIF
+
+* allow multiple axes at once as in "GXY=ggg" (12/99 hack)
+	   IF (.NOT.single_char) THEN
+* count the number of axis specifiers
+	      DO 102 i = istart+1, equal_pos
+                 letter2 = text_buff(i:i)
+	         IF (  letter2 .EQ. ' '
+     .	          .OR. letter2 .EQ. '='
+     .	          .OR. letter2 .EQ. tab ) GOTO 103
+ 102          CONTINUE
+! can never get here ...
+ 103	      naxes = i - istart - 1
+	      next_char = istart
+	   ENDIF
+
+* initialize for next axis as in "GXY="
+ 105	   IF (.NOT.single_char) THEN
+	      next_char = next_char + 1
+	      IF ( next_char-istart .GT. naxes ) GOTO 500
+              letter2 = UPPER_CASE( text_buff(next_char:next_char) )
+              DO 107 suborval = 1,2
+	      DO 107 idim     = 1,4
+	         IF ( letter2.EQ.region_qual(idim,suborval) ) GOTO 109
+ 107	      CONTINUE
+              GOTO 190   ! ... not a recognized qualifier
+ 109	      CONTINUE
+	   ENDIF
+
 * decipher the grid name (or variable name) (or axis name - 9/95)
 *11111111111
            IF ( name_end .GT. 0 ) THEN
@@ -335,6 +367,7 @@
 	      IF (idim .EQ. t_dim .AND. name(1:1) .EQ. '"') i = 2    ! 3/98
 	      IF ( TM_DIGIT(name(i:i)) .AND. .NOT.single_char ) THEN
 	         IF (.NOT.first_time(idim) ) GOTO 5200
+	         IF (naxes .GT. 1) GOTO 5205	! cannot say GXY=lo:hi:delta
 	         kludge_gx_to_x(idim) = .TRUE.
 	         GOTO 201	! treat it like X=lo:hi:delta
 	      ENDIF
@@ -408,15 +441,9 @@
 	         ENDIF
 * ... end of 7/95 additions
 * ... which variable (from which to borrow grid)?
-	         IF ( gdset .NE. unspecified_int4 ) THEN
-	            CALL FIND_VAR_NAME( gdset, name(:name_end),
-     .                                  category, variable )
-	            IF ( category .EQ. cat_pseudo_var ) GOTO 5055
-!	            IF ( category .EQ. cat_user_var
-!     .              .OR. category .EQ. cat_pseudo_var ) GOTO 5055
-	         ELSE
-	            variable = munknown_var_name
-	         ENDIF
+	         CALL FIND_VAR_NAME( gdset, name(:name_end),
+     .                               category, variable )
+	         IF ( category .EQ. cat_pseudo_var ) GOTO 5055
 *33333333333333333
 	         IF ( variable .NE. munknown_var_name ) THEN
 	            grid = KNOWN_GRID(gdset,category,variable)
@@ -494,6 +521,7 @@
               ENDIF
               cx_unstand_grid( mods_cx ) = .TRUE.
 	   ENDIF
+	   IF (.NOT.single_char) GOTO 105	! back for another axis
 	   GOTO 500
 
 * can't identify it
@@ -643,6 +671,9 @@
 	   cx_hi_ww( idim, mods_cx ) = cx_lo_ww( idim, mods_cx )
 	   fmat_hi = fmat_lo
 	ENDIF	
+
+* save the formatting information (12/99)
+	cx_formatted(idim) = fmat_lo .OR. fmat_hi
 	
 * is there a third value given ?  (possibly implying a dynamic axis)
 	IF ( colon2 ) THEN
@@ -851,6 +882,9 @@
  5200	CALL ERRMSG( ferr_syntax, status, 
      .	'used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)'
      .	 //pCR//
+     .	 risc_buff(:len_rbuff), *5000)
+ 5205	CALL ERRMSG( ferr_syntax, status, 
+     .	'lo:hi:delta must be given separately for each axis' //pCR//
      .	 risc_buff(:len_rbuff), *5000)
  5210	CALL ERRMSG( ferr_syntax, status, 
      .	'GX=lo:hi:delta with no delta (or ditto for Y,Z, or T)'

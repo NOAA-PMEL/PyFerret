@@ -1,0 +1,31 @@
+! Test symbols which capture the latest LEVELS settings
+! LEV_TEXT  The argument, if any, to the LEV qualifier
+! LEV_MIN  Minimum level
+! LEV_MAX  Maximum level
+! LEV_NUM  Number of levels
+! LEV_DEL  Delta level (irregular)
+
+shade/i=1:15/j=1:5 i*j
+sho sym lev*
+
+contour/over/i=1:15/j=1:5 i*j
+sho sym lev*
+
+contour/over/i=1:15/j=1:5/lev=(0,50,3) i*j
+sho sym lev*
+
+fill/i=1:15/j=1:5/lev=(0,50,5) i*j
+sho sym lev*
+
+contour/over/i=1:15/j=1:5/lev=(0,80,3),(56),DARK(56) i*j
+sho sym lev*
+
+contour/over/i=1:15/j=1:5/lev=50 i*j
+sho sym lev*
+
+
+shade/i=1:15/j=1:5/lev=(0,80,1) i*j
+sho sym lev*
+
+contour/over/i=1:15/j=1:5/lev=(33) i*j
+sh sym lev*

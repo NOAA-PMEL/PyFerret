@@ -1,0 +1,12 @@
+ ! Needs more examples, reading files with CARTESIAN_AXIS, and
+ ! testing order or precedence.  See files in ~ansley/ans_ferret/users/wittenberg/gtspp*
+
+! Write a file -- see that it has the attribute AXIS = 
+use coads_climatology
+save/x=180/y=0/file=ax_att.cdf sst
+sp ncdump -c ax_att.cdf | grep "axis ="
+
+! Read the file
+can data/all
+use ax_att
+sh data

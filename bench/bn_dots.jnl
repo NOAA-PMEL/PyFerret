@@ -1,0 +1,14 @@
+! PLOT/SYMBOL=DOT  qualifiers
+! *acm* 12/02
+
+
+plot/symbol=dot/i=1:1000 sin(62.8*i)
+plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
+
+! test warnings
+plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
+plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
+
+! Vector plots with null-size vectors
+
+vector/i=1:5/j=1:5 0.*(i+j),0*(i+j)

@@ -202,6 +202,23 @@ void FORTRAN(fftp_work_size)(int *);
 void FORTRAN(fftp_compute)(int *, float *, float *, float *, 
                            float *, float *, float *);
 
+void FORTRAN(samplei_init)(int *);
+void FORTRAN(samplei_result_limits)(int *);
+void FORTRAN(samplei_compute)(int *, float *, float, float *);
+
+void FORTRAN(samplej_init)(int *);
+void FORTRAN(samplej_result_limits)(int *);
+void FORTRAN(samplej_compute)(int *, float *, float, float *);
+
+void FORTRAN(samplek_init)(int *);
+void FORTRAN(samplek_result_limits)(int *);
+void FORTRAN(samplek_compute)(int *, float *, float, float *);
+
+void FORTRAN(samplel_init)(int *);
+void FORTRAN(samplel_result_limits)(int *);
+void FORTRAN(samplel_compute)(int *, float *, float, float *);
+
+
 void FORTRAN(sampleij_init)(int *);
 void FORTRAN(sampleij_result_limits)(int *);
 void FORTRAN(sampleij_work_size)(int *);
@@ -335,7 +352,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 17
+#define N_INTEF 21
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -343,21 +360,25 @@ struct {
 
    strcpy(I_EFnames[0].funcname, "ffta");
    strcpy(I_EFnames[1].funcname, "fftp");
-   strcpy(I_EFnames[2].funcname, "sampleij");
-   strcpy(I_EFnames[3].funcname, "samplet_date");
-   strcpy(I_EFnames[4].funcname, "samplexy");
-   strcpy(I_EFnames[5].funcname, "scat2gridgauss_xy");
-   strcpy(I_EFnames[6].funcname, "scat2gridgauss_xz");
-   strcpy(I_EFnames[7].funcname, "scat2gridgauss_yz");
-   strcpy(I_EFnames[8].funcname, "scat2gridlaplace_xy");
-   strcpy(I_EFnames[9].funcname, "scat2gridlaplace_xz");
-   strcpy(I_EFnames[10].funcname, "scat2gridlaplace_yz");
-   strcpy(I_EFnames[11].funcname, "sorti");
-   strcpy(I_EFnames[12].funcname, "sortj");
-   strcpy(I_EFnames[13].funcname, "sortk");
-   strcpy(I_EFnames[14].funcname, "sortl");
-   strcpy(I_EFnames[15].funcname, "tauto_cor");
-   strcpy(I_EFnames[16].funcname, "xauto_cor");
+   strcpy(I_EFnames[2].funcname, "samplei");
+   strcpy(I_EFnames[3].funcname, "sampleij");
+   strcpy(I_EFnames[4].funcname, "samplej");
+   strcpy(I_EFnames[5].funcname, "samplek");
+   strcpy(I_EFnames[6].funcname, "samplel");
+   strcpy(I_EFnames[7].funcname, "samplet_date");
+   strcpy(I_EFnames[8].funcname, "samplexy");
+   strcpy(I_EFnames[9].funcname, "scat2gridgauss_xy");
+   strcpy(I_EFnames[10].funcname, "scat2gridgauss_xz");
+   strcpy(I_EFnames[11].funcname, "scat2gridgauss_yz");
+   strcpy(I_EFnames[12].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[13].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[14].funcname, "scat2gridlaplace_yz");
+   strcpy(I_EFnames[15].funcname, "sorti");
+   strcpy(I_EFnames[16].funcname, "sortj");
+   strcpy(I_EFnames[17].funcname, "sortk");
+   strcpy(I_EFnames[18].funcname, "sortl");
+   strcpy(I_EFnames[19].funcname, "tauto_cor");
+   strcpy(I_EFnames[20].funcname, "xauto_cor");
 
 /*    
  *  ------------------------------------ 
@@ -2057,6 +2078,27 @@ else if ( !strcmp(name,"fftp_custom_axes_") ) return (void *)FORTRAN(fftp_custom
 else if ( !strcmp(name,"fftp_result_limits_") ) return (void *)FORTRAN(fftp_result_limits);
 else if ( !strcmp(name,"fftp_work_size_") ) return (void *)FORTRAN(fftp_work_size);
 else if ( !strcmp(name,"fftp_compute_") ) return (void *)FORTRAN(fftp_compute);
+
+
+/* samplei.F */
+else if ( !strcmp(name,"samplei_init_") ) return (void *)FORTRAN(samplei_init);
+else if ( !strcmp(name,"samplei_result_limits_") ) return (void *)FORTRAN(samplei_result_limits);
+else if ( !strcmp(name,"samplei_compute_") ) return (void *)FORTRAN(samplei_compute);
+
+/* samplej.F */
+else if ( !strcmp(name,"samplej_init_") ) return (void *)FORTRAN(samplej_init);
+else if ( !strcmp(name,"samplej_result_limits_") ) return (void *)FORTRAN(samplej_result_limits);
+else if ( !strcmp(name,"samplej_compute_") ) return (void *)FORTRAN(samplej_compute);
+
+/* samplek.F */
+else if ( !strcmp(name,"samplek_init_") ) return (void *)FORTRAN(samplek_init);
+else if ( !strcmp(name,"samplek_result_limits_") ) return (void *)FORTRAN(samplek_result_limits);
+else if ( !strcmp(name,"samplek_compute_") ) return (void *)FORTRAN(samplek_compute);
+
+/* samplel.F */
+else if ( !strcmp(name,"samplel_init_") ) return (void *)FORTRAN(samplel_init);
+else if ( !strcmp(name,"samplel_result_limits_") ) return (void *)FORTRAN(samplel_result_limits);
+else if ( !strcmp(name,"samplel_compute_") ) return (void *)FORTRAN(samplel_compute);
 
 /* sampleij.F */
 else if ( !strcmp(name,"sampleij_init_") ) return (void *)sampleij_init_;

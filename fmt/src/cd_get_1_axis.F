@@ -72,6 +72,8 @@
 * V500 4/99 *kob*:  increase vname and vupcase from 24 to 64 chars 
 * V510 *sh* 3/00 - added tregular argument
 *		 - convert to dynamic grids and axes
+* V530 *sh* 1/01 - automatically flag as modulo any time axis that ends before
+*		   year 0002
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -141,13 +143,21 @@
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
-      REAL*8   first, secs2firststep, secs1590, TM_SECS_FROM_BC
+      INTEGER   year, month, day, hour, minute, second
+      REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
+     .		t0_secs, last_secs, last_coord, firs_coord, yr_len
 
+* parameter declarations
+	REAL*8          psecs_per_day
+	PARAMETER     ( psecs_per_day = 60.*60.*24. )
 
 * initialize for EPIC
       do_warn = .NOT.its_epic     ! EPIC files can get away with anything
       west_lon = .FALSE.          ! assume longitudes are positive east
       iaxis = 0
+
+* gen; initialization
+      got_torg = .FALSE.
 
 * get the vital statistics of the axis
       CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
@@ -382,6 +392,8 @@
          line_subsc1 (iaxis) = unspecified_int4
          line_regular(iaxis) = .TRUE.
          line_dim    (iaxis) = 1
+	 last_coord          = 1.0D0
+	 firs_coord          = 1.0D0
 
 * start/n/delta representation for "regular axes"
 * (no check is made on validity of the regularity claim)
@@ -433,6 +445,8 @@
             line_delta(iaxis) = 1
          ENDIF
          line_subsc1(iaxis) = unspecified_int4
+	 last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+	 firs_coord = line_start(iaxis)
 
 * ============= START OF IRREGULAR AXIS PROCESSING ========================
       ELSE
@@ -486,6 +500,8 @@
 	      GOTO 1000
            ENDIF
   350	CONTINUE
+	last_coord = line_mem(ipte)
+	firs_coord = line_mem(ipt1)
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
         delta = line_mem(ipt1+1) - line_mem(ipt1)  ! sing. prec., only
@@ -499,11 +515,14 @@
         line_delta  (iaxis) = 
      .              (line_mem(ipte)-line_mem(ipt1))/(npts-1)
         line_subsc1 (iaxis) = unspecified_int4
+	last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+	firs_coord = line_start(iaxis)
         GOTO 390
 
 * compute the default locations of boundaries between grid boxes (midpoints)
 * Note: this may be modified by a subsequent "EDGES" definition
  380    CALL TM_IRREGAX_MID( ipt1, npts )
+
       ENDIF
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
 
@@ -608,6 +627,25 @@
 	      delta = line_mem(ipt1+2*npts) - line_mem(ipt1+npts)
 	   ENDIF
 	   IF ( TM_FPEQ(delta,360.0) ) line_modulo(iaxis) = .TRUE.
+	ENDIF
+
+* if it is a calendar time axis it might be implicitly MODULO
+* must have T0 in year 0000 or 0001, have a year length roughly correct,
+* and have a final tstep in year 0000 or 0001
+	IF (got_torg .AND. .NOT.line_modulo(iaxis)) THEN
+	   CALL TM_BREAK_DATE(line_t0(iaxis), year, month, day,
+     .                            hour, minute, second, istat)
+	   IF (istat.EQ.merr_ok .AND. year.LE.1) THEN
+	      t0_secs = TM_SECS_FROM_BC (year, month, day,
+     .                                   hour, minute, second)
+	      last_secs = t0_secs + last_coord*line_tunit(iaxis)
+	      yr_len = last_secs - 
+     .		       t0_secs + firs_coord*line_tunit(iaxis)
+	      IF ( yr_len.GE.359.*psecs_per_day
+     .	     .AND. yr_len.LE.367.*psecs_per_day) 
+     .		   line_modulo(iaxis)
+     .		         = last_secs .LE. 2.*366.*psecs_per_day
+	   ENDIF
 	ENDIF
 
 * successful completion

@@ -1,0 +1,22 @@
+SRCS_F = \
+bibo5.F\
+datype5.F\
+deflt.F\
+dirrd.F\
+dsf.F\
+dtypi.F\
+init.F\
+krnd.F\
+lnblk.F\
+lnonbl5.F\
+loadppl.F\
+logger.F\
+lpplot5.F\
+lstb5.F\
+mttime.F\
+ndig5.F\
+npbt5.F\
+squish.F\
+uninit.F\
+upper.F\
+wldfle.F 

@@ -1,6 +1,38 @@
 *
 * samplexy.F
 *
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without anx fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and anx derivative works thereof, and
+*  its supporting documentation for anx purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in anx publications that result from
+*  the use of this software or in anx product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in anx advertising or publicity to endorse or promote anx products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with anx support, consulting,
+*  training or assistance of anx kind with regard to the use, operation
+*  and performance of this software nor to provide the user with anx
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND Anx EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR Anx SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR Anx DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
 * Ansley Manke
 *  -------------------------------------------------------------------
 *  Replace samplexy_compute subroutine with the one sent by Bernadette Fritzsch 
@@ -18,8 +50,8 @@
 *  
 *  Here are some modification of the code. To avoid to much if-then-else-endif
 *  constructs i modify the variable itop and jtop in the case of matching.
-*  In this case no interpolation is done but the condition if all numbers are not bad values
-*  is fullfilled.
+*  In this case no interpolation is done but the condition if all numbers are 
+*  not bad values is fullfilled.
 *  
 *  I attach my version of subroutine samplexy_compute. Modifications are marked
 *  as coloured.
@@ -40,6 +72,7 @@
 * 6/ 8/2000 ACM -- fix bug in incrementing k2, k3, l2, l3
 *
 * 7/2000  acm -- merge Bernadettes and increment fix into this version
+* 5/2001  acm -- allow modulo axes
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -265,6 +298,7 @@
       INTEGER mxdat, mydat
       INTEGER nx, nxx, nxy, nxz, nxt
       INTEGER ny, nyx, nyy, nyz, nyt
+      INTEGER ndimx, ndimy
 
 *  Set up work arrays
 
@@ -285,6 +319,12 @@
       REAL frac
       CHARACTER*255 err_msg
 
+C  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4)
+      REAL delmodx, delmody, xpt, ypt, xlo, xhi, ylo, yhi
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
@@ -301,12 +341,22 @@
       nyt = arg_hi_ss(T_AXIS,ARG3) - arg_lo_ss(T_AXIS,ARG3) + 1
       ny = max(nyx, nyy, nyz, nyt)
 
-      IF (nx .NE. ny) THEN
+      ndimx = 0
+      ndimy = 0
+      DO 110 i = X_AXIS,T_AXIS
+         IF (arg_hi_ss(i,ARG2) - arg_lo_ss(i,ARG2) .GT.0) 
+     .       ndimx = ndimx + 1
+         IF (arg_hi_ss(i,ARG3) - arg_lo_ss(i,ARG3) .GT.0) 
+     .       ndimy = ndimy + 1
+  110 CONTINUE
+
+      IF (nx .NE. ny   .OR.  ndimx .GT. 1  .OR. ndimy .GT.1) THEN
          WRITE (err_msg, 10)
          GO TO 999
       ENDIF
 
-   10 FORMAT('Arguments 2 and 3 must be lists of equal length')
+   10 FORMAT(
+     . 'Arguments 2 and 3 must be 1-dimensional lists of equal length')
 
 *  Get x and y coordinates of the data to be sampled.
 
@@ -325,47 +375,108 @@
       k3 = arg_lo_ss(Z_AXIS,ARG3)
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
+*  Check to see if input x,y  axis is modulo
+
+      CALL ef_get_axis_info (id, ARG1, ax_name, ax_units, backward, 
+     .                       modulo, regular)
+
+      xlo = arg_lo_ss(X_AXIS,ARG1)
+      xhi = arg_hi_ss(X_AXIS,ARG1)
+      ylo = arg_lo_ss(Y_AXIS,ARG1)
+      yhi = arg_hi_ss(Y_AXIS,ARG1)
+
+      IF ( modulo(1) ) delmodx = xaxdat(xhi,1,1,1) - xaxdat(xlo,1,1,1)
+      IF ( modulo(2) ) delmody = yaxdat(yhi,1,1,1) - yaxdat(ylo,1,1,1)
+
 *  For each (xpt,ypt) pair, search the data array 
 *   arg_1 for the nearest higher (x,y) grid coordinates.  Interpolate 
 *   in 2 directions for the result.
 
+      i2 = arg_lo_ss(X_AXIS,ARG2)
+      j2 = arg_lo_ss(Y_AXIS,ARG2)
+      k2 = arg_lo_ss(Z_AXIS,ARG2)
+      l2 = arg_lo_ss(T_AXIS,ARG2)
+
+      i3 = arg_lo_ss(X_AXIS,ARG3)
+      j3 = arg_lo_ss(Y_AXIS,ARG3)
+      k3 = arg_lo_ss(Z_AXIS,ARG3)
+      l3 = arg_lo_ss(T_AXIS,ARG3)
+
       j = res_lo_ss(Y_AXIS)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         ibot = arg_lo_ss(X_AXIS,ARG1)
+         ibot = ef_unspecified_int4	! Check if xpt points in xax range.
          imatch = 0
 
+	 xpt = arg_2(i2,j2,k2,l2)
          DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-            IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(i1,1,1,1)) ibot = i1
+            IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
+            if (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
 
-            if (arg_2(i2,j2,k2,l2).eq.xaxdat(i1,1,1,1))  imatch = i1
 cbf      may be some derivation from the exact value can be allowed:
-cbf      if (abs(arg_2(i2,j2,k2,l2)- xaxdat(i1,1,1,1)).le.eps)   imatch = i1
+cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
+
+*  Locate the X point within the range of modulo X axis 
+
+	    IF (modulo(1)) THEN
+	       DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
+                  xpt = xpt - delmodx
+	       ENDDO
+	       DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
+		  xpt = xpt + delmodx
+	       ENDDO
+	    ENDIF
 
   100    CONTINUE
+         i1 = arg_hi_ss(X_AXIS,ARG1)
+         IF (xpt .GT. xaxdat(i1,1,1,1)) THEN
+             ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 
+						! (non modulo)
+         ENDIF
 
-cbf       for matching the next neighbout is not of interest
-             if(imatch.ne.0) then
-                itop = ibot
-             else
-                itop = ibot + 1
-             endif
+cbf       for matching the next neighbour is not of interest
+         IF (imatch .NE. 0) then
+            itop = ibot
+         ELSE
+            itop = ibot + 1
+         ENDIF
+         IF (ibot .EQ. ef_unspecified_int4) itop = ibot
 
 cbf        analogously in y direction
-             jmatch = 0
+         jbot = ef_unspecified_int4	! Check if ypt points in yax range.
+         jmatch = 0
 
-             jbot = arg_lo_ss(Y_AXIS,ARG1)
-             DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-               IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) jbot = j1
-               IF (arg_3(i3,j3,k3,l3) .eq.yaxdat(j1,1,1,1) ) jmatch = j1
-cbf         IF (abs(arg_3(i3,j3,k3,l3) -yaxdat(j1,1,1,1) ).le.eps) jmatch = j1
+	 ypt = arg_3(i3,j3,k3,l3)
+         DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+            IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1
+            IF (ypt .EQ. yaxdat(j1,1,1,1) ) jmatch = j1
+cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
+
+*  Locate the Y point within the range of modulo Y axis 
+
+	    IF (modulo(2)) THEN
+	       DO WHILE (ypt .GE. yaxdat(yhi,1,1,1) ) 
+                  ypt = ypt - delmody
+	       ENDDO
+	       DO WHILE (ypt .LT. yaxdat(ylo,1,1,1) )
+		  ypt = ypt + delmody
+	       ENDDO
+	    ENDIF
 
   200    CONTINUE
-              if(jmatch.ne.0) then
-                   jtop = jbot
-              else
-                    jtop = jbot + 1
-              endif
+         j1 = arg_hi_ss(Y_AXIS,ARG1)
+         IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) THEN
+            jbot = ef_unspecified_int4		! ARG_3 YPT outside of range 
+						! (non modulo)
+
+         ENDIF
+
+         IF (jmatch .NE. 0) then
+            jtop = jbot
+         ELSE
+            jtop = jbot + 1
+         ENDIF
+         IF (jbot .EQ. ef_unspecified_int4) jtop = jbot
 
          k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
@@ -377,62 +488,62 @@ cbf         IF (abs(arg_3(i3,j3,k3,l3) -yaxdat(j1,1,1,1) ).le.eps) jmatch = j1
 
 *  First interpolate in x, getting values of the fcn at (x,jbot) and (x,jtop)
 
-               IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND.
-     .              itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN
+	       IF (ibot .EQ. ef_unspecified_int4  .OR.  
+     .		   jbot .EQ. ef_unspecified_int4) THEN
+                 result(i,j,k,l) = bad_flag_result
+	       ELSE 
+                  IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND.
+     .                itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN
 
-cbf         what about axis modulo??
+                     xbot = xaxdat(ibot,1,1,1)
+                     xtop = xaxdat(itop,1,1,1)
 
-                  xbot = xaxdat(ibot,1,1,1)
-                  xtop = xaxdat(itop,1,1,1)
+                     fbb = arg_1(ibot,jbot,k1,l1)
+                     ftb = arg_1(itop,jbot,k1,l1)
+                     fbt = arg_1(ibot,jtop,k1,l1)
+                     ftt = arg_1(itop,jtop,k1,l1)
 
-                  fbb = arg_1(ibot,jbot,k1,l1)
-                  ftb = arg_1(itop,jbot,k1,l1)
-                  fbt = arg_1(ibot,jtop,k1,l1)
-                  ftt = arg_1(itop,jtop,k1,l1)
-
-                  IF (fbb .NE. bad_flag(ARG1)  .AND.
-     .                ftb .NE. bad_flag(ARG1)  .AND.
-     .                fbt .NE. bad_flag(ARG1)  .AND.
-     .                ftt .NE. bad_flag(ARG1) ) THEN
+                     IF (fbb .NE. bad_flag(ARG1)  .AND.
+     .                   ftb .NE. bad_flag(ARG1)  .AND.
+     .                   fbt .NE. bad_flag(ARG1)  .AND.
+     .                   ftt .NE. bad_flag(ARG1) ) THEN
 
 cbf                 for matching x-axis no interpolation is need
-                       if (imatch.ne.0) then
-                            fxbot = fbb
-                            fxtop = fbt
-                       else
-                            frac = (arg_2(i2,j2,k2,l2) - xbot )/
-     .                               (xtop - xbot)
-                            fxbot = fbb + frac* (ftb - fbb)
-                            fxtop = fbt + frac* (ftt - fbt)
-                       endif
+                          if (imatch.ne.0) then
+                             fxbot = fbb
+                             fxtop = fbt
+                          else
+                             frac = (xpt - xbot )/ (xtop - xbot)
+                             fxbot = fbb + frac* (ftb - fbb)
+                             fxtop = fbt + frac* (ftt - fbt)
+                          endif
 
 *  Now interpolate in y, getting value at (x,y)
 
-                    IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND.
-     .                   jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
-                       ybot = yaxdat(jbot,1,1,1)
-                       ytop = yaxdat(jtop,1,1,1)
+                       IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND.
+     .                     jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
+                          ybot = yaxdat(jbot,1,1,1)
+                          ytop = yaxdat(jtop,1,1,1)
 
-                       if(jmatch.ne.0) then
+                          if(jmatch.ne.0) then
                              result(i,j,k,l) = fxbot
-                       else
-                            frac = (arg_3(i3,j3,k3,l3) - ybot)/ 
-     .                               (ytop-ybot)
+                          else
+                            frac = (ypt - ybot)/ (ytop-ybot)
 
                             result(i,j,k,l) = fxbot + frac* 
      .                                         (fxtop - fxbot)
 
-                       endif
-                     ELSE
+                          endif
+                       ELSE
+                           result(i,j,k,l) = bad_flag_result
+                       ENDIF
+
+                    ELSE
                         result(i,j,k,l) = bad_flag_result
-                     ENDIF
+                    ENDIF  ! bad_flag(ARG1) test
+                  ENDIF	   ! fbb,ftp, etc not bad flags
 
-                  ELSE
-                        result(i,j,k,l) = bad_flag_result
-                  ENDIF  ! bad_flag(ARG1) test
-               ENDIF
-
-
+	       ENDIF  ! itop, jtop not ef_unspecified_int4
 
                l1 = l1 + arg_incr(T_AXIS,ARG1)
 

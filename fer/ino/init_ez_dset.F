@@ -64,6 +64,7 @@
 *	    4/00 - bump use counts on grids and axes used by this data set
 * V530 *sh* 10/00 - added /FORMAT=delimited/TYPE=data_types
 * V533 *sh* 7/01 - bug fix: filenames beginning with digits
+* V540 *sh* 10/01 - bug fig -- process TMAP error from ez_init_dset
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -326,12 +327,11 @@ c       /swap
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
  5600	call errmsg(ferr_invalid_command, status,
      .        'invalid argument for /TYPE', *5000)
- 5700	call errmsg(ferr_invalid_command, status,
+ 5700	CALL ERRMSG(ferr_invalid_command, status,
      .        'variable permutations only allowed for STREAM format', 
      .        *5000)
- 5800	call errmsg(ferr_invalid_command, status,
+ 5800	CALL ERRMSG(ferr_invalid_command, status,
      .        '/SWAP or /TYPE only allowed for STREAM format', 
      .        *5000)
- 5900	status = ferr_tmap_error
-	GOTO 5000
+ 5900	CALL ERRMSG ( ferr_TMAP_error, status, ' ', *5000 ) 
 	END

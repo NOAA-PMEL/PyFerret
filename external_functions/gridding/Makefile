@@ -35,7 +35,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 #all:    ferret_cmn scatter2gridgauss_xy.so scatter2gridgauss_xz.so scatter2gridgauss_yz.so scatter2gridlaplace_xy.so scatter2gridlaplace_xz.so scatter2gridlaplace_yz.so 
-all:    ferret_cmn scat2grid_t.so
+all:    ferret_cmn ave_scat2grid_t.so scat2grid_t.so
 
 
 ferret_cmn:

@@ -1,7 +1,7 @@
 set mode ignore_errors
 
 can region
-use coads_climatology
+use COADS-climatology
 let a1 = sst[d=1,l=1]
 let a2 = sst[d=1,l=2]
 let a3 = sst[d=1,l=3]

@@ -33,10 +33,9 @@ FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
 
 PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr
 
-
 FERMAIN = ccr/fermain_c.o
 
-FEROBJS_DFLT = \
+FEROBJS_DFLT = $(LINUX_OBJS) \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
 	special/ferret_query_f.o  special/xrevision_type_data.o
 
@@ -55,6 +54,7 @@ WHATGKS = xgks
 all:	fer_libraries ppl_libraries special_code ferret
 
 
+
 debug:
 	touch ccr/fermain_c.c
 	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
@@ -67,13 +67,14 @@ gui_nodebug:
 		"GUI=GUI" all
 gui_debug:
 	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
-	$(MAKE) "DEBUG=-g" "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
+	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" all
 
 fortran:
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
+
 
 ferret:	update
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`

@@ -42,8 +42,7 @@ CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
 LD		= cc
 LDFLAGS		= -v -static
  
-
-SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/l1/kobrien/src/f2c/libF77/libF77.a /home/l1/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm
+SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/ark/kobrien/src/f2c/libF77/libF77.a /home/ark/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
 
 TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 
@@ -53,13 +52,13 @@ HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 
 CDFLIB		= -lnetcdf
 
-LINUX_OBJS  = special/linux_routines.o
+LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ccr/dl*_linux.o
 
 .IGNORE:
 
 .F.o:
-	rm $*.f
-	$(CPP) $(CPP_FLAGS) $(<F) | sed -e        's/de	/de /g' | sed -e  's/de 	/de /g' > $*.f
+	rm -f $*.f
+	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de	/de /g' | sed -e  's/de 	/de /g' > $*.f
 	$(F77) $(FFLAGS) $*.f
 
 

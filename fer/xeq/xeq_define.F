@@ -133,6 +133,9 @@
 *		    axes that are needed can get wiped out
 *	*sh* 6/01 - increase buff1 size for DEFINE AXIS/LIKE=expr
 * V540:	*sh* 9/01 - added DEFINE VIEWPORT/AXES
+* V540: *acm*12/01 -bug fix: consolidate arguments broken up by command parser 
+*                   back into a single arg with call to all_1_arg
+
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -588,8 +591,13 @@
 	   IF ( num_args .LT. 1 ) GOTO 5300
 	   CALL NAME_EQUAL_STRING( buff3, pos, status )
 	   IF ( status .NE. ferr_ok )  GOTO 5000
+
 	   IF ( pos .GT. 0 ) THEN
-	      num_args = 1	! used by GET_CMND_DATA
+
+* consolidate arguments broken up by command parser back into a single arg
+
+              IF (cmnd_buff(pos:pos) .EQ. '{') CALL all_1_arg
+	      num_args = 1	 ! used by GET_CMND_DATA
 	      arg_start(1) = pos ! skip over "name ="
 	   ELSE
 	      CONTINUE ! pos=0 signals that no expression was given

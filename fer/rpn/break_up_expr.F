@@ -53,6 +53,8 @@
 * V450:  11/96 - Using reformulated version of INIT_UVAR (RPN called
 *		 from there). Part of changes to support external function.
 * V510: 5/00 *sh* - added "bad" (missing value flag) to INIT_UVAR arguments
+* V540:12/01 *acm*- for parsing expr like def axis/x x1={ 1, 2 } dont include
+*                   the brackets in risc_buff
 
 #ifdef unix
 	include	'ferret.parm'
@@ -84,8 +86,23 @@
      .		atom_1   (max_exp), atom_n (max_exp)
 	CHARACTER	EXPR_NAME*8, err_string*128
 
+        INTEGER ii
+
 * initialize fixed length string for RISC
+* If curly-brackets, dont count them.
+
         risc_buff = text
+c        tlen = MIN( size_rbuff, LEN(text) )
+
+        IF (text(1:1) .EQ. '{') THEN
+            DO ii = 2, LEN(risc_buff)
+               risc_buff(ii:ii) = text(ii:ii)
+               IF (text(ii:ii) .EQ. '}') THEN
+                  go to 499 
+               ENDIF
+             ENDDO
+  499        CONTINUE
+        ENDIF
         tlen = MIN( size_rbuff, LEN(text) )
 
 * break the expression into atoms

@@ -51,6 +51,7 @@
 *              X and Y scattered points are 1-D lists on anx axis.
 *
 *    5/2001    Let F(x,y) be a function of Z and/or T
+* v5.41 5/02   Fix bug (typo); Gridding to modulo X axis wasnt done.
 
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of time.  
@@ -491,8 +492,8 @@ C  Get coordinates of output axes.
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
 
-            IF (modulox(2)) CALL modscat (xax, nx, 1, xx)
-            IF (moduloy(3)) CALL modscat (yax, ny, 1, yy)
+            IF (modulox(1)) CALL modscat (xax, nx, 1, xx)
+            IF (moduloy(2)) CALL modscat (yax, ny, 1, yy)
 
             IF ( val  .NE. bad_flag(ARG3) ) THEN
                CALL gausswt2 (xx, yy, tt, val, grid, wate, nx, ny, nm, 

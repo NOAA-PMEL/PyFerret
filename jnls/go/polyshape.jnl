@@ -1,6 +1,8 @@
 \cancel mode verify
 ! polyshape.jnl
 ! *4/99 *sh* and *jd*
+!  7/01 *acm* update /xlimits and /ylimits to /hlimits and /vlimits
+!  7/01 *acm* add rectangle and tallbox
 
 ! Description: define xpolyshape, ypolyshape variables for polygon fills
 
@@ -11,13 +13,13 @@
 !    triangle		delta		square
 !    diamond		pentagon	hexagon
 !    circle		star		plus
-!    ex
+!    ex			rectangle	tallbox
 
 ! example:
 !	yes? GO polyshape star 2   ! define double-sized star
 
 ! check shape name
-query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle|star|plus|ex|"
+query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle|star|plus|ex|rectangle|tallbox|"
 
 IF $1"|triangle>1|*>0|" THEN
   LET/QUIET xpolyshape = COS(3.14159/180 * X[X=90:`2*120+90`:120])
@@ -57,10 +59,10 @@ ENDIF
 IF $1"|star>1|*>0|" THEN
   !LET/QUIET xpen = COS(3.14159/180 * X[X=90:`4*72+90`:72])
   !LET/QUIET ypen = SIN(3.14159/180 * X[X=90:`4*72+90`:72])
-  !poly/xlimits=-1:1/ylimits=-1:1 xpen,ypen,0
+  !poly/hlimits=-1:1/vlimits=-1:1 xpen,ypen,0
   !LET/QUIET xpeni = 0.3*COS(3.14159/180 * X[X=`90-36`:`4*72+90-36`:72])
   !LET/QUIET ypeni = 0.3*SIN(3.14159/180 * X[X=`90-36`:`4*72+90-36`:72])
-  !poly/over/line/xlimits=-1:1/ylimits=-1:1 xpeni,ypeni,0
+  !poly/over/line/hlimits=-1:1/vlimits=-1:1 xpeni,ypeni,0
   LET/QUIET xpolyshape = { 0.17634 , 0.00000 , -0.17634, -0.95106,  -0.28532,   -0.58779,    0.00000 ,    0.58778 ,    0.28532 ,    0.95106 }
   LET/QUIET ypolyshape =  { 0.24270,  1.00000,  0.24271,  0.30902,  -0.09270,   -0.80902,  -0.30000,   -0.80902,   -0.09271,   0.30901 }
 ENDIF
@@ -82,6 +84,18 @@ LET/QUIET poly_d = .15
   LET/QUIET ypolyshape = {`poly_h+poly_d`,`2*poly_d`,`poly_h+poly_d`, `poly_h-poly_d`,0,`-1*(poly_h-poly_d)`,`-1*(poly_h+poly_d)`,`-2*poly_d`,`-1*(poly_h+poly_d)`,`-1*(poly_h-poly_d)`,0,`poly_h-poly_d`}
   cancel variable poly_d, poly_h
 ENDIF
+
+IF $1"|rectangle>1|*>0|" THEN
+  LET/QUIET xpolyshape = 2.* COS(3.14159/180 * X[X=45:`3*90+45`:90])
+  LET/QUIET ypolyshape = SIN(3.14159/180 * X[X=45:`3*90+45`:90])
+ENDIF
+
+
+IF $1"|tallbox>1|*>0|" THEN
+  LET/QUIET xpolyshape = COS(3.14159/180 * X[X=45:`3*90+45`:90])
+  LET/QUIET ypolyshape = 2.* SIN(3.14159/180 * X[X=45:`3*90+45`:90])
+ENDIF
+
 
 set mode/last verify
 

@@ -57,7 +57,9 @@
 *        7/97 - generate child var name using GCF_PARENT_UVAR
 * v491   3/98 - sgi benchmarking uncovered bug in psuedo_variable processing - 
 *               no valid "name" was being set up   *kob/sh*
+*        4/98 - pass default context (lo_cx) to MERGE_CONTEXT *jc*
 *
+
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 	include	'ferret_cmn/errmsg.parm'
@@ -160,7 +162,7 @@
 	   itype = uvar_item_type ( item, uvar )
 	   start = uvar_item_start( item, uvar )
 	   end   = uvar_item_end  ( item, uvar )
-	   CALL MERGE_CONTEXT(	its_gc, item, big_cx, hi_cx,
+	   CALL MERGE_CONTEXT(	its_gc, item, lo_cx, big_cx, hi_cx,
      .				uvar_text(uvar)(start:end), status )
 	   IF ( status .NE. ferr_ok ) RETURN
 
@@ -178,7 +180,7 @@
 	   itype = uvar_item_type ( item, uvar )
 	   start = uvar_item_start( item, uvar )
 	   end   = uvar_item_end  ( item, uvar )
-	   CALL MERGE_CONTEXT( its_gc, item, big_cx, hi_cx,
+	   CALL MERGE_CONTEXT( its_gc, item, lo_cx, big_cx, hi_cx,
      .				uvar_text(uvar)(start:end), status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	ENDIF

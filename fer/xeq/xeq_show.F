@@ -994,10 +994,12 @@
      .			( ferr_interrupt, status, ' ', *5000 )
 	         IF (MATCH_TEMPLATE(alg_fcn(i2),arg(:len0))) THEN
 	            CALL SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i2)
-	            GOTO 2110
+*	            GOTO 2110
 	         ENDIF
  2108	      CONTINUE
-* ... no luck. so try grid-changing functions ...
+
+* JC_TODO: these should be changed to print all matches, not just the first one
+* ... now try grid-changing functions ...
               i2 = GCF_MATCH_FCN( arg(:len0) )
               IF ( i2 .NE. unspecified_int4 ) CALL
      .			SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i2)
@@ -1024,7 +1026,7 @@
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .		'Externally defined functions available to Ferret:', 0)
 	      DO 2140 i = gfcn_num_internal+1, gfcn_num_internal+
-	1	efcn_scan(gfcn_num_internal)
+     .          efcn_scan(gfcn_num_internal)
 	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i)
  2140	      CONTINUE
 	ENDIF

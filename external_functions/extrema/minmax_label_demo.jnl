@@ -4,7 +4,7 @@ use coads_climatology
 set region/l=7/x=100:360/y=-20:60
 
 fill/line/pal=no_red slp; go fland
-go label_hi_lo.jnl slp label 5 4 green purple
+go label_hi_lo.jnl slp label 10 8 green purple
 
 pause
 contour slp

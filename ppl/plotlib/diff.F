@@ -48,15 +48,18 @@ C**
 *	Mod J Davison 11.20.95 for 4 digit year and seconds
 
 	CHARACTER*(*) IT1,IT2
-*  *kob*     - Need the below to stop OSF crashing of v5.4 - w/ pplldx envelopes
+*  *kob*     - Need the below to stop OSF/Linux crashing of v5.4 - w/ pplldx envelopes
 *              and c/fortran argument passing, need exact length strings to 
 *              pass into whoi2bc
+*  *kob* 1/10/02 - for some reason, also need to explicitely only use first 14
+*                  chars of IT1, IT2.  This only showed up as a problem with Linux
+*                  linked statically, for some odd reason
 	CHARACTER*14 IT1_14, IT2_14
 	INTEGER*4 JDAY
 	REAL*8 DATE2, DATE1, WHOI2BC, RDATE
 	
-	IT1_14 = IT1
-	IT2_14 = IT2
+	IT1_14 = IT1(:14)
+	IT2_14 = IT2(:14)
 	RDATE = WHOI2BC(IT2_14) - WHOI2BC(IT1_14)
 	DIFF  = RDATE
 

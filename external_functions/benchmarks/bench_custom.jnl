@@ -1,0 +1,29 @@
+define axis/t=1-jan-1980:1-jan-1990:1800/units=days tt	! 4 points
+let v = t[gt=tt]
+list v
+
+list custom(v)
+show grid
+show grid/dyn
+!***********************************
+
+list custom(v[l=1:4])
+show grid
+show grid/dyn
+!***********************************
+
+list custom(v[l=1:3])
+show grid
+show grid/dyn
+!***********************************
+
+list custom(v[l=2:3])
+show grid
+show grid/dyn
+!***********************************
+
+let v2 = v[L=2:3]
+list custom(v2)
+
+
+

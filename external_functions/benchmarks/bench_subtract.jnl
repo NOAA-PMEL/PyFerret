@@ -1,0 +1,44 @@
+set mode ignore_errors
+
+can region
+use coads_climatology
+set region/l=1
+let a = subtract(airt,sst)
+shade a
+let b = airt- sst
+shade a - b
+
+can region
+let a = airt[l=1]
+let b = sst[l=1]
+shade subtract(a,b)
+
+let a = airt[x=180]
+let b = sst[x=180]
+shade subtract(a,b)
+
+can region
+let a = x[i=1:30]
+let b = y[j=1:30]
+plot subtract(a,b)          ! DELIBERATE ERROR
+shade subtract(a,b)
+
+can region
+let a = sst[l=1]
+let b = 26
+shade subtract(a,b)
+shade subtract(a,26)
+
+let b = sst[x=180,y=0,l=@ave]
+shade subtract(a,b)         
+
+can region
+let a = sst[l=1]
+let b = 20
+shade subtract(a,b)
+
+let b = sst[l=@ave]
+shade subtract(a,b)
+plot subtract(a,b)          ! DELIBERATE ERROR
+
+exit

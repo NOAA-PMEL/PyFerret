@@ -1,0 +1,35 @@
+set mode ignore_errors
+
+use coads_sst
+let a = storage(sst)
+set region/t=15-jan-1960
+shade a
+
+can region
+set region/x=40w/y=40n
+plot a
+
+set region/y=0:70n/t=15-jan-1950:15-jan-1990
+shade a
+
+can region
+list a                                   ! DELIBERATE ERROR
+
+set region/y=0:70n/x=50w
+shade a
+
+can region
+set region/y=-90:-70/t=15-aug-1900
+shade a                                  ! DELIBERATE ERROR
+
+can region
+set region/t=15-jan-1981:15-jan-1991
+shade a[t=@ave]
+
+let b = sst[x=140e:60w]
+let c = storage(b)
+shade c[t=15-jan-1983]
+
+shade c[x=20:380,t=15-jan-1983]          ! DELIBERATE ERROR
+
+stat c

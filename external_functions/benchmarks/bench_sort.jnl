@@ -1,0 +1,171 @@
+
+
+use coads_climatology
+set region/x=140/y=40/z=0/l=1:12
+
+list sst
+let tsorted_indices = sortt(sst)
+let tsorted_sst = reordert(tsorted_indices, sst)
+
+list tsorted_indices
+list tsorted_sst
+
+
+! Jon's test case.  
+! What is the temp here three months after the strongest winds there?
+!  Scatter plots of all data, then highest winds.
+
+can region 
+set data coads
+
+let westerly_wind = uwnd[x=160e:180@ave,y=5s:5n@ave]
+let sorted_indices = sortt(westerly_wind)
+let sorted_indices3 = sortt(westerly_wind) + 3
+
+let wwe_by_wwe = reordert(sorted_indices, westerly_wind)
+let sst_by_wwe = reordert(sorted_indices3, sst)
+
+let el_nino = sst_by_wwe[x=180:80w@ave,y=5s:5n@ave]
+let leng = lent(wwe_by_wwe)
+
+!  Scatter plots of all data, then highest winds.
+
+plot/vs/l=`leng[l=1]`:`leng[l=2]` wwe_by_wwe, el_nino
+plot/vs/over/symbol=18/l=`leng[l=2]-20`:`leng[l=2]` wwe_by_wwe, el_nino
+
+!  Line plots of the sorted data.
+plot/l=`leng[l=1]`:`leng[l=2]` wwe_by_wwe  
+plot/over/l=`leng[l=1]`:`leng[l=2]` el_nino - 24
+
+! line plots of the data from highest winds.
+
+plot/l=`leng[l=2]-20`:`leng[l=2]` wwe_by_wwe 
+plot/over/l=`leng[l=2]-20`:`leng[l=2]` el_nino - 24
+
+
+!  See if components of wind correlate
+
+can region 
+set data coads
+
+let westerly_wind = uwnd[x=160e:180@ave,y=5s:5n@ave]
+let wsorted_indices = sortt(westerly_wind)
+let ww_by_ww = reordert(wsorted_indices, westerly_wind)
+
+let speed_wind = wspd[x=160e:180@ave,y=5s:5n@ave]
+let sp_by_ww = reordert(wsorted_indices, speed_wind)
+
+
+let len_w = lent(ww_by_ww)
+list len_w
+
+plot/l=`len_w[l=1]`:`len_w[l=2]` ww_by_ww 
+plot/over/l=`len_w[l=1]`:`len_w[l=2]` sp_by_ww 
+
+plot/vs/l=`len_w[l=1]`:`len_w[l=2]` ww_by_ww, sp_by_ww
+plot/vs/l=`len_w[l=2]-20`:`len_w[l=2]` ww_by_ww, sp_by_ww
+
+
+
+!  See if air and sea temp correlate
+
+can region 
+set data coads
+
+let sea_temp = sst[x=160e:180@ave,y=5s:5n@ave]
+let stsorted_indices = sortt(sea_temp)
+let st_by_st = reordert(stsorted_indices, sea_temp)
+
+let air_temp = airt[x=160e:180@ave,y=5s:5n@ave]
+let at_by_st = reordert(stsorted_indices, air_temp)
+
+
+let len_s = lent(st_by_st)
+list len_s
+
+plot/l=`len_s[l=1]`:`len_s[l=2]` st_by_st 
+plot/over/l=`len_s[l=1]`:`len_s[l=2]` at_by_st 
+
+plot/vs/xlimits=26:32:1/ylimits=26:32:1/l=`len_s[l=1]`:`len_s[l=2]` st_by_st, at_by_st
+
+!  Test sortx and reorder by sorting elevation data.
+
+can region
+use etopo120
+let xsorted_indices = sortx(rose)
+let xsorted_elev = reorderx(xsorted_indices, rose)
+shade xsorted_elev
+
+! test sortx with data containing bad/missing data.
+
+can region
+set data coads
+set region/l=500
+shade sst
+
+let xsorted_indices = sortx(sst)
+let xsorted_sst = reorderx(xsorted_indices, sst)
+shade xsorted_sst
+
+set region/l=500/y=0
+let len = lenx(xsorted_sst)
+list len
+
+
+! test sorty with data containing bad/missing data.
+
+can region
+set data coads
+set region/l=500
+shade sst
+
+let ysorted_indices = sorty(sst)
+let ysorted_sst = reordery(ysorted_indices, sst)
+shade ysorted_sst
+
+set region/l=500/x=180
+let len = leny(ysorted_sst)
+list len
+
+
+
+! test sortz
+ 
+can region
+set data ocean_atlas_annual
+show data ocean_atlas_annual
+
+set region/y=0
+shade temp
+
+let zsorted_indices = sortz(temp)
+let zsorted_temp = reorderz(zsorted_indices, temp)
+shade zsorted_temp
+
+set region/y=0/x=110w
+let len = lenz(zsorted_temp)
+list len
+
+
+
+! test sortt with data containing bad/missing data.
+
+can region 
+set data coads
+set region/y=0
+! shade sst
+
+let tsorted_indices = sortt(sst)
+let tsorted_sst = reordert(tsorted_indices, sst)
+! shade tsorted_sst
+
+set region/x=110w/y=0
+plot sst
+plot tsorted_sst
+let len = lent(tsorted_sst)
+list len
+
+
+list/l=`len[l=1]`:`len[l=2]` tsorted_sst
+list/l=`len[l=2]-20`:`len[l=2]` tsorted_sst
+

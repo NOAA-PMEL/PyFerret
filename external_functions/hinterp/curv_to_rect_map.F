@@ -3,7 +3,8 @@
 ! to call only the spherical interpolation modules, and
 ! recast in F77-compileable format.
 ! ACM 3/2004
-!
+!  10/8/2004  add fourth argument radius  (max_dist) so this can be
+!             set to a smaller value for fine grids or small regions.
 !
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -91,7 +92,7 @@
      .  'rectangular grid.')
       CALL ef_set_desc(id, descr)
 
-      CALL ef_set_num_args(id, 3)
+      CALL ef_set_num_args(id, 4)
       CALL ef_set_num_work_arrays(id, 9)
 
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,  
@@ -117,6 +118,14 @@
       CALL ef_set_arg_desc(id, arg, descr)
      .  
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
+
+      arg = 4
+      CALL ef_set_arg_name(id, arg, 'radius')
+      WRITE (descr, 30)
+   30 FORMAT ('Source points falling ',
+     .   'within radius are included in mapping to destination point')
+      CALL ef_set_arg_desc(id, arg, descr)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 !                                                                     ^
 !                                                                     |
@@ -294,10 +303,32 @@
 ! In this SUBROUTINE we compute the result
 !
       SUBROUTINE curv_to_rect_map_compute(id, arg_1, arg_2, arg_3,
-     .          result, i_lon_j_lat, src_dist, 
+     .          arg_4, result, i_lon_j_lat, src_dist, 
      .          found_neighbors, map_src_add, wt, mask_dst, 
      .          src_grid_radians, dst_grid, dst_grid_radians)
 
+! Schematic:
+!    The following example illustrates a destination grid location (+) with 
+!    a (R)adius of influence (in radians) denoted by (=).  Valid source grid 
+!    locations (o) which fall within the radius of influence of the destination 
+!    point are used in the mapping.  Masked points (x) do not contribute to the mapping
+!    but are included as nearest neighbors. In this case, 4 valid source grid points fall
+!    within the radius of influence.   
+!
+! 
+!               o  o   o   o   o   o   o
+!                      =========
+!                     =         = 
+!               o  o = o   o   o = o   o
+!                   =        R    = 
+!                   =      +----->=
+!               o  o   o   x   x   x   x
+!                     =         =
+!                      =========
+!               o  o   o   x   x   x   x
+!
+!
+!
       IMPLICIT none
       
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -314,6 +345,8 @@
      .       mem2lot:mem2hit)
       REAL  arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
      .       mem3lot:mem3hit)
+      REAL  arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz,
+     .       mem4lot:mem4hit)
 
       REAL  result(memreslox:memreshix, memresloy:memreshiy, 
      .      memresloz:memreshiz, memreslot:memreshit)
@@ -352,7 +385,7 @@
 !                                                                     |
 !                                                                     V
 
-      INTEGER  i, j, k, l,arg, idim, interp_method, nx, ny,
+      INTEGER  i, j, k, l, arg, idim, interp_method, nx, ny,
      .         nlon_src, nlat_src, nlon_dst, nlat_dst, num_nbrs, 
      .         ilon(4), jlat(4)
 
@@ -361,13 +394,19 @@
       REAL max_dist, pi, pi180
       LOGICAL src_modulo
 
-      num_nbrs = 4
-      max_dist = 0.17
-      src_modulo = .true.  ! Do we want this? Ferret does not now deal w/ modulo curvi data
-
       pi =  4.*ATAN(1.)
       pi180 = pi/ 180.
-      
+
+      num_nbrs = 4
+
+!  Get max_dist as an argument and convert to radians.
+cc      max_dist = 0.17
+      arg = 4
+      CALL ef_get_one_val(id, arg, max_dist)
+      max_dist = pi180*max_dist
+
+      src_modulo = .true.  ! Do we want this? Ferret does not now deal w/ modulo curvi data
+
 !  Loop over x,y,t of the input fields
       
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -456,7 +495,8 @@
       CALL save_mapping (src_dist, wt, mask_dst, 
      .        found_neighbors(1,1,1,1), i_lon_j_lat(1,1,1,1),  
      .        i_lon_j_lat(1,1,1,2), max_dist, nlon_src, nlat_src, 
-     .        nlon_dst, nlat_dst, num_nbrs, result(i,j,k,l) )
+     .        nlon_dst, nlat_dst, num_nbrs, bad_flag_result,
+     .        result(i,j,k,l) )
 
 !                                                                     ^
 !                                                                     |
@@ -598,9 +638,9 @@
 
 ! parameters
       real epsln, large
-      parameter (epsln=1.e-10, large=1.e20)
+cc      parameter (epsln=1.e-10, large=1.e20)
+      parameter (epsln=4.e-7, large=1.e20)
 
-       pi  =  3.14159265358979323846 
        pi = 4.*ATAN(1.)
        tpi = 2.0*PI
        hpi = 0.5*PI
@@ -855,7 +895,8 @@ c     .    max_theta_src/pi180, max_theta_dst/pi180
 
 ! parameters
       real epsln
-      parameter (epsln=1.e-10)
+cc      parameter (epsln=1.e-10)
+      parameter (epsln=4.e-7)
 
 ! this is a simple, enough way to calculate distance on the sphere
 ! first, construct cartesian vectors r1 and r2
@@ -866,7 +907,7 @@ c     .    max_theta_src/pi180, max_theta_dst/pi180
 ! theta is longitude and phi is latitude
 !
 
-      pi  =  3.14159265358979323846 
+      pi =  4.*ATAN(1.)
 
       r1(1) = cos(theta1)*cos(phi1)
       r1(2)=sin(theta1)*cos(phi1)
@@ -933,8 +974,9 @@ c     .    max_theta_src/pi180, max_theta_dst/pi180
       if (d .le. max_src_dist) then
          do n=1,num_neighbors 
             if (d .lt. map_src_dist(i,j,n)) then 
-               if (n .GT. 1 .and. src_add .NE. map_src_add(i,j,n-1)) 
-     .             GOTO 100
+cc               if (n .GT. 1 .and. src_add .NE. map_src_add(i,j,n-1)) 
+ccc               if (n .GT. 1 .and. src_add .EQ. map_src_add(i,j,n-1)) 
+ccc     .             GOTO 100
                do m=num_neighbors,n+1,-1
                   map_src_add(i,j,m) = map_src_add(i,j,m-1)
                   map_src_dist(i,j,m) = map_src_dist(i,j,m-1)
@@ -959,24 +1001,23 @@ c     .    max_theta_src/pi180, max_theta_dst/pi180
        subroutine save_mapping (src_dist, wt, mask_dst, 
      .      found_neighbors, i_lon, j_lat, max_src_dist,  
      .      nlon_src, nlat_src, nlon_dst, nlat_dst, num_nbrs,
-     .      result)
+     .      bad_flag_result, result)
 
 ! compute mask_dst, wt, i_lon, and j_lat and save in the result.
-! result(nlon_dst,nlat_dst,num_nbrs,2)  where
+! result(nlon_dst,nlat_dst,num_nbrs,2)  where num_nbrs = 4 and
+! 
 !   result(m,n,1,1) = mask_dst(m,n)
 !   result(m,n,k,2) = wt(m,n,k)
 !   result(m,n,k,3) = i_lon(m,n,k)
-!   result(m,n,k,3) = j_lat(m,n,k)
-! For consistency checking:
-!    result(1,1,2,1) = nlon_src
-!    result(1,1,2,1) = nlat_src
+!   result(m,n,k,4) = j_lat(m,n,k)
+
 
        integer nlon_src, nlat_src, nlon_dst, nlat_dst, num_nbrs
 
        real src_dist(nlon_dst, nlat_dst, num_nbrs)
        real wt(nlon_dst, nlat_dst, num_nbrs)  
        real mask_dst(nlon_dst, nlat_dst)  
-       real max_src_dist
+       real max_src_dist, bad_flag_result
 
        integer i_lon(nlon_dst,nlat_dst,num_nbrs)
        integer j_lat(nlon_dst,nlat_dst,num_nbrs) 
@@ -993,7 +1034,8 @@ c     .    max_theta_src/pi180, max_theta_dst/pi180
 !-----------------------------------------------------------------
       
       real epsln, large
-      parameter (epsln=1.e-10, large=1.e20)
+cc      parameter (epsln=1.e-10, large=1.e20)
+      parameter (epsln=4.e-7, large=1.e20)
 
       result(1,1,2,1) = nlon_src
       result(1,1,3,1) = nlat_src

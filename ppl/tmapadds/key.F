@@ -64,6 +64,11 @@
 *           in that direction.  See shade_key.F 
 * v553 *acm* Fix bug where length of the first numeric key label was not
 *           taken into account when determining label size: computing max_len
+* V553 *acm* 9/03 Introduce flag check_0. On Linux, there may be a 
+*           be a level of -6.E-07 or some such, where it should be 0.
+*           Check whether the numbers for the labels are all small,
+*           in which case we leave things alone; otherwise use TM_FPEQ
+*           to see if the value should be exactly 0.  
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -94,10 +99,10 @@
 	real		xmaxx,ymaxx,vwidth,vheight,karht
 	real		xx,yy,xxx,yyy
 
-        real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def
-
-	character*12	text,TM_FMT, txt_out, blanks
-	logical		ITSA_AXIS_VIEW, windof_hold
+        real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
+     .                  val, del
+	character*12	text,tm_fmt, txt_out, blanks
+	logical		TM_FPEQ, ITSA_AXIS_VIEW, windof_hold, check_0
 
 	external	TM_FMT
 
@@ -112,6 +117,17 @@
 *	CANCEL WINDOW ON IF SET
 	windof_hold = windof
 	windof = .false.
+
+* Decide whether to check for small numeric values in the key labels.
+* If delta is large, we dont want 0.000005 to be labelled in an exponential
+* format (it is zero with a bit of noise). But if all the numbers are 
+* small, label them as is. 
+
+        del = 1
+        check_0 = .TRUE.
+
+        IF (shd_levels .GT. 1) del = zlev(2) - zlev(1)
+        IF (TM_FPEQ(del,0.)) check_0 = .FALSE.
 
 	if (vertical_key) goto 1000
 
@@ -212,7 +228,9 @@
 	   kpy(5) = kpy(1)
 	   IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
-	   text = tm_fmt (zlev(ndx),klab_dig,klab_len,str_len)
+           val = zlev(ndx)
+           IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	   text = tm_fmt (val,klab_dig,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	   
 10	continue
 
@@ -237,9 +255,13 @@ cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
 
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
-	     text = tm_fmt (zlev(1),  klab_dig,klab_len,str_len)
+             val = zlev(1)
+             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	     text = tm_fmt (val,klab_dig,klab_len,str_len)
 	   else
-	     text = tm_fmt (zlev(ndx),klab_dig,klab_len,str_len)
+             val = zlev(ndx)
+             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	     text = tm_fmt (val,klab_dig,klab_len,str_len)
 	   end if
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
@@ -371,7 +393,9 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            kpy(5) = kpy(1)
            IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
-	   text = tm_fmt (zlev(ndx),klab_dig,klab_len,str_len)
+           val = zlev(ndx)
+           IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	   text = tm_fmt (val,klab_dig,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	
 1010	continue
 
@@ -394,9 +418,13 @@ cc	   karht = amin1 (0.08*1000.0,360.0*rem/real (max_len))/1000.0
 
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
-	     text = tm_fmt (zlev(1),  klab_dig,klab_len,str_len)
+             val = zlev(1)
+             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	     text = tm_fmt (val,klab_dig,klab_len,str_len)
 	   else
-	     text = tm_fmt (zlev(ndx),klab_dig,klab_len,str_len)
+             val = zlev(ndx)
+             IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	     text = tm_fmt (val,klab_dig,klab_len,str_len)
 	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 

@@ -59,6 +59,8 @@
 * 	      - Added a preprocessor include for tmap_dset.parm
 *	        because it needed a preprocessor.
 *  7/98 *js*  - Hacked to add support for permuted binary file reads
+* V530: *sh* 11/00 - delimited file reading added
+
 * calling argument declarations:
 	INTEGER	status
 	REAL	memory(*)
@@ -70,9 +72,7 @@
 	LOGICAL		reprimand
 	DATA       	reprimand/.TRUE./
 	INTEGER 	CGRID_AXIS, cx, dset_num, idim, cat
-	CHARACTER	VAR_CODE*8
 
-#ifdef unix
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'xdset_info.cmn_text'
@@ -83,17 +83,6 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * --- end of introductory code ---
 
@@ -129,6 +118,8 @@
 * all stream formatted files now read with new fast binary reads
 	   IF ( ds_parm_text(1,dset_num)(:3) .eq. 'STR') THEN
 	      CALL READ_BINARY( memory, cx, is_mr(isp), status)
+	   ELSEIF ( ds_parm_text(1,dset_num)(:4) .eq. 'DELI') THEN
+	      CALL READ_DELIMITED( memory, cx, is_mr(isp), status)
 	   ELSEIF ( ds_parm_text(1,dset_num)(:4) .eq. 'PERL') THEN
 	      CALL READ_PERL( memory, cx, is_mr(isp), status)
 	   ELSE

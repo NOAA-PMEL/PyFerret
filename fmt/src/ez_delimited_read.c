@@ -341,7 +341,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
   char blankstr[] = " ";
   double days_1900 = 59958230400.0 / (60.*60.*24.);
   int pinc = 8/sizeof(char*);  /* pointers spacd 8 bytes apart */
-
+  int slen;     /* kob 12/01 needed to check for numberical string ending in e/E */
   p = recptr;
 
   for (i=0; i<*nfields; i++) {
@@ -370,6 +370,15 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = -1 * dummy;
 	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
+	/* *kob* 12/01 - need to check for a sting ending in e or E and set
+	   it to bad.  osf and linux compiler let such a string through as 
+	   a valid number, i.e. 130E gets through */
+	else {
+	  slen = strlen(p);
+	  if (p[slen-1] == 'e' || p[slen-1] == 'E') 
+	    (*(numeric_fields+i))[rec] = bad_flags[i];  
+	}
+
 	break;
 	
 	/* longitude */
@@ -436,6 +445,14 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
       case FTYP_NUMERIC:
 	if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
+	/* *kob* 12/01 - need to check for a sting ending in e or E and set
+	   it to bad.  osf and linux compiler let such a string through as 
+	   a valid number, i.e. 130E gets through */
+	else {
+	  slen = strlen(p);
+	  if (p[slen-1] == 'e' || p[slen-1] == 'E') 
+	    (*(numeric_fields+i))[rec] = bad_flags[i];  
+	}
 	break;
 	
 	/* character field */

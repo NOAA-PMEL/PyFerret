@@ -2,7 +2,11 @@
  *
  * Jonathan Callahan
  * Feb 16th 1998
- *
+
+ * Revisions:
+ * for V530 of Ferret - Oct, 2000 *sh* -- make ef_get_mr_list more robust
+ *      so it can be called during custom axis creation
+
  * This file contains all the utility functions which
  * External Functions need in order to interact with
  * EF "objects".
@@ -68,7 +72,7 @@ void ef_get_mres_(int *);
 
 extern ExternalFunction *ef_ptr_from_id_ptr(int *);
 
-void ef_get_one_val_sub_(float *, int *, float *);
+void ef_get_one_val_sub_(int *, float *, int *, float *);
 
 
 /* ............. Function Definitions .............. */
@@ -350,7 +354,7 @@ void ef_set_arg_type_(int *id_ptr, int *arg, int *arg_type)
 
 void ef_get_one_val_(int *id_ptr, int *arg_ptr, float *val_ptr)
 {
-  ef_get_one_val_sub_(GLOBAL_memory_ptr, arg_ptr, val_ptr);
+  ef_get_one_val_sub_(id_ptr, GLOBAL_memory_ptr, arg_ptr, val_ptr);
 }
 
 
@@ -368,9 +372,12 @@ void ef_get_mr_list_(int *mr_list)
 {
   int i=0;
 
-  for (i=0; i<EF_MAX_ARGS; i++) {
-    mr_list[i] = GLOBAL_mr_list_ptr[i];
-  }
+  if (  GLOBAL_mr_list_ptr != NULL ) {
+    for (i=0; i<EF_MAX_ARGS; i++) {
+      mr_list[i] = GLOBAL_mr_list_ptr[i];
+    }
+  } else
+    mr_list[0] = 0;  /* flag that mr_list isnt available */
 }
 
 

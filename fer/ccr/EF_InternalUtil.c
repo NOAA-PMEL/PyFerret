@@ -128,7 +128,7 @@ int  FORTRAN(efcn_scan)( int * );
 int  FORTRAN(efcn_already_have_internals)( int * );
 
 int  FORTRAN(efcn_gather_info)( int * );
-void FORTRAN(efcn_get_custom_axes)( int *, int * );
+void FORTRAN(efcn_get_custom_axes)( int *, int *, int * );
 void FORTRAN(efcn_get_result_limits)( int *, float *, int *, int * );
 void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, float *, int *, float *, int * );
 
@@ -646,7 +646,7 @@ void *internal_dlsym(char *);
  * Query the function about custom axes. Store the context
  * list information for use by utility functions.
  */
-void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr )
+void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -654,6 +654,11 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr )
 
   void (*fptr)(int *);
   void *internal_dlsym(char *);
+
+  /*
+   * Initialize the status
+   */
+  *status = FERR_OK;
 
   /*
    * Store the context list globally.
@@ -676,6 +681,7 @@ void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr )
      */   
 
     if (EF_Util_setsig("efcn_get_custom_axes")) {
+      *status = FERR_EF_ERROR;
        return;
     }
     
@@ -970,25 +976,12 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
      * (for the "bail out" utility function).
      */   
 
-    if ( EF_Util_setsig("efcn_set_work_array_dims")) {
-       return;
-    }
-
-    canjump = 1;
-
-    if (setjmp(jumpbuffer) != 0 ) {
-      /* Warning message printed by bail-out utility function. */
-
-      /*
-       * Restore the old signal handlers.
-       */
-    if ( EF_Util_ressig("efcn_set_work_array_dims")) {
-       return;
-    }
-
+    if ( EF_Util_setsig("efcn_compute")) {
       *status = FERR_EF_ERROR;
       return;
     }
+
+    canjump = 1;
 
 
     /*
@@ -2009,10 +2002,22 @@ int EF_Util_setsig(char fcn_name[])
       fprintf(stderr, "\nERROR in %s() catching SIGBUS.\n", fcn_name);
       return 1;
     }
+
+    /*
+     * Set the signal return location and process jumps
+     */
     if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-      /* Warning message printed by signal handler. */
+      /* (?huh? *sh* ==> Warning message printed by signal handler. */
       return 1;
     }
+
+    /*
+     * Set the bail out return location and process jumps
+     */
+    if (setjmp(jumpbuffer) != 0) {
+      return 1;
+    }
+
     return 0;
 }
 

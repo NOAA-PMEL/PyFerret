@@ -75,6 +75,8 @@
 *	1/00 *sh* - bug fix for nested GC variables 
 *	4/00 *sh* - netCDF grids are now dynamic so 2nd pass check to deallo
 *			dynamic grid needs logic change
+* V530 10/00 *sh* - fixed bug that was revealed by new ability of
+*		    GCF_IMPOSE_AXES to take an error exit
 
 * calling argument declarations:
 	INTEGER	status
@@ -88,7 +90,7 @@
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		 hi_cx, lo_cx, big_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
-     .		var, len_name, pass_number, cx_save
+     .		var, len_name, pass_number, cx_save, this_dset
 	CHARACTER VAR_CODE*4, name*128
 
 #ifdef unix
@@ -381,10 +383,11 @@
            uvar_need_dset(uvar) = .FALSE.
         ENDIF
 	IF ( uvar_need_dset(uvar) ) THEN
-	   uvar_grid( uvar, dset ) = gnum
+	   this_dset = dset
 	ELSE
-	   uvar_grid( uvar, pdset_irrelevant ) = gnum
+	   this_dset = pdset_irrelevant
 	ENDIF
+	uvar_grid( uvar, this_dset ) = gnum
 
 * * * SECOND PASS CHECK * * *
 * need a second pass to include pseudo_vars in calculation ?
@@ -393,6 +396,7 @@
 	   IF ( pass_number .GT. 1 ) GOTO 9000	! caught in a loop ...
 	   DO 1110 i = 1, 4
  1110	   uvar_given(i,uvar) = uvlim_irrelevant
+	   uvar_grid( uvar, this_dset ) = unspecified_int4 ! 10/00
 	   is_phase( isp ) = 0
 	   is_sum( isp ) = isalg_transfer
 	   cx_stack_ptr = cx_save

@@ -53,6 +53,7 @@
 *               with SET GRID
 * V530: 10/00 *sh* - bug fix: need to pass an *array* of argument contexts
 *       to the C routine efcn_get_custom_axes
+*                  - changed EFCN_GET_CUSTOM_AXES so it returns a status
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -228,7 +229,8 @@
      .          .OR. axis_will_be(2) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(3) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(4) .EQ. pgc_axis_supplied_herein) THEN
-              CALL EFCN_GET_CUSTOM_AXES(gcfcn, EF_cx_list)
+              CALL EFCN_GET_CUSTOM_AXES(gcfcn, EF_cx_list, status)
+              IF (status .NE. ferr_ok) GOTO 5000
            ENDIF
 
            DO 400 idim = 1, 4

@@ -104,7 +104,7 @@
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
 *      *sh* 1/01 - added argument step_inc for PLOT/STEP
 *	         - bug fix: PLOT+ mem limit check off by x2 --  X&Y components
-
+*       *kob*1/01 - changed declaration of variable i to integer from real
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -164,9 +164,9 @@
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
-     .			slen2, slen3, tax, plot_mem_used, nload,
+     .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim
-	REAL		only_val, val1, dt_min, i,
+	REAL		only_val, val1, dt_min,
      .			lo, hi, dep_len, ind_len,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,

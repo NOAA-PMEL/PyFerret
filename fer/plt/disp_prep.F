@@ -120,7 +120,8 @@
 	lev_loc = qual_given( slash_levels )
 	len_loc = qual_given( slash_length )
 	lev_given    = ( cmnd_num.EQ.cmnd_contour .OR. 
-     .                   cmnd_num.EQ.cmnd_shade) .AND. lev_loc.NE.0
+     .                   cmnd_num.EQ.cmnd_shade   .OR.
+     .                   cmnd_num.EQ.cmnd_polygon) .AND. lev_loc.NE.0
 	len_given = cmnd_num .EQ. cmnd_vector
      .		.AND. len_loc .NE. 0
 

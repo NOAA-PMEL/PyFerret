@@ -1,5 +1,6 @@
 * *kob* 2/23/99 v3.4 of netcdf include file - upgraded from 2.3.2 
-!
+! *kob* 10.21.99 - had to comment out EXTERNAL statements for compiling on
+!		   DEC systems
 ! netcdf version 3 fortran interface:
 !
 
@@ -171,15 +172,15 @@
 ! miscellaneous routines:
 !
       character*80   nf_inq_libvers
-      external       nf_inq_libvers
+!      external       nf_inq_libvers
 
       character*80   nf_strerror
 !                         (integer             ncerr)
-      external       nf_strerror
+!      external       nf_strerror
 
       logical        nf_issyserr
 !                         (integer             ncerr)
-      external       nf_issyserr
+!      external       nf_issyserr
 
 !
 ! control routines:
@@ -189,7 +190,7 @@
 !                         (character*(*)       path,
 !                          integer             cmode,
 !                          integer             ncid)
-      external        nf_create
+!      external        nf_create
 
       integer         nf__create
 !                         (character*(*)       path,
@@ -197,34 +198,34 @@
 !                          integer             initialsz,
 !                          integer             chunksizehint,
 !                          integer             ncid)
-      external        nf__create
+!      external        nf__create
 
       integer         nf_open
 !                         (character*(*)       path,
 !                          integer             mode,
 !                          integer             ncid)
-      external        nf_open
+!      external        nf_open
 
       integer         nf__open
 !                         (character*(*)       path,
 !                          integer             mode,
 !                          integer             chunksizehint,
 !                          integer             ncid)
-      external        nf__open
+!      external        nf__open
 
       integer         nf_set_fill
 !                         (integer             ncid,
 !                          integer             fillmode,
 !                          integer             old_mode)
-      external        nf_set_fill
+!      external        nf_set_fill
 
       integer         nf_redef
 !                         (integer             ncid)
-      external        nf_redef
+!      external        nf_redef
 
       integer         nf_enddef
 !                         (integer             ncid)
-      external        nf_enddef
+!      external        nf_enddef
 
       integer         nf__enddef
 !                         (integer             ncid,
@@ -232,23 +233,23 @@
 !                          integer             v_align,
 !                          integer             v_minfree,
 !                          integer             r_align)
-      external        nf__enddef
+!      external        nf__enddef
 
       integer         nf_sync
 !                         (integer             ncid)
-      external        nf_sync
+!      external        nf_sync
 
       integer         nf_abort
 !                         (integer             ncid)
-      external        nf_abort
+!      external        nf_abort
 
       integer         nf_close
 !                         (integer             ncid)
-      external        nf_close
+!      external        nf_close
 
       integer         nf_delete
 !                         (character*(*)       ncid)
-      external        nf_delete
+!      external        nf_delete
 
 !
 ! general inquiry routines:
@@ -260,27 +261,27 @@
 !                          integer             nvars,
 !                          integer             ngatts,
 !                          integer             unlimdimid)
-      external        nf_inq
+!      external        nf_inq
 
       integer         nf_inq_ndims
 !                         (integer             ncid,
 !                          integer             ndims)
-      external        nf_inq_ndims
+!      external        nf_inq_ndims
 
       integer         nf_inq_nvars
 !                         (integer             ncid,
 !                          integer             nvars)
-      external        nf_inq_nvars
+!      external        nf_inq_nvars
 
       integer         nf_inq_natts
 !                         (integer             ncid,
 !                          integer             ngatts)
-      external        nf_inq_natts
+!      external        nf_inq_natts
 
       integer         nf_inq_unlimdim
 !                         (integer             ncid,
 !                          integer             unlimdimid)
-      external        nf_inq_unlimdim
+!      external        nf_inq_unlimdim
 
 !
 ! dimension routines:
@@ -291,38 +292,38 @@
 !                          character(*)        name,
 !                          integer             len,
 !                          integer             dimid)
-      external        nf_def_dim
+!      external        nf_def_dim
 
       integer         nf_inq_dimid
 !                         (integer             ncid,
 !                          character(*)        name,
 !                          integer             dimid)
-      external        nf_inq_dimid
+!      external        nf_inq_dimid
 
       integer         nf_inq_dim
 !                         (integer             ncid,
 !                          integer             dimid,
 !                          character(*)        name,
 !                          integer             len)
-      external        nf_inq_dim
+!      external        nf_inq_dim
 
       integer         nf_inq_dimname
 !                         (integer             ncid,
 !                          integer             dimid,
 !                          character(*)        name)
-      external        nf_inq_dimname
+!      external        nf_inq_dimname
 
       integer         nf_inq_dimlen
 !                         (integer             ncid,
 !                          integer             dimid,
 !                          integer             len)
-      external        nf_inq_dimlen
+!      external        nf_inq_dimlen
 
       integer         nf_rename_dim
 !                         (integer             ncid,
 !                          integer             dimid,
 !                          character(*)        name)
-      external        nf_rename_dim
+!      external        nf_rename_dim
 
 !
 ! general attribute routines:
@@ -334,35 +335,35 @@
 !                          character(*)        name,
 !                          integer             xtype,
 !                          integer             len)
-      external        nf_inq_att
+!      external        nf_inq_att
 
       integer         nf_inq_attid
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          integer             attnum)
-      external        nf_inq_attid
+!      external        nf_inq_attid
 
       integer         nf_inq_atttype
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          integer             xtype)
-      external        nf_inq_atttype
+!      external        nf_inq_atttype
 
       integer         nf_inq_attlen
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          integer             len)
-      external        nf_inq_attlen
+!      external        nf_inq_attlen
 
       integer         nf_inq_attname
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             attnum,
 !                          character(*)        name)
-      external        nf_inq_attname
+!      external        nf_inq_attname
 
       integer         nf_copy_att
 !                         (integer             ncid_in,
@@ -370,20 +371,20 @@
 !                          character(*)        name,
 !                          integer             ncid_out,
 !                          integer             varid_out)
-      external        nf_copy_att
+!      external        nf_copy_att
 
       integer         nf_rename_att
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        curname,
 !                          character(*)        newname)
-      external        nf_rename_att
+!      external        nf_rename_att
 
       integer         nf_del_att
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name)
-      external        nf_del_att
+!      external        nf_del_att
 
 !
 ! attribute put/get routines:
@@ -395,14 +396,14 @@
 !                          character(*)        name,
 !                          integer             len,
 !                          character(*)        text)
-      external        nf_put_att_text
+!      external        nf_put_att_text
 
       integer         nf_get_att_text
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          character(*)        text)
-      external        nf_get_att_text
+!      external        nf_get_att_text
 
       integer         nf_put_att_int1
 !                         (integer             ncid,
@@ -411,14 +412,14 @@
 !                          integer             xtype,
 !                          integer             len,
 !                          nf_int1_t           i1vals(1))
-      external        nf_put_att_int1
+!      external        nf_put_att_int1
 
       integer         nf_get_att_int1
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          nf_int1_t           i1vals(1))
-      external        nf_get_att_int1
+!      external        nf_get_att_int1
 
       integer         nf_put_att_int2
 !                         (integer             ncid,
@@ -427,14 +428,14 @@
 !                          integer             xtype,
 !                          integer             len,
 !                          nf_int2_t           i2vals(1))
-      external        nf_put_att_int2
+!      external        nf_put_att_int2
 
       integer         nf_get_att_int2
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          nf_int2_t           i2vals(1))
-      external        nf_get_att_int2
+!      external        nf_get_att_int2
 
       integer         nf_put_att_int
 !                         (integer             ncid,
@@ -443,14 +444,14 @@
 !                          integer             xtype,
 !                          integer             len,
 !                          integer             ivals(1))
-      external        nf_put_att_int
+!      external        nf_put_att_int
 
       integer         nf_get_att_int
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          integer             ivals(1))
-      external        nf_get_att_int
+!      external        nf_get_att_int
 
       integer         nf_put_att_real
 !                         (integer             ncid,
@@ -459,14 +460,14 @@
 !                          integer             xtype,
 !                          integer             len,
 !                          real                rvals(1))
-      external        nf_put_att_real
+!      external        nf_put_att_real
 
       integer         nf_get_att_real
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          real                rvals(1))
-      external        nf_get_att_real
+!      external        nf_get_att_real
 
       integer         nf_put_att_double
 !                         (integer             ncid,
@@ -475,14 +476,14 @@
 !                          integer             xtype,
 !                          integer             len,
 !                          double              dvals(1))
-      external        nf_put_att_double
+!      external        nf_put_att_double
 
       integer         nf_get_att_double
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name,
 !                          double              dvals(1))
-      external        nf_get_att_double
+!      external        nf_get_att_double
 
 !
 ! general variable routines:
@@ -495,7 +496,7 @@
 !                          integer             ndims,
 !                          integer             dimids(1),
 !                          integer             varid)
-      external        nf_def_var
+!      external        nf_def_var
 
       integer         nf_inq_var
 !                         (integer             ncid,
@@ -505,55 +506,55 @@
 !                          integer             ndims,
 !                          integer             dimids(1),
 !                          integer             natts)
-      external        nf_inq_var
+!      external        nf_inq_var
 
       integer         nf_inq_varid
 !                         (integer             ncid,
 !                          character(*)        name,
 !                          integer             varid)
-      external        nf_inq_varid
+!      external        nf_inq_varid
 
       integer         nf_inq_varname
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name)
-      external        nf_inq_varname
+!      external        nf_inq_varname
 
       integer         nf_inq_vartype
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             xtype)
-      external        nf_inq_vartype
+!      external        nf_inq_vartype
 
       integer         nf_inq_varndims
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             ndims)
-      external        nf_inq_varndims
+!      external        nf_inq_varndims
 
       integer         nf_inq_vardimid
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             dimids(1))
-      external        nf_inq_vardimid
+!      external        nf_inq_vardimid
 
       integer         nf_inq_varnatts
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             natts)
-      external        nf_inq_varnatts
+!      external        nf_inq_varnatts
 
       integer         nf_rename_var
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        name)
-      external        nf_rename_var
+!      external        nf_rename_var
 
       integer         nf_copy_var
 !                         (integer             ncid_in,
 !                          integer             varid,
 !                          integer             ncid_out)
-      external        nf_copy_var
+!      external        nf_copy_var
 
 !
 ! entire variable put/get routines:
@@ -563,73 +564,73 @@
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        text)
-      external        nf_put_var_text
+!      external        nf_put_var_text
 
       integer         nf_get_var_text
 !                         (integer             ncid,
 !                          integer             varid,
 !                          character(*)        text)
-      external        nf_get_var_text
+!      external        nf_get_var_text
 
       integer         nf_put_var_int1
 !                         (integer             ncid,
 !                          integer             varid,
 !                          nf_int1_t           i1vals(1))
-      external        nf_put_var_int1
+!      external        nf_put_var_int1
 
       integer         nf_get_var_int1
 !                         (integer             ncid,
 !                          integer             varid,
 !                          nf_int1_t           i1vals(1))
-      external        nf_get_var_int1
+!      external        nf_get_var_int1
 
       integer         nf_put_var_int2
 !                         (integer             ncid,
 !                          integer             varid,
 !                          nf_int2_t           i2vals(1))
-      external        nf_put_var_int2
+!      external        nf_put_var_int2
 
       integer         nf_get_var_int2
 !                         (integer             ncid,
 !                          integer             varid,
 !                          nf_int2_t           i2vals(1))
-      external        nf_get_var_int2
+!      external        nf_get_var_int2
 
       integer         nf_put_var_int
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             ivals(1))
-      external        nf_put_var_int
+!      external        nf_put_var_int
 
       integer         nf_get_var_int
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             ivals(1))
-      external        nf_get_var_int
+!      external        nf_get_var_int
 
       integer         nf_put_var_real
 !                         (integer             ncid,
 !                          integer             varid,
 !                          real                rvals(1))
-      external        nf_put_var_real
+!      external        nf_put_var_real
 
       integer         nf_get_var_real
 !                         (integer             ncid,
 !                          integer             varid,
 !                          real                rvals(1))
-      external        nf_get_var_real
+!      external        nf_get_var_real
 
       integer         nf_put_var_double
 !                         (integer             ncid,
 !                          integer             varid,
 !                          doubleprecision     dvals(1))
-      external        nf_put_var_double
+!      external        nf_put_var_double
 
       integer         nf_get_var_double
 !                         (integer             ncid,
 !                          integer             varid,
 !                          doubleprecision     dvals(1))
-      external        nf_get_var_double
+!      external        nf_get_var_double
 
 !
 ! single variable put/get routines:
@@ -640,84 +641,84 @@
 !                          integer             varid,
 !                          integer             index(1),
 !                          character*1         text)
-      external        nf_put_var1_text
+!      external        nf_put_var1_text
 
       integer         nf_get_var1_text
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          character*1         text)
-      external        nf_get_var1_text
+!      external        nf_get_var1_text
 
       integer         nf_put_var1_int1
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          nf_int1_t           i1val)
-      external        nf_put_var1_int1
+!      external        nf_put_var1_int1
 
       integer         nf_get_var1_int1
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          nf_int1_t           i1val)
-      external        nf_get_var1_int1
+!      external        nf_get_var1_int1
 
       integer         nf_put_var1_int2
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          nf_int2_t           i2val)
-      external        nf_put_var1_int2
+!      external        nf_put_var1_int2
 
       integer         nf_get_var1_int2
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          nf_int2_t           i2val)
-      external        nf_get_var1_int2
+!      external        nf_get_var1_int2
 
       integer         nf_put_var1_int
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          integer             ival)
-      external        nf_put_var1_int
+!      external        nf_put_var1_int
 
       integer         nf_get_var1_int
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          integer             ival)
-      external        nf_get_var1_int
+!      external        nf_get_var1_int
 
       integer         nf_put_var1_real
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          real                rval)
-      external        nf_put_var1_real
+!      external        nf_put_var1_real
 
       integer         nf_get_var1_real
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          real                rval)
-      external        nf_get_var1_real
+!      external        nf_get_var1_real
 
       integer         nf_put_var1_double
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          doubleprecision     dval)
-      external        nf_put_var1_double
+!      external        nf_put_var1_double
 
       integer         nf_get_var1_double
 !                         (integer             ncid,
 !                          integer             varid,
 !                          integer             index(1),
 !                          doubleprecision     dval)
-      external        nf_get_var1_double
+!      external        nf_get_var1_double
 
 !
 ! variable array put/get routines:
@@ -729,7 +730,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          character(*)        text)
-      external        nf_put_vara_text
+!      external        nf_put_vara_text
 
       integer         nf_get_vara_text
 !                         (integer             ncid,
@@ -737,7 +738,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          character(*)        text)
-      external        nf_get_vara_text
+!      external        nf_get_vara_text
 
       integer         nf_put_vara_int1
 !                         (integer             ncid,
@@ -745,7 +746,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          nf_int1_t           i1vals(1))
-      external        nf_put_vara_int1
+!      external        nf_put_vara_int1
 
       integer         nf_get_vara_int1
 !                         (integer             ncid,
@@ -753,7 +754,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          nf_int1_t           i1vals(1))
-      external        nf_get_vara_int1
+!      external        nf_get_vara_int1
 
       integer         nf_put_vara_int2
 !                         (integer             ncid,
@@ -761,7 +762,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          nf_int2_t           i2vals(1))
-      external        nf_put_vara_int2
+!      external        nf_put_vara_int2
 
       integer         nf_get_vara_int2
 !                         (integer             ncid,
@@ -769,7 +770,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          nf_int2_t           i2vals(1))
-      external        nf_get_vara_int2
+!      external        nf_get_vara_int2
 
       integer         nf_put_vara_int
 !                         (integer             ncid,
@@ -777,7 +778,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          integer             ivals(1))
-      external        nf_put_vara_int
+!      external        nf_put_vara_int
 
       integer         nf_get_vara_int
 !                         (integer             ncid,
@@ -785,7 +786,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          integer             ivals(1))
-      external        nf_get_vara_int
+!      external        nf_get_vara_int
 
       integer         nf_put_vara_real
 !                         (integer             ncid,
@@ -793,7 +794,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          real                rvals(1))
-      external        nf_put_vara_real
+!      external        nf_put_vara_real
 
       integer         nf_get_vara_real
 !                         (integer             ncid,
@@ -801,7 +802,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          real                rvals(1))
-      external        nf_get_vara_real
+!      external        nf_get_vara_real
 
       integer         nf_put_vara_double
 !                         (integer             ncid,
@@ -809,7 +810,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          doubleprecision     dvals(1))
-      external        nf_put_vara_double
+!      external        nf_put_vara_double
 
       integer         nf_get_vara_double
 !                         (integer             ncid,
@@ -817,7 +818,7 @@
 !                          integer             start(1),
 !                          integer             count(1),
 !                          doubleprecision     dvals(1))
-      external        nf_get_vara_double
+!      external        nf_get_vara_double
 
 !
 ! strided variable put/get routines:
@@ -830,7 +831,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          character(*)        text)
-      external        nf_put_vars_text
+!      external        nf_put_vars_text
 
       integer         nf_get_vars_text
 !                         (integer             ncid,
@@ -839,7 +840,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          character(*)        text)
-      external        nf_get_vars_text
+!      external        nf_get_vars_text
 
       integer         nf_put_vars_int1
 !                         (integer             ncid,
@@ -848,7 +849,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          nf_int1_t           i1vals(1))
-      external        nf_put_vars_int1
+!      external        nf_put_vars_int1
 
       integer         nf_get_vars_int1
 !                         (integer             ncid,
@@ -857,7 +858,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          nf_int1_t           i1vals(1))
-      external        nf_get_vars_int1
+!      external        nf_get_vars_int1
 
       integer         nf_put_vars_int2
 !                         (integer             ncid,
@@ -866,7 +867,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          nf_int2_t           i2vals(1))
-      external        nf_put_vars_int2
+!      external        nf_put_vars_int2
 
       integer         nf_get_vars_int2
 !                         (integer             ncid,
@@ -875,7 +876,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          nf_int2_t           i2vals(1))
-      external        nf_get_vars_int2
+!      external        nf_get_vars_int2
 
       integer         nf_put_vars_int
 !                         (integer             ncid,
@@ -884,7 +885,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          integer             ivals(1))
-      external        nf_put_vars_int
+!      external        nf_put_vars_int
 
       integer         nf_get_vars_int
 !                         (integer             ncid,
@@ -893,7 +894,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          integer             ivals(1))
-      external        nf_get_vars_int
+!      external        nf_get_vars_int
 
       integer         nf_put_vars_real
 !                         (integer             ncid,
@@ -902,7 +903,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          real                rvals(1))
-      external        nf_put_vars_real
+!      external        nf_put_vars_real
 
       integer         nf_get_vars_real
 !                         (integer             ncid,
@@ -911,7 +912,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          real                rvals(1))
-      external        nf_get_vars_real
+!      external        nf_get_vars_real
 
       integer         nf_put_vars_double
 !                         (integer             ncid,
@@ -920,7 +921,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          doubleprecision     dvals(1))
-      external        nf_put_vars_double
+!      external        nf_put_vars_double
 
       integer         nf_get_vars_double
 !                         (integer             ncid,
@@ -929,7 +930,7 @@
 !                          integer             count(1),
 !                          integer             stride(1),
 !                          doubleprecision     dvals(1))
-      external        nf_get_vars_double
+!      external        nf_get_vars_double
 
 !
 ! mapped variable put/get routines:
@@ -943,7 +944,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          character(*)        text)
-      external        nf_put_varm_text
+!      external        nf_put_varm_text
 
       integer         nf_get_varm_text
 !                         (integer             ncid,
@@ -953,7 +954,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          character(*)        text)
-      external        nf_get_varm_text
+!      external        nf_get_varm_text
 
       integer         nf_put_varm_int1
 !                         (integer             ncid,
@@ -963,7 +964,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          nf_int1_t           i1vals(1))
-      external        nf_put_varm_int1
+!      external        nf_put_varm_int1
 
       integer         nf_get_varm_int1
 !                         (integer             ncid,
@@ -973,7 +974,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          nf_int1_t           i1vals(1))
-      external        nf_get_varm_int1
+!      external        nf_get_varm_int1
 
       integer         nf_put_varm_int2
 !                         (integer             ncid,
@@ -983,7 +984,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          nf_int2_t           i2vals(1))
-      external        nf_put_varm_int2
+!      external        nf_put_varm_int2
 
       integer         nf_get_varm_int2
 !                         (integer             ncid,
@@ -993,7 +994,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          nf_int2_t           i2vals(1))
-      external        nf_get_varm_int2
+!      external        nf_get_varm_int2
 
       integer         nf_put_varm_int
 !                         (integer             ncid,
@@ -1003,7 +1004,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          integer             ivals(1))
-      external        nf_put_varm_int
+!      external        nf_put_varm_int
 
       integer         nf_get_varm_int
 !                         (integer             ncid,
@@ -1013,7 +1014,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          integer             ivals(1))
-      external        nf_get_varm_int
+!      external        nf_get_varm_int
 
       integer         nf_put_varm_real
 !                         (integer             ncid,
@@ -1023,7 +1024,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          real                rvals(1))
-      external        nf_put_varm_real
+!      external        nf_put_varm_real
 
       integer         nf_get_varm_real
 !                         (integer             ncid,
@@ -1033,7 +1034,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          real                rvals(1))
-      external        nf_get_varm_real
+!      external        nf_get_varm_real
 
       integer         nf_put_varm_double
 !                         (integer             ncid,
@@ -1043,7 +1044,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          doubleprecision     dvals(1))
-      external        nf_put_varm_double
+!      external        nf_put_varm_double
 
       integer         nf_get_varm_double
 !                         (integer             ncid,
@@ -1053,7 +1054,7 @@
 !                          integer             stride(1),
 !                          integer             imap(1),
 !                          doubleprecision     dvals(1))
-      external        nf_get_varm_double
+!      external        nf_get_varm_double
 
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 ! begin netcdf 2.4 backward compatibility:
@@ -1062,7 +1063,7 @@
 !      
 ! functions in the fortran interface
 !
-* This block of external declarations was added when netCDF upgraded
+!* This block of external declarations was added when netCDF upgraded
 * from version 1 to version 2.x.  Since these declarations exist
 * explicitly where they are needed in the individual TMAP library source
 * modules their presence here causes "multiple declaration" warnings.
@@ -1078,14 +1079,14 @@
 *      integer nctlen
 *      integer ncsfil
 
-*      external nccre
-*      external ncopn
-*      external ncddef
-*      external ncdid
-*      external ncvdef
-*      external ncvid
-*      external nctlen
-*      external ncsfil
+!*      external nccre
+!*      external ncopn
+!*      external ncddef
+!*      external ncdid
+!*      external ncvdef
+!*      external ncvid
+!*      external nctlen
+!*      external ncsfil
 
 
       integer ncrdwr

@@ -7,6 +7,8 @@
 *	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
 *		ensure contiguous 8-byte organization
 * v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
+* V550 *acm*  9/02 Let SPEC_SIZE be 250, so folks can set at least as many 
+*                  colors as they can use 
 
 *	I_LO,I_HI,J_LO,J_HI are the lo and hi indices of the grid data
 *	X_LO,X_HI,Y_LO,Y_HI are the corresponding lon & lat coordinates
@@ -62,7 +64,7 @@
 	
 
 	integer		spec_size,max_windows,pattern_num
-	parameter	(spec_size=100,max_windows=12,pattern_num=50)
+	parameter	(spec_size=250,max_windows=12,pattern_num=50)
 
 	integer		i_lo,i_hi,j_lo,j_hi,shd_levels,lo_color_ndx
 	integer		klab_dig,klab_len,klab_incr,ncl,hi_color_ndx

@@ -46,20 +46,17 @@
 *	*jd* 6.94 add option to have comments in .spk files -- !-begun lines
 *       *jd* 10.98 Add control for rgb interpolation, atomic colors, or data
 *                 based levels in color bar
+*       *acm* 9/02 Check that the number of levels in a palette file isn't larger
+*                  than SPEC_SIZE (see shade_vars.cmn), the number of spectrum 
+*                  levels allowed to be specified in a palette file.
 
-#ifdef unix
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
         include 	'CMRDL.INC'            
         include 	'gkscm1_inc.decl'            
         include 	'GKSCM1.INC'            
         include 	'gkscm2.cmn'            
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE 	'tmap_pplv11inc:tmap_cmrdl.inc'            
-        INCLUDE 	'tmap_pplv11inc:tmap_gkscm1.inc'            
-        INCLUDE 	'tmap_pplv11inc:tmap_gkscm2.inc'            
-#endif
+
 
 #ifdef atc_gks
 #   ifdef unix
@@ -129,13 +126,15 @@
 #ifdef atc_gks
 10	call gsds (wsid,gasti,gallow) !This action necessary?
 	if (.not. protect_used_colors) call set_fill_area_rep (wsid,wstype)
-	call gsds (wsid,gasap,gsuppd)                                  
+	call gsds (wsid,gasap,gsuppd)   
+                                                          
 #else
  10	if (.not. protect_used_colors) 
      .	call set_fill_area_rep (wsid,wstype)
-        call guwk (wsid,gpostp)
+        call guwk (wsid,gpostp)	
+
 #endif
-*4.91   if (meta_actv) call set_fill_area_rep (meta_wsid,meta_wstype)         
+*4.91   if (meta_actv) call set_fill_area_rep (meta_wsid,meta_wstype)
 
 	return
 	end
@@ -144,7 +143,6 @@
 
 	SUBROUTINE SHADE_LEVELS 
 
-#ifdef unix
         include         'parampl5_dat.decl'
         include         'PARAMPL5.DAT'
         include         'cont_inc.decl'
@@ -152,15 +150,12 @@
         include         'shade_vars.cmn'
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_CONT.INC'
-#endif
+
+	include 'errmsg.parm'
 
 	integer		i,j
+
+        CHARACTER*100   err_msg
 
 *******************************************************************************
 
@@ -259,6 +254,7 @@
 		 sb(j+1) = sb(j)
 15	      end do
 	      ncl = ncl + 1
+              IF (ncl .GT. spec_size) GOTO 1000
 
 	      slvl(i+1) = p(1)
 	      sr(i+1) = p(2)/100.0
@@ -271,6 +267,7 @@
           
         if (p(1) .gt. slvl(ncl)) then 
            ncl = ncl + 1
+           IF (ncl .GT. spec_size) GOTO 1000
            
            slvl(ncl) = p(1)
            sr(ncl) = p(2)/100.0
@@ -278,8 +275,13 @@
            sb(ncl) = p(4)/100.0
         end if
  
-	return
-	end
+ 5000	RETURN
+        
+ 1000	WRITE (err_msg, 110)  spec_size 
+  110   FORMAT ('Too many spectrum levels in .spk file. Max is', i4)
+        CALL ERRMSG( ferr_prog_limit, status,
+     .		err_msg, *5000 )
+	END
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

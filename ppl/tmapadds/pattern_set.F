@@ -35,7 +35,10 @@
         
 *       Sets the patterns for SHADE/FILL
 *       J Davison JISAO/PMEL/TMAP 10.23.98
-
+*
+*       *acm* 9/02 Check that the number of levels in a pattern file isn't larger
+*                  than pattern_num (see shade_vars.cmn), the number of pattern 
+*                  levels allowed to be specified in a pattern file.
 #ifdef unix
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
@@ -114,20 +117,19 @@
 
 	SUBROUTINE PATTERN_LEVELS (str,end)
 
-#ifdef unix
         include         'shade_vars.cmn'
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
-#endif
+
+	include 'errmsg.parm'
+
 * 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
 	integer		i,j,ndx,npatp1,solid
         DATA            solid/21/
 
         integer         beg,end,andx
-        character*255   str                                
+        character*255   str   
+        character*100   err_msg                             
 
         logical    recognized
 
@@ -211,18 +213,25 @@
  11     if (ndx .eq. p(1)) then
            patterns(ndx) = named_ndx
            if (ndx .eq. npat + 1) npat = npat + 1
-        else
+           IF (npat .GT. pattern_num) GOTO 1000
+       else
 *	IF NEW, INSERT INTO PROPER LOCATION IN PATTERN LIST
            do 15 j = npat,ndx+1,-1
               patterns(j+1) = patterns(j)
  15        end do
 
            npat = npat + 1
+           IF (npat .GT. pattern_num) GOTO 1000
            patterns(ndx+1) = named_ndx
         end if
 
-	return
-	end
+
+ 5000	RETURN
+        
+ 1000	WRITE (err_msg, 110)  pattern_num 
+  110   FORMAT ('Too many levels in .pat file. Max is',i4)
+        CALL ERRMSG( ferr_prog_limit, status, err_msg, *5000 )
+	END
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

@@ -48,7 +48,7 @@
 *                and new character class 11 (single quote)
 *       7/23 - fixed problem missed the first time. brackets: 'X'[stuff]
 * V500: 12/98 - allow {1,3,5} notation for lists of constants
-*	 1/99 - allow strings in quoble quotes (as fcn args)
+*	 1/99 - allow strings in double quotes (as fcn args)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -65,7 +65,8 @@
 	CHARACTER*(*)	text, err_string
 
 * internal variable declarations:
-	LOGICAL		was_operand, atom_open
+	LOGICAL		was_operand, atom_open,
+     .			requires_closure(num_state)
 	INTEGER		ALG_STATE, ALG_CLASS, TM_LENSTR1,
      .			tlen, p, state, last_state, class,
      .			i, next_state(num_class,num_state),
@@ -133,6 +134,19 @@
 	DATA (next_state(i,12),i=1,num_class)
 	1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
 
+* which states are not valid on exit (e.g. unclosed braces)
+	DATA requires_closure(1 )/.FALSE./ !S1 - looking for start of atom
+	DATA requires_closure(2 )/.FALSE./ !S2 - + or - following operator
+	DATA requires_closure(3 )/.FALSE./ !S3 - interpreting constant
+	DATA requires_closure(4 )/.FALSE./ !S4 - interpreting name
+	DATA requires_closure(5 )/.FALSE./ !S5 - found last character of atom
+	DATA requires_closure(6 )/.TRUE. / !S6 - ignoring characters inside []
+	DATA requires_closure(7 )/.FALSE./ !S7 - just missed last character
+	DATA requires_closure(8 )/.FALSE./ !S8 - interpreting exponent
+	DATA requires_closure(9 )/.TRUE. / !S9 - inside of nested []
+	DATA requires_closure(10)/.TRUE. / !S10- inside of single quote pair
+	DATA requires_closure(11)/.TRUE. / !S11- ignoring characters inside {}
+	DATA requires_closure(12)/.TRUE. / !S12- inside of double quote pair
 
 * initialize
 *    "was_operand" flags the character of the previous atom to distinguish the
@@ -149,6 +163,7 @@
  5	p = p + 1
 	IF ( p .GT. tlen ) THEN
 	   IF ( natom .EQ. 0 ) GOTO 9999
+	   IF (requires_closure(state)) GOTO 5400
 * ... SUCCESS - DONE
 	   status = ferr_ok
 	   at_end(natom) = tlen
@@ -265,6 +280,8 @@
  5300	err_string = '['//text(MAX(1,p-8):p)//'\\\]'
 	status = ferr_expr_too_complex
 	GOTO 5005
+ 5400	err_string = 'unclosed quotation, parenthesis, or bracket'
+	GOTO 5000
  5900	err_string = '*** lex state'
 	status = ferr_internal
 	GOTO 5005

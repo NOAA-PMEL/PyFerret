@@ -118,7 +118,11 @@
 *	12/99 *sh* - allow new syntax DEFINE AXIS name=expression
 *			infer units from formatted (say) X=130e:80W
 *		and use routine name_equal_string in multiple places
-
+*	2/00 *sh* - on LET cmnd when replacing an existing variable definition
+*		allow for possible child vars ==> delete old BEFORE init_uvar
+*		is called on new
+*	3/00 *sh* - remove backslash escape characters from DEFINE SYMBOL
+*	     *sh* - allow automatic generation of T0=1-jan-0000
 #ifdef unix
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -218,14 +222,13 @@
      .		  tmap_status, npoints,
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
-     .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset,
+     .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen,
      .		  old_line, old_grid, frst_pt, dim(4), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms)
 	REAL	  rbuff
 	REAL*8	  SECS_FROM_BC, bc_to_t0, start, delta, end, micro_adj
-	CHARACTER FULL_UVAR_NAME*64,
-     .		  reg_name*4, buff1*32, buff2*32, buff3*40, buff30*30,
+	CHARACTER reg_name*4, buff1*32, buff2*32, buff3*40, buff30*30,
      .            basic_orients(4)*2, err_string*255, replmsg*24
 
         CHARACTER*1 tab
@@ -505,6 +508,28 @@
 	   IF ( var .NE. munknown_var_name ) CALL PURGE_ALL_UVARS
 	ENDIF
 
+* do we need to delete a previous definition of this var ?
+* Note: need to purge old defs ALSO if the same name is now redefined in a 
+*	new data set -- expressions using this name chg interpretation  
+	DO 410 i1 = 1, max_uvar
+	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
+	   vax_code = STR_CASE_BLIND_COMPARE( uvar_name_code(i1), buff1 )
+	   IF ( vax_code .EQ. vms_str_success ) THEN
+* ... delete only if same name in same data set
+	      IF ( uvar_dset(i1) .EQ. dset ) THEN
+!	         IF ( qual_given(slash_let_quiet) .EQ. 0 ) THEN
+!	            err_string = FULL_UVAR_NAME(i1,i2)	! buffer
+!	            CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+!     .			replmsg// 'variable '//err_string(:i2), 0)
+!	         ENDIF
+	         CALL DELETE_USER_VAR(i1)
+!  pre-4/99	         uvar_num_items(i1) = uvar_deleted
+	      ENDIF
+* ... reuse of name  makes all past assumptions incorrect
+	      CALL PURGE_ALL_UVARS	! not done above for pdset_irrelevant
+	   ENDIF
+ 410	CONTINUE
+
 * now file the expression in the user-defined variable area
 	CALL INIT_UVAR ( buff1, cmnd_buff(pos:len_cmnd), buff3, buff2, dset,
      .			 explct_defn, uvar,
@@ -512,32 +537,8 @@
      .			 natom, 1, len_cmnd-pos+1, status )
 	IF ( status .NE. ferr_ok ) RETURN
 
-* do we need to delete a previous definition of this var ?
-* Note: need to purge old defs ALSO if the same name is now redefined in a 
-*	new data set -- expressions using this name chg interpretation  
-	DO 410 i1 = 1, max_uvar
-	   IF ( i1 .EQ. uvar
-     .	   .OR. uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
-	   vax_code = STR_CASE_BLIND_COMPARE( uvar_name_code(i1), buff1 )
-	   IF ( vax_code .EQ. vms_str_success ) THEN
-* ... delete only if same name in same data set
-	      IF ( uvar_dset(i1) .EQ. dset ) THEN
-	         CALL DELETE_USER_VAR(i1)
-!  pre-4/99	         uvar_num_items(i1) = uvar_deleted
-	         IF ( qual_given(slash_let_quiet) .EQ. 0 ) THEN
-	            err_string = FULL_UVAR_NAME(i1,i2)	! buffer
-	            CALL SPLIT_LIST(pttmode_ops, ttout_lun,
-     .			replmsg// 'variable '//err_string(:i2), 0)
-	         ENDIF
-	      ENDIF
-* ... reuse of name  makes all past assumptions incorrect
-	      CALL PURGE_ALL_UVARS	! not done above for pdset_irrelevant
-!	      GOTO 420   ! no GOTO: new name may match more than 1 var
-	   ENDIF
- 410	CONTINUE
-
 * is there at least one slot blank ?
- 420	DO 430 i1 = 1, max_uvar
+	DO 430 i1 = 1, max_uvar
  430	IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
 
 * no - not allowed to fill the last slot !
@@ -890,8 +891,8 @@
 	      i1 = 20
  580	      bc_to_t0 = SECS_FROM_BC( buff2, status )      
 	      IF ( status .NE. ferr_ok ) GOTO 5540
-	      IF ( bc_to_t0 + start .GE. 0 ) THEN	! start is before T0?
-	         IF ( i1 .LE. 0 ) GOTO 5540
+	      IF ( bc_to_t0 + start .GT. 0 ) THEN	! start is before T0?
+	         IF ( i1 .LT. 0 ) GOTO 5540
 	         i1 = i1 - 1
 	         WRITE (buff2,3560) i1
  3560	         FORMAT('01-JAN-',I2.2,'00')
@@ -931,7 +932,6 @@
 	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), status )
 	   line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
 	   line_start(iline) = (-line_start(iline)-bc_to_t0)/line_tunit(iline)
-	   IF ( line_start(iline) .LE. 0.0D0 ) GOTO 5360
 
 * ... time axis specified as time step values with T0 given
 	ELSEIF ( orient.EQ.t_dim .AND. qual_given(slash_T0).GT.0 ) THEN
@@ -1131,9 +1131,12 @@
 	CALL GETSYM( buff30, err_string, i2, i1 )
 	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
 
+* remove backslash escape characters
+	err_string = cmnd_buff(pos:arg_end(num_args))   ! exactly 255 for PPL
+	CALL DE_ESCAPE_STRING( err_string, slen )
+
 * define the symbol
-	err_string = cmnd_buff(pos:arg_end(num_args))	! exactly 255 for PPL
-	CALL PUTSYM( buff30, err_string, arg_end(num_args)-pos+1, i2)
+	CALL PUTSYM( buff30, err_string, slen, i2)
 ! ... no check on returned error code (could be "internal error")
 	RETURN
 
@@ -1150,9 +1153,6 @@
  5330	CALL ERRMSG( ferr_grid_definition, status,
      .		'inappropriate orientation for '//ww_dim_name(idim)//
      .		' axis:'//buff1(:TM_LENSTR1(buff1)), *5000 )
- 5360	CALL ERRMSG( ferr_grid_definition, status,
-     .		'time axis start date must be after T0='//line_t0(iline),
-     .		*5000 )
  5400 	CALL ERRMSG( ferr_syntax, status,
      .			buff1(:TM_LENSTR1(buff1))//' = ???', *5000 )
  5410   CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff1,*5000 )

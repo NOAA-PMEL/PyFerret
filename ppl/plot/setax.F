@@ -40,6 +40,11 @@
 *
 *       Declarations added 9.6.88 J Davison                           
 *	Mod for 4 year digits *jd* 11.21.95
+*  
+* v5.41 *acm* - 3/02  If autoscaling is done on an axis, after the
+*                     scale settings are made, set XAXIS_MIN, XAXIS_MAX
+*                     or YAXIS_MIN, YAXIS_MAX
+*               Also remove VMS include statements.
 
 
         real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl,xf,xl,xh  
@@ -69,7 +74,7 @@ C**
 C**
 	DIMENSION X(NXS)
 C	KTYPE = 0 -XY  1 -Z  2-VECTOR
-#ifdef unix
+
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
@@ -90,28 +95,7 @@ C	KTYPE = 0 -XY  1 -Z  2-VECTOR
         include 'MISS.INC'
         include 'cmrdl_inc.decl'
         include 'CMRDL.INC'
-#else
-        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-        INCLUDE 'PPLV11INC:LINES.INC'
-        INCLUDE 'TMAP_PPLV11INC:PEN_INC.DECL'
-        INCLUDE 'PPLV11INC:PEN.INC'
-        INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
-        INCLUDE 'PPLV11INC:PLTL.INC'
-        INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-        INCLUDE 'PPLV11INC:AXIS.INC'
-        INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
-        INCLUDE 'PPLV11INC:HD.INC'
-        INCLUDE 'TMAP_PPLV11INC:TAXIS_INC.DECL'
-        INCLUDE 'PPLV11INC:TAXIS.INC'
-        INCLUDE 'TMAP_PPLV11INC:AXISL_INC.DECL'
-        INCLUDE 'PPLV11INC:AXISL.INC'
-        INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
-        INCLUDE 'PPLV11INC:MISS.INC'
-        INCLUDE 'TMAP_PPLV11INC:CMRDL_INC.DECL'
-        INCLUDE 'PPLV11INC:CMRDL.INC'
-#endif
+
 	LOGICAL CONTR,VECTR
 	CHARACTER IT1TMP*14,IT2TMP*14
 
@@ -183,6 +167,8 @@ C	CONTOUR PLOT
 		XL=(xtm-XLO)*XF
 		XH=XLEN+(xtx-XHI)*XF
 		NMX=NMTCX
+                   CALL GETSYM('XAXIS_MAX',xaxmaxval,NC,IER)
+
 	    ELSE
 		IF(IAUTOX.EQ.0)GOTO 100
 		IF(VECTR)THEN
@@ -252,6 +238,8 @@ C CONTOUR DATA
 			YHI=YF
 			YTIC=-YTIC
 		    ENDIF
+
+                   CALL GETSYM('YAXIS_MAX',yaxval,NC,IER)
 		ENDIF
 		YF=YLEN/(YHI-YLO)
 		YL=(ytm-YLO)*YF
@@ -295,5 +283,10 @@ C CONTOUR DATA
 		NMY=NMTCY
 	    ENDIF
 	ENDIF
+
+        IF (IAUTOX .NE. 0) CALL setax_syms('X', xlo, xhi)
+        IF (IAUTOY .NE. 0) CALL setax_syms('Y', ylo, yhi)
+
+
 	RETURN
 	END

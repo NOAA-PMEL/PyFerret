@@ -1,15 +1,10 @@
-set MODE VERIFY
-!    
-!    
-!    FERRET external functions version 1.1  Use ferret_c
- 
-! ******************************************************************** 
-MESSAGE
 
 
+! Benchmark for sort and sample external Functions
+! ACM 5/99
 
 use coads_climatology
-set region/x=140/y=40/z=0/l=1:6
+set region/x=141/y=39/z=0/l=1:6
 
 list sst
 list samplel({1,3,5},sst)
@@ -17,53 +12,36 @@ list samplel({1,3,5},sst)
 let tsorted_indices = sortl(sst)
 let tsorted_sst = samplel(tsorted_indices, sst)
 
-list tsorted_indices
-list tsorted_sst
+list tsorted_indices, tsorted_sst
 
-message
+
+
 
 can region
 use coads_climatology
-set region/x=140/y=40/z=0/l=7:12
+set region/x=141:151/y=39/z=0/l=2
 
-list sst[l=7:12]
+list sst
 
-let tsorted_indices = sortl( sst[l=7:12])
-let tsorted_sst = samplel(tsorted_indices,  sst)
+let tsorted_indices = sorti( sst[i=61:66])
+let tsorted_sst = samplei(tsorted_indices,  sst)
 
-list tsorted_indices
-list tsorted_sst
+list tsorted_indices, tsorted_sst
 
-message
-! What is the temp here three months after the strongest winds there?
-!  Scatter plots of all data, then highest winds.
-MESSAGE
+
+
+can region
+use coads_climatology
+set region/x=141/y=39:49/z=0/l=2
+
+list sst
+
+let tsorted_indices = sortj( sst[j=65:70])
+let tsorted_sst = samplej(tsorted_indices,  sst)
+
+list tsorted_indices, tsorted_sst
+
 
 can region 
-set data coads
-
-let westerly_wind = uwnd[x=160e:180@ave,y=5s:5n@ave]
-let sorted_indices = sortl(westerly_wind)
-let sorted_indices3 = MOD((sorted_indices+2), 648) + 1
-
-let wwe_by_wwe = samplel(sorted_indices, westerly_wind)
-let sst_by_wwe = samplel(sorted_indices3, sst)
-
-let el_nino = sst_by_wwe[x=180:80w@ave,y=5s:5n@ave]
-let leng = wwe_by_wwe[l=@NGD]
-
-!  Scatter plots of all data, then highest winds.
-
-plot/vs wwe_by_wwe, el_nino
-plot/vs/over/symbol=18/l=`leng-20`:`leng` wwe_by_wwe, el_nino
-
-message
-!  Line plots of the sorted data.
-plot wwe_by_wwe  
-plot/over el_nino - 24
-
-! line plots of the data from highest winds.
-
-plot/l=`leng-20`:`leng` wwe_by_wwe 
-plot/over/l=`leng-20`:`leng` el_nino - 24
+set data coads_climatology
 

@@ -50,27 +50,27 @@
 * *sh* 2/24/95 - instead of comparing the units string compare the units code
 * *sh* 10/95 - slightly different check if a dynamic line
 * V510 4/00 *sh* - netCDF data sets using dynamic axes and grids
+* V530 10/00 *sh* - bug fix: since netCDF axes are now dynamic, the decision
+*		    to bypass coordinate checking on irregular axes must be
+*		    based on these be child axes, rather than being dynamic
+*		  - also switched to using TM_WORLD rather than direct refs
+*		    to line_mem
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
+	include 'implicit.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * Argument definitions
 	INTEGER*4	line1, line2
 
 * Local definitions
         LOGICAL         TM_FPEQ, dynamic
-	INTEGER*4	i2, i1, j
+	INTEGER*4	j
+	REAL*8		TM_WORLD_AX, xx1, xx2
 
 * local parameter declaration
 * ... all these are somewhat arbitrary
@@ -114,32 +114,70 @@
      .                          SNGL(line_start(line2)) ) ) GOTO 1000
             IF ( .NOT. TM_FPEQ( SNGL(line_delta(line1)),
      .                          SNGL(line_delta(line2)) ) ) GOTO 1000
-	  ELSEIF (.NOT.dynamic) THEN
-* static irregular lines
-	    i2 = line_subsc1(line2)
-	    i1 = line_subsc1(line1)
-	    DO 100 j = 0,2*line_dim(line1)
-              IF ( ABS(line_mem(i2+j)) .LT. max_sp_compare ) THEN
+! pre 10/00	  ELSEIF (.NOT.dynamic) THEN
+	  ELSEIF ((line_class (line1) .NE. pline_class_stride)
+     .	    .AND. (line_class (line1) .NE. pline_class_midpt ) ) THEN
+* irregular lines
+	    DO 100 j = 1,line_dim(line1)
+* first check the grid points
+	      xx1 = TM_WORLD_AX(j, line1, box_middle)
+	      xx2 = TM_WORLD_AX(j, line2, box_middle)
+	      IF (ABS(xx1) .EQ. -ABS(xx2)) GOTO 1000
+              IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
-	         IF ( SNGL(line_mem(i2+j))
-     .           .EQ. SNGL(line_mem(i1+j)) ) GOTO 100
+	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
 * ... they're not equal but they may be within acceptable limits
-	         IF ( ABS((line_mem(i2+j)-line_mem(i1+j))
-     .		      /(line_mem(i2+j)+line_mem(i1+j))) .GT. haf_sp_eps )
+	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
      .							    GOTO 1000
               ELSE
 * ... full precision comparison (needed for very large time words)
-	         IF ( line_mem(i2+j) .EQ. line_mem(i1+j) ) GOTO 100
+	         IF ( xx1 .EQ. xx2 ) GOTO 100
 * ... they're not equal but they may be within machine accuracy
-	         IF ( ABS((line_mem(i2+j)-line_mem(i1+j))
-     .		      /(line_mem(i2+j)+line_mem(i1+j))) .GT. haf_dp_eps )
+	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_dp_eps )
+     .							    GOTO 1000
+              ENDIF
+
+* now the grid cell bounds
+	      xx1 = TM_WORLD_AX(j, line1, box_lo_lim)
+	      xx2 = TM_WORLD_AX(j, line2, box_lo_lim)
+	      IF (ABS(xx1) .EQ. -ABS(xx2)) GOTO 1000
+              IF ( ABS(xx2) .LT. max_sp_compare ) THEN
+* ... single precision comparison
+	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
+* ... they're not equal but they may be within acceptable limits
+	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
+     .							    GOTO 1000
+              ELSE
+* ... full precision comparison (needed for very large time words)
+	         IF ( xx1 .EQ. xx2 ) GOTO 100
+* ... they're not equal but they may be within machine accuracy
+	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_dp_eps )
      .							    GOTO 1000
               ENDIF
   100	    CONTINUE
+
+* finally the upper limit of the top cell
+	    xx1 = TM_WORLD_AX(j, line1, box_hi_lim)
+	    xx2 = TM_WORLD_AX(j, line2, box_hi_lim)
+	    IF (ABS(xx1) .EQ. -ABS(xx2)) GOTO 1000
+            IF ( ABS(xx2) .LT. max_sp_compare ) THEN
+* ... single precision comparison
+	       IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 500
+* ... they're not equal but they may be within acceptable limits
+	       IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
+     .							    GOTO 1000
+              ELSE
+* ... full precision comparison (needed for very large time words)
+	       IF ( xx1 .EQ. xx2 ) GOTO 500
+* ... they're not equal but they may be within machine accuracy
+	       IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_dp_eps )
+     .							    GOTO 1000
+            ENDIF
+
 	  ENDIF
 
 * the lines are identical
-	TM_SAME_LINE_DEF = .TRUE.
+ 500	  TM_SAME_LINE_DEF = .TRUE.
         RETURN
 
 * the lines differ

@@ -102,6 +102,7 @@
 #include "gif/gd.h"
 #include "gif/gdadds.h"
 
+
 #ifndef lint
     static char afsid[]	= "$__Header$";
     static char rcsid[]	= "$Id$";
@@ -664,6 +665,58 @@ GIFmessage(Metafile **mf, int num, Gchar *string)
  */
 /* RETURN HERE ****************/
 
+static int isColinear(gdPointPtr first, gdPointPtr second, gdPointPtr third){
+  int dx1 = second->x - first->x;
+  int dx2 = third->x - second->x;
+  int dy1 = second->y - first->y;
+  int dy2 = third->y - second->y;
+  return (dy2*dx1 - dx2*dy1) == 0;
+}
+
+static void stripColinear(gdPointPtr tpts, int *num_pts){
+  int total = 0;
+  int i;
+  gdPointPtr npts, first, second;
+  if (*num_pts <= 2){
+    return;
+  }
+  npts = (gdPointPtr)umalloc(sizeof(gdPoint) * *num_pts);
+  assert(npts);
+  first = tpts;
+  second = tpts+1;
+  for (i=2; i < *num_pts; ++i){
+    gdPointPtr third = &tpts[i];
+    if (isColinear(first, second, third)){
+      second = third;
+    } else {
+      npts[total].x = first->x;
+      npts[total].y = first->y;
+      ++total;
+      first = second;
+      second = third;
+    }
+  }
+  npts[total].x = first->x;
+  npts[total].y = first->y;
+  ++total;
+  npts[total].x = second->x;
+  npts[total].y = second->y;
+  ++total;
+
+  memcpy(tpts, npts, sizeof(gdPoint)*total);
+
+  free(npts);
+  *num_pts = total;
+
+#ifdef DEBUG
+  printf("--------------------------------------\n");
+  for (i=0; i < total; ++i){
+    printf("strip: (%d, %d)\n", tpts[i].x, tpts[i].y);
+  }
+#endif
+
+}
+
     int
 GIFoutputGraphic(Metafile *mf, int num, Gint code, Gint num_pt, Gpoint *pos)
 {
@@ -715,13 +768,24 @@ GIFoutputGraphic(Metafile *mf, int num, Gint code, Gint num_pt, Gpoint *pos)
 	    gdPointPtr tpts = (gdPointPtr)umalloc(sizeof(gdPoint) * num_pt);
 	    assert(tpts);
 	    xform(meta, pos->x, pos->y, &tpts[0].x, &tpts[0].y);
+#ifdef DEBUG
+	    printf("--------------------------------------\n");
+	    printf("Transform: (%f, %f) -> (%d,%d)\n",
+		pos->x, pos->y, tpts[0].x, tpts[0].y);   
+#endif
 	    ++pos;
 	    for (i=1; i < num_pt; ++i, ++pos){
 	      xform(meta, pos->x, pos->y, &tpts[i].x, &tpts[i].y);
+#ifdef DEBUG
+	      printf("Transform: (%f, %f) -> (%d,%d)\n",
+		     pos->x, pos->y, tpts[i].x, tpts[i].y);   
+#endif
 	    }
 	    if (meta->fillStyleIndex == 0){
 	      gdImagePolygon(meta->image, tpts, num_pt, meta->fillIndex);
 	    } else {
+				/* Eliminate colinear points (bug in gd.c) */
+	      stripColinear(tpts, &num_pt);
 	      gdImageFilledPolygon(meta->image, tpts, num_pt,
 				   meta->fillIndex);
 	    }

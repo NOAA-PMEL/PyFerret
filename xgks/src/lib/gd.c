@@ -34,7 +34,6 @@
 *
 */
 
-
 #include <unistd.h>
 #include <malloc.h>
 #include <stdio.h>
@@ -2427,7 +2426,8 @@ void gdImageFilledPolygon(gdImagePtr im, gdPointPtr p, int n, int c)
 			y2 = p[i].y;
 		}
 	}
-	for (y=y1; (y <= y2); y++) {
+	/* Fix in 1.3: count a vertex only once */
+	for (y=y1; (y < y2); y++) {
 		int interLast = 0;
 		int dirLast = 0;
 		int interFirst = 1;
@@ -2469,7 +2469,7 @@ void gdImageFilledPolygon(gdImagePtr im, gdPointPtr p, int n, int c)
 			}
 			if ((y >= y1) && (y <= y2)) {
 				int inter = 
-					(y-y1) * (x2-x1) / (y2-y1) + x1;
+					1.0 * (y-y1) * (x2-x1) / (y2-y1) + x1;
 				/* Only count intersections once
 					except at maxima and minima. Also, 
 					if two consecutive intersections are
@@ -2505,12 +2505,21 @@ void gdImageFilledPolygon(gdImagePtr im, gdPointPtr p, int n, int c)
 			}
 		}
 		qsort(im->polyInts, ints, sizeof(int), gdCompareInt);
-		for (i=0; (i < (ints-1)); i+=2) {
+				/* Bug fix js 5.99 */
+				/* replaced i+=2 with ++i to avoid holes in fills */
+		for (i=0; (i < (ints-1)); ++i) {
 			gdImageLine(im, im->polyInts[i], y,
 				im->polyInts[i+1], y, c);
+#ifdef DEBUG
+			if (y == 564 || y == 565){
+			  printf("Line: (%d,%d)->(%d,%d)\n", im->polyInts[i], y,
+				im->polyInts[i+1], y);
+			}
+#endif
 		}
 	}
 }
+	
 	
 int gdCompareInt(const void *a, const void *b)
 {

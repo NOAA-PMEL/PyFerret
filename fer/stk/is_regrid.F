@@ -72,6 +72,11 @@
 *                  the fact that result is on a new axis where the delta 
 *                  is implicit rather than explicit in the axis definition 
 *                  see err540_strides_rev.jnl 
+* V552:  4/04 *acm* - bug fix.  For @AVE and related transforms @SUM, etc.
+*                     send src_lo_ss and src_hi_ss for the range on the src
+*                     axis.  Previous use of mr_lo_ss and mr_hi_ss can result
+*                     in incorrect results when a larger then needed chunk
+*                     of source data is already in4/15/03 memory
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -255,20 +260,22 @@
 	   CALL DO_AVE_REGRID( cx_valid, axis, rgrd_trans,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1, 2*wk_size )
+     .			memory(1, blk1), src_cx, dst_cx,
+     .                  wk_size+1 )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYAVE_REGRID( cx_valid,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1, wk_size+wk_size2 )
+     .			memory(1, blk1), src_cx, dst_cx,
+     .                  wk_size+1, wk_size+wk_size2 )
 	ELSEIF ( rgrd_trans.EQ.prgrd_min
      .	   .OR. rgrd_trans.EQ.prgrd_max ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_WINDOW_REGRID( cx_valid, axis, rgrd_trans,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
-     .			memory(1, blk1), wk_size+1, 2*wk_size )
+     .			memory(1, blk1), wk_size+1)
 	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN
 	   CALL DO_XACT_REGRID( cx_valid, axis,
      .			memory(1,mr_blk1(src_mr)), src_mr,

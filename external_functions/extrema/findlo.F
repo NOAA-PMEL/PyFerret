@@ -3,6 +3,7 @@
 *
 * Ansley Manke
 * July 02, 2001
+* jan 2002 -- change to use neighborhood in data units, not Ngridpoints.
 *
 * This function locates local extrema, returning "lows".
 *
@@ -78,19 +79,19 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'NEIGH_X')
+      CALL ef_set_arg_name(id, arg, 'XRNG')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local minima in neighborhood +- NEIGH_X gridpoints')
+     .'Find local minima in neighborhood +- XRNG, in data units')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'NEIGH_Y')
+      CALL ef_set_arg_name(id, arg, 'YRNG')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local minima in neighborhood +- NEIGH_X gridpoints')
+     .'Find local minima in neighborhood +- YRNG, in data units')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                      ^
 *                                                                      |
@@ -255,7 +256,7 @@
 
       INTEGER i, j, k, l, i1, j1, k1, l1, arg, nx, ny, nzmin, ip, jp, 
      .        neigh_x, neigh_y
-      REAL    neigh
+      REAL    dx, dy, xsc, ysc
 
 *  Dimension the work arrays.
 
@@ -283,6 +284,9 @@
       nx = arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1
       ny = arg_hi_ss(Y_AXIS,arg) - arg_lo_ss(Y_AXIS,arg) + 1
 
+      dx = xax(2,1,1,1) - xax(1,1,1,1)
+      dy = yax(2,1,1,1) - yax(1,1,1,1)
+
 *  Get the parameters neigh_x, neigh_y, to determine the region in which relative 
 *  mins are found: 
 C A RELATIVE MINIMUM (OR MAXIMUM) IS DEFINED TO BE THE LOWEST (OR HIGHEST) 
@@ -290,10 +294,10 @@ C POINT WITHIN A CERTAIN NEIGHBORHOOD OF THE POINT.  THE NEIGHBORHOOD USED
 C HERE IS + OR - neigh_x IN THE X DIRECTION AND + OR - neigh_y IN THE Y 
 C DIRECTION
 
-      CALL ef_get_one_val (id, ARG2, neigh)
-      neigh_x = INT (neigh)
-      CALL ef_get_one_val (id, ARG3, neigh)
-      neigh_y = INT (neigh)
+      CALL ef_get_one_val (id, ARG2, xsc)
+      neigh_x = MAX(1, INT (xsc/dx))
+      CALL ef_get_one_val (id, ARG3, ysc)
+      neigh_y = MAX(1, INT (ysc/dy))
 
 *  For each level and each time, call minminmax to get the minima.
 *  Determine the coordinates of the min's and put with the min value

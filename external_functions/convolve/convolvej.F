@@ -55,7 +55,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Convolve J component of grid with weight function')
+   10 FORMAT ('Convolve J component of variable with weight function')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -67,7 +67,8 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'COM')
-      CALL ef_set_arg_desc(id, arg, 'Component of grid to convolve')
+      CALL ef_set_arg_desc(id, arg, 
+     .  'Variable in Y (and perhaps X,Z,T) to convolve')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 2
@@ -126,7 +127,7 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
-      REAL comp, sum
+      REAL comp, sum, weight
       INTEGER xlen, ylen, zlen, tlen, jj
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
@@ -177,11 +178,24 @@
                      ELSE
                         comp = arg_1(i1,j1+jj,k1,l1)
 
+                        IF (i2 .LT. arg_lo_ss(X_AXIS,ARG2)  .OR.
+     .                      i2 .GT. arg_hi_ss(X_AXIS,ARG2)  .OR.
+     .                      j2 .LT. arg_lo_ss(Y_AXIS,ARG2)  .OR.
+     .                      j2 .GT. arg_hi_ss(X_AXIS,ARG2)  .OR.
+     .                      k2 .LT. arg_lo_ss(Z_AXIS,ARG2)  .OR.
+     .                      k2 .GT. arg_hi_ss(Z_AXIS,ARG2)  .OR.
+     .                      l2 .LT. arg_lo_ss(T_AXIS,ARG2)  .OR.
+     .                      l2 .GT. arg_hi_ss(T_AXIS,ARG2)) THEN
+                               weight = 0.
+                        ELSE
+                           weight = arg_2(i2,j2,k2,l2)
+                        ENDIF
+
                         IF ( comp .EQ. bad_flag(ARG1)) THEN
                            result(i,j,k,l) = bad_flag_result
                            GOTO 190
                         ELSE
-                           sum = sum + comp*arg_2(i2,j2,k2,l2)
+                           sum = sum + comp* weight
                         ENDIF
                      ENDIF
 

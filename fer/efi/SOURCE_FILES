@@ -1,4 +1,6 @@
 SRCS_F = \
+shellsort.F\
+fftsubs.F\
 ffta.F\
 fftp.F\
 sampleij.F\
@@ -16,10 +18,8 @@ sortk.F\
 sortl.F\
 tauto_cor.F\
 xauto_cor.F\
-day_of_year.f\
-fftsubs.f\
-gausswt.f\
-nobad.f\
-pickindex.f\
-pickoutxyz.f\
-shellsort.f
+day_of_year.F\
+gausswt.F\
+nobad.F\
+pickindex.F\
+pickoutxyz.F

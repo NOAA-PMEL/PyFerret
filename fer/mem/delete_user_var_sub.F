@@ -56,6 +56,9 @@
 
 * V420 9/95 - When user variable is deleted release any claim on dynamic grids
 * V450 7/97 - renamed to DELETE_USER_VAR_SUB from DELETE_USER_VAR
+* V510 2/00 *sh* - with the advent of "child variables" created by grid
+*	changing variables deleting a user variable must also remove the name
+*	of the (child) variable
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -83,7 +86,7 @@
 * internal variable declarations:
 	INTEGER		STR_UPCASE,
      .			du_list( max_uvar ), ndu, kdu, uv, vax_code, ind,
-     .			i, mr
+     .			i
 	CHARACTER*24	check_name
 
 * procedure:
@@ -135,6 +138,8 @@
 
 * eliminate the named variable from the list of uvars
 	uvar_num_items( uvar ) = uvar_deleted
+	uvar_name_code( uvar ) = " "
+	uvar_text     ( uvar ) = " "
 	      
 	RETURN
 	END

@@ -66,7 +66,7 @@ i486-linux:
 		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include/ -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
-		LIB="-L/usr/X11R6/lib -lX11 -lm"
+		LIB="-L/usr/X11R6/lib -lX11static -lm"
 
 gksm2ps:	gksm2ps.o xpreview.o \
 	resize_xgks_window.o set_background.o gksm.o batch_graphics.o

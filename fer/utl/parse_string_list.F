@@ -11,7 +11,7 @@
 *		   - save null strings for missing values
 * V540:  9/01 *sh* - change "SYSTEM:" to "SPAWN:"
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead 
+*                         statements.  use an octal constant instead 
 
 * calling argument declarations
 	INTEGER		cx, mr, status
@@ -25,7 +25,11 @@
 
 * internal parameter declarations
 	CHARACTER*1     tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 	include 'ferret.parm'
 	include 'errmsg.parm'

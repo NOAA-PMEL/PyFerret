@@ -51,7 +51,7 @@
 * V500: 12/98 - add "{" and "}" to support "{1,3,5}" notation
 *	 1/99 - allow strings in quoble quotes (as fcn args)
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead 
+*                         statements.  use an octal constant instead 
 
 #ifdef unix
 	include	'ferret.parm'
@@ -64,7 +64,11 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 * classes of characters
 *	C1 - + -

@@ -256,7 +256,11 @@
      .		  mon_names(12)*3
 
         CHARACTER*1 tab
-        PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 	DATA	  basic_orients / 'WE','SN','UD','TI' /,
      .		  replmsg/'Replacing definition of '/

@@ -70,7 +70,7 @@
 * V522 7/00 *sh* - hack to add symbol "FERRET_VERSION"
 *	         - call upon the new routine SPECIAL_SYMBOL
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead 
+*                         statements.  use an octal constant instead 
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -92,7 +92,12 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
+
 
 * 11/96 *kob*
 #ifdef crptd_cat_argument

@@ -44,7 +44,7 @@
 * V510: 3/00 *sh* - allow backslash escapes to protect quotations
 * V531 *sh* 4/01 - allow 2-digit argument numbers and enclosing parens
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead
+*                         statements.  use an octal constant instead
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
@@ -58,7 +58,12 @@
 
 * internal parameter declarations
 	CHARACTER*1     tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
+
 
 #ifdef unix
 	include 'ferret.parm'

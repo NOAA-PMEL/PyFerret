@@ -63,7 +63,7 @@
 * V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
 * V53 *acm* - 3/01 calendar axes:  pass in calendar ID
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead 
+*                         statements.  use an octal constant instead 
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -101,7 +101,11 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 * initialize fixed length string for RISC
         risc_buff = string

@@ -56,7 +56,7 @@
 *                  alias.  new version of DEC fortran caught the error in
 *                  the string concatenation.
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead
+*                         statements.  use an octal constant instead
 
 
 * calling argument declarations:
@@ -68,7 +68,12 @@
      .          alen, true_len, i, spos, bpos, cpos
 
         CHARACTER*1     tab
-        PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
+
 
 #ifdef unix
 	include 'ferret.parm'

@@ -48,7 +48,7 @@
 *     : bug fix 5/96: ENDIF processed wrong for nested IF
 * V530: 1/01 *sh* - skip white space at start of line
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead
+*                         statements.  use an octal constant instead
 
 * calling argument declarations:
 	INTEGER		slen
@@ -76,7 +76,11 @@
 
 * internal parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 * sanity check
 	IF ( ifstk.LT.1 .OR. ifstk.GT.max_ifstk ) GOTO 5000

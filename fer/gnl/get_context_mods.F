@@ -128,7 +128,7 @@
 * V533:6/01 *sh* bug fix: cx_grid_needs_dset is not set correctly when the
 *			  g=var and var is a uvar with self-contained dset 
 *
-* *kob* 2/03 - replace call to intrinsic func CHAR with its character
+* *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -187,7 +187,11 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 	INTEGER		looking_for_D, looking_for_eq, looking_for_name,
      .			done_looking, cal_id, TM_GET_CALENDAR_ID
 	PARAMETER     ( looking_for_D = 1,

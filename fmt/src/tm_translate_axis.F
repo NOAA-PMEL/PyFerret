@@ -79,7 +79,11 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab 
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 
 	end_pos = TM_LENSTR1( string )

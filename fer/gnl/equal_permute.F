@@ -50,7 +50,7 @@
 *	       is filled, var_ok arg to determine if "V" is allowable, and
 *	       neg_ok for acceptable minus signs
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead
+*                         statements.  use an octal constant instead
 
 * calling argument declarations
 	LOGICAL		fill, v_ok, neg_ok
@@ -64,7 +64,11 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 #ifdef unix
 	include 'ferret.parm'

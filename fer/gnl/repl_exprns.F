@@ -79,7 +79,7 @@
 *	*sh* 3/01 - added RETURN=dset, dset_num, dset_path
 * V531: *sh* 4/01 - added RETURN=bad
 * V532: *sh* 5/01 - mod to EVAL_CONTEXT forced change here  
-* *kob* 2/03 - replace call to intrinsic func CHAR with its character
+* *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
 *            - Need to use risc_buff for arbitrary concatenations
 
@@ -128,7 +128,12 @@
 
 * local parameter declarations
 	CHARACTER	tab*1
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
+
 
 * initialize
 	did_sub = .FALSE.    	! any substitutions done?

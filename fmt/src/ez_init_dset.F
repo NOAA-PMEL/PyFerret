@@ -72,7 +72,12 @@
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
 	PARAMETER 	(ez_rev = '1.11')
-	PARAMETER	( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
+
 *
 * Arguments:
 *	filename	- name of data file

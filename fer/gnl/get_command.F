@@ -83,7 +83,7 @@
 *       *sh* 3/01 - do not call PARSE_COMMA_LIST if arg1 quoted
 * V531: *sh* 4/01 - chenge prompt for continuation line
 *	*sh* 5/01 - ignore DOS carriage returns in journal files
-* *kob* 2/03 - replace call to intrinsic func CHAR with its character
+* *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
 
 #ifdef MIXING_NAG_F90_AND_C
@@ -101,8 +101,11 @@
      .		iqual, ilist, cmnd_len, double_eof
 
         CHARACTER*1 backslash
-        PARAMETER ( backslash = '\092' )
-
+#ifdef NO_INTRINSIC_IN_PARAMETER
+        PARAMETER ( backslash = o'134' )
+#else
+        PARAMETER ( backslash = char(92) )
+#endif
 #ifdef unix
 	include 'errmsg.parm'
 	include 'ferret.parm'

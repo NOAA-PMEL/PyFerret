@@ -81,9 +81,14 @@
 
 * local parameter declarations
         CHARACTER*1     sing_quote
-        PARAMETER     ( sing_quote = '\039' )
         CHARACTER*1	tab
-        PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+        PARAMETER     ( sing_quote = o'047' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+        PARAMETER     ( sing_quote = CHAR(39) )
+#endif
 
 #ifdef unix
 	include 'ferret.parm'

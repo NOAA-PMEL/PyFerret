@@ -61,7 +61,11 @@
 	
 * local parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 * skip leading blanks
 	DO 100 i = 1, LEN(string)

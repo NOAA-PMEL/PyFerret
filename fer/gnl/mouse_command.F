@@ -47,7 +47,7 @@
 *				 ifdef MANDATORY_FORMAT_WIDTHS for I format
 *			         descriptor 
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead
+*                         statements.  use an octal constant instead
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -75,7 +75,11 @@
      .		status, iqual, ilist, cmnd_len, query, i
 
         CHARACTER*1 backslash
-        PARAMETER ( backslash = '\092' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+        PARAMETER ( backslash = o'134' )
+#else
+        PARAMETER ( backslash = CHAR(92) )
+#endif
 
 
 * read from standard input without prompt

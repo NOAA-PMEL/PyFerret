@@ -68,7 +68,7 @@
 * V533: *sh8 7/01 - if label contains single tic marks double them so PLOT+
 *		    doesn't try to interpret symbols
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead 
+*                         statements.  use an octal constant instead 
 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -96,7 +96,11 @@
 * local parameter declarations:
 	INTEGER		maxsym, len_in, i
 	CHARACTER*1	esc
-	PARAMETER     ( esc = '\027',
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( esc = o'033' ,
+#else
+	PARAMETER     ( esc = CHAR(27),
+#endif
      .			maxsym = 102   )! max. symbol length for PPLUS (PPL bug)
 
 * data initialization

@@ -40,7 +40,7 @@
 *
 * V510 - 12/99 *sh* - extracted from XEQ_DEFINE
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use an character constant instead
+*                         statements.  use an octal constant instead
 
 #ifdef unix
 	include	'ferret.parm'
@@ -60,7 +60,11 @@
 	INTEGER STR_UPCASE, pos, i1
 
 	CHARACTER*1 tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 * find name to define
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"

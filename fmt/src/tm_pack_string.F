@@ -52,7 +52,11 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = '\t' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( tab = o'011' )
+#else
+	PARAMETER     ( tab = CHAR(9))
+#endif
 
 * internal variable declarations:
 	INTEGER	i_in, i_out, str_len, str_end

@@ -90,7 +90,11 @@
 #endif
 
 	CHARACTER*1	rubout
-	PARAMETER     ( rubout = '\127' )
+#ifdef NO_INTRINSIC_IN_PARAMETER
+	PARAMETER     ( rubout = o'177' )
+#else
+	PARAMETER     ( rubout = CHAR(127) )
+#endif
 	INTEGER	i
 
 * single character operators:

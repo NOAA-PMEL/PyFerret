@@ -60,11 +60,15 @@ hp:
 
 
 gksm2ps:	gksm2ps.o xpreview.o \
-	resize_xgks_window.o set_background.o gksm.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.o xpreview.o \
-	 resize_xgks_window.o set_background.o gksm.o \
-	$(FER_LINK_DIR)/ppl/addsxgks/ppladd_ws_line_bundle.o \
+	resize_xgks_window.o set_background.o gksm.o batch_graphics.o
+	- $(CC) $(CFLAGS) $(LDFLAGS) -o gksm2ps gksm2ps.o xpreview.o \
+	 resize_xgks_window.o set_background.o gksm.o batch_graphics.o \
+	../ppl/addsxgks/ppladd_ws_line_bundle.o \
+	../ppl/addsxgks/ppladd_query_xgks_wkstn.o \
+	../ppl/modsxgks/xgksmod_xopws.o \
+	../ppl/modsxgks/xgksmod_xcolours.o \
 	$(GKLIB) $(LIB)
+	chmod +x gksm2ps
 
 clean:
 	rm *.o gksm2ps

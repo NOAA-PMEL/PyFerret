@@ -61,6 +61,9 @@
 *	NUM_BUFFERED is the number of currently buffered polygons
 *	UPPERFLG is true when the upper triangle calls drawpoly
 *	UPPER_FIRST is true when the upper triangle is first cell in a buffer
+* 
+* 2/03 *kob* g77 port - move position of cont_key var in common block.  g77
+*                       complained that padding was necessary otherwise
 	
 
 	integer		spec_size,max_windows,pattern_num
@@ -107,7 +110,7 @@
      .			   ncl,slvl,sr,sg,sb,
      .			   lo_color_ndx(max_windows),
      .			   hi_color_ndx(max_windows),
-     .			   area_bundles,protect_used_colors,
+     .			   area_bundles,protect_used_colors,cont_key,
      .			   mncl,mslvl,msr,msg,msb,
      .			   patterns,npat,mpatterns,mnpat,
      .			   default_patterns,
@@ -115,5 +118,5 @@
      .			   mrgb_mapping, ilast,
      .			   buffer_empty, num_buffered,
      .		     	   xbuff, ybuff, upperflg, upper_first,
-     .			   pattern_list, cont_key
+     .			   pattern_list
 

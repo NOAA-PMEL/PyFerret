@@ -36,6 +36,9 @@
 * V455    9/97 - added transforms @CDA,CDB,CIA,CIB
 * V490   10/97 - added regrid transform @XACT (removed unimplemented g=@NRS)
 *	       - changed title for g=@ASN from "1 to 1" to "index assn"
+* V491    4/98 - *kob* modified documentation order for function days1900
+*                      to correct year-month-day
+
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -268,13 +271,13 @@
      .	     alg_num_fcn_args	( 22 ) / 3 	    /
      .	     alg_fcn_descr	( 22 ) / 'days elapsed since 1-Jan-1990'/,
      .	     alg_fcn_arg_ptr    ( 22 ) / 32	    /,
-     .	     alg_arg_name     ( 32 ) / 'day'	    /,
+     .	     alg_arg_name     ( 32 ) / 'year'	    /,
      .	     alg_arg_units    ( 32 ) / ' '	    /,
      .	     alg_arg_descr    ( 32 ) / ' '	    /,
      .	     alg_arg_name     ( 33 ) / 'month'	    /,
      .	     alg_arg_units    ( 33 ) / ' '	    /,
      .	     alg_arg_descr    ( 33 ) / ' '	    /,
-     .	     alg_arg_name     ( 34 ) / 'year'	    /,
+     .	     alg_arg_name     ( 34 ) / 'day'	    /,
      .	     alg_arg_units    ( 34 ) / ' '	    /,
      .	     alg_arg_descr    ( 34 ) / ' '	    /
 	DATA (alg_fcn(i),i=23,num_functions)/ 3*unspecified_name4 /

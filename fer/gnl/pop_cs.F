@@ -45,6 +45,8 @@
 * V300 - 2/2/93 - added semicolon-separated command groups
 * V420 - added IF (single line version controls input source)
 *      - generate warning if multi-line IF is unclosed
+* V500 4/99 *sh* - remove the informative message about an unclosed IF
+*    This is not an error in IF cond THEN stmt; QUIT ENDIF 
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN, stat, axis
@@ -72,7 +74,7 @@
 * we will issue a warning and then implicitly close the IF
 	IF (if_conditional) THEN
 	   IF (csp .LE. if_cs(ifstk) ) THEN
-	      CALL WARN('Unclosed IF statement ... assuming ENDIF')
+! no! 4/99	      CALL WARN('Unclosed IF statement ... assuming ENDIF')
 	      ifstk = ifstk - 1
 	      IF (ifstk .EQ. 0 ) if_conditional = .FALSE.
 	   ENDIF

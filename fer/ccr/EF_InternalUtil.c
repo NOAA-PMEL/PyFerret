@@ -145,7 +145,7 @@ void FORTRAN(efcn_get_arg_desc)( int *, int *, char * );
 
 /* Fortran routines from the efn/ directory */
 void FORTRAN(efcn_copy_array_dims)(void);
-void FORTRAN(efcn_set_work_array_dims)(int *, int *, int *, int *, int *);
+void FORTRAN(efcn_set_work_array_dims)(int *, int *, int *, int *, int *, int *, int *, int *, int *);
 void FORTRAN(efcn_get_workspace_addr)(float *, int *, float *);
 
 static void EF_signal_handler(int);
@@ -784,23 +784,26 @@ ERROR in efcn_compute() accessing %s\n", tempText);
       }
       (*fptr)( id_ptr );
 
+
+	  /* Allocate memory for each individual work array */
+
       for (j=0; j<i_ptr->num_work_arrays; i++, j++) {
 
-        int iarray,xlen,ylen,zlen,tlen;
+        int iarray,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi;
         iarray = j+1;
-        xlen = i_ptr->work_array_len[j][0];
-        ylen = i_ptr->work_array_len[j][1];
-        zlen = i_ptr->work_array_len[j][2];
-        tlen = i_ptr->work_array_len[j][3];
+        xlo = i_ptr->work_array_lo[j][0];
+        ylo = i_ptr->work_array_lo[j][1];
+        zlo = i_ptr->work_array_lo[j][2];
+        tlo = i_ptr->work_array_lo[j][3];
+        xhi = i_ptr->work_array_hi[j][0];
+        yhi = i_ptr->work_array_hi[j][1];
+        zhi = i_ptr->work_array_hi[j][2];
+        thi = i_ptr->work_array_hi[j][3];
 
-        FORTRAN(efcn_set_work_array_dims)(&iarray,&xlen,&ylen,&zlen,&tlen);
+        FORTRAN(efcn_set_work_array_dims)(&iarray,&xlo,&ylo,&zlo,&tlo,&xhi,&yhi,&zhi,&thi);
 
-        size = sizeof(float);
-        for (xyzt=0; xyzt<4; xyzt++) {
-          size *= i_ptr->work_array_len[j][xyzt];
-        }
+        size = sizeof(float) * (xhi-xlo+1) * (yhi-ylo+1) * (zhi-zlo+1) * (thi-tlo+1);
 
-	/* Allocate memory for each individual work array */
         if ( (arg_ptr[i] = (float *)malloc(size)) == NULL ) { 
           fprintf(stderr, "\n\
 ERROR in efcn_compute() allocating %d words of memory\n", size);
@@ -1593,7 +1596,8 @@ int EF_New( ExternalFunction *this )
   i_ptr->num_work_arrays = 0;
   for (i=0; i<4; i++) {
     for (j=0; j<EF_MAX_WORK_ARRAYS; j++) {
-      i_ptr->work_array_len[j][i] = 1;
+      i_ptr->work_array_lo[j][i] = 1;
+      i_ptr->work_array_hi[j][i] = 1;
     }
     i_ptr->axis_will_be[i] = IMPLIED_BY_ARGS;
     i_ptr->axis_reduction[i] = RETAINED;

@@ -11,131 +11,131 @@ c     It sets all of the dimensioning information for the work spaces in
 c     ef_mem_subsc.cmn.
 c     
 
-      SUBROUTINE EFCN_SET_WORK_ARRAY_DIMS(iarray,i,j,k,l)
+      SUBROUTINE EFCN_SET_WORK_ARRAY_DIMS(iarray,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER iarray, i, j, k, l
+      INTEGER iarray,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi
 
       IF (iarray .EQ. 1) THEN
-         wrk1lox = 1
-         wrk1loy = 1
-         wrk1loz = 1
-         wrk1lot = 1
-         wrk1hix = i
-         wrk1hiy = j
-         wrk1hiz = k
-         wrk1hit = l
+         wrk1lox = xlo
+         wrk1loy = ylo
+         wrk1loz = zlo
+         wrk1lot = tlo
+         wrk1hix = xhi
+         wrk1hiy = yhi
+         wrk1hiz = zhi
+         wrk1hit = thi
 
       ELSE IF (iarray .EQ. 2) THEN
-         wrk2lox = 1
-         wrk2loy = 1
-         wrk2loz = 1
-         wrk2lot = 1
-         wrk2hix = i
-         wrk2hiy = j
-         wrk2hiz = k
-         wrk2hit = l
+         wrk2lox = xlo
+         wrk2loy = ylo
+         wrk2loz = zlo
+         wrk2lot = tlo
+         wrk2hix = xhi
+         wrk2hiy = yhi
+         wrk2hiz = zhi
+         wrk2hit = thi
 
       ELSE IF (iarray .EQ. 3) THEN
-         wrk3lox = 1
-         wrk3loy = 1
-         wrk3loz = 1
-         wrk3lot = 1
-         wrk3hix = i
-         wrk3hiy = j
-         wrk3hiz = k
-         wrk3hit = l
+         wrk3lox = xlo
+         wrk3loy = ylo
+         wrk3loz = zlo
+         wrk3lot = tlo
+         wrk3hix = xhi
+         wrk3hiy = yhi
+         wrk3hiz = zhi
+         wrk3hit = thi
 
       ELSE IF (iarray .EQ. 4) THEN
-         wrk4lox = 1
-         wrk4loy = 1
-         wrk4loz = 1
-         wrk4lot = 1
-         wrk4hix = i
-         wrk4hiy = j
-         wrk4hiz = k
-         wrk4hit = l
+         wrk4lox = xlo
+         wrk4loy = ylo
+         wrk4loz = zlo
+         wrk4lot = tlo
+         wrk4hix = xhi
+         wrk4hiy = yhi
+         wrk4hiz = zhi
+         wrk4hit = thi
 
       ELSE IF (iarray .EQ. 5) THEN
-         wrk5lox = 1
-         wrk5loy = 1
-         wrk5loz = 1
-         wrk5lot = 1
-         wrk5hix = i
-         wrk5hiy = j
-         wrk5hiz = k
-         wrk5hit = l
+         wrk5lox = xlo
+         wrk5loy = ylo
+         wrk5loz = zlo
+         wrk5lot = tlo
+         wrk5hix = xhi
+         wrk5hiy = yhi
+         wrk5hiz = zhi
+         wrk5hit = thi
 
       ELSE IF (iarray .EQ. 6) THEN
-         wrk6lox = 1
-         wrk6loy = 1
-         wrk6loz = 1
-         wrk6lot = 1
-         wrk6hix = i
-         wrk6hiy = j
-         wrk6hiz = k
-         wrk6hit = l
+         wrk6lox = xlo
+         wrk6loy = ylo
+         wrk6loz = zlo
+         wrk6lot = tlo
+         wrk6hix = xhi
+         wrk6hiy = yhi
+         wrk6hiz = zhi
+         wrk6hit = thi
 
       ELSE IF (iarray .EQ. 7) THEN
-         wrk7lox = 1
-         wrk7loy = 1
-         wrk7loz = 1
-         wrk7lot = 1
-         wrk7hix = i
-         wrk7hiy = j
-         wrk7hiz = k
-         wrk7hit = l
+         wrk7lox = xlo
+         wrk7loy = ylo
+         wrk7loz = zlo
+         wrk7lot = tlo
+         wrk7hix = xhi
+         wrk7hiy = yhi
+         wrk7hiz = zhi
+         wrk7hit = thi
 
       ELSE IF (iarray .EQ. 8) THEN
-         wrk8lox = 1
-         wrk8loy = 1
-         wrk8loz = 1
-         wrk8lot = 1
-         wrk8hix = i
-         wrk8hiy = j
-         wrk8hiz = k
-         wrk8hit = l
+         wrk8lox = xlo
+         wrk8loy = ylo
+         wrk8loz = zlo
+         wrk8lot = tlo
+         wrk8hix = xhi
+         wrk8hiy = yhi
+         wrk8hiz = zhi
+         wrk8hit = thi
 
       ELSE IF (iarray .EQ. 9) THEN
-         wrk9lox = 1
-         wrk9loy = 1
-         wrk9loz = 1
-         wrk9lot = 1
-         wrk9hix = i
-         wrk9hiy = j
-         wrk9hiz = k
-         wrk9hit = l
+         wrk9lox = xlo
+         wrk9loy = ylo
+         wrk9loz = zlo
+         wrk9lot = tlo
+         wrk9hix = xhi
+         wrk9hiy = yhi
+         wrk9hiz = zhi
+         wrk9hit = thi
 
       ELSE IF (iarray .EQ. 10) THEN
-         wrk10lox = 1
-         wrk10loy = 1
-         wrk10loz = 1
-         wrk10lot = 1
-         wrk10hix = i
-         wrk10hiy = j
-         wrk10hiz = k
-         wrk10hit = l
+         wrk10lox = xlo
+         wrk10loy = ylo
+         wrk10loz = zlo
+         wrk10lot = tlo
+         wrk10hix = xhi
+         wrk10hiy = yhi
+         wrk10hiz = zhi
+         wrk10hit = thi
 
       ELSE IF (iarray .EQ. 11) THEN
-         wrk11lox = 1
-         wrk11loy = 1
-         wrk11loz = 1
-         wrk11lot = 1
-         wrk11hix = i
-         wrk11hiy = j
-         wrk11hiz = k
-         wrk11hit = l
+         wrk11lox = xlo
+         wrk11loy = ylo
+         wrk11loz = zlo
+         wrk11lot = tlo
+         wrk11hix = xhi
+         wrk11hiy = yhi
+         wrk11hiz = zhi
+         wrk11hit = thi
 
       ELSE IF (iarray .EQ. 12) THEN
-         wrk12lox = 1
-         wrk12loy = 1
-         wrk12loz = 1
-         wrk12lot = 1
-         wrk12hix = i
-         wrk12hiy = j
-         wrk12hiz = k
-         wrk12hit = l
+         wrk12lox = xlo
+         wrk12loy = ylo
+         wrk12loz = zlo
+         wrk12lot = tlo
+         wrk12hix = xhi
+         wrk12hiy = yhi
+         wrk12hiz = zhi
+         wrk12hit = thi
 
       END IF
 

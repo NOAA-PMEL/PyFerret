@@ -31,6 +31,7 @@
 extern float *GLOBAL_memory_ptr;
 extern int   *GLOBAL_mr_list_ptr;
 extern int   *GLOBAL_cx_list_ptr;
+extern int   *GLOBAL_mres_ptr;
 extern float *GLOBAL_bad_flag_ptr;
 
 /* ............. Function Declarations .............. */
@@ -46,11 +47,16 @@ void ef_set_piecemeal_ok_( int *, int *, int *, int *, int * );
 void ef_set_axis_influence_( int *, int *, int *, int *, int *, int * );
 void ef_set_axis_extend_( int *, int *, int *, int *, int * );
 
-void ef_get_subscripts_(int *, int *, int *, int *);
+void ef_get_res_subscripts_(int *, int *, int *, int *);
+void ef_get_arg_subscripts_(int *, int *, int *, int *);
+void ef_get_arg_subscript_extremes_(int *, int *, int *);
 void ef_get_one_val_(int *, int *, float *);
 void ef_get_bad_flags_(int *, float *, float *);
 
 void ef_set_desc_sub_(int *, char *);
+
+void ef_get_coordinates_(int *, int *, int *, int *, int *, float *);
+void ef_get_box_size_(int *, int *, int *, int *, int *, float *);
 
 /* ... Functions called internally .... */
 
@@ -59,7 +65,11 @@ ExternalFunction *ef_ptr_from_id_ptr(int *);
 int  EF_ListTraverse_FoundID( char *, char * );
 
 
-void ef_get_subscripts_sub_(int *, int *, int *, int *);
+void ef_get_res_subscripts_sub_(int *, int *, int *, int *);
+void ef_get_arg_subscripts_sub_(int *, int *, int *, int *);
+void ef_get_arg_subscript_extremes_sub_(int *, int *, int *, int *);
+void ef_get_coordinates_sub_(int *, int *, int *, int *, int *, float *);
+void ef_get_box_size_sub_(int *, int *, int *, int *, int *, float *);
 
 
 /* ............. Function Definitions .............. */
@@ -149,6 +159,22 @@ void ef_set_piecemeal_ok_(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax3)
 /*
  * Set the "variable arguments" flag for a function.
  */
+void ef_set_axis_limits_(int *id_ptr, int *axis, int *lo, int *hi)
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  ef_ptr->internals_ptr->axis[*axis-1].ss_lo = *lo;
+  ef_ptr->internals_ptr->axis[*axis-1].ss_hi = *hi;
+
+  return;
+}
+
+
+/*
+ * Set the "variable arguments" flag for a function.
+ */
 void ef_set_axis_influence_(int *id_ptr, int *arg, int *ax0, int *ax1, int *ax2, int *ax3)
 {
   ExternalFunction *ef_ptr=NULL;
@@ -180,9 +206,28 @@ void ef_set_axis_extend_(int *id_ptr, int *arg, int *axis, int *lo, int *hi)
 }
 
 
-void ef_get_subscripts_(int *id_ptr, int *ss_lo_lim, int *ss_hi_lim, int *ss_incr)
+void ef_get_res_subscripts_(int *id_ptr, int *res_lo_ss, int *res_hi_ss, int *res_incr)
 {
-  ef_get_subscripts_sub_(GLOBAL_cx_list_ptr, ss_lo_lim, ss_hi_lim, ss_incr);
+  ef_get_res_subscripts_sub_(GLOBAL_mres_ptr, res_lo_ss, res_hi_ss, res_incr);
+}
+
+
+void ef_get_arg_subscripts_(int *id_ptr, int *arg_lo_ss, int *arg_hi_ss, int *arg_incr)
+{
+  ef_get_arg_subscripts_sub_(GLOBAL_cx_list_ptr, arg_lo_ss, arg_hi_ss, arg_incr);
+}
+
+
+void ef_get_arg_subscript_extremes_(int *id_ptr, int *ss_min, int *ss_max)
+{
+  ExternalFunction *ef_ptr=NULL;
+  int num_args=0;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  num_args = ef_ptr->internals_ptr->num_reqd_args;
+
+  ef_get_arg_subscript_extremes_sub_(GLOBAL_cx_list_ptr, &num_args, ss_min, ss_max);
 }
 
 
@@ -192,14 +237,28 @@ void ef_get_one_val_(int *id_ptr, int *arg_ptr, float *val_ptr)
 }
 
 
+void ef_get_coordinates_(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
+			 int *hi_lim_ptr, float *val_ptr)
+{
+  ef_get_coordinates_sub_(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
+}
+
+
+void ef_get_box_size_(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
+			 int *hi_lim_ptr, float *val_ptr)
+{
+  ef_get_box_size_sub_(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
+}
+
+
 void ef_get_bad_flags_(int *id_ptr, float *bad_flag, float *bad_flag_result)
 {
   int i=0;
 
   for (i=0; i<EF_MAX_ARGS+1; i++) {
     bad_flag[i] = GLOBAL_bad_flag_ptr[i];
-    *bad_flag_result = GLOBAL_bad_flag_ptr[EF_MAX_ARGS];
   }
+  *bad_flag_result = GLOBAL_bad_flag_ptr[EF_MAX_ARGS];
 }
 
 

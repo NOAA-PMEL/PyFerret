@@ -5,6 +5,7 @@ cancel data/all
 cancel region
 
 ! dods_demo.jnl  *kob* 5/99
+! customized for IPRC presentation 9/99 *sh*
 !
 ! Description: Demo: how to use Ferret and DODS to access remote Datasets
 !
@@ -18,19 +19,12 @@ set mode verify
 !        DEMO: Using Ferret and DODS to access remote data sets
 !      *********************************************************
 
-!      MAY '99 NOTE: THE DODS CAPABILITIES WILL BE CONTINUALLY
-!      ENHANCED OVER THE NEXT MONTH OR SO. THIS DEMO WILL BE
-!      MODIFIED TO REFLECT THE NEW CAPABILITIES. PLEASE CHECK
-!      http://ferret.wrc.noaa.gov/Ferret/DODS
-
- 
 ! First we will examine the COADS climatology dataset from the Pacific
 ! Marine Environmental Laboratory (PMEL) in Seattle, Washington. 
 
 
 ! Note:  Once the dataset has been initialized from the remote site,
 !        using the dataset is exactly the same as if it were local
-
 
 
 PAUSE
@@ -83,7 +77,6 @@ fill/x=140e:180e/l=1:24 sst[y=5s:5n@ave]
 
 PAUSE
 !      *********************************************************
-
 
 go dods_cdc reynolds_sst/sst.wkmean.1981-1989.nc
 show data 2
@@ -138,7 +131,7 @@ PAUSE
 !      *********************************************************
 
 
-go dods_jpl ocean_wind/ssmi/derived_winds/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf
+go dods_jpl ocean_wind/ssmi/atlas_ssmi/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf
 show data 3
 
 
@@ -159,8 +152,8 @@ vector/xskip=5/yskip=1/l=1 u10m, v10m
 PAUSE
 !      *********************************************************
 
-define axis/x=-180:177.5:2.5/units=long xjpl
-define axis/y=-90:90:2/units=long yjpl
+define axis/x=-180:177.5:2.5/units=degrees xjpl
+define axis/y=-90:90:2/units=degrees yjpl
 define axis/t="1-jan-1995":"31-dec-1995":5/units=days tjpl
 define grid/x=xjpl/y=yjpl/t=tjpl gjpl 
 vector/title="SSMI 10m 5 Day Winds"/xskip=5/yskip=1/l=1 u10m[g=gjpl@asn], v10m[g=gjpl@asn]
@@ -179,37 +172,11 @@ PAUSE
 
 
 ! go dods_uri
-go dods_uri fth_sst_decloud/1995/f95018175608.fth_d.Z
+use "http://maewest.gso.uri.edu/cgi-bin/nph-dsp/fth_sst_decloud/1995/f95018175608.fth_d.Z"
 go basemap x=-95:-60 y=15n:40n 20
 
-! PERFORMANCE ENHANCEMENT TO BE IMPLEMENTED SOON
-!shade/overlay/levels=50 dsp_band_1[i=1:1024:4, j=1:1024:4]
+! Performance greatly enhanced through use of strides
+shade/overlay/levels=50 dsp_band_1[i=1:1024:4, j=1:1024:4]
 
-! FOR NOW USE A SUBSET
-shade/overlay/levels=50 dsp_band_1[i=1:300:4, j=1:300:4]
-
-! To clarify the operation that was performed we will overlay a small
-! section at full resolution
-
-
-PAUSE
-!      *********************************************************
-
-
-shade/overlay/levels dsp_band_1[y=25n:27n, x=-83:-80]
-
-
-
-! To find out more about Data suppliers, in ferret, type:
-!        yes? go dods
-!        -------------------------------------
-!        dods_cdc.jnl: "Use" a dods data set from NOAA/CDC
-!        dods_fsu.jnl: "Use" a dods data set from FSU
-!        dods_jpl.jnl: "Use" a dods data set from JPL
-!        dods_pmel.jnl: "Use" a dods data set from NOAA/PMEL
-!        dods_uri.jnl: "Use" a dods data set from URI/GSO
-!         
-!         
-!        NOTE: The list of suppliers is constantly growing.
-!              Consult http://www.unidata.ucar.edu/packages/dods/home/data.shtml
-!              for the latest information
+! and overlay a line showing Florida over the image
+go land

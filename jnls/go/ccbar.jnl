@@ -38,7 +38,13 @@ QUERY/IGNORE $7%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
 QUERY/IGNORE $8%v%
 LET ccb_orient = $8"1|v>1|h>2|*>1"
 
-DEFINE SYM ccb_pal = /pal=$9"default"
+DEFINE SYM ccb_pal = $9"none"
+LET ccb_given = ($ccb_pal%|none>0|*>1%)
+IF `ccb_given EQ 1` THEN 
+   DEFINE SYM ccb_pal = /PAL=$9
+ELSE
+   CANCEL SYM ccb_pal 
+ENDIF
 
 ! Define the viewport to contain the colorbar
 
@@ -98,6 +104,7 @@ IF `ccb_orient EQ 1` THEN
    IF `ccb_fmt eq 1` THEN PPL YFOR ($ccb_yform)
    PPL SHADE
 ELSE
+set mode ver
    SHADE/TRANS/LEV=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/NOKEY/NOLAB/AXES=1,0,0,0($ccb_pal)/SET ccb_var
    IF `ccb_fmt eq 1` THEN PPL XFOR ($ccb_yform)
    PPL SHADE

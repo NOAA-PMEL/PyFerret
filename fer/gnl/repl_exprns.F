@@ -74,6 +74,7 @@
 * V510: 9/99 *sh* - added RETURN=XSTART (X-Y-Z-T, START-END-UNITS))
 *	3/00 *sh* - RETURN= options computed without evaluating the expression
 *		  - added RETURN=SIZE
+* V522: 6/00 *sh* added RETURN = XAXIS, YAXIS, ZAXIS, TAXIS 
 
 #ifdef unix
 	include 'ferret.parm'
@@ -299,7 +300,7 @@
 	      i2 = CGRID_SIZE ( cx )
 	      repl = LEFINT(i2, str_len)
 
-* ... RETURN=*SIZE, *START, *END, *UNITS
+* ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	
 * ... axis specific requests - must start with i,j,k,l or x,y,z,t
 	      DO 220 idim = 1, 4
@@ -320,9 +321,21 @@
 	         i2 = cx_lo_ss(cx,idim)
 	      ELSEIF ( repl(2:4) .EQ. "END" ) THEN
 	         i2 = cx_hi_ss(cx,idim)
+	      ELSEIF ( repl(2:5) .EQ. "AXIS" ) THEN
+	         axis = CGRID_AXIS ( idim, cx )
+	         IF (axis.EQ.mnormal .OR. axis.EQ.munknown) THEN
+	           repl = 'NORMAL'
+	         ELSE
+	            repl = line_name( axis )
+	         ENDIF
+	         need_formatting = .FALSE.
 	      ELSEIF ( repl(2:5) .EQ. "UNIT" ) THEN
 	         axis = CGRID_AXIS ( idim, cx )
-	         repl = line_units( axis )
+	         IF (axis.EQ.mnormal .OR. axis.EQ.munknown) THEN
+	           repl = ' '
+	         ELSE
+	           repl = line_units( axis )
+	         ENDIF
 	         need_formatting = .FALSE.
 	      ELSE
 	         GOTO 5520
@@ -403,6 +416,6 @@
      .       'maximum precision is 10 digits: '
      .					//cmnd(i:qual_end), *5000)
  5520   CALL ERRMSG( ferr_invalid_command, status,
-     .     'RETURN="shape","size","grid","isize","jend", ... '
+     .     'use R=shape,size,grid,*size,*start,*end,*axis, or *units'
      .				//pCR//cmnd(i:qual_end), *5000)
 	END

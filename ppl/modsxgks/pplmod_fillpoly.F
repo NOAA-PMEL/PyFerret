@@ -84,9 +84,6 @@ c
       endif
 
 
-*     Curvilinear section
-      IF (curvilinear) THEN
-
 *     We're not sure if the xarg and yarg indices are needed in the calling routine
 *     so copy all of the values to the x() and y() arrays.
 *
@@ -96,6 +93,9 @@ c
             y(i) = yarg(i)
  1       CONTINUE 
          
+*     Curvilinear section
+      IF (curvilinear) THEN
+
          CALL CURV_COORD(x, y, npts, 1.0, 1.0, status) ! xform the pts
 
       ENDIF

@@ -48,6 +48,8 @@
 *	(to avoid the XGKS memory leak from GCLRWK)
 *        9/9/97 - if batch is active, just clear workstation since XGKS
 *        doesn't delete metafile segments, and it avoids gdelseg warnings
+*        1.30.99 *js* Eliminated change of 9/9/97, since it caused memory
+*          leak and we don't seem to get warnings anymore.
 
 #ifdef unix
 	include 'xplot_state.cmn'		! viewport info
@@ -69,8 +71,7 @@
 	   IF ( wsid .NE. 0 ) THEN
 * explicitly delete segments to avoid XGKS memory leak
 	      DO 110 ivp =  mvp_dflt, max_viewport
-	         IF ( .not. ITS_BATCH_GRAPHICS() .and.
-     1  	      vp_seg0(ivp) .NE. 0 ) THEN 
+		 if ( vp_seg0(ivp) .NE. 0 ) THEN 
 	            DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
  100	            CALL GDSG( iseg ) 
 	         ENDIF

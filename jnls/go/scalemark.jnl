@@ -1,0 +1,91 @@
+\cancel mode verify
+! scalemark.jnl
+! 6/99 *sh*
+
+! Description: Plot an "I beam" documenting a scale on a plot
+
+! This script is particularly designed to be a companion for trackplot.jnl
+! See trackplot_demo for examples.
+
+! Usage:              $1   $2     $3     $4     $5        $6         $7
+! yes?  GO scalemark xloc yloc [value] [user] [label] [units/in] [line no.] 
+! $1 - X coordinate of the lower left hand corner of the scale marker
+! $2 - Y coordinate of the lower left hand corner of the scale marker
+! $3 - [optional] magnitude (range) in data units to be shown by the scale.
+!		Default = 1
+! $4 - [optional] If "user" then coordinates are in "user units".
+!		Default = coords in inches 
+! $5 - [optional] label to be written at center of scale.
+!		Default = magnitude as text
+! $6 - [optional] units/inch to be shown by scale
+!		Default normally pre-set by the trackplot command
+! $7 - [optional] line number (style) to match on the screen.
+!		Default = 1 (use if one line was drawn in the last plot command)
+
+! example
+! Define synthetic data
+!       yes? LET xpts = 230 - L[L=1:80]
+!       yes? LET ypts = 30 + 20*SIN(L[L=1:80]/30)
+!       yes? LET val  = RANDN(L[L=1:80])
+!
+! Draw base map
+!       yes? go basemap x=130E:120W Y=10n:60n 20
+!       yes? plot/vs/over/line/title="track" xpts, ypts
+!
+! Auto-scaled plot, then manually scaled plot
+!	yes? GO trackplot plot/vs/over/line=2/title="my data" xpts, ypts, val
+!       yes? GO scalemark 150 30 1 user
+!	yes? GO trackplot plot/vs/over/line=4/title="scaled" xpts, ypts, val 3
+!	yes? GO scalemark 0.5 6.2 2 nouser "2 units"
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO scalemark xloc yloc [value] ["user"] [label] [units/in] [line no.]"
+QUERY/IGNORE $2"<usage: yes? GO scalemark xloc yloc [value] ["user"] [label] [units/in] [line no.]"
+
+! set default argument values
+LET/QUIET SMKmagnitude = $3"1"
+IF $6"0|*>1" THEN
+   LET/QUIET SMKunitsperinch = $6
+ELSE
+   LET/QUIET SMKunitsperinch = ($TRACKPLOTscale"1")  
+ENDIF
+IF $5"0|*>1" THEN
+   DEFINE SYMBOL SMKlabel = $5
+ELSE
+   DEFINE SYMBOL SMKlabel = @AC`SMKmagnitude`
+ENDIF
+LET/QUIET SMKline = $7"1"
+
+! size of label text (inches)
+LET/QUIET SMKtxt_size = 0.1
+
+! draw the scale mark
+IF  $4"0|USER>1|*>0"  THEN
+! using user units (typ. lat/lon degrees)
+   LET/QUIET SMKhsize = 0.01 * (($xaxis_max)-(($xaxis_min)))		! horizontal size
+   LET/QUIET SMKmap_yscale =   (($yaxis_max)-(($yaxis_min)))/ ($ppl$ylen)  ! degrees/inch
+   LET/QUIET SMKvsize =  SMKmap_yscale * SMKmagnitude/SMKunitsperinch	! vertical   size
+! ... I-beam
+   PPL ALINE `SMKline`,$1,$2,`$1+SMKhsize`,$2				 ! bottom
+   PPL ALINE `SMKline`,`$1+SMKhsize/2`,$2,`$1+SMKhsize/2`,`$2+SMKvsize`
+   PPL ALINE `SMKline`,$1,`$2+SMKvsize`,`$1+SMKhsize`,`$2+SMKvsize` ! top
+! ... label
+   LET/QUIET SMKtxt_height = SMKtxt_size * SMKmap_yscale
+   LABEL `$1+SMKhsize*1.5`,`$2+SMKvsize/2-SMKtxt_height/2`,-1,0,`SMKtxt_size` "($SMKlabel)"
+
+ELSE
+! using inches
+   LET/QUIET SMKhsize = 0.01 * ($ppl$xlen)		! horizontal size
+   LET/QUIET SMKvsize = SMKmagnitude/SMKunitsperinch	! vertical   size
+! ... I-beam
+   PPL ALINE/NOUSER `SMKline`,$1,$2,`$1+SMKhsize`,$2				 ! bottom
+   PPL ALINE/NOUSER `SMKline`,`$1+SMKhsize/2`,$2,`$1+SMKhsize/2`,`$2+SMKvsize`
+   PPL ALINE/NOUSER `SMKline`,$1,`$2+SMKvsize`,`$1+SMKhsize`,`$2+SMKvsize` ! top
+! ... label
+   LABEL/NOUSER `$1+SMKhsize*1.5`,`$2+SMKvsize/2-SMKtxt_size/2`,-1,0,`SMKtxt_size` "($SMKlabel)"
+ENDIF
+
+! clean up
+cancel symbol SMK*
+cancel variable SMK*
+set mode/last verify

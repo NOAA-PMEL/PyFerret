@@ -15,7 +15,6 @@
 #
 
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
-include godae_obs_platform_specific_flags.mk.$(HOSTTYPE)
 
 #
 # Macros

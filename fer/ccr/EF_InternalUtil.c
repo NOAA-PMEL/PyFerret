@@ -1001,7 +1001,6 @@ void EF_force_linking(int I_should_do_it)
     float f = 5.0;
     char c = NULL;
     ef_set_num_args_( &i, &i );
-    ef_set_num_args( &i, i );
     ef_set_has_vari_args_( &i, &i );
     ef_set_piecemeal_ok_( &i, &i, &i, &i, &i );
     ef_set_axis_inheritance_( &i, &i, &i, &i, &i );

@@ -3,7 +3,9 @@
 
  ! Compute FFT of time series; then invert to recover time series.
 
+set win/clear
 DEFINE AXIS/t=1:366:1 dayt
+
 DEFINE GRID/T=dayt  tgrid
 SET GRID tgrid
 LET fcn1 = sin(0.5*tpts - 6.) /2.
@@ -13,6 +15,11 @@ LET fcn2 = cos(0.3*tpts)
 
 LET sample_function = fcn1 - fcn2 + 0.2* randu(tpts)
 LET tpts = t
+
+
+set view upper
+plot/title="original function" sample_function
+pause
 
 ! Compute the equivalent of FFTA(sample_function)
 

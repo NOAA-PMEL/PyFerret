@@ -146,7 +146,7 @@ depend:
 
 
 debug:
-	$(MAKE) "DEBUG=-g" DEBUG_TITLE="Debug" all
+	$(MAKE) "DEBUG=-g" DEBUG_TITLE="debug" all
 
 
 #

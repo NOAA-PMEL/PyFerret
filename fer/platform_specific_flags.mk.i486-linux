@@ -13,8 +13,8 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
 		  -I../common
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
-
  
+
 
 CC              = cc
 FC		= f90
@@ -38,7 +38,7 @@ LDFLAGS		= -L/usr/openwin/lib -v
 SYSLIB		= -lX11 -ldl -llist -Bstatic -L/usr/ucblib -lucb -L/opt/SUNWspro/SC4.0/lib \
 		  -lV77 -lelf -lM77 -lF77 -Bdynamic -lsunmath -lm -lc
 
-TMLIB		= ../fmt/libs/tmap_lib.a
+TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 

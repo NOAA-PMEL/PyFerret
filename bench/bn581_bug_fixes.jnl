@@ -43,3 +43,7 @@ GO err580_def_tax_norange.jnl
 ! fix for bug 1207: closest distance and closest index transformations.
 GO bn_reset
 GO err580_cdb.jnl
+
+! fix for bug 1214: crash on repeating a SET VIEW when viewport defined with /AXES
+GO bn_reset
+GO err580_def_view_axes.jnl

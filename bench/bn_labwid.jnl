@@ -1,0 +1,21 @@
+! LABWID returns the length in Denbo inches of the
+! string.  For multi-line strings, returns length of
+! the longest line.
+
+LIST LABWID("aaaaabbbbb", .15)
+LIST LABWID("aaaaabbbbb", .10)
+LIST LABWID("aaaaabbbbb<NL>ee", .15)
+LIST LABWID("ee<NL>aaaaabbbbb", .15)
+
+
+LIST LABWID("@IISTRING", .15)
+LIST LABWID("@SSSTRING", .15)
+LIST LABWID("@SSSTRING<NL>@IISTRING", .15)
+LIST LABWID("@IISTRING<NL>@SSSTRING", .15)
+
+
+go ptest
+
+label/nouser 0,3,-1,0,.15,"@P2@IILine1<NL>@IIA LONGER LINE"
+let wid = labwid("@P2@IILine1<NL>@IIA LONGER LINE",.15)
+label/nouser `wid`, 3, -1, 0, .15,  "@P4@IIMulti-line<NL>Length is longest of ALL lines<NL>Line three"

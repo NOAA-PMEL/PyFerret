@@ -13,6 +13,18 @@
 * v300: 1/2/93 - incorporated cmnd_semicolon
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V420:  4/25/96 - added IF command
+*
+* 1/98 sh&kob
+* "KNOWN BUG: The proper formatting of the REPEAT limit requires a 
+*              knowledge of the grid of the result(see lohi_string.F). 
+*              Since the grid is not determined until the first repeat 
+*              loop is executed the formatting of the first loop may be
+*              incorrect. Fixing this would require that a new set of 
+*              world coordinate formatting routines be developed that 
+*              do not depend on the grid. This seemed too much trouble 
+*              given the small consequeunces."
+
+
 
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line

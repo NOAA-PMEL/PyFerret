@@ -1,15 +1,17 @@
 ! samplexy_demo.jnl
 ! 5/27/03 *acm*
 
+! Set up some viewports.
+
+DEF VIEW/AXES/X=0.1:0.9/Y=0.65:0.95 bigup
+DEF VIEW/AXES/X=0.1:0.9/Y=0.15:0.45 bigdn
+
+
 ! Description: Use the SAMPLEXY function to create an arbitrary 2D 
 ! vertical section from a 3D field. The result has the same depth
 ! axis as the variable being sampled.  The horizontal axis is abstract; 
 ! it is a count of the number of points along the track.  
 
-! Set up
-
-DEF VIEW/AXES/X=0.2:0.8/Y=0.6:0.9 bigup
-DEF VIEW/AXES/X=0.2:0.8/Y=0.1:0.4 bigdn
 
 ! Here is a section of the Levitus climatological temperature running
 ! along a track defined by points (xlon, xlat), which could also be

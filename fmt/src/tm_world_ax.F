@@ -44,6 +44,7 @@
 * V530 10/00 *sh* - extracted from tm_world so that it could be called from
 *		    routines that know the axis but not a container grid
 * V533 6/01 *sh* - using TM_AXIS_RECURSIVE
+*      10/01 *kob* - change TM_AXIS_RECURSIVE to proper logical type
 
 * Include files
 #include "gt_lib.parm"
@@ -55,8 +56,8 @@
 	INTEGER	isubscript, iaxis, where_in_box
 
 * internal variable declarations:
-	LOGICAL	recursive
-	INTEGER	TM_AXIS_RECURSIVE, isub, line_len, rmod
+	LOGICAL	TM_AXIS_RECURSIVE, recursive
+	INTEGER	 isub, line_len, rmod
 	REAL*8	TM_WORLD_RECUR, midpoint, box_size, tempwld
 
 * initialize

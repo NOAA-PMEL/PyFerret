@@ -1,7 +1,7 @@
-! pplus tics bug - pre 5.42 fill plots overlaid interior tics.
+! pplus tics bug - pre 5.42, fill plots overlaid interior tics.
 
 use coads_climatology
-go graticule
+ppl tics 0.,.35,0.,.35,0,0
 
 set view upper
 shade/l=1/x=150e:110w/y=40s:40n sst

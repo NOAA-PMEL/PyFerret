@@ -132,6 +132,7 @@
 *      *acm*  5/03  Send the flag irregular to AXIS_INTERVALS.  
 * v5.52*acm*  6/03  Restore cellarray setup. uses its_gif flag so these are
 *                   only done in -gif mode
+* v5.53*acm*  6/03  send correct axis to AXIS_INTERVALS
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -401,7 +402,7 @@ C   set up memory for the flag grid
      .			     w1_lo, w1_hi, n1_regrid, d1_regrid, regrid_1,
      .                       irregular )
 
-        irregular = .NOT. ( line_regular(axis1) )
+        irregular = .NOT. ( line_regular(axis2) )
 	CALL AXIS_INTERVALS( 'Y', mvx_temp, ctx, dim2, curvilinear, s2_axis,
      .			     mr_lo_ss(mvx_temp,dim2), mr_hi_ss(mvx_temp,dim2),
      .			     w2_lo, w2_hi, n2_regrid, d2_regrid, regrid_2,

@@ -69,6 +69,8 @@ C
         include 'PARAMPL5.DAT'
         include 'axis_inc.decl'
         include 'AXIS.INC'
+        include 'switch_inc.decl'
+        include 'SWITCH.INC'
         include 'lines_inc.decl'
         include 'LINES.INC'
         include 'pen_inc.decl'
@@ -85,14 +87,19 @@ C
         include 'AXISL.INC'
         include 'cmrd_inc.decl'
         include 'CMRD.INC'
+        include 'cmrdl_inc.decl'
+        include 'CMRDL.INC'
         include 'gkscm1_inc.decl'	! sh 11/97
         include 'GKSCM1.INC'		! sh 11/97
 !        include 'gkscm2.cmn' ! jd 3.22.89
         include 'gkspar.inc'	! sh 11/97
         include 'shade_vars.cmn'	! sh 11/97
+	include		'cont_inc.decl'
+	include		'CONT.INC'
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
         INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
         INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
         INCLUDE 'tmap_pplv11inc:tmap_PLTL.INC'
@@ -101,6 +108,7 @@ C
         INCLUDE 'tmap_pplv11inc:tmap_TAXIS.INC'
         INCLUDE 'tmap_pplv11inc:tmap_AXISL.INC'
         INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
 #endif
 
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
@@ -118,7 +126,28 @@ C
 
 	logical		valid
 
+*jd*
+	real            zzmin, zzmax
+	integer         nlm1
+	real		dx,dy,dz,znp,zmp
+	integer		i,j,uprdn
+	logical         line_it, fill_it
+
+        parameter       (epsilon = 1e-6)
+
 *************************************
+
+C       Check switches
+	line_it = sline
+	
+	if (sline .and. sfill) then
+	   fill_it = .true.
+	else if (sline .and. .not. sfill) then
+	   fill_it = .false.
+	else
+	   fill_it = .true.
+	end if
+
 * INITIALIZE
 	nl = lnum - 1	! # lines over which to loop: last line is color info
 
@@ -128,7 +157,7 @@ C
 *     "zpolybase" is the offset to the ycolor array
 	xpolybase = 1
 	DO 2010  I=1,nl
- 2010	xpolybase=xpolybase+LLENG(I)
+ 2010	xpolybase = xpolybase+LLENG(I)
 	zpolybase = xpolybase + nxs/2
 	xpolybase = xpolybase + lleng(lnum)	! skip past color array
 	ypolybase = xpolybase + nxs/2
@@ -136,8 +165,6 @@ C
 	fill_ndx = 0
 
 * set up GKS environment (code copied from SHADE_SUB)
-*	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
-	call set_fill_area_rep (wsid,wstype)
 
 *	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
 	call gqcntn (error,trans_no)
@@ -150,9 +177,10 @@ C
 
 *	NOW SET THE CLIPPING RECTANGLE AROUND THEM AND PATTERN SIZE
 * v4.91 *kob* had to add <cr> after first line below
+
 	call gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
         call gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
-	call gselnt (my_trans)
+	if (fill_it) call gselnt (my_trans)
 
 	call gqclip (error,cflag,ndc)
 	if (error .ne. 0) goto 1000
@@ -167,33 +195,166 @@ C
 	ICNT=1
 	IF(M.GE.2.AND.IFLG(2).NE.0)ICNT=P(2)
 
+C *jd* 
+* FIND LIMITS
+	zzmin = 1e33
+	zzmax = -1e33
+	nlm1  = nl - 1
+
+	do 100 i = 0, nlm1 
+	   if (x(zpolybase+i) .gt. zzmax) zzmax = x(zpolybase+i)
+	   if (x(zpolybase+i) .lt. zzmin) zzmin = x(zpolybase+i)
+ 100	end do
+
+C ------------
+
+C       
+C       IAUTOC = 1 means: compute levels from input data and number
+C                         of levels
+
+	IF (IAUTOC.EQ.1) THEN
+
+	   IF (zZMIN.EQ.zZMAX) THEN
+
+C             NLEV2=0 is the code in pplmod_plotz
+	      NLEV2=1
+
+	   ELSE
+C       
+C       If set_delta is .true. the delta value has been set
+C       elsewhere and we should calculate the max and min values
+C       of the range based on this delta.
+C       (This portion stolen from RANGE)
+
+	      if (set_delta) then 
+
+		 dz = delta
+C       
+C       CALCULATE THE MINIMUM VALUE OF THE RANGE
+C       
+		 FM = zzmin / DZ
+		 M = IFIX(FM)
+		 IF (FM .LT. 0.0) M = M - 1
+		 znp = DZ * FLOAT(M)
+C       
+C       CALCULATE THE MAXIMUM VALUE OF THE RANGE.
+C       
+		 FM = zzmax / DZ
+		 M = IFIX(FM)
+		 IF(FM .GT. 0.0)M = M + 1
+		 zmp = DZ * FLOAT(M)
+
+C       Else we should allow RANGE to determine the max and min range
+C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
+
+	      else
+
+		 CALL RANGE(zZMIN,zZMAX,NLEV,ZNP,ZMP,DZ)
+
+	      endif
+
+C       Set levels centered about zero if centered is .true.   
+ 
+	      if (centered) then
+		 if (abs(znp) .gt. abs(zmp)) then
+		    zmp = -znp
+		 else
+		    znp = -zmp
+		 endif
+	      endif
+
+	      NLEV2=(ZMP-ZNP)/DZ+1 
+
+C       Handle rounding errors *jd* 6.27.95/12.30.97
+
+	      IF (ZMP .GT. 0.0) THEN
+		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) 
+	1	      NLEV2 = NLEV2 + 1
+	      ELSE
+		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
+	1	     ABS(EPSILON*ZMP)) 
+	1	      NLEV2 = NLEV2 + 1
+	      ENDIF
+
+	      DO 110 I=1,NLEV2 
+		 ZLEV(I)=ZNP+DZ*FLOAT(I-1) 
+ 110	      CONTINUE 
+
+	   ENDIF
+
+C       
+C       Else IAUTOC != 1 means: use supplied levels
+C       
+	ELSE 
+
+C       Mod 4.18.90 to allow just on level to be SHADEd
+C       CONTOUR requires more than one level to work but SHADE doesn't
+
+	   NLEV2=NLEV
+
+	END IF 
+
+C ------------
+
+*	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
+
+*       Allow shading single level fields 
+        if (nlev2 .lt. 1) goto 1000
+        shd_levels = max (nlev2 - 1,1)
+
+	call set_fill_area_rep (wsid,wstype)
+
+	CALL MARKH(HMARK(1))
+	CALL COLOR(IPEN(1))
+
 ******** LOOP OVER LINES STORED
 	DO 200 I=1,nl
-	  CALL MARKH(HMARK(I))
-	  CALL COLOR(IPEN(I))
 
 * will this polygon fit in the buffer?
 	  IF (lleng(i) .GT. polysizemax) THEN
 	     WRITE (6,*) 'Too much polygon data to plot at once'
 	     GOTO 200
 	  ENDIF 
-* determine the color index for the fill
-	   fill_ndx = GET_NDX (x(zpolybase),fill_ndx)
-	   if (fill_ndx .eq. -999) goto 200
 
 * assemble the vertices into arrays in units of plot coordinates
 * note: all points in the polygon are guaranteed to be "valid"
 	   nvertex = 0
-	   DO 100 J=IBASE+1,IBASE+LLENG(I)
+	   DO 150 J=IBASE+1,IBASE+LLENG(I)
 	      CALL TRANS(I,X(J),X(IY+J),XT,YT)
 	      nvertex = nvertex + 1
 	      x(xpolybase+nvertex-1) = xt
 	      x(ypolybase+nvertex-1) = yt
- 100	   CONTINUE
+ 150	   CONTINUE
 
-* draw the filled polygon
-	   CALL SET_FILL_NDX (fill_ndx)
-	   CALL GFA(nvertex, x(xpolybase), x(ypolybase)) 
+	   if (fill_it) then
+*             Determine the color index for the fill
+	      fill_ndx = GET_NDX (x(zpolybase+I-1),fill_ndx)
+	      if (fill_ndx .eq. -999) goto 200
+
+*             Draw the filled polygon
+	      if (line_it) call gselnt (my_trans)
+	      CALL SET_FILL_NDX (fill_ndx)
+	      CALL GFA(nvertex, x(xpolybase), x(ypolybase)) 
+	   end if
+
+	   if (line_it) then
+*             Outline the polygon
+
+	      if (fill_it) call gselnt (trans_no)
+	      nvertex = 0
+
+	      DO 160 J=IBASE+1,IBASE+LLENG(I)
+		 nvertex = nvertex + 1
+		 if (nvertex .eq. 1) then
+		    uprdn = 0
+		 else
+		    uprdn = 1
+		 end if
+		 call plot (x(xpolybase+nvertex-1),
+     .	                    x(ypolybase+nvertex-1),uprdn,0)
+ 160	      continue
+	      call plot (x(xpolybase),x(ypolybase),1,0)
+	   end if
 
 	   if (interrupted) go to 1000 !*jd* 8.3.92
 	   IBASE=IBASE+LLENG(I)		! prepare for next line
@@ -201,12 +362,16 @@ C
 
 ******** END OF LOOP OVER LINES STORED
 
+
 * ... restore GKS transforms following FILLPOL 
  1000	call gsclip (cflag)
 	call gselnt (trans_no)
 
 * ... and DO THE KEY
-	if (do_key .AND. .NOT.interrupted) call key
+	if (fill_it .and. do_key .AND. .NOT.interrupted) then
+	   call color(ipen(0))
+	   call key
+	end if
 
  1100	CALL COLOR(IPEN(0))
 

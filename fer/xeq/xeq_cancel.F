@@ -113,6 +113,7 @@
 * v541 *acm*  7/02 Capitalize routine names in CALL REMOVE_AXIS, DEALLO_ALL_AXES.
 * v551 *acm*  1/03 Bug fix: datasets starting with digit not correctly cancelled.
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+*       *acm* 6/04 - CANCEL AXIS/DEPTH as inverse to SET AXIS/DEPTH
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -541,6 +542,21 @@
 
         ELSE IF ( qual_given(slash_canc_axis_all) .GT. 0 ) THEN 	
 	   CALL DEALLO_ALL_AXES
+
+* CANCEL AXIS/DEPTH
+
+        ELSE IF ( qual_given(slash_canc_axis_depth) .GT. 0 ) THEN 
+        
+	   DO 1222 item = 1, num_items
+              axis = TM_GET_LINENUM(
+     .				cmnd_buff(item_start(item):item_end(item)) )
+              IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+              IF ( line_direction(axis) .EQ. 'UD' ) THEN
+                 line_direction(axis) = 'DU'
+              ENDIF
+
+ 1222	   CONTINUE
+
         ELSE
 
 * ... CANCEL AXIS

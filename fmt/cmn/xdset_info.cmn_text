@@ -40,19 +40,20 @@
      .		ds_var_code(maxvars),ds_var_title(maxvars),
      .		ds_var_titl_mod(maxvars),ds_var_units(maxvars),
      .		ds_grid_number(maxvars),ds_missing_flag(maxvars),
+     .          ds_var_scale(maxvars), ds_var_off(maxvars),
      .		ds_bad_flag(maxvars),ds_ordering(4,maxvars),
      .		ds_grid_start(4,maxvars),ds_grid_end(4,maxvars),
      .	 	ds_var_type(maxvars),
      .		ds_precision(maxvars),
 **************************************************************************
-     .		ds_aux_set_num(maxvars),
+     .		ds_aux_set_num(maxvars), ds_var_scaleit(maxvars),
 **************************************************************************
      .		min_ds_tstart,max_ds_tend,ds_tdelta,
 **************************************************************************
      .		ds_des_name(maxdsets),ds_name(maxdsets),
      .		ds_open(maxdsets),
-     .		ds_regsteps(maxdsets),
-     .		ds_basic_axes(6,maxdsets),ds_time_axis(maxdsets),
+     .		ds_regsteps(maxdsets), ds_basic_axes(6,maxdsets),
+     .		ds_time_axis(maxdsets),
 **************************************************************************
      .		ds_ndataperrec(maxvars),ds_nrecpervar(maxvars),
      .		ds_nrecb4var(maxvars),ds_var_setnum(maxvars),
@@ -94,9 +95,11 @@
 	CHARACTER*256	ds_name
 	CHARACTER*256	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
-	LOGICAL		ds_regsteps
+	LOGICAL		ds_regsteps, ds_var_scaleit
 	REAL*8		ds_1step,ds_lastep,ds_delstep,
      .			ds_file_info_ptr
+        REAL            ds_var_scale, ds_var_off
+
 
 * additional calculated or derived values pertaining to variables
 	INTEGER*4	ds_ndataperrec,ds_nrecpervar,ds_nrecb4var,

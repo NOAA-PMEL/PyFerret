@@ -58,6 +58,7 @@
 
 * v533 9/01 *acm*- Check that SET VARIABLE/NAME doesnt give a name already in the dataset
 *                - and that not using a variable from a GT or TS data set
+* V552: *acm* 4/02 - add SET VARIABLE/SCALEFAC/OFFSET
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -76,11 +77,27 @@
 	CHARACTER	vname*(*)
 
 * internal variable declarations:
-	LOGICAL		VALID_GRID, TM_LEGAL_NAME, have_mods, ez, gtts
+	LOGICAL		VALID_GRID, TM_LEGAL_NAME, TM_HAS_STRING,
+     .                  have_mods, ez, gtts, ncfile
 	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, 
      .			dset, grid, cat, var, loc, TMAP_status, testvar
-	REAL		bad
+	REAL		bad, scalefac, offset
 	CHARACTER	grid_name*16, title*128, units*64, newname*64
+
+* Initialize
+
+	grid = unspecified_int4
+	bad = real4_init
+	scalefac = real4_init
+	offset = real4_init
+        have_mods = .FALSE.
+        gtts = .FALSE.
+        ncfile = .FALSE.
+        ez = .FALSE.
+	newname = char_init80
+	title = char_init80
+	units = char_init16
+	grid_name = char_init16
 
 * decode specified variable name of form VNAME[D=dset]
 	dset = unspecified_int4			! default is global variable
@@ -108,6 +125,7 @@
 
 * SET VAR/NAME does not work for GT, TS datasets where sanity check is done
 * in gt_find_rec.F comparing var name to the name in the dataset.
+
 	   gtts = ( (ds_type(dset) .EQ. pds_type_gt)  .OR. 
      .              (ds_type(dset) .EQ. pds_type_ts) )
 	   IF ( gtts ) GOTO 5600
@@ -129,6 +147,44 @@
 	ELSE
 	   newname = char_init80
 	ENDIF
+
+
+* SET VAR/SCALEFAC only for NetCDF datasets
+
+	loc = qual_given( slash_set_var_scale )
+	IF ( loc .GT. 0 ) THEN
+
+	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'GT')  )
+	   IF ( .NOT. ncfile ) GOTO 5700
+
+	   have_mods = .TRUE.
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   scalefac, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	ELSE
+	   scalefac = real4_init
+	ENDIF
+
+* SET VAR/OFFSET only for NetCDF datasets
+
+	loc = qual_given( slash_set_var_offset )
+	IF ( loc .GT. 0 ) THEN
+
+	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
+     .               TM_HAS_STRING(ds_type(dset), 'GT')  )
+	   IF ( .NOT. ncfile ) GOTO 5800
+
+	   have_mods = .TRUE.
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   offset, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	ELSE
+	   offset = real4_init
+	ENDIF
+
 	loc = qual_given( slash_set_var_title )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -199,6 +255,19 @@
 	   IF (newname.NE. char_init16 ) ds_var_code ( var ) = newname
 	   IF ( units .NE. char_init16 ) ds_var_units( var ) = units
 	   IF ( title .NE. char_init80 ) ds_var_title( var ) = title
+
+           IF (scalefac .NE. real4_init .AND. ncfile) THEN
+	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
+	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+              ds_var_scale(var) = scalefac
+              ds_var_scaleit(var)       = .TRUE.
+           ENDIF
+           IF (offset .NE. real4_init .AND. ncfile) THEN
+	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
+	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
+              ds_var_off(var)   = offset
+              ds_var_scaleit(var)       = .TRUE.
+           ENDIF
 	ELSE
 * ... user-defined var
 	   IF ( grid .NE. int4_init   ) GOTO 5110
@@ -250,5 +319,11 @@
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
  5600	CALL ERRMSG( ferr_invalid_command, status,
      .               'Cannot SET VARIABLE/NAME= with GT or TS datasets',
+     .               						*5000 )
+ 5700	CALL ERRMSG( ferr_invalid_command, status,
+     .           'Can SET VARIABLE/SCALEFAC= only with NetCDF datasets',
+     .               						*5000 )
+ 5800	CALL ERRMSG( ferr_invalid_command, status,
+     .           'Can SET VARIABLE/OFFSET= only with NetCDF datasets',
      .               						*5000 )
 	END

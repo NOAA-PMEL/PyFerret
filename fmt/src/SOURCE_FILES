@@ -199,6 +199,7 @@ tm_rename.F\
 tm_same_grid_def.F\
 tm_same_line_def.F\
 tm_scale.F\
+tm_scale_nobad.F\
 tm_secs_from_bc.F\
 tm_secs_to_date.F\
 tm_set_current_calendar.F\

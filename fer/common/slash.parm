@@ -18,6 +18,7 @@
 *			slash_exit_script
 *			slash_exit_program			
 *      *sh* 11/01 - add slash_list_width
+* V552:*acm*  4/02 - add SET VARIABLE/SCALEFAC/OFFSET
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -87,6 +88,8 @@
      .			slash_set_var_grid,
      .			slash_set_var_bad,
      .			slash_set_var_name,
+     .			slash_set_var_scale,
+     .			slash_set_var_offset,
      .
      .			slash_set_grid_save,
      .			slash_set_grid_restore,
@@ -260,6 +263,8 @@
      .			slash_set_var_grid	= 3,
      .			slash_set_var_bad	= 4,
      .			slash_set_var_name	= 6,
+     .			slash_set_var_scale	= 7,
+     .			slash_set_var_offset	= 8,
      .
      .			slash_set_grid_save	= 1,
      .			slash_set_grid_restore	= 2,

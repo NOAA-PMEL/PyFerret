@@ -138,7 +138,8 @@
 * V541: 4/02 *acm* - remove CONTOUR/HLOG/VLOG; mistakenly put in here!!
 *                    note they were not used by xeq_contour...
 * V541: 5/02 *acm* - add VECTOR/NOKEY
-*       6/05 *acm* - add CANCEL AXIS/ALL
+*       6/02 *acm* - add CANCEL AXIS/ALL
+* V552: 4/02 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -248,14 +249,17 @@
 	   DATA subcommands      (nsub_at1 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at1 + 9)	/ nqual1j	/
 	   DATA qualifier_pointer(nsub_at1 + 9)	/ nqual_at1j	/
-* SET VARIABLE/TITL
+* SET VARIABLE/TITLE/UNIT/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET
 		DATA qualifiers  (nqual_at1j+0)	/ 'TITLE'	/
 		DATA qualifiers  (nqual_at1j+1)	/ 'UNIT'	/
 		DATA qualifiers  (nqual_at1j+2)	/ 'GRID'	/
 		DATA qualifiers  (nqual_at1j+3)	/ 'BAD'	/
 		DATA qualifiers  (nqual_at1j+4)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at1j+5)	/ 'NAME'	/
-		DATA qualifiers  (nqual_at1j+6)	/ '****'	/
+		DATA qualifiers  (nqual_at1j+6)	/ 'SCALEFAC'	/
+		DATA qualifiers  (nqual_at1j+7)	/ 'OFFSET'	/
+		DATA qualifiers  (nqual_at1j+8)	/ '****'	/
+		DATA qualifiers  (nqual_at1j+9)	/ '****'	/
 * SET GRID
 	   DATA subcommands      (nsub_at1 +10)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at1 +10)	/ nqual1k	/

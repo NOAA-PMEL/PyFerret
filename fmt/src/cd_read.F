@@ -64,6 +64,8 @@
 * V521 7/00 *kob* - modify calculation of totsize to take any striding into
 *                   account.
 * v531 5/01 *kob* - fix erroneous error report referencing cd_rd_r8_as_r4
+* v552 4/03 *acm* - Changes for SET VAR/SCALEFAC/OFFSET: apply new scale
+*                   and offset.
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -287,7 +289,13 @@
 
 * if data has mean or range removed rescale it
         IF ( cd_scaled( ivar ) ) CALL TM_SCALE(
-     .       cd_scale_factor(ivar),cd_add_offset(ivar),var,totsize)
+     .       cd_scale_factor(ivar),cd_add_offset(ivar),var,totsize )
+
+* if user has asked for new offset and/or scale, apply those, but
+* not to any missing data.
+        IF ( ds_var_scaleit( ivar ))  CALL TM_SCALE_NOBAD(
+     .       ds_var_scale(ivar), ds_var_off(ivar), var, totsize,
+     .       ds_bad_flag(ivar), ds_missing_flag(ivar) )
 
 * successful completion
 	status = merr_ok

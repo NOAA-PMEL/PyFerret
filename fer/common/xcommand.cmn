@@ -83,7 +83,7 @@
      .			nqual1g =15, nqual_at1h = nqual_at1g + nqual1g,	!'DATA'
      .			nqual1h = 1, nqual_at1i = nqual_at1h + nqual1h,	!'MODE'
      .			nqual1i = 5, nqual_at1j = nqual_at1i + nqual1i,	!'MOVI'
-     .			nqual1j = 7, nqual_at1k = nqual_at1j + nqual1j,	!'VARI'
+     .			nqual1j =10, nqual_at1k = nqual_at1j + nqual1j,	!'VARI'
      .			nqual1k = 2, nqual_at1l = nqual_at1k + nqual1k,	!'GRID'
      .			nqual1l = 2, nqual_at1m = nqual_at1l + nqual1l,	!'AXIS'
      .			nqual1m = 2, nqual_at1n = nqual_at1m + nqual1m,	!'MEMO'

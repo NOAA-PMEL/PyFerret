@@ -67,7 +67,9 @@
 * revision 1.21 - 04/24/91 - increased size of sf_name, ds_name and ds_des_name
 * netCDF support *sh* 6/92
 * EPIC netCDF *sh* 3/93
-
+* v500 - *kob* 3/99 -  initialize ds_var_code, ds_var_units, ds_var_title
+*                      and ds_var_titl_mod w/ char_inits of proper new value
+	
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
 
@@ -145,10 +147,10 @@
 * Next clear variables associated with variable in that data set.
 	DO 120 ivar = 1,maxvars
 	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 120
-	  ds_var_code(ivar)		=	char_init08
-	  ds_var_title(ivar)		=	char_init40
-	  ds_var_titl_mod(ivar)		=	char_init40
-	  ds_var_units(ivar)		=	char_init24
+	  ds_var_code(ivar)		=	char_init64
+	  ds_var_title(ivar)		=	char_init128
+	  ds_var_titl_mod(ivar)		=	char_init128
+	  ds_var_units(ivar)		=	char_init64
 	  ds_grid_number(ivar)		=	int4_init
 	  ds_missing_flag(ivar)		=	real4_init
 	  ds_bad_flag(ivar)		=	real4_init

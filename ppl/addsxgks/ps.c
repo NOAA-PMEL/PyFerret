@@ -291,7 +291,7 @@ void PSresize(WS_STATE_PTR ws, Gpoint size)
   float myAspect = size.y/size.x;
   FILE	*fp	= ws->mf.any->fp;
   if (myAspect < 1.0){
-    PSmoSetLandscape(ws->mf);
+    PSmoSetLandscape(&ws->mf);
   }
   fprintf(fp, "gr %f center gs\n", myAspect);
   

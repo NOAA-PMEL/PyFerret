@@ -91,6 +91,7 @@
 *                   variable name in the key below the plot.
 * v541 *acm*  5/02 add option to control outline on the shade key boxes 
 *                   /KEY=continuous
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call
 
 
 	include 'tmap_dims.parm'
@@ -120,9 +121,10 @@
 	CHARACTER TM_FMT*12, fname*128, buff*25
 
 * internal parameter declarations:
-	LOGICAL		norm_dims_only, not_vector, cont_key
+	LOGICAL		norm_dims_only, not_vector, cont_key, is_shade
 	PARAMETER     ( norm_dims_only  = .FALSE.,
-     .			not_vector	= .FALSE. )
+     .			not_vector	= .FALSE.,
+     .                  is_shade        = .FALSE. )
 
 * set up the graphics environment
 
@@ -218,6 +220,7 @@
 * set up the axes and title and load the data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
      . 			 	not_vector,
+     .				is_shade,
      .				aspect,
      .				overlay,
      .				transpz,

@@ -79,6 +79,8 @@
 *                   variable name in the key below the plot.
 * v541 *acm*  5/02 add option to control outline on the shade key boxes 
 *                   /KEY=continuous
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call, allocate
+*                  PPLUS memory for pixel array in cellarray calls.
 
 
 	include 'tmap_dims.parm'
@@ -98,7 +100,7 @@
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, do_key,
      .            spectrum, set_up, noaxes, axes, pattern, no_data,
-     .		  is_logh, is_logv
+     .		  is_logh, is_logv, is_shade
 
 	INTEGER	  TM_LENSTR1, status, slen, sp, patt,
      .		  ax1_blks, ax1_start,
@@ -141,11 +143,13 @@
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+        is_shade = .TRUE.
         density = 0	! not used; vec/flow needs it in set up
 
 * set up the axes and title and load the data into PPLUS
 	CALL DISP_SET_UP   (    memory,
      .				not_vector,
+     .				is_shade,
      .				aspect,
      .				overlay,
      .				transpz,

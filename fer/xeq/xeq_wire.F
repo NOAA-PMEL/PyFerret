@@ -52,8 +52,9 @@
 *               declaration line.
 * V530: *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
 *                  (only used for PLOT command)
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call.
+*                  remove VMS includes.
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -64,25 +65,14 @@
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xplot_setup.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-#endif
+
 	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
-     .		  is_logh, is_logv
+     .		  is_logh, is_logv, is_shade
 	INTEGER	  status, qp,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start, density
@@ -93,7 +83,8 @@
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, not_vector
 	PARAMETER     ( norm_dims_only  = .FALSE.,
-     .			not_vector	= .FALSE. )
+     .			not_vector	= .FALSE.,
+     .                  is_shade        = .FALSE. )
 
 * set up the graphics environment
 	CALL START_PPLUS
@@ -151,6 +142,7 @@
 * set up the axes and title and load the data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
      .				not_vector,
+     .                          is_shade,
      .				aspect,
      .				overlay,
      .				transpz,

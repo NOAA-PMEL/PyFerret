@@ -85,6 +85,7 @@
 *                   variable name in the key below the plot.
 *      *acm*  5/02  Add /NOKEY option.  Also, if /NOLAB specifed, do not
 *                   plot a key.
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call
 
 
 	include 'tmap_dims.parm'
@@ -109,7 +110,7 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
      .			set_up, noaxes, axes, no_data, flows, 
-     .			is_logh, is_logv, no_key
+     .			is_logh, is_logv, no_key, is_shade
 	INTEGER		TM_LENSTR1, status, cx, 
      .			loc, ipen, thick,
      .			dim1, dim2, asp,
@@ -125,7 +126,8 @@
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, vector
 	PARAMETER     ( norm_dims_only  = .FALSE.,
-     .			vector		= .TRUE.  )
+     .			vector		= .TRUE.,
+     .                  is_shade        = .FALSE.  )
 	INTEGER ncolors
 	PARAMETER (ncolors = 6)
 
@@ -235,6 +237,7 @@
 * set up title and load the x component data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
      .				vector,
+     .                          is_shade,
      .				aspect,
      .				overlay,
      .				transpz,

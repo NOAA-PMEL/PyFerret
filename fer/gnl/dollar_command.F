@@ -58,6 +58,7 @@
 *     3/24/95  - fix bug introduced 3/2 
 * V420	2/29/96	- detach the "coaching" code into a separate routine so it
 *		can be used in symbol substitution as well
+* V510: 3/00 *sh* bug fix - in the syntax "$1" the final " caused iptr mis-set
 
 * calling argument declarations:
 	LOGICAL   did_sub
@@ -137,6 +138,7 @@
               IF ( cmnd(iptr:iptr) .EQ. c1 ) GOTO 200
  100       CONTINUE
            coaching = .FALSE.       ! unterminated option string - red herring?
+           iptr = dollar + 1	! 3/00 bug fix
         ELSE
            iptr = dollar + 1
         ENDIF

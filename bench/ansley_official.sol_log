@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version  ~ansley/FERRET/fer/ferretdods_gui
+Running FERRET version ~ansley/FERRET/fer/ferretdods_gui 
 -rwxrwxrwx   1 ansley   tmap     56315944 Dec 18 12:15 /home/ja8/ansley//FERRET/fer/ferretdods_gui
 Using external functions from  /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: after cvs update -A,  bug fixes to 12/16
+Note: bug fixes to 12/16, new benchmarks for modulo attribute and polygon/over bug fix
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Dec 18 12:25:11 PST 2002
+Beginning at Wed Dec 18 14:46:16 PST 2002
  	NOAA/PMEL TMAP
  	FERRET v5.50  
  	Solaris 5.6 - 12/18/02
- 	18-Dec-02 12:25     
+ 	18-Dec-02 14:46     
 
 yes? !bn500_all_shell
 yes? 
@@ -10117,7 +10117,7 @@ BYTEORDER = "BIG"
 FERRET_VERSION = " 5.50"
 FERRET_PLATFORM = "Solaris 5.6"
 SESSION_DATE = "18-Dec-02"
-SESSION_TIME = "12:25"
+SESSION_TIME = "14:46"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10136,7 +10136,7 @@ BYTEORDER = "BIG"
 FERRET_VERSION = " 5.50"
 FERRET_PLATFORM = "Solaris 5.6"
 SESSION_DATE = "18-Dec-02"
-SESSION_TIME = "12:25"
+SESSION_TIME = "14:46"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10145,7 +10145,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "18-Dec-02"
-SESSION_TIME = "12:25"
+SESSION_TIME = "14:46"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10156,12 +10156,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "18-Dec-02"
-SESSION_TIME = "12:25"
+SESSION_TIME = "14:46"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "18-Dec-02"
-SESSION_TIME = "12:25"
+SESSION_TIME = "14:46"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10195,7 +10195,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.50"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Dec 18 2002 12:26:30 "
+LAB3 = "Dec 18 2002 14:47:34 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10297,7 +10297,7 @@ BYTEORDER = "BIG"
 FERRET_VERSION = " 5.50"
 FERRET_PLATFORM = "Solaris 5.6"
 SESSION_DATE = "18-Dec-02"
-SESSION_TIME = "12:25"
+SESSION_TIME = "14:46"
  
  
 GO bn_reset
@@ -18298,7 +18298,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       17755 Dec 18 12:27 bench.mgm
+-rw-rw-r--   1 ansley   tmap       17755 Dec 18 14:48 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18317,7 +18317,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      318282 Dec 18 12:27 bench.mgm
+-rw-rw-r--   1 ansley   tmap      318301 Dec 18 14:48 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26642,7 +26642,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Dec 18 12:29:10 PST 2002
+Wed Dec 18 14:50:13 PST 2002
  
 GO bn_reset
 cancel mode verify
@@ -34932,7 +34932,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Dec 18 12:30 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Dec 18 14:51 testa.v5d
  
 can region
 use coads_climatology
@@ -34944,7 +34944,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Dec 18 12:30 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Dec 18 14:51 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -38943,6 +38943,83 @@ show axis/all
  COADSY    LATITUDE            90 r   89S                  89N
  
  
+! Make sure delimited reads are processing dates correctly
+! *kob*
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err541_date_delim
+! err541_date_delim.jnl
+! Fix errors occurring with delimted reads - four digit years were
+!   being accuratly calculated.
+!
+! *kob* 11/02
+ 
+set data/var="date1"/type="date,date"/form=delim dates_bug.dat
+! first date is 12-27-1999 which is unacceptable so should be missing values
+list days1900toymdhms(date1)
+             VARIABLE : DAYS1900TOYMDHMS(DATE1)
+             FILENAME : dates_bug.dat
+             SUBSET   : 6 by 6 points (X-Z)
+              1        2        3        4        5        6     
+              1        2        3        4        5        6
+ 1   / 1:     ....  1999.00  2001.00  2001.00  2003.00   999.00
+ 2   / 2:     ....     7.00     7.00     7.00     7.00     8.00
+ 3   / 3:     ....    28.00    29.00    30.00    31.00     1.00
+ 4   / 4:     ....     0.00     0.00     0.00     0.00     0.00
+ 5   / 5:     ....     0.00     0.00     0.00     0.00     0.00
+ 6   / 6:     ....     0.00     0.00     0.00     0.00     0.00
+ 
+ 
+! now test accuracy of dates
+DEFINE AXIS/T0=1-jan-1900/T=1-jan-1900:1-jan-2005:1/units=days ttt
+ 
+let date_check = date1[i=2] - T[gt=ttt,t="28-jul-1999"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=3] - T[gt=ttt,t="29-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=4] - T[gt=ttt,t="30-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=5] - T[gt=ttt,t="31-jul-2003"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+ 
+ 
+ 
+! now test eurodate format
+can data/all
+set data/var="date1"/type="eurodate,eurodate"/form=delim euro_dates_bug.dat
+! first date is 27-07-1999 which is unacceptable so should be missing values
+list days1900toymdhms(date1)
+             VARIABLE : DAYS1900TOYMDHMS(DATE1)
+             FILENAME : euro_dates_bug.dat
+             SUBSET   : 5 by 6 points (X-Z)
+              1        2        3        4        5     
+              1        2        3        4        5
+ 1   / 1:     ....  2001.00  2001.00  2003.00   999.00
+ 2   / 2:     ....     7.00     7.00     7.00     8.00
+ 3   / 3:     ....    28.00    30.00    31.00     1.00
+ 4   / 4:     ....     0.00     0.00     0.00     0.00
+ 5   / 5:     ....     0.00     0.00     0.00     0.00
+ 6   / 6:     ....     0.00     0.00     0.00     0.00
+ 
+!test accuracy of eurodates
+let date_check = date1[i=2] - T[gt=ttt,t="28-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=3] - T[gt=ttt,t="30-jul-2001"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+let date_check = date1[i=4] - T[gt=ttt,t="31-jul-2003"]
+if `date_check` then say **** DELIMTED READ DATE CHECK FAILED
+ !-> if 0 then say **** DELIMTED READ DATE CHECK FAILED
+ 
+ 
+ 
 ! ******** V5.50 Additions below ***********
  
 GO bn_reset
@@ -40458,12 +40535,102 @@ polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
  
 cancel view
  
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_modulo_attribute
+! Ferret V5.50 m
+ 
+! Modulo attribute can take numerical values to indicate
+! the modulo length of axis (subspan modulo changes)
+! This script tests various string values of the attribute
+ 
+use modulo_lon_time
+ *** NOTE: Undecipherable value of netCDF attribute modulo on variable lon_moderr
+ *** NOTE: modulo = "j"
+ *** NOTE: Undecipherable value of netCDF attribute modulo on variable time_moderr
+ *** NOTE: modulo = "j"
+ 
+sh ax lon*
+ name       axis              # pts   start                end
+ LON_FIELD_J_AXIS               2 r   50                   65
+   Axis span (to cell edges) = 30
+ LON_FIELD_I_AXIS              42 r   160                  201
+   Axis span (to cell edges) = 42
+ LON_TRUE  LONGITUDE            5mr   1.875W(-1.875)       13.125E
+   Axis span (to cell edges) = 18.75 (modulo length = 360)
+ LON_MODERR (meters)            5 r   0                    15
+   Axis span (to cell edges) = 18.75
+ LON_FALSE LONGITUDE            5 r   1.875W(-1.875)       13.125E
+   Axis span (to cell edges) = 18.75
+ LON_MOD_NOUNITS                5mr   0                    15
+   Axis span (to cell edges) = 18.75 (modulo length = axis span)
+ LON_USUAL LONGITUDE            5mr   0E                   15E
+   Axis span (to cell edges) = 18.75 (modulo length = 360)
+sh ax tim*
+ name       axis              # pts   start                end
+ TIME1     TIME                 6 r   16-JAN-1900 06:00    17-JUN-1900 10:25
+T0 = 01-JAN-1900
+   Axis span (to cell edges) = 4382.91
+ TIME2     TIME                 3 i   16-JAN-1900 06:00    17-MAY-1900 23:56
+T0 = 01-JAN-1900
+   Axis span (to cell edges) = 4382.91
+ TIME      (HOURS)             20 r   1                    20
+   Axis span (to cell edges) = 20
+ TIME_TRUE T (days)             4mi   30                   150
+T0 = %%
+   Axis span (to cell edges) = 165 (modulo length = axis span)
+ TIME_MODERR T (meters)         4 i   30                   150
+T0 = %%
+   Axis span (to cell edges) = 165
+ TIME_FALSE T (days)            4 r   120                  150
+T0 = %%
+   Axis span (to cell edges) = 40
+ TIME_MOD_NOUNITS T             4mr   120                  150
+T0 = %%
+   Axis span (to cell edges) = 40 (modulo length = axis span)
+ TIME_USUAL T (days)            4mr   120                  150
+T0 = %%
+   Axis span (to cell edges) = 40 (modulo length = axis span)
+ TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 2191.455 (modulo length = 8765.82)
+ TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
+T0 = 01-JAN-0000 00:00:00
+   Axis span (to cell edges) = 1460.97 (modulo length = 8765.82)
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn550_bug_fixes
+! bn550_bug_fixes.jnl
+! test various fixes that went into version 5.5
+! 10/02 *acm*
+!
+ 
+! Polygon/overlay calendar axis bug
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err542_poly_over_calendar
+! POLY/OVER when data has a non-standard calendar caused
+! calendar mismatch error, even on a plot with no time axis.
+ 
+use err542_poly_over_calendar.nc
+shade pc
+poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.50  
  	Solaris 5.6 - 12/18/02
- 	18-Dec-02 12:32     
+ 	18-Dec-02 14:53     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -40640,7 +40807,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.50  
  	Solaris 5.6 - 12/18/02
- 	18-Dec-02 12:32     
+ 	18-Dec-02 14:53     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -40753,4 +40920,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Dec 18 12:32:22 PST 2002
+Ended at Wed Dec 18 14:53:33 PST 2002

@@ -220,7 +220,7 @@ static GIFmetafile *init_meta(mf_cgmo *cgmo, int sx, int sy)
   newmeta->styleIndex = 1;
   newmeta->fillStyleIndex = 1;
   newmeta->style = 0;
-  newmeta->resize = 1;
+  newmeta->resize = 1;		/* OK to resize */
   newmeta->ws = cgmo->ws;
   init_colors(newmeta, cgmo->ws->wscolour);
 
@@ -558,6 +558,7 @@ GIFclear(Metafile *mf, int num, Gclrflag flag)
 	GIFmetafile *meta = find_meta(cgmo[imf]);
 	GIFcolor *color;
 	assert(meta);
+	meta->resize = 1;	/* OK to resize */
 	color = &meta->colors[0];
 	gdImageBlockFill(meta->image, color->index);
     }
@@ -634,7 +635,7 @@ GIFoutputGraphic(Metafile *mf, int num, Gint code, Gint num_pt, Gpoint *pos)
 	GIFmetafile *meta = find_meta(cgmo[imf]);
 	assert(meta);
 	assert(num_pt > 0);
-	meta->resize = 0;
+	meta->resize = 0;	/* Not OK to resize */
 
 	switch(code){
 	  case GKSM_FILL_AREA:

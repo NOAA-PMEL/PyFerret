@@ -62,7 +62,7 @@
 #elif xgks
 	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin)
 c       Also need to resize the metafile window, if it is open *js* 8.97
-	if (meta_actv) then
+	if (meta_actv .and. .not. meta_clsplt) then
 	   call resize_xgks_window (meta_wsid, xmax-xmin,ymax-ymin)
 	end if
 #else

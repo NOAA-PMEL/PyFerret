@@ -1,8 +1,10 @@
 \cancel mode verify
 ! mask_outline.jnl
-! *sh* 1/02
+! *sh* 2/01
+! *sh* 3/01 - enhanced to support irregularly spaced axes
+!(*acm 6/01 - checked into directory jnls/go rather than jnls)
 
-! Description: define a contour field with squared off lines for a 1/0 mask
+! Description: define a contour field with squared off lines for a 1-0 mask
 
 ! Explanation:
 ! A straightforward contour of a mask grid of 0's and 1's does not produce
@@ -12,7 +14,14 @@
 
 ! Note this approach works only for a mask defined on a regularly-spaced grid
 
-!usage: GO mask_outline mask
+!usage: GO mask_outline mask [xax_start] [yax_start]
+! xax_start - optional argument giving the lower bound of the first (I=1) grid
+!             cell on the X axis of the mask. If omitted the default value
+!             used will be X[I=1] - XBOX[I=1]/2 -- i.e. the assumption is that
+!             the first point on the X axis is centered within its grid cell
+!             Note that this argument becomes unnecessary if the V5.3 pseudo-
+!               variables XBOXLO, XBOXHI, ... are used (below).
+! yax_start - ditto for the y axis
 
 ! example
 !   yes? use etopo60
@@ -54,37 +63,41 @@
 ! within EPSILON of the true corners.
 ! ================================================
 
-! capture the characteristics of the native mask grid
-canc mode longitude_labels  ! get "-170" instead of "170e"
-canc mode latitude_labels   ! get "-20"  instead of "20s"
-define symbol mo_xlo `$1,return=xstart`
-define symbol mo_xhi `$1,return=xend`
-define symbol mo_xn  `$1,return=isize`
-define symbol mo_ylo `$1,return=ystart`
-define symbol mo_yhi `$1,return=yend`
-define symbol mo_yn  `$1,return=jsize`
-set mode/last longitude_labels
-set mode/last latitude_labels
+! ***
+! Note that using the XBOXLO, YBOXLO pseudo-variables of Ferret V5.3 and higher
+! this script can be substantially simplified
+! ***
+
+! Save the current region -- to be restored at the end
+DEFINE REGION/DEFAULT mo_rg
+CANCEL REGION
 
 ! define the modified X axis and cluster the mask values at the cell boundaries
-let mo_xdel = `(($mo_xhi)-($mo_xlo))/(($mo_xn)-1)`
-let mo_xdelov2 = mo_xdel/2
-let mo_xeps = mo_xdel/1e4
-define axis/x=`($mo_xlo)-mo_xdelov2`:`($mo_xhi)+mo_xdelov2`:`mo_xdelov2`/units=degrees mo_xax0
-let mo_x0 = X[gx=mo_xax0]
-let mo_x2 = IF MOD(i,2) EQ 1 THEN mo_x0+mo_xeps ELSE mo_x0+mo_xdelov2-mo_xeps
-define axis/unit=degrees/x mo_xax = mo_x2
-let $1_xmo = INT($1[gx=mo_xax]+.5)
+let mo_x    = X[g=$1]
+let mo_xbox = XBOX[g=$1]
+let mo_xoffset = mo
+define symbol mo_x0 $2"`mo_x[i=1]-0.5*mo_xbox[i=1],p=7`"!lo edge of 1st axis pt
+define symbol mo_nx `$1,return=isize`
+let mo_xhi = mo_xbox[i=1:($mo_nx)@rsum]   ! XBOXHI in V5.3
+let mo_xlo = IF I[i=1:($mo_nx)] EQ 1 THEN 0 ELSE mo_xhi[i=@shf:-1] ! XBOXLO ...
+define symbol mo_xeps  `(mo_x[i=($mo_nx)]-mo_x[i=1])/(($mo_nx)-1)/1e4,p=7`
+let mo_xpoints = ($mo_x0) + XSEQUENCE(IF K[g=abstract,k=1:2] EQ 1 THEN TSEQUENCE(mo_xlo+($mo_xeps)) ELSE TSEQUENCE(mo_xhi-($mo_xeps)))
+define axis/X/units="`$1,return=xunits`" mo_xaxis = mo_xpoints
 
 ! define the modified Y axis and cluster the mask values at the cell boundaries
-let mo_ydel = `(($mo_yhi)-($mo_ylo))/(($mo_yn)-1)`
-let mo_ydelov2 = mo_ydel/2
-let mo_yeps = mo_ydel/1e4
-define axis/y=`($mo_ylo)-mo_ydelov2`:`($mo_yhi)+mo_ydelov2`:`mo_ydelov2`/units=degrees mo_yax0
-let mo_y2 = IF MOD(j,2) EQ 1 THEN mo_y0+mo_yeps ELSE mo_y0+mo_ydelov2-mo_yeps
-let mo_y0 = Y[gy=mo_yax0]
-define axis/unit=degrees/y mo_yax = mo_y2
-let $1_mo = INT($1_xmo[gy=mo_yax]+.5)
+let mo_y    = Y[g=$1]
+let mo_ybox = YBOX[g=$1]
+let mo_yoffset = mo
+define symbol mo_y0 $3"`mo_y[j=1]-0.5*mo_ybox[j=1],p=7`"!lo edge of 1st axis pt
+define symbol mo_ny `$1,return=jsize`
+let mo_yhi = mo_ybox[j=1:($mo_ny)@rsum]   ! YBOXHI in V5.3
+let mo_ylo = IF J[j=1:($mo_ny)] EQ 1 THEN 0 ELSE mo_yhi[j=@shf:-1] ! YBOXLO ...
+define symbol mo_yeps  `(mo_y[j=($mo_ny)]-mo_y[j=1])/(($mo_ny)-1)/1e4,p=7`
+let mo_ypoints =  ($mo_y0) + XSEQUENCE(IF K[g=abstract,k=1:2] EQ 1 THEN TSEQUENCE(mo_ylo+($mo_yeps)) ELSE TSEQUENCE(mo_yhi-($mo_yeps)))
+define axis/Y/units="`$1,return=yunits`" mo_yaxis = mo_ypoints
+
+* regrid the mask
+let $1_mo = INT($1[gx=mo_xaxis@ave,gy=mo_yaxis@ave]+.01) ! round to be safe
 
 ! define an alias the user can type for easy plotting
 define alias ovmo cont/ov/lev=(0.5,0.5,1,-3)/nolab/color=black $1_mo
@@ -93,6 +106,5 @@ say *** Use the command alias "ovmo" to overlay the mask outline ***
 ! clean up
 cancel variables mo_*
 cancel symbols mo_*
-cancel axis mo_xax0
-cancel axis mo_yax0
+set region mo_reg
 set mode/last verify

@@ -49,6 +49,7 @@
 *	Mod to use new hatch scheme *jd* 10.12.92 - cancelled 10.22.92
 *	Mod to use SYMBEL rather than GTX for key labels *jd* 3.4.93
 * 	Mod to provide identical endpoint values for a constant field/jd/5.96
+*       Mod for FILLPOL *jd* 3.99
 
 #ifdef unix
 	include 	'parampl5_dat.decl'
@@ -218,7 +219,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   yy = (ky_hi - 5.0 * y_inc)/1000.0 - yorg - karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
-	   if (makep .eq. 'SHADE') then
+	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL') then
 	      call point_convert (xx,yy,xxx,yyy)
 	   else if (makep .eq. 'FILL') then
 	      xxx = xx
@@ -311,7 +312,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg - 0.5*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
-	   if (makep .eq. 'SHADE') then
+	   if (makep .eq. 'SHADE'.or. makep .eq. 'FILLPOL') then
 	      call point_convert (xx,yy,xxx,yyy)
 	   else if (makep .eq. 'FILL') then
 	      xxx = xx

@@ -35,6 +35,9 @@
 *
 */
 
+/* Revision history
+   V530 - *sh* added ability to read dates formatted as YYYYMMDD
+*/
 
 /*
   Code to perform tab, comma, etc delimited reads from Ferret
@@ -371,6 +374,12 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 			  &idummy1,&idummy2,&idummy3,errstr) == 3)
 	  (*(numeric_fields+i))[rec] =
 	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
+	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
+	      && idummy1>0
+	      && idummy2>=1 && idummy2<=12
+	      && idummy3>=1 && idummy3<=31 )
+	  (*(numeric_fields+i))[rec] =
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
@@ -471,6 +480,17 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
       }
     else if (sscanf(p,"%d-%d-%d%1s",&idummy1,&idummy2,&idummy3,str1) == 3)
       /* date as yyyy-mm-dd */
+      {
+	if (field_type[(*nfields)] == FTYP_MISSING)
+	  field_type[(*nfields)] = FTYP_DATE;
+	else if (field_type[(*nfields)] != FTYP_DATE)
+	  field_type[(*nfields)] = FTYP_CHARACTER;
+      }
+    else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1) == 3)
+	      && idummy1>=1800 && idummy1<2100
+	      && idummy2>=1 && idummy2<=12
+	      && idummy3>=1 && idummy3<=31 )
+      /* date as yyyymmdd */
       {
 	if (field_type[(*nfields)] == FTYP_MISSING)
 	  field_type[(*nfields)] = FTYP_DATE;

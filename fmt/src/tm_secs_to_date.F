@@ -53,22 +53,18 @@
 * V530: *acm* 12/00 add calendar types; cal_id.  This routine is from
 *       Jerry's tm_calendars_secs_to_date
 *       *acm* 3/01  Treat Julian calendar as a separate case.
-* 
-
+*       *ACm* 4/24/01 INT(tot_days/366. + 307./366.)  is 0 under linux,
+*                     when the expression is 1.  workaround: compute
+*		      INT((tot_days_0.1)/366. + 307./366.) 
 
 * Argument definitions
 	REAL*8		num_secs
 	INTEGER		cal_id
 
 * Include files
-#ifdef unix
 	include 'tmap_errors.parm'
         include 'calendar.decl'
         include 'calendar.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#endif
 
 *
 * Local Definition
@@ -78,7 +74,7 @@
      .			minute, second, leapadj, cent_cnt, status,
      .			year_cnt, cent4_cnt, year4_cnt, tot_days,
      .			tmp_days
-	REAL		yeardays
+	REAL		yeardays, a
 	REAL*8		secs_in_minute, secs_in_hour, secs_in_day,
 	1    secs_in_year, secs_in_4years, secs_in_cent,
 	2    secs_in_4cents, total_secs, leap_yr_days
@@ -162,7 +158,9 @@ C  Get calendar attributes
 	   total_secs = total_secs - tot_days*secs_in_day
 	   
 *          DECIDE WHAT MONTH/DAY IT IS
-	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+
+	   tmp_days = tot_days - leapadj*
+     .			INT((tot_days+0.1)/366. + 307./366.)
 	   IF (tmp_days .LT. 0) 
 	1	STOP 'negative subscript in TM_SECS_TO_DATE'
 	   month = month_by_day(tmp_days+1)
@@ -228,7 +226,8 @@ C  Get calendar attributes
 	   total_secs = total_secs - tot_days*secs_in_day
 
 *          DECIDE WHAT MONTH/DAY IT IS
-	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+	   tmp_days = tot_days - leapadj*
+     .			INT((tot_days+0.1)/366. + 307./366.)
 	   IF (tmp_days .LT. 0) 
 	1	STOP 'negative subscript in TM_SECS_TO_DATE'
 	   month = month_by_day(tmp_days+1)

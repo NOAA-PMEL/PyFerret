@@ -20,7 +20,9 @@
 * V420:  9/95 - deallocate dynamic grid (if any) at cleanup time
 * V450:  1/97 - process alg_child_var and alg_grid_chg_fcn
 *        7/97 - generate child var name using GCF_PARENT_UVAR
-
+* v491   3/98 - sgi benchmarking uncovered bug in psuedo_variable processing - 
+*               no valid "name" was being set up   *kob/sh*
+*
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 	include	'ferret_cmn/errmsg.parm'
@@ -246,7 +248,8 @@
 	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   dflt_cx = cx_stack_ptr
-	   CALL GCF_IMPOSE_ARG_LIM_DFLTS( name(:len_name), item,
+* use uvar_text as name to pass to gcf_impose...*kob* 3/98
+	   CALL GCF_IMPOSE_ARG_LIM_DFLTS( uvar_text(uvar)(start:end), item,
      .					  lo_cx, dflt_cx, uvar, status )
 	   IF (status .NE. ferr_ok) RETURN
 	ELSE

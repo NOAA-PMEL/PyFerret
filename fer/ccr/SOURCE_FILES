@@ -1,4 +1,5 @@
 SRCS_C = \
+EF_InternalUtil.c\
 batch_graphics.c\
 fermain_c.c\
 ferret_dispatch_c.c\

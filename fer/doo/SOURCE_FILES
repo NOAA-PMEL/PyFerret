@@ -21,6 +21,7 @@ do_deriv_bkwd.F\
 do_deriv_cntr.F\
 do_deriv_frwd.F\
 do_dist_loc.F\
+do_external_gc_fcn.F\
 do_fill_ave.F\
 do_fill_interp.F\
 do_fill_near.F\

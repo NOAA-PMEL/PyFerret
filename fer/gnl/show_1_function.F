@@ -10,6 +10,7 @@
 * programmer - steve hankin
 
 * V450: 7/97
+* 97.07.30 *jc* added code to enable external functions
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -30,12 +31,22 @@
 * local variable declarations:
 	INTEGER TM_LENSTR, TM_LENSTR1, ll, ll2, llsave,
      .					narg, i, iarg, iarg2
-	CHARACTER units*40
+	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*80, 
+	1    ef_units*40
+	integer efcn_scan, efcn_get_num_reqd_args, efcn_gather_info
 
 * local parameter definitions
 	CHARACTER*4 indent
 	PARAMETER ( indent = '    ' )
+        INTEGER      slen
+        PARAMETER  ( slen = 40 )
 
+#ifdef sun
+        BYTE      fhol(slen)    ! c-type Hollerith string buffer
+#else
+        INTEGER*1 fhol(slen)    ! c-type Hollerith string buffer
+#endif
+ 
 * initialize
 	len_rbuff = LEN(risc_buff)	! maximum length
 
@@ -50,7 +61,17 @@
 	   narg = gfcn_num_reqd_args(ifcn)
 	   iarg = gfcn_arg_ptr(ifcn)
 	ELSE
-	   STOP 'no external functions yet'
+	   IF ( efcn_scan(gfcn_num_internal) .EQ. 0 ) THEN
+	      ! JC_TODO: what if no external functions are found?
+	      STOP 'no external functions found'
+	   ELSE
+	      IF ( efcn_gather_info(ifcn) .ne. 0 ) THEN
+		 RETURN
+	      ENDIF
+	      risc_buff = gcf_name(ifcn)
+	      narg = efcn_get_num_reqd_args(ifcn)
+	      iarg = 1
+	   ENDIF
 	ENDIF
 
 * ... open paren
@@ -65,7 +86,9 @@
 	ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	   risc_buff = risc_buff(:ll) // gfcn_arg_name(iarg)
 	ELSE
-	   STOP 'no external functions yet'
+           call efcn_get_arg_name(ifcn, iarg, fhol)
+           call TM_CTOF_STRNG( fhol, ef_arg_name, slen)
+	   risc_buff = risc_buff(:ll) // ef_arg_name
 	ENDIF
 	ll = TM_LENSTR1(risc_buff)
 	IF ( ll .GE. len_rbuff ) GOTO 200   ! undetected (unlikely) error
@@ -81,7 +104,9 @@
 	   ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	      risc_buff = risc_buff(:ll) // gfcn_arg_name(iarg2)
 	   ELSE
-	      STOP 'no external functions yet'
+	      call efcn_get_arg_name(ifcn, iarg2, fhol)
+	      call TM_CTOF_STRNG( fhol, ef_arg_name, slen)
+	      risc_buff = risc_buff(:ll) // ef_arg_name
 	   ENDIF
 	   ll = TM_LENSTR1(risc_buff)
 	   IF ( ll .GE. len_rbuff ) GOTO 200   ! truncation error
@@ -101,7 +126,9 @@
 	ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	   risc_buff = gfcn_descr(ifcn)
 	ELSE
-	   STOP 'no external functions yet'
+	   call efcn_get_descr(ifcn, fhol)
+	   call TM_CTOF_STRNG( fhol, ef_descr, slen)
+	   risc_buff = ef_descr
 	ENDIF
 	IF ( risc_buff .NE. ' ') CALL SPLIT_LIST
      .			(pttmode_explct, lun, indent//risc_buff, 0)
@@ -115,7 +142,9 @@
 	   ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	      risc_buff = gfcn_arg_name(iarg)
 	   ELSE
-	      STOP 'no external functions yet'
+	      call efcn_get_arg_name(ifcn, iarg, fhol)
+	      call TM_CTOF_STRNG( fhol, ef_arg_name, slen)
+	      risc_buff = ef_arg_name
 	   ENDIF
 	   ll = TM_LENSTR1(risc_buff)
 	   IF ( ll .GE. len_rbuff ) GOTO 400   ! truncation error
@@ -127,7 +156,9 @@
 	   ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	      risc_buff = risc_buff(:ll+2) // gfcn_arg_descr(iarg)
 	   ELSE
-	      STOP 'no external functions yet'
+	      call efcn_get_arg_descr(ifcn, iarg, fhol)
+	      call TM_CTOF_STRNG( fhol, ef_descr, slen)
+	      risc_buff = risc_buff(:ll+2) // ef_descr
 	   ENDIF
 * ... arg units
 	   IF ( .NOT.its_gc ) THEN
@@ -135,7 +166,9 @@
 	   ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	      units = gfcn_arg_units(iarg)
 	   ELSE
-	      STOP 'no external functions yet'
+	      call efcn_get_arg_units(ifcn, iarg, fhol)
+	      call TM_CTOF_STRNG( fhol, ef_units, slen)
+	      units = ef_units
 	   ENDIF
 	   ll2 = TM_LENSTR(units)
 	   IF ( ll2 .GT. 0 ) THEN

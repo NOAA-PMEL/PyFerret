@@ -811,7 +811,7 @@ c	ind_dim = plot_axis(1)
 	   ELSE
 	      plot_title = KEY_STRING( cx_color, cx_xtra_doc, slen )
 	   ENDIF
-           IF (no_x_rng .AND. (valx1.EQ.bad_val4)) THEN
+           IF (no_range) THEN
               plot_title(slen+1:slen+14) = ' No Valid Data'
               slen = slen + 14
            ENDIF

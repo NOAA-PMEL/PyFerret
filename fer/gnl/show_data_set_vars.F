@@ -59,6 +59,8 @@
 * V420:	10/95 - extended missing flag output to cover dual flags
 * V500: 3/99 *kob* - added check for NORMAL Axes - output only ... rather
 *                    than a 1:1 or 100:100
+*       4/99 *kob* - bug fix to above - check grid_line to see if axis is
+*                    truly normal
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -119,9 +121,8 @@
      .		(rbuff(i+4)(slen(i):),rbuff(i)(:6),i=1,4)
  4010	   FORMAT( 1X,A8,1X,A31,T42,4(A,':',A) )
 * *kob* 3/99 check for NORMAL Axis and insert ... rather than 1:1 
-*            kinda a kludge
            DO 150 i = 1, 4
-	      IF (ds_grid_start(i,ivar) .EQ. ds_grid_end(i,ivar)) THEN
+	      IF ( grid_line(i,ds_grid_number(ivar)) .EQ. mnormal) THEN
 		 tlen = 34 + (i*10)
 		 risc_buff(tlen:tlen+2) = '...'
 	      ENDIF

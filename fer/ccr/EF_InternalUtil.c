@@ -1975,7 +1975,12 @@ int EF_ListTraverse_MatchTemplate( char data[], char *curr )
 
   } 
 
-  return FALSE; /* got all the way through: a match */
+  /* *sh* if any non-wildcard characters remain in the "curr" name, then reject
+     probably a bug remains for a regexp ending in "?" */
+  if ( *n == '\0' || star_skip )
+    return FALSE; /* got all the way through: a match */
+  else
+    return TRUE; /* characters remain--e.g. "xx5" does not math regexp "xx" */
 
 }
 

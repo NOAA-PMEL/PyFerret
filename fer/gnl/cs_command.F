@@ -63,7 +63,8 @@
 *		   [IN FACT THIS TURNS OUT TO BE IRRELEVANT ... ]
 * v522 *kob* 12/00 - add xplot_setup common file to check to see if we
 *                    are animating
-
+* v540 *kob* 1/02 - fix bug in which last animation plot wasn't being
+*                   flushed to the screen
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
 * RETURN 1 - used when no command can be supplied
@@ -121,8 +122,15 @@
 		 RETURN 1
 	      ELSE
 * *kob* repeat loop done so we are done animating.  reset active window
+* 1/02 v5.4 - and also flush last plot to screen
 		 IF (animate .EQV. .TRUE.) THEN
 		    animate = .FALSE.
+* flush last plot to screen
+		    wsid = win_id9
+		    anim_id = active_win_id
+		    CALL COPY_BUFFERED_WINDOW(wsid, anim_id)
+		    CALL CLEAR_WINDOW(wsid)
+* reset active window
 		    CALL SWAP_ACTIVE_WINDOW
 		 ENDIF
 		 CALL POP_CS

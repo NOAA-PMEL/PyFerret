@@ -58,6 +58,7 @@
 *	        PARAMETER statement because variable was modified in code
 * 	      - Added a preprocessor include for tmap_dset.parm
 *	        because it needed a preprocessor.
+*  7/98 *js*  - Hacked to add support for permuted binary file reads
 * calling argument declarations:
 	INTEGER	status
 	REAL	memory(*)
@@ -125,7 +126,12 @@
 
 * choose the appropriate routine to read the data
 	IF ( ds_type( dset_num ) .EQ. pds_type_ez ) THEN
-	   CALL READ_EZ( memory, cx, is_mr(isp), status )
+* all stream formatted files now read with new fast binary reads
+	   IF ( ds_parm_text(1,dset_num)(:3) .eq. 'STR') THEN
+	      CALL READ_BINARY( memory, cx, is_mr(isp), status)
+	   ELSE
+	      CALL READ_EZ( memory, cx, is_mr(isp), status )
+	   ENDIF
 	   IF ( status .EQ. ferr_ok ) GOTO 2
 	ELSE
 	   CALL READ_TM( memory, cx, is_mr(isp), status )

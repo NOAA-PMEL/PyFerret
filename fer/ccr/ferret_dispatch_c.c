@@ -61,7 +61,7 @@ compile this with
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <ferret.h>
 #include "ferret_shared_buffer.h"
 
 /* function prototype for FORTRAN routine */
@@ -109,4 +109,29 @@ void ferret_dispatch_c( float *memory, char *init_command, smPtr sBuffer )
 
   return;
 }
+
+static int SecureFlag = 0;
+static int ServerFlag = 0;
+
+/*
+ * Routines for setting/getting security settings
+ */
+void set_secure() {
+  SecureFlag = 1;
+}
+
+int FORTRAN(is_secure)() {
+  return SecureFlag;
+}
+/*
+ * Routines for setting/getting server settings
+ */
+void set_server() {
+  ServerFlag = 1;
+}
+
+int FORTRAN(is_server)() {
+  return ServerFlag;
+}
+
 

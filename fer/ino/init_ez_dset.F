@@ -58,6 +58,8 @@
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
 * V450 7/97 - Increase array var_list holding dset var names
+*      7/98 *js*   Mods to support new /swap and /type qualifiers for stream
+*                  datasets
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -85,22 +87,29 @@
 #endif
 
 * calling argument declarations
-	INTEGER		dset, status
+	INTEGER		dset, status, i
 	CHARACTER	dset_name*(*)
 
 * internal variable declarations:
 	LOGICAL		TM_DIGIT, VALID_GRID,
-     .			have_mods, already_init, by_number
+     .			have_mods, already_init, by_number, swap
+	LOGICAL         have_type
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, ivar, skip, grid, columns,
-     .			order(4), idim
+     .			order(5), idim
 	CHARACTER	TM_INQ_PATH*80, var_list*256,
-     .			path_name*80, ezform*80, title*128, grid_name*16
+     .			path_name*80, ezform*80, title*128, grid_name*16,
+     .			type*16, ctype*16
 	REAL		rval
 
+* functions
+	INTEGER         br_set_type
 * initialize
 	loc = qual_given( slash_set_data_var )
 	have_mods = .FALSE.
+	swap = .FALSE.
+	have_type = .FALSE.
+	type = 'R4'
 
 * interpret the data set name or number given
 * 3 possibilities:
@@ -202,7 +211,7 @@
      .                         order, status )
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
-	   DO 500 idim = 1,4
+	   DO 500 idim = 1,5
  500	   order(idim) = idim
 	ENDIF
 	loc = qual_given( slash_set_data_grid )
@@ -231,12 +240,43 @@
 	ELSE
 	   skip = int4_init
 	ENDIF
+	
+c       /type
+	loc = qual_given(slash_set_data_type)
+	if (loc .GT. 0) then
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   type, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   have_type = .TRUE.
+	END IF
+	   
+c       /swap
+	loc = qual_given(slash_set_data_swap)
+	if (loc .GT. 0) then
+	   swap = .TRUE.
+	END IF
+	   
 	IF ( have_mods ) THEN
 	   CALL EZ_MOD_DSET( dset, title, ezform, grid, skip, order,
      .				tmap_status )
 	   IF ( tmap_status .NE. merr_ok ) GOTO 5900
 	ENDIF
 
+* Make sure no v permutations are defined for non-stream formats,
+* and don't allow /swap or /type flags 
+	if (ezform(:3) .NE. 'STR') then
+	   do i=1,4
+	      if (order(i) .eq. 5) goto 5700
+	   end do
+	   if (swap .eq. .TRUE. .or. have_type .eq. .TRUE.) then
+	      goto 5800
+	   end if
+	end if
+
+
+	call toChar(type, ctype)
+	if (BR_SET_TYPE(ctype) .EQ. 0) goto 5600
+	call BR_SET_ATTS(order, swap)
 * successful completion
 	status = ferr_ok
 	RETURN
@@ -252,6 +292,14 @@
 ! 5400	CALL ERRMSG( ferr_unknown_data_set, status, dset_name, *5000 )
  5400	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
+ 5600	call errmsg(ferr_invalid_command, status,
+     .        'invalid argument for /TYPE', *5000)
+ 5700	call errmsg(ferr_invalid_command, status,
+     .        'variable permutations only allowed for STREAM format', 
+     .        *5000)
+ 5800	call errmsg(ferr_invalid_command, status,
+     .        '/SWAP or /TYPE only allowed for STREAM format', 
+     .        *5000)
  5900	status = ferr_tmap_error
 	GOTO 5000
 	END

@@ -58,6 +58,7 @@
 *	 2/28/95 - SPLIT_GUI_MESSAGE --> TM_SPLIT_MESSAGE
 * Linux Port - *kob* 12/96 - had to put single quotes around hello 
 *			     in comment up above - linux f90 freaked out.
+*       10.28.98 *js* Don't pause for messages if in server mode
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 	include 'ferret_cmn/errmsg.parm'
@@ -79,6 +80,7 @@
 	
 * local variable declarations
 	LOGICAL fexist
+	LOGICAL is_server
 	INTEGER status
 
 * treat all text as a single argument
@@ -94,7 +96,7 @@
         ENDIF
 * continue or wait ?
 	IF ( qual_given( slash_continue ) .GT. 0
-     .	.OR. mode_gui ) RETURN
+     .	.OR. mode_gui .OR. is_server()) RETURN
 
 * prompt for <CR> ?
 * (in gui mode ferret_dispatch will send a flag back to the GUI)

@@ -48,6 +48,7 @@
 
 /* .................... Includes .................... */
  
+#include <assert.h>
 #include <stdio.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
 #include <string.h>		/* for convenience */
@@ -344,6 +345,21 @@ int efcn_gather_info_( int *id_ptr )
   strcat(ef_object, ef_ptr->name);
   strcat(ef_object, ".so");
 
+  /*
+   * Following might need to be added to get WebFerret to work
+   * Commented out because it's Solaris specific
+   * JS
+   */
+#if 0
+  if (dlopen("liballferret.so", RTLD_LAZY | RTLD_GLOBAL) == NULL){
+      fprintf(stderr, "  dlerror: %s\n", dlerror());
+  }
+  if (dlopen(ef_object, RTLD_LAZY | RTLD_GLOBAL) == NULL){
+      fprintf(stderr, "  dlerror: %s\n", dlerror());
+  }
+
+  ef_ptr->handle = dlopen(0, RTLD_LAZY);
+#endif
   /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {*/
   /* if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) { */
   /* kob - commented out above line, and removed RTLD_GBAL check from below on

@@ -45,6 +45,7 @@
 * v200: Unix/RISC port - 3/12/91 - coach for "^z" on Unix
 * V230 6/92 - allow "system" calls for unix
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* 10.28.98 *js* Disable command if secure mode set
 * V500:  1/99 - correct the handing of qutes as in SPAWN "date"
 *		with call to ALL_1_ARG
 
@@ -58,10 +59,17 @@
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
 #endif
 
+	LOGICAL IS_SECURE
+
 # ifdef unix
 	CALl ALL_1_ARG
 	IF ( num_args .GT. 0 ) THEN
-	   call system( cmnd_buff(arg_start(1):arg_end(1)) )
+	   if (IS_SECURE()) then
+	      call SPLIT_LIST(pttmode_help, ttout_lun,
+     1	        'This command is not allowed.', 0)
+	   else
+	      call system( cmnd_buff(arg_start(1):len_cmnd) )
+	   end if
 	ELSE
 * user can get choice of shells with "SPAWN csh", or whatever.
 	   CALL SPLIT_LIST(pttmode_help, ttout_lun,

@@ -54,5 +54,4 @@ gcstuff.c\
 gui_dummies.c\
 main.c\
 po.c\
-vp.c\
-xgksmod_xopws.c 
+vp.c

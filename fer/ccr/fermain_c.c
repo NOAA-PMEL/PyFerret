@@ -99,6 +99,7 @@
 *    10/16/97 *kob* - Combining non-gui main program w/ gui main program so that
 *                     there needs only be one main program.  added an ifdef 
 *                     LINK_GUI_AS_MAIN around the gui-exclusive code
+*    10.28.98 *js* Added -secure option
 */
 
  
@@ -180,20 +181,24 @@ void help_text()
 {
 #ifdef LINK_GUI_AS_MAIN
   printf(
-"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-gif] [-gui] [-unmapped] [-help] \n\
+"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] \n\
        -memsize:  specify the memory cache size in megawords (default 3.2)\n\
          -batch:  output directly to metafile \"outfile\" w/out X windows\n\
       -unmapped:  use invisible output windows (superceded by -batch)\n\
            -gif:  output to GIF file w/o X windows only w/ FRAME command\n\
            -gui:  to start Ferret in point and click mode\n\
+        -secure:  run securely -- don't allow system commands\n\
+        -server:  run in server mode -- don't stop on message commands\n\
           -help:  obtain this listing\n");
 #else
   printf(
-"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-gif] [-unmapped] [-help] \n\
+"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-secure] [-gif] [-unmapped] [-help] \n\
        -memsize:  specify the memory cache size in megawords (default 3.2)\n\
          -batch:  output directly to metafile \"outfile\" w/out X windows\n\
       -unmapped:  use invisible output windows (superceded by -batch)\n\
            -gif:  output to GIF file w/o X windows only w/ FRAME command\n\
+        -secure:  run securely -- don't allow system commands\n\
+        -server:  run in server mode -- don't stop on message commands\n\
           -help:  obtain this listing\n");
 #endif  /* LINK_GUI_AS_MAIN */
   exit(0);
@@ -288,6 +293,12 @@ main (int argc, char *argv[])
     } else if (strcmp(argv[i],"-gif")==0) {
       char *meta_name = ".gif";	/* Unused dummy name */
       set_batch_graphics_(meta_name);
+      ++i;
+    } else if (strcmp(argv[i],"-secure")==0) {
+      set_secure();
+      ++i;
+    } else if (strcmp(argv[i],"-server")==0) {
+      set_server();
       ++i;
     } else if (strcmp(argv[i],"-batch")==0) {
       char *meta_name = "metafile.plt";

@@ -180,6 +180,7 @@
 
 * read the data via TMAP library routine
 	nread = rec_to_read
+
 	CALL EZ_READ( data_set, nread, nrepeat, columns,
      .          memory( 1, buffblk), status,
      .		memory( 1, mr_blk1(mr20( 1)) ),

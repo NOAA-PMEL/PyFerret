@@ -107,6 +107,9 @@
 *		      "ifndef sgi" to prevent reclen_in_bytes being set
 * V450	11/96 - added LIST/CLOBBER
 *		added pcdf_mode_cache for DODS caching
+*       7/98 *js* Changed size of perm to 5 to support parsing of 
+*                 xyztv permutations (unsupported for now)
+*      12/98 *js* Disable listing to files if in secure mode
 * v500  2/99  - *kob* added LIST/QUIET
 
 #ifdef unix
@@ -144,7 +147,7 @@
      .                  STR_UPCASE,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
      .			rlen, flen, reclen, i, cx1, qfile, idim, cdfoutid,
-     .			ndim, wkblk, perm(4), mr_perm(max_intrp),
+     .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars
 	CHARACTER	AUTO_FILENAME*200, filename*200, raw_name*200,
      .			buff*80, fstatus*8, faccess*12, fformatted*12,
@@ -163,6 +166,9 @@
      .			slash_rigid   = 18+1,
      .			slash_clobber = 27+1,
      .                  slash_quiet   = 28+1)
+
+* one lonely function declaration
+	LOGICAL is_secure
 
 * formatting information given ?
 	i = qual_given( slash_format )
@@ -210,6 +216,13 @@
         npermuted    = 0
 	recsofar     = 0
 	
+* Verboten to list to file if in secure mode
+	IF (is_secure() .AND. .NOT. list_to_tty) then
+	   call SPLIT_LIST(pttmode_help, ttout_lun,
+     1	        'This command is not allowed.', 0)
+	   return
+	ENDIF
+
 * in GUI mode you cannot use LIST/FORMAT without /FILE
 	IF ( mode_gui.AND.list_format_given.AND.list_to_tty ) GOTO 5070
 
@@ -247,7 +260,7 @@
 	all_at_once  = do_multi.OR.do_epic.OR.do_gt.OR.do_cdf
 
 * permutation requested ?
-        DO 10 idim = 1, 4 ! 3/92 SUN port addition
+        DO 10 idim = 1, 5 ! 3/92 SUN port addition
  10     perm(idim) = idim
 	IF ( permute ) THEN
 * ... user-specified permutation
@@ -255,6 +268,10 @@
 	   i = qual_given( slash_permute )
 	   CALL EQUAL_PERMUTE( cmnd_buff(qual_start(i):qual_end(i)),
      .			       perm, status )
+c Check for unsupported variable permutations
+	   do idim = 1,4
+	      if (perm(idim) .eq. 5) goto 5080
+	   end do
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 
@@ -588,6 +605,8 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
      .		'	(format cannot be tab or comma)', *1000 )
  5070	CALL ERRMSG( ferr_invalid_command, status,
      .		'In GUI mode LIST/FORMAT reguires a named /FILE=', *1000 )
+ 5080	CALL ERRMSG( ferr_invalid_command, status,
+     .			'/ORDER not allowed with V permutation (yet)', *1000 )
 	END
 
 

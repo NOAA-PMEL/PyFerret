@@ -56,6 +56,8 @@
      .			slash_set_data_save,
      .			slash_set_data_restore,
      .			slash_set_data_order,
+     .			slash_set_data_type,
+     .			slash_set_data_swap,
      .
      .			slash_set_var_title,
      .			slash_set_var_unit,
@@ -179,6 +181,8 @@
      .			slash_set_data_save	= 8,
      .			slash_set_data_restore	= 9,
      .			slash_set_data_order	= 10,
+     .			slash_set_data_type     = 11,
+     .			slash_set_data_swap     = 12,
      .
      .			slash_set_var_title	= 1,
      .			slash_set_var_unit	= 2,

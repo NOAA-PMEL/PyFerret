@@ -44,9 +44,11 @@
 *
 * V200:   9/1/89
 * V230: 4/92 (SUN port) - bug fix on loop: "fill in any missing dimensions"
+*
+* 7/15/98 *js* Added support for "XYZTV" permutations. 
 
 * calling argument declarations
-	INTEGER		perm(4), status
+	INTEGER		perm(5), status
 	CHARACTER*(*)	string
 
 * internal variable declarations
@@ -74,31 +76,36 @@
 	IF ( equal_pos .EQ. 0 .OR. equal_pos .EQ. slen ) GOTO 5100
 
 * skip blanks and tabs
-	DO 100 pos = equal_pos+1, slen
+	DO  pos = equal_pos+1, slen
 	   IF ( string(pos:pos) .NE. ' '
      .	  .AND. string(pos:pos) .NE. tab ) GOTO 200
- 100	CONTINUE
+	END DO
 	GOTO 5100
 
 * decode permutation string
- 200	IF ( slen-pos .GT. 3 ) GOTO 5100
+ 200	IF ( slen-pos .GT. 4 ) GOTO 5100
 	ndim = 0
 	DO 250 pos = pos, slen
 	   vax_code = STR_UPCASE( ax, string(pos:pos) )
-	   DO 210 idim = 1, 4
+	   DO idim = 1, 4
 	      IF ( ax .EQ. ss_dim_name(idim)
      .	      .OR. ax .EQ. ww_dim_name(idim) ) THEN
 	         ndim = ndim + 1
 	         perm(ndim) = idim
 	         GOTO 250
 	      ENDIF
- 210	   CONTINUE
+ 	   END DO
+	   IF ( ax .EQ. 'V') THEN   ! Variable name permutation
+	      ndim = ndim + 1
+	      perm(ndim) = idim
+	      GOTO 250
+	   END IF
 	   GOTO 5100
  250	CONTINUE
 
 * fill in any missing dimensions (e.g. "perm=YX" is interpreted as YXZT)
-	DO 350 ndim = ndim+1, 4
-	   DO 320 idim = 1, 4
+	DO 350 ndim = ndim+1, 5
+	   DO 320 idim = 1, 5
 	      DO 310 i = 1, ndim-1   ! loop of slots already set (4/92 bug fix)
  310	      IF ( perm(i) .EQ. idim ) GOTO 320
 	      perm(ndim) = idim
@@ -107,8 +114,8 @@
  350	CONTINUE
 
 * check that no axis is given twice
-	DO 410 idim = 1, 4
-	   DO 400 i = idim+1, 4
+	DO 410 idim = 1, 5
+	   DO 400 i = idim+1, 5
  400	   IF ( perm(i) .EQ. perm(idim) ) GOTO 5100
  410	CONTINUE
 

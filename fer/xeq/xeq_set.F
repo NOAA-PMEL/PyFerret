@@ -112,6 +112,7 @@
 *			  because it needed a preprocessor.
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
+*          12/98 *js*  - Disallow set mem command is in secure mode
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 	include 'tmap_format/tmap_errors.parm'
@@ -198,6 +199,9 @@
 * local parameter declarations:
 	INTEGER		slash_set_last
 	PARAMETER     ( slash_set_last = 1 )
+
+* functions
+	LOGICAL is_secure
 
 * initialize
 	reconfig = 0   	! zero signals NO memory reconfigure
@@ -668,6 +672,11 @@ c *kob* 4/97
 
 * SET MEMORY/MWORDS=megawords
  1300	IF ( num_args .GT. 0 ) GOTO 5800
+	if (is_secure()) then
+	   call SPLIT_LIST(pttmode_help, ttout_lun,
+     1	        'This command is not allowed.', 0)
+	   return
+	endif
         lp = qual_given( slash_set_memory_words )
 	IF ( lp .GT. 0 ) THEN
            CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),

@@ -97,7 +97,7 @@
 * V450	11/14/96 - added LIST/CLOBBER
 *	5/97	 - added /NOAXES to SHADE, PLOT, CONTOUR, and VECTOR
 *       7/97     - added SHOW FUNCTIONS
-
+*  *js* 7/98     - added SET DATA/TYPE and SET DATA/SWAP
 * v491  12.98    - added PATTERN support *jd*
 * v491  12.98    - added PATTERN alias *jd*
 * v500  2/99 - *kob* - add /QUIET to LIST command
@@ -191,6 +191,11 @@
 		DATA qualifiers  (nqual_at1g+7)	/ 'SAVE'	/
 		DATA qualifiers  (nqual_at1g+8)	/ 'RESTORE'	/
 		DATA qualifiers  (nqual_at1g+9)	/ 'ORDER'	/   !5/94
+		DATA qualifiers  (nqual_at1g+10) / 'TYPE'        / 
+		DATA qualifiers  (nqual_at1g+11) / 'SWAP'        / 
+		DATA qualifiers  (nqual_at1g+12) / '****' / !avail
+		DATA qualifiers  (nqual_at1g+13) / '****' / !avail
+		DATA qualifiers  (nqual_at1g+14) / '****' / !avail
 * SET MODE
 	   DATA subcommands      (nsub_at1 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at1 + 7)	/ nqual1h	/

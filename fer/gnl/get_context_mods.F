@@ -130,6 +130,8 @@
 *
 * *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
+* V552 3/03 *acm* - variable "name" may be the name of a dataset, 
+*                    increase its length from 48 to 512 characters.
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
 * the specifiers may be of any of the following forms:
@@ -181,7 +183,7 @@
      .			impl_grid, axis, other, naxes
 	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2),
      .			letter, letter2
-	CHARACTER	name*48, comment*12, transnam*6, buff*32
+	CHARACTER	name*512, comment*12, transnam*6, buff*32
 	REAL*8		temp
 	INTEGER		dstart, dend, lbrac, state, gdset
 

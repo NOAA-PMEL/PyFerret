@@ -49,13 +49,17 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id, arg
+      CHARACTER*100 fcn_desc
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
 
-      CALL ef_set_desc(id,'returns the time average' )
+      WRITE (fcn_desc, 10)
+   10 FORMAT ('Average to interpolate V onto Z axis of ZAX using Z ',
+     . ' values in ZVALS' )
+      CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_has_vari_args(id, NO)
@@ -213,6 +217,7 @@
       INTEGER i2, j2, l2
       INTEGER nsrc_lo, nsrc_hi
       REAL*8 sum, wtdsum
+      REAL dbox_lo, dbox_hi
 c      CHARACTER*132 err_msg
 
 *  Dimension work arrays
@@ -372,8 +377,11 @@ c      CHARACTER*132 err_msg
 	               xsrc_min = sbox_lo_new(1,1,nsrc,1)
 	               xsrc_max = sbox_hi_new(1,1,nsrc,1)
 
-	               xsrc_lo = MAX(xsrc_min, dbox_lo_lim(1,1,k,1))
-	               xsrc_hi = MIN(xsrc_max, dbox_hi_lim(1,1,k,1))
+                       dbox_hi = dbox_hi_lim(1,1,k,1)
+                       dbox_lo = dbox_lo_lim(1,1,k,1)
+
+	               xsrc_lo = MAX(xsrc_min, dbox_lo)
+	               xsrc_hi = MIN(xsrc_max, dbox_hi)
 
                        xsrcdiff = xsrc_max - xsrc_min
                        wtd = 0.

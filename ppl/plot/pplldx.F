@@ -1,4 +1,4 @@
-	subroutine pplldx(icode,xt,yt,npts,tstrt,tref,xdt,pplmem)
+      subroutine pplldx(icode,xt,yt,npts,tstrt,tref,xdt,pplmem)
 C**
 C**    @(#)pplldx.F	1.2    9/8/88
 C**
@@ -16,6 +16,14 @@ c
 c	icode	0 use both x and y
 c		1 use x only
 c		2 use y only
+c
+c                  When saving polygon data, save npts per polygon with 
+c                  the data, not in the array lleng(): unlimited # polygons
+
+c               3 use both x and y, for polygons 
+c		4 use x only, for polygons
+c		5 use y only, for polygons
+c
 c	xt	x data
 c	yt	y data
 c	npts	number of xt and yt points
@@ -102,6 +110,10 @@ c
 *      *acm* 10/01 Remove VMS includes
 * V541 *acm*  4/02 Explicitly set itstart to be all 14 character places of tref:
 *                  itstrt = tref(1:14) Otherwise we only get the first 10 (why??)
+* V553 *acm*  6/03  For polygons, store the # of points in each polygon in the PPLUS
+*                   memory buffer, rather than in lleng.  This way the number of
+*                   polygons that may be plotted is unlimited. Mark this with the
+*                   value of icode (first argument to pplldx_envelope)
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -202,7 +214,7 @@ c	load data
 c
 	ix=ibase-1
 	iy=ix+pplmem_nsize/2
-	if(icode.eq.0)then
+	if(icode.eq.0 .OR. icode.EQ.3) THEN
 	    do 100 i=1,npts
 * FERRET mod 10/93 - apply transformation to Y data
 * FERRET mod  3/00 - screen X and Y separately for missing values
@@ -383,16 +395,20 @@ c
 	    endif
 	endif
 * end of FERRET 9-21 changes
-
-	lleng(linen)=npts
+        
 	pbuf=1
 * ORIG	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax,0.,0.)
 	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
 	lnum = linen
-	if(linen.ge.NPOLYGON)then
-	    linen=NPOLYGON - 1
-	else
-	    ibase=ibase+lleng(linen)
-	endif
+        IF (icode .LE. 2) THEN
+           lleng(linen)=npts
+ 	   if(linen.ge.NPOLYGON)then
+	       linen=NPOLYGON - 1
+	   else
+	       ibase=ibase+lleng(linen)
+	   endif
+        ELSE
+           ibase = ibase + npts
+        ENDIF
 	return
 	end

@@ -103,6 +103,10 @@
 *                   (Input is 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,..)
 * V552 *acm*  3/03  Send the key string to key_loc since it may be multi-line
 *                   Also, set strings longer
+* V553 *acm*  6/03  For polygons, store the # of points in each polygon in the PPLUS
+*                   memory buffer, rather than in lleng.  This way the number of
+*                   polygons that may be plotted is unlimited. Mark this with the
+*                   value of icode (first argument to pplldx_envelope)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -158,7 +162,7 @@
      .			plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
-     .                  cal_id, tax, x_axtyp, y_axtyp
+     .                  cal_id, tax, x_axtyp, y_axtyp, n
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -402,7 +406,15 @@ c	ind_dim = plot_axis(1)
 	      cx_lo_ss(cx_buff_y,coord_dim) =
      .	       cx_lo_ss(cx_buff_y,coord_dim) + end
 	      IF (cx_lo_ss(cx_buff_x,coord_dim)
-     .	     .GE. cx_hi_ss(cx_buff_x,coord_dim)) GOTO 290 ! exit DO_WHILE loop
+     .	     .GE. cx_hi_ss(cx_buff_x,coord_dim)) THEN
+                
+ 	         cx_lo_ss(cx_buff_x,coord_dim) =
+     .	           cx_lo_ss(cx_buff_x,coord_dim) - end   ! restore what it was
+	         cx_lo_ss(cx_buff_y,coord_dim) =         ! so we can count npts
+     .	          cx_lo_ss(cx_buff_y,coord_dim) - end    ! in the 700 loop below
+                 GOTO 290 ! exit DO_WHILE loop
+              ENDIF
+
 	   ELSE
 *    ... coords are 2D arrays of color_dim X coord_dim
 	      xrow = xrow + 1  ! advance to next polygon in the 2D array
@@ -439,7 +451,7 @@ c	ind_dim = plot_axis(1)
 *  For 2d form, npts in each polygon; check PPLUS memory and if needed, 
 *  allocate more.  Multiply by 2 because we have X and Y vertices of 
 *  polygons, and by 2 again because the call below to 
-*       PPLLDX_envelope(2,x_dat,x_dat,ncolor...  
+*       PPLLDX_envelope(5,x_dat,x_dat,ncolor...  
 *  loads polygon data after all the previous data.
 
 	   IF (first_polygon .AND. .NOT.oneD_form) THEN
@@ -575,7 +587,7 @@ c	ind_dim = plot_axis(1)
               CALL reallo_envelope(plot_mem_used)
            ENDIF
 
-	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
+c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling
 	   CALL MINMAX( x_dat(start), npts, mr_bad_data(mr_x), lo, hi)
@@ -610,13 +622,13 @@ c	ind_dim = plot_axis(1)
 	   IF (missing_polygon) THEN
 ! for time series overlays, dont load the data
               IF (.NOT. (has_time_axis .AND. overlay)) 
-     .    	  CALL PPLLDX_envelope(0,mr_bad_data(mr_x),
+     .    	  CALL PPLLDX_envelope(3,mr_bad_data(mr_x),
      .            mr_bad_data(mr_y),1,t1_date,' ',dt_min,plot_mem_used)
 	   ELSE IF ( transpz ) THEN
-	      CALL PPLLDX_envelope(0,y_dat(start),x_dat(start),npts,
+	      CALL PPLLDX_envelope(3,y_dat(start),x_dat(start),npts,
      .		           t1_date, ' ', dt_min, plot_mem_used)
 	   ELSE
-	      CALL PPLLDX_envelope(0,x_dat(start),y_dat(start),npts,
+	      CALL PPLLDX_envelope(3,x_dat(start),y_dat(start),npts,
      .			   t1_date, ' ', dt_min, plot_mem_used)
 	   ENDIF
 
@@ -627,6 +639,7 @@ c	ind_dim = plot_axis(1)
 	   npoly = npoly + 1
 	GOTO 200	! end of DO-WHILE loop
  290	IF (npoly .EQ. 0 ) GOTO 5230
+
 
 * ... restore normal PPLOT+ operations (else segments get prematurely created)
 	   makep = ' '
@@ -641,6 +654,7 @@ c	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
 
 * pass the color value array to PLOT+ (use x_dat as a buffer)
+
 	if (nmv .eq. 2) then
 	   ncolor = 1
 	   x_dat(1) = 0.0
@@ -667,10 +681,111 @@ c	ind_dim = plot_axis(1)
      .				 ncolor, mr_bad_data(mr_color), only_val )
 
 	if (overlay) SOVER = .true.
-
 	makep = 'FILLPOL'   ! that PLOT+ kludge again
-	CALL PPLLDX_envelope(2,x_dat,x_dat,ncolor, t1_date, ' ', 
+	CALL PPLLDX_envelope(5,x_dat,x_dat,ncolor, t1_date, ' ', 
      .                       dt_min,plot_mem_used)
+
+
+* ... check for adequate PLOT+ memory to store the npts for each poly. 
+* ... Save in ppl mem rather than array lleng to remove restriction on
+* ... total number of polys that can be plotted.
+
+           plot_mem_used = plot_mem_used + npoly + 1
+           CALL reallo_envelope(plot_mem_used)
+
+* reset start indices for extraction
+	IF (oneD_form) THEN
+	   end  = 0
+	ELSE
+	   xrow = cx_lo_ss(cx_x,color_dim) - 1
+	   yrow = cx_lo_ss(cx_y,color_dim) - 1
+	ENDIF
+
+* loop through all the polygons getting their npts;
+* loading the counts into PPLUS memory
+* ---- 
+         DO 700 n = 1, npoly
+
+* ... prepare the context buffer to point to the next polygon 
+	   IF ( oneD_form ) THEN
+*    ... coords are 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,...
+	      cx_lo_ss(cx_buff_x,coord_dim) =
+     .	       cx_lo_ss(cx_buff_x,coord_dim) + end   ! advance past end of last
+	      cx_lo_ss(cx_buff_y,coord_dim) =
+     .	       cx_lo_ss(cx_buff_y,coord_dim) + end
+	      IF (cx_lo_ss(cx_buff_x,coord_dim)
+     .	     .GE. cx_hi_ss(cx_buff_x,coord_dim)) GOTO 690 ! exit DO_WHILE loop
+	   ELSE
+*    ... coords are 2D arrays of color_dim X coord_dim
+	      xrow = xrow + 1  ! advance to next polygon in the 2D array
+	      yrow = yrow + 1  ! advance to next polygon in the 2D array
+	      IF (xrow .GT. cx_hi_ss(cx_x,color_dim)) GOTO 690	! exit the DO_WHILE loop
+	      cx_lo_ss(cx_buff_x,color_dim) = xrow
+	      cx_hi_ss(cx_buff_x,color_dim) = xrow
+	      cx_lo_ss(cx_buff_y,color_dim) = yrow
+	      cx_hi_ss(cx_buff_y,color_dim) = yrow
+	   ENDIF
+
+* ... extract 1-dimensional arrays -- possibly with embedded missing values
+* ... x coordinates
+	   CALL EXTRACT_LINE (	cx_buff_x,
+     .				memory( 1, mr_blk1(mr_x) ),
+     .				mr_x,
+     .				x_dat,
+     .				coord_dim,
+     .				ndim,
+     .				npts,
+     .				status	)
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+* ... y coordinates
+	   CALL EXTRACT_LINE (	cx_buff_y,
+     .				memory( 1, mr_blk1(mr_y) ),
+     .				mr_y,
+     .				y_dat,
+     .				coord_dim,
+     .				ndim,
+     .				npts,
+     .				status	)
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+* ... check for missing polygon
+
+	   missing_polygon = .false.
+	   start = npts
+	   end   = npts
+	   DO 610 i = 1, npts
+	      IF ( x_dat(i) .NE. mr_bad_data(mr_x) 
+     .       .AND. y_dat(i) .NE. mr_bad_data(mr_y) ) THEN
+	         start = i
+	         GOTO 620
+	      ENDIF
+ 610	   CONTINUE
+	   GOTO 640   ! This polygon is all missing in X - omit		
+*    ... find the end of the segment
+ 620	   DO 630 i = start, npts
+	      IF ( x_dat(i) .EQ. mr_bad_data(mr_x) 
+     .       .OR.  y_dat(i) .EQ. mr_bad_data(mr_y) ) THEN
+	         end = i - 1
+	         GOTO 650
+	      ENDIF
+ 630	   CONTINUE
+
+ 640	   IF (start .GE. end ) missing_polygon = .true.
+
+* ... check for adequate PLOT+ memory
+ 650	   npts = end-start+1
+
+	   IF (missing_polygon) THEN
+! for time series overlays, dont load the data
+              IF (.NOT. (has_time_axis .AND. overlay)) 
+     .    	 CALL pplld_pts_envelope (1, plot_mem_used)
+	   ELSE
+	      CALL pplld_pts_envelope (npts, plot_mem_used)
+	   ENDIF
+
+ 700    CONTINUE
+ 690    CONTINUE
+        CALL pplld_pts_envelope (ncolor, plot_mem_used)
 
 	makep = ' '   ! that PLOT+ kludge again
 
@@ -900,9 +1015,6 @@ C	   slen = TM_LENSTR1( plot_title )
  5300	CALL ERRMSG( ferr_invalid_command, status,
      .		'invalid argument to /COORD_AX=',
      .		*5000)
-
-              IF (cal_id .NE. saved_calendar_id) GO TO 5160
-
 
  5360	cal_name = TM_GET_CALENDAR_NAME(cal_id)
         cal_name_saved = TM_GET_CALENDAR_NAME(saved_calendar_id)

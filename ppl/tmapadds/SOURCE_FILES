@@ -27,6 +27,7 @@ open_metafile.F\
 pattern_set.F\
 pltdat_block_data.F\
 point_convert.F\
+pplld_pts.F\
 pplp_ver_data.F\
 process_x_events.F\
 ps_line_bundle.F\
@@ -71,6 +72,7 @@ pplcmd_c.c\
 pplldc_envelope.c\
 pplldv_envelope.c\
 pplldx_envelope.c\
+pplld_pts_envelope.c\
 reallo_envelope.c\
 reallo_ppl_memory.c\
 resize_xgks_window.c\

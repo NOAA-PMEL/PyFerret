@@ -11,7 +11,7 @@ C***********************************************************************
 C**
 C**
 C
-C  ARRAY X HOLDS X AND Y'S FOR ALL LINES.  DIMENSIONED FOR NXS.
+C  ARRAY X HOLDS X AND Y'S FOR ALL LINES.  DIMENSIONED FOR NXS+npoly
 C  ORDER AS FOLLOWS:  ALL X'S FOR LINE1, ALL X'S FOR LINE2,...
 C                     STARTING AT X(NXS/2+1), ALL Y'S FOR LINE1,
 C                     ALL Y'S FOR LINE2...
@@ -62,12 +62,15 @@ C
 * V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
 * V552 3/03 *acm* allow clipping to be set on or off via IWIND (ppl window off)
 * V552 3/03 *acm* Check for too many levels, as is done for FILL and CONTOUR plots.
+* V553 *acm*  6/03  For polygons, store the # of points in each polygon in the PPLUS
+*                   memory buffer, rather than in lleng.  This way the number of
+*                   polygons that may be plotted is unlimited. 
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
 
         INTEGER NXS
-	REAL X(NXS), XF, YF
+	REAL X(*), XF, YF
 
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -101,13 +104,14 @@ C
 	include		'cont_inc.decl'
 	include		'CONT.INC'
         include         'errmsg.parm'
+	include 'PPLDAT.INC'		! with ibase
 
 
 * 3/99 *kob*
 	EXTERNAL RANGE
 
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
-     .		nvertex, fill_ndx			! 11/97
+     .		nvertex, fill_ndx, xvertexbase			! 11/97
 
 	INTEGER GET_NDX
 
@@ -123,7 +127,7 @@ C
 	real            zzmin, zzmax
 	integer         nlm1
 	real		dz,znp,zmp
-	integer		i,j,uprdn
+	integer		i,j,uprdn, llen
 	logical         line_it, fill_it
         integer         slen1, slen2
         CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
@@ -151,11 +155,19 @@ C       Check switches
 *               yline1, yline2, ..., ylinenl, ycolor , bufferspace ...
 *     "zpolybase" is the offset to the ycolor array
 	xpolybase = 1
+        ptsbase = ibase - lnum 
 	DO 2010  I=1,nl
- 2010	xpolybase = xpolybase+LLENG(I)
-	zpolybase = xpolybase + nxs/2
-	xpolybase = xpolybase + lleng(lnum)	! skip past color array
+        llen = x(ptsbase+i-1)
+ 2010	xpolybase = xpolybase+llen
+
+        llen = x(ibase-1)      ! Length of color array
+
+	zpolybase = ptsbase - llen - 1 + nxs/2
+	xpolybase = xpolybase + llen	! skip past color array
 	ypolybase = xpolybase + nxs/2
+
+        xvertexbase = xpolybase + lnum	! skip past list of lengths
+
 	polysizemax = nxs - ypolybase	! unused buffer space
 	fill_ndx = 0
 
@@ -196,10 +208,16 @@ C *jd*
 	zzmax = -1e33
 	nlm1  = nl - 1
 
+cc	do 100 i = 0, nlm1 	      
+cc	   if (ZEQ.AND.x(zpolybase+i).EQ.CMZEQ) GOTO 100
+cc	   if (x(zpolybase+i) .gt. zzmax) zzmax = x(zpolybase+i)
+cc	   if (x(zpolybase+i) .lt. zzmin) zzmin = x(zpolybase+i)
+cc 100	end do
+
 	do 100 i = 0, nlm1 	      
-	   if (ZEQ.AND.x(zpolybase+i).EQ.CMZEQ) GOTO 100
-	   if (x(zpolybase+i) .gt. zzmax) zzmax = x(zpolybase+i)
-	   if (x(zpolybase+i) .lt. zzmin) zzmin = x(zpolybase+i)
+	   if (ZEQ.AND.x(zpolybase+1+i).EQ.CMZEQ) GOTO 100
+	   if (x(zpolybase+1+i) .gt. zzmax) zzmax = x(zpolybase+1+i)
+	   if (x(zpolybase+1+i) .lt. zzmin) zzmin = x(zpolybase+1+i)
  100	end do
 
 C ------------
@@ -319,10 +337,11 @@ C ------------
 	CALL COLOR(IPEN(1))
 
 ******** LOOP OVER LINES STORED
-	DO 200 I=1,nl
 
+	DO 200 I=1,nl
+          llen = x(ptsbase+i-1)
 * will this polygon fit in the buffer?
-	  IF (lleng(i) .GT. polysizemax) THEN
+	  IF (llen .GT. polysizemax) THEN
 	     WRITE (6,*) 'Too much polygon data to plot at once'
 	     GOTO 200
 	  ENDIF 
@@ -330,28 +349,29 @@ C ------------
 * assemble the vertices into arrays in units of plot coordinates
 * note: all points in the polygon are guaranteed to be "valid"
 	   nvertex = 0
-	   DO 150 J=IBASE+1,IBASE+LLENG(I)
+
+	   DO 150 J=IBASE+1,IBASE+llen
 !	      CALL TRANS(I,X(J),X(IY+J),XT,YT)
 !	      nvertex = nvertex + 1
-!	      x(xpolybase+nvertex-1) = xt
+!	      x(xvertexbase+nvertex-1) = xt
 !	      x(ypolybase+nvertex-1) = yt
 	      nvertex = nvertex + 1
-	      x(xpolybase+nvertex-1) = x(j)
+	      x(xvertexbase+nvertex-1) = x(j)
 	      x(ypolybase+nvertex-1) = x(iy+j)
  150	   CONTINUE
 
 	   if (fill_it) then
 *             Determine the color index for the fill
-	      if (ZEQ.AND.x(zpolybase+I-1).EQ.CMZEQ) GOTO 157
+	      if (ZEQ.AND.x(zpolybase+i).EQ.CMZEQ) GOTO 157
 
-	      fill_ndx = GET_NDX (x(zpolybase+I-1),fill_ndx)
+	      fill_ndx = GET_NDX (x(zpolybase+i),fill_ndx)
 	      if (fill_ndx .eq. -999) goto 157
 
 *             Draw the filled polygon
 	      CALL SET_FILL_NDX (fill_ndx)
 
 	      IF ( XEQ ) THEN 
-	         do 155 j = xpolybase, xpolybase+nvertex-1
+	         do 155 j = xvertexbase, xvertexbase+nvertex-1
 		    IF (X(J).EQ.CMXEQ) GOTO 157
  155	         continue
 	      ENDIF
@@ -364,7 +384,7 @@ C ------------
 
 	      if (nvertex .gt. 2) then
 		 if (line_it) call gselnt (my_trans)
-		 CALL GFA(nvertex, x(xpolybase), x(ypolybase)) 
+		 CALL GFA(nvertex, x(xvertexbase), x(ypolybase)) 
 	      end if
 	   end if
 
@@ -372,30 +392,30 @@ C ------------
 *             Outline the polygon
 
 	      nvertex = 0
-	      DO 158 J=IBASE+1,IBASE+LLENG(I)
+	      DO 158 J=IBASE+1,IBASE+llen
 		 nvertex = nvertex + 1
-		 IF (XEQ.AND.X(xpolybase+nvertex-1).EQ.CMXEQ) GOTO 199
+		 IF (XEQ.AND.X(xvertexbase+nvertex-1).EQ.CMXEQ) GOTO 199
 		 IF (YEQ.AND.X(ypolybase+nvertex-1).EQ.CMYEQ) GOTO 199
  158	      CONTINUE
 
 	      if (fill_it) call gselnt (trans_no)
 	      nvertex = 0
 
-	      DO 160 J=IBASE+1,IBASE+LLENG(I)
+	      DO 160 J=IBASE+1,IBASE+llen
 		 nvertex = nvertex + 1
 		 if (nvertex .eq. 1) then
 		    uprdn = 0
 		 else
 		    uprdn = 1
 		 end if
-		 call plot (x(xpolybase+nvertex-1),
+		 call plot (x(xvertexbase+nvertex-1),
      .	                    x(ypolybase+nvertex-1),uprdn,0)
  160	      continue
-	      call plot (x(xpolybase),x(ypolybase),1,0)
+	      call plot (x(xvertexbase),x(ypolybase),1,0)
 	   end if
 
 	   if (interrupted) go to 1000 !*jd* 8.3.92
- 199    IBASE=IBASE+LLENG(I)	! prepare for next line
+ 199    IBASE=IBASE+llen	! prepare for next line
  200	CONTINUE
 
 ******** END OF LOOP OVER LINES STORED
@@ -412,6 +432,11 @@ C ------------
 	end if
 
  1100	CALL COLOR(IPEN(0))
+
+* We use lnum as a counter, but we do not use the lleng array
+* or other contstructs that used to treat each polygon as a plot line.
+ 
+        lnum = 1
 
 	RETURN
 

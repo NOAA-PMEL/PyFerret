@@ -43,7 +43,7 @@ static int checkMem(void *p){
   return 1;
 }
 
-#if 0				// CYGWIN B20 doesn't support varargs
+#if 0				/* CYGWIN B20 doesn't support varargs */
 static void setError(char *str, ...) {
   va_list ap;
   va_start(ap, str);

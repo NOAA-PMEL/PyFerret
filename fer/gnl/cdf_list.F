@@ -70,7 +70,7 @@
 
 #ifdef unix
         include 'netcdf.decl'
-        include 'netcdf.inc'
+#include "netcdf.inc"
         include 'tmap_errors.parm'
         include 'cd_lib.parm'
         include 'tmap_dims.parm'

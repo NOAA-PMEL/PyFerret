@@ -62,6 +62,7 @@
 	include 'command.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

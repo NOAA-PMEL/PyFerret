@@ -50,9 +50,6 @@
 *			: the hacked file netcdf.inc.no_externals
 #ifdef unix
 	include 'netcdf.decl'
-#ifndef USE_NETCDF_V3
-	include 'netcdf_no_externals.inc'
-#endif
 	include 'xcdferror.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:NETCDF.DECL'

@@ -111,9 +111,12 @@
 * V530 *acm* 1/01  cal_id for alternative calendar axes.
 * V533 *acm* 6/01 for LOG plots add logicals is_logx, is_logy.  set to plot
 *                   log of depth as inverse axis
+*       ACM  8/2001 BUG FIX: save cal id if vertical time axis
+*      *acm* 10/01  remove VMS includes
+
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
-#ifdef unix
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -127,10 +130,9 @@ C plus those starting w/ xbox_bounds:
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xtext_info.cmn'
-        include 'axis_inc.decl'       ! with axis lengths
-        include 'AXIS.INC'       ! with axis lengths	
-        include 'ppldat_inc.decl'       ! with nsize
-        include 'PPLDAT.INC'       ! with nsize
+        include 'axis_inc.decl'    ! with axis lengths
+        include 'AXIS.INC'         ! with axis lengths
+	include 'PPLDAT.INC'
         include 'switch_inc.decl'
         include 'SWITCH.INC'
 
@@ -140,27 +142,9 @@ C plus those starting w/ xbox_bounds:
 	include 'xcommand.cmn'
 	include 'xpplus.cmn'
 
+
 *kob 1/97
 	include 'xwindow_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPPLUS.CMN'
-	INCLUDE 'FERRET_CMN:XBOX_BOUNDS.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'	! axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC'	! axis lengths
-        INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
-        INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-#endif
 
 
 * calling argument declarations:
@@ -206,7 +190,7 @@ C plus those starting w/ xbox_bounds:
 	ctx       = cx_list  ( 1 )
 	grid	  = mr_grid( mvx )
 	bad_x	  = mr_bad_data( mvx )
-	cal_id    = 0
+	cal_id    = 1
 	x_axtyp   = 1
 	y_axtyp   = 1
 
@@ -227,20 +211,21 @@ C plus those starting w/ xbox_bounds:
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
 
-* determine PLOT+ memory required
-        plot_mem_used = CGRID_SIZE( cx_list(1) )
-        IF ( vector ) plot_mem_used = plot_mem_used * 2
-        IF ( plot_mem_used .GT. 0.99*nsize ) GOTO 5170
-
-* set flag indicating a 2D plot is on the screen
-	twodee_on = .TRUE.
-
 * get 4D shape of data region to load (already oversized)
 	dim1 = plot_axis(1)
 	dim2 = plot_axis(2)
 	size1 = CX_DIM_LEN( dim1, ctx )
 	size2 = CX_DIM_LEN( dim2, ctx )
 	size  = size1 * size2
+
+* determine PLOT+ memory required
+        plot_mem_used = CGRID_SIZE( cx_list(1) ) + size1 + size2
+        IF ( vector ) plot_mem_used = plot_mem_used * 2
+!        IF ( plot_mem_used .GT. 0.99*nsize ) GOTO 5170      ! test is now in
+!                                                            ! pplldc_envelope
+* set flag indicating a 2D plot is on the screen
+	twodee_on = .TRUE.
+
 
 * save axis pointers so PLOT+ can get box boundaries
 	bb_grid = grid
@@ -434,6 +419,7 @@ C plus those starting w/ xbox_bounds:
 	   haxhi = xaxhi	! will know them
 
 	   time_axis = GEOG_LABEL( dim1, grid )
+
 	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
            IF (time_axis) THEN
               tax = grid_line(t_dim, grid)
@@ -492,6 +478,17 @@ C plus those starting w/ xbox_bounds:
 	   time_axis = GEOG_LABEL( dim2, grid )
 	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
 
+C ACM added 8/2001 save cal id if vertical time axis
+           IF (time_axis) THEN
+              tax = grid_line(t_dim, grid)
+              cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
+	      IF(overlay .AND. cal_id .NE. saved_calendar_id) GO TO 5660
+	      ppl_buff = ' '
+	      WRITE ( ppl_buff, 3004 ) line_cal_name(tax)
+              CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+	      saved_calendar_id = cal_id
+           ENDIF
+
 	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
      .			      y_axtyp, status )
 	   IF ( status .NE. ferr_ok ) THEN
@@ -536,16 +533,16 @@ C plus those starting w/ xbox_bounds:
 	if (overlay) SOVER = .true.
 
 * load contour data into PPLUS and (possibly) regrid to regular grid
-	CALL PPLLDC ( icode, memory(1, xblk1), size1, size2,
+	CALL PPLLDC_envelope ( icode, memory(1, xblk1), size1, size2,
      .		      1, size1, 1, size2, s1_axis, s2_axis, 
      .		      n1_regrid, n2_regrid, w1_lo, w2_lo,
-     .		      d1_regrid, d2_regrid )
+     .		      d1_regrid, d2_regrid, plot_mem_used)
 	CALL DELETE_VARIABLE( mvx_temp )
 
 	IF ( vector ) THEN
 * load the Y vector component
-	   CALL PPLLDV ( icode, memory(1,yblk1), size1, size2,
-     .		      1, size1, 1, size2			)
+	   CALL PPLLDV_envelope ( icode, memory(1,yblk1), size1, size2,
+     .		      1, size1, 1, size2)
 	   CALL DELETE_VARIABLE( mvy_temp )
 	ENDIF
 	
@@ -601,6 +598,7 @@ C plus those starting w/ xbox_bounds:
 
 * *ACM* if time axis, then cal_id is set to the calendar.  Label the
 *       plot with the calendar name if there is non-standard calendar
+
 	   CALL DISP_LABELS( cx_plot, year, cal_id )
 	ENDIF
 
@@ -641,11 +639,11 @@ C plus those starting w/ xbox_bounds:
  5160	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'must be a 2D region'//pCR//
      .					cmnd_buff(:len_cmnd), *5100 )
- 5170   buff = LEFINT( INT(0.99*nsize), lo1 )
-        cmnd_name = LEFINT( plot_mem_used, lo2 )   ! used as buffer
-        CALL ERRMSG( ferr_prog_limit, status,
-     .          cmnd_name(:lo2)//' points to plot'//pCR//
-     .          'Plot buffer size is: '//buff(:lo1), *5100 )
+! 5170   buff = LEFINT( INT(0.99*nsize), lo1 )
+!        cmnd_name = LEFINT( plot_mem_used, lo2 )   ! used as buffer
+!        CALL ERRMSG( ferr_prog_limit, status,
+!     .          cmnd_name(:lo2)//' points to plot'//pCR//
+!     .          'Plot buffer size is: '//buff(:lo1), *5100 )
 
 ! 5200	CALL ERRMSG( ferr_no_range, status,
 !     .				'data are all flagged as bad', *5000 )

@@ -82,8 +82,11 @@
 * V530 *ACM* 5/09  add arguments (unused here) to line_style call. 
 * V533 *acm* 6/01 - for LOG plots add logicals is_logx, is_logy.  set to plot
 *                   log of depth as inverse axis
+* V533 *acm* 9/01 - changes for dynamic pplus buffer.  Rename NSIZE to pplmem_nsize.
+*                   call PPLLDX via pplldx_envelope.c which checks pplmem_nsize 
+*                   and allocates more memory if needed.  
+*      *acm* 10/01  remove VMS includes
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -100,35 +103,13 @@
 	include 'xtext_info.cmn'
 	include 'axis_inc.decl'       ! with axis lengths
 	include 'AXIS.INC'       ! with axis lengths	
-
+        include 'PPLDAT.INC'
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'	! with NPOLYGONS
-	include 'ppldat_inc.decl'       ! with nsize
-	include 'PPLDAT.INC'       ! with nsize
         include 'switch_inc.decl'
         include 'SWITCH.INC'
         include 'pltl_inc.decl'
         include 'PLTL.INC'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL/LIST'       ! with axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
-	INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
-	INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-        INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
-        INCLUDE 'PPLV11INC:PLTL.INC'
-#endif
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
@@ -520,7 +501,8 @@
 * ... check for adequate PLOT+ memory
  250	   npts = end-start+1
 	   plot_mem_used = plot_mem_used + npts
-	   IF ( plot_mem_used .GT. 0.99*nsize ) GOTO 5150
+!	   IF ( plot_mem_used .GT. 0.99*pplmem_nsize ) GOTO 5150  ! test is now in
+                                                                 ! pplldx_envelope
 	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling
@@ -554,14 +536,14 @@
 	   ENDIF
 
 	   IF (missing_polygon) THEN
-	      CALL PPLLDX(0,mr_bad_data(mr_x),mr_bad_data(mr_y),1,
-     .    	          t1_date,' ',dt_min)	
+	      CALL PPLLDX_envelope(0,mr_bad_data(mr_x),mr_bad_data(mr_y),
+     .    	          1, t1_date, ' ', dt_min, plot_mem_used)
 	   ELSE IF ( transpz ) THEN
-	      CALL PPLLDX(0,y_dat(start),x_dat(start),npts,
-     .		          t1_date,' ',dt_min)
+	      CALL PPLLDX_envelope(0,y_dat(start),x_dat(start),npts,
+     .		           t1_date, ' ', dt_min, plot_mem_used)
 	   ELSE
-	      CALL PPLLDX(0,x_dat(start),y_dat(start),npts,
-     .			  t1_date,' ',dt_min)
+	      CALL PPLLDX_envelope(0,x_dat(start),y_dat(start),npts,
+     .			   t1_date, ' ', dt_min, plot_mem_used)
 	   ENDIF
 
 * ... increment number of lines on plot
@@ -613,7 +595,8 @@
 	if (overlay) SOVER = .true.
 
 	makep = 'FILLPOL'   ! that PLOT+ kludge again
-	CALL PPLLDX(2,x_dat,x_dat,ncolor,t1_date,' ',dt_min)
+	CALL PPLLDX_envelope(2,x_dat,x_dat,ncolor, t1_date, ' ', 
+     .                       dt_min,plot_mem_used)
 
 	makep = ' '   ! that PLOT+ kludge again
 
@@ -814,9 +797,9 @@ C	   slen = TM_LENSTR1( plot_title )
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean
 	IF (stack_up) cx_stack_ptr = cx_stack_ptr - 2
 	RETURN
- 5150	buff = LEFINT( INT(0.99*nsize), slen )
-	CALL ERRMSG( ferr_prog_limit, status,
-     .		'Plot buffer size is: '//buff(:slen), *5000 )
+! 5150	buff = LEFINT( INT(0.99*pplmem_nsize), slen )
+!	CALL ERRMSG( ferr_prog_limit, status,
+!     .		'Plot buffer size is: '//buff(:slen), *5000 )
  5160	buff = LEFINT( NPOLYGON, slen )
 	CALL ERRMSG( ferr_prog_limit, status,
      .		'Maximum polygons is: '//buff(:slen), *5000 )

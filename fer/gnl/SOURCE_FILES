@@ -29,6 +29,7 @@ errmsg.F\
 get_command.F\
 get_context_mods.F\
 get_mode_arg.F\
+get_ppl_memory_size.F\
 get_vms_mode.F\
 gtvar_list.F\
 init_journal.F\
@@ -51,6 +52,7 @@ proclaim_c.F\
 repl_exprns.F\
 sample.F\
 sample_sub.F\
+save_ppl_memory_size.F\
 set_var.F\
 show_1_function.F\
 show_1_mr.F\

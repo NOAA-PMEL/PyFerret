@@ -111,7 +111,11 @@
 *      *acm* 5/01 - correct STEP bug: send NLOAD rather than NPTS2 to PPLLDX 
 * V533 *acm* 6/01 - for LOG plots add logicals is_logx, is_logy.  set to plot
 *                   log of depth as inverse axis
-#ifdef unix
+* V533 *acm* 9/01 - changes for dynamic pplus buffer.  Rename NSIZE to pplmem_nsize.
+*                   call PPLLDX via pplldx_envelope.c which checks pplmem_nsize 
+*                   and allocates more memory if needed.
+*      *acm* 10/01  remove VMS includes
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -125,30 +129,11 @@
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
 	include 'xtext_info.cmn'
-        include 'axis_inc.decl'       ! with axis lengths
-        include 'AXIS.INC'       ! with axis lengths	
-        include 'ppldat_inc.decl'       ! with nsize
-        include 'PPLDAT.INC'       ! with nsize
+        include 'axis_inc.decl'    ! with axis lengths
+        include 'AXIS.INC'         ! with axis lengths	
+	include 'PPLDAT.INC'
         include 'switch_inc.decl'
         include 'SWITCH.INC'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-        INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL/LIST'       ! with axis lengths
-        INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
-        INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
-        INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-#endif
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
@@ -225,7 +210,8 @@
         DO 10 ipl = 1, nmv
  10     plot_mem_used = plot_mem_used
      .		      + 2*step_inc*CGRID_SIZE( cx_list(ipl) )
-        IF ( plot_mem_used .GT. 0.999*nsize ) GOTO 5150
+c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now in
+                                                                ! pplldx_envelope
 
 * check for improper data supplied
 	IF ( versus ) THEN
@@ -555,9 +541,11 @@
 	   ENDIF
 
 	   IF ( flip ) THEN
-	      CALL PPLLDX(0,dep_dat,indep_dat,nload,t1_date,tref,dt_min)
+	      CALL PPLLDX_envelope(0,dep_dat,indep_dat,nload,
+     .                             t1_date, tref, dt_min, plot_mem_used)
 	   ELSE
-	      CALL PPLLDX(0,indep_dat,dep_dat,nload,t1_date,tref,dt_min)
+	      CALL PPLLDX_envelope(0,indep_dat,dep_dat,nload,
+     .                             t1_date, tref, dt_min, plot_mem_used)
 	   ENDIF
 * ... increment number of lines on plot
 	   nline_on     = nline_on     + 1
@@ -814,11 +802,11 @@
      .		'line '//buff3(:slen3)//' is on '//ww_dim_name(dep_dim)//
      .		' axis', *5000 )
         
- 5150	buff3 = LEFINT( INT(0.999*nsize), slen3 )
-	buff2 = LEFINT( plot_mem_used, slen2 )
-	CALL ERRMSG( ferr_prog_limit, status,
-     .          'Requested '//buff2(:slen2)//' words to plot'//pCR//
-     .		'Plot buffer size is: '//buff3(:slen3), *5000 )
+! 5150	buff3 = LEFINT( INT(0.999*pplmem_nsize), slen3 )
+!	buff2 = LEFINT( plot_mem_used, slen2 )
+!	CALL ERRMSG( ferr_prog_limit, status,
+!     .          'Requested '//buff2(:slen2)//' words to plot'//pCR//
+!     .		'Plot buffer size is: '//buff3(:slen3), *5000 )
 
  5160	cal_name = TM_GET_CALENDAR_NAME(cal_id_old)
         cal_name_new = TM_GET_CALENDAR_NAME(cal_id_new)

@@ -30,6 +30,10 @@
 *                       "m5lox" --> "m10lox", etc.
 *       11/12/97 - bug fix in ZAXREPLACE when destination field has missing
 *                       values. New routine EXTRACT_Z_AXIS
+* V491:  4/98 - fixed bugs in ZAXREPLACE: see err491_zaxreplace.jnl
+*       need to guide calculation with  cx lims rather than mr lims of args
+*       (see EXTRACT_Z_LINE) and
+*       need to recognize the missing value flags of the first arg
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -251,6 +255,7 @@
 
 * ... extract the vertical profile at this I,J,L location
           CALL EXTRACT_Z_LINE ( com2, bad2, i2, j2, l2,
+     .                  cx_lo_s3(cx2), cx_hi_s3(cx2), 
      .          	m2lox,m2hix,m2loy,m2hiy,m2loz,m2hiz,m2lot,m2hit,
      .                  memory(1,wkblk), klo, khi )
 
@@ -269,13 +274,18 @@
              zval = SNGL(TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
 
 * ... search the Z field (com2) for the index just below this value
+* ... note that ndx_lo is always referenced to a starting index of 1
 	     CALL HUNT_R4(memory(1,wkblk), klo, khi, zval, ndx_lo, frac)
 
              IF ( frac .LT. 0.0 ) THEN
 * ... no luck -- the Z axis value we seek is outside the range in com2
                 res(i,j,k,l) = bad_res
-             ELSEIF ( frac .EQ. 1.0 ) THEN
+             ELSEIF ( com1(i1,j1,sk1+ndx_lo,l1) .EQ. bad1 ) THEN
+                res(i,j,k,l) = bad_res
+             ELSEIF ( frac .EQ. 1.0 ) THEN                  ! exactly on point
 	        res(i,j,k,l) =  com1(i1,j1,sk1+ndx_lo,l1)
+             ELSEIF ( com1(i1,j1,sk1+ndx_lo+1,l1) .EQ. bad1 ) THEN
+                res(i,j,k,l) = bad_res
              ELSE
 * ... interpolate data com1 field to get result
 	        res(i,j,k,l) =  frac   * com1(i1,j1,sk1+ndx_lo,  l1)

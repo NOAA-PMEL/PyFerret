@@ -1,7 +1,6 @@
 	SUBROUTINE PARSE_COMMA_LIST ( buffer, istart, iend, max_items, 
      .				      num_it, it_start, it_end, status )
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -54,16 +53,13 @@
 *	     - had to close open quotes in above comment line - linux f77
 *	       was freaking out because of it...
 * V530: *sh* 3/01 - remove surrounding quotes from items in list
+* V532: *sh* 5/01 - ignore commas embedded in parentheses
+*		  - allow for nested parens and brackets
 
-#ifdef unix
+	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'	! for ttout_lun
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'	! for ttout_lun
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	buffer
@@ -71,7 +67,7 @@
      .			it_start(max_items), it_end(max_items), status
 
 * internal variable declarations:
-	INTEGER		ip, i
+	INTEGER		ip, i, nest_level
 	CHARACTER*8	LEFINT
 
 * initialize
@@ -113,12 +109,36 @@
 
 * ... ignore commas sandwiched between [ ]
 	IF ( buffer(ip:ip) .EQ. '[' ) THEN
+	   nest_level = -1  ! will be immediately incremented
 	   DO 40 i = ip, iend
-	      IF ( buffer(i:i) .EQ. ']' ) THEN
-	         ip = i
-	         GOTO 30
+	      IF ( buffer(i:i) .EQ. '[' ) THEN
+	         nest_level = nest_level + 1
+	      ELSEIF ( buffer(i:i) .EQ. ']' ) THEN
+	         IF (nest_level .GT. 0) THEN
+	            nest_level = nest_level - 1
+	         ELSE
+	            ip = i
+	            GOTO 30
+	         ENDIF
 	      ENDIF
  40	   CONTINUE
+	   GOTO 5020	! unpaired
+
+* ... ignore commas sandwiched between ( )
+	ELSEIF ( buffer(ip:ip) .EQ. '(' ) THEN
+	   nest_level = -1  ! will be immediately incremented
+	   DO 45 i = ip, iend
+	      IF ( buffer(i:i) .EQ. '(' ) THEN
+	         nest_level = nest_level + 1
+	      ELSEIF ( buffer(i:i) .EQ. ')' ) THEN
+	         IF (nest_level .GT. 0) THEN
+	            nest_level = nest_level - 1
+	         ELSE
+	            ip = i
+	            GOTO 30
+	         ENDIF
+	      ENDIF
+ 45	   CONTINUE
 	   GOTO 5020	! unpaired
 
 * ... ignore commas sandwiched between " "
@@ -167,8 +187,8 @@
 * error exits
  5000	RETURN
  5020	CALL ERRMSG( ferr_syntax, status,
-     .		'unpaired quotations or brackets '
-     .           //risc_buff(istart:iend), *5000 )
+     .		'unpaired quotations, parens, or brackets '
+     .           //pCR//risc_buff(istart:iend), *5000 )
 
 * warning exit
  6000	CALL WARN( 'command incompletely processed: '

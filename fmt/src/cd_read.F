@@ -113,7 +113,7 @@
 	LOGICAL      permuted
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
-     .               start(4), filsize(4), totsize, dim_lo(4), dim_hi(4),
+     .               start(4), filsize(4), totsize, dim_lo(4),dim_hi(4),
      .		     imap(4), trans(4), memsize(4), count(4),
      .		     grid_dims(4), fildim, memdim, filstride(4)
 	CHARACTER*1	dimnam(4)

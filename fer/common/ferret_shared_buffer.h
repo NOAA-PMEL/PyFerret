@@ -44,7 +44,7 @@ typedef sharedMem *smPtr;
 __global smPtr sBuffer;
 
 __global float *memory;
-__global float *ppl_memory;
+__global float *ppl_memory;   /* new 10/01 */
 
 
 #undef __global

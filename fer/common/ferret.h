@@ -37,6 +37,8 @@ void init_journal_( );
 void proclaim_c_( );
 void init_memory_( );
 void ferret_dispatch_( );
+
+/* new 10/01  for PPLUS dynamic memory*/
 void save_ppl_memory_size_( );
 void get_ppl_memory_size_( );
 /* 04.20.99 *jc*

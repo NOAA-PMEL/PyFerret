@@ -5,6 +5,8 @@
 ! 	 2/94  - added [basemap]
 ! 	 11/94 - added transparent overlays and "detail" control
 !	  3/95 - added region arguments -- mostly to help point-and-click
+!	 11/96 - use patterns for transparent fills
+!        11/96 - use plot region (xaxis_min, xaxis_max) if available
 
 ! Description: Plot or overlay an area-filled map of the continents
 
@@ -47,9 +49,15 @@ query/ignore $4%not_required|detailed|solid|all> <4th argument of GO basemap may
 
 set data/save
 
+def sym xlo_hack ($xaxis_min%0%)
+def sym xhi_hack ($xaxis_max%360%)
+def sym map_reg = [$5%x=($xlo_hack):($xhi_hack)%]
+
+
 set data etopo$1"60"
 
-shade/nolab/nokey/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*" $3"rose|transparent>if mod(i+j,2) eq 0 then rose|*>rose"
+
+shade/nolab/nokey/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*"$3" |transparent>/pattern=tiny_grid|*>/pattern=solid" $3"rose($map_reg)|base>rose($map_reg)|*>rose($map_reg)"
 
 cancel data etopo$1"60"
 set data/restore

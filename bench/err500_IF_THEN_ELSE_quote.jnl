@@ -1,0 +1,8 @@
+! err500_IF_THEN_ELSE_quote.jnl
+
+! 6/9/99 - final quotation mark is lost by parser resulting in error.
+
+! solved 6/11/99 in xeq_if.F
+
+
+IF 1 THEN SAY "I is too big" ENDIF

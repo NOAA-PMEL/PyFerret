@@ -377,7 +377,9 @@ void ef_get_mr_list_(int *mr_list)
       mr_list[i] = GLOBAL_mr_list_ptr[i];
     }
   } else
-    mr_list[0] = 0;  /* flag that mr_list isnt available */
+    for (i=0; i<EF_MAX_ARGS; i++) {
+      mr_list[i] = 0;  /* flag that mr_list isnt available */
+    }
 }
 
 

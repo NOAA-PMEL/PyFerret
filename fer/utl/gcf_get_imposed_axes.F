@@ -222,7 +222,7 @@
 *   ... create a context list array
            narg = EFCN_GET_NUM_REQD_ARGS(gcfcn)
            DO 300 i = 1, narg
-              EF_cx_list(i) = cx_base + narg - i
+              EF_cx_list(i) = cx_stack_ptr - i + 1
  300       CONTINUE
 
            IF (axis_will_be(1) .EQ. pgc_axis_supplied_herein
@@ -230,7 +230,8 @@
      .          .OR. axis_will_be(3) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(4) .EQ. pgc_axis_supplied_herein) THEN
               CALL EFCN_GET_CUSTOM_AXES(gcfcn, EF_cx_list, status)
-              IF (status .NE. ferr_ok) GOTO 5000
+              IF (status .NE. ferr_ok) CALL ERRMSG
+     .                          ( status, status, ' ', *5000) 
            ENDIF
 
            DO 400 idim = 1, 4

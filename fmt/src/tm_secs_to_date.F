@@ -48,7 +48,9 @@
 * revision 2.00 - 02/20/89 - Rewritten - subtract year 0 - claculate from there
 *			     year 0 special case - readded logical leap test
 *			     Added some error handling (STOP's)
-*
+
+* V510 5/00 *sh* - trap attempt to translate a date before 0000
+
 * Argument definition
 	REAL*8		num_secs
 
@@ -86,6 +88,12 @@
      .			   31*07, 31*08, 30*09, 31*10, 30*11, 31*12/
 	DATA days_before_month	/   0,  31,  59,  90, 120, 151,
      .				  181, 212, 243, 273, 304, 334/
+
+* trap invalid input
+	IF ( num_secs .LT. 0 ) THEN
+	   TM_SECS_TO_DATE = '01-JAN-0000:00:00:00'
+	   RETURN
+	ENDIF
 
 * Initialize
 	total_secs = num_secs

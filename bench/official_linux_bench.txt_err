@@ -1,21 +1,24 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja9/kobrien/BETA_BUILDS/linux/FERRET/fer/ferret_v550
--rwxr-xr-x    1 kobrien  tmap     32004886 Jan 15 02:23 /home/ja9/kobrien/BETA_BUILDS/linux/FERRET/fer/ferret_v550
-Using external functions from /home/ja4/kobrien/linux/FERRET/bin
-Benchmark run by auto
-Note: Auto run test of 15Jan03
+Running FERRET version /home/ja9/kobrien/BETA_BUILDS/linux/FERRET/fer/ferret_v551
+-rwxr-xr-x    1 kobrien  tmap     28542269 Feb 28 13:26 /home/ja9/kobrien/BETA_BUILDS/linux/FERRET/fer/ferret_v551
+Using external functions from /home/ja9/kobrien/BETA_BUILDS/linux/FERRET/bin
+Benchmark run by kob
+Note: v551 official release version test - using nag f90
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja9/kobrien/BETA_BUILDS/linux/FERRET/bench
-FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
-FER_GO=. /home/ja9/tmap/ferret/linux/go /home/ja9/tmap/ferret/linux/examples /home/ja9/tmap/ferret/linux/contrib /home/ja9/tmap/ferret/tmap_go
-FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/linux/FERRET/bin
-FER_DATA=.
-FER_DESCR=.
+FER_LINK_DIR=/home/ja9/tmap/ferret_link/linux
+FER_DIR=.
+FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
+FER_GO=. /home/ja9/tmap/ferret/linux/go /home/ja9/tmap/ferret/linux/examples /home/ja9/tmap/ferret/linux/contrib /home/ja9/tmap/ferret/tmap_go
+FER_DATA=.
+FER_DESCR=.
 FER_GRIDS=.
-FER_DIR=.
-Beginning at Wed Jan 15 02:23:20 PST 2003
+FER_MODEL_RUNS=/home/ja9/tmap/model_runs
+FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
+FER_EXTERNAL_FUNCTIONS=/home/ja9/kobrien/BETA_BUILDS/linux/FERRET/bin
+Beginning at Fri Feb 28 13:28:03 PST 2003
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -495,4 +498,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Jan 15 02:25:02 PST 2003
+Ended at Fri Feb 28 13:29:44 PST 2003

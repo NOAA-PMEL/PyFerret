@@ -5,7 +5,8 @@
 # platform specific macros
 
 
-INCLUDES        = -I/usr/ucbinclude -I/usr/local/include \
+INCLUDES        = -I../../ppl/include/xgks \
+		  -I/usr/ucbinclude -I/usr/local/include \
 		  -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
                   -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib \
                   -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \

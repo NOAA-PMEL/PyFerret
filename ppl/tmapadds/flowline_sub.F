@@ -92,8 +92,8 @@ C       startflag is a work array.
 C
 C  Calling argument declarations
 
-      INTEGER siz, den, nxs, nys, startflag(*)
-      REAL xf, yf, px(nxs),py(nys), u(nx,ny),v(nx,ny)
+      INTEGER siz, den, nxs, nys
+      REAL xf, yf, px(nxs),py(nys), u(nx,ny), v(nx,ny), startflag(*)
 
 C  From from GrADS module gxstrm.c
 C void gxstrm (float *u, float *v, float *c, int is, int js,
@@ -191,7 +191,7 @@ C  Get mean velocity for scaling the arrows
 C  Initialize the flag grid
 
       DO i = 1, siz
-         startflag(i) = 0
+         startflag(i) = 0.
       ENDDO
 
 C   Loop through flag grid to look for start of flowlines.  
@@ -216,7 +216,7 @@ C     flag boxes.
          DO jz = jmn, jmx
             ipt = jz*iss + imn
             DO iz = imn, imx
-              iacc = iacc + startflag(ipt)
+              iacc = iacc + INT(startflag(ipt))
               ipt = ipt + 1
             ENDDO
          ENDDO
@@ -403,10 +403,10 @@ C  and for latitude.
                ii1index = ii1 + 1
 
                IF (ii1 .LT. 0  .OR.  ii1 .GE. siz) GO TO 19
-               IF (startflag(ii1index) .EQ. 1) GO TO 19
+               IF (startflag(ii1index) .EQ. 1.) GO TO 19
 
-               IF (ii1index .NE. iisav .AND. iisav.GT.-1)
-     .             startflag(iisav) = 1
+               IF (ii1index .NE. iisav .AND. iisav.GT.0)
+     .             startflag(iisav) = 1.
                IF (ii1index .EQ. iisav) THEN
                   iacc = iacc + 1
                ELSE
@@ -674,9 +674,9 @@ C  travelling the other direction, so subtract
                ii1index = ii1 + 1
 
                IF (ii1 .LT. 0  .OR.  ii1 .GE. siz) GO TO 29
-               IF (startflag(ii1index) .EQ. 1) GO TO 29
+               IF (startflag(ii1index) .EQ. 1.) GO TO 29
 
-               IF (ii1 .NE. iisav .AND. iisav .GT. 0)startflag(iisav) =1 
+               IF (ii1 .NE. iisav .AND. iisav .GT. 0)startflag(iisav) =1. 
 
                IF (ii1index .EQ. iisav) THEN
                   iacc = iacc + 1

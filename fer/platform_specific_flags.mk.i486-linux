@@ -5,7 +5,7 @@
 # platform specific macros
 
 
-INCLUDES        = -I/usr/local/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include \
+INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/2.96/include/ \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I. -Ireadline \
 		  -I../../ppl/include/xgks \
@@ -30,12 +30,17 @@ FINCLUDES	= -I../../ppl/tmap_inc \
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
  
+# New platform type var - *kob* 10/01
+PLATFORM = Linux 2.4.3-12smp
+
 
 
 CC              = cc
-F77		= /usr/local/src/NAGWare_f95/bin/f95
+F77		= /home/ja4/kobrien/src/linux/NAGWare_f95/bin/f95
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
+# have to remove -02 flag due to bug in v2.96 of compiler. see
+#   for http://gcc.gnu.org/ml/gcc-bugs/2000-04/msg00716.html for info
+CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 FFLAGS          =  -132 -c -save -dusty -mismatch -fieee -maxcontin=150 -x77 -w $(FINCLUDES) 
 PPLUS_FFLAGS    = -132 -c -save -dusty  -fieee -maxcontin=150 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
@@ -55,12 +60,11 @@ CPP_FLAGS       = $(INCLUDES) -P -Dunix -DNEED_IAND -DFORTRAN_90 \
 
 LD		= cc 
 LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -export-dynamic 
-#LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -static
+#LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib  -static 
  
 
 
-#SYSLIB		= -L/usr/X11R6/lib -lX11 /usr/lib/libf2c.a -L/usr/local/src/NAGWare_f95/lib /usr/local/src/NAGWare_f95/lib/libf95.a -lm -ldl -lXpm  $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE -lc
-SYSLIB		= -L/usr/X11R6/lib   /usr/lib/libf2c.a /usr/local/src/NAGWare_f95/lib/libf95.a -lm -ldl /usr/X11R6/lib/libXpmstatic.a $(TMAP_LOCAL)/lib/liblist.a -lc -lXmstatic -lXtstatic -lXextstatic -lX11static -lSMstatic -lICEstatic  -lc /usr/lib/libc.a
+SYSLIB		= -L/usr/X11R6/lib  /usr/local/lib/libf2c.a /home/ja4/kobrien/src/linux/NAGWare_f95/lib/libf95.a  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc -lXm -lXt -lXext -lX11 -lXp -lSM       -lICE        -lc
 
 TMLIB		= ../lib/tmap_lib.a
 
@@ -68,7 +72,7 @@ GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 #GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
 READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
 
-HDFLIB		= -L/usr/local/lib  -ldf 
+HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 
 CDFLIB		= -lnetcdf
 

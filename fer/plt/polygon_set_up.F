@@ -76,6 +76,7 @@
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 * V510: *sh* 7/00 - added arg to EQUAL_RANGE 
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
+*	    1/01 - remove makep setting so segments are not pre-activated
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -434,7 +435,7 @@
 
 	   if (overlay) SOVER = .true.
 
-* ... let PPL know what's going on
+* ... let PPL data loader know what's going on (kludge)
 	   makep = 'FILLPOL'
 
 * ... setup for possible overlay on a time axis plot
@@ -464,6 +465,9 @@
 	   npoly = npoly + 1
 	GOTO 200	! end of DO-WHILE loop
  290	IF (npoly .EQ. 0 ) GOTO 5230
+
+* ... restore normal PPLOT+ operations (else segments get prematurely created)
+	   makep = ' '
 
 * NOW set the line style
 	CALL LINE_STYLE( symbol, 0.08, line_type, use_line, 1, 1 )
@@ -499,9 +503,10 @@
      .				 ncolor, mr_bad_data(mr_color), only_val )
 
 	if (overlay) SOVER = .true.
-	makep = 'FILLPOL'
 
+	makep = 'FILLPOL'   ! that PLOT+ kludge again
 	CALL PPLLDX(2,x_dat,x_dat,ncolor,t1_date,' ',dt_min)
+	makep = ' '   ! that PLOT+ kludge again
 
 * turn on lon/lat axis formatting for polygon plots, otherwise off
 

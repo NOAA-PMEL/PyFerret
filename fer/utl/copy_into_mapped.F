@@ -44,16 +44,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V510: 8/99 *sh* - based on COPY_INTO
+* V533: 7/01 *sh* - added string support
 
-#ifdef unix
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER msrc, cxs, mdst, axis, hilim
@@ -72,7 +67,8 @@
 *	then throw away I=14
 *	then copy I=13 of source into both I=4 and I=2 or result
 
-	CALL COPY_INTO_MAPPED_SUB( cxs, axis, hilim,
+	IF (mr_type(msrc) .EQ. ptype_string ) THEN
+	  CALL COPY_PTR_INTO_MAPPED_SUB( cxs, axis, hilim,
      .			    sorted_indices, index_map,
      .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
      .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
@@ -82,6 +78,18 @@
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
      .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
+	ELSE
+	  CALL COPY_INTO_MAPPED_SUB( cxs, axis, hilim,
+     .			    sorted_indices, index_map,
+     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
+     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
+     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
+     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
+     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
+     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
+     .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
+	ENDIF
 
 	RETURN
 	END 

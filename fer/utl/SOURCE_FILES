@@ -25,6 +25,8 @@ copy_grid_trans_sub.F\
 copy_into.F\
 copy_into_mapped.F\
 copy_into_mapped_sub.F\
+copy_ptr_into_mapped_sub.F\
+copy_ptr_into_sub.F\
 copy_into_sub.F\
 copy_ptr_grid_sub.F\
 count_number_list.F\
@@ -54,6 +56,7 @@ gcf_name.F\
 gcf_num_args.F\
 gcf_parent_char.F\
 gcf_parent_uvar.F\
+gcf_rtn_type.F\
 geog_var.F\
 get_ave_lims.F\
 get_max_string_len.F\
@@ -78,6 +81,7 @@ itsa_gcvar.F\
 itsa_modulo_axis.F\
 itsa_modulo_gcf.F\
 itsa_modulo_regrid.F\
+itsa_pure_sum_var.F\
 legal_chars.F\
 make_axis.F\
 make_step_axis.F\
@@ -87,6 +91,7 @@ match_quoted_name.F\
 match_template.F\
 minmax.F\
 mode_gui_on.F\
+modulo_parity.F\
 mult_grid.F\
 no_grid_range.F\
 no_line_range.F\

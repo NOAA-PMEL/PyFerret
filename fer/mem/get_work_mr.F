@@ -1,7 +1,5 @@
 	SUBROUTINE GET_WORK_MR ( size, mr, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -49,6 +47,7 @@
 *
 * V510 8/99 *sh*
 *      2/00 *sh* bug fix - initialize mr_grid
+* V533 7/01 *sh* - set data type
 
 * calling argument declarations:
 	INTEGER	size, mr, status
@@ -75,6 +74,9 @@
 * point mr slot to data in bulk memory
 	mr_blk1     ( mr )	= start_block
 	mr_nblks    ( mr )	= num_blocks
+
+* always set its data type to float
+	mr_type( mr ) = ptype_float
 
 * always set its missing value flag to the default
 	mr_bad_data( mr ) = bad_val4

@@ -35,30 +35,32 @@
 
 
 /* 
- *sh* 9/2000
- *sh* 6/01 - allow null pointers (free memory only if non-null)
-
-   Free the string arrays pointed to by this Ferret variable 
-   Note: for porttability the Ferret array is 8-byte
+   Fill the indicated region of memory with pointers to null strings
 */
 
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void free_c_string_array_(fer_ptr, length)
+void set_null_c_string_array_(fer_ptr, nstr)
      char*** fer_ptr;
-     int* length;
+     int* nstr;
 {
-
-  /* first free the individual strings */
-  char** each_str_ptr = *fer_ptr;
-  char* dbg;
+  char** each_str_ptr;
   int i;
-  for (i=0; i<*length; i++)
+
+  each_str_ptr = *fer_ptr;   /* holds pointer to the first string */
+
+  for (i=0; i<*nstr; i++)
     {
-      if (*each_str_ptr) free(*each_str_ptr);
+
+      *each_str_ptr = (char *) malloc(sizeof(char));
+      assert(*each_str_ptr);
+      **each_str_ptr = NULL;
+
       each_str_ptr += 8/sizeof(char**);
     }
-    
-  return;
 
+  return;
 }

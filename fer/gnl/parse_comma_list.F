@@ -55,6 +55,7 @@
 * V530: *sh* 3/01 - remove surrounding quotes from items in list
 * V532: *sh* 5/01 - ignore commas embedded in parentheses
 *		  - allow for nested parens and brackets
+* V533: *sh* 7/01 - allow both single and double quoted strings
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -149,6 +150,16 @@
 	         GOTO 30
 	      ENDIF
  50	   CONTINUE
+	   GOTO 5020	! unpaired
+
+* ... ignore commas sandwiched between ' '   ! 7/01
+	ELSEIF ( buffer(ip:ip) .EQ. "'" ) THEN
+	   DO i = ip+1, iend
+	      IF ( buffer(i:i) .EQ. "'" ) THEN
+	         ip = i
+	         GOTO 30
+	      ENDIF
+	   ENDDO
 	   GOTO 5020	! unpaired
 
 * ... comma as terminator

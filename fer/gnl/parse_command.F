@@ -95,6 +95,7 @@
 *	*sh* 3/01 - added arg1_quoted to indicate if the first arg in the list
 *		has enclosing quotes - and avoid calling PARSE_COMMA_LIST
 * V531 *sh* 4/01 - added continuation lines
+* V533 *sh* 7/01 - allow both single and double quotes
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -142,14 +143,14 @@
 
 * modified def of MATCH4 from INTEGER to LOGICAL *kob* IBM port 8/94
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
-     .          surround_quote, subst, first_paren,
+     .          surround_quote, doub_quote, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
      .          MATCH4, escape
 	INTEGER TM_LENSTR
-	INTEGER	buff_len, bang_position, pointer, quote_end,
+	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
-     .		isubcmnd_pointer, iword, last_qual, iqual_word, iterm,
-     .		iqual, iqual_pointer, iarg, i, nparen, nsubst_passes,
+     .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
+     .		iqual, iqual_ptr, iarg, i, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
      .		paren_level
 	CHARACTER c1*1
@@ -167,7 +168,7 @@
 	arg1_quoted	= .FALSE.
 	status 		= ferr_ok
 	buff_len	= LEN ( cmnd_buff )
- 5	pointer		= 1		! current position in cmnd_buff
+ 5	ptr		= 1		! current position in cmnd_buff
 	word_num	= 0		! current "word" in cmnd_buff
 	num_quals	= 0
 	num_args	= 0
@@ -291,7 +292,9 @@
                  nparen = nparen + 1
               ELSEIF ( c1 .EQ. ')' ) THEN
                  nparen = nparen - 1
-              ELSEIF ( c1 .EQ. '"' ) THEN
+              ELSEIF ( c1 .EQ. '"' .AND. doub_quote ) THEN
+                 surround_quote = .NOT.surround_quote
+              ELSEIF ( c1 .EQ. "'" .AND. .NOT.doub_quote ) THEN
                  surround_quote = .NOT.surround_quote
               ELSEIF ( c1 .EQ. ';' ) THEN
 	         escape = i.GT.1
@@ -360,9 +363,9 @@
  100	CONTINUE
 
 * skip blanks preceeding word
-	DO 110 pointer = pointer, cmnd_len
-		IF (      cmnd_buff(pointer:pointer) .NE. ' '
-     .		    .AND. cmnd_buff(pointer:pointer) .NE. tab ) GOTO 200
+	DO 110 ptr = ptr, cmnd_len
+		IF (      cmnd_buff(ptr:ptr) .NE. ' '
+     .		    .AND. cmnd_buff(ptr:ptr) .NE. tab ) GOTO 200
  110	CONTINUE
 	GOTO 500		! end of command buffer - no more words
 
@@ -370,14 +373,14 @@
 
  200	IF ( word_num .EQ. max_words ) GOTO 500
 	word_num 	= word_num + 1
-	IF ( cmnd_buff(pointer:pointer) .EQ. '/' ) THEN
+	IF ( cmnd_buff(ptr:ptr) .EQ. '/' ) THEN
 	   itsa_qualifier(word_num) = .TRUE.
-	   pointer = pointer + 1		! jump over "/"
+	   ptr = ptr + 1		! jump over "/"
 *	skip blanks between "/" and text of word
-	   DO 210 pointer = pointer, cmnd_len
-		IF (      cmnd_buff(pointer:pointer) .EQ. '/' ) GOTO 5050
-		IF (      cmnd_buff(pointer:pointer) .NE. ' '
-     .		    .AND. cmnd_buff(pointer:pointer) .NE. tab ) GOTO 300
+	   DO 210 ptr = ptr, cmnd_len
+		IF (      cmnd_buff(ptr:ptr) .EQ. '/' ) GOTO 5050
+		IF (      cmnd_buff(ptr:ptr) .NE. ' '
+     .		    .AND. cmnd_buff(ptr:ptr) .NE. tab ) GOTO 300
  210	   CONTINUE
 	   word_num = word_num - 1
 	   GOTO 500			! ignore "/" at end of buffer
@@ -386,64 +389,86 @@
 	ENDIF
 
 * we have found the start of a word - initialize variables
- 300    arg_start (word_num) = pointer
+ 300    arg_start (word_num) = ptr
         surround_quote = .FALSE.
 
 * start searching for the end of the word: blank,tab,"/" or ", if its a quote
  400	CONTINUE
-	   IF ( cmnd_buff(pointer:pointer) .EQ. '"' ) THEN
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) THEN
+#else
+	   IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) THEN
+#endif
+	      GOTO 410
+  
+	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '"' 
+     .	   .OR.     cmnd_buff(ptr:ptr) .EQ. "'"  ) THEN
 * ... quotation marks - skip past entire quotated string
-              surround_quote = pointer .EQ. arg_start(word_num)
-	      DO 401 pointer = pointer+1, cmnd_len
-	         IF ( cmnd_buff(pointer:pointer) .EQ. '"' ) THEN
-                    quote_end = pointer
-                    GOTO 410
-                 ENDIF
+	      doub_quote = cmnd_buff(ptr:ptr) .EQ. '"' 
+              surround_quote = doub_quote
+     .	                 .AND. ptr .EQ. arg_start(word_num)
+	      DO 401 ptr = ptr+1, cmnd_len
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+	        IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 401
+#else
+	        IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 401
+#endif
+	        IF (cmnd_buff(ptr:ptr).EQ.'"' .AND. doub_quote
+     .	       .OR. cmnd_buff(ptr:ptr).EQ."'" .AND. .NOT.doub_quote) THEN
+                  quote_end = ptr
+                  GOTO 410
+                ENDIF
  401	      CONTINUE
 	      GOTO 5010
-	   ELSEIF ( cmnd_buff(pointer:pointer) .EQ. '`' ) THEN
+	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '`' ) THEN
 * ... grave accent - skip past entire immediate mode expression
+	      DO 402 ptr = ptr+1, cmnd_len
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-* "\`"
-	      IF ( cmnd_buff(pointer-1:pointer-1) .EQ. '\' ) 
-     .               GOTO 410  
+	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 402
 #else
-* "\`"
-	      IF ( cmnd_buff(pointer-1:pointer-1) .EQ. '\\' ) 
-     .               GOTO 410  
+	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 402
 #endif
-	      DO 402 pointer = pointer+1, cmnd_len
-	         IF ( cmnd_buff(pointer:pointer) .EQ. '`' ) GOTO 410
+	         IF ( cmnd_buff(ptr:ptr) .EQ. '`' ) GOTO 410
  402	      CONTINUE
 	      GOTO 5010
-	   ELSEIF ( cmnd_buff(pointer:pointer) .EQ. '[' ) THEN
+	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '[' ) THEN
 * ... embedded bracket - find matching right bracket
 	      nest = 1
-	      DO 403 pointer = pointer+1, cmnd_len
-	         IF ( cmnd_buff(pointer:pointer) .EQ. '[' ) THEN
+	      DO 403 ptr = ptr+1, cmnd_len
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 403
+#else
+	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 403
+#endif
+	         IF ( cmnd_buff(ptr:ptr) .EQ. '[' ) THEN
 	            nest = nest + 1
-	         ELSEIF ( cmnd_buff(pointer:pointer) .EQ. ']' ) THEN
+	         ELSEIF ( cmnd_buff(ptr:ptr) .EQ. ']' ) THEN
 	            nest = nest - 1
 	            IF ( nest .EQ. 0 ) GOTO 410
 	         ENDIF
  403	      CONTINUE
 	      GOTO 5010
-	   ELSEIF ( cmnd_buff(pointer:pointer) .EQ. '(' ) THEN
+	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '(' ) THEN
 * ... embedded paren - find matching right paren (10/95)
 	      nest = 1
-	      DO 404 pointer = pointer+1, cmnd_len
-	         IF ( cmnd_buff(pointer:pointer) .EQ. '(' ) THEN
+	      DO 404 ptr = ptr+1, cmnd_len
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 404
+#else
+	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 404
+#endif
+	         IF ( cmnd_buff(ptr:ptr) .EQ. '(' ) THEN
 	            nest = nest + 1
-	         ELSEIF ( cmnd_buff(pointer:pointer) .EQ. ')' ) THEN
+	         ELSEIF ( cmnd_buff(ptr:ptr) .EQ. ')' ) THEN
 	            nest = nest - 1
 	            IF ( nest .EQ. 0 ) GOTO 410
 	         ENDIF
  404	      CONTINUE
 	      GOTO 5010
 	   ELSE
-		IF (	  cmnd_buff(pointer:pointer) .NE. ' '
-     .		    .AND. cmnd_buff(pointer:pointer) .NE. '/'
-     .		    .AND. cmnd_buff(pointer:pointer) .NE. tab ) THEN
+		IF (	  cmnd_buff(ptr:ptr) .NE. ' '
+     .		    .AND. cmnd_buff(ptr:ptr) .NE. '/'
+     .		    .AND. cmnd_buff(ptr:ptr) .NE. tab ) THEN
                    surround_quote = .FALSE.  ! text outside of quotation
                    GOTO 410
                 ENDIF
@@ -451,15 +476,15 @@
 
 * "/" can be escaped using "\/"
 #ifdef NO_DOUBLE_ESCAPE_SLASH
-	   IF (cmnd_buff(pointer-1:pointer) .EQ. '\/') GOTO 410
+	   IF (cmnd_buff(ptr-1:ptr) .EQ. '\/') GOTO 410
 #else
-	   IF (cmnd_buff(pointer-1:pointer) .EQ. '\\/') GOTO 410
+	   IF (cmnd_buff(ptr-1:ptr) .EQ. '\\/') GOTO 410
 #endif
 	
 * probable terminator found - make sure it's not hiding a comma or =
 * first check ahead that the next non-blank/tab is not comma or =
 * ... also check for ":"
-	   DO 405 look_ahead = pointer+1, cmnd_len
+	   DO 405 look_ahead = ptr+1, cmnd_len
 	      IF (   cmnd_buff( look_ahead:look_ahead ) .EQ. ' '
      .		.OR. cmnd_buff( look_ahead:look_ahead ) .EQ. tab ) GOTO 405
 	      IF (   cmnd_buff( look_ahead:look_ahead ) .EQ. ','
@@ -472,7 +497,7 @@
  405	   CONTINUE
 
 * now look back to make sure this isn'a a gap following an = or comma
- 406	   DO 408 look_back = pointer-1, 1, -1
+ 406	   DO 408 look_back = ptr-1, 1, -1
 	      IF (   cmnd_buff( look_back:look_back ) .EQ. ' '
      .	      .OR. cmnd_buff( look_back:look_back ) .EQ. tab ) GOTO 408
 	      IF (   cmnd_buff( look_back:look_back ) .EQ. ','
@@ -486,13 +511,13 @@
 		 GOTO 420	! yes - we found a terminator
 
 * manual DO-loop to permit embedded quotation marks
- 410	IF ( pointer .LT. cmnd_len ) THEN
-	   pointer = pointer + 1
+ 410	IF ( ptr .LT. cmnd_len ) THEN
+	   ptr = ptr + 1
 	   GOTO 400
 	ENDIF
 
 * end of buffer has been reached with no word terminator - assume the word ends
- 415	pointer = cmnd_len + 1
+ 415	ptr = cmnd_len + 1
 
 * we have found the end of the word
  420    IF ( surround_quote ) THEN
@@ -500,9 +525,9 @@
            arg_end  (word_num) = quote_end - 1
            IF ( arg_start(word_num) .GT. arg_end(word_num) ) GOTO 5015
 	ELSE
-	   arg_end (word_num) = pointer - 1
+	   arg_end (word_num) = ptr - 1
 	ENDIF
-        IF ( pointer .LT. cmnd_len ) THEN
+        IF ( ptr .LT. cmnd_len ) THEN
            GOTO 100                              ! go back for next word
         ELSE
 	   GOTO 500				 ! done parsing
@@ -536,9 +561,9 @@
 	GOTO 650
 * look for a match in the list of subcommands for this command
  620	DO 630 subcmnd_num = 2, num_subcommands(cmnd_num)
-	   isubcmnd_pointer = subcmnd_num + subcommand_pointer(cmnd_num) - 1
+	   isubcmnd_ptr = subcmnd_num + subcommand_pointer(cmnd_num) - 1
 	   IF ( MATCH4( cmnd_buff(arg_start(isub_word):arg_end(isub_word)),
-     .			subcommands( isubcmnd_pointer)(:4)  )  ) THEN
+     .			subcommands( isubcmnd_ptr)(:4)  )  ) THEN
 * ... legal syntax of subcommand ?  (avoid, e.g., "SET REGION@T")
               IF ( .NOT.TM_LEGAL_NAME
      .        (cmnd_buff(arg_start(isub_word):arg_end(isub_word))) )
@@ -553,7 +578,7 @@
 * no matches against known 4 character subcommands --> no subcommand given
  650	isub_word	 = 0		! no subcommand word in cmnd_buff
 	subcmnd_num	 = 1		! use "    " as  subcommand
-	isubcmnd_pointer = subcommand_pointer(cmnd_num)
+	isubcmnd_ptr = subcommand_pointer(cmnd_num)
 
 * +++++++ QUALIFIERS +++++++
 * since "/" may be used for syntax purposes other that qualifiers determine the
@@ -569,7 +594,7 @@
 * loop through qualifiers
  704	DO 740 iqual_word = 2, last_qual
 	   IF ( .NOT.itsa_qualifier(iqual_word) )	  GOTO 740
-	   IF ( num_qualifs(isubcmnd_pointer) .EQ. 0 )    GOTO 5030	! error
+	   IF ( num_qualifs(isubcmnd_ptr) .EQ. 0 )        GOTO 5030	! error
 	   IF ( num_quals .EQ. max_quals )		  GOTO 5040	! error
 
 * find qualifier terminator ( eg. /K=1:5  is terminated by "=" )
@@ -581,11 +606,11 @@
 	   iterm = arg_end(iqual_word) + 1	! no funny terminator
 
 * identify against list of qualifiers for this subcommand
- 720	   DO 730 iqual = 1,num_qualifs(isubcmnd_pointer)
-	   iqual_pointer = iqual + qualifier_pointer(isubcmnd_pointer) - 1
+ 720	   DO 730 iqual = 1,num_qualifs(isubcmnd_ptr)
+	   iqual_ptr = iqual + qualifier_pointer(isubcmnd_ptr) - 1
 	   known_qualifier = 
      .		MATCH4( cmnd_buff(arg_start(iqual_word):iterm - 1 ),
-     .			qualifiers(iqual_pointer) )
+     .			qualifiers(iqual_ptr) )
 * "@/anything" will be permitted to pass
 * (8/92 - this should be lifted outside of this loop for speed!!! *sh*)
 	   atsin_qualifier  = 
@@ -626,8 +651,10 @@
 * the nature of arg_start,end allows safe (??) decrement/increment
 	IF (num_args .GE. 1) THEN
 	   arg1_quoted =
-     .	       cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. '"'
-     .   .AND. cmnd_buff(arg_end(1)  +1:arg_end(1)  +1) .EQ. '"' 
+     .	   (     cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. '"'
+     .     .AND. cmnd_buff(arg_end(1)  +1:arg_end(1)  +1) .EQ. '"' )
+     . .OR.(     cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. "'"
+     .     .AND. cmnd_buff(arg_end(1)  +1:arg_end(1)  +1) .EQ. "'" )
 	ENDIF
 
 * REPEAT loops postpone symbol substitutions in arguments -- all 1 arg for now

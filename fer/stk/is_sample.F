@@ -1,7 +1,5 @@
 	SUBROUTINE IS_SAMPLE( memory, *, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -45,22 +43,14 @@
 *
 * V510: 8/99
 *	 *sh* 2/00 (??) - correct improper handling of invalid indices
+* V533; *sh* 7/01 - add support for sampling of string variables
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -76,7 +66,7 @@
 
 * internal variable declarations:
 	LOGICAL	all_at_once
-	INTEGER DENSE_CONTIG_REGION
+	INTEGER DENSE_CONTIG_REGION, MGRID_SIZE_DELTA
 	INTEGER chunk_mr, hold_mr, chunk_cx, hold_cx,
      .		axis, n, phase, lo_cx_lim, hi_cx_lim, mr_sorted_indices,
      .		mr_index_map, idim, chunk_isp, hold_isp, cat, var,
@@ -120,9 +110,18 @@
 	      is_mr( hold_isp ) = hold_mr
 
 * pre-fill output with missing flags, in case a missing index was given
-	      CALL FILL_MEMORY ( memory, mr_blk1 (hold_mr),
-     .				 mr_nblks(hold_mr),
-     .				 mr_bad_data(hold_mr) )
+	      IF ( mr_type(hold_mr) .EQ. ptype_string ) THEN
+	        CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(hold_mr),
+     .                                    memory(1, mr_blk1(hold_mr)),
+     .                                    mr_c_pointer(hold_mr)      )
+	        CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(hold_mr),
+     .					     MGRID_SIZE_DELTA(hold_mr) )
+
+	      ELSE
+	        CALL FILL_MEMORY ( memory, mr_blk1 (hold_mr),
+     .				   mr_nblks(hold_mr),
+     .				   mr_bad_data(hold_mr) )
+	      ENDIF
 
 	   ENDIF
 

@@ -44,6 +44,7 @@
 *
 * revision 0.0 - 3/2/87
 * V200:  6/20/89 - 4D-symmetrical version
+* V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
 
 #ifdef unix
 	include	'ferret.parm'
@@ -72,9 +73,9 @@
 	grid = cx_grid( cx )
 
 	pv = (mr_variable(mr)-1) / 4  + 1
-	IF ( pv .GT. 3 )  STOP 'MK_PSEUDO_VAR'	! diag
+	IF ( pv .GT. 5 )  STOP 'MK_PSEUDO_VAR'	! diag
 
-	GOTO (  100, 200, 300 ) pv
+	GOTO (  100, 200, 300, 400, 500 ) pv
 
 * "I", "J", "K", "L"
  100	DO 110 i = lo_ss, hi_ss
@@ -89,6 +90,16 @@
 * "XBOX", "YBOX", "ZBOX", "TBOX"
  300	DO 310 i = lo_ss, hi_ss
  310	pvar( i ) = BOX_SIZE( i, grid, idim )
+	RETURN
+
+* "XBOX", "YBOX", "ZBOX", "TBOX"
+ 400	DO 410 i = lo_ss, hi_ss
+ 410	pvar( i ) =  TM_WORLD( i,grid,idim,box_lo_lim )
+	RETURN
+
+* "XBOX", "YBOX", "ZBOX", "TBOX"
+ 500	DO 510 i = lo_ss, hi_ss
+ 510	pvar( i ) =  TM_WORLD( i,grid,idim,box_hi_lim )
 	RETURN
 
 	END

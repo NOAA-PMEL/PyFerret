@@ -77,6 +77,7 @@
 *         1/00 - *acm* Change alg_fcn_descr to "since 1900" (was 1990)
 *         1/00 - *acm* Corrected the order of argument listing for THETA_FO to 
 *                      match how the function is actually called.
+* V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
 
 #ifdef unix
 	include	'ferret.parm'
@@ -343,14 +344,14 @@
 	DATA alg_pvar	( 10 ) / 'YBOX    ' /,
      .       alg_pvar	( 11 ) / 'ZBOX    ' /,
      .       alg_pvar	( 12 ) / 'TBOX    ' /,
-     .       alg_pvar	( 13 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 14 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 15 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 16 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 17 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 18 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 19 ) / 'xxxxxxxx' /,	! undefined
-     .       alg_pvar	( 20 ) / 'xxxxxxxx' /	! undefined
+     .       alg_pvar	( 13 ) / 'XBOXLO  ' /,
+     .       alg_pvar	( 14 ) / 'YBOXLO  ' /,
+     .       alg_pvar	( 15 ) / 'ZBOXLO  ' /,
+     .       alg_pvar	( 16 ) / 'TBOXLO  ' /,
+     .       alg_pvar	( 17 ) / 'XBOXHI  ' /,
+     .       alg_pvar	( 18 ) / 'YBOXHI  ' /,
+     .       alg_pvar	( 19 ) / 'ZBOXHI  ' /,
+     .       alg_pvar	( 20 ) / 'TBOXHI  ' /
 
 	DATA
      .		alg_trans_text ( 1 )	/ 'AV4' 		/, 

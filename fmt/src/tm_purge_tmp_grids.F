@@ -46,7 +46,7 @@
 
 * Include files
 	include 'tmap_dims.parm'
-#include 'gt_lib.parm'
+#include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	include 'xio.cmn_text'
 

@@ -42,7 +42,7 @@
 
 * Include files
 	include 'tmap_dims.parm'
-#include 'tmap_dset.parm'
+#include "tmap_dset.parm"
 	include 'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
 	include 'xbuild_grids.cmn'

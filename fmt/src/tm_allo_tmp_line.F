@@ -44,7 +44,7 @@
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
 	include 'tmap_errors.parm'
-#include 'tmap_dset.parm'
+#include "tmap_dset.parm"
 	include 'xtm_grid.cmn_text'
 
 * Argument definitions

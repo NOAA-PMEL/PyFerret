@@ -1,6 +1,12 @@
 \cancel mode verify
 ! 2/94 - polar_vs.jnl
 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction
+ 
+
 ! Description: perform a polar PLOT/VS of 2 variables: lat long
 
 ! usage:   GO polar_vs plot_command lats longs
@@ -22,6 +28,8 @@
 
 ! Note: the rotation parameter is inherited from the other polar routines
 ! Use    LET polar_rotation="value"   to use this routine apart from the others
+
+
 
 ! check that parameters are OK to the best we can
 query/ignore $1%<Use: GO polar_vs plot_command lats longs [color]%
@@ -47,3 +55,7 @@ let/quiet polar_ypage = polar_cosrot*polar_ypage0 - signgr*polar_sinrot*polar_xp
 GO box_plot $1/vs polar_xpage,polar_ypage
 
 set mode/last verify
+
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

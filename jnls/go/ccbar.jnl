@@ -5,31 +5,36 @@
 ! 5/16/02  ms and acm
 
 ! Usage:
-
-!    GO ccbar xloc yloc xlen ylen v1 v2 dv orient
- 
-! where the first four arguments are in inches, relative to the
-! ENTIRE PLOT PAGE
+! 
+!   yes? SET VIEW full      ! Or any other viewport
+!   yes? SHADE var          ! Or FILL var
+!   yes? GO ccbar xloc yloc xlen ylen v1 v2 dv orient
 !
-!         xloc = x-coordinate of lower left corner of clorbar 
-!         yloc = y-coordinate of lower left corner of clorbar 
-!         xlen = x length of colorbar    
-!         ylen = y length of colorbar
+!         x1 = Lower x bound (in fractional units) for colorbar 
+!         x2 = Upper x bound (in fractional units) for colorbar 
+!         y1 = Lower y bound (in fractional units) for colorbar 
+!         y2 = Upper y bound (in fractional units) for colorbar 
 !         v1 = lo value on colorbar 
 !         v2 = hi value on colorbar
-!         dv = delta value for colorbar labels
+!         dv = delta value for colorbar axis
 !         orientation = v for vertical or h for horizontal, default v
-!         palette to use, optional
+!         palette to use, optional (defaults to default Ferret palette)
+
+! Where the first four arguments are in fractions of the
+! ENTIRE PLOT PAGE, as in the DEFINE VIEWPORT command, whose 
+! qualifiers /XLIMITS=x1,x2 and /YLIMITS=y1,y2 allow the user 
+! to specify a portion of the graphics window to be the defined
+! viewport.
 
 ! Check inputs. First 7 are required
 
-QUERY/IGNORE $1%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
-QUERY/IGNORE $2%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
-QUERY/IGNORE $3%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
-QUERY/IGNORE $4%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
-QUERY/IGNORE $5%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
-QUERY/IGNORE $6%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
-QUERY/IGNORE $7%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $1%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $2%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $3%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $4%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $5%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $6%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
+QUERY/IGNORE $7%<Usage: GO ccbar x1 x2 y1 y2 v1 v2 dv orient"%
 QUERY/IGNORE $8%v%
 LET ccb_orient = $8"1|v>1|h>2|*>1"
 
@@ -37,12 +42,12 @@ DEFINE SYM ccb_pal = /pal=$9"default"
 
 ! Define the viewport to contain the colorbar
 
-LET ccb_x1 = $1/($ppl$width)
-LET ccb_y1 = $2/($ppl$height)
-LET ccb_x2 = ($1+$3)/($ppl$width)
-LET ccb_y2 = ($2+$4)/($ppl$height)
+LET ccb_x1 = $1
+LET ccb_x2 = $2
+LET ccb_y1 = $3
+LET ccb_y2 = $4
 
-DEFINE VIEW/AXES/TEXT=1/XLIMITS=`ccb_x1`,`ccb_x2`/YLIMITS=`ccb_y1`,`ccb_y2` ccb_cbar$1$2$3$4
+DEFINE VIEW/AXES/text=0.6/XLIMITS=`ccb_x1`,`ccb_x2`/YLIMITS=`ccb_y1`,`ccb_y2` ccb_cbar$1$2$3$4
 SET VIEW ccb_cbar$1$2$3$4
 
 !  Set up to plot a variable with desired range
@@ -57,21 +62,28 @@ LET ccb_var = 0*x[gx=ccb_xcb] + y[gy=ccb_ycb]
 ! ----------------------------------------------------------------------
 !  Set the label format.  This could be further customized.
 
+! I3 if range in [-99,999]
+
 LET ccb_fmt = 0
 IF `ccb_v1 GE -99` THEN
-  LET ccb_fmt = 1
+  IF `ccb_v2 LT 1000` THEN LET ccb_fmt = 1
   IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I3)
 ENDIF
 
+!  I2 format if range in [-9,99]
+
 IF `ccb_v1 GE -9` THEN
-  LET ccb_fmt = 1
-  IF `ccb_v2 LT 100` THEN DEFINE SYM ccb_yform = (I2)
+  IF `ccb_v2 LT 1000` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I2)
 ENDIF
 
+!  I1 if in range 0 [0,9]   This may not be adequate!
 IF `ccb_v1 GE 0` THEN 
-  LET ccb_fmt = 1
-  IF `ccb_v2 LT 10` THEN DEFINE SYM ccb_yform = (I1)
+  IF `ccb_v2 LT 1000` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I1)
 ENDIF
+
+! Otherwise use default axis labelling...
 
 IF `ccb_v2 - ccb_v1 LT 2` THEN 
   LET ccb_fmt = 0
@@ -80,6 +92,7 @@ ENDIF
 
 !  Plot the variable within the colorbar.
 
+PPL yfor
 IF `ccb_orient EQ 1` THEN
    SHADE/LEV=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/NOKEY/NOLAB/AXES=0,0,0,1($ccb_pal)/SET ccb_var
    IF `ccb_fmt eq 1` THEN PPL YFOR ($ccb_yform)

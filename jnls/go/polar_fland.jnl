@@ -3,6 +3,12 @@
 ! (default 60 minute resolution)
 ! 2/94
 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction
+
+
 ! Description: Overlay solid-filled continents on a polar plot
 
 ! usage:  GO polar_fland [resolution] [palette] ["basemap"]
@@ -23,6 +29,7 @@
 !         the region to be plotted
 ! Note 4: You must pre-define the variable "SIGNGR" to be 1 (north polar plot)
 !	  or -1 (south polar plot) prior to running this script.
+
 
 ! check the overlay/basemap option
 query/ignore $3%overlay|overlay>overlay|basemap> <3rd argument of GO polar_fland must be "overlay" or "basemap"%
@@ -48,3 +55,7 @@ cancel data etopo$1"60"
 ppl tics 0.125,.25,.125,.25; ppl axlabp -1,-1
 set data/restore
 set mode/last verify
+
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

@@ -1,6 +1,12 @@
 \cancel mode verify
 ! 2/94 - polar_land.jnl
 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction"
+
+
 ! Description: overlay the continental outlines on a polar stereographic plot
 
 ! usage:   GO polar_land [color] [radius]
@@ -13,6 +19,8 @@
 !  use  GO line_samples    to view the first 6 pen numbers
 !       Higher pen numbers cycle with thicker lines (max 18)
 ! Note: the rotation parameter is inherited from the other polar routines
+
+
 
 ! test argument before performing any actions
 ppl pen 1 $1%1|red>1|green>1|blue>1|thick>1|0>1|1>1|2>1|3>1|4>1|5>1|6>1|7>1|8>1|9>1|10>1|11>1|12>1|13>1|14>1|15>1|16>1|17>1|18>1|<GO polar_land "pen" with pen = 0(back), 1(fore), thick, 2-18 or a color%
@@ -52,3 +60,6 @@ cancel data unf_tlandr.dat
 set data/restore
 set mode/last verify
 
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

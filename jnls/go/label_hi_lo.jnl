@@ -20,7 +20,7 @@
 !
 !       hicolor  color of box around HI labels, or of letter H, default black
 !       locolor  color of box around LO labels, or of letter L, default black
-!       labsize  size of the mark or label (default 1.5) 
+!       labsize  size of the mark or label, in data units (default 1.5) 
 !       precision number of significant figures for numeric lables (default not specified)
 
 ! example:
@@ -28,7 +28,7 @@
 !       yes? SET REGION/L=7/X=100:360/Y=-20:60
 !       yes? FILL/LINE/PAL=no_red slp
 !       yes? GO fland
-!       yes? GO label_hi_lo.jnl slp label 10 8 green purple
+!       yes? GO label_hi_lo.jnl slp label 10 8 green purple 2.0 4
 !       yes? PAUSE
 !       yes? CONTOUR slp
 !       yes? GO fland
@@ -44,34 +44,35 @@ QUERY/IGNORE $6%black|black|red|green|blue|lightblue|purple|*>black|%
 QUERY/IGNORE $7%1.5%
 QUERY/IGNORE $8%-1%
 
-LET/QUIET LHL_rsiz = $7%1.5% 
-LET/QUIET LHL_prec = $8%-1%
+LET/QUIET rsiz = $7%1.5% 
+LET/QUIET prec = $8%-1%
+LET/QUIET chsiz = rsiz / 20
 
 ! save region and grid information.  X and Y regions are cancelled below
 
 DEFINE REGION/DEFAULT save
 
-LET/QUIET LHL_xmax = ($ppl$xmax)
-LET/QUIET LHL_xmin = ($ppl$xmin)
-LET/QUIET LHL_ymax = ($ppl$ymax)
-LET/QUIET LHL_ymin = ($ppl$ymin)
+LET/QUIET xmax = ($ppl$xmax)
+LET/QUIET xmin = ($ppl$xmin)
+LET/QUIET ymax = ($ppl$ymax)
+LET/QUIET ymin = ($ppl$ymin)
 
 ! compute local mins and maxes
-LET/QUIET LHL_datlo = findlo($1[x=`LHL_xmin`:`LHL_xmax`,y=`LHL_ymin`:`LHL_ymax`], $3, $4)
-LET/QUIET LHL_dathi = findhi($1[x=`LHL_xmin`:`LHL_xmax`,y=`LHL_ymin`:`LHL_ymax`], $3, $4)
+LET/QUIET datlo = findlo($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
+LET/QUIET dathi = findhi($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
 
-LET/QUIET LHL_xph = LHL_dathi[j=1]
-LET/QUIET LHL_yph = LHL_dathi[j=2]
-LET/QUIET LHL_zph = LHL_dathi[j=3]
+LET/QUIET xph = dathi[j=1]
+LET/QUIET yph = dathi[j=2]
+LET/QUIET zph = dathi[j=3]
 
-LET/QUIET LHL_xpl = LHL_datlo[j=1]
-LET/QUIET LHL_ypl = LHL_datlo[j=2]
-LET/QUIET LHL_zpl = LHL_datlo[j=3]
+LET/QUIET xpl = datlo[j=1]
+LET/QUIET ypl = datlo[j=2]
+LET/QUIET zpl = datlo[j=3]
 
-LOAD LHL_xph; LOAD LHL_yph; LOAD LHL_zph
-LOAD LHL_xph; LOAD LHL_ypl; LOAD LHL_zpl
-LET/QUIET LHL_nhi = LHL_xph[x=@ngd]
-LET/QUIET LHL_nlo = LHL_xph[x=@ngd]
+LOAD xph; LOAD yph; LOAD zph
+LOAD xph; LOAD ypl; LOAD zpl
+LET/QUIET nhi = xph[x=@ngd]
+LET/QUIET nlo = xph[x=@ngd]
 
 ! I and J indices are used as indices of the extrema, so cancel the
 ! region that came in with the variable.
@@ -82,46 +83,42 @@ IF $2"|label>1|*>0|" THEN
 ! Mark the max's and mins with a rectangle, and the value of the extremum.
 ! Allow either violet or purple to be specified.   
 
-
-set mode verify
-  LET/QUIET LHL_chsiz = LHL_rsiz / 20
-
-  GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$5%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% LHL_xph,LHL_yph,LHL_zph,rectangle, LHL_rsiz
-  IF `LHL_prec GT 1 AND LHL_prec LE 2` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=2`")
-  ELIF `LHL_prec GT 2 AND LHL_prec LE 3` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=3`")
-  ELIF `LHL_prec GT 3 AND LHL_prec LE 4` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=4`")
-  ELIF `LHL_prec GT 4 AND LHL_prec LE 5` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=5`")
-  ELIF `LHL_prec GT 5 AND LHL_prec LE 6` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=6`")
-  ELIF `LHL_prec GT 6 AND LHL_prec LE 7` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=7`")
-  ELIF `LHL_prec GT 7 AND LHL_prec LE 8` THEN
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=8`")
+  GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$5%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xph,yph,zph,rectangle, rsiz
+  IF `prec GT 1 AND prec LE 2` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=2`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=2`")
+  ELIF `prec GT 2 AND prec LE 3` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=3`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=3`")
+  ELIF `prec GT 3 AND prec LE 4` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=4`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=4`")
+  ELIF `prec GT 4 AND prec LE 5` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=5`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=5`")
+  ELIF `prec GT 5 AND prec LE 6` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=6`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=6`")
+  ELIF `prec GT 6 AND prec LE 7` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=7`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=7`")
+  ELIF `prec GT 7 AND prec LE 8` THEN
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp,prec=8`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=8`")
   ELSE
-    REPEAT/i=1:`LHL_nhi` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_yph[i=`i`]; LET/QUIET LHL_zp=LHL_zph[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp`")
+    REPEAT/i=1:`nhi` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=yph[i=`i`]; LET/QUIET zp=zph[i=`i`]; say `zp`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp`")
   ENDIF
 
-  GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% LHL_xph,LHL_ypl,LHL_zpl,rectangle, LHL_rsiz
-  IF `LHL_prec GT 1 AND LHL_prec LE 2` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=2`")
-  ELIF `LHL_prec GT 2 AND LHL_prec LE 3` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=3`")
-  ELIF `LHL_prec GT 3 AND LHL_prec LE 4` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=4`")
-  ELIF `LHL_prec GT 4 AND LHL_prec LE 5` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=5`")
-  ELIF `LHL_prec GT 5 AND LHL_prec LE 6` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=6`")
-  ELIF `LHL_prec GT 6 AND LHL_prec LE 7` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=7`")
-  ELIF `LHL_prec GT 7 AND LHL_prec LE 8` THEN
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp,prec=8`")
+  GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle, rsiz
+  IF `prec GT 1 AND prec LE 2` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=2`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=2`")
+  ELIF `prec GT 2 AND prec LE 3` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=3`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=3`")
+  ELIF `prec GT 3 AND prec LE 4` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=4`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=4`")
+  ELIF `prec GT 4 AND prec LE 5` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=5`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=5`")
+  ELIF `prec GT 5 AND prec LE 6` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=6`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=6`")
+  ELIF `prec GT 6 AND prec LE 7` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=7`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=7`")
+  ELIF `prec GT 7 AND prec LE 8` THEN
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp,prec=8`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp,prec=8`")
   ELSE
-    REPEAT/i=1:`LHL_nlo` (LET/QUIET LHL_xp=LHL_xph[i=`i`]; LET/QUIET LHL_yp=LHL_ypl[i=`i`]; LET/QUIET LHL_zp=LHL_zpl[i=`i`]; label `LHL_xp`, `LHL_yp-LHL_chsiz`, 0,0, `LHL_chsiz`, "`LHL_zp`")
+    REPEAT/i=1:`nlo` (LET/QUIET xp=xph[i=`i`]; LET/QUIET yp=ypl[i=`i`]; LET/QUIET zp=zpl[i=`i`]; say `zp`; LABEL `xp`, `yp`, 0,0, `chsiz`, "`zp`")
   ENDIF
 ENDIF
 
@@ -129,8 +126,8 @@ IF $2"|mark>1|*>0|" THEN
 ! Mark the extrema with L and H 
 ! Allow either violet or purple to be specified.   
 
-  GO polymark POLY/OVER/NOLABEL/PAL=$5%black|black|red|green|blue|lightblue|violet|purple>violet|*>black%/fill LHL_xph,LHL_yph,,hletter,LHL_rsiz
-  GO polymark POLY/OVER/NOLABEL/PAL=$6%black|black|red|green|blue|lightblue|violet|purple>violet|*>black%/fill LHL_xph,LHL_ypl,LHL_zpl,lletter,LHL_rsiz
+  GO polymark POLY/OVER/NOLABEL/PAL=$5%black|black|red|green|blue|lightblue|violet|purple>violet|*>black%/fill xph,yph,,hletter,rsiz
+  GO polymark POLY/OVER/NOLABEL/PAL=$6%black|black|red|green|blue|lightblue|violet|purple>violet|*>black%/fill xph,ypl,zpl,lletter,rsiz
 ENDIF
 
 ! Restore input region

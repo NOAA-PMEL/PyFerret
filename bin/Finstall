@@ -4,7 +4,8 @@
 # 1) modifies 'ferret_paths template' to specify locations of ferret software &
 # demo data sets and places the result in the appropriate sourcing directory
 # as 'ferret_paths'
-# 2) installs ferret and gksm2ps executables from tar file to $FER_DIR/bin
+# 2) installs ferret and gksm2ps executables and shared-object external functions from 
+# tar file to $FER_DIR/bin
 #
 # J Davison 4.94
 # NOAA PMEL TMAP
@@ -261,6 +262,12 @@ echo
 zcat $ferexec_dir/fer_executables.tar.Z | tar xvf -
 if ($status != 0) goto exec_err
 echo " Extracted FERRET executables..."
+
+#### *kob* 5/99 move external function .so files to fer_dir/ext_func/libs
+if (! -d $fer_dir/ext_fun/libs) mkdir  $fer_dir/ext_fun/libs
+if ($status !=0) goto exec_err
+mv *.so $fer_dir/ext_fun/libs
+if ($status !=0) goto exec_err
 
 pushd > /dev/null
 echo " Returning to $cwd..."

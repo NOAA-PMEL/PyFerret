@@ -29,11 +29,13 @@ SET REGION/X=120:180/Y=20:60/L=1
 GO basemap x=120:180 y=20:60 20
 LABEL/NOUSER `($ppl$xlen)/2`, `($ppl$yorigin)-1`, 0, 0, 0.16, "UWND, VWND"
 
+
 ! The inputs to poly_vectors.jnl are the components of the vectors to be 
 ! plotted and the X and Y lcoordinates of the vectors.  We need to limit 
 ! the region of the data explicitly, so that the calculations are done 
 ! only for the vectors we are interested in.
 
+PAUSE
 LET x_vec = X[GX=uwnd,X=120:180] + 0*Y[GY=uwnd,Y=20:60]
 LET y_vec = 0*X[GX=uwnd,X=120:180] + Y[GY=uwnd,Y=20:60]
 LET u_vec = uwnd[X=120:180,Y=20:60,L=1]
@@ -41,29 +43,37 @@ LET v_vec = vwnd[X=120:180,Y=20:60,L=1]
 
 GO poly_vectors.jnl x_vec y_vec u_vec v_vec 5 "arrow"
 
-PAUSE
 
-! Draw the arrow polygons.  The color key is for the fill color, sea level 
-! pressure.  We use the /LINE qualifier to outline the arrows with black.
+! Draw the arrow polygons. We can use a third argument on the POLYGON 
+! command to fill the polygons with colors according to a variable. Make 
+! a list of the values of sea level pressure which corresponds to the 
+! original vector components. The color key is for the fill color. We use 
+! the /LINE qualifier to outline the arrows with black.
+
+PAUSE
 
 LET press = YSEQUENCE(slp[X=120:180,Y=20:60,L=1])
 POLYGON/OVER/NOAX/NOLAB/KEY/LINE/PAL=rainbow plt_x_arrow, plt_y_arrow, press
 
 ! Make a vector arrow key.
-PAUSE
 
 GO poly_arrow_key "winds", "5 m/s"
 
-! For a larger-scale plot we need to sub-sample the vectors before
-! sending them as arguments to the poly_vectors script.
 PAUSE
 
 CAN VAR/ALL
-USE coads_climatology
 CAN REGION
+
+! For a larger-scale plot we need to sub-sample the vectors before
+! sending them as arguments to the poly_vectors script.
+
+PAUSE
+
+USE coads_climatology
 SET REGION/L=1/X=0:360/Y=-80:80
 
-! Make any 2-D plot to set plot parameters.
+! Make a 2-D plot to set plot parameters.
+
 GO basemap x=0:360 y=-80:80 20
 LABEL/NOUSER `($ppl$xlen)/2`, `($ppl$yorigin)-1`, 0, 0, 0.16, "Wind Vectors Colored by SLP"
 
@@ -74,17 +84,24 @@ LET x_vec = X[GX=uwnd,X=0:360:10] + 0*Y[GY=uwnd,Y=-80:80:5]
 LET y_vec = 0*X[GX=uwnd,X=0:360:10] + Y[GY=uwnd,Y=-80:80:5]
 LET u_vec = uwnd[X=0:360:10,Y=-80:80:5,L=5]
 LET v_vec = vwnd[X=0:360:10,Y=-80:80:5,L=5]
+
 GO poly_vectors.jnl x_vec y_vec u_vec v_vec 8 "arrow"
+
+PAUSE
 
 ! Draw the arrow polygons, colored by SLP, and make a key for the arrows.
 ! Note the different plot appearance when we leave off the LINE qualifier
 ! on the polygon command.
-PAUSE
 
 LET press = YSEQUENCE(slp[X=0:360:10,Y=-80:80:5,L=5])
 POLYGON/OVER/NOAX/NOLAB/KEY/PAL=rainbow/LEV=(980,1030,5) plt_x_arrow, plt_y_arrow, press
 GO poly_arrow_key "", "8 m/s", red
 
+
+CAN REGION
+CAN VAR/ALL
+
+PAUSE
 ! Next we will do some polygon-vector plots using map projections. 
 
 ! The steps are: Define a subset of the data to plot, define a map projection, 
@@ -92,10 +109,6 @@ GO poly_arrow_key "", "8 m/s", red
 ! of the plotting command. Define variables with with U, V, X, and Y for the 
 ! vectors, call mp_poly_vectors to set up the polygon coordinates and use a 
 ! curvlinear polygon command to plot them.
-
-PAUSE
-CAN REGION
-CAN VAR/ALL
 
 USE coads_climatology
 
@@ -107,45 +120,56 @@ GO mp_stereographic_north  `mp_central_meridian` `mp_standard_parallel`
 SET GRID uwnd
 GO mp_aspect
 
-! Make a FILL plot to set the plot parameters for the mp_poly_vectors script
-FILL/NOAXIS/NOKEY/PAL=greyscale/TITLE="Winds Colored by Pressure" slp, x_page,y_page
+PAUSE
+
+! Make a FILL plot using the map projection to set the plot parameters for 
+! the mp_poly_vectors script
+
+FILL/NOAXIS/NOKEY/PAL=inverse_grayscale/TITLE="Winds Colored by Pressure" slp, x_page,y_page
 GO mp_fland 20 black
 
-! Call mp_poly_vectors to set up the vectors to be plotted as polygons
-
 PAUSE
+
+! Call mp_poly_vectors to set up the vectors to be plotted as polygons
 
 LET x_vec = X[GX=uwnd,X=131:181] + 0*Y[GY=uwnd,Y=21:61]
 LET y_vec = 0*X[GX=uwnd,X=131:181] + Y[GY=uwnd,Y=21:61]
 LET u_vec = uwnd[X=131:181,Y=21:61,L=5]
 LET v_vec = vwnd[X=131:181,Y=21:61,L=5]
 
-GO mp_poly_vectors x_vec y_vec u_vec v_vec 4 "arrow"
+GO mp_poly_vectors x_vec y_vec u_vec v_vec 3 "arrow"
+
 
 ! Draw the polygons, colored by SLP
+
+PAUSE
 
 LET press = YSEQUENCE(slp[X=131:181,Y=21:61,L=5])
 POLYGON/OVER/NOAX/NOLAB/KEY/LINE/PAL=rainbow mp_x_arrow, mp_y_arrow, press
 
 GO mp_graticule 131 181 12.5 21 61 10
 
-! Now we illustrate positioning the vector arrow key
+! Now we illustrate positioning the vector arrow key. By default it is 
+! positioned at the lower left.  We can choose to center it horizontally
+! or vertically by sending C as the argument for a position.
+
 PAUSE 
 
-GO poly_arrow_key "default key", "4 m/s", red, line
-GO poly_arrow_key "left top key", 4, blue, " ", 2, `($ppl$height)-1.5`
-GO poly_arrow_key "centered bottom", 4, violet, " ", c, 0.2
-GO poly_arrow_key "upper right", 4, green, line, `($ppl$width)-1.6`, `($ppl$height)-1.5`,0.14
+GO poly_arrow_key "default key", "3 m/s", red, line
+GO poly_arrow_key "left top key", 3, blue, " ", 2, `($ppl$height)-1.5`
+GO poly_arrow_key "centered bottom", 3, violet, " ", c, 0.2
+GO poly_arrow_key "upper right", 3, green, line, `($ppl$width)-1.6`, `($ppl$height)-1.5`,0.14
 
-! Next we'll make a view from space.  We need the mp_mask for this 
-! projection; apply it to the polygon data as it is plotted. This time we 
-! will use explicit regridding to put the vector components onto a coarser grid.
-
-PAUSE
 CAN DATA/ALL
 CAN VAR/ALL
 CAN REGION
 
+! Next we'll make a view from space.  We need the mp_mask for this projection, 
+! to keep the vectors on other side of the earth from "showing through" the
+! map.  Apply it to the polygon data as it is plotted. This time we will 
+! use explicit regridding to put the vector components onto a coarser grid.
+
+PAUSE
 USE coads_climatology
 SET REGION/L=1
 
@@ -160,7 +184,8 @@ LET y_vec = 0*X[GX=xax] + Y[GY=yax]
 LET u_vec = uwnd[g=gxy,L=1]
 LET v_vec = vwnd[g=gxy,L=1]
 
-! Make a plot with the map projection to set the plot parameters.
+! Make a plot with the map projection to set the plot parameters. (FILL plot
+! with the palette set to all white, for a blank underlying plot)
 PAUSE
 
 GO mp_orthographic 210 45
@@ -184,6 +209,10 @@ POLYGON/OVER/NOAX/NOLAB/LINE/KEY/PAL=rainbow mp_mask*mp_x_arrow, mp_mask*mp_y_ar
 GO poly_arrow_key " ", "5 m/s", red, " ", 1, `($ppl$yorg)`
 
 
+CAN DATA/ALL
+CAN VAR/ALL
+CAN REGION
+
 ! Finally, the poly_vector scripts also have the option to plot the vectors 
 ! as stick vectors, rather than arrows.  All the commands stay the same,
 ! but with the final argument to poly_vectors.jnl or mp_poly_vectors.jnl
@@ -191,10 +220,6 @@ GO poly_arrow_key " ", "5 m/s", red, " ", 1, `($ppl$yorg)`
 ! made with stick vectors:
 
 PAUSE
-CAN DATA/ALL
-CAN VAR/ALL
-CAN REGION
-
 USE coads_climatology
 SET REGION/X=120:180/Y=20:60/L=1
 

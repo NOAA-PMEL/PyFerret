@@ -12,6 +12,8 @@
 * argument definitions:
 *    dset   - pointer to TMAP data set
 *    status - return status
+* 11/97 *kob* - added a close on the cdfid for the netcdf file for
+*               mc datasets only.  
 
 * argument declarations:
 	INTEGER	dset, status
@@ -90,9 +92,11 @@
       ENDIF
 
 ! for multiple files ... maybe
+! *kob* 11/97 - close cdf files which are a part of a multi-file netcdf set
 !* close the netCDF file
-!      CALL NCCLOS( cdfid, istat )
-
+      IF (ds_type(dset) .EQ. '  MC') THEN
+        CALL NCCLOS( cdfid, istat )
+      ENDIF
 * successful completion
       status = merr_ok
       RETURN

@@ -128,7 +128,7 @@ static void command_line_run(float **memory);
 void help_text()
 {
   printf(
-	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] \n\
+	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl]\n\
 -memsize:  specify the memory cache size in megawords (default 3.2)\n\
 -batch:  output directly to metafile \"outfile\" w/out X windows\n\
 -unmapped:  use invisible output windows (superceded by -batch)\n\
@@ -136,7 +136,8 @@ void help_text()
 -gui:  to start Ferret in point and click mode (not available on all platforms)\n\
 -secure:  run securely -- don't allow system commands\n\
 -server:  run in server mode -- don't stop on message commands\n\
--help:  obtain this listing\n");
+-help:  obtain this listing\n\
+-nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n");
   exit(0);
 }
 
@@ -167,6 +168,7 @@ main (int oargc, char *oargv[])
   int pplmem_size;
 
   int gui_enabled = gui_init();
+  int journalfile = 1;
 
 #ifdef MIXING_NAG_F90_AND_C
   f90_io_init();
@@ -195,6 +197,10 @@ main (int oargc, char *oargv[])
       ++i;
     } else if (strcmp(argv[i],"-server")==0) {
       set_server();
+      ++i;
+    } else if (strcmp(argv[i],"-nojnl")==0) {
+      journalfile = 0;
+	  /*FORTRAN(set_start_jnl_file)(journalfile);*/ 
       ++i;
     } else if (strcmp(argv[i],"-batch")==0) {
       char *meta_name = "metafile.plt";
@@ -235,7 +241,13 @@ main (int oargc, char *oargv[])
   FORTRAN(initialize)();
 
   /*  prepare appropriate console input state and open the output journal file */
-  FORTRAN(init_journal)( &status );
+
+  if ( journalfile ) {
+    FORTRAN(init_journal)( &status );
+  } else {
+    FORTRAN(no_journal)();
+  }
+
 
   /* initialize size and shape of memory and linked lists */
   FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );

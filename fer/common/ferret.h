@@ -9,6 +9,7 @@ void initialize();
 void set_ctrl_c(); /* void set_ctrl_c_( void (*CTRLC_AST_)() ); */ 
 void help_text();
 void init_journal( );
+void no_journal( );
 void proclaim_c( );
 void init_memory( );
 void ferret_dispatch( );
@@ -34,6 +35,7 @@ void initialize_();
 void set_ctrl_c_(); /* void set_ctrl_c_( void (*CTRLC_AST_)() ); */ 
 void help_text();
 void init_journal_( );
+void no_journal_( );
 void proclaim_c_( );
 void init_memory_( );
 void ferret_dispatch_( );

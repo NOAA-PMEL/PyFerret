@@ -206,7 +206,8 @@
 	   memdim = grid_dims(idim)
            filsize(fildim) = use_hi(memdim) - use_lo(memdim) + 1
 	   count(fildim)   = (filsize(fildim)-1)/stride(memdim) + 1
-           start(fildim)   = use_lo(memdim) - ds_grid_start(memdim,ivar) + 1
+           start(fildim)   = use_lo(memdim) - 
+     .                         ds_grid_start(memdim,ivar) + 1
 	   filstride(fildim) = stride(memdim)
  100    CONTINUE
 

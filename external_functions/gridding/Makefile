@@ -21,19 +21,26 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
+
+SUB_OBJS = gridsubs.o
+
 #
 # Rules
 #
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #
 # Targets
 #
 
-all:	ferret_cmn scatter2gridgauss_xy.so scatter2gridgauss_xz.so scatter2gridlaplace_xy.so scatter2gridlaplace_xz.so  
+all:	ferret_cmn ef_utility gridsubs.o scatgrid_xy.so scatgrid_xz.so scatgrid_yz.so scat2gridgauss_xy.so scat2gridgauss_xz.so scat2gridgauss_yz.so scat2gridlaplace_xy.so scat2gridlaplace_xz.so scat2gridlaplace_yz.so  
+
+
+ef_utility:
+	ln -s ../ef_utility ef_utility
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

@@ -136,7 +136,6 @@
 
       arg = 4
       CALL ef_get_one_val(id, arg, val)  
-      print *, ' val', val
 
       nn = val
 
@@ -260,11 +259,6 @@ c      end do
       if( res_hi_ss(T_AXIS) - res_lo_ss(T_AXIS) .LT. 2*nn ) then
          CALL EF_BAIL_OUT(id, 
      .     'Too many weights exist for the number of times present.')
-      endif
-      if( res_lo_ss(T_AXIS).ne.arg_lo_ss(T_AXIS,ARG1) .or. 
-     .      res_hi_ss(T_AXIS).ne.arg_hi_ss(T_AXIS,ARG1) ) then
-         print*,'WARNING: The input and result time indexes differ.'
-         print*,'       Beware of the result!'
       endif
 
 ! Apply the weights to the data...

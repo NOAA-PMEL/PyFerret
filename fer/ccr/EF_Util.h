@@ -30,7 +30,7 @@
 #define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
 #define FERR_EF_ERROR 437  /* This should match the ferr_ef_error parameter in errmsg.parm. */
 
-#define EF_VERSION 1.1
+#define EF_VERSION 1.2
 
 #define EF_MAX_NAME_LENGTH 40
 #define EF_MAX_DESCRIPTION_LENGTH 128
@@ -45,6 +45,9 @@ enum { X_AXIS=0, Y_AXIS, Z_AXIS, T_AXIS } EF_AXIS_type;
 /* The next two lines of parameters need to match numbers in ferret.parm */
 enum { CUSTOM=101, IMPLIED_BY_ARGS, NORMAL, ABSTRACT } EF_AXIS_SOURCE_type;
 enum { RETAINED=201, REDUCED } EF_AXIS_REDUCTION_type;
+
+/* These parameters need to match numbers in grid_chg_fcns.parm */
+enum { FLOAT_ARG=1, STRING_ARG } EF_ARG_type;
 
 enum { CANNOT_ALLOCATE, INSUFFICIENT_DATA } EF_ERROR_type;
 
@@ -81,6 +84,7 @@ typedef struct {
   int  axis_implied_from[EF_MAX_ARGS][4];
   int  axis_extend_lo[EF_MAX_ARGS][4];
   int  axis_extend_hi[EF_MAX_ARGS][4];
+  int  arg_type[EF_MAX_ARGS];
   char arg_name[EF_MAX_ARGS][EF_MAX_NAME_LENGTH];
   char arg_unit[EF_MAX_ARGS][EF_MAX_NAME_LENGTH];
   char arg_desc[EF_MAX_ARGS][EF_MAX_DESCRIPTION_LENGTH];

@@ -77,6 +77,7 @@
 *                      match how the function is actually called.
 * V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
 *	 3/01 - *sh* - adde g=ax@nrst
+* V533   6/01 - *sh* - added transformation @EVNT
 
 #ifdef unix
 	include	'ferret.parm'
@@ -573,12 +574,18 @@
      .		alg_trans_its_int ( 36)	/ .TRUE.		/,
      .		alg_trans_has_arg ( 36)	/ .TRUE.		/,
      .		alg_trans_dflt_arg( 36)	/ 1			/,
-     .		alg_trans_text ( 37 )	/ rubout 		/,   ! unused
-     .		alg_trans_title( 37 )	/ ' '			/,
-     .		alg_trans_num  ( 37 )	/ unspecified_int4	/,
+     .		alg_trans_text ( 37 )	/ 'EVN' 		/,
+     .		alg_trans_title( 37 )	/ 'event mask'		/,
+     .		alg_trans_num  ( 37 )	/ trans_event_mask	/,
      .		alg_trans_its_int ( 37)	/ .FALSE.		/,
-     .		alg_trans_has_arg ( 37)	/ .FALSE.		/,
-     .		alg_trans_dflt_arg( 37)	/ bad_val4		/
+     .		alg_trans_has_arg ( 37)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 37)	/ 0.0			/
+     .		alg_trans_text ( 38 )	/ rubout 		/,   ! unused
+     .		alg_trans_title( 38 )	/ ' '			/,
+     .		alg_trans_num  ( 38 )	/ unspecified_int4	/,
+     .		alg_trans_its_int ( 38)	/ .FALSE.		/,
+     .		alg_trans_has_arg ( 38)	/ .FALSE.		/,
+     .		alg_trans_dflt_arg( 38)	/ bad_val4		/
 c     .     alg_trans_text ( 38 )   / 'RDC'         /,   ! hidden
 c     .     alg_trans_title( 38 )   / 'reduced'     /,
 c     .     alg_trans_num  ( 38 )   / trans_reduced /,
@@ -586,8 +593,8 @@ c     .     alg_trans_its_int ( 38) / .FALSE.       /,
 c     .     alg_trans_has_arg ( 38) / .FALSE.       /,
 c     .     alg_trans_dflt_arg( 38) / bad_val4      /
 
-        DATA    (alg_trans_num(i),i = 38, num_transforms)
-     .            /23*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 39, num_transforms)
+     .            /22*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,

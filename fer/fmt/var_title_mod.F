@@ -1,7 +1,5 @@
 	CHARACTER*(*) FUNCTION VAR_TITLE_MOD ( cx )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -65,6 +63,7 @@
 * V455:  9/97 - modify labeling of xforms @CIA,CIB,CDA,CDB to avoid "by n pts"
 * V491:  3/98 - crash due to boolean operator precedence error
 * V530:  8/00 *sh* - added support for cat_string
+* V533:  6/01 *sh* - added transformation @EVNT
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -241,7 +240,8 @@
 	      ENDIF
 	      trans_title = ALG_TRANS_TITL( trans, cx )
 	      t_len = TM_LENSTR1( trans_title )
-	      IF ( cx_trans( idim, cx ) .EQ. trans_wgted_eq ) THEN
+	      IF ( cx_trans( idim, cx ) .EQ. trans_wgted_eq
+     .	      .OR. cx_trans( idim, cx ) .EQ. trans_event_mask ) THEN
                  trans_title = trans_title(:t_len)//' of '//
      .                TM_FMT( cx_trans_arg(idim,cx), 4, 12, slen )
                  t_len = t_len + 4 + slen

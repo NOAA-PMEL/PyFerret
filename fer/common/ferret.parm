@@ -16,6 +16,7 @@
 *	*sh* 10/00 - increased max_context to support more complex expressions
 *	*sh* 3/00 -- added g=ax@near
 * V532: *sh* 5/01 - redefined arbitrary_large/small_<type>
+* V533: *sh* 6/01 - added transformation trans_event_mask (@evnt)
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -246,7 +247,8 @@
 	INTEGER		trans_nrst_dist_abv,
      .			trans_nrst_dist_blw,
      .			trans_nrst_indx_abv,
-     .			trans_nrst_indx_blw
+     .			trans_nrst_indx_blw,
+     .			trans_event_mask
 
 	PARAMETER     ( trans_compress_code = 30,
      .			trans_no_transform = 1,
@@ -271,7 +273,8 @@
      .			trans_nrst_dist_blw = 20,
      .			trans_nrst_indx_abv = 21,
      .			trans_nrst_indx_blw = 22,
-     .			max_plane_transform = trans_nrst_indx_blw )
+     .			trans_event_mask    = 23,
+     .			max_plane_transform = trans_event_mask )
 
 	PARAMETER     ( trans_average      = trans_compress_code + 1,
      .			trans_interpolate  = trans_compress_code + 2,

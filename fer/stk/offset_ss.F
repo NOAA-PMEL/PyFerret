@@ -1,7 +1,5 @@
 	SUBROUTINE OFFSET_SS( idim, cx, lo_off, hi_off, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -49,19 +47,14 @@
 *         7/2/92 - changed @FLN, @FNR to off-edge (vs. window width)  
 * V455:  9/97 - trap illegal offset arguments, return status
 *	      - added transforms @CDA,CDB,CIA,CIB
+* V533:  *sh* 6/01 - added @EVNT
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_off, hi_off, status
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * internal variable declarations:
 	LOGICAL	offset_supplied( 2:max_plane_transform )
@@ -150,7 +143,11 @@
      .
      .	     offset_lo  	( trans_nrst_indx_blw )	/  -1 /,
      .	     offset_hi  	( trans_nrst_indx_blw )	/  +1 /,
-     .	     offset_supplied	( trans_nrst_indx_blw )	/ .TRUE. /
+     .	     offset_supplied	( trans_nrst_indx_blw )	/ .TRUE. /,
+     .
+     .	     offset_lo  	( trans_event_mask )	/  0 /,
+     .	     offset_hi  	( trans_event_mask )	/  0 /,
+     .	     offset_supplied	( trans_event_mask )	/ .FALSE. /
 
 * --- end of introductory code ---
 * initiailize

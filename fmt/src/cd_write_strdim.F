@@ -56,7 +56,7 @@
 
 * local variable declarations:
       CHARACTER dimname*12, buff*5
-      INTEGER NCDID, NCDDEF, NF_INQ_DIMLEN, cdfstat, clen, dimid
+      INTEGER NCDID, NCDDEF, cdfstat, clen, dimid
 
 * initialize
       WRITE(buff,'(I5.5)') maxstrlen

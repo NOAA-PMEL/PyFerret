@@ -68,6 +68,10 @@
 *		   - mr_delta changes the handling of stride regridding
 * v541:  2/02 *kob*- on hankin request add an initialization line for
 *                    cx_delta in loop 500
+* V541:  4/02 *sh* - bug fix: delta not removed from result despite 
+*                  the fact that result is on a new axis where the delta 
+*                  is implicit rather than explicit in the axis definition 
+*                  see err540_strides_rev.jnl 
 
 	include	'ferret.parm'
 	include	'errmsg.parm'

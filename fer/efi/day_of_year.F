@@ -36,6 +36,7 @@
 C  ACM 
 C  Find sequential day of the year corresponding to month, day, year. 
 C  Return sequential day in variable ada.
+C  4/2001  *ACM* add error message
 
       REAL daymo(12)           ! Number of days in each month
       DATA daymo/31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/

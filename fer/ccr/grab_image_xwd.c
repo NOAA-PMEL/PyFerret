@@ -374,11 +374,13 @@ Window_Dump(window, dpy,outfile, type)
 			what it was before we snapped the gif so that
 			all of the memory is freed properly
      */
-    if (win_info.visual->class == DirectColor ||
-	win_info.visual->class == TrueColor) {
-      image->bytes_per_line = image->bytes_per_line * 4; 
-      image->bits_per_pixel = 32;
-      image->depth          = 24;
+    if (strcmp(type, "GIF") == 0) {
+      if (win_info.visual->class == DirectColor ||
+	  win_info.visual->class == TrueColor) {
+	image->bytes_per_line = image->bytes_per_line * 4; 
+	image->bits_per_pixel = 32;
+	image->depth          = 24;
+      }
     }
     XDestroyImage(image);
 }

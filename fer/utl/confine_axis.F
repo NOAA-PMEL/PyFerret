@@ -62,6 +62,8 @@
 * V520 *kob* 6/00 - had to had risc_buff text buffer for sgi output
 * V530 *acm* 1/01 - add cal_id for alternative calendar types
 * V552 *acm* 4/03- up VAR_CODE and err_str to 128 chars 
+* V553 *acm* 8/03 - write an error message if time origin or time limits 
+*                   were mis-defined.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -161,31 +163,30 @@
 * ... time/date strings are received as -1*(secs from BC)
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
 * 2/01 *acm* reset time step if axis is a different calendar than Gregorian.
+* 8/03 *acm* write error message if time origin or limits were mis-defined.
 
 	   IF ( idim .EQ. t_dim .AND.cx_calendar(cx) ) THEN
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
-	      bc_to_t0 = SECS_FROM_BC(line_t0(axis), cal_id, status)
-	      IF (status .ne. ferr_ok) GO TO 5000
+	      bc_to_t0 = SECS_FROM_BC(line_t0(axis), cal_id, istat)
+	      IF (istat .ne. ferr_ok) GO TO 4000
 
               dflt_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
               CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), new_lo_ww, 
      .			dflt_cal_id, cal_id, istat)
-	      IF (status .ne. ferr_ok) GO TO 5000
+	      IF (istat .ne. ferr_ok) GO TO 5010
               CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), new_hi_ww,  
      .			dflt_cal_id, cal_id, istat)
-	      IF (status .ne. ferr_ok) THEN
-                 status = istat
-		 GO TO 5000
-	      ENDIF
+	      IF (istat.ne. ferr_ok) GO TO 5010
 
 	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
 	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
 	      cx_calendar(cx) = .FALSE. 
-              status = err_ww_lims	! in case of error
+
+              status = ferr_ok
 
 	   ENDIF
 * ... confine values to the limits of the defining grid
-	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )
+ 4000	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )
 	   lo_ww = MAX( cx_lo_ww( idim, cx ), min_ww )
 	   hi_ww = MIN( cx_hi_ww( idim, cx ), max_ww )
 * ... check for error in limits and possibly remove transformation

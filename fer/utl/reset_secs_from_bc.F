@@ -45,6 +45,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * revision 0.0 2/28/01
+* V5.53 *acm* 9/03 Set status flag to OK for case where calendar doesnt change
 
 * Calling argument declarations:
 	INTEGER		old_cal_id, new_cal_id, status
@@ -61,6 +62,7 @@
 #endif
 	IF (old_cal_id .EQ. new_cal_id ) THEN
            new_tstep = tstep
+           status = ferr_ok
         ELSE
 
 * Convert to date string

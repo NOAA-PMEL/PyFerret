@@ -1,7 +1,5 @@
-	SUBROUTINE PROCESS_IF( cmnd_string, * )
+	SUBROUTINE PROCESS_IF( cmnd_string, slen, * )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -48,13 +46,16 @@
 
 * V420:  4/28/96
 *     : bug fix 5/96: ENDIF processed wrong for nested IF
+* V530: 1/01 *sh* - skip white space at start of line
 
 * calling argument declarations:
+	INTEGER		slen
 	CHARACTER	cmnd_string*(*)
 * RETURN 1 - used when the current command should be **skipped**
 
 * internal variable declarations:
-	INTEGER	STR_CASE_BLIND_COMPARE, vax_code, status	! not returned
+	INTEGER	STR_CASE_BLIND_COMPARE, ic1,
+     .		status	! not returned
 	LOGICAL its_endif, its_else, its_elif, its_if
 
 #ifdef unix
@@ -78,12 +79,22 @@
 * sanity check
 	IF ( ifstk.LT.1 .OR. ifstk.GT.max_ifstk ) GOTO 5000
 
+* skip initial white space
+	DO ic1 = 1, slen
+	   IF (cmnd_string(ic1:ic1).NE. ' '
+     .   .AND. cmnd_string(ic1:ic1).NE. tab) GOTO 100
+	END DO
+! should never arrive here ...
+	ic1 = 1
+
 * check for IF or ENDIF
-	its_endif = STR_CASE_BLIND_COMPARE(cmnd_string(1:4),'ENDI')
+ 100	its_endif =
+     .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ENDI')
      .		 .EQ. vms_str_success
-	its_if   = (STR_CASE_BLIND_COMPARE(cmnd_string(1:3),'IF ')
+	its_if   =
+     .	     (STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+2),'IF ')
      .		 .EQ. vms_str_success)
-     .        .OR. (STR_CASE_BLIND_COMPARE(cmnd_string(1:3),'IF'//tab)
+     .  .OR. (STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+2),'IF'//tab)
      .		 .EQ. vms_str_success)
 
 * always execute the IF and ENDIF statements
@@ -100,9 +111,11 @@
 
 	ELSEIF ( if_doing(ifstk) .EQ. pif_skip_to_clause ) THEN
 * check for ELSE or ELIF
-	   its_else  = STR_CASE_BLIND_COMPARE(cmnd_string(1:4),'ELSE')
+	   its_else  =
+     .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ELSE')
      .	 	    .EQ. vms_str_success
-	   its_elif  = STR_CASE_BLIND_COMPARE(cmnd_string(1:4),'ELIF')
+	   its_elif  =
+     .	      STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+3),'ELIF')
      .		    .EQ. vms_str_success
 	   IF (its_else .OR. its_elif) RETURN
 * nope - just an ordinary command ... keep skipping 

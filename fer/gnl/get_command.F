@@ -1,8 +1,5 @@
 	SUBROUTINE GET_COMMAND( memory, called_string, status, * )
 
-
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -82,6 +79,7 @@
 *                       order to use the Fortan Flush.  USE command has
 *                       to come right after subroutine name
 *     : 5/34/99 *kob* - call FLUSH for all systems
+* V530: 1/01 *sh* - suppress verify output during skipped IF lines 
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -94,7 +92,7 @@
 
 
 * internal variable declarations:
-	LOGICAL reverify
+	LOGICAL re_verify, do_verify, prefix_verify
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof
 
@@ -198,7 +196,8 @@
 * *kob* 5/99 - Flush buffer
 	   CALL FLUSH(jrnl_lun)
 	      
-	endif
+	ENDIF
+	do_verify = .FALSE.
 	GOTO 1000
 
 *************** COMMAND FILE AS SOURCE OF COMMAND LINE ***********************
@@ -207,9 +206,11 @@
 	cmnd_len = TM_LENSTR1( cmnd_buff )
         IF ( cmnd_buff(1:1) .EQ. backslash ) THEN
            cmnd_buff(1:1) = ' '
-        ELSEIF ( mode_verify ) THEN
-	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, cmnd_buff, cmnd_len)
+	   do_verify = .FALSE.
+        ELSE
+	   do_verify = mode_verify
         ENDIF
+	prefix_verify = .FALSE.
 	GOTO 1000
 * end of command file - return to next lower control stack level
  210	CALL POP_CS
@@ -224,16 +225,28 @@
 
  300	CALL CS_COMMAND( cmnd_buff, *20 )
 	cmnd_len = TM_LENSTR1( cmnd_buff )
-	IF ( mode_verify .AND. mode_arg(pmode_verify,1).GE.2)
-     .		CALL SPLIT_LIST(pttmode_ops, ttout_lun,
-     .			' !-> '//cmnd_buff, cmnd_len+5 )
-
-*********** LEFT JUSTIFY THE COMMAND  ********************
- 1000	CALL LEFT_JUST( cmnd_buff, cmnd_buff, cmnd_len )
-        IF ( cmnd_buff(1:1) .EQ. '?' ) cmnd_buff = 'HELP'    ! 8/92
+	do_verify =  mode_verify .AND. mode_arg(pmode_verify,1).GE.2
+	prefix_verify = .TRUE.
 
 *********** POSSIBLY SKIP COMMAND UNDER IF CONTROL (4/96) ********************
-	IF (if_conditional) CALL PROCESS_IF(cmnd_buff, *20)
+ 1000	IF (if_conditional) CALL PROCESS_IF(cmnd_buff, cmnd_len, *20)
+
+*********** ECHO THE COMMAND ****************************
+	IF (do_verify) THEN
+	   IF (prefix_verify) THEN
+	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .			' !-> '//cmnd_buff, cmnd_len+5 )
+	   ELSE
+	      CALL SPLIT_LIST(pttmode_ops, ttout_lun, cmnd_buff, cmnd_len)
+	   ENDIF
+	ENDIF
+
+*********** LEFT JUSTIFY THE COMMAND  ********************
+	CALL LEFT_JUST( cmnd_buff, cmnd_buff, cmnd_len )
+        IF ( cmnd_buff(1:1) .EQ. '?' ) THEN   ! should be an ALIAS!!
+	   cmnd_buff = 'HELP'    ! 8/92
+	   cmnd_len = 4
+	ENDIF
 
 *************** DECODE THE COMMAND LINE ***************************************
 	CALL PARSE_COMMAND ( memory, cmnd_buff,
@@ -242,10 +255,10 @@
      .			     num_qualifiers, qualifier_list,
      .			     qual_start, qual_end,
      .			     num_args, arg_start, arg_end,
-     .			     err_lun, reverify, status	)
+     .			     err_lun, re_verify, status	)
 	IF ( status   .NE. ferr_ok ) RETURN 1	! messages already displayed
 	IF ( cmnd_num .EQ. 0 ) GOTO 20
-	IF ( reverify ) THEN
+	IF ( re_verify ) THEN
 	   cmnd_len = TM_LENSTR1( cmnd_buff )
 	   IF ( mode_verify ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .					' !-> '//cmnd_buff, cmnd_len+5 )

@@ -93,8 +93,7 @@ LET press = YSEQUENCE(slp[X=0:360:10,Y=-80:80:5])
 POLYGON/OVER/NOAX/NOLAB/KEY/PAL=rainbow/LEV=(980,1030,5) plt_x_arrow, plt_y_arrow, press
 GO poly_arrow_key "", "8 m/s", red
 
-!
-! Here is a sampling of what you can do with map projections. 
+! Here are some polygon-vector plots using map projections. 
 
 ! Define a subset of the data to plot, set up a map projection, and define 
 ! variables with with U, V, X, and Y for the vectors. Color the vectors according 

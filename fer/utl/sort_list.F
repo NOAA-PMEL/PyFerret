@@ -70,7 +70,8 @@
  20	CONTINUE
 
 * shell sort
-	CALL SHELLR(list,indices,bad_flag_in,n)
+c	CALL SHELLR(list,indices,bad_flag_in,n)
+	CALL HEAP2(list, indices, bad_flag_in, n)
 
 * count valid points
  300	nvalid = n

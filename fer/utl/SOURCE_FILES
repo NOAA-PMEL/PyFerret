@@ -65,6 +65,7 @@ grid_from_name.F\
 grid_subscript_extremes.F\
 grid_subscript_extremes_no_mod.F\
 grid_world_extremes.F\
+heap2.F\
 hunt_r4.F\
 igrid.F\
 invalid_r8_to_i4.F\

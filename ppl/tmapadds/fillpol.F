@@ -127,7 +127,7 @@ C
 	real            zzmin, zzmax
 	integer         nlm1
 	real		dz,znp,zmp
-	integer		i,j,uprdn, llen
+	integer		i,j,uprdn, llen, ptsbase
 	logical         line_it, fill_it
         integer         slen1, slen2
         CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40

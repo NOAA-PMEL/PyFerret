@@ -49,6 +49,7 @@
 *	*jd* 5.96 Fix bug where if shade/lev=N option is used with constant 
 *	field, no shade results
 *       *jd* 1.98 Fix bug: shade misses top level, when top level is lt 0.
+* V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
 
 #ifdef unix
 	include		'parampl5_dat.decl'
@@ -128,24 +129,33 @@ C
 		 M = IFIX(FM)
 		 IF(FM .GT. 0.0)M = M + 1
 		 zmp = DZ * FLOAT(M)
+C
+C       Set levels centered about zero if centered is .true.
+C
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
 
 C       Else we should allow RANGE to determine the max and min range
 C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      else
 
-		 CALL RANGE(ZMIN,ZMAX,NLEV,ZNP,ZMP,DZ)
+	         znp = zmin
+	         zmp = zmax
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
+		 CALL RANGE(znp,zmp,NLEV,ZNP,ZMP,DZ)
 
-	      endif
-
-C       Set levels centered about zero if centered is .true.   
- 
-	      if (centered) then
-		 if (abs(znp) .gt. abs(zmp)) then
-		    zmp = -znp
-		 else
-		    znp = -zmp
-		 endif
 	      endif
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 

@@ -66,7 +66,8 @@ C
 *	*jd* 2.96 Change centered option so that data not spanning zero
 *       is centered as well.
 *       *jc* 4.97 Major clean up and commenting
-C       *jc* 5.97 Added code for curvilinear coordinates
+*       *jc* 5.97 Added code for curvilinear coordinates
+* V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
 
 #ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
@@ -144,23 +145,33 @@ C
 		 IF(FM .GT. 0.0)M = M + 1
 		 zmp = DZ * FLOAT(M)
 
+C
+C       Set levels centered about zero if centered is .true.
+C
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
+	          
 C       Else we should allow RANGE to determine the max and min range
 C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      else
 
-		 CALL RANGE(ZMIN,ZMAX,NLEV,ZNP,ZMP,DZ)
+	         znp = zmin
+	         zmp = zmax
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
+		 CALL RANGE(znp,zmp,NLEV,ZNP,ZMP,DZ)
 
-	      endif
-
-C       Set levels centered about zero if centered is .true.
-
-	      if (centered) then
-		 if (abs(znp) .gt. abs(zmp)) then
-		    zmp = -znp
-		 else
-		    znp = -zmp
-		 endif
 	      endif
 
 	      NLEV2=(ZMP-ZNP)/DZ+1

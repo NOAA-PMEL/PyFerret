@@ -59,6 +59,7 @@ C
 * V510 *sh* 3/00 - changes to accomodate NPOLYGON > NLINES
 *		 - involved eliminating CALL TRANS, which means that there
 *			isn't a need to copy the X,y coords to x/ypolybase
+* V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
 
 
 #ifdef unix
@@ -253,23 +254,33 @@ C
 		 IF(FM .GT. 0.0)M = M + 1
 		 zmp = DZ * FLOAT(M)
 
+C
+C       Set levels centered about zero if centered is .true.
+C
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
+
 C       Else we should allow RANGE to determine the max and min range
 C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 
 	      else
 
-		 CALL RANGE(zZMIN,zZMAX,NLEV,ZNP,ZMP,DZ)
+	         znp = zzmin
+	         zmp = zzmax
+	         if (centered) then
+		    if (abs(znp) .gt. abs(zmp)) then
+		       zmp = -znp
+		    else
+		       znp = -zmp
+		    endif
+	         endif
+		 CALL RANGE(znp,zmp,NLEV,ZNP,ZMP,DZ)
 
-	      endif
-
-C       Set levels centered about zero if centered is .true.   
- 
-	      if (centered) then
-		 if (abs(znp) .gt. abs(zmp)) then
-		    zmp = -znp
-		 else
-		    znp = -zmp
-		 endif
 	      endif
 
 	      NLEV2=(ZMP-ZNP)/DZ+1 

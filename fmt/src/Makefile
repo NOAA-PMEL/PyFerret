@@ -135,7 +135,7 @@ nogcompile:
 
 	
 sgi_comp:
-	${MAKE} comp FFLAGS="-c -Nl60 -w -G 0 -Dsgi -Dsun" CCFLAGS="-cckr -Ireadline -I. -I/usr/local/include -c -G 0 -Dsgi -Dsun -D_BSD_SIGNALS -I/home/e2/tmap/local/sgi/include" 
+	${MAKE} comp FFLAGS="-c -Nl60 -w -G 0 -Dsgi -Dsun" CCFLAGS="-cckr -Ireadline -I. -I/usr/local/include -c -G 0 -Dsgi -Dsun -D_BSD_SIGNALS -I/home/l2/tmap/local/sgi/include" 
 
 sun4_comp:  
 	${MAKE} comp CC="/usr/ucb/cc"  FFLAGS="-c -Nl60 -w -u" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -D_NO_PROTO -c" 
@@ -163,7 +163,7 @@ gcompile:
 	${MAKE} $(HOSTTYPE)_gcomp
 
 sgi_gcomp:
-	${MAKE} comp FFLAGS="-c -Nl60 -w -G 0 -Dsgi -Dsun" CCFLAGS="-cckr -Ireadline -I. -I/usr/local/include -c -G 0 -Dsgi -Dsun -D_BSD_SIGNALS" DEBUG="-g"
+	${MAKE} comp FFLAGS="-c -Nl60 -w -G 0 -Dsgi -Dsun" CCFLAGS="-cckr -Ireadline -I. -I/usr/local/include -c -G 0 -Dsgi -Dsun -D_BSD_SIGNALS -I/home/l2/tmap/local/sgi/include" DEBUG="-g"
 
 sun4_gcomp:  
 	${MAKE} comp CC="/usr/ucb/cc"  FFLAGS="-c -Nl60 -w -u" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -D_NO_PROTO -c" DEBUG="-g"

@@ -111,6 +111,7 @@
 *                   so they can be properly restored. (ss_x_save, ss_y_save)
 * V580 *acm* 11/04  Check calendar id only for 2-D polygon form; 1-D polygon data are
 *                   just lists on abstract axis.  Fix for bug 1066
+* V580 *acm*11/04  Fix bug 1130  lon/lat axis formatting if those are the units.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -807,14 +808,16 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	IF (.NOT.overlay) THEN
 	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
 	   IF (iunits .EQ. 4) THEN
-	      CALL PPLCMD ( from, line, 0, 'XFOR (I7,''LONE'')', 1, 1 )
+	      CALL PPLCMD ( from, line, 0, 
+     .                    'XFOR (I7,''''LONE'''')', 1, 1 )
 	   else
 	      CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
 	   endif
 	   
 	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
 	   IF (iunits .EQ. 4) THEN
-	      CALL PPLCMD ( from, line, 0, 'YFOR (I7,''LAT'')', 1, 1 )
+	      CALL PPLCMD ( from, line, 0, 
+     .                    'YFOR (I7,''''LAT'''')', 1, 1 )
 	   else
 	      CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
 	   endif

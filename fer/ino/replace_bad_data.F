@@ -1,7 +1,5 @@
 	SUBROUTINE REPLACE_BAD_DATA( src, msrc, cx, old_bad )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,7 +38,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/19/87
 * V200:  5/18/89 - 4D-symmetrical version
@@ -48,20 +45,15 @@
 * V500: 2/18/99 - *kob* - call new C routine REPLACE_BAD_DATA_SUB which
 *                         will check for use of NaN as missing/bad flag.  new
 *                         routine is also simpler and faster
+* V541: *sh* 4/02 - need to use MGRID_SIZE_DELTA to determine the size
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 * 2/99 *kob* add new variable size and reference to function MGRID_SIZE
-	INTEGER	msrc, cx, size, MGRID_SIZE
+	INTEGER	msrc, cx, size, MGRID_SIZE_DELTA
 	REAL    src( * )
 	REAL	old_bad
 
@@ -72,7 +64,7 @@
 *     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
 *     .				 mr_bad_data( msrc )		 )
 	
-	size = MGRID_SIZE(msrc)
+	size = MGRID_SIZE_DELTA(msrc)
         CALL REPLACE_BAD_DATA_SUB( old_bad, src, size,
      .                            mr_bad_data(msrc) )
 

@@ -68,6 +68,7 @@ SET MODE VERIFY
 !           -- added bn_strings
 ! 10/01 *acm* -- added bn_axcontrol
 !             -- add EOF's and cmprsi_by to bn_internal_external_functions.jnl
+! 11/01 *sh* -- added bn_delimited_read
 
 GO bn_reset
 GO bn_syntax
@@ -281,6 +282,9 @@ GO bn_axcontrol
 
 GO bn_reset
 GO bn_vec_curv
+
+GO bn_reset
+GO bn_delimited_read
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

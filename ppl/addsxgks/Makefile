@@ -12,7 +12,6 @@
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
 #
 
-include ../platform_specific_flags.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 #
 # non-default suffix rules
@@ -21,6 +20,9 @@ include ./SOURCE_FILES
 .F.o:
 	$(FC) $(PPLUS_FFLAGS) -c $<
  
+# 10/97 *kob* - had to move this below to prevent the .F.o dependency from
+#     	        being ignored on linux
+include ../platform_specific_flags.mk.$(HOSTTYPE)
 
 #
 # Macros

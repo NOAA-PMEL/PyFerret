@@ -15,10 +15,12 @@
 	INTEGER
      .		pcd_defer_init,
      .		pcd_defer_points,
-     .		pcd_defer_edges
+     .		pcd_defer_edges,
+     .		pcd_defer_bounds
 
 	PARAMETER (
      .		pcd_defer_init = 0,
      .		pcd_defer_points = 1,
-     .		pcd_defer_edges = 2 )
+     .		pcd_defer_edges = 2,
+     .		pcd_defer_bounds = 3 )
 

@@ -85,7 +85,6 @@ ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|
 ! ppl yfor (I7,''LAT'')
 
 ! draw it - as an overlay or as a basemap
-set mode ver
 $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
 ! **** now the optional country borders

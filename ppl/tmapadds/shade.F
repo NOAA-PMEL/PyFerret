@@ -58,6 +58,9 @@
 * v552  6/03*acm* Rename the array used for cellarray call.
 * v554  3/04*acm* In the section marked correction for rounding errors, under g77 
 *                 on linux this incorrectly uses low-order bits to reset NLEV2
+* v570  4/04*acm* The fix above went too far.  Use TM_FPEQ to see if
+*                 values are equal or close.  Also fixes this adjustment
+*                 when the range has negative values; was always incorrect.
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -83,7 +86,7 @@
 
 	integer		i, j, cells(*), slen1, slen2
         CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
-
+        LOGICAL         TM_FPEQ
         parameter       (epsilon = 1e-6)
 
 C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn
@@ -161,18 +164,16 @@ C       Handle rounding errors *jd* 6.27.95/12.30.97
 
 c *acm* 3/04 under g77 on linux this incorrectly uses
 c            low-order bits to reset NLEV2 example:
-*             yes?shade/lev=c {-1.1, 1.1}* ysequence({1,1})
+c             yes?shade/lev=c {-1.1, 1.1}* ysequence({1,1})
 
-c	      IF (ZMP .GT. 0.0) THEN
-c		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) THEN
-c	            NLEV2 = NLEV2 + 1
-c                 ENDIF
-c	      ELSE
-c		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
-c     .            ABS(EPSILON*ZMP)) THEN
-c		      NLEV2 = NLEV2 + 1
-c                 ENDIF
-c	      ENDIF
+c       4/04  But, dont just skip this, use TM_FPEQ to see if
+c             values are equal... 
+c       4/04  Also fix the negative-range case.
+
+	      IF ( (ZNP + DZ*(NLEV2-1) .LT. ZMP) .AND. 
+     .              .NOT. TM_FPEQ(ZNP + DZ*(NLEV2-1), ZMP) ) THEN
+		 NLEV2 = NLEV2 + 1
+	      ENDIF
 
               IF (NLEV2 .GT. ICNLEV) GO TO 5000
 

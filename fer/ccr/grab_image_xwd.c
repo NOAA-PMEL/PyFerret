@@ -110,6 +110,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+/* #include <endian.h> */
 
 #include <X11/Xos.h>
 #include <X11/Xlib.h>
@@ -122,6 +123,7 @@
 #else
 #include <X11/Xmu/WinUtil.h>
 #endif
+
 
 typedef unsigned long Pixel;
 
@@ -315,7 +317,7 @@ Window_Dump(window, dpy,outfile, type)
 
 /*     if (debug) outl("xwd: Getting Colors.\n");*/
 
-    ncolors = Get_XColors(&win_info, &colors,dpy);
+    ncolors = Get_XColors(&win_info, image, &colors,dpy); 
 
 #ifdef HP_SIGNALS
     signal(_SIGIO, func);
@@ -364,7 +366,20 @@ Window_Dump(window, dpy,outfile, type)
 
     /*
      * Free image
+
      */
+
+    /*     *kob* 6/02 - if we are on a TrueColor or DirectColor display
+	                we need to reset the image information to 
+			what it was before we snapped the gif so that
+			all of the memory is freed properly
+     */
+    if (win_info.visual->class == DirectColor ||
+	win_info.visual->class == TrueColor) {
+      image->bytes_per_line = image->bytes_per_line * 4; 
+      image->bits_per_pixel = 32;
+      image->depth          = 24;
+    }
     XDestroyImage(image);
 }
 
@@ -411,16 +426,23 @@ int Image_Size(image)
 }
 
 #define lowbit(x) ((x) & (~(x) + 1))
+#define lowbyte(x) ((x) & (~(x) + 8))
 
 /*
  * Get the XColors of all pixels in image - returns # of colors
  */
-int Get_XColors(win_info, colors,dpy)
+int Get_XColors(win_info, image, colors,dpy) 
+     XImage *image;  
      XWindowAttributes *win_info;
      XColor **colors;
      Display *dpy;
 {
     int i, ncolors;
+    unsigned long pixel;
+    unsigned char *cptr,tmp_cptr;
+
+    Bool reverse_bytes;
+
     Colormap cmap = win_info->colormap;
 
     if (use_installed)
@@ -429,7 +451,10 @@ int Get_XColors(win_info, colors,dpy)
     if (!cmap)
 	return(0);
 
-    ncolors = win_info->visual->map_entries;
+   /* in Ferret, which uses GKS, the color model is always indexed 8 bit */
+    /* ncolors = win_info->visual->map_entries;*/
+    ncolors = 256;
+
     if (!(*colors = (XColor *) malloc (sizeof(XColor) * ncolors)))
       {
 	fprintf (stderr, "Fatal Error - Out of memory!");
@@ -438,34 +463,106 @@ int Get_XColors(win_info, colors,dpy)
 
     if (win_info->visual->class == DirectColor ||
 	win_info->visual->class == TrueColor) {
-	Pixel red, green, blue, red1, green1, blue1;
 
-	red = green = blue = 0;
-	red1 = lowbit(win_info->visual->red_mask);
-	green1 = lowbit(win_info->visual->green_mask);
-	blue1 = lowbit(win_info->visual->blue_mask);
-	for (i=0; i<ncolors; i++) {
-	  (*colors)[i].pixel = red|green|blue;
+	int nunique_colors;
+	char ind; 
+	char *color_indices =  (char *) image->data;
+	unsigned int *color_values = (unsigned int *) image->data;
+	/*	int npixels = image->bytes_per_line * image->height; */
+	int npixels = image->width * image->height;
+
+	/*
+	  For TrueColor or DirectColor the colors are stored in
+	  the image structure, rather than in a separate map. Here we convert the
+	  TrueColor representation to an indexed color representation by pulling
+	  the colors from the image and storing them in a color map, replacing
+	  the colors with indices pointing to the color map.
+	  
+	  Since the indices are 1 byte, whereas the color pixels are 4, only 1/4
+	  of the inage data is actually over-written.  At the end we need to modify the
+	  image structure to reflect its new contents.
+	  
+	  Note: RISK OF MEMORY LEAK, IF X USES THESE VALS FREEING MEMORY
+	  
+	*/
+
+        /* initialize unique color list to first color in image*/
+	for (i=1; i<ncolors; i++) {
+	  (*colors)[i].pixel = 0;
 	  (*colors)[i].pad = 0;
-	  red += red1;
-	  if (red > win_info->visual->red_mask)
-	    red = 0;
-	  green += green1;
-	  if (green > win_info->visual->green_mask)
-	    green = 0;
-	  blue += blue1;
-	  if (blue > win_info->visual->blue_mask)
-	    blue = 0;
 	}
+	
+	(*colors)[0].pixel = color_values[0];
+	nunique_colors = 1;
+
+        /* convert direct color representation to indexed color */ 
+	for (i=0; i<npixels; i++) {
+
+	  /* see if this pixel matches a known color index */
+	  ind = 0;
+
+	  while ( (ind < (int) nunique_colors) 
+               && (color_values[i] != (*colors)[ind].pixel) ) ind++;
+
+	  /* store unique color just found */
+	  if (ind == (int)nunique_colors ) {
+	    (*colors)[ind].pixel = color_values[i]; 
+	    nunique_colors++;
+	  }  
+
+	  /* replace color with index pointer in image structure */
+	  /* (Read the image as color_values.  Write it as color_indices) */
+	  color_indices[i] = ind; 
+	}	  
+	
+
+	/* modify values in the Ximage structure to reflect new contents */
+	image->bytes_per_line = image->bytes_per_line / 4; 
+	image->bits_per_pixel = 8;
+	image->depth          = 8;
+
+
+	/* need to test the blue mask to see which endianness machine we are on. 
+	   then grab the individual rgb values from the pixel value */
+	/*	for (i=0; i<= nunique_colors; i++) { */
+
+	if ( endian_type() == 65 ) {
+	  if (ImageByteOrder(dpy))
+	    reverse_bytes = True;
+	  else
+	    reverse_bytes = False;
+	} else {
+	  if (!ImageByteOrder(dpy))
+	    reverse_bytes = True;
+	  else
+	    reverse_bytes = False;
+	}
+	/* only need to revers/swap pixel values if reverse_bytes is true */
+	if (reverse_bytes) {
+	  for (i=0; i< ncolors; i++) {
+	    pixel = (*colors)[i].pixel;
+	    cptr = (unsigned char *)&pixel;
+	    tmp_cptr = cptr[0];
+	    cptr[0]=cptr[3];
+	    cptr[3]=tmp_cptr;
+	    tmp_cptr = cptr[1];
+	    cptr[1]=cptr[2];
+	    cptr[2]=tmp_cptr;
+	    (*colors)[i].pixel = pixel;	    
+	  }
+	}
+	
+	 XQueryColors(dpy, cmap, *colors, ncolors); 
+	
     } else {
 	for (i=0; i<ncolors; i++) {
 	  (*colors)[i].pixel = i;
 	  (*colors)[i].pad = 0;
 	}
+	XQueryColors(dpy, cmap, *colors, ncolors); 
     }
 
-    XQueryColors(dpy, cmap, *colors, ncolors);
-    
+    /*    XQueryColors(dpy, cmap, *colors, ncolors);  */
     return(ncolors);
 }
 
@@ -503,4 +600,10 @@ _swaplong (bp, n)
 	*bp++ = c;
 	bp += 2;
     }
+}
+
+
+int endian_type ()
+{
+  return (*(short *) "AZ")& 255;
 }

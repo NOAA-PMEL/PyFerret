@@ -110,7 +110,11 @@ static void ViewCB()
 
 void InitialList()
 {
-	char goText[80], cmd[80], go[80], path[80], *envText=(char *)XtMalloc(1000);
+/* *kob* 3/99 upped cmd, goText, go and path to MAX_NAME_LENGTH - 
+           a precaution */
+	char goText[MAX_NAME_LENGTH], cmd[MAX_NAME_LENGTH];
+	char go[MAX_NAME_LENGTH], path[MAX_NAME_LENGTH];
+	char *envText=(char *)XtMalloc(1000);
 	char *env_ptr;
 	FILE *fpin;
 	XmString xgoText;
@@ -200,7 +204,9 @@ void GOCancelOpen()
 
 void GOOpenOK()
 {
-	char cmd[80];
+  /* 	upped cmd from 80 to 256 chars - was causing crashes w/ dods datasets
+        *kob* 3/25/99  and use macro MAX_NAME_LENGTH */
+	char cmd[MAX_NAME_LENGTH];
 	
 	strcpy(cmd, "");
 	sprintf(cmd, "GO %s", GOText);

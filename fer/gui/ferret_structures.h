@@ -30,7 +30,9 @@
 #define UPDATE_COMMAND_WIDGET 1
 #define IGNORE_COMMAND_WIDGET 2
 
-#define MAX_NAME_LENGTH 64
+
+/* *kob* 3/25/99 increase MAX_NAME_LENGTH from 64 to 256 */
+#define MAX_NAME_LENGTH 256
 #define MAX_COMMAND_LENGTH 256
 #define MAX_AXIS_SIZE 2048
 

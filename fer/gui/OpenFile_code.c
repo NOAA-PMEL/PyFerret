@@ -117,7 +117,10 @@ static void CancelOpen()
 
 static void OpenOK()
 {
-	char cmd[80];
+  /* 	upped cmd from 80 to 256 chars - was causing crashes w/ dods datasets
+        *kob* 3/25/99  and use macro MAX_NAME_LENGTH */
+
+	char cmd[MAX_NAME_LENGTH];
 
 	if ( JC_String_EndsWithTag(DSText, ".cdf") || JC_String_EndsWithTag(DSText, ".nc"))
 	  sprintf(cmd, "USE %s", DSText);

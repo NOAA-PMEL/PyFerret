@@ -62,7 +62,8 @@
 *******************************************************************************/
 
 #include "OpenFile_code.h"
-
+/* added below include to get MAX_NAME_LENGTH macro 3/99 *kob* */
+#include "ferret_structures.h"
 
 static	Widget	form1;
 static	Widget	label1;

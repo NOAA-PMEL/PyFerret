@@ -34,7 +34,7 @@
 *
 */
 
-
+/* 3/99 v500 *kob* - update GUI version and help information */
 
 
 /*******************************************************************************
@@ -165,7 +165,7 @@ static Widget	_Uxbuild_Splash()
 			XmNy, 184,
 			XmNwidth, 340,
 			XmNheight, 470,
-			XmNtitle, "Ferret 4.4",
+			XmNtitle, "Ferret 5.0",
 			XmNminWidth, 340,
 			XmNallowShellResize, TRUE,
 			NULL );
@@ -191,7 +191,7 @@ static Widget	_Uxbuild_Splash()
 	ferret_version = XtVaCreateManagedWidget( "ferret_version",
 			xmLabelWidgetClass,
 			form1,
-			RES_CONVERT( XmNlabelString, "Ferret 4.4" ),
+			RES_CONVERT( XmNlabelString, "Ferret 5.0" ),
 			XmNtopOffset, 20,
 			XmNtopAttachment, XmATTACH_FORM,
 			XmNleftPosition, 50,
@@ -288,20 +288,7 @@ More detailed information regarding Ferret can be found at the\n\
 following locations:\n\
 \n\
 \tFerret home page --\n\
-\thttp://www.pmel.noaa.gov/ferret/home.html\n\
-\n\
-\tFerret release notes --\n\
-\thttp://www.pmel.noaa.gov/ferret/release_notes/\n\
-\tFerret GUI Users' Guide --\n\
-\n\
-\thttp://dread.pmel.noaa.gov/~callahan/Ferret_GUI/Users_Guide.html\n\
-\n\
-\n\
-\n\
-This is the initial release of the GUI version of Ferret and all\n\
-comments, suggestions and bug reports should be made to:\n\
-\n\
-\thttp://dread.pmel.noaa.gov/~callahan/Ferret_GUI/GUI_response.html\n\
+\thttp://ferret.wrc.noaa.gov/Ferret/\n\
 \n\
 \n\
 Note that the GUI does not have point-and-click access to all of the\n\

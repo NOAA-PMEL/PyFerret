@@ -19,7 +19,8 @@
 #define charset	XmSTRING_DEFAULT_CHARSET
 
 /*.....     variables     .....*/
-static char	DSText[80];
+/* increase DSText to MAX_NAME_LENGTH  3/99 *kob* */
+static char	DSText[MAX_NAME_LENGTH];
 swidget		OpenFile;
 swidget		gSavedOpenFile = NULL;
 

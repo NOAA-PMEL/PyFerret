@@ -84,6 +84,7 @@ tm_axis_recursive.F\
 tm_axis_stride.F\
 tm_break_date.F\
 tm_break_fmt_date.F\
+tm_break_lines.F\
 tm_break_str.F\
 tm_check_box_loc.F\
 tm_choose_read.F\
@@ -165,6 +166,7 @@ tm_legal_unix_name.F\
 tm_lenstr.F\
 tm_lenstr1.F\
 tm_line_match.F\
+tm_loc_string.F\
 tm_lonw2lone.F\
 tm_load_calendar.F\
 tm_make_4d_grids.F\

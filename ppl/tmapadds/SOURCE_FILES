@@ -11,6 +11,7 @@ fillpol.F\
 fillpoly.F\
 flowline.F\
 flowline_sub.F\
+getlabfonts.F\
 get_ndx.F\
 get_user_coords.F\
 get_world_coords.F\

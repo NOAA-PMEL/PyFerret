@@ -39,6 +39,8 @@ C**    @(#)prmtiv.F	1.1    3/10/88
 * modified 6/99 *sh*
 *	added mouse input (CALL IGRNPT) to %LABEL
 *	added %WHERE mouse input command
+* v552 3/03 *acm* changes for multi-line labels with %label, %xaxis, %yaxis
+*                   and remove VMS include statements.
 
 C**
 C**
@@ -114,7 +116,6 @@ c		N/A
 
 	DIMENSION X(NXS)
 C
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'
 	INCLUDE 'PEN.INC'
@@ -135,29 +136,7 @@ C
 	INCLUDE 'LABELS.INC'
 	INCLUDE 'SWITCH.INC'
 	INCLUDE 'SYSTEM.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:PEN.INC'
-        INCLUDE 'PPLINC:PLT.INC'
-        INCLUDE 'pplinc:PLTL.INC'
-        INCLUDE 'PPLINC:HAB.INC'
-        INCLUDE 'PPLINC:LABCOM.INC'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:MISS.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'PPLINC:AXIS.INC'
-        INCLUDE 'PPLINC:AXISL.INC'
-        INCLUDE 'PPLINC:CMRD.INC'
-        INCLUDE 'PPLINC:CMRDL.INC'
-        INCLUDE 'PPLINC:PRMCOM.INC'
-        INCLUDE 'PPLINC:TICS.INC'
-        INCLUDE 'PPLINC:AXLWID.INC'
-        INCLUDE 'PPLINC:LABELS.INC'
-        INCLUDE 'CMDINC:SWITCH.INC'
-        INCLUDE 'CMDINC:SYSTEM.INC'
-	byte inc
-#endif
+
 C
 C
 	CHARACTER FRMTX*20,SYM*30
@@ -166,10 +145,11 @@ C
 	LOGICAL mouse_input, need_justify, need_arrow
 	INTEGER	IGRNPT, idummy, ichoice, iat
 	REAL xp, yp
-C
+        INTEGER numlines, i, j
 
 	EXTERNAL range, scale, size
 
+c        line_spacing = 1.4
 
 C***	OPNPLT
 C
@@ -283,14 +263,43 @@ C
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCX,LINTT,XUNIT,
      *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE)
-	    NCHR=LNBLK(XLAB,255)
-	    IF(IPOS.LT.0)THEN
-		YL=Y-(XWID+2.0*HXLAB)/YFF
-	    ELSE
-		YL=Y+(XWID+HXLAB)/YFF
-	    ENDIF
-	    XL=XLOW+(XLEN-SYMWID(HXLAB,NCHR,XLAB))*.5/XFF
-	    CALL SYMBEL(XL,YL,0.,HXLAB,NCHR,XLAB)
+
+            CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
+            nfont = 0
+            npen = 0
+            fontprefix = ""
+            penprefix = ""
+            DO 20 j = 1, numlines
+               CALL getlabfonts (xlab, lnbeg, lnend, j, npnew, nfnew, 
+     .           newfont, newpen, nchr)
+
+	       IF(IPOS.LT.0)THEN
+		  YL=Y-(XWID+2.0*HXLAB)/YFF
+	       ELSE
+	 	  YL=Y+(XWID+HXLAB)/YFF
+	       ENDIF
+               YL = YL - line_spacing*(j-1)*HYLAB/yff
+	       XL=XLOW+(XLEN-SYMWID(HXLAB, NCHR+npen+nfont,
+     .                  penprefix(1:npen)//fontprefix(1:nfont)//
+     .                  xlab(lnbeg(j):lnend(j) )) )*.5/XFF
+
+               CALL SYMBEL(XL,YL,0.,HXLAB,NCHR+npen+nfont,
+     .                  penprefix(1:npen)//fontprefix(1:nfont)//
+     .                  xlab(lnbeg(j):lnend(j)))
+
+C  Set up to use any font settings from this line on subsequent lines.
+
+               IF (npnew.GT.0) THEN
+                  penprefix(1:3) = newpen(1:3)
+                  npen = 3
+               ENDIF
+               IF (nfnew.GT.0) THEN
+                  fontprefix(1:3) = newfont(1:3)
+                  nfont = 3
+               ENDIF
+
+  20        CONTINUE
+
 C
 C***	YAXIS
 C
@@ -346,26 +355,66 @@ C
 	    ELSE
 		CHSIZE=YCSIZE
 	    ENDIF
+
+c	    IF(N.GT.0)THEN
+c		FRMTX=LABEL(1:N)
+c	    ELSE IF(IFRX.NE.' ')THEN  <-- bug here: check IFRY instead.
+c		FRMTX=IFRY
+c	    ELSE
+c		CALL FRMT(YLOW,YHIGH,NSIGY,FRMTX)
+c	    ENDIF
+
+
 	    IF(N.GT.0)THEN
 		FRMTX=LABEL(1:N)
-	    ELSE IF(IFRX.NE.' ')THEN
+	    ELSE IF(IFRY.NE.' ')THEN
 		FRMTX=IFRY
 	    ELSE
 		CALL FRMT(YLOW,YHIGH,NSIGY,FRMTX)
 	    ENDIF
+
 	    YFF=YLEN/(YHIGH-YLOW)
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCY,LINTT,YUNIT,
      *		IPOS,FRMTX,YFF,CHSIZE)
-	    NCHR=LNBLK(YLAB,255)
-	    IF(IPOS.LT.0)THEN
-	        XL=XX-(YWID+HYLAB)/XFF
-	    ELSE
-	        XL=XX+(YWID+2.0*HYLAB)/XFF
-	    ENDIF
-	    YL=YLOW+(YLEN-SYMWID(HYLAB,NCHR,YLAB))*.5/XFF
-	    CALL SYMBEL(XL,YL,90.,HYLAB,NCHR,YLAB)
+
+            CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
+            nfont = 0
+            npen = 0
+            fontprefix = ""
+            penprefix = ""
+            DO 30 j = 1, numlines
+               CALL getlabfonts (ylab, lnbeg, lnend, j, npnew, nfnew, 
+     .           newfont, newpen, nchr)
+
+	       IF(IPOS.LT.0)THEN
+	           XL=XX-(YWID+HYLAB)/XFF
+	       ELSE
+	           XL=XX+(YWID+2.0*HYLAB)/XFF
+	       ENDIF 
+               XL = XL + line_spacing*(j-1)*hylab/xff
+	       YL=YLOW+(YLEN-SYMWID(HYLAB,NCHR+npen+nfont,
+     .                  penprefix(1:npen)//fontprefix(1:nfont)//
+     .                  ylab(lnbeg(j):lnend(j) )) )*.5/XFF
+
+               CALL SYMBEL(XL,YL,90.,HYLAB,NCHR+npen+nfont,
+     .                  penprefix(1:npen)//fontprefix(1:nfont)//
+     .                  ylab(lnbeg(j):lnend(j)))
+
+C  Set up to use any font settings from this line on subsequent lines.
+
+               IF (npnew.GT.0) THEN
+                  penprefix(1:3) = newpen(1:3)
+                  npen = 3
+               ENDIF
+               IF (nfnew.GT.0) THEN
+                  fontprefix(1:3) = newfont(1:3)
+                  nfont = 3
+               ENDIF
+
+  30        CONTINUE
+
 C
 C***	PLTLIN
 C
@@ -522,18 +571,49 @@ C
 	    ENDIF
 	    CS=COS(ANG*0.0175329252)
 	    SN=SIN(ANG*0.0175329252)
-	    XMN=SYMWID(CHSIZE,N,LABEL)
-	    SHFT=0.0
-	    IF(IPOS.GT.0)THEN
-		SHFT=-XMN
-	    ELSE IF(IPOS.EQ.0)THEN
-		SHFT=-XMN*.5
-	    ENDIF
-	    XT=P(1)/XFUSER+XLOUSR+SHFT*CS/XFF
-	    YT=P(2)/YFUSER+YLOUSR+SHFT*SN/YFF
-	    IF (need_arrow) CALL ARROW(p(1),p(2),xp,yp,
+
+            CALL tm_break_lines (label, lnbeg, lnend, numlines)
+            nfont = 0
+            npen = 0
+            fontprefix = ""
+            penprefix = ""
+            DO 40 j = 1, numlines
+               CALL getlabfonts (label, lnbeg, lnend, j, npnew, nfnew, 
+     .           newfont, newpen, nchr)
+
+	       XMN=SYMWID(CHSIZE,NCHR+npen+nfont,
+     .                 penprefix(1:npen)//fontprefix(1:nfont)//
+     .                 label(lnbeg(j):lnend(j)))
+	       SHFT=0.0
+	       IF(IPOS.GT.0)THEN
+	   	   SHFT=-XMN
+	       ELSE IF(IPOS.EQ.0)THEN
+		   SHFT=-XMN*.5
+	       ENDIF
+
+	       XT=P(1)/XFUSER+XLOUSR+CS*SHFT/XFF + 
+     .             line_spacing*(j-1)*chsize*SN/xff
+	       YT=P(2)/YFUSER+YLOUSR+SN*SHFT/YFF - 
+     .             line_spacing*(j-1)*chsize*CS/yff
+
+	       IF (need_arrow .AND. j.EQ.1) CALL ARROW(p(1),p(2),xp,yp,
      .				IAT,SHFT,XMN,CS,SN,XFF,YFF,chsize)
-	    CALL SYMBEL(XT,YT,ANG,CHSIZE,N,LABEL)
+
+               CALL SYMBEL(XT,YT,ANG,CHSIZE,NCHR+npen+nfont,
+     .                 penprefix(1:npen)//fontprefix(1:nfont)//
+     .                 label(lnbeg(j):lnend(j)))
+
+C  Set up to use any font settings from this line on subsequent lines.
+
+               IF (npnew.GT.0) THEN
+                  penprefix(1:3) = newpen(1:3)
+                  npen = 3
+               ENDIF
+               IF (nfnew.GT.0) THEN
+                  fontprefix(1:3) = newfont(1:3)
+                  nfont = 3
+               ENDIF
+  40        CONTINUE
 C
 C
 C***	%WHERE

@@ -127,6 +127,7 @@
 * v5.51*acm*  1/03  Comment out the cellarray implementation; xgks doesnt
 *                      completely implement it & has a precision bug for 
 *                      large plots.  see comment lines: c no_cellarray
+* V552 *acm*  3/03  Send the key string to key_loc since it may be multi-line
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -170,7 +171,7 @@ C plus those starting w/ xbox_bounds:
 	REAL 		aspect, valx1, s1_axis(*), s2_axis(*)
 
 * internal variable declarations:
-	CHARACTER*200	COMPOUND_TITLE, COMPOUND_KEY, plot_title
+	CHARACTER*1020	COMPOUND_TITLE, COMPOUND_KEY, plot_title
 	CHARACTER	TM_FMT*16, LEFINT*8, LEFT_REAL*16,
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
      .			letter*1, buff1*16, buff2*16,
@@ -640,7 +641,7 @@ C ACM added 8/2001 save cal id if vertical time axis
               slen = slen + 14
            ENDIF
 	   CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			 lab_ht, style, justify )
+     .			 lab_ht, style, justify, plot_title(:slen) )
 	   CALL PUT_CMND_KEY( cmnd_num, plot_title(:slen),
      .			      xkeypos, ykeypos, xkeysize, ykeysize,
      .			      lab_ht )

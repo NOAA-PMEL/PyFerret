@@ -48,27 +48,27 @@
 * V200:	  2/2/90
 *	 3/30/90 - use font info in calling SYMWID
 * Unix/RISC port - 1/91 - cant use "//" with CHAR*(*)
+* v552 *acm* 3/03 multi-line strings in titles and labels.
+*                 If the string starts with @ do not set ASCII font
+*                 for title and X and Y label; lets user set pen and font.
+*                 Note can do colors and ASCII fonts, if set pen first: @P2@AC
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations
-	INTEGER lab_type, justify, xaxrel, yaxrel
+	INTEGER lab_type, justify, xaxrel, yaxrel, k, numlines
 	REAL	xpos, ypos, xsize, ysize, lab_ht
-	CHARACTER string*(*)
+	CHARACTER string*(*), font*3
 
 * internal variable declarations
-	INTEGER	TM_LENSTR1, slen, brk_pt, nex_brk_pt, las_brk_pt, nlines
-	REAL	SYMWID, ymid, width, ht, frac, frac_width, las_frac, xend
+        INTEGER lnbeg(250), lnend(250)
+	INTEGER	TM_LENSTR1, slen, nfont, brk_pt, nex_brk_pt, 
+     .          las_brk_pt, nlines
+	REAL	SYMWID, ymid, width, ht, frac, frac_width, las_frac, xend,
+     .          htsave
 
 * initialize
 	ymid = ypos + ysize*0.5
@@ -78,13 +78,40 @@
 	risc_buff = string			! for RISC/FORTRAN
 
 * compute the width of the string in the font that it will be presented
+        numlines = 1
+        call tm_break_lines (string, lnbeg, lnend, numlines)
+
+* select PLOT+ font
+
+        nfont = 0
+
 	IF ( .NOT.mode_font_ascii ) THEN
-	   width = SYMWID( ht, slen, string )
+	   font = ' '
 	ELSEIF ( lab_type .EQ. ppl_title ) THEN
-	   width = SYMWID( ht, slen+3, '@AC'//risc_buff(:slen) )
+	   font = '@AC'
+           nfont = 3
 	ELSE
-	   width = SYMWID( ht, slen+3, '@AS'//risc_buff(:slen) )
+	   font = '@AS'
+           nfont = 3
 	ENDIF
+
+* Let user select the font if they want
+
+        IF (string(1:1) .EQ. "@") THEN
+           font = ' '
+           nfont = 0
+        ENDIF
+
+        width = 0.
+        DO 330 k = 1, numlines
+           slen = lnend(k) - lnbeg(k) + 1
+           risc_buff = string(lnbeg(k):lnend(k) )
+	      width = MAX(width, SYMWID( ht, 
+     .                           slen+nfont, font//risc_buff(:slen) ))
+  330      CONTINUE
+
+	slen = TM_LENSTR1( string )
+	risc_buff = string			! for RISC/FORTRAN
 
 * left or right justify or center
 	xend = xpos
@@ -114,9 +141,11 @@
  100	IF ( .NOT.mode_font_ascii ) THEN
 	   frac_width = SYMWID( ht,brk_pt,string(:brk_pt) )
 	ELSEIF ( lab_type .EQ. ppl_title ) THEN
-	   frac_width = SYMWID( ht, brk_pt+3, '@AC'//risc_buff(:brk_pt)  )
+c	   frac_width = SYMWID( ht, brk_pt+3, '@AC'//risc_buff(:brk_pt)  )
+	   frac_width = SYMWID( ht, brk_pt, risc_buff(:brk_pt)  )
 	ELSE
-	   frac_width = SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  )
+c	   frac_width = SYMWID( ht, brk_pt+3, '@AS'//risc_buff(:brk_pt)  )
+	   frac_width = SYMWID( ht, brk_pt, risc_buff(:brk_pt)  )
 	ENDIF
 	frac = frac_width / width
 	IF ( ABS(0.5-frac) .LT. ABS(0.5-las_frac) ) THEN
@@ -149,7 +178,18 @@
 
 
 * WRITE STRING AS 1 LINE
- 500	ht = ht * MIN(1., xsize/width)
+ 500	htsave = ht
+
+* Adjust character size for the length of the longest line
+        ht = ht * MIN(1., 1.25* xsize/width)
+
+* Adjust character size for the number of lines
+        IF (lab_type .NE. ppl_movlab) THEN
+           IF  (numlines .GE. 4 .AND. ht .EQ. htsave) ht = 0.5*ht
+           IF  (numlines .EQ. 3 .AND. ht .EQ. htsave) ht = 0.65*ht
+           IF  (numlines .EQ. 2 .AND. ht .EQ. htsave) ht = 0.8*ht
+        ENDIF
+
 	CALL PUT_LABEL( lab_type, xend, ymid-0.5*ht, justify, ht,
      .			string(:slen), xaxrel, yaxrel )
 	RETURN

@@ -47,8 +47,8 @@ C**
 *
 *     MOD *JD* 10.91 to eliminate PLOT COMPLETE msg if in ferret
 *     MOD *sh* 6/99 with changes to IGRNPT call
+* v552 *acm* 3/03 Changes for multi-line labels.
 
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'LABELS.INC'
@@ -67,39 +67,21 @@ C**
 	INCLUDE 'PRMCOM.INC'
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
-#else
-        INCLUDE 'pplv11inc:PARAMPL5.DAT'
-        INCLUDE 'pplv11inc:AXIS.INC'
-        INCLUDE 'pplv11inc:LABELS.INC'
-        INCLUDE 'pplv11inc:LABCOM.INC'
-        INCLUDE 'pplv11inc:PLT.INC'
-        INCLUDE 'pplv11inc:HAB.INC'
-        INCLUDE 'pplv11inc:LINES.INC'
-        INCLUDE 'pplv11inc:MPLOT.INC'
-        INCLUDE 'pplv11inc:TAXIS.INC'
-        INCLUDE 'pplv11inc:TICS.INC'
-        INCLUDE 'pplv11inc:TICS2.INC'
-        INCLUDE 'pplv11inc:AXISL.INC'
-        INCLUDE 'pplv11inc:XYLABP.INC'
-        INCLUDE 'pplv11inc:CMRDL.INC'
-        INCLUDE 'pplv11inc:LUNITS.INC'
-        INCLUDE 'pplv11inc:PRMCOM.INC'
-        INCLUDE 'pplv11inc:SYSTEM.INC'
-        INCLUDE 'pplv11inc:SWITCH.INC'
-	byte inc
-#endif
 
-#ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif 
 
 ******************************************************************************
 
+
 	CHARACTER OUT*255
+        INTEGER numlines, i, j
+
+c        CHARACTER fontprefix*3, penprefix*3, newfont*3, newpen*3
+c        INTEGER lnbeg(500), lnend(500), 
+c        REAL line_spacing
+c        line_spacing = 1.4
+
 	CALL VECTRS
 	DO 80 I=1,NLAB
 	IF(RHLABS(I).LT.0.0)THEN
@@ -111,77 +93,111 @@ C**
 	SN=SIN(RLABS(I)*0.0175329252)
 	IAT=0
 	SHFT=0.0
-	NCR=LNBLK(LABS(I),255)
-	XMN=SYMWID(HLB,NCR,LABS(I))
-	IF(USRLBS(I))THEN
-	    XFUSER=1.
-	    YFUSER=1.
-	    YLOUSR=0.
-	    XLOUSR=0.
-	ELSE
-	    XFUSER=XF
-	    YFUSER=YF
-	    XLOUSR=XLO
-	    YLOUSR=YLO
-	ENDIF
-	IF(XLABS(I).LT.1.E35)THEN
-	    XL=XLABS(I)
-	    YL=YLABS(I)
-	    LTY=LTYPE(I)
-	    IF(LTY.GT.0)THEN
-		SHFT=-XMN
-	    ELSE IF(LTY.EQ.0)THEN
-		SHFT=-XMN*.5
-	    ENDIF
-	    CALL ARROW(XL/XFUSER+XLOUSR,YL/YFUSER+YLOUSR,
-     *	    XLLABS(I)/XFUSER+XLOUSR,YLLABS(I)/YFUSER+YLOUSR,
-     *	    LLTYPE(I),SHFT,XMN,CS,SN,XF,YF,HLB)
-	    GOTO 70
-	ENDIF
-	ICHAR=IGRNPT(.TRUE., XL,YL)	! show the choice menu
-	LTY=-1
-	IF(ICHAR.EQ.67.OR.ICHAR.EQ.99)THEN
-	    LTY=0
-	    SHFT=-XMN*.5
-	ELSE IF(ICHAR.EQ.82.OR.ICHAR.EQ.114)THEN
-	    LTY=1
-	    SHFT=-XMN
-	ELSE IF(ICHAR.EQ.76.OR.ICHAR.EQ.70.OR.ICHAR.EQ.108
-     *	.OR.ICHAR.EQ.102)THEN
-	    IAT=1
-	    XL2=XL
-	    YL2=YL
-	    ICHARO=ICHAR
-	    ICHAR=IGRNPT(.FALSE., XL,YL) ! do not show the choice menu again
-	    IF(ICHAR.EQ.67.OR.ICHAR.EQ.99)THEN
-		SHFT=-XMN*.5
-		LTY=0
-	    ENDIF
-	    IF(ICHAR.EQ.82.OR.ICHAR.EQ.114)THEN
-		SHFT=-XMN
-		LTY=1
-	    ENDIF
-	    IF(ICHARO.EQ.70.OR.ICHARO.EQ.102)IAT=2
-	    CALL ARROW(XL,YL,XL2,YL2,IAT,SHFT,XMN,CS,SN,XF,YF,HLB)
-	    WRITE(OUT,998)I,(XL2-XLOUSR)*XFUSER,(YL2-YLOUSR)*YFUSER,IAT
-998 	    FORMAT('C LLABS,',I2,2(',',1PE10.3),',',I2)
-	    CALL ECHO(OUT,40)
-	ENDIF
-	XL=(XL-XLOUSR)*XFUSER
-	YL=(YL-YLOUSR)*YFUSER
-	IF(USRLBS(I))THEN
-	    WRITE(OUT,999)I,XL,YL,LTY,LABS(I)(:NCR)
-999	    FORMAT('C LABS,',I2,2(',',1PE10.3),',',I2,',','"',A,'"')
-	ELSE
-	    WRITE(OUT,997)I,XL,YL,LTY,LABS(I)(:NCR)
-997	    FORMAT('C LABS/NOUSER,',I2,2(',',1PE10.3),',',I2,
-     *	    ',','"',A,'"')
-	ENDIF
-	NOUT=LNBLK(OUT,255)
-	CALL ECHO(OUT,NOUT)
-70	XL=XL/XFUSER+XLOUSR+SHFT*CS/XF
-	YL=YL/YFUSER+YLOUSR+SHFT*SN/YF
-	CALL SYMBEL(XL,YL,RLABS(I),HLB,NCR,LABS(I))
+
+
+        CALL tm_break_lines (labs(i), lnbeg, lnend, numlines)
+        nfont = 0
+        npen = 0
+        fontprefix = ""
+        penprefix = ""
+        DO 20 j = 1, numlines
+           CALL getlabfonts (labs(i), lnbeg, lnend, j, npnew, nfnew, 
+     .           newfont, newpen, ncr)
+
+	   NCR = lnend(j) - lnbeg(j) + 1
+	   XMN=SYMWID(HLB,NCR+npen+nfont,
+     .                 penprefix(1:npen)//fontprefix(1:nfont)//
+     .                 LABS(I)(lnbeg(j):lnend(j)))
+
+	   IF(USRLBS(I))THEN
+	       XFUSER=1.
+	       YFUSER=1.
+	       YLOUSR=0.
+	       XLOUSR=0.
+	   ELSE
+	       XFUSER=XF
+	       YFUSER=YF
+	       XLOUSR=XLO
+	       YLOUSR=YLO
+	   ENDIF
+	   IF(XLABS(I).LT.1.E35)THEN
+	       XL=XLABS(I)
+	       YL=YLABS(I)
+	       LTY=LTYPE(I)
+	       IF(LTY.GT.0)THEN
+		   SHFT=-XMN
+	       ELSE IF(LTY.EQ.0)THEN
+		   SHFT=-XMN*.5
+	       ENDIF
+	       CALL ARROW(XL/XFUSER+XLOUSR,YL/YFUSER+YLOUSR,
+     *	       XLLABS(I)/XFUSER+XLOUSR,YLLABS(I)/YFUSER+YLOUSR,
+     *	       LLTYPE(I),SHFT,XMN,CS,SN,XF,YF,HLB)
+	       GOTO 70
+	   ENDIF
+	   ICHAR=IGRNPT(.TRUE., XL,YL)	! show the choice menu
+	   LTY=-1
+	   IF(ICHAR.EQ.67.OR.ICHAR.EQ.99)THEN
+	       LTY=0
+	       SHFT=-XMN*.5
+	   ELSE IF(ICHAR.EQ.82.OR.ICHAR.EQ.114)THEN
+	       LTY=1
+	       SHFT=-XMN
+	   ELSE IF(ICHAR.EQ.76.OR.ICHAR.EQ.70.OR.ICHAR.EQ.108
+     *	   .OR.ICHAR.EQ.102)THEN
+	       IAT=1
+	       XL2=XL
+	       YL2=YL
+	       ICHARO=ICHAR
+	       ICHAR=IGRNPT(.FALSE., XL,YL) ! do not show the choice menu again
+	       IF(ICHAR.EQ.67.OR.ICHAR.EQ.99)THEN
+		   SHFT=-XMN*.5
+		   LTY=0
+	       ENDIF
+	       IF(ICHAR.EQ.82.OR.ICHAR.EQ.114)THEN
+		   SHFT=-XMN
+		   LTY=1
+	       ENDIF
+	       IF(ICHARO.EQ.70.OR.ICHARO.EQ.102)IAT=2
+	       CALL ARROW(XL,YL,XL2,YL2,IAT,SHFT,XMN,CS,SN,XF,YF,HLB)
+	       WRITE(OUT,998)I,(XL2-XLOUSR)*XFUSER,
+     .               (YL2-YLOUSR)*YFUSER,IAT
+998 	       FORMAT('C LLABS,',I2,2(',',1PE10.3),',',I2)
+	       CALL ECHO(OUT,40)
+	   ENDIF
+	   XL=(XL-XLOUSR)*XFUSER
+  	   YL=(YL-YLOUSR)*YFUSER
+	   IF(USRLBS(I))THEN
+	       WRITE(OUT,999)I,XL,YL,LTY,LABS(I)(:NCR)
+999	       FORMAT('C LABS,',I2,2(',',1PE10.3),',',I2,',','"',A,'"')
+	   ELSE
+	       WRITE(OUT,997)I,XL,YL,LTY,LABS(I)(:NCR)
+997	       FORMAT('C LABS/NOUSER,',I2,2(',',1PE10.3),',',I2,
+     *	       ',','"',A,'"')
+	   ENDIF
+	   NOUT=LNBLK(OUT,255)
+	   CALL ECHO(OUT,NOUT)
+70	   XL=XL/XFUSER+XLOUSR+SHFT*CS/XF + 
+     .         line_spacing*(j-1)*hlb*SN/xf
+	   YL=YL/YFUSER+YLOUSR+SHFT*SN/YF -
+     .         line_spacing*(j-1)*hlb*CS/yf
+
+           CALL SYMBEL(XL,YL,RLABS(i),HLB,NCR+npen+nfont,
+     .                 penprefix(1:npen)//fontprefix(1:nfont)//
+     .                 LABS(I)(lnbeg(j):lnend(j)))
+
+C  Set up to use any font settings from this line on subsequent lines.
+
+           IF (npnew.GT.0) THEN
+              penprefix(1:3) = newpen(1:3)
+              npen = 3
+           ENDIF
+           IF (nfnew.GT.0) THEN
+              fontprefix(1:3) = newfont(1:3)
+              nfont = 3
+           ENDIF
+
+20      CONTINUE
+
 80	CONTINUE
 	IF(PLTOPN)RETURN
 	IF(IMULT.EQ.0.OR.IMCNT.EQ.MNX*MNY)THEN

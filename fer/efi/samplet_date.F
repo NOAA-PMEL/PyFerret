@@ -309,7 +309,7 @@
       INTEGER i6, j6, k6, l6
       INTEGER i7, j7, k7, l7
       INTEGER numtimes
-      INTEGER lbot, ltop
+      INTEGER lbot, ltop, status
       REAL ayr, amo, ada, ahr, amn, asc
       REAL byr, bmo, bda, bhr, bmn, bsc
       REAL tbot, ttop, timepoint, frac
@@ -353,7 +353,8 @@
          DO 100 m = 1, 12
             IF (cmon .eq. months(m)) bmo = m
  100                  CONTINUE
-         call day_of_year(bmo, bda, byr)
+         call day_of_year(bmo, bda, byr, status, errtxt)
+	 IF (status .NE. 0) GO TO 1000
          bmn = bmn + bsc/ 60.
          bhr = bhr + bmn/ 60.
          bda = bda + bhr/ 24.
@@ -394,7 +395,9 @@
      .       amn .NE. bad_flag(arg6) .AND. 
      .       asc .NE. bad_flag(arg7) ) THEN
 
-            CALL day_of_year(amo, ada, ayr)
+            CALL day_of_year(amo, ada, ayr, status, errtxt)
+            IF (status .NE. 0) GO TO 1000
+
             amn = amn + asc/ 60.
             ahr = ahr + amn/ 60.
             ada = ada + ahr/ 24.
@@ -497,11 +500,15 @@
 
       RETURN 
 
-900   CONTINUE
+ 900  CONTINUE
 
       WRITE (errtxt,*) 'error reading date buffer ',l, datebuf(l1,1,1,1)
 
       CALL EF_BAIL_OUT(id, errtxt)
 
+      RETURN
+
+1000  CONTINUE
+      CALL EF_BAIL_OUT(id, errtxt)
       RETURN
       END

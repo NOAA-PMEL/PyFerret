@@ -1,6 +1,7 @@
 *
 *  scat2gridgauss_yz.F
 *
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -32,17 +33,18 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-**
+*
 * Ansley Manke
 * July 28 1998
-*  May 2000 *acm fix bug in work arrays
-*  May 2000 *acm fix bug in setting mapping scales
+*  revised 2/00 to use work arrays
+* June 2000 ACM pass 4 gridding arguments:  y and z radius of influence,
+*               and y and z cutoffs. 
 *
-* Returns variable interpolated onto an equally-spaced Y-Z grid.  
-* Input is scattered triples: (y, z, f(y,z)); may be functions of time.
-* Output is gridded data in y, z, and time.  Calls routine "gausswt".
 *
-
+* Returns variable interpolated onto an equally-spaced X-Y grid.  
+* Input is scattered triples: (x, y, f(x,y)); may be functions of time.  
+* Output is gridded data in x, y and time.  Calls routine "gausswt2".
+*
 
 *
 * In this subroutine we provide information about
@@ -91,56 +93,80 @@
 *                                                                      |
 *                                                                      V
 
-      CHARACTER*100 fcn_desc
+      CHARACTER*126 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Use Gaussian weighting to grid scattered data to a ',
-     .        'YZ grid.')
+   10 FORMAT ('Use Gaussian weighting to grid scattered data to an ',
+     .        'XY grid.')
       CALL ef_set_desc(id, fcn_desc)
 
-
-      CALL ef_set_num_args(id, 6)
+      CALL ef_set_num_args(id, 9)
       CALL ef_set_axis_inheritance(id, NORMAL, IMPLIED_BY_ARGS, 
      .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 4)
 
-* YZ grid is determined by arguments 4 and 5, the result's y and z axes. 
+* Horizontal grid is determined by arguments 4 and 5, the result's x and y axes. 
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'YPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .'y-coordinates of scattered input triples, may be fcn of time')
+     .     'Y coordinates of scattered input triples')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .'z-coordinates of scattered input triples, may be fcn of time')
+     .     'Z coordinates of scattered input triples')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      WRITE (fcn_desc, 20) 
-   20 FORMAT ('F(Y,Z) 3rd component of scattered input triples',
-     .  ' may be fcn of time')
-      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      CALL ef_set_arg_desc(id, arg, 
+     .     'F(Y,Z)   3rd component of scattered input triples')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'YAX')
-      CALL ef_set_arg_desc(id, arg, 'Y axis of output grid')
+      CALL ef_set_arg_desc(id, arg, 'Y axis of regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'ZAX')
-      CALL ef_set_arg_desc(id, arg, 'Y axis of output grid')
+      CALL ef_set_arg_desc(id, arg, 'Z axis of regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, NO)
 
       arg = 6
-      CALL ef_set_arg_name(id, arg, 'CUTOFF')
-      CALL ef_set_arg_desc(id, arg, 
-     .     'Interpolation parameter: cutoff limit')
+      CALL ef_set_arg_name(id, arg, 'YSCALE')
+      WRITE (fcn_desc, 30)
+      CALL ef_set_arg_desc(id, arg, fcn_desc)
+   30 FORMAT ('Radius of influence in Y',
+     .        ' direction, data units (e.g. km or lat)')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+      arg = 7
+      CALL ef_set_arg_name(id, arg, 'ZSCALE')
+      WRITE (fcn_desc, 40)
+      CALL ef_set_arg_desc(id, arg, fcn_desc)
+   40 FORMAT ('Radius of influence in Z',
+     .        ' direction, data units (e.g. m or km)')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+
+      arg = 8
+      CALL ef_set_arg_name(id, arg, 'YCUTOFF')
+      WRITE (fcn_desc, 50)
+      CALL ef_set_arg_desc(id, arg, fcn_desc)
+   50 FORMAT ('CUTOFF for wt fcn in Y direction: cutoff=2 limits the ',
+     .        'search to min wt=e**-4')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+      arg = 9
+      CALL ef_set_arg_name(id, arg, 'ZCUTOFF')
+      WRITE (fcn_desc, 60)
+      CALL ef_set_arg_desc(id, arg, fcn_desc)
+   60 FORMAT ('CUTOFF for wt fcn in Z direction: cutoff=2 limits the',
+     .        'search to min wt=e**-4')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 
@@ -151,8 +177,6 @@
 
       RETURN 
       END
-
-
 *
 * In this subroutine we request an amount of storage to be supplied
 * by Ferret and passed as an additional argument.
@@ -191,16 +215,12 @@
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nz2, 1, 1, 1)
 
 * grid  work array - gridded data. 
-      CALL ef_set_work_array_dims (id, 3, 
-     .  arg_lo_ss(Y_AXIS,ARG4), arg_lo_ss(Z_AXIS,ARG5), 1, 1, 
-     .  arg_hi_ss(Y_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG5), 1, 1)
-
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, 
+     .                             nyout, nzout, 1, 1)
 
 * wate - weights.
-      CALL ef_set_work_array_dims (id, 4, 
-     .  arg_lo_ss(Y_AXIS,ARG4), arg_lo_ss(Z_AXIS,ARG5), 1, 1, 
-     .  arg_hi_ss(Y_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG5), 1, 1)
-
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, 
+     .                             nyout, nzout, 1, 1)
 
       RETURN
       END
@@ -210,17 +230,17 @@
 * In this subroutine we compute the result
 *
 
-      SUBROUTINE  scat2gridgauss_yz_compute(id, arg_1, arg_2, 
-     .     arg_3, arg_4, arg_5, arg_6, result, yax, zax, grid, wate)
-
-
+      SUBROUTINE  scat2gridgauss_yz_compute(id, arg_1, arg_2, arg_3, 
+     .     arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
+     .     yax, zax, grid, wate)
 
 *  arg_1  ypts \
-*  arg_2  zpts  > Scattered y,z,f(x,z) triples to be gridded.
+*  arg_2  zpts  > Scattered y,z,f(y,z) triples to be gridded.
 *  arg_3  fpts /    Can be fcn of t
-*  arg_4  Y axis of new grid
-*  arg_5  Z axis of new grid
-*  arg_6  interpolation parameter   cutoff
+*  arg_4  yaxis of new grid
+*  arg_5  zaxis of new grid
+*  arg_6  interpolation parameter   yscale
+*  arg_7  interpolation parameter   zscale
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -237,8 +257,14 @@
      .     mem4lot:mem4hit)
       REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz, 
      .     mem5lot:mem5hit)
-      REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz, 
-     .     mem6lot:mem6hit)
+      REAL arg_6(mem6lox:mem6hix, mem6loy:mem6hiy, mem6loz:mem6hiz,
+     .      mem6lot:mem6hit)
+      REAL arg_7(mem7lox:mem7hix, mem7loy:mem7hiy, mem7loz:mem7hiz,
+     .      mem7lot:mem7hit)
+      REAL arg_8(mem8lox:mem8hix, mem8loy:mem8hiy, mem8loz:mem8hiz,
+     .      mem8lot:mem8hit)
+      REAL arg_9(mem9lox:mem9hix, mem9loy:mem9hiy, mem9loz:mem9hiz,
+     .      mem9lot:mem9hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
@@ -257,16 +283,22 @@
 *                                                                      |
 *                                                                      V
       INTEGER i, j, k, l, m, n, nm
-      INTEGER i1, i2, i1n, i2n
-      INTEGER nypts, nzpts, nscat
-      INTEGER i4, i4n, j5, j5n
-      REAL ysc, zsc, tsc 
-      REAL tt, t1, tf
-      INTEGER iwflag, l3, ii3, jj3, kk3, ll3
+      INTEGER j4, j4n, l5, l5n
 
+      INTEGER nypts, nzpts, nscat
       INTEGER ny, nz, nyaxis, nzaxis
-      REAL y1, z1, yf, zf
-      REAL yy, zz, val, cutoff
+      INTEGER nysize, nzsize
+      INTEGER ii3, jj3, kk3, ll3
+      INTEGER i1, i1n, i2, i2n, l3
+
+      REAL y1, z1, yf, zf, t1, tf
+      REAL yy, zz, tt
+      REAL ysc, zsc, tsc
+      REAL ycutoff, zcutoff
+      REAL val
+      INTEGER iwflag
+
+*  Dimension the work arrays
 
       REAL*8 yax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
@@ -290,7 +322,7 @@
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
             i1n = arg_hi_ss(m,ARG1)
-            nypts = 1 + (i1n - i1)
+            if (i1n-i1 .NE. 0) nypts = 1 + (i1n - i1)
          ENDIF
  100  CONTINUE
 
@@ -298,24 +330,26 @@
          IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG2)
             i2n = arg_hi_ss(m,ARG2)
-            nzpts = 1 + (i2n - i2)
+            if (i2n-i2 .NE. 0) nzpts = 1 + (i2n - i2)
          ENDIF
  110  CONTINUE
 
-      IF (nzpts .NE. nypts ) GOTO 999
+      IF (nypts .NE. nzpts ) GOTO 999
 
       nscat = nypts
 
 *  Compute number of points in output axes.
 
-      i4 = arg_lo_ss(Y_AXIS,ARG4)
-      i4n = arg_hi_ss(Y_AXIS,ARG4)
+      j4 = arg_lo_ss(Y_AXIS,ARG4)
+      j4n = arg_hi_ss(Y_AXIS,ARG4)
 
-      j5 = arg_lo_ss(Z_AXIS,ARG5)
-      j5n = arg_hi_ss(Z_AXIS,ARG5)
+      l5 = arg_lo_ss(Z_AXIS,ARG5)
+      l5n = arg_hi_ss(Z_AXIS,ARG5)
 
-      ny = 1 + (i4n - i4)
-      nz = 1 + (j5n - j5)
+      ny = 1 + (j4n - j4)
+      nz = 1 + (l5n - l5)
+      nysize = ny
+      nzsize = nz
 
       call ef_get_coordinates(id, ARG4, Y_AXIS, 
      .   arg_lo_ss(Y_AXIS, ARG4), arg_hi_ss(Y_AXIS, ARG4), yax)
@@ -323,7 +357,8 @@
       call ef_get_coordinates(id, ARG5, Z_AXIS, 
      .   arg_lo_ss(Z_AXIS, ARG5), arg_hi_ss(Z_AXIS, ARG5), zax)
 
-*  Set start, end for output axes. 
+*  Set start, end, and delta for output axes. 
+
 
       y1 = yax(1,1,1,1)
       z1 = zax(1,1,1,1)
@@ -331,28 +366,33 @@
       yf = yax(ny,1,1,1)
       zf = zax(nz,1,1,1)
 
-*  mapping scales (data units)
-
-      zsc = zax(2,1,1,1) - zax(1,1,1,1)
-      ysc = yax(2,1,1,1) - yax(1,1,1,1)         
-
-      tsc = 1. 
-
 *  Time parameters for subroutine gausswt.  Calling with 1 time.
 
       nm = 1
       tt = 1.
       t1 = 1.
       tf = 1.
+      tsc = 1. 
 
 *  iwflag=1 for time wrapping; 0 for no wrapping
 
       iwflag = 0
 
-*  Get interpolation parameter.
+*  Get interpolation parameters: mapping scales (data units)
 
-      cutoff  = arg_6(arg_lo_ss(X_AXIS,ARG6), arg_lo_ss(Y_AXIS,ARG6), 
+      ysc  = arg_6(arg_lo_ss(X_AXIS,ARG6), arg_lo_ss(Y_AXIS,ARG6), 
      .            arg_lo_ss(Z_AXIS,ARG6), arg_lo_ss(T_AXIS,ARG6))
+
+      zsc  = arg_7(arg_lo_ss(X_AXIS,ARG7), arg_lo_ss(Y_AXIS,ARG7), 
+     .            arg_lo_ss(Z_AXIS,ARG7), arg_lo_ss(T_AXIS,ARG7))
+
+*  And cutoff parameters:
+
+      ycutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
+     .            arg_lo_ss(Z_AXIS,ARG8), arg_lo_ss(T_AXIS,ARG8))
+
+      zcutoff  = arg_9(arg_lo_ss(X_AXIS,ARG9), arg_lo_ss(Y_AXIS,ARG9), 
+     .            arg_lo_ss(Z_AXIS,ARG9), arg_lo_ss(T_AXIS,ARG9))
 
 
       nyaxis = arg_hi_ss(Y_AXIS,ARG4) - arg_lo_ss(Y_AXIS,ARG4) + 1
@@ -360,15 +400,15 @@
 
 *  Initialize sums of values and weights.
 
-      DO j = wrk3loy, wrk3hiy
-         DO i = wrk3lox, wrk3hix
-            grid(i,j,1,1) = 0.
+      DO k = 1, nzaxis
+         DO j = 1, nyaxis
+            grid(j,k,1,1) = 0.
          ENDDO
       ENDDO
 
-      DO j = wrk4loy, wrk4hiy
-         DO i = wrk4lox, wrk4hix
-            wate(i,j,1,1) = 0.
+      DO k = 1, nzaxis
+         DO j = 1, nyaxis
+            wate(j,k,1,1) = 0.
          ENDDO
       ENDDO
 
@@ -376,43 +416,43 @@
 
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
-      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS), 
+     .                       max(1,res_incr(T_AXIS))
+         DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS), 
+     .                       max(1,res_incr(X_AXIS))
 
-*  Loop over x and z, compute the weighted sums for gaussian-weighted mapping
+*  Loop over x and y, compute the weighted sums for gaussian-weighted mapping
 *  onto the grid.  Lat and longitude may be on the X,Y or Z axis of ARG1 and
-*  ARG2: send them to a subroutine which collapses the extra dimensions so the
-*  data value can be found.
+*  ARG2, sending them to a subroutine collapses the extra dimensions so the
+*  value can be found.
 
          ii3 = arg_lo_ss(X_AXIS,ARG3)
          jj3 = arg_lo_ss(Y_AXIS,ARG3)
          kk3 = arg_lo_ss(Z_AXIS,ARG3)
          ll3 = arg_lo_ss(T_AXIS,ARG3) - 1 + l
          if (arg_lo_ss(T_AXIS,ARG3) .eq. ef_unspecified_int4) 
-     .         ll3 = ef_unspecified_int4
+     .                  ll3 = ef_unspecified_int4
          DO 300 n = 1, nscat
 
             CALL pickoutxyz (arg_1, arg_2, arg_3(ii3,jj3,kk3,ll3), 
      .                    n, yy, zz, val)
 
             IF ( val  .NE. bad_flag(ARG3) )
-     .      CALL gausswt (yy, zz, tt, val, grid, wate, ny, nz, nm, 
+     .      CALL gausswt2 (yy, zz, tt, val, grid, wate, ny, nz, nm, 
      .                    y1, z1, t1, yf, zf, tf, ysc, zsc, tsc, 
-     .                    iwflag, cutoff, nyaxis, nzaxis) 
+     .                    ycutoff, zcutoff, iwflag, nyaxis, nzaxis)
 
  300     CONTINUE
 
-*  Put gridded fcn into result variable, dividing by summed weights. (as in
+*  Put gridded z into result variable, dividing by summed weights. (as in
 *  gaussfin, but indices needn't start at 1)
 
-
-         m = 1
          DO 410 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-            result(i,j,k,l) = 0.
-            IF ( wate(j,k,m,1) .gt. 0.) THEN
-               result(i,j,k,l) = grid(j,k,m,1)/ wate(j,k,m,1)
+            result(i,j,k,l) = bad_flag_result
+            IF ( wate(j,k,1,1) .gt. 0.) THEN
+               result(i,j,k,l) = grid(j,k,1,1)/ wate(j,k,1,1)
             ELSE
                result(i,j,k,l) = bad_flag_result
             ENDIF
@@ -428,14 +468,12 @@
 
 999   CONTINUE
 
-   20 FORMAT('Input y, z have different # of points', 2i8)
-
+   20 FORMAT('Input y,z, have different # of points', 2i8)
       WRITE (errtxt,20) nypts, nzpts
 
       CALL EF_BAIL_OUT(id, errtxt)
 
 
-      
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -443,4 +481,3 @@
 
       RETURN 
       END
-

@@ -26,6 +26,7 @@ equal_string.F\
 equal_type.F\
 equal_val.F\
 errmsg.F\
+finalize.F\
 get_command.F\
 get_context_mods.F\
 get_mode_arg.F\

@@ -36,6 +36,7 @@
 *  v5.41  *acm* set XAXIS_MIN, XAXIS_MAX, YAXIS_MIN, YAXIS_MAX if 
 *               they have not already been set.  Called by setax.
 ** v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+*  v552 *acm* 4/03 buff was too short a string
 
 * Calling argument declarations
 
@@ -44,7 +45,7 @@
 
 * Internal arguments
 
-      CHARACTER axval*255, ppl_buff*2048, buff*8, TM_FMT*8
+      CHARACTER axval*255, ppl_buff*2048, buff*9, TM_FMT*8
       INTEGER nc, ier, ilen, slen 
 
       buff = dir//'AXIS_MIN'

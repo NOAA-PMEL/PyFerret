@@ -132,6 +132,8 @@ C
 * Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
         external scale, size
 
+
+
 C
 C	DEFINE THE SCALE FACTOR TO BE THE AMOUNT OF MAGNIFICATION
 C	REQUIRED TO CONVERT THE CHARACTERS IN THE CHARACTER DEFI-
@@ -150,8 +152,15 @@ C *JD* Mod below fix for unix  -- use environment variable 3.19.91
 	   call getenv ('PLOTFONTS',fontdir)
        	   dirlen = lnblk (fontdir,255)
 
+C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
+#ifdef __CYGWIN__
+	   OPEN(LUSY,FILE=fontdir(:dirlen)//'\fondat.dat',
+     *	        STATUS='OLD')
+#else
 	   OPEN(LUSY,FILE=fontdir(:dirlen)//'/fondat.dat',
      *	        STATUS='OLD')
+#endif
+
 #else
 	   open(lusy,file='plotfonts:fondat.dat',readonly,
      *	       status='old')

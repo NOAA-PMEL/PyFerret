@@ -152,16 +152,16 @@
       CALL ef_set_arg_name(id, arg, 'YSCALE')
       WRITE (fcn_desc, 30)
       CALL ef_set_arg_desc(id, arg, fcn_desc)
-   30 FORMAT ('Radius of influence in Y',
-     .        ' direction, data units (e.g. km or lat)')
+   30 FORMAT 
+     .  ('Mapping scale in Y direction, data units (e.g. km or lat)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'ZSCALE')
       WRITE (fcn_desc, 40)
       CALL ef_set_arg_desc(id, arg, fcn_desc)
-   40 FORMAT ('Radius of influence in Z',
-     .        ' direction, data units (e.g. m or km)')
+   40 FORMAT (
+     .  'Mapping scale in Z direction, data units (e.g. m or km)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 
@@ -169,16 +169,16 @@
       CALL ef_set_arg_name(id, arg, 'YCUTOFF')
       WRITE (fcn_desc, 50)
       CALL ef_set_arg_desc(id, arg, fcn_desc)
-   50 FORMAT ('CUTOFF for wt fcn in Y direction: cutoff=2 limits the ',
-     .        'search to min wt=e**-4')
+   50 FORMAT 
+     .  ('Weight cutoff in Y direction: Use pts within cutoff*scale')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 9
       CALL ef_set_arg_name(id, arg, 'ZCUTOFF')
       WRITE (fcn_desc, 60)
       CALL ef_set_arg_desc(id, arg, fcn_desc)
-   60 FORMAT ('CUTOFF for wt fcn in Z direction: cutoff=2 limits the',
-     .        'search to min wt=e**-4')
+   60 FORMAT 
+     .  ('Weight cutoff in X direction: Use pts within cutoff*scale')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 

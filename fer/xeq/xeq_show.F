@@ -134,6 +134,11 @@
 * V530 8/00 *sh* - bug fix to SHOW SYMBOLS - avoid accidental PPL$XPIXEL eval
 * V540 9/01 *sh* - SHOW VIEWPORT to show state of /AXES
 * v540 *acm* 10/01 increase length of ds_name
+* v540 *acm*  1/02 Change SHOW FUNC so that shared object files are 
+*                  not listed on the command: SHO FUNC/INTERNAL func_name
+
+and I'll get that checked in after
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -1119,15 +1124,17 @@
      .                                sbrief, sdetail, i2)
  2106         CONTINUE
 * ... third try external functions
-	      DO 2108 i2 = gfcn_num_internal+1, gfcn_num_internal+
-     .             efcn_scan(gfcn_num_internal)
-	         IF ( interrupted ) CALL ERRMSG
-     .			( ferr_interrupt, status, ' ', *5000 )
-              CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
-              IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
-     .            SHOW_1_FUNCTION(ttout_lun, .TRUE.,
-     .                            sbrief, sdetail, i2)
- 2108         CONTINUE
+              IF (qual_given(slash_internal) .EQ. 0) THEN
+ 	         DO 2108 i2 = gfcn_num_internal+1, gfcn_num_internal+
+     .                efcn_scan(gfcn_num_internal)
+	            IF ( interrupted ) CALL ERRMSG
+     .			   ( ferr_interrupt, status, ' ', *5000 )
+                 CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
+                 IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
+     .               SHOW_1_FUNCTION(ttout_lun, .TRUE.,
+     .                               sbrief, sdetail, i2)
+ 2108            CONTINUE  
+              ENDIF
  2110      CONTINUE
 
 

@@ -98,6 +98,8 @@
 *                 err490_l_ave.jnl: use "expl_com_lim" (explicit component
 *                 limits) **consistently** instead of cx_given to know whether
 *                 a new component does or does not possess its own limits
+* V500: *sh* 6/99 -- BUG COMMENT ONLY!! NOT FIXED. See err500_expl_lims.jnl
+*		  and find "6/99" in code below
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -364,6 +366,10 @@
 	   ELSE
 	      imrg = 3
 	   ENDIF
+! 6/99 NEXT LINE IS NOT AN ADEQUATE TEST!! com_len may in relity be GT 1, but
+! buried within a uvar def'n. uvar_given tells that limits are buried, but
+! NOT whether the limits are GT 1.
+!  example: "v" in  SST[x=180] + v, where v=X[GX=xax,I=1:10]
 	   IF ( com_len.GT.1 .AND. icom.LT.5 ) icom = icom + 1
 
 * update the merged cx_given value (added 1/97)

@@ -49,6 +49,10 @@
  * Open display wk->conn if necessary, then create and map the workstation 
  * window wk: workstation list pointer return: (0)---- open succeeds (21)-- 
  * open fails .
+ *
+ * 2.17.98 Modified workstation initialization code to use XgksMaxColours
+ * to avoid setting the number of colors used in two places *js* 
+ * 
  */
 
 /*LINTLIBRARY*/
@@ -273,7 +277,7 @@ BoolResource(prog, name, class, rDB)
     return ison;
 }
 
-static XVisualInfo *getBestVisual(Display *dpy, int *index)
+XVisualInfo *getBestVisual(Display *dpy, int *index)
 {
   XVisualInfo *visualList;
   XVisualInfo     visualTemplate;
@@ -378,7 +382,8 @@ CreateWindow(name, rDB, wk)
 				    theVisual->visual, AllocNone);
       }
     /* Initialize color-mapping. */
-      wk->wscolour = theVisual->colormap_size;
+      wk->wscolour = 0;
+      wk->wscolour = XgksMaxColours(wk->wstype);
       wk->wclmp = wk->dclmp;
 
 	/*

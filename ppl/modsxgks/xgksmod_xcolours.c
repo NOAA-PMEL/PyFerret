@@ -53,6 +53,10 @@
  * been added to solve this problem: addPixelTable, removePixelTable, 
  * and getPixelTable -- a table of allocated pixels is associated with each
  * workstations.
+ *
+ * 2.17.98 Modified XgksMaxColours to return MAX_GKS_COLOURS if display is
+ * TrueColor or DirectColor, since the previous algorithm incorrectly 
+ * returned the size of the colormap. 
  */
 
 /*LINTLIBRARY*/
@@ -111,6 +115,7 @@ extern int		XgksSIGIO_OFF();
 extern int		XgksSIGIO_ON();
 
 static unsigned long	MaskToMult();
+extern XVisualInfo *getBestVisual(Display *, int *);
 
 #define MAX_GKS_COLORS 256
 
@@ -315,12 +320,12 @@ XcInit(ws, vinfo)
     ToX = &map->ToX;
     ToGKS = &map->ToGKS;
 
-    map->NumEntries = vinfo->colormap_size;
 
     addPixelTable(ws);
 
+    map->NumEntries = XgksMaxColours(ws->wstype);
     if (vinfo->class == TrueColor || vinfo->class == DirectColor) {
-	nbytes = sizeof(XcRGB) * vinfo->colormap_size;
+	nbytes = sizeof(XcRGB) * map->NumEntries;
 
 	map->SeparateRGB = 1;
 	map->red_mask = vinfo->red_mask;
@@ -343,7 +348,7 @@ XcInit(ws, vinfo)
 		register        i;
 
 		/* Initialize mapping table with trivial mapping */
-		for (i = 0; i < vinfo->colormap_size; ++i)
+		for (i = 0; i < map->NumEntries; ++i)
 		    ToX->rgb[i].red
 			= ToX->rgb[i].green
 			= ToX->rgb[i].blue
@@ -384,7 +389,7 @@ XcInit(ws, vinfo)
     } else {					/* single palette */
 	map->SeparateRGB = 0;
 
-	nbytes = sizeof(unsigned long) * vinfo->colormap_size;
+	nbytes = sizeof(unsigned long) * map->NumEntries;
 
 	if ((ToX->color = (unsigned long *) malloc((size_t)nbytes)) == NULL) {
 	    (void) fprintf(stderr,
@@ -400,7 +405,7 @@ XcInit(ws, vinfo)
 		register        i;
 
 		/* Initialize mapping table with trivial mapping */
-		for (i = 0; i < vinfo->colormap_size; ++i)
+		for (i = 0; i < map->NumEntries; ++i)
 		  {
 		    ToX->color[i] = ToGKS->color[i] = i;
 		  }
@@ -694,7 +699,7 @@ XgksMaxColours(server)
 	if (STRCMP(xgks_state.openedws[i].ws->wstype, server) == 0)
 	    break;
     }
-    if (i < MAX_OPEN_WS) {			/* found a connection */
+    if (i < MAX_OPEN_WS && xgks_state.openedws[i].ws->wscolour > 0) {  
 	dpy = xgks_state.openedws[i].ws->dpy;
 	(void) XgksSIGIO_OFF(dpy);
 	colours = xgks_state.openedws[i].ws->wscolour;
@@ -703,7 +708,15 @@ XgksMaxColours(server)
 	(void) XgksSIGIO_OFF(dpy);
 	if (dpy == NULL)
 	    return -1;
-	colours = DisplayCells(dpy, DefaultScreen(dpy));
+	{
+	  int index;
+	  XVisualInfo *visList = getBestVisual(dpy, &index);
+	  XVisualInfo *vinfo = &visList[index];
+	  if (vinfo->class == TrueColor || vinfo->class == DirectColor)
+	    colours = MAX_GKS_COLORS;
+	  else
+	    colours = vinfo->colormap_size;
+	}
 	XCloseDisplay(dpy);
     }
 

@@ -45,13 +45,11 @@
 * V200:  5/31/89 - extracted from TRANSFER_CONTEXT
 * $Id$ 
 *       - *kob* need to now copy cx_calender as well
-#ifdef unix
+* v580 *acm* 11/04 transfer cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
+
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	INTEGER	source, dest, idim
 
@@ -64,8 +62,10 @@
 	cx_given ( idim, dest )   = cx_given ( idim, source )
 	cx_trans_arg(idim, dest)  = cx_trans_arg(idim, source)
 * 8/97 *kob* 	
-	IF (idim .EQ. t_dim) 
-     .        cx_calendar(dest) = cx_calendar(source)
+	IF (idim .EQ. t_dim) THEN
+           cx_calendar(dest) = cx_calendar(source)
+           cx_cal_id(dest) = cx_cal_id(source)
+        ENDIF
 
 
 	RETURN

@@ -50,6 +50,8 @@
 * V532 5/01 *sh* - eliminate (annoying) warning message about unknown units
 * V541 2/01 *sh* - added support for line_modulo_len
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
+* V580 9/04 *acm* - if units not given, assign general X or Y direction rather 
+*                   than WE or SN
 
 * Arguments
 	LOGICAL		modulo
@@ -137,6 +139,12 @@
 	   iunit = line_unit_code(inline)	
            IF ( iunit .EQ. 0 ) THEN
 !	     CALL WARN('unknown axis units: '//units)
+
+             IF (line_direction(inline) .EQ. 'WE'  )
+     .           line_direction(inline) = 'XX'
+             IF (line_direction(inline) .EQ. 'SN' )
+     .           line_direction(inline) = 'YY'
+ 
 	     CONTINUE
 	   ELSEIF (iunit .EQ. -5) THEN    ! "-5" is "MONTHS"
 	       risc_buff = units

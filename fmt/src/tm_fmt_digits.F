@@ -46,6 +46,8 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 11/14/03
+* *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing 
+*              flag is nan)
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -67,7 +69,7 @@
 	CHARACTER*10	fmt
 
 * local parameters:
-	INTEGER		max_int_len, sig_min
+	INTEGER		TM_CHECK_NAN, max_int_len, sig_min
 	REAL		eps, one_m_eps
 	PARAMETER     ( max_int_len = 8,
      .			sig_min     = 1,		! minimum sig. digits
@@ -87,6 +89,18 @@
 * maximum length of output string (at least 1 character long)
 	slen = MIN( LEN(TM_FMT_DIGITS), max_len )
 	slen = MAX( 1, slen )
+
+* If the value is NaN, set the string here
+        IF ( TM_CHECK_NAN(aval) .EQ. 1) THEN
+           IF (slen .GE. 3) THEN
+              TM_FMT_DIGITS = 'NaN'
+              str_len = 3
+           ELSE
+              TM_FMT_DIGITS = '*'
+              str_len = 1
+           ENDIF
+	   RETURN
+        ENDIF
 
 * location of leftmost digit (.01-->-1, 0.1-->0, 1.0-->1, etc.)
  10	l10      = LOG10(aval)

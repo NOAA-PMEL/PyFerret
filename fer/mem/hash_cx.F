@@ -45,23 +45,25 @@
 * revision 0.0 - 7/21/88
 * V200:  7/12/89 - special treatment for cat_temp_var
 * V510: 8/99 *sh* special treatment for cat_work_mr
+* v580: 9/04 *acm* Fix Bug 993: constant variables and string variables
+*                  use (1000*uvar + item) to pack extra information
+*                  into what is stored in cx_variable(cx).  When these
+*                  very large values go into computing nsum here,
+*                  the expression 2107*nsum overflows and becomes
+*                  a negative number, and so HASH_CX computed at the 
+*                  end of this routine is 0 or > 0.  This messes up 
+*                  the linked lists for variables in memory. Use uvar 
+*                  for these types of vars so HASH_CX is always negative.
 
-
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'	! for pmv_npiles
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'	! for pmv_npiles
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		cx
 
 * internal variable declarations:
-	INTEGER		idim, nsum, cat
+	INTEGER		idim, nsum, cat, uvar
 
 * initialize
 	cat = cx_category( cx )
@@ -78,8 +80,12 @@
 	ENDIF	   
 	
 * arbitrary number generated from context information
+        uvar = cx_variable( cx )
+        IF (cat .EQ. cat_const_var .OR. cat .EQ. cat_string)  
+     .       uvar = cx_variable(cx)/1000
+
 	nsum = cx_data_set( cx )
-     .	     + cx_variable( cx ) * 7
+     .	     + uvar * 7
      .	     + cat * 13
 	DO 100 idim = 1, 4
 	   IF ( cx_trans( idim, cx ) .NE. trans_no_transform )
@@ -87,8 +93,9 @@
  100	CONTINUE
 
 * randomize the number and return a NEGATIVE pile number
-* ( corresponding to the negative subscripts of the hash pile pointers )
+
 	HASH_CX = -1 * ( MOD( 2107*nsum, pmv_npiles ) + 1 )
+        IF (HASH_CX .GE. 0) HASH_CX = -1
 
 	RETURN
 	END

@@ -39,6 +39,9 @@
 * Write binary data for DODS output listing the axis coordinates
 
 * V554 - *acm* 9/03  from show_line_coords
+* *acm* v580 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
+
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -61,8 +64,8 @@
 
 * local variable declarations:
         LOGICAL  swap
-	INTEGER ISUBSCR_CX, TM_LENSTR1,
-     .		lo, hi, i, line, loest, hiest,
+	INTEGER ISUBSCR_CX, TM_LENSTR1, TM_GET_CALENDAR_ID,
+     .		lo, hi, i, line, loest, hiest, cal_id,
      .		status, delta, slen, size, clobber_flag, swap_flag
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, pt_val8
 
@@ -112,6 +115,9 @@
      .          SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
               cx_hi_ww(idim,cx) =
      .		SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
+              cal_id = TM_GET_CALENDAR_ID(grid)
+              cx_cal_id(cx) = cal_id
+
 * reset cx_calendar now that cx_lo/hi_ww have been converted
               cx_calendar(cx) = .FALSE.
 	   ENDIF

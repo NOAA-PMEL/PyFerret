@@ -47,18 +47,18 @@
 *	10/16/89 - modified array declarations using call to *_SUB
 *	  5/9/90 - allow a multi-dimensional region as a line for PLOT/VS
 *	         - return number of dims
+* v580 *acm* 11/04 Fix bug 1009. Distinguish between axes which really have one 
+*                  point, and those for which the hi and lo subscripts on the axes 
+*                  are undefined. When undefined return zero from CX_DIM_LEN_ZERO in
+*                  GET_CX_DIMS_ZERO. These axes are listed last in the heirarchy in 
+*                  array plot_axis().  This means we can plot a variable with just 
+*                  one point in their range (if /HLIMITS or /VLIMITS are used to give 
+*                  PPLUS a range to draw).
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, msrc, idim, ndim, n, status
@@ -68,7 +68,7 @@
 	INTEGER	CGRID_SIZE, dim(4)
 
 * determine 4D shape of context
-	CALL GET_CX_DIMS( cx, ndim, dim )
+	CALL GET_CX_DIMS_ZERO( cx, ndim, dim )
 
 * have we been given a reasonable context ?
 ! eliminated 5/90

@@ -1,4 +1,5 @@
-      SUBROUTINE modscat (ax, nax, nscat, scatm)
+	SUBROUTINE get_pix(wsid,x_pixel_dim, y_pixel_dim)
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -31,44 +32,29 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-* 
-* ACM 11/00
-*  Called by scat2gridlaplace* gridding functions.
-*  If there is a modulo axis, apply modulo-ness to the coordinates in that 
-*  direction of the scattered points.
+*
+*
+* ACM 8/26/04
+*	Routine to get window size in pixels, saved by set_window_size,
+*       for gif windows where gqpxad does not work.
+*       
 
-*  ax           modulo axis
-*  nax          number of points in the modulo axis
-*  nscat        input: number of scattered points, output: updated number.
-*  scatm        scattered points coordinate array in the direction of the 
-*               modulo axis
+	INCLUDE 'gkscm2.cmn'
 
-      REAL scatm(*)
-      REAL*8 ax(*)
-      INTEGER nscat, i, nax
-      REAL ax1, axf, scatpt, diff, range
+* Calling arguments
 
-      ax1 = ax(1)
-      axf = ax(nax)
-      range = axf - ax1
+        INTEGER wsid
+        INTEGER x_pixel_dim, y_pixel_dim
 
-      DO 100 i = 1, nscat
-         scatpt = scatm(i)
-         diff = scatpt - axf
-         DO WHILE (diff .GE. 0)
-            scatpt = scatpt - range
-            diff = scatpt - axf
-         ENDDO
+* Internal variables
+        INTEGER ierr,conid,wstype
 
-         diff = scatpt - ax1 
-         DO WHILE (diff .LT. 0.)
-            scatpt = scatpt + range
-            diff = scatpt - ax1
-         ENDDO
+*******************************************************************************
+c	call gqwkc (wsid,ierr,conid,wstype)
 
-         scatm(i) = scatpt
-  100 CONTINUE
+        x_pixel_dim = pixx
+        y_pixel_dim = pixy
 
-      RETURN
-      END
+	RETURN
+	END
 

@@ -48,6 +48,7 @@
 *        11/9/92 - incorporated SHASET PROTECT to save color tables
 *        3/29/93 - restore the old-style functioning of DEFINE VIEW/SIZE
 * V540: 9/01 *sh* - DEF VIEW/AXES: viewports based on *axis* positions
+* V580: 11/04 *acm* New symbols for viewport scaling
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -152,10 +153,12 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
      .                              xoei, yoei, xcei, ycei )
         ENDIF
 * set viewport in NDC to limits requested
+
 	CALL GSVP(wsid,fctx*xov, fctx*xcv,
      .		       fcty*yov, fcty*ycv )
 
 * set world coordinate window to preserve 1:1 aspect
+
 	CALL GSWN(wsid, 0.0, ( xcv-xov )*asize*scale,
      .		        0.0, ( ycv-yov )*bsize*scale  )
 
@@ -164,8 +167,16 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 * auto-size the axes to fit the plot window
            xfrac = scale*(xcv-xov)
            yfrac = scale*(ycv-yov)
+
            CALL SET_AX_SIZES( xfrac, yfrac,
      .                        xoei, yoei, xcei, ycei )
+
+* Set more symbols describing the viewport
+
+           CALL SET_VP_SYMBOLS (scale, vp_size(vp_num), xfrac, yfrac,
+     .			        xoei, yoei, xcei, ycei,
+     .                          xov,  yov,  xcv,  ycv)
+
 	   CALL GSELNT(wsid)     ! no clipping 11/92 (below) for PPL BOX ON 
 
 	ELSE

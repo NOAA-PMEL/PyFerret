@@ -46,18 +46,15 @@
 * 9/97 *kob* - need to reset cx_calendar to false if cx_lo/hi_ww are
 *              not used
 * 12/97 *kob* - and set  cx_calendar to true if they are used....
+* *acm* v580 11/04 Introducing cx_cal_id, saves the calendar ID used 
+*                  when computing world coordinates
+
 * internal variable declarations:
 	INTEGER	idim
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xcontrol.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-#endif
 
 * initialize
 	idim = cs_axis( csp )
@@ -71,16 +68,20 @@
 	   cx_lo_ww( idim, cx_last ) = unspecified_val8
 	   cx_hi_ww( idim, cx_last ) = unspecified_val8
 * kob 9/97 - need to reset cx_calendar as well
-	   IF (idim .eq. t_dim) 
-     .                cx_calendar(cx_last) = .FALSE.
+	   IF (idim .eq. t_dim) THEN
+              cx_calendar(cx_last) = .FALSE.
+              cx_cal_id(cx_last) = unspecified_int4
+           ENDIF
 	ELSE
 * kob 12/97 - i need to set cx_calendar to true here
  	   cx_lo_ss( cx_last, idim ) = unspecified_int4
 	   cx_hi_ss( cx_last, idim ) = unspecified_int4
 	   cx_lo_ww( idim, cx_last ) = cs_phase( csp )
 	   cx_hi_ww( idim, cx_last ) = cs_phase( csp )
-	   IF (idim .eq. t_dim) 
-     .                cx_calendar(cx_last) = cs_is_calendar(csp)
+	   IF (idim .eq. t_dim) THEN
+              cx_calendar(cx_last) = cs_is_calendar(csp)
+              cx_cal_id ( cx_last) = cs_cal_id(csp)
+           ENDIF
 	ENDIF
 	   
 	RETURN

@@ -62,6 +62,7 @@
 * V530 *acm* 3/01 - add calendar name (if not Gregorian calendar)
 * v533 *acm* 8/01 - test for calendar label had .LT. max_calendars; needs .LE.
 *      *acm* 10/01  remove VMS includes
+* V580 *acm* 11/04 - bug 1098 url is cut off; keep going to the last /
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -85,7 +86,7 @@
 	CHARACTER	AX_TITLE*32, TM_GET_CALENDAR_NAME*32,
      .			line_buff*255, genl_buff*255, cal_buff*32
 	INTEGER		TM_LENSTR, idim, len, lablen,
-     .			nlabs, dset_num, tlen
+     .			nlabs, dset_num, tlen, lab2
 	REAL 		ul_yspace, ul_labht,  ul_ypos, ul_ysqueeze
 	EQUIVALENCE	( ppl_buff, genl_buff )	! save space
 
@@ -172,8 +173,15 @@
      .			   letsize_dset_title, ppl_centered,
      .			   lab_loc_axlen_times, lab_loc_axlen_plus )
 * ... DODS URL of data set
+* bug 1098 url is cut off; keep going to the last /
+
 	   IF ( ds_des_name(dset_num)(1:7) .EQ. 'http://' ) THEN
 	      lablen = INDEX(ds_des_name(dset_num)(8:),'/')
+              lab2 = lablen
+              DO WHILE (lab2 .GT. 0)
+ 	         lab2 = INDEX(ds_des_name(dset_num)(8+lablen:),'/')
+                 lablen = lablen + lab2
+	      ENDDO
 	      lablen = INDEX(ds_des_name(dset_num)(8+lablen:),'/')
      .		     + 7 + lablen
 	      CALL PUT_LABEL( ppl_movlab-ppl_dodsurl, 0.0,

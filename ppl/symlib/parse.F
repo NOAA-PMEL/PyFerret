@@ -68,6 +68,10 @@ C*
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C * v552 *acm* 3/03 Longer strings: changes for multi-line labels
+C v580 *acm* 8/04 Change use of 256 to buflen+1, 
+C                 where buflen is defined in cmndlen.inc
+
+        INCLUDE 'cmndlen.inc'
 
 	CHARACTER ICOM*(*),LAB*(*),LINE*(*)
 	ICOM=' '
@@ -78,10 +82,10 @@ C
 	N=0
 	IST=0
 	ISPC=INDEX(LINE,' ')
-	IF(ISPC.EQ.0)ISPC=256
+	IF(ISPC.EQ.0)ISPC=buflen+1
 	ICMA=INDEX(LINE,',')
-	IF(ICMA.EQ.0)ICMA=256
-	I=MIN0(ISPC,ICMA,256,ILEN+1)
+	IF(ICMA.EQ.0)ICMA=buflen+1
+	I=MIN0(ISPC,ICMA,buflen+1,ILEN+1)
 	ICOM=LINE(:I-1)
 	CALL UPPER(ICOM,2048)
 100	I=I+1

@@ -74,6 +74,14 @@
 *                  number of decimal places.  The change is to force the
 *                  same number of digits for all labels. -- more consistent 
 *                  output, better justification.
+* V580 *acm* 7/04  When the user has set the location and size of the colorbar,
+*                  the position of the labels was too close to the edge of the
+*                  vertical colorbar.
+* V580 *acm* 8/04  Allow for PPL POLYGON as well as PPL FILLPOL after a POLY/SET command.
+* V580 *acm* 11/04 Make the default key label size 0.1, to match axis labels. Change
+*                  setting so the key labels do not go so close to the edge of the plot.
+* V580 *acm* 11/04 Fix bug 906: default number of digits did not distinguish different 
+*                  levels; got repeated labels 370, 371, 371, 372, 372,...
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -98,7 +106,7 @@
 
 	include        'gkspar.inc'
 
-	integer		ndx,str_len,max_len,incr
+	integer		ndx,str_len,max_len,incr,lab_digits
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht
@@ -106,8 +114,11 @@
 
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del
+        real*8          val_n, val_last
 	character*12	text,tm_fmt, TM_FMT_DIGITS, txt_out, blanks
-	logical		TM_FPEQ, ITSA_AXIS_VIEW, windof_hold, check_0
+        character*20    buff
+	logical		TM_FPEQ, TM_DFPEQ, ITSA_AXIS_VIEW, windof_hold, 
+     .                  check_0, increase_digits
 
 	external	TM_FMT, TM_FMT_DIGITS
 
@@ -133,6 +144,34 @@
 
         IF (shd_levels .GT. 1) del = zlev(2) - zlev(1)
         IF (TM_FPEQ(del,0.)) check_0 = .FALSE.
+
+* See if klab_dig is enough digits to distinguish the levels. 
+
+        lab_digits = klab_dig
+        increase_digits = .TRUE.
+
+        DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len )
+           buff = ' '
+
+ 	   buff = 
+     .        TM_FMT_DIGITS (zlev(1),lab_digits,klab_len+5,str_len)
+           READ (buff,*) val_last
+           increase_digits = .FALSE.
+
+	   DO 30 ndx = 2, shd_levels
+	     buff = 
+     .          TM_FMT_DIGITS (zlev(ndx),lab_digits,klab_len+5,str_len)
+             READ (buff,*) val_n
+             IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
+             val_last = val_n
+   30      CONTINUE
+
+           IF (increase_digits) THEN
+              IF (lab_digits .GT. 0) lab_digits = lab_digits + 1
+              IF (lab_digits .LT. 0) lab_digits = lab_digits - 1
+           ENDIF
+
+        ENDDO
 
 	if (vertical_key) goto 1000
 
@@ -200,10 +239,10 @@
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
-	text = TM_FMT_DIGITS (zlev(1),klab_dig,klab_len,str_len)  
+	text = TM_FMT_DIGITS (zlev(1),lab_digits,klab_len,str_len)  
         if (max_len .lt. str_len) max_len = str_len	   
 
-	do 10 ndx = 2, max (2,shd_levels + 1)
+	do 10 ndx = 2, MAX(2,shd_levels + 1)
 	   px(1) = kx_lo + real (ndx - 2) * x_inc
 	   px(2) = kx_lo + real (ndx - 2) * x_inc
 	   px(3) = kx_lo + real (ndx - 1) * x_inc
@@ -235,7 +274,7 @@
 
            val = zlev(ndx)
            IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
+	   text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	   
 10	continue
 
@@ -249,7 +288,9 @@
 	if (klab_size .eq. 0.0) then
 cc	   karht = amin1 (0.08*1000.0,
 cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-	   karht = amin1 (0.12*1000.0,
+cc	   karht = amin1 (0.12*1000.0,
+cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
+	   karht = amin1 (0.10*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
@@ -262,11 +303,11 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   end if
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
@@ -283,7 +324,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            ENDIF
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
-	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL') then
+	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
+     .         makep .EQ. 'POLYGON') then
 	      call point_convert (xx,yy,xxx,yyy)
 	   else if (makep .eq. 'FILL') then
 	      xxx = xx
@@ -365,10 +407,10 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
-	text = TM_FMT_DIGITS (zlev(1),klab_dig,klab_len,str_len)
+	text = TM_FMT_DIGITS (zlev(1),lab_digits,klab_len,str_len)
 	if (max_len .lt. str_len) max_len = str_len	
 
-	do 1010 ndx = 2, max (2,shd_levels + 1)
+	do 1010 ndx = 2, MAX(2,shd_levels + 1)
 	   px(1) = kx_lo
 	   px(2) = kx_lo + 4.0*x_inc
 	   px(3) = kx_lo + 4.0*x_inc
@@ -400,14 +442,15 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
            val = zlev(ndx)
            IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
+	   text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	
 1010	continue
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
 cc	   karht = amin1 (0.08*1000.0,360.0*rem/real (max_len))/1000.0
-	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
+cc	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
+	   karht = amin1 (0.10*1000.0,400.0*rem/real (max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
 	end if
@@ -425,16 +468,16 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,klab_dig,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
            IF (kuser_loc(1) .OR. kuser_loc(2)) 
-     .              xx = (kx_hi+0.2*x_inc)/1000 - xorg
+     .              xx = (kx_hi+2.*x_inc)/1000 - xorg
 
 * If klab_size negative put the key labels on the left rather than 
 * the right of the key
@@ -448,16 +491,19 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            ELSE
               nspace = max_len - str_len
               txt_out = text
-              IF (nspace .GT. 0) 
-     .                txt_out = blanks(1:nspace)//text(1:str_len)
-              str_len = max_len
+              IF (nspace .GT. 0 .AND. del.GT.1)THEN 
+                 txt_out = blanks(1:nspace)//text(1:str_len)
+                 str_len = max_len
+              ENDIF
            ENDIF
 
 	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg - 0.5*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
-	   if (makep .eq. 'SHADE'.or. makep .eq. 'FILLPOL') then
-	      call point_convert (xx,yy,xxx,yyy)
+
+	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL' .OR.
+     .         makep .EQ. 'POLYGON') then
+              call point_convert (xx,yy,xxx,yyy)
 	   else if (makep .eq. 'FILL') then
 	      xxx = xx
 	      yyy = yy
@@ -474,9 +520,3 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 2000	windof = windof_hold
 	return
 	end
-
-
-
-
-
-

@@ -3,11 +3,13 @@
 * revision 0.00 - 2/92 - by Steve Hankin for  PMEL/TMAP
 * 2/93 *sh* added cd_what_isit for EPIC compatibility
 * 9/95 *kob* added mc_init_stepfile for mutli-file capability
+* 10/04*acm* fix for bug 982; same var name in multiple MC datasets
+*            mc_init_stepfile needs to know which file it is from.
 
 	LOGICAL     cd_scaled(maxvars)
 	INTEGER     cd_varid(maxvars),
      .	            cd_stepfile(maxdsets),
-     .		    mc_init_stepfile
+     .		    mc_init_stepfile(maxdsets)
 	REAL	    cd_add_offset(maxvars),
      .	            cd_scale_factor(maxvars)	  
 	CHARACTER*4 cd_dset_code(maxdsets)   ! unique code made from dset name

@@ -44,6 +44,10 @@ C**    @(#)prmtiv.F	1.1    3/10/88
 * v554 3/04 *acm* 5th arg of %xaxis, %yaxis should set the # of tics
 * v554 3/04 *acm* Need to send parameters used for making graticule lines
 *                 to xaxis, yaxis, initialized to values for graticule off.
+* v580 10/05 *acm* Fix for bug1003; pen may be changed by @Cnnn as well
+*                  as @Pn. In saving info about color/font changes from
+*                  one line to the next in multi-line lables, allow for
+*                  @Cnnn syntax.  (changes also in getlabfonts)
 C**
 C**
 C***********************************************************************
@@ -309,12 +313,12 @@ C
 C  Set up to use any font settings from this line on subsequent lines.
 
                IF (npnew.GT.0) THEN
-                  penprefix(1:3) = newpen(1:3)
-                  npen = 3
+                  penprefix(1:npnew) = newpen(1:npnew)
+                  npen = npnew
                ENDIF
                IF (nfnew.GT.0) THEN
-                  fontprefix(1:3) = newfont(1:3)
-                  nfont = 3
+                  fontprefix(1:nfnew) = newfont(1:nfnew)
+                  nfont = nfnew
                ENDIF
 
   20        CONTINUE
@@ -439,12 +443,12 @@ c	    ENDIF
 C  Set up to use any font settings from this line on subsequent lines.
 
                IF (npnew.GT.0) THEN
-                  penprefix(1:3) = newpen(1:3)
-                  npen = 3
+                  penprefix(1:npnew) = newpen(1:npnew)
+                  npen = npnew
                ENDIF
                IF (nfnew.GT.0) THEN
-                  fontprefix(1:3) = newfont(1:3)
-                  nfont = 3
+                  fontprefix(1:nfnew) = newfont(1:nfnew)
+                  nfont = nfnew
                ENDIF
 
   30        CONTINUE
@@ -640,12 +644,12 @@ C
 C  Set up to use any font settings from this line on subsequent lines.
 
                IF (npnew.GT.0) THEN
-                  penprefix(1:3) = newpen(1:3)
-                  npen = 3
+                  penprefix(1:npnew) = newpen(1:npnew)
+                  npen = npnew
                ENDIF
                IF (nfnew.GT.0) THEN
-                  fontprefix(1:3) = newfont(1:3)
-                  nfont = 3
+                  fontprefix(1:npnew) = newfont(1:npnew)
+                  nfont = npnew
                ENDIF
   40        CONTINUE
 C

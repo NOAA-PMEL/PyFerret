@@ -224,6 +224,7 @@
            ELSE
               cs_save_lo( csp1 ) = cx_lo_ww (idim,cx_last)
               cs_save_hi( csp1 ) = cx_hi_ww (idim,cx_last)
+              cs_save_cal( csp1) = cx_cal_id (cx_last)
            ENDIF
 
 * Save name of REPEAT/RANGE variable
@@ -352,6 +353,7 @@
            ELSE
               cs_save_lo( csp1 ) = cx_lo_ww (idim,cx_last)
               cs_save_hi( csp1 ) = cx_hi_ww (idim,cx_last)
+              cs_save_cal(csp1 ) = cx_cal_id (cx_last)
            ENDIF
 
 * special check for the validity of time axis limits: calendar dates are
@@ -365,6 +367,7 @@
 	   IF ( by_date ) THEN
                cs_delta(csp1) =  -3600. * cs_delta(csp1)
 	       cs_is_calendar(csp1) = .TRUE.
+               cs_cal_id(csp1) = 1
 	   ENDIF
 
 * reverse limits if negative delta is desired

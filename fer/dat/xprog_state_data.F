@@ -92,6 +92,9 @@
 * V540 11/01 *sh* - initialize last_cmnd_buff
 * V550:12/02 *acm*- new MODE LOGO and MODE LABELS
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+* v580 10/04 *acm* - add flag silent_err for SHOW VAR/XML This is set for  
+*                    SHOW VAR/XML when checking for user variables not  
+*                    relevant to the context
 
 	include 'ferret.parm'
 	include 'movies.parm'
@@ -297,5 +300,6 @@
 	DATA	saved_abstract_grid	/ unspecified_int4 /
 	DATA	xwind_node		/ ' ' /
 	DATA	mode_grat_buff		/ ' ' /
+        DATA    silent_err              / .FALSE. /  ! will set true for SHOW VAR/XML
 
 	END

@@ -141,6 +141,9 @@
 * V554 *acm* 9/03  Add output for SHOW AXIS in /DODS binary format, 
 *                  see the flag do_dods
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+* V580: *acm* 10/04 - add xml tags <datasets>  </datasets>, dataset name and title
+*                     <axes>  </axes> for SHOW AXIS/XML
+* V580: *acm* 10/04 - Add xml output for global and dataset variables. SHOW_1_UVAR_XML
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -220,8 +223,9 @@
 	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE,
      .		slash_all, limited_show, nothing, sdetail,
      .		only_1, done_1, sfull, svars, sfile, sbrief, first,
-     .          sxml, do_dods, clobber, fexist, list_at_eof, sho_edges
-	INTEGER TM_LENSTR1, UVAR_NUMBER, STR_UPCASE,
+     .          sxml, do_dods, clobber, fexist, list_at_eof, sho_edges,
+     .          firstxml
+	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
@@ -233,10 +237,8 @@
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
-	CHARACTER	AUTO_FILENAME*2048, filename*2048,raw_name*2048,
-     .			fstatus*8, faccess*12, fformatted*12,
-     .			cdf_recax*1,
-     .			fposition*12
+	CHARACTER	filename*2048,raw_name*2048,
+     .			fformatted*12
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
 
@@ -343,6 +345,8 @@
 	list_at_eof  = list_append .OR. 
      .           qual_given( slash_axis_append ) .GT. 0
 
+        IF (sxml) firstxml = .TRUE.
+
 * decode the limit qualifiers
 	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -402,6 +406,7 @@
         ENDIF
 	risc_buff = ' '
 	IF ( num_args .GT. 0 ) THEN
+
 	   DO 420 i = 1, num_items
 * show the named line(s)
 	      i1 = STR_UPCASE(name,cmnd_buff(item_start(i):item_end(i)))
@@ -412,8 +417,13 @@
 	         IF ( line_name(line) .EQ. char_init16 ) GOTO 410
 	         IF ( line_name(line)(1:1) .EQ. '(' ) GOTO 410
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
-
                    IF (sxml) THEN
+                      IF (firstxml) THEN
+                         risc_buff = '<axes>'
+                         CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .                                risc_buff, 0)
+                         firstxml = .FALSE.
+                      ENDIF
                       CALL SHOW_LINE_XML( ttout_lun, line)
                    ELSE IF (do_dods) THEN
 	              DO 402 i2 = 1, 4
@@ -464,6 +474,12 @@
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
 
                    IF (sxml) THEN
+                      IF (firstxml) THEN
+                         risc_buff = '<axes>'
+                         CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .                                risc_buff, 0)
+                         firstxml = .FALSE.
+                      ENDIF
                       CALL SHOW_LINE_XML( ttout_lun, line)
                    ELSE IF (do_dods) THEN
 
@@ -522,8 +538,15 @@
               IF (.NOT.sxml .AND. .NOT.do_dods) THEN
                  CALL SHOW_LINE( line, brief )
               ENDIF
-              IF (sxml .AND. line .GT. num_predefined_axes)
-     .           CALL SHOW_LINE_XML( ttout_lun, line)
+              IF (sxml .AND. line .GT. num_predefined_axes) THEN
+                 IF (firstxml) THEN
+                    risc_buff = '<axes>'
+                    CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .                              risc_buff, 0)
+                    firstxml = .FALSE.
+                 ENDIF
+                 CALL SHOW_LINE_XML( ttout_lun, line)
+              ENDIF
 
  450	   CONTINUE
 *  ... then show the dynamic lines
@@ -532,6 +555,12 @@
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
               IF (sxml) THEN
+                 IF (firstxml) THEN
+                    risc_buff = '<axes>'
+                    CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .                              risc_buff, 0)
+                    firstxml = .FALSE.
+                 ENDIF
                  CALL SHOW_LINE_XML( ttout_lun, line)
 
               ELSE
@@ -540,6 +569,10 @@
               GOTO 460
  470       CONTINUE
 	ENDIF
+        IF (.NOT. firstxml .AND. sxml) THEN
+           risc_buff = '</axes>'
+           CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        ENDIF
 	IF ( limited_show ) RETURN
 
 * SHOW EXPRESSION
@@ -631,9 +664,14 @@
 	   IF ( dset .EQ. unspecified_int4 ) GOTO 5071
 	ENDIF
 
-	WRITE ( risc_buff, 3700 )	! heading line
-        IF (.NOT. sxml) 
-     .     CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        IF (.NOT. sxml) THEN
+           WRITE ( risc_buff, 3700 )	! heading line
+           CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        ELSE
+           risc_buff = '<datasets>'
+           CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        ENDIF
+
 	risc_buff = ' '
 
 	DO 790 iset = 1, maxdsets
@@ -652,9 +690,31 @@
 	      len0 = 1
 	   ENDIF
 	   len = TM_LENSTR1( ds_des_name( iset ) )
-	   WRITE (risc_buff,3710) iset,ds_des_name(iset)(:len),default(:len0)
-	   IF (.NOT. sxml)
-     .         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+           IF (sxml) THEN
+
+* Write data set name
+              IF (len0 .EQ. 1)
+     .        WRITE (risc_buff,3711) ds_des_name(iset)(:len)
+              IF (len0 .EQ. 9)
+     .        WRITE (risc_buff,3712) ds_des_name(iset)(:len)
+	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+* Write data set title
+	      len = TM_LENSTR1(ds_title(iset))
+	      WRITE ( risc_buff, 2020 ) ds_title(iset)(1:len)
+	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+
+	      len = TM_LENSTR(ds_mod_title(iset))
+	      IF (len .GT. 0) THEN
+	         len = TM_LENSTR1(ds_mod_title(iset))
+	         WRITE ( risc_buff, 2030 ) ds_mod_title(iset)(1:len)
+	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+              ENDIF
+
+           ELSE
+	      WRITE (risc_buff,3710) iset,ds_des_name(iset)(:len),default(:len0)
+	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+           ENDIF
+
 	   risc_buff = ' '
 * ... by default only name and variables are shown
            IF ( sxml) THEN
@@ -671,11 +731,25 @@
 	      IF ( sfile       ) CALL SHOW_DATA_FILES      
      .                             (ttout_lun, iset)
            ENDIF
+           IF (sxml) THEN
+              risc_buff = '</dataset>'
+              CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+           ENDIF
  790	CONTINUE
 
+        IF (sxml) THEN
+           risc_buff = '</datasets>'
+           CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        ENDIF
+
 	IF ( limited_show ) RETURN
+
+ 2020   FORMAT( '<title>', A, '</title>' )
+ 2030   FORMAT( '<title_mod>', A, '</title_mod>' )
  3700	FORMAT (T6,'currently SET data sets:')
  3710	FORMAT (T2,I4,'> ',A,2X,A)
+ 3711	FORMAT ('<dataset name="',A,'" default="false">')
+ 3712	FORMAT ('<dataset name="',A,'" default="true">')
 
 * SHOW MODE mode
  800	WRITE ( risc_buff, 3800 )
@@ -755,8 +829,11 @@
 	IF ( limited_show ) RETURN
 
 * SHOW VARIABLES
+
+ 1000   sxml  = qual_given(slash_show_var_xml) .GT. 0 
+        IF (sxml) firstxml = .TRUE.
 * ... SHOW VARIABLES/DIAGNOSTIC
- 1000	IF ( slash_all .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
+        IF ( slash_all .OR. qual_given(slash_show_var_diag) .GT. 0 ) THEN
 	   IF ( num_args .GT. 0 ) THEN
 	      arg = cmnd_buff(arg_start(1):arg_end(1))
 	   ELSE
@@ -802,13 +879,27 @@
 		    dset = pdset_irrelevant	! default (not used ...)
                     CALL PARSE_NAM_DSET(arg, cx_last, dset,
      .				     category, ivar, mods_cx, status)
-	            IF (status .EQ. ferr_ok) CALL SHOW_1_UVAR
-     .			(ttout_lun, ivar, show_str, ' ', .TRUE.)
+	            IF (status .EQ. ferr_ok) THEN
+                       IF (sxml) THEN
+	                  CALL SHOW_1_UVAR_XML 
+     .                      (ttout_lun,ivar,show_str,firstxml)
+                       ELSE
+	                 CALL SHOW_1_UVAR
+     .                      (ttout_lun,ivar,show_str,' ',.TRUE.)
+                       ENDIF
+
+                    ENDIF
 	         ELSEIF (  rqst_dset .NE. unspecified_int4) THEN
 		    CALL FIND_VAR_NAME(rqst_dset,arg,category,ivar)
 	            IF ( ivar .EQ. munknown_var_name
      .		    .OR. category .NE. cat_user_var ) GOTO 5100
-	            CALL SHOW_1_UVAR(ttout_lun,ivar,show_str,' ',.TRUE.)
+                    IF (sxml) THEN
+	               CALL SHOW_1_UVAR_XML 
+     .                      (ttout_lun,ivar,show_str,firstxml)
+                    ELSE
+	              CALL SHOW_1_UVAR
+     .                   (ttout_lun,ivar,show_str,' ',.TRUE.)
+                    ENDIF
 	         ELSE
 * ... show ALL user variables matching this name (or name template 4/96)
 *	            DO 1015 ivar = 1, max_uvar
@@ -822,9 +913,15 @@
      .		      .AND. .NOT.mode_diagnostic   ) GOTO 1015     ! 7/97
 !	               IF (MATCH_NAME(arg,uvar_name_code(ivar)))
 
-                       IF (MATCH_TEMPLATE(uvar_name_code(ivar),arg))
-     .			 CALL SHOW_1_UVAR
+                       IF (MATCH_TEMPLATE(uvar_name_code(ivar),arg))THEN
+                         IF (sxml) THEN
+     			    CALL SHOW_1_UVAR_XML
+     .                         (ttout_lun,ivar,show_str,firstxml)
+                         ELSE
+     			    CALL SHOW_1_UVAR
      .				(ttout_lun, ivar, show_str,' ',.TRUE.)
+                         ENDIF
+                      ENDIF
  1015	            CONTINUE
 	         ENDIF
  1020	      CONTINUE
@@ -841,12 +938,18 @@
 	         IF ( rqst_dset .NE. uvar_dset(i)	  ) GOTO 1030
 	         IF ( uvar_parent(i).NE.0
      .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1030  ! 7/97
-                 CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+                 IF (sxml) THEN
+                    CALL SHOW_1_UVAR_XML 
+     .                      (ttout_lun,i,show_str,firstxml)
+                 ELSE
+                    CALL SHOW_1_UVAR
+     .                 (ttout_lun,i,show_str,'     ',.TRUE.)
+                 ENDIF
  1030	      CONTINUE
 	   ELSE
 * ... show ALL user variables of every stripe
 * ... 8/95 sorted by data set
-	      CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+	      IF (.NOT. sxml) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .			' Created by DEFINE VARIABLE:', 0)
 * ... locate the highest data set number in use
 	      DO 1035 i1 = maxdsets, 1, -1
@@ -865,13 +968,21 @@
 	            IF ( dset .NE. uvar_dset(i)		     ) GOTO 1050
 	            IF ( uvar_parent(i).NE.0
      .		    .AND. .NOT.mode_diagnostic		     ) GOTO 1050 ! 7/97
-                    CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+
+                    IF (sxml) THEN
+                       CALL SHOW_1_UVAR_XML
+     .                      (ttout_lun,i,show_str,firstxml)
+                    ELSE
+                       CALL SHOW_1_UVAR
+     .                    (ttout_lun,i,show_str,'     ',.TRUE.)
+                    ENDIF
+
  1050	         CONTINUE
  1060	      CONTINUE
 * ... global variables defined without /D
+
 	      first = .TRUE.
-*	      DO 1070 i = 1, max_uvar
-*	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1070
+
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
@@ -881,13 +992,21 @@
 	         IF ( uvar_dset(i) .NE. unspecified_int4  ) GOTO 1070
 	         IF ( uvar_parent(i).NE.0
      .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1070  ! 7/97
-		 IF ( first ) THEN
-	            CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .	' >>> Definitions that replace any file variable of same name:'
-     .		, 0)
-	            first = .FALSE.	            
-	         ENDIF
-                 CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+
+                 IF (sxml) THEN
+                    CALL SHOW_1_UVAR_XML
+     .                      (ttout_lun,i,show_str,firstxml)
+                 ELSE
+		    IF ( first ) THEN
+	               CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .	  ' >>> Definitions that replace any file variable of same name:'
+     .    , 0)
+	               first = .FALSE.	            
+	            ENDIF
+                    CALL SHOW_1_UVAR
+     .                 (ttout_lun,i,show_str,'     ',.TRUE.)
+                 ENDIF
+
  1070	      CONTINUE
 * ... global variables defined with /D
 	      first = .TRUE.
@@ -902,19 +1021,33 @@
 	         IF ( uvar_dset(i) .NE. pdset_irrelevant  ) GOTO 1080
 	         IF ( uvar_parent(i).NE.0
      .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1080  ! 7/97
-		 IF ( first ) THEN
-	            CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+
+                 IF (sxml) THEN
+                    CALL SHOW_1_UVAR_XML
+     .                      (ttout_lun,i,show_str,firstxml)
+                 ELSE
+		    IF ( first ) THEN
+	               CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .	' >>> Definitions used if no file variable of this name exists:'
-     .		, 0)
-	            first = .FALSE.	            
-	         ENDIF
-                 CALL SHOW_1_UVAR(ttout_lun,i,show_str,
-     .                 '     ',.TRUE.)
+     .    , 0)
+	               first = .FALSE.	            
+	            ENDIF
+                    CALL SHOW_1_UVAR
+     .                 (ttout_lun,i,show_str,'     ',.TRUE.)
+                 ENDIF
+
+
+
  1080	      CONTINUE
 	   ENDIF
  4010	FORMAT (1x,A,' = ',A)
  4020	FORMAT (T20,'"',A,'"')
 	ENDIF
+        IF (.NOT. firstxml .AND. sxml) THEN
+           risc_buff = '</global>'
+           CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        ENDIF
+
 	IF ( limited_show ) RETURN
 
 * SHOW COMMAND [name]
@@ -1048,7 +1181,7 @@
 	         IF ( status .NE. ferr_ok ) GOTO 1350
                  IF ( grid .EQ. unspecified_int4 ) GOTO 5300
 	         IF (sxml) THEN 
-                    CALL SHOW_GRID_XML(ttout_lun, grid )
+                    CALL SHOW_GRID_XML(ttout_lun, grid, unspecified_int4 )
                  ELSE
 	            WRITE ( risc_buff, 4210 ) grid_name( grid )
 	            CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)

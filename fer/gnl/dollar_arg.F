@@ -45,6 +45,9 @@
 * V531 *sh* 4/01 - allow 2-digit argument numbers and enclosing parens
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
+* 11/04*acm* - fix bug 485: $0 should return the name of the script -
+*                           IF (karg.LE.0 .OR. karg.GE.100) should be IF(karg.LT.0 ...
+
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
@@ -64,14 +67,8 @@
 	PARAMETER     ( tab = CHAR(9))
 #endif
 
-
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
 
 * initialize
 	status = ferr_ok
@@ -86,7 +83,7 @@
 	   GOTO 5100     ! implement later
 	ELSE
 	   READ ( carg, '(I2)', ERR=5100 ) karg
-	   IF (karg.LE.0 .OR. karg.GE.100) GOTO 5100  
+	   IF (karg.LT.0 .OR. karg.GE.100) GOTO 5100  
 	ENDIF
 
 * locate the start and end of argument number karg

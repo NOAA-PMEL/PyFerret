@@ -1,5 +1,5 @@
-      SUBROUTINE modscat (ax, nax, nscat, scatm)
-*
+      SUBROUTINE NDIG_COORDS (grid, ax, lo, hi, del, bad_data, ndig, ndig_default)
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -31,44 +31,63 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-* 
-* ACM 11/00
-*  Called by scat2gridlaplace* gridding functions.
-*  If there is a modulo axis, apply modulo-ness to the coordinates in that 
-*  direction of the scattered points.
+*
+*
+* Compute the number of digits needed to list the coordinates along
+* an axis with enough resolution to distinguish them.
+* Called by list_cmnd_data.F
+*
+* Ferret v5.80 9/02/2004  ACM
 
-*  ax           modulo axis
-*  nax          number of points in the modulo axis
-*  nscat        input: number of scattered points, output: updated number.
-*  scatm        scattered points coordinate array in the direction of the 
-*               modulo axis
+      INCLUDE 'ferret.parm'
 
-      REAL scatm(*)
-      REAL*8 ax(*)
-      INTEGER nscat, i, nax
-      REAL ax1, axf, scatpt, diff, range
+* calling argument declarations
+      INTEGER grid, ax, lo, hi, del, ndig, ndig_default
+      REAL bad_data
 
-      ax1 = ax(1)
-      axf = ax(nax)
-      range = axf - ax1
+* Internal variable declarations
+      REAL*8 TM_WORLD, val8, val_last, diff_min, diff_ave, count
+      LOGICAL TM_DFPEQ
+      INTEGER i
 
-      DO 100 i = 1, nscat
-         scatpt = scatm(i)
-         diff = scatpt - axf
-         DO WHILE (diff .GE. 0)
-            scatpt = scatpt - range
-            diff = scatpt - axf
-         ENDDO
+* Special formatting codes for time axes etc.
 
-         diff = scatpt - ax1 
-         DO WHILE (diff .LT. 0.)
-            scatpt = scatpt + range
-            diff = scatpt - ax1
-         ENDDO
+      IF (ndig_default .LE. 0) THEN
+         ndig = ndig_default
+         RETURN
+      ENDIF
 
-         scatm(i) = scatpt
-  100 CONTINUE
+* Get number of decimal places for formatting the coordinates
+
+      val_last = bad_data
+      diff_min = ABS(bad_data)
+      diff_ave = 0.D0
+      count = 0.
+
+* Find the smallest difference from one coordinate to the next.
+* also compute the average difference, in case two coordinates
+* are very close together.
+
+      DO 310 i = lo, hi, del
+         val8 = TM_WORLD( i, grid, ax, box_middle )
+
+         IF (val8 .NE. bad_data .AND. val_last .NE. bad_data) THEN
+            diff_min = MIN(diff_min, ABS(val8-val_last) )
+            diff_ave = diff_ave + ABS(val8-val_last)
+            count = count + 1
+         ENDIF
+
+         val_last = val8
+ 310  CONTINUE
+      
+      IF (count .GT. 0) THEN
+         diff_ave = diff_ave/count
+         IF ( TM_DFPEQ(diff_min,0.D0) ) diff_min = diff_ave
+         ndig = 1 - INT(LOG10(diff_min)) 
+         ndig = MAX(ndig, ndig_default )
+      ELSE
+         ndig = ndig_default
+      ENDIF
 
       RETURN
       END
-

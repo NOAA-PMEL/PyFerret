@@ -79,6 +79,10 @@
 * v554 *acm* 11/03  Bug fix: plot/sym/size=  didnt change the size; the size
 *                   was always being reset to the default, not just on sym=dot.
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
+* V580: *acm*11/04 add PLOT/NOKEY qualifier (bug 1089)
+* V580 *acm*11/04  (bug 1085) Allow thickness to be set when cycling through colors 
+*                  automatically. In call to line_style, when color = -11  then 
+*                  thin line, color=-21 then thick=2, when color=-31 then thick=3
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -106,7 +110,7 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
-     .			is_logh, is_logv
+     .			is_logh, is_logv, nokey
 	INTEGER		TM_LENSTR1, STR_UPCASE,
      .                  symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
@@ -233,23 +237,33 @@ CC       => Set values here instead.
 
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			   val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
 
            IF (val .NE. 1  .AND. color .EQ. 19) GOTO 5460  ! Only have thin white line
 
-	   IF ( color .EQ. qual_on ) color = 1  ! /THICK alone means "BLACK"
-	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
-	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
 	      thick = NINT( val )	! user-specified line style
 	   ELSE
 	      thick = 2  ! default if no value is specified
 	   ENDIF
-	   color = ncolors*(thick-1) + color
-           IF ( symbol .EQ. dot_sym) THEN
-              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+
+	   IF ( color .EQ. qual_on ) THEN
+              IF ( symbol .EQ. dot_sym) THEN
+                 CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+	         color = MOD(color-1,ncolors)+1  ! eliminate thickness
+              ELSE
+                 color = color-10*(thick-1)
+              ENDIF
+           ELSE
 	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
+	      color = ncolors*(thick-1) + color
+              IF ( symbol .EQ. dot_sym) THEN
+                 CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+	         color = MOD(color-1,ncolors)+1  ! eliminate thickness
+              ENDIF
            ENDIF
+
 	ENDIF
 * ... PLOT/LINE_STYLE=n
 	loc = qual_given( slash_plot_line )
@@ -348,6 +362,10 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
 
         CALL set_graticules(loch, locv, status)
 
+* ... PLOT/NOKEY  (default is key on)
+
+	nokey = qual_given(slash_plot_nokey) .GT. 0
+
 * set up the axes and title and load the data into PPLUS
 	CALL PLOT_SET_UP   ( 	memory,
      .				overlay,
@@ -363,6 +381,7 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
      .				dashstyle,
      .				is_logh, 
      .				is_logv,
+     .                          nokey,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,

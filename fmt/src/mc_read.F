@@ -62,6 +62,11 @@
 * V570 4/04 *acm* when checking which stepfile to read from, use
 *                 TM_FPEQ_TOL to see if the timestep is equal (within tolerance)
 *                 to the start or end point of any of the files.
+* V580 9/04 *acm* - Fix bug 982 If same variable name in multiple descriptor files, 
+*                   mc_init_stepfile needs to know which file its from.
+* V580 10/04*acm* - Get values for scale and offset attributes in each individual 
+*                   step file.  Values returned by RETURN=nc_offset or RETURN=nc_scale 
+*                   will return the last value used.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -111,11 +116,13 @@
      .            hi_offset,a_lo_t_offset,
      .            a_hi_t_offset, vartype, nvdims,vdims(8),nvatts,
      .		  varid, varpos,ndims,nvars, natts, recdim,
-     .            npts, var_id,index,nsteps_in_file
+     .            npts, var_id,index, nsteps_in_file, vlen
 	REAL*8	  TM_WORLD,start_tstep, end_tstep, start_read_tstep,
      .            end_read_tstep, epsilon
-	INTEGER   TM_SUBSC, NCOPN, NCVID
-	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL
+	INTEGER   TM_SUBSC, NCOPN, NCVID, TM_LENSTR1
+	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL, CD_GET_ATTVAL, 
+     .            got_scale, got_off, do_warn
+        PARAMETER (do_warn = .TRUE. )
         CHARACTER*256   TM_INQ_PATH, tstep_file
 	CHARACTER*128 vname
 	CHARACTER*64 dim_name
@@ -137,15 +144,27 @@
 	IF (grid_line(t_dim, ds_grid_number(ivar)) .EQ. mpsnorm) THEN
 * let's open the netcdf file now
 *first make sure we have the full path set
-          tstep_file = TM_INQ_PATH( sf_name(mc_init_stepfile), 
+          tstep_file = TM_INQ_PATH( sf_name(mc_init_stepfile(dset)), 
      .                          tmap_tsteps, ' ',
      .                          .TRUE., status )
            IF ( status .NE. merr_ok ) GOTO 5000
-           sf_name(mc_init_stepfile) = tstep_file     ! save exact path
+           sf_name(mc_init_stepfile(dset)) = tstep_file     ! save exact path
 *got the full path, let's open the file now
-	   cdfid = NCOPN(sf_name(mc_init_stepfile), NCNOWRIT, cdfstat)	
+	   cdfid = NCOPN(sf_name(mc_init_stepfile(dset)), NCNOWRIT, cdfstat)	
 	   IF (cdfstat .NE. NCNOERR) GOTO 5100
-	   sf_lunit(mc_init_stepfile) = cdfid
+	   sf_lunit(mc_init_stepfile(dset)) = cdfid
+
+           
+	   CALL NCVINQ(cdfid, cd_varid(ivar), vname, vartype, nvdims, vdims,
+     .		nvatts,cdfstat)
+           vlen = TM_LENSTR1(vname)
+
+           got_scale = CD_GET_ATTVAL( cdfid, cd_varid, 'scale_factor',
+     .             do_warn,vname(:vlen),cd_scale_factor(ivar),1,status )
+           got_off = CD_GET_ATTVAL( cdfid, cd_varid, 'add_offset',
+     .             do_warn,vname(:vlen),cd_add_offset(ivar),1,status )
+           cd_scaled(ivar) = got_scale .OR. got_scale
+
 *read the data
 	   CALL CD_READ( dset, ivar,
      .		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
@@ -153,7 +172,7 @@
      .		use_lo, use_hi, stride,
      .		var(a_lo_x, a_lo_y, a_lo_z,
      .		a_lo_t),
-     .		mc_init_stepfile, status)
+     .		mc_init_stepfile(dset), status)
 
 * 7/97 - *kob* error check as in tm_choose_read.F
 	   if (status .NE. merr_ok) GOTO 5000
@@ -164,7 +183,7 @@
 	   if (status .NE. merr_ok) GOTO 5000
 *5/98 - *kob* sf_lunit needs to reflect the above cdf close
 *12/00- *kob* bug - use mc_init_stepfile not sfcnt - latter not set yet
-	   sf_lunit(mc_init_stepfile) = file_not_open
+	   sf_lunit(mc_init_stepfile(dset)) = file_not_open
 
 	
 
@@ -290,6 +309,15 @@ c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
  70	   tmp_lo(4) = start_read_lstep -offset
 	   tmp_hi(4) = tmp_lo(4) + (end_read_lstep - start_read_lstep)
 		
+
+* determine local scale and offset
+           vlen = TM_LENSTR1(vname)
+
+           got_scale = CD_GET_ATTVAL( cdfid, cd_varid, 'scale_factor',
+     .             do_warn,vname(:vlen),cd_scale_factor(ivar),1,status )
+           got_off = CD_GET_ATTVAL( cdfid, cd_varid, 'add_offset',
+     .             do_warn,vname(:vlen),cd_add_offset(ivar),1,status )
+           cd_scaled(ivar) = got_scale .OR. got_scale
 
 * let's read the data (finally)
 	   CALL CD_READ( dset, ivar,

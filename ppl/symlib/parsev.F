@@ -70,6 +70,10 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* v580 *acm* 8/04 Change use of 256 to buflen+1, 
+*                 where buflen is defined in cmndlen.inc
+
+        INCLUDE 'cmndlen.inc'
 
 	CHARACTER LINE*(*),UPLINE*(*),EXP1*2048,EXP2*2048
 	LOGICAL RESULT,NUM1,NUM2,NUM
@@ -79,42 +83,42 @@ C	CHECK FOR OPERATORS
 C
 	IEQ=INDEX(UPLINE,'.EQ.')
 	IF(IEQ.LE.0)THEN
-	    IEQ=256
+	    IEQ=buflen+1
 	ELSE
 	    ISW=1
 	ENDIF
 	INE=INDEX(UPLINE,'.NE.')
 	IF(INE.LE.0)THEN
-	    INE=256
+	    INE=buflen+1
 	ELSE
 	    ISW=2
 	ENDIF
 	ILT=INDEX(UPLINE,'.LT.')
 	IF(ILT.LE.0)THEN
-	    ILT=256
+	    ILT=buflen+1
 	ELSE
 	    ISW=3
 	ENDIF
 	IGT=INDEX(UPLINE,'.GT.')
 	IF(IGT.LE.0)THEN
-	    IGT=256
+	    IGT=buflen+1
 	ELSE
 	    ISW=4
 	ENDIF
 	ILE=INDEX(UPLINE,'.LE.')
 	IF(ILE.LE.0)THEN
-	    ILE=256
+	    ILE=buflen+1
 	ELSE
 	    ISW=5
 	ENDIF
 	IGE=INDEX(UPLINE,'.GE.')
 	IF(IGE.LE.0)THEN
-	    IGE=256
+	    IGE=buflen+1
 	ELSE
 	    ISW=6
 	ENDIF
 	IOP=MIN0(IEQ,INE,ILT,IGT,ILE,IGE)
-	IF(IOP.GE.256)THEN
+	IF(IOP.GE.buflen+1)THEN
 C
 C	NO OPERATOR FOUND
 C

@@ -50,14 +50,14 @@
 *	to get the pixel size.
 * 1/97 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
+* 8/04 *acm* - Get x and y pixel sizes that were saved in common by set_window_size.
+*              When in gif or batch mode, these will be values of symbols PPL$XPIXEL 
+*              and PPL$YPIXEL.  If not in gif  or batch mode, we get the window size 
+*              from a GKS call.
 
-#ifdef unix
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
-#else
-        INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-        INCLUDE 'PPLV11INC:PLTCOM.DAT'
-#endif
+
 
 	integer		error_status,transno,ws_id
 	integer		x_pixel_dim,y_pixel_dim
@@ -96,8 +96,14 @@
         y_minw = world(3)
         y_maxw = world(4)
 
-	call gqpxad(ws_id,x_minw,y_maxw,x_maxw,y_minw,
-     .	error_status,x_pixel_dim,y_pixel_dim)
+! get pixx and pixy that were saved by set_window_size
+
+        CALL get_pix(ws_id,x_pixel_dim, y_pixel_dim)
+
+! If not a gif window get pixel workstation from gks
+
+     	CALL gqpxad(ws_id,x_minw,y_maxw,
+     .	x_maxw,y_minw,error_status,x_pixel_dim,y_pixel_dim)
 
  1000	call gselnt (transno)
         return

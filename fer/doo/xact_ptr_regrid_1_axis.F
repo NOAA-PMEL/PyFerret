@@ -60,6 +60,9 @@
 *                 -111 among them. Allow regridding, using the flag 
 *                 ok_neg111 to distinguish this case from the flag 
 *                 unspecified_int4.
+* v580 *acm* 11/04 Fix the definition of ok_neg111; if -111 is at
+*                  either end of the interval we cannot distinguish
+*                  it as a valid index from its use as the bad flag.
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -100,9 +103,9 @@
 * ok_neg111 distinguishes between this and the flag unspecified_int4.
 
         ok_neg111 = (ss12(dst_lo) .LT. unspecified_int4 .AND.
-     .               ss12(dst_hi) .GE. unspecified_int4) .OR.
+     .               ss12(dst_hi) .GT. unspecified_int4) .OR.
      .              (ss12(dst_lo) .GT. unspecified_int4 .AND.
-     .               ss12(dst_hi) .LE. unspecified_int4) 
+     .               ss12(dst_hi) .LT. unspecified_int4) 
 
 * transfer THE map-able DATA TO dst_grd
 	IF ( axis .EQ. x_dim ) THEN

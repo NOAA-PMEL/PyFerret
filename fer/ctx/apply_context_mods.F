@@ -64,21 +64,15 @@
 *		 - also xfer cx_regrid_trans since dynamic axes may use
 * *kob* 9/97 - support for negative time steps - make sure cx_calendar
 *              gets transfered
-#ifdef unix
+* *acm* v580 11/04 Transfer cx_cal_id, the calendar ID used when computing 
+*                  world coordinates
+
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	mods_cx, dest_cx, status
@@ -127,16 +121,21 @@
 	         cx_lo_ww( idim,dest_cx ) = unspecified_val8
 	         cx_hi_ww( idim,dest_cx ) = unspecified_val8
 * kob 9/97 - need to reset cx_calendar as well
-		 IF (idim .eq. t_dim) 
-     .                cx_calendar(dest_cx) = .FALSE.
+		 IF (idim .eq. t_dim) THEN
+                    cx_calendar(dest_cx) = .FALSE.
+                    cx_cal_id(dest_cx) = unspecified_int4
+                 ENDIF
 	      ELSE
 	         cx_lo_ww( idim,dest_cx ) = cx_lo_ww( idim,mods_cx)
 	         cx_hi_ww( idim,dest_cx ) = cx_hi_ww( idim,mods_cx)
 	         cx_lo_ss( dest_cx ,idim) = unspecified_int4
 	         cx_hi_ss( dest_cx ,idim) = unspecified_int4
 * kob 9/97 - need to transfer cx_calendar as well
-		 IF (idim .eq. t_dim) 
-     .                cx_calendar(dest_cx) = cx_calendar(mods_cx)
+		 IF (idim .eq. t_dim) THEN
+                    cx_calendar(dest_cx) = cx_calendar(mods_cx)
+                    cx_cal_id(dest_cx) = cx_cal_id(mods_cx)
+                 ENDIF
+
 	      ENDIF
 	      cx_delta( idim, dest_cx )   = cx_delta( idim, mods_cx ) ! 10/95
 	   ENDIF

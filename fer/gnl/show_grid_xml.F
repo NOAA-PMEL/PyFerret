@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_GRID_XML( lun, grid )
+	SUBROUTINE SHOW_GRID_XML( lun, grid, cx_expr )
 
 *
 *
@@ -41,6 +41,7 @@
 * programmer - Ansley Manke, based on show_grid.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
+* V580 *acm* 11/4/04 add <axes> tags
 
 c	include	'ferret.parm'
 c	include	'slash.parm'
@@ -61,10 +62,11 @@ c	include 'xrisc.cmn'
 	include	'xtext_info.cmn'
 	include	'xprog_state.cmn'
 	include	'xrisc.cmn'
+	include	'xcontext.cmn'
 
 
 * calling argument declarations
-	INTEGER lun, grid
+	INTEGER lun, grid, cx_expr
 
 * local variable declarations:
 	INTEGER TM_LENSTR1, TM_LENSTR, idim, slen, line
@@ -73,27 +75,49 @@ c	include 'xrisc.cmn'
 
 
  2020   FORMAT ('<grid name="',A,'">' )
- 2030   FORMAT( '<', A1, 'axis>' ,A , '</', A1, 'axis>' )
- 2040   FORMAT ('</grid>')
+ 2030   FORMAT ('<axes>' )
+ 2040   FORMAT( '<', A1, 'axis>' ,A , '</', A1, 'axis>' )
+ 2050   FORMAT ('</axes>')
+ 2060   FORMAT ('</grid>')
 
 * list the 4 axes of the grid
 
         slen = TM_LENSTR1(grid_name(grid))
 	WRITE ( risc_buff, 2020 ) grid_name(grid)(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+	WRITE ( risc_buff, 2030 ) 
+	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	DO 110 idim = 1, 4
            line = grid_line(idim, grid)
            slen = TM_LENSTR(line_name(line))
-           IF (line .GT. 0  .AND.  slen .GT. 0) THEN
+
+
+           IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
+     .         cx_expr .EQ. unspecified_int4) THEN
               slen = TM_LENSTR1(line_name(line))
-              WRITE (risc_buff, 2030 ) axdir(idim),
+              WRITE (risc_buff, 2040 ) axdir(idim),
      .           line_name(line)(1:slen), axdir(idim)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
+
+           IF (line .GT. 0  .AND.  slen .GT. 0 .AND.
+     .         cx_expr .NE. unspecified_int4) THEN
+
+              IF (cx_hi_ss(cx_expr,idim)-cx_lo_ss(cx_expr,idim) .GT. 0)
+     .          THEN
+                 slen = TM_LENSTR1(line_name(line))
+                 WRITE (risc_buff, 2040 ) axdir(idim),
+     .              line_name(line)(1:slen), axdir(idim)
+	         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              ENDIF
+           ENDIF
+
  110	CONTINUE
 
-        WRITE ( risc_buff, 2040 )
+        WRITE ( risc_buff, 2050 )
+        CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+        WRITE ( risc_buff, 2060 )
         CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
         RETURN

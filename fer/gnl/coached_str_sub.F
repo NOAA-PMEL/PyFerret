@@ -85,6 +85,8 @@
 * V420	2/29/96	- extracted from dollar_command for shared use by symbols
 *
 * 1/03 *kob* - need to accomodate g77 and it's inability to arbitrarily concatenate
+* V580 *acm* 11/04 when command contains some error text, and an error condition
+*                  is found, issue an error rather than just a note. (bug 1077)
 
 * calling argument declarations:
 	LOGICAL   err_subst
@@ -106,19 +108,14 @@
 #ifdef NO_PASSED_CONCAT
 * Additional temp character buffer needed for concatenating error messages
 *    required by g77 *kob* 1/03
+
 	CHARACTER tmp_buff*2048
 #endif
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-#endif
 
 * initialize
 	status = ferr_ok
@@ -290,7 +287,9 @@
 	GOTO 5000
 #else
  5900	IF ( errtxt ) THEN
-	   CALL WARN( coaching(estart:eend) )
+	   CALL ERRMSG( ferr_nomessge, status,
+     .       coaching(estart:eend), *5000)
+!	   CALL WARN( coaching(estart:eend) )
 	ELSEIF ( options ) THEN
 	   CALL WARN
      .	('Valid '//sym_name//' choices are: '

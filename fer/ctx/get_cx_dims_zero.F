@@ -1,5 +1,7 @@
-	SUBROUTINE KNOWN_DATA_TYPE ( cx )
+	SUBROUTINE GET_CX_DIMS_ZERO( cx, ndim, dim )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,66 +35,75 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* find the data type for the given variable
+* determine the "shape" of the region specified in context cx by returning
+* array, dim, which contains a permutation of the 4 defining axes 1,2,3,4
+* and, ndim, the number of axes for which there is a range of data.
+* The permutation is first those axes which contain a range of data
+* (subsampled from the ordering 1,2,3,4) followed by the axes for which the
+* context specifies only a single point
+
+* e.g. for the expression SST[X=130e:70w,t="1-jan-1982":"31-dec-1983",Y=0]
+* ndim = 2
+* dim = 1,4,2,3		(the Z axis is normal for SST)
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-*
-* V533:  7/01
-* V554 1/04 *acm* - add counter_var 
+* written for VAX computer under VMS operating system
+
+* V200:  5/18/89 - complete re-write from GET_CONTEXT_PLANE
+* 10/2004 *acm*
+* For disp_init and extract_line, distinguish between axes which really 
+* have one point, and those for which the hi and lo subscripts on the axes 
+* are undefined. When undefined return zero from CX_DIM_LEN_ZERO. These axes 
+* are listed last in the heirarchy in array dim().  This means we can 
+* plot a variable with just one point in their range (if /HLIMITS or 
+* /VLIMITS are used to give PPLUS a range to draw).
 
 	include	'tmap_dims.parm'
-	include	'xdset_info.cmn_text'
-	external xdset_info_data
+	include	'xtm_grid.cmn_text'
+	external xgt_grid_data
 	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
-	include	'xvariables.cmn'
-	include	'xcalc_vars.cmn'
+	include	'xtext_info.cmn'
 
 * calling argument declarations:
-	INTEGER	cx
+	INTEGER cx, ndim, dim(4)
 
-* internal variable declarations:
-	INTEGER	dset, data_set, category, variable
+* local variable declarations:
+	INTEGER	CX_DIM_LEN_ZERO, idim, ii, clen(4)
 
 * initialize
-	category = cx_category(cx)
-	variable = cx_variable(cx)
-	data_set = cx_data_set(cx)
+	ndim = 0
+	DO 10 idim = 1, 4
+ 10	clen(idim) = CX_DIM_LEN_ZERO( idim, cx )
 
-* different procedure for determining grid from each category
-	IF     ( category .EQ. cat_file_var ) THEN
-
-	   cx_type(cx) =  ds_var_type(variable)
-
-	ELSEIF ( category .EQ. cat_calc_var ) THEN
-
-           cx_type(cx) = ptype_float
-
-	ELSEIF ( category .EQ. cat_user_var ) THEN
-
-* ... allow "abstract" expressions that don't depend on data set
-	   IF ( .NOT.uvar_need_dset(variable)
-     .	   .OR. data_set .EQ. unspecified_int4 ) THEN
-	      dset = pdset_irrelevant
-	   ELSE
-	      dset = data_set
+* find the axes with a range of values
+	DO 100 idim = 1, 4
+	   IF ( clen(idim) .GT. 1 ) THEN
+	      ndim = ndim + 1
+	      dim(ndim) = idim
 	   ENDIF
-	   cx_type(cx) = uvar_data_type( variable, dset )
+ 100	CONTINUE
 
-	ELSEIF ( category .EQ. cat_temp_var ) THEN
-!! here, variable may be up to 2000, mr_type is dimension 151
-	   cx_type(cx) = mr_type( variable )  
+* find the axes where the context is a single point
+	ii = ndim
+	DO 200 idim = 1, 4
+	   IF ( clen(idim) .EQ. 1) THEN
+	      ii = ii + 1
+	      dim(ii) = idim
+	   ENDIF
+ 200	CONTINUE
 
-	ELSEIF ( category .EQ. cat_counter_var ) THEN
+* find the axes where the context is no points
 
-	   cx_type(cx) = ptype_float
+	DO 300 idim = 1, 4
+	   IF ( clen(idim) .EQ. 0 ) THEN
+	      ii = ii + 1
+	      dim(ii) = idim
+	   ENDIF
+ 300	CONTINUE
 
-	ELSE
-
-	   STOP 'KNOWN_TYP'
-
-	ENDIF
-
-	RETURN
+	RETURN	   
 	END

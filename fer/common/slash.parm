@@ -22,8 +22,10 @@
 * V553 *acm*  1/04 - added slash_repeat_range, slash_repeat_name
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 * V570: *acm* 5/40 add LIST/EDGES LIST/BOUNDS for NetCDF output
-*       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
-*       *acm* 6/05 - add CANCEL AXIS/DEPTH
+*       *acm* 6/04 - add SET AXIS/CALENDAR /T0 /UNITS
+*       *acm* 6/04 - add CANCEL AXIS/DEPTH
+* V580: *acm*10/04 - add SHOW VAR/XML
+* V580: *acm*11/04 - add PLOT/NOKEY
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -59,6 +61,7 @@
      .
      .			slash_show_var_diag,
      .			slash_show_var_user,
+     .			slash_show_var_xml,
      .
      .			slash_show_grid_x0,
      .			slash_show_grid_i0,
@@ -188,7 +191,8 @@
      .			slash_plot_axes,
      .			slash_plot_hgrat,
      .			slash_plot_vgrat,
-     .			slash_plot_grat
+     .			slash_plot_grat,
+     .			slash_plot_nokey
 
 
 	INTEGER		slash_wire_over,
@@ -253,6 +257,7 @@
      .
      .			slash_show_var_diag = 3,
      .			slash_show_var_user = 4,
+     .			slash_show_var_xml = 5,
      .
      .			slash_show_grid_x0 = 5,
      .			slash_show_grid_i0 = 1,
@@ -382,7 +387,8 @@
      .			slash_plot_dash		= 1+25,
      .			slash_plot_hgrat	= 1+28,
      .			slash_plot_vgrat	= 1+29,
-     .			slash_plot_grat 	= 1+34 )
+     .			slash_plot_grat 	= 1+34,
+     .			slash_plot_nokey 	= 1+35 )
 
 	PARAMETER     ( slash_wire_over		= 9,
      .			slash_wire_set_up	= 10,

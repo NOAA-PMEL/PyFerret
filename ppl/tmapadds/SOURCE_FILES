@@ -13,6 +13,7 @@ flowline.F\
 flowline_sub.F\
 getlabfonts.F\
 get_ndx.F\
+get_pix.F\
 get_user_coords.F\
 get_world_coords.F\
 hatch_fill_rep.F\

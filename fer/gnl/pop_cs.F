@@ -55,6 +55,9 @@
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control; reset repeat controls.
 * v560 3/04 *acm    reset last_cmnd_buff  when resetting repeat controls.
 *      6/04 ywei    change MATCH_NAME function
+* v5.80 *acm* 11/04 use cx_cal_id to store the calender used when
+*                   computing world coordinates; restore cx_cal_id
+*                   along with  the rest of the context after a REPEAT
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,stat,axis,ivar,cvar
@@ -103,6 +106,7 @@
               cx_hi_ww (axis,cx_last) = cs_save_hi( csp )
               cx_lo_ss (cx_last,axis) = unspecified_int4
               cx_hi_ss (cx_last,axis) = unspecified_int4
+              cx_cal_id (cx_last) = cs_save_cal(csp) 
            ENDIF
 
 * clean up counter variable 

@@ -78,6 +78,10 @@
 *                     change this comment, so that the checkin under branch FDSv1
 *                     will occur.
 * v560   4/04 *acm* Very wide output needs a fix in the format specifier that is written.
+* V580   9/04 *acm* call ndig_coords to compute the precision needed to list the
+*                   coordinates in tab and comma delimited formats.  Note that if
+*                   precision more than 0.001 is needed for longitude and latitude
+*                   axes, then a change needs to be made in translate_to_world.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -110,7 +114,7 @@
         CHARACTER*(*) dods_file
 	
 * local variable declarations:
-	LOGICAL		GEOG_LABEL,
+	LOGICAL		GEOG_LABEL, TM_DFPEQ, 
      .			line_too_long, del_col_changed, all_bad,
      .			valid(4), need_doc(4), span(4), do_unform,
      .			do_stream, do_comma_del, do_tab_del, itsa_string,
@@ -126,7 +130,7 @@
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id,
-     .                  wkblk
+     .                  wkblk, ndig(4)
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
@@ -135,7 +139,8 @@
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32, cal_name*32
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value
-	REAL*8		TM_WORLD, val8
+	REAL*8		TM_WORLD, val8, val_last, diff_min, diff_ave, count
+
 #ifdef DEC_FORTRAN
 	INTEGER		ios
 #endif
@@ -507,9 +512,37 @@
 	   ENDIF
 	   line_buff(1:line_length) = 'coordinates'//tab_or_comma
 	   alen = 12
+
+* Get number of decimal places for formatting the row coordinates
+
+           ndig(row_ax)= ax_dec_pt(row_ax)
+           CALL NDIG_COORDS (grid, row_ax, lo1, hi1, del1, 
+     .        bad_data, ndig(row_ax), ax_dec_pt(row_ax) )
+
+* Get number of decimal places for formatting the column coordinates
+
+           ndig(col_ax) = ax_dec_pt(col_ax)
+           CALL NDIG_COORDS (grid, col_ax, lo2, hi2, del2, 
+     .        bad_data, ndig(col_ax), ax_dec_pt(col_ax) )
+
+* Get number of decimal places for formatting coordinate labels
+
+           ndig(perm(3)) = ax_dec_pt(perm(3))
+	   IF ( ndim .GE. 3 .AND. valid(3) .AND. 
+     .          ax_dec_pt(perm(3)) .GE. 0 ) 
+     .        CALL NDIG_COORDS (grid, perm(3), lo3, hi3, del3, 
+     .           bad_data, ndig(perm(3)), ax_dec_pt(perm(3)) )
+
+           ndig(perm(4)) = ax_dec_pt(perm(4))
+	   IF ( ndim .GE. 4 .AND. valid(4) ) 
+     .        CALL NDIG_COORDS (grid, perm(4), lo4, hi4, del4, 
+     .           bad_data, ndig(perm(4)), ax_dec_pt(perm(4)) )
+
+* Write coordinates
+
 	   DO 330 i = lo1, hi1, del1
 	      val8 = TM_WORLD( i, grid, row_ax, box_middle )
-	      width = FIELD_WIDTH(val8, grid, row_ax, ax_dec_pt(row_ax),
+	      width = FIELD_WIDTH(val8, grid, row_ax, ndig(row_ax),
      .					numbers)
 	      alen = alen + width
 	      IF ( alen .GT. max_line_len ) THEN
@@ -522,7 +555,7 @@
      .		      ( val8,
      .			row_ax,
      .			grid,
-     .			ax_dec_pt(row_ax),
+     .			ndig(row_ax),
      .			line_buff(alen-(width-1):alen) )
 	      IF ( i .LT. hi1 ) THEN
 	         alen = alen + 1
@@ -535,7 +568,7 @@
 * ... label the block of blocks (4th dimension)
 	      IF ( ndim .GE. 4 .AND. valid(4) ) THEN
 	         CALL POS_LAB( l, cx, perm(4),
-     .			    ax_dec_pt(perm(4)), line_buff, alen )
+     .			    ndig(perm(4)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			' ---- '//line_buff(:alen), 6+alen )
 	      ENDIF
@@ -543,7 +576,7 @@
 * ... label a single block (3rd dimension)
 	      IF ( ndim .GE. 3 .AND. valid(3) ) THEN
 	         CALL POS_LAB( k, cx, perm(3),
-     .			       ax_dec_pt(perm(3)), line_buff, alen )
+     .			       ndig(perm(3)), line_buff, alen )
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			' ---- '//line_buff(:alen), 6+alen )
 	      ENDIF
@@ -553,7 +586,7 @@
 	         IF ( ndim .GE. 2 .AND. valid(2) ) THEN
 	            CALL TRANSLATE_TO_WORLD
      .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
-     .			col_ax, grid, ax_dec_pt(col_ax), line_buff(:16) )
+     .			col_ax, grid, ndig(col_ax), line_buff(:16) )
 	            alen = TM_LENSTR1(line_buff(:16))
 	         ELSE	! 1D row-only (will this ever happen?)
 	            line_buff(1:5) = 'row 1'	
@@ -780,4 +813,3 @@
  5000	RETURN
  5010	CALL ERRMSG( ferr_erreq, status, list_format, *5000 )
 	END
-

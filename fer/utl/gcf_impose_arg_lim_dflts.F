@@ -57,9 +57,11 @@
 *		**result** grid to convert world coords to subscripts when
 *		offsets need to be applied -- argument grid not needed.
 *		Hugely simplified this routine!
+* v580 *acm* 11/04 Reset cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
+
 *	Note: the "offset" code in this routine is largely untested!
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -67,13 +69,7 @@
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
+
 
 * calling argument declarations
 	INTEGER		arg, cx_in, cx_out, uvar, status
@@ -117,6 +113,7 @@
 	      cx_given(idim,cx_out)      = .FALSE.	! needed ?
 	      cx_lo_ww(idim,cx_out)      = unspecified_val8	! 11/97
 	      cx_hi_ww(idim,cx_out)      = unspecified_val8	! 11/97
+	      cx_cal_id(cx_out)          = unspecified_int4
 !	      cx_trans (idim,cx_out)     = trans_no_transform
 !	      cx_trans_arg(idim,cx_out)  = bad_val4
 

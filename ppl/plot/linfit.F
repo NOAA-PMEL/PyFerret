@@ -37,6 +37,8 @@
 *
 C**    @(#)linfit.F	1.1    3/10/88
 C**
+* v580 *acm* 8/04 Change use of 256 to buflen+1, 
+*                 where buflen is defined in cmndlen.inc
 C**
 C***********************************************************************
 C**
@@ -45,21 +47,15 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef  unix
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'
 	INCLUDE 'DATA.INC'
 	INCLUDE 'CMRD.INC'
 	INCLUDE 'LUNITS.INC'
 	INCLUDE 'SYSTEM.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'CMDINC:SYSTEM.INC'
-#endif
+        INCLUDE 'cmndlen.inc'
+
 	CHARACTER OUT*80,SYM*30
 C
 C	DO A LEAST SQUARES FIT ON LINE 'ILNE', PLACE THE RESULT INTO
@@ -256,7 +252,6 @@ C
       END
 	SUBROUTINE SETFIT(ILNE,X,NSIZE,JBASE,XIMIN,XIMAX)
 	DIMENSION X(NSIZE)
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'MISS.INC'
 	INCLUDE 'LINES.INC'
@@ -265,16 +260,7 @@ C
 	INCLUDE 'CMRDL.INC'
 	INCLUDE 'AXISL.INC'
 	INCLUDE 'TAXIS.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:MISS.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-#endif
+
 	CHARACTER DATE*10
 	IF(ITFLG.EQ.1.AND.N.NE.0)THEN
 C
@@ -284,8 +270,8 @@ C
 	IF(IW.EQ.0)GOTO 100
 	ICM=INDEX(LABEL,',')
 	ISPC=INDEX(LABEL,' ')
-	IF(ICM.EQ.0)ICM=256
-	IF(ISPC.EQ.0)ISPC=256
+	IF(ICM.EQ.0)ICM=buflen+1
+	IF(ISPC.EQ.0)ISPC=buflen+1
 	IF(ICM.LT.IW)THEN
 		M=M+1
 		IFLG(M)=0

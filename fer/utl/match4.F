@@ -43,6 +43,10 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 3/24/86
+*
+* V5.80 *acm* 7/6/04 If either string is a single blank character, then
+*                    len_to_test = 0 and MATCH4 was set true for all values 
+*                    of the other string.  Check for lengths of zero.
 
 	INTEGER		TM_LENSTR, len_model, len_test, len_to_test, i
 
@@ -57,6 +61,9 @@
 * if model string is fewer than 4 characters the test string must not be longer
 	IF (      len_model .LT. 4
      .	    .AND. len_test  .GT. len_model ) GOTO 200
+
+        IF (len_test .EQ. 0 .AND. len_model .NE. 0) GOTO 200 
+        IF (len_test .NE. 0 .AND. len_model .EQ. 0) GOTO 200 
 
 	len_to_test = MIN( len_test, len_model )
 

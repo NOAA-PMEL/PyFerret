@@ -49,6 +49,12 @@
 
 /* Remove XCheckWindowEvent to see if that's causing the occasional hangs
  * *jd* 2.23.99
+ *
+ * *acm* 8/27/04
+ * Return ix and iy, the size of the window in pixels.  This will be saved
+ * in common so that in gif and batch modes we can return them in symbols
+ * PPL$XPIXEL and PPL$YPIXEL.
+ *
  */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
@@ -63,14 +69,15 @@
 #include <time.h> 
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
-resize_xgks_window (ws_id, x, y)
+resize_xgks_window (ws_id, x, y, ix, iy)
 #else
-resize_xgks_window_ (ws_id, x, y)
+resize_xgks_window_ (ws_id, x, y, ix, iy)
 #endif
 
 Gint *ws_id;
 float *x;
 float *y;
+int   *ix,*iy;
 
 {
   WS_STATE_ENTRY *ws;
@@ -83,7 +90,6 @@ float *y;
   Gint            val;
   Gpoint          size;
 
-  unsigned int    ix,iy;
   float           xf,yf,aspect;
 
   int             xw_event,scr; 
@@ -102,8 +108,8 @@ float *y;
     yf = 1024.0/289.0;
   }
 
-  ix = (*x)*1000.0*xf;
-  iy = (*y)*1000.0*yf;
+  *ix = (*x)*1000.0*xf;
+  *iy = (*y)*1000.0*yf;
 
   if (*x > *y) {
     aspect = (*y / *x);
@@ -119,7 +125,7 @@ float *y;
 
   if (ws){
     if (ws->ewstype == X_WIN && ws->dpy){
-      XResizeWindow (ws->dpy,ws->win,ix,iy);
+      XResizeWindow (ws->dpy,ws->win,*ix,*iy);
       tp = &t_now;
       t0 = time(0);
   
@@ -135,8 +141,8 @@ float *y;
       int type = ws->mf.cgmo->type;
       if (type == MF_GIF){
 	Gpoint nsize;
-	nsize.x = ix;
-	nsize.y = iy;
+	nsize.x = *ix;
+	nsize.y = *iy;
 	GIFresize(ws, nsize);
       } else if (type == MF_PS){
 	PSresize(ws, size);

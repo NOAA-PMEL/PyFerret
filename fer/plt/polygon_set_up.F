@@ -109,6 +109,8 @@
 *                   value of icode (first argument to pplldx_envelope)
 * v554 *acm* 12/03  Bug fix: for 1-D form of polygon command, save values of context 
 *                   so they can be properly restored. (ss_x_save, ss_y_save)
+* V580 *acm* 11/04  Check calendar id only for 2-D polygon form; 1-D polygon data are
+*                   just lists on abstract axis.  Fix for bug 1066
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -612,15 +614,19 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   makep = 'FILLPOL'
 
 * ... setup for possible overlay on a time axis plot  ? calendar_id here?
-	   IF (overlay .AND. has_time_axis) THEN
+	   IF (overlay .AND. has_time_axis  ) THEN
 	      dt_min  = saved_dt_min
 	      t1_date = saved_t1_date
-
+              IF ( .NOT. oneD_form) THEN
+              
 *  Check for calendar mismatch for time- overlay plots
-              tax = grid_line(t_dim,cx_grid(cx_x ))
-              cal_name = line_cal_name(tax)
-              cal_id = TM_GET_CALENDAR_ID ( cal_name )
-              IF (cal_id .NE. saved_calendar_id) GO TO 5360
+*  (but only for 2-D polygon form; 1-D polygon data are
+*  just lists on abstract axis.)
+                 tax = grid_line(t_dim,cx_grid(cx_x ))
+                 cal_name = line_cal_name(tax)
+                 cal_id = TM_GET_CALENDAR_ID ( cal_name )
+                 IF (cal_id .NE. saved_calendar_id) GO TO 5360
+              ENDIF
 	   ELSE
               dt_min  = 1.0
               t1_date = ' '

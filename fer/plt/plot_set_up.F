@@ -2,7 +2,7 @@
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
      .				step_inc, do_dash, dashstyle,
-     .                          is_logx, is_logy, 
+     .                          is_logx, is_logy, nokey,
      .				mv_list, cx_list, nmv,
      .				indep_dat, dep_dat, status )
 
@@ -117,6 +117,9 @@
 *      *acm* 10/01  remove VMS includes
 * V552 *acm*  3/03  Send the key string to key_loc since it may be multi-line
 *                   also, make strings longer
+* V580 *acm*11/04  Allow thickness to be set when cycling through colors automatically.
+*                  In call to line_style, when color = -11  then thin line, color=-21 
+*                  then thick=2, when color=-31 then thick=3
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -139,7 +142,7 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
-     .			is_logx, is_logy
+     .			is_logx, is_logy, nokey
 	INTEGER		symbol, color, step_inc, do_dash,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
@@ -299,7 +302,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   var1 = 2	! since first var is independent axis
 	   ndv  = nmv - 1	! # of dependent variables
-	   IF ( use_keys ) THEN
+	   IF ( use_keys .AND. (.NOT. nokey)) THEN
 	      plot_title = KEY_STRING( cx_list(1), key_doc, slen )
 	   ELSE
 	      plot_title = FULL_VAR_TITLE( cx_list(1), slen )
@@ -590,6 +593,8 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	            ind_min = SECS_TO_TSTEP( grid1, ind_min )
 	            ind_max = SECS_TO_TSTEP( grid1, ind_max )
 	         ENDIF
+              ELSE   ! /HLIM or /VLIM not used; check for range in indep direction
+                 IF (nload .EQ. 1) GOTO 5180
 	      ENDIF
 	      IF ( time_axis ) THEN
 	         IF ( pindeplim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max,
@@ -698,11 +703,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	      ELSE
 	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
 	      ENDIF
-	      CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
+              IF (.NOT. nokey) THEN
+	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, justify, plot_title(:slen))
-	      CALL PUT_KEY( nline_in_mem, plot_title(:slen),
+	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			    xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
+              ENDIF
  500	   CONTINUE
 	ELSE
 * *kob* 1/00 check the variable time_axis before looking at
@@ -731,7 +738,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 * ... keys for the dependent vars, or if one, only then title or axis label
 	   DO 600 ipl = var1, nmv
 	      nline_in_mem = nline_in_mem + 1
-	      IF ( use_keys ) THEN
+	      IF ( use_keys .AND. (.NOT. nokey) ) THEN
 	         plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
 	      ELSE
 	         plot_title = FULL_VAR_TITLE( cx_list(ipl), slen )
@@ -759,12 +766,14 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ENDIF
 	      ELSE
-	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
+                 IF (.NOT. nokey) THEN
+	            CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			       lab_ht, style, justify, plot_title(:slen) )
-	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
+	            CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			       xkeypos, ykeypos, xkeysize, ykeysize,
      .			       lab_ht, style,
      .			       lab_loc_absolute, lab_loc_absolute )
+	         ENDIF
 	      ENDIF
 
  600	   CONTINUE
@@ -826,5 +835,10 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	CALL ERRMSG( ferr_out_of_range, status,
      . 'Limits for log axis negative or too small: '//
      .  buff1(:slen)// ' : '//  buff2(:slen2), *5000 )
+
+
+ 5180	CALL ERRMSG( ferr_limits, status,
+     . 'One-point independent axis: Requires a '//
+     .  '/HLIMIT or /VLIMIT specification', *5000 )
 
 	END

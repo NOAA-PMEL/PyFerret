@@ -62,6 +62,7 @@ set_var.F\
 show_1_function.F\
 show_1_mr.F\
 show_1_uvar.F\
+show_1_uvar_xml.F\
 show_data_files.F\
 show_data_set_xml.F\
 show_data_set_params.F\

@@ -73,6 +73,10 @@ C*
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* v580 *acm* 8/04 Change use of 256 to buflen+1, 
+*                 where buflen is defined in cmndlen.inc
+
+        INCLUDE 'cmndlen.inc'
 
 	CHARACTER LABEL*(*),LINE*(*),FRMT*30
 	DIMENSION X(*),INTIF(*)
@@ -108,9 +112,9 @@ C	Search for space or comma  (legal seperator)
 C
 100	IOLD=I
 	ISPC=INDEX(LINE(I:),' ')+I-1
-	IF(ISPC.EQ.I-1)ISPC=256
+	IF(ISPC.EQ.I-1)ISPC=buflen+1
 	ICMA=INDEX(LINE(I:),',')+I-1
-	IF(ICMA.EQ.I-1)ICMA=256
+	IF(ICMA.EQ.I-1) ICMA=buflen+1
 	J=MIN0(ISPC,ICMA,ILEN+1)
 C
 C	Try to read a number,  if it fails put the rest into

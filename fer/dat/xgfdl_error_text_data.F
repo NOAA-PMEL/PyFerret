@@ -58,14 +58,11 @@
 * V230:   8/5/92 - "ignored" removed from text of ferr_too_many_args
 *        11/9/92 - text of unknown variable mentions not in data set
 * V530: *sh* 9/00 - added ferr_data_type
+* V580 *acm* 11/04 - New code ferr_nomessge for use when user-given error  
+*                    msg in coached string substitution
 
-#ifdef unix
 	include 'errmsg.parm'	! parameter definitions
 	include 'xerrmsg_text.cmn'	! common declaration
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	! parameter definitions
-	INCLUDE 'FERRET_CMN:XERRMSG_TEXT.CMN'	! COMMON declaration
-#endif
 
 
 * last error reported
@@ -265,5 +262,10 @@
      .		/ 'illegal data type (float,string,...) for operation'/
 	DATA report_err_code( ferr_data_type - greport )
      .		/ 'data_type' /
+
+	DATA err_text( ferr_nomessge - greport )
+     .		/ ' '/
+	DATA report_err_code( ferr_nomessge - greport )
+     .		/ 'no_message' /
 
 	END

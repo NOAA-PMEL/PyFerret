@@ -68,6 +68,9 @@
 * V530: 3/01 *sh* - added rgrd_nearest -- (unrestricted by source lims)
 * V550: 2/02 *sh* - did NOT change CAXIS_LEN to CAXIS_MODLEN
 *		    since subspan modulo default length is N not N+1
+* v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
+
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
@@ -252,6 +255,7 @@ c	   tmp_hi_ww = SECS_TO_TSTEP(dst_grid, src_hi_ww)
      .					     dst_grid, axis, box_lo_lim )
 	   cx_hi_ww(axis,dst_cx) = TM_WORLD( dst_hi_ss,
      .					     dst_grid, axis, box_hi_lim )
+           cx_cal_id(dst_cx) = dst_cal_id
 	ENDIF
 
 * even with sufficient source data we shouldn't exceed the requested region

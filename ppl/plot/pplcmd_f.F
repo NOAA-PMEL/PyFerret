@@ -90,6 +90,9 @@ C**
 * v552 *acm*  3/03 Longer strings: changes for multi-line labels
 * v552 *acm*  5/03 Add option to control whether cellarray calls are made for
 *                  shade plots (S_CELL)  Only used internally.
+* v580 *acm* 8/04 Change use of 256 to buflen+1, 
+*                 where buflen is defined in cmndlen.inc
+* v580 *acm* 8/04 allow PPL POLYGON as well as PPL FILLPOL after POLY/SET
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -176,6 +179,7 @@ c
 	include 'calendar.decl'
 	include 'calendar.cmn'
         INCLUDE 'pplcmd_strings.cmn'
+        INCLUDE 'cmndlen.inc'
 
 * special COMMON to let this routine know if FERRET is in control
         include 'ppl_in_ferret.cmn'
@@ -354,6 +358,7 @@ C
 	   endif
 	endif
 	makep = ' '
+        IF (makep .EQ. 'POLYGON') makep = 'FILLPOL'
 
 	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
 	IF (DONEF) RETURN
@@ -1025,7 +1030,7 @@ C	IF NO FIRST PARAMETER SKIP TMIN PROCESSING
 C
 	    IF(M.GE.1.AND.IFLG(1).EQ.0)GOTO 9201
 	    IC=INDEX(LABEL,',')
-	    IF(IC.EQ.0)IC=256
+	    IF(IC.EQ.0)IC=buflen+1
 	    IS=INDEX(LABEL,' ')
 	    IS=MIN0(IS,IC)
 
@@ -1058,7 +1063,7 @@ C	IF NO SECOND PARAMETER SKIP TMAX PROCESSING
 C
 9201	    IF(M.GE.2.AND.IFLG(2).EQ.0)GOTO 9202
 	    IC=INDEX(LABEL,',')
-	    IF(IC.EQ.0)IC=256
+	    IF(IC.EQ.0)IC=buflen+1
 	    IS=INDEX(LABEL,' ')
 	    IS=MIN0(IS,IC)
 
@@ -1518,7 +1523,7 @@ c       area
         if(iflg2)cangle=p(2)
         GOTO 6001
 
- 9183	makep='POLYGON'
+ 9183	makep='FILLPOL'   ! makep='POLYGON'
         if(iflg1)then
             ivcomp=p(1)
         else

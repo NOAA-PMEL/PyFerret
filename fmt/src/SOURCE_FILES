@@ -286,4 +286,5 @@ tm_set_free_event.c\
 tm_unblockify_ferret_strings.c\
 tm_unix_versions.c\
 tm_world_recur.c \
+tm_check_nan.c\
 tm_switch_nan.c

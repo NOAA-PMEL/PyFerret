@@ -135,7 +135,8 @@
 * V552 5/03 *acm* - bug fixes for parsing mulit-axis regrids, when uvar is
 *                   not loaded [gxy=var]  and [gxy=var[d=dset]]
 * v554 11/03*acm* - changing a comment, only. 
-
+* v5.80 *acm* 11/04 use cx_cal_id to store the calendar used when
+*                   computing world coordinates.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -145,6 +146,7 @@
 *	/q=val_1:val_2:val_inc	specifies a range and an increment
 *	/q=val_1:val_2@XXX	specifies a range with a transformation XXX
 *	/q=@XXX			specifies a transformation XXX, only
+
 
 * logical arguments:
 *	report_unknown 	  if .TRUE. then unknown specifiers are errors
@@ -684,6 +686,10 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
      .			cx_lo_ww ( idim, mods_cx ),
      .			fmat_lo, cal_id, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+
+* ACM 11/04 save calendar used to compute world coordinates
+           IF (idim .EQ. t_dim) cx_cal_id(mods_cx) = cal_id
+
 * kob 8/97 - set cx_calender to true/false depending on whether date is
 *            a formated string or not
 	   IF (idim.EQ.t_dim) cx_calendar(mods_cx) = fmat_lo

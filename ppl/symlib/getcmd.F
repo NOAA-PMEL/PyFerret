@@ -84,6 +84,9 @@ C**
 C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
+* v580 *acm* 8/04 Change use of 256 to buflen+1, 
+*                 where buflen is defined in cmndlen.inc
+
         logical         tmapdebug
         common/tmdebug/ tmapdebug
 
@@ -91,6 +94,7 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
 	INCLUDE 'LUNITS.INC'
+        INCLUDE 'cmndlen.inc'
 
 	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*2048,FILE*80
 	CHARACTER ICOM*2048
@@ -217,9 +221,9 @@ C     Brain dead exclusion of @ mod
 #else
 	    islsh=index(line,'/')-1
 #endif
-	    IF(ISPC.LE.0)ISPC=256
-	    IF(ICMA.LE.0)ICMA=256
-	    IF(ISLSH.LE.0)ISLSH=256
+	    IF(ISPC.LE.0)ISPC=buflen+1
+	    IF(ICMA.LE.0)ICMA=buflen+1
+	    IF(ISLSH.LE.0)ISLSH=buflen+1
 	    I=MIN0(ISPC,ICMA,ISLSH,ILEN)
 	    FILE=LINE(2:I)
 	    IF(ILEN.LT.I+2)THEN

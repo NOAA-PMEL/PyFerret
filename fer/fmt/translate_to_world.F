@@ -62,6 +62,8 @@
 * V533: *sh* 7/01 - bug fix: negative time steps still formatted as seconds
 *		    since BC.  A leftover from an Oct. 1997 change by K.O.
 *	            omitted from this documentation block
+* V580 *acm* 10/01  modify the kludge to restrict degrees to precision 0.001
+*                   If the calling sequence asks for more precision, allow it.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -127,7 +129,7 @@
 	   IF ( idim .EQ. x_dim ) THEN
 * x - longitude E/W
 * ... restrict degrees to a precision of .001
-	      val4 = INT(val4 * 1000.)/1000.
+              IF (ndec .LE. 3) val4 = INT(val4 * 1000.)/1000.
 	      val4 = MOD( val4, 360. )
 	      IF ( val4 .LT. 0.0 ) val4 = val4 + 360.	! 1/27
               modulo = val4 .NE. val4_orig
@@ -141,7 +143,7 @@
 	   ELSEIF ( idim .EQ. y_dim ) THEN
 * y - latitude N/S
 * ... restrict degrees to a precision of .001
-	      val4 = INT(val4 * 1000.)/1000.
+	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.)/1000.
  	      IF     ( val4 .LT. 0.0 ) THEN
 	         val4 = -val4
 	         code    = 'S'			! degS

@@ -61,6 +61,8 @@
 *                               have limits set
 * V550 *sh* 11/02 - added remark about weak_cache to 4/99 comments
 *			(remark copied from ChangeLog)
+* ??? v570 *acm* 7/04  do we want to use mabstract = grid_line( idim, saved_abstract_grid )
+*                      instead of getting the line from mgrid_abstract ???
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -89,7 +91,7 @@
 
 * internal variable declarations:
 	LOGICAL needs_limits, its_unspec
-	INTEGER idim, cat, var, grid, mabstract, line, status
+	INTEGER idim, cat, var, grid, mabstract, line, status, grr
 
 * possible skip this routine
 	IF (mode_stupid) GOTO 1000
@@ -104,7 +106,12 @@
 
 * get the axis number for the abstract axis
 * 10/02 - need to do this for each dimension, not just x_dim
-	   mabstract = grid_line( idim, mgrid_abstract )
+
+           grr = saved_abstract_grid
+           IF (grr .EQ. unspecified_int4) grr = mgrid_abstract
+
+!	   mabstract = grid_line( idim, mgrid_abstract )
+	   mabstract = grid_line( idim,  grr)
 
 
 	   IF ( cx_by_ss(idim, cx) ) THEN

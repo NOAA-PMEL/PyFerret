@@ -49,19 +49,14 @@
 * V200:  9/1/89
 * V312: 5/94 - array "memory" as a calling argument
 * V530:  8/00 *sh* - partial implementation of permuting string arrays
-*		("table only"
+*		("table only")
+*v580  *acm* 11/04 transfer cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, msrc, perm(4), mdst, status
@@ -149,6 +144,7 @@
 	cx_type    ( cx_buff ) = cx_type    ( cx )
 	cx_ovsiz   ( cx_buff ) = cx_ovsiz   ( cx )
 	cx_bad_data( cx_buff ) = cx_bad_data( cx )
+        cx_cal_id  ( cx_buff ) = cx_cal_id  ( cx )
 
 	cx_unstand_grid( cx_buff ) = cx_unstand_grid( cx )
 

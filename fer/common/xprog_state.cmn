@@ -26,6 +26,8 @@
 * V553: 8/03 *acm*- new scriptfile_name and state its_script
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/04 - change ordering in the common block so compilers are happy
+* V580: *acm*10/04 - add silent_err, to be set true for SHOW VAR/XML when
+*                    checking for user variables not relevant to the context
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -75,7 +77,7 @@
      .			pmode_gui		= 21,
      .			pmode_logo		= 22,
      .			pmode_labels		= 23,
-     .			pmode_grat		= 24 )
+     .			pmode_grat		= 24)
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
 
@@ -132,7 +134,8 @@
      .		denig_pen_msg_done,
      .		in_get_grid_mode,
      .          its_script,
-     .          grat_on
+     .          grat_on,
+     .          silent_err
 
 
 ! Note: available_char_var is unused
@@ -186,6 +189,7 @@
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
      .		genl_storage, its_script, grat_on,
+     .          silent_err,
      .		ppl_wait, mode_name,
      .          scriptfile_name
 

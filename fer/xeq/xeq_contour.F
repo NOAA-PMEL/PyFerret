@@ -94,7 +94,12 @@
 * V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by contour)
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by contour)
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
-
+* v580 *acm* 6/15/04 In the workaround which does a PPL LEV command for data with
+*                    a single value, need to give the PPL command the value with  
+*                    more precision. (single value data isnt contoured or filled,
+*                    but put this fix in as a parallel to what is done in shade
+*                    and polygon.)
+ 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -275,10 +280,14 @@
  3100	FORMAT('CONSET ',F8.3,',',I4,', , , , , ,',F7.2)
 
 * PPLUS blows up setting auto contour levels if all data have same value
+* But, do not let this be rounded off, or we cannot find the color when matching 
+* this value in get_ndx, called by fillpol.  ( although, if there is just
+* one level, the fill is not done.)
+
 	IF ( no_range  .AND. .NOT.no_data 
      .	     .AND. qual_given( slash_cont_lev_same ) .EQ. 0 )
      .		CALL PPLCMD ( from, line, 0, 
-     .		'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
+     .		'LEV () ('//TM_FMT(only_val, 8, 12, slen)//')' , 1, 1 )
 
 * default key
 	   do_key =  (qual_given(slash_cont_key)  .GT. 0)

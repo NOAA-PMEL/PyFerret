@@ -1,4 +1,4 @@
-      SUBROUTINE modscat (ax, nax, nscat, scatm)
+/*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -30,45 +30,22 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-* 
-* ACM 11/00
-*  Called by scat2gridlaplace* gridding functions.
-*  If there is a modulo axis, apply modulo-ness to the coordinates in that 
-*  direction of the scattered points.
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*
+*/
 
-*  ax           modulo axis
-*  nax          number of points in the modulo axis
-*  nscat        input: number of scattered points, output: updated number.
-*  scatm        scattered points coordinate array in the direction of the 
-*               modulo axis
+/* tm_check_nan.c :
+/*  see if value is NaN */
 
-      REAL scatm(*)
-      REAL*8 ax(*)
-      INTEGER nscat, i, nax
-      REAL ax1, axf, scatpt, diff, range
+/* *acm* - 11/04/04 */
 
-      ax1 = ax(1)
-      axf = ax(nax)
-      range = axf - ax1
+/*int FORTRAN(tm_check_nan)( float *src )*/
+int tm_check_nan_( float *src )
 
-      DO 100 i = 1, nscat
-         scatpt = scatm(i)
-         diff = scatpt - axf
-         DO WHILE (diff .GE. 0)
-            scatpt = scatpt - range
-            diff = scatpt - axf
-         ENDDO
+{
+  int result = 0;
+  
+  if  (isnan(*src)) result = 1;
+  return result;
 
-         diff = scatpt - ax1 
-         DO WHILE (diff .LT. 0.)
-            scatpt = scatpt + range
-            diff = scatpt - ax1
-         ENDDO
-
-         scatm(i) = scatpt
-  100 CONTINUE
-
-      RETURN
-      END
-
+}

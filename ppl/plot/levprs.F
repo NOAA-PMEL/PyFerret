@@ -50,6 +50,10 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+* v580 *acm* 8/04 Change use of 256 to buflen+1, 
+*                 where buflen is defined in cmndlen.inc
+
+        INCLUDE 'cmndlen.inc'
 
 	LOGICAL BLNK
 	CHARACTER PRSE*(*)
@@ -61,10 +65,10 @@ C                with "*(*)" for the linux port
 	IPOS=1
 	I=1
 30	ICM=INDEX(PRSE,',')
-	IF(ICM.EQ.0)ICM=256
+	IF(ICM.EQ.0)ICM=buflen+1
 	IBL=INDEX(PRSE,' ')
-	IF(IBL.EQ.0)IBL=256
-	ISTPP=MIN0(ICM,IBL,2048)
+	IF(IBL.EQ.0)IBL=buflen+1
+	ISTPP=MIN0(ICM,IBL,buflen)
 	BLNK=PRSE(ISTPP:ISTPP).EQ.' '
 	IF(ISTPP.NE.1)THEN
 		INTIF(I)=1
@@ -78,7 +82,7 @@ C                with "*(*)" for the linux port
 996		FORMAT(E20.0)
 	ENDIF
 20	ISTPP=ISTPP+1
-	IF(ISTPP.GT.2048)GOTO 40
+	IF(ISTPP.GT.buflen)GOTO 40
 	IF(PRSE(ISTPP:ISTPP).EQ.' '.OR.
      *	(BLNK.AND.PRSE(ISTPP:ISTPP).EQ.','))GOTO 20
 	PRSE=PRSE(ISTPP:)

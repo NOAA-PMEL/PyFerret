@@ -42,19 +42,17 @@
 *       Mod 3.15.94 *jd* to call X event processing 
 *	*sh* 3.5.97 Mod to support metafile-only (no X) output through a
 *		cuckoo's egg implantation of meta_wsid in place of wsid
-
-
-#ifdef unix
+*      *acm* 8/27/04 New returns from resize_xgks_window; pixx,pixy which are
+*                    the size of the window in pixels.  Save these in common 
+*                    gkscm2.cmn, so that in gif and batch modes we can return 
+*                    them in symbols PPL$XPIXEL and PPL$YPIXEL.
+*
 #   ifndef atc_gks
         include         'gkspar.inc'
 #   endif
         include         'ws_types.cmn'
 	include         'gkscm2.cmn'
-#else
-        include         'sys$library:gksdefs.bnd'
-        include         'tmap_pplv11inc:ws_types.inc'
-	include         'tmap_pplv11inc:gkscm2.cmn'
-#endif
+
 
 	integer		wsid,ierr,conid,wstype
 	real		xmin,xmax,ymin,ymax,xsize,ysize,xfactor,yfactor
@@ -69,6 +67,8 @@
 *******************************************************************************
 * initialize batch mode
 	batch = ITS_BATCH_GRAPHICS()
+        pixx = -1
+        pixy = -1
 
 #ifdef atc_gks
 	
@@ -95,10 +95,11 @@
 	   call gswkvp (wsid,xmin,xmax,ymin,ymax)
 	endif
 #elif xgks
-	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin)
+	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin,pixx,pixy)
 c       Also need to resize the metafile window, if it is open *js* 8.97
 	if (meta_actv .and. .not. meta_clsplt) then
-	   call resize_xgks_window (meta_wsid, xmax-xmin,ymax-ymin)
+	   call resize_xgks_window (meta_wsid, xmax-xmin,ymax-ymin,
+     .             pixx,pixy)
 	end if
 #else
 	call gswkvp (wsid,xmin,xmax,ymin,ymax)

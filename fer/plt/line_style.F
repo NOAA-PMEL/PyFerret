@@ -59,7 +59,10 @@
 * V510 *sh* 3/00 - added args use_line and sym_size to suport PLOT/COLOR=/SIZE=
 * V530 *acm 5/01 - added args do_dash and dashstyle for 
 *		   PLOT/DASH[=(dn1,up1,dn2,up2)]
-
+* V580 *acm*11/04  Allow thickness to be set when cycling through colors automatically.
+*                  When color = -11  then thin line, color=-21 then thick=2, when 
+*                  color=-31 then thick=3
+                 
 	include	'slash.parm'
 	include	'plot_setup.parm'
 	include	'xplot_setup.cmn'
@@ -76,12 +79,12 @@
 
 * internal variable declarations
         LOGICAL unique_symbol, symbol_only1, select_lines
-	INTEGER	style, ppl_draw_line, sym_so_far, i
+	INTEGER	style, ppl_draw_line, sym_so_far, i, ltyp
         SAVE sym_so_far     ! # symbols on the screen ... *sh* 10/91
 
 * internal parameter declarations
-	INTEGER	num_line
-	PARAMETER     ( num_line = num_plain*num_sym )
+	INTEGER	num_line, ncolors
+	PARAMETER     ( num_line = num_plain*num_sym, ncolors=6)
 
 * internal variable declarations
 	INTEGER	ityp, imrk, style0, sym(num_sym)
@@ -141,9 +144,20 @@
 	ELSEIF ( imrk .NE. 0 ) THEN
 	  imrk = sym(imrk)
 	ENDIF
-	IF ( color .GT. 0 ) ityp = color
+	IF ( color .GT. 0 ) THEN
+           ityp = color
+           ltyp = color
+        ELSE
+           IF (color .EQ. -21) THEN
+              ltyp = ityp + ncolors
+           ELSE IF (color .EQ. -31) THEN
+              ltyp = ityp + ncolors*2
+           ELSE
+              ltyp = ityp
+           ENDIF
+        ENDIF
 
-	WRITE ( ppl_buff, 3000 ) line_number, ityp
+	WRITE ( ppl_buff, 3000 ) line_number, ltyp
  3000	FORMAT('PEN ',2I4)
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 

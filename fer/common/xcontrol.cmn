@@ -8,6 +8,10 @@
 * V531 5/01 *sh* - added has_continuation_cmnd
 * V533 7/01 *sh* - increased cs_max from 10 to 200 (allowing recursive scripts)
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
+* v580 11/04 *acm* use cx_cal_id to store the calendar used when
+*                  computing world coordinates. Save this in a repeat
+*                  with the other context info.  Also need cs_cal_id 
+*                  for repeat command.
 
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 200 )
@@ -22,6 +26,8 @@
      .		cs_cmnd_num( cs_max ),
      .		cs_axis    ( cs_max ),
      .		cs_loop	   ( cs_max ),
+     .          cs_save_cal( cs_max ),
+     .          cs_cal_id  (cs_max),
      .		len_cmnd_copy
 
 	REAL*8	cs_limit   ( cs_max ),
@@ -48,6 +54,8 @@
      .		cs_cmnd_num,
      .		cs_axis    ,
      .		cs_loop    ,
+     .          cs_save_cal,
+     .          cs_cal_id,
      .		cs_in_control,
      .		cs_by_ss   ,
      .		cs_save_by_ss,

@@ -90,7 +90,7 @@ HDFLIB		= /opt/local/lib/libdf.a
 #CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
 CDFLIB          = /home/ja4/kobrien/src/solaris/netcdf-3.5.0/lib/libnetcdf.a
 
-DODS_LIBS	= -L/home/stout/kobrien/solaris/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
+DODS_LIBS	= -L/home/stout/kobrien/solaris/DODS_v3.4.5/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz 
 
 TERMCAPLIB 	= -ltermcap
 

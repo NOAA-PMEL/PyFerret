@@ -1,4 +1,6 @@
-      SUBROUTINE modscat (ax, nax, nscat, scatm)
+	INTEGER FUNCTION CX_DIM_LEN_ZERO ( idim, cx )
+
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -31,44 +33,31 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-* 
-* ACM 11/00
-*  Called by scat2gridlaplace* gridding functions.
-*  If there is a modulo axis, apply modulo-ness to the coordinates in that 
-*  direction of the scattered points.
+*
+*
+* determine the number of points along the indicated axis of a variable context.
+* If the subscripts are undefined, return zero.
+*
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* (based on cx_dim_len
+* V580: 10/8/04 *ACM*
+* If the subscripts are undefined, return zero.
 
-*  ax           modulo axis
-*  nax          number of points in the modulo axis
-*  nscat        input: number of scattered points, output: updated number.
-*  scatm        scattered points coordinate array in the direction of the 
-*               modulo axis
+	include 'ferret.parm'
+	include 'xcontext.cmn'
 
-      REAL scatm(*)
-      REAL*8 ax(*)
-      INTEGER nscat, i, nax
-      REAL ax1, axf, scatpt, diff, range
 
-      ax1 = ax(1)
-      axf = ax(nax)
-      range = axf - ax1
+* calling argument declarations:
+	INTEGER	idim, cx
 
-      DO 100 i = 1, nscat
-         scatpt = scatm(i)
-         diff = scatpt - axf
-         DO WHILE (diff .GE. 0)
-            scatpt = scatpt - range
-            diff = scatpt - axf
-         ENDDO
+	   CX_DIM_LEN_zero = cx_hi_ss( cx, idim ) 
+     .		      - cx_lo_ss( cx, idim ) + 1
+           IF ( (cx_hi_ss( cx, idim ) .EQ. unspecified_int4)  .OR.
+     .		(cx_lo_ss( cx, idim ) .EQ. unspecified_int4) )
+     .       CX_DIM_LEN_ZERO = 0
 
-         diff = scatpt - ax1 
-         DO WHILE (diff .LT. 0.)
-            scatpt = scatpt + range
-            diff = scatpt - ax1
-         ENDDO
-
-         scatm(i) = scatpt
-  100 CONTINUE
-
-      RETURN
-      END
-
+	RETURN
+	END

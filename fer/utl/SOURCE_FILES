@@ -71,6 +71,7 @@ getunit.F\
 gname_from_number.F\
 go_file_input.F\
 grid_from_name.F\
+grid_from_name_xml.F\
 grid_subscript_extremes.F\
 grid_subscript_extremes_no_mod.F\
 grid_world_extremes.F\
@@ -98,6 +99,7 @@ minmax.F\
 mode_gui_on.F\
 modulo_parity.F\
 mult_grid.F\
+ndig_coords.F\
 no_grid_range.F\
 no_line_range.F\
 parse_nam_dset_grd.F\

@@ -59,6 +59,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v551 *acm* 1/03  Also check for extension .NC along with .DES, .CDF
+* v580 *acm*11/04  Fix bug 1102; under linux, var[d=5coads] is read as dset=5
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -76,6 +77,8 @@
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len
 	CHARACTER	buff*256
+	CHARACTER*13	TM_STRING, buff13, vbuff
+        REAL*8          val
 
 	IF ( TM_DIGIT( dname ) ) THEN
 
@@ -85,11 +88,21 @@
 *              of a dataset (eg 5coads) rather than just an error
 * *kob* 3/30/99 - minor modification in logic forced by F90.  
 c *kob* 4/97
+* *acm* 11/04 current linux compiler reads a filename starting with digits
+*             as just the digits with no error (10a.nc is read as dset=10)
+*             Check explicitly whether the dset read is the same as buff
+
 #ifdef MANDATORY_FORMAT_WIDTHS
 	   READ (buff,*, ERR=50 ) dset
 #else
 	   READ (buff, '(I)', ERR=50 ) dset
 #endif
+           val = dset
+           buff13 = TM_STRING(val)
+           CALL TM_PACK_STRING(buff13, vbuff, 1,13, short_len)
+	   vax_code = STR_CASE_BLIND_COMPARE( vbuff, buff(1:13) )
+	   IF (  vax_code .NE. vms_str_success ) GOTO 50
+
 	   GOTO 200
 	ENDIF
 

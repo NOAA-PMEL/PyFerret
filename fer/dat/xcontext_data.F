@@ -59,20 +59,18 @@
 *                            (Arguably better to do this in a ferret_init file)
 * V230:  1/30/92: Sun port - fixed cx_name data initialization
 * V420: 9/8/95 - added initializations for implicit grid creation
+* V580: 11/04  - new cx_cal_id 
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
-	INTEGER	    n4cx, n4neg, num_cx_undefined, num_cx_predefined
+	INTEGER	    n4cx, n4neg, num_cx_undefined, num_cx_predefined, 
+     .              all_undefined
 	PARAMETER ( n4cx  = 4 * max_cx,
      .		    num_cx_predefined = 3, ! 0, -1 and -2 are named cx's T,W&N
      .		    num_cx_undefined = max_cx_predefined - num_cx_predefined,
-     .		    n4neg = 4 * num_cx_undefined )
+     .		    n4neg = 4 * num_cx_undefined, 
+     .              all_undefined = max_cx+max_cx_predefined)
 	INTEGER	    i, j
 
 	DATA	cx_stack_ptr	/ cx_stack_ptr_base /
@@ -113,11 +111,14 @@
 	DATA	((cx_given(i,j),i=1,4),j=min_context,-3)
      .					/ n4neg *.FALSE.	 /
 
+
 	DATA
      .		cx_unstand_grid	/ max_cx*.FALSE.		/,
      .		cx_regrid_trans	/ n4cx*unspecified_int4	/
 
 	DATA	cx_ovsiz(cx_last)/ ovsiz_off /
+
+        DATA     cx_cal_id / all_undefined*unspecified_int4	/
 
 * pre-initialize unused named region subscripts
 * (added exact limits 1/92 for Sun port)

@@ -68,6 +68,8 @@
 * V561 *acm*  4/04 -Fix bug plotting a noleap time axis: cx_lo_ww and cx_hi_ww
 *                   are originally set without knowledge of calendar, so when
 *                   resetting time step here, also reset the limits for cx_cmnd
+* V580 *acm* 11/04  - Use cx_cal_id to keep track of which calendar 
+*                     used when cx_lo_ww and cx_hi_ww are computed.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -95,7 +97,7 @@
 * internal parameter declarations:
 	LOGICAL     full_precision
 	INTEGER	    err_ss_lims, err_ww_lims
-	INTEGER TM_GET_CALENDAR_ID, cal_id, dflt_cal_id
+	INTEGER TM_GET_CALENDAR_ID, cal_id, prev_cal_id
 	REAL*8      new_lo_ww, new_hi_ww
 	PARAMETER ( full_precision = .TRUE.,
      .		    err_ss_lims = -77,
@@ -168,21 +170,30 @@
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
 * 2/01 *acm* reset time step if axis is a different calendar than Gregorian.
 * 8/03 *acm* write error message if time origin or limits were mis-defined.
+*11/04 *acm* reset time step only if axis is a different calendar than 
+*            the calendar originally used to compute world coordinates
 
 	   IF ( idim .EQ. t_dim .AND.cx_calendar(cx) ) THEN
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
 	      bc_to_t0 = SECS_FROM_BC(line_t0(axis), cal_id, istat)
 	      IF (istat .ne. ferr_ok) GO TO 4000
 
-              dflt_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
-              CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), new_lo_ww, 
-     .			dflt_cal_id, cal_id, istat)
+!              prev_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
 
-c              status = err_ww_lims
-              IF (istat .ne. ferr_ok) GO TO 5000
-              CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), new_hi_ww,  
-     .			dflt_cal_id, cal_id, istat)
-	      IF (istat.ne. ferr_ok) GO TO 5000
+              prev_cal_id = cx_cal_id(cx)
+              IF (prev_cal_id .NE. cal_id) THEN
+                 CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), 
+     .		     new_lo_ww, prev_cal_id, cal_id, istat)
+c                status = err_ww_lims
+                 IF (istat .ne. ferr_ok) GO TO 5000
+                 CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), 
+     .		     new_hi_ww, prev_cal_id, cal_id, istat)
+	         IF (istat.ne. ferr_ok) GO TO 5000
+                 cx_cal_id(cx) = cal_id
+              ELSE
+                 new_lo_ww = -1*cx_lo_ww(idim,cx)
+                 new_hi_ww = -1*cx_hi_ww(idim,cx)
+              ENDIF
 
 	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
 	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
@@ -191,9 +202,10 @@ c              status = err_ww_lims
 * also fix the world limits for cx_cmnd, if they were originally set 
 * using default calendar
 
-              IF (cal_id .NE. dflt_cal_id) THEN   
+              IF (cal_id .NE. prev_cal_id) THEN   
                   cx_lo_ww(idim,cx_cmnd) = -1*new_lo_ww
                   cx_hi_ww(idim,cx_cmnd) = -1*new_hi_ww
+                  cx_cal_id(cx_cmnd) = cal_id
               ENDIF
 
            ENDIF

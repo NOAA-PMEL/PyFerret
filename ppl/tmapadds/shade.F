@@ -61,6 +61,7 @@
 * v570  4/04*acm* The fix above went too far.  Use TM_FPEQ to see if
 *                 values are equal or close.  Also fixes this adjustment
 *                 when the range has negative values; was always incorrect.
+* v580  8/04*acm* Fix bug 957 shade/lev=1 of a constant field needs zlev(1) to be set.
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -104,6 +105,7 @@ C                         of levels
 
 C             NLEV2=0 is the code in pplmod_plotz
 	      NLEV2=1
+              zlev(1) = zmin
 
 	   ELSE
 C       

@@ -87,6 +87,8 @@
 * v552: *acm* 4/03 - Add RETURN=dsettitle
 *       *acm* 4/03 - Add RETURN=nc_scale, nc_off[set], user_scale, user_off[set]
 * V570  *acm* 6/04 - Add RETURN=CALENDAR
+* V580  *acm* 8/04 - Increase the length of string repl from 128 to 2048: If using a
+*                    long string, e.g. in a label, this string can be very long. (bug 956)
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -108,7 +110,7 @@
 
 * local parameter declarations
 	INTEGER	   max_len
-	PARAMETER (max_len = 128)
+	PARAMETER (max_len = 2048)
 !	INTEGER	   fmt_len
 !	PARAMETER (fmt_len = 64 )
 

@@ -65,6 +65,8 @@
 * V530:  3/01 *sh* - added prgrd_nearest
 *        6/01 *acm* remove redundant calendar=.FALSE. after line 134
 * V552 *acm* 4/03- up VAR_CODE  to 128 chars 
+* v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -330,8 +332,10 @@
 	cx_hi_ww( axis, src_cx )	= unspecified_val8
 	cx_given( axis, src_cx )	= .FALSE.
 * 9/97 *kob* - cx_calendar needs to also reflect these changes
-	IF (axis .eq. t_dim)
-     .      cx_calendar(src_cx) = .FALSE.
+	IF (axis .eq. t_dim) THEN
+           cx_calendar(src_cx) = .FALSE.
+           cx_cal_id(src_cx) = unspecified_int4
+        ENDIF
 
 	RETURN
 

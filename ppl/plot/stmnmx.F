@@ -43,6 +43,7 @@
 * *sh* - 1/27/89 corrected bug: min/max search improperly rejects LIMITs points
 * *sh* - 12/8/93 corrected bug: vectors blow on divied by zero attempt
 * *jd* - 4.20.99 Don't delete symbols {X,Y}{MIN,MAX} in overlay plots
+* V580 *acm* 8/04  Allow for PPL POLYGON as well as PPL FILLPOL after a POLY/SET command.
 
 	DIMENSION X(NSIZE)
 C**
@@ -56,7 +57,6 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
@@ -71,21 +71,7 @@ C**
         include 'SWITCH.INC'
         include 'pltl_inc.decl'
         include 'PLTL.INC'
-#else
-        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-        INCLUDE 'PPLV11INC:LINES.INC'
-        INCLUDE 'TMAP_PPLV11INC:DATA_INC.DECL'
-        INCLUDE 'PPLV11INC:DATA.INC'
-        INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
-        INCLUDE 'PPLV11INC:MISS.INC'
-	INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
-	INCLUDE 'PPLV11INC:HD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-        INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
-        INCLUDE 'PPLV11INC:PLTL.INC'
-#endif
+
 	CHARACTER SYM*30,VAL*10
 C
 	SYM='*PPL$LINE_COUNT'
@@ -200,7 +186,7 @@ c
 	    call putval(sym,ylow,4,ier)
 
 C       Don't define line symbols for FILLPOL/POLYGON
-	ELSE if (makep .ne. 'FILLPOL') then
+	ELSE if (makep .ne. 'FILLPOL' .AND. makep .ne. 'POLYGON') then
 C
 C	LINE DATA
 

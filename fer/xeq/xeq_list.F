@@ -191,9 +191,12 @@
 	   CALL CDF_PREP_CACHE( cx_last, filename, nvars,
      .			  memory, is_mr, is_cx, clobber, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+           edges_flag = 0
+           do_bounds = .FALSE.
 	   CALL CDF_LIST( memory, filename( 1:TM_LENSTR1(filename)), 
      .                    .FALSE., 'N', nvars, is_mr, is_cx,
-     .			   ' ', .TRUE., pcdf_mode_cache, clobber, status )
+     .			   ' ', .TRUE., pcdf_mode_cache, clobber, 
+     .                    edges_flag, do_bounds, status )
 	   CALL DELETE_MRS_IN_PROGRESS		! remove temporary vars
 	   RETURN
 	ENDIF

@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_DATA_SET_VARS_XML( lun, dset )
+	SUBROUTINE SHOW_DATA_SET_VARS_XML( lun, dset)
 
 *
 *
@@ -41,6 +41,10 @@
 * programmer - Ansley Manke, based on show_data_set_vars.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
+* V5.80 13-Sep-2004 *acm* Add data-set specific user variables to the listing
+*       13-Oct-2004 *acm* Make the current dataset the default dataset so
+*                         we can get all the info on dataset-specific user-defined
+*                         variables in all files.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -56,15 +60,19 @@
 	include	'xtext_info.cmn'
 	include	'xprog_state.cmn'
 	include	'xrisc.cmn'
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	lun, dset
 	
 * local variable declarations:
-	INTEGER   TM_LENSTR, TM_LENSTR1, ivar, slen, grid
+	INTEGER   TM_LENSTR, TM_LENSTR1, GRID_FROM_NAME_XML,
+     .            ivar, slen, grid, cx_expr, dset_save, status
         CHARACTER TM_FMT*16, show_str*16
+        CHARACTER uvarname*150
 
  2020   FORMAT ('<var name="', A, '">' )
+ 2025   FORMAT ('<definition="', A, '">' )
  2030   FORMAT( '<units>', A, '</units>' )
  2040   FORMAT( '<long_name>', A, '</long_name>' )
  2050   FORMAT( '<history>', A, '</history>' )
@@ -74,6 +82,11 @@
  2090   FORMAT ('</var>')
 
 * describe the variables in the set, including a report on the axes of this grid.
+
+* temporarily make this the default data set
+
+        dset_save = cx_data_set(cx_last)
+        cx_data_set(cx_last) = dset
 
 	DO 400 ivar = 1, maxvars
 	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 400
@@ -129,13 +142,76 @@
            ENDIF
 
            grid = ds_grid_number(ivar)
-           CALL SHOW_GRID_XML (lun, grid)
+           CALL SHOW_GRID_XML (lun, grid, unspecified_int4)
 
 	   WRITE ( risc_buff, 2090 )
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
  400	CONTINUE
 
+* show the data-set-specific user-defined variables
 
-	RETURN
-	END
+	DO 600 ivar = 1, max_uvar
+	   IF (uvar_num_items(ivar) .EQ. uvar_deleted  ) GOTO 600
+	   IF (uvar_dset(ivar) .EQ. dset) THEN
+
+* ... output variable code, units, grid, and type
+
+             uvarname = uvar_name_code(ivar)
+             slen = TM_LENSTR1(uvarname)
+             WRITE ( risc_buff, 2020 ) uvarname(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             slen = TM_LENSTR1(uvar_text(ivar))      
+             WRITE ( risc_buff, 2025 ) uvar_text(ivar)(1:slen)
+
+             slen = TM_LENSTR(uvar_units(ivar))
+             IF (uvar_units(ivar)(1:2) .NE. char_init 
+     .             .AND. slen.GT.0) THEN
+                slen = TM_LENSTR1(uvar_units(ivar))
+                WRITE ( risc_buff, 2030 ) uvar_units(ivar)(1:slen)  
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             ENDIF
+
+             slen = TM_LENSTR(uvar_title(ivar))
+             IF (uvar_title(ivar)(1:2) .NE. char_init 
+     .             .AND. slen.GT.0) THEN
+                slen = TM_LENSTR1(uvar_title(ivar))
+                WRITE ( risc_buff, 2040 ) uvar_title(ivar)(1:slen)
+                CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+             ENDIF
+
+! missing_flag comes from attribute FillValue; 
+! bad_flag comes from missing_value
+
+             show_str = TM_FMT(uvar_bad_data(ivar), 16,16,slen)
+             WRITE ( risc_buff, 2060 ) show_str(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+             show_str = TM_FMT(uvar_bad_data(ivar), 16,16,slen)
+             WRITE ( risc_buff, 2070 ) show_str(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+             IF (uvar_data_type(ivar,dset) .EQ. ptype_string ) THEN
+                risc_buff = '<datatype>STRING</datatype>'
+             ELSE
+                risc_buff = '<datatype>FLOAT</datatype>' 
+             ENDIF
+
+             grid = GRID_FROM_NAME_XML( uvarname, cx_last, cx_expr, status )
+
+             grid = uvar_grid(ivar,dset)
+             IF (grid .NE. unspecified_int4) 
+     .          CALL SHOW_GRID_XML (lun, grid, cx_expr)
+
+             WRITE ( risc_buff, 2090 )
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+         ENDIF
+ 600  CONTINUE
+
+* Restore the default data set
+
+      cx_data_set(cx_last) = dset_save
+
+      RETURN
+      END

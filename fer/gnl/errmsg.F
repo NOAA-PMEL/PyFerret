@@ -81,8 +81,11 @@
 *				a filename or variable name
 * *acm 1/02  -v5.41  -- Check for mode ignore_error before closing out all open 
 *                       IF blocks on error  (at label 1000)
+* *acm* 10/04 v5.80  -- Check flag silent_err. This is set for SHO VAR/XML when
+*                       checking for user variables not relevant to the context
+* *acm* 10/04 v5.80  -- New code ferr_nomessge for use when user-given error msg 
+*                       in coached string substitution
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -91,19 +94,7 @@
         include 'xrisc.cmn'
         include 'xgui.cmn'
 	include 'xplot_setup.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XERRMSG_TEXT.CMN'
-        INCLUDE 'FERRET_CMN:XRISC.CMN'
-        INCLUDE 'FERRET_CMN:XGUI.CMN'
 
-* VMS-specific message processing
-	INTEGER		msgvec(8), fnum, rmssts, rmsstv, iunit, condval
-
-#endif
 
 * ^C handling routine
 	EXTERNAL CTRLC_AST
@@ -136,7 +127,7 @@
 #endif
 
 * display error message 
-	IF ( status .GT. greport ) THEN
+	IF ( status .GT. greport .AND. (.NOT.silent_err) ) THEN
 	   len_text = TM_LENSTR1( err_text(status - greport) ) 
 	   IF ( err_string .EQ. ' ' ) THEN
 	      CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
@@ -150,10 +141,18 @@
 	      ELSE
 	         len_string = TM_LENSTR1( err_string )
 	      ENDIF
-	      CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
+
+              IF (err_text(status-greport) .EQ. ' ') THEN
+ 	         CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
+     .			        risc_buff(:len_string) )
+!     .				': '//err_string(:len_string) )  !11/93 SUN bug
+              ELSE
+	         CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
      .				err_text(status-greport)(:len_text)//
      .				': '//risc_buff(:len_string) )
 !     .				': '//err_string(:len_string) )  !11/93 SUN bug
+              ENDIF
+    
 	      IF ( multiline ) CALL WRITE_MULTI(err_lun, err_string(cr_pos+1:))
 	   ENDIF
  3000	   FORMAT (' **ERROR: ',3A)
@@ -168,7 +167,7 @@
 	   GOTO 1000
 
 * error message from ERR= branch ?
-	ELSEIF ( status .EQ. ferr_ erreq ) THEN
+	ELSEIF ( status .EQ. ferr_erreq ) THEN
 
 #ifdef unix
 	   len_string = TM_LENSTR1( risc_buff )

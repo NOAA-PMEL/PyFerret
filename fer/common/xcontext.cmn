@@ -33,6 +33,8 @@
 *	cx_hi_ss	- upper bounds of space/time regions in grid subscripts
 *	cx_delta	- delta increment of space/time regions (in WORLD or
 *		  	  SUBSC according to cx_by_ss )
+*	cx_cal_id	- integer; waich calendar used when computing cx_*ss 
+*                         in world coords
 *	cx_by_ss	- logical for how dimension was specified by user
 *	cx_trans	- mathematical transform applied to dimension
 *	cx_given	- logical for whether dimension was just changed
@@ -56,7 +58,6 @@
      .		cx_hi_ss	 ( min_context:max_cx, 4 ),
      .		cx_trans	 ( 4, min_context:max_cx ),
      .		cx_regrid_trans  ( 4, max_cx )
-
 	INTEGER	cx_stack_ptr,
      .		cx_data_set ( max_cx ),
      .		cx_category ( max_cx ),
@@ -64,7 +65,9 @@
      .		cx_grid     ( max_cx ),
      .		cx_type     ( max_cx ),
      .		cx_ovsiz    ( max_cx ),
-     .		cx_impl_grid( max_cx )
+     .		cx_impl_grid( max_cx ),
+     .		cx_cal_id   ( min_context:max_cx )
+
 
 	LOGICAL	cx_unstand_grid	( max_cx ),
      .		cx_by_ss	( 4, min_context:max_cx ),
@@ -108,6 +111,7 @@
      .		cx_name,
      .		cx_has_impl_grid,
      .		cx_impl_grid,
+     .          cx_cal_id,
      .		cx_xtra_doc,
      .		cx_formatted
 

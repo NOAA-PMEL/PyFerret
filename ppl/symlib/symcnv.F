@@ -68,11 +68,12 @@ C**
 *       than the ERR= branch of a READ which fails on AIX/xlf
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* v580 *acm* 9/04 Longer strings: changes for multi-line labels; symbols may be *2048.
 
         LOGICAL TM_NUMBER      
 
 	LOGICAL SYS,SYS2
-	CHARACTER SYM*(*),FRMT*30,SYM2*30,VALUE*255
+	CHARACTER SYM*(*),FRMT*30,SYM2*30,VALUE*2048
 	SYS=.FALSE.
 	IF(SYM(1:1).EQ.'*')THEN
 	    SYS=.TRUE.

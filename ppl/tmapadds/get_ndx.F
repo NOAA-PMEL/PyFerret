@@ -50,8 +50,10 @@
 *		Also had to add explicit range checks since whatever logic
 *		made rng chks mysteriously unnecessary using REAL bad_flag has
 *		changed
+*  V5.71 *acm*  6/15/04 Use TM_FPEQ when checking whether a single-level zlev is
+*               the same as datum.
 
-#ifdef unix
+
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 	include		'miss_inc.decl'
@@ -62,21 +64,15 @@
 	include		'CONT.INC'
 	include		'shade_vars.cmn'
 
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'
-	INCLUDE		'tmap_pplv11inc:tmap_miss.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_hd.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_cont.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
-
 	integer		ndx
 
-	real		datum
+	real		datum, test
+        logical         TM_FPEQ
 
 ********************************************************************************
 
 *	      CHECK AGAINST 'LIMITS' VALUES AND FIND COLOR INDEX
+              test = datum - zlev(1)
 	      if(
      .		 (zle.and.datum.le.cmzle) 	.or.
      .		 (zeq.and.datum.eq.cmzeq) 	.or.
@@ -91,7 +87,7 @@
 * ... 12/4/97
 
 	      else if (nlev2 .eq. 1) then
-		 if (datum .eq. zlev(1)) then
+		 if ( TM_FPEQ(datum, zlev(1)) ) then
 		    get_ndx = 2
 		 else
 		    get_ndx = -999

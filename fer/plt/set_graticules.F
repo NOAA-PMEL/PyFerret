@@ -44,6 +44,9 @@
 *
 * Ferret v5.54   2/04
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+* V570 *acm* 6/30/04 VGRAT with no argument needs to default to lines
+* v580 *acm* 11/04   PLOT/HGRAT gave both horiz and vertical graticules
+*                    need to initialize buff.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -103,6 +106,7 @@
         ENDIF
 
 * HGRAT
+        IF (.NOT. grat_on) buff = ' ' 
         IF (loch .GT. 0) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(loch):qual_end(loch)),
      .                     buff, status )
@@ -258,9 +262,16 @@
 
 *  /VGRAT
 
+        IF (.NOT. grat_on) buff = ' ' 
         IF (locv .GT. 0) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(locv):qual_end(locv)),
      .                     buff, status )
+
+* /VGRAT with no argument defaults to lines at large tic marks.
+
+           DO 115 ii = 1, 4
+             vgrat(ii,1) = -1.
+115        CONTINUE
 
         ENDIF
 	IF ( buff .EQ. ' ' ) GOTO 5000  ! done

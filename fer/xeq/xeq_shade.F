@@ -84,6 +84,9 @@
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call, so it can be
 *                  passed on to PPLUS
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
+* v580 *acm* 6/15/04 In the workaround which does a PPL LEV command for data with
+*                    a single value, need to give the PPL command the value with  
+*                    more precision.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -195,10 +198,13 @@
            no_data =  no_range .AND. only_val.EQ.bad_val4
 
 * PPLUS blows up setting auto contour levels if all data have same value
+* But, do not let this be rounded off, or we cannot find the color when matching 
+* this value in get_ndx, called by fillpol
+
 	   IF ( no_range .AND. .NOT.no_data 
      .          .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
      .		CALL PPLCMD ( from, line, 0, 
-     .		'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
+     .		'LEV () ('//TM_FMT(only_val, 8, 12, slen)//')' , 1, 1 )
 
 * default key
 	   do_key =  (qual_given(slash_shad_key)  .GT. 0)

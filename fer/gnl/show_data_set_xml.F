@@ -40,6 +40,11 @@
 * programmer - Ansley Manke, based on show_data_set_vars.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
+* V5.80 13-Sep-2004 *acm* Add data-set specific user variables to the listing
+*       30-Sep-2004 *acm* Move listing of dataset info to show_data.F, show any
+*                         dataset-specific user-defined variables, use the
+*                         tag <var name> rather than <vname>
+*       13-Oct-2004 *acm* for consistent XML, write <var name="VNAME" />
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -61,29 +66,9 @@
 	
 * local variable declarations:
 	INTEGER TM_LENSTR, TM_LENSTR1, ivar, slen
+        CHARACTER uvarname*150
 
-
- 2010   FORMAT ('<dataset>')
- 2020   FORMAT( '<title>', A, '</title>' )
- 2030   FORMAT( '<title_mod>', A, '</title_mod>' )
- 2040   FORMAT( '<vname>', A, '</vname>' )
- 2050   FORMAT ('</dataset>')
-
-* Write data set title
-
-	WRITE ( risc_buff, 2010 )
-	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
- 
-        slen = TM_LENSTR1(ds_title(dset))
-	WRITE ( risc_buff, 2020 ) ds_title(dset)(1:slen)
-	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-
-        slen = TM_LENSTR(ds_mod_title(dset))
-        IF (slen .GT. 0) THEN
-           slen = TM_LENSTR1(ds_mod_title(dset))
-           WRITE ( risc_buff, 2030 ) ds_mod_title(dset)(1:slen)
-           CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
-        ENDIF
+ 2040   FORMAT ('<var name="', A, '" />' )
 
 * List the variables in the set
 
@@ -102,8 +87,22 @@
 
  400	CONTINUE
 
-	WRITE ( risc_buff, 2050 )
-	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-	RETURN
-	END
+* show the data-set-specific user-defined variables
+
+	DO 600 ivar = 1, max_uvar
+	   IF (uvar_num_items(ivar) .EQ. uvar_deleted  ) GOTO 600
+	   IF (uvar_dset(ivar) .EQ. dset) THEN
+
+* ... output variable name
+
+             uvarname = uvar_name_code(ivar)
+             slen = TM_LENSTR1(uvarname)
+             WRITE ( risc_buff, 2040 ) uvarname(1:slen)
+             CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+         ENDIF
+ 600  CONTINUE
+
+      RETURN
+      END

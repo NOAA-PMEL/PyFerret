@@ -152,6 +152,8 @@
 *                     and LIST/EDGES, LIST/BOUNDS (for NetCDF output only)
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
 *       *acm* 6/05 - add CANCEL AXIS/DEPTH
+* V580: 10/04 *acm* - add SHOW VARIABLES/XML
+* V580: 11/04 *acm* - add PLOT/NOKEY
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -440,12 +442,12 @@
 	   DATA subcommands      (nsub_at2 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at2 + 9)	/ nqual2j	/
 	   DATA qualifier_pointer(nsub_at2 + 9)	/ nqual_at2j	/
-* SHOW VARIABLES /ALL /DIAGNOSTIC /USER
+* SHOW VARIABLES /ALL /DIAGNOSTIC /USER /XML
 		DATA qualifiers  (nqual_at2j+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2j+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at2j+2)	/ 'DIAG'	/
 		DATA qualifiers  (nqual_at2j+3)	/ 'USER'	/
-		DATA qualifiers  (nqual_at2j+4)	/ '****'	/
+		DATA qualifiers  (nqual_at2j+4)	/ 'XML'	/
 * SHOW COMMANDS
 	   DATA subcommands      (nsub_at2 +10)	/ 'COMMANDS'	/
 	   DATA num_qualifs      (nsub_at2 +10)	/ nqual2k	/
@@ -816,9 +818,9 @@
 		DATA qualifiers  (nqual_at6a+32)/ 'HLOG'/	! log axis horiz
 		DATA qualifiers  (nqual_at6a+33)/ 'VLOG'/	! log axis vert
 		DATA qualifiers  (nqual_at6a+34)/ 'GRATICULE'/	! tic lines
-		DATA qualifiers  (nqual_at6a+35)/ '****'/	! tic lines
-		DATA qualifiers  (nqual_at6a+36)/ '****'/	! tic lines
-		DATA qualifiers  (nqual_at6a+37)/ '****'/	! tic lines
+		DATA qualifiers  (nqual_at6a+35)/ 'NOKEY'/	! /nokey
+		DATA qualifiers  (nqual_at6a+36)/ '****'/	! 
+		DATA qualifiers  (nqual_at6a+37)/ '****'/	! 
 
 
 * GO	 - command # 7

@@ -71,6 +71,10 @@
 * V533: *sh* 6/01 - added logic for strides (cx_delta)
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 * V560:*acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+* *acm* v580 11/04- Keep cx_cal_id, the calendar ID used when computing 
+*                  world coordinates
+* V580 *acm* 11/04- Fix divide by zero; cx_delta(idim,cx) is 0 if user
+*                   incorrectly specifies LIST/I=1:100:0 VAR
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -169,8 +173,10 @@
 	   cx_delta( idim, cx ) = unspecified_val8
 	   cx_trans( idim, cx ) = trans_no_transform
 * kob 9/97 - need to reset cx_calendar as well
-	   IF (idim .eq. t_dim) 
-     .                cx_calendar(cx) = .FALSE.
+	   IF (idim .eq. t_dim) THEN
+              cx_calendar(cx) = .FALSE.
+              cx_cal_id(cx) = unspecified_int4
+           ENDIF
 
 	ELSEIF ( cx_by_ss( idim, cx ) ) THEN
 * POSITIONS WERE SPECIFIED BY SUBSCRIPT
@@ -186,6 +192,7 @@
 
 * if strides in use then set the upper subscript to correct parity
 	    IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
+	      IF (cx_delta(idim,cx) .LE. 0.) GOTO 5300
 	      ispread = cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim)
 	      ispread = (ispread/NINT(cx_delta(idim,cx)))
      .		      * NINT(cx_delta(idim,cx))
@@ -197,6 +204,12 @@
      .					  grid, idim, box_lo_lim )
 	   cx_hi_ww(idim, cx) = TM_WORLD( cx_hi_ss( cx,idim),
      .					  grid, idim, box_hi_lim )
+
+	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
+             cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
+             cx_cal_id(cx) = cal_id
+           ENDIF
+
 
 * POSITIONS WERE SPECIFIED BY WORLD COORDINATES
 	ELSE
@@ -226,6 +239,7 @@
 	         cx_hi_ww(idim,cx) =
      .                SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
 		 cx_calendar(cx) = .FALSE.
+                 cx_cal_id(cx) = cal_id
               ENDIF
 	   ENDIF
 	      
@@ -290,4 +304,8 @@
      .		' is already transformed'//pCR//
      .		'Can you define an intermediate variable ?',
      .		*5000 )
+ 5300	CALL ERRMSG( ferr_invalid_command, status,
+     .		'delta non-positive on '//ww_dim_name(idim)
+     .		//' axis of '//VAR_CODE(cx_category(cx),cx_variable(cx)),
+     .						*5000)
 	END

@@ -160,6 +160,9 @@
 *                  syntax for user-specified bounds:
 *                  DEFINE AXIS/X/BOUNDS xax={1,2,5}, {0.5,1.5,1.5,3,3,6}
 *                  DEFINE AXIS/Z/BOUNDS zax=zcoord,zbnd
+* V580 *acm* 10/05 correct misspelling in statement 5582
+* V580 *acm* 11/04 Use cx_cal_id to keep track of which calendar used
+*                  when cx_lo_ww and cx_hi_ww are computed.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -261,7 +264,7 @@
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
      .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, s2len,
-     .            j, num_indices
+     .            prev_cal_id, j, num_indices
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -799,7 +802,7 @@ C /calendar=/unit=year gets length of year in that calendar.
 
 C /units=months  is 1/12 of the length of the year
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
-              IF (cal_id .eq. gregorian) THEN
+              IF (cal_id .eq. GREGORIAN) THEN
                  WRITE (err_string,3544) yeardays
               ELSE
                  WRITE (err_string,3540) yeardays
@@ -1069,18 +1072,20 @@ C /units=months  is 1/12 of the length of the year
 
 	   start = cx_lo_ww(orient,mods_cx)
 	   end   = cx_hi_ww(orient,mods_cx)
+           prev_cal_id = cx_cal_id(mods_cx)
 
-	   IF ( orient .EQ. t_dim .AND. cal_id .NE. 1 .AND. 
-     .          start .LT. 0.) THEN
-	      CALL RESET_SECS_FROM_BC (-start, new_ww, dflt_cal_id, 
+	   IF ( orient .EQ. t_dim .AND. cal_id .NE. prev_cal_id 
+     .          .AND. start .LT. 0.) THEN
+	      CALL RESET_SECS_FROM_BC (-start, new_ww, prev_cal_id, 
      .                                 cal_id, status)
 	      start = -1. * new_ww
 
-	      CALL RESET_SECS_FROM_BC (-end, new_ww, dflt_cal_id, 
+	      CALL RESET_SECS_FROM_BC (-end, new_ww, prev_cal_id, 
      .                                 cal_id, status)
 	      IF ( status .NE. ferr_ok ) RETURN
 
 	      end = -1. * new_ww
+              cx_cal_id(mods_cx) = cal_id
 	   ENDIF
 
 	   IF ( its_edges ) THEN
@@ -1500,7 +1505,7 @@ C /units=months  is 1/12 of the length of the year
  5580	CALL ERRMSG( ferr_grid_definition, status,
      .		'data for DEFINE AXIS/FROM_VARIABLE is ambiguous', *5000 )
  5582	CALL ERRMSG( ferr_grid_definition, status,
-     .		'illegal agrument for DEFINE AXIS/NPOINTS', *5000 )
+     .		'illegal argument for DEFINE AXIS/NPOINTS', *5000 )
  5590	CALL ERRMSG( ferr_prog_limit, status,
      .		'axis coordinate storage exhausted - restart FERRET', *5000 )
  5610	CALL ERRMSG( ferr_prog_limit, status,

@@ -108,6 +108,14 @@
 *                  as scalar integers not array elements.
 *            6/18/04 Change order of operations so axes with edges are read the same as 
 *                  in previous versions.  Also treat 1-point axes having bounds correctly
+* V580 *acm* 10/04 Add a comment only, describing the hack to deal with CDC files starting 
+*                  in 1-1-1 00:00:00
+* V580 *acm* 11/04 Fix bug 1042 If bounds attribute has a problem found by TM_CHECK_BNDS_ATTRIB,
+*                  just skip applying the bounds. The edges have been defined by putting them
+*                  midway between coordinates; use this definition. If there is only one point 
+*                  on the axis, then set it to be a regular axis.  
+* V580 *acm* 11/04 further fixes for when there is just one point on an axis having bounds
+*                  first_delta is meaningless and should not be used.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -745,8 +753,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
 
 * if the coordinates are decreasing-ordered then reverse them
-         first_delta = line_mem(ipt1+1) - line_mem(ipt1)
-         reversed(iaxis) = first_delta .LT. 0.0
+         IF (npts .GT. 1) THEN
+            first_delta = line_mem(ipt1+1) - line_mem(ipt1)
+            reversed(iaxis) = first_delta .LT. 0.0
+         ENDIF
          IF ( reversed(iaxis) ) THEN
             DO 345 i=ipt1,ipt1+npts/2-1
                tmp = line_mem(i)
@@ -806,6 +816,17 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
 
 * hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
+* Comments from Roland Schweitzer about CDC files:
+* These CDCfiles have units of the form: days since 1-1-1 00:00:00 or
+* hours since 1-1-1 00:00:00.  Any of these files that encode dates
+* after 1590 will look to Ferret as if they are offset by 2 days.  The 
+* CDC axes shift around the time axis at various historical breaks as the
+* UDUNITS package does. Ferret uses a proleptic Gregorian calendar - same
+* for all time without these shifts. (Ferret uses udunits for units 
+* definitions only.) Also note there are CDC files which decode to 
+* fall entirely within year 0001.  These files represent a climatology,
+* and Ferret deals with them correctly.
+
  390    IF ( (since_T0.GT.2)
      .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
      .  .AND.(cal_id .EQ. GREGORIAN) ) THEN
@@ -870,7 +891,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too
-         IF ( first_delta .LT. 0.0 ) THEN
+         IF ( first_delta .LT. 0.0  .AND.  npts .GT. 1) THEN
             DO 450 i=ipt1+npts-1,(ipt1+npts-1)+npts
  450        line_mem(i) = -1. * line_mem(i)
          ENDIF
@@ -898,8 +919,16 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .                             bndid, npts, status)
         IF (status .EQ. pcdferr) GO TO 5100
         IF (status .NE. merr_ok) THEN
-           CALL TM_IRREGAX_MID( next_line_mem_pos,
-     .                          line_dim   (iaxis) )
+           IF (npts .EQ. 1) THEN  ! save as a regular axis, no bounds.
+              line_regular(iaxis) = .TRUE.
+              line_start  (iaxis) = line_mem(ipt1)
+              line_delta(iaxis) = 1
+              line_subsc1 (iaxis) = unspecified_int4
+              last_coord = line_start(iaxis) 
+              firs_coord = line_start(iaxis)
+           ENDIF
+              ! If npts not 1 then we have already set the boundaries
+              ! at statement 380  CALL TM_IRREGAX_MID( ipt1, npts )
            GO TO 600
         ENDIF
 
@@ -924,7 +953,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too 
-        IF ( first_delta .LT. 0.0 ) THEN
+        IF ( first_delta .LT. 0.0  .AND.  npts .GT. 1) THEN
            DO 550 i=ipt1+npts,(ipt1+npts)+2*npts
  550       line_mem(i) = -1. * line_mem(i)
         ENDIF

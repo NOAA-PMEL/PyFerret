@@ -44,6 +44,8 @@
 * V50 - *sh* 4/99 code extracted from SHOW_GRID
 * V530 - *sh* 1/01 - show lower limit value of grid box
 * 560 *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+* v580 *acm* 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
+*                  computing world coordinates
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -63,8 +65,9 @@
 * local variable declarations:
 	LOGICAL	GEOG_LABEL, calendar
 	INTEGER ISUBSCR_CX, TM_LENSTR, TM_LENSTR1,
+     .          TM_GET_CALENDAR_ID,
      .		lo, hi, i, line, loest, hiest, dlen,
-     .		ndec, status, delta, exlen
+     .		ndec, status, delta, exlen, cal_id
 	CHARACTER TM_FMT*14, buff*14, pt_str*20, lo_str*20, extra*24
 	REAL	BOX_SIZE
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, pt_val8, lo_val8
@@ -116,6 +119,10 @@
      .          SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
               cx_hi_ww(idim,cx) =
      .		SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
+
+              cal_id = TM_GET_CALENDAR_ID(grid)
+              cx_cal_id(cx) = cal_id
+
 * reset cx_calendar now that cx_lo/hi_ww have been converted
               cx_calendar(cx) = .FALSE.
 	   ENDIF

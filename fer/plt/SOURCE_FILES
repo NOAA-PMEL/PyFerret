@@ -61,6 +61,7 @@ set_ax_sizes.F\
 set_graticules.F\
 set_plot_size.F\
 set_viewport.F\
+set_vp_symbols.F\
 set_window.F\
 setup_keys.F\
 snapit_ris8.F\

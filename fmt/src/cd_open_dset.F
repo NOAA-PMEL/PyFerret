@@ -63,6 +63,8 @@
 * *kob* 4/99 - increase size of TM_INQ_PATH, cdf_file and raw_file 
 *              to accomodate lenghty DODS dataset names
 * 4/03 *acm* - Use STR_SAME to compare strings
+* 9/04 *acm* - Fix bug 982 If same variable name in multiple descriptor files, 
+*              mc_init_stepfile needs to know which file its from.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -172,7 +174,7 @@
      .                                      ' ',.FALSE., status)
 		     IF (status .EQ. merr_ok)  THEN
 	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
-			 mc_init_stepfile = i
+			 mc_init_stepfile(dset) = i
 			 IF ( cdfstat .EQ. NCNOERR) GOTO 110
 		     ENDIF
  100	        CONTINUE

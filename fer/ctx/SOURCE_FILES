@@ -11,6 +11,7 @@ confine_context.F\
 create_new_context.F\
 cs_set_context.F\
 cx_dim_len.F\
+cx_dim_len_zero.F\
 cx_ww_pos.F\
 del_cx_dim.F\
 flesh_out_axis.F\
@@ -18,6 +19,7 @@ forget_past_context_mods.F\
 get_context_bad_flag.F\
 get_context_grid.F\
 get_cx_dims.F\
+get_cx_dims_zero.F\
 get_cx_modulo_axes.F\
 get_delta_context.F\
 get_new_cx.F\

@@ -1,3 +1,9 @@
-	COMMON/XEZ_INFO/ez_mods
+* V530 *sh* 11/00 - added ftyp_name
+
+	COMMON/XEZ_INFO/
+     .			ez_mods,
+     .			ftyp_name
 
 	LOGICAL  ez_mods(maxdsets)
+
+	CHARACTER*16 ftyp_name(FTYP_NUM_TYPES)

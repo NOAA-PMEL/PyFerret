@@ -15,7 +15,7 @@
 
 include platform_specific_flags.mk.$(HOSTTYPE)
 
-
+CFLAGS += -I../gui
 #
 # Macros
 #
@@ -42,7 +42,7 @@ FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
 
 PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr 
 
-FERMAIN = ccr/fermain_c.o
+FERMAIN = ccr/fermain_c.o ccr/gui_init.o
 
 FEROBJS_DFLT = $(LINUX_OBJS) \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
@@ -68,13 +68,13 @@ debug:	.FRC
 	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug: .FRC
-	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
 		"GUI=GUI" all
 gui_debug: .FRC
-	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \

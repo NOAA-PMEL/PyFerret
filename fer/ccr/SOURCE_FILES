@@ -5,6 +5,7 @@ batch_graphics.c\
 fermain_c.c\
 ferret_dispatch_c.c\
 ferret_query.c\
+gui_init.c\
 grab_image_xwd.c\
 linux_routines_c.c\
 put_frame.c\

@@ -62,6 +62,9 @@
 *  RESULT FROM SORTING v[L=6:10].
 *  
 *
+* V5.53  *acm*  6/03 Correct the frequency axis:  Incorrect factor of
+*                     1.001 in freqn = 1.001*yquist
+*
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -193,19 +196,11 @@ c      CALL ef_version_test(ef_version)
 
 C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
-      nfreq = nd/2	
-
-      yquist = 1./(2.*boxsize(1))		! Nyquist frequency
-
-      freq1 = 1.* yquist/ float(nfreq)
-      freqn = 1.001*yquist
-
 C  Set label for the frequency axis CYC/units.
 
       outunits = 'CYC/' // ax_units(T_AXIS)
 
-      CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
-     .   outunits, NO)
+      CALL ef_set_freq_axis (id, T_AXIS, nd, boxsize(1), outunits, NO)
 
 *                                                                      ^
 *                                                                      |

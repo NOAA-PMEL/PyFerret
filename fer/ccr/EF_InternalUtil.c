@@ -808,7 +808,7 @@ ERROR in efcn_compute() accessing %s\n", tempText);
           fprintf(stderr, "\n\
 ERROR in efcn_compute() allocating %d bytes of memory\n\
       work array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d\n", 
-      iarray,xlo,xhi,ylo,yhi,zlo,zhi,tlo,thi,size);
+      size,iarray,xlo,xhi,ylo,yhi,zlo,zhi,tlo,thi);
 	  *status = FERR_EF_ERROR;
 	  return;
         }

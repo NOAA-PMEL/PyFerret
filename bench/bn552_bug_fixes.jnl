@@ -50,4 +50,6 @@ GO err551_modulo_nc_regrid.jnl
 GO bn_reset
 GO err551_fft_freqaxis.jnl
 
-
+! No error message on request for time on bad time axis
+GO bn_reset
+GO err551_no_taxis_errmsg.jnl

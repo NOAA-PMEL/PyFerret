@@ -181,7 +181,8 @@
 	      IF ( (at_type(gc_arg_start) .EQ. alg_child_var)
      .	     .OR.  ( (iat .EQ. gc_arg_start+1)
 
-     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)    )   ) THEN
+     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
+     .             )   ) THEN
 
 cc     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
 cc     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN

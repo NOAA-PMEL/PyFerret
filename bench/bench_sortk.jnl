@@ -5,23 +5,37 @@
 
 ! test sortz, samplez
  
+
+!  data set  gt160w011 is in the portable benchmark data area.
+
 can region
-use gtbc011
+use gt160w011
 
 set region/i=70/l=1
 shade temp
 
 let zsorted_indices = sortk(temp)
-let zsorted_temp = samplek(zsorted_indices, temp)
+let zsorted_temp = samplek(temp, zsorted_indices)
 shade zsorted_temp
 
 set region/j=10
 let len = zsorted_temp[k=@ngd]
 list len
 
+
+can region
+use ocean_atlas_monthly
+
+set region/i=70/l=1
+shade temp
+
+let zsorted_indices = sortk(temp)
+let zsorted_temp = samplek(temp, zsorted_indices)
+shade zsorted_temp
+
 ! this should bail out with indices out of range:
 
 let zsorted_indices = sortk(temp) - 100
-let zsorted_temp = samplek(zsorted_indices, temp)
+let zsorted_temp = samplek(temp, zsorted_indices)
 shade zsorted_temp
 

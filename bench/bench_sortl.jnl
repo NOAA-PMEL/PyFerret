@@ -10,7 +10,7 @@ list sst
 list samplel({1,3,5},sst)
 
 let tsorted_indices = sortl(sst)
-let tsorted_sst = samplel(tsorted_indices, sst)
+let tsorted_sst = samplel(sst, tsorted_indices)
 
 list tsorted_indices, tsorted_sst
 
@@ -27,16 +27,16 @@ set region/i=90/j=65
 plot vwnd
 
 let tsorted_indices = sortl(vwnd)
-let tsorted_wnd = samplel(tsorted_indices, vwnd)
+let tsorted_wnd = samplel(vwnd, tsorted_indices)
 list tsorted_indices, tsorted_wnd
 
 let len = tsorted_wnd[l=@ngd]
 list len
 
-!  This should bail out of the function with
+!  This illustrates a problem with BAIL OUT of the function with
 !  out-of-range indices:
 
-let tsorted_indices = sortl(vwnd) + 90
-let tsorted_wnd = samplel(tsorted_indices, vwnd)
-list tsorted_indices, tsorted_wnd
+ let tsorted_indices = sortl(vwnd) + 90
+ let tsorted_wnd = samplel(vwnd, tsorted_indices)
+ list tsorted_indices, tsorted_wnd
 

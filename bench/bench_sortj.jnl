@@ -11,22 +11,22 @@ set region/x=141/y=39:49/z=0/l=2
 list sst
 
 let tsorted_indices = sortj( sst[j=65:70])
-let tsorted_sst = samplej(tsorted_indices,  sst)
+let tsorted_sst = samplej(sst, tsorted_indices)
 
 list tsorted_indices, tsorted_sst
 
 ! test on 2-D data.
 
 can region
-use coads_climatology
-set region/l=3
+set data coads_climatology
+set region/l=5
 shade sst
 
 let ysorted_indices = sortj(sst)
-let ysorted_sst = samplej(ysorted_indices, sst)
+let ysorted_sst = samplej(sst, ysorted_indices)
 shade ysorted_sst
 
-set region/l=3/x=181
+set region/l=5/x=181
 let len = ysorted_sst[j=@ngd]
 list len
 

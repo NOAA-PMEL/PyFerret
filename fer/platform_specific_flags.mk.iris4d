@@ -1,0 +1,75 @@
+#
+# platform_specific_includes.mk.irix6
+#
+# This file is included in other Makefiles and defines
+# platform specific macros.  Changed by jimp 01/20/99.
+# NOTE:  SGI compilation requires the -Dsun flag to be set for compilation
+
+TMAP_LOCAL = /local/tmp/sch/FERRET
+RANLIB = /bin/touch
+INCLUDES        = -I$(TMAP_LOCAL)/xgks/include \
+                  -I/usr/local/xgks/include \
+		  -I$(TMAP_LOCAL)/list-2.1 \
+  		  -I$(TMAP_LOCAL)/ppl/include/xgks \
+		  -I$(TMAP_LOCAL)/fer/common \
+  		  -I$(TMAP_LOCAL)/ppl/include \
+  		  -I$(TMAP_LOCAL)/ppl/tmap_inc \
+		  -I$(TMAP_LOCAL)/xgks/port \
+                  -I$(TMAP_LOCAL)/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/xgks/src/lib/gksm \
+                  -I$(TMAP_LOCAL)/xgks/include/gif \
+                  -I$(TMAP_LOCAL)/fer/gui \
+		  -I$(TMAP_LOCAL)/include \
+		  -I$(TMAP_LOCAL)/fmt/cmn \
+		  -I/usr/local/include \
+		  -I. -I$(TMAP_LOCAL)/readline-4.1 \
+		  -I$(TMAP_LOCAL)
+
+FINCLUDES       = -I../../ppl/tmap_inc \
+		  -I../include -I../../fmt/cmn \
+		  -I../common \
+	 	 -I../../ppl/include  -I../../fer/common
+
+
+C = /usr/bin/cc
+CFLAGS = -n32 -O2 -Dunix -Dsun -Dsgi -DXT_CODE -DSGI_SIGNALS -DLINK_GUI_AS_MAIN -DFULL_GUI_VERSION $(INCLUDES) -I/usr/local/include -I../gui
+
+FC = /usr/bin/f77
+FFLAGS = -n32 -O3 -Dunix -Dsgi  -Dsun -Dreclen_in_bytes -DusingDODSf2cUnderscore $(INCLUDES)
+#FFLAGS = -n32 -O3 -Dunix -Dsgi -DX_REFRESH -Dsun -Dreclen_in_bytes -DusingDODSf2cUnderscore $(INCLUDES)
+#FFLAGS = -n32 -O3 -Dunix -Dsgi -DX_REFRESH -Dsun -Dreclen_in_bytes  $(INCLUDES)
+#PPLUS_FFLAGS = -n32 -Dunix -Dsgi -Dxgks -static -DNO_ACCESS_DEPEND -DNO_OPEN_RECORDTYPE -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_OPEN_CARRIAGECONTROL -DSTAR_1_SUPPORTED -DNO_OPEN_READONLY -Dsun  -DX_REFRESH -Dreclen_in_bytes $(FINCLUDES)
+
+PPLUS_FFLAGS = -n32 -Dunix -Dsgi -Dxgks -static -DNO_ACCESS_DEPEND -DNO_OPEN_RECORDTYPE -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_OPEN_CARRIAGECONTROL -DSTAR_1_SUPPORTED -DNO_OPEN_READONLY -Dsun -Dreclen_in_bytes $(FINCLUDES)
+
+#
+# Below this line are macro definitions used only for the final linking of the executable
+#
+
+LD		= cc
+LDFLAGS		=  -v -IPA -n32
+
+SYSLIB		= -ldl -lXm -lXt -lX11 -lsun -lftn -lm -lc   /usr/lib32/crtn.o -L$(TMAP_LOCAL)/lib
+
+TMLIB		= -L//tmp/ferret_tmp/lib  ../lib/tmap_lib.a
+
+READLINELIB	= -L/local/tmp/sch/FERRET/readline-4.1 -lreadline
+
+GKSLIB		= $(TMAP_LOCAL)/lib/libxgks.a
+
+#HDFLIB		= -L/net/hnv/lib/IRIX6 -ldf -ljpeg -lmfhdf -lz
+HDFLIB		= -L/net/hnv/lib/IRIX6 -ldf -ljpeg -lz
+
+CDFLIB		= /net/hnv/lib/IRIX6/libnetcdf-3.4.a
+
+.F.o:
+	$(FC) $(PPLUS_FFLAGS) $(INCLUDES) -c $<
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+
+
+
+
+#
+# End of platform_specific_includes.mk.irix6
+#

@@ -31,7 +31,8 @@ PAUSE
 !      *********************************************************
 
 
-go dods_pmel coads_climatology.nc
+
+set data "http://ferret.wrc.noaa.gov/cgi-bin/nph-nc/data/coads_climatology.nc"
 show data
 
 
@@ -78,7 +79,7 @@ fill/x=140e:180e/l=1:24 sst[y=5s:5n@ave]
 PAUSE
 !      *********************************************************
 
-go dods_cdc reynolds_sst/sst.wkmean.1981-1989.nc
+use "http://www.cdc.noaa.gov/cgi-bin/nph-nc/Datasets/reynolds_sst/sst.wkmean.1981-1989.nc"
 show data 2
 
 ! This data set contains weekly mean global SST grids prepared by
@@ -129,9 +130,7 @@ shade/x=80w:20e/y=0:80N/pal=black/levels/pattern=weave/t="15-jun-1989"/over warm
 
 PAUSE
 !      *********************************************************
-
-
-go dods_jpl ocean_wind/ssmi/atlas_ssmi/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf
+use "http://dods.jpl.nasa.gov/dods-bin/nph-hdf/pub/ocean_wind/ssmi/atlas_ssmi/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf"
 show data 3
 
 
@@ -170,8 +169,6 @@ go land red
 PAUSE
 !      *********************************************************
 
-
-! go dods_uri
 use "http://maewest.gso.uri.edu/cgi-bin/nph-dsp/fth_sst_decloud/1995/f95018175608.fth_d.Z"
 go basemap x=-95:-60 y=15n:40n 20
 

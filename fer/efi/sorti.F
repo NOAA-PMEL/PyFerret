@@ -296,7 +296,6 @@
 * Sort based on sort_dat.  sort_indx goes along for the ride,
 * elements moved when elements of sort_dat moved.
 *
-c               IF (nsrt .GT. 1) CALL shell (sort_dat, sort_indx, nsrt)
                IF (nsrt .GT. 1) CALL HEAP2 (sort_dat, sort_indx, 
      .                                      bad_flag(arg1), nsrt)
 

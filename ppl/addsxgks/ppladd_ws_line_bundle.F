@@ -4,6 +4,7 @@
 *	J Davison JISAO/PMEL/TMAP 3.23.89
 *	*jd* 2.19.92 mod to support atc gks
 *	*jd* 8.10.93 mod to support XGKS line colors -- force setting
+*       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 	integer		zwsid,zwstype,i,j
 
@@ -24,7 +25,7 @@
 *******************************************************************************
 
 *	WHAT IS AVAILABLE ON THIS WORKSTATION?
-	call gqlwk (zwstype,error,max_pline,max_pmark,
+	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
 

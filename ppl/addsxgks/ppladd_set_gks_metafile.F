@@ -16,6 +16,8 @@
 *       *jd* 12.8.93 Mod to put line color rep info into metafile for xgks
 *	*sh* 3.4.97 Mod to support metafile-only (no X) output through a
 *		cuckoo's egg implantation of meta_wsid in place of wsid
+*       *js* 7.25.97 Added 'C' callable save_metafile_name to save string
+*               in variable 'meta_file'
 
 	LOGICAL		ITS_BATCH_GRAPHICS, batch
 
@@ -152,7 +154,7 @@
 
 		do ndx = 2,6
 		   call gqcr (wsid,ndx,type,error,red,green,blue)	
-		   if (error .eq. 0) then
+		   if (batch .or. error .eq. 0) then
 		      call gscr (meta_wsid,ndx,red,green,blue)
 		   else
 		      call gscr (meta_wsid,ndx,0.0,0.0,0.0)
@@ -181,3 +183,16 @@
 	end
 
 
+	subroutine save_metafile_name(mname, clen)
+	implicit none
+	include 'tmap_pplv11inc/gkscm2.cmn'
+	integer clen
+#ifdef sun
+	byte mname(clen) 
+#else   
+	integer*1 mname(clen)
+#endif  
+	call tm_ctof_strng(mname, meta_file, clen)
+	return
+	end
+	

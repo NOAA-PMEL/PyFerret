@@ -10,6 +10,7 @@
 * 	*jd* 7.21.95 bug fix where if meta_clsplt has been invoked to close
 *			the metafile, error messages are emitted when trying
 *			to setup the color table for the closed ws
+*       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 #ifdef unix
         include         'tmap_pplv11inc/shade_vars.cmn'
@@ -50,7 +51,7 @@ C	data stmt added for linux *jd* 12.96
 *******************************************************************************
 
 *	WHAT IS AVAILABLE ON THIS WORKSTATION?
-	call gqlwk (zwstype,error,max_pline,max_pmark,
+	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
 

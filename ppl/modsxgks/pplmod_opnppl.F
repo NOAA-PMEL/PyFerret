@@ -2,6 +2,7 @@
      *			  KEY1,KEY2,EPLUN1,EPLUN2)
 *	Mod to set SYM='*PPL$PLTNME' to metafile.plt by default *jd* 1.7.94
 *	Mod to not reference "getlog" routine for linux port *kob* 3.11.97	
+*       Mod to set SYM='*PPL$PLTNME' to value of meta_file *js* 7.25.97
 C**
 C**    @(#)opnppl.F	1.1    3/10/88
 C**
@@ -56,6 +57,7 @@ c
         include 'pplv11inc/SYSTEM.INC'
         include 'tmap_pplv11inc/cmdcom_inc.decl'
         include 'pplv11inc/CMDCOM.INC'
+	include 'tmap_pplv11inc/gkscm2.cmn'
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE 'tmap_pplv11inc:tmap_EPICLUN.INC'
@@ -207,8 +209,9 @@ C
 	ISYM=LNBLK(IFORM,80)
 	CALL PUTSYM(SYM,IFORM,ISYM,IER)
 	SYM='*PPL$PLTNME'
-	TEMP='metafile.plt'
-	CALL PUTSYM(SYM,TEMP,12,IER)
+C	TEMP='metafile.plt'
+C	CALL PUTSYM(SYM,TEMP,12,IER)
+	call putsym(sym, meta_file, LNBLK(meta_file,128), ier)
 	SYM='*PPL$TEKNME'
 #ifdef unix
         TEMP='/dev/tty'

@@ -1,9 +1,8 @@
-#ifdef FORTRAN_90
-
 	block data pltdat_block_data
 
 C	Initialization of PLTCOM.DAT common block.  Must be done in 
 C	a block data stmt in FORTRAN 90.  *jd* Linux port 12.96
+C       All ports should have this, not just Linux (for sh libs) *js* 8.97
 
       include 'pplv11inc/PLTCOM.DAT'
 
@@ -28,6 +27,5 @@ C	a block data stmt in FORTRAN 90.  *jd* Linux port 12.96
      * HOME/29,56,117,32,64/
 
 	end
-#endif
 
 

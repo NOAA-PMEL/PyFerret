@@ -27,6 +27,9 @@
 * V301:	 11/3/93 - calls SET_VIEWPORT to define VP_WIDTH and VP_height symbols
 *	 1/24/94 - turn on metafiles in DISP_INIT instead of here
 *	           (resolve problem of metafiles created with wrong name)
+* V450:  TEMPORARY EXPERIMENTAL change to test metafile-only output
+* V450:  3/4/97 - Mod to support metafile-only (no X) output through a
+*		cuckoo's egg implantation of meta_wsid in place of wsid
 
 #ifdef unix
 	include 'ferret_cmn/plot_setup.parm'
@@ -69,6 +72,7 @@
 	PARAMETER     ( dummy_filename	  = ' ' )
 
 * internal variable declarations
+	LOGICAL		ITS_BATCH_GRAPHICS, batch
 
 * external declarations to force loading of modules used by PPLUS
 	EXTERNAL	GET_VP_FROM_FERRET, CLEAR_VP, INTERRUPT,
@@ -76,6 +80,9 @@
 
 * still need to cold-start graphics ?
 	IF ( pplus_started ) RETURN
+
+* are we in no-X mode?
+	batch = ITS_BATCH_GRAPHICS()
 
 * tell PPLUS that it is under FERRET control without viewports
 	PPL_in_FERRET = .TRUE.
@@ -106,13 +113,20 @@
 	CALL DISP_RESET
 
 * set correct plot device (e.g. "PLTYPE 3 WS=VSII" )
-	IF ( mode_gks ) CALL SEND_PLTYPE(.FALSE.) ! 1/94 - was "mode_metafile"
+	IF ( batch ) THEN
+	   IF ( mode_gks ) CALL SEND_PLTYPE(.TRUE.)
+	ELSE
+	   IF ( mode_gks ) CALL SEND_PLTYPE(.FALSE.) ! 1/94 was "mode_metafile"
+	ENDIF
 
 	IF ( .NOT.gksopn ) RETURN	! flag was set by PPLUS
 
 * start GKS on FERRET side
 	wn_open( wsid )   = .TRUE.
 	wn_active( wsid ) = .TRUE.
+!	wn_open( 1 )   = .TRUE.	! note that wsid only HAPPENS TO BE the
+!	wn_active( 1 ) = .TRUE. ! transformation number
+
 !	CALL DEFINE_COLORS( wsid )
 
 * set up the default spectrum

@@ -5,6 +5,7 @@
 *	attributes.
 
 *	J Davison 10.12.92
+*       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 #ifdef unix
         include         'tmap_pplv11inc/shade_vars.cmn'
@@ -29,7 +30,7 @@
 	   call gsfai (fill_ndx+lo_color_ndx(wsid))
 	else
 *	   HOW MANY COLORS HAVE WE?
-           call gqlwk (wstype,error,max_pline,max_pmark,
+           call query_xgks_wkstn (wstype,error,max_pline,max_pmark,
      .              max_text,max_fill_area,max_pattern,max_color)
 
 	if (max_color .gt. 2) then 

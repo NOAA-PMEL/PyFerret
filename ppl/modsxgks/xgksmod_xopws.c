@@ -37,6 +37,11 @@
  * Mod to AllocGroundColors to set background/foreground defaults *jd* 3.21.94
  * Added WindowMapping to control output window visibility *sh* 16-sep-94
  *
+ * XGKS doesn't work correctly on non-indexed color displays. So, the quick
+ * fix utilized here is to 1) see if the default visual uses a color table;
+ * if so, use that. 2) If not, we look for the best color table (if any) to
+ * use. If there are no indexed visuals, we're out of luck *js* 7.29.97
+ *
  * XGKS open workstation function
  * Open display wk->conn if necessary, then create and map the workstation 
  * window wk: workstation list pointer return: (0)---- open succeeds (21)-- 
@@ -46,6 +51,7 @@
 /*LINTLIBRARY*/
 
 #include "udposix.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <sys/types.h>			/* for uid_t */
 #include <unistd.h>			/* NeXTOS requires that this be */
@@ -212,11 +218,6 @@ InsureConn(wk)
 	    } else {
 		STRCPY(wk->conn, ptr);
 
-		/* Set the screen default colour map ID. */
-		wk->dclmp = DefaultColormap(wk->dpy,
-					    DefaultScreen(wk->dpy));
-		wk->wclmp = wk->dclmp;
-
 		XSelectInput(wk->dpy, DefaultRootWindow(wk->dpy),
 			     0);
 	    }
@@ -269,6 +270,53 @@ BoolResource(prog, name, class, rDB)
     return ison;
 }
 
+static int VisualsToUse[] = {
+  PseudoColor, StaticColor, GrayScale, StaticGray
+};
+
+static XVisualInfo *getBestVisual(Display *dpy, int *index)
+{
+  XVisualInfo *visualList;
+  XVisualInfo     visualTemplate;
+  int numMatched;
+
+  /* Try default visual first */
+  visualTemplate.screen = DefaultScreen(dpy);
+  visualTemplate.visualid =
+    XVisualIDFromVisual(DefaultVisual(dpy, DefaultScreen(dpy)));
+  visualList =
+    XGetVisualInfo(dpy, VisualScreenMask | VisualIDMask, &visualTemplate,
+		   &numMatched);
+  *index = 0;
+
+  if (visualList == NULL || visualList->class == TrueColor ||
+      visualList->class == DirectColor){	/* Plan B -- get best supported visual */
+    int class, i;
+    visualList = NULL;
+    for (i=0; i < sizeof(VisualsToUse)/sizeof(int); ++i){
+      visualTemplate.class = VisualsToUse[i];
+      visualList =
+	XGetVisualInfo(dpy,VisualScreenMask | VisualClassMask,
+		       &visualTemplate, &numMatched);
+      if (visualList != NULL)
+	break;
+    }
+    if (visualList){
+      /* Get deepest visual */
+      int j;
+      int maxDepth = -1;
+      for (j=0; j < numMatched; ++j){
+	if (visualList[j].depth > maxDepth){
+	  maxDepth = visualList[j].depth;
+	}
+      }
+      assert(maxDepth > 0);
+      *index = i;
+    }
+  }
+  return visualList;
+}
+
 
 /*
  * Create an XGKS window -- with all its associated attributes.
@@ -284,21 +332,30 @@ CreateWindow(name, rDB, wk)
     Display        *dpy = wk->dpy;	/* for convenience */
     XSizeHints      SizeHints;		/* window size hints */
     XSetWindowAttributes xswa;		/* window attributes */
-    XVisualInfo     VisualTemplate;
     XVisualInfo    *VisualList;
+    int visualIndex;
 
     /* Initialize color-mapping. */
     wk->wscolour = DisplayCells(dpy, DefaultScreen(dpy));
-    /* size of colour map */
-    VisualTemplate.screen = DefaultScreen(dpy);
-    VisualTemplate.visualid =
-	DefaultVisual(dpy, DefaultScreen(dpy))->visualid;
-    if ((VisualList = XGetVisualInfo(dpy, VisualScreenMask | VisualIDMask,
-				     &VisualTemplate, &NumMatched)) == NULL ||
-	    !XcInit(wk, VisualList)) {
 
+    VisualList = getBestVisual(dpy, &visualIndex);
+    
+    /* size of colour map */
+    if (VisualList == NULL || !XcInit(wk, &VisualList[visualIndex])) {
+      fprintf(stderr, "The display must support an indexed visual\n");
 	status = 26;
     } else {
+      /* Set the screen default colour map ID. */
+      if (VisualList[visualIndex].visual ==
+	  DefaultVisual(wk->dpy, DefaultScreen(wk->dpy))){
+	wk->dclmp = DefaultColormap(wk->dpy,
+				    DefaultScreen(wk->dpy));
+      } else {
+	wk->dclmp = XCreateColormap(wk->dpy, DefaultRootWindow(wk->dpy),
+				    VisualList[visualIndex].visual, AllocNone);
+      }
+      wk->wclmp = wk->dclmp;
+
 	/*
 	 * Get foreground and background colors (and set them in the
 	 * colormap).
@@ -348,8 +405,8 @@ CreateWindow(name, rDB, wk)
 				     (int) SizeHints.x, (int) SizeHints.y,
 			      (int) SizeHints.width, (int) SizeHints.height,
 				     5,		/* border width */
-				     DefaultDepth(dpy, DefaultScreen(dpy)),
-			InputOutput, DefaultVisual(dpy, DefaultScreen(dpy)),
+				     VisualList[visualIndex].depth,
+			InputOutput, VisualList[visualIndex].visual,
 	    (unsigned long) (CWDontPropagate | CWBackPixel | CWBorderPixel |
 	     CWEventMask | CWColormap | CWBackingStore), &xswa)) == False) {
 
@@ -403,9 +460,10 @@ CreateWindow(name, rDB, wk)
 	}					/* window created */
     }						/* color-mapping initialized */
 
-    if (VisualList != NULL)
-	XFree((char *) VisualList);
-
+    if (VisualList != NULL){
+      XFree((char *)VisualList);
+    }
+	
     return status;
 }
 

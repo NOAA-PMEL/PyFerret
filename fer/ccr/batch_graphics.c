@@ -18,26 +18,31 @@
 */
 
 
+#include <assert.h>
+#include <stdio.h>
+
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+#define FORTRAN(a) a
+#else
+#define FORTRAN(a) a##_
+#endif
+
 /* local static variable to contain the state */
 static int its_batch=0;
 
 /* set_batch_graphics */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void set_batch_graphics( )
-#else
-void set_batch_graphics_( )
-#endif
+void FORTRAN(set_batch_graphics)(char *outfile)
 {
+  int length;
+  assert(outfile);
+  length = strlen(outfile);
+  FORTRAN(save_metafile_name)(outfile, &length);
   its_batch = -1;
   return;
 }
 
 /* its_batch_graphics */
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-int its_batch_graphics( )
-#else
-int its_batch_graphics_( )
-#endif
+int FORTRAN(its_batch_graphics)()
 {
    return (its_batch);
 }

@@ -4,6 +4,7 @@
 *       J Davison JISAO/PMEL/TMAP 11.15.91
 *       *jd* 3.10.92 Brought over to Sun
 *	*jd* 1.14.94 Mod for background setting in xgks
+*       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 #ifdef unix
 #   ifndef atc_gks
@@ -36,7 +37,7 @@
 
 *	IF NO ARGS, RESET COLORS
 	if (m .eq. 0) then
-           call gqlwk (wstype,err,max_pline,max_pmark,
+           call query_xgks_wkstn (wstype,err,max_pline,max_pmark,
      .              max_text,max_fill_area,max_pattern,max_color)
 	   if (err .ne. 0) goto 1000
 

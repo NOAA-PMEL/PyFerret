@@ -18,6 +18,7 @@
  * It is provided "as is" without express or implied warranty.  It is
  * provided with no support and without obligation on the part of UCAR or
  * Unidata, to assist in its use, correction, modification, or enhancement.
+ *
  */
 
 
@@ -29,6 +30,12 @@
 /* Fixed bug below for linux port (received 'warning') *jd* 1.28.97 
  * define MO_SET_SEG_DETECTmf, num, name, det)	<-- original
  * define MO_SET_SEG_DETECT(mf, num, name, det)	<-- fix
+ */
+
+/*
+ * Modified by Joe Sirott, Pacific Marine Environmental Lab
+ * Added support for PostScript and GIF metafile output.
+ * Also, changed prototypes from K&R to ANSI C.
  */
 
 #define MAX_META_WSCOLOURS 256
@@ -47,6 +54,8 @@
 #include "gks_implem.h"
 #include "gksm/gksm.h"
 #include "cgm/cgm.h"
+#include "ps/ps.h"
+#include "gif/gif.h"
 
 #ifndef lint
     static char rcsid[]	= "$Id$";
@@ -60,117 +69,141 @@
  */
 static int	num_cgmo;
 static int	num_gksmo;
+static int      num_psmo;
+static int      num_gifmo;
 static Metafile	active_cgmo[MAX_ACTIVE_WS];
 static Metafile	active_gksmo[MAX_ACTIVE_WS];
+static Metafile	active_psmo[MAX_ACTIVE_WS];
+static Metafile	active_gifmo[MAX_ACTIVE_WS];
+
+typedef int (*INT_PROC)();
+
+/*
+ * Keep in old K&R C to avoid painfu, picky function prototyping requirements
+ * of MIPS c compiler
+ */
+static INT_PROC SEL_FUNC(mf, gksm, cgm, ps, gif)
+     Metafile *mf; INT_PROC gksm; INT_PROC cgm; INT_PROC ps; INT_PROC gif;
+{
+    switch(mf->any->type){
+      case MF_GKSM:
+	return gksm;
+      case MF_PS:
+	return ps;
+      case MF_CGM:
+	return cgm;
+      case MF_GIF:
+	return gif;
+      default:
+	return 0;
+    }
+}
+
+static INT_PROC emptyProc(void)
+{
+    return (INT_PROC)0;
+}
 
 /*
  * The following are macros that expand to the appropriate type of metafile
- * function (i.e. either GKSM or CGM).
+ * function (i.e. either GKSM or CGM or PostScript).
  *
  * This allows the metafile functions to be chosen at the time of metafile 
  * creation
  */
 
-#define SEL_FUNC(mf, gksm, cgm)	\
-	    (*((mf)->any->type == MF_CGM ? (cgm) : (gksm)))
-
 #define MO_CELL_ARRAY(mf, num, ll, ur, lr, row, colour, dim) \
-	    SEL_FUNC(mf, GMcellArray, CGMcellArray) \
-		(mf, num, ll, ur, lr, row, colour, dim)
+	    SEL_FUNC(*mf, (INT_PROC)GMcellArray, (INT_PROC)CGMcellArray, \
+		     (INT_PROC)PScellArray,  (INT_PROC)GIFcellArray)\
+	    (mf, num, ll, ur, lr, row, colour, dim)
 #define MO_CLEAR(mf, num, flag)	\
-	    SEL_FUNC(mf, GMclear, CGMclear)(mf, num, flag)
+	    SEL_FUNC(*mf, (INT_PROC)GMclear, (INT_PROC)CGMclear, (INT_PROC)PSclear, (INT_PROC)GIFclear)(mf, num, flag)
 #define MO_CLOSE(mf)	\
-	    SEL_FUNC(mf, GMmoClose, CGMmoClose)(mf)
+	    SEL_FUNC(mf, (INT_PROC)GMmoClose, (INT_PROC)CGMmoClose, (INT_PROC)PSmoClose, (INT_PROC)GIFmoClose)(mf)
 #define MO_CLOSE_SEG(mf, num)	\
-	    SEL_FUNC(mf, GMcloseSeg, CGMcloseSeg)(mf, num)
+	    SEL_FUNC(*mf, (INT_PROC)GMcloseSeg, (INT_PROC)CGMcloseSeg, (INT_PROC)PScloseSeg, (INT_PROC)GIFcloseSeg)(mf, num)
 #define MO_DEFER(mf, num, defer_mode, regen_mode)	\
-	    SEL_FUNC(mf, GMdefer, CGMdefer)(mf, num, defer_mode, regen_mode)
+	    SEL_FUNC(*mf, (INT_PROC)GMdefer, (INT_PROC)CGMdefer, (INT_PROC)PSdefer, (INT_PROC)GIFdefer)(mf, num, defer_mode, regen_mode)
 #define MI_GET_NEXT_ITEM(mf)	\
-	    SEL_FUNC(mf, GMnextItem, CGMnextItem)(mf)
+	    SEL_FUNC(mf, (INT_PROC)GMnextItem, (INT_PROC)CGMnextItem, emptyProc, emptyProc)(mf)
 #define MO_MESSAGE(mf, num, string)	\
-	    SEL_FUNC(mf, GMmessage, CGMmessage)(mf, num, string)
+	    SEL_FUNC(*mf, (INT_PROC)GMmessage, (INT_PROC)CGMmessage, (INT_PROC)PSmessage, (INT_PROC)GIFmessage)(mf, num, string)
 #define MI_OPEN(mf)	\
-	    SEL_FUNC(mf, GMmiOpen, CGMmiOpen)(mf)
-#define MI_CLOSE(mf)	\
-	    SEL_FUNC(mf, GMmiClose, CGMmiClose)(mf)
+	    SEL_FUNC(mf, (INT_PROC)GMmiOpen, (INT_PROC)CGMmiOpen, emptyProc, emptyProc)
 #define MO_OPEN(mf)	\
-	    SEL_FUNC(mf, GMmoOpen, CGMmoOpen)(mf)
+	    SEL_FUNC(mf, (INT_PROC)GMmoOpen, (INT_PROC)CGMmoOpen, (INT_PROC)PSmoOpen, (INT_PROC)GIFmoOpen)(mf)
+#define MI_CLOSE(mf)	\
+	    SEL_FUNC(mf, GMmiClose, CGMmiClose(mf), emptyProc, emptyProc)(mf)
 #define MI_READ_ITEM(mf, record)	\
-	    SEL_FUNC(mf, GMreadItem, CGMreadItem)(mf, record)
+	    SEL_FUNC(mf, (INT_PROC)GMreadItem, (INT_PROC)CGMreadItem, emptyProc, emptyProc)(mf, record)
 #define MO_REDRAW_ALL_SEG(mf, num)	\
-	    SEL_FUNC(mf, GMredrawAllSeg, CGMredrawAllSeg)(mf, num)
+	    SEL_FUNC(*mf, (INT_PROC)GMredrawAllSeg, (INT_PROC)CGMredrawAllSeg, (INT_PROC)PSredrawAllSeg, (INT_PROC)GIFredrawAllSeg)(mf, num)
 #define MO_RENAME_SEG(mf, num, old, new)	\
-	    SEL_FUNC(mf, GMrenameSeg, CGMrenameSeg)(mf, num, old, new)
+	    SEL_FUNC(*mf, (INT_PROC)GMrenameSeg, (INT_PROC)CGMrenameSeg, (INT_PROC)PSrenameSeg, (INT_PROC)GIFrenameSeg)(mf, num, old, new)
 #define MO_SET_ASF(mf, num)	\
-	    SEL_FUNC(mf, GMsetAsf, CGMsetAsf)(mf, num)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetAsf, (INT_PROC)CGMsetAsf, (INT_PROC)PSsetAsf, (INT_PROC)GIFsetAsf)(mf, num)
 #define MO_SET_CHAR_UP(mf, num, up, base)	\
-	    SEL_FUNC(mf, GMsetCharUp, CGMsetCharUp)(mf, num, up, base)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetCharUp, (INT_PROC)CGMsetCharUp, (INT_PROC)PSsetCharUp, (INT_PROC)GIFsetCharUp)(mf, num, up, base)
 #define MO_SET_CLIPPING(mf, num, rect)	\
-	    SEL_FUNC(mf, GMsetClip, CGMsetClip)(mf, num, rect)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetClip, (INT_PROC)CGMsetClip, (INT_PROC)PSsetClip, (INT_PROC)GIFsetClip)(mf, num, rect)
 #define MO_SET_COLOUR_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(mf, GMsetColRep, CGMsetColRep)(mf, num, idx, rep)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetColRep, (INT_PROC)CGMsetColRep, (INT_PROC)PSsetColRep, (INT_PROC)GIFsetColRep)(mf, num, idx, rep)
 #define MO_SET_FILL_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(mf, GMsetFillRep, CGMsetFillRep)(mf, num, idx, rep)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetFillRep, (INT_PROC)CGMsetFillRep, (INT_PROC)PSsetFillRep, (INT_PROC)GIFsetFillRep)(mf, num, idx, rep)
 #define MO_SET_FILL_STYLE(mf, num, style)	\
-	    SEL_FUNC(mf, GMsetFillStyle, CGMsetFillStyle)(mf, num, style)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetFillStyle, (INT_PROC)CGMsetFillStyle, (INT_PROC)PSsetFillStyle, (INT_PROC)GIFsetFillStyle)(mf, num, style)
 #define MO_SET_GRAPH_SIZE(mf, num, code, size)	\
-	    SEL_FUNC(mf, GMsetGraphSize, CGMsetGraphSize)(mf, num, code, \
-							     size)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetGraphSize, (INT_PROC)CGMsetGraphSize, (INT_PROC)PSsetGraphSize, (INT_PROC)GIFsetGraphSize)(mf, num, code, size)
 #define MO_SET_GRAPH_ATTR(mf, num, code, attr)	\
-	    SEL_FUNC(mf, GMsetGraphAttr, CGMsetGraphAttr)(mf, num, code, \
-							     attr)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetGraphAttr, (INT_PROC)CGMsetGraphAttr, (INT_PROC)PSsetGraphAttr, (INT_PROC)GIFsetGraphAttr)(mf, num, code, attr)
 #define MO_SET_LIMIT(mf, num, code, rect)	\
-	    SEL_FUNC(mf, GMsetLimit, CGMsetLimit)(mf, num, code, rect)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetLimit, (INT_PROC)CGMsetLimit, (INT_PROC)PSsetLimit, (INT_PROC)GIFsetLimit)(mf, num, code, rect)
 #define MO_SET_LINE_MARKER_REP(mf, num, code, idx, type, size, colour)	\
-	    SEL_FUNC(mf, GMsetLineMarkRep, CGMsetLineMarkRep)\
+	    SEL_FUNC(*mf, (INT_PROC)GMsetLineMarkRep, (INT_PROC)CGMsetLineMarkRep, (INT_PROC)PSsetLineMarkRep, (INT_PROC)GIFsetLineMarkRep)\
 		(mf, num, code, idx, type, size, colour)
 #define MO_SET_PATTERN_REFPT(mf, num)	\
-	    SEL_FUNC(mf, GMsetPatRefpt, CGMsetPatRefpt)(mf, num)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetPatRefpt, (INT_PROC)CGMsetPatRefpt, (INT_PROC)PSsetPatRefpt, (INT_PROC)GIFsetPatRefpt)(mf, num)
 #define MO_SET_PATTERN_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(mf, GMsetPatRep, CGMsetPatRep)(mf, num, idx, rep)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetPatRep, (INT_PROC)CGMsetPatRep, (INT_PROC)PSsetPatRep, (INT_PROC)GIFsetPatRep)(mf, num, idx, rep)
 #define MO_SET_PATTERN_SIZE(mf, num)	\
-	    SEL_FUNC(mf, GMsetPatSize, CGMsetPatSize)(mf, num)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetPatSize, (INT_PROC)CGMsetPatSize, (INT_PROC)PSsetPatSize, (INT_PROC)GIFsetPatSize)(mf, num)
 #define MO_SET_SEG_ATTR(mf, num, name, code, attr)	\
-	    SEL_FUNC(mf, GMsetSegAttr, CGMsetSegAttr)(mf, num, name, code, \
-							 attr)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetSegAttr, (INT_PROC)CGMsetSegAttr, (INT_PROC)PSsetSegAttr, (INT_PROC)GIFsetSegAttr)(mf, num, name, code, attr)
 #define MO_SET_SEG_DETECT(mf, num, name, det)	\
-	    SEL_FUNC(mf, GMsetSegDetect, CGMsetSegDetect)(mf, num, name, det)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetSegDetect, (INT_PROC)CGMsetSegDetect, (INT_PROC)PSsetSegDetect, (INT_PROC)GIFsetSegDetect)(mf, num, name, det)
 #define MO_SET_SEG_HILIGHT(mf, num, name, hilight)	\
-	    SEL_FUNC(mf, GMsetSegHilight, CGMsetSegHilight)\
-		(mf, num, name, hilight)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetSegHilight, (INT_PROC)CGMsetSegHilight, (INT_PROC)PSsetSegHilight, (INT_PROC)GIFsetSegHilight\
+		(mf, num, name, hilight))
 #define MO_SET_SEG_PRI(mf, num, name, pri)	\
-	    SEL_FUNC(mf, GMsetSegPri, CGMsetSegPri)(mf, num, name, pri)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetSegPri, (INT_PROC)CGMsetSegPri, (INT_PROC)PSsetSegPri, (INT_PROC)GIFsetSegPri)(mf, num, name, pri)
 #define MO_SET_SEG_TRANS(mf, num, name, matrix)	\
-	    SEL_FUNC(mf, GMsetSegTran, CGMsetSegTran)(mf, num, name, matrix)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetSegTran, (INT_PROC)CGMsetSegTran, (INT_PROC)PSsetSegTran, (INT_PROC)GIFsetSegTran)(mf, num, name, matrix)
 #define MO_SET_SEG_VIS(mf, num, name, vis)	\
-	    SEL_FUNC(mf, GMsetSegVis, CGMsetSegVis)(mf, num, name, vis)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetSegVis, (INT_PROC)CGMsetSegVis, (INT_PROC)PSsetSegVis, (INT_PROC)GIFsetSegVis)(mf, num, name, vis)
 #define MO_SET_TEXT_ALIGN(mf, num, align)	\
-	    SEL_FUNC(mf, GMsetTextAlign, CGMsetTextAlign)(mf, num, align)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetTextAlign, (INT_PROC)CGMsetTextAlign, (INT_PROC)PSsetTextAlign, (INT_PROC)GIFsetTextAlign)(mf, num, align)
 #define MO_SET_TEXT_FP(mf, num, txfp)	\
-	    SEL_FUNC(mf, GMsetTextFP, CGMsetTextFP)(mf, num, txfp)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetTextFP, (INT_PROC)CGMsetTextFP, (INT_PROC)PSsetTextFP, (INT_PROC)GIFsetTextFP)(mf, num, txfp)
 #define MO_SET_TEXT_PATH(mf, num, path)	\
-	    SEL_FUNC(mf, GMsetTextPath, CGMsetTextPath)(mf, num, path)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetTextPath, (INT_PROC)CGMsetTextPath, (INT_PROC)PSsetTextPath, (INT_PROC)GIFsetTextPath)(mf, num, path)
 #define MO_SET_TEXT_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(mf, GMsetTextRep, CGMsetTextRep)(mf, num, idx, rep)
+	    SEL_FUNC(*mf, (INT_PROC)GMsetTextRep, (INT_PROC)CGMsetTextRep, (INT_PROC)PSsetTextRep, (INT_PROC)GIFsetTextRep)(mf, num, idx, rep)
 #define MO_UPDATE(mf, num, regenflag)	\
-	    SEL_FUNC(mf, GMupdate, CGMupdate)(mf, num, regenflag)
+	    SEL_FUNC(*mf, (INT_PROC)GMupdate, (INT_PROC)CGMupdate, (INT_PROC)PSupdate, (INT_PROC)GIFupdate)(mf, num, regenflag)
 #define MO_GRAPHIC(mf, num, code, num_pt, pos)	\
-	    SEL_FUNC(mf, GMoutputGraphic, CGMoutputGraphic)\
+	    SEL_FUNC(*mf, (INT_PROC)GMoutputGraphic, (INT_PROC)CGMoutputGraphic, (INT_PROC)PSoutputGraphic, (INT_PROC)GIFoutputGraphic)\
 		(mf, num, code, num_pt, pos)
 #define MO_WRITE_ITEM(mf, num, type, length, data)	\
-	    SEL_FUNC(mf, GMwriteItem, CGMwriteItem)(mf, num, type, length, \
-						       data)
+	    SEL_FUNC(*mf, (INT_PROC)GMwriteItem, (INT_PROC)CGMwriteItem, emptyProc, emptyProc)(mf, num, type, length, data)
 #define MO_TEXT(mf, num, at, string)	\
-	    SEL_FUNC(mf, GMtext, CGMtext)(mf, num, at, string)
+	    SEL_FUNC(*mf, (INT_PROC)GMtext, (INT_PROC)CGMtext, (INT_PROC)PStext, (INT_PROC)GIFtext)(mf, num, at, string)
 
 
 /*
  * Execute the data contained in a Metafile item.
  */
     static Gint
-XgksExecData(type, record)
-    Gint            type;
-    char           *record;
+XgksExecData(Gint type, char *record)
 {
     XGKSMONE       *ptr1;
     XGKSMTWO       *ptr2;
@@ -770,8 +803,7 @@ XgksExecData(type, record)
  * Indicate whether or not a Metafile item of the given type is valid.
  */
     static int
-XgksValidGksMItem(type)
-    Gint            type;
+XgksValidGksMItem(Gint type)
 {
     if (type >= 0 && type <= 6)
 	return OK;
@@ -800,11 +832,11 @@ XgksValidGksMItem(type)
  * WRITE ITEM TO GKSM
  */
     int
-gwritegksm(ws_id, type, length, data)
-    Gint            ws_id;	/* workstation identifier */
-    Gint	    type;	/* item type */
-    Gint	    length;	/* item length */
-    Gchar          *data;	/* item data-record */
+gwritegksm(Gint ws_id, Gint type, Gint length, Gchar *data)
+                          	/* workstation identifier */
+        	         	/* item type */
+        	           	/* item length */
+                         	/* item data-record */
 {
     WS_STATE_PTR    ws;
     Metafile       *mf;
@@ -835,9 +867,9 @@ gwritegksm(ws_id, type, length, data)
  * GET ITEM TYPE FROM GKSM
  */
     int
-ggetgksm(ws_id, result)
-    Gint            ws_id;	/* workstation identifier */
-    Ggksmit        *result;	/* input metafile item information */
+ggetgksm(Gint ws_id, Ggksmit *result)
+                          	/* workstation identifier */
+                           	/* input metafile item information */
 {
     WS_STATE_PTR    ws;
 
@@ -895,10 +927,10 @@ ggetgksm(ws_id, result)
  * in MI, since the error is unrecoverable and no more reading is allowed.
  */
     int
-greadgksm(ws_id, length, record)
-    Gint            ws_id;	/* workstation identifier */
-    Gint	    length;	/* maximum item data record length */
-    char           *record;	/* input metafile item data-record */
+greadgksm(Gint ws_id, Gint length, char *record)
+                          	/* workstation identifier */
+        	           	/* maximum item data record length */
+                           	/* input metafile item data-record */
 {
     int             istat;
     WS_STATE_PTR   ws;
@@ -953,8 +985,7 @@ greadgksm(ws_id, length, record)
  * decoded, binary structures -- not the file-encoded size.
  */
     static int
-recSize(type)
-    Gint            type;
+recSize(Gint type)
 {
     switch (type) {
 
@@ -1061,9 +1092,9 @@ recSize(type)
  * INTERPRET GKSM ITEM
  */
     int
-ginterpret(recInfo, data)
-    Ggksmit        *recInfo;	/* item type and length */
-    char           *data;	/* item data-record */
+ginterpret(Ggksmit *recInfo, char *data)
+                            	/* item type and length */
+                         	/* item data-record */
 {
     GKSERROR((xgks_state.gks_state != GWSOP && xgks_state.gks_state !=
 		GWSAC && xgks_state.gks_state != GSGOP),
@@ -1140,27 +1171,34 @@ XgksMiOpenWs(ws)
 XgksMoOpenWs(ws)
     WS_STATE_PTR    ws;
 {
+  Gint status;
     ws->wscolour	= MAX_META_WSCOLOURS;
     ws->set_colour_rep	= NULL;
 
-    return ((strstr(ws->conn, ".cgm") == NULL &&
-	     strstr(ws->conn, ".CGM") == NULL
-		    ? GMmoOpen(ws)
-		    : CGMmoOpen(ws))
-		== OK)
-	    ? OK
-	    : 26;			/* workstation could not be opened */
-}
 
+    if (strstr(ws->conn, ".cgm") != NULL || strstr(ws->conn, ".CGM") != NULL) {
+      status = CGMmoOpen(ws);
+    } else if (strstr(ws->conn, ".ps") != NULL ||
+	       strstr(ws->conn, ".PS") != NULL){
+      status = PSmoOpen(ws);
+    } else if (strstr(ws->conn, ".gif") != NULL ||
+	       strstr(ws->conn, ".GIF") != NULL){
+      status = GIFmoOpen(ws);
+    } else {
+      status = GMmoOpen(ws);
+    }
+    return status == OK ? OK :26;
+}
 
 /*
  * Close an input Metafile.
  */
     int
-XgksMiCloseWs(ws)
-    WS_STATE_PTR    ws;
+XgksMiCloseWs(WS_STATE_PTR ws)
 {
-    return MI_CLOSE(&ws->mf);
+    (void) fclose(ws->mf.any->fp);
+
+    return OK;
 }
 
 
@@ -1168,10 +1206,9 @@ XgksMiCloseWs(ws)
  * Close an output Metafile.
  */
     int
-XgksMoCloseWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoCloseWs(WS_STATE_PTR ws)
 {
-    return MO_CLOSE(&ws->mf);
+  return MO_CLOSE(&ws->mf);
 }
 
 
@@ -1179,9 +1216,7 @@ XgksMoCloseWs(ws)
  * Set the clear flag in an output Metafile.
  */
     int
-XgksMoClearWs(ws, flag)
-    WS_STATE_PTR    ws;
-    Gclrflag        flag;
+XgksMoClearWs(WS_STATE_PTR ws, Gclrflag flag)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1193,8 +1228,7 @@ XgksMoClearWs(ws, flag)
  * Redraw all segments in an output Metafile.
  */
     int
-XgksMoReDrawAllSeg(ws)
-    WS_STATE_PTR    ws;
+XgksMoReDrawAllSeg(WS_STATE_PTR ws)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1206,9 +1240,7 @@ XgksMoReDrawAllSeg(ws)
  * Set the update flag in an output Metafile.
  */
     int
-XgksMoUpdateWs(ws, regenflag)
-    WS_STATE_PTR    ws;
-    Gregen          regenflag;
+XgksMoUpdateWs(WS_STATE_PTR ws, Gregen regenflag)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1220,10 +1252,7 @@ XgksMoUpdateWs(ws, regenflag)
  * Set the deferal state in an output Metafile.
  */
     int
-XgksMoDeferWs(ws, defer_mode, regen_mode)
-    WS_STATE_PTR    ws;
-    Gdefmode        defer_mode;
-    Girgmode        regen_mode;
+XgksMoDeferWs(WS_STATE_PTR ws, Gdefmode defer_mode, Girgmode regen_mode)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1235,9 +1264,7 @@ XgksMoDeferWs(ws, defer_mode, regen_mode)
  * Write a message to an output Metafile.
  */
     int
-XgksMoMessage(ws, string)
-    WS_STATE_PTR    ws;
-    Gchar          *string;
+XgksMoMessage(WS_STATE_PTR ws, Gchar *string)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1249,11 +1276,7 @@ XgksMoMessage(ws, string)
  * Write a graphic to an output Metafile.
  */
     int
-XgksMoGraphicOutputToWs(ws, code, num_pt, pos)
-    WS_STATE_PTR    ws;
-    Gint            code;
-    Gint            num_pt;
-    Gpoint         *pos;
+XgksMoGraphicOutputToWs(WS_STATE_PTR ws, Gint code, Gint num_pt, Gpoint *pos)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1265,15 +1288,16 @@ XgksMoGraphicOutputToWs(ws, code, num_pt, pos)
  * Write a graphic to all, appropriate, output Metafiles.
  */
     int
-XgksMoGraphicOutput(code, num_pt, pos)
-    Gint            code;
-    Gint            num_pt;
-    Gpoint         *pos;
+XgksMoGraphicOutput(Gint code, Gint num_pt, Gpoint *pos)
 {
     if (num_gksmo > 0)
 	GMoutputGraphic(active_gksmo, num_gksmo, code, num_pt, pos);
     if (num_cgmo > 0)
 	CGMoutputGraphic(active_cgmo, num_cgmo, code, num_pt, pos);
+    if (num_psmo > 0)
+	PSoutputGraphic(active_psmo, num_psmo, code, num_pt, pos);
+    if (num_gifmo > 0)
+	GIFoutputGraphic(active_gifmo, num_gifmo, code, num_pt, pos);
 
     return OK;
 }
@@ -1283,10 +1307,7 @@ XgksMoGraphicOutput(code, num_pt, pos)
  * Write text to an output Metafile.
  */
     int
-XgksMoTextToWs(ws, at, string)
-    WS_STATE_PTR    ws;
-    Gpoint         *at;
-    Gchar          *string;
+XgksMoTextToWs(WS_STATE_PTR ws, Gpoint *at, Gchar *string)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1298,14 +1319,16 @@ XgksMoTextToWs(ws, at, string)
  * Write text to all, appropriate, output Metafiles.
  */
     int
-XgksMoText(at, string)
-    Gpoint         *at;
-    Gchar          *string;
+XgksMoText(Gpoint *at, Gchar *string)
 {
     if (num_gksmo > 0)
 	GMtext(active_gksmo, num_gksmo, at, string);
     if (num_cgmo > 0)
 	CGMtext(active_cgmo, num_cgmo, at, string);
+    if (num_psmo > 0)
+	PStext(active_psmo, num_psmo, at, string);
+    if (num_gifmo > 0)
+	GIFtext(active_gifmo, num_gifmo, at, string);
 
     return OK;
 }
@@ -1315,11 +1338,7 @@ XgksMoText(at, string)
  * Write a cell array to an output Metafile.
  */
     int
-XgksMoCellArrayToWs(ws, ll, ur, lr, row, colour, dim)
-    WS_STATE_PTR    ws;
-    Gpoint         *ll, *ur, *lr;
-    Gint            row, *colour;
-    Gipoint        *dim;
+XgksMoCellArrayToWs(WS_STATE_PTR ws, Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row, Gint *colour, Gipoint *dim)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1331,16 +1350,19 @@ XgksMoCellArrayToWs(ws, ll, ur, lr, row, colour, dim)
  * Write a cell array to all, appropriate, output Metafiles.
  */
     int
-XgksMoCellArray(ll, ur, lr, row, colour, dim)
-    Gpoint         *ll, *ur, *lr;
-    Gint           row, *colour;
-    Gipoint        *dim;
+XgksMoCellArray(Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row, Gint *colour, Gipoint *dim)
 {
     if (num_gksmo > 0)
 	GMcellArray(active_gksmo, num_gksmo, ll, ur, lr, row, 
 				 colour, dim);
     if (num_cgmo > 0)
 	CGMcellArray(active_cgmo, num_cgmo, ll, ur, lr, row, 
+				 colour, dim);
+    if (num_psmo > 0)
+	PScellArray(active_psmo, num_psmo, ll, ur, lr, row, 
+				 colour, dim);
+    if (num_gifmo > 0)
+	GIFcellArray(active_gifmo, num_gifmo, ll, ur, lr, row, 
 				 colour, dim);
 
     return OK;
@@ -1351,10 +1373,7 @@ XgksMoCellArray(ll, ur, lr, row, colour, dim)
  * Set the size of graphics in an output Metafile.
  */
     int
-XgksMoSetGraphicSizeOnWs(ws, code, size)
-    WS_STATE_PTR    ws;
-    Gint            code;
-    double          size;
+XgksMoSetGraphicSizeOnWs(WS_STATE_PTR ws, Gint code, double size)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1366,14 +1385,17 @@ XgksMoSetGraphicSizeOnWs(ws, code, size)
  * Set the size of graphics in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetGraphicSize(code, size)
-    Gint            code;
-    double          size;
+XgksMoSetGraphicSize(Gint code, double size)
 {
+
     if (num_gksmo > 0)
 	GMsetGraphSize(active_gksmo, num_gksmo, code, size);
     if (num_cgmo > 0)
 	CGMsetGraphSize(active_cgmo, num_cgmo, code, size);
+    if (num_psmo > 0)
+	PSsetGraphSize(active_psmo, num_psmo, code, size);
+    if (num_gifmo > 0)
+	GIFsetGraphSize(active_gifmo, num_gifmo, code, size);
 
     return OK;
 }
@@ -1383,8 +1405,7 @@ XgksMoSetGraphicSize(code, size)
  * Close the open segment in an output Metafile.
  */
     int
-XgksMoCloseSegOnWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoCloseSegOnWs(WS_STATE_PTR ws)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1396,12 +1417,16 @@ XgksMoCloseSegOnWs(ws)
  * Close the open segment in all, appropriate, output Metafiles.
  */
     int
-XgksMoCloseSeg()
+XgksMoCloseSeg(void)
 {
     if (num_gksmo > 0)
 	GMcloseSeg(active_gksmo, num_gksmo);
     if (num_cgmo > 0)
 	CGMcloseSeg(active_cgmo, num_cgmo);
+    if (num_psmo > 0)
+	PScloseSeg(active_psmo, num_psmo);
+    if (num_gifmo > 0)
+	GIFcloseSeg(active_gifmo, num_gifmo);
 
     return OK;
 }
@@ -1411,10 +1436,7 @@ XgksMoCloseSeg()
  * Set the graphic attributes in an output Metafile.
  */
     int
-XgksMoSetGraphicAttrOnWs(ws, code, attr)
-    WS_STATE_PTR    ws;
-    Gint            code;
-    Gint            attr;
+XgksMoSetGraphicAttrOnWs(WS_STATE_PTR ws, Gint code, Gint attr)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1426,14 +1448,16 @@ XgksMoSetGraphicAttrOnWs(ws, code, attr)
  * Set the graphic attributes in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetGraphicAttr(code, attr)
-    Gint            code;
-    Gint            attr;
+XgksMoSetGraphicAttr(Gint code, Gint attr)
 {
     if (num_gksmo > 0)
 	GMsetGraphAttr(active_gksmo, num_gksmo, code, attr);
     if (num_cgmo > 0)
 	CGMsetGraphAttr(active_cgmo, num_cgmo, code, attr);
+    if (num_psmo > 0)
+	PSsetGraphAttr(active_psmo, num_psmo, code, attr);
+    if (num_gifmo > 0)
+	GIFsetGraphAttr(active_gifmo, num_gifmo, code, attr);
 
     return OK;
 }
@@ -1443,9 +1467,7 @@ XgksMoSetGraphicAttr(code, attr)
  * Set the font precision in an output Metafile.
  */
     int
-XgksMoSetTextFPOnWs(ws, txfp)
-    WS_STATE_PTR    ws;
-    Gtxfp          *txfp;
+XgksMoSetTextFPOnWs(WS_STATE_PTR ws, Gtxfp *txfp)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1457,13 +1479,16 @@ XgksMoSetTextFPOnWs(ws, txfp)
  * Set the font precision in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetTextFP(txfp)
-    Gtxfp          *txfp;
+XgksMoSetTextFP(Gtxfp *txfp)
 {
     if (num_gksmo > 0)
 	GMsetTextFP(active_gksmo, num_gksmo, txfp);
     if (num_cgmo > 0)
 	CGMsetTextFP(active_cgmo, num_cgmo, txfp);
+    if (num_psmo > 0)
+	PSsetTextFP(active_psmo, num_psmo, txfp);
+    if (num_gifmo > 0)
+	GIFsetTextFP(active_gifmo, num_gifmo, txfp);
 
     return OK;
 }
@@ -1473,9 +1498,7 @@ XgksMoSetTextFP(txfp)
  * Set the character up-vector in an output Metafile.
  */
     int
-XgksMoSetCharUpOnWs(ws, up, base)
-    WS_STATE_PTR    ws;
-    Gpoint         *up, *base;
+XgksMoSetCharUpOnWs(WS_STATE_PTR ws, Gpoint *up, Gpoint *base)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1487,7 +1510,7 @@ XgksMoSetCharUpOnWs(ws, up, base)
  * Set the character up-vector in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetCharUp()
+XgksMoSetCharUp(void)
 {
     if (num_gksmo > 0)
 	GMsetCharUp(active_gksmo, num_gksmo, (Gpoint*)NULL,
@@ -1495,6 +1518,12 @@ XgksMoSetCharUp()
     if (num_cgmo > 0)
 	CGMsetCharUp(active_cgmo, num_cgmo, (Gpoint*)NULL,
 				      (Gpoint*)NULL);
+    if (num_psmo > 0)
+	PSsetCharUp(active_psmo, num_psmo, &xgks_state.gks_chattr.up,
+				      &xgks_state.gks_chattr.base);
+    if (num_gifmo > 0)
+	GIFsetCharUp(active_gifmo, num_gifmo, &xgks_state.gks_chattr.up,
+				      &xgks_state.gks_chattr.base);
 
     return OK;
 }
@@ -1504,9 +1533,7 @@ XgksMoSetCharUp()
  * Set the text-path in an output Metafile.
  */
     int
-XgksMoSetTextPathOnWs(ws, path)
-    WS_STATE_PTR    ws;
-    Gtxpath         path;
+XgksMoSetTextPathOnWs(WS_STATE_PTR ws, Gtxpath path)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1518,13 +1545,16 @@ XgksMoSetTextPathOnWs(ws, path)
  * Set the text-path in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetTextPath(path)
-    Gtxpath         path;
+XgksMoSetTextPath(Gtxpath path)
 {
     if (num_gksmo > 0)
 	GMsetTextPath(active_gksmo, num_gksmo, path);
     if (num_cgmo > 0)
 	CGMsetTextPath(active_cgmo, num_cgmo, path);
+    if (num_psmo > 0)
+	PSsetTextPath(active_psmo, num_psmo, path);
+    if (num_gifmo > 0)
+	GIFsetTextPath(active_gifmo, num_gifmo, path);
 
     return OK;
 }
@@ -1534,9 +1564,7 @@ XgksMoSetTextPath(path)
  * Set the text-alignment in an output Metafile.
  */
     int
-XgksMoSetTextAlignOnWs(ws, align)
-    WS_STATE_PTR    ws;
-    Gtxalign       *align;
+XgksMoSetTextAlignOnWs(WS_STATE_PTR ws, Gtxalign *align)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1548,13 +1576,16 @@ XgksMoSetTextAlignOnWs(ws, align)
  * Set the text-alignment in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetTextAlign(align)
-    Gtxalign       *align;
+XgksMoSetTextAlign(Gtxalign *align)
 {
     if (num_gksmo > 0)
 	GMsetTextAlign(active_gksmo, num_gksmo, align);
     if (num_cgmo > 0)
 	CGMsetTextAlign(active_cgmo, num_cgmo, align);
+    if (num_psmo > 0)
+	PSsetTextAlign(active_psmo, num_psmo, align);
+    if (num_gifmo > 0)
+	GIFsetTextAlign(active_gifmo, num_gifmo, align);
 
     return OK;
 }
@@ -1564,9 +1595,7 @@ XgksMoSetTextAlign(align)
  * Set the interior fill-style in an output Metafile.
  */
     int
-XgksMoSetFillIntStyleOnWs(ws, style)
-    WS_STATE_PTR    ws;
-    Gflinter        style;
+XgksMoSetFillIntStyleOnWs(WS_STATE_PTR ws, Gflinter style)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1578,13 +1607,16 @@ XgksMoSetFillIntStyleOnWs(ws, style)
  * Set the interior fill-style in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetFillIntStyle(style)
-    Gflinter        style;
+XgksMoSetFillIntStyle(Gflinter style)
 {
     if (num_gksmo > 0)
 	GMsetFillStyle(active_gksmo, num_gksmo, style);
     if (num_cgmo > 0)
 	CGMsetFillStyle(active_cgmo, num_cgmo, style);
+    if (num_psmo > 0)
+	PSsetFillStyle(active_psmo, num_psmo, style);
+    if (num_gifmo > 0)
+	GIFsetFillStyle(active_gifmo, num_gifmo, style);
 
     return OK;
 }
@@ -1594,8 +1626,7 @@ XgksMoSetFillIntStyle(style)
  * Set the pattern size in an output Metafile.
  */
     int
-XgksMoSetPatSizeOnWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoSetPatSizeOnWs(WS_STATE_PTR ws)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1607,12 +1638,16 @@ XgksMoSetPatSizeOnWs(ws)
  * Set the pattern size in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetPatSize()
+XgksMoSetPatSize(void)
 {
     if (num_gksmo > 0)
 	GMsetPatSize(active_gksmo, num_gksmo);
     if (num_cgmo > 0)
 	CGMsetPatSize(active_cgmo, num_cgmo);
+    if (num_psmo > 0)
+	PSsetPatSize(active_psmo, num_psmo);
+    if (num_gifmo > 0)
+	GIFsetPatSize(active_gifmo, num_gifmo);
 
     return OK;
 }
@@ -1622,8 +1657,7 @@ XgksMoSetPatSize()
  * Set the pattern reference-point in an output Metafile.
  */
     int
-XgksMoSetPatRefOnWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoSetPatRefOnWs(WS_STATE_PTR ws)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1635,12 +1669,16 @@ XgksMoSetPatRefOnWs(ws)
  * Set the pattern reference-point in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetPatRef()
+XgksMoSetPatRef(void)
 {
     if (num_gksmo > 0)
 	GMsetPatRefpt(active_gksmo, num_gksmo);
     if (num_cgmo > 0)
 	CGMsetPatRefpt(active_cgmo, num_cgmo);
+    if (num_psmo > 0)
+	PSsetPatRefpt(active_psmo, num_psmo);
+    if (num_gifmo > 0)
+	GIFsetPatRefpt(active_gifmo, num_gifmo);
 
     return OK;
 }
@@ -1650,8 +1688,7 @@ XgksMoSetPatRef()
  * Set the ASF in an output Metafile.
  */
     int
-XgksMoSetAsfOnWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoSetAsfOnWs(WS_STATE_PTR ws)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1663,12 +1700,16 @@ XgksMoSetAsfOnWs(ws)
  * Set the ASF in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetAsf()
+XgksMoSetAsf(void)
 {
     if (num_gksmo > 0)
 	GMsetAsf(active_gksmo, num_gksmo);
     if (num_cgmo > 0)
 	CGMsetAsf(active_cgmo, num_cgmo);
+    if (num_psmo > 0)
+	PSsetAsf(active_psmo, num_psmo);
+    if (num_gifmo > 0)
+	GIFsetAsf(active_gifmo, num_gifmo);
 
     return OK;
 }
@@ -1678,11 +1719,7 @@ XgksMoSetAsf()
  * Set the line and marker representation in an output Metafile.
  */
     int
-XgksMoSetLineMarkRep(ws, code, idx, type, size, colour)
-    WS_STATE_PTR    ws;
-    Gint            code, idx, type;
-    double          size;
-    Gint            colour;
+XgksMoSetLineMarkRep(WS_STATE_PTR ws, Gint code, Gint idx, Gint type, double size, Gint colour)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1694,10 +1731,7 @@ XgksMoSetLineMarkRep(ws, code, idx, type, size, colour)
  * Set the text representation in an output Metafile.
  */
     int
-XgksMoSetTextRep(ws, idx, rep)
-    WS_STATE_PTR    ws;
-    Gint            idx;
-    Gtxbundl       *rep;
+XgksMoSetTextRep(WS_STATE_PTR ws, Gint idx, Gtxbundl *rep)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1709,10 +1743,7 @@ XgksMoSetTextRep(ws, idx, rep)
  * Set the fill representation in an output Metafile.
  */
     int
-XgksMoSetFillRep(ws, idx, rep)
-    WS_STATE_PTR    ws;
-    Gint            idx;
-    Gflbundl       *rep;
+XgksMoSetFillRep(WS_STATE_PTR ws, Gint idx, Gflbundl *rep)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1724,10 +1755,7 @@ XgksMoSetFillRep(ws, idx, rep)
  * Set the pattern representation in an output Metafile.
  */
     int
-XgksMoSetPatRep(ws, idx, rep)
-    WS_STATE_PTR    ws;
-    Gint            idx;
-    Gptbundl       *rep;
+XgksMoSetPatRep(WS_STATE_PTR ws, Gint idx, Gptbundl *rep)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1739,10 +1767,7 @@ XgksMoSetPatRep(ws, idx, rep)
  * Set the colour representation in an output Metafile.
  */
     int
-XgksMoSetColourRep(ws, idx, rep)
-    WS_STATE_PTR    ws;
-    Gint            idx;
-    Gcobundl       *rep;
+XgksMoSetColourRep(WS_STATE_PTR ws, Gint idx, Gcobundl *rep)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1754,9 +1779,7 @@ XgksMoSetColourRep(ws, idx, rep)
  * Set the clipping rectangle in an output Metafile.
  */
     int
-XgksMoSetClipOnWs(ws, rect)
-    WS_STATE_PTR    ws;
-    Glimit         *rect;
+XgksMoSetClipOnWs(WS_STATE_PTR ws, Glimit *rect)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1768,13 +1791,16 @@ XgksMoSetClipOnWs(ws, rect)
  * Set the clipping rectangle in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetClip(rect)
-    Glimit         *rect;
+XgksMoSetClip(Glimit *rect)
 {
     if (num_gksmo > 0)
 	GMsetClip(active_gksmo, num_gksmo, rect);
     if (num_cgmo > 0)
 	CGMsetClip(active_cgmo, num_cgmo, rect);
+    if (num_psmo > 0)
+	PSsetClip(active_psmo, num_psmo, rect);
+    if (num_gifmo > 0)
+	GIFsetClip(active_gifmo, num_gifmo, rect);
 
     return OK;
 }
@@ -1784,10 +1810,7 @@ XgksMoSetClip(rect)
  * Set the viewport limits in an output Metafile.
  */
     int
-XgksMoSetLimit(ws, code, rect)
-    WS_STATE_PTR    ws;
-    Gint            code;
-    Glimit         *rect;
+XgksMoSetLimit(WS_STATE_PTR ws, Gint code, Glimit *rect)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1799,13 +1822,16 @@ XgksMoSetLimit(ws, code, rect)
  * Rename a segment in all, appropriate, output Metafiles.
  */
     int
-XgksMoRenameSeg(old, new)
-    Gint            old, new;
+XgksMoRenameSeg(Gint old, Gint new)
 {
     if (num_gksmo > 0)
 	GMrenameSeg(active_gksmo, num_gksmo, old, new);
     if (num_cgmo > 0)
 	CGMrenameSeg(active_cgmo, num_cgmo, old, new);
+    if (num_psmo > 0)
+	PSrenameSeg(active_psmo, num_psmo, old, new);
+    if (num_gifmo > 0)
+	GIFrenameSeg(active_gifmo, num_gifmo, old, new);
 
     return OK;
 }
@@ -1815,10 +1841,7 @@ XgksMoRenameSeg(old, new)
  * Set the segment transformation in an output Metafile.
  */
     int
-XgksMoSetSegTransOnWs(ws, name, matrix)
-    WS_STATE_PTR    ws;
-    Gint            name;
-    Gfloat          matrix[2][3];
+XgksMoSetSegTransOnWs(WS_STATE_PTR ws, Gint name, Gfloat (*matrix)[])
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1830,14 +1853,16 @@ XgksMoSetSegTransOnWs(ws, name, matrix)
  * Set the segment transformation in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetSegTrans(name, matrix)
-    Gint            name;
-    Gfloat          matrix[2][3];
+XgksMoSetSegTrans(Gint name, Gfloat (*matrix)[])
 {
     if (num_gksmo > 0)
 	GMsetSegTran(active_gksmo, num_gksmo, name, matrix);
     if (num_cgmo > 0)
 	CGMsetSegTran(active_cgmo, num_cgmo, name, matrix);
+    if (num_psmo > 0)
+	PSsetSegTran(active_psmo, num_psmo, name, matrix);
+    if (num_gifmo > 0)
+	GIFsetSegTran(active_gifmo, num_gifmo, name, matrix);
 
     return OK;
 }
@@ -1847,9 +1872,7 @@ XgksMoSetSegTrans(name, matrix)
  * Set the segment attributes in an output Metafile.
  */
     int
-XgksMoSetSegAttrOnWs(ws, name, code, attr)
-    WS_STATE_PTR    ws;
-    Gint            name, code, attr;
+XgksMoSetSegAttrOnWs(WS_STATE_PTR ws, Gint name, Gint code, Gint attr)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1861,14 +1884,16 @@ XgksMoSetSegAttrOnWs(ws, name, code, attr)
  * Set the segment visibility in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetSegVis(name, vis)
-    Gint            name;
-    Gsegvis         vis;
+XgksMoSetSegVis(Gint name, Gsegvis vis)
 {
     if (num_gksmo > 0)
 	GMsetSegVis(active_gksmo, num_gksmo, name, vis);
     if (num_cgmo > 0)
 	CGMsetSegVis(active_cgmo, num_cgmo, name, vis);
+    if (num_psmo > 0)
+	PSsetSegVis(active_psmo, num_psmo, name, vis);
+    if (num_gifmo > 0)
+	GIFsetSegVis(active_gifmo, num_gifmo, name, vis);
 
     return OK;
 }
@@ -1878,14 +1903,16 @@ XgksMoSetSegVis(name, vis)
  * Set the segment highlighting in all, appropriate, output Metafiles.
  */
     int
-XgksMoSetSegHiLight(name, hilight)
-    Gint            name;
-    Gseghi          hilight;
+XgksMoSetSegHiLight(Gint name, Gseghi hilight)
 {
     if (num_gksmo > 0)
 	GMsetSegHilight(active_gksmo, num_gksmo, name, hilight);
     if (num_cgmo > 0)
 	CGMsetSegHilight(active_cgmo, num_cgmo, name, hilight);
+    if (num_psmo > 0)
+	PSsetSegHilight(active_psmo, num_psmo, name, hilight);
+    if (num_gifmo > 0)
+	GIFsetSegHilight(active_gifmo, num_gifmo, name, hilight);
 
     return OK;
 }
@@ -1895,10 +1922,7 @@ XgksMoSetSegHiLight(name, hilight)
  * Set the segment priority in an output Metafile.
  */
     int
-XgksMoSetSegPriOnWs(ws, name, pri)
-    WS_STATE_PTR    ws;
-    Gint            name;
-    double          pri;
+XgksMoSetSegPriOnWs(WS_STATE_PTR ws, Gint name, double pri)
 {
     Metafile       *mf	= &ws->mf;
 
@@ -1910,14 +1934,16 @@ XgksMoSetSegPriOnWs(ws, name, pri)
  * Set the segment priority in all, appropriate output Metafiles.
  */
     int
-XgksMoSetSegPri(name, pri)
-    Gint            name;
-    double          pri;
+XgksMoSetSegPri(Gint name, double pri)
 {
     if (num_gksmo > 0)
 	GMsetSegPri(active_gksmo, num_gksmo, name, pri);
     if (num_cgmo > 0)
 	CGMsetSegPri(active_cgmo, num_cgmo, name, pri);
+    if (num_psmo > 0)
+	PSsetSegPri(active_psmo, num_psmo, name, pri);
+    if (num_gifmo > 0)
+	GIFsetSegPri(active_gifmo, num_gifmo, name, pri);
 
     return OK;
 }
@@ -1927,14 +1953,16 @@ XgksMoSetSegPri(name, pri)
  * Set segment detectability in all, appropriate output Metafiles.
  */
     int
-XgksMoSetSegDet(name, det)
-    Gint            name;
-    Gsegdet         det;
+XgksMoSetSegDet(Gint name, Gsegdet det)
 {
     if (num_gksmo > 0)
 	GMsetSegDetect(active_gksmo, num_gksmo, name, det);
     if (num_cgmo > 0)
 	CGMsetSegDetect(active_cgmo, num_cgmo, name, det);
+    if (num_psmo > 0)
+	PSsetSegDetect(active_psmo, num_psmo, name, det);
+    if (num_gifmo > 0)
+	GIFsetSegDetect(active_gifmo, num_gifmo, name, det);
 
     return OK;
 }
@@ -1944,10 +1972,7 @@ XgksMoSetSegDet(name, det)
  * Add an output Metafile to a list of active, output Metafiles.
  */
     static void
-add_mo(mo, list, num)
-    Metafile	*mo;
-    Metafile	*list;
-    int		*num;
+add_mo(Metafile *mo, Metafile *list, int *num)
 {
     assert(*num >= 0);
     assert(*num < MAX_ACTIVE_WS);
@@ -1993,28 +2018,37 @@ remove_mo(mo, list, num)
  * Metafiles and write initial output Metafile attributes.
  */
     int
-XgksMoActivateWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoActivateWs(WS_STATE_PTR ws)
 {
-    if (ws->mf.any->type	== MF_GKSM) {
-	add_mo(&ws->mf, active_gksmo, &num_gksmo);
-    } else {
-	add_mo(&ws->mf, active_cgmo, &num_cgmo);
+    switch(ws->mf.any->type){
+    case MF_GKSM:
+      add_mo(&ws->mf, active_gksmo, &num_gksmo);
+      break;
+    case MF_PS:
+      add_mo(&ws->mf, active_psmo, &num_psmo);
+      break;
+    case MF_GIF:
+      add_mo(&ws->mf, active_gifmo, &num_gifmo);
+      break;
+    case MF_CGM:
+    default:
+      add_mo(&ws->mf, active_cgmo, &num_cgmo);
+      break;
     }
-
+    
     XgksMoSetClipOnWs(ws, &xgks_state.cliprec.rec);
-
+    
     XgksSetLineAttrMo(ws, &xgks_state.gks_lnattr);
     XgksSetMarkAttrMo(ws, &xgks_state.gks_mkattr);
     XgksSetTextAttrMo(ws, &xgks_state.gks_txattr, &xgks_state.gks_chattr);
     XgksMoSetCharUpOnWs(ws, (Gpoint *) NULL, (Gpoint *) NULL);
     XgksSetFillPatAttrMo(ws, &xgks_state.gks_flattr, &xgks_state.gks_ptattr);
-
+    
     XgksMoSetPatSizeOnWs(ws);
     XgksMoSetPatRefOnWs(ws);
     XgksMoSetAsfOnWs(ws);
     XgksMoSetGraphicAttrOnWs(ws, 44, xgks_state.gks_pick_id);
-
+    
     return OK;
 }
 
@@ -2024,15 +2058,23 @@ XgksMoActivateWs(ws)
  * Metafiles.
  */
     int
-XgksMoDeactivateWs(ws)
-    WS_STATE_PTR    ws;
+XgksMoDeactivateWs(WS_STATE_PTR ws)
 {
-    if (ws->mf.any->type	== MF_GKSM) {
+    switch(ws->mf.any->type){
+      case MF_GKSM:
 	remove_mo(&ws->mf, active_gksmo, &num_gksmo);
-    } else {
+	break;
+      case MF_PS:
+	remove_mo(&ws->mf, active_psmo, &num_psmo);
+	break;
+      case MF_GIF:
+	remove_mo(&ws->mf, active_gifmo, &num_gifmo);
+	break;
+      case MF_CGM:
+      default:
 	remove_mo(&ws->mf, active_cgmo, &num_cgmo);
+	break;
     }
-
     return OK;
 }
 
@@ -2041,7 +2083,7 @@ XgksMoDeactivateWs(ws)
  * Initialize the Metafile system.
  */
     int
-XgksInitGksM()
+XgksInitGksM(void)
 {
     return OK;
 }

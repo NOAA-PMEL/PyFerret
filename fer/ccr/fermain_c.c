@@ -1,7 +1,7 @@
 /*	PROGRAM FERRET - C version of MAIN program with reconfigurable memory */
 
 /* compile this with:
-   cc -c -I/home/rascal/oz/Ferret_gui -I$fsrc/common fermain_c.c
+   cc -c [-g] -Iferret_cmn fermain_c.c
          (and use -D_NO_PROTO for non-ANSI compilers)
 */
 
@@ -38,17 +38,19 @@
 * FERRET 3.13     - 7/94 - relink of Solaris version
 *                          (using IBM-portable TMAP libs)
 *|*|*|*|*|*|*|*|*|*|*|*|
-* FERRET 4.0     - 7/94 - using a C main program with dynamic memory
-*                - 6/95 - *kob* had to add ifdef checks for 
-*		  	  NO_ENTRY_NAME_UNDERSCORES for hp port, as hp
-*			  doesnt need trailing underscores for c/fortran 
-*			  compatibility
 *
 */
 
 /*
    revision history for MAIN program unit:
       11/16/94 - changed to a c version of ferret_dispatch_c
+* FERRET 4.0     - 7/94 - using a C main program with dynamic memory
+*                - 6/95 - *kob* had to add ifdef checks for 
+*		  	  NO_ENTRY_NAME_UNDERSCORES for hp port, as hp
+*			  doesnt need trailing underscores for c/fortran 
+*			  compatibility
+*    3/5/97 *sh* changes to incorporate "-batch" qualifier
+*    7/25/97 *js* changes to incorporate output file for -batch
 */
 
 
@@ -61,10 +63,10 @@
 void help_text()
 {
   printf(
-"Usage:  ferret [-memsize Mwords] [-unmapped] [-help]\n\
-\n\
+"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-unmapped] [-help] \n\
        -memsize:  specify the memory cache size in megawords (default 3.2)\n\
-      -unmapped:  use invisible output windows (for animations and GIF files)\n\
+         -batch:  output directly to metafile \"outfile\" w/out X windows\n\
+      -unmapped:  use invisible output windows (superceded by -batch)\n\
           -help:  obtain this listing\n");
   exit(0);
 }
@@ -73,9 +75,9 @@ void help_text()
 main (argc, argv)
 int argc;
 char *argv[];
-#else
+#else 
 main (int argc, char *argv[])
-#endif
+#endif /* NO_PROTO */
 {
   int status;
   smPtr sBuffer;
@@ -105,7 +107,13 @@ main (int argc, char *argv[])
       mem_size = rmem_size * 1.E6;
     } else if (strcmp(argv[i],"-unmapped")==0) {
       WindowMapping(0);  /* new routine added to xopws.c */
-      i++;
+      i++;    /* advance to next argument */
+    } else if (strcmp(argv[i],"-batch")==0) {
+      char *meta_name = "metafile.plt";
+      if (++i < argc && argv[i][0] != '-'){
+	meta_name = argv[i++];
+      }
+      set_batch_graphics_(meta_name);  /* inhibit X output altogether */
     } else  /* -help also comes here */
       help_text();
   }

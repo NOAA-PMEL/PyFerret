@@ -9,6 +9,11 @@
 *       04.22.91 *jd* - mods to support new metafile translator
 *       05.06.81 *jd* - mod to maintain metafile version #'s on ultrix
 *       01.06.94 *jd*   Mod to put line color rep info into metafile for xgks
+*       7.26.97  *js*   Restored call to set line bundles. Forced to be same
+*                          as XGKS bundles. Added subroutine query_xgks_wkstn
+*                          to support workstation queries on metafiles. Fixed
+*                          bug where setup_line_bundles always called with type
+*                           ws_xwindow
 
 #ifdef unix
 	include 'tmap_pplv11inc/pltcom_dat.decl'! with declarations    
@@ -17,6 +22,7 @@
 	include 'pplv11inc/GKSCM1.INC'! with declarations    
 	include 'tmap_pplv11inc/gkscm2.cmn'! with declarations    
 	include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+	include 'tmap_pplv11inc/ws_types.cmn'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'! with declarations    
 	INCLUDE 'PPLV11INC:PLTCOM.DAT'! with declarations    
@@ -24,6 +30,7 @@
 	INCLUDE 'PPLV11INC:GKSCM1.INC'! with declarations    
 	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'! WITH DECLARATIONS    
 	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
+	INCLUDE 'TMAP_PPLV11INC:WS_TYPES.CMN'
 #endif
 
 #ifdef unix
@@ -48,7 +55,7 @@
 	real		red,green,blue
 
 	integer		errind,errnr,fctid
-
+	integer         theWsType
 
 C	XGKS DOESN'T DEFINE GMOUTP 
 	integer		gmoutp
@@ -76,10 +83,12 @@ C	XGKS DOESN'T DEFINE GMOUTP
         close (meta_lun,status='delete')
 
 	call guesc050 (meta_lun,meta_file)
+	theWsType = 1002
 	call gopwk(meta_wsid,meta_lun,1002)
 #else
-	call gopwk(meta_wsid,meta_lun,gmoutp)
+	theWsType = gmoutp
 #endif
+	call gopwk(meta_wsid,meta_lun,theWsType)
 *	call gsds (meta_wsid,gasap,gsuppd) !Better to be 'At Some TIme'
 	call gsds (meta_wsid,gasti,gsuppd) 
 
@@ -89,7 +98,8 @@ C	XGKS DOESN'T DEFINE GMOUTP
 
 *	SET UP DEFAULT LINE BUNDLES FOR METAFILE WS
 *    -- PLACE NO LINE BUNDLE INFO IN METAFILE (4.22.91)
-!	call setup_line_bundles (meta_wsid,meta_wstype) 
+*    -- Changed back to placing line bundle info in metafile (7.26.97)
+	call setup_line_bundles (meta_wsid,theWsType) 
 
 	meta_open = .true.
 !	meta_actv = .false.
@@ -134,6 +144,32 @@ C	XGKS DOESN'T DEFINE GMOUTP
 	
 	end
 
-
-
-
+c
+c       Support queries on metafile workstations
+c
+	subroutine query_xgks_wkstn(zwstype,error,max_pline,max_pmark,
+	1    max_text,max_fill_area,max_pattern,max_color)
+	implicit none
+#ifdef unix
+	include 'tmap_pplv11inc/gkscm2.cmn'! with declarations    
+	include 'tmap_pplv11inc/ws_types.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'! WITH DECLARATIONS    
+	INCLUDE 'TMAP_PPLV11INC:WS_TYPES.CMN'
+#endif
+	integer zwstype,error,max_pline,max_pmark
+	integer max_text, max_fill_area, max_pattern,max_color
+	if (zwstype .eq. ws_xwindow) then
+	   call gqlwk(zwstype,error,max_pline,max_pmark,
+	1	max_text,max_fill_area,max_pattern,max_color)
+	else
+	   error = 0
+	   max_pline = 20
+	   max_pmark = 20
+	   max_text = 20
+	   max_fill_area = 20
+	   max_pattern = 20
+	   max_color = 256
+	endif
+	return
+	end

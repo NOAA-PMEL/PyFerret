@@ -8,6 +8,6 @@
 	INCLUDE 'FERRET_CMN:XMAKE_DATE.CMN'
 #endif
 
-	DATA make_date/'06/10/97'/
+	DATA make_date/'07/25/97'/
 
 	END

@@ -9,11 +9,11 @@
 *       subroutines rather than 1 with 2 entry points
 *	*jd* 3.10.92 Mod to handle ATC GKS
 *	*jd* 8.6.93 Mod to use XGKS
-*	*sh* 3.4.97 Mod to support metafile-only (no X) output through a
-*		cuckoo's egg implantation of meta_wsid in place of wsid
+*       *sh* 3.4.97 (& 7/97) Mod to support metafile-only (no X) output
+*       through a cuckoo's egg implantation of meta_wsid in place of wsid
 
 	integer 	asf(13),error
-	LOGICAL		ITS_BATCH_GRAPHICS, batch
+	LOGICAL         ITS_BATCH_GRAPHICS, batch
 
 #ifdef unix
 	include 'tmap_pplv11inc/pltcom_dat.decl'! with declarations    
@@ -56,9 +56,15 @@
 #endif
 
 
-********************************************************************************
-* initialize
-	batch = ITS_BATCH_GRAPHICS()
+******************************************************************************** initialize
+	batch = ITS_BATCH_GRAPHICS()	! 7/97
+	IF (batch) THEN
+	   CALL GOPKS(1,-1)  
+!	   xwind_id = GKS_X_CONID( wsid )	! obsolete?
+	   meta_wsid = wsid  ! cuckoo's egg -- output ws will be metafile
+* ... metafile will be opened and activated later
+	   GOTO 500
+	ENDIF
 
 *	Opens GKS and workstation, and activates it
 
@@ -100,7 +106,6 @@ C
 	endif
 	call gopwk (wsid,conid,wstype)
 #else
-
 #ifndef xgks
 	CALL GOPKS(ERRFIL)  
 #else
@@ -115,44 +120,38 @@ C
 * ... remote node connection option for FERRET
 	   xwind_id = GKS_X_CONID( wsid )
 #   ifdef unix
-	   IF ( .NOT. batch) THEN
 #ifndef xgks
-	      CALL GOPWK(WSID, 0, 0)
+	CALL GOPWK(WSID, 0, 0)
 #else
-	      if (ppl_in_ferret) then
-	         call gesspn ('FERRET_1',8)
-	      else
-	         call gesspn ('PPLP',4)
-	      endif
-	      CALL GOPWK(WSID,6,4)       
+	if (ppl_in_ferret) then
+	   call gesspn ('FERRET_1',8)
+	else
+	   call gesspn ('PPLP',4)
+	endif
+  	CALL GOPWK(WSID,6,4)       
 #endif
-	   ELSE
-              meta_wsid = wsid	! cuckoo's egg -- output ws will be metafile
-	   ENDIF
 #   else
-	      CALL GKS$OPEN_WS( wsid, xwind_id, 0 )
+	   CALL GKS$OPEN_WS( wsid, xwind_id, 0 )
 #   endif
 	else
-	   IF ( .NOT. batch) THEN
 #ifndef xgks
-	      CALL GOPWK(WSID,CONID,WSTYPE)       
+	   CALL GOPWK(WSID,CONID,WSTYPE)       
 #else
-	      if (ppl_in_ferret) then
-	         call gesspn ('FERRET_1',8)
-	      else
-	         call gesspn ('PPLP',4)
-	      endif
-	      CALL GOPWK(WSID,6,4)       
-	   ENDIF
+	if (ppl_in_ferret) then
+	   call gesspn ('FERRET_1',8)
+	else
+	   call gesspn ('PPLP',4)
+	endif
+	   CALL GOPWK(WSID,6,4)       
 #endif
-	end if
+	endif
 #endif
-	IF ( .NOT.batch) THEN
-	   CALL GACWK(WSID)    
+	CALL GACWK(WSID)    
     
 *       SET DEFERRAL STATE TO GENERATE OUTPUT AS SOON AS POSSIBLE   
-	   call gsds (wsid,gasap,gsuppd) 
-	ENDIF
+	call gsds (wsid,gasap,gsuppd) 
+
+ 500	CONTINUE	! 7/97 -- from here on BATCH mode, too
 
 	GKSOPN=.TRUE.       
 	gks_open = .true.  ! another open flag needed, PLTCOM.DAT has problems
@@ -179,8 +178,7 @@ C
 	call gsasf (asf)
 	
 *	SET UP DEFAULT LINE BUNDLES FOR WS
-! XXXXXXXXX
-! 1. do not activate:	call setup_line_bundles (wsid,wstype) 
+	IF ( .NOT.batch ) call setup_line_bundles (wsid,wstype) 
 *ATC two lines following -- commented out for now
 *	call gscr (wsid,0,1.0,1.0,1.0)
 *	call gscr (wsid,1,0.0,0.0,0.0)

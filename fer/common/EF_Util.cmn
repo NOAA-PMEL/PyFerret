@@ -6,11 +6,13 @@ c*
 c* This is the header file to be included by routines which
 c* are part of the Ferret External Function library.
 c*
+c* ef_version 1.1: *jc* 9.98 Added ef_max_work_arrays
 
 	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
      .  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9,
      .  t_axis, custom, implied_by_args, normal, abstract,
-     .	ef_max_args, ef_max_name_length, ef_max_description
+     .	ef_max_args, ef_max_work_arrays, ef_max_name_length, 
+     .  ef_max_description
 
 	parameter ( ef_c = 1,
      .	ef_f = 2,
@@ -34,9 +36,10 @@ c*
      .	normal = 103, 
      .	abstract = 104, 
      .	ef_max_args=9, 
+     .	ef_max_work_arrays=9, 
      .	ef_max_name_length=40, 
      .	ef_max_description = 128 )
 
 	real ef_version
 
-	parameter (ef_version = 1.0) 
+	parameter (ef_version = 1.1) 

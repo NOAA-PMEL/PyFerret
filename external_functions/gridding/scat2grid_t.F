@@ -36,6 +36,7 @@
 *
 * Ansley Manke
 * May 2003 
+* 11-Jul-2003  Clean up section where we get box limits
 
 * Input is a set of T coordinates on an abstract axis, and an output time axis.
 * Returns a time series which is the number of points that fall inside of each T cell. 
@@ -285,21 +286,7 @@ C  Get coordinates of output axis.
       call ef_get_coordinates(id, ARG2, T_AXIS, 
      .   arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), tax)
 
-C  Compute cell boundaries
-
-      L = 1
-      del1 = tax(L+1,1,1,1) - tax(L,1,1,1)
-
-      DO 200 L = res_lo_ss(T_AXIS)+1, res_hi_ss(T_AXIS)
-         del = tax(L,1,1,1) - tax(L-1,1,1,1)
-         tax(L,1,1,1) = tax(L,1,1,1) - del/2.
-  200 CONTINUE
-
-      L = res_hi_ss(T_AXIS)+1
-      tax(L,1,1,1) = tax(L-1,1,1,1) + del
-
-      L = 1
-      tax(L,1,1,1) = tax(L,1,1,1) - del1/2.
+C  Get cell boundaries
 
       CALL ef_get_box_lo_lim (id, ARG2, T_AXIS, 
      .   arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), tax)
@@ -327,7 +314,7 @@ C  Compute cell boundaries
 
       DO 500 n = 1, ntpts
 
-        CALL pickout_t (arg_1, n, tt)
+        CALL pickout (arg_1, n, tt)
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
@@ -374,7 +361,7 @@ c      ENDIF
 
       END
 
-      SUBROUTINE pickout_t (atim, n, val)
+      SUBROUTINE pickout (atim, n, val)
 
 
 *  ACM 5/2003

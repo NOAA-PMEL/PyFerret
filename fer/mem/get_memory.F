@@ -54,6 +54,7 @@
 *                integer) js
 * V520: 6/00 *sh* - improved error message
 * V522: 7/00 *sh* corrected typo in previous ... 
+* V530: 5/01 - further improved error mesages (for 9999999 words)
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -135,11 +136,18 @@
 
  5000	RETURN
  5100	num_str = LEFINT(num_words,num_slen)
-	CALL ERRMSG( ferr_insuff_memory,status,
-     .	num_str(:num_slen)//' words were requested. ')
- 5101   CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
-        CALL WARN('The "Memory use" section of the FERRET '
-     .            //'Users Guide has further tips.') 
+	IF ( num_words .EQ. 9999999 ) THEN
+	   CALL ERRMSG( ferr_dim_underspec, status,
+     .	  num_str(:num_slen)//' words were requested. ')
+	  CALL WARN('Check for unspecified limits on an ABSTRACT axis')
+          CALL WARN('Use the SHOW GRID command to see the axes')
+	ELSE
+	  CALL ERRMSG( ferr_insuff_memory,status,
+     .	  num_str(:num_slen)//' words were requested. ')
+	  CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
+          CALL WARN('The "Memory use" section of the FERRET '
+     .              //'Users Guide has further tips.') 
+	ENDIF
         GOTO 5000
  5200	num_str = LEFINT(num_words,num_slen)
 	CALL ERRMSG( ferr_insuff_memory,status,

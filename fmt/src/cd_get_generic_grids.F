@@ -54,6 +54,8 @@
 *	create a 1,2,3...n axis without error message
 *       4/99 *kob* - increase size of temp_axnams, vname and name to 64
 * *sh*  6/99 - added "perm" (permutation) argument
+* V510: *sh* 1/00 - when a "BASIC" axis is created cuz the file has no coords that
+*	axis needs to bump "lastax" to get checked for dup names later
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -168,6 +170,7 @@ xx        include 'netcdf.decl'  ! untested
               CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
      .                                 iaxis, status )
               IF ( status .NE. merr_ok ) GOTO 5900
+	      lastax = iaxis	! so it gets checked as a dup name later
 
 * save a pointer to the axis just found
  150          IF (idim.LE.4) tmplines(idim) = iaxis

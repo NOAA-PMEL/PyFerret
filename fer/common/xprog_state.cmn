@@ -25,6 +25,7 @@
 * V550:12/02 *acm*- new MODE LOGO and MODE LABELS
 * V553: 8/03 *acm*- new scriptfile_name and state its_script
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+*       *acm* 6/04 - change ordering in the common block so compilers are happy
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -184,10 +185,9 @@
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
-     .		genl_storage, its_script,
+     .		genl_storage, its_script, grat_on,
      .		ppl_wait, mode_name,
-     .          scriptfile_name,
-     .          grat_on
+     .          scriptfile_name
 
 * individual mode variable names
 	LOGICAL		mode_diagnostic, mode_verify, mode_interpolate,

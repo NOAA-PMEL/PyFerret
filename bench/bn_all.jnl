@@ -233,6 +233,12 @@ GO bn_cache_hits		! cache hits on unspecified (full) regions
 GO bn_reset
 GO bn_regrid_to_user		! G=user_var and related
 
+
+! ******** V53 Additions below ***********
+
+GO bn_reset
+GO bn_calendar
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

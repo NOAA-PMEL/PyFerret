@@ -39,6 +39,14 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+
+! acm 12/2004 Compute the sum of weights in routine apply_mapping; 
+!             sum of weights used when there is good data contributing 
+!             to the destination point.
+!             Remove use of mask_dst variable; never used.
+
+
+
 ! In this SUBROUTINE we provide information about
 ! the function.  The user configurable information 
 ! consists of the following:
@@ -93,7 +101,7 @@
       CALL ef_set_desc(id, descr)
 
       CALL ef_set_num_args(id, 4)
-      CALL ef_set_num_work_arrays(id, 9)
+      CALL ef_set_num_work_arrays(id, 8)
 
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,  
      .     IMPLIED_BY_ARGS, ABSTRACT, ABSTRACT)
@@ -152,8 +160,8 @@
 *                                                                      |
 *                                                                      V
 
-      call ef_set_axis_limits(id, Z_AXIS, 1, 4)
-      call ef_set_axis_limits(id, T_AXIS, 1, 4)
+      CALL ef_set_axis_limits(id, Z_AXIS, 1, 4)
+      CALL ef_set_axis_limits(id, T_AXIS, 1, 3)
 
 *                                                                      ^
 *                                                                      |
@@ -254,21 +262,12 @@
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
      .     num_nbrs, 1)
 
-* real  mask_dst(nlon_dst, nlat_dst) 
-
-      array_num = 6
-      CALL ef_set_work_array_dims(id, array_num,
-     .     arg_lo_ss(X_AXIS,ARG3), arg_lo_ss(Y_AXIS,ARG3), 
-     .     1, 1, 
-     .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
-     .     1, 1)
-
 * Define together as one work array:
 * real src_grid_radians(nx_src, ny_src, 2, 1)
 * source grid longitudes (arg_1), translated to radians
 * source grid latitudes  (arg_2), translated to radians
 
-      array_num = 7
+      array_num = 6
       CALL ef_set_work_array_dims(id, array_num,
      .     arg_lo_ss(X_AXIS,ARG1), arg_lo_ss(Y_AXIS,ARG2), 1, 1, 
      .     arg_hi_ss(X_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG2), 2, 1)
@@ -277,7 +276,7 @@
 * destination rectangular grid, translated to radians
 * allocate 2* needed number of values, since this will be real*8
 
-      array_num = 8
+      array_num = 7
       nx =  arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3) + 1
       ny =  arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
       nx = MAX(nx,ny)
@@ -288,7 +287,7 @@
 * real dst_grid_radians(nx_dst, ny_dst, 2, 1)
 * destination rectangular grid, translated to radians
 
-      array_num = 9
+      array_num = 8
       nx =  arg_hi_ss(X_AXIS,ARG3) - arg_lo_ss(X_AXIS,ARG3) + 1
       ny =  arg_hi_ss(Y_AXIS,ARG3) - arg_lo_ss(Y_AXIS,ARG3) + 1
       CALL ef_set_work_array_dims(id, array_num,
@@ -308,15 +307,14 @@
 !
       SUBROUTINE curv_to_rect_map_compute(id, arg_1, arg_2, arg_3,
      .          arg_4, result, i_lon_j_lat, src_dist, 
-     .          found_neighbors, map_src_add, wt, mask_dst, 
+     .          found_neighbors, map_src_add, wt, 
      .          src_grid_radians, dst_grid, dst_grid_radians)
 
 ! Schematic:
 !    The following example illustrates a destination grid location (+) with 
 !    a (R)adius of influence (in radians) denoted by (=).  Valid source grid 
 !    locations (o) which fall within the radius of influence of the destination 
-!    point are used in the mapping.  Masked points (x) do not contribute to the mapping
-!    but are included as nearest neighbors. In this case, 4 valid source grid points fall
+!    point are used in the mapping. In this case, 4 valid source grid points fall
 !    within the radius of influence.   
 !
 ! 
@@ -367,14 +365,12 @@
      .              wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
       REAL wt(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
      .              wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
-      REAL mask_dst(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
+      REAL src_grid_radians(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
      .              wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
-      REAL src_grid_radians(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+      REAL*8 dst_grid(wrk7lox:wrk7hix/2, wrk7loy:wrk7hiy/2,
      .              wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
-      REAL*8 dst_grid(wrk8lox:wrk8hix/2, wrk8loy:wrk8hiy/2,
+      REAL dst_grid_radians(wrk8lox:wrk8hix, wrk8loy:wrk8hiy,
      .              wrk8loz:wrk8hiz, wrk8lot:wrk8hit)
-      REAL dst_grid_radians(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .              wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
 
 ! After initialization, the 'res_' arrays contain indexing information 
 ! for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -480,8 +476,8 @@ cc      max_dist = 0.17
       ENDDO
 
       CALL horiz_interp_init_sphe(id, 
-     .        src_grid_radians(wrk7lox,wrk7loy,1,1), 
-     .        src_grid_radians(wrk7lox,wrk7loy,2,1), 
+     .        src_grid_radians(wrk6lox,wrk6loy,1,1), 
+     .        src_grid_radians(wrk6lox,wrk6loy,2,1), 
      .        dst_grid_radians(1,1,1,1), dst_grid_radians(1,1,2,1),
      .        i_lon_j_lat(1,1,1,1), i_lon_j_lat(1,1,1,2), 
      .        ilon, jlat, 
@@ -496,7 +492,7 @@ cc      max_dist = 0.17
       k = res_lo_ss(Z_AXIS)
       l = res_lo_ss(T_AXIS)
 
-      CALL save_mapping (src_dist, wt, mask_dst, 
+      CALL save_mapping (src_dist, wt, 
      .        found_neighbors(1,1,1,1), i_lon_j_lat(1,1,1,1),  
      .        i_lon_j_lat(1,1,1,2), max_dist, nlon_src, nlat_src, 
      .        nlon_dst, nlat_dst, num_nbrs, bad_flag_result,
@@ -534,7 +530,7 @@ cc      max_dist = 0.17
       
       integer  i, j, n, num_neighbors, map_dst_xsize, map_dst_ysize, 
      .         map_src_xsize, map_src_ysize, map_src_size
-      real     sum, max_src_dist,
+      real     max_src_dist,
      .         map_src_dist(nlon_dst,nlat_dst,num_nbrs)
       
       logical map_found_neighbors(nlon_dst, nlat_dst)
@@ -558,7 +554,6 @@ cc      max_dist = 0.17
       
       do j=1,map_dst_ysize
       do i=1,map_dst_xsize
-         sum=0.0
          do n=1,num_neighbors
             if(map_src_add(i,j,n) .EQ. 0) then
                jlat(n) = 0
@@ -1002,47 +997,44 @@ ccc     .             GOTO 100
 
 !#######################################################################
             
-       subroutine save_mapping (src_dist, wt, mask_dst, 
+       subroutine save_mapping (src_dist, wt, 
      .      found_neighbors, i_lon, j_lat, max_src_dist,  
      .      nlon_src, nlat_src, nlon_dst, nlat_dst, num_nbrs,
      .      bad_flag_result, result)
 
-! compute mask_dst, wt, i_lon, and j_lat and save in the result.
-! result(nlon_dst,nlat_dst,num_nbrs,2)  where num_nbrs = 4 and
+! compute wt, i_lon, and j_lat and save in the result.
+! result(nlon_dst,nlat_dst,num_nbrs,3)  where num_nbrs = 4 and
 ! 
-!   result(m,n,1,1) = mask_dst(m,n)
-!   result(m,n,k,2) = wt(m,n,k)
-!   result(m,n,k,3) = i_lon(m,n,k)
-!   result(m,n,k,4) = j_lat(m,n,k)
+!   result(m,n,k,1) = wt(m,n,k)
+!   result(m,n,k,2) = i_lon(m,n,k)
+!   result(m,n,k,3) = j_lat(m,n,k)
 
+! acm 12/2004 Compute the sum of weights in apply_mapping in function 
+!             curv_to_rect; weights only used when there is good data 
+!             contributing to the destination grid cell.
 
        integer nlon_src, nlat_src, nlon_dst, nlat_dst, num_nbrs
 
        real src_dist(nlon_dst, nlat_dst, num_nbrs)
        real wt(nlon_dst, nlat_dst, num_nbrs)  
-       real mask_dst(nlon_dst, nlat_dst)  
        real max_src_dist, bad_flag_result
 
        integer i_lon(nlon_dst,nlat_dst,num_nbrs)
        integer j_lat(nlon_dst,nlat_dst,num_nbrs) 
 
-! mask, wt, etc for applying the regridding
-       real result(nlon_dst, nlat_dst, num_nbrs, 4)  
+!  Result contains wts, neighbors, for applying the regridding
+       real result(nlon_dst, nlat_dst, num_nbrs, 3)  
 
        logical found_neighbors(nlon_dst,nlat_dst)
 
 !--- some local variables ----------------------------------------
        integer nlon_in, nlat_in, nlon_out, nlat_out, num_neighbors,
      .               m, n, k, i1, i2, j1, j2
-       real sum
 !-----------------------------------------------------------------
       
       real epsln, large
 cc      parameter (epsln=1.e-10, large=1.e20)
       parameter (epsln=4.e-7, large=1.e20)
-
-      result(1,1,2,1) = nlon_src
-      result(1,1,3,1) = nlat_src
       
          nlon_in  = nlon_src
          nlat_in  = nlat_src
@@ -1050,12 +1042,10 @@ cc      parameter (epsln=1.e-10, large=1.e20)
          nlat_out = nlat_dst   
          num_neighbors = num_nbrs
 
-!first calculate destination mask and weight
+!first calculate destination weight
       
          do m=1,nlon_out
          do n=1,nlat_out
-            mask_dst(m,n) = 1.0
-            IF (.not. found_neighbors(m,n)) mask_dst(m,n) = 0.0
 
 ! neighbors are sorted nearest to farthest
 ! check nearest to see if it is a land point
@@ -1063,57 +1053,32 @@ cc      parameter (epsln=1.e-10, large=1.e20)
             i1 = i_lon(m,n,1)
             j1 = j_lat(m,n,1)
       
-            if( i1 .eq. 0 .and. j1 .eq. 0) then
-               mask_dst(m,n) = 0.0
-!            else if (mask_src(i1,j1) .lt. 0.5) then
-!               mask_dst(m,n) = 0.0
-            endif
-            
             if(num_neighbors .gt. 1 ) then
                i2 = i_lon(m,n,2)
                j2 = j_lat(m,n,2)
-
-! compare first 2 nearest neighbors -- if they are nearly
-! equidistant then use this mask for robustness
-
-!               if(i2 .ne. 0 .and. j2 .ne. 0 .and. 
-!     .            abs(src_dist(m,n,2)-src_dist(m,n,1)) .lt. epsln) then
-!                  if((mask_src(i1,j1) .lt. 0.5))  mask_dst(m,n) = 0.0
-!               endif
             endif
       
-            sum=0.0
             do k=1, num_neighbors
               if (src_dist(m,n,k) .LE. epsln) then
                  wt(m,n,k) = large
-                 sum = sum + large
               else if(src_dist(m,n,k) .LE. max_src_dist ) then
                  wt(m,n,k) = 1.0/src_dist(m,n,k)
-                 sum = sum+wt(m,n,k)
               else
                  wt(m,n,k) = 0.0
               endif
            enddo
-           if (sum .GT. epsln) then
-              do k = 1, num_neighbors
-                 wt(m,n,k) = wt(m,n,k)/sum
-              enddo
-           else
-              mask_dst(m,n) = 0.0
-           endif
-      
+
          enddo
          enddo
       
-! Save mask_dst, wt, i_lon, j_lat for this curvi/rect grid pair.
+! Save wt, i_lon, j_lat for this curvi/rect grid pair.
 
          do m=1,nlon_out
          do n=1,nlat_out
-            result(m,n,1,1) = mask_dst(m,n)
             do k=1, num_neighbors
-               result(m,n,k,2) = wt(m,n,k)
-               result(m,n,k,3) = i_lon(m,n,k)
-               result(m,n,k,4) = j_lat(m,n,k)
+               result(m,n,k,1) = wt(m,n,k)
+               result(m,n,k,2) = i_lon(m,n,k)
+               result(m,n,k,3) = j_lat(m,n,k)
             enddo
          enddo
          enddo

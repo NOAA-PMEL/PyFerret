@@ -42,6 +42,14 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+
+
+! acm 12/2004 Compute the sum of weights in routine apply_mapping; 
+!             sum of weights used when there is good data contributing 
+!             to the destination point.
+!             Remove use of mask_dst variable; never used.
+
+
 ! In this SUBROUTINE we provide information about
 ! the function.  The user configurable information 
 ! consists of the following:
@@ -157,31 +165,13 @@
 !                                                                     V
 
       INTEGER  i, j, k, l, i1, j1, k1, l1, i2, j2, k2, l2, 
-     .         num_nbrs, nlon_src, nlat_src, nlon_chk, 
-     .         nlat_chk, nlon_dst, nlat_dst
-      CHARACTER*200 err_msg
+     .         num_nbrs, nlon_src, nlat_src, nlon_dst, nlat_dst
 
       num_nbrs = 4
       
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id,bad_flag,bad_flag_result)
-
-! Consistency check; CURV_TO_RECT_MAP saves nlon_src and lnat_src
-
-c      nlon_chk = arg_2(1,1,2,1)
-c      nlat_chk = arg_2(1,1,3,1)
-
-c      nlon_src = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
-c      nlat_src = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1
-
-c      IF (nlon_chk .NE. nlon_src .OR. nlat_chk .NE. nlat_src) THEN
-c         WRITE(err_msg,100) nlon_src,nlat_src,nlon_chk,nlat_chk
-c 100     FORMAT ('Dimensions of arg1 inconsistent with source ',
-c     .           'dimensions saved in arg2: arg1 (', i4, ',', i4, 
-c     .           ') saved dimensions (', i4, ',', i4,')')
-c         CALL ef_bail_out (id, err_msg)
-c      ENDIF
 
       nlon_src = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
       nlat_src = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1
@@ -208,9 +198,9 @@ c      ENDIF
 
             CALL apply_mapping ( arg_1(i1,j1,k1,l1), 
      .        arg_2(i2,j2,k2,l2), arg_2(i2,j2,k2,l2+1),
-     .        arg_2(i2,j2,k2,l2+2), arg_2(i2,j2,k2,l2+3),
-     .        result(i,j,k,l), nlon_src, nlat_src, nlon_dst, 
-     .        nlat_dst, num_nbrs, bad_flag(ARG1), bad_flag_result )
+     .        arg_2(i2,j2,k2,l2+2), result(i,j,k,l), nlon_src,
+     .        nlat_src, nlon_dst, nlat_dst, num_nbrs, 
+     .        bad_flag(ARG1), bad_flag_result )
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
          ENDDO
@@ -229,23 +219,25 @@ c      ENDIF
 
 !#######################################################################
             
-       subroutine apply_mapping (data_in, mask_dst, wt, i_lon, j_lat, 
+       subroutine apply_mapping (data_in, wt, i_lon, j_lat, 
      .                           data_out, 
      .                           nlon_src, nlat_src, nlon_dst, nlat_dst,
      .                           num_nbrs, bad_flag_in, bad_flag_out)
 
 ! This is the last set of loops from horiz_interp_sphe, applying wt
-! and mask_dst to the data to compute the regridded result.
+! to the data to compute the regridded result.
 
 ! acm 7/2004 Add variable COUNT to set data to missing if there is nothing added
 ! to the sum in a given output grid cell.  This had been done in the original code
 ! by seeing if the value is a "land" value, but it is not general enough for our
 ! purposes.
 
+! acm 12/2004 Compute the sum of weights here; weights only used when there
+!             is good data contributing to the destination point.
+
        real data_in(nlon_src, nlat_src)   ! input
        real data_out(nlon_dst, nlat_dst)  ! output
        real wt(nlon_dst, nlat_dst, num_nbrs)  
-       real mask_dst(nlon_dst, nlat_dst)  
 
        real i_lon(nlon_dst,nlat_dst,num_nbrs)
        real j_lat(nlon_dst,nlat_dst,num_nbrs) 
@@ -257,8 +249,14 @@ c      ENDIF
 
 !--- some local variables ----------------------------------------
        integer nlon_in, nlat_in, nlon_out, nlat_out, num_neighbors,
-     .               m, n, k, i, j, i2, COUNT
+     .               m, n, k, i, j
+       real sum
 !-----------------------------------------------------------------
+
+! parameters
+      real epsln, large
+cc      parameter (epsln=1.e-10, large=1.e20)
+      parameter (epsln=4.e-7, large=1.e20)
 
          nlon_in  = nlon_src
          nlat_in  = nlat_src
@@ -268,29 +266,29 @@ c      ENDIF
 
          do m=1,nlon_out
          do n=1,nlat_out
+
             data_out(m,n) = 0.0
-            count = 0
-            if(mask_dst(m,n) .gt. 0.5) then
-               do k=1, num_neighbors
-                  i = i_lon(m,n,k)
-                  j = j_lat(m,n,k)
-                  IF (i.eq.0 .and. j .eq.0) then
-                    i2 = 0  ! what is wt(m,n,k) ??
-                  endif
-                  if (i.GT.0 .and. j.GT.0) THEN
-                     IF (data_in(i,j) .NE. bad_flag_in ) THEN
-                        data_out(m,n) = data_out(m,n)+
+            sum=0.0
+            do k=1, num_neighbors
+               i = i_lon(m,n,k)
+               j = j_lat(m,n,k)
+
+               if (i.GT.0 .and. j.GT.0) THEN
+                  IF (data_in(i,j) .NE. bad_flag_in ) THEN
+                     data_out(m,n) = data_out(m,n)+
      .                                  data_in(i,j)*wt(m,n,k)
-                        COUNT = COUNT + 1
-                     ENDIF
-                  else
-                     data_out(m,n) = bad_flag_out
-                  endif
-               enddo
-            else
+                     sum = sum + wt(m,n,k)
+                  ENDIF
+               else
+                  data_out(m,n) = bad_flag_out
+               endif
+            enddo
+
+            IF (sum .GT. epsln) THEN
+               data_out(m,n) = data_out(m,n)/sum
+            ELSE
                data_out(m,n) = bad_flag_out
-            endif
-            IF (COUNT .EQ. 0) data_out(m,n) = bad_flag_out
+            ENDIF
          enddo
          enddo
       

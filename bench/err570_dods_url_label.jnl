@@ -1,6 +1,6 @@
 ! err570_dods_url_label.jnl
 !
-! Look for the label with the URL: it should include
+! Bug 1098. Look for the label with the URL: it should include
 ! everything up to the last slash.  
 ! acm 11/04
 

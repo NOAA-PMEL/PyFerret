@@ -8,7 +8,8 @@
 * revision 1.03 - 04/24/91 - *sh* increased ds_name and ds_des_name lengths
 *	                   - moved real*8 vars to beginning for alignment
 * revision 1.04 - 05/11/92 - *sh* increased ds_var_code string length
-
+* revision 1.05 - 3/99 - *kob* increase ds_var_code and ds_var_units to
+*			       length 64 and ds_var_title to 128
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
      .		ds_delstep(maxdsets),
@@ -67,9 +68,9 @@
 
 * "VARIABLE RECORD (one record per file variable)
 	CHARACTER*1	ds_precision
-	CHARACTER*24	ds_var_code       ! was *8 (*sh* 11/92)
-	CHARACTER*24	ds_var_units
-	CHARACTER*40	ds_var_title,ds_var_titl_mod
+	CHARACTER*64	ds_var_code       ! was *24 (*kob* 3/99)
+	CHARACTER*64	ds_var_units
+	CHARACTER*128	ds_var_title,ds_var_titl_mod
 	INTEGER*4	ds_grid_start,ds_grid_end,ds_grid_number,
      .			ds_ordering
 	REAL*4		ds_bad_flag,ds_missing_flag

@@ -1,0 +1,11 @@
+! Bug in 2-D averaging, if source data thats loaded has a 
+! larger range than the dest data, code didnt check whether
+! source grid cells actually overlapped destination cells
+
+use coads_climatology
+load/l=1 sst
+
+def axis/x=110w:90w:5 xax
+def axis/y=10n:20n:2 yax
+
+list/l=1/y=20 sst[gx=xax@ave,gy=yax@ave]

@@ -1,5 +1,9 @@
 SRCS_F = \
-cmprsi_by.F\
+compressi.F\
+compressj.F\
+compressk.F\
+compressl.F\
+compress_by.F\
 eof_space.F\
 eof_stat.F\
 eof_tfunc.F\

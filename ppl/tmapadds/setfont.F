@@ -60,6 +60,10 @@ c	CHARACTER PLTFIL*80
 	CHARACTER DNAME(35)*(*),KIF(4)*(*),IFN(4)*(*)
 	CHARACTER*1 KSUB,KSUPER,KBKSP,KCALL,PENS(16)
 
+* 1/03 *kob* - Add temp character buffer for g77 arbitrary text
+*              concatenations
+	CHARACTER*2048 temp_charbuff
+
 #ifdef unix
 	INTEGER*2 SX,SY
 
@@ -86,7 +90,9 @@ C
 
 #ifdef unix
  1010	continue
-	OPEN(LUSY,FILE=fontdir(:dirlen)//'/'//DNAME(ID),STATUS='OLD',
+* 1/03 *kob* 
+	temp_charbuff = DNAME(id)
+	OPEN(LUSY,FILE=fontdir(:dirlen)//'/'//temp_charbuff,STATUS='OLD',
      *	FORM='UNFORMATTED',ERR=5000)
 #else
 1010	open(lusy,file=dname(id),status='old',readonly,
@@ -125,10 +131,12 @@ C
 	CLOSE(LUSY)
 	return
 
- 5000	write(6,*) "setfont: Couldn't open font file:"//
-     .               fontdir(:dirlen)//'/'//DNAME(ID)
+ 5000	temp_charbuff = DNAME(ID)
+	write(6,*) "setfont: Couldn't open font file:"//
+     .               fontdir(:dirlen)//'/'//temp_charbuff
 	stop
- 5010	write(6,*) "setfont: Read error on font file:"//
-     .               fontdir(:dirlen)//'/'//DNAME(ID)
+ 5010	temp_charbuff = DNAME(ID)
+	write(6,*) "setfont: Read error on font file:"//
+     .               fontdir(:dirlen)//'/'//temp_charbuff
 	stop
 	end

@@ -39,12 +39,14 @@
 
 * V450: 1/97
 *       97.07.16 *jc* adding code to allow call to efcn_get_name()
+* V500: 3/99 *jc* convert external function names to upper case
 
 * calling argument declarations
-	INTEGER ifcn
+	INTEGER ifcn, STR_UPCASE, status
 
 * internal variable declarations
 	INTEGER status
+	CHARACTER text*40
 
 * internal parameter declarations:
         INTEGER      slen
@@ -77,8 +79,9 @@
 
 	ELSE
 
-	   call efcn_get_name(ifcn, fhol)
-	   call TM_CTOF_STRNG( fhol, gcf_name, slen)
+	   CALL EFCN_GET_NAME(ifcn, fhol)
+	   CALL TM_CTOF_STRNG( fhol, text, slen)
+           status =  STR_UPCASE(gcf_name,text)
 
 	ENDIF	   
 	

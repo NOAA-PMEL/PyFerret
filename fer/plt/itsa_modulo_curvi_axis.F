@@ -29,12 +29,14 @@
 	REAL    xfield(*), yfield(*)
 	INTEGER	mr_xpos, mr_ypos, idim
 
+c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
+c       this bombed aix compiler, though it seems to work on others
 	ITSA_MODULO_CURVI_AXIS = ITSA_MODULO_CURVI_AXIS_SUB( xfield, yfield,
-	1    mr_lo_s1(mr_xpos), mr_hi_s1(mr_xpos),
-	2    mr_lo_s2(mr_xpos), mr_hi_s2(mr_xpos),
-	3    mr_lo_s1(mr_ypos), mr_hi_s1(mr_ypos),
-	4    mr_lo_s2(mr_ypos), mr_hi_s2(mr_ypos),
-	5    idim )
+     1    mr_lo_s1(mr_xpos), mr_hi_s1(mr_xpos),
+     2    mr_lo_s2(mr_xpos), mr_hi_s2(mr_xpos),
+     3    mr_lo_s1(mr_ypos), mr_hi_s1(mr_ypos),
+     4    mr_lo_s2(mr_ypos), mr_hi_s2(mr_ypos),
+     5    idim )
 
 	RETURN
 	END

@@ -1,6 +1,6 @@
 	LOGICAL FUNCTION ITSA_MODULO_CURVI_AXIS_SUB ( xfield, yfield,
-	1    slox_dim1, shix_dim1, slox_dim2, shix_dim2, 
-	2    sloy_dim1, shiy_dim1, sloy_dim2, shiy_dim2, dim1_or_2	)
+     1    slox_dim1, shix_dim1, slox_dim2, shix_dim2, 
+     2    sloy_dim1, shiy_dim1, sloy_dim2, shiy_dim2, dim1_or_2	)
 
 *       support routine for ITSA_MODULO_CURVI_AXIS
 *       
@@ -44,10 +44,12 @@
 #endif  
 
 *       calling argument declarations:
+c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
+c       this bombed aix compiler, though it seems to work on others
 	INTEGER slox_dim1, shix_dim1, slox_dim2, shix_dim2, 
-	1    sloy_dim1, shiy_dim1, sloy_dim2, shiy_dim2, dim1_or_2
+     1    sloy_dim1, shiy_dim1, sloy_dim2, shiy_dim2, dim1_or_2
 	REAL    xfield( slox_dim1:shix_dim1, slox_dim2:shix_dim2 ),
-	1    yfield( sloy_dim1:shiy_dim1, sloy_dim2:shiy_dim2 )
+     1    yfield( sloy_dim1:shiy_dim1, sloy_dim2:shiy_dim2 )
 
 *       internal variable declarations:
 	INTEGER	i, imax, number_of_x_cells, number_of_y_cells

@@ -293,10 +293,15 @@ GO bn_delimited_read
 ! ******** V5.41 Additions below ***********
 
 GO bn_reset
-GO bn540_bug_fixes
+GO bn541_bug_fixes
 
 GO bn_reset
 GO bn_cancel_axes
+
+! ******** V5.42 Additions below ***********
+
+GO bn_reset
+GO bn542_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

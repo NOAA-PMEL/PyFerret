@@ -49,6 +49,7 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V550: *acm*10/02- Changed cx_name to char*24, so use TM_LENSTR1 with it.
 *       *ACM*11/02- Did NOT need the above change with TM_LENSTR1.
+* v554: *acm* 11/03 call SPLIT_LIST with open string length; region names now up to 24 long.
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -70,10 +71,10 @@
 * write region name
 	IF ( cx .EQ. cx_last ) THEN
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .				'default region:',15)
+     .				'default region:',0)
 	ELSE
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .		'region '//cx_name(cx)//':',12)
+     .		'region '//cx_name(cx)//':',0)
 	ENDIF
 
 * describe each axis - produce lines as complex as:"X=lo:hi@xxx:nn (transform)"

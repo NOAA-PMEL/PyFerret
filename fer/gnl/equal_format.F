@@ -60,17 +60,11 @@
 	INTEGER	STR_UPCASE, vax_code
 	CHARACTER buff*80, upcase3*3
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
-* SET LIST/FORMAT=(FORTRAN_FORMAT),'UNFORMATTED','EPIC','TMAP','GT','STREAM'
+* SET LIST/FORMAT=(FORTRAN_FORMAT),'UNFORMATTED','EPIC','TMAP','GT','STREAM', 'DODS'
 
 * remove old specs
 	list_format_given = .FALSE.
@@ -99,6 +93,8 @@
            list_fmt_type = plist_tab_del
         ELSEIF ( upcase3 .EQ. 'CAC' ) THEN
            list_fmt_type = plist_cdf_cache
+        ELSEIF ( upcase3 .EQ. 'DOD' ) THEN
+           list_fmt_type = plist_dods
         ELSE
 
 * ... check out user-specified format

@@ -134,6 +134,7 @@
 *                    increase its length from 48 to 512 characters.
 * V552 5/03 *acm* - bug fixes for parsing mulit-axis regrids, when uvar is
 *                   not loaded [gxy=var]  and [gxy=var[d=dset]]
+* v554 11/03*acm* - changing a comment, only.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -775,6 +776,11 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 * ... date strings: stored negatively as seconds since BC
 * 8/97 *kob* check cx_calendar rather than if fmat_hi or fmat_lo is set to 
 *            see if time is a date
+
+* 11/03 *acm* Why do we swap the limits when hi > lo?  This means that
+*             repeat/i=3:1:1 executes the same as repeat/i=1:3:1 and
+*             list var[i=180:10:10] the same as list var[i=10:180:10]
+
 	IF (  idim .EQ. t_dim .AND. cx_calendar(mods_cx) ) THEN
 	   IF ( cx_hi_ww(idim,mods_cx) .GT. 
      .				cx_lo_ww(idim,mods_cx) ) THEN

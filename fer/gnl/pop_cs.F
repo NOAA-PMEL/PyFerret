@@ -52,7 +52,8 @@
 *	(The need to do this represents a bug somewhere up the line -- region
 *		information is used without regard to cx_by_ss)
 *	see err522_repeat_leftover.jnl
- 
+* V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
+
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN, stat, axis
 
@@ -105,6 +106,7 @@
               cx_lo_ss (cx_last,axis) = unspecified_int4
               cx_hi_ss (cx_last,axis) = unspecified_int4
            ENDIF
+           cs_repeatname(cx_last) = unspecified_name4
 	ENDIF
 	csp = csp - 1
 

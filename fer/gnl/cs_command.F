@@ -67,6 +67,8 @@
 *                   flushed to the screen
 * v541 *kob* 8/02 - for animating, check for Xserver backingstore and
 *                   don't animate if it's not set
+* V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
+
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
 * RETURN 1 - used when no command can be supplied
@@ -74,9 +76,9 @@
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40,anim_win_id*16,GKS_X_CONID*16
-	INTEGER  anim_id, bs, ws_id
-	
-#ifdef unix
+	INTEGER  TM_LENSTR1, slen, anim_id, bs, ws_id
+        CHARACTER out_buff*2048
+
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
@@ -89,16 +91,6 @@
 	include 'xplot_state.cmn'
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	                ! with gks common
-
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 	IF ( interrupted ) THEN
 * *kob* if we are animating, stop and reset active window
@@ -194,6 +186,14 @@
            IF ( mode_verify ) THEN
               risc_buff = CX_DIM_STR( cs_axis(csp), cx_last, ':',
      .             .TRUE., len_rbuff )
+              
+              IF (cs_repeatname(csp) .NE. unspecified_name4) THEN
+                 slen = TM_LENSTR1(cs_repeatname(csp))
+                 out_buff = cs_repeatname(csp)(1:slen)//risc_buff(2:len_rbuff)
+                 risc_buff = out_buff
+                 len_rbuff = TM_LENSTR1(risc_buff)
+               ENDIF
+
 	      CALL SPLIT_LIST(pttmode_ops, ttout_lun, '!-> REPEAT: '
      .                           //risc_buff(1:len_rbuff), 12+len_rbuff)
            ENDIF

@@ -1,6 +1,7 @@
-	SUBROUTINE LIST_CMND_DATA( grid_data, mr, cx,
-     .				   ax_buff, heading, head_enh, recsofar,
-     .				   perm, status )
+
+        SUBROUTINE LIST_CMND_DATA( grid_data, mr, cx,
+     .                             ax_buff, heading, head_enh, recsofar,
+     .                             perm, clobber, dods_file, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -71,7 +72,7 @@
 *	           - expanded and reorganized the LIST heading
 * V552   2/03 *acm*- Increase line_buff to 10000
 * v553   9/03 *kob*- Increase GET_STRING_ELEMENT to 512 
-
+* V554   9/03 *acm* - add output in /DODS binary format, see the flag do_dods
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -97,17 +98,18 @@
      .			max_line_len = 10000 )
 
 * calling argument declarations:
-	LOGICAL		heading, head_enh
+	LOGICAL		heading, head_enh, clobber
 	INTEGER		mr, cx, perm(4), recsofar, status
-	REAL  grid_data(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit),
-     .        ax_buff(*)
+	REAL grid_data(m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit),
+     .       ax_buff(*)
+        CHARACTER*(*) dods_file
 	
 * local variable declarations:
 	LOGICAL		GEOG_LABEL,
      .			line_too_long, del_col_changed, all_bad,
      .			valid(4), need_doc(4), span(4), do_unform,
      .			do_stream, do_comma_del, do_tab_del, itsa_string,
-     .			fortran_selfdoc, do_auto_fmt
+     .			fortran_selfdoc, do_auto_fmt, do_dods
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE,
      .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
@@ -118,7 +120,8 @@
      .			idim, vlen, istart, iend, ifield,
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
-     .			numbers, first, slen, llen, axis, lp, cal_id
+     .			numbers, first, slen, llen, axis, lp, cal_id,
+     .                  wkblk
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
@@ -151,6 +154,7 @@
 	del_col_changed	= .FALSE.
 	width		= min_field_width
         do_unform       = list_fmt_type .EQ. plist_unformatted
+        do_dods         = list_fmt_type .EQ. plist_dods
         do_stream       = list_fmt_type .EQ. plist_stream
         do_comma_del    = list_fmt_type .EQ. plist_comma_del
         do_tab_del      = list_fmt_type .EQ. plist_tab_del
@@ -194,7 +198,8 @@
 	   valid(idim) = cx_lo_ss( cx, perm(idim) ) .NE. unspecified_int4
  30	CONTINUE
 * * * * * * WRITE INTRODUCTORY LINES * * * * *
-	IF ( do_unform .OR. do_stream .OR. .NOT.heading ) GOTO 200
+	IF ( do_unform .OR. do_stream .OR. do_dods .OR.
+     .       .NOT.heading ) GOTO 200
 * ... first the variable name
 	vname_buff   = VAR_TITLE( cx )
 	vlen   = TM_LENSTR1( vname_buff )
@@ -231,12 +236,7 @@
      .			'             FILENAME : '//
      .			ds_des_name(dset)(i+1:slen), 24+(slen-i))
 * ... DODS URL BASE or ABSOLUTE PATH
-* *kob* v553 - CYGWIN paths are always preceded by '.'
-#ifdef __CYGWIN__
-	   IF (i.GT.0 .AND.  ds_des_name(dset)(2:2).EQ.'\')
-#else
 	   IF (i.GT.0 .AND.  ds_des_name(dset)(1:1).NE.'.')
-#endif
      .			CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			'             FILEPATH : '//
      .			 ds_des_name(dset)(:i), i+24)
@@ -285,7 +285,7 @@
 * ... which axes require labels
 	DO 35 idim = 1, 4
  35	need_doc(idim) = .TRUE.
-	IF ( .NOT.(do_unform.OR.list_format_given) ) THEN
+	IF ( .NOT.(do_unform.OR.do_dods.OR.list_format_given) ) THEN
 	   DO 36 idim = 1, ndim
  36	   need_doc(idim) = CX_DIM_LEN( perm(idim), cx ) .EQ. 1
 	ENDIF
@@ -326,6 +326,8 @@
 	   hi(i) = cx_hi_ss( cx, idim )
 	   del(i)= 1
  210	CONTINUE
+
+
 
 * * * * *  ENHANCED HEADING STUFF (10/94) * * * * *
 	IF ( fortran_selfdoc ) THEN
@@ -403,9 +405,21 @@
 	ENDIF
 
 * * * * * LIST DATA UNFORMATTED OR WITH USER FORMAT (no frills)
+
+
+	IF ( do_dods) THEN
+           CALL WRITE_DODS_FMT (grid_data, 
+     .           m1lox,m1hix, m1loy,m1hiy, m1loz,m1hiz, m1lot,m1hit, 
+     .           ax_buff, dods_file, clobber, status)
+
+* done - 
+	   RETURN
+        ENDIF
+
 	IF ( do_unform
      .	.OR. do_stream
      .	.OR. list_format_given ) THEN
+
 	   DO 300 l = lo4, hi4, del4
 	   DO 300 k = lo3, hi3, del3
 	   DO 300 j = lo2, hi2, del2
@@ -446,6 +460,7 @@
 	      IF ( do_unform ) THEN
 	         WRITE (list_lun, ERR=5010)
      .			( grid_data(i,j,k,l),i = lo1, hi1, del1 )
+
 	      ELSEIF ( do_stream ) THEN				! 12/94
 	         DO 298 i = lo1, hi1, del1
 	            recsofar = recsofar + 1
@@ -466,8 +481,10 @@
 #endif
 	      ENDIF
  300	   CONTINUE
+
 * done - go home
 	   RETURN
+
 * 9/95 - COMMA OR TAB DELIMITED OUTPUT ... some frills  but not too many
 * (note that indent levels aren't changed for k and l loops)
 	ELSEIF ( do_comma_del .OR. do_tab_del ) THEN

@@ -16,6 +16,7 @@
 ! arg 2 - palette - may be any palette on your system.  Normally solid colors
 !		    like black, gray,red, etc. (see Fpalette '*') default=gray
 ! arg 3 - overlay_style - "basemap", "transparent", or "overlay" (default)
+!         see note 2 below regarding "basemap"
 ! arg 4 - detailed - may be "detailed", "all" or "solid"  default=solid
 !	  Use "detailed" together with a spectrum like dark_terrestrial
 !	  Use "all" to plot oceans as well as land.
@@ -38,7 +39,8 @@
 
 ! Note 1: To use resolution "nnn" the file etoponnn must exist.
 ! Note 2: If "basemap" is given then the current default region will determine
-!	  the region to be plotted
+!	  the region to be plotted (if a SET GRID or SET REGION command has 
+!         not been issued, you may need to set a region explicitly)
 ! Note 3: The transparent option creates a see-through overlay land mask
 
 ! check the overlay/basemap/transparent option

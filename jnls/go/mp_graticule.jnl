@@ -44,6 +44,9 @@
 !         go mp_graticule                         ! default - whole world in black
 !         go mp_graticule 120 220 20 35 65 2.5 5  ! graticule over northern Pacific in cyan
 !
+! Note:   If overlaying on a basemap or in any case where a SET GRID has
+!         not been issued, the current default region will determine
+!	  the region to be plotted.
 
 define region/default save
 set grid/save

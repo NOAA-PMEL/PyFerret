@@ -75,6 +75,8 @@
 *		the implicit grid is "owned" by someone.
 *	11/99 *sh* - bug fix: if child var occurred in the second (or higher)
 *			expression in a line the child var name was wrong
+*       11/99 ACM  Part of the fix noted just above causes trouble with external 
+*             functions that use custom axes.  See comments starting w/ ACM ***
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -172,17 +174,23 @@
 * ...(10/99)also treat sst[y=5s:5n:1] as a "complex" argument (has impl grid)
 
 
+* ACM *** 11/99
 * ACM *** The lines commented out with cc below, replaced by the line just 
-* ACM *** above are a "fix" to the problem with custom axes in external 
-* ACM *** functions.  Not the true fix but allows the FFT benchmarks to run.
+* ACM *** above are a "fix" to a problem with custom axes in external 
+* ACM *** functions, where the square bracket is treated wrong and we get:
+ 
+* ACM ***        yes? LIST/L=30:35 ffta(sample_function[l=1:365])
+* ACM ***            **ERROR: illegal limits: VW_FFT is not in the range L=1
+* ACM ***            Axis extremes are L=1:-2147483
+
+* ACM *** Not the true fix but allows the FFT benchmarks to run.
 
 	      istart = at_start (gc_arg_start)
 	      iend   = at_end   (gc_arg_start)
 	      IF ( (at_type(gc_arg_start) .EQ. alg_child_var)
      .	     .OR.  ( (iat .EQ. gc_arg_start+1)
 
-     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
-     .             )   ) THEN
+     .         .AND. (at_type(gc_arg_start) .NE. alg_constant))) THEN
 
 cc     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
 cc     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN

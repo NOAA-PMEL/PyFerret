@@ -8,6 +8,7 @@
 * 2/99 *sh* - added POLYGON command
 * 3/99 *jd* - increase qualifiers for POLYGON to 30   
 * 3/99 *jc* - increased possible qualifiers for SHOW FUNCTION
+* 4/99 *sh* increased num_predefined_alias for PAUSE command
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -369,7 +370,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 14,
+     .	                num_predefined_alias    = 15,
      .			max_queries		= 50 )
 
 * declarations

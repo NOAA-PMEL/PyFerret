@@ -100,11 +100,11 @@
 *  *js* 7/98     - added SET DATA/TYPE and SET DATA/SWAP
 * v491  12.98    - added PATTERN support *jd*
 * v491  12.98    - added PATTERN alias *jd*
-* v500  2/99 - *kob* - add /QUIET to LIST command
-* V500  2/99 *sh* - added POLYGON command
-* V500  3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
+* V500  2/99 - *kob* - add /QUIET to LIST command
+*       2/99 *sh* - added POLYGON command
+*       3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
 *       3/99 *jc* - added /INTERNAL to SHOW FUNCTION command
-
+*       4/99 *sh* - added PAUSE alias
 
 #ifdef unix
 	include 'ferret.parm'
@@ -1296,12 +1296,15 @@
      .		alias_name(14)	/ 'PATTERN' /,
      .		alias_len(14)	/ 19 /,
      .		alias(14)	/ 'PPL PATSET PATTERN=' /
+     .		alias_name(15)	/ 'PAUSE' /,
+     .		alias_len(15)	/ 7 /,
+     .		alias(15)	/ 'MESSAGE' /
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 136*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 136*4 /,
+     .                   / 135*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150)/ 135*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 136*unspecified_name4 /
+     .                   / 135*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

@@ -5,7 +5,10 @@
 # platform specific macros
 
 
-INCLUDES        = -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
+INCLUDES        = -I../../ppl/include/xgks \
+		  -I/usr/include \
+		  -I/usr/include/X11 \
+		  -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
                   -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib \
                   -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
@@ -19,32 +22,46 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include
 CC              = cc
 FC		= f90
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -DFULL_GUI_VERSION -O2 -m486 $(INCLUDES)
+CFLAGS          = -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch
 PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch
 CPP		= /lib/cpp
-CPP_FLAGS	= -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
-		  -DNO_OPEN_RECORDTYPE -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL \
-		  -Dxgks -DSTAR_1_SUPPORTED -DF90_NO_FPUTC -DF90_NO_UNLINK -DF90_NO_GETLOG \
-		  -DF90_SYSTEM_ERROR_CALLS -DF90_DATE_TIME
+CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
+		  -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME \
+		  -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS \
+		  -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH \
+		  -DF90_OPEN_FILE_APPEND -DNO_OPEN_READONLY \
+		  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
+		  -DF90_NO_FPUTC -DF90_NO_UNLINK -DF90_NO_GETLOG \
+		  -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH \
+		  -DXT_CODE -Dsun4
 
-#
 # Below this line are macro definitions used only for the final linking of the executable
 #
 
 LD		= cc
-LDFLAGS		= -L/usr/openwin/lib -v
+LDFLAGS		= -v -static
  
-SYSLIB		= -lX11 -ldl -llist -Bstatic -L/usr/ucblib -lucb -L/opt/SUNWspro/SC4.0/lib \
-		  -lV77 -lelf -lM77 -lF77 -Bdynamic -lsunmath -lm -lc
+
+SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/l1/kobrien/src/f2c/libF77/libF77.a /home/l1/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm
 
 TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
-HDFLIB		= /opt/lib/libdf.a
+HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 
-CDFLIB		= /opt/lib/libnetcdf.a
+CDFLIB		= -lnetcdf
+
+LINUX_OBJS  = special/linux_routines.o
+
+.IGNORE:
+
+.F.o:
+	rm $*.f
+	$(CPP) $(CPP_FLAGS) $(<F) | sed -e        's/de	/de /g' | sed -e  's/de 	/de /g' > $*.f
+	$(F77) $(FFLAGS) $*.f
+
 
 #
 # End of platform_specific_includes.mk.i486-linux

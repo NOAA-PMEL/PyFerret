@@ -72,3 +72,21 @@ def axis/t="1-jan-1990:01":"2-jan-1990:12:00":1/units=minutes tax
 plot/thick/grat="large(line,color=blue),small(line,color=lightblue)" b
 plot/trans/thick/vg="(line,color=blue)"/hg="large(line,color=blue),small(line,color=lightblue)" b
 
+! Tests for MODE GRATICULE  added in Ferret v5.7
+show mode graticule
+set mode graticule
+show mode graticule
+
+PLOT/i=1:100 sin(i/5)
+can mode graticule
+
+PLOT/i=1:100 cos(i/5)
+
+set mode graticule:color=red
+PLOT/i=1:100 cos(i/5)
+set mode graticule:(thick,color=red)
+PLOT/i=1:100 cos(i/5)
+
+set mode graticule:(dash,color=blue)
+PLOT/i=1:100 cos(i/5)
+can mode graticule

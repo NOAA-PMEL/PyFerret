@@ -120,3 +120,6 @@ list/l=1:4 jsst, nsst
 ! this is not specifically a calendar test, but it is a change in V5.3x
 define axis/units=days/t/t0=1-jan-1980 tax_neg = {-3,-2,-1}
 show axis/l tax_neg
+
+! also see bn_all_leap.jnl, 6/2004
+! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).

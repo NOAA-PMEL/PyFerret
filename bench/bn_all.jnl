@@ -382,7 +382,7 @@ GO bn_reset
 GO bn553_bug_fixes.jnl
 
 
-! ******** V5.54Additions below ***********
+! ******** V5.6Additions below ***********
 
 GO bn_reset
 GO bn_graticules.jnl
@@ -392,6 +392,18 @@ GO bn_repeat_range.jnl
 
 GO bn_reset
 GO bn554_bug_fixes.jnl
+
+
+! ******** V5.7 Additions below ***********
+
+GO bn_reset
+GO bn_bounds.jnl
+
+GO bn_reset
+GO bn_all_leap.jnl
+
+GO bn_reset
+GO bn570_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

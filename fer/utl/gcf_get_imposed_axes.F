@@ -13,14 +13,16 @@
 
 * V450: 1/97
 *	7/97 - slight reorg for external functions
+* V491: 1/98 - make test function TIMES2 impose its T axis
 
 * calling argument declarations
 	INTEGER	gcfcn, cx_base, axes(4), status
 
 * internal variable declarations
 	LOGICAL has_imposed_axes
-	INTEGER	CGRID_AXIS, TM_LENSTR1, cx, idim,
-     .		axis_will_be(4)
+	INTEGER	CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN, CAXIS_LEN,
+     .		cx, idim, axis_will_be(4), n, grid
+	REAL*8	TM_WORLD, dlo, dhi, del
 	CHARACTER*40 GCF_NAME, buff
 
 * Upon entry to this routine the context stack should be organized as
@@ -40,6 +42,7 @@
 	include 'ferret_cmn/xgrid_chg_fcns.cmn'
 	include 'ferret_cmn/xtext_info.cmn'	! w/ ww_dim_name
 	include 'ferret_cmn/xfr_grid.cmn'       ! w/ mgrid_abstract
+	include 'ferret_cmn/xcontext.cmn'       ! for TIMES2
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
@@ -49,6 +52,7 @@
 	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
 	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'	! W/ WW_DIM_NAME
 	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'       ! w/ mgrid_abstract
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'       ! for TIMES2
 #endif
 
 * initialize
@@ -86,15 +90,74 @@
 * The result of this function is a grid of ABSTRACT NORMAL NORMAL NORMAL
 *   .... 7/97 changes -- handled entirely within "typical" cases above
 
+	IF ( gcfcn .EQ. p_reshape ) THEN
 * *** RESHAPE function ***
 * The second argument contains the desired grid. (It cannot simply be merged,
 * however, because the result limits have no obvious relation to the inputs)
-	IF ( gcfcn .EQ. p_reshape ) THEN
 	   cx = cx_base 	! component 2: the reshaping grid
 	   DO 210 idim = 1, 4
 	      axes(idim) = CGRID_AXIS ( idim, cx )
  210	   CONTINUE
 
+
+
+	ELSEIF ( gcfcn .EQ. p_times2 ) THEN
+* *** TIMES2 (debugging) function ***
+	   cx = cx_base 	! the argument context
+
+	   IF ( CGRID_AXIS(t_dim,cx) .EQ. mnormal
+     .	   .OR. CGRID_AXIS(t_dim,cx) .EQ. unspecified_int4 )
+     .		CALL ERRMSG(ferr_unknown_arg, status,
+     .			'arg of TIMES2(v) must have a T axis',*5000)
+
+	   grid = cx_grid(cx)
+
+* Note: This routine is called during the "getgrid" pass of Ferret.
+* During the "getgrid" pass the context limits of the argument are not reliably
+* available. For example, in "TIMES2(V)" the limits of V will appear
+* to be cx_lo/hi_ss=1:1. Even in the case of TIMES2(V[L=1:4]) at this
+* stage it will appear that V has limits L=1:4 but the actual arg
+* that will be obtained later may differ (example: the definition of V may be
+* LET V = V2[L=5:10]). The best that we can do about this situation is
+* 1. check cx_given to determine if the limits were explicit. If not,
+*	then use the limits of the full axis
+* 2. in GCF_IMPOSE_RESULT_LIMS and again in the function, itself, double
+*	check the axis we have defined against the actual argument recieved.
+*	If the axis is inappropriate then flag an error and coach the user
+*	that the argument limits are ambiguous or contradictory.
+
+* compute the lo/hi/delta of the new custom (regular) axis
+	   IF ( cx_given(t_dim, cx) ) THEN
+* ... limits of arg are explicit -- use 'em (and hope for the best!)
+	      n = CX_DIM_LEN(t_dim, cx)
+	      dlo = TM_WORLD(cx_lo_ss(cx,t_dim), cx_grid(cx), t_dim,
+     .						box_middle )
+	      dhi = TM_WORLD(cx_hi_ss(cx,t_dim), cx_grid(cx), t_dim,
+     .						box_middle )
+	   ELSE
+* ... limits of arg are not explicit -- use axis lims (and hope for the best!)
+	      n = CAXIS_LEN(t_dim, cx)
+	      dlo = TM_WORLD(1, cx_grid(cx), t_dim, box_middle )
+	      dhi = TM_WORLD(n, cx_grid(cx), t_dim, box_middle )
+	   ENDIF
+	   IF ( n .EQ. 1 ) THEN
+	      del = 1.D0
+	   ELSE
+	      del = (dhi-dlo)/(n-1)
+	   ENDIF
+
+*	Create and set the custom axis
+* NOTE: It is important that **somewhere** inside of Ferret TM_MAKE_DYN_LINE
+*	is called -- else it will not be linked in and available to the
+*	external functions 
+* Use TM_GET_LIKE_DYN_LINE to create axes which are children of an argument ax
+	   CALL TM_MAKE_DYN_LINE(t_dim, dlo, dhi, del,
+     .                                  'Hertz', .FALSE.,
+     .                                  axes(t_dim), status)
+	   IF (status .NE. ferr_ok) GOTO 5000
+
+
+**************
 	ELSEIF (gcfcn .GT. gfcn_num_internal ) THEN
 
 	   IF ( has_imposed_axes ) THEN

@@ -1,7 +1,5 @@
 	SUBROUTINE XEQ_CONTOUR( memory )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -74,7 +72,8 @@
 *               declaration line.
 * V450:  5/29/97 - added /NOAXES qualifier (useful in curvilinear plots)
 * V491:  12.98   - added /PATTERN qualifier *jd*
-* V510 12/99 *sh* - allow all-missing data plots
+* V510 12/99 *sh* - allow plots of all-missing data
+*		  - added /SIZE=/SPACING=/SIGDIG= controls over contour labels
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -106,12 +105,12 @@
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
      .            do_key, spectrum, set_up, noaxes, pattern, no_data
-	INTEGER	  TM_LENSTR1, status, mr, cx, icntr, slen, sp, ipen,
-     .		  ax1_blks, ax1_start, limit, loc,
+	INTEGER	  TM_LENSTR1, status, slen, sp, ipen,
+     .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt
-	REAL	  vbuf, only_val, aspect
+	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
 	PARAMETER (aspect = 0.0)			!kob 12/96
-	CHARACTER TM_FMT*12, LEFINT*4, fname*128
+	CHARACTER TM_FMT*12, fname*128
 
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, not_vector
@@ -148,15 +147,51 @@
 	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
      .							transpz = .NOT.transpz
 
-* user-specified pen color ?  (2/94)
+* ... CONTOUR/SIZE=float
+	loc = qual_given( slash_cont_size )
+	IF ( loc .GT. 0  ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      vbuf, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( vbuf .NE. unspecified_val4 ) THEN
+	      IF ( vbuf.LE. 0.0 ) GOTO 5210
+	      lab_size = vbuf	
+	   ENDIF
+	ELSE
+	   lab_size = 0.08
+	ENDIF
+* ... CONTOUR/SPACING=float
+	loc = qual_given( slash_cont_spacing )
+	IF ( loc .GT. 0  ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      vbuf, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( vbuf .NE. unspecified_val4 ) THEN
+	      IF ( vbuf .LE. 0.0 ) GOTO 5210
+	      lab_spacing = vbuf	
+	   ENDIF
+	ELSE
+	   lab_spacing = 5.0
+	ENDIF
+* ... CONTOUR/SIGDIG=integer
+	loc = qual_given( slash_cont_sigdig )
+	IF ( loc .GT. 0  ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      vbuf, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( vbuf .NE. unspecified_val4 ) THEN
+	      IF ( vbuf.LE.0.5 ) GOTO 5210
+	      sigdig = NINT(vbuf)
+	   ENDIF
+	ELSE
+	   sigdig = 2
+	ENDIF
+* ... CONTOUR/COLOR=color name or pen number
 	loc = qual_given( slash_pen )
 	IF ( loc .GT. 0 ) THEN
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   vbuf, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   limit = num_fancy_lines
-	   IF ( vbuf.GT.limit .OR. vbuf.LE.0.0 ) GOTO 5200
-	   ipen = vbuf
+	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                           ipen, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
 	   ipen = -1	! auto-select in DISP_SET_UP
 	ENDIF
@@ -187,7 +222,12 @@
 	IF ( usa_line ) ncont_on = ncont_on + 1
 
 * is the no valid input data?
-           no_data =  no_range .AND. only_val.EQ.bad_val4
+        no_data =  no_range .AND. only_val.EQ.bad_val4
+
+* set contour label details (3/00)
+	WRITE ( ppl_buff, 3100 ) lab_size, sigdig, lab_spacing
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+ 3100	FORMAT('CONSET ',F8.3,',',I4,', , , , , ,',F7.2)
 
 * PPLUS blows up setting auto contour levels if all data have same value
 	IF ( no_range  .AND. .NOT.no_data 
@@ -308,8 +348,11 @@
 
 * error exits
  5000	GOTO 1000
- 5200   CALL ERRMSG( ferr_out_of_range, status,
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .          'Legal range is 1 to '//LEFINT(limit,slen), *1000 )
+! 5200   CALL ERRMSG( ferr_out_of_range, status,
+!     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+!     .          'Legal range is 1 to '//LEFINT(limit,slen), *1000 )
+ 5210	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Value must be positive', *1000 )
 
 	END

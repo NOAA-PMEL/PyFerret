@@ -59,6 +59,7 @@
 *	  1/27/95 - default style for /VS is now /SYMBOLS_ONLY
 * V450:  5/29/97 - added /NOAXES qualifier
 * V500   4.27.99 - *jd* NLINES command added to clean up after/before POLYGON
+* V510 *sh* 3/00 - added PLOT/COLOR=/SIZE= qualifiers
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -107,13 +108,18 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL		overlay, transpz, versus, no_labels, set_up, noaxes
-	INTEGER		symbol, line_type, status, mr, cx, ipl,
-     .			loc, limit, slen,
+	LOGICAL		overlay, transpz, versus,
+     .			no_labels, set_up, noaxes, use_line
+	INTEGER		symbol, color, status,
+     .			loc, limit, slen, thick,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start
-	REAL		val
+	REAL		val, sym_size
 	CHARACTER	LEFINT*4
+
+* internal parameter declarations
+	INTEGER ncolors
+	PARAMETER (ncolors = 6)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -143,7 +149,9 @@ CC       => Set values here instead.
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	symbol	  = unspecified_int4
-	line_type = unspecified_int4
+	sym_size  = 0.08	! default plot mark size
+	thick	  = 1		! default thickness
+	color     = qual_on	! automatic selection as default
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -151,7 +159,9 @@ CC       => Set values here instead.
 * change default style to symbols, only if PLOT/VS (1/27/95)
 	IF ( versus ) THEN
 	   symbol = qual_on
-	   line_type = qual_off
+	   use_line = .FALSE.
+	ELSE
+	   use_line = .TRUE.
 	ENDIF
 
 * decode qualifiers
@@ -168,20 +178,59 @@ CC       => Set values here instead.
 	   ELSE
 	      symbol = qual_on		! auto selection of symbols
 	   ENDIF
-	   line_type = qual_off		! default to no line w/ symbol	      
+	   use_line = .FALSE.		! default to no line w/ symbol
+	   color = 1			! default symbol color	      
+	ENDIF
+* ... PLOT/SYM_SIZE=float
+	loc = qual_given( slash_plot_symsize )
+	IF ( loc .GT. 0  ) THEN
+	   IF ( symbol .EQ. unspecified_int4 ) THEN
+	       symbol = qual_on		! turn on symbols if needed
+	       use_line = .FALSE.
+	       color = 1	
+	   ENDIF
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( val .NE. unspecified_val4 ) THEN
+	      IF ( val.LE. 0.0 ) GOTO 5210
+	      sym_size = val		! user-specified symbol
+	   ENDIF
+	ENDIF
+* ... PLOT/COLOR=n
+	loc = qual_given( slash_plot_color )
+	IF ( loc .GT. 0  ) THEN
+	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                           color, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+* ... PLOT/THICKNESS=n
+ 200	loc = qual_given( slash_plot_thick )
+	IF ( loc .GT. 0  ) THEN
+	   IF ( color .EQ. qual_on ) color = 1  ! /THICK alone means "BLACK"
+	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( val .NE. unspecified_val4 ) THEN
+	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
+	      thick = NINT( val )	! user-specified line style
+	   ELSE
+	      thick = 2  ! default if no value is specified
+	   ENDIF
+	   color = ncolors*(thick-1) + color
 	ENDIF
 * ... PLOT/LINE_STYLE=n
 	loc = qual_given( slash_plot_line )
 	IF ( loc .GT. 0  ) THEN
+	   use_line = .TRUE.
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      val, status )	! syntax check
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      limit = num_fancy_lines 			!was num_plain 1/94
 	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      line_type = NINT( val )	! user-specified line style
-	   ELSE
-	      line_type = qual_on		! auto selection of line style
+	      color = NINT( val )	! user-specified line style
 	   ENDIF
 * ... default to no symbols when /LINE_STYLE, alone, is given
 * 	or for PLOT/VS/LINE  (1/27/95)
@@ -197,7 +246,9 @@ CC       => Set values here instead.
      .				versus,
      .				no_labels,
      .				symbol,
-     .				line_type,
+     .				sym_size,
+     .				color,
+     .				use_line,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -242,4 +293,10 @@ CC       => Set values here instead.
  5200	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to '//LEFINT(limit,slen), *1000 )
+ 5210	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Symbol size must be positive ', *1000 )
+ 5400	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Legal range is 1 to 3', *1000 )
 	END

@@ -51,7 +51,7 @@
 	LOGICAL	MATCH4, TM_DIGIT
 	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code
 	REAL	val
-	CHARACTER	LEFINT*4, str*12, colors*12(6), scolor*4
+	CHARACTER	LEFINT*4, str*12, colors*12(6)
 
 * internal parameter declarations
 	INTEGER ncolors
@@ -71,6 +71,8 @@
 
 	IF ( equal_pos .EQ. 0 ) THEN
 	   str = ' '				! "name", alone
+	   icolor = 1
+	   RETURN
 
 	ELSEIF ( equal_pos .EQ. slen ) THEN	
 	   GOTO 5000				! "name ="
@@ -102,22 +104,22 @@
 	 ELSE
 * ... compare with allowable colors
 	   DO 200 icolor = 1, ncolors
-	      IF ( MATCH4(scolor, colors(icolor)) ) GOTO 1000
+	      IF ( MATCH4(str, colors(icolor)) ) GOTO 1000
  200	   CONTINUE
 	   GOTO 5100
 	ENDIF
 
 * success
  1000	status = ferr_ok
-	RETURN
+ 4999	RETURN
 
 * syntax error
- 5000	CALL ERRMSG( ferr_syntax, status, string, *1000 )
+ 5000	CALL ERRMSG( ferr_syntax, status, string, *4999 )
  5100	CALL ERRMSG( ferr_invalid_command, status, 
      .		string//pCR//
      .		'Colors are Black,Red,Green,Blue,LightBlue, and Purple',
-     .		*1000 )
+     .		*4999 )
  5200	CALL ERRMSG( ferr_out_of_range, status, 
      .		string//pCR//
-     .		'Legal range is 1 to '//LEFINT(num_fancy_lines,slen), *1000 )
+     .		'Legal range is 1 to '//LEFINT(num_fancy_lines,slen), *4999 )
 	END

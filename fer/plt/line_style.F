@@ -1,6 +1,6 @@
-	SUBROUTINE LINE_STYLE( symbol, line_type, line_number, so_far )
+	SUBROUTINE LINE_STYLE( symbol, sym_size, color,
+     .			       use_line, line_number, so_far )
 
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -51,10 +51,12 @@
 * V200:	  1/2/90
 * 	 2/21/90 - changed line style order so all dash patterns are used for
 *		   each symbol choice, then the next symbol ...
-* 	 5/18/90 - added args symbol and line_type to force styling of lines
+* 	 5/18/90 - added args symbol and color to force styling of lines
 * Unix/RISC port - 10/91 - /symb"/noline" -> successive line w/ new symbol
 * V230:  7/23/92 - when /LINE_STYLE is given /SYMBOLS must default to OFF
 * V301:  1/27/94 - when /LINE_STYLE is given w/out /SYMBOL use num_fancy_lines
+* V510 *sh* 3/00 - added args use_line and sym_size to suport PLOT/COLOR=/SIZE=
+
 
 #ifdef unix
 	include	'slash.parm'
@@ -67,7 +69,9 @@
 #endif
 
 * calling argument declarations
-	INTEGER symbol, line_type, line_number, so_far
+	LOGICAL use_line
+	INTEGER symbol, color, line_number, so_far
+	REAL	sym_size
 
 * internal variable declarations
         LOGICAL unique_symbol, symbol_only1, select_lines
@@ -86,15 +90,15 @@
         IF ( so_far .EQ. 1 ) sym_so_far = 0      ! first line on screen
 * ... each line needs a new symbol for /SYMBOL or /LINE=n/SYMBOL
         unique_symbol = ( symbol.EQ.qual_on
-     .             .AND. (line_type.EQ.qual_off.OR.line_type.GT.0) )
-        symbol_only1  = symbol.GT.0 .AND. line_type.EQ.qual_off
-	select_lines = symbol.EQ.qual_off .AND. line_type.EQ.qual_on
+     .             .AND. .NOT.use_line )
+        symbol_only1  = symbol.GT.0 .AND. .NOT.use_line
+	select_lines = symbol.EQ.qual_off .AND. use_line
 
 * respond to qualifiers that force actions
-	IF ( line_type .EQ. qual_off ) THEN
-	   ppl_draw_line = 3	! PPL LINE command: mark points only
-	ELSE
+	IF ( use_line ) THEN
 	   ppl_draw_line = 1	! draw the line by default
+	ELSE
+	   ppl_draw_line = 3	! PPL LINE command: mark points only
 	ENDIF
 	IF ( symbol .EQ. qual_on ) THEN
 * ... bypass plain lines
@@ -105,7 +109,11 @@
 
 * select line type and symbols
         IF ( unique_symbol .OR. symbol_only1 ) THEN 
-           itype = 1
+           IF (color.GT.0) THEN
+	      itype = color		! turn on symbol color 3/00
+	   ELSE
+	      itype = 1
+	   ENDIF
            imark = MOD(sym_so_far,num_sym) + 1
            sym_so_far = sym_so_far + 1
 	ELSEIF ( select_lines .AND. style .LE. num_fancy_lines ) THEN  ! 1/94
@@ -132,7 +140,7 @@
 	ELSEIF ( imark .NE. 0 ) THEN
 	  imark = sym(imark)
 	ENDIF
-	IF ( line_type .GT. 0 ) itype = line_type
+	IF ( color .GT. 0 ) itype = color
 
 * communicate this to PLOT+
 	WRITE ( ppl_buff, 3000 ) line_number, itype
@@ -148,6 +156,12 @@
  3200	   FORMAT ('LINE ',I4,' 1 0')
 	ENDIF
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	IF ( imark .GT. 0 ) THEN
+* ... "MARKH 8 0.08" - symbol size 0.08 on line 8
+	   WRITE ( ppl_buff, 3300 ) line_number, sym_size
+ 3300	   FORMAT ('MARKH ',I4,F8.3)
+	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	ENDIF
 
 	RETURN
 	END

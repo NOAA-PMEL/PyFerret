@@ -2,7 +2,7 @@
      .			      ( memory,
      .				overlay, transpz, coord_ax, no_labels,
      .				no_range, only_val,
-     .				symbol, line_type,
+     .				symbol, line_type, use_line,
      .				mr_list, cx_list, nmv,
      .				x_dat, y_dat, status )
 
@@ -71,6 +71,8 @@
 *       5/99 *kob* - minor mod to remove improper comment line linux compiler
 *                    didn't like
 *       6/99 - *jd* fix bug in 2 var form where x_dat(1) is reassigned
+* V510: *sh* 3/00 - trap if number of polygons is too large 
+*		  - new arg use_line for change in arguments to LINE_STYLE
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -89,6 +91,9 @@
 	include 'xtext_info.cmn'
 	include 'axis_inc.decl'       ! with axis lengths
 	include 'AXIS.INC'       ! with axis lengths	
+
+	include 'parampl5_dat.decl'
+	include 'PARAMPL5.DAT'	! with NPOLYGONS
 	include 'ppldat_inc.decl'       ! with nsize
 	include 'PPLDAT.INC'       ! with nsize
         include 'switch_inc.decl'
@@ -117,12 +122,12 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL		overlay, transpz, no_labels, no_range
+	LOGICAL		overlay, transpz, no_labels, no_range, use_line
 	INTEGER		symbol, line_type, coord_ax, iunits,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
-	REAL            dummy_x_dat, only_val
+	REAL            only_val
 
 * internal variable declarations:
 	LOGICAL         missing_polygon
@@ -130,14 +135,14 @@
      .			formatted, user_title, oneD_form, stack_up
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
-	CHARACTER	VAR_UNITS*64, LEFINT*4,
+	CHARACTER	VAR_UNITS*64, LEFINT*6,
      .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14
 	INTEGER         TM_UNIT_ID
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
+	INTEGER		TM_LENSTR1, CX_DIM_LEN,
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
      .			slen, slen2, x_lab, y_lab, nline_in_mem, i,
-     .			npolygon, ncolor, ipoly, xrow, yrow, start, end,
-     .			npts, idim, color_dim, coord_dim, i0,
+     .			npoly, ncolor, ipoly, xrow, yrow, start, end,
+     .			npts, idim, color_dim, coord_dim,
      .			style, justify, ndim, dims(4), nfdim, fdims(4),
      .			plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y
@@ -311,7 +316,7 @@
 	
 * loop through all the polygons variables loading them into PPLUS
 * construct a funky FORTRAN 77 DO-WHILE loop
-	npolygon = 0
+	npoly = 0
 * ---- 
 200	CONTINUE
 
@@ -385,6 +390,7 @@
  250	   npts = end-start+1
 	   plot_mem_used = plot_mem_used + npts
 	   IF ( plot_mem_used .GT. 0.99*nsize ) GOTO 5150
+	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling
 	   CALL MINMAX( x_dat(start), npts, mr_bad_data(mr_x), lo, hi)
@@ -425,15 +431,12 @@
 !	   nline_on     = nline_on     + 1
 	   nline_in_mem = nline_in_mem + 1
 
-* ... assign the same line style ("1") to all polygons
-CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
-
-	npolygon = npolygon + 1
+	   npoly = npoly + 1
 	GOTO 200	! end of DO-WHILE loop
- 290	IF (npolygon .EQ. 0 ) GOTO 5230
+ 290	IF (npoly .EQ. 0 ) GOTO 5230
 
 * NOW set the line style
-	CALL LINE_STYLE( symbol, line_type, 1, 1 )
+	CALL LINE_STYLE( symbol, 0.08, line_type, use_line, 1, 1 )
 
 * release context stack buffers
 	cx_stack_ptr = cx_stack_ptr - 2
@@ -455,11 +458,11 @@ CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	endif
 	IF (ncolor .EQ. 1) THEN
-	   DO 300 ipoly = 1, npolygon
+	   DO 300 ipoly = 1, npoly
  300	   x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
-	   ncolor = npolygon
+	   ncolor = npoly
 	ENDIF
-	IF (ncolor .NE. npolygon) GOTO 5220	! color array length wrong
+	IF (ncolor .NE. npoly) GOTO 5220	! color array length wrong
 
 * pass back a summary about the range of colors
 	no_range = NO_LINE_RANGE(x_dat,
@@ -609,6 +612,9 @@ C	   slen = TM_LENSTR1( plot_title )
  5150	buff = LEFINT( INT(0.99*nsize), slen )
 	CALL ERRMSG( ferr_prog_limit, status,
      .		'Plot buffer size is: '//buff(:slen), *5000 )
+ 5160	buff = LEFINT( NPOLYGON, slen )
+	CALL ERRMSG( ferr_prog_limit, status,
+     .		'Maximum polygons is: '//buff(:slen), *5000 )
  5200	CALL ERRMSG( ferr_invalid_command, status,
      .		'POLYGON may use 2 args (xpts,ypts) with /LINE only,' //
      .          ' or 3 args (xpts,ypts,color_value)',
@@ -616,7 +622,7 @@ C	   slen = TM_LENSTR1( plot_title )
  5210	CALL ERRMSG( ferr_invalid_command, status,
      .		'illegal dimensions for polygon coordinate(s) or values',
      .		*5000)
- 5220	buff2 = LEFINT(npolygon, slen2)
+ 5220	buff2 = LEFINT(npoly, slen2)
 	buff  = LEFINT(ncolor, slen) 
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'no. of values ('//buff(:slen)//') '//

@@ -1,7 +1,5 @@
 	SUBROUTINE XEQ_VECTOR( memory )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -67,7 +65,8 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 *	 1/20/94 - changes to SAVE_FRAME call reflecting C-based procedures
 * V450:  5/29/97 - added /NOAXES qualifier (eventually for curvilinear plots)
-* V510 12/99 *sh* - allow all-missing data plots
+* V510 *sh* 12/99 - allow plots of all-missing data
+*		  - replace /PEN qualifier with /COLOR, supporting named colors
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -107,19 +106,21 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
      .			set_up, noaxes, no_data
-	INTEGER		status, cx, loc, ipen, limit,
-     .			dim1, dim2, asp, dlen,
+	INTEGER		status, cx, loc, ipen, thick,
+     .			dim1, dim2, asp,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			x_skip, y_skip
 	REAL		only_x, aspect, vbuf
-	CHARACTER	TM_FMT*16, LEFINT*4, ibuff*3
 
 
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, vector
 	PARAMETER     ( norm_dims_only  = .FALSE.,
      .			vector		= .TRUE.  )
+	INTEGER ncolors
+	PARAMETER (ncolors = 6)
+
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -170,14 +171,27 @@
 * user-specified pen color ?  (2/94)
 	loc = qual_given( slash_pen )
 	IF ( loc .GT. 0 ) THEN
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   vbuf, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   limit = num_fancy_lines
-	   IF ( vbuf.GT.limit .OR. vbuf.LE.0.0 ) GOTO 5200
-	   ipen = vbuf
+	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                           ipen, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
 	   ipen = -1	! auto-select in DISP_SET_UP
+	ENDIF
+* ... VECTOR/THICKNESS=n
+	loc = qual_given( slash_vect_thick )
+	IF ( loc .GT. 0  ) THEN
+	   IF ( ipen .EQ. -1 ) ipen = 1  ! /THICK alone means "BLACK"
+	   ipen = MOD(ipen-1,ncolors)+1  ! eliminate thickness
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   vbuf, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( vbuf .NE. unspecified_val4 ) THEN
+	      IF ( vbuf.LE.0.0 .OR. vbuf.GT.3 ) GOTO 5400
+	      thick = NINT( vbuf )	! user-specified line style
+	   ELSE
+	      thick = 2  ! default if no value is specified
+	   ENDIF
+	   ipen = ncolors*(thick-1) + ipen
 	ENDIF
 
 * set up title and load the x component data into PPLUS
@@ -295,7 +309,7 @@
 
 * error exits
  5000	GOTO 1000
- 5200   CALL ERRMSG( ferr_out_of_range, status,
-     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .          'Legal range is 1 to '//LEFINT(limit,dlen), *1000 )
+ 5400	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Legal range is 1 to 3', *5000 )
 	END

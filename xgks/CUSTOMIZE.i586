@@ -1,5 +1,5 @@
 # Type of C compiler (default is `cc'):
-CC='gcc -I../../ppl/include/xgks -I../../../ppl/include/xgks/ -I../../include'
+CC='gcc -D__CYGWIN__ -I../../ppl/include/xgks -I../../../ppl/include/xgks/ -I../../include'
 #
 # C compiler flags (default is `-O'):
 CFLAGS='-g'

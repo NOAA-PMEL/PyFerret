@@ -86,7 +86,7 @@ IF `LN_vert NE 0` THEN
    IF `LN_vert EQ -1` THEN LET LN_yoff = `LN_yoff` - (LN_lsiz * LN_yfac)
 
    LET LN_xfac = ( ($PPL$XMAX)-($PPL$XMIN) ) / ($PPL$XLEN)
-   LET LN_xoff = -2* LN_lsiz * LN_xfac 
+   LET LN_xoff = -1* LN_lsiz * LN_xfac 
    LET LN_just = -1
 ENDIF
 

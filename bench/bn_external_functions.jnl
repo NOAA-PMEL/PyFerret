@@ -4,6 +4,9 @@ go bench_examples
 !Ansley's benchmarks
 
 GO bn_reset
+go bench_compress
+
+GO bn_reset
 go bench_fft
 
 GO bn_reset

@@ -67,7 +67,8 @@
 * V500: 2/99 - based on plot_set_up.F
 *       3/99 - *jd* mods to complete the command
 * V500: 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
-
+*       5/99 *kob* - minor mod to remove improper comment line linux compiler
+*                    didn't like
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -149,8 +150,8 @@
 	   mr_color = mr_list(3)
         ELSEIF (nmv .EQ. 2) THEN
 	   CALL INIT_EMPTY_CONTEXT(cx_buff)
+*       ignore status ... always OK
 	   CALL CONSTANT_CONTEXT("0", cx_buff, cx_buff, status)
-				!        ignore status ... always OK
 	   memory(1, mr_blk1(dummy_mr)) = 0 ! just for good house-keeping ...
 	   cx_color = cx_buff
 	   mr_color = dummy_mr

@@ -228,6 +228,14 @@
 *     onto the result? (perhaps a parameter of the function determines this?)
 * ... If so, impose 'em here
 
+           IF (axis_will_be(1) .EQ. pgc_axis_is_abstract
+     .          .OR. axis_will_be(2) .EQ. pgc_axis_is_abstract
+     .          .OR. axis_will_be(3) .EQ. pgc_axis_is_abstract
+     .          .OR. axis_will_be(4) .EQ. pgc_axis_is_abstract)	THEN
+              CALL EFCN_GET_RESULT_LIMITS(gcfcn, memory, mr_list, 
+     .             cx_list)
+           ENDIF
+
 	   DO 450 idim = 1, 4
 
 
@@ -237,8 +245,7 @@
 
 	      IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract)	THEN
 
-		 CALL EFCN_GET_RESULT_LIMS(gcfcn, memory, mr_list, 
-     .           cx_list, idim, lo_lim,hi_lim)
+		 CALL EFCN_GET_AXIS_LIMITS(gcfcn, idim, lo_lim, hi_lim)
 		 cx_lo_ss(res_cx,idim) = lo_lim
 		 cx_hi_ss(res_cx,idim) = hi_lim
 		 cx_by_ss(idim, res_cx) = .TRUE.

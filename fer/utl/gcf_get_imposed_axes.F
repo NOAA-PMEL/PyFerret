@@ -177,10 +177,17 @@
 
 	ELSEIF (gcfcn .GT. gfcn_num_internal ) THEN
 
+           IF (axis_will_be(1) .EQ. pgc_axis_supplied_herein
+     .          .OR. axis_will_be(2) .EQ. pgc_axis_supplied_herein
+     .          .OR. axis_will_be(3) .EQ. pgc_axis_supplied_herein
+     .          .OR. axis_will_be(4) .EQ. pgc_axis_supplied_herein) THEN
+              CALL EFCN_GET_CUSTOM_AXES(gcfcn, cx_base)
+           ENDIF
+
            DO 400 idim = 1, 4
 
               IF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) THEN
-                 CALL EF_GET_CUSTOM_AXIS(gcfcn, idim, dlo, dhi, del,
+                 CALL EFCN_GET_CUSTOM_AXIS(gcfcn, idim, dlo, dhi, del,
      .                unit, modulo)
                  CALL TM_MAKE_DYN_LINE(idim, dlo, dhi, del,
      .                unit, modulo, axes(idim), status)

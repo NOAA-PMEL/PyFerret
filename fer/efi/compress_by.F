@@ -1,5 +1,5 @@
 * 
-*  cmprsi_by.F
+*  compress_by.F
 * 
 *  Steve Hankin
 *  12/27/2000
@@ -42,7 +42,7 @@
 *
 
 
-      SUBROUTINE cmprsi_by_init(id)
+      SUBROUTINE compress_by_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -94,7 +94,7 @@
 * hi_ss               hi subscript for an axis
 *
 
-      SUBROUTINE cmprsi_by_result_limits(id)
+      SUBROUTINE compress_by_result_limits(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -134,7 +134,7 @@
 * 
 *  In this subroutine we compute the result
 * 
-      SUBROUTINE cmprsi_by_compute(id, arg_1, arg_2, result)
+      SUBROUTINE compress_by_compute(id, arg_1, arg_2, result)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'

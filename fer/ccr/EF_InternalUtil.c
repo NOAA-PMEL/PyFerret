@@ -66,7 +66,7 @@
  * add EOF_SPACE, EOF_STAT, EOF_TFUNC to the functions that are
  * statically linked 
 
-* V5.4 *acm* 10/01 add cmprsi_by to the statically linked fcns 
+* V5.4 *acm* 10/01 add compress* to the statically linked fcns 
 /* .................... Includes .................... */
  
 #include <unistd.h>		/* for convenience */
@@ -323,12 +323,25 @@ void FORTRAN(eof_tfunc_compute)(int *, float *, float *, float *,
                            float *, float *, float *, float *, 
                            float *, float *, float *, float *, float *);
 
-void FORTRAN(cmprsi_by_init)(int *);
-void FORTRAN(cmprsi_by_result_limits)(int *);
-void FORTRAN(cmprsi_by_compute)(int *, float *, float *, float *, 
-                           float *, float *, float *, float *, 
-                           float *, float *, float *, float *, float *);
+void FORTRAN(compress_by_init)(int *);
+void FORTRAN(compress_by_result_limits)(int *);
+void FORTRAN(compress_by_compute)(int *, float *, float *);
+						   
+void FORTRAN(compressi_init)(int *);
+void FORTRAN(compressi_result_limits)(int *);
+void FORTRAN(compressi_compute)(int *, float *, float *);
 
+void FORTRAN(compressj_init)(int *);
+void FORTRAN(compressj_result_limits)(int *);
+void FORTRAN(compressj_compute)(int *, float *, float *);
+
+void FORTRAN(compressk_init)(int *);
+void FORTRAN(compressk_result_limits)(int *);
+void FORTRAN(compressk_compute)(int *, float *, float *);
+
+void FORTRAN(compressl_init)(int *);
+void FORTRAN(compressl_result_limits)(int *);
+void FORTRAN(compressl_compute)(int *, float *, float *);
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -376,7 +389,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 21
+#define N_INTEF 25
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -402,7 +415,11 @@ struct {
    strcpy(I_EFnames[17].funcname, "eof_stat");
    strcpy(I_EFnames[18].funcname, "eof_tfunc");
    strcpy(I_EFnames[19].funcname, "eof_space");
-   strcpy(I_EFnames[20].funcname, "cmprsi_by");
+   strcpy(I_EFnames[20].funcname, "compress_by");
+   strcpy(I_EFnames[21].funcname, "compressi");
+   strcpy(I_EFnames[22].funcname, "compressj");
+   strcpy(I_EFnames[23].funcname, "compressk");
+   strcpy(I_EFnames[24].funcname, "compressl");
 
 
 /*    
@@ -2283,10 +2300,30 @@ else if ( !strcmp(name,"eof_tfunc_result_limits_") ) return (void *)FORTRAN(eof_
 else if ( !strcmp(name,"eof_tfunc_work_size_") ) return (void *)FORTRAN(eof_tfunc_work_size);
 else if ( !strcmp(name,"eof_tfunc_compute_") ) return (void *)FORTRAN(eof_tfunc_compute);
 
-/* cmprsi_by.F */
-else if ( !strcmp(name,"cmprsi_by_init_") ) return (void *)FORTRAN(cmprsi_by_init);
-else if ( !strcmp(name,"cmprsi_by_result_limits_") ) return (void *)FORTRAN(cmprsi_by_result_limits);
-else if ( !strcmp(name,"cmprsi_by_compute_") ) return (void *)FORTRAN(cmprsi_by_compute);
+/* compress_by.F */
+else if ( !strcmp(name,"compress_by_init_") ) return (void *)FORTRAN(compress_by_init);
+else if ( !strcmp(name,"compress_by_result_limits_") ) return (void *)FORTRAN(compress_by_result_limits);
+else if ( !strcmp(name,"compress_by_compute_") ) return (void *)FORTRAN(compress_by_compute);
+
+/* compressi.F */
+else if ( !strcmp(name,"compressi_init_") ) return (void *)FORTRAN(compressi_init);
+else if ( !strcmp(name,"compressi_result_limits_") ) return (void *)FORTRAN(compressi_result_limits);
+else if ( !strcmp(name,"compressi_compute_") ) return (void *)FORTRAN(compressi_compute);
+
+/* compressj.F */
+else if ( !strcmp(name,"compressj_init_") ) return (void *)FORTRAN(compressj_init);
+else if ( !strcmp(name,"compressj_result_limits_") ) return (void *)FORTRAN(compressj_result_limits);
+else if ( !strcmp(name,"compressj_compute_") ) return (void *)FORTRAN(compressj_compute);
+
+/* compressk.F */
+else if ( !strcmp(name,"compressk_init_") ) return (void *)FORTRAN(compressk_init);
+else if ( !strcmp(name,"compressk_result_limits_") ) return (void *)FORTRAN(compressk_result_limits);
+else if ( !strcmp(name,"compressk_compute_") ) return (void *)FORTRAN(compressk_compute);
+
+/* compressl.F */
+else if ( !strcmp(name,"compressl_init_") ) return (void *)FORTRAN(compressl_init);
+else if ( !strcmp(name,"compressl_result_limits_") ) return (void *)FORTRAN(compressl_result_limits);
+else if ( !strcmp(name,"compressl_compute_") ) return (void *)FORTRAN(compressl_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

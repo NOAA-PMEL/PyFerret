@@ -49,7 +49,8 @@
 *                 points as modulo too.
 *
 *   12/7/2000  Add error checking on gridding parameters
-*
+*    5/2001    Let F(x,z) be a function of Y and/or T
+
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -103,8 +104,8 @@
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 7)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .      NORMAL, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
+     .       IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 6)
@@ -114,22 +115,22 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'XPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .'x-coordinates of scattered input triples, may be fcn of time')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+     .'x-coordinates of scattered input triples')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .'z-coordinates of scattered input triples, may be fcn of time')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+     .'z-coordinates of scattered input triples')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       WRITE (fcn_desc, 20) 
    20 FORMAT ('F(X,Z) 3rd component of scattered input triples',
-     .  ' may be fcn of time')
+     .  ' may be fcn of Y and/or time')
       CALL ef_set_arg_desc(id, arg, fcn_desc)
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      CALL ef_set_axis_influence(id, arg, NO, YES, NO, YES)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'XAXPTS')
@@ -286,7 +287,7 @@
 
       INTEGER i, j, k, l, m
       INTEGER i1, i2, i4
-      INTEGER ii3, jj3, kk3
+      INTEGER i3, j3, k3, l3
 
       INTEGER nx, nz, nxpts, nzpts, nscat
       INTEGER i1n, i2n
@@ -409,20 +410,23 @@ C  Get coordinates of output axes.
 
 *  Compute result at each time, and over range of y.
 
+
+      i3 = arg_lo_ss(X_AXIS,ARG3)
+      k3 = arg_lo_ss(Z_AXIS,ARG3)
+
+      l3 = arg_lo_ss(T_AXIS,ARG3)
       DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         j3 = arg_lo_ss(Y_AXIS,ARG3)
          DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
 *  If there is a missing value routine zgrid does not grid the data in a zone 
 *  around that point, even if there are other nearby good data points.
 *  Remove missing/bad data from the input (x,y,z) points.  This resets nscat.
 
-         ii3 = arg_lo_ss(X_AXIS,ARG3)
-         jj3 = arg_lo_ss(Y_AXIS,ARG3)
-         kk3 = arg_lo_ss(Z_AXIS,ARG3)
-
          nscat = nxpts
-         CALL nobad (arg_1, arg_2, arg_3(ii3,jj3,kk3,l), 
-     .         bad_flag(ARG3), nscat, xscat, zscat, fscat)
+
+         CALL nobadxz (arg_1, arg_2, arg_3, bad_flag(ARG3), 
+     .                 nscat, i3, j3, k3, l3, xscat, zscat, fscat)
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered points.
@@ -478,7 +482,9 @@ C  Get coordinates of output axes.
             iz = iz + 1
   410    CONTINUE
 
+         j3 = j3 + arg_incr(Y_AXIS,ARG3)
  500  CONTINUE
+      l3 = l3 + arg_incr(T_AXIS,ARG3)
  510  CONTINUE
 
       RETURN
@@ -504,8 +510,8 @@ C  Get coordinates of output axes.
 
    20 FORMAT('Input scattered x, z have different # of points', 2i8)
 
-   30 FORMAT ('Scattered points must be indexed I,J,or L (May be,
-     .  fcns of time). Use RESHAPE to list them in I,J,or L.')
+   30 FORMAT ('Scattered points must be indexed I,J,or L.  Use RESHAPE',
+     .        ' to list them in I,J,or L.')
 
    40 FORMAT ('Gridding parameter CAY must be nonnegative Argument 6')
 
@@ -519,6 +525,57 @@ C  Get coordinates of output axes.
 
       RETURN 
       END
+
+
+      SUBROUTINE nobadxz (xin, zin, fin, badz, nscat, 
+     .                    i3, j3, k3, l3, xscat, zscat, fscat)
+
+* ACM 11/00 change so not exact comparison: wasnt catching all bad values.
+* ACM  5/01 properly deal with f-scattered points which may be fcns of y and t
+
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
+
+      REAL xin(*), zin(*), badz
+      REAL xscat(*), zscat(*), fscat(*)
+
+      REAL fin(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .     mem3lot:mem3hit)
+
+      INTEGER nscat, ngood, n, i3, j3, k3, l3
+      REAL badcompare
+
+      ngood = 0
+      badcompare = abs(badz) - 1.
+
+      IF (i3 .EQ. ef_unspecified_int4 ) THEN
+
+         DO 100 n = 1, nscat
+            IF (abs(fin(i3, j3, n, l3)) .LT. badcompare) THEN
+               ngood = ngood + 1
+               xscat(ngood) = xin(n)
+               zscat(ngood) = zin(n)
+               fscat(ngood) = fin(i3, j3, n, l3)
+            ENDIF
+  100    CONTINUE
+
+      ELSE
+
+         DO 200 n = 1, nscat
+            IF (abs(fin(n, j3, k3, l3)) .LT. badcompare) THEN
+               ngood = ngood + 1
+               xscat(ngood) = xin(n)
+               zscat(ngood) = zin(n)
+               fscat(ngood) = fin(n, j3, k3, l3)
+            ENDIF
+  200    CONTINUE
+
+      ENDIF
+      nscat = ngood
+
+      RETURN
+      END
+
 
 
 C**

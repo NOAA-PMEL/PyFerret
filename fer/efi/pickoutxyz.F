@@ -1,4 +1,6 @@
-      SUBROUTINE pickoutxyz (alon, alat, fcnpts, n, xx, yy, val)
+
+
+      SUBROUTINE pickoutxyz (alon, alat, n, xx, yy)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,13 +41,12 @@
 *  Pick out nth item from alon and alat, which are really 4-dimensioned arrays
 *  with normal axes on three of the four axes.
 
-      REAL alon(*), alat(*), fcnpts(*)
-      REAL xx, yy, val
+      REAL alon(*), alat(*)
+      REAL xx, yy
       INTEGER n
 
       xx = alon(n)
       yy = alat(n)
-      val = fcnpts(n)
 
       RETURN
       END

@@ -1,4 +1,4 @@
-      subroutine day_of_year(amo, ada, ayr)
+      subroutine day_of_year(amo, ada, ayr, status, err_msg)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -40,17 +40,33 @@ C  Return sequential day in variable ada.
       REAL daymo(12)           ! Number of days in each month
       DATA daymo/31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/
       REAL amo, ada, ayr
-      INTEGER iyr, imo, i
+      INTEGER iyr, imo, i, status
+      CHARACTER*(*) err_msg
 
+      status = 0
       iyr = ayr
       IF (MOD(iyr, 4) .EQ. 0) THEN
         daymo(2) = 29
       ENDIF
 
       imo = amo
+      IF (imo .LT. 1  .OR.  imo .GT. 12) THEN
+         WRITE (err_msg,*) 'Month less than 1 or greater than 12', imo
+         GO TO 1000
+      ENDIF
+
+      IF (ada .LT. 0  .OR. ada .GT. daymo(imo)) THEN
+	 WRITE (err_msg,10) ada, imo
+   10	 FORMAT ('Day ', F4.0, ' out of range for month', I3)
+         GO TO 1000
+      ENDIF
+
       DO 100 i = 1, imo-1
        ada = ada + daymo(i)
   100 CONTINUE
 
+      RETURN
+
+1000  status = 1
       RETURN
       END

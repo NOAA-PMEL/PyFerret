@@ -49,6 +49,8 @@
 *
 *   12/7/2000  Add error checking on gridding parameters
 *
+*    5/2001    Let F(x,z) be a function of Y and/or T
+*
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of z and/or time.
 * Output is gridded data in x, y, z, and time.  Calls routine "gausswt2".
@@ -111,7 +113,7 @@
 
       CALL ef_set_num_args(id, 9)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .      NORMAL, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+     .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
       CALL ef_set_num_work_arrays(id, 4)
@@ -122,19 +124,21 @@
       CALL ef_set_arg_name(id, arg, 'XPTS')
       CALL ef_set_arg_desc(id, arg, 
      .     'X coordinates of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZPTS')
       CALL ef_set_arg_desc(id, arg, 
      .     'Z coordinates of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
-      CALL ef_set_arg_desc(id, arg, 
-     .     'F(X,Z)   3rd component of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      WRITE (fcn_desc, 20) 
+   20 FORMAT ('F(X,Z) 3rd component of scattered input triples',
+     .  ' may be fcn of Y and/or time')
+      CALL ef_set_arg_desc(id, arg, fcn_desc)
+      CALL ef_set_axis_influence(id, arg, NO, YES, NO, YES)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'XAXPTS')
@@ -306,7 +310,7 @@
       REAL xsc, zsc, tsc 
       REAL xcutoff, zcutoff
       REAL tt, t1, tf
-      INTEGER iwflag, ii3, jj3, kk3, ll3
+      INTEGER iwflag, i3, j3, k3, l3
 
       INTEGER nx, nz, nxaxis, nzaxis
       REAL x1, z1, xf, zf
@@ -348,7 +352,7 @@ C  variables for checking axis characteristics (modulo axes)
 
       nxpts = 0
       nzpts = 0
-      DO 100 m = X_AXIS, Z_AXIS
+      DO 100 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
             i1n = arg_hi_ss(m,ARG1)
@@ -356,7 +360,7 @@ C  variables for checking axis characteristics (modulo axes)
          ENDIF
  100  CONTINUE
 
-      DO 110 m = X_AXIS, Z_AXIS
+      DO 110 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG2)
             i2n = arg_hi_ss(m,ARG2)
@@ -447,42 +451,44 @@ C  Get coordinates of output axes.
       nxaxis = arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4) + 1
       nzaxis = arg_hi_ss(Z_AXIS,ARG5) - arg_lo_ss(Z_AXIS,ARG5) + 1
 
+*  Compute result at each time, and each y
+
+      i3 = arg_lo_ss(X_AXIS,ARG3)
+      k3 = arg_lo_ss(Z_AXIS,ARG3)
+
+      l3 = arg_lo_ss(T_AXIS,ARG3)
+      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+       j3 = arg_lo_ss(Y_AXIS,ARG3)
+       DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
 *  Initialize sums of values and weights.
 
-      DO j = 1, nzaxis
-         DO i = 1, nxaxis
-            grid(i,j,1,1) = 0.
+         DO k = 1, nzaxis
+            DO i = 1, nxaxis
+               grid(i,k,1,1) = 0.
+            ENDDO
          ENDDO
-      ENDDO
 
-      DO j = 1, nzaxis
-         DO i = 1, nxaxis
-            wate(i,j,1,1) = 0.
+         DO k = 1, nzaxis
+            DO i = 1, nxaxis
+               wate(i,k,1,1) = 0.
+            ENDDO
          ENDDO
-      ENDDO
-
-*  Compute result at each time, and each depth.
-
-
-      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
 *  Loop over x and z, compute the weighted sums for gaussian-weighted mapping
 *  onto the grid.  Lat and longitude may be on the X,Y or Z axis of ARG1 and
 *  ARG2: send them to a subroutine which collapses the extra dimensions so the
 *  data value can be found.
 
-
-         ii3 = arg_lo_ss(X_AXIS,ARG3)
-         jj3 = arg_lo_ss(Y_AXIS,ARG3)
-         kk3 = arg_lo_ss(Z_AXIS,ARG3)
-         ll3 = arg_lo_ss(T_AXIS,ARG3) - 1 + l
-         if (arg_lo_ss(T_AXIS,ARG3) .eq. ef_unspecified_int4) 
-     .       ll3 = ef_unspecified_int4
          DO 300 n = 1, nscat
 
-            CALL pickoutxyz (arg_1, arg_2, arg_3(ii3,jj3,kk3,ll3), 
-     .                    n, xx, zz, val)
+            CALL pickoutxyz (arg_1, arg_2, n, xx, zz)
+
+            IF (arg_lo_ss(X_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
+               val = arg_3(n,j3,k3,l3)
+            ELSE IF (arg_lo_ss(Z_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
+               val = arg_3(i3,j3,n,l3)
+            ENDIF
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
@@ -562,7 +568,9 @@ C                     other end, and use in the gridding computation.
  400        CONTINUE
  410     CONTINUE
 
+         j3 = j3 + arg_incr(Y_AXIS,ARG3)
  500  CONTINUE
+      l3 = l3 + arg_incr(T_AXIS,ARG3)
  510  CONTINUE
 
       RETURN
@@ -570,11 +578,7 @@ C                     other end, and use in the gridding computation.
 
 900   CONTINUE
 
-      IF (nxpts .NE. nzpts) THEN
-         WRITE (errtxt,20) nxpts, nzpts
-      ELSE IF (nxpts .EQ. 0) THEN
-         WRITE (errtxt, 30) 
-      ENDIF
+      IF (nxpts .NE. nzpts) WRITE (errtxt,20) nxpts, nzpts
       GOTO 999 
 
  910  CONTINUE
@@ -598,9 +602,6 @@ C                     other end, and use in the gridding computation.
 
 
    20 FORMAT ('Input scattered x, z have different # of points', 2i8)
-
-   30 FORMAT ('Scattered points must be indexed I,J,or L (May be,
-     .  fcns of time). Use RESHAPE to list them in I,J,or L.')
 
    40 FORMAT (a1,
      .    ' Mapping scale parameter must be positive. Argument', I2)

@@ -49,6 +49,8 @@
 *
 *   12/7/2000  Add error checking on gridding parameters
 *
+*    5/2001    Let F(y,z) be a function of X and/or T
+*
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of time.  
 * Output is gridded data in x, y and time.  Calls routine "gausswt2".
@@ -103,12 +105,12 @@
 
       CHARACTER*126 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Use Gaussian weighting to grid scattered data to an ',
-     .        'XY grid.')
+   10 FORMAT ('Use Gaussian weighting to grid scattered data to a ',
+     .        'YZ grid.')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 9)
-      CALL ef_set_axis_inheritance(id, NORMAL, IMPLIED_BY_ARGS, 
+      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
      .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
@@ -120,19 +122,19 @@
       CALL ef_set_arg_name(id, arg, 'YPTS')
       CALL ef_set_arg_desc(id, arg, 
      .     'Y coordinates of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'ZPTS')
       CALL ef_set_arg_desc(id, arg, 
      .     'Z coordinates of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_arg_desc(id, arg, 
      .     'F(Y,Z)   3rd component of scattered input triples')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
+      CALL ef_set_axis_influence(id, arg, YES, NO, NO, YES)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
@@ -300,7 +302,7 @@
       INTEGER nypts, nzpts, nscat
       INTEGER ny, nz, nyaxis, nzaxis
       INTEGER nysize, nzsize
-      INTEGER ii3, jj3, kk3, ll3
+      INTEGER i3, j3, k3, l3
       INTEGER i1, i1n, i2, i2n, l3
 
       REAL y1, z1, yf, zf, t1, tf
@@ -349,7 +351,7 @@ C  variables for checking axis characteristics (modulo axes)
       nypts = 0
       nzpts = 0
 
-      DO 100 m = X_AXIS, Z_AXIS
+      DO 100 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
             i1n = arg_hi_ss(m,ARG1)
@@ -357,7 +359,7 @@ C  variables for checking axis characteristics (modulo axes)
          ENDIF
  100  CONTINUE
 
-      DO 110 m = X_AXIS, Z_AXIS
+      DO 110 m = X_AXIS, T_AXIS
          IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
             i2 = arg_lo_ss(m,ARG2)
             i2n = arg_hi_ss(m,ARG2)
@@ -384,7 +386,7 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check that yax is a Y axis and zax a Z axis
 
-      IF (j4 .EQ. ef_unspecified_int4) then
+	      IF (j4 .EQ. ef_unspecified_int4) then
          WRITE (errtxt, *) 'fourth argument must be a Y axis'
          GO TO 999
       ENDIF
@@ -447,42 +449,44 @@ C  Get coordinates of output axes.
       nyaxis = arg_hi_ss(Y_AXIS,ARG4) - arg_lo_ss(Y_AXIS,ARG4) + 1
       nzaxis = arg_hi_ss(Z_AXIS,ARG5) - arg_lo_ss(Z_AXIS,ARG5) + 1
 
+
+*  Compute result at each time, and each x.
+
+      j3 = arg_lo_ss(Y_AXIS,ARG3)
+      k3 = arg_lo_ss(Z_AXIS,ARG3)
+      l3 = arg_lo_ss(T_AXIS,ARG3)
+      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+       i3 = arg_lo_ss(X_AXIS,ARG3)
+       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+
 *  Initialize sums of values and weights.
 
-      DO k = 1, nzaxis
-         DO j = 1, nyaxis
-            grid(j,k,1,1) = 0.
+         DO k = 1, nzaxis
+           DO j = 1, nyaxis
+               grid(j,k,1,1) = 0.
+            ENDDO
          ENDDO
-      ENDDO
 
-      DO k = 1, nzaxis
-         DO j = 1, nyaxis
-            wate(j,k,1,1) = 0.
+         DO k = 1, nzaxis
+            DO j = 1, nyaxis
+               wate(j,k,1,1) = 0.
+            ENDDO
          ENDDO
-      ENDDO
-
-*  Compute result at each time, and each depth.
-
-      l3 = arg_lo_ss(T_AXIS,ARG3)
-
-      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 *  Loop over x and y, compute the weighted sums for gaussian-weighted mapping
 *  onto the grid.  Lat and longitude may be on the X,Y or Z axis of ARG1 and
 *  ARG2, sending them to a subroutine collapses the extra dimensions so the
 *  value can be found.
 
-         ii3 = arg_lo_ss(X_AXIS,ARG3)
-         jj3 = arg_lo_ss(Y_AXIS,ARG3)
-         kk3 = arg_lo_ss(Z_AXIS,ARG3)
-         ll3 = arg_lo_ss(T_AXIS,ARG3) - 1 + l
-         if (arg_lo_ss(T_AXIS,ARG3) .eq. ef_unspecified_int4) 
-     .                  ll3 = ef_unspecified_int4
          DO 300 n = 1, nscat
 
-            CALL pickoutxyz (arg_1, arg_2, arg_3(ii3,jj3,kk3,ll3), 
-     .                    n, yy, zz, val)
+            CALL pickoutxyz (arg_1, arg_2, n, yy, zz)
+
+            IF (arg_lo_ss(Y_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
+               val = arg_3(i3,n,k3,l3)
+            ELSE IF (arg_lo_ss(Z_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
+               val = arg_3(i3,j3,n,l3)
+            ENDIF
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
@@ -559,6 +563,8 @@ C                     other end, and use in the gridding computation.
  400        CONTINUE
  410     CONTINUE
 
+      i3 = i3 + arg_incr(X_AXIS,ARG3)
+
  500  CONTINUE
       l3 = l3 + arg_incr(T_AXIS,ARG3)
  510  CONTINUE
@@ -568,11 +574,7 @@ C                     other end, and use in the gridding computation.
 
 900   CONTINUE
 
-      IF (nypts .NE. nzpts) THEN
-         WRITE (errtxt,20) nypts, nzpts
-      ELSE IF (nypts .EQ. 0) THEN
-         WRITE (errtxt, 30) 
-      ENDIF
+      IF (nypts .NE. nzpts) WRITE (errtxt,20) nypts, nzpts
       GOTO 999 
 
  910  CONTINUE
@@ -596,9 +598,6 @@ C                     other end, and use in the gridding computation.
 
 
    20 FORMAT ('Input scattered y, z have different # of points', 2i8)
-
-   30 FORMAT ('Scattered points must be indexed I,J,or L (May be,
-     .  fcns of time). Use RESHAPE to list them in I,J,or L.')
 
    40 FORMAT (a1,
      .    ' Mapping scale parameter must be positive. Argument', I2)

@@ -53,7 +53,7 @@ C
 *
 *
 *	Modified *jd* J Davison JISAO/PMEL/TMAP 3.22.89
-*	To exlude Denbo line dashing in favor of GKS line bundles 
+*	To exclude Denbo line dashing in favor of GKS line bundles 
 *	Mod *jd* 8.3.92 to add interrupts 
 *	Mod *sh* 11/97 to add PLOTPOL command
 
@@ -108,7 +108,7 @@ C
 	REAL MAXVEL
 
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
-     .		nvertex, fill_ndx			! 11/97
+     .		nvertex, fill_ndx
 
 	INTEGER GET_NDX
 
@@ -124,11 +124,13 @@ C
 *************************************
 
 	IPV=0
-	nl = lnum	! 11/97
+	nl = lnum	
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
-	IF(JTYPE.NE.1)RETURN
+	IF(JTYPE.NE.1) RETURN
+
+
 1000	IBASE=0
 	IY=NXS/2
 	CS=COS(VANG*.01745329252)

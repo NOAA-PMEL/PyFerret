@@ -10,7 +10,7 @@
 # Macro Definitions
 #
 
-DIRS = examples sort v5d
+DIRS = examples autocor convolve eof sort v5d zaxr
 
 #
 # Targets

@@ -29,4 +29,11 @@ GO err551_2dave.jnl
 GO bn_reset
 GO err551_return_message.jnl
 
+!  file/form=stream didnt see file in another directory
+GO bn_reset
+GO err551_streamread_directory.jnl
+
+! GXY=var  regridding syntax, when the variable hasnt been loaded
+GO bn_reset
+GO err551_regrid_undef_grid.jnl
 

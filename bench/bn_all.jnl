@@ -75,6 +75,10 @@ SET MODE VERIFY
 !
 ! V5.50:
 ! 11/02 *sh*-- Add bn_subspan_modulo.jnl
+!
+! V5.52
+!  5/03 *acm* add bn_multi_line_labels.jnl, bn552_bug_fixes.jnl,
+!             bn_set_var_scale_off.jnl, bn_longvarnames.jnl, bn_shakey.jnl
 
 GO bn_reset
 GO bn_syntax
@@ -343,6 +347,14 @@ GO bn552_bug_fixes
 
 GO bn_reset
 GO bn_set_var_scale_off.jnl
+
+GO bn_reset
+GO bn_longvarnames.jnl
+
+GO bn_reset
+GO bn_shakey.jnl
+
+
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

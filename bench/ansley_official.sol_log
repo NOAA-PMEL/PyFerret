@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     59175884 Apr 24 14:13 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     59437240 May 15 09:42 /home/ja8/ansley//FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: new qualifiers SET VAR/OFFSET/SCALE  and new RETURN=nc_scale,nc_off,user_scale,user_off
+Note: shakey improvements; var names length incr to 128, read binary in subdir, fixes to regrid [gxy=uvar]
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Thu Apr 24 14:46:14 PDT 2003
+Beginning at Thu May 15 09:50:27 PDT 2003
  	NOAA/PMEL TMAP
  	FERRET v5.52  
- 	Solaris 5.6 - 04/24/03
- 	24-Apr-03 14:46     
+ 	Solaris 5.6 - 05/15/03
+ 	15-May-03 09:50     
 
 yes? !bn500_all_shell
 yes? 
@@ -10116,8 +10116,8 @@ PPL$YPIXEL = "344"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.52"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "24-Apr-03"
-SESSION_TIME = "14:46"
+SESSION_DATE = "15-May-03"
+SESSION_TIME = "09:50"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10135,8 +10135,8 @@ PPL$YPIXEL = "344"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.52"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "24-Apr-03"
-SESSION_TIME = "14:46"
+SESSION_DATE = "15-May-03"
+SESSION_TIME = "09:50"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10144,8 +10144,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "24-Apr-03"
-SESSION_TIME = "14:46"
+SESSION_DATE = "15-May-03"
+SESSION_TIME = "09:50"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10155,13 +10155,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "24-Apr-03"
-SESSION_TIME = "14:46"
+SESSION_DATE = "15-May-03"
+SESSION_TIME = "09:50"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "24-Apr-03"
-SESSION_TIME = "14:46"
+SESSION_DATE = "15-May-03"
+SESSION_TIME = "09:50"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10195,7 +10195,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.52"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Apr 24 2003 14:47:54 "
+LAB3 = "May 15 2003 09:51:43 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10296,8 +10296,8 @@ PPL$YPIXEL = "344"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.52"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "24-Apr-03"
-SESSION_TIME = "14:46"
+SESSION_DATE = "15-May-03"
+SESSION_TIME = "09:50"
  
  
 GO bn_reset
@@ -18298,7 +18298,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       17825 Apr 24 14:49 bench.mgm
+-rw-rw-r--   1 ansley   tmap       17809 May 15 09:52 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18317,7 +18317,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      319551 Apr 24 14:49 bench.mgm
+-rw-rw-r--   1 ansley   tmap      319265 May 15 09:53 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26466,7 +26466,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.52   24-Apr-03" ;
+		:history = "FERRET V5.52   15-May-03" ;
 data:
 
  T5 = 50757969 ;
@@ -26490,7 +26490,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.52   24-Apr-03" ;
+		:history = "FERRET V5.52   15-May-03" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26642,7 +26642,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Apr 24 14:51:26 PDT 2003
+Thu May 15 09:54:20 PDT 2003
  
 GO bn_reset
 cancel mode verify
@@ -34932,7 +34932,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr 24 14:52 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 May 15 09:55 testa.v5d
  
 can region
 use coads_climatology
@@ -34944,7 +34944,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr 24 14:52 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 May 15 09:55 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35012,7 +35012,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.52   24-Apr-03" ;
+		:history = "FERRET V5.52   15-May-03" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35075,7 +35075,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.52   24-Apr-03" ;
+		:history = "FERRET V5.52   15-May-03" ;
 data:
 
  GFP3 = "" ;
@@ -35295,7 +35295,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.52   24-Apr-03" ;
+		:history = "FERRET V5.52   15-May-03" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -41222,6 +41222,180 @@ dataset title for 4D string data
  
 SET MODE/LAST IGNORE_ERROR
  
+!  file/form=stream didnt see file in another directory
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err551_streamread_directory.jnl
+! Bug: file/form=stream doesnt see file in another directory
+ 
+sp rm -f subdir/a.dat
+ 
+def ax/x=1:1/np=1 xax
+Replacing definition of axis XAX
+def grid/x=xax g
+list/clobber/form=stream/file="a.dat" 1
+ LISTing to file a.dat
+file/form=stream/grid=g/var=a "a.dat"
+list a
+             VARIABLE : A
+             FILENAME : a.dat
+             X        : 1
+          1.00000
+ 
+can dat/all
+sp mkdir -p subdir
+sp mv a.dat subdir
+file/form=stream/grid=g/var=a "subdir/a.dat"
+list a
+             VARIABLE : A
+             FILENAME : a.dat
+             FILEPATH : subdir/
+             X        : 1
+          1.00000
+ 
+! GXY=var  regridding syntax, when the variable hasnt been loaded
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err551_regrid_undef_grid.jnl
+! err551_regrid_undef_grid.jnl
+! 5/03 *acm* based on bn_regrid_to_user; more testing of multi-axis GXY=var
+!            syntax, when the destination grid is not yet defined
+ 
+! test various regridding combos that involve user-defined variables
+! for the target grids
+ 
+ 
+set mode ignore_errors
+ 
+use coads_climatology
+use levitus_climatology
+ 
+! define test objects
+let a = sst[d=coads_climatology] + 1
+let b = sst + 1		! data set unspecified
+DEFINE AXIS/Y=20s:20n:.5/units=degrees yax
+Replacing definition of axis YAX
+DEFINE GRID/like=sst[d=coads_climatology]/y=yax gg
+ 
+! reference data
+list/x=158e:161e/y=6s:4s temp[d=2,k=1]
+             VARIABLE : TEMPERATURE (DEG C)
+             FILENAME : levitus_climatology.cdf
+             SUBSET   : 3 by 2 points (LONGITUDE-LATITUDE)
+             DEPTH (m): 0
+              158.5E   159.5E   160.5E  
+              139      140      141
+ 4.5S / 86:  29.5110  29.4430  29.3800
+ 5.5S / 85:  29.5890  29.5250  29.4570
+ 
+! basic regrid (implicit grid -- sst and temp geometries are mismatched)
+list/x=160e/y=5s temp[d=2,k=1,gxy=a[d=1]]
+             VARIABLE : TEMPERATURE (DEG C)
+                        regrid: 2 deg on X, 2 deg on Y
+             FILENAME : levitus_climatology.cdf
+             LONGITUDE: 159E
+             LATITUDE : 5S
+             DEPTH (m): 0
+          29.5170
+show grid
+ Default grid for DEFINE VARIABLE is ABSTRACT
+ Last successful data access was on grid (G022)
+    GRID (G022)
+ name       axis              # pts   start                end
+ COADSX    LONGITUDE          180mr   21E                  19E(379)
+ COADSY    LATITUDE            90 r   89S                  89N
+ ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
+ normal    T
+ 
+can data/all
+can var/all
+can grid
+ 
+! multiple axis syntax: GXY=gg
+define axis/x=1:6:1 x1
+define axis/y=1:4:1 y1
+define axis/z=1:3:1 z1
+Replacing definition of axis Z1
+define axis/x=1:6:2 x2
+define axis/y=1:4:2 y2
+define axis/z=1:3:2 z2
+let a1 = x[gx=x1]+y[gy=y1]+z[gz=z1]
+let a2 = x[gx=x2]+y[gy=y2]+z[gz=z2]
+list a1
+             VARIABLE : X[GX=X1]+Y[GY=Y1]+Z[GZ=Z1]
+             SUBSET   : 6 by 4 by 3 points (X-Y-Z)
+              1        2        3        4        5        6     
+              1        2        3        4        5        6
+ ---- K:1 Z:   1
+ 1   / 1:   3.0000   4.0000   5.0000   6.0000   7.0000   8.0000
+ 2   / 2:   4.0000   5.0000   6.0000   7.0000   8.0000   9.0000
+ 3   / 3:   5.0000   6.0000   7.0000   8.0000   9.0000  10.0000
+ 4   / 4:   6.0000   7.0000   8.0000   9.0000  10.0000  11.0000
+ ---- K:2 Z:   2
+ 1   / 1:   4.0000   5.0000   6.0000   7.0000   8.0000   9.0000
+ 2   / 2:   5.0000   6.0000   7.0000   8.0000   9.0000  10.0000
+ 3   / 3:   6.0000   7.0000   8.0000   9.0000  10.0000  11.0000
+ 4   / 4:   7.0000   8.0000   9.0000  10.0000  11.0000  12.0000
+ ---- K:3 Z:   3
+ 1   / 1:   5.0000   6.0000   7.0000   8.0000   9.0000  10.0000
+ 2   / 2:   6.0000   7.0000   8.0000   9.0000  10.0000  11.0000
+ 3   / 3:   7.0000   8.0000   9.0000  10.0000  11.0000  12.0000
+ 4   / 4:   8.0000   9.0000  10.0000  11.0000  12.0000  13.0000
+list a1[gzxy=a2]
+             VARIABLE : X[GX=X1]+Y[GY=Y1]+Z[GZ=Z1]
+                        regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
+             SUBSET   : 4 by 3 by 2 points (X-Y-Z)
+              1        3        5        7     
+              1        2        3        4
+ ---- K:1 Z:   1
+ 1   / 1:   3.0000   5.0000   7.0000     ....
+ 3   / 2:   5.0000   7.0000   9.0000     ....
+ 5   / 3:     ....     ....     ....     ....
+ ---- K:2 Z:   3
+ 1   / 1:   5.0000   7.0000   9.0000     ....
+ 3   / 2:   7.0000   9.0000  11.0000     ....
+ 5   / 3:     ....     ....     ....     ....
+ 
+can data/all
+can var/all
+ 
+! Convoluted definitions, LIST needs data on a grid not yet loaded.
+use clim_airt_lev
+def axis/t=16-JUL-1966:16-MAY-1967:1/unit=month hope_month
+ *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+can dat climatological_axes
+ 
+let dzdt_month = airt[gt=hope_month]
+let dzdt_clim = airt[gt=month_reg@mod]
+let dzdt_anom = dzdt_month - dzdt_clim[gt=dzdt_month@asn]
+set region/x=100w/y=0
+list dzdt_anom
+             VARIABLE : DZDT_MONTH - DZDT_CLIM[GT=DZDT_MONTH@ASN]
+             FILENAME : clim_airt_lev.cdf
+             SUBSET   : 11 points (TIME)
+             LONGITUDE: 100.5W
+             LATITUDE : 0.166S
+                     100.5W  
+                     130
+ 16-JUL-1966 /  1: -1.42150
+ 15-AUG-1966 /  2: -2.97197
+ 14-SEP-1966 /  3: -4.50334
+ 15-OCT-1966 /  4: -3.88180
+ 14-NOV-1966 /  5: -2.57982
+ 15-DEC-1966 /  6: -1.07969
+ 14-JAN-1967 /  7:  1.42389
+ 14-FEB-1967 /  8:  2.96229
+ 16-MAR-1967 /  9:  4.50321
+ 15-APR-1967 / 10:  3.83807
+ 16-MAY-1967 / 11:  2.60887
+ 
  
  
 GO bn_reset
@@ -41274,12 +41448,255 @@ SET VAR/SCALE=10 x2
  
 SET MODE/LAST IGNORE_ERROR
  
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_longvarnames.jnl
+ ! variable names up to 128 characters long
+ 
+LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678 = {12,14,20,28,22,10}
+LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+             VARIABLE : {12,14,20,28,22,10}
+             SUBSET   : 6 points (X)
+ 1   / 1:  12.0000
+ 2   / 2:  14.0000
+ 3   / 3:  20.0000
+ 4   / 4:  28.0000
+ 5   / 5:  22.0000
+ 6   / 6:  10.0000
+ 
+! With a transformation, which makes the whole specification longer
+ 
+list a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678,\
+  A234567890B234567890C234567890D234567890E234567890F234567890G234567890H234567890I234567890D234567890J234567890K234567890L2345678[i=@SHF:1]
+             X: 0.5 to 6.5
+ Column  1: A234567890B234567890C234567890D234567890E234567890F234567890G234567890H234567890I234567890D234567890J234567890K234567890L234567* is {12,14,20,28,22,10}
+ Column  2: A234567890B234567890C234567890D234567890E234567890F234567890G234567890H234567890I234567890D234567890J234567890K234567890L234567* is {12,14,20,28,22,10} (shifted by 1 pts on X)
+        A2345678 A2345678 
+1   / 1:  12.0000  14.0000
+2   / 2:  14.0000  20.0000
+3   / 3:  20.0000  28.0000
+4   / 4:  28.0000  22.0000
+5   / 5:  22.0000  10.0000
+6   / 6:  10.0000     ....
+ 
+! SET GRID using long variable name
+SET GRID a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+SHOW GRID
+ Default grid for DEFINE VARIABLE is XABSTRACT
+ Last successful data access was on grid XABSTRACT
+    GRID XABSTRACT
+ name       axis              # pts   start                end
+ ABSTRACT  X              9999999 r   1                     9999999
+ normal    Y
+ normal    Z
+ normal    T
+ 
+! save to a file a variable that is 128 long
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678 = {12,14,20,28,22,10}
+SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+ LISTing to file longvname.nc
+ 
+! read from the file
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+USE longvname
+LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+             VARIABLE : {12,14,20,28,22,10}
+             FILENAME : longvname.nc
+             SUBSET   : 6 points (X)
+ 1   / 1:  121.000
+ 2   / 2:  141.000
+ 3   / 3:  201.000
+ 4   / 4:  281.000
+ 5   / 5:  221.000
+ 6   / 6:  101.000
+ 
+! save a 4-D variable
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678 = I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
+SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+ LISTing to file longvname.nc
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+USE longvname.nc
+lIST/I=1/J=2 a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+             VARIABLE : I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
+             FILENAME : longvname.nc
+             SUBSET   : 3 by 3 points (Z-T)
+             X        : 1
+             Y        : 2
+              1        2        3     
+              1        2        3
+ 1   / 1:  31.0000  51.0000  71.0000
+ 2   / 2:  41.0000  61.0000  81.0000
+ 3   / 3:  51.0000  71.0000  91.0000
+LIST/K=2/L=3 a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
+             VARIABLE : I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
+             FILENAME : longvname.nc
+             SUBSET   : 5 by 4 points (X-Y)
+             Z        : 2
+             T        : 3
+              1        2        3        4        5     
+              1        2        3        4        5
+ 1   / 1:   51.000   71.000   91.000  111.000  131.000
+ 2   / 2:   71.000  111.000  151.000  191.000  231.000
+ 3   / 3:   91.000  151.000  211.000  271.000  331.000
+ 4   / 4:  111.000  191.000  271.000  351.000  431.000
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_shakey.jnl
+! Changes to shade key:
+! - Default size is a little bigger
+! - To put key labels on the left or bottom of the key, multiply the size by -1
+! - Previously ALL OF kx_lo, kx_hi,ky_lo, ky_hi had to be set, or none of them
+!   were applied. With changes as of 3/3/03 can set any of these independently.
+!   If, say only x1 and y1 are set, the other corners are set, keeping the default
+!   width and/or height.
+ 
+use ocean_atlas_temp
+set region/x=130:290/y=-45:45
+ 
+shade/title="shift shakey left and up"/set temp[l=1]
+ 
+let x1 = `($ppl$xorg)+($ppl$xlen)`
+ !-> DEFINE VARIABLE x1 = 9.94
+let y1 = `($ppl$yorg)+.4`
+ !-> DEFINE VARIABLE y1 = 1.8
+ 
+ppl shakey ,,.12,,,,`x1`,,`y1`
+ !-> ppl shakey ,,.12,,,,9.94,,1.8
+ppl shade
+ppl list shakey
+
+         DO KEY  ORIENT  LAB SIZE  LAB INC  LAB DIG  LAB LEN
+              1       1      0.12        0        3        9
+
+
+         X LO     X HI     Y LO     Y HI
+         9.94    10.20     1.80     7.21
+ 
+shade/title="set only x2,y2"/set temp[l=1]
+ 
+let x2 = `($ppl$xorg)+($ppl$xlen)`
+ !-> DEFINE VARIABLE x2 = 9.94
+let y2 = `($ppl$yorg)+($ppl$ylen) - .4`
+ !-> DEFINE VARIABLE y2 = 6.405
+ 
+ppl shakey ,,.12,,,,,`x2`,,`y2`
+ !-> ppl shakey ,,.12,,,,,9.94,,6.405
+ppl shade
+ppl list shakey
+
+         DO KEY  ORIENT  LAB SIZE  LAB INC  LAB DIG  LAB LEN
+              1       1      0.12        0        3        9
+
+
+         X LO     X HI     Y LO     Y HI
+         9.68     9.94     1.00     6.41
+ 
+ 
+! resetting location of horizontal shade keys
+ 
+shade/title="shakey labels above it"/set temp[l=1]
+ 
+let x1 = `($ppl$xorg)+0.1`
+ !-> DEFINE VARIABLE x1 = 1.3
+let y1 = `($ppl$yorg)+($ppl$ylen)+0.1`
+ !-> DEFINE VARIABLE y1 = 6.905
+let y2 = `($ppl$yorg)+($ppl$ylen)+0.5`
+ !-> DEFINE VARIABLE y2 = 7.305
+ 
+ppl shakey ,0,-.12,2,,,`x1`,,`y1`,`y2`
+ !-> ppl shakey ,0,-.12,2,,,1.3,,6.905,7.305
+go unlabel 4
+go unlabel 5
+ppl shade
+ppl list shakey
+
+         DO KEY  ORIENT  LAB SIZE  LAB INC  LAB DIG  LAB LEN
+              1       0     -0.12        2        3        9
+
+
+         X LO     X HI     Y LO     Y HI
+         1.30    10.04     6.91     7.30
+ 
+ 
+let x1 = `($ppl$xorg)+1`
+ !-> DEFINE VARIABLE x1 = 2.2
+let x2 = `($ppl$xorg)+($ppl$xlen)-1`
+ !-> DEFINE VARIABLE x2 = 8.94
+let y1 = `($ppl$yorg)`
+ !-> DEFINE VARIABLE y1 = 1.4
+shade/title="shorter, at bottom"/set temp[l=1]
+ppl shakey ,0,-.12,3,,,`x1`,`x2`,`y1`
+ !-> ppl shakey ,0,-.12,3,,,2.2,8.94,1.4
+ppl shade
+ppl list shakey
+
+         DO KEY  ORIENT  LAB SIZE  LAB INC  LAB DIG  LAB LEN
+              1       0     -0.12        3        3        9
+
+
+         X LO     X HI     Y LO     Y HI
+         2.20     8.94     1.40     1.77
+ 
+shade/title="on left, labelled on left"/set temp[l=1]
+ppl axlabp, 1,1
+ 
+let x1 = `($ppl$xorg)`  - .5
+ !-> DEFINE VARIABLE x1 = 1.2  - .5
+let x2 = `($ppl$xorg)`  - 0.1
+ !-> DEFINE VARIABLE x2 = 1.2  - 0.1
+ppl shakey ,1,-.1,2,,,`x1`,`x2`
+ !-> ppl shakey ,1,-.1,2,,,0.7,1.1
+ppl shade
+ 
+ppl axlabp, -1, -1
+ 
+set view upper
+ppl window off
+let y1 = -1* `($ppl$yorg)`
+ !-> DEFINE VARIABLE y1 = -1* 1.4
+shade/title="In viewport, shakey located anywhere on page"/set temp[l=1]
+ppl shakey ,0,-.1,2,,,,,`y1`
+ !-> ppl shakey ,0,-.1,2,,,,,-1.4
+ppl shade
+ppl list shakey
+
+         DO KEY  ORIENT  LAB SIZE  LAB INC  LAB DIG  LAB LEN
+              1       0     -0.10        2        3        9
+
+
+         X LO     X HI     Y LO     Y HI
+         1.20     9.94    -1.40    -1.30
+ 
+ 
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.52  
- 	Solaris 5.6 - 04/24/03
- 	24-Apr-03 14:55     
+ 	Solaris 5.6 - 05/15/03
+ 	15-May-03 09:58     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -41455,8 +41872,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.52  
- 	Solaris 5.6 - 04/24/03
- 	24-Apr-03 14:56     
+ 	Solaris 5.6 - 05/15/03
+ 	15-May-03 09:58     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -41569,4 +41986,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Thu Apr 24 14:56:07 PDT 2003
+Ended at Thu May 15 09:58:22 PDT 2003

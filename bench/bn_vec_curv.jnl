@@ -16,5 +16,5 @@ set reg/x=138w:122w/y=55:70/k=1/l=5
 go mp_orthographic 230 60; set grid un
 vec/noax/len=1  un*0,vn*0+1,x_page,y_page
 vec/over/len=1  un*0+1,vn*0,x_page,y_page
-vec/over/len=1  un*0+1,vn*0+1,x_page,y_page
+vec/over/len=1.4  un*0+1,vn*0+1,x_page,y_page
 vec/over/len=2  un*0+1,vn*0+1,x_page,y_page

@@ -54,6 +54,10 @@
     5/99 *sh* - bug fix: modulo irregular axes get wrong memory subscript
     V510: 4/00 *sh* - the arrays line_parent and line_class are now indexed
                       from zero instead of from max_lines
+    V541: 2/02 *sh* - added support for subspan modulo axes
+                    - fixed bug in strides on modulo parent axis
+
+    V542: 10/02 *sh* - serious bug fixes in non-modulo subspan modulo
 
    compile this with
    cc -c -g tm_world_recur.c
@@ -74,27 +78,23 @@
 #define MAX(x, y) (( (x) < (y)) ? (y) : (x))
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
-#  define ENTRY_NAME tm_world_recur
+#define FORTRAN(a) a
 #else
-#  define ENTRY_NAME tm_world_recur_
+#define FORTRAN(a) a##_
 #endif
 
-#ifdef _NO_PROTO
-double ENTRY_NAME( isubscript, iaxis, where_in_box,
-		  max_lines, line_mem, line_parent,
-		  line_class, line_dim,
-		  line_start, line_delta,
-		  line_subsc1, line_modulo, line_regular )
-int *isubscript, *iaxis, *where_in_box, *max_lines, line_parent[],
-    line_class[], line_dim[], line_subsc1[], line_modulo[], line_regular[];
-double line_mem[], line_start[], line_delta[];
-#else
-double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
-		  int *max_lines, double line_mem[], int line_parent[],
-		  int line_class[], int line_dim[], 
-		  double line_start[], double line_delta[],
-		  int line_subsc1[], int line_modulo[], int line_regular[] )
-#endif
+/* prototype for FORTRAN boolean function */
+int  FORTRAN(tm_its_subspan_modulo) (int *axis);
+void FORTRAN(tm_ww_axlims) (int *axis, double *lo, double *hi);
+double FORTRAN(tm_modulo_axlen) (int *axis);
+
+double FORTRAN(tm_world_recur)
+     ( int *isubscript, int *iaxis, int *where_in_box,
+       int *max_lines, double line_mem[], int line_parent[],
+       int line_class[], int line_dim[], 
+       double line_start[], double line_delta[],
+       int line_subsc1[], int line_modulo[], double line_modulo_len[],
+       int line_regular[] )
 
 {
   double tempwld, tm_world;
@@ -121,13 +121,15 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	             +(*isubscript-1)*(int)line_delta[axis];
 	if ( line_regular[axis] || *where_in_box==BOX_MIDDLE ) {
 
-	  tm_world = ENTRY_NAME(&new_ss,
-			      &(line_parent[axis]),
-			      where_in_box,
-			      max_lines, line_mem, line_parent,
-			      line_class, line_dim,
-			      line_start, line_delta,
-			      line_subsc1, line_modulo,line_regular);
+	  tm_world = FORTRAN(tm_world_recur)
+	    (&new_ss,
+	     &(line_parent[axis]),
+	     where_in_box,
+	     max_lines, line_mem, line_parent,
+	     line_class, line_dim,
+	     line_start, line_delta,
+	     line_subsc1, line_modulo, line_modulo_len,
+	     line_regular );
 
 	} else {   /*  !!!! EXTRA LOGIC FOR IRREGULAR AXIS STRIDES */
 	  /* cases to consider: interpolate to neighbor above or below
@@ -144,54 +146,61 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	  }
 
 	  parent_len = line_dim[ line_parent[axis] ];
-	  if ( line_modulo[axis] 
+	  if ( line_modulo[ line_parent[axis] ]   /* 2/02 bug fix */
 	       || (lo_ss>=1 && hi_ss<=parent_len) ) {  /* interpolate */
 	    new_where = BOX_MIDDLE;
 	    tm_world = 0.5 * (
-			      ENTRY_NAME(&lo_ss,
-			      &(line_parent[axis]),
-			      &new_where,
-			      max_lines, line_mem, line_parent,
-			      line_class, line_dim,
-			      line_start, line_delta,
-			      line_subsc1, line_modulo,line_regular)
+			      FORTRAN(tm_world_recur)
+			      (&lo_ss,
+			       &(line_parent[axis]),
+			       &new_where,
+			       max_lines, line_mem, line_parent,
+			       line_class, line_dim,
+			       line_start, line_delta,
+			       line_subsc1, line_modulo, line_modulo_len,
+			       line_regular)
 	                  +   
-			      ENTRY_NAME(&hi_ss,
-			      &(line_parent[axis]),
-			      &new_where,
-			      max_lines, line_mem, line_parent,
-			      line_class, line_dim,
-			      line_start, line_delta,
-			      line_subsc1, line_modulo,line_regular)
+			      FORTRAN(tm_world_recur)
+			      (&hi_ss,
+			       &(line_parent[axis]),
+			       &new_where,
+			       max_lines, line_mem, line_parent,
+			       line_class, line_dim,
+			       line_start, line_delta,
+			       line_subsc1, line_modulo, line_modulo_len,
+			       line_regular)
 			      );
 	  } else if (*where_in_box ==  BOX_LO_LIM) { /* lower axis edge */
 	    new_ss = 1;
-	    tm_world = ENTRY_NAME(&new_ss,
-			      &(line_parent[axis]),
-			      where_in_box,
-			      max_lines, line_mem, line_parent,
-			      line_class, line_dim,
-			      line_start, line_delta,
-			      line_subsc1, line_modulo,line_regular);
+	    tm_world = FORTRAN(tm_world_recur)
+	      (&new_ss,
+	       &(line_parent[axis]),
+	       where_in_box,
+	       max_lines, line_mem, line_parent,
+	       line_class, line_dim,
+	       line_start, line_delta,
+	       line_subsc1, line_modulo, line_modulo_len, line_regular);
 	  } else {  /* upper axis edge */
 	    new_ss = parent_len;
-	    tm_world = ENTRY_NAME(&new_ss,
-			      &(line_parent[axis]),
-			      where_in_box,
-			      max_lines, line_mem, line_parent,
-			      line_class, line_dim,
-			      line_start, line_delta,
-			      line_subsc1, line_modulo,line_regular);
+	    tm_world = FORTRAN(tm_world_recur)
+	      (&new_ss,
+	       &(line_parent[axis]),
+	       where_in_box,
+	       max_lines, line_mem, line_parent,
+	       line_class, line_dim,
+	       line_start, line_delta,
+	       line_subsc1, line_modulo, line_modulo_len, line_regular);
 	  }
 	}
 	break;
 
       case PLINE_CLASS_MIDPT:
-	tm_world = ENTRY_NAME(isubscript,iaxis,where_in_box,
-			      max_lines, line_mem, line_parent,
-			      line_class, line_dim,
-			      line_start, line_delta,
-			      line_subsc1, line_modulo,line_regular);
+	tm_world = FORTRAN(tm_world_recur)
+	  (isubscript,iaxis,where_in_box,
+	   max_lines, line_mem, line_parent,
+	   line_class, line_dim,
+	   line_start, line_delta,
+	   line_subsc1, line_modulo, line_modulo_len, line_regular);
 	break;
       default:
 	tm_world = -999.;
@@ -204,6 +213,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
    not a recursive access - return the same result that TM_WORLD would have.
    Force given subsc to data range as appropriate for modulo or non-modulo axes
 */
+  if ( FORTRAN(tm_its_subspan_modulo) (&axis) ) line_len++;  /* 2/02 mod */
   if ( line_modulo[axis] ) {
     isub = ((*isubscript-1)%line_len) + 1 ;  /* inserted "+1" 5/99 */
     if (isub <= 0)
@@ -213,10 +223,32 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
       isub = MIN( line_len, MAX( 1, *isubscript ) );
 
 /*
+    the given index  falls in the "void" region of a subspan modulo axis
+    ... get the box_hi_lim of the Nth point in the core region
+*/
+  if  ( FORTRAN(tm_its_subspan_modulo) (&axis)
+	&& isub == line_len ) {
+    double lo, hi;
+    FORTRAN(tm_ww_axlims) (&axis,&lo, &hi);
+/* ... now where within the grid box ? */
+    if ( *where_in_box == BOX_LO_LIM )
+      tempwld = hi;
+    else if ( *where_in_box == BOX_MIDDLE )
+      tempwld = ( hi + (lo+line_modulo_len[axis]) )/2.;
+    else
+      tempwld = lo + line_modulo_len[axis];
+    
+    if (*isubscript <= 0)
+      rmod = *isubscript/line_len - 1;
+    else
+      rmod = (*isubscript-1)/line_len;
+    tm_world = tempwld + rmod*line_modulo_len[axis];
+	    
 
+/*
    regularly spaced points
 */
-  if ( line_regular[axis] ) {
+    } else if ( line_regular[axis] ) {
 /* ... calculate midpoint and box_size values */
     double midpoint = line_start[axis] + (isub-1)*line_delta[axis];
     double box_size = line_delta[axis];
@@ -230,10 +262,10 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
     
     if ( line_modulo[axis] ) {
       if (*isubscript <= 0)
-	rmod = line_len * ( *isubscript/line_len - 1 );
+	rmod = ( *isubscript/line_len - 1 );
       else
-	rmod = line_len * ( (*isubscript-1)/line_len );
-      tm_world = tempwld + rmod*line_delta[axis];
+	rmod = ( (*isubscript-1)/line_len );
+      tm_world = tempwld + rmod * FORTRAN(tm_modulo_axlen) (&axis);
     }
     else
       tm_world = tempwld;
@@ -248,11 +280,11 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
       isub--;      /* 5/99 switch to C-style zero-referenced indexing */
 /* ... now, where within the grid box ? */
       if      ( *where_in_box == BOX_LO_LIM )
-	tempwld = line_mem[isub+line_len];
+	tempwld = line_mem[isub+line_dim[axis]];
       else if ( *where_in_box == BOX_MIDDLE )
 	tempwld = line_mem[isub];
       else
-	tempwld = line_mem[isub+line_len+1];
+	tempwld = line_mem[isub+line_dim[axis]+1];
       
       if ( line_modulo[axis] ) {
 	if (*isubscript <= 0)
@@ -260,9 +292,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	else
 	  rmod = (*isubscript-1)/line_len;
 	
-	tm_world = tempwld + rmod*
-	  ( line_mem[line_subsc1[axis]+2*line_len - 1] -
-	    line_mem[line_subsc1[axis]+  line_len - 1] );
+	tm_world = tempwld + rmod * FORTRAN(tm_modulo_axlen) (&axis);
       }
       else
 	tm_world = tempwld;

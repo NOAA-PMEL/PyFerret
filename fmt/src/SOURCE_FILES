@@ -92,6 +92,7 @@ tm_date_to_step.F\
 tm_deallo_dyn_grid.F\
 tm_deallo_dyn_line.F\
 tm_deallo_dyn_line_sub.F\
+tm_dfpeq.F\
 tm_digit.F\
 tm_dset_number.F\
 tm_errmsg.F\

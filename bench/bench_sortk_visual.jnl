@@ -14,7 +14,7 @@ list zsorted_temp
 
 
 can region
-use ocean_atlas_monthly
+use ocean_atlas_temp
 
 set region/i=50:70/j=90/l=1
 shade temp

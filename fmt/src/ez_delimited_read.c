@@ -371,15 +371,8 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = -1 * dummy;
 	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
-	/* *kob* 12/01 - need to check for a sting ending in e or E and set
-	   it to bad.  osf and linux compiler let such a string through as 
-	   a valid number, i.e. 130E gets through */
-	else {
-	  slen = strlen(p);
-	  if (p[slen-1] == 'e' || p[slen-1] == 'E') 
-	    (*(numeric_fields+i))[rec] = bad_flags[i];  
-	}
-
+	else if (p[strlen(p)-1] == 'e' || p[strlen(p)-1] == 'E') 
+	    (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
 	
 	/* longitude */
@@ -388,6 +381,11 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = dummy;
 	else if (sscanf(p,"%f%1[Ww]",&dummy,str1) == 2)
 	  (*(numeric_fields+i))[rec] = -1 * dummy;
+	/* *kob* 12/01 - need to check for a sting ending in e or E and set
+	   it to dummy, as above.  osf and linux compiler let such a string through as 
+	   a valid number, rather than a longitude */
+	else if (p[strlen(p)-1] == 'e' || p[strlen(p)-1] == 'E') 
+	    (*(numeric_fields+i))[rec] = dummy;
 	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
@@ -446,9 +444,9 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
       case FTYP_NUMERIC:
 	if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
-	/* *kob* 12/01 - need to check for a sting ending in e or E and set
-	   it to bad.  osf and linux compiler let such a string through as 
-	   a valid number, i.e. 130E gets through */
+	/* *kob* 12/01 - need to check for a sting ending in e or E
+	   osf and linux compiler let such a string through as 
+	   a valid number, rather than a longitude */
 	else {
 	  slen = strlen(p);
 	  if (p[slen-1] == 'e' || p[slen-1] == 'E') 
@@ -568,8 +566,12 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	else if (field_type[(*nfields)] != FTYP_LAT)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
       }
-    else if (sscanf(p,"%f%1[EeWw]%1s",&dummy,latlon1,str1) == 2)
-      /* longitude */
+    else if ((sscanf(p,"%f%1[EeWw]%1s",&dummy,latlon1,str1) == 2) 
+	     || p[(strlen(p))-1] == 'E' || p[(strlen(p))-1] == 'E' )
+      /* need above check for strings such as 120E - which some 
+	 compilers pass through as valid floating point number 
+         kob v5.41 - 4/02 */
+       /* longitude */
       {
 	if (field_type[(*nfields)] == FTYP_MISSING
 	    || field_type[(*nfields)] == FTYP_NUMERIC)

@@ -59,8 +59,16 @@ socketlib = /usr/lib/libsocket.a
 SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/lib \
 		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
 		  /usr/ccs/lib/libgen.a -lc \
+<<<<<<< platform_specific_flags.mk.solaris
+		  -Bstatic /usr/ucblib/libucb.a -Bdynamic /usr/lib/libICE.so \
+<<<<<<< platform_specific_flags.mk.solaris
+                  /usr/lib/libSM.so
+=======
+=======
 		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
+>>>>>>> 1.20
 		  /usr/lib/libSM.so 
+>>>>>>> 1.19
 
 DODS_SYSLIB	= $(nsllib) $(socketlib) \
 		  /opt/local/hdf/lib/libz_HDF4.1r1.a

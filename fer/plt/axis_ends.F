@@ -46,6 +46,7 @@
 * V300 10/93 - allow delta value to be passed into this routine
 * Linux Port *kob* 12/96 - had to add "external RANGE" because RANGE is an
 *			   intrinsic function for F90.
+* V500 - *jd* 5.3.99 Add axis extrema symbols
 
 #ifdef unix
 	include 'ferret.parm'
@@ -87,6 +88,15 @@
 	WRITE ( val_buff, '(3(E13.6,1X))' ) x1, x2, dint
 	CALL PPLCMD ( from, line, 0, 
      .				plot_ax//'AXIS '//val_buff , 1, 1 )
+
+* Define symbols identifying axis limits
+	WRITE ( val_buff, '(G13.6)' ) x1
+	CALL PPLCMD ( from, line, 0, 
+     .		'SET '//plot_ax//'AXIS_MIN '//val_buff , 1, 1 )
+
+	WRITE ( val_buff, '(G13.6)' ) x2
+	CALL PPLCMD ( from, line, 0, 
+     .		'SET '//plot_ax//'AXIS_MAX '//val_buff , 1, 1 )
 
 	RETURN
       END

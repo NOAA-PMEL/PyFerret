@@ -159,7 +159,9 @@ c
 #endif
 	integer zwstype,error,max_pline,max_pmark
 	integer max_text, max_fill_area, max_pattern,max_color
-	if (zwstype .eq. ws_xwindow) then
+	LOGICAL		ITS_BATCH_GRAPHICS, batch
+
+	if (.not.its_batch_graphics() .and. zwstype .eq. ws_xwindow) then
 	   call gqlwk(zwstype,error,max_pline,max_pmark,
 	1	max_text,max_fill_area,max_pattern,max_color)
 	else

@@ -17,7 +17,6 @@ C *acm* 1/ 01  add cals_days_before_month and cals_month_by_day
      .			days_before_month,
      .			month_by_day,
      .			days_in_month,
-     .                  yrdays,
      .			month_names,
 
      .			allowed_calendars,
@@ -25,8 +24,9 @@ C *acm* 1/ 01  add cals_days_before_month and cals_month_by_day
      .			noleap,
      .			julian,
      .			d360,
+     .			tmap_360,
+     .			peculiar,
      .                  cals_num_days,
-     .                  cals_yeardays,
      .			cals_num_months,
      .			cals_month_names,
      .			cals_days_in_month,

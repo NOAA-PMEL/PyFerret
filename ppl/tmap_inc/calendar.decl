@@ -11,7 +11,7 @@ C	*******************************************************************
      .			max_months, mxmnths,
      .			max_days, mxdays,
      .			calendar_id
-	parameter      (mxcals  = 4,
+	parameter      (mxcals  = 6,
      .			mxmnths = 12,
      .			mxdays  = 366)
 
@@ -24,12 +24,11 @@ C	*******************************************************************
      .			month_by_day(mxdays),
      .			days_in_month(mxmnths)
 
-	real		yrdays
 	character*3	month_names(mxmnths)
 
 
 C	*******************************************************************
-C	Calendar names as recognized (NetCDF standards)
+C	Calendar names as recognized (NetCDF standards, plus a couple local ones)
 C	*******************************************************************
 	character*16	allowed_calendars(mxcals)
 	
@@ -49,7 +48,6 @@ C	*******************************************************************
      .			cals_days_in_month(mxmnths,mxcals),
      .			cals_days_before_month(mxmnths,mxcals),
      .			cals_month_by_day(mxdays,mxcals)
-	real		cals_yeardays(mxcals)
 
 	character*3	cals_month_names(mxmnths,mxcals)
 
@@ -61,4 +59,5 @@ C	*******************************************************************
         integer		noleap
         integer		julian
         integer		d360
-
+        integer		tmap_360
+        integer		peculiar

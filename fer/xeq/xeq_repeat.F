@@ -59,6 +59,7 @@
 * V56  3/04 *acm* - initialize cat flag before error checks; change messages when
 *                   user attempts to use a pseudo-variables for /NAME=
 *      6/04 ywei  - changed MATCH_NAME to allow optimization
+* V57  6/04 *acm* - clean up declarations
 
 	include	'ferret.parm'
 	include	'command.parm'
@@ -81,11 +82,11 @@
 	REAL*8	temp
  
 	INTEGER STR_UPCASE, TM_LENSTR1, loc, equal_pos, last_pos, 
-     .          dflt_cx, cvar, istart, iflag, locr, cat, var, slen
+     .          cvar, istart, iflag, locr, cat, var, slen
 	REAL val
-	CHARACTER GKS_X_CONID*16, anim_win_id*16, counter_name*128
+	CHARACTER counter_name*128
 	LOGICAL MATCH_NAME, loop
-        INTEGER TM_LENSTR, len_str, len_mchars
+        INTEGER TM_LENSTR, len_mchars, len_test
 
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG

@@ -304,9 +304,10 @@
 	  ENDIF
 * removed SNGL function from evalutating last_delta because it isn't
 * a real*8   *kob* 14apr94
+* v51 - put it back in - last_delta IS a real*8
 	  ds_regsteps(dset_num) = ds_regsteps(dset_num) .AND.
      .				  sf_regtimes(stp_cnt) .AND.
-     .		     TM_FPEQ(SNGL(s_delta), last_delta)
+     .		     TM_FPEQ(SNGL(s_delta), SNGL(last_delta))
 	  stp_pos = stp_cnt
   210	CONTINUE
 	GOTO 170

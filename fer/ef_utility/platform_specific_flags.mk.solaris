@@ -4,13 +4,18 @@
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
 
+INCLUDES        = -I. -I$(TMAP_LOCAL)/include
+
+FINCLUDES       = -I../../fmt/cmn -I../common
+
+
 CCSHFLAG        = -K PIC
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -g $(CCSHFLAG)
+CFLAGS          = -g $(CCSHFLAG) $(INCLUDES)
 F77             = f77
 F77SHFLAG       = -PIC
-FFLAGS          = -g $(F77SHFLAG)
+FFLAGS          = -g $(F77SHFLAG) $(FINCLUDES)
 LD_DYN_FLAGS    = -G -z text -z muldefs
 
 

@@ -343,10 +343,13 @@
 * ... decode the character position of the "G=" target variable name
 	end = (-cx_grid(hi_cx))/2000
 	start = (-cx_grid(hi_cx)) - 2000*end + unspecified_int4
+* 2/03 *kob* g77 port - need the '*' on call to errmsg to make it an
+*                       alternate return label, rather than passing
+*                       by reference
 	IF ( start .LT. 0
      .  .OR. end   .LT. start
-     .	.OR. end   .GT. cmnd_buff_len ) CALl ERRMSG(
-     .			ferr_internal, status, 'G=uvar', 5000)
+     .	.OR. end   .GT. cmnd_buff_len ) CALL ERRMSG(
+     .			ferr_internal, status, 'G=uvar', *5000)
 
 	name = uvar_text(uvar)(start:end)
 	len_name = end - start + 1

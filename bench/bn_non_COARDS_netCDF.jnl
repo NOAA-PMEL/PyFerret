@@ -1,0 +1,27 @@
+! bn_non_COARDS_netCDF.jnl
+! *sh* 3/99
+
+! test robust treatment of non-standard netCDF files
+
+use non_COARDS
+
+show data
+show grid/x HAS_NO_AXIS
+show grid/x HAS_UNORDERED_AXIS
+show grid/x HAS_GAPPY_AXIS
+show grid/x HAS_BACKWARDS_AXIS
+show grid/x SCALAR_VAR
+
+show grid/i=1:5 USES_BIG_IRREG
+
+show grid MASKED_SST
+show grid COADSX
+show grid COADSY
+
+show data
+list UNORDERED_AXIS
+list GAPPY_AXIS
+list SCALAR_VAR
+list HAS_BACKWARDS_AXIS
+
+list/i=1:5 BIG_IRREG

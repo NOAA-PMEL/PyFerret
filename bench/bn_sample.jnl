@@ -1,0 +1,149 @@
+! bn_sample.jnl
+! 10/99 *sh*
+
+! test the internally optimized version of the SAMPLE* commands
+
+! basic file variable access
+use coads_climatology
+let/quiet a = sst
+list sst[I=30:50:10,l=1,y=-2:2]		! reference listing
+list SAMPLEI(sst[l=1,y=0],{30,40,50})
+list SAMPLEI(sst[l=1,y=-2:2],{30,40,50})
+list SAMPLEI(sst[l=1:3,y=-2:2],{30,40,50})
+SHOW MEM/FREE
+
+! these should break sampling up into separate reads
+cancel memory/all
+set mode diagnostic
+list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result 
+cancel memory/all
+list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
+cancel memory/all
+list/l=1/y=-2:2  SAMPLEI(a  ,{30,40,50})
+
+! these should NOT break up the access into chunks
+cancel memory/all
+list/l=1/y=-2:2  SAMPLEI(sst[i=30:40],{30,40,50})
+let/quiet a = sst[i=30:40]
+cancel memory/all
+list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
+cancel memory/all
+list/l=1/y=-2:2  SAMPLEI(a,{30})		! sample at just 1 point
+cancel memory/all
+list/l=1/y=-2:2  SAMPLEI(a,30)			! sample at just 1 point
+cancel memory/all
+let/quiet fsst = sst[x=@fln] 		! fill holes to allow @iin to work
+let/quiet a = fsst[i=@iin]		! @iin forces all-at-once
+list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
+cancel memory/all
+
+! now test optimization that uses large memory chunks if available
+cancel memory/all
+load/l=1/y=0 sst[I=30:50]
+list/l=1/y=0  SAMPLEI(sst,{30,40,50})
+cancel memory/all
+load/l=1/y=0 sst[I=30:39]
+list/l=1/y=0  SAMPLEI(sst,{30,40,50})
+cancel memory/all
+load/l=1/y=0 sst[I=30:40]
+list/l=1/y=0  SAMPLEI(sst,{30,40,50})
+cancel memory/all
+load/l=1/y=0 sst[I=30:41]
+list/l=1/y=0  SAMPLEI(sst,{30,40,50})
+set mode/last diagnostic
+
+! sampling a user var
+let/quiet a = sst + 1
+list SAMPLEI(a[l=1:3,y=-2:2],{30,40,50})
+let/quiet a = sst[l=1:3,y=-2:2] + 1		! same result, different syntax
+list SAMPLEI(a, {30,40,50})
+
+! combined with a dynamic axis
+list SAMPLEI(sst[l=1,y=1s:1n:.5],{30,40,50})
+show grid/dyn
+cancel memory/all
+let/quiet a = sst[l=1,y=1s:1n:.5]
+list SAMPLEI(a,{30,40,50})
+show grid/dyn
+
+! sampling a pseudo-variable
+list SAMPLEI(X[x=1:12],{3,4,7,15})
+list SAMPLEI(X[x=111:120],{3,4,7})	! indices out of range
+list SAMPLEI(X[x=111:120:1],{3,4,7})	! now OK
+list SAMPLEI(X[x=110:200:10],{3,4,7})
+cancel memory/all
+let/quiet a = X[x=110:200:10]
+list SAMPLEI(a,{3,4,7})
+
+! sampling a constant !!??!
+list SAMPLEI(5,{3,,1})
+let/quiet a = 5
+list SAMPLEI(a,{3,,1})
+
+! sampling a constant list
+list SAMPLEI({1,2,3,4,5},{3,,7})
+
+! over-defined X axis limits
+cancel memory/all
+list SAMPLEI(sst[l=1,y=0,i=30:50],{30,40,50})
+cancel memory/all
+list SAMPLEI(sst[l=1,y=0,i=35:38],{30,40,50})
+
+! sampling with disordered and missing values in the index list
+list SAMPLEI(sst[l=1,y=-2:2],{30,40,,50})
+list SAMPLEI(sst[l=1,y=-2:2],{40,,50,30})
+
+! out of bounds indices
+list SAMPLEI(sst[l=1,y=0,i=30:50],{30 ,400,500})
+list SAMPLEI(sst[l=1,y=0,i=30:50],{-300,400,500})
+list SAMPLEI(X[x=110:200:10],{3,40,7})
+
+! sampling along a normal axis
+list SAMPLEI(Y[y=110:200:10],{3,4,7})
+
+! test sampling optimization
+cancel memory/all
+set mode diagnostic
+list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
+
+! test cache hits
+list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48}) !   <-- CACHE HIT FAILS!!!
+set mode/last diagnostic
+let a = SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
+load a
+set mode diagnostic
+list a 			!   <-- CACHE HIT FAILS!!!
+set mode/last diagnostic
+
+SHOW MEM/FREE
+
+! test SAMPLEJ
+let/quiet a = sst + Z[z=0:500:5]
+list SAMPLEJ(a[l=1,k=1:2,x=180],30)
+list SAMPLEJ(a[l=1,k=1:2,x=180],{30,31,35, 40})
+list SAMPLEJ(a[l=1,k=1,x=180],{30,40,50})
+list SAMPLEJ(a[l=1,k=1,x=160e:160w:5],{30,40,50})
+list SAMPLEJ(Y[y=110:200:10],{3,4,7})
+list SAMPLEJ(YSEQUENCE({1,2,3,4,5}),{5,2,3,,7,2})
+list SAMPLEJ(X[x=110:200:10],{3,4,7})	! normal axis
+
+! test SAMPLEK
+let/quiet a = sst + Z[z=0:500:5]
+list SAMPLEK(a[l=1,y=0,x=180],30)
+list SAMPLEK(a[l=1,y=0,x=180],{30,31,35, 40})
+list SAMPLEK(a[l=1,y=0,x=180],{30,40,50})
+list SAMPLEK(a[l=1,y=0,x=160e:160w:5],{30,40,50})
+list SAMPLEK(Z[z=110:200:10],{3,4,7})
+list SAMPLEK(ZSEQUENCE({1,2,3,4,5}),{5,2,3,,7,2})
+list SAMPLEK(X[x=110:200:10],{3,4,7})	! normal axis
+
+! test SAMPLEL
+let/quiet a = sst + Z[z=0:500:5]
+list SAMPLEL(a[y=0,k=1:2,x=180],5)
+list SAMPLEL(a[y=0,k=1:2,x=180],{2,3,5, 10})
+list SAMPLEL(a[y=0,k=1,x=180],{1,5,10})
+list SAMPLEL(a[y=0,k=1,x=160e:160w:5],{1,5,10})
+list SAMPLEL(T[t=110:200:10],{3,4,7})
+list SAMPLEL(TSEQUENCE({1,2,3,4,5}),{5,2,3,,7,2})
+list SAMPLEL(X[x=110:200:10],{3,4,7})	! normal axis
+

@@ -6,6 +6,7 @@
 * V450: added descriptions of functions
 * V510: *sh* reordered elements to avoid "padding before alg_4d_trans"
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
+* V554 3/04 *acm* - reorder items in the common block to avoid warning msg when compiling
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,
@@ -36,6 +37,7 @@
      .				alg_4d_trans,
      .				alg_1d_to_4d,
      .				num_4d_trans,
+     .                          csp_cvar,
      .				alg_fcn_arg_ptr,
      .				alg_op, 
      .				alg_fcn, 
@@ -51,8 +53,7 @@
      .				alg_arg_units,
      .				alg_arg_descr,
      .                          alg_cvar,
-     .                          countervar_name,
-     .                          csp_cvar
+     .                          countervar_name
 
 	INTEGER		alg_num_fcn_args ( num_functions ),
      .			alg_fcn_arg_ptr  ( num_functions )

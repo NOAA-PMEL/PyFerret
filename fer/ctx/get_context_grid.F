@@ -130,8 +130,10 @@
 * V520: 6/00 *sh* - bug fix - if the quick exit is taken here because
 *		std_grid is not yet known the axes within the implicit grid
 *		were never allocated so dont deallocate them
+* V532: *sh* 6/01 - bug fix: err522_impl_ax_ignored.jnl -- the variable
+*		impl_grid wasn't initialized if cx_impl_grid was set
+*		in get_context_mods by gx=name
 
-#ifdef unix
 	include 'errmsg.parm'
 	include 'ferret.parm'
 	include 'interp_stack.parm'
@@ -147,21 +149,6 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xfr_grid.cmn'   ! stack ptr should be in TMAP lib
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'TMAP_FORMAT:IMPLICIT.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'   ! stack ptr should be in TMAP lib
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, status
@@ -224,6 +211,8 @@
 	      CALL ALLO_GRID_TO_CX( cx, impl_grid, status )
 	      IF (status .NE. ferr_ok) GOTO 5000
 	      cx_unstand_grid(cx) = .TRUE.
+	   ELSE
+	      impl_grid = cx_impl_grid(cx)  ! allo'd in get_context_mods 
 	   ENDIF
 * ... make the implicit axes and save them in the implicit grid
 	   DO 20 idim = 1, 4

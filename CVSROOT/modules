@@ -39,3 +39,4 @@ utility corba/utility
 WebFerret WebFerret &Ferret &CGIservlet &utility
 
 lasxml lasxml &xml
+godae godae &xml

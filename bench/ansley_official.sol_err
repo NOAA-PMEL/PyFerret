@@ -1,11 +1,11 @@
-Procedure run_all to run all FERRET benchmarks 
-Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61656488 Mar 15 13:49 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+Procedure run_all to run all FERRET benchmarks
+Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61656868 Mar 17 10:10 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  after checkins of new code, and merge and checkin of bug fixes for v554, new benchmark tests
+Note: fresh checkout of benchmarks
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja8/ansley/FERRET/bench
+PWD=/export/home/ja8/ansley/test/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
 CVSROOT=/home/ja9/tmap/FERRET_ROOT
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Mon Mar 15 13:54:03 PST 2004
+Beginning at Wed Mar 17 10:40:02 PST 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -351,6 +351,7 @@ define axis/from/x/name=xax {6,6,6.000001,7}
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
  **ERROR: command syntax: unknown region name: @w
 set region/@w
+rm: No match.
  **ERROR: command syntax: noname(i)
           unknown function "noname"
 stat i, noname(i)
@@ -362,6 +363,7 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+rm: No match.
  **ERROR: unknown defining grid: G=NO_EXIST
 load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
  **ERROR: unknown defining grid: GX=A[D=1]
@@ -399,6 +401,7 @@ list substring("Have you fed your ferret today")
  **ERROR: command syntax: strcat ("All work and no play")
           The strcat function has an incorrect number of arguments
 list strcat ("All work and no play")
+rm: No match.
  **ERROR: command syntax: "string2"}
 list e
  **ERROR: command syntax: 5, "string2"}
@@ -455,10 +458,14 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY
  *** NOTE: A dummy axis of subscripts will be used
 input.txt: No such file or directory
+input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
                 dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
+ *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+ *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
+ *** NOTE: A dummy axis of subscripts will be used
  **ERROR: illegal limits: "DUMMY" is not in the range T=-6.3E+10
           Axis extremes are T=0.5:32
 list/t=1-jan-1990 dummy
@@ -531,4 +538,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Mar 15 14:05:15 PST 2004
+Ended at Wed Mar 17 10:52:16 PST 2004

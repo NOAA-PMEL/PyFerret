@@ -1,11 +1,11 @@
-Procedure run_all to run all FERRET benchmarks 
-Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61656488 Mar 15 13:49 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+Procedure run_all to run all FERRET benchmarks
+Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61656868 Mar 17 10:10 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  after checkins of new code, and merge and checkin of bug fixes for v554, new benchmark tests
+Note: fresh checkout of benchmarks
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja8/ansley/FERRET/bench
+PWD=/export/home/ja8/ansley/test/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
 CVSROOT=/home/ja9/tmap/FERRET_ROOT
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Mon Mar 15 13:54:03 PST 2004
+Beginning at Wed Mar 17 10:40:02 PST 2004
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 03/15/04
- 	15-Mar-04 13:54     
+ 	Solaris 5.6 - 03/17/04
+ 	17-Mar-04 10:40     
 
 yes? !bn500_all_shell
 yes? 
@@ -10122,8 +10122,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "15-Mar-04"
-SESSION_TIME = "13:54"
+SESSION_DATE = "17-Mar-04"
+SESSION_TIME = "10:40"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10141,8 +10141,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "15-Mar-04"
-SESSION_TIME = "13:54"
+SESSION_DATE = "17-Mar-04"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10150,8 +10150,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "15-Mar-04"
-SESSION_TIME = "13:54"
+SESSION_DATE = "17-Mar-04"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10161,13 +10161,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "15-Mar-04"
-SESSION_TIME = "13:54"
+SESSION_DATE = "17-Mar-04"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "15-Mar-04"
-SESSION_TIME = "13:54"
+SESSION_DATE = "17-Mar-04"
+SESSION_TIME = "10:40"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10201,7 +10201,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.53"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Mar 15 2004 13:55:33 "
+LAB3 = "Mar 17 2004 10:41:33 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10302,8 +10302,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "15-Mar-04"
-SESSION_TIME = "13:54"
+SESSION_DATE = "17-Mar-04"
+SESSION_TIME = "10:40"
  
  
 GO bn_reset
@@ -18304,7 +18304,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23041 Mar 15 13:56 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23043 Mar 17 10:42 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18323,7 +18323,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419289 Mar 15 13:57 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419305 Mar 17 10:43 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26473,7 +26473,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   15-Mar-04" ;
+		:history = "FERRET V5.53   17-Mar-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26498,7 +26498,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   15-Mar-04" ;
+		:history = "FERRET V5.53   17-Mar-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26650,7 +26650,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Mar 15 13:58:33 PST 2004
+Wed Mar 17 10:44:36 PST 2004
  
 GO bn_reset
 cancel mode verify
@@ -34940,7 +34940,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Mar 15 13:59 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar 17 10:45 testa.v5d
  
 can region
 use coads_climatology
@@ -34952,7 +34952,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Mar 15 13:59 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar 17 10:45 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35020,7 +35020,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.53   15-Mar-04" ;
+		:history = "FERRET V5.53   17-Mar-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35083,7 +35083,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.53   15-Mar-04" ;
+		:history = "FERRET V5.53   17-Mar-04" ;
 data:
 
  GFP3 = "" ;
@@ -35303,7 +35303,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.53   15-Mar-04" ;
+		:history = "FERRET V5.53   17-Mar-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -43540,18 +43540,18 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- strip regrid on X: TAUX --> (G030)           @XACT
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ strip regrid on X: TAUX --> (G021)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:130 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
 can mem/all
  -DELETE A        M:130 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43559,28 +43559,28 @@ can mem/all
  TEMPORARY data cleared from memory
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- strip regrid on X: TAUX --> (G030)           @XACT
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ strip regrid on X: TAUX --> (G021)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:130 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
  
 can mem/all
  -DELETE TAUX     M:130 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43588,8 +43588,8 @@ can mem/all
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 can data/all
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -44330,13 +44330,207 @@ ppl list shakey
          9.45     9.71     1.40     7.40
  
  
+! At lon = 0, we used to have an E; remove this.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_lon_ax_0_label.jnl
+! Label longitude axes with the degree sign only
+! at x=0 (previously had an E).
+ 
+! ACM 1/6/04
+ 
+use coads_climatology
+shade/x=-20:20/y=-40:40/L=1 sst
+ 
+ 
+! Errors listing string and numeric data together
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_list_string_numeric.jnl
+! err553_list_string_numeric.jnl
+! 2/2004 ACM
+! LISTing string and numeric variables together.
+ 
+def axis/t=1:3:1 tax
+Replacing definition of axis TAX
+let a = reshape ({1,2,3}, t[gt=tax])
+let b = reshape ({"a", "b", "c"}, t[gt=tax])
+list a, b
+             T: 0.5 to 3.5
+ Column  1: A is RESHAPE ({1,2,3}, T[GT=TAX])
+ Column  2: B is RESHAPE ({"a", "b", "c"}, T[GT=TAX])
+               A   B 
+1   / 1:  1.00000 "a"
+2   / 2:  2.00000 "b"
+3   / 3:  3.00000 "c"
+ 
+! Now in 2D
+let c = {"cat", "rat", "spat", "that", "pat"}
+list/i=2:4/l=1:3 b, c
+             T: 0.5 to 3.5
+             X: 1.5 to 4.5
+ Column  1: B is RESHAPE ({"a", "b", "c"}, T[GT=TAX])
+ Column  2: C is {"cat", "rat", "spat", "that", "pat"}
+          B      C 
+ ---- I:2 X:   2
+1   / 1: "a" "rat" 
+2   / 2: "b" "rat" 
+3   / 3: "c" "rat" 
+ ---- I:3 X:   3
+1   / 1: "a" "spat"
+2   / 2: "b" "spat"
+3   / 3: "c" "spat"
+ ---- I:4 X:   4
+1   / 1: "a" "that"
+2   / 2: "b" "that"
+3   / 3: "c" "that"
+ 
+let v = y[y=1:5]
+list v
+             VARIABLE : Y[Y=1:5]
+             SUBSET   : 5 points (Y)
+ 1   / 1:  1.00000
+ 2   / 2:  2.00000
+ 3   / 3:  3.00000
+ 4   / 4:  4.00000
+ 5   / 5:  5.00000
+list/i=3:4/l=1:2 b, c, v
+             T: 0.5 to 2.5
+             X: 2.5 to 4.5
+             Y: 0.5 to 5.5
+ Column  1: B is RESHAPE ({"a", "b", "c"}, T[GT=TAX])
+ Column  2: C is {"cat", "rat", "spat", "that", "pat"}
+ Column  3: V is Y[Y=1:5]
+          B      C        V 
+ ---- J:1 Y:   1
+ ---- I:3 X:   3
+1   / 1: "a" "spat"  1.00000
+2   / 2: "b" "spat"  1.00000
+ ---- I:4 X:   4
+1   / 1: "a" "that"  1.00000
+2   / 2: "b" "that"  1.00000
+ ---- J:2 Y:   2
+ ---- I:3 X:   3
+1   / 1: "a" "spat"  2.00000
+2   / 2: "b" "spat"  2.00000
+ ---- I:4 X:   4
+1   / 1: "a" "that"  2.00000
+2   / 2: "b" "that"  2.00000
+ ---- J:3 Y:   3
+ ---- I:3 X:   3
+1   / 1: "a" "spat"  3.00000
+2   / 2: "b" "spat"  3.00000
+ ---- I:4 X:   4
+1   / 1: "a" "that"  3.00000
+2   / 2: "b" "that"  3.00000
+ ---- J:4 Y:   4
+ ---- I:3 X:   3
+1   / 1: "a" "spat"  4.00000
+2   / 2: "b" "spat"  4.00000
+ ---- I:4 X:   4
+1   / 1: "a" "that"  4.00000
+2   / 2: "b" "that"  4.00000
+ ---- J:5 Y:   5
+ ---- I:3 X:   3
+1   / 1: "a" "spat"  5.00000
+2   / 2: "b" "spat"  5.00000
+ ---- I:4 X:   4
+1   / 1: "a" "that"  5.00000
+2   / 2: "b" "that"  5.00000
+ 
+ 
+! Bug in setting axis to depth when reading from nc file
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_set_axis_depth.jnl
+ ! NOAA/PMEL TMAP
+ ! FERRET v5.53
+ ! Solaris 5.6 - 12/16/03
+ ! 16-Dec-03 10:58
+ 
+use xz_nozattrib.nc
+set axis/depth zax
+say "axis should be reversed"
+axis should be reversed
+show axis zax
+ name       axis              # pts   start                end
+ ZAX       DEPTH (m)           26 r-  0                    1000
+   Axis span (to cell edges) = 1040
+q
+ 
+! Set symbols showing levels settings when poly command is called
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err553_symbol_lev.jnl
+! err553_symbol_lev.jnl
+! 2/2004 ACM
+! In 5.51 and in 5.53 version, symbols LEV* are not created
+! for polygon plots
+ 
+LET XTRIANGLE = YSEQUENCE({-1,0,1})
+LET YTRIANGLE = YSEQUENCE({-1,1,-1})
+LET XPTS = 180+30*RANDU(I[i=1:10])
+LET YPTS = 30*RANDU(1+I[i=1:10])
+POLYGON XTRIANGLE+XPTS, YTRIANGLE+YPTS, I[I=1:10]
+ 
+!*************************************
+! List symbols LEV_MIN, LEV_MAX, LEV_DEL
+ 
+show symb lev*
+LEV_TEXT = "C"
+LEV_MIN = "1"
+LEV_MAX = "11"
+LEV_NUM = "11"
+LEV_DEL = "1"
+ 
+can sym lev*
+! Now with /LEV=(min,max,del)
+ 
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+let ypts = x/10
+let xpts = cos(x/10)
+polygon/trans/i=1:100/nolable/lev=(0,1100,40) xpts+xsqr, ypts+ysqr, x*x/10
+sh sym lev*
+LEV_TEXT = "(0,1100,40)"
+LEV_MIN = "0"
+LEV_MAX = "1080"
+LEV_NUM = "28"
+LEV_DEL = "40"
+ 
+can sym lev*
+! Now with /LEV=nl
+ 
+LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+LET sst = 25 - ypts + RANDN(ypts)
+plot/vs xpts,ypts
+GO polymark POLYGON/KEY/lev=20 xpts,ypts,sst,star
+ 
+sh sym lev*
+LEV_TEXT = "20"
+LEV_MIN = "-12"
+LEV_MAX = "32"
+LEV_NUM = "23"
+LEV_DEL = "2"
+can sym lev*
+ 
+ 
  
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 03/15/04
- 	15-Mar-04 14:05     
+ 	Solaris 5.6 - 03/17/04
+ 	17-Mar-04 10:52     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44512,8 +44706,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 03/15/04
- 	15-Mar-04 14:05     
+ 	Solaris 5.6 - 03/17/04
+ 	17-Mar-04 10:52     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44626,4 +44820,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Mon Mar 15 14:05:15 PST 2004
+Ended at Wed Mar 17 10:52:16 PST 2004

@@ -17,7 +17,7 @@
 ! 4 arrow head     - "stick" for no head or "head" [default]
 
 ! Example:
-!	see "centered_grids.jnl" for a usage example
+!	see "centered_vectors.jnl" for a usage example
 
 ! Note: This procedure will grab the plot state from PLOT+ so that plot state
 !	must already exist.  If this procedure is used to generate an overlay

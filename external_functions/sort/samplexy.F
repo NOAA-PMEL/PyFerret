@@ -157,10 +157,9 @@
 *
 * Set the work arrays,  X/Y/Z/T dimensions
 *
-* ef_set_work_array_lens(id, array #, X len, Y len, Z len, T len)
+* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      COMMON /STOR/ mxdat, mydat
-      INTEGER mxdat, mydat
+      INTEGER mxdat, mydat, mx2, my2
 
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
@@ -174,10 +173,10 @@
       my2 = mydat* 2
 
 *  xaxdat
-      CALL ef_set_work_array_lens (id, 1, mx2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mx2, 1, 1, 1)
 
 *  yaxdat
-      CALL ef_set_work_array_lens (id, 2, my2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, my2, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -226,8 +225,10 @@
 
 *  Set up work arrays
 
-      REAL*8 xaxdat(1:mxdat,1:1,1:1,1:1)
-      REAL*8 yaxdat(1:mydat,1:1,1:1,1:1)
+      REAL*8 xaxdat(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+      REAL*8 yaxdat(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
 
       INTEGER imatch
       integer i1,j1,k1,l1

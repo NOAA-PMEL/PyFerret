@@ -1,6 +1,5 @@
 	SUBROUTINE EZ_Mod_Vars(dset,vpos,title,units,grid,bad,status)
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -44,6 +43,7 @@
 * revision 0.10 - 10/25/89 - *sh* immediate COMMON update via EZ_UPDATE_VAR
 * revision 0.11 - 04/25/91 *sh* Unix/RISC port: longer des name
 * V530: change to xez_info.cmn requires ez_lib.parm first
+* V532 5/01 *sh* - when the grid is modified must handle dynamic allocation
 
 * Arguments:
 *	dset	- data set number
@@ -94,6 +94,8 @@
 *
 * Defining grid number?
 	IF (grid .NE. int4_init) THEN
+	  CALL TM_USE_DYN_GRID(grid)	! allocate new as used by variable
+	  CALL TM_DEALLO_DYN_GRID( ds_grid_number(vpos) ) ! deallo old
 	  ds_grid_number(vpos) = grid
 	  CALL EZ_UPDATE_VAR(vpos)
 	ENDIF

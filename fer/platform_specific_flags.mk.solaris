@@ -35,8 +35,8 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -xO2 -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
-FFLAGS          = -O -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix
+CFLAGS          = -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
+FFLAGS          = -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix
 PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
 
 #
@@ -50,8 +50,11 @@ LD_DYN_FLAGS = -G -z text -z muldefs
 SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
 		  -lV77 -lelf -lM77 -lF77 -lXm -lXt -Bdynamic -lsunmath -lm \
 		  /usr/ccs/lib/libgen.a -lc \
-		  -Bstatic -L/usr/ucblib -lucb -Bdynamic /usr/lib/libICE.so \
-                  /usr/lib/libSM.so
+		  -Bstatic /usr/ucblib/libucb.a -Bdynamic /usr/lib/libICE.so \
+                  /usr/lib/libSM.so 
+
+DODS_SYSLIB	= -lnsl -lsocket \
+		  /opt/local/hdf/lib/libz_HDF4.1r1.a
 
 TMLIB		= ../lib/tmap_lib.a
 

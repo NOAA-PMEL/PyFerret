@@ -5,7 +5,8 @@
 # platform specific macros
 
 
-INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
+		  -I$(TMAP_LOCAL)/src/xgks/include \
   		  -I../../ppl/include/xgks \
 		  -I/usr/local/include \
 		  -I$(TMAP_LOCAL)/src/xgks/gif \
@@ -15,23 +16,25 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
 		  -I../common \
+		  -I../gui \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
 		  -I. -Ireadline 
 
-FINCLUDES	= -I../tmap_inc -I../include -I../../fmt/cmn \
-		-I../../fer/common
-
-
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common -I../gui \
+		   -I../../ppl/include  -I../../fer/common
 
 GUI_INCLUDES	=
 
  
-
+F77 		= f77
 CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
 FFLAGS          = -c -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C \
-		  $(FINCLUDES)
+		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C $(FINCLUDES)
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -Nl160 -Dxgks -static -fpe2 $(FINCLUDES)
@@ -45,15 +48,18 @@ LD		= cc
 # I want this to be able to link shared libraries! *jc*
 LDFLAGS		= -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib 
 
-SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE  /shlib/libc.so 
+# removed libc.so - DODS binary wouldn't link w/ it,and no one seems sure why
+# it's in here anyway.  i'll remove it and see if something breaks *kob*
+#SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE  /shlib/libc.so 
+SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE   
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 
-GKSLIB		= -L../lib -lxgks
+GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
 HDFLIB		= -L/usr/local/lib -ldf -ljpeg -lz
 
-CDFLIB		= -lnetcdf
+CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
 
 
 #

@@ -1,0 +1,35 @@
+! err570_long_label.jnl
+! Fix for bug 956
+
+! Very long multi-line label truncated on %LABEL command 
+! (string lengths hardwired to 255 deep in PPLUS command parsing)
+
+PLOT/i=1:10  1/i
+
+set mod verity
+! from Jean Newman's facts_ttl_src_lst.jnl
+
+define symbol clrmod = 2
+let source_list = "Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23+14.76*a24+14.76*b24"
+let tit_x = 3.6035
+let sl_y = 6.5
+
+  define symbol lenline = `strlen(source_list)+8`
+      let tsuchr = 0.09
+      let ntsulns = if `($VP_WIDTH)/((($lenline)/2.)*.9) lt 0.09` then 3 else 2
+      let nctsulns = `int(($lenline)/ntsulns)`
+      let lstr1 = `strrindex(substring(source_list,0,nctsulns),"+")`
+        let lstr2 = `strrindex(substring(source_list,lstr1+1,nctsulns),"+")`
+        let str3a = substring(source_list,0,lstr1)
+        let str3 = strcat(str3a,"<nl>")
+        let str4a = substring(source_list,lstr1+1,lstr2)
+        let str4 = strcat(str4a,"<nl>")
+        let str1 = strcat(str3,str4)
+        let lstr3 = `lstr1+lstr2`
+        let str2 = substring(source_list,lstr3+1,($lenline)-lstr3)
+        let tsustr = strcat(str1,str2)
+      let tsulab = strcat("@P($clrmod)Source: ",tsustr)
+      list/noheader tsulab
+    label/nouser `tit_x`,`sl_y`,0,0,`tsuchr` `tsulab`
+
+can mode verity

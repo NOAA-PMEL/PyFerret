@@ -1,0 +1,52 @@
+! err570_compress_by.jnl
+! fix for bug 925
+
+!--------------------------------------------------------------
+! create a file with 3-d data and 2-d array of sampling levels
+! define xy and xyz grids
+
+def axis/x=1:5:1 xax ; def axis/y=1:4:1 yax ; def axis/z=1:3:1 zax
+def grid/x=xax/y=yax gxy ; def grid/x=xax/y=yax/z=zax gxyz
+
+let/title="Sampling Levels" ind=int(3*randu(x[g=gxy]+y[g=gxy])+1)
+let/title="3-D Data" temp=x[g=gxyz]+10*(y[g=gxyz]+10*z[g=gxyz])
+
+list ind
+!             1      2      3      4      5
+! 1   / 1:  3.000  2.000  1.000  1.000  3.000
+! 2   / 2:  1.000  3.000  2.000  2.000  3.000
+! 3   / 3:  2.000  3.000  3.000  2.000  3.000
+! 4   / 4:  3.000  2.000  1.000  1.000  2.000
+
+list temp
+!             1      2      3      4      5
+! ---- K:1 Z:   1
+! 1   / 1:  111.0  112.0  113.0  114.0  115.0
+! 2   / 2:  121.0  122.0  123.0  124.0  125.0
+! 3   / 3:  131.0  132.0  133.0  134.0  135.0
+! 4   / 4:  141.0  142.0  143.0  144.0  145.0
+! ---- K:2 Z:   2
+! 1   / 1:  211.0  212.0  213.0  214.0  215.0
+! 2   / 2:  221.0  222.0  223.0  224.0  225.0
+! 3   / 3:  231.0  232.0  233.0  234.0  235.0
+! 4   / 4:  241.0  242.0  243.0  244.0  245.0
+! ---- K:3 Z:   3
+! 1   / 1:  311.0  312.0  313.0  314.0  315.0
+! 2   / 2:  321.0  322.0  323.0  324.0  325.0
+! 3   / 3:  331.0  332.0  333.0  334.0  335.0
+! 4   / 4:  341.0  342.0  343.0  344.0  345.0
+
+let mask=if(ind+0*z[g=gxyz] eq k[g=gxyz])then 1
+let tlev=compressk_by(temp,mask)
+
+!**** here is the bug behavior ... column 1 is as expected but not the others
+! list tlev[k=1]
+!             1      2      3      4      5
+! 1   / 1:  311.0  311.0  311.0  311.0  311.0
+! 2   / 2:  121.0  121.0  121.0  121.0  121.0
+! 3   / 3:  231.0  231.0  231.0  231.0  231.0
+! 4   / 4:  341.0  341.0  341.0  341.0  341.0
+
+list tlev[k=1]
+
+

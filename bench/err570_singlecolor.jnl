@@ -1,0 +1,38 @@
+! err570_singlecolor.jnl
+! 7/6/2004
+
+! See bug 901. When a single fill color is sent to
+! the POLYGON, SHADE, or FILL, the code sends the command 
+! PPL LEV (val).  But, the value was formatted so that the
+! value got rounded off, so the precise value wasnt specified
+! and the graphics call then didn't find the value.
+
+! This polygon was filled
+let a = 111
+poly/fill/line {0,1,2},{1,2,1},a
+
+! This polygon was not filled
+let a = 111.55
+poly/fill/over/line {0,1,2},{2,1,2},a
+
+! This shade plot did not fill in.
+define axis/x=1:10:1 xax
+define axis/y=1:12:1 yax
+let b = x[gx=xax] + y[gy=yax]
+shade/y=0:90 a + 0*b
+
+! FILL doesnt make the graphics call to do the fil plot 
+! when there is just one level ...
+
+! ... and this is bug 957; similar symptoms but a different
+! cause. SHADE and POLY need level defined when there is just 
+! one level.
+
+let v = 15
+shade/lev=1/x=1:10/y=1:10 v + 0*x + 0*y
+
+
+def axis/x=1:1:1 xaxj
+def grid/x=xaxj gaxj
+let a = 111241*x[gx=gaxj@asn]
+poly/lev=2 {0,1,2},{1,2,1},a ! OR lev=1

@@ -93,6 +93,8 @@ c
 *	        by Ferret, now that 1901 is insufficient
 * *jd* 11.30.95 Fix bug (again? see 10/25/93) where Y axis time axis
 *		limits are not computed
+* V510 *sh* 3/00 - allow loading of up to NPOLYGON lines (instead of NLINES)
+*		 - the X or Y inputs no longer both flagged as bad if either is
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -207,27 +209,35 @@ c
 	iy=ix+nsize/2
 	if(icode.eq.0)then
 	    do 100 i=1,npts
-* FERRET mod 2/89 - screen bad data
-	        IF ( ( xeq .AND. xt(i).EQ.cmxeq )
-     .	        .OR. ( yeq .AND. yt(i).EQ.cmyeq ) ) THEN
-	           x(ix+i) = bad_flag
-	           x(iy+i) = bad_flag
-	           GOTO 100
-	        ENDIF
-* end of 2/89 FERRET mod
 * FERRET mod 10/93 - apply transformation to Y data
+* FERRET mod  3/00 - screen X and Y separately for missing values
 	        IF ( flip ) THEN
 
-		  if (translate) then
-		    x(iy+i)=(yt(i)-1.0)*rate+off
+	          IF ( yeq .AND. yt(i).EQ.cmyeq ) THEN
+	             x(iy+i) = bad_flag
+
+		  elseif (translate) then
+		     x(iy+i)=(yt(i)-1.0)*rate+off
 		  else
-		    x(iy+i)=yt(i)
+		     x(iy+i)=yt(i)
 		  endif
 
-		  x(ix+i)=xt(i)
+	          IF ( xeq .AND. xt(i).EQ.cmxeq ) THEN
+	             x(ix+i) = bad_flag
+	          ELSE
+		     x(ix+i)=xt(i)
+	          ENDIF
+
 	        ELSE
-		  x(iy+i)=yt(i)
-		  if (translate) then
+	          IF ( yeq .AND. yt(i).EQ.cmyeq ) THEN
+	             x(iy+i) = bad_flag
+	          ELSE
+		     x(iy+i)=yt(i)
+	          ENDIF
+
+	          IF ( xeq .AND. xt(i).EQ.cmxeq ) THEN
+	             x(ix+i) = bad_flag
+	          ELSEIF (translate) then
 		     x(ix+i)=(xt(i)-1.0)*rate+off
 	          else
 		     x(ix+i)=xt(i)
@@ -235,13 +245,15 @@ c
 
 		ENDIF
 * end of 10/93 FERRET mod
+* end of  3/00 FERRET mod
+
 100	    continue
 	else if(icode.eq.1)then
 	    do 200 i=1,npts
 * FERRET mod 2/89 - screen bad data
 	        IF ( ( xeq .AND. xt(i).EQ.cmxeq ) ) THEN
 	           x(ix+i) = bad_flag
-	           x(iy+i) = bad_flag
+	           x(iy+i) = i     ! 3/00 mod
 	           GOTO 200
 	        ENDIF
 * end of 2/89 FERRET mod
@@ -278,13 +290,15 @@ c
 	ymin=xmin
 	ymax=xmax
 	do 400 i=1,npts
-* FERRET mod 2/89 - eliminate bad data from min/max calculation
-	IF ( x(ix+i).EQ.bad_flag .OR. x(iy+i).EQ.bad_flag ) GOTO 400
-* end of 2/89 FERRET mod
-	if(xmin.gt.x(ix+i))xmin=x(ix+i)
-	if(xmax.lt.x(ix+i))xmax=x(ix+i)
-	if(ymin.gt.x(iy+i))ymin=x(iy+i)
-	if(ymax.lt.x(iy+i))ymax=x(iy+i)
+* FERRET mod 2/89 -*re-mod 3/00*  eliminate bad data from min/max calculation 
+	IF ( x(ix+i).NE.bad_flag ) THEN
+ 	  if(xmin.gt.x(ix+i)) xmin=x(ix+i)
+	  if(xmax.lt.x(ix+i)) xmax=x(ix+i)
+	ENDIF
+	IF ( x(iy+i).NE.bad_flag ) THEN
+	  if(ymin.gt.x(iy+i)) ymin=x(iy+i)
+	  if(ymax.lt.x(iy+i)) ymax=x(iy+i)
+	ENDIF
 400	continue
 c
 c	some variable definitions
@@ -380,8 +394,8 @@ c
 * ORIG	call stmnmx(x,nsize,xmin,xmax,ymin,ymax,0.,0.)
 	call stmnmx(x,nsize,xmin,xmax,ymin,ymax)
 	lnum = linen
-	if(linen.ge.NLINES)then
-	    linen=NLINES - 1
+	if(linen.ge.NPOLYGON)then
+	    linen=NPOLYGON - 1
 	else
 	    ibase=ibase+lleng(linen)
 	endif

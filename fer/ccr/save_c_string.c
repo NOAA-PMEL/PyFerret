@@ -38,6 +38,8 @@
    Allocate dynamic memory and save a string returning the pointer to it
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
 

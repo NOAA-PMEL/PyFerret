@@ -40,6 +40,8 @@
     V540: *sh* 9/01 - added support for string arrays
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

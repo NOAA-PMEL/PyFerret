@@ -62,12 +62,13 @@ Note: for **unknown reasons** this routine will not compile using the stock
 
  Routine for writing out GIF files, using pd GIFEncode routine */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <signal.h>
-#include <malloc.h>
 #ifdef MEMDBG
 #include <mnemosyne.h>
 #endif

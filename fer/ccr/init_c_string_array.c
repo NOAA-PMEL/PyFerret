@@ -38,6 +38,8 @@
    of fer_ptr
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 
 void init_c_string_array_(length, mr_blk1, fer_ptr)

@@ -36,6 +36,8 @@
 
 /*LINTLIBRARY*/
 
+/* Need to include wchar.h for RH9 - *kob* 10/03 */
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include <time.h>		/* for time(), localtime(), and strftime() */

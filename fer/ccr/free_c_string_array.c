@@ -42,6 +42,8 @@
    Note: for porttability the Ferret array is 8-byte
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 
 void free_c_string_array_(fer_ptr, length)

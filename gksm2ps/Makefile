@@ -60,6 +60,14 @@ hp:
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="/usr/lib/X11R5/libX11.a -lm"
 
+i386-linux:	
+	${MAKE} gksm2ps \
+		CC=gcc \
+		CFLAGS=" -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		LDFLAGS= \
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-L/usr/X11R6/lib -lX11 -lm"
+
 i486-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \

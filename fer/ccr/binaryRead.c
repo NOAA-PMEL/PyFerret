@@ -6,6 +6,8 @@
  */
 
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include "binaryRead.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,7 +16,6 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
-#include <malloc.h>
 #include <unistd.h>
 #include <stdarg.h>
 #include <ctype.h>

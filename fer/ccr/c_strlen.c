@@ -40,6 +40,8 @@
    V552: *kob* 4/03 - change func type to void
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 
 void c_strlen_(in_ptr, out_ptr)

@@ -39,6 +39,8 @@
    Pointer may be spaced "naturally" (_del=0) or at 8 byte intervals (_del=1).
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 
 void xfer_c_ptrs_(src_ptr, src_del, src_offset,

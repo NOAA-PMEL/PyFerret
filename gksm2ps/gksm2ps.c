@@ -78,6 +78,8 @@
 #define PAGE_HEIGHT 10  /* Default page height in inches */
 #define ORIENTATION 1   /* Default page orientation (0=portrait,1=landscape) */
 
+/* Need to include wchar.h for RH9 - *kob* 10/03 */
+#include <wchar.h>
 #include "udposix.h"
 #include <math.h>
 #include <X11/Xlib.h>

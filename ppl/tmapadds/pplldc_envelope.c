@@ -47,6 +47,8 @@
 */
 /*******************/
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>

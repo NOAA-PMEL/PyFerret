@@ -1,3 +1,5 @@
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include "udposix.h"
 #include "gks_implem.h"
 #include "cgm/cgm.h"

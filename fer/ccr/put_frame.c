@@ -57,6 +57,8 @@ and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
 */
 
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include "gks_implem.h" /* ditto */
 #include "wslist.h"
 #include "cgm/cgm.h"		/* for public, API details */

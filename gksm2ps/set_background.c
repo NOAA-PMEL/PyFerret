@@ -43,6 +43,8 @@
  * *jd* Hacked for metafile interpretation 8.24.95
  */
 
+/* Need to include wchar.h for RH9 - *kob* 10/03 */
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include <string.h>

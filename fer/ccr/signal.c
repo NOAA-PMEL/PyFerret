@@ -46,6 +46,8 @@
 
 /* *kob* add ifdef check for DARWIN - Mac OS X */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include	<signal.h>
 #ifndef DARWIN
 #include	"posix_signal.h"

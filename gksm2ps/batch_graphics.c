@@ -56,6 +56,8 @@
 */
 
 
+/* Need to include wchar.h for RH9 - *kob* 10/03 */
+#include <wchar.h>
 #include <assert.h>
 #include <stdio.h>
 

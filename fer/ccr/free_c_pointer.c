@@ -39,6 +39,8 @@
    Pointer is passed by reference -- as per a FORTRAN subroutine call.
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 
 void free_c_pointer_(fer_ptr)

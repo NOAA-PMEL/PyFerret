@@ -69,6 +69,8 @@
 * V5.4 *acm* 10/01 add compress* to the statically linked fcns 
 /* .................... Includes .................... */
  
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <unistd.h>		/* for convenience */
 #include <stdio.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */

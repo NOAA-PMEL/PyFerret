@@ -43,6 +43,8 @@
  * Mod to use in X preview of metafiles *jd* 8.23.95 Convert inches to metres
  */
 
+/* Need to include wchar.h for RH9 - *kob* 10/03 */
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include <time.h> 

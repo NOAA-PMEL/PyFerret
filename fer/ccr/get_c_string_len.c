@@ -38,6 +38,8 @@
    Return the *FORTRAN* length of the saved string
 */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
 

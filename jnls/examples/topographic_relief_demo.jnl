@@ -1,5 +1,7 @@
 ! relief_demo.jnl *jd* 11/91
 
+! *acm* 7/01 change uppercase GO LAND to GO land
+
 ! Description: reviews coarse subsets of the ETOPO (Equator to Poles) data set
 
 ! This demonstration reviews coarse subsets of the ETOPO (Equator to Poles)
@@ -27,7 +29,7 @@ MESSAGE
 
 GO rgb_centered		! Changing the color palette
 SHADE/LEV/OVER R1000
-GO LAND
+GO land
 
 MESSAGE
 
@@ -35,7 +37,7 @@ MESSAGE
 
 SET DATA etopo60
 SHADE/X=50E:180/Y=-40:40/LEV=(-8,8,1) R1000
-GO LAND
+GO land
 
 MESSAGE
 

@@ -1,4 +1,5 @@
 ! fnoc_demo.jnl *jd* 11/91
+! 7/01 *acm* change uppercase GO LAND to GO land
 
 ! Description: explores the Navy's FNOC surface marine wind field.
 
@@ -23,7 +24,7 @@ MESSAGE
 
 CAN REGION
 VECTOR/LEN=20/T="15-DEC-1990" UWND,VWND
-GO LAND
+GO land
 
 MESSAGE
 
@@ -32,7 +33,7 @@ MESSAGE
 
 VECTOR/LEN=20/T="15-DEC-1990"/SET UWND,VWND
 PPL VECTOR 3 2
-GO LAND
+GO land
 
 ! A time series of the winds at a point may be reviewed as well.
 

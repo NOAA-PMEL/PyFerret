@@ -10,6 +10,8 @@
 ! Advanced use of FERRET commands in the demo will give you helpful examples
 ! of their use.  See the User's Guide for more on individual commands.
 
+! 7/01 *acm* change uppercase GO LAND to GO land
+
 MESSAGE
 
 
@@ -32,7 +34,7 @@ MESSAGE
 
 go rgb_rainbow
 SHADE/L=7 SLP
-GO LAND		
+GO land		
 
 MESSAGE
 
@@ -67,7 +69,7 @@ MESSAGE
 ! The geostrophic wind
 
 VECTOR/LEN=10/L=7 UG,VG
-GO LAND
+GO land
 
 MESSAGE
 
@@ -76,14 +78,14 @@ MESSAGE
 LET UGS = UG[X=@SBX:5]
 LET VGS = VG[X=@SBX:5]
 VECTOR/LEN=10/L=7 UGS,VGS
-GO LAND
+GO land
 
 MESSAGE
 
 ! Here is the geostrophic wind field superimposed on sea level pressure.
 
 SHADE/L=7 SLP
-GO LAND
+GO land
 VECTOR/LEN=10/OVER/L=7 UGS,VGS
 
 ! If we now overlay the observed winds we see that they are often
@@ -98,7 +100,7 @@ MESSAGE
 ! Here is the same plot for March
 
 SHADE/L=3 SLP
-GO LAND
+GO land
 VECTOR/LEN=10/OVER/L=3 UGS,VGS
 VECTOR/LEN=10/OVER/L=3 UWND,VWND
 
@@ -127,7 +129,7 @@ GO FLAND
 
 MESSAGE
 
-GO LAND
+GO land
 
 MESSAGE
 

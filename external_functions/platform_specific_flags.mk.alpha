@@ -1,0 +1,15 @@
+#
+# platform_specific_includes.mk.solaris
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros
+
+CCSHFLAG        =
+CC              = cc
+RANLIB          = /bin/touch
+CFLAGS          = -g $(CCSHFLAG)
+F77             = f77
+F77SHFLAG       = -shared
+FFLAGS          = -g $(F77SHFLAG)
+LD_DYN_FLAGS    = -shared
+

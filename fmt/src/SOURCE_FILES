@@ -123,7 +123,6 @@ tm_get_like_line.F\
 tm_get_linenum.F\
 tm_get_varnum.F\
 tm_grid_match.F\
-tm_has_all_strides.F\
 tm_has_string.F\
 tm_hash_name.F\
 tm_init_dset.F\

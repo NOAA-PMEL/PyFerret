@@ -17,8 +17,12 @@
 *	       - had to add an real*4 buffer to the buff equivalence.  
 *		 Linux f77 complained aobut inconsistent datatypes
 *
-* 4/98  *kob*  - bonehead move above.  removing the r4 buffer because it
-*                was causing problems with double precision attribute values
+* 4/98  *kob*  - fix bug introduced by above.  Linux f90 compiler will not allow
+*                r8 buff to be passed to NCAGT, complaining of inconsistent 
+*                datatypes.  SO, r4buff is passed to NCAGT, but really only as the
+*                address pointer.  then, when the values are actually used, r8buff
+*                is the buffer from which they are read.  this allows dp attribute
+*                values to be used correctly.
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -80,8 +84,9 @@
             CALL NCAGT(cdfid,varid,attrib,val,cdfstat)
             CD_GET_ATTVAL = .TRUE.
          ELSE
-            CALL NCAGT(cdfid,varid,attrib,r8buff,cdfstat)
-!            CALL NCAGT(cdfid,varid,attrib,r4buff,cdfstat)   !kob 4/98
+! *kob* 4/98 - see comment above
+!            CALL NCAGT(cdfid,varid,attrib,r8buff,cdfstat)
+            CALL NCAGT(cdfid,varid,attrib,r4buff,cdfstat)   !kob 4/98
             CD_GET_ATTVAL = .TRUE.
 * convert data types
             IF (attype.EQ.NCBYTE .OR. attype.EQ.NCCHAR ) THEN

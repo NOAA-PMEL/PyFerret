@@ -78,7 +78,9 @@
 * *sh* 9/95 (for V420): axes need not have T0 to be valid.  Disable this check.
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
-* V500: 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
+* V500: 7/99 *sh* - bug fix: need consistent use of char_init16 on line_name
+* V510: 8/99 bug fix: grid_out_prod not set for NORMAL axis
+*			(see err500_del_var_corruption)
 
 * arguments
 	CHARACTER*(*)	gfile_name
@@ -241,12 +243,12 @@
 	    IF (STR_CASE_BLIND_COMPARE(newline(:7),'UNKNOWN') .EQ.
      .		  str_match) THEN
 	      grid_line(i,temp) = mpsunkn
-	      GOTO 210
+	      GOTO 200
 	    ENDIF
 	    IF (STR_CASE_BLIND_COMPARE(newline(:6),'NORMAL')  .EQ.
      .		  str_match) THEN
 	      grid_line(i,temp) = mpsnorm
-	      GOTO 210
+	      GOTO 200
 	    ENDIF
 	    DO 190 j = 1, nline
 	      istat = STR_CASE_BLIND_COMPARE ( line_name(j), newline )

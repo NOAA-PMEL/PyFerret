@@ -39,7 +39,8 @@
 * and passes along responsibility for associated dynamic lines
 
 * 10/95 for Ferret V4.20
-*
+* V510 4/00 *sh* - use counts now apply to ALL axes
+
 * Arguments
 	INTEGER*4	source, dest
 *
@@ -66,8 +67,7 @@
 
 * give the new grid responsibility for dynimic lines it has inherited
 	DO 100 icnt = 1,4
-	  IF ( grid_line(icnt,dest) .GT. max_lines ) CALL
-     .		TM_USE_LINE( grid_line(icnt,dest) )
+	   CALL TM_USE_LINE( grid_line(icnt,dest) )
   100	CONTINUE
 	RETURN
 	END

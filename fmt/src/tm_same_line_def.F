@@ -49,6 +49,7 @@
 *			   "val**(-5)"
 * *sh* 2/24/95 - instead of comparing the units string compare the units code
 * *sh* 10/95 - slightly different check if a dynamic line
+* V510 4/00 *sh* - netCDF data sets using dynamic axes and grids
 
 * Include files
 #ifdef unix
@@ -102,13 +103,10 @@
 	    IF (line_tunit(line2) .NE. line_tunit(line1)) GOTO 1000
 	  ENDIF
 
-* dynamic lines
+* dynamic line info
 	  dynamic = line1.GT.max_lines .OR. line2.GT.max_lines
-	  IF ( dynamic ) THEN
-	    IF ( line1.LE.max_lines .OR. line2.LE.max_lines ) GOTO 1000
-	    IF ( line_class (line1) .NE. line_class (line2) ) GOTO 1000
-	    IF ( line_parent(line1) .NE. line_parent(line2) ) GOTO 1000
-	  ENDIF
+	  IF ( line_class (line1) .NE. line_class (line2) ) GOTO 1000
+	  IF ( line_parent(line1) .NE. line_parent(line2) ) GOTO 1000
 
 * check coordinate and box locations
 	  IF (line_regular(line2)) THEN

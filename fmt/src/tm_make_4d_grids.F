@@ -60,6 +60,8 @@
 * 7/95  - *kob*- added logic to add a time axis to a multi-file netcdf data
 *		 set based on the information in a descriptor
 
+* V510 5/00 *sh* - adapt to dynamic grids and axes for netCDF files
+
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
 *	status  - the returning status
@@ -94,10 +96,9 @@
         INTEGER*4       upstat                    ! 6/91
 	LOGICAL		use_ext_tax
 	CHARACTER*13    TM_STRING
-	INTEGER*4	ivar, ngrd, ilne, old, igrd, ngrid, ext_tax, sf
+	INTEGER*4	ivar, iv, ngrd, ilne, ngrid, ext_tax, sf
 	INTEGER*4	GT_GET_TIME_AXIS, TS_GET_TIME_AXIS,
-     .			TM_FIND_LIKE_GRID, TM_LENSTR1,
-     .			TM_FIND_GRID_SLOT,STR_UPCASE
+     .			TM_FIND_LIKE_GRID, STR_UPCASE
 * local parameter declarations:
         INTEGER*4 new
         PARAMETER ( new = 0 )
@@ -147,13 +148,28 @@
 	      CALL TM_COPY_GRID(ngrd,new)
 	      grid_line(4,new) = ds_time_axis(dnum)
               grid_out_prod(4,new) = .TRUE.
-* ... Create new name
-	      CALL TM_NEW_GRID_NAME( grid_name(ngrd), grid_name(new) )
-* ... Does this grid already exist? Yes - use old, No - make permanent
-	      CALL TM_GET_LIKE_GRID(new,grid_name(new),ngrid,status)
-	      IF (status .NE. merr_ok) GOTO 9000
-* ... Point to it
-	      ds_grid_number(ivar) = ngrid
+* ... Does this match an already existing grid?
+	      ngrid = TM_FIND_LIKE_GRID ( new )
+	      IF (ngrid .EQ. unspecified_int4) THEN
+*	... This is a new grid definition -- make sure name is unique
+	         grid_name(new) = grid_name(ngrd)
+	         grid_name(ngrd) = '%noexist%'
+	         CALL TM_NEW_GRID_NAME(grid_name(new), grid_name(new))
+	         grid_name(ngrd) = grid_name(new)
+*	... Keep the new grid with the time axis and "use" the time axis
+*	    Other vars defined on this grid will then bypass this code
+	         CALL TM_COPY_GRID( new, ngrd )
+	         CALL TM_USE_LINE( ds_time_axis(dnum) )
+	      ELSE
+*	... This duplicates a pre-existing grid definition -- reuse the older
+	         DO 110 iv =  1,maxvars
+	           IF (ds_var_setnum(ivar) .EQ. dnum) THEN
+	             IF (ds_grid_number(iv).EQ.ngrd)
+     .			 ds_grid_number(iv) = ngrid
+	           ENDIF
+ 110		 CONTINUE
+	         ngrd = ngrid
+	      ENDIF
 * ... Set the (previously unspecified) subscript limits for the variable
 * ... Check to see if data is time-independent, if it is, both
 * ...... grid start and end are set to 1 -----------> kob 6/91

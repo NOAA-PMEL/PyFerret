@@ -41,6 +41,7 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * 10/3/95 for Ferret version 4.2
+* 5/00 *sh* - check to make sure the line is not munknown
 
 * Include files
 #ifdef unix
@@ -59,9 +60,9 @@
 * Argument definitions
 	INTEGER line
 
-* Local definitions
 
-	line_use_cnt(line) = line_use_cnt(line) + 1
+	IF (line.GT.0 .AND. line.LE.line_ceiling)
+     .		line_use_cnt(line) = line_use_cnt(line) + 1
 
 * always successful completion
 	RETURN

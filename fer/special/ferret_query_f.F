@@ -50,6 +50,7 @@
 *			  because it needed a preprocessor.
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
+*           12/00*acm* - cleanup: TM_DATE_OK declared but never called
 #ifdef unix
         include 'tmap_dims.parm'
 #       include "tmap_dset.parm"
@@ -97,7 +98,7 @@
 	REAL*8	nums(nnums)
 
 * local variable declarations:
-	LOGICAL TM_DATE_OK, GEOG_LABEL
+	LOGICAL GEOG_LABEL
 	INTEGER	TM_LENSTR1, FIND_DSET_NUMBER, IGRID, TM_GET_LINENUM,
      .		TM_GET_GRIDNUM,
      .		i, i2, n, dim, dset, cat, var, axis, grid,

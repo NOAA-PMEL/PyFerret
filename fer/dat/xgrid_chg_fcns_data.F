@@ -46,8 +46,9 @@
 * V510: added SAMPLE* functions as *internal* GC functions
 * V533: *sh* 6/01 - allow some functions to take parg_type_multi
 *            7/01 - added function SPAWN  
-* V540: *sh* 10/01 - use improved data typing general parameter parg_type_* defs
-* V560: *acm*11/01 - clarify the function description for ZAXREPLACE
+* V540: *sh* 10/01 - use improved data typing parameters parg_type_*
+*       *acm*11/01 - clarify the function description for ZAXREPLACE
+*	     12/01 - bug fix in arg type of SPAWN function
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -599,7 +600,7 @@
 
 * ... description of arguments
 	DATA gfcn_arg_name(p_spawn_arg_start+0)/'STR'/
-	DATA gfcn_arg_type(p_spawn_arg_start+0)/parg_type_float_or_string/
+	DATA gfcn_arg_type(p_spawn_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_spawn_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_spawn_arg_start+0)/'Unix command string'/
 	DATA (gfcn_arg_extend_lo (i,p_spawn_arg_start+0),i=1,4)

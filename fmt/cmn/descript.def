@@ -32,9 +32,11 @@
 
 * Information for set files in descriptor
 * "STEPFILE RECORD"
+* *kob* 11/00 Increase size of s_filename to accomodate large file names for
+*	      DODS multi-mc files
 	CHARACTER*5	s_regvarflag
 	CHARACTER*23	s_index
-	CHARACTER*60	s_filename
+	CHARACTER*512	s_filename
 	INTEGER*4	s_aux_set_num, s_num_of_files
 	REAL*8		s_start, s_end, s_delta
 

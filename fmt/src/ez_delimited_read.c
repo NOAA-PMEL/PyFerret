@@ -107,7 +107,6 @@ void FORTRAN(decode_file_jacket)
       
       if (field_type[i] == FTYP_CHARACTER )
 	{
-		{
 	  /* *kob* make sure were using size of real*4 float */
 	  text_fields[i] = (char**) (memptr + ((mr_blk1[mr]-1)*(*mblk_size)*4)/sizeof(float));
 	  mr_c_ptr[mr*pinc] = text_fields[i];

@@ -2,6 +2,10 @@
 ! 2/94 - make_monthly_climatology.jnl
 
 ! Description: create a monthly climatology data set
+!  NOTE:  For a more modern methodology, please see the FAQ 
+!  "How do I calculate climatologies and climatological anomalies?" at 
+!  http://ferret.pmel.noaa.gov/Ferret/FAQ/analysis/climatologies.html
+!  and also the topic "climatology" in the Ferret Users guide.
 
 ! usage:  GO make_monthly_climatology variable clim_var_name clim_grid high_month ["append"] [out_file] 
 

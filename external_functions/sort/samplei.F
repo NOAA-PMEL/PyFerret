@@ -5,6 +5,9 @@
 * Dec 1998
 *
 * This function samples data along the I axis using a set of indices
+* 4/5/99  Ansley Manke 
+*         Indices may be oriented along any axis; 
+*         Result is abstract on the sampled axis.
 *
 *
 * In this subroutine we provide information about
@@ -21,7 +24,7 @@
 *                       IMPLIED_BY_ARGS - same axis as the incoming argument
 *                       NORMAL          - the result is normal to this axis
 *                       ABSTRACT        - an axis which only has index values
-* 
+*
 * piecemeal_ok       For memory optimization:
 *                       axes where calculation may be performed piecemeal
 *                       ( YES, NO )
@@ -59,7 +62,7 @@
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
+      CALL ef_set_axis_inheritance(id, ABSTRACT, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
@@ -67,7 +70,7 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'I_INDICES')
       CALL ef_set_arg_desc(id, arg, 'indices upon which to sample')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -81,6 +84,54 @@
       RETURN 
       END
 
+*
+* In this subroutine we provide information about the lo and hi
+* limits associated with each abstract or custom axis.   The user 
+* configurable information consists of the following:
+*
+* loss               lo subscript for an axis
+*
+* hiss               hi subscript for an axis
+*
+
+      SUBROUTINE samplei_result_limits(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+
+      INTEGER id
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+     .     arg_incr(4,EF_MAX_ARGS)
+
+* **********************************************************************
+*                                           USER CONFIGURABLE PORTION |
+*                                                                     |
+*                                                                     V
+
+      COMMON / samplei / my_lo_l, my_hi_l
+      INTEGER my_lo_l, my_hi_l
+
+*     Use utility functions to get context information about the 
+*     1st argument, to set the abstract axis lo and hi indices.
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
+      ny = arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) + 1
+      nz = arg_hi_ss(Z_AXIS, ARG1) - arg_lo_ss(Z_AXIS, ARG1) + 1
+      nt = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
+
+      my_lo_l = 1
+      my_hi_l = max(nx,ny,nz,nt)
+
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+
+*                                                                     ^
+*                                                                     |
+*                                           USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
 *
 * In this subroutine we compute the result
 *
@@ -112,33 +163,32 @@
 *                                                                     |
 *                                                                     V
       INTEGER id, i, j, k, l
-      INTEGER i1, j1, k1, l1
       INTEGER j2, k2, l2
       INTEGER iorder
       REAL aorder
+
+      INTEGER nlen(3)
+      CHARACTER*8 lefint, aindex(3) 
       CHARACTER*100 errtxt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      j1 = arg_lo_ss(Y_AXIS,ARG1)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
       DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS) 
 
-         k1 = arg_lo_ss(Z_AXIS,ARG1)
          k2 = arg_lo_ss(Z_AXIS,ARG2)
          DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-            l1 = arg_lo_ss(T_AXIS,ARG1)
             l2 = arg_lo_ss(T_AXIS,ARG2)
             DO 200 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-                i1 = arg_lo_ss(X_AXIS,ARG1)
-
                 DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-                   aorder = arg_1(i1,j1,k1,l1)
+*  Get the index to sample, whichever axis of arg_1 it is on.
+
+                   CALL pickindex(arg_1, i, aorder)
                    iorder = aorder
 
 *  Check that we do have an index of ARG_2; set the result
@@ -159,18 +209,14 @@
                      END IF
                   END IF
 
-                  i1 = i1 + arg_incr(X_AXIS,ARG1)
  100           CONTINUE
 
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
                l2 = l2 + arg_incr(T_AXIS,ARG2)
  200        CONTINUE
 
-            k1 = k1 + arg_incr(Z_AXIS,ARG1)
             k2 = k2 + arg_incr(Z_AXIS,ARG2)
  300     CONTINUE
 
-         j1 = j1 + arg_incr(Y_AXIS,ARG1)
          j2 = j2 + arg_incr(Y_AXIS,ARG2)
  400  CONTINUE
 
@@ -178,13 +224,15 @@
 
 999   CONTINUE
 
-      WRITE (errtxt,10) iorder, arg_lo_ss(X_AXIS,ARG2), 
-     .              arg_hi_ss(X_AXIS,ARG2)
+      aindex(1) = LEFINT(iorder,nlen(1))
+      aindex(2) = LEFINT(arg_lo_ss(X_AXIS,ARG2),nlen(2))
+      aindex(3) = LEFINT(arg_hi_ss(X_AXIS,ARG2),nlen(3))
 
-   10 FORMAT ('Sample index ', i8, ' in ARG1 outside the range ', 
-     .        'of indices for ARG2 ('i8,':',i8')')
+      WRITE (errtxt,*) 'Sampling index ', aindex(1)(1:nlen(1)), 
+     . ' in ARG1 is outside the range of I indices for ARG2 (', 
+     .  aindex(2)(1:nlen(2)), ':', aindex(3)(1:nlen(3)), ')'
 
-      CALL EF_BAIL_OUT(id, errtxt)
+      CALL ef_bail_out(id, errtxt)
 
       RETURN
       END
@@ -192,3 +240,15 @@
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
+      SUBROUTINE pickindex(arr, iindex, aorder)
+
+*  Get the index to sample, whichever axis of arg_1 it is on.  Collapse
+*  array arr to one dimension and return the i'th point.
+
+      real arr(*), aorder
+      integer iindex
+
+      aorder = arr(iindex)
+
+      return
+      end

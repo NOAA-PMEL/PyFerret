@@ -1,0 +1,92 @@
+!      ef_vis5d_write_demo.jnl *acm* 9/98 - writev5d EF demo
+
+!      Description: examples of the external function to write Vis5D files 
+!      from FERRET.
+ 
+CANCEL REGION
+SET MODE VERIFY
+ 
+!      This demonstration/tutorial will introduce the FERRET
+!      external function for writing Vis5D data files.
+ 
+MESSAGE
+ 
+!      Write climatology data to a Vis5D file.  The first argument 
+!      to the GO script is the file, arguments 2 through 9 are variable 
+!      names to be written.
+ 
+CAN REGION
+USE coads_climatology
+
+!      By default Vis5D looks for variables named U and V to plot as
+!      horizontal winds (Hwind1) so it is convenient to name them this way.
+ 
+LET u =  uwnd
+LET v =  vwnd 
+ 
+GO vis5d_write coads_clim.v5d sst airt wspd u v slp
+
+MESSAGE
+
+!      Write COADS climatology and Levitus climatology data to a Vis5D 
+!      file.  Use the horizontal grid from coads_climatology, and a 
+!      regularly-spaced depth grid in the upper 500 meters of the ocean.  
+!      When writing data to a Vis5D file from more than one data set, you 
+!      must regrid the data so that the horizontal grid and the time axes 
+!      are the same.  The vertical axis, or layers as they are called in 
+!      Vis5D, can be different for different variables.
+ 
+CAN REGION
+USE coads_climatology, levitus_climatology
+SET REGION/X=180:280/Y=5:45
+ 
+DEFINE AXIS/Z=0:500:50/DEPTH dep500 
+DEFINE GRID/LIKE=sst[d=coads_climatology]/Z=dep500 cl_grid
+ 
+!      The Levitus data has one time step; apply the 1:1@AVE so that the 
+!      time axes of both variables are defined as time-averaged.
+ 
+LET sst_tav = sst[D=coads_climatology, G=cl_grid, l=1:12@AVE]
+LET lev_tmp = temp[D=levitus_climatology, G=cl_grid, l=1:1@AVE]
+ 
+GO vis5d_write coads_levitus_test.v5d lev_tmp sst_tav
+ 
+MESSAGE
+
+
+!      There is a Vis5D utility which appends a Vis5D file to an existing
+!      file.  The GO script vis5d_write_append calls this.  It allows 
+!      us to add more time steps to a Vis5D file.  The spatial grid for 
+!      the file being appended must match the grid of the original file.  
+!      The utility checks for this and will issue an error message if 
+!      they do not match.
+
+!      We will write a few months' data from the COADS Climatology surface 
+!      data set, and then append data from later in the year. Times being
+!      appended need to be after times in the initial file, but we can skip
+!      time steps between the two files.  If some variables are not available
+!      for the appended set, the file is written and Vis5D will display the
+!      variables when they are present. 
+
+CAN REGION
+CAN DATA/ALL
+
+USE coads_climatology
+LET u =  uwnd
+LET v =  vwnd
+
+SET REGION/l=1:4
+GO vis5d_write coads_suv.v5d sst u v
+
+CAN REGION
+SET REGION/l=7:12
+GO vis5d_append coads_suv.v5d sst
+
+GO vis5d_start coads_suv.v5d
+
+
+!      To get started learning Vis5D, see the External Functions web page 
+!      for links to a basic primer, and to the Vis5D web site.
+
+
+ 

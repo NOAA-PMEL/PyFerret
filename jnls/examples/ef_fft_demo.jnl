@@ -1,0 +1,92 @@
+\cancel mode verify
+! ef_fft_demo.jnl
+! *am* 4/99
+set mode verify
+! Description: Demonstration of external functions for FFT:  
+! FFTA for amplitude spectrum
+! FFTP for phase.
+
+! The variable must have the explicit time specification.
+! Planned upgrades to FFTA and FFTP:
+!  - Allow the function to operate on the full time axis from the 
+!    input grid without requiring the explicit time specification.
+!  - Give units for the frequency axis of "1/<time units>" 
+
+! We will plot an FFT for the monthly_navy_winds and look for the
+! annual cycle.
+
+MESSAGE
+
+USE monthly_navy_winds
+
+!  Average the data in space and put it on a regular time grid.  
+!  Show the grid; note the number of points in time.
+
+DEFINE AXIS/T=16-Jan-1982:16-Dec-1992:730.5@ave montht
+DEFINE GRID/T=montht  tgrid
+SH GRID tgrid
+
+! Plot the amplitude spectrum vs frequency.
+
+LET/QUIET FFT_uwndtim = uwnd[gt=tgrid,x=150e:130w@ave,y=20n:40n@ave]
+LET/QUIET FFT_uwndfft = ffta(FFT_uwndtim[l=1:132])
+SET VARIABLE/TITLE="Amplitude Spectrum" FFT_uwndfft
+
+SET VIEW ul
+PLOT FFT_uwndfft
+
+! The time averaging left missing data point at the first time step.
+! Respecify the time axis and plot the FFT.
+MESSAGE
+
+LET/QUIET FFT_uwndfft = ffta(FFT_uwndtim[l=2:132])
+SET VARIABLE/TITLE="Amplitude Spectrum" FFT_uwndfft
+
+SET VIEW ul
+PLOT FFT_uwndfft
+
+!  For easier interpretation, invert the frequency axis and plot the 
+!  spectrum vs period: months/cycle
+
+LET/QUIET FFT_nf = `FFT_uwndfft,return=lend`
+LET/QUIET FFT_nyquist = 0.5
+LET/QUIET FFT_freq1 = FFT_nyquist/ FFT_nf
+
+DEFINE AXIS/T=`FFT_freq1`:`FFT_nyquist`:`FFT_freq1` FAXIS
+DEFINE GRID/T=FAXIS gfftfreq
+LET/QUIET a = T[g=gfftfreq]
+
+LET/QUIET per = 1./a
+
+!  Plot as a "Y VS X" plot; the PPL ccommands clean up the plot appearance.
+
+SET VIEW ur
+PLOT/VS/LINE/XLIMITS=0:30:2/TITLE="Amplitude Spectrum"/SET_UP per[l=1:`FFT_nf`], FFT_uwndfft
+PPL XFOR (I2)
+PPL XLAB Period, months/cycle
+PPL YLAB 
+PPL PLOT
+
+!  Next we will plot the phase
+MESSAGE
+
+LET/QUIET FFT_uwndfftp = fftp(FFT_uwndtim[l=2:132])
+SET VARIABLE/TITLE="FFT Phase"/UNITS="deg" FFT_uwndfftp
+
+SET VIEW ll
+PLOT FFT_uwndfftp
+
+!  And the phase in months/cycle
+
+SET VIEW lr
+PLOT/VS/LINE/XLIMITS=0:30:2/TITLE="FFT Phase"/SET_UP per[l=1:`FFT_nf`],FFT_uwndfftp
+PPL XFOR (I2)
+PPL XLAB Period, months/cycle
+PPL YLAB Deg
+PPL PLOT
+
+! clean up
+! restore plot state 
+CANCEL SYMBOL FFT_*
+CANCEL VARIABLE FFT_*
+SET MODE/LAST VERIFY	! restore echo behavior

@@ -20,8 +20,7 @@ query/ignore $2"<vis5d_append writes at least one variable to the file. Supply v
 
 !  Write the scratch file with new time records.
  
-DEFINE SYMBOL VIS5D_FILENAME = appnd_scratch.v5d
-let vflag = writev5d($2, $3%0%, $4%0%, $5%0%, $6%0%, $7%0%, $8%0%, $9%0%, 0)
+let vflag = writev5d($2, $3%0%, $4%0%, $5%0%, $6%0%, $7%0%, $8%0%, $9%0%, "appnd_scratch.v5d")
 LOAD/TEMPORARY vflag
 
 !  v5dappend utility appends the new file onto the old.
@@ -29,6 +28,9 @@ LOAD/TEMPORARY vflag
 MESSAGE/CONTINUE !
 sp v5dappend appnd_scratch.v5d $1%vis5d_out.v5d%
 sp rm appnd_scratch.v5d
+
+SAY To view the file with Vis5D say:   GO vis5d_start $1%vis5d_out.v5d%
+
 
 set mode/last verify
 

@@ -68,7 +68,7 @@
 	      call SPLIT_LIST(pttmode_help, ttout_lun,
      1	        'This command is not allowed.', 0)
 	   else
-	      call system( cmnd_buff(arg_start(1):len_cmnd) )
+	      call system( cmnd_buff(arg_start(1):arg_end(1)) )
 	   end if
 	ELSE
 * user can get choice of shells with "SPAWN csh", or whatever.

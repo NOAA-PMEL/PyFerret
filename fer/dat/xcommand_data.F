@@ -102,6 +102,8 @@
 * v491  12.98    - added PATTERN alias *jd*
 * v500  2/99 - *kob* - add /QUIET to LIST command
 * V500  2/99 *sh* - added POLYGON command
+* V500  3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
+
 
 #ifdef unix
 	include 'ferret.parm'
@@ -1031,7 +1033,7 @@
 		DATA qualifiers  (nqual_at18a+16)/ 'LEVELS'/	!/levels_same
 		DATA qualifiers  (nqual_at18a+17)/ 'KEY' /	!/key
 		DATA qualifiers  (nqual_at18a+18)/ 'NOKEY'/	!/nokey
-		DATA qualifiers  (nqual_at18a+19)/ 'PALETTE'/	! 
+		DATA qualifiers  (nqual_at18a+19)/ 'PALETTE'/	!/palette=
 		DATA qualifiers  (nqual_at18a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at18a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at18a+22)/ 'TITLE'/	!/title
@@ -1178,7 +1180,7 @@
 	DATA subcommand_pointer(27)		/ nsub_at27	/
 * POLYGON '    '
 	   DATA subcommands      (nsub_at27 + 0)/ '    '	/
-	   DATA num_qualifs      (nsub_at27 + 0)/ nqual6a	/
+	   DATA num_qualifs      (nsub_at27 + 0)/ nqual27a	/
 	   DATA qualifier_pointer(nsub_at27 + 0)/ nqual_at27a	/
 * POLYGON/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/COORD_AX
 		DATA qualifiers  (nqual_at27a+0)/ 'I'	/
@@ -1197,15 +1199,20 @@
 		DATA qualifiers  (nqual_at27a+13)/ 'COORD_AX'/	!/coord_ax
 		DATA qualifiers  (nqual_at27a+14)/ 'SYMBOL'/	!/symbol
 		DATA qualifiers  (nqual_at27a+15)/ 'NOLABEL'/	!/nolabel
-		DATA qualifiers  (nqual_at27a+16)/ 'LINE'/	!/line
-		DATA qualifiers  (nqual_at27a+17)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+16)/ 'LEVELS'/	!/levels_same
+		DATA qualifiers  (nqual_at27a+17)/ 'LINE'/	!/line
 		DATA qualifiers  (nqual_at27a+18)/ '****'/	!/unused
-		DATA qualifiers  (nqual_at27a+19)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+19)/ 'PALETTE'/	!/palette=
 		DATA qualifiers  (nqual_at27a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at27a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at27a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at27a+23)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at27a+24)/ 'NOAXES'/	!/noaxes
+	        DATA qualifiers  (nqual_at27a+25)/ 'PATTERN'/   !/pattern=
+		DATA qualifiers  (nqual_at27a+26)/ 'FILL'/	!/fill
+		DATA qualifiers  (nqual_at27a+27)/ '****'/	!
+		DATA qualifiers  (nqual_at27a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at27a+29)/ '****'/	!
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/

@@ -47,7 +47,8 @@
 	CHARACTER string*(*)
 
 * internal variable declarations:
-	INTEGER	TM_LENSTR1, alen, i
+	INTEGER	TM_LENSTR1, TM_LENSTR, alen, i,
+     .          len_test, len_mchars
 	LOGICAL	MATCH4
 
 #ifdef unix
@@ -60,11 +61,13 @@
 
 * length of test string
         alen = TM_LENSTR1( string )
-
+        len_test = TM_LENSTR(string(:alen))
 * against possible aliases
 	DO 100 i = 1, total_num_alias
            IF ( alias(i) .EQ. unspecified_name4 ) GOTO 100
-	   IF ( MATCH4(string(:alen),alias_name(i)(:4)) ) THEN
+           len_mchars = TM_LENSTR(alias_name(i)(:4))
+	   IF ( MATCH4(string(:alen),len_test,
+     .          alias_name(i),len_mchars) ) THEN
               ALIAS_ID = i
 	      RETURN
 	   ENDIF

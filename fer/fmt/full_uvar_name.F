@@ -64,7 +64,8 @@
 #endif
 
 * variable name and definition
-	len = TM_LENSTR1(uvar_name_code(uvar))
+*	len = TM_LENSTR1(uvar_name_code(uvar))
+        CALL string_array_get_strlen1(uvar_name_code_head,uvar,len)
 	FULL_UVAR_NAME = uvar_name_code(uvar)(:len)
 	IF (uvar_dset(uvar) .GT. pdset_irrelevant) THEN
 	   len2 = TM_LENSTR1(ds_name(uvar_dset(uvar)))

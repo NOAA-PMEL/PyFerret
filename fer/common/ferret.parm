@@ -536,4 +536,4 @@
 	INTEGER		pgc_span_retained,
      .          pgc_span_reduced
 	PARAMETER ( pgc_span_retained = 201,
-	            pgc_span_reduced  = 202 )
+     .          pgc_span_reduced  = 202 )

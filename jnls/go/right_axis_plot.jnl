@@ -6,6 +6,8 @@
 ! Overlay a second variable on a plot placing the vertical axis on the right
 ! The routine left_axis_plot should be used before this.
 
+!  *acm* 6/19/2000 fix bug in aline call as suggested by M.Verschell
+
 ! usage:
 !   yes? GO right_yaxis_plot expression_to_plot [scale] [key] [hgt] [args]
 
@@ -47,13 +49,11 @@ ppl rlabs 1,-90
 ppl %range 'PPL$YMIN1','PPL$YMAX1',10
 ppl %yaxis/nouser $2"'ppl$range_low','ppl$range_high','ppl$range_inc'",'ppl$xlen',$5",,,+1,,(1PG10.3)"
 
-! set up the line specimen
-ppl aline/nouser 1,'axov_aline_xpos','axov_aline_start','axov_aline_xpos','axov_aline_end',on
-
 ! draw the plot
 ppl window off
 ppl plot/over
-ppl plot/over    ! needs 2 times to get aline to work - don't know why
+! set up the line specimen
+ppl aline/nouser 1,'axov_aline_xpos','axov_aline_start','axov_aline_xpos','axov_aline_end'
 
 ! clean up
 ppl window on

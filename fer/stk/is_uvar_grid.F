@@ -62,6 +62,8 @@
 *		     needed ANY TIME that pseudo-variables which do not state
 *		     their own axes are used, becuase they may be generating
 *		     abstract axes. For example, the grid of "SST+Z"
+* v500: *kob* 3/99 - fixed which crashed ferret when  let/d didn't have a 
+*                    dataset present
 
 * calling argument declarations:
 	INTEGER	status
@@ -324,8 +326,12 @@
 
 * point uvar to its grid (possibly need different grid for each dset)
 * ... 8/95 check uvar_dset: LET/D variable needs uvar_need_dset always true 
-	IF ( uvar_dset(uvar).EQ.unspecified_int4 ) 
-     .	   uvar_need_dset(uvar) = .NOT.cx_dset_gvn(big_cx)
+* ... 3/99 but LET/D ("default") needs uvar_need_dset FALSE 
+        IF ( uvar_dset(uvar).EQ.unspecified_int4 ) THEN
+           uvar_need_dset(uvar) = .NOT.cx_dset_gvn(big_cx)
+        ELSEIF ( uvar_dset(uvar).EQ.pdset_irrelevant ) THEN
+           uvar_need_dset(uvar) = .FALSE.
+        ENDIF
 	IF ( uvar_need_dset(uvar) ) THEN
 	   uvar_grid( uvar, dset ) = gnum
 	ELSE

@@ -90,6 +90,7 @@
 * V450:	 11/19/96 - eliminated MODE POLISH
 * V510 5/00 *sh* - added denig_x/ylim_msg_done
 * V540 11/01 *sh* - initialize last_cmnd_buff
+* V550:12/02 *acm*- new MODE LOGO and MODE LABELS
 
 #ifdef unix
 	include 'ferret.parm'
@@ -176,8 +177,12 @@
      .					/ mode_stack_size*.FALSE.   /,
      .		(mode_state( pmode_ppllist     ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /,
-     .		(mode_state( pmode_gui         ,i), i=1,mode_stack_size)
-     .					/ mode_stack_size*.FALSE.   /
+     .		(mode_state( pmode_gui        ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.FALSE.   /,
+     .		(mode_state( pmode_logo        ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /,
+     .		(mode_state( pmode_labels      ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
      .		mode_name ( pmode_interpolate )	/ 'INTERPOLATE ' /,
@@ -198,8 +203,10 @@
      .		mode_name ( pmode_xwindows    )	/ 'REFRESH'      /,
      .		mode_name ( pmode_metafile    )	/ 'METAFILE'     /,
      .		mode_name ( pmode_ppllist     )	/ 'PPLLIST'      /,
-     .		mode_name ( pmode_gui         )	/ 'GUI'          /
-	DATA  ( mode_name(i),i=pmode_gui+1,max_modes)/4*pmode_unused/
+     .		mode_name ( pmode_gui         )	/ 'GUI'          /,
+     .		mode_name ( pmode_logo        )	/ 'LOGO'         /,
+     .		mode_name ( pmode_labels      )	/ 'LABELS'       /
+	DATA  ( mode_name(i),i=pmode_labels+1,max_modes)/4*pmode_unused/
 
 
 	DATA	(mode_arg  ( pmode_diagnostic  ,i), i=1,mode_stack_size)
@@ -242,7 +249,11 @@
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_ppllist     ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
-     .		(mode_arg  ( pmode_gui         ,i), i=1,mode_stack_size)
+     .		(mode_arg  ( pmode_gui        ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /,
+     .		(mode_arg  ( pmode_logo        ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /,
+     .		(mode_arg  ( pmode_labels      ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
 * for MODE WAIT

@@ -22,6 +22,7 @@
 *       4/01 *sh* - added in_get_grid_mode (for future use)
 *      10/01 *acm*- increased max_qual_list; CONTOUR needed more with /AXES=
 * V540:11/00 *sh* - added array last_cmnd_buff (formerly in get_prot_cmnd_data)
+* V550:12/02 *acm*- new MODE LOGO and MODE LABELS
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -30,7 +31,7 @@
      .			max_qual_list = 40 ,	! increased from 35 10/01
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 250 ,
-     .			max_modes     = 25 ,
+     .			max_modes     = 27 ,
      .			mode_stack_size     = 7,
      .			max_ifstk     = 10 )
 
@@ -45,7 +46,7 @@
      .			pmode_depth_lab, pmode_segment, pmode_font_ascii,
      .			pmode_wait, pmode_reject, pmode_desparate, pmode_rpn,
      .			pmode_gks, pmode_xwindows, pmode_metafile,
-     .			pmode_ppllist, pmode_gui
+     .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -67,7 +68,9 @@
      .			pmode_xwindows		= 18,
      .			pmode_metafile		= 19,
      .			pmode_ppllist		= 20,
-     .			pmode_gui		= 21 )
+     .			pmode_gui		= 21,
+     .			pmode_logo		= 22,
+     .			pmode_labels		= 23 )
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
 
@@ -178,7 +181,7 @@
      .			mode_depth_lab, mode_segment, mode_font_ascii,
      .			mode_wait, mode_reject, mode_desparate, mode_rpn,
      .			mode_gks, mode_xwindows, mode_metafile,
-     .			mode_ppllist, mode_gui
+     .			mode_ppllist, mode_gui, mode_logo, mode_labels
 	EQUIVALENCE
      .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
      .		( mode_state( pmode_verify      ,1), mode_verify      ),
@@ -200,7 +203,9 @@
      .		( mode_state( pmode_xwindows    ,1), mode_xwindows    ),
      .		( mode_state( pmode_metafile    ,1), mode_metafile    ),
      .		( mode_state( pmode_ppllist     ,1), mode_ppllist     ),
-     .		( mode_state( pmode_gui         ,1), mode_gui         )
+     .		( mode_state( pmode_gui         ,1), mode_gui         ),
+     .		( mode_state( pmode_logo        ,1), mode_logo        ),
+     .		( mode_state( pmode_labels      ,1), mode_labels      )
 
 * axis label modes
 	LOGICAL		ax_fmt(4)

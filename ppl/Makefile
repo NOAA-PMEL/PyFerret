@@ -157,7 +157,7 @@ i486-linuxxgks:
 	${MAKE} pplp \
 		F77=f90 \
 		CC=cc \
-		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c -O2 -m486 $(G)" \
+		CFLAGS="-Ipplinc/xgks -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c -O2 -m486 $(G)" \
 		FFLAGS="$(G) -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch" \
 		LDFLAGS= \
 		GKOBJ= \
@@ -295,7 +295,7 @@ i486-linuxxgks_compile:
 	${MAKE} do_the_compile_linux \
 		F77=f90 \
                 GK=xgks \
-		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c -O2 -m486 $(G)" \
+		CFLAGS="-Ipplinc/xgks -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c -O2 -m486 $(G)" \
 		FFLAGS="$(G) -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch" \
 		CPP_FLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED -DF90_NO_FPUTC -DF90_NO_UNLINK -DF90_NO_GETLOG -DF90_SYSTEM_ERROR_CALLS -DF90_DATE_TIME"
      

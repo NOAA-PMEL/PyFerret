@@ -72,6 +72,8 @@ C
 *                 not been set if previous call was SHADE
 * V540 10/01 *acm remove VMS include statements
 
+* V540 12/01 *acm* do NOT set LWGT, LDIG here; set them in SHADE
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
 	INCLUDE 'ZGRID.INC'
@@ -207,35 +209,6 @@ C
 	   ELSE
 	      NLEV2=NLEV
 	   ENDIF
-
-C *acm* 10/01----------------
-C set LWGT, LDIG; not set if previous call was SHADE 
-C       lwgt()
-C       =1 standard line
-C       =2 heavy line
-C       =3 dashed line
-
-           ZMP = ZLEV(NLEV2)
-           ZNP = ZLEV(1)
-
-           DZ = 0
-           IF (NLEV2 .GE. 2) DZ = ZLEV(2) - ZLEV(1)
-
-	   JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
-	   IF (JJ.LE.0) JJ=-1
-
-           DO 110 I=1,NLEV2
-	      LWGT(I)=2
-	      LDIG(I)=-1
-	      IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 110
-	      IF (ZLEV(I).GT.0.) THEN
-	         LWGT(I)=1
-	      ELSE
-	         LWGT(I)=3
-	      END IF
-	      LDIG(I)=JJ
- 110	   CONTINUE
-C *acm* 10/01----------------
 
 	END IF
 

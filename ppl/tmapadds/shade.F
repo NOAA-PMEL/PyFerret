@@ -171,8 +171,23 @@ C       Handle rounding errors *jd* 6.27.95/12.30.97
 	1	      NLEV2 = NLEV2 + 1
 	      ENDIF
 
+C acm 12/01  Set LWGT for future contour line overlays.
+
 	      DO 100 I=1,NLEV2 
-		 ZLEV(I)=ZNP+DZ*FLOAT(I-1) 
+
+
+                 LWGT(I)=2
+                 LDIG(I)=-1
+                 ZLEV(I)=ZNP+DZ*FLOAT(I-1)
+                 IF (ABS(ZLEV(I)).LT.1.E-5*DZ) GOTO 100
+                 IF (ZLEV(I).GT.0.) THEN
+                    LWGT(I)=1
+                 ELSE
+                    LWGT(I)=3
+                 END IF
+                 LDIG(I)=JJ
+
+
  100	      CONTINUE 
 
 	   ENDIF

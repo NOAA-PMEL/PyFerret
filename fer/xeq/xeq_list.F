@@ -117,6 +117,7 @@
 *       *sh* 9/00  - added initial data type support in get_cmnd_data 
 *	*sh* 11/00 - fixed bug: permutation for all vars written was determined
 *		     from context of first var, only
+*       *sh8 1/01  - bug fix to 11/00 bug fix!
 
 #ifdef unix
         include 'tmap_errors.parm'
@@ -549,12 +550,14 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
  200	   CONTINUE
 	ELSE
 * ... if no axis order was specified use the first variable as default
-           IF ( .NOT.permute ) CALL GET_CX_DIMS( cx, ndim, perm )
+           IF ( .NOT.permute ) THEN
+	      CALL GET_CX_DIMS( cx, ndim, perm )
 * ... default listing for a line of data is a column
-	   IF ( .NOT.permute .AND. ndim.EQ.1) THEN
-	      i = perm(1)
-	      perm(1) = perm(2)
-	      perm(2) = i
+	      IF (ndim.EQ.1) THEN
+	         i = perm(1)
+	         perm(1) = perm(2)
+	         perm(2) = i
+	      ENDIF
 	   ENDIF
 	   CALL CREATE_PERMUTATION(memory,cx,mr,perm,mr_perm,status)
 	   IF ( status .NE. ferr_ok ) GOTO 500

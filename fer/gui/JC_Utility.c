@@ -76,7 +76,7 @@
 
 /* .................... Defines .................... */
 
-#define MAX_MENU_ITEMS 64
+#define MAX_MENU_ITEMS 256
 
 
 extern JC_StateFlags GLOBAL_StateFlags;

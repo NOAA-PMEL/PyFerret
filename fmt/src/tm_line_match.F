@@ -47,6 +47,7 @@
 * 1/96 *sh* "bug" fix: match was based on exactly identical unit strings
 *		this meant that "DEGREES" didn't match "LONGITUDE".
 * V541 *sh* 2/02 - check line_modulo_len
+* V551 *acm*2/03 - check calendar type
 
 * Include files
 #ifdef unix
@@ -93,6 +94,11 @@
 
 * Check orientation
 	IF (line_direction(line1) .NE. line_direction(line2)) GOTO 110
+
+* Check calendar type
+	IF (line_direction(line1) .EQ. 'TI') THEN
+           IF (line_cal_name(line1) .NE. line_cal_name(line2)) GOTO 110
+        ENDIF
 
 * Check special values for time axis
 	IF (line_direction(line1) .EQ. 'TI') THEN

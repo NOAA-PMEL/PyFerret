@@ -52,6 +52,7 @@
 * V541: *kob* 6/02 - Add STRLEN, UPCASE,DNCASE,STRINDEX, STRRINDEX
 *                        SUBSTRING, STRCAT, STRFLOAT 
 *                    internal string handling functions   
+* V550: *acm*10/02 - Correct the function description for SUBSTRING
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -929,7 +930,7 @@
 
 
 
-* SUBSTR(string1, offset, lenght) - clips a substring from a string
+* SUBSTR(string1, offset, length) - clips a substring from a string
 	INTEGER		p_substring_arg_start, p_substring_num_args
 	PARAMETER     ( p_substring_arg_start = p_strcat_arg_start +
      .					    p_strcat_num_args,
@@ -937,7 +938,7 @@
 	DATA gfcn_name         (p_substring) /'SUBSTRING'/
 	DATA gfcn_version      (p_substring) / 1.0 /
 	DATA gfcn_descr        (p_substring) /
-     .	'concatenate two strings' /
+     .	         'Return a substring ' /
 	DATA gfcn_rtn_type     (p_substring) /pfcn_rtn_string /
 	DATA gfcn_num_reqd_args(p_substring) /p_substring_num_args/
 	DATA gfcn_has_vari_args(p_substring) /.FALSE./

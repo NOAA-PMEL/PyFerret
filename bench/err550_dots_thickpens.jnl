@@ -1,5 +1,5 @@
 ! err550_dots_thickpens.jnl
 ! For pen code higher than 6, get *  rather than dot.
-! also for 
+! also for vector plots having short vectors that are plotted with dots.
 
 plot/sym=dot/color=8/i=1:10 i

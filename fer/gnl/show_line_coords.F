@@ -73,7 +73,7 @@
 * local variable declarations:
 	LOGICAL	GEOG_LABEL, calendar
 	INTEGER ISUBSCR_CX, TM_LENSTR, 
-     .		lo, hi, idim, i, line, loest, hiest, dlen,
+     .		lo, hi, i, line, loest, hiest, dlen,
      .		ndec, status, delta
 	CHARACTER TM_FMT*14, buff*14, lo_str*20, hi_str*20, extra*30
 	REAL	BOX_SIZE

@@ -16,7 +16,7 @@ include ../platform_specific_flags.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 include ./LIB_NAME
 
-CFLAGS += -I../gui
+#CFLAGS += -I../gui
 #
 # Macros
 #

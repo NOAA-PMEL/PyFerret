@@ -19,6 +19,7 @@
 !                  mp_xaxdel does not divide the region exactly. Fix this, and
 !                  also add an argument window_flag to turn on windowing when
 !                  desired.
+! *acm*  9/30/04   replace REPEAT/K=2:5 with REPEAT/RANGE=2:5/NAME=m
 
 ! Description:  Overlay a graticule on a map.
 !
@@ -134,7 +135,7 @@ let/quiet mp_std_parallel_south = `mp_y[j=@min]`
 ! But, 9/03, This gives gaps when mp_xaxdel does not divide the region exactly
 ! 
 let/quiet mp_xaxdel = mp_xdel
-repeat/k=2:5 (if `mp_xaxdel gt 1` then let/quiet mp_xaxdel = mp_xdel/`k`)
+repeat/range=2:5/name=m (if `mp_xaxdel gt 1` then let/quiet mp_xaxdel = mp_xdel/`m`)
 
 
 define axis/x=`mp_xmin`:`mp_xmax + mp_xaxdel`:`mp_xaxdel` lon_field_i_axis

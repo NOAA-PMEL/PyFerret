@@ -18,10 +18,10 @@ include platform_specific_flags.mk.$(HOSTTYPE)
 # Macros
 #
 
-DIRS	= ccr ctx dat doo fmt gnl gui ino mem ocn plt \
+DIRS	= ccr ctx dat doo efn fmt gnl gui ino mem ocn plt \
 	rpn special stk utl xeq
 
-LIBS	= ccr ctx dat doo fmt gnl gui ino mem ocn plt \
+LIBS	= ccr ctx dat doo efn fmt gnl gui ino mem ocn plt \
 	rpn stk utl xeq
 
 CLEANDIRS = $(DIRS)
@@ -29,7 +29,7 @@ CLEANDIRS = $(DIRS)
 DEPDIRS = ccr gui
 
 FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
-	-lctx -lfmt -lino -lmem -lutl -ldat -lccr
+	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefn
 
 PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr
 

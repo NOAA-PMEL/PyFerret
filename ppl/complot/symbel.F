@@ -66,6 +66,10 @@ C       *jd* 7.92 variable IF renamed to KIF for MAC
 *			    to release linux and more importantly solaris.
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C *ACM* 6/02   When there is a period or decimal point in the text, make
+C              a GKS dot there too, so it'll show up in small labels.
+C *acm* 7/02   Take out the MARKER calls that made dots. This caused trouble 
+C              when making encapsulated postscript from postscript.  
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -332,15 +336,19 @@ C
 
 * for decimal points, find the average x and Y location; will
 * plot a point at this location.
-
-        IF (ICHR .EQ. '.') THEN
-           IF (IPT .EQ. 1) THEN
-             XBASE = 0.
-             YBASE = 0.
-           ENDIF
-           XBASE = XBASE + XTEMP
-           YBASE = YBASE + YTEMP
-        ENDIF
+C  xxx  
+C  xxx  Dont do this: it causes trouble with encapsulated postscript.
+C  xxx  and anyway, it was to correct trouble with the postscript translation
+C  xxx  for one printer...
+C  xxx
+C  xxx        IF (ICHR .EQ. '.') THEN
+C  xxx           IF (IPT .EQ. 1) THEN
+C  xxx             XBASE = 0.
+C  xxx             YBASE = 0.
+C  xxx           ENDIF
+C  xxx           XBASE = XBASE + XTEMP
+C  xxx           YBASE = YBASE + YTEMP
+C  xxx        ENDIF
 
 C
 C	MOVE THE PEN TO THE NEW COORDINATES.
@@ -357,20 +365,21 @@ C
 	PENF = .FALSE.
 	GO TO 30
 
-C  End of character
-C  If it was a decimal point, draw a tiny dot at its center.
-
 70	CONTINUE
-        IF (ICHR .EQ. '.' .AND. IPT .GT. 1) THEN
-           XBASE = XBASE/ FLOAT(IPT-1)
-           YBASE = YBASE/ FLOAT(IPT-1)
-           XBASE = XBASE/ XSCALE
-           YBASE = YBASE/ YSCALE
-           call marker (1)              ! could call with 7 for bigger dot.
-           CALL PLOT(XBASE, YBASE, 0, 0)
-           CALL MARK(99)
-           call marker (1)
-        ENDIF
+
+C  End of character
+C xxx If it was a decimal point, draw a tiny dot at its center.  
+C  xxx
+C  xxx        IF (ICHR .EQ. '.' .AND. IPT .GT. 1) THEN
+C  xxx           XBASE = XBASE/ FLOAT(IPT-1)
+C  xxx           YBASE = YBASE/ FLOAT(IPT-1)
+C  xxx           XBASE = XBASE/ XSCALE
+C  xxx           YBASE = YBASE/ YSCALE
+C  xxx           call marker (1)              ! could call with 7 for bigger dot.
+C  xxx           CALL PLOT(XBASE, YBASE, 0, 0)
+C  xxx           CALL MARK(99)
+C  xxx           call marker (1)
+C  xxx        ENDIF
 C
 C	ADJUST THE REFERENCE POSITION TO TAKE INTO ACCOUNT THE
 C	CHARACTER THAT WAS JUST DRAWN.
@@ -548,7 +557,7 @@ C
 C	PLOT TO THE END OF THE CHARACTER STRING.
 C
 200	PENF = .FALSE.
-c	CALL XYZPLT
+	CALL XYZPLT
 C
 C	RESET COLOR
 C

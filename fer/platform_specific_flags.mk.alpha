@@ -55,7 +55,7 @@ ICELIB   = /usr/lib/libICE.a
 dnetLIB  = /usr/lib/libdnet_stub.a
 ostLIB 	 = /usr/lib/libost.a
 
-SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) $(otsLIB) -lX11 -llist $(dnetLIB) $(SMLIB) $(ICELIB) 
+SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) $(otsLIB) -lX11 -lXpm -llist $(dnetLIB) $(SMLIB) $(ICELIB) 
 
 TMLIB		= ../lib/tmap_lib.a
 

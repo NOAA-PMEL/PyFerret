@@ -46,9 +46,11 @@
 
 * V450: 7/97
 * 97.07.30 *jc* added code to enable external functions
+* V500: 1/99 *sh* added support for string arguments to functions
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/grid_chg_fcns.parm'
 	include	'ferret_cmn/xalgebra.cmn'
 	include	'ferret_cmn/xgrid_chg_fcns.cmn'
 	include	'ferret_cmn/xrisc.cmn'
@@ -64,8 +66,8 @@
 	INTEGER	lun, ifcn
 	
 * local variable declarations:
-	INTEGER TM_LENSTR, TM_LENSTR1, ll, ll2, llsave,
-     .					narg, i, iarg, iarg2
+	INTEGER TM_LENSTR, TM_LENSTR1, GCF_ARG_TYPE,
+     .		ll, ll2, llsave, itype, narg, i, iarg, iarg2
 	CHARACTER units*40, gcf_name*40, ef_arg_name*40, ef_descr*80, 
 	1    ef_units*40
 	integer efcn_scan, efcn_get_num_reqd_args, efcn_gather_info
@@ -210,6 +212,16 @@
 	      ll = TM_LENSTR1(risc_buff)
 	      IF ( ll .GE. len_rbuff ) GOTO 400   ! truncation error
 	      risc_buff = risc_buff(:ll) // ' (' //units(:ll2) //')'
+	   ENDIF
+	   ll = TM_LENSTR1(risc_buff)
+* ... data type (if STRING)
+	   IF ( .NOT.its_gc ) THEN
+	      itype = parg_type_float
+	   ELSE
+	      itype = GCF_ARG_TYPE(ifcn, i)
+	   ENDIF
+	   IF (itype .EQ. parg_type_string) THEN
+	       risc_buff = risc_buff(:ll) // ' (STRING)'
 	   ENDIF
 	   ll = TM_LENSTR1(risc_buff)
 

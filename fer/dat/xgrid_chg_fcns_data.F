@@ -40,6 +40,7 @@
 
 * V450 - 7/79 - minor change to text on ZAXREPLACE
 * V491 - 1/98 - changed function TEST2 so that it replaces T axis
+* V500: 1/99 added gfcn_arg_type in support of string arguments
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -89,6 +90,7 @@
 
 * ... description of arguments
 	DATA gfcn_arg_name(p_unravel_arg_start+0)/'X'/
+	DATA gfcn_arg_type(p_unravel_arg_start+0)/parg_type_float/
 	DATA gfcn_arg_units(p_unravel_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_unravel_arg_start+0)/' '/
 	DATA (gfcn_arg_extend_lo (i,p_unravel_arg_start+0),i=1,4)
@@ -100,7 +102,7 @@
      .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
 
 
-* TIMES2(arg) - multiply input value by 2 --> debugging function
+* TIMES2(arg) a.k.a. "ECHO" -- display string  --> debugging function
 * 1/98 - changed TIMES2 to test custom axis replacement of T axis
 	INTEGER		p_times2_arg_start, p_times2_num_args 
 	PARAMETER     ( p_times2_arg_start = p_unravel_arg_start +
@@ -108,9 +110,10 @@
      .			p_times2_num_args  = 1 )
 
 
-	DATA gfcn_name         (p_times2) /'TIMES2'/
+	DATA gfcn_name         (p_times2) /'ECHO'/
 	DATA gfcn_version      (p_times2) / 1.0 /
-	DATA gfcn_descr        (p_times2) / 'multiply by 2 (test routine)' /
+	DATA gfcn_descr        (p_times2)
+     .			/ 'echo passed string (test routine)' /
 	DATA gfcn_num_reqd_args(p_times2) /p_times2_num_args/
 	DATA gfcn_has_vari_args(p_times2) /.FALSE./
 
@@ -118,7 +121,7 @@
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
-     .						pgc_axis_supplied_herein/
+     .						pgc_axis_implied_by_args/
 	DATA (gfcn_piecemeal_ok(i,p_times2),i=1,4) / .TRUE.,
      .						     .TRUE.,
      .						     .TRUE.,
@@ -126,9 +129,10 @@
 	DATA gfcn_arg_ptr(p_times2) /p_times2_arg_start/
 
 * ... description of arguments
-	DATA gfcn_arg_name(p_times2_arg_start+0)/'X'/
+	DATA gfcn_arg_name(p_times2_arg_start+0)/'STR'/
+	DATA gfcn_arg_type(p_times2_arg_start+0)/parg_type_string/
 	DATA gfcn_arg_units(p_times2_arg_start+0)/' '/
-	DATA gfcn_arg_descr(p_times2_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_times2_arg_start+0)/'input text'/
 	DATA (gfcn_arg_extend_lo (i,p_times2_arg_start+0),i=1,4)
      .		  / 0, 0, 0, 0 /
 	DATA (gfcn_arg_extend_hi (i,p_times2_arg_start+0),i=1,4)
@@ -162,9 +166,11 @@
 
 * ... description of arguments
 	DATA gfcn_arg_name(p_reshape_arg_start+0)/'A'/
+	DATA gfcn_arg_type(p_reshape_arg_start+0)/parg_type_float/
 	DATA gfcn_arg_units(p_reshape_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_reshape_arg_start+0)/'data to be reshaped'/
 	DATA gfcn_arg_name(p_reshape_arg_start+1)/'B'/
+	DATA gfcn_arg_type(p_reshape_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_reshape_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_reshape_arg_start+1)/'destination grid'/
 	DATA (gfcn_arg_extend_lo (i,p_reshape_arg_start+0),i=1,4)
@@ -210,14 +216,17 @@
 
 * ... description of arguments
 	DATA gfcn_arg_name(p_zlayer_arg_start+0)/'V'/
+	DATA gfcn_arg_type(p_zlayer_arg_start+0)/parg_type_float/
 	DATA gfcn_arg_units(p_zlayer_arg_start+0)/' '/
 	DATA gfcn_arg_descr(p_zlayer_arg_start+0)/
      .		'variable on native Z axis'/
 	DATA gfcn_arg_name(p_zlayer_arg_start+1)/'ZVALS'/
+	DATA gfcn_arg_type(p_zlayer_arg_start+1)/parg_type_float/
 	DATA gfcn_arg_units(p_zlayer_arg_start+1)/' '/
 	DATA gfcn_arg_descr(p_zlayer_arg_start+1)/
      .	'Z-value field corresponding to data points of V'/
 	DATA gfcn_arg_name(p_zlayer_arg_start+2)/'ZAX'/
+	DATA gfcn_arg_type(p_zlayer_arg_start+3)/parg_type_float/
 	DATA gfcn_arg_units(p_zlayer_arg_start+2)/' '/
 	DATA gfcn_arg_descr(p_zlayer_arg_start+2)/
      .		'variable with desired Z (depth) axis points'/
@@ -244,3 +253,4 @@
      .			p_next_num_args  = 1 )
 
 	END
+

@@ -68,6 +68,9 @@
 *	       on grid ABSTRACT.  Hopefully, there will be no side-effects.
 *	11/95 - if any of the components are non-reusabe ("un_cached") so
 *		must be the result
+* V500:  1/99 *sh* Trap as errors attempts to use string variables as
+*		arguments. Strings may be passed only to grid-changing
+*		functions (see IS_DO_GC_FC)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -154,6 +157,12 @@
 	frame_bottom = isp - num_com + 1
 	IF ( frame_bottom .LE. lo_isp ) CALL ERRMSG
      .		( ferr_syntax, status, 'RPN', *5000 )
+
+* trap attempts to pass string variables as errors (1/99)
+	DO 100 icom = 1, num_com
+	   com_cx  = is_cx(frame_bottom+icom-1)
+	   IF (cx_category(com_cx) .EQ. cat_string) GOTO 5100
+ 100	CONTINUE
 
 * allocate context space for the result
 	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
@@ -265,4 +274,6 @@
 
 * error exit
  5000	RETURN
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		'cannot use a string as an argument to: '//alg_text, *5000 )
 	END

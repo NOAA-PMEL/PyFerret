@@ -3,6 +3,7 @@
 * differs from the straightforward implications of the input arguments.
 
 * V450:
+* V500: 1/99 added gfcn_arg_type in support of string arguments
 
 	INTEGER		pmax_grid_chg_fcns,
      .			pmax_gfcn_args
@@ -13,7 +14,8 @@
      .				gfcn_num_internal, 
      .				gfcn_version,
      .				gfcn_num_reqd_args, 
-     .				gfcn_arg_ptr, 
+     .				gfcn_arg_ptr,
+     .				gfcn_arg_type, 
      .				gfcn_axis_will_be, 
      .				gfcn_axis_reduction,
      .				gfcn_has_vari_args, 
@@ -62,7 +64,10 @@
 	LOGICAL		gfcn_piecemeal_ok  ( 4, pmax_grid_chg_fcns )
 
 * pointer from function to array of information about arguments
-	INTEGER		gfcn_arg_ptr          ( pmax_grid_chg_fcns )
+	INTEGER		gfcn_arg_ptr       ( pmax_grid_chg_fcns )
+
+* for each argument: what is its required data type
+	INTEGER		gfcn_arg_type	   ( pmax_gfcn_args )
 
 * for each argument: should its axes be merged into the result grid?
 	LOGICAL		gfcn_axis_implied_from( 4, pmax_gfcn_args )

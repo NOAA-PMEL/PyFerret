@@ -67,6 +67,8 @@
 *		the component size here to fit the result. We need to flag the
 *		result as not cache-retreivable because the uvar_given value
 *		indicates the result size is self-defined (Is this risky??)
+* V500:  1/99 *sh* Trap as errors attempts to apply transform to string
+*		variables
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -118,6 +120,9 @@
 	trans	= cx_trans( idim1, res_cx )
 	arg	= cx_trans_arg( idim1, res_cx )
 	grid    = cx_grid( com_cx )
+
+* screen out attempts to transform a string
+	IF (cx_category(com_cx) .EQ. cat_string) GOTO 5400
 
 * determine if this is a 1D or a 4D (multiple axis) transformation
 	its_4d = .FALSE.
@@ -344,4 +349,8 @@
 	CALL ERRMSG( ferr_limits, status,
      .		     buff(:slen)//' exceeds interpolation range',
      .		     *5000 )
+ 5400	buff = VAR_TRANS( idim, res_cx, slen )
+	CALL ERRMSG( ferr_invalid_command, status,
+     .		     'cannot apply a transformation to a string: '
+     .		     //buff(:slen), *5000 )
 	END	

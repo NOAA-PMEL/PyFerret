@@ -11,6 +11,7 @@
 * (opt)	GCF_GET_RESULT_LIMS	- fill in limits of "imposed" axes, if any
 
 * V450:
+* V500: 1/99 added parg_type in support of string arguments
 
 	INTEGER		p_unravel, p_times2, p_reshape, p_zlayer
 
@@ -24,3 +25,10 @@
 	INTEGER		pset_to_unspec, ppass_along
 	PARAMETER     ( pset_to_unspec = 1,
      .			ppass_along    = 2 )
+
+* parameters to designate the data type of arguments
+	INTEGER		parg_type_float,
+     .			parg_type_string
+
+	PARAMETER     ( parg_type_float  = 1,
+     .			parg_type_string = 2 )

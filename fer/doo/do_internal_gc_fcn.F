@@ -69,6 +69,8 @@
 *       need to guide calculation with  cx lims rather than mr lims of args
 *       (see EXTRACT_Z_LINE) and
 *       need to recognize the missing value flags of the first arg
+* V500:  1/99 *sh* comandeered the TIMES2 function for string argument testing
+*               renamed it to ECHO
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -115,6 +117,7 @@
      .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4,
      .		si5, sj5, sk5, sl5, si6, sj6, sk6, sl6
         INTEGER klo, khi, ndim, ndx_lo, wkblk
+        INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
 
 	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0, bad_res,
@@ -209,20 +212,46 @@
  1110	CONTINUE
 	RETURN
 
-* "TIMES2" - debugging function
- 1200	DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+* "TIMES2" (a.k.a. "ECHO") - debugging function
+
+* ECHO the string that was passed in
+
+* here's how you check the variable type
+ 1200   IF (mr_category(mr1) .NE. cat_string)
+     .     WRITE (6,*) "ERROR: argument is not a string after all!"
+
+* here's how you decode the string
+        coded_pointer = mr_variable(mr1)
+* ... note that the uvar number and item number of the string are
+*     packed together in the coded_pointer value
+        IF ( coded_pointer .GT. 0 ) THEN
+* ... as of V5.0 should always come here
+           uvar = coded_pointer/1000
+           item = coded_pointer - 1000*uvar
+           start = uvar_item_start( item, uvar )
+           end   = uvar_item_end  ( item, uvar )
+           WRITE (6,'(1X,A)') 
+     .          'You said: '//uvar_text(uvar)(start:end)
+        ELSE
+* ... for future grids of strings
+           STOP 'illegal string argument encoding'
+!          pointer to array of strings encoded in memory(k,blk)
+!          string = EXTRACT_FROM_STRING_GRID(memory(k,blk),i,j,k,l)
+        ENDIF
+	DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
 	 DO 1210 k = mr_lo_s3(mres), mr_hi_s3(mres)
 	  DO 1210 j = mr_lo_s2(mres), mr_hi_s2(mres)
 	   DO 1210 i = mr_lo_s1(mres), mr_hi_s1(mres)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1
-     .    .OR.  com1(i,j,k,l) .LE. 0.0 ) THEN    ! 8/92
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      res(i,j,k,l) = com1(i,j,k,l) * 2.0
-	   ENDIF
+!	   IF ( com1(i,j,k,l) .EQ. bad1
+!     .    .OR.  com1(i,j,k,l) .LE. 0.0 ) THEN    ! 8/92
+!	      res(i,j,k,l) = bad_res
+!	   ELSE
+!	      res(i,j,k,l) = com1(i,j,k,l) * 2.0
+!	   ENDIF
+            res(i,j,k,l) = 0.0
  1210	CONTINUE
-	RETURN
+        RETURN
 
 * "RESHAPE" - reshape argument 1 into the grid of arg 2. Start output
 * at the i,j,k,l point given in arg 2. It is commonly useful for taking

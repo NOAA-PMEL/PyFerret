@@ -42,10 +42,14 @@
 * V450:  1/97 - based on IS_DO_OP
 *        7/97 - added status and memory args to DO_INTERNAL_GC_FCN call
 *       7/25/97 - increase number of args allowed from 5 to 10
+* V500:  1/99 *sh* Trap as errors attempts to use string variables as
+*		arguments ti internal functions.
+*		Strings may be passed only to external functions
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 	include	'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/grid_chg_fcns.parm'
 	include	'ferret_cmn/rpn.parm'
 	include	'ferret_cmn/xvariables.cmn'
 	include	'ferret_cmn/xcontext.cmn'
@@ -73,10 +77,10 @@
 * local variables
 	LOGICAL	ITS_UN_CACHED, not_reusable
 	INTEGER	CX_DIM_LEN, STR_MATCH, GCF_FIND_FCN, GCF_NUM_ARGS,
-     .		CGRID_AXIS,
+     .		CGRID_AXIS, GCF_ARG_TYPE,
      .		ifcn, iop, ilogic, icom, idim, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
-     .		frame_bottom, res_len, com_len, com_cx, res_mr
+     .		frame_bottom, res_len, com_len, com_cx, res_mr, itype
 
 * convenience equivalences
 	INTEGER	com(10)
@@ -112,6 +116,18 @@
 	frame_bottom = isp - num_com + 1
 	IF ( frame_bottom .LE. lo_isp ) CALL ERRMSG
      .		( ferr_syntax, status, 'RPN', *5000 )
+
+* trap attempts to pass arguments of the wrong type (1/99)
+	DO 100 icom = 1, num_com
+	   itype = GCF_ARG_TYPE(ifcn, icom)
+	   com_cx  = is_cx(frame_bottom+icom-1)
+	   IF ( (cx_category(com_cx) .EQ. cat_string)
+     .	  .NEQV.(itype .EQ. parg_type_string)		) THEN
+! ... temporary diagnostic EF output (REMOVE THIS!!!)
+	      CALL TEMP_SHOW_EF_STRING(is_mr(frame_bottom+icom-1))
+	      GOTO 5200
+	   ENDIF
+ 100	CONTINUE
 
 !* the merged context is already nearly complete
 	res_cx = is_big_cx(lo_isp)
@@ -218,5 +234,7 @@
  5000	RETURN
  5100	CALL DELETE_VARIABLE(res_mr)
 	GOTO 5000
+ 5200	CALL ERRMSG( ferr_invalid_command, status,
+     .		'cannot use a string as an argument to: '//alg_text, *5000 )
 	END
 

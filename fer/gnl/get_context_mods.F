@@ -75,10 +75,12 @@
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V450:  7/17/97 - GX=grid_name does not generate X-only regridding
-*       8/97 - *kob* - add set of cx_calendar to show whether a time was entered
+*       8/97 - *kob* - set cx_calendar to show whether a time was entered
 *                      as a date string.
 *                    - also check cx_calender rather than fmat_lo or fmat_hi
-*                      
+* V491:  3/2/98 *sh* - increased length of "name" to accomodate
+*                    e.g. gt="1-jan-1990:12:00":"15-jan-1990:12:00":120
+*                    and allow special check for leading quotation mark
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -144,7 +146,7 @@
      .			impl_grid, axis, other
 	CHARACTER*(1)	UPPER_CASE, region_qual(4,2), other_qual(2), axnam,
      .			letter, letter2
-	CHARACTER	LEFINT*6, name*32, comment*12, transnam*6, buff*32
+	CHARACTER	LEFINT*6, name*48, comment*12, transnam*6, buff*32
 	REAL*8		epsilon2_factor, temp
 	INTEGER		dstart, dend, lbrac, state, gdset
 
@@ -288,7 +290,10 @@
 *	Note: this trap is a kludge -- it is a hack to allow GX=lo:hi:delta
 *	      equivalent to X=lo:hi:delta because it is natural for users
 *	      to confuse these two
-	      IF ( TM_DIGIT(name(:name_end)) .AND. .NOT.single_char ) THEN
+*       3/98: for T axis with GT="1-JAN-1990" first character may be a quote
+	      i = 1		                                     ! 3/98
+	      IF (idim .EQ. t_dim .AND. name(1:1) .EQ. '"') i = 2    ! 3/98
+	      IF ( TM_DIGIT(name(i:i)) .AND. .NOT.single_char ) THEN
 	         IF (.NOT.first_time(idim) ) GOTO 5200
 	         kludge_gx_to_x(idim) = .TRUE.
 	         GOTO 201	! treat it like X=lo:hi:delta

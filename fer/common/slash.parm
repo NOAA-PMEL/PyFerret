@@ -68,6 +68,7 @@
      .			slash_set_grid_restore,
      .
      .			slash_set_axis_modulo,
+     .			slash_set_axis_depth,
      .
      .			slash_set_memory_words
 
@@ -193,6 +194,7 @@
      .			slash_set_grid_restore	= 2,
      .
      .			slash_set_axis_modulo	= 1,
+     .			slash_set_axis_depth    = 2,
      .
      .			slash_set_memory_words	= 1 )
 

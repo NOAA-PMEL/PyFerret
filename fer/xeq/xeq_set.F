@@ -112,7 +112,9 @@
 *			  because it needed a preprocessor.
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
-*          12/98 *js*  - Disallow set mem command is in secure mode
+*          12/98 *js* - Disallow set mem command is in secure mode
+* V500:  4/28/99 *sh* - added SET AXIS/DEPTH 
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -654,10 +656,11 @@ c *kob* 4/97
 	mgrid_abstract = grid
 	RETURN
 
-* SET AXIS/MODULO
- 1200	IF ( qual_given(slash_set_axis_modulo) .GT. 0 ) THEN
-           axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
-           IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+* SET AXIS  /MODULO and /DEPTH
+ 1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
+        IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+* /MODULO
+	IF ( qual_given(slash_set_axis_modulo) .GT. 0 ) THEN
            IF ( .NOT.line_modulo(axis) ) THEN
               line_modulo( axis ) = .TRUE.
 * ... wipe memory clear of stored variables - this could change all definitions
@@ -666,6 +669,12 @@ c *kob* 4/97
               DO 1210 i = 1,max_mr_avail
  1210         IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )
+           ENDIF
+        ENDIF
+* /DEPTH
+	IF ( qual_given(slash_set_axis_depth) .GT. 0 ) THEN
+           IF ( line_direction(axis) .EQ. 'DU' ) THEN
+	      line_direction(axis) = 'UD'
            ENDIF
         ENDIF
 	RETURN

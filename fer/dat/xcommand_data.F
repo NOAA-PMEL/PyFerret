@@ -106,6 +106,7 @@
 *       3/99 *jc* - added /INTERNAL to SHOW FUNCTION command
 *       4/99 *sh* - added PAUSE alias
 *	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/IJ/K/L 
+*	     *sh* - added SET AXIS/DEPTH
 
 #ifdef unix
 	include 'ferret.parm'
@@ -241,7 +242,7 @@
 	   DATA qualifier_pointer(nsub_at1 +11)	/ nqual_at1l	/
 * SET AXIS / MODULO
 		DATA qualifiers  (nqual_at1l+0)	/ 'MODULO'	/
-		DATA qualifiers  (nqual_at1l+1)	/ '****'	/
+		DATA qualifiers  (nqual_at1l+1)	/ 'DEPTH'	/
 * SET MEMO							
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/

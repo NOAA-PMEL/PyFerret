@@ -1,6 +1,8 @@
  ! err551_return_message.jnl
  ! 4/15/03 ACM  
 
+SET MODE IGNORE_ERROR
+
 use dstitle
 
 ! This is not a valid argument for RETURN.  The error message
@@ -11,3 +13,4 @@ say `axy, return=xx`
 ! This is a new argument: title from the global attributes secion.
 say `axy,return=dsettitle`
 
+SET MODE/LAST IGNORE_ERROR

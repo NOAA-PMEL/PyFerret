@@ -4,6 +4,8 @@
 ! Description: demonstrate usage of trackplot jnl file
 
 set mode verify
+
+! Open demo ship track file with Lat, Lon, and SST
 use polydata
 
 ! Default scale
@@ -13,13 +15,9 @@ go trackplot plot/vs/over/line=2 lon lat sin(i[g=lon])
 \message
 
 ! A little smaller
-go basemap x=130:250 Y=20:65 20
-plot/vs/line/over lon,lat
 go trackplot plot/vs/over/line=3 lon lat sin(i[g=lon]) .5
 \message
 
 ! Reverse polarity
-go basemap x=130:250 Y=20:65 20
-plot/vs/line/over lon,lat
 go trackplot plot/vs/over/line=4 lon lat sin(i[g=lon]) -1
 

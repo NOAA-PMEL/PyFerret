@@ -4,6 +4,8 @@
 ! Description: demonstrate usage of polymark jnl file
 
 set mode verify
+
+! Open demo ship track file with Lat, Lon, and SST
 use polydata
 
 ! Default scale

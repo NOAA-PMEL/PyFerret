@@ -38,7 +38,7 @@ LET/QUIET PLMyscale = ((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
 
 ! determine default scale
 LET/QUIET PLMyrange = (($yaxis_max))-(($yaxis_min))
-LET/QUIET PLMdefault_scale = 0.04 * PLMyrange
+LET/QUIET PLMdefault_scale = 0.04 * PLMyrange*((($ppl$ylen))/(($ppl$xlen)))
 LET/QUIET PLMscale = $6"1" * PLMdefault_scale 
 
 ! compute factor to compensate for unequal scaling of X and Y plot axes

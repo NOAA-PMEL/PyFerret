@@ -48,8 +48,9 @@ void tm_blockify_ferret_strings(char **mr_blk1, char *pblock,
   int i;
   char *poutchar, *poutstr, *pinchar, **pinstr;
 
-  /* prefill the output buffer with nulls */
-  for (i=0; i<=bufsiz; i++) pblock[i] = 0;
+  /* prefill the output buffer with nulls 
+     *kob*  fix i<= bufsize bug - corrupted heap */
+  for (i=0; i<bufsiz; i++) pblock[i] = 0;
 
   /* copy all the strings */
   pinstr = mr_blk1;  /* points to each input  string in turn */

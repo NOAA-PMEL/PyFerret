@@ -100,3 +100,8 @@ GO err570_digit_filename.jnl
 ! Fix for bug 1098: DODS URL label was cut off
 GO bn_reset
 GO err570_dods_url_label.jnl
+
+
+! Fix for bug 906: auto-formatting of labels on color keys loses precision
+GO bn_reset
+GO err570_keylabels.jnl

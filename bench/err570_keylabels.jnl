@@ -1,0 +1,9 @@
+! err570_keylabels.jnl
+! 11/2004
+
+! (bug 906)
+! auto-formatting of labels on color keys loses precision
+! key labels are 370, 371, 371, 372, 372, ...
+
+let a = 370 + x[x=1:10:1] + 0.2*y[y=1:10:1]
+shade/lev=(370,382,0.5) a

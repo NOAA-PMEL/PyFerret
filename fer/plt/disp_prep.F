@@ -94,7 +94,8 @@
 	INTEGER	TM_LENSTR1, lev_loc, len_loc, str_len, ii
 	REAl	val
 * v500 - 1/26/99 *kob* double buffer size for /levels text
-	CHARACTER str_buff*80
+* v532 - 5/11/01 *kob* increase buffer size for /levels text to 1028
+	CHARACTER str_buff*1028
 
 * local parameter definitions:
 	INTEGER		slash_levels,

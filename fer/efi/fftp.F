@@ -37,6 +37,8 @@
 * Ansley Manke
 * Dec 1998
 *
+* v5.50  *acm* 10/02 Simplify the error message for missing data when the 
+*                    input is a simple 1-D time series.
 *
 * This function computes fft phase spectrum for each time series.  Result
 * time axis is a custom axis in period 1./time  The input variable must have
@@ -369,6 +371,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
       CHARACTER*80 err_msg
 
    40 FORMAT ('FFTP encountered missing data at (i,j,k,l)', 4I5)
+   50 FORMAT ('FFTA encountered missing data at L=', I5)
 
       rad = 180.0/ 3.141592654
 
@@ -406,13 +409,19 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
             k1 = arg_lo_ss(Z_AXIS,ARG1)
             DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-*
 * Calculate the FFT for each time series which have no missing data.
-*
+* Make a simple message if we have a 1-D input time series.
+
                l1 =arg_lo_ss(T_AXIS,ARG1)
                DO 100 l = 1, nd
                   IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(ARG1)) THEN
                      WRITE (err_msg, 40) i1,j1,k1,l
+
+                     IF (i1 .EQ. ef_unspecified_int4 .AND.
+     .                   j1 .EQ. ef_unspecified_int4 .AND.
+     .                   k1 .EQ. ef_unspecified_int4 )
+     .                     WRITE (err_msg, 50) l
+
                      GO TO 999 
                   ENDIF
 

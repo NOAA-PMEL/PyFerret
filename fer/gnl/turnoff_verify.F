@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * 8/2003
+* *kob* bug fix - remove ";" at end of status assingment line.
 
 
 	INCLUDE 'xprog_state.cmn'
@@ -48,7 +49,7 @@
         INTEGER status
 
 	mode_state(pmode_verify,1) = .FALSE.
-        status = 1;
+        status = 1
 
 	END
 

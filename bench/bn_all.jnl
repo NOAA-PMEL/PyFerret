@@ -79,6 +79,8 @@ SET MODE VERIFY
 ! V5.52
 !  5/03 *acm* add bn_multi_line_labels.jnl, bn552_bug_fixes.jnl,
 !             bn_set_var_scale_off.jnl, bn_longvarnames.jnl, bn_shakey.jnl
+! v5.53
+!  9/03 *kob* added bn_test_nan
 
 GO bn_reset
 GO bn_syntax
@@ -369,8 +371,15 @@ GO bn_zaxr_fcns.jnl
 GO bn_reset
 GO bn_fill_irregular.jnl
 
+! ******** V5.53 Additions below ***********
 GO bn_reset
 GO bn_xml_output.jnl
+
+GO bn_reset
+GO bn_test_nan.jnl
+
+GO bn_reset
+GO bn_553_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

@@ -34,7 +34,7 @@ solaris:
 		CC=cc \
 		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I/usr/openwin/share/include -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS="-z muldefs" \
-		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
+		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
 iris4d:
 	${MAKE} gksm2ps \

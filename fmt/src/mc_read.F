@@ -48,6 +48,11 @@
 * 7/97 *kob* - fix bug in which status is not being checked
 * 5/98 *kob* - fix bug in which step files were not being properly reset after 
 *              they were closed
+*
+* V500 5/99 *kob* - 1) fixed bug occurring when correctly setting up variable in 
+*	               common
+*                   2) minor mod to only open set entire path of cdf file if it
+*                      hasn't already been opened
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -186,10 +191,13 @@
 
 * let's open the netcdf file now
 *first make sure we have the full path set
-          tstep_file = TM_INQ_PATH( sf_name(sfcnt), tmap_tsteps, ' ',
+* 5/99 *kob* only need to do this if the file hasn't already been opened
+	   IF (.NOT. sf_valid(sfcnt)) THEN
+	      tstep_file = TM_INQ_PATH( sf_name(sfcnt), tmap_tsteps, ' ',
      .                          .TRUE., status )
-           IF ( status .NE. merr_ok ) GOTO 5000
-           sf_name(sfcnt) = tstep_file     ! save exact path
+	      IF ( status .NE. merr_ok ) GOTO 5000
+	      sf_name(sfcnt) = tstep_file ! save exact path
+	   ENDIF
 
 	   cdfid = NCOPN(sf_name(sfcnt), NCNOWRIT, cdfstat)	
 	   IF (cdfstat .NE. NCNOERR) GOTO 5100
@@ -205,10 +213,12 @@
      .		vname) .NE. str_match)	THEN
 	      CALL NCINQ(cdfid, ndims, nvars, natts, recdim, cdfstat)
 	      do 50 varpos=1,nvars
-		 CALL NCVINQ(cdfid, cd_varid(varpos), vname, vartype, 
+* 5/99 - fix bug which was sending cd_varid(varps) to NCVINQ instead of varpos
+		 CALL NCVINQ(cdfid, varpos, vname, vartype, 
      .		      nvdims, vdims, nvatts,cdfstat)
+*5/99 - bug fix: need to test to see if sting is EQUAL rather than not equal *kob*
 		 IF (STR_CASE_BLIND_COMPARE ( ds_var_code(ivar), 
-     .		      vname) .NE. str_match)	THEN
+     .		      vname) .EQ. str_match)	THEN
 		    cd_varid(ivar) = varpos
 		    goto 60 
 		 ENDIF

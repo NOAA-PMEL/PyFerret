@@ -58,6 +58,8 @@
 *		 - added oversizing of contexts
 *		 - added test for irrelevant data set
 * V500: 10/20/98 *jc* - added ADD_RDC_XFORM
+* V510: 8/99 *sh* - g=unknown_uvar is allowed now. If happening, then skip
+*	final steps of context getting
 	
 #ifdef unix
 	include	'ferret.parm'
@@ -90,6 +92,13 @@
 * get variable and attached modifications
 	CALL PARSE_VAR_NAME ( full_var_name, var_cx, mods_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* 8/99 If G=unknown_user_var was given then exit now.
+* It is recognizable because the text position is encoded in the grid number.
+* This should happen ONLY when this is called from IS_UVAR_GRID
+	IF ( cx_unstand_grid(var_cx)
+     . .AND. cx_grid(var_cx) .LT. unspecified_int4 ) GOTO 100
+
 
 * apply the hidden @RDC transform if appropriate
 	CALL ADD_RDC_XFORM( var_cx, status)

@@ -60,6 +60,9 @@
 * V500: 2/22/99 *sh* - if ABSTRACT grid or normal axis then use XABSTRACT (or
 *			YABSTRACT, ZABSTRACT, TABSTRACT)
 *		       see Note at "the_real-ABSTRACT"
+* V510: 8/99 *sh* - for g=user_var the returned grid is LT unspecified_int4
+*		... having the text position of uvar encoded in it
+*		... exit out earliy in this case
 
 #ifdef unix
 	include	'ferret.parm'
@@ -283,7 +286,7 @@
 
 * unknown grid for pseudo-variable is OK when program is determining grid
 * for an algebraic expression but not OK when it's time to evaluate the expr.
-	IF ( cx_grid(pvar_cx) .EQ. unspecified_int4 ) GOTO 500
+	IF ( cx_grid(pvar_cx) .LE. unspecified_int4 ) GOTO 500	! 8/99
 
 * if the grid is ABSTRACT change it to X/Y/Z/TABSTRACT so other axes than
 * pvdim are not effected (2/22/99)

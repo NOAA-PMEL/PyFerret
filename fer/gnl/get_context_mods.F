@@ -116,6 +116,7 @@
 * V491:  3/2/98 *sh* - increased length of "name" to accomodate
 *                    e.g. gt="1-jan-1990:12:00":"15-jan-1990:12:00":120
 *                    and allow special check for leading quotation mark
+* V510: 8/99 *sh* - allow g=uvar and return encoded char pos of uvar
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -169,7 +170,8 @@
 	LOGICAL		INVALID_R8_TO_I4, TM_DIGIT,
      .			atsin, colon, colon2, atcolon, first_time(4),
      .			kludge_gx_to_x(4), set_implicitly(4),
-     .			fmat_lo, fmat_hi, logical_dummy, single_char
+     .			fmat_lo, fmat_hi, logical_dummy, single_char,
+     .			has_g_eq_unkn_uvar
 	INTEGER		ATOM_POS, STR_CASE_BLIND_COMPARE, STR_UPCASE,
      .			TM_GET_GRIDNUM, KNOWN_GRID, FIND_DSET_NUMBER,
      .			REGION_NUMBER, TM_GET_LINENUM, TM_AXIS_DIRECTION,
@@ -207,6 +209,7 @@
 	kludge_gx_to_x(idim) = .FALSE.
 	set_implicitly(idim) = .FALSE.
  10     first_time(idim) = .TRUE.
+	has_g_eq_unkn_uvar = .FALSE.
 
 * check in advance for the use of pre-specified ("/@") limits and D=
 * (the results of D= may be relevant in G=var)
@@ -408,8 +411,9 @@
 	         IF ( gdset .NE. unspecified_int4 ) THEN
 	            CALL FIND_VAR_NAME( gdset, name(:name_end),
      .                                  category, variable )
-	            IF ( category .EQ. cat_user_var
-     .              .OR. category .EQ. cat_pseudo_var ) GOTO 5055
+	            IF ( category .EQ. cat_pseudo_var ) GOTO 5055
+!	            IF ( category .EQ. cat_user_var
+!     .              .OR. category .EQ. cat_pseudo_var ) GOTO 5055
 	         ELSE
 	            variable = munknown_var_name
 	         ENDIF
@@ -417,11 +421,28 @@
 	         IF ( variable .NE. munknown_var_name ) THEN
 	            grid = KNOWN_GRID(gdset,category,variable)
 		    cx_grid_needs_dset = .NOT.cx_dset_gvn( mods_cx )
-	            IF ( single_char ) THEN	! g=name
+* ... 8/99 -- allow G=uvar where uvar may be unknown at this point
+		    IF ( grid     .EQ. unspecified_int4
+     .		   .AND. category .EQ. cat_user_var ) THEN	! g=??uvar??
+	              IF (cx_grid(mods_cx) .NE. unspecified_int4) GOTO 5022
+		      has_g_eq_unkn_uvar = .TRUE.
+*       HACK!: encode the start/end limits of the uvar name into the grid !!!
+		      cx_grid(mods_cx) = unspecified_int4
+     .				 - (equal_pos+1 + 2000*iend)
+		      IF (cx_has_impl_grid(mods_cx)) THEN
+*       A any previous gx= info becomes irrelevant
+		         cx_has_impl_grid(mods_cx) = .FALSE.
+			 cx_impl_grid(mods_cx) = unspecified_int4
+		         CALL DEALLO_GRID(status)
+			 IF (status .NE. ferr_ok) CALL ERRMSG
+     .				( ferr_internal, status, 'g=uvar', *5000) 
+	              ENDIF
+* ... end of 8/99
+	            ELSEIF ( single_char ) THEN	! g=name
 	               IF ( cx_grid(mods_cx) .NE. unspecified_int4
      .	              .AND. cx_grid(mods_cx) .NE. grid ) GOTO 5022
  	               cx_grid( mods_cx ) = grid
-	            ELSE
+	            ELSEIF (.NOT.has_g_eq_unkn_uvar) THEN
 	               IF (.NOT.cx_has_impl_grid(mods_cx)) THEN
 	                  CALL ALLO_GRID_TO_CX(mods_cx,impl_grid,status)
 	                  IF ( status .NE. ferr_ok ) GOTO 5000
@@ -440,7 +461,7 @@
 	            ELSEIF ( TM_AXIS_DIRECTION(axis) .NE. idim
      .		       .AND. TM_AXIS_DIRECTION(axis) .NE. 0 ) THEN	! 7/96
 	               GOTO 5052
-	            ELSE
+	            ELSEIF (.NOT.has_g_eq_unkn_uvar) THEN
 	               IF (.NOT.cx_has_impl_grid(mods_cx) ) THEN
 	                  CALL ALLO_GRID_TO_CX(mods_cx,impl_grid,status)
 	                  IF ( status .NE. ferr_ok ) GOTO 5000

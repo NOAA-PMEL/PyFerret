@@ -70,6 +70,9 @@
 *		this state as a negative is_phase
 *       *kob* 4/99 - bug fix: using /d in the definition of a dataset
 *                    independent variable caused a crash.
+* V510: 8/99 *sh* - allow G=uvar on both uvars and pseudo-vars.
+*			If uvar grid is unknown, go get it!
+
 * calling argument declarations:
 	INTEGER	status
 * normal return is for error conditions
@@ -166,7 +169,9 @@
 * (note XBOX probably doesn't need this but, hey, what the heck)
 	uvar_mod_pseudo(idim,uvar) = .TRUE.
 * did we get a grid for the pseudo-variable ?
-	IF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
+	IF ( cx_grid(hi_cx) .LT. unspecified_int4 ) THEN
+	   GOTO 800
+	ELSEIF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
 	   GOTO 500		! yup - merge it
 	ELSE
 * nope! Set flag indicating a 2nd pass is needed
@@ -208,6 +213,9 @@
      .				hi_cx,
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+* handle variable regridded to a uvar which has unknown grid (8/99) 
+	IF ( cx_unstand_grid(hi_cx)
+     . .AND. cx_grid(hi_cx) .LT. unspecified_int4 ) GOTO 800
 * do we know the defining grid for the component ?
 * (not necessarily the same as the returned grid --> there may be a regrid )
 	IF ( cx_category(hi_cx) .EQ. cat_user_var ) THEN
@@ -282,6 +290,26 @@
 	   ENDIF
 	ENDIF
 	GOTO 100
+
+* deal with G=uvar with target grid not yet known -- get the target grid (8/99)
+ 800	CONTINUE
+* ... decode the character position of the "G=" target variable name
+	end = (-cx_grid(hi_cx))/2000
+	start = (-cx_grid(hi_cx)) - 2000*end + unspecified_int4
+	IF ( start .LT. 0
+     .  .OR. end   .LT. start
+     .	.OR. end   .GT. cmnd_buff_len ) CALl ERRMSG(
+     .			ferr_internal, status, 'G=uvar', 5000)
+
+	name = uvar_text(uvar)(start:end)
+	len_name = end - start + 1
+* ... the context stack is already pushed from above
+	CALL GET_VAR_CONTEXT (  name(:len_name),
+     .				lo_cx,
+     .				hi_cx,
+     .				status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
 
 * grid for this component is not known.  Back to IS stack to get it
 * ... repeat this phase again when we get back

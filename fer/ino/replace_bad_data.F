@@ -45,6 +45,9 @@
 * revision 0.0 - 3/19/87
 * V200:  5/18/89 - 4D-symmetrical version
 *	10/16/89 - modified array declarations using REPLACE_BAD_DATA_SUB
+* V500: 2/18/99 - *kob* - call new C routine REPLACE_BAD_DATA_SUB which
+*                         will check for use of NaN as missing/bad flag.  new
+*                         routine is also simpler and faster
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -57,16 +60,21 @@
 #endif
 
 * calling argument declarations:
-	INTEGER	msrc, cx
+* 2/99 *kob* add new variable size and reference to function MGRID_SIZE
+	INTEGER	msrc, cx, size, MGRID_SIZE
 	REAL    src( * )
 	REAL	old_bad
 
-	CALL REPLACE_BAD_DATA_SUB( cx, old_bad,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .				 mr_bad_data( msrc )		 )
+*	CALL REPLACE_BAD_DATA_SUB( cx, old_bad,
+*     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
+*     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
+*     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
+*     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
+*     .				 mr_bad_data( msrc )		 )
+	
+	size = MGRID_SIZE(msrc)
+        CALL REPLACE_BAD_DATA_SUB( old_bad, src, size,
+     .                            mr_bad_data(msrc) )
 
 	RETURN
 	END

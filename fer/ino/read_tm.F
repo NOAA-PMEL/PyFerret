@@ -47,7 +47,8 @@
 * V230:  7/30/92 - must CALL ERRMSG to stop command files, etc. following error
 *        11/6/92 - increased variable length to 24 characters
 * V312: 5/94 - array "memory" as a calling argument
-
+* v500: 2/99 - *kob* add call to new routine REPLACEABLE_BAD_FLAGS to allow
+*              and check for NaN as missing values
 #ifdef unix
 	include	'tmap_format/tmap_errors.parm'
 	include	'tmap_format/tmap_dims.parm'
@@ -82,6 +83,9 @@
      .			lo_s1, lo_s2, lo_s3, lo_s4, 
      .			hi_s1, hi_s2, hi_s3, hi_s4 
 	CHARACTER*24	VAR_CODE, variable_code
+
+* *kob* 2/99 - add declaration for new c function
+	INTEGER REPLACEABLE_BAD_FLAGS
 
 	EQUIVALENCE	(lo_ss(1),lo_s1), (lo_ss(2),lo_s2),
      .			(lo_ss(3),lo_s3), (lo_ss(4),lo_s4),
@@ -131,7 +135,10 @@
 	ENDIF
 
 * replace multiple bad data flags in some variables
-	IF ( ds_bad_flag( variable ) .NE. ds_missing_flag( variable ) )
+* IF ( ds_bad_flag( variable ) .NE. ds_missing_flag( variable ) )
+* *kob* 2/99 - call new routine to check for usage of NaN.
+	IF (REPLACEABLE_BAD_FLAGS(ds_bad_flag(variable), 
+     .                            ds_missing_flag(variable)) .EQ. 1)
      .	   CALL REPLACE_BAD_DATA
      .		(memory(1,mr_blk1(mr)),mr,cx,ds_missing_flag(variable))
 

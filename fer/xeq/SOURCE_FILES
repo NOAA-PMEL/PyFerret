@@ -26,5 +26,3 @@ xeq_user_command.F\
 xeq_vector.F\
 xeq_wire.F\
 xeq_write.F 
-LIB = ../../lib/libxeq.a
- 

@@ -47,5 +47,3 @@ un_cache.F\
 unprotect_all_mrs.F\
 uvar_number.F\
 var_code.F 
-LIB = ../../lib/libmem.a
- 

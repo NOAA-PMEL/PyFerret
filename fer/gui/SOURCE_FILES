@@ -56,5 +56,3 @@ main.c\
 po.c\
 vp.c\
 xgksmod_xopws.c 
-LIB = ../../lib/libgui.a
- 

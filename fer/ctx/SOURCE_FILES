@@ -40,5 +40,3 @@ reconcile_com_dst_cx.F\
 region_class.F\
 set_doc_flag.F\
 transfer_context.F 
-LIB = ../../lib/libctx.a
- 

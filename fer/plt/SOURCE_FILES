@@ -64,5 +64,3 @@ store_palette.F\
 taxis_style.F\
 viewport_number.F\
 whoi_date.F 
-LIB = ../../lib/libplt.a
- 

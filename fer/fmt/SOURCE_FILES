@@ -31,5 +31,3 @@ var_title.F\
 var_title_mod.F\
 var_trans.F\
 var_units.F 
-LIB = ../../lib/libfmt.a
- 

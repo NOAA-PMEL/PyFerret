@@ -32,5 +32,3 @@ wind_stress.F\
 xy_hdiffus.F\
 z_hadvec.F\
 z_hdiffus.F 
-LIB = ../../lib/libocn.a
- 

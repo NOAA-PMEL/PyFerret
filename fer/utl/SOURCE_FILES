@@ -101,5 +101,3 @@ unit_chg_ax.F\
 upper_case.F\
 valid_grid.F\
 which_gcfcn.F 
-LIB = ../../lib/libutl.a
- 

@@ -72,5 +72,3 @@ translate_limit.F\
 user_sub.F\
 warn.F\
 write_multi.F 
-LIB = ../../lib/libgnl.a
- 

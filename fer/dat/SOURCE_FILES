@@ -19,5 +19,3 @@ xrevision_data.F\
 xtext_info_data.F\
 xvariables_data.F\
 xwindow_state_data.F 
-LIB = ../../lib/libdat.a
- 

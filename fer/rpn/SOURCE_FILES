@@ -13,5 +13,3 @@ not_rpn.F\
 ok_juxtapo.F\
 prcd.F\
 rpn.F 
-LIB = ../../lib/librpn.a
- 

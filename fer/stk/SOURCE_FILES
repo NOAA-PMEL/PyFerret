@@ -46,5 +46,3 @@ stack_ptr_dn.F\
 stack_ptr_up.F\
 unprotect_cmnd_data.F\
 xerror.F 
-LIB = ../../lib/libstk.a
- 

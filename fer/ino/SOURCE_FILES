@@ -12,5 +12,3 @@ repl_tm_find_grid_slot.F\
 replace_bad_data.F\
 replace_bad_data_sub.F\
 var_ss_lims.F 
-LIB = ../../lib/libino.a
- 

@@ -62,5 +62,3 @@ theta_foff.F\
 welch_wt.F\
 window_regrid_1_axis.F\
 xyave_regrid.F 
-LIB = ../../lib/libdoo.a
- 

@@ -10,5 +10,3 @@ save_arg_pointers.c\
 signal.c\
 wgif.c\
 whdf.c 
-LIB = ../../lib/libccr.a
- 

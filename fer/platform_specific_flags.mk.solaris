@@ -31,6 +31,8 @@ FINCLUDES	= -I../../ppl/tmap_inc \
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
+# New platform type var - *kob* 10/01
+PLATFORM = Solaris 5.6 
  
 
 CC              = cc

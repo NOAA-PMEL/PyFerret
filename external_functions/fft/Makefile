@@ -8,7 +8,7 @@
 #  15-Nov-1999 Ansley Manke  
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
-
+# 2/2001  debug macros
 #
 # include platform specific macro definitions
 #
@@ -42,7 +42,7 @@ ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

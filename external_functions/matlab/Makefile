@@ -7,7 +7,7 @@
 # 
 # *acm* 3/23/2000 link  ../common to ferret_cmn  rather than using the
 #       link in ef_utility (which may not be present when this is compiled.)
-#
+#  ACM  2/2001  debug macros
 #
 #  Note that these functions must be decleared in ../ccr/EF_InternalUtil.c
 #  Run the perl script in this directory int_dlsym.pl ./ > intcode.c
@@ -49,7 +49,7 @@ all:	ferret_cmn matlab.so matlab_func.so
 
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

@@ -4,11 +4,8 @@
 # January 20 1998
 # Jonathan Callahan
 #
-#  15-Nov-1999 Ansley Manke  
-#  remove refs to ef_utility/*.o  (now in ferret executable)
-#
 # dec-00 adapted for "godae_obs" function
-
+# ACM 2/2001
 
 #
 # include platform specific macro definitions
@@ -44,7 +41,7 @@ GOB_OBJS = ocn_obs.o
 all:	ferret_cmn ocn_obs.o godae_obs.o godae_obs.so
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

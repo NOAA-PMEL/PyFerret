@@ -6,6 +6,7 @@
 #
 #  15-Nov-1999 Ansley Manke  
 #  remove refs to ef_utility/*.o  (now in ferret executable)
+#  ACM 2/2001  debug macros
 #
 # include platform specific macro definitions
 #
@@ -34,10 +35,10 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 
 standard:	ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so subtract.so
 
-all:	ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so strings.so subtract.so times_table.so
+all:	ferret_cmn add_9.so avet.so custom.so custom_nf.so custom_x.so extend.so pass_thru.so percent_good_t.so status.so storage.so strings.so subtract.so times_table.so
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 
 ferret_cmn:

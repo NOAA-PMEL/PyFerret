@@ -9,6 +9,7 @@
 # *sh* 2/2000 - removed SAMPLEIJ from target list (replaced by SAMPLEXY)
 #
 # *acm* 1/2001 - incorporate "make debug" as per SH Makefiles
+#  acm  2/2001   debug macros
 #
 # include platform specific macro definitions
 #
@@ -38,7 +39,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 all:    ferret_cmn compressi.so compressj.so compressk.so compressl.so 
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

@@ -7,7 +7,7 @@
 #  15-Nov-1999 Ansley Manke  
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
- 
+#  ACM  2/2001  debug macros
 #
 # include platform specific macro definitions
 #
@@ -41,7 +41,7 @@ SUB_OBJS = eofsubs.o
 all:	ferret_cmn eofsubs.o eof_space.so eof_tfunc.so eof_stat.so
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

@@ -10,7 +10,7 @@
 # Macro Definitions
 #
 
-DIRS = examples convolve eof sort v5d zaxr
+DIRS = examples cmprsi_by convolve date_and_time eof godae_obs sort v5d zaxr
 
 #
 # Targets
@@ -21,6 +21,13 @@ all:
 		do \
 			(cd $$i; echo "making" $@ "in $$i..."; \
 			$(MAKE) );\
+		done
+
+debug:
+	for i in $(DIRS); \
+		do \
+			(cd $$i; echo "making debug" $@ "in $$i..."; \
+			$(MAKE) debug);\
 		done
 
 install:

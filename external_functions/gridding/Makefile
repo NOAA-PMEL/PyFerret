@@ -8,7 +8,7 @@
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 # *sh* 2/2000 - removed SAMPLEIJ from target list (replaced by SAMPLEXY)
 #
- 
+# ACM 2/2001  debug macros
 #
 # include platform specific macro definitions
 #
@@ -41,7 +41,7 @@ ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

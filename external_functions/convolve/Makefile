@@ -5,7 +5,7 @@
 # Jonathan Callahan
 #
 # *acm* 1/2001 - add "make debug" target as per SH Makefiles
- 
+#  ACM  2/2001    use debug macros
 #
 # include platform specific macro definitions
 #
@@ -37,7 +37,7 @@ all:	ferret_cmn convolvei.so convolvej.so convolvek.so convolvel.so
 
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

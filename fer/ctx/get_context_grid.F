@@ -127,6 +127,9 @@
 *		value of use_grid upon entry cannot be trusted to be correct
 *	*sh* 4/00 - since netCDF dsets use dynamic grids now, all grids and
 *		  lines maintain a use count
+* V520: 6/00 *sh* - bug fix - if the quick exit is taken here because
+*		std_grid is not yet known the axes within the implicit grid
+*		were never allocated so dont deallocate them
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -198,7 +201,8 @@
 	      IF ( mode_diagnostic )  CALL DIAG_OP
      .	     ('dealloc ',isact_class_impl_grid,cx_impl_grid(cx),0)
 #endif
-	      CALL DEALLO_GRID(status)
+* ... grid was barely started by GET_CONTEXT_MODS. Axes were never allocated
+	      CALL DEALLO_UNFORMED_GRID(status)
 	   ENDIF
 	   RETURN
 	ENDIF

@@ -407,7 +407,7 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
         IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore dash settings? (5/29/97  revised 3/2002
-        IF ( do_dash ) CALL PPL_DASH_RESTORE
+        IF ( do_dash .EQ. 1 ) CALL PPL_DASH_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

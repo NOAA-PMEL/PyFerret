@@ -115,6 +115,7 @@
 *      *acm* 10/01  remove VMS includes
 *      *acm* 12/01  Allocate PPLUS memory for the flag array used by
 *                   flowline.
+* V541 *acm*  4/02  for flowlines, more PPLUS memory was allocated than needed.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -225,17 +226,20 @@ C plus those starting w/ xbox_bounds:
         IF ( vector ) plot_mem_used = plot_mem_used * 2
 
 	flows     = qual_given( slash_vect_flowline  ).GT.0
-        IF ( flows ) THEN
 
 !  For flowlines, more PLOT+ memory needed; based on density parameter and
-!  grid size.  Use iscl = 10; an upper bound for iscl in subroutine flowline.
+!  grid size.  Use density=5; an upper bound for iscl in subroutine flowline.
 
+        IF ( flows ) THEN
            nsiz = MAX(size1, size2)
-           iscl = 10
+!           iscl = density-5 + 200/nsiz
+           iscl = 200/nsiz
+           IF (iscl .LT. 1) iscl = 1
+           IF (iscl .GT. 10) iscl = 10
 
 C   set up memory for the flag grid
 
-           siz = 4*(nsiz*nsiz*iscl*iscl + nsiz*iscl)   ! see flowline
+           siz = (nsiz*nsiz*(iscl*iscl +2)) + nsiz*iscl   ! see flowline
            plot_mem_used = plot_mem_used + siz
         ENDIF
 
@@ -655,11 +659,6 @@ C ACM added 8/2001 save cal id if vertical time axis
  5160	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'must be a 2D region'//pCR//
      .					cmnd_buff(:len_cmnd), *5100 )
-! 5170   buff = LEFINT( INT(0.99*nsize), lo1 )
-!        cmnd_name = LEFINT( plot_mem_used, lo2 )   ! used as buffer
-!        CALL ERRMSG( ferr_prog_limit, status,
-!     .          cmnd_name(:lo2)//' points to plot'//pCR//
-!     .          'Plot buffer size is: '//buff(:lo1), *5100 )
 
 ! 5200	CALL ERRMSG( ferr_no_range, status,
 !     .				'data are all flagged as bad', *5000 )

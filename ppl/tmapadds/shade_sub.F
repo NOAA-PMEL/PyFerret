@@ -77,6 +77,8 @@
 *			and by returning -999 for no index found
 *       *acm* 11/02     V5.50 For rectangular shade plots with no pattern
 *                       calls, use cellarray call for the shade.
+*       *acm*  1/03     v5.50 Remove debug line that stopped Ferret for large
+*                             cellarray plots (!)
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -294,7 +296,6 @@ C       data statement of my_trans added for linux port *jd* 12.96
         cy1 = uc(3)*yinv
         cy2 = uc(4)*yinv
 
-        if (nx*ny .gt. 500000) stop
         IF (uc(3) .LE. uc(4) ) THEN      ! non-depth axis
            k = 1
 	   DO 80 j = 1,ny

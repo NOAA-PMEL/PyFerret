@@ -1,139 +1,71 @@
-<!-- gziped --><html>
-<title>CVS log for fer/common/command.parm</title>
-<!-- hennerik CVSweb $Revision$ -->
-</head>
-<body text="#000000" bgcolor="#ffffff">
-<img src="/icons/apache_pb.gif"> <h1 align=center>CVS log for fer/common/command.parm</h1>
-<A HREF="/cgi-bin/cvsweb.cgi/fer/common/#command.parm"><IMG SRC="/icons/back.gif" ALT="[BACK]" BORDER="0" WIDTH="20" HEIGHT="22"></A>
- <b>Up to  <a href="/cgi-bin/cvsweb.cgi/#dirlist">[Development]</a> / <a href="/cgi-bin/cvsweb.cgi/fer/#dirlist">fer</a> / <a href="/cgi-bin/cvsweb.cgi/fer/common/#dirlist">common</a></b><p>
-<A HREF="#diff">Request diff between arbitrary revisions</A>
-<HR NOSHADE>
-Default branch: MAIN<BR>
-<HR size=1 NOSHADE><a NAME="rev1.3"></a><a NAME="HEAD"></a><a NAME="MAIN"></a>
- Revision <A HREF="command.parm?rev=1.3&content-type=text/x-cvsweb-markup"><b>1.3</b></A> / (<A HREF="/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.3&content-type=text/plain" target="cvs_checkout" onClick="window.open('/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.3&content-type=text/plain','cvs_checkout','resizeable,scrollbars');"><b>download</b></A>) - <a href="/cgi-bin/cvsweb.cgi/fer/common/command.parm?annotate=1.3">annotate</a> - <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm?r1=1.3">[select for diffs]</A>
-, <i>Fri Jan 19 20:18:51 2001 UTC</i> (13 minutes, 35 seconds ago) by <i>ansley</i>
-<BR>Branch: <b><A HREF="command.parm?only_with_tag=MAIN">MAIN</A>
-</b>
-<BR>CVS Tags: <b><A HREF="command.parm?only_with_tag=HEAD">HEAD</A>
-</b><BR>Changes since <b>1.2: +4 -1
- lines</b><BR>Diff to previous <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm.diff?r1=1.2&r2=1.3">1.2</A>
-<PRE>
-streamline commands
-</PRE>
-<HR size=1 NOSHADE><a NAME="rev1.2"></a><a NAME="v522"></a><a NAME="v511beta1-1"></a><a NAME="v510beta1-1"></a><a NAME="v500beta1-1"></a><a NAME="v500beta1-0"></a><a NAME="v500PreBetaRelease"></a><a NAME="ansley-special-FFT"></a>
- Revision <A HREF="command.parm?rev=1.2&content-type=text/x-cvsweb-markup"><b>1.2</b></A> / (<A HREF="/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.2&content-type=text/plain" target="cvs_checkout" onClick="window.open('/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.2&content-type=text/plain','cvs_checkout','resizeable,scrollbars');"><b>download</b></A>) - <a href="/cgi-bin/cvsweb.cgi/fer/common/command.parm?annotate=1.2">annotate</a> - <b>[selected]</b>, <i>Wed Feb 17 20:36:28 1999 UTC</i> (23 months ago) by <i>hankin</i>
-<BR>Branch: <b><A HREF="command.parm?only_with_tag=MAIN">MAIN</A>
-</b>
-<BR>CVS Tags: <b><A HREF="command.parm?only_with_tag=v522">v522</A>,
-<A HREF="command.parm?only_with_tag=v511beta1-1">v511beta1-1</A>,
-<A HREF="command.parm?only_with_tag=v510beta1-1">v510beta1-1</A>,
-<A HREF="command.parm?only_with_tag=v500beta1-1">v500beta1-1</A>,
-<A HREF="command.parm?only_with_tag=v500beta1-0">v500beta1-0</A>,
-<A HREF="command.parm?only_with_tag=v500PreBetaRelease">v500PreBetaRelease</A>,
-<A HREF="command.parm?only_with_tag=ansley-special-FFT">ansley-special-FFT</A>
-</b><BR>Changes since <b>1.1: +4 -0
- lines</b><BR>Diff to previous <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm.diff?r1=1.1&r2=1.2">1.1</A>
-<PRE>
-for under-development POLYGON command **UNTESTED CODE**
-</PRE>
-<HR size=1 NOSHADE><a NAME="rev1.1.1.1"></a><a NAME="v5-0"></a><a NAME="v492nodisc"></a><a NAME="v492"></a><a NAME="v491b3"></a><a NAME="v491b"></a><a NAME="v491"></a><a NAME="v490"></a><a NAME="ferret"></a>
- Revision <A HREF="command.parm?rev=1.1.1.1&content-type=text/x-cvsweb-markup"><b>1.1.1.1</b></A> / (<A HREF="/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.1.1.1&content-type=text/plain" target="cvs_checkout" onClick="window.open('/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.1.1.1&content-type=text/plain','cvs_checkout','resizeable,scrollbars');"><b>download</b></A>) - <a href="/cgi-bin/cvsweb.cgi/fer/common/command.parm?annotate=1.1.1.1">annotate</a> - <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm?r1=1.1.1.1">[select for diffs]</A>
- <i>(vendor branch)</i>, <i>Wed Jul 23 20:14:35 1997 UTC</i> (3 years, 5 months ago) by <i>tmap</i>
-<BR>Branch: <b><A HREF="command.parm?only_with_tag=ferret">ferret</A>
-</b>
-<BR>CVS Tags: <b><A HREF="command.parm?only_with_tag=v5-0">v5-0</A>,
-<A HREF="command.parm?only_with_tag=v492nodisc">v492nodisc</A>,
-<A HREF="command.parm?only_with_tag=v492">v492</A>,
-<A HREF="command.parm?only_with_tag=v491b3">v491b3</A>,
-<A HREF="command.parm?only_with_tag=v491b">v491b</A>,
-<A HREF="command.parm?only_with_tag=v491">v491</A>,
-<A HREF="command.parm?only_with_tag=v490">v490</A>
-</b><BR>Changes since <b>1.1: +0 -0
- lines</b><BR>Diff to previous <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm.diff?r1=1.1&r2=1.1.1.1">1.1</A>
- to selected <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm.diff?r1=1.2&r2=1.1.1.1">1.2</A>
-<PRE>
-Initial setup of Ferret and CVS
-</PRE>
-<HR size=1 NOSHADE><a NAME="rev1.1"></a>
- Revision <A HREF="command.parm?rev=1.1&content-type=text/x-cvsweb-markup"><b>1.1</b></A> / (<A HREF="/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.1&content-type=text/plain" target="cvs_checkout" onClick="window.open('/cgi-bin/cvsweb.cgi/~checkout~/fer/common/command.parm?rev=1.1&content-type=text/plain','cvs_checkout','resizeable,scrollbars');"><b>download</b></A>) - <a href="/cgi-bin/cvsweb.cgi/fer/common/command.parm?annotate=1.1">annotate</a> - <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm?r1=1.1">[select for diffs]</A>
-, <i>Wed Jul 23 20:14:35 1997 UTC</i> (3 years, 5 months ago) by <i>tmap</i>
-<BR>Branch: <b><A HREF="command.parm?only_with_tag=MAIN">MAIN</A>
-</b>
-<BR>Diff to selected <A HREF="/cgi-bin/cvsweb.cgi/fer/common/command.parm.diff?r1=1.2&r2=1.1">1.2</A>
-<PRE>
-Initial revision
-</PRE>
-<A NAME=diff>
-<HR NOSHADE>This form allows you to request diff's between any two
-revisions of a file.  You may select a symbolic revision
-name using the selection box or you may type in a numeric
-name using the type-in text box.
-</A><P>
-<FORM METHOD="GET" ACTION="/cgi-bin/cvsweb.cgi/fer/common/command.parm.diff">
-Diffs between 
-<SELECT NAME="r1">
-<OPTION VALUE="text" SELECTED>Use Text Field
-<OPTION VALUE="1.2:v522">v522
-<OPTION VALUE="1.2:v511beta1-1">v511beta1-1
-<OPTION VALUE="1.2:v510beta1-1">v510beta1-1
-<OPTION VALUE="1.2:v500beta1-1">v500beta1-1
-<OPTION VALUE="1.2:v500beta1-0">v500beta1-0
-<OPTION VALUE="1.2:v500PreBetaRelease">v500PreBetaRelease
-<OPTION VALUE="1.1.1.1:v5-0">v5-0
-<OPTION VALUE="1.1.1.1:v492nodisc">v492nodisc
-<OPTION VALUE="1.1.1.1:v492">v492
-<OPTION VALUE="1.1.1.1:v491b3">v491b3
-<OPTION VALUE="1.1.1.1:v491b">v491b
-<OPTION VALUE="1.1.1.1:v491">v491
-<OPTION VALUE="1.1.1.1:v490">v490
-<OPTION VALUE="1.1.1:ferret">ferret
-<OPTION VALUE="1.2:ansley-special-FFT">ansley-special-FFT
-<OPTION VALUE="1:MAIN">MAIN
-<OPTION VALUE="1.3:HEAD">HEAD
-</SELECT>
-<INPUT TYPE="TEXT" SIZE="12" NAME="tr1" VALUE="1.2">
- and 
-<SELECT NAME="r2">
-<OPTION VALUE="text" SELECTED>Use Text Field
-<OPTION VALUE="1.2:v522">v522
-<OPTION VALUE="1.2:v511beta1-1">v511beta1-1
-<OPTION VALUE="1.2:v510beta1-1">v510beta1-1
-<OPTION VALUE="1.2:v500beta1-1">v500beta1-1
-<OPTION VALUE="1.2:v500beta1-0">v500beta1-0
-<OPTION VALUE="1.2:v500PreBetaRelease">v500PreBetaRelease
-<OPTION VALUE="1.1.1.1:v5-0">v5-0
-<OPTION VALUE="1.1.1.1:v492nodisc">v492nodisc
-<OPTION VALUE="1.1.1.1:v492">v492
-<OPTION VALUE="1.1.1.1:v491b3">v491b3
-<OPTION VALUE="1.1.1.1:v491b">v491b
-<OPTION VALUE="1.1.1.1:v491">v491
-<OPTION VALUE="1.1.1.1:v490">v490
-<OPTION VALUE="1.1.1:ferret">ferret
-<OPTION VALUE="1.2:ansley-special-FFT">ansley-special-FFT
-<OPTION VALUE="1:MAIN">MAIN
-<OPTION VALUE="1.3:HEAD">HEAD
-</SELECT>
-<INPUT TYPE="TEXT" SIZE="12" NAME="tr2" VALUE="1.3">
-<BR>Type of Diff should be a&nbsp;<SELECT NAME="f">
-<OPTION VALUE=h SELECTED>Colored Diff<OPTION VALUE=H>Long Colored Diff<OPTION VALUE=u>Unidiff<OPTION VALUE=c>Context Diff<OPTION VALUE=s>Side by Side</SELECT><INPUT TYPE=SUBMIT VALUE="  Get Diffs  ">
-</FORM>
-<HR noshade>
-<A name=branch>
-<FORM METHOD="GET" ACTION="/cgi-bin/cvsweb.cgi/fer/common/command.parm">
-View only Branch: 
-<SELECT NAME="only_with_tag" onchange="submit()">
-<OPTION VALUE="" SELECTED>Show all branches
-<OPTION>MAIN
-</SELECT>
-<INPUT TYPE=SUBMIT VALUE="  View Branch  ">
-</FORM>
-</A>
-<A name=logsort>
-<FORM METHOD="GET" ACTION="/cgi-bin/cvsweb.cgi/fer/common/command.parm">
-Sort log by: 
-<SELECT NAME="logsort" onchange="submit()">
-<OPTION VALUE=cvs>Not sorted<OPTION VALUE=date SELECTED>Commit date<OPTION VALUE=rev>Revision</SELECT>
-<INPUT TYPE=SUBMIT VALUE="  Sort  ">
-</FORM>
-</A><hr noshade><address>zeller@think.de</address>
-</BODY></HTML>
+* COMMAND.PARM
+* command numbers
+* V500 *sh* 2/99 -- added POLYGON command
+
+	INTEGER		cmnd_set,
+     .			cmnd_show,
+     .			cmnd_cancel,
+     .			cmnd_contour,
+     .			cmnd_list,
+     .			cmnd_plot,
+     .			cmnd_go,
+     .			cmnd_help,
+     .			cmnd_load,
+     .			cmnd_define,
+     .			cmnd_exit,
+     .			cmnd_message,
+     .			cmnd_vector,
+     .			cmnd_pplus,
+     .			cmnd_frame,
+     .			cmnd_repeat,
+     .			cmnd_stat,
+     .			cmnd_shade,
+     .			cmnd_spawn,
+     .			cmnd_user,
+     .			cmnd_wire,
+     .			cmnd_query,
+     .			cmnd_if,
+     .			cmnd_else,
+     .			cmnd_elif,
+     .			cmnd_endif,
+     .			cmnd_polygon,
+     .			cmnd_semicolon
+	INTEGER		subcmnd_variable,
+     .			subcmnd_set_data,
+     .			subcmnd_set_window,
+     .			subcmnd_canc_data,
+     .			subcmnd_canc_window
+
+	PARAMETER    (	cmnd_set     = 1,
+     .			cmnd_show    = 2,
+     .			cmnd_cancel  = 3,
+     .			cmnd_contour = 4,
+     .			cmnd_list    = 5,
+     .			cmnd_plot    = 6,
+     .			cmnd_go      = 7,
+     .			cmnd_help    = 8,
+     .			cmnd_load    = 9,
+     .			cmnd_define  = 10,
+     .			cmnd_exit    = 11,
+     .			cmnd_message = 12,
+     .			cmnd_vector  = 13,
+     .			cmnd_pplus   = 14,
+     .			cmnd_frame   = 15,
+     .			cmnd_repeat  = 16,
+     .			cmnd_stat    = 17,
+     .			cmnd_shade   = 18,
+     .			cmnd_spawn   = 19,
+     .			cmnd_user    = 20,
+     .			cmnd_wire    = 21,
+     .			cmnd_query   = 22,
+     .			cmnd_if      = 23,
+     .			cmnd_else    = 24,
+     .			cmnd_elif    = 25,
+     .			cmnd_endif   = 26,
+     .			cmnd_polygon = 27,
+     .			cmnd_semicolon = -123 ) ! not a real command
+	PARAMETER     (	subcmnd_variable = 4,
+     .			subcmnd_set_data = 6,
+     .			subcmnd_set_window = 2,
+     .			subcmnd_canc_data= 6,
+     .			subcmnd_canc_window = 2)

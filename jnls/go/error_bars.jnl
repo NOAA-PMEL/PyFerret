@@ -13,7 +13,10 @@
 ! $4 - [optional] error limit below (if different that $4)
 ! $5 - [optional] "transpose" to interchange X and Y axes
 
-! example
+! examples
+!         demo script has more examples
+!       yes? go error_bars_demo
+
 ! Define synthetic data
 
 !	yes? let xpts = j[j=1:5]
@@ -22,7 +25,9 @@
 !	yes? let errdn = 0.6 * RANDU(xpts+1)
 !
 !	yes? plot/hlimits=0:6/vlimits=-2:2/vs/line xpts, ypts
-!	yes? GO error_bars poly/line=2 xpts ypts errup errdn
+!	yes? GO error_bars poly/line=2 ypts errup 
+
+!       yes? GO error_bars poly/line=3 ypts errup errdn
 
 ! argument check
 QUERY/IGNORE $1%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%

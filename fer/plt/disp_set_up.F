@@ -62,6 +62,8 @@
 * Linux Port *kob* 1/97 - include new cmn file xwindow_state.cmn because
 *			  locally declared common blocks aren't allowed.
 * V450: 3/97 - support for curvilinear coordinate plots
+*       8/97 - added curvilinear check to make sure that args 2 and 3 lie in
+*              compatible planes with the variable to be plotted
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -114,7 +116,8 @@
 * internal variable declarations:
 	CHARACTER*200	COMPOUND_TITLE, COMPOUND_KEY, plot_title
 	CHARACTER	TM_FMT*16, LEFINT*8,
-     .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8
+     .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
+     .			letter*1
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
      .			regrid_1, regrid_2, no_y_rng, formatted,
      .			edges_ok
@@ -226,10 +229,18 @@
 	   mr_ypos = mr_list(arg_xpos + 1)
 	   cx_xpos = cx_list(arg_xpos)
 	   cx_ypos = cx_list(arg_xpos + 1)
+* Note that the plot axes have never been transposed by this point
 	   IF ( CX_DIM_LEN(plot_axis(3),cx_xpos) .GT. 1
-     .	   .OR. CX_DIM_LEN(plot_axis(3),cx_ypos) .GT. 1
      .	   .OR. CX_DIM_LEN(plot_axis(4),cx_xpos) .GT. 1
-     .	   .OR. CX_DIM_LEN(plot_axis(4),cx_ypos) .GT. 1 ) GOTO 5400
+     .	   .OR. CX_DIM_LEN(plot_axis(1),cx_xpos) .EQ. 1 ) THEN
+	      letter = 'X'
+	      GOTO 5400
+	   ELSEIF ( CX_DIM_LEN(plot_axis(3),cx_ypos) .GT. 1
+     .	   .OR. CX_DIM_LEN(plot_axis(4),cx_ypos) .GT. 1
+     .	   .OR. CX_DIM_LEN(plot_axis(2),cx_ypos) .EQ. 1 ) THEN
+	      letter = 'Y'
+	      GOTO 5400
+	   ENDIF
 	ENDIF
 
 * create temporary buffers to contain the plot data
@@ -325,6 +336,10 @@
      .				mr_xpos, cx_xpos, rlo, rhi )
 	      xaxlo = rlo
 	      xaxhi = rhi
+	      IF (xaxlo .EQ. xaxhi) THEN
+		 letter = 'X'
+		 GOTO 5500
+	      ENDIF
 	      delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi )
@@ -347,6 +362,10 @@
      .				mr_ypos, cx_ypos, rlo, rhi )
 	      yaxlo = rlo
 	      yaxhi = rhi
+	      IF (yaxlo .EQ. yaxhi) THEN
+		 letter = 'Y'
+		 GOTO 5500
+	      ENDIF
 	      delta = unspecified_val8
 	   ELSE
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim2, yaxlo, yaxhi )
@@ -497,5 +516,8 @@
      .		     'can only '//commands(cmnd_num)//' single fields'//pCR//
      .		     'Use /OVERLAY for multiple variables', *5100 )
  5400	CALL ERRMSG( ferr_inconsist_plane, status,
-     .		'X or Y coord field lies'//pCR//'in wrong plane', *5100 )
+     .		 letter//' coord field lies'//pCR//
+     .		'in different plane from data to be plotted', *5100 )
+ 5500	CALL ERRMSG( ferr_no_range, status, letter//
+     .				' coordinate field', *5000 )
 	END

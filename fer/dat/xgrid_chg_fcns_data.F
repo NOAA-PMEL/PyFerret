@@ -47,6 +47,7 @@
 * V533: *sh* 6/01 - allow some functions to take parg_type_multi
 *            7/01 - added function SPAWN  
 * V540: *sh* 10/01 - use improved data typing general parameter parg_type_* defs
+* V560: *acm*11/01 - clarify the function description for ZAXREPLACE
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -212,8 +213,11 @@
 
 	DATA gfcn_name         (p_zlayer) /'ZAXREPLACE'/
 	DATA gfcn_version      (p_zlayer) / 1.0 /
-	DATA gfcn_descr        (p_zlayer) /
-     .		'interpolate V onto Z axis of ZAX using Z values in ZVALS' /
+	DATA gfcn_descr        (p_zlayer)(1:51) /
+     .	         'regrid V onto Z axis of ZAX based upon Z values in '/
+	DATA gfcn_descr        (p_zlayer)(52:124) /
+     .           'ZVALS using linear interpolation'/
+
 	DATA gfcn_rtn_type     (p_zlayer) / pfcn_rtn_float /
 	DATA gfcn_num_reqd_args(p_zlayer) /p_zlayer_num_args/
 	DATA gfcn_has_vari_args(p_zlayer) /.FALSE./

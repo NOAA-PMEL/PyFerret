@@ -98,11 +98,6 @@ set err_file = "all_${date_stamp}.${machine}_err"
 set plt_file = "all_${date_stamp}.${machine}_plt"
 
 
-#set up a generic data environment
-setenv FER_DESCR .
-setenv FER_DATA .
-setenv FER_DSETS .
-
 #set up external functions search path
 setenv FER_EXTERNAL_FUNCTIONS $efdir
 
@@ -150,6 +145,11 @@ ls -l $fver >>&$log_file
 echo "Using external functions from $efdir" >>&$log_file
 echo "Benchmark run by $bmarker" >>&$log_file
 echo "Note: $bcomment" >>&$log_file
+
+#set up a generic data environment
+echo "***** Restricting Ferret paths to bench directory *****" >>&$log_file
+source bench_environment >>&$log_file
+Fenv >>&$log_file
 
 # put a record of this benchmark run into the benchmark log file
 set bench_hist = "benchmark_history.log"

@@ -21,6 +21,7 @@
 * V552:*acm*  4/02 - add SET VARIABLE/SCALEFAC/OFFSET
 * V553 *acm*  1/04 - added slash_repeat_range, slash_repeat_name
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
+* V570: *acm* 5/40 add LIST/EDGES LIST/BOUNDS for NetCDF output
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -67,7 +68,9 @@
      .			slash_list_nohead,
      .			slash_list_extend,
      .			slash_list_title,
-     .			slash_list_width
+     .			slash_list_width,
+     .			slash_list_edges,
+     .			slash_list_bounds
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -255,7 +258,9 @@
      .			slash_list_nohead = 11,
      .			slash_list_title  = 17,
      .			slash_list_extend = 19,
-     .			slash_list_width = 1+29 )
+     .			slash_list_width = 1+29,
+     .			slash_list_edges = 1+30,
+     .			slash_list_bounds = 1+31 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,

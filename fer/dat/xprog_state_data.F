@@ -91,16 +91,11 @@
 * V510 5/00 *sh* - added denig_x/ylim_msg_done
 * V540 11/01 *sh* - initialize last_cmnd_buff
 * V550:12/02 *acm*- new MODE LOGO and MODE LABELS
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'movies.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:MOVIES.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * internal variable declarations:
 	INTEGER	i
@@ -182,7 +177,9 @@
      .		(mode_state( pmode_logo        ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /,
      .		(mode_state( pmode_labels      ,i), i=1,mode_stack_size)
-     .					/ mode_stack_size*.TRUE.   /
+     .					/ mode_stack_size*.TRUE.   /,
+     .		(mode_state( pmode_grat      ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.FALSE.   /
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
      .		mode_name ( pmode_interpolate )	/ 'INTERPOLATE ' /,
@@ -205,8 +202,9 @@
      .		mode_name ( pmode_ppllist     )	/ 'PPLLIST'      /,
      .		mode_name ( pmode_gui         )	/ 'GUI'          /,
      .		mode_name ( pmode_logo        )	/ 'LOGO'         /,
-     .		mode_name ( pmode_labels      )	/ 'LABELS'       /
-	DATA  ( mode_name(i),i=pmode_labels+1,max_modes)/4*pmode_unused/
+     .		mode_name ( pmode_labels      )	/ 'LABELS'       /,
+     .		mode_name ( pmode_grat      )	/ 'GRATICULE'    /
+	DATA  ( mode_name(i),i=pmode_grat+1,max_modes)/3*pmode_unused/
 
 
 	DATA	(mode_arg  ( pmode_diagnostic  ,i), i=1,mode_stack_size)
@@ -254,6 +252,8 @@
      .		(mode_arg  ( pmode_logo        ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_labels      ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /,
+     .		(mode_arg  ( pmode_grat      ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /
 
 * for MODE WAIT
@@ -296,5 +296,6 @@
 	DATA	saved_dset		/ unspecified_int4 /
 	DATA	saved_abstract_grid	/ unspecified_int4 /
 	DATA	xwind_node		/ ' ' /
+	DATA	mode_grat_buff		/ ' ' /
 
 	END

@@ -18,7 +18,8 @@
  * *jd* 03.04.94  Mod: change argument syntax to match mtt                   *
  * *jd* 04.14.94  Mod: to handle version number of metafile                  *
  * *jd* 01.20.95  Mod: Now EPS compliant for single metafile translations    *
- * *jd* 09.15.95  Mod: Permit X window preview
+ * *jd* 09.15.95  Mod: Permit X window preview                               *
+ * *jd* 12.23.97  Mod: Handle polyline rep setting for monochrome devices    *
  *                                                                           *
  *****************************************************************************/
 
@@ -28,6 +29,7 @@
  *  Mod 1.02 1.20.95    emits encapsulated PS when 1 file is translated
  *  Mod 1.03 6.14.95    Fix BB bug, clipping bug
  *  Mod 1.04 9.21.95    Add -X preview option
+ *  Mod 1.05 12.23.97   Handle polyline rep setting for monochrome devices
  */
 
 
@@ -195,7 +197,7 @@ initpage ()		/* Initializes PostScript */
    fprintf(ps_output, 
 	   "%%%%Title: %s\n", output_file);
    fprintf(ps_output, 
-	   "%%%%Creator: gksm2ps Mod 1.04 / XPPLP Profile F 1.0 [oX]\n" );
+	   "%%%%Creator: gksm2ps Mod 1.05 / XPPLP Profile F 1.0 [oX]\n" );
    fprintf(ps_output, 
 	   "%%%%CreationDate: %s\n", s);
 
@@ -689,15 +691,18 @@ ps_trans_meta( meta_id )        /* translate the metafile */
             break;
 	 case 44:			/* pick identifier */
 	    break;
-	 case 51:			/* polyline representation */
+         case 51:			/* polyline representation */
 	    index = (*(XGKSMLMREP *)record).idx;
+	    /* Ignore color and style setting if monochrome device */
 	    if ( 0 < index < MAX_BUNDL_TBL ) {
-               line_bundle[index].type   = (*(XGKSMLMREP *)record).style;
-               line_bundle[index].width  = (*(XGKSMLMREP *)record).size;
-               line_bundle[index].colour = (*(XGKSMLMREP *)record).color;
+	      if (color_lines) {
+		line_bundle[index].type   = (*(XGKSMLMREP *)record).style;
+		line_bundle[index].colour = (*(XGKSMLMREP *)record).color;
+	      }
+	      line_bundle[index].width  = (*(XGKSMLMREP *)record).size;
 	    }
 	    else
-	       fprintf( stderr, "GKSM51: index not in range 0-%d\n", MAX_BUNDL_TBL-1 );
+	      fprintf( stderr, "GKSM51: index not in range 0-%d\n", MAX_BUNDL_TBL-1 );
 	    break;
 	 case 52:			/* polymarker representation */
 	    index = (*(XGKSMLMREP *)record).idx;
@@ -864,9 +869,9 @@ main (argc, argv)
    int	   gks_stat;		/* The return status from gks function */
    char    *getenv();
 
-   char    *mod = "1.04";       /* -X preview option added*/
+   char    *mod = "1.05";        /* Handle addition of polyline rep in Fv449 */
    char	   *gksm2ps_version = "XPPLP Profile F 1.0 "; /* gksm2ps version # */
-   char    metafile_header[45];   /* Version of metafiles read in */
+   char    metafile_header[45];  /* Version of metafiles read in */
    char    *metafile_version;
 
    FILE    *meta_file;           /* meta file */

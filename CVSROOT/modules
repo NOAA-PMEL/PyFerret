@@ -34,4 +34,4 @@ gksm2ps gksm2ps
 corba 	corba
 CGIservlet corba/CGIservlet
 Ferret corba/Ferret
-
+utility corba/utility

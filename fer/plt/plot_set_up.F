@@ -99,6 +99,7 @@
 *       3/00 - *sh* added use_line and sym_size args for PLOT/COLOR=/SIZE=
 *	     - pass no_labels to AXIS_FORMAT 
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
+* V522	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -541,21 +542,6 @@
      .			dep_dim, dep_min, dep_max, delta,
      .			formatted, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
-	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
-	   ELSEIF ( pvlim.GT.0 .OR. (flip .AND. phlim.GT.0) ) THEN
-	      IF (flip) THEN
-	         CALL EQUAL_RANGE(
-     .			cmnd_buff(qual_start(phlim):qual_end(phlim)),
-     .			dep_dim, dep_min, dep_max, delta,
-     .			formatted, status )
-	         IF ( status .NE. ferr_OK ) GOTO 5000
-	      ELSE
-	         CALL EQUAL_RANGE(
-     .			cmnd_buff(qual_start(pvlim):qual_end(pvlim)),
-     .			dep_dim, dep_min, dep_max, delta,
-     .			formatted, status )
-	         IF ( status .NE. ferr_OK ) GOTO 5000
-	      ENDIF
 	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99

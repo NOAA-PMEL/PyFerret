@@ -42,6 +42,7 @@
 
 * V500:  *sh*
 *        *jd* mods for v500
+*        *jd  fix for v5.01 for fill if /patt or /pal given 6.7.99
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -140,6 +141,7 @@ CC       => Set values here instead.
 
 	if (line_it) then
 	   fill_it = qual_given(slash_polygon_fill) .gt. 0 
+     .               .or. spectrum .or. pattern
 	else
 	   fill_it   = .true.
 	end if

@@ -43,10 +43,10 @@
 * V230: 11/92 - for color map protection during viewport manipulations
 
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
-!	include 'ferret_cmn/xprog_state.cmn'
-!	include 'ferret_cmn/xplot_setup.cmn'
-	include 'ferret_cmn/xrisc.cmn'		! to fix RISC FORTRAN bug
+	include 'plot_setup.parm'
+!	include 'xprog_state.cmn'
+!	include 'xplot_setup.cmn'
+	include 'xrisc.cmn'		! to fix RISC FORTRAN bug
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 !	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

@@ -46,10 +46,10 @@
 * V450: 
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xcurvilinear.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include	'xvariables.cmn'
+	include	'xcurvilinear.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'

@@ -47,7 +47,7 @@
 * V230:  11/5/92 - removed axis resizing to SET_AX_SIZES
  
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
+	include 'plot_setup.parm'
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 #endif

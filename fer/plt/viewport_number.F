@@ -50,9 +50,9 @@
 	INTEGER	ivp
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/xplot_state.cmn'
+	include	'ferret.parm'
+	include	'gfdl_vms.parm'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'

@@ -47,13 +47,13 @@
 *			  because it needed a preprocessor.
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include	'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xfr_grid.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xfr_grid.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

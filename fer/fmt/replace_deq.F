@@ -47,10 +47,10 @@
 *		- actual bug was that i1 is improperly set in branches to 10
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xvariables.cmn'
-        include 'tmap_format/tmap_dims.parm'
-        include 'tmap_format/xdset_info.cmn_text'
+	include	'ferret.parm'
+	include	'xvariables.cmn'
+        include 'tmap_dims.parm'
+        include 'xdset_info.cmn_text'
         external xdset_info_data
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

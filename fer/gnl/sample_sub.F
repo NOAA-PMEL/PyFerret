@@ -56,15 +56,15 @@
 * V312: 5/94 - array "memory" as a calling argument
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xmem_subsc.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
+	include 'xmem_subsc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'

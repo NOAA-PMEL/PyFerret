@@ -93,11 +93,11 @@
 #endif 
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xcommand.cmn'
-	include 'ferret_cmn/xplot_state.cmn'	! for PPL$XPIXEL
-	include 'ferret_cmn/xrisc.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xcommand.cmn'
+	include 'xplot_state.cmn'	! for PPL$XPIXEL
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

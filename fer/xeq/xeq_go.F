@@ -66,15 +66,15 @@
 !       an output window the symbol GO_FILE will **not** be defined.
 
 #ifdef unix
-        include 'tmap_format/tmap_errors.parm'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/command.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'		! 12/94
-	include 'ferret_cmn/xcontrol.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+        include 'tmap_errors.parm'
+	include 'ferret.parm'
+	include 'command.parm'
+	include 'errmsg.parm'
+	include 'plot_setup.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'		! 12/94
+	include 'xcontrol.cmn'
+	include 'xrisc.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

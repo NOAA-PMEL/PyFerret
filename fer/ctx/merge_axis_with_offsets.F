@@ -46,9 +46,9 @@
 * V500:  4/9/98   - extracted from merge_context
 	
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'

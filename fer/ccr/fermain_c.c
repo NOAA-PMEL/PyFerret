@@ -110,6 +110,7 @@
 #  include <X11/StringDefs.h>
 #  include <X11/Xlib.h>
 #endif   /* LINK_GUI_AS_MAIN */
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -261,10 +262,14 @@ main (int argc, char *argv[])
 
 #endif        /*LINK_GUI_AS_MAIN*/
 
+
 #ifdef MIXING_NAG_F90_AND_C
   f90_io_init();
 #endif
 
+#ifdef __CYGWIN__
+  for_rtl_init_(&argc, argv);
+#endif
 
 #ifdef LINK_GUI_AS_MAIN
 /*
@@ -292,7 +297,11 @@ main (int argc, char *argv[])
       i++;    /* advance to next argument */
     } else if (strcmp(argv[i],"-gif")==0) {
       char *meta_name = ".gif";	/* Unused dummy name */
-      set_batch_graphics_(meta_name);
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+      set_batch_graphics(meta_name);  /* inhibit X output altogether */
+#else
+      set_batch_graphics_(meta_name);  /* inhibit X output altogether */
+#endif
       ++i;
     } else if (strcmp(argv[i],"-secure")==0) {
       set_secure();
@@ -577,6 +586,9 @@ main (int argc, char *argv[])
  */
 #ifdef MIXING_NAG_F90_AND_C
   f90_io_finish();
+#endif
+#ifdef __CYGWIN__
+  for_rtl_finish_(&argc, argv);
 #endif
 }
 

@@ -1,5 +1,4 @@
 	SUBROUTINE READ_BINARY ( memory, cx, mr, status )
-#define MAX_STRING 256
 * read a stream formatted file 
 * stolen from read_ez
 
@@ -9,20 +8,20 @@
 *
 * 7/98 *js*  First version hacked from read_ez
 
-	include	'tmap_format/tmap_errors.parm'
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_errors.parm'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xprog_state.cmn'
+	include	'xtext_info.cmn'
 
 * calling argument declarations:
 	INTEGER	cx, mr, status, fstatus
@@ -41,7 +40,7 @@
 	INTEGER         lengths(5), permutes(5), skip, doRead
 	LOGICAL         firstTime
 	CHARACTER	VAR_CODE*24
-	CHARACTER*MAX_STRING   cname,cerrmsg,ferrmsg
+	CHARACTER*256   cname,cerrmsg,ferrmsg
 
 * --- end of introductory code ---
 
@@ -219,7 +218,7 @@
      .		ww_dim_name(idim)//' axis of '//VAR_CODE(cat_file_var,ask_var),
      .		*5500 )
  6000	CALL BR_GET_ERROR(cerrmsg)
-	CALL TM_CTOF_STRNG(cerrmsg, ferrmsg, MAX_STRING-1)
+	CALL TM_CTOF_STRNG(cerrmsg, ferrmsg, 255)
 	CALL TM_SPLIT_MESSAGE(err_lun, ' **ERROR: '//ferrmsg(1:LEN(ferrmsg)))
         CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
 	END	

@@ -43,8 +43,8 @@
 * revision 0.0 - 7/17/86
 
 #ifdef unix
-	include 'ferret_cmn/gfdl.parm'
-	include 'ferret_cmn/xonedim.cmn'
+	include 'gfdl.parm'
+	include 'xonedim.cmn'
 #else
 	INCLUDE 'FERRET_CMN:GFDL.PARM'
 	INCLUDE 'FERRET_CMN:XONEDIM.CMN'

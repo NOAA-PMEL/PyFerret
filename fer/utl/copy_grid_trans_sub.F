@@ -46,7 +46,7 @@
 * V200:	10/16/89 - from COPY_GRID_TRANS
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
+	include 'ferret.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 #endif

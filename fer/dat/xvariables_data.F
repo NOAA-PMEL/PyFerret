@@ -60,12 +60,12 @@
 *			  because it needed a preprocessor.
 
 #ifdef unix
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xtm_grid.cmn_text'	! .cmn_text has an external
+#	include "tmap_dset.parm"
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'	! .cmn_text has an external
 !	external xgt_grid_data	! xtm_grid --> xgt  (DEC f77 3.2 not allowed)
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

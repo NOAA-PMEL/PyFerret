@@ -64,10 +64,10 @@
 * V314&V400: 9/94 - bug fix: GOTO 50 ==> GOTO 60 for missing source value
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

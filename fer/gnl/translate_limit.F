@@ -70,9 +70,9 @@
 *   t coord:  #  or dd-mmm-$_@hh:mm:ss  eg 14-JAN-1986@11:15
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xrisc.cmn'
+	include 'errmsg.parm'
+	include 'ferret.parm'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

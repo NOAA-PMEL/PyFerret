@@ -10,6 +10,8 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
 		  -I../../ppl/include/xgks \
 		  -I/usr/ucbinclude \
                   -I/usr/openwin/include \
+		  -I$(TMAP_LOCAL)/src/xgks/gif \
+		  -I$(TMAP_LOCAL)/src/xgks/ps \
 		  -I$(TMAP_LOCAL)/src/xgks/port \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
@@ -17,7 +19,14 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
 		  -I/opt/SUNWmotif/include \
 		  -I/opt/local/include \
                   -I../common \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
 		  -I. -Ireadline
+
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common \
+		   -I../../ppl/include 
 
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
@@ -27,7 +36,7 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 CC              = cc
 RANLIB          = /bin/touch
 CFLAGS          = -xO2 -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
-FFLAGS          = -O -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes
+FFLAGS          = -O -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES)
 PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL
 
 #

@@ -41,10 +41,10 @@
 * V450:  
 
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xcontrol.cmn'
-	include 'tmap_pplv11inc/axis_inc.decl'
-	include 'pplv11inc/AXIS.INC'		! variable iaxon
+	include 'plot_setup.parm'
+	include 'xcontrol.cmn'
+	include 'axis_inc.decl'
+	include 'AXIS.INC'		! variable iaxon
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 	include 'FERRET_CMN:XCONTROL.CMN'

@@ -46,7 +46,7 @@
 * revision 0.1 - 9/22/88 - bug fix.  start at subscript 1
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
+	include	'ferret.parm'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 #endif

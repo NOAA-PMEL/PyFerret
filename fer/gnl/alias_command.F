@@ -68,15 +68,15 @@
         PARAMETER     ( tab = CHAR(9) )
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcommand.cmn'
+	include 'ferret.parm'
+	include 'xcommand.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
 #endif
 
 #ifdef AIX_XLF
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
 
 * what is the alias command name length - terminated by "/" or " "

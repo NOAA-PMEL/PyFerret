@@ -51,16 +51,16 @@
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xtext_info.cmn'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xcalc_vars.cmn'
-	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret.parm'
+	include	'xtext_info.cmn'
+	include	'xcontext.cmn'
+	include	'xcalc_vars.cmn'
+	include	'xvariables.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'

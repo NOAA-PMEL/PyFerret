@@ -46,7 +46,7 @@
 * revision 0.1 -11/28/88 - new TM IO library: WORLD --> TM_WORLD
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
+	include 'ferret.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 #endif

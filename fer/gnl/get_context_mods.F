@@ -130,20 +130,20 @@
 *	report_unknown 	  if .TRUE. then unknown specifiers are errors
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/xdset_info.cmn_text'
-	include	'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
+	include	'xtm_grid.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/errmsg.parm'	
-	include 'ferret_cmn/ferret.parm'	
-	include 'ferret_cmn/gfdl_vms.parm'	
-	include 'ferret_cmn/interp_stack.parm'	
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xrisc.cmn'		! for RISC/FORTRAN
+	include 'errmsg.parm'	
+	include 'ferret.parm'	
+	include 'gfdl_vms.parm'	
+	include 'interp_stack.parm'	
+	include 'xalgebra.cmn'
+	include 'xprog_state.cmn'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'xrisc.cmn'		! for RISC/FORTRAN
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -199,6 +199,8 @@
      .			(region_qual(idim,2),idim=1,4) / 'X','Y','Z','T' /,
      .			 other_qual(1) / 'D' /,	! /DATA_SET=
      .			 other_qual(2) / 'G' /	! /GRID=
+
+
 * initialize
 	dset = cx_data_set( dflt_cx)
         DO 10 idim = 1, 4    ! 8/92

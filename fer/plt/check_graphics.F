@@ -45,13 +45,13 @@
 * V200:  3/12/90 - written to permit metafile-only output
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include	'tmap_pplv11inc/gkscm1_inc.decl'	! with wsid
-	include	'pplv11inc/GKSCM1.INC'	! with wsid
-	include	'tmap_pplv11inc/pltcom_dat.decl'	! with gksopn
-	include	'pplv11inc/PLTCOM.DAT'	! with gksopn
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
+	include	'gkscm1_inc.decl'	! with wsid
+	include	'GKSCM1.INC'	! with wsid
+	include	'pltcom_dat.decl'	! with gksopn
+	include	'PLTCOM.DAT'	! with gksopn
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

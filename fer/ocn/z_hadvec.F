@@ -53,16 +53,16 @@
 * V450 - 7/22/97 - minor reordering of "#includes" for Solaris compiler bug
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/gfdl.parm'		! parameter definitions
+	include 'ferret.parm'
+	include 'gfdl.parm'		! parameter definitions
 
 ! land/water masks
-#	include "ferret_cmn/xgfdl_masks.cmn"	
+#	include "xgfdl_masks.cmn"	
 
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xonedim.cmn'	! geometric constants
-	include 'ferret_cmn/xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xonedim.cmn'	! geometric constants
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:GFDL.PARM'		! parameter definitions

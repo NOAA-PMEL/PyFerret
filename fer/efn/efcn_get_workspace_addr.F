@@ -16,8 +16,8 @@ c
 
       SUBROUTINE EFCN_GET_WORKSPACE_ADDR(memory, work_blk, workspace)
 
-      INCLUDE 'ferret_cmn/ferret.parm'
-      INCLUDE 'ferret_cmn/xvariables.cmn'
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xvariables.cmn'
 
       INTEGER work_blk
       REAL memory( mem_blk_size, max_mem_blks ), workspace

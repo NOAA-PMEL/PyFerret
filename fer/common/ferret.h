@@ -56,8 +56,10 @@ the given command was really multiple commands and they are not yet complete*/
 #define                 FACTN_SYNCH_LET          7
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
+#ifndef FORTRAN
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 #define FORTRAN(a) a
 #else
 #define FORTRAN(a) a##_
+#endif
 #endif

@@ -46,9 +46,9 @@
 * V200:  5/20/89
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xmem_subsc.cmn'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
+	include 'xmem_subsc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'

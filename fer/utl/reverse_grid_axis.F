@@ -44,9 +44,9 @@
 * V320:  2/16/95
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'

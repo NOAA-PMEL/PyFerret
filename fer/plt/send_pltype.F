@@ -54,10 +54,10 @@
 	INTEGER	TM_LENSTR1
 
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_setup.cmn'
-	include 'ferret_cmn/xgks_devices.cmn'
+	include 'plot_setup.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_setup.cmn'
+	include 'xgks_devices.cmn'
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

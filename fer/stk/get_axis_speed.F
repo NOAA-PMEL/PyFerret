@@ -56,17 +56,17 @@
 	INTEGER	idim, i, slowdim, igrid, ivar, nexdim
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xax_speed.cmn'
+	include 'xtm_grid.cmn_text'
+	include 'ferret.parm'
+	include 'xax_speed.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT/XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN/FERRET.PARM'
+	INCLUDE 'XTM_GRID.CMN_TEXT'
+	INCLUDE 'FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XAX_SPEED.CMN'
 #endif
 

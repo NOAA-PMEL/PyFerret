@@ -45,10 +45,10 @@
 * V320: 12/29/94 - use WARN to avoid direct tty output (for GUI)
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'  ! error codes
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'tmap_errors.parm'  ! error codes
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'  ! error codes
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

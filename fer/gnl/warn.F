@@ -49,12 +49,12 @@
 
 #ifdef unix
 #ifdef NO_PASSED_CONCAT
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
-	include 'ferret_cmn/ferret.parm'
-        include 'ferret_cmn/gui.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-        include 'ferret_cmn/xgui.cmn'
+	include 'ferret.parm'
+        include 'gui.parm'
+	include 'xprog_state.cmn'
+        include 'xgui.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
         INCLUDE 'FERRET_CMN:GUI.PARM'

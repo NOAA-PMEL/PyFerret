@@ -46,12 +46,12 @@
 * Unix/RISC port - 1/91 - cannot use "//" with char*(*)
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'	
-	include 'ferret_cmn/ferret.parm'	
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xdelta_context.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+	include 'errmsg.parm'	
+	include 'ferret.parm'	
+	include 'xcontext.cmn'
+	include 'xdelta_context.cmn'
+	include 'xtext_info.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
 	INCLUDE 'FERRET_CMN:FERRET.PARM'	

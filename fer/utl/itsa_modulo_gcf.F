@@ -48,9 +48,9 @@
 *       97.07.16 *jc* adding code to query external functions
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xgrid_chg_fcns.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xgrid_chg_fcns.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

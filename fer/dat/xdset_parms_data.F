@@ -49,9 +49,9 @@
 *			  when SET DATA_SET is given
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/xdset_parms.cmn'
+	include	'ferret.parm'
+	include	'tmap_dims.parm'
+	include	'xdset_parms.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'

@@ -64,7 +64,7 @@
 * V312: 5/94 - array "memory" as a calling argument
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
+	include 'errmsg.parm'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 #endif

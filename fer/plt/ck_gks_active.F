@@ -44,10 +44,10 @@
 * V200: 12/20/89
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'tmap_pplv11inc/pltcom_dat.decl'   ! with gksopn
-	include 'pplv11inc/PLTCOM.DAT'   ! with gksopn
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'pltcom_dat.decl'   ! with gksopn
+	include 'PLTCOM.DAT'   ! with gksopn
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

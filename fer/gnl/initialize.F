@@ -77,20 +77,20 @@
 *		     rather than f77 default routines.
 
 #ifdef unix
-        include 'tmap_format/tmap_errors.parm'  ! error codes
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xio.cmn_text'
+        include 'tmap_errors.parm'  ! error codes
+	include 'tmap_dims.parm'
+	include 'xio.cmn_text'
 	external xio_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/gfdl_vms.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/gfdl.parm'			! from phil/sieg
-	include	'ferret_cmn/xonedim.cmn'		! from phil.sieg
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xtoday.cmn'
+	include	'ferret.parm'
+	include	'gfdl_vms.parm'
+	include	'errmsg.parm'
+	include	'gfdl.parm'			! from phil/sieg
+	include	'xonedim.cmn'		! from phil.sieg
+	include 'xprog_state.cmn'
+	include 'xvariables.cmn'
+	include 'xtoday.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'  ! error codes
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

@@ -51,9 +51,9 @@
 *	 1/99 - allow strings in double quotes (as fcn args)
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/rpn.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'rpn.parm'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

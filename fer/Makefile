@@ -63,17 +63,17 @@ WHATGKS = xgks
 all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 
-debug:
+debug:	.FRC
 	touch ccr/fermain_c.c
 	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
 
-gui_nodebug:
+gui_nodebug: .FRC
 	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
-		"GUI=GUI" "GUI_FAKES=" all
-gui_debug:
+		"GUI=GUI" all
+gui_debug: .FRC
 	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
@@ -81,7 +81,7 @@ gui_debug:
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" \
 		"GUI_FAKES="  all
 
-fortran:
+fortran: .FRC
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
 
 
@@ -107,9 +107,8 @@ ferret:	update
 		$(SYSLIB)
 	chmod +x $(EXECNAME)
 
-update:
+update: .FRC
 	${MAKE} update_date DATE=`/bin/date +%D`
-	rm -f special/xrevision_type_data.F
 	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	(cd special;make)
 
@@ -120,10 +119,10 @@ update_date:
 libraries: ppl_libraries fer_libraries
 
 
-fmt_libraries:
+fmt_libraries: .FRC
 	(cd ../fmt/src ; $(MAKE));
 
-fer_libraries:
+fer_libraries: .FRC
 	for i in $(LIBS) ; \
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; \
@@ -132,30 +131,30 @@ fer_libraries:
         done
 
 
-ppl_libraries:
+ppl_libraries: .FRC
 	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS)" all);
 
 
-special_code:
+special_code: .FRC
 	(cd special ; $(MAKE) all);
 
 
 clean: fmt_clean ppl_clean fer_clean 
 	(cd ../lib ; rm -f *.a *.so);
 
-ppl_clean:
+ppl_clean: .FRC
 	(cd ../ppl ; $(MAKE) clean);
 
-fer_clean:
+fer_clean: .FRC
 	for i in $(CLEANDIRS) ; \
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; $(MAKE) clean); \
         done
 
-fmt_clean:
+fmt_clean: .FRC
 	(cd ../fmt/src; rm -f *.[fo])
 
-depend:
+depend: .FRC
 	(cd ../ppl ; $(MAKE) depend);
 	for i in $(DEPDIRS) ; \
         do \
@@ -164,6 +163,8 @@ depend:
                 "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
         done
 
+
+.FRC:
 
 #
 # End of Makefile

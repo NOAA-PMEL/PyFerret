@@ -45,7 +45,7 @@
 * internal variable declarations
 
 #ifdef unix
-	include 'ferret_cmn/xcurvilinear.cmn'
+	include 'xcurvilinear.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
 #endif

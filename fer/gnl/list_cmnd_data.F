@@ -67,19 +67,19 @@
 *			  because it needed a preprocessor.
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/xdset_info.cmn_text'
-	include 'tmap_format/xtm_grid.cmn_text'		! for line_units and t0
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
+	include 'xtm_grid.cmn_text'		! for line_units and t0
 	external xdset_info_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xinterrupt.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xprog_state.cmn'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'xinterrupt.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

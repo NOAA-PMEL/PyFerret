@@ -59,10 +59,10 @@
 * V420: 1/96 - removed SUM and NGD from here to ave_regrid_1_axis (weighted)
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

@@ -54,12 +54,12 @@
 *       12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include	'ferret.parm'
+	include 'xtext_info.cmn'
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'

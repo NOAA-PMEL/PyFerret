@@ -45,11 +45,11 @@
 * revision 0.1 - 8/29/87 - added vms_str_success
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/gfdl_vms.parm'
+	include 'ferret.parm'
+	include 'gfdl_vms.parm'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'

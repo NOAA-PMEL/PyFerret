@@ -46,12 +46,12 @@
 * V230:  7/21/92 - check for unspecified data set on calc_var
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xcalc_vars.cmn'
+	include	'ferret.parm'
+	include	'xvariables.cmn'
+	include	'xcalc_vars.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'

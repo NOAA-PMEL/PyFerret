@@ -47,9 +47,9 @@
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xplot_setup.cmn'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xplot_setup.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'

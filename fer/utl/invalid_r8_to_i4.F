@@ -47,7 +47,7 @@
 *                  in a parameter definition
 
 #ifdef unix
-	include	'ferret_cmn/vax_machine.parm'
+	include	'vax_machine.parm'
 #else
 	INCLUDE	'FERRET_CMN:VAX_MACHINE.PARM'
 #endif

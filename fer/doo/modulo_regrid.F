@@ -57,13 +57,13 @@
 *               to have access to context information - needed for negative
 *               time step processing
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xtm_grid.cmn_text'		! for line_dim
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'		! for line_dim
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xcontext.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'		! for line_dim

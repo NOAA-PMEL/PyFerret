@@ -58,14 +58,14 @@
 * V450 7/97 - renamed to DELETE_USER_VAR_SUB from DELETE_USER_VAR
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-        include 'tmap_format/xtm_grid.cmn_text'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/interp_stack.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+	include 'tmap_dims.parm'
+        include 'xtm_grid.cmn_text'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'interp_stack.parm'
+	include 'xprog_state.cmn'
+	include 'xvariables.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
         INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'

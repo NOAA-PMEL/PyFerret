@@ -45,10 +45,10 @@
 * revision 0.1 -  3/23/87 - eliminated grid_origin as not useful
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'ferret_cmn/ferret.parm'
+	include 'ferret.parm'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'

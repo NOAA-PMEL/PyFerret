@@ -67,22 +67,22 @@
 *		cuckoo's egg implantation of meta_wsid in place of wsid
 
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xgks_devices.cmn'
-	include	'tmap_pplv11inc/system_inc.decl'	! with echof
-	include	'pplv11inc/SYSTEM.INC'	! with echof
-	include	'tmap_pplv11inc/plt_inc.decl'	! with icode
-	include	'pplv11inc/PLT.INC'	! with icode
-	include	'tmap_pplv11inc/gkscm1_inc.decl'	! with wsid
-	include	'pplv11inc/GKSCM1.INC'	! with wsid
-	include	'tmap_pplv11inc/switch_inc.decl'	! with deflts
-	include	'pplv11inc/SWITCH.INC'	! with deflts
-	include	'tmap_pplv11inc/pltcom_dat.decl'	! with gksopn
-	include	'pplv11inc/PLTCOM.DAT'	! with gksopn
-	include	'tmap_pplv11inc/ppl_in_ferret.cmn'	! with ppl_in_ferret
-!	include	'sys_library/gksdefs.bnd'		! gks parameters
+	include 'plot_setup.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xgks_devices.cmn'
+	include	'system_inc.decl'	! with echof
+	include	'SYSTEM.INC'	! with echof
+	include	'plt_inc.decl'	! with icode
+	include	'PLT.INC'	! with icode
+	include	'gkscm1_inc.decl'	! with wsid
+	include	'GKSCM1.INC'	! with wsid
+	include	'switch_inc.decl'	! with deflts
+	include	'SWITCH.INC'	! with deflts
+	include	'pltcom_dat.decl'	! with gksopn
+	include	'PLTCOM.DAT'	! with gksopn
+	include	'ppl_in_ferret.cmn'	! with ppl_in_ferret
+!	include	'gksdefs.bnd'		! gks parameters
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

@@ -45,9 +45,9 @@
 * V200:  6/9/89 - deleted variables flagged in mr_protected
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

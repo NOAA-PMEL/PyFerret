@@ -42,9 +42,9 @@
 *               declaration line.
 
 #ifdef unix
-        include 'ferret_cmn/errmsg.parm'
-        include 'tmap_pplv11inc/pltcom_dat.decl'
-        include 'pplv11inc/PLTCOM.DAT'
+        include 'errmsg.parm'
+        include 'pltcom_dat.decl'
+        include 'PLTCOM.DAT'
 #else
         INCLUDE 'FERRET_CMN:ERRMSG.PARM'
         INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'

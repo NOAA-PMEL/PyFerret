@@ -45,8 +45,8 @@
 * V312: 5/19/94 - call PROCLAIM from here to simplify the MAIN program
 
 #ifdef unix
-	include 'ferret_cmn/xprog_state.cmn'
-        include 'ferret_cmn/xrevision.cmn'
+	include 'xprog_state.cmn'
+        include 'xrevision.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
         INCLUDE 'FERRET_CMN:XREVISION.CMN'

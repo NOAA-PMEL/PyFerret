@@ -50,7 +50,7 @@
 * COMMON/XGFDL_MASKS...define grid variables
 #ifdef unix
 
-#	include "ferret_cmn/xgfdl_masks.cmn"
+#	include "xgfdl_masks.cmn"
 
 #else
 	INCLUDE 'FERRET_CMN:XGFDL_MASKS.CMN/LIST'

@@ -50,13 +50,13 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xcalc_vars.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xinterrupt.cmn'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
+	include 'xvariables.cmn'
+	include	'xcalc_vars.cmn'
+	include	'xtext_info.cmn'
+	include 'xinterrupt.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

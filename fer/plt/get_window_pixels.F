@@ -52,8 +52,8 @@
 *               declaration line.
 
 #ifdef unix
-        include 'tmap_pplv11inc/pltcom_dat.decl'
-        include 'pplv11inc/PLTCOM.DAT'
+        include 'pltcom_dat.decl'
+        include 'PLTCOM.DAT'
 #else
         INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
         INCLUDE 'PPLV11INC:PLTCOM.DAT'

@@ -44,7 +44,7 @@
 * revision 0.0 - 4/29/87
 
 #ifdef unix
-	include 'ferret_cmn/xcontrol.cmn'
+	include 'xcontrol.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
 #endif

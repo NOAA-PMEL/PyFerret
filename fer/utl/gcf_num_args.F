@@ -49,8 +49,8 @@
 * internal variable declarations
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xgrid_chg_fcns.cmn'
+	include 'ferret.parm'
+	include 'xgrid_chg_fcns.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'

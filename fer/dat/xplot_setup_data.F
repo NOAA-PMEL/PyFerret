@@ -44,8 +44,8 @@
 * V200: 12/21/89
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xplot_setup.cmn'
+	include 'ferret.parm'
+	include 'xplot_setup.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'

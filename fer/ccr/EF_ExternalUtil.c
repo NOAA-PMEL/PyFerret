@@ -46,9 +46,9 @@
  * EF "objects".
  */
 
-
 /* .................... Includes .................... */
 
+#include <unistd.h>
 #include <stdio.h>	 	/* for convenience */
 #include <stdlib.h> 		/* for convenience */
 #include <string.h> 		/* for convenience */
@@ -56,7 +56,7 @@
 #include <sys/types.h> 	        /* required for "NULL" */
 
 #include "EF_Util.h"
-#include "/home/r3/tmap/local/sun/include/list.h"  /* locally added list library */
+#include "list.h"  /* locally added list library */
 
 
 /* ................ Global Variables ................ */
@@ -76,26 +76,26 @@ extern float *GLOBAL_bad_flag_ptr;
 
 /* ... Functions called from the EF code .... */
 
-void ef_set_num_args_( int *, int * );
-void ef_set_has_vari_args_( int *, int * );
-void ef_set_axis_inheritance_( int *, int *, int *, int *, int * );
-void ef_set_piecemeal_ok_( int *, int *, int *, int *, int * );
+void FORTRAN(ef_set_num_args)( int *, int * );
+void FORTRAN(ef_set_has_vari_args)( int *, int * );
+void FORTRAN(ef_set_axis_inheritance)( int *, int *, int *, int *, int * );
+void FORTRAN(ef_set_piecemeal_ok)( int *, int *, int *, int *, int * );
 
-void ef_set_axis_influence_( int *, int *, int *, int *, int *, int * );
-void ef_set_axis_extend_( int *, int *, int *, int *, int * );
+void FORTRAN(ef_set_axis_influence)( int *, int *, int *, int *, int *, int * );
+void FORTRAN(ef_set_axis_extend)( int *, int *, int *, int *, int * );
 
-void ef_get_res_subscripts_(int *, int *, int *, int *);
-void ef_get_arg_subscripts_(int *, int *, int *, int *);
-void ef_get_arg_ss_extremes_(int *, int *, int *);
-void ef_get_one_val_(int *, int *, float *);
-void ef_get_bad_flags_(int *, float *, float *);
+void FORTRAN(ef_get_res_subscripts)(int *, int *, int *, int *);
+void FORTRAN(ef_get_arg_subscripts)(int *, int *, int *, int *);
+void FORTRAN(ef_get_arg_ss_extremes)(int *, int *, int *);
+void FORTRAN(ef_get_one_val)(int *, int *, float *);
+void FORTRAN(ef_get_bad_flags)(int *, float *, float *);
 
-void ef_set_desc_sub_(int *, char *);
+void FORTRAN(ef_set_desc_sub)(int *, char *);
 
-void ef_get_coordinates_(int *, int *, int *, int *, int *, float *);
-void ef_get_box_size_(int *, int *, int *, int *, int *, float *);
+void FORTRAN(ef_get_coordinates)(int *, int *, int *, int *, int *, float *);
+void FORTRAN(ef_get_box_size)(int *, int *, int *, int *, int *, float *);
 
-void ef_get_hidden_variables_(int *, int *);
+void FORTRAN(ef_get_hidden_variables)(int *, int *);
 
 
 /* ... Functions called internally .... */
@@ -105,11 +105,11 @@ ExternalFunction *ef_ptr_from_id_ptr(int *);
 int  EF_ListTraverse_FoundID( char *, char * );
 
 
-void ef_get_res_subscripts_sub_(int *, int *, int *, int *);
-void ef_get_arg_subscripts_sub_(int *, int *, int *, int *);
-void ef_get_arg_ss_extremes_sub_(int *, int *, int *, int *);
-void ef_get_coordinates_sub_(int *, int *, int *, int *, int *, float *);
-void ef_get_box_size_sub_(int *, int *, int *, int *, int *, float *);
+void FORTRAN(ef_get_res_subscripts_sub)(int *, int *, int *, int *);
+void FORTRAN(ef_get_arg_subscripts_sub)(int *, int *, int *, int *);
+void FORTRAN(ef_get_arg_ss_extremes_sub)(int *, int *, int *, int *);
+void FORTRAN(ef_get_coordinates_sub)(int *, int *, int *, int *, int *, float *);
+void FORTRAN(ef_get_box_size_sub)(int *, int *, int *, int *, int *, float *);
 
 
 /* ............. Function Definitions .............. */
@@ -118,7 +118,7 @@ void ef_get_box_size_sub_(int *, int *, int *, int *, int *, float *);
 /*
  * Set the number of args for a function.
  */
-void ef_set_num_args_(int *id_ptr, int *num_args)
+void FORTRAN(ef_set_num_args)(int *id_ptr, int *num_args)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -137,7 +137,7 @@ void ef_set_num_args_(int *id_ptr, int *num_args)
 /*
  * Set the "variable arguments" flag for a function.
  */
-void ef_set_has_vari_args_(int *id_ptr, int *has_vari_args)
+void FORTRAN(ef_set_has_vari_args)(int *id_ptr, int *has_vari_args)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -149,7 +149,7 @@ void ef_set_has_vari_args_(int *id_ptr, int *has_vari_args)
 }
 
 
-void ef_set_axis_inheritance_(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax3)
+void FORTRAN(ef_set_axis_inheritance)(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax3)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -181,7 +181,7 @@ void ef_set_axis_inheritance_(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax
 }
 
 
-void ef_set_piecemeal_ok_(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax3)
+void FORTRAN(ef_set_piecemeal_ok)(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax3)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -196,7 +196,7 @@ void ef_set_piecemeal_ok_(int *id_ptr, int *ax0, int *ax1, int *ax2, int *ax3)
 }
 
 
-void ef_set_axis_limits_(int *id_ptr, int *axis, int *lo, int *hi)
+void FORTRAN(ef_set_axis_limits)(int *id_ptr, int *axis, int *lo, int *hi)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -209,7 +209,7 @@ void ef_set_axis_limits_(int *id_ptr, int *axis, int *lo, int *hi)
 }
 
 
-void ef_set_axis_influence_(int *id_ptr, int *arg, int *ax0, int *ax1, int *ax2, int *ax3)
+void FORTRAN(ef_set_axis_influence)(int *id_ptr, int *arg, int *ax0, int *ax1, int *ax2, int *ax3)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -241,7 +241,7 @@ void ef_set_axis_influence_(int *id_ptr, int *arg, int *ax0, int *ax1, int *ax2,
 }
 
 
-void ef_set_axis_extend_(int *id_ptr, int *arg, int *axis, int *lo, int *hi)
+void FORTRAN(ef_set_axis_extend)(int *id_ptr, int *arg, int *axis, int *lo, int *hi)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -254,19 +254,19 @@ void ef_set_axis_extend_(int *id_ptr, int *arg, int *axis, int *lo, int *hi)
 }
 
 
-void ef_get_res_subscripts_(int *id_ptr, int *res_lo_ss, int *res_hi_ss, int *res_incr)
+void FORTRAN(ef_get_res_subscripts)(int *id_ptr, int *res_lo_ss, int *res_hi_ss, int *res_incr)
 {
-  ef_get_res_subscripts_sub_(GLOBAL_mres_ptr, res_lo_ss, res_hi_ss, res_incr);
+  FORTRAN(ef_get_res_subscripts_sub)(GLOBAL_mres_ptr, res_lo_ss, res_hi_ss, res_incr);
 }
 
 
-void ef_get_arg_subscripts_(int *id_ptr, int *arg_lo_ss, int *arg_hi_ss, int *arg_incr)
+void FORTRAN(ef_get_arg_subscripts)(int *id_ptr, int *arg_lo_ss, int *arg_hi_ss, int *arg_incr)
 {
-  ef_get_arg_subscripts_sub_(GLOBAL_cx_list_ptr, arg_lo_ss, arg_hi_ss, arg_incr);
+  FORTRAN(ef_get_arg_subscripts_sub)(GLOBAL_cx_list_ptr, arg_lo_ss, arg_hi_ss, arg_incr);
 }
 
 
-void ef_get_arg_ss_extremes_(int *id_ptr, int *ss_min, int *ss_max)
+void FORTRAN(ef_get_arg_ss_extremes)(int *id_ptr, int *ss_min, int *ss_max)
 {
   ExternalFunction *ef_ptr=NULL;
   int num_args=0;
@@ -275,31 +275,31 @@ void ef_get_arg_ss_extremes_(int *id_ptr, int *ss_min, int *ss_max)
 
   num_args = ef_ptr->internals_ptr->num_reqd_args;
 
-  ef_get_arg_ss_extremes_sub_(GLOBAL_cx_list_ptr, &num_args, ss_min, ss_max);
+  FORTRAN(ef_get_arg_ss_extremes_sub)(GLOBAL_cx_list_ptr, &num_args, ss_min, ss_max);
 }
 
 
-void ef_get_one_val_(int *id_ptr, int *arg_ptr, float *val_ptr)
+void FORTRAN(ef_get_one_val)(int *id_ptr, int *arg_ptr, float *val_ptr)
 {
-  ef_get_one_val_sub_(arg_ptr, GLOBAL_memory_ptr, GLOBAL_mr_list_ptr, GLOBAL_cx_list_ptr, val_ptr);
+  FORTRAN(ef_get_one_val_sub)(arg_ptr, GLOBAL_memory_ptr, GLOBAL_mr_list_ptr, GLOBAL_cx_list_ptr, val_ptr);
 }
 
 
-void ef_get_coordinates_(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
+void FORTRAN(ef_get_coordinates)(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
 			 int *hi_lim_ptr, float *val_ptr)
 {
-  ef_get_coordinates_sub_(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
+  FORTRAN(ef_get_coordinates_sub)(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
 }
 
 
-void ef_get_box_size_(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
+void FORTRAN(ef_get_box_size)(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
 			 int *hi_lim_ptr, float *val_ptr)
 {
-  ef_get_box_size_sub_(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
+  FORTRAN(ef_get_box_size_sub)(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
 }
 
 
-void ef_get_hidden_variables_(int *cx_list, int *mres)
+void FORTRAN(ef_get_hidden_variables)(int *cx_list, int *mres)
 {
   int i=0;
 
@@ -311,7 +311,7 @@ void ef_get_hidden_variables_(int *cx_list, int *mres)
 
 
 
-void ef_get_bad_flags_(int *id_ptr, float *bad_flag, float *bad_flag_result)
+void FORTRAN(ef_get_bad_flags)(int *id_ptr, float *bad_flag, float *bad_flag_result)
 {
   int i=0;
 
@@ -325,7 +325,7 @@ void ef_get_bad_flags_(int *id_ptr, float *bad_flag, float *bad_flag_result)
 
 
 
-void ef_set_desc_sub_(int *id_ptr, char *text)
+void FORTRAN(ef_set_desc_sub)(int *id_ptr, char *text)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -336,7 +336,7 @@ void ef_set_desc_sub_(int *id_ptr, char *text)
   return;
 }  
 
-void ef_set_arg_desc_sub_(int *id_ptr, int *arg_ptr, char *text)
+void FORTRAN(ef_set_arg_desc_sub)(int *id_ptr, int *arg_ptr, char *text)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -347,7 +347,7 @@ void ef_set_arg_desc_sub_(int *id_ptr, int *arg_ptr, char *text)
   return;
 }  
 
-void ef_set_arg_name_sub_(int *id_ptr, int *arg_ptr, char *text)
+void FORTRAN(ef_set_arg_name_sub)(int *id_ptr, int *arg_ptr, char *text)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -358,7 +358,7 @@ void ef_set_arg_name_sub_(int *id_ptr, int *arg_ptr, char *text)
   return;
 }  
 
-void ef_set_arg_unit_sub_(int *id_ptr, int *arg_ptr, char *text)
+void FORTRAN(ef_set_arg_unit_sub)(int *id_ptr, int *arg_ptr, char *text)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -370,7 +370,7 @@ void ef_set_arg_unit_sub_(int *id_ptr, int *arg_ptr, char *text)
 } 
 
  
-void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, float *lo_ptr,
+void FORTRAN(ef_set_custom_axis_sub)(int *id_ptr, int *axis_ptr, float *lo_ptr,
 			     float *hi_ptr, float* del_ptr, char *text, int *modulo_ptr)
 {
   ExternalFunction *ef_ptr=NULL;
@@ -385,3 +385,4 @@ void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, float *lo_ptr,
 
   return;
 }  
+

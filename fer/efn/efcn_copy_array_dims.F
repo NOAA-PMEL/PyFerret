@@ -13,8 +13,8 @@ c
 
       SUBROUTINE EFCN_COPY_ARRAY_DIMS
 
-      INCLUDE 'ferret_cmn/xmem_subsc.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'xmem_subsc.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       mem1lox = m1lox
       mem1loy = m1loy

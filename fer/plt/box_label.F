@@ -50,10 +50,10 @@
 * Unix/RISC port - 1/91 - cant use "//" with CHAR*(*)
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+	include	'ferret.parm'
+	include	'plot_setup.parm'
+	include 'xprog_state.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'

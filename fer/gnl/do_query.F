@@ -53,24 +53,24 @@
 *               time step processing
 
 #ifdef unix
-        include 'tmap_format/tmap_dims.parm'
-#        include "tmap_format/tmap_dset.parm"
-        include 'tmap_format/xdset_info.cmn_text'
+        include 'tmap_dims.parm'
+#        include "tmap_dset.parm"
+        include 'xdset_info.cmn_text'
         external xdset_info_data
-        include 'tmap_format/xtm_grid.cmn_text'
+        include 'xtm_grid.cmn_text'
         external xgt_grid_data
-        include 'tmap_format/xalt_messages.cmn_text'
+        include 'xalt_messages.cmn_text'
         external xalt_messages_data
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xcommand.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xgui.cmn'
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'gfdl_vms.parm'
+	include 'xprog_state.cmn'
+	include 'xcommand.cmn'
+	include 'xtext_info.cmn'
+	include 'xcontext.cmn'
+	include 'xalgebra.cmn'
+	include 'xgui.cmn'
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
         INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

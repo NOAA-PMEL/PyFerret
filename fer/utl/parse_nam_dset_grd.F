@@ -51,9 +51,9 @@
 *	     - Guts of routine extracted to PARSE_NAM_DSET
 	
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

@@ -44,12 +44,12 @@
 * V402: 7/95 - extracted from XEQ_SHOW with additions for LET/D=
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xrisc.cmn'
+	include	'ferret.parm'
+	include	'xvariables.cmn'
+	include	'xrisc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'

@@ -54,9 +54,9 @@
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xalgebra.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xalgebra.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

@@ -50,8 +50,8 @@
 *       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
 *                    contains a string 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'

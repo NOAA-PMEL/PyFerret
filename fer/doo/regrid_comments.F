@@ -44,16 +44,16 @@
 * V450: 1/97 - corrected problem of missing blank when no units were defined
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'tmap_format/xunits.cmn_text'
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
+	include 'xunits.cmn_text'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xalgebra.cmn'
+	include	'xtext_info.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'

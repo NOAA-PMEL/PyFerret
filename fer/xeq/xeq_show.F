@@ -127,31 +127,31 @@
 *                caught by new DEC f77 version
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'tmap_pplv11inc/gkscm2.cmn'
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/slash.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/movies.parm'
-	include 'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xcommand.cmn'
-	include 'ferret_cmn/xrevision.cmn'
-	include 'ferret_cmn/xinterrupt.cmn'
-	include	'ferret_cmn/xfr_grid.cmn'
-	include	'ferret_cmn/xgks_devices.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
-	include	'ferret_cmn/xgrid_chg_fcns.cmn'
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include 'gkscm2.cmn'
+	include	'ferret.parm'
+	include	'slash.parm'
+	include 'errmsg.parm'
+	include 'movies.parm'
+	include 'gfdl_vms.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'xcommand.cmn'
+	include 'xrevision.cmn'
+	include 'xinterrupt.cmn'
+	include	'xfr_grid.cmn'
+	include	'xgks_devices.cmn'
+	include	'xalgebra.cmn'
+	include	'xgrid_chg_fcns.cmn'
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

@@ -61,17 +61,17 @@
 * v500 - 1/26/99 - *kob* add PPLCMD call for aline reinitialization - needed for
 *                   nolabel plot overlays
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/command.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'tmap_pplv11inc/parampl5_dat.decl'	! with inclen
-	include 'pplv11inc/PARAMPL5.DAT'	! with inclen
-	include 'tmap_pplv11inc/cont_inc.decl'	! with iautoc
-	include 'pplv11inc/CONT.INC'	! with iautoc
-	include 'tmap_pplv11inc/vector_inc.decl'	! with vauto
-	include 'pplv11inc/VECTOR.INC'	! with vauto
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'command.parm'
+	include 'plot_setup.parm'
+	include 'xprog_state.cmn'
+	include 'parampl5_dat.decl'	! with inclen
+	include 'PARAMPL5.DAT'	! with inclen
+	include 'cont_inc.decl'	! with iautoc
+	include 'CONT.INC'	! with iautoc
+	include 'vector_inc.decl'	! with vauto
+	include 'VECTOR.INC'	! with vauto
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

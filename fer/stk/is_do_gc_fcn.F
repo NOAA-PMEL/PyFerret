@@ -47,16 +47,16 @@
 *		Strings may be passed only to external functions
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/grid_chg_fcns.parm'
-	include	'ferret_cmn/rpn.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
-	include	'ferret_cmn/xfr_grid.cmn'	! w/ mgrid_abstract
-	include 'ferret_cmn/xgrid_chg_fcns.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'grid_chg_fcns.parm'
+	include	'rpn.parm'
+	include	'xvariables.cmn'
+	include	'xcontext.cmn'
+	include	'xalgebra.cmn'
+	include	'xtext_info.cmn'
+	include	'xfr_grid.cmn'	! w/ mgrid_abstract
+	include 'xgrid_chg_fcns.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

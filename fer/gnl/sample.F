@@ -72,14 +72,14 @@
 *			  opening a file for append.
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
 #ifdef NO_PASSED_CONCAT	
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

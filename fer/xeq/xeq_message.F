@@ -60,11 +60,11 @@
 *			     in comment up above - linux f90 freaked out.
 *       10.28.98 *js* Don't pause for messages if in server mode
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-        include 'ferret_cmn/xrisc.cmn'
-        include 'ferret_cmn/xgui.cmn'
+	include 'tmap_dims.parm'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
+        include 'xrisc.cmn'
+        include 'xgui.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

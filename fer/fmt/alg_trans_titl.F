@@ -51,10 +51,10 @@
 	CHARACTER prefix*5
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'xtext_info.cmn'
+	include 'xalgebra.cmn'
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'

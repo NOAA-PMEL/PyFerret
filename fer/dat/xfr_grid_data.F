@@ -44,8 +44,8 @@
 * V200:  7/13/89
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/xfr_grid.cmn'
+	include 'tmap_dims.parm'
+	include	'xfr_grid.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'

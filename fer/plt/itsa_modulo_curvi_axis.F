@@ -44,13 +44,13 @@
 *       V420: 04/97
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
-	include 'ferret_cmn/xcurvilinear.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'tmap_dims.parm'
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
+	include 'xcurvilinear.cmn'
 #else   
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

@@ -60,16 +60,16 @@
 	CHARACTER VAR_CODE*24, VAR_TRANS*64, var*24, out_buff*64
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
-        include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xrisc.cmn'		! 12/94 SPLIT_LIST buffer
+	include	'ferret.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xprog_state.cmn'
+	include	'xtext_info.cmn'
+        include 'xalgebra.cmn'
+	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
 
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'

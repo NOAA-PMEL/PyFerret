@@ -15,11 +15,11 @@
 *	 2/99 *sh* - bug fix on cx_given for normal axes
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xfr_grid.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
+	include	'xalgebra.cmn'
+	include 'xfr_grid.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

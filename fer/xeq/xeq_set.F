@@ -114,37 +114,37 @@
 *			 read because linux/nag f90 needed a format width.
 *          12/98 *js*  - Disallow set mem command is in secure mode
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/tmap_errors.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'tmap_errors.parm'
+#	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-        include 'tmap_format/xdiag_ctrl.cmn_text'
-        include 'tmap_format/xtm_grid.cmn_text'
+        include 'xdiag_ctrl.cmn_text'
+        include 'xtm_grid.cmn_text'
         external xgt_grid_data
-        include 'tmap_format/xalt_messages.cmn_text'
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/slash.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/movies.parm'
-	include 'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xrevision.cmn'
-	include 'ferret_cmn/xtoday.cmn'
-	include 'ferret_cmn/xvideo.cmn'
-	include	'ferret_cmn/xfr_grid.cmn'
-	include	'ferret_cmn/xcontrol.cmn'
-	include	'tmap_pplv11inc/pltcom_dat.decl'	! with gksopn
-	include	'pplv11inc/PLTCOM.DAT'	! with gksopn
-	include	'tmap_pplv11inc/switch_inc.decl'	! with deflts
-	include	'pplv11inc/SWITCH.INC'	! with deflts
-        include 'pplv11inc/LUNITS.INC'          ! with lttout
-        include 'tmap_pplv11inc/lunits_inc.decl'
+        include 'xalt_messages.cmn_text'
+	include	'ferret.parm'
+	include	'slash.parm'
+	include 'errmsg.parm'
+	include 'movies.parm'
+	include 'gfdl_vms.parm'
+	include 'plot_setup.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'xrevision.cmn'
+	include 'xtoday.cmn'
+	include 'xvideo.cmn'
+	include	'xfr_grid.cmn'
+	include	'xcontrol.cmn'
+	include	'pltcom_dat.decl'	! with gksopn
+	include	'PLTCOM.DAT'	! with gksopn
+	include	'switch_inc.decl'	! with deflts
+	include	'SWITCH.INC'	! with deflts
+        include 'LUNITS.INC'          ! with lttout
+        include 'lunits_inc.decl'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'

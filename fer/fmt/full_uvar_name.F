@@ -51,11 +51,11 @@
 	INTEGER TM_LENSTR1, len, len2
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include	'xvariables.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'

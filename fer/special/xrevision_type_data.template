@@ -5,7 +5,7 @@
 *		which were formerly handled in XREVISION_DATA.F
 
 #ifdef unix
-	include 'ferret_cmn/xrevision_type.cmn'
+	include 'xrevision_type.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XREVISION_TYPE.CMN'
 #endif

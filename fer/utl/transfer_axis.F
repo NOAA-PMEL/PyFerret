@@ -46,8 +46,8 @@
 * $Id$ 
 *       - *kob* need to now copy cx_calender as well
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

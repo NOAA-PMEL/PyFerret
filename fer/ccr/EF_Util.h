@@ -99,5 +99,11 @@ typedef struct {
 } ExternalFunction;
 
 
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+#define FORTRAN(a) a
+#else
+#define FORTRAN(a) a##_
+#endif
+
 #endif	/* _EF_UTIL_H */
 

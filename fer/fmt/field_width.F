@@ -48,9 +48,9 @@
 *			determining field width
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
+	include	'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

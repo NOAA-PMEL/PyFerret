@@ -47,15 +47,15 @@
 * V446:   9/97 - bug showed up with addition of new xforms
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include	'ferret.parm'
+	include	'xprog_state.cmn'
+	include	'xalgebra.cmn'
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
-	INCLUDE	'FERRET_CMN/FERRET.PARM'
-	INCLUDE	'FERRET_CMN/XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN/XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN/XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
+	INCLUDE	'FERRET.PARM'
+	INCLUDE	'XPROG_STATE.CMN'
+	INCLUDE	'XALGEBRA.CMN'
+	INCLUDE 'XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
 #endif
 
 * calling argument declarations:

@@ -72,14 +72,14 @@
 * 12/94 - modified ferret_dispatch arguments
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'   ! merr_ok
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/gui.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'tmap_errors.parm'   ! merr_ok
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'gui.parm'
+	include 'xprog_state.cmn'
+	include 'xvariables.cmn'
 #else
-	INCLUDE 'TMAP_FORMAT/TMAP_ERRORS.PARM'   ! MERR_OK
+	INCLUDE 'TMAP_ERRORS.PARM'   ! MERR_OK
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:GUI.PARM'

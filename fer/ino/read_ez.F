@@ -57,18 +57,18 @@
 *	3/95 - fixed bug - reserve "buff" of size "column" instead of "nrepeat"
 
 #ifdef unix
-	include	'tmap_format/tmap_errors.parm'
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_errors.parm'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xprog_state.cmn'
+	include	'xtext_info.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'

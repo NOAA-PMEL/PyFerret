@@ -47,8 +47,8 @@
 *	to avoid XGKS memory leak in that routine
 
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xplot_state.cmn'		! viewport info
+	include 'plot_setup.parm'
+	include 'xplot_state.cmn'		! viewport info
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'	

@@ -56,10 +56,10 @@
 *			   error when looking at atom_id array.
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/rpn.parm'
-	include 'ferret_cmn/xalgebra.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'rpn.parm'
+	include 'xalgebra.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

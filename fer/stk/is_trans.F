@@ -71,13 +71,13 @@
 *		variables
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xtext_info.cmn'
+	include	'xalgebra.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

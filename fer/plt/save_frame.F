@@ -58,10 +58,10 @@
 	logical         ITS_BATCH_GRAPHICS
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/movies.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
+	include 'errmsg.parm'
+	include 'movies.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:MOVIES.PARM'

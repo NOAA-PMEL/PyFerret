@@ -49,13 +49,13 @@
 * V301:  11/5/93 - define PLOT+ symbol "LABKEY" with the key string
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/plot_setup.parm'
-	include	'ferret_cmn/xplot_setup.cmn'
-	include 'tmap_pplv11inc/axis_inc.decl'	! axis lengths
-	include 'pplv11inc/AXIS.INC'	! axis lengths
+	include	'ferret.parm'
+	include	'plot_setup.parm'
+	include	'xplot_setup.cmn'
+	include 'axis_inc.decl'	! axis lengths
+	include 'AXIS.INC'	! axis lengths
 #ifdef NO_PASSED_CONCAT
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

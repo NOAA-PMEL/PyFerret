@@ -44,7 +44,7 @@
 * revision 0.0 - 2/19/87
 
 #ifdef unix
-	include 'ferret_cmn/xwork_space.cmn'
+	include 'xwork_space.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XWORK_SPACE.CMN'
 #endif

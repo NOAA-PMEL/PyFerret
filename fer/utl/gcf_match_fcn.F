@@ -48,8 +48,8 @@
       LOGICAL  MATCH_TEMPLATE
       
 #ifdef unix
-      include 'ferret_cmn/ferret.parm'
-      include 'ferret_cmn/xgrid_chg_fcns.cmn'
+      include 'ferret.parm'
+      include 'xgrid_chg_fcns.cmn'
 #else 
       INCLUDE 'FERRET_CMN:FERRET.PARM'
       INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
@@ -57,7 +57,7 @@
 
 *     added 09/98
 *     
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
 c     internal parameter declarations:
       INTEGER      slen, EFCN_MATCH_TEMPLATE, EFCN_SCAN

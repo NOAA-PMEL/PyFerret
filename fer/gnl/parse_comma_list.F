@@ -54,9 +54,9 @@
 *	     - had to close open quotes in above comment line - linux f77
 *	       was freaking out because of it...
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'	! for ttout_lun
-	include 'ferret_cmn/xrisc.cmn'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'	! for ttout_lun
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'	! for ttout_lun

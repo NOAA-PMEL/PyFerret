@@ -103,11 +103,11 @@
      .		rstart, rend, right_star
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/gfdl_vms.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'gfdl_vms.parm'
 #ifdef NO_PASSED_CONCAT
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

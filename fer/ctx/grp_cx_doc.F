@@ -49,7 +49,7 @@
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
+	include	'ferret.parm'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 #endif

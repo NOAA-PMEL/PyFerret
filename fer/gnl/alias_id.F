@@ -51,8 +51,8 @@
 	LOGICAL	MATCH4
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcommand.cmn'
+	include 'ferret.parm'
+	include 'xcommand.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'

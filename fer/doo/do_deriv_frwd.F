@@ -57,11 +57,11 @@
 	INTEGER	ishf		!kob 12/96
 	PARAMETER (ishf = 0)	! 0 for forward, 1 for backward
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xprog_state.cmn'
+	include	'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

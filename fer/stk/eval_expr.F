@@ -62,13 +62,13 @@
 * V400: 3/95 - based on GET_PROT_CMND_DATA
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xfr_grid.cmn'
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
+	include 'xfr_grid.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

@@ -59,10 +59,10 @@
 *			at_start, at_end are relative to full text buffer
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'	
-	include 'ferret_cmn/errmsg.parm'	
-	include 'ferret_cmn/rpn.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'	
+	include 'errmsg.parm'	
+	include 'rpn.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'	
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
@@ -122,12 +122,7 @@
 	DO 100 i = txstart, txend
 	   i2 = i2 + 1
 	   c = text(i:i)
-* *kob* NAG f90 gave error on statement with three tick marks
-#ifdef FORTRAN_90
 	   IF ( c .EQ. "'" ) THEN
-#else
-	   IF ( c .EQ. '\'' ) THEN
-#endif
 * ... single quote -- start or end of string?
 	      IF (inquote) THEN
 	        IF (quote_type.EQ.p_single_quote) inquote = .FALSE.

@@ -62,14 +62,8 @@
 	len_test	= TM_LENSTR( test_string(1:LEN(test_string)) )
 
 * (7/98) is test string in quotations?
-* *kob* NAG f90 gave error on statement with three tick marks
-#ifdef FORTRAN_90
 	is_quoted = test_string(1:1) .EQ. "'" 
 	IF (is_quoted) is_quoted = test_string(len_test:len_test) .EQ. "'"
-#else
-	is_quoted = test_string(1:1) .EQ. '\'' 
-	IF (is_quoted) is_quoted = test_string(len_test:len_test) .EQ. '\''
-#endif
 	IF (is_quoted) len_test = len_test - 2
 
 * test string cannot be shorter than model or longer than fully terminated model

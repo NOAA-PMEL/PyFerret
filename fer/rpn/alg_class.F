@@ -52,7 +52,7 @@
 *	 1/99 - allow strings in quoble quotes (as fcn args)
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
+	include	'ferret.parm'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 #endif
@@ -104,12 +104,7 @@
 	   ALG_CLASS = 8
 	ELSEIF ( ctr.EQ.'.' ) THEN
 	   ALG_CLASS = 10
-* *kob* NAG f90 gave error on statement with three tick marks
-#ifdef FORTRAN_90
 	ELSEIF ( ctr.EQ. "'" ) THEN
-#else	
-	ELSEIF ( ctr.EQ.'\'' ) THEN
-#endif
 	   ALG_CLASS = 11
 	ELSEIF ( ctr.EQ.'{' ) THEN
 	   ALG_CLASS = 12

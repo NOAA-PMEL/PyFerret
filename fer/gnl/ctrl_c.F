@@ -87,7 +87,7 @@
 * (see unix man signal or the include file < signal.h >)
       PARAMETER ( sigint = 2 )
 
-      include 'ferret_cmn/xinterrupt.cmn'
+      include 'xinterrupt.cmn'
 
 
 *set up new defines *kob* 1/96
@@ -171,7 +171,7 @@
 * this routine is called when ^C is entered if AST is queued
 
 #ifdef unix
-	include 'ferret_cmn/xinterrupt.cmn'	! COMMON/XINTERRUPT/
+	include 'xinterrupt.cmn'	! COMMON/XINTERRUPT/
 #else
 	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'	! COMMON/XINTERRUPT/
 #endif

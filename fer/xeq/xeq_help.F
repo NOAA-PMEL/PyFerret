@@ -49,11 +49,12 @@
 * revision 1.4 - 8/3/88  - Top level of help library, "FERRET", removed
 * V230: 8/26/92 - added Unix version - entirely separate from VMS
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V5.0: 1/1/99 - Start up appropriate Web browser on PC
 * v500: 1/26/99 - *kob* update help to reflect current options
 
 #ifdef unix
-        include 'ferret_cmn/ferret.parm'
-        include 'ferret_cmn/xprog_state.cmn'
+        include 'ferret.parm'
+        include 'xprog_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
@@ -66,6 +67,12 @@
 #endif
 
 #ifdef unix
+#ifdef __CYGWIN__
+	call SPLIT_LIST(pttmode_help, ttout_lun,
+     .   ' Starting your default Web browser...'
+     .								, 0)
+	call system('bash.exe startDefaultBrowser&');
+#else
 	CALL SPLIT_LIST(pttmode_help, ttout_lun,
      .   ' Detailed help is available from several sources:'
      .								, 0)
@@ -84,6 +91,7 @@
 	CALL SPLIT_LIST(pttmode_help, ttout_lun,
      .   ' To obtain a list of FERRET commands type    SHOW COMMANDS'
      .								, 0)
+#endif
 
         RETURN
 #else

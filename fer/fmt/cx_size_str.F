@@ -44,8 +44,8 @@
 * V230:  8/28/92
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include 'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

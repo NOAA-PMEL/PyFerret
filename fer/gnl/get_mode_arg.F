@@ -60,12 +60,12 @@
 *		   (bug fix for MODE VERIFY:garbage error msgs 2/3/95)
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/gfdl_vms.parm'	
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xrisc.cmn'          ! for RISC/FORTRAN
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'gfdl_vms.parm'	
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
+	include 'xrisc.cmn'          ! for RISC/FORTRAN
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

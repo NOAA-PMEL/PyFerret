@@ -72,10 +72,10 @@
 *		GCFCN((a)) generated an error -- paren problem
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'	
-	include 'ferret_cmn/errmsg.parm'	
-	include 'ferret_cmn/rpn.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'	
+	include 'errmsg.parm'	
+	include 'rpn.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'	
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	

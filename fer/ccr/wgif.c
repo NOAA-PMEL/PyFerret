@@ -62,7 +62,7 @@ Note: for **unknown reasons** this routine will not compile using the stock
 
  Routine for writing out GIF files, using pd GIFEncode routine */
 
-
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

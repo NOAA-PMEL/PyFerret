@@ -61,10 +61,10 @@
 	REAL*8		tmp
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
 #ifdef NO_PASSED_CONCAT
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
 
 #else

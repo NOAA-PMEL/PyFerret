@@ -66,17 +66,17 @@
 * V491:  3/98 - crash due to boolean operator precedence error
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/instance_table.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xalgebra.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
-	include	'ferret_cmn/xdset_parms.cmn'
+	include	'ferret.parm'
+	include	'instance_table.parm'
+	include	'xcontext.cmn'
+	include	'xalgebra.cmn'
+	include	'xtext_info.cmn'
+	include	'xdset_parms.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'

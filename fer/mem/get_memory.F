@@ -54,9 +54,9 @@
 * V230:  4/30/92 - added coaching to error message
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'errmsg.parm'
+	include	'ferret.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

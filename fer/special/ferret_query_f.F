@@ -51,23 +51,23 @@
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
 #ifdef unix
-        include 'tmap_format/tmap_dims.parm'
-#       include "tmap_format/tmap_dset.parm"
-        include 'tmap_format/xdset_info.cmn_text'
+        include 'tmap_dims.parm'
+#       include "tmap_dset.parm"
+        include 'xdset_info.cmn_text'
         external xdset_info_data
-        include 'tmap_format/xtm_grid.cmn_text'
+        include 'xtm_grid.cmn_text'
         external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/ferret_query.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xcommand.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xgui.cmn'
-	include 'ferret_cmn/xvariables.cmn' ! JC_ADDITION
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'gfdl_vms.parm'
+	include 'ferret_query.parm'
+	include 'xprog_state.cmn'
+	include 'xcommand.cmn'
+	include 'xtext_info.cmn'
+	include 'xcontext.cmn'
+	include 'xalgebra.cmn'
+	include 'xgui.cmn'
+	include 'xvariables.cmn' ! JC_ADDITION
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
         INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

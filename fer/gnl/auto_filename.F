@@ -59,12 +59,12 @@
 *               - also added protections against name overflowing buffer
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-        include 'ferret_cmn/xrisc.cmn'
+	include	'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xtext_info.cmn'
+	include 'xprog_state.cmn'
+        include 'xrisc.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

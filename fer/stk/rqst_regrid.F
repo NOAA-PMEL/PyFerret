@@ -62,12 +62,12 @@
 *		full  dest axis limits of source rather than unspecified limts
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
@@ -77,8 +77,8 @@
 #endif
 !	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
 #ifdef unix
-	include	'ferret_cmn/xalgebra.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
+	include	'xalgebra.cmn'
+	include	'xtext_info.cmn'
 #else
 	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
 	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'

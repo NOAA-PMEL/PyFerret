@@ -43,14 +43,14 @@
 * V450: 1/97
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xgrid_chg_fcns.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include 'xgrid_chg_fcns.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'

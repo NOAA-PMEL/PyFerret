@@ -61,7 +61,7 @@
 * V500 - 12/98 *sh* - still in development as of this date
 
 #ifdef unix
-	include	'ferret_cmn/xrevision.cmn'
+	include	'xrevision.cmn'
 #else
 	INCLUDE	'FERRET_CMN:XREVISION.CMN'
 #endif

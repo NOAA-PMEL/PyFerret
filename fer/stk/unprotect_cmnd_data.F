@@ -43,8 +43,8 @@
 * V230: 7/27/92 - removed code from GET_CMND_DATA
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include	'ferret.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'

@@ -49,9 +49,9 @@
 	INTEGER	STR_CASE_BLIND_COMPARE, ict, vax_code
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'gfdl_vms.parm'
+	include 'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'

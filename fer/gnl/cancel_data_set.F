@@ -50,13 +50,13 @@
 *			  because it needed a preprocessor.
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_errors.parm'
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xdset_parms.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'tmap_errors.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'xdset_parms.cmn'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

@@ -64,12 +64,12 @@
 *	     - added ifdef check for double slash because f90/linux didn't
 *	       need two of them together for escapes
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xrisc.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xvariables.cmn'
+	include 'xrisc.cmn'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

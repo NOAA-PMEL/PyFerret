@@ -49,8 +49,8 @@
 * V230:  5/14/92 - REMOTE_X mode was replaced by the REFRESH mode
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret.parm'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

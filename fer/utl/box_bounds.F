@@ -48,8 +48,8 @@
 * V3.00 changed REAL FUNCTION to SUBROUTINE (noticed by f77 3.2)
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xbox_bounds.cmn'
+	include 'ferret.parm'
+	include 'xbox_bounds.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XBOX_BOUNDS.CMN'

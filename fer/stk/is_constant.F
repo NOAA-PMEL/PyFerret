@@ -48,12 +48,12 @@
 * V312: 5/94 - array "memory" as a calling argument
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xprog_state.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xvariables.cmn'
+	include	'xcontext.cmn'
+	include	'xprog_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

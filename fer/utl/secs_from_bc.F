@@ -54,8 +54,8 @@
 	REAL*8		TM_SECS_FROM_BC
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

@@ -60,13 +60,13 @@
 	CHARACTER   VAR_CODE*24, buff24*24, buff8*8
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'tmap_format/tmap_dims.parm'
-#	include	"tmap_format/tmap_dset.parm"
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xrisc.cmn'		! 12/94 SPLIT_LIST buffer
+	include	'ferret.parm'
+	include	'tmap_dims.parm'
+#	include	"tmap_dset.parm"
+	include	'xprog_state.cmn'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'

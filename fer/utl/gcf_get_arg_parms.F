@@ -57,10 +57,10 @@
 	INTEGER	idim, iptr, ip
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-        include 'tmap_format/xtm_grid.cmn_text'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xgrid_chg_fcns.cmn'
+	include 'tmap_dims.parm'
+        include 'xtm_grid.cmn_text'
+	include 'ferret.parm'
+	include 'xgrid_chg_fcns.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
         INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'

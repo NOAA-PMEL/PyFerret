@@ -49,17 +49,17 @@
 * V420: 11/95 - indicate un-cached variables
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include	'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xvariables.cmn'
+	include 'xtext_info.cmn'
+	include 'xalgebra.cmn'
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'

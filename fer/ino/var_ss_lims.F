@@ -49,15 +49,15 @@
 *	      may lead to problem behavior
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'tmap_format/xtm_grid.cmn_text'
+	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xfr_grid.cmn'	! 10/93
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
+	include	'xfr_grid.cmn'	! 10/93
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'

@@ -41,8 +41,8 @@
 * If no reasonable position can be found then return bad_val4
  
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

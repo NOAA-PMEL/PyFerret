@@ -47,11 +47,11 @@
 *	(see err450_time_xlimits.jnl). Eliminated tstart.
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xplot_setup.cmn'
+	include 'ferret.parm'
+	include 'plot_setup.parm'
+	include 'xplot_setup.cmn'
 * special equivalence needed only with DEC risc compiler: bug fix
-        include 'ferret_cmn/xrisc.cmn'     ! for f77 bug
+        include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
         EQUIVALENCE ( rbuff, risc_buff )
 #else

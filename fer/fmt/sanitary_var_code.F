@@ -46,8 +46,8 @@
 * V230:  11/4/92 - expanded user variable name length
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret.parm'
+	include	'xvariables.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'

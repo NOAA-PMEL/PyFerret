@@ -45,9 +45,9 @@
 * V200: 10/16/89
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xvideo.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'errmsg.parm'
+	include 'xvideo.cmn'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:XVIDEO.CMN'

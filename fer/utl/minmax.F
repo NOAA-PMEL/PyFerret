@@ -44,7 +44,7 @@
 * revision 0.0 - 9/20/88
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
+	include	'ferret.parm'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 #endif

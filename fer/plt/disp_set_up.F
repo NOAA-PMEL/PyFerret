@@ -101,25 +101,25 @@
 *              compatible planes with the variable to be plotted
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/slash.parm'
-	include 'ferret_cmn/command.parm'
-	include 'ferret_cmn/xcommand.cmn'
-	include 'ferret_cmn/xplot_setup.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xpplus.cmn'
-	include 'ferret_cmn/xbox_bounds.cmn'
-	include 'ferret_cmn/xcurvilinear.cmn'
-	include 'tmap_pplv11inc/axis_inc.decl'	! axis lengths
-	include 'pplv11inc/AXIS.INC'	! axis lengths
-        include 'tmap_pplv11inc/ppldat_inc.decl'       ! with nsize
-        include 'pplv11inc/PPLDAT.INC'       ! with nsize
+	include 'ferret.parm'
+	include 'plot_setup.parm'
+	include 'errmsg.parm'
+	include 'slash.parm'
+	include 'command.parm'
+	include 'xcommand.cmn'
+	include 'xplot_setup.cmn'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
+	include 'xpplus.cmn'
+	include 'xbox_bounds.cmn'
+	include 'xcurvilinear.cmn'
+	include 'axis_inc.decl'	! axis lengths
+	include 'AXIS.INC'	! axis lengths
+        include 'ppldat_inc.decl'       ! with nsize
+        include 'PPLDAT.INC'       ! with nsize
 *kob 1/97
-	include 'ferret_cmn/xwindow_state.cmn'
+	include 'xwindow_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'

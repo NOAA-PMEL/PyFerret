@@ -113,15 +113,15 @@
 * v500  2/99  - *kob* added LIST/QUIET
 
 #ifdef unix
-        include 'tmap_format/tmap_errors.parm'
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/slash.parm'
-	include 'ferret_cmn/errmsg.parm'
-        include 'ferret_cmn/gfdl_vms.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xinterrupt.cmn'
+        include 'tmap_errors.parm'
+	include	'ferret.parm'
+	include	'slash.parm'
+	include 'errmsg.parm'
+        include 'gfdl_vms.parm'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
+	include 'xprog_state.cmn'
+	include 'xinterrupt.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

@@ -54,11 +54,11 @@
 *	/q=val_1:val_2		specifies a separate delta for lowe and upper
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'	
-	include 'ferret_cmn/ferret.parm'	
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xdelta_context.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'errmsg.parm'	
+	include 'ferret.parm'	
+	include 'xcontext.cmn'
+	include 'xdelta_context.cmn'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
 	INCLUDE 'FERRET_CMN:FERRET.PARM'	

@@ -47,7 +47,7 @@
 * V200:   7/9/90 - extracted from LIST_CMND_DATA
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
+	include 'ferret.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 #endif

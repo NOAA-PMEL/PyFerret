@@ -43,9 +43,9 @@
 * V320: 9/94 
 *	4/95 - added alt_messages
 
-	include 'tmap_format/xalt_messages.cmn_text'
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'xalt_messages.cmn_text'
+	include	'ferret.parm'
+	include 'xprog_state.cmn'
 
 	mode_state(pmode_gui,1) = .TRUE. 
 	alt_messages = .TRUE.

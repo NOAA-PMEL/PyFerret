@@ -58,13 +58,13 @@
 * 12/97 *kob* - use new logical cs_is_calendar
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/command.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xcontrol.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
+	include	'ferret.parm'
+	include	'command.parm'
+	include 'errmsg.parm'
+	include 'xcontext.cmn'
+	include 'xcontrol.cmn'
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:COMMAND.PARM'

@@ -44,9 +44,9 @@
 * V200:  6/26/89 - extracted from ASSIGN_VARIABLE
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'

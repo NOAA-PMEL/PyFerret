@@ -61,10 +61,10 @@
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'

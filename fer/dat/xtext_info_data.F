@@ -54,9 +54,9 @@
 *			  because it needed a preprocessor.
 
 #ifdef unix
-#include	"tmap_format/tmap_dset.parm"
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xtext_info.cmn'
+#include "tmap_dset.parm"
+	include	'ferret.parm'
+	include	'xtext_info.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

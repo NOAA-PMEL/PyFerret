@@ -50,12 +50,12 @@
 	INTEGER	LIB_FREE_LUN, stat, axis
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/command.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xcontrol.cmn'
-        include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'command.parm'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
+	include 'xcontrol.cmn'
+        include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:COMMAND.PARM'

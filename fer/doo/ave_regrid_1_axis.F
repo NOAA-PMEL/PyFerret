@@ -61,10 +61,10 @@
 *	 1/96 - handles @SUM and @NGD as well
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'

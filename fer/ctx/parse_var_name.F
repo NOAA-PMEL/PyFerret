@@ -61,11 +61,11 @@
 *		from the COMMON area.
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xprog_state.cmn'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'tmap_dims.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xprog_state.cmn'
+	include	'xcontext.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -84,6 +84,7 @@
  	LOGICAL		name_only
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
+
 
 * separate simple name from possible modifiers
 	full_name_len = LEN   ( full_var_name )

@@ -52,10 +52,10 @@
 * *kob* 11/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

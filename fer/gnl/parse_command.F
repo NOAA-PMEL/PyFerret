@@ -123,13 +123,13 @@
      .			err_lun,status
 
 #ifdef unix
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/command.parm'
-	include 'ferret_cmn/xcommand.cmn'
-	include 'ferret_cmn/xcontrol.cmn'
-	include 'ferret_cmn/xvariables.cmn'	! for num_uvars_in_cmnd
-!        include 'ferret_cmn/xrisc.cmn'
+	include	'errmsg.parm'
+	include	'ferret.parm'
+	include	'command.parm'
+	include 'xcommand.cmn'
+	include 'xcontrol.cmn'
+	include 'xvariables.cmn'	! for num_uvars_in_cmnd
+!        include 'xrisc.cmn'
 #else
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

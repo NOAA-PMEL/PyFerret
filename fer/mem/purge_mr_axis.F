@@ -49,13 +49,13 @@
 *		(err450_redefine_axis_in_dyn_grid.jnl)
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-#	include	"tmap_format/tmap_dset.parm"
-	include	'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include	'tmap_dims.parm'
+#	include	"tmap_dset.parm"
+	include	'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'

@@ -50,14 +50,14 @@
 *	SW-LW (C5) is short wave down less long wave up
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/gfdl.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xonedim.cmn'
-	include 'ferret_cmn/xdset_parms.cmn'
+	include 'ferret.parm'
+	include 'gfdl.parm'
+	include 'tmap_dims.parm'
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xcontext.cmn'
+	include 'xonedim.cmn'
+	include 'xdset_parms.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:GFDL.PARM'

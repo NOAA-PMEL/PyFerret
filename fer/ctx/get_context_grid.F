@@ -120,21 +120,21 @@
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/interp_stack.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'tmap_format/implicit.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'errmsg.parm'
+	include 'ferret.parm'
+	include 'interp_stack.parm'
+	include 'xcontext.cmn'
+	include 'xalgebra.cmn'
+	include 'xtext_info.cmn'
+	include 'xprog_state.cmn'
+	include 'implicit.parm'
+	include 'tmap_dims.parm'
+	include 'tmap_errors.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'ferret_cmn/xfr_grid.cmn'   ! stack ptr should be in TMAP lib
+	include 'xfr_grid.cmn'   ! stack ptr should be in TMAP lib
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

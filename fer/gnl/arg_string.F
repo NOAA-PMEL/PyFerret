@@ -48,7 +48,7 @@
 * V230: 8/18/92 - eliminated string(1:) notation for MAC compatibility
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
+	include 'ferret.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 #endif

@@ -55,8 +55,8 @@
 	CHARACTER*12 name
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'

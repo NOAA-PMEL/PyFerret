@@ -44,11 +44,11 @@
 * revision 0.0 - 4/1/87
 
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-	include	'tmap_format/xdset_info.cmn_text'
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'xcontext.cmn'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'

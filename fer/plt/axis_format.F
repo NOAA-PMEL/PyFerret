@@ -69,16 +69,16 @@
 *		added args curvilinear and cx_curv
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xplot_setup.cmn'
+	include 'ferret.parm'
+	include 'plot_setup.parm'
+	include 'xplot_setup.cmn'
 * special equivalence needed only with risc compiler: bug fix
-	include 'ferret_cmn/xrisc.cmn'     ! for f77 bug
+	include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
         EQUIVALENCE ( rbuff, risc_buff )
 #else

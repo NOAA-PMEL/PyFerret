@@ -51,14 +51,14 @@
 	INTEGER status
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/command.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xcontrol.cmn'
-	include 'ferret_cmn/xinterrupt.cmn'
-	include 'ferret_cmn/xgui.cmn'
+	include 'errmsg.parm'
+	include 'ferret.parm'
+	include 'command.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xcontrol.cmn'
+	include 'xinterrupt.cmn'
+	include 'xgui.cmn'
 #else
 	INTEGER	SMG$READ_COMPOSED_LINE, vax_code
 

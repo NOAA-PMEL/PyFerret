@@ -58,6 +58,7 @@ compile this with
    (and use -D_NO_PROTO for non-ANSI compilers)
 */ 
 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -53,13 +53,13 @@
 *		   to determine the nature of the context merging.
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/grid_chg_fcns.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
-	include	'ferret_cmn/xfr_grid.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'grid_chg_fcns.parm'
+	include	'xcontext.cmn'
+	include	'xtext_info.cmn'
+	include	'xfr_grid.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

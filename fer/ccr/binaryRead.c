@@ -43,11 +43,17 @@ static int checkMem(void *p){
   return 1;
 }
 
+#if 0				// CYGWIN B20 doesn't support varargs
 static void setError(char *str, ...) {
   va_list ap;
   va_start(ap, str);
   vsprintf(Errbuf, str, ap);
   /*  fprintf(stderr, "%s\n", file->errbuf); */
+}
+#endif
+
+static void setError(char *str, char *mess) {
+  fprintf(stderr, str, mess);
 }
 
 static void tidyUp(FileInfo *file) {
@@ -84,7 +90,7 @@ static char *grabMemChunk(FileInfo *file){
     mi->size = chunkSize;
     mi->fileStartPos = position;
   }
-  if (mi->data == MAP_FAILED){
+  if (mi->data <= 0){
     mi->data = 0;
     setError("Can't allocate enough memory for file %s", file->name);
   }

@@ -48,17 +48,21 @@
 *                e.g. SHADE T_INDEPENDENT  CONTOUR/OVER T_DEPENDENT
 * *kob* 11/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+#elif _WIN32
+	INCLUDE	'FERRET.PARM' 
+	INCLUDE	'XCONTEXT.CMN'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN' 
 #endif
 
 * calling argument declarations
-	INTEGER joint_cx, addl_cx
-	LOGICAL	overlay, flags(0:10)
+	INTEGER joint_cx, addl_cx 
+	LOGICAL	overlay, flags(0:10) 
 
 * internal variable declarations
 	INTEGER	idim, CX_DIM_LEN

@@ -110,23 +110,23 @@
 * V491+ - 7/98 *sh* - allow case-sensitive var name in DEFINE GRID/LIKE=varname
 
 #ifdef unix
-	include	'tmap_format/tmap_errors.parm'
-#	include	"tmap_format/tmap_dset.parm"
-	include	'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xunits.cmn_text'
+	include	'tmap_errors.parm'
+#	include	"tmap_dset.parm"
+	include	'tmap_dims.parm'
+	include 'xunits.cmn_text'
 	external xunits_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/rpn.parm'
-	include 'ferret_cmn/gfdl_vms.parm'	
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'ferret_cmn/xcommand.cmn'	
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include 'rpn.parm'
+	include 'gfdl_vms.parm'	
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xtext_info.cmn'
+	include 'xcommand.cmn'	
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'

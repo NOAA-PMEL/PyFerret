@@ -51,8 +51,8 @@
 * V301:  22/2/94 - changed wn_scale(1) from 1.0 to 0.7
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xplot_state.cmn'
+	include	'ferret.parm'
+	include	'xplot_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XPLOT_STATE.CMN'

@@ -46,8 +46,8 @@
 *	10/11/89 - use COPY_GRID_SUB - avoid adjustable dimensioning with array
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include	'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'

@@ -62,11 +62,11 @@
 *               declaration line.
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-        include 'ferret_cmn/xrisc.cmn'           ! for Unix/RISC bugs (&12/94)
+	include 'ferret.parm'
+	include 'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xcontext.cmn'
+        include 'xrisc.cmn'           ! for Unix/RISC bugs (&12/94)
 * special equivalence needed only with risc compiler: bug fix
         CHARACTER rbuff(4)*12
         EQUIVALENCE ( rbuff, risc_buff )

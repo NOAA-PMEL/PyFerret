@@ -54,11 +54,11 @@
 *		 from there). Part of changes to support external function.
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'	
-	include 'ferret_cmn/rpn.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+	include	'ferret.parm'
+	include 'errmsg.parm'	
+	include 'rpn.parm'
+	include 'xprog_state.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	

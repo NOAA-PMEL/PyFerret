@@ -67,9 +67,9 @@
 * V312:  6/2/94
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xregrid.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xregrid.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

@@ -50,9 +50,9 @@
 *		with call to ALL_1_ARG
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
+	include 'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

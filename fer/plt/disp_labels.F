@@ -60,16 +60,16 @@
 * V401: 6/23/95 - tag the movable labels by passing ppl_movlab minus nnn
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xplot_setup.cmn'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
-	include 'tmap_pplv11inc/axis_inc.decl'	! axis lengths
-	include 'pplv11inc/AXIS.INC'	! axis lengths
+	include 'ferret.parm'
+	include 'plot_setup.parm'
+	include 'xplot_setup.cmn'
+	include 'xcontext.cmn'
+	include 'xtext_info.cmn'
+	include 'axis_inc.decl'	! axis lengths
+	include 'AXIS.INC'	! axis lengths
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'

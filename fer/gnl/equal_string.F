@@ -55,8 +55,8 @@
 	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

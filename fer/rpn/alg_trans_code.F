@@ -50,8 +50,8 @@
 	INTEGER	i
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xalgebra.cmn'
+	include 'ferret.parm'
+	include 'xalgebra.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'

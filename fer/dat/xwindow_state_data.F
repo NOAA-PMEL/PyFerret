@@ -37,7 +37,7 @@
 * *kob* New routine for Linux/f90 port
 
 #ifdef unix
-        include 'ferret_cmn/xwindow_state.cmn'
+        include 'xwindow_state.cmn'
 #else
         INCLUDE 'FERRET_CMN:XWINDOW_STATE.CMN'
 #endif

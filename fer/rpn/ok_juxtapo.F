@@ -48,9 +48,9 @@
 *	 1/99 - added alg_string   
 
 #ifdef unix
-	include		'ferret_cmn/ferret.parm'
-	include		'ferret_cmn/rpn.parm'
-	include		'ferret_cmn/xalgebra.cmn'
+	include		'ferret.parm'
+	include		'rpn.parm'
+	include		'xalgebra.cmn'
 #else
 	INCLUDE		'FERRET_CMN:FERRET.PARM'
 	INCLUDE		'FERRET_CMN:RPN.PARM'

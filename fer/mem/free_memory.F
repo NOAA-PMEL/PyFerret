@@ -51,10 +51,10 @@
 * V312: 5/94 - array "memory" as a calling argument
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret.parm'
+	include 'tmap_dims.parm'
+	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

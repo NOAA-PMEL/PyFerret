@@ -50,9 +50,9 @@
 * V314: 8/24/94 *kob* IBM port: slash_command_file should be declared as 
 *				logical
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'tmap_dims.parm'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

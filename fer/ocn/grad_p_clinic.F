@@ -52,12 +52,12 @@
 * V420 - 2/96 - fix bug in bounds checking on j loop
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/gfdl.parm'		! parameter definitions
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xonedim.cmn'	! geometric constants
-	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret.parm'
+	include 'gfdl.parm'		! parameter definitions
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xonedim.cmn'	! geometric constants
+	include 'xcontext.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:GFDL.PARM'		! parameter definitions

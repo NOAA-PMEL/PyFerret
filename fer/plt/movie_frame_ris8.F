@@ -45,7 +45,7 @@
 *                         does not accept this type.
 
 #ifdef unix
-        include 'ferret_cmn/errmsg.parm'
+        include 'errmsg.parm'
 #else
         INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 #endif

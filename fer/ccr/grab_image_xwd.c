@@ -107,6 +107,7 @@
  *%  color can be supported.
 %*/
 
+#include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
 

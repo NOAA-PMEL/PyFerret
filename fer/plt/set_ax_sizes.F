@@ -45,10 +45,10 @@
 * V301:  11/3/93 - set PLOT+ symbols VP_WIDTH and VP_HEIGHT
 
 #ifdef unix
-	include 'ferret_cmn/plot_setup.parm'
-        include 'ferret_cmn/xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
-        include 'tmap_pplv11inc/plt_inc.decl'     ! with width/height
-        include 'pplv11inc/PLT.INC'
+	include 'plot_setup.parm'
+        include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
+        include 'plt_inc.decl'     ! with width/height
+        include 'PLT.INC'
 #else
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
         INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'      ! 10/91 for saved_ppl_yax

@@ -45,17 +45,17 @@
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include	'ferret_cmn/xprog_state.cmn'
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xunits.cmn_text'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include	'xprog_state.cmn'
+	include 'tmap_dims.parm'
+	include 'xunits.cmn_text'
 	external xunits_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

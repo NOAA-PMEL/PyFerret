@@ -44,8 +44,8 @@
 * V450 7/97 - guts of routine moved to DELETE_USER_VAR_SUB
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret.parm'
+	include 'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'

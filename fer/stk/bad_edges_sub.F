@@ -48,10 +48,10 @@
 * V300:  3/16/93 - allow for possibility of entire region invalid
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
+	include 'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'

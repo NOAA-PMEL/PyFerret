@@ -60,15 +60,15 @@
 *		205 run data base.
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/tmap_errors.parm'
-	include 'ferret_cmn/xdset_parms.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'tmap_dims.parm'
+	include 'tmap_errors.parm'
+	include 'xdset_parms.cmn'
+	include 'xprog_state.cmn'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

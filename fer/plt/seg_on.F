@@ -50,12 +50,12 @@
 *	...
 
 #ifdef unix
-	include	'ferret_cmn/xprog_state.cmn'		! with mode_segment
-	include	'ferret_cmn/xplot_state.cmn'
-	include	'tmap_pplv11inc/gkscm1_inc.decl'	! with wsid
-	include	'pplv11inc/GKSCM1.INC'	! with wsid
-	include 'tmap_pplv11inc/pltcom_dat.decl'	! with gksopn
-	include 'pplv11inc/PLTCOM.DAT'	! with gksopn
+	include	'xprog_state.cmn'		! with mode_segment
+	include	'xplot_state.cmn'
+	include	'gkscm1_inc.decl'	! with wsid
+	include	'GKSCM1.INC'	! with wsid
+	include 'pltcom_dat.decl'	! with gksopn
+	include 'PLTCOM.DAT'	! with gksopn
 #else
 	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'		! with mode_segment
 	INCLUDE	'FERRET_CMN:XPLOT_STATE.CMN'

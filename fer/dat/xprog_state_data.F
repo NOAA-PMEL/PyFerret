@@ -92,9 +92,9 @@
 * V450:	 11/19/96 - eliminated MODE POLISH
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/movies.parm'
-	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret.parm'
+	include 'movies.parm'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:MOVIES.PARM'

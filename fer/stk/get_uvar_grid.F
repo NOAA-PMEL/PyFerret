@@ -67,16 +67,16 @@
 #ifdef unix
 
 ! debug includes 11/6/94 *sh*
-        include 'tmap_format/tmap_errors.parm'
-        include 'tmap_format/tmap_dims.parm'
-        include 'tmap_format/xtm_grid.cmn_text'
+        include 'tmap_errors.parm'
+        include 'tmap_dims.parm'
+        include 'xtm_grid.cmn_text'
         external xgt_grid_data
 
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret.parm'
+	include	'interp_stack.parm'
+	include	'errmsg.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'

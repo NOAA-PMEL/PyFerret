@@ -46,7 +46,7 @@
 * V314: 8/24/94 *kob* IBM port - variable flag should be declared as logical and
 *				 not integer...caught by AIX xlf compiler
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
+	include	'ferret.parm'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 #endif

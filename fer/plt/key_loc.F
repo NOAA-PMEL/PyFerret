@@ -45,11 +45,11 @@
 * V200:	  1/2/90
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/plot_setup.parm'
-	include	'ferret_cmn/xplot_setup.cmn'
-	include 'tmap_pplv11inc/axis_inc.decl'		! axis lengths
-	include 'pplv11inc/AXIS.INC'		! axis lengths
+	include	'ferret.parm'
+	include	'plot_setup.parm'
+	include	'xplot_setup.cmn'
+	include 'axis_inc.decl'		! axis lengths
+	include 'AXIS.INC'		! axis lengths
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'

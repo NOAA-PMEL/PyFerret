@@ -59,8 +59,8 @@
 *        11/9/92 - text of unknown variable mentions not in data set
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'	! parameter definitions
-	include 'ferret_cmn/xerrmsg_text.cmn'	! common declaration
+	include 'errmsg.parm'	! parameter definitions
+	include 'xerrmsg_text.cmn'	! common declaration
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	! parameter definitions
 	INCLUDE 'FERRET_CMN:XERRMSG_TEXT.CMN'	! COMMON declaration

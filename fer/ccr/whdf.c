@@ -53,7 +53,7 @@
                    check validity of height and width
 
 */
-
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -67,6 +67,9 @@ void wHDF(file, image,r,g,b)
      XImage *image;
      int r[],g[],b[];
 {
+#ifdef __CYGWIN__
+  fprintf(stderr, "wHDF not supported on this platform\n");
+#else
 
   char *data,*pdata;
   int hheight, hwidth,istat,i,j;
@@ -115,6 +118,8 @@ void wHDF(file, image,r,g,b)
 	printf("*****Error writing HDF file*****\n");
 	exit (1);
       }
+#endif /* #ifdef __CYGWIN__ */
 }
+
 
 

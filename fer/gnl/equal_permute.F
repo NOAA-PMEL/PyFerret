@@ -61,9 +61,9 @@
 	PARAMETER     ( tab = CHAR(9) )
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xtext_info.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xtext_info.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

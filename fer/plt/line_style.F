@@ -57,9 +57,9 @@
 * V301:  1/27/94 - when /LINE_STYLE is given w/out /SYMBOL use num_fancy_lines
 
 #ifdef unix
-	include	'ferret_cmn/slash.parm'
-	include	'ferret_cmn/plot_setup.parm'
-	include	'ferret_cmn/xplot_setup.cmn'
+	include	'slash.parm'
+	include	'plot_setup.parm'
+	include	'xplot_setup.cmn'
 #else
 	INCLUDE	'FERRET_CMN:SLASH.PARM'
 	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'

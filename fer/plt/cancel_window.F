@@ -54,14 +54,14 @@
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xgui.cmn'
-	include	'tmap_pplv11inc/pltcom_dat.decl'	! with sizing data, etc.
-	include	'pplv11inc/PLTCOM.DAT'	! with sizing data, etc.
-	include	'tmap_pplv11inc/gkscm1_inc.decl'	! with gks common
-	include	'pplv11inc/GKSCM1.INC'	! with gks common
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xgui.cmn'
+	include	'pltcom_dat.decl'	! with sizing data, etc.
+	include	'PLTCOM.DAT'	! with sizing data, etc.
+	include	'gkscm1_inc.decl'	! with gks common
+	include	'GKSCM1.INC'	! with gks common
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

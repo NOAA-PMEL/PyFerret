@@ -50,9 +50,9 @@
 * ...
 
 #ifdef unix
-	include	'ferret_cmn/xprog_state.cmn'		! with mode_segment
-	include 'tmap_pplv11inc/pltcom_dat.decl'	! with gksopn
-	include 'pplv11inc/PLTCOM.DAT'	! with gksopn
+	include	'xprog_state.cmn'		! with mode_segment
+	include 'pltcom_dat.decl'	! with gksopn
+	include 'PLTCOM.DAT'	! with gksopn
 #else
 	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'		! with mode_segment
 	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn

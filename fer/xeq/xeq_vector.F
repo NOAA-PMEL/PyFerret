@@ -69,20 +69,20 @@
 * V450:  5/29/97 - added /NOAXES qualifier (eventually for curvilinear plots)
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/plot_setup.parm'
-	include	'ferret_cmn/slash.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xplot_setup.cmn'
-	include 'ferret_cmn/xpplus.cmn'
-        include 'tmap_pplv11inc/axis_inc.decl'       ! with axis lengths	
-        include 'pplv11inc/AXIS.INC'       ! with axis lengths	
-	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'errmsg.parm'
+	include	'plot_setup.parm'
+	include	'slash.parm'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xplot_setup.cmn'
+	include 'xpplus.cmn'
+        include 'axis_inc.decl'       ! with axis lengths	
+        include 'AXIS.INC'       ! with axis lengths	
+	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'

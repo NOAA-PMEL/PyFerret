@@ -56,12 +56,12 @@
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/gfdl_vms.parm'	
+	include	'ferret.parm'
+	include 'gfdl_vms.parm'	
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

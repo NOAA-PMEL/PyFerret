@@ -48,11 +48,11 @@
 *	10/11/89 - modified array declarations
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include 'ferret_cmn/xdset_parms.cmn'
+	include 'ferret.parm'
+	include 'tmap_dims.parm'
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include 'xdset_parms.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

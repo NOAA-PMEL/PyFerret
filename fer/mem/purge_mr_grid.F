@@ -47,15 +47,15 @@
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 #ifdef unix
-	include	'tmap_format/tmap_dims.parm'
-#	include	"tmap_format/tmap_dset.parm"
-	include	'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include	'tmap_dims.parm'
+#	include	"tmap_dset.parm"
+	include	'tmap_errors.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
+	include	'ferret.parm'
+	include	'errmsg.parm'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -67,8 +67,8 @@
 #endif
 !	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
 #ifdef unix
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xcalc_vars.cmn'
+	include 'xvariables.cmn'
+	include 'xcalc_vars.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
 	INCLUDE 'FERRET_CMN:XCALC_VARS.CMN'

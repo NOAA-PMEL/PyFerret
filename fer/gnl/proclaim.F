@@ -46,10 +46,10 @@
 * V402 - 8/95 - use XREVISION_TYPE to automate version info
 
 #ifdef unix
-	include 'ferret_cmn/xrevision.cmn'
-	include 'ferret_cmn/xrevision_type.cmn'
-	include 'ferret_cmn/xtoday.cmn'
-	include 'ferret_cmn/xmake_date.cmn'
+	include 'xrevision.cmn'
+	include 'xrevision_type.cmn'
+	include 'xtoday.cmn'
+	include 'xmake_date.cmn'
 #else
 	INCLUDE 'FERRET_CMN:XREVISION.CMN'
 	INCLUDE 'FERRET_CMN:XREVISION_TYPE.CMN'

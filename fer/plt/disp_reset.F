@@ -48,11 +48,11 @@
 *        11/9/92 - unprotect all colors
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/plot_setup.parm'
-	include 'ferret_cmn/xplot_setup.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xrevision.cmn'
+	include 'ferret.parm'
+	include 'plot_setup.parm'
+	include 'xplot_setup.cmn'
+	include 'xplot_state.cmn'
+	include 'xrevision.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'

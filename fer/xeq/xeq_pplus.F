@@ -48,19 +48,19 @@
 * Unix/RISC port - 10/9/91 - check to see if user changes ylen or yorg
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/xplot_setup.cmn'    ! added 10/9/91
-        include 'tmap_pplv11inc/axis_inc.decl'  ! added 10/9/91 for ylen,yorg
-        include 'pplv11inc/AXIS.INC'            ! added 10/9/91 for ylen,yorg
+	include 'tmap_dims.parm'
+	include	'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'xplot_setup.cmn'    ! added 10/9/91
+        include 'axis_inc.decl'  ! added 10/9/91 for ylen,yorg
+        include 'AXIS.INC'            ! added 10/9/91 for ylen,yorg
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN/XPLOT_SETUP.CMN'    ! added 10/9/91
+	INCLUDE 'XPLOT_SETUP.CMN'    ! added 10/9/91
         INCLUDE 'PPLV11INC:AXIS.INC'            ! added 10/9/91 for ylen,yorg
         INCLUDE 'PPLV11INC:AXIS.INC'            ! added 10/9/91 for ylen,yorg
 #endif

@@ -57,22 +57,22 @@
 *               declaration line.
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xrevision.cmn'
-	include 'ferret_cmn/xinterrupt.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xrevision.cmn'
+	include 'xinterrupt.cmn'
         external xmachine_data
 
 #ifdef sun 
-        include 'tmap_format/xmachine_byte.cmn'
+        include 'xmachine_byte.cmn'
         BYTE i1zero/0/
 #else
-        include 'tmap_format/xmachine_int1.cmn'
+        include 'xmachine_int1.cmn'
         INTEGER*1 i1zero
 	PARAMETER (i1zero = 0)
 #endif

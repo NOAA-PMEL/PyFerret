@@ -42,8 +42,8 @@
 
 * V400: 11/94 
 
-	include	'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
+	include	'ferret.parm'
+	include 'xprog_state.cmn'
 
 * calling argument declarations:
 	REAL*8 bcsecs

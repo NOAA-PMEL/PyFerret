@@ -49,11 +49,11 @@
 * V500: 1/99 *sh* added support for string arguments to functions
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/grid_chg_fcns.parm'
-	include	'ferret_cmn/xalgebra.cmn'
-	include	'ferret_cmn/xgrid_chg_fcns.cmn'
-	include	'ferret_cmn/xrisc.cmn'
+	include	'ferret.parm'
+	include	'grid_chg_fcns.parm'
+	include	'xalgebra.cmn'
+	include	'xgrid_chg_fcns.cmn'
+	include	'xrisc.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'

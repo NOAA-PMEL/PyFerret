@@ -47,9 +47,9 @@
 *	 7/10/90 - added checks for invalid grid and ss
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xtext_info.cmn'
+	include 'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xtext_info.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'

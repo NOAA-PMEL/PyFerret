@@ -48,9 +48,9 @@
 * V320: 2/28/95 - SPLIT_GUI_MESSAGE --> TM_SPLIT_MESSAGE
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
+	include 'ferret.parm'
 #ifdef NO_PASSED_CONCAT
-	include 'ferret_cmn/xrisc.cmn'
+	include 'xrisc.cmn'
 #endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

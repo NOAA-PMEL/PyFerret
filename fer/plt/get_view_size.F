@@ -54,10 +54,10 @@
 * V300:  4/19/93 - old style vp's: use ABS() for negative vp_size
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xplot_state.cmn'
-	include	'tmap_pplv11inc/plt_inc.decl'	! with sizing data,etc.
-	include	'pplv11inc/PLT.INC'	! with sizing data, etc.
+	include 'ferret.parm'
+	include 'xplot_state.cmn'
+	include	'plt_inc.decl'	! with sizing data,etc.
+	include	'PLT.INC'	! with sizing data, etc.
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'

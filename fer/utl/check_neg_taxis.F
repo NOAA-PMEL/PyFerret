@@ -58,11 +58,11 @@
 	DOUBLE PRECISION TM_WORLD
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'ferret.parm'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

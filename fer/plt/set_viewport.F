@@ -51,15 +51,15 @@
 *        3/29/93 - restore the old-style functioning of DEFINE VIEW/SIZE
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include	'tmap_pplv11inc/pltcom_dat.decl' ! with sizing data, etc.
-	include	'pplv11inc/PLTCOM.DAT'	         ! with sizing data, etc.
-	include	'tmap_pplv11inc/ppl_in_ferret.cmn'	! with ppl_in_ferret
-	include	'tmap_pplv11inc/gkscm1_inc.decl'	! with gks common
-	include	'pplv11inc/GKSCM1.INC'	! with gks common
-!	include 'sys_library/gksdefs.bnd'		! with gclip
+	include 'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include	'pltcom_dat.decl' ! with sizing data, etc.
+	include	'PLTCOM.DAT'	         ! with sizing data, etc.
+	include	'ppl_in_ferret.cmn'	! with ppl_in_ferret
+	include	'gkscm1_inc.decl'	! with gks common
+	include	'GKSCM1.INC'	! with gks common
+!	include 'gksdefs.bnd'		! with gclip
 C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	INTEGER*4  GNCLIP,GCLIP
 	DATA       GNCLIP,GCLIP/  0,    1/

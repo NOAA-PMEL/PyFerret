@@ -112,16 +112,16 @@
 * V500: 2/99 *sh* - added POLYGON command
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xalt_messages.cmn_text'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/gui.parm'
-	include 'ferret_cmn/command.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xgui.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
+	include 'tmap_dims.parm'
+	include 'xalt_messages.cmn_text'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'gui.parm'
+	include 'command.parm'
+	include 'xprog_state.cmn'
+	include 'xvariables.cmn'
+	include 'xgui.cmn'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'

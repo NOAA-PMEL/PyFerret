@@ -44,7 +44,7 @@
 * V200:  12/6/89
 
 #ifdef unix
-	include	'ferret_cmn/xgks_devices.cmn'
+	include	'xgks_devices.cmn'
 #else
 	INCLUDE	'FERRET_CMN:XGKS_DEVICES.CMN'
 #endif

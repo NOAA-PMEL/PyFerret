@@ -46,8 +46,8 @@
 * revision 0.2 - 7/18/88 - Am entered from data sets - not computed here
 
 #ifdef unix
-	include 'ferret_cmn/gfdl.parm'
-	include 'ferret_cmn/xonedim.cmn'
+	include 'gfdl.parm'
+	include 'xonedim.cmn'
 #else
 	INCLUDE 'FERRET_CMN:GFDL.PARM'
 	INCLUDE 'FERRET_CMN:XONEDIM.CMN'

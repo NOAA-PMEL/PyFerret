@@ -9,12 +9,21 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
   		  -I../../ppl/include/xgks \
 		  -I/usr/local/include \
+		  -I$(TMAP_LOCAL)/src/xgks/gif \
+		  -I$(TMAP_LOCAL)/src/xgks/ps \
 		  -I$(TMAP_LOCAL)/src/xgks/port \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
 		  -I../common \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
 		  -I. -Ireadline 
+
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common \
+		   -I../../ppl/include 
 
 GUI_INCLUDES	=
 
@@ -24,7 +33,7 @@ CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
 FFLAGS          = -c -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C
+		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C $(FINCLUDES)
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -Nl160 -Dxgks -static -fpe2

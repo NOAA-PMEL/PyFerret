@@ -46,12 +46,12 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/xdset_parms.cmn'
-	include	'ferret_cmn/xrisc.cmn'
+	include	'ferret.parm'
+	include	'xdset_parms.cmn'
+	include	'xrisc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'

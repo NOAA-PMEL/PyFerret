@@ -56,11 +56,11 @@
 *	 1/99 - allow strings in double quotes (as args to function)
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/rpn.parm'
-	include 'ferret_cmn/xalgebra.cmn'
-	include 'ferret_cmn/xrisc.cmn'
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include 'rpn.parm'
+	include 'xalgebra.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -158,20 +158,15 @@
 	   ENDIF
 
 * string in double quotes? (1/99)
-	  IF ( text(at_start(i):at_start(i)).EQ."\""
-     .	 .AND. text(at_end  (i):at_end  (i)).EQ."\"" ) THEN
+	  IF ( text(at_start(i):at_start(i)).EQ.'"'
+     .	 .AND. text(at_end  (i):at_end  (i)).EQ.'"' ) THEN
 	      at_type(i) = alg_string
 	      at_id(i)   = unspecified_int4
 	      GOTO 100
 	   ENDIF
 
 * cant identify it - we will call it an variable for now
-* *kob* NAG f90 gave error on statement with three tick marks
-#ifdef FORTRAN_90
 	   IF (text(at_start(i):at_start(i)) .NE. "'" ) THEN
-#else
-	   IF (text(at_start(i):at_start(i)) .NE. '\'' ) THEN
-#endif
 * (7/98) only check name if it is not in quotation marks
 	     IF ( .NOT.TM_LEGAL_NAME(text(at_start(i):aend)) ) GOTO 5100
 	   ENDIF

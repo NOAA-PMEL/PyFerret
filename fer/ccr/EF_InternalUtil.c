@@ -48,11 +48,10 @@
 
 /* .................... Includes .................... */
  
-#include <assert.h>
+#include <unistd.h>		/* for convenience */
 #include <stdio.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
 #include <string.h>		/* for convenience */
-#include <unistd.h>		/* for convenience */
 #include <fcntl.h>		/* for fcntl() */
 #include <dlfcn.h>		/* for dynamic linking */
 #include <signal.h>             /* for signal() */
@@ -63,7 +62,7 @@
 #include <sys/errno.h>
 
 #include "EF_Util.h"
-#include "/home/r3/tmap/local/sun/include/list.h"  /* locally added list library */
+#include "list.h"  /* locally added list library */
 
 
 /* ................ Global Variables ................ */

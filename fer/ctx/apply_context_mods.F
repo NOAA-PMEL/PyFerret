@@ -65,12 +65,12 @@
 * *kob* 9/97 - support for negative time steps - make sure cx_calendar
 *              gets transfered
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xcontext.cmn'
-	include 'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xtext_info.cmn'
+	include 'errmsg.parm'
+	include 'ferret.parm'
+	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
+	include 'xtext_info.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'

@@ -47,10 +47,10 @@
 * V200:  6/20/89 - variable protection scheme changed
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'xvariables.cmn'
+	include	'xcontext.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

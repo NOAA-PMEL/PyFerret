@@ -52,13 +52,13 @@
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 
 #ifdef unix
-	include	'ferret_cmn/ferret.parm'
-	include	'ferret_cmn/errmsg.parm'
-	include	'ferret_cmn/interp_stack.parm'
-	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include	'ferret_cmn/xmem_subsc.cmn'
-	include	'ferret_cmn/xprog_state.cmn'
+	include	'ferret.parm'
+	include	'errmsg.parm'
+	include	'interp_stack.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
+	include	'xprog_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'

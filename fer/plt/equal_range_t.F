@@ -58,8 +58,8 @@
 	REAL*8		SECS_TO_TSTEP, tmp
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/errmsg.parm'
+	include 'ferret.parm'
+	include 'errmsg.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'

@@ -80,20 +80,20 @@
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'
-	include 'ferret_cmn/xprog_state.cmn'
-	include 'ferret_cmn/xplot_state.cmn'
-	include 'ferret_cmn/errmsg.parm'
-        include 'tmap_pplv11inc/ppl_in_ferret.cmn' ! with PPL_viewports_active
-	include	'tmap_pplv11inc/pltcom_dat.decl' 
-	include	'pplv11inc/PLTCOM.DAT'         	  ! with asize,bsize
-        include 'tmap_pplv11inc/plt_inc.decl'     ! with width/height
-        include 'pplv11inc/PLT.INC'
-	include	'tmap_pplv11inc/gkscm1_inc.decl'	! with gks common
-	include	'pplv11inc/GKSCM1.INC'	                ! with gks common
-	include 'tmap_pplv11inc/axis_inc.decl'		! axis lengths
-	include 'pplv11inc/AXIS.INC'		        ! axis lengths
-!	include 'sys_library/gksdefs.for'		! escape code
+	include 'ferret.parm'
+	include 'xprog_state.cmn'
+	include 'xplot_state.cmn'
+	include 'errmsg.parm'
+        include 'ppl_in_ferret.cmn' ! with PPL_viewports_active
+	include	'pltcom_dat.decl' 
+	include	'PLTCOM.DAT'         	  ! with asize,bsize
+        include 'plt_inc.decl'     ! with width/height
+        include 'PLT.INC'
+	include	'gkscm1_inc.decl'	! with gks common
+	include	'GKSCM1.INC'	                ! with gks common
+	include 'axis_inc.decl'		! axis lengths
+	include 'AXIS.INC'		        ! axis lengths
+!	include 'gksdefs.for'		! escape code
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'

@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ~ansley/FERRET/fer/ferretdods_gui 
--rwxrwxrwx   1 ansley   tmap     56315944 Dec 18 12:15 /home/ja8/ansley//FERRET/fer/ferretdods_gui
-Using external functions from  /home/ja9/tmap/ferret/solaris/ext_func/libs
+Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     56317432 Jan 14 14:31 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: bug fixes to 12/16, new benchmarks for modulo attribute and polygon/over bug fix
+Note: fix for modulo attribute on OSF, PC
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Dec 18 14:46:16 PST 2002
+Beginning at Tue Jan 14 14:33:37 PST 2003
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -501,4 +501,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Dec 18 14:53:33 PST 2002
+Ended at Tue Jan 14 14:40:41 PST 2003

@@ -4,7 +4,7 @@
 # This file is included in other Makefiles and defines
 # platform specific macros.  Changed by jimp 01/20/99.
 # NOTE:  SGI compilation requires the -Dsun flag to be set for compilation
-
+# ACM 2/2001 debug flags
 
 INCLUDES        = -I. -I$(TMAP_LOCAL)/include
 
@@ -24,4 +24,5 @@ LD_DYN_FLAGS    = -shared -n32
 
 CPP             = /lib/cpp
 CPP_FLAGS       = -P -traditional $(INCLUDES)
-
+CFLAGS_DEBUG	= -g -Ddebug
+FFLAGS_DEBUG	= -g -C -Ddebug

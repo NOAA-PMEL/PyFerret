@@ -3,6 +3,7 @@
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
+# ACM 2/2001 debug flags
 
 INCLUDES        = -I. -I$(TMAP_LOCAL)/include
 
@@ -18,3 +19,5 @@ F77SHFLAG       = -shared
 FFLAGS          = -c -u -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -fpe2 -C $(F77SHFLAG) $(FINCLUDES)
 LD_DYN_FLAGS    = -shared
+CFLAGS_DEBUG	= -g -Ddebug
+FFLAGS_DEBUG	= -g -C -Ddebug

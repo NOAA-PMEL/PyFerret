@@ -3,6 +3,7 @@
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
+# ACM 2/2001 debug flags
 
 CCSHFLAG        = -K PIC
 CC              = cc
@@ -12,5 +13,5 @@ F77             = f77
 F77SHFLAG       = -PIC
 FFLAGS          = -c -u $(F77SHFLAG)
 LD_DYN_FLAGS    = -G -z text -z muldefs
-
-
+CFLAGS_DEBUG	= -g -Ddebug
+FFLAGS_DEBUG	= -g -C -Ddebug

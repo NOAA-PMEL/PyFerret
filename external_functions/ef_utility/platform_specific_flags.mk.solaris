@@ -3,6 +3,7 @@
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros
+# SH 2/2001 debug flags
 
 CCSHFLAG        = -K PIC
 CC              = cc

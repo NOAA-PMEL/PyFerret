@@ -1,0 +1,46 @@
+* XTM_GRID.CMN
+* pre-defined and user-defined grids and axis for TMAP programs
+*
+* revision 1.00 - 05/25/87 - by M. Verschell
+* revision 1.01 - 12/90 - by S.Hankin - reordered variables to avoid
+*			  word misalignment error on DEC/MIPS RISC CPU
+* Unix/RISC port 4/91 - increased grid_filename size for full path
+
+
+	CHARACTER*128	grid_filename
+	CHARACTER*20	line_t0
+	CHARACTER*16	line_name, line_units, grid_name
+	CHARACTER*2	line_direction, axis_orients
+	INTEGER		line_subsc1, line_dim, line_unit_code, grid_line,
+     .			next_line_mem_pos
+	LOGICAL		grid_out_prod, line_regular, line_modulo
+	REAL		line_tunit, grid_rotation
+	REAL*8		line_start, line_delta, line_mem
+
+	COMMON / XGRID /
+     .			line_start	( 0:max_lines ),
+     .			line_delta	( 0:max_lines ),
+     .			line_mem	( maxlinestore),
+     .
+     .			grid_filename	( maxgridfiles),
+     .
+     .			line_name	( 0:max_lines ),
+     .			line_subsc1	( 0:max_lines ),
+     .			line_dim	( 0:max_lines ),
+     .			line_units	( 0:max_lines ),
+     .			line_unit_code	( 0:max_lines ),
+     .			line_regular	( 0:max_lines ),
+     .			line_modulo	( 0:max_lines ),
+     .			line_t0		( 0:max_lines ),
+     .			line_tunit	( 0:max_lines ),
+     .			next_line_mem_pos,
+     .
+     .			grid_name	( 0:max_grids ),
+     .			grid_line	( 4, 0:max_grids ),
+     .			grid_out_prod	( 4, 0:max_grids ),
+     .			grid_rotation	( 0:max_grids ),
+     .
+     .			line_direction	( 0:max_lines ),
+     .			axis_orients	( 0:max_axis_orients )
+
+* note: the zero subscript is a scratch buffer

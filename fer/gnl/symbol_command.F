@@ -61,9 +61,11 @@
 *		      for sgi
 * Linux Port *kob* 12/96 - had to remove a single quote from a comment line
 * 
-* v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.  erroneously
-*                       reused "clen" argument..changed it to clen2
-* v5 *js* 4/99 - yet another Ferret hack to add a byteorder symbol -- value
+* v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.
+*			erroneously
+* V500 *sh* 4/99 - bug fix: single character substitution string caused
+*			error out as empty strings
+*      *js* 4/99 - yet another Ferret hack to add a byteorder symbol -- value
 *                can be BIG or LITTLE
 
 * calling argument declarations:
@@ -216,7 +218,7 @@
 
 * perform the coached text substitution, if requested
 	IF ( coaching ) THEN
-	   IF (coach_start .GE. coach_end) GOTO 5400
+	   IF (coach_start .GT. coach_end) GOTO 5400	 ! 4/99 (was ".GE.")
 *11/96 *kob* - concatenation w/in procedure call corrupted on sgis. !kob 12/96
 #ifdef crptd_cat_argument	
 	   cat_argument = 'symbol '//buffer(spos+2:sym_end)

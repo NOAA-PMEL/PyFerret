@@ -354,7 +354,11 @@ GO bn_longvarnames.jnl
 GO bn_reset
 GO bn_shakey.jnl
 
+GO bn_reset
+GO bn_eof_4d.jnl
 
+GO bn_reset
+go bn_abstract_axis_names.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

@@ -23,7 +23,6 @@ xeq_shade.F\
 xeq_show.F\
 xeq_spawn.F\
 xeq_stat.F\
-xeq_streamln.F\
 xeq_user_command.F\
 xeq_vector.F\
 xeq_wire.F\

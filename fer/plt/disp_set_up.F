@@ -113,6 +113,8 @@
 *                   log of depth as inverse axis
 *       ACM  8/2001 BUG FIX: save cal id if vertical time axis
 *      *acm* 10/01  remove VMS includes
+*      *acm* 12/01  Allocate PPLUS memory for the flag array used by
+*                   flowline.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -149,7 +151,7 @@ C plus those starting w/ xbox_bounds:
 
 * calling argument declarations:
 	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
-     .			is_logx, is_logy
+     .			is_logx, is_logy, flows
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			pen, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -172,9 +174,9 @@ C plus those starting w/ xbox_bounds:
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
      .			style, justify, ipen, ndim, dims(4), ptitl,
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
-     .			phlim, pvlim, slen2,
-     .			TM_GET_CALENDAR_ID, cal_id, tax,
-     .			x_axtyp, y_axtyp
+     .			phlim, pvlim, slen2, cal_id, tax,
+     .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
+     .			TM_GET_CALENDAR_ID
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -221,8 +223,22 @@ C plus those starting w/ xbox_bounds:
 * determine PLOT+ memory required
         plot_mem_used = CGRID_SIZE( cx_list(1) ) + size1 + size2
         IF ( vector ) plot_mem_used = plot_mem_used * 2
-!        IF ( plot_mem_used .GT. 0.99*nsize ) GOTO 5170      ! test is now in
-!                                                            ! pplldc_envelope
+
+	flows     = qual_given( slash_vect_flowline  ).GT.0
+        IF ( flows ) THEN
+
+!  For flowlines, more PLOT+ memory needed; based on density parameter and
+!  grid size.  Use iscl = 10; an upper bound for iscl in subroutine flowline.
+
+           nsiz = MAX(size1, size2)
+           iscl = 10
+
+C   set up memory for the flag grid
+
+           siz = 4*(nsiz*nsiz*iscl*iscl + nsiz*iscl)   ! see flowline
+           plot_mem_used = plot_mem_used + siz
+        ENDIF
+
 * set flag indicating a 2D plot is on the screen
 	twodee_on = .TRUE.
 

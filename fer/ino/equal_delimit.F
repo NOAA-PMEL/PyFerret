@@ -1,4 +1,4 @@
-	SUBROUTINE EQUAL_DELIMIT( string, outstring, n, status )
+	SUBROUTINE EQUAL_DELIMIT( string, outstring, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -42,12 +42,12 @@
 * V530: *sh* 11/00
 
 * calling argument declarations
-	INTEGER		n, status
+	INTEGER		status
 	CHARACTER*(*)	string, outstring
 
 * internal variable declarations
-	INTEGER	TM_LENSTR1, llen, pos, ll
-	CHARACTER buff*80, buff1*12
+	INTEGER	TM_LENSTR1, n, llen, pos, ll, ic
+	CHARACTER buff*80, buff1*8
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -94,18 +94,22 @@
 #else
 	  IF (buff(1:1).EQ.'\\') THEN
 #endif	     
-	    IF (buff(2:2).EQ.'t') THEN
+	    IF (buff(2:2).EQ.'t' .OR. buff(2:2).EQ.'T') THEN
 	      outstring(n:n) = tab
-	    ELSEIF (buff(2:2).EQ.'b') THEN  !"\b" ok for blank
+	    ELSEIF (buff(2:2).EQ.'b' .OR. buff(2:2).EQ.'B' ) THEN
 	      outstring(n:n) = ' '
-	    ELSEIF (buff(2:2).EQ.'n') THEN
+	    ELSEIF (buff(2:2).EQ.'n' .OR. buff(2:2).EQ.'N') THEN
 	      outstring(n:n) = CHAR(12) ! newline character
 	    ELSE
-	      outstring(n:n) = buff1(2:2)
+	      outstring(n:n) = buff(2:2)
 	    ENDIF
-	  ELSEIF ( buff(1:2).EQ.'0X'
-     .	      .OR. buff(1:2).EQ.'0x' ) THEN
-	    CONTINUE  ! decode HEX input here
+	  ELSEIF ( buff(1:1).GE.'0'
+     .	     .AND. buff(1:1).LE.'9'
+     .	     .AND. pos.GT.2 ) THEN
+	    buff1 = buff(:pos-1)
+	    READ(buff1,'(I)',ERR=5100) ic
+	    IF (ic.GT.127) GOTO 5100
+	    outstring(n:n) = CHAR(ic)  ! any decimal value
 	  ELSEIF (pos.GT.2) THEN
 	     GOTO 5100
 	  ELSE
@@ -117,6 +121,9 @@
 	  llen = llen - pos
 	IF (llen.GT.0) GOTO 100 
 * -- end of implied DO-WHILE loop
+
+* terminate with a NULL (C-style)
+	outstring(n+1:n+1) = CHAR(0)
 
 * success
 	status = ferr_ok

@@ -52,6 +52,9 @@
 *		because TM_UNIT_ID was incorrectly interpreting "mbar"
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+* *kob* 3/99 - add gregorian_ye[ar], year360, year366 units and also added
+*              year356 as an alternate unit to the common year.
+
 * local variable declarations
 	INTEGER	i
 
@@ -93,9 +96,9 @@
      .		un_name( -5)	/ 'mon'		/,
      .		un_name( -6)	/ 'yr'		/,
      .		un_name( -7)	/ 'M2 cycles'	/,
-     .		un_name( -8)	/ char_init12	/,
-     .		un_name( -9)	/ char_init12	/,
-     .		un_name(-10)	/ char_init12	/
+     .		un_name( -8)	/ 'year366'     /,
+     .		un_name( -9)	/ 'year360'     /,
+     .		un_name(-10)	/ 'gregorian_ye'/
 
 	DATA	un_convert( 1)	/ .01		/,
      .		un_convert( 2)	/ 1000.		/,
@@ -120,9 +123,9 @@
      .		un_convert( -5)	/ 2628000.	/,	! sec per 730 hr month
      .		un_convert( -6)	/ 31536000.	/,	! sec per 365 day year
      .		un_convert( -7)	/ 44712.	/,	! sec per M2 cycle
-     .		un_convert( -8)	/ real4_init	/,
-     .		un_convert( -9)	/ real4_init	/,
-     .		un_convert(-10)	/ real4_init	/
+     .		un_convert( -8)	/ 31622400.	/,      ! sec per 366 day year
+     .		un_convert( -9)	/ 31104000.	/,       ! sec per 360 day year
+     .		un_convert(-10)	/ 31556952.	/      ! sec per 365.2425 year
 
 	DATA	un_alt_name ( 1) / 'centim'	/,
      .		un_alt_subsc( 1) / 1 /,
@@ -148,7 +151,7 @@
      .		un_alt_name ( 8) / 'meter'	/,! after all other "xxxxmeters"
      .		un_alt_subsc( 8) / pun_meters /,
      .
-     .		un_alt_name ( 9) / 'year'	/,
+     .		un_alt_name ( 9) / 'year365'/,
      .		un_alt_subsc( 9) / -6 /,
      .
      .		un_alt_name (10) / 'millibar'	/,
@@ -157,8 +160,8 @@
      .		un_alt_name (11) / 'decibar'	/,
      .		un_alt_subsc(11) / pun_decibars /,
      .
-     .		un_alt_name (12) / char_init12	/,
-     .		un_alt_subsc(12) / 0 /,
+     .		un_alt_name (12) / 'common_year'/,
+     .		un_alt_subsc(12) / -6 /,
      .
      .		un_alt_name (13) / char_init12	/,
      .		un_alt_subsc(13) / 0 /,
@@ -166,7 +169,7 @@
      .		un_alt_name (14) / char_init12	/,
      .		un_alt_subsc(14) / 0 /,
      .
-     .		un_alt_name (15) / char_init12	/,
+     .		un_alt_name (15) / char_init12 /,
      .		un_alt_subsc(15) / 0 /,
      .
      .		un_alt_name (16) / char_init12	/,

@@ -38,6 +38,7 @@
 *                  memory and passes it to pplcmd_f.F  which has the original code.
 *                  Put the strings in common to avoid wierdness with strings in C.
 * v541 *acm* 5/02  Slightly more graceful stop in case IDMDIM too large
+* v552 *acm* 3/03  cleanup in declarations
 
 c	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
 
@@ -47,8 +48,7 @@ c	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
         INTEGER   ICMDIM,ISI,ICMSZE     
 
 c     internal parameter declarations:
-      INTEGER      slen
-      PARAMETER  ( slen = 255 )
+      INTEGER      i
 
       IF (ICMDIM .GT. 5) GO TO 5000
 

@@ -124,7 +124,7 @@
 	   IF ( (cx_category(com_cx) .EQ. cat_string)
      .	  .NEQV.(itype .EQ. parg_type_string)		) THEN
 ! ... temporary diagnostic EF output (REMOVE THIS!!!)
-	      CALL TEMP_SHOW_EF_STRING(is_mr(frame_bottom+icom-1))
+!	      CALL TEMP_SHOW_EF_STRING(is_mr(frame_bottom+icom-1))
 	      GOTO 5200
 	   ENDIF
  100	CONTINUE

@@ -47,3 +47,7 @@ GO err580_cdb.jnl
 ! fix for bug 1214: crash on repeating a SET VIEW when viewport defined with /AXES
 GO bn_reset
 GO err580_def_view_axes.jnl
+
+! fix for bug 1205: symbol LEV_DEL wrong when single level specified
+GO bn_reset
+GO err580_lev_del.jnl

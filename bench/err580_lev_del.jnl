@@ -1,0 +1,7 @@
+! err580_lev_del.jnl    
+! demonstrates bug 1205; precision of LEV_DEL when single level specified.
+
+use coads_climatology
+shade/l=1/lev=.5d sst; sho sym lev_del
+shade/l=1/lev=.4d sst; sho sym lev_del
+

@@ -39,7 +39,7 @@ LIST/l=1:20 days_fftp
 !PAUSE
 
 
-USE  "/home/ja4/kobrien/FERRET/bench/coads_vwnd.cdf"
+USE coads_vwnd.cdf
 SET REGION/I=90/J=65
 
 SAY This should bail out with error msg about Time axis must be regular

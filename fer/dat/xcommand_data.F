@@ -1,4 +1,4 @@
-	BLOCK DATA XCOMMAND_DATA
+H	BLOCK DATA XCOMMAND_DATA
 
 *
 *
@@ -119,6 +119,7 @@
 *		  - added /DETAILED to SHOW FUNCTIONS and to MESSAGE
 *	5/00 *sh* - restored /PEN as a "denigrated" command
 * V520: 6/00 *sh* - added MESSAGE/ERROR
+*      10/00 *AM* - added VECTOR/STREAMLINE (alias STREAMLINE)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -980,8 +981,8 @@
 		DATA qualifiers  (nqual_at13a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at13a+23)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at13a+25)/ '****'/	!
-		DATA qualifiers  (nqual_at13a+26)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+25)/ 'STREAMLI'/  !/streamline
+		DATA qualifiers  (nqual_at13a+26)/ 'DENSITY'/	!/density=
 		DATA qualifiers  (nqual_at13a+27)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
@@ -1364,12 +1365,15 @@
      .		alias_name(16)	/ 'WHERE' /,
      .		alias_len(16)	/ 10 /,
      .		alias(16)	/ 'PPL %WHERE' /
+     .		alias_name(17)	/ 'STREAMLI' /,
+     .		alias_len(17)	/ 17 /,
+     .		alias(17)	/ 'VECTOR/STREAMLINE' /
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 134*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 134*4 /,
+     .                   / 133*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150)/ 133*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 134*unspecified_name4 /
+     .                   / 133*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

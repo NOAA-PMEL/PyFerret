@@ -374,7 +374,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 16,
+     .	                num_predefined_alias    = 17,
      .			max_queries		= 50 )
 
 * declarations

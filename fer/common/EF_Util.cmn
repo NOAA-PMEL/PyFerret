@@ -1,0 +1,32 @@
+c* EF_Util.cmn
+c*
+c* Jonathan Callahan
+c* July 10th 1997
+c*
+c* This is the header file to be included by routines which
+c* are part of the Ferret External Function library.
+c*
+
+	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
+     .  t_axis, custom, implied_by_args, normal, abstract,
+     .	ef_max_args, ef_max_name_length, ef_max_description
+
+	parameter ( ef_c = 1,
+     .	ef_f = 2,
+     .	yes = 1,
+     .	no = 0, 
+     .	x_axis=1, 
+     .	y_axis=2, 
+     .	z_axis=3, 
+     .	t_axis=4, 
+     .	custom = 101, 
+     .	implied_by_args=102, 
+     .	normal = 103, 
+     .	abstract = 104, 
+     .	ef_max_args=3, 
+     .	ef_max_name_length=40, 
+     .	ef_max_description = 128 )
+
+	real ef_version
+
+	parameter (ef_version = 1.0) 

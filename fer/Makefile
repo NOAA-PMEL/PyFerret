@@ -24,7 +24,6 @@ CFLAGS += -I../gui
 #	      stuff is needed.  in order to allow the "make" command 
 #	      by itself to work.
 
-
 GUI_FAKES = special/gui_fakes.o
 
 DIRS	= ccr ctx dat doo efn fmt gnl gui ino mem ocn plt \
@@ -56,6 +55,8 @@ EXECNAME = ferret_c
 
 WHATGKS = xgks
 
+LD = cc
+
 #
 # Targets
 #
@@ -81,13 +82,32 @@ gui_debug: .FRC
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" \
 		"GUI_FAKES="  all
 
+DODS_gui_debug: 
+	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
+		"EXECNAME=ferretdods_gui" \
+		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
+		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lexpect5.21 -ltcl7.6 -lg++.a" \
+		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
+		"DEBUG_TITLE=debug" all
+DODS_gui: 
+	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
+		"EXECNAME=ferretdods_gui" \
+		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
+		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lexpect5.21 -ltcl7.6 -lg++.a" \
+		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
+		"DEBUG_TITLE=" all
+
 fortran: .FRC
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
 
 
 ferret:	update
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
-	- $(CC) $(LDFLAGS) -o $(EXECNAME) \
+	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
 		$(FERMAIN) \
 		$(FEROBJS) \
 		$(GUI_FAKES) \

@@ -79,7 +79,7 @@ let/quiet mp_lambda = mp_x * deg2rad
 let/quiet mp_phi = mp_y * deg2rad
 
 let/quiet x_page = mp_R * (mp_lambda-mp_lambda0)              ! eqn (1)
-let/quiet y_page = mp_R *  LOG(TAN(mp_phi/2 + pi/4))          ! Mercator eqn
+let/quiet y_page = mp_R *  LN(TAN(mp_phi/2 + pi/4))           ! Mercator eqn
 
 let/quiet mp_mask = 1
 

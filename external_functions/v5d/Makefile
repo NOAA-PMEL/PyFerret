@@ -27,6 +27,9 @@ V5D_OBJS = binio.o v5d.o
 # Rules
 #
 
+.c.o:
+	cc ${V5DFLAGS} ${CFLAGS} -c $<
+
 .F.so:
 	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $(V5D_OBJS) $*.o -o $*.so 

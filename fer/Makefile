@@ -88,7 +88,7 @@ DODS_gui_debug: .FRC
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
-		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lexpect5.21 -ltcl7.6 $(TMAP_LOCAL)/lib/libg++.a" \
+		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=debug" all
 DODS_gui: .FRC
@@ -97,7 +97,7 @@ DODS_gui: .FRC
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
-		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lexpect5.21 -ltcl7.6 -L/opt/local/lib -lg++.a" \
+		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
 		"DEBUG_TITLE=" all
 

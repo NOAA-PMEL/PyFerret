@@ -104,6 +104,7 @@
 *			  because it needed a preprocessor.
 * V450:    7/97  - update CANCEL VAR/ALL so it handles child vars and dynamic
 *                  grids/axes
+* V510: 5/00 *sh* - added CANCEL AXIS and CANCEL GRID
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -124,6 +125,7 @@
 	include 'xplot_state.cmn'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
+	include 'xfr_grid.cmn'
 	include 'xvideo.cmn'
 	include 'xcommand.cmn'
 	include	'xcontrol.cmn'
@@ -165,16 +167,17 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
-	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, FIND_DSET_NUMBER,
-     .                  TM_GET_LINENUM, TM_LENSTR1, STR_UPCASE,
-     .			ivp, i, blen, ier, i1,
-     .			svar, status, tmap_status, variable, category,
+	INTEGER		REGION_NUMBER, FIND_DSET_NUMBER,
+     .                  TM_GET_LINENUM, TM_GET_GRIDNUM, 
+     .			TM_GET_GRID_OF_LINE, TM_LENSTR1, STR_UPCASE,
+     .			ivp, i, blen, ier, i1, num_protected_axes,
+     .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
-     .			mode, cx, axis, mod_cx
+     .			mode, cx, axis, grid, mod_cx
 	LOGICAL		MATCH4, TM_DIGIT, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims
-	CHARACTER	UPPER_CASE*1, arg*4, buff*255, arg30*30
+	CHARACTER	arg*4, buff*255, arg30*30
 
 * local parameter declarations:
 	INTEGER		slash_del_temp, slash_del_perm
@@ -513,23 +516,88 @@
 
 * CANCEL AXIS/MODULO
  1200	IF ( qual_given(slash_canc_axis_modulo) .GT. 0 ) THEN
-           axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
-           IF ( axis .EQ. unspecified_int4 ) GOTO 6210
-           IF ( line_modulo(axis) ) THEN
-              line_modulo( axis ) = .FALSE.
+	   DO 1220 item = 1, num_items
+              axis = TM_GET_LINENUM(
+     .				cmnd_buff(item_start(item):item_end(item)) )
+              IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+              IF ( line_modulo(axis) ) THEN
+                 line_modulo( axis ) = .FALSE.
 * ... wipe memory clear of stored variables - this could change all definitions
 *      ( could be more selective for efficiency by checking to see where this
 *      axis gets used )
-              DO 1210 i = 1,max_mr_avail
- 1210         IF ( mr_protected( i ) .NE. mr_deleted ) 
+                 DO 1210 i = 1,max_mr_avail
+ 1210            IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )
-           ENDIF
+              ENDIF
+ 1220	   CONTINUE
+        ELSE
+* ... CANCEL AXIS
+	   num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
+	   DO 1230 item = 1, num_items
+              axis = TM_GET_LINENUM(
+     .				cmnd_buff(item_start(item):item_end(item)) )
+              IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+	      IF ( axis .LE. num_protected_axes ) GOTO 6212
+	      line_keep_flag(axis) = .FALSE.  ! see tm_garb_col_grids.F
+	      IF (line_use_cnt(axis) .LE. 0) THEN
+	         IF ( axis .LE. max_lines ) THEN
+		    line_name(axis) = char_init16
+	         ELSE
+	            CALL TM_DEALLO_DYN_LINE(axis)
+	         ENDIF
+	      ELSE
+*     ... cannot delete - in use.  Locate the grid that is using it.
+	         grid = TM_GET_GRID_OF_LINE( axis )
+	         CALL WARN( 'Not deleted: '//line_name(axis))
+	         IF ( grid .NE. unspecified_int4 ) THEN
+	            CALL WARN( 
+     .		      'Axis is in use by grid '//grid_name(grid))
+	         ELSE
+	            CALL ERRMSG(ferr_internal, status,
+     .				'axis use count err', *5000)
+	         ENDIF
+	      ENDIF
+ 1230	   CONTINUE
         ENDIF
+	RETURN
+
+* CANCEL GRID
+ 1300   CONTINUE
+	DO 1330 item = 1, num_items
+           grid = TM_GET_GRIDNUM(
+     .			cmnd_buff(item_start(item):item_end(item)) )
+           IF (grid .EQ. unspecified_int4) GOTO 6215
+* ... clear out any user variable dependencies and warn if used by a dataset
+	   IF (grid_use_cnt(grid) .GE. 1 .OR. grid .LE. mgrid_tabstract) THEN
+	      CALL PURGE_MR_GRID(grid, status)
+	      IF ( status .NE. ferr_ok ) THEN
+	          CALL WARN( 'Not deleted: '//grid_name(grid))
+	          RETURN
+	      ENDIF
+* ... grids created by data sets without associated vars may get deleted by
+*     PURGE_MR_GRID (e.g. handled as climatological_axes.cdf handles axes)
+	      IF (grid_name(grid) .EQ. char_init16) RETURN
+	   ENDIF
+* ... remove the grid if possible
+	   IF (grid_use_cnt(grid) .LE. 0) THEN
+	      IF ( grid .LE. max_grids ) THEN
+	         grid_name(grid) = char_init16
+	         DO 1310 idim = 1, 4
+ 1310		 CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
+	      ELSE
+	         CALL TM_DEALLO_DYN_GRID(grid)
+	      ENDIF
+	   ELSE
+*     ... cannot delete - in use.
+	      CALL WARN( 'Not deleted: '//grid_name(grid))
+	   ENDIF
+ 1330	CONTINUE
+	RETURN
 
 * unused subcommands
- 1300   CONTINUE
  1400   CONTINUE
  1500   CONTINUE
+	RETURN
 
 * CANCEL ALIAS
  1600	IF ( slash_all ) THEN
@@ -604,9 +672,12 @@
      .		     'MODE GKS cannot be modified after the first GKS plot',
      .			*5000 )
  5830	CALL ERRMSG( ferr_erreq, status, 'Cannot close file', *5000 )
- 6210	CALL ERRMSG( ferr_invalid_command, status,
-     .		 'unknown axis: '//cmnd_buff(item_start(1):item_end(1)),
-     .               *5000 )
+ 6210	CALL ERRMSG( ferr_invalid_command, status, 'unknown axis: '//
+     .		     cmnd_buff(item_start(item):item_end(item)), *5000 )
+ 6212	CALL ERRMSG( ferr_invalid_command, status, 'protected axis: '//
+     .		     cmnd_buff(item_start(item):item_end(item)), *5000 )
+ 6215	CALL ERRMSG( ferr_unknown_grid, status,
+     .		     cmnd_buff(item_start(item):item_end(item)), *5000 )
 
 	END
 

@@ -1,5 +1,6 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, grid, idim, recdim,
-     .                             loss, hiss, ax_type, status )
+     .                             loss, hiss, ax_type, 
+     .                             edges_flag, do_bounds, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -63,6 +64,7 @@
 * v530 *acm* 1/01  calendar axes: write the calendar name if non-Gregorian
 * v541 *sh* 2/02 - added support for line_modulo_len
 * V550 *ACM* 12/02 Write AXIS attribute to output files.
+* V570 *acm*  5/04 write bounds attribute and bounds 2xN coordinates to NetCDF files
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -74,7 +76,7 @@
 *     status  - return status
 
 * include files
-#ifdef unix
+
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -88,22 +90,11 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xunits.cmn_text'
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-#endif
+
 
 * argument declarations
-      LOGICAL recdim
-      INTEGER cdfid, grid, idim, loss, hiss, ax_type, status
+      LOGICAL recdim, do_bounds
+      INTEGER cdfid, grid, idim, loss, hiss, ax_type, edges_flag, status
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -112,8 +103,8 @@ xx        include 'netcdf.decl'  ! untested
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, NCDID, NCVID, NCDDEF, NCVDEF,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
-     .        nlen, elen, axlen, slen, edgid, npts
-      INTEGER TM_GET_CALENDAR_ID, cal_id
+     .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
+      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, bndsdim
 !      INTEGER vartype, nvdims, vdims(6), nvatts
 !      LOGICAL condensed
 !      REAL rlen
@@ -267,10 +258,7 @@ xx        include 'netcdf.decl'  ! untested
 * record axis (time, usually) doesn't get cooridnate spacing or any
 * coordinates inserted at creation time
       IF ( recdim ) THEN
-! (code removed 10/92 - shouldn't have been here, anyway, I think *sh*)
-!* ... this attribute is maintained by cd_rec_synch
-!         CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 4,
-!     .             'even', cdfstat )
+
          CONTINUE
       ELSE
         IF ( line_regular(iaxis) ) THEN
@@ -288,7 +276,7 @@ xx        include 'netcdf.decl'  ! untested
            ENDIF
         ENDIF
 
-* set up for deferref writing of coordinate values (12/00)
+* set up for deferred writing of coordinate values (12/00)
 	CALL CD_DEFER_COORD_WRITE(axid, grid, idim, lo, hi,
      .				  pcd_defer_points)
 
@@ -314,12 +302,51 @@ xx        include 'netcdf.decl'  ! untested
      .        	      slen, 'T', cdfstat )
       ENDIF
 
+* does it need axis bounds definitions ?
 
-* does it need axis box edge definitions ?
-      IF (  (ax_type .EQ. pcdf_full_span
-     .  .OR. ax_type .EQ. pcdf_sub_span)
-     ..AND. .NOT.line_regular(iaxis)
-     ..AND. .NOT.recdim ) THEN
+      IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
+     .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds) 
+     .  .AND. ( edges_flag .EQ. 0) ) THEN
+         IF ( status .NE. merr_ok ) RETURN
+
+         name = name(:nlen)//'_bnds'
+         elen = nlen + 5
+
+* ... define the first dimension of bounds variable (what about record axis??)
+
+         dim2d(2) = dimid    ! Dimension already defined above for coordinates
+
+         IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+
+* ... second dimension of bounds coordinate variable is 2
+         dim2d(1) = CD_WRITE_BNDSDIM(cdfid, status)
+
+* ... create the bounds variable
+         bndid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 2, dim2d, cdfstat)
+
+* ... point to it from axis coordinates definitioncd
+         CALL NCAPTC( cdfid, axid, 'bounds', NCCHAR, elen,
+     .                name(:elen), cdfstat )
+
+* set up for deferred writing of edge coordinate values (12/00)
+* Record axis and bounds are written when variable written.
+
+        IF ( .NOT.recdim ) 
+     .    CALL CD_DEFER_COORD_WRITE(bndid, grid, idim, lo, hi,
+     .				  pcd_defer_bounds)
+
+      ENDIF
+
+* does it need axis box edge definitions ?  
+* edges_flag = 1 if requested with /EDGES qualifier
+* edges_flag = 2 if requested with /RIGID qualifier
+
+      IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
+     . .AND. ((edges_flag.EQ.1) .OR.
+     .        (edges_flag.EQ.2 .AND.
+     .         .NOT.line_regular(iaxis) .AND. 
+     .         .NOT.recdim)) ) THEN
+
          IF ( status .NE. merr_ok ) RETURN
          name = name(:nlen)//'edges'
          elen = nlen + 5

@@ -100,6 +100,10 @@
 *                   2440000 days.
 * V554  *acm 12/03 Restore the last-ditch determination of line_direction
 *                        using the starting letter of the axis.
+* V570 *acm* 4/04  Add the calendar "all_leap", 366 days every year.
+*                  also the name "365_DAY" as an equivalent to "NOLEAP" 
+* V570 *acm* 5/04  Allow "bounds" attribute for defining an irregular axis.  Store
+*                  all irregular axis intervals as Nx2 bounds rather than Nx1 edges.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -139,23 +143,28 @@
 * local variable declarations:
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ, TM_DFPEQ, CD_GET_ATTVALC, 
-     .        CD_GET_ATTVAL_L, 
+     .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
-     .        got_mod, mod_tf, setmodfalse, ok_cal, ok
+     .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
+     .        got_edges, got_bnds, enclosed, centered
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
-     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
+     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, 
+     .        soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
      .        edgid, spacing_atlen, epic_t2var, since_T0,
-     .        cal_id, year, month, day, hour, minute, second, slen, nc
+     .        cal_id, year, month, day, hour, minute, second, slen, nc,
+     .        blen, bndid, startpts(2), numpts(2), i1, next_line_storage,
+     .        newaxis, nlen
+
 
       REAL    rbuff, delta, first_delta
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen, tmp
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*30, vupcase*128, words(8)*24,
-     .        spacing_attr*14
+     .        spacing_attr*14, bname*30
       CHARACTER*13 TM_STRING
       CHARACTER*132 buff
       CHARACTER*1 axis_dir
@@ -181,6 +190,7 @@
 * gen; initialization
       got_torg = .FALSE.
       days_neg4713 = 0.D0
+      next_line_storage = next_line_mem_pos
 
 * get the vital statistics of the axis
       CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
@@ -231,7 +241,8 @@
          ENDIF
       ENDIF
       line_dim( iaxis ) = npts
-      IF ( npts .LE. 2 ) line_regular(iaxis) = .TRUE.
+
+      IF (npts .LT. 2) line_regular(iaxis) = .TRUE.
 
 * *ACM get the calendar name.
 
@@ -244,6 +255,8 @@
          IF (buff(1:3) .EQ. '360') buff = '360_DAY' 
          IF (buff .EQ. 'STANDARD') buff = 'GREGORIAN' 
          IF (buff(1:6) .EQ. 'COMMON') buff = 'NOLEAP' 
+         IF (buff(1:3) .EQ. '365') buff = 'NOLEAP' 
+         IF (buff(1:3) .EQ. '366') buff = 'ALL_LEAP' 
 
          ok_cal = .FALSE.
          nc = 1
@@ -353,6 +366,7 @@ c         ENDIF
          IF (cal_id .EQ. d360) units = -9
          IF (cal_id .EQ. julian) units = -12
 	 IF (cal_id .EQ. noleap) units = -11
+	 IF (cal_id .EQ. all_leap) units = -8
       ENDIF
 
       line_unit_code(iaxis) = units
@@ -690,7 +704,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * adequate storage for the irregular coordinates and box edges ?
          line_start(iaxis) = unspecified_val8
          line_delta(iaxis) = unspecified_val8
-         IF ((next_line_mem_pos+2*npts).GT.maxlinestore) GOTO 5300
+         IF ((next_line_mem_pos+2*npts+1).GT.maxlinestore) GOTO 5300
 
 * read the CDF coordinate values into double precision axis storage
          ipt1 = next_line_mem_pos
@@ -742,15 +756,139 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
               GOTO 1000
            ENDIF
   350   CONTINUE
-        last_coord = line_mem(ipte)
-        firs_coord = line_mem(ipt1)
+
+*  See if there are box edges or bounds in the file.
+
+
+****************************************************************************
+*                              BOX EDGES                                   *
+****************************************************************************
+
+* the attribute "edges=name" may point to a list of box boundaries
+      got_edges = CD_GET_ATTRIB( cdfid, ivar, 'edges',
+     .                       do_warn, vname(:vlen), ename, 30 )
+      IF ( .NOT.got_edges ) GOTO 500
+      IF ( line_regular(iaxis) ) THEN
+         CALL TM_NOTE(
+     .           'Evenly spaced axis has edges definition: '//
+     .           vname(:vlen)//' - ignored', tt )
+         GOTO 500
+      ENDIF
+
+* Cannot have both "edges" and "bounds" atrtributes
+      got_bnds = CD_GET_ATTRIB( cdfid, ivar, 'bounds',
+     .                       do_warn, vname(:vlen), bname, 30 )
+      IF ( got_bnds )THEN
+         CALL TM_NOTE(
+     .     'Axis has both edges and bounds attributes: '//
+     .      vname(:vlen)//' - edges definition ignored', tt )
+         GOTO 500
+      ENDIF
+
+      CALL TM_CHECK_EDGES_ATTRIB (cdfid, iaxis, vname, vlen, ename, 
+     .        edgid, npts, status)
+
+      IF (status .EQ. pcdferr) GO TO 5100
+      IF (status .NE. merr_ok) THEN
+         CALL TM_IRREGAX_MID( next_line_mem_pos,
+     .                          line_dim   (iaxis) )
+         GO TO 600
+      ENDIF
+
+* read the (npts+1) box edge values into double precision storage
+
+        ipt1 = next_line_mem_pos
+        line_subsc1(iaxis) = next_line_mem_pos
+        CALL CD_RD_R8_ARR( cdfid, edgid, 1, npts, vartype, vname(:vlen),
+     .                     line_mem(ipt1+npts-1), status )
+        IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
+
+* if the coordinates were reversed then the box bounds must be, too
+         IF ( first_delta .LT. 0.0 ) THEN
+            DO 450 i=ipt1+npts-1,(ipt1+npts-1)+npts
+ 450        line_mem(i) = -1. * line_mem(i)
+         ENDIF
+
+* check to see that each data point is contained inside its box
+        IF (.NOT.TM_CHECK_BOX_LOC(iaxis)) THEN
+           CALL TM_NOTE('Edges "'//ename(:elen)//
+     .         '" do not enclose point on axis '//line_name(iaxis), tt)
+           CALL TM_NOTE('Substituting coordinate midpoints', tt)
+           CALL TM_IRREGAX_MID( next_line_mem_pos,
+     .                          line_dim   (iaxis) )
+        ENDIF
+
+****************************************************************************
+*                              BOX BOUNDS                                  *
+****************************************************************************
+
+* the attribute "bounds=name" may point to a list of box boundaries
+500     got_bnds = CD_GET_ATTRIB( cdfid, ivar, 'bounds',
+     .                       do_warn, vname(:vlen), bname, 30 )
+        IF ( .NOT.got_bnds ) GOTO 600
+
+* Check the bounds variable, issue any warnings.
+        CALL TM_CHECK_BNDS_ATTRIB (cdfid, iaxis, vname, vlen, bname,
+     .                             bndid, npts, status)
+        IF (status .EQ. pcdferr) GO TO 5100
+        IF (status .NE. merr_ok) THEN
+           CALL TM_IRREGAX_MID( next_line_mem_pos,
+     .                          line_dim   (iaxis) )
+           GO TO 600
+        ENDIF
+
+* read the (npts*2) box edge values into double precision storage 
+
+        line_subsc1(iaxis) = next_line_mem_pos
+        ipt1 = next_line_mem_pos
+        startpts(1) = 1
+        startpts(2) = 1
+        numpts(1) = 2
+        numpts(2) = npts
+
+        CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartype, 
+     .                    bname(:blen), line_mem(ipt1+npts), status )
+        IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
+
+* if the coordinates were reversed then the box bounds must be, too 
+         IF ( first_delta .LT. 0.0 ) THEN
+            DO 550 i=ipt1+npts,(ipt1+npts)+2*npts
+ 550        line_mem(i) = -1. * line_mem(i)
+         ENDIF
+
+* check to see that each data point is contained inside its box,
+* and if the bounds are contiguous, warning user if not. Change
+* the storage from N*2 bounds to N+1 edges.    !!!!!!!!!!!!
+
+        IF (.NOT. TM_CHECK_BNDS(iaxis, vname) ) THEN  
+
+           CALL TM_NOTE('bounds "'//bname(:blen)//
+     .         '" do not enclose point on axis '//line_name(iaxis), tt)
+           CALL TM_NOTE('Substituting coordinate midpoints', tt)
+           CALL TM_IRREGAX_MID( next_line_mem_pos,
+     .                          line_dim   (iaxis) )
+      
+        ENDIF
+
+ 600    CONTINUE
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
+
+        last_coord = line_mem(ipte)
+        firs_coord = line_mem(ipt1)
         delta = line_mem(ipt1+1) - line_mem(ipt1)  ! sing. prec., only
         DO 360 i=ipt1+2,ipte
            IF (.NOT. TM_FPEQ( delta,
      .                   SNGL(line_mem(i)-line_mem(i-1))) ) GOTO 380
   360   CONTINUE
+
+* For axes specified with BOUNDS, check whether coordinates are also 
+* centered in the boxes
+
+        IF (got_bnds) THEN
+           IF (.NOT. TM_CHECK_BNDS_CENTERED(iaxis)) GO TO 390
+        ENDIF
+
 * yes, it's actually regular - save it as such
         line_regular(iaxis) = .TRUE.
         line_start  (iaxis) = line_mem(ipt1)
@@ -759,11 +897,13 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         line_subsc1 (iaxis) = unspecified_int4
         last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
         firs_coord = line_start(iaxis)
+
         GOTO 390
 
-* compute the default locations of boundaries between grid boxes (midpoints)
-* Note: this may be modified by a subsequent "EDGES" definition
- 380    CALL TM_IRREGAX_MID( ipt1, npts )
+* If no bounds or edges, compute the default locations of boundaries 
+* between grid boxes (midpoints)
+ 380    IF (.NOT.got_bnds .AND. .NOT.got_edges) 
+     .         CALL TM_IRREGAX_MID( ipt1, npts )
 
       ENDIF
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
@@ -791,79 +931,18 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
      .                                          = '30-DEC-0000 00:00:00'
         ENDIF
 
-* Save the axis name (upper case) and memory storage     
+* Save the axis name (upper case) and memory storage.  For all irregular axes, 
+* we have saved 2*N bounds for  the axis cells. Increment the pointer.   
       line_name(iaxis) = vupcase
       IF ( .NOT.line_regular(iaxis) ) THEN
-             line_subsc1(iaxis) = next_line_mem_pos
-             next_line_mem_pos =  next_line_mem_pos + 2*npts + 1
+         line_subsc1(iaxis) = next_line_mem_pos
+         next_line_mem_pos =  next_line_storage + 2*npts+1 
       ENDIF
-
-* the attribute "edges=name" may point to a list of box boundaries
-      got_it = CD_GET_ATTRIB( cdfid, ivar, 'edges',
-     .                       do_warn, vname(:vlen), ename, 30 )
-      IF ( .NOT.got_it ) GOTO 500
-      IF ( line_regular(iaxis) ) THEN
-         CALL TM_NOTE(
-     .           'Evenly spaced axis has edges definition: '//
-     .           vname(:vlen)//' - ignored', tt )
-         GOTO 500
-      ENDIF
-
-****************************************************************************
-*                              BOX EDGES                                   *
-****************************************************************************
-
-* does the variable pointed to really exist ?
-        elen = TM_LENSTR1(ename)
-        edgid = NCVID( cdfid, ename(:elen), cdfstat )
-        IF (cdfstat.NE.NCNOERR) THEN
-           soft_err = 11
-           GOTO 5000
-        ENDIF
-
-* get the vital statistics of the edges variable
-        CALL NCVINQ(cdfid, edgid, ename(:elen), vartype, nvdims,
-     .               vdims, nvatts,cdfstat)
-        IF ( nvdims .NE. 1 ) THEN
-           soft_err = 12
-           GOTO 5000
-        ENDIF
-
-* get axis length:
-        CALL NCDINQ( cdfid, vdims, buff, npts, cdfstat )
-        IF (cdfstat.NE.NCNOERR) GOTO 5100   ! should never happen
-
-* check for error conditions
-        IF ( npts .NE. line_dim(iaxis)+1 ) THEN
-           soft_err = 13
-           GOTO 5000
-        ENDIF
-
-* read the (npts+1) box edge values into double precision storage
-* (Note: "npts" is now +1 larger than in the previous section)
-        ipt1 = line_subsc1(iaxis)
-        CALL CD_RD_R8_ARR( cdfid, edgid, 1, npts, vartype, vname(:vlen),
-     .                     line_mem(ipt1+npts-1), status )
-        IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
-
-* if the coordinates were reversed then the box bounds must be, too
-         IF ( first_delta .LT. 0.0 ) THEN
-            DO 450 i=ipt1+npts-1,(ipt1+npts-1)+npts
- 450        line_mem(i) = -1. * line_mem(i)
-         ENDIF
-
-* check to see that each data point is contained inside it's box
-        IF (.NOT.TM_CHECK_BOX_LOC(iaxis)) THEN
-           CALL TM_NOTE('Edges "'//ename(:elen)//
-     .         '" do not enclose point on axis '//line_name(iaxis), tt)
-           CALL TM_NOTE('Substituting coordinate midpoints', tt)
-           CALL TM_IRREGAX_MID( line_subsc1(iaxis),
-     .                          line_dim   (iaxis) )
-        ENDIF
 
 * if it is a longitude axis of 360 degrees or less let it default to MODULO
 * unless user has set it explicitly to false.
- 500    axwwlen = TM_WW_AXLEN(iaxis)
+        
+ 400    axwwlen = TM_WW_AXLEN(iaxis)
 
         IF ( line_direction(iaxis).EQ.'WE'
      . .AND. units.EQ.4
@@ -910,6 +989,26 @@ c          secsperyear = cals_yeardays(cal_id)* 24*60*60
            ENDIF
         ENDIF
 
+
+* If a dynamic axis was created as part of bounds checking, give it 
+* all the same settings (except name, length, and line_subsc1 which 
+* are already set
+        IF (newaxis .NE. 0) THEN
+            line_regular(newaxis) = line_regular(iaxis)
+            line_units(newaxis) = line_units(iaxis)
+            line_unit_code(newaxis) = line_unit_code(iaxis)
+            line_tunit(newaxis) = line_tunit(iaxis) 
+            line_cal_name(newaxis) = line_cal_name(iaxis)
+            line_t0(newaxis) = line_t0(iaxis)
+            line_modulo(newaxis) = line_modulo(iaxis)
+            line_modulo_len(newaxis) = line_modulo_len(iaxis)
+            line_direction(newaxis) = line_direction(newaxis)
+            line_start(newaxis) = line_start(iaxis) 
+            line_delta(newaxis) = line_delta(iaxis) 
+            line_regular(newaxis) = line_regular(iaxis) 
+            reversed(newaxis) = reversed(iaxis)
+         ENDIF
+
 * successful completion
         status = merr_ok
         RETURN
@@ -941,7 +1040,7 @@ c          secsperyear = cals_yeardays(cal_id)* 24*60*60
         ELSE
            CALL TM_NOTE( 'Edge definitions ignored', tt )
         ENDIF
-        GOTO 500
+        GOTO 400
 
  5100   CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_GET_1_AXIS', cdfid, ivar,

@@ -1,5 +1,6 @@
 	SUBROUTINE CD_MAKE_VAR ( cdfid, varname, type, maxstrlen, grid,
-     .                           lo, hi, recdim, enhead, new, status )
+     .                           lo, hi, recdim, enhead, new, 
+     .                           edges_flag, do_bounds, status )
 
 *
 *
@@ -88,8 +89,9 @@
 	include 'xio.cmn_text'
 
 * argument declarations
-      LOGICAL enhead, new
-      INTEGER cdfid, type, maxstrlen, grid, lo(4), hi(4), recdim, status
+      LOGICAL enhead, new, do_bounds
+      INTEGER cdfid, type, maxstrlen, grid, lo(4), hi(4), recdim, 
+     .        edges_flag, status
       CHARACTER*(*) varname
 
 * local variable declarations:
@@ -194,14 +196,15 @@
       IF ( enhead ) THEN
 * create the parent grid needed for this variable
          CALL CD_WRITE_GRID( cdfid, grid, lo, hi, recdim, itsa_slab,
-     .                       gname, status )
+     .                       gname,  edges_flag, do_bounds, status )
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
          DO 250 idim = 1, 4
             IF ( need_child(idim) ) THEN
                CALL CD_WRITE_AXIS( cdfid, grid, idim, .FALSE.,
-     .                   lo(idim), hi(idim), pcdf_child_span, status)
+     .                   lo(idim), hi(idim), pcdf_child_span, 
+     .                   .FALSE., .FALSE., status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -218,7 +221,8 @@
 	         ax_type = pcdf_full_span
 	      ENDIF
               CALL CD_WRITE_AXIS( cdfid, grid, idim, idim.EQ.recdim,
-     .			        lo(idim), hi(idim), ax_type, status ) 
+     .			        lo(idim), hi(idim), ax_type, edges_flag,
+     .                          do_bounds, status ) 
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE

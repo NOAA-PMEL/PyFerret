@@ -109,18 +109,21 @@
 * local variable declarations:
 *  ivtm - TMAP library variable ID
 *  ivcd - netCDF file variable ID
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, CD_GET_BOUNDS,
-     .        TM_LEGAL_NAME,
-     .        got_it, got_bad, got_missing, tf2, its_epic, 
+      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, 
+     .        TM_LEGAL_NAME, MATCH_NAME,
+     .        got_it, got_bad, its_epic, 
      .        got_a_variable, failed_axis
       INTEGER NCVID,
      .	      STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
-     .        ndims, nvars, cdfstat, las_pos, first_pos, idim, iaxis,
+     .        TM_LENSTR, 
+     .        ndims, nvars, cdfstat, las_pos, first_pos, iaxis,
      .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
-     .        ngatts, recdim, istat, npts, lasdim, attype, epic_t2
+     .        ngatts, recdim, istat, npts, epic_t2,
+     .        nbvar, ivar, len_test, len_mchars
 * 4/99 *kob*
+* ?? how many bounds variables (bname) might there be ??
       CHARACTER    vname*128, name*16, buff*128
-      CHARACTER*13 TM_STRING
+      CHARACTER*128 bname(30)
       REAL*4  global_bad
 
       INTEGER tt  ! nice short name
@@ -182,6 +185,41 @@
         ENDIF
 
 *   * * * loop through all variables in the net CDF file * * *
+*  Get any bounds attribute for each axis, save the bounds
+*  name.  Then these names do not need to be processed as dependent 
+*  variables.
+
+        nbvar = 0
+        DO 2000 ivcd = 1,nvars
+
+* get the vital statistics for this variable
+           CALL NCVINQ(cdfid, ivcd, vname, vartyp, nvdim, vdims,
+     .                 nvatts,cdfstat)
+           IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+           vlen = TM_LENSTR1(vname)
+
+*** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
+* if it is not 1D it must be a dependent variable (3/99)
+	   IF ( nvdim .NE. 1 ) GOTO 400
+
+* if var name doesn't match a dim name it isn't a coordinate var
+	   i = NCDID( cdfid, vname(:vlen), cdfstat )
+           IF (cdfstat .NE. NCNOERR ) GOTO 400
+
+* See if it has a bounds attribute 
+
+           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'bounds',
+     .              do_warn, vname(:vlen), bname(nbvar+1), 30 )
+           IF (got_it) THEN
+              nbvar = nbvar + 1
+              istat = STR_UPCASE( bname(nbvar), bname(nbvar) )
+           ENDIF
+
+  400      CONTINUE
+ 2000   CONTINUE
+
+*   * * * loop through all variables in the net CDF file * * *
+
 * classify each as a coordinate variable (axis) or as a dependent
 * variable. If a coordinate variable then TRY to interpret it,
 * (in cd_get_1_axis) but if it proves to be invalid, then process
@@ -219,6 +257,15 @@
      .                            do_warn, vname(:vlen), name, 16 ) !linenamlen
            IF ( got_it ) GOTO 1000
 
+* or is it really a bounds variable for an axis?  If so it is processed with the axis.
+
+           len_test = TM_LENSTR(vname)
+           IF (nbvar .GT. 0) then 
+              DO 20 ivar = 1, nbvar
+                 len_mchars = TM_LENSTR(bname(ivar))
+                 IF (MATCH_NAME(vname, len_test, bname(ivar), len_mchars )) GOTO 1000
+   20         CONTINUE
+           ENDIF
 
 *** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
 * if it is not 1D it must be a dependent variable (3/99)

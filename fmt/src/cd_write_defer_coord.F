@@ -44,6 +44,9 @@
 
 * V530 *sh* - 12/00
 *	    -  1/01 bug fix -- upper box bound of last coord wrong
+* V570 *acm*   5/04 For irregular axes, write bounds coordinate variable, 
+*                   dimensioned 2xN
+
 * argument declarations:
 	INTEGER cdfid, status
 
@@ -55,7 +58,8 @@
         include 'xdefer_coords.cmn'
 
 * local variable declarations:
-	INTEGER	 iax, i, i1000, hilim, cdfstat, box_loc
+	INTEGER	 iax, i, i1000, hilim, cdfstat, box_loc,
+     .           start(2), count(2)
 	REAL*8   buff(1000)
 	REAL*8   TM_WORLD
 
@@ -72,27 +76,56 @@
 	    box_loc = box_middle
 	  ELSEIF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
 	    box_loc = box_lo_lim
-	  ELSE
+	  ELSEIF (dfr_axis_type(iax) .NE. pcd_defer_bounds) THEN
 	    CALL TM_NOTE( '***IntrnlERR - CD_DEFER_COORD_WRITE',
      .				tooplu)
 	  ENDIF
 
-          DO 110 i1000 = dfr_lo(iax), dfr_hi(iax), 1000
-            hilim = MIN((i1000-1)+1000, dfr_hi(iax))
-            DO 100 i = i1000, hilim
- 100        buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
+
+* Write coordinates or edges as N by 1 or N+1 by 1
+
+          IF (dfr_axis_type(iax) .EQ. pcd_defer_points .OR.
+     .        dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
+             DO 110 i1000 = dfr_lo(iax), dfr_hi(iax), 1000
+               hilim = MIN((i1000-1)+1000, dfr_hi(iax))
+               DO 100 i = i1000, hilim
+ 100           buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
-            CALL NCVPT(cdfid, dfr_cdaxis(iax), i1000-dfr_lo(iax)+1,
+               CALL NCVPT(cdfid, dfr_cdaxis(iax), i1000-dfr_lo(iax)+1,
      .		       hilim-i1000+1, buff, cdfstat)
- 110      CONTINUE
+ 110         CONTINUE
 
 * ... for edge defn tag on the upper bound of the top grid box
-	  IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
-            buff(1) = TM_WORLD(dfr_hi(iax), dfr_grid(iax), 
+	     IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
+                buff(1) = TM_WORLD(dfr_hi(iax), dfr_grid(iax), 
      .			       dfr_idim(iax), box_hi_lim)
-            CALL NCVPT1(cdfid, dfr_cdaxis(iax),
+               CALL NCVPT1(cdfid, dfr_cdaxis(iax),
      .			dfr_hi(iax)-dfr_lo(iax)+2, buff, cdfstat)
-	  ENDIF
+	     ENDIF
+
+* Write bounds as N by 2, 1000 sets buffered at a time.
+
+          ELSEIF (dfr_axis_type(iax) .EQ. pcd_defer_bounds) THEN
+             DO 210 i1000 = dfr_lo(iax), dfr_hi(iax), 500
+                hilim = MIN((i1000-1)+500, dfr_hi(iax))
+                buff(1) = TM_WORLD(i1000, dfr_grid(iax), 
+     .			              dfr_idim(iax), box_lo_lim)
+                DO 200 i = i1000, hilim
+                   buff(2*(i-i1000+1)-1) = TM_WORLD(i, dfr_grid(iax), 
+     .			              dfr_idim(iax), box_lo_lim)
+ 200               buff(2*(i-i1000+1)) = TM_WORLD(i, dfr_grid(iax), 
+     .			              dfr_idim(iax), box_hi_lim)
+
+
+                start(1) = 1
+                count(1) = 2
+                start(2) = i1000-dfr_lo(iax)+1
+                count(2) =  hilim-i1000+1
+
+                CALL NCVPT(cdfid, dfr_cdaxis(iax), start,
+     .		          count, buff, cdfstat)
+ 210           CONTINUE
+           ENDIF
 
  500	CONTINUE
 
@@ -100,6 +133,3 @@
 
 	RETURN
 	END
-
-
-

@@ -1,5 +1,7 @@
 	SUBROUTINE CD_REC_SYNCH ( cdfid, lo, hi, tmrecax, grid,
-     .                            start, axid, vartyp, status )
+     .                            start, axid, vartyp, reset, 
+     .                            old_box_hi, new_box_lo, do_bounds,
+     .                            status )
 
 *
 *
@@ -55,6 +57,13 @@
 *	 (since the box bounds will not be saved)
 * 6/97:  changed "STATIC" to SAVE for f90 compatibility
 *	 also moved var assignments off of declaration line *kob*
+
+* V570  *acm* 5/04 Do not issue the warning about irregular record axis,
+*                  Bounds are used rather than edges for defining irregular 
+*                  axis cell boundaries.  Check whether there is a gap
+*                  between the high box-bound of the existing axis and
+*                  the low box-bound of the new axis to be appended.
+
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
 *     lo      - lowest index from variable grid on record axis
@@ -65,67 +74,45 @@
 *     axid    - CDF var no of coordinate variable for record axis
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 #include "gt_lib.parm"
         include 'cd_lib.parm'
-        include 'tmap_dims.parm'		! for warning 1/97
         include 'tmap_errors.parm'
         include 'xio.cmn_text'
-        include 'xtm_grid.cmn_text'		! for warning 1/97
         external xio_data
 
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-        INCLUDE 'TMAP_DIMS.PARM'		! for warning 1/97
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'		! for warning 1/97
-        EXTERNAL XIO_DATA
-#endif
-
 * argument declarations
-      INTEGER cdfid, lo, hi, tmrecax, start, axid, grid, vartyp, status
+      LOGICAL do_bounds
+      INTEGER cdfid, lo, hi, tmrecax, start, axid, grid, vartyp, 
+     .        reset, status
 
 * local variable declarations:
-      LOGICAL CD_GET_ATTRIB, TM_DFPEQ, got_it, regular,
-     .        do_warn
-      PARAMETER ( do_warn = .TRUE. )
-      INTEGER TM_LENSTR1, STR_CASE_BLIND_COMPARE, NCVID,
+      LOGICAL CD_GET_ATTRIB, TM_DFPEQ, got_bnds
+      INTEGER TM_LENSTR1, NCVID,
      .        alen, look, hi_look, lo_look,
-     .        ndims, nvars, cdfstat, i100, hilim, i,
+     .        ndims, nvars, cdfstat,
      .        nvdim, vdims(6), nvatts,
-     .        ngatts, npts, recdim
-      CHARACTER axnam*24, buff*16
+     .        ngatts, npts, recdim, blen, bndid,
+     .        startpts(2), numpts(2)
+      CHARACTER axnam*128, buff*16, bname*30
       CHARACTER*1     dimnam(4)
       DATA dimnam/'I','J','K','L'/
       CHARACTER*13 TM_STRING
-!  REAL   r100(100)   ! removed 10/92   
-      REAL  delta
-      REAL*8 TM_WORLD, new, hi_val, lo_val, val
+
+      REAL*8 TM_WORLD, new_coord, hi_val, lo_val, val,
+     .       new_box_lo, old_box_hi, hi_val_1
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
 * local parameter declarations
-      LOGICAL     append
+      LOGICAL     append, do_warn
       INTEGER     str_eq
       REAL        unspecified_val4
       PARAMETER ( str_eq = 0,
      .            unspecified_val4 = -2E34,
-     .            append = .TRUE. )
-
-* statis variable causes warning to be issued only once
-	LOGICAL first_warning
-	SAVE	first_warning
-	DATA	first_warning/.TRUE./
-
-* initialize
-        delta = unspecified_val4
+     .            append = .TRUE., do_warn=.TRUE. )
 
 * get the vital statistics for the CDF file
         CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
@@ -148,7 +135,11 @@
 
 * locate the new coordinate values at end of coordinate axis ?
 * see if the first of the new coordinates exceeds the last already in the file
-        new = TM_WORLD( lo, grid, tmrecax, box_middle )
+        new_coord = TM_WORLD( lo, grid, tmrecax, box_middle )
+        new_box_lo = 0.D0
+        old_box_hi = 0.D0
+        reset = 0
+
         IF ( npts .GT. 0 ) THEN
            CALL CD_RD_R8_1( cdfid, axid, npts, vartyp,
      .                      'axis: '//axnam(:alen), hi_val, cdfstat )
@@ -156,30 +147,26 @@
            CALL CD_RD_R8_1( cdfid, axid, 1, vartyp,
      .                      'axis: '//axnam(:alen), lo_val, cdfstat )
            IF ( cdfstat.NE.merr_ok ) GOTO 5900
-* ... (determine the delta of the axis prior to writing new coordinates)
-           IF ( npts .GE.2 ) delta = (hi_val - lo_val) / (npts - 1)
 * 4/99 *kob* - call to new routine tm_dfpeq for double precision compares
-           IF ( TM_DFPEQ(new,hi_val) ) THEN
+           IF ( TM_DFPEQ(new_coord,hi_val) ) THEN
               start = npts
-              GOTO 2000
-           ELSEIF ( new .GT. hi_val ) THEN
+              GOTO 4000
+           ELSEIF ( new_coord .GT. hi_val ) THEN
               start = npts + 1
-              GOTO 500		! warning to be issued (1/97)
-!              GOTO 2000
+              GOTO 1000
            ENDIF
         ELSE
            hi_val = unspecified_val8
            start = 1
-           GOTO 500		! warning to be issued (1/97)
-!           GOTO 2000
+           GOTO 4000
         ENDIF
 
 * binary search to locate new coordinate in file
 * ... initialize search with coordinate of first point
-        IF ( TM_DFPEQ(new, lo_val) ) THEN
+        IF ( TM_DFPEQ(new_coord, lo_val) ) THEN
            start = 1
-           GOTO 2000
-        ELSEIF ( new .LT. lo_val ) THEN
+           GOTO 4000
+        ELSEIF ( new_coord .LT. lo_val ) THEN
            GOTO 5200 
         ENDIF
         lo_look = 0
@@ -190,14 +177,14 @@
  100    CALL CD_RD_R8_1( cdfid, axid, look, vartyp,
      .                   'axis: '//axnam(:alen), val, cdfstat )
         IF ( cdfstat.NE.merr_ok ) GOTO 5900
-        IF ( TM_DFPEQ(new, val) ) THEN
+        IF ( TM_DFPEQ(new_coord, val) ) THEN
 * ... found it
            start = look
            GOTO 1000
         ELSEIF ( hi_look - lo_look .LE. 1 ) THEN
 * ... value not on axis
            GOTO 5200
-        ELSEIF ( new .GT. val ) THEN
+        ELSEIF ( new_coord .GT. val ) THEN
 * ... look higher
            IF ( look .EQ. hi_look ) GOTO 5200
            lo_look = look
@@ -212,81 +199,91 @@
         ENDIF
         GOTO 100
 
-* issue a one-time warning if we are extending an irregular axis
- 500	IF  ( .NOT.line_regular(grid_line(tmrecax,grid))
-     .	.AND. first_warning ) THEN
-	   CALL TM_NOTE(
-     .		'Irregular T axis box limits cannot be saved',
-     .		tooplu)
-	   CALL TM_NOTE(
-     .		'in NetCDF files created by this means.',
-     .		tooplu)
-	   CALL TM_NOTE(
-     .		'To avoid this create the file using the qualifiers',
-     .		tooplu)
-	   CALL TM_NOTE(
-     .		'    /RIGID/HEADING=ENHANCED/LLIMITS=lo:hi',
-     .		tooplu)
-	   CALL TM_NOTE(
-     .		'This warning will not be repeated.',
-     .		tooplu)
-	   first_warning = .FALSE.
-	ENDIF
-
  1000   CONTINUE
- 2000   CONTINUE
-!!!! 10/92 - check for axis regularity removed as a part of performance
-!!!! enhancement to consolidate all writes under a single ncendf (slow) call
 
-!* this new data will overlay some of the previously existing axis
-!* initialize to determine if new points conform to old spacing
-! 1000   IF ( delta .EQ. unspecified_val4 ) THEN
-!           hi_val = unspecified_val8  ! was only 1 point & we're jumping on it
-!        ELSE
-!           hi_val = new - delta   ! as if concatenating to the previous point
-!        ENDIF
-!
-!* add coordinates to file (possibly over-writing identical old ones)
-!* note: no check is made that just because th first new coordinate matches
-!* the successive ones match, too
-!* (buffer 100 at a time)
-!* also, check for regular point spacing in the coordinates being written
-! 2000   regular = .TRUE.
-!        DO 2110 i100 = lo, hi, 100
-!           hilim = MIN(i100+99, hi)
-!           DO 2100 i = i100, hilim
-! 2100      r100(i-i100+1) = TM_WORLD( i, grid, tmrecax, box_middle )
-!           CALL NCVPT(cdfid, axid, i100-lo+start, hilim-i100+1,
-!     .                r100, cdfstat)
-!           IF ( cdfstat .NE. NCNOERR ) GOTO 5100
-!* ... check for matching regularity of new points as we write
-!           DO 2105 i = 1, hilim-i100+1
-!              IF ( delta .NE. unspecified_val4 ) THEN
-!                 IF ( .NOT.TM_FPEQ(delta,
-!     .                     SNGL(r100(i)-hi_val) ) ) regular=.FALSE.
-!              ELSEIF ( hi_val .NE. unspecified_val8 ) THEN
-!                 delta  = r100(i) - hi_val
-!              ENDIF
-!              hi_val = r100(i)
-! 2105      CONTINUE
-! 2110   CONTINUE
-!        CALL NCREDF( cdfid, cdfstat ) ! back into define mode
-!
-!* check the existing point_spacing attribute
-!        got_it = CD_GET_ATTRIB( cdfid, axid, 'point_spacing',
-!     .                          do_warn, axnam(:alen), buff, 16 )
-!        IF ( .NOT.got_it )  GOTO 4000    ! axis not created by FERRET
-!        IF ( str_eq .NE. STR_CASE_BLIND_COMPARE(buff,'even') )
-!     .                      GOTO 4000    ! once uneven, always uneven
-!
-!* add the point_spacing attribute
-!        IF ( regular ) THEN
-!           CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 5,
-!     .              'even', cdfstat )
-!        ELSE
-!           CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 7,
-!     .              'uneven', cdfstat )
-!        ENDIF
+* is there a bounds attribute for this axis? 
+
+       got_bnds = CD_GET_ATTRIB( cdfid, axid, 'bounds',
+     .                       do_warn, axnam(:alen), bname, 30 )
+
+       IF (got_bnds) THEN
+
+* Always write bounds when appending to axis which has bounds
+
+          do_bounds = .TRUE.  
+
+* Get upper bound of last box on existing axis
+
+          blen = TM_LENSTR1(bname)
+          bndid = NCVID( cdfid, bname(:blen), cdfstat )
+
+          startpts(1) = 2  ! get uppper bound, 1 point
+          numpts(1) = 1
+
+* get upper bound of last point to be used on existing axis
+          startpts(2) = start-1  
+          numpts(2) = 1
+
+          CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartyp, 
+     .                    bname(:blen), old_box_hi, status )
+
+* Get lower bound of first point to be output
+
+          new_box_lo = TM_WORLD( lo, grid, tmrecax, box_lo_lim )
+
+* Reconcile upper bound of last point on existing axis with lower bound of new axis
+* reset = 0  no change to bounds is needed
+*       = 1  gap between old_hi and new_lo, so add a void point with these as bounds
+*       = 2  need to reset new_lo to match old_hi
+
+          IF (TM_DFPEQ(old_box_hi, new_box_lo) ) THEN 
+*  no need to adjust; bounds line up.
+              reset = 0
+
+          ELSE IF (old_box_hi .LT. new_box_lo) THEN
+*  need to add a void point, with bounds [old_box_hi , new_box_lo]
+              reset = 1
+
+          ELSE   !  (old_box_hi .GT. new_box_lo) 
+             IF (old_box_hi .LT. new_coord) THEN 
+*  old_box_hi is between new_box_lo and new_coord, so use old_box_hi for new_box_lo
+                reset = 2
+                new_box_lo = old_box_hi
+
+             ELSE IF (old_box_hi .GE. new_coord) THEN
+                IF (new_box_lo .GT. hi_val) THEN 
+*  Issue an error message: high bound of last point of existing axis greater than
+*  the first coordinate of points being appended; cannot reset old_box_hi
+                   GO TO 5300
+                ELSE   
+*  new_box_lo is < hi_val, so use old_box_hi for new_box_lo
+                   reset = 2
+                   new_box_lo = old_box_hi
+                ENDIF
+             ENDIF
+          ENDIF
+
+       ELSE   ! (not got_bnds)
+
+* Check whether we are outputting the next point on a regularly spaced axis.
+* If we are skipping points, issue a warning.
+
+          IF (new_coord .GT. hi_val) THEN  
+
+              CALL CD_RD_R8_1( cdfid, axid, npts-1, vartyp,
+     .              'axis: '//axnam(:alen), hi_val_1, cdfstat )
+              IF (.NOT. TM_DFPEQ(hi_val-hi_val_1, new_coord-hi_val) ) THEN
+                 CALL WARN( 
+     . 'Appending to NetCDF record axis which has no bounds attribute.')
+                 CALL WARN( 
+     . 'This will result in incorrect box sizes on record axis: '
+     .             // axnam(:alen))
+                 CALL WARN( 
+     . 'Write the data initially with the /BOUNDS qualifier')
+              ENDIF
+           ENDIF
+
+       ENDIF
 
 * successful completion
  4000   status = merr_ok
@@ -300,7 +297,13 @@
      .      ( merr_badlinedef, status, 'CD_REC_SYNCH', no_descfile,
      .        no_stepfile,
      .       'disordered output coordinate value:'
-     .       //TM_STRING(new)//' Axis: '//axnam(:alen),
+     .       //TM_STRING(new_coord)//' Axis: '//axnam(:alen),
+     .       no_errstring , *5900 )
+ 5300  CALL TM_ERRMSG     
+     .      ( merr_badlinedef, status, 'CD_REC_SYNCH', no_descfile,
+     .        no_stepfile,
+     . 'output coordinate is inside upper bound of existing axis cell:'
+     .       //TM_STRING(new_coord)//' Axis: '//axnam(:alen),
      .       no_errstring , *5900 )
  5900  CALL NCREDF( cdfid, cdfstat ) ! back into define mode
        RETURN

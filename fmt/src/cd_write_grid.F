@@ -1,5 +1,6 @@
 	SUBROUTINE CD_WRITE_GRID ( cdfid, grid, lo, hi, recdim, 
-     .                             itsa_slab, gname, status )
+     .                             itsa_slab, gname, edges_flag, 
+     .                             do_bounds, status )
 
 *
 *
@@ -48,6 +49,7 @@
 *    2/96 - *sh* same deal for dynamic grids ... a quick fix right here
 * v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
 *                    lname to 64 from 24 to match longer line_name
+* v570 *acm*  6/04 - changes to use bounds attribute
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -60,7 +62,6 @@
 *     status  - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -70,20 +71,11 @@
         include 'cd_lib.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-        INCLUDE 'GT_LIB.PARM'
-        INCLUDE 'CD_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 
 * argument declarations
-      LOGICAL itsa_slab
-      INTEGER cdfid, grid, lo(4), hi(4), recdim, status
+      LOGICAL itsa_slab, do_bounds
+      INTEGER cdfid, grid, lo(4), hi(4), recdim, edges_flag, status
       CHARACTER*(*) gname
 
 * local variable declarations:
@@ -164,7 +156,8 @@ xx        include 'netcdf.decl'  ! untested
          IF ( grid_line(idim, grid) .NE. mpsnorm
      .  .AND. lo(idim) .NE. unspecified_int4     ) THEN
             CALL CD_WRITE_AXIS( cdfid, grid, idim, idim.EQ.recdim,
-     .           lo(idim), hi(idim), pcdf_full_span, status ) 
+     .           lo(idim), hi(idim), pcdf_full_span, 
+     .           edges_flag, do_bounds, status ) 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF
  200  CONTINUE

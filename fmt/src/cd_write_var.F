@@ -1,5 +1,5 @@
-	SUBROUTINE CD_WRITE_VAR ( cdfid, vname, grid, lo, hi, dat, 
-     .                            status )
+	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, vname, grid, lo, hi, 
+     .                            dat, edges_flag, do_bounds, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -52,6 +52,7 @@
 * 6/97	*kob* - fix introduced bug in call to NCVPT
 * V533 *sh* 6/01 - add support for string variables (NCCHAR)
 * V552 *acm* 5/03   increase vbuff to 128 chars 
+* V570 *acm*  5/04 write bounds 2xN coordinates when record axis is irregular.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -69,16 +70,20 @@
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
         include 'cdf_tmap.parm'
-#include "gt_lib.parm"
+        include 'ferret.parm'
+        include 'xvariables.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 
+
 * argument declarations
-      INTEGER cdfid, grid, lo(4), hi(4), status
+      LOGICAL do_bounds
+      INTEGER cdfid, grid, lo(4), hi(4), edges_flag, status
       CHARACTER*(*) vname
       REAL dat(*)
+      REAL memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -86,18 +91,23 @@
       INTEGER TM_LENSTR1, NCVID,
      .        start(4), count(4), idim, iaxis, cdfstat, vlen,
      .        slab_min(4), slab_max(4), tmrecax, cdrecax, dims, varid,
-     .        hilim, i100, i, recaxvar, lorec, hirec, rectyp,
-     .	      vartyp, nvdim, vdims(6), nvatts
+     .        hilim, i100, i, j, k, l, recaxvar, lorec, hirec, rectyp,
+     .	      vartyp, nvdim, vdims(6), nvatts, bndstart(2), bndcount(2),
+     .        mblk1, nblks, npts, savecount
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, got_it
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(4)
       DATA  	   dimnam/'I','J','K','L'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
-      REAL*8 r100_8(100)
+      REAL*8 r100_8(200)
       REAL*8 TM_WORLD
+      
+      INTEGER bndid, nlen, elen, reset
+      CHARACTER name*64, CD_AXIS_NAME*64
 
-      REAL*4 r100_4(100)
-      EQUIVALENCE (r100_8, r100_4)
+      REAL*4 r100_4(200)
+      REAL*8 new_box_lo, old_box_hi, reset_bnd_lo, missflag
+c      EQUIVALENCE (r100_8, r100_4)
 
 * initialize
       vlen = TM_LENSTR1( vname )
@@ -160,7 +170,7 @@
       dims = 0
       DO 200 idim = 1, 4
          iaxis = grid_line(idim, grid)
-         IF ( iaxis.EQ.mpsnorm .OR. lo(idim).EQ.unspecified_int4) THEN
+         IF ( iaxis.EQ.mnormal .OR. lo(idim).EQ.unspecified_int4) THEN
             IF ( dims .LE. tmrecax ) cdrecax = cdrecax - 1   ! logic ok ??
          ELSE
             dims = dims + 1
@@ -181,8 +191,97 @@
       ENDIF
       IF ( lorec .NE. unspecified_int4 ) THEN
          CALL CD_REC_SYNCH( cdfid, lorec, hirec, tmrecax,
-     .               grid, start(cdrecax), recaxvar, rectyp, status )
+     .               grid, start(cdrecax), recaxvar, rectyp, 
+     .               reset, old_box_hi, new_box_lo, do_bounds,
+     .               status )
+
          IF ( status .NE. merr_ok ) GOTO 5900
+
+* RESET flag: need to adjust box limits and possibly add a void point between the 
+* last cell of the existing axis and the lower bound of the axis being appended
+
+        IF (reset .NE. 0) THEN    
+            IF (reset .EQ. 2) THEN  ! just need to adjust low bound of new axis.
+               reset_bnd_lo = new_box_lo
+
+            ELSE IF (reset .EQ. 1) THEN  ! write a void point
+
+               savecount = count(cdrecax)
+               count(cdrecax) = 1
+
+**************************************
+
+* Write out  an extra point on the axis; NC library 
+* writes fill-missflagged data for the extra point?  
+
+
+               r100_8(1) = (old_box_hi + new_box_lo)/2.D0
+
+#ifdef FORTRAN_90
+            CALL NCVPT(cdfid, recaxvar, 
+     .                 TRANSFER(start(cdrecax),start,1),
+     .                 TRANSFER(1,count,1), 
+     .		       TRANSFER(r100_8,r100_4), 
+     . 		        cdfstat)
+#else
+            CALL NCVPT(cdfid, recaxvar, start(cdrecax),
+     .                 1, r100_8, cdfstat)
+#endif
+            IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+
+
+* Now write the bounds for this point
+
+               r100_8(1) = old_box_hi
+               r100_8(2) = new_box_lo
+
+               bndstart(1) = 1
+               bndcount(1) = 2
+               bndstart(2) = start(cdrecax)
+               bndcount(2) = 1
+
+
+               CALL NCVPT(cdfid, bndid, bndstart,
+     .		           bndcount, r100_8, cdfstat)
+
+            IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+
+* Write a time-step slab containing missing data
+            npts = 1
+            DO 220  idim = 1, 4
+               IF ( idim .EQ. tmrecax ) GOTO 220
+               IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
+ 220        CONTINUE
+
+* allocate memory for missing-data
+
+            CALL GET_MEMORY( npts*4, mblk1, nblks, status )
+            IF ( status .NE. merr_ok ) GOTO 5900
+
+            CALL CD_GET_MISSING_FLAG (cdfid, varid, vname, .TRUE., 
+     .           missflag, status)
+            IF (status .EQ. 0) missflag = unspecified_val4
+
+            npts = 1
+            memory(npts, mblk1) = missflag
+            DO 240 i = 1, MAX(count(1),1)
+            DO 240 j = 1, MAX(count(2),1)
+            DO 240 k = 1, MAX(count(3),1)
+            DO 240 l = 1, MAX(count(4),1)
+               memory(npts, mblk1) = missflag
+               npts = npts + 1
+ 240        CONTINUE
+
+            CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start,
+     .             count, vdims(1), memory(1, mblk1), cdfstat )
+ 
+            CALL FREE_MEMORY( mblk1, nblks )
+            start(cdrecax) = start(cdrecax) + 1
+            count(cdrecax) = savecount
+         ENDIF
+
+      ENDIF  ! Reset
+**************************************
 
 * write the record axis coords (buffer 100 at a time) (12/92 REAL*8 option)
 * (code lifted from CD_REC_SYNCH 10/92)
@@ -206,6 +305,46 @@
 #endif
             IF ( cdfstat .NE. NCNOERR ) GOTO 5300
  310     CONTINUE
+
+* Now write the bounds, if record axis is irregular, or if /BOUNDS was requested.
+
+         iaxis = grid_line(tmrecax, grid)
+         IF ( (.NOT.line_regular(iaxis) .OR. do_bounds) 
+     .         .AND. (edges_flag .EQ. 0) ) THEN
+
+            name = CD_AXIS_NAME( grid, tmrecax, nlen )
+
+            name = name(:nlen)//'_bnds'
+            elen = nlen + 5
+            bndid = NCVID(cdfid, name(:elen), cdfstat)
+
+            DO 330 i100 = lorec, hirec, 100
+               hilim = MIN(i100+99, hirec)
+               r100_8(1) = TM_WORLD(i100,grid,tmrecax,box_lo_lim)
+               DO 320 i = i100, hilim
+                  j = 2*(i-i100+1)-1
+                  r100_8(2*(i-i100+1)-1) = TM_WORLD(i,grid,tmrecax,box_lo_lim)
+                  r100_8(2*(i-i100+1)) = TM_WORLD(i,grid,tmrecax,box_hi_lim)
+                  IF ( rectyp .EQ. NCFLOAT ) r100_4(i-i100+1)
+     .                                  = r100_8(i-i100+1)
+ 320           CONTINUE
+
+               bndstart(1) = 1
+               bndstart(2) = i100-lorec+start(cdrecax)
+               bndcount(1) = 2
+               bndcount(2) =  hilim-i100+1
+
+               IF (reset_bnd_lo .NE. 0.D0) THEN
+                  r100_8(i100-lorec+start(cdrecax)) = reset_bnd_lo
+                  reset_bnd_lo = 0.D0
+               ENDIF
+
+               CALL NCVPT(cdfid, bndid, bndstart,
+     .		           bndcount, r100_8, cdfstat)
+               IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+ 330        CONTINUE
+         ENDIF
+
       ENDIF
 
 * write the slab

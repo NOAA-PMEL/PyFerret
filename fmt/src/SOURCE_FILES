@@ -17,6 +17,7 @@ cd_get_attval_l.F\
 cd_get_bounds.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
+cd_get_missing_flag.F\
 cd_get_parent_grids.F\
 cd_get_time_axis.F\
 cd_get_tmap_parms.F\
@@ -30,6 +31,7 @@ cd_rd_ep_1.F\
 cd_rd_ep_arr.F\
 cd_rd_r8_1.F\
 cd_rd_r8_arr.F\
+cd_rd_r8_bnds.F\
 cd_rd_ymd_1.F\
 cd_rd_ymd_arr.F\
 cd_read.F\
@@ -41,6 +43,7 @@ cd_use_recdim.F\
 cd_write_attrib.F\
 cd_write_attval.F\
 cd_write_axis.F\
+cd_write_bndsdim.F\
 cd_write_defer_coord.F\
 cd_write_grid.F\
 cd_write_strdim.F\
@@ -88,6 +91,10 @@ tm_break_fmt_date.F\
 tm_break_lines.F\
 tm_break_str.F\
 tm_check_box_loc.F\
+tm_check_bnds.F\
+tm_check_bnds_attrib.F\
+tm_check_bnds_centered.F\
+tm_check_edges_attrib.F\
 tm_choose_read.F\
 tm_clean_filename.F\
 tm_close_set.F\
@@ -109,6 +116,7 @@ tm_deallo_dyn_grid_sub.F\
 tm_deallo_dyn_line.F\
 tm_deallo_dyn_line_sub.F\
 tm_dfpeq.F\
+tm_dfpeq_tol.F\
 tm_digit.F\
 tm_dset_number.F\
 tm_dset_deallo_grids.F\
@@ -216,7 +224,6 @@ tm_use_dyn_grid.F\
 tm_use_line.F\
 tm_world.F\
 tm_world_ax.F\
-tm_write_gridfile.F\
 tm_ww_ax_1_n.F\
 tm_ww_axlen.F\
 tm_ww_axlims.F\

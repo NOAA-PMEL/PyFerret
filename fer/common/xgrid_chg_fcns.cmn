@@ -15,6 +15,7 @@
      .				gfcn_num_reqd_args, 
      .				gfcn_arg_ptr, 
      .				gfcn_axis_will_be, 
+     .				gfcn_axis_reduction,
      .				gfcn_has_vari_args, 
      .				gfcn_piecemeal_ok, 
      .				gfcn_axis_implied_from, 
@@ -53,6 +54,9 @@
 
 * type of axis of result: merged from args, normal, abstract, or custom
 	INTEGER		gfcn_axis_will_be    ( 4, pmax_grid_chg_fcns )
+
+* how to interpret a range on the result axis: pgc_span_retained or pgc_span_reduced
+	INTEGER		gfcn_axis_reduction  ( 4, pmax_grid_chg_fcns )
 
 * for memory optimization: axes where calculation may be performed piecemeal
 	LOGICAL		gfcn_piecemeal_ok  ( 4, pmax_grid_chg_fcns )

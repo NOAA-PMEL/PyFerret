@@ -37,13 +37,16 @@
 * if isym=0 on input then this is a request to translate the passed "name"
 *	if the given name is the name of a special symbol return its definition
 *	in value and its length in slen. Else return slen=0
-* if slen is a positive integer then return the name and value of that symbol
-*	or slen =0 if the integer is larger than the number of symbols 
+* if slen is a positive integer then return the name of that symbol
+*	or a blank name if the integer is larger than the number of symbols 
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V522 7/00 *sh* - extracted from symbol_command.F
+* V530  8/00 *sh* - bug (feature) fix so that SHOW SYM doesn't eveluate
+*			PPL$XPIXEL
+*      12/00 *sh* - added symbols SESSION_DATE and SESSION_TIME
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -51,7 +54,7 @@
 
 * internal parameter declaration
 	INTEGER nspecial
-	PARAMETER (nspecial = 4)
+	PARAMETER (nspecial = 6)
 
 * internal variable declarations:
 	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix
@@ -62,12 +65,15 @@
 	DATA special(1)/ 'PPL$XPIXEL' /,
      .	     special(2)/ 'PPL$YPIXEL' /,
      .	     special(3)/ 'BYTEORDER' /,
-     .	     special(4)/ 'FERRET_VERSION' /
+     .	     special(4)/ 'FERRET_VERSION' /,
+     .	     special(5)/ 'SESSION_DATE' /,
+     .	     special(6)/ 'SESSION_TIME' /
 
 #ifdef unix
 	include 'ferret.parm'
 	include 'xplot_state.cmn'	! for PPL$XPIXEL
 	include 'xrevision.cmn'
+	include 'xtoday.cmn'
 * #ifdef for endianness info.
 #ifdef sun
 	include 'xmachine_byte.cmn'
@@ -81,11 +87,11 @@
 	IF (isym .GE. 1) THEN 
 * ***** QUERY BY INTEGER ******
 	   IF (isym.GT.nspecial) THEN
-	      slen = 0
+	      name = ' '
 	      RETURN
 	   ENDIF
 	   name = special(isym)
-* ... now continue on as if a query by name ...
+	   RETURN
 	ENDIF
 
 * ***** QUERY BY NAME *****
@@ -99,7 +105,7 @@
 	slen = 0
 	RETURN
 
- 200	GOTO (1100, 1200, 1300, 1400) i
+ 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600) i
 
 * PPL$XPIXEL, PPL$YPIXEL
  1100	CONTINUE
@@ -132,6 +138,16 @@
 * FERRET_VERSION
  1400	value = ' '
 	WRITE (value,'(F5.2)') revision_level
+	slen = 5
+	RETURN
+
+* SESSION_DATE
+ 1500	value = today_date
+	slen = 9
+	RETURN
+
+* SESSION_TIME
+ 1600	value = today_time
 	slen = 5
 	RETURN
 

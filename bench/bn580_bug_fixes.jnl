@@ -91,3 +91,12 @@ GO err570_illegal_stride.jnl
 ! Fix for bug 1085; /THICK without color specifier caused all lines to revert to black
 GO bn_reset
 GO err570_thick_colors.jnl 
+
+! Fix for bug 1102: under linux, var[d=filename] fails if filename
+! starts with a digit.
+GO bn_reset
+GO err570_digit_filename.jnl
+
+! Fix for bug 1098: DODS URL label was cut off
+GO bn_reset
+GO err570_dods_url_label.jnl

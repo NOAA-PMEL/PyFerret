@@ -10,6 +10,7 @@
 #
 
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+include v5d_platform_specific_flags.mk.$(HOSTTYPE)
  
 
 #

@@ -67,6 +67,10 @@ C
 *                   polygons that may be plotted is unlimited. 
 * v554 *acm*  2/04  After levels are set, call setlab_syms to set the LEVELS symbols
 
+* v570  4/04*acm* Fix for the section marked correction for rounding errors. 
+*                 Use TM_FPEQ to see if values are equal or close.  Also fixes 
+*                 this adjustment when the range has negative values; was incorrect.
+
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
 
@@ -129,7 +133,7 @@ C
 	integer         nlm1
 	real		dz,znp,zmp
 	integer		i,j,uprdn, llen, ptsbase
-	logical         line_it, fill_it
+	logical         TM_FPEQ, line_it, fill_it
         integer         slen1, slen2
         CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
 
@@ -291,9 +295,11 @@ C       values and also the appropriate delta value. (ZNP, ZMP, DZ)
 	      NLEV2=(ZMP-ZNP)/DZ+1 
 
 C       Handle rounding errors *jd* 6.27.95/12.30.97
+C acm 4/04 use TM_FPEQ to fix precision problem as in shade.F
 
 	      IF (ZMP .GT. 0.0) THEN
-		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) 
+		 IF (ZNP + DZ*(NLEV2-1) .LT. ZMP.AND.
+     .           .NOT. TM_FPEQ(ZNP + DZ*(NLEV2-1), ZMP)) 
 	1	      NLEV2 = NLEV2 + 1
 	      ELSE
 		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 

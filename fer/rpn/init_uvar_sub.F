@@ -57,6 +57,7 @@
 * V500:  1/99 *sh* - don't upcase double quoted strings, either
 *        3/99 *sh* - bug fix: pass the full error text to RPN, since
 *			at_start, at_end are relative to full text buffer
+*	12/99 *sh* - initialize uvar_lo/hi*
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -81,7 +82,7 @@
 * internal variable declarations:
 	LOGICAL inquote
 	INTEGER	STR_UPCASE, vax_code, i, natom_rpn,
-     .                  rpn_order(maxatoms), i2, is, ie, quote_type
+     .                  rpn_order(maxatoms), i2, quote_type
 	CHARACTER	err_string*255, c*1
 
 * internal parameter declarations
@@ -198,7 +199,13 @@
 
 * by default assume that all limits are irrelevant
 	DO 320 i = 1, 4
- 320	uvar_given(i,uvar) = uvlim_irrelevant
+	   uvar_lo_ss ( uvar, i )  = unspecified_int4
+	   uvar_hi_ss ( uvar, i )  = unspecified_int4
+	   uvar_lo_ww ( i, uvar )  = unspecified_val8
+	   uvar_hi_ww ( i, uvar )  = unspecified_val8
+	   uvar_by_ss ( i, uvar )  = .FALSE.             !for bookkeeping
+  	   uvar_given ( i, uvar )  = uvlim_irrelevant
+ 320	CONTINUE
 
 * by default assume that there are no pseudo-variables involved
 	DO 330 i = 1, 4

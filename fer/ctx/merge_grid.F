@@ -100,6 +100,8 @@
 *                 a new component does or does not possess its own limits
 * V500: *sh* 6/99 -- BUG COMMENT ONLY!! NOT FIXED. See err500_expl_lims.jnl
 *		  and find "6/99" in code below
+* V510: *sh* 12/99 - support for uvlim_hidden (EF caching)
+*	*sh* 12/99 - set the uvar_lo/hi limits along with uvar_given
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -195,6 +197,7 @@
 * ("gvn" indicates lo/hi limits were given in square brackets)
 * ("gnl","lo","lohi" and "xact" encode special requirements of transformations)
 *	uvlim_irrelevant- limits irrelevant: NEW=10.1
+*	uvlim_hidden	- limits hidden inside on another axis: NEW=FFT(v)
 *	uvlim_gvn_gnl	- limits given in a gen'l way: NEW=U[K=1:5]
 *	uvlim_gvn_lo	- limits that require exact lo match: NEW=U[K=1:5@IIN]
 *	uvlim_gvn_lohi	- limits require exact lohi match: NEW=U[K=1:5@WEQ]
@@ -307,7 +310,7 @@
 * axis should be ignored.
 
 * Made a special exception for mrg_ax being mnormal. In that case, even
-* the unspecified limits are relevant. This is a porrly understood kludge
+* the unspecified limits are relevant. This is a poorly understood kludge
 * fix to accomodate the fact that the grid is now initially set at all mnormal.
 	   IF ( cx_lo_ww(idim,com_cx) .EQ. unspecified_val8
      .    .AND. mrg_ax .NE. mnormal				) THEN
@@ -353,7 +356,8 @@
 	        icom = 6
 	      ENDIF
 	   ENDIF
-	   IF ( uvar_given(idim,uvar) .EQ. uvlim_irrelevant ) THEN
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_irrelevant
+     .	   .OR.  uvar_given(idim,uvar) .EQ. uvlim_hidden  ) THEN
 	      imrg = 5
 	   ELSEIF ( mrg_ax .EQ. mnormal ) THEN
 	      imrg = 4
@@ -433,7 +437,7 @@
 	   IF ( mrg_ax .GT. max_lines ) CALL TM_DEALLO_DYN_LINE(mrg_ax)
 	   grid_line( idim, mrg_grd ) = com_ax
 
-* save implications about how limits are given in this component
+* save implications about how limits are given in thi uvar_given(idim,uvar) .EQ. uvlim_s component
 * if the component is a user-defined variable then consider the implications
 * of its definition
 * com_class encodes the way limits are given in this component
@@ -445,7 +449,8 @@
 *           is irrelevant  
 *        For a component which is not, cx_lo_ww was already used prior to 2/98
  400	   IF ( nest ) THEN
-	      IF (uvar_given(idim,com_uvar).EQ.uvlim_irrelevant) GOTO 500
+	      IF (uvar_given(idim,com_uvar).EQ.uvlim_irrelevant
+     .	      .OR. uvar_given(idim,com_uvar).EQ.uvlim_hidden) GOTO 500
 	   ELSE
 	      IF (cx_lo_ww(idim,com_cx) .EQ. unspecified_val8) GOTO 500 ! 1/97
 	   ENDIF
@@ -458,7 +463,8 @@
 	      com_class = REGION_CLASS( idim, com_cx )
 	   ENDIF	      
 
-	   IF ( uvar_given(idim,uvar) .EQ. uvlim_irrelevant ) THEN ! 1/97
+	   IF ( uvar_given(idim,uvar) .EQ. uvlim_irrelevant 
+     .	   .OR. uvar_given(idim,uvar) .EQ. uvlim_hidden) THEN ! 1/97
 * nothing meaningful has been merged in so far
 	      uv_class = com_class				   ! 1/97
 	   ELSE
@@ -478,6 +484,11 @@
 	      uvar_given(idim,uvar) = uv_class + uvlim_needed
 	   ELSE
 	      uvar_given(idim,uvar) = uv_class
+	      IF ( cx_given(idim,com_cx) ) THEN
+	         CALL TRANSFER_CX_AXIS_TO_UV( idim, com_cx, uvar)
+	      ELSEIF ( expl_com_lim ) THEN
+	         CALL TRANSFER_UV_AXIS_TO_UV( idim, com_uvar, uvar)
+	      ENDIF
 	   ENDIF
 	
  500	CONTINUE

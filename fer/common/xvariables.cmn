@@ -23,18 +23,7 @@
 *	        increased max_uvar to 250
 * V301: increased mem_blk_size x4  !!!
 * V312: 5/17/94  removed "memory" array from COMMON altogether
-* V510: 8/99 *sh* allow other categories of cached mvars (mpv_nocache area)
 
-*	"mr"	- "memory resident"
-*	("mv")	  table of information about variables currently stored in
-*		  memory
-*	"mblk"	- related to management of array "memory" where bulk data is
-*		  stored
-*	"uvar"	- information about user-defined variables (and implicit user-
-*		  defined variables given as command arguments)
-*	"is"	- pertaining to the "interpretation stack" on which user 
-*		  variables are evaluated, axis transformations are executed and
-*		  grids in awkward planes are assembled
 * V402: 7/20/95 - added uvar_dset (for LET/D=...)
 * V420: 11/95   - added hash pile for "un_cached" results
 *	12/95	- added uvar_mod_pseudo to postpone modulo ops on uvars with
@@ -43,6 +32,21 @@
 * V491: 12/97  - increased max_uvar_items from 40 to 100 *kob*
 * v500: 3/99 - increased uvar_name_code, uvar_units to 64 and uvar_title
 *              to 128
+* V510: 8/99 *sh* allow other categories of cached mvars (mpv_nocache area)
+*	12/99 *sh* added uvar_lo/hi_ss/ww and uvar_by_ss
+*		(also fixed messed up comments)
+
+* Terminology:
+*	"mr"	- "memory resident"
+*	("mv")	  table of information about variables currently stored in
+*		  memory
+*	"mblk"	- related to management of array "memory" where bulk data is
+*		  stored
+*	"uvar"	- information about user-defined variables (and implicit user-
+*		  defined variables given as command arguments)
+*	"is"	- pertaining to the "interpretation stack" on which user 
+*		  variables are evaluated, axis transformations are executed
+*		  and grids in awkward planes are assembled
 
 * BULK MEMORY MANAGEMENT:
 *  The free bulk memory list is organized as follows:
@@ -119,6 +123,9 @@
 *	uvar_given	- indicate degree to which definition of uvar specifies
 *			  limits along each axis
 *	uvar_dset	- name of data set to which uvar **belongs** (7/95)
+*	uvar_by_ss	- when uvlims are given in expression this tells how
+*	uvar_lo/hi_ss	- when uvlims are given in expression this tells what
+*	uvar_lo/hi_ww	- when uvlims are given in expression this tells what
 
 *	isp	 	- interpretation stack pointer
 *	is_act   	- activity currently in progress
@@ -181,6 +188,8 @@
 	COMMON / XMR / 
      .		mr_lo_ww	( 4, max_mrs ),
      .		mr_hi_ww	( 4, max_mrs ),
+     .		uvar_lo_ww	( 4, max_uvar ),
+     .		uvar_hi_ww	( 4, max_uvar ),
      .		mr_trans	( 4, max_mrs ),
      .		mr_trans_arg	( 4, max_mrs ),
      .		mr_lo_ss	( max_mrs, 4 ),
@@ -210,6 +219,9 @@
      .		mr_del_last_mblk,
      .		mr_del_last_size,
      .
+     .		uvar_by_ss	 ( 4, max_uvar ),
+     .		uvar_lo_ss	 ( max_uvar, 4 ),
+     .		uvar_hi_ss	 ( max_uvar, 4 ),
      .		uvar_title	 ( max_uvar ),
      .		uvar_title_w_text( max_uvar ),
      .		uvar_name_code	 ( max_uvar ),
@@ -263,7 +275,10 @@
 	REAL		mr_bad_data  	,
      .			mr_trans_arg
 	REAL*8		mr_lo_ww	,
-     .			mr_hi_ww
+     .			mr_hi_ww	,
+     .			uvar_lo_ww	,
+     .			uvar_hi_ww
+
 	INTEGER		mr_lo_ss	,
      .			mr_hi_ss	,
      .			mr_trans	,
@@ -281,14 +296,17 @@
 	CHARACTER*160	uvar_text	
 	LOGICAL		uvar_title_w_text,
      .			uvar_need_dset,
-     .			uvar_mod_pseudo
+     .			uvar_mod_pseudo,
+     .			uvar_by_ss
 	INTEGER		uvar_num_items  ,
      .			uvar_grid	,
      .			uvar_item_start	,
      .			uvar_item_end	,
      .			uvar_item_type	,
      .			uvar_given	,
-     .			uvar_parent
+     .			uvar_parent	,
+     .			uvar_lo_ss	,
+     .			uvar_hi_ss
 
 	INTEGER		isp,
      .			is_act  ,

@@ -28,6 +28,7 @@
 * V420:	 9/25/95 - use REGRID_COMMENTS
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
 * V455:  9/97 - modify labeling of xforms @CIA,CIB,CDA,CDB to avoid "by n pts"
+* V491:  3/98 - crash due to boolean operator precedence error
 
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
@@ -168,7 +169,7 @@
 	ENDIF
 
 * add remark about momentum diffusion coefficient
-	IF ( vcalc .AND. var .EQ. pudfh .OR. var .EQ. pvdfh ) THEN
+	IF ( vcalc .AND. (var.EQ.pudfh) .OR. (var.EQ.pvdfh) ) THEN
 	   IF ( add_on ) THEN
 	      var_title_mod = var_title_mod(:mlen) //' - '
 	      mlen = MIN( maxlen, mlen + 3 )

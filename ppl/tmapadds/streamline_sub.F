@@ -120,7 +120,8 @@ C   int *shdcls, int shdcnt, int den)
       REAL x,y,xx,yy,uv1,uv2,uv,vv1,vv2,vv,auv,avv,xsav,ysav,xold,yold
       INTEGER i,ii,jj,ii1,ij1,i2,j2,ipt,acnt,icol,scol,dis
       INTEGER iindex, jjndex, ii1index
-      INTEGER iacc,iisav,iscl,imn,imx,jmn,jmx,iz,jz,iss,jss,bflg
+      INTEGER iacc,iisav,iscl,imn,imx,jmn,jmx,iz,jz,iss,jss
+      LOGICAL bflg
       REAL fact,rscl,xxsv,yysv
       REAL xtm, ytm, xtx, ytx
       REAL upsv, vpsv

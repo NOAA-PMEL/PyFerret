@@ -48,6 +48,10 @@
 * *jd* Mod for 4 digit years
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+
+C *acm* 24/01/00 Y2k Bug -- Put century at start when comparing 
+C                 ITIME to ITIME2 at loop 10
+
 C**
 C**    @(#)taxis1.f	1.1    3/10/88
 C**
@@ -122,6 +126,7 @@ C     SET PARAMETERS.
 *     *jd Number of arguments of TIME3 calls reduced to 6.  TIME3 uses only
 *     the first 6, 'seconds' are not handled.  Done for MAC 7.92
 
+ 
       TIC = 1440./DT
       NTIC = NSMTIC + 1
 	IF(NSMTIC.LT.0)THEN
@@ -210,8 +215,12 @@ C             ELSE:
    70     CONTINUE
           ITIME=ITIME3
           T=T+TIC
-          IF(ITIME.LT.ITIME2) GO TO 10
+c          IF(ITIME.LT.ITIME2) GO TO 10
+
+          IF(ITIME(13:14)//ITIME(1:12) .LT. 
+     .       ITIME2(13:14)//ITIME2(1:12) ) GO TO 10
 	     IF(IMDB.EQ.0) RETURN
+	     
 	IF(IABS(LABEL).EQ.1.AND.IMON.EQ.IMDB*(IMON/IMDB)
      .	.AND.IDAY3.GE.4)THEN
       CALL TIME2(ITIME,SYM)

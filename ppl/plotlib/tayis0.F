@@ -51,6 +51,8 @@
 * *jd* Mod for 4 digit years 11.27.95
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C *acm* 24/01/00 Y2k Bug --Put century at start when comparing 
+C                 ITIME to ITIME2 at loop 10
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
@@ -195,7 +197,9 @@ C             ELSE:
 70	CONTINUE
 	ITIME=ITIME3
 	T=T+TIC
-	IF(ITIME.LE.ITIME2) GO TO 10
+c	IF(ITIME.LE.ITIME2) GO TO 10
+        IF(ITIME(13:14)//ITIME(1:12) .LE.
+     .       ITIME2(13:14)//ITIME2(1:12)) GO TO 10
 	IF(IDDB.EQ.0) RETURN
 	IF(IABS(LABEL).EQ.1.AND.IDAY.EQ.IDDB*(IDAY/IDDB)
      .	.AND.IHR3.GE.4)THEN

@@ -124,15 +124,16 @@ C
 C     THIS PROGRAM WAS FIRST WRITTEN BY DAVID MANDEL IN JULY 1980.
 C
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
+
 	IF(ITIME1(5:10).NE.'010000')STOP ',1'
 	IF(ITIME2(5:10).NE.'010000')STOP ',2'
-        IF(ITIME1(13:14)//ITIME1(1:12).GE.
-     .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
+
 C
 C     SET PARAMETERS.
 
 *     *jd Number of arguments of TIME3 calls reduced to 6.  TIME3 uses only
 *     the first 6, 'seconds' are not handled.  Done for MAC 7.92
+
 
 	IF(LABEL+IX.EQ.0)THEN
 		YTEMP=0.0
@@ -214,7 +215,7 @@ C     LOOP:
 	         IF(NOT_ZERO_SIZE)
      .		   CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 	      ENDIF
-           ENDIF
+          ENDIF
 	ELSE
 	   IF(IMON3.EQ.1)THEN
 	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)

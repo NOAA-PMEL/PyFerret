@@ -53,6 +53,7 @@
 *		information is used without regard to cx_by_ss)
 *	see err522_repeat_leftover.jnl
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control; reset repeat controls.
+* v560 3/04 *acm    reset last_cmnd_buff  when resetting repeat controls.
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN, stat, axis, ivar, cvar
@@ -117,6 +118,7 @@
               alg_cvar( cvar ) = unspecified_name4
               cs_repeatname( csp ) = unspecified_name4
               csp_cvar( csp ) = unspecified_int4
+              last_cmnd_buff = ' '
            ENDIF
 
 	ENDIF

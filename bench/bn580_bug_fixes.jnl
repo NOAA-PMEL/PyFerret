@@ -63,3 +63,7 @@ GO err570_index111.jnl
 ! crashed on trying to format value for the output buffer.   
 GO bn_reset
 GO err570_sh_dat_nan.jnl
+
+! Time reqest out of range on NOLEAP axes.
+GO bn_reset 
+GO err570_time_range.jnl

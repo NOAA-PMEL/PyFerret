@@ -164,17 +164,29 @@
 	   ELSEIF ( at_id(iat) .EQ. right_paren ) THEN
 	      paren_level = paren_level - 1
 	   ENDIF
+
 * ... check for the end of an argument -- comma or final paren
 	   IF (  (at_id(iat).EQ.comma .AND. paren_level.EQ.1)
      .	    .OR. paren_level .EQ. 0   ) THEN
 * ...(2/98) treat lone constant like a "complex" argument (an expression)
 * ...(10/99)also treat sst[y=5s:5n:1] as a "complex" argument (has impl grid)
+
+
+* ACM *** The lines commented out with cc below, replaced by the line just 
+* ACM *** above are a "fix" to the problem with custom axes in external 
+* ACM *** functions.  Not the true fix but allows the FFT benchmarks to run.
+
 	      istart = at_start (gc_arg_start)
 	      iend   = at_end   (gc_arg_start)
 	      IF ( (at_type(gc_arg_start) .EQ. alg_child_var)
      .	     .OR.  ( (iat .EQ. gc_arg_start+1)
-     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
-     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN
+
+     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)    )   ) THEN
+
+cc     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
+cc     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN
+
+
 * ... this argument is "simple" (a single atom) 
 	         gc_arg_start = iat + 1	! look for next
 	      ELSE

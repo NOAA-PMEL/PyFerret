@@ -7,9 +7,10 @@
 * V5.0 - 8/99 *sh* this buffer is now used throughtout Ferret. When used during
 * symbol substitution and grave accent evals on command it limits the
 * command line length. So increase the buffer size.
+* V530 10/00 - increased to 2048 (should be at least as large as len_cmnd_buf)
 
 	INTEGER     size_rbuff
-	PARAMETER ( size_rbuff = 1000 )  ! was 256 pre 8/99
+	PARAMETER ( size_rbuff = 2048 )  ! was 256 pre 8/99
 
 	COMMON/ XRISC / len_rbuff, risc_buff
 	CHARACTER  risc_buff*(size_rbuff)

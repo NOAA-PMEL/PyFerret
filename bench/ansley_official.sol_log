@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61679072 Mar 25 14:54 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61680848 Mar 29 09:42 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  v5.6 with fixes and further tests of REPEAT/RANGE
+Note:  further fixes and tests of REPEAT/RANGE=, error if pseudovariable name is used
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Thu Mar 25 14:55:40 PST 2004
+Beginning at Mon Mar 29 10:28:26 PST 2004
  	NOAA/PMEL TMAP
- 	FERRET v5.53  
- 	Solaris 5.6 - 03/25/04
- 	25-Mar-04 14:55     
+ 	FERRET v5.60  
+ 	Solaris 5.6 - 03/29/04
+ 	29-Mar-04 10:28     
 
 yes? !bn500_all_shell
 yes? 
@@ -10120,10 +10120,10 @@ show symbols/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
-FERRET_VERSION = " 5.53"
+FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "25-Mar-04"
-SESSION_TIME = "14:55"
+SESSION_DATE = "29-Mar-04"
+SESSION_TIME = "10:28"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10139,10 +10139,10 @@ show symbol/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
-FERRET_VERSION = " 5.53"
+FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "25-Mar-04"
-SESSION_TIME = "14:55"
+SESSION_DATE = "29-Mar-04"
+SESSION_TIME = "10:28"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10150,8 +10150,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "25-Mar-04"
-SESSION_TIME = "14:55"
+SESSION_DATE = "29-Mar-04"
+SESSION_TIME = "10:28"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10161,13 +10161,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "25-Mar-04"
-SESSION_TIME = "14:55"
+SESSION_DATE = "29-Mar-04"
+SESSION_TIME = "10:28"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "25-Mar-04"
-SESSION_TIME = "14:55"
+SESSION_DATE = "29-Mar-04"
+SESSION_TIME = "10:28"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10199,9 +10199,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 5.53"
+LAB1 = "FERRET Ver. 5.60"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Mar 25 2004 14:57:26 "
+LAB3 = "Mar 29 2004 10:29:51 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10300,10 +10300,10 @@ show symbols/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
-FERRET_VERSION = " 5.53"
+FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "25-Mar-04"
-SESSION_TIME = "14:55"
+SESSION_DATE = "29-Mar-04"
+SESSION_TIME = "10:28"
  
  
 GO bn_reset
@@ -18304,7 +18304,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23040 Mar 25 14:59 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23046 Mar 29 10:31 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18323,7 +18323,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419209 Mar 25 14:59 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419375 Mar 29 10:31 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26473,7 +26473,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   25-Mar-04" ;
+		:history = "FERRET V5.60   29-Mar-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26498,7 +26498,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   25-Mar-04" ;
+		:history = "FERRET V5.60   29-Mar-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26650,7 +26650,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Mar 25 15:01:31 PST 2004
+Mon Mar 29 10:32:41 PST 2004
  
 GO bn_reset
 cancel mode verify
@@ -34940,7 +34940,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Mar 25 15:03 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar 29 10:33 testa.v5d
  
 can region
 use coads_climatology
@@ -34952,7 +34952,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Mar 25 15:03 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar 29 10:33 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35020,7 +35020,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.53   25-Mar-04" ;
+		:history = "FERRET V5.60   29-Mar-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35083,7 +35083,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.53   25-Mar-04" ;
+		:history = "FERRET V5.60   29-Mar-04" ;
 data:
 
  GFP3 = "" ;
@@ -35303,7 +35303,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.53   25-Mar-04" ;
+		:history = "FERRET V5.60   29-Mar-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -43207,7 +43207,31 @@ set mode ignore
 rep/name=a say `a`
  
 ! Cannot use pseudo-variables.
-rep/range=1:3/name=l list/nohead sst[i=1,j=1]
+ 
+set mode ignore
+rep/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+ 
+! Check that the state is reset after error
+rep/range=1:3/name=a say `a`
+!-> REPEAT: A:1
+ !-> MESSAGE/CONTINUE 1
+1
+!-> REPEAT: A:2
+ !-> MESSAGE/CONTINUE 2
+2
+!-> REPEAT: A:3
+ !-> MESSAGE/CONTINUE 3
+3
+ 
+rep/range=1:3/name=I (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=j (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=k (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=X (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=y (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=z (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=tbox (use coads_climatology; list/nohead[sst,x=181,y=0,t=`tbox`])
+rep/range=1:3/name=xboxlo (list/nohead xboxlo)
+ 
  
 ! Nested REPEAT with the same counter variable name
 repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
@@ -43215,7 +43239,6 @@ repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
 !-> REPEAT: A:2
 !-> REPEAT: A:3
 !-> REPEAT: A:4
- 
 cancel mode ignore
  
 GO bn_reset
@@ -44583,9 +44606,9 @@ can sym lev*
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.53  
- 	Solaris 5.6 - 03/25/04
- 	25-Mar-04 15:09     
+ 	FERRET v5.60  
+ 	Solaris 5.6 - 03/29/04
+ 	29-Mar-04 10:39     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44760,9 +44783,9 @@ plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
 frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.53  
- 	Solaris 5.6 - 03/25/04
- 	25-Mar-04 15:09     
+ 	FERRET v5.60  
+ 	Solaris 5.6 - 03/29/04
+ 	29-Mar-04 10:39     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44875,4 +44898,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Thu Mar 25 15:09:58 PST 2004
+Ended at Mon Mar 29 10:39:42 PST 2004

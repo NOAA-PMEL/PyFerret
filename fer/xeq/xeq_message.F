@@ -96,7 +96,6 @@
         INTEGER*1 ctmpfile(slen)
 #endif
 	LOGICAL is_server, its_batch_graphics
-	INTEGER status
 
 * treat all text as a single argument
 	CALL ALL_1_ARG

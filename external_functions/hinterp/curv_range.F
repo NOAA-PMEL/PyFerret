@@ -350,8 +350,10 @@
  310  CONTINUE
  410  CONTINUE
 
-* Return one cell out from the computed result, to be sure we cover
-* the entire requested range (the coords may be cell centers or bounds.
+* Return two cell out from the computed result, one to be sure we cover
+* the entire requested range (the coords may be cell centers or bounds, and
+* a second because the mapping in curv_to_rect uses neighbors around each
+* location to compute the result.
 
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
@@ -362,13 +364,13 @@
  600  CONTINUE
 
       IF (found_irange) THEN
-         result(1,j,k,l) = MAX(ilo-1, arg_lo_ss(X_AXIS, ARG1) )
-         result(2,j,k,l) = MIN(ihi+1, arg_hi_ss(X_AXIS, ARG1) )
+         result(1,j,k,l) = MAX(ilo-2, arg_lo_ss(X_AXIS, ARG1) )
+         result(2,j,k,l) = MIN(ihi+2, arg_hi_ss(X_AXIS, ARG1) )
       ENDIF
 
       IF (found_jrange) THEN
-         result(3,j,k,l) = MAX(jlo-1, arg_lo_ss(Y_AXIS, ARG2) )
-         result(4,j,k,l) = MIN(jhi+1, arg_hi_ss(Y_AXIS, ARG2) )
+         result(3,j,k,l) = MAX(jlo-2, arg_lo_ss(Y_AXIS, ARG2) )
+         result(4,j,k,l) = MIN(jhi+2, arg_hi_ss(Y_AXIS, ARG2) )
       ENDIF
 
       RETURN 

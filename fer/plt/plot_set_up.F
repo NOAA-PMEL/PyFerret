@@ -115,6 +115,8 @@
 *                   call PPLLDX via pplldx_envelope.c which checks pplmem_nsize 
 *                   and allocates more memory if needed.
 *      *acm* 10/01  remove VMS includes
+* V552 *acm*  3/03  Send the key string to key_loc since it may be multi-line
+*                   also, make strings longer
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -149,7 +151,7 @@
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, flip, time_axis,
      .			all_1_dep, all_1_ind, formatted, user_title,
      .			indep_is_log, dep_is_log
-	CHARACTER*200	FULL_VAR_TITLE,  KEY_STRING, plot_title
+	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
      .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
@@ -697,7 +699,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
 	      ENDIF
 	      CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			    lab_ht, style, justify )
+     .			    lab_ht, style, justify, plot_title(:slen))
 	      CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			    xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
@@ -758,7 +760,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	         ENDIF
 	      ELSE
 	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			       lab_ht, style, justify )
+     .			       lab_ht, style, justify, plot_title(:slen) )
 	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			       xkeypos, ykeypos, xkeysize, ykeysize,
      .			       lab_ht, style,

@@ -101,6 +101,8 @@
 *                   IF (no_range .AND. (only_val.EQ.mr_bad_data(mr_color))
 * V550 *acm* 11/02  When its a 1-d form the ppl memory allocation was wrong.
 *                   (Input is 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,..)
+* V552 *acm*  3/03  Send the key string to key_loc since it may be multi-line
+*                   Also, set strings longer
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -140,7 +142,7 @@
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up,
      .			x_is_log, y_is_log
-	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
+	CHARACTER*2048	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
      .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14,
@@ -819,7 +821,7 @@ c	ind_dim = plot_axis(1)
               slen = slen + 14
            ENDIF
 	   CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
-     .			 lab_ht, style, justify )
+     .			 lab_ht, style, justify, plot_title(:slen) )
 *          Key uses line 1
 	   CALL PUT_KEY( 1, plot_title(:slen),
      .			 xkeypos, ykeypos, xkeysize, ykeysize,

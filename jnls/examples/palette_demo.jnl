@@ -63,7 +63,7 @@ PALETTE rainbow_by_levels
 ppl list shaset
 
 set view upper; go magnify 1.2
-FILL/levels=(15,30,3) temp[z=0]; go land thick
+FILL/levels=(15,30,2.5) temp[z=0]; go land thick
 
 set view lower; go magnify 1.2
 FILL/lev=(15,30,.5) temp[z=0]; go land thick

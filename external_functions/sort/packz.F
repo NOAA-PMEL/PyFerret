@@ -5,7 +5,7 @@
 * March 1999
 *
 *  Apply a mask to data.  Returns a result with an ABSTRACT Z axis.
-*  Take only those points where xmask had valid (non-missing) points.
+*  Take only those points where mask had valid (non-missing) points.
 *
 *
 * In this subroutine we provide information about
@@ -56,7 +56,7 @@
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data masked; result on abstract Z axis ',
-     .        'where zmask has valid points')
+     .        'where mask has valid points')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -67,14 +67,15 @@
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'ZMASK')
-      CALL ef_set_arg_desc(id, arg, 'Mask')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
-
-      arg = 2
       CALL ef_set_arg_name(id, arg, 'VAR')
       CALL ef_set_arg_desc(id, arg, 'data to mask')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+
+      arg = 2
+      CALL ef_set_arg_name(id, arg, 'MASK')
+      CALL ef_set_arg_desc(id, arg, '1-D mask')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -106,7 +107,6 @@
 *                                                                     V
       INTEGER my_lo_l, my_hi_l
 
-      INTEGER arg
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
@@ -117,11 +117,15 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      my_lo_l = 1
-      my_hi_l = 1
+      nx = arg_hi_ss(X_AXIS, ARG2) - arg_lo_ss(X_AXIS, ARG2) + 1
+      ny = arg_hi_ss(Y_AXIS, ARG2) - arg_lo_ss(Y_AXIS, ARG2) + 1
+      nz = arg_hi_ss(Z_AXIS, ARG2) - arg_lo_ss(Z_AXIS, ARG2) + 1
+      nt = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
 
-      arg = 2
-      my_hi_l = arg_hi_ss(Z_AXIS,arg) - arg_lo_ss(Z_AXIS,arg) + 1
+      my_lo_l = 1
+      my_hi_l = ny
+      IF (arg_hi_ss(Z_AXIS, ARG2) - arg_lo_ss(Z_AXIS, ARG2) .EQ. 0)
+     .    my_hi_l = max(nx,ny,nz,nt)
 
       CALL ef_set_axis_limits(id, Z_AXIS, my_lo_l, my_hi_l)
 *                                                                     ^
@@ -165,7 +169,7 @@
 *                                                                     V
       INTEGER id, i, j, k, l
       INTEGER i1, j1, k1, l1
-      INTEGER j2, k2, l2
+      INTEGER i2, j2, k2, l2
       INTEGER nlen1, nlen2, ndims
       CHARACTER*100 errtxt
 
@@ -173,30 +177,30 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Check that ARG1 is 1-D.  
+*  Check that ARG2 is 1-D.  
 
       ndims = 0
+      nlen2 = 0
       DO 88 m = X_AXIS, T_AXIS
-         IF (arg_incr(m,ARG1) .GT. 0) THEN
-           nlen1 = (arg_hi_ss(m,ARG1)-arg_lo_ss(m,ARG1))/
-     .                arg_incr(m,ARG1)
+         IF (arg_incr(m,ARG2) .GT. 0) THEN
+           nlen2 = arg_hi_ss(m,ARG2) - arg_lo_ss(m,ARG2)
            ndims = ndims + 1
          ENDIF
   88  CONTINUE
 
       IF (ndims .LE. 0  .OR.  ndims .GT. 1) THEN
-         WRITE (errtxt, *) 'PACKZ: ARG1 must be 1-dimensional'
+         WRITE (errtxt, *) 'ARG2 (mask) must be 1-dimensional'
          GOTO 999
       ENDIF
 
 C  Check that the dimension of the mask matches the  x axis of the variable.
 
-      IF (arg_incr(Z_AXIS,ARG2) .GT. 0) nlen2 = (arg_hi_ss(Z_AXIS,ARG2) 
-     .    - arg_lo_ss(Z_AXIS,ARG2))/ arg_incr(Z_AXIS,ARG2)
+      IF (arg_incr(Z_AXIS,ARG1) .GT. 0) nlen1 = arg_hi_ss(Z_AXIS,ARG1) 
+     .    - arg_lo_ss(Z_AXIS,ARG1)
 
       IF (nlen2 .NE. nlen1) THEN
          WRITE (errtxt, *) 
-     .    'PACKZ: ARG1 must be the same length as the z-axis of ARG2'
+     .    'ARG2 (mask) must be the same length as the z-axis of ARG1'
          GOTO 999
       ENDIF
 
@@ -216,27 +220,22 @@ C  Apply the mask.
 
                 k = res_lo_ss(Z_AXIS)
                 k2 = arg_lo_ss(Z_AXIS,ARG2)
+                k1 = arg_lo_ss(Z_AXIS,ARG1)
 
-                DO 100 k1 = arg_lo_ss(Z_AXIS,ARG1), 
-     .               arg_hi_ss(Z_AXIS,ARG1), arg_incr(Z_AXIS,ARG1)
+                DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-*  Check that this value of ARG_1 is not missing; set the result
+*  Check that this value of ARG_2 is not missing; set the result
 
-                   If (arg_1(i1,j1,k1,l1) .ne. bad_flag(ARG1)) THEN
-                        result(i,j,k,l) = arg_2(i2,j2,k2,l2)
-                        k = k + res_incr(Z_AXIS)
+                   If (arg_2(i2,j2,k2,l2) .ne. bad_flag(ARG2)) THEN
+                        result(i,j,k,l) = arg_1(i1,j1,k1,l1)
+                  ELSE
+                        result(i,j,k,l) = bad_flag_result
                   END IF
 
+                  k1 = k1 + arg_incr(Z_AXIS,ARG1) 
                   k2 = k2 + arg_incr(Z_AXIS,ARG2) 
 
  100           CONTINUE
-
-*  Set the rest of the result array to missing.
-
-               kok = k 
-               DO 150 k = kok, res_hi_ss(Z_AXIS), res_incr(Z_AXIS)
-                   result(i,j,k,l) = bad_flag_result
- 150           CONTINUE
 
                l1 = l1 + arg_incr(T_AXIS,ARG1)
                l2 = l2 + arg_incr(T_AXIS,ARG2)

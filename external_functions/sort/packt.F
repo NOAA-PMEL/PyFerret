@@ -106,22 +106,25 @@
 *                                                                     V
       INTEGER my_lo_l, my_hi_l
 
-      INTEGER arg
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
 *
 *     Use utility functions to get context information about the arguments.
-*     Set the abstract T axis.
+*     Set the abstract T axis based on ARG2.
 *
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      my_lo_l = 1
-      my_hi_l = 1
+      nx = arg_hi_ss(X_AXIS, ARG2) - arg_lo_ss(X_AXIS, ARG2) + 1
+      ny = arg_hi_ss(Y_AXIS, ARG2) - arg_lo_ss(Y_AXIS, ARG2) + 1
+      nz = arg_hi_ss(Z_AXIS, ARG2) - arg_lo_ss(Z_AXIS, ARG2) + 1
+      nt = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
 
-      arg = 2
-      my_hi_l = arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1
+      my_lo_l = 1
+      my_hi_l = nt
+      IF (arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) .EQ. 0)
+     .    my_hi_l = max(nx,ny,nz,nt)
 
       CALL ef_set_axis_limits(id, T_AXIS, my_lo_l, my_hi_l)
 *                                                                     ^
@@ -173,30 +176,29 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Check that ARG1 is 1-D.  
+*  Check that ARG2 is 1-D.  
 
       ndims = 0
       DO 88 m = X_AXIS, T_AXIS
-         IF (arg_incr(m,ARG1) .GT. 0) THEN
-           nlen1 = (arg_hi_ss(m,ARG1)-arg_lo_ss(m,ARG1))/
-     .                arg_incr(m,ARG1)
+         IF (arg_incr(m,ARG2) .GT. 0) THEN
+           nlen2 = arg_hi_ss(m,ARG2) - arg_lo_ss(m,ARG2)
            ndims = ndims + 1
          ENDIF
   88  CONTINUE
 
       IF (ndims .LE. 0  .OR.  ndims .GT. 1) THEN
-         WRITE (errtxt, *) 'PACKT: ARG1 must be 1-dimensional'
+         WRITE (errtxt, *) 'ARG2 (mask) must be 1-dimensional'
          GOTO 999
       ENDIF
 
 C  Check that the dimension of the mask matches the  t axis of the variable.
 
-      IF (arg_incr(T_AXIS,ARG2) .GT. 0) nlen2 = (arg_hi_ss(T_AXIS,ARG2) 
-     .    - arg_lo_ss(T_AXIS,ARG2))/ arg_incr(T_AXIS,ARG2)
+      IF (arg_incr(T_AXIS,ARG1) .GT. 0) nlen1 = arg_hi_ss(T_AXIS,ARG1) 
+     .    - arg_lo_ss(T_AXIS,ARG1)
 
       IF (nlen2 .NE. nlen1) THEN
          WRITE (errtxt, *) 
-     .    'PACKT: ARG1 must be the same length as the t-axis of ARG2'
+     .    'ARG2 (mask) must be the same length as the t-axis of ARG1'
          GOTO 999
       ENDIF
 
@@ -214,29 +216,24 @@ C  Apply the mask.
             k2 = arg_lo_ss(Z_AXIS,ARG2)
             DO 200 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-                l = res_lo_ss(T_AXIS)
+                l1 = arg_lo_ss(T_AXIS,ARG1)
                 l2 = arg_lo_ss(T_AXIS,ARG2)
 
-                DO 100 l1 = arg_lo_ss(T_AXIS,ARG1), 
-     .               arg_hi_ss(T_AXIS,ARG1), arg_incr(T_AXIS,ARG1)
+                DO 100 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-*  Check that this value of ARG_1 is not missing; set the result
+*  Check that this value of ARG_2 is not missing; set the result
 
-                   If (arg_1(i1,j1,k1,l1) .ne. bad_flag(ARG1)) THEN
-                        result(i,j,k,l) = arg_2(i2,j2,k2,l2)
-                        l = l + res_incr(T_AXIS)
+
+                  IF (arg_2(i2,j2,k2,l2) .ne. bad_flag(ARG2)) THEN
+                        result(i,j,k,l) = arg_1(i1,j1,k1,l1)
+                  ELSE
+                        result(i,j,k,l) = bad_flag_result
                   END IF
 
-                  l2 = l2 + arg_incr(T_AXIS,ARG2) 
+                  l1 = l1 + arg_incr(T_AXIS,ARG1)
+                  l2 = l2 + arg_incr(T_AXIS,ARG2)
 
  100           CONTINUE
-
-*  Set the rest of the result array to missing.
-
-               lok = l 
-               DO 150 l = lok, res_hi_ss(T_AXIS), res_incr(T_AXIS)
-                   result(i,j,k,l) = bad_flag_result
- 150           CONTINUE
 
                k1 = k1 + arg_incr(Z_AXIS,ARG1)
                k2 = k2 + arg_incr(Z_AXIS,ARG2)

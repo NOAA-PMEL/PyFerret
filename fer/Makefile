@@ -84,6 +84,7 @@
 
 # 7/24/97 *kob* - add a FER_LINK_DIR so that CVS makes wil now work
 # 8/15/97 *kob* - added MIXING_NAG_F90_AND_C flag to linux compile
+# 8/21/97 *kob* - removed obsolete compile options for aix
 FER_LINK_DIR=..
 GUI =no GUI
 DEBUG =
@@ -105,7 +106,8 @@ CCINCLUDES = -I/usr/local/include -I../common \
 FCHK = /home/rogue/hankin/fer/src/checkdir
 FERMAIN =
 GUI_LIB=
-DIRS = ctx dat doo fmt gnl ino mem ocn plt rpn stk utl xeq special ccr
+DIRS = ctx dat doo fmt gnl ino mem ocn plt rpn stk utl xeq special
+
 
 
 all_systems:
@@ -724,7 +726,8 @@ aix_FORTRAN:
 		LD=xlf \
 		CC=cc \
 		FFLAGS="-c -u -qfixed=80" \
-		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
+		CCFLAGS="-c $(GFLAG)" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_PREPEND_STRING -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
 		LDFLAGS="-v" \
 		XTRA_OBJ="ccr/fermain_c.o special/aix_routines.o $(FEROBJS_DFLT)" \
 		FCHECKOUT="$(FCHECKOUT)" \
@@ -749,7 +752,8 @@ aix:
 		LD=cc \
 		CC=cc \
 		FFLAGS="-c -u -qfixed=80" \
-		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
+		CCFLAGS="-c $(GFLAG)" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DNO_PREPEND_STRING -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES" \
 		LDFLAGS="-v -bloadmap:load.txt" \
 		XTRA_OBJ="ccr/fermain_c.o special/aix_routines.o $(FEROBJS_DFLT)" \
 		FCHECKOUT="$(FCHECKOUT)" \
@@ -775,7 +779,8 @@ aix_gui:
                 FERMAIN="gui/ferret.o" \
                 GUI_LIB="gui/libgui.a -llist" \
                 FFLAGS="-c -u -qfixed=80" \
-		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
+		CCFLAGS="-c $(GFLAG)" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_PREPEND_STRING -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
 		LDFLAGS="-v -bloadmap:load.txt" \
 		XTRA_OBJ="ccr/fermain_c.o special/aix_routines.o $(FEROBJS_DFLT)" \
 		FCHECKOUT="$(FCHECKOUT)" \
@@ -940,9 +945,9 @@ hp_gcompile:
 aix_gcompile:
 	${MAKE} go_compile_aix \
                 F77=xlf \
-		FFLAGS="-c -u -gi -qfixed=85" \
-		CPPFLAGS="-P -Dreclen_in_bytes -DMANDATORY_FORMAT_WIDTHS -Dunix -Ddebug -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT" \
-		CCFLAGS="-Ireadline -I. -I../common -I$TMAP_LOCAL/src/xgks-2.5.5/port -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm -c -DSGI_SIGNALS"
+		FFLAGS="-c -u -g -qfixed=85" \
+		CPPFLAGS="-P -Dreclen_in_bytes -DNO_PREPEND_STRING -DMANDATORY_FORMAT_WIDTHS -Dunix -Ddebug -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT" \
+		CCFLAGS="-Ireadline -I. -I../common -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c -DSGI_SIGNALS -DNO_ENTRY_NAME_UNDERSCORES"
 
 aix_gcompile_1:
 	${MAKE} go_compile_aix_1 \
@@ -950,7 +955,7 @@ aix_gcompile_1:
                 DIR=${DIR} \
 		F77=xlf \
 		FFLAGS="-c -u -g -qfixed=80" \
-		CPPFLAGS="-P -Dreclen_in_bytes -DMANDATORY_FORMAT_WIDTHS -Dunix -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT"
+		CPPFLAGS="-P -Dreclen_in_bytes -DNO_PASSED_CONCAT -DNO_PREPEND_STRING -DMANDATORY_FORMAT_WIDTHS -Dunix -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"
 
 linux_gcompile:
 	${MAKE} go_compile_linux \
@@ -1018,8 +1023,9 @@ aix_nogcompile:
 	${MAKE} go_compile_aix \
                 F77=xlf \
 		FFLAGS="-c -u -qfixed=85  -bnso -bI:/usr/lib/syscalls.exp" \
-		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DNO_SNGL -DMANDATORY_FORMAT_WIDTHS -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT" \
-		CCFLAGS="-Ireadline -I. -I../common -I$TMAP_LOCAL/src/xgks-2.5.5/port -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm -c -DSGI_SIGNALS"
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DNO_PASSED_CONCAT -DNO_PREPEND_STRING -DNO_SNGL -DMANDATORY_FORMAT_WIDTHS -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES" \
+		CCFLAGS="-Ireadline -I. -I../common -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c -DSGI_SIGNALS -DNO_ENTRY_NAME_UNDERSCORES -Daix"
+
 
 aix_nogcompile_1:
 	${MAKE} go_compile_aix_1 \
@@ -1027,7 +1033,7 @@ aix_nogcompile_1:
                 DIR=${DIR} \
 		F77=xlf \
 		FFLAGS="-c -u -qfixed=85  -bnso -bI:/usr/lib/syscalls.exp" \
-		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT"
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DNO_PASSED_CONCAT -DNO_PREPEND_STRING -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT"
 
 linux_nogcompile:
 	${MAKE} go_compile_linux \
@@ -1110,7 +1116,8 @@ ferret_aix:	$(FERLIBS) $(FEROBJS) $(TMLIB) $(MOVIELIB) $(FCHECKOUT) $(TMCHECKOUT
 #	echo $(PPLLIBS)
 # auto-generate the "debug" and "GUI" information about this link (8/95)
 #	sed -e 's&mmmmmmmm&($(DEBUG)$(GUI))&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
-	sed -e 's&mmmmmmmm&($(DEBUG)/$(GUI))&' -e 's&\(/&(' -e 's&/\)&)' < special/xrevision_type_data.template > special/xrevision_type_data.F
+#	sed -e 's&mmmmmmmm&($(DEBUG)/$(GUI))&' -e 's&\(/&(' -e 's&/\)&)' < special/xrevision_type_data.template > special/xrevision_type_data.F
+	sed -e 's&mmmmmmmm&($(DEBUG)$(GUI))&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	(cd special;/usr/lib/cpp -P ${CPPFLAGS} xrevision_type_data.F > xrevision_type_data.f; $(F77) $(FFLAGS) xrevision_type_data.f) 
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
 	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
@@ -1194,6 +1201,7 @@ go_compile_aix:
 			done;\
 		cd ..; echo `pwd`; \
 	done
+	(cd ccr;  $(CC)  $(CCFLAGS) *.c)
 
 go_compile_aix_1:
 	for dir in ${DIR} ; \
@@ -1279,7 +1287,7 @@ ccr/ccrlib.a:	$(ccrobjs)
 	(cd $(<D);$(F77) $(FFLAGS) $(<F))
 
 .c.o: 
-	(cd $(<D);$(CC) $(CCFLAGS) $(CCINCLUDES) $(<F))
+	(cd $(<D);$(CC) $(CPPFLAGS) $(CCFLAGS) $(CCINCLUDES) $(<F))
 
 .F.o: 
 	(cd $(<D);$(F77) $(FFLAGS) $(<F))

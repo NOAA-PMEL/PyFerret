@@ -218,12 +218,12 @@ C
 C
 	DATA IBASE,PBUF/1,0/
 C
-	DATA NFLAGS/18/
+	DATA NFLAGS/20/
 	DATA SWITCH/'ECHO', 'DEBUG', 'OVERLAY','ERASE',
      *		    'WAIT','CENTER',   'RIGHT', 'LEFT',
      *		    'USER', 'LATCH',   'QUIET',  'LOG',
      *		   'YAXIS',  'TIME',  'OFFSET',  'CTD',
-     *		    'NEXT','VECTOR',     2*' '/
+     *		    'NEXT','VECTOR',    'LINE',  'FILL'/
 	DATA SMIN/       2,       1,         2,      2,
      *			 1,       1,         1,      2,
      *			 1,       2,         1,      2,

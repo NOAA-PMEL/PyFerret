@@ -22,10 +22,11 @@
 # CC='gcc -traditional'
 #
 # C compiler flags (default is `-O'):
- CFLAGS='-I/usr/openwin/include -I../../ppl/include/xgks -I../../../ppl/include/xgks'
+ CFLAGS='-I/usr/openwin/include -I$(TMAP_LOCAL)/src/xgks/include -I../../ppl/include/xgks -I../../../ppl/include/xgks -xO2'
 #
 # C preprocessor flags (default is `-DNDEBUG'):
 # CPPFLAGS=-DDEBUG
 #
 # Installation prefix (default is `../..'):
 # prefix=/usr/local/unidata
+ prefix=/home/l2/tmap/local/solaris

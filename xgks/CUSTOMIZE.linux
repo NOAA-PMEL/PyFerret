@@ -19,7 +19,7 @@
 #############################################################################
 #
 # Type of C compiler (default is `cc'):
-CC='gcc -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include -I/usr/include -I../../ppl/include/xgks -I../../../ppl/include/xgks/ '
+CC='gcc -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include -I/usr/include -I/home/l2/tmap/local/linux/src/xgks/include -I../../ppl/include/xgks -I../../../ppl/include/xgks/ '
 #
 # C compiler flags (default is `-O'):
 CFLAGS='-O2 -m486'
@@ -28,7 +28,10 @@ CFLAGS='-O2 -m486'
 # CPPFLAGS=-DDEBUG
 #
 # Installation prefix (default is `../..'):
-prefix=..
+prefix=/home/l2/tmap/local/linux
 
 FC=/usr/local/bin/f90
 OS=linux
+
+
+

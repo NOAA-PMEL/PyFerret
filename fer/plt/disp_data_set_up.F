@@ -1,8 +1,6 @@
 	SUBROUTINE DISP_DATA_SET_UP
      .	( memory, ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -57,6 +55,8 @@
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 *	*sh* 1/01 - added PLOT/STEP with special work array needs
 *	          - also fixed apparent bug in loop over num_uvars_in_cmnd
+* V533: *sh* 6/01 - include CGRID_SIZE in determination of axis buffer sizes
+*	            only if PLOT/VS
 
 #ifdef unix
 	include	'ferret.parm'
@@ -79,10 +79,15 @@
 	REAL memory(*)
 
 * internal variable declarations:
+	LOGICAL plot_vs
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE,
      .		idim, ndim, dim(4), mr1, ax_len, cx, ivar,
      .		factor, loc
 	CHARACTER buff*4
+
+* check for PLOT/VS -- significant in axis buffer sizes
+	plot_vs = cmnd_num .EQ. cmnd_plot
+     .	.AND. qual_given(slash_plot_vs) .GT. 0
 
 * get the requested data somehow  (and leave it protected 1/94)
 	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_float, status )
@@ -129,8 +134,10 @@
      .			    MR_DIM_LEN( dim(1), mr1 ),
      .		            MR_DIM_LEN( dim(2), mr1 ),
      .			    factor*CX_DIM_LEN(dim(1), is_cx(ivar)),
-     .			    factor*CX_DIM_LEN(dim(2), is_cx(ivar)),
-     .		            CGRID_SIZE( is_cx(ivar) )    )
+     .			    factor*CX_DIM_LEN(dim(2), is_cx(ivar)) )
+	      IF (plot_vs) ax_len =
+     .		       MAX( ax_len,
+     .		            CGRID_SIZE(is_cx(ivar))  )
  200	   CONTINUE
 	ENDIF
 

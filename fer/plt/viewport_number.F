@@ -48,6 +48,7 @@
 * internal variable declarations:
 	LOGICAL	MATCH_NAME
 	INTEGER	ivp
+        INTEGER TM_LENSTR,len_test,len_mchars
 
 #ifdef unix
 	include	'ferret.parm'
@@ -64,8 +65,11 @@
 *	  5/8/90 - bug: MATCH4 --> MATCH_NAME ("OV" doesn't match "OVER")
 
 * search the viewport_names
+        len_test = TM_LENSTR(view_name(1:LEN(view_name)))
 	DO 10 ivp = 1, max_viewport
-	   IF ( MATCH_NAME(view_name, vp_name(ivp)) ) THEN
+           len_mchars = TM_LENSTR(vp_name(ivp))
+	   IF ( MATCH_NAME(view_name, len_test, 
+     .        vp_name(ivp),len_mchars) ) THEN
 	      VIEWPORT_NUMBER = ivp
 	      RETURN
 	   ENDIF

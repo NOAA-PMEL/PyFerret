@@ -12,6 +12,7 @@
 !	       -- use template notation for SHOW SYMBOL and CANCEL SYMBOL
 
 ! V510: added tests of backslash escaping
+! V533: *sh* 7/01 - Ferret allows single quoted strings -- syntax change
 
 cancel symbols/all
 show symbols/all
@@ -71,7 +72,7 @@ define symbol cmnd "show symbol"; define symbol arg "cmnd"
 ($cmnd) ($arg)
 
 ! bn420 - check symbol editing
-define symbol test I'm here
+define symbol test "\"I'm here\""   ! added surrounding quotes V533
 define symbol t2 hello
 cancel symbol test2
 message/continue ($test)

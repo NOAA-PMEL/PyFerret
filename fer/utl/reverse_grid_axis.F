@@ -40,6 +40,10 @@
 *
 * V320:  2/16/95
 * V541:  2/02 *sh* - added support for delta strides
+* V560: 10/03 *acm* - fix bug 537, when use/order=x-y and strides, 
+*                     need to reset the indices to apply to the data
+*                     as it has been read, after the strides applied, 
+*                     e.g. reset 4:360:3 to 1:119:1
 
 	include 'ferret.parm'
 	include	'xcontext.cmn'
@@ -60,8 +64,12 @@
 	    idel(idim) = 1
 	  ELSE
 	    idel(idim) = cx_delta(idim,cx)
-	    ilo(idim) = 1
-	    ihi(idim) = 1 + (ihi(idim) - ilo(idim)) / idel(idim)
+     
+c	    ihi(idim) = 1 + (ihi(idim) - ilo(idim)) / idel(idim)
+c	    ilo(idim) = 1
+	    ihi(idim) = ilo(idim) + (ihi(idim) - ilo(idim)) / idel(idim)
+            idel(idim) = 1
+
 	  ENDIF
 	ENDDO
 

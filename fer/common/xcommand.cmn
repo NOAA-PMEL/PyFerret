@@ -6,7 +6,7 @@
 * 8.98    - increased possible qualifiers for CONTOUR and SHADE *jd*
 * 12.98   - increased num_predefined_alias -> 14 for alias "pattern" *jd*
 * 2/99 *sh* - added POLYGON command
-
+* 3/99 *jd* - increase qualifiers for POLYGON to 30   
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -337,7 +337,7 @@
 	INTEGER		nsub27       , nsub_at28 ,
      .			nqual27a     ,nqual_at28a
 	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
-     .			nqual27a = 25,nqual_at28a  = nqual_at27a + nqual27a  )
+     .			nqual27a = 30,nqual_at28a  = nqual_at27a + nqual27a  )
 
 * ****/****/**** - command number 28
 	INTEGER		nsub28       , nsub_at29 ,

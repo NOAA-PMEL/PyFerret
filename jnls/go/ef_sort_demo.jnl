@@ -31,13 +31,13 @@ MESSAGE
 
 LET tsorted_indices = sortl(sst[l=1:6])
 
-LET tsorted_sst = samplel(tsorted_indices, sst[l=1:6])
+LET tsorted_sst = samplel(sst[l=1:6], tsorted_indices)
 LIST tsorted_indices, tsorted_sst
 
 !       We can also use the constant-array notation to pick out a couple
 !       of points:
 
-list samplel({1,5},sst)
+list samplel(sst, {1,5})
 
 
 
@@ -67,8 +67,8 @@ LET sorted_indices3 = MOD((sorted_indices + 2), 12) + 1
 !         by their sorted indices.  Then order the SST's according  
 !         to the sorted wind indices plus 3 months.  
 
-LET wwe_by_wwe = samplel(sorted_indices, westerly_wind)
-LET sst_by_wwe = samplel(sorted_indices3, sst_e)
+LET wwe_by_wwe = samplel(westerly_wind, sorted_indices)
+LET sst_by_wwe = samplel(sst_e, sorted_indices3)
 
 !         The SST's of interest are to the east of our westerly_wind 
 !         region.  Get the number of valid data in the sort. 

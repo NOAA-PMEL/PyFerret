@@ -36,14 +36,14 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Deallocates all axis (line) slots
-
-* This routine functions as a part of the TMAP library
-
-* for FERRET version 4.00 8/94  *sh*
-*Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
-*			  because it needed a preprocessor.
+* Deallocates all axis (line) slots defined by user 
+* Does not deallocate the first group of "protected" axes.
+* ACM 6/11/2002
 *
+* V5.41 7/30/02 ACM Deallocate irregular dynamic axes defined by files too,
+*               by calling remove_axis.
+
+
 * Parameters and commons
 
 	include	'tmap_dims.parm'
@@ -63,7 +63,9 @@
         IF (num_protected_axes .EQ. unspecified_int4 .OR.
      .      num_protected_axes .LE. 0) num_protected_axes = 1
 
-        DO 100 islot = num_protected_axes+1, max_lines
+        DO 100 islot = num_protected_axes+1, line_ceiling
+           IF (line_name(islot) .NE. char_init16  .AND. 
+     .        (.NOT. line_regular(islot)) ) call remove_axis(islot)
 	   line_name(islot) = char_init16
   100	CONTINUE
 

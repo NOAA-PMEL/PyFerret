@@ -53,6 +53,7 @@
 *		==>  extensive changes!!
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
+* V510: 10/99 *sh* - make checks on 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -73,7 +74,7 @@
 * internal variable declarations:
 	INTEGER	mv, mb, mvfree, mvused, mbfree, mbused, mbmax,
      .		nmvlost, nmblost, n, pile, last, size, test_next,
-     .		navail, nperm, mbperm, ntemp, ndel, slen
+     .		navail, nperm, mbperm, ntemp, ndel, slen, nn
 	CHARACTER LEFINT*8, buff*40, b12*12
 	PARAMETER (b12 = '            ')    !kob 12/96
 * check available bulk memory
@@ -160,7 +161,51 @@
 	      GOTO 300
 	   ENDIF
  310	CONTINUE
-* ... make sure no table slots or memory blocks have been lost
+
+
+* * * * integrity check * * * * * * * * * * * * * * * * * * * *
+* check non-cached variables (10/99)
+	nn = 0
+	last = pmv_nocache_pile
+	mv = mv_flink( last )	! base pointer for slots in this hash #
+ 350	IF ( mv .GT. 0 ) THEN
+	   IF ( mr_protected(mv) .EQ. mr_deleted
+     .	   .OR. mr_protected(mv) .EQ. mr_in_progress
+     .	   .OR. mr_nblks    (mv) .NE. mblk_size( mr_blk1(mv) )
+     .	   .OR. mv_blink(mv) .NE. last ) 	CALL WARN
+     .			('CORRUPTION! uncached variable error: '
+     .						//LEFINT(mv,slen) )
+	   nn = nn + 1
+	   mvused = mvused + 1
+	   mbused = mbused + mr_nblks(mv)
+	   last   = mv
+	   mv     = mv_flink(mv)
+	   GOTO 350
+	ENDIF
+	CALL SPLIT_LIST( pttmode_explct, lun,
+     .			 b12//'number of UN-CACHED variables: '//
+     .			 LEFINT(nn,slen), 0 )
+
+* * * * integrity check * * * * * * * * * * * * * * * * * * * *
+* check working storage (10/99)
+	nn = 0
+	last = pmv_work_var_pile
+	mv = mv_flink( last )	! base pointer for slots in this hash #
+ 360	IF ( mv .GT. 0 ) THEN
+	   nn = nn + 1
+	   mvused = mvused + 1
+	   mbused = mbused + mr_nblks(mv)
+	   last   = mv
+	   mv     = mv_flink(mv)
+	   GOTO 360
+	ENDIF
+	IF ( nn .GT. 0 ) CALL WARN
+     .			('CORRUPTION! unfreed work arrays: '
+     .						//LEFINT(nn,slen) )
+
+
+* * * * integrity check * * * * * * * * * * * * * * * * * * * *
+* make sure no table slots or memory blocks have been lost
 	nmvlost = max_mr_avail - ( mvfree+mvused )
 	nmblost = max_mem_blks   - ( mbfree+mbused )
 	IF ( nmvlost .NE. 0 ) CALL WARN
@@ -170,7 +215,8 @@
      .			('CORRUPTION! lost memory blocks: '
      .						//LEFINT(nmblost,slen) )
 
-* integrity check on variable deletion priority chain
+* * * * integrity check * * * * * * * * * * * * * * * * * * * * *
+* variable deletion priority chain
 	navail = 0
 	mv = mr_del_flink(0)
  400	IF ( mv .NE. 0 ) THEN
@@ -210,6 +256,7 @@
 	IF ( n .NE. 0 ) CALL WARN
      .		( 'CORRUPTION! Deleted vars unaccountable: '
      .				//LEFINT(nmvlost,slen) )
+
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	RETURN
 	END

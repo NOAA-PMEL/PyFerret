@@ -137,8 +137,10 @@
 	   axlen = ylen
 	ENDIF
 
-* regard axis as climatological if it lies within 1st 2 years since BC
+* regard axis as climatological if it starts in year 0000 or 0001 and
+* extends less than 2 years
 	climatology = lo_bc .LE. psecs_at_2_yrs
+     .		.AND. (hi_bc-lo_bc).LT.psecs_at_2_yrs
 
 * get axis length in hours from times since BC in seconds
 	hrs = ( hi_bc - lo_bc ) / 3600.

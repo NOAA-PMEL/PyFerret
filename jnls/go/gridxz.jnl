@@ -1,16 +1,24 @@
 \CANCEL MODE VERIFY
 ! Description: create an overlay of IK graticule lines to show the grid points
 ! updated 10/93 for Ferret V3.01
+! 11/2002 *acm* Bug fix: contour X and Z, not I and K
+
+! Note: you may need to change the PPL LEV commands to contour over the
+!       range of the axes for your data.  
+! Example:
+!     yes? use levitus_climatology
+!     yes? shade/y=0/x=140:190/z=0:500 temp
+!     yes? go gridxz
 
 SET GRID/SAVE
 SET GRID				! grid from last data access
-CONTOUR/OVER/SET/NOLABELS I+(K*0)	! "K*0" to create 2D structure
+CONTOUR/OVER/SET/NOLABELS X+(Z*0)	! "Z*0" to create 2D structure
 PPL PEN 1,1
 PPL LEV () (1,400,1,-3) (10,400,10,-1) DARK(10,400,10)
 PPL CONTOUR/OVER
-CONTOUR/OVER/SET/NOLABELS K+(I*0)
+CONTOUR/OVER/SET/NOLABELS Z+(X*0)
 PPL PEN 1,1
-PPL LEV () (1,400,1,-3) (10,400,10,-1) DARK(10,400,10)
+PPL LEV () (-1000,1000,10,-3) (-1000,1000,100,-1) DARK(-1000,1000,100)
 PPL CONTOUR/OVER
 SET GRID/RESTORE
 

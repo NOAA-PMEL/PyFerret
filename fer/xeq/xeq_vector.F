@@ -87,6 +87,7 @@
 *                   plot a key.
 * V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by vector)
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by vector)
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 
 	include 'tmap_dims.parm'
@@ -119,7 +120,9 @@
      .			ax2_blks, ax2_start,
      .			x_skip, y_skip,
      .                  density, slen, i, nparm, num_it, 
-     .			s1, s2, it_start(4), it_end(4), iax(4)
+     .			s1, s2, it_start(4), it_end(4), iax(4),
+     .                  loch, locv
+        INTEGER   STR_UPCASE, i1
 	REAL		only_x, aspect, vbuf
 	CHARACTER	buff*25
 
@@ -159,7 +162,7 @@
         use_cell  = .FALSE.
 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
-* ... default orientation for YT and ZT contours has time on horizontal
+* ... default orientation for YT and ZT VECTORs has time on horizontal
 	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
      .							transpz = .NOT.transpz
 	CALL DISP_PREP( status )
@@ -236,11 +239,28 @@
            ENDIF
         ENDIF
 
+* ... VECTOR/hgrat[=dash or line] default is dash
+*     hgrat line type: 0=tics only, 1=dash 2=line
+
+	loch = qual_given(slash_vect_hgrat)
+
+* ... VECTOR/vgrat[=dash or line] default is dash
+*     vgrat line type: 0=tics only, 1=dash 2=line
+
+	locv = qual_given(slash_vect_vgrat)
+        
+        IF (loch .EQ. 0  .AND. locv .EQ. 0) THEN
+           loch = qual_given(slash_vect_grat)
+           locv = qual_given(slash_vect_grat)
+        ENDIF
+
+        CALL set_graticules(loch, locv, status)
+
 * set up title and load the x component data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
-     .				vector,
-     .                          is_shade,
-     .                          use_cell,
+     . 			 	vector,
+     .				is_shade,
+     .				use_cell,
      .				aspect,
      .				overlay,
      .				transpz,
@@ -253,11 +273,12 @@
      .				is_mr,
      .				num_uvars_in_cmnd,
      .				is_cx,
-     .				is_uvar,
+     .				is_uvar,	
      .				memory( 1, ax1_start ),
      .				memory( 1, ax2_start ),
      .				ipen,
      .				status )
+
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * is there no valid input data?

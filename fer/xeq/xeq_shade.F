@@ -83,7 +83,7 @@
 *                  PPLUS memory for cells array in cellarray calls.
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call, so it can be
 *                  passed on to PPLUS
-
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -104,11 +104,11 @@
      .            spectrum, set_up, noaxes, axes, pattern, no_data,
      .		  is_logh, is_logv, is_shade, use_cell
 
-	INTEGER	  TM_LENSTR1, status, slen, sp, patt,
+	INTEGER	  TM_LENSTR1, STR_UPCASE, status, slen, sp, patt,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start, i, nparm, num_it, 
      .		  loc, s1, s2, it_start(4), it_end(4), iax(4),
-     .            density
+     .            density, i1, loch, locv
 	REAL	  only_val, aspect
 	PARAMETER ( aspect = 0.0)			!kob 12/96
 	CHARACTER TM_FMT*12, fname*128, buff*25
@@ -147,6 +147,25 @@
 
         is_shade = .TRUE.
         density = 0	! not used; vec/flow needs it in set up
+
+
+* ... SHADE/hgrat[=dash or line] default is dash
+*     hgrat line type: 0=tics only, 1=dash 2=line
+
+	loch = qual_given(slash_shad_hgrat)
+
+* ... SHADE/vgrat[=dash or line] default is dash
+*     vgrat line type: 0=tics only, 1=dash 2=line
+
+	locv = qual_given(slash_shad_vgrat)
+
+        IF (loch .EQ. 0  .AND. locv .EQ. 0) THEN
+           loch = qual_given(slash_shad_grat)
+           locv = qual_given(slash_shad_grat)
+        ENDIF
+
+        CALL set_graticules(loch, locv, status)
+
 
 * set up the axes and title and load the data into PPLUS
 	CALL DISP_SET_UP   (    memory,

@@ -76,6 +76,7 @@
 *                      to resolve PPLUS issues with polymark first.
 * V550 *acm* 12/02  Restore dot_sym = 99 and warnings that /THICK and /SIZE 
 !                    do not apply to DOT
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -104,12 +105,14 @@
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv
-	INTEGER		TM_LENSTR1, symbol, color, status,
+	INTEGER		TM_LENSTR1, STR_UPCASE,
+     .                  symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			do_dash, s1, s2, it_start(4), it_end(4),
-     .			nparm, dot_sym, num_it, i, iax(4)
+     .			nparm, dot_sym, num_it, i, iax(4), i1,
+     .                  loch, locv
 	REAL		val, sym_size, dashstyle(4)
 	CHARACTER	LEFINT*4, buff*25
 
@@ -323,6 +326,24 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
            ENDIF
               
 	ENDIF	   
+
+
+* ... PLOT/hgrat[=dash or line, color=, thick[=] ] default is line
+*     hgrat line type: 0=tics only, 1=dash 2=line
+
+	loch = qual_given(slash_plot_hgrat)
+
+* ... PLOT/vgrat[=dash or line, color=, thick[=] ] default is line
+*     vgrat line type: 0=tics only, 1=dash 2=line
+
+	locv = qual_given(slash_plot_vgrat)
+
+        IF (loch .EQ. 0  .AND. locv .EQ. 0) THEN
+           loch = qual_given(slash_plot_grat)
+           locv = qual_given(slash_plot_grat)
+        ENDIF
+
+        CALL set_graticules(loch, locv, status)
 
 * set up the axes and title and load the data into PPLUS
 	CALL PLOT_SET_UP   ( 	memory,

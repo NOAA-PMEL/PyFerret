@@ -52,6 +52,7 @@
 *                   done with qualifiers /AXES= or /NOAXES.
 * v541 *acm*  5/02 add option to control outline on the shade key boxes 
 *                   /KEY=continuous
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 
 	include 'tmap_dims.parm'
@@ -82,13 +83,13 @@
         LOGICAL         no_range, do_key, spectrum, pattern, use_line
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes, axes
 	LOGICAL         line_it, fill_it, is_logh, is_logv
-	INTEGER         sp, patt, TM_LENSTR1
+	INTEGER         sp, patt, TM_LENSTR1, STR_UPCASE
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			s1, s2, it_start(4), it_end(4),
-     .			nparm,  num_it, i, iax(4)
+     .			nparm,  num_it, i, iax(4), i1, loch, locv
 	REAL		val, only_val, sym_size
 	CHARACTER	LEFINT*4, TM_FMT*12, fname*128, poly_opt*10,
      .                  buff*25
@@ -206,6 +207,23 @@ CC       => Set values here instead.
 	else
 	   poly_opt = ' '
 	end if
+
+* ... POLYGON/hgrat[=dash or line] default is dash
+*     hgrat line type: 0=tics only, 1=dash 2=line
+
+	loch = qual_given(slash_polygon_hgrat)
+
+* ... POLYGON/vgrat[=dash or line] default is dash
+*     vgrat line type: 0=tics only, 1=dash 2=line
+
+	locv = qual_given(slash_polygon_vgrat)
+        
+        IF (loch .EQ. 0  .AND. locv .EQ. 0) THEN
+           loch = qual_given(slash_polygon_grat)
+           locv = qual_given(slash_polygon_grat)
+        ENDIF
+
+        CALL set_graticules(loch, locv, status)
 
 	if (overlay) sover = .true.
 * set up the axes and title and load the data into PPLUS

@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS(IT,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *	YF,XHI,XF,TCSIZE)
+     *	YF,XHI,XF,TCSIZE,xacross,hgrat,hcolor,hline)
 C** 
 C**    @(#)tayis.f	1.1    3/10/88
 C**
@@ -50,13 +50,26 @@ C**
 * 	Mod 11.27.95 For 4 digit years J Davison
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C *acm* 03/04  new arguments for plotting graticule lines across plot. 
+C If graticule lines are to be drawn across the plot at the tics
+C then only do them for one horizontal and one vertical axis.  
+C The dash lines interfere with each other if drawn from both 
+C sides. HLINE and VLINE control this.
+
+        REAL xacross           ! to draw tic line across plot
+        REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
+        INTEGER hcolor(*)      ! pen number 
+        LOGICAL hline          ! If true, do the lines across.
 
 	CHARACTER*(*) IT1,IT2
 	GOTO (10,20,20,30)IT+1
-10	CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE)
+10	CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .              xacross,hgrat,hcolor,hline)
 	RETURN
-20	CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE)
+20	CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .              xacross,hgrat,hcolor,hline)
 	RETURN
-30	CALL TAYIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE)
+30	CALL TAYIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .              xacross,hgrat,hcolor,hline)
 	RETURN
 	END

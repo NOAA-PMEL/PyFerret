@@ -1,5 +1,5 @@
 	SUBROUTINE TAYIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
-     *	TFACT,X,XFACT,CSIZE)
+     *	TFACT,X,XFACT,CSIZE,xacross,hgrat,hcolor,hline)
 
 *
 *
@@ -53,6 +53,7 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 C *acm* 24/01/00 Y2k Bug --Put century at start when comparing 
 C                 ITIME to ITIME2 at loop 10
+C *acm* 03/04  new arguments and code for plotting graticule lines across plot. 
 
 C**
 C**    @(#)tayis0.f	1.1    3/10/88
@@ -70,12 +71,20 @@ C**
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
 
+* Parameters for drawing tics across plot
+
+        REAL xacross
+        REAL dash1_1, dash1_2, dash1_3, dash1_4
+        REAL dash2_1, dash2_2, dash2_3, dash2_4
+        REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
+        INTEGER hcolor(*)      ! pen number 
+        LOGICAL hline          ! If true, do the lines across.
+        LOGICAL solid1, solid2   ! solid lines across at tics
+        LOGICAL dashed1, dashed2 ! dashed lines across at tics
+
 * TMAP interrupt flag
-#ifdef unix
+
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
 
 C     THIS ROUTINE PLOTS A TIME AXIS AND LABELS IT WITH THE DAY OF THE M
 C     AND THE MONTH.
@@ -116,6 +125,28 @@ C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME2(9:10).NE.'00')STOP ',2'
         IF(ITIME1(13:14)//ITIME1(1:12).GE.
      .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
+        
+        solid1 = (hgrat(1,1).LT.0 .AND. hgrat(2,1).LT.0 .AND.  
+     .            hgrat(3,1).LT.0 .AND.  hgrat(4,1).LT.0 )
+        solid2 = (hgrat(1,2).LT.0 .AND. hgrat(2,2).LT.0 .AND.  
+     .            hgrat(3,2).LT.0 .AND.  hgrat(4,2).LT.0 )
+        dashed1 = (hgrat(1,1).GT.0 .OR. hgrat(2,1).GT.0 .OR.  
+     .            hgrat(3,1).GT.0 .OR.  hgrat(4,1).GT.0 )
+        dashed2 = (hgrat(1,2).GT.0 .OR. hgrat(2,2).GT.0 .OR.  
+     .            hgrat(3,2).GT.0 .OR.  hgrat(4,2).GT.0 )
+
+        IF (dashed1) THEN
+           dash1_1 = hgrat(1,1)
+           dash1_2 = hgrat(2,1)
+           dash1_3 = hgrat(3,1)
+           dash1_4 = hgrat(4,1)
+        ENDIF
+        IF (dashed2) THEN
+           dash2_1 = hgrat(1,2)
+           dash2_2 = hgrat(2,2)
+           dash2_3 = hgrat(3,2)
+           dash2_4 = hgrat(4,2)
+        ENDIF
 C
 C     SET PARAMETERS.
 	TIC = 60./DT
@@ -167,12 +198,54 @@ C      LOOP:
 	IF ( interrupted ) RETURN		! TMAP interrupt
 	DO 20 I=1,NSMTIC
 	CALL PLOTT7(X,T+FLOAT(I)*TDIST,XFACT,TFACT,1,-5)
+        
+                 IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+                    CALL COLOR(hcolor(2))
+                    IF (dashed2) THEN
+                       CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
+                       CALL DASHES
+                    ENDIF
+                    CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
+                    CALL PLOT(xacross,T+FLOAT(I)*TDIST,1,0)
+                    CALL PLOT(x,T+FLOAT(I)*TDIST,0,0) 
+                    CALL COLOR(1)
+                    CALL VECTRS
+                 ENDIF
+
 20	CONTINUE
 	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	IF(IHR.EQ.0)THEN
 	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
+            
+              IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+                 CALL COLOR(hcolor(1))
+                 IF (dashed1) THEN
+                    CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
+                    CALL DASHES
+                 ENDIF
+                 CALL PLOT(x,t+tic,0,0) 
+                 CALL PLOT(xacross,t+tic,1,0)
+                 CALL PLOT(x,t+tic,0,0) 
+                 CALL COLOR(1)
+                 CALL VECTRS
+              ENDIF
+
 	ELSE
 	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+            
+                 IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+                    CALL COLOR(hcolor(1))
+                    IF (dashed1) THEN
+                       CALL DASHSZ(dash1_1,dash2_1,dash1_3,dash1_4)
+                       CALL DASHES
+                    ENDIF
+                    CALL PLOT(x,t+tic,0,0) 
+                    CALL PLOT(xacross,t+tic,1,0)
+                    CALL PLOT(x,t+tic,0,0) 
+                    CALL COLOR(1)
+                    CALL VECTRS
+                 ENDIF
+
 	ENDIF
 C         THE LABELS
 	IF(IHDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 50

@@ -56,8 +56,8 @@
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate 
 *         whether time is date or timesteps
 * 12/97 *kob* - use new logical cs_is_calendar
+* V554 1/04 *acm* - additions for /RANGE repeat loop control
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'command.parm'
 	include 'errmsg.parm'
@@ -69,133 +69,111 @@
 	include 'xplot_state.cmn'
 	include 'xplot_setup.cmn'
 	include	'gkscm1_inc.decl'	! with gks common
-	include	'GKSCM1.INC'	                ! with gks common
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
+	include	'GKSCM1.INC'            ! with gks common
+        include 'rpn.parm'              ! with maxatoms
+        include 'xalgebra.cmn'
 
 * local variable declarations
-	LOGICAL	by_date, report_unknown
-	INTEGER	i, idim, limits_cx, status, csp1
+	LOGICAL	by_date, report_unknown, range
+	INTEGER	i, idim, limits_cx, status, csp1, rlo, rhi, rdel
 	REAL*8	temp
-*kob*
-	INTEGER loc
+ 
+	INTEGER STR_UPCASE, loc, equal_pos, last_pos, dflt_cx, cvar,
+     .          istart, iflag
 	REAL val
-	CHARACTER GKS_X_CONID*16, anim_win_id*16
+	CHARACTER GKS_X_CONID*16, anim_win_id*16, counter_name*128
 	LOGICAL loop
+
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
      .			( ferr_invalid_command, status, 'REPEAT what ?', *5000 )
 
-* get the limits for repeating
-*  eg. "REPEAT/X=160E:140W:10 LIST/X=-5D:+5D/Y=0D:5D TEMP"
-	limits_cx = cx_stack_ptr_base + 1
-* *kob* 1/00 - dont report unknown command qualifiers
-	report_unknown = .FALSE.
-	CALL INIT_CONTEXT_MODS ( limits_cx )
-	CALL GET_CONTEXT_MODS ( cx_last,
-     .				cmnd_buff,
-     .				limits_cx,
-     .				max_qual_list,
-     .				num_qualifiers,
-     .				qual_start,
-     .				qual_end,
-     .				report_unknown,
-     .				status	)
-	IF ( status .NE. ferr_ok ) GOTO 5000
+*acm 1/01 check to see if we are using /RANGE=
+       loc = qual_given(slash_repeat_range) 
+       range = (qual_given(slash_repeat_range) .GT. 0)
+       IF (range) THEN
+          idim = 1
 
-* determine the (unique) axis of REPEATing
-	idim = unspecified_int4
-	DO 100 i = 1,4
-	   IF ( cx_given(i,limits_cx) ) THEN
-	      IF ( idim .EQ. unspecified_int4 ) THEN
-	         idim = i
-	      ELSE
-	         CALL ERRMSG( ferr_invalid_command, status,
-     .			'Use nested REPEAT for multiple axes', *5000 )
-	      ENDIF
- 	   ENDIF
- 100	CONTINUE
-	IF ( idim .EQ. unspecified_int4 ) CALL ERRMSG
-     .		(ferr_invalid_command,status,'REPEAT on which axis ?',*5000)
+           equal_pos = INDEX(cmnd_buff, '=')
+           last_pos = qual_end(loc)
+
+* Are we using a name for the repeat counter?
+          counter_name = 'REPCOUNT'
+
+          loc = qual_given(slash_repeat_name) 
+          IF (loc .GT. 0) THEN
+
+	     CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        counter_name, status )
+             IF ( status .NE. ferr_ok ) GOTO 5000
+          ENDIF
 
 * allocate next spot for the given limits on the control stack
 * ... but leave the stack in place in case of errors in this routine
-	CALL STACK_PTR_UP( csp, cs_max, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	csp1 = csp
-	CALL STACK_PTR_DN( csp, 0, status )
+	   CALL STACK_PTR_UP( csp, cs_max, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   csp1 = csp
+	   CALL STACK_PTR_DN( csp, 0, status )
+
+* File the expression and name in the counter-variable area and set up the
+* context so the command stack can be loaded 
+
+           istart = 1
+	   CALL INIT_COUNTER_VAR ( counter_name, cmnd_buff(equal_pos+1:last_pos), 
+     .             istart, last_pos-equal_pos, rlo, rhi, rdel, cvar, status )\
+
+	   IF ( status .NE. ferr_ok ) RETURN
 
 * load the start and end limits and the increment
-	cs_by_ss( csp1 ) = cx_by_ss( idim, limits_cx )
-	IF ( cx_delta( idim, limits_cx ) .EQ. unspecified_val8 ) THEN
-	   cs_delta( csp1 ) = 1
-	ELSE
-	   cs_delta( csp1 ) = cx_delta( idim, limits_cx )
-	ENDIF
-	IF ( cs_by_ss( csp1 ) ) THEN
-	   cs_limit( csp1 ) = cx_hi_ss( limits_cx, idim )
-	   cs_phase( csp1 ) = cx_lo_ss( limits_cx, idim )
-	ELSE
-	   cs_limit( csp1 ) = cx_hi_ww( idim, limits_cx )
-	   cs_phase( csp1 ) = cx_lo_ww( idim, limits_cx )
-	ENDIF
+
+           cs_by_ss( csp1 ) = .TRUE.
+	   cs_delta( csp1 ) = rdel
+	   cs_limit( csp1 ) = rhi
+	   cs_phase( csp1 ) = rlo
+	
+* error message if delta is 0
+
+           IF (cs_delta( csp1 ) .EQ. 0) CALL ERRMSG( ferr_invalid_command, status,
+     .			'Delta value on REPEAT must be nonzero', *5000 )
 
 * save the current context so it can be restored afterwards
-        cs_save_by_ss( csp1 ) = cx_by_ss(idim,cx_last)
-        IF ( cs_save_by_ss(csp1) ) THEN
-           cs_save_lo( csp1 ) = cx_lo_ss (cx_last,idim)
-           cs_save_hi( csp1 ) = cx_hi_ss (cx_last,idim)
-        ELSE
-           cs_save_lo( csp1 ) = cx_lo_ww (idim,cx_last)
-           cs_save_hi( csp1 ) = cx_hi_ww (idim,cx_last)
-        ENDIF
 
-* special check for the validity of time axis limits: calendar dates are
-* stored as negative seconds since 1-jan-0000:00:00:00
-* 8/97 *kob* use cx_calender to check if time is date rather than time step
-* 12/97 *kob* set new logical cs_is_calendar now as well
-	by_date = ( idim .EQ. t_dim )
-     .	.AND. ( .NOT.cx_by_ss(idim,limits_cx) )
-     .	.AND. ( cx_calendar(limits_cx) )
-* ... delta value in hours: hours-->seconds (to add to secs from BC)
-	IF ( by_date ) THEN
-            cs_delta(csp1) =  -3600. * cs_delta(csp1)
-	    cs_is_calendar(csp1) = .TRUE.
-	ENDIF
+           cs_save_by_ss( csp1 ) = cx_by_ss(idim,cx_last)
+           IF ( cs_save_by_ss(csp1) ) THEN
+              cs_save_lo( csp1 ) = cx_lo_ss (cx_last,idim)
+              cs_save_hi( csp1 ) = cx_hi_ss (cx_last,idim)
+           ELSE
+              cs_save_lo( csp1 ) = cx_lo_ww (idim,cx_last)
+              cs_save_hi( csp1 ) = cx_hi_ww (idim,cx_last)
+           ENDIF
 
-* reverse limits if negative delta is desired
-	IF ( ( .NOT.by_date .AND. (cs_delta(csp1) .LT. 0.0D0) )
-     .	.OR. (      by_date .AND. (cs_delta(csp1) .GT. 0.0D0) ) ) THEN
-	   temp = cs_phase(csp1)
-	   cs_phase(csp1) = cs_limit(csp1)
-	   cs_limit(csp1) = temp
-	ENDIF
+* Save name of REPEAT/RANGE variable
 
-* from here on no errors can occur so make the stack bump permanent
-	CALL STACK_PTR_UP( csp, cs_max, status )
+           csp_cvar(cvar) = csp1
+           IF (counter_name .EQ. 'repcount') THEN
+              cs_repeatname( csp1 ) = 'REPCOUNT'
+           ELSE
+              iflag = STR_UPCASE( cs_repeatname( csp1 ), counter_name )
+           ENDIF
+
+* stack bump  ???
+	   CALL STACK_PTR_UP( csp, cs_max, status )
 
 * load the axis to which the limits apply
-	cs_axis( csp ) = idim
+	   cs_axis( csp ) = idim
 
 * load the command line to be repeatedly executed
-	cs_text( csp ) = cmnd_buff( arg_start(1):len_cmnd )
+	   cs_text( csp ) = cmnd_buff( arg_start(1):len_cmnd )
 
 * and tell 'em who owns this level
-	cs_cmnd_num( csp ) = cmnd_repeat
+	   cs_cmnd_num( csp ) = cmnd_repeat
 
 * and set the default context in preparation for first call
-	CALL CS_SET_CONTEXT
+!	   CALL CS_SET_CONTEXT  !??? Not for REPEAT/RANGE
 
 * success - tell 'em we've taken over and start workin'
-	cs_in_control = .TRUE.
-	input_source  = input_from_cs
+	   cs_in_control = .TRUE.
+	   input_source  = input_from_cs
 
 * kob 1/01 - check to see if there is a loop in the repeat command.  if so, set
 *            cs_loop accordingly
@@ -206,18 +184,160 @@
 	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .	           val, status ) ! syntax check
 	      IF ( val .NE. unspecified_val4 .AND. val .NE. 0) THEN
-		 cs_loop(csp1) = INT(val)
+                 cs_loop(csp1) = INT(val)
 	      ELSE
-		 cs_loop(csp1) = 1
+                  cs_loop(csp1) = 1
 	      ENDIF
 	   ENDIF
 *kob 1/01 check to see if we are in an animation repeat loop
-	animate = qual_given(slash_repeat_animate) .GT. 0
-        IF (animate) THEN
+	   animate = qual_given(slash_repeat_animate) .GT. 0
+           IF (animate) THEN
 * set first_frame to true - we don't need to animate first frame - its
 *   already in the plot window
-	   first_frame = .TRUE. 
-	ENDIF
+	      first_frame = .TRUE. 
+	   ENDIF
+
+        ELSE  ! not range
+
+* get the limits for repeating
+*  eg. "REPEAT/X=160E:140W:10 LIST/X=-5D:+5D/Y=0D:5D TEMP"
+	   limits_cx = cx_stack_ptr_base + 1
+* *kob* 1/00 - dont report unknown command qualifiers
+	   report_unknown = .FALSE.
+	   CALL INIT_CONTEXT_MODS ( limits_cx )
+
+
+	   CALL GET_CONTEXT_MODS ( cx_last,
+     .				cmnd_buff,
+     .				limits_cx,
+     .				max_qual_list,
+     .				num_qualifiers,
+     .				qual_start,
+     .				qual_end,
+     .				report_unknown,
+     .				status	)
+
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+* determine the (unique) axis of REPEATing
+	   idim = unspecified_int4
+	   DO 100 i = 1,4
+	      IF ( cx_given(i,limits_cx) ) THEN
+	         IF ( idim .EQ. unspecified_int4 ) THEN
+	            idim = i
+	         ELSE
+	            CALL ERRMSG( ferr_invalid_command, status,
+     .			'Use nested REPEAT for multiple axes', *5000 )
+	         ENDIF
+ 	      ENDIF
+ 100	   CONTINUE
+	   IF ( idim .EQ. unspecified_int4 ) CALL ERRMSG
+     .		(ferr_invalid_command,status,'REPEAT on which axis ?',*5000)
+
+* allocate next spot for the given limits on the control stack
+* ... but leave the stack in place in case of errors in this routine
+	   CALL STACK_PTR_UP( csp, cs_max, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   csp1 = csp
+	   CALL STACK_PTR_DN( csp, 0, status )
+
+* load the start and end limits and the increment
+
+	   cs_by_ss( csp1 ) = cx_by_ss( idim, limits_cx )
+           IF ( cx_delta( idim, limits_cx ) .EQ. unspecified_val8 ) THEN
+	      cs_delta( csp1 ) = 1
+	   ELSE
+	      cs_delta( csp1 ) = cx_delta( idim, limits_cx )
+	   ENDIF
+	   IF ( cs_by_ss( csp1 ) ) THEN
+	      cs_limit( csp1 ) = cx_hi_ss( limits_cx, idim )
+	      cs_phase( csp1 ) = cx_lo_ss( limits_cx, idim )
+	   ELSE
+	      cs_limit( csp1 ) = cx_hi_ww( idim, limits_cx )
+	      cs_phase( csp1 ) = cx_lo_ww( idim, limits_cx )
+           ENDIF
+
+* error message if delta is 0
+
+           IF (cs_delta( csp1 ) .EQ. 0) CALL ERRMSG( ferr_invalid_command, status,
+     .			'Delta value on REPEAT must be nonzero', *5000 )
+
+           cs_repeatname( csp1 ) = unspecified_name4
+
+* save the current context so it can be restored afterwards
+
+           cs_save_by_ss( csp1 ) = cx_by_ss(idim,cx_last)
+           IF ( cs_save_by_ss(csp1) ) THEN
+              cs_save_lo( csp1 ) = cx_lo_ss (cx_last,idim)
+              cs_save_hi( csp1 ) = cx_hi_ss (cx_last,idim)
+           ELSE
+              cs_save_lo( csp1 ) = cx_lo_ww (idim,cx_last)
+              cs_save_hi( csp1 ) = cx_hi_ww (idim,cx_last)
+           ENDIF
+
+* special check for the validity of time axis limits: calendar dates are
+* stored as negative seconds since 1-jan-0000:00:00:00
+* 8/97 *kob* use cx_calender to check if time is date rather than time step
+* 12/97 *kob* set new logical cs_is_calendar now as well
+	   by_date = ( idim .EQ. t_dim )
+     .	   .AND. ( .NOT.cx_by_ss(idim,limits_cx) )
+     .	   .AND. ( cx_calendar(limits_cx) )
+* ... delta value in hours: hours-->seconds (to add to secs from BC)
+	   IF ( by_date ) THEN
+               cs_delta(csp1) =  -3600. * cs_delta(csp1)
+	       cs_is_calendar(csp1) = .TRUE.
+	   ENDIF
+
+* reverse limits if negative delta is desired
+	   IF (( ( .NOT.by_date .AND. (cs_delta(csp1) .LT. 0.0D0) )
+     .   	.OR. (      by_date .AND. (cs_delta(csp1) .GT. 0.0D0) ) ) ) THEN
+	      temp = cs_phase(csp1)
+	      cs_phase(csp1) = cs_limit(csp1)
+	      cs_limit(csp1) = temp
+	   ENDIF
+
+* from here on no errors can occur so make the stack bump permanent
+	   CALL STACK_PTR_UP( csp, cs_max, status )
+
+* load the axis to which the limits apply
+	   cs_axis( csp ) = idim
+
+* load the command line to be repeatedly executed
+	   cs_text( csp ) = cmnd_buff( arg_start(1):len_cmnd )
+
+* and tell 'em who owns this level
+	   cs_cmnd_num( csp ) = cmnd_repeat
+
+* and set the default context in preparation for first call
+	   CALL CS_SET_CONTEXT
+
+* success - tell 'em we've taken over and start workin'
+   	   cs_in_control = .TRUE.
+	   input_source  = input_from_cs
+
+* kob 1/01 - check to see if there is a loop in the repeat command.  if so, set
+*            cs_loop accordingly
+	      loc = qual_given(slash_repeat_loop)
+	      IF (loc .GT. 0) THEN
+	         loop = .TRUE.
+	         cs_start(csp1) = cs_phase(csp1)
+	         CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .	              val, status ) ! syntax check
+	         IF ( val .NE. unspecified_val4 .AND. val .NE. 0) THEN
+	   	    cs_loop(csp1) = INT(val)
+	         ELSE
+		    cs_loop(csp1) = 1
+	         ENDIF
+	      ENDIF
+*kob 1/01 check to see if we are in an animation repeat loop
+	   animate = qual_given(slash_repeat_animate) .GT. 0
+           IF (animate) THEN
+* set first_frame to true - we don't need to animate first frame - its
+*   already in the plot window
+	     first_frame = .TRUE. 
+	   ENDIF
+
+        ENDIF  ! IF (range)
 
 	RETURN
 

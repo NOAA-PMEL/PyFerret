@@ -1,5 +1,5 @@
       SUBROUTINE YAXIS2(X,XFACT,YLO,YHI,YUNIT,LABEL,IFORMT,IAXIS,
-     * YFACT,CSIZE)
+     * YFACT,CSIZE,xacross,hgrat,hcolor,hline)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -53,6 +53,19 @@ C                with "*(*)" for the linux port
 	CHARACTER YLAB*20,IFORMT*(*),YFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
+
+* Parameters for drawing tics across plot
+
+        REAL xacross
+        REAL dash1_1, dash1_2, dash1_3, dash1_4 
+        REAL dash2_1, dash2_2, dash2_3, dash2_4
+        REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
+        REAL yt
+        INTEGER hcolor(*)      ! pen number 
+        LOGICAL hline          ! If true, do the lines across.
+        LOGICAL solid1,solid2  ! solid lines across at large, small tics
+        LOGICAL dashed1, dashed2 ! dashed lines across at large, small tics
+
 C
 C     THIS ROUTINE PLOTS SEVERAL TYPES OF BASE 10 LOG YAXIS.
 C         X,XFACT,YFACT HAVE THEIR USUAL MEANINGS.
@@ -99,13 +112,69 @@ C
 		SGN=-1.0
 	ENDIF
  
+        solid1 = (hgrat(1,1).LT.0 .AND. hgrat(2,1).LT.0 .AND.  
+     .            hgrat(3,1).LT.0 .AND.  hgrat(4,1).LT.0 )
+        solid2 = (hgrat(1,2).LT.0 .AND. hgrat(2,2).LT.0 .AND.  
+     .            hgrat(3,2).LT.0 .AND.  hgrat(4,2).LT.0 )
+        dashed1 = (hgrat(1,1).GT.0 .OR. hgrat(2,1).GT.0 .OR.  
+     .            hgrat(3,1).GT.0 .OR.  hgrat(4,1).GT.0 )
+        dashed2 = (hgrat(1,2).GT.0 .OR. hgrat(2,2).GT.0 .OR.  
+     .            hgrat(3,2).GT.0 .OR.  hgrat(4,2).GT.0 )
+        IF (dashed1) THEN
+           dash1_1 = hgrat(1,1)
+           dash1_2 = hgrat(2,1)
+           dash1_3 = hgrat(3,1)
+           dash1_4 = hgrat(4,1)
+        ENDIF
+        IF (dashed2) THEN
+           dash2_1 = hgrat(1,2)
+           dash2_2 = hgrat(2,2)
+           dash2_3 = hgrat(3,2)
+           dash2_4 = hgrat(4,2)
+        ENDIF
+
 	IF  (IAXIS .LE. 3) THEN
 	   CALL PLOT(X,Y,0,0)
 	   CALL PLOTT7(X,Y,XFACT,YFACT,1,-6)
-	   DO 110 I=1,NDEC
-	   DO 100 J=2,9
-100	   CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
-110	   CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6)
+	   DO 110 I=1,NDEC    ! large tics
+
+	      DO 100 J=2,9    ! small tics
+
+                 CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+
+                 IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+                   yt = Y+SGN*(I-1+ALOG10(FLOAT(J)))
+                   CALL COLOR(hcolor(2))
+                    IF (dashed2) THEN
+                       CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
+                       CALL DASHES
+                    ENDIF
+                    CALL PLOT(X,yt,0,0) 
+                    CALL PLOT(xacross,yt,1,0)
+                    CALL PLOT(X,yt,0,0) 
+                    CALL COLOR(1)
+                    CALL VECTRS
+                 ENDIF
+             
+100           CONTINUE
+
+              CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6) ! draw large tic
+
+              IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+                 yt = Y+SGN*I
+                 CALL COLOR(hcolor(1))
+                 IF (dashed1) THEN
+                    CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
+                    CALL DASHES
+                 ENDIF
+                 CALL PLOT(X,yt,0,0) 
+                 CALL PLOT(xacross,yt,1,0)
+                 CALL PLOT(X,yt,0,0) 
+                 CALL COLOR(1)
+                 CALL VECTRS
+              ENDIF
+
+110        CONTINUE
 
 	ELSE
 
@@ -114,10 +183,42 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
            YTEMP = Y + SGN* NDEC
 	   CALL PLOT(X,YTEMP,0,0)
 	   CALL PLOTT7(X,YTEMP,XFACT,YFACT,1,-6)
-	   DO 130 I=1,NDEC
-	   DO 120 J=2,9
-120	   CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
-130	   CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)
+	   DO 130 I=1,NDEC      ! large tics
+	      DO 120 J=2,9      ! small tics
+                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+
+                 IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+                   yt = YTEMP+(I-1+ALOG10(FLOAT(J)))
+                   CALL COLOR(hcolor(2))
+                    IF (dashed2) THEN
+                       CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
+                       CALL DASHES
+                    ENDIF
+                    CALL PLOT(X,yt,0,0) 
+                    CALL PLOT(xacross,yt,1,0)
+                    CALL PLOT(X,yt,0,0) 
+                    CALL COLOR(1)
+                    CALL VECTRS
+                 ENDIF
+
+120           CONTINUE
+              CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)  ! make large tic
+              
+              IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+                 yt = ytemp+i
+                 CALL COLOR(hcolor(1))
+                 IF (dashed1) THEN
+                    CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
+                    CALL DASHES
+                 ENDIF
+                 CALL PLOT(X,yt,0,0) 
+                 CALL PLOT(xacross,yt,1,0)
+                 CALL PLOT(X,yt3/2/2004,0,0) 
+                 CALL COLOR(1)
+                 CALL VECTRS
+              ENDIF
+
+130        CONTINUE
         ENDIF
 C
 C	DRAW LABELS

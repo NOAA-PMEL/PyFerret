@@ -58,6 +58,7 @@ seg_off.F\
 seg_on.F\
 send_pltype.F\
 set_ax_sizes.F\
+set_graticules.F\
 set_plot_size.F\
 set_viewport.F\
 set_window.F\

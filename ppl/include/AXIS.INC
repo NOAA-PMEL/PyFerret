@@ -12,12 +12,13 @@ C***********************************************************************
 C**
 C**
 c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
+c v554 *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 c
 	COMMON/AXIS/ XLO,XHI,XTIC,XLEN,XCSIZE, 
      *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG, 
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,
-     *	IAXON(4),IAXSET
+     *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, HCOLOR(2), VCOLOR(2)
 c
 c**	x axis variables
 c
@@ -71,5 +72,9 @@ c	iaxon(1)	top axis (x axis)
 c	iaxon(2)	bottom axis (x axis)
 c	iaxon(3)	left axis (y axis)
 c	iaxon(4)	right axis (y axis)
+c       HGRAT      draw horizontal tic lines across whole plot 0=no,1=dash,2=solid
+c       VGRAT      draw vertical tic lines across whole plot 0=no,1=dash,2=solid
+c       hline           flag: true if still need to draw horizontal tic lines
+c       vline           flag: true if still need to draw vertical tic lines
 c
 c*******************************************************************

@@ -93,7 +93,7 @@
 *                   /KEY=continuous
 * V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by contour)
 * V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by contour)
-
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -116,7 +116,9 @@
 	INTEGER	  TM_LENSTR1, status, slen, sp, ipen,
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
-     .		  s1, s2, it_start(4), it_end(4), iax(4), density
+     .		  s1, s2, it_start(4), it_end(4), iax(4), density,
+     .            loch, locv
+        INTEGER   STR_UPCASE, i1
 	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
 	PARAMETER (aspect = 0.0)			!kob 12/96
 	CHARACTER TM_FMT*12, fname*128, buff*25
@@ -208,12 +210,29 @@
 	      CALL WARN( '/PEN is deprecated. Use /COLOR.')
 	      denig_pen_msg_done = .TRUE.
 	   ENDIF
-	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
+           CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                           ipen, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
 	   ipen = -1	! auto-select in DISP_SET_UP
 	ENDIF
+
+* ... CONTOUR/hgrat[=dash or line] default is dash
+*     hgrat line type: 0=tics only, 1=dash, 2=line
+
+	loch = qual_given(slash_cont_hgrat)
+
+* ... CONTOUR/vgrat[=dash or line] default is dash
+*     vgrat line type: 0=tics only, 1=dash, 2=line
+
+	locv = qual_given(slash_cont_vgrat)
+
+        IF (loch .EQ. 0  .AND. locv .EQ. 0) THEN
+           loch = qual_given(slash_cont_grat)
+           locv = qual_given(slash_cont_grat)
+        ENDIF
+
+        CALL set_graticules(loch, locv, status)
 
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000

@@ -45,6 +45,10 @@
 * v5.41 *acm* - 3/02  bug fix: xaxis2 call for log plots caused the tics for log 
 *               axes to be wrong.
 *               Also remove VMS include statements.
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks:
+*                  Pass new arguments to all axis routines, and set hline, vline
+*                  when done.
+*
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -84,32 +88,58 @@ C**
 	include 'AXISL.INC'
 
 	CHARACTER IFX*20,IFY*20
+        integer ii
 
 * TMAP interrupt flag
 	include 'xinterrupt.cmn'
 
-	IF(IMCNT.LE.1)THEN
+C If graticule lines are to be drawn across the plot at the tics
+C then only do them for one horizontal and one vertical axis.  
+C The dash lines interfere with each other if drawn from both 
+C sides. HLINE and VLINE control this. Draw a second axis after each 
+C axis that may have the graticule lines, so the axes themselves are 
+C always solid, black.
+
+        HLINE = .TRUE.
+        VLINE = .TRUE.
+           
+        do ii = 1, 2   ! first time thru do graticules, 
+                      ! second time dont, get black axes
+        
+        IF(IMCNT.LE.1)THEN
 	    CALL BOX
 	END IF
 C	SETUP AXIS
 	CALL SETLAB(XF,YF,LTT,LTB,LYL,LYR,LXT,LXB,IFX,IFY)
+
+
+
 C
 C     DRAW AXIS, LEFT, RIGHT Y AXIS THEN TOP, BOTTOM XAXIS
 C
 	IF(MAKEP.EQ.'VIEW')GOTO 1000
       IF(MYLEF.EQ.0.AND.IAXON(3).EQ.1)THEN
 	  IY=ITY
-C
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
 C
           IF(ITFLG.EQ.-1)THEN
               CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        YF,XLO,XF,TCSIZE)
+     *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, HLINE)
+              CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
+     *        YF,XLO,XF,TCSIZE,XHI,HGRAT, HCOLOR, .FALSE.)
+            hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
-	CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
-     *	    YCSIZE)
+	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
+     *	    YCSIZE,XHI,HGRAT, HCOLOR, HLINE)
+	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
+     *	    YCSIZE,XHI,HGRAT, HCOLOR, .FALSE.)
+            hline = .FALSE.
 	  ELSE
-            CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE)
+            CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
+     .                    XHI,HGRAT, HCOLOR, HLINE)
+            CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
+     .                    XHI,HGRAT, HCOLOR, .FALSE.)
+            hline = .FALSE.
           END IF
       END IF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
@@ -117,12 +147,22 @@ C
 	IY=-ITY
         IF(ITFLG.EQ.-1)THEN
             CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *      YF,XHI,XF,TCSIZE)
+     *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, HLINE)
+            CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
+     *      YF,XHI,XF,TCSIZE,XLO,HGRAT, HCOLOR, .FALSE.)
+           hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
-     1     YCSIZE)
+     1     YCSIZE,XLO,HGRAT, HCOLOR, HLINE)
+	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
+     1     YCSIZE,XLO,HGRAT, HCOLOR, .FALSE.)
+           hline = .FALSE.
 	ELSE
-	    CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE)
+	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE,
+     .                    XLO,HGRAT, HCOLOR, HLINE)
+	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE,
+     .                    XLO,HGRAT, HCOLOR, .FALSE.)
+           hline = .FALSE.
 	ENDIF
       ENDIF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
@@ -134,13 +174,22 @@ C					 TAXIS1 OR TAXIS3
 C
           IF(ITFLG.EQ.1)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
-     *        XF,YHI,YF,TCSIZE)
+     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, VLINE)
+              CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,
+     *        XF,YHI,YF,TCSIZE,YLO,VGRAT, VCOLOR, .FALSE.)
+              vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
-     *	       XCSIZE)
+     *	       XCSIZE,YLO,VGRAT, VCOLOR, VLINE)
+	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
+     *	       XCSIZE,YLO,VGRAT, VCOLOR, .FALSE.)
+              vline = .FALSE.
           ELSE
-c	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,ITYPEX-1,XF,YHI,YF,XCSIZE)
-	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE)
+	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
+     *                    YLO,VGRAT, VCOLOR, VLINE)
+	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
+     *                    YLO,VGRAT, VCOLOR, .FALSE.)
+              vline = .FALSE.
           END IF
       END IF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
@@ -148,14 +197,25 @@ c	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,ITYPEX-1,XF,YHI,YF,XCSIZE)
           IX=ITX
           IF(ITFLG.EQ.1)THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
-     *        XF,YLO,YF,TCSIZE)
+     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, VLINE)
+              CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
+     *        XF,YLO,YF,TCSIZE,YHI,VGRAT, VCOLOR, .FALSE.)
+              vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
-     *	      XCSIZE)
+     *	      XCSIZE,YHI,VGRAT, VCOLOR, VLINE)
+	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
+     *	      XCSIZE,YHI,VGRAT, VCOLOR, .FALSE.)
+              vline = .FALSE.
           ELSE
-	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE)
+	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,
+     *                    YHI,VGRAT, VCOLOR, VLINE)
+	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,
+     *                    YHI,VGRAT, VCOLOR, .FALSE.)
+              vline = .FALSE.
           END IF
       END IF
+      enddo  ! ii loop
 
 * TMAP interrupt re-entry
  3333	CONTINUE

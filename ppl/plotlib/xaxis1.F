@@ -1,5 +1,6 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
-     *    IFORMT,XFACT,Y,YFACT,CSIZE)
+     *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,
+     *    vline)
 
 *
 *
@@ -46,6 +47,7 @@
 *		      be compiled with /WARNINGS=NODECLARATIONS
 *	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
 *			in small non-zero values
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 C**
 C**    @(#)xaxis1.f	1.1    3/10/88
@@ -58,6 +60,15 @@ C**
 C***********************************************************************
 C**
 C**
+
+* Parameters for drawing tics across plot
+
+        REAL yacross, dash1, dash2,dash3,dash4
+        REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
+        INTEGER vcolor(*)      ! pen number 
+        LOGICAL vline          ! If true, do the lines across.
+        LOGICAL solid          ! solid lines across at tics
+        LOGICAL dashed         ! dashed lines across at tics
 	CHARACTER IFORMT*(*),XLAB*20
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
@@ -100,18 +111,61 @@ C
 	IF(DIR*XT.LT.DIR*XLO)XT=XT+XTIC
 	ISTOP=IFIX((XHI-XT)/XTIC+0.000001)
 	CALL PLOT(XT,Y,0,0)
-	CALL SMX1(XT,XLO,-XTIC,NSMTCX,XFACT,YFACT,Y)
+	CALL SMX1(XT,XLO,-XTIC,NSMTCX,XFACT,YFACT,Y,
+     *    yacross,vgrat,vcolor,vline)
 	CALL PLOT(XLO,Y,1,0)
 	CALL PLOTT7(XT,Y,XFACT,YFACT,1,-8)
 	X=XT
+        
+        solid = (vgrat(1,1).LT.0 .AND. vgrat(2,1).LT.0 .AND.  
+     .            vgrat(3,1).LT.0 .AND.  vgrat(4,1).LT.0 )
+        dashed = (vgrat(1,1).GT.0 .OR. vgrat(2,1).GT.0 .OR.  
+     .            vgrat(3,1).GT.0 .OR.  vgrat(4,1).GT.0 )
+        IF (dashed) THEN
+           dash1 = vgrat(1,1)
+           dash2 = vgrat(2,1)
+           dash3 = vgrat(3,1)
+           dash4 = vgrat(4,1)
+        ENDIF
+
 	DO 100 I=1,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
-	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y)
+	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y,
+     *    yacross,vgrat,vcolor,vline)
+        IF ((solid.OR.dashed) .AND. vline) THEN ! make line across
+           CALL COLOR(vcolor(1))
+           IF (dashed) THEN
+              CALL DASHSZ(dash1,dash2,dash3,dash4)
+              CALL DASHES
+           ENDIF
+           CALL PLOT(X,Y,0,0) 
+           CALL PLOT(X,yacross,1,0)
+           CALL PLOT(X,Y,0,0) 
+           CALL COLOR(1)
+           CALL VECTRS
+        ENDIF
+
 	X=X+XTIC
 	CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
 100	CONTINUE
-	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y)
+	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y,
+     *    yacross,vgrat,vcolor,vline)
+        
+        IF ((solid.OR.dashed) .AND. vline) THEN ! make line across
+           CALL COLOR(vcolor(1))
+           IF (dashed) THEN
+              CALL DASHSZ(dash1,dash2,dash3,dash4)
+              CALL DASHES
+           ENDIF
+           CALL PLOT(X,Y,0,0) 
+           CALL PLOT(X,yacross,1,0)
+           CALL PLOT(X,Y,0,0) 
+           CALL COLOR(1)
+           CALL VECTRS
+        ENDIF
+
 	CALL PLOT(XHI,Y,1,0)
+           
 C
 C	DRAW LABELS
 C

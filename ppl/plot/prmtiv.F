@@ -41,7 +41,8 @@ C**    @(#)prmtiv.F	1.1    3/10/88
 *	added %WHERE mouse input command
 * v552 3/03 *acm* changes for multi-line labels with %label, %xaxis, %yaxis
 *                   and remove VMS include statements.
-
+* v554 3/04 *acm* Need to send parameters used for making graticule lines
+*                 to xaxis, yaxis, initialized to values for graticule off.
 C**
 C**
 C***********************************************************************
@@ -144,8 +145,9 @@ C
 
 	LOGICAL mouse_input, need_justify, need_arrow
 	INTEGER	IGRNPT, idummy, ichoice, iat
-	REAL xp, yp
+	REAL xp, yp, across
         INTEGER numlines, i, j
+        LOGICAL lineflag
 
 	EXTERNAL range, scale, size
 
@@ -200,6 +202,21 @@ C
 C***	XAXIS
 C
 	ELSE IF(ICOM.EQ.'%XAXIS')THEN
+        
+            DO 100 ii = 1, 4
+              hgrat(ii,1) = 0.
+              hgrat(ii,2) = 0.
+              vgrat(ii,1) = 0.
+              vgrat(ii,2) = 0.
+100         CONTINUE
+
+            hcolor(1) = 1 
+            hcolor(2) = 1
+            vcolor(1) = 1
+            vcolor(2) = 1
+            across = 0.
+            lineflag = .FALSE.
+
 	    CALL INQSCL(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    IF(M.GE.1.AND.IFLG(1).NE.0)THEN
 		XLOW=P(1)
@@ -262,7 +279,8 @@ C
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCX,LINTT,XUNIT,
-     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE)
+     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,vgrat,
+     *		vcolor,vline)
 
             CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
             nfont = 0
@@ -304,6 +322,21 @@ C
 C***	YAXIS
 C
 	ELSE IF(ICOM.EQ.'%YAXIS')THEN
+        
+            DO 200 ii = 1, 4
+              hgrat(ii,1) = 0.
+              hgrat(ii,2) = 0.
+              vgrat(ii,1) = 0.
+              vgrat(ii,2) = 0.
+200         CONTINUE
+
+            hcolor(1) = 1 
+            hcolor(2) = 1
+            vcolor(1) = 1
+            vcolor(2) = 1
+            across = 0.
+            lineflag = .FALSE.
+
 	    CALL INQSCL(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    IF(M.GE.1.AND.IFLG(1).NE.0)THEN
 		YLOW=P(1)
@@ -377,7 +410,7 @@ c	    ENDIF
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCY,LINTT,YUNIT,
-     *		IPOS,FRMTX,YFF,CHSIZE)
+     *		IPOS,FRMTX,YFF,CHSIZE,across,hgrat,hcolor,hline)
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

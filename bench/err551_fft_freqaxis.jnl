@@ -1,0 +1,14 @@
+
+DEFINE AXIS/t=1:4998:1 dayt
+let tpts = t[gt=dayt]
+
+LET sample_function = sin(0.5*tpts - 6.)/2. - cos(0.3*tpts)
+ 
+LET days_fft = ffta(sample_function)
+LOAD days_fft
+LET FFT_nf = `days_fft,return=lend`
+
+list FFT_nf
+list 2*FFT_nf
+list `tpts,return=lend`
+

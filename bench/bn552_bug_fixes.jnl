@@ -45,3 +45,9 @@ GO err551_repeat_sym.jnl
 ! another time axis, some times have missing data 
 GO bn_reset
 GO err551_modulo_nc_regrid.jnl
+
+! FFT frequency axis not computed accurately enough.
+GO bn_reset
+GO err551_fft_freqaxis.jnl
+
+

@@ -42,6 +42,7 @@
 * V491 - 1/98 - changed function TEST2 so that it replaces T axis
 * V500: 1/99 added gfcn_arg_type in support of string arguments
 *       2/99 changed UNRAVEL to XSEQUENCE, YSEQUENCE, ZSEQUENCE, TSEQUENCE
+*       3/99 *kob* fixed bugs in above additions - parameter references incorrect
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -224,7 +225,7 @@
 	DATA gfcn_arg_descr(p_zlayer_arg_start+1)/
      .	'Z-value field corresponding to data points of V'/
 	DATA gfcn_arg_name(p_zlayer_arg_start+2)/'ZAX'/
-	DATA gfcn_arg_type(p_zlayer_arg_start+3)/parg_type_float/
+	DATA gfcn_arg_type(p_zlayer_arg_start+2)/parg_type_float/
 	DATA gfcn_arg_units(p_zlayer_arg_start+2)/' '/
 	DATA gfcn_arg_descr(p_zlayer_arg_start+2)/
      .		'variable with desired Z (depth) axis points'/
@@ -280,8 +281,8 @@
 
 * ZSEQUENCE(arg) - same values as input grid but unravelled into a Y line
 	INTEGER		p_zunravel_arg_start, p_zunravel_num_args
-	PARAMETER     ( p_zunravel_arg_start = p_zlayer_arg_start +
-     .					       p_zlayer_num_args,
+	PARAMETER     ( p_zunravel_arg_start = p_yunravel_arg_start +
+     .					       p_yunravel_num_args,
      .			p_zunravel_num_args  = 1 )
 	DATA gfcn_name         (p_zunravel) /'ZSEQUENCE'/
 	DATA gfcn_version      (p_zunravel) / 1.0 /
@@ -315,8 +316,8 @@
 
 * TSEQUENCE(arg) - same values as input grid but unravelled into a Y line
 	INTEGER		p_tunravel_arg_start, p_tunravel_num_args
-	PARAMETER     ( p_tunravel_arg_start = p_zlayer_arg_start +
-     .					       p_zlayer_num_args,
+	PARAMETER     ( p_tunravel_arg_start = p_zunravel_arg_start +
+     .					       p_zunravel_num_args,
      .			p_tunravel_num_args  = 1 )
 	DATA gfcn_name         (p_tunravel) /'TSEQUENCE'/
 	DATA gfcn_version      (p_tunravel) / 1.0 /

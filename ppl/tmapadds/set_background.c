@@ -43,6 +43,9 @@
 
 /* Changed include order of gks_implem.h to remove errors in compile (set 
  * **before** stdlib.h) for linux port *jd* 1.28.97
+ *
+ * Check to make sure display is actually set to avoid crashes in
+ * -gif mode *js* 5.99
  */
 
 #include "udposix.h"
@@ -73,12 +76,14 @@ int *ndx;
 /****************************************************************************/
 
   ws  = OPEN_WSID (*ws_id);
-  scr = DefaultScreen (ws->dpy);
+  if (ws && ws->dpy){
+    scr = DefaultScreen (ws->dpy);
 
-  if (*ndx == 0)
-    XSetWindowBackground (ws->dpy,ws->win,BlackPixel(ws->dpy,scr));
-  else
-    XSetWindowBackground (ws->dpy,ws->win,WhitePixel(ws->dpy,scr));
+    if (*ndx == 0)
+      XSetWindowBackground (ws->dpy,ws->win,BlackPixel(ws->dpy,scr));
+    else
+      XSetWindowBackground (ws->dpy,ws->win,WhitePixel(ws->dpy,scr));
+  }
 }
 
 

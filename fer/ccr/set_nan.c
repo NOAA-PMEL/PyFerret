@@ -34,39 +34,45 @@
 *
 */
 
-/* replace_bad_data_sub.c :
-/*  replace the missing value if it is either NaN, or if it is equal to */
-/*  the old bad value */
+/* set_nan.c:
 
-/* *kob* - 2/18/99 */
-/* v553 *kob* - if the new_bad is NaN, we need to replace any possible
-                NaN's in the data, and also swap the old and new bad.  This 
-		could happen if use did a set var/bad=nan - new feature */
+   set a float value to NaN - needed for the command
+       set variable/bad=nan var_name
+      
+   kob - 05/03
 
-void replace_bad_data_sub_ ( float *old_bad, float *src, 
-			   int *size, float *new_bad )
+*/
+
+
+#include <signal.h>
+#include <stdio.h>
+#include <math.h>
+
+float set_nan_ ()
+
 
 {
-  int i;
-  double tmp;
+
+  sigset_t block_fpe;
+  float val;
+
+  /* initialize the signal mask */
+  sigemptyset(&block_fpe);
+  sigaddset (&block_fpe, SIGFPE); 
   
-  if (isnan(*old_bad)) {
-    for (i=0; i<*size; i++)
-      if (isnan(src[i])) src[i] = *new_bad;
-  } 
-  else if (isnan(*new_bad)) {
-    for (i=0; i<*size; i++) {
-      if (isnan(src[i])) {
-	src[i] = *old_bad;
-      }
-    }
-    *new_bad = *old_bad;
-  }
-  else {
-    for (i=0; i<*size; i++) {
-      if (src[i] == *old_bad) src[i] = *new_bad;
-    }
-  }
+  
+  /* block SIGFPE so we don't have problems generating NaN */
+  sigprocmask (SIG_BLOCK, &block_fpe, NULL); 
+
+  /* calculating the inverse hyperbolic cosine of a value less
+     than 1 will result in NaN - seems better than doing a divide
+     by 0 */
+  val = acosh(.2);
+
+  /* unblock SIGFPE */
+  sigprocmask (SIG_UNBLOCK, &block_fpe, NULL); 
+
+  /* return the NaN value */
+  return val;
+  
 }
-
-

@@ -60,6 +60,7 @@
 *                - and that not using a variable from a GT or TS data set
 * V552: 4/03 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
 * v552: 4/03 *acm*  Increase length of variable names to 128 characters
+* v553: 7/03 *kob* - Add SET VARIABLE/bad=NaN ability
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -82,8 +83,9 @@
      .                  have_mods, ez, gtts, ncfile
 	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, 
      .			dset, grid, cat, var, loc, TMAP_status, testvar
-	REAL		bad, scalefac, offset
-	CHARACTER	grid_name*16, title*128, units*64, newname*128
+	REAL		bad, scalefac, offset, set_nan
+	CHARACTER	grid_name*16, title*128, units*64, newname*128,
+     .                  is_nan*3
 
 * Initialize
 
@@ -219,9 +221,16 @@
 	loc = qual_given( slash_set_var_bad )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+* *kob* 7/03 - Add check for bad=NaN
+	   CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                         is_nan, status)
+	   IF (TM_HAS_STRING(is_nan, 'NaN')) THEN
+	      bad = set_nan()
+	   ELSE
+	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			   bad, status )
-	   IF ( status .NE. ferr_ok ) RETURN
+	      IF ( status .NE. ferr_ok ) RETURN
+	   ENDIF
 	ELSE
 	   bad = real4_init
 	ENDIF

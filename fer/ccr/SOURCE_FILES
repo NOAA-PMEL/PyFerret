@@ -40,6 +40,7 @@ replace_bad_data_sub.c \
 resize_animation_window.c\
 save_arg_pointers.c\
 save_c_string.c\
+set_nan.c\
 set_null_c_string.c\
 set_null_c_string_array.c\
 signal.c\

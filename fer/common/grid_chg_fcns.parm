@@ -21,6 +21,9 @@
 * v541: 03/02 -- added p_strlen,p_upcase,p_strindex,p_strrindex
 *		       p_dncase, p_strcat, p_substring, p_strfloat
 *                for new internal string handling functions  *kob*
+* 1/03: *kob* -- hardcode value for parg_type_float_or_string to 3 which
+*                is the value of ior(parg_type_float,parg_type_string).
+*                g77 won't allow intrinsic function in paramter stmt
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
      .			p_yunravel, p_zunravel, p_tunravel,
@@ -67,13 +70,12 @@
      .			parg_type_float_or_string
 	PARAMETER     ( parg_type_float  = 1,
      .			parg_type_string = 2,
+     . 		        parg_type_float_or_string = 3,
      .			parg_type_double = 4,
      .			parg_type_byte   = 8,
      .			parg_type_int16  = 16,
-     .			parg_type_int32  = 32,
-     .
-     .			parg_type_float_or_string = IOR(parg_type_float,
-     .				                        parg_type_string) )
+     .			parg_type_int32  = 32)
+
 
 * parameters to designate the data type of return value of function
 	INTEGER		pfcn_rtn_string,

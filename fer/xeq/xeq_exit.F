@@ -50,10 +50,20 @@
 * V314: 8/24/94 *kob* IBM port: slash_command_file should be declared as 
 *				logical
 * V510: *sh* 12/99 - close TMAP data sets when exiting
+* V533: *kob* 8/01 - add checks for new EXIT qualifiers:
+*	                 exit/loop
+*			 exit/script
+*                        exit/prompt
+*			 exit/program
+*                     With these new qualifiers, the routine has been
+*                     reworked as well.
 
 #ifdef unix
 	include 'tmap_dims.parm'
+	include 'command.parm'
 	include 'errmsg.parm'
+	include 'slash.parm'
+	include 'xcontrol.cmn'
 	include 'xprog_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
@@ -64,31 +74,46 @@
 	INTEGER status
 	LOGICAL slash_command_file
 
+	INTEGER i, pop
+
 * make sure no arguments were given
 	IF ( num_args .GT. 0 ) CALL ERRMSG( ferr_invalid_subcmnd, 
      .			status, cmnd_buff(arg_start(1):len_cmnd), *5000 )
 
-* real exit or just from command file ?
-	slash_command_file =  num_qualifiers    .EQ. 1
-     .			.AND. qualifier_list(1) .EQ. 1
 
-	IF ( input_source .NE. input_from_file
-     .	.OR. slash_command_file			) THEN
-
-* exit the program
-	   CALL CLSPPL						! close PLOT5
-	   CALL TM_EXIT			! close TMAP data sets
-!	   IF ( frame_on ) CALL MOVIE_CLOSE( frame_lun, status )! end movie
-	   RETURN 1
-
-	ELSE
-
-* exit the command file, only
-	   CALL POP_CS
+	IF (qual_given(slash_exit_loop) .GT. 0) THEN
+* Exit from current repeat loop
+	   pop=1
+	   DO 100 i = csp,1,-1
+	      IF ( cs_cmnd_num(i) .EQ. cmnd_repeat) GOTO 400
+	      pop = pop + 1 
+ 100	   CONTINUE
+	   RETURN        ! not in repeat loop, no need to move down stack
+	ELSE IF (qual_given(slash_exit_script) .GT. 0) THEN
+* Exit from current script.  Need to do check to make sure this
+* wasn't executed from waiting Ferret prompt, ie not in a script
+	   IF (csp .GT. 0) CALL POP_CS
 	   RETURN
-
+	ELSE IF (qual_given(slash_exit_prompt) .GT. 0) THEN
+* Exit to Ferret prompt
+	   pop = csp
+	   goto 400
+	ELSE IF (qual_given(slash_exit_program) .GT. 0    .OR.
+     .  	  (qual_given(slash_exit_command) .GT. 0) .OR.
+     .            input_source .NE. input_from_file) THEN
+* Exit program completely
+	   CALL CLSPPL		! close PLOT5
+	   CALL TM_EXIT		! close TMAP data sets
+	   RETURN 1
+!	   IF ( frame_on ) CALL MOVIE_CLOSE( frame_lun, status )! end movie
 	ENDIF
-	   
+
+* Here is where we'll pop the stack once for each level we need to move down
+ 400	IF (pop .GT. 0) then
+	   DO 500 i = 1,pop
+	      CALL POP_CS
+ 500	   CONTINUE
+	ENDIF
 * error exit
  5000	RETURN
 

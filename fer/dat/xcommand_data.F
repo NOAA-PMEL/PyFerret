@@ -130,6 +130,8 @@
 *                    inverse log axes and log depth axes.
 *       7/01 *acm* - added /AXES[=TOP,BOTTOM,LEFT,RIGHT]  for 
 *		     PLOT, CONTOUR, POLYGON, SHADE, VECTOR.
+*       8/01 *kob* - add LOOP, PROMPT, SCRIPT, PROGRAM qualifiers 
+*                    to EXIT command
 * V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
 
 	include 'ferret.parm'
@@ -940,6 +942,10 @@
 	   DATA qualifier_pointer(nsub_at11 + 0)/ nqual_at11a	/
 * EXIT/COMMAND_FILE
 		DATA qualifiers  (nqual_at11a+0)/ 'COMMAND'	/
+		DATA qualifiers  (nqual_at11a+1)/ 'LOOP'	/
+		DATA qualifiers  (nqual_at11a+2)/ 'SCRIPT'	/
+		DATA qualifiers  (nqual_at11a+3)/ 'PROMPT'	/
+		DATA qualifiers  (nqual_at11a+4)/ 'PROGRAM'	/
 
 * MESSAGE	 - command # 12
 	DATA commands(12)			/ 'MESSAGE'	/

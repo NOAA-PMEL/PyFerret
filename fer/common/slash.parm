@@ -12,7 +12,12 @@
 * V533 *acm*6/01 - added slash_is_logh, slash_is_logv
 * V540 *acm*7/01 - added /AXES[=TOP,BOTTOM,LEFT,RIGHT]  for plot commands
 *		     (PLOT, CONTOUR, POLYGON, SHADE, VECTOR)
-
+*      *kob* 8/01 - add slash_exit_command
+*                       slash_exit_loop
+*			slash_exit_prompt
+*			slash_exit_script
+*			slash_exit_program
+*			
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -173,7 +178,15 @@
      .			slash_noaxes,
      .
      .			slash_repeat_animate,
+     .
      .			slash_repeat_loop,
+     .
+     .                  slash_exit_command,
+     .                  slash_exit_loop,
+     .			slash_exit_script,	
+     .			slash_exit_prompt,	
+     .			slash_exit_program,	
+     .
      .			slash_is_logh,
      .			slash_is_logv	
 
@@ -335,7 +348,13 @@
      .
      .
      .                  slash_repeat_animate	= 9 + 1 ,
-     .                  slash_repeat_loop	= 10 + 1)
+     .                  slash_repeat_loop	= 10 + 1,
+     .
+     .			slash_exit_command	= 0 + 1,
+     .                  slash_exit_loop 	= 1 + 1,
+     .                  slash_exit_script 	= 2 + 1,
+     .                  slash_exit_prompt 	= 3 + 1,
+     .                  slash_exit_program 	= 4 + 1)
 
 	INTEGER		slash_xlimits, slash_ylimits, slash_title,
      .			slash_pen, slash_hlimits, slash_vlimits,

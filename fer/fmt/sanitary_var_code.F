@@ -44,6 +44,8 @@
 *
 * V200:  12/4/89 - created to make more honest VAR_CODE for other purposes
 * V230:  11/4/92 - expanded user variable name length
+* V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
+
 
 #ifdef unix
 	include	'ferret.parm'
@@ -58,7 +60,7 @@
 
 * internal variable declarations:
 	INTEGER		HASH_NAME
-	CHARACTER	VAR_CODE*24, vcode*24
+	CHARACTER	VAR_CODE*64, vcode*64
 
 * get basic variable code
 	vcode = VAR_CODE( category, variable )

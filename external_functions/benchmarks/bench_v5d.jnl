@@ -11,5 +11,5 @@ use coads_climatology
 let u =  uwnd
 let v =  vwnd 
  
-GO vis5d_write " " sst airt wspd u v slp
+GO vis5d_write " " sst 
 

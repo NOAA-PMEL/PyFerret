@@ -18,15 +18,15 @@ list tsorted_indices, tsorted_sst
 ! test on 2-D data.
 
 can region
-set data coads_climatology
-set region/l=5
+use coads_climatology
+set region/l=3
 shade sst
 
 let ysorted_indices = sortj(sst)
 let ysorted_sst = samplej(ysorted_indices, sst)
 shade ysorted_sst
 
-set region/l=5/x=181
+set region/l=3/x=181
 let len = ysorted_sst[j=@ngd]
 list len
 

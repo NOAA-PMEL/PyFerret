@@ -17,14 +17,16 @@
 *	4/96 added controls for IF: if_*, pif_*, max_arg_list 20-->128
 * V450:11/96 added plist_cdf_cache
 * V510: 5/00 *sh* - added denig_xylim_msg_done. increased max_qual_list
+* V530:10/00 *sh* - increased input command buffer size to 2048
+*		  - increased max_item_list 25 -> 250
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
      .			max_ifstk
-	PARAMETER     ( cmnd_buff_len = 500,
+	PARAMETER     ( cmnd_buff_len = 2048,
      .			max_qual_list = 35 ,	! increased from 30 5/00
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
-     .			max_item_list = 25 ,
+     .			max_item_list = 250 ,
      .			max_modes     = 25 ,
      .			mode_stack_size     = 7,
      .			max_ifstk     = 10 )
@@ -117,7 +119,7 @@
 
 ! Note: available_char_var is unused
 	CHARACTER
-     .		cmnd_buff*500,
+     .		cmnd_buff*2048,
      .		prompt*8,
      .		list_format*200, list_file*200,
      .		mode_name( max_modes )*12,

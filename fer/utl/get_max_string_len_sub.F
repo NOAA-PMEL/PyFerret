@@ -1,4 +1,4 @@
-	SUBROUTINE GET_MAX_STRING_LEN_SUB(cx, grid_data,
+	SUBROUTINE GET_MAX_STRING_LEN_SUB(cx, grid_data, 
      .		lox, hix, loy, hiy, loz, hiz, lot, hit, smax )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -36,8 +36,11 @@
 * Return the length of the longest string in this context
 
 * V530: 8/00 *sh*
+* v554: 12/04 *acm* Get the shape of the region for the context of the data;
+*                   these are the indices to use in looping through grid_data.
+*                   (fixes bug 617, listing string and numeric data together)
 
-	include 'ferret.parm'
+        include 'ferret.parm'
 	include 'xcontext.cmn'
 
 * calling argument declarations
@@ -45,15 +48,27 @@
 	REAL*8 grid_data( lox:hix,loy:hiy,loz:hiz,lot:hit )
 
 * internal variable declarations:
-	INTEGER  GET_C_STRING_LEN, i, j, k, l, slen
+	INTEGER  GET_C_STRING_LEN, i, j, k, l, slen, sslo(4), sshi(4),
+     .         ndim, cxperm(4)
 
 * initialize
 	smax = 1
 
-	DO 100 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	DO 100 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	DO 100 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	DO 100 i = cx_lo_s1(cx), cx_hi_s1(cx)
+        CALL get_cx_dims (cx,ndim,cxperm)
+
+        sslo(1) = cx_lo_s1(cx)
+        sslo(2) = cx_lo_s2(cx)
+        sslo(3) = cx_lo_s3(cx)
+        sslo(4) = cx_lo_s4(cx)
+        sshi(1) = cx_hi_s1(cx)
+        sshi(2) = cx_hi_s2(cx)
+        sshi(3) = cx_hi_s3(cx)
+        sshi(4) = cx_hi_s4(cx)
+
+	DO 100 l = sslo(cxperm(4)), sshi(cxperm(4))
+	DO 100 k = sslo(cxperm(3)), sshi(cxperm(3))
+	DO 100 j = sslo(cxperm(2)), sshi(cxperm(2))
+	DO 100 i = sslo(cxperm(1)), sshi(cxperm(1))
 
 	   slen = GET_C_STRING_LEN( grid_data(i,j,k,l) )
 	   IF ( slen .GT. smax ) smax = slen

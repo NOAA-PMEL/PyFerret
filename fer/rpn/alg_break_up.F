@@ -12,6 +12,7 @@
 * V402: 7/95 - Allow nested [] of the form vname1[G=vname2[D=dset]]
 * V495: 7/7/98 - allow variable names in single quotes - add new state S10
 *                and new character class 11 (single quote)
+*       7/23 - fixed problem missed the first time. brackets: 'X'[stuff]
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -36,7 +37,7 @@
 
 * possible states of lexical analysis
 *	S1 - looking for start of atom
-*	S2 - + or - found following operator
+*	S2 - + or - found following operator (*sh* following name ??)
 *	S3 - interpreting constant
 *	S4 - interpreting name (variable or function, ...)
 *	S5 - found last character of atom
@@ -57,10 +58,10 @@
 *	C8 - blank tab
 *	C9 - E
 *	C10- .
-*       C11- "
+*       C11- '
 *	C12- all others
-*						... CHARACTER CLASS ...
-*				      C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 C11
+*		    ... CHARACTER CLASS ...
+*             C1 C2 C3 C4 C5 C6 C7 C8 C9 C10C11 C12
 	DATA (next_state(i,1),i=1,num_class)
 	1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10, -2/
 	DATA (next_state(i,2),i=1,num_class)
@@ -175,10 +176,8 @@
 *    Also, quoted names inside of square brackets will not be handled here
  1000	IF (class .EQ. 11) THEN		! quote found
 	   IF (last_state .EQ. 10) THEN      
-	      at_end(natom) = p         ! closing quote
-	      IF ( at_end(natom)-at_start(natom) .LT. 2 ) GOTO 5400
-	      atom_open = .FALSE.
-	      state = 1
+	      state = 4                 ! closing quote
+*       ... note that we may still be interpreting names like 'X'[stuff]
 	   ELSE
 	      atom_open = .TRUE.        ! opening quote
 	   ENDIF
@@ -197,8 +196,6 @@
  5300	err_string = '['//text(MAX(1,p-8):p)//'\\\]'
 	status = ferr_expr_too_complex
 	GOTO 5005
- 5400	err_string = 'empty quotes not allowed'
-	GOTO 5000 
  5900	err_string = '*** lex state'
 	status = ferr_internal
 	GOTO 5005

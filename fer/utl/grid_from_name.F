@@ -12,6 +12,7 @@
 * Unix/RISC port - 11/1/91: bug fix: status not checked returning from
 *                           PARSE_NAM_DSET_GRD.  "SHOW GRID T" blew up.
 * V300: 2/93 - return unspecified if error exit (caught by f77 3.2)
+* V491+ 7/98 *sh* - allow case-sensitive variable names in single quotes 
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -38,11 +39,13 @@
 	IF ( grid .NE. unspecified_int4 ) GOTO 1000
 	
 * well then, identify the variable named and get its grid
-	CALL PARSE_NAM_DSET_GRD( name, dflt_cx,
+! 7/98	CALL PARSE_NAM_DSET_GRD( name, dflt_cx,
+	CALL PARSE_NAM_DSET_GRD( lc_name, dflt_cx,
      .				iset, grid, category, variable, status )
         IF ( status .NE. ferr_ok ) GOTO 5000       ! 11/91 *sh*
 	IF ( variable .EQ. munknown_var_name ) CALL ERRMSG
-     .       ( ferr_unknown_grid,status,name(:TM_LENSTR1(name)),*5000 )
+     .       ( ferr_unknown_grid, status,
+     .             lc_name(:TM_LENSTR1(lc_name)),*5000 )
 	
 * success
  1000	GRID_FROM_NAME = grid

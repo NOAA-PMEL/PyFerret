@@ -72,6 +72,7 @@
 * $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
+* V491+ - 7/98 *sh* - allow case-sensitive var name in DEFINE GRID/LIKE=varname
 
 #ifdef unix
 	include	'tmap_format/tmap_errors.parm'
@@ -308,7 +309,7 @@
 * was a /LIKE= given ? ... set up a grid template
 	iqual = qual_given( slash_like )
 	IF ( iqual .GT. 0 ) THEN
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff1, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   grid = GRID_FROM_NAME( buff1, cx_last, status )

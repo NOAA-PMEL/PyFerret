@@ -3,7 +3,7 @@ Running FERRET version /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_
 -rwxrwxrwx   1 ansley   tmap     63882404 Nov  4 11:30 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: bug fix for bug 1090, also different scaling in stepfiles of an MC dataset.  2 new benchmark scripts. Remove unneeded set mode diag from err570_many_variables.jnl
+Note: bug fix for bug 1070, also different scaling in stepfiles of an MC dataset.  2 new benchmark scripts. Remove unneeded set mode diag from err570_many_variables.jnl
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0

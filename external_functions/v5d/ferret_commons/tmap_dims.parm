@@ -7,11 +7,19 @@
 * increased parameter limits flagging the changes with "xarmchg date" ("x"="p")
 * so that automatic procedures can select which group of parameters to choose
 
+* 9/95 *sh* : added dynamic grid creation
+*		To preserve compatibility with older code a new area for
+*		dynamic grids was created **above** max_grids
+* 10/95 *sh* : added dynamic line creation in a similar style
+* 11/95 *sh* : increased max_grids from 200 to 500
+* 7/97 *sh*  : increased maxvars, max_lines, and maxlinestore
+
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
      .		maxstepfiles,maxvars,maxaux,max_grids,max_lines,
      .		maxlinestore, maxgridfiles, max_axis_orients,
-     .		num_aux, num_parm, num_gridfiles, maxvarfiles
+     .		num_aux, num_parm, num_gridfiles, maxvarfiles,
+     .		num_dyn_grids, max_dyn_grids, num_dyn_lines, max_dyn_lines
 
 * parameters used for dimensioning arrays
 	PARAMETER (nrec_codes = 11)	! # of different record codes
@@ -20,17 +28,24 @@
 	PARAMETER (maxdsets = 30)	! maximum # of data sets simultaneously
 	PARAMETER (maxstepfiles = 500)	! # of files with time step data
 !	PARAMETER (maxvars = 200)	! max # of ALL vars *parmchg: pre 7/92
-!	PARAMETER (maxvars = 300)	! max # of ALL vars *parmchg: now
-	PARAMETER (maxvars = 500)	! max # of ALL vars *parmchg: now  !acm
+!	PARAMETER (maxvars = 300)	! max # of ALL vars *parmchg: pre 7/97
+	PARAMETER (maxvars = 500)	! max # of ALL vars *parmchg: now
 	PARAMETER (maxvarfiles = 500)	! # of files with time step data
 	PARAMETER (maxaux = 50)		! max # of ALL auxiliary sets
 !	PARAMETER (max_grids = 60)	! max # of grids *parmchg: pre 7/92
-!	PARAMETER (max_grids = 200)	! max # of grids *parmchg: now
-	PARAMETER (max_grids = 600)	! max # of grids *parmchg: now  !acm
+!	PARAMETER (max_grids = 200)	! max # of grids *parmchg: pre 11/95
+	PARAMETER (max_grids = 500)	! max # of **static** grids
+	PARAMETER (num_dyn_grids = 100)! max # of "implicit" grids (9/95)
+	PARAMETER (max_dyn_grids = max_grids + num_dyn_grids)
 !	PARAMETER (max_lines = 100)	! max # of lines *parmchg: pre 7/92
-	PARAMETER (max_lines = 200)	! max # of lines *parmchg: pre 7/92
+!	PARAMETER (max_lines = 200)	! max # of lines *parmchg: pre 7/97
+	PARAMETER (max_lines = 500)	! max # of lines
+	PARAMETER (num_dyn_lines = 100)! max # of "implicit" liness (10/95)
+	PARAMETER (max_dyn_lines = max_lines + num_dyn_lines)
 !	PARAMETER (maxlinestore = 10000)! max # of coords *parmchg: pre 7/92
-	PARAMETER (maxlinestore = 20000)! max # of coords *parmchg: now
+!	PARAMETER (maxlinestore = 20000)! max # of coords *parmchg: pre 10/95
+!	PARAMETER (maxlinestore = 50000)! max # of coords *parmchg: pre 7/97
+	PARAMETER (maxlinestore = 100000)! max # of coords
 	PARAMETER (maxgridfiles = 10)	! maximum number of grids
 	PARAMETER (max_axis_orients = 9)! maximum number of axis orients
 	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor

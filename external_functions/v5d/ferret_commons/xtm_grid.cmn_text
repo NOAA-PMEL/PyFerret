@@ -6,41 +6,66 @@
 *			  word misalignment error on DEC/MIPS RISC CPU
 * Unix/RISC port 4/91 - increased grid_filename size for full path
 
-
+* 9/95 *sh* : added dynamic grid creation variables
+*		To preserve compatibility with older code a new area for
+*		dynamic grids was created **above** max_grids
+* see detailed description of dynamic grids in TM_ALLO_DYN_GRID 
+* 10/95 *sh*: added dynamix axes (lines) in a similar style
+* v500: 3/99 *kob* - up line_name to length of 64
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
-	CHARACTER*16	line_name, line_units, grid_name
+	CHARACTER*64	line_name
+	CHARACTER*16	line_units, grid_name
 	CHARACTER*2	line_direction, axis_orients
 	INTEGER		line_subsc1, line_dim, line_unit_code, grid_line,
-     .			next_line_mem_pos
-	LOGICAL		grid_out_prod, line_regular, line_modulo
+     .			next_line_mem_pos, grid_use_cnt, grid_flink,
+     .			grid_blink, grid_free_ptr, max_grid_used,
+     .			line_parent, line_use_cnt, line_flink, line_blink,
+     .			line_class, line_parm1, line_free_ptr, max_line_used
+	LOGICAL		grid_out_prod, line_regular, line_modulo,
+     .			line_has_edges
 	REAL		line_tunit, grid_rotation
 	REAL*8		line_start, line_delta, line_mem
 
 	COMMON / XGRID /
-     .			line_start	( 0:max_lines ),
-     .			line_delta	( 0:max_lines ),
+     .			line_start	( 0:max_dyn_lines ),
+     .			line_delta	( 0:max_dyn_lines ),
      .			line_mem	( maxlinestore),
      .
      .			grid_filename	( maxgridfiles),
      .
-     .			line_name	( 0:max_lines ),
+     .			line_name	( 0:max_dyn_lines ),
      .			line_subsc1	( 0:max_lines ),
-     .			line_dim	( 0:max_lines ),
-     .			line_units	( 0:max_lines ),
-     .			line_unit_code	( 0:max_lines ),
-     .			line_regular	( 0:max_lines ),
-     .			line_modulo	( 0:max_lines ),
-     .			line_t0		( 0:max_lines ),
-     .			line_tunit	( 0:max_lines ),
+     .			line_dim	( 0:max_dyn_lines ),
+     .			line_units	( 0:max_dyn_lines ),
+     .			line_unit_code	( 0:max_dyn_lines ),
+     .			line_regular	( 0:max_dyn_lines ),
+     .			line_modulo	( 0:max_dyn_lines ),
+     .			line_t0		( 0:max_dyn_lines ),
+     .			line_tunit	( 0:max_dyn_lines ),
      .			next_line_mem_pos,
+     .			line_parent	( max_lines:max_dyn_lines ),
+     .			line_use_cnt	( 0:max_dyn_lines ),
+     .			line_has_edges	( 0:max_dyn_lines ),
+     .			line_flink	( max_lines:max_dyn_lines ),
+     .			line_blink	( max_lines:max_dyn_lines ),
+     .			line_class	( max_lines:max_dyn_lines ),
+     .			line_parm1	( max_lines:max_dyn_lines ),
+     .			line_free_ptr,
+     .			max_line_used,
      .
-     .			grid_name	( 0:max_grids ),
-     .			grid_line	( 4, 0:max_grids ),
-     .			grid_out_prod	( 4, 0:max_grids ),
-     .			grid_rotation	( 0:max_grids ),
+     .			grid_name	( 0:max_dyn_grids ),
+     .			grid_line	( 4, 0:max_dyn_grids ),
+     .			grid_out_prod	( 4, 0:max_dyn_grids ),
+     .			grid_rotation	( 0:max_dyn_grids ),
+     .			grid_use_cnt	( 0:max_dyn_grids ),
+     .			grid_flink	( max_grids:max_dyn_grids ),
+     .			grid_blink	( max_grids:max_dyn_grids ),
+     .			grid_free_ptr,
+     .			max_grid_used,
      .
-     .			line_direction	( 0:max_lines ),
+     .			line_direction	( 0:max_dyn_lines ),
      .			axis_orients	( 0:max_axis_orients )
 
 * note: the zero subscript is a scratch buffer
+

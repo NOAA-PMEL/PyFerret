@@ -42,6 +42,7 @@
 * V533: 6/01 *sh* added variable mr_delta
 *	7/01 *sh* added variable uvar_data_type
 * V534: 9/01 *sh* doubled default memory size
+* v5.50 *acm*9/02 - up max_uvar from 400 to 2000
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -178,7 +179,7 @@
      .			uvar_text_len,
      .			uvar_dset,
      .			max_intrp
-	PARAMETER     (	max_uvar      	  = 400,! total # uvars incl. "EX#."
+	PARAMETER     (	max_uvar      	  =2000,! total # uvars incl. "EX#."
      .			max_uvar_items    = 100,! complexity of uvar expression
      .			uvar_text_len	  = 512,! max length of uvar expression
      .			max_intrp	  = 200  )

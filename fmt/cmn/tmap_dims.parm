@@ -21,6 +21,7 @@
 *	*sh* 3/00 - create line_ceiling and grid_ceiling to allow netCDF files
 *		    to be using dynamic objects
 *	*sh* 5/00 - bump num_dyn_grids from 100 to 500
+* v5.50 *acm*9/02 - up maxdsets from 30 to 100 
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
@@ -35,11 +36,12 @@
 	PARAMETER (nrec_codes = 11)	! # of different record codes
 	PARAMETER (ngrid_prenamed=11)	! # of pre-defined grids
 	PARAMETER (nvari_prenamed=7)	! # of pre-named variables
-	PARAMETER (maxdsets = 30)	! maximum # of data sets simultaneously
+	PARAMETER (maxdsets = 100)	! maximum # of data sets simultaneously
 	PARAMETER (maxstepfiles = 500)	! # of files with time step data
 !	PARAMETER (maxvars = 200)	! max # of ALL vars *parmchg: pre 7/92
 !	PARAMETER (maxvars = 300)	! max # of ALL vars *parmchg: pre 7/97
-	PARAMETER (maxvars = 500)	! max # of ALL vars *parmchg: now
+!	PARAMETER (maxvars = 500)	! max # of ALL vars *parmchg: now
+	PARAMETER (maxvars = 2000)	! max # of ALL vars *parmchg: now
 	PARAMETER (maxvarfiles = 500)	! # of files with time step data
 	PARAMETER (maxaux = 50)		! max # of ALL auxiliary sets
 !	PARAMETER (max_grids = 60)	! max # of grids *parmchg: pre 7/92
@@ -58,7 +60,7 @@
 !	PARAMETER (max_lines = 2500)	! max # of lines: pre 3/00
 	PARAMETER (max_lines = 1000)	! max # of *static* lines
 !	PARAMETER (num_dyn_lines = 100)! max # of *dynamic* lines: pre 3/00
-	PARAMETER (num_dyn_lines = 500)! max # of *dynamic* lines
+	PARAMETER (num_dyn_lines = 1500)! max # of *dynamic* lines
 	PARAMETER (max_dyn_lines = max_lines + num_dyn_lines)
 	PARAMETER (tmp_line_hook = max_dyn_lines + 1)
 	PARAMETER (line_ceiling  = tmp_line_hook )

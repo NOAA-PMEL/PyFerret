@@ -19,10 +19,11 @@
 * V533: *sh* 6/01 - added transformation trans_event_mask (@evnt)
 *	          - ptype_native -> ptype_unknown
 *	     7/01 - replace alg_no_op with alg_if_marker and alg_then_marker
+* V550: *acm*9/02 - Increase max_gfdl_dsets to 100, along with maxdsets.
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
-	PARAMETER     (	max_gfdl_dsets	  = 30 )! = maxdsets in XDSET_INFO
+	PARAMETER     (	max_gfdl_dsets	  = 100 )! = maxdsets in XDSET_INFO
 
 * numerical constants
 	REAL		deg2rad, radius, deg2km, deg2m, m_radius

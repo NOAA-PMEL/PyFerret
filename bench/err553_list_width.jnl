@@ -1,0 +1,11 @@
+! err553_list_width.jnl
+! *acm* 4/1/2004
+! Fix for bug 837; creating a format for very wide ascii listing  
+! (this caused an outright crash)
+
+set mode ignore
+def axis/x=1:10000:1 xax
+def axis/y=1:2:1 yax
+list/wid=99999/y=1:2 sin(x[gx=xax]) + y[gy=yax]
+
+can mode ignore

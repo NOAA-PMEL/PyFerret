@@ -63,4 +63,10 @@ GO err553_set_axis_depth.jnl
 GO bn_reset
 GO err553_symbol_lev.jnl
 
+! Fixes for modulo striding bugs
+GO bn_reset
+GO err553_stride_modulo.jnl
 
+! Fixes bug creating format for listing a very long line
+GO bn_reset
+GO err553_list_width.jnl

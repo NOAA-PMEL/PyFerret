@@ -1,0 +1,27 @@
+! err553_stride_modulo_neg.jnl
+! *acm* 3/31/2004
+!  Modulo axis with strides that have negative indices
+! did not work prior to v5.6 of Ferret.
+
+! mylon.nc created as follows:
+! use etopo20
+! let var = sin(x[gx=var])
+! save/file=mylon.nc var
+
+use mylon
+list var[i=-400:-40:20]
+list var[i=-400:-40:50]
+
+! This list, using modulo-ing to go out to a second replication 
+! of the data, would have worked under previous versions but
+! with the last point missing, bug 841
+
+list var[i=`2*1082-400`:`2*1082-40`:50]
+
+! Previously also, the moduloing could return results
+! that are one index off, also bug 841
+
+list/nohead/y=0/prec=6 var[i=1100:1400:50]
+can mem; list/nohead/y=0/prec=6 var[i=19:319:50,y=0]
+can mem; list/y=0 var[i=69]
+can mem; list/y=0 var[i=68]

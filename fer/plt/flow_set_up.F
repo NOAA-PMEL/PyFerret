@@ -62,7 +62,7 @@ C plus those starting w/ xbox_bounds:
 * internal variable declarations:
 
 	INTEGER	dim1, dim2, mvx, ctx, grid
-        LOGICAL	GEOG_COS_FACTOR, trnspz, transpz
+        LOGICAL	GEOG_COS_FACTOR, transpz
 
 * initialize
 	mvx  = mr_list( 1 )

@@ -102,6 +102,7 @@
 * V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
 *       6/99 - save time axis info in XPLOT_STATE to enable line plot overlays
 *		(with plot/vs and polygon)
+* V510	12/99 - *sh* all bad data no longer an error
 
 #ifdef unix
 	include 'ferret.parm'
@@ -161,8 +162,7 @@
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
      .			letter*1
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
-     .			regrid_1, regrid_2, no_y_rng, formatted,
-     .			edges_ok
+     .			regrid_1, regrid_2, no_y_rng, edges_ok
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
      .			ctx, cty, xblk1, yblk1, plot_mem_used, nvars,
@@ -326,10 +326,13 @@
 
 * check that there is some valid data
 	no_x_rng = NO_GRID_RANGE( memory(1,xblk1), size, mvx_temp, valx1 )
-	IF ( no_x_rng .AND. valx1 .EQ. bad_x ) GOTO 5200
+	IF ( no_x_rng .AND. valx1 .EQ. bad_x ) valx1 = bad_val4
 	IF ( vector ) THEN
 	   no_y_rng = NO_GRID_RANGE( memory(1,yblk1), size, mvy_temp, valy1 )
-	   IF ( no_y_rng .AND. valy1 .EQ. bad_y  ) GOTO 5200
+	   IF ( no_y_rng .AND. valy1 .EQ. bad_y  ) THEN
+	      valx1 = bad_val4
+	      no_x_rng = no_y_rng	! need both to have either
+	   ENDIF
 	ENDIF
 
 * determine axis re-gridding needs
@@ -556,8 +559,8 @@
      .          cmnd_name(:lo2)//' points to plot'//pCR//
      .          'Plot buffer size is: '//buff(:lo1), *5100 )
 
- 5200	CALL ERRMSG( ferr_no_range, status,
-     .				'data are all flagged as bad', *5000 )
+! 5200	CALL ERRMSG( ferr_no_range, status,
+!     .				'data are all flagged as bad', *5000 )
  5300	CALL ERRMSG( ferr_invalid_command, status,
      .		     'can only '//commands(cmnd_num)//' single fields'//pCR//
      .		     'Use /OVERLAY for multiple variables', *5100 )

@@ -64,6 +64,7 @@
 *               declaration line.
 * V450:  5/29/97 - added /NOAXES qualifier (useful in curvilinear plots)
 * V491:  12.98   - added /PATTERN qualifier *jd*
+* V510 12/99 *sh* - allow all-missing data plots
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -94,7 +95,7 @@
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, do_key,
-     .            spectrum, set_up, noaxes, pattern
+     .            spectrum, set_up, noaxes, pattern, no_data
 	INTEGER	  TM_LENSTR1, status, ishade, slen, sp, patt,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start
@@ -150,20 +151,29 @@
      .				status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
+* is there no valid input data?
+           no_data =  no_range .AND. only_val.EQ.bad_val4
+
 * PPLUS blows up setting auto contour levels if all data have same value
-	   IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
+	   IF ( no_range .AND. .NOT.no_data 
+     .          .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
      .		CALL PPLCMD ( from, line, 0, 
      .		'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
 
 * default key
 	   do_key =  (qual_given(slash_shad_key)  .GT. 0)
      .		.OR. ( (qual_given(slash_shad_line) .EQ. 0)
-     .           .AND. .NOT.overlay )
+     .           .AND. .NOT.overlay
+     .           .AND. .NOT.no_data )
 	   IF (qual_given(slash_shad_nokey) .gt. 0) do_key = .FALSE.
            IF ( do_key ) THEN
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
            ELSE
               CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
+              IF (no_data) CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
+     .                  ppl_centered, letsize_title,
+     .                  'No Valid Data',
+     .                  lab_loc_axlen_times, lab_loc_axlen_times )
            ENDIF
 
 * protect colors already on-screen before a color overlay

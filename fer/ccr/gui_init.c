@@ -48,14 +48,44 @@
  * stand-alone application. 
  *---------------------------------------------------*/
 #define __globalDefs
-#include "ferret_fortran.h"
-#include "ferret_structures.h"
 #include "ferret_shared_buffer.h"
+#include "ferret_fortran.h"
+#ifdef LINK_GUI_AS_MAIN
+#include "ferret_structures.h"
 #include "JC_Utility.h" /* for windows[] and window_count in the SGI_POPUPS section */
-#undef __globalDefs
 #ifndef DESIGN_TIME
 #include "UxXt.h"
 #endif /* DESIGN_TIME */
+#endif
+#undef __globalDefs
+
+static void do_gui_init() {
+
+  /*
+   * Make sure the FERRET environment is set up and ready by looking for $FER_DIR.
+   */
+  if (getenv("FER_DIR") == NULL){
+    printf("\n  The FERRET environment has not been properly set up.\n");
+    printf("  (The environment variable FER_DIR is not defined)\n");
+    printf("\n  Have you executed \"source your_system_path/ferret_paths\" ?\n");
+    exit(1);
+  }
+}
+
+#ifndef LINK_GUI_AS_MAIN
+int gui_init() {
+  return 0;
+}
+
+static float *mem;
+				
+float **gui_get_memory() {
+  return &mem;
+}
+void gui_run(int *argc, char **argv){
+}
+
+#else
 
 XtAppContext	UxAppContext;
 Widget		UxTopLevel;
@@ -89,34 +119,6 @@ static void TimeOutCB(XtPointer cd, XtIntervalId *id)
   FORTRAN(xgks_x_events)();
 
 }
-
-static void do_gui_init() {
-
-  /*
-   * Make sure the FERRET environment is set up and ready by looking for $FER_DIR.
-   */
-  if (getenv("FER_DIR") == NULL){
-    printf("\n  The FERRET environment has not been properly set up.\n");
-    printf("  (The environment variable FER_DIR is not defined)\n");
-    printf("\n  Have you executed \"source your_system_path/ferret_paths\" ?\n");
-    exit(1);
-  }
-}
-
-#ifndef LINK_GUI_AS_MAIN
-int gui_init() {
-  return 0;
-}
-
-static float *mem;
-				
-float **gui_get_memory() {
-  return &mem;
-}
-void gui_run(int *argc, char **argv){
-}
-
-#else
 
 int gui_init() {
   int rval = 1;

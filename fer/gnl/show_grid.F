@@ -26,6 +26,8 @@
 * kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
+* *kob*  1/98 - add calls to convert cx_lo/hi_ww to tsteps before calling
+*               ISUBSCR_CX
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -61,7 +63,7 @@
      .		ndec, status, delta
 	CHARACTER TM_FMT*14, buff*14, lo_str*20, hi_str*20, extra*30
 	REAL	BOX_SIZE
-	REAL*8	TM_WORLD, lo_val8
+	REAL*8	TM_WORLD, lo_val8, SECS_TO_TSTEP
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -106,6 +108,18 @@
 	         lo = MAX( loest, cx_lo_ss( cx, idim ) )
 	         hi = MIN( hiest, cx_hi_ss( cx, idim ) )
 	      ELSE
+* kob - 1/98 -  cx_lo/hi_ww need to be translated to tsteps, before calling
+*               ISUBSCR_CX, for the t dimension when cx_calendar is true.
+*               similar to what goes on in flesh_out_axis. 
+*
+		 IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
+                    cx_lo_ww(idim,cx) =
+     .                SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
+                    cx_hi_ww(idim,cx) =
+     .		      SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
+* reset cx_calendar now that cx_lo/hi_ww have been converted
+                    cx_calendar(cx) = .FALSE.
+		 ENDIF
 	         lo = ISUBSCR_CX( cx_lo_ww(idim,cx),
      .						grid, idim, cx, round_dn )
 	         hi = ISUBSCR_CX( cx_hi_ww(idim,cx),

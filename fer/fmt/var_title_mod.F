@@ -64,6 +64,7 @@
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
 * V455:  9/97 - modify labeling of xforms @CIA,CIB,CDA,CDB to avoid "by n pts"
 * V491:  3/98 - crash due to boolean operator precedence error
+* V530:  8/00 *sh* - added support for cat_string
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -97,9 +98,9 @@
 	INTEGER	TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .		var, categ, dset, cairt, cairt_dset,
      .		mlen, t_len, maxlen, idim, trans, slen, k_lo
-	CHARACTER ALG_TRANS_TITL*20, LEFINT*4, TM_FMT*20,
+	CHARACTER ALG_TRANS_TITL*20, TM_FMT*20,
      .		REGRID_COMMENTS*64,
-     .          trans_title*40, buffer*24, separator*1
+     .          trans_title*40, buffer*24
 
 * initialize
 	var     = cx_variable( cx )
@@ -113,6 +114,7 @@
 	ELSE
 	   var_title_mod = ' '
 	ENDIF
+	IF ( categ .EQ. cat_string ) RETURN
 
 * length so far
 	mlen = TM_LENSTR( var_title_mod )

@@ -49,6 +49,7 @@
 *       10/22/92 - added units on uvars
 * V420: variable units may be modified by regrid transforms of the variable
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
+* V530  8/00 *sh* - added support for cat_string
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -99,6 +100,7 @@
 
 	ELSEIF ( category .EQ. cat_pseudo_var 
      .	   .OR.  category .EQ. cat_constant
+     .	   .OR.  category .EQ. cat_string
      .	   .OR.  category .EQ. cat_const_var ) THEN
 
 	   VAR_UNITS = ' '

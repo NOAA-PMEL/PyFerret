@@ -78,9 +78,23 @@ set mode ignore
 rep/name=a say `a`  
 
 ! Cannot use pseudo-variables.
-rep/range=1:3/name=l list/nohead sst[i=1,j=1]
+
+set mode ignore
+rep/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+
+! Check that the state is reset after error
+rep/range=1:3/name=a say `a`
+
+rep/range=1:3/name=I (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=j (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=k (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=X (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=y (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=z (use coads_climatology; list/nohead [sst])
+rep/range=1:3/name=tbox (use coads_climatology; list/nohead[sst,x=181,y=0,t=`tbox`])
+rep/range=1:3/name=xboxlo (list/nohead xboxlo)
+
 
 ! Nested REPEAT with the same counter variable name
 repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
-
 cancel mode ignore

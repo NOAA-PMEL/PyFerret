@@ -3,7 +3,8 @@ c
 !	PARAMETER (NSIZE=150000)
 !	Changed back to 200K J Davison
 !	Now 500 000 J Davison 3.4.93
-	PARAMETER (NSIZE=500000)
+!	Now double it to 1000000
+	PARAMETER (NSIZE=1000000)
 c
 c	ppldat
 C** 

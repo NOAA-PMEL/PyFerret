@@ -1,8 +1,6 @@
-	SUBROUTINE REVERSE_GRID_AXIS_SUB( axis, cx, dat,
+	SUBROUTINE REVERSE_GRID_AXIS_SUB( axis, dat, ddlo, ddhi, ddel,
      .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,27 +32,20 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-* copy data from source grid into dstination grid using limits of source
-* context (i.e. dstination grid is ASSUMED) big enough to hold data
+
+* reverse the grid indexing along the indicated axis
+* the passed indices are correct for the *result* of the reversal
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V320: 2/16/89
+* V541:  2/02 *sh* - added support for delta strides
 
-#ifdef unix
 	include 'ferret.parm'
-	include	'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER axis, cx,
+	INTEGER axis, ddlo, ddhi, ddel,
      .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
 	REAL    dat( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
 
@@ -65,17 +56,16 @@
 * --- end of introductory code ---
 
 * initialize
-	turn_pt = cx_lo_ss(cx,axis)
-     .	      + (cx_hi_ss(cx,axis)-cx_lo_ss(cx,axis)-1)/2
-	hiplo = cx_lo_ss(cx,axis) + cx_hi_ss(cx,axis)
+	turn_pt = ddlo + (ddhi-ddlo-1)/2
+	hiplo = ddlo + ddhi
 
 * reverse the data along the appropriate axis
 
 	IF ( axis .EQ. x_dim ) THEN
-	   DO 100 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	   DO 100 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	   DO 100 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	   DO 100 i = cx_lo_s1(cx), turn_pt
+	   DO 100 l = dlot, dhit
+	   DO 100 k = dloz, dhiz
+	   DO 100 j = dloy, dhiy
+	   DO 100 i = dlox, turn_pt
 
 	      tmp = dat(i,j,k,l)
 	      dat(      i,j,k,l) = dat(hiplo-i,j,k,l)
@@ -84,10 +74,10 @@
  100	   CONTINUE
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
-	   DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	   DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	   DO 200 j = cx_lo_s2(cx), turn_pt
-	   DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	   DO 200 l = dlot, dhit
+	   DO 200 k = dloz, dhiz
+	   DO 200 j = dloy, turn_pt
+	   DO 200 i = dlox, dhix
 
 	      tmp = dat(i,j,k,l)
 	      dat(i,      j,k,l) = dat(i,hiplo-j,k,l)
@@ -96,10 +86,10 @@
  200	   CONTINUE
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
-	   DO 300 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	   DO 300 k = cx_lo_s3(cx), turn_pt
-	   DO 300 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	   DO 300 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	   DO 300 l = dlot, dhit
+	   DO 300 k = dloz, turn_pt
+	   DO 300 j = dloy, dhiy
+	   DO 300 i = dlox, dhix
 
 	      tmp = dat(i,j,k,l)
 	      dat(i,j,      k,l) = dat(i,j,hiplo-k,l)
@@ -108,10 +98,10 @@
  300	   CONTINUE
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
-	   DO 400 l = cx_lo_s4(cx), turn_pt
-	   DO 400 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	   DO 400 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	   DO 400 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	   DO 400 l = dlot, turn_pt
+	   DO 400 k = dloz, dhiz
+	   DO 400 j = dloy, dhiy
+	   DO 400 i = dlox, dhix
 
 	      tmp = dat(i,j,k,l)
 	      dat(i,j,k,      l) = dat(i,j,k,hiplo-l)

@@ -1,7 +1,5 @@
 	SUBROUTINE REVERSE_GRID_AXIS ( axis, cx, mr, dat )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -39,29 +37,40 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V320:  2/16/95
+* V541:  2/02 *sh* - added support for delta strides
 
-#ifdef unix
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER axis, cx, mr
 	REAL    dat( * )
 
-	CALL REVERSE_GRID_AXIS_SUB( axis, cx, dat,
-     .			         mr_lo_s1(mr), mr_hi_s1(mr),
-     .				 mr_lo_s2(mr), mr_hi_s2(mr),
-     .				 mr_lo_s3(mr), mr_hi_s3(mr),
-     .				 mr_lo_s4(mr), mr_hi_s4(mr) )
+* local variable declarations
+	INTEGER idim, ilo(4), ihi(4), idel(4)
+
+* get the delta values
+	DO idim = 1, 4
+	  ilo (idim) = cx_lo_ss(cx,idim)
+	  ihi (idim) = cx_hi_ss(cx,idim)
+	  IF (cx_delta(idim,cx) .EQ. unspecified_val8 ) THEN
+	    idel(idim) = 1
+	  ELSE
+	    idel(idim) = cx_delta(idim,cx)
+	    ilo(idim) = 1
+	    ihi(idim) = 1 + (ihi(idim) - ilo(idim)) / idel(idim)
+	  ENDIF
+	ENDDO
+
+	CALL REVERSE_GRID_AXIS_SUB( axis, dat,
+     .				    ilo(axis), ihi(axis), idel(axis),
+     .			            ilo(1), ihi(1),
+     .			            ilo(2), ihi(2),
+     .			            ilo(3), ihi(3),
+     .			            ilo(4), ihi(4) )
 
 	RETURN
 	END 

@@ -1,7 +1,5 @@
 	SUBROUTINE IS_REVERSE( memory, *, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -45,22 +43,15 @@
 * V411: 9/11/95 (IBM port) array "reversed" is declared wrong type
 * V500: 7/99 *sh* is strides were applied to reversed axes need special
 *	handling of the limits
+* V541: 2/02 *sh* - bug fix -- 6/01 changes in the handling of delta strides
+*			(see read_tm.F) were not propagated to this routine
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -75,10 +66,9 @@
 *	 isp	<--	current stack level (for moduloing )
 
 * internal variable declarations:
-	LOGICAL	short_span, has_a_stride, has_strides(4)
-	INTEGER CAXIS_LEN, TM_AXES_REVERSED, nrev,
+	INTEGER TM_AXES_REVERSED, nrev,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
-     .		axis, i, idim, var, hi_ss, lo_ss, itmp, reversed(4)
+     .		axis, i, var, hi_ss, lo_ss, itmp, reversed(4)
 
 * --- end of introductory code ---
 
@@ -101,31 +91,32 @@
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing',isact_class_reverse, res_cx, axis )
 
-* strides indicated in cx_delta e.g. SST[I=110:180:10] ?
-* If so, transfer this info to the stride array
-        has_a_stride = .FALSE.
-        DO 100 idim = 1, 4
-           has_strides(idim) =  cx_delta(idim,res_cx) .NE. unspecified_val8
-     .                   .AND.  cx_delta(idim,res_cx) .NE. 1 
-           IF (has_strides(idim))  has_a_stride = .TRUE.
- 100    CONTINUE
+!* strides indicated in cx_delta e.g. SST[I=110:180:10] ?
+!* If so, transfer this info to the stride array
+!        has_a_stride = .FALSE.
+!        DO 100 idim = 1, 4
+!           has_strides(idim) =  cx_delta(idim,res_cx) .NE. unspecified_val8
+!     .                   .AND.  cx_delta(idim,res_cx) .NE. 1 
+!           IF (has_strides(idim))  has_a_stride = .TRUE.
+! 100    CONTINUE
 
-* if strides are invloved memory requirement is less ... (cloned from READ_TM)
-        CALL TRANSFER_CONTEXT(res_cx, cx_buff)
-        IF (has_a_stride) THEN
-           DO 200 idim = 1, 4
-              IF  (has_strides(idim)) THEN
-                 cx_lo_ss( cx_buff, idim ) = 1 
-                 cx_hi_ss( cx_buff, idim ) = 
-     .                (cx_hi_ss(res_cx,idim) - cx_lo_ss(res_cx,idim))
-     .              / INT(cx_delta(idim,res_cx))  + 1
-                 cx_delta(idim,cx_buff) = unspecified_val8
-              ENDIF
- 200      CONTINUE
-        ENDIF
+!* if strides are invloved memory requirement is less ... (cloned from READ_TM)
+!* 2/02 -- no longer necessary or appropriate
+!        CALL TRANSFER_CONTEXT(res_cx, cx_buff)
+!        IF (has_a_stride) THEN
+!           DO 200 idim = 1, 4
+!              IF  (has_strides(idim)) THEN
+! 1  	cx_lo_ss( cx_buff, idim ) = 1 
+!               cx_hi_ss( cx_buff, idim ) = 
+!     .                (cx_hi_ss(res_cx,idim) - cx_lo_ss(res_cx,idim))
+!     .              / INT(cx_delta(idim,res_cx))  + 1
+!                 cx_delta(idim,res_cx) = unspecified_val8
+!              ENDIF
+! 200      CONTINUE
+!        ENDIF
 
 * create the space for the result in memory
-	CALL CREATE_MEM_VAR( cx_buff, res_mr, status )
+	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 	is_mr( res_isp ) = res_mr
 
@@ -134,22 +125,25 @@
 * errors we will disabuse the data of that misconception atthis point
 	DO 300 i = 1, nrev
 	   axis = reversed(i)
-	   IF (has_strides(axis)) GOTO 300	  ! already handled above
+!	   IF (has_strides(axis)) GOTO 300	  ! already handled above
 	   CALL VAR_SS_LIMS( axis, res_cx, lo_ss, hi_ss )
 	   itmp = mr_lo_ss( com_mr, axis )
 	   mr_lo_ss(com_mr,axis) = hi_ss + lo_ss - mr_hi_ss(com_mr,axis)
 	   mr_hi_ss(com_mr,axis) = hi_ss + lo_ss - itmp
+	   itmp = cx_lo_ss( com_cx, axis )
+	   cx_lo_ss(com_cx,axis) = hi_ss + lo_ss - cx_hi_ss(com_cx,axis)
+	   cx_hi_ss(com_cx,axis) = hi_ss + lo_ss - itmp
  300	CONTINUE
 
 * copy the source data into the result
-	CALL COPY_GRID(
-     .    memory( 1, mr_blk1(com_mr) ), com_mr,
+	CALL COPY_INTO(
+     .    memory( 1, mr_blk1(com_mr) ), com_mr, com_cx,
      .    memory( 1, mr_blk1(res_mr) ), res_mr   )
 
 * reverse the result along all of the required axes
 	DO 400 i = 1, nrev
 	   CALL REVERSE_GRID_AXIS
-     .		( reversed(i), cx_buff, res_mr,memory(1, mr_blk1(res_mr)) )
+     .		( reversed(i), res_cx, res_mr,memory(1, mr_blk1(res_mr)) )
  400	CONTINUE
 
 * successful completion of modulo operation

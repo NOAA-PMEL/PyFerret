@@ -94,7 +94,7 @@ gui_nodebug: .FRC
 	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
-		"MOVIELIB=" "EXECNAME=ferretgui_c" \
+		"MOVIELIB=" "EXECNAME=ferretgui_c" "GUI_FAKES=" \
 		"GUI=GUI" all
 gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
@@ -112,7 +112,7 @@ DODS_gui_debug: .FRC
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB="  \
-                "LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww  -lz -lrx" \
+                "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=alpha" all
 DODS_gui: .FRC
@@ -120,9 +120,9 @@ DODS_gui: .FRC
 	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
 		"EXECNAME=ferretdods_gui" \
-		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
 		"MOVIELIB="  \
-                "LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww  -lz -lrx" \
+                "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
 		"DEBUG_TITLE=" all
 
@@ -147,7 +147,7 @@ ferret:
 		$(MOVIELIB) \
 		$(TMLIB) \
 		$(READLINELIB) \
-		-ltermcap \
+		$(TERMCAPLIB) \
 		$(CDFLIB) \
 		$(HDFLIB) \
 		$(GKSLIB) \
@@ -172,7 +172,9 @@ libraries: ppl_libraries fer_libraries
 
 
 fmt_libraries: .FRC
-	(cd ../fmt/src ; $(MAKE));
+	(cd ../fmt/src ; \
+	$(MAKE) "CC=$(CC)" "CFLAGS=$(DEBUG) $(CFLAGS)" \
+		"FFLAGS=$(DEBUG) $(FFLAGS)");
 
 fer_libraries: .FRC
 	for i in $(LIBS) ; \

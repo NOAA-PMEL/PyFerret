@@ -90,7 +90,8 @@ set efdir = $<
 echo "Enter your name"
 set bmarker = $<
 echo "Enter comment about this benchmark or this version of Ferret"
-set bcomment = $<
+# *kob* 4.01 linux needs quotes around the input or spaces throw it off
+set bcomment = "$<"
 
 set date_stamp = `date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
 set log_file = "all_${date_stamp}.${machine}_log"

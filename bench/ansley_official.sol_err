@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version  /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     64012304 Mar  1 09:48 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     64352920 Mar  4 11:45 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: bug fixes for 1179, 1180, 1181
+Note: changes to bench_sort*.jnl due to fix for bug1187: axis inheritance and argument context on grid-changing functions. Also fix to bug 1181: longer string for dsettitle.
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Tue Mar 1 13:53:17 PST 2005
+Beginning at Mon Mar 7 09:54:21 PST 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -185,7 +185,6 @@ shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: value out of legal range: Y coordinates
           missing value where val is needed
 shade/nolabel sst, x_page, asin(y_page)
-gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: command syntax: illegal name: TEST*
@@ -616,4 +615,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Mar 1 14:10:46 PST 2005
+Ended at Mon Mar 7 10:26:38 PST 2005

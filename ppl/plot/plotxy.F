@@ -57,8 +57,9 @@ C
 *	Mod *jd* 8.3.92 to add interrupts 
 *	Mod *sh* 11/97 to add PLOTPOL command
 
-#ifdef unix
-        include         'xinterrupt.cmn' ! 1/89 *sh*
+*  ACM  8-30-2000 Go back to calling the line dash subroutine.   
+
+#ifdef un        include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
@@ -219,7 +220,8 @@ C     DRAW VECTORS
 
 * standard line or point plot
 	  ELSEIF (ipv .EQ. 0) THEN
-	    IF(ITYPE(I).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89
+!ACM 	    IF(ITYPE(I).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89
+	    IF(ITYPE(I).GE.4)THEN ! JD 3.22.89
 	      CALL DASHSZ(DN1(I),UP1(I),DN2(I),UP2(I))
 	      CALL DASHES
 	    ELSE

@@ -154,8 +154,11 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	CALL MARKH(HMARK(a_line))
 	CALL COLOR(IPEN(a_line))
 
-	IF(ITYPE(a_line).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89 NEW PPL
-!	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
+c acm  Put back to old PPL  ACM 8/2000
+c acm	IF(ITYPE(a_line).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89 NEW PPL
+c acm!	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
+
+	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
 	   CALL DASHSZ(DN1(a_line),UP1(a_line),DN2(a_line),UP2(a_line))
 	   CALL DASHES
 	ELSE

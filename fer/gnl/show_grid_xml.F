@@ -85,7 +85,7 @@ c	include 'xrisc.cmn'
 	DO 110 idim = 1, 4
            line = grid_line(idim, grid)
            slen = TM_LENSTR(line_name(line))
-           IF (slen .GT. 0) THEN
+           IF (line .GT. 0  .AND.  slen .GT. 0) THEN
               slen = TM_LENSTR1(line_name(line))
               WRITE (risc_buff, 2030 ) axdir(idim),
      .           line_name(line)(1:slen), axdir(idim)

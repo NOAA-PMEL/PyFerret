@@ -12,7 +12,7 @@
 #include <X11/cursorfont.h>
 
 
-#include "ferret_fortran.h"
+#include "ferret.h"
 #include "ferret_shared_buffer.h"
 #include "ferret_structures.h"
 

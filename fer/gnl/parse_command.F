@@ -53,6 +53,9 @@
 *	       was freaking out because of it...
 *	     - added ifdef check for double slash because f90/linux didn't
 *	       need two of them together for escapes
+* v4.91 12/97 *kob* - added parameter decl. for local_max_arg_list to use as
+*                     number of elements for itsa_qualifer logical array
+*
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
 *	 the command buffer
@@ -103,12 +106,16 @@
 #endif
 
 * local variable declarations:
-* ! temp - dimension of itsa_qualifier should be max_arg_list.  This should be
-*	   moved from XPROG_STATE to FERRET.PARM.  MAX_WORDS not needed.
+*
+**kob*12/97!!! NOTE:local_max_arg_list must match max_arg_list in xprog_state
+        INTEGER local_max_arg_list
+        PARAMETER (local_max_arg_list = 256)
+
 * modified def of MATCH4 from INTEGER to LOGICAL *kob* IBM port 8/94
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
-     .          surround_quote, subst, itsa_qualifier(20), MATCH4,
-     .		escape
+     .          surround_quote, subst, 
+     .          itsa_qualifier(local_max_arg_list), 
+     .          MATCH4, escape
 	INTEGER TM_LENSTR
 	INTEGER	cmnd_buff_len, bang_position, pointer, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,

@@ -14,6 +14,10 @@
 #              (see note in ef_utility/Makefile: Don't put these in a library.)
 # 12/99 *sh* - changed "debug" to "alpha" as DEBUG_TITLE
 #  3/00 *acm* - Add efi library External Functions, internally linked
+#  5/00 *kob* - Added a "make update" to all entries in order to properly
+#	        update the date for each make.  this was also necessary when
+#		compiling Ferret initially in order to create 
+#	        special/xmake_date_data.F  and special/xrevision_type_data.F
 
 # include platform specific macro definitions
 #
@@ -80,12 +84,14 @@ debug:	.FRC
 
 gui_nodebug: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
 		"GUI=GUI" all
 gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
@@ -94,6 +100,7 @@ gui_debug: .FRC
 
 DODS_gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
@@ -103,6 +110,7 @@ DODS_gui_debug: .FRC
 		"DEBUG_TITLE=alpha" all
 DODS_gui: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
@@ -117,6 +125,7 @@ fortran: .FRC
 
 ferret:	
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
+	- make update
 	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
 		$(FERMAIN) \
 		$(FEROBJS) \

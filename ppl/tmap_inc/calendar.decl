@@ -47,7 +47,8 @@ C	*******************************************************************
      .			cals_num_months(mxcals),
      .			cals_days_in_month(mxmnths,mxcals),
      .			cals_days_before_month(mxmnths,mxcals),
-     .			cals_month_by_day(mxdays,mxcals)
+     .			cals_month_by_day(mxdays,mxcals),
+     .			cals_yeardays(mxcals)
 
 	character*3	cals_month_names(mxmnths,mxcals)
 
@@ -60,4 +61,3 @@ C	*******************************************************************
         integer		julian
         integer		d360
         integer		tmap_360
-        integer		peculiar

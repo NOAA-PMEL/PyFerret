@@ -1,4 +1,4 @@
-      SUBROUTINE TM_LOAD_CALENDAR (calendar_id, status)
+      SUBROUTINE TM_LOAD_CALENDAR (cal_id, status)
 
 C     Loads data for the calendar given  into common.  These values are
 C     accessed by the date/time functions for all calendar-using plots.
@@ -14,6 +14,7 @@ C
 C     0.00000000000000000000000000000000000000000000000000000000000000001
 
 #ifdef unix
+      include 'calendar.decl'
       include 'calendar.cmn'
       include 'tmap_errors.parm'
 #else
@@ -21,29 +22,29 @@ C     0.00000000000000000000000000000000000000000000000000000000000000001
       INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 #endif
 
-      integer         calendar_id,status,i,j,k
+      integer         cal_id,status,i,j,k
 
 *************************************************************************
 
 C     OK CALENDAR ID?
-      if (calendar_id .lt. 1 .or. 
-     .    calendar_id .gt. max_calendars) then 
+      if (cal_id .lt. 1 .or. 
+     .    cal_id .gt. max_calendars) then 
          status = merr_varlim
          goto 1000
       end if
 
 C     SET NUM_MONTHS AND NUM_DAYS IN CALENDAR
-      num_months = cals_num_months(calendar_id)
-      num_days = cals_num_days(calendar_id)
+      num_months = cals_num_months(cal_id)
+      num_days = cals_num_days(cal_id)
 
 C     SET MONTH NAMES
       do 110 i = 1, num_months
-         month_names(i) = cals_month_names(i,calendar_id)
+         month_names(i) = cals_month_names(i,cal_id)
  110  end do
 
 C     SET DAYS_IN_MONTH
       do 120 i = 1, num_months
-         days_in_month(i) = cals_days_in_month(i,calendar_id)
+         days_in_month(i) = cals_days_in_month(i,cal_id)
  120  end do
 
 C     SET DAYS_BEFORE_MONTH
@@ -63,7 +64,7 @@ C     SET MONTH_BY_DAY
  150  end do
 
 C     IDENTIFY LOADED CALENDAR
-      loaded_calendar = calendar_id
+      calendar_id = cal_id
 
       status = merr_ok
 

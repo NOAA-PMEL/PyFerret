@@ -6,7 +6,6 @@ ef_get_coordinates_sub.F\
 ef_get_one_val_sub.F\
 ef_get_one_val_sub_sub.F\
 ef_get_res_subscripts_sub.F\
-ef_get_subscripts_sub.F\
 ef_set_arg_desc.F\
 ef_set_arg_name.F\
 ef_set_arg_unit.F\

@@ -63,6 +63,7 @@
 * V510: 8/99 *sh* - for g=user_var the returned grid is LT unspecified_int4
 *		... having the text position of uvar encoded in it
 *		... exit out earliy in this case
+*	12/99 *sh* - for formatted lat or lon (e.g. Y[y=0:20n:2]), set units
 
 #ifdef unix
 	include	'ferret.parm'
@@ -75,6 +76,7 @@
 	include 'xrisc.cmn'
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
+	include 'xunits.cmn_text'
 	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
 #else
@@ -97,8 +99,8 @@
 	CHARACTER*(*)	full_pvar_name
 
 * internal variable declarations:
-	LOGICAL		MATCH_NAME, its_dyn, has_impl_axis, calendar
-	INTEGER		CGRID_AXIS, mods_cx, idim, cat, pvax, base_grid,
+	LOGICAL		its_dyn, has_impl_axis, calendar, alloed_tmp
+	INTEGER		CGRID_AXIS, mods_cx, idim, pvax, base_grid,
      .			impl_grid, like, tmp, the_real_ABSTRACT
 
 * internal parameter declarations
@@ -212,11 +214,10 @@
 	      cx_lo_ss(pvar_cx,pvdim) = 1
 	      cx_hi_ss(pvar_cx,pvdim) = line_dim(grid_line(pvdim,impl_grid))
 	   ELSE
-* ... special processing for calendar pseudo-variables
-*    (there should be similar processing for X[X=160E:160W:2] but the support
-*	for it needs to be in GET_CONTEXT_MODS and elsewhere )
+* ... special processing for calendar pseudo-variables and lat/long formatting
 * *kob* 8/97 check cx_calendar rather then cx_lo_ww
 	      calendar = pvdim.EQ.t_dim .AND. cx_calendar(pvar_cx)
+	      alloed_tmp = .FALSE.	! assume no dyn axis allocated
 	      IF ( calendar ) THEN
 * ... note: a minor misbehavior:  for the pseudo-variable
 * 	"T[g=temp,t=[t=1-jan-1982:1-jan-1983:24]" it would be nice to inherit
@@ -230,12 +231,28 @@
 	         cx_delta(pvdim,pvar_cx) = cx_delta(pvdim,pvar_cx)/24.
 	         CALL TM_ALLO_DYN_LINE( tmp, status )
 	         IF ( status .NE. ferr_ok ) GOTO 5000
+	         alloed_tmp = .TRUE.
 	         CALL TM_COPY_LINE( like, tmp )
 	         line_t0(tmp) = '1-JAN-0000'
 	         line_units(tmp) = 'DAYS'
 	         line_unit_code(tmp) = -4			! days
 	         line_tunit(tmp) = daysinsecs
 	         line_direction(tmp) = 'TI'
+	         like = tmp
+	      ELSEIF ( cx_formatted(pvdim) 
+     .		.AND. (pvdim.EQ.x_dim .OR. pvdim.EQ.y_dim) ) THEN
+	         CALL TM_ALLO_DYN_LINE( tmp, status )
+	         IF ( status .NE. ferr_ok ) GOTO 5000
+	         alloed_tmp = .TRUE.
+	         CALL TM_COPY_LINE( like, tmp )
+	         line_unit_code(tmp) = pun_degrees
+	         IF ( pvdim .EQ. x_dim ) THEN
+		    line_units(tmp) = 'DEGREES_EAST'
+	            line_direction(tmp) = 'WE'
+	         ELSEIF ( pvdim .EQ. y_dim) THEN
+		    line_units(tmp) = 'DEGREES_NORTH'
+	            line_direction(tmp) = 'SN'
+	         ENDIF
 	         like = tmp
 	      ENDIF
 	      CALL TM_GET_LIKE_DYN_LINE( pvdim,
@@ -246,7 +263,7 @@
      .					 pline_class_basic,
      .					 grid_line(pvdim,impl_grid),
      .					 status)
-	      IF ( calendar ) THEN
+	      IF ( alloed_tmp ) THEN
 	         CALL TM_DEALLO_DYN_LINE( tmp )
 	      ENDIF
 	   ENDIF

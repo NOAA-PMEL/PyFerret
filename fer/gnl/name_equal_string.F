@@ -1,7 +1,6 @@
-	SUBROUTINE INIT_CONTEXT_MODS ( cx )
+	SUBROUTINE NAME_EQUAL_STRING(nambuff, start_pos, status)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,63 +32,89 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-* prepare a clean,empty cx to receive a list of modifications
+
+* decode "NAME = expression" on a command line
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* revision 0.0 - ????
-* revision 0.1 -  4/1/89  - added regridding transformations
-* V200:  6/28/89 - 4D symmetrical - init trans_arg, too, eliminate %%_relative
-*		 - init cx_dset_gvn, cx_grid_needs_dset
-* V420: 9/8/95 - added initializations for implicit grid creation
-* 
-*       8/97 *kob* - initalize cx_calendar - used to indicate whether a date
-*                    contains a string 
-* V510 *sh* - added cx_formatted
+* V510 - 12/99 *sh* - extracted from XEQ_DEFINE
 
 #ifdef unix
 	include	'ferret.parm'
-	include	'xcontext.cmn'
+	include 'errmsg.parm'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
 #endif
 
 * calling argument declarations:
-	INTEGER	cx
+	INTEGER		start_pos, status
+	CHARACTER*(*) nambuff
 
-* internal variable declarations:
-	INTEGER	idim
+* local variable declarations:
+	INTEGER STR_UPCASE, pos, i1
 
-* initialize everything but region
-	cx_variable( cx ) = unspecified_int4
-	cx_category( cx ) = unspecified_int4
-	cx_data_set( cx ) = unspecified_int4
-	cx_dset_gvn( cx ) = .FALSE.
-	cx_grid( cx )     = unspecified_int4
-	cx_unstand_grid( cx ) = .FALSE.
-	cx_grid_needs_dset    = .FALSE.
-	cx_has_impl_grid( cx ) = .FALSE.
-	cx_calendar(cx) = .FALSE.
+	CHARACTER*1 tab
+	PARAMETER     ( tab = CHAR(9) )
 
-* initialize region
-* note: ss specifications are not used in storing modifications
-	DO 100 idim = 1,4
-	   cx_lo_ss ( cx, idim )  = unspecified_int4
-	   cx_hi_ss ( cx, idim )  = unspecified_int4
-	   cx_lo_ww ( idim, cx )  = unspecified_val8
-	   cx_hi_ww ( idim, cx )  = unspecified_val8
-	   cx_delta ( idim, cx )  = unspecified_val8
-	   cx_trans ( idim, cx )  = trans_no_transform
-	   cx_trans_arg(idim,cx)  = bad_val4
-	   cx_by_ss ( idim, cx )  = .FALSE.		!for bookkeeping
-	   cx_given( idim, cx )  = .FALSE.
-	   cx_regrid_trans(idim,cx) = unspecified_int4 
-	   cx_formatted( idim )	  = .FALSE.
-100	CONTINUE
+* find name to define
+* 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"
+* in the latter be careful that "TEXT" may contain "="
+	pos = INDEX(cmnd_buff(arg_start(1):len_cmnd), '=')
+* ... is it a legit = sign or one used within [] further on in expression ?
+	IF ( num_args .GT. 1 ) THEN
+	   IF ( pos+arg_start(1)-1 .GT. arg_start(2) ) pos = 0
+	ENDIF
+	IF ( pos .EQ. 0 ) THEN
+* ... no "=" separator
+	   nambuff = cmnd_buff( arg_start(1):arg_end(1) )
+	   IF ( num_args .LT. 2 ) GOTO 400
+	   pos = arg_start(2)
+	ELSE
+* ... yes "=" separator
+	   pos = pos + arg_start(1)	! character after "="
+*    ... hunt backwards for end of variable name
+	   nambuff = '(none)'
+	   DO 101 i1 = pos-2, arg_start(1), -1
+	      IF ( cmnd_buff(i1:i1).EQ.' '
+     .	      .OR. cmnd_buff(i1:i1).EQ.tab ) THEN
+	         CONTINUE
+	      ELSE
+	         GOTO 102
+	      ENDIF
+ 101	   CONTINUE
+	   GOTO 5100
+ 102	   nambuff = cmnd_buff( arg_start(1):i1 )
+*    ... find next non-blank, non-tab after "=" -- start of expression
+	   DO 105 pos = pos, len_cmnd
+	      IF ( cmnd_buff(pos:pos) .NE. ' ' 
+     .	     .AND. cmnd_buff(pos:pos) .NE. tab  ) GOTO 106
+ 105	   CONTINUE
+	   GOTO 400	! no text following equal sign
+ 106	   CONTINUE
+	ENDIF
+	GOTO 500
+
+* no text follows the name -- this is just a name.
+ 400	start_pos = 0
+	GOTO 1000
+
+* save starting position of the text
+ 500	start_pos = pos
+
+* success
+ 1000	i1 = STR_UPCASE( nambuff, nambuff )	! uppercase name always
+	status = ferr_ok
 	RETURN
+
+* error exit
+ 5000	RETURN
+ 5100 	CALL ERRMSG( ferr_syntax, status,
+     .			cmnd_buff(:len_cmnd)//' ???', *5000 )
+
+
 	END
+

@@ -1,5 +1,6 @@
 ! bn_define_axes.jnl
 ! *sh* 5/99
+! *sh* 12/99 - with streamlined syntax
 
 ! exercise the DEFINE AXIS command
 
@@ -103,4 +104,23 @@ define axis/from/x/name=xax/edges {6,6}
 define axis/from/x/name=xax/edges {6,6,6}
 define axis/from/x/name=xax {6,6,6.000001,7}
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
+
+! ================= STREAMLINED SYNTAX ================
+! name=expression syntax
+define axis/x XAX2 = {1,2,5}
+show axis/x xax2
+define axis/unit=days/t0=1-jan-1990 TAX2 = {1,2,5}	! inferred /T
+show axis/t tax2
+define axis/depth ZAX2 = {1,2,5}			! inferred /Z
+show axis/z zax2
+
+! units inferred from formatting
+define axis/X=130e:180:5 xax2
+show axis xax2
+define axis/Y=0:80n:5 yax2
+show axis yax2
+define axis/X=130e:80w:5/units=blahs xax2
+show axis xax2
+
+! cleanup
 set mode/last ignore

@@ -7,6 +7,8 @@
 * Unix/RISC port 1/91 - variables reordered to accomodate REAL*8 boundaries
 * V420: added cx_impl_grid for implicit grid creation
 * V450: added cx_calendar to enable time < 0
+* V510: *sh* added cx_formatted to record user inputs like X=130E:80W
+*	also moved cx_xtra_doc inside COMMON to Solaris avoid compiler ragging
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -39,6 +41,7 @@
 *	cx_regrid_trans	- regridding transformation for each axis
 *	cx_ovsiz	- flags whether data should be oversized
 *	cx_xtra_doc	- documentation flags (as in XPLOT_SETUP)
+*	cx_formatted	- flags if the latest input used formatted style
 
 * allocate some protected contexts at the top of the context stack
 	INTEGER		max_cx
@@ -67,7 +70,8 @@
      .		cx_calendar	( min_context:max_cx ),
      .		cx_grid_needs_dset,
      .		cx_xtra_doc	( 0:10 ),
-     .		cx_has_impl_grid( max_cx )
+     .		cx_has_impl_grid( max_cx ),
+     .		cx_formatted	( 4 )
 
 	REAL	cx_bad_data	( max_cx ),
      .		cx_trans_arg	( 4, min_context:max_cx )
@@ -99,7 +103,9 @@
      .		cx_grid_needs_dset,
      .		cx_name,
      .		cx_has_impl_grid,
-     .		cx_impl_grid
+     .		cx_impl_grid,
+     .		cx_xtra_doc,
+     .		cx_formatted
 
 * equivalences to assist with declaration statements
 	INTEGER cx_lo_s1( max_cx ),

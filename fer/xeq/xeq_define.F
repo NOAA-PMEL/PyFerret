@@ -115,6 +115,9 @@
 *	 7/99 *sh* - changed def'n of "month" so change warning message
 * V510 - 8/99 *sh* - allow DEFINE GRID /LIKE=user_var /X=user_var (bump use
 *			counts on dynamic axes
+*	12/99 *sh* - allow new syntax DEFINE AXIS name=expression
+*			infer units from formatted (say) X=130e:80W
+*		and use routine name_equal_string in multiple places
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -216,7 +219,7 @@
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
      .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset,
-     .		  old_line, old_grid, frst_pt, dim(4), ndim, num_parts, natom,
+     .		  old_line, old_grid, frst_pt, dim(4), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms)
 	REAL	  rbuff
@@ -434,39 +437,9 @@
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"
 * in the latter be careful that "TEXT" may contain "="
  400	IF ( num_args .LT. 1 ) GOTO 5300
-	pos = INDEX(cmnd_buff(arg_start(1):len_cmnd), '=')
-* ... is it a legit = sign or one used within [] further on in expression ?
-	IF ( num_args .GT. 1 ) THEN
-	   IF ( pos+arg_start(1)-1 .GT. arg_start(2) ) pos = 0
-	ENDIF
-	IF ( pos .EQ. 0 ) THEN
-* ... no "=" separator
-	   IF ( num_args .LT. 2 ) GOTO 5400
-	   buff1 = cmnd_buff( arg_start(1):arg_end(1) )
-	   pos = arg_start(2)
-	ELSE
-* ... yes "=" separator
-	   pos = pos + arg_start(1)	! character after "="
-*    ... hunt backwards for end of variable name
-	   buff1 = '(none)'
-	   DO 401 i1 = pos-2, arg_start(1), -1
-	      IF ( cmnd_buff(i1:i1).EQ.' '
-     .	      .OR. cmnd_buff(i1:i1).EQ.tab ) THEN
-	         CONTINUE
-	      ELSE
-	         GOTO 402
-	      ENDIF
- 401	   CONTINUE
-	   GOTO 5410
- 402	   buff1 = cmnd_buff( arg_start(1):i1 )
-*    ... find next non-blank, non-tab after "=" -- start of expression
-	   DO 405 pos = pos, len_cmnd
-	      IF ( cmnd_buff(pos:pos) .NE. ' ' 
-     .	     .AND. cmnd_buff(pos:pos) .NE. tab  ) GOTO 406
- 405	   CONTINUE
-	   GOTO 5400
- 406	   CONTINUE
-	ENDIF
+	CALL NAME_EQUAL_STRING( buff1, pos, status )
+	IF ( status .NE. ferr_ok )  GOTO 5000
+	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
         IF ( TM_LENSTR1(buff1) .GT. 24 ) GOTO 5410
 	CALL FIND_VAR_NAME ( pdset_irrelevant, buff1, cat, var )
@@ -584,10 +557,23 @@
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff3, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+	   pos = arg_start(1)	! cmnd arg is the expression to eval
 	ELSE	   
-	   IF ( num_args .NE. 1 ) GOTO 5300
-	   vax_code = STR_UPCASE( buff3, cmnd_buff(arg_start(1):arg_end(1)) ) 
+	   IF ( num_args .LT. 1 ) GOTO 5300
+	   CALL NAME_EQUAL_STRING( buff3, pos, status )
+	   IF ( status .NE. ferr_ok )  GOTO 5000
+	   IF ( pos .GT. 0 ) THEN
+	      num_args = 1	! used by GET_CMND_DATA
+	      arg_start(1) = pos ! skip over "name ="
+	   ELSE
+	      CONTINUE ! pos=0 signals that no expression was given
+	   ENDIF
 	ENDIF
+
+* is this to be a regular or irregular definition?
+	irreg = qual_given(slash_name) .GT. 0
+     .	  .OR. (qual_given(slash_name) .EQ. 0
+     .		.AND. pos .GT. 0)	! /NAME=XXX or "NAME= expression"
 
 * must be a unique name
 	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
@@ -618,7 +604,12 @@
 	      orient = idim
 	   ENDIF
  510	CONTINUE
-        IF ( qual_given( slash_depth ) .GT. 0 
+	IF ( irreg ) THEN
+* ... orientation may be inferred from clues if irregular coord syntax is used
+	    IF ( qual_given(slash_depth) .GT. 0 ) orient = z_dim
+	    IF ( qual_given(slash_T0)    .GT. 0 ) orient = t_dim
+	ENDIF
+        IF ( qual_given(slash_depth) .GT. 0
      . .AND. orient .NE. z_dim            ) GOTO 5505
 	IF ( orient .EQ. unspecified_int4 ) GOTO 5510
 
@@ -635,6 +626,9 @@
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff1, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+	ELSEIF ( cx_formatted(orient)
+     .	   .AND. (orient.EQ.x_dim .OR. orient.EQ.y_dim) ) THEN
+	   buff1 = 'degrees'	! infer from input like "X=130E:80W"
 	ELSEIF ( orient .EQ. t_dim
 * 8/97 *kob* use cx_calender to check if time is date rather than time step
      .  .AND.  (     qual_given(slash_T0) .GT. 0
@@ -692,7 +686,6 @@
 	ENDIF
 
 * GET THE AXIS POINTS: IRREGULAR (from_variable) or regular
-	irreg = qual_given(slash_from) .GT. 0
 	IF ( irreg ) THEN
 * ... get axis points from a memory variable
 	   CALL GET_CMND_DATA ( memory, cx_last, status )
@@ -961,7 +954,7 @@
 * now catalog it in memory by saving its name
 	line_name( iline ) = buff3
 * ... coordinate pointer for next line to save
-	IF (qual_given(slash_from).GT.0 .AND. .NOT.line_regular(iline))
+	IF (irreg .AND. .NOT.line_regular(iline))
      .			next_line_mem_pos = frst_pt + 2*n + 1
 	RETURN
 
@@ -1104,27 +1097,9 @@
 **************************************************************************
 * DEFINE ALIAS
  700	IF ( num_args .LT. 1 ) GOTO 5300
-	pos = INDEX(cmnd_buff(arg_start(1):len_cmnd), '=')
-* ... is it a legit = sign or one used within [] further on in expression ?
-	IF ( num_args .GT. 1 ) THEN
-	   IF ( pos+arg_start(1)-1 .GT. arg_start(2) ) pos = 0
-	ENDIF
-	IF ( pos .EQ. 0 ) THEN
-* ... no "=" separator
-	   IF ( num_args .LT. 2 ) GOTO 5400
-	   buff1 = cmnd_buff( arg_start(1):arg_end(1) )
-	   pos = arg_start(2)
-	ELSE
-* ... yes "=" separator
-	   pos = pos + arg_start(1)	! character after "="
-	   buff1 = cmnd_buff( arg_start(1):pos-2 )
-* ... find next non-blank
-	   DO 705 pos = pos, len_cmnd
-	      IF ( cmnd_buff(pos:pos) .NE. ' ' ) GOTO 706
- 705	   CONTINUE
-	   GOTO 5400
- 706	   CONTINUE
-	ENDIF
+	CALL NAME_EQUAL_STRING( buff1, pos, status )
+	IF ( status .NE. ferr_ok )  GOTO 5000
+	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
 
 * find a slot to save this alias
@@ -1146,27 +1121,9 @@
 **************************************************************************
 * DEFINE SYMBOL
  800	IF ( num_args .LT. 1 ) GOTO 5300
-	pos = INDEX(cmnd_buff(arg_start(1):len_cmnd), '=')
-* ... is it a legit = sign or one used within [] further on in expression ?
-	IF ( num_args .GT. 1 ) THEN
-	   IF ( pos+arg_start(1)-1 .GT. arg_start(2) ) pos = 0
-	ENDIF
-	IF ( pos .EQ. 0 ) THEN
-* ... no "=" separator
-	   IF ( num_args .LT. 2 ) GOTO 5400
-	   buff1 = cmnd_buff( arg_start(1):arg_end(1) )
-	   pos = arg_start(2)
-	ELSE
-* ... yes "=" separator
-	   pos = pos + arg_start(1)	! character after "="
-	   buff1 = cmnd_buff( arg_start(1):pos-2 )
-* ... find next non-blank
-	   DO 805 pos = pos, len_cmnd
-	      IF ( cmnd_buff(pos:pos) .NE. ' ' ) GOTO 806
- 805	   CONTINUE
-	   GOTO 5400
- 806	   CONTINUE
-	ENDIF
+	CALL NAME_EQUAL_STRING( buff1, pos, status )
+	IF ( status .NE. ferr_ok )  GOTO 5000
+	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
 
 * if this symbol already exists then delete it
@@ -1197,7 +1154,7 @@
      .		'time axis start date must be after T0='//line_t0(iline),
      .		*5000 )
  5400 	CALL ERRMSG( ferr_syntax, status,
-     .			cmnd_buff(:len_cmnd)//' ???', *5000 )
+     .			buff1(:TM_LENSTR1(buff1))//' = ???', *5000 )
  5410   CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff1,*5000 )
  5420   CALL ERRMSG( ferr_syntax,status,'cannot define: '//buff1,*5000 )
  5440	CALL ERRMSG( ferr_syntax, status,

@@ -38,6 +38,7 @@ list_cmnd_data.F\
 list_multi.F\
 list_multi_sub.F\
 mouse_command.F\
+name_equal_string.F\
 objective.F\
 objective_sub.F\
 parse_comma_list.F\

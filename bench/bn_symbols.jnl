@@ -11,6 +11,8 @@
 !	  4/96 -- test symbol editing in the style of dollar args
 !	       -- use template notation for SHOW SYMBOL and CANCEL SYMBOL
 
+! V510: added tests of backslash escaping
+
 cancel symbols/all
 show symbols/all
 
@@ -88,6 +90,15 @@ message/continue ($test2"|hello|bye|")
 message/continue ($test2"|hello|bye|<error message")	! silent error
 message/continue ($t2"|solong>really hello|bye|")
 set mode/last ignore_errors
+
+! V510 - added processing of backslash escapes
+define symbol ss \"hello\"
+show symbol ss
+define symbol ss "\"hello\""
+show symbol ss
+define symbol delayed_eval \`1+1\`
+show symbol delayed_eval
+say ($delayed_eval)         ! translate symbol and then evaluate
 
 
 ! cleanup

@@ -1,0 +1,7 @@
+! This had worked, but stopped working in v541
+! symbol substituted on each repetition of REPEAT
+
+! (The cause was the fix intended to repair what it
+!  tested in err540_parse_repeat.jnl )
+
+def sym a 0; rep/i=1:3:1 (def sym a `i`; say ($a))

@@ -37,3 +37,6 @@ GO err551_streamread_directory.jnl
 GO bn_reset
 GO err551_regrid_undef_grid.jnl
 
+! Symbol substituted on each repetition of REPEAT
+GO bn_reset
+GO err551_repeat_sym.jnl

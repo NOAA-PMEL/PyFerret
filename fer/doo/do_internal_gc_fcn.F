@@ -76,6 +76,10 @@
 * V533: *sh* 6/01 - arguments and result may be string or float
 *                 - added SPAWN function
 * V540: *sh* 12/01 - added STRCMP function
+* V541: *kob* 6/02 - Add STRLEN, UPCASE,DNCASE,STRINDEX, STRRINDEX
+*                        SUBSTRING, STRCAT, STRFLOAT 
+*                    internal string handling functions   
+
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -105,7 +109,7 @@
 	INTEGER CX_DIM_LEN,  CGRID_SIZE, count, size,
      .		i, j, k, l, icom, idim, ii,
      .		cx1, cx2, cx3, cx4, cx5, cx6, cx7, cx8, cx9,
-     .		i1, j1, k1, l1, i2, j2, k2, l2,
+     .		i1, j1, k1, l1, i2, j2, k2, l2, i3,j3,k3,l3,
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
      .		di3, dj3, dk3, dl3, di4, dj4, dk4, dl4,
      .		di5, dj5, dk5, dl5, di6, dj6, dk6, dl6,
@@ -197,8 +201,8 @@
 
 * select the function
 	GOTO (  1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
-     .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000
-     .								  ) fcn
+     .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,
+     .		3100,3200,3300,3400,3500			  ) fcn
 
 * "XSEQUENCE" - reshape/flatten the input into a line in X
  1100	IF (typr .EQ. pfloat_words) THEN
@@ -585,13 +589,251 @@
         ENDDO
         RETURN
 
+* *kob* 3/02 STRLEN function
  2400	CONTINUE
+	l1 = sl1
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	k1 = sk1
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 j1 = sj1
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  i1 = si1
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+
+	     CALL C_STRLEN(com1(1,i1,j1,k1,l1),
+     .                     ii)
+             res(1,i,j,k,l) = ii
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
+
+* *kob* 3/02 UPCASE function
  2500	CONTINUE
+	l1 = sl1
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	k1 = sk1
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 j1 = sj1
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  i1 = si1
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+
+	     CALL C_UPCASE(com1(1,i1,j1,k1,l1),
+     .          res(1,i1,j1,k1,l1))
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
+* *kob* 3/02 STRINDEX function
  2600	CONTINUE
+	l1 = sl1
+	l2 = sl2
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	k1 = sk1
+	k2 = sk2
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 j1 = sj1
+	 j2 = sj2
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  i1 = si1
+	  i2 = si2
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+
+	     CALL C_STRINDEX(com1(1,i1,j1,k1,l1),
+     .                       com2(1,i2,j2,k2,l2), ii)
+             res(1,i,j,k,l) = FLOAT(ii)
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
+* *kob* 3/02 STRRINDEX function
  2700	CONTINUE
+	l1 = sl1
+	l2 = sl2
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	k1 = sk1
+	k2 = sk2
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 j1 = sj1
+	 j2 = sj2
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  i1 = si1
+	  i2 = si2
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+
+	     CALL C_STRRINDEX(com1(1,i1,j1,k1,l1),
+     .                        com2(1,i2,j2,k2,l2), ii)
+             res(1,i,j,k,l) = FLOAT(ii)
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
+
+* *kob* 3/02 DNCASE function
  2800	CONTINUE
+	l1 = sl1
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	k1 = sk1
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 j1 = sj1
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  i1 = si1
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+
+	     CALL C_DNCASE(com1(1,i1,j1,k1,l1),
+     .                     res(1,i,j,k,l))
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
  2900	CONTINUE
+* *kob* STRCAT function 3/02
+	l1 = sl1
+	l2 = sl2
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	k1 = sk1
+	k2 = sk2
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 j1 = sj1
+	 j2 = sj2
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  i1 = si1
+	  i2 = si2
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+
+	     CALL C_STRCAT(com1(1,i1,j1,k1,l1),
+     .                     com2(1,i2,j2,k2,l2),
+     .                      res(1,i,j,k,l))
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
  3000	CONTINUE
+* *kob* SUBSTRING function 3/02
+	l1 = sl1
+	l2 = sl2
+	l3 = sl3
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	l3 = l3 + dl3
+	k1 = sk1
+	k2 = sk2
+	k3 = sk3
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 k3 = k3 + dk3
+	 j1 = sj1
+	 j2 = sj2
+	 j3 = sj3
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  j3 = j3 + dj3
+	  i1 = si1
+	  i2 = si2
+	  i3 = si3
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+	   i3 = i3 + di3
+
+	     CALL C_SUBSTR(com1(1,i1,j1,k1,l1),
+     .                     com2(1,i2,j2,k2,l2), 
+     .                     com3(1,i3,j3,k3,l3),
+     .                     res(1,i,j,k,l))
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
+* *kob* 5/02 STRFLOAT function
+ 3100	CONTINUE
+	l1 = sl1
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	k1 = sk1
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 j1 = sj1
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  i1 = si1
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+
+	     CALL C_STRFLOAT(com1(1,i1,j1,k1,l1),
+     .                       res(1,i,j,k,l))
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
+ 3200   CONTINUE
+ 3300   CONTINUE
+ 3400   CONTINUE
+ 3500   CONTINUE
+
 	STOP 'GC FUNCTION NOT IMPLEMENTED'
 
 

@@ -18,25 +18,38 @@
 *	     and p_spawn
 * V540: 10/01 -- more generalizable parg_type definitions
 *       12/01 -- added p_strcmp
+* v541: 03/02 -- added p_strlen,p_upcase,p_strindex,p_strrindex
+*		       p_dncase, p_strcat, p_substring, p_strfloat
+*                for new internal string handling functions  *kob*
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
      .			p_yunravel, p_zunravel, p_tunravel,
      .			p_samplei, p_samplej, p_samplek, p_samplel,
-     .			p_spawn, p_strcmp
+     .			p_spawn, p_strcmp, p_strlen, p_upcase, 
+     .                  p_strindex, p_strrindex, p_dncase, p_strcat,
+     .                  p_substring, p_strfloat
 
 	PARAMETER     ( p_xunravel = 1,
-     .			p_times2   = p_xunravel + 1,
-     .			p_reshape  = p_times2   + 1,
-     .			p_zlayer   = p_reshape  + 1,
-     .			p_yunravel = p_zlayer   + 1,
-     .			p_zunravel = p_yunravel + 1,
-     .			p_tunravel = p_zunravel + 1,
-     .			p_samplei  = p_tunravel + 1,
-     .			p_samplej  = p_samplei  + 1,
-     .			p_samplek  = p_samplej	+ 1,
-     .			p_samplel  = p_samplek 	+ 1,
-     .			p_spawn    = p_samplel 	+ 1,
-     .			p_strcmp   = p_spawn 	+ 1 )
+     .			p_times2      = p_xunravel  + 1,
+     .			p_reshape     = p_times2    + 1,
+     .			p_zlayer      = p_reshape   + 1,
+     .			p_yunravel    = p_zlayer    + 1,
+     .			p_zunravel    = p_yunravel  + 1,
+     .			p_tunravel    = p_zunravel  + 1,
+     .			p_samplei     = p_tunravel  + 1,
+     .			p_samplej     = p_samplei   + 1,
+     .			p_samplek     = p_samplej   + 1,
+     .			p_samplel     = p_samplek   + 1,
+     .			p_spawn       = p_samplel   + 1,
+     .			p_strcmp      = p_spawn     + 1,
+     .                  p_strlen      = p_strcmp    + 1,
+     .                  p_upcase      = p_strlen    + 1,
+     .                  p_strindex    = p_upcase    + 1,
+     .                  p_strrindex   = p_strindex  + 1,
+     .                  p_dncase      = p_strrindex + 1,
+     .                  p_strcat      = p_dncase    + 1,
+     .                  p_substring   = p_strcat    + 1,
+     .                  p_strfloat    = p_substring + 1 )
 
 * parameters to control the passing of context information
 	INTEGER		pset_to_unspec, ppass_along

@@ -3,6 +3,14 @@ add_c_pointer.c\
 binaryRead.c\
 batch_graphics.c\
 c_strcmp.c\
+c_strlen.c\
+c_upcase.c\
+c_dncase.c\
+c_strindex.c\
+c_strrindex.c\
+c_strcat.c\
+c_substr.c\
+c_strfloat.c\
 copy_buffered_window.c\
 concatenate_c_strings.c\
 compare_c_strings.c\

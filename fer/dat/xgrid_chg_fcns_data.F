@@ -49,6 +49,9 @@
 * V540: *sh* 10/01 - use improved data typing parameters parg_type_*
 *       *acm*11/01 - clarify the function description for ZAXREPLACE
 *	     12/01 - bug fix in arg type of SPAWN function
+* V541: *kob* 6/02 - Add STRLEN, UPCASE,DNCASE,STRINDEX, STRRINDEX
+*                        SUBSTRING, STRCAT, STRFLOAT 
+*                    internal string handling functions   
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -661,14 +664,383 @@
      .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
 
 
+* STRLEN(string1) - return the length of the string
+	INTEGER		p_strlen_arg_start, p_strlen_num_args
+	PARAMETER     ( p_strlen_arg_start = p_strcmp_arg_start +
+     .					    p_strcmp_num_args,
+     .			p_strlen_num_args  = 1 )
+	DATA gfcn_name         (p_strlen) /'STRLEN'/
+	DATA gfcn_version      (p_strlen) / 1.0 /
+	DATA gfcn_descr        (p_strlen) /
+     .	'determine string length' /
+	DATA gfcn_rtn_type     (p_strlen) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_strlen) /p_strlen_num_args/
+	DATA gfcn_has_vari_args(p_strlen) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_strlen),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_strlen),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_strlen) /p_strlen_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_strlen_arg_start+0)/'STR'/
+	DATA gfcn_arg_type(p_strlen_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_strlen_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_strlen_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_strlen_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strlen_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strlen_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+* UPCASE(string1) - return string in all upper case
+	INTEGER		p_upcase_arg_start, p_upcase_num_args
+	PARAMETER     ( p_upcase_arg_start = p_strlen_arg_start +
+     .					    p_strlen_num_args,
+     .			p_upcase_num_args  = 1 )
+	DATA gfcn_name         (p_upcase) /'UPCASE'/
+	DATA gfcn_version      (p_upcase) / 1.0 /
+	DATA gfcn_descr        (p_upcase) /
+     .	'upper case entire string' /
+	DATA gfcn_rtn_type     (p_upcase) /pfcn_rtn_string /
+	DATA gfcn_num_reqd_args(p_upcase) /p_upcase_num_args/
+	DATA gfcn_has_vari_args(p_upcase) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_upcase),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_upcase),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_upcase) /p_upcase_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_upcase_arg_start+0)/'STR'/
+	DATA gfcn_arg_type(p_upcase_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_upcase_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_upcase_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_upcase_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_upcase_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_upcase_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+
+* STRINDEX(string1, substring) - find star char position of substring
+	INTEGER		p_strindex_arg_start, p_strindex_num_args
+	PARAMETER     ( p_strindex_arg_start = p_upcase_arg_start +
+     .					    p_upcase_num_args,
+     .			p_strindex_num_args  = 2 )
+	DATA gfcn_name         (p_strindex) /'STRINDEX'/
+	DATA gfcn_version      (p_strindex) / 1.0 /
+	DATA gfcn_descr        (p_strindex) /
+     .	'Return start character position of substring in string' /
+	DATA gfcn_rtn_type     (p_strindex) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_strindex) /p_strindex_num_args/
+	DATA gfcn_has_vari_args(p_strindex) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_strindex),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_strindex),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_strindex) /p_strindex_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_strindex_arg_start+0)/'STR1'/
+	DATA gfcn_arg_type(p_strindex_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_strindex_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_strindex_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_strindex_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strindex_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strindex_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+* ... description of argument 2
+	DATA gfcn_arg_name(p_strindex_arg_start+1)/'SUBSTR'/
+	DATA gfcn_arg_type(p_strindex_arg_start+1)/parg_type_string/
+	DATA gfcn_arg_units(p_strindex_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_strindex_arg_start+1)/'string array 2'/
+	DATA (gfcn_arg_extend_lo (i,p_strindex_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strindex_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strindex_arg_start+1),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+
+* STRRINDEX(string1, substring) - find last char position of substring
+	INTEGER		p_strrindex_arg_start, p_strrindex_num_args
+	PARAMETER     ( p_strrindex_arg_start = p_strindex_arg_start +
+     .					    p_strindex_num_args,
+     .			p_strrindex_num_args  = 2 )
+	DATA gfcn_name         (p_strrindex) /'STRRINDEX'/
+	DATA gfcn_version      (p_strrindex) / 1.0 /
+	DATA gfcn_descr        (p_strrindex) /
+     .	'Return last character position of substring in string' /
+	DATA gfcn_rtn_type     (p_strrindex) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_strrindex) /p_strrindex_num_args/
+	DATA gfcn_has_vari_args(p_strrindex) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_strrindex),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_strrindex),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_strrindex) /p_strrindex_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_strrindex_arg_start+0)/'STR1'/
+	DATA gfcn_arg_type(p_strrindex_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_strrindex_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_strrindex_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_strrindex_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strrindex_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strrindex_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+* ... description of argument 2
+	DATA gfcn_arg_name(p_strrindex_arg_start+1)/'SUBSTR'/
+	DATA gfcn_arg_type(p_strrindex_arg_start+1)/parg_type_string/
+	DATA gfcn_arg_units(p_strrindex_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_strrindex_arg_start+1)/'string array 2'/
+	DATA (gfcn_arg_extend_lo (i,p_strrindex_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strrindex_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strrindex_arg_start+1),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+
+* DNCASE(string1) - return string in all lower case
+	INTEGER		p_dncase_arg_start, p_dncase_num_args
+	PARAMETER     ( p_dncase_arg_start = p_strrindex_arg_start +
+     .					    p_strrindex_num_args,
+     .			p_dncase_num_args  = 1 )
+	DATA gfcn_name         (p_dncase) /'DNCASE'/
+	DATA gfcn_version      (p_dncase) / 1.0 /
+	DATA gfcn_descr        (p_dncase) /
+     .	'make entire string lower case' /
+	DATA gfcn_rtn_type     (p_dncase) /pfcn_rtn_string /
+	DATA gfcn_num_reqd_args(p_dncase) /p_dncase_num_args/
+	DATA gfcn_has_vari_args(p_dncase) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_dncase),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_dncase),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_dncase) /p_dncase_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_dncase_arg_start+0)/'STR'/
+	DATA gfcn_arg_type(p_dncase_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_dncase_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_dncase_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_dncase_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_dncase_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_dncase_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+* STRCAT(string1, string2) - compare 2 string *arrays* as in C function
+	INTEGER		p_strcat_arg_start, p_strcat_num_args
+	PARAMETER     ( p_strcat_arg_start = p_dncase_arg_start +
+     .					    p_dncase_num_args,
+     .			p_strcat_num_args  = 2 )
+	DATA gfcn_name         (p_strcat) /'STRCAT'/
+	DATA gfcn_version      (p_strcat) / 1.0 /
+	DATA gfcn_descr        (p_strcat) /
+     .	'concatenate two strings' /
+	DATA gfcn_rtn_type     (p_strcat) /pfcn_rtn_string /
+	DATA gfcn_num_reqd_args(p_strcat) /p_strcat_num_args/
+	DATA gfcn_has_vari_args(p_strcat) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_strcat),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_strcat),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_strcat) /p_strcat_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_strcat_arg_start+0)/'STR1'/
+	DATA gfcn_arg_type(p_strcat_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_strcat_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_strcat_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_strcat_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcat_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strcat_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+* ... description of argument 2
+	DATA gfcn_arg_name(p_strcat_arg_start+1)/'STR2'/
+	DATA gfcn_arg_type(p_strcat_arg_start+1)/parg_type_string/
+	DATA gfcn_arg_units(p_strcat_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_strcat_arg_start+1)/'string array 2'/
+	DATA (gfcn_arg_extend_lo (i,p_strcat_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcat_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strcat_arg_start+1),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+
+* SUBSTR(string1, offset, lenght) - clips a substring from a string
+	INTEGER		p_substring_arg_start, p_substring_num_args
+	PARAMETER     ( p_substring_arg_start = p_strcat_arg_start +
+     .					    p_strcat_num_args,
+     .			p_substring_num_args  = 3 )
+	DATA gfcn_name         (p_substring) /'SUBSTRING'/
+	DATA gfcn_version      (p_substring) / 1.0 /
+	DATA gfcn_descr        (p_substring) /
+     .	'concatenate two strings' /
+	DATA gfcn_rtn_type     (p_substring) /pfcn_rtn_string /
+	DATA gfcn_num_reqd_args(p_substring) /p_substring_num_args/
+	DATA gfcn_has_vari_args(p_substring) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_substring),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_substring),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_substring) /p_substring_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_substring_arg_start+0)/'STR'/
+	DATA gfcn_arg_type(p_substring_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_substring_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_substring_arg_start+0)/'string array'/
+	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+* ... description of argument 2
+	DATA gfcn_arg_name(p_substring_arg_start+1)/'OFFSET'/
+	DATA gfcn_arg_type(p_substring_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_substring_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_substring_arg_start+1)/'start position'/
+	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+1),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+* ... description of argument 3
+	DATA gfcn_arg_name(p_substring_arg_start+2)/'LENGTH'/
+	DATA gfcn_arg_type(p_substring_arg_start+2)/parg_type_float/
+	DATA gfcn_arg_units(p_substring_arg_start+2)/' '/
+	DATA gfcn_arg_descr(p_substring_arg_start+2)/'number of chars'/
+	DATA (gfcn_arg_extend_lo (i,p_substring_arg_start+2),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_substring_arg_start+2),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_substring_arg_start+2),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+* STRFLOAT(string1) - return float value of given string
+	INTEGER		p_strfloat_arg_start, p_strfloat_num_args
+	PARAMETER     ( p_strfloat_arg_start = p_substring_arg_start +
+     .					    p_substring_num_args,
+     .			p_strfloat_num_args  = 1 )
+	DATA gfcn_name         (p_strfloat) /'STRFLOAT'/
+	DATA gfcn_version      (p_strfloat) / 1.0 /
+	DATA gfcn_descr        (p_strfloat) /
+     .	'Return float value from character string' /
+	DATA gfcn_rtn_type     (p_strfloat) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_strfloat) /p_strfloat_num_args/
+	DATA gfcn_has_vari_args(p_strfloat) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_strfloat),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_strfloat),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_strfloat) /p_strfloat_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_strfloat_arg_start+0)/'STR'/
+	DATA gfcn_arg_type(p_strfloat_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_strfloat_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_strfloat_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_strfloat_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strfloat_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strfloat_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+
+
+
+
 * internal parameters helpful for initialization
-	DATA gfcn_num_internal/p_strcmp/
+	DATA gfcn_num_internal/p_strfloat/
 
 * template for next function ...
 	INTEGER		p_next, p_next_arg_start, p_next_num_args 
-	PARAMETER     ( p_next = p_strcmp + 1,
-     .			p_next_arg_start = p_strcmp_arg_start +
-     .					   p_strcmp_num_args,
+	PARAMETER     ( p_next = p_strfloat + 1,
+     .			p_next_arg_start = p_strfloat_arg_start +
+     .					   p_strfloat_num_args,
      .			p_next_num_args  = 1 )
 
 	END

@@ -101,11 +101,23 @@
 	      line = '             '//ds_var_units(ivar)(:dlen)//
      .		' on grid '//grid_name(grid)
 	      dlen = TM_LENSTR1( line )
+#ifdef NO_PREPEND_STRING
+	      risc_buff = line(:dlen)
+	      len_rbuff = dlen
+	      line = risc_buff(:len_rbuff)//' with '//
+#else
 	      line = line(:dlen)//' with '//
+#endif
      .				TM_FMT(ds_bad_flag(ivar),7,14,dlen)
 	      dlen = TM_LENSTR1( line )
 	      IF ( ds_bad_flag(ivar) .NE. ds_missing_flag(ivar) ) THEN
+#ifdef NO_PREPEND_STRING
+	      risc_buff = line(:dlen)
+	      len_rbuff = dlen
+	      line = risc_buff(:len_rbuff)//' & '//
+#else
 	         line = line(:dlen)//' & '//
+#endif
      .				TM_FMT(ds_missing_flag(ivar),7,14,dlen)
 	         dlen = TM_LENSTR1( line )
 	      ENDIF
@@ -118,7 +130,13 @@
 	         IF ( grid_line(i,grid) .NE. mnormal ) THEN
 	            lo = TM_WORLD( ds_grid_start(i,ivar), grid, i, box_lo_lim )
 	            hi = TM_WORLD( ds_grid_end  (i,ivar), grid, i, box_hi_lim )
+#ifdef NO_PREPEND_STRING
+	            risc_buff = line(:len)
+ 	            len_rbuff = len
+		    line = risc_buff(:len_rbuff)// ww_dim_name(i) // '=' //
+#else
 		    line = line(:len) // ww_dim_name(i) // '=' //
+#endif
      .			LOHI_STRING( lo,hi,i,grid,':',ax_dec_pt(i),dlen )
      .			// '  '
 	            len = MIN( 64, len+4+dlen )

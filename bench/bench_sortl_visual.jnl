@@ -15,8 +15,6 @@ let tsorted_sst = samplel(sst, tsorted_indices)
 list tsorted_indices, tsorted_sst
 
 
-
-
 ! test sortt with data containing bad/missing data.
 
 can region 

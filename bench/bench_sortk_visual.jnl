@@ -13,15 +13,14 @@ let zsorted_temp = samplek(temp, zsorted_indices)
 list zsorted_temp
 
 
-can region
-use ocean_atlas_temp
-
-set region/i=50:70/j=90/l=1
-shade temp
+set region/i=100/j=40/l=1
+set view left
+plot temp
 
 let zsorted_indices = sortk(temp)
 let zsorted_temp = samplek(temp, zsorted_indices)
-shade zsorted_temp
+set view right
+plot zsorted_temp
 
 ! this should bail out with indices out of range:
 

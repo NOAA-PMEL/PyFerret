@@ -16,16 +16,15 @@ let tsorted_sst = samplei(sst, tsorted_indices)
 list tsorted_indices, tsorted_sst
 
 
-! test on 2-d data
+! 
 
 can region
 set data coads_climatology
-set region/l=5
-shade sst
+set region/l=5/y=0
 
 let xsorted_indices = sorti(sst)
 let xsorted_sst = samplei(sst, xsorted_indices)
-shade xsorted_sst
+plot xsorted_sst
 
 set region/l=5/y=1
 let len = xsorted_sst[i=@ngd]

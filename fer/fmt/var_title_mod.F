@@ -169,7 +169,9 @@
 	ENDIF
 
 * add remark about momentum diffusion coefficient
-	IF ( vcalc .AND. (var.EQ.pudfh) .OR. (var.EQ.pvdfh) ) THEN
+* add second pair of parens around second conditional statement below 
+*     *kob* 4/14/98
+	IF ( vcalc .AND. ((var.EQ.pudfh) .OR. (var.EQ.pvdfh)) ) THEN
 	   IF ( add_on ) THEN
 	      var_title_mod = var_title_mod(:mlen) //' - '
 	      mlen = MIN( maxlen, mlen + 3 )

@@ -1,0 +1,52 @@
+\cancel mode verify
+! dods_fsu.jnl - 4/99 *sh and *kob*
+
+! DESCRIPTION: "Use" a dods data set from FSU
+
+! usage:              arg 1 
+!	GO dods_fsu data_set
+
+! examples:
+!  blah blah
+
+! Set the base DODS URL for this supplier
+DEFINE SYMBOL dods_base_url "http://www.coaps.fsu.edu/cgi-bin/nph-nc/"
+
+! check if data set argument was given. If not, do a query
+IF   $1"True|*>False|"  THEN
+  sp $FER_WEB_BROWSER http://www.coaps.fsu.edu/WOCE/SAC/fsuwinds/pacftp &
+  SAY ----------------------------------
+  SAY "Spawning external viewer to display listings of Available Data"
+  SAY also see  http://www.coaps.fsu.edu/nscat/data/
+  SAY " "
+  SAY "The base URL is:  ($DODS_base_url)"
+  SAY " " 
+  SAY "Example:"
+  SAY "go dods_fsu WOCE/SAC/fsuwinds/pacftp/pac_pstress.clim.61-92.nc"
+  SAY or
+  SAY "go dods_fsu nscat/data/nc_monthlystress"
+  QUIT
+ENDIF
+
+!!! ==>
+! NOTE 1: If a given supplier has a Web site at which the list of data
+! sets can be seen, the QUERY option can be used here to bring up a Web
+! browser pointing to that site
+
+! NOTE 2: abbreviations for data set names can be created here
+
+! abbreviation examples
+IF  $1"|sst1981-89>1|*>0|" THEN
+  DEFINE SYMBOL DODS_data_set reynolds_sst/sst.wkmean.1981-1989.nc
+
+
+! all non-abbreviated data set (INCLUDING BLOOPERS!!)
+ELSE
+  DEFINE SYMBOL DODS_data_set $1 
+ENDIF
+
+! SET DATA
+SET DATA "($DODS_base_url)($DODS_data_set)"
+
+! clean up
+SET MODE/LAST verify

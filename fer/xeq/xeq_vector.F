@@ -70,6 +70,8 @@
 *      5/00 *sh* - restored the /PEN qualifier (with "denigrated" remark
 *      10/00 *AM* - added VECTOR/FLOWLINE (alias FLOWLINE)
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
+*      *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
+*                  (only used for PLOT command)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -108,7 +110,8 @@
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
-     .			set_up, noaxes, no_data, flows
+     .			set_up, noaxes, no_data, flows, 
+     .			is_logh, is_logv
 	INTEGER		status, cx, loc, ipen, thick,
      .			dim1, dim2, asp,
      .			ax1_blks, ax1_start,
@@ -144,6 +147,9 @@
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	flows     = qual_given( slash_vect_flowline  ).GT.0
+	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
+	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for vector
+
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
 	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
@@ -213,6 +219,8 @@
      .				no_labels,
      .				no_x_rng,
      .				only_x,
+     .				is_logh, 
+     .				is_logv,
      .				is_mr,
      .				num_uvars_in_cmnd,
      .				is_cx,

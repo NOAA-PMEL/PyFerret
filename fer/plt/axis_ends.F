@@ -1,4 +1,5 @@
-	SUBROUTINE AXIS_ENDS( plot_ax, dat_ax, grid, first, last, delta )
+	SUBROUTINE AXIS_ENDS( plot_ax, dat_ax, grid, first, last, delta,
+     .                        is_log,  axtp, status )
 
 *
 *
@@ -51,9 +52,11 @@
 *             7/99 - use 7 digits of output precision
 *        *kob* 9/99 - fixed minor bug in which length of val_buff was one
 *                     character too short.  this only showed up under Linux
+*        *acm* 6/01 - add logical IS_LOG  for log axis
 #ifdef unix
 	include 'ferret.parm'
 	include 'plot_setup.parm'
+	include 'errmsg.parm'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
@@ -62,16 +65,52 @@
 * kob 12/96
 	EXTERNAL RANGE
 * calling argument declarations:
-	LOGICAL		BKWD_AXIS
+	LOGICAL		is_log
 	CHARACTER*1	plot_ax		! X (horiz) or Y (vert) axis of plot
 	INTEGER		dat_ax, grid	! X,Y,Z or T axis of data
 	REAL*8		first, last, delta
 
 * internal variable declarations:
-	CHARACTER*45    val_buff
+	LOGICAL		BKWD_AXIS
+	CHARACTER	val_buff*45
+	INTEGER		axtp, status
 	REAL		x1, x2, uminr, umaxr, dint
+	REAL*8		firstl, lastl, epsilon, eps2
+	PARAMETER	(epsilon=1.e-45)
 
-* convert to single precision and reverse order if a depth plot on Y axis
+	STATUS = ferr_ok 
+
+* For log axes set up PPLUS for a regular or inverted log axis
+
+	IF (is_log) THEN
+ 
+* Check for negative or too-tiny values of range
+	   IF (first .LT. epsilon .OR. last  .LT. epsilon) GO TO 5000
+
+	   IF ( BKWD_AXIS(dat_ax, grid) ) THEN
+	      axtp = 4		! inverse log axis (leave type 3 as is in PPLUS)
+           ELSE
+	      axtp = 2		! log axis
+	   ENDIF
+
+	   firstl = LOG10(first)
+	   lastl = LOG10(last)
+
+	   first = INT(LOG10(first))
+	   last  = INT(LOG10(last))
+
+!  If needed, round the higher limit up, if not an exact decade already. 
+	   eps2 = ABS(MIN(firstl, lastl)/ 100.)
+
+           IF (lastl .GE. firstl ) THEN
+	      IF (ABS(lastl - last) .GT. eps2) last = last + 1.
+	   ELSE
+             IF (ABS(firstl - first) .GT. eps2) first = first + 1.
+	   ENDIF
+       ENDIF
+
+* Convert to single precision and reverse order if a depth plot on Y axis
+
 	IF ( plot_ax .EQ. 'Y'  .AND.  BKWD_AXIS(dat_ax, grid) ) THEN
 	   x2 = SNGL(first)
 	   x1 = SNGL(last)
@@ -79,6 +118,7 @@
 	   x1 = SNGL(first)
 	   x2 = SNGL(last)
 	ENDIF
+
 
 * use Denbo's PPLUS routine to calculate the tic interval, dint
 	IF ( delta .EQ. unspecified_val8 ) THEN
@@ -96,4 +136,6 @@
 	CALL AXIS_END_SYMS(plot_ax, first, last)
 
 	RETURN
+ 5000	STATUS = 9999
+
       END

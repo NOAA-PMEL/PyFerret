@@ -2,6 +2,7 @@
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
      .				step_inc, do_dash, dashstyle,
+     .                          is_logx, is_logy, 
      .				mv_list, cx_list, nmv,
      .				indep_dat, dep_dat, status )
 
@@ -103,12 +104,13 @@
 * V521	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
 *	7/00 - *sh* new argument range_rqd needed on EQUAL_RANGE
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
-* V5.3 *ACM* 1/01  cal_id for alternative calendar axes.
+* V530 *ACM* 1/01  cal_id for alternative calendar axes.
 *      *sh* 1/01 - added argument step_inc for PLOT/STEP
 *	         - bug fix: PLOT+ mem limit check off by x2 --  X&Y components
 *      *acm* 5/01 - added  PLOT/DASH  (do_dash, dashstyle)
 *      *acm* 5/01 - correct STEP bug: send NLOAD rather than NPTS2 to PPLLDX 
-
+* V533 *acm* 6/01 - for LOG plots add logicals is_logx, is_logy.  set to plot
+*                   log of depth as inverse axis
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -149,7 +151,8 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL		overlay, transpz, versus, no_labels, use_line
+	LOGICAL		overlay, transpz, versus, no_labels, use_line,
+     .			is_logx, is_logy
 	INTEGER		symbol, color, step_inc, do_dash,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
@@ -159,26 +162,29 @@
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, flip, time_axis,
-     .			all_1_dep, all_1_ind, formatted, user_title
+     .			all_1_dep, all_1_ind, formatted, user_title,
+     .			indep_is_log, dep_is_log
 	CHARACTER*200	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
-     .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14,
+     .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
+     .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
      .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
-     .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14,
-     .                  TM_GET_CALENDAR_NAME*32, cal_name*32, 
-     .                  cal_name_new*32
+     .			buff1*16, buff2*16, buff3*8, t1_date*14, tref*14,
+     .                  cal_name*32, cal_name_new*32, val_buff*32
+
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
      .			slen2, slen3, tax, plot_mem_used, nload, i,
-     .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim
+     .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim,
+     .			dep_axtyp, indep_axtyp
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
-	REAL		only_val, val1, dt_min,
-     .			lo, hi, dep_len, ind_len,
-     .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
+	REAL		only_val, val1, dt_min, lo, hi, dep_len, 
+     .			ind_len, xkeypos, ykeypos, xkeysize, ykeysize, 
+     .			lab_ht, first, last
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
      .			ind_min, ind_max, dep_min, dep_max, delta, tmp
 
@@ -211,6 +217,8 @@
 	user_title = ptitl .GT. 0
 	cal_id_1 = 0
 	cal_id_2 = 0
+	dep_axtyp = 1
+	indep_axtyp = 1
 
 * determine PLOT+ memory required
         plot_mem_used = 0
@@ -249,12 +257,15 @@
 	   flip = transpz
 	ENDIF
 	IF ( flip ) THEN
-	     dep_ax  = 'X'
+	   dep_ax    = 'X'
 	   indep_ax  = 'Y'
-	     dep_lab = ppl_xlab
+	   dep_lab   = ppl_xlab
 	   indep_lab = ppl_ylab
 	   dep_len   = xlen
 	   ind_len   = ylen
+	   indep_is_log = is_logy
+           dep_is_log   = is_logx
+
 	   IF ( pxlim.GT.0 ) THEN
 	      pindeplim = pxlim
 	   ELSE
@@ -266,12 +277,14 @@
 	      pdeplim = phlim
 	   ENDIF 
 	ELSE
-	     dep_ax  = 'Y'
+	   dep_ax    = 'Y'
 	   indep_ax  = 'X'
-	     dep_lab = ppl_ylab
+	   dep_lab   = ppl_ylab
 	   indep_lab = ppl_xlab
 	   ind_len   = xlen
 	   dep_len   = ylen
+	   indep_is_log = is_logx
+           dep_is_log   = is_logy
 	   IF ( pxlim.GT.0 ) THEN
 	      pindeplim = pxlim
 	   ELSE
@@ -314,6 +327,7 @@
 * ... force axis scaling if the data has no range
 	   all_1_ind = NO_LINE_RANGE( indep_dat,npts,mr_bad_data(mv),val1 )
 	   delta = unspecified_val8
+
 	   IF ( pindeplim .GT. 0 ) THEN
 	      IF ( pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done ) THEN
 	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
@@ -342,12 +356,19 @@
 	      ind_min = DBLE( lo )
 	      ind_max = DBLE( hi )
 	   ENDIF
+
 	   IF (.NOT.overlay) THEN
-	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,delta)
+	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
+     .                       delta, indep_is_log, indep_axtyp, status)
+	      IF ( status .NE. ferr_ok ) THEN
+                 first = ind_min
+                 last  = ind_max
+                 GOTO 5170
+              ENDIF
 * ... turn off axis formatting for /VS plots
 	      CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
 	   ENDIF
-	ELSE
+	ELSE	! (not VERSUS)
 	   var1 = 1
 	   ndv  = nmv
 	   ito  = 0
@@ -371,6 +392,7 @@
                     GO TO 5160
                  ENDIF
  100	      CONTINUE
+
 	   ENDIF
 
 * ... (PLOT+ needs TAXIS,ON prior to PPLLDX calls)
@@ -589,8 +611,16 @@
      .				SECS_TO_TSTEP( grid1, ind_min ),
      .				SECS_TO_TSTEP( grid1, ind_max ) )
 	      ELSE
+
 	         CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
-     .				   ind_min, ind_max, delta )
+     .				   ind_min, ind_max, delta, 
+     .				   indep_is_log, indep_axtyp, status )
+	         IF ( status .NE. ferr_OK ) THEN
+                    first = ind_min
+                    last  = ind_max
+                    GOTO 5170
+                 ENDIF
+
 	         CALL AXIS_FORMAT( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max,
      .				   pnot_curv, 0,
@@ -610,13 +640,52 @@
      .			dep_dim, dep_min, dep_max, delta,
      .			formatted, range_rqd, cal_id_1, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
-	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
+
+	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, 
+     .                        delta, dep_is_log, dep_axtyp, status )
+	      IF ( status .NE. ferr_OK ) THEN
+                 first = dep_min
+                 last  = dep_max
+                 GOTO 5170
+              ENDIF
+
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
-	      CALL AXIS_ENDS( dep_ax, t_dim, grid,val1-1.D0,val1+1.D0,1.D0 )
-	   ENDIF
-	ENDIF
+	      CALL AXIS_ENDS( dep_ax, t_dim, grid,val1-1.D0,val1+1.D0,1.D0,
+     .                        dep_is_log, dep_axtyp, status )   
+	      IF ( status .NE. ferr_OK ) THEN
+                  first = val1-1.0
+		  last  = val1+1.0
+		  GOTO 5170
+	      ENDIF   
+	   ELSEIF (dep_is_log) THEN	! get dependent var scaling and set up log axis
+	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
+	      dep_min = DBLE( lo )
+	      dep_max = DBLE( hi )
+	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, 
+     .                        delta, dep_is_log, dep_axtyp, status )
+	      IF ( status .NE. ferr_OK ) THEN
+                 first = dep_min
+                 last  = dep_max
+                 GOTO 5170
+              ENDIF
 
+	   ENDIF
+
+*   When not an overlay, set the axis type to log or reverse log
+
+	   IF (dep_is_log  .OR.  indep_is_log) THEN
+	      IF (flip) THEN
+		 WRITE (val_buff, 3006) dep_axtyp, indep_axtyp
+	      ELSE
+ 	         WRITE (val_buff, 3006) indep_axtyp, dep_axtyp
+	      ENDIF
+
+ 3006         FORMAT ('axtype,', I2, ',', I2)
+              CALL PPLCMD ( from, line, 0, val_buff, 1, 1)
+	   ENDIF
+
+	ENDIF
 
 	IF ( no_labels ) RETURN
 
@@ -761,4 +830,11 @@
      .          ' axis'//pCR//
      .		'subsequent variable is on '//cal_name_new(:slen2)//
      .		' axis', *5000 )
+
+ 5170	buff1 = LEFT_REAL (first, '(G15.3)', slen)
+	buff2 = LEFT_REAL (last,  '(G15.3)', slen2)
+	CALL ERRMSG( ferr_out_of_range, status,
+     . 'Limits for log axis negative or too small: '//
+     .  buff1(:slen)// ' : '//  buff2(:slen2), *5000 )
+
 	END

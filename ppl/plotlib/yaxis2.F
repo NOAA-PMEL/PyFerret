@@ -47,6 +47,9 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* *acm* - 6/01   changes to allow plot qualifiers to set log axes,
+*                inverse log axes and log depth axes.
+
 	CHARACTER YLAB*20,IFORMT*(*),YFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
@@ -69,31 +72,53 @@ C                = 1 FOR A SIMPLE LOG AXIS WITH ONE LABEL PER DECADE.
 C                  IN THIS CASE YLO, YHI MUST= LOG(POWER OF 10)
 C                  AND IFORMT IS IGNORED.
 C                  YUNIT MUST = LOG(POWER OF 10)
-C                = 2   THIS GIVES YOU THE INVERSE SCALE OF IAXIS = 1
-C
+C               GE 2  GIVES THE INVERSE SCALE OF IAXIS = 1
+
       IF(IAXIS.EQ.0) RETURN
       ABSSZ=ABS(CSIZE)
       TYLO=IFIX(1.0001*YLO)
       TYHI=IFIX(1.0001*YHI)
       TYUNIT=IFIX(1.0001*YUNIT)
       NDEC=TYHI-TYLO
-      IF(NDEC.LT.1) STOP 'YLO,YHI'
+!      IF(NDEC.LT.1) STOP 'YLO,YHI'
+      IF(NDEC.LT.1) THEN
+         NDEC = -1* ndec
+         SGN  = TYHI	! use SGN as a dummy
+         TYHI = TYLO
+         TYLO = SGN
+      ENDIF
+
 C
 C	DRAW AXIS
 C
 	IF(IAXIS.EQ.1)THEN
 		Y=TYLO
-		SGN=+1.0
+		SGN= 1.0
 	ELSE
 		Y=TYHI
 		SGN=-1.0
 	ENDIF
-	CALL PLOT(X,Y,0,0)
-	CALL PLOTT7(X,Y,XFACT,YFACT,1,-6)
-	DO 100 I=1,NDEC
-	DO 150 J=2,9
-150	CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
-100	CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6)
+ 
+	IF  (IAXIS .LE. 3) THEN
+	   CALL PLOT(X,Y,0,0)
+	   CALL PLOTT7(X,Y,XFACT,YFACT,1,-6)
+	   DO 110 I=1,NDEC
+	   DO 100 J=2,9
+100	   CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+110	   CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6)
+
+	ELSE
+
+C  for DEPTH axes, Y plot coordinates are reversed on page.
+
+           YTEMP = Y + SGN* NDEC
+	   CALL PLOT(X,YTEMP,0,0)
+	   CALL PLOTT7(X,YTEMP,XFACT,YFACT,1,-6)
+	   DO 130 I=1,NDEC
+	   DO 120 J=2,9
+120	   CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+130	   CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)
+        ENDIF
 C
 C	DRAW LABELS
 C
@@ -119,8 +144,21 @@ C
 	ENDIF
 	YWIDT=0.0
 	DO 200 I=0,NDEC
-	WRITE(YLAB,YFRMT)IFIX(SGN*(Y-TYUNIT+I))
-	CALL SCINOT(XTEMP,Y+SGN*I,0.,ABSSZ,NC,YLAB,IPOS,WID,XFACT,YFACT)
+c	WRITE(YLAB,YFRMT)IFIX(SGN*(Y-TYUNIT+I))	! wrong nums for log depth axis 
+
+	IF (SGN .GE. 0) THEN
+            WRITE(YLAB,YFRMT)IFIX((Y-TYUNIT+SGN*I))
+            YTEMP = Y + SGN*I
+
+C  for DEPTH axes, Y plot coordinates are reversed on page.
+
+        ELSE IF (SGN .LT. 0.)THEN
+            WRITE(YLAB,YFRMT)IFIX((Y-TYUNIT+SGN*(NDEC-I)))
+            YTEMP = Y + SGN*(NDEC-I)
+        ENDIF
+
+	CALL SCINOT(XTEMP,YTEMP,0.,ABSSZ,NC,YLAB,IPOS,WID,XFACT,YFACT)
+
 	IF(WID.GT.YWIDT)YWIDT=WID
 200	CONTINUE
 	YWID=YWID+YWIDT

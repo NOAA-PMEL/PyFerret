@@ -50,6 +50,9 @@
 * V320:   1/20/94 - changes to SAVE_FRAME call reflecting C-based procedures
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
+* V530: *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
+*                  (only used for PLOT command)
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -78,7 +81,8 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint
+	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
+     .		  is_logh, is_logv
 	INTEGER	  status, qp,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start
@@ -103,6 +107,8 @@
 	overlay   = qual_given( slash_wire_over      ).GT.0 .AND. twodee_on
 	no_labels = qual_given( slash_wire_nolabels  ).GT.0
 	transpz   = qual_given( slash_wire_transpz   ).GT.0
+	is_logh   = qual_given( slash_is_logh        ).GT.0 ! Not valid quals
+	is_logv   = qual_given( slash_is_logv        ).GT.0 ! for wire 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,
      .                                     is_cx, num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
@@ -149,6 +155,8 @@
      .				no_labels,
      .				no_range,
      .				only_val,
+     .				is_logh, 
+     .				is_logv,
      .				is_mr,		! pass list
      .				num_uvars_in_cmnd,
      .				is_cx,		! pass list

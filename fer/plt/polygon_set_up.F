@@ -3,6 +3,7 @@
      .				overlay, transpz, coord_ax, no_labels,
      .				no_range, only_val,
      .				symbol, line_type, use_line,
+     .				is_logx, is_logy,
      .				mr_list, cx_list, nmv,
      .				x_dat, y_dat, status )
 
@@ -77,8 +78,10 @@
 * V510: *sh* 7/00 - added arg to EQUAL_RANGE 
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
 *	    1/01 - remove makep setting so segments are not pre-activated
-* V5.3 *ACM* 1/03  cal_id for alternative calendar axes.
-* V5.3 *ACM* 5/09  add arguments (unused here) to line_style call.
+* V530 *ACM* 1/03  cal_id for alternative calendar axes.
+* V530 *ACM* 5/09  add arguments (unused here) to line_style call. 
+* V533 *acm* 6/01 - for LOG plots add logicals is_logx, is_logy.  set to plot
+*                   log of depth as inverse axis
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -128,7 +131,8 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL		overlay, transpz, no_labels, no_range, use_line
+	LOGICAL		overlay, transpz, no_labels, no_range, use_line,
+     .			is_logx, is_logy
 	INTEGER		symbol, line_type, coord_ax, iunits, do_dash,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -138,12 +142,14 @@
 * internal variable declarations:
 	LOGICAL         missing_polygon
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
-     .			formatted, user_title, oneD_form, stack_up
+     .			formatted, user_title, oneD_form, stack_up,
+     .			x_is_log, y_is_log
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
      .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14,
-     .                  cal_name*32, cal_name_saved*32
+     .                  cal_name*32, cal_name_saved*32, buff3*16,
+     .			buff4*16, LEFT_REAL*16
 	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN,	TM_GET_CALENDAR_ID, 
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
@@ -154,16 +160,22 @@
      .			plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
-     .                  cal_id, tax
+     .                  cal_id, tax, x_axtyp, y_axtyp
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
-     .			dt_min
-	REAL*8		vmin, vmax, delta
+     .			dt_min, epsilon, small, scale,
+     .			xptsmin, xptsmax, xptsmean, xdif, xmeanlog,
+     .			yptsmin, yptsmax, yptsmean, ydif, ymeanlog,
+     .                  first, last
+
+	REAL*8		vmin, vmax, delta, ind_min, ind_max, dep_min,
+     .			dep_max
 
 * local parameter declarations:
 	LOGICAL		range_rqd
 	PARAMETER     ( range_rqd = .TRUE. )
+	PARAMETER     ( epsilon = 1.E-45 )
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -203,6 +215,8 @@
 !	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
 	cal_id = 0
+	x_axtyp = 1
+	y_axtyp = 1
 
 * perform sanity checks on the arguments
 * ... check the X coordinate variable for shape
@@ -293,6 +307,9 @@
 	   x_lab = ppl_ylab
 	   y_len   = xlen
 	   x_len   = ylen
+	   x_is_log = is_logy
+           y_is_log = is_logx
+
 	   IF (pxlim .GT. 0) THEN
 	      pxdenig = pxlim
 	   ELSE
@@ -310,6 +327,9 @@
 	   x_lab = ppl_xlab
 	   x_len   = xlen
 	   y_len   = ylen
+	   x_is_log = is_logx
+           y_is_log = is_logy
+
 	   IF (pxlim .GT. 0) THEN
 	      pxdenig = pxlim
 	   ELSE
@@ -361,9 +381,9 @@
 	   IF ( oneD_form ) THEN
 *    ... coords are 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,...
 	      cx_lo_ss(cx_buff_x,coord_dim) =
-     .	      cx_lo_ss(cx_buff_x,coord_dim) + end   ! advance past end of last
+     .	       cx_lo_ss(cx_buff_x,coord_dim) + end   ! advance past end of last
 	      cx_lo_ss(cx_buff_y,coord_dim) =
-     .	      cx_lo_ss(cx_buff_y,coord_dim) + end
+     .	       cx_lo_ss(cx_buff_y,coord_dim) + end
 	      IF (cx_lo_ss(cx_buff_x,coord_dim)
      .	     .GE. cx_hi_ss(cx_buff_x,coord_dim)) GOTO 290 ! exit DO_WHILE loop
 	   ELSE
@@ -398,6 +418,80 @@
      .				npts,
      .				status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+* When using log axis transform to log(x).  Scale the points of the
+* polygon within the log axis range xlo, xhi to keep something like
+* the original shape of the polygon.
+
+	   IF (x_is_log) THEN
+
+*  Find min and max x points in the polygon shape (linear units)
+
+	      xptsmin = ABS(mr_bad_data(mr_x))
+	      xptsmax = -1.* xptsmin
+
+	      DO 400 i = 1, npts
+		 IF (x_dat(i) .NE. mr_bad_data(mr_x)) THEN 
+		    xptsmin = MIN(xptsmin, x_dat(i))
+		    xptsmax = MAX(xptsmax, x_dat(i))
+		 ENDIF
+  400         CONTINUE
+
+	      xptsmean = (xptsmin+xptsmax)/2.
+
+*  Convert the x midpoint to log units, and put the other x points
+*  on the page scaled by the axis ends xlo and xhi
+
+	      IF (xptsmean .GT. epsilon) THEN
+		 xmeanlog = LOG10(xptsmean)
+		 scale = 0.1* (xhi-xlo)	! log axis units
+
+		 DO 410 i = 1, npts
+		    xdif = scale*(x_dat(i) - xptsmean)
+		    x_dat(i) = xmeanlog + xdif
+  410		 CONTINUE
+	      ELSE
+		 small = xptsmean
+		 GO TO 5600
+	      ENDIF
+	   ENDIF
+
+* When using log axis transform to log(y).  Scale the points of the
+* polygon within the log axis range ylo, yhi to keep something like
+* the original shape of the polygon.
+
+	   IF (y_is_log) THEN
+
+*  Find min and max y points in the polygon shape (linear units)
+
+	      yptsmin = ABS(mr_bad_data(mr_y))
+	      yptsmax = -1.* yptsmin
+
+	      DO 500 i = 1, npts
+		 IF (y_dat(i) .NE. mr_bad_data(mr_y)) THEN 
+		    yptsmin = MIN(yptsmin, y_dat(i))
+		    yptsmax = MAX(yptsmax, y_dat(i))
+		 ENDIF
+  500         CONTINUE
+
+	      yptsmean = (yptsmin+yptsmax)/2.
+
+*  Convert the y midpoint to log units, and put the other Y points
+*  on the page scaled by the axis ends ylo and yhi
+
+	      IF (yptsmean .GT. epsilon) THEN
+		 ymeanlog = LOG10(yptsmean)
+		 scale = 0.1* (yhi-ylo)	! log axis units
+
+		 DO 510 i = 1, npts
+		    ydif = scale*(y_dat(i) - yptsmean)
+		    y_dat(i) = ymeanlog + ydif
+  510		 CONTINUE
+	      ELSE
+		 small = yptsmean
+		 GO TO 5600
+	      ENDIF
+	   ENDIF
 
 * ... locate the (next) contiguous segment in the arrays
 *    ...search for start of segment
@@ -562,16 +656,34 @@
      .			x_dim, vmin, vmax, delta,
      .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
-              CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .			     vmin,vmax,delta)
+
+              CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x), vmin, 
+     .			     vmax, delta, x_is_log, x_axtyp, status )
+		 IF ( status .NE. ferr_ok ) THEN
+		 first = vmin
+		 last = vmax
+		 GOTO 5400
+	      ENDIF
+
 	   ELSEIF (lox .GE. hix) THEN
 	      IF (lox .EQ. arbitrary_large_val4) lox = 1.0
 * ... no data range -- provide artifical axis limits
-              CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .			DBLE(lox-1.0),DBLE(lox+1.0), 0.5D0)
+              CALL AXIS_ENDS(x_ax, coord_dim, cx_grid(cx_x),
+     .			DBLE(lox-1.0), DBLE(lox+1.0), 0.5D0, x_is_log, 
+     .			x_axtyp, status )
+	      IF ( status .NE. ferr_ok ) THEN
+		 first = lox-1.0
+		 last = lox+1.0
+		 GOTO 5400
+	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
-     .			DBLE(lox),DBLE(hix), delta)
+     .	       DBLE(lox),DBLE(hix), delta, x_is_log, x_axtyp, status )
+	      IF ( status .NE. ferr_ok ) THEN
+		 first = lox
+		 last = hix
+		 GOTO 5400
+	      ENDIF
 
 	   ENDIF
 * ... Y axis
@@ -590,17 +702,42 @@
      .			formatted, range_rqd, cal_id, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			     vmin,vmax,delta)
+     .			     vmin,vmax,delta, y_is_log, y_axtyp, status )
+	      IF ( status .NE. ferr_ok ) THEN
+		 first = vmin
+		 last = vmax
+		 GOTO 5400
+	      ENDIF
 	   ELSEIF (loy .GE. hiy) THEN
 	      IF (loy .EQ. arbitrary_large_val4) loy = 1.0
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			DBLE(loy-1.0),DBLE(loy+1.0), 0.5D0)
+     .			DBLE(loy-1.0),DBLE(loy+1.0), 0.5D0, y_is_log, 
+     .			y_axtyp, status )
+	      IF ( status .NE. ferr_ok ) THEN
+		 first = loy-1.0
+		 last = loy+1.0
+		 GOTO 5400
+	      ENDIF
 	   ELSE
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
-     .			DBLE(loy),DBLE(hiy), delta)
+     .		DBLE(loy),DBLE(hiy), delta, y_is_log, y_axtyp, status )
+	      IF ( status .NE. ferr_ok ) THEN
+		 first = loy
+		 last = hiy
+		 GOTO 5400
+	      ENDIF
 
 	   ENDIF
+
+*   When not an overlay, set the axis type to log or reverse log
+	   IF (is_logx .OR. is_logy) THEN
+	      WRITE (buff3, 3006) x_axtyp, y_axtyp
+
+ 3006         FORMAT ('axtype,', I2, ',', I2)
+	      CALL PPLCMD ( from, line, 0, buff3, 1, 1)
+	   ENDIF
+
 	ENDIF
 
 	IF ( no_labels ) RETURN
@@ -716,4 +853,15 @@ C	   slen = TM_LENSTR1( plot_title )
      .		' axis'//pCR//
      .		'overlaid variable is on '//cal_name(:slen2)//
      .		' axis', *5000 )
+
+ 5400	buff3 = LEFT_REAL (first, '(G15.3)', slen)
+	buff4 = LEFT_REAL (last,  '(G15.3)', slen2)
+	CALL ERRMSG( ferr_out_of_range, status,
+     . 'Limits for log axis negative or too small: '//
+     .  buff3(:slen)// ' : '//  buff4(:slen2), *5000 )
+
+ 5600	buff3 = LEFT_REAL (small, '(G15.3)', slen)
+	CALL ERRMSG( ferr_out_of_range, status,
+     . 'X coordinates on log axis negative or too small : '//
+     .  buff3(:slen), *5000 )
 	END

@@ -76,7 +76,8 @@
 *		  - added /SIZE=/SPACING=/SIGDIG= controls over contour labels
 *      5/00 *sh* - restored the /PEN qualifier (with "denigrated" remark
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
-
+*      *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
+*                  (only used for PLOT command)
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -106,7 +107,8 @@
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
-     .            do_key, spectrum, set_up, noaxes, pattern, no_data
+     .            do_key, spectrum, set_up, noaxes, pattern, no_data,
+     .		  is_logh, is_logv
 	INTEGER	  TM_LENSTR1, status, slen, sp, ipen,
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt
@@ -135,6 +137,8 @@
 	set_up    = qual_given( slash_cont_set_up    ).GT.0
 	fill      = qual_given( slash_cont_fill      ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
+	is_logh   = qual_given( slash_is_logh        ).GT.0
+	is_logv   = qual_given( slash_is_logv        ).GT.0
         sp        = qual_given( slash_cont_spectrum  )
         spectrum  = sp .GT. 0 .AND. fill
 
@@ -215,6 +219,8 @@
      .				no_labels,
      .				no_range,
      .				only_val,
+     .				is_logh, 
+     .				is_logv,
      .				is_mr,		! pass list
      .				num_uvars_in_cmnd,
      .				is_cx,		! pass list

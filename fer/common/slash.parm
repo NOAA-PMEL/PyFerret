@@ -9,6 +9,7 @@
 * V530 *kob* 1/01 - added slash_repeat_animate, slash_repeat_loop
 * V530 *acm* 5/01 - added slash_plot_dash
 * V533 *sh* 6/01 - added slash_set_var_name
+* V533 *acm*6/01 - added slash_is_logh, slash_is_logv
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -166,7 +167,9 @@
      .			slash_noaxes,
      .
      .			slash_repeat_animate,
-     .			slash_repeat_loop		
+     .			slash_repeat_loop,
+     .			slash_is_logh,
+     .			slash_is_logv	
 
 
 	PARAMETER     ( qual_on	 = -11,
@@ -332,7 +335,9 @@
      .			slash_color   = 1 + 23,
      .			slash_pen     = 1 + 29,
      .			slash_hlimits = 1 + 30,
-     .			slash_vlimits = 1 + 31 )
+     .			slash_vlimits = 1 + 31,
+     .			slash_is_logh = 1 + 32,
+     .			slash_is_logv = 1 + 33 )
 
         INTEGER		slash_polygon_line,
      .			slash_polygon_fill,

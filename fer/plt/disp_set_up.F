@@ -1,6 +1,7 @@
 	SUBROUTINE DISP_SET_UP( memory,
-     .				vector, aspect, overlay, transpz, no_labels,
-     .				no_x_rng, valx1, mr_list, nmv, cx_list, uvar,
+     .				vector, aspect, overlay, transpz, no_labels, 
+     .				no_x_rng, valx1, is_logx, is_logy,
+     .				mr_list, nmv, cx_list, uvar,
      .				s1_axis, s2_axis, pen, status )
 
 *
@@ -107,9 +108,9 @@
 *	 5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 * V520   6/00 *sh* - bug fix: trap ndim>2 on overlays
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
-* V5.3 *ACM* 1/01  cal_id for alternative calendar axes.
-* V5.3 *ACM* 3/01  send cal_id to EQUAL_RANGE_T
-
+* V530 *acm* 1/01  cal_id for alternative calendar axes.
+* V533 *acm* 6/01 for LOG plots add logicals is_logx, is_logy.  set to plot
+*                   log of depth as inverse axis
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
 #ifdef unix
@@ -163,7 +164,8 @@ C plus those starting w/ xbox_bounds:
 
 
 * calling argument declarations:
-	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng
+	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
+     .			is_logx, is_logy
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			pen, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -171,9 +173,9 @@ C plus those starting w/ xbox_bounds:
 
 * internal variable declarations:
 	CHARACTER*200	COMPOUND_TITLE, COMPOUND_KEY, plot_title
-	CHARACTER	TM_FMT*16, LEFINT*8,
+	CHARACTER	TM_FMT*16, LEFINT*8, LEFT_REAL*16,
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
-     .			letter*1,
+     .			letter*1, buff1*16, buff2*16,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 
      .                  cal_name_2*32
 
@@ -187,10 +189,12 @@ C plus those starting w/ xbox_bounds:
      .			style, justify, ipen, ndim, dims(4), ptitl,
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
      .			phlim, pvlim, slen2,
-     .			TM_GET_CALENDAR_ID, cal_id, tax
+     .			TM_GET_CALENDAR_ID, cal_id, tax,
+     .			x_axtyp, y_axtyp
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
-     .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
+     .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
+     .                  first, last
 	REAL*8		xaxlo, xaxhi, yaxlo, yaxhi, delta
 
 * signal that plot set-up has begun
@@ -203,6 +207,8 @@ C plus those starting w/ xbox_bounds:
 	grid	  = mr_grid( mvx )
 	bad_x	  = mr_bad_data( mvx )
 	cal_id    = 0
+	x_axtyp   = 1
+	y_axtyp   = 1
 
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
@@ -423,8 +429,10 @@ C plus those starting w/ xbox_bounds:
 	      CALL CHOOSE_CX_WW( uvar, cx_cmnd, ctx, dim1, xaxlo, xaxhi )
 	      delta = unspecified_val8
 	   ENDIF
+
 	   haxlo = xaxlo	! save limits so overlays
 	   haxhi = xaxhi	! will know them
+
 	   time_axis = GEOG_LABEL( dim1, grid )
 	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
            IF (time_axis) THEN
@@ -437,7 +445,15 @@ C plus those starting w/ xbox_bounds:
  3004         FORMAT ('CALENDAR ', A7)
 	      saved_calendar_id = cal_id
            ENDIF
-	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta )
+
+	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta, is_logx,
+     .			      x_axtyp, status )
+	   IF ( status .NE. ferr_ok ) THEN
+              first = xaxlo
+              last  = xaxhi
+              GOTO 5700
+           ENDIF
+
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi,
      .						curvilinear, cx_xpos,
      .						time_axis,xstyle,no_labels)
@@ -472,12 +488,28 @@ C plus those starting w/ xbox_bounds:
 	   ENDIF
 	   vaxlo = yaxlo	! save limits so overlays
 	   vaxhi = yaxhi	! will know them
+
 	   time_axis = GEOG_LABEL( dim2, grid )
 	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
-	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta )
+
+	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta, is_logy,
+     .			      y_axtyp, status )
+	   IF ( status .NE. ferr_ok ) THEN
+              first = xaxlo
+              last  = xaxhi
+              GOTO 5700
+           ENDIF 
 	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, 
      .						curvilinear, cx_ypos,
      .						time_axis,ystyle,no_labels)
+
+*   When not an overlay, set the axis type to log or reverse log
+	   IF (is_logx .OR. is_logy) THEN
+	      WRITE (buff2, 3006) x_axtyp, y_axtyp
+
+ 3006         FORMAT ('axtype,', I2, ',', I2)
+	      CALL PPLCMD ( from, line, 0, buff2, 1, 1)
+	   ENDIF
         ENDIF
 
 * rotate vectors to make axis scale ratio correction ?
@@ -522,7 +554,7 @@ C plus those starting w/ xbox_bounds:
 ! ====================== LABELS ========================
 
 * if we are starting from a blank screen compose a title
-* if we are overlaying on an plot put the new variable name on as a key
+* if we are overlaying on a plot put the new variable name on as a key
 	IF ( user_title ) THEN
 	   CALL EQUAL_STR_LC(
      .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
@@ -636,4 +668,11 @@ C plus those starting w/ xbox_bounds:
      .          ' axis'//pCR//
      .		'subsequent variable is on '//cal_name_2(:slen2)//
      .		' axis', *5000 )
+
+ 5700	buff1 = LEFT_REAL (first, '(G15.3)', slen)
+	buff2 = LEFT_REAL (last,  '(G15.3)', slen2)
+	CALL ERRMSG( ferr_out_of_range, status,
+     . 'Limits for log axis negative or too small: '//
+     .  buff1(:slen)// ' : '// buff2(:slen2), *5000 )
+
 	END

@@ -62,6 +62,9 @@
 * V530 *sh* 1/01 - added PLOT/STEP
 * V530 *acm* 5/01 - added PLOT/DASH
 *	            and PLOT/SYMBOL=dot
+* V533 *acm*6/01 - add arguments is_logh, is_logv to PLOT_SET_UP call, 
+*                  set log axes, inverse log axes and log depth axes with
+*                  PLOT/VLOG or PLOT/HLOG
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -111,7 +114,8 @@
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, versus,
-     .			no_labels, set_up, noaxes, use_line
+     .			no_labels, set_up, noaxes, use_line,
+     .			is_logh, is_logv
 	INTEGER		TM_LENSTR1, symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
@@ -152,6 +156,9 @@ CC       => Set values here instead.
 	versus    = qual_given( slash_plot_vs	     ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
+	is_logh   = qual_given( slash_is_logh        ).GT.0
+	is_logv   = qual_given( slash_is_logv        ).GT.0
+
 	symbol	  = unspecified_int4
 	sym_size  = 0.08	! default plot mark size
 	thick	  = 1		! default thickness
@@ -321,6 +328,8 @@ CC       => Set values here instead.
      .				step_inc,
      .				do_dash,
      .				dashstyle,
+     .				is_logh, 
+     .				is_logv,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -353,6 +362,17 @@ CC       => Set values here instead.
 	   CALL SAVE_FRAME( frame_file, "HDF", status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
+
+*  Save log axis state
+
+	IF (overlay) THEN
+	   is_logh = h_logaxis
+	   is_logv = v_logaxis
+	ELSE
+	   h_logaxis= is_logh
+	   v_logaxis = is_logv 
+	ENDIF
+
 
 * release the memory used for axis buffers
  1000	CALL FREE_MEMORY( ax2_start, ax2_blks )

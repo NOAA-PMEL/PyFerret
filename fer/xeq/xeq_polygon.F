@@ -45,6 +45,10 @@
 *        *sh* 6/99 -- suppress color key for 2-argument version of command
 * V510:  *sh* 3/00 -- change to how line specifications are passed
 
+* V533 *acm*6/01 - add arguments is_logh, is_logv to PLOT_SET_UP call, 
+*                  set log axes, inverse log axes and log depth axes with
+*                  PLOT/VLOG or PLOT/HLOG
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -94,7 +98,7 @@
 * internal variable declarations:
         LOGICAL         no_range, do_key, spectrum, pattern, use_line
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes
-	LOGICAL         line_it, fill_it
+	LOGICAL         line_it, fill_it, is_logh, is_logv
 	INTEGER         sp, patt, TM_LENSTR1
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
@@ -134,6 +138,9 @@ CC       => Set values here instead.
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	coord_ax  = qual_given( slash_plot_vs	     )		! integer
+	is_logh   = qual_given( slash_is_logh        ).GT.0
+	is_logv   = qual_given( slash_is_logv        ).GT.0 
+
 	symbol	  = qual_off	! or ??unspecified_int4??
 	sym_size  = 0.08	! default plot mark size
 	thick	  = 1		! default thickness
@@ -223,6 +230,8 @@ CC       => Set values here instead.
      .				symbol,
      .				color,
      .				use_line,
+     .				is_logh, 
+     .				is_logv,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -309,6 +318,16 @@ CC       => Set values here instead.
 	IF ( qual_given( slash_plot_frame ) .GT. 0 ) THEN
 	   CALL SAVE_FRAME( frame_file, "HDF", status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
+*  Save log axis state
+
+	IF (overlay) THEN
+	   is_logh = h_logaxis
+	   is_logv = v_logaxis
+	ELSE
+	   h_logaxis= is_logh
+	   v_logaxis = is_logv 
 	ENDIF
 
 * release the memory used for axis buffers

@@ -126,6 +126,9 @@
 *	             to what must be the now-defunct xds with new 
 *		     animate alias which uses internal double buffering
 * V533: 6/01 *sh* - added SET VARIABLE/NAME=
+*            *acm* - added PLOT/VLOG, PLOT/HLOG: plot qualifiers to set log,
+*                    inverse log axes and log depth axes.
+
 
 #ifdef unix
 	include 'ferret.parm'
@@ -680,8 +683,8 @@
 		DATA qualifiers  (nqual_at4a+29)/ 'PEN'/	!/pen (denig!!)
 		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at4a+32)/ '****'/	!
-		DATA qualifiers  (nqual_at4a+33)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+32)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+33)/ '****'/	! 
 
 
 * LIST	 - command # 5
@@ -765,8 +768,8 @@
 		DATA qualifiers  (nqual_at6a+29)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at6a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at6a+32)/ '****'/	!/unused
-		DATA qualifiers  (nqual_at6a+33)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+32)/ 'HLOG'/	! log axis horiz
+		DATA qualifiers  (nqual_at6a+33)/ 'VLOG'/	! log axis vert
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
@@ -994,8 +997,8 @@
 		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
 		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at13a+32)/ '****'/	!
-		DATA qualifiers  (nqual_at13a+33)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+32)/ '****'/	! 
+		DATA qualifiers  (nqual_at13a+33)/ '****'/	! 
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/
@@ -1113,8 +1116,8 @@
 		DATA qualifiers  (nqual_at18a+29)/ '****'/	!
 		DATA qualifiers  (nqual_at18a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at18a+32)/ '****'/	!
-		DATA qualifiers  (nqual_at18a+33)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+32)/ '****'/	! 
+		DATA qualifiers  (nqual_at18a+33)/ '****'/	! 
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/
@@ -1286,8 +1289,8 @@
 		DATA qualifiers  (nqual_at27a+29)/ '****'/	!unused
 		DATA qualifiers  (nqual_at27a+30)/ 'HLIMITS'/	! horizontal
 		DATA qualifiers  (nqual_at27a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at27a+32)/ '****'/	!unused
-		DATA qualifiers  (nqual_at27a+33)/ '****'/	!unused
+		DATA qualifiers  (nqual_at27a+32)/ 'HLOG'/	!log axis horiz
+		DATA qualifiers  (nqual_at27a+33)/ 'VLOG'/	!log axis vert
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/

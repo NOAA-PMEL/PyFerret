@@ -65,6 +65,8 @@
 * V450:  5/29/97 - added /NOAXES qualifier (useful in curvilinear plots)
 * V491:  12.98   - added /PATTERN qualifier *jd*
 * V510 12/99 *sh* - allow all-missing data plots
+* V530: *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
+*                  (only used for PLOT command)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -95,7 +97,9 @@
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, do_key,
-     .            spectrum, set_up, noaxes, pattern, no_data
+     .            spectrum, set_up, noaxes, pattern, no_data,
+     .		  is_logh, is_logv
+
 	INTEGER	  TM_LENSTR1, status, ishade, slen, sp, patt,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start
@@ -121,6 +125,8 @@
         sp        = qual_given( slash_cont_spectrum  )
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
+	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
+	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for shade
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
@@ -141,6 +147,8 @@
      .				no_labels,
      .				no_range,
      .				only_val,
+     .				is_logh,
+     .				is_logv,
      .				is_mr,
      .				num_uvars_in_cmnd,
      .				is_cx,

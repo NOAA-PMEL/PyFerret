@@ -165,7 +165,7 @@ static Widget	_Uxbuild_Splash()
 			XmNy, 184,
 			XmNwidth, 340,
 			XmNheight, 470,
-			XmNtitle, "Ferret 5.0",
+			XmNtitle, "Ferret GUI",
 			XmNminWidth, 340,
 			XmNallowShellResize, TRUE,
 			NULL );
@@ -191,7 +191,7 @@ static Widget	_Uxbuild_Splash()
 	ferret_version = XtVaCreateManagedWidget( "ferret_version",
 			xmLabelWidgetClass,
 			form1,
-			RES_CONVERT( XmNlabelString, "Ferret 5.0" ),
+			RES_CONVERT( XmNlabelString, "Ferret GUI" ),
 			XmNtopOffset, 20,
 			XmNtopAttachment, XmATTACH_FORM,
 			XmNleftPosition, 50,

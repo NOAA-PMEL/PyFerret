@@ -6,7 +6,7 @@
 !              values at those extrema
 !
 !   usage:
-!	GO label_hi_lo var marktype xneigh yneigh hicolor locolor
+!	GO label_hi_lo var marktype xrng yrng hicolor locolor
 !   where:
 !	var	   Variable in the underlying plot. note do not use square
 !                  bracket syntax (GO label_lo_hi sst[l=1]... will fail )
@@ -15,8 +15,8 @@
 !			mark puts L and H
 !			label puts the data value in a box at extremum
 !
-!	xneigh     neighborhood, # of gridpoints in x and y direction
-!	yneigh       in which to look for local extrema
+!	xrng     range in data units, in x and y direction
+!	yrng       in which to look for local extrema
 !
 !	hicolor    color of box around HI labels, or of letter H, default black
 !	locolor    color of box around LO labels, or of letter L, default black
@@ -33,10 +33,10 @@
 !	yes? GO label_hi_lo.jnl slp mark 3 3 red blue
 
 ! check arguments
-QUERY/IGNORE $1%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
-QUERY/IGNORE $2%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
-QUERY/IGNORE $3%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
-QUERY/IGNORE $4%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
+QUERY/IGNORE $1%<Usage: GO label_hi_lo  var marktype xrng yrng xmin xmax ymin%
+QUERY/IGNORE $2%<Usage: GO label_hi_lo  var marktype xrng yrng xmin xmax ymin%
+QUERY/IGNORE $3%<Usage: GO label_hi_lo  var marktype xrng yrng xmin xmax ymin%
+QUERY/IGNORE $4%<Usage: GO label_hi_lo  var marktype xrng yrng xmin xmax ymin%
 
 QUERY/IGNORE $5%black|black|red|green|blue|lightblue|purple|*>black|%
 QUERY/IGNORE $6%black|black|red|green|blue|lightblue|purple|*>black|%
@@ -64,6 +64,8 @@ LET/QUIET zpl = datlo[i=3]
 
 LOAD xph; LOAD yph; LOAD zph
 LOAD xpl; LOAD ypl; LOAD zpl
+let/quiet nhi = xph[y=@ngd]
+let/quiet nlo = xpl[y=@ngd]
 
 ! I and J indices are used as indices of the extrema, so cancel the
 ! region that came in with the variable.
@@ -75,10 +77,10 @@ IF $2"|label>1|*>0|" THEN
 ! Allow either violet or purple to be specified.   
 
   GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$5%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xph,yph,zph,rectangle,1.8
-  REPEAT/K=1:20 (LET/QUIET xp=xph[j=`k`]; LET/QUIET yp=yph[j=`k`]; LET/QUIET zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  REPEAT/K=1:`nhi` (LET/QUIET xp=xph[j=`k`]; LET/QUIET yp=yph[j=`k`]; LET/QUIET zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 
   GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle,1.8
-  REPEAT/K=1:20 (LET/QUIET xp=xpl[j=`k`]; LET/QUIET yp=ypl[j=`k`]; LET/QUIET zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  REPEAT/K=1:`nlo` (LET/QUIET xp=xpl[j=`k`]; LET/QUIET yp=ypl[j=`k`]; LET/QUIET zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 ENDIF
 
 IF $2"|mark>1|*>0|" THEN

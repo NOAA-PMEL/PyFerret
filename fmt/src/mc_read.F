@@ -59,6 +59,9 @@
 *                    files if mode diag is turned on.
 * v531: *kob* 5/01 - fix erroneous error reporting at label 5100
 * V552 5/03 *acm*: increase size of vname to 128 chars
+* V570 4/04 *acm* when checking which stepfile to read from, use
+*                 TM_FPEQ_TOL to see if the timestep is equal (within tolerance)
+*                 to the start or end point of any of the files.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -110,15 +113,17 @@
      .		  varid, varpos,ndims,nvars, natts, recdim,
      .            npts, var_id,index,nsteps_in_file
 	REAL*8	  TM_WORLD,start_tstep, end_tstep, start_read_tstep,
-     .            end_read_tstep
+     .            end_read_tstep, epsilon
 	INTEGER   TM_SUBSC, NCOPN, NCVID
-	LOGICAL   more_to_read, TM_FPEQ
+	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL
         CHARACTER*256   TM_INQ_PATH, tstep_file
 	CHARACTER*128 vname
 	CHARACTER*64 dim_name
 	INTEGER*4 STR_CASE_BLIND_COMPARE
 	REAL*8 r8buff
 	CHARACTER*13    TM_STRING
+
+        epsilon = 4.E-15   ! for TM_DFPEQ_TOL
 
 	start_tstep = TM_WORLD(a_lo_t,ds_grid_number(ivar),4,box_middle)
 	end_tstep   = TM_WORLD(a_hi_t,ds_grid_number(ivar),4,box_middle)
@@ -168,7 +173,18 @@
 * find correct file
  20	   DO 30 sfcnt = 1,maxstepfiles
 	      IF (sf_setnum(sfcnt) .NE. dset) GOTO 30 ! right dataset?
-	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. ! contains timestep
+
+c	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. ! contains timestep
+c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
+
+          ! contains timestep, to within epsilon
+	      IF (TM_DFPEQ_TOL(sf_1step(sfcnt), 
+     .                         start_read_tstep, epsilon) .OR.
+     .		  TM_DFPEQ_TOL(sf_lastep(sfcnt), 
+     .                         start_read_tstep, epsilon)) GOTO 40
+
+          ! stepfile does not contain timestep
+	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. 
      .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
 	      GOTO 40
  30	   CONTINUE

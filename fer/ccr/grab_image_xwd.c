@@ -443,6 +443,8 @@ int Get_XColors(win_info, image, colors,dpy)
     unsigned long pixel;
     unsigned char *cptr,tmp_cptr;
 
+    Pixel pmask = 0xff000000;
+
     Bool reverse_bytes;
 
     Colormap cmap = win_info->colormap;
@@ -540,7 +542,7 @@ int Get_XColors(win_info, image, colors,dpy)
 	    reverse_bytes = False;
 	}
 	/* only need to revers/swap pixel values if reverse_bytes is true */
-	if (reverse_bytes) {
+	if (reverse_bytes) {  
 	  for (i=0; i< ncolors; i++) {
 	    pixel = (*colors)[i].pixel;
 	    cptr = (unsigned char *)&pixel;
@@ -552,8 +554,18 @@ int Get_XColors(win_info, image, colors,dpy)
 	    cptr[2]=tmp_cptr;
 	    (*colors)[i].pixel = pixel;	    
 	  }
-	}
+	}  
 	
+
+	/* *kob* for some reason, solaris machines display on solaris consoles
+	         place an 0xff at the beginning of each pixel value, ie 0xff00a1b1. 
+		 This causes a crash when passed to the XQueryColors routine but 
+		 seemingly has no effect on the color.  Make sure it isnt there 
+		 to prevent crashing   */
+	for (i=0; i<nunique_colors; i++) {
+	  (*colors)[i].pixel = (*colors)[i].pixel & ~0xff000000;
+	}
+
 	 XQueryColors(dpy, cmap, *colors, ncolors); 
 	
     } else {

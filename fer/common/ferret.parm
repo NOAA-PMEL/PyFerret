@@ -11,6 +11,7 @@
 *  1/99: added cat_string and alg_string
 *  8/99: *sh* added cat_work_mr
 * 12/99: *sh* added uvlim_hidden
+* V510 *sh* 1/00 - added uvar_on_hold
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -118,6 +119,7 @@
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,
+     .			uvar_on_hold,
      .			uvar_no_more_vars,
      .			cmnd_uvars_not_given,
      .			uvlim_irrelevant,
@@ -132,6 +134,7 @@
      .			uvlim_need_xact,
      .			uvlim_unknown
 	PARAMETER     ( uvar_deleted		= -9,
+     .			uvar_on_hold		= -10,
      .			uvar_no_more_vars	= -8,
      .			cmnd_uvars_not_given	= -9,
      .			uvlim_irrelevant	= -1,

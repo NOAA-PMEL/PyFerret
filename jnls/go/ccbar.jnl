@@ -1,4 +1,4 @@
-\cancel mode verify
+\CANCEL MODE verify
 
 ! Continuous colorbar script.   
 ! uses a shade plot inside a viewport to make a colorbar
@@ -19,7 +19,7 @@
 !         orientation = v for vertical or h for horizontal, default v
 !         palette to use, optional
 
-! Check inputs. All except last are required
+! Check inputs. First 7 are required
 
 QUERY/IGNORE $1%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $2%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
@@ -29,69 +29,69 @@ QUERY/IGNORE $5%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $6%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $7%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $8%v%
-let ccb_orient = $8"1|v>1|h>2|*>1"
+LET ccb_orient = $8"1|v>1|h>2|*>1"
 
-def sym ccb_pal = /pal=$9"default"
-sh sym ccb_pal
+DEFINE SYM ccb_pal = /pal=$9"default"
 
 ! Define the viewport to contain the colorbar
 
-let ccb_x1 = $1/($ppl$width)
-let ccb_y1 = $2/($ppl$height)
-let ccb_x2 = ($1+$3)/($ppl$width)
-let ccb_y2 = ($2+$4)/($ppl$height)
+LET ccb_x1 = $1/($ppl$width)
+LET ccb_y1 = $2/($ppl$height)
+LET ccb_x2 = ($1+$3)/($ppl$width)
+LET ccb_y2 = ($2+$4)/($ppl$height)
 
-define view/axes/text=1/xlimits=`ccb_x1`,`ccb_x2`/ylimits=`ccb_y1`,`ccb_y2` ccb_cbar
-set view ccb_cbar
+DEFINE VIEW/AXES/TEXT=1/XLIMITS=`ccb_x1`,`ccb_x2`/YLIMITS=`ccb_y1`,`ccb_y2` ccb_cbar
+SET VIEW ccb_cbar
 
 !  Set up to plot a variable with desired range
-let ccb_v1 = $5
-let ccb_v2 = $6
-let ccb_dv = $7
+LET ccb_v1 = $5
+LET ccb_v2 = $6
+LET ccb_dv = $7
 
-def axis/x=1:2:1 ccb_xcb ; def axis/y=`ccb_v1`:`ccb_v2`:`ccb_dv` ccb_ycb
-let ccb_var = 0*x[gx=ccb_xcb] + y[gy=ccb_ycb]
+DEFINE AXIS/X=1:2:1 ccb_xcb 
+DEFINE AXIS/Y=`ccb_v1`:`ccb_v2`:`ccb_dv` ccb_ycb
+LET ccb_var = 0*x[gx=ccb_xcb] + y[gy=ccb_ycb]
 
 ! ----------------------------------------------------------------------
 !  Set the label format.  This could be further customized.
 
-let ccb_fmt = 0
-if `ccb_v1 ge -99` then
-  let ccb_fmt = 1
-  if `ccb_v2 lt 1000` then def sym ccb_yform = (I3)
-endif
+LET ccb_fmt = 0
+IF `ccb_v1 GE -99` THEN
+  LET ccb_fmt = 1
+  IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I3)
+ENDIF
 
-if `ccb_v1 ge -9` then
-  let ccb_fmt = 1
-  if `ccb_v2 lt 100` then def sym ccb_yform = (I2)
-endif
+IF `ccb_v1 GE -9` THEN
+  LET ccb_fmt = 1
+  IF `ccb_v2 LT 100` THEN DEFINE SYM ccb_yform = (I2)
+ENDIF
 
-if `ccb_v1 ge 0` then 
-  let ccb_fmt = 1
-  if `ccb_v2 lt 10` then def sym ccb_yform = (I1)
-endif
+IF `ccb_v1 GE 0` THEN 
+  LET ccb_fmt = 1
+  IF `ccb_v2 LT 10` THEN DEFINE SYM ccb_yform = (I1)
+ENDIF
 
-if `ccb_v2 - ccb_v1 lt 2` then 
-  let ccb_fmt = 0
-endif
+IF `ccb_v2 - ccb_v1 LT 2` THEN 
+  LET ccb_fmt = 0
+ENDIF
 ! ----------------------------------------------------------------------
 
 !  Plot the variable within the colorbar.
 
-if `ccb_orient eq 1` then
-   shade/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=0,0,0,1($ccb_pal)/set ccb_var
-   if `ccb_fmt eq 1` then ppl yfor ($ccb_yform)
-   ppl shade
-else
-   shade/trans/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=1,0,0,0($ccb_pal)/set ccb_var
-   if `ccb_fmt eq 1` then ppl xfor ($ccb_yform)
-   ppl shade
-endif
+IF `ccb_orient EQ 1` THEN
+   SHADE/LEV=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/NOKEY/NOLAB/AXES=0,0,0,1($ccb_pal)/SET ccb_var
+   IF `ccb_fmt eq 1` THEN PPL YFOR ($ccb_yform)
+   PPL SHADE
+ELSE
+   SHADE/TRANS/LEV=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/NOKEY/NOLAB/AXES=1,0,0,0($ccb_pal)/SET ccb_var
+   IF `ccb_fmt eq 1` THEN PPL XFOR ($ccb_yform)
+   PPL SHADE
+ENDIF
 
 ! Clean up
-can var ccb_*
-can sym ccb_*
-can axis ccb_xcb
-can axis ccb_ycb
+CANCEL VAR ccb_*
+CANCEL SYM ccb_*
+CANCEL AXIS ccb_xcb
+CANCEL AXIS ccb_ycb
 
-set mode/last verify
+SET MODE/LAST verify

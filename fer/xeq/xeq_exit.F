@@ -57,6 +57,9 @@
 *                     reworked as well.
 * V540: *sh* 11/01 - bug fix to logic in V5.33 change:
 *	  "quit" in a command file was ignored
+* V542: *kob* 11/02 - bug fix - check to make sure an exit w/ no qualifiers
+*                               wasn't being called from a command file before
+*                               completely exiting out of Ferret
 
 	include 'tmap_dims.parm'
 	include 'command.parm'
@@ -67,6 +70,7 @@
 
 	INTEGER status
 	INTEGER i, pop
+	LOGICAL GO_FILE_INPUT
 
 * make sure no arguments were given
 	IF ( num_args .GT. 0 ) CALL ERRMSG( ferr_invalid_subcmnd, 
@@ -91,9 +95,10 @@
 	   pop = csp
 	   GOTO 400
 	ELSE IF (qual_given(slash_exit_program) .GT. 0    .OR.
-     .  	  (qual_given(slash_exit_command) .GT. 0) .OR.
-     .            input_source .NE. input_from_file) THEN
-* Exit program completely
+     .  	  (qual_given(slash_exit_command) .GT. 0) .OR. 
+     .            .NOT. GO_FILE_INPUT()) THEN
+* Exit program completely 
+* *kob* new call to GO_FILE_INPUT to make sure were not in command file
 	   CALL CLSPPL		! close PLOT5
 	   CALL TM_EXIT		! close TMAP data sets
 	   RETURN 1

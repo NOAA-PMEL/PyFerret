@@ -63,6 +63,7 @@
 *		 - if variable is scalar fill in trans and grid_dims
 * V521 7/00 *kob* - modify calculation of totsize to take any striding into
 *                   account.
+* v531 5/01 *kob* - fix erroneous error report referencing cd_rd_r8_as_r4
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -323,12 +324,12 @@
      .     dimnam(idim), ' ', *5900)
 
  5500	IF ( status .EQ. -1 ) THEN
-	   CALL TM_ERRMSG( cdfstat+pcdferr, status, 'CD_RD_R8_AS_R4',
+	   CALL TM_ERRMSG( cdfstat+pcdferr, status, 'CD_READ',
      .	             cdfid, varid,
      .		    'unable to allocate memory for doub. prec. read',
      .		     no_errstring, *5900 )
 	ELSE
-	   CALL TM_ERRMSG( cdfstat+pcdferr, status, 'CD_RD_R8_AS_R4',
+	   CALL TM_ERRMSG( cdfstat+pcdferr, status, 'CD_READ',
      .	             cdfid, varid, no_errstring, no_errstring, *5900 )
 	ENDIF
 

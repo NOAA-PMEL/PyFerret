@@ -49,7 +49,7 @@ void ef_set_axis_extend_( int *, int *, int *, int *, int * );
 
 void ef_get_res_subscripts_(int *, int *, int *, int *);
 void ef_get_arg_subscripts_(int *, int *, int *, int *);
-void ef_get_arg_subscript_extremes_(int *, int *, int *);
+void ef_get_arg_ss_extremes_(int *, int *, int *);
 void ef_get_one_val_(int *, int *, float *);
 void ef_get_bad_flags_(int *, float *, float *);
 
@@ -67,7 +67,7 @@ int  EF_ListTraverse_FoundID( char *, char * );
 
 void ef_get_res_subscripts_sub_(int *, int *, int *, int *);
 void ef_get_arg_subscripts_sub_(int *, int *, int *, int *);
-void ef_get_arg_subscript_extremes_sub_(int *, int *, int *, int *);
+void ef_get_arg_ss_extremes_sub_(int *, int *, int *, int *);
 void ef_get_coordinates_sub_(int *, int *, int *, int *, int *, float *);
 void ef_get_box_size_sub_(int *, int *, int *, int *, int *, float *);
 
@@ -218,7 +218,7 @@ void ef_get_arg_subscripts_(int *id_ptr, int *arg_lo_ss, int *arg_hi_ss, int *ar
 }
 
 
-void ef_get_arg_subscript_extremes_(int *id_ptr, int *ss_min, int *ss_max)
+void ef_get_arg_ss_extremes_(int *id_ptr, int *ss_min, int *ss_max)
 {
   ExternalFunction *ef_ptr=NULL;
   int num_args=0;
@@ -227,7 +227,7 @@ void ef_get_arg_subscript_extremes_(int *id_ptr, int *ss_min, int *ss_max)
 
   num_args = ef_ptr->internals_ptr->num_reqd_args;
 
-  ef_get_arg_subscript_extremes_sub_(GLOBAL_cx_list_ptr, &num_args, ss_min, ss_max);
+  ef_get_arg_ss_extremes_sub_(GLOBAL_cx_list_ptr, &num_args, ss_min, ss_max);
 }
 
 

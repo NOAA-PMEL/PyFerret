@@ -3,6 +3,7 @@
 C     Return the calendar name associated with cal_id an integer code.
 C     'no_calendar is returned if cal_id is not a valid code
 C     Ansley Manke 1/01
+* v533 *acm* 8/01 - test for cal_id had .LT. max_calendars; needs .LE.
 
 #ifdef unix
       include 'calendar.decl'
@@ -14,7 +15,7 @@ C     Ansley Manke 1/01
       tm_get_calendar_name = 'NO_CALENDAR'
 
 C     LOCATE NAME IN CALENDAR TABLE
-      IF (cal_id .GT. 0   .AND.  cal_id .LT. max_calendars)
+      IF (cal_id .GT. 0   .AND.  cal_id .LE. max_calendars)
      .     tm_get_calendar_name = allowed_calendars(cal_id)
 
       end

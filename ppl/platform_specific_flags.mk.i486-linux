@@ -3,7 +3,8 @@
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
-
+# 10/01 *kob* - change Fortran compiler macro to just f95 - now properly
+#		installed 
 
 INCLUDES        = -I/usr/local/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
@@ -33,7 +34,7 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include
 
 
 CC              = cc
-F77		= /usr/local/src/NAGWare_f95/bin/f95
+F77		= f95
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 FFLAGS          = -132 -c -save -dusty  -fieee -maxcontin=105 -x77 -w -mismatch $(FINCLUDES) 

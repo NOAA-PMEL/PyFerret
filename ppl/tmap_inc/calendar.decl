@@ -11,7 +11,7 @@ C	*******************************************************************
      .			max_months, mxmnths,
      .			max_days, mxdays,
      .			calendar_id
-	parameter      (mxcals  = 6,
+	parameter      (mxcals  = 4,
      .			mxmnths = 12,
      .			mxdays  = 366)
 
@@ -60,4 +60,3 @@ C	*******************************************************************
         integer		noleap
         integer		julian
         integer		d360
-        integer		tmap_360

@@ -8,9 +8,9 @@ cd_clean_grids.F\
 cd_close_set.F\
 cd_dods_control.F\
 cd_get_1_axis.F\
+cd_get_1_dep_var.F\
 cd_get_attrib.F\
 cd_get_attval.F\
-cd_get_axes.F\
 cd_get_bounds.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
@@ -97,6 +97,7 @@ tm_dset_number.F\
 tm_errmsg.F\
 tm_exp_code.F\
 tm_f7721bug_inquire.F\
+tm_fill.F\
 tm_find_grid_slot.F\
 tm_find_like_dyn_grid.F\
 tm_find_like_dyn_line.F\

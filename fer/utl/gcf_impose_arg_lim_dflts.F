@@ -15,6 +15,12 @@
 
 * V450: 1/97
 * V490: 11/97 - bug fix: when wiping out context axis wipe ww lims, too
+* V491:  3/98 - bug fix: crashed because pseudo-variables did not have
+*		valid grids when this routine was called. Changed to use
+*		**result** grid to convert world coords to subscripts when
+*		offsets need to be applied -- argument grid not needed.
+*		Hugely simplified this routine!
+*	Note: the "offset" code in this routine is largely untested!
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -24,26 +30,19 @@
 	include 'ferret_cmn/errmsg.parm'
 	include 'ferret_cmn/grid_chg_fcns.parm'
 	include	'ferret_cmn/xcontext.cmn'
-	include	'ferret_cmn/xvariables.cmn'
-	include 'ferret_cmn/xfr_grid.cmn'       ! w/ mgrid_abstract
-	include 'ferret_cmn/xtext_info.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'       ! w/ mgrid_abstract
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
 #endif
 
 * calling argument declarations
 	INTEGER		arg, cx_in, cx_out, uvar, status
-	CHARACTER*(*)	vname
+	CHARACTER*(*)	vname		! unused after 3/98
 
 * local variable declarations
-	LOGICAL CGRID_AXIS
 	INTEGER	TM_LENSTR1, ISUBSCRIPT, KNOWN_GRID,
      .		gcfcn, idim, arg_grd, mods_cx, tmp_var_cx,
      .		lo_off(4), hi_off(4), action(4), uvgrid,
@@ -52,36 +51,10 @@
 * initialize
 	CALL TRANSFER_CONTEXT ( cx_in, cx_out )
 
-* When this routine is called the grid of the argument is not yet known
-* We must know the grid in order to apply offsets
-* These two stack levels are just needed temporarily to learn the grid
-	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	tmp_var_cx = cx_stack_ptr
-	CALL TRANSFER_CONTEXT ( cx_in, tmp_var_cx )
-	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	mods_cx = cx_stack_ptr
-	CALL INIT_CONTEXT_MODS ( mods_cx )
-
-* get variable and attached modifications
-	CALL PARSE_VAR_NAME ( vname, tmp_var_cx, mods_cx, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	
-* determine the defining grid of the argument
-	CALL GET_CONTEXT_GRID ( tmp_var_cx, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	arg_grd = cx_grid(tmp_var_cx)
-	cx_grid(cx_out) = arg_grd
-
-* can't do more if the grid isn't known
-	cx_stack_ptr = cx_stack_ptr - 2
-	IF ( arg_grd .EQ. unspecified_int4 ) RETURN	! ??? error ???
-
 * which grid changing function does this uvar have?
 	gcfcn = WHICH_GCFCN(uvar)
 
-* get the grid of the result of this function
+* get the grid of the result of this function (user variable)
 	uvgrid = KNOWN_GRID(cx_data_set(cx_in), cat_user_var, uvar)
 
 * What did the function creator specify about this argument?
@@ -119,10 +92,10 @@
 	         IF ( cx_hi_ww(idim,cx_out).NE.unspecified_val8 ) THEN
 	            cx_lo_ss(cx_out,idim) =
      .				ISUBSCRIPT(cx_lo_ww(idim,cx_out),
-     .					   arg_grd, idim, round_up)
+     .					   uvgrid, idim, round_up)
 	            cx_hi_ss(cx_out,idim) = 
      .				ISUBSCRIPT(cx_hi_ww(idim,cx_out),
-     .					   arg_grd, idim, round_dn)
+     .					   uvgrid, idim, round_dn)
 	            cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
      .					  + lo_off(idim)
 	            cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)
@@ -139,6 +112,6 @@
 	RETURN
 
 * error exit
- 5000	RETURN
+! 5000	RETURN
 	END
 

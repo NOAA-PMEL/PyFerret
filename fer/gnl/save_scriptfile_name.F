@@ -66,7 +66,7 @@
 
 ! Save the state, running with -script switch
 
-        its_script = 1
+        its_script = .TRUE.
 
         IF (TM_HAS_STRING(sname, '.jnl')) THEN
            ok = 1

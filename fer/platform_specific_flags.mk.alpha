@@ -16,19 +16,20 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
 		  -I../common \
+		  -I../gui \
 		  -I../../fmt/cmn \
 		  -I../../ppl/include \
 		  -I. -Ireadline 
 
 FINCLUDES	= -I../../ppl/tmap_inc \
 		   -I../include -I../../fmt/cmn \
-		   -I../common \
+		   -I../common -I../gui \
 		   -I../../ppl/include  -I../../fer/common
 
 GUI_INCLUDES	=
 
  
-
+F77 		= f77
 CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
@@ -47,7 +48,8 @@ LD		= cc
 # I want this to be able to link shared libraries! *jc*
 LDFLAGS		= -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib 
 
-SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE  /shlib/libc.so 
+#SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE  /shlib/libc.so 
+SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE 
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 

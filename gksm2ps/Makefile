@@ -36,7 +36,7 @@ solaris:
 		LDFLAGS="-z muldefs" \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
-sgi:
+iris4d:
 	${MAKE} gksm2ps \
 		CC=cc \
 		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \

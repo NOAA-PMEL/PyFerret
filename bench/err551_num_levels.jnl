@@ -8,11 +8,12 @@ CONTOUR/L=1/LEV=0.01d sst
 FILL/L=1/LEV=0.01d sst
 
 SHADE/L=1/LEV=0.01d sst
+can data/all
 
 LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
 LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
 LET sst = 25 - ypts + RANDN(ypts)
-GO basemap x=120:250 Y=25S:65N 20
-GO polytube POLYGON/OVER/KEY/LEV=0.01d xpts,ypts,sst
+plot/vs xpts,ypts
+GO polymark POLYGON/KEY/LEV=0.01d xpts,ypts,sst,star
 
 SET MODE/LAST IGNORE_ERROR

@@ -28,7 +28,7 @@ SUB_OBJS = eofsubs.o
 #
 
 .f.o:
-	$(F77) $(FFLAGS) -c $<
+	$(F77) $(FFLAGS) -c -u $<
 
 .F.so:
 	$(F77) $(FFLAGS) -c -u $<
@@ -38,9 +38,7 @@ SUB_OBJS = eofsubs.o
 # Targets
 #
 
-# all:	ferret_cmn eofsubs.o anntrend_subs.o eof_space.so eof_tfunc.so eof_stat.so ann_trend.so
-
-all:	ferret_cmn eofsubs.o eof_space.so eof_tfunc.so eof_stat.so ann_trend.so
+all:	ferret_cmn eofsubs.o eof_space.so eof_tfunc.so eof_stat.so
 
 
 ferret_cmn:

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja4/kobrien/official_releases/v5.00/osf/FERRET/fer/ferretdods_gui
--rwxr-xr-x   1 kobrien  tmap     20619264 May 26 10:43 /home/ja4/kobrien/official_releases/v5.00/osf/FERRET/fer/ferretdods_gui
-Running benchmark version bn500
+Running FERRET version /home/ja4/kobrien/osf/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 kobrien  tmap     30580736 Jul 27 10:43 /home/ja4/kobrien/osf/FERRET/fer/ferretdods_gui
+Using external functions from /home/ja9/tmap/ferret/alpha/ext_func/libs
 Benchmark run by kob
-Note: final test before world release - v500beta1.1 release
-Beginning at Wed May 26 13:45:19 PDT 1999
+Note: testing v5.22
+Beginning at Thu Jul 27 10:47:49 PDT 2000
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -55,6 +55,18 @@ MESSAGE/CONTINUE `2+2\`+1`
  **ERROR: command syntax: +1\
           illegal character: \
 MESSAGE/CONTINUE \`2+2`+1\`
+ **ERROR: command syntax: 1*/3
+          * before / is illegal
+MESSAGE/CONTINUE `1*/3`
+ **ERROR: command syntax: sst*/3
+          * before / is illegal
+MESSAGE/CONTINUE `sst*/3,return=lunits`
+ **ERROR: invalid command: use R=shape,size,grid,*size,*start,*end,*axis, or *units
+          sst,return=Xsize
+MESSAGE/CONTINUE `sst,return=Xsize`
+ **ERROR: invalid command: use R=shape,size,grid,*size,*start,*end,*axis, or *units
+          sst,return=trash
+MESSAGE/CONTINUE `sst,return=trash`
  **ERROR: unknown data set: NOEXIST
 DEFINE VARIABLE/d=noexist a = b
  **ERROR: variable unknown or not in data set: AIRT[D=GT4D011]
@@ -98,7 +110,7 @@ plot/i=1:10/j=1:20/nolabel j,i
           Expression 2 has 10 points:
           "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
 plot/i=1:10/j=1:20/vs/line/nolabel j,i
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
+ **ERROR: dimensions improperly specified: must be a 2D region
           contour/i=1:10/j=1:20/nolabel i
 contour/i=1:10/j=1:20/nolabel i
  **ERROR: invalid command: can only CONTOUR  single fields
@@ -108,6 +120,23 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+ **ERROR: invalid command: color=noexist
+          Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
+plot/over/i=1:10/color=noexist i
+ **ERROR: value out of legal range: thick=4
+          Legal range is 1 to 3
+plot/over/i=1:10/thick=4 i
+ **ERROR: value out of legal range: size=-1
+          Symbol size must be positive
+plot/over/i=1:10/size=-1 i
+ **ERROR: invalid command: color=noexist
+          Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
+cont/over/i=1:10/color=noexist i
+ **ERROR: unknown command qualifier: thick=4
+cont/over/i=1:10/thick=4 i
+ **ERROR: value out of legal range: sigdig=-1
+          Value must be positive
+cont/over/i=1:10/sigdig=-1 i
  **ERROR: inconsistent sizes of data regions: Y coord field lies
           in different plane from data to be plotted
 shade/nolabel sst, x_page, y_page
@@ -123,7 +152,7 @@ shade/nolabel sst, x_page, asin(y_page)
 gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
- **ERROR: command syntax: illegal name: test*
+ **ERROR: command syntax: illegal name: TEST*
 define symbol test* = hello
  **ERROR: invalid command: Value needed for argument 5 in command
           GO bn_symbols
@@ -150,7 +179,7 @@ list temp[i=2:5,gx=130e:80w:10]
 list temp[gx=130e:80w]
  **ERROR: variable unknown or not in data set: NOEXIST
 list temp[gx=u]	+ noexist
- **ERROR: illegal limits: TEMP on grid (G002) is not in the range K=30
+ **ERROR: illegal limits: TEMP on grid (G003) is not in the range K=30
           Axis extremes are K=1:27
 list temp[gx=u,k=30]
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -160,15 +189,13 @@ list temp[gx=u,k=20]
 list temp[gx=psyu]
  **ERROR: regridding: Axis orientation not matching request:GX=PSYT
 list/i=3:6 X[gx=PSYT]
- **ERROR: unknown defining grid: GX=A --> g=user-or-pseudo-var not allowed
-list temp[gx=a]
- **ERROR: unknown defining grid: GX=NOEXIST --> g=user-or-pseudo-var not allowed
+ **ERROR: unknown defining grid: GX=NOEXIST
 list tu
  **ERROR: command syntax: P=NOEXIST
 list tu
  **ERROR: variable unknown or not in data set: NOEXIST
 list tu
- **ERROR: illegal limits: TEMP on grid (G002) is not in the range K=30
+ **ERROR: illegal limits: TEMP on grid (G003) is not in the range K=30
           Axis extremes are K=1:27
 list tu
  **ERROR: illegal limits: TEMP does not contain K=20
@@ -178,8 +205,6 @@ list tu
 list tu
  **ERROR: insufficient memory: 24999975 words were requested.
 list temp[gz=z999999,z=5:15]
- **ERROR: all data have same value: data are all flagged as bad
-shade 1/0 * temp[gx=u]
  **ERROR: invalid command: non-positive delta value: X[I=1:5:-1]
 list x[i=1:5:-1]
  **ERROR: invalid command: non-positive delta value: X[I=1:5:0]
@@ -209,16 +234,12 @@ list a
 list a
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
-  ***** ERROR IN CD_WRITE_VAR *****
  **TMAP ERR: Requested data range is outside of data set limits
              inconsistent I axis length for IL
-  ***** ERROR IN CD_MAKE_VAR *****
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
-  ***** ERROR IN CD_MAKE_VAR *****
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJKL is inconsist. w/ CDF file
-  ***** ERROR IN CD_REC_SYNCH *****
  **TMAP ERR: error in line definition
              disordered output coordinate value: 363 Axis: TCENTURY
  **ERROR: regridding: no target grid specified
@@ -237,25 +258,22 @@ plot/xlimits= i
 plot/xlimits=text i
  **ERROR: command syntax: xlimits=1
 plot/xlimits=1 i
- **ERROR: command syntax:  i
+ **ERROR: command syntax: i
 plot/xlimits=1: i
  **ERROR: command syntax: xlimits=1:: i
 plot/xlimits=1:: i
- **ERROR: command syntax:  i
+ **ERROR: command syntax: i
 plot/xlimits=1:2: i
  **ERROR: invalid command: Must give a range: xlimits=5:5
 plot/xlimits=5:5 i
 rm: bench.mgm: No such file or directory
-  ***** ERROR IN MC_INIT_DSET *****
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
              Data set: ./coads_clim_bad_delta.des
 set data coads_clim_bad_delta
-  ***** ERROR IN GT_GET_TIME_AXIS *****
  **TMAP ERR: error in line definition
              A gap or overlap exists in time axis
 set data coads_clim_step_order
-  ***** ERROR IN TM_PATH_LIST *****
  **TMAP ERR: non-existent or not on line
              coads_clim.001b
 list sst
@@ -275,7 +293,6 @@ list v2-and-minus[i=5:15@ddc]
 load num
  **ERROR: insufficient memory: 1000000000 words were requested.
 load num
-  ***** ERROR IN TM_PATH_LIST *****
  **TMAP ERR: non-existent or not on line
              NoSuchFile.dat
 SET DATA/EZ/format=stream/var=num/grid=mygrid NoSuchFile.dat
@@ -303,56 +320,26 @@ define axis/from/x/name=xax/edges {6,6,6}
 define axis/from/x/name=xax {6,6,6.000001,7}
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
-          shade a
-shade a
- **ERROR: inconsistent sizes of data regions: X axis
-          A3 has 3 points (I=70:72)
-          expression has 180 points (I=001:180)
-shade a
- **ERROR: dimensions improperly specified: specified data is not a line
-           - its a 2D region: "plot a"
-plot a
- **ERROR: all data have same value: data are all flagged as bad
-shade a
  **ERROR: command syntax: unknown region name: @w
 set region/@w
- **ERROR: all data have same value: data are all flagged as bad
-shade a
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
-          shade a[x=180]
-shade a[x=180]
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
-          shade b
-shade b
- **ERROR: command syntax: unknown region name: @w
-set region/@w
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
-          shade a
-shade a
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
-          shade a
-shade a
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
-          shade c[x=20:380,t=15-jan-1983]
-shade c[x=20:380,t=15-jan-1983]
- **ERROR: dimensions improperly specified: specified data is not a line
-           - its a 2D region: "plot subtract(a,b)"
-plot subtract(a,b)
- **ERROR: dimensions improperly specified: specified data is not a line
-           - its a 2D region: "plot subtract(a,b)"
-plot subtract(a,b)
 
-Bailing out of external function "samplek":
-	Sampling index -73 in ARG1 is outside the range of Z indices for ARG2 (1:27)
-
-Bailing out of external function "samplel":
-	Sampling index 5 in ARG1 is outside the range of L indices for ARG2 (1:3)
-
-Bailing out of external function "samplel":
-	Sampling index 148 in ARG1 is outside the range of L indices for ARG2 (1:60)
+Bailing out of external function "ffta":
+	Time axis must be a regular axis
+ **ERROR:                                                   : error in external function
+LIST vw_fft
+ **ERROR: illegal limits: VWND does not contain L=102:150
+          Data are available in L =    1:60
+list tsorted_indices, tsorted_wnd
  **ERROR: invalid command: disallowed usage of z[gz=z10]
 set grid z[gz=z10]
+ **ERROR: invalid command: delta values may only modify variable names
+LIST/i=2:4:2 VAR
+ **TMAP ERR: limit on storage for coordinates has been reached
+             MAX= 250000
+ *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
+ *** NOTE: A dummy axis of subscripts will be used
+ *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
+ *** NOTE: A dummy axis of subscripts will be used
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -371,7 +358,7 @@ plot/i=1:10/j=1:20/nolabel j,i
           Expression 2 has 10 points:
           "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
 plot/i=1:10/j=1:20/vs/line/nolabel j,i
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
+ **ERROR: dimensions improperly specified: must be a 2D region
           contour/i=1:10/j=1:20/nolabel i
 contour/i=1:10/j=1:20/nolabel i
  **ERROR: invalid command: can only CONTOUR  single fields
@@ -399,7 +386,7 @@ plot/i=1:10/j=1:20/nolabel j,i
           Expression 2 has 10 points:
           "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
 plot/i=1:10/j=1:20/vs/line/nolabel j,i
- **ERROR: dimensions improperly specified: can only contour or vector a 2D region
+ **ERROR: dimensions improperly specified: must be a 2D region
           contour/i=1:10/j=1:20/nolabel i
 contour/i=1:10/j=1:20/nolabel i
  **ERROR: invalid command: can only CONTOUR  single fields
@@ -411,4 +398,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed May 26 13:50:21 PDT 1999
+Ended at Thu Jul 27 10:51:50 PDT 2000

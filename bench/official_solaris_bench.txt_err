@@ -1,25 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja4/kobrien/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 kobrien  46631844 Apr 24 16:21 /home/ja4/kobrien/solaris/FERRET/fer/ferretdods_gui
+Running FERRET version ~/solaris/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 kobrien  41047204 Jul 27 09:33 /home/ja4/kobrien/solaris/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by kob
-Note: final solaris test of v5.31 after confine_axis and tm_break_date checkins
-***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja4/kobrien/FERRET/bench
-FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
-CVSROOT=/home/ja9/tmap/FERRET_ROOT
-FER_DIR=.
-FER_WEB_BROWSER=netscape -ncols 60
-FER_DSETS=.
-FER_DAT=.
-FER_GO=. /home/ja9/tmap/ferret/solaris/go /home/ja9/tmap/ferret/solaris/examples /home/ja9/tmap/ferret/solaris/contrib /home/ja9/tmap/ferret/tmap_go
-FER_DATA=.
-FER_DESCR=.
-FER_GRIDS=.
-FER_MODEL_RUNS=/home/ja9/tmap/model_runs
-FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Tue Apr 24 16:22:11 PDT 2001
+Note: testing v5.22
+Beginning at Thu Jul 27 09:47:51 PDT 2000
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -31,6 +16,8 @@ message/cont $3
 message/cont $1"greetings|xxxxx|goodbye"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+ **ERROR: invalid command: command argument strings are too long
+message/cont here is a very long text $1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx the end 1234567890 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy 1234
  **ERROR: command syntax: empty argument replacement string: $3""
 message/cont $3""
  **ERROR: command syntax: empty text string provided with ">": <
@@ -54,11 +41,9 @@ message/continue "2+2=`garbage`"
 message/continue "3 numbers: `I[i=3:5]`"
  **ERROR: invalid command: maximum precision is 10 digits: precision=11
 message/continue "1/3=`1/3,BAD=-999,precision=11`"
- **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
-          message/continue "1/3=`1/3BAD=-999`"
+ **ERROR: command syntax: invalid "P=prec", "B=bad", or "R=key" qualifier: message/continue "1/3=`1/3BAD=-999`"
 message/continue "1/3=`1/3BAD=-999`"
- **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
-          message/continue "1/3=`1/3,qBAD=-999`"
+ **ERROR: command syntax: invalid "P=prec", "B=bad", or "R=key" qualifier: message/continue "1/3=`1/3,qBAD=-999`"
 message/continue "1/3=`1/3,qBAD=-999`"
  **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
 MESSAGE/CONTINUE \`2+2`
@@ -101,7 +86,7 @@ LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
- **ERROR: variable unknown or not in data set: A1
+ **ERROR: invalid command: Number of expressions in line must be less than  20
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
  **ERROR: inconsistent sizes of data regions: X axis
           X[I=6:9] has 4 points (I=6:9)
@@ -252,18 +237,12 @@ rm: No match.
 list/format=cdf/l=1:10/file=test_abs.cdf l
  **TMAP ERR: Requested data range is outside of data set limits
              inconsistent I axis length for IL
-list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
-list/format=cdf/append/file=test_abs.cdf ijl2
-list/format=cdf/append/file=test_abs.cdf ijl2
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJKL is inconsist. w/ CDF file
-list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
-list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value: 363 Axis: TCENTURY
-list/format=cdf/l=13/append/file=test_abs.cdf l1
  **ERROR: regridding: no target grid specified
 load temp[g=@lin]
  **ERROR: regridding: no target grid specified
@@ -362,12 +341,6 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
- **ERROR: unknown defining grid: G=NO_EXIST
-load/x=180/y=0 temp[d=2,k=1,g=no_exist]
- **ERROR: unknown defining grid: GX=A[D=1]
-load/x=180/y=0 v2
- *** NOTE: Evenly spaced axis has edges definition: PSYT39_51 - ignored
- *** NOTE: Evenly spaced axis has edges definition: PSZT1_1 - ignored
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -426,4 +399,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Apr 24 16:25:17 PDT 2001
+Ended at Thu Jul 27 09:50:16 PDT 2000

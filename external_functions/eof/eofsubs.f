@@ -12,6 +12,9 @@ C  Ansley Manke 8/99  Change dimension statements for arguments to be (*) or
 C                     (NX,*), etc.  The work arrays in the calling functions
 C                     now have extra space to accomodate I = 1,N... BB(I+1) in 
 C                     QRSYM, for example.
+C  Ansley Manke 10/00 Change bad-data flag "realbad"  to bad_flag_dat
+C                     and a separate flag for bad_flag_result, the bad-data
+C                     flag for the result.
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -46,7 +49,8 @@ C					  TAF(EOF#,time)
 		
 C---------------------------------------------------------------------
       SUBROUTINE EOFIN_CHEL_GAP (DATA,NX,NT,VAL,VEC,TAF,PCT,C, 
-     +      eofwork, pct_cutoff, nout, realbad, err_msg, ier)
+     +      eofwork, pct_cutoff, nout, bad_flag_dat, bad_flag_result,
+     +      err_msg, ier)
 
 	DIMENSION DATA(NX,*), PCT(*), VAL(*), VEC(NX,*),
      +            TAF(NX,*), C(NX,*)
@@ -58,6 +62,7 @@ C---------------------------------------------------------------------
 
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
      .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+      REAL bad_flag_dat, bad_flag_result
 
 C---------------------------------------------------------------------
 c.............initializations.
@@ -79,7 +84,7 @@ C.................Note PCT is used first as a dummy to save the mean.
 	DO 100 I=1,NX
 	ct=0.
 	DO 110 J=1,NT
-	if (data(i,j).GT.realbad) then
+	if (data(i,j).GT.bad_flag_dat) then
 		PCT(I)=PCT(I)+DATA(I,J)
 		ct=ct+1.
 	endif
@@ -93,7 +98,7 @@ C.................Note PCT is used first as a dummy to save the mean.
 	   return
 	endif
 	DO 120 J=1,NT
-	if (data(i,j).GT.realbad) then
+	if (data(i,j).GT.bad_flag_dat) then
 		DATA(I,J)=DATA(I,J)-PCT(I)
 	endif
 120	continue
@@ -105,7 +110,7 @@ C.................Form the mean product matrix.
 
 	ct=0.
 	DO 200 J=1,NT
-	if (data(i1,j).GT.realbad .and. data(i2,j).GT.realbad) then
+	if (data(i1,j).GT.bad_flag_dat .and. data(i2,j).GT.bad_flag_dat) then
 		ct=ct+1.
 		C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
 	endif
@@ -192,7 +197,7 @@ c............find out if any gaps exist at this time.
 c............use ic to count them and pct(nx) to keep track of where they are.
 	ic=0
 	do 400 is=1,nx
-	if (data(is,j).GT.realbad) then
+	if (data(is,j).GT.bad_flag_dat) then
 		ic=ic+1
 		pct(is)=0.
 	else
@@ -212,7 +217,7 @@ c................................loop over EOF numbers, then over space.
 	elseif (ic.eq.0) then
 c..............If there are NO data values at time j, then blank the TAF.
 		do 450 ie=1,nx
-450		taf(ie,j)=realbad
+450		taf(ie,j)=bad_flag_result
 	else
 c.............If there are some blanks, then use Chelton's estimate Beta_i(t).
 c.............Now use c(nx,nx) as dummy to keep Chelton's Gamma_ji.
@@ -269,7 +274,7 @@ c.................loop over EOF numbers, then over space.
 	DO 300 IE=1,NX_compute
 	do 315 j=1,nt
 
-315	if (taf(ie,j) .GT. realbad) taf(ie,j)=taf(ie,j)/sqrt(val(ie))
+315	if (taf(ie,j) .GT. bad_flag_dat) taf(ie,j)=taf(ie,j)/sqrt(val(ie))
 	DO 316 IS=1,NX
 316	VEC(IS,IE) = VEC(IS,IE)*SQRT(VAL(IE))
 300	CONTINUE

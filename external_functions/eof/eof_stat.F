@@ -415,7 +415,7 @@ C  get array sizes
 *  Set OK to mark where they are.
 
       CALL count_neof (arg_1, neof, ok, nx, ny, nt, mx, 
-     .       bad_flag_result, frac_timeser, err_msg, ier)
+     .       bad_flag(ARG1), frac_timeser, err_msg, ier)
 
       IF (ier .ne. 0) then
          GOTO 999
@@ -429,9 +429,8 @@ C  get array sizes
 *  Solve for the EOF's: eigenvectors, time functions, percent variance explained.
 
       CALL solve_eof (ddat_1d, neof, nt, val, vec, taf, pct, c, 
-     .      result, isave_jsave, eofwork, bad_flag_result, 
-     .      pct_cutoff, err_msg, ier)
-      IF (ier .ne. 0) GOTO 999
+     .      result, isave_jsave, eofwork, bad_flag(ARG1),
+     .      bad_flag_result, pct_cutoff, err_msg, ier)
 
       RETURN
 
@@ -442,8 +441,8 @@ C  get array sizes
 
 
       SUBROUTINE solve_eof (ddat_1d, neof, nt, val, vec, taf, pct, c, 
-     .      result, isave_jsave, eofwork, bad_flag_result, pct_cutoff, 
-     .      err_msg, ier)
+     .      result, isave_jsave, eofwork, bad_flag_dat, bad_flag_result, 
+     .      pct_cutoff, err_msg, ier)
 
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -455,7 +454,7 @@ C  get array sizes
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
-      REAL bad_flag_result, pct_cutoff
+      REAL bad_flag_dat, bad_flag_result, pct_cutoff
       INTEGER neof, nt, nout, ier
       INTEGER i, j, k, l
 
@@ -477,7 +476,8 @@ C  get array sizes
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
 
       CALL EOFIN_CHEL_GAP (ddat_1d, neof, nt, val, vec, taf, pct, c, 
-     .      eofwork, pct_cutoff, nout, bad_flag_result, err_msg, ier)
+     .      eofwork, pct_cutoff, nout, bad_flag_dat, bad_flag_result, 
+     .      err_msg, ier)
 
       IF (ier .ne. 0) GOTO 999
 

@@ -4,6 +4,11 @@
      .				com2, mr2,
      .				com3, mr3,
      .				com4, mr4,
+     .				com5, mr5,
+     .				com6, mr6,
+     .				com7, mr7,
+     .				com8, mr8,
+     .				com9, mr9,
      .				res, mres,
      .                          status )
 
@@ -19,6 +24,8 @@
 
 * V450:  1/97 - new, based on operate.F, but for grid changing functions
 *        7/97 - complete the ZAXREPLACE function
+*       7/25/97 - increase number of args from 4 to 9
+*               - add function PPLGRID
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -35,29 +42,40 @@
 #endif
 
 * calling argument declarations:
-	INTEGER	fcn, num_com, com_cx(4), mr1, mr2, mr3, mr4, mres, status
+	INTEGER	fcn, num_com, com_cx(9), status,
+     .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres
         REAL	memory( mem_blk_size, max_mem_blks )
 	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
      .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
      .		com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
      .		com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
-     .		 res( m5lox:m5hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit )
+     .		com5( m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit ),
+     .		com6( m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,m6lot:m6hit ),
+     .		com7( m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,m7lot:m7hit ),
+     .		com8( m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,m8lot:m8hit ),
+     .		com9( m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,m9lot:m9hit ),
+     .		 res( m10lox:m10hix,m10loy:m10hiy,
+     .					  m10loz:m10hiz,m10lot:m10hit )
 
 * internal variable declarations:
 	LOGICAL	first
 	INTEGER CX_DIM_LEN,  CGRID_SIZE, count, size,
-     .		i, j, k, l, icom, idim, cx1, cx2, cx3, cx4,
+     .		i, j, k, l, icom, idim,
+     .		cx1, cx2, cx3, cx4, cx5, cx6, cx7, cx8, cx9,
      .		i1, j1, k1, l1, i2, j2, k2, l2,
      .		i3, j3, k3, l3, i4, j4, k4, l4,
+     .		i5, j5, k5, l5, i6, j6, k6, l6,
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
      .		di3, dj3, dk3, dl3, di4, dj4, dk4, dl4,
+     .		di5, dj5, dk5, dl5, di6, dj6, dk6, dl6,
      .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
-     .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4
+     .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4,
+     .		si5, sj5, sk5, sl5, si6, sj6, sk6, sl6
         INTEGER nz, ndim, ndx_lo, wkblk
 
 	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
-     .		DAYS_FROM_DAY0,
-     .          bad1, bad2, bad3, bad4, bad_res
+     .		DAYS_FROM_DAY0, bad_res,
+     .          bad1, bad2, bad3, bad4, bad5, bad6, bad7, bad8, bad9
         REAL    zval, frac
 
         REAL*8  TM_WORLD
@@ -65,16 +83,20 @@
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
 * "lo"  is the starting subscript (minus 1) for each axis of each component
-	INTEGER	inc(4,4), lo(4,4), ind(4)
+	INTEGER	inc(4,6), lo(4,6), ind(4)
 	EQUIVALENCE
      .	(lo(1,1),si1), (lo(2,1),sj1), (lo(3,1),sk1), (lo(4,1),sl1),
      .	(lo(1,2),si2), (lo(2,2),sj2), (lo(3,2),sk2), (lo(4,2),sl2),
      .	(lo(1,3),si3), (lo(2,3),sj3), (lo(3,3),sk3), (lo(4,3),sl3),
      .	(lo(1,4),si4), (lo(2,4),sj4), (lo(3,4),sk4), (lo(4,4),sl4),
+     .	(lo(1,5),si5), (lo(2,5),sj5), (lo(3,5),sk5), (lo(4,5),sl5),
+     .	(lo(1,6),si6), (lo(2,6),sj6), (lo(3,6),sk6), (lo(4,6),sl6),
      .	(inc(1,1),di1),(inc(2,1),dj1),(inc(3,1),dk1),(inc(4,1),dl1),
      .	(inc(1,2),di2),(inc(2,2),dj2),(inc(3,2),dk2),(inc(4,2),dl2),
      .	(inc(1,3),di3),(inc(2,3),dj3),(inc(3,3),dk3),(inc(4,3),dl3),
      .	(inc(1,4),di4),(inc(2,4),dj4),(inc(3,4),dk4),(inc(4,4),dl4),
+     .	(inc(1,5),di5),(inc(2,5),dj5),(inc(3,5),dk5),(inc(4,5),dl5),
+     .	(inc(1,6),di6),(inc(2,6),dj6),(inc(3,6),dk6),(inc(4,6),dl6),
      .	(ind(1),i2),   (ind(2),j2),   (ind(3),k2),   (ind(4),l2)
 
 * internal parameter declarations:
@@ -87,12 +109,22 @@
 	cx2 = com_cx(2)
 	cx3 = com_cx(3)
 	cx4 = com_cx(4)
+	cx5 = com_cx(5)
+	cx6 = com_cx(6)
+	cx7 = com_cx(7)
+	cx8 = com_cx(8)
+	cx9 = com_cx(9)
 
 * flag(s) for bad or missing values
 	bad1 = mr_bad_data ( mr1 )
 	bad2 = mr_bad_data ( mr2 )
 	bad3 = mr_bad_data ( mr3 )
 	bad4 = mr_bad_data ( mr4 )
+	bad5 = mr_bad_data ( mr5 )
+	bad6 = mr_bad_data ( mr6 )
+	bad7 = mr_bad_data ( mr7 )
+	bad8 = mr_bad_data ( mr8 )
+	bad9 = mr_bad_data ( mr9 )
 	bad_res = mr_bad_data( mres )
 
 * compute the delta increment for each axis of each component

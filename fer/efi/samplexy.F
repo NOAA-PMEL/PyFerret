@@ -39,6 +39,7 @@
 * 3/ 1/2000 ACM -- fix bug in the definition of the work arrays
 * 6/ 8/2000 ACM -- fix bug in incrementing k2, k3, l2, l3
 *
+* 7/2000  acm -- merge Bernadettes and increment fix into this version
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -328,11 +329,11 @@
 higher
 *  (x,y) grid coordinates.  Interpolate in 2 directions for the result.
 
-      DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      j = res_lo_ss(Y_AXIS)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          ibot = arg_lo_ss(X_AXIS,ARG1)
-        imatch = 0
+         imatch = 0
 
          DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
             IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(i1,1,1,1)) ibot = i1
@@ -370,6 +371,8 @@ cbf         IF (abs(arg_3(i3,j3,k3,l3) -yaxdat(j1,1,1,1) ).le.eps) jmatch = j1
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             l1 = arg_lo_ss(T_AXIS,ARG1)
+            l2 = arg_lo_ss(T_AXIS,ARG2)
+            l3 = arg_lo_ss(T_AXIS,ARG3)
             DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
 *  First interpolate in x, getting values of the fcn at (x,jbot) and (x,jtop)
@@ -430,23 +433,26 @@ cbf                 for matching x-axis no interpolation is need
                ENDIF
 
 
+
                l1 = l1 + arg_incr(T_AXIS,ARG1)
-               l2 = l2 + arg_incr(T_AXIS,ARG2)
-               l3 = l3 + arg_incr(T_AXIS,ARG2)
+
  300        CONTINUE
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
-            k2 = k2 + arg_incr(Z_AXIS,ARG2)
-            k3 = k3 + arg_incr(Z_AXIS,ARG3)
  400     CONTINUE
 
          i2 = i2 + arg_incr(X_AXIS,ARG2)
-         i3 = i3 + arg_incr(X_AXIS,ARG3)
- 500  CONTINUE
-
          j2 = j2 + arg_incr(Y_AXIS,ARG2)
+         k2 = k2 + arg_incr(Z_AXIS,ARG2)
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+
+         i3 = i3 + arg_incr(X_AXIS,ARG3)
          j3 = j3 + arg_incr(Y_AXIS,ARG3)
- 600  CONTINUE
+         k3 = k3 + arg_incr(Z_AXIS,ARG3)
+         l3 = l3 + arg_incr(T_AXIS,ARG3)
+         j = j + res_incr(Y_AXIS)
+500   CONTINUE
+
 
       RETURN
  999  CALL ef_bail_out (id, err_msg)

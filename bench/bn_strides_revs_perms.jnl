@@ -6,7 +6,7 @@
 
 ! * * * * * PERMUTATIONS * * * * *
 ! How to evaluate the correct ordering:
-! The data in test_strides.cdf is ordered with the 1's digit
+! The data in bn_strides.cdf is ordered with the 1's digit
 ! moving fastert, then the 10's, then 100's, etc.
 
 ! If (say) /ORDER=ZXY is given we should see the 100's digit
@@ -19,65 +19,65 @@ cancel mode diagnostic
 
 ! first with an XYZT variable
 set region/i=3:6/j=2:4/k=1:2/l=1
-use test_strides
+use bn_strides
 list bigvar
 canc data/all
 
-use/order=yx test_strides
+use/order=yx bn_strides
 list bigvar
 canc data/all
 
-use/order=zyx test_strides
+use/order=zyx bn_strides
 list bigvar
 canc data/all
 
-use/order=zxy test_strides
+use/order=zxy bn_strides
 list bigvar
 canc data/all
 
 ! now with an XYT variable
 cancel region
 set region/i=1:4/j=1:3/l=1:2
-use test_strides
+use bn_strides
 show grid xytvar
 list xytvar
 canc data/all
 
-use/order=yx test_strides
+use/order=yx bn_strides
 show grid xytvar
 list xytvar
 canc data/all
 
-use/order=tyx test_strides
+use/order=tyx bn_strides
 show grid xytvar
 list xytvar
 canc data/all
 
-use/order=txy test_strides
+use/order=txy bn_strides
 show grid xytvar
 list xytvar
 canc data/all
 
 ! map into Z instead of T
-use/order=zxy test_strides
+use/order=zxy bn_strides
 show grid xytvar
 list/k=1:2 xytvar
 canc data/all
 
 ! ambiguous mapping
-use/order=tx test_strides
+use/order=tx bn_strides
 show grid xytvar
 list xytvar
 canc data/all
 
 ! final "z" goes beyond the 3D -- no effect
-use/order=txyz test_strides
+use/order=txyz bn_strides
 show grid xytvar
 show grid var
 canc data/all
 
 ! * * * * * STRIDES * * * * *
-use test_strides
+use bn_strides
 set mode diag
 cancel memory/all
 
@@ -165,19 +165,19 @@ LIST/j=1/k=1/l=1/precision=9 UNEVENVAR[i=1:10:2@ave]
 
 set region/i=3:6/j=2:4/k=1:2/l=1
 
-use/order=yx test_strides
+use/order=yx bn_strides
 list bigvar[i=3:9:2]
 list bigvar[j=2:6:2]
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
 canc data/all
 
-use/order=zyx test_strides
+use/order=zyx bn_strides
 list bigvar[i=3:9:2]
 list bigvar[j=2:6:2]
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
 canc data/all
 
-use/order=zxy test_strides
+use/order=zxy bn_strides
 list bigvar[i=3:9:2]
 list bigvar[j=2:6:2]
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
@@ -186,28 +186,28 @@ canc data/all
 ! now with xytvar
 cancel region
 set region/i=1:4/j=1:3/l=1:2
-use test_strides
+use bn_strides
 show grid xytvar
 list xytvar[i=1:7:2]
 list xytvar[j=2:6:2]
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
 
-use/order=yx test_strides
+use/order=yx bn_strides
 show grid xytvar
 list xytvar[i=1:7:2]
 list xytvar[j=2:6:2]
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
 
-use/order=tyx test_strides
+use/order=tyx bn_strides
 show grid xytvar
 list xytvar[i=1:7:2]
 list xytvar[j=2:6:2]
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
 
-use/order=txy test_strides
+use/order=txy bn_strides
 show grid xytvar
 list xytvar[i=1:7:2]
 list xytvar[j=2:6:2]
@@ -215,7 +215,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
 canc data/all
 
 ! map into Z instead of T
-use/order=zxy test_strides
+use/order=zxy bn_strides
 show grid xytvar
 list/k=1:2 xytvar[i=1:7:2]
 list/k=1:2 xytvar[j=2:6:2]
@@ -240,33 +240,33 @@ canc data/all
 cancel region; set region/l=1
 
 ! reference output
-use/order=yx test_strides
+use/order=yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
-use/order=-yx test_strides
+use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
-use/order=y-x test_strides
+use/order=y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
 ! reference output
-use/order=tyx test_strides
+use/order=tyx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
-use/order=-t-y-x test_strides
+use/order=-t-y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
 ! reference output
-use/order=txy test_strides
+use/order=txy bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all
 
-use/order=-t-x-y test_strides
+use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
 canc data/all

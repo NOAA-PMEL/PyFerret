@@ -47,6 +47,7 @@
 * V200:  6/12/89 - initialize back link of memory regions
 * V312:  5/19/94 - changes for reconfigurable (dynamic) memory
 * V420: initialize the no-cache memory hash pointer
+* V500: 4/99 *sh* - set mode desperate while we're at it
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -54,6 +55,7 @@
 	external xgt_grid_data
 	include	'ferret.parm'
 	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
@@ -91,9 +93,16 @@
 * ... free list (pointer at subscript 0) contains all table slots
 	DO 110 mv = 0, max_mr_avail
 	   mv_flink(mv) = mv + 1
-	   mv_blink(mv) = unspecified_int4	! bck link not used in free list
+	   mv_blink(mv) = unspecified_int4   ! bck link not used in free list
  110	CONTINUE
-	mv_flink(max_mr_avail) = 0		! make list circular
+	mv_flink(max_mr_avail) = 0	     ! make list circular
+
+
+* set MODE DESPERATE to 1/10 of full memory size
+* the reason so small is that Ferret memory management is not aware of
+* large hierarchies of definitions -- so a command like "LIST var"
+* may involve far more data than the transformations of "var" alone
+	mode_arg(pmode_desparate,1) = 0.1 *  block_size *  number_of_blocks
 
 	RETURN
 	END

@@ -97,6 +97,7 @@
 * V450	11/14/96 - added LIST/CLOBBER
 *	5/97	 - added /NOAXES to SHADE, PLOT, CONTOUR, and VECTOR
 *       7/97     - added SHOW FUNCTIONS
+* v500  2/99 - *kob* - add /QUIET to LIST command
 * V500  2/99 *sh* - added POLYGON command
 
 #ifdef unix
@@ -634,7 +635,7 @@
 	   DATA subcommands      (nsub_at5 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at5 + 0)	/ nqual5a	/
 	   DATA qualifier_pointer(nsub_at5 + 0)	/ nqual_at5a	/
-* LIST/I/J/K/L/X/Y/Z/T/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT
+* LIST/I/J/K/L/X/Y/Z/T/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET
 		DATA qualifiers  (nqual_at5a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at5a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at5a+2)	/ 'K'	/
@@ -663,7 +664,7 @@
 		DATA qualifiers  (nqual_at5a+25)/ 'ZLIMITS'/
 		DATA qualifiers  (nqual_at5a+26)/ 'TLIMITS'/
 		DATA qualifiers  (nqual_at5a+27)/ 'CLOBBER'/
-		DATA qualifiers  (nqual_at5a+28)/ '****'/
+		DATA qualifiers  (nqual_at5a+28)/ 'QUIET'/
 		DATA qualifiers  (nqual_at5a+29)/ '****'/
 
 * PLOT - command # 6

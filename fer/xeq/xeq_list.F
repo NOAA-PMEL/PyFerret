@@ -107,6 +107,7 @@
 *		      "ifndef sgi" to prevent reclen_in_bytes being set
 * V450	11/96 - added LIST/CLOBBER
 *		added pcdf_mode_cache for DODS caching
+* v500  2/99  - *kob* added LIST/QUIET
 
 #ifdef unix
         include 'tmap_format/tmap_errors.parm'
@@ -138,7 +139,7 @@
      .			do_epic, do_gt, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_cdf_cache,
      .			permute, all_at_once, list_at_eof, head_enh,
-     .			clobber
+     .			clobber, quiet
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
@@ -151,15 +152,17 @@
      .			fposition*12
 
 * local parameter declarations
+* *kob* 2/99 - add entries for quiet qualifier 
 	INTEGER		slash_file, slash_append, slash_permute, slash_format,
-     .			slash_seqntl, slash_rigid, slash_clobber
+     .			slash_seqntl, slash_rigid, slash_clobber, slash_quiet
 	PARAMETER     (	slash_seqntl  = 11+1,
      .			slash_file    = 12+1,
      .			slash_append  = 13+1,
      .			slash_permute = 14+1,
      .			slash_format  = 15+1,
      .			slash_rigid   = 18+1,
-     .			slash_clobber = 27+1 )
+     .			slash_clobber = 27+1,
+     .                  slash_quiet   = 28+1)
 
 * formatting information given ?
 	i = qual_given( slash_format )
@@ -170,6 +173,9 @@
 
 * did the user request to clobber previous output file versions
 	clobber = qual_given( slash_clobber ) .GT. 0
+
+* *kob* 2/99 - did the user request a quiet listing
+	quiet = qual_given( slash_quiet ) .GT. 0
 
 * special trap to create DODS cache version of NetCDF file
         IF ( list_fmt_type .EQ. plist_cdf_cache ) THEN
@@ -373,10 +379,13 @@
 	      fposition = 'asis'
 	   ENDIF
 * ... open or create it
-	   IF (.NOT.(do_EPIC) .AND. do_stream_phase.EQ.0 )
-     .		CALL SPLIT_LIST(pttmode_bull, ttout_lun,
-     .		' LISTing to file '//raw_name(1:TM_LENSTR1(raw_name))
+* only output listing message if user didn't specify quiet *kob* 2/99
+	   IF (.NOT.(do_EPIC) .AND. do_stream_phase.EQ.0 
+     .                    .AND. .NOT.(quiet) )
+     . 	          CALL SPLIT_LIST(pttmode_bull, ttout_lun,
+     .		  ' LISTing to file '//raw_name(1:TM_LENSTR1(raw_name))
      .								,0)
+
 	   IF ( do_gt ) THEN
 	      reclen = 8	! minimum
 	      DO 50 i = 1, num_uvars_in_cmnd

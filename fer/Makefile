@@ -4,12 +4,14 @@
 # August 11 1997
 # Jonathan Callahan (with some help from Joe Sirott)
 #
+# 10/97 *kob*  - pltform specific files will reside in ppl directory and be 
+#		 links to actual files in fer directory
 
 #
 # include platform specific macro definitions
 #
 
-include ../platform_specific_flags.mk.$(HOSTTYPE)
+include platform_specific_flags.mk.$(HOSTTYPE)
 
 
 #

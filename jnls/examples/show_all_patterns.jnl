@@ -1,0 +1,79 @@
+\cancel mode verify
+! show_patterns.jnl
+!	designed to show all the installed patterns available
+!	all patterns are shown in the color inputed or black if none specified
+!
+!	INPUTS	
+!		1: (optional)		name of color palette to use
+!					(default=black)
+
+
+define symbol color $1"black"		
+
+!	set up total number of installed patterns (must be changed by hand)
+define symbol NUM_PATTERNS 21
+
+
+define symbol mylevels "(0.5,`($NUM_PATTERNS)+0.5`,1)"
+
+! 	set up viewports 
+define symbol numview 7
+repeat/k=1:($numview) define viewport/ylimits=`(k-1)/($numview)`,`k/($numview)`/xlimits=0.0,0.333 L`($numview)-k+1`
+repeat/k=1:($numview) define viewport/ylimits=`(k-1)/($numview)`,`k/($numview)`/xlimits=0.333,0.666 M`($numview)-k+1`
+repeat/k=1:($numview) define viewport/ylimits=`(k-1)/($numview)`,`k/($numview)`/xlimits=0.666,0.999 R`($numview)-k+1`
+
+
+!	make the first page
+set viewport L1
+go show_pattern.jnl "solid" ($color)
+set viewport L2
+go show_pattern.jnl "fish_scale" ($color)
+set viewport L3
+go show_pattern.jnl "brick" ($color)
+set viewport L4
+go show_pattern.jnl "ball_bearings" ($color)
+set viewport L5
+go show_pattern.jnl "weave" ($color)
+set viewport L6
+go show_pattern.jnl "double_vertical" ($color)
+set viewport L7
+go show_pattern.jnl "double_horizontal" ($color)
+
+
+set viewport M1
+go show_pattern.jnl "large_grid" ($color)
+set viewport M2
+go show_pattern.jnl "tiny_open_squares" ($color)
+set viewport M3
+go show_pattern.jnl "angled_grid" ($color)
+set viewport M4
+go show_pattern.jnl "lite_up_left_to_right" ($color)
+set viewport M5
+go show_pattern.jnl "lite_up_right_to_left" ($color)
+set viewport M6
+go show_pattern.jnl "lite_vertical" ($color)
+set viewport M7
+go show_pattern.jnl "lite_horizontal" ($color)
+
+
+set viewport R1
+go show_pattern.jnl "tiny_grid" ($color)
+set viewport R2
+go show_pattern.jnl "tiny_squares" ($color)
+set viewport R3
+go show_pattern.jnl "tiny_triangles" ($color)
+set viewport R4
+go show_pattern.jnl "dark_up_left_to_right" ($color)
+set viewport R5
+go show_pattern.jnl "dark_up_right_to_left" ($color)
+set viewport R6
+go show_pattern.jnl "dark_vertical" ($color)
+set viewport R7
+go show_pattern.jnl "dark_horizontal" ($color)
+
+
+set mode/last verify
+exit
+
+
+

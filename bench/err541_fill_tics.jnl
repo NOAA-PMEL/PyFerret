@@ -8,3 +8,5 @@ shade/l=1/x=150e:110w/y=40s:40n sst
  
 set view lower
 fill/l=1/x=150e:110w/y=40s:40n sst
+
+cancel view

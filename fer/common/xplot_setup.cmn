@@ -12,6 +12,7 @@
 * *kob* 12/00 - add animate logical and active_win_id for animations
 * *sh* 9/01 - added white space defaults -- distance above/below axis ends
 *		to window or viewport edge (below == PLOT+ origin)
+* *acm* v552 3/03 Longer strings: changes for multi-line labels.
 
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
@@ -62,7 +63,7 @@
      .		xwhitehi,
      .		ywhitehi
 
-	CHARACTER	ppl_buff*255
+	CHARACTER	ppl_buff*2048
 
 	COMMON / XPLOT_SETUP /
      .		animate,

@@ -187,6 +187,9 @@
 #ifdef AIX_XLF
 	   CALL FLUSH(jrnl_lun)
 #endif
+#ifdef solaris
+	      CALL FLUSH(jrnl_lun)
+#endif
 	endif
 	GOTO 1000
 

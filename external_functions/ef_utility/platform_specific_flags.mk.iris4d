@@ -1,0 +1,27 @@
+#
+# platform_specific_includes.mk.irix6
+#
+# This file is included in other Makefiles and defines
+# platform specific macros.  Changed by jimp 01/20/99.
+# NOTE:  SGI compilation requires the -Dsun flag to be set for compilation
+
+
+INCLUDES        = -I. -I$(TMAP_LOCAL)/include
+
+FINCLUDES       =  -I../common
+
+
+CCSHFLAG        =
+CC              = cc
+RANLIB          = /usr/bin/ranlib
+CFLAGS          = -n32 $(CCSHFLAG) $(INCLUDES)
+FC              = /usr/bin/f77
+F77SHFLAG       = -shared
+FFLAGS          = -KPIC -n32
+
+LD_DYN_FLAGS    = -shared -n32
+#SYSLIBS         = -lc -ldl
+
+CPP             = /lib/cpp
+CPP_FLAGS       = -P -traditional $(INCLUDES)
+

@@ -40,3 +40,5 @@ WebFerret WebFerret &Ferret &CGIservlet &utility
 
 lasxml lasxml &xml
 godae godae &xml
+
+FERRET FERRET &fer &ppl &fmt &gksm2ps

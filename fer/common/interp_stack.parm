@@ -1,5 +1,7 @@
 * INTERP_STACK.PARM
 * parameters needed for the functioning of the interpretation stack, only
+*
+* 10/98 *jc* added isact_reduce
 
 * minimum working space provided to transformations
 	INTEGER		iswksiz
@@ -40,7 +42,8 @@
      .			isact_modulo,
      .			isact_reverse,
      .			isact_impl_grid,
-     .			isact_reconcile
+     .			isact_reconcile,
+     .			isact_reduce
 	PARAMETER     ( isact_request		= 1,
      .			isact_algebra		= 2,
      .			isact_rotate		= 3,
@@ -55,7 +58,8 @@
      .			isact_modulo		= 12,
      .			isact_reverse		= 13,
      .			isact_impl_grid		= 14,
-     .			isact_reconcile		= 15 )
+     .			isact_reconcile		= 15,
+     .          isact_reduce = 16 ) ! never used since GC fcns perform axis reduction
 
 * transformations (which are also stack activities)
 	INTEGER		isact_interp,

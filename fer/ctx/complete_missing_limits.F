@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 *  V500 *sh* 3/99
+*       *sh* 4/99 - bug fix: ABSTRACT axes completed on some user vars
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -89,11 +90,10 @@
 
 	      line = grid_line( idim, grid )
 
-	      IF ( cat .EQ. cat_user_var ) THEN
+	      needs_limits = line .NE. mnormal
+     .		       .AND. line .NE. mabstract
+	      IF ( needs_limits .AND. cat.EQ.cat_user_var ) THEN
 	         needs_limits = uvar_given(idim,var) .GE. uvlim_needed
-	      ELSE
-	         needs_limits = line .NE. mnormal
-     .			 .AND. line .NE. mabstract
 	      ENDIF
 
 	      IF ( needs_limits ) THEN

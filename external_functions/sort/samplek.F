@@ -8,6 +8,7 @@
 * 4/5/99  Ansley Manke 
 *         Indices may be oriented along any axis; 
 *         Result is abstract on the sampled axis.
+*    6-Jul-1999  change order of the arguments: data-to-sample, indices
 *
 *
 *
@@ -69,14 +70,14 @@
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'K_INDICES')
-      CALL ef_set_arg_desc(id, arg, 'ordered indices')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
-
-      arg = 2
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
       CALL ef_set_arg_desc(id, arg, 'data to sample using K indices')
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
+
+      arg = 2
+      CALL ef_set_arg_name(id, arg, 'K_INDICES')
+      CALL ef_set_arg_desc(id, arg, 'ordered indices')
+      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -114,18 +115,18 @@
       INTEGER nx, ny, nz, nt
 
 *     Use utility functions to get context information about the 
-*     1st argument, to set the abstract axis lo and hi indices.
+*     2nd argument, to set the abstract axis lo and hi indices.
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
-      ny = arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) + 1
-      nz = arg_hi_ss(Z_AXIS, ARG1) - arg_lo_ss(Z_AXIS, ARG1) + 1
-      nt = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
+      nx = arg_hi_ss(X_AXIS, ARG2) - arg_lo_ss(X_AXIS, ARG2) + 1
+      ny = arg_hi_ss(Y_AXIS, ARG2) - arg_lo_ss(Y_AXIS, ARG2) + 1
+      nz = arg_hi_ss(Z_AXIS, ARG2) - arg_lo_ss(Z_AXIS, ARG2) + 1
+      nt = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
 
       my_lo_l = 1
       my_hi_l = nz
-      IF (arg_hi_ss(Z_AXIS, ARG1) - arg_lo_ss(Z_AXIS, ARG1) .EQ. 0)
+      IF (arg_hi_ss(Z_AXIS, ARG2) - arg_lo_ss(Z_AXIS, ARG2) .EQ. 0)
      .    my_hi_l = max(nx,ny,nz,nt)
 
       CALL ef_set_axis_limits(id, Z_AXIS, my_lo_l, my_hi_l)
@@ -168,8 +169,8 @@
 *                                                                     V
 
       INTEGER id, i, j, k, l
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, j2, l2
+      INTEGER i1, j1, l1
+      INTEGER i2, j2, k2, l2
       INTEGER korder
       REAL aorder
 
@@ -195,38 +196,38 @@
             l2 = arg_lo_ss(T_AXIS,ARG2)
             DO 200 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-               k1 = arg_lo_ss(Z_AXIS,ARG1)
+               k2 = arg_lo_ss(Z_AXIS,ARG1)
                DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  Get the index to sample, whichever axis of arg_1 it is on.
 
-                  aorder = arg_1(i1,j1,k1,l1)
-                  IF (k1 .EQ. unspecified_int4) 
-     .                  CALL pickindex(arg_1, k, aorder)
+                  aorder = arg_2(i2,j2,k2,l2)
+                  IF (k2 .EQ. unspecified_int4) 
+     .                  CALL pickindex(arg_2, k, aorder)
                   korder = aorder
 
-*  Check that we do have an index of ARG_2; set the result
+*  Check that we do have an index of ARG_1; set the result
 
-                  IF (aorder .EQ. bad_flag(ARG1)) THEN
+                  IF (aorder .EQ. bad_flag(ARG2)) THEN
                      result(i,j,k,l) = bad_flag_result
                   ELSE
 
-                     IF (korder .LT. arg_lo_ss(Z_AXIS,ARG2)  .OR.
-     .                   korder .GT. arg_hi_ss(Z_AXIS,ARG2) ) THEN
+                     IF (korder .LT. arg_lo_ss(Z_AXIS,ARG1)  .OR.
+     .                   korder .GT. arg_hi_ss(Z_AXIS,ARG1) ) THEN
                         GO TO 999
                      ELSE
 
-                        IF (arg_2(i2,j2,korder,l2) .EQ. bad_flag(ARG2))
+                        IF (arg_1(i1,j1,korder,l1) .EQ. bad_flag(ARG1))
      .                   THEN
                            result(i,j,k,l) = bad_flag_result
                         ELSE
-                           result(i,j,k,l) = arg_2(i2,j2,korder,l2)
+                           result(i,j,k,l) = arg_1(i1,j1,korder,l1)
  
                         END IF
                      END IF
                   END IF
 
-                  k1 = k1 + arg_incr(Z_AXIS,ARG1)
+                  k2 = k2 + arg_incr(Z_AXIS,ARG2)
  100           CONTINUE
 
                l1 = l1 + arg_incr(T_AXIS,ARG1)
@@ -245,11 +246,11 @@
 999   CONTINUE
 
       aindex(1) = LEFINT(korder,nlen(1))
-      aindex(2) = LEFINT(arg_lo_ss(Z_AXIS,ARG2),nlen(2))
-      aindex(3) = LEFINT(arg_hi_ss(Z_AXIS,ARG2),nlen(3))
+      aindex(2) = LEFINT(arg_lo_ss(Z_AXIS,ARG1),nlen(2))
+      aindex(3) = LEFINT(arg_hi_ss(Z_AXIS,ARG1),nlen(3))
 
       WRITE (errtxt,*) 'Sampling index ', aindex(1)(1:nlen(1)), 
-     . ' in ARG1 is outside the range of Z indices for ARG2 (', 
+     . ' in ARG2 is outside the range of Z indices for ARG1 (', 
      .  aindex(2)(1:nlen(2)), ':', aindex(3)(1:nlen(3)), ')'
 
       CALL ef_bail_out(id, errtxt)

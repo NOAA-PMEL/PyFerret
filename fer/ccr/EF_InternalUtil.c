@@ -335,7 +335,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
-#define N_INTEF 16
+#define N_INTEF 17
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];

@@ -36,4 +36,4 @@ CGIservlet corba/CGIservlet
 Ferret corba/Ferret
 utility corba/utility
 
-WebFerret WebFerret &Ferret
+WebFerret WebFerret &Ferret &CGIservlet &utility

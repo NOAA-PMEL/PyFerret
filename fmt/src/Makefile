@@ -19,6 +19,7 @@
 #		   - non-debug and debug version of the tmap libray
 # 11/14/96 - *kob* - Add Linux entry similar to that of AIX - linux f77
 #		     doesn't use pre-processor
+# 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
 F77 = f77
 CC = cc
 RANLIB=ranlib
@@ -58,7 +59,7 @@ alpha:
 	${MAKE} tmap_libs/tmap_lib.a F77="f77" FFLAGS="-c -u -cpp -w1 -align dcommons -align records -integer_size 32 -real_size 32  -check overflow -check underflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -DUSG -DDEC_ALPHA"	DEBUG=" "
 
 aix:
-	${MAKE} tmap_libs/tmap_lib.a F77="xlf" FFLAGS="-c -u -qfixed=132" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -DUSG -Dunix -cpp -DVOID_SIGHANDLER -Daix -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun"	
+	${MAKE} tmap_libs/tmap_lib.a F77="xlf" FFLAGS="-c -u -qfixed=132" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -Dreclen_in_bytes -DUSG -Dunix -cpp -DVOID_SIGHANDLER -Daix -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun"	
 
 
 hp:  
@@ -93,7 +94,7 @@ alpha_deblib:
 	${MAKE} tmap_libs/tmap_deblib.a F77="f77" FFLAGS="-c -u -cpp -w1 -align dcommons -align records -integer_size 32 -real_size 32  -check overflow -check underflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -DUSG -DDEC_ALPHA"	DEBUG="-g"
 
 aix_deblib:
-	${MAKE} tmap_libs/tmap_deblib.a F77="xlf" FFLAGS="-g -c -u -qfixed=132" CCFLAGS="-Ireadline -I. -I/usr/local/include -g -c -DUSG -Dunix -cpp -DVOID_SIGHANDLER -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun" CPPFLAGS="-Dsun -Dunix -Daix -P -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"	
+	${MAKE} tmap_libs/tmap_deblib.a F77="xlf" FFLAGS="-g -c -u -qfixed=132" CCFLAGS="-Ireadline -I. -I/usr/local/include -g -c -Dreclen_in_bytes -DUSG -Dunix -cpp -DVOID_SIGHANDLER -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun" CPPFLAGS="-Dsun -Dunix -Daix -P -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"	
 
 hp_deblib:
 	${MAKE} tmap_libs/tmap_deblib.a  FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun" DEBUG="-g"
@@ -149,7 +150,7 @@ alpha_comp:
 	${MAKE} comp F77="f77" FFLAGS="-c -u -cpp -C -w1 -align dcommons -align records -integer_size 32 -real_size 32 -check underflow -check overflow -Df7732_bug -DDEC_FORTRAN  " CCFLAGS="-Ireadline -I. -I/usr/local/include -c -DUSG -DDEC_ALPHA"
 	
 aix_comp:
-	${MAKE} comp_nocpp F77="xlf" FFLAGS="-c -u -qfixed=132" CCFLAGS="-Ireadline -I. -I/usr/local/include -cpp -c -DUSG -Dunix -Daix -DVOID_SIGHANDLER -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun" CPPFLAGS="-Dsun -Dunix -Daix -P -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"	
+	${MAKE} comp_nocpp F77="xlf" FFLAGS="-c -u -qfixed=132" CCFLAGS="-Ireadline -I. -I/usr/local/include -cpp -c -DUSG -Dunix -Dreclen_in_bytes -Daix -DVOID_SIGHANDLER -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun" CPPFLAGS="-Dsun -Dunix -Daix -P -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"	
 
 hp_comp:  
 	${MAKE} comp FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun"
@@ -177,7 +178,7 @@ alpha_gcomp:
 	${MAKE} comp F77="f77" FFLAGS="-c -u -cpp -C -w1 -align dcommons -align records -integer_size 32 -real_size 32 -check underflow -check overflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -DUSG -DDEC_ALPHA" DEBUG="-g"
 	
 aix_gcomp:
-	${MAKE} comp_nocpp F77="xlf" FFLAGS="-c -u -qfixed=132" DEBUG="-g" CCFLAGS="-Ireadline -I. -I/usr/local/include -cpp -c -g -DUSG -Dunix -Daix -DVOID_SIGHANDLER -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun" CPPFLAGS=" -Dsun -Dunix -Daix -P -DAIX_XLF"
+	${MAKE} comp_nocpp F77="xlf" FFLAGS="-c -u -qfixed=132" DEBUG="-g" CCFLAGS="-Ireadline -I. -I/usr/local/include -cpp -c -g -DUSG -Dreclen_in_bytes -Dunix -Daix -DVOID_SIGHANDLER -Daix_cc -DNO_ENTRY_NAME_UNDERSCORES -Dsun" CPPFLAGS=" -Dsun -Dunix -Daix -P -DAIX_XLF"
 
 hp_gcomp:  
 	${MAKE} comp FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun" DEBUG="-g"

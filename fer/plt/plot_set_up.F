@@ -1,6 +1,6 @@
 	SUBROUTINE PLOT_SET_UP( memory,
      .				overlay, transpz, versus, no_labels,
-     .				symbol, line_type,
+     .				symbol, sym_size, color, use_line,
      .				mv_list, cx_list, nmv,
      .				indep_dat, dep_dat, status )
 
@@ -94,7 +94,8 @@
 *       4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
 *       6/99 - *sh* added logic to permit a PLOT/VS over a time series plot
 * V510 10/99 - *sh* plot/i=1:10 i/0 is not an error -- scale axis to -1:1
-
+*       3/00 - *sh* added use_line and sym_size args for PLOT/COLOR=/SIZE=
+*	     - pass no_labels to AXIS_FORMAT 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -136,10 +137,10 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL		overlay, transpz, versus, no_labels
-	INTEGER		symbol, line_type,
+	LOGICAL		overlay, transpz, versus, no_labels, use_line
+	INTEGER		symbol, color,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
-	REAL		memory( mem_blk_size, max_mem_blks )
+	REAL		memory( mem_blk_size, max_mem_blks ), sym_size
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
  
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
@@ -147,13 +148,13 @@
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, flip, time_axis,
      .			all_1_dep, all_1_ind, formatted, user_title
 	CHARACTER*200	FULL_VAR_TITLE,  KEY_STRING, plot_title
-	CHARACTER	VAR_CODE*64, INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
+	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*4, MERGED_WHOI_DATE*14,
      .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
      .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
-     .			indep_dim, npts, dep_dim, npts2, i, ndv, var1,
+     .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
      .			slen2, slen3, tax, plot_mem_used,
      .			pxlim, pylim, ptitl
@@ -441,7 +442,8 @@
 	   nline_on     = nline_on     + 1
 	   nline_in_mem = nline_in_mem + 1
 * ... assign line style for the data plotting:
-	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, nline_on )
+	   CALL LINE_STYLE(symbol, sym_size, color, use_line,
+     .			   nline_in_mem,nline_on)
  200	CONTINUE
 
 * axis scaling and formatting
@@ -487,7 +489,7 @@
 	         CALL AXIS_FORMAT( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max,
      .				   pnot_curv, 0,
-     .				   time_axis, tstyle )
+     .				   time_axis, tstyle, no_labels )
 	      ENDIF
 	   ENDIF
 * ... dependent axis scaling

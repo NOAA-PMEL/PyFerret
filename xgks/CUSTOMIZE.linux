@@ -30,7 +30,7 @@ CFLAGS='-O2 -m486'
 # Installation prefix (default is `../..'):
 prefix=..
 
-FC=f95
+FC='g77 -fno-second-underscore -fno-backslash -fdollar-ok -fugly-init -fugly-logint -fintrin-case-any -ffixed-line-length-132 -malign-double ' 
 OS=linux
 
 

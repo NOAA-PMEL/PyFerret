@@ -11,9 +11,7 @@
 *    LET ssffta = ffta(ssttim[l=1:492])
 * and the time axis must be regular.
 
-*  Note current limitations as of 28-Apr-1999
-*   - result T-axis units is set to FREQ: want to get the time step units and
-*     set the frequency axis to 1./days, etc.
+*  Note current limitations as of 1-Jan-2000
 *   - Will have a utility to get the length of the input time axis at the
 *     point when the custom freq axis is set up, to use in computing the
 *     length of the frequency axis.  Currently need to specify explicitly, 
@@ -73,14 +71,14 @@
       INTEGER id, arg
 
       CHARACTER*110 arg_desc
-      CALL ef_version_test(ef_version)
+c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
       CALL ef_set_desc(id,
-     .      'Computes fft amplitude spectra, unnormalized' )
+     .      'Computes fft amplitude spectra, normalized by 1/N' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -132,11 +130,27 @@
       INTEGER nfreq, nd
 
       REAL yquist, freq1, freqn
-      CHARACTER outunits*20
-
+      
+      CHARACTER outunits*32
+      REAL boxsize(1), small
+      REAL*8 box8
+      INTEGER ibox, places, right
+      CHARACTER*100 fmt
+         
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4)
+      CHARACTER*16 taxunits
+      INTEGER nch
+      
+      arg = 1
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      arg = 1
+      CALL ef_get_axis_info(id, arg, ax_name, ax_units, backward,
+     .     modulo, regular)
+
+      CALL ef_get_box_size(id, arg, T_AXIS, arg_lo_ss(T_AXIS,arg), 
+     .               arg_lo_ss(T_AXIS,arg), boxsize)
+     
 
       IF ( arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) .EQ. 0 ) THEN
          nfreq_lo_l = 1
@@ -146,21 +160,54 @@
          nfreq_hi_l = arg_hi_ss(T_AXIS,arg)
       ENDIF
 
-      arg = 1
-      nd = (nfreq_hi_l - nfreq_lo_l + 1)
+      nd = abs(nfreq_hi_l - nfreq_lo_l) + 1
 
-      nfreq = nd/ 2
+C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
-*  FFT routine works on an even number of time points.
+      nfreq = nd/2	
 
-      IF (nd .NE. nfreq* 2) nd = nd-1
-      nfreq = nd/ 2
+      yquist = 1./(2.*boxsize(1))		! Nyquist frequency
 
-      yquist = 0.5              ! Nyquist frequency
       freq1 = 1.* yquist/ float(nfreq)
-      freqn = yquist
+      freqn = 1.001*yquist
 
-      outunits = 'FREQ'
+C  Set label for the frequency axis CYC/units, taking into acount box size.
+
+      IF (boxsize(1) .EQ. 1.) THEN
+         outunits = 'CYC/' // ax_units(T_AXIS)
+      ELSE
+      
+C  Get # of places needed to output box size, with digits right of decimal pt.
+
+         small = 0.5
+c         IF (boxsize(1) .GT. 1.) small = 1.0
+         
+         box8 = boxsize(1)
+         CALL get_prec_digits(box8, box8, small, places, right)
+        
+        
+C  Get number of characters in the axis units label
+
+         taxunits = ax_units(T_AXIS)
+         call nchar(taxunits, nch)
+         
+C  Generate a format statement and write the frequency axis label.
+     
+         IF (right .GT. 0) THEN
+           WRITE (fmt, 10) places, right, nch
+           WRITE (outunits, fmt) boxsize(1), taxunits(1:nch)
+        ELSE
+           WRITE (fmt, 12) places, nch
+           ibox = boxsize(1)
+           WRITE (outunits, fmt) ibox, taxunits(1:nch)
+        ENDIF
+
+      ENDIF
+      
+   10 FORMAT 
+     . ( '( ''CYC/('',F', I1, '.', I1, ''' '', A', I2.2,  ''')''  )' )
+   12 FORMAT 
+     . ( '( ''CYC/('',I', I1,  ''' '', A', I2.2,  ''')''  )' )
 
       CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
      .   outunits, NO)
@@ -211,12 +258,11 @@
 
       arg = 1
       ntime = arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1
-      nfreq = ntime/ 2
 
-*  FFT routine works on an even number of time points.
+C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
-      IF (ntime .NE. nfreq*2) ntime = ntime-1
       nfreq = ntime/ 2
+      if (ntime .ne. nfreq*2) nfreq = (ntime+1)/2 ! see FFTPACK comments in rfftf
 
       CALL ef_set_axis_limits(id, T_AXIS, 1, nfreq)
 
@@ -257,10 +303,10 @@
 
       mtwork = 2.5* mtdat + 15
   
-* creal
+* a
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
-* cimag
+* b
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
 * wft
@@ -281,7 +327,8 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE ffta_compute(id, arg_1, result, creal, cimag, wft, ts)
+      SUBROUTINE ffta_compute(id, arg_1, result, 
+     .             a, b, wft, ts)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -312,16 +359,16 @@
 
 *  Dimension work arrays
 
-      REAL creal(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+      REAL a(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL cimag(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+      REAL b(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
       REAL wft(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
      .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
       REAL ts(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
      .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
 
-      REAL rr, ri
+      REAL aa, bb
       INTEGER nd, nf
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
@@ -334,16 +381,14 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  FFT routine works on an even number of time points.
+*  number of time points.
 
       arg = 1
       nd = (arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1)
       nf = nd/ 2
-      IF (nd .NE. nf*2) nd = nd-1
 
 *  Check that the time axis is regular.
 
-      arg = 1
       CALL ef_get_axis_info (id, 1, ax_name, ax_units, backward,
      .     modulo, regular)
 
@@ -367,7 +412,7 @@
 
 *
 * Calculate the FFT for each time series which have no missing data.
-*
+
                l1 =arg_lo_ss(T_AXIS,ARG1)
                DO 100 l = 1, nd
                   IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(ARG1)) THEN
@@ -383,12 +428,12 @@
                l1 = arg_lo_ss(T_AXIS,ARG1)
                l = res_lo_ss(T_AXIS)
 
-               CALL FOUR_RE (nd, ts, creal, cimag, wft)
+               CALL four_re (nd, ts, a, b, wft)
 
                DO 110 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
-                   rr = creal(l,1,1,1)
-                   ri = cimag(l,1,1,1)
-                   result(i,j,k,l) = SQRT(rr*rr + ri*ri)
+                   aa = a(l,1,1,1)
+                   bb = b(l,1,1,1)
+                   result(i,j,k,l) = SQRT(aa*aa + bb*bb)
  110           CONTINUE
 
                k1 = k1 + arg_incr(Z_AXIS,ARG1)
@@ -410,3 +455,4 @@
 
       RETURN 
       END
+      

@@ -27,7 +27,7 @@ include ../platform_specific_flags.mk.$(HOSTTYPE)
 SRCS_F = 
 
 SRCS_C = \
-    ferret.c JC_CallbackUtility.c JC_CommandGen.c JC_InterInterface.c \
+    JC_CallbackUtility.c JC_CommandGen.c JC_InterInterface.c \
 	CommandHelp.c CustomLevels.c JC_DefineVariable.c JC_EditDefinedVar.c \
 	ErrorLog.c FerretMainWd.c ListManager.c MacroManager.c \
 	Open_Save_ctl.c Open_Save_dset.c Open_Save_err.c Open_Save_list.c \

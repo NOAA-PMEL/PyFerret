@@ -38,7 +38,7 @@ FERMAIN = ccr/fermain_c.o
 
 FEROBJS_DFLT = \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
-	special/ferret_query_f.o special/gui_fakes.o  special/xrevision_type_data.o
+	special/ferret_query_f.o  special/xrevision_type_data.o
 
 FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
 
@@ -56,21 +56,31 @@ all:	fer_libraries ppl_libraries special_code ferret
 
 
 debug:
-	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" all
+	touch ccr/fermain_c.c
+	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "GUI_FAKES=special/gui_fakes.o" all
 
-ferret_gui:
-	$(MAKE) "FERMAIN=gui/ferret.o" "GUILIB = -L../lib -lgui" "EXECNAME=ferretgui_c" all
+gui_nodebug:
+	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
+		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
+		"GUI=GUI" all
+gui_debug:
+	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
+		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
+		"GUI=GUI" "DEBUG_TITLE=debug" all
 
 fortran:
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
-
-
 
 ferret:	update
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
 	- $(CC) $(LDFLAGS) -o $(EXECNAME) \
 		$(FERMAIN) \
 		$(FEROBJS) \
+		$(GUI_FAKES) \
 		$(XTRA_OBJ) \
 		$(GUILIB) \
 		$(GKSOBJ) \
@@ -87,11 +97,13 @@ ferret:	update
 		$(SYSLIB)
 	chmod +x $(EXECNAME)
 
-
 update:
-	sed "s&xxxxxxxx&$(DATE)&" <special/xmake_date_data.template >special/xmake_date_data.F
-	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
+	${MAKE} update_date DATE=`/bin/date +%D`
+	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template >! special/xrevision_type_data.F 
 	(cd special;make)
+
+update_date:
+	sed "s&xxxxxxxx&$(DATE)&" <special/xmake_date_data.template >special/xmake_date_data.F
 
 
 libraries: ppl_libraries fer_libraries

@@ -20,6 +20,7 @@
 * V553   9/03 *acm* - increased number of qualifiers for SHOW AXIS
 * V554   1/04 *acm* - increased number of quals for REPEAT command
 
+
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
 * arrays SUBCOMMANDS and QUALIFIERS.  This is done so that new commands,

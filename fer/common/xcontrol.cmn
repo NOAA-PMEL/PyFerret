@@ -6,9 +6,10 @@
 * *sh* 10/0 - increased saved command buffer size - match cmnd_buff_len
 * *kob* 1/01 - added cs_start and cs_loop for animations
 * V531 5/01 *sh* - added has_continuation_cmnd
+* V533 7/01 *sh* - increased cs_max from 10 to 200 (allowing recursive scripts)
 
 	INTEGER		cs_max
-	PARAMETER     (	cs_max = 10 )
+	PARAMETER     (	cs_max = 200 )
 
 	LOGICAL	cs_in_control,
      .		cs_by_ss( cs_max ),

@@ -8,8 +8,4 @@
 can region
 use coads_climatology
 
-let u =  uwnd
-let v =  vwnd 
- 
 GO vis5d_write " " sst 
-

@@ -57,7 +57,8 @@
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V491: 4/98 - fix bug in check for itsa_uvar -- was bypassing ALL processing
-
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars  and err_string from 48 to 64
+*                  and VAR_TITLE from 24 to 128
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -86,8 +87,10 @@
 	INTEGER	ISUBSCRIPT, TM_LENSTR1, ss, min_ss, max_ss, lo_ss, hi_ss,
      .		axis, grid, lenstr, slen, cat, var, istat
 	REAL*8	SECS_FROM_BC, bc_to_t0, ww, min_ww, max_ww, lo_ww, hi_ww
-	CHARACTER VAR_CODE*24, CX_DIM_STR*48, VAR_TITLE*24,
-     .		  buff*48, err_str*48, expr_num*1
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars  and err_string from 48 to 64
+*                  and VAR_TITLE from 24 to 128
+	CHARACTER VAR_CODE*64, CX_DIM_STR*48, VAR_TITLE*128,
+     .		  buff*48, err_str*64, expr_num*1
 
 * internal parameter declarations:
 	LOGICAL     full_precision

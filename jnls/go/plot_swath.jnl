@@ -1,6 +1,7 @@
 \cancel mode verify
 ! plot_swath.jnl
 ! 6/99 *sh*
+! 1/02 *acm* add note on limits
 
 ! Description: Plot a color-filed swath between upper and lower bounds
 
@@ -11,6 +12,12 @@
 ! $3 - lower bound variable
 ! $4 - x coordinates (shared by both of the following arguments)
 !    - default is the values of t the underlying axis of argment 2 
+
+! Note:
+!     The variables a and b must be 1-dimensional.  If they have axes
+!     that are normal to the axis of interest, then limits on those axes
+!     must be explicit in the expressions passed in arguments 2 and 3, 
+!     even if the range on that axis is a single point.  See example 3.
 
 ! example 1 - difference between two points on a grid
 !	yes? use coads_climatology
@@ -30,7 +37,19 @@
 !	yes? go plot_swath poly/over/nolabels/palette=red   y1,y2
 !	yes? go plot_swath poly/over/nolabels/palette=green y2,y3
 !	yes? go plot_swath poly/over/nolabels/palette=blue  y3,y4
-
+!
+! example 3 -- 2 time series with 1-point z axis.
+!	yes? define axis/T=1-jan-1990:1-feb-1990:24] timeax
+!	yes? define axis/z=1:1:1 zax
+!	yes? define grid/z=zax/t=timeax ztgrid
+!	yes? let tpts = t[gt=ztgrid] - T[T=1-jan-1990]
+!	yes? let zpts = z[gz=ztgrid]
+!	yes? let a1 = tpts + zpts
+!	yes? let a2 = a1 + 100*sin(tpts/100)
+!	yes? plot/nolabels a1,a2
+!       yes? !  note we need to pass explicit Z limits even for a 1-point axis.
+!	yes? go plot_swath poly/over/nolabels/palette=red (a1[k=1]), (a2[k=1])
+!
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO plot_swath polygon_command ylo yhi [xpts]"
 QUERY/IGNORE $2"<usage: yes? GO plot_swath polygon_command ylo yhi [xpts]"

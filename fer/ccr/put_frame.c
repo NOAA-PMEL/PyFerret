@@ -72,7 +72,7 @@ void put_frame_batch_(int *ws_id, char *filename, char *format,
     strcpy(errmsg, "Batch FRAME only works for GIF files");
     return;
   }
-  if (GIFFlush(ws->mf, filename) != OK){
+  if (GIFFlush(&ws->mf, filename) != OK){
     sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
     return;
   }

@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION MATCH_NAME ( test_string, model_string)
+	LOGICAL FUNCTION MATCH_NAME ( test_string, len_test, model_string, len_model_chars)
 
 *
 *
@@ -44,28 +44,32 @@
 *
 * revision 0.0 - 5/1/86
 * revision 0.1 - 12/9/86 - allowed model_string of arbitrary length
+* ywei  05/04 changed function prototype to allow speed up
+*              before calling this function, make sure
+*              len_test = TM_LENSTR(test_string)
+*              len_model_chars = TM_LENSTR(model_string)
 
 * calling argument declarations:
 	CHARACTER*(*)	model_string
 	CHARACTER*(*)	test_string
+        INTEGER         len_test
+        INTEGER         len_model_chars
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR, len_model, len_test, len_model_chars, i
-	CHARACTER*1	UPPER_CASE
+	INTEGER		TM_LENSTR, len_model, i
+        LOGICAL         result
 
 	len_model	= LEN( model_string )
-	len_model_chars	= TM_LENSTR( model_string )
-	len_test	= TM_LENSTR( test_string(1:LEN(test_string)) )
 
 * test string cannot be shorter than model or longer than fully terminated model
 	IF (   len_test        .LT. len_model_chars
      .	 .OR.( len_model_chars .LT. len_model		! fully terminated ?
      .	 .AND. len_test	       .GT. len_model_chars )	) GOTO 200
 
-	DO 100 i = 1,len_model_chars
-	IF ( model_string(i:i) .NE. UPPER_CASE( test_string(i:i) ) ) GOTO 200
- 100	CONTINUE
+        CALL tm_match_captial_name(test_string, model_string, 
+     .          len_model_chars, result)
 
+        IF(.NOT.result) GOTO 200
 * it matches
 	MATCH_NAME = .TRUE.
 	RETURN

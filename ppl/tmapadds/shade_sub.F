@@ -1,4 +1,4 @@
-	SUBROUTINE SHADE_SUB (data,xc,yc,xs,ys)
+	SUBROUTINE SHADE_SUB (data,xc,yc,xs,ys, pixel)
 
 *
 *
@@ -75,71 +75,47 @@
 *	*sh*  03.07.97  Allow external transformation to curvilinear coords
 *	*sh*  25.11.97  changed calling args of GET_NDX by eliminating "i,j"
 *			and by returning -999 for no index found
+*       *acm* 11/02     V5.50 For rectangular shade plots with no pattern
+*                       calls, use cellarray call for the shade.
 
-#ifdef unix
-	include		'parampl5_dat.decl'
-	include		'PARAMPL5.DAT'
-        include         'shade_vars.cmn'
-	include		'axis_inc.decl'
-	include		'AXIS.INC'
-	include		'miss_inc.decl'
-	include		'MISS.INC'
-        include         'hd_inc.decl'
-        include         'HD.INC'
-	include		'cont_inc.decl'
-	include		'CONT.INC'
-	include		'gkscm1_inc.decl'
-	include		'GKSCM1.INC'
-	include		'gkscm2.cmn'
-        include         'pen_inc.decl'
-        include         'PEN.INC'
+	INCLUDE		'parampl5_dat.decl'
+	INCLUDE		'PARAMPL5.DAT'
+        INCLUDE         'shade_vars.cmn'
+	INCLUDE		'axis_inc.decl'
+	INCLUDE		'AXIS.INC'
+	INCLUDE		'miss_inc.decl'
+	INCLUDE		'MISS.INC'
+        INCLUDE         'hd_inc.decl'
+        INCLUDE         'HD.INC'
+	INCLUDE		'cont_inc.decl'
+	INCLUDE		'CONT.INC'
+	INCLUDE		'gkscm1_inc.decl'
+	INCLUDE		'GKSCM1.INC'
+	INCLUDE		'gkscm2.cmn'
+        INCLUDE         'pen_inc.decl'
+        INCLUDE         'PEN.INC'
+	INCLUDE         'gkspar.inc'
+	INCLUDE 	'xinterrupt.cmn'	! 1/89 *sh*
+	INCLUDE 	'ppl_in_ferret.cmn'
+        INCLUDE         'switch_inc.decl'
+        INCLUDE         'SWITCH.INC'
 
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_miss.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_hd.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_cont.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_gkscm1.inc'
-	INCLUDE		'tmap_pplv11inc:tmap_gkscm2.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_pen.inc'
-#endif
+	INTEGER		error,i,j,trans_no,cflag,jindex
 
-#ifdef atc_gks
-#   ifdef unix
-	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
-#else
-#   ifdef unix
-  	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
-#endif
-
-#ifdef unix
-	include 	'xinterrupt.cmn'	! 1/89 *sh*
-	include 	'ppl_in_ferret.cmn'	
-#else
-	INCLUDE 	'TMAP_PPLV11INC:XINTERRUPT.CMN'	! 1/89 *sh*
-	INCLUDE 	'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'	
-#endif
-
-	integer		error,i,j,trans_no,cflag
-
-        integer         my_trans,fill_ndx,next_ndx,GET_NDX
-        data            my_trans/20/
+        INTEGER         my_trans,fill_ndx,next_ndx,GET_NDX
+        DATA            my_trans/20/
 
 C       data statement of my_trans added for linux port *jd* 12.96
 
-	real		data(nx,ny),xc(nx),yc(ny),xs(nx+1),ys(ny+1)
-	real	 	w(4),v(4),ndc(4),uc(4)
-	real		xinv,yinv
+	REAL		data(nx,ny),xc(nx),yc(ny),xs(nx+1),ys(ny+1)
+	REAL	 	w(4),v(4),ndc(4),uc(4)
+	REAL		xinv,yinv, cx1, cx2, cy1, cy2
 
 	logical		valid
+
+        INTEGER		pixel(*), pmax
+	LOGICAL		ITS_BATCH_GRAPHICS, REGULARLY_SPACED,
+     .                  batch, irregular, use_cell
 
 * declarations for curvilinear coordinates
 	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES, BAD_XY_COORD,
@@ -150,8 +126,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
      .			maxpt_ov2 = maxpts / 2 )
 	REAL		px(maxpts), py(maxpts)
 
-*	parameter	(my_trans = 10)
-	external	GET_NDX
+*	PARAMETER	(my_trans = 10)
+	EXTERNAL	GET_NDX
 
 *	MY_TRANS is the normalization transformation used in laying down the
 *	area fill overlay.
@@ -159,44 +135,54 @@ C       data statement of my_trans added for linux port *jd* 12.96
 ******************************************************************************
 
 *       *sh* (3/97) are we doing a curvilinear plot?
-	if (ppl_in_ferret) then
+	IF (ppl_in_ferret) THEN
 	   curvilinear = ITS_CURVILINEAR()
 	ELSE
 	   curvilinear = .FALSE.
 	ENDIF
 
 *	*jd* mod to allow shading single level fields 
-	if (nlev2 .lt. 1) goto 1000
+	IF (nlev2 .LT. 1) GOTO 1000
 	shd_levels = max (nlev2 - 1,1)
 
+* are we in no-X mode?
+	batch = ITS_BATCH_GRAPHICS()
+
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
-	call set_fill_area_rep (wsid,wstype)
+	CALL set_fill_area_rep (wsid,wstype)
+
+        IF (meta_actv .AND. .NOT. meta_clsplt) 
+     .     CALL set_fill_area_rep (meta_wsid,meta_wstype)
 
 *	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
-	call gqcntn (error,trans_no)
-	if (error .ne. 0) goto 1000
+	CALL gqcntn (error,trans_no)
+	IF (error .NE. 0) GOTO 1000
 
-	call gqnt (trans_no,error,w,v)
-	if (error .ne. 0) goto 1000
+	CALL gqnt (trans_no,error,w,v)
+	IF (error .NE. 0) GOTO 1000
 
-	call get_user_coords (w,v,ndc,uc,xinv,yinv)
+	CALL get_user_coords (w,v,ndc,uc,xinv,yinv)
 
 *	NOW SET THE CLIPPING RECTANGLE AROUND THEM AND PATTERN SIZE
-	call gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)	
-	call gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
-	call gselnt (my_trans)
 
-	call gqclip (error,cflag,ndc)
-	if (error .ne. 0) goto 1000
-	if (cflag .ne. gclip) call gsclip (gclip)
+	CALL gswn (my_trans,uc(1)*xinv,uc(2)*xinv,uc(3)*yinv,uc(4)*yinv)
+	CALL gsvp (my_trans,ndc(1),ndc(2),ndc(3),ndc(4))
+	CALL gselnt (my_trans)
+
+	CALL gqclip (error,cflag,ndc)
+	IF (error .NE. 0) GOTO 1000
+	IF (cflag .NE. gclip) CALL gsclip (gclip)
 
 *	SET UP COORDINATES FOR CENTER OF EACH GRID BOX
 
+        irregular = .FALSE.
+
 **** X coordinates ***
-	if (ppl_in_ferret) then			!	JD 1.2.90	
+	IF (ppl_in_ferret) THEN			!	JD 1.2.90	
 
 * "curvilinear" indicates a 3-argument SHADE command: "SHADE vals, xpos, ypos"
 	   IF ( curvilinear ) THEN
+              irregular = .FALSE.
 * ... Indices have been passed to this routine instead of coordinates
 *     The coordinates are inside Ferret - gotten through CURV_COORDS below 
 	      IF ( ITS_CURV_EDGES(1) ) THEN
@@ -217,25 +203,28 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
 * normal rectangular grid (non-curvilinear)
 	   ELSE
-	      call box_bounds ('X',xc(1),nx,xs,valid)
-	      if (.not. valid) then
+	      CALL box_bounds ('X',xc(1),nx,xs,valid)
+	      IF (.NOT. valid) THEN
 	         interrupted = .true.
-	         goto 3333
-	      end if
+	         GOTO 3333
+	      ENDIF
 	   ENDIF
-	   do 20 i = 1,nx+1
+	   DO 20 i = 1,nx+1
 	      xs(i) = xs(i)*xinv
-20	   continue
-	else
+20	   CONTINUE
+	ELSE
 	   xs(1) = (xc(1) - (xc(2) - xc(1))/2.0)*xinv
-	   do 30 i = 1,nx-1
+	   DO 30 i = 1,nx-1
 	      xs(i+1) = (xc(i) + (xc(i+1) - xc(i))/2.0)*xinv
-30	   continue
+30	   CONTINUE
 	   xs(nx+1) = (xc(nx) + (xc(nx) - xc(nx-1))/2.0)*xinv
-	end if
+	ENDIF
+
+        IF (.NOT.curvilinear .AND. .NOT.irregular) 
+     .      irregular = .NOT. REGULARLY_SPACED(xc, nx)
 
 **** Y coordinates *** (see doc of logic in X coordinates)
-	if (ppl_in_ferret) then			!	JD 1.2.90
+	IF (ppl_in_ferret) THEN			!	JD 1.2.90
 	   IF ( curvilinear ) THEN
 	      IF ( ITS_CURV_EDGES(2) ) THEN
 	         DO 21 i = 1, ny
@@ -249,30 +238,136 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	         ys(ny+1) = (yc(ny) + (yc(ny) - yc(ny-1))/2.0)
 	      ENDIF
 	   ELSE
-	      call box_bounds ('Y',yc(1),ny,ys,valid)
-	      if (.not. valid) then
+	      CALL box_bounds ('Y',yc(1),ny,ys,valid)
+	      IF (.NOT. valid) THEN
 	         interrupted = .true.
-	         goto 3333
-	      end if
-	      do 31 j = 1,ny+1
+	         GOTO 3333
+	      ENDIF
+	      DO 31 j = 1,ny+1
 	         ys(j) = ys(j)*yinv
-31	      continue
+31	      CONTINUE
 	   ENDIF
-	else
+	ELSE
 	   ys(1) = (yc(1) - (yc(2) - yc(1))/2.0)*yinv
-	   do 35 j = 1,ny-1
+	   DO 35 j = 1,ny-1
 	      ys(j+1) = (yc(j) + (yc(j+1) - yc(j))/2.0)*yinv
-35	   continue
+35	   CONTINUE
 	   ys(ny+1) = (yc(ny) + (yc(ny) - yc(ny-1))/2.0)*yinv
 *								END 12.13.89
-	end if
+	ENDIF
+        IF (.NOT.curvilinear .AND. .NOT.irregular) 
+     .      irregular = .NOT. REGULARLY_SPACED(yc, ny)
+
 
 *       WRITE OUT SHD_LEVELS & SHADE SETTINGS TO METAFILE (4.91)
 #ifndef xgks
-        if (meta_actv) call meta_shade_set
+        IF (meta_actv) CALL meta_shade_set
 #endif
+
+* For cellarray shade plots:
+
+*       For version 5.5 cellarray called only for X output, when
+*       there is no metafile open, and we are not in -batch mode.
+*       cellarray call is for rectangular, evenly spaced grids,
+*       to be filled with solid colors.
+*       Use older calls using fillarea when there is meta or ps output.
+
+      use_cell = ((.NOT. meta_actv ) .AND. (.NOT.batch) .AND.
+     .            (.NOT.curvilinear) .AND. (mnpat.EQ.0) .AND.
+     .            (.NOT.irregular)   .AND. (.NOT.SOVER) ) 
+
+
+      IF (use_cell) THEN
+
+* initialize py so that the check in BAD_XY_COORD doesn't get caught
+* in a loop
+        j = 1
+        py(1) = ys(j)
+        py(2) = ys(j+1)
+        py(3) = ys(j+1)
+        py(4) = ys(j)
+
+* Collect color indices in cellarray pixel array.
+
+        cx1 = uc(1)*xinv   
+        cx2 = uc(2)*xinv   
+        cy1 = uc(3)*yinv
+        cy2 = uc(4)*yinv
+
+        if (nx*ny .gt. 500000) stop
+        IF (uc(3) .LE. uc(4) ) THEN      ! non-depth axis
+           k = 1
+	   DO 80 j = 1,ny
+	      DO 70 i = 1, nx
+
+              IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
+
+              IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) THEN
+                 pixel(k) = 0
+
+              ELSE
+ 	         pixel(k)  = GET_NDX (data(i,j),fill_ndx)
+
+	         IF (fill_ndx .EQ. -999) pixel(k) = 0
+	         IF (pixel(k) .EQ. -999) pixel(k) = 0
+
+                 IF (pixel(k) .NE. 0) THEN
+                    pixel(k) = pixel(k)+lo_color_ndx(wsid)-2
+                    pmax = max (pixel(k), pmax)
+                 ENDIF
+
+              ENDIF
+
+              k = k + 1
+70            CONTINUE
+80         CONTINUE
+
+
+        ELSE  ! Depth plot:
+          k = 1
+          DO 82 j = 1,ny
+              jindex = ny-j+1
+              DO 72 i = 1, nx
+       
+             IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
+
+             IF (BAD_XY_COORD(i,jindex,xs,py,fill_ndx)) THEN
+                 pixel(k) = 0
+
+              ELSE
+ 	         pixel(k)  = GET_NDX (data(i,jindex),fill_ndx)
+
+                IF (fill_ndx .EQ. -999) pixel(k) = 0
+                IF (pixel(k) .EQ. -999) pixel(k) = 0
+
+                 IF (pixel(k) .NE. 0) THEN
+                    pixel(k) = pixel(k)+lo_color_ndx(wsid)-2
+                    pmax = max (pixel(k), pmax)
+                 ENDIF
+
+              ENDIF
+              k = k + 1
+72            CONTINUE
+82	   CONTINUE
+
+        ENDIF
+
+*  Render the field using the cellarray primitive call.
+
+         DO 90 i = 0, pmax
+            CALL gsfaci (i)
+90       CONTINUE
+
+         CALL gca
+     .     (cx1,cy1, cx2,cy2, nx,ny, 1,1, nx,ny, pixel)
+
+      ELSE  ! non-cellarray:
+
+* Previous code for SHADE plot, when either a pattern is used or 
+* we have curvilinear coordinates
+
 *	LAY FILL DOWN ON SCREEN IN PROPER PLACE
-	do 50 j = 1,ny
+	DO 50 j = 1,ny
 
 ! initialize these so that the check in BAD_XY_COORD doesn't get caught
 ! in a loop
@@ -286,7 +381,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
 * ... outer: DO WHILE i LE nx ...
 40	   i = i + 1					! To line 50 JD 5.16.90
-	   if (i .eq. nx + 1) goto 50
+	   IF (i .EQ. nx + 1) GOTO 50
 
 	   IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
 
@@ -299,7 +394,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	      IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 40
 	   ENDIF
 	   fill_ndx = GET_NDX (data(i,j),fill_ndx)
-	   if (fill_ndx .eq. -999) goto 40
+	   IF (fill_ndx .EQ. -999) GOTO 40
 	   pt1 = i
 	   npt = 1
 
@@ -311,7 +406,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 *	    computing the curvilinear position of these points TWICE in calls
 *	    to CURV_COORD
 45	      i = i + 1
-	      if (i .eq. nx + 1) goto 48
+	      IF (i .EQ. nx + 1) GOTO 48
 	      IF ( curvilinear ) THEN
 	         npt = i + 1
 	         IF ( npt .GE. maxpt_ov2 ) GOTO 48
@@ -321,7 +416,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	      IF (.NOT.curvilinear) THEN
 	         IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 48
 	      ENDIF
-	      if (fill_ndx .eq. next_ndx) goto 45
+	      IF (fill_ndx .EQ. next_ndx) GOTO 45
 * ... inner: end loop
 
 * found last cell in chain - now assign the vertices of the polygon
@@ -356,28 +451,30 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	   pt1 = i	! index of left edge of first cell of next color
 	   i = i - 1
 
-	   call set_fill_ndx (fill_ndx)
-	   call gfa (npt,px,py)
+	   CALL set_fill_ndx (fill_ndx)
+	   CALL gfa (npt,px,py)
 
 *	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
 *	   FILL_NDX TO PRIVATE ITEM -- no, forget it *jd* 10.22.92
-*	   if (meta_actv .and. .not. area_bundles) 
-*     .				call meta_fill_ndx (fill_ndx)
+*	   IF (meta_actv .AND. .NOT. area_bundles) 
+*     .				CALL meta_fill_ndx (fill_ndx)
 
-	   goto 40
-50	continue
+	   GOTO 40
+50	CONTINUE
+
+      ENDIF
 
  3333	CONTINUE					! 1/89 - *sh*
 * post-interrupt re-entry				! 1/89 - *sh*
 
 *	BACK TO PREVIOUS CLIPPING
-	call gsclip (cflag)
+	CALL gsclip (cflag)
 
 *	BACK TO OLD TRANSFORM
-	call gselnt (trans_no)
+	CALL gselnt (trans_no)
 
 *	DO THE KEY
-	if (do_key .AND. .NOT.interrupted) call key	! 1/89 - *sh*
+	IF (do_key .AND. .NOT.interrupted) CALL key	! 1/89 - *sh*
 
 	return
 *	FATAL ERROR

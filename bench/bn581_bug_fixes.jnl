@@ -1,0 +1,8 @@
+! bn581_bug_fixes.jnl
+! test various fixes that went into version 5.81
+! 2/05 *acm*
+!
+
+! short axis with irreg bounds seen as regular.
+GO bn_reset
+GO err580_irreg_bounds.jnl

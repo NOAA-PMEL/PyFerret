@@ -1,0 +1,20 @@
+! err580_irreg_bounds.jnl
+! Define a short irregular time axis with some time_bounds, 
+! and then read it into Ferret.  When the file is read in, 
+! the bounds seem to be ignored; axis is seen as regular.
+! Bug 1160 reported by Andrew.
+
+yes? def ax/t/edge time = {0,1,3}
+yes? let a = t[gt=time]
+yes? show grid/t a
+
+yes? save/clob/file=a.nc a
+yes? sp ncdump a.nc
+
+can data/all
+can var/all
+can mem
+
+!  T axis was marked as regular
+yes? use a.nc
+yes? show grid/t a

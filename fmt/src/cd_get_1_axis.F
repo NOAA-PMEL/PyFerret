@@ -77,6 +77,8 @@
 * V530 *acm* 12/00 attribute for different calendar types
 *      *acm*  7/12/2001  correct for conflicts between prev two versions,
 *                        somehow checked into CVS w/o proper merging
+* V533 *acm*  8/30/01  change calendar name 360 to 360_day
+*      *acm* 10/01  remove VMS includes
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -87,7 +89,6 @@
 *       status   - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -105,19 +106,6 @@
         external xunits_data
         include 'calendar.decl'
         include 'calendar.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'  ! untested
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-#endif
 
 * argument declarations
         LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular
@@ -225,9 +213,7 @@
          istat = STR_UPCASE (buff, buff)
          line_cal_name(iaxis) = buff
          IF (line_cal_name(iaxis) .EQ. '360') 
-     .        line_cal_name(iaxis) = '360DAY' 
-         IF (line_cal_name(iaxis) .EQ. 'D360') 
-     .        line_cal_name(iaxis) = '360DAY' 
+     .        line_cal_name(iaxis) = '360_DAY' 
          IF (line_cal_name(iaxis) .EQ. 'STANDARD') 
      .        line_cal_name(iaxis) = 'GREGORIAN' 
          IF (line_cal_name(iaxis)(1:6) .EQ. 'COMMON') 

@@ -12,9 +12,9 @@ FINCLUDES       = -I../../fmt/cmn -I../common
 CCSHFLAG        =
 CC              = cc
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -g $(CCSHFLAG) $(INCLUDES)
+CFLAGS          = -g -c $(CCSHFLAG) $(INCLUDES)
 F77             = f77
 F77SHFLAG       = -shared
-FFLAGS          = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
+FFLAGS          = -c -u -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -fpe2 -C $(F77SHFLAG) $(FINCLUDES)
 LD_DYN_FLAGS    = -shared

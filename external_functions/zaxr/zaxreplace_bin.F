@@ -252,11 +252,10 @@
 *                                                                     V
 
       INTEGER i, j, k, l
-      INTEGER i1, j1, l1
-      INTEGER i2, j2, l2
-      INTEGER nsrc_lo, nsrc_hi
+      INTEGER i1, j1, l1, i2, j2, l2, i3, j3, l3
+      INTEGER nsrc, nsrc_lo, nsrc_hi
       REAL*8 sum
-      REAL count
+      REAL count, arg1_val
 
 *  Dimension work arrays
 

@@ -159,9 +159,12 @@
 *                                                                     |
 *                                                                     V
       REAL comp, sum, weight
+      REAL xlen, ylen, zlen, tlen
+      INTEGER i, j, k, l
       INTEGER hlen, ii, wlen
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
+
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

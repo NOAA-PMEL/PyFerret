@@ -200,7 +200,7 @@
       INTEGER max_row, min_col, max_col, min_lev, max_lev
       INTEGER array_num
       INTEGER nwork, nax
-
+      INTEGER min_row, iarg, max_lev_all
 
 *  Set work array size. gwork is a work array whose output dimensions
 *  are reset in routine wrt_v5d_steps

@@ -245,9 +245,11 @@
 *                                                                     V
 
       INTEGER i, j, k, l
-      INTEGER i1, j1, l1
-      INTEGER i2, j2, l2
+      INTEGER i1, j1, l1, i2, j2, l2, i3, j3, l3
+      INTEGER ifirst, iw, nbox, nsrc, nothing
       INTEGER nsrc_lo, nsrc_hi
+      REAL frac, xsrc_min, xsrc_max, xsrc_lo, xsrc_hi, xsrcdiff
+      REAL wtd, arg1_val, arg1_val_last, wtd_last
       REAL*8 sum, wtdsum
       REAL dbox_lo, dbox_hi
 c      CHARACTER*132 err_msg

@@ -15,6 +15,7 @@ C                     QRSYM, for example.
 C  Ansley Manke 10/00 Change bad-data flag "realbad"  to bad_flag_dat
 C                     and a separate flag for bad_flag_result, the bad-data
 C                     flag for the result.
+C  Ansley Manke 1/01  declare all variables.
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -52,10 +53,15 @@ C---------------------------------------------------------------------
      +      eofwork, pct_cutoff, nout, bad_flag_dat, bad_flag_result,
      +      err_msg, ier)
 
-	DIMENSION DATA(NX,*), PCT(*), VAL(*), VEC(NX,*),
+        INTEGER nx
+	REAL DATA(NX,*), PCT(*), VAL(*), VEC(NX,*),
      +            TAF(NX,*), C(NX,*)
 
       CHARACTER*(*) err_msg
+
+      INTEGER nt, nout, ier, ix, i2, it, i, j, i1, ie, nx_compute, npr,
+     .        ic, is
+      REAL pct_cutoff, ct, eps, sumljgji, beta, tvar
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -187,6 +193,8 @@ C.................First compute the time amplitude function from the data.
 C.................Renormalize each TAF by dividing by SQRT of its eigenvalue.
 
 c...........................loop over time
+
+        nx_compute = nx		! acm 1/01  testing time routine takes
         nout = nx_compute
 
 	DO 350 J=1,NT
@@ -296,7 +304,8 @@ C************************************************************************
 
       SUBROUTINE QRSYM (A,N,E,X, eofwork)
 
-      DIMENSION A(N,*),E(*),X(N,*)
+      INTEGER N
+      REAL A(N,*),E(*),X(N,*)
 c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
 *  
 * 5/99 ACM  Use a work array eofwork rather than explicitly dimensioned
@@ -307,6 +316,9 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
 
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
      .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+
+      INTEGER nb
+      REAL rnorm, eps
 
 
       nb=n
@@ -333,10 +345,15 @@ c      CALL BACKS(BETA,A,N,X,N,EPS,NB)
 C**********************************************************************
 
       SUBROUTINE HOUSEH (G,N,A,B,NB, p)
-      DIMENSION G(NB,*),A(*),B(*)
+      INTEGER NB
+      REAL G(NB,*),A(*),B(*)
 
 c      DIMENSION P(2000)
-      DIMENSION P(*)
+      REAL P(*)
+
+      INTEGER n, n2, k, k1, i, j, i1
+      REAL sum, sigma, absb, alpha, beta, gamma, t
+
       N2=N-2
       IF(N2)45,44,2
     2 DO 43 K=1,N2
@@ -384,7 +401,11 @@ c      DIMENSION P(2000)
 C************************************************************************
 
       SUBROUTINE QRSTD (ALPHA,BETA,N,E,BB,RNORM,EPS)
-      DIMENSION ALPHA(*),BETA(*),E(*),BB(*)
+      REAL ALPHA(*),BETA(*),E(*),BB(*)
+
+      INTEGER n, i, k, m, n1, i1, j
+      REAL eta, delta, t, r, w, c, s, shift, g, p, ek1, rnorm, eps
+
 
 C W.KAHAN AND J.VARAH, TWO WORKING ALGORITHMS FOR THE EIGENVALUES OF A
 C SYMMETRIC TRIDIAGONAL MATRIX. TECHNICAL REPORT NO. CS43, AUGUST 11,
@@ -489,7 +510,9 @@ C SORT
 C*************************************************************************
 
       SUBROUTINE TRIDIN (C,B,N,W,NORM,M1,MACHEPS,Z,NB)
-      DIMENSION C(*),B(*),W(*),Z(NB,*)
+      REAL C(*),B(*),W(*),Z(NB,*)
+
+      INTEGER nb, nminus1, ii
 
 C J.H.WILKINSON, CALCULATION OF THE EIGENVECTORS OF A SYMMETRIC
 C TRIDIAGONAL MATRIX BY INVERSE ITERATION. NUMERISCHE MATHEMATIK 4,
@@ -591,7 +614,12 @@ C STORE VECTORS AS COLUMNS
 C**********************************************************************
 
       SUBROUTINE BACKS (BETA,A,N,X,M1,EPS,NB)
-      DIMENSION BETA(*), A(NB,*), X(NB,*)
+      INTEGER n, nb, m1 
+      REAL BETA(*), A(NB,*), X(NB,*), EPS
+
+      INTEGER j, kk, k, k1, i
+      REAL s
+
 
 C BACKTRANSFORMATION
 

@@ -31,7 +31,7 @@ MATLAB_INCLUDES=-I/opt/local/matlab/matlab5.2/extern/include
 MATLAB_DIR=/opt/local/matlab/matlab5.2/extern/lib/sol2
 MATLAB_LIBS=$(MATLAB_DIR)/libeng.so $(MATLAB_DIR)/libmat.so
 CFLAGS += $(MATLAB_INCLUDES) -K PIC
-FFLAGS += -u -PIC
+FFLAGS += -PIC
 
 #
 # Macros
@@ -47,6 +47,9 @@ OBJSf = $(SRCS_F:.f=.o)
 
 all:	ferret_cmn matlab.so matlab_func.so
 
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

@@ -181,7 +181,7 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
-      INTEGER id, arg
+      INTEGER id
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
@@ -204,7 +204,6 @@
 *                                                                      V
 *  names, units, characteristics of variables to send to Vis5D utility functions.
 
-        INTEGER arg
         CHARACTER errmsg*80
 
         INCLUDE 'xgodae_obs.cmn'

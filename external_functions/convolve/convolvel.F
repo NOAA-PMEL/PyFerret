@@ -159,6 +159,7 @@
 *                                                                     |
 *                                                                     V
       REAL comp, sum, weight
+      INTEGER i, j, k, l
       INTEGER xlen, ylen, zlen, tlen, ll
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2

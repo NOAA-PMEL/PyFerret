@@ -4,6 +4,7 @@
 # January 20 1998
 # Jonathan Callahan
 #
+# *acm* 1/2001 - add "make debug" target as per SH Makefiles
  
 #
 # include platform specific macro definitions
@@ -18,25 +19,28 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
- #
+#
 # Rules
 #
 
-.F.so:
-	$(F77) $(FFLAGS) -c -u $<
-	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
+.F.o:
+	$(F77) $(FFLAGS) $<
+
+.o.so:
+	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
 
 #
 # Targets
 #
 
-all:	ferret_cmn ef_utility convolvei.so convolvej.so convolvek.so convolvel.so 
+all:	ferret_cmn convolvei.so convolvej.so convolvek.so convolvel.so 
 
-ef_utility:
-	ln -s ../ef_utility ef_utility
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
-	ln -s ef_utility/ferret_cmn ferret_cmn
+	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

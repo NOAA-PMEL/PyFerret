@@ -7,10 +7,10 @@
 CCSHFLAG        = -K PIC
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -g $(CCSHFLAG)
+CFLAGS          = -c -g $(CCSHFLAG)
 F77             = f77
 F77SHFLAG       = -PIC
-FFLAGS          = $(F77SHFLAG)
+FFLAGS          = -c -u $(F77SHFLAG)
 LD_DYN_FLAGS    = -G -z text -z muldefs
 
 

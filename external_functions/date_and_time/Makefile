@@ -29,10 +29,10 @@ DAT_OBJS = date_decode.o time_decode.o
 #
 
 .c.o:
-	cc ${DATFLAGS} ${CFLAGS} -c $<
+	cc ${DATFLAGS} ${CFLAGS} $<
 
 .F.o:
-	$(F77) $(FFLAGS) -u -c $<
+	$(F77) $(FFLAGS) $<
 
 .o.so:
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
@@ -44,7 +44,7 @@ DAT_OBJS = date_decode.o time_decode.o
 all:	ferret_cmn date_decode.o time_decode.o date1900.o date1900.so minutes24.o minutes24.so
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -C -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug" "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

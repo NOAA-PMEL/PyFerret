@@ -26,7 +26,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -c -u $<
+	$(F77) $(FFLAGS) $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
 #
@@ -34,6 +34,10 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 all:	ferret_cmn zaxreplace_avg.so zaxreplace_bin.so
+
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

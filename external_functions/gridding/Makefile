@@ -27,7 +27,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -u -c $<
+	$(F77) $(FFLAGS)  $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
 
 #
@@ -39,6 +39,9 @@ all:    ferret_cmn scatter2gridgauss_xy.so scatter2gridgauss_xz.so scatter2gridg
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

@@ -100,14 +100,16 @@
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'TMASK')
-      CALL ef_set_arg_desc(id, arg, 'Mask')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
-
-      arg = 2
       CALL ef_set_arg_name(id, arg, 'VAR')
       CALL ef_set_arg_desc(id, arg, 'data to mask')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+
+      arg = 2
+      CALL ef_set_arg_name(id, arg, 'MASK')
+      CALL ef_set_arg_desc(id, arg, 
+     .  '1-D mask, same length as t-axis of VAR')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |

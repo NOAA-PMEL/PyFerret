@@ -29,10 +29,10 @@ GOB_OBJS = ocn_obs.o
 #
 
 .c.o:
-	cc ${GOBFLAGS} ${CFLAGS} -c $<
+	cc ${GOBFLAGS} ${CFLAGS} $<
 
 .F.o:
-	$(F77) $(FFLAGS) -u -c $<
+	$(F77) $(FFLAGS) $<
 
 .o.so:
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
@@ -44,7 +44,7 @@ GOB_OBJS = ocn_obs.o
 all:	ferret_cmn ocn_obs.o godae_obs.o godae_obs.so
 
 debug:
-	$(MAKE) "FFLAGS = $(FFLAGS) -g -C -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

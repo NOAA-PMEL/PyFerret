@@ -29,10 +29,10 @@ V5D_OBJS = binio.o v5d.o
 #
 
 .c.o:
-	cc ${V5DFLAGS} ${CFLAGS} -c $<
+	cc ${V5DFLAGS} ${CFLAGS} $<
 
 .F.so:
-	$(F77) $(FFLAGS) -c -u $<
+	$(F77) $(FFLAGS) $<
 	$(LD) $(LD_DYN_FLAGS) $(V5D_OBJS) $*.o -o $*.so 
 
 #
@@ -40,6 +40,9 @@ V5D_OBJS = binio.o v5d.o
 #
 
 all:	ferret_cmn binio.o v5d.o writev5d.so
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

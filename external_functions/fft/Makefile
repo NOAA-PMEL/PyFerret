@@ -29,7 +29,7 @@ SUB_OBJS = fftsubs.o
 #
 
 .F.so:
-	f77  $(FFLAGS) -c -u  $<
+	f77  $(FFLAGS)  $<
 	$(LD) $(LD_DYN_FLAGS)   $(SUB_OBJS) $*.o -o $*.so 
 
 #
@@ -40,6 +40,9 @@ all:	ferret_cmn fftsubs.o ffta.so fftp.so
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

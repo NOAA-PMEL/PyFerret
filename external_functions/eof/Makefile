@@ -28,10 +28,10 @@ SUB_OBJS = eofsubs.o
 #
 
 .f.o:
-	$(F77) $(FFLAGS) -c -u $<
+	$(F77) $(FFLAGS)  $<
 
 .F.so:
-	$(F77) $(FFLAGS) -c -u $<
+	$(F77) $(FFLAGS) $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #
@@ -40,6 +40,8 @@ SUB_OBJS = eofsubs.o
 
 all:	ferret_cmn eofsubs.o eof_space.so eof_tfunc.so eof_stat.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

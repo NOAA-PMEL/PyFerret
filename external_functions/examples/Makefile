@@ -36,6 +36,10 @@ standard:	ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so 
 
 all:	ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so strings.so subtract.so times_table.so
 
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) -g -Ddebug"   "CFLAGS = $(CFLAGS) -g -Ddebug"  all
+
+
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
 

@@ -14,10 +14,10 @@ FINCLUDES       =  -I../common
 CCSHFLAG        =
 CC              = cc
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -n32 $(CCSHFLAG) $(INCLUDES)
+CFLAGS          = -c -n32 $(CCSHFLAG) $(INCLUDES)
 FC              = /usr/bin/f77
 F77SHFLAG       = -shared
-FFLAGS          = -KPIC -n32
+FFLAGS          = -KPIC -n32 -c -u
 
 LD_DYN_FLAGS    = -shared -n32
 #SYSLIBS         = -lc -ldl

@@ -49,6 +49,7 @@
 *         1/94 - need to pass at least 5 arguments for COMMAND=SAMPLE
 * V312: 5/94 - array "memory" as a calling argument
 *	(and passed to USER_SUB - fixed 6/1/94)
+* V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 
 #ifdef unix
 	include	'ferret.parm'
@@ -66,11 +67,10 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
-	LOGICAL	cmnd_given
-	INTEGER	mr, cx, ivar, mr_list(6), cx_list(6), loc, status
+	INTEGER	ivar, mr_list(6), cx_list(6), status
 	
 * get the requested data somehow - possibly several grids of data
-	CALL GET_CMND_DATA ( memory, cx_last, status )
+	CALL GET_CMND_DATA ( memory, cx_last, ptype_float, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * set up dummies if fewer than 4 components

@@ -47,6 +47,7 @@
 * V312: 5/94 - array "memory" as a calling argument
 *       10/26/94 - changed "STAT" to "VAR_STAT" for IBM/AIX
 * V420	 2/7/96  - added STAT/BRIEF
+* V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 
 #ifdef unix
 	include	'ferret.parm'
@@ -73,7 +74,7 @@
 	full = qual_given( slash_stat_brief ) .EQ. 0
 
 * get the requested data somehow
-	CALL GET_CMND_DATA ( memory, cx_last, status )
+	CALL GET_CMND_DATA ( memory, cx_last, ptype_native, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * compute and display the results

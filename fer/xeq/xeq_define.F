@@ -125,6 +125,7 @@
 *	     *sh* - allow automatic generation of T0=1-jan-0000
 *	4/00 *sh* - set use counts when defining grids and axes
 *	5/00 *sh* - support for LET/BAD=
+* V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -704,7 +705,7 @@
 * GET THE AXIS POINTS: IRREGULAR (from_variable) or regular
 	IF ( irreg ) THEN
 * ... get axis points from a memory variable
-	   CALL GET_CMND_DATA ( memory, cx_last, status )
+	   CALL GET_CMND_DATA ( memory, cx_last, ptype_float, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   IF ( num_uvars_in_cmnd .NE. 1 ) GOTO 5580
 	   cx = is_cx(1)

@@ -58,6 +58,7 @@
 *		- and bixed del_flink/blink bug in LOAD/PERM
 * V230: 8/11/92 - double load of /PERMANENT got subscript error
 * V312: 5/94 - array "memory" as a calling argument
+* V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 
 #ifdef unix
 	include	'ferret.parm'
@@ -94,7 +95,7 @@
      .		'/NAME= no longer supported - use DEFINE VARIABLE', *5000 )
 	
 * get the requested data somehow
-	CALL GET_CMND_DATA ( memory, cx_last, status )
+	CALL GET_CMND_DATA ( memory, cx_last, ptype_native, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * set protections as indicated (check for already protected 8/92)

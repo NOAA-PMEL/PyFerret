@@ -5,14 +5,16 @@
 
 * V450: 1/97
 *	7/97 - slight reorg for external functions
-*       8/97 - type mismatch on axis_implied_from caught by 
+*   8/97 - type mismatch on axis_implied_from caught by 
 *              linux/aix compilers *kob*
+
 * calling argument declarations
 	INTEGER	ifcn, iarg, axis_source(4)
 
 * internal variable declarations
 	INTEGER	idim, iptr1,
      .		axis_will_be(4)
+	INTEGER efcn_get_num_reqd_args
 	LOGICAL axis_implied_from(4)
 
 #ifdef unix
@@ -30,13 +32,18 @@
 #endif
 
 * initialize
+        IF (ifcn .LT. 0 .OR. iarg .LT. 1) THEN
+
+           STOP 'gcf_get_axis_srcs'
+
+        ELSEIF (ifcn .LE. gfcn_num_internal) THEN
+
+* check the internal grid changing functions first
 * is this a valid argument number?
-	IF (iarg .LT. 1
-     . .OR. iarg .GT. gfcn_num_reqd_args(ifcn) )
-     .					STOP 'gcf_cx_merge_arg_1'
+	   IF (iarg .GT. gfcn_num_reqd_args(ifcn) )
+	2	STOP 'gcf_get_axis_srcs'
 
 * store info in local arrays to blur distinction between internal and external
-	IF ( ifcn .LE. gfcn_num_internal ) THEN
 * ... determine pointer to argument information
 	   iptr1 = gfcn_arg_ptr(ifcn)
 	   DO 10 idim = 1, 4
@@ -44,8 +51,15 @@
 	      axis_implied_from(idim) =
      .			gfcn_axis_implied_from(idim,iptr1+iarg-1)
  10	   CONTINUE
+
 	ELSE
-	   STOP 'gcf_get_axis_src: call for external function'
+
+	   IF (iarg .GT. efcn_get_num_reqd_args(ifcn) )
+	2	STOP 'gcf_get_axis_srcs'
+
+	   call efcn_get_axis_will_be(ifcn, axis_will_be)
+	   call efcn_get_axis_implied_from(ifcn, iarg, axis_implied_from)
+
 	ENDIF
 
 * return information about argument iarg

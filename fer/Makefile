@@ -125,7 +125,6 @@ fortran: .FRC
 
 ferret:	
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
-	- make update
 	- $(LD) $(LDFLAGS) -o $(EXECNAME) \
 		$(FERMAIN) \
 		$(FEROBJS) \

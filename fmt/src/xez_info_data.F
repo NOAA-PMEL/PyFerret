@@ -41,16 +41,23 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 08/14/89
+* V530 - 10/00 *sh* ==> added field type variable for delimited reads
 
 * COMMON/XEZ_INFO.....info for EZ_ data sets
-#ifdef unix
 	include 'tmap_dims.parm'
+	include 'ez_lib.parm'
 	include 'xez_info.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XEZ_INFO.CMN_TEXT'
-#endif
 
 	DATA	ez_mods		/maxdsets*.TRUE./
+
+* note; order of entries must match delimitedRead.h in Ferret
+        DATA ftyp_name(1)/'-'/,
+     .       ftyp_name(2)/'NUMERIC'/,
+     .       ftyp_name(3)/'TEXT'/,
+     .       ftyp_name(4)/'LATITUDE'/,
+     .       ftyp_name(5)/'LONGITUDE'/,
+     .       ftyp_name(6)/'DATE'/,
+     .       ftyp_name(7)/'EURODATE'/,
+     .       ftyp_name(8)/'TIME'/
 
 	END

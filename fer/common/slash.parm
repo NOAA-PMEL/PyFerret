@@ -1,5 +1,6 @@
 * SLASH.PARM
 * v450:  5/29 -- added slash_noaxes
+* v491:  12.98 - added pattern for contour and shade *jd*
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -79,6 +80,7 @@
      .			slash_cont_line,
      .			slash_cont_nokey,
      .			slash_cont_spectrum,
+     .			slash_cont_pattern,
      .
      .			slash_vect_over_plot,
      .			slash_vect_set_up,
@@ -98,6 +100,7 @@
      .			slash_shad_lev_same,
      .			slash_shad_key,
      .			slash_shad_nokey,
+     .			slash_shad_pattern,
      .
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
@@ -200,6 +203,7 @@
      .			slash_cont_line		= 15,
      .			slash_cont_nokey	= 19,
      .			slash_cont_spectrum	= 20,
+     .			slash_cont_pattern	= 1+25,
      .
      .			slash_vect_over_plot	= 9,
      .			slash_vect_set_up	= 10,
@@ -219,6 +223,7 @@
      .			slash_shad_lev_same	= 1+16,
      .			slash_shad_key		= 1+17,	
      .			slash_shad_nokey	= 1+18,
+     .			slash_shad_pattern	= 1+25,
      .
      .			slash_plot_over_plot	= 9,
      .			slash_plot_set_up	= 10,

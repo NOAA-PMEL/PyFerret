@@ -261,6 +261,7 @@ main (int oargc, char *oargv[])
 	  //parsed correctly by the system*/
           if (++i < argc){
 		script_name = argv[i];
+
 		its_script = 1;
 		len_str = strlen(script_name);
 
@@ -312,6 +313,7 @@ main (int oargc, char *oargv[])
 		/* //</YWEI> */
 
                 script_args[arg_pos]='\0';
+
 	  } 
 
       } else  /* -help also comes here */

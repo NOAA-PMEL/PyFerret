@@ -40,6 +40,7 @@ pos_lab.F\
 ppl_axes_off.F\
 ppl_axes_restore.F\
 ppl_bdead.F\
+ppl_patset.F\
 ppl_shaset.F\
 ppl_time.F\
 put_cmnd_key.F\

@@ -22,7 +22,7 @@ cancel mode diagnostic
 ! first with an XYZT variable
 set region/i=3:6/j=2:4/k=1:2/l=1
 !use bn_strides
-use "http://ferret.wrc.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
+use "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/bn_strides.cdf"
 list bigvar
 canc data/all
 

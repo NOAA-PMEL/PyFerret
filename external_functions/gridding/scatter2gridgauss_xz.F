@@ -174,13 +174,13 @@
       INTEGER nxsize, nzsize
       REAL xsc, zsc, tsc 
       REAL tt, t1, tf
-      REAL iwflag, l3, ii3, jj3, kk3, ll3
+      INTEGER iwflag, l3, ii3, jj3, kk3, ll3
 
       INTEGER nx, nz, nxaxis, nzaxis
       REAL x1, z1, xf, zf, dx, dz
       REAL xx, zz, val, cutoff
 
-      REAL NAX
+      INTEGER NAX
       PARAMETER (NAX = 400)
       REAL*8 xax(NAX), zax(NAX)
 

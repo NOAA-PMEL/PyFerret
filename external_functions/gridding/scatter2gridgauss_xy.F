@@ -177,7 +177,8 @@
       REAL x1, y1, xf, yf, dx, dy, t1, tf
       REAL xx, yy, tt
       REAL xsc, ysc, tsc
-      REAL val, cutoff, iwflag
+      REAL val, cutoff
+      INTEGER iwflag
 
       INTEGER NAX
       PARAMETER (NAX = 400)

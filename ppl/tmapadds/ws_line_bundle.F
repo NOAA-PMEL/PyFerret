@@ -53,6 +53,7 @@
 *              size of the dots by 4, the output is consistent from 
 *              ferret metafiles transformed to postscript, from 
 *              "ferret -batch" output, and gif files.
+*       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6.
 
 	integer		zwsid,zwstype,i,j
 
@@ -93,10 +94,10 @@
 #endif
 
 	do 20 j = 1,6           ! colors
-	   call gspmr (zwsid,j,marktype,dotsize,j)
 	    
 	   do 10 fktr = 1,3     ! thickness
               thickness = real(fktr)
+	      call gspmr (zwsid,(fktr-1)*6+j,marktype,dotsize,j)
 	      call gsplr (zwsid,(fktr-1)*6+j,1,thickness,j)
        
 10	   continue

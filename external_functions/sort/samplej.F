@@ -109,8 +109,8 @@
 *                                                                     |
 *                                                                     V
 
-      COMMON / samplei / my_lo_l, my_hi_l
       INTEGER my_lo_l, my_hi_l
+      INTEGER nx, ny, nz, nt
 
 *     Use utility functions to get context information about the 
 *     1st argument, to set the abstract axis lo and hi indices.
@@ -123,7 +123,9 @@
       nt = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
 
       my_lo_l = 1
-      my_hi_l = max(nx,ny,nz,nt)
+      my_hi_l = ny
+      IF (arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) .EQ. 0)
+     .    my_hi_l = max(nx,ny,nz,nt)
 
       CALL ef_set_axis_limits(id, Y_AXIS, my_lo_l, my_hi_l)
 
@@ -164,33 +166,41 @@
 *                                                                     |
 *                                                                     V
       INTEGER id, i, j, k, l
-      INTEGER i2, j2, k2, l2
+      INTEGER i1, j1, k1, l1
+      INTEGER i2, k2, l2
       INTEGER jorder
       REAL aorder
 
-      INTEGER nlen(3)
+      INTEGER nlen(3), unspecified_int4
       CHARACTER*8 lefint, aindex(3) 
       CHARACTER*100 errtxt
+
+      unspecified_int4 = -111
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+      i1 = arg_lo_ss(X_AXIS,ARG1)
       i2 = arg_lo_ss(X_AXIS, ARG2)
       DO 400 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
 
+         k1 = arg_lo_ss(Z_AXIS,ARG1)
          k2 = arg_lo_ss(Z_AXIS,ARG2)
          DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
+            l1 = arg_lo_ss(T_AXIS,ARG1)
             l2 = arg_lo_ss(T_AXIS,ARG2)
             DO 200 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-               j2 = arg_lo_ss(Y_AXIS,ARG2)
+               j1 = arg_lo_ss(Y_AXIS,ARG1)
                DO 100 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
 *  Get the index to sample, whichever axis of arg_1 it is on.
 
-                  CALL pickindex(arg_1, j, aorder)
+                   aorder = arg_1(i1,j1,k1,l1)
+                   IF (j1 .EQ. unspecified_int4) 
+     .                  CALL pickindex(arg_1, j, aorder)
                   jorder = aorder
 
 *  Check that we do have an index of ARG_2; set the result
@@ -211,17 +221,19 @@
                      END IF
                   END IF
 
-                  j2 = j2 + arg_incr(Y_AXIS,ARG2)
+                  j1 = j1 + arg_incr(Y_AXIS,ARG1)
  100           CONTINUE
 
+               l1 = l1 + arg_incr(T_AXIS,ARG1)
                l2 = l2 + arg_incr(T_AXIS,ARG2)
  200        CONTINUE
 
-            j2 = j2 + arg_incr(Z_AXIS,ARG2)
+            k1 = k1 + arg_incr(Z_AXIS,ARG1)
+            k2 = k2 + arg_incr(Z_AXIS,ARG2)
  300     CONTINUE
 
+         i1 = i1 + arg_incr(X_AXIS,ARG1)
          i2 = i2 + arg_incr(X_AXIS,ARG2)
-
  400  CONTINUE
       RETURN 
 

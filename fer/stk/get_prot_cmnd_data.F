@@ -1,7 +1,5 @@
-	SUBROUTINE GET_PROT_CMND_DATA ( memory, dflt_cx, status )
+	SUBROUTINE GET_PROT_CMND_DATA ( memory, dflt_cx, dtype, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -86,6 +84,8 @@
 * V500:  1/99 - allowing strings in quoble quotes requires fix to quote
 *		handling as in LIST "hello"
 *		Added call to ALL_1_ARG
+* V530: *sh* 9/00 - added data type ad an argument
+*		  - increased size of "last" stored command
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -106,14 +106,13 @@
 #endif
 
 * calling argument declarations
-	INTEGER	dflt_cx, status
+	INTEGER	dflt_cx, dtype, status
 	REAL	memory(*) 
 
 * local variable declarations
-	INTEGER		cmnd_mods_cx, start, end, nu, uvar, next_start,
-     .			cx_expr, mr, laslen
+	INTEGER		TM_LENSTR1, nu, cx_expr, laslen
 	DATA	 	laslen/200/
-	CHARACTER	EXPR_NAME*8, last*200
+	CHARACTER	EXPR_NAME*8, VAR_CODE*32, last*2048, buff*32
 
 * for compilers that put variables on stacks:
 * not for f90 *kob* 12/96
@@ -171,6 +170,11 @@
      .			      EXPR_NAME(nu), status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
+* check for legal data type
+	   IF ( dtype .NE. ptype_native ) THEN
+	      IF (mr_type(is_mr(nu)) .NE. dtype ) GOTO 5100
+	   ENDIF
+
 ! temp diagnostic
 	   IF ( cx_stack_ptr .NE. cx_cmnd+nu ) WRITE (6,*) 'get_cmnd_???'
  300	CONTINUE
@@ -181,4 +185,12 @@
 
 * error exit
  5000	RETURN
+ 5100	buff = VAR_CODE(mr_category(is_mr(nu)),mr_variable(is_mr(nu)))
+* ... copied from INTERP_STACK error exit ... probably over-kill
+	CALL RELEASE_WORK_SPC
+        CALL DELETE_MRS_IN_PROGRESS
+        CALL UNPROTECT_ALL_MRS
+        CALL DEALLO_ALL_GRIDS
+        CALL CLEAN_STACK
+	CALL ERRMSG( ferr_data_type, status,buff(:TM_LENSTR1(buff)), *5000 )
 	END

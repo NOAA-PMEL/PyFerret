@@ -1,18 +1,4 @@
 	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
-C**
-
-C**    @(#)pplcmd.F   1.4    11/8/88 !Mod added 12.6.88 JD
-C**    @(#)pplcmd.F   1.3     9/8/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -46,7 +32,20 @@ C**
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
+
+C**
+
+C**    @(#)pplcmd.F   1.4    11/8/88 !Mod added 12.6.88 JD
+C**    @(#)pplcmd.F   1.3     9/8/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
 *       Modified 8.12.88 J Davison TMAP/JISAO/PMEL   
 *       to include SHADE command.                    
 *	J Davison 11.28.88 Modified for compatibility to v1.1 PPL
@@ -67,6 +66,8 @@ C**
 *	J Davison 01.25.94 Mod to call PPLGFLUSH to flush output at each call
 *	J Davison 11.19.95 Mod for 4 digit year capability
 *	J Davison 11.29.95 Mod for century axis
+*	J Davison 10.15.98 Mod for pattern support: PATSET
+*       *jd* VVV  02.16.99 Mod to bring two versions of PPLCMD in line VVV
 *	S Hankin  11.25.97 Mod to add commands PLOTPOL and FILLPOL
 *       kob 9.98 - add external statement to force linker to find
 *                  block data statments
@@ -155,6 +156,7 @@ c
 	include 'pplv11inc/PRMCOM.INC'
 	include 'tmap_pplv11inc/gkscm2.cmn'
         include 'pplv11inc/ARFILL.INC'
+
 #else
         INCLUDE 'TMAP_PPLV11INC:tmap_comepl.inc'  ! Added 9.6.88 J Davison 
 	INCLUDE 'TMAP_PPLV11INC:tmap_comeps.inc'
@@ -281,7 +283,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,LABOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(109)*7
+	CHARACTER COMM(110)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -304,7 +306,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
-     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL'/
+     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -398,7 +400,7 @@ C
 	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
 	IF (DONEF) RETURN
 
-	DO 20 I=1,109
+	DO 20 I=1,110
 	    IF(ICOM.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -429,7 +431,8 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
-     *	9150,9160,9170,9180,9190,98,  9191,9380,9171,9172,9173),I
+     *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
+     *  9174),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -440,7 +443,8 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
-     *	9150,9160,9170,9180,9190,98,  9191,9380,9171,9172,9173),I
+     *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
+     *  9174),I
         end if
         goto 10
 
@@ -1518,6 +1522,7 @@ c       area
         endif
         if(iflg2)cangle=p(2)
         GOTO 6001
+
  9172	makep='PLOTPOL'
         if(iflg1)then
             ivcomp=p(1)
@@ -1526,6 +1531,7 @@ c       area
         endif
         if(iflg2)cangle=p(2)
         GOTO 6001
+
  9173	makep='FILLPOL'
         if(iflg1)then
             ivcomp=p(1)
@@ -1534,6 +1540,10 @@ c       area
         endif
         if(iflg2)cangle=p(2)
         GOTO 6001
+
+ 9174	call pattern_set
+	goto 10
+
 #ifdef unix
 9180    continue
 #else

@@ -109,17 +109,19 @@ $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
 ! Draw any lines outside 0 to 360
 
+set mode verify
 IF `landi_addx NE 0` THEN 
-   $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_addx, CONTINENT_LAT
+   plot/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_addx, CONTINENT_LAT
    ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
-   $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot/overlay"
+   ppl plot/overlay
 ENDIF
 
 IF `landi_subx NE 0` THEN 
-   $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_subx, CONTINENT_LAT
+   plot/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_subx, CONTINENT_LAT
    ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
-   $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot/overlay"
+   ppl plot/overlay
 ENDIF
+can mode ver
 
 ! **** now the optional country borders
 $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" COUNTRY_LON, COUNTRY_LAT

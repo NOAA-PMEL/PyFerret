@@ -68,7 +68,8 @@
 *	*sh* 4/99 - bug fix: 2/99 2nd pass check "need_another_pass" state
 *		is lost is a component is fetched afterwards. Instead, save
 *		this state as a negative is_phase
-
+*       *kob* 4/99 - bug fix: using /d in the definition of a dataset
+*                    independent variable caused a crash.
 * calling argument declarations:
 	INTEGER	status
 * normal return is for error conditions
@@ -312,7 +313,12 @@
 	      uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
 	   ELSE		! defined with LET/D
 !	      uvar_need_dset(uvar) = .TRUE.	! always TRUE anyway
-	      uvar_grid(uvar, dset) = mgrid_abstract
+* *kob* 4/99 bug fix - check to see if let/d is dataset independent
+	      IF (dset .EQ. unspecified_int4) THEN
+		 uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
+              ELSE
+                 uvar_grid(uvar, dset) = mgrid_abstract
+	      ENDIF
 	   ENDIF
 	   gnum = mgrid_abstract
 	   GOTO 2000

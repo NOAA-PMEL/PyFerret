@@ -363,8 +363,8 @@
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
                    CALL SHOW_LINE( line, .NOT.brief )
 	           DO 405 i2 = 1, 4
-	             IF ( qual_given( slash_show_grid_x0+i2 ) .GT. 0
-     .              .OR.  qual_given( slash_show_grid_i0+i2 ) .GT. 0 ) THEN
+	             IF (qual_given( slash_show_grid_x0+i2).GT.0
+     .              .OR. qual_given( slash_show_grid_i0+i2).GT.0) THEN
                       grid_line(i2,tmp_grid) = line
                       CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
                     ENDIF

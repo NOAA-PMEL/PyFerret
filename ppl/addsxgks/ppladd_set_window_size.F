@@ -58,11 +58,7 @@
 	   call gswkvp (wsid,xmin,xmax,ymin,ymax)
 	endif
 #elif xgks
-	IF (batch) THEN
-	   write (6,*) "Need to output window size to metafile!"
-	ELSE
-	   call resize_xgks_window (wsid,xmax-xmin,ymax-ymin)
-	ENDIF
+	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin)
 #else
 	call gswkvp (wsid,xmin,xmax,ymin,ymax)
 #endif

@@ -311,10 +311,10 @@ static GIFmetafile *copy_meta(mf_cgmo *cgmo, GIFmetafile *old,
 static void xform(GIFmetafile *meta, float x, float y, int *xp, int *yp)
 {
   static int margin = 10;
-  int mindim = meta->sx > meta->sy ? meta->sy : meta->sx;
-  mindim -= 2 * margin;
-  *xp = x * mindim + margin;
-  *yp = meta->sy - y * mindim - margin;
+  int maxdim = meta->sx > meta->sy ? meta->sx : meta->sy;
+  maxdim -= 2 * margin;
+  *xp = x * maxdim + margin;
+  *yp = meta->sy - y * maxdim - margin;
 }
 
 

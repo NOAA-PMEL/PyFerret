@@ -5,11 +5,14 @@
 
 /* Changed include order of gks_implem.h to remove errors in compile (set 
  * **before** stdlib.h) for linux port *jd* 1.28.97
+ * More hacks to support batch mode (i.e. no display available) *js* 8.97
  */
 
 
 #include "udposix.h"
 #include "gks_implem.h"
+#include "cgm/cgm.h"
+#include "cgm/cgm_implem.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -45,10 +48,16 @@ float *y;
 /*****************************************************************************/
 
   ws  = OPEN_WSID (*ws_id);
-  scr = DefaultScreen (ws->dpy);
+  if (ws->dpy){
+    scr = DefaultScreen (ws->dpy);
 
-  xf = ((float) DisplayWidth(ws->dpy,scr)) /((float) DisplayWidthMM(ws->dpy,scr));
-  yf = ((float) DisplayHeight(ws->dpy,scr))/((float) DisplayHeightMM(ws->dpy,scr));
+    xf = ((float) DisplayWidth(ws->dpy,scr)) /((float) DisplayWidthMM(ws->dpy,scr));
+    yf = ((float) DisplayHeight(ws->dpy,scr))/((float) DisplayHeightMM(ws->dpy,scr));
+  } else {
+    xf = 1280.0/361.0;		/* Standard 20" monitor width/size */
+    yf = 1024.0/289.0;
+  }
+
   ix = (*x)*1000.0*xf;
   iy = (*y)*1000.0*yf;
 
@@ -64,18 +73,24 @@ float *y;
     }
   gescsetdcsize (*ws_id, size);
 
-  XResizeWindow (ws->dpy,ws->win,ix,iy);
-
-
-  tp = &t_now;
-  t0 = time(0);
-
-  do { 
-       xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
-       time (tp);
-     } while (xw_event && (t_now - t0 < 3));
+  if (ws->dpy){
+    XResizeWindow (ws->dpy,ws->win,ix,iy);
+    tp = &t_now;
+    t0 = time(0);
+  
+    do { 
+      xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
+      time (tp);
+    } while (xw_event && (t_now - t0 < 3));
+  } else if (ws->ewstype == MO && ws->mf.cgmo->type == MF_GIF){
+    Gpoint nsize;
+    nsize.x = ix;
+    nsize.y = iy;
+    GIFresize(ws, nsize);
+  }
 
 }
+
 
 
 

@@ -1,0 +1,14 @@
+! bn542_bug_fixes.jnl
+! test various fixes that went into version 5.42
+! 10/02 *acm*
+!
+
+! Interior tics disappear on FILL plots
+GO bn_reset
+GO err541_fill_tics
+
+! non-Gregorian axes not properly defined when time steps
+! are used rather than date specifications
+GO bn_reset
+GO err541_non_gregorian
+

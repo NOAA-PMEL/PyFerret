@@ -5,8 +5,6 @@
      .				string,
      .				xaxrel, yaxrel )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -67,8 +65,9 @@
 * V420: 2/1/96  - *sh* If "string" is blank output "<ESC>@AC" to wipe out
 *		   previous label
 * V510: *sh8 3/00 - add DODS URL label
+* V533: *sh8 7/01 - if label contains single tic marks double them so PLOT+
+*		    doesn't try to interpret symbols
 
-#ifdef unix 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_setup.cmn'
@@ -76,14 +75,6 @@
 	include 'axis_inc.decl'	! axis lengths
 	include 'AXIS.INC'		! axis lengths
 	include 'xrisc.cmn'		! to fix RISC FORTRAN bug
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'	! axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC'		! axis lengths
-#endif
 
 * PLOT+ parameter fom PPLV11INC:PARAMPL5.DAT
 	INTEGER		nlabs
@@ -96,11 +87,12 @@
 
 * internal variable declarations:
 	INTEGER		flen, lsym, ii
-	CHARACTER	TM_FMT*4, font*3, labname(ppl_dset:ppl_dodsurl)*6
+	CHARACTER	TM_FMT*4, font*3, buf4*4,
+     .			labname(ppl_dset:ppl_dodsurl)*6
 	REAL 		xp, yp
 
 * local parameter declarations:
-	INTEGER		maxsym
+	INTEGER		maxsym, len_in, i
 	CHARACTER*1	esc
 	PARAMETER     ( esc = CHAR(27),
      .			maxsym = 102   )! max. symbol length for PPLUS (PPL bug)
@@ -113,9 +105,24 @@
      .	     labname(ppl_offset)/'OFFSET'/,
      .	     labname(ppl_dodsurl)/'DODS'/
 
-* initialize fixed length string for RISC
-	risc_buff = string
-	len_rbuff = MIN( size_rbuff, LEN(string) )
+* if label hass single tic marks double them so PLOT+ doesnt interpret symbols
+	IF ( INDEX(string,"'date'") .GT. 0 ) THEN
+* ... hack to let PLOT+ date time symbols be evaluated (using single tics)
+	  risc_buff = string
+	  len_in = MIN( size_rbuff, LEN(string) )
+	ELSE
+	  risc_buff = ' '
+	  len_in = MIN( size_rbuff-1, LEN(string) )
+	  len_rbuff = 0
+	  DO i = 1, len_in
+	    len_rbuff = len_rbuff+1
+	    risc_buff(len_rbuff:len_rbuff) = string(i:i)
+	    IF (string(i:i) .EQ. "'") THEN
+	      len_rbuff = len_rbuff+1
+	      risc_buff(len_rbuff:len_rbuff) = "'" ! 2 tics together
+	    ENDIF
+	  ENDDO
+	ENDIF
 
 * adjust positions relative to axis lengths if requested
 	xp = xpos
@@ -132,7 +139,7 @@
 	ENDIF
 
 * PPLUST symbols strings cannot exceed maxsym
-	lsym = MIN( maxsym, LEN(string) )
+	lsym = MIN( maxsym, len_rbuff )
 
 * select PLOT+ font
 	IF ( string .EQ. ' ' ) THEN
@@ -150,7 +157,7 @@
 * ... TITLE
 	   WRITE ( ppl_buff, 3200) labht, font//risc_buff(:len_rbuff)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-	   WRITE ( ppl_buff, 3500 ) 'TIT', string(:lsym)
+	   WRITE ( ppl_buff, 3500 ) 'TIT', risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ELSEIF ( labnum .EQ. ppl_xlab ) THEN
 * ... XLAB
@@ -158,7 +165,7 @@
      .			'XLAB '//font//risc_buff(:len_rbuff), 1, 1 )
 	   WRITE ( ppl_buff, 3300 ) labht
 	   CALL PPLCMD( from, line, 0, ppl_buff, 1, 1 )
-	   WRITE ( ppl_buff, 3500 ) 'X', string(:lsym)
+	   WRITE ( ppl_buff, 3500 ) 'X', risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ELSEIF ( labnum .EQ. ppl_ylab ) THEN
 * ... YLAB
@@ -166,7 +173,7 @@
      .			'YLAB '//font//risc_buff(:len_rbuff), 1, 1 )
 	   WRITE ( ppl_buff, 3400 ) labht
 	   CALL PPLCMD( from, line, 0, ppl_buff, 1, 1 )
-	   WRITE ( ppl_buff, 3500 ) 'Y', string(:lsym)
+	   WRITE ( ppl_buff, 3500 ) 'Y', risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ELSE
 * ... LABS (PLOT+ movable labels)
@@ -179,22 +186,22 @@
 	   WRITE ( ppl_buff, 3100 ) nlabs_on, labht
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 #ifdef NO_SNGL
-           risc_buff = TM_FMT(REAL(nlabs_on),3,3,flen)      ! for Unix/RISC
+           buf4 = TM_FMT(REAL(nlabs_on),3,3,flen)      ! for Unix/RISC
 #else
-           risc_buff = TM_FMT(SNGL(nlabs_on),3,3,flen)      ! for Unix/RISC
+           buf4 = TM_FMT(SNGL(nlabs_on),3,3,flen)      ! for Unix/RISC
 #endif
-	   WRITE ( ppl_buff, 3500 ) risc_buff(:flen), string(:lsym)
+	   WRITE ( ppl_buff, 3500 ) buf4(:flen),  risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 * ... define a PLOT+ symbol containing the label number "SET LABNUM_X 4"
 *	or LABNUM_DSET, LABNUM_YEAR, etc.
 	   ii = ppl_movlab - labnum
 	   IF ( ii.GE.1 .AND. ii.LE.4 ) THEN
 	      WRITE ( ppl_buff, 3500 )
-     .			"num_"//ww_dim_name(ii), risc_buff(:flen)
+     .			"num_"//ww_dim_name(ii), buf4(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   ELSEIF ( ii.GE.ppl_dset  .AND. ii.LE.ppl_dodsurl ) THEN
 	      WRITE ( ppl_buff, 3500 )
-     .			"num_"//labname(ii), risc_buff(:flen)
+     .			"num_"//labname(ii), buf4(:flen)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   ENDIF
 	ENDIF

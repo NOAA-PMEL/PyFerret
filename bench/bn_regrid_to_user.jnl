@@ -1,5 +1,7 @@
 ! bn_regrid_to_user
 ! 8/99 *sh*
+! 5/01 *sh* - changes to accomodate truncated levitus_climatology.cdf
+!           - additions to test use of expressions in SET/SHOW/DEFINE grid
 
 ! test various regridding combos that involve user-defined variables
 ! for the target grids
@@ -13,18 +15,23 @@ let b = sst + 1		! data set unspecified
 DEFINE AXIS/Y=20s:20n:.5/units=degrees yax
 DEFINE GRID/like=sst[d=coads_climatology]/y=yax gg
 
+! reference data
+list/x=158e:161e/y=6s:4s temp[d=2,k=1]
+
 ! basic regrid (implicit grid -- sst and temp geometries are mismatched)
-list/x=180/y=0 temp[d=2,k=1,g=a[d=1]]
+list/x=160e/y=5s temp[d=2,k=1,g=a[d=1]]
 show grid
 
 ! per axis regrid
-list/x=180/y=0 temp[d=2,k=1,gx=a[d=1],gy=yax]
-list/x=180/y=0 temp[d=2,k=1,gy=yax,gx=a[d=1]]
+! 5/01 note: changed from y=0 yo y=5s to accomodate Y-truncated
+! levitus_climatology.cdf
+list/x=160e/y=5s temp[d=2,k=1,gx=a[d=1],gy=yax]
+list/x=160e/y=5s temp[d=2,k=1,gy=yax,gx=a[d=1]]
 show grid
 
 ! combined full grid and per-axis
-list/x=180/y=0 temp[d=2,k=1,g=gg,gx=a[d=1]]
-list/x=180/y=0 temp[d=2,k=1,gx=a[d=1],g=gg]
+list/x=160e/y=5s temp[d=2,k=1,g=gg,gx=a[d=1]]
+list/x=160e/y=5s temp[d=2,k=1,gx=a[d=1],g=gg]
 show grid
 
 ! pseudo-variable access
@@ -57,17 +64,17 @@ set grid g
 show grid
 
 ! The SET GRID (default) definition should be protected -- not altered
-load/d=coads_climatology sst[y=-10:10:.1,l=1,x=180]
+load/d=coads_climatology sst[y=-10:10:.1,l=1,x=160e]
 show grid
 show grid/dynamic
 
 ! deliberate errors
 set mode ignore
-load/x=180/y=0 temp[d=2,k=1,g=no_exist]	! non-existent target variable
+load/x=160e/y=5s temp[d=2,k=1,g=no_exist]	! non-existent target variable
 let v2 = temp[d=2,k=1,gx=a[d=1],gy=yax]
-load/x=180/y=0 v2
+load/x=160e/y=5s v2
 cancel variable a
-load/x=180/y=0 v2		! non-existent target grid
+load/x=160e/y=5s v2		! non-existent target grid
 set mode/last ignore
 
 ! 12/99
@@ -86,3 +93,21 @@ list a1[gx=a2]
 list a1[gxy=a2]
 list a1[gzxy=a2]
 list a1[gxz=a2]
+
+! 6/01
+! test use of expressions in dynamic grid commands
+SHOW GRID temp[d=2,gx=sst[d=1],y=10s:2s:.2]             ! implicit Y axis
+SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5"
+SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
+SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
+SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]),SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])  
+
+load/x=160e/y=5s temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5
+SHOW GRID
+SET GRID  FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) + 5
+SHOW GRID
+list/j=1:5 j
+DEFINE GRID/LIKE="temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5" mygrid
+SHOW GRID MYGRID
+SHOW GRID/DYNAMIC
+

@@ -1,4 +1,4 @@
-\cancel mode verify
+!\cancel mode verify
 ! scalemark.jnl
 ! 6/99 *sh*
 
@@ -7,8 +7,8 @@
 ! This script is particularly designed to be a companion for trackplot.jnl
 ! See trackplot_demo for examples.
 
-! Usage:              $1   $2     $3     $4     $5        $6         $7
-! yes?  GO scalemark xloc yloc [value] [user] [label] [units/in] [line no.] 
+! Usage:              $1   $2     $3     $4     $5        $6         $7        $8
+! yes?  GO scalemark xloc yloc [value] [user] [label] [units/in] [baseline] [line no.] 
 ! $1 - X coordinate of the lower left hand corner of the scale marker
 ! $2 - Y coordinate of the lower left hand corner of the scale marker
 ! $3 - [optional] magnitude (range) in data units to be shown by the scale.
@@ -19,7 +19,10 @@
 !		Default = magnitude as text
 ! $6 - [optional] units/inch to be shown by scale
 !		Default normally pre-set by the trackplot command
-! $7 - [optional] line number (style) to match on the screen.
+! $7 - [optional] baseline (a.k.a. offset) of variable plotted
+!		(e.g. value represented by plot crossing the trackline)
+!		Default =  normally pre-set by the trackplot command
+! $8 - [optional] line number (style) to match on the screen.
 !		Default = 1 (use if one line was drawn in the last plot command)
 
 ! example
@@ -52,9 +55,14 @@ ENDIF
 IF $5"0|*>1" THEN
    DEFINE SYMBOL SMKlabel = $5
 ELSE
-   DEFINE SYMBOL SMKlabel = @AC`SMKmagnitude`
+   DEFINE SYMBOL SMKlabel = `SMKmagnitude`
 ENDIF
-LET/QUIET SMKline = $7"1"
+IF $7"0|*>1" THEN
+   LET/QUIET SMKoffset = $7
+ELSE
+   LET/QUIET SMKoffset =  ($TRACKPLOToffset"0")
+ENDIF
+LET/QUIET SMKline = $8"1"
 
 ! size of label text (inches)
 LET/QUIET SMKtxt_size = 0.1
@@ -66,23 +74,25 @@ IF  $4"0|USER>1|*>0"  THEN
    LET/QUIET SMKmap_yscale =   (($yaxis_max)-(($yaxis_min)))/ ($ppl$ylen)  ! degrees/inch
    LET/QUIET SMKvsize =  SMKmap_yscale * SMKmagnitude/SMKunitsperinch	! vertical   size
 ! ... I-beam
-   PPL ALINE `SMKline`,$1,$2,`$1+SMKhsize`,$2				 ! bottom
-   PPL ALINE `SMKline`,`$1+SMKhsize/2`,$2,`$1+SMKhsize/2`,`$2+SMKvsize`
-   PPL ALINE `SMKline`,$1,`$2+SMKvsize`,`$1+SMKhsize`,`$2+SMKvsize` ! top
-! ... label
+   PPL ALINE `SMKline`,$1,$2,`$1+SMKhsize*2`,$2				 ! bottom
+   PPL ALINE `SMKline`,`$1+SMKhsize`,$2,`$1+SMKhsize`,`$2+SMKvsize`
+   PPL ALINE `SMKline`,`$1+SMKhsize*0.5`,`$2+SMKvsize`,`$1+SMKhsize*1.5`,`$2+SMKvsize` ! top
+! ... labels
    LET/QUIET SMKtxt_height = SMKtxt_size * SMKmap_yscale
-   LABEL `$1+SMKhsize*1.5`,`$2+SMKvsize/2-SMKtxt_height/2`,-1,0,`SMKtxt_size` "($SMKlabel)"
+   LABEL `$1+SMKhsize*2.1`,`$2+SMKvsize/2-SMKtxt_height/2`,-1,0,`SMKtxt_size` "($SMKlabel)"
+   LABEL `$1+SMKhsize*2.4`,`$2-SMKtxt_height*0.4`,-1,0,`SMKtxt_size*0.8` "`SMKoffset`"
 
 ELSE
 ! using inches
    LET/QUIET SMKhsize = 0.01 * ($ppl$xlen)		! horizontal size
    LET/QUIET SMKvsize = SMKmagnitude/SMKunitsperinch	! vertical   size
 ! ... I-beam
-   PPL ALINE/NOUSER `SMKline`,$1,$2,`$1+SMKhsize`,$2				 ! bottom
-   PPL ALINE/NOUSER `SMKline`,`$1+SMKhsize/2`,$2,`$1+SMKhsize/2`,`$2+SMKvsize`
-   PPL ALINE/NOUSER `SMKline`,$1,`$2+SMKvsize`,`$1+SMKhsize`,`$2+SMKvsize` ! top
-! ... label
-   LABEL/NOUSER `$1+SMKhsize*1.5`,`$2+SMKvsize/2-SMKtxt_size/2`,-1,0,`SMKtxt_size` "($SMKlabel)"
+   PPL ALINE/NOUSER `SMKline`,$1,$2,`$1+SMKhsize*2`,$2				 ! bottom
+   PPL ALINE/NOUSER `SMKline`,`$1+SMKhsize`,$2,`$1+SMKhsize`,`$2+SMKvsize`
+   PPL ALINE/NOUSER `SMKline`,`$1+SMKhsize*0.5`,`$2+SMKvsize`,`$1+SMKhsize*1.5`,`$2+SMKvsize` ! top
+! ... labels
+   LABEL/NOUSER `$1+SMKhsize*2.1`,`$2+SMKvsize/2-SMKtxt_size/2`,-1,0,`SMKtxt_size` "($SMKlabel)"
+   LABEL/NOUSER `$1+SMKhsize*2.5`,`$2-SMKtxt_size*0.4`,-1,0,`SMKtxt_size*0.8`  "`SMKoffset`"
 ENDIF
 
 ! clean up

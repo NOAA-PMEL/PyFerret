@@ -1,8 +1,7 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, grid, idim, recdim,
      .                             loss, hiss, ax_type, status )
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -59,6 +58,9 @@
 *                     a child axis
 * v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
 *                    name to 64 from 24 to match longer line_name
+* V530 *sh* 12/00 - avoid performance problems of switching between netCDF
+*	DEFINE and DATA mode by deferring actual coordinate writes until later
+
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -107,17 +109,15 @@ xx        include 'netcdf.decl'  ! untested
       LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, abstract, do_warn
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, NCDID, NCVID, NCDDEF, NCVDEF,
-     .        dimid, iaxis, axid, cdfstat, lo, hi, i, i100,
-     .        nlen, elen, axlen, slen, hilim, edgid, npts
+     .        dimid, iaxis, axid, cdfstat, lo, hi,
+     .        nlen, elen, axlen, slen, edgid, npts
 !      INTEGER vartype, nvdims, vdims(6), nvatts
-      REAL*8 buff(100)
 !      LOGICAL condensed
 !      REAL rlen
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
 *                    name to 64 from 24 to match longer line_name
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
      .          name*64, units*48
-      REAL*8 TM_WORLD
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
       INTEGER maxchildlen
@@ -253,38 +253,27 @@ xx        include 'netcdf.decl'  ! untested
      .             'even', cdfstat )
         ELSE
 * sub-span axis may not have irregular spacing just cuz parent does
-           IF ( ax_type .EQ. pcdf_full_span ) THEN
+* 12/00 NO. ... regular appearing coordinates are not necessarily regular --
+*       for example 2 points extracted from an irregular axis will always
+*	appear to be regular, but their box limits are not necessarily so
+           IF ( ax_type .EQ. pcdf_full_span
+     .     .OR. ax_type .EQ. pcdf_sub_span ) THEN
               CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 6,
      .             'uneven', cdfstat )
            ENDIF
         ENDIF
 
-* put CDF into data mode so coordinates can be written
-      CALL CD_SET_MODE(cdfid, pcd_mode_data, status)
-      IF ( status .NE. merr_ok ) RETURN
+* set up for deferref writing of coordinate values (12/00)
+	CALL CD_DEFER_COORD_WRITE(axid, grid, idim, lo, hi,
+     .				  pcd_defer_points)
 
-* write the coordinates (buffer 100 at a time)
-!        IF ( condensed ) THEN
-!           buff(1) = TM_WORLD(    1, grid, idim, box_middle )
-!           buff(2) = TM_WORLD( npts, grid, idim, box_middle )
-!           CALL NCVPT(cdfid,axid,1,2,buff,cdfstat)
-!        ELSE
-           DO 110 i100 = lo, hi, 100
-              hilim = MIN(i100+99, hi)
-              DO 100 i = i100, hilim
- 100          buff(i-i100+1) = TM_WORLD( i, grid, idim, box_middle )
-              CALL NCVPT(cdfid,axid,i100-lo+1,hilim-i100+1,buff,cdfstat)
- 110       CONTINUE
-!        ENDIF
-!        CALL NCREDF( cdfid, cdfstat )    ! removed 10/92
       ENDIF
 
 * does it need axis box edge definitions ?
-      IF (   ax_type .EQ. pcdf_full_span
+      IF (  (ax_type .EQ. pcdf_full_span
+     .  .OR. ax_type .EQ. pcdf_sub_span)
      ..AND. .NOT.line_regular(iaxis)
      ..AND. .NOT.recdim ) THEN
-* ... put CDF into define mode so attributes can be written
-         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
          IF ( status .NE. merr_ok ) RETURN
          name = name(:nlen)//'edges'
          elen = nlen + 5
@@ -294,20 +283,11 @@ xx        include 'netcdf.decl'  ! untested
 * ... point to it from axis coordinates definition
          CALL NCAPTC( cdfid, axid, 'edges', NCCHAR, elen,
      .                name(:elen), cdfstat )
-* ... write the edge locations (buffer 100 at a time)
-* ... put CDF into data mode so coordinates can be written
-         CALL CD_SET_MODE(cdfid, pcd_mode_data, status)
-         IF ( status .NE. merr_ok ) RETURN
-         DO 210 i100 = lo, hi, 100
-         hilim = MIN(i100+99, hi)
-         DO 200 i = i100, hilim
- 200       buff(i-i100+1) = TM_WORLD( i, grid, idim, box_lo_lim )
-           CALL NCVPT(cdfid,edgid,i100-lo+1,hilim-i100+1,buff,cdfstat)
- 210     CONTINUE
-* ... tag on the upper bound of the top grid box
-         buff(1) = TM_WORLD( hi, grid, idim, box_hi_lim )
-         CALL NCVPT1(cdfid,edgid,axlen+1,buff,cdfstat)
-!         CALL NCREDF( cdfid, cdfstat )
+
+* set up for deferref writing of edge coordinate values (12/00)
+	CALL CD_DEFER_COORD_WRITE(edgid, grid, idim, lo, hi,
+     .				  pcd_defer_edges)
+
       ENDIF
 
 * successful completion

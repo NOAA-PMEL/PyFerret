@@ -53,6 +53,9 @@
 * 		strings, ie 'ijkl', for linux f90....
 * v4.91 *kob* - increase size of CD_CHILDAX_NAME,CD_AXIS_NAME lname from
 *               16 to 24
+* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
+*          cdfname, vname and gname to 64 from 24 to match longer line_name
+
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
 *     varname - name of variable
@@ -106,10 +109,10 @@ xx        include 'netcdf.decl'  ! untested
      .        dimid(4), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(6), nvatts, nlen, glen, vlen, ax_type,
      .        lo2(4), hi2(4), what_recdim
-* *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME*16, lname*16
-*          to 24 from 16 
-      CHARACTER CD_CHILDAX_NAME*24, CD_AXIS_NAME*24, lname*24,
-     .		cdfname*24, vname*24, gname*24
+* *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
+*          cdfname, vname and gname to 64 from 24
+      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64, lname*64,
+     .		cdfname*64, vname*64, gname*64
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       CHARACTER*1     dimnam(4)

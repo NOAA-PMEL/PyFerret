@@ -7,7 +7,7 @@
 # Mod 05.97 *jd* add AIX-required environment var XLFRTEOPTS
 # *jd* 4.27.99  - add FER_WEB_BROWSER
 # *jd* 4.27.99  - add FER_EXTERNAL_FUNCTIONS
-
+# *kob* 5.99 - change dir for FER_EXTERNAL_FUNCTIONS
 #
 # If you are installing FERRET for the first time at your site we ask
 # that you please notify us with an Internat mail message to
@@ -57,7 +57,7 @@
 #  Default Ferret document browser
    export FER_WEB_BROWSER="netscape -ncols 60"
 
-   export FER_EXTERNAL_FUNCTIONS="$FER_DIR/ext_func"
+   export FER_EXTERNAL_FUNCTIONS="$FER_DIR/ext_func/libs"
 
    export FER_GO=". $FER_DIR/go $FER_DIR/examples $FER_DIR/contrib"
 

@@ -39,6 +39,9 @@
 * V530: 8/00 *sh* added variable mr_c_pointer and mr_type
 * 	10/00 *sh* - increased max_intrp to support more complex commands
 *		     and uvar_text_len to support longer expressions
+* V533: 6/01 *sh* added variable mr_delta
+*	7/01 *sh* added variable uvar_data_type
+* V534: 9/01 *sh* doubled default memory size
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -123,6 +126,7 @@
 *	uvar_item_start	- positions in text for starts of item text substrings
 *	uvar_item_end	- positions in text for ends   of item text substrings
 *	uvar_grid	- defining grid for the expression
+*	uvar_data_type	- data type for the expression
 *	uvar_need_dset  - flag if the uvar def'n is independent of dset
 *	uvar_given	- indicate degree to which definition of uvar specifies
 *			  limits along each axis
@@ -160,7 +164,7 @@
 	PARAMETER     ( max_mrs   = 151,
      .			dummy_mr  = max_mrs,
      .			max_mr_avail = max_mrs - 1,
-     .			pmem_blk_size   = 160*100*4 / 10,  ! added "*4" 1/25/94
+     .			pmem_blk_size = 2*(160*100*4/10), !2* 9/01 see ferret.h
      .			pmax_mem_blks   = 500,
      .			pmv_npiles     = 11,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,
@@ -193,6 +197,7 @@
 	COMMON / XMR / 
      .		mr_lo_ww	( 4, max_mrs ),
      .		mr_hi_ww	( 4, max_mrs ),
+     .		mr_delta	( 4, max_mrs ),
      .		mr_c_pointer    ( max_mrs ),
      .		uvar_lo_ww	( 4, max_uvar ),
      .		uvar_hi_ww	( 4, max_uvar ),
@@ -239,6 +244,7 @@
      .		uvar_need_dset	 ( max_uvar ),
      .		uvar_parent	 ( max_uvar ),
      .		uvar_grid	 ( max_uvar, 0:max_gfdl_dsets ),
+     .		uvar_data_type	 ( max_uvar, 0:max_gfdl_dsets ),
      .		uvar_item_start	 ( max_uvar_items, max_uvar ),
      .		uvar_item_end	 ( max_uvar_items, max_uvar ),
      .		uvar_item_type	 ( max_uvar_items, max_uvar ),
@@ -286,6 +292,7 @@
 
 	REAL*8		mr_lo_ww	,
      .			mr_hi_ww	,
+     .			mr_delta	,
      .			uvar_lo_ww	,
      .			uvar_hi_ww	,
      .			mr_c_pointer      ! see note
@@ -314,6 +321,7 @@
      .			uvar_by_ss
 	INTEGER		uvar_num_items  ,
      .			uvar_grid	,
+     .			uvar_data_type	,
      .			uvar_item_start	,
      .			uvar_item_end	,
      .			uvar_item_type	,

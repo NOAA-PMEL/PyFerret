@@ -51,7 +51,8 @@ void gescinqxattr();
 #endif
 
 /* memory configuration defaults */
-#define PMEM_BLK_SIZE (160*100*4/10)
+/* NOTE!! PMEM_BLK_SIZE must match pmem_blk_size in xvariables.cmn */
+#define PMEM_BLK_SIZE 2*(160*100*4/10)  /*  2* 9/01 *sh* */
 #define PMAX_MEM_BLKS 500
 
 /* from XPROG_STATE COMMON */

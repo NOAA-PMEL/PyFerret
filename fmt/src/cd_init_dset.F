@@ -14,6 +14,7 @@
 *    status - return status
 * 11/97 *kob* - added a close on the cdfid for the netcdf file for
 *               mc datasets only.  
+* 4/98 *kob* - need to explicitely declare istat
 
 * argument declarations:
 	INTEGER	dset, status
@@ -39,7 +40,7 @@
 #endif
 
 * local variable declarations:
-      INTEGER cdfid, remote_dods_id
+      INTEGER cdfid, remote_dods_id,istat
       CHARACTER*16 temp_axnams(4,max_temp_grid)
       LOGICAL reversed(0:max_lines)
 

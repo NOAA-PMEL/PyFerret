@@ -122,6 +122,8 @@
 *                    IF (no_x_rng .AND. (valx1.EQ.bad_val4) )
 * v5.5 *acm* 11/02  Set PPLUS memory for the pixel array used by cellarray 
 *                   in SHADE plots
+*      *acm* 12/02  When setting has_time_axis flag, only do it if an
+*                   axis being used IS a time axis
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -470,7 +472,7 @@ C   set up memory for the flag grid
 	   haxlo = xaxlo	! save limits so overlays
 	   haxhi = xaxhi	! will know them
 
-	   time_axis = GEOG_LABEL( dim1, grid )
+	   time_axis = GEOG_LABEL( dim1, grid )  .AND. (dim1 .EQ. 4) 
 
 	   has_time_axis = time_axis	! save for PLOT/VS/OVERLAY (6/99)
            IF (time_axis) THEN
@@ -528,6 +530,8 @@ C   set up memory for the flag grid
 	   vaxhi = yaxhi	! will know them
 
 	   time_axis = GEOG_LABEL( dim2, grid )
+	   time_axis = GEOG_LABEL( dim2, grid )  .AND. (dim2 .EQ. 4) 
+
 	   has_time_axis = has_time_axis .OR. time_axis ! 6/99
 
 C ACM added 8/2001 save cal id if vertical time axis

@@ -1,0 +1,13 @@
+!
+!  Data coads_vwnd in ~kobrien/FERRET/benc
+!
+use coads_vwnd
+set region/x=180/y=0
+
+let my_vwnd = samplet_date(vwnd,1947,5,16,12,0,0)
+list my_vwnd
+
+
+let my_vwnd = samplet_date(vwnd,{1947,1952},{5,2},{16,15},{12,12},{0,0},{0,0})
+list my_vwnd
+

@@ -7,6 +7,8 @@ compressi_by.F\
 compressj_by.F\
 compressk_by.F\
 compressl_by.F\
+copyscat.F\
+day_of_year.F\
 eof_space.F\
 eof_stat.F\
 eof_tfunc.F\
@@ -14,6 +16,12 @@ eofsubs.F\
 fftsubs.F\
 ffta.F\
 fftp.F\
+gausswt.F\
+modscat.F\
+mrgrnk.F\
+nobad.F\
+pickindex.F\
+pickoutxyz.F\
 sampleij.F\
 samplet_date.F\
 samplexy.F\
@@ -35,11 +43,3 @@ sortk.F\
 sortl.F\
 tauto_cor.F\
 xauto_cor.F\
-day_of_year.F\
-gausswt.F\
-nobad.F\
-copyscat.F\
-modscat.F\
-mrgrnk.F\
-pickindex.F\
-pickoutxyz.F

@@ -1,0 +1,11 @@
+! err560_shade_levels.jnl  *acm* 4/28/04
+! Missing levels on SHADE auto-level 
+
+! Fix for bug 801 went too far: shade levels need adjusting
+! (and were wrong always for negative levels)
+
+! Here is a simpler example (acm)
+set view upper; shade/i=1:10/j=1:10 i*j*0.0034   !levels only go up to 0.003
+set view lower; shade/i=1:10/j=1:10 -1*i*j*0.0034  
+
+can view

@@ -21,7 +21,7 @@
 *                       IMPLIED_BY_ARGS - same axis as the incoming argument
 *                       NORMAL          - the result is normal to this axis
 *                       ABSTRACT        - an axis which only has index values
-*
+* 
 * piecemeal_ok       For memory optimization:
 *                       axes where calculation may be performed piecemeal
 *                       ( YES, NO )

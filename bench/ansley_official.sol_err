@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     63921944 Nov 24 12:08 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
-Using external functions from  /home/ja9/tmap/ferret/solaris/ext_func/libs
+-rwxrwxrwx   1 ansley   tmap     63919632 Nov 30 12:20 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
+Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  fixes for bugs 1102 and 1098, with new benchmark scripts
+Note: fixes for bug 906, and 1108, size of key labels.  Also note 2 of the VP_ symbols have new names
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Nov 24 14:14:17 PST 2004
+Beginning at Tue Nov 30 13:27:39 PST 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -616,4 +616,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Nov 24 14:26:36 PST 2004
+Ended at Tue Nov 30 13:39:49 PST 2004

@@ -1,0 +1,68 @@
+#! /bin/bash
+# ferret_paths_template for those running the bash shell
+#
+# ferret_paths_template    11/91 & 4/92
+# Template for setting up the FERRET environment
+# updated for FERRET version 3 2/93 
+# Mod 10.93 *jd* fix for SunOS LD_LIBRARY_PATH
+# Mod 03.94 *jd* for XGKS - remove reference to ATCgks
+# Mod 05.97 *jd* add AIX-required environment var XLFRTEOPTS
+# *jd* 4.27.99  - add FER_WEB_BROWSER
+# *jd* 4.27.99  - add FER_EXTERNAL_FUNCTIONS
+# *kob* 5.99 - change dir for FER_EXTERNAL_FUNCTIONS
+# Thanks to Brent McDaniel 1/28/01 for bash template
+
+#
+# If you are installing FERRET for the first time at your site we ask
+# that you please notify us with an Internat mail message to
+# ferret@noaapmel.gov [192.68.161.0] (or call Steve Hankin at (206)526-6080)
+# - no strings attached.  Please specify if you would like to be on a mailing
+# list for FERRET updates.
+#
+# Modify this to suit your system and place the result as file `ferret_paths'
+# in another directory set up to hold login initialization scripts.
+# `/usr/local' is the suggested choice.
+# Users of FERRET should include the command 
+#  `source /usr/local/ferret_paths'
+# (or wherever you have located the ferret_paths file) in their .bash_profile.
+#
+# The environment variable FER_DIR should be the pathname of
+# the directory named `ferret' you created to install the FERRET software.
+
+# You may want to customize the pathname of the `ferret' directory:
+export FER_DIR=/usr/local/ferret
+
+# The environment variable FER_DSETS should be the pathname of
+# the directory named `fer_dsets' you created to install the FERRET program.
+
+# !!!! You must customize the following line:
+# This directory will contain FERRET demonstration data files (30+ Mbytes)
+export FER_DSETS=my_big_data_disk/fer_dsets
+
+
+
+# System Manager: Check this PATH modification for your system security.
+# If you prefer not to modify PATH here you may comment out the following few
+# lines and execute the file $FER_DIR/bin/install_ferret_links wich will
+# create ferret links in /usr/local/bin.
+export PATH="$PATH $FER_DIR/bin"
+# *** end of PATH modifications
+ 
+# =========== Initially make no modifications below this line ===========
+
+#  Default Ferret document browser
+export  FER_WEB_BROWSER="netscape -ncols 60"
+
+export FER_EXTERNAL_FUNCTIONS="$FER_DIR/ext_func/libs"
+
+export FER_GO=". $FER_DIR/go $FER_DIR/examples $FER_DIR/contrib"
+
+export   FER_DATA=". $FER_DSETS/data $FER_DIR/go $FER_DIR/examples $FER_DIR/contrib /data/ncep"
+export FER_DESCR=". $FER_DSETS/descr"
+export  FER_GRIDS=". $FER_DSETS/grids"
+
+export TMAP="$FER_DIR/fmt"
+export PLOTFONTS="$FER_DIR/ppl/fonts"
+export SPECTRA="$FER_DIR/ppl"         # for old ferret versions
+export FER_PALETTE=". $FER_DIR/ppl"       # palette search list
+

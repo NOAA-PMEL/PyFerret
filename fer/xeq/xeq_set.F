@@ -114,7 +114,8 @@
 *			 read because linux/nag f90 needed a format width.
 *          12/98 *js* - Disallow set mem command is in secure mode
 * V500:  4/28/99 *sh* - added SET AXIS/DEPTH 
-*	    5/99 *sh* - implemented SET DATA/ORDE=
+*	    5/99 *sh* - implemented SET DATA/ORDER=
+*	    8/99 *sh* - bug fix: adjust grid_use_count
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -664,6 +665,10 @@ c *kob* 4/97
 	   IF ( cx.EQ.0 .OR. cx.EQ.unspecified_int4 )	GOTO 5120
 	   grid = cx_grid( cx )
 	ENDIF
+* ... adjust the use count if this is a dynamic grid (8/99)
+	IF (grid .GT. max_grids) CALL TM_USE_DYN_GRID(grid)
+	IF (mgrid_abstract .GT. max_grids) 
+     .				CALL TM_DEALLO_DYN_GRID(mgrid_abstract)
 * ... eliminate all memory-resident user-defined vars and their uvar_grid 's
 	CALL PURGE_ALL_UVARS
 	mgrid_abstract = grid

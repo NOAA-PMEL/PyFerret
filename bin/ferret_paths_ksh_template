@@ -5,6 +5,8 @@
 # Mod 03.94 *jd* for XGKS - remove reference to ATCgks
 # Mod 03.95 *jd* to be used with ksh.  Initial fix, problems may exist
 # Mod 05.97 *jd* add AIX-required environment var XLFRTEOPTS
+# *jd* 4.27.99  - add FER_WEB_BROWSER
+# *jd* 4.27.99  - add FER_EXTERNAL_FUNCTIONS
 
 #
 # If you are installing FERRET for the first time at your site we ask
@@ -51,6 +53,11 @@
 # *** end of PATH modifications
  
 # =========== Initially make no modifications below this line ===========
+
+#  Default Ferret document browser
+   export FER_WEB_BROWSER="netscape -ncols 60"
+
+   export FER_EXTERNAL_FUNCTIONS="$FER_DIR/ext_func"
 
    export FER_GO=". $FER_DIR/go $FER_DIR/examples $FER_DIR/contrib"
 

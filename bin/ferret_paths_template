@@ -4,6 +4,9 @@
 # Mod 10.93 *jd* fix for SunOS LD_LIBRARY_PATH
 # Mod 03.94 *jd* for XGKS - remove reference to ATCgks
 # Mod 05.97 *jd* add AIX-required environment var XLFRTEOPTS
+# *jd* 4.27.99  - add FER_WEB_BROWSER
+# *jd* 4.27.99  - add FER_EXTERNAL_FUNCTIONS
+
 #
 # If you are installing FERRET for the first time at your site we ask
 # that you please notify us with an Internat mail message to
@@ -48,6 +51,11 @@
 # *** end of PATH modifications
  
 # =========== Initially make no modifications below this line ===========
+
+#  Default Ferret document browser
+   setenv FER_WEB_BROWSER "netscape -ncols 60"
+
+   setenv FER_EXTERNAL_FUNCTIONS "$FER_DIR/ext_func"
 
    setenv FER_GO    	". $FER_DIR/go $FER_DIR/examples $FER_DIR/contrib"
 

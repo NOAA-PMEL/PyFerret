@@ -100,9 +100,9 @@
 *                  Make another copy of cmnd_buff AFTER removal of enclosing parens
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
-* V552 *acm* 5/03  The v541 fix noted above introduced bug in symbol substitution
-*                  within REPEATS yes? def sym a 0; rep/i=1:3 (def sym a `i`; say ($a))
-*                  Fix in saving cmnd_copy.  Bugs 376 and 559 fixed.
+* V552 *acm* 6/03  The v541 fix noted above introduced bug in symbol substitution
+*                  within REPEATS: yes? def sym a 0; rep/i=1:3 (def sym a `i`; say ($a))
+*                  Fix in saving cmnd_copy.  Bugs 376 and 558 fixed.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in

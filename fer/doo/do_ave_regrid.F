@@ -1,6 +1,6 @@
 	SUBROUTINE DO_AVE_REGRID( cx_lims, axis, trans,
      .				  src, msrc, dst, mdst,
-     .				    work, itot )
+     .				  work, src_cx, dst_cx,  itot )
 
 *
 *
@@ -43,24 +43,22 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V230:  8/22/92 - based on DO_XYAVE_REGRID
+* V552:  4/04 *acm* - bug fix.  For @AVE and related transforms @SUM, etc.
+*                     send src_lo_ss and src_hi_ss for the range on the src
+*                     axis.  
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, trans, msrc, mdst, itot
+	INTEGER	cx_lims, axis, trans, msrc, mdst, itot, src_cx, dst_cx
 	REAL	src(*), dst(*), work(itot)
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	CALL AVE_REGRID_1_AXIS(   cx_lims, axis, trans,
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
      .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
      .			   src, msrc, dst, mdst,
-     .			   work(1), itot )
+     .			   work(1), src_cx, dst_cx, itot )
 
 	RETURN
 	END	

@@ -1,5 +1,5 @@
 	SUBROUTINE DO_XYAVE_REGRID( cx_lims, src, msrc, dst, mdst,
-     .				    work, iwork2, itot )
+     .				    work, src_cx, dst_cx, iwork2, itot )
 
 *
 *
@@ -43,24 +43,22 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 12/1/89 - 4D symmetrical version - regrid only 1 axis
+* V552:  4/04 *acm* - bug fix.  For @AVE and related transforms @SUM, etc.
+*                     send src_lo_ss and src_hi_ss for the range on the src
+*                     axis.  
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot
+	INTEGER	cx_lims, axis, msrc, mdst, iwork2, itot, src_cx, dst_cx
 	REAL	src(*), dst(*), work(itot)
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 	CALL XYAVE_REGRID( cx_lims,
      .			   cx_lo_ss(cx_lims,x_dim), cx_hi_ss(cx_lims,x_dim),
      .			   cx_lo_ss(cx_lims,y_dim), cx_hi_ss(cx_lims,y_dim),
-     .			   src, msrc, dst, mdst,
-     .			   work(1), work(iwork2) )
+     .			   src, msrc, dst, mdst, src_cx, dst_cx, 
+     .                     work(1), work(iwork2) )
 
 	RETURN
 	END	

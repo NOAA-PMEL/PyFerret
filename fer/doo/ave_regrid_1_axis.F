@@ -1,6 +1,7 @@
 	SUBROUTINE AVE_REGRID_1_AXIS( cx_lims, axis, trans,
      .				 dst_lox, dst_hix, dst_loy, dst_hiy,
-     .				 src, msrc, dst, mdst, ss21, wksize )
+     .				 src, msrc, dst, mdst, ss21, src_cx,
+     .                           dst_cx, wksize )
 
 *
 *
@@ -65,18 +66,13 @@
 *                  outside the destination indices, so ddist < 0.  Test
 *                  for this and only have a contribution to the avg from 
 *                  portions of the source axis that overlap the dest box.
+* v552  *acm* 4/03 Use src_lo_ss and src_hi_ss for the range on the src
+*                  axis, as a more complete fix of the above bug.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, trans, msrc, mdst,
@@ -88,7 +84,8 @@
 
 * local variable declarations:
 	INTEGER		dstss,srcss,src_grid,dst_grid,i,j,k,l
-	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib
+	INTEGER	     	srcss_lo,srcss_hi, dstss_lo,dstss_hi, ncontrib,
+     .                  src_cx, dst_cx
 
 	REAL		ddist, bad_src, bad_dst
 	REAL*8		TM_WORLD, TDEST_WORLD, sum, distance, dev,
@@ -103,6 +100,9 @@
 * limits for calculation
         srcss_lo = mr_lo_ss(msrc,axis)
         srcss_hi = mr_hi_ss(msrc,axis)
+
+c        srcss_lo = cx_lo_ss(src_cx,axis)
+c        srcss_hi = cx_hi_ss(src_cx,axis)
 
         dstss_lo = cx_lo_ss(cx_lims,axis)
         dstss_hi = cx_hi_ss(cx_lims,axis)

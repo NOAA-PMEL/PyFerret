@@ -1,7 +1,7 @@
 	SUBROUTINE XYAVE_REGRID( cx_lims,
      .				 dst_lox, dst_hix, dst_loy, dst_hiy,
      .				 src, msrc, dst, mdst,
-     .			         i21,j21)
+     .			         src_cx, dst_cx, i21,j21)
 
 *
 *
@@ -63,20 +63,21 @@
 *	along the X and Y axes
 * V314&V400: 9/94 - bug fix: GOTO 50 ==> GOTO 60 for missing source value
 
-#ifdef unix
+* v552: *acm* 4/03 In some cases the source indices include a range
+*                  outside the destination indices, so xdist or ydist < 0. 
+*                  Test for this and only have a contribution to the avg from 
+*                  portions of the source axis that overlap the dest box.
+*                  Also, use src_lo_ss and src_hi_ss for the range on the src
+*                  axis rather than mr_lo_ss and mr_hi_ss
+
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix, dst_loy, dst_hiy 
+	INTEGER	cx_lims, msrc, mdst, dst_lox, dst_hix, dst_loy, dst_hiy,
+     .          src_cx, dst_cx 
 	INTEGER	i21(dst_lox:dst_hix+1),
      .		j21(dst_loy:dst_hiy+1)
 
@@ -106,10 +107,16 @@
 	need_cos = GEOG_COS_FACTOR( dim2, dst_grid )
 
 * limits for calculation
-        isrc_lo = mr_lo_ss(msrc,dim1)
-        isrc_hi = mr_hi_ss(msrc,dim1)
-        jsrc_lo = mr_lo_ss(msrc,dim2)
-        jsrc_hi = mr_hi_ss(msrc,dim2)
+c        isrc_lo = mr_lo_ss(msrc,dim1)
+c        isrc_hi = mr_hi_ss(msrc,dim1)
+c        jsrc_lo = mr_lo_ss(msrc,dim2)
+c        jsrc_hi = mr_hi_ss(msrc,dim2)
+
+
+        isrc_lo = cx_lo_ss(src_cx,dim1)
+        isrc_hi = cx_hi_ss(src_cx,dim1)
+        jsrc_lo = cx_lo_ss(src_cx,dim2)
+        jsrc_hi = cx_hi_ss(src_cx,dim2)
 
         idst_lo = cx_lo_s1(cx_lims)
         idst_hi = cx_hi_s1(cx_lims)
@@ -121,6 +128,7 @@
         bad_dst = mr_bad_data(mdst)
 
 * determine the source grid boxes containing the destination box edges
+
 	CALL GET_AVE_LIMS( isrc_lo, isrc_hi, src_grid,
      .			   idst_lo, idst_hi, dst_grid,
      .			   dim1, i21 )
@@ -176,9 +184,11 @@
 	      xdist   = AXIS_DISTANCE( xsrc_lo, xsrc_hi, dim1, src_grid )
 
 * ... contribution from this source box
-	      darea = ydist*(cos_fact*xdist)
-	      area  = area + darea
-	      sum   = sum  + darea * src(isrc, jsrc, k, l)
+              IF (xdist .gt. 0.  .AND.  ydist .GT. 0) THEN
+ 	         darea = ydist*(cos_fact*xdist)
+	         area  = area + darea
+	         sum   = sum  + darea * src(isrc, jsrc, k, l)
+              ENDIF
 
  50	      CONTINUE
  51	   CONTINUE

@@ -57,8 +57,11 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * 5/99 *sh* (V5.0) - implement strides, reversals, and permutations 
-* 3/2000 *kob* (v5.1) - use netcdf v3 calls to read double precision data rather than
-*                       having to call cd_rd_r8_as_r4 
+* 3/00 *kob* (v5.1) - use netcdf v3 calls to read double precision data
+*		rather than having to call cd_rd_r8_as_r4 
+* V510 6/00 *sh* - remove obsolete code left behind by 3/00 fix
+*		 - if variable is scalar fill in trans and grid_dims
+
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -176,6 +179,11 @@
 	   trans(idim) =  ABS(ds_ordering(idim,ivar))
 	   grid_dims(idim) = trans(idim)
  30	CONTINUE
+	IF ( trans(1) .EQ. 0 ) THEN
+* ... trap for scalar (no dimension) netCDF variables
+	   trans(1) = 1
+	   grid_dims(1) = 1
+	ENDIF
 	DO 34 idim = 1, ndim
 	   DO 32 idim2 = idim+1, ndim
 	      IF (grid_dims(idim) .GT. grid_dims(idim2)) THEN
@@ -224,6 +232,8 @@
 * compute the map vector (for strides, reversals, and permutations)
 	DO 210 idim = 1, 4
  210	imap(idim) = 0
+#ifdef netcdf_version_2
+* for netCDF V2 the imap array is set up in bytes
 	IF ( cd_data_type(ivar) .EQ. NCDOUBLE ) THEN
 	   imap(trans(1)) = 8
 	ELSEIF ( cd_data_type(ivar) .EQ. NCFLOAT
@@ -234,10 +244,10 @@
 	ELSE			! NCBYTE, NCCHAR
 	   imap(trans(1)) = 1
 	ENDIF
-
-********* DIAG STATEMENT netcdf v3 
+#else
+* for netCDF V3 the imap array is set up in number of array elements, not bytes
 	imap(trans(1)) = 1
-
+#endif
 	DO 220 idim = 2,ndim
 	   imap(trans(idim)) = imap(trans(idim-1))
      .			     * (1 + (memsize(grid_dims(idim-1))-1))

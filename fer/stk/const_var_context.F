@@ -14,20 +14,13 @@
 * V5.00: 12/18/98 - based on CONSTANT_CONTEXT	
 *	 2/99 *sh* - bug fix on cx_given for normal axes
 * V530:  8/00 *sh* - allow constant arrays of strings
+* V533:  7/01 *sh* - allow single quoted strings
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		uvar, item, default_cx, const_cx, status
@@ -46,7 +39,8 @@
 	cx_grid    ( const_cx ) = mgrid_xabstract
 
 * identify a constant array of strings by the presence of a quotation mark
-	IF (INDEX(text,'"') .GT. 0) THEN
+	IF ( INDEX(text,'"') .GT. 0
+     .	.OR. INDEX(text,"'") .GT. 0 ) THEN
 	   cx_type(const_cx) = ptype_string
 	ELSE
 	   cx_type(const_cx) = ptype_float

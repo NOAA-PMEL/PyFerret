@@ -1,7 +1,5 @@
 	SUBROUTINE IS_DO_OP( memory, alg_type, alg_text, lo_isp, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,7 +38,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 2/13/87 - based on ALG_DO_OP rev 1.0
 * revision 1.0 - 8/11/87 - allowed for expanding grids: lines to planes, etc.
@@ -72,8 +69,8 @@
 *		arguments. Strings may be passed only to grid-changing
 *		functions (see IS_DO_GC_FC)
 * V530:  8/00 *sh* added support for string arrays
+* V533:  7/01 *sh* improved support for string arrays -- logical operations
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'rpn.parm'
@@ -82,16 +79,6 @@
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
 	include	'xfr_grid.cmn'	! w/ mgrid_abstract
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:RPN.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'	! W/ MGRID_ABSTRACT
-#endif
 
 * calling arguments
 	INTEGER		alg_type, lo_isp, status
@@ -99,16 +86,22 @@
 	CHARACTER*(*)	alg_text
 
 * local variables
-	LOGICAL	ITS_UN_CACHED, not_reusable
-	INTEGER	CX_DIM_LEN, STR_MATCH,
+	LOGICAL	ITS_UN_CACHED, not_reusable, arg_types_matched,
+     .		numerical_op
+	INTEGER	CX_DIM_LEN, STR_MATCH, MGRID_SIZE_DELTA,
      .		ifcn, iop, ilogic, icom, idim, num_com, mr, res_cx,
-     .		mr1, mr2, mr3, mr4, impl_grid,
+     .		mr1, mr2, mr3, mr4, impl_grid, arg_type, i1,
      .		frame_bottom, op_num, res_len, com_len, com_cx, res_mr
 
 * convenience equivalences
 	INTEGER	com(5)
 	EQUIVALENCE (com(1),mr1), (com(2),mr2), (com(3),mr3), (com(4),mr4),
      .              (com(5),res_mr)
+
+* local parameter declarations
+	INTEGER	     p_log_op_first, p_log_op_last  ! see operate.F
+	PARAMETER  ( p_log_op_first = 8,
+     .		     p_log_op_last = 13 )
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -159,10 +152,21 @@
 	IF ( frame_bottom .LE. lo_isp ) CALL ERRMSG
      .		( ferr_syntax, status, 'RPN', *5000 )
 
-* trap attempts to pass string variables as errors (1/99)
-	DO 100 icom = 1, num_com
+* classify the data type of the arguments
+* ... ignore type of "cond" in IF cond THEN result
+	IF ( alg_type .EQ. alg_log_struct ) THEN
+	  i1 = 2 ! ignore "cond"
+	ELSE
+	  i1 = 1
+	ENDIF
+	arg_type =  cx_type(is_cx(frame_bottom+i1-1))
+	arg_types_matched = .TRUE.
+	DO 100 icom = i1, num_com
 	   com_cx  = is_cx(frame_bottom+icom-1)
-	   IF (cx_type(com_cx) .EQ. ptype_string) GOTO 5100
+	   IF (arg_type .NE. cx_type(com_cx) ) THEN
+	     arg_types_matched = .FALSE.
+	     arg_type = ptype_float
+	   ENDIF
  100	CONTINUE
 
 * allocate context space for the result
@@ -174,7 +178,8 @@
 	CALL TRANSFER_CONTEXT( is_cx(frame_bottom), res_cx )
 	cx_category( res_cx ) = cat_temp_var
 	cx_variable( res_cx ) = 1		! in case it is a constant
-	cx_grid    ( res_cx ) =  mgrid_abstract	! see 10/5 notes above
+	cx_grid    ( res_cx ) = mgrid_abstract	! see 10/5 notes above
+	cx_type    ( res_cx ) = arg_type
 
 * stretch sizes to maxes for all components on each axis
 * e.g. temp[k=1] + temp[K=1:3] needs 3 in the K direction
@@ -199,6 +204,13 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	mr_variable( res_mr ) = res_mr	! cat_temp_var vars point to themselves
 
+* special HACK to support "a"+"b" (see MERGE_GRID)
+	IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
+           CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
+     .                               memory(1, mr_blk1(res_mr)),
+     .                               mr_c_pointer(res_mr)      )
+	ENDIF
+
 * point to the memory resident components
 * (if fewer than 4 components default extras to dummy)
 	DO 300 icom = 1, num_com
@@ -209,13 +221,50 @@
 * set up 4D array limits as unsubscripted variables in COMMON
 	CALL NON_ARRAY_SUBSC( com, 5 )
 
+* operation relevant ONLY to numerical arguments? (neither "+" nor logical op)
+	numerical_op =  .NOT.
+     .	     (	(op_num.EQ.1)
+     .     .OR. (op_num.GE.p_log_op_first .AND. op_num.LE.p_log_op_last)
+     .     .OR. (op_num.GT.offset_logic_struc)   )
+
 * perform the operation
-	CALL OPERATE (	op_num, num_com, is_cx(frame_bottom),
-     .			memory(1, mr_blk1(mr1) ),   mr1,
-     .			memory(1, mr_blk1(mr2) ),   mr2,
-     .			memory(1, mr_blk1(mr3) ),   mr3,
-     .			memory(1, mr_blk1(mr4) ),   mr4,
-     .			memory(1, mr_blk1(res_mr)), res_mr )
+	IF (.NOT.arg_types_matched
+     .	  .OR. (arg_type.EQ.ptype_string .AND. numerical_op) ) THEN 
+* ... inappropriate use of string arguments
+          CALL FILL_MEMORY ( memory, mr_blk1 (res_mr),
+     .                       mr_nblks(res_mr),
+     .                       mr_bad_data(res_mr) )
+
+	ELSEIF (arg_type.EQ.ptype_string) THEN
+	  IF (op_num .EQ. 1 ) THEN  ! "+"
+	    CALL STRING_CONCATENATE
+     .		       ( is_cx(frame_bottom),
+     .			 memory(1, mr_blk1(mr1) ),   mr1,
+     .			 memory(1, mr_blk1(mr2) ),   mr2,
+     .			 memory(1, mr_blk1(res_mr)), res_mr )
+	  ELSEIF (op_num .GT. offset_logic_struc) THEN
+	    CALL STRING_CONDITIONAL
+     .		       ( op_num-offset_logic_struc,
+     .			 num_com, is_cx(frame_bottom),
+     .			 memory(1, mr_blk1(mr1) ),   mr1,
+     .			 memory(1, mr_blk1(mr2) ),   mr2,
+     .			 memory(1, mr_blk1(mr3) ),   mr3,
+     .			 memory(1, mr_blk1(res_mr)), res_mr )
+	  ELSE  ! "EQ", "NE", "LT", ...
+	    CALL STRING_OPERATE
+     .		       ( op_num, is_cx(frame_bottom),
+     .			 memory(1, mr_blk1(mr1) ),   mr1,
+     .			 memory(1, mr_blk1(mr2) ),   mr2,
+     .			 memory(1, mr_blk1(res_mr)), res_mr )
+	  ENDIF
+	ELSE
+	  CALL OPERATE ( op_num, num_com, is_cx(frame_bottom),
+     .			 memory(1, mr_blk1(mr1) ),   mr1,
+     .			 memory(1, mr_blk1(mr2) ),   mr2,
+     .			 memory(1, mr_blk1(mr3) ),   mr3,
+     .			 memory(1, mr_blk1(mr4) ),   mr4,
+     .			 memory(1, mr_blk1(res_mr)), res_mr )
+	ENDIF
 
 * clean up 
 * ... deallocate result context space
@@ -275,6 +324,6 @@
 
 * error exit
  5000	RETURN
- 5100	CALL ERRMSG( ferr_invalid_command, status,
-     .		'cannot use a string as an argument to: '//alg_text, *5000 )
+! 5100	CALL ERRMSG( ferr_invalid_command, status,
+!     .		'cannot use a string as an argument to: '//alg_text, *5000 )
 	END

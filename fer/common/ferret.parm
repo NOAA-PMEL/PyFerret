@@ -17,6 +17,8 @@
 *	*sh* 3/00 -- added g=ax@near
 * V532: *sh* 5/01 - redefined arbitrary_large/small_<type>
 * V533: *sh* 6/01 - added transformation trans_event_mask (@evnt)
+*	          - ptype_native -> ptype_unknown
+*	     7/01 - replace alg_no_op with alg_if_marker and alg_then_marker
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -355,7 +357,8 @@
      .			alg_log_struct,
      .			alg_punctuation,
      .			alg_operand,
-     .			alg_no_op,
+     .			alg_if_marker,
+     .			alg_then_marker,
      .			alg_grid_chg_fcn,
      .			alg_child_var,
      .			alg_const_var,
@@ -371,7 +374,8 @@
      .			alg_log_struct = 9,
      .			alg_punctuation= 10,
      .			alg_operand    = 11,
-     .			alg_no_op      = 12,
+     .			alg_if_marker    = 21,
+     .			alg_then_marker  = 22,
      .			alg_grid_chg_fcn = 13,
      .			alg_child_var    = 14,
      .			alg_const_var    = 15,
@@ -568,20 +572,22 @@
      .          pgc_span_reduced  = 202 )
 
 * data types
-	INTEGER		ptype_native,
+	INTEGER		ptype_unknown,
      .			ptype_float,
      .			ptype_int4,
      .			ptype_int2,
      .			ptype_int1,
      .			ptype_char,
      .			ptype_string,
-     .			ptype_double
-	PARAMETER     ( ptype_native = 0,
+     .			ptype_double,
+     .			ptype_native
+	PARAMETER     ( ptype_unknown = 0,
      .			ptype_float = 1,
      .			ptype_int4 = 2,
      .			ptype_int2 = 3,
      .			ptype_int1 = 4,
      .			ptype_char = 5,
      .			ptype_string = 6,
-     .			ptype_double = 7 )
+     .			ptype_double = 7,
+     .			ptype_native = 999 )
 

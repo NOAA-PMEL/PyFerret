@@ -1,7 +1,5 @@
 	SUBROUTINE IS_ALGEBRA( memory, *, *, isp_base, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -85,8 +83,9 @@
 * V530: 8/00 *sh* - added support for string arrays
 *	12/00 *sh* bug fix: constants as in LET a = 5 were not deleted -- they
 *		accumulated and used up mvars -- err522_too_many_vars.jnl
+* V533: 7/01 *sh* - added support for functions returning different data types
+*		  - alg_no_op removed to allow string IF-THEN-ELSE exprns
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -94,14 +93,6 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	isp_base, status
@@ -184,10 +175,8 @@
 *	result 
 	ELSEIF ( its_gc ) THEN
 	   IF ( is_sum(lo_isp) .EQ. isalg_transfer ) THEN
-!	      CALL INIT_EMPTY_CONTEXT( big_cx)  ! moved 8/00 for no-arg fcns
-! NOTE: SET FUNCTION OUTPUT DATA TYPE HERE!! cx_type(big_cx) = GC_FCN_TYPE ...
 	      CALL MERGIFY_CX( lo_cx, uvar, big_cx, status )
-	      cx_type(big_cx) = ptype_float   ! TEMPORARY - UNTIL STRNG FCNS
+!	      cx_type(big_cx) = ptype_float   ! TEMPORARY - UNTIL STRNG FCNS
 	      is_sum( lo_isp ) = isalg_merge_1
 	   ELSEIF ( is_sum(lo_isp) .EQ. isalg_merge_1 ) THEN
 * ... this allows us to distinguish between single component and
@@ -210,7 +199,7 @@
 	   IF (  is_sum(lo_isp) .EQ. isalg_merge_1 ) THEN
 	      CALL MERGIFY_CX( lo_cx, uvar, big_cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
-	      cx_type(big_cx) = ptype_float   ! only GC vars allow strings (??)
+!	      cx_type(big_cx) = ptype_float   ! only GC vars allow strings (??)
 	      is_sum( lo_isp ) = isalg_merge_n
 	   ENDIF
 	   item = is_phase(lo_isp)		! points into uvar_text
@@ -264,7 +253,8 @@
 	   GOTO 700
 	ELSEIF ( itype .EQ. alg_string ) THEN
 	   GOTO 800
-	ELSEIF ( itype .EQ. alg_no_op ) THEN
+	ELSEIF ( itype .EQ. alg_if_marker
+     .	    .OR. itype .EQ. alg_then_marker ) THEN
 	   GOTO 100
 	ELSE
 	   STOP 'unknown algebraic category'
@@ -417,7 +407,7 @@
 * CALL ADD_RDC_XFORM is a test to see if we can get the right
 * context onto the context which will be used for the result
  600    CALL ADD_RDC_XFORM(is_big_cx(lo_isp), status)
-	CALL IS_DO_GC_FCN( memory, itype, uvar_text(uvar)(start:end),
+	CALL IS_DO_GC_FCN( memory, uvar, uvar_text(uvar)(start:end),
      .		       lo_isp, status )
 	IF ( status .NE. ferr_ok ) RETURN
 	GOTO 100

@@ -53,6 +53,8 @@
 * Linux Port - kob- 4/97 - logic change in if statement to prevent an overflow
 *			   error when looking at atom_id array.
 * V532 5/01 *sh* - improve error message about unknon function in FCN(a)
+* V533 7/01 *sh* - insert alg_if_marker and alg_then_marker instead of no_op
+*		   to enable IF cond THEN string1 ELSE string2 
 
 #ifdef unix
 	include 'ferret.parm'
@@ -239,14 +241,14 @@
 * ... "WHERE" is a no-op at RPN execution time
 	   DO 64 i = 1, atom_cnt
  64	   IF ( atom_type(i) .EQ. alg_log_struct
-     .	  .AND. atom_id(i)   .EQ. where ) at_typ_in(i) = alg_no_op
+     .	  .AND. atom_id(i)   .EQ. where ) at_typ_in(i) = alg_then_marker
 	   IF (wte_cnt(2) .eq. where) THEN
 	      goto 5100
 	   ELSEIF ( wte_cnt(2) .EQ. pelse ) THEN
 * ... WHERE-THEN-ELSE --> THEN becomes a no-op
 	      DO 66 i = 1, atom_cnt
  66	      IF ( atom_type(i) .EQ. alg_log_struct
-     .	     .AND. atom_id(i)   .EQ. pthen ) at_typ_in(i) = alg_no_op
+     .	     .AND. atom_id(i)   .EQ. pthen ) at_typ_in(i) = alg_if_marker
 	   ENDIF
 	end if
 

@@ -1,7 +1,5 @@
 	SUBROUTINE IS_TRANS( memory, ROUTINE, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -69,9 +67,9 @@
 *		indicates the result size is self-defined (Is this risky??)
 * V500:  1/99 *sh* Trap as errors attempts to apply transform to string
 *		variables
-* V530:  8/99 *sh* changed string trap to be based on data type, not category
+* V530:  8/00 *sh* changed string trap to be based on data type, not category
+* V533:  7/01 *sh* transform @SHF supported for strings
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -79,16 +77,6 @@
 	include	'xvariables.cmn'
 	include	'xtext_info.cmn'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
-!	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
 
 * calling argument declarations:
 	INTEGER	status
@@ -101,7 +89,7 @@
 * internal variable declarations:
 * ... "res"="result" , "com"="component"
 	LOGICAL	ITSA_FILL_TRANS, its_4d
-	INTEGER CX_DIM_LEN, slen, cx_valid,
+	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
      .		mrlist(2), axes(4), idim1, i, ndim
@@ -121,9 +109,6 @@
 	trans	= cx_trans( idim1, res_cx )
 	arg	= cx_trans_arg( idim1, res_cx )
 	grid    = cx_grid( com_cx )
-
-* screen out attempts to transform a string
-	IF (cx_type(com_cx) .EQ. ptype_string) GOTO 5400
 
 * determine if this is a 1D or a 4D (multiple axis) transformation
 	its_4d = .FALSE.
@@ -238,6 +223,12 @@
 	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_mr( res_isp ) = res_mr
+	IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
+* ... only applicable to @SHF transformation
+           CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
+     .                               memory(1, mr_blk1(res_mr)),
+     .                               mr_c_pointer(res_mr)      )
+	ENDIF
 
 !* diagnostic message ?
 !	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT(
@@ -265,8 +256,13 @@
 	   cx_hi_ss( cx_valid, idim ) = cx_hi_ss( com_cx, idim ) - hi_off
 	   IF ( cx_lo_ss(cx_valid,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
 * ... insufficient component data to compute anything
-	      CALL FILL_MEMORY( memory,mr_blk1(res_mr),mr_nblks(res_mr),
-     .				mr_bad_data(res_mr) )
+	      IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
+	        CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
+     .                                       MGRID_SIZE_DELTA(res_mr) )
+	      ELSE
+	        CALL FILL_MEMORY( memory,mr_blk1(res_mr),mr_nblks(res_mr),
+     .		  		  mr_bad_data(res_mr) )
+	      ENDIF
 	      GOTO 1000
 	   ELSEIF (  cx_lo_ss(res_cx,idim) .LT. cx_lo_ss(cx_valid,idim)
      .		.OR. cx_hi_ss(res_cx,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
@@ -299,6 +295,24 @@
 	   ENDIF
 	ENDIF
 
+* set up 4D array limits as unsubscripted variables in COMMON
+	mrlist(1) = com_mr
+	mrlist(2) = res_mr
+	CALL NON_ARRAY_SUBSC( mrlist, 2 )
+
+* transformations applied to string arguments
+	IF ( mr_type(com_mr) .EQ. ptype_string ) THEN
+	   IF (trans .EQ. trans_shift) THEN
+	      CALL DO_STRING_SHIFT ( idim, arg,
+     .		memory( 1, mr_blk1(com_mr) ), com_mr, com_cx, ! component
+     .		memory( 1, mr_blk1(res_mr) ), res_mr, res_cx) ! result
+	   ELSE
+	     CALL SET_NULL_C_STRING_ARRAY(mr_c_pointer(res_mr),
+     .                                    MGRID_SIZE_DELTA(res_mr) )
+	   ENDIF
+	   GOTO 1000
+	ENDIF
+
 * reserve working space for the transformation
 * Note: this logic is a loose hodge-podge to get an upper bound size for all
 * the different cases: 4D, 1D, with arguments, etc.
@@ -316,11 +330,6 @@
      .			MAX( wksiz, CX_DIM_LEN(idim1,res_cx)+INT(arg) )
 	CALL GET_WORK_SPC( wksiz, wkblk, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
-
-* set up 4D array limits as unsubscripted variables in COMMON
-	mrlist(1) = com_mr
-	mrlist(2) = res_mr
-	CALL NON_ARRAY_SUBSC( mrlist, 2 )
 
 * do the transform
 	status = ROUTINE( idim, arg,
@@ -350,8 +359,5 @@
 	CALL ERRMSG( ferr_limits, status,
      .		     buff(:slen)//' exceeds interpolation range',
      .		     *5000 )
- 5400	buff = VAR_TRANS( idim, res_cx, slen )
-	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'cannot apply a transformation to a string: '
-     .		     //buff(:slen), *5000 )
+
 	END	

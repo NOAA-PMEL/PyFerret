@@ -1,7 +1,5 @@
 	SUBROUTINE IS_UVAR_GRID( *, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -45,7 +43,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V200:  6/20/89
 * V230:  7/21/92 - separate error message for cvar grid unknown
@@ -79,6 +76,8 @@
 *		    GCF_IMPOSE_AXES to take an error exit
 *	          - process string variables so that they may be obtained
 *		    by EFs during custom axis creation
+* V533 7/01 *sh* - save the data type of the result
+*	         - process alg_if_marker in support of IF cond THEN string
 
 * calling argument declarations:
 	INTEGER	status
@@ -87,15 +86,16 @@
 * exit #2 is to signal that the grid has been obtained and stored in uvar_grid
 
 * internal variable declarations:
-	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass
+	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass,
+     .		saved_ifthen_type
 	INTEGER KNOWN_GRID,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		 hi_cx, lo_cx, big_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
-     .		var, len_name, pass_number, cx_save, this_dset
+     .		var, len_name, pass_number, cx_save, this_dset,
+     .		ifthen_data_type
 	CHARACTER VAR_CODE*4, name*128
 
-#ifdef unix
 	include	'tmap_errors.parm'
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -108,19 +108,6 @@
 	include	'xprog_state.cmn'
 	include	'xfr_grid.cmn'
 	include	'xdset_parms.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-        INCLUDE 'FERRET_CMN:XDSET_PARMS.CMN'
-#endif
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -143,6 +130,7 @@
 	need_another_pass = is_phase(isp) .LT. 0  ! saved from last time here
 	is_phase(isp) = ABS( is_phase(isp) )
 	cx_save = cx_stack_ptr		! restored on pass #2 (2/99)
+	saved_ifthen_type = .FALSE.
 
 * process the next item in the expression from the uvar buffer (last to first)
  100	is_phase(isp) = is_phase(isp) + 1
@@ -161,6 +149,8 @@
 	   GOTO 305
 	ELSEIF ( itype .EQ. alg_string      ) THEN
 	   GOTO 400
+	ELSEIF ( itype .EQ. alg_then_marker ) THEN
+	   GOTO 450
 	ELSE
 	   GOTO 100
 	ENDIF
@@ -262,6 +252,13 @@
         IF ( status .NE. ferr_ok ) RETURN
 	GOTO 500		! go merge it
 
+* "IF" marker in an "IF cond THEN result1 ELSE result2" structure
+* ... the data type of the result depends only on the result clauses
+* ... prepare to restore the data type while the "cond" is precessed
+ 450	saved_ifthen_type = .TRUE.
+	ifthen_data_type = cx_type(big_cx)
+	GOTO 100
+
 * create, initialize buffer to receive the grid
  500	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
 	   grid = cx_grid(big_cx)
@@ -276,6 +273,7 @@
 	CALL MERGE_GRID( item, its_gc, uvar_text(uvar)(start:end),
      .			 big_cx, hi_cx, uvar, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+	IF (saved_ifthen_type) cx_type(big_cx) = ifthen_data_type
 
 * 1/97: For GC variables, the last GC function argument has just been merged.
 * Now we need to finish by imposing any axes that the function requires.
@@ -363,13 +361,16 @@
 	   IF ( uvar_dset(uvar).EQ.unspecified_int4 ) THEN
 	      uvar_need_dset(uvar) = .FALSE.
 	      uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
+	      uvar_data_type(uvar, pdset_irrelevant) = ptype_float
 	   ELSE		! defined with LET/D
 !	      uvar_need_dset(uvar) = .TRUE.	! always TRUE anyway
 * *kob* 4/99 bug fix - check to see if let/d is dataset independent
 	      IF (dset .EQ. unspecified_int4) THEN
 		 uvar_grid(uvar, pdset_irrelevant) = mgrid_abstract
+	         uvar_data_type(uvar, pdset_irrelevant) = ptype_float
               ELSE
                  uvar_grid(uvar, dset) = mgrid_abstract
+	         uvar_data_type(uvar, dset) = ptype_float
 	      ENDIF
 	   ENDIF
 	   gnum = mgrid_abstract
@@ -405,6 +406,7 @@
 	   this_dset = pdset_irrelevant
 	ENDIF
 	uvar_grid( uvar, this_dset ) = gnum
+	uvar_data_type(uvar, this_dset) = cx_type(big_cx)
 
 * * * SECOND PASS CHECK * * *
 * need a second pass to include pseudo_vars in calculation ?
@@ -414,6 +416,7 @@
 	   DO 1110 i = 1, 4
  1110	   uvar_given(i,uvar) = uvlim_irrelevant
 	   uvar_grid( uvar, this_dset ) = unspecified_int4 ! 10/00
+	   uvar_data_type(uvar, this_dset) =  unspecified_int4 ! housekeeping
 	   is_phase( isp ) = 0
 	   is_sum( isp ) = isalg_transfer
 	   cx_stack_ptr = cx_save

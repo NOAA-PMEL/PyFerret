@@ -2,6 +2,8 @@ SRCS_C = \
 add_c_pointer.c\
 binaryRead.c\
 batch_graphics.c\
+concatenate_c_strings.c\
+compare_c_strings.c\
 copy_c_string.c\
 perl_read.c\
 EF_InternalUtil.c\
@@ -26,6 +28,8 @@ replaceable_bad_flags.c \
 replace_bad_data_sub.c \
 save_arg_pointers.c\
 save_c_string.c\
+set_null_c_string.c\
+set_null_c_string_array.c\
 signal.c\
 sizeof_pointer.c\
 wgif.c\

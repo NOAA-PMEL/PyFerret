@@ -7,22 +7,14 @@
 
 * V500: 12/98 - based on IS_CONSTANT
 * V530:  8/00 *sh* - allow lists of strings
+* V533:  7/01 *sh* - allow single quoted strings
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xvariables.cmn'
 	include	'xcontext.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -56,7 +48,8 @@
 	start = uvar_item_start( item, uvar )
 	end   = uvar_item_end  ( item, uvar )
 
-	IF ( INDEX(uvar_text(uvar)(start:end), '"') .GT. 0 ) THEN
+	IF ( INDEX(uvar_text(uvar)(start:end), '"') .GT. 0
+     .	.OR. INDEX(uvar_text(uvar)(start:end), "'") .GT. 0 ) THEN
 * ... set up FORTRAN-independent pointer
 	   CALL INIT_C_STRING_ARRAY( size,
      .				     memory(1,mr_blk1(mr)),

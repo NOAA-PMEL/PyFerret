@@ -8,13 +8,15 @@
 * V500: *sh* 12/98
 * V510: *sh* 10/99 bug fix: single character {3} gave n=0
 * V530:  8/00 *sh* - added support for arrays of strings
+* V530:  7/01 *sh* - allow single quoted strings
+* V540:  9/01 *sh* - change "SYSTEM:" to "SPAWN:"
 
 * calling argument declarations
 	INTEGER		n
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	LOGICAL		in_quote, no_chars_yet
+	LOGICAL		in_quote, doub_quote, no_chars_yet
 	INTEGER 	TM_LENSTR1, STR_CASE_BLIND_COMPARE,
      .			i, start, slen, vax_code
 	CHARACTER*1	c
@@ -52,20 +54,25 @@
               IF (c .EQ. '\\') THEN
 #endif
 	         i = i + 1   ! skip processing of next character 
-	      ELSEIF  (c .EQ. '"') THEN
+	      ELSEIF  (     doub_quote .AND. c.EQ.'"'
+     .	          .OR. .NOT.doub_quote .AND. c.EQ."'" ) THEN
 	         in_quote = .FALSE.
 	      ELSE
 	         CONTINUE   ! skip over anything inside of quotations
 	      ENDIF
 	   ELSEIF (c .EQ. '"') THEN
 	      in_quote = .TRUE.
+	      doub_quote = .TRUE.
+	   ELSEIF (c .EQ. "'") THEN
+	      in_quote = .TRUE.
+	      doub_quote = .FALSE.
 	   ELSEIF (c .EQ. ',') THEN
 	      n = n+1
 	   ELSEIF (c.EQ.'s' .OR. c.EQ.'S' ) THEN
 	      IF ( i+7 .GT. slen ) CONTINUE  ! trap syntax error later
-	      vax_code = STR_CASE_BLIND_COMPARE(string(i:i+6), 'SYSTEM:')
+	      vax_code = STR_CASE_BLIND_COMPARE(string(i:i+5), 'SPAWN:')
 	      IF( vax_code .NE. vms_str_success ) CONTINUE ! trap syntax later
-	      i = i + 6
+	      i = i + 5
 	      n = n + 2000 - 1   ! allow default memory for 2000 strings 
 	   ELSE
 	      CONTINUE   ! ignore the text, itself

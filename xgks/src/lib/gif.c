@@ -41,9 +41,11 @@
  * Created by Joe Sirott, Pacific Marine Environmental Lab
  * $Id$
  *
- * umalloc(0) returns 0 on DEC alpha; eliminated assert(meta->style) in
- *  set_lineStyle to avoid this problem, since length can be 0 *js* 8.97
- * added clipping *js* 8.97
+ * *js* 8.97 umalloc(0) returns 0 on DEC alpha; eliminated assert(meta->style) in
+ *  set_lineStyle to avoid this problem, since length can be 0 
+ * *js* 8.97 added clipping 
+ * *js* 6.99 If resize is called with primitives, primitives are discarded 
+ * (previously, error message was issued, and no resize occurred).
  */
 
 /*
@@ -580,12 +582,19 @@ void GIFresize(WS_STATE_PTR ws, Gpoint size)
   mf_cgmo *cgmo = ws->mf.cgmo;
   GIFmetafile *meta = find_meta(cgmo);
   assert(meta);
+#if 0
   if (meta->resize == 0){
     msgErr("GIFresize: metafile contains primitives -- can't resize\n");
   } else {
     copy_meta(cgmo, find_meta(cgmo), size.x, size.y);
     msgInfo("GIFresize: Resizing to (%f,%f)\n", size.x, size.y);
   }
+#endif
+  if (meta->resize == 0){
+    msgWarn("GIFresize: metafile contains primitives that will be lost when resizing\n");
+  } 
+  copy_meta(cgmo, find_meta(cgmo), size.x, size.y);
+  msgInfo("GIFresize: Resizing to (%f,%f)\n", size.x, size.y);
 }
 
 /*

@@ -224,10 +224,14 @@ CC       => Set values here instead.
 * ... PLOT/THICKNESS=n
  	loc = qual_given( slash_plot_thick )
 	IF ( loc .GT. 0  ) THEN
-	   IF ( color .EQ. qual_on ) color = 1  ! /THICK alone means "BLACK"
-	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
+
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			   val, status )	! syntax check
+
+           IF (val .NE. 1  .AND. color .EQ. 19) GOTO 5460  ! Only have thin white line
+
+	   IF ( color .EQ. qual_on ) color = 1  ! /THICK alone means "BLACK"
+	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
@@ -466,5 +470,8 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
+ 5460	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'/COLOR=WHITE only available with /THICK=1', *1000 )
 
 	END

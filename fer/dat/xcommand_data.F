@@ -120,7 +120,7 @@
 *	5/00 *sh* - restored /PEN as a "denigrated" command
 * V520: 6/00 *sh* - added MESSAGE/ERROR
 * V530: 10/00 *sh* - added added SET DATA/EZ  /TYPE=/DELIMITERS=
-*      10/00 *acm* - added VECTOR/STREAKLINE (alias STREAKLINE)
+*      10/00 *acm* - added VECTOR/FLOWLINE (alias FLOWLINE)
 *      1 /01 *sh* - added PLOT/STEP[=connected]
 *       1/01 *acm* - added DEFINE AXIS/CALENDAR qualifier
 *       5/01 *acm* - added PLOT/DASH[=(dn1,up1,dn2,up2) qualifier
@@ -988,7 +988,7 @@
 		DATA qualifiers  (nqual_at13a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at13a+23)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at13a+25)/ 'STREAKLI'/  !/streakline
+		DATA qualifiers  (nqual_at13a+25)/ 'FLOWLINE'/	!/flowline
 		DATA qualifiers  (nqual_at13a+26)/ 'DENSITY'/	!/density=
 		DATA qualifiers  (nqual_at13a+27)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
@@ -1375,9 +1375,9 @@
      .		alias_name(16)	/ 'WHERE' /,
      .		alias_len(16)	/ 10 /,
      .		alias(16)	/ 'PPL %WHERE' /
-     .		alias_name(17)	/ 'STREAKLI' /,
+     .		alias_name(17)	/ 'FLOWLINE' /,
      .		alias_len(17)	/ 17 /,
-     .		alias(17)	/ 'VECTOR/STREAKLINE' /
+     .		alias(17)	/ 'VECTOR/FLOWLINE' /
 	
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)

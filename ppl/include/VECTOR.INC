@@ -13,7 +13,8 @@ C**
 C**
 c
 	COMMON/VECTOR/VLEN,VUSRLN,VAUTO,VXLOC,VYLOC,VUSER,VKEY,
-     *	VPOS,VFRMT,VSKPX,VSKPY,VMINLN,ARMAX,ARMIN,HFACT,DENSITY
+     *	VPOS,VFRMT,VSKPX,VSKPY,VMINLN,ARMAX,ARMIN,HFACT,DENSITY,
+     *	NEED_COS,TRNSPZ
 	LOGICAL VAUTO,VKEY,VUSER
 	INTEGER VSKPX,VSKPY
 	CHARACTER VFRMT*20
@@ -33,6 +34,8 @@ c	vminln	minimum vector size
 c	armax	size for maximum head size
 c	armin	size for minimum head size
 c	hfact	size factor for head
-c       density density parameter for streaklines
+c       density density parameter for flowlines
+c       need_cos flag for geographical correction 
+c       transpz flag for transpose (needed for geographical cosine correction)
 c
 c*******************************************************************

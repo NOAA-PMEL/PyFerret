@@ -3,7 +3,7 @@
 * v491:  12.98 - added pattern for contour and shade *jd*
 * v500:  03.99 - added qualifiers for polygon *jd*
 * V510 *sh* 3/00 - added slash_set_data_tregular, slash_plot_color
-* V522+ *acm* 10/00 - added VECTOR/STREAKLINE (alias STREAK)
+* V522+ *acm* 10/00 - added VECTOR/FLOWLINE (alias FLOW)
 * V530 *sh* 10/00 - added slash_set_data_type, slash_set_data_delimiters
 *	*sh* 1/01 - added slash_plot_step
 * V530 *kob* 1/01 - added slash_repeat_animate, slash_repeat_loop
@@ -108,7 +108,7 @@
      .			slash_vect_xskip,
      .			slash_vect_yskip,
      .			slash_vect_thick,
-     .			slash_vect_streakline,
+     .			slash_vect_flowline,
      .			slash_vect_density,
      .
      .			slash_strm_over_plot,
@@ -263,7 +263,7 @@
      .			slash_vect_xskip	= 18,
      .			slash_vect_yskip	= 19,
      .			slash_vect_thick	= 20,
-     .			slash_vect_streakline   = 1+25,
+     .			slash_vect_flowline     = 1+25,
      .			slash_vect_density      = 1+26,
      .
      .			slash_strm_over_plot	= 9,

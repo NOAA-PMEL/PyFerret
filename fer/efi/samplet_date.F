@@ -43,7 +43,8 @@
 *         Result is abstract on the sampled axis.
 * 3/1/00  ACM fixed bug in definition of the work array datebuf
 * 7/2000  ACM inherit axes only from the data variable, not dates!
-*
+* 4/2001  *ACM* add error message
+
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 

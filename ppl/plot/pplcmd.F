@@ -74,7 +74,7 @@ C**
 *       J Davison 10.14.99 Mod to add CALENDAR command for multiple calendars
 * V510: *sh* 3/0 - bug fix: TXLABP 0 was interpreted as TXLABP 1 cuz
 *		of SIGN() call near top of this routine
-*       ACM 10/2000  Add VECTOR/STREAKLINE, alias STREAKLINE 
+*       ACM 10/2000  Add VECTOR/FLOWLINE, alias FLOWLINE 
 * V530: *acm* 1/01 calendar info in calendar.cmn and calendar.decl
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -313,7 +313,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
-     *  'STREAKLI'/
+     *  'FLOWLINE'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -403,7 +403,7 @@ C
      .	  .or.makep .eq. 'PLOTUV'
      .	  .or.makep .eq. 'VELVCT'
      .	  .or.makep .eq. 'VECTOR'
-     .	  .or.makep .eq. 'STREAK'
+     .	  .or.makep .eq. 'FLOW'
      .	  .or.makep .eq. 'SHADE'
      .	  .or.makep .eq. 'FILL'
      .	  .or.makep .eq. 'PLOTPOL'
@@ -1468,8 +1468,8 @@ C	VECTOR
 	IF(IFLG1)VSKPX=P(1)
 	IF(IFLG2)VSKPY=P(2)
 	GOTO 6001
-C       STREAKLINE (VECTOR/STREAKLINE)
-9390	MAKEP='STREAK'
+C       FLOWLINE (VECTOR/FLOWLINE)
+9390	MAKEP='FLOW'
 	IF(IFLG1)DENSITY=P(1)
 	GOTO 6001
 C	VECSET

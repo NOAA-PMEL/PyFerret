@@ -56,7 +56,10 @@ SET MODE VERIFY
 !			bn_cache_hits.jnl, .sub
 !			bn_strides_revs_perms.jnl
 !			bn_regrid_to_user.jnl
-
+! V5.3:
+! 6/01 *acm*  -- add	bn_calendar
+!			bn_dash_dot
+!			bn_flowlines
 
 GO bn_reset
 GO bn_syntax
@@ -241,6 +244,9 @@ GO bn_calendar
 
 GO bn_reset
 GO bn_dash_dot
+
+GO bn_reset
+GO bn_flowlines
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

@@ -23,6 +23,7 @@ C *acm* 1/ 01  add cals_days_before_month and cals_month_by_day
      .			gregorian,
      .			noleap,
      .			julian,
+     .			d360,
      .                  cals_num_days,
      .                  cals_yeardays,
      .			cals_num_months,

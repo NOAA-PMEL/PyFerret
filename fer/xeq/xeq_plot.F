@@ -117,13 +117,13 @@
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			do_dash, it_start(4), it_end(4),
-     .			ndashparm, num_it, i
-	REAL		val, sym_size, dot_sym, dashstyle(4)
+     .			ndashparm, dot_sym, num_it, i
+	REAL		val, sym_size, dashstyle(4)
 	CHARACTER	LEFINT*4, buff*4, dashbuf*25
 
 * internal parameter declarations
 	INTEGER ncolors
-	PARAMETER (ncolors = 6, dot_sym = 99)
+	PARAMETER (ncolors = 6, dot_sym=99)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS

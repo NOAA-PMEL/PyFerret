@@ -68,7 +68,7 @@
 * V510 *sh* 12/99 - allow plots of all-missing data
 *		  - replace /PEN qualifier with /COLOR, supporting named colors
 *      5/00 *sh* - restored the /PEN qualifier (with "denigrated" remark
-*      10/00 *AM* - added VECTOR/STREAKLINE (alias STREAKLINE)
+*      10/00 *AM* - added VECTOR/FLOWLINE (alias FLOWLINE)
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
 
 #ifdef unix
@@ -108,7 +108,7 @@
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
-     .			set_up, noaxes, no_data, streaks
+     .			set_up, noaxes, no_data, flows
 	INTEGER		status, cx, loc, ipen, thick,
      .			dim1, dim2, asp,
      .			ax1_blks, ax1_start,
@@ -143,7 +143,7 @@
 	transpz   = qual_given( slash_vect_transpz   ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
-	streaks   = qual_given( slash_vect_streakline).GT.0
+	flows     = qual_given( slash_vect_flowline  ).GT.0
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
 	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
@@ -247,9 +247,9 @@
 	IF ( set_up) GOTO 1000
 
 * sub-sample the vectors to make a cleaner plot ?
-* *ACM 10/00*  do not subsample if its a streakline plot
+* *ACM 10/00*  do not subsample if its a flowline plot
 
-        IF (.NOT. streaks) THEN
+        IF (.NOT. flows) THEN
 	   cx   = is_cx( 1 )
 	   loc = qual_given( slash_vect_xskip )
 	   IF ( loc .GT. 0 ) THEN
@@ -304,7 +304,7 @@
 
         ELSE  
 
-* plot it with streaklines
+* plot it with flowlines
 	   loc = qual_given( slash_vect_density )
 	   IF ( loc .GT. 0 ) THEN
 	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -319,13 +319,23 @@
               density = 5
            ENDIF
 
+           CALL flow_set_up (is_mr, is_cx, transpz)
+
+* special set-up required only for the VECTOR/FLOW command
+	IF ( .NOT.overlay .AND. .NOT.no_data ) THEN
+* ... vector length key below plot title (overlay written as key)
+	   WRITE ( ppl_buff, '(2F6.1)' ) 5.5, -1.2
+	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
+	ENDIF	
+
            WRITE (ppl_buff, '(I4)') density
 	   IF (  overlay ) THEN
 	      CALL PPLCMD (' ',' ',0,
-     .		'STREAKLI/OVER/' //ppl_wait//' '//ppl_buff, 1, 1 )
+     .		'FLOWLINE/OVER/' //ppl_wait//' '//ppl_buff, 1, 1 )
+
 	   ELSE
 	      CALL PPLCMD (' ',' ',0,
-     .		'STREAKLI/LATCH/'//ppl_wait//' '//ppl_buff, 1, 1 )
+     .		'FLOWLINE/LATCH/'//ppl_wait//' '//ppl_buff, 1, 1 )
 	   ENDIF
         ENDIF
 

@@ -58,6 +58,7 @@
 * V490 - 4/5/97 *sh* - still in development at this date
 * v4.92 - 1/11/98 *kob* - upped version number from 4.91 to 4.92 for 
 *                         source code release
+* V500 - 12/98 *sh* - still in development as of this date
 
 #ifdef unix
 	include	'ferret_cmn/xrevision.cmn'
@@ -68,7 +69,7 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  4.92    /
+	DATA revision_level	/  5.00    /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

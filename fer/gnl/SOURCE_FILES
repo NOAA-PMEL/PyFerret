@@ -23,6 +23,7 @@ equal_format.F\
 equal_permute.F\
 equal_str_lc.F\
 equal_string.F\
+equal_type.F\
 equal_val.F\
 errmsg.F\
 get_command.F\

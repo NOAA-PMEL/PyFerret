@@ -25,6 +25,7 @@ copy_into.F\
 copy_into_mapped.F\
 copy_into_mapped_sub.F\
 copy_into_sub.F\
+copy_ptr_grid_sub.F\
 count_number_list.F\
 cstring_insert.F\
 de_escape_string.F\
@@ -54,6 +55,9 @@ gcf_parent_char.F\
 gcf_parent_uvar.F\
 geog_var.F\
 get_ave_lims.F\
+get_max_string_len.F\
+get_max_string_len_sub.F\
+get_string_element.F\
 get_window_lims.F\
 getunit.F\
 gname_from_number.F\
@@ -85,7 +89,9 @@ no_grid_range.F\
 no_line_range.F\
 parse_nam_dset_grd.F\
 parse_number_list.F\
+parse_string_list.F\
 permute.F\
+permute_ptr_sub.F\
 permute_sub.F\
 region_number.F\
 reverse_grid_axis.F\
@@ -95,9 +101,12 @@ secs_to_date.F\
 secs_to_date_c.F\
 secs_to_tstep.F\
 sort_list.F\
+shellr.F\
 short_mod_copy.F\
 split_list.F\
 ss_neighbors.F\
+store_string.F\
+store_sys_strings.F\
 str_match.F\
 sub_2_grids.F\
 sub_2_grids_sub.F\

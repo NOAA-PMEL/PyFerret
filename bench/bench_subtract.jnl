@@ -2,6 +2,7 @@
 !  ACM  8/99
 !  benchmark script for testing external function subtract.
 ! Note: bench_subtract_visual.jnl contains plots of similar computations
+! V550 *sh* 11/02 - documentation note only reflecting subspan modulo
 
 set mode ignore_errors
 
@@ -27,7 +28,7 @@ list/y=0 subtract(a,b)
 can region
 let a = x[i=1:30]
 let b = y[j=1:30]
-list/y=15 subtract(a,b)
+list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg in V550
 
 can region
 let a = sst[l=1]

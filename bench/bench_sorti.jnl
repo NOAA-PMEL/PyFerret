@@ -3,6 +3,8 @@
 ! Benchmark for sort and sample external Functions
 ! ACM 5/99
 
+! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
+! The use of L=5 on a 3 point time axis triggers a valid subspan modulo calculation
 
 can region
 use coads_climatology

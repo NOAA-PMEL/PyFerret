@@ -4,6 +4,9 @@
 ! ACM 5/99
 ! *sh* 3/00 - indicate that test of illegal indices should produce an error
 
+! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
+! The use of L=5 on a 3 point time axis triggers a valid subspan modulo calculation
+
 use coads_climatology
 set region/x=141/y=39/z=0/l=1:6
 

@@ -1,5 +1,6 @@
 ! bn_sample.jnl
 ! 10/99 *sh*
+! V550 *sh* 11/02 - documentation change only, reflecting subspan modulo
 
 ! test the internally optimized version of the SAMPLE* commands
 
@@ -139,6 +140,9 @@ list SAMPLEK(X[x=110:200:10],{3,4,7})	! normal axis
 
 ! test SAMPLEL
 let/quiet a = sst + Z[z=0:500:5]
+! Note: (V550) In the SAMPLEL examples which follow the L index values
+! which exceed L=3 lie outside of the time axis range.  As of V550 this
+! triggers a subspan modulo operation (3 months from the full year of 12)
 list SAMPLEL(a[y=0,k=1:2,x=180],5)
 list SAMPLEL(a[y=0,k=1:2,x=180],{2,3,5, 10})
 list SAMPLEL(a[y=0,k=1,x=180],{1,5,10})

@@ -9,6 +9,7 @@
 !			      This caused numerical differences in the output benchmark
 !			      log files when compared to pre beta5001.1 logs.  The 
 !			      numericals results found here are verified to be correct
+! V550 11/02 *sh* - documentation change only reflecting new modulo behavior
 
 ! deliberate dynamic grid errors
 
@@ -213,8 +214,8 @@ list x[i=1:5:-1]	! error: negative delta
 list x[i=1:5:0]		! error: delta=0
 list x[x=1:5:-1]	! error: negative delta
 list x[x=1:5:0]		! error: delta=0
-list temp[i=200:210:2]	! completely out of range
-list temp[i=-200:-190:2]! completely out of range
+list temp[i=200:210:2]	! was: "completely out of range"  now: ok - subspan modulo 11/02
+list temp[i=-200:-190:2]! was: "completely out of range"  now: ok - subspan modulo 11/0
 canc mode ignore
 show grid/dyn
 

@@ -3,7 +3,11 @@
  ! Version 5.21 - 06/15/00
  ! 10-Jul-00 10:39     
 
+! V550 *sh* 11/02 - documentation change only reflecting subspan modulo
+
 use coads_climatology
+! Note that L=5 lies outside the time axis range of 3 points
+! As of V550 this triggers a subspan modulo calculation (correctly)
 list sst[l=5,j=66,i=125:131]
 list compressi(sst[l=5,j=66,i=125:131])
 

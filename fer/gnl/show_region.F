@@ -70,10 +70,10 @@
 * write region name
 	IF ( cx .EQ. cx_last ) THEN
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .				'default region:',15)
+     .				'default region:',0)
 	ELSE
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .		'region '//cx_name(cx)//':',12)
+     .		'region '//cx_name(cx),0)
 	ENDIF
 
 * describe each axis - produce lines as complex as:"X=lo:hi@xxx:nn (transform)"

@@ -190,7 +190,7 @@
       nyin = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
       nzin = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
       ntin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
-      nin = 2* max(nxin,nyin,nzin,ntin)
+      nin = 3* max(nxin,nyin,nzin,ntin)
 
       nxout = 1 + arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4)
       nzout = 1 + arg_hi_ss(Z_AXIS,ARG5) - arg_lo_ss(Z_AXIS,ARG5)
@@ -347,7 +347,7 @@ C  variables for checking axis characteristics (modulo axes)
          ENDIF
  110  CONTINUE
 
-      IF (nzpts .NE. nxpts .OR. nxpts .eq. 0) GOTO 999
+      IF (nzpts .NE. nxpts .OR. nxpts .eq. 0) GOTO 900
 
       nscat = nxpts
 
@@ -361,6 +361,19 @@ C  variables for checking axis characteristics (modulo axes)
 
       nx = 1 + i4n - i4
       nz = 1 + k5n - k5
+
+*  Check that xax is an X axis and zax a Z axis
+
+      IF (i4 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fourth argument must be an X axis'
+         GO TO 999
+      ENDIF
+      IF (k5 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fifth argument must be a Z axis'
+         GO TO 999
+      ENDIF
+
+C  Get coordinates of output axes.
 
       call ef_get_coordinates(id, ARG4, X_AXIS, 
      .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
@@ -454,7 +467,7 @@ C  variables for checking axis characteristics (modulo axes)
 
       RETURN
 
-999   CONTINUE
+900   CONTINUE
 
       IF (nxpts .NE. nzpts) THEN
          WRITE (errtxt,20) nxpts, nzpts
@@ -467,7 +480,7 @@ C  variables for checking axis characteristics (modulo axes)
    30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
      . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
-      CALL EF_BAIL_OUT(id, errtxt)
+ 999  CALL EF_BAIL_OUT(id, errtxt)
       
 *                                                                      ^
 *                                                                      |

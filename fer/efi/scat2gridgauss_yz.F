@@ -289,7 +289,7 @@
 *                                                                      |
 *                                                                      V
       INTEGER i, j, k, l, m, n, nm
-      INTEGER j4, j4n, l5, l5n
+      INTEGER j4, j4n, k5, k5n
 
       INTEGER nypts, nzpts, nscat
       INTEGER ny, nz, nyaxis, nzaxis
@@ -368,13 +368,26 @@ C  variables for checking axis characteristics (modulo axes)
       j4 = arg_lo_ss(Y_AXIS,ARG4)
       j4n = arg_hi_ss(Y_AXIS,ARG4)
 
-      l5 = arg_lo_ss(Z_AXIS,ARG5)
-      l5n = arg_hi_ss(Z_AXIS,ARG5)
+      k5 = arg_lo_ss(Z_AXIS,ARG5)
+      k5n = arg_hi_ss(Z_AXIS,ARG5)
 
       ny = 1 + (j4n - j4)
-      nz = 1 + (l5n - l5)
+      nz = 1 + (k5n - k5)
       nysize = ny
       nzsize = nz
+
+*  Check that yax is a Y axis and zax a Z axis
+
+      IF (j4 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fourth argument must be a Y axis'
+         GO TO 999
+      ENDIF
+      IF (k5 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fifth argument must be a Z axis'
+         GO TO 999
+      ENDIF
+
+C  Get coordinates of output axes.
 
       call ef_get_coordinates(id, ARG4, Y_AXIS, 
      .   arg_lo_ss(Y_AXIS, ARG4), arg_hi_ss(Y_AXIS, ARG4), yax)
@@ -547,6 +560,8 @@ C                     other end, and use in the gridding computation.
    30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
      . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
+
+ 999  CALL EF_BAIL_OUT(id, errtxt)
 
 *                                                                      ^
 *                                                                      |

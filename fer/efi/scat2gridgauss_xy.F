@@ -330,6 +330,7 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+
 *  Check to see if output axes are modulo
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
@@ -372,8 +373,22 @@ C  variables for checking axis characteristics (modulo axes)
 
       nx = 1 + (i4n - i4)
       ny = 1 + (j5n - j5)
+
       nxsize = nx
       nysize = ny
+
+*  Check that xax is an X axis and yax a Y axis
+
+      IF (i4 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fourth argument must be an X axis'
+         GO TO 999
+      ENDIF
+      IF (j5 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fifth argument must be a Y axis'
+         GO TO 999
+      ENDIF
+
+C  Get coordinates of output axes.
 
       call ef_get_coordinates(id, ARG4, X_AXIS, 
      .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
@@ -548,7 +563,7 @@ C                     other end, and use in the gridding computation.
    30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
      . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
-      CALL EF_BAIL_OUT(id, errtxt)
+ 999  CALL EF_BAIL_OUT(id, errtxt)
 
 *                                                                      ^
 *                                                                      |

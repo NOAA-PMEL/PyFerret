@@ -297,7 +297,7 @@
       INTEGER i, j, k, l, m, n, nm
       INTEGER i1, i2, i1n, i2n
       INTEGER nxpts, nzpts, nscat
-      INTEGER i4, i4n, j5, j5n
+      INTEGER i4, i4n, k5, k5n
       INTEGER nxsize, nzsize
       REAL xsc, zsc, tsc 
       REAL xcutoff, zcutoff
@@ -368,13 +368,26 @@ C  variables for checking axis characteristics (modulo axes)
       i4 = arg_lo_ss(X_AXIS,ARG4)
       i4n = arg_hi_ss(X_AXIS,ARG4)
 
-      j5 = arg_lo_ss(Z_AXIS,ARG5)
-      j5n = arg_hi_ss(Z_AXIS,ARG5)
+      k5 = arg_lo_ss(Z_AXIS,ARG5)
+      k5n = arg_hi_ss(Z_AXIS,ARG5)
 
       nx = 1 + (i4n - i4)
-      nz = 1 + (j5n - j5)
+      nz = 1 + (k5n - k5)
       nxsize = nx
       nzsize = nz
+
+*  Check that xax is an X axis and zax a Z axis
+
+      IF (i4 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fourth argument must be an X axis'
+         GO TO 999
+      ENDIF
+      IF (k5 .EQ. ef_unspecified_int4) then
+         WRITE (errtxt, *) 'fifth argument must be a Z axis'
+         GO TO 999
+      ENDIF
+
+C  Get coordinates of output axes.
 
       call ef_get_coordinates(id, ARG4, X_AXIS, 
      .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
@@ -550,7 +563,7 @@ C                     other end, and use in the gridding computation.
    30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
      . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
-      CALL EF_BAIL_OUT(id, errtxt)
+  999 CALL EF_BAIL_OUT(id, errtxt)
 
 *                                                                      ^
 *                                                                      |

@@ -1,0 +1,14 @@
+!bn_xml_output.jnl
+! new-V553 output in XML-style format
+! Illustrate the SHOW commands with /XML xml-style output
+
+USE gtsa056_2.cdf
+
+SHO DATA/VAR/XML
+
+SHO GRID/XML ps3du1
+
+SHO AXIS/XML psxu
+SHO AXIS/XML psyu
+SHO AXIS/XML pszt
+SHO AXIS/XML time

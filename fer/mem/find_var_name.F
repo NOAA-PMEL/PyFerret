@@ -56,6 +56,7 @@
 * V510 5/00 *sh* - don't match on a cvar unless the data set indicates
 *	Philander-Seigel
 * V554 1/04 *acm* Add category cat_counter_var
+*  ywei 05/04 change MATCH_NAME and MATCH_QUOTED_NAME function calls to speed up
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -72,15 +73,18 @@
 	CHARACTER*(*)	test_name
 
 * internal variable declarations:
-	INTEGER		ivar, uvdset
+	INTEGER		TM_LENSTR, ivar, uvdset, len_test, len_mchars
 	LOGICAL		MATCH_NAME, MATCH_QUOTED_NAME, single_dset
 
 * initialize
 	single_dset = dset_num .NE. unspecified_int4
+        len_test = TM_LENSTR( test_name(1:LEN(test_name)) )
 
 * start by checking counter variable names
 	DO 10 ivar = 1, num_counter_vars
-	   IF ( MATCH_NAME( test_name, countervar_name(ivar) ) ) THEN
+           len_mchars = TM_LENSTR(countervar_name(ivar))
+	   IF ( MATCH_NAME( test_name, len_test,
+        1	   countervar_name(ivar),len_mchars ) ) THEN
 	      category = cat_counter_var
 	      variable = ivar
 	      RETURN
@@ -89,7 +93,9 @@
 
 * check pseudo-variables names
 	DO 20 ivar = 1, num_pseudo_vars
-	   IF ( MATCH_NAME( test_name, alg_pvar(ivar) ) ) THEN
+           len_mchars = TM_LENSTR(alg_pvar(ivar))
+	   IF ( MATCH_NAME( test_name, len_test, alg_pvar(ivar),len_mchars)) 
+        1	   THEN
 	      category = cat_pseudo_var
 	      variable = ivar
 	      RETURN
@@ -102,7 +108,8 @@
 	   DO 40 ivar = 1, max_uvar
 	      IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 40
 	      IF ( uvar_dset( ivar ) .NE. dset_num ) GOTO 40
-	      IF ( MATCH_QUOTED_NAME(test_name,uvar_name_code(ivar)) )
+              len_mchars = TM_LENSTR(uvar_name_code(ivar))
+	      IF ( MATCH_QUOTED_NAME(test_name,len_test, uvar_name_code(ivar), len_mchars))
 	1	   THEN
 	         category = cat_user_var
 	         variable = ivar
@@ -116,7 +123,8 @@
 	      DO 60 ivar = 1, max_uvar
 	         IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 60
 	         IF ( uvar_dset( ivar ) .NE. uvdset ) GOTO 60
-	         IF ( MATCH_QUOTED_NAME( test_name,uvar_name_code(ivar)) )
+                 len_mchars = TM_LENSTR(uvar_name_code(ivar))
+	         IF ( MATCH_QUOTED_NAME( test_name,len_test, uvar_name_code(ivar),len_mchars))
 	1	      THEN
 	            category = cat_user_var
 	            variable = ivar
@@ -130,7 +138,8 @@
 	DO 100 ivar = 1, max_uvar
 	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 100
 	   IF ( uvar_dset( ivar ) .NE. unspecified_int4 ) GOTO 100
-	   IF ( MATCH_QUOTED_NAME( test_name,uvar_name_code(ivar)) )
+           len_mchars = TM_LENSTR(uvar_name_code(ivar))
+	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars) )
 	1	THEN
 	      category = cat_user_var
 	      variable = ivar
@@ -140,9 +149,10 @@
 
 * check file variables from this data set
 	DO 200 ivar = 1, maxvars
-	   IF ( single_dset
-     .	  .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
-	   IF ( MATCH_QUOTED_NAME( test_name, ds_var_code( ivar ) ) ) THEN
+	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
+           len_mchars = TM_LENSTR(ds_var_code(ivar))
+	   IF ( MATCH_QUOTED_NAME( test_name,len_test, ds_var_code( ivar ),len_mchars)) 
+        1    THEN
 	      category = cat_file_var
 	      variable = ivar
 	      RETURN
@@ -153,7 +163,8 @@
 	DO 250 ivar = 1, max_uvar
 	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 250
 	   IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 250
-	   IF ( MATCH_QUOTED_NAME( test_name,uvar_name_code(ivar)) )
+           len_mchars = TM_LENSTR(uvar_name_code(ivar))
+	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars))
 	1	THEN
 	      category = cat_user_var
 	      variable = ivar
@@ -166,7 +177,8 @@
 	IF ( dset_num.GE.1 .AND. dset_num.LE.maxdsets ) THEN
 	   IF (dp_phil_sieg(dset_num).OR.dp_cox(dset_num)) THEN
 	      DO 300 ivar = 1, num_calc_vars
-	         IF (MATCH_QUOTED_NAME(test_name,cvar_name_code(ivar)//'    '))
+                 len_mchars = TM_LENSTR(cvar_name_code(ivar)//'    ')
+	         IF (MATCH_QUOTED_NAME(test_name,len_test,cvar_name_code(ivar)//'    ',len_mchars))
 	1	      THEN
 	            category = cat_calc_var
 	            variable = ivar

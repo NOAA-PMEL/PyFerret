@@ -1027,7 +1027,7 @@
 	   DATA subcommands      (nsub_at16 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at16 + 0)/ nqual16a	/
 	   DATA qualifier_pointer(nsub_at16 + 0)/ nqual_at16a	/
-* REPEAT/I/J/K/L/X/Y/Z/T
+* REPEAT/I/J/K/L/X/Y/Z/T/ANIMATE/LOOP=[N]
 		DATA qualifiers  (nqual_at16a+0)/ 'I'	/
 		DATA qualifiers  (nqual_at16a+1)/ 'J'	/
 		DATA qualifiers  (nqual_at16a+2)/ 'K'	/
@@ -1037,7 +1037,10 @@
 		DATA qualifiers  (nqual_at16a+6)/ 'Z'	/
 		DATA qualifiers  (nqual_at16a+7)/ 'T'	/
 		DATA qualifiers  (nqual_at16a+8)/ '*****' /   ! future "QUIET"
-		DATA qualifiers  (nqual_at16a+9)/ '****'  /
+		DATA qualifiers  (nqual_at16a+9)/ 'ANIMATE'  /
+		DATA qualifiers  (nqual_at16a+10)/ 'LOOP' /   
+		DATA qualifiers  (nqual_at16a+11)/ '*****' /   
+		DATA qualifiers  (nqual_at16a+12)/ '*****' /   
 
 * STATISTICS - command # 17
 	DATA commands(17)			/ 'STAT'	/

@@ -1,0 +1,45 @@
+* "FORMAT RECORD"
+	CHARACTER*4	d_type, d_format, d_prog_rev
+	CHARACTER*16	d_source_class, d_source, d_subsource
+
+* "BACKGROUND RECORD"
+	CHARACTER*4	d_expnum, d_modnum, d_aux_modnum(num_aux)
+	CHARACTER*16	d_forcing_set, d_who_ranit, d_who_madeit
+	CHARACTER*20	d_t0time, d_time_run, d_time_made
+	CHARACTER*80	d_title, d_mod_title, d_add_parm(num_parm),
+     .			d_grid_filename(num_gridfiles)
+	INTEGER*4	d_ntuple
+	LOGICAL		d_time_modulo
+	REAL*4		d_time_unit, d_ntegrate_tstep
+
+* "MESSAGE RECORD"
+	LOGICAL*2	d_alert_on_open, d_alert_on_output
+	CHARACTER*80	d_message
+
+* "VARIABLE RECORD (one record per file variable)
+	CHARACTER*2	d_ordering(4)
+	CHARACTER*8	d_var_code, d_grid_name
+	CHARACTER*12	d_precision
+	CHARACTER*24	d_var_units
+	CHARACTER*40	d_var_title, d_var_titl_mod
+	REAL*4		d_missing_flag, d_bad_flag
+	INTEGER*4	d_grid_start(4),d_grid_end(4), d_aux_set_num,
+     .			d_var_tstart, d_var_tend, d_var_tdelta,
+     .			d_ndataperrec
+
+* "EXTRA RECORD"
+	CHARACTER*80	d_extra_des_info
+
+* Information for set files in descriptor
+* "STEPFILE RECORD"
+	CHARACTER*5	s_regvarflag
+	CHARACTER*23	s_index
+	CHARACTER*60	s_filename
+	INTEGER*4	s_aux_set_num, s_num_of_files
+	REAL*8		s_start, s_end, s_delta
+
+* Information for var files in descriptor
+* "VARFILE RECORD"
+	CHARACTER*4	v_firstvar, v_lastvar
+	CHARACTER*23	v_index
+	CHARACTER*60	v_filename

@@ -1,0 +1,98 @@
+	CHARACTER*(*) FUNCTION CX_DIM_STR( idim,cx,to_word,full_prec,slen )
+
+* create a string describing the region and transformation along an axis
+* for example: X=160E:140W@SBX:5
+* the argument full_prec ("full precision") indicates number of decimals for
+* world coordinates (see LOHI_WORLD) or skip/not skip leading integer 0's
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 9/26/87
+* V200:  5/19/89 - re-ordered _ss args
+*		 - changed LEFINT from *4 to *8
+*		 - allowed leading zeros as needed by size of cx_hi_ss
+* V230:  6/22/92 - if ss limits are unspec. then use world limits regardless
+*                  of cx_by_ss (needed for CDF_LIST documentation)
+*        8/18/92 - eliminated string(1:) notation for MAC compatibility
+
+#ifdef unix
+	include	'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xtext_info.cmn'
+#else
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
+#endif
+
+* calling argument declarations
+	LOGICAL	full_prec
+	INTEGER	idim, cx, slen
+	CHARACTER*(*) to_word
+
+* local variable declarations:
+	CHARACTER LOHI_WORLD*44
+	INTEGER TM_LENSTR, llen, ndigits, cx_dim_str_len
+	CHARACTER ALG_TRANS_CODE*3, ARG_STRING*12, LEFINT*8, buff*8
+
+* initialize - put in "=" and blank out string
+        cx_dim_str_len = LEN( CX_DIM_STR )
+	CX_DIM_STR = '*='
+
+* create "lo_limit" or "lo:hi" in subscript or world coords
+
+* SUBSCRIPT NOTATION (I,J,K or L)
+* ( added ".AND. cx_lo_ss(cx,idim) ..." 6/22 *sh*)
+	IF ( cx_by_ss( idim, cx )
+     . .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
+	   CX_DIM_STR(1:1) = ss_dim_name( idim ) 
+* lo limit
+	   IF ( full_prec ) THEN
+* ... only the minimum number of digits needed - maximum readability
+	      CX_DIM_STR(3:cx_dim_str_len) =
+     .                               LEFINT( cx_lo_ss(cx,idim), slen )
+	      slen = slen + 2
+	   ELSE
+* ... uses leading zeros to ensure filenames generated automatically will colate
+	      CX_DIM_STR(3:cx_dim_str_len) = '0000000000000000'
+	      ndigits = LOG10( REAL(cx_hi_ss(cx,idim)) ) + 1.00001
+	      slen = 2 + ndigits	! right-most character
+	      buff = LEFINT( cx_lo_ss(cx,idim), llen )
+	      CX_DIM_STR(slen-llen+1:slen)=buff(:llen)
+	   ENDIF
+* hi limit - similar logic
+	   IF ( cx_hi_ss(cx,idim) .NE. cx_lo_ss(cx,idim) ) THEN
+	      slen = slen + 1
+	      CX_DIM_STR(slen:slen) = ':'	
+	      IF ( full_prec ) THEN
+	         CX_DIM_STR(slen+1:cx_dim_str_len) =
+     .                LEFINT(cx_hi_ss(cx,idim), llen)
+	         slen = slen + 1 + llen
+	      ELSE
+	         buff = LEFINT( cx_hi_ss(cx,idim), llen )
+	         slen = slen + ndigits
+	         CX_DIM_STR(slen-llen+1:slen)=buff(:llen)
+	      ENDIF
+	   ENDIF
+	   IF ( .NOT.full_prec ) CX_DIM_STR(slen+1:cx_dim_str_len)= ' '
+
+* WORLD COORDINATE NOTATION
+	ELSE
+	   CX_DIM_STR(1:1) = ww_dim_name( idim )
+	   CX_DIM_STR(3:cx_dim_str_len)  =
+     .                 LOHI_WORLD( idim, cx, ':', full_prec, slen )
+	   slen = slen + 2
+	ENDIF
+
+* transformation, if any ... "@ttt:n"
+	IF ( cx_trans( idim, cx ) .NE. trans_no_transform ) THEN
+	   CX_DIM_STR = CX_DIM_STR(1:slen) // '@' //
+     .				ALG_TRANS_CODE( cx_trans( idim, cx )) //
+     .				ARG_STRING( cx_trans_arg( idim, cx ))
+	   slen = TM_LENSTR( CX_DIM_STR )
+	ENDIF
+	
+	RETURN
+	END

@@ -1,0 +1,122 @@
+	SUBROUTINE BREAK_UP_EXPR( text, num_parts, status )
+
+* text may have more than one algebraic expression separated by commas
+* this routine will delimit the expressions and store them in reverse Polish
+* order in the user-var structure
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 2/23/87
+* V200:  6/20/89 - pass "implct_defn" to initialize user vars from here
+*       11/27/89 - perform Reverse Polish translation
+*        2/29 90 - don't double-report INIT_UVAR errors
+* Unix/RISC port - 1/91 - cant use "//" with CHAR*(*) variable
+*       10/22/92 - added units on uvars
+* V402:  7/95 - Added "dset" argument to INIT_UVAR for  LET/D=dset var = ... 
+* V450:  11/96 - Using reformulated version of INIT_UVAR (RPN called
+*		 from there). Part of changes to support external function.
+
+#ifdef unix
+	include	'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'	
+	include 'ferret_cmn/rpn.parm'
+	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret_cmn/xrisc.cmn'
+#else
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
+	INCLUDE 'FERRET_CMN:RPN.PARM'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XRISC.CMN'
+#endif
+
+* calling argument declaration:
+	INTEGER		num_parts, status
+	CHARACTER*(*)	text
+
+* internal parameter declarations:
+	LOGICAL		implct_defn
+	PARAMETER     ( implct_defn = .TRUE. )
+
+* internal variable declarations:
+	INTEGER	TM_LENSTR, tlen, uvar, natom, i, paren_level, at1,
+     .		at_type  (maxatoms), at_id  (maxatoms),
+     .		at_start (maxatoms), at_end (maxatoms),
+     .		exp_start(max_exp), exp_end(max_exp),
+     .		atom_1   (max_exp), atom_n (max_exp)
+	CHARACTER	EXPR_NAME*8, err_string*128
+
+* initialize fixed length string for RISC
+        risc_buff = text
+        tlen = MIN( size_rbuff, LEN(text) )
+
+* break the expression into atoms
+	CALL ALG_BREAK_UP( text,at_start,at_end,natom,err_string,status )
+	IF ( status .NE. ferr_ok ) GOTO 5100
+
+* identify the atoms
+	CALL ALG_ID( text, natom, at_start, at_end, at_type, at_id, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* locate the sub-expressions by looking for commas that are outside of
+* enclosing parentheses
+	num_parts    = 1
+	exp_start(1) = 1
+	atom_1(1)    = 1
+	paren_level  = 0
+	DO 100 i = 1, natom
+	   IF ( at_type(i) .EQ. alg_punctuation ) THEN
+	      IF ( at_id(i) .EQ. left_paren ) THEN
+	         paren_level = paren_level + 1
+	      ELSEIF (at_id(i) .EQ. right_paren ) THEN
+	         paren_level = paren_level - 1
+	      ELSEIF  (at_id(i) .EQ. comma ) THEN
+	         IF ( paren_level .EQ. 0 ) THEN
+	            IF ( i.EQ.1 .OR.  i.EQ.natom ) GOTO 5200
+	            IF ( num_parts .GE. max_exp  ) GOTO 5300
+	            IF ( at_type(i+1) .EQ. alg_punctuation
+     .		   .AND. at_id(i+1)   .EQ. comma ) GOTO 5200
+	            atom_n (num_parts) = i - 1
+	            exp_end(num_parts) = at_end(i-1)
+	            num_parts = num_parts + 1
+	            exp_start(num_parts) = at_start(i+1)
+	            atom_1(num_parts) = i + 1
+	         ENDIF
+	      ENDIF
+	   ENDIF
+ 100	CONTINUE
+	atom_n (num_parts) = natom
+	exp_end(num_parts) = at_end(natom)
+
+* now file the expression in the user-defined variable area
+	DO 200 i = 1, num_parts
+	   at1 = atom_1(i)
+	   CALL INIT_UVAR( EXPR_NAME(i),text,' ', ' ', unspecified_int4,
+     .			   implct_defn, uvar,
+     .			   at_type(at1),  at_id(at1),
+     .			   at_start(at1), at_end(at1),
+     .			   atom_n(i)-at1+1,
+     .			   exp_start(i), exp_end(i), status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+ 200	CONTINUE
+
+* successful completion
+ 1000	status = ferr_ok
+	RETURN
+
+* error exits
+ 5000	num_parts = cmnd_uvars_not_given
+	RETURN
+ 5100	CALL ERRMSG( status, status,
+     .			risc_buff(:tlen)//pCR//err_string, *5000 )
+ 5200	CALL ERRMSG( ferr_syntax, status,
+     .		'comma does not separate any expressions: '
+     .			//text(:tlen), *5000 )
+ 5300   write ( err_string, '(I4)' ) max_exp
+	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Number of expressions in line must be less than'
+     .		//err_string(:4), *5000 )
+	END
+

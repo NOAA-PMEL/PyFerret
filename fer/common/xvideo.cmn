@@ -1,0 +1,2 @@
+	character odr_resp*(80)
+	common /odr_response_block/odr_resp

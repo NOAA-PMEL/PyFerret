@@ -1,0 +1,22 @@
+String fallbacks[] = {
+"Ferret*Background: gray80",
+"Ferret*Foreground: black",
+"Ferret*FontList: *-helvetica-bold-r-normal*120*",
+"Ferret*buttonFontList: *-helvetica-bold-r-normal*120*",
+"Ferret*XmList.FontList: *-times-medium-r-normal*120*",
+"Ferret*XmTextField.FontList: *-times-medium-r-normal*120*",
+"Ferret*Ferret_app_menu1*XmToggleButton.FontList: *-helvetica-bold-r-normal*120*",
+"Ferret*FerretMainWd*form_XYZT.label_RegriddingStatus.FontList: *-courier-medium-r-normal*120*",
+"Ferret*Splash*ferret_version.FontList: *lucida-bold-r-normal-sans-34-*",
+"Ferret*Splash*ferret_version.Foreground: blue",
+"Ferret*Splash*author.FontList: *palatino-bold-r-normal--12*",
+"Ferret*Splash*scrolledText1*fontList: *-courier-medium-r-normal*120*",
+"Ferret*JC_SelectRegridding.form1.label1.fontList:	 *-courier-bold-r-normal*140*",
+"Ferret*JC_SelectRegridding*form_uniform*XmRowColumn.topOffset: 2",
+"Ferret*JC_SelectRegridding*form_non_uniform*labelFontList: *-helvetica-bold-r-normal*120*",
+"Ferret*JC_SelectRegridding*form_non_uniform*XmRowColumn.topOffset: 4",
+"Ferret*JC_DefineVariable*LabelFontList: *-courier-medium-r-normal*120*",
+"Ferret*JC_DefineVariable*optionMenu_Operator1_EXP*fontList: *-courier-bold-r-normal*180*",
+"Ferret*JC_DefineVariable*optionMenu_LC_Operator*fontList: *-courier-bold-r-normal*180*",
+NULL
+};

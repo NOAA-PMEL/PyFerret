@@ -1,0 +1,91 @@
+	SUBROUTINE MAKE_CVAR_GRIDS ( dset, status )
+
+* find or make a full grid, including a time axis, for each cvar variable in 
+* the given data set based on information stored in COMMON by INIT_DSET.
+* results are stored COMMON/~VARIABLES/ in cvar_grid
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 -11/17/88 - based on MAKE_DS_4D_GRIDS v1.0
+*			   new io library does file variables - only cvars here
+* Unix/RISC port - 1/91 - cant use "/star" in comments on Unix
+*Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
+*			  because it needed a preprocessor.
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+#	include "tmap_format/tmap_dset.parm"
+	include 'tmap_format/xdset_info.cmn_text'
+	external xdset_info_data
+	include 'tmap_format/xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret_cmn/xcalc_vars.cmn'
+	include	'ferret_cmn/xdset_parms.cmn'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
+	INCLUDE	'FERRET_CMN:XDSET_PARMS.CMN'
+#endif
+
+* calling argument declarations
+	INTEGER	dset, status
+
+* local variable declarations
+	INTEGER	TM_LENSTR1, fvar, cvar, idim, iline, slen
+	CHARACTER TM_FMT*4, gname*8
+
+* * * * CALCULATED VARIABLES
+	IF ( .NOT.( dp_phil_sieg(dset) .OR. dp_cox(dset) ) ) THEN
+* not available: not Philander/Siegel or Cox
+	   DO 150 cvar = 1, num_calc_vars
+ 150	   cvar_grid( cvar, dset ) = unspecified_int4
+
+	ELSE
+* create a template for the unchanging grid stuff
+	   DO 200 idim = 1, 4
+ 200	   grid_out_prod( idim, mgrid_buff ) = .TRUE.
+	   grid_line( t_dim, mgrid_buff ) = ds_time_axis( dset )
+
+	   DO 320 cvar = 1, num_calc_vars
+
+* fill in the spacial axes for the grid to look for
+	      DO 310 idim = 1,3
+	         IF ( cvar_axes( idim, cvar ) .EQ. mnormal ) THEN
+	            grid_line( idim, mgrid_buff ) = mnormal
+	         ELSE
+	            grid_line( idim, mgrid_buff ) =
+     .			ds_basic_axes( cvar_axes(idim,cvar)-1, dset )
+	         ENDIF
+ 310	      CONTINUE
+
+* make a plausible name for the new grid (e.g. GPCDZ1)
+	      gname = 'G' // cvar_name_code(cvar)
+     .			  // TM_FMT( REAL(dset), 4, 4, slen )
+
+* make sure name is unique
+	      CALL TM_NEW_GRID_NAME( gname, gname )
+
+* save it or use an identical one that already exists
+	      CALL TM_GET_LIKE_GRID( mgrid_buff, gname,
+     .				     cvar_grid(cvar,dset), status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+ 320	   CONTINUE
+	ENDIF
+
+* successful completion
+	status = ferr_ok
+ 	RETURN
+
+* error exit
+ 5000	RETURN
+	END

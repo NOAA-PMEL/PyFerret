@@ -1,0 +1,5 @@
+* error messages for netCDF error codes
+* *sh* 3/92
+
+	CHARACTER*36 cdferrmsg(20)
+	COMMON / XCDFERROR / cdferrmsg

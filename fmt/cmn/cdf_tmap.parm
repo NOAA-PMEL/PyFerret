@@ -1,0 +1,14 @@
+* cdf_tmap.parm
+* special TMAP parameters needed for netCDF files
+
+	INTEGER pcd_mode_data,
+     .		pcd_mode_define,
+     .          pcd_reset_data,
+     .		pcd_reset_define
+
+	PARAMETER (
+     .		pcd_mode_data    = 1,
+     .		pcd_mode_define  = 2,
+     .          pcd_reset_data   = -pcd_mode_data,
+     .		pcd_reset_define = -pcd_mode_define )
+

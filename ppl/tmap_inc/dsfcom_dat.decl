@@ -1,0 +1,16 @@
+* DSFCOM_DAT.DECL - converted to Unix 2.26.91         
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	INTEGER	INXT
+	INTEGER	IBKWD
+	INTEGER	IKEY
+	REAL	BUF
+	INTEGER	IFRWD
+	INTEGER	IRW
+	INTEGER	LUN
+	INTEGER	IHD
+	INTEGER	IBP
+	REAL	DMIN
+	REAL	DMAX
+	REAL	DMEAN
+* requires: INCLUDE 'PPLV11INC:DSFCOM.DAT'  

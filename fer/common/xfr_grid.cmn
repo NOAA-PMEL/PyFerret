@@ -1,0 +1,18 @@
+* XFR_GRID.CMN
+* common to supplement XTM_GRID in the TMAP_FORMAT library
+
+	INTEGER		max_special_grids
+	PARAMETER     ( max_special_grids = 10 )
+
+	COMMON / XFR_GRID / grd_stk_ptr,
+     .			    num_special_grids,
+     .			    special_grids
+
+	INTEGER	grd_stk_ptr,
+     .		num_special_grids,
+     .		special_grids( max_special_grids )
+
+* EQUIVALENCES
+	INTEGER mgrid_abstract,	mgrid_ez_dflt
+	EQUIVALENCE	( special_grids(1), mgrid_abstract ),
+     .			( special_grids(2), mgrid_ez_dflt  )

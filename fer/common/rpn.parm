@@ -1,0 +1,41 @@
+*	RPN.PARM
+
+*	Parameters for RPN.FOR
+
+*	J Davison TMAP/JISAO/PMEL/NOAA
+*	10.20.87
+* 7/95 - increased number of states from 8 to 9 *sh* (see alg_break_up.F)
+* 12/96 *sh* added parameter right_paren
+* 7/97 - *sh* increased maxatoms
+
+	integer		maxatoms,
+     .			max_fcn,
+     .			max_exp,
+     .			max_wte,
+     .			where,
+     .			pthen,
+     .			pelse,
+     .			comma,
+     .			added_left_paren,
+     .			left_paren,
+     .			right_paren,
+     .			inf_flg,
+     .			stk_flg,
+     .			num_state,
+     .			num_class
+
+	parameter     ( maxatoms		= 250,
+     .			max_fcn 		= 25,
+     .			max_exp 		= 20,
+     .			max_wte			= 3,
+     .			where			= 1,
+     .			pthen			= 2,
+     .			pelse			= 3,
+     .			comma 			= 1,
+     .			added_left_paren	= 666,
+     .			left_paren		= 2,
+     .			right_paren		= 3,
+     .			inf_flg 		= 1,
+     .			stk_flg 		= 2,
+     .			num_state		= 9,
+     .			num_class		= 11 )

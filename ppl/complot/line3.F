@@ -1,0 +1,45 @@
+      SUBROUTINE LINE3(X,Y,Z,IMARK,NAPTS)
+C** 
+C**    @(#)line3.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL LINE3(X,Y,Z,IMARK,NPTS)
+C
+C     THIS SUBROUTINE PLOTS A SERIES OF POINTS USING DATA SUP-
+C     PLIED IN ARRAYS.  THE CURRENT PLOTTING MODE IS USED TO
+C     DETERMINE THE MANNER IN WHICH THE POINTS ARE CONNECTED.
+C
+C     THE VARIOUS PARAMETERS AND THEIR DEFINITIONS ARE LISTED
+C     BELOW:
+C        X,Y,Z  - ARRAYS CONTAINING THE COORDINATES OF THE
+C                 POINTS TO BE PLOTTED IN USER'S UNITS.
+C        IMARK  - DATA MARK CODE (0-88).
+C        NPTS   - NUMBER OF POINTS TO BE PLOTTED.
+C
+C
+      DIMENSION X(1),Y(1),Z(1)
+C
+      IF(NAPTS .EQ. 0)RETURN
+      NPTS = IABS(NAPTS)
+C
+C     MOVE TO THE FIRST POINT WITH THE PEN UP.
+C
+      CALL PLOT3(X(1),Y(1),Z(1),0,0)
+      CALL MARK(IMARK)
+      IF(NPTS .EQ. 1)RETURN
+C
+C     MOVE TO THE REST OF THE POINTS WITH THE PEN DOWN.
+C
+      DO 10 I=2,NPTS
+   10 CALL PLOT3(X(I),Y(I),Z(I),1,IMARK)
+      RETURN
+C
+      END

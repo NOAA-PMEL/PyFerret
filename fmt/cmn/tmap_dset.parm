@@ -1,0 +1,167 @@
+*TMAP_DSET.PARM
+*
+* parameters used in "TMAP-formatted" data sets
+*
+* revision 0.00 - 05/07/87 - by Mark Verschell for PMEL/TMAP
+* revision 0.01 - 11/21/88 - Changed variable initialization to char_initXX
+
+* codes for data sets
+	INTEGER		set_not_open,set_open,file_not_open
+	PARAMETER      (set_not_open = -9)	! shows available set storage
+	PARAMETER      (set_open = -19)		! shows available set storage
+	PARAMETER      (file_not_open = -7)	! shows data file not open
+
+* codes for end of namelist blocks
+	CHARACTER*4	end_of_aux
+	CHARACTER*8	end_of_variables
+	CHARACTER*40	end_of_stepfiles, end_of_varfiles
+	CHARACTER*60	end_of_grids
+	PARAMETER	(end_of_variables = '**END OF VARS**')
+	PARAMETER	(end_of_aux = '**END OF AUX**')
+	PARAMETER	(end_of_stepfiles = '**END OF STEPFILES**')
+	PARAMETER	(end_of_varfiles = '**END OF VARFILES**')
+	PARAMETER	(end_of_grids = '**END OF GRIDS**')
+
+* codes for common block initialization
+	CHARACTER*80	char_init
+	CHARACTER*20	sevens
+	CHARACTER	char_init01*01, char_init02*02, char_init04*04,
+     .			char_init08*08,	char_init12*12, char_init16*16,
+     .			char_init20*20,	char_init23*23, char_init24*24,
+     .			char_init30*30, char_init40*40, char_init60*60,
+     .			char_init80*80, char_init128*128
+	INTEGER*2	int2_init
+	INTEGER*4	int4_init
+	REAL*4		real4_init
+	REAL*8		real8_init
+	PARAMETER	(sevens = '77777777777777777777')
+	PARAMETER	(char_init = sevens//sevens//sevens//sevens)
+	PARAMETER	(char_init01 = char_init)
+	PARAMETER	(char_init02 = char_init)
+	PARAMETER	(char_init04 = char_init)
+	PARAMETER	(char_init08 = char_init)
+	PARAMETER	(char_init12 = char_init)
+	PARAMETER	(char_init16 = char_init)
+	PARAMETER	(char_init20 = char_init)
+	PARAMETER	(char_init23 = char_init)
+	PARAMETER	(char_init24 = char_init)
+	PARAMETER	(char_init30 = char_init)
+	PARAMETER	(char_init40 = char_init)
+	PARAMETER	(char_init60 = char_init)
+	PARAMETER	(char_init80 = char_init)
+	PARAMETER	(char_init128= char_init)
+	PARAMETER	(int2_init = -7777)
+	PARAMETER	(int4_init = -7777)
+	PARAMETER	(real4_init = -7.77E-07)
+	PARAMETER	(real8_init = -7.77E-07)
+	
+* record length parameters
+	INTEGER		default_reclen,max_reclen,max_tapereclen
+	PARAMETER      (default_reclen = 162,	! for GFDL Phil/Seig output
+     .			max_reclen = 4095,	! VMS restriction
+     .			max_tapereclen = 2499)	! VMS restriction
+
+* bad/missing data indicators
+	REAL*4		bad_r4
+	REAL*8		bad_r8
+	PARAMETER	(bad_r4 = -1.E34 , bad_r8 = -1.E34)
+
+* zero representations
+#ifdef ACCEPTS_BYTE_DECLARATION
+	BYTE			i1zero
+#else
+	INTEGER*1		i1zero
+#endif
+	INTEGER		i4zero
+	PARAMETER	(i1zero = 0, i4zero = 0)
+
+* file format codes
+	INTEGER		GFDL_3D,pacific_grids,model_output
+	CHARACTER*2	grids_at_times,time_series
+	CHARACTER*4	pds_type_gt,pds_type_ts,pds_type_ez
+#ifdef ACCEPTS_BYTE_DECLARATION
+	BYTE			regular,irregular
+#else
+	INTEGER*1		regular,irregular
+#endif
+	PARAMETER	(grids_at_times = 'GT',
+     .			 time_series = 'TS',
+     .			 model_output = 1,
+     .			 GFDL_3D = 1,
+     .			 pacific_grids = 1,
+     .			 regular = 1,
+     .			 irregular = 2,
+     .			 pds_type_gt = '  GT',
+     .			 pds_type_ts = '  TS',
+     .			 pds_type_ez = '  EZ' )
+
+* codes for heading records
+	INTEGER		plogo,ptitl,pform,pback,pmess,psumm,pvari,
+     .			pgrid,pcomm,pindx,pxtra,nbefore_vari
+	PARAMETER      (plogo = 1,
+     .			ptitl = 2,
+     .			pform = 3,
+     .			pback = 4,
+     .			pmess = 5,
+     .			psumm = 6,
+     .			pvari = 7,
+     .			pcomm = 8,
+     .			pgrid = 9,
+     .			pindx = 10,
+     .			pxtra = 11)
+	PARAMETER	(nbefore_vari = 6)	! records preceeding VARI recs
+
+* codes for variables
+	INTEGER		ptemp,psalt,pu,pv,pw,ptaux,ptauy,ppsi,pairt,
+     .			ptstar_s, ptstar_n, psstar_s, psstar_n
+	PARAMETER      (ptemp = 1,
+     .			psalt = 2,
+     .			pu    = 3,
+     .			pv    = 4,
+     .			pw    = 5,
+     .			ptaux = 6,
+     .			ptauy = 7,
+     .			ppsi  = 8,
+     .			pairt = 9,
+     .			ptstar_s = 10,
+     .			ptstar_n = 11,
+     .			psstar_s = 12,
+     .			psstar_n = 13 )
+
+* codes for standard grids and "No defining grid error"
+	INTEGER		pps1dxt,pps1dyt,pps1dzb,pps3dtemp,pps3duv,
+     .			pps3dw,	pps1dxv,pps1dyv,pps1dz, pps2dtemp,
+     .			pps2duv
+	INTEGER		no_grid_err
+	PARAMETER      (pps1dxt   = 1,
+     .			pps1dyt   = 2,
+     .			pps1dzb   = 3,
+     .			pps1dxv   = 4,
+     .			pps1dyv   = 5,
+     .			pps1dz    = 6,
+     .			pps3dtemp = 7,
+     .			pps3duv   = 8,
+     .			pps3dw    = 9,
+     .			pps2dtemp = 10,
+     .			pps2duv   = 11)
+	PARAMETER      (no_grid_err = -1)
+
+* codes used at time steps
+	CHARACTER*4	step_code
+	INTEGER		nintro_recs
+	PARAMETER	(nintro_recs = 1 , step_code = 'STEP')
+
+* codes used for time<->date conversion
+	INTEGER		to_year, to_month, to_day, to_hour, to_minute,
+     .			to_second, full_prec
+	PARAMETER	(to_year	= 6,
+     .			 to_month	= 5,
+     .			 to_day		= 4,
+     .			 to_hour	= 3,
+     .			 to_minute	= 2,
+     .			 to_second	= 1,
+     .			 full_prec	= 2)
+
+* codes for auxiliary data sets
+	INTEGER		main_set
+	PARAMETER	(main_set	= 0)

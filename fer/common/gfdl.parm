@@ -1,0 +1,39 @@
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 3/7/86	extracted from SUBROUTINE HDIFFUS
+
+* PARAMETERS used in GFDL code
+
+      INTEGER IMT, JMT, KM, NT, LSEG, NISLE, LBC, LCYC	 		! 1524
+     *,KAV, NPS, NPN, NAS, NAF	 					! 1525
+     *,KMP1, KMP2, KMM1, IMTP1, IMTM1	 				! 1526
+     *,JMTM1, IMU, IMUM1, JMU, JMUM1	 				! 1527
+     *,IMTM2, JMTM2	 						! 1528
+     *,NSLAB, NWDS, NSWICH				 		! 1529
+     *,NDICES, NTMIN2	 						! 1530
+     *,ISCAN, JSCAN	 						! 1531
+     .,NT1		 						! 2885
+     .,im, jm
+ 
+      PARAMETER (IMT=160,JMT=100,KM=27,NT=2,LSEG=2,NISLE=1,LBC=4,LCYC=0	! 1524
+     *,KAV=16,NPS=5,NPN=7,NAS=NPN+NPS,NAF=15				! 1525
+     *,KMP1=KM+1,KMP2=KM+2,KMM1=KM-1,IMTP1=IMT+1,IMTM1=IMT-1		! 1526
+     *,JMTM1=JMT-1,IMU=IMT+LCYC-1,IMUM1=IMU-1,JMU=JMTM1,JMUM1=JMU-1	! 1527
+     *,IMTM2=IMT-2,JMTM2=JMT-2						! 1528
+     *,NSLAB=IMT*((NT+2)*KM+LBC),NWDS=IMT*JMT,NSWICH=LBC*IMT		! 1529
+     *,NDICES=2*LSEG*JMT+6*NISLE,NTMIN2=NT+1/NT				! 1530
+     *,ISCAN=IMT-1,JSCAN=JMT-2)						! 1531
+
+      PARAMETER (NT1=2)							! 2885
+
+	PARAMETER (im=160,jm=100)
+
+* from a variable grid in the original 205 code ...
+	REAL 		pfull_depth, hr		! temp for constant depth ocean
+	PARAMETER     ( pfull_depth = 4149.E2, HR = 1./pfull_depth )
+
+* from namelist variables
+	REAL 		dtsf, c2dtsf, acor
+	PARAMETER     ( dtsf = 3600., c2dtsf = 2.0 * dtsf, acor = 0.5 )

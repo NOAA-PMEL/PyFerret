@@ -1,0 +1,75 @@
+* XCALC_VARS.CMN - COMMON/ XCALC_VARS /
+* array declarations and information for "calculatable" variables 
+* ... variables derivable from Philander/COX model results
+* V200:  7/89 - extracted from xvariables
+
+*	
+*	cvar_frame_start
+*		      - subscript pointer into "cv..." arrays to the frame
+*			(list) of variable cvances needed to compute this var
+*	cvar_frame_length
+*		      -	Number of variable cvances needed to cumpute this var
+
+	INTEGER		max_calc_vars,
+     .			max_cv
+	PARAMETER     (	max_calc_vars 	  = 65,
+     .			max_cv          = 200 )
+
+********************************************************************************
+******				COMMON DECLARATION			  ******
+
+	COMMON / XCALC_VARS /
+     .		num_calc_vars,
+     .
+     .		cvar_primary_name ( max_calc_vars ),
+     .		cvar_name_code    ( max_calc_vars ),
+     .		cvar_unit_code    ( max_calc_vars ),
+     .		cvar_grid	  ( max_calc_vars, max_gfdl_dsets ),
+     .		cvar_axes	  ( 3, max_calc_vars ),
+     .		cvar_frame_start  ( max_calc_vars ),
+     .		cvar_frame_length ( max_calc_vars ),
+     .		cvar_num_results  ( max_calc_vars ),
+     .
+     .		cv_category ( max_cv ),
+     .		cv_variable ( max_cv ),
+     .		cv_lo_ds    ( max_cv, 4 ),
+     .		cv_hi_ds    ( max_cv, 4 )
+
+********************************************************************************
+******			COMMON VARIABLE TYPE DECLARATIONS		  ******
+
+	INTEGER		num_calc_vars
+
+	INTEGER		cvar_num_results  ,
+     .			cvar_grid	  ,
+     .			cvar_axes	  ,
+     .			cvar_frame_start  ,
+     .			cvar_frame_length ,
+     .			cvar_unit_code
+	CHARACTER*40	cvar_primary_name
+	CHARACTER*4	cvar_name_code
+
+	INTEGER		cv_category ,
+     .			cv_variable ,
+     .			cv_grid ,
+     .			cv_lo_ds  ,
+     .			cv_hi_ds
+
+* equivalences to assist with declaration statements
+	INTEGER cv_lo_d1( max_cv ),
+     .		cv_lo_d2( max_cv ),
+     .		cv_lo_d3( max_cv ),
+     .		cv_lo_d4( max_cv ),
+     .		cv_hi_d1( max_cv ),
+     .		cv_hi_d2( max_cv ),
+     .		cv_hi_d3( max_cv ),
+     .		cv_hi_d4( max_cv )
+	EQUIVALENCE
+     .		( cv_lo_d1, cv_lo_ds(1,1) ),
+     .		( cv_lo_d2, cv_lo_ds(1,2) ),
+     .		( cv_lo_d3, cv_lo_ds(1,3) ),
+     .		( cv_lo_d4, cv_lo_ds(1,4) ),
+     .		( cv_hi_d1, cv_hi_ds(1,1) ),
+     .		( cv_hi_d2, cv_hi_ds(1,2) ),
+     .		( cv_hi_d3, cv_hi_ds(1,3) ),
+     .		( cv_hi_d4, cv_hi_ds(1,4) )

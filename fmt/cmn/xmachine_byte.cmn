@@ -1,0 +1,24 @@
+* COMMON with information about the type of CPU which is currently active
+
+* note: since DECstation uses INTEGER*1 whereas VAX uses BYTE these declarations
+* are in different files for different machine types.
+* *kob* 2/92 (based on xmachine.cmn_text) - for SUN port
+
+* defines codes for cpu types
+* used to control floating point and integer conversions
+* "dec" = DECstation/MIPS
+
+	INTEGER	cptype_vax, cptype_dec, cptype_sun
+	PARAMETER	(cptype_vax = 0,
+     .			 cptype_dec = 1,
+     .			 cptype_sun = 2 )
+
+
+	COMMON /XMACHINE/
+     .				active_cpu	! local machine type
+
+!	INTEGER*1 active_cpu
+	BYTE      active_cpu
+
+
+

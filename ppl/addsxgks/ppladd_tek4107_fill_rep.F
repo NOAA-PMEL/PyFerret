@@ -1,0 +1,49 @@
+	SUBROUTINE TEK4107_FILL_REP (zwsid)
+
+*	Setup the fill area indices for colors on TEK 4107 WS
+
+*	J Davison JISAO/PMEL/TMAP
+*	9.2.88/3.15.89
+*	*jd* 2.19.92 mod to support atc gks
+
+#ifdef unix
+        include         'tmap_pplv11inc/shade_vars.cmn'
+	include		'tmap_pplv11inc/ws_types.cmn'
+#else
+        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
+	include		'tmap_pplv11inc:ws_types.inc'
+#endif
+
+#ifdef atc_gks
+#   ifdef unix
+	include        'atc_gksdir/gkspar.inc'
+#   else
+	INCLUDE        'atc_gksdir:gkspar.inc'
+#   endif
+#else
+#   ifdef unix
+  	include        'tmap_pplv11inc/gkspar.inc'
+#   else
+  	INCLUDE        'sys$library:gksdefs.bnd'
+#   endif
+#endif
+
+	integer		zwsid,color,ndx
+
+********************************************************************************
+
+*	SET THE COLOR TABLE TO CUSTOM COLORS OR TO THE DEFAULT SELECTION
+	if (custom_colors) then 
+	   call setup_color_table (zwsid,2,14)
+	else	
+	   call set_default_colors (zwsid,ws_tek4107,2,14)
+	end if
+
+*	GO THRU AVAILABLE INDICES FOR FILL REP
+	do 100 ndx = 1,shd_levels
+	   color = 2 + (ndx-1)*14/(shd_levels)
+	   call gsfar (zwsid,ndx+1,gsolid,1,color)
+100	continue
+	return
+
+	end

@@ -1,0 +1,509 @@
+* FERRET.PARM
+* 7/96: added _4d_ transforms
+* 11/96: added pcdf_mode_* (for DODS caching)
+* 12/96: added pfcn_axis_* (for grid-changing functions)
+*	   and alg_grid_chg_fcn
+*  1/97: added "pcg_" parameters for grid changing functions
+
+* this should always match maxdsets in TMAP_FORMAT:
+	INTEGER		max_gfdl_dsets
+	PARAMETER     (	max_gfdl_dsets	  = 30 )! = maxdsets in XDSET_INFO
+
+* numerical constants
+	REAL		deg2rad, radius, deg2km, deg2m, m_radius
+	PARAMETER     ( deg2rad = 3.141592 / 180,
+     .			radius = 6370.E5,		! cm
+     .			m_radius = radius / 100.,	! meters
+     .			deg2km = deg2rad * radius * 1.E-5,
+     .			deg2m  = deg2km * 1000.  )
+
+* names of dimensions
+	INTEGER		x_dim,   y_dim,   z_dim,   t_dim,   no_dim
+	PARAMETER     ( x_dim=1, y_dim=2, z_dim=3, t_dim=4, no_dim = 0 )
+
+* special data value flags
+	DOUBLE PRECISION	unspecified_val8,
+     .				unspec_val8_2,
+     .				arbitrary_large_val8,
+     .				arbitrary_small_val8,
+     .				arbitrary_large_int4,
+     .				arbitrary_small_int4,
+     .				ambiguous_val8
+	INTEGER			unspecified_int4,
+     .				ambiguous_int4
+	REAL			bad_val4,
+     .				arbitrary_large_val4,
+     .				arbitrary_small_val4,
+     .				unspecified_val4
+	CHARACTER*4		unspecified_name4
+* note: unspecified_int4 was changed from -9999 because of FORTRAN dimens. bug
+	PARAMETER	      ( unspecified_val8	= -2.E34,
+     .				unspec_val8_2		= -2.1E34,
+     .				arbitrary_large_val8	=  3.E33,	! D33?
+     .				arbitrary_small_val8	= -3.E33,	! D33?
+     .				arbitrary_large_val4	=  3.E33,
+     .				arbitrary_small_val4	= -3.E33,
+     .				arbitrary_large_int4	=  1000000000,
+     .				arbitrary_small_int4	= -1000000000,
+     .				ambiguous_val8		= -2.1E33,
+     .				unspecified_int4	= -111 ,
+     .				ambiguous_int4		= -8888 ,
+     .				bad_val4		= -1.E34,
+     .				unspecified_name4	= '&&&&',
+     .				unspecified_val4	= -2.5E34 )
+
+* punctuation
+	CHARACTER*1	pCR
+	PARAMETER     ( pCR = CHAR(13) )
+
+* quantities relevant to management of memory and memory variables
+	INTEGER		mr_deleted,		mr_nonexist,
+     .			mr_out_of_bounds,	
+     .			mr_not_protected,	mr_perm_protected,
+     .			mr_in_progress,		mr_temporary,
+     .			var_name_nonexist,	mr_table_entry_only,
+     .			munknown_var_name,	mr_not_contiguous
+	PARAMETER     ( mr_deleted		= -777,
+     .			mr_temporary		= -888,
+     .			mr_in_progress		= -666,
+     .			mr_perm_protected	= -555,
+     .			mr_table_entry_only	= -444,
+     .			mr_nonexist		= 0 ,
+     .			mr_not_contiguous	= mr_nonexist - 1,
+     .			mr_out_of_bounds	= -1,
+     .			mr_not_protected	= 0,
+     .			var_name_nonexist	= 0 ,
+     .			munknown_var_name	= -5 )
+
+* flags indicating mode of memory variable search
+	LOGICAL		search_by_value, search_by_ss
+	PARAMETER     ( search_by_value = .TRUE.,
+     .			search_by_ss = .FALSE. )
+
+* flags to control context interpretation
+	LOGICAL		unknown_qual_bad,
+     .			unknown_qual_ok
+	PARAMETER     (	unknown_qual_bad = .TRUE.,
+     .			unknown_qual_ok  = .FALSE. )
+
+* codes regarding the categories of variables used by the program
+*    "cat" - "categories" of variables ("file","calc","user"...)
+	INTEGER		cat_file_var, cat_calc_var,
+     .			cat_user_var, cat_dummy_var,
+     .			cat_expr_var, cat_axis_var,
+     .			cat_temp_var, cat_pseudo_var,
+     .			cat_constant, cat_file_rev
+	PARAMETER     ( cat_file_var = 1,
+     .			cat_calc_var = 2,
+     .			cat_user_var = 3,
+     .			cat_dummy_var= 4,
+     .			cat_expr_var = 5,
+     .			cat_axis_var = 6,
+     .			cat_temp_var = 7,
+     .			cat_pseudo_var = 8,
+     .			cat_constant   = 9,
+     .			cat_file_rev   = 10 )
+
+* codes referring to the user-defined variables
+	INTEGER		uvar_deleted,
+     .			uvar_no_more_vars,
+     .			cmnd_uvars_not_given,
+     .			uvlim_irrelevant,
+     .			uvlim_gvn_gnl,
+     .			uvlim_gvn_lo,
+     .			uvlim_gvn_lohi,
+     .			uvlim_gvn_xact,
+     .			uvlim_needed,
+     .			uvlim_need_lo,
+     .			uvlim_need_lohi,
+     .			uvlim_need_xact,
+     .			uvlim_unknown
+	PARAMETER     ( uvar_deleted		= -9,
+     .			uvar_no_more_vars	= -8,
+     .			cmnd_uvars_not_given	= -9,
+     .			uvlim_irrelevant	= -1,
+     .			uvlim_gvn_gnl		= 0,
+     .			uvlim_gvn_lo		= 1,
+     .			uvlim_gvn_lohi		= 2,
+     .			uvlim_gvn_xact		= 3,
+     .			uvlim_needed		= 4,
+     .			uvlim_need_lo		= 5,
+     .			uvlim_need_lohi		= 6,
+     .			uvlim_need_xact		= 7,
+     .			uvlim_unknown		= 100 )	! must be largest
+
+* conversion factors
+* convert [calcm**-2sec-1] to [wattm**-2] using rocp = 1 for water
+	REAL		q2wattm2 
+	PARAMETER     ( q2wattm2 = 86400./2.06 )
+
+* codes to interpret the instance of component variables needed for calculating
+* cvars (qdfz,rho, etc.) ... default is locations relative to current.
+* each of the special conditions (absolute, hourly-only, etc) is represented by
+* values greater than the flag pcv_*_flg with pcv_*_0 representing a coded
+* zero and pcv_*_1 representing an encoded 1
+* values encoded in pcv_keq1_* are absolute positions of components in a
+* calculation which are relevant only at k=1
+	INTEGER		pcv_range,		! allow +-range for each case
+     .			pcv_abs_flg,		! absolute positions ... eg. k=1
+     .			pcv_abs_0,
+     .			pcv_abs_1,
+     .			pcv_hourly_flg,	! use delta-t=0 unless hourly
+     .			pcv_hourly_0,
+     .			pcv_keq1_flg,		! component needed only at k=1
+     .			pcv_keq1_0,
+     .			pcv_keq1_1,
+     .			pcv_spec_flg		! flag special data set calcs
+	PARAMETER     ( pcv_range 	= 500,
+     .			pcv_abs_flg	= 1001,	! 1001<x<2000 ==> abs
+     .			pcv_spec_flg	= 1000,	! var#>1000 ==> special
+     .			pcv_abs_0	= pcv_abs_flg    + pcv_range,
+     .			pcv_abs_1	= pcv_abs_0 + 1,
+     .			pcv_hourly_flg  = pcv_abs_flg    + 2*pcv_range,
+     .			pcv_hourly_0	= pcv_hourly_flg + pcv_range,
+     .			pcv_keq1_flg    = pcv_hourly_flg + 2*pcv_range,
+     .			pcv_keq1_0	= pcv_keq1_flg   + pcv_range,
+     .			pcv_keq1_1      = pcv_keq1_0 + 1 )
+
+* codes to designate ( to FUNCTION WORLD ) which end of grid box
+	INTEGER		box_lo_lim,
+     .			box_middle,
+     .			box_hi_lim
+	PARAMETER     (	box_lo_lim = 1,
+     .			box_middle = 2,
+     .			box_hi_lim = 3	)
+
+* codes to designate rounding
+* (in FUNCTION ISUBSCRIPT to resolve ambiguities when coord is on box boundary)
+	INTEGER		round_up,
+     .			round_dn,
+     .			round_never
+	PARAMETER     ( round_up    = 1,
+     .			round_dn    = 2,
+     .			round_never = 3	)
+
+* codes to designate what mathematical transformations have been applied
+	INTEGER		max_plane_transform,
+     .			trans_compress_code,
+     .			trans_no_transform,
+     .			trans_average,
+     .			trans_interpolate,
+     .			trans_integ_def,
+     .			trans_integ_indef,
+     .			trans_max,
+     .			trans_min,
+     .			trans_smth_box,
+     .			trans_smth_binml,
+     .			trans_smth_hanng,
+     .			trans_smth_parzn,
+     .			trans_smth_welch,
+     .			trans_deriv_cntr,
+     .			trans_deriv_fwrd,
+     .			trans_deriv_bkwd,
+     .			trans_subset,
+     .			trans_shift,
+     .			trans_4d_ave,
+     .			trans_4d_int_def,
+     .			trans_fill_ave,
+     .			trans_fill_interp,
+     .			trans_fill_near,
+     .			trans_locate,
+     .                  trans_wgted_eq,
+     .                  trans_sum,
+     .                  trans_run_sum,
+     .                  trans_std_dev,   ! unused
+     .                  trans_variance,
+     .                  trans_npoints,   ! unused
+     .                  trans_good_pt,
+     .                  trans_bad_pt,
+     .                  trans_4d_var,
+     .                  trans_4d_good_pt,
+     .                  trans_4d_bad_pt
+	PARAMETER     ( trans_compress_code = 30,
+     .			trans_no_transform = 1,
+     .			trans_integ_indef  = 2,
+     .			trans_smth_box	   = 3,
+     .			trans_deriv_cntr   = 4,
+     .			trans_deriv_fwrd   = 5,
+     .			trans_deriv_bkwd   = 6,
+     .			trans_subset       = 7,
+     .			trans_shift	   = 8,
+     .			trans_fill_ave	   = 9,
+     .			trans_smth_binml   = 10,
+     .			trans_smth_hanng   = 11,
+     .			trans_smth_parzn   = 12,
+     .			trans_smth_welch   = 13,
+     .                  trans_wgted_eq	   = 14,
+     .                  trans_run_sum	   = 15,
+     .                  trans_std_dev      = 16,
+     .			trans_fill_interp  = 17,
+     .			trans_fill_near    = 18,
+     .			max_plane_transform = trans_fill_near )
+
+	PARAMETER     ( trans_average      = trans_compress_code + 1,
+     .			trans_interpolate  = trans_compress_code + 2,
+     .			trans_integ_def    = trans_compress_code + 3,
+     .			trans_max	   = trans_compress_code + 4,
+     .			trans_min	   = trans_compress_code + 5,
+     .			trans_4d_ave	   = trans_compress_code + 6,
+     .			trans_4d_int_def   = trans_compress_code + 7,
+     .			trans_locate	   = trans_compress_code + 8,
+     .			trans_sum	   = trans_compress_code + 9,
+     .                  trans_variance     = trans_compress_code + 10,
+     .                  trans_npoints      = trans_compress_code + 11,
+     .                  trans_good_pt      = trans_compress_code + 12,
+     .                  trans_bad_pt       = trans_compress_code + 13,
+     .                  trans_4d_var	   = trans_compress_code + 14,
+     .                  trans_4d_good_pt   = trans_compress_code + 15,
+     .                  trans_4d_bad_pt	   = trans_compress_code + 16)
+
+* codes to designate regridding transformations
+! unused but required to compile V4.11 code:
+	INTEGER		prgrd_rdn_dn
+	PARAMETER     (	prgrd_rdn_dn = 7 )
+	INTEGER		max_regrid_trans,
+     .			prgrd_exact,
+     .			prgrd_linear_interp,
+     .			prgrd_average,
+     .			prgrd_xy_ave,
+     .			prgrd_nearest,
+     .			prgrd_associate,
+     .			prgrd_variance,
+     .			prgrd_min,
+     .			prgrd_max,
+     .			prgrd_sum,
+     .			prgrd_good_pt,
+     .			prgrd_modulo,
+     .			prgrd_modvar,
+     .			prgrd_modngd,
+     .			prgrd_modsum,
+     .			prgrd_modmin,
+     .			prgrd_modmax,
+     .			prgrd_from_source,
+     .			prgrd_from_ntrmed,
+     .			pinterpolate
+	PARAMETER     (	max_regrid_trans	= 30,   ! increased 11/95
+     .			prgrd_exact		= 1,
+     .			prgrd_linear_interp	= 2,
+     .			prgrd_average		= 3,
+     .			prgrd_xy_ave		= 4,
+     .			prgrd_nearest		= 5,
+     .			prgrd_associate		= 6,
+     .			prgrd_variance		= 7,
+     .			prgrd_min		= 8,
+     .			prgrd_max		= 9,
+     .			prgrd_sum		= 10,
+     .			prgrd_good_pt		= 11,
+     .			prgrd_modulo		= 12,
+     .			prgrd_modvar		= 13,
+     .			prgrd_modngd		= 14,
+     .			prgrd_modsum		= 15,
+     .			prgrd_modmin		= 16,
+     .			prgrd_modmax		= 17,
+     .			prgrd_from_source	= -6,
+     .			prgrd_from_ntrmed	= -7,
+     .			pinterpolate		= 0 )
+
+* codes to designate classes of items used within algebraic expressions
+	INTEGER		alg_operator,
+     .			alg_constant,
+     .			alg_variable,
+     .			alg_comma,
+     .			alg_function,
+     .			alg_pseudo_var,
+     .			alg_finished,
+     .			alg_unknown,
+     .			alg_log_struct,
+     .			alg_punctuation,
+     .			alg_operand,
+     .			alg_no_op,
+     .			alg_grid_chg_fcn,
+     .			alg_child_var
+	PARAMETER     (	alg_operator   = 1,
+     .			alg_constant   = 2,
+     .			alg_variable   = 3,
+     .			alg_comma      = 4,
+     .			alg_function   = 5,
+     .			alg_pseudo_var = 6,
+     .			alg_finished   = 7,
+     .			alg_unknown    = 8,
+     .			alg_log_struct = 9,
+     .			alg_punctuation= 10,
+     .			alg_operand    = 11,
+     .			alg_no_op      = 12,
+     .			alg_grid_chg_fcn = 13,
+     .			alg_child_var = 14 )
+
+* codes to distinguish between context choices
+* (contexts describe space/time/variable/transformation/data_set,etc.)
+	INTEGER		max_context, min_context, max_cx_predefined
+	PARAMETER     ( max_context = 100,
+     .			max_cx_predefined = 10,
+     .			min_context = 1 - max_cx_predefined )
+
+	INTEGER		cx_none,
+     .			cx_buff,
+     .			cx_last,
+     .			cx_cmnd,
+     .			cx_plot,
+     .			cx_unused_yet,			! available buffer
+     .			cx_stack_ptr_base
+	PARAMETER     (	cx_none = 0,
+     .			cx_buff = 1,
+     .			cx_last = 2,
+     .			cx_cmnd = 3,
+     .			cx_plot = max_context+1,
+     .			cx_unused_yet = max_context+2,
+     .			cx_stack_ptr_base = cx_cmnd )
+
+* aid for documentation flags used to create strings describing variables
+	INTEGER		pdoc_offset_xform,
+     .			pdoc_regrid,
+     .			pdoc_dset
+	PARAMETER     (	pdoc_offset_xform = 6,
+     .			pdoc_regrid = 5,
+     .			pdoc_dset = 6 )
+
+	INTEGER		ovsiz_plane, ovsiz_off
+	PARAMETER     ( ovsiz_off = 0,
+     .			ovsiz_plane = -7 )
+
+	LOGICAL		nest_context,
+     .			replace_context
+
+	PARAMETER     ( nest_context	= .TRUE.,
+     .			replace_context = .FALSE. )
+
+* flag that data has no data set dependencies not in its definition
+	INTEGER		pdset_irrelevant
+	PARAMETER     (	pdset_irrelevant = 0 )
+
+* pointers to the 7 fundamental axes of the Cox/Phil./Sieg. model
+* eg mxt points to the X axis used by TEMP (and SALT, TAU, etc.)
+	INTEGER		mtime, mxt, mxu, myt, myu, mzt, mzw
+	PARAMETER     ( mtime = 1,
+     .			mxt   = 2,
+     .			mxu   = 3,
+     .			myt   = 4,
+     .			myu   = 5,
+     .			mzt   = 6,
+     .			mzw   = 7 )
+
+* pre-defined grids:.....
+* define "lines" ( 1 dimensional components of which grids are assembled)
+* parameter definitions are pointers to the lines
+*			("m" indicates parameter, "ps"= Philander/Seigel)
+	INTEGER		mpsxt, mpsxu, mpsyt, mpsyu, mpszt, mpszw
+	PARAMETER (	mpsxt	= 1,
+     .			mpsxu	= 2,
+     .			mpsyt	= 3,
+     .			mpsyu	= 4,
+     .			mpszt	= 5,
+     .			mpszw	= 6 )
+
+* define grids, themselves...
+* grids are formed of "outer products" (rectangular arrays) or "inner products"
+*	(ordered tuples) of lines.  (To use inner products the lines must be of
+*	the same length.)
+	INTEGER		mgrid_buff, mps2dt, mps2du, mps3dt, mps3du, mps3dw,
+     .			mps3dwu
+	PARAMETER (	mgrid_buff = 0,	! scratch buffer for grids
+     .			mps2dt	= 1,	! 2D temp(erature) grid
+     .			mps2du	= 2,	! 2D taux,tauy grid
+     .			mps3dt	= 3,	! 3D temp/salt grid
+     .			mps3du	= 4,	! 3d u/v grid
+     .			mps3dw	= 5,	! 3D w grid
+     .			mps3dwu	= 6 )	! 3D w grid calculate at uv points
+
+* codes for units
+	INTEGER		punot_app, pudiffusion, puheat_flux, putemp_dt,
+     .			puvel_dt, pupressure, pudensity, pupres_dx, puppt,
+     .			puvelocity, putemperature
+	PARAMETER     (	punot_app	=  1,
+     .			pudiffusion	=  2,
+     .			puheat_flux	=  3,
+     .			putemp_dt	=  4,
+     .			puvel_dt	=  5,
+     .			pupressure	=  6,
+     .			pudensity	=  7,
+     .			pupres_dx	=  8,
+     .			puppt		=  9,
+     .			puvelocity	= 10,
+     .			putemperature	= 11 )
+
+* codes for special grid features...
+* flag values stored in parameters
+	INTEGER		line_not_midpt, mnormal, munknown
+	PARAMETER     ( line_not_midpt	= 0,	! line not midpts of any other
+     .			mnormal		= 0,	! dimension is normal to grid
+     .			munknown	= -1 )	! dimension specs not known
+
+* search codes for locating single character strings ('atoms')
+	INTEGER		atom_not_found, atom_illegal_pos
+	PARAMETER     ( atom_not_found	 = 0,
+     .			atom_illegal_pos = -1 )
+
+* to point to descriptor of context or of memory variable
+	INTEGER		point_to_cx, point_to_mr
+	PARAMETER     ( point_to_cx = -5,
+     .			point_to_mr = -10 )
+
+* default program states
+	INTEGER		default_output_precision,
+     .			default_list_lun
+	PARAMETER     ( default_output_precision = 4,
+     .			default_list_lun	 = 19 )
+
+* display precisions for date/time strings
+	INTEGER		ptime_yr,  ptime_mon, ptime_day, ptime_hr,
+     .			ptime_min, ptime_sec
+	PARAMETER     ( ptime_yr  = 1,
+     .			ptime_mon = 2,
+     .			ptime_day = 3,
+     .			ptime_hr  = 4,
+     .			ptime_min = 5,
+     .			ptime_sec = 6 )
+
+* various modes of output (differentiated for GUI window controls)
+	INTEGER		pttmode_explct, pttmode_ops,
+     .			pttmode_help, pttmode_bull, pttmode_msg
+	PARAMETER     (	pttmode_explct	= 1,	! explicit requests -eg LIST
+     .			pttmode_ops	= 2,	! operational info -eg diag out
+     .			pttmode_help	= 3,	! help text
+     .			pttmode_bull	= 4,	! bulletin -eg vector spacing
+     .			pttmode_msg	= 5 )	! MESSAGE command output
+
+* clues to changes of units from transformations applied
+	INTEGER		punit_mod_variance,
+     .			punit_mod_loc,
+     .			punit_mod_npoints
+	PARAMETER     (	punit_mod_variance = 1,
+     .			punit_mod_loc      = 2,
+     .			punit_mod_npoints  = 3 )
+
+* NetCDF file creation modes (for DODS caching)
+	INTEGER		pcdf_mode_normal,
+     .			pcdf_mode_cache
+	PARAMETER     ( pcdf_mode_normal = 1,
+     .			pcdf_mode_cache = 2 )
+
+
+* various behaviors of axes in grid-changing functions
+* grid-changing functions
+* ... to provide internal instructions to Ferret on how to merge arguments
+	INTEGER		pgc_merge_axis,
+     .			pgc_ignore_axis,
+     .			pgc_impose_axis
+	PARAMETER     ( pgc_merge_axis  = 11,
+     .			pgc_ignore_axis = 12,
+     .			pgc_impose_axis = 13 )
+
+* ... for grid changing functions to describe themselves
+	INTEGER		pgc_axis_supplied_herein,
+     .			pgc_axis_implied_by_args,
+     .			pgc_axis_is_normal,
+     .			pgc_axis_is_abstract
+	PARAMETER     ( pgc_axis_supplied_herein = 101,
+     .			pgc_axis_implied_by_args = 102,
+     .			pgc_axis_is_normal       = 103,
+     .			pgc_axis_is_abstract     = 104 )

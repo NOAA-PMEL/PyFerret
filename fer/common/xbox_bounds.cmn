@@ -1,0 +1,4 @@
+* COMMON XBOX_BOUNDS - axis pointers used by SHADE within PLOT+
+
+	INTEGER bb_xaxis, bb_yaxis, bb_grid
+	COMMON/ XBOX_BOUNDS / bb_xaxis, bb_yaxis, bb_grid

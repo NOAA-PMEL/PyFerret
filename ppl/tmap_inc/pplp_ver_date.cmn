@@ -1,0 +1,8 @@
+*	pplp_ver_date.cmn
+*	J Davison 2.24.93
+
+	character*5	  pplp_ver
+	character*8	  pplp_make_date
+	common/pplp_rev/  pplp_ver,pplp_make_date
+
+

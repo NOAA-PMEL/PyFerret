@@ -1,0 +1,12 @@
+*  COMMON containing GFDL model mask arrays
+* Linux Port *kob* 1/97 - added ifdef check for byte vs. integer
+	COMMON /XGFDL_MASKS/
+     .				umask,		! velocity, wind mask
+     .				tmask,		! temperature, salinity mask
+     .				kmt,		! bottom topography on t grid
+     .				kmu		! bottom topography on u grid
+#ifdef ACCEPTS_BYTE_DECLARATION
+	 BYTE      umask(im,jm), tmask(im,jm), kmt(im,jm), kmu(im,jm)
+#else
+	 INTEGER*1 umask(im,jm), tmask(im,jm), kmt(im,jm), kmu(im,jm)
+#endif

@@ -1,0 +1,26 @@
+* equivalences to COMMON/XDSET_INFO/ used by netCDF files 
+
+* revision 0.00 - 2/92 - by Steve Hankin for  PMEL/TMAP
+* 2/93 *sh* added cd_what_isit for EPIC compatibility
+* 9/95 *kob* added mc_init_stepfile for mutli-file capability
+
+	LOGICAL     cd_scaled(maxvars)
+	INTEGER     cd_varid(maxvars),
+     .	            cd_stepfile(maxdsets),
+     .		    mc_init_stepfile
+	REAL	    cd_add_offset(maxvars),
+     .	            cd_scale_factor(maxvars)	  
+	CHARACTER*4 cd_dset_code(maxdsets)   ! unique code made from dset name
+	CHARACTER*4 cd_what_isit(num_aux, maxdsets)
+    
+	EQUIVALENCE (cd_scaled,        ds_ndataperrec),
+     .	            (cd_varid,         ds_aux_set_num),
+     .	            (cd_add_offset,    ds_nrecpervar ),
+     .	            (cd_scale_factor,  ds_nrecb4var  ),
+     .		    (cd_stepfile,      ds_ntuple     ),
+     .		    (cd_dset_code,     ds_prog_rev   ),
+     .		    (cd_what_isit,     ds_aux_modnum ),
+     .		    (mc_init_stepfile, ds_aux_modnum )
+
+* still available: INTEGER*2 ds_npospervar(maxvars)
+*          and     cd_what_isit(*,dset) - only (1,dset) used by EPIC

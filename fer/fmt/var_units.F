@@ -1,0 +1,91 @@
+	CHARACTER*(*) FUNCTION VAR_UNITS( cx )
+
+* return units text string for variable
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 4/4/88
+* V200:  6/20/89 - eliminated "named" variables
+*	  1/3/90 - mr --> cx
+*	 1/12/90 - allow unit changes by transforms
+*       10/22/92 - added units on uvars
+* V420: variable units may be modified by regrid transforms of the variable
+
+#ifdef unix
+	include	'tmap_format/tmap_dims.parm'
+	include	'tmap_format/xdset_info.cmn_text'
+	external xdset_info_data
+	include 'tmap_format/xtm_grid.cmn_text'
+	external xgt_grid_data
+	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/xtext_info.cmn'
+	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret_cmn/xcalc_vars.cmn'
+	include	'ferret_cmn/xvariables.cmn'
+#else
+	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+#endif
+
+* calling argument declarations
+	INTEGER	cx
+
+* internal variable declarations
+	LOGICAL UNIT_CHG_AX
+	INTEGER	TM_LENSTR1, slen, category, variable, idim, axis, trans
+
+
+* initialize
+	category = cx_category( cx )
+	variable = cx_variable( cx )
+
+* select units by category of variable
+	IF     ( category .EQ. cat_file_var ) THEN
+
+	   VAR_UNITS = ds_var_units( variable )
+
+	ELSEIF ( category .EQ. cat_calc_var ) THEN
+
+	   VAR_UNITS = unit_text( cvar_unit_code(variable) )
+
+	ELSEIF ( category .EQ. cat_user_var ) THEN
+
+	   VAR_UNITS = uvar_units( variable )
+
+	ELSEIF ( category .EQ. cat_pseudo_var 
+     .	   .OR.  category .EQ. cat_constant ) THEN
+
+	   VAR_UNITS = ' '
+
+	ELSE
+
+	   VAR_UNITS = 'unit_err'
+
+	ENDIF
+
+* certain transformations change the units
+	IF ( UNIT_CHG_AX( cx, idim, trans ) ) THEN
+	   IF ( trans .EQ. punit_mod_loc ) THEN
+	      axis = grid_line( idim, cx_grid(cx) )
+	      VAR_UNITS = line_units( axis )
+	   ELSEIF ( trans .EQ. punit_mod_variance ) THEN
+	      IF ( VAR_UNITS .NE. ' ' ) THEN
+	         slen = TM_LENSTR1(VAR_UNITS)
+	         VAR_UNITS = '('//VAR_UNITS(:slen) // ')^2'
+	      ENDIF
+	   ELSEIF ( trans .EQ. punit_mod_npoints ) THEN
+	      VAR_UNITS = '# of points'
+	   ENDIF	      
+
+	ENDIF
+
+	RETURN
+	END

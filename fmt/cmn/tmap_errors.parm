@@ -1,0 +1,98 @@
+* TMAP_ERRORS.PARM
+*
+* error code PARAMETERS pertaining to TMAP file formats
+* error coding:
+*	pspecial+1--> pregular	           - errors requiring special action
+*       pregular+1--> pregular+num_regular - regular error messages
+*	pcdferr+1 --> pcdferr+pcdferrmax   - netCDF error messages
+
+! huh ? *sh* 2/92 - leftover, incorrect coding description, below ??
+!*	pspecial+1--> pnofile	- error codes requiring special action
+!*	pnofile+1 --> pwfile	- error codes without associated filenames
+!*	pwfile +1 --> ...	- error codes with    associated filenames
+*
+* revision 0.00 - 05/07/87 - By Mark Verschell for PMEL/TMAP
+* revision 0.01 - 05/04/88 - *sh* added merr_no_action
+*
+
+* internally used PARAMETERS:
+	INTEGER		num_special,num_regular,pspecial,pregular,
+     .			no_stepfile, no_varfile, no_descfile, no_varid,
+     .	                pcdferr, pcdferrmax
+	CHARACTER*1	no_errstring
+	PARAMETER      (num_special	= 3,
+     .			num_regular	= 41,
+     .			pspecial	= 2,	! avoid 0,1 as too special
+     .			pregular	= 200,
+     .			pcdferr		= 1000,
+     .			pcdferrmax	= 500,
+     .			no_errstring	= ' ',
+     .			no_stepfile	= -991,
+     .			no_varfile	= -991,
+     .			no_varid	= -9,
+     .			no_descfile	= -999)
+
+* special errors
+	INTEGER		 merr_ok,  merr_erreq,  merr_interrupt, merr_no_action
+	PARAMETER      (merr_ok		= 1 + pspecial,
+     .			merr_erreq	= 1 + merr_ok,
+     .			merr_interrupt	= 1 + merr_erreq,
+     .			merr_no_action	= 1 + merr_interrupt )
+
+* regular errors
+	INTEGER		merr_notsupport, merr_filpos, merr_tstep,
+     .			merr_expnum, merr_modnum, merr_notmounted,
+     .			merr_stepform, merr_eof, merr_nmlerr,
+     .			merr_unkvar, merr_unkgrid, merr_unkline,
+     .			merr_stpmtch, merr_filim, merr_nostep,
+     .			merr_dsetlim, merr_varlim, merr_outofgrid,
+     .			merr_badsubscr, merr_auxlim, merr_grfillim,
+     .			merr_gridlim, merr_linelim, merr_keynf,
+     .			merr_gridpredef, merr_lineundef, merr_linepredef,
+     .			merr_badgriddef, merr_badlinedef,
+     .			merr_linstorlim, merr_nocoordlin, merr_unktype,
+     .			merr_syntax, merr_undefline,merr_notimeinfo,
+     .			merr_varform, merr_varmtch, merr_badtimedef,
+     .			merr_dsetnf, merr_stepnf, merr_badcolmn
+	PARAMETER      (merr_notsupport	= 1 + pregular,
+     .			merr_filpos	= 1 + merr_notsupport,
+     .			merr_tstep	= 1 + merr_filpos,
+     .			merr_expnum	= 1 + merr_tstep,
+     .			merr_modnum	= 1 + merr_expnum,
+     .			merr_notmounted	= 1 + merr_modnum,
+     .			merr_stepform   = 1 + merr_notmounted,
+     .			merr_eof	= 1 + merr_stepform,
+     .			merr_nmlerr	= 1 + merr_eof,
+     .			merr_unkvar	= 1 + merr_nmlerr,
+     .			merr_unkgrid	= 1 + merr_unkvar,
+     .			merr_unkline	= 1 + merr_unkgrid,
+     .			merr_stpmtch	= 1 + merr_unkline,
+     .			merr_filim	= 1 + merr_stpmtch,
+     .			merr_nostep	= 1 + merr_filim,
+     .			merr_dsetlim	= 1 + merr_nostep,
+     .			merr_varlim     = 1 + merr_dsetlim,
+     .			merr_outofgrid	= 1 + merr_varlim,
+     .			merr_badsubscr  = 1 + merr_outofgrid,
+     .			merr_auxlim	= 1 + merr_badsubscr,
+     .			merr_grfillim	= 1 + merr_auxlim,
+     .			merr_gridlim	= 1 + merr_grfillim,
+     .			merr_linelim	= 1 + merr_gridlim,
+     .			merr_keynf	= 1 + merr_linelim )
+	PARAMETER (
+     .			merr_gridpredef	= 1 + merr_keynf,
+     .			merr_lineundef	= 1 + merr_gridpredef,
+     .			merr_linepredef	= 1 + merr_lineundef,
+     .			merr_badgriddef	= 1 + merr_linepredef,
+     .			merr_badlinedef	= 1 + merr_badgriddef,
+     .			merr_badtimedef	= 1 + merr_badlinedef,
+     .			merr_linstorlim	= 1 + merr_badtimedef,
+     .			merr_nocoordlin	= 1 + merr_linstorlim,
+     .			merr_unktype	= 1 + merr_nocoordlin,
+     .			merr_syntax	= 1 + merr_unktype,
+     .			merr_undefline	= 1 + merr_syntax,
+     .			merr_notimeinfo	= 1 + merr_undefline,
+     .			merr_varform	= 1 + merr_notimeinfo,
+     .			merr_varmtch	= 1 + merr_varform,
+     .			merr_dsetnf	= 1 + merr_varmtch,
+     .			merr_stepnf	= 1 + merr_dsetnf,
+     .			merr_badcolmn	= 1 + merr_stepnf )

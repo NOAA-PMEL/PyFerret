@@ -1,0 +1,14 @@
+* EZ_LIB.PARM
+*
+* revision 0.00 - 08/07/89 - by Mark Verschell for PMEL/TMAP
+* 7/92 *sh*:
+* increased parameter limits flagging the changes with "xarmchg date" ("x"="p")
+* so that automatic procedures can select which group of parameters to choose
+* 2/95 *sh* increased maxezvars from 10 to 20
+ 
+* EZ lib parameters
+	INTEGER*4	maxezvars, maxezinput
+!	PARAMETER     ( maxezvars  = 10 )   ! *parmchg: pre 2/95
+	PARAMETER     ( maxezvars  = 20 )   ! 
+!	PARAMETER     ( maxezinput = 300 )  ! *parmchg: pre 7/92
+	PARAMETER     ( maxezinput = 1000 ) ! *parmchg: now

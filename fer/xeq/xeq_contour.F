@@ -1,0 +1,249 @@
+	SUBROUTINE XEQ_CONTOUR( memory )
+
+* execute the CONTOUR command
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 1/5/87 copied from rev. 0.0 of XEQ_PLOT (6/3/86) with changes
+*		 to allow multiple mrs in a single expression
+*		 and with separate subroutines for graphics set-up
+* revision 0.1 - 2/25/87 - changes for INTERPRETATION STACK
+* revision 0.2 - 6/24/87 - incorporated 90 degree in-plane transpose
+*			   and DISP_INIT separated from DISP_SET_UP
+* revision 0.3 - 7/8/87  - DISP_LABELS separated from DISP_SET_UP
+* revision 0.4 - 7/28/87 - added CALL DISP_PREP
+* revision 0.5 - ????    - plots not automatically transposed in XT plane
+* revision 0.6 - 3/2/88  - check for valid data range before PLOT+ auto-scaling
+* revision 0.7 - 4/14/88 - added /NOLABELS option and range check-->DISP_SET_UP
+* revision 0.8 - 4/28/88 - set up PPLUS LEV command if no data range
+* revision 0.9 - 8/2/88  - added MODE WAIT
+* revision 1.0 - 9/21/88 - do_labels --> no_labels: /NOLABEL processing chged
+* revision 1.1 - 1/25/89 - PPLUS interruptibility - chg for multiple plots
+* revision 1.2 - 5/1/89  - PPL LEVELS not cleared for no_range if /LEVELS_SAME
+* V200:  5/19/89 - 4D symmetrical
+*		 - obtain oversized data region to fill contours to edges
+*	  1/4/89 - using keys for labelling
+*	 3/13/90 - check status from DISP_PREP
+* V230:   6/8/92 - added CONTOUR/FILL/KEY/LINE/NOKEY
+*       10/22/92 - removed dependence on shade_vars.cmn using PPLCMND(SHAKEY)
+*        11/9/92 - protect colors before doing a color overlay
+*                - default for KEY is off on overlays
+* V300:  3/11/93 - added /SPECTRUM=
+* V301:	  1/7/94 - bug fix: (see DISP_DATA_SET_UP) must unprotect plot data
+*	 2/10/94 - added /PEN=
+* V312: 5/94 - array "memory" as a calling argument
+* V320:   1/20/94 - changes to SAVE_FRAME call reflecting C-based procedures
+* 12/96 *kob* - Linux Port - had to move variable assignments off of
+*               declaration line.
+* V450:  5/29/97 - added /NOAXES qualifier (useful in curvilinear plots)
+
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+	include	'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include 'ferret_cmn/slash.parm'
+	include 'ferret_cmn/xplot_state.cmn'
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret_cmn/plot_setup.parm'
+	include 'ferret_cmn/xplot_setup.cmn'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
+	INCLUDE 'FERRET_CMN:SLASH.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
+#endif
+	
+* calling argument declarations:
+	REAL	memory( mem_blk_size, max_mem_blks )
+
+* internal variable declarations:
+	LOGICAL	  no_range, overlay, transpz, no_labels, fill, usa_line,
+     .            do_key, spectrum, set_up, noaxes
+	INTEGER	  TM_LENSTR1, status, mr, cx, icntr, slen, sp, ipen,
+     .		  ax1_blks, ax1_start, limit, loc,
+     .		  ax2_blks, ax2_start
+	REAL	  vbuf, only_val, aspect
+	PARAMETER (aspect = 0.0)			!kob 12/96
+	CHARACTER TM_FMT*12, LEFINT*4, fname*128
+
+* internal parameter declarations:
+	LOGICAL		norm_dims_only, not_vector
+	PARAMETER     ( norm_dims_only  = .FALSE.,
+     .			not_vector	= .FALSE. )
+
+* set up the graphics environment
+	CALL START_PPLUS
+
+* get the data (possibly ?? on a slightly oversized region)
+!	cx_ovsiz(cx_last) = ovsiz_plane	! ... causes too many headaches !
+	CALL DISP_DATA_SET_UP( memory,
+     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	IF ( status .NE. ferr_ok ) GOTO 5100
+
+* initialize
+	overlay   = qual_given( slash_cont_over_plot ).GT.0 .AND. twodee_on
+	no_labels = qual_given( slash_cont_nolabels  ).GT.0
+	transpz   = qual_given( slash_cont_transpz   ).GT.0
+	set_up    = qual_given( slash_cont_set_up    ).GT.0
+	fill      = qual_given( slash_cont_fill      ).GT.0
+	noaxes    = qual_given( slash_noaxes         ).GT.0
+        sp        = qual_given( slash_cont_spectrum  )
+        spectrum  = sp .GT. 0 .AND. fill
+	usa_line  = .NOT.fill
+     .          .OR. qual_given( slash_cont_line      ).GT.0
+	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,
+     .                                       num_uvars_in_cmnd)
+* ... default orientation for YT and ZT contours has time on horizontal
+	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
+     .							transpz = .NOT.transpz
+
+* user-specified pen color ?  (2/94)
+	loc = qual_given( slash_pen )
+	IF ( loc .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   vbuf, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   limit = num_fancy_lines
+	   IF ( vbuf.GT.limit .OR. vbuf.LE.0.0 ) GOTO 5200
+	   ipen = vbuf
+	ELSE
+	   ipen = -1	! auto-select in DISP_SET_UP
+	ENDIF
+
+	CALL DISP_PREP( status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* set up the axes and title and load the data into PPLUS
+	CALL DISP_SET_UP   ( 	memory,
+     . 			 	not_vector,
+     .				aspect,
+     .				overlay,
+     .				transpz,
+     .				no_labels,
+     .				no_range,
+     .				only_val,
+     .				is_mr,		! pass list
+     .				num_uvars_in_cmnd,
+     .				is_cx,		! pass list
+     .				is_uvar,	
+     .				memory( 1, ax1_start ),
+     .				memory( 1, ax2_start ),
+     .				ipen,
+     .				status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* increment counter of line-style contours on screen
+	IF ( usa_line ) ncont_on = ncont_on + 1
+
+* PPLUS blows up setting auto contour levels if all data have same value
+	IF ( no_range .AND. qual_given( slash_cont_lev_same ) .EQ. 0 )
+     .		CALL PPLCMD ( from, line, 0, 
+     .		'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
+
+* default key
+	   do_key =  (qual_given(slash_cont_key)  .GT. 0)
+     .		.OR. (.NOT.usa_line .AND. .NOT.overlay)
+	   IF (qual_given(slash_cont_nokey) .GT. 0) do_key = .FALSE.
+           IF ( do_key ) THEN
+              CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
+           ELSE
+              CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
+           ENDIF
+
+* protect colors already on-screen before a color overlay
+           IF ( overlay .AND. fill ) CALL PPL_SHASET( 'PROTECT' )
+
+* save old and reset to new color spectrum if requested
+           IF ( spectrum ) THEN
+              CALL EQUAL_STR_LC( cmnd_buff(qual_start(sp):qual_end(sp)),
+     .             fname, status )
+              IF ( status .NE. ferr_ok ) RETURN
+              IF ( fname .EQ. ' ' ) fname = 'default'
+              CALL PPL_SHASET( 'SAVE' )
+              CALL PPL_SHASET( 'SPECTRUM='//fname(1:TM_LENSTR1(fname)) )
+           ENDIF
+
+* turn off axes? (5/29/97)
+	IF ( noaxes ) CALL PPL_AXES_OFF(set_up)
+
+* /set_up only requested ?
+	IF ( set_up ) GOTO 1000
+
+* contour it 
+        IF ( fill ) THEN
+* ... filled contours
+	   IF ( overlay ) THEN
+	      IF ( usa_line ) THEN
+		 CALL PPLCMD ( ' ', ' ', 0,
+     .			'FILL/OVER/' //ppl_wait//' ' , 1, 1 )
+	         IF ( ppl_interrupted ) GOTO 1000
+		 CALL PPLCMD ( ' ', ' ', 0,
+     .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
+	      ELSE
+	         CALL PPLCMD ( ' ', ' ', 0,
+     .			'FILL/OVER/' //ppl_wait//' ' , 1, 1 )
+	      ENDIF
+	   ELSE
+	      IF ( usa_line ) THEN
+		 CALL PPLCMD ( ' ', ' ', 0,
+     .			'FILL/LATCH/'//ppl_wait//' ', 1, 1 )
+	         IF ( ppl_interrupted ) GOTO 1000
+		 CALL PPLCMD ( ' ', ' ', 0,
+     .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
+	      ELSE
+		 CALL PPLCMD ( ' ', ' ', 0,
+     .			'FILL/LATCH/'//ppl_wait//' ', 1, 1 )
+	      ENDIF
+	   ENDIF
+        ELSE
+* ... line-style contour
+	   IF ( overlay ) THEN
+	      CALL PPLCMD ( ' ', ' ', 0,
+     .			'CONTOUR/OVER/' //ppl_wait//' ' , 1, 1 )
+	   ELSE
+	      CALL PPLCMD ( ' ', ' ', 0,
+     .			'CONTOUR/LATCH/'//ppl_wait//' ', 1, 1 )
+	   ENDIF
+        ENDIF
+
+* protect the new colors and restore the original color spectrum
+           IF ( spectrum ) THEN
+              CALL PPL_SHASET( 'PROTECT' )
+              CALL PPL_SHASET( 'SPECTRUM' )
+           ENDIF
+
+* restore axes? (5/29/97)
+	IF ( noaxes ) CALL PPL_AXES_RESTORE
+
+* interrupt occurred during plot ?
+	IF ( ppl_interrupted ) GOTO 1000
+
+* capture the bit map ?
+	IF ( qual_given( slash_cont_frame ) .GT. 0 ) THEN
+	   CALL SAVE_FRAME( frame_file, "HDF", status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
+* release the memory used for axis buffers
+ 1000 	CALL FREE_MEMORY( ax2_start, ax2_blks )
+ 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+	CALL UNPROTECT_CMND_DATA			! 1/94
+ 5100	RETURN
+
+* error exits
+ 5000	GOTO 1000
+ 5200   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Legal range is 1 to '//LEFINT(limit,slen), *1000 )
+
+	END

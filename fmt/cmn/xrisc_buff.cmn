@@ -1,0 +1,12 @@
+* XRISC - *sh* 2/1/91
+* RISC/FORTRAN compiler can't handle CHARACTER*(*) variables used in
+* character string concatenations ("//")
+* this common declares a buffer with a fixed length string in which to copy
+* the CHAR*(*) string
+
+	INTEGER     size_rbuff
+	PARAMETER ( size_rbuff = 256 )
+
+	COMMON/ XRISC_BUFF / len_rbuff, risc_buff
+	CHARACTER  risc_buff*(size_rbuff)
+	INTEGER    len_rbuff

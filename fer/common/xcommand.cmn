@@ -1,0 +1,397 @@
+* XCOMMAND.CMN
+* COMMON declaration for command,subcommand and qualifier names
+* 4/23/96 - increased total_num_alias from 30 to 150
+*	  - increased number of commands by 6 (adding IF, ELSE, ELIF, ENDIF)
+*			and room for growth
+
+* PARAMETERS are used to store numbers of subcommands and qualifiers for use
+* in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
+* arrays SUBCOMMANDS and QUALIFIERS.  This is done so that new commands,
+* subcommands and qualifiers may be added without manually recomputing the
+* pointer values.
+
+* parameter naming:
+*	nsubN		- number of subcommands of command N (always > 0 since
+*			  "    " is always regarded as a subcommand
+*	nqualNx		- number of qualifiers for command N, subcommand x
+*			  all qualifiers are "global" rather than "positional"
+*	nsub_atN	- pointer into array SUBCOMMANDS to first subcommand of
+*			  command N
+*	nqual_atNx	- pointer into array QUALIFIERS to first qualifier 
+*			  of command N, subcommand x. 
+
+* adding new commands,subcommands and qualifiers:
+* commands    - To add a command simply define the parameters for the new
+*		command at the end of the existing commands and update the 
+*		"summary PARAMETERS".  Then make corresponding additions to 
+*		BLOCK DATA XCOMMAND_DATA.
+* subcommands -	To add new subcommands simply change nsubN and insert additional
+*		lines of nqualNx = ... defining the numbers of qualifiers.  Be
+*		sure that nqual_atN+1a is updated.  Then make the corresponding
+*		additions to BLOCK DATA XCOMMAND_DATA.
+* qualifiers  -	To add new qualifiers simply update nqualNx and make the
+*		corresponding changes in BLOCK DATA XCOMMAND_DATA.
+
+
+* pointers to first elements of arrays
+	INTEGER		 nsub_at1  , nqual_at1a
+	PARAMETER	(nsub_at1=1, nqual_at1a=1)
+
+* SET		 - commmand # 1
+	INTEGER		nsub1      , nsub_at2  ,
+     .			nqual1a    , nqual_at1b,
+     .			nqual1b    , nqual_at1c,
+     .			nqual1c    , nqual_at1d,
+     .			nqual1d    , nqual_at1e,
+     .			nqual1e    , nqual_at1f,
+     .			nqual1f    , nqual_at1g,
+     .			nqual1g    , nqual_at1h,
+     .			nqual1h    , nqual_at1i,
+     .			nqual1i    , nqual_at1j,
+     .			nqual1j    , nqual_at1k,
+     .			nqual1k    , nqual_at1l,
+     .			nqual1l    , nqual_at1m,
+     .			nqual1m    , nqual_at1n,
+     .			nqual1n    , nqual_at1o,
+     .			nqual1o    , nqual_at1p,
+     .			nqual1p    , nqual_at1q,
+     .			nqual1q    , nqual_at1r,
+     .			nqual1r    , nqual_at1s,
+     .			nqual1s    , nqual_at1t,
+     .			nqual1t    , nqual_at2a
+	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
+     .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
+     .			nqual1b = 6, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
+     .			nqual1c =18, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
+     .			nqual1d = 1, nqual_at1e = nqual_at1d + nqual1d,	!'VIEW'
+     .			nqual1e = 0, nqual_at1f = nqual_at1e + nqual1e,	!'EXPR'
+     .			nqual1f = 5, nqual_at1g = nqual_at1f + nqual1f,	!'LIST'
+     .			nqual1g =10, nqual_at1h = nqual_at1g + nqual1g,	!'DATA'
+     .			nqual1h = 1, nqual_at1i = nqual_at1h + nqual1h,	!'MODE'
+     .			nqual1i = 5, nqual_at1j = nqual_at1i + nqual1i,	!'MOVI'
+     .			nqual1j = 7, nqual_at1k = nqual_at1j + nqual1j,	!'VARI'
+     .			nqual1k = 2, nqual_at1l = nqual_at1k + nqual1k,	!'GRID'
+     .			nqual1l = 2, nqual_at1m = nqual_at1l + nqual1l,	!'AXIS'
+     .			nqual1m = 2, nqual_at1n = nqual_at1m + nqual1m,	!'MEMO'
+     .			nqual1n = 2, nqual_at1o = nqual_at1n + nqual1n,	!'****'
+     .			nqual1o = 2, nqual_at1p = nqual_at1o + nqual1o,	!'****'
+     .			nqual1p = 2, nqual_at1q = nqual_at1p + nqual1p,	!'****'
+     .			nqual1q = 2, nqual_at1r = nqual_at1q + nqual1q,	!'****'
+     .			nqual1r = 2, nqual_at1s = nqual_at1r + nqual1r,	!'****'
+     .			nqual1s = 4, nqual_at1t = nqual_at1s + nqual1s,	!'****'
+     .			nqual1t = 4, nqual_at2a = nqual_at1t + nqual1t	!'****'
+     .		      )
+
+ 
+* SHOW		 - commmand # 2
+	INTEGER		nsub2      , nsub_at3  ,
+     .			nqual2a    , nqual_at2b,
+     .			nqual2b    , nqual_at2c,
+     .			nqual2c    , nqual_at2d,
+     .			nqual2d    , nqual_at2e,
+     .			nqual2e    , nqual_at2f,
+     .			nqual2f    , nqual_at2g,
+     .			nqual2g    , nqual_at2h,
+     .			nqual2h    , nqual_at2i,
+     .			nqual2i    , nqual_at2j,
+     .			nqual2j    , nqual_at2k,
+     .			nqual2k    , nqual_at2l,
+     .			nqual2l    , nqual_at2m,
+     .			nqual2m    , nqual_at2n,
+     .			nqual2n    , nqual_at2o,
+     .			nqual2o    , nqual_at2p,
+     .			nqual2p    , nqual_at2q,
+     .			nqual2q    , nqual_at2r,
+     .			nqual2r    , nqual_at2s,
+     .			nqual2s    , nqual_at2t,
+     .			nqual2t    , nqual_at2u,
+     .			nqual2u    , nqual_at2v,
+     .			nqual2v    , nqual_at3a
+	PARAMETER    (	nsub2   =22, nsub_at3   = nsub_at2   + nsub2,
+     .			nqual2a = 1, nqual_at2b = nqual_at2a + nqual2a,	!'    '
+     .			nqual2b = 1, nqual_at2c = nqual_at2b + nqual2b,	!'WIND'
+     .			nqual2c = 1, nqual_at2d = nqual_at2c + nqual2c,	!'REGI'
+     .			nqual2d = 1, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
+     .			nqual2e = 1, nqual_at2f = nqual_at2e + nqual2e,	!'EXPR'
+     .			nqual2f = 1, nqual_at2g = nqual_at2f + nqual2f,	!'LIST'
+     .			nqual2g = 6, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
+     .			nqual2h = 1, nqual_at2i = nqual_at2h + nqual2h,	!'MODE'
+     .			nqual2i = 1, nqual_at2j = nqual_at2i + nqual2i,	!'MOVI'
+     .			nqual2j = 5, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'
+     .			nqual2k = 1, nqual_at2l = nqual_at2k + nqual2k,	!'COMM'
+     .			nqual2l = 5, nqual_at2m = nqual_at2l + nqual2l,	!'MEMO'
+     .			nqual2m =11, nqual_at2n = nqual_at2m + nqual2m,	!'GRID'
+     .			nqual2n = 3, nqual_at2o = nqual_at2n + nqual2n,	!'VIEW'
+     .			nqual2o = 1, nqual_at2p = nqual_at2o + nqual2o,	!'TRAN'
+     .			nqual2p = 1, nqual_at2q = nqual_at2p + nqual2p,	!'ALIA'
+     .			nqual2q = 1, nqual_at2r = nqual_at2q + nqual2q,	!'****'
+     .			nqual2r = 1, nqual_at2s = nqual_at2r + nqual2r,	!'****'
+     .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'****'
+     .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'****'
+     .			nqual2u = 3, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
+     .			nqual2v = 3, nqual_at3a = nqual_at2v + nqual2v	!'QUER'
+     .		      )
+
+* CANCEL 	 - commmand # 3
+	INTEGER		nsub3      , nsub_at4  ,
+     .			nqual3a    , nqual_at3b,
+     .			nqual3b    , nqual_at3c,
+     .			nqual3c    , nqual_at3d,
+     .			nqual3d    , nqual_at3e,
+     .			nqual3e    , nqual_at3f,
+     .			nqual3f    , nqual_at3g,
+     .			nqual3g    , nqual_at3h,
+     .			nqual3h    , nqual_at3i,
+     .			nqual3i    , nqual_at3j,
+     .			nqual3j    , nqual_at3k,
+     .			nqual3k    , nqual_at3l,
+     .			nqual3l    , nqual_at3m,
+     .			nqual3m    , nqual_at3n,
+     .			nqual3n    , nqual_at3o,
+     .			nqual3o    , nqual_at3p,
+     .			nqual3p    , nqual_at3q,
+     .			nqual3q    , nqual_at3r,
+     .			nqual3r    , nqual_at3s,
+     .			nqual3s    , nqual_at3t,
+     .			nqual3t    , nqual_at4a
+	PARAMETER    (	nsub3   =20, nsub_at4   = nsub_at3   + nsub3,
+     .			nqual3a = 0, nqual_at3b = nqual_at3a + nqual3a,	!'    '
+     .			nqual3b = 1, nqual_at3c = nqual_at3b + nqual3b,	!'WIND'
+     .			nqual3c = 9, nqual_at3d = nqual_at3c + nqual3c,	!'REGI'
+     .			nqual3d = 3, nqual_at3e = nqual_at3d + nqual3d,	!'MEMO'
+     .			nqual3e = 1, nqual_at3f = nqual_at3e + nqual3e,	!'EXPR'
+     .			nqual3f = 6, nqual_at3g = nqual_at3f + nqual3f,	!'LIST'
+     .			nqual3g = 2, nqual_at3h = nqual_at3g + nqual3g,	!'DATA'
+     .			nqual3h = 1, nqual_at3i = nqual_at3h + nqual3h,	!'MODE'
+     .			nqual3i = 1, nqual_at3j = nqual_at3i + nqual3i,	!'MOVI'
+     .			nqual3j = 1, nqual_at3k = nqual_at3j + nqual3j,	!'VIEW'
+     .			nqual3k = 3, nqual_at3l = nqual_at3k + nqual3k,	!'VARI'
+     .			nqual3l = 1, nqual_at3m = nqual_at3l + nqual3l,	!'META'
+     .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'****'
+     .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'****'
+     .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'
+     .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'****'
+     .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'****'
+     .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'****'
+     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'****'
+     .			nqual3t = 3, nqual_at4a = nqual_at3t + nqual3t	!'****'
+     .		      )
+
+* CONTOUR	 - commmand # 4
+	INTEGER		nsub4      , nsub_at5 ,
+     .			nqual4a    ,nqual_at5a
+	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
+     .			nqual4a = 25,nqual_at5a = nqual_at4a + nqual4a  )
+
+* LIST		 - commmand # 5
+	INTEGER		nsub5      , nsub_at6  ,
+     .			nqual5a    , nqual_at6a
+	PARAMETER    (	nsub5   = 1, nsub_at6   = nsub_at5   + nsub5,
+     .			nqual5a =30, nqual_at6a = nqual_at5a + nqual5a  )
+
+* PLOT	 	- commmand # 6
+	INTEGER		nsub6      , nsub_at7  ,
+     .			nqual6a    , nqual_at7a
+	PARAMETER    (	nsub6   = 1, nsub_at7   = nsub_at6   + nsub6,
+     .			nqual6a =25, nqual_at7a = nqual_at6a + nqual6a  )
+
+* GO		 - commmand # 7
+	INTEGER		nsub7      , nsub_at8   ,
+     .			nqual7a    , nqual_at8a
+	PARAMETER    (	nsub7   = 1, nsub_at8   = nsub_at7   + nsub7,
+     .			nqual7a = 9, nqual_at8a = nqual_at7a + nqual7a  )
+
+* HELP		 - commmand # 8
+	INTEGER		nsub8      , nsub_at9  ,
+     .			nqual8a    , nqual_at9a
+	PARAMETER    (	nsub8   = 1, nsub_at9   = nsub_at8   + nsub8,
+     .			nqual8a = 0, nqual_at9a = nqual_at8a + nqual8a  )
+
+* LOAD		 - commmand # 9
+	INTEGER		nsub9      , nsub_at10  ,
+     .			nqual9a    , nqual_at10a
+	PARAMETER    (	nsub9   = 1, nsub_at10   = nsub_at9   + nsub9,
+     .			nqual9a =15, nqual_at10a = nqual_at9a + nqual9a  )
+
+* DEFINE	 - commmand # 10
+	INTEGER		nsub10      , nsub_at11  ,
+     .			nqual10a    , nqual_at10b,
+     .			nqual10b    , nqual_at10c,
+     .			nqual10c    , nqual_at10d,
+     .			nqual10d    , nqual_at10e,
+     .			nqual10e    , nqual_at10f,
+     .			nqual10f    , nqual_at10g,
+     .			nqual10g    , nqual_at10h,
+     .			nqual10h    , nqual_at11a
+	PARAMETER    (	nsub10   = 8, nsub_at11   = nsub_at10   + nsub10,
+     .			nqual10a = 0, nqual_at10b = nqual_at10a + nqual10a,!'  '
+     .			nqual10b =18, nqual_at10c = nqual_at10b + nqual10b,!REGI
+     .			nqual10c =11, nqual_at10d = nqual_at10c + nqual10c,!GRID
+     .			nqual10d = 6, nqual_at10e = nqual_at10d + nqual10d,!VARI
+     .			nqual10e = 12, nqual_at10f = nqual_at10e + nqual10e,!AXIS
+     .			nqual10f = 8, nqual_at10g = nqual_at10f + nqual10f,!VIEW
+     .			nqual10g = 2, nqual_at10h = nqual_at10g + nqual10g,!****
+     .			nqual10h = 2, nqual_at11a = nqual_at10h + nqual10h !****
+     .		      )
+* EXIT		 - commmand # 11
+	INTEGER		nsub11      , nsub_at12  ,
+     .			nqual11a    , nqual_at12a
+	PARAMETER    (	nsub11   = 1, nsub_at12   = nsub_at11   + nsub11,
+     .			nqual11a = 1, nqual_at12a = nqual_at11a + nqual11a  )
+
+* MESSAGE	 - commmand # 12
+	INTEGER		nsub12      , nsub_at13  ,
+     .			nqual12a    , nqual_at13a
+	PARAMETER    (	nsub12   = 1, nsub_at13   = nsub_at12   + nsub12,
+     .			nqual12a = 2, nqual_at13a = nqual_at12a + nqual12a  )
+
+* VECTOR		 - commmand # 13
+	INTEGER		nsub13       , nsub_at14 ,
+     .			nqual13a     ,nqual_at14a
+	PARAMETER    (	nsub13   = 1, nsub_at14    = nsub_at13   + nsub13,
+     .			nqual13a = 25,nqual_at14a  = nqual_at13a + nqual13a  )
+
+* PPLUS		 - commmand # 14
+	INTEGER		nsub14      , nsub_at15 ,
+     .			nqual14a    , nqual_at15a
+	PARAMETER    (	nsub14   = 1, nsub_at15   = nsub_at14   + nsub14,
+     .			nqual14a = 2, nqual_at15a = nqual_at14a + nqual14a  )
+
+* FRAME		 - commmand # 15
+	INTEGER		nsub15      , nsub_at16 ,
+     .			nqual15a    , nqual_at16a
+	PARAMETER    (	nsub15   = 1, nsub_at16   = nsub_at15   + nsub15,
+     .			nqual15a = 4, nqual_at16a = nqual_at15a + nqual15a  )
+
+* REPEAT		 - commmand # 16
+	INTEGER		nsub16       , nsub_at17 ,
+     .			nqual16a     ,nqual_at17a
+	PARAMETER    (	nsub16   = 1, nsub_at17    = nsub_at16   + nsub16,
+     .			nqual16a =10,nqual_at17a  = nqual_at16a + nqual16a  )
+
+* STATISTICS		 - commmand # 17
+	INTEGER		nsub17       , nsub_at18 ,
+     .			nqual17a     ,nqual_at18a
+	PARAMETER    (	nsub17   = 1, nsub_at18    = nsub_at17   + nsub17,
+     .			nqual17a = 16,nqual_at18a  = nqual_at17a + nqual17a  )
+
+* SHADE			 - commmand # 18
+	INTEGER		nsub18       , nsub_at19 ,
+     .			nqual18a     ,nqual_at19a
+	PARAMETER    (	nsub18   = 1, nsub_at19    = nsub_at18   + nsub18,
+     .			nqual18a = 25,nqual_at19a  = nqual_at18a + nqual18a  )
+
+* SPAWN			 - commmand # 19
+	INTEGER		nsub19       , nsub_at20 ,
+     .			nqual19a     ,nqual_at20a
+	PARAMETER    (	nsub19   = 1, nsub_at20    = nsub_at19   + nsub19,
+     .			nqual19a = 0,nqual_at20a  = nqual_at19a + nqual19a  )
+
+* USER/OPT1/OPT2/COMMAND/I/J/...
+	INTEGER		nsub20       , nsub_at21 ,
+     .			nqual20a     ,nqual_at21a
+	PARAMETER    (	nsub20   = 1, nsub_at21    = nsub_at20   + nsub20,
+     .			nqual20a = 14,nqual_at21a  = nqual_at20a + nqual20a  )
+
+* WIRE/I/J/K/L/X/Y/Z/T/D/OVER/SET_/FRAME/VIEW/ZLIM/TITLE
+	INTEGER		nsub21       , nsub_at22 ,
+     .			nqual21a     ,nqual_at22a
+	PARAMETER    (	nsub21   = 1, nsub_at22    = nsub_at21   + nsub21,
+     .			nqual21a = 25,nqual_at22a  = nqual_at21a + nqual21a  )
+
+* QUERY/FILE/****/**** - command number 22
+	INTEGER		nsub22       , nsub_at23 ,
+     .			nqual22a     ,nqual_at23a
+	PARAMETER    (	nsub22   = 1, nsub_at23    = nsub_at22   + nsub22,
+     .			nqual22a = 3,nqual_at23a  = nqual_at22a + nqual22a  )
+
+* IF/****/**** - command number 23
+	INTEGER		nsub23       , nsub_at24 ,
+     .			nqual23a     ,nqual_at24a
+	PARAMETER    (	nsub23   = 1, nsub_at24    = nsub_at23   + nsub23,
+     .			nqual23a = 2,nqual_at24a  = nqual_at23a + nqual23a  )
+
+* ELSE/****/**** - command number 24
+	INTEGER		nsub24       , nsub_at25 ,
+     .			nqual24a     ,nqual_at25a
+	PARAMETER    (	nsub24   = 1, nsub_at25    = nsub_at24   + nsub24,
+     .			nqual24a = 2,nqual_at25a  = nqual_at24a + nqual24a  )
+
+* ELIF/****/**** - command number 25
+	INTEGER		nsub25       , nsub_at26 ,
+     .			nqual25a     ,nqual_at26a
+	PARAMETER    (	nsub25   = 1, nsub_at26    = nsub_at25   + nsub25,
+     .			nqual25a = 2,nqual_at26a  = nqual_at25a + nqual25a  )
+
+* ENDIF/****/**** - command number 26
+	INTEGER		nsub26       , nsub_at27 ,
+     .			nqual26a     ,nqual_at27a
+	PARAMETER    (	nsub26   = 1, nsub_at27    = nsub_at26   + nsub26,
+     .			nqual26a = 2,nqual_at27a  = nqual_at26a + nqual26a  )
+
+* ****/****/**** - command number 27
+	INTEGER		nsub27       , nsub_at28 ,
+     .			nqual27a     ,nqual_at28a
+	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
+     .			nqual27a = 4,nqual_at28a  = nqual_at27a + nqual27a  )
+
+* ****/****/**** - command number 28
+	INTEGER		nsub28       , nsub_at29 ,
+     .			nqual28a     ,nqual_at29a
+	PARAMETER    (	nsub28   = 1, nsub_at29    = nsub_at28   + nsub28,
+     .			nqual28a = 2,nqual_at29a  = nqual_at28a + nqual28a  )
+
+* ****/****/**** - command number 29
+	INTEGER		nsub29       , nsub_at30 ,
+     .			nqual29a     ,nqual_at30a
+	PARAMETER    (	nsub29   = 1, nsub_at30    = nsub_at29   + nsub29,
+     .			nqual29a = 2,nqual_at30a  = nqual_at29a + nqual29a  )
+
+* ****/****/**** - command number 30
+	INTEGER		nsub30       , nsub_at31 ,
+     .			nqual30a     ,nqual_at31a
+	PARAMETER    (	nsub30   = 1, nsub_at31    = nsub_at30   + nsub30,
+     .			nqual30a = 2,nqual_at31a  = nqual_at30a + nqual30a  )
+
+* summary PARAMETERS
+	INTEGER		total_num_commands   ,
+     .			total_num_subcommands,
+     .			total_num_qualifiers,
+     .			total_num_alias,
+     .	                num_predefined_alias,
+     .			max_queries
+	PARAMETER    (	total_num_alias		= 150,  ! was 30 pre 4/96
+     .			total_num_commands	= 30,
+     .			total_num_subcommands	= nsub_at31 - 1,
+     .			total_num_qualifiers	= nqual_at31a - 1,
+     .	                num_predefined_alias    = 13,
+     .			max_queries		= 50 )
+
+* declarations
+	CHARACTER*8	commands    (total_num_commands),
+     .			subcommands (total_num_subcommands),
+     .			qualifiers  (total_num_qualifiers)
+	CHARACTER*8	alias_name  (total_num_alias)
+	CHARACTER*8	queries	    (max_queries)
+	CHARACTER*64	alias	    (total_num_alias)	     
+
+	INTEGER*2	num_subcommands   (total_num_commands),
+     .			subcommand_pointer(total_num_commands),
+     .			num_qualifs       (total_num_subcommands),
+     .			qualifier_pointer (total_num_subcommands),
+     .			alias_len	  (total_num_alias)
+	INTEGER		num_queries
+
+	COMMON /XCOMMAND/	commands,
+     .				subcommands,
+     .				qualifiers,
+     .				num_subcommands,
+     .				subcommand_pointer,
+     .				num_qualifs,
+     .				qualifier_pointer,
+     .				alias_name,
+     .				alias_len,
+     .				alias,
+     .				queries, num_queries
+
+

@@ -1,0 +1,74 @@
+	SUBROUTINE HPABMV
+C** 
+C**    @(#)hpabmv.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C	CALL HPABMV
+C
+C	THIS SUBROUTINE DRIVES THE HP7475 AND HP7470 PLOTTERS
+C	THE CORRDINATES OF THE NEW POSITION ARE RECEIVED IN A AND B
+C
+C	D. DENBO   MARCH 1984
+C
+#ifdef unix
+	include 'pplinc/PLTCOM.DAT'
+#else
+	include 'pplinc:PLTCOM.DAT'
+#endif
+	IF(.NOT.PLTFLG)THEN
+	CALL ZBUFFT('DF;SP1;',7)
+	PLTFLG=.TRUE.
+	LPEN=.NOT.PEN
+	ENDIF
+	IF(PEN.AND..NOT.LPEN)THEN
+	CALL ZBUFFT('PD',2)
+	ELSE IF(.NOT.PEN.AND.LPEN)THEN
+	CALL ZBUFFT('PU',2)
+	ELSE 
+	CALL ZBUFFT(',',1)
+	ENDIF
+	DA=A-OLDHPA
+	DB=B-OLDHPB
+	IF(DA.EQ.0.AND.DB.EQ.0.)RETURN
+	CALL HPOUT(INT(A))
+	CALL ZBUFFT(',',1)
+	CALL HPOUT(INT(B))
+	OLDHPA=A
+	OLDHPB=B
+	RETURN
+	END
+#ifdef unix
+	SUBROUTINE HPOUT(IA)
+	character as*5
+	DO 10 I=5,1,-1
+	IA10=IA/10
+	AS(I:I)=char(IA-IA10*10+48)
+	IA=IA10
+	IF(IA.EQ.0)GOTO 11
+10	CONTINUE
+	I=1
+11	CALL ZBUFFT(AS(I:),6-I)
+	RETURN
+	END
+#else
+	SUBROUTINE HPOUT(IA)
+	BYTE AS(5)
+	DO 10 I=5,1,-1
+	IA10=IA/10
+	AS(I)=IA-IA10*10+48
+	IA=IA10
+	IF(IA.EQ.0)GOTO 11
+10	CONTINUE
+	I=1
+11	CALL ZBUFFT(AS(I),6-I)
+	RETURN
+	END
+#endif

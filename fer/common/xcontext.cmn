@@ -1,0 +1,121 @@
+* XCONTEXT.CMN
+* space/time/data_set/variable expression context information
+
+* 1/3/89 - added regridding transformations
+* V200:  5/17/89 - changed to 4D symmetry
+*	12/18/89 - added cx_plot
+* Unix/RISC port 1/91 - variables reordered to accomodate REAL*8 boundaries
+* V420: added cx_impl_grid for implicit grid creation
+* V450: added cx_calendar to enable time < 0
+
+* the declarations below represent a stack of depth max_context for saving
+* the nested contexts.  The bottom few entries in the stack have special uses:
+*	_last	- context left from the last command
+*	_cmnd	- context of command after interpreting command qualifiers
+* the non-positive subscripts are used for storing pre-defined (user defined)
+* contexts
+
+* contexts are nested; the context of the current command is built from
+*	  i)	the default context ( usually left from the last command )
+*	 ii)	the qualifiers included in the current command line
+*	iii)	the qualifiers included with the variable names in expressions
+
+* note:	lists of modifiers to command contexts are also stored temporarily
+*	in the context stack
+
+*	cx_lo_ww	- lower bounds of space/time regions in world coords
+*	cx_lo_ss	- lower bounds of space/time regions in grid subscripts
+*	cx_hi_ww	- upper bounds of space/time regions in world coords
+*	cx_hi_ss	- upper bounds of space/time regions in grid subscripts
+*	cx_delta	- delta increment of space/time regions (in WORLD or
+*		  	  SUBSC according to cx_by_ss )
+*	cx_by_ss	- logical for how dimension was specified by user
+*	cx_trans	- mathematical transform applied to dimension
+*	cx_given	- logical for whether dimension was just changed
+*	cx_dset_gvn	- logical for whether data set was just changed
+*			( "is a context self-contained with respect to dset ? )
+*
+*	cx_unstand_grid	- (logical) - variable on its defining grid ?
+*	cx_regrid_trans	- regridding transformation for each axis
+*	cx_ovsiz	- flags whether data should be oversized
+*	cx_xtra_doc	- documentation flags (as in XPLOT_SETUP)
+
+* allocate some protected contexts at the top of the context stack
+	INTEGER		max_cx
+	PARAMETER     ( max_cx = max_context + 2 )
+
+	REAL*8	cx_lo_ww	 ( 4, min_context:max_cx ),
+     .		cx_hi_ww	 ( 4, min_context:max_cx ),
+     .		cx_delta	 ( 4, max_cx )
+	INTEGER	cx_lo_ss	 ( min_context:max_cx, 4 ),
+     .		cx_hi_ss	 ( min_context:max_cx, 4 ),
+     .		cx_trans	 ( 4, min_context:max_cx ),
+     .		cx_regrid_trans  ( 4, max_cx )
+
+	INTEGER	cx_stack_ptr,
+     .		cx_data_set ( max_cx ),
+     .		cx_category ( max_cx ),
+     .		cx_variable ( max_cx ),
+     .		cx_grid     ( max_cx ),
+     .		cx_ovsiz    ( max_cx ),
+     .		cx_impl_grid( max_cx )
+
+	LOGICAL	cx_unstand_grid	( max_cx ),
+     .		cx_by_ss	( 4, min_context:max_cx ),
+     .		cx_given	( 4, min_context:max_cx ),
+     .		cx_dset_gvn	( max_cx ),
+     .		cx_calendar	( max_cx ),
+     .		cx_grid_needs_dset,
+     .		cx_xtra_doc	( 0:10 ),
+     .		cx_has_impl_grid( max_cx )
+
+	REAL	cx_bad_data	( max_cx ),
+     .		cx_trans_arg	( 4, min_context:max_cx )
+
+	CHARACTER
+     .		cx_name		( min_context:0 )*4
+
+	COMMON / XCONTEXT /
+     .		cx_lo_ww,
+     .		cx_hi_ww,
+     .		cx_delta,
+     .		cx_stack_ptr,
+     .		cx_unstand_grid,
+     .		cx_regrid_trans,
+     .		cx_data_set,
+     .		cx_category,
+     .		cx_variable,
+     .		cx_bad_data,
+     .		cx_grid,
+     .		cx_ovsiz,
+     .		cx_lo_ss,
+     .		cx_hi_ss,
+     .		cx_trans,
+     .		cx_by_ss,
+     .		cx_given,
+     .		cx_dset_gvn,
+     .		cx_calendar,
+     .		cx_trans_arg,
+     .		cx_grid_needs_dset,
+     .		cx_name,
+     .		cx_has_impl_grid,
+     .		cx_impl_grid
+
+* equivalences to assist with declaration statements
+	INTEGER cx_lo_s1( max_cx ),
+     .		cx_lo_s2( max_cx ),
+     .		cx_lo_s3( max_cx ),
+     .		cx_lo_s4( max_cx ),
+     .		cx_hi_s1( max_cx ),
+     .		cx_hi_s2( max_cx ),
+     .		cx_hi_s3( max_cx ),
+     .		cx_hi_s4( max_cx )
+	EQUIVALENCE
+     .		( cx_lo_s1, cx_lo_ss(1,1) ),
+     .		( cx_lo_s2, cx_lo_ss(1,2) ),
+     .		( cx_lo_s3, cx_lo_ss(1,3) ),
+     .		( cx_lo_s4, cx_lo_ss(1,4) ),
+     .		( cx_hi_s1, cx_hi_ss(1,1) ),
+     .		( cx_hi_s2, cx_hi_ss(1,2) ),
+     .		( cx_hi_s3, cx_hi_ss(1,3) ),
+     .		( cx_hi_s4, cx_hi_ss(1,4) )

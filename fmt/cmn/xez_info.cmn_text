@@ -1,0 +1,3 @@
+	COMMON/XEZ_INFO/ez_mods
+
+	LOGICAL  ez_mods(maxdsets)

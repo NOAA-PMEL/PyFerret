@@ -1,0 +1,7 @@
+* names of system-wide logicals or environment variables
+	COMMON /XSYS_NAMES/ tmap_sets, tmap_tsteps, tmap_grids,
+     .                      tmap_model_runs
+
+	CHARACTER*12 tmap_sets, tmap_tsteps, tmap_grids
+	CHARACTER*16 tmap_model_runs
+

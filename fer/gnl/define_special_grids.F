@@ -1,0 +1,107 @@
+	SUBROUTINE DEFINE_SPECIAL_GRIDS
+
+* define "pre_defined" grids not set up by TMAP_FORMAT COMMON
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V200:  6/22/89
+*	10/23/89 - added ez_dflt
+* V300: 6/93 - lengthened axis EZ x10 so that accidental truncations were rarer
+
+#ifdef unix
+	include	'tmap_format/tmap_dims.parm'
+	include	'tmap_format/tmap_errors.parm'
+	include 'tmap_format/xunits.cmn_text'
+	external xunits_data
+	include 'tmap_format/xtm_grid.cmn_text'
+	external xgt_grid_data
+	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/xfr_grid.cmn'
+#else
+	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
+#endif
+
+* local variable declarations:
+	INTEGER	TM_FIND_LINE_SLOT, TM_FIND_GRID_SLOT,
+     .		iline, igrid, idim, status
+
+* "ABSTRACT" axis
+* find a space to catalog it
+	status = TM_FIND_LINE_SLOT( iline )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* save the line in memory - but don't catalog its name
+	line_name     ( iline ) = 'ABSTRACT'
+	line_start    ( iline ) = 1.0D0
+	line_delta    ( iline ) = 1.0D0
+	line_dim      ( iline ) = 9999999
+	line_regular  ( iline ) = .TRUE.
+	line_modulo   ( iline ) = .FALSE.
+	line_units    ( iline ) = ' '
+	line_unit_code( iline ) = 0	! unknown units
+	line_t0       ( iline ) = ' '
+	line_subsc1   ( iline ) = unspecified_int4	! since regular
+	line_direction( iline ) = 'NA'
+
+* "ABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 4 abstract axes
+	DO 100 idim = 1, 4
+	   grid_line    (idim, igrid) = iline
+           grid_out_prod(idim, igrid) = .TRUE.
+ 100	CONTINUE	
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'ABSTRACT'
+
+* save pointer to grid
+	mgrid_abstract = igrid
+
+
+* "EZ" axis
+* find a space to catalog it
+	status = TM_FIND_LINE_SLOT( iline )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* save the line in memory - but don't catalog its name
+	line_name     ( iline ) = 'EZ'
+	line_start    ( iline ) = 1.0D0
+	line_delta    ( iline ) = 1.0D0
+	line_dim      ( iline ) = 20480
+	line_regular  ( iline ) = .TRUE.
+	line_modulo   ( iline ) = .FALSE.
+	line_units    ( iline ) = ' '
+	line_unit_code( iline ) = 0	! unknown units
+	line_t0       ( iline ) = ' '
+	line_subsc1   ( iline ) = unspecified_int4	! since regular
+	line_direction( iline ) = 'NA'
+
+* "EZ" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 axis, only
+	DO 200 idim = 1, 4
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 200	CONTINUE	
+	grid_line    (1, igrid) = iline    
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'EZ'
+
+* save pointer to grid
+	mgrid_ez_dflt = igrid
+	RETURN
+
+ 5000	STOP 'DFN_SPC_GRD'
+	END

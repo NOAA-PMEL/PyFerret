@@ -1,0 +1,29 @@
+*DECK MESH
+      SUBROUTINE MESH (DX,DY)
+      INTEGER  IM, JM, NX, NY
+      PARAMETER (IM=160,JM=100,NX= 1,NY=3)
+	INTEGER l, m, n
+      REAL DX(IM),DY(JM)
+      REAL XMAX(NX),XMIN(NX),XWID(NX)
+      REAL YMAX(NY),YMIN(NY),YWID(NY)
+	INTEGER	ID(NX), JD(NY)
+      DATA XMAX/1.0/
+      DATA XMIN/1.0/
+      DATA XWID/160.0/
+      DATA YMAX/2.3333334,.3333334,2.8666667/
+      DATA YMIN/3*.3333334/
+      DATA YWID/20.,20.,40./
+      DATA ID/1/
+      DATA JD/-1,2*1/
+      M=1
+      DO 5 L=1,NX
+      CALL CMESH (DX(M),XMAX(L),XMIN(L),XWID(L),N,ID(L))
+      M=M+N
+    5 CONTINUE
+      M=1
+      DO 8 L=1,NY
+      CALL CMESH (DY(M),YMAX(L),YMIN(L),YWID(L),N,JD(L))
+      M=M+N
+    8 CONTINUE
+      RETURN
+      END

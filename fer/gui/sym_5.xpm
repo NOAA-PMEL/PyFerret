@@ -1,0 +1,13 @@
+/* XPM */
+static char * sym_5_xpm[] = {
+"7 7 2 1",
+" 	c gray80",
+".	s gray	c black",
+/*/home/rascal/oz/Ferret_gui/sym_5.xpm*/
+"       ",
+"       ",
+"       ",
+"  ...  ",
+"       ",
+"       ",
+"       "};

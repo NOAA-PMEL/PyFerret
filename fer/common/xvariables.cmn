@@ -1,0 +1,310 @@
+* XVARIABLES.CMN - COMMON/ XVARIABLES /
+* array declarations and information for variables stored in memory and
+* information on variables that can be computed
+* variable-naming:
+* 2/88 - removed "num_file_vars"
+* 3/88 - modulo_var_pri 2000 --> 100000
+* 7/88 - added mv_flink/blink and mblk_flink/size for
+*	 efficient memory management  -  eliminated blk_in_use
+*      - split into 3 distinct COMMON areas:
+*	XBLOCK_MEM - with array memory, only
+*	XMR	   - with memory variable information
+*	XINTERP    - with instance table and interpretation stack information
+* 8/88 - dummy_mr moved from FERRET.PARM to here
+* 1/89 - added mr_unstand_grid and mr_regrid_trans
+* V200:  5/89 - major changes for FERRET 2.00.  4D-symmetrical memory variables
+* 	      - delete priorities handled through linked lists
+*	      - eliminated "named" variables ("nvar")
+*	      - all cvar-related stuff into XCALC_VARS
+* 	 2/90 - max_uvars 20 --> 100
+* V200 Unix/RISC port - eliminated REAL*8 boundary alignment problem
+*		        by placing REAL*8 variables first
+*    10/22/92 - added uvar_units, increased uvar_name_code to *24,
+*	        increased max_uvar to 250
+* V301: increased mem_blk_size x4  !!!
+* V312: 5/17/94  removed "memory" array from COMMON altogether
+
+*	"mr"	- "memory resident"
+*	("mv")	  table of information about variables currently stored in
+*		  memory
+*	"mblk"	- related to management of array "memory" where bulk data is
+*		  stored
+*	"uvar"	- information about user-defined variables (and implicit user-
+*		  defined variables given as command arguments)
+*	"is"	- pertaining to the "interpretation stack" on which user 
+*		  variables are evaluated, axis transformations are executed and
+*		  grids in awkward planes are assembled
+* V402: 7/20/95 - added uvar_dset (for LET/D=...)
+* V420: 11/95   - added hash pile for "un_cached" results
+*	12/95	- added uvar_mod_pseudo to postpone modulo ops on uvars with
+*		  pseudo vars X,Y,Z,T,I,J,K, or L
+* V450: 7/97   - added uvar_parent and increates max_uvar
+
+* BULK MEMORY MANAGEMENT:
+*  The free bulk memory list is organized as follows:
+*     o Each contiguous region of free memory is identified by its starting
+*	block number in from array "memory" - usually "mblk"
+*     o Each contiguous region of free memory contains its size (mblk_size)
+*	and link pointers to the surrounding free regions (mblk_&link)
+*     o The linked list is ordered by increasing mblk value
+*  Bulk memory in use is removed from the free list.  Its starting block #
+*   is found in "mr_blk1" (of the memory resident table) of the variable
+*   using this memory.  Its size is redundantly stored (an historical artifact)
+*   in both "mr_nblks" and mblk_size( start_block )
+
+* MEMORY RESIDENT TABLE MANAGEMENT:
+*  The slots of the memory variable table are organized as a number of doubly
+*   linked lists using mv_flink & mv_blink.  When a variable is to be stored in
+*   memory its context (data set, variable, category, etc.) is hashed to 
+*   produce a pile number (which linked list contains it).  This greatly
+*   reduces the number of table slots that must be searched locating a variable
+*   in memory.  The start link for each list is in subscript -1*pile# of
+*   mv_flink.
+*  Unused table slots are organized into a singly linked list starting at
+*   subscript 0 of mv_flink.
+
+* DELETION PRIORITIES
+*  Deletion priorities are handled through a doubly linked deletion priority
+*   list.  The most recently used/acquired variables are added to the head of
+*   the list indicating the lowest priority for deletion.  Variables may be
+*   removed from the list if they are in-progress or in-use.  See mr_protected.
+
+* explanation of selected variables:
+*	mr_blk1     - First memory block of contiguous storage for this var.
+*	mr_nblks    -	Number of contiguous storage blocks for this variable
+*			See further documemtation in GET_MEMORY
+*	mr_trans    - designates what mathematical transformations have been
+*			applied to the data along each axis (see FERRET.PARM)
+*	mv_flink      - forward and backwards links into the memory variable
+*	mv_blink	table.  Stored variables are hashed into pmv_npiles
+*			piles with start pointers stored in the negative
+*			subscripts of these arrays
+*	mblk_flink    - sizes and links of free contiguous regions
+*	mblk_size	available in array "memory"
+*	mblk_blink
+*
+*	mr_del_flink  -	forward and backwards links for the chain of variables
+*	mr_del_blink	that are available to be deleted if memory space runs
+*			short
+*	mr_del_last_mblk - memory region freed by the last deletion
+*	mr_del_last_size - size of that memory region
+*
+*	mr_protected  - flags variables as "deleted", "in_progress",
+*			"perm_protrcted" or "not_protected".  Variables which
+*			are needed as future components of calculations may
+*			be reserved (protecting them from deletion) by
+*			incrementing mr_protected.  This mechanism allows
+*			multiple calculations to claim the same component and
+*			still easily keep track of when all claims on the
+*			component have been released.
+*	
+*	uvar_title	- title text for plots, etc. of user-defined variables
+*	uvar_title_w_text
+*			- logical to determine if variable definition is part 
+*			  of title
+*	uvar_name_code	- 24 character user variable name
+*	uvar_units	- units string for variable
+*	uvar_text	- text of the algebraic expression defining the variable
+*	uvar_num_items	- number of "items" (functions,variables,operators,...)
+*			  in the text
+*	uvar_item_type	- coded (see alg_ in GFDLPROGRAM.PARM) item types
+*	uvar_item_start	- positions in text for starts of item text substrings
+*	uvar_item_end	- positions in text for ends   of item text substrings
+*	uvar_grid	- defining grid for the expression
+*	uvar_need_dset  - flag if the uvar def'n is independent of dset
+*	uvar_given	- indicate degree to which definition of uvar specifies
+*			  limits along each axis
+*	uvar_dset	- name of data set to which uvar **belongs** (7/95)
+
+*	isp	 	- interpretation stack pointer
+*	is_act   	- activity currently in progress
+*	is_cx		- default context buffer at current stack level
+*	is_big_cx	- context of full expression at current stack level
+*	is_phase 	- current  looping value for stack level
+*	is_obj   	- class of object for stack level
+*	is_axis  	- grid axis of transformation for this level
+*	is_uvar  	- pointer to text,name,etc. of uvar
+*	is_mr		- pointer to memory grid for result
+*	is_sum   	- stores a value that is accumulated at stack level
+
+********************************************************************************
+******			PARAMETER DEFINITIONS				  ******
+
+* memory storage capacity
+	INTEGER		max_mrs,
+     .			max_mr_avail,
+     .			pmem_blk_size,
+     .			pmax_mem_blks,
+     .			pmv_npiles,
+     .			pmv_nocache_pile,
+     .			dummy_mr
+	PARAMETER     ( max_mrs   = 151,
+     .			dummy_mr  = max_mrs,
+     .			max_mr_avail = max_mrs - 1,
+     .			pmem_blk_size   = 160*100*4 / 10,  ! added "*4" 1/25/94
+     .			pmax_mem_blks   = 500,
+     .			pmv_npiles     = 11,	! prime # of hash piles
+     .			pmv_nocache_pile = -pmv_npiles - 1 )
+
+	INTEGER		max_uvar,
+     .			max_uvar_items,
+     .			uvar_text_len,
+     .			uvar_dset,
+     .			max_intrp
+	PARAMETER     (	max_uvar      	  = 400,! total # uvars incl. "EX#."
+     .			max_uvar_items    = 40,	! complexity of uvar expression
+     .			uvar_text_len	  = 160,! max length of uvar expression
+     .			max_intrp	  = 40  )
+
+********************************************************************************
+******				COMMON DECLARATION			  ******
+
+! removed 5/17/94
+!	COMMON / XBLOCK_MEM / memory(mem_blk_size,max_mem_blks)
+! changed mem_blk_size and max_mem_blks from parameters to COMMON variables
+
+	COMMON / XMEM_DESCR /
+     .		mem_blk_size,
+     .		max_mem_blks
+
+	COMMON / XMR / 
+     .		mr_lo_ww	( 4, max_mrs ),
+     .		mr_hi_ww	( 4, max_mrs ),
+     .		mr_trans	( 4, max_mrs ),
+     .		mr_trans_arg	( 4, max_mrs ),
+     .		mr_lo_ss	( max_mrs, 4 ),
+     .		mr_hi_ss	( max_mrs, 4 ),
+     .		mr_protected	( max_mrs ),
+     .		mr_blk1		( max_mrs ),
+     .		mr_nblks	( max_mrs ),
+     .		mr_data_set	( max_mrs ),
+     .		mr_category	( max_mrs ),
+     .		mr_variable	( max_mrs ),
+     .		mr_grid   	( max_mrs ),
+     .		mr_bad_data   	( max_mrs ),
+     .		mr_unstand_grid	( max_mrs ),
+     .		mr_regrid_trans	( 1:4, max_mrs ),
+     .
+     .		mblk_flink( 0:pmax_mem_blks),
+     .		mblk_blink( 0:pmax_mem_blks),
+     .		mblk_size ( 0:pmax_mem_blks),
+     .
+     .		num_uvars_in_cmnd,
+     .
+     .		mv_flink( pmv_nocache_pile:max_mrs ),
+     .		mv_blink( pmv_nocache_pile:max_mrs ),
+     .
+     .		mr_del_flink( 0:max_mrs ),
+     .		mr_del_blink( 0:max_mrs ),
+     .		mr_del_last_mblk,
+     .		mr_del_last_size,
+     .
+     .		uvar_title	 ( max_uvar ),
+     .		uvar_title_w_text( max_uvar ),
+     .		uvar_name_code	 ( max_uvar ),
+     .		uvar_units	 ( max_uvar ),
+     .		uvar_text	 ( max_uvar ),
+     .		uvar_num_items   ( max_uvar ),
+     .		uvar_need_dset	 ( max_uvar ),
+     .		uvar_parent	 ( max_uvar ),
+     .		uvar_grid	 ( max_uvar, 0:max_gfdl_dsets ),
+     .		uvar_item_start	 ( max_uvar_items, max_uvar ),
+     .		uvar_item_end	 ( max_uvar_items, max_uvar ),
+     .		uvar_item_type	 ( max_uvar_items, max_uvar ),
+     .		uvar_given	 ( 4, max_uvar ),
+     .		uvar_dset	 ( max_uvar ),
+     .		uvar_mod_pseudo	 ( 4, max_uvar ),
+     .
+     .		isp,
+     .		is_act		( max_intrp ),
+     .		is_cx		( max_intrp ),
+     .		is_big_cx	( max_intrp ),
+     .		is_phase	( max_intrp ),
+     .		is_obj  	( max_intrp ),
+     .		is_axis 	( max_intrp ),
+     .		is_uvar 	( max_intrp ),
+     .		is_mr		( max_intrp ),
+     .		is_sum  	( max_intrp )
+
+********************************************************************************
+******			COMMON VARIABLE TYPE DECLARATIONS		  ******
+
+!	REAL	memory     ! removed 5/94
+
+	INTEGER	mem_blk_size,
+     .		max_mem_blks
+
+	INTEGER	mblk_flink,
+     .		mblk_blink,
+     .		mblk_size
+
+	INTEGER	mv_flink,
+     .		mv_blink,
+     .		mr_del_flink,
+     .		mr_del_blink,
+     .		mr_del_last_mblk,
+     .		mr_del_last_size
+
+	INTEGER		num_uvars_in_cmnd
+
+	LOGICAL		mr_unstand_grid
+
+	REAL		mr_bad_data  	,
+     .			mr_trans_arg
+	REAL*8		mr_lo_ww	,
+     .			mr_hi_ww
+	INTEGER		mr_lo_ss	,
+     .			mr_hi_ss	,
+     .			mr_trans	,
+     .			mr_data_set	,
+     .			mr_category	,
+     .			mr_variable	,
+     .			mr_protected	,
+     .			mr_blk1		,
+     .			mr_nblks	,
+     .			mr_grid 	,
+     .			mr_regrid_trans
+
+	CHARACTER*40	uvar_title	
+	CHARACTER*24	uvar_name_code, uvar_units
+	CHARACTER*160	uvar_text	
+	LOGICAL		uvar_title_w_text,
+     .			uvar_need_dset,
+     .			uvar_mod_pseudo
+	INTEGER		uvar_num_items  ,
+     .			uvar_grid	,
+     .			uvar_item_start	,
+     .			uvar_item_end	,
+     .			uvar_item_type	,
+     .			uvar_given	,
+     .			uvar_parent
+
+	INTEGER		isp,
+     .			is_act  ,
+     .			is_cx ,
+     .			is_big_cx ,
+     .			is_phase,
+     .			is_obj  ,
+     .			is_axis ,
+     .			is_uvar ,
+     .			is_mr
+	REAL		is_sum
+
+* equivalences to assist with declaration statements
+	INTEGER mr_lo_s1( max_mrs ),
+     .		mr_lo_s2( max_mrs ),
+     .		mr_lo_s3( max_mrs ),
+     .		mr_lo_s4( max_mrs ),
+     .		mr_hi_s1( max_mrs ),
+     .		mr_hi_s2( max_mrs ),
+     .		mr_hi_s3( max_mrs ),
+     .		mr_hi_s4( max_mrs )
+	EQUIVALENCE
+     .		( mr_lo_s1, mr_lo_ss(1,1) ),
+     .		( mr_lo_s2, mr_lo_ss(1,2) ),
+     .		( mr_lo_s3, mr_lo_ss(1,3) ),
+     .		( mr_lo_s4, mr_lo_ss(1,4) ),
+     .		( mr_hi_s1, mr_hi_ss(1,1) ),
+     .		( mr_hi_s2, mr_hi_ss(1,2) ),
+     .		( mr_hi_s3, mr_hi_ss(1,3) ),
+     .		( mr_hi_s4, mr_hi_ss(1,4) )

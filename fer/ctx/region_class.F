@@ -1,0 +1,51 @@
+	INTEGER FUNCTION REGION_CLASS( idim, cx )
+
+* determine the region-limits class of a component in an expression
+* the region-limits class encodes how limits must be specified in order to
+* match with memory-resident data.  (It is uvar_given without the 
+* "need"/"given" information.)
+
+* note: the classes that exist as of FERRET 2.00 are complete
+*	class 3 ("xact") assumes that any time both upper and lower limits must 
+*	match then this must be a compressing transformation.  There should
+*	really be a class "xact" to insist on exact match, uncompressed and a
+*	class "pt" that compresses as well.  This would require updating the
+*	tables in NEST_REGION_CLASS and MERGE_GRID.
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V200:  7/18/89
+* V230:  1/27/92 - changed uvlim_*_hi (unused) to uvlim_*_lohi to describe
+*                  @WEQ - exaxt limits required but a range of data
+*                - also added @RSUM (like @IIN)
+	
+#ifdef unix
+	include 'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/xcontext.cmn'
+#else
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+#endif
+
+* calling argument declarations
+	INTEGER	idim, cx
+
+	IF ( cx_trans( idim, cx ) .GT. trans_compress_code ) THEN
+	   REGION_CLASS = 3    ! uvlim_*_xact
+	ELSEIF ( cx_trans( idim,cx ) .EQ. trans_integ_indef
+     .      .OR. cx_trans( idim,cx ) .EQ. trans_run_sum ) THEN
+	   REGION_CLASS = 1    ! uvlim_*_lo
+	ELSEIF ( cx_trans( idim,cx ) .EQ. trans_wgted_eq ) THEN
+           REGION_CLASS = 2    ! uvlim_*_lohi
+	ELSEIF ( cx_given( idim, cx )
+     .	   .AND. cx_lo_ss(cx,idim) .EQ. cx_hi_ss(cx,idim) ) THEN
+* ... e.g. U[K=3] ... defines a fixed point
+	   REGION_CLASS = 3
+	ELSE
+	   REGION_CLASS = 0  
+	ENDIF
+
+	RETURN
+	END

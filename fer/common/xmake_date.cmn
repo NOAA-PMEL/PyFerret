@@ -1,0 +1,5 @@
+* XMAKE_DATE.CMN
+
+	COMMON/ XMAKE_DATE / make_date
+
+	CHARACTER*8 make_date

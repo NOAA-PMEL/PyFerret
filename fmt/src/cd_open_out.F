@@ -1,0 +1,83 @@
+	SUBROUTINE CD_OPEN_OUT(cdfname, append, cdfid, clobber, status)
+
+* Open a netCDF file for output
+* if appending then the file must already exist
+* leave it in definition mode
+
+* Programmer Steve Hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* revision 0.0 - 3/92
+*               10/92 - leave mode as opened (report via CD_SET_MODE)
+* V450 11/96 - added argument "clobber" *sh*
+
+* argument definitions:
+*       cdfname - desired output file name
+*       append  - logical control to create or append
+*       cdfid   - returned pointer to open CDF file
+*	clobber	- Boolean to say if existing file can be clobbered
+*	status	- return status
+
+* argument declarations:
+        LOGICAL  append, clobber
+        INTEGER	 cdfid, status
+        CHARACTER*(*) cdfname
+
+* include files
+#ifdef unix
+        include 'tmap_format/netcdf.decl'
+        include 'tmap_format/netcdf.inc'
+        include 'tmap_format/cdf_tmap.parm'
+        include 'tmap_format/tmap_errors.parm'
+        include 'tmap_format/gt_lib.parm'
+#else
+        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
+        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
+        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+        INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
+#endif
+
+* local variable declarations:
+      LOGICAL file_exists, do_append
+      INTEGER NCOPN, NCCRE, cdfstat, cstat, clobber_mode
+
+* initialize netCDF
+      CALL NCPOPT(0)  ! no error processing by netCDF
+
+* does it exist already ?
+      INQUIRE ( FILE = cdfname, EXIST = file_exists )
+      do_append = append .AND. file_exists
+
+* open or create the file
+      IF ( do_append ) THEN
+	 cdfid = NCOPN( cdfname, NCWRITE, cdfstat )
+         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+         CALL CD_SET_MODE( cdfid, pcd_reset_data, status )
+         IF ( status .NE. merr_ok ) RETURN
+      ELSE
+	 IF (clobber) THEN
+	   clobber_mode =   NCCLOB
+	 ELSE
+	   clobber_mode =   NCNOCLOB
+	 ENDIF
+* ... let netCDF detect the error if the file already exists
+         cdfid = NCCRE( cdfname, clobber_mode, cdfstat )
+         IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+         CALL CD_SET_MODE( cdfid, pcd_reset_define, status )
+         IF ( status .NE. merr_ok ) RETURN
+      ENDIF
+
+* successful completion
+	status = merr_ok
+	RETURN
+
+* error messages
+ 5100 CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_OPEN_OUT', unspecified_int4,
+     .     no_varid, 'could not open CDF output file: ',
+     .     cdfname, *5000 )
+
+* error exit
+ 5000 RETURN
+	END

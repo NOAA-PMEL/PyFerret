@@ -1,0 +1,5 @@
+* COMMON flag loaded by data statement to determine if PPLUS is running under
+* the control of FERRET (esp. re: window and viewport sizing)
+
+	COMMON / XPPL_IN_FERRET / PPL_in_FERRET, PPL_viewports_active
+	LOGICAL PPL_in_FERRET, PPL_viewports_active

@@ -1,0 +1,105 @@
+	SUBROUTINE NUMCDE(XZ,STR,NC,FRMTZ) 
+C** 
+C**    @(#)numcde.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C     ROUTINE ADDS LEADING ZEROS TO A NUMBER IF 
+C     LESS THAN ONE AND IFRMT=('0'.... 
+C
+c  Modified so that if FRMTZ has ",'LAT')" or ",'LON')" as last non-blank
+c  characters, XZ will be assumed to be either latitude (+ for N, - for S)
+c  or longitude (+0 to +180 for W, +180 to +360 for E, ie, continuous across
+c  dateline) in EPIC format. FRMT and X will be modified so that axis labels
+c  will be of the form 165 E or 6 S, etc.
+c  NNS, Jun 85.
+c
+	CHARACTER*20 FRMTZ
+	CHARACTER*20 FRMT,STR,TEMP 
+C
+	FRMT=FRMTZ
+	TEMP=FRMTZ
+	CALL UPPER(TEMP,20)
+	X=XZ
+	ILAT = INDEX (TEMP, ',''LAT'')')
+	IF (ILAT .NE. 0) THEN
+	  IF (X .LT. 0) THEN
+	    X=-X
+	    FRMT (ILAT+1:) = '''#S'')'
+	  ELSE IF (X .EQ. 0.) THEN
+	    FRMT (ILAT+1:) = '''#'')'
+	  ELSE
+	    FRMT (ILAT+1:) = '''#N'')'
+	  ENDIF
+	ELSE
+	  ILON = INDEX (TEMP, ',''LON'')') + INDEX (TEMP, ',''LONW'')')
+	  ILONE = INDEX (TEMP, ',''LONE'')')
+	  IF (ILON .NE. 0) THEN
+	    IF (X .GT. 180.) THEN
+	      X=360.-X
+	      FRMT (ILON+1:) = '''#E'')'
+	    ELSE IF (X .EQ. 180.) THEN
+	      FRMT (ILON+1:) = '''#'')'
+	    ELSE IF (X .LT. 0.) THEN
+	      FRMT (ILON+1:) = '''#E'')'
+	      X = -X
+	    ELSE
+	      FRMT (ILON+1:) = '''#W'')'
+	    ENDIF
+	  ELSE IF (ILONE .NE. 0)THEN
+	    IF (X .GT.180.) THEN
+	      X=360.-X
+	      FRMT (ILONE+1:) = '''#W'')'
+	    ELSE IF (X .EQ. 180.) THEN
+	      FRMT (ILONE+1:) = '''#'')'
+	    ELSE IF (X .LT. 0.) THEN
+	      FRMT (ILONE+1:) = '''#W'')'
+	      X = -X
+	    ELSE
+	      FRMT (ILONE+1:) = '''#E'')'
+	    ENDIF
+	  ENDIF
+	ENDIF
+C
+	FLAG=0 
+	IF(FRMT(1:2).EQ.'(I'.OR.FRMT(1:2).EQ.'(i')THEN 
+	    WRITE(STR,FRMT)IFIX(X+SIGN(.5,X)) 
+	ELSE 
+	    WRITE(STR,FRMT)X 
+	END IF 
+C     STRIP OFF LEADING ZERO AND SET FLAG 
+	IF(FRMT(1:4).EQ.'(''0''')THEN 
+	    TEMP=STR(2:20) 
+	    STR=TEMP 
+	    FLAG=1 
+	END IF 
+C     LEFT JUSTIFY STRING 
+	NC=0 
+100	IF(STR(1:1).EQ.' ')THEN 
+	    TEMP=STR(2:20) 
+	    STR=TEMP 
+	    NC=NC+1 
+	    IF(NC.LE.20)GOTO 100 
+	END IF 
+C     ADD LEADING ZERO 
+	IF(FLAG.EQ.1.AND.ABS(X).LT.1.1)THEN 
+	    IF(STR(1:1).EQ.'.')THEN
+		TEMP='0'
+		TEMP(2:)=STR(1:19)
+	    ENDIF
+	    IF(STR(1:2).EQ.'+.'.OR.STR(1:2).EQ.'-.')THEN
+		TEMP=STR(1:1)
+		TEMP(2:2)='0'
+		TEMP(3:)=STR(2:18)
+	    ENDIF
+	    STR=TEMP 
+	END IF 
+	NC=LNBLK(STR,20)
+	RETURN 
+	END 

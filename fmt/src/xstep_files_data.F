@@ -1,0 +1,43 @@
+	BLOCK DATA XSTEP_FILES_DATA
+
+* various pre-defined variables for COMMON/Xstep_files
+* programmer - mark verschell
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.00 - 08/19/86
+* revision 0.10 - 07/22/88 - Added TS variables
+* revision 0.11 - 11/21/88 - variable initialization changed to char_initXX
+* revision 0.12 - 04/24/91 - *sh* unix/RISC port: increased sf_name size
+* Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
+*			   preprocessor include for F90 - needed because
+*			   tmap_dset.parm contains an ifdef
+
+#ifdef unix
+#include "tmap_format/tmap_dset.parm"		
+	include 'tmap_format/tmap_dims.parm'
+	include 'tmap_format/xstep_files.cmn_text'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! parameter definitions
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN_TEXT'
+#endif
+
+	DATA	sf_name			/maxstepfiles*char_init128/
+	DATA	sf_setnum		/maxstepfiles*set_not_open/
+	DATA	sf_aux_set_num		/maxstepfiles*set_not_open/
+	DATA	sf_nrecperstep		/maxstepfiles*int4_init/
+	DATA	sf_skip			/maxstepfiles*int4_init/
+	DATA	sf_1step		/maxstepfiles*real8_init/
+	DATA	sf_lastep		/maxstepfiles*real8_init/
+	DATA	sf_delta		/maxstepfiles*real8_init/
+	DATA	sf_reclen		/maxstepfiles*int4_init/
+	DATA	sf_valid		/maxstepfiles*.FALSE./
+	DATA	sf_lunit		/maxstepfiles*file_not_open/
+	DATA	sf_index		/maxstepfiles*char_init23/
+	DATA	sf_regvars		/maxstepfiles*.TRUE./
+	DATA	sf_regtimes		/maxstepfiles*.TRUE./
+	DATA	vf_firstvar		/maxvarfiles*int4_init/
+	DATA	vf_lastvar		/maxvarfiles*int4_init/
+
+	END

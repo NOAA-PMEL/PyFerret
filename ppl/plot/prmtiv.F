@@ -1,0 +1,454 @@
+	SUBROUTINE PRMTIV(X,NXS)
+C** 
+C**    @(#)prmtiv.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C	This subroutine does plot primitives.  They
+C	should be used with care since interactions are
+C	a very strong possibility.
+C
+C	These routines do not work with multplt!!!!
+C
+c
+c	%OPNPLT
+c		/overlay	do not erase last plot
+c
+c	%CLSPLT
+c		/wait		immediatly return to get next command
+c
+c	%RANGE
+c		min		minimum value of data to be ranged
+c		max		maximum value of data
+c		ntic		number of large increments
+c	ppl$range_low		new minimum range value
+c	ppl$range_high		new maximum range value
+c	ppl$range_inc		new increment
+c
+c	%PLTLIN
+c		n		plot line n using current scales
+c
+c	%LABEL
+c		/user		x and y in user or inches
+c		x		x position user or inches
+c		y		y position user or inches
+c		ipos		-1 left, 0 center, +1 right justify
+c		ang		angle to draw label degrees
+c		chsize		character size inches
+c		label		string to draw
+c
+c	%XAXIS
+c		/user		y in user or inches
+c		xlow		min value of x user
+c		xhigh		max value of x user
+c		xtic		large tic increment user
+c		y		y position user or inches
+c		nmstc		number of small tics
+c		lint		label interval (large tics)
+c		xunit		divisor for axis label
+c		ipos		-1 bottom, 0 none, +1 top of label
+c		csize		character size inches
+c		frmt		axis format char*20
+c
+c	%YAXIS
+c		/user		x in user or inches
+c		ylow		min value of y user
+c		yhigh		max value of y user
+c		ytic		large tic increment user
+c		x		x position user or inches
+c		nmstc		number of small tics
+c		lint		label interval (large tics)
+c		yunit		divisor for axis label
+c		ipos		-1 left, 0 none, +1 right of label
+c		csize		character size inches
+c		frmt		axis format char*20
+c
+	DIMENSION X(NXS)
+C
+#ifdef unix
+	INCLUDE 'pplinc/PARAMPL5.DAT'
+	INCLUDE 'pplinc/LINES.INC'
+	INCLUDE 'pplinc/PEN.INC'
+	INCLUDE 'pplinc/PLT.INC'
+	INCLUDE 'pplinc/PLTL.INC'
+	INCLUDE 'pplinc/HAB.INC'
+	INCLUDE 'pplinc/LABCOM.INC'
+	INCLUDE 'pplinc/HD.INC'
+	INCLUDE 'pplinc/MISS.INC'
+	INCLUDE 'pplinc/TAXIS.INC'
+	INCLUDE 'pplinc/AXIS.INC'
+	INCLUDE 'pplinc/AXISL.INC'
+	INCLUDE 'pplinc/CMRD.INC'
+	INCLUDE 'pplinc/CMRDL.INC'
+	INCLUDE 'pplinc/PRMCOM.INC'
+	INCLUDE 'pplinc/TICS.INC'
+	INCLUDE 'pplinc/AXLWID.INC'
+	INCLUDE 'pplinc/LABELS.INC'
+	INCLUDE 'cmdinc/SWITCH.INC'
+	INCLUDE 'cmdinc/SYSTEM.INC'
+#else
+        INCLUDE 'pplinc:PARAMPL5.DAT'
+        INCLUDE 'pplinc:LINES.INC'
+        INCLUDE 'pplinc:PEN.INC'
+        INCLUDE 'PPLINC:PLT.INC'
+        INCLUDE 'pplinc:PLTL.INC'
+        INCLUDE 'PPLINC:HAB.INC'
+        INCLUDE 'PPLINC:LABCOM.INC'
+        INCLUDE 'pplinc:HD.INC'
+        INCLUDE 'pplinc:MISS.INC'
+        INCLUDE 'pplinc:TAXIS.INC'
+        INCLUDE 'PPLINC:AXIS.INC'
+        INCLUDE 'PPLINC:AXISL.INC'
+        INCLUDE 'PPLINC:CMRD.INC'
+        INCLUDE 'PPLINC:CMRDL.INC'
+        INCLUDE 'PPLINC:PRMCOM.INC'
+        INCLUDE 'PPLINC:TICS.INC'
+        INCLUDE 'PPLINC:AXLWID.INC'
+        INCLUDE 'PPLINC:LABELS.INC'
+        INCLUDE 'CMDINC:SWITCH.INC'
+        INCLUDE 'CMDINC:SYSTEM.INC'
+	byte inc
+#endif
+C
+C
+	CHARACTER FRMTX*20,SYM*30
+	LOGICAL SVQIET,SVLOG,CLEAR
+C
+
+	EXTERNAL range, scale, size
+
+
+C***	OPNPLT
+C
+	IF(ICOM.EQ.'%OPNPLT')THEN
+	    SVQIET=QUIETF
+	    SVLOG=LOGCMF
+	    QUIETF=.TRUE.
+	    LOGCMF=.FALSE.
+	    CLEAR = .NOT.SOVER
+	    PLTOPN=.TRUE.
+	    IF(.NOT.SOVER)CALL SIZE(WIDTH,HEIGHT)
+	    CALL OPNDEV(TERMF,CLEAR)
+	    CALL COLOR(IPEN(0))
+C
+C***	CLSPLT
+C
+	ELSE IF(ICOM.EQ.'%CLSPLT')THEN
+	    QUIETF=SVQIET
+	    LOGCMF=SVLOG
+	    PLTOPN=.FALSE.
+	    IF(SWAIT)THEN
+		CALL HABIS(IPLOT,IPAUSE,IHDCPY,INC)
+	    ELSE
+		CALL HABIS(IPLOT,0,IHDCPY,INC)
+	    ENDIF
+C
+C***	RANGE
+C
+	ELSE IF(ICOM.EQ.'%RANGE')THEN
+	    RMIN=P(1)
+	    RMAX=P(2)
+	    NTIC=P(3)
+	    if(rmin.eq.rmax)then
+		rlow=rmin
+		rhigh=rmax
+	    else
+	        CALL RANGE(RMIN,RMAX,NTIC,RLOW,RHIGH,RINC)
+	    endif
+	    SYM='*PPL$RANGE_LOW'
+	    CALL PUTVAL(SYM,RLOW,4,IER)
+C
+	    SYM='*PPL$RANGE_HIGH'
+	    CALL PUTVAL(SYM,RHIGH,4,IER)
+C
+	    SYM='*PPL$RANGE_INC'
+	    CALL PUTVAL(SYM,RINC,4,IER)
+C
+C***	XAXIS
+C
+	ELSE IF(ICOM.EQ.'%XAXIS')THEN
+	    CALL INQSCL(XFF,YFF,XOR,YOR,XLOW,YLOW)
+	    IF(M.GE.1.AND.IFLG(1).NE.0)THEN
+		XLOW=P(1)
+	    ELSE
+		XLOW=XLO
+	    ENDIF
+	    IF(M.GE.2.AND.IFLG(2).NE.0)THEN
+		XHIGH=P(2)
+	    ELSE
+		XHIGH=XHI
+	    ENDIF
+	    IF(M.GE.3.AND.IFLG(3).NE.0)THEN
+		XTICC=P(3)
+	    ELSE
+		XTICC=XTIC
+	    ENDIF
+	    IF(M.GE.4.AND.IFLG(4).NE.0)THEN
+		IF(SUSER)THEN
+		    Y=P(4)
+		ELSE
+		    Y=YLOW+P(4)/YFF
+		ENDIF
+	    ELSE
+		Y=YLOW
+	    ENDIF
+	    IF(M.GE.5.AND.IFLG(5).NE.0)THEN
+		NSMTCS=P(5)
+	    ELSE
+		NSMTCS=NMTCX
+	    ENDIF
+	    IF(M.GE.6.AND.IFLG(6).NE.0)THEN
+		LINTT=P(6)
+	    ELSE
+		LINTT=LINTX
+	    ENDIF
+	    IF(M.GE.7.AND.IFLG(7).NE.0)THEN
+		XUNIT=P(7)
+	    ELSE
+		XUNIT=1.
+	    ENDIF
+	    IF(M.GE.8.AND.IFLG(8).NE.0)THEN
+		IPOS=P(8)
+	    ELSE
+		IPOS=LABELX
+	    ENDIF
+	    IX=IPOS
+	    IF(M.GE.9.AND.IFLG(9).NE.0)THEN
+		CHSIZE=P(9)
+	    ELSE
+		CHSIZE=XCSIZE
+	    ENDIF
+	    IF(N.GT.0)THEN
+		FRMTX=LABEL(1:N)
+	    ELSE IF(IFRX.NE.' ')THEN
+		FRMTX=IFRX
+	    ELSE
+		CALL FRMT(XLOW,XHIGH,NSIGX,FRMTX)
+	    ENDIF
+	    XFF=XLEN/(XHIGH-XLOW)
+	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
+	    call color(ipen(0))
+	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCX,LINTT,XUNIT,
+     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE)
+	    NCHR=LNBLK(XLAB,255)
+	    IF(IPOS.LT.0)THEN
+		YL=Y-(XWID+2.0*HXLAB)/YFF
+	    ELSE
+		YL=Y+(XWID+HXLAB)/YFF
+	    ENDIF
+	    XL=XLOW+(XLEN-SYMWID(HXLAB,NCHR,XLAB))*.5/XFF
+	    CALL SYMBEL(XL,YL,0.,HXLAB,NCHR,XLAB)
+C
+C***	YAXIS
+C
+	ELSE IF(ICOM.EQ.'%YAXIS')THEN
+	    CALL INQSCL(XFF,YFF,XOR,YOR,XLOW,YLOW)
+	    IF(M.GE.1.AND.IFLG(1).NE.0)THEN
+		YLOW=P(1)
+	    ELSE
+		YLOW=YLO
+	    ENDIF
+	    IF(M.GE.2.AND.IFLG(2).NE.0)THEN
+		YHIGH=P(2)
+	    ELSE
+		YHIGH=YHI
+	    ENDIF
+	    IF(M.GE.3.AND.IFLG(3).NE.0)THEN
+		YTICC=P(3)
+	    ELSE
+		YTICC=YTIC
+	    ENDIF
+	    IF(M.GE.4.AND.IFLG(4).NE.0)THEN
+		IF(SUSER)THEN
+		    XX=P(4)
+		ELSE
+		    XX=XLOW+P(4)/XFF
+		ENDIF
+	    ELSE
+		XX=XLOW
+	    ENDIF
+	    IF(M.GE.5.AND.IFLG(5).NE.0)THEN
+		NSMTCS=P(5)
+	    ELSE
+		NSMTCS=NMTCY
+	    ENDIF
+	    IF(M.GE.6.AND.IFLG(6).NE.0)THEN
+		LINTT=P(6)
+	    ELSE
+		LINTT=LINTY
+	    ENDIF
+	    IF(M.GE.7.AND.IFLG(7).NE.0)THEN
+		YUNIT=P(7)
+	    ELSE
+		YUNIT=1.
+	    ENDIF
+	    IF(M.GE.8.AND.IFLG(8).NE.0)THEN
+		IPOS=P(8)
+	    ELSE
+		IPOS=LABELY
+	    ENDIF
+	    IY=IPOS
+	    IF(M.GE.9.AND.IFLG(9).NE.0)THEN
+		CHSIZE=P(9)
+	    ELSE
+		CHSIZE=YCSIZE
+	    ENDIF
+	    IF(N.GT.0)THEN
+		FRMTX=LABEL(1:N)
+	    ELSE IF(IFRX.NE.' ')THEN
+		FRMTX=IFRY
+	    ELSE
+		CALL FRMT(YLOW,YHIGH,NSIGY,FRMTX)
+	    ENDIF
+	    YFF=YLEN/(YHIGH-YLOW)
+	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
+	    call color(ipen(0))
+	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCY,LINTT,YUNIT,
+     *		IPOS,FRMTX,YFF,CHSIZE)
+	    NCHR=LNBLK(YLAB,255)
+	    IF(IPOS.LT.0)THEN
+	        XL=XX-(YWID+HYLAB)/XFF
+	    ELSE
+	        XL=XX+(YWID+2.0*HYLAB)/XFF
+	    ENDIF
+	    YL=YLOW+(YLEN-SYMWID(HYLAB,NCHR,YLAB))*.5/XFF
+	    CALL SYMBEL(XL,YL,90.,HYLAB,NCHR,YLAB)
+C
+C***	PLTLIN
+C
+	ELSE IF(ICOM.EQ.'%PLTLIN')THEN
+	    IF(M.GE.1.AND.IFLG(1).NE.0)THEN
+		I=P(1)
+	    ELSE
+		I=1
+	    ENDIF
+	    IF(IWIND.GT.0)THEN
+	    	CALL INQSCL(XFF,YFF,XOR,YOR,XLOW,YLOW)
+		XHIGH=XLOW+XLEN/XFF
+		YHIGH=YLOW+YLEN/YFF
+		CALL WINDOW(XLOW,YLOW,XHIGH,YHIGH)
+	    ENDIF
+	IBASE=0
+	IY=NXS/2
+C
+	DO 50 J=1,I-1
+50	IBASE=IBASE+LLENG(J)
+C
+	  CALL MARKH(HMARK(I))
+	  CALL COLOR(IPEN(I))
+C
+C     SET PLOT MODE
+	    IF(ITYPE(I).GE.4)THEN
+	      CALL DASHSZ(DN1(I),UP1(I),DN2(I),UP2(I))
+	      CALL DASHES
+	    ELSE
+	      CALL VECTRS
+	    END IF
+	    IF(ITYPE(I).EQ.3)CALL POINTS
+	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
+C     DO NOT CHECK POINTS FOR MISSING DATA
+	      CALL TRANS(I,X(IBASE+1),X(IY+IBASE+1),XT,YT)
+	      CALL PLOT(XT,YT,0,0)
+	      IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4)CALL MARK(IMARK(I))
+	      IM=0
+	      IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3)IM=IMARK(I)
+	      DO 60 J=IBASE+1,IBASE+LLENG(I)
+	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
+	        CALL PLOT(XT,YT,1,0)
+60            CALL MARK(IM)
+	    ELSE
+C     CHECK POINTS FOR OUT OF RANGE   (CM)
+	      DO 70 J=IBASE+1,IBASE+LLENG(I)
+		IF(XLE.AND.X(J).LE.CMXLE)GOTO 70
+		IF(XEQ.AND.X(J).EQ.CMXEQ)GOTO 70
+		IF(XGE.AND.X(J).GE.CMXGE)GOTO 70
+		IF(YLE.AND.X(IY+J).LE.CMYLE)GOTO 70
+		IF(YEQ.AND.X(IY+J).EQ.CMYEQ)GOTO 70
+		IF(YGE.AND.X(IY+J).GE.CMYGE)GOTO 70
+	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
+	        CALL PLOT(XT,YT,0,0)
+	        IF(ITYPE(I).NE.0.AND.ITYPE(I).NE.4)CALL MARK(IMARK(I))
+ 	        IM=0
+	        IF(ITYPE(I).EQ.1.OR.ITYPE(I).EQ.3)IM=IMARK(I)
+	        GOTO 71
+70	      CONTINUE
+71	      IF=1
+	      DO 72 K=J+1,IBASE+LLENG(I)
+		IF((XLE.AND.X(K).LE.CMXLE).OR.
+     *		   (XEQ.AND.X(K).EQ.CMXEQ).OR.
+     *		   (XGE.AND.X(K).GE.CMXGE).OR.
+     *		 (YLE.AND.X(IY+K).LE.CMYLE).OR.
+     *		 (YEQ.AND.X(IY+K).EQ.CMYEQ).OR.
+     *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
+	          IF=0
+	        ELSE
+	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
+	          CALL PLOT(XT,YT,IF,0)
+	          CALL MARK(IM)
+	          IF(IF.EQ.0)THEN
+	            IF=1
+	          END IF
+	        END IF
+72	      CONTINUE
+	    END IF
+	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))
+ 	CALL COLOR(IPEN(0))
+	CALL WINDOW(0.,0.,0.,0.)
+C
+C***	%LABEL
+C
+	ELSE IF(ICOM.EQ.'%LABEL')THEN
+	    IF(N.EQ.0)RETURN
+C
+C	SET SCALE FOR LABEL
+C
+	    CALL INQSCL(XFF,YFF,XOR,YOR,XLOW,YLOW)
+	    IF(M.GE.3.AND.IFLG(3).NE.0)THEN
+		IPOS=P(3)
+	    ELSE
+	    	IPOS=-1
+	    ENDIF
+	    IF(M.GE.4.AND.IFLG(4).NE.0)THEN
+	    	ANG=P(4)
+	    ELSE
+	        ANG=0.
+	    ENDIF
+	    IF(M.GE.5.AND.IFLG(5).NE.0)THEN
+	    	CHSIZE=P(5)
+	    ELSE
+	    	CHSIZE=HLAB1
+	    ENDIF
+	    IF(SUSER)THEN
+	    	XFUSER=1.
+		YFUSER=1.
+		YLOUSR=0.
+		XLOUSR=0.
+	    ELSE
+	    	XFUSER=XFF
+		YFUSER=YFF
+		XLOUSR=XLOW
+		YLOUSR=YLOW
+	    ENDIF
+	    CS=COS(ANG*0.0175329252)
+	    SN=SIN(ANG*0.0175329252)
+	    XMN=SYMWID(CHSIZE,N,LABEL)
+	    SHFT=0.0
+	    IF(IPOS.GT.0)THEN
+		SHFT=-XMN
+	    ELSE IF(IPOS.EQ.0)THEN
+		SHFT=-XMN*.5
+	    ENDIF
+	    XT=P(1)/XFUSER+XLOUSR+SHFT*CS/XFF
+	    YT=P(2)/YFUSER+YLOUSR+SHFT*SN/YFF
+	    CALL SYMBEL(XT,YT,ANG,CHSIZE,N,LABEL)
+	ENDIF
+C
+	RETURN
+	END

@@ -1,0 +1,65 @@
+	SUBROUTINE GCF_GET_ARG_PARMS
+     .			(gcfcn, arg, lo_off,  hi_off, implied_lims)
+
+* Return parameters about the grid changing function, gcfcn, on how the
+* limits of the argument, arg, should be determined relative to the
+* default limits of the grid changing variable
+
+* For example, in
+*	LET a = GCFCN( b )
+*	LIST a[i=1:5]
+* we need to know if the limits i=1:5 should be passed along to b and if they
+* should be increased or decreased by offsets supplied by the function.
+
+* V450: 1/97
+
+* calling argument declarations
+	LOGICAL	implied_lims(4)
+	INTEGER	gcfcn, arg, lo_off(4),  hi_off(4)
+
+* internal variable declarations
+	INTEGER	idim, iptr, ip
+
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+        include 'tmap_format/xtm_grid.cmn_text'
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/xgrid_chg_fcns.cmn'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
+#endif
+
+* check the internal grid changing functions first
+        IF (gcfcn .LT. 0 ) THEN
+
+           STOP 'gcf_get_arg_lims'
+
+        ELSEIF (gcfcn .LE. gfcn_num_internal) THEN
+
+* is this a valid argument number?
+	   IF (arg .LT. 1
+     .    .OR. arg .GT. gfcn_num_reqd_args(gcfcn) )
+     .					STOP 'gcf_cx_merge_arg_1'
+
+* determine location of information in argument arrays
+	   iptr = gfcn_arg_ptr(gcfcn) + arg - 1
+
+* return information about argument iarg
+
+	   DO 100 idim = 1, 4
+
+	      lo_off(idim) = gfcn_arg_extend_lo(idim, iptr)
+	      hi_off(idim) = gfcn_arg_extend_lo(idim, iptr)
+	      implied_lims(idim) = gfcn_axis_implied_from(idim, iptr)
+ 100	   CONTINUE
+
+	ELSE
+	      STOP 'External functions not yet implemented'
+
+	ENDIF
+
+	RETURN
+	END

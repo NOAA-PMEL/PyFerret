@@ -1,0 +1,38 @@
+* XCONTROL.CMN - COMMON storage for control stack
+* the letters "CS" refer to "control stack"
+* *sh* 7/92 - added cs_save_*
+* *sh* 2/94 - increased cs_text size to match cmnd_buff
+
+	INTEGER		cs_max
+	PARAMETER     (	cs_max = 10 )
+
+	LOGICAL	cs_in_control,
+     .		cs_by_ss( cs_max ),
+     .		cs_save_by_ss( cs_max )
+	INTEGER	csp,			! control stack pointer
+     .		cs_lun     ( cs_max ),
+     .		cs_cmnd_num( cs_max ),
+     .		cs_axis    ( cs_max )
+	REAL*8	cs_limit   ( cs_max ),
+     .		cs_delta   ( cs_max ),
+     .		cs_phase   ( cs_max ),
+     .		cs_save_lo ( cs_max ),
+     .		cs_save_hi ( cs_max )
+	CHARACTER*500
+     .		cs_text    ( cs_max )
+
+	COMMON / XCONTROL /
+     .		cs_limit   ,
+     .		cs_delta   ,
+     .		cs_phase   ,
+     .		cs_save_lo ,
+     .		cs_save_hi ,
+     .		csp	   ,
+     .		cs_cmnd_num,
+     .		cs_axis    ,
+     .		cs_in_control,
+     .		cs_by_ss   ,
+     .		cs_save_by_ss,
+     .		cs_lun     ,
+     .		cs_text 
+

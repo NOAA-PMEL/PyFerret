@@ -1,0 +1,5 @@
+* variables to control TMAP diagnostic messages
+* *sh* 2/92 added ds_dset_type 
+	COMMON /XDIAG_CTRL/ tmap_diag_on, ds_dset_type
+	LOGICAL tmap_diag_on
+	CHARACTER*4 ds_dset_type

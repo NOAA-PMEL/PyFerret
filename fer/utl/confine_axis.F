@@ -1,0 +1,192 @@
+	SUBROUTINE CONFINE_AXIS( idim, cx, status )
+
+* given a skeletal context with a known grid confine the context limits to
+* on the given axis within the grid limits
+* if date/time limits were specified convert to time steps here
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V200: 5/26/89 - extracted from CONFINE_CONTEXT with improved error message
+*	12/4/89 - improved error reporting
+*	5/16/90 - further improved error reporting
+*	 8/6/90 - error processing bug: "status" --> istat in SECS_FROM_BC
+*       8/10/92 - don't eliminate transform because of lo=hi limits
+* V230: 11/4/92 - expanded variable name length
+* V420: 11/95 - change to philosophy of "explicit" contexts -- for
+*		LET A=I[i=1:5:1] (dynamic axis) the expression A[I=10] should
+*		be an error
+*	      - allow explicit Z=100@ITP to pass through
+
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+	include	'tmap_format/xtm_grid.cmn_text'
+	external xgt_grid_data
+	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret_cmn/xtext_info.cmn'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
+#endif
+
+* calling argument declarations:
+	INTEGER	cx, idim, status
+
+* internal variable declarations:
+!	LOGICAL lim_redundant
+	LOGICAL itsa_uvar
+	INTEGER	ISUBSCRIPT, TM_LENSTR1, ss, min_ss, max_ss, lo_ss, hi_ss,
+     .		axis, grid, lenstr, slen, cat, var, istat
+	REAL*8	SECS_FROM_BC, bc_to_t0, ww, min_ww, max_ww, lo_ww, hi_ww
+	CHARACTER VAR_CODE*24, CX_DIM_STR*48, VAR_TITLE*24,
+     .		  buff*48, err_str*48, expr_num*1
+
+* internal parameter declarations:
+	LOGICAL     full_precision
+	INTEGER	    err_ss_lims, err_ww_lims
+	PARAMETER ( full_precision = .TRUE.,
+     .		    err_ss_lims = -77,
+     .		    err_ww_lims = -88 )
+
+* initialize
+	grid = cx_grid( cx )
+	cat  = cx_category(cx)
+	var  = cx_variable(cx)
+	itsa_uvar = cat .EQ. cat_user_var
+
+* axis for this dimension
+	axis = grid_line( idim, grid )
+
+! 11/95: increased restrictions that limits must be within valid bounds
+!        even redundant limits must be fleshed out since they may be used at
+!	 higher levels to "reconcile" results
+!* check for special actions needed on user-defined variables
+!* ( e.g. how to handle U[K=5] - U[K=1:10] or PI=3.1415)
+!	IF ( cat .EQ. cat_user_var ) THEN
+!	   lim_redundant = uvar_given( idim, var ) .LE. uvlim_gvn_xact
+!	ELSE
+!	   lim_redundant = .FALSE.
+!	ENDIF
+
+* check for internal error left over from old TMAP library
+	IF ( axis .EQ. munknown ) THEN
+	   status = ferr_grid_definition
+	   GOTO 5010
+	
+* irrelevant normal axis  (was based on lim_redundant prior to 11/95)
+	ELSEIF ( axis .EQ. mnormal ) THEN
+	   GOTO 1000
+
+* (11/95) limits on a constant are irrelevant
+	ELSEIF ( cat .EQ. cat_constant ) THEN
+	   GOTO 1000
+
+* (11/95) expressions such as "2+2"
+	ELSEIF ( itsa_uvar ) THEN
+	   IF ( uvar_given(idim,var) .EQ. uvlim_irrelevant) GOTO 1000
+
+* positions were specified by subscript
+	ELSEIF ( cx_by_ss( idim, cx ) ) THEN
+	   status = err_ss_lims	! in case of error
+* ... is there valid position data for this axis ?
+	   IF ( cx_lo_ss( cx ,idim ) .EQ. unspecified_int4 ) GOTO 1000
+* ... confine them to the limits of the defining grid
+	   CALL GRID_SUBSCRIPT_EXTREMES(min_ss, max_ss, grid, idim)
+	   lo_ss = MAX( min_ss, cx_lo_ss(cx,idim) )
+	   hi_ss = MIN( max_ss, cx_hi_ss(cx,idim) )
+* ... check for limit error
+	   IF ( lo_ss .GT. hi_ss ) GOTO 5010
+* ... success
+	   cx_lo_ss( cx, idim ) = lo_ss
+	   cx_hi_ss( cx, idim ) = hi_ss
+
+* positions were specified by world coordinates
+	ELSE
+	   status = err_ww_lims	! in case of error
+* ... is there valid position data for this axis ?
+	   IF ( cx_lo_ww( idim, cx ) .EQ. unspecified_val8 ) GOTO 1000
+* ... time/date strings are received as -1*(secs from BC)
+	   IF ( idim .EQ. t_dim 
+     .	  .AND. cx_lo_ww(idim,cx) .LT. 0.0D0 ) THEN
+	      bc_to_t0 = SECS_FROM_BC( line_t0(axis), istat )
+	      cx_lo_ww(idim,cx) = 
+     .			-(cx_lo_ww(idim,cx)+bc_to_t0)/line_tunit(axis)
+	      cx_hi_ww(idim,cx) = 
+     .			-(cx_hi_ww(idim,cx)+bc_to_t0)/line_tunit(axis)
+	   ENDIF
+* ... confine values to the limits of the defining grid
+	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )
+	   lo_ww = MAX( cx_lo_ww( idim, cx ), min_ww )
+	   hi_ww = MIN( cx_hi_ww( idim, cx ), max_ww )
+* ... check for error in limits and possibly remove transformation
+	   IF ( lo_ww .GT. hi_ww ) THEN
+	      GOTO 5010
+! commented out 11/95 -- allow user's "@ITP" to pass through
+!	   ELSEIF ( lo_ww .EQ. hi_ww
+!     .	      .AND. cx_trans(idim,cx) .EQ. trans_interpolate ) THEN
+!! ... B4 8/92 was: .AND. cx_trans(idim,cx) .GT. trans_compress_code ) THEN
+!* ... remove transformation if irrevelent
+!	      cx_trans( idim, cx ) = trans_no_transform
+	   ENDIF
+* ... success
+	   cx_lo_ww( idim, cx ) = lo_ww
+	   cx_hi_ww( idim, cx ) = hi_ww
+
+	ENDIF
+
+* successful completion
+ 1000	status = ferr_ok
+	RETURN
+
+* error exits
+ 5000	RETURN
+* prepare detailed error string: variable name and range along axis
+ 5010	err_str = VAR_CODE(cat,var)
+	IF ( INDEX( err_str,'#' ) .GT. 0 ) THEN
+	   err_str = '"'//VAR_TITLE( cx )
+	   lenstr  = TM_LENSTR1(err_str)
+	   IF ( lenstr .GT. 20 ) THEN
+	      err_str = err_str(:20)//'..."'
+	   ELSE
+	      err_str = err_str(:lenstr)//'"'
+	   ENDIF
+	ENDIF
+	lenstr = TM_LENSTR1(err_str)
+	IF ( cx_unstand_grid(cx) ) THEN
+	   err_str = err_str(:lenstr)//' on grid '//grid_name(cx_grid(cx))
+	   lenstr = TM_LENSTR1(err_str)
+	ENDIF
+	CALL TRANSFER_CONTEXT( cx, cx_buff )
+	cx_trans( idim, cx_buff ) = trans_no_transform
+	IF ( status .EQ. err_ss_lims ) THEN
+	   cx_lo_ss(cx_buff,idim) = min_ss
+	   cx_hi_ss(cx_buff,idim) = max_ss
+	   GOTO 5900
+	ELSEIF ( status .EQ. err_ww_lims ) THEN
+	   cx_lo_ww(idim,cx_buff) = min_ww
+	   cx_hi_ww(idim,cx_buff) = max_ww
+	   GOTO 5900
+	ELSEIF ( status .EQ. ferr_grid_definition ) THEN
+	   CALL ERRMSG( ferr_grid_definition, status,
+     .			err_str(:lenstr)//pCR//
+     .			'Unknown '//ww_dim_name(idim)//' axis in grid '//
+     .			grid_name(grid), *5000 )
+	ELSE
+	   STOP 'CONFINE_AXIS'
+	ENDIF
+
+ 5900	buff = CX_DIM_STR(idim, cx, ':',full_precision,slen)
+	CALL ERRMSG( ferr_limits, status,
+     .		err_str(:lenstr)//' is not in the range '//buff(:slen)//
+     .		pCR//'Axis extremes are '//CX_DIM_STR(idim, cx_buff, 
+     .					  ':',full_precision,slen), *5000 )
+	END

@@ -1,0 +1,57 @@
+	SUBROUTINE CSTRING_INSERT( fstring, flen, cstring, clen, insert_pt)
+
+* Insert a FORTRAN character string into a "C" string (a character array)
+* using a carriage return followed by null as the terminator.
+* Return with the insertion point pointing to the null.
+
+* V400:  8/94
+
+* Note that insert_pt is both input and output - it will be returned at the
+* correct position for the next insert
+
+* If insert_pt>clen upon return that means the buffer has overflowed
+
+* calling argument declarations:
+	INTEGER	flen, clen, insert_pt
+	CHARACTER fstring*(*)
+#ifdef sun
+        BYTE      cstring(clen) ! c-type Hollerith string buffer
+#else
+        INTEGER*1 cstring(clen) ! c-type Hollerith string buffer
+#endif
+
+* internal variable declarations:
+
+* internal parameter declarations:
+#ifdef sun
+        BYTE      CR, NULL, STAR
+#else
+        INTEGER*1 CR, NULL, STAR
+#endif
+	PARAMETER ( CR   = 13,
+     .		    NULL =  0,
+     .		    STAR = 42 )	
+
+	IF ( insert_pt + flen + 2 .LE. clen ) THEN
+
+* insert the new string
+	  CALL TM_FTOC_STRNG( fstring(:flen), cstring(insert_pt), clen )
+	  insert_pt = insert_pt + flen
+
+* insert the terminators
+	  cstring(insert_pt) = CR
+	  insert_pt = insert_pt + 1
+	  cstring(insert_pt) = NULL      ! overwritten by next
+	
+	ELSE
+
+* ERROR: insufficient room to append this text
+	  DO 100 insert_pt = insert_pt, clen-1
+ 100	  cstring(insert_pt) = STAR
+	  cstring(clen) = NULL
+	  insert_pt = clen + 1
+
+	ENDIF
+
+	RETURN
+	END

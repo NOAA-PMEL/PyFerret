@@ -1,0 +1,109 @@
+	SUBROUTINE DSFLAB
+C** 
+C**    @(#)dsflab.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C	DSFLAB fills the PLOT5 labels with information from the
+C	BIBO header of a DSF file.
+C
+#ifdef unix
+	INCLUDE 'pplinc/PARAMPL5.DAT'
+	INCLUDE 'pplinc/CMRD.INC'
+	INCLUDE 'pplinc/LABELS.INC'
+	INCLUDE 'pplinc/BIBO.COM'
+	INCLUDE 'pplinc/TBLE.INC'
+#else
+        INCLUDE 'pplinc:PARAMPL5.DAT'
+        INCLUDE 'pplinc:CMRD.INC'
+        INCLUDE 'pplinc:LABELS.INC'
+        INCLUDE 'pplinc:BIBO.COM'
+C        INCLUDE 'pplinc:BIBO.DAT'
+        INCLUDE 'pplinc:TBLE.INC'
+#endif
+C
+	REAL STR(11)
+	CHARACTER MORINT*16,LAT*11,LON*11,NS*1,EW*1,DEP*10
+	INTEGER MORLEN,LATLEN,LONLEN,DEPLEN
+#ifdef unix
+C	INCLUDE 'pplinc/BIBO.DAT'
+#endif
+C
+C	fill the XLAB 
+C
+	XLAB = 'Time (BIBO)'
+C
+C	fill the YLAB
+C
+	CALL FILL(DTTAB,NDTTAB,P(DTYPE),STR,IER)
+	WRITE(YLAB,'(6A4,1X,4A4)')(STR(I),I=1,10)
+	CALL LJUST(YLAB,255,J)
+	WRITE(MORINT,'(4A4)')P(MOOR),P(MOOR+1),P(INST),P(INST+1)
+	CALL SQUISH(MORINT,1,16)
+	MORLEN=LNBLK(MORINT,16)
+	ILAT=P(SLAT)/100.0
+	IF(P(SLAT).GE.0)THEN
+	    NS='N'
+	ELSE
+	    NS='S'
+	ENDIF
+	RLAT=ABS(P(SLAT)-ILAT*100.0)
+	IF(RLAT.EQ.0.)THEN
+	    WRITE(LAT,999)IABS(ILAT),NS
+999	    FORMAT(I4,'#',A1)
+	ELSE
+	    WRITE(LAT,998)IABS(ILAT),RLAT,NS
+998	    FORMAT(I4,1X,F4.1,'#',A1)
+	ENDIF
+	CALL LJUST(LAT,11,LATLEN)
+	ILON=P(SLON)/100.0
+	IF(P(SLON).GE.0)THEN
+	    EW='E'
+	ELSE
+	    EW='W'
+	ENDIF
+	RLON=ABS(P(SLON)-ILON*100.0)
+	IF(RLON.EQ.0.)THEN
+	    WRITE(LON,999)IABS(ILON),EW
+	ELSE
+	    WRITE(LON,998)IABS(ILON),RLON,EW
+	ENDIF
+	CALL LJUST(LON,11,LONLEN)
+	WRITE(DEP,'(F10.1)')P(INDEP)
+	CALL LJUST(DEP,10,DEPLEN)
+C
+C	create main label
+C
+	LAB1=MORINT(1:MORLEN)//'  '//LAT(1:LATLEN)//', '//
+     *	    LON(1:LONLEN)//'  ('//DEP(1:DEPLEN)//' M)'
+	RETURN
+	END
+	SUBROUTINE LJUST(STR,INLEN,OUTLEN)
+C
+C	LJUST left justifies a string and returns its length
+C
+	INTEGER INLEN,OUTLEN
+
+#ifdef FORTRAN_90
+	character str*(*)
+#else
+	CHARACTER STR*255
+#endif
+
+	IF(STR.EQ.' ')THEN
+	    OUTLEN=1
+	    RETURN
+	ENDIF
+100	IF(STR(1:1).NE.' ')GOTO 200
+	STR(1:INLEN)=STR(2:INLEN)
+	GOTO 100
+200	OUTLEN=LNBLK(STR,INLEN)
+	RETURN
+	END

@@ -1,0 +1,17 @@
+* common xbuild_grids.cmn
+
+* common to assist with processing new grid definitions
+* this could be folded into xgrid.cmn
+
+	INTEGER     max_temp_grid
+	PARAMETER ( max_temp_grid = 60 )
+
+	INTEGER firstax, lastax, firstgrid, lastgrid, orig_line_mem
+
+	COMMON /XBUILD_GRIDS/
+     .		firstax,
+     .		lastax,
+     .		firstgrid,
+     .		lastgrid,
+     .		orig_line_mem
+

@@ -1,0 +1,293 @@
+	SUBROUTINE CD_WRITE_AXIS ( cdfid, grid, idim, recdim,
+     .                             loss, hiss, ax_type, status )
+
+* Write an axis definition out to the current output netCDF file
+* May be a full "parent" definition, a sub_axis, or a "child" (a sub-axis
+* which points to the full axis)
+
+* Programmer Steve Hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* revision 0.0 - 3/92
+*   10/92: for performance reasons the "point_spacing" attribute will not be
+*          maintained on the record axis (see cd_rec_synch)
+*        - and CD_SET_MODE used to put into define mode before writing attribs
+*   12/92: write axes in double precision (esp. for time axis issues) 
+*    3/93: check error status after creating dimension
+*    4/93: check "line_direction" in determining if time_origin is needed
+*    1/95: change logical argument into integer "ax_type"
+*    2/95: write NOAA COOP-compliant files: "days since 1992-02-28",
+*	   "degrees_east", "degrees_north"
+* 10/96 *kob* - Linux port - had to move variable assignments off of
+*		declaration line.
+
+* argument definitions:
+*     cdfid   - netCDF id number for already opened CDF file
+*     grid    - TMAP grid id
+*     idim    - axis orientation (1-4)
+*     recdim  - is this to be the CDF record axis ? (input)
+*     loss    - lo subscript (child axis, only)
+*     hiss    - hi subscript (child axis, only)
+*     status  - return status
+
+* include files
+#ifdef unix
+        include 'tmap_format/netcdf.decl'
+        include 'tmap_format/netcdf.inc'
+	include 'tmap_format/tmap_errors.parm'
+	include 'tmap_format/tmap_dims.parm'
+#include "tmap_format/tmap_dset.parm"
+        include 'tmap_format/cdf_tmap.parm'
+	include 'tmap_format/gt_lib.parm'
+	include 'tmap_format/cd_lib.parm'
+	include 'tmap_format/xdset_info.cmn_text'
+	external xdset_info_data
+	include 'tmap_format/xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'tmap_format/xunits.cmn_text'
+#else
+xx        include 'xxtmap_format/netcdf.decl'  ! untested
+xx        include 'xxtmap_format/netcdf.inc'
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
+	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
+	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
+	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
+#endif
+
+* argument declarations
+      LOGICAL recdim
+      INTEGER cdfid, grid, idim, loss, hiss, ax_type, status
+
+* local variable declarations:
+* *kob* explicit definitions not allowed on decl line in linux...
+*       moved it to parameter line 10/96
+      LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, abstract, do_warn
+      PARAMETER (do_warn = .TRUE. )
+      INTEGER TM_LENSTR1, CD_AXLEN, NCDID, NCVID, NCDDEF, NCVDEF,
+     .        dimid, iaxis, axid, cdfstat, lo, hi, i, i100,
+     .        nlen, elen, axlen, slen, hilim, edgid, npts
+!      INTEGER vartype, nvdims, vdims(6), nvatts
+      REAL*8 buff(100)
+!      LOGICAL condensed
+!      REAL rlen
+      CHARACTER CD_CHILDAX_NAME*24, CD_AXIS_NAME*24,
+     .          name*24, units*48
+      REAL*8 TM_WORLD
+!      REAL*8 val8_cdf, val8_tmap
+
+* initialize
+      iaxis = grid_line(idim, grid)
+      name = CD_AXIS_NAME( grid, idim, nlen )
+      npts = line_dim(iaxis)
+      abstract = TM_ABSTRACT_AXIS( iaxis )
+
+* determine lo/hi limits of the axis to be written
+      IF ( abstract ) THEN
+         lo = loss
+         hi = hiss
+      ELSEIF ( ax_type .EQ. pcdf_full_span ) THEN
+         lo = 1
+         hi = line_dim(iaxis)
+      ELSE
+         lo = loss
+         hi = hiss
+      ENDIF
+!      condensed = line_regular(iaxis) .AND. (hi-lo).GT.3000
+
+* dimension name and size for this axis
+      axlen = hi - lo + 1
+      IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
+         name = CD_CHILDAX_NAME( name, lo, hi, nlen )
+         nlen = MIN(nlen,16)
+      ENDIF
+      dimid = NCDID( cdfid, name(:nlen), cdfstat )
+
+* already defined ? (limited consistency checking)
+      IF ( cdfstat .EQ. NCNOERR ) THEN
+* ... is there a coordinate variable by the same name ?
+         axid = NCVID( cdfid, name(:nlen), cdfstat )
+         IF ( cdfstat .NE. NCNOERR ) GOTO 5300
+         IF ( .NOT.recdim ) THEN
+* ... check the length
+            slen = CD_AXLEN( cdfid, dimid, status )
+            IF ( status .NE. merr_ok ) GOTO 5900
+            IF ( axlen .NE. slen ) GOTO 5100
+!* ... check the first value on the axis for consistency
+! (check fails with "Attribute not found" in CD_RD_R8_1 - not debugged *sh*)
+! (also note: this may require a mode change 10/92)
+!            CALL NCVINQ(cdfid, axid, name, vartype, nvdims, vdims,
+!     .                 nvatts,cdfstat)
+!            CALL CD_RD_R8_1( cdfid, axid,   1, vartype, name(:nlen),
+!     .                        val8_cdf, status )
+!            IF ( status .NE. merr_ok ) GOTO 5900
+!            val8_tmap = TM_WORLD( lo, grid, idim, box_middle )
+!            IF ( SNGL(val8_cdf) .NE. SNGL(val8_tmap) ) GOTO 5100
+         ENDIF
+         GOTO 1000
+      ENDIF
+
+* put CDF into define mode so axis can be defined
+      CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
+      IF ( status .NE. merr_ok ) RETURN
+
+* define the dimension
+      IF ( recdim ) THEN
+         dimid = NCDDEF( cdfid, name(:nlen), NCUNLIM, cdfstat )
+!      ELSEIF ( condensed ) THEN
+!         dimid = NCDDEF( cdfid, name(:nlen), 2, cdfstat )
+      ELSE
+         dimid = NCDDEF( cdfid, name(:nlen), axlen, cdfstat )
+      ENDIF
+      IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+
+* create the coordinate variable (12/92 -> double precision)
+      axid = NCVDEF(cdfid, name(:nlen), NCDOUBLE, 1, dimid, cdfstat)
+      IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+
+* assign its attributes
+      IF (ax_type .EQ. pcdf_child_span) THEN
+         CALL NCAPTC( cdfid, axid, 'child_axis', NCCHAR, 1, ' ',
+     .        cdfstat )
+      ENDIF
+!      IF ( condensed ) THEN
+!         CALL NCAPT( cdfid, axid, 'true_size', NCLONG, 1, npts,
+!     .        cdfstat )
+!      ENDIF
+      IF ( line_units(iaxis) .NE. ' ' ) THEN
+	 units = line_units(iaxis)	 
+	 IF ( line_direction(iaxis) .EQ. 'WE'
+     .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
+	    units = 'degrees_east'
+	 ELSEIF ( line_direction(iaxis) .EQ. 'SN'
+     .	.AND. line_unit_code(iaxis) .EQ. pun_degrees ) THEN
+	    units = 'degrees_north'
+	ELSEIF ( line_direction(iaxis) .EQ. 'TI'
+     . .AND. TM_DATE_OK( line_T0(iaxis) )    ) THEN
+            slen = TM_LENSTR1( line_units(iaxis) )
+	    units = line_units(iaxis)(:slen)//' since '
+	    CALL TM_DATE_REFORMAT(line_T0(iaxis),pdate_vax,
+     .				  units(slen+8:),pdate_numslashnum,
+     .				  status )
+	    IF ( status .NE. merr_ok ) GOTO 5900
+	ENDIF
+        slen = TM_LENSTR1( units )
+        CALL NCAPTC( cdfid, axid, 'units', NCCHAR, slen,
+     .        	      units(:slen), cdfstat )
+      ENDIF
+      IF ( idim .EQ. t_dim ) THEN                  ! 4/93 update
+	IF ( line_direction(iaxis) .EQ. 'TI'
+     . .AND. TM_DATE_OK( line_T0(iaxis) )    ) THEN
+            slen = TM_LENSTR1( line_T0(iaxis) )
+            CALL NCAPTC( cdfid, axid, 'time_origin', NCCHAR, slen,
+     .           line_T0(iaxis)(:slen), cdfstat )
+	ENDIF
+      ENDIF
+      IF ( line_modulo(iaxis) ) THEN
+         CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
+      ENDIF
+      IF ( idim.EQ.z_dim .AND. line_direction(iaxis).EQ.'UD') THEN
+         CALL NCAPTC( cdfid, axid, 'positive', NCCHAR, 4,
+     .                'down', cdfstat )
+      ENDIF
+
+* record axis (time, usually) doesn't get cooridnate spacing or any
+* coordinates inserted at creation time
+      IF ( recdim ) THEN
+! (code removed 10/92 - shouldn't have been here, anyway, I think *sh*)
+!* ... this attribute is maintained by cd_rec_synch
+!         CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 4,
+!     .             'even', cdfstat )
+         CONTINUE
+      ELSE
+        IF ( line_regular(iaxis) ) THEN
+           CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 4,
+     .             'even', cdfstat )
+        ELSE
+* sub-span axis may not have irregular spacing just cuz parent does
+           IF ( ax_type .EQ. pcdf_full_span ) THEN
+              CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 6,
+     .             'uneven', cdfstat )
+           ENDIF
+        ENDIF
+
+* put CDF into data mode so coordinates can be written
+      CALL CD_SET_MODE(cdfid, pcd_mode_data, status)
+      IF ( status .NE. merr_ok ) RETURN
+
+* write the coordinates (buffer 100 at a time)
+!        IF ( condensed ) THEN
+!           buff(1) = TM_WORLD(    1, grid, idim, box_middle )
+!           buff(2) = TM_WORLD( npts, grid, idim, box_middle )
+!           CALL NCVPT(cdfid,axid,1,2,buff,cdfstat)
+!        ELSE
+           DO 110 i100 = lo, hi, 100
+              hilim = MIN(i100+99, hi)
+              DO 100 i = i100, hilim
+ 100          buff(i-i100+1) = TM_WORLD( i, grid, idim, box_middle )
+              CALL NCVPT(cdfid,axid,i100-lo+1,hilim-i100+1,buff,cdfstat)
+ 110       CONTINUE
+!        ENDIF
+!        CALL NCREDF( cdfid, cdfstat )    ! removed 10/92
+      ENDIF
+
+* does it need axis box edge definitions ?
+      IF (   ax_type .EQ. pcdf_full_span
+     ..AND. .NOT.line_regular(iaxis)
+     ..AND. .NOT.recdim ) THEN
+* ... put CDF into define mode so attributes can be written
+         CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
+         IF ( status .NE. merr_ok ) RETURN
+         name = name(:nlen)//'edges'
+         elen = nlen + 5
+         dimid = NCDDEF( cdfid, name(:elen), axlen+1, cdfstat )
+         edgid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 1, dimid, cdfstat)
+         CALL NCAPTC( cdfid, edgid, 'edges', NCCHAR, 1, ' ', cdfstat )
+* ... point to it from axis coordinates definition
+         CALL NCAPTC( cdfid, axid, 'edges', NCCHAR, elen,
+     .                name(:elen), cdfstat )
+* ... write the edge locations (buffer 100 at a time)
+* ... put CDF into data mode so coordinates can be written
+         CALL CD_SET_MODE(cdfid, pcd_mode_data, status)
+         IF ( status .NE. merr_ok ) RETURN
+         DO 210 i100 = lo, hi, 100
+         hilim = MIN(i100+99, hi)
+         DO 200 i = i100, hilim
+ 200       buff(i-i100+1) = TM_WORLD( i, grid, idim, box_lo_lim )
+           CALL NCVPT(cdfid,edgid,i100-lo+1,hilim-i100+1,buff,cdfstat)
+ 210     CONTINUE
+* ... tag on the upper bound of the top grid box
+         buff(1) = TM_WORLD( hi, grid, idim, box_hi_lim )
+         CALL NCVPT1(cdfid,edgid,axlen+1,buff,cdfstat)
+!         CALL NCREDF( cdfid, cdfstat )
+      ENDIF
+
+* successful completion
+ 1000 status = merr_ok
+      RETURN
+
+* error messages
+ 5100 CALL TM_ERRMSG
+     . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
+     .   unspecified_int4,
+     .  'axis '//name(:nlen)//' doesnt match CDF file',
+     .  no_errstring, *5900 )
+
+ 5200        CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
+     .       unspecified_int4, 'Failed creating coord variable '
+     .       //name(:nlen), no_errstring, *5900 )
+
+ 5300 CALL TM_ERRMSG
+     . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
+     .   unspecified_int4,
+     .  'Bad CDF file: dimension '//name(:nlen)
+     .  //' exists without coordinates',
+     .  no_errstring, *5900 )
+
+* error exit
+ 5900   RETURN
+	END

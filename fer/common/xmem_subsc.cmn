@@ -1,0 +1,43 @@
+* XMEM_SUBSC.CMN - COMMON/ XMEM_SUBSC /
+* non-array subscript limits required to use adjustable array declarations
+* after "VAX FORTRAN V5.2-33"
+
+* V200:  10/89 
+* Unix/RISC changes: direct declaration of unsubscripted vars, equivalence
+* to arrays.  Ultrix/RISC/FORTRAN doesn't permit EQUIVALENCED object to be
+* used as array declaration bounds
+
+
+********************************************************************************
+******			PARAMETER DEFINITIONS				  ******
+
+	INTEGER		max_mem_args
+	PARAMETER     ( max_mem_args = 6 )
+
+	COMMON / XMEM_SUBSC /
+     .		m1lox, m2lox, m3lox, m4lox, m5lox, m6lox,
+     .		m1loy, m2loy, m3loy, m4loy, m5loy, m6loy,
+     .		m1loz, m2loz, m3loz, m4loz, m5loz, m6loz,
+     .		m1lot, m2lot, m3lot, m4lot, m5lot, m6lot,
+     .		m1hix, m2hix, m3hix, m4hix, m5hix, m6hix,
+     .		m1hiy, m2hiy, m3hiy, m4hiy, m5hiy, m6hiy,
+     .		m1hiz, m2hiz, m3hiz, m4hiz, m5hiz, m6hiz,
+     .		m1hit, m2hit, m3hit, m4hit, m5hit, m6hit
+
+	INTEGER
+     .		m1lox, m2lox, m3lox, m4lox, m5lox, m6lox,
+     .		m1loy, m2loy, m3loy, m4loy, m5loy, m6loy,
+     .		m1loz, m2loz, m3loz, m4loz, m5loz, m6loz,
+     .		m1lot, m2lot, m3lot, m4lot, m5lot, m6lot,
+     .		m1hix, m2hix, m3hix, m4hix, m5hix, m6hix,
+     .		m1hiy, m2hiy, m3hiy, m4hiy, m5hiy, m6hiy,
+     .		m1hiz, m2hiz, m3hiz, m4hiz, m5hiz, m6hiz,
+     .		m1hit, m2hit, m3hit, m4hit, m5hit, m6hit
+
+* equivalences to assist with passing subscripts
+	INTEGER
+     .		lo_ss( max_mem_args, 4 ),
+     .		hi_ss( max_mem_args, 4 )
+
+	EQUIVALENCE
+     .		(lo_ss(1,1), m1lox), (hi_ss(1,1), m1hix)

@@ -1,0 +1,83 @@
+      SUBROUTINE WINDOW(XALOW,YALOW,XAHIGH,YAHIGH)
+C** 
+C**    @(#)window.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL WINDOW(XLOW,YLOW,XHIGH,YHIGH)
+C
+C     THIS SUBROUTINE DEFINES A PLOTTING AREA THAT HAS DIFFERENT
+C     BOUNDARIES THAN THE COMPLETE DISPLAY DEFINED BY SIZE.  AF-
+C     TER A CALL TO THIS SUBROUTINE, ALL SUBSEQUENT PLOTTING MUST
+C     LIE WITHIN BOTH SETS OF BOUNDARIES IN ORDER TO BE VISIBLE.
+C
+C     THE VARIOUS PARAMETERS AND THEIR DEFINITIONS ARE LISTED
+C     BELOW:
+C        XLOW   - MINIMUM X-VALUE TO BE PLOTTED IN USER'S UNITS.
+C        YLOW   - MINIMUM Y-VALUE TO BE PLOTTED IN USER'S UNITS.
+C        XHIGH  - MAXIMUM X-VALUE TO BE PLOTTED IN USER'S UNITS.
+C        YHIGH  - MAXIMUM Y-VALUE TO BE PLOTTED IN USER'S UNITS.
+C
+C
+#ifdef unix
+	include 'pplinc/PLTCOM.DAT'
+#else
+	include 'pplinc:PLTCOM.DAT'
+#endif
+C
+C     TRANSFER THE PARAMETERS TO NEW VARIABLES.
+C
+      XLOW = XALOW
+      XHIGH = XAHIGH
+      YLOW = YALOW
+      YHIGH = YAHIGH
+      IF(XHIGH .NE. XLOW .AND. YHIGH .NE. YLOW)THEN
+C
+C     SET THE WINDOW FLAG.
+C
+        WINDOF = .TRUE.
+C
+C     SET THE MINIMUM AND MAXIMUM ALLOWABLE VALUES OF X AND Y.
+C
+        XMIN = XLOW * XSCALE
+        YMIN = YLOW * YSCALE
+        XMAX = XHIGH * XSCALE
+        YMAX = YHIGH * YSCALE
+C
+C     CHECK THE PARAMETERS TO MAKE SURE THAT THEY ARE VALID.
+C
+        IF(XMIN .GT. XMAX)THEN
+          TEMP = XMIN
+          XMIN = XMAX
+          XMAX = TEMP
+        ENDIF
+        IF(YMIN .GT. YMAX)THEN
+          TEMP = YMIN
+          YMIN = YMAX
+          YMAX = TEMP
+        ENDIF
+C
+C     CALCULATE THE OFF-WINDOW FLAG.
+C
+        LOWFLG = 0
+        IF(XOLD .GT. XMAX)LOWFLG = 1
+        IF(XOLD .LT. XMIN)LOWFLG = 2
+        IF(YOLD .GT. YMAX)LOWFLG = LOWFLG + 4
+        IF(YOLD .LT. YMIN)LOWFLG = LOWFLG + 8
+      ELSE
+C
+C     RESET THE WINDOW FLAG.
+C
+        WINDOF = .FALSE.
+        OWFLG = 0
+      ENDIF
+      RETURN
+C
+      END

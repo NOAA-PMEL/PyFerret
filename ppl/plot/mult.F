@@ -1,0 +1,112 @@
+	SUBROUTINE MULT
+C** 
+C**    @(#)mult.F	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+#ifdef unix
+	INCLUDE 'pplinc/AXIS.INC'
+	INCLUDE 'pplinc/MPLOT.INC'
+	INCLUDE 'pplinc/CMRD.INC'
+	INCLUDE 'pplinc/CMRDL.INC'
+	INCLUDE 'pplinc/PLT.INC'
+	INCLUDE 'pplinc/FILNAM.INC'
+	INCLUDE 'pplinc/LUNITS.INC'
+	INCLUDE 'cmdinc/SYSTEM.INC'
+#else
+        INCLUDE 'pplinc:AXIS.INC'
+        INCLUDE 'pplinc:MPLOT.INC'
+        INCLUDE 'pplinc:CMRD.INC'
+        INCLUDE 'pplinc:CMRDL.INC'
+        INCLUDE 'pplinc:PLT.INC'
+        INCLUDE 'pplinc:FILNAM.INC'
+        INCLUDE 'pplinc:LUNITS.INC'
+        INCLUDE 'CMDINC:SYSTEM.INC'
+#endif
+	IF(IFLG(1).EQ.1)THEN 
+	    MNX=P(1) 
+	ELSE 
+	   MNX=1 
+	END IF 
+	IF(IFLG(2).EQ.1.AND.M.GE.2)THEN 
+	    MNY=P(2) 
+	ELSE 
+	    MNY=1 
+	END IF 
+	CALL STPRMP('multplt>',8)
+	IF(.NOT.QUIETF)WRITE(LTTOUT,
+     *	'('' ENTER XLEN FOR COLS 1,2,...,NX'')') 
+	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT) 
+	DO 4901 I=1,MNX 
+	IF(M.GE.I.AND.IFLG(I).EQ.1)THEN 
+	    XLENM(I)=P(I) 
+	ELSE 
+	    XLENM(I)=XLEN 
+	END IF 
+4901	CONTINUE 
+	IF(.NOT.QUIETF)WRITE(LTTOUT,
+     *	'('' ENTER YLEN FOR ROWS 1,2,...,NY'')') 
+	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
+	DO 4902 I=1,MNY 
+	IF(M.GE.I.AND.IFLG(I).EQ.1)THEN 
+	    YLENM(I)=P(I) 
+	ELSE 
+	    YLENM(I)=YLEN 
+	END IF 
+4902	CONTINUE 
+	IF(.NOT.QUIETF)WRITE(LTTOUT,'('' ENTER PLOT SPACINGS'')') 
+	IF(.NOT.QUIETF)WRITE(LTTOUT,
+     *	'('' LEFT BNDRY TO COL 1,COL1 TO COL2,ETC...'')') 
+	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
+	DO 4903 I=1,MNX 
+	IF(M.GE.I.AND.IFLG(I).EQ.1)THEN 
+	    DXM(I)=P(I) 
+	ELSE IF(I.EQ.1)THEN 
+	    DXM(1)=1.4 
+	ELSE 
+	    DXM(I)=DXM(1) 
+	END IF 
+4903	CONTINUE 
+	IF(.NOT.QUIETF)WRITE(LTTOUT,
+     *	'('' ROW1 TO ROW2,...,ROW NY TO BOTTOM'')') 
+	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
+	CALL STPRMP('ppl>',4)
+	DO 4904 I=1,MNY 
+	IF(M.GE.I.AND.IFLG(I).EQ.1)THEN 
+	    DYM(I)=P(I) 
+	ELSE IF (I.EQ.1) THEN 
+	    DYM(1)=1.2 
+	ELSE 
+	    DYM(I)=DYM(1) 
+	END IF 
+4904	CONTINUE 
+	HTM=HEIGHT 
+	WDM=WIDTH 
+	WIDTH=DXM(1) 
+	DO 4905 I=1,MNX 
+4905	WIDTH=WIDTH+XLENM(I)+DXM(I) 
+	HEIGHT=DYM(MNY) 
+	DO 4906 I=1,MNY 
+4906	HEIGHT=HEIGHT+YLENM(I)+DYM(I) 
+	IF(.NOT.QUIETF)WRITE(LTTOUT,9987) WIDTH,HEIGHT 
+9987	FORMAT(' PLOT IS',F6.2,' IN. WIDE AND',F6.2,' IN.HIGH') 
+	IMCNT=0 
+	IMULT=1 
+	IXM=0 
+	IYM=1 
+#ifdef unix
+	open(lmult,status='scratch',form='unformatted')
+#else
+	OPEN(LMULT,FILE='MULTZZZ.DAT',STATUS='NEW',
+     *	FORM='UNFORMATTED')
+	INQUIRE(UNIT=LMULT,NAME=MULTFL)
+	CLOSE(LMULT)
+#endif
+10	RETURN
+	END

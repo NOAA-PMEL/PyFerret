@@ -1,0 +1,8 @@
+* XIO.PARM
+*
+* XIO defines logical units for datainput/output
+
+	INTEGER	tooplu,fmoplu
+
+	PARAMETER	(tooplu  = 6)		!output to operator
+	PARAMETER	(fmoplu  = 5)		!input from operator

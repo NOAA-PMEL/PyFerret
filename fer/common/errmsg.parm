@@ -1,0 +1,107 @@
+* ERRMSG.PARM
+* error code PARAMETERS pertaining to program GFDL
+* error coding:
+*	gspecial +1--> gnoreport	- error codes requiring special action
+*	gnoreport+1--> greport		- error codes not requiring messages
+*	greport  +1--> ...		- error codes requiring error messages
+
+* internally used PARAMETERS:
+	INTEGER		gnum_special,gnum_noreport,gnum_report,
+     .			gspecial,    gnoreport,    greport,
+     .			ghelp_cue
+	CHARACTER*1	gno_errstring
+
+	PARAMETER     ( gspecial	= 2,	! avoid 0,1 as too special
+     .			gnoreport	= 200,
+     .			greport		= gnoreport + 200,
+     .			ghelp_cue	= greport + 1000,
+     .			gno_errstring	= ' '	)
+
+* special errors
+	INTEGER		ferr_ok,  ferr_erreq,  ferr_interrupt
+	PARAMETER     ( ferr_ok		= 1 + gspecial,
+     .			ferr_erreq	= 1 + ferr_ok,
+     .			ferr_interrupt	= 1 + ferr_erreq )
+	PARAMETER     ( gnum_special	= 3		 )
+
+* error codes requiring no message
+	INTEGER		ferr_TMAP_error, ferr_ODR_error, ferr_silent
+	PARAMETER     (	ferr_TMAP_error		= gnoreport		+ 1,
+     .			ferr_ODR_error		= ferr_TMAP_error	+ 1,
+     .			ferr_silent		= ferr_ODR_error	+ 1 )
+	PARAMETER     (	gnum_noreport	= 3 )
+
+* error codes requiring a message
+	INTEGER		ferr_insuff_memory,
+     .			ferr_too_many_vars,
+     .			ferr_perm_var,
+     .			ferr_syntax,
+     .			ferr_unknown_qualifier,
+     .			ferr_unknown_variable,
+     .			ferr_invalid_command,
+     .			ferr_regrid,
+     .			ferr_cmnd_too_complex,
+     .			ferr_unknown_data_set,
+     .			ferr_too_many_args,
+     .			ferr_not_implemented,
+     .			ferr_invalid_subcmnd,
+     .			ferr_relative_coord,
+     .			ferr_unknown_arg,
+     .			ferr_dim_underspec,
+     .			ferr_grid_definition,
+     .			ferr_internal,
+     .			ferr_line_too_long,
+     .			ferr_inconsist_plane,
+     .			ferr_inconsist_grid,
+     .			ferr_expr_too_complex,
+     .			ferr_stack_ovfl,
+     .			ferr_stack_undfl,
+     .			ferr_out_of_range,
+     .			ferr_prog_limit,
+     .			ferr_unknown_grid,
+     .			ferr_no_range,
+     .			ferr_var_not_in_set,
+     .			ferr_unknown_file_type,
+     .			ferr_limits,
+     .			ferr_descriptor,
+     .			ferr_bad_delta,
+     .			ferr_trans_nest,
+     .			ferr_state_not_set,
+     .			ferr_unknown_command
+	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
+     .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
+     .			ferr_perm_var		= ferr_too_many_vars	+ 1,
+     .			ferr_syntax		= ferr_perm_var		+ 1,
+     .			ferr_unknown_qualifier	= ferr_syntax		+ 1,
+     .			ferr_unknown_variable	= ferr_unknown_qualifier+ 1,
+     .			ferr_invalid_command	= ferr_unknown_variable	+ 1,
+     .			ferr_regrid		= ferr_invalid_command	+ 1,
+     .			ferr_cmnd_too_complex	= ferr_regrid		+ 1,
+     .			ferr_unknown_data_set	= ferr_cmnd_too_complex	+ 1,
+     .			ferr_too_many_args	= ferr_unknown_data_set	+ 1,
+     .			ferr_not_implemented	= ferr_too_many_args	+ 1,
+     .			ferr_invalid_subcmnd	= ferr_not_implemented	+ 1,
+     .			ferr_relative_coord	= ferr_invalid_subcmnd	+ 1,
+     .			ferr_unknown_arg	= ferr_relative_coord	+ 1,
+     .			ferr_dim_underspec	= ferr_unknown_arg	+ 1,
+     .			ferr_grid_definition	= ferr_dim_underspec	+ 1,
+     .			ferr_internal		= ferr_grid_definition	+ 1,
+     .			ferr_line_too_long	= ferr_internal		+ 1,
+     .			ferr_inconsist_plane	= ferr_line_too_long	+ 1,
+     .			ferr_inconsist_grid	= ferr_inconsist_plane	+ 1,
+     .			ferr_expr_too_complex	= ferr_inconsist_grid	+ 1,
+     .			ferr_stack_ovfl		= ferr_expr_too_complex + 1,
+     .			ferr_stack_undfl	= ferr_stack_ovfl	+ 1,
+     .			ferr_out_of_range	= ferr_stack_undfl	+ 1,
+     .			ferr_prog_limit		= ferr_out_of_range	+ 1,
+     .			ferr_unknown_grid	= ferr_prog_limit	+ 1,
+     .			ferr_no_range		= ferr_unknown_grid	+ 1,
+     .			ferr_var_not_in_set	= ferr_no_range		+ 1,
+     .			ferr_unknown_file_type	= ferr_var_not_in_set	+ 1,
+     .			ferr_limits		= ferr_unknown_file_type+ 1,
+     .			ferr_descriptor		= ferr_limits		+ 1,
+     .			ferr_bad_delta		= ferr_descriptor	+ 1,
+     .			ferr_trans_nest		= ferr_bad_delta	+ 1,
+     .			ferr_state_not_set	= ferr_trans_nest	+ 1,
+     .			ferr_unknown_command	= ferr_state_not_set	+ 1 )
+	PARAMETER     ( gnum_report	= 36 )

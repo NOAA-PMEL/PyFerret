@@ -1,0 +1,5 @@
+* information obtained from reading of the descriptor files of data sets
+
+	INCLUDE		'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
+
+	EXTERNAL	 XDSET_INFO_DATA

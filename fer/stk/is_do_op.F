@@ -1,0 +1,233 @@
+	SUBROUTINE IS_DO_OP( memory, alg_type, alg_text, lo_isp, status )
+
+* do bookkeeping and call up calculation to perform op_num between
+* 0,1,2 or 3 grids
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 2/13/87 - based on ALG_DO_OP rev 1.0
+* revision 1.0 - 8/11/87 - allowed for expanding grids: lines to planes, etc.
+* revision 1.1 - 9/30/87 - added mr_perm_prot
+* revision 1.2 - 2/18/88 - bug fix: LOAD/i=lo:hi/j=j1/k=k1/l=lo:hi temp,salt
+*				    LIST/i=i1 temp salt +
+*				  --> dimension error: tries to expand temp,salt
+*				and check the data planes before GRID_OPERATIO*
+* revision 1.3 - 7/8/88  - make sure subscript limits are adequate
+* revision 1.4 - 1/31/89 - passed num_com to GRID_OPERATION
+* V200:  6/20/89 - re-worked user defined variable logic
+*	10/16/89 - set up adjustable array limits with NON_ARRAY_SUBSC
+*	11/27/89 - IF-THEN-ELSE logic
+* V230:   8/7/92 - upped to 4 the number of arguments a function can use
+* V312: 5/94 - array "memory" as a calling argument
+* V400: corrected bad type declaration of STR_MATCH (found by IBM compiler)
+* V420: 9/95 - deallocate dynamic grids from components that had 'em
+*       10/5 ... a subtle change required by this is that the result must not
+*	       explicitly require the same grid as the first component  (lest
+*	       the result get deleted when that grid is deallocated.  In
+*	       fact, the true result grid and context are created by the
+*	       individual mergers of each component ... never by examining
+*	       the grid that results from this routine.  Thus (experimentally)
+*	       we will always represent the output of this routine as being
+*	       on grid ABSTRACT.  Hopefully, there will be no side-effects.
+*	11/95 - if any of the components are non-reusabe ("un_cached") so
+*		must be the result
+
+#ifdef unix
+	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/rpn.parm'
+	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret_cmn/xalgebra.cmn'
+	include	'ferret_cmn/xtext_info.cmn'
+	include	'ferret_cmn/xfr_grid.cmn'	! w/ mgrid_abstract
+#else
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE	'FERRET_CMN:RPN.PARM'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
+	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
+	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'	! W/ MGRID_ABSTRACT
+#endif
+
+* calling arguments
+	INTEGER		alg_type, lo_isp, status
+	REAL		memory( mem_blk_size, max_mem_blks )
+	CHARACTER*(*)	alg_text
+
+* local variables
+	LOGICAL	ITS_UN_CACHED, not_reusable
+	INTEGER	CX_DIM_LEN, STR_MATCH,
+     .		ifcn, iop, ilogic, icom, idim, num_com, mr, res_cx,
+     .		mr1, mr2, mr3, mr4, impl_grid,
+     .		frame_bottom, op_num, res_len, com_len, com_cx, res_mr
+
+* convenience equivalences
+	INTEGER	com(5)
+	EQUIVALENCE (com(1),mr1), (com(2),mr2), (com(3),mr3), (com(4),mr4),
+     .              (com(5),res_mr)
+
+*        ... interpretation stack setup at the time this is called ...
+*	stack level		stack contents
+*	 isp	<--	most recently obtained component for calculation
+*	isp-1		...
+*	isp-2	<--	...	other components of this expression on stack
+*	isp-n		...
+*	lo_isp	<--	level at which expression evaluation was called
+*
+* eg. for tau ^ 2 as a part of the full expression
+*			level isp     will contain the constant 2
+*			level isp-1   will contain tau
+*		and the alg_type/alg_text will point to "^"
+
+* the "frame_bottom" is the isp level that will be left when the components of
+* the current calculation (1 to 3) are reduced to a single value.
+* on exit isp will point to the frame bottom and the result will be left there
+
+* identify the text of the particular item within the algebraic class
+* ... function
+	IF     ( alg_type .EQ. alg_function   ) THEN
+	   ifcn = STR_MATCH( alg_text, alg_fcn, num_functions )
+	   IF ( ifcn .EQ. atom_not_found ) STOP ' bad fcn err'
+	   num_com = alg_num_fcn_args( ifcn )
+	   op_num  = ifcn + offset_functions
+* ... operator
+	ELSEIF ( alg_type .EQ. alg_operator   ) THEN
+	   iop = STR_MATCH ( alg_text, alg_op, num_operators )
+	   IF ( iop .EQ. atom_not_found ) STOP ' bad op err'
+	   num_com = 2
+	   op_num  = iop
+* ... logic structure
+	ELSEIF ( alg_type .EQ. alg_log_struct   ) THEN
+	   ilogic = STR_MATCH (	alg_text, alg_struct, num_log_structs )
+	   IF ( ilogic .EQ. atom_not_found ) STOP ' bad if-then err'
+	   IF ( ilogic .EQ. pthen ) THEN
+	      num_com = 2	! IF ... THEN ...
+	   ELSEIF ( ilogic .EQ. pelse ) THEN
+	      num_com = 3	! IF ... THEN ... ELSE ...
+	   ELSE
+	      STOP 'bad if'
+	   ENDIF
+	   op_num  = ilogic + offset_logic_struc
+	ELSE
+	   STOP '??? fcn or op'
+	ENDIF
+	frame_bottom = isp - num_com + 1
+	IF ( frame_bottom .LE. lo_isp ) CALL ERRMSG
+     .		( ferr_syntax, status, 'RPN', *5000 )
+
+* allocate context space for the result
+	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	res_cx = cx_stack_ptr
+
+* use first component context as the default
+	CALL TRANSFER_CONTEXT( is_cx(frame_bottom), res_cx )
+	cx_category( res_cx ) = cat_temp_var
+	cx_variable( res_cx ) = 1		! in case it is a constant
+	cx_grid    ( res_cx ) =  mgrid_abstract	! see 10/5 notes above
+
+* stretch sizes to maxes for all components on each axis
+* e.g. temp[k=1] + temp[K=1:3] needs 3 in the K direction
+* also - if there is a meaningful axis then use it
+* e.g. I[i=1] + J[j=1]   --> use the J axis although it is only length 1
+	DO 210 idim = 1, 4
+	   res_len = CX_DIM_LEN( idim, res_cx )
+	   DO 200 icom = 2, num_com
+	      com_cx  = is_cx(frame_bottom+icom-1)
+	      com_len = CX_DIM_LEN( idim, com_cx )
+	      IF ( com_len .GT. res_len
+     .	     .OR.  ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8
+     .	       .AND. cx_lo_ww(idim,com_cx) .NE. unspecified_val8 ) ) THEN
+	         CALL TRANSFER_AXIS( idim, com_cx, res_cx )
+	         res_len = com_len
+	      ENDIF
+ 200	   CONTINUE
+ 210	CONTINUE
+ 
+* allocate memory space for result
+	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+	mr_variable( res_mr ) = res_mr	! cat_temp_var vars point to themselves
+
+* point to the memory resident components
+* (if fewer than 4 components default extras to dummy)
+	DO 300 icom = 1, num_com
+ 300	com(icom) = is_mr(frame_bottom+icom-1)
+	DO 310 icom = num_com+1, 4
+ 310	com(icom) = dummy_mr
+
+* set up 4D array limits as unsubscripted variables in COMMON
+	CALL NON_ARRAY_SUBSC( com, 5 )
+
+* perform the operation
+	CALL OPERATE (	op_num, num_com, is_cx(frame_bottom),
+     .			memory(1, mr_blk1(mr1) ),   mr1,
+     .			memory(1, mr_blk1(mr2) ),   mr2,
+     .			memory(1, mr_blk1(mr3) ),   mr3,
+     .			memory(1, mr_blk1(mr4) ),   mr4,
+     .			memory(1, mr_blk1(res_mr)), res_mr )
+
+* clean up 
+* ... deallocate result context space
+	cx_stack_ptr = cx_stack_ptr - 1
+
+* ... if any components were un_cached we must uncache the result
+	not_reusable = .FALSE.
+	DO 2050 icom = isp, frame_bottom, -1
+ 2050	IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+	IF ( not_reusable ) CALL UN_CACHE( res_mr )
+
+* ...release component cx stack space
+	DO 2100 isp = isp, frame_bottom, -1
+	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) 'OP_STK??'	! temp
+	   cx_stack_ptr = cx_stack_ptr - 1
+	   mr  = is_mr( isp )
+	   IF ( mr_protected(mr) .EQ. mr_temporary
+     .	   .OR. mr_category (mr) .EQ. cat_temp_var ) THEN
+	      CALL DELETE_VARIABLE( mr )
+	   ELSE
+	      CALL MR_NOT_IN_USE( mr )
+	   ENDIF
+* (9/95) deallocate dynamic grids from components
+! instead make the result depend on grid ABSTRACT
+!* or, if the result requires
+!* the same grid, then pass responsibility for deallocating it later along to
+!* the result context. The use count is decremented (by calling DEALLO...)
+!* for each additional component that may have shared use of this dynamic grid.
+	   com_cx = is_cx(isp)
+	   IF ( cx_has_impl_grid(com_cx) ) THEN
+	      impl_grid = cx_grid(com_cx)
+!	      IF ( cx_grid(res_cx) .EQ. impl_grid ) THEN
+! 10/5	         IF ( cx_has_impl_grid(res_cx) )
+! idea    .				CALL DEALLO_DYN_GRID(impl_grid)
+!	         cx_has_impl_grid(res_cx) = .TRUE.	!inherit responsibility
+!	      ELSE
+	         CALL DEALLO_DYN_GRID(impl_grid)
+!	      ENDIF
+	      cx_has_impl_grid(com_cx) = .FALSE.
+	   ENDIF
+ 2100	CONTINUE
+
+* collapse the interp stack frame
+	isp = frame_bottom
+	is_mr( isp ) = res_mr
+
+* save the result context at the cx level previously used by the 1st component
+	cx_stack_ptr = cx_stack_ptr + 1
+	CALL TRANSFER_CONTEXT( res_cx, cx_stack_ptr )
+!	IF ( cx_has_impl_grid(res_cx) ) THEN
+! 10/5 	   cx_has_impl_grid(cx_stack_ptr) = .TRUE.
+! idea	   cx_has_impl_grid(res_cx)       = .FALSE.
+!	ENDIF
+	is_cx( isp ) = cx_stack_ptr
+
+	RETURN
+
+* error exit
+ 5000	RETURN
+	END

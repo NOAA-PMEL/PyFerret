@@ -1,0 +1,92 @@
+	SUBROUTINE SETFONT(fontdir,dirlen,dname,ifont,ii,kif,dnme,
+     .               ifn,dnum,itype,dtype,iflen, dlen,ioff,
+     .               icnt,ascii,base,rast,iadd,
+     .		     sx,sy,id)
+
+* Created 1.28.97 *kob*
+*
+*	Code in this routine taken from old pplmod_symbel.F routine.  This
+*	was necessary to reorganize the symbel routine to remove an illegal
+*	forward reference into a do loop.  This routine makes the 
+*	pplmod_symbel a little cleaner.  This change has 
+*	occurred in the middle of releasing v4.45 of 
+*	Ferret to the world.  Aix, Sgi, HP, OSF and SunOs
+*	have already been released, and this change is
+*	not a part of them.
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
+	DIMENSION SX(12000),SY(12000),ASCII(127,4),BASE(4),RAST(4)
+	DIMENSION DTYPE(35),DLEN(35),IOFF(4),IFLEN(4),ITYPE(4)
+C
+	LOGICAL SYMROT,READIR,PLOT,COLRF
+c	CHARACTER PLTFIL*80
+	CHARACTER ICOM*2,ICHR*1,STRING*120,DNME(35)*(*),DNUM(35)*(*)
+	CHARACTER DNAME(35)*(*),KIF(4)*(*),IFN(4)*(*)
+	CHARACTER*1 KSUB,KSUPER,KBKSP,KCALL,PENS(16)
+
+#ifdef unix
+	INTEGER*2 SX,SY
+
+        integer       dirlen
+        character*255 fontdir
+#else
+	byte sx,sy
+#endif
+	INTEGER*2 ICNT,IBASE,IRAST
+*added for linux port
+	INTEGER*4 IBASE4,IRAST4 
+	INTEGER*2 ASCII
+	INTEGER*2 DTYPE,DLEN,IOFF,IFLEN,ITYPE
+	INTEGER COLOLD
+	LOGICAL ASCFNT
+C
+C
+#ifdef unix
+	INCLUDE 'pplv11inc/PLTCOM.DAT'
+#else
+	INCLUDE 'pplv11inc:PLTCOM.DAT'
+#endif
+
+
+#ifdef unix
+1010	OPEN(LUSY,FILE=fontdir(:dirlen)//'/'//DNAME(ID),STATUS='OLD',
+     *	FORM='UNFORMATTED',ERR=5000)
+#else
+1010	open(lusy,file=dname(id),status='old',readonly,
+     *	form='unformatted',err=5000)
+#endif
+C
+C	SETUP FOR NEW FONT
+C
+	IFONT=II
+	KIF(II)=DNME(ID)
+	IFN(II)=DNUM(ID)
+	ITYPE(II)=DTYPE(ID)
+	IFLEN(II)=DLEN(ID)
+C
+C	SETUP IOFF
+C
+	IF(II.EQ.4)GOTO 1008
+	DO 1007 IJ=II+1,4
+	IOFF(IJ)=12000
+	KIF(IJ)='@@'
+	IFN(IJ)='@@'
+1007	IFLEN(IJ)=0
+	IOFF(II+1)=IOFF(II)+IFLEN(II)
+C
+C	READ NEW FONT
+C
+1008	READ(LUSY)ICNT,IBASE,IRAST
+	IBASE4 = IBASE
+	IRAST4 = IRAST
+	READ(LUSY)(ASCII(IJ,II),IJ=1,127)
+	BASE(II)=FLOAT(IBASE4)
+	RAST(II)=21./FLOAT(IRAST4)
+	IADD=IOFF(II)+1
+	READ(LUSY)(SX(IJ),IJ=IADD,IADD+DLEN(ID)-1)
+	READ(LUSY)(SY(IJ),IJ=IADD,IADD+DLEN(ID)-1)
+	CLOSE(LUSY)
+
+5000	return
+	end

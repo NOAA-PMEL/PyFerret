@@ -1,0 +1,222 @@
+	SUBROUTINE INIT_EZ_DSET( dset_name, dset, status )
+
+* initialize a data set of type "EZ" (simple ASCII or unformatted file with
+* no attendant descriptor
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V200: 10/20/89
+*	  2/2/90 - make sure its really an EZ set
+*	  2/8/90 - default /VAR is "V1"
+*	 3/27/90 - cancel data set (vs warning) if /VAR or /COL is changed
+*	  4/2/90 - cancel data set (vs warning) if already_init
+* Unix/RISC port - filesystem specific needs - new routine to evaluate path
+*                - and longer saved descriptor name
+* V3.1      5/94 - added /ORDER= 
+* V320  11/94 - *sh* IBM port - need to pass 4 character blank in TM_INQ_PATH
+*       11/94 - title needs to be case sensitive
+* V420 (V411) 10/95 - for IBM port change "READ(dset_name,*" to use '(I)'
+*Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
+*			  because it needed a preprocessor.
+*	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
+*			 read because linux/nag f90 needed a format width.
+* V450 7/97 - Increase array var_list holding dset var names
+
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+#	include "tmap_format/tmap_dset.parm"
+	include 'tmap_format/tmap_errors.parm'
+	include 'tmap_format/xdset_info.cmn_text'
+	external xdset_info_data
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include 'ferret_cmn/slash.parm'
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret_cmn/xfr_grid.cmn'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:SLASH.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
+#endif
+
+* calling argument declarations
+	INTEGER		dset, status
+	CHARACTER	dset_name*(*)
+
+* internal variable declarations:
+	LOGICAL		TM_DIGIT, VALID_GRID,
+     .			have_mods, already_init, by_number
+	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
+     .			tmap_status, loc, ivar, skip, grid, columns,
+     .			order(4), idim
+	CHARACTER	TM_INQ_PATH*80, var_list*256,
+     .			path_name*80, ezform*80, title*128, grid_name*16
+	REAL		rval
+
+* initialize
+	loc = qual_given( slash_set_data_var )
+	have_mods = .FALSE.
+
+* interpret the data set name or number given
+* 3 possibilities:
+*   i) dset implied from current default
+*  ii) dset given by number
+* iii) dset given by name  
+	IF ( dset_name .EQ. ' ' ) THEN
+	   by_number = .TRUE.
+	   already_init = .TRUE.
+	   dset = cx_data_set(cx_last)
+	ELSEIF ( TM_DIGIT(dset_name) ) THEN
+	   by_number = .TRUE.
+	   already_init = .TRUE.
+* *kob* 4/97
+#ifdef MANDATORY_FORMAT_WIDTHS
+	   READ (dset_name,*,ERR=5050) dset	! 10/95
+#else
+	   READ (dset_name,'(I)',ERR=5050) dset	! 10/95
+#endif
+	ELSE
+	   by_number = .FALSE.
+#ifdef unix
+           path_name = TM_INQ_PATH( dset_name, 'FER_DATA', '    ',
+     .                                   .TRUE., TMAP_status )
+#else
+	   path_name = TM_INQ_PATH( dset_name, 'FER_DATA', 'data.dat', .TRUE.,
+     .					  TMAP_status )
+#endif
+	   IF ( TMAP_status .EQ. merr_notmounted ) GOTO 5400
+	   IF ( TMAP_status .NE. merr_ok ) GOTO 5900
+	   dset = TM_DSET_NUMBER( path_name )
+	   already_init = dset .NE. unspecified_int4
+	ENDIF
+
+	IF ( by_number ) THEN
+	   IF   ( dset .LT. 1
+     .	   .OR.   dset .GT. maxdsets
+     .	   .OR.   dset .GT. max_gfdl_dsets )		GOTO 5300
+	   IF ( ds_name( dset ) .EQ. char_init40 )	GOTO 5300
+	ENDIF
+
+* already initialized ? - cancel it
+	IF ( already_init ) THEN
+* ... is it an EZ set ?
+	   IF ( ds_type(dset) .NE. '  EZ' ) GOTO 5100
+	   CALL PURGE_DSET( dset )	! remove memory-resident variables
+	   CALL PURGE_ALL_UVARS		! delete (possibly dependent) uvars
+* (note: this purge is unnecessarily strict - could be refined in the future)
+	   CALL CANCEL_DATA_SET( dset, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   already_init = .FALSE.
+	ENDIF
+
+* get list of variable names: SET DATA/EZ/VAR="..." name 
+	IF ( loc .EQ. 0 ) THEN
+	   var_list = 'V1'
+	ELSE
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      var_list, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	ENDIF
+
+* get number of columns if specified
+	loc = qual_given( slash_set_data_column )
+	IF ( loc .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   rval, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   columns = INT( rval )
+	ELSE
+	   columns = int4_init
+	ENDIF
+	CALL EZ_INIT_DSET( path_name, var_list, columns, dset, tmap_status )
+	IF ( tmap_status .NE. merr_ok ) GOTO 5900
+
+* always process any other qualifiers given
+	loc = qual_given( slash_set_data_title )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+           CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      title, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	ELSE
+	   title = char_init80
+	ENDIF
+        loc = qual_given( slash_set_data_form )
+        IF ( loc .GT. 0 ) THEN
+           have_mods = .TRUE.
+           CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        ezform, status )
+           IF ( status .NE. ferr_ok ) RETURN
+        ELSE
+           ezform = char_init16
+        ENDIF
+	loc = qual_given( slash_set_data_order )    ! 5/94
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+           CALL EQUAL_PERMUTE( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                         order, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	ELSE
+	   DO 500 idim = 1,4
+ 500	   order(idim) = idim
+	ENDIF
+	loc = qual_given( slash_set_data_grid )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+           CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      grid_name, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	   grid = GRID_FROM_NAME( grid_name, cx_last, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	   IF ( .NOT.VALID_GRID( grid ) ) GOTO 5500
+	ELSEIF ( .NOT.already_init ) THEN
+* ... insert the default defining grid
+	   have_mods = .TRUE.
+	   grid = mgrid_ez_dflt
+	ELSE
+	   grid = int4_init
+	ENDIF
+	loc = qual_given( slash_set_data_skip )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   rval, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   skip = INT( rval )
+	ELSE
+	   skip = int4_init
+	ENDIF
+	IF ( have_mods ) THEN
+	   CALL EZ_MOD_DSET( dset, title, ezform, grid, skip, order,
+     .				tmap_status )
+	   IF ( tmap_status .NE. merr_ok ) GOTO 5900
+	ENDIF
+
+* successful completion
+	status = ferr_ok
+	RETURN
+
+* error exits
+ 5000	RETURN
+ 5050	CALL ERRMSG( ferr_erreq, status, dset_name, *5000 )
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		ds_name(dset)(:TM_LENSTR1(ds_name(dset)))//
+     .		' is not an EZ data set', *5000 )
+ 5300	CALL ERRMSG( ferr_unknown_data_set, status,
+     .		'invalid data set number for SET DATA/EZ', *5000 )
+! 5400	CALL ERRMSG( ferr_unknown_data_set, status, dset_name, *5000 )
+ 5400	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
+ 5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
+ 5900	status = ferr_tmap_error
+	GOTO 5000
+	END

@@ -1,0 +1,7 @@
+* XWORK_SPACE.CMN
+* describes region of temporary work space allocated by GET_WORK_SPACE
+
+	COMMON / XWORK_SPACE / sp_last_size, sp_start_block, sp_num_blocks
+
+	INTEGER	sp_last_size, sp_start_block, sp_num_blocks
+

@@ -1,0 +1,9 @@
+* XREVISION.CMN
+
+	COMMON/ XREVISION /	program_name, len_program_name,
+     .				progname_mod, len_progname_mod,
+     .				revision_level
+
+	INTEGER		len_program_name, len_progname_mod
+	CHARACTER*20	program_name, progname_mod
+	REAL		revision_level

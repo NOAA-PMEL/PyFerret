@@ -1,0 +1,253 @@
+* SLASH.PARM
+* v450:  5/29 -- added slash_noaxes
+
+* command qualifier states
+	INTEGER		qual_on,
+     .			qual_off
+
+* command qualifiers
+	INTEGER		
+     .			slash_set_list_prec,
+     .			slash_set_list_out,
+     .			slash_set_list_form,
+     .			slash_set_list_append,
+     .			slash_set_list_heading,
+     .
+     .			slash_canc_list_all,
+     .			slash_canc_list_prec,
+     .			slash_canc_list_out,
+     .			slash_canc_list_form,
+     .			slash_canc_list_heading,
+     .			slash_canc_list_append,
+     .
+     .			slash_canc_axis_modulo,
+     .
+     .			slash_canc_data_noerr,
+     .
+     .			slash_canc_var_data,
+     .
+     .			slash_set_movie_out,
+     .			slash_set_movie_compress,
+     .			slash_set_movie_laser,
+     .			slash_set_movie_start,
+     .
+     .			slash_show_var_diag,
+     .			slash_show_var_user,
+     .
+     .			slash_show_grid_x0,
+     .			slash_show_grid_i0,
+     .
+     .			slash_show_data_brief,
+     .
+     .			slash_list_head,
+     .			slash_list_nohead,
+     .			slash_list_extend,
+     .			slash_list_title
+
+	INTEGER		
+     .			slash_set_data_ez,
+     .			slash_set_data_var,
+     .			slash_set_data_title,
+     .			slash_set_data_form,
+     .			slash_set_data_grid,
+     .			slash_set_data_skip,
+     .			slash_set_data_column,
+     .			slash_set_data_save,
+     .			slash_set_data_restore,
+     .			slash_set_data_order,
+     .
+     .			slash_set_var_title,
+     .			slash_set_var_unit,
+     .			slash_set_var_grid,
+     .			slash_set_var_bad,
+     .
+     .			slash_set_grid_save,
+     .			slash_set_grid_restore,
+     .
+     .			slash_set_axis_modulo,
+     .
+     .			slash_set_memory_words
+
+	INTEGER		slash_cont_over_plot,
+     .			slash_cont_set_up,
+     .			slash_cont_frame,
+     .			slash_cont_transpz,
+     .			slash_cont_nolabels,
+     .			slash_cont_lev_same,
+     .			slash_cont_fill,
+     .			slash_cont_key,
+     .			slash_cont_line,
+     .			slash_cont_nokey,
+     .			slash_cont_spectrum,
+     .
+     .			slash_vect_over_plot,
+     .			slash_vect_set_up,
+     .			slash_vect_frame,
+     .			slash_vect_transpz,
+     .			slash_vect_aspect,
+     .			slash_vect_nolabels,
+     .			slash_vect_xskip,
+     .			slash_vect_yskip,
+     .
+     .			slash_shad_over_plot,
+     .			slash_shad_set_up,
+     .			slash_shad_frame,
+     .			slash_shad_transpz,
+     .			slash_shad_line,
+     .			slash_shad_nolabels,
+     .			slash_shad_lev_same,
+     .			slash_shad_key,
+     .			slash_shad_nokey,
+     .
+     .			slash_plot_over_plot,
+     .			slash_plot_set_up,
+     .			slash_plot_frame,
+     .			slash_plot_transpz,
+     .			slash_plot_vs,
+     .			slash_plot_symb,
+     .			slash_plot_nolabels,
+     .			slash_plot_line
+
+	INTEGER		slash_wire_over,
+     .			slash_wire_set_up,
+     .			slash_wire_frame,
+     .			slash_wire_transpz,
+     .			slash_wire_nolabels,
+     .			slash_wire_view,
+     .			slash_wire_zlimits,
+     .			slash_wire_zscale,
+     .
+     .			slash_frame_format,
+     .			slash_frame_file,
+     .
+     .			slash_stat_brief,
+     .
+     .			slash_noaxes
+
+
+	PARAMETER     ( qual_on	 = -11,
+     .			qual_off = -12 )
+	PARAMETER     ( 
+     .			slash_set_list_prec   = 1,
+     .			slash_set_list_out    = 2,
+     .			slash_set_list_form   = 3,
+     .			slash_set_list_append = 4,
+     .			slash_set_list_heading= 5,
+     .
+     .			slash_canc_list_all    = 1,
+     .			slash_canc_list_prec   = 2,
+     .			slash_canc_list_out    = 3,
+     .			slash_canc_list_form   = 4,
+     .			slash_canc_list_heading= 5,
+     .			slash_canc_list_append = 6,
+     .
+     .			slash_canc_axis_modulo = 1,
+     .
+     .			slash_canc_data_noerr  = 2,
+     .
+     .			slash_canc_var_data	= 2,
+     .
+     .			slash_set_movie_out    = 1,
+     .			slash_set_movie_compress = 2,
+     .			slash_set_movie_laser  = 3,
+     .			slash_set_movie_start  = 4,
+     .
+     .			slash_show_var_diag = 3,
+     .			slash_show_var_user = 4,
+     .
+     .			slash_show_grid_x0 = 5,
+     .			slash_show_grid_i0 = 1,
+     .
+     .			slash_show_data_brief = 2,
+     .
+     .			slash_list_head   = 10,
+     .			slash_list_nohead = 11,
+     .			slash_list_title  = 17,
+     .			slash_list_extend = 19 )
+
+	PARAMETER     (
+     .			slash_set_data_ez	= 1,
+     .			slash_set_data_var	= 2,
+     .			slash_set_data_title	= 3,
+     .			slash_set_data_form	= 4,
+     .			slash_set_data_grid	= 5,
+     .			slash_set_data_skip	= 6,
+     .			slash_set_data_column	= 7,
+     .			slash_set_data_save	= 8,
+     .			slash_set_data_restore	= 9,
+     .			slash_set_data_order	= 10,
+     .
+     .			slash_set_var_title	= 1,
+     .			slash_set_var_unit	= 2,
+     .			slash_set_var_grid	= 3,
+     .			slash_set_var_bad	= 4,
+     .
+     .			slash_set_grid_save	= 1,
+     .			slash_set_grid_restore	= 2,
+     .
+     .			slash_set_axis_modulo	= 1,
+     .
+     .			slash_set_memory_words	= 1 )
+
+	PARAMETER     ( slash_cont_over_plot	= 9,
+     .			slash_cont_set_up	= 10,
+     .			slash_cont_frame	= 11,
+     .			slash_cont_transpz	= 13,
+     .			slash_cont_nolabels	= 16,
+     .			slash_cont_lev_same	= 17,
+     .			slash_cont_fill		= 14,
+     .			slash_cont_key		= 18,
+     .			slash_cont_line		= 15,
+     .			slash_cont_nokey	= 19,
+     .			slash_cont_spectrum	= 20,
+     .
+     .			slash_vect_over_plot	= 9,
+     .			slash_vect_set_up	= 10,
+     .			slash_vect_frame	= 11,
+     .			slash_vect_transpz	= 13,
+     .			slash_vect_aspect	= 15,
+     .			slash_vect_nolabels	= 16,
+     .			slash_vect_xskip	= 18,
+     .			slash_vect_yskip	= 19,
+     .
+     .			slash_shad_over_plot	= 1+8,
+     .			slash_shad_set_up	= 1+9,
+     .			slash_shad_frame	= 1+10,
+     .			slash_shad_transpz	= 1+12,
+     .			slash_shad_line		= 1+14,
+     .			slash_shad_nolabels	= 1+15,
+     .			slash_shad_lev_same	= 1+16,
+     .			slash_shad_key		= 1+17,	
+     .			slash_shad_nokey	= 1+18,
+     .
+     .			slash_plot_over_plot	= 9,
+     .			slash_plot_set_up	= 10,
+     .			slash_plot_frame	= 11,
+     .			slash_plot_transpz	= 13,
+     .			slash_plot_vs		= 14,
+     .			slash_plot_symb		= 15,
+     .			slash_plot_nolabels	= 16,
+     .			slash_plot_line		= 17 )
+
+	PARAMETER     ( slash_wire_over		= 9,
+     .			slash_wire_set_up	= 10,
+     .			slash_wire_frame	= 11,
+     .			slash_wire_transpz	= 15,
+     .			slash_wire_nolabels	= 16,
+     .			slash_wire_view		= 13,
+     .			slash_wire_zlimits	= 14,
+     .			slash_wire_zscale	= 16+1,
+     .
+     .			slash_frame_format	= 0 + 1,
+     .			slash_frame_file	= 1 + 1,
+     .
+     .			slash_stat_brief	= 0 + 1,
+     .
+     .			slash_noaxes		= 24 + 1 )
+
+	INTEGER		slash_xlimits, slash_ylimits, slash_title,
+     .			slash_pen
+	PARAMETER     ( slash_xlimits = 1 + 20,
+     .			slash_ylimits = 1 + 21,
+     .			slash_title   = 1 + 22,
+     .			slash_pen   = 1 + 23 )

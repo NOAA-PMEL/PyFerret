@@ -1,0 +1,159 @@
+	SUBROUTINE CDF_PREP_CACHE( dflt_cx, filename, nvars, memory,
+     .			           mrlist, cxlist, clobber, status )
+
+* setup to create a DODS NetCDF cache
+* create a list of contexts appropriate to describe the (1,1,1,1) element
+* of each variable in the DODS data set.
+
+* programmer - steve hankin
+
+* V450	11/96
+
+#ifdef unix
+        include 'tmap_format/tmap_errors.parm'
+        include 'tmap_format/tmap_dims.parm'
+        include 'tmap_format/xdset_info.cmn_text'
+	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/slash.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xprog_state.cmn'
+#else
+        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:SLASH.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+        INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
+#endif
+
+* calling argument declarations:
+	LOGICAL clobber
+	INTEGER dflt_cx, nvars, mrlist(*), cxlist(*), status
+	REAL	memory( mem_blk_size, max_mem_blks )
+	CHARACTER TM_INQ_PATH*200, filename*(*)
+
+* local variable declarations
+	LOGICAL		TM_HAS_STRING, fexist
+	INTEGER		TM_LENSTR1,
+     .			qfile, dset, cx0, cx, ivar, idim, flen, dlen,
+     .			iin, iout
+	CHARACTER	ch*1, raw_name*200
+
+* local parameter declarations
+	INTEGER         slash_file
+	PARAMETER     ( slash_file    = 12+1)
+
+* determine the data set in question
+        CALL GET_NEW_CX( dflt_cx, cx_cmnd, status )
+        IF ( status .NE. ferr_ok ) GOTO 5000
+	dset = cx_data_set(cx_cmnd)
+	IF ( dset .EQ. unspecified_int4 ) GOTO 5100
+	IF ( ds_type(dset) .NE. 'CDF' )   GOTO 5200
+	IF ( .NOT.TM_HAS_STRING(ds_des_name(dset)(:8), 'http://') )
+     .					  GOTO 5200
+
+* determine the directory to receive the cached file
+        qfile = qual_given( slash_file )
+        IF ( qfile .GT. 0 ) THEN
+           CALL EQUAL_STR_LC(
+     .			cmnd_buff(qual_start(qfile):qual_end(qfile)),
+     .                  raw_name, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+* ... translate a possible env. var. at start of directory name.
+*	Make sure the directory exists.
+	   filename = TM_INQ_PATH( raw_name, ' ', ' ',
+     .			.TRUE., status )
+           IF ( status .NE. merr_ok ) GOTO 5000
+	ELSE
+	   filename = '.'
+        ENDIF
+
+* create the file name from the directory name
+* ... name too long to cache?
+	flen = TM_LENSTR1(filename)
+	dlen = TM_LENSTR1(ds_des_name(dset))
+	IF ( LEN(ds_des_name(dset)) .EQ. dlen ) GOTO 5300
+	IF ( LEN(filename) .LE. flen+dlen-7 ) GOTO 5300
+	filename(flen+1:flen+1) = '/'		! after user-supplied directory
+	iout = flen+2				
+	DO 10 iin = 8, dlen			! just past the "http://"
+	   ch = ds_des_name(dset)(iin:iin)	
+	   IF ( ch .EQ. '/' ) THEN
+	      filename(iout:iout) = '_'
+	   ELSE
+	      filename(iout:iout) = ch 
+	   ENDIF
+	   iout = iout + 1
+ 10	CONTINUE
+
+* if the file already exists and we are not in clobber mode ---> error
+	IF ( .NOT.clobber ) THEN
+	   INQUIRE( FILE = filename, EXIST = fexist )
+	   IF ( fexist ) GOTO 5400
+	ENDIF
+
+* create a base context
+        CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+        IF ( status .NE. ferr_ok ) GOTO 5000
+        cx0 = cx_stack_ptr
+        cx_data_set(cx0) = dset
+        cx_category(cx0) = cat_file_var
+        DO 20 idim = 1, 4
+          cx_lo_ss(cx0,idim) = 1
+          cx_hi_ss(cx0,idim) = 1
+          cx_by_ss(idim,cx0) = .TRUE.
+          cx_trans(idim,cx0) = trans_no_transform
+          cx_given(idim,cx0) = .FALSE.
+          cx_delta(idim,cx0) = unspecified_val8
+ 20    CONTINUE
+
+* set up one dummy variable for each variable in the data set
+	nvars = 0
+	DO 100 ivar = 1, maxvars
+	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 100
+           CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           cx = cx_stack_ptr
+	   nvars = nvars + 1
+	   cxlist(nvars) = cx
+	   CALL TRANSFER_CONTEXT(cx0, cx)
+           cx_variable(cx) = ivar
+	   cx_grid(cx)     = ds_grid_number(ivar)
+	   cx_bad_data(cx) = ds_bad_flag( ivar )
+	   DO 110 idim = 1, 4
+	      CALL FLESH_OUT_AXIS( idim, cx, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+ 110	   CONTINUE
+	   CALL CREATE_TEMP_MEM_VAR( cx, mrlist(nvars), status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   CALL UN_CACHE( mrlist(nvars) )
+	   memory(1, mr_blk1(mrlist(nvars))) = 0.0    ! just good house-keeping
+ 100	CONTINUE
+
+* echo the name of the output cache file
+	CALL SPLIT_LIST(pttmode_bull, ttout_lun,
+     .		' LISTing to file '//filename(1:TM_LENSTR1(filename))
+     .								,0)
+
+	RETURN
+
+* error exits
+ 5000	CALL DELETE_MRS_IN_PROGRESS		! remove temporary vars
+	RETURN
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .			'no data set specified to cache', *5000 )
+ 5200	CALL ERRMSG( ferr_invalid_command, status,
+     .			'can only cache a DODS NetCDF data set', *5000 )
+ 5300	CALL ERRMSG( ferr_invalid_command, status,
+     .			'URL string too long to cache', *5000 )
+
+ 5400	CALL ERRMSG( ferr_invalid_command, status,
+     .			'/CLOBBER not specified and file exists: '
+     .			//filename, *5000 )
+
+	END

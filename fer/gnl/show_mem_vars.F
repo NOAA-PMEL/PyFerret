@@ -1,0 +1,96 @@
+	SUBROUTINE SHOW_MEM_VARS
+
+* execute the SHOW VARIABLES/MEMORY command - display a priority-sorted list 
+* of the data in memory
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 5/29/87 - (from XEQ_EXAMINE)
+* revision 0.1 - 7/8/87  - made mr_list and mr_sort into dummy args
+* revision 0.2 - 9/17/87 - made permanent vars,only the default
+*			   and added trans_arg output
+* revision 0.3 - 3/25/88 - added /NAMED qualifier, reformatted "PERM" output
+*			   and added interrupts
+* revision 0.4 - 6/27/88 - added /PERM and /TEMP qualifiers
+* revision 0.5 - 10/5/88 - loop 2,max_mrs --> 1,max_mr_avail
+* revision 0.6 - 1/10/89 - added grid info
+* V200:  5/19/89 - 4D symmetrical; major reformatting of output
+* 		 - deleted variables flagged in mr_protected
+*		 - sorting not needed because of deletion priority chain
+*		 - most code moved to SHOW_1_MR
+* V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* 12/96 *kob* - Linux Port - had to move variable assignments off of
+*               declaration line.
+#ifdef unix
+	include	'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret_cmn/xinterrupt.cmn'
+#else
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
+#endif
+
+* calling argument declarations:
+
+* local variable declarations:
+	LOGICAL	show_all, show_perm, show_named, show_temp
+	INTEGER status, iqual, mr
+	CHARACTER datmsg*16
+	PARAMETER ( datmsg = 'data loaded with' )	!kob 12/96
+* local parameter declarations:
+	INTEGER	    slash_all, slash_named, slash_temp, slash_perm
+	PARAMETER ( slash_all = 1,
+     .		    slash_named = 2,
+     .		    slash_temp  = 3,
+     .		    slash_perm  = 4 )
+
+* interpret qualifiers
+	show_all   = qual_given( slash_all ) .GT. 0
+	show_named = show_all .OR. qual_given( slash_named ) .GT. 0
+	show_perm  = show_all .OR. qual_given( slash_perm ) .GT. 0
+	show_temp  = show_all .OR. qual_given( slash_temp ) .GT. 0
+	show_all   = show_temp .AND. show_perm
+* ... /PERM is default
+	show_perm  = show_perm .OR.
+     .		     .NOT.(show_all .OR. show_named .OR. show_temp)
+
+* write introductory line
+	IF ( show_all ) THEN
+	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .				'all data in memory:',19 )
+	ELSE
+	   IF ( show_named ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .				datmsg//' /NAME=:',24 )
+	   IF ( show_perm  ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .				datmsg//' /PERMANENT:',28 )
+	   IF ( show_temp  ) CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .				datmsg//'out /PERMANENT:',31 )
+	ENDIF
+
+* display permanent variables
+	IF ( show_perm ) THEN
+	   DO 100 mr = 1, max_mr_avail
+	      IF ( interrupted ) CALL ERRMSG( ferr_interrupt,status,' ',*5000 )
+ 100	   IF (mr_protected(mr).EQ.mr_perm_protected) CALL SHOW_1_MR(mr)
+	ENDIF
+
+* display deletable variables
+	IF ( show_temp ) THEN
+	   mr = mr_del_flink(0)
+ 200	   IF ( mr .NE. 0 ) THEN
+	      IF ( interrupted ) CALL ERRMSG( ferr_interrupt,status,' ',*5000 )
+	      CALL SHOW_1_MR( mr )
+	      mr = mr_del_flink(mr)
+	      GOTO 200
+	   ENDIF
+	ENDIF
+
+ 5000	RETURN
+	END

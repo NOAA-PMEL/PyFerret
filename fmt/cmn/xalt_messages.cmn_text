@@ -1,0 +1,9 @@
+	COMMON /XALT_MESSAGES / alt_messages, alt_nlines, alt_text
+
+* parameter definition:
+	INTEGER	max_alt_text
+	PARAMETER ( max_alt_text = 15 )
+
+	LOGICAL	alt_messages
+	INTEGER	alt_nlines
+	CHARACTER*200	alt_text(max_alt_text)

@@ -1,0 +1,144 @@
+	SUBROUTINE TAXIS_STYLE( x_or_y, lo_bc, hi_bc, tstyle )
+
+* set up PPLUS to properly format a time axis
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 9/22/88 - extracted from AXIS_FORMAT
+* revision 0.1 -  1/9/89 - added climatological axis logic
+* 12/10/93 - set only the small tic size - do not mess with large tics
+* V420: 11/95 - accomodate century long time axes
+*	      - and 4-digit PLOT+ years!!
+*	      - added "x_or_y" argument for Y axis calendar axes
+*	      - added TXTYPE MULTIYR
+
+#ifdef unix
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/plot_setup.parm'
+        include 'tmap_pplv11inc/axis_inc.decl'	! with axis lengths
+        include 'pplv11inc/AXIS.INC'       	! with axis lengths	
+#else
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
+#endif
+
+* calling argument declarations:
+	CHARACTER	x_or_y*1, tstyle*3
+	REAL*8		lo_bc, hi_bc
+
+* parameter definitions:
+	INTEGER		pmax_tax
+	REAL*8		psecs_at_2_yrs
+	PARAMETER     ( pmax_tax   = 11,
+     .			psecs_at_2_yrs = 60.*60.*24.*365.*2. )
+
+* internal variable declarations:
+	LOGICAL		climatology, its_x
+	INTEGER		itax, hi_int
+	CHARACTER	ppl_cmnd*128, tstyle_long*10
+	REAL		hrs, hrsper8, axlen
+
+* time axis style table
+	INTEGER		tax_loint( pmax_tax ),	! PPL TXLINT lo,...
+     .			tax_hiint( pmax_tax )	! PPL TXLINT ...,hi
+	REAL		tax_hours( pmax_tax )	! bounds: range-->style
+	CHARACTER*10	tax_style( pmax_tax )	! PPL TXTYPE value
+
+	DATA	tax_hours(1)	/   24.	/,	! 0-24 hour long axis
+     .		tax_style(1)	/ 'DAY'	/,
+     .		tax_loint(1)	/    1	/,
+     .		tax_hiint(1)	/    1	/
+	DATA	tax_hours(2)	/  144.	/,	! 24 hour to 6 day long axis
+     .		tax_style(2)	/ 'DAY'	/,
+     .		tax_loint(2)	/    6	/,
+     .		tax_hiint(2)	/    1	/
+	DATA	tax_hours(3)	/  768.	/,	! 6 to 32 day long axis
+     .		tax_style(3)	/ 'MON'	/,
+     .		tax_loint(3)	/    1	/,
+     .		tax_hiint(3)	/    1	/
+	DATA	tax_hours(4)	/ 2880.	/,	! 32 day to 4 month long axis
+     .		tax_style(4)	/ 'MON'	/,
+     .		tax_loint(4)	/    5	/,
+     .		tax_hiint(4)	/    1	/
+	DATA	tax_hours(5)	/43200.	/,	! 4 month to 5 year long axis
+     .		tax_style(5)	/  'YR'	/,
+     .		tax_loint(5)	/    1	/,
+     .		tax_hiint(5)	/    1	/
+	DATA	tax_hours(6)	/100800./,	! 5 to 12 year long axis
+     .		tax_style(6)	/  'YR'	/,
+     .		tax_loint(6)	/    3	/,
+     .		tax_hiint(6)	/    1	/
+	DATA	tax_hours(7)	/144000./,	! 12 to 17 year long axis
+     .		tax_style(7)	/  'YR'	/,
+     .		tax_loint(7)	/    0	/,
+     .		tax_hiint(7)	/    2	/
+* ... eliminate small tics beyond here
+	DATA	tax_hours(8)	/172800./,	! 17 to 20 year long axis
+     .		tax_style(8)	/  'YR MULTIYR'	/,
+     .		tax_loint(8)	/    0	/,
+     .		tax_hiint(8)	/    2	/
+	DATA	tax_hours(9)	/432000./,	! 20 to 50 year long axis
+     .		tax_style(9)	/  'YR MULTIYR'	/,
+     .		tax_loint(9)	/    0	/,
+     .		tax_hiint(9)	/    5	/
+	DATA	tax_hours(10)	/864000./,	! 50 to 100 year long axis
+     .		tax_style(10)	/  'YR MULTIYR'	/,
+     .		tax_loint(10)	/    0	/,
+     .		tax_hiint(10)	/   10	/
+	DATA	tax_hours(11)	/    0.	/,	! greater than 100 yr long axis
+     .		tax_style(11)	/  'YR MULTIYR'	/,
+     .		tax_loint(11)	/    0	/,
+     .		tax_hiint(11)	/   20	/
+
+* time axis orientation
+	its_x = x_or_y .EQ. 'X'
+
+* axis length
+	IF ( its_x ) THEN
+	   axlen = xlen
+	ELSE
+	   axlen = ylen
+	ENDIF
+
+* regard axis as climatological if it lies within 1st 2 years since BC
+	climatology = lo_bc .LE. psecs_at_2_yrs
+
+* get axis length in hours from times since BC in seconds
+	hrs = ( hi_bc - lo_bc ) / 3600.
+
+* how many hours if the axis were 8 in length ?
+	hrsper8 = 8./axlen * hrs
+
+* select style based on axis length
+	DO 500 itax = 1, pmax_tax
+	   IF ( hrsper8 .LE. tax_hours( itax ) ) GOTO 510
+ 500	CONTINUE	         
+	itax = pmax_tax
+
+* TXTYPE and TXLINT commands (time axis style)
+ 510	tstyle_long = tax_style( itax )
+	tstyle = tstyle_long	! 3 character, only
+	CALL PPLCMD ( from, line, 0, 'TXTYPE '//tstyle_long, 1, 1 )
+* ... suppress year display on climatological axes
+	hi_int = tax_hiint(itax)
+	IF ( climatology ) THEN
+	   IF ( tstyle(:2) .EQ. 'YR' ) hi_int = 0 ! suppress year axis label
+	   tstyle = 'CLM'			  ! suppress "YEAR:" label
+	ENDIF
+	WRITE ( ppl_cmnd, 3030 ) tax_loint(itax), hi_int
+ 3030	FORMAT ('TXLINT',2I3)
+	CALL PPLCMD ( from, line, 0, ppl_cmnd, 1, 1 )
+
+* eliminate small tics if they would be too dense (default is .125)
+!	IF ( itax .GE. 8 ) THEN
+!	   IF ( its_x ) THEN
+!	      CALL PPLCMD ( from, line, 0, 'TICS 0', 1, 1 )  	! 12/93
+!	   ELSE
+!	      CALL PPLCMD ( from, line, 0, 'TICS,,,0', 1, 1 )	! 11/95
+!	   ENDIF
+!	ENDIF
+
+	RETURN
+	END

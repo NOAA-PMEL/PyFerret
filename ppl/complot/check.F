@@ -1,0 +1,47 @@
+      SUBROUTINE CHECK(U,NAPTS,UMIN,UMAX)
+C** 
+C**    @(#)check.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL CHECK(U,NPTS,UMIN,UMAX)
+C
+C     THIS SUBROUTINE CHECKS AN ARRAY OF FLOATING-POINT NUMBERS
+C     AND RETURNS THE ALGEBRAIC MINIMUM AND MAXIMUM.
+C
+C     THE VARIOUS PARAMETERS AND THEIR DEFINITIONS ARE LISTED
+C     BELOW:
+C        U      - ARRAY CONTAINING THE FLOATING-POINT NUMBERS
+C                 TO BE CHECKED.
+C        NPTS   - NUMBER OF ENTRIES IN THE ARRAY.
+C        UMIN   - MINIMUM VALUE IN THE ARRAY.
+C        UMAX   - MAXIMUM VALUE IN THE ARRAY.
+C
+C
+      DIMENSION U(1)
+C
+      IF(NAPTS .EQ. 0)RETURN
+      NPTS = IABS(NAPTS)
+C
+C     INITIALIZE THE MINIMUM AND MAXIMUM TO THE FIRST ENTRY.
+C
+      UMIN = U(1)
+      UMAX = U(1)
+      IF(NPTS .EQ. 1)RETURN
+C
+C     CHECK THE REST OF THE ENTRIES FOR ALGEBRAICALLY SMALLER
+C     AND LARGER VALUES.
+C
+      DO 10 I=2,NPTS
+      IF(U(I) .LT. UMIN)UMIN = U(I)
+   10 IF(U(I) .GT. UMAX)UMAX = U(I)
+      RETURN
+C
+      END

@@ -1,0 +1,148 @@
+	SUBROUTINE XEQ_GO
+
+* execute the GO command
+* GO filename	indicates that the commands in file filename are to be executed
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 4/8/86
+* revision 1.0 - 4/29/87 - added ability to nest GO commmands
+*			 - eliminated pretenses of batch mode
+* revision 1.1 - 7/22/88 - enhanced error message for no filename given
+* Unix/RISC port - change OPEN statement for Unix
+* V300: 4/93 - implemented arguments to GO commands (save command string here)
+*	6/93 - bug fix to arguments when filename is in quotes
+* V314 8/24/94 *kob* IBM port - READONLY not allowed in open statements on
+*				IBM
+*			      - SHARED not allowed in open statementson IBM..
+*				add an ifdef NO_OPEN_SHARED
+* V320: 10/94 - added GO/HELP filename
+*	12/94 - added definition of PLOT+ symbol 'GO_FILE' if PLOT+ is running
+*		and the GO command is given from the keyboard
+*    12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V411: 9/11/95 (IBM port) variable go_help assigned to integer expression
+
+! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
+!	GO_FILE gets defined only **after** PLOT+ has already placed a window
+!	on the screen and a GO command is executed.  This means that if the
+!       GO file to create a plot contains the first command that opens
+!       an output window the symbol GO_FILE will **not** be defined.
+
+#ifdef unix
+        include 'tmap_format/tmap_errors.parm'
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/command.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include 'ferret_cmn/plot_setup.parm'
+	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret_cmn/xplot_state.cmn'		! 12/94
+	include 'ferret_cmn/xcontrol.cmn'
+	include 'ferret_cmn/xrisc.cmn'
+#else
+        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:COMMAND.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'		! 12/94
+	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
+	INCLUDE 'FERRET_CMN:XRISC.CMN'
+#endif
+
+* internal variable declarations:
+	LOGICAL	go_help
+	INTEGER	LIB_GET_LUN, TM_LENSTR1,
+     .		temp_lun, status, TMAP_status, nlines, i
+	REAL	val
+        CHARACTER TM_INQ_PATH*80, cbuff*256
+
+* internal parameter declarations
+	INTEGER     slash_go_help
+	PARAMETER ( slash_go_help = 0 + 1 )
+	
+* was /HELP given ?
+	go_help = qual_given( slash_go_help ) .GT. 0	! added ".GT. 0" 9/95
+
+* check syntax
+	IF     ( num_args .EQ. 0 ) THEN
+	   IF (go_help) THEN
+	      CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .			' Use the GO command to name a file of FERRET'//
+     .			' commands to be executed.', 0)
+	      CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .			 '     e.g.   yes? GO filename', 0)
+	      CALL SPLIT_LIST(pttmode_help, ttout_lun, ' ', 1)
+	      CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .			' Use "GO/HELP filename" to read documentation in '//
+     .			' the file to be executed.', 0)
+	      RETURN
+	   ELSE
+	      CALL ERRMSG( ferr_unknown_arg, status,
+     .			cmnd_buff(:len_cmnd)//': What file ?', *5000 )
+	   ENDIF
+	ENDIF
+
+* check path list to find the "GO" file
+        cbuff = TM_INQ_PATH( cmnd_buff(arg_start(1):arg_end(1)),
+     .                   'FER_GO', '.jnl', .TRUE., TMAP_status )
+        IF ( TMAP_status .NE. merr_ok ) GOTO 5100
+
+* get a logical unit number and open the command file
+	status = LIB_GET_LUN( temp_lun )
+
+* display HELP lines using the "more" command on the system
+	IF (go_help) THEN
+	   CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .		' Full path name: '//cbuff(:TM_LENSTR1(cbuff)), 0) 
+
+	   CALL SYSTEM( 'more -d '//cbuff(:TM_LENSTR1(cbuff)) )
+	   RETURN
+	ENDIF
+
+* OPEN the file in preparation for reading commands from it
+	OPEN(	UNIT=temp_lun,
+     .		FILE=cbuff,
+#ifdef READONLY_ALLOWED
+     .		READONLY,
+#endif
+#ifdef NO_OPEN_SHARED
+#else
+     .		SHARED,
+#endif
+     .		STATUS='OLD',
+     .		ERR=5010 )
+
+* inform the control stack that it has taken control at a new level
+	CALL STACK_PTR_UP( csp, cs_max, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+	cs_in_control = .TRUE.
+	cs_cmnd_num( csp ) = cmnd_go
+	cs_lun( csp ) = temp_lun
+	cmnd_lun = temp_lun
+	input_source = input_from_file
+
+* GO line will be parsed by DOLLAR_ARG - un-do parsing of PARSE_COMMAND
+	CALL ALL_1_ARG
+	cs_text( csp ) = cmnd_buff(arg_start(1):arg_end(1))
+
+* define the PLOT+ symbol 'GO_FILE' if PLOT+ is running and the GO command
+* was given at the keyboard
+* (Note: we check for csp.eq.1 instead of 0 because csp was just pushed)
+	IF ( pplus_started .AND. csp.EQ.1 ) CALL PPLCMD
+     .		( from, line, 0, 'SET GO_FILE '//cbuff, 1, 1 )
+
+* successful completion
+	RETURN
+
+* error exits
+ 5000	RETURN
+ 5010	CALL ERRMSG( ferr_erreq, status,
+     .		cmnd_buff(arg_start(1):arg_end(1)), *5000)
+ 5100	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000)
+ 5200	CALL ERRMSG( ferr_out_of_range, status, 'GO/HELP=#-of_lines',
+     .		*5000)
+	END
+

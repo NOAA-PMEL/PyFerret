@@ -1,0 +1,11 @@
+*XWINDOW_STATE.CMN
+* Was a locally declared common block in plt/disp_set_up.F but the Linux
+* f90 compiler would not allow it.  I moved it to it's own file.  *kob* 1/97
+
+*		==> COMMON XWINDOW_STATE has been created **temporarily**
+*		    with the intention that it will be expanded in future
+*		    so overlays can be placed on **previously** drawn windows
+	COMMON /XWINDOW_STATE/ haxlo, haxhi, vaxlo, vaxhi
+	REAL*8  haxlo, haxhi, vaxlo, vaxhi
+* pre-initialize to [0,1] limits just to avoid misbehavior from non-init
+*	DATA  haxlo, haxhi, vaxlo, vaxhi/0.D0,1.D0,0.D0,1.D0/

@@ -1,0 +1,12 @@
+* XDELTA_CONTEXT.CMN
+* temporary storage for delta limits given in the form "/DX=val", etc.
+
+* V200:   5/2/90
+
+	REAL*8		dcx_lo(4), dcx_hi(4)
+	LOGICAL		dcx_given(4), dcx_by_ss(4)
+
+	COMMON / XDELTA_CONTEXT /
+     .		dcx_lo, dcx_hi,
+     .		dcx_given,
+     .		dcx_by_ss

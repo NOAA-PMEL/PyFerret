@@ -1,0 +1,47 @@
+* COMMON/XCURVILINEAR -- COMMON to communicate arrays of X and Y positions
+*		to PLOT+ for curvilinear plotting
+
+	COMMON/ XCURVILINEAR/
+     .		curvilinear,
+     .		dim1_modulo, dim2_modulo,
+     .		dim1_edges,  dim2_edges,
+     .		wwxmax, wwxmin,
+     .		wwymax, wwymin,
+     .		badx, bady,
+     .		minss_dim1, maxss_dim1,
+     .		minss_dim2, maxss_dim2,
+     .		xpos_loss_dim1, xpos_hiss_dim1,
+     .		xpos_loss_dim2, xpos_hiss_dim2,
+     .		ypos_loss_dim1, ypos_hiss_dim1,
+     .		ypos_loss_dim2, ypos_hiss_dim2,
+     .		xpos_off0_dim1,
+     .		xpos_off0_dim2,
+     .		ypos_off0_dim1,
+     .		ypos_off0_dim2,
+     .		xspan_1_dim1,
+     .		xspan_1_dim2,
+     .		yspan_1_dim1,
+     .		yspan_1_dim2
+
+	LOGICAL	curvilinear,
+     .		dim1_modulo, dim2_modulo,
+     .		dim1_edges,  dim2_edges,
+     .		xspan_1_dim1,
+     .		xspan_1_dim2,
+     .		yspan_1_dim1,
+     .		yspan_1_dim2
+	INTEGER
+     .		minss_dim1, maxss_dim1,
+     .		minss_dim2, maxss_dim2,
+     .		xpos_loss_dim1, xpos_hiss_dim1,
+     .		xpos_loss_dim2, xpos_hiss_dim2,
+     .		ypos_loss_dim1, ypos_hiss_dim1,
+     .		ypos_loss_dim2, ypos_hiss_dim2,
+     .		xpos_off0_dim1,
+     .		xpos_off0_dim2,
+     .		ypos_off0_dim1,
+     .		ypos_off0_dim2
+	REAL	badx, bady,
+     .		wwxmax, wwxmin,
+     .		wwymax, wwymin
+

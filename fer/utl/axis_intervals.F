@@ -1,0 +1,98 @@
+	SUBROUTINE AXIS_INTERVALS(
+     .				horiz_or_vert, mr, cx, idim, curvilinear,
+     .				axis, lo_ss, hi_ss, lo_world, hi_world,
+     .				n_regrid, d_regrid, regrid )
+
+* convert required points of axis to single precision and determine
+* re-gridding needs for non-constant spaced points
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 6/23/87
+* revision 0.1 - 2/25/88 - added 2-direction Z-axis option
+* revision 0.1 - 9/20/88 - create axis with MAKE_AXIS
+* V200:  5/19/89 - reorder lo/hi_ss arguments
+*	10/16/89 - eliminated invalid adjustable array subscripts
+*        1/28/93 - allow axes of length 1
+* V450: 3/97 - support for curvilinear coordinate plots
+
+#ifdef unix
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xvariables.cmn'
+#else
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+#endif
+
+* calling argument declarations:
+	LOGICAL	curvilinear, regrid
+	INTEGER	mr, cx, idim, lo_ss, hi_ss, size, n_regrid
+	REAL 	axis( lo_ss:hi_ss )
+	REAL 	lo_world, hi_world, d_regrid
+	CHARACTER*1 horiz_or_vert
+
+* internal variable declarations:
+	LOGICAL	BKWD_AXIS
+	INTEGER	lo_cx, hi_cx, grid, i
+
+* initialize
+	grid   = mr_grid( mr )
+	lo_cx = cx_lo_ss( cx, idim )
+	hi_cx = cx_hi_ss( cx, idim )
+
+* make a single precision axis corresponding to the subscript range of the
+* memory variable (mr)
+	IF ( curvilinear ) THEN
+* ... axis of index values (other command line args provide true coordinates)
+	   DO 100 i = lo_ss, hi_ss
+ 100	   axis(i) = i
+	ELSE
+	   CALL MAKE_AXIS( grid, idim, lo_ss, hi_ss, axis(lo_ss) )
+	ENDIF
+
+* single point?  Fake up some reasonable values.
+        IF ( lo_ss .EQ. hi_ss ) THEN
+           d_regrid = 1.
+           IF ( axis(lo_cx) .EQ. 0.0 ) THEN
+              lo_world = -1.
+              hi_world =  1.
+           ELSE
+              lo_world = axis(lo_cx) * 0.99
+              hi_world = axis(lo_cx) * 1.01
+           ENDIF
+           RETURN
+        ENDIF
+
+* determine if regridding is needed within the (cx) region to be plotted
+* ... and determine smallest grid interval
+	regrid = .FALSE.		! assume it's not needed
+        d_regrid = axis( lo_cx + 1 ) - axis( lo_cx )
+	DO 200 i = lo_cx+1, hi_cx-1
+* ... test within precision limits that may be visible in a plot
+	   IF (ABS((axis(i+1)-axis(i))/d_regrid - 1.0) .GT. 3.E-6) THEN
+		regrid = .TRUE.
+		d_regrid = MIN( d_regrid, axis(i+1)-axis(i) )
+	   ENDIF
+ 200	CONTINUE
+	
+* regridding parameters
+	lo_world = axis(lo_cx)
+	hi_world = axis(hi_cx)
+	n_regrid = INT( (hi_world - lo_world) / d_regrid ) + 1
+
+* plot vertical z axes upside down ?
+	IF ( horiz_or_vert .EQ. 'Y' .AND. idim .EQ. z_dim ) THEN
+	   IF ( BKWD_AXIS(idim, grid) ) THEN
+	      lo_world = axis(hi_cx)
+	      hi_world = axis(lo_cx)
+	      d_regrid = -d_regrid
+	      regrid   = .TRUE.
+	   ENDIF
+	ENDIF
+
+	RETURN
+      END

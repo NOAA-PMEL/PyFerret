@@ -1,0 +1,78 @@
+	INTEGER FUNCTION TM_UNIT_ID( string )
+
+* identify the string as a known unit or return 0
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.00 - 04/15/88
+* revision 1.00 - 05/26/88 - to work with TMAP routines
+* revision 1.01 - 11/21/88 - variable used check changed to specific char_initXX
+* 7/96 *sh*: check that "deg" is not hiding "degrees C" or "deg K" ...
+
+*
+* Include files
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+#include "tmap_format/tmap_dset.parm"
+	include 'tmap_format/xunits.cmn_text'
+	external xunits_data
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
+#endif
+
+* calling argument declarations:
+	CHARACTER*(*)	string
+
+* internal parameter declarations:
+	INTEGER		ndeg_temp
+	PARAMETER     ( ndeg_temp = 6 )
+
+* internal variable declarations:
+	INTEGER		iun, ideg
+	LOGICAL		TM_HAS_STRING
+	CHARACTER	deg_temp(ndeg_temp)*1
+
+* initialize characters that signal "degrees" is really temperature
+	DATA deg_temp / 'C', 'K', 'F', 'c', 'k', 'f' /	
+
+* check through alternate (long) names first to avoid ambiguity
+* eg. "m" is the un_name for "meters" but also exits in many other unit names
+	DO 100 iun = 1, pun_num_alt
+
+	   IF ( un_alt_name(iun) .EQ. char_init12 ) GOTO 200
+
+	   IF ( TM_HAS_STRING( string, un_alt_name(iun) ) ) THEN
+	      TM_UNIT_ID = un_alt_subsc( iun )
+	      RETURN
+	   ENDIF
+
+ 100	CONTINUE
+
+* now it's safe to search the list of short abbreviations
+ 200	DO 210 iun = pun_1st_unit, pun_last_unit
+
+	   IF ( un_name(iun) .EQ. char_init12 .OR.
+     .	        un_name(iun) .EQ. ' '             ) GOTO 210
+
+	   IF ( TM_HAS_STRING( string, un_name(iun) ) ) THEN
+* ... check that "deg" is not hiding "degrees C" or "deg K" ...
+	      IF ( iun .EQ. pun_degrees ) THEN
+	         DO 205 ideg = 1, ndeg_temp
+	            IF (TM_HAS_STRING(string,deg_temp(ideg))) GOTO 210
+ 205	         CONTINUE
+	      ENDIF
+	      TM_UNIT_ID = iun
+	      RETURN
+	   ENDIF
+
+ 210	CONTINUE
+
+* not found
+	TM_UNIT_ID = 0
+	RETURN
+
+	END

@@ -1,0 +1,17 @@
+* status codes returned by ferret_query_F
+* negative codes are FERRET status codes ferr_xxx...
+
+	INTEGER
+     .       QSTAT_OK,
+     .       QSTAT_UNKNOWN_QUERY,
+     .       QSTAT_BUFF_OVFLOW,
+     .       QSTAT_INVALID_ARG,
+     .       QSTAT_INTERNAL_ERROR
+
+	PARAMETER (
+     .       QSTAT_OK = 0,
+     .       QSTAT_UNKNOWN_QUERY = 1,
+     .       QSTAT_BUFF_OVFLOW = 2,
+     .       QSTAT_INVALID_ARG = 3,
+     .       QSTAT_INTERNAL_ERROR = 4 )
+

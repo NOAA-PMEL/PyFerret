@@ -1,0 +1,56 @@
+      SUBROUTINE RANGEL(UAMIN,UAMAX,UMINR,UMAXR)
+C** 
+C**    @(#)rangel.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL RANGEL(UMIN,UMAX,UMINR,UMAXR)
+C
+C     THIS SUBROUTINE FINDS TWO VALUES FOR A VARIABLE SUCH THAT
+C     EACH IS AN INTEGER POWER OF TEN AND THE RANGE BETWEEN THEM
+C     CONTAINS THE MINIMUM AND MAXIMUM VALUES OF THE VARIABLE.
+C
+C     THE VARIOUS PARAMETERS AND THEIR DEFINITIONS ARE LISTED
+C     BELOW:
+C        UMIN   - MINIMUM VALUE OF THE VARIABLE.
+C        UMAX   - MAXIMUM VALUE OF THE VARIABLE.
+C        UMINR  - MINIMUM VALUE OF THE RANGE.
+C        UMAXR  - MAXIMUM VALUE OF THE RANGE.
+C
+C
+C     TRANSFER THE PARAMETERS TO NEW VARIABLES.
+C
+      UMIN = ABS(UAMIN)
+      UMAX = ABS(UAMAX)
+C
+C     CHECK THE PARAMETERS TO MAKE SURE THAT THEY ARE VALID.
+C
+      IF(UMIN .GT. UMAX)THEN
+        TEMP = UMIN
+        UMIN = UMAX
+        UMAX = TEMP
+      ENDIF
+C
+C     CALCULATE THE MINIMUM VALUE OF THE RANGE.
+C
+      FM = ALOG10(UMIN)
+      M = IFIX(FM)
+      IF(FM .LT. 0.0)M = M - 1
+      UMINR = 10.0 ** M
+C
+C     CALCULATE THE MAXIMUM VALUE OF THE RANGE.
+C
+      FM = ALOG10(UMAX)
+      M = IFIX(FM)
+      IF(FM .GT. 0.0)M = M + 1
+      UMAXR = 10.0 ** M
+      RETURN
+C
+      END

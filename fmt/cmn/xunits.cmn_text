@@ -1,0 +1,45 @@
+* XUNITS.CMN - unit names and conversion factors
+*
+* revision 0.00 - 04/15/88 - 
+* added pun_millibars and pun_decibars 12/19/94
+*
+
+* 9/26/95: interchanged pun_meters (was 3) with pun_millibars (was 9)
+*	   because TM_UNIT_ID was interpreting "mbar" as "mters"
+*	   ==> required changes to xunits_data.F, too
+
+	INTEGER		pun_1st_time,
+     .			pun_last_time,
+     .			pun_1st_len,
+     .			pun_last_len,
+     .			pun_1st_unit,
+     .			pun_last_unit,
+     .			pun_num_alt,
+     .			pun_degrees,
+     .			pun_meters,
+     .			pun_millibars,
+     .			pun_decibars
+
+	PARAMETER     ( pun_1st_time  = -10,
+     .			pun_last_time = -1,
+     .			pun_1st_len   = 1,
+     .			pun_last_len  = 15, 
+     .			pun_1st_unit  = pun_1st_time,
+     .			pun_last_unit = pun_last_len,
+     .			pun_num_alt   = 20,
+     .			pun_degrees   = 4,
+     .			pun_meters    = 9,	! formerly 3
+     .			pun_millibars = 3,	! formerly 9
+     .			pun_decibars  = 10 )
+
+
+	
+	INTEGER		un_alt_subsc( pun_num_alt )
+	REAL		un_convert  ( pun_1st_unit:pun_last_unit )
+	CHARACTER*12	un_name     ( pun_1st_unit:pun_last_unit ),
+     .			un_alt_name ( pun_num_alt )
+
+	COMMON/ XUNIT /	un_alt_subsc,		! subscripts of unit names
+     .			un_convert,		! conversion factors
+     .			un_name,		! unit names
+     .			un_alt_name		! alternative unit names

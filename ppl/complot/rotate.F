@@ -1,0 +1,53 @@
+      SUBROUTINE ROTATE(DEGRES)
+C** 
+C**    @(#)rotate.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL ROTATE(DEGRES)
+C
+C     THIS SUBROUTINE CAUSES THE USER'S XYZ CARTESIAN COORDINATE
+C     SYSTEM TO BE ROTATED COUNTERCLOCKWISE THE SPECIFIED NUMBER
+C     OF DEGREES.  FOR TWO-DIMENSIONAL PLOTS, THE CENTER OF ROTA-
+C     TION IS THE USER'S ORIGIN.  FOR THREE-DIMENSIONAL PLOTS,
+C     THE CENTER OF ROTATION IS THE LINE PARALLEL TO THE VIEWING
+C     DIRECTION WHICH PASSES THROUGH THE REFERENCE POINT FOR THE
+C     PROJECTION CURRENTLY IN EFFECT.
+C
+C
+#ifdef unix
+	include 'pplinc/PLTCOM.DAT'
+#else
+	include 'pplinc:PLTCOM.DAT'
+#endif
+C
+      IF(DEGRES .NE. 0.0)THEN
+C
+C     SET THE ROTATION FLAG.
+C
+        ROTAT = .TRUE.
+C
+C     CONVERT THE ROTATION TO RADIANS.
+C
+        TEMP = 0.01745329251994 * DEGRES
+C
+C     COMPUTE THE SINE AND COSINE.
+C
+        ROTSIN = SIN(TEMP)
+        ROTCOS = COS(TEMP)
+      ELSE
+C
+C     RESET THE ROTATION FLAG.
+C
+        ROTAT = .FALSE.
+      ENDIF
+      RETURN
+C
+      END

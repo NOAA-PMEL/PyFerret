@@ -1,0 +1,14 @@
+* initialization data for calendar axis regridding
+* see full description in tdest_world.F
+
+	LOGICAL		tcnvrt_ok
+	INTEGER		cnvrt_src_grid
+	REAL*8		tcnvrt_slope, tcnvrt_intercept
+
+	COMMON/ XREGRID /
+     .			cnvrt_src_grid,
+     .			tcnvrt_ok,
+     .			tcnvrt_slope,
+     .			tcnvrt_intercept
+
+

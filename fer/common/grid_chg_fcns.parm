@@ -1,0 +1,26 @@
+* GRID_CHG_FCNS.PARM - parameters for "grid changing functions" --
+* functions which are capable of delivering results on a grid which is
+* differs from the straightforward implications of the input arguments.
+
+* the addition (or major modification) of an internal grid-changing function
+* requires changes to these routines:
+*	grid_chg_fcns.parm	- parameters to number the functions
+*	XGRID_CHG_FCNS_DATA	- description of the function and args
+*	DO_INTERNAL_GC_FCN	- code to execute the function
+* (opt)	GCF_GET_IMPOSED_AXES	- return the "imposed" axes, if any
+* (opt)	GCF_GET_RESULT_LIMS	- fill in limits of "imposed" axes, if any
+
+* V450:
+
+	INTEGER		p_unravel, p_times2, p_reshape, p_zlayer
+
+	PARAMETER     ( p_unravel = 1,
+     .			p_times2  = p_unravel  + 1,
+     .			p_reshape = p_times2   + 1,
+     .			p_zlayer  = p_reshape  + 1 )
+
+
+* parameters to control the passing of context information
+	INTEGER		pset_to_unspec, ppass_along
+	PARAMETER     ( pset_to_unspec = 1,
+     .			ppass_along    = 2 )

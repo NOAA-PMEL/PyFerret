@@ -1,0 +1,190 @@
+	SUBROUTINE CURV_COORD_SUB( xi, yj, npt, xfield, yfield,
+     .				   xinv, yinv, status )
+
+* convert the incoming coordinate arrays (xi,yj), which are "fractional
+* indices" into true (X,Y) world coordinates by bi-linear interpolation
+* in the coordinate arrays, xfield, yfield
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* V450: 
+
+#ifdef unix
+	include 'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret_cmn/xcurvilinear.cmn'
+#else
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+#endif
+
+* calling argument declarations:
+	INTEGER npt, status
+	REAL    xi(npt), yj(npt),
+     .		xfield(xpos_loss_dim1:xpos_hiss_dim1,
+     .		       xpos_loss_dim2:xpos_hiss_dim2),
+     .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
+     .		       ypos_loss_dim2:ypos_hiss_dim2),
+     .		xinv, yinv
+
+* internal variable declarations:
+	INTEGER xlo_dim1, xhi_dim1, xlo_dim2, xhi_dim2,
+     .		ylo_dim1, yhi_dim1, ylo_dim2, yhi_dim2, i
+	REAL xfrac, yfrac, xit, yjt,
+     .	     x11, x12, x21, x22,
+     .	     y11, y12, y21, y22
+	CHARACTER*1 dim
+
+	DO 100 i = 1, npt
+
+* transfer coordinate pair to temporary variables
+	xit = xi(i)
+	yjt = yj(i)
+
+* clip to the limits of the axis subscripts
+	IF ( .NOT.(dim1_modulo.OR.dim1_edges) ) THEN
+	   IF (xit .LT. minss_dim1) xit = minss_dim1
+	   IF (xit .GT. maxss_dim1) xit = maxss_dim1
+	ENDIF
+	IF ( .NOT.(dim2_modulo.OR.dim2_edges) ) THEN
+	   IF (yjt .LT. minss_dim2) yjt = minss_dim2
+	   IF (yjt .GT. maxss_dim2) yjt = maxss_dim2
+	ENDIF
+
+* determine the surrounding index values for both coordinates
+* (only the X component for now ... Y conponent later)
+	xlo_dim1 = INT(xit)
+	IF ( FLOAT(xlo_dim1) .EQ. xit ) THEN
+	   xhi_dim1 = xlo_dim1
+	ELSE
+	   IF (xit .LT. 0.) xlo_dim1 = xlo_dim1 - 1  ! neg val to round down
+	   xhi_dim1 = xlo_dim1 + 1
+	ENDIF
+	xlo_dim2 = INT(yjt)
+	IF ( FLOAT(xlo_dim2) .EQ. yjt ) THEN
+	   xhi_dim2 = xlo_dim2
+	ELSE
+	   IF (yjt .LT. 0.) xlo_dim2 = xlo_dim2 - 1  ! neg val to round down
+	   xhi_dim2 = xlo_dim2 + 1
+	ENDIF
+
+* determine the interpolation coefficients
+	xfrac = xit - xlo_dim1
+	yfrac = yjt - xlo_dim2
+
+* apply modulo wrapping
+* Note: this logic assumes that modulo wrapping is applied to indices
+*   that are at most one point beyond the edge of the coordinate fields.
+*   This is consistent with the index requirements of CONTOUR and SHADE
+* e.g. an input of xi=0.5 would result in xlo_dim1=N, xhi_dim1=1
+	IF ( dim1_modulo ) THEN
+	   IF ( xlo_dim1 .LT. minss_dim1 ) xlo_dim1 = maxss_dim1
+	   IF ( xlo_dim1 .GT. maxss_dim1 ) xlo_dim1 = minss_dim1
+	   IF ( xhi_dim1 .LT. minss_dim1 ) xhi_dim1 = maxss_dim1
+	   IF ( xhi_dim1 .GT. maxss_dim1 ) xhi_dim1 = minss_dim1
+	ENDIF
+	IF ( dim2_modulo ) THEN
+	   IF ( xlo_dim2 .LT. minss_dim2 ) xlo_dim2 = maxss_dim2
+	   IF ( xlo_dim2 .GT. maxss_dim2 ) xlo_dim2 = minss_dim2
+	   IF ( xhi_dim2 .LT. minss_dim2 ) xhi_dim2 = maxss_dim2
+	   IF ( xhi_dim2 .GT. maxss_dim2 ) xhi_dim2 = minss_dim2
+	ENDIF
+
+* Propagate the X indices to the Y field (to be modified next)
+	ylo_dim1 = xlo_dim1
+	yhi_dim1 = xhi_dim1
+	ylo_dim2 = xlo_dim2
+	yhi_dim2 = xhi_dim2
+
+* Set up for degenerate coordinate fields (single point on an axis)
+* e.g.  SHADE vals2D xpos1d ypos1d
+	IF (xspan_1_dim1) THEN
+	   xlo_dim1 = minss_dim1
+	   xhi_dim1 = xlo_dim1
+	ENDIF
+	IF (xspan_1_dim2) THEN
+	   xlo_dim2 = minss_dim2
+	   xhi_dim2 = xlo_dim2
+	ENDIF
+	IF (yspan_1_dim1) THEN
+	   ylo_dim1 = minss_dim1
+	   yhi_dim1 = ylo_dim1
+	ENDIF
+	IF (yspan_1_dim2) THEN
+	   ylo_dim2 = minss_dim2
+	   yhi_dim2 = ylo_dim2
+	ENDIF
+
+* The indexing of the X and Y fields may each be offset from the indices given
+	xlo_dim1 = xlo_dim1 + xpos_off0_dim1
+	xhi_dim1 = xhi_dim1 + xpos_off0_dim1
+	xlo_dim2 = xlo_dim2 + xpos_off0_dim2
+	xhi_dim2 = xhi_dim2 + xpos_off0_dim2
+
+	ylo_dim1 = ylo_dim1 + ypos_off0_dim1
+	yhi_dim1 = yhi_dim1 + ypos_off0_dim1
+	ylo_dim2 = ylo_dim2 + ypos_off0_dim2
+	yhi_dim2 = yhi_dim2 + ypos_off0_dim2
+
+* get the interpolants
+*	        (x,y)22           (x,y)22
+*	
+*	             	 (ix,jy)
+*	
+*	        (x,y)11           (x,y)12
+
+	x11 = xfield(xlo_dim1, xlo_dim2)
+	x12 = xfield(xhi_dim1, xlo_dim2)
+	x21 = xfield(xlo_dim1, xhi_dim2)
+	x22 = xfield(xhi_dim1, xhi_dim2)
+	y11 = yfield(ylo_dim1, ylo_dim2)
+	y12 = yfield(yhi_dim1, ylo_dim2)
+	y21 = yfield(ylo_dim1, yhi_dim2)
+	y22 = yfield(yhi_dim1, yhi_dim2)
+
+* check that all of the needed interpolants exist
+	IF ( x11.EQ.badx
+     .	.OR. x12.EQ.badx
+     .	.OR. x21.EQ.badx
+     .	.OR. x22.EQ.badx) THEN
+	   dim = 'X'
+	   GOTO 5100
+	ELSEIF (
+     .	     y11.EQ.bady
+     .	.OR. y12.EQ.bady
+     .	.OR. y21.EQ.bady
+     .	.OR. y22.EQ.bady ) THEN
+	   dim = 'Y'
+	   GOTO 5100
+	ENDIF
+
+* perform the interpolation
+	xi(i) = (x11*(1.-xfrac) + x12*(xfrac)) * (1.-yfrac)
+     .	      + (x21*(1.-xfrac) + x22*(xfrac)) * (yfrac)
+	yj(i) = (y11*(1.-xfrac) + y12*(xfrac)) * (1.-yfrac)
+     .	      + (y21*(1.-xfrac) + y22*(xfrac)) * (yfrac)
+
+ 100	CONTINUE
+
+* possibly invert the sign of the coordinates (used for descending Z axis)
+	IF ( xinv .EQ. -1. ) THEN
+	   DO 110  i = 1, npt
+ 110	   xi(i) = -1.*xi(i)
+	ENDIF
+	IF ( yinv .EQ. -1. ) THEN
+	   DO 120  i = 1, npt
+ 120	   yj(i) = -1.*yj(i)
+	ENDIF
+
+* successful completion
+	status = 0  ! (like ferr_ok but for PLOT+)
+	RETURN
+
+* error exit
+ 5000	RETURN
+ 5100	CALL ERRMSG( ferr_out_of_range, status,
+     .		dim//' coordinates'//pCR//
+     .		'missing value where val is needed', *5000)
+	END 

@@ -1,0 +1,91 @@
+* information obtained from reading of the descriptor files of data sets
+*
+* revision 0.00 - 05/07/87 - by Mark Verschell for  PMEL/TMAP
+* revision 0.01 - 07/07/87 - removed revision and increased size of type/format
+* revision 1.00 - 08/18/87 - completely redone
+* revision 1.01 - 10/30/87 - removed ds_make_dscrp_rev
+* revision 1.02 - 02/08/89 - removed ds_var_modline
+* revision 1.03 - 04/24/91 - *sh* increased ds_name and ds_des_name lengths
+*	                   - moved real*8 vars to beginning for alignment
+* revision 1.04 - 05/11/92 - *sh* increased ds_var_code string length
+
+	COMMON/XDSET_INFO/
+     .		ds_1step(maxdsets),ds_lastep(maxdsets),
+     .		ds_delstep(maxdsets),
+     .		ds_type(maxdsets),ds_format(maxdsets),
+     .		ds_source_class(maxdsets),ds_source(maxdsets),
+     .		ds_subsource(maxdsets),ds_prog_rev(maxdsets),
+**************************************************************************
+     .		ds_expnum(maxdsets),ds_modnum(maxdsets),
+     .		ds_title(maxdsets),ds_mod_title(maxdsets),
+     .		ds_forcing_set(maxdsets),ds_t0time(maxdsets),
+     .		ds_time_unit(maxdsets),ds_time_modulo(maxdsets),
+     .		ds_ntegrate_tstep(maxdsets),ds_ntuple(maxdsets),
+     .		ds_time_run(maxdsets),ds_aux_modnum(num_aux,maxdsets),
+     .		ds_parm_name(num_parm,maxdsets),
+     .		ds_parm_text(num_parm,maxdsets),
+**************************************************************************
+     .		ds_alert_on_open(maxdsets),ds_alert_on_output(maxdsets),
+     .		ds_message(maxdsets),
+**************************************************************************
+     .		ds_var_code(maxvars),ds_var_title(maxvars),
+     .		ds_var_titl_mod(maxvars),ds_var_units(maxvars),
+     .		ds_grid_number(maxvars),ds_missing_flag(maxvars),
+     .		ds_bad_flag(maxvars),ds_ordering(4,maxvars),
+     .		ds_grid_start(4,maxvars),ds_grid_end(4,maxvars),
+     .		ds_precision(maxvars),
+**************************************************************************
+     .		ds_aux_set_num(maxvars),
+**************************************************************************
+     .		min_ds_tstart,max_ds_tend,ds_tdelta,
+**************************************************************************
+     .		ds_des_name(maxdsets),ds_name(maxdsets),
+     .		ds_open(maxdsets),
+     .		ds_regsteps(maxdsets),
+     .		ds_basic_axes(6,maxdsets),ds_time_axis(maxdsets),
+**************************************************************************
+     .		ds_ndataperrec(maxvars),ds_nrecpervar(maxvars),
+     .		ds_nrecb4var(maxvars),ds_var_setnum(maxvars),
+     .		ds_npospervar(maxvars)
+
+* "FORMAT RECORD"
+	CHARACTER*4	ds_type,ds_format,ds_prog_rev
+	CHARACTER*16	ds_source_class,ds_source,ds_subsource
+
+* "BACKGROUND RECORD"
+	CHARACTER*4	ds_expnum,ds_modnum,ds_aux_modnum
+	CHARACTER*16	ds_forcing_set
+	CHARACTER*20	ds_t0time,ds_time_run,ds_parm_name
+	CHARACTER*80	ds_title,ds_mod_title,ds_parm_text
+	INTEGER*4	ds_ntuple
+	LOGICAL		ds_time_modulo
+	REAL*4		ds_time_unit,ds_ntegrate_tstep
+
+* "MESSAGE RECORD"
+	LOGICAL*2	ds_alert_on_open,ds_alert_on_output
+	CHARACTER*80	ds_message
+
+* "VARIABLE RECORD (one record per file variable)
+	CHARACTER*1	ds_precision
+	CHARACTER*24	ds_var_code       ! was *8 (*sh* 11/92)
+	CHARACTER*24	ds_var_units
+	CHARACTER*40	ds_var_title,ds_var_titl_mod
+	INTEGER*4	ds_grid_start,ds_grid_end,ds_grid_number,
+     .			ds_ordering
+	REAL*4		ds_bad_flag,ds_missing_flag
+*    - only in GT sets
+	INTEGER*4	ds_aux_set_num
+*    - only in TS sets
+	INTEGER*4	min_ds_tstart,max_ds_tend,ds_tdelta
+
+* additional calculated or derived values pertaining to data sets
+	CHARACTER*40	ds_name
+	CHARACTER*128	ds_des_name
+	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
+	LOGICAL		ds_regsteps
+	REAL*8		ds_1step,ds_lastep,ds_delstep
+
+* additional calculated or derived values pertaining to variables
+	INTEGER*4	ds_ndataperrec,ds_nrecpervar,ds_nrecb4var,
+     .			ds_var_setnum
+	INTEGER*2	ds_npospervar

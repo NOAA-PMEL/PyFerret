@@ -1,0 +1,94 @@
+	SUBROUTINE GET_DELTA_CONTEXT ( slash_dx0, delta_given, status )
+
+* interpret delta coordinate limits of the FORM DX=, DY=, etc.
+* ... slash_dx0 is the qualifier number of dx less 1
+* qualifiers are assumed to be ordered dx,dy,dz,dt,di,dj,dk,dl
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* V200: 10/27/89
+*	  5/2/90 - half extracted to APPLY_DELTA_CONTEXT
+* V420 (IBM/AIX port of V411): 10/5/95 - buffer for "READ(var,*"
+
+* specifiers may give coordinate in subscript units (/DI,/DJ,/DK,/DL) or
+* may give coordinate in "world" units (/DX,/DY,/DZ,/DT)
+* the specifiers may be of the following forms:
+*	/q=val			specifies a single delta
+*	/q=val_1:val_2		specifies a separate delta for lowe and upper
+
+#ifdef unix
+	include 'ferret_cmn/errmsg.parm'	
+	include 'ferret_cmn/ferret.parm'	
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xdelta_context.cmn'
+	include 'ferret_cmn/xprog_state.cmn'
+#else
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
+	INCLUDE 'FERRET_CMN:FERRET.PARM'	
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XDELTA_CONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+#endif
+
+* calling arguments:
+	LOGICAL		delta_given
+	INTEGER		slash_dx0, status
+
+* internal variables:
+	INTEGER		TM_LENSTR1, colon_pos, wworss, idim, iqual, loc, rlen
+	CHARACTER	string*40, raw_string*44
+
+* initialize
+	delta_given = .FALSE.
+	DO 10 idim = 1, 4
+ 10	dcx_given( idim ) = .FALSE.
+
+* decode the delta qualifiers
+	DO 200 wworss = 0, 7, 4
+	DO 100 idim = 1, 4
+
+	   iqual = slash_dx0 + wworss + idim
+	   loc = qual_given( iqual )
+	   IF ( loc .EQ. 0 ) GOTO 100
+
+	   delta_given = .TRUE.
+	   IF ( dcx_given(idim) ) GOTO 5100
+	   dcx_given(idim) = .TRUE.
+
+* get the qualifier string
+	   raw_string = cmnd_buff(qual_start(loc):qual_end(loc))
+	   rlen = TM_LENSTR1(raw_string)
+	   CALL EQUAL_STRING( raw_string, string, status )
+
+* decode it
+	   colon_pos = INDEX( string, ':' )
+	   IF ( colon_pos .EQ. 0 ) THEN
+	      READ( string, *, ERR=5200 ) dcx_lo(idim)
+	      dcx_hi(idim) = dcx_lo(idim)		   
+	   ELSE
+	      raw_string = string(:colon_pos-1)
+	      READ( raw_string, *, ERR=5200 ) dcx_lo(idim)	! AIX 10/95
+	      raw_string = string(colon_pos+1:)
+	      READ( raw_string, *, ERR=5200 ) dcx_hi(idim)	! AIX 10/95
+	   ENDIF
+
+* is it ww or ss ?
+	   dcx_by_ss(idim) = wworss .EQ. 4
+
+ 100	CONTINUE
+ 200	CONTINUE
+
+* success
+	status = ferr_ok
+	RETURN
+
+* error exits
+ 5000	RETURN
+ 5100	CALL ERRMSG( ferr_relative_coord, status, 
+     .		     'subscript and world position given on same axis: '//
+     .		     raw_string(:rlen), *5000)
+ 5200	CALL ERRMSG( ferr_erreq, status, raw_string(:rlen), *5000)
+
+	END

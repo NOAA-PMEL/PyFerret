@@ -1,0 +1,5 @@
+* COMMON with information about the files with data at time steps
+
+	INCLUDE		'TMAP_FORMAT:XSTEP_FILES.CMN_TEXT'
+
+	EXTERNAL	XSTEP_FILES_DATA

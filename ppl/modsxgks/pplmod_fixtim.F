@@ -1,0 +1,69 @@
+	subroutine fixtim (it1,it2,itnew1,itnew2,itype)
+C** 
+C**    @(#)fixtim.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************        C**
+C**                 EPIC
+C**
+C***********************************************************************        C**
+C**
+c
+c  Input:
+c	it1,it2 = input range of times in PLOT5's WHOI format (yyddmmhhmm)
+c	itype   = PLOT5 axis type 0 even hours		ending     00
+c                                 1 even days		ending   0000
+c                                 3 even months		ending 010000
+c  Output:
+c	itnew1,itnew2 = range of times which suit the input axis type and
+c                       include the input range of times (yymmddhhmm)
+c
+c  Uses subroutines TIME1 (sequence # <--> WHOI times and NUMDM1
+c  (# days in month) from PLOT5's MILELIB.
+c
+c  Programmed by N. Soreide, May 86.
+
+* Mod J Davison 11.21.95 For 4 digit years
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
+c
+	character*(*) it1,it2,itnew1,itnew2
+	character*14 cdum
+c
+	if (itype .eq. 3) then
+	    itnew1=it1(1:4)//'010000'//it1(11:14)
+	    if (it2(5:10) .eq. '010000') then
+		itnew2=it2
+	    else
+		dt=1440.
+		nm=numdm1(it2)
+		read (it2(5:6),*) id
+		iseq=nm-id+2
+		call time1 (1, it2(1:6)//'0000'//it2(11:14), iseq,
+     1		                cdum, idum, itnew2, dt)
+	    endif
+	else if (itype .eq. 1) then
+	    itnew1=it1(1:6)//'0000'//it1(11:14)
+	    if (it2(7:10) .eq. '0000') then
+		itnew2=it2
+	    else
+		dt=1440.
+		iseq=2
+		call time1 (1, it2(1:6)//'0000'//it2(11:14), iseq,
+     1		                cdum, idum, itnew2, dt)
+	    endif
+	else if (itype .eq. 0) then
+	    itnew1=it1(1:8)//'00'//it1(11:14)
+	    if (it2(9:10) .eq. '00') then
+		itnew2=it2
+	    else
+		dt=60.
+		iseq=2
+		call time1 (1, it2(1:8)//'00'//it2(11:14), iseq,
+     1		                cdum, idum, itnew2, dt)
+	    endif
+	endif
+	return
+	end
+

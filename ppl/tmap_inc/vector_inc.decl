@@ -1,0 +1,13 @@
+* VECTOR_INC.DECL - converted to Unix 2.26.91         
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	REAL	VLEN
+	REAL	VUSRLN
+	REAL	VXLOC
+	REAL	VYLOC
+	REAL	VPOS
+	REAL	VMINLN
+	REAL	ARMAX
+	REAL	ARMIN
+	REAL	HFACT
+* requires: INCLUDE 'PPLV11INC:VECTOR.INC'                                  

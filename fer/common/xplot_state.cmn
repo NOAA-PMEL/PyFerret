@@ -1,0 +1,56 @@
+* XPLOT_STATE.CMN
+* COMMON describing the state of GKS
+* 7/97 *sh* - increased max_viewport from 50 to 200
+
+	INTEGER		max_windows,
+     .			max_viewport,
+     .			mvp_dflt
+	REAl		wn_dflt_scale
+	PARAMETER     ( max_windows = 8,
+     .			max_viewport= 200,
+     .			mvp_dflt = 0,
+     .			wn_dflt_scale = 0.83666 )	! SQRT(0.7)
+
+	LOGICAL		wn_open,
+     .			wn_active,
+     .			vp_opaque,
+     .			pplus_started,
+     .			ppl_interrupted
+
+	INTEGER		vp_num,
+     .			vp_seg0,
+     .			vp_segn,
+     .			curr_seg_name
+
+	REAL		wn_scale,
+     .			vp_size ,
+     .			vp_xorg ,
+     .			vp_yorg ,
+     .			vp_xclip,
+     .			vp_yclip,
+     .			xlowlef,
+     .			ylowlef
+
+	CHARACTER	vp_name*16
+
+	COMMON / XPLOT_STATE /
+     .			pplus_started,
+     .			ppl_interrupted,
+     .			curr_seg_name,
+     .
+     .			wn_open	 ( max_windows ),
+     .			wn_active( max_windows ),
+     .			wn_scale ( max_windows ),
+     .			xlowlef  ( max_windows ),
+     .			ylowlef  ( max_windows ),
+     .
+     .			vp_num,
+     .			vp_name ( mvp_dflt:max_viewport ),
+     .			vp_size ( mvp_dflt:max_viewport ),
+     .			vp_xorg ( mvp_dflt:max_viewport ),
+     .			vp_yorg ( mvp_dflt:max_viewport ),
+     .			vp_xclip( mvp_dflt:max_viewport ),
+     .			vp_yclip( mvp_dflt:max_viewport ),
+     .			vp_seg0 ( mvp_dflt:max_viewport ),
+     .			vp_segn ( mvp_dflt:max_viewport ),
+     .			vp_opaque(mvp_dflt:max_viewport )

@@ -1,0 +1,189 @@
+	SUBROUTINE TAYIS1(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IDDB,IMDB,
+     *	TFACT,X,XFACT,CSIZE)
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAYIS1.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+
+* *jd* Mod for 4 digit years 11.27.95
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+C**
+C**    @(#)tayis1.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+	CHARACTER ITIME3*14
+	CHARACTER SYM*21,ITIME1*(*),ITIME*14,ITIME2*(*),MON*3,DAY*2
+	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
+	COMMON/AXLWID/XWID,YWID
+
+* TMAP interrupt flag
+#ifdef unix
+	include 'tmap_pplv11inc/xinterrupt.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
+#endif
+
+C
+C     THIS ROUTINE PLOTS A TIME AXIS AND LABELS IT WITH THE DAY OF THE M
+C     AND THE MONTH.
+C     VARIBLES:
+C         TLO=X VALUE CORRESPONDING TO THE START TIME.
+C         ITIME1 = START TIME (IE.  7708190000)
+C                  WE RESTRICT THE PERMISSIBLE START TIMES TO BE
+C                  EVEN DAYS.  (THAT IS THE LAST 6 DIGITS OF ITIME1
+C                  MUST BE 0)
+C         ITIME2 = END TIME (IE   7709070000)
+C                  THIS IS THE FIRST DAY NOT TO BE PLOTTED, AND IT
+C                  MUST BE AN EVEN DAY.
+C         DT = SAMPLING RATE IN MINUTES.
+C         NSMTIC = NUMBER OF SMALL TICS TO MAKE EACH DAY.
+C                = 23 FOR HOURLY TICS.
+C                = 11 FOR BIHOURLY TICS.
+C                   ETC.
+C         LABEL > 0 IF LABELS ARE TO BE DRAWN ABOVE THE AXIS.
+C               = 0 IF NO LABELS ARE TO BE DRAWN.
+C               < 0 IF LABEL ARE TO BE DRAWN BELOW THE AXIS.
+C         IABS(LABEL) = 1 FOR LABELS OF THE STYLE
+C                  1..........1..........1..........1..........1
+C                       3           4          5        6
+C                                      JUN
+C         IABS(LABEL) = 2 FOR LABELS OF THE STYLE
+C                  1..........1..........1..........1..........1
+C                     JUN  3     JUN  4      JUN  5    JUN  6
+C         IDDB = PRINT LABELS OF DAYS DIVIBLE BY THIS NUMBER ONLY.
+C                IF(IDDB = 0) PRINT NO DAY LABELS.
+C         IMDB = PRINT LABELS OF MONTHS DIVISIBLE BY THIS NUMBER ONLY.
+C                IF(IMDB = 0) PRINT NO MONTH LABELS.
+C                THIS VARIBLE ONLY APPLYS WHEN IABS(LABEL) = 1
+C         TFACT = (LENGTH OF T AXIS IN INCHES)/(LENGTH OF T AXIS IN USER
+C         Y = Y COORDINATE OF TIME AXIS.
+C         YFACT = (LENGTH OF Y AXIS IN INCHES)/(LENGTH OF Y AXIS IN USER
+C         CSIZE = SIZE TO DRAW DAY LABELS.
+C                 MONTH LABELS WILL BE 1.5 TIMES AS LARGE.
+C
+C     THERE WAS A MODIFICATION TO THIE IN JUNE 1980.  THE
+C     SOLE PURPOSE FOR THIS MODIFICATION WAS TO IMPROVE 'S
+C     EFFICIENCY.
+C
+C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
+	IF(ITIME1(7:10).NE.'0000')STOP ',1'
+	IF(ITIME2(7:10).NE.'0000')STOP ',2'
+C
+C     SET PARAMETERS.
+
+*     *jd Number of arguments of TIME3 calls reduced to 6.  TIME3 uses only
+*     the first 6, 'seconds' are not handled.  Done for MAC 7.92
+
+	TIC = 1440./DT
+	NTIC = NSMTIC + 1
+	IF(NSMTIC.LT.0)THEN
+	    IHVY=-6
+	    INML=-5
+	ELSE
+	    IHVY=-10
+	    INML=-6
+	    TDIST = TIC/NTIC
+	ENDIF
+	IF(LABEL+IY.EQ.0)THEN
+	    XTEMP=0.0
+	ELSE
+	    XTEMP=TLY*0.5
+	ENDIF
+	IF(IDDB.NE.0)THEN
+	    FIDDB=0.0
+	ELSE
+	    FIDDB=-1.4
+	ENDIF
+	IF(LABEL.LT.0) THEN
+	    XTEMP1=X-(1.4*CSIZE+XTEMP)/XFACT
+	    XTEMP2=X-((4.0+FIDDB)*CSIZE+XTEMP)/XFACT
+	ELSE
+* ... corrected tabulation error in next line *sh* 1/23/89
+	    XTEMP1=X+(0.4*CSIZE+XTEMP)/XFACT
+	    XTEMP2=X+((2.5+FIDDB)*CSIZE+XTEMP)/XFACT
+	ENDIF
+	IF(LABEL.NE.0)YWID=(4.0+FIDDB)*CSIZE+XTEMP
+	T=TLO
+	ITIME=ITIME1
+	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+	TMON=T
+	CALL PLOT(X,TLO,0,0)
+	IF(IDAY.EQ.1)THEN
+	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+	ELSE
+	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,INML)
+	ENDIF
+C      LOOP:
+10	CALL PLOT(X,T,0,0)
+	IF ( interrupted ) RETURN		! TMAP interrupt
+	DO 20 I=1,NSMTIC
+	CALL PLOTT7(X,T+FLOAT(I)*TDIST,XFACT,TFACT,1,-5)
+20	CONTINUE
+	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,1440.)
+	CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
+	IF(IDAY3.EQ.1)THEN
+	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
+	ELSE
+	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+	ENDIF
+C         THE LABELS
+	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+	IF(IDDB.EQ.0.OR.LABEL.EQ.0) GO TO 50
+	IF(IDAY.NE.IDDB*(IDAY/IDDB)) GO TO 50
+	CALL TIME2(ITIME,SYM)
+	READ(SYM,30) MON,DAY
+30	FORMAT(6X,A3,1X,A2)
+	IF(DAY(1:1).EQ.' ')THEN
+	    NC=1
+	    DAY=DAY(2:2)
+	ELSE
+	    NC=2
+	ENDIF
+	IF(IABS(LABEL).EQ.1)THEN
+	    TSYM=T+(TIC-SYMWID(CSIZE,NC,DAY)/TFACT)*.5
+	    CALL SYMBEL(XTEMP1,TSYM,90.,CSIZE,NC,DAY)
+	ELSE
+	    WRITE(SYM,40)MON,DAY
+40	    FORMAT(A3,' ',A2)
+	    TSYM=T+(TIC-SYMWID(CSIZE,6,SYM)/TFACT)*.5
+	    CALL SYMBEL(XTEMP1,TSYM,90.,CSIZE,6,SYM)
+	ENDIF
+50	CONTINUE
+	IF(IMDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
+	IF(IMON.EQ.IMON3) GO TO 70
+	IF(IMON.NE.IMDB*(IMON/IMDB)) GO TO 60
+C             ELSE:
+	IF(T-TMON.GT.4320./DT)THEN
+	    CALL TIME2(ITIME,SYM)
+	    READ(SYM,30)MON,DAY
+	    TSYM=TMON+(T+TIC-TMON-SYMWID(1.5*CSIZE,3,MON)/TFACT)*.5
+	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,3,MON)
+	ENDIF
+60	TMON=T+TIC
+70	CONTINUE
+	ITIME=ITIME3
+	T=T+TIC
+	IF(ITIME.LT.ITIME2) GO TO 10
+	IF(IMDB.EQ.0) RETURN
+	IF(IABS(LABEL).EQ.1.AND.IMON.EQ.IMDB*(IMON/IMDB)
+     .	.AND.IDAY3.GE.4)THEN
+	    CALL TIME2(ITIME,SYM)
+	    READ(SYM,30)MON,DAY
+	    TSYM=TMON+(T-TMON-SYMWID(1.5*CSIZE,3,MON)/TFACT)*.5
+	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,3,MON)
+	ENDIF
+	RETURN
+	END

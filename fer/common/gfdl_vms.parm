@@ -1,0 +1,6 @@
+* GFDL_VMS.PARM
+* parameters used by program GFDL to communicate with VAX VMS
+
+	INTEGER	vms_str_success, vms_smg_success
+	PARAMETER ( vms_str_success = 0,
+     .		    vms_smg_success = 1 )

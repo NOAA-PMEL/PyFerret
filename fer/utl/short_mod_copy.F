@@ -1,0 +1,141 @@
+	SUBROUTINE SHORT_MOD_COPY( memory, res_lo, res_hi, idim,
+     .				   tcom_cx, tcom_mr, res_cx, res_mr)
+
+* copy into the result over the range lo:hi from the component data
+* the range lo:hi is assumed to be not more than Nmod points
+
+* copying takes place in 2 stages ... with possible voids before,between,
+* and after.
+
+* the "t" in tcom_cx and tcom_mr refer to the fact that these are temporary
+* information -- they may be modified
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* V420: 11/95 - to accomodate modulo stripped on the main INTERP_STACK
+*	12/95 - fixed bug for negative subscripts
+
+#ifdef unix
+	include	'ferret_cmn/ferret.parm'
+	include	'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/interp_stack.parm'
+	include	'ferret_cmn/xcontext.cmn'
+	include	'ferret_cmn/xvariables.cmn'
+	include	'ferret_cmn/xprog_state.cmn'
+	include	'ferret_cmn/xtext_info.cmn'
+#else
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
+#endif
+
+* calling argument declarations:
+	INTEGER	res_lo, res_hi, idim, tcom_cx, tcom_mr, res_cx, res_mr
+	REAL	memory( mem_blk_size, max_mem_blks )
+
+
+* internal variable declarations:
+	LOGICAL	allatonce
+	INTEGER CAXIS_LEN, npts, com_lo, com_hi, com_nshf, res_nshf,
+     .		nshift, xlate, uplim,
+     .		cx_lo_sav, cx_hi_sav, mr_lo_sav, mr_hi_sav
+
+
+* --- end of introductory code ---
+
+* The diagram below illustrates the component and result regions relative
+* to the modulo axis replications
+
+* |++++++++|--------|--------|--------|--------|   <-- replicated modulo axis
+*                |--------|			   <-- component received
+*                                 |-----|	   <-- result requested
+
+* The copy takes place in two steps.
+
+* Step 1: The component is shifted so that the start of the result
+*	  region lies within the component span (if possible)
+*	  As much data as is possible contiguously is then copied
+* |++++++++|--------|--------|--------|--------|   <-- replicated modulo axis
+*                         |--------|		   <-- shifted component
+*                                 |-----|	   <-- result requested
+
+* Step 2: The component is shifted so that the start of the component
+*	  region lies within the result span (if possible)
+*	  As much data as is possible contiguously is then copied
+* |++++++++|--------|--------|--------|--------|   <-- replicated modulo axis
+*                                  |--------|	   <-- shifted component
+*                                 |-----|	   <-- result requested
+
+* save to restore at end
+	cx_lo_sav = cx_lo_ss(tcom_cx, idim)
+	cx_hi_sav = cx_hi_ss(tcom_cx, idim)
+	mr_lo_sav = mr_lo_ss(tcom_mr, idim)
+	mr_hi_sav = mr_hi_ss(tcom_mr, idim)
+
+* initialize
+	npts = CAXIS_LEN( idim, tcom_cx )	! length of modulo axis
+	com_lo = cx_lo_ss(tcom_cx, idim)
+	com_hi = MIN( cx_hi_ss(tcom_cx,idim), com_lo+npts-1 )	
+	
+* initialize the modulo shifting
+	IF ( com_lo .GT. 0 ) THEN
+	   com_nshf = (com_lo - 1) / npts
+	ELSE
+	   com_nshf = (com_lo / npts ) - 1
+	ENDIF
+	IF ( res_lo .GT. 0 ) THEN
+	   res_nshf = (res_lo - 1) / npts
+	ELSE
+	   res_nshf = (res_lo / npts) - 1
+	ENDIF
+	nshift = res_nshf - com_nshf
+
+* STEP 1
+* shift component so the start of the result lies within the component range
+	xlate = npts * nshift
+	IF ( res_lo.GT.com_hi+xlate ) xlate = xlate - npts
+	IF ( res_lo.LT.com_lo+xlate ) xlate = xlate + npts
+	IF ( res_lo.GE.com_lo+xlate .AND. res_lo.LE.com_hi+xlate ) THEN
+* ... copy the region
+	   uplim = MIN( res_hi, com_hi+xlate )
+	   cx_lo_ss(tcom_cx, idim) = res_lo
+	   cx_hi_ss(tcom_cx, idim) = uplim
+	   mr_lo_ss(tcom_mr, idim) = mr_lo_sav + xlate
+	   mr_hi_ss(tcom_mr, idim) = mr_hi_sav + xlate
+	   CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
+     .			   tcom_cx,
+     .			   memory(1,mr_blk1(res_mr)), res_mr )
+	   IF (uplim .EQ. res_hi) GOTO 1000	! STEP 2 not needed
+	ENDIF
+
+* STEP 2
+* shift component so the start of the component lies within the result range
+	xlate = npts * nshift
+	IF ( com_lo+xlate.GT.res_hi ) xlate = xlate - npts
+	IF ( com_lo+xlate.LT.res_lo ) xlate = xlate + npts
+	IF ( com_lo+xlate.GE.res_lo .AND. com_lo+xlate.LE.res_hi ) THEN
+* ... copy the region
+	   uplim = MIN( res_hi, com_hi+xlate )
+	   cx_lo_ss(tcom_cx, idim) = com_lo + xlate
+	   cx_hi_ss(tcom_cx, idim) = uplim
+	   mr_lo_ss(tcom_mr, idim) = mr_lo_sav + xlate
+	   mr_hi_ss(tcom_mr, idim) = mr_hi_sav + xlate
+	   CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
+     .			   tcom_cx,
+     .			   memory(1,mr_blk1(res_mr)), res_mr )
+	ENDIF
+
+* clean up - restore as before this call
+ 1000	cx_lo_ss(tcom_cx, idim) = cx_lo_sav
+	cx_hi_ss(tcom_cx, idim) = cx_hi_sav
+	mr_lo_ss(tcom_mr, idim) = mr_lo_sav
+	mr_hi_ss(tcom_mr, idim) = mr_hi_sav
+
+	RETURN	
+	END	
+

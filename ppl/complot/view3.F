@@ -1,0 +1,106 @@
+      SUBROUTINE VIEW3(XREF,YREF,ZREF,XDIR,YDIR,ZDIR,DIST)
+C** 
+C**    @(#)view3.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+C
+C     CALL VIEW3(XREF,YREF,ZREF,XDIR,YDIR,ZDIR,DIST)
+C
+C     THIS SUBROUTINE ESTABLISHES CONTROL INFORMATION FOR THREE-
+C     DIMENSIONAL PROJECTIONS.
+C
+C     THE VARIOUS PARAMETERS AND THEIR DEFINITIONS ARE LISTED
+C     BELOW:
+C        XREF   - X-COORDINATE OF THE REFERENCE POINT FOR THE
+C                 PROJECTION IN USER'S UNITS.
+C        YREF   - Y-COORDINATE OF THE REFERENCE POINT FOR THE
+C                 PROJECTION IN USER'S UNITS.
+C        ZREF   - Z-COORDINATE OF THE REFERENCE POINT FOR THE
+C                 PROJECTION IN USER'S UNITS.
+C        XDIR   - X-DIRECTION NUMBER OF THE VIEWING DIRECTION
+C                 IN USER'S UNITS.
+C        YDIR   - Y-DIRECTION NUMBER OF THE VIEWING DIRECTION
+C                 IN USER'S UNITS.
+C        ZDIR   - Z-DIRECTION NUMBER OF THE VIEWING DIRECTION
+C                 IN USER'S UNITS.
+C        DIST   - DISTANCE IN THE VIEWING DIRECTION FROM THE
+C                 CENTER OF PROJECTION TO THE REFERENCE POINT
+C                 IN INCHES (OR MM).
+C
+C
+#ifdef unix
+	include 'pplinc/PLTCOM.DAT'
+#else
+	include 'pplinc:PLTCOM.DAT'
+#endif
+C
+      IF(XDIR .NE. 0.0 .OR. YDIR .NE. 0.0 .OR. ZDIR .NE. 0.0)
+     * THEN
+C
+C     SET THE VIEW FLAG.
+C
+        VIEWF = .TRUE.
+C
+C     SCALE THE DIRECTION NUMBERS.
+C
+        XABS = XDIR * XSCALE
+        YABS = YDIR * YSCALE
+        ZABS = ZDIR * ZSCALE
+C
+C     COMPUTE THE SINE AND COSINE OF THE ANGLES OF ROTATION.
+C
+        DISTA = SQRT(XABS * XABS + YABS * YABS + ZABS * ZABS)
+        DISTB = SQRT(XABS * XABS + ZABS * ZABS)
+        SINA = YABS / DISTA
+        COSA = DISTB / DISTA
+        IF(DISTB .EQ. 0.0)THEN
+          SINB = 0.0
+          COSB = 1.0
+        ELSE
+          SINB = XABS / DISTB
+          COSB = ZABS / DISTB
+        ENDIF
+C
+C     COMPUTE THE ELEMENTS OF THE TRANSFORMATION MATRIX.
+C
+        TAX = COSB
+        TAY = 0.0
+        TAZ = -SINB
+        TBX = -SINA * SINB
+        TBY = COSA
+        TBZ = -SINA * COSB
+        TCX = COSA * SINB
+        TCY = SINA
+        TCZ = COSA * COSB
+C
+C     SCALE THE REFERENCE POINT.
+C
+        XABS = XREF * XSCALE
+        YABS = YREF * YSCALE
+        ZABS = ZREF * ZSCALE
+C
+C     TRANSFORM THE REFERENCE POINT.
+C
+        AREF = XABS * TAX + YABS * TAY + ZABS * TAZ
+        BREF = XABS * TBX + YABS * TBY + ZABS * TBZ
+        CREF = XABS * TCX + YABS * TCY + ZABS * TCZ
+C
+C     CONVERT THE VIEW DISTANCE TO INTERNAL INCREMENTS.
+C
+        VDIST = FACTOR * DIST
+      ELSE
+C
+C     RESET THE VIEW FLAG.
+C
+        VIEWF = .FALSE.
+      ENDIF
+      RETURN
+C
+      END

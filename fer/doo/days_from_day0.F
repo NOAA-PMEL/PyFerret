@@ -1,0 +1,56 @@
+	REAL FUNCTION DAYS_FROM_DAY0( date0_days, year, month, day )
+
+
+* return a relative day number since the day of date0_days where date0_days
+* is in units of days since 1-JAN-0000
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+*
+* V320 11/94 - in order to implement the DAY1900 function
+*		based on tm_secs_from_bc by Mark Verschell
+
+* calling argument declarations:
+	REAL*8 date0_days
+	INTEGER year, month, day
+
+* Local Definition
+	INTEGER		days_in_month(12)
+	REAL*8		secs_in_day,
+     .			secs_in_year, secs_in_century, total_secs
+
+	PARAMETER	(secs_in_day	 = 60.*60.*24.,
+     .			 secs_in_year	 = secs_in_day*365.,
+     .			 secs_in_century = secs_in_day*36524.)
+
+	DATA days_in_month /   0,  31,  59,  90, 120, 151,
+     .			     181, 212, 243, 273, 304, 334/
+
+* add lots of seconds for each century since 0 day
+	total_secs = secs_in_century * INT(year/100)
+* add a day for every 400 years (leap year at centennial)
+	total_secs = total_secs + secs_in_day*INT(year/400.+0.9975)
+* add a year for each year since turn of century
+	total_secs = total_secs + secs_in_year*MOD(year,100)
+* add a day for each leap year since centennial (except for centennial)
+	total_secs = total_secs + secs_in_day*INT((MOD(year,100)-1)/4)
+* add seconds for number of months
+	total_secs = total_secs + days_in_month(month)*secs_in_day
+* add 1 day worth of seconds if this is leap year and past february
+	IF (month .GT. 2) THEN
+	  IF (MOD(year,400) .EQ. 0) THEN
+	    total_secs = total_secs + secs_in_day
+	  ELSE
+	    IF (MOD(year,4) .EQ. 0 .AND. MOD(year,100) .NE. 0)
+     .	          total_secs = total_secs + secs_in_day
+	  ENDIF
+	ENDIF
+* add seconds for number of days
+	total_secs = total_secs + secs_in_day*(day-1)
+
+* convert to days and return result
+	DAYS_FROM_DAY0 = SNGL(total_secs/secs_in_day - date0_days)
+
+	RETURN
+	END
+

@@ -1,0 +1,3 @@
+	COMMON /XINTERRUPT/ interrupted
+
+	LOGICAL interrupted

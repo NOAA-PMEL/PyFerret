@@ -1,0 +1,258 @@
+	SUBROUTINE XEQ_VECTOR( memory )
+
+* execute the VECTOR command
+
+* programmer - steve hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+* written for VAX computer under VMS operating system
+*
+* revision 0.0 - 1/7/87
+* revision 0.1 - 2/25/87 - changes for INTERPRETATION STACK
+* revision 0.2 - 6/24/87 - provisions to permit 90 degree data-plane transpose
+*			   and to separate DISP_INIT from DISP_SET_UP
+* revision 0.3 - 7/8/87  - DISP_LABELS separated from DISP_SET_UP
+* revision 0.4 - 7/28/87 - added CALL DISP_PREP
+* revision 0.5 - 8/11/87 - VECKEY relocates according to title position
+* revision 0.6 - 8/26/87 - dont transpose on XT plots
+* revision 0.7 - 3/2/88  - check for valid data range before loading
+* revision 0.8 - 4/14/88 - added /NOLABELS and range check --> DISP_SET_UP
+* revision 0.9 - 4/28/88 - added only_x to DISP_SET_UP
+* revision 1.0 - 6/22/88 - compute axis aspect correction using PPLUS AXIS.INC
+*			   axis lengths
+* revision 1.1 - 8/1/88  - corrected bug: x_skip said "Y" and visa versa
+*			   added MODE WAIT
+* revision 1.2 - 9/21/88 - do_labels --> no_labels: /NOLABEL processing chged
+* V200:  5/19/89 - 4D symmetrical
+*	  1/4/89 - using keys for labelling
+*	 3/13/90 - check status from DISP_PREP
+* V301: 12/8/93  - added VECTOR/XSKIP/YSKIP
+* 	  1/7/94 - bug fix: (see DISP_DATA_SET_UP) must unprotect plot data
+*	 2/10/94 - added /PEN=
+* V312: 5/94 - array "memory" as a calling argument
+* V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+*	 1/20/94 - changes to SAVE_FRAME call reflecting C-based procedures
+* V450:  5/29/97 - added /NOAXES qualifier (eventually for curvilinear plots)
+
+#ifdef unix
+	include 'tmap_format/tmap_dims.parm'
+	include	'ferret_cmn/ferret.parm'
+	include 'ferret_cmn/errmsg.parm'
+	include	'ferret_cmn/plot_setup.parm'
+	include	'ferret_cmn/slash.parm'
+	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xvariables.cmn'
+	include 'ferret_cmn/xprog_state.cmn'
+	include 'ferret_cmn/xplot_state.cmn'
+	include 'ferret_cmn/xplot_setup.cmn'
+	include 'ferret_cmn/xpplus.cmn'
+        include 'tmap_pplv11inc/axis_inc.decl'       ! with axis lengths	
+        include 'pplv11inc/AXIS.INC'       ! with axis lengths	
+	include 'ferret_cmn/xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE	'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'
+	INCLUDE	'FERRET_CMN:SLASH.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
+	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
+	INCLUDE 'FERRET_CMN:XPPLUS.CMN'
+        INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL/LIST'       ! with axis lengths	
+        INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
+	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
+#endif
+
+* calling argument declarations:
+	REAL	memory( mem_blk_size, max_mem_blks )
+
+* internal variable declarations:
+	LOGICAL		overlay, transpz, no_labels, no_x_rng,
+     .			set_up, noaxes
+	INTEGER		status, cx, loc, ipen, limit,
+     .			dim1, dim2, asp, dlen,
+     .			ax1_blks, ax1_start,
+     .			ax2_blks, ax2_start,
+     .			x_skip, y_skip
+	REAL		only_x, aspect, vbuf
+	CHARACTER	TM_FMT*16, LEFINT*4, ibuff*3
+
+
+* internal parameter declarations:
+	LOGICAL		norm_dims_only, vector
+	PARAMETER     ( norm_dims_only  = .FALSE.,
+     .			vector		= .TRUE.  )
+
+* set up the graphics environment and get the data
+	CALL START_PPLUS
+	CALL DISP_DATA_SET_UP( memory,
+     .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
+	IF ( status .NE. ferr_ok ) GOTO 5100
+
+* make sure the number of expressions given is even ( x and y components )
+	IF ( MOD( num_uvars_in_cmnd, 2 ) .NE. 0 ) CALL ERRMSG
+     .		(ferr_invalid_command,status,
+     .		 'VECTOR requires paired components',*5000)
+
+* initialize
+	overlay   = qual_given( slash_vect_over_plot ).GT.0 .AND. twodee_on
+	no_labels = qual_given( slash_vect_nolabels  ).GT.0
+	transpz   = qual_given( slash_vect_transpz   ).GT.0
+	set_up	  = qual_given( slash_shad_set_up    ).GT.0
+	noaxes    = qual_given( slash_noaxes         ).GT.0
+	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
+* ... default orientation for YT and ZT contours has time on horizontal
+	IF ( plot_axis(2).EQ.t_dim .AND. plot_axis(1).NE.x_dim )
+     .							transpz = .NOT.transpz
+	CALL DISP_PREP( status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* possibly transpose the axes
+	IF ( transpz ) THEN
+	   dim2 = plot_axis(1)
+	   dim1 = plot_axis(2)
+	ELSE
+	   dim1	= plot_axis(1)
+	   dim2	= plot_axis(2)
+	ENDIF
+
+* scale-ratio correction requested ?
+	IF ( qual_given( slash_vect_aspect ) .GT. 0 ) THEN
+	   asp = qual_given( slash_vect_aspect )
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(asp):qual_end(asp)),
+     .			   aspect, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( aspect .EQ. unspecified_val4 ) aspect = ylen/xlen
+	   IF ( aspect .LE. 0.0 ) CALL ERRMSG( ferr_out_of_range,
+     .		status, cmnd_buff(qual_start(asp):qual_end(asp)), *5000 )
+	ELSE
+	   aspect = 0.0
+	ENDIF
+
+* user-specified pen color ?  (2/94)
+	loc = qual_given( slash_pen )
+	IF ( loc .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   vbuf, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   limit = num_fancy_lines
+	   IF ( vbuf.GT.limit .OR. vbuf.LE.0.0 ) GOTO 5200
+	   ipen = vbuf
+	ELSE
+	   ipen = -1	! auto-select in DISP_SET_UP
+	ENDIF
+
+* set up title and load the x component data into PPLUS
+	CALL DISP_SET_UP   ( 	memory,
+     .				vector,
+     .				aspect,
+     .				overlay,
+     .				transpz,
+     .				no_labels,
+     .				no_x_rng,
+     .				only_x,
+     .				is_mr,
+     .				num_uvars_in_cmnd,
+     .				is_cx,
+     .				is_uvar,
+     .				memory( 1, ax1_start ),
+     .				memory( 1, ax2_start ),
+     .				ipen,
+     .				status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* increment counter of vector fields on the screen
+	nvect_on = nvect_on + 1
+
+* special set-up required only for the VECTOR command
+	IF ( .NOT.overlay ) THEN
+* ... vector length key below plot title (overlay written as key)
+	   WRITE ( ppl_buff, '(2F6.1)' ) 3.5, -1.2
+	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
+	ENDIF	
+
+* turn off axes? (5/29/97)
+	IF ( noaxes ) CALL PPL_AXES_OFF(set_up)
+
+* done now if /set_up, only
+	IF ( set_up ) GOTO 1000
+
+* sub-sample the vectors to make a cleaner plot ?
+	cx   = is_cx( 1 )
+	loc = qual_given( slash_vect_xskip )
+	IF ( loc .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   vbuf, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( vbuf .EQ. unspecified_val4 ) THEN
+	      x_skip = 1.
+	   ELSE
+	      x_skip = ABS(vbuf)
+	   ENDIF
+	ELSE
+	   x_skip = ( cx_hi_ss(cx,dim1)-cx_lo_ss(cx,dim1) )
+     .		 / max_x_vec + 1
+	   IF ( x_skip .NE. 1 ) THEN
+	      risc_buff = ' '	      
+	      WRITE ( risc_buff, 3000 ) x_skip, 'X'
+	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   ENDIF
+	ENDIF
+	loc = qual_given( slash_vect_yskip )
+	IF ( loc .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   vbuf, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( vbuf .EQ. unspecified_val4 ) THEN
+	      y_skip = 1.
+	   ELSE
+	      y_skip = ABS(vbuf)
+	   ENDIF
+	ELSE
+	   y_skip = ( cx_hi_ss(cx,dim2)-cx_lo_ss(cx,dim2) )
+     .		 / max_y_vec + 1
+	   IF ( y_skip .NE. 1 ) THEN 
+	      risc_buff = ' '	      
+	      WRITE ( risc_buff, 3000 ) y_skip, 'Y'
+	      CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   ENDIF
+	ENDIF
+ 3000	FORMAT (' Using every ',I3,'th vector in the ',
+     .            A1,' direction')
+	WRITE ( ppl_buff, '(2I4)' ) x_skip, y_skip
+
+* plot it with vector arrows
+	IF (  overlay ) THEN
+	   CALL PPLCMD (' ',' ',0,
+     .		'VECTOR/OVER/' //ppl_wait//' '//ppl_buff, 1, 1 )
+	ELSE
+	   CALL PPLCMD (' ',' ',0,
+     .			'VECTOR/LATCH/'//ppl_wait//' '//ppl_buff, 1, 1 )
+	ENDIF
+
+* restore axes? (5/29/97)
+	IF ( noaxes ) CALL PPL_AXES_RESTORE
+
+* interrupt occurred during plot ?
+	IF ( ppl_interrupted ) GOTO 1000
+
+* capture the bit map ?
+	IF ( qual_given( slash_vect_frame ) .GT. 0 ) THEN
+	   CALL SAVE_FRAME( frame_file, "HDF", status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
+* release the memory used for axis buffers
+ 1000 	CALL FREE_MEMORY( ax2_start, ax2_blks )
+ 	CALL FREE_MEMORY( ax1_start, ax2_blks )
+	CALL UNPROTECT_CMND_DATA			! 1/94
+ 5100	RETURN
+
+* error exits
+ 5000	GOTO 1000
+ 5200   CALL ERRMSG( ferr_out_of_range, status,
+     .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .          'Legal range is 1 to '//LEFINT(limit,dlen), *1000 )
+	END

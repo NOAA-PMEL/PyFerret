@@ -1,0 +1,19 @@
+* CONT_INC.DECL - converted to Unix 2.26.91           
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	REAL	ZLEV,CANGLE
+	INTEGER	LDIG,IVCOMP
+	INTEGER	LWGT
+	INTEGER	LCLR
+	INTEGER	NLEV
+	REAL	HGT
+	INTEGER	NARC
+	INTEGER	IAUTOC
+	INTEGER	NLEV2
+	INTEGER	NSIGC
+	
+*	Following added 8.3.95 *jd*
+	LOGICAL*4 CENTERED,SET_DELTA
+	REAL	DELTA
+
+* requires: INCLUDE 'PPLV11INC:CONT.INC'                                    

@@ -1,0 +1,150 @@
+	LOGICAL FUNCTION CD_GET_BOUNDS ( cdfid, ivar, lo, hi, tmrecdim,
+     .                                   status )
+
+* Get the bounds of the hyperslab of the given netCDF variable relative
+* to its parent grid in the TMAP Common
+
+* Programmer Steve Hankin
+* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
+
+* revision 0.0 - 3/92
+*
+* 15apr94 *kob* Need to initialzie cd_get_bounds in case of error 
+*		exit
+*
+* 2jun94 *kob* cd_get_bounds needs to be initialazed with boolean .FALSE.
+* 		instead of 0.
+* 10/96 *kob* - Linux port - had to move variable assignments off of
+*		declaration line.
+
+
+
+* argument definitions:
+*	cdfid   - id of currently open CDF file
+*       ivar    - CDF variable ID of the desired variable
+*       lo      - array of (4) lower bounds subscripts
+*       hi      - array of (4) upper bounds subscripts
+*       tmrecdim- returned axis (1-4) which is CDF record dimension (or 0)
+*       status  - returned TMAP status
+
+* argument declarations:
+	INTEGER	 cdfid, ivar, lo(4), hi(4), tmrecdim, status
+
+* include files
+#ifdef unix
+        include 'tmap_format/netcdf.decl'
+        include 'tmap_format/netcdf.inc'
+	include 'tmap_format/tmap_errors.parm'
+	include 'tmap_format/cd_lib.parm'
+        include 'tmap_format/xio.cmn_text'
+        external xio_data
+#else
+        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
+        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
+        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
+        EXTERNAL XIO_DATA
+#endif
+
+* local variable declarations:
+* *kob* explicit definitions not allowed on decl line in linux...
+*       moved it to parameter line 10/96
+      LOGICAL CD_GET_ATTVAL, got_lo, got_hi,
+     .        do_warn
+      PARAMETER (do_warn = .TRUE. )
+      INTEGER TM_LENSTR1,
+     .        ndims, nvars, cdfstat, vbacklo, vbackhi, idim,
+     .        vartyp, nvdim, vdims(6), nvatts, vlen,
+     .        ngatts, npts, recdim
+      REAL    r4_lo(4), r4_hi(4)
+      CHARACTER vname*24, buff*24
+
+      INTEGER tt  ! nice short name
+      EQUIVALENCE (tt,lunit_errors)
+
+* initialize
+        tmrecdim = 0   ! may be changed, below
+* ibm compiler didn't like initializing cd_get_bounds to 0, so *kob* 
+* changed it to .false.  2jun94
+	CD_GET_BOUNDS = .FALSE.     !in case of error exit
+* get the vital statistics for the CDF file
+        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
+
+* get the vital statistics for this variable
+        CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
+     .              nvatts,cdfstat)
+        vlen = TM_LENSTR1(vname)
+
+* get the lower bounds
+        got_lo = CD_GET_ATTVAL( cdfid, ivar, 'slab_min_index',
+     .           do_warn,vname(:vlen),r4_lo,4,vbacklo )
+        IF ( got_lo ) THEN
+          DO 100 idim = 1, 4
+ 100      lo(idim) = r4_lo(idim) !fp->int
+        ENDIF
+
+* get the upper bounds
+        got_hi = CD_GET_ATTVAL( cdfid, ivar, 'slab_max_index',
+     .           do_warn,vname(:vlen),r4_hi, 4, vbackhi )
+        IF ( got_hi ) THEN
+          DO 200 idim = 1, 4
+ 200      hi(idim) = r4_hi(idim) !fp->int
+        ENDIF
+
+* check for consistency
+        IF ( got_lo .NEQV. got_hi ) GOTO 5200
+        IF ( got_lo .AND. (vbacklo.NE.4.OR.vbackhi.NE.4) ) GOTO 5300
+        IF ( .NOT.got_lo ) GOTO 1000
+        IF ( recdim .EQ. -1 ) GOTO 1000     ! no record axis in file ?
+
+* the record dimension of the variable may have a flag, only
+* if so substitute the full size of the record dimension
+        DO 300 idim = 1, 4
+           IF ( hi(idim) .EQ. pcdf_recdim ) THEN
+              IF ( tmrecdim .NE. 0 ) GOTO 5100
+              tmrecdim = idim
+           ENDIF
+ 300    CONTINUE
+        IF ( tmrecdim .NE. 0 ) THEN
+           CALL NCDINQ( cdfid, recdim, buff, npts, cdfstat )
+           lo(tmrecdim) = 1
+           hi(tmrecdim) = npts
+        ENDIF
+
+* check for reasonable slab limits
+        DO 400 idim = 1, 4
+           IF ( idim .EQ. tmrecdim ) GOTO 400
+           IF ( lo(idim).LE.0 .OR. hi(idim).LE.0
+     .     .OR. lo(idim) .GT. hi(idim) )           GOTO 5400
+ 400    CONTINUE
+
+* successful completion
+ 1000   CD_GET_BOUNDS = got_lo
+        status = merr_ok
+        RETURN
+
+* error exits
+ 5100   CALL TM_ERRMSG(pcdferr+pcdferrmax,
+     .         status, 'CD_GET_BOUNDS', cdfid, ivar, 
+     .         'More than one record dimension in "slab_min_index": '
+     .         //vname(:vlen), no_errstring, *5000 )
+
+ 5200    CALL TM_ERRMSG(pcdferr+pcdferrmax,
+     .         status, 'CD_GET_BOUNDS', cdfid, ivar,
+     .         'Must give both min and max "slab_m**_index" values: '
+     .         //vname(:vlen),  no_errstring, *5000 )
+
+ 5300    CALL TM_ERRMSG(pcdferr+pcdferrmax,
+     .         status, 'CD_GET_BOUNDS', cdfid, ivar,
+     .         'Must be exactly 4 "slab_m**_index" values: '
+     .         //vname(:vlen),  no_errstring, *5000 )
+
+ 5400    CALL TM_ERRMSG(pcdferr+pcdferrmax,
+     .         status, 'CD_GET_BOUNDS', cdfid, ivar,
+     .         'Non-positive or disordered "slab_m**_index" values: '
+     .         //vname(:vlen),  no_errstring, *5000 )
+
+ 5000   RETURN
+	END
+

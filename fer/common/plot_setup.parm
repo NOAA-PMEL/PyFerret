@@ -1,0 +1,67 @@
+* PLOT_SETUP.PARM
+* parameters to communicate with PLOT+
+	INTEGER		ppl_centered,
+     .			ppl_left_just,
+     .			ppl_right_just,
+     .			ppl_sidebyside,
+     .			is
+	CHARACTER*1	from, line
+	PARAMETER     (	ppl_centered  	= 0,
+     .			ppl_left_just 	= -1,
+     .			ppl_right_just	= +1,
+     .			ppl_sidebyside  = 1,
+     .			from = ' ',
+     .			line = ' ',
+     .			is = 0	)
+
+* parameters describing the locations and sizes of labels
+	INTEGER		lab_loc_axlen_plus,
+     .			lab_loc_axlen_times,
+     .			lab_loc_absolute,
+     .			ppl_title,
+     .			ppl_xlab,
+     .			ppl_ylab,
+     .			ppl_movlab,
+     .			ppl_dset,
+     .			ppl_aspect,
+     .			ppl_year,
+     .			ppl_datitl,
+     .			ppl_offset
+	REAL		letsize_logo,
+     .			letsize_title,
+     .			letsize_label,
+     .			letsize_dset_title
+
+	PARAMETER     ( lab_loc_axlen_times = 2,
+     .			lab_loc_axlen_plus  = 1,
+     .			lab_loc_absolute    = 0,
+     .			ppl_title	= -1,
+     .			ppl_xlab	= -2,
+     .			ppl_ylab	= -3,
+     .			ppl_movlab	= -4,
+     .			ppl_dset	= 5,
+     .			ppl_aspect	= 6,
+     .			ppl_year	= 7,
+     .			ppl_datitl	= 8,
+     .			ppl_offset	= 9,
+     .			letsize_logo	   = 0.06,
+     .			letsize_title	   = 0.20,
+     .			letsize_label	   = 0.12,
+     .			letsize_dset_title = 0.12 )
+
+* parameters used to determine VECTOR sizes
+	REAL		vxax_len, vyax_len, max_vecperinch
+	INTEGER		max_x_vec, max_y_vec
+	PARAMETER     ( vxax_len = 8., 
+     .			vyax_len = 6., 
+     .			max_vecperinch = 5.,
+     .			max_x_vec = vxax_len * max_vecperinch, 
+     .			max_y_vec = vyax_len * max_vecperinch )
+
+* parameters to describe line styles
+	INTEGER	num_plain, num_sym, max_sym, num_fancy_lines
+	PARAMETER     ( num_plain = 6,
+     .			num_fancy_lines = 18,
+     .			num_sym = 17,
+     .			max_sym = 88  )
+

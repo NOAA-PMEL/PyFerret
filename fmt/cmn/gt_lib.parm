@@ -1,0 +1,71 @@
+* GT_LIB.PARM
+*
+* revision 0.00 - 05/07/87 - by Mark Verschell for PMEL/TMAP
+* revision 1.00 - 05/26/88 - added numerical constants
+* revision 1.10 - 11/29/88 - mpsunkn,mpsnorm changed values to munknown,mnormal
+* revision 1.11 - 12/07/89 - unspecified_int4 changed to -111 from -9999
+*
+* Function return codes
+	INTEGER*4	str_match
+	PARAMETER	(str_match = 0)
+
+* numerical constants
+        REAL            deg2rad, radius, deg2km, deg2m, m_radius
+        PARAMETER     ( deg2rad = 3.141592 / 180,
+     .                  radius = 6370.E5,               ! cm
+     .                  m_radius = radius / 100.,       ! meters
+     .                  deg2km = deg2rad * radius * 1.E-5,
+     .                  deg2m  = deg2km * 1000.  )
+
+* names of dimensions
+	INTEGER		  x_dim,   y_dim,   z_dim,   t_dim
+	PARAMETER	( x_dim=1, y_dim=2, z_dim=3, t_dim=4 )
+
+* Unspecified values
+	REAL*8		  unspecified_val8
+	INTEGER		  unspecified_int4
+	PARAMETER	( unspecified_val8	= -2E34)
+	PARAMETER	( unspecified_int4	= -111)
+
+* pre-defined grids:.....
+* define "lines" (1 dimensional components of which grids are assembled)
+* parameter definitions are pointers to the lines
+*			("m" indicates parameter, "ps"=Philander/Seigal)
+
+	INTEGER		mpsunkn, mpsnorm, mpsxt, mpsxu, mpsyt, mpsyu,
+     .			mpszt, mpszw
+	PARAMETER (	mpsunkn	= -1,		! must match FERRET munknown
+     .			mpsnorm	=  0,		! must match FERRET mnormal
+     .			mpsxt	=  1,
+     .			mpsxu	=  2,
+     .			mpsyt	=  3,
+     .			mpsyu	=  4,
+     .			mpszt	=  5,
+     .			mpszw	=  6)
+
+* define grids, themselves...
+* grids are formed of "outer products" (rectangular arrays) or "inner products"
+*	(ordered tuples) of lines.  (To use inner products the lines must be of
+*	the same length.)
+
+	INTEGER		mps2dt, mps2du, mps3dt, mps3du, mps3dw
+	PARAMETER (	mps2dt	= 1,	! 2D temp(erature) grid
+     .			mps2du	= 2,	! 2D taux,tauy grid
+     .			mps3dt	= 3,	! 3D temp/salt grid
+     .			mps3du	= 4,	! 3d u/v grid
+     .			mps3dw	= 5 )	! 3D w grid
+
+* codes for special grid features...
+* flag values stored in parameters
+	INTEGER		box_lo_lim, box_middle, box_hi_lim
+	PARAMETER     ( box_lo_lim =  1 )
+	PARAMETER     ( box_middle =  2 )
+	PARAMETER     ( box_hi_lim =  3 )
+
+* codes for special time/date formats
+	INTEGER pdate_vax, pdate_numslashnum
+	PARAMETER (pdate_vax = 1,
+     .		   pdate_numslashnum = 2 )
+
+
+

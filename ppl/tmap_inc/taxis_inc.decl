@@ -1,0 +1,18 @@
+* TAXIS_INC.DECL - converted to Unix 2.26.91          
+* COMMON for PLOT+ with all variables declared
+* created for TMAP usage by Steve Hankin 7/88
+	REAL	TLO
+	REAL	DT
+	REAL	TCSIZE
+	INTEGER	ITYPET
+	INTEGER	NMTCT
+	INTEGER	LABELT
+	INTEGER	IFDB
+	INTEGER	ISDB
+	INTEGER	ITFLG
+	REAL	VANG
+	INTEGER	IVFLG
+	INTEGER	IAUTOT
+	INTEGER	ITXTPE
+	INTEGER	ITXLBP
+* requires: INCLUDE 'PPLV11INC:TAXIS.INC'                                   

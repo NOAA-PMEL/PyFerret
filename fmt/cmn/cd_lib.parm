@@ -1,0 +1,24 @@
+* CD_LIB.PARM
+* netCDF special parameters for TMAP library
+
+* revision 0.00 - 18/03/92 - by Steve Hankin for PMEL/TMAP
+
+	CHARACTER pcdf_global*10
+	PARAMETER ( pcdf_global = '%%GLOBAL%%' )
+
+	INTEGER     pcdf_recdim
+        PARAMETER ( pcdf_recdim = 0 )
+
+	INTEGER     pcdf_yes, pcdf_no, pcdf_undefined
+        PARAMETER ( pcdf_yes = 1,
+     .	            pcdf_undefined = 0,
+     .	            pcdf_no = -1 )
+
+	INTEGER     pcdf_full_span, pcdf_sub_span, pcdf_child_span
+        PARAMETER ( pcdf_full_span  = 1,
+     .	            pcdf_sub_span   = 2,
+     .	            pcdf_child_span = 3 )
+
+
+
+

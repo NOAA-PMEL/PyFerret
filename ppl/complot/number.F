@@ -1,0 +1,60 @@
+	SUBROUTINE NUMBER(X,Y,DEG,CSIZE,NC,V)
+C** 
+C**    @(#)number.f	1.1    3/10/88
+C**
+C**
+C***********************************************************************
+C**
+C**                 PLOT+ Scientific Graphics System
+C**
+C***********************************************************************
+C**
+C**
+	CHARACTER LAB*30,IFORM*10
+	LOGICAL FLAG
+	FLAG=.FALSE.
+200	VT=V*1.000001
+	IF(V.EQ.0)THEN
+	NCC=1
+	ELSE
+	VX=ALOG10(ABS(VT))
+	NCC=IFIX(VX)+SIGN(1.,VX)
+	END IF
+	IF(NC.GT.0)THEN
+	IF(NC.GE.IABS(NCC)+2)THEN
+	IF(NCC.GE.0)THEN
+	WRITE(IFORM,10)NC,NC-NCC-2
+10	FORMAT('(F',I2,'.',I2,')')
+	ELSE
+	WRITE(IFORM,10)NC,NC-2
+	END IF
+	ELSE
+	IF(NC.LT.7)GOTO 100
+	WRITE(IFORM,11)NC,NC-7
+11	FORMAT('(1PE',I2,'.',I2,')')
+	ENDIF
+	WRITE(LAB,IFORM)V
+	ELSE
+	NC=-NC
+	IF(NC.LT.NCC+1)GOTO 100
+	WRITE(IFORM,12)NC
+12	FORMAT('(I',I2,')')
+	WRITE(LAB,IFORM)IFIX(V)
+	END IF
+	IF(FLAG)THEN
+	CALL SYMBL(X,Y,DEG,CSIZE,NC,LAB)
+	ELSE
+	CALL SYMBOL(X,Y,DEG,CSIZE,NC,LAB)
+	END IF
+	RETURN
+100	LAB='******************************'
+	IF(FLAG)THEN
+	CALL SYMBL(X,Y,DEG,CSIZE,NC,LAB)
+	ELSE
+	CALL SYMBOL(X,Y,DEG,CSIZE,NC,LAB)
+	ENDIF
+	RETURN
+	ENTRY NUMBR(X,Y,DEG,CSIZE,NC,V)
+	FLAG=.TRUE.
+	GOTO 200
+	END

@@ -1,0 +1,7 @@
+* XTODAY.CMN
+* 2/97 *kob* bumped up today_time from char*8 to char*10 for usage with
+*	f90 date_and_time routine
+	COMMON/ XTODAY / today_date, today_time
+
+	CHARACTER*9 today_date
+	CHARACTER*10 today_time

@@ -1,0 +1,55 @@
+* XDSET_PARMS.CMN
+* special parameters for individual data sets
+* this common is mostly managed by GET_DSET_PARMS
+* needs maxdsets from *VARIABLES.CMN
+* 8/91 *sh* - added dp_nts30_wind
+
+	INTEGER	    max_spec_parms, 
+     .		    max_airt_clim
+	PARAMETER ( max_spec_parms = 40,
+     .		    max_airt_clim  = 5 )
+
+	LOGICAL		dp_flags	( maxdsets, max_spec_parms )
+	REAL		dp_real_vals	( maxdsets, max_spec_parms )
+	INTEGER		dp_int_vals	( maxdsets, max_spec_parms )
+	INTEGER		dp_airt_dset	( max_airt_clim )
+	CHARACTER*4	dp_airt_name	( max_airt_clim )
+
+
+	COMMON /XDSET_PARMS/ dp_flags, dp_airt_dset, dp_airt_name
+
+* logical, real and integer parameters all equivalenced
+	EQUIVALENCE ( dp_flags, dp_real_vals ),
+     .		    ( dp_flags, dp_int_vals  )
+
+* specific names for parameters already known
+* (future parameter equivalences may be imbedded in specific subroutines)
+	LOGICAL	dp_phil_sieg	( maxdsets ),
+     .		dp_cox		( maxdsets ),
+     .		dp_trop_pacific	( maxdsets ),
+     .		dp_phil_qflux	( maxdsets ),
+     .		dp_ramp1_qflux	( maxdsets ),
+     .		dp_ramp2_qflux	( maxdsets ),
+     .		dp_const_air_sst( maxdsets ),
+     .		dp_nts30_wind	( maxdsets )
+
+	INTEGER	dp_clim_air_sst	 ( maxdsets )
+
+	REAL	dp_delta_air_sst ( maxdsets ),
+     .		dp_min_wind	 ( maxdsets ),
+     .		dp_Am_factor	 ( maxdsets )
+
+	EQUIVALENCE
+     .		( dp_flags( 1, 1), dp_phil_sieg ),
+     .		( dp_flags( 1, 2), dp_cox ),
+     .		( dp_flags( 1, 3), dp_trop_pacific ),
+     .		( dp_flags( 1, 4), dp_phil_qflux ),
+     .		( dp_flags( 1, 5), dp_ramp1_qflux ),
+     .		( dp_flags( 1, 6), dp_ramp2_qflux ),
+     .		( dp_flags( 1, 7), dp_clim_air_sst ),
+     .		( dp_flags( 1, 8), dp_const_air_sst ),
+     .		( dp_flags( 1, 9), dp_nts30_wind ),
+     .		! #10 unused
+     .		( dp_flags( 1,11), dp_delta_air_sst ),
+     .		( dp_flags( 1,12), dp_min_wind ),
+     .		( dp_flags( 1,13), dp_Am_factor )

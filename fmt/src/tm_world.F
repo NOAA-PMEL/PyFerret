@@ -59,6 +59,8 @@
 *			irregularly-spaced axes
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+* *sh* 9/99 - allow input subscript to be unspecified_int4 as long as the
+*		underlying axis is modulo
 
 * Include files
 #ifdef unix
@@ -84,7 +86,8 @@
 	iaxis    = grid_line( idim, grid_num )
 	IF ( iaxis .EQ. mpsnorm
      .	.OR. iaxis .EQ. mpsunkn
-     .	.OR. isubscript .EQ. unspecified_int4 ) THEN
+     .	.OR. (isubscript .EQ. unspecified_int4 
+     .	      .AND. .NOT.line_modulo(iaxis) )     ) THEN
 	  TM_WORLD = unspecified_val8
 	  RETURN
 	ENDIF

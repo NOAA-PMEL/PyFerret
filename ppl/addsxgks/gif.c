@@ -615,7 +615,6 @@ GIFmessage(Metafile **mf, int num, Gchar *string)
     return OK;
 }
 
-
 /*
  * Write a graphic to output GIF files.
  *
@@ -639,45 +638,78 @@ GIFoutputGraphic(Metafile *mf, int num, Gint code, Gint num_pt, Gpoint *pos)
 	assert(num_pt > 0);
 	meta->resize = 0;	/* Not OK to resize */
 
-	switch(code){
-	  case GKSM_FILL_AREA:
-	    {
-	      gdPointPtr tpts = (gdPointPtr)umalloc(sizeof(gdPoint) * num_pt);
-	      assert(tpts);
-	      xform(meta, pos->x, pos->y, &tpts[0].x, &tpts[0].y);
-	      ++pos;
-	      for (i=1; i < num_pt; ++i, ++pos){
-		xform(meta, pos->x, pos->y, &tpts[i].x, &tpts[i].y);
-	      }
-	      if (meta->fillStyleIndex == 0){
-		gdImagePolygon(meta->image, tpts, num_pt, meta->fillIndex);
-	      } else {
-		gdImageFilledPolygon(meta->image, tpts, num_pt,
-				     meta->fillIndex);
-	      }
-	      free(tpts);
-	    }
-	    break;
-	  case GKSM_POLYLINE:
-	    {
- 	      int lineIndex = meta->styleIndex == 1 ? meta->lineIndex 
- 		: gdStyled; 
-	      gdPointPtr tpts = (gdPointPtr)umalloc(sizeof(gdPoint) * num_pt);
-	      assert(tpts);
-	      for (i=0; i < num_pt; ++i, ++pos){
-		xform(meta, pos->x, pos->y, &tpts[i].x, &tpts[i].y);
-	      }
-	      gdImageWideLines(meta->image, tpts, num_pt,
-			      lineIndex, meta->lineWidth);
 
-	      free(tpts);
+	/*
+	  Trivial accept and reject clipping of points.
+	*/
+	{
+	  int xlo = 1, xhi = 1, yhi = 1, ylo = 1;
+	  Gfloat lolimit = -1, hilimit = 2;
+	  int i;
+	  for (i=1; i < num_pt; ++i){
+	    float x = pos[i].x; 
+	    float y = pos[i].y;
+	    xlo &= (x < lolimit);
+	    xhi &= (x > hilimit);
+	    ylo &= (y < lolimit);
+	    yhi &= (y > hilimit);
+	  }
+	  if (xlo || xhi || ylo || yhi)
+	    return OK;
+	    
+	  /* If any points are extreme, toss the polygon. Someday,
+             there will be a real clipping algorithm */
+	  for (i=1; i < num_pt; ++i){ 
+	    float x = pos[i].x; 
+	    float y = pos[i].y; 
+	    if (x < -10. || x > 10. || y < -10 || y > 10){ 
+	      msgWarn("GIFoutputGraphic: Bad NDC point %f %f\n", 
+		      x, y); 
+	      return OK; 
+	    } 
+	  }
+	}
+	
+
+	switch(code){
+	case GKSM_FILL_AREA:
+	  {
+	    gdPointPtr tpts = (gdPointPtr)umalloc(sizeof(gdPoint) * num_pt);
+	    assert(tpts);
+	    xform(meta, pos->x, pos->y, &tpts[0].x, &tpts[0].y);
+	    ++pos;
+	    for (i=1; i < num_pt; ++i, ++pos){
+	      xform(meta, pos->x, pos->y, &tpts[i].x, &tpts[i].y);
 	    }
-	    break;
-	  case GKSM_POLYMARKER:
-	    msgWarn("GIFoutputGraphics: polymarker unsupported\n");
-	    break;
-	  default:
-	    msgWarn("GIFoutputGraphics: Unknown code %d\n", code);
+	    if (meta->fillStyleIndex == 0){
+	      gdImagePolygon(meta->image, tpts, num_pt, meta->fillIndex);
+	    } else {
+	      gdImageFilledPolygon(meta->image, tpts, num_pt,
+				   meta->fillIndex);
+	    }
+	    free(tpts);
+	  }
+	break;
+	case GKSM_POLYLINE:
+	  {
+	    int lineIndex = meta->styleIndex == 1 ? meta->lineIndex 
+	      : gdStyled; 
+	    gdPointPtr tpts = (gdPointPtr)umalloc(sizeof(gdPoint) * num_pt);
+	    assert(tpts);
+	    for (i=0; i < num_pt; ++i, ++pos){
+	      xform(meta, pos->x, pos->y, &tpts[i].x, &tpts[i].y);
+	    }
+	    gdImageWideLines(meta->image, tpts, num_pt,
+			     lineIndex, meta->lineWidth);
+
+	    free(tpts);
+	  }
+	break;
+	case GKSM_POLYMARKER:
+	  msgWarn("GIFoutputGraphics: polymarker unsupported\n");
+	  break;
+	default:
+	  msgWarn("GIFoutputGraphics: Unknown code %d\n", code);
 	}
     }
     return OK;

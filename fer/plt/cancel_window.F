@@ -15,6 +15,7 @@
 * V400:  6/20/95 - remove changes from 2/28/95 -- state change on windows
 *		will be detected by mismatch between wn_open AND 
 *		gui_window_reported
+* *js* 12.12.97 Don't allow windows to be canceled when running in batch mode
 
 #ifdef unix
 	include 'ferret_cmn/errmsg.parm'
@@ -44,6 +45,7 @@
 	INTEGER 	n, n_lo, n_hi, lo
 	CHARACTER	buffer*24
 
+        logical         ITS_BATCH_GRAPHICS
 * local parameter declarations:
 	INTEGER		slash_all
 	PARAMETER     ( slash_all = 0+1 )
@@ -57,6 +59,11 @@
 	   CALL WARN('See HELP on SET MODE GKS')
 	   GOTO 1000
 	ENDIF
+        
+        if (its_batch_graphics()) then
+           call warn('Can\'t cancel window when in batch mode')
+           goto 1000
+        endif
 
 * get window numbers to close
 	IF ( qual_given( slash_all ) .GT. 0 ) THEN

@@ -43,9 +43,17 @@
  * using private color maps and the pixel value given to free is in the 
  * private color map.  It happens because XcInit uses sequential values to 
  * initialize color indices without actually allocating the color.
+ *
+ * Direct mapped color algorithm was incorrect. *js* 12.30.97
+ *
+ * The 7.31.95 fix didn't work for TrueColor displays because the pixel value
+ * could be quite large. Also, even if the color associated with a GKSindex
+ * changed, the color would not be freed until the colormap was full -- this
+ * could cause problems with other applications. This is now fixed. *js* 1.15.98
  */
 
-int XGKS_alloc_pixel[256]; /* Use to indicate pixel allocated by XGKS *jd* */
+#define MAX_GKS_COLORS 256
+int XGKS_alloc_pixel[MAX_GKS_COLORS]; /* Use to indicate pixel allocated by XGKS *jd* */
 
 /*LINTLIBRARY*/
 
@@ -87,9 +95,9 @@ int XGKS_alloc_pixel[256]; /* Use to indicate pixel allocated by XGKS *jd* */
  * value) for visuals with separate RGB palettes:
  */
 #define RGB(map,tbl,color)	(\
-	RED(map, (tbl)->rgb[IRED(map,color)].red) + \
-	GRN(map, (tbl)->rgb[IGRN(map,color)].green) + \
-	BLU(map, (tbl)->rgb[IBLU(map,color)].blue))
+	RED(map, (tbl)->rgb[color].red) + \
+	GRN(map, (tbl)->rgb[color].green) + \
+	BLU(map, (tbl)->rgb[color].blue))
 
 /*
  * Macro for computing the color value (either GKS colour-index or X pixel-
@@ -261,6 +269,14 @@ XcInit(ws, vinfo)
 
     map->NumEntries = vinfo->colormap_size;
 
+    {
+      int i;
+      for (i=0; i < MAX_GKS_COLORS; ++i){
+	XGKS_alloc_pixel[i] = 0;
+      }
+    }
+	
+
     if (vinfo->class == TrueColor || vinfo->class == DirectColor) {
 	nbytes = sizeof(XcRGB) * vinfo->colormap_size;
 
@@ -345,7 +361,6 @@ XcInit(ws, vinfo)
 		for (i = 0; i < vinfo->colormap_size; ++i)
 		  {
 		    ToX->color[i] = ToGKS->color[i] = i;
-		    XGKS_alloc_pixel[i] = 0; /* Haven't actually allocated */
 		  }
 
 		/* Set background GKS -> WhitePixel() */
@@ -356,11 +371,9 @@ XcInit(ws, vinfo)
 	
 		/* Set WhitePixel() -> background GKS */
 		ToGKS->color[ToX->color[0]] = 0;
-		XGKS_alloc_pixel[ToX->color[0]] = 1; /* jd */
 
 		/* Set BlackPixel() -> foreground GKS */
 		ToGKS->color[ToX->color[1]] = 1;
-		XGKS_alloc_pixel[ToX->color[1]] = 1; /* jd */
 
 		ReturnStatus = 1;
 	    }
@@ -418,6 +431,15 @@ XcSetColour(ws, GKSindex, GKSrep)
     Xrep.green = 65535 * GKSrep->green;
     Xrep.blue = 65535 * GKSrep->blue;
 
+    /* Free color at this GKS index if already allocated */
+    if (XGKS_alloc_pixel[GKSindex] == 1){
+      unsigned long	pixel	= XcPixelValue(ws, GKSindex);
+      unsigned long	planes	= 0;
+      XFreeColors(ws->dpy, ws->dclmp, &pixel, 1, planes);
+      XGKS_alloc_pixel[GKSindex] = 0;
+    }
+
+
     /*
      * Get the X-server color closest to the desired GKS one and save its
      * color-cell index (i.e. pixel-value) in the table.  Also, set the
@@ -429,22 +451,28 @@ XcSetColour(ws, GKSindex, GKSrep)
 	XcTable        *ToGKS = &map->ToGKS;
 
 	/* Pixel successfully allocated by XGKS */
-	XGKS_alloc_pixel[Xrep.pixel] = 1; /* jd */
+	XGKS_alloc_pixel[GKSindex] = 1; /* jd */
 
 	if (map->SeparateRGB) {
-	    ToX->rgb[IRED(map, GKSindex)].red
+	  /* Bug fix --  direct mapped colors were incorrectly assigned
+	     an index using IRED() rather than GKSindex *js* */
+	    ToX->rgb[GKSindex].red
 		= (unsigned) IRED(map, Xrep.pixel);
-	    ToX->rgb[IGRN(map, GKSindex)].green
+	    ToX->rgb[GKSindex].green
 		= (unsigned) IGRN(map, Xrep.pixel);
-	    ToX->rgb[IBLU(map, GKSindex)].blue
+	    ToX->rgb[GKSindex].blue
 		= (unsigned) IBLU(map, Xrep.pixel);
 
+	    /* The following code is disabled, as it won't work, and the
+	       the ToGKS array isn't used by Ferret. */
+#if 0
 	    ToGKS->rgb[IRED(map, Xrep.pixel)].red
 		= (unsigned) IRED(map, GKSindex);
 	    ToGKS->rgb[IGRN(map, Xrep.pixel)].green
 		= (unsigned) IGRN(map, GKSindex);
 	    ToGKS->rgb[IBLU(map, Xrep.pixel)].blue
 		= (unsigned) IBLU(map, GKSindex);
+#endif
 	} else {
 	    ToX->color[GKSindex] = Xrep.pixel;
 	    ToGKS->color[Xrep.pixel] = (unsigned long) GKSindex;
@@ -453,31 +481,9 @@ XcSetColour(ws, GKSindex, GKSrep)
 	ReturnStatus = 1;
 
     } else {
-	static int	SecondTry	= 0;	/* second attempt? */
-
-	if (SecondTry) {
-	    (void) fprintf(stderr,
-    "XcSetColour: Couldn't allocate X color: RGB = %u %u %u.\n",
-			   Xrep.red, Xrep.green, Xrep.blue);
-	} else {
-	    unsigned long	pixel	= XcPixelValue(ws, GKSindex);
-	    unsigned long	planes	= 0;
-
-	    /* Return if pixel not allocated *jd* */
-	    if (!XGKS_alloc_pixel[pixel]) {
-	      (void) fprintf(stderr,
-		   "XcSetColour: Couldn't allocate X color: RGB = %u %u %u.\n",
-			   Xrep.red, Xrep.green, Xrep.blue);
-	      return ReturnStatus;
-	    }
-
-	    if (XFreeColors(ws->dpy, ws->dclmp, &pixel, 1, planes) == 0) {
-	        XGKS_alloc_pixel[pixel] = 0; /* Now a pixel unallocated *jd* */
-		SecondTry	= 1;
-		ReturnStatus	= XcSetColour(ws, GKSindex, GKSrep);
-		SecondTry	= 0;
-	    }
-	}
+      (void) fprintf(stderr,
+		    "XcSetColour: Couldn't allocate X color: RGB = %u %u %u.\n",
+		     Xrep.red, Xrep.green, Xrep.blue);
     }
 
     return ReturnStatus;
@@ -536,6 +542,9 @@ XcPixelValue(ws, ColourIndex)
  *
  * OUTPUT: GKS colour-index corresponding to X pixel-value.  Out-of-range
  *	   X pixel-values are mapped to the nearest GKS colour-index.
+ *
+ * Note: This routine should never be executed, as the direct mapped color
+ * algorithm doesn't work. The assert statement is used to guarantee this.
  */
     Gint
 XcColourIndex(ws, PixelValue)
@@ -545,6 +554,7 @@ XcColourIndex(ws, PixelValue)
     XcMap          *map;		/* color mapping */
     Gint            ColourIndex;	/* returned value */
 
+    assert(0);			/* Disable this routine */
     assert(ws != NULL);
 
     map = &ws->XcMap;

@@ -42,6 +42,9 @@
  * if so, use that. 2) If not, we look for the best color table (if any) to
  * use. If there are no indexed visuals, we're out of luck *js* 7.29.97
  *
+ * Disabled quick fix listed above due to fix of XGKS code to support 
+ * non-indexed color visuals
+ *
  * XGKS open workstation function
  * Open display wk->conn if necessary, then create and map the workstation 
  * window wk: workstation list pointer return: (0)---- open succeeds (21)-- 
@@ -270,6 +273,28 @@ BoolResource(prog, name, class, rDB)
     return ison;
 }
 
+static XVisualInfo *getBestVisual(Display *dpy, int *index)
+{
+  XVisualInfo *visualList;
+  XVisualInfo     visualTemplate;
+  int numMatched;
+
+  /* Try default visual first */
+  visualTemplate.screen = DefaultScreen(dpy);
+  visualTemplate.visualid =
+    XVisualIDFromVisual(DefaultVisual(dpy, DefaultScreen(dpy)));
+  visualList =
+    XGetVisualInfo(dpy, VisualScreenMask | VisualIDMask, &visualTemplate,
+		   &numMatched);
+  *index = 0;
+  return visualList;
+}
+
+
+/* getBestVisual has been deprecated, due to fix of direct mapped color
+   problems
+*/
+#if 0
 static int VisualsToUse[] = {
   PseudoColor, StaticColor, GrayScale, StaticGray
 };
@@ -316,7 +341,7 @@ static XVisualInfo *getBestVisual(Display *dpy, int *index)
   }
   return visualList;
 }
-
+#endif
 
 /*
  * Create an XGKS window -- with all its associated attributes.
@@ -340,8 +365,8 @@ CreateWindow(name, rDB, wk)
     
     /* size of colour map */
     if (VisualList == NULL || !XcInit(wk, &VisualList[visualIndex])) {
-      fprintf(stderr, "The display must support an indexed visual\n");
-	status = 26;
+      fprintf(stderr, "Ferret cannot run on this X server\n");
+      exit(1);
     } else {
       theVisual = &VisualList[visualIndex];
       /* Set the screen default colour map ID. */

@@ -40,6 +40,8 @@
 *               declaration line.
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
+* *js* Don't create new window with set win/new if batch graphics active
+*      Don't set window to any number but 1 if batch graphics active
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -78,7 +80,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
-     .		axis_ref
+     .		axis_ref, ITS_BATCH_GRAPHICS
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
      .          qp, ivp, colon_pos
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
@@ -118,14 +120,21 @@
 * are we in a valid GKS window environment ?
 	IF ( .NOT. gksopn	) RETURN
 
+* ... Don't create new window if batch graphics active
+        if (ITS_BATCH_GRAPHICS().and.qual_given(slash_new).gt.0) then
+           call warn('Can\'t create new windows '//
+     $          'when batch mode set')
+           qual_given(slash_new) = 0
+        endif
 * get number
 	IF ( num_args .EQ. 0 .AND. qual_given(slash_new) .GT. 0 ) THEN
+           
 * ... find next free number
-	   chg_window = .TRUE.
-	   DO 50 n = 1, max_windows
-	      IF ( .NOT.wn_open( n ) ) GOTO 60
- 50	   CONTINUE
-	   CALL ERRMSG(ferr_prog_limit,status,'# windows',*5000)
+           chg_window = .TRUE.
+           DO 50 n = 1, max_windows
+              IF ( .NOT.wn_open( n ) ) GOTO 60
+ 50        CONTINUE
+           CALL ERRMSG(ferr_prog_limit,status,'# windows',*5000)
 	ELSEIF ( num_args .GT. 0 ) THEN
 * ... use number given
 	   buffer = cmnd_buff(arg_start(1):arg_end(1)) 
@@ -149,9 +158,14 @@
 	   GOTO 5060
 	ENDIF	   
 
-* valid number ?
+* valid number ? 
  60	IF ( n.LT.1 .OR. n.GT.max_windows ) CALL ERRMSG
      .		( ferr_out_of_range, status, 'legal numbers are 1-8', *5000 )
+* ... Only one window can be open with batch graphics
+        if (ITS_BATCH_GRAPHICS() .and. n.ne.1) then
+           call warn('Only one window can be open in batch mode')
+           n = 1
+        endif
 
 * clear the screen ? (which deletes all segments from window)
 * (moved from near end of routine 

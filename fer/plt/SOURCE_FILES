@@ -30,6 +30,7 @@ gks_x_conid.F\
 internal_whoi_date.F\
 its_curv_edges.F\
 its_curvilinear.F\
+itsa_axis_view.F\
 itsa_modulo_curvi_axis.F\
 itsa_modulo_curvi_axis_sub.F\
 key_loc.F\

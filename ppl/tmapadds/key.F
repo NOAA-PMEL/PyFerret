@@ -83,7 +83,7 @@
 	real		xx,yy,xxx,yyy
 
 	character*12	text,tm_fmt
-	logical		windof_hold
+	logical		ITSA_AXIS_VIEW, windof_hold
 
 	external	tm_fmt
 
@@ -104,6 +104,9 @@
 	if (.not. kuser_loc) then
            if (ppl_in_ferret) then
               call get_view_size (vwidth,vheight)
+
+              IF (ITSA_AXIS_VIEW(1)) vheight = (ylen + yorg )* 1.15
+
               if (vheight .le. ylen + yorg) goto 2000
 
               rem = vheight - (ylen + yorg)
@@ -199,10 +202,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 1000	if (.not. kuser_loc) then
            if (ppl_in_ferret) then
               call get_view_size (vwidth,vheight)
+
+              IF (ITSA_AXIS_VIEW(1)) vwidth = (xlen + xorg )* 1.15
               if (vwidth .le. xlen + xorg) goto 2000
 
 	      rem = vwidth - (xlen + xorg)
 	      xmaxx = 0.25*xlen
+
               kx_lo = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
               kx_hi = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
               ky_lo = 1000.0 *  yorg

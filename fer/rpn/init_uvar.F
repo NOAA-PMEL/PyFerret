@@ -32,6 +32,7 @@
 *         5/97 - create separate child vars for expressions used as args to
 *		 a grid-changing function
 *         7/97 - bug fix for case of GCFCN(a,b)
+* V491:   2/98 - fix to 5/97 changes: a constant is an expression, too
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
@@ -122,7 +123,9 @@
 	      IF ( at_id(iat) .EQ. right_paren )
      .				paren_level = paren_level - 1
 	      IF ( paren_level .LE. 1 ) THEN
-	         IF ( iat .EQ. gc_arg_start+1 ) THEN
+* ...(2/98) ".AND.": lone constant like a "complex" argument (an expression)
+	         IF ( (iat .EQ. gc_arg_start+1)
+     .          .AND. (at_type(gc_arg_start) .NE. alg_constant) ) THEN
 * ... this argument is "simple" (a single atom) 
 	            gc_arg_start = iat + 1	! look for next
 	         ELSE

@@ -510,9 +510,9 @@ C SORT
 C*************************************************************************
 
       SUBROUTINE TRIDIN (C,B,N,W,NORM,M1,MACHEPS,Z,NB)
-      REAL C(*),B(*),W(*),Z(NB,*)
 
       INTEGER nb, nminus1, ii
+      REAL C(*),B(*),W(*),Z(NB,*)
 
 C J.H.WILKINSON, CALCULATION OF THE EIGENVECTORS OF A SYMMETRIC
 C TRIDIAGONAL MATRIX BY INVERSE ITERATION. NUMERISCHE MATHEMATIK 4,

@@ -27,7 +27,7 @@
      .				vf_firstvar	(maxvarfiles),	! 1st var in set
      .				vf_lastvar	(maxvarfiles)	! lst var in set
 
-	CHARACTER*256	sf_name
+	CHARACTER*512	sf_name         ! same as s_filename in descript.def
 	CHARACTER*23	sf_index
 	INTEGER		sf_setnum,sf_aux_set_num,sf_skip,sf_lunit,
      .			sf_reclen,sf_nrecperstep,sf_cpu_type

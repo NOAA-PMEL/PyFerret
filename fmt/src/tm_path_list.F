@@ -75,6 +75,9 @@
 * v5.41 5/02 *acm* - If there are .'s within the filename, the logic for adding
 *                    the extension is not adequate (statement 50). When file not
 *                    found, go back and see if adding the extension works.
+* v5.50 10/02 *acm*- path_buff longer to accomodate longer s_filename 
+*                    in descript.def
+
 
 * calling argument declarations:
       LOGICAL       do_errmsg
@@ -94,7 +97,7 @@
       INTEGER vers_int,vers_len,end_tilde,path_tries
       LOGICAL file_exist,pos_ver,zero_ver
       LOGICAL relative, dot_next_to_tilde, retry_ext
-      CHARACTER  ext*8, path_buff*128,suffix*16,TM_LEFINT*8
+      CHARACTER  ext*8, path_buff*512,suffix*16,TM_LEFINT*8
       CHARACTER  tilde_buff*8,vers_no*8,temp_fname*128
 	
 *

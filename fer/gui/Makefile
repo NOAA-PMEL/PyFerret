@@ -1,76 +1,69 @@
 #
-# Makefile (for the Ferret GUI code)
+# Makefile (for the FERRET/fer/gui code)
 #
-# December 13 1995
-# Jonathan Callahan
-#
-# Each platform for which code is compiled has its own directory as specified
-# by $FER_LINK_DIR.   This directory contains links to the official *.h and *.c
-# code.  It also houses the *.o files for that platform.
-#
-# From now on it should also house a platform_specific_flags.mk file which
-# specifies CC, CCFLAGS and RANLIB for the specific platform.
+# August 11 1997
+# Jonathan Callahan (with some help from Joe Sirott)
 #
 
+#
+# include platform specific definitions of:
+#       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
+#
 
-include platform_specific_flags.mk.$(HOSTTYPE)		# for CC, CCFLAGS, RANLIB
-
-
-C_FILES = \
-	ferret.c \
-	JC_CallbackUtility.c \
-	JC_CommandGen.c \
-	JC_InterInterface.c \
-	CommandHelp.c \
-	CustomLevels.c \
-	JC_DefineVariable.c \
-	JC_EditDefinedVar.c \
-	ErrorLog.c \
-	FerretMainWd.c \
-	ListManager.c \
-	MacroManager.c \
-	Open_Save_ctl.c \
-	Open_Save_dset.c \
-	Open_Save_err.c \
-	Open_Save_list.c \
-	Open_Save_grd.c \
-	Open_Save_jnl.c \
-	Open_jnl.c \
-	OpenFile.c \
-	OpenGO.c \
-	OpenGOFile.c \
-	PixmapStuff.c \
-	PlotOptions.c \
-	PrintSetup.c \
-	JC_SelectRegridding.c \
-	SaveDataObject.c \
-	Splash.c \
-	JC_Synchronize.c \
-	JC_Utility.c \
-	Utility.c \
-	Viewports.c \
-	gui_dummies.c \
-	UxXt.c \
-	UxMethod.c
-
-C_OBJECTS = ${C_FILES:.c=.o}
+include ../../platform_specific_flags.mk.$(HOSTTYPE)
 
 
-.c.o: 
-	echo ""
-	echo "compiling $<"
-	${CC} -c ${CCFLAGS} $<
+#
+# non-default suffix rules
+#
+ 
+.c.o:
+	$(CC) $(CFLAGS) $(GUI_INCLUDES) -c $<
+
+#
+# Macros
+#
+
+SRCS_F = 
+
+SRCS_C = \
+    ferret.c JC_CallbackUtility.c JC_CommandGen.c JC_InterInterface.c \
+	CommandHelp.c CustomLevels.c JC_DefineVariable.c JC_EditDefinedVar.c \
+	ErrorLog.c FerretMainWd.c ListManager.c MacroManager.c \
+	Open_Save_ctl.c Open_Save_dset.c Open_Save_err.c Open_Save_list.c \
+	Open_Save_grd.c Open_Save_jnl.c Open_jnl.c OpenFile.c \
+	OpenGO.c OpenGOFile.c PixmapStuff.c PlotOptions.c \
+	PrintSetup.c JC_SelectRegridding.c SaveDataObject.c Splash.c \
+	JC_Synchronize.c JC_Utility.c Utility.c Viewports.c \
+	gui_dummies.c UxXt.c UxMethod.c
+
+OBJS = $(SRCS_C:.c=.o)
+
+LIB    = ../../lib/libgui.a
 
 
-libgui.a: ${C_OBJECTS}
-	echo ""
-	mv libgui.a libgui.a~
-	ar r libgui.a ${C_OBJECTS}
-	${RANLIB} libgui.a
+#
+# Targets
+#
+
+all:	$(LIB)
 
 
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+	$(RANLIB) $@
 
-#~~~~~~~~~~~~~~~~~~~~ END OF MAKEFILE ~~~~~~~~~~~~~~~~~~~~#
+
+depend:
+	makedepend $(CFLAGS) $(GUI_INCLUDES) $(SRCS_C)
+ 
+
+clean:
+	rm -f core *.o *.a
 
 
-
+#
+# End of Makefile
+#
+# DO NOT DELETE
+# DO NOT DELETE THIS LINE -- make depend depends on it.

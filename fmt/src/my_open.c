@@ -19,7 +19,7 @@ void my_open_(    void  **lun,
    c_fname[true_len_fname] = 0;
 
    fp = fopen(c_fname,"r");
-   //      printf("\nopen fp=%p",fp);
+
    if(fp)
      *is_success = 1;
    else
@@ -27,6 +27,6 @@ void my_open_(    void  **lun,
 
    free(c_fname);
  
-   (FILE*)(*lun) = fp;
+   *((FILE**)lun) = fp;
 }
 

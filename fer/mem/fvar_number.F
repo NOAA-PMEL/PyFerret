@@ -81,7 +81,7 @@
      .                                   LEN(name_code),
      .                                   string_array_result1(1),
      .                                   maxvars,
-     .                                   num_indicse)
+     .                                   num_indices)
         DO 100 j = 1, num_indices
            fvar = string_array_result1(j)
            IF ( ds_var_setnum( fvar ) .NE. dset_num ) GOTO 100

@@ -66,10 +66,15 @@
      .   'Write up to 8 variables to a Vis5D-formatted file' )
 
       CALL ef_set_num_args(id, 9)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS,
-     .       IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_reduction (id, REDUCED, REDUCED, 
+     .        REDUCED, REDUCED)
+
+      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
+     .        IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+
+      CALL ef_set_num_work_arrays(id, 1)
 
 *  All variables should be on the same grid (except for the vertical 
 *  component). There is no result variable sent back to FERRET - a
@@ -124,6 +129,55 @@
 
 
 *
+* In this subroutine we request an amount of storage to be supplied
+* by Ferret and passed as an additional argument.
+*
+      SUBROUTINE writev5d_work_size(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                                                                      V
+
+*
+* Set the work array X/Y/Z/T dimensions
+*
+* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+*
+*  Include file for the Vis5D utility functions thad write the file.
+*  We have a separate Ferret version that renames a parameter "MAXVARS.
+
+      INCLUDE 'v5df_fer.h'
+
+      INTEGER array_num
+
+*  Set work array size.     MAX's are from v5df_fer.h
+*  gwork is a work array whose output dimensions are reset in 
+*  routine wrt_v5d_steps
+
+      INTEGER NWORK
+      PARAMETER (NWORK=MAXROWS*MAXCOLUMNS*MAXLEVELS)
+
+      array_num = 1
+
+      CALL ef_set_work_array_dims(id, array_num, 1, 1, 1, 1, 
+     .     NWORK, 1, 1, 1)
+
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
+*
 * In this subroutine we compute the result
 *
       SUBROUTINE writev5d_compute (id, arg_1, arg_2, arg_3,
@@ -156,6 +210,10 @@
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
+      REAL gwork(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+
+
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -171,7 +229,7 @@
 *                                                                      |
 *                                                                      V
 *  Include file for the Vis5D utility functions thad write the file.
-*  We have a separate version that renames a parameter "MAXVARS.
+*  We have a separate Ferret version that renames a parameter "MAXVARS.
 
       INCLUDE 'v5df_fer.h'
 
@@ -181,22 +239,17 @@
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
 
-      INTEGER i, m
+      INTEGER i, m, n
       INTEGER numtimes, nlev, numvars, nr, nc, ier
 
       CHARACTER*255 err_msg
 
 *  Set axis and output arrays.     MAX's are from v5df_fer.h
-*  gwork is a work array whose output dimensions are set in 
-*  routine wrt_v5d_steps
 
       REAL*8 xax(MAXCOLUMNS), yax(MAXROWS) 
 
+      INTEGER MAXVARS_OUT
       PARAMETER (MAXVARS_OUT = EF_MAX_ARGS - 1)
-
-      INTEGER NWORK
-      PARAMETER (NWORK=MAXROWS*MAXCOLUMNS*MAXLEVELS)
-      REAL*4 gwork(NWORK)
 
       INTEGER timestamp(MAXTIMES), datestamp(MAXTIMES)
       INTEGER ndep(MAXVARS_OUT)
@@ -423,7 +476,6 @@ c
 
       REAL result(memreslox:memreshix, memresloy:memreshiy,  
      .     memresloz:memreshiz,memreslot:memreshit)
-
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -704,7 +756,7 @@ C  Check number of columns and rows against Vis5D maxima.
 ************************************************************************
 
       SUBROUTINE settimes (id, numvars, numtimes, timestamp, datestamp, 
-     .                     gwork, ier)
+     .                     gwork, err_msg, ier)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -718,7 +770,7 @@ C  Check number of columns and rows against Vis5D maxima.
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER ier, m, nlm, l, icentury
+      INTEGER iarg, ier, m, nlm, l, icentury
       INTEGER numtimes, numvars
 
       REAL*8 tax(MAXTIMES), gwork(*)
@@ -727,6 +779,7 @@ C  Check number of columns and rows against Vis5D maxima.
       CHARACTER*3 cmon
       INTEGER day_of_mon, day_of_year
       CHARACTER*20 datebuf(MAXTIMES)
+      CHARACTER*(*) err_msg
 
       INTEGER timestamp(*), datestamp(*)
 
@@ -738,8 +791,6 @@ C  Check number of columns and rows against Vis5D maxima.
 
       CALL ef_get_coordinates (id, ARG1, T_AXIS, 
      .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), tax)
-
- 
 
       IF (arg_hi_ss(T_AXIS,ARG1) .EQ. arg_lo_ss(T_AXIS,ARG1) .or.
      .      arg_incr(T_AXIS,ARG1) .EQ. 0) THEN 

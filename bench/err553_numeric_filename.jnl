@@ -1,0 +1,10 @@
+! err553_numeric_filename.jnl
+! 9/03 kob
+
+
+! Use of a filename begining w/ a numberic was a problem
+! w/ g77 - just make sure it works where
+use 123456789000101_100101_test_numeric.nc
+
+list vwnd_clim
+

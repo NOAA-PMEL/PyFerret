@@ -1,0 +1,10 @@
+! bn553_bug_fixes.jnl
+! test various fixes that went into version 5.52
+! 9/03 *acm*
+!
+
+! Make sure numeric filenames works
+GO bn_reset
+GO err553_numeric_filename.jnl
+
+

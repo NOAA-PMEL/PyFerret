@@ -15,6 +15,10 @@
 # 5may94 *kob* 	Ultrix bug - no /usr/bin/grep
 #		 should have been /bin/grep
 # 30may97 *kob* Linux port - test is in /usr/bin/test
+# 19mar01 *acm* Eliminate hard-coded paths, set path as sugg by J.Sirott (added
+#               /usr/ucb as well. for TEST definition)
+
+set path = ($path /bin /usr/bin /sbin /usr/sbin /opt/bin /opt/sbin /usr/ucb) 
 
 #check for proper amount of args.  One arg is the filename or template. 
 if ($#argv == 0 || $#argv > 2) then
@@ -53,15 +57,17 @@ set num_args = $#argv
 set nonomatch
 set found = 0
 
+# ACM eliminate this and replace $TEST with just test throughout
 #check for sunos 5.x
-if (`uname` =~ *Sun* && `uname -r` =~ *5.*) then
-	set TEST = /usr/ucb/test
-else if (`uname` =~ *inux* ) then
-	set TEST = /usr/bin/test
-else
-	set TEST = /bin/test
-endif
+#if (`uname` =~ *Sun* && `uname -r` =~ *5.*) then
+#	set TEST = /usr/ucb/test
+#else if (`uname` =~ *inux* ) then
+#	set TEST = /usr/bin/test
+#else
+#	set TEST = /bin/test
+#endif
 
+# check to see if file 
 # check to see if file contains .jnl or not
 if ($argv[$num_args] =~ *.jnl*) then
 	set tag = 1
@@ -75,19 +81,19 @@ endif
 if ($num_args == 1) then
 #check for usage error
   if ($argv[1] =~ *-l* || $argv[1] =~ *-hel* || $argv[1] =~ *-mor*) goto usage
-  foreach path ($FER_GO)
-	cd $path
+  foreach fpath ($FER_GO)
+	cd $fpath
 # check for existance of an extension.  If no extension, apply .jnl default
 	if ($tag) then
 		set flist = *$argv*
 	else
 		set flist = *$argv*.jnl
 	endif
-	$TEST -f $flist[1]
+	test -f $flist[1]
 	if ($status == 0) then   
-      		echo "* * * * * * * * in $path"
+      		echo "* * * * * * * * in $fpath"
 		foreach file ($flist)
-		echo `/bin/ls $file`: `/usr/bin/egrep '[ ][dD][eE][sS][cC][rR][iI][p	P][tT][iI][oO][nN]:[ ]' $file ` | /bin/sed -e "s/\![ ][dD][eE][sS][cC][rR][iI][pP][tT][iI][oO][nN]:[ ]//"
+		echo `ls $file`: `egrep '[ ][dD][eE][sS][cC][rR][iI][p	P][tT][iI][oO][nN]:[ ]' $file ` | sed -e "s/\![ ][dD][eE][sS][cC][rR][iI][pP][tT][iI][oO][nN]:[ ]//"
 		end
 		set found = 1
       		echo " " 
@@ -100,16 +106,16 @@ else if ( $num_args == 2 ) then
 #do a long listing
 	switch ($argv[1]) 
 	  case '*l*' :
-		foreach path ($FER_GO)
-   			cd $path
+		foreach fpath ($FER_GO)
+   			cd $fpath
    			set flist = *$argv[2]*
-    			$TEST -f $flist[1] >& /dev/null
+    			test -f $flist[1] >& /dev/null
     			if ($status == 0) then    
-      			   echo "* * * * * * * * in $path"
+      			   echo "* * * * * * * * in $fpath"
 			   if ($tag) then
-      			   	/bin/ls -l $argv[2]
+      			   	ls -l $argv[2]
 			   else	
-				/bin/ls -l *$argv[2]*.jnl
+				ls -l *$argv[2]*.jnl
 			   endif
       			   set found = 1
       		 	   echo " " 
@@ -118,16 +124,16 @@ else if ( $num_args == 2 ) then
 	     breaksw
 	  case '*mor*':
 # more each file we come across which matches the template.
-		foreach path ($FER_GO)
-   			cd $path
+		foreach fpath ($FER_GO)
+   			cd $fpath
    			set flist = *$argv[2]*
-    			$TEST -f $flist[1] >& /dev/null
+    			test -f $flist[1] >& /dev/null
 			if ($status == 0) then    
-      			   echo "* * * * * * * * in $path"
+      			   echo "* * * * * * * * in $fpath"
 			   if ($tag) then
-      			   	/usr/ucb/more $argv[2]
+      			   	more $argv[2]
 			   else	
-				/usr/ucb/more *$argv[2]*.jnl
+				more *$argv[2]*.jnl
 			   endif
       			   set found = 1
       		 	   echo " " 

@@ -72,6 +72,7 @@
 *		to a single consolidated point at the end -- to alleviate
 *		performance problems due to switching netCDF modes
 * V530 *acm* 3/01 pass calendar ID to EQUAL_RANGE
+*            4/16/01 properly declare TM_GET_CALENDAR_ID as integer
 
 #ifdef unix
         include 'netcdf.decl'
@@ -167,14 +168,15 @@
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
 * local parameter declarations
-        INTEGER         buff_size, sslimits0, wwlimits0, cal_id, tax
+        INTEGER         TM_GET_CALENDAR_ID, buff_size, sslimits0, 
+     .			wwlimits0, cal_id, tax
         LOGICAL         full_precision, DODS_cache, range_not_rqd
         PARAMETER     ( buff_size = 140,
      .			sslimits0 = 1+19-1,
      .			wwlimits0 = 1+23-1,
      .                  full_precision = .TRUE.,
      .			 range_not_rqd = .FALSE. )
-	CHARACTER*32	TM_GET_CALENDAR_ID, cal_name
+	CHARACTER*32	cal_name
 
 * initialize
 	 ivar = 1  ! just house-keeping -- make sure all is init'ed

@@ -125,6 +125,8 @@
 * 97.07.31 *jc* - added external function code to SHOW FUNCTIONS
 * *kob*  10/97 - added check for string length of zero at 1750.  This error
 *                caught by new DEC f77 version
+* V500 - *kob* 3/99 - initialiaze line_name w/ 64 char string to match new
+*                     length 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -318,7 +320,8 @@
 	      DO 410 line = 1, max_lines
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	         IF ( line_name(line) .EQ. char_init16 ) GOTO 410
+* kob* 3/99 - initialiaze line_name w/ 64 char string to match new length
+	         IF ( line_name(line) .EQ. char_init64 ) GOTO 410
 	         IF (MATCH_TEMPLATE(line_name(line),name))
      .					CALL SHOW_LINE( line, .NOT.brief )
  410	      CONTINUE
@@ -329,7 +332,8 @@
 	   DO 450 line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	      IF ( line_name(line) .EQ. char_init16 ) GOTO 450
+* kob* 3/99 - initialiaze line_name w/ 64 char string to match new length
+	      IF ( line_name(line) .EQ. char_init64 ) GOTO 450
 	      CALL SHOW_LINE( line, brief )
  450	   CONTINUE
 

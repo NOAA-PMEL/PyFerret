@@ -56,7 +56,7 @@
 * internal variable declarations
 	LOGICAL	MATCH4
 	INTEGER	TM_LENSTR1, iif, iit, equal_pos, slen
-	CHARACTER*9 ftypes(2:maxtypes)
+	CHARACTER*9 ftypes(maxtypes)
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -64,7 +64,8 @@
 	include 'xrisc.cmn'
 
 * order of entries must match delimitedRead.h
-	DATA ftypes(2)/'NUMERIC'/
+	DATA ftypes(1)/'-'/,
+     .	     ftypes(2)/'NUMERIC'/,
      .       ftypes(3)/'CHARACTER'/,
      .       ftypes(4)/'LATITUDE'/,
      .       ftypes(5)/'LONGITUDE'/,
@@ -99,7 +100,7 @@
 
 * identify each field
 	  DO 200 iif = 1, nfields
-	    DO 100 iit = 2, maxtypes
+	    DO 100 iit = 1, maxtypes
 	      IF (MATCH4(string(wk_start(iif):wk_end(iif)),
      .			 ftypes(iit)(:4)))			THEN
 	        field_type(iif) = iit 

@@ -34,6 +34,8 @@ plot/vs/over/symbols xpts,ypts
 
 define axis/x=1:10:.5 xax5
 define axis/y=1:10:.5 yax5
+set wind/clear
+
 
 set view ul
 let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
@@ -51,4 +53,5 @@ set view lr
 let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
 SHADE/TITLE="Gauss Gridding (6) to 20x20 grid" sgrid  
 
-
+set view full
+set wind/clear

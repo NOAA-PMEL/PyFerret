@@ -58,3 +58,5 @@ set view lr
 PLOT/SET_UP days_fftp
 PPL YLAB Phase Spectrum
 PPL PLOT FFTP
+set view full
+set wind/clear

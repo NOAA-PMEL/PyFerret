@@ -4,10 +4,19 @@
 ! ACM 5/99
 
 go bench_sorti.jnl
+set view full
+set wind/clear
 
 go bench_sortj.jnl
+set view full
+set wind/clear
 
 go bench_sortk.jnl
+set view full
+set wind/clear
 
 go bench_sortl.jnl
+set view full
+set wind/clear
+
 

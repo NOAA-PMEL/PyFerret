@@ -1,0 +1,112 @@
+! dods_demo.jnl  *kob* 5/99
+!
+! Description:  Example of how to use Ferret and DODS to access remote Datasets
+!
+
+MESSAGE
+
+set mode verify
+
+! First we will grab the coads climatology dataset from PMEL in Seattle. 
+!     NOTE:  Once the dataset has been loaded from the remote site,
+!            using the dataset is exactly the same as if it were local
+
+MESSAGE
+
+go dods_pmel coads_climatology.nc
+sh data
+
+! You can see from the Dataset name that this is a remote dataset
+! 
+! Now let's look at a shaded fill of Sea Surface Temperature
+
+MESSAGE
+
+fill/t="16-jul" sst
+
+! Now let's look at a subregion of the SST.  
+!     NOTE: Higher data access speed may be noticed due to data caching by Ferret
+
+MESSAGE
+
+fill/t="16-jul"/x=140e:180e/y=40N:65N sst
+
+! Now demonstrate reading a 12 month time series of SST at 40N
+
+MESSAGE
+
+fill/x=140e:180e/y=40n sst
+
+! Now, let's grab a similar dataset from the Climate Diagnostics Center in Boulder
+! 
+
+MESSAGE
+
+! go dods_cdc
+go dods_cdc reynolds_sst/sst.wkmean.1981-1989.nc
+sh data 2
+
+! This is the Renyolds SST weekly mean dataset
+! First, let's look at the SST for June 15, 1989
+
+MESSAGE
+
+fill/t="15-JUN-1989" sst[d=2]
+
+! Now, using the new pattern hatching abilities of Ferret, let's overlay
+! the coads_climatology data from PMEL in Seattle for the month of June
+
+MESSAGE
+
+shade/pal=black/lev/line/pattern=4patterns/t="15-jun"/over sst[d=1]
+
+! They look pretty similar, so let's put the Coads data on the same
+! grid as the Reynolds data and look at the difference.
+
+MESSAGE
+
+fill/t="15-JUN-1989"/palette=centered/lev=20c sst[d=2]-sst[d=1,g=grg1]
+
+
+! Now let's load an HDF dataset from JPL.  This is a SSMI derived 
+! wind data set and using this data set illustrates the format independence
+! benefits of Ferret and DODS.
+
+MESSAGE
+
+!go dods_jpl
+go dods_jpl ocean_wind/ssmi/derived_winds/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf
+sh data 3
+
+! Let's look at the 10m Zonal Wind field
+
+MESSAGE
+
+shade/l=1 u10m
+
+! Now let's do a vector plot of the Zonal and Meridional 10m Wind fields
+
+MESSAGE
+
+vector/l=1 u10m,v10m
+
+MESSAGE
+
+! go dods_uri
+go dods_uri fth_sst_decloud/1995/f95018175608.fth_d.Z
+shade/l=1:200/j=1:200 dsp_band_1
+
+
+! To find out more about Data suppliers, in ferret, type:
+!        yes? go dods
+!        -------------------------------------
+!        dods_cdc.jnl: "Use" a dods data set from NOAA/CDC
+!        dods_fsu.jnl: "Use" a dods data set from FSU
+!        dods_jpl.jnl: "Use" a dods data set from JPL
+!        dods_pmel.jnl: "Use" a dods data set from NOAA/PMEL
+!        dods_uri.jnl: "Use" a dods data set from URI/GSO
+!         
+!         
+!        NOTE: The list of suppliers is constantly growing.
+!              Consult http://www.unidata.ucar.edu/packages/dods/home/data.shtml
+!              for the latest information

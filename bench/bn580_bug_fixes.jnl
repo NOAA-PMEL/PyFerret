@@ -11,3 +11,7 @@ GO err570_fill_singlecolor.jnl
 GO bn_reset
 GO err570_shakeylab.jnl
 
+! Null input gives wierd error message
+GO bn_reset
+GO err570_null_symbol.jnl
+

@@ -1,0 +1,12 @@
+! err570_null_symbol
+! null input -- > wierd error message see bug 919
+! 
+!    **ERROR: invalid command: DEFINE what name?
+!    DEFINE VARIABLE
+
+set mode ignore
+
+def sym a " "
+($a)
+
+can mode ignore

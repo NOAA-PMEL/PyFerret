@@ -47,7 +47,7 @@ DEFINE AXIS/Y=20N:70N:.5/UNIT=LATITUDE   yfine
 DEFINE GRID/X=xfine/Y=yfine gfine
 SHADE/X=160W:40W/Y=20N:70N rose[g=gfine]
 
-message The @AVE transformation improves this behavior for this case
+message The @AVE transformation improves this behavior in this instance
 
 SHADE/X=160W:40W/Y=20N:70N rose[g=gfine@AVE]
 

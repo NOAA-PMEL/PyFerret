@@ -6,6 +6,7 @@ cd_axlen.F\
 cd_childax_name.F\
 cd_clean_grids.F\
 cd_close_set.F\
+cd_defer_coord_write.F\
 cd_dods_control.F\
 cd_get_1_axis.F\
 cd_get_1_dep_var.F\
@@ -38,8 +39,10 @@ cd_use_recdim.F\
 cd_write_attrib.F\
 cd_write_attval.F\
 cd_write_axis.F\
+cd_write_defer_coord.F\
 cd_write_grid.F\
 cd_write_var.F\
+ez_delimited_read.F\
 ez_init_dset.F\
 ez_init_permute.F\
 ez_mod_dset.F\
@@ -196,6 +199,7 @@ tm_unit_id.F\
 tm_use_dyn_grid.F\
 tm_use_line.F\
 tm_world.F\
+tm_world_ax.F\
 tm_write_gridfile.F\
 tm_ymd_time_convrt.F\
 ts_find_var.F\

@@ -489,6 +489,7 @@ static void command_line_run(float **memory){
     /* ***** EXIT ***** */
     else if  (sBuffer->flags[FRTN_ACTION] == FACTN_EXIT ) {
       /*      printf("exit from FERRET requested\n"); */
+      FORTRAN(finalize)();
       exit(0);
     }
 

@@ -20,7 +20,9 @@
    Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 
 #include "keymaps.h"
-#include "emacs_keymap.c"
+/* kob - change the below to a .h file - needed to work w/ Ferret linking
+   process  9/98 */
+#include "emacs_keymap.h"
 
 #ifdef VI_MODE
 #include "vi_keymap.c"

@@ -133,6 +133,12 @@ struct passwd *getpwuid (), *getpwent ();
 #endif  /* xenix */
 #endif  /* USG */
 
+
+/* kob  - below define needed to compile under v 2.0.x of Linux */
+#if defined (LINUX)
+#define d_namlen d_reclen
+#endif
+
 #if defined (USG) && defined (TIOCGWINSZ) && !defined (LINUX)
 #include <sys/stream.h>
 #  if defined (USGr4) || defined (USGr3)

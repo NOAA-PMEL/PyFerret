@@ -38,6 +38,8 @@
 *
 * desc               Text description of an argument
 *
+* type               The argument is one of ( FLOAT_ARG, STRING_ARG )
+*
 * axis_influence     Are this argument's axes the same as the result grid?
 *                       ( YES, NO )
 *

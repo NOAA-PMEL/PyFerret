@@ -26,13 +26,14 @@ EF_OBJS = ef_utility/*.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $*.o -o $*.so 
-	cp $@ $(FER_EXTERNAL_FUNCTIONS)
+	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $(SYSLIBS) $*.o -o $*.so
 
 
 #
 # Targets
 #
+
+standard:	ef_utility ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so subtract.so
 
 all:	ef_utility ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so strings.so subtract.so times_table.so
 
@@ -41,6 +42,9 @@ ef_utility:
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
+
+install:
+	cp *.so $(FER_EXTERNAL_FUNCTIONS)
 
 clean:
 	-rm -f *.o *.so core a.out temp.* ef_utility ferret_cmn

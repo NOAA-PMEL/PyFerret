@@ -51,6 +51,8 @@ C     Mod *JD* 3.5.91 Change output unit for terminal to 6 from 5 --
 C     problem with buffered outout in unix -- see opnppl
 C     Mod *jd* 1.10.95 To DATA KEYLN1,KEYLN2 (line 201) at *sh* request
 C     for compatibility with Ferret use of symbols.
+* V510 4/99 *jd* increased initialization sizes for bigger NLINES
+* V510 9/99 *sh* increased initialization sizes for bigger NLINES
 
 
 #ifdef unix
@@ -187,16 +189,19 @@ C	FOR NLABS = 50
 C
 	DATA LAB1,XLAB,YLAB,LABS/3*' ',50*' '/
 C
-C	FOR NLINES=5000
+C	FOR NLINES=30000 ! 9/99 *sh*
 C
-	DATA IMARK/0,2,4,18,20,22,26,28,30,48,4990*0/
-	DATA HMARK,ITYPE/5000*0.08,0,9*4,4990*0/
-	DATA XOFF,YOFF,XFCT,YFCT/5001*0.,5001*0.,5001*1.0,5001*1.0/
-	DATA DN1/3*.15,.05,3*.15,.2,.1,.1,4990*.15/
-	DATA UP1/3*.1,.05,.05,.15,.05,.1,.05,.1,4990*.1/
-	DATA DN2/.15,.15,5*.05,3*.1,4990*.15/
-	DATA UP2/3*.1,.05,.15,.05,.05,.1,.05,.1,4990*.1/
-	DATA LLENG,LNUM,IWIND/5000*0,1,0/
+	DATA IMARK/0,2,4,18,20,22,26,28,30,48,29990*0/
+	DATA HMARK,ITYPE/30000*0.08,0,9*4,29990*0/
+	DATA XOFF,YOFF,XFCT,YFCT/30001*0.,30001*0.,30001*1.0,
+     .						   30001*1.0/
+	DATA DN1/3*.15,.05,3*.15,.2,.1,.1,29990*.15/
+	DATA UP1/3*.1,.05,.05,.15,.05,.1,.05,.1,29990*.1/
+	DATA DN2/.15,.15,5*.05,3*.1,29990*.15/
+	DATA UP2/3*.1,.05,.15,.05,.05,.1,.05,.1,29990*.1/
+	DATA LLENG,LNUM,IWIND/30000*0,1,0/
+	DATA IPEN,IP/30001*1,0,1,2*0/
+
 C
 C       Mod *JD* 3.91 to set default tty output to unit 6, not 5
 C	DATA LTTOUT,LMULT/5,6/ original
@@ -211,8 +216,6 @@ C
 C
 	DATA MNX,MNY,IMULT,IMCNT,DXM,DYM/4*0,10*1.4,10*1.2/
 	DATA XLENM,YLENM,IXM,IYM,MXBOT,MYLEF/10*5.5,10*4.,2*0,2*0/
-C
-	DATA IPEN,IP/5001*1,0,1,2*0/
 C
 	DATA ICODE,WIDTH,HEIGHT,MOD,IR,LUN/3,10.0,8.0,4010,110,8/
 C

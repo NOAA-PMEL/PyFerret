@@ -16,6 +16,8 @@
 * V500 7/99 *kob* : double maxlinestore - this was done before for Ned C. but 
 *              somehow didn't get into the official cvs area
 *      7/99 *sh*: increased maxlinestore, max_grids, and max_lines
+* V510 7/99 *kob* : bump maxlinestore again -- to 800K!! (6.4 Mbytes!)
+*		==> retored the previous size: this added 6Mbytes to the exe!!
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
@@ -51,7 +53,8 @@
 !	PARAMETER (maxlinestore = 20000)! max # of coords *parmchg: pre 10/95
 !	PARAMETER (maxlinestore = 50000)! max # of coords *parmchg: pre 7/97
 !	PARAMETER (maxlinestore = 100000)! max # of coords : pre 7/99
-	PARAMETER (maxlinestore = 250000)! max # of coords
+	PARAMETER (maxlinestore = 250000)! max # of coords 
+!	PARAMETER (maxlinestore = 800000)! max # of coords : temporary!!!
 	PARAMETER (maxgridfiles = 10)	! maximum number of grids
 	PARAMETER (max_axis_orients = 9)! maximum number of axis orients
 	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor

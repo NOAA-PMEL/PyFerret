@@ -11,10 +11,20 @@ C***********************************************************************
 C**
 C**
 C
+
+* V500:  4/99 *jd* increased NLINES from 200 to 5000
+* V510:  9/99 *sh* increased NLINES from 5000 to 30000
+*	Note: there are 19 separate PLOT+ COMMON variables that depend
+*	on NLINES. Few of these need to go beyond, say, 300 in size, but
+*	code changes are neede to prevent out-of-bounds arrays if these
+*	limits are set smaller than NLINES.
+
+
+
 	PARAMETER (IDSFRM=38)
 	PARAMETER (ICNLEV=500)
 	PARAMETER (NMIPTS=38)
-	PARAMETER (NLINES=5000)
+	PARAMETER (NLINES=30000)
 	PARAMETER (NLABS=50)
 C
 C

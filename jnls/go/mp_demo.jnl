@@ -45,7 +45,7 @@ go mp_label 204.4 19.5 -1 0 .1 @p5@IIHawaii
 !
 go mp_graticule
 go mp_graticule 160 200 40 50 65 15 11
-go mp_label 180 45 0 -22 .15 @p5@DR"The Bering Sea"
+go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
 
 !
 ! Here's how you can plot your own data

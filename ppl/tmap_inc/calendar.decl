@@ -47,8 +47,9 @@ C	*******************************************************************
      .			cals_num_months(mxcals),
      .			cals_days_in_month(mxmnths,mxcals),
      .			cals_days_before_month(mxmnths,mxcals),
-     .			cals_month_by_day(mxdays,mxcals),
-     .			cals_yeardays(mxcals)
+     .			cals_month_by_day(mxdays,mxcals)
+
+	real		cals_yeardays(mxcals)
 
 	character*3	cals_month_names(mxmnths,mxcals)
 

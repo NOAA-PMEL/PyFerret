@@ -134,6 +134,8 @@
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .				'setting up polygons', 19)
 
+	IF (nmv .NE. 3) GOTO 5200	! must be 3: xc,yc,color
+
 * initialize
 	nline_in_mem = 0
 	pxlim = qual_given( slash_xlimits )
@@ -152,7 +154,6 @@
 !	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
 
-	IF (nmv .NE. 3) GOTO 5200	! must be 3: xc,yc,color
 	cx_color = cx_list(3)
 	mr_color = mr_list(3)
 

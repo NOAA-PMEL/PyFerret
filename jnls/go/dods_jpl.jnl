@@ -1,7 +1,7 @@
 \cancel mode verify
 ! dods_pmel.jnl - 4/99 *sh and *kob*
 
-! DESCRIPTION: "Use" a dods data set from NOAA/PMEL
+! DESCRIPTION: "Use" a dods data set from JPL
 
 ! usage:              arg 1 
 !	GO dods_pmel data_set

@@ -17,7 +17,8 @@ IF  $1"True|*>False|" THEN
   SPAWN Fgo dods_
   SAY
   SAY "NOTE: The list of suppliers is constantly growing."
-  SAY "      Consult Web page XXXWebPageXXX for the latest information"
+  SAY "      Consult http://www.unidata.ucar.edu/packages/dods/home/data.shtml"
+  SAY "      for the latest information"
 !  KEVIN ==> THIS SHOULD NOW BRING UP A WEB PAGE OF SUPPLIERS
 ! The env variable FER_WEB_BROWSER will be part of ferret_paths
   QUIT
@@ -34,8 +35,9 @@ IF  $2"True|*>False|" THEN
   SAY "To query for the data sets at a supplier:  yes? GO dods_*supplier*"
   SAY "    e.g. GO dods_pmel"
   SAY
-  SAY "NOTE: The lists of suppliers and data sets are constantly growing."
-  SAY "      Consult XXXWebPageXXX for the latest information"
+  SAY "NOTE: The list of suppliers is constantly growing."
+  SAY "      Consult http://www.unidata.ucar.edu/packages/dods/home/data.shtml"
+  SAY "      for the latest information"
   QUIT
 ENDIF
 

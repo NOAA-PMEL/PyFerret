@@ -44,10 +44,15 @@
 * V510 *sh* 3/00 - based upon EQUAL_STRING
 *      *kob* 5/00 - minor change to declaration of colors array needed to
 *                   compile under nag f95 for linux
+* V520 6/00 *sh* - introduced "white" as color 19 (only thin available)
 
 * calling argument declarations
 	INTEGER		icolor, status
 	CHARACTER*(*)	string
+
+* internal parameter declarations
+	INTEGER ncolors
+	PARAMETER (ncolors = 7)
 
 * internal variable declarations
 	LOGICAL	MATCH4, TM_DIGIT
@@ -55,14 +60,11 @@
 	REAL	val
 *	CHARACTER	LEFINT*4, str*12, colors*12(6)
 	CHARACTER	LEFINT*4, str*12
-	CHARACTER*12    COLORS(6)
-
-* internal parameter declarations
-	INTEGER ncolors
-	PARAMETER (ncolors = 6)
+	CHARACTER*12    COLORS(ncolors)
 
 * internal data declarations
-	DATA colors/'BLACK','RED','GREEN','BLUE','LIGHTBLUE','PURPLE'/
+	DATA colors/'BLACK','RED','GREEN',
+     .		    'BLUE','LIGHTBLUE','PURPLE','WHITE'/
 
 
 	include 'ferret.parm'
@@ -103,14 +105,15 @@
 	IF ( TM_DIGIT(str) ) THEN 
 * ... color and thickness by number
            READ ( str, *, ERR=5000 ) val
-	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines ) GOTO 5200
+	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
 	   icolor = NINT( val )	! user-specified line style
 	 ELSE
 * ... compare with allowable colors
 	   DO 200 icolor = 1, ncolors
-	      IF ( MATCH4(str, colors(icolor)) ) GOTO 1000
+	      IF ( MATCH4(str, colors(icolor)) ) GOTO 210
  200	   CONTINUE
-	   GOTO 5100
+	   GOTO 5100   ! unknown color
+ 210	   IF (icolor .EQ. 7) icolor = 19   ! WHITE
 	ENDIF
 
 * success
@@ -121,9 +124,9 @@
  5000	CALL ERRMSG( ferr_syntax, status, string, *4999 )
  5100	CALL ERRMSG( ferr_invalid_command, status, 
      .		string//pCR//
-     .		'Colors are Black,Red,Green,Blue,LightBlue, and Purple',
+     .	'Colors are Black,Red,Green,Blue,LightBlue,Purple, and White',
      .		*4999 )
  5200	CALL ERRMSG( ferr_out_of_range, status, 
-     .		string//pCR//
-     .		'Legal range is 1 to '//LEFINT(num_fancy_lines,slen), *4999 )
+     .		string//pCR//'Legal range is 1 to '
+     .		//LEFINT(num_fancy_lines+1,slen), *4999 )
 	END

@@ -127,5 +127,10 @@ set view ll6
 plot/vs/title="My Custom Title"/i=1:100/nolabel sin(i/6),sin(i/9),sin(i/12)
 plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
 frame/file=bnplot.gif
+
+! Prior to v5.8 could not get the window size in pixels when in gif mode
+show symbol ppl$xpixel
+show symbol ppl$ypixel
+
 exit/command
 

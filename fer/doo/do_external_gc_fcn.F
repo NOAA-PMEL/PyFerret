@@ -128,8 +128,8 @@
        mr_arg_offset_array(10) = ( mr_blk1(mres) - 1 ) * mem_blk_size
        bad_flag_array(10) = mr_bad_data ( mres )
 
-       call efcn_compute(fcn, num_com, com_cx, mres, bad_flag_array, 
-     .      mr_arg_offset_array, memory, status)
+       call efcn_compute(fcn, num_com, com_cx, com_mr, mres, 
+     .      bad_flag_array, mr_arg_offset_array, memory, status)
 
  
 * clean temporary results from memory cache

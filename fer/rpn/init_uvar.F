@@ -70,6 +70,11 @@
 * V491:   2/98 - fix to 5/97 changes: a constant is an expression, too
 * V500:  2/99 *sh* - bug fix for GC child var parsing
 *		GCFCN((a)) generated an error -- paren problem
+* V510: 10/99 *sh* - bug fix: if, say, SST[Y=5s:5N:1] is an argument to a GC
+*		function, this routine must create a child variable so that
+*		the implicit grid is "owned" by someone.
+*	11/99 *sh* - bug fix: if child var occurred in the second (or higher)
+*			expression in a line the child var name was wrong
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -92,7 +97,7 @@
 
 * internal variable declarations:
 	INTEGER		tlen, iat, paren_level, atoms_lost, uvar_child,
-     .			child_start, child_end, gc_arg_start
+     .			child_start, child_end, gc_arg_start, istart, iend
 	CHARACTER	child_name*16
 
 * initialize
@@ -144,7 +149,8 @@
 * Grid-changing functions need to know the grids of each of their arguments
 * This requires that each argument be "simple" -- expressions like a+b are not
 * allowed. In this section, we scan the arguments of the grid-changing
-* function and if we find a complex argument we create a separate child
+* function and if we find a complex argument or a simple argument that  may
+* have an implicit grid, we create a separate child
 * variable from it
 * At this point we know there are no grid-changing functions used in the args.
 * In this very simple parsing operation any arg with more than one "atom"
@@ -162,12 +168,17 @@
 	   IF (  (at_id(iat).EQ.comma .AND. paren_level.EQ.1)
      .	    .OR. paren_level .EQ. 0   ) THEN
 * ...(2/98) treat lone constant like a "complex" argument (an expression)
-	      IF ( (iat .EQ. gc_arg_start+1)
-     .       .AND. (at_type(gc_arg_start) .NE. alg_constant) ) THEN
+* ...(10/99)also treat sst[y=5s:5n:1] as a "complex" argument (has impl grid)
+	      istart = at_start (gc_arg_start)
+	      iend   = at_end   (gc_arg_start)
+	      IF ( (at_type(gc_arg_start) .EQ. alg_child_var)
+     .	     .OR.  ( (iat .EQ. gc_arg_start+1)
+     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
+     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN
 * ... this argument is "simple" (a single atom) 
 	         gc_arg_start = iat + 1	! look for next
 	      ELSE
-* ... make this (complex) argument into a seperate child variable
+* ... make this (complex) argument into a separate child variable
 	         child_start = gc_arg_start
 	         child_end = iat - 1
 	         GOTO 800
@@ -181,8 +192,9 @@
      . .AND. child_end   .EQ. natom ) GOTO 1000
 
 * generate name of child variable
- 800	CALL GCF_CHILD_VAR_NAME(uvar,at_start(child_start),child_name)
-
+ 800	CALL GCF_CHILD_VAR_NAME( uvar,
+     .				 at_start(child_start)-(at_start(1)-1),
+     .				 child_name )
 
 * initialize the child variable
 	CALL INIT_UVAR_SUB (

@@ -42,6 +42,10 @@
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 *       *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT  
+*       *acm* 4/2002  add polymarker calls for circles of different sizes
+*                     and colors 1-6 are colored dots, 7-12 are small circles
+*                     13-18 are larger circles.  /THICK makes them thicker.
+
 * gsplr: wkid, line index, line type, linewidth scale factor, color index
 * gspmr: wkid, marker index, marker type(dot=1), 
 *        size scale factor (const for dot), color index
@@ -69,7 +73,7 @@
 
 	integer		max_pline,max_pmark,max_text,max_fill_area
 	integer		max_pattern,max_color,error
-	integer		fktr, marktype
+	integer		fktr, marktype(3)
                                        
 	real		thickness, dotsize
 
@@ -80,7 +84,9 @@
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
 
-        marktype = 1    ! polymarker type 1=dot, (4=circle)
+        marktype(1) = 1    ! polymarker type 1=dot
+        marktype(2) = 4    ! polymarker type 4=circle
+        marktype(3) = 4
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100
@@ -97,9 +103,10 @@
 	do 20 j = 1,6 ! colors
 	   do 10 fktr = 1,3
               thickness = real(fktr)
-              dotsize = thickness/2.
+              dotsize = thickness/12.
+              if (fktr .eq. 2) dotsize = real(fktr-1)/12.
 	      call gsplr (zwsid,(fktr-1)*6+j,1,thickness,j)
-	      call gspmr (zwsid,(fktr-1)*6+j,marktype,dotsize,j)
+	      call gspmr (zwsid,(fktr-1)*6+j,marktype(fktr),dotsize,j)
 10	   continue
 20	continue
 
@@ -108,10 +115,10 @@
 *	MONOCHROME WORKSTATIONS:
 100	do 120 j = 1,3
 	   thickness = real (j)
-           dotsize = thickness/2.
+           dotsize = thickness/12.
 	   do 110 i = 1,6
 	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gspmr (zwsid,i+6*(j-1),marktype,dotsize,1)
+	      call gspmr (zwsid,i+6*(j-1),marktype(fktr),dotsize,1)
 110	   continue
 120	continue                   
 

@@ -164,6 +164,7 @@ end
 
 # 10/97 *kob* mv last created bnplot files to the last_plot directory
 mv bn*.plt* last_plot
+mv p*.plt* last_plot
 mv bn*.gif* last_plot
 mv bn*.ps* last_plot
 

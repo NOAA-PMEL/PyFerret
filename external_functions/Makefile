@@ -13,7 +13,6 @@
 #
 
 DIRS = cmprsi_by convolve date_and_time examples extrema fft sort transpose v5d zaxr
-DIRS_INSTALL = cmprsi_by convolve date_and_time  extrema fft sort transpose v5d zaxr
 
 #
 # Targets
@@ -34,7 +33,7 @@ debug:
 		done
 
 install:
-	for i in $(DIRS_INSTALL); \
+	for i in $(DIRS); \
 		do \
 			(cd $$i; echo "installing" $@ "in $$i..."; \
 			$(MAKE) install );\

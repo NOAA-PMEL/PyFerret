@@ -33,11 +33,14 @@ FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
 
 PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr
 
+
+FERMAIN = ccr/fermain_c.o
+
 FEROBJS_DFLT = \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
 	special/ferret_query_f.o special/gui_fakes.o  special/xrevision_type_data.o
 
-FEROBJS = ccr/fermain_c.o ccr/save_arg_pointers.o $(FEROBJS_DFLT)
+FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
 
 PPLOBJS = ../ppl/modsxgks/*.o ../ppl/addsxgks/*.o
 
@@ -51,7 +54,17 @@ WHATGKS = xgks
 
 all:	fer_libraries ppl_libraries special_code ferret
 
-dyn:	fer_libraries ppl_libraries special_code dynferret
+
+debug:
+	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" all
+
+ferret_gui:
+	$(MAKE) "FERMAIN=gui/ferret.o" "GUILIB = -L../lib -lgui" "EXECNAME=ferretgui_c" all
+
+fortran:
+	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
+
+
 
 ferret:	update
 	- mv $(EXECNAME) $(EXECNAME)_pre_`date +'%d%h'|tr '[A-Z]' '[a-z]'`
@@ -59,6 +72,7 @@ ferret:	update
 		$(FERMAIN) \
 		$(FEROBJS) \
 		$(XTRA_OBJ) \
+		$(GUILIB) \
 		$(GKSOBJ) \
 		$(PPLOBJS) \
 		$(BDEAD) \
@@ -74,34 +88,11 @@ ferret:	update
 	chmod +x $(EXECNAME)
 
 
-dynferret:	update
-	- $(CC) $(LDFLAGS) -o dynferret_c \
-		$(FERMAIN) \
-		$(FEROBJS) \
-		$(XTRA_OBJ) \
-		$(GKSOBJ) \
-		$(PPLOBJS) \
-		$(BDEAD) \
-		$(FERLIBS) \
-		$(PPLLIBS) \
-		$(MOVIELIB) \
-		$(TMLIB) \
-		-ltermcap \
-		$(CDFLIB) \
-		$(HDFLIB) \
-		$(GKSLIB) \
-		$(SYSLIB)
-	chmod +x dynferret_c
-
-
-
 update:
-	${MAKE} update_date DATE=`/bin/date +%D`
+	sed "s&xxxxxxxx&$(DATE)&" <special/xmake_date_data.template >special/xmake_date_data.F
 	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	(cd special;make)
 
-update_date:
-	sed "s&xxxxxxxx&$(DATE)&" <special/xmake_date_data.template >special/xmake_date_data.F
 
 libraries: ppl_libraries fer_libraries
 
@@ -143,10 +134,6 @@ depend:
         $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
                 "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
         done
-
-
-debug:
-	$(MAKE) "DEBUG=-g" DEBUG_TITLE="debug" all
 
 
 #

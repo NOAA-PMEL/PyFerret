@@ -35,7 +35,18 @@
 *
 * Ansley Manke
 * June 30 1998
-
+*
+* This function takes up to 8 variables from ferret data sets
+* and writes them in Vis5D format.  Send in variables to write in the
+* first several parameter positions; fill the remaining positions with "0"
+* and the name of the file to write in the 9th argument. 
+* Requires variables to be on the same x-y grid, grids can vary in depth.
+*
+*  Use v5dcreate, v5dwrite, v5dclose from the v5d utility functions; these
+*  are in binio.c and v5d.c
+*
+*  ACM  25-Mar-1999  put in filename as an argument.
+*
 *  ACM 8/May/99 Use REDUCED axes, call ef_set_work_array_lens 
 *               function to set gwork
 *
@@ -50,16 +61,8 @@
 *          -  single timestep and t<0  use date=time=0 (some abstract axes...)
 *          -  multiple timesteps and any t<0 bail out. V5d doesn't allow neg times
 *
-* This function takes up to 8 variables from ferret data sets
-* and writes them in Vis5D format.  Send in variables to write in the
-* first several parameter positions; fill the remaining positions with "0"
-* and the name of the file to write in the 9th argument. 
-* Requires variables to be on the same x-y grid, grids can vary in depth.
-*
-*  Use v5dcreate, v5dwrite, v5dclose from the v5d utility functions; these
-*  are in binio.c and v5d.c
-*
-*  ACM  25-Mar-1999  put in filename as an argument.
+*  ACM 10/03 Pass the ibkwd flag to wrt_v5d_steps. Flip the data in Z only
+*            if the Z axis is a depth axis.
 *
 *
 * In this subroutine we provide information about
@@ -522,7 +525,7 @@ c      END IF
 
 *  Fill the data array and write to the Vis5D file for each timestep.
 
-      CALL wrt_v5d_steps (id, nr, nc, ndep, nlev, numvars, arg_1, 
+      CALL wrt_v5d_steps (id, nr, nc, ndep, nlev, numvars, ibkwd, arg_1, 
      .      arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8,  
      .      result, gwork, err_msg, ier)
       IF (ier .EQ. 0) THEN
@@ -554,9 +557,9 @@ c      END IF
 
 ************************************************************************
 
-      SUBROUTINE wrt_v5d_steps (id, nr, nc, ndep, nlev, numvars, arg_1, 
-     .     arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8,  
-     .      result, g, err_msg, ier)
+      SUBROUTINE wrt_v5d_steps (id, nr, nc, ndep, nlev, numvars, ibkwd,
+     .     arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8,  
+     .     result, g, err_msg, ier)
 
 
 *  Write an (x,y,z) grid for each timestep to the Vis5D file.
@@ -575,6 +578,7 @@ c
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
+      LOGICAL ibkwd(*)
       INTEGER id
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
@@ -614,7 +618,7 @@ c
       INCLUDE 'v5df_fer.h'
 
       INTEGER numvars, nr, nc, nl
-      INTEGER ndep(*), nlev
+      INTEGER ndep(*), nlev, index
 
       REAL baddat, argdat
 
@@ -652,7 +656,8 @@ c
 
                   nl = ndep(m)
                   DO 100 k2 = 1, nl
-  
+                     index = k2
+                     IF (ibkwd(m)) index = nl-k2+1
                      baddat = bad_flag(m)
  
                      IF (m .EQ. 1) argdat = arg_1(i1,j1,k1,l1) 
@@ -666,9 +671,9 @@ c
 
 
                      IF (argdat .EQ. baddat) THEN
-                        g(nr-j2+1,i2,nl-k2+1) = MISSING
+                        g(nr-j2+1,i2,index) = MISSING
                      ELSE 
-                        g(nr-j2+1,i2,nl-k2+1) = argdat
+                        g(nr-j2+1,i2,index) = argdat
                      END IF
 
                      k1 = k1 + arg_incr(Z_AXIS,m)	! depth may vary w/ m

@@ -31,7 +31,7 @@ solaris:
 	${MAKE} gksm2ps \
 		CC=cc \
 		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I/usr/openwin/share/include -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm $(G)" \
-		LDFLAGS= \
+		LDFLAGS="-z muldefs" \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
 sgi:

@@ -411,7 +411,10 @@ GO bn570_bug_fixes.jnl
 ! ******** V5.8 Additions below ***********
 
 GO bn_reset
-GO bn_modstats
+GO bn_modstats.jnl
+
+GO bn_reset
+GO bn_mc_vary_scale.jnl
 
 GO bn_reset
 GO bn580_bug_fixes.jnl

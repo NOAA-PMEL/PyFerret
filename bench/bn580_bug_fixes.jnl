@@ -57,3 +57,9 @@ GO err570_hlimit_onepoint
 ! caused a segfault.
 GO bn_reset
 GO err570_index111.jnl
+
+
+! Data has missing value flag of NaN. Under linux, SHOW DATA/FULL 
+! crashed on trying to format value for the output buffer.   
+GO bn_reset
+GO err570_sh_dat_nan.jnl

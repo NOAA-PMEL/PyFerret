@@ -1,5 +1,6 @@
 ! err570_many_variables.jnl
 ! 27-sep-2004  ACM
+! See bug 993
 
 ! Script derived from Jean Newman script where she
 ! opens up many files and defines a bunch of variables.
@@ -21,7 +22,7 @@
 ! See ~ansley/ans_ferret/users/jnewman/facts/x_r.jnl
 !     ~ansley/ans_ferret/users/jnewman/facts/example_crash.jnl
 ! 
-set mode diag
+!set mode diag
 
 DEFINE SYMBOL SOURCE_LIST = Mw 9.2, 14.76*a12+14.76*b12+14.76*a13+14.76*b13+14.76*a14+14.76*b14+14.76*a15+14.76*b15+14.76*a16+14.76*b16+14.76*a17+14.76*b17+14.76*a18+14.76*b18+14.76*a19+14.76*b19+14.76*a20+14.76*b20+14.76*a21+14.76*b21+14.76*a22+14.76*b22+14.76*a23+14.76*b23
 

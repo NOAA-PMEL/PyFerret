@@ -45,6 +45,8 @@
 *          EOF solution for each depth.
 * Aug 2001 move to fer/efi directory, to be statically linked to Ferret.  
 *	   Change INCLUDE statements to remove directory spec.  
+* Feb 2003 Add a test that NEOF <= max_neof, which is dictated by work
+*          arrays in the solvers in TRIDIN in eofsubs.F
 
 * Compute the spatial EOFs from a 2-d field. 
 
@@ -349,11 +351,13 @@
 *                                                                      |
 *                                                                      V
 
-      INTEGER neof, ier
+      INTEGER neof, max_neof, ier
       CHARACTER*255 err_msg, err_out
 
       INTEGER nx, ny, nt, i, j, k, l, k1
       REAL frac_timeser
+
+      DATA max_neof/4000/        ! size of work arrays within the EOF solver
 
 *  Initialize work arrays.
 
@@ -450,6 +454,13 @@
 
          CALL count_neof (id, arg_1, neof, ok, nx, ny,  k1, nt, mx, 
      .       bad_flag(ARG1), frac_timeser, err_msg, ier)
+
+         IF (neof .GT. max_neof) THEN
+            WRITE (err_msg, 5600) neof, max_neof 
+ 5600       FORMAT ('Number of EOFs too large:', I8, 
+     .              ' Reduce NX*NY. Max is', i5)
+            ier = 1
+         ENDIF
 
          IF (ier .NE. 0) then
             GOTO 5010

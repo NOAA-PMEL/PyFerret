@@ -1,0 +1,85 @@
+\cancel mode verify
+! label_hi_lo
+! *8/01 *acm* 
+
+! Description: label local extrema with the values at those extrema
+
+!   usage:
+!	GO label_hi_lo var marktype xneigh yneigh hicolor locolor
+!   where:
+!	var	   data variable 
+!	marktype   "mark" or "label": mark puts L and H, label puts the data value at extremum
+!	xneigh     argument to findhi,findlo: neighborhood in x direction
+!	yneigh     argument to findhi,findlo: neighborhood in y direction
+!	hicolor    color of box around hi labels, or of letter H, default black
+!	locolor    color of box around lo labels, or of letter L, default black
+
+! example:
+!	yes? use coads_climatology
+!	yes? set region/l=7/x=100:360/y=-20:60
+!	yes? fill/lev="(994,1036,2)"/line/pal=no_red slp
+!	yes? go fland
+!	yes? go label_hi_lo.jnl slp label 5 4 green purple
+!       yes? pause
+!	yes? contour/lev="(994,1036,2)" slp
+!	yes? go fland
+!	yes? go label_hi_lo.jnl slp mark 3 3 red blue
+
+! check arguments
+query/ignore $1%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
+query/ignore $2%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
+query/ignore $3%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
+query/ignore $4%<Usage: GO label_hi_lo  var marktype xneigh yneigh xmin xmax ymin%
+
+query/ignore $5%1|black|red|green|blue|lightblue|purple|*>black|<GO label_hi_lo  var marktype xneigh yneigh hpen lpen with hpen a color%
+query/ignore $6%1|black|red|green|blue|lightblue|purple|*>black|<GO label_hi_lo  var marktype xneigh yneigh hpen lpen with lpen a color%
+
+! save region and grid information.  X and Y regions are cancelled below
+
+define region/default save
+
+let xmax = ($ppl$xmax)
+let xmin = ($ppl$xmin)
+let ymax = ($ppl$ymax)
+let ymin = ($ppl$ymin)
+
+! compute local mins and maxes
+let/quiet datlo = findlo($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
+let/quiet dathi = findhi($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
+
+let/quiet xph = dathi[i=1]
+let/quiet yph = dathi[i=2]
+let/quiet zph = dathi[i=3]
+
+let/quiet xpl = datlo[i=1]
+let/quiet ypl = datlo[i=2]
+let/quiet zpl = datlo[i=3]
+
+load xph; load yph; load zph
+load xpl; load ypl; load zpl
+
+! I and J indices are used as indices of the extrema, so cancel the
+! region that came in with the variable.
+
+can region/x/y
+
+IF $2"|label>1|*>0|" THEN
+! Mark the max's and mins with a rectangle, and the value of the extremum     
+
+  go polymark poly/over/nolabel/pal=white/line/color=$5%1|black|red|green|blue|lightblue|purple|violet>purple|*>black% xph,yph,zph,rectangle,1.8
+  repeat/k=1:20 (let/quiet xp=xph[j=`k`]; let/quiet yp=yph[j=`k`]; let/quiet zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+
+  go polymark poly/over/nolabel/pal=white/line/color=$6%1|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle,1.8
+  repeat/k=1:20 (let/quiet xp=xpl[j=`k`]; let/quiet yp=ypl[j=`k`]; let/quiet zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+ENDIF
+
+IF $2"|mark>1|*>0|" THEN
+! Mark the extrema with L and H 
+  go polymark poly/over/nolabel/pal=$5%1|black|red|green|blue|lightblue|violet|purple>violet|*>black%/fill xph,yph,,hletter,1.2
+  go polymark poly/over/nolabel/pal=$6%1|black|red|green|blue|lightblue|violet|purple>violet|*>black%/fill xpl,ypl,zpl,lletter,1.2
+ENDIF
+
+! Restore input region
+set region save
+
+set mode/last verify

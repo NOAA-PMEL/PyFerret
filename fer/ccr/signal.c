@@ -44,7 +44,10 @@
 
 	*kob* 6/96 */
 
+/* *kob* add ifdef check for DARWIN - Mac OS X */
+
 #include	<signal.h>
+#ifndef DARWIN
 #include	"posix_signal.h"
 
 Sigfunc *
@@ -68,3 +71,5 @@ signal(int signo, Sigfunc *func)
 		return(SIG_ERR);
 	return(oact.sa_handler);
 }
+
+#endif /* DARWIN */

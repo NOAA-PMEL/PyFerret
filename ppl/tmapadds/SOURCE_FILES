@@ -16,6 +16,7 @@ get_user_coords.F\
 hatch_fill_rep.F\
 key.F\
 kurv.F\
+line_key.F\
 locator.F\
 metafile_writes.F\
 new_gks_window.F\
@@ -39,6 +40,7 @@ set_pat_size.F\
 set_window_size.F\
 setax_syms.F\
 setfont.F\
+setlab_syms.F\
 setup_color_table.F\
 setup_defaults.F\
 setup_line_bundles.F\
@@ -71,5 +73,4 @@ reallo_ppl_memory.c\
 resize_xgks_window.c\
 set_background.c\
 wait_on_resize.c\
-xgks_x_events.c 
-
+xgks_x_events.c

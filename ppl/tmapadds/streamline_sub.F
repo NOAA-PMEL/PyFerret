@@ -48,7 +48,6 @@ C**
 *
 *  ACM  From vecfld.F  9/00
 *       and from GrADS module gxstrm.c
-C  ACM  11/1/00  Fix up arrow-sizing algorithm in strmar.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -124,7 +123,7 @@ C   int *shdcls, int shdcnt, int den)
       INTEGER iacc,iisav,iscl,imn,imx,jmn,jmx,iz,jz,iss,jss,bflg
       REAL fact,rscl,xxsv,yysv
       REAL xtm, ytm, xtx, ytx
-      REAL afact, upsv, vpsv
+      REAL upsv, vpsv
 
 
 C     Curvilinear coordinates declarations
@@ -134,7 +133,7 @@ C     Curvilinear coordinates declarations
 C  From vector
       CALL COLOR(IPEN(1))
 
-C  Get offset for true grid
+*  Get offset for true grid
 
       CALL trans(0,xmin,ymin,xtm,ytm)
       CALL trans(0,xmax,ymax,xtx,ytx)
@@ -162,15 +161,12 @@ C   Figure out the interval for the flag grid
       iss = nx*iscl
       jss = ny*iscl
 
-C  Adjust arrow lengths so they fit the plot
-
-      afact = 0.5*(xf + yf)/ 2.
-
 C  Get max velocity for scaling the arrows
 
+      sqsum = 0.
+      velmx = 0.
       velmean = 0.
       count = 0.
-
       DO i = 1, nx
          DO j = 1, ny 
             up = u(i,j)
@@ -179,7 +175,11 @@ C  Get max velocity for scaling the arrows
             IF (ZEQ .AND. (up .EQ. CMZEQ .OR. vp .EQ. CMZEQ)) GO TO 89
             IF (ZGE .AND. (up .GE. CMZGE .OR. vp .GE. CMZGE)) GO TO 89
 
-            vel = sqrt(up*up + vp*vp)
+            vel = up*up + vp*vp
+            sqsum = sqsum + vel
+            vel = sqrt(vel)
+
+            velmx = max(velmx, vel)
             velmean = velmean + vel
             count = count + 1.
 
@@ -188,6 +188,7 @@ C  Get max velocity for scaling the arrows
       ENDDO 
       IF (count .GT. 0.) THEN
         velmean = velmean/ count
+        sd = sqrt(sqsum/ count - velmean* velmean)
       ENDIF
 
 C  Initialize the flag grid
@@ -374,7 +375,6 @@ C  Draw arrow heads
                  vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
                  IF (icol .GT. -1) 
      .              CALL strmar (xxsv, yysv, xx, yy, vel, xf, yf)
-
                   acnt = 0
                ENDIF
 
@@ -533,7 +533,7 @@ C  Draw arrow head
                IF (acnt .GT. 20) THEN
                  vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
                  IF (icol .GT. -1) 
-     .              CALL strmar(xx, yy, xxsv, yysv, vel, xf, yf) 
+     .              CALL strmar(xx, yy, xxsv, yysv, vel, xf, yf)
                   acnt = 0
                ENDIF
 
@@ -561,7 +561,8 @@ C  arrows
 
       subroutine strmar (xx1, yy1, xx2, yy2, vel, xf, yf) 
       PARAMETER (a160 = 160.0*3.1416/180.0)
-      REAL afact, vel, dir, xx1, xx2, yy1, yy2
+      REAL xf, yf
+      REAL arrlen, vel, dir, xx1, xx2, yy1, yy2
 
 #ifdef unix
         include 'vector_inc.decl'
@@ -575,36 +576,23 @@ C     Curvilinear coordinates declarations
       INTEGER status
       REAL x_curv, y_curv
 
-C  Set arrow length scale based on vel.
+*  Set directions for arrows.
 
-      arrwx = 0.07* vel/ xf
-      arrwy = 0.07* vel/ yf
+      dir = atan2(yy2-yy1, xx2-xx1)
+
+*  Set arrow length scale based on vel.
+
+      arrlen = 0.2* vel/(xf+yf)
 
       IF (curvilinear) THEN
-          arrwx = 20. * arrwx
-          arrwy = 20. * arrwy
+          arrlen = 5. * arrlen
+          arrlen = 5. * arrlen
       ENDIF
 
-C  Set directions for arrows.  Note they're based on the current 
-C  instantaneous direction of the velocity, but they angle back
-C  on recent past velocities along the curve.  When direction is
-C  large and changing rapidly, one side of the arrow may sit on
-C  top of the streamline curve.
-
-      IF ( ABS(xx2-xx1) .GT. ABS(yy2-yy1) ) THEN
-         dir = atan2(yy2-yy1, xx2-xx1)
-         addx1 = arrwx* cos(dir+a160)
-         addy1 = arrwy* sin(dir+a160) 
-         addx2 = arrwx* cos(dir-a160)
-         addy2 = arrwy* sin(dir-a160) 
-      ELSE
-         dir = atan2(xx2-xx1, yy2-yy1)
-         addx1 = arrwx* sin(dir+a160)
-         addy1 = arrwy* cos(dir+a160) 
-         addx2 = arrwx* sin(dir-a160)
-         addy2 = arrwy* cos(dir-a160) 
-      ENDIF
-
+      addx1 = arrlen* cos(dir+a160)
+      addy1 = arrlen* sin(dir+a160)
+      addx2 = arrlen* cos(dir-a160)
+      addy2 = arrlen* sin(dir-a160)
 
       IF (curvilinear) THEN
 
@@ -634,6 +622,7 @@ C  top of the streamline curve.
           CALL plot (xxc, yyc, 0, 0)
 
       ELSE
+
          CALL plot (xx2, yy2, 0, 0)
          CALL plot (xx2+addx1, yy2+addy1, 1, 0)
          CALL plot (xx2, yy2, 0, 0)

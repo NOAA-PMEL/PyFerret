@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 3/92
+* V5.0 2/99 *sh* - corrected declaration error - "sec" is float
+*		Note that fractional seconds are lost!
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -70,8 +72,9 @@
 #endif
 
 * internal variable declarations:
-      INTEGER jday, msec, cdfstat, mon, day, yr, hour, min, sec,
+      INTEGER jday, msec, cdfstat, mon, day, yr, hour, min,
      .        t0year, t0mon, t0day, t0hour, t0min, t0sec
+	REAL	      sec					! 2/99
       REAL*8          TM_SECS_FROM_BC
       REAL*8          date_secs, start_secs, offset_secs
 
@@ -97,7 +100,7 @@
       start_secs = TM_SECS_FROM_BC (t0year, t0mon, t0day,
      .                              t0hour, t0min, t0sec)
       date_secs  = TM_SECS_FROM_BC (yr  , mon, day,
-     .                              hour, min, sec)
+     .                              hour, min, NINT(sec))  ! NINT 2/99
 
 * Find the number of seconds since T0
       offset_secs = date_secs - start_secs

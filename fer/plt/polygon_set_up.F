@@ -809,6 +809,10 @@ c	ind_dim = plot_axis(1)
 	   ELSE
 	      plot_title = KEY_STRING( cx_color, cx_xtra_doc, slen )
 	   ENDIF
+           IF (no_range) THEN
+              plot_title(slen+1:slen+14) = ' No Valid Data'
+              slen = slen + 14
+           ENDIF
 	   CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			 lab_ht, style, justify )
 *          Key uses line 1

@@ -43,6 +43,6 @@ WebFerret WebFerret &Ferret &CGIservlet &utility
 lasxml lasxml &xml
 godae godae &xml
 
-FERRET_ALL &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks &ext_func &bench
-FERRET &fer &ppl &fmt 
+FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks &ext_func &bench
+
 

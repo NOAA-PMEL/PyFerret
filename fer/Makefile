@@ -97,7 +97,7 @@ DODS_gui_debug: .FRC
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
-		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6" \
+                "LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lwwwcore -lwwwinit -lwwwstream -lsocket -lnsl -lz -lrx -ltcl8.1 -ltk8.1" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=alpha" all
 DODS_gui: .FRC
@@ -106,7 +106,7 @@ DODS_gui: .FRC
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a"  \
-		"LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6" \
+                "LD = g++" "CDFLIB=-L$(TMAP_LOCAL)/src/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lwww -lwwwcore -lwwwinit -lwwwstream -lsocket -lnsl -lz -lrx -ltcl8.1 -ltk8.1" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
 		"DEBUG_TITLE=" all
 
@@ -135,7 +135,7 @@ ferret:
 		$(HDFLIB) \
 		$(GKSLIB) \
 		$(SYSLIB) \
-		$(DODS_SYSLIB) 
+		$(DODS_SYSLIB)
 	chmod +x $(EXECNAME)
 
 update: .FRC

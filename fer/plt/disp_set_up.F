@@ -118,6 +118,9 @@
 * V541 *acm*  4/02  for flowlines, more PPLUS memory was allocated than needed.
 *      *acm*  4/02  If this is an overlay, and there is no valid data, add
 *                   this information variable name in the key below the plot.
+* v541 *acm*  8/02  For "No Valid Data" the test is: 
+*                    IF (no_x_rng .AND. (valx1.EQ.bad_val4) )
+
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -224,9 +227,11 @@ C plus those starting w/ xbox_bounds:
 	size2 = CX_DIM_LEN( dim2, ctx )
 	size  = size1 * size2
 
-* determine PLOT+ memory required
+* determine PLOT+ memory required 
+
         plot_mem_used = CGRID_SIZE( cx_list(1) ) + size1 + size2
-        IF ( vector ) plot_mem_used = plot_mem_used * 2
+        IF ( vector ) 
+     .        plot_mem_used = plot_mem_used * 2
 
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 
@@ -590,7 +595,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	      CALL OV_GRP_CX_DOC( cx_list, nmv, cx_xtra_doc )
 	      plot_title = COMPOUND_KEY( cx_list, nvars, cx_xtra_doc, slen )
 	   ENDIF
-           IF (no_x_rng) THEN
+           IF (no_x_rng .AND. (valx1.EQ.bad_val4) ) THEN
               plot_title(slen+1:slen+14) = ' No Valid Data'
               slen = slen + 14
            ENDIF
@@ -697,3 +702,4 @@ C ACM added 8/2001 save cal id if vertical time axis
      .  buff1(:slen)// ' : '// buff2(:slen2), *5000 )
 
 	END
+                                                                                                                

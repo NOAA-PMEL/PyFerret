@@ -97,6 +97,8 @@
 *                   polygon plots
 * v541 *acm*  4/02  If we have a depth axis, multiply the corresponding 
 *                   vertices by -1.  Else the polygons arent plotted.
+* v541 *acm*  8/02  For "No Valid Data" the test is: 
+*                    IF (no_x_rng .AND. (valx1.EQ.bad_val4) )
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -809,7 +811,7 @@ c	ind_dim = plot_axis(1)
 	   ELSE
 	      plot_title = KEY_STRING( cx_color, cx_xtra_doc, slen )
 	   ENDIF
-           IF (no_range) THEN
+           IF (no_x_rng .AND. (valx1.EQ.bad_val4)) THEN
               plot_title(slen+1:slen+14) = ' No Valid Data'
               slen = slen + 14
            ENDIF

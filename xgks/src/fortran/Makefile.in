@@ -9,7 +9,7 @@ CPP_X11		= @CPP_X11@
 INCLUDES	= -I../../port -I../lib $(CPP_X11)
 DEFINES		= -DOS_$(OS)
 CPPFLAGS	= $(INCLUDES) $(DEFINES) @CPPFLAGS@
-CFLAGS		= @CFLAGS@
+CFLAGS		= @CFLAGS@ -g
 
 headers		= f_errno.h fortmac.h fortxgks.h pdrutils.h ps2aixdefs.h
 SRCS		= control.fc error.fc escapes.fc escapes1.c fexterninit.c \

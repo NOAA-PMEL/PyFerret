@@ -448,7 +448,7 @@ void ef_set_arg_unit_sub_(int *id_ptr, int *arg_ptr, char *text)
 
  
 void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, float *lo_ptr,
-			     float *hi_ptr, float* del_ptr, char *text, int *modulo_ptr)
+			     float *hi_ptr, float *del_ptr, char *text, int *modulo_ptr)
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -458,6 +458,31 @@ void ef_set_custom_axis_sub_(int *id_ptr, int *axis_ptr, float *lo_ptr,
   ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_lo = *lo_ptr;
   ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_hi = *hi_ptr;
   ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_del = *del_ptr;
+  ef_ptr->internals_ptr->axis[*axis_ptr-1].modulo = *modulo_ptr;
+
+  return;
+}  
+
+ 
+void ef_set_freq_axis_sub_(int *id_ptr, int *axis_ptr, int *npts, float *box,
+			     char *text, int *modulo_ptr)
+{
+
+  double lo, hi, del, nfreq, yquist;
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  nfreq = *npts/2;	
+  yquist = 0.5* (1./ *box);		/* Nyquist frequency */
+  lo = yquist/ nfreq;
+  hi = yquist;
+  del = lo;
+
+  strcpy(ef_ptr->internals_ptr->axis[*axis_ptr-1].unit, text);
+  ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_lo = lo;
+  ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_hi = hi;
+  ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_del = del;
   ef_ptr->internals_ptr->axis[*axis_ptr-1].modulo = *modulo_ptr;
 
   return;

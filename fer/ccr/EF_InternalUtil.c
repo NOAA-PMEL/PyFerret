@@ -138,7 +138,7 @@ void FORTRAN(efcn_get_result_limits)( int *, float *, int *, int *, int * );
 void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, float *, int *, float *, int * );
 
 
-void FORTRAN(efcn_get_custom_axis_sub)( int *, int *, float *, float *, float *, char *, int * );
+void FORTRAN(efcn_get_custom_axis_sub)( int *, int *, double *, double *, double *, char *, int * );
 
 int  FORTRAN(efcn_get_id)( char * );
 int  FORTRAN(efcn_match_template)( int *, char * );
@@ -1590,8 +1590,8 @@ int FORTRAN(efcn_match_template)( int *id_ptr, char template[] )
 
 /*
  */
-void FORTRAN(efcn_get_custom_axis_sub)( int *id_ptr, int *axis_ptr, float *lo_ptr, float *hi_ptr, 
-			       float *del_ptr, char *unit, int *modulo_ptr )
+void FORTRAN(efcn_get_custom_axis_sub)( int *id_ptr, int *axis_ptr, double *lo_ptr, double *hi_ptr, 
+			       double *del_ptr, char *unit, int *modulo_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
 

@@ -1,25 +1,26 @@
 c     
-c     ef_set_custom_axis.F
+c     ef_set_freq_axis.F
 c     
-c     Jonathan Callahan
-c     Feb 19th 1998
+c     Ansley Manke
+c     June 2003
 c     
 c     
 
 c     
 c     This subroutine allows an external function to create
-c     a custom axis.
+c     a frequency axis from the # of points and boxsize.
+c     (based on ef_set_custom_axis)
 c     
 
-      SUBROUTINE EF_SET_CUSTOM_AXIS(id, axis, lo, hi, del,
+      SUBROUTINE EF_SET_FREQ_AXIS(id, axis, npts, box,
      .     unit, modulo)
 
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
       INCLUDE 'EF_Util.parm'
 
-      INTEGER id, axis, modulo
-      REAL*8    lo, hi, del
+      INTEGER id, axis, npts, modulo
+      REAL    box
       CHARACTER*(*) unit
 
 c     internal parameter declarations:
@@ -40,7 +41,7 @@ c     call the external functions library to set the value
       
       llen = TM_LENSTR1( unit )
       CALL TM_FTOC_STRNG( unit(:llen), fhol, slen )
-      call ef_set_custom_axis_sub( id, axis, lo, hi, del, 
+      CALL ef_set_freq_axis_sub( id, axis, npts, box, 
      .     fhol, modulo )
       
       

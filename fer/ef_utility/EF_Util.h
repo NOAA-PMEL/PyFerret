@@ -57,7 +57,7 @@ enum { CANNOT_ALLOCATE, INSUFFICIENT_DATA } EF_ERROR_type;
 typedef struct {
   int  will_be, modulo;
   int  ss_lo, ss_hi, ss_incr;
-  float ww_lo, ww_hi, ww_del;
+  double ww_lo, ww_hi, ww_del;
   char unit[EF_MAX_NAME_LENGTH];
 } Axis;
 

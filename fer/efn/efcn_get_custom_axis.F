@@ -19,7 +19,7 @@ c
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id, axis, modulo
-      REAL    lo, hi, del
+cc      REAL    lo, hi, del
       REAL*8  dlo, dhi, ddel
       CHARACTER*(*) unit
       LOGICAL modulo_logical
@@ -36,7 +36,7 @@ c     internal parameter declarations:
       
 c     call the external functions library to get the value
       
-      call efcn_get_custom_axis_sub( id, axis, lo, hi, del, 
+      call efcn_get_custom_axis_sub( id, axis, dlo, dhi, ddel, 
      .     fhol, modulo )
       
       modulo_logical = .FALSE.
@@ -48,9 +48,9 @@ c     convert to a Fortran string
       call TM_CTOF_STRNG( fhol, unit, slen)
 
 c     convert to double
-      dlo = lo
-      dhi = hi
-      ddel = del
+cc      dlo = lo
+cc      dhi = hi
+cc      ddel = del
       
       RETURN 
       END

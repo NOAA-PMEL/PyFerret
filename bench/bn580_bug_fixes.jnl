@@ -77,4 +77,9 @@ GO err570_poly_over_julian.jnl
 ! exiting from a script where query/ignore or other coached 
 ! string substitution returns the user-given error message
 GO bn_reset
-go err570_coaching hello
+GO err570_coaching hello
+
+! Fix for bug 485: say ($0) in a script should return the 
+! name of the script
+GO bn_reset
+GO err570_dollar_zero.jnl

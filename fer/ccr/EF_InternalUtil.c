@@ -54,8 +54,6 @@
 #include <unistd.h>		/* for convenience */
 #include <fcntl.h>		/* for fcntl() */
 #include <dlfcn.h>		/* for dynamic linking */
-#include <signal.h>             /* for signal() */
-#include <setjmp.h>             /* required for jmp_buf */
 
 #include <sys/types.h>	        /* required for some of our prototypes */
 #include <sys/stat.h>
@@ -80,19 +78,6 @@ int   *GLOBAL_cx_list_ptr;
 int   *GLOBAL_mres_ptr;
 float *GLOBAL_bad_flag_ptr;
 
-/*
- * The jumpbuffer is used by setjmp() and longjmp().
- * setjmp() is called by efcn_compute_() in EF_InternalUtil.c and
- * saves the stack environment in jimpbuffer for later use by longjmp().
- * This allows one to bail out of external functions and still
- * return control to Ferret.
- * Check "Advanced Progrmming in the UNIX Environment" by Stevens
- * sections 7.10 and 10.14 to understand what's going on with these.
- */
-static jmp_buf jumpbuffer;
-static sigjmp_buf sigjumpbuffer;
-static volatile sig_atomic_t canjump;
-
 static int I_have_scanned_already = FALSE;
 static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
@@ -114,13 +99,15 @@ int  efcn_already_have_internals_( int * );
 int  efcn_gather_info_( int * );
 void efcn_get_custom_axes_( int *, int * );
 void efcn_get_result_limits_( int *, float *, int *, int * );
-void efcn_compute_( int *, int *, int *, int *, float *, int *, float *, int * );
+void efcn_compute_( int *, int *, int *, int *, float *, int *, float * );
 
 
 void efcn_get_custom_axis_sub_( int *, int *, float *, float *, float *, char *, int * );
 
+
 int  efcn_get_id_( char * );
 int  efcn_match_template_( char * );
+
 
 void efcn_get_name_( int *, char * );
 void efcn_get_version_( int *, float * );
@@ -139,16 +126,9 @@ void efcn_get_arg_unit_( int *, int *, char * );
 void efcn_get_arg_desc_( int *, int *, char * );
 
 
-/* .... Functions called internally .... */
+/* ... Functions called internally .... */
 
-/* Fortran routines from the efn/ directory */
-void efcn_copy_array_dims_(void);
-void efcn_get_workspace_addr_(float *, int *, float *);
-
-static void sig_fpe_segv_handler(int);
-
-void ef_err_bail_out_(int *, char *);
-void ef_err_not_found(int);
+void EF_force_linking(int);
 
 void EF_store_globals(float *, int *, int *, int *, float *);
 
@@ -160,6 +140,11 @@ int  EF_ListTraverse_MatchTemplate( char *, char * );
 int  EF_ListTraverse_FoundID( char *, char * );
 
 int  EF_New( ExternalFunction * );
+
+
+/* ... FORTRAN Functions available to External Functions ... */
+
+
 
 
 /* .............. Function Definitions .............. */
@@ -184,6 +169,12 @@ int efcn_scan_( int *gfcn_num_internal )
   int count=0, status=LIST_OK;
 
   static int return_val=0; /* static because it needs to exist after the return statement */
+
+  /*
+   * We need to generate calls to all the functions in EF_ExternalUtil.c
+   * in order to have Solaris link these symbols into the final executable.
+   */
+  EF_force_linking(0);
 
   if ( I_have_scanned_already ) {
     return_val = list_size(GLOBAL_ExternalFunctionList);
@@ -243,12 +234,9 @@ int efcn_scan_( int *gfcn_num_internal )
  
       while ( fgets(file, EF_MAX_NAME_LENGTH, file_ptr) != NULL ) {
 
-        char *extension;
-
 	file[strlen(file)-1] = '\0';   /* chop off the carriage return */
-	extension = &file[strlen(file)-3];
-	if ( strcmp(extension, ".so") == 0 ) {
-      file[strlen(file)-3] = '\0'; /* chop off the ".so" */
+	if ( strstr(file, ".so") != NULL ) {
+	  *strstr(file, ".so") = '\0'; /* chop off the ".so" */
 	  strcpy(ef.path, path);
 	  strcpy(ef.name, file);
 	  ef.id = *gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
@@ -326,14 +314,7 @@ int efcn_gather_info_( int *id_ptr )
   strcat(ef_object, ef_ptr->name);
   strcat(ef_object, ".so");
 
-  /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {*/
-  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) {
-    fprintf(stderr, "\n\
-ERROR in efcn_gather_info:\n\
-dlopen(%s, RTLD_LAZY) generates the error:\n\
-\t\"%s\"\n", ef_object, dlerror());
-    return -1;
-  }
+  ef_ptr->handle = dlopen(ef_object, RTLD_LAZY);
   
   /*
    * Allocate and default initialize the internal information.
@@ -466,21 +447,14 @@ void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int 
  * the function to calculate the result.
  */
 void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
-	float *bad_flag_ptr, int *mr_arg_offset_ptr, float *memory, int *status )
+	float *bad_flag_ptr, int *mr_arg_offset_ptr, float *memory )
 {
   ExternalFunction *ef_ptr=NULL;
-  ExternalFunctionInternals *i_ptr=NULL;
-  float *arg_ptr[EF_MAX_COMPUTE_ARGS];
-  int xyzt=0, i=0, j=0;
-  int size=0;
+  int xyzt=0, i=0;
+  int arg_points[EF_MAX_ARGS];
   char tempText[EF_MAX_NAME_LENGTH]="";
 
-  /*
-   * Prototype all the functions needed for varying numbers of
-   * arguments and work arrays.
-   */
-
-  void (*fptr)(int *);
+  int (*fptr)(int, void *);
   void (*f1arg)(int *, float *, float *);
   void (*f2arg)(int *, float *, float *, float *);
   void (*f3arg)(int *, float *, float *, float *, float *);
@@ -494,399 +468,118 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
 		float *, float *, float *);
   void (*f9arg)(int *, float *, float *, float *, float *, float *, float *,
 		float *, float *, float *, float *);
-  void (*f10arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *);
-  void (*f11arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *);
-  void (*f12arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *);
-  void (*f13arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *);
-  void (*f14arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *);
-  void (*f15arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *);
-  void (*f16arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *);
-  void (*f17arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *);
-  void (*f18arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *);
 
   /*
-   * Initialize the status
-   */
-  *status = FERR_OK;
-
-  /*
-   * Store the array dimensions for memory resident variables and for working storage.
    * Store the memory pointer and various lists globally.
    */
-  efcn_copy_array_dims_();
   EF_store_globals(memory, mr_arg_offset_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
 
   /*
    * Find the external function.
    */
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) {
-    fprintf(stderr, "\n\
-ERROR in efcn_compute() finding external function: id = [%d]\n", *id_ptr);
-    *status = FERR_EF_ERROR;
-    return;
-  }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  i_ptr = ef_ptr->internals_ptr;
+  if ( ef_ptr->internals_ptr->language == EF_F ) {
 
-  if ( i_ptr->language == EF_F ) {
-
-    /*
-     * Begin assigning the arg_ptrs.
-     */
-
-    /* First come the arguments to the function. */
-
-     for (i=0; i<i_ptr->num_reqd_args; i++) {
-       arg_ptr[i] = memory + mr_arg_offset_ptr[i];
-     }
-
-    /* Now for the result */
-
-     arg_ptr[i++] = memory + mr_arg_offset_ptr[EF_MAX_ARGS];
-
-    /* Now for the work arrays */
-
-    /*
-     * If this program has requested working storage we need to 
-     * ask the function to specify the amount of space needed
-     * and then create the memory here.  Memory will be released
-     * after the external function returns.
-     */
-    if (i_ptr->num_work_arrays > EF_MAX_WORK_ARRAYS) {
-
-	  fprintf(stderr, "\n\
-ERROR specifying number of work arrays in ~_init subroutine of external function %s\n\
-\tnum_work_arrays[=%d] exceeds maximum[=%d].\n\n", ef_ptr->name, i_ptr->num_work_arrays, EF_MAX_WORK_ARRAYS);
-	  *status = FERR_EF_ERROR;
-	  return;
-
-    } else if (i_ptr->num_work_arrays < 0) {
-
-	  fprintf(stderr, "\n\
-ERROR specifying number of work arrays in ~_init subroutine of external function %s\n\
-\tnum_work_arrays[=%d] must be a positive number.\n\n", ef_ptr->name, i_ptr->num_work_arrays);
-	  *status = FERR_EF_ERROR;
-	  return;
-
-    } else if (i_ptr->num_work_arrays > 0)  {
-
-      sprintf(tempText, "");
-      strcat(tempText, ef_ptr->name);
-      strcat(tempText, "_work_size_");
-
-      fptr = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
-      if (fptr == NULL) {
-	fprintf(stderr, "\n\
-ERROR in efcn_compute() accessing %s\n", tempText);
-	*status = FERR_EF_ERROR;
-        return;
-      }
-      (*fptr)( id_ptr );
-
-      for (j=0; j<i_ptr->num_work_arrays; i++, j++) {
-
-        size = sizeof(float);
-        for (xyzt=0; xyzt<4; xyzt++) {
-          size *= i_ptr->work_array_len[j][xyzt];
-        }
-
-	/* Allocate memory for each individual work array */
-        if (arg_ptr[i] = (float *)malloc(size) == NULL) { 
-          fprintf(stderr, "\n\
-ERROR in efcn_compute() allocating %d words of memory\n", size);
-	  *status = FERR_EF_ERROR;
-	  return;
-        }
-      }
-
-    }
-
-    /*
-     * Prepare for bailout possibilities by setting a signal handler for
-     * SIGFPE and SIGSEGV and then by cacheing the stack environment with
-     * sigsetjmp (for the signal handler) and setjmp (for the "bail out"
-     * utility function).
-     */   
-    if (signal(SIGFPE, sig_fpe_segv_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() catching SIGFPE.\n");
-      *status = FERR_EF_ERROR;
-      return;
-    }
-    if (signal(SIGSEGV, sig_fpe_segv_handler) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() catching SIGSEGV.\n");
-      *status = FERR_EF_ERROR;
-      return;
-    }
-    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
-      /* Warning message printed by signal handler. */
-      *status = FERR_EF_ERROR;
-      return;
-    }
-    canjump = 1;
-
-    if (setjmp(jumpbuffer) != 0 ) {
-      /* Warning message printed by utility function. */
-      *status = FERR_EF_ERROR;
-      return;
-    }
-
-
-    /*
-     * Now go ahead and call the external function's "_compute_" function,
-     * prototyping it for the number of arguments expected.
-     */
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
     strcat(tempText, "_compute_");
 
-    switch ( i_ptr->num_reqd_args + i_ptr->num_work_arrays ) {
+    switch ( ef_ptr->internals_ptr->num_reqd_args ) {
 
     case 1:
-	  f1arg  = (void (*)(int *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f1arg)( id_ptr, arg_ptr[0], arg_ptr[1] );
-	break;
-
+      f1arg  = (void (*)(int *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f1arg)( id_ptr, memory + mr_arg_offset_ptr[0], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     case 2:
-	  f2arg  = (void (*)(int *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f2arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2] );
-	break;
-
+      f2arg  = (void (*)(int *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f2arg)( id_ptr, memory + mr_arg_offset_ptr[0],
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     case 3:
-	  f3arg  = (void (*)(int *, float *, float *, float *, float *))
-        dlsym(ef_ptr->handle, tempText);
-	  (*f3arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3] );
-	break;
-
+      f3arg  = (void (*)(int *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f3arg)( id_ptr, memory + mr_arg_offset_ptr[0],
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     case 4:
-	  f4arg  = (void (*)(int *, float *, float *, float *, float *, float *))
-        dlsym(ef_ptr->handle, tempText);
-	  (*f4arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4] );
-	break;
-
+      f4arg  = (void (*)(int *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f4arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     case 5:
-	  f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *))
-        dlsym(ef_ptr->handle, tempText);
-	  (*f5arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5] );
-	break;
-
+      f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f5arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+       break;
 
     case 6:
-	  f6arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *))dlsym(ef_ptr->handle, tempText);
-	  (*f6arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6] );
-	break;
-
+      f6arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *))dlsym(ef_ptr->handle, tempText);
+      (*f6arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS+1] );
+      break;
 
     case 7:
-	  f7arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f7arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7] );
-	break;
-
+      f7arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f7arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     case 8:
-	  f8arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f8arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8] );
-	break;
-
+      f8arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f8arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
+		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     case 9:
-	  f9arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f9arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9] );
-	break;
-
-
-    case 10:
-	  f10arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f10arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10] );
-	break;
-
-
-    case 11:
-	  f11arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f11arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11] );
-	break;
-
-
-    case 12:
-	  f12arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *))
-        dlsym(ef_ptr->handle, tempText);
-	  (*f12arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12] );
-	break;
-
-
-    case 13:
-	  f13arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *, float *))
-        dlsym(ef_ptr->handle, tempText);
-	  (*f13arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12], arg_ptr[13] );
-	break;
-
-
-    case 14:
-	  f14arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *, float *,
-        float *))dlsym(ef_ptr->handle, tempText);
-	  (*f14arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12], arg_ptr[13], arg_ptr[14] );
-	break;
-
-
-    case 15:
-	  f15arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f15arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12], arg_ptr[13], arg_ptr[14], arg_ptr[15] );
-	break;
-
-
-    case 16:
-	  f16arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f16arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12], arg_ptr[13], arg_ptr[14], arg_ptr[15], arg_ptr[16] );
-	break;
-
-
-    case 17:
-	  f17arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f17arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12], arg_ptr[13], arg_ptr[14], arg_ptr[15], arg_ptr[16],
-        arg_ptr[17] );
-	break;
-
-
-    case 18:
-	  f18arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *, float *, float *, float *,
-        float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-	  (*f18arg)( id_ptr, arg_ptr[0], arg_ptr[1], arg_ptr[2], arg_ptr[3], arg_ptr[4],
-        arg_ptr[5], arg_ptr[6], arg_ptr[7], arg_ptr[8], arg_ptr[9], arg_ptr[10],
-        arg_ptr[11], arg_ptr[12], arg_ptr[13], arg_ptr[14], arg_ptr[15], arg_ptr[16],
-        arg_ptr[17], arg_ptr[18] );
-	break;
-
+      f9arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
+			 float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f9arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
+		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[8], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
+      break;
 
     default:
-      fprintf(stderr, "\n\
-ERROR: External functions with more than %d arguments are not implemented yet.\n\n", EF_MAX_ARGS);
-      *status = FERR_EF_ERROR;
-      return;
+      fprintf(stderr, "\nNOTICE: External functions with more than %d arguments are not implemented yet.\n\n", EF_MAX_ARGS);
       break;
 
     }
 
-    /*
-     * Restore the default signal handlers.
-     */
-    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGFPE handler.\n");
-      *status = FERR_EF_ERROR;
-      return;
-    }
-    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
-      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGSEGV handler.\n");
-      *status = FERR_EF_ERROR;
-      return;
-    }
-
-    /*
-     * Now it's time to release the work space.
-     * With arg_ptr[0] for argument #1, and remembering one slot for the result,
-     * we should begin freeing up memory at arg_ptr[num_reqd_args+1].
-     */
-    for (i=i_ptr->num_reqd_args+1; i<i_ptr->num_reqd_args+1+i_ptr->num_work_arrays; i++) {
-      free(arg_ptr[i]);
-    }
-
   } else if ( ef_ptr->internals_ptr->language == EF_C ) {
 
-    fprintf(stderr, "\n\
-ERROR: External Functions may not yet be written in C.\n\n");
-    *status = FERR_EF_ERROR;
-    return;
+    fprintf(stderr, "\nERROR: EF_C is not a supported language for External Functions.\n\n");
 
   }
   
-
   return;
 }
 
 
-/*
- * A signal handler for SIGFPE and SIGSEGV signals generated
- * while executing an external function.  See "Advanced Programming
- * in the UNIX Environment" p. 299 ff for details.
- */
-static void sig_fpe_segv_handler(int signo) {
 
-  if (canjump == 0) return;
-
-  if (signo == SIGFPE) {
-    fprintf(stderr, "\n\nERROR inexternal function: Floating Point Error\n");
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  } else if (signo == SIGSEGV) {
-    fprintf(stderr, "\n\nERROR inexternal function: Segmentation Violation\n");
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  } else {
-    fprintf(stderr, "\n\nERROR inexternal function: signo = %d\n", signo);
-    canjump = 0;
-    siglongjmp(sigjumpbuffer, 1);
-  }
-
-}
 
 
 /*
  * Find an external function based on its name and
  * fill in the integer ID associated with that funciton.
  */
-int efcn_get_id_( char name[] )
+int efcn_get_id_( char *name )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -919,7 +612,7 @@ int efcn_get_id_( char name[] )
  * fill in the integer ID associated with first function
  * that matches the template.
  */
-int efcn_match_template_( char name[] )
+int efcn_match_template_( char *name )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -1017,7 +710,7 @@ void efcn_get_descr_( int *id_ptr, char *descr )
 
 /*
  * Find an external function based on its integer ID and
- * fill return the number of arguments.
+ * fill in the number of arguments.
  */
 int efcn_get_num_reqd_args_( int *id_ptr )
 {
@@ -1203,7 +896,7 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
   if ( printable ) {
     strcpy(string, ef_ptr->internals_ptr->arg_name[index]);
   } else {
-    strcpy(string, "--");
+    strcpy(string, "X");
   }
 
   return;
@@ -1243,29 +936,6 @@ void efcn_get_arg_desc_( int *id_ptr, int *iarg_ptr, char *string )
   strcpy(string, ef_ptr->internals_ptr->arg_desc[index]);
 
   return;
-}
-
-
-
-void ef_err_bail_out_(int *id_ptr, char *text)
-{
-  ExternalFunction *ef_ptr=NULL;
-
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { ef_err_not_found(*id_ptr); return; }
-
-  fprintf(stderr, "\n\
-Bailing out of external function \"%s\":\n\
-\t%s\n", ef_ptr->name, text);
-
-  longjmp(jumpbuffer, 1);
-}
-
-
-void ef_err_not_found(int id)
-{
-  fprintf(stderr, "\nERROR: external function id [%d] not found.\n", id);
-
-  longjmp(jumpbuffer, 1);
 }
 
 
@@ -1315,11 +985,7 @@ int EF_New( ExternalFunction *this )
   i_ptr->language = EF_F;
   i_ptr->num_reqd_args = 1;
   i_ptr->has_vari_args = NO;
-  i_ptr->num_work_arrays = 0;
   for (i=0; i<4; i++) {
-    for (j=0; j<EF_MAX_WORK_ARRAYS; j++) {
-      i_ptr->work_array_len[j][i] = 1;
-    }
     i_ptr->axis_will_be[i] = IMPLIED_BY_ARGS;
     i_ptr->piecemeal_ok[i] = NO;
   }
@@ -1340,7 +1006,7 @@ int EF_New( ExternalFunction *this )
   return return_val;
 
 }
-
+ 
 
 /* .... UtilityFunctions for dealing with GLOBAL_ExternalFunctionList .... */
 
@@ -1359,6 +1025,42 @@ void EF_store_globals(float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr,
   GLOBAL_mres_ptr = mres_ptr;
   GLOBAL_bad_flag_ptr = bad_flag_ptr;
 
+}
+
+
+/*
+ * Generate calls to all of the EF_ExternalUtil.c code in order to 
+ * force linking of these routines on Solaris.
+ */
+void EF_force_linking(int I_should_do_it)
+{
+  if ( I_should_do_it ) {
+    int i = 5;
+    float f = 5.0;
+    char c = NULL;
+    ef_set_num_args_( &i, &i );
+    ef_set_has_vari_args_( &i, &i );
+    ef_set_piecemeal_ok_( &i, &i, &i, &i, &i );
+    ef_set_axis_inheritance_( &i, &i, &i, &i, &i );
+    ef_set_axis_influence_( &i, &i, &i, &i, &i, &i );
+    ef_set_axis_extend_( &i, &i, &i, &i, &i );
+
+    ef_get_arg_subscripts_( &i, &i, &i, &i );
+    ef_get_arg_ss_extremes_( &i, &i, &i );
+    ef_get_one_val_( &i, &i, &f );
+    ef_get_bad_flags_( &i, &f, &f );
+
+    efcn_get_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
+    ef_set_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
+
+    ef_set_desc_( &i, &c);
+    ef_set_arg_desc_( &i, &i, &c);
+    ef_set_arg_name_( &i, &i, &c);
+    ef_set_arg_unit_( &i, &i, &c);
+
+    ef_get_coordinates_( &i, &i, &i, &i, &i, &f );
+    ef_get_box_size_( &i, &i, &i, &i, &i, &f );
+  }
 }
 
 
@@ -1414,20 +1116,14 @@ int EF_ListTraverse_FoundName( char *data, char *curr )
 }
 
 
-int EF_ListTraverse_MatchTemplate( char data[], char *curr )
+int EF_ListTraverse_MatchTemplate( char *data, char *curr )
 {
   ExternalFunction *ef_ptr=(ExternalFunction *)curr; 
 
   int i=0, star_skip=FALSE;
-  char upname[EF_MAX_DESCRIPTION_LENGTH];
   char *t, *n;
 
-  for (i=0; i<strlen(ef_ptr->name); i++) {
-    upname[i] = toupper(ef_ptr->name[i]);
-  }
-  upname[i] = '\0';
-
-  n = upname;
+  n = ef_ptr->name;
 
   for (i=0, t=data; i<strlen(data); i++, t++) {
 
@@ -1458,10 +1154,8 @@ int EF_ListTraverse_MatchTemplate( char data[], char *curr )
     } else if ( *n == '\0' ) /* end of name */
       return TRUE; /* no match */
 
-    else if ( *t == *n ) {
-      n++;
+    else if ( *t == *n )
       continue;
-    }
 
     else
       return TRUE; /* no match */

@@ -95,9 +95,6 @@ void ef_set_desc_sub_(int *, char *);
 void ef_get_coordinates_(int *, int *, int *, int *, int *, float *);
 void ef_get_box_size_(int *, int *, int *, int *, int *, float *);
 
-void ef_get_hidden_variables_(int *, int *);
-
-
 /* ... Functions called internally .... */
 
 ExternalFunction *ef_ptr_from_id_ptr(int *);
@@ -297,18 +294,6 @@ void ef_get_box_size_(int *id_ptr, int *arg_ptr, int *dim_ptr, int *lo_lim_ptr,
 {
   ef_get_box_size_sub_(GLOBAL_cx_list_ptr, arg_ptr, dim_ptr, lo_lim_ptr, hi_lim_ptr, val_ptr);
 }
-
-
-void ef_get_hidden_variables_(int *cx_list, int *mres)
-{
-  int i=0;
-
-  for (i=0; i<EF_MAX_ARGS; i++) {
-    cx_list[i] = GLOBAL_cx_list_ptr[i];
-  }
-  *mres = *GLOBAL_mres_ptr;
-}
-
 
 
 void ef_get_bad_flags_(int *id_ptr, float *bad_flag, float *bad_flag_result)

@@ -1,7 +1,41 @@
-      SUBROUTINE MERGE_CONTEXT( its_gc, iarg, dflt_cx,
-     .     mrg_cx, com_cx, com_str, status )
+	SUBROUTINE MERGE_CONTEXT( its_gc, iarg,
+     .				  mrg_cx, com_cx, com_str, status )
 
-* combine new space/time/data_set/variable/grid context information into a 
+*
+*
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*
+*
 * single context checking for consistency 
 * (the merged grid is determined in advance by IS_UVAR_GRID)
 
@@ -36,7 +70,7 @@
 
 * calling argument declarations
 	LOGICAL		its_gc
-	INTEGER		iarg, dflt_cx, mrg_cx, com_cx, status
+	INTEGER		iarg, mrg_cx, com_cx, status
 	CHARACTER*(*)	com_str
 
 * local variable declarations
@@ -46,8 +80,7 @@
      .			choice(4,5), i, icom, imrg, uvar,
      .			com_str_slen, mrg_str_slen,
      .			com_int_slen, mrg_int_slen, gcfcn,
-     .			axis_source(4), lo_off(4),  hi_off(4), action(4),
-     .                  temp_ss, ui4
+     .			axis_source(4), lo_off(4),  hi_off(4), action(4)
 	CHARACTER	CX_DIM_STR*16, LEFINT*8, com_lims*16, mrg_lims*16,
      .			com_int*8, mrg_int*8
 
@@ -151,46 +184,26 @@
 	DO 500 idim = 1,4
 
 * argument of grid-changing function? (1/97)
-*
-*     If we should ignore the axis:     don't merge
-*     Else if we should impose an axis 
-*        If (pset_to_unspec):           don't merge
-*        Else (ppass_along):            imposed axis matches arg axis --> merge
-*     Else (we should merge an axis)
-*        If we have offsets:            special merge
-*        Else:                          all OK --> merge
-*     Endif
-
-           IF (its_gc ) THEN
-
-              IF (axis_source(idim).EQ.pgc_ignore_axis) THEN
-
-                 GOTO 500
-
-              ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
-
-                 IF (action(idim) .EQ. pset_to_unspec) THEN
-*     ... IS_DO_GC_FUNC will fill in the result limits on the imposed axes
-                    GOTO 500    ! leave it in its initialized (vacant) condition
-                 ELSE
-*     ... This is the special case of an imposed axis that matches the argument ax
-                    CONTINUE
-                 ENDIF
-
-              ELSE !(axis_source(idim) .EQ. pgc_merge_axis)
-
-                 IF  (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
-                    CALL MERGE_AXIS_WITH_OFFSETS(dflt_cx, mrg_cx, 
-     .                   com_cx, idim, lo_off, hi_off)
-                    GOTO 500
-                 ELSE
-                    CONTINUE
-                 ENDIF
-
-              ENDIF	 
-              
-           ENDIF
-
+	IF (its_gc ) THEN
+	   IF (    axis_source(idim).EQ.pgc_ignore_axis) THEN
+	      GOTO 500
+	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
+* ... cannot merge limits from axis with offset because we might be right
+*     up to the grid edge where offsets couldn't be applied
+	      GOTO 500
+	   ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
+	      IF (action(idim) .EQ. pset_to_unspec) THEN
+* ... IS_DO_GC_FUNC will fill in the result limits on the imposed axes
+	         GOTO 500  ! leave it in its initialized (vacant) condition
+	      ELSE
+* ... This is the special case of an imposed axis that matches the argument ax
+	         CONTINUE
+	      ENDIF
+	   ELSE
+* ... it is evidently, a mergible axis ... continue on
+	      CONTINUE
+	   ENDIF	      
+	ENDIF
 
 * ignore axes for which region isn't known (e.g. X axis of pseudo-variable "Y")
 	   IF ( cx_lo_ww(idim,com_cx) .EQ. unspecified_val8 ) GOTO 500

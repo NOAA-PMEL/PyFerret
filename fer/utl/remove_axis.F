@@ -1,5 +1,5 @@
 
-	SUBROUTINE remove_axis (axis)
+	SUBROUTINE REMOVE_AXIS (axis)
 
 *
 *
@@ -39,6 +39,10 @@
 * Deallocates one axis (line) slot, and pack the coordinate memory array.
 
 * ACM 6/11/2002
+* V5.41 7/30/02 ACM Fix def of npoints. Also, move the pointer into 
+*                   line_mem array when the coordinates in line_mem have
+*                   been changed. 
+
 * Parameters and commons
 
 	include	'tmap_dims.parm'
@@ -51,16 +55,36 @@
         INTEGER axis
 
 * Local declarations
-	INTEGER  imem, frst_pt, npoints, nline, last_mem
+	INTEGER  iaxis, imem, first_pt, npoints, last_mem
 
-        frst_pt = line_subsc1 ( axis )
-        npoints = 2*line_dim(axis)
+        first_pt = line_subsc1 ( axis )
+        npoints = 2*line_dim(axis) + 1
 
         last_mem = next_line_mem_pos - 1
 
-        DO 200 imem = frst_pt, last_mem
-           line_mem(imem) = line_mem(imem+npoints)
-  200   CONTINUE
+*  Recover space in line_mem array that defines point locations, box sizes.
+
+        IF (first_pt .NE. unspecified_int4  .AND. 
+     .      last_mem .NE. unspecified_int4 ) THEN
+
+           DO 200 imem = first_pt, last_mem
+              line_mem(imem) = line_mem(imem+npoints)
+  200      CONTINUE
+
+        ENDIF
+
+*  For all axes above this axis, whose line_mem entries were moved, 
+*  also move the pointer into line_mem
+
+        DO 300 iaxis = axis+1, line_ceiling 
+           IF ( (.NOT. line_regular(iaxis) ) .AND. 
+     .              (line_subsc1(iaxis) .NE. unspecified_int4) ) THEN
+
+              IF (line_subsc1(iaxis) .GT. first_pt) 
+     .           line_subsc1(iaxis) = line_subsc1(iaxis) - npoints
+
+           ENDIF
+  300   CONTINUE
 
         line_subsc1(axis) = unspecified_int4
 

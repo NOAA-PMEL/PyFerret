@@ -83,6 +83,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V420	2/29/96	- extracted from dollar_command for shared use by symbols
+*
+* 1/03 *kob* - need to accomodate g77 and it's inability to arbitrarily concatenate
 
 * calling argument declarations:
 	LOGICAL   err_subst
@@ -101,14 +103,17 @@
      .		iptr, len_in, vax_code, errstat,
      .		dstart, ostart, estart, dend, oend, eend, ostart1, oend1,
      .		rstart, rend, right_star
+#ifdef NO_PASSED_CONCAT
+* Additional temp character buffer needed for concatenating error messages
+*    required by g77 *kob* 1/03
+	CHARACTER tmp_buff*2048
+#endif
 
 #ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -262,21 +267,25 @@
  5000   RETURN
  5100   CALL ERRMSG( ferr_invalid_command, status,
      .       'command argument strings are too long', *5000)
- 5200   CALL ERRMSG( errstat, status,
-     .       'Valid value needed for '//sym_name, *5900)
- 5400   CALL ERRMSG( ferr_syntax, status,
-     .       'empty text string provided with ">": '//coaching, *5000 )
- 5500   CALL ERRMSG( ferr_syntax, status,
-     .       'both default and error strings given: '//coaching, *5000 )
+ 5200	risc_buff = sym_name
+	CALL ERRMSG( errstat, status,
+     .       'Valid value needed for '//risc_buff, *5900)
+ 5400	risc_buff = coaching
+	CALL ERRMSG( ferr_syntax, status,
+     .       'empty text string provided with ">": '//risc_buff, *5000 )
+ 5500	risc_buff = coaching
+	CALL ERRMSG( ferr_syntax, status,
+     .       'both default and error strings given: '//risc_buff, *5000 )
 
 * display the supplied error string or list the allowed options
 #ifdef NO_PASSED_CONCAT
  5900   risc_buff = coaching(ostart:oend)
+	tmp_buff = sym_name
 	IF ( errtxt ) THEN
 	   CALL WARN( coaching(estart:eend) )
 	ELSEIF ( options ) THEN
 	   CALL WARN
-     .	('Valid argument '//sym_name//' choices are: '//risc_buff)
+     .	('Valid '//tmp_buff(:TM_LENSTR1(tmp_buff))//' choices are: '//risc_buff)
 	ENDIF
 	GOTO 5000
 #else

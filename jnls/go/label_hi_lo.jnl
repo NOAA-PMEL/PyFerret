@@ -4,20 +4,22 @@
 
 ! Description: overlay labels for local extrema with H and L or the
 !              values at those extrema
-! NOTE:        Please use SET REGION to specify the region before 
-!              calling this script.  
 !
 !   usage:
 !	GO label_hi_lo var marktype xneigh yneigh hicolor locolor
 !   where:
-!	var	   Variable in the underlying plot
+!	var	   Variable in the underlying plot. note do not use square
+!                  bracket syntax (GO label_lo_hi sst[l=1]... will fail )
+!
 !	marktype   "mark" or "label": 
 !			mark puts L and H
 !			label puts the data value in a box at extremum
-!	xneigh     argument to findhi,findlo: neighborhood in x direction
-!	yneigh     argument to findhi,findlo: neighborhood in y direction
-!	hicolor    color of box around hi labels, or of letter H, default black
-!	locolor    color of box around lo labels, or of letter L, default black
+!
+!	xneigh     neighborhood, # of gridpoints in x and y direction
+!	yneigh       in which to look for local extrema
+!
+!	hicolor    color of box around HI labels, or of letter H, default black
+!	locolor    color of box around LO labels, or of letter L, default black
 
 ! example:
 !	yes? USE coads_climatology
@@ -43,10 +45,10 @@ QUERY/IGNORE $6%black|black|red|green|blue|lightblue|purple|*>black|%
 
 DEFINE REGION/DEFAULT save
 
-LET xmax = ($ppl$xmax)
-LET xmin = ($ppl$xmin)
-LET ymax = ($ppl$ymax)
-LET ymin = ($ppl$ymin)
+LET/QUIET xmax = ($ppl$xmax)
+LET/QUIET xmin = ($ppl$xmin)
+LET/QUIET ymax = ($ppl$ymax)
+LET/QUIET ymin = ($ppl$ymin)
 
 ! compute local mins and maxes
 LET/QUIET datlo = findlo($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
@@ -72,11 +74,11 @@ IF $2"|label>1|*>0|" THEN
 ! Mark the max's and mins with a rectangle, and the value of the extremum.
 ! Allow either violet or purple to be specified.   
 
-  go polymark poly/over/nolabel/pal=white/line/color=$5%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xph,yph,zph,rectangle,1.8
-  repeat/k=1:20 (let/quiet xp=xph[j=`k`]; let/quiet yp=yph[j=`k`]; let/quiet zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$5%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xph,yph,zph,rectangle,1.8
+  REPEAT/K=1:20 (LET/QUIET xp=xph[j=`k`]; LET/QUIET yp=yph[j=`k`]; LET/QUIET zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 
-  go polymark poly/over/nolabel/pal=white/line/color=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle,1.8
-  repeat/k=1:20 (let/quiet xp=xpl[j=`k`]; let/quiet yp=ypl[j=`k`]; let/quiet zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle,1.8
+  REPEAT/K=1:20 (LET/QUIET xp=xpl[j=`k`]; LET/QUIET yp=ypl[j=`k`]; LET/QUIET zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 ENDIF
 
 IF $2"|mark>1|*>0|" THEN

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* merge an additional variable context with those already merged into the
 * joint context for a plot.  See GRP_CX_DOC
 
 * programmer - steve hankin

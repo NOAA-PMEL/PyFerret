@@ -131,6 +131,7 @@
 * V510 4/00 *sh* - netCDF grids are now dynamic
 *      5/00 *sh* - added SHOW FUNC/DETAILS
 * V522 7/00 *sh* - SHOW SYMBOLS now shows special symbols, too
+* V530 8/00 *sh* - bug fix to SHOW SYMBOLS - avoid accidental PPL$XPIXEL eval
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -1039,9 +1040,9 @@
 * SPECIAL SYMBOLS
 	i1=0
  1702   i1 = i1 + 1
-        CALL SPECIAL_SYMBOL(i1, arg30,show_str,len) ! get next symbol
+        CALL SPECIAL_SYMBOL(i1, arg30,show_str,len) ! get next symbol namees
 	len0 = TM_LENSTR1(arg30)
-        IF(len.GT.0)THEN
+        IF(arg30 .NE. ' ')THEN
 	   IF ( num_args .GE. 1 ) THEN
 * ... check the names specified by template matching 
 	      DO 1703 i = 1, num_items
@@ -1052,7 +1053,8 @@
 	      GOTO 1702			! no match
 	   ENDIF
 * ... display the symbol definition
- 1705	  CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+ 1705      CALL SPECIAL_SYMBOL(0, arg30,show_str,len) ! get the sym value
+           CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .			arg30(:len0)//' = "'//show_str(:len)//'"', 0)
            GOTO 1702
 	ENDIF

@@ -338,6 +338,7 @@ int GUIFerretDispatch( char *inCmd)
 	       
       case FACTN_EXIT:
 	printf("Exit from FERRET requested\n");
+	//        FORTRAN(finalize)();
 	exit(0);
 	break;
 	       

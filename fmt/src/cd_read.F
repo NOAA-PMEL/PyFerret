@@ -57,7 +57,8 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * 5/99 *sh* (V5.0) - implement strides, reversals, and permutations 
-
+* 3/2000 *kob* (v5.1) - use netcdf v3 calls to read double precision data rather than
+*                       having to call cd_rd_r8_as_r4 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -73,7 +74,7 @@
      .                  a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
      .			use_lo(4), use_hi(4), stride(4)
-	REAL		var(a_lo_x:a_hi_x,
+	REAL     	var(a_lo_x:a_hi_x,
      .                      a_lo_y:a_hi_y,
      .                      a_lo_z:a_hi_z,
      .                      a_lo_t:a_hi_t)
@@ -119,6 +120,9 @@
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
 	DATA  		dimnam/'I','J','K','L'/
+
+	INTEGER  NF_GET_VARM_REAL_
+	EXTERNAL NF_GET_VARM_REAL_
 
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv 
 * because "BYTE" isn't supported on DECstation)
@@ -229,6 +233,10 @@
 	ELSE			! NCBYTE, NCCHAR
 	   imap(trans(1)) = 1
 	ENDIF
+
+********* DIAG STATEMENT netcdf v3 
+	imap(trans(1)) = 1
+
 	DO 220 idim = 2,ndim
 	   imap(trans(idim)) = imap(trans(idim-1))
      .			     * (1 + (memsize(grid_dims(idim-1))-1))
@@ -247,37 +255,32 @@
  225	CONTINUE
 
 * read the data
- 500	IF ( cd_data_type(ivar) .EQ. NCDOUBLE ) THEN
-* read double precision variables (requires special routine) 5/94
-! !!! XXX REPLACE WITH netCDF V3 DOUBLE READ CALL WHEN POSSIBLE XXX !!!
-	   IF ( permuted ) WRITE (6,*)
-     .			"Permuted order of non-FLOAT not supported yet"
-	   CALL CD_RD_R8_AS_R4(cdfid, varid, start, filsize, ndim,
-     .             var(use_lo(1),
-     .                 use_lo(2),
-     .                 use_lo(3),
-     .                 use_lo(4)) , cdfstat)
-	   IF ( cdfstat .NE. NCNOERR ) GOTO 5500
-	ELSE
- 	   CALL NCVGTG(cdfid, varid, start, count,
+* v5.1 *kob* - Major revision.  Use nc v3 call to read data and convert values
+*              to real/float.  Should work for all datatypes.
+* v5.11 *kob* - add ifdef to check whether or not to append an underscore
+*               to the v3 routine name.  This necessary because DODS netcdf
+*               fortran jackets were configured assuming f2c, which appends
+*               an additional underscore to routine names already containing
+*               and underscore.  The real solution is to configure dods 
+*               correctly, but for now, this kludge is applied
+
+#ifdef usingDODSf2cUnderscore
+	cdfstat = NF_GET_VARM_REAL_(cdfid, varid, start, count,
      .		   filstride, imap,
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)) , cdfstat)
-           IF (cdfstat .NE. NCNOERR ) GOTO 5100
+     .                 use_lo(4)))
+#else
+	cdfstat = NF_GET_VARM_REAL(cdfid, varid, start, count,
+     .		   filstride, imap,
+     .             var(use_lo(1),
+     .                 use_lo(2),
+     .                 use_lo(3),
+     .                 use_lo(4)))
+#endif
+	IF ( cdfstat .NE. NCNOERR ) GOTO 5500	
 
-* convert data type if necessary
-           IF ( cd_data_type(ivar) .EQ. NCFLOAT ) THEN
-              CONTINUE
-           ELSEIF ( cd_data_type(ivar) .EQ. NCLONG ) THEN
-              CALL TM_I4_TO_R4( var, var, totsize)
-           ELSEIF ( cd_data_type(ivar) .EQ. NCSHORT ) THEN
-              CALL TM_I2_TO_R4( var, var, totsize)
-           ELSE   ! NCBYTE or NCCHAR
-              CALL TM_I1_TO_R4( var, var, totsize)
-           ENDIF
-	ENDIF
 
 * if data has mean or range removed rescale it
         IF ( cd_scaled( ivar ) ) CALL TM_SCALE(

@@ -50,7 +50,8 @@
   NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
    revision history:
-   10/95
+   10/95 - original
+    5/99 *sh* - bug fix: modulo irregular axes get wrong memory subscript
 
    compile this with
    cc -c -g tm_world_recur.c
@@ -107,18 +108,80 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
   if ( recursive ) {
     recursive = line_parent[axis-*max_lines] != 0;    /* could use "&&" */
     if ( recursive ) {
-      int new_ss;
+      int new_ss, lo_ss, hi_ss, parent_len;
+      int new_where;
       switch (line_class[axis-*max_lines]) {
       case PLINE_CLASS_STRIDE:
+/* 5/99 - in irreg axis striding the box edges cannot simply be read from
+          the box edge array (think about it) So we have xtra logic here.
+*/
 	new_ss = (int)line_start[axis]
 	             +(*isubscript-1)*(int)line_delta[axis];
-	tm_world = ENTRY_NAME(&new_ss,
+	if ( line_regular[axis] || *where_in_box==BOX_MIDDLE ) {
+
+	  tm_world = ENTRY_NAME(&new_ss,
 			      &(line_parent[axis-*max_lines]),
 			      where_in_box,
 			      max_lines, line_mem, line_parent,
 			      line_class, line_dim,
 			      line_start, line_delta,
 			      line_subsc1, line_modulo,line_regular);
+
+	} else {   /*  !!!! EXTRA LOGIC FOR IRREGULAR AXIS STRIDES */
+	  /* cases to consider: interpolate to neighbor above or below
+	                        use lower or upper limit of entire axis
+	  */	  
+	  if (*where_in_box ==  BOX_LO_LIM) {
+	    lo_ss = (int)line_start[axis]
+	             +(*isubscript-2)*(int)line_delta[axis];
+	    hi_ss = new_ss;
+	  } else {
+	    lo_ss = new_ss;
+	    hi_ss =  (int)line_start[axis]
+	             +(*isubscript-0)*(int)line_delta[axis];
+	  }
+
+	  parent_len = line_dim[ line_parent[axis-*max_lines] ];
+	  if ( line_modulo[axis] 
+	       || (lo_ss>=1 && hi_ss<=parent_len) ) {  /* interpolate */
+	    new_where = BOX_MIDDLE;
+	    tm_world = 0.5 * (
+			      ENTRY_NAME(&lo_ss,
+			      &(line_parent[axis-*max_lines]),
+			      &new_where,
+			      max_lines, line_mem, line_parent,
+			      line_class, line_dim,
+			      line_start, line_delta,
+			      line_subsc1, line_modulo,line_regular)
+	                  +   
+			      ENTRY_NAME(&hi_ss,
+			      &(line_parent[axis-*max_lines]),
+			      &new_where,
+			      max_lines, line_mem, line_parent,
+			      line_class, line_dim,
+			      line_start, line_delta,
+			      line_subsc1, line_modulo,line_regular)
+			      );
+	  } else if (*where_in_box ==  BOX_LO_LIM) { /* lower axis edge */
+	    new_ss = 1;
+	    tm_world = ENTRY_NAME(&new_ss,
+			      &(line_parent[axis-*max_lines]),
+			      where_in_box,
+			      max_lines, line_mem, line_parent,
+			      line_class, line_dim,
+			      line_start, line_delta,
+			      line_subsc1, line_modulo,line_regular);
+	  } else {  /* upper axis edge */
+	    new_ss = parent_len;
+	    tm_world = ENTRY_NAME(&new_ss,
+			      &(line_parent[axis-*max_lines]),
+			      where_in_box,
+			      max_lines, line_mem, line_parent,
+			      line_class, line_dim,
+			      line_start, line_delta,
+			      line_subsc1, line_modulo,line_regular);
+	  }
+	}
 	break;
 
       case PLINE_CLASS_MIDPT:
@@ -140,7 +203,7 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
    Force given subsc to data range as appropriate for modulo or non-modulo axes
 */
   if ( line_modulo[axis] ) {
-    isub = ((*isubscript-1)%line_len) ;  /* would add 1 in FORTRAN */
+    isub = ((*isubscript-1)%line_len) + 1 ;  /* inserted "+1" 5/99 */
     if (isub <= 0)
       isub += line_len;
   }
@@ -180,7 +243,8 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 */
 /* ... xlate subscript to location in line_mem array */
       isub  += line_subsc1[axis] - 1;
-/** ... now, where within the grid box ? */
+      isub--;      /* 5/99 switch to C-style zero-referenced indexing */
+/* ... now, where within the grid box ? */
       if      ( *where_in_box == BOX_LO_LIM )
 	tempwld = line_mem[isub+line_len];
       else if ( *where_in_box == BOX_MIDDLE )
@@ -195,8 +259,8 @@ double ENTRY_NAME( int *isubscript, int *iaxis, int *where_in_box,
 	  rmod = (*isubscript-1)/line_len;
 	
 	tm_world = tempwld + rmod*
-	  ( line_mem[line_subsc1[axis]+2*line_len] -
-	   line_mem[line_subsc1[axis]+  line_len] );
+	  ( line_mem[line_subsc1[axis]+2*line_len - 1] -
+	    line_mem[line_subsc1[axis]+  line_len - 1] );
       }
       else
 	tm_world = tempwld;

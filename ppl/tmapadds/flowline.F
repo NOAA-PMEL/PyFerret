@@ -51,6 +51,7 @@ C**
 *  ACM  implementing algorighm from grads -- gxstrm.c
 *       draw flowlines 
 *  v4 2-oct-01 remove VMS includes
+*  ACM 12/01  remove ref to jscl; not used.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -105,7 +106,7 @@ C   int *shdcls, int shdcnt, int den)
 
 C  from gxstrm.c Figure out the interval for the flag grid
 
-      integer siz, i, iscl, j, jscl, iss, jss
+      integer siz, i, iscl, j, iss, jss
 
       i = NX
       if (NY .GT. i) i = NY
@@ -120,7 +121,6 @@ C  from gxstrm.c Figure out the interval for the flag grid
 
 C   Allocate memory for the flag grid
 
-      iscl = max(iscl,jscl)
       i = max(nx,ny)
       siz = i*i*iscl*iscl + i*iscl   ! see ii1index in flowline_sub
 

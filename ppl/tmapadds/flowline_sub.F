@@ -54,6 +54,7 @@ C**
 *       change MAX(1, x + 1) to MAX(1., x + 1)
 *  ACM  Aug 2001 remove subroutine strmar to separate file (arrow-drawing)
 *      *acm* 10/01  remove VMS includes
+*  ACM  12/01 bug fix: jjndex not jjindex!
 
         include 'ferret.parm'
         include 'parampl5_dat.decl'
@@ -287,10 +288,10 @@ C     flag boxes.
                   ELSE 
                      dx = px(iindex) - px(iindex-1)
                   ENDIF
-                  IF (jjindex .LT. nys) THEN
-                     dy = py(jjindex+1) - py(jjindex)
+                  IF (jjndex .LT. nys) THEN
+                     dy = py(jjndex+1) - py(jjndex)
                   ELSE 
-                     dy = py(jjindex) - py(jjindex-1)
+                     dy = py(jjndex) - py(jjndex-1)
                   ENDIF
 
                ENDIF

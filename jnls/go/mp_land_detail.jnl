@@ -41,7 +41,7 @@
 !   LET masked_sst = sst * mp_mask
 !   FILL/TITLE="View From Space"/NOAXES masked_sst, x_page, y_page
 !   GO mp_fland
-!   GO mp_land_detail thick over red green blue lightblue purple
+!   GO mp_land_detail thick overlay red green blue lightblue purple
 !
 ! Notes:
 !  1) This script is SLOW! It computes the map projection for all the 

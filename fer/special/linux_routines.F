@@ -44,9 +44,9 @@
 	CHARACTER*9 linux_date
 	CHARACTER*2 month
 	character*3 mmm
-
+#ifndef solaris
 	CALL DATE_AND_TIME(linux_date)
-
+#endif
 	month = linux_date(5:6)
 	if (month .eq. '01') then
 		mmm = "Jan"
@@ -88,9 +88,9 @@
 	character*9 linux_date
 	character*10 linux_time
 
-	
+#ifndef solaris	
 	call DATE_AND_TIME(linux_date, linux_time)
-
+#endif
 	time = linux_time(1:2)//':'//linux_time(3:4)//':'//linux_time(5:6)
 
 	return

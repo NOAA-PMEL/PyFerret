@@ -41,6 +41,8 @@
 * 1/21/04 *acm* from init_user_var.F
 * V554 1/04 *acm* - additions for /RANGE repeat loop control
 
+* V554 3/04 *acm* - fix error messages
+
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'
@@ -61,6 +63,7 @@
      .                  hi_start, hi_end, del_start, del_end, dum
         LOGICAL         colon, colon2, fmat, logical_dummy, by_ss
         REAL*8          answer		
+        CHARACTER*50    err_msg
 
 * find an unused counter var slot for the variable
 	DO 100 cvar = 1, num_counter_vars
@@ -109,12 +112,12 @@
 	IF ( colon ) THEN
 	   colon2_pos = ATOM_POS(text( colon_pos+1:slen ), ':' )
 	   IF ( colon2_pos .EQ. atom_illegal_pos
-     .	   .OR. colon2_pos .EQ. 1 ) GOTO 5100
+     .	   .OR. colon2_pos .EQ. 1 ) GOTO 5200
 	   colon2 = colon2_pos .NE. atom_not_found
 	   IF ( colon2 ) THEN
 	      colon2_pos = colon2_pos + colon_pos
 	      hi_end     = colon2_pos - 1
-	      IF (INDEX(text(colon2_pos+1:slen),':').GT.0) GOTO 5100
+	      IF (INDEX(text(colon2_pos+1:slen),':').GT.0) GOTO 5200
 	   ELSE
 	      hi_end     = slen
 	   ENDIF
@@ -153,9 +156,11 @@
 * error exit
  5000	RETURN
 
- 5100	CALL ERRMSG( ferr_prog_limit, status,
+ 5100	WRITE (err_msg, 4000) num_counter_vars
+        CALL ERRMSG( ferr_prog_limit, status,
      .		'too many counter variables'//pCR//
-     .		'cancel or redefine some variables', *5000 ) 
+     .		err_msg, *5000 ) 
+ 4000   FORMAT ('maximum number is ', i3)
  5200   CALL ERRMSG( ferr_syntax, status, 
      .	          risc_buff(:slen)//pCR//
      .'":" used incorrectly. A correct example is "RANGE=1:100:10".',

@@ -1,3 +1,195 @@
+# 1 "eofsubs.F"
+C  EOF code from Billy Kessler.  For cases where time series do not
+C  have any gaps.  Implemented 7/2001
+C
+C  At end are routines count_eof and pack_eof written with Dai McClurg
+C  to count the good timeseries and pack the X,Y,T  array into an neof by T
+C  array.
+C
+C
+C  Ansley Manke       Change dimension statements for arguments to be (*) or
+C                     (NX,*), etc.  The work arrays in the calling functions
+C                     have extra space to accomodate I = 1,N... BB(I+1) in 
+C                     QRSYM, for example.
+C
+C                     Declare all variables.
+C
+C Aug 2001 move to fer/efi directory, EPFs to be statically linked to Ferret.  
+C	   Change INCLUDE statements to remove directory spec.
+C
+C
+c Date: Thu, 18 Jan 2001 16:44:10 -0800 (PST)
+c From: kessler@pmel.noaa.gov (Billy Kessler)
+c Subject: more EOF code (reverse time and space)
+c 
+c The attached code (one file) contains the following subroutines:
+c 
+c First set are three different front ends that call the
+c routines at bottom that do the work:
+c 
+c EOFIN         ! for usual EOFs (more times than locations)
+c EOFIN2	! EOFs when there are more locations than times
+c EOFIN3C	! routine that allows weighting the data (probably 
+c	           get rid of this one for ferret)
+c
+c These are the black-box routines that do the actual work
+c 
+c FRACVAR	! find percent variance at each point
+c QRSYM		! call all the other routines in turn
+c HOUSEH	! Householder tridiagonalization of matrix
+c QRSTD		! find eigenvalues of tridiagonal matrix
+c TRIDIN	! find eigenvectors of tridiagonal matrix
+c BACKS		! does something
+c 
+c * Actually, either EOFIN or EOFIN2 produces exactly the same
+c result (but see note 1). These two routines don't care about 
+c zero eigenvalues, so there is really no restriction at all on 
+c their use. However, EOFIN2 will be faster if there are more 
+c locations than times. So a possible choice for this whole mess 
+c would be just to use EOFIN for all cases (except for gappy time 
+c series). That might be the most straightforward thing to do,
+c even if it is not the most elegant code.
+c 
+c Notes: 
+c 
+c Note 1: The eigenvalues out of EOFIN2 differ from those of EOFIN
+c by the factor (NT/NX). THis is due to the fact that there are NT 
+c non-zero eigenvalues produced by EOFIN2 (since it assumes that NT<NX), 
+c while there are NX produced by EOFIN. However, I have scaled the 
+c EOFs and PCs to be identical. This should not matter to anyone.
+c 
+c Note 3: Differences between the outputs of these three occur for
+c the higher eigenvalues/vectors, as the values of the eigenvalues
+c come down towards the computational noise and slight differences
+c in cutoff values hardwired into the routines. These are iterative
+c search routines and I have not tried to make the cutoffs (when the
+c routine decides it's found a value) consistent. This should not 
+c matter for geophysical work.
+c 
+c Note 4: Odd results can occur in SVDEOF for input fields that do
+c not have NX degrees of freedom. I spent an embarrassingly long
+c amount of time this afternoon "debugging" a test program that I
+c was feeding a simple idealized (product of sinusoids) field. The
+c field could be represented in only a handful of eigenvectors, but
+c SVDEOF cranked off NX of them, and the higher eigenvalues were
+c pure noise. Some of them were large though, and overwhelmed the
+c others. So if you are making up test fields, use the RANDU 
+c function to add sufficient noise to "use up" all the eigenvectors.
+c This will not be a problem for geophysical fields, which always
+c have sufficient noise. For some reason EOFIN and EOFIN2 do not
+c appear to have this problem.
+c 
+c Note 5: I wrote this code in 1982-83, with Nancy Soreide (then a 
+c programmer for Stan Hayes) holding my hand. It was the first thing
+c I did as a graduate student.
+c 
+c Billy
+
+C-------------------------------------------------------------------------------
+C	EOFSUB_2.FOR MODIFIES TRIDIN TO PASS OVERFLOW. SEE NEAR END OF TRIDIN.
+C	ALSO MODIFIES QRSYM TO NOTE PROGRESS TO 6.
+C-------------------------------------------------------------------------------
+
+C.................EOFIN.FOR is a front end to the EOF subroutines which follow.
+C.................Arrangement of output:
+C					  VEC(position,EOF#)
+C					  TAF(EOF#,time)
+
+c	Variables:
+c	data(nx,nt)	I/O	original data		Returned demeaned
+c	nx		I	number of spatial locations
+c	nt		I	number of time realizations
+c	val(nx)		O	eigenvalues (Lambda)
+c	vec(nx,nx)	O	eigenvectors (Lambda*U). Same units as data.
+c	taf(nx,nt)	O	time amplitude functions (V). Dimensionless.
+c	pct(nx)		O	% variance represented by each EOF.
+		
+	SUBROUTINE EOFIN(DATA,NX,NT,VAL,VEC,TAF,PCT,C,eofwork)
+
+C  Calling argument declarations.
+
+        INTEGER   NX, NT
+	REAL      DATA(NX,*),PCT(*),VAL(*),VEC(NX,*),TAF(NX,*),C(NX,*)
+
+	INCLUDE 'ferret_cmn/EF_Util.cmn'
+	INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+	REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
+     *               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+
+C  Internal declarations
+
+	INTEGER I, J, I1, I2, IE, IS
+	REAL TVAR
+
+C---------------------------------------------------------------------
+C.................Find mean, demean DATA.
+C.................Note PCT is used first as a dummy to save the mean.
+	DO 100 I=1,NX
+	PCT(I)=0.0
+	DO 110 J=1,NT
+110	PCT(I)=PCT(I)+DATA(I,J)/REAL(NT)
+	DO 120 J=1,NT
+120	DATA(I,J)=DATA(I,J)-PCT(I)
+100	CONTINUE
+C--------------------------------------------------------------------
+C.................Form the mean product matrix.
+	DO 210 I1=1,NX
+	DO 211 I2=1,NX
+
+	DO 200 J=1,NT
+200	C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J) / REAL(NT)
+
+211	CONTINUE
+210	CONTINUE
+C------------------------------------------------------------------------
+C.................Call the subroutines which do the work.
+
+	CALL QRSYM(C,NX,VAL,VEC, eofwork)
+
+C.................VEC(IS,IE) is arranged so that IS indexes the space
+C.................dimension of each eigenvector and IE the EOF number.
+C------------------------------------------------------------------------
+C.................Find the percentage of total variance accounted for by
+C.................each eigenvector.
+	TVAR=0.0
+	DO 220 I=1,NX
+220	TVAR=TVAR+VAL(I)
+	DO 221 I=1,NX
+221	PCT(I)=100.*ABS(VAL(I)/TVAR)
+C------------------------------------------------------------------------
+C.................Renormalize EOFs.
+C.................Thus EOFs have units of data, while time amplitude functions
+C.................are dimensionless.
+C.................Thus the sum of the squares of a given EOF = eigenvalue.
+C.................And the mean of a given TAF = 1.
+C-------------------------------------------------------------------------
+C.................First compute the time amplitude function from the data.
+C.................Renormalize each TAF by dividing by SQRT of its eigenvalue.
+
+	DO 350 J=1,NT			! loop over time
+	DO 360 IE=1,NX			! loop over EOF numbers
+
+	TAF(IE,J)=0.0
+
+	DO 370 IS=1,NX
+370	TAF(IE,J) = TAF(IE,J) + VEC(IS,IE)*DATA(IS,J)/SQRT(ABS(VAL(IE)))
+
+360	CONTINUE
+350	CONTINUE
+
+C.................Renormalize each EOF by the SQRT of its eigenvalue.
+
+	DO 300 IE=1,NX			! loop over EOF numbers
+	DO 310 IS=1,NX
+310	VEC(IS,IE) = VEC(IS,IE)*SQRT(ABS(VAL(IE)))
+300	CONTINUE
+C----------------------------------------------------------------------
+	RETURN
+	END
+		
+
+C************************************************************************
 
 
 c -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -16,7 +208,8 @@ C  Ansley Manke 10/00 Change bad-data flag "realbad"  to bad_flag_dat
 C                     and a separate flag for bad_flag_result, the bad-data
 C                     flag for the result.
 C  Ansley Manke 1/01  declare all variables.
-c
+C
+C  Ansley Manke 5/01  remove pct_cutoff as a parameter
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -34,6 +227,7 @@ c***************************************************************************
 C..........SUBROUTINE EOFIN_CHEL_GAP 
 c..........is a front end to the EOF SUBROUTINEs in eofsub_2.for.
 
+
 c	Variables:
 c	data(nx,nt)	I/O	original data.	Returned demeaned.
 c	nx		I	number of spatial locations
@@ -50,24 +244,23 @@ C					  TAF(EOF#,time)
 		
 C---------------------------------------------------------------------
       SUBROUTINE EOFIN_CHEL_GAP (DATA,NX,NT,VAL,VEC,TAF,PCT,C, 
-     +      eofwork, pct_cutoff, nout, bad_flag_dat, bad_flag_result,
-     +      err_msg, ier)
+     *      eofwork, bad_flag_dat, bad_flag_result, err_msg, ier)
 
         INTEGER nx
 	REAL DATA(NX,*), PCT(*), VAL(*), VEC(NX,*),
-     +            TAF(NX,*), C(NX,*)
+     *            TAF(NX,*), C(NX,*)
 
       CHARACTER*(*) err_msg
 
-      INTEGER nt, nout, ier, ix, i2, it, i, j, i1, ie, nx_compute, npr,
-     .        ic, is
-      REAL pct_cutoff, ct, eps, sumljgji, beta, tvar
+      INTEGER nt, ier, ix, i2, it, i, j, i1, ie, npr,
+     *        ic, is
+      REAL ct, eps, sumljgji, beta, tvar
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+     *               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
       REAL bad_flag_dat, bad_flag_result
 
 C---------------------------------------------------------------------
@@ -99,7 +292,7 @@ C.................Note PCT is used first as a dummy to save the mean.
 		pct(i)=pct(i)/ct
 	else
 	   write(err_msg,*) ' EOFIN_CHEL_GAP found the time series',
-     .                     ' at ix=',i,' with no values.'
+     *                     ' at ix=',i,' with no values.'
            ier = 1
 	   return
 	endif
@@ -116,7 +309,9 @@ C.................Form the mean product matrix.
 
 	ct=0.
 	DO 200 J=1,NT
-	if (data(i1,j).GT.bad_flag_dat .and. data(i2,j).GT.bad_flag_dat) then
+	if (data(i1,j).GT.bad_flag_dat .and. data(i2,j).GT.bad_flag_dat) t
+     *hen
+# 312
 		ct=ct+1.
 		C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
 	endif
@@ -126,8 +321,8 @@ C.................Form the mean product matrix.
 		c(i1,i2)=c(i1,i2)/ct
 	else
            write(err_msg,*) ' EOFIN_CHEL_GAP found no overlapping',
-     .       ' values in two time series at EOF-1D-coordinates ', 
-     .       i1,i2, ' Will be a zero in covariance matrix'
+     *       ' values in two time series at EOF-1D-coordinates ', 
+     *       i1,i2, ' Will be a zero in covariance matrix'
            ier = 1
            return
 	endif
@@ -167,20 +362,19 @@ cc     .					' to epsilon (=',eps,')'
 252	continue
 
 C----------------------------------------------------------------------
-C !ACM  Use pct_cutoff to determine how many TAF's to compute.  Array pct
-C       is then used as a dummy array below, and we will compute it again
-C       before returning.
+C !ACM  Array pctis used as a dummy array below, and we will compute it 
+C       again before returning.
 C.................Find the percentage of total variance accounted for by
 C.................each eigenvector.
 c.................Place this at the end to be able to use pct as dummy
 c.................for counting missing data in TAF calculation.
 	TVAR=0.0
-        nx_compute = 0
 	DO 1220 I=1,NX
 1220	TVAR=TVAR+VAL(I)
 	DO 1221 I=1,NX
 	PCT(I)=100.*ABS(VAL(I)/TVAR)
-1221	IF (PCT(I) .GE. pct_cutoff) nx_compute = I
+c 1221	IF (PCT(I) .GE. pct_cutoff) NX_compute = I
+1221	CONTINUE
 
 C------------------------------------------------------------------------
 C.................Renormalize EOFs.
@@ -194,9 +388,7 @@ C.................Renormalize each TAF by dividing by SQRT of its eigenvalue.
 
 c...........................loop over time
 
-        nx_compute = nx		! acm 1/01  testing time routine takes
-        nout = nx_compute
-
+c        nout = NX
 	DO 350 J=1,NT
 	npr = nt/ 10 
         if (nt .gt. 100) npr = (npr/ 10) * 10     
@@ -216,11 +408,11 @@ c............use ic to count them and pct(nx) to keep track of where they are.
 c..............if no blanks at this time, compute TAF as usual.
 	if (ic.eq.nx) then
 c................................loop over EOF numbers, then over space.
-		DO 360 IE=1,NX_compute
+		DO 360 IE=1,NX
 
 		DO 370 IS=1,NX
 370		TAF(IE,J) = TAF(IE,J) + 
-     .			    VEC(IS,IE)*DATA(IS,J)
+     *			    VEC(IS,IE)*DATA(IS,J)
 360		CONTINUE
 	elseif (ic.eq.0) then
 c..............If there are NO data values at time j, then blank the TAF.
@@ -232,16 +424,16 @@ c.............Now use c(nx,nx) as dummy to keep Chelton's Gamma_ji.
 c.............Fill c(i,j), where i and j are both EOF #s. 
 c.............Sum over MISSING data points only.
 
-		do 410 i1=1,nx_compute
+		do 410 i1=1,NX
 		do 410 i2=1,nx
 		   c(i1,i2)=0.
 		   do 415 ix=1,nx
 415		   if (pct(ix).eq.1)
-     .			c(i1,i2)=c(i1,i2)+vec(ix,i1)*vec(ix,i2)
+     *			c(i1,i2)=c(i1,i2)+vec(ix,i1)*vec(ix,i2)
 410		continue
 
 c..................Loop over EOF numbers.
-		do 420 ie=1,nx_compute
+		do 420 ie=1,NX
 
 c......................Find Beta_i(t) from Gamma_ij.
 c......................Also need the sum of Lambda_j*Gamma_ji**2 over all j.ne.i
@@ -262,12 +454,12 @@ c
 
 c.....................find beta.
 		   beta = ( (1.-c(ie,ie)) * val(ie) ) / 
-     .			 ( val(ie) * (1.-c(ie,ie))**2 + sumljgji )
+     *			 ( val(ie) * (1.-c(ie,ie))**2 + sumljgji )
 
 c...................Now find TAF. Summation in space over existing points only.
 		   do 440 is=1,nx
 440			if (pct(is).eq.0.) taf(ie,j) = taf(ie,j) + 
-     .			   	beta * vec(is,ie) * data(is,j)
+     *			   	beta * vec(is,ie) * data(is,j)
 
 420		continue
 
@@ -279,7 +471,8 @@ c...................Now find TAF. Summation in space over existing points only.
 C-------------------------------------------------------------------------
 C.................Renormalize each EOF by the SQRT of its eigenvalue.
 c.................loop over EOF numbers, then over space.
-	DO 300 IE=1,NX_compute
+
+	DO 300 IE=1,NX
 	do 315 j=1,nt
 
 315	if (taf(ie,j) .GT. bad_flag_dat) taf(ie,j)=taf(ie,j)/sqrt(val(ie))
@@ -301,7 +494,6 @@ C------------------------------------------------------------------------
 	END
 
 C************************************************************************
-
       SUBROUTINE QRSYM (A,N,E,X, eofwork)
 
       INTEGER N
@@ -315,7 +507,7 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
-     .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
+     *               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
 
       INTEGER nb
       REAL rnorm, eps
@@ -324,12 +516,12 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
       nb=n
 
       CALL HOUSEH(A,N,eofwork(1,1,1,1),eofwork(1,2,1,1),NB,
-     .            eofwork(1,4,1,1))
+     *            eofwork(1,4,1,1))
       CALL QRSTD (eofwork(1,1,1,1),eofwork(1,2,1,1),N,E,
-     .            eofwork(1,3,1,1),RNORM,EPS)
+     *            eofwork(1,3,1,1),RNORM,EPS)
 
       CALL TRIDIN(eofwork(1,1,1,1),eofwork(1,2,1,1),N,E,RNORM,
-     .            N,2.0**(-48),X,NB)
+     *            N,2.0**(-48),X,NB)
 
       CALL BACKS(eofwork(1,2,1,1),A,N,X,N,EPS,NB)
 
@@ -341,6 +533,7 @@ c      CALL BACKS(BETA,A,N,X,N,EPS,NB)
 
       RETURN
       END
+
 
 C**********************************************************************
 
@@ -557,7 +750,7 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
    50 M(I+1)=BI/U
       P(I)=U
       Q(I)=V
-      R(I)=0
+       R(I)=0
       U=C(I+1)-LAMBDA-M(I+1)*V
       V=BI1
       INT(I+1)=-1
@@ -637,6 +830,118 @@ C BACKTRANSFORMATION
    80 X(I,J)=X(I,J)+S*A(I,K)
    85 CONTINUE
    90 CONTINUE
+
+      RETURN
+      END
+
+      SUBROUTINE count_neof (id, arg_1, neof, ok, nx, ny, iz, nt, mx, 
+     *      flag, frac_timeser, err_msg, ier)
+
+*  Find number of time series with valid data.  This will be neof.
+*  Set array OK to mark which (x,y) have some good data.
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+      INTEGER id
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+     *     arg_incr(4,EF_MAX_ARGS)
+
+      INTEGER nt, i, j, n, nx, ny, iz, i1, j1
+      INTEGER mx, neof, ier
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     *     mem1lot:mem1hit)
+      REAL flag, a_nt, frac_timeser
+
+      REAL ok(nx,ny)
+      CHARACTER*(*) err_msg
+
+*  Set array ok = 1 if frac_timeser fraction of valid data exists at the point.
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      a_nt = float(nt)
+
+      neof = 0
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      DO j = 1, ny
+         i1 = arg_lo_ss(X_AXIS,ARG1)
+         DO i = 1, nx
+            ok(i,j) = 0.
+            DO n = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+               IF (arg_1(i1,j1,iz,n) .ne. flag) then
+                  ok(i,j) = ok(i,j) + 1.
+               endif
+            ENDDO
+            ok(i,j) = ok(i,j)/ a_nt
+            IF (ok(i,j) .ge. frac_timeser) neof = neof + 1 
+            i1 = i1 + arg_incr(X_AXIS,ARG1) 
+         ENDDO
+         j1 = j1 + arg_incr(Y_AXIS,ARG1) 
+      ENDDO
+
+      ier = 0
+      IF (neof .gt. mx) then
+        WRITE(err_msg,*) 'Increase parameter mx in eof.F ',
+     *                   'Set mx at least', neof
+        ier = 1
+        RETURN
+      ENDIF
+
+      RETURN
+      END
+
+************************************************************************
+      SUBROUTINE pack_ef (id, arg_1, ddat_1d, isave_jsave, neof,  
+     *                 ok, frac_timeser, nx, ny, iz, nt)
+
+*  put arg_1(x,y,t) into one list ddat_1d(neof,nt)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INTEGER id
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+     *     arg_incr(4,EF_MAX_ARGS)
+
+      INTEGER nt, i, j, n, nx, ny, iz, i1, j1, l1
+      INTEGER ipack, neof
+
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+     *     mem1lot:mem1hit)
+      REAL ddat_1d(neof,nt)
+
+      REAL isave_jsave(wrk7lox:wrk7hix, wrk7loy:wrk7hiy,
+     *               wrk7loz:wrk7hiz, wrk7lot:wrk7hit)
+
+      REAL frac_timeser
+      REAL ok(nx,ny)
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      ipack = 0
+
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      DO j = 1, ny
+         i1 = arg_lo_ss(X_AXIS,ARG1)
+         DO i = 1, nx
+            IF (ok(i,j) .GE. frac_timeser) THEN
+               ipack = ipack + 1
+ 
+               isave_jsave(ipack,1,1,1) = i
+               isave_jsave(ipack,2,1,1) = j
+ 
+               l1 = arg_lo_ss(T_AXIS,ARG1)
+               DO n = 1, nt
+                  ddat_1d(ipack, n) = arg_1(i1,j1,iz,l1)
+                  l1 = l1 + arg_incr(T_AXIS,ARG1) 
+               ENDDO
+
+             ENDIF
+             i1 = i1 + arg_incr(X_AXIS,ARG1) 
+         ENDDO
+         j1 = j1 + arg_incr(Y_AXIS,ARG1) 
+      ENDDO
 
       RETURN
       END

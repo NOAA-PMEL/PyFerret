@@ -1,7 +1,5 @@
 \cancel mode verify
-!
-! better_histogram.jnl
-!
+!!
 ! frequency_histogram.jnl - *sh* 8/94
 ! *acm* Add argument to choose hollow or filled bars. Also fix
 !       the call to bar_chart2.jnl which should use plot/line
@@ -16,6 +14,10 @@
 ! 	set (it may even crash).  In this case either include the Y limits
 !	in the expression (i.e. "temp[y=0]" instead of "temp" with Y=0 in the
 !       region) or specify a free axis in the optional [AXIS] parameter
+
+! Note: If this script fails due to a large amount of input data, use 
+!       frequency_histogram2.jnl which does not call Unix sort and awk
+!       tools, but instead uses Ferret functions to compile the bins.
 
 ! arguments:
 !    expression  - expression (values) from which histogram is to be computed

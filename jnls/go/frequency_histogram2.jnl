@@ -1,9 +1,11 @@
 \cancel mode verify
 ! frequency_histogram2.jnl - *acm* 10/02  
 ! 
-! Description: produce a 1D frequency histogram,
-!              using the sort and sample functions, and external function
-!              bin_index_wt to compile the bin weights.
+! Description: produce a 1D frequency histogram, using Ferret functions to
+!              compile bin data. Calls sort and sample functions, and 
+!              external function bin_index_wt are called rather than Unix 
+!              sort and awk. This works when frequency_histogram.jnl fails 
+!              due to large input data.
 
 ! Usage:  
 !    yes? GO frequency_histogram expression lo hi del [weight] [axis] [style]

@@ -29,6 +29,8 @@ fer	fer
 ppl	ppl
 fmt 	fmt
 gksm2ps gksm2ps
+ext_func external_functions
+bench 	bench
 
 #new one
 corba 	corba
@@ -41,4 +43,6 @@ WebFerret WebFerret &Ferret &CGIservlet &utility
 lasxml lasxml &xml
 godae godae &xml
 
-FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks
+FERRET_ALL &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks &ext_func &bench
+FERRET &fer &ppl &fmt 
+

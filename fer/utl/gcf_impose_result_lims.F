@@ -1,5 +1,5 @@
-	SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
-     .          cx_list, res_cx, status )
+      SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
+     .     cx_list, res_cx, status )
 
 * Complete the context for the result of a grid-changing function.
 * Fill in the limits for those axes of the grid changing function which
@@ -56,6 +56,10 @@
 	uvar = cx_variable(res_cx)
 	res_grd = cx_grid(res_cx)
 
+* get "axis_will_be()" for external functions
+	IF (gcfcn .GT. gfcn_num_internal ) THEN
+	   CALL EFCN_GET_AXIS_WILL_BE(gcfcn, axis_will_be)
+	ENDIF
 
 * Fill in the limits for those axes of the grid changing function which
 * were "imposed" by the function.
@@ -72,8 +76,8 @@
      .	      .NE. pgc_axis_supplied_herein) GOTO 100	! 100 if not custom
 	   ELSE
 * ... external function imposing custom axis?
-*             STOP 'EF code must GOTO 100 if not custom axis'
-	      GOTO 100
+              IF (  axis_will_be(idim) .NE.
+     .             pgc_axis_supplied_herein) GOTO 100 ! 100 if not custom
 	   ENDIF
 
 * get size of custom output axis
@@ -224,9 +228,6 @@
 *     onto the result? (perhaps a parameter of the function determines this?)
 * ... If so, impose 'em here
 
-* What kind of axes are we dealing with?
-	   CALL EFCN_GET_AXIS_WILL_BE(gcfcn, axis_will_be)
-
 	   DO 450 idim = 1, 4
 
 
@@ -236,7 +237,7 @@
 
 	      IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract)	THEN
 
-		 CALL EFCN_GET_AXIS_ABSTRACT(gcfcn, memory, mr_list, 
+		 CALL EFCN_GET_RESULT_LIMS(gcfcn, memory, mr_list, 
      .           cx_list, idim, lo_lim,hi_lim)
 		 cx_lo_ss(res_cx,idim) = lo_lim
 		 cx_hi_ss(res_cx,idim) = hi_lim
@@ -251,13 +252,15 @@
 *       do nothing
 
 
-* If the axis is custom ... not supported yet
+* If the axis is custom
 
 	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein)
      .                THEN
-		 CALL ERRMSG( ferr_internal, status,
-     .                'gcf_impose_result_lims: external function'// 
-     .                'custom axes not supported', *5000 )
+* do nothing.  accept the limits defined at the top.
+
+*		 CALL ERRMSG( ferr_internal, status,
+*     .                'gcf_impose_result_lims: external function'// 
+*     .                'custom axes not supported', *5000 )
 
 
 * If the axis is implied_by_args ... nothing needs to be done
@@ -276,48 +279,7 @@
 
 	ENDIF
 
-c* *jc* 01/98 Removing this section to allow for arguments which are constants.
-c*
 	RETURN
-
-********************************
-* Reconcile the limits of the arguments with the limits of the result where
-* offsets are imposed.
-* At this point there is one valid reason for an incomplete result context --
-* that is, that the function requests "offset" limits from its arguments.
-* Offsets are used, for example, in taking a centered derivative -- an offset
-* of an additional point is needed in the argument relative to the result.
-* However, the process of applying the offsets introduces ambiguities -- e.g.
-* with an offset of hi_lim+1, a request for the full axis range of the
-* function result and a request for the full range minus one will both lead
-* to a full range argument.
-* To sidestep the ambiguities axes of arguments with offset limits are not
-* merged in MERGE_CONTEXT -- instead they are merged here when all of the
-* argument limits are available at the same moment.
-
-* is the result context incomplete?
-
-*JC	DO 1000 idim = 1, 4
-*JC	   IF ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8 ) THEN
-* only UVARs end up in this routine so uvar_given is available
-*JC	      IF (uvar_given(idim,uvar).EQ.uvlim_irrelevant) GOTO 1000
-
-* ... logic for offsets not yet implemented -- take internal error
-* some ideas:
-*  i) normal behavior is to impose argument minus offset as limits
-* ii) ambiguities will be permitted only within offset points of axis edge
-*     else they are errors.
-*iii) if ambiguous at edges how to resolve??? Need to know the **requested**
-*     limits
-
-*JC	      CALL ERRMSG( ferr_internal, status,
-*JC     .			'gcf_get_result_lims: incomplete cx', *5000 )
-
-*JC	   ENDIF
-*JC 1000	CONTINUE
-
-*JC	RETURN
-
 
 * error exit
  5000	RETURN

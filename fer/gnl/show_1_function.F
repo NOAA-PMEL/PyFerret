@@ -156,7 +156,7 @@
 	   ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	      risc_buff = risc_buff(:ll+2) // gfcn_arg_descr(iarg)
 	   ELSE
-	      call efcn_get_arg_descr(ifcn, iarg, fhol)
+	      call efcn_get_arg_desc(ifcn, iarg, fhol)
 	      call TM_CTOF_STRNG( fhol, ef_descr, slen)
 	      risc_buff = risc_buff(:ll+2) // ef_descr
 	   ENDIF
@@ -166,7 +166,7 @@
 	   ELSEIF ( ifcn .LE. gfcn_num_internal ) THEN
 	      units = gfcn_arg_units(iarg)
 	   ELSE
-	      call efcn_get_arg_units(ifcn, iarg, fhol)
+	      call efcn_get_arg_unit(ifcn, iarg, fhol)
 	      call TM_CTOF_STRNG( fhol, ef_units, slen)
 	      units = ef_units
 	   ENDIF

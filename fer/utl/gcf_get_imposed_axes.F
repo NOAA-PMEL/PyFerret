@@ -1,4 +1,4 @@
-	SUBROUTINE GCF_GET_IMPOSED_AXES( gcfcn, cx_base, axes, status )
+      SUBROUTINE GCF_GET_IMPOSED_AXES( gcfcn, cx_base, axes, status )
 
 * supply the axes for those axes of the grid changing function which
 * are "imposed" by the function
@@ -15,15 +15,16 @@
 *	7/97 - slight reorg for external functions
 * V491: 1/98 - make test function TIMES2 impose its T axis
 
+
 * calling argument declarations
 	INTEGER	gcfcn, cx_base, axes(4), status
 
 * internal variable declarations
-	LOGICAL has_imposed_axes
+	LOGICAL known_limits
 	INTEGER	CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN, CAXIS_LEN,
-     .		cx, idim, axis_will_be(4), n, grid
+     .		cx, idim, axis_will_be(4), n, grid, modulo
 	REAL*8	TM_WORLD, dlo, dhi, del
-	CHARACTER*40 GCF_NAME, buff
+	CHARACTER*40 GCF_NAME, buff, unit
 
 * Upon entry to this routine the context stack should be organized as
 *	 	  default context (for this uvar)
@@ -43,6 +44,7 @@
 	include 'ferret_cmn/xtext_info.cmn'	! w/ ww_dim_name
 	include 'ferret_cmn/xfr_grid.cmn'       ! w/ mgrid_abstract
 	include 'ferret_cmn/xcontext.cmn'       ! for TIMES2
+	include 'ferret_cmn/xvariables.cmn'     ! for TIMES2
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
@@ -53,6 +55,7 @@
 	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'	! W/ WW_DIM_NAME
 	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'       ! w/ mgrid_abstract
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'       ! for TIMES2
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'     ! for TIMES2
 #endif
 
 * initialize
@@ -64,7 +67,6 @@
 	ELSE
 	   call efcn_get_axis_will_be(gcfcn, axis_will_be)
 	ENDIF
-	has_imposed_axes = .FALSE. ! innocent until proven guilty
 
 * process what axes we can: either "merged" (determined by grid stack logic),
 *	NORMAL, and ABSTRACT ... but not IMPOSED ("supplied herein")
@@ -73,10 +75,12 @@
 	      axes(idim) = grid_line(1,mgrid_abstract)
 	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
 	      axes(idim) = mnormal
-	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args) THEN
+	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args) 
+     .             THEN
 	      axes(idim) = unspecified_int4   ! ... determined elsewhere
-	   ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) THEN
-	      has_imposed_axes = .TRUE.
+           ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) 
+     .             THEN
+* nothing to do here
 	   ELSE	      
 	      buff = GCF_NAME( gcfcn )
 	      CALL ERRMSG(ferr_internal, status,
@@ -127,13 +131,23 @@
 *	that the argument limits are ambiguous or contradictory.
 
 * compute the lo/hi/delta of the new custom (regular) axis
-	   IF ( cx_given(t_dim, cx) ) THEN
-* ... limits of arg are explicit -- use 'em (and hope for the best!)
-	      n = CX_DIM_LEN(t_dim, cx)
-	      dlo = TM_WORLD(cx_lo_ss(cx,t_dim), cx_grid(cx), t_dim,
-     .						box_middle )
-	      dhi = TM_WORLD(cx_hi_ss(cx,t_dim), cx_grid(cx), t_dim,
-     .						box_middle )
+
+* are the argument's limits along this axis known ?
+	known_limits = cx_given(t_dim, cx)	! given right in fcn arg list
+	IF ( cx_category(cx) .EQ. cat_user_var ) THEN
+* ... user variables may contain limits embedded in its definition
+	   known_limits = known_limits .OR.
+     .          uvar_given(t_dim,cx_variable(cx))
+     .          .LE. uvlim_gvn_xact
+	ENDIF
+        IF ( known_limits ) THEN
+* ... limits of arg are explicit -- use 'em
+
+           n = CX_DIM_LEN(t_dim, cx)
+           dlo = TM_WORLD(cx_lo_ss(cx,t_dim), cx_grid(cx), t_dim,
+     .          box_middle )
+           dhi = TM_WORLD(cx_hi_ss(cx,t_dim), cx_grid(cx), t_dim,
+     .          box_middle )
 	   ELSE
 * ... limits of arg are not explicit -- use axis lims (and hope for the best!)
 	      n = CAXIS_LEN(t_dim, cx)
@@ -158,11 +172,23 @@
 
 
 **************
+*     FOR EXTERNAL FUNCTIONS
+
+
 	ELSEIF (gcfcn .GT. gfcn_num_internal ) THEN
 
-	   IF ( has_imposed_axes ) THEN
-	      STOP 'need to request externally imposed axis'
-	   ENDIF
+           DO 400 idim = 1, 4
+
+              IF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) THEN
+                 CALL EF_GET_CUSTOM_AXIS(gcfcn, idim, dlo, dhi, del,
+     .                unit, modulo)
+                 CALL TM_MAKE_DYN_LINE(idim, dlo, dhi, del,
+     .                unit, modulo, axes(idim), status)
+                 IF (status .NE. ferr_ok) GOTO 5000
+              ENDIF
+
+
+ 400       CONTINUE
 
 	ENDIF
 

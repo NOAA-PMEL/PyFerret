@@ -348,21 +348,22 @@ C       multiplying the index value by the DX or DY delta values.
 
 
 	 if (makep.eq.'CONTOUR') then
-
+c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
+c       this bombed aix compiler, though it seems to work on others
 	    CALL CONSEG(Z,NX,NY,XX(IZLEN+1),YY(IZLEN+1),NX,NY,
-	1	 XFF,XOF,YFF,YOF,ZLEV,LDIG,LWGT,LCLR,NLEV2,HGT,
-	2	 NARC,CANGLE)
+     1	 XFF,XOF,YFF,YOF,ZLEV,LDIG,LWGT,LCLR,NLEV2,HGT,
+     2	 NARC,CANGLE)
 
 	 else if (makep.eq.'FILL') then
 
 	    call arfill(z,xx(izlen+1),yy(izlen+1),nx,ny,
-	1	 zlev,nlev2)
+     1	 zlev,nlev2)
 C       CALL DAXIS(XF,YF,NMX,NMY)
 
 	 else
 
 	    call sqrfill(z,xx(izlen+1),yy(izlen+1),nx,ny,
-	1	 zlev,nlev2)
+     1	 zlev,nlev2)
 
 	 endif
 

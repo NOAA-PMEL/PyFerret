@@ -173,8 +173,10 @@ C       multiplying the index value by the DX or DY delta values.
 	      YY(IZLEN+J)=DY*(J-1)+YMIN
  510	   CONTINUE
 
+c *kob* 8/97 had to move the conintation marker to col 5 - it was in col 8
+c       this bombed aix compiler, though it seems to work on others
 	   CALL SHADE_SUB(Z,XX(IZLEN+1),YY(IZLEN+1),XX(IZLEN+NX+1),
-	1	YY(IZLEN+NY+1))
+     1	       YY(IZLEN+NY+1))
 
 	ENDIF
 

@@ -103,8 +103,8 @@ C       Fill in the zz() subregion with values from z().
 	   do 120 j=jam,jbm 
 	      jj =  j-jam+1 
 	      if ((zle.and.z(i,j).le.cmzle).or.
-	1	   (zeq.and.z(i,j).eq.cmzeq).or.
-	2	   (zge.and.z(i,j).ge.cmzge)) then
+     1	   (zeq.and.z(i,j).eq.cmzeq).or.
+     2	   (zge.and.z(i,j).ge.cmzge)) then
 		 zz(ii,jj)=1.e35
 	      else
 		 zz(ii,jj)=z(i,j)
@@ -115,8 +115,10 @@ C       Fill in the zz() subregion with values from z().
 
 C       Actually contour the zz() subregion.
 
+c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
+c       this bombed aix compiler, though it seems to work on others
 	call contur(zz,izz,izz,px(iam),py(jam),nxx,nyy,xf,xoff,yf,yoff,
-	1    zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xc,yc) 
+     1    zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xc,yc) 
 	
 
 C       This is the Y axis loop

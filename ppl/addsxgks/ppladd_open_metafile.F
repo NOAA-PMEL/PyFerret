@@ -147,8 +147,10 @@ C	XGKS DOESN'T DEFINE GMOUTP
 c
 c       Support queries on metafile workstations
 c
+c *kob* 8/97 had to move the conintation marker to col 5 - it was in col 8
+c       this bombed aix compiler, though it seems to work on others
 	subroutine query_xgks_wkstn(zwstype,error,max_pline,max_pmark,
-	1    max_text,max_fill_area,max_pattern,max_color)
+     1	max_text,max_fill_area,max_pattern,max_color)
 	implicit none
 #ifdef unix
 	include 'tmap_pplv11inc/gkscm2.cmn'! with declarations    
@@ -163,7 +165,7 @@ c
 
 	if (.not.its_batch_graphics() .and. zwstype .eq. ws_xwindow) then
 	   call gqlwk(zwstype,error,max_pline,max_pmark,
-	1	max_text,max_fill_area,max_pattern,max_color)
+     1	   max_text,max_fill_area,max_pattern,max_color)
 	else
 	   error = 0
 	   max_pline = 20

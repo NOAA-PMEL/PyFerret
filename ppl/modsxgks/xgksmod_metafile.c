@@ -1177,8 +1177,12 @@ XgksMoOpenWs(ws)
   Gint status;
     ws->wscolour	= MAX_META_WSCOLOURS;
     ws->set_colour_rep	= NULL;
-
-
+    
+    /* Make sure window boundaries are set to zero to avoid */
+    /* floating point exceptions on DEC OSF *js* 9.97 */
+    ws->wbound.x = 0;
+    ws->wbound.y = 0;
+      
     if (strstr(ws->conn, ".cgm") != NULL || strstr(ws->conn, ".CGM") != NULL) {
       status = CGMmoOpen(ws);
     } else if (strstr(ws->conn, ".ps") != NULL ||

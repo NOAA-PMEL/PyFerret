@@ -1,12 +1,11 @@
- ! NOAA/PMEL TMAP
- ! Program FERRET (GUI)
- ! Version 4.91 - 05/19/98
- ! 29-Jul-98 11:09     
+! bench_gridding.jnl  
+! *acm* 8/99
 
-! Call scatter2gridlaplace_xy 
+! Call scatter2gridlaplace_xy  and scatter2gridgauss_xy
 ! to put scattered data onto a regularly spaced grid.
 
 ! function definition from objective_analysis_demo.jnl
+
 
 define axis/x=0:10:0.05 x10
 define axis/y=0:10:0.05 y10
@@ -26,32 +25,23 @@ let Y0 = 8
 LET sample_function = fcn1 + wave
 
 let xpts = x; let ypts = y
-SHADE/title="A field with 200 sample points marked" sample_function 
+
+list/x=4:5/y=1 sample_function
 
 let xpts = 10*randu(i); let ypts = 10*randu(i+2)
-set region/i=1:200
-plot/vs/over/symbols xpts,ypts
 
+set region/i=1:200
 define axis/x=1:10:.5 xax5
 define axis/y=1:10:.5 yax5
-set wind/clear
 
-
-set view ul
 let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
-SHADE/TITLE="Laplace Gridding (5,5) to 20x20 grid" sgrid 
+list/x=4:5/y=1 sgrid
 
-set view ur
 let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
-SHADE/TITLE="Laplace Gridding (1,1) to 20x20" sgrid  
+list/x=4:5/y=1 sgrid
 
-set view ll
 let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
-SHADE/TITLE="Gauss Gridding (2) to 20x20 grid" sgrid  
+list/x=4:5/y=1 sgrid
 
-set view lr
-let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
-SHADE/TITLE="Gauss Gridding (6) to 20x20 grid" sgrid  
-
-set view full
-set wind/clear
+let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 6)
+list/x=4:5/y=1 sgrid

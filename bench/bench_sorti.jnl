@@ -21,11 +21,11 @@ list tsorted_indices, tsorted_sst
 can region
 set data coads_climatology
 set region/l=5
-shade sst
 
 let xsorted_indices = sorti(sst)
 let xsorted_sst = samplei(sst, xsorted_indices)
-shade xsorted_sst
+! shade xsorted_sst
+list/y=0/i=1:15 xsorted_sst
 
 set region/l=5/y=1
 let len = xsorted_sst[i=@ngd]

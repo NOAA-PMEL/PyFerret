@@ -27,5 +27,5 @@ list zsorted_temp
 
 let zsorted_indices = sortk(temp) - 100
 let zsorted_temp = samplek(temp, zsorted_indices)
-shade zsorted_temp
+list zsorted_temp
 

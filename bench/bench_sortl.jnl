@@ -14,17 +14,13 @@ let tsorted_sst = samplel(sst, tsorted_indices)
 
 list tsorted_indices, tsorted_sst
 
-
-
-
 ! test sortt with data containing bad/missing data.
 
 can region 
 
-! use  "/home/ja4/kobrien/FERRET/bench/coads_vwnd.cdf"
 use  coads_vwnd.cdf
 set region/i=90/j=65
-plot vwnd
+list vwnd
 
 let tsorted_indices = sortl(vwnd)
 let tsorted_wnd = samplel(vwnd, tsorted_indices)
@@ -33,10 +29,7 @@ list tsorted_indices, tsorted_wnd
 let len = tsorted_wnd[l=@ngd]
 list len
 
-!  This illustrates a problem with BAIL OUT of the function with
-!  out-of-range indices:
-
- let tsorted_indices = sortl(vwnd) + 90
- let tsorted_wnd = samplel(vwnd, tsorted_indices)
- list tsorted_indices, tsorted_wnd
+let tsorted_indices = sortl(vwnd) + 90
+let tsorted_wnd = samplel(vwnd, tsorted_indices)
+list tsorted_indices, tsorted_wnd
 

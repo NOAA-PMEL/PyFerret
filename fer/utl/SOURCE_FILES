@@ -30,6 +30,7 @@ cstring_insert.F\
 de_escape_string.F\
 deallo_all_grids.F\
 deallo_grid.F\
+deallo_unformed_grid.F\
 dense_contig_region.F\
 extract_dp_line.F\
 extract_line.F\

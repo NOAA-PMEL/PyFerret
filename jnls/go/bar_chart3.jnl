@@ -63,6 +63,6 @@ LET/QUIET BCHx4 = MISSING(IF BCHpindex LE 2 then BCHxmid ELSE BCHxmid[($BCHiax)=
 ! execute the polygon command
 $1/coord_ax=($BCHbar_ax)  BCHx4,BCHy4 ($BCHcolor)
 
-!cancel symbol BCH*
-!cancel variable BCH*
+cancel symbol BCH*
+cancel variable BCH*
 set mode/last verify

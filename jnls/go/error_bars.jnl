@@ -76,6 +76,6 @@ $1($ERBtranspz"/over")/over/coord=($ERBbar_dim)) ERBx+ERBxbar*ERBwidth,ERBy+ERBe
 $1($ERBtranspz"/over")/over/coord=($ERBbar_dim)/NOLABEL ERBx+ERBxbar*ERBwidth,ERBy-ERBerr_dn*ERBybar
 
 
-!cancel symbol ERB*
-!cancel variable ERB*
+cancel symbol ERB*
+cancel variable ERB*
 set mode/last verify

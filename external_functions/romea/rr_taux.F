@@ -202,6 +202,20 @@ C		4) VONK = 0.40 VON KARMAN'S CONSTANT
 C		5) THE SMALL WT REGRESSION, WTR BELOW IF BIG=FALSE
 C		       WITH A=(.0008,  Z/L>0)   =(.0010,  Z/L<0)
 	LOGICAL BIG
+
+*  ARGUMENT DECLARATIONS
+
+      REAL UZ, ZU, TZ, ZT, QZ, ZQ, TSFC, TOL, UW, WT, WQ, CD
+
+*  LOCAL VARIABLE DECLARATIONS
+
+      INTEGER iter
+      REAL    a, u, dth, t, cda, cts, ctu, cea, uch, rh, vonk, delth, 
+     .        qsat, delq, tkelv, f1, t0, udt, f2, wtr, u3, zuol, ztol, 
+     .        zqol, p10, pg10, s10, sg10, phim, phi, psim, phit, psimt, 
+     .        psit, phiq, psimq, rk, up, cp, u10, diff, cdn, sqcd, rcd,
+     .        ctn, rcdt, ct, rkt, dth10, cen, rcdq, ce, psi, psiq
+
 	WTR(A,U,DTH) = 0.002 + A*U*DTH
 C
 C		6) THE SATURATION HUMIDITY OF AIR AT T CELSIUS QSAT(T) SAT(T) I
@@ -325,6 +339,15 @@ C
 C FZOL:		SUBROUTINE TO ESTIMATE THE STABILITY FUNCTIONS
 C		USING THE MOST UP TO DATE FLUX-PROFILE RELATIONSHIPS
 C
+
+*  ARGUMENT DECLARATIONS
+
+        REAL ZOL,PHIM,PHIG,PSIM,PSIG
+
+*  LOCAL VARIABLE DECLARATIONS
+
+        REAL X
+
 	IF(ZOL .GE. 0.0) GO TO 2
 C		UNSTABLE
 	X = (1.0 - 16.0*ZOL)**0.25
@@ -342,8 +365,4 @@ C
 	PSIM = -7.0*ZOL
 	RETURN
 	END
-
-
-
-
 

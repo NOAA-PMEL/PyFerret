@@ -851,8 +851,12 @@ C
 C     WSAVE   CONTAINS INITIALIZATION CALCULATIONS WHICH MUST NOT BE
 C             DESTROYED BETWEEN CALLS OF SUBROUTINE CFFTF OR CFFTB
 C
+      real       c(*)       ,wsave(*)
 
-      dimension       c(*)       ,wsave(*)
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer n, iw1, iw2
+
       if (n .eq. 1) return
       iw1 = n+n+1
       iw2 = iw1+n+n
@@ -864,7 +868,13 @@ C
 C***REFER TO CFFTF
 C***ROUTINES CALLED  PASSF,PASSF5,PASSF3,PASSF2,PASSF4
 
-      dimension       ch(*)      ,c(*)       ,wa(*)      ,ifac(*)
+      real       ch(*)      ,c(*)       ,wa(*)      ,ifac(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      INTEGER i, n, nf, na, l1, iw, k1, ip, l2, ido, idot, idl1, 
+     .        ix2, ix3, ix4, nac, n2
+
       nf = ifac(2)
       na = 0
       l1 = 1
@@ -951,7 +961,12 @@ C             ARE REQUIRED FOR DIFFERENT VALUES OF N. THE CONTENTS OF
 C             WSAVE MUST NOT BE CHANGED BETWEEN CALLS OF CFFTF OR CFFTB
 C
 
-      dimension       wsave(*)
+      real       wsave(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer  n, iw1, iw2
+
       if (n .eq. 1) return
       iw1 = n+n+1
       iw2 = iw1+n+n
@@ -962,7 +977,14 @@ C
 C***REFER TO CFFTI
 C***ROUTINES CALLED  (NONE)
 
-      dimension       wa(*)      ,ifac(*)    ,ntryh(4)
+      real       wa(*)      ,ifac(*)    ,ntryh(4)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer n, nl, nf, j, ntry, nq, nr, i, ib, l1, k1, ip, ld, l2, 
+     .        ido, idot, ipm,i1,ii
+      real    argh, wldc, wlds, arg, dl1c, dl1s, dc, ds, tpi, wldch
+
       data ntryh(1),ntryh(2),ntryh(3),ntryh(4)/3,4,2,5/
       nl = n
       nf = 0
@@ -1080,7 +1102,11 @@ C             DESTROYED BETWEEN CALLS OF SUBROUTINE CFFTF OR CFFTB
 
 C***ROUTINES CALLED  CFFTB1
 
-      dimension c(*), wsave(*)
+      real c(*), wsave(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer n, iw1, iw2
       if (n .eq. 1) return
       iw1 = n+n+1
       iw2 = iw1+n+n
@@ -1093,7 +1119,13 @@ C***ROUTINES CALLED  CFFTB1
 C***REFER TO CFFTB
 C***ROUTINES CALLED  PASSB,PASSB5,PASSB3,PASSB2,PASSB4
 
-      dimension       ch(*)      ,c(*)       ,wa(*)      ,ifac(*)
+      real       ch(*)      ,c(*)       ,wa(*)      ,ifac(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer n, nf, na, l1, iw, k1, ip, l2, ido, idot, idl1,
+     .        ix2, ix3, ix4, nac, n2, i
+
       nf = ifac(2)
       na = 0
       l1 = 1
@@ -1158,9 +1190,16 @@ C***ROUTINES CALLED  PASSB,PASSB5,PASSB3,PASSB2,PASSB4
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 
-      dimension       ch(ido,l1,ip)          ,cc(ido,ip,l1)          ,
+      real       ch(ido,l1,ip)          ,cc(ido,ip,l1)          ,
      1                c1(ido,l1,ip)          ,wa(*)      ,c2(idl1,ip),
      2                ch2(idl1,ip)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer nac, ido, ip, l1, idl1, idot, nt, ipp2, ipph, idp, j, 
+     .        jc, k, i, idl, inc, l, lc, ik, idlj, idij, idj
+      real    war, wai
+
       idot = ido/2
       nt = ip*idl1
       ipp2 = ip+2
@@ -1278,8 +1317,14 @@ C
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,2,l1)           ,ch(ido,l1,2)           ,
+      real       cc(ido,2,l1)           ,ch(ido,l1,2)           ,
      1                wa1(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real    tr2, ti2
+
       if (ido .gt. 2) go to 102
       do 101 k=1,l1
          ch(1,k,1) = cc(1,1,k)+cc(1,2,k)
@@ -1305,8 +1350,14 @@ C***ROUTINES CALLED  (NONE)
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,3,l1)           ,ch(ido,l1,3)           ,
+      real       cc(ido,3,l1)           ,ch(ido,l1,3)           ,
      1                wa1(*)     ,wa2(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real taur, taui, tr2, cr2, ti2, ci2, cr3, ci3, dr2, dr3, di2, di3
+
       data taur,taui /-.5,.866025403784439/
       if (ido .ne. 2) go to 102
       do 101 k=1,l1
@@ -1351,8 +1402,15 @@ C***ROUTINES CALLED  (NONE)
 C***REFER TO CFFTB
 C***ROUTINES CALLED (NONE)
 
-      dimension       cc(ido,4,l1)           ,ch(ido,l1,4)           ,
+      real       cc(ido,4,l1)           ,ch(ido,l1,4)           ,
      1                wa1(*)     ,wa2(*)     ,wa3(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real    ti1, ti2, ti3, ti4, tr1, tr2, tr3, tr4, 
+     .        cr2, cr3, cr4, ci2, ci3, ci4
+
       if (ido .ne. 2) go to 102
       do 101 k=1,l1
          ti1 = cc(2,1,k)-cc(2,3,k)
@@ -1406,8 +1464,16 @@ C***ROUTINES CALLED (NONE)
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,5,l1)           ,ch(ido,l1,5)           ,
+      real       cc(ido,5,l1)           ,ch(ido,l1,5)           ,
      1                wa1(*)     ,wa2(*)     ,wa3(*)     ,wa4(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real tr2, tr4, tr5, tr11, tr12, ti2, ti3, ti4, ti5, ti11, ti12, 
+     .     cr2, cr3, cr4, cr5, ci2, ci3, ci4, ci5, dr4, dr5, 
+     .     di2, di3, di4, di5, tr3, dr3, dr2
+
       data tr11,ti11,tr12,ti12 /.309016994374947,.951056516295154,
      1-.809016994374947,.587785252292473/
       if (ido .ne. 2) go to 102
@@ -1485,9 +1551,16 @@ C***ROUTINES CALLED  (NONE)
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 
-      dimension       ch(ido,l1,ip)          ,cc(ido,ip,l1)          ,
+      real       ch(ido,l1,ip)          ,cc(ido,ip,l1)          ,
      1                c1(ido,l1,ip)          ,wa(*)      ,c2(idl1,ip),
      2                ch2(idl1,ip)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer nac, ido, ip, l1, idl1, idot, nt, ipp2, ipph, idp, j, jc,
+     .        k, i, idl, inc, l, lc, ik, idlj, idij, idj
+      real    war, wai
+
       idot = ido/2
       nt = ip*idl1
       ipp2 = ip+2
@@ -1605,8 +1678,14 @@ C
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,2,l1)           ,ch(ido,l1,2)           ,
+      real       cc(ido,2,l1)           ,ch(ido,l1,2)           ,
      1                wa1(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real    tr2, ti2
+
       if (ido .gt. 2) go to 102
       do 101 k=1,l1
          ch(1,k,1) = cc(1,1,k)+cc(1,2,k)
@@ -1632,8 +1711,14 @@ C***ROUTINES CALLED  (NONE)
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,3,l1)           ,ch(ido,l1,3)           ,
+      real       cc(ido,3,l1)           ,ch(ido,l1,3)           ,
      1                wa1(*)     ,wa2(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real taur, taui, tr2, cr2, ti2, ci2, cr3, ci3, dr2, dr3, di2, di3
+
       data taur,taui /-.5,-.866025403784439/
       if (ido .ne. 2) go to 102
       do 101 k=1,l1
@@ -1678,8 +1763,15 @@ C***ROUTINES CALLED  (NONE)
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,4,l1)           ,ch(ido,l1,4)           ,
+      real       cc(ido,4,l1)           ,ch(ido,l1,4)           ,
      1                wa1(*)     ,wa2(*)     ,wa3(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real    ti1, ti2, tr4, ti3, tr1, tr2, ti4, tr3, cr3, ci3, 
+     .        cr2, cr4, ci2, ci4
+
       if (ido .ne. 2) go to 102
       do 101 k=1,l1
          ti1 = cc(2,1,k)-cc(2,3,k)
@@ -1733,8 +1825,16 @@ C***ROUTINES CALLED  (NONE)
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 
-      dimension       cc(ido,5,l1)           ,ch(ido,l1,5)           ,
+      real       cc(ido,5,l1)           ,ch(ido,l1,5)           ,
      1                wa1(*)     ,wa2(*)     ,wa3(*)     ,wa4(*)
+
+* INTERNAL VARIABLE DECLARATIONS
+
+      integer ido, l1, k, i
+      real    tr11, ti11, tr12, ti12, ti5, ti2, ti4, ti3, tr5, tr2, 
+     .        tr4, tr3, cr2, ci2, cr3, ci3, cr5, ci5, cr4, ci4, dr3, 
+     .        dr4, di3, di4, dr5, dr2, di5, di2
+
       data tr11,ti11,tr12,ti12 /.309016994374947,-.951056516295154,
      1-.809016994374947,-.587785252292473/
       if (ido .ne. 2) go to 102

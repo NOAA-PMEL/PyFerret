@@ -111,8 +111,8 @@
      .		saved_abstract_grid,
      .		xwind_node_len,
      .		genl_storage(25),
-     .		ifstk, if_cs(max_ifstk), if_doing(max_ifstk),
-     .          its_script
+     .		ifstk, if_cs(max_ifstk), if_doing(max_ifstk)
+
 
 	LOGICAL
      .		list_format_given, list_unformatted, list_dsf, list_redirected,
@@ -124,7 +124,9 @@
      .		if_conditional,
      .		denig_xylim_msg_done,
      .		denig_pen_msg_done,
-     .		in_get_grid_mode
+     .		in_get_grid_mode,
+     .          its_script
+
 
 ! Note: available_char_var is unused
 	CHARACTER

@@ -53,6 +53,8 @@
 *       user variable names are allowed in quotations just for
 *       consistency. Pseudo-variable names in quotes are not allowed -- so they
 *       don't get confused
+* V510 5/00 *sh* - don't match on a cvar unless the data set indicates
+*	Philander-Seigel
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -63,6 +65,7 @@
 	include 'xvariables.cmn'
 	include 'xcalc_vars.cmn'
 	include	'xalgebra.cmn'
+	include	'xdset_parms.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
@@ -159,14 +162,19 @@
  250	CONTINUE
 
 * check table of calculatable variables (padded to 8 characters)
-	DO 300 ivar = 1, num_calc_vars
-	   IF (MATCH_QUOTED_NAME(test_name,cvar_name_code(ivar)//'    '))
-	1	THEN
-	      category = cat_calc_var
-	      variable = ivar
-	      RETURN
+*   but only if this is a Philander-Seigle model output
+	IF ( dset_num.GE.1 .AND. dset_num.LE.maxdsets ) THEN
+	   IF (dp_phil_sieg(dset_num).OR.dp_cox(dset_num)) THEN
+	      DO 300 ivar = 1, num_calc_vars
+	         IF (MATCH_QUOTED_NAME(test_name,cvar_name_code(ivar)//'    '))
+	1	      THEN
+	            category = cat_calc_var
+	            variable = ivar
+	            RETURN
+	         ENDIF
+ 300	      CONTINUE
 	   ENDIF
- 300	CONTINUE
+	ENDIF
 
 * not found
 	variable = munknown_var_name

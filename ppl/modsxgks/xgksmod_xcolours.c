@@ -323,6 +323,7 @@ XcInit(ws, vinfo)
 
     addPixelTable(ws);
 
+    ws->wscolour = 0;
     map->NumEntries = XgksMaxColours(ws->wstype);
     if (vinfo->class == TrueColor || vinfo->class == DirectColor) {
 	nbytes = sizeof(XcRGB) * map->NumEntries;

@@ -48,9 +48,9 @@ void deleted_list_modify_(void *deleted_list_header,
    DL_Node * p;
    int old_value;
 
-   head = (DLHead *) deleted_list_header;
+   head = *((DLHead**) deleted_list_header);
 
-   if(head->ptr_table){
+   if(head){
       old_value = head->int_array[*index-1];
       head->int_array[*index-1]=*new_value;
       p = head->ptr_table[*index-1];

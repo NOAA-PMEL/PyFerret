@@ -46,8 +46,8 @@ void string_array_get_strlen_( int * string_array_header,
 {
    SA_Head * head;
   
-   if(*string_array_header==1){
-      head = (SA_Head *) string_array_header;
+   if(*string_array_header){
+      head = *((SA_Head**) string_array_header);
       *true_strlen = head->strlen_array[*index-1];
    }
    else{

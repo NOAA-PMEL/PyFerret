@@ -61,8 +61,8 @@ void string_array_find_quoted_(  int *string_array_header,
 
 FILE *fp;
    
-   if(*string_array_header==1){
-      head = (SA_Head*)string_array_header;
+   if(*string_array_header){
+      head = *((SA_Head**)string_array_header);
       array_size = head->array_size;
       string_size = head->string_size;
  

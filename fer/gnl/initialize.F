@@ -275,26 +275,22 @@
         CALL string_array_init(alg_pvar_head,
      .                         num_pseudo_vars,
      .                         8,
-     .                         alg_pvar(1),
-     .                         alg_pvar_strlen(1))
+     .                         alg_pvar(1))
 
         CALL string_array_init(countervar_name_head,
      .                         num_counter_vars,
      .                         128,
-     .                         countervar_name(1),
-     .                         countervar_name_strlen(1))
+     .                         countervar_name(1))
 
         CALL string_array_init(uvar_name_code_head,
      .                         max_uvar,
      .                         128,
-     .                         uvar_name_code(1),
-     .                         uvar_name_code_strlen(1))
+     .                         uvar_name_code(1))
 
         CALL string_array_init(ds_var_code_head,
      .                         maxvars,
      .                         128,
-     .                         ds_var_code(1),
-     .                         ds_var_code_strlen(1))
+     .                         ds_var_code(1))
 
         CALL deleted_list_init(uvar_num_items_head,
      .                         uvar_num_items(1),

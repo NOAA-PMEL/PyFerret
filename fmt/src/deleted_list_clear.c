@@ -47,13 +47,13 @@ void deleted_list_clear_(void * deleted_list_header)
    int array_size;
    DLHead * head;
 
-   head = (DLHead*)deleted_list_header;
+   head = *((DLHead**)deleted_list_header);
    array_size = head->array_size;
-   if(head->ptr_table){
+   if(head){
        for(j=1;j<=array_size;j++)
          free(head->ptr_table[j-1]);
        free(head->ptr_table);
    }
-   *((int*)head)=0;
+   *((int*)deleted_list_header)=0;
 }
 

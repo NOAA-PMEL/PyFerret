@@ -52,7 +52,8 @@ void deleted_list_init_(void *deleted_list_header,
    DLHead * head;
    DL_Node * p;
 
-   head = (DLHead*)deleted_list_header;
+   head = (DLHead*)malloc(sizeof(DLHead));
+   *((DLHead**)deleted_list_header) = head;
    head->int_array = int_array;
    head->array_size = *int_array_size;
    head->deleted_value = *deleted_value;
@@ -85,6 +86,5 @@ void deleted_list_init_(void *deleted_list_header,
           }
        }
    }
-   *((int*)head)=1;
 }
 

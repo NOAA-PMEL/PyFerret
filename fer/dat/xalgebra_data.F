@@ -340,6 +340,7 @@
 
 * pseudo_variables:
         DATA alg_pvar_head     / 0 /
+        DATA alg_pvar_padding  / 0 /
 	DATA alg_pvar	(  1 ) / 'I       ' /,
      .       alg_pvar	(  2 ) / 'J       ' /,
      .       alg_pvar	(  3 ) / 'K       ' /,
@@ -361,6 +362,8 @@
      .       alg_pvar	( 19 ) / 'ZBOXHI  ' /,
      .       alg_pvar	( 20 ) / 'TBOXHI  ' /
         DATA alg_cvar        /60*unspecified_name4/
+        DATA countervar_name_head / 0 /
+        DATA countervar_name_padding / 0 /
         DATA countervar_name /60*unspecified_name4/
 
 	DATA
@@ -660,8 +663,6 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_4d_trans(4) /trans_4d_good_pt/,
      .		alg_1d_to_4d(5) /trans_bad_pt/,
      .		alg_4d_trans(5) /trans_4d_bad_pt/
-
-        DATA    countervar_name_head /  0  /
 
 	END
 

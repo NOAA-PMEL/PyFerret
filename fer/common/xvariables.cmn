@@ -242,25 +242,14 @@
      .		uvar_title_w_text( max_uvar ),
      .
      .          uvar_name_code_head,
-     .          uvar_name_code_array_size,
-     .          uvar_name_code_string_size,
-     .          uvar_name_code_ptr_array,
-     .          uvar_name_code_hash_table,
-     .          uvar_name_code_string_array,
-     .          uvar_name_code_strlen_array,
+     .          uvar_name_code_padding,
      .		uvar_name_code	 ( max_uvar ),
-     .          uvar_name_code_strlen ( max_uvar ),
      .
      .		uvar_units	 ( max_uvar ),
      .		uvar_text	 ( max_uvar ),
      .
      .          uvar_num_items_head,
-     .          uvar_num_items_array_size,
-     .          uvar_num_items_deleted_value,
-     .          uvar_num_items_ptr_table,
-     .          uvar_num_items_del_list_head,
-     .          uvar_num_items_undel_list_head,
-     .          uvar_num_items_array,
+     .          uvar_num_items_padding,
      .		uvar_num_items   ( max_uvar ),
      .
      .		uvar_need_dset	 ( max_uvar ),
@@ -320,10 +309,6 @@
      .			mr_delta	,
      .			uvar_lo_ww	,
      .			uvar_hi_ww	,
-     .                  uvar_num_items_ptr_table,
-     .                  uvar_num_items_del_list_head,
-     .                  uvar_num_items_undel_list_head,
-     .                  uvar_num_items_array,
      .			mr_c_pointer      ! see note
 ! Note: the actual data type for mr_c_pointer is **char
 ! we allocate 8 bytes to be safe
@@ -349,12 +334,9 @@
      .			uvar_mod_pseudo,
      .			uvar_by_ss
 	INTEGER         uvar_name_code_head,
-     .                  uvar_name_code_array_size,
-     .                  uvar_name_code_string_size,
-     .                  uvar_name_code_strlen,
+     .                  uvar_name_code_padding,       
      .                  uvar_num_items_head,
-     .                  uvar_num_items_array_size,
-     .                  uvar_num_items_deleted_value,
+     .                  uvar_num_items_padding,
      .   		uvar_num_items  ,
      .			uvar_grid	,
      .			uvar_data_type	,
@@ -378,10 +360,6 @@
      .			is_uvar ,
      .			is_mr
 	REAL		is_sum
-        REAL*8          uvar_name_code_ptr_array,
-     .                  uvar_name_code_hash_table,
-     .                  uvar_name_code_string_array,
-     .                  uvar_name_code_strlen_array
 
 * equivalences to assist with declaration statements
 	INTEGER mr_lo_s1( max_mrs ),

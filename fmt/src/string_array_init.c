@@ -43,27 +43,26 @@
 void string_array_init_(int *string_array_header,
                          int  *array_size,
                          int  *string_size,
-                         char *string_array,
-                         int  *strlen_array 
+                         char *string_array
                         )
 {
    int i,j;
    int true_len, hash_value;
    SA_Head * head;
    List_Node * p;
-
-   *string_array_header = 1;
-
-   head = (SA_Head*)string_array_header;
+   
+   head = (SA_Head*)malloc(sizeof(SA_Head));
+   *((SA_Head**)string_array_header) = head;
    head->array_size = *array_size;
    head->string_size = *string_size;
    head->string_array = string_array;
-   head->strlen_array = strlen_array;
 
    head->ptr_array = (List_Node**)malloc(head->array_size*sizeof(List_Node*));
 
    head->hash_table = (List_Node**)malloc(head->array_size*sizeof(List_Node*));
    memset((void*)head->hash_table, 0, head->array_size*sizeof(List_Node*));
+
+   head->strlen_array = (int*)malloc(head->array_size*sizeof(int));
 
    for(j=head->array_size;j>=1;j--) {
        tm_get_strlen_(&true_len, &(head->string_size),

@@ -61,5 +61,5 @@
    };
    typedef struct Deleted_List_Header DLHead;
 
-#endif //_DELETED_LIST_H
+#endif /*_DELETED_LIST_H*/
 

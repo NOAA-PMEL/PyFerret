@@ -60,5 +60,5 @@
 
 #define uc(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
 
-#endif //_STRING_ARRAY.H_
+#endif /*_STRING_ARRAY.H_*/
 

@@ -41,10 +41,10 @@
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_modify_upcase_(   int  *string_array_header,
-                              int  *index,
-                              char *new_string,
-                              int  *new_string_size){
+void string_array_modify_upcase_(int  *string_array_header,
+                                 int  *index,
+                                 char *new_string,
+                                 int  *new_string_size){
 
    int true_old_str_len, true_new_str_len,
        array_size, string_size, old_hash_value,
@@ -55,8 +55,8 @@ void string_array_modify_upcase_(   int  *string_array_header,
    List_Node * p;
 FILE *fp;
 
-   if(*string_array_header ==1 ) {
-      head = (SA_Head*)string_array_header;
+   if(*string_array_header) {
+      head = *((SA_Head**)string_array_header);
       array_size = head->array_size;
       string_size = head->string_size;
 

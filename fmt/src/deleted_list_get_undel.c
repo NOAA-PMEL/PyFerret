@@ -52,8 +52,8 @@ void deleted_list_get_undel_( void *deleted_list_header,
    DLHead * head;
    DL_Node *p;
 
-   head = (DLHead*)deleted_list_header;
-   if(*((int*)head)==1){
+   head = *((DLHead**)deleted_list_header);
+   if(head){
       array_size = *result_array_size;
 
       for(p=head->undel_list_head; p; p=p->next) {

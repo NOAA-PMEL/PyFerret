@@ -42,14 +42,8 @@
 **************************************************************************
      .
      .          ds_var_code_head,
-     .          ds_var_code_array_size,
-     .          ds_var_code_string_size,
-     .          ds_var_code_ptr_array,
-     .          ds_var_code_hash_table,
-     .          ds_var_code_string_array,
-     .          ds_var_code_strlen_array,
+     .          ds_var_code_padding,
      .		ds_var_code(maxvars),
-     .          ds_var_code_strlen(maxvars),
      .
      .          ds_var_title(maxvars),
      .		ds_var_titl_mod(maxvars),ds_var_units(maxvars),
@@ -107,14 +101,8 @@
 	INTEGER*4	min_ds_tstart,max_ds_tend,ds_tdelta
 	INTEGER*4	ds_var_type
         INTEGER         ds_var_code_head,
-     .                  ds_var_code_array_size,
-     .                  ds_var_code_string_size,
-     .                  ds_var_code_strlen,
+     .                  ds_var_code_padding,
      .                  string_array_result1
-        REAL*8          ds_var_code_ptr_array,
-     .                  ds_var_code_hash_table,
-     .                  ds_var_code_string_array,
-     .                  ds_var_code_strlen_array
 
 * additional calculated or derived values pertaining to data sets
 	CHARACTER*256	ds_name

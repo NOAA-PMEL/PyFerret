@@ -102,6 +102,8 @@
 *		  and find "6/99" in code below
 * V510: *sh* 12/99 - support for uvlim_hidden (EF caching)
 *	*sh* 12/99 - set the uvar_lo/hi limits along with uvar_given
+*	*sh* 12/99 - bug fix: rules for merging embodied in joint_match were
+*			wrong when new component is xact
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -216,7 +218,7 @@
 * N C |	gnl	|	gnl	lo	lohi	gnl/xact |
 * E O |	lo	|	 lo	lo	lohi	 lo/xact |
 * W M |	lohi	|      lohi	lohi	lohi   lohi/xact |
-*   P |	xact	|	gnl	lo	lohi	  xact	 |
+*   P |	xact	|      lohi	lohi    lohi	  xact	 |
 *		------------------------------------------
 * in this table the rows refer to the context qualifiers of new components
 * (i.e. what is given in square brackets).  The result of the table and
@@ -241,7 +243,7 @@
 	DATA	(joint_match(i,0),i=0,3) /  gnl,   lo, lohi, gnl  /,
      .		(joint_match(i,1),i=0,3) /   lo,   lo, lohi, lo   /,
      .		(joint_match(i,2),i=0,3) / lohi, lohi, lohi, lohi /,
-     .		(joint_match(i,3),i=0,3) /  gnl,   lo, lohi, xact /
+     .		(joint_match(i,3),i=0,3) / lohi, lohi, lohi, xact /
 
 **************************************************************************
 * is this a grid changing variable? (1/97)

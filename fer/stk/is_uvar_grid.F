@@ -78,6 +78,7 @@
 *		    by EFs during custom axis creation
 * V533 7/01 *sh* - save the data type of the result
 *	         - process alg_if_marker in support of IF cond THEN string
+* V540 10/01 *sh* - fix bug in IF-THEN hack when 2nd pass is required
 
 * calling argument declarations:
 	INTEGER	status
@@ -252,9 +253,11 @@
         IF ( status .NE. ferr_ok ) RETURN
 	GOTO 500		! go merge it
 
-* "IF" marker in an "IF cond THEN result1 ELSE result2" structure
-* ... the data type of the result depends only on the result clauses
-* ... prepare to restore the data type while the "cond" is precessed
+* "IF" marker in an "IF condition THEN result1 ELSE result2" structure
+* ... The data type of the result depends only on the result clauses
+* ... prepare to restore the data type after the "condition" is processed
+* ... Note: expressions are processed here from high item backwards so
+*           the "condition" is the last thing to be procesed 
  450	saved_ifthen_type = .TRUE.
 	ifthen_data_type = cx_type(big_cx)
 	GOTO 100
@@ -422,6 +425,7 @@
 	   cx_stack_ptr = cx_save
 	   need_another_pass = .FALSE.
 	   pass_number = pass_number + 1
+	   saved_ifthen_type = .FALSE.
 	   cx_grid( lo_cx ) = gnum	! set default for pseudo-vars
 * ... deallocate the grid just obtained since it will be
 *     allocated again on the next pass

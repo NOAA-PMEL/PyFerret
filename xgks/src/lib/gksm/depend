@@ -1,0 +1,14 @@
+gksm.o: gksm.c
+gksm.o: ../gks_implem.h
+gksm.o: ../xgks.h
+gksm.o: ../gks_defines.h
+gksm.o: ../primitive.h
+gksm.o: ../input.h
+gksm.o: ../wdt.h
+gksm.o: ../wslist.h
+gksm.o: ../gkslist.h
+gksm.o: ../gks_errors.h
+gksm.o: ../event.h
+gksm.o: ../metafile.h
+gksm.o: ./gksm.h
+gksm.o: ./gksm_implem.h

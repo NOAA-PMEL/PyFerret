@@ -1,0 +1,26 @@
+# $Id$
+#
+# Makefile for the "doc" subdirectory of the XGKS package.
+
+MANUALS		= xgks.3
+SUBDIRS		= binding userdoc
+SUBDIR_TARGETS	= binding/all binding/clean
+MANIFEST	= Makefile.in xgks.3src1 xgks.3src2
+GARBAGE		= xgks_synop.3 xgks.3
+
+all::		xgks_synop.3 $(MANUALS)
+
+install:	installed_manuals
+
+clean::		binding/clean
+
+xgks_synop.3:	binding/all
+	awk '{print ".HP 4"; print}' binding/Cbinding.src > $@
+
+# We'd like to use soelim(1) for the following but IRIX doesn't have that
+# utility.
+#
+xgks.3:		xgks.3src1 xgks_synop.3 xgks.3src2
+	cat xgks.3src1 xgks_synop.3 xgks.3src2 > $@
+
+include ../port/master.mk

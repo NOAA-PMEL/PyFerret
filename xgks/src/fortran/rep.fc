@@ -1,0 +1,300 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Workstation Attribute Functions :
+ *	gsplr_
+ *	gspmr_
+ *	gstxr_
+ *	gsfar_
+ *	gspar_
+ *	gscr_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern char    *forttext;
+extern int     *fortint;
+extern Gpoint  *fortpoints;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+
+
+/*
+ * gsplr - Set Polyline Representation
+ *
+ * int   *wkid   - pointer to workstation id
+ * int   *pli    - pointer to polyline index
+ * int   *ltype  - pointer to polyline type
+ * float *lwidth - pointer to polyline width
+ * int   *coli   - pointer to polyline colour
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.100
+ */
+/*FORTRAN*/
+gsplr(
+    int            *wkid,
+    int            *pli,
+    int            *ltype,
+    float          *lwidth,
+    int            *coli)
+{
+    Glnbundl        rep;
+
+    debug(("Set Polyline Representation %d  %d \n", *wkid, *pli));
+
+    rep.type = (Gint) *ltype;
+    rep.width = (Gfloat) *lwidth;
+    rep.colour = (Gint) *coli;
+
+    (void) gsetlinerep((Gint) *wkid, (Gint) *pli, &rep);
+}
+
+
+/*
+ * gspmr - Set Polymarker Representation
+ *
+ * int   *wkid  - pointer to workstation id
+ * int   *pmi   - pointer to polymarker index
+ * int   *mtype - pointer to polymarker type
+ * float *mszsf - pointer to polymarker size scale factor
+ * int   *coli  - pointer to polymarker colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.101
+ */
+/*FORTRAN*/
+gspmr(
+    int            *wkid,
+    int            *pmi,
+    int            *mtype,
+    float          *mszsf,
+    int            *coli)
+{
+    Gmkbundl        rep;
+
+    debug(("Set Polymarker Representation %d  %d \n", *wkid, *pmi));
+
+    rep.type = (Gint) *mtype;
+    rep.size = (Gfloat) *mszsf;
+    rep.colour = (Gint) *coli;
+
+    (void) gsetmarkerrep((Gint) *wkid, (Gint) *pmi, &rep);
+}
+
+
+/*
+ * gstxr - Set Text Representation
+ *
+ * int   *wkid - pointer to workstation id
+ * int   *txi  - pointer to text index
+ * int   *font - pointer to text font
+ * int   *prec - pointer to text precision
+ * float *chxp - pointer to character expansion factor
+ * float *chsp - pointer to character spacing
+ * int   *coli - pointer to text colour index
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.102
+ */
+/*FORTRAN*/
+gstxr(
+    int            *wkid,
+    int            *txi,
+    int            *font,
+    int            *prec,
+    float          *chxp,
+    float          *chsp,
+    int            *coli)
+{
+    Gtxbundl        rep;
+
+    rep.fp.font = (Gint) *font;
+    TEXTPRECISION(*prec, errgsettextrep)
+	rep.fp.prec = (Gtxprec) * prec;
+    rep.ch_exp = (Gfloat) *chxp;
+    rep.space = (Gfloat) *chsp;
+    rep.colour = (Gint) *coli;
+
+    debug(("Set Text  Representation %d  %d \n", *wkid, *txi));
+
+    (void) gsettextrep((Gint) *wkid, (Gint) *txi, &rep);
+}
+
+
+/*
+ * gsfar - Set Fill Area Representation
+ *
+ * int *wkid  - pointer to workstation id
+ * int *fai   - pointer to fill area index
+ * int *ints  - pointer to fill area interior style
+ * int *styli - pointer to fill area interior style index
+ * int *coli  - pointer to fill area colour index
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.102
+ */
+/*FORTRAN*/
+gsfar(
+    int            *wkid,
+    int            *fai,
+    int            *ints,
+    int            *styli,
+    int            *coli)
+{
+    Gflbundl        rep;
+
+    debug(("Set Fill Area Representation %d  %d \n", *wkid, *fai));
+
+    FILLAREAINTERIORSTYLE(*ints, errgsetfillrep)
+	rep.inter = (Gflinter) *ints;
+    rep.style = (Gint) *styli;
+    rep.colour = (Gint) *coli;
+
+    (void) gsetfillrep((Gint) *wkid, (Gint) *fai, &rep);
+}
+
+
+/*
+ * gspar - Set Pattern Representation
+ *
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.104
+ */
+/*FORTRAN*/
+gspar(
+    int            *wkid,
+    int            *pai,
+    int            *dimx,
+    int            *dimy,
+    int            *isc,
+    int            *isr,
+    int            *dx,
+    int            *dy,
+    int            *colia)
+{
+    Gptbundl        rep;
+    Gint           *parray;
+    int             sizeofmatrix;
+
+    rep.size.x = (Gfloat) *dx;
+    rep.size.y = (Gfloat) *dy;
+    debug(("Set Pattern Size:  %d - %d\n", rep.size.x, rep.size.y));
+
+    sizeofmatrix = sizeof(Gint) * (*dx) *(*dy);
+    if (sizeofmatrix > currfortint) {		/* Check amount of memory
+						 * needed */
+	/* realloc more memory */
+	fortint = (Gint *) REALLOC((voidp)fortint, (size_t) sizeofmatrix);
+	if (fortint == NULL) {			/* If memory allocation
+						 * unsuccessful call error
+						 * routine */
+	    (void) gerrorhand(300, errgsetpatrep, (errfp));
+	    return;
+	} else
+	    currfortint = sizeofmatrix;
+    }
+    parray = fortint;
+
+    /*
+     * This array does NOT need to be transposed.
+     * Take the dx-by-dy subset starting at (isc,isr).
+     */
+    {
+	int             i, j;
+	int            *fortstart;	/* ptr to colia(isc,isr) */
+
+	fortstart = colia + ((*isr - 1) * (*dimx) + (*isc - 1));
+
+	for (i = 0; i < *dy; i++)
+	    for (j = 0; j < *dx; j++)
+		*(parray + (i * (*dx) + j)) =
+		    (Gint) *(fortstart + (i * (*dimx) + j));
+    }
+
+    rep.array = (Gint *) parray;
+
+    (void) gsetpatrep((Gint) *wkid, (Gint) *pai, &rep);
+}
+
+
+/*
+ * gscr - Set Colour Representation
+ *
+ * int   *wkid - pointer to workstation id
+ * int   *ci   - pointer to colour index
+ * float *cr   - pointer to red value
+ * float *cg   - pointer to green value
+ * float *cb   - pointer to blue value
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.105
+ */
+/*FORTRAN*/
+gscr(
+    int            *wkid,
+    int            *ci,
+    float          *cr,
+    float          *cg,
+    float          *cb)
+{
+    Gcobundl        rep;
+
+    debug(("Set Color Representation %d  %d \n", *wkid, *ci));
+
+    rep.red = (Gfloat) *cr;
+    rep.green = (Gfloat) *cg;
+    rep.blue = (Gfloat) *cb;
+
+    (void) gsetcolourrep((Gint) *wkid, (Gint) *ci, &rep);
+}

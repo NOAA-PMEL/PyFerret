@@ -1,0 +1,191 @@
+GKS Function Name,C Function Name,Status
+
+ACCUMULATE TRANSFORMATION MATRIX,gaccumtran(),Coded
+ACTIVATE WORKSTATION,gactivatews(),Coded
+ASSOCIATE SEGMENT WITH WORKSTATION,gassocsegws(),Coded
+AWAIT EVENT,gawaitevent(),Coded
+CELL ARRAY,gcellarray(),Coded
+CLEAR WORKSTATION,gclearws(),Coded
+CLOSE GKS,gclosegks(),Coded
+CLOSE SEGMENT,gcloseseg(),Coded
+CLOSE WORKSTATION,gclosews(),Coded
+COPY SEGMENT TO WORKSTATION,gcopysegws(),Coded
+CREATE SEGMENT,gcreateseg(),Coded
+DEACTIVATE WORKSTATION,gdeactivatews(),Coded
+DELETE SEGMENT,gdelseg(),Coded
+DELETE SEGMENT FROM WORKSTATION,gdelsegws(),Coded
+EMERGENCY CLOSE GKS,gemergencyclosegks(),Coded
+ERROR HANDLING,gerrorhand(),Coded
+ERROR LOGGING,gerrorlog(),Coded
+ESCAPE,gescape(),
+ESCAPE SET COLOR PLANE MASK,gescsetcolormask(),Coded
+ESCAPE SET DEVICE COORDINATE SIZE,gescsetdcsize(),Coded
+ESCAPE SET MESSAGE POINT,gescsetmessagepoint(),
+ESCAPE INQUIRE X ATTRIBUTES,gescinqxattr(),
+ESCAPE INQUIRE COLOR INDEX,gescinqcolorind(),
+ESCAPE SET STORE OUTPUT PRIMITIVES,gescstoreprimi(),Coded
+ESCAPE SET REDRAW NOTIFY,gescredrawnotify(),Coded
+EVALUATE TRANSFORMATION MATRIX,gevaltran(),Coded
+FILL AREA,gfillarea(),Coded
+FLUSH DEVICE EVENTS,gflushevents(),Coded
+GENERALIZED DRAWING PRIMITIVE (GDP),ggdp(),
+GET CHOICE,ggetchoice(),Coded
+GET ITEM TYPE FROM GKSM,ggetgksm(),Coded
+GET LOCATOR,ggetloc(),Coded
+GET PICK,ggetpick(),Coded
+GET STRING,ggetstring,Coded
+GET STROKE,ggetstroke(),Coded
+GET VALUATOR,ggetval(),Coded
+INITIALISE CHOICE,ginitchoice(),Coded
+INITIALISE LOCATOR,ginitloc(),Coded
+INITIALISE PICK,ginitpick(),Coded
+INITIALISE STRING,ginitstring(),Coded
+INITIALISE STROKE,ginitstroke(),Coded
+INITIALISE VALUATOR,ginitval(),Coded
+INQUIRE CHOICE DEVICE STATE,ginqchoicest(),Coded
+INQUIRE CLIPPING INDICATOR,ginqclip(),Coded
+INQUIRE COLOR FACILITIES,ginqcolorfacil(),Coded
+INQUIRE COLOR REPRESENTATION,ginqcolorrep(),Coded
+INQUIRE CURRENT INDIVIDUAL ATTRIBUTE VALUES,ginqindividualattr(),Coded
+INQUIRE CURRENT NORMALIZATION TRANSFORMATION NUMBER,ginqcurntrannum(),Coded
+INQUIRE CURRENT PICK IDENTIFIER VALUE,ginqcurpickid(),Coded
+INQUIRE CURRENT PRIMITIVE ATTRIBUTE VALUES,ginqprimattr(),Coded
+INQUIRE DEFAULT CHOICE DEVICE DATA,ginqdefchoice(),Coded
+INQUIRE DEFAULT DEFERRAL STATE VALUES,ginqdefdeferst(),Coded
+INQUIRE DEFAULT LOCATOR DEVICE DATA,ginqdefloc(),Coded
+INQUIRE DEFAULT PICK DEVICE DATA,ginqdefpick(),Coded
+INQUIRE DEFAULT STRING DEVICE DATA,ginqdefstring(),Coded
+INQUIRE DEFAULT STROKE DEVICE DATA,ginqdefstroke(),Coded
+INQUIRE DEFAULT VALUATOR DEVICE DATA,ginqdefval(),Coded
+INQUIRE DISPLAY SURFACE SIZE,ginqdisplayspacesize(),Coded
+INQUIRE DYNAMIC MODIFICATION OF SEGMENT ATTRIBUTES,ginqmodsegattr(),Coded
+INQUIRE DYNAMIC MODIFICATION OF WORKSTATION ATTRIBUTES,ginqmodwsattr(),Coded
+INQUIRE FILL AREA FACILITIES,ginqfillfacil(),Coded
+INQUIRE FILL AREA REPRESENTATION,ginqfillrep(),Coded
+INQUIRE GENERALIZED DRAWING PRIMITIVE,ginqgdp(),
+INQUIRE INPUT QUEUE OVERFLOW,ginqinputoverflow(),Coded
+INQUIRE LEVEL OF GKS,ginqlevelgks(),Coded
+INQUIRE LIST OF AVAILABLE GENERALIZED DRAWING PRIMITIVES,ginqavailgdp(),
+INQUIRE LIST OF AVAILABLE WORKSTATION TYPES,ginqavailwstypes(),Coded
+INQUIRE LIST OF COLOR INDICES,ginqcolorindices(),Coded
+INQUIRE LIST OF FILL AREA INDICES,ginqfillindices(),Coded
+INQUIRE LIST OF NORMALIZATION TRANSFORMATION NUMBERS,ginqntrannum(),Coded
+INQUIRE LIST OF PATTERN INDICES,ginqpatindices(),Coded
+INQUIRE LIST OF POLYLINE INDICES,ginqlineindices(),Coded
+INQUIRE LIST OF POLYMARKER INDICES,ginqmarkerindices(),Coded
+INQUIRE LIST OF TEXT INDICES,ginqtextindices(),Coded
+INQUIRE LOCATOR DEVICE STATE,ginqlocst(),Coded
+INQUIRE MAXIMUM LENGTH OF WORKSTATION STATE TABLES,ginqmaxwssttables(),Coded
+INQUIRE MAXIMUM NORMALIZATION TRANSFORMATION NUMBER,ginqmaxntrannum(),Coded
+INQUIRE MORE SIMULTANEOUS EVENTS,ginqmoreevents(),Coded
+INQUIRE NAME OF OPEN SEGMENT,ginqnameopenseg(),Coded
+INQUIRE NORMALIZATION TRANSFORMATION,ginqntran(),Coded
+INQUIRE NUMBER OF AVAILABLE LOGICAL INPUT DEVICES,ginqnumavailinput(),Coded
+INQUIRE NUMBER OF SEGMENT PRIORITIES SUPPORTED,ginqnumsegpri(),Coded
+INQUIRE OPERATING STATE VALUE,ginqopst(),Coded
+INQUIRE PATTERN FACILITIES,ginqpatfacil(),Coded
+INQUIRE PATTERN REPRESENTATION,ginqpatrep(),Coded
+INQUIRE PICK DEVICE STATE,ginqpickst(),Coded
+INQUIRE PIXEL,ginqpixel(),Coded
+INQUIRE PIXEL ARRAY,ginqpixelarray(),Coded
+INQUIRE PIXEL ARRAY DIMENSIONS,ginqpixelarraydim(),Coded
+INQUIRE POLYLINE FACILITIES,ginqlinefacil(),Coded
+INQUIRE POLYLINE REPRESENTATION,ginqlinerep(),Coded
+INQUIRE POLYMARKER FACILITIES,ginqmarkerfacil(),Coded
+INQUIRE POLYMARKER REPRESENTATION,ginqmarkerrep(),Coded
+INQUIRE PREDEFINED COLOR REPRESENTATION,ginqpredcolorrep(),Coded
+INQUIRE PREDEFINED FILL AREA REPRESENTATION,ginqpredfillrep(),Coded
+INQUIRE PREDEFINED PATTERN REPRESENTATION,ginqpredpatrep(),Coded
+INQUIRE PREDEFINED POLYLINE REPRESENTATION,ginqpredlinerep(),Coded
+INQUIRE PREDEFINED POLYMARKER REPRESENTATION,ginqpredmarkerrep(),Coded
+INQUIRE PREDEFINED TEXT REPRESENTATION,ginqpredtextrep(),Coded
+INQUIRE SEGMENT ATTRIBUTES,ginqsegattr(),Coded
+INQUIRE SET OF ACTIVE WORKSTATIONS,ginqactivews(),Coded
+INQUIRE SET OF ASSOCIATED WORKSTATIONS,ginqassocws(),Coded
+INQUIRE SET OF OPEN WORKSTATIONS,ginqopenws(),Coded
+INQUIRE SET OF SEGMENT NAMES IN USE,ginqsegnames(),Coded
+INQUIRE SET OF SEGMENT NAMES ON WORKSTATION,ginqsegnamesws(),Coded
+INQUIRE STRING DEVICE STATE,ginqstringst(),Coded
+INQUIRE STROKE DEVICE STATE,ginqstrokest(),Coded
+INQUIRE TEXT EXTENT,ginqtextextent(),Coded
+INQUIRE TEXT FACILITIES,ginqtextfacil(),Coded
+INQUIRE TEXT REPRESENTATION,ginqtextrep(),Coded
+INQUIRE VALUATOR DEVICE STATE,ginqvalst(),Coded
+INQUIRE WORKSTATION CATEGORY,ginqwscategory(),Coded
+INQUIRE WORKSTATION CLASSIFICATION,ginqwsclass(),Coded
+INQUIRE WORKSTATION CONNECTIONS AND TYPE,ginqwsconntype(),Coded
+INQUIRE WORKSTATION DEFERRAL AND UPDATE STATES,ginqwsdeferupdatest(),Coded
+INQUIRE WORKSTATION MAXIMUM NUMBERS,ginqwsmaxnum(),Coded
+INQUIRE WORKSTATION STATE,ginqwsst(),Coded
+INQUIRE WORKSTATION TRANSFORMATION,ginqwstran(),Coded
+INSERT SEGMENT,ginsertseg(),Coded
+INTERPRET ITEM,ginterpret(),Coded
+MESSAGE,gmessage(),Coded
+OPEN GKS,gopengks(),Coded
+OPEN WORKSTATION,gopenws(),Coded
+POLYLINE,gpolyline(),Coded
+POLYMARKER,gpolymarker(),Coded
+READ ITEM FROM GKSM,greadgksm(),Coded
+REDRAW ALL SEGMENTS ON WORKSTATION,gredrawsegws(),Coded
+RENAME SEGMENT,grenameseg(),Coded
+REQUEST CHOICE,greqchoice(),Coded
+REQUEST LOCATOR,greqloc(),Coded
+REQUEST PICK,greqpick(),Coded
+REQUEST STRING,greqstring(),Coded
+REQUEST STROKE,greqstroke(),Coded
+REQUEST VALUATOR,greqval(),Coded
+SAMPLE CHOICE,gsamplechoice(),Coded
+SAMPLE LOCATOR,gsampleloc(),Coded
+SAMPLE PICK,gsamplepick(),Coded
+SAMPLE STRING,gsamplestring(),Coded
+SAMPLE STROKE,gsamplestroke(),Coded
+SAMPLE VALUATOR,gsampleval(),Coded
+SELECT NORMALIZATION TRANSFORMATION,gselntran(),Coded
+SET ASPECT SOURCE FLAGS,gsetasf(),Coded
+SET CHARACTER EXPANSION FACTOR,gsetcharexpan(),Coded
+SET CHARACTER HEIGHT,gsetcharheight(),Coded
+SET CHARACTER SPACING,gsetcharspace(),Coded
+SET CHARACTER UP VECTOR,gsetcharup(),Coded
+SET CHOICE MODE,gsetchoicemode(),Coded
+SET CLIPPING INDICATOR,gsetclip(),Coded
+SET COLOR REPRESENTATION,gsetcolorrep(),Coded
+SET DEFERRAL STATE,gsetdeferst(),Coded
+SET FILL AREA COLOR INDEX,gsetfillcolorind(),Coded
+SET FILL AREA INDEX,gsetfillind(),Coded
+SET FILL AREA INTERIOR STYLE,gsetfillintstyle(),Coded
+SET FILL AREA REPRESENTATION,gsetfillrep(),Coded
+SET FILL AREA STYLE INDEX,gsetfillstyleind(),Coded
+SET LINETYPE,gsetlinetype(),Coded
+SET LINEWIDTH SCALE FACTOR,gsetlinewidth(),Coded
+SET LOCATOR MODE,gsetlocmode(),Coded
+SET MARKER SIZE SCALE FACTOR,gsetmarkersize(),Coded
+SET MARKER TYPE,gsetmarkertype(),Coded
+SET PATTERN REFERENCE POINT,gsetpatrefpt(),
+SET PATTERN REPRESENTATION,gsetpatrep(),Coded
+SET PATTERN SIZE,gsetpatsize(),
+SET PICK IDENTIFIER,gsetpickid(),Coded
+SET PICK MODE,gsetpickmode(),Coded
+SET POLYLINE COLOR INDEX,gsetlinecolorind(),Coded
+SET POLYLINE INDEX,gsetlineind(),Coded
+SET POLYLINE REPRESENTATION,gsetlinerep(),Coded
+SET POLYMARKER COLOR INDEX,gsetmarkercolorind(),Coded
+SET POLYMARKER INDEX,gsetmarkerind(),Coded
+SET POLYMARKER REPRESENTATION,gsetmarkerrep(),Coded
+SET SEGMENT ATTRIBUTES,gsetsegattr(),Coded
+SET STRING MODE,gsetstringmode(),Coded
+SET STROKE MODE,gsetstrokemode(),Coded
+SET TEXT ALIGNMENT,gsettextalign(),Coded
+SET TEXT COLOR INDEX,gsettextcolorind(),Coded
+SET TEXT FONT AND PRECISION,gsettextfontprec(),Coded
+SET TEXT INDEX,gsettextind(),Coded
+SET TEXT PATH,gsettextpath(),Coded
+SET TEXT REPRESENTATION,gsettextrep(),Coded
+SET VALUATOR MODE,gsetvalmode(),Coded
+SET VIEWPORT,gsetviewport(),Coded
+SET VIEWPORT INPUT PRIORITY,gsetviewportinputpri(),Coded
+SET WINDOW,gsetwindow(),Coded
+SET WORKSTATION VIEWPORT,gsetwsviewport(),Coded
+SET WORKSTATION WINDOW,gsetwswindow(),Coded
+TEXT,gtext(),Coded
+UPDATE WORKSTATION,gupdatews(),Coded
+WRITE ITEM TO GKSM,gwritegksm(),Coded

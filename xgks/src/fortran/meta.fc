@@ -1,0 +1,152 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Metafile functions :
+ *	gwitm_
+ *	ggtitm_
+ *	grditm_
+ *	giitm_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ * gwitm - Write Item
+ *
+ * int *wkid;                         workstation identifier
+ * int *type;                         item type
+ * int *idrl;                         item data record length
+ * int *ldr;                          dimension of data record
+ * char *datarec;                     data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.142
+ */
+/*FORTRAN*/
+gwitm(
+    int            *wkid,		/* workstation identifier  */
+    int            *type,		/* item type               */
+    int            *idrl,		/* item data record length */
+    int            *ldr,		/* dimension of data record */
+    char           *datarec)		/* data record             */
+{
+    (void) gwritegksm((Gint) *wkid, (Gint) *type, (Gint) *idrl, 
+		      (Gchar *) datarec);
+}
+
+
+/*
+ * ggtitm - Get Item
+ *
+ * int *wkid;                          workstation identifier
+ * int *type;                          item type
+ * int *idrl;                          item data rec length
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.142
+ */
+/*FORTRAN*/
+ggtitm(
+    int            *wkid,		/* workstation identifier */
+    int            *type,		/* item type              */
+    int            *idrl)		/* item data rec length   */
+{
+    Ggksmit         result;
+
+    if (ggetgksm((Gint) *wkid, &result))
+	return;
+
+    *type = (int) result.type;
+    *idrl = (int) result.length;
+}
+
+
+/*
+ * giitm - Interpret Item
+ *
+ * int *wkid;                          workstation identifier
+ * int *midrl;                         max item data record
+ * int *mldr;                          dim of data record
+ * char *datarec;                      data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.143
+ */
+/*FORTRAN*/
+grditm(
+    int            *wkid,		/* workstation identifier */
+    int            *midrl,		/* max item data record   */
+    int            *mldr,		/* dim of data record     */
+    char           *datarec)		/* data record            */
+{
+    (void) greadgksm((Gint) *wkid, (Gint) *midrl, datarec);
+}
+
+
+/*
+ * giitm - Interpret Item
+ *
+ * int	*type		- pointer to item type
+ * int	*idrl		- pointer to item data record length
+ * int	*ldr		- pointer to dimension of data record array
+ * char	*datrec[ldr]	- pointer to data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.143
+ */
+/*FORTRAN*/
+giitm(
+    int            *type,
+    int            *idrl,
+    int            *ldr,
+    char           *datarec)
+{
+    Ggksmit         typeandlength;
+
+    typeandlength.type = *type;
+    typeandlength.length = *idrl;
+    (void) ginterpret(&typeandlength, datarec);
+}

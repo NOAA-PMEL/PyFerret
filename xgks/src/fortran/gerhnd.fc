@@ -1,0 +1,59 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Error Handling Functions :
+ *	gerhnd
+ *
+ * Todd Gill
+ * TCS Development
+ * Cambridge MA
+ *
+ * September 28 1988
+ */
+
+#ifndef lint
+    static char	rcsid[]	= "$Id$";
+    static char	afsid[] = "$__Header$";
+#endif
+
+#include "udposix.h"
+#include <xgks.h>
+#include "fortxgks.h"
+
+
+/*
+ * gerhnd -  Error Handling
+ *
+ *   int *errnr    - error number
+ *   int *fctid    - function number
+ *   int *errfil   - error-file LUN
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p. 195
+ */
+/*FORTRAN*/
+gerhnd(int *errnr, int *fctid, int *errfil)
+{
+    FC_NAME(gerlog)(errnr, fctid, errfil);
+}

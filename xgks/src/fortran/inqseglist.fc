@@ -1,0 +1,131 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Inquiry Functions for Segment State List :
+ *	gqsga_
+ *	gqaswk_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * Todd Gill
+ * TCS Development
+ * Cambridge MA
+ *
+ * September 28 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ * gqsga - Inquire Segment Attributes
+ *
+ * int   *sgna   - pointer to segment name
+ * int   *errind - pointer to error indicator
+ * float *segtm  - pointer to segment transformation matrix
+ * int   *vis    - pointer to segment visibility
+ * int   *high   - pointer to segment highlighting
+ * float *sgpr   - pointer to segment priority
+ * int   *det    - pointer to segment detectability
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+gqsga(
+    int            *sgna,
+    int            *errind,
+    float          *segtm,
+    int            *vis,
+    int            *high,
+    float          *sgpr,
+    int            *det)
+{
+    Gsegattr        segattr;
+
+    debug(("Inquire Segment Attributes %d  \n", *sgna));
+
+    segattr.seg = (Gint) *sgna;
+    if (*errind = ginqsegattr(&segattr))
+	return;
+
+    CHANGE_COL_TO_ROW_MAJOR_F(segattr.segtran, segtm, 2, 3);
+
+    /* Reverse the sense of vis */
+    *vis = (int) ((segattr.vis) ? FORT_GINVIS : FORT_GVISI);
+
+    *high = (int) segattr.hilight;
+    *sgpr = (float) segattr.pri;
+    *det = (int) segattr.det;
+}
+
+
+/*
+ * gqaswk - Inquire Set member of Associated Workstations
+ *
+ * int	*sgna		- pointer to segment name
+ * int	*n		- pointer to set member requested
+ * int	*errind		- pointer to error indicator
+ * int	*ol		- pointer to number of associated workstations
+ * int	*wkid		- pointer to nth member of set of associated 
+ *			  workstations
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.189
+ */
+/*FORTRAN*/
+gqaswk(
+    int            *sgna,
+    int            *n,
+    int            *errind,
+    int            *ol,
+    int            *wkid)
+{
+    Gintlist        asswk;
+
+    debug(("Inquire Set member of Associated Workstations \n"));
+
+    if (*errind = ginqassocws((Gint) *sgna, &asswk))
+	return;
+
+    /* set return values not effected by range query */
+    *ol = (int) asswk.number;
+
+    VALIDMEMBER(errind, *n, 0, asswk.number, errginqassocws);
+    if (*n)
+	*wkid = asswk.integers[*n - 1];
+
+    free((voidp) asswk.integers);
+}

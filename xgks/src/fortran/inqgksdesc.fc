@@ -1,0 +1,156 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Inquire GKS Description Table functions :
+ *	gqlvks_
+ *	gqewk_
+ *	gqwkm_
+ *	gqmntn_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+
+/*
+ * gqlvks - Inquire Level of GKS
+ *
+ * int *errind - pointer to error indicator
+ * int *level - pointer to level of GKS
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.145
+ */
+/*FORTRAN*/
+gqlvks(
+    int            *errind,
+    int            *level)
+{
+    debug(("Inquire Level of Kernel System  \n"));
+
+    *errind = ginqlevelgks((Glevel *) level);
+}
+
+
+/*
+ * gqewk - Inquire List  of Available Workstation Types
+ *
+ * int *n              list element requested
+ * int *errind         error indicator
+ * int *number         number of workstation types
+ * int *wktyp          Nth element of list
+ *
+ * Returns: 2002 in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.146
+ */
+/*FORTRAN*/
+gqewk(
+    int            *n,
+    int            *errind,
+    int            *number,
+    int            *wktyp)
+{
+    Gstrlist        wstypes;
+
+    if (*errind = ginqavailwstypes(&wstypes))
+	return;
+    (void) free((voidp)(wstypes.strings));
+
+    /* set return values not dependent on range check */
+    *number = (int) wstypes.number;
+
+    VALIDMEMBER(errind, *n, 0, wstypes.number, errginqavailwstypes);
+
+    /* Since the workstation type in fortran is an
+   integer, simply return the integer type requested */
+    if (*n)
+	*wktyp = (int) *n;
+}
+
+
+/*
+ * gqwkm - Inquire Workstation Maximum Numbers
+ *
+ * int  *errind         - error indicator
+ * int  *mxopwk         - max open workstations
+ * int  *mxacwk         - max simultaneously active workstations
+ * int  *mxwkas         - max workstations associated with segment
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.146
+ */
+/*FORTRAN*/
+gqwkm(
+    int            *errind,
+    int            *mxopwk,
+    int            *mxacwk,
+    int            *mxwkas)
+{
+    Gwsmax          maxws;
+
+    if (*errind = ginqwsmaxnum(&maxws))
+	return;
+    *mxopwk = (int) maxws.open;
+    *mxacwk = (int) maxws.active;
+    *mxwkas = (int) maxws.assoc;
+}
+
+
+/*
+ * gqmntn - Inquire Maximum Normalization Transformation Number
+ *
+ * int	*errind		- pointer to error indicator
+ * int	*maxtnr		- pointer to maximum normalization transformation number
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.146
+ */
+/*FORTRAN*/
+gqmntn(
+    int            *errind,
+    int            *maxtnr)
+{
+    debug(("Inquire Maximum Normalization Transformation Number"));
+    *errind = ginqmaxntrannum((Gint *) maxtnr);
+}

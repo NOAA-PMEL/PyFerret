@@ -1,0 +1,60 @@
+# Makefile for the C, XGKS library
+#
+# $Id$
+
+LIBRARY		= xgks
+
+FONTDBDIR	= "$(LIBDIR)/xgksfonts"
+CPPFLAGS	= -I../../port -DFONTDBDIR='$(FONTDBDIR)' @CPP_X11@ @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+
+HEADERS		= xgks.h
+headers		= event.h fillarea.h font.h gks_defines.h gks_errors.h \
+		  gks_implem.h gkslist.h input.h metafile.h \
+		  polylines.h polymarkers.h primitive.h text.h wdt.h \
+		  wslist.h
+csrcs		= act_ws.c aspect_flags.c cellarray.c choice.c colours.c \
+		  deferral_ws.c escape.c event.c externinit.c fillarea.c \
+		  gdp.c ggdp.c gks_error.c input.c inqWDT.c \
+		  inqfillareas.c inqpixel.c inqpmarker.c inqpolylines.c \
+		  inqtext.c inqtransform.c inquiries.c locator.c \
+		  message.c metafile.c mkerrmsg.c open_gks.c open_ws.c pick.c \
+		  polylines.c polymarkers.c prmgr.c segments.c string.c \
+		  stroke.c text.c transforms.c umalloc.c update.c \
+		  valuator.c
+LIBOBJS		= act_ws.o aspect_flags.o cellarray.o choice.o colours.o \
+		  deferral_ws.o escape.o event.o externinit.o fillarea.o \
+		  gdp.o ggdp.o gks_error.o input.o inqWDT.o \
+		  inqfillareas.o inqpixel.o inqpmarker.o inqpolylines.o \
+		  inqtext.o inqtransform.o inquiries.o locator.o \
+		  message.o metafile.o open_gks.o open_ws.o pick.o \
+		  polylines.o polymarkers.o prmgr.o segments.o string.o \
+		  stroke.o text.o transforms.o umalloc.o update.o \
+		  valuator.o
+SUBDIRS		= cgm gksm x
+SUBDIR_TARGETS	= cgm/all cgm/clean cgm/distclean \
+		  gksm/all gksm/clean gksm/distclean \
+		  x/all x/clean x/distclean
+
+MANIFEST	= Makefile.in depend $(HEADERS) $(headers) $(csrcs)
+
+all::		gkserrmsg.h cgm/all gksm/all x/all library 
+
+install::	installed_library installed_headers
+
+clean::		cgm/clean gksm/clean x/clean
+	rm -f gkserrmsg.h mkerrmsg
+
+distclean::	cgm/distclean gksm/clean x/distclean
+
+gkserrmsg.h:	gks_errors.h mkerrmsg
+	./mkerrmsg < gks_errors.h > $@
+
+mkerrmsg:	mkerrmsg.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ mkerrmsg.c
+
+include ../../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

@@ -1,0 +1,33 @@
+# This file is for customizing the configuation process performed by
+# `./configuration'.  This file consists of sh(1) variable-definition lines.
+# The value given to those variable by this file will override their default
+# values.
+#
+# You can also customize the configuration process via the environment
+# variables seen by ./configure.  For example:
+#
+#     In csh(1):
+#	  % setenv CC acc
+#	  & setenv CFLAGS -g
+#	  % ./configure
+#
+#     In sh(1):
+#	  $ CC=acc CFLAGS=-g ./configure
+#
+# Variables in this file override the environmental ones.
+#
+#############################################################################
+#
+# Type of C compiler (default is `cc'):
+CC='gcc -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include -I/usr/include'
+#
+# C compiler flags (default is `-O'):
+CFLAGS='-O2 -m486'
+#
+# C preprocessor flags (default is `-DNDEBUG'):
+# CPPFLAGS=-DDEBUG
+#
+# Installation prefix (default is `../..'):
+prefix=/home/l2/tmap/local/linux
+
+OS=linux

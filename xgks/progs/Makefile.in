@@ -1,0 +1,115 @@
+# $Id$
+#
+# Makefile for the "demonstration programs" subdirectory of the XGKS package.
+
+DEFINES		=
+CPP_X11		= @CPP_X11@
+INCLUDES	= -I../src/lib -I../port
+CPPFLAGS	= @CPPFLAGS@
+CFLAGS		= $(INCLUDES) $(DEFINES) @CFLAGS@
+prefix		= ..
+CSRCS		= defcolors.c font.c hanoi.c mi.c pline.c pmark.c
+FSRCS		= gksdemo.f star.f
+SHELL		= /bin/sh
+#LD_SOCKET	= @LD_SOCKET@
+LD_X11		= @LD_X11@
+LIBS		= -L../src/lib -lxgks \
+		  -L../port -ludport \
+		  -L$(LIBDIR) -lxgks \
+		  $(LD_X11) \
+		  $(LD_SOCKET) \
+		  -lm
+
+#	The following list is a subset of the XGKS programs contained
+#	in the original X11R4 distribution.  IMHO, it contains the 
+#	useful ones.
+#
+CPROGS		= defcolors font hanoi mi pline pmark 
+
+#	The following list contains the Fortran programs.  They're cute
+#	(especially "gksdemo", which is an excellent example of a very
+#	interactive program) but not particularly useful.
+#
+FPROGS		= star gksdemo
+
+PROGRAMS	= $(CPROGS) $(FPROGS)
+GARBAGE		= $(PROGRAMS) *.gksm *.cgm
+
+MANIFEST	= Makefile.in depend $(CSRCS) $(FSRCS) demo.h gkspar.inc
+
+all::		$(PROGRAMS)
+
+install::	installed_programs
+
+defcolors:	defcolors.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+font:		font.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+hanoi:		hanoi.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+mi:		mi.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+pline:		pline.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+pmark:		pmark.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+star:		star.o
+	$(FC) $(FFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+gksdemo:	gksdemo.o
+	$(FC) $(FFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+
+
+# The following rule is for debugging using the CodeCenter 
+# (formerly Saber-C) code-development system.
+#
+.SUFFIXES:	.saber .o .c
+
+gksdemo.saber:	gksdemo.o
+	#setopt path . ../src/lib ../src/lib/cgm ../src/lib/gksm ../src/lib/x
+	#setopt ansi
+	#setopt load_flags -C $(CFLAGS) -I/usr/5include -DDEBUG
+	#load -C $(CFLAGS) -I/usr/5include -DDEBUG gksdemo.o $(OBJS) \
+	    $(LIBS_F77) -L/usr/local/lang/SC0.0 -lF77 -lc
+	#ignore IO
+
+.o.saber:
+	#setopt path . ../src/lib ../src/lib/cgm ../src/lib/gksm ../src/lib/x
+	#setopt ansi
+	#setopt load_flags -C $(CFLAGS) -I/usr/5include -DDEBUG
+	#load -C $(CFLAGS) -I/usr/5include -DDEBUG $< $(OBJS) $(LIBS) -lc
+	#ignore IO
+
+.c.saber:
+	#setopt path . ../src/lib ../src/lib/cgm ../src/lib/gksm ../src/lib/x
+	#setopt ansi
+	#setopt load_flags -C $(CFLAGS) -I/usr/5include -DDEBUG
+	#load -C $(CFLAGS) -I/usr/5include -DDEBUG $< $(OBJS) $(LIBS) -lc
+	#ignore IO
+
+test:		all
+	@-if test `which xrdb | wc -w` = 1; then \
+	    echo Testing inactive backing-store; \
+	    echo "Xgks.backingstore: off" | xrdb -merge; \
+	    ./pmark; \
+	    echo Testing active backing-store; \
+	    echo "Xgks.backingstore: on" | xrdb -merge; \
+	fi
+	./pmark
+	./pline
+	./defcolors
+	./hanoi -o hanoi.gksm
+	./mi hanoi.gksm
+	./hanoi -o hanoi.cgm
+	./mi hanoi.cgm
+	./font -o font.gksm
+	./mi font.gksm
+	./font -o font.cgm
+	./mi font.cgm
+	-test -f star && ./star
+	-test -f gksdemo && ./gksdemo
+
+include ../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

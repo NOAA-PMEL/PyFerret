@@ -1,0 +1,127 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Error Handling Functions :
+ *	geclks_
+ *	gerlog_
+ *        
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * September 28 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdio.h>
+#include <string.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern int	error_lun;
+extern char     *getlunname();
+extern char    *xgks_connection;
+extern FILE    *errfp;
+
+
+/*
+ * gclks - emergency close gks
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p. 195
+ */
+/*FORTRAN*/
+geclks()
+{
+    debug(("emergency close gks \n"));
+    (void) gemergencyclosegks();
+}
+
+
+/*
+ * gerrorhand -  Error Handling
+ *
+ *	gerrorhand() is called internally to the FORTRAN and C bindings (when
+ *	a binding function determines that there's an error)  When the user
+ *	wants to call the error handler, he can only call gerhnd() (FORTRAN)
+ *	or gerrorhand() (C).
+ *
+ *	gerrorhand() needs to have a file pointer as the 3rd argument so C
+ *	binding functions can call it correctly, but it only uses that
+ *	argument if the user isn't using the FORTRAN binding.
+ *
+ *  Gint errnr     - error number
+ *  Gchar *fctid   - function that detected the error
+ *  Gfile *efp     - file for error output.
+ *
+ * See also: ANSI standard p. 195
+ */
+gerrorhand(errnr, fctid, efp)
+    Gint            errnr;
+    Gerrmap         fctid;
+    Gfile          *efp;
+{
+    debug(("FORTRAN Errorhand:  errnr = %d, fctid = %d\n", errnr, fctid));
+
+    FC_NAME(gerhnd)((int *) &errnr, (int *) &fctid, &error_lun);
+
+    debug(("Exit errorhand\n"));
+
+    return 0;
+}
+
+
+/*
+ * gerlog -  Default error logger
+ *
+ *   int  *errnr    - error number
+ *   int  *fctid    - function number
+ *   int  *lun      - error-file logical unit number.  NB: ignored because
+ *		      the error file had to have been set in the OPEN GKS
+ *	 	      call.
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p. 196
+ */
+/*FORTRAN*/
+gerlog(
+    int            *errnr,
+    int            *fctid,
+    /*ARGSUSED*/
+    int            *lun)
+{
+    debug(("Error log:  errnr = %d, fctid = %d\n", *errnr, *fctid));
+
+    (void) gerrorlog((Gint) *errnr, (Gerrmap) *fctid, (Gfile *) errfp);
+    debug(("Exit error log\n"));
+}

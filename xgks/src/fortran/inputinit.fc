@@ -1,0 +1,794 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Input device initialization functions :
+ *
+ *	ginlc()
+ *	ginsk()
+ *	ginvl()
+ *	ginch()
+ *	ginpk()
+ *	ginst()
+ *
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * Todd Gill
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ *
+ * $Id$
+ * $__Header$
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include <string.h>
+#include "xgks.h"
+#include "fortxgks.h"
+#include "pdrutils.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern int     *fortint;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+extern char    *forttext;
+extern FILE    *errfp;
+extern Gpoint  *fortpoints;
+
+
+/*
+ * ginlc -  Initialise locator
+ *
+ * int *wkid                              workstation identifier
+ * int *lcdnr                             locator device number
+ * int *tnr                               initial transformation #
+ * float *ipx,*ipy                        initial locator poistion
+ * int *pet                               prompt/echo type
+ * float *xmin, *xmax, *ymin, *ymax       echo area in device coord
+ * int *ldr                               dimension of data record
+ * char *datarec                          data record
+ *
+ * Returns: Error 2003 in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+ginlc(
+    int            *wkid,
+    int            *lcdnr,
+    int            *tnr,
+    float          *ipx,
+    float          *ipy,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    /*ARGSUSED*/
+    int            *ldr,
+    char           *datarec
+)
+{
+    Glimit          glimit;
+    Glocrec         glocrec;
+    Gloc            gloc;
+
+    debug(("Initialize locator %d %d \n", *wkid, *lcdnr));
+    debug(("    echo area (%7.2f, %7.2f) (%7.2f, %7.2f) \n", *xmin, *ymin, 
+	   *xmax, *ymax));
+
+    gloc.transform = *tnr;
+    gloc.position.x = *ipx;
+    gloc.position.y = *ipy;
+
+    glimit.xmin = *xmin;
+    glimit.xmax = *xmax;
+    glimit.ymin = *ymin;
+    glimit.ymax = *ymax;
+
+    switch (*pet) {
+    case 4:
+	{
+	    Gacf            attrcontrolflag;
+
+	    CHECKMAGICNUM(datarec, errginitloc);
+	    if (pdrintnum(datarec) < 1) {
+		(void) gerrorhand(2003, errginitloc, (errfp));
+		return;
+	    }
+	    attrcontrolflag = (Gacf) pdrintindex(datarec, 1);
+	    glocrec.pet4.acf = attrcontrolflag;
+	    glocrec.pet4.data = NULL;
+	    if (attrcontrolflag == GSPECIFIED) {
+		if ((pdrintnum(datarec) != 7) || (pdrrealnum(datarec) != 1)) {
+		    (void) gerrorhand(2003, errginitloc, (errfp));
+		    return;
+		}
+		glocrec.pet4.ln.type = (Gasf) pdrintindex(datarec, 2);
+		glocrec.pet4.ln.width = (Gasf) pdrintindex(datarec, 3);
+		glocrec.pet4.ln.colour = (Gasf) pdrintindex(datarec, 4);
+		glocrec.pet4.ln.line = pdrintindex(datarec, 5);
+		glocrec.pet4.ln.bundl.type = pdrintindex(datarec, 6);
+		glocrec.pet4.ln.bundl.colour = pdrintindex(datarec, 7);
+		glocrec.pet4.ln.bundl.width = pdrrealindex(datarec, 1);
+	    }
+	}
+	break;
+
+    case 5:
+	{
+	    Gacf            attrcontrolflag;
+	    Gpfcf           areacontrolflag;
+
+	    CHECKMAGICNUM(datarec, errginitloc);
+	    if (pdrintnum(datarec) < 2) {
+		(void) gerrorhand(2003, errginitloc, (errfp));
+		return;
+	    }
+	    attrcontrolflag = (Gacf) pdrintindex(datarec, 1);
+	    areacontrolflag = (Gpfcf) pdrintindex(datarec, 2);
+	    glocrec.pet5.acf = attrcontrolflag;
+	    glocrec.pet5.pfcf = areacontrolflag;
+	    glocrec.pet5.data = NULL;
+	    if (areacontrolflag == GPF_POLYLINE) {
+		if (attrcontrolflag == GSPECIFIED)
+		    if (pdrintnum(datarec) != 8 || pdrrealnum(datarec) != 1) {
+			(void) gerrorhand(2003, errginitloc, (errfp));
+			return;
+		    }
+		glocrec.pet5.attr.ln.type = (Gasf) pdrintindex(datarec, 3);
+		glocrec.pet5.attr.ln.width = (Gasf) pdrintindex(datarec, 4);
+		glocrec.pet5.attr.ln.colour = (Gasf) pdrintindex(datarec, 5);
+		glocrec.pet5.attr.ln.line = pdrintindex(datarec, 6);
+		glocrec.pet5.attr.ln.bundl.type = pdrintindex(datarec, 7);
+		glocrec.pet5.attr.ln.bundl.colour = pdrintindex(datarec, 8);
+		glocrec.pet5.attr.ln.bundl.width = pdrrealindex(datarec, 1);
+	    } else {				/* Fill Area */
+		if (attrcontrolflag == GSPECIFIED)
+		    if (pdrintnum(datarec) != 9) {
+			(void) gerrorhand(2003, errginitloc, (errfp));
+			return;
+		    }
+		glocrec.pet5.attr.fl.inter = (Gasf) pdrintindex(datarec, 3);
+		glocrec.pet5.attr.fl.style = (Gasf) pdrintindex(datarec, 4);
+		glocrec.pet5.attr.fl.colour = (Gasf) pdrintindex(datarec, 5);
+		glocrec.pet5.attr.fl.fill = pdrintindex(datarec, 6);
+		glocrec.pet5.attr.fl.bundl.inter =
+		    (Gflinter) pdrintindex(datarec, 7);
+		glocrec.pet5.attr.fl.bundl.style =
+		    (Gint) pdrintindex(datarec, 8);
+		glocrec.pet5.attr.fl.bundl.colour =
+		    (Gint) pdrintindex(datarec, 9);
+	    }
+	}
+	break;
+
+    default:					/* covers cases 1,2,3,6  */
+	glocrec.pet1.data = NULL;
+	break;
+    }
+
+    (void) ginitloc((Gint) *wkid, (Gint) *lcdnr, &gloc, (Gint) *pet, &glimit, 
+	     &glocrec);
+}
+
+
+/*
+ * ginsk - Initialize Stroke
+ *
+ * int *wkid;                                    workstation identifier
+ * int *skdnr;                                   stroke device number
+ * int *tnr;                                     initial tranformation #
+ * int *n;                                       # of points in init
+ * float *ipx,*ipy;                              points in initial stroke
+ * int *pet;                                     prompt/echo type
+ * float *xmin, *xmax, *ymin, *ymax;             echo area in device coord
+ * int *buflen;                                  input buffer size
+ * int *ldr;                                     dimension of data record
+ * char *datarec;                                data record
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+ginsk(
+    int            *wkid,
+    int            *skdnr,
+    int            *tnr,
+    int            *n,
+    float          *ipx,
+    float          *ipy,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    int            *buflen,
+    /*ARGSUSED*/
+    int            *ldr,
+    char           *datarec
+)
+{
+    Glimit          glimit;
+    Gstrokerec      gstrokerec;
+    Gstroke         gstroke;
+    Gint            i;
+
+    debug(("Initialize stroke wkid = %d dev = %d pet = %d\n", *wkid, *skdnr, 
+	  *pet));
+    debug(("    echo area (%7.2f, %7.2f) (%7.2f, %7.2f) \n", *xmin, *ymin, 
+	  *xmax, *ymax));
+
+    /* check magic num all pets require packed datarecord */
+
+    CHECKMAGICNUM(datarec, errginitstroke);
+
+    gstroke.transform = *tnr;
+    gstroke.n_points = *n;
+    glimit.xmin = *xmin;
+    glimit.xmax = *xmax;
+    glimit.ymin = *ymin;
+    glimit.ymax = *ymax;
+    if (!(gstroke.points = (Gpoint *)malloc((size_t)(*n*sizeof(Gpoint))))) {
+	(void) gerrorhand(300, errginitstroke, (errfp));
+	return;
+    }
+    for (i = 0; i < *n; i++) {
+	gstroke.points[i].x = ipx[i];
+	gstroke.points[i].y = ipy[i];
+    }
+
+    switch (*pet) {
+
+    case 1:
+	debug(("Case 1 Entered \n"));
+	gstrokerec.pet1.bufsiz = *buflen;
+	if ((pdrintnum(datarec) != 2) || (pdrrealnum(datarec) != 3)) {
+	    (void) gerrorhand(2003, errginitstroke, (errfp));
+	    return;
+	}
+	/* Note: The first integer in the datarec is the bufsize */
+	/* this is not used because it is a parameter to   */
+	/* this function.				      */
+
+	gstrokerec.pet1.editpos = pdrintindex(datarec, 2);
+	gstrokerec.pet1.interval.x = pdrrealindex(datarec, 1);
+	gstrokerec.pet1.interval.y = pdrrealindex(datarec, 2);
+	gstrokerec.pet1.time = pdrrealindex(datarec, 3);
+	gstrokerec.pet1.data = NULL;
+	debug(("Flag : time = %7.2f \n", gstrokerec.pet1.time));
+	debug(("Flag : edit interval = %7.2f, %7.2f \n",
+	      gstrokerec.pet1.interval.x, gstrokerec.pet1.interval.y));
+	debug(("Flag : bufsiz = %d \n", gstrokerec.pet1.bufsiz));
+	debug(("Flag : editpos = %d \n", gstrokerec.pet1.editpos));
+	break;
+
+    case 2:
+	debug(("Case 2 Entered \n"));
+	gstrokerec.pet2.bufsiz = *buflen;
+	if ((pdrintnum(datarec) != 2) || (pdrrealnum(datarec) != 3)) {
+	    (void) gerrorhand(2003, errginitstroke, (errfp));
+	    return;
+	}
+	/* Note: The first integer in the datarec is the bufsize */
+	/* this is not used because it is a paremaeter to  */
+	/* this function.				      */
+
+	gstrokerec.pet2.editpos = pdrintindex(datarec, 2);
+	gstrokerec.pet2.interval.x = pdrrealindex(datarec, 1);
+	gstrokerec.pet2.interval.y = pdrrealindex(datarec, 2);
+	gstrokerec.pet2.time = pdrrealindex(datarec, 3);
+	gstrokerec.pet2.data = NULL;
+	break;
+
+    case 3:
+	{
+	    Gacf            attrcontrolflag;
+
+	    if ((pdrintnum(datarec) < 3) || (pdrrealnum(datarec) < 3)) {
+		(void) gerrorhand(2003, errginitstroke, (errfp));
+		return;
+	    }
+	    /* bufsiz is not removed from the datarecord  */
+	    /* the parameter buflen is used */
+	    gstrokerec.pet3.editpos = pdrintindex(datarec, 2);
+	    attrcontrolflag = (Gacf) pdrintindex(datarec, 3);
+	    gstrokerec.pet3.acf = attrcontrolflag;
+	    gstrokerec.pet3.bufsiz = *buflen;
+	    gstrokerec.pet3.data = NULL;
+	    gstrokerec.pet3.interval.x = pdrrealindex(datarec, 1);
+	    gstrokerec.pet3.interval.y = pdrrealindex(datarec, 2);
+	    gstrokerec.pet3.time = pdrrealindex(datarec, 3);
+	    if (attrcontrolflag == GSPECIFIED) {
+		if ((pdrintnum(datarec) != 9) || (pdrrealnum(datarec) != 4)) {
+		    (void) gerrorhand(2003, errginitstroke, (errfp));
+		    return;
+		}
+		gstrokerec.pet3.mk.type = (Gasf) pdrintindex(datarec, 4);
+		gstrokerec.pet3.mk.size = (Gasf) pdrintindex(datarec, 5);
+		gstrokerec.pet3.mk.color = (Gasf) pdrintindex(datarec, 6);
+		gstrokerec.pet3.mk.mark = pdrintindex(datarec, 7);
+		gstrokerec.pet3.mk.bundl.type = pdrintindex(datarec, 8);
+		gstrokerec.pet3.mk.bundl.size = pdrrealindex(datarec, 4);
+		gstrokerec.pet3.mk.bundl.color = pdrintindex(datarec, 9);
+	    }
+	}
+	break;
+
+    case 4:
+
+	{
+	    Gacf            attrcontrolflag;
+
+	    if ((pdrintnum(datarec) < 3) || (pdrrealnum(datarec) < 3)) {
+		(void) gerrorhand(2003, errginitstroke, (errfp));
+		return;
+	    }
+	    /*
+	     * bufsiz is not removed from the datarecord.  The parameter 
+	     * buflen is used.
+	     */
+	    gstrokerec.pet4.bufsiz = *buflen;
+	    gstrokerec.pet4.editpos = pdrintindex(datarec, 2);
+	    attrcontrolflag = (Gacf) pdrintindex(datarec, 3);
+	    gstrokerec.pet4.acf = attrcontrolflag;
+	    gstrokerec.pet4.interval.x = pdrrealindex(datarec, 1);
+	    gstrokerec.pet4.interval.y = pdrrealindex(datarec, 2);
+	    gstrokerec.pet4.time = pdrrealindex(datarec, 3);
+	    gstrokerec.pet4.data = NULL;
+	    gstrokerec.pet4.acf = attrcontrolflag;
+	    if (attrcontrolflag == GSPECIFIED) {
+		if ((pdrintnum(datarec) != 9) || (pdrrealnum(datarec) != 4)) {
+		    (void) gerrorhand(2003, errginitstroke, (errfp));
+		    return;
+		}
+		gstrokerec.pet4.ln.type = (Gasf) pdrintindex(datarec, 4);
+		gstrokerec.pet4.ln.width = (Gasf) pdrintindex(datarec, 5);
+		gstrokerec.pet4.ln.colour = (Gasf) pdrintindex(datarec, 6);
+		gstrokerec.pet4.ln.line = pdrintindex(datarec, 7);
+		gstrokerec.pet4.ln.bundl.type = pdrintindex(datarec, 8);
+		gstrokerec.pet4.ln.bundl.color = pdrintindex(datarec, 9);
+		gstrokerec.pet4.ln.bundl.width = pdrrealindex(datarec, 4);
+	    }
+	}
+	break;
+
+    default:					/* covers cases 5,6   */
+	debug(("    WARNING! unknown pet (%d) specified \n", *pet));
+	/* return statement removed - c1175 */
+    }
+
+    (void) ginitstroke((Gint) *wkid, (Gint) *skdnr, (Gstroke *) & gstroke,
+		(Gint) *pet, (Glimit *) &glimit, (Gstrokerec *) & gstrokerec);
+
+    debug(("End ginsk \n"));
+}
+
+
+/*
+ * ginvl - Initialize Valuator
+ *
+ * int *wkid;                                  workstation identifier
+ * int *vldnr;                                 valuator device #
+ * float *ival;                                initial value
+ * int *pet;                                   prompt/echo type
+ * float *xmin,*xmax,*ymin,*ymax;              echo area in device
+ * float *loval,*hival;                        minimal and maximal
+ * int *ldr;                                   dim of data record
+ * int *datarec;                               data record
+ *
+ * Returns:
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+ginvl(
+    int            *wkid,
+    int            *vldnr,
+    float          *ival,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    float          *loval,
+    float          *hival,
+    /*ARGSUSED*/
+    int            *ldr,
+    int            *datarec)
+{
+    Glimit          area;
+    Gvalrec         record;
+
+    area.xmin = (Gfloat) *xmin;
+    area.xmax = (Gfloat) *xmax;
+    area.ymin = (Gfloat) *ymin;
+    area.ymax = (Gfloat) *ymax;
+    switch (*pet) {
+    case 1:
+	record.pet1.low = (Gfloat) *loval;
+	record.pet1.high = (Gfloat) *hival;
+	record.pet1.data = NULL;
+	break;
+    case 2:
+	record.pet2.low = (Gfloat) *loval;
+	record.pet2.high = (Gfloat) *hival;
+	record.pet2.data = NULL;
+	break;
+    case 3:
+	record.pet3.low = (Gfloat) *loval;
+	record.pet3.high = (Gfloat) *hival;
+	record.pet3.data = NULL;
+	break;
+    }
+
+    debug(("Initialize Valuator %d %d \n", *wkid, *vldnr));
+    debug(
+	("Echo area  xmin = %7.2f xmax =  %7.2f  ymin = %7.2f ymax = %7.2f \n",
+	 area.xmin, area.xmax, area.ymin, area.ymax));
+    debug(
+	("High val = %7.2f Low val =  %7.2f Init val =  %7.2f \n",
+	 *hival, *loval, *ival));
+
+    (void) ginitval((Gint) *wkid, (Gint) *vldnr, (Gfloat) *ival, (Gint) *pet, 
+		    &area, &record);
+
+}
+
+
+/*
+ * ginch -  Initialize Choice
+ *
+ * int *wkid;                                   initialize choice
+ * int *chdnr;                                  choice device number
+ * int *istat;                                  initial status
+ * int *ichnr;                                  initial choice number
+ * int *pet;                                    prompt/echo type
+ * float *xmin, *xmax, *ymin, *ymax;            echo area in device
+ * int *ldr;                                    dimension of datarec
+ * char *datarec;                               data record
+ *
+ * Returns: 2000 and 2003, in addition to ANSI standard errors for this 
+ * function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+ginch(
+    int            *wkid,
+    int            *chdnr,
+    int            *istat,
+    int            *ichnr,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    /*ARGSUSED*/
+    int            *ldr,
+    char           *datarec)
+{
+    Gchoice         gchoice;
+    Glimit          glimit;
+    Gchoicerec      gchoicerec;
+
+    debug(("Initialize Choice %d %d %d %d %d\n", *wkid, *chdnr, *istat,
+	  *ichnr, *pet));
+    debug(("    echo area (%7.2f, %7.2f) (%7.2f, %7.2f) \n", *xmin, *ymin,
+	  *xmax, *ymax));
+
+    INPUTDEVICESTATUS(*istat, errginitchoice);
+
+    switch (*istat) {
+    case FORT_GNONE:
+	gchoice.status = GC_NONE;
+	break;
+    case FORT_GNCHOI:
+	gchoice.status = GC_NOCHOICE;
+	break;
+    case FORT_GOK:
+	gchoice.status = GC_OK;
+	break;
+    }
+
+    gchoice.choice = *ichnr;
+
+    glimit.xmin = *xmin;
+    glimit.xmax = *xmax;
+    glimit.ymin = *ymin;
+    glimit.ymax = *ymax;
+
+    switch (*pet) {
+    case 1:
+	gchoicerec.pet1.data = NULL;
+	break;
+    case 2:
+	CHECKMAGICNUM(datarec, errginitchoice);
+	gchoicerec.pet2.number = pdrintnum(datarec);
+
+	/* point to the array of integers */
+	/* take advantage of C enumerated types */
+	if (gchoicerec.pet2.number > 0)
+	    gchoicerec.pet2.enable = (Gprflag *) pdrintaddr(datarec);
+	else
+	    gchoicerec.pet2.enable = NULL;
+	gchoicerec.pet2.data = NULL;
+	break;
+
+    case 3:
+	CHECKMAGICNUM(datarec, errginitchoice);
+	/* number of strings */
+	gchoicerec.pet3.number = pdrstringnum(datarec);
+	gchoicerec.pet3.strings = (Gchar **) pdrstringtabptr(datarec);
+	gchoicerec.pet3.data = NULL;
+	break;
+
+    case 4:
+	CHECKMAGICNUM(datarec, errginitchoice);
+	/* number of strings */
+	gchoicerec.pet4.number = pdrstringnum(datarec);
+	gchoicerec.pet4.strings = (Gchar **) pdrstringtabptr(datarec);
+	gchoicerec.pet4.data = NULL;
+	break;
+    case 5:
+	CHECKMAGICNUM(datarec, errginitchoice);
+	/* number of strings */
+	gchoicerec.pet5.seg = pdrintindex(datarec, 1);
+	gchoicerec.pet5.number = pdrintindex(datarec, 2);
+	gchoicerec.pet5.pickids = pdrintaddr(datarec);
+	gchoicerec.pet5.data = NULL;
+	break;
+
+    default:					/* covers cases 1 > pet ||
+						 * pet > 5 */
+	debug(("    WARNING! unknown pet (%d) specified \n", *pet));
+	return;
+    }
+
+    (void) ginitchoice((Gint) *wkid, (Gint) *chdnr, &gchoice, (Gint) *pet, 
+		       &glimit, &gchoicerec);
+}
+
+
+/*
+ * ginpk  -  Initialize Pick
+ *
+ * int *wkid;                                workstation identifier
+ * int *pkdnr;                               pick device number
+ * int *istat;                               initial status
+ * int *isgna;                               initial segment name
+ * int *ipkid;                               initial pick identifier
+ * int *pet;                                 prompt/echo type
+ * float *xmin,*xmax,*ymin,*ymax;            echo area
+ * int *ldr;                                 dimension of datarec
+ * char *datarec;                            data record
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.74
+ */
+/*FORTRAN*/
+ginpk(
+    int            *wkid,
+    int            *pkdnr,
+    int            *istat,
+    int            *isgna,
+    int            *ipkid,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    /*ARGSUSED*/
+    int            *ldr,
+    char           *datarec)
+
+{
+    Gpick           gpick;
+    Glimit          glimit;
+    Gpickrec        gpickrec;
+
+    switch (*istat) {
+    case FORT_GNONE:
+	gpick.status = GP_NONE;
+	break;
+    case FORT_GNPICK:
+	gpick.status = GP_NOPICK;
+	break;
+    case FORT_GOK:
+	gpick.status = GP_OK;
+	break;
+    }
+    gpick.seg = *isgna;
+    gpick.pickid = *ipkid;
+    glimit.xmin = *xmin;
+    glimit.xmax = *xmax;
+    glimit.ymin = *ymin;
+    glimit.ymax = *ymax;
+    switch (*pet) {
+    case 1:
+	gpickrec.pet1.data = NULL;
+	break;
+    case 3:
+	gpickrec.pet3.data = NULL;
+    }
+
+    debug(("Initialize Pick %d %d \n", *wkid, *pkdnr));
+
+    (void) ginitpick((Gint) *wkid, (Gint) *pkdnr, &gpick, (Gint) *pet, &glimit,
+	      &gpickrec);
+}
+
+
+/*
+ * ginst  -  Initialize String
+ *
+ * int *wkid;                                workstation identifier
+ * int *stdnr;                               string device number
+ * int *lstr;                                length of the init string
+ * char *istr;                               initial string
+ * int *pet;                                 prompt/echo type
+ * float *xmin,*xmax,*ymin,*ymax;            echo area
+ * int *buflen;                              buffer length of string
+ * int *inipos;                              initial cursor position
+ * int *ldr;                                 dimension of datarec
+ * char *datarec;                            data record
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ginst(
+    int            *wkid,
+    int            *stdnr,
+    int            *lstr,
+    char           *istr,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    int            *buflen,
+    int            *inipos,
+    /*ARGSUSED*/
+    int            *ldr,
+    char           *datarec)
+{
+    Glimit          area;
+    Gstringrec      record;
+
+    debug(("Initialize String  \n"));
+
+    area.xmin = *xmin;
+    area.xmax = *xmax;
+    area.ymin = *ymin;
+    area.ymax = *ymax;
+
+    record.pet1.bufsiz = *buflen;
+    record.pet1.position = *inipos;
+    record.pet1.data = NULL;
+
+    if (*lstr + 1 > currforttext) {		/* Check amount of memory
+						 * needed */
+	/* realloc more memory */
+	forttext = (char*) REALLOC((voidp) forttext, (size_t) (*lstr + 1));
+	if (forttext == NULL) {			/* If memory allocation
+						 * unsuccessful call error
+						 * routine */
+	    (void) gerrorhand(300, errgreqstring, (errfp));
+	    return;
+	} else
+	    currforttext = *lstr + 1;
+    }
+    (void) strncpy(forttext, istr, *lstr);
+    forttext[*lstr] = '\0';
+
+    (void) ginitstring((Gint) *wkid, (Gint) *stdnr, forttext, (Gint) *pet, 
+		       &area, &record);
+}
+
+
+/*
+ * ginsts  -  Initialize String  (Subset Version)
+ * int *wkid;                                workstation identifier
+ * int *stdnr;                               string device number
+ * int *lstr;                                length of the init string
+ * char *istr;                               initial string
+ * int *pet;                                 prompt/echo type
+ * float *xmin,*xmax,*ymin,*ymax;            echo area
+ * int *buflen;                              buffer length of string
+ * int *inipos;                              initial cursor position
+ * int *ldr;                                 dimension of datarec
+ * char *datarec;                            data record
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ginsts(
+    int            *wkid,
+    int            *stdnr,
+    int            *lstr,
+    char           *istr,
+    int            *pet,
+    float          *xmin,
+    float          *xmax,
+    float          *ymin,
+    float          *ymax,
+    int            *buflen,
+    int            *inipos,
+    /*ARGSUSED*/
+    int            *ldr,
+    char           *datarec)
+{
+    Glimit          area;
+    Gstringrec      record;
+
+    debug(("Initialize String (Subset)  \n"));
+
+    area.xmin = *xmin;
+    area.xmax = *xmax;
+    area.ymin = *ymin;
+    area.ymax = *ymax;
+
+    record.pet1.bufsiz = *buflen;
+    record.pet1.position = *inipos;
+    record.pet1.data = NULL;
+
+    if (*lstr + 1 > currforttext) {		/* Check amount of memory
+						 * needed */
+	/* realloc more memory */
+	forttext = (char*) REALLOC((VOIDP) forttext, (size_t) (*lstr + 1));
+
+	/* If memory allocation unsuccessful call error routine */
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgreqstring, (errfp));
+	    return;
+	} else
+	    currforttext = *lstr + 1;
+    }
+    (void) strncpy(forttext, istr, *lstr);
+    forttext[*lstr] = '\0';
+
+    (void) ginitstring((Gint) *wkid, (Gint) *stdnr, forttext, (Gint) *pet, 
+		       &area, &record);
+}

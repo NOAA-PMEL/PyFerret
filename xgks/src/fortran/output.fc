@@ -1,0 +1,408 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Output functions :
+ *
+ *	gpl_ (n, px, py)
+ *	gpm_ (n, px, py)
+ *	gtx_ (px, py, chars, length)
+ *	gtxs_ (px, py, lstr, chars)
+ *	gfa_ (n, px, py)
+ *	gca_ (px,py,qx,qy,dimx,dimy,isc,isr,dx,dy,colia)
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#define OUTPUT
+#include "udposix.h"
+#include <string.h>
+/*  #include <stdlib.h> */
+#include "xgks.h"
+#include "fortxgks.h"
+
+#undef OUTPUT
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern int     *fortint;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+extern char    *forttext;
+extern FILE    *errfp;
+extern Gpoint  *fortpoints;
+
+
+/*
+ * gpl - Polyline
+ *
+ * Parameters :
+ * int *n;            	Number of points
+ * float *px, *py;	Coordinates of points WC
+ *
+ * Returns error 300 in addition to ANSI standard errors
+ *
+ * See also: ANSI standard p.82
+ */
+    void
+/*FORTRAN*/
+gpl(
+    int            *n,
+    float          *px,
+    float          *py)
+{
+    int             i;
+
+    debug(("Polyline %d\n", *n));
+
+    /* Check amount of memory needed */
+    if (*n > currfortpoints) {
+	fortpoints = (Gpoint *) REALLOC((voidp) fortpoints,
+					(size_t) (*n * sizeof(Gpoint)));
+	if (fortpoints == NULL) {
+	    (void) gerrorhand(300, errgpolyline, (errfp));
+	    currfortpoints = 0;
+	    return;
+	} else {
+	    currfortpoints = *n;
+	}
+    }
+    for (i = 0; i < *n; i++) {
+	fortpoints[i].x = (Gfloat) px[i];
+	fortpoints[i].y = (Gfloat) py[i];
+    }
+
+    (void) gpolyline((Gint) *n, (Gpoint *) fortpoints);
+}
+
+
+/*
+ * gpm - Polymarker
+ *
+ * Parameters :
+ * int *n;		Number of points
+ * float *px, *py;	Coordinates of points WC
+ *
+ * Returns error 300 in addition to ANSI standard errors
+ *
+ * See also: ANSI standard p.82
+ */
+    void
+/*FORTRAN*/
+gpm(
+    int            *n,
+    float          *px,
+    float          *py)
+{
+    int             i;
+
+    debug(("Polymarker %d\n", *n));
+
+    /* Check amount of memory needed */
+    if (*n > currfortpoints) {
+	fortpoints = (Gpoint *) REALLOC((voidp) fortpoints,
+					(size_t) (*n * sizeof(Gpoint)));
+	if (fortpoints == NULL) {
+	    (void) gerrorhand(300, errgpolymarker, (errfp));
+	    currfortpoints = 0;
+	    return;
+	} else {
+	    currfortpoints = *n;
+	}
+    }
+    for (i = 0; i < *n; i++) {
+	fortpoints[i].x = (Gfloat) px[i];
+	fortpoints[i].y = (Gfloat) py[i];
+    }
+
+    (void) gpolymarker((Gint) *n, (Gpoint *) fortpoints);
+}
+
+
+/*
+ * gtx - Text
+ *
+ * Parameters :
+ * float *px, *py;      Text position WC
+ * char *chars;         String of characters
+ *
+ * Returns error 300 in addition to ANSI standard errors
+ *
+ * See also: ANSI standard p.83
+ */
+    void
+/*FORTRAN*/
+gtx(
+    float          *px,
+    float          *py,
+    char           *chars)
+{
+    Gpoint          position;
+
+    debug(("Text\n"));
+
+    /*
+     * Check amount of memory needed. NB: use length+1 because of the NULL at
+     * the end.
+     */
+    if (chars_len + 1 > currforttext) {
+	forttext = (Gchar *) REALLOC((voidp) forttext,
+				     (size_t) (chars_len + 1 * sizeof(Gchar)));
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgtext, (errfp));
+	    currforttext = 0;
+	    return;
+	} else {
+	    currforttext = chars_len + 1;
+	}
+    }
+    (void) strncpy((char *) forttext, chars, (size_t)chars_len);
+    forttext[chars_len] = '\0';
+
+    debug(("<%s> chars_len %d\n", forttext, chars_len));
+
+    position.x = (Gfloat) *px;
+    position.y = (Gfloat) *py;
+
+    (void) gtext(&position, (Gchar *) forttext);
+}
+
+
+/*
+ * gtxs - Text (Subset Version).
+ *
+ * Parameters :
+ * float *px, *py; 	Text position WC
+ * int  *lstr; 		Length of string.
+ * char *chars;         Pointer to string
+ *
+ * Returns error 300 in addition to ANSI standard errors
+ *
+ * See also: ANSI standard p.83
+ */
+    void
+/*FORTRAN*/
+gtxs(
+    float          *px,
+    float          *py,
+    int            *lstr,
+    char           *chars)
+{
+    Gpoint          position;
+
+    debug(("Text (Subset Version)\n"));
+
+    /*
+     * Check amount of memory needed. NB: use *lstr+1 because it's a NULL
+     * terminated string.
+     */
+    if (*lstr + 1 > currforttext) {
+	forttext = (Gchar *) REALLOC((voidp) forttext,
+				     (size_t) (*lstr + 1 * sizeof(Gchar)));
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgtext, (errfp));
+	    return;
+	} else {
+	    currforttext = *lstr + 1;
+	}
+    }
+    (void) strncpy(forttext, chars, (size_t)*lstr);
+    forttext[*lstr] = '\0';
+
+    debug(("<%s> length %d\n", forttext, *lstr));
+
+    position.x = (Gfloat) *px;
+    position.y = (Gfloat) *py;
+
+    (void) gtext(&position, (Gchar *) forttext);
+}
+
+
+/*
+ * gfa - Fill Area
+ *
+ * Parameters :
+ * int *n;		Number of points
+ * float *px, *py;      Coordinates of points WC
+ *
+ * Returns error 300 in addition to ANSI standard errors
+ *
+ * See also: ANSI standard p.83
+ */
+    void
+/*FORTRAN*/
+gfa(
+    int            *n,
+    float          *px,
+    float          *py)
+{
+    int             i;
+
+    debug(("Fill Area %d\n", *n));
+
+    /* Check amount of memory needed */
+    if (*n > currfortpoints) {
+	fortpoints = (Gpoint *) REALLOC((voidp) fortpoints,
+					(size_t) (*n * sizeof(Gpoint)));
+	if (fortpoints == NULL) {
+	    (void) gerrorhand(300, errgfillarea, (errfp));
+	    currfortpoints = 0;
+	    return;
+	} else {
+	    currfortpoints = *n;
+	}
+    }
+    for (i = 0; i < *n; i++) {
+	fortpoints[i].x = px[i];
+	fortpoints[i].y = py[i];
+    }
+
+    (void) gfillarea((Gint) *n, (Gpoint *) fortpoints);
+}
+
+
+/*
+ * gca - Cell Array
+ *
+ * Parameters :
+ * float *px;                        +---------0 <--(*qx,*qy)
+ * float *py;                        |         |
+ * float *qx;                        |         |
+ * float *qy;           (*px,*py)--> 0---------+
+ * int   *dimx; 	columns of entire colour index array
+ * int   *dimy;		rows of entire colour index array
+ * int   *isc; 		index of start column
+ * int   *isr; 		index of start row
+ * int   *dx;      	number of columns in array subset
+ * int   *dy;		number of rows in array subset
+ * int   *colia;  	colour index array
+ *
+ *
+ * Returns error 300 in addition to ANSI standard errors
+ *
+ * See also: ANSI standard p.85
+ */
+    void
+/*FORTRAN*/
+gca(
+    float          *px,
+    float          *py,
+    float          *qx,
+    float          *qy,
+    int            *dimx,
+    /* ARGSUSED */
+    int            *dimy,
+    int            *isc,
+    int            *isr,
+    int            *dx,
+    int            *dy,
+    int            *colia)
+{
+    Grect           rectangle;
+    Gipoint         dimensions;
+
+    debug(("Cell Array\n"));
+
+    rectangle.ll.x = (Gfloat) *px;
+    rectangle.ll.y = (Gfloat) *py;
+    rectangle.ur.x = (Gfloat) *qx;
+    rectangle.ur.y = (Gfloat) *qy;
+
+    dimensions.x = (Gint) *dx;
+    dimensions.y = (Gint) *dy;
+
+    /*
+     * Because of the way the standard sets up the color array, it does NOT
+     * have to be transformed from column major to row major. We can more or
+     * less pass the parameters in verbatim from here.
+     */
+    (void) gcellarray(&rectangle, &dimensions, (Gint) *dimx, (colia));
+}
+
+
+/*
+ * ggdp - Generalized Drawing Primitive
+ *
+ * Parameters :
+ * int *n;            	Number of points
+ * float *pxa, *pya;    Coordinates of points in WC
+ * int *primid;    	GDP identifier
+ * int *ldr;    	dimension of data record array
+ * char *datrec[80,*ldr]; data record
+ *
+ *
+ * See also: ANSI standard p.86
+ */
+    void
+/*FORTRAN*/
+ggdp(
+    int            *n,
+    float          *pxa,
+    float          *pya,
+    int            *primid,
+    /* ARGSUSED */
+    int            *ldr,
+    char           *datarec)
+{
+    Gint            function;
+    Gpoint         *points;
+    Ggdprec        *data;
+    int             i;
+
+    /* allocate memory for C Gpoint array */
+    points = (Gpoint *) malloc((size_t) (*n * sizeof(Gpoint)));
+    if (points == NULL) {
+	(void) gerrorhand(300, errggdp, (errfp));
+	return;
+    }
+    /* convert from two arrays of floats to an array of points */
+    for (i = 0; i < *n; i++) {
+	points[i].x = (Gfloat) pxa[i];
+	points[i].y = (Gfloat) pya[i];
+    }
+
+    function = (Gint) *primid;
+
+    /*
+     * Convert FORTRAN data to C data. NOTE: someday this will be a little
+     * more complicated
+     */
+    data = (Ggdprec *) datarec;
+
+    (void) g_gdp(*n, points, function, data);
+}

@@ -1,0 +1,412 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Input Request Functions:
+ *	grqlc_ ()
+ *	grqsk_ ()
+ *	grqvl_ ()
+ *	grqch_ ()
+ *	grqpk_ ()
+ *	grqst_ ()
+ *	grqsts_ ()
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ *
+ * $Id$
+ * $__Header$
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include <string.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern char    *forttext;
+extern int     *fortint;
+extern Gpoint  *fortpoints;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+
+
+/*
+ * grqlc - Request Locator
+ *
+ * Parameters :
+ * int *wkid;		workstation identifier
+ * int *lcdnr;		locatordevice number
+ * int *stat;		status
+ * int *tnr;		normalization transformation number
+ * float *px;		locator x position
+ * float *py;		locator y position
+ *
+ * Returns:  ANSI standard errors for this function.
+ * See also: ANSI standard p.131
+ */
+/*FORTRAN*/
+grqlc(
+    int            *wkid,
+    int            *lcdnr,
+    int            *stat,
+    int            *tnr,
+    float          *px,
+    float          *py)
+{
+    Gqloc           response;
+
+    debug(("Request Locator %d %d \n", *wkid, *lcdnr));
+
+    if (greqloc((Gint) *wkid, (Gint) *lcdnr, &response))
+	return;
+
+    /* Reverse the sense of status */
+    *stat = (int) (response.status) ? (int) FORT_GNONE : (int) FORT_GOK;
+
+    *tnr = (int) response.loc.transform;
+    *px = (float) response.loc.position.x;
+    *py = (float) response.loc.position.y;
+}
+
+
+/*
+ * grqsk - Request Stroke
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *skdnr;		stroke device number
+ * int *n; 		maximum number of points
+ * int *stat;		status
+ * int *tnr; 		normalization transformation number
+ * int *np; 		number of points
+ * float *pxa;          x points in stroke
+ * float *pya;          y points in stroke
+ *
+ * Returns: ANSI standard errors for this function.
+ * See also: ANSI standard p.132
+ */
+/*FORTRAN*/
+grqsk(
+    int            *wkid,
+    int            *skdnr,
+    int            *n,
+    int            *stat,
+    int            *tnr,
+    int            *np,
+    float          *pxa,
+    float          *pya)
+{
+    Gqstroke        response;
+    int             i, temp;
+
+    debug(("Request Stroke %d %d \n", *wkid, *skdnr));
+    debug(("number of points = %d buffsize = %d \n", *np, *n));
+
+    if (*n > currfortpoints) {			/* Check amount of memory
+						 * needed */
+	/* realloc more memory */
+	fortpoints = (Gpoint *) REALLOC((voidp)fortpoints,
+					(size_t)(*n * sizeof(Gpoint)));
+	if (fortpoints == NULL) {		/* If memory allocation
+						 * unsuccessful call error
+						 * routine */
+	    (void) gerrorhand(300, errgreqstroke, (errfp));
+	    currfortpoints = 0;
+	    return;
+	} else
+	    currfortpoints = *n;
+    }
+    response.stroke.points = (Gpoint *) fortpoints;
+
+    if (greqstroke((Gint) *wkid, (Gint) *skdnr, &response))
+	return;
+
+    /* Reverse the sense of status */
+    *stat = (int) (response.status) ? (int) FORT_GNONE : (int) FORT_GOK;
+    *tnr = (int) response.stroke.transform;
+    *np = (int) response.stroke.n_points;
+
+    if (*np > *n)
+	temp = *n;
+    else
+	temp = *np;
+
+    for (i = 0; i < (temp); i++) {
+	pxa[i] = (float) response.stroke.points[i].x;
+	pya[i] = (float) response.stroke.points[i].y;
+    }
+    debug(("Request Stroke Completed"));
+}
+
+
+/*
+ * grqvl - Request Valuator
+ *
+ * Parameters :
+ * int *wkid;		workstation identifier
+ * int *vldnr; 		valuator device number
+ * int *stat;		status
+ * int *val; 		value
+ *
+ * Returns: ANSI standard errors for this function.
+ * See also: ANSI standard p.133
+ */
+/*FORTRAN*/
+grqvl(
+    int            *wkid,
+    int            *vldnr,
+    int            *stat,
+    float          *val)
+{
+    Gqval           response;
+
+    debug(("Request Valuator %d %d \n", *wkid, *vldnr));
+
+    if (greqval((Gint) *wkid, (Gint) *vldnr, &response))
+	return;
+
+    /* Reverse the sense of status */
+    *stat = (int) (response.status) ? (int) FORT_GNONE : (int) FORT_GOK;
+
+    *val = (float) response.val;
+}
+
+
+/*
+ * grqch - Request Choice
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *chdnr;  	choice device number
+ * int *stat; 		status
+ * int *chnr;		choice number
+ *
+ * Returns: ANSI standard errors for this function.
+ * See also: ANSI standard p.133
+ */
+/*FORTRAN*/
+grqch(
+    int            *wkid,
+    int            *chdnr,
+    int            *stat,
+    int            *chnr)
+{
+    Gchoice         response;
+
+    debug(("Request Choice %d %d \n", *wkid, *chdnr));
+
+    if (greqchoice((Gint) *wkid, (Gint) *chdnr, &response))
+	return;
+    debug(
+	(" status before switch  response.status = %d  response.choice = %d \n",
+	 response.status, response.choice));
+
+    switch (response.status) {
+    case GC_OK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GC_NOCHOICE:
+	*stat = (int) FORT_GNCHOI;
+	break;
+    case GC_NONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+
+    *chnr = (int) response.choice;
+}
+
+
+/*
+ * grqpk - Request Pick
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *pkdnr; 		pick device number
+ * int *stat;		status
+ * int *sgna;		segment name
+ * int *pkid; 		pick identifier
+ *
+ * Returns: ANSI standard errors for this function.
+ * See also: ANSI standard p.134
+ */
+/*FORTRAN*/
+grqpk(
+    int            *wkid,
+    int            *pkdnr,
+    int            *stat,
+    int            *sgna,
+    int            *pkid)
+{
+    Gpick           response;
+
+    debug(("Request Pick %d %d \n", *wkid, *pkdnr));
+
+    if (greqpick((Gint) *wkid, (Gint) *pkdnr, &response))
+	return;
+
+    switch (response.status) {
+    case GP_OK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GP_NOPICK:
+	*stat = (int) FORT_GNPICK;
+	break;
+    case GP_NONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+
+    *sgna = (int) response.seg;
+    *pkid = (int) response.pickid;
+}
+
+
+/*
+ * grqst - Request String
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *stdnr; 		string device number
+ * int *stat;		status
+ * int *lostr;		number of characters returned
+ * char *str;		character string
+ *
+ * Returns: ANSI standard errors for this function.
+ * See also: ANSI standard p.134
+ */
+/*FORTRAN*/
+grqst(
+    int            *wkid,
+    int            *stdnr,
+    int            *stat,
+    int            *lostr,
+    char           *str)
+{
+    Gqstring        response;
+
+    debug(("Request String %d %d \n", *wkid, *stdnr));
+
+    if (str_len > currforttext) {
+	forttext = (Gchar *) REALLOC((voidp)forttext,
+				     (size_t)(str_len * sizeof(char)));
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgreqstring, (errfp));
+	    currforttext = 0;
+	    return;
+	} else
+	    currforttext = (str_len);
+    }
+    response.string = (Gchar *) forttext;
+
+    if (greqstring((Gint) *wkid, (Gint) *stdnr, &response))
+	return;
+
+    switch (response.status) {
+    case GOK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GNONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+
+    debug(("response string = %s ", response.string));
+
+    *lostr = MIN(str_len, strlen(response.string));
+    (void) strncpy(str, (char *) response.string, *lostr);
+}
+
+
+/*
+ * grqsts - Request String (Subset Version)
+ *
+ * Parameters :
+ * int *wkid; 		workstation identifier
+ * int *stdnr; 		string device number
+ * int *stat;		status
+ * int *lostr;		number of characters returned
+ * char *str;		character string
+ *
+ * Returns: ANSI standard errors for this function.
+ * See also: ANSI standard p.134
+ */
+/*FORTRAN*/
+grqsts(
+    int            *wkid,
+    int            *stdnr,
+    int            *stat,
+    int            *lostr,
+    char           *str)
+{
+    Gqstring        response;
+
+    debug(("Request String (Subset Version)  %d %d \n", *wkid, *stdnr));
+
+    if (str_len > currforttext) {
+	forttext = (Gchar *) REALLOC((voidp)forttext,
+				     (size_t)(str_len * sizeof(char)));
+	if (forttext == NULL) {
+	    (void) gerrorhand(300, errgreqstring, (errfp));
+	    currforttext = 0;
+	    return;
+	} else
+	    currforttext = (str_len);
+    }
+    response.string = (Gchar *) forttext;
+
+    if (greqstring((Gint) *wkid, (Gint) *stdnr, &response))
+	return;
+
+    switch (response.status) {
+    case GOK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GNONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+
+    debug(("response string = %s ", response.string));
+
+    *lostr = MIN(80, (int) strlen(response.string));
+    (void) strncpy(str, (char *) response.string, (size_t)*lostr);
+}

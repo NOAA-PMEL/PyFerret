@@ -1,0 +1,30 @@
+# This is the makefile for the Unidata FORTRAN-callable-C generator.
+#
+# $Id$
+
+exec_prefix	= $(prefix)/bin
+BINFILES	= fortc
+GARBAGE		= fortc
+M4S		= aix.m4 aux.m4 common.m4 convexos.m4 domainos.m4 hpux.m4 \
+		  irix.m4 msoft.m4 next-absoft.m4 sunos.m4 ultrix.m4 \
+		  unicos.m4 vms.m4 linux.m4
+LIBFILES	= $(M4S)
+MANIFEST	= $(M4S) $(MANUALS) configure configure.in Makefile.in \
+		  fortc.src post.sed pre1.sed pre2.sed test.src
+MANUALS		= fortc.1
+prefix		= ../../../..
+REPLACE		= sed "s|__LIBPATH__|`pwd`:$(LIBDIR)/fortc|g;s/__DEFAULT_OS__/$(OS)/g"
+
+all::		fortc
+
+fortc:		fortc.src
+	$(REPLACE) fortc.src > $@
+	chmod +x $@
+
+include ../master.mk
+
+# The following target following the master makefile rules so that LIBDIR
+# is defined.
+
+install::	installed_binfiles installed_manuals $(LIBDIR)
+	@$(MAKE) $(MFLAGS) LIBDIR=$(LIBDIR)/fortc installed_libfiles

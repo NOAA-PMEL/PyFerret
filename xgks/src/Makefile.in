@@ -1,0 +1,18 @@
+# Makefile for the XGKS library
+#
+# $Id$
+
+SUBDIRS		= fortran lib
+SUBDIR_TARGETS	= fortran/all fortran/clean fortran/distclean \
+		  lib/all lib/install lib/clean lib/distclean
+MANIFEST	= Makefile.in
+
+all::		fortran/all lib/all
+
+install::	lib/install
+
+clean::		fortran/clean lib/clean
+
+distclean::	fortran/distclean lib/distclean
+
+include ../port/master.mk

@@ -1,0 +1,428 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Event Input functions :
+ *	gwait_
+ *	gflush_
+ *	ggtlc_
+ *	ggtsk_
+ *	ggtvl_
+ *	ggtch_
+ *	ggtpk_
+ *	ggtst_
+ *        
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ *
+ * $Id$
+ * $__Header$
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifdef lint
+    static void	lint_malloc(n) size_t n; { n++; }
+    static void	lint_realloc(p,n) voidp p; size_t n; { (char*)p+n; }
+#   define	malloc(n)	(lint_malloc(n), 0)
+#   define	realloc(p,n)	(lint_realloc(p,n), 0)
+#else
+    static char afsid[] = "$__Header$";
+    static char rcsid[] = "$Id$";
+#endif
+
+extern char    *forttext;
+extern int     *fortint;
+extern int      currforttext;
+extern int      currfortint;
+extern int      currfortpoints;
+extern FILE    *errfp;
+extern Gpoint  *fortpoints;
+
+
+/*
+ * gwait - Await Event
+ *
+ * float *tout - pointer to timeout (seconds)
+ * int *wkid - pointer to workstation identifier
+ * int *icl - pointer to input class
+ * int *idnr - pointer to logical input device number
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.138
+ */
+/*FORTRAN*/
+gwait(
+    float          *tout,
+    int            *wkid,
+    int            *icl,
+    int            *idnr
+)
+{
+    Gevent          event;
+
+    debug(("Await Event %d %d %d %f \n", *wkid, *icl, *idnr, *tout));
+
+    if (gawaitevent((Gfloat) *tout, &event))
+	return;
+
+    *wkid = (int) event.ws;
+    *icl = (int) event.class;
+    *idnr = (int) event.dev;
+
+    debug(("Await Event input class = %d  \n", *icl));
+
+}
+
+/*
+ * gflush - Flush Device Events
+ *
+ * int *wkid - pointer to workstation identifier
+ * int *icl - pointer to input class
+ * int *idnr - pointer to logical input device number
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.139
+ */
+/*FORTRAN*/
+gflush(
+    int *wkid,
+    int *icl,
+    int *idnr
+)
+{
+
+    debug(("Flush Device Input class = %d device = %d \n", *icl, *idnr));
+
+    INPUTCLASS(*icl, errgflushevents);
+
+    (void) gflushevents((Gint) *wkid, (Giclass) *icl, (Gint) *idnr);
+
+}
+
+
+/*
+ * ggtlc - Get Locator
+ *
+ * Parameters :
+ *
+ * int *tnr;		normalization transformation number
+ * float *lpx;		locator x position
+ * float *lpy;		locator y position
+ *
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ggtlc(
+    int            *tnr,
+    float          *lpx,
+    float          *lpy
+)
+{
+    Gloc            response;
+
+
+    if (ggetloc(&response))
+	return;
+
+    *tnr = (int) response.transform;
+    *lpx = (float) response.position.x;
+    *lpy = (float) response.position.y;
+}
+
+/*
+ * ggtsk -  Get Stroke
+ *
+ * Parameters :
+
+ * int *n; 		maximum number of points
+ * int *tnr; 		normalization transformation number
+ * int *np; 		number of points
+ * float *pxa;          x points in stroke
+ * float *pya;          y points in stroke
+
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ggtsk(
+    int            *n,
+    int            *tnr,
+    int            *np,
+    float          *pxa,
+    float          *pya
+)
+{
+    Gstroke         response;
+    int             i, temp;
+
+    debug(("Get Stroke \n"));
+    debug(("number of points = %d buffsize = %d \n", *np, *n));
+
+    if (*n > currfortpoints) {
+	/*
+	 * Check amount of memory needed.  realloc more memory if needed.
+	 */
+	fortpoints = (Gpoint *) REALLOC((voidp)fortpoints,
+					(size_t)((*n) * sizeof(Gpoint)));
+	if (fortpoints == NULL) {
+	    /*
+	     * If memory allocation unsuccessful call error routine
+	     */
+	    (void) gerrorhand(300, errggetstroke, (errfp));
+	    return;
+	} else
+	    currfortpoints = *n;
+    }
+    response.points = (Gpoint *) fortpoints;
+    if (ggetstroke(&response))
+	return;
+
+    *tnr = (int) response.transform;
+    *np = (int) response.n_points;
+
+    if (*np > *n)
+	temp = *n;
+    else
+	temp = *np;
+
+    for (i = 0; i < (temp); i++) {
+	pxa[i] = (float) response.points[i].x;
+	pya[i] = (float) response.points[i].y;
+    }
+    debug(("Get Stroke Completed"));
+}
+
+
+/*
+ * grqvl - Request Valuator
+ *
+ * Parameters :
+ * float *val; 		value
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ggtvl(
+    float *val
+)
+{
+    Gfloat          response;
+
+    debug(("Request Valuator \n"));
+
+    if (ggetval((Gfloat *) &response))
+	return;
+
+    *val = (float) response;
+}
+
+
+/*
+ * ggtch - Get Choice
+ *
+ * int *stat - pointer to status
+ * int *chnr - pointer to choice number
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ggtch(
+    int            *stat,
+    int            *chnr
+)
+{
+    Gchoice         response;
+
+    debug(("Get Choice \n"));
+
+    if (ggetchoice(&response))
+	return;
+
+    switch (response.status) {
+    case GC_OK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GC_NOCHOICE:
+	*stat = (int) FORT_GNCHOI;
+	break;
+    case GC_NONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+    *chnr = (int) response.choice;
+
+    debug(("  Get Choice  returning status %d choice %d \n", *stat, *chnr));
+}
+
+
+/*
+ * ggtpk - Get Pick
+ *
+ * int *stat - pointer to status
+ * int *sgna - pointer to segment name
+ * int *pkid - pointer to pick identifier
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.140
+ */
+/*FORTRAN*/
+ggtpk(
+    int            *stat,
+    int            *sgna,
+    int            *pkid
+)
+{
+    Gpick           response;
+
+    debug(("Get Pick \n"));
+
+    if (ggetpick(&response))
+	return;
+
+    switch (response.status) {
+    case GP_OK:
+	*stat = (int) FORT_GOK;
+	break;
+    case GP_NOPICK:
+	*stat = (int) FORT_GNPICK;
+	break;
+    case GP_NONE:
+	*stat = (int) FORT_GNONE;
+	break;
+    }
+    *sgna = (int) response.seg;
+    *pkid = (int) response.pickid;
+
+    debug(("    returning status %d seg %d pickid %d \n", *stat, *sgna, *pkid));
+}
+
+
+/*
+ * ggtst - Get String
+ *
+ * Parameters :
+ * int *lostr;		number of characters returned
+ * char *str;		character string
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ggtst(
+    int            *lostr,
+    char           *str
+)
+{
+    Gchar          *response;
+
+    debug(("Get String \n"));
+
+
+    if (str_len > currforttext) {		/* Check amount of memory
+						 * needed */
+	/*
+	 * Realloc more memory.
+	 */
+	forttext = (Gchar *) REALLOC((voidp)forttext,
+				     (size_t)(str_len * sizeof(char)));
+	if (forttext == NULL) {			/* If memory allocation
+						 * unsuccessful call error
+						 * routine */
+	    (void) gerrorhand(300, errggetstring, (errfp));
+	    return;
+	} else
+	    currforttext = str_len;
+    }
+    response = (Gchar *) forttext;
+
+    if (ggetstring(response))
+	return;
+
+    debug(("response string = %s ", response));
+
+    *lostr = MIN(80, strlen(response));
+    (void) strncpy(str, (char *) response, *lostr);
+}
+
+
+/*
+ * ggtsts - Get String (Subset Version)
+ *
+ * Parameters :
+ * int *lostr;		number of characters returned
+ * char *str;		character string
+
+ *
+ * See also: ANSI standard
+ */
+/*FORTRAN*/
+ggtsts(
+    int            *lostr,
+    char           *str
+)
+{
+    Gchar          *response;
+
+    debug(("Get String (Subset Version) \n"));
+
+
+    if (str_len > currforttext) {		/* Check amount of memory
+						 * needed */
+	/*
+	 * Rrealloc more memory.
+	 */
+	forttext = (Gchar *) REALLOC((voidp)forttext,
+				     (size_t)((*lostr) * sizeof(char)));	
+	if (forttext == NULL) {			/* If memory allocation
+						 * unsuccessful call error
+						 * routine */
+	    (void) gerrorhand(300, errggetstring, (errfp));
+	    return;
+	} else
+	    currforttext = (*lostr) * sizeof(char);
+    }
+    response = (Gchar *) forttext;
+
+    if (ggetstring(response))
+	return;
+
+    debug(("response string = %s ", response));
+
+    *lostr = MIN(strlen(response), 80);
+    (void) strncpy(str, (char *) response, (size_t) *lostr);
+}

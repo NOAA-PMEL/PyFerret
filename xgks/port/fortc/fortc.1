@@ -1,0 +1,212 @@
+\" $Id$
+.TH fortc 1 "$Date$" "Printed: \n(yr-\n(mo-\n(dy" "UNIDATA UTILITIES"
+.SH NAME
+fortc \- Unidata utility to generate fortran-compatible C code
+.SH SYNOPSIS
+\fBfortc [-L \fILibDir\fB] [-O \fIOpSys\fB] \fIfile\fB\fR
+.SH DESCRIPTION
+.LP
+.B fortc
+Reads C code from `\fIfile\fP', transforms it 
+into FORTRAN compatible code, and then writes the result to standard output.
+The transformation is 
+operating-system dependent because there are no standards in this matter.
+.LP
+The target operating-system can be specified in several ways.
+If the `\fB-O\fP' option is given, then the operating-system specified
+by its argument is used; 
+otherwise, if the environmental variable `\fBOS\fP' exists, then the
+operating-system specified by it's value is used;
+otherwise, the default operating-system \-\- determined at
+installation time \-\- is used.
+.LP
+Global names that are not function definitions but that are to be 
+accessible from both C and FORTRAN should 
+be enclosed by the `\fBFC_NAME()\fP' macro:
+.sp
+.nf
+.RS 4
+extern int FC_NAME(foo)(void);  /* FORTRAN function */
+.sp
+extern struct {
+    float f;
+    int   i;
+} FC_NAME(comblk);              /* FORTRAN common block */
+.sp
+cfoo()
+{
+    return FC_NAME(foo)();      /* call FORTRAN function */
+}
+.RE
+.fi
+.sp
+.LP
+C functions which are to be called from FORTRAN are written as follows:
+.sp
+.nf
+.RS 4
+int
+/*FORTRAN*/
+foo(
+    character        pathname,    /* file name of new file */
+    real             amount,      /* amount to frobdicate by */
+    doubleprecision  dbl,         /* amount to tizzle by */
+    void function    errf,        /* error routine */
+    integer          rcode        /* returned error code */)
+{
+\&...
+.RE
+.fi
+.sp
+or, equivalently,
+.sp
+.nf
+.RS
+int
+/*FORTRAN*/
+foo(char* pathname, float* amount, double* dbl, 
+    void (*errf)(), int* rcode)
+{
+\&...
+.RE
+.fi
+.sp
+The points to note in writing FORTRAN-compatible functions are:
+.IP 1. 3
+Functions to be transformed are marked by a proceeding `\fB/*FORTRAN*/\fP'
+comment, which must appear on the line prior to the function name.
+Any return-type declarations must proceed the comment.
+.IP 2.
+The formal parameters must be declared within function parentheses
+and be separated by commas.
+.IP 3.
+The formal parameters are restricted to the following types:
+.RS 4
+.TP 8
+.BR "character " "or " char*
+For Fortran character-variables.
+.TP 8
+.BR "doubleprecision " "or " double*"
+For double-precision floating-point values.
+.TP 8
+.BR "real " "or " float*
+For single-precision floating-point values.
+.TP 8
+.BR "integer " "or " int*
+For integer values.
+.TP 8
+.BR "\fItype\fP function \fIname\fP " "or " "\fItype\fP (*\fIname\fP)()"
+For functions returning type `\fItype\fP'.
+.RE
+.IP 4.
+There must be nothing important after the opening brace, `{', and on the 
+same line.
+.LP
+The functions should be written using variables with the same names
+as the formal parameters, and with the same semantics.
+In the case of formal parameters of type `\fBcharacter\fP' (i.e. Fortran 
+character-variables),
+a variable with the same name will exist and will be of type `\fBchar*\fP'.
+In addition, for each character-variable argument,
+a local variable of integral type will be created and its value
+will be the size of the associated character-variable.
+The name of this variable will be the name of the associated character 
+variable with "\fB_len\fP" appended (e.g. "\fBpathname_len\fP").
+These length variables may be used in
+the function just like any other variable.
+.LP
+For example, under SunOS the previous function would become (if it is 
+contained in the file `\fBfoo.src\fP'):
+.sp
+.nf
+.RS 4
+#line 1 "foo.src"
+unsigned int
+#line 2 "foo.src"
+foo_(pathname, amount, errf, rcode, pathname_len)
+    char      *pathname;
+    int        pathname_len;
+    float     *amount;
+    void       (*errf)();
+    int       *rcode; 
+{
+#line 9 "foo.src"
+.RE
+.fi
+.sp
+Note that
+1) preprocessor line directives have been added;
+2) the function name has been suffixed with an underscore; 
+and
+3) a formal parameter, `\fBpathname_len\fP', has been created.
+.LP
+Under UNICOS, the same file would become
+.sp
+.nf
+.RS 4
+#include <fortran.h>
+#line 1  "foo.src"
+unsigned int
+#line 2  "foo.src"
+FOO(pathnamed, amount, errf, rcode)
+    _fcd       pathnamed;
+    float     *amount;
+    void       (*errf)();
+    int       *rcode; 
+{
+    char      *pathname	= _fcdtocp (pathnamed);
+    unsigned   pathname_len	= _fcdlen (pathnamed);
+#line 9  "foo.src"
+.RE
+.fi
+.sp
+Note, in particular, the additional `\fP#include <fortran.h>\fP' and 
+the creation and initialization of the local variables 
+`\fBpathname\fP' and `\fBpathname_len\fP'.
+.LP
+This utility is implemented as a script and uses the system-supplied
+utilities sed(1) and m4(1).
+.RE
+.SH OPTIONS
+.TP 8
+.BI "-L " LibDir"
+Defines the directory containing the `fortc' library files.  The
+default is determined at installation time.
+.TP
+.BI "-O " OpSys 
+Defines the operating-system as \fIOpSys\fP.  Known values include
+`aix', `convexos', `domainos', `hpux', `irix', `msoft', `next-absoft', 
+`newsos', `sunos', `ultrix', `unicos', and `vms'.
+To allow for greater flexibility, the known values may have any suffix
+(e.g. `sunos_4.1').
+.SH ENVIRONMENT
+.TP 8
+.B OS
+Defines the operating system if the `-O' option is not specified.
+Known values are the same as the \fP-O\fP option.
+.SH FILES
+.LP
+In the following, `LIBDIR' is the default library directory determined at
+installation time.
+.TP
+.B LIBDIR/pre.sed
+A pre-m4, sed(1) script for transforming the input source into 
+m4(1) source.
+.TP
+.B LIBDIR/post.sed
+A post-m4, sed(1) script for transforming the m4(1) output into
+C code.
+.TP
+.B LIBDIR/common.m4
+An m4(1) source common to all Fortran-calling-C implementations.
+.TP
+.B LIBDIR/*.m4
+Operating-system-specific m4(1) sources.
+.SH BUGS
+.LP
+The names of automatically generated variables might conflict
+with those of other, pre-existing variables.
+.SH "SEE ALSO"
+.LP
+.BR sed (1),
+.BR m4 (1).

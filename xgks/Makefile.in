@@ -1,0 +1,30 @@
+# Root Makefile for the XGKS package.
+#
+# $Id$
+
+PACKAGE		= xgks
+
+MAJOR_NO	= @MAJOR_NO@
+MINOR_NO	= @MINOR_NO@
+
+SUBDIRS		= port src fontdb progs doc
+
+SUBDIR_TARGETS	= port/all port/install port/clean port/distclean \
+		  src/all src/install src/clean src/distclean \
+		  fontdb/all fontdb/install fontdb/clean fontdb/distclean \
+		  progs/all progs/install progs/clean progs/distclean \
+		  doc/all doc/install doc/clean doc/distclean
+
+MANIFEST        = COPYRIGHT CUSTOMIZE HISTORY INSTALL MANIFEST \
+		  Makefile.in ORIGIN README VERSION configure \
+		  configure.in
+
+all::		port/all port/install src/all fontdb/all progs/all doc/all
+
+install::	src/install fontdb/install progs/install doc/install
+
+clean::		port/clean \
+		src/clean fontdb/clean progs/clean doc/clean
+	rm -f xgks*.tar.Z
+
+include port/master.mk

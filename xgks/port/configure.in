@@ -1,0 +1,58 @@
+dnl $Id$
+dnl
+dnl Process this file with GNU autoconf(1) to produce a configure script.
+dnl
+AC_INIT(udconfig.h.in)
+
+include(local.m4)dnl
+
+AC_CONFIG_HEADER(udposix.h)
+
+UC_CUSTOMIZE
+
+UC_PREFIX(../../..)
+
+UC_DEFAULT(CPPFLAGS, -DNDEBUG)
+UC_DEFAULT(CFLAGS, -O)
+UC_DEFAULT(FFLAGS, -O)
+UC_DEFAULT(LIBOBJS, )
+
+AC_PROG_RANLIB
+UC_PROG_CC
+UC_PROG_FC
+UC_PROG_CPP
+UC_PROG_FORTC
+UC_PROG_NEQN
+UC_PROG_TBL
+UC_PROG_NCDUMP
+UC_PROG_NCGEN
+UC_PROG_INSTALL
+
+UC_UDPOSIX
+UC_UDPOSIX_STDDEF
+UC_UDPOSIX_LIMITS
+UC_UDPOSIX_FLOAT
+UC_UDPOSIX_SIGNAL
+UC_UDPOSIX_STDLIB
+UC_UDPOSIX_STRING
+
+dnl UC_FORTC
+dnl UC_LINKLIST
+dnl UC_PATHNAME
+dnl UC_STRBUF
+dnl UC_STRVEC
+dnl UC_UDALLOC
+dnl UC_ULOG
+
+UC_OS
+
+UC_FTPDIR(pub/sdm)
+
+UC_VERSION
+
+UC_CHECK_MISSING
+
+AC_OUTPUT(Makefile master.mk signal.h stdarg.h stdlib.h \
+          string.h udposix.h fortc/Makefile)
+
+UC_POSTPROCESS_MAKEFILES(Makefile fortc/Makefile)

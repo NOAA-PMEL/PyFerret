@@ -1,0 +1,294 @@
+VERSION		CHANGE
+-------		------
+
+2.5.5	1993-3-27
+
+		Corrected bug in event.c.  gawaitevent() was freeing the
+		data portion of an event structure that was subsequently
+		referenced by the individual GET ... EVENT routines.  This
+		caused crashes on RS/6000 machines.
+
+		Made X backend more compliant with X11 by removing illegal
+		references to members of the opaque structures _XGC and
+		_XDisplay.  OSF1 wouldn't allow this.
+
+		Ported to OSF1.
+
+		Corrected handling of SIGIO.  Under HPUX, XGKS would often
+		abort if the display generated an asynchronous SIGIO while
+		XGKS was using an X function.  This was due to the 
+		non-reentrancy of HPUX's implementation of Xlib tickling a
+		bug in XGKS.
+
+2.5.4	1993-2-23
+
+		Deleted ESCAPE INQUIRE VERSION function in order to 
+		eliminate the otherwise unresolved global symbol
+		`afs_conf_id' and because the function was, IMHO, useless.
+
+2.5.3	1993-2-16
+
+		Added information to the README file about the archive of
+		the XGKS mailing-list now being available via gopher(1).
+
+		Added support for UNICOS to the `configure' script.
+
+
+2.5.2	1993-2-9
+
+		Added missing file src/lib/mkerrmsg.c.
+
+
+2.5.1	1993-2-9
+
+		Added missing files COPYRIGHT and INSTALL.
+
+
+2.5	1993-2-9
+
+		BUG FIXES
+		----------
+
+		The XGKS fonts created by the `fontdb/mkfont' program now
+		incorporate "margins".  This allows for correct spacing
+		between characters when the character spacing is set to
+		zero (the standard demands this).  Before this change,
+		printing a string using a character spacing of zero would
+		result in characters that were excessively squeezed 
+		together.  As a consequence of this change, however, all
+		old programs that wish to use the new fonts must adjust the
+		amount of character spacing specified in their SET
+		CHARACTER SPACING calls (gsetcharspace() in C and GSCHSP()
+		in FORTRAN).  IF YOU DO NOT WISH TO MODIFY YOUR PROGRAMS IN
+		THIS WAY, THEN YOU SHOULD USE THE OLD XGKS FONTS.
+
+		The CGM backend is extensively modified.  The order and
+		placement of several CGM elements within an output file is
+		corrected.  Also corrected is the writing of color-index
+		parameters in the CGM backend -- they used to be 16-bits;
+		they're now 8-bits -- as the standard demands.
+
+		A bug in the handling of window redraws is fixed.  This bug
+		was possibly introduced in XGKS patch #5 (sigh) and causes
+		an XGKS window on an AIX server to be redrawn twice,
+		instead of just once, when the window is moved or resized.
+		This fix has been tested on the ULTRIX DecWindows server,
+		the AIX server, and the MIT X11R4 server under SunOS.
+
+		An incorrect usage of a macro-function in a debug assertion
+		in file "lib/src/cgmo.c" is fixed.  This caused problems
+		under UNICOS.  (Thanks to Helmut Schumacher
+		<zdv145@zam067.zam.kfa-juelich.de>)
+
+		A superfluous declaration of free() in file
+		"lib/src/x/xcolours.c" is deleted.  This caused problems
+		under UNICOS.  (Thanks to Helmut Schumacher
+		<zdv145@zam067.zam.kfa-juelich.de>)
+
+		Initialization of the WISS module is made independent of
+		whether or not an X workstation is opened.
+
+		The updating of the display surface when a REQUEST PICK is
+		requested is modified to ensure that any prompting message
+		is not erased.
+
+		A superfluous definition of exit() in `lib/src/x/xtext.c'
+		is removed.  It caused compilation to fail under SunOS.
+
+		ENHANCEMENTS
+		------------
+
+		The installation mechanism is changed to one based on a GNU
+		autoconf(1)-generated `configure' script.  XKGS is now
+		self-contained: there is no longer any dependence on GNU
+		make(1) or Unidata's udape(3) or udposix(3) packages.
+
+		FORTRAN and C libraries are merged into one (libxgks.a).
+
+		The file `lib/src/x/xport.c', containing system-dependent
+		support routines for the X backend, is modified to
+		accomodate the peculiarities of HPUX 8.05.
+
+		The Fortran INQUIRE functions are modified to use the X
+		display- name established by the Fortran subroutine
+		gescid() (ESCAPE SET CONNECTION ID).
+
+		The writing of the CGM background color is separated from
+		the writing of the color table.
+
+		References to `isset' in the CGM implementation are changed
+		to `setmask' to avoid name-conflicts on certain platforms
+		(notably HPUX).
+
+		A synopsis of the escape functions is added to the XGKS
+		manual-page A section describing them is also added.
+
+		The 80-character limit on the name of a Metafile in the
+		Fortran interface is increased to, at least, 255
+		(_POSIX_PATH_MAX).
+
+		If the SET COLOUR REPRESENTATION function cannot, at first,
+		obtain an X color-cell, then it will attempt to free an
+		already allocated color-cell and try again.
+
+		The new routine urealloc() is added to handle memory
+		reallocation.  This routine is safe in the presence of
+		signals.
+
+		MISCELLANEOUS
+		-------------
+
+		The demonstration program "progs/fonts" is modified to
+		await a BREAK key after displaying each frame.
+
+		A `test' target is added to the Makefile for the
+		demonstration programs, "progs/Makefile".
+
+		A superfluous XSync() call is removed from the X-event
+		handler.
+
+		The implementation details of the CGM, and GKSM backends
+		are made invisible to the calling routines; thus, obviating
+		the need for recompilation when an implementation changes.
+
+		The order of function definitions in certain files is
+		changed to accomodate the HPUX 8.05 C compiler.
+
+		The sources are slightly modified to reduce warnings from
+		Standard C compilers.
+
+
+2.4	1991-8-5
+		
+		ENHANCEMENTS
+		------------
+
+		Extremely inept and simple-minded support for binary
+		Computer Graphics Metafiles (CGM) has been added.  Output
+		files containing the string ".cgm" will be written and read
+		accordingly.  Besides allowing graphical interchange,
+		binary CGM files are typically smaller by a factor of 1/4
+		from their formatted GKSM counterparts.  Currently, the CGM
+		implementation only works on platforms where CHAR_BIT is
+		8.  Also, CGM input capability is limited to the binary
+		defaults of CGM version 1.  (Note: This is the same format
+		used by the CGM implementation of NCAR Graphics.)
+
+		XGKS no longer depends upon the existance of SIGIO on the
+		host platform for its correct operation.  All the REQUEST
+		functions as well as the AWAIT EVENT function now work
+		properly regardless of whether or not SIGIO exists and
+		regardless of the number of workstations being waited
+		upon.  (In this regard, the original implementation of
+		AWAIT EVENT was broken on platforms which lacked SIGIO:
+		XGKS could only wait upon events from a single
+		workstation.)
+
+		In the implementation of the CHOICE and STRING input
+		devices and in the GKS MESSAGE function, if the X font did
+		not exist ("8x13" and "6x10", respectively) then the system
+		would crash.  In such cases, XGKS now prints a warning and
+		attempts to fallback to the font "fixed".
+
+		The INQUIRE COLOUR REPRESENTATION function,
+		ginqcolourrep(), now returns 94 if an inquiry of type SET
+		requests an unset color, and 95 if an inquiry of type
+		REALIZED is attempted on an unset color on a non-X
+		workstation.
+
+		The GET ITEM TYPE FROM GKSM function used to return a gross
+		overestimate of the amount of space needed to hold an
+		item's data.  (Although, in certain situations under
+		UNICOS, the function actually underestimates the amount of
+		required storage, e.g. an integer encoded using less than
+		eight characters.) The function now returns the correct
+		amount for CGM input -- but not GKSM.
+
+		The invocation syntax of some programs has changed:
+
+			hanoi [-d display] [-n num_disks] [-o out_file]
+			font [-d display] [-o out_file]
+			mi [-d display] in_file
+
+		The program "mi" now pauses and awaits keyboard input
+		before clearing the display surface.
+
+		The programs "hanoi", "font", and "mi" now use getopt(3).
+
+		The GKSM backend has been made faster.
+
+		A SYNOPSIS section has been added to the XGKS manual-page.
+
+
+		 BUG FIXES
+		 ---------
+
+		A bug in the PICK implementation, which caused XGKS to
+		return an incorrect segment identifier, has been fixed.
+
+		A bug in the GKS Metafile implementation, which caused
+		viewport co-ordinates to overflow their output fields, has
+		been fixed.
+
+		The interface to the FORTRAN routine GPREC() has been
+		recoded according to the ISO GKS FORTRAN-binding standard.
+		This may break some existing, XGKS-using Fortran routines
+		that had to be modified to accomodate XGKS's non-standard
+		GPREC().  On the other hand, Fortran routines that use
+		GPREC() correctly will now work.
+
+		The use of GPREC() by program "gksdemo" has been
+		corrected.  Character strings are no longer packed into a
+		single array, but are separated.  According to the GKS
+		FORTRAN standard.  (It should have been this way all
+		along.)
+
+		The potential for name-collision between the Fortran GGDP()
+		routine and the C ggdp() function has been eliminated.
+
+		The BREAK-key facility, used by some demonstration
+		programs, has been fixed.
+
+		An incorrect argument in the gsetlinetype() call within the
+		program "hanoi" has been fixed.
+
+		The use of color has been fixed in the programs "hanoi" and
+		"font".
+
+
+		ARBITRARY AND CAPRICIOUS CHANGES
+		--------------------------------
+
+		All C source-files have been rewritten according to UDPOSIX
+		conventions to enhance portability and ease of
+		maintenance.
+
+		The coding style has been greatly improved through manual
+		editing and the use of indent(1).
+
+		The Fortran interface has been recoded according to
+		fortc(1) conventions to enhance its portability and ease of
+		maintenance.
+
+		The XGKS source directory "./lib/xgks" has been renamed to
+		"./lib/src" in accordance with standard UNIX conventions.
+
+		The X, GKSM, and CGM "backends" of XGKS have been moved to
+		their own subdirectories:
+
+			./lib/src/x/
+			./lib/src/gksm/
+			./lib/src/cgm/
+
+		The header-files, which used to reside in "./include", have
+		been moved to the C-source directory "./lib/src" in
+		accordance with standard UNIX conventions.  The
+		sub-directory "./include" is no longer in the distribution
+		(at least it shouldn't be).
+
+		The "./demo" subdirectory has been renamed "./progs" in
+		preparation for some additional utilities (volunteers?).
+
+		The programs "hanoi" and "font" now create, by default, the
+		GKSM files "hanoi.gksm" and "font.gksm" rather than the
+		previous "hanoi.out" and "font.out".

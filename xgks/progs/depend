@@ -1,0 +1,11 @@
+defcolors.o: defcolors.c
+defcolors.o: ./demo.h
+font.o: font.c
+font.o: ./demo.h
+hanoi.o: hanoi.c
+hanoi.o: ./demo.h
+hello.o: hello.c
+mi.o: mi.c
+mi.o: ./demo.h
+pline.o: pline.c
+pmark.o: pmark.c

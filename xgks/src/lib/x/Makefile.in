@@ -1,0 +1,27 @@
+# Makefile for the X backend to XGKS
+#
+# $Id$
+
+LIBNAME		= xgks
+REMOTE_LIBRARY	= ../lib$(LIBNAME).a
+CPP_X11		= @CPP_X11@
+INCLUDES	= -I.. -I../../../port $(CPP_X11)
+CPPFLAGS	= $(INCLUDES) @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+CC		= @CC@
+LIBOBJS		= xSet.o xcellarray.o xcolours.o xevent.o xfillarea.o \
+		  xinqpixel.o xopws.o xpline.o xpmarker.o xport.o xtext.o \
+		  xupdate.o
+
+MANIFEST	= Makefile.in depend \
+		  xSet.c xcellarray.c xcolours.c xevent.c xfillarea.c \
+		  xinqpixel.c xopws.c xpline.c xpmarker.c xport.c xtext.c \
+		  xupdate.c
+
+all::		$(REMOTE_LIBRARY)
+
+include ../../../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

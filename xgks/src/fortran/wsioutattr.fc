@@ -1,0 +1,596 @@
+/*
+ *		Copyright IBM Corporation 1989
+ *
+ *                      All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of IBM not be
+ * used in advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ *
+ * IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ *
+ *
+ * FORTRAN to C binding for XGKS
+ *
+ * GKS Workstation Independent Primitive Attributes :
+ *	gspli_    gsln_    gslwsc_   gsplci_
+ *	gspmi_    gsmk_    gsmksc_   gspmci_
+ *	gstxi_    gstxfp_  gschxp_   gschsp_
+ *	gstxci_   gschh_   gschup_   gstxp_
+ *	gstxal_   gsfai_   gsfais_   gsfasi_
+ *	gsfaci_   gsasf_   gspkid_
+ *
+ * David Berkowitz
+ * Bruce Haimowitz
+ * TCS Development
+ * Cambridge MA
+ *
+ * August 31 1988
+ */
+
+/*LINTLIBRARY*/
+
+#include "udposix.h"
+#include <stdlib.h>
+#include "xgks.h"
+#include "fortxgks.h"
+
+#ifndef lint
+static char     afsid[] = "$__Header$";
+static char     rcsid[] = "$Id$";
+
+#endif
+
+
+/*
+ * gspli - Set Polyline Index
+ *
+ * int *pli - pointer to polyline index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.89
+ */
+/*FORTRAN*/
+gspli(
+    int            *pli)
+{
+    debug(("Set Polyline Index %d \n", *pli));
+
+    (void) gsetlineind((Gint) *pli);
+}
+
+
+/*
+ * gsln - Set Line Type
+ *
+ * int *ltype - pointer to line type id
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.89
+ */
+/*FORTRAN*/
+gsln(
+    int            *ltype)
+{
+    debug(("Set Linetype %d \n", *ltype));
+
+    (void) gsetlinetype((Gint) *ltype);
+}
+
+
+/*
+ * gslwsc - Set Linewidth Scale Factor
+ *
+ * float *lwidth - pointer to line width scale factor
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.90
+ */
+/*FORTRAN*/
+gslwsc(
+    float          *lwidth)
+{
+    debug(("Set Linewidth Scale Factor %4.1f \n", *lwidth));
+
+    (void) gsetlinewidth((Gfloat) *lwidth);
+}
+
+
+/*
+ * gsplci - Set Polyline Colour Index
+ *
+ * int *coli - pointer to polyline colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.90
+ */
+/*FORTRAN*/
+gsplci(
+    int            *coli)
+{
+    debug(("Set Polyline Color Index %d \n", *coli));
+
+    gsetlinecolorind((Gint) *coli);
+}
+
+
+/*
+ * gspmi - Set Polymarker Index
+ *
+ * int *pmi - pointer to polymarker index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.91
+ */
+/*FORTRAN*/
+gspmi(
+    int            *pmi)
+{
+    debug(("Set Polymarker Index %d \n", *pmi));
+
+    (void) gsetmarkerind((Gint) *pmi);
+}
+
+
+/*
+ * gsmk - Set Marker Type
+ *
+ * int *mtype - pointer to marker type
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.91
+ */
+/*FORTRAN*/
+gsmk(
+    int            *mtype)
+{
+    debug(("Set Markertype %d \n", *mtype));
+
+    (void) gsetmarkertype((Gint) *mtype);
+}
+
+
+/*
+ * gsmksc - Set Marker Size Scale Factor
+ *
+ * float *mszsf - pointer to marker size scale factor
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.92
+ */
+/*FORTRAN*/
+gsmksc(
+    float          *mszsf)
+{
+    debug(("Set Marker Size Scale Factor %7.2f \n", *mszsf));
+
+    (void) gsetmarkersize((Gfloat) *mszsf);
+}
+
+
+/*
+ * gspmci - Set Polymarker Colour Index
+ *
+ * int *coli - pointer to polymarker colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.92
+ */
+/*FORTRAN*/
+gspmci(
+    int            *coli)
+{
+    debug(("Set PolyMaker Color Index %d \n", *coli));
+
+    gsetmarkercolorind((Gint) *coli);
+}
+
+
+/*
+ * gstxi - Set Text Index
+ *
+ * int *txi - pointer to text index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.92
+ */
+/*FORTRAN*/
+gstxi(
+    int            *txi)
+{
+    debug(("Set Text Index %d \n", *txi));
+
+    (void) gsettextind((Gint) *txi);
+}
+
+
+/*
+ * gstxfp - Set Text Font And Precision
+ *
+ * int *font - pointer to text font
+ * int *prec - pointer to text precision
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.93
+ */
+/*FORTRAN*/
+gstxfp(
+    int            *font,
+    int            *prec)
+{
+    Gtxfp           txfp;
+
+    debug(("Set Text Font and Precision %d %d \n", *font, *prec));
+
+    txfp.font = (Gint) *font;
+    TEXTPRECISION(*prec, errgsettextfontprec)
+	txfp.prec = (Gtxprec) * prec;
+
+    (void) gsettextfontprec(&txfp);
+}
+
+
+/*
+ * gschxp - Set Character Expansion Factor
+ *
+ * float *chxp - pointer to character expansion factor
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.93
+ */
+/*FORTRAN*/
+gschxp(
+    float          *chxp)
+{
+    debug(("Set Character Expansion Factor %4.1f \n", *chxp));
+
+    (void) gsetcharexpan((Gfloat) *chxp);
+}
+
+
+/*
+ * gschsp - Set Character Spacing
+ *
+ * float *chsp - pointer to character spacing
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.94
+ */
+/*FORTRAN*/
+gschsp(
+    float          *chsp)
+{
+    debug(("Set Character Spacing %7.2f \n", *chsp));
+
+    (void) gsetcharspace((Gfloat) *chsp);
+}
+
+
+/*
+ * gstxci - Set Text Colour Index
+ *
+ * int *coli - pointer to text color index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.94
+ */
+/*FORTRAN*/
+gstxci(
+    int            *coli)
+{
+    debug(("Set Text Color Index %d \n", *coli));
+
+    gsettextcolorind((Gint) *coli);
+}
+
+
+/*
+ * gschh - Set Character Height
+ *
+ * float *chh - pointer to character height
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.95
+ */
+/*FORTRAN*/
+gschh(
+    float          *chh)
+{
+    debug(("Set Character Height %7.2f \n", *chh));
+
+    (void) gsetcharheight((Gfloat) *chh);
+}
+
+
+/*
+ * gschup - Set Character Up Vector
+ *
+ * float *chux - pointer to x component of up vector
+ * float *chuy - pointer to y component of up vector
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.95
+ */
+/*FORTRAN*/
+gschup(
+    float          *chux,
+    float          *chuy)
+{
+    Gpoint          charup;
+
+    debug(("Set Character Up Vector %7.2f %7.2f \n", *chux, *chuy));
+
+    charup.x = (Gfloat) *chux;
+    charup.y = (Gfloat) *chuy;
+
+    (void) gsetcharup(&charup);
+}
+
+
+/*
+ * gstxp - Set Text Path
+ *
+ * int *txp - pointer to text path
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.95
+ */
+/*FORTRAN*/
+gstxp(
+    int            *txp)
+{
+    debug(("Set Text Path  %d \n", *txp));
+
+    TEXTPATH(*txp, errgsettextpath)
+    (void) gsettextpath((Gtxpath) * txp);
+}
+
+
+/*
+ * gstxal - Set Text Alignment
+ *
+ * int *txalh - pointer to horizontal text alignment
+ * int *txalv - pointer to vertical text alignment
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.96
+ */
+/*FORTRAN*/
+gstxal(
+    int            *txalh,
+    int            *txalv)
+{
+    Gtxalign        txalign;
+
+    debug(("Set Text Alignment %d %d \n", *txalh, *txalv));
+
+    TEXTALIGNMENTHORIZONTAL(*txalh, errgsettextalign)
+	txalign.hor = (Gtxhor) * txalh;
+    TEXTALIGNMENTVERTICAL(*txalv, errgsettextalign)
+	txalign.ver = (Gtxver) * txalv;
+
+    (void) gsettextalign(&txalign);
+}
+
+
+/*
+ * gsfai - Set Fill Area Index
+ *
+ * int *fai - pointer to fill area index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.98
+ */
+/*FORTRAN*/
+gsfai(
+    int            *fai)
+{
+    debug(("Set Fill Area Index %d \n", *fai));
+
+    (void) gsetfillind((Gint) *fai);
+}
+
+
+/*
+ * gsfais - Set Fill Area Interior Style
+ *
+ * int *ints - pointer to fill area interior style
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.96
+ */
+/*FORTRAN*/
+gsfais(
+    int            *ints)
+{
+    debug(("Set Fill Area Interior Style %d \n", *ints));
+
+    FILLAREAINTERIORSTYLE(*ints, errgsetfillintstyle);
+    (void) gsetfillintstyle((Gflinter) (*ints));
+}
+
+
+/*
+ * gsfasi - Set Fill Area Style Index
+ *
+ * int *styli - pointer to fill area style index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.97
+ */
+/*FORTRAN*/
+gsfasi(
+    int            *styli)
+{
+    debug(("Set Fill Area Style Index %d \n", *styli));
+
+    (void) gsetfillstyleind((Gint) *styli);
+}
+
+
+/*
+ * gsfaci - Set Fill Area Colour Index
+ *
+ * int *coli - pointer to fill area colour index
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.98
+ */
+/*FORTRAN*/
+gsfaci(
+    int            *coli)
+{
+    debug(("Set Fill Area Color Index %d \n", *coli));
+
+    gsetfillcolorind((Gint) *coli);
+}
+
+
+/*
+ * gsasf - Set Aspect Source Flags
+ *
+ * int lasf[13] - array of aspect source flags
+ *
+ * Returns: 2000, in addition to ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.99
+ */
+/*FORTRAN*/
+gsasf(
+    int             *lasf)
+{
+    Gasfs           asfs;
+
+    debug(("Set Aspect Source Flags \n"));
+    ASPECTSOURCE(lasf[0], errgsetasf)
+	asfs.ln_type = (Gasf) lasf[0];
+    ASPECTSOURCE(lasf[1], errgsetasf)
+	asfs.ln_width = (Gasf) lasf[1];
+    ASPECTSOURCE(lasf[2], errgsetasf)
+	asfs.ln_colour = (Gasf) lasf[2];
+    ASPECTSOURCE(lasf[3], errgsetasf)
+	asfs.mk_type = (Gasf) lasf[3];
+    ASPECTSOURCE(lasf[4], errgsetasf)
+	asfs.mk_size = (Gasf) lasf[4];
+    ASPECTSOURCE(lasf[5], errgsetasf)
+	asfs.mk_colour = (Gasf) lasf[5];
+    ASPECTSOURCE(lasf[6], errgsetasf)
+	asfs.tx_fp = (Gasf) lasf[6];
+    ASPECTSOURCE(lasf[7], errgsetasf)
+	asfs.tx_exp = (Gasf) lasf[7];
+    ASPECTSOURCE(lasf[8], errgsetasf)
+	asfs.tx_space = (Gasf) lasf[8];
+    ASPECTSOURCE(lasf[9], errgsetasf)
+	asfs.tx_colour = (Gasf) lasf[9];
+    ASPECTSOURCE(lasf[10], errgsetasf)
+	asfs.fl_inter = (Gasf) lasf[10];
+    ASPECTSOURCE(lasf[11], errgsetasf)
+	asfs.fl_style = (Gasf) lasf[11];
+    ASPECTSOURCE(lasf[12], errgsetasf)
+	asfs.fl_colour = (Gasf) lasf[12];
+
+    (void) gsetasf(&asfs);
+}
+
+
+/*
+ * gspkid - Set Pick Identifier
+ *
+ * int	*pkid		- pointer to pick identifier
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.99
+ */
+/*FORTRAN*/
+gspkid(
+    int            *pkid)
+{
+    (void) gsetpickid((Gint) *pkid);
+}
+
+
+/*
+ * gspa - Set Pattern Size
+ *
+ * float *szx   - pointer to x size value
+ * float *szy   - pointer to y size value
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.105
+ */
+/*FORTRAN*/
+gspa(
+    float          *szx,
+    float          *szy)
+{
+    Gpoint          size;
+
+    debug(("Set Pattern Size  %f %f\n", *szx, *szy));
+
+    size.x = *szx;
+    size.y = *szy;
+
+    (void) gsetpatsize(&size);
+}
+
+
+/*
+ * gsparf - Set Pattern Reference Point
+ *
+ * int   *wkid - pointer to workstation id
+ * int   *ci   - pointer to colour index
+ * float *cr   - pointer to red value
+ * float *cg   - pointer to green value
+ * float *cb   - pointer to blue value
+ *
+ * Returns: ANSI standard errors for this function.
+ *
+ * See also: ANSI standard p.105
+ */
+/*FORTRAN*/
+gsparf(
+    float          *rfx,
+    float          *rfy)
+{
+    Gpoint          ref;
+
+    debug(("Set Pattern Reference Point  %f %f\n", *rfx, *rfy));
+
+    ref.x = *rfx;
+    ref.y = *rfy;
+
+    (void) gsetpatrefpt(&ref);
+}

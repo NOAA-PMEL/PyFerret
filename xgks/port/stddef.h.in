@@ -1,0 +1,18 @@
+/*
+ * $Id$
+ */
+
+#ifndef UD_stddef_h
+#define UD_stddef_h
+
+
+#include "udposix.h"
+#include UD_SYSTEM_STDDEF_H
+
+
+#ifdef UD_NO_OFFSETOF_MACRO
+#  define offsetof(type, member)	((size_t)&((type*)0)->member)
+#endif
+
+
+#endif	/* UD_stddef_h not defined above */

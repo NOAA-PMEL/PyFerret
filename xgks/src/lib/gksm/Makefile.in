@@ -1,0 +1,22 @@
+# Makefile for the GKS Metafile (GKSM) backend to XGKS
+#
+# $Id$
+
+LIBNAME		= xgks
+REMOTE_LIBRARY	= ../lib$(LIBNAME).a
+CPP_X11		= @CPP_X11@
+INCLUDES	= -I.. -I../../../port $(CPP_X11)
+CPPFLAGS	= $(INCLUDES) @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+CC		= @CC@
+LIBOBJS		= gksm.o
+
+MANIFEST	= Makefile.in depend gksm.c gksm.h gksm_implem.h
+
+all::		$(REMOTE_LIBRARY)
+
+include ../../../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

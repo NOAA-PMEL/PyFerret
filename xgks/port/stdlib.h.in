@@ -1,0 +1,24 @@
+/*
+ * $Id$
+ */
+
+#ifndef UD_stdlib_h
+#define UD_stdlib_h
+
+
+#include "udposix.h"
+#include UD_SYSTEM_STDLIB_H
+
+
+/*
+ * This file doesn't contain a typedef for `size_t' because that has
+ * caused problems with the compiler-supplied header files and typedef lockout
+ * mechanisms.
+ */
+
+#ifdef UD_NO_ATEXIT_DECL
+    UD_EXTERN_FUNC(int atexit, (void (*fcn)(void)));
+#endif
+
+
+#endif	/* UD_stdlib_h not defined above */

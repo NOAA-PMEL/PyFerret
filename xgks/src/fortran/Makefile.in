@@ -1,0 +1,44 @@
+# Makefile for the FORTRAN API to the XGKS library
+#
+# $Id$
+
+LIBNAME		= xgks
+REMOTE_LIBRARY	= ../lib/lib$(LIBNAME).a
+
+CPP_X11		= @CPP_X11@
+INCLUDES	= -I../../port -I../lib $(CPP_X11)
+DEFINES		= -DOS_$(OS)
+CPPFLAGS	= $(INCLUDES) $(DEFINES) @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+
+headers		= f_errno.h fortmac.h fortxgks.h pdrutils.h ps2aixdefs.h
+SRCS		= control.fc error.fc escapes.fc fexterninit.c \
+		  finqpixel.fc fxgksvers.c gerhnd.fc getlunname.fc \
+		  inputevent.fc inputinit.fc inputmode.fc inputreq.fc \
+		  inputsamp.fc inqerrlist.fc inqgksdesc.fc inqgkslist.fc \
+		  inqlun.f inqseglist.fc inqstate.fc inqwsdesc.fc \
+		  inqwslist.fc meta.fc output.fc rep.fc segattr.fc \
+		  segment.fc transform.fc utils.fc wsioutattr.fc
+LIBOBJS		= control.o error.o escapes.o fexterninit.o finqpixel.o \
+		  fxgksvers.o gerhnd.o getlunname.o inputevent.o \
+		  inputinit.o inputmode.o inputreq.o inputsamp.o \
+		  inqerrlist.o inqgksdesc.o inqgkslist.o inqlun.o \
+		  inqseglist.o inqstate.o inqwsdesc.o inqwslist.o meta.o \
+		  output.o rep.o segattr.o segment.o transform.o utils.o \
+		  wsioutattr.o
+MANIFEST	= Makefile.in depend $(HEADERS) $(headers) $(SRCS)
+GARBAGE		= control.c error.c escapes.c \
+		  finqpixel.c gerhnd.c getlunname.c \
+		  inputevent.c inputinit.c inputmode.c inputreq.c \
+		  inputsamp.c inqerrlist.c inqgksdesc.c inqgkslist.c \
+		  inqseglist.c inqstate.c inqwsdesc.c \
+		  inqwslist.c meta.c output.c rep.c segattr.c \
+		  segment.c transform.c utils.c wsioutattr.c
+
+all::		$(REMOTE_LIBRARY)
+
+include ../../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

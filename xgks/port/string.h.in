@@ -1,0 +1,24 @@
+/*
+ * $Id$
+ */
+
+#ifndef UD_string_h
+#define UD_string_h
+
+
+#include "udposix.h"
+#include UD_SYSTEM_STRING_H
+
+
+/*
+ * This file doesn't contain a typedef for `size_t' because that has
+ * caused problems with the compiler-supplied header files and typedef lockout
+ * mechanisms.
+ */
+
+#ifdef UD_NO_STRERROR_DECL
+    UD_EXTERN_FUNC(char *strerror, (int errno));
+#endif
+
+
+#endif	/* UD_string_h not defined above */

@@ -1,0 +1,98 @@
+#!/bin/sh
+# fortc - make C source file FORTRAN compatible
+# usage: fortc [-L LibDir] [-O OpSys] file
+#
+# $Id$
+
+
+#set -x
+
+
+# Temporary files:
+#
+tmp1=/tmp/fortc$$_1
+tmp2=/tmp/fortc$$_2
+
+
+# Automatic cleanup on interruption:
+#
+trap "rm -f $tmp1 $tmp2; exit 1" 1 2 3 13 14 15
+
+
+# Find the default, fortc(1) runtime library directory.
+#
+libpath=${FORTC_LIBPATH-__LIBPATH__}
+saveifs="$IFS"; IFS="${IFS}:"
+for dir in $libpath; do
+test -z "$dir" && dir=.
+if test -f $dir/pre1.sed; then
+  LibDir=$dir
+  break
+fi
+done
+IFS="$saveifs"
+
+
+OS=${OS-__DEFAULT_OS__}
+
+
+for arg do
+    case $1 in
+    -L)	shift; LibDir=$1; shift;;
+    -L*)
+	LibDir=`echo $1 | sed 's/-.//'`; shift;;
+    -O)	shift; OS=$1; shift;;
+    -O*)
+	OS=`echo $1 | sed 's/-.//'`; shift;;
+    -*)	echo 1>&2 "Option '$1' is unknown"; exit 1;;
+    *)	break;;
+    esac
+done
+
+
+case $# in
+    1)	file=$1;;
+    *)	echo 1>&2 "$0: Usage [-L LibDir] [-O OpSys] file"; exit 1;;
+esac
+
+
+if test ! -f $LibDir/pre1.sed; then
+    echo 1>&2 "$0: Can't find runtime support files:
+    use \`-L' option or FORTC_LIBPATH environment variable"
+    exit 1
+fi
+
+
+case "$OS" in
+    next-absoft*)
+	OS=next-absoft;;
+    next*)
+	OS=next-absoft;;
+    unicos*)
+	echo '#include "/usr//include/fortran.h"';
+	OS=unicos;;
+    vms*)
+	echo "#include descrip";
+	OS=vms;;
+    *)	OS=`echo $OS | sed 's/_.*//'`;;
+esac
+
+case "$OS" in
+    domainos)	sedcmd=d;;
+    *)		sedcmd='s//\1 "'$file'"/';;
+esac
+
+if sed -f $LibDir/pre1.sed $file > $tmp1  &&
+	sed -f $LibDir/pre2.sed $tmp1 > $tmp2  &&
+	m4 $LibDir/$OS.m4 $LibDir/common.m4 $tmp2 > $tmp1  &&
+	sed -f $LibDir/post.sed $tmp1 > $tmp2 &&
+	sed '/.*\(#line.*\)M4_FORTC_FILE/'"$sedcmd" $tmp2; then
+    status=0
+fi
+
+
+# Cleanup:
+#
+rm -f $tmp1 $tmp2
+
+exit ${status-1}

@@ -1,0 +1,27 @@
+unsigned int
+/*FORTRAN*/
+foO(
+    char	*pathname,	/* file name of new file */
+    void	*ptr,    	/* pointer to something */
+    utUnit	**unit,		/* pointer to a pointer */
+    float	*amount,	/* amount to frodicate by */
+    double	*dblamt,	/* double the amount */
+    void	(*errf)(),	/* error routine */
+    int		*rcode		/* returned error code */)
+{
+    FC_NAME(foO)(bar, bof);
+}
+
+unsigned int
+/*FORTRAN*/
+foo(
+    character		pathname,	/* file name of new file */
+    void		*ptr,		/* file name of new file */
+    utUnit		**unit,		/* pointer to a pointer */
+    real		amount,		/* amount to frodicate by */
+    doubleprecision	dblamt,		/* double the amount */
+    void function	errf,		/* error routine */
+    integer		rcode)		/* returned error code */
+{
+    FC_NAME(foo)(bar, bof);
+}

@@ -1,0 +1,22 @@
+# $Id$
+#
+# Makefile for the "doc/binding" subdirectory of the XGKS package.
+
+TROFF		= @TROFF@
+MANIFEST	= Makefile.in function_list Cbinding.src mkcbinding
+name		= cbinding
+document	= $(name).me
+GARBAGE		= $(document) AP
+
+all::		$(document)
+
+hardcopy:	$(name).hc
+
+$(document):	function_list Cbinding.src
+	./mkcbinding function_list Cbinding.src > $@
+
+include ../../port/master.mk
+
+.SUFFIXES:	.hc .me
+.me.hc:
+	$(TROFF) -me $<

@@ -23,7 +23,8 @@
      .		FTYP_LON,
      .		FTYP_DATE,
      .		FTYP_EURODATE,
-     .		FTYP_TIME
+     .		FTYP_TIME,
+     .		FTYP_ANAL_MISSING
 	PARAMETER ( FTYP_NUM_TYPES = 8,
      .		FTYP_MISSING = 1,
      .		FTYP_NUMERIC = 2,
@@ -32,5 +33,6 @@
      .		FTYP_LON = 5,
      .		FTYP_DATE = 6,
      .		FTYP_EURODATE = 7,
-     .		FTYP_TIME = 8 )
+     .		FTYP_TIME = 8,
+     .		FTYP_ANAL_MISSING = -FTYP_MISSING )
 

@@ -76,6 +76,7 @@ C
 *                  LWGT, LDIG, and ZLEV; issue an error message.
 * V550 11/02 *acm* For fine grids, XLPLOT, XHPLOT, YLPLOT, YHPLOT computations
 *                  need to be done in double precision.
+* V550 11/02 *acm* New call to create LEVELS symbols, routine setlab_syms
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -222,6 +223,10 @@ C
 
 	END IF
 
+* Now that the levels are set, create the LEVELS symbols
+
+        CALL setlab_syms (ZLEV, NLEV2)
+
 
 C       DRAW CONTOUR
 C
@@ -353,10 +358,10 @@ C       ~OF - page offset to the beginning of an axis?
 
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
-	XFF = (XHPLOT - XLPLOT)/(xtx-xtm)
-	XOF = XLPLOT - XFF*xtm
-	YFF = (YHPLOT - YLPLOT)/(ytx-ytm)
-	YOF = YLPLOT - YFF*ytm
+	XFF = REAL(XHPLOT - XLPLOT)/(xtx-xtm)
+	XOF = REAL(XLPLOT) - XFF*xtm
+	YFF = REAL(YHPLOT - YLPLOT)/(ytx-ytm)
+	YOF = REAL(YLPLOT) - YFF*ytm
 
 
 C       If this is a 2-D plot on an irregular grid, use TRANS() to 
@@ -389,6 +394,10 @@ C       multiplying the index value by the DX or DY delta values.
  510	   CONTINUE
 
 	ENDIF
+
+* Now that the levels are set, create the LEVELS symbols
+
+        CALL setlab_syms (ZLEV, NLEV2)
 
 	 if (makep.eq.'CONTOUR') then
 c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8

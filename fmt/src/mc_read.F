@@ -11,6 +11,8 @@
 * 11/96 *kob* - Linux Port
 * 	      - replace end_read_tstep with a_hi_t as a clue for tm_subsc
 * 7/97 *kob* - fix bug in which status is not being checked
+* 5/98 *kob* - fix bug in which step files were not being properly reset after 
+*              they were closed
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -35,6 +37,7 @@
         include 'tmap_format/netcdf.decl'
         include 'tmap_format/netcdf.inc'
 	include 'tmap_format/tmap_errors.parm'
+#include "tmap_format/tmap_dset.parm"
 	include 'tmap_format/tmap_dims.parm'		! data set dimension
 	include 'tmap_format/gt_lib.parm'		! axis setup params
 	include 'tmap_format/xdset_info.cmn_text'	! data set info common
@@ -117,6 +120,8 @@
 	   CALL CD_CLOSE_SET( cdfid, status)
 * 7/97 - *kob* error check as in tm_choose_read.F
 	   if (status .NE. merr_ok) GOTO 5000
+*5/98 - *kob* sf_lunit needs to reflect the above cdf close
+	   sf_lunit(sfcnt) = file_not_open
 
 	
 
@@ -235,6 +240,8 @@
 	   CALL CD_CLOSE_SET( cdfid, status)
 * 7/97 - *kob* error check as in tm_choose_read.F
 	   if (status .NE. merr_ok) GOTO 5000
+*5/98 - *kob* sf_lunit needs to reflect the above cdf close
+	   sf_lunit(sfcnt) = file_not_open
 
 * Check to see if done reading
 	   IF (end_read_lstep .LT. a_hi_t) THEN
@@ -257,6 +264,7 @@
 
 
 	END
+
 
 
 

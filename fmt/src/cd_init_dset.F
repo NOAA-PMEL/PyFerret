@@ -15,6 +15,8 @@
 * 11/97 *kob* - added a close on the cdfid for the netcdf file for
 *               mc datasets only.  
 * 4/98 *kob* - need to explicitely declare istat
+* 5/98 *kob* - make sure that the sf_lunit is reset to file_not_open
+*              when cdf file is closed - for mc datasets only
 
 * argument declarations:
 	INTEGER	dset, status
@@ -26,6 +28,8 @@
 	include 'tmap_format/tmap_dims.parm'
 #	include "tmap_format/tmap_dset.parm"
 	include 'tmap_format/tmap_errors.parm'
+* add below *kob* 5/98
+	include 'tmap_format/xstep_files.cmn_text'
 	include 'tmap_format/xdset_info.cmn_text'
 	external xdset_info_data
         include 'tmap_format/xdset_info.cd_equiv'
@@ -95,8 +99,10 @@
 ! for multiple files ... maybe
 ! *kob* 11/97 - close cdf files which are a part of a multi-file netcdf set
 !* close the netCDF file
+! 5/98 *kob* - reset sf_lunit as well
       IF (ds_type(dset) .EQ. '  MC') THEN
         CALL NCCLOS( cdfid, istat )
+	sf_lunit(dset) = file_not_open
       ENDIF
 * successful completion
       status = merr_ok

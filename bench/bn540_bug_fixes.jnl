@@ -69,7 +69,12 @@ GO err540_data_type.jnl
 ! take delta strides into account when determining the size 
 ! over which to apply bad data replacement
 go bn_reset
-GO err540_dods_set_bad.jnl
+GO err540_dods_bad_strides.jnl
+
+! test dods access on bad/unknown dataset.  old bug behaviour
+! was to hang
+go bn_reset
+GO err540_dods_bad_dataset.jnl
 
 ! gridding scattered points to modulo axis had bug
 go bn_reset

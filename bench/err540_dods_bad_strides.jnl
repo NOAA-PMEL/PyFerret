@@ -1,0 +1,22 @@
+! err540_dods_set_bad.jnl
+! reported by Joe Sirott  4/02
+
+set mode diag
+
+use "http://ferret.wrc.noaa.gov/cgi-bin/nph-nc/data/S19972441997273.L3m_MO_CHLO.hdf"
+set var/bad=0 L3M_DATA  ! if omitted it works fine
+stat L3M_DATA[i=1:4096:16,j=1:2048:16]
+quit
+
+=============
+dies in rdstride ... so appears to be a DODS bug
+yes? stat data_values[i=1:4096:16,j=1:4096:16]
+ getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ allocate dynamic grid (G002)          (AX004)   (AX005)   NORMAL    NORMAL
+ dealloc  dynamic grid (G002)          (AX004)   (AX005)   NORMAL    NORMAL
+ allocate dynamic grid (G002)          (AX004)   (AX005)   NORMAL    NORMAL
+ eval    EX#1     C:  4 I:    1  256  J:    1  256  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G002)          (AX004)   (AX005)   NORMAL    NORMAL
+ strip regrid on X: DATA_VALUES --> (G002)           @XACT
+ rdstride DAT-LUES C:  7 I:    1 4081  J:    1 4081  K: -111 -111  L: -111 -111
+Segmentation fault

@@ -7,6 +7,7 @@
 
 * revision 0.0 - 3/92
 * 1/95 - allow negative subscripts.  Substitute "N" for "-"
+* v4.91 - *kob* - 12/97 - added checks for axis name length
 
 * argument definitions:
 *     axis    - original axis name
@@ -39,20 +40,27 @@ xx        include 'xxtmap_format/netcdf.inc'
 * local variable declarations:
       INTEGER TM_LENSTR1, slen
       CHARACTER TM_LEFINT*8, int_buff*8
+* 12/97
+      INTEGER maxlen
+
+      maxlen = LEN(CD_CHILDAX_NAME)
 
 * generate "axis_nameLO_HI"
 * append the low subscript limit
       tlen = TM_LENSTR1(axname)
+      IF (tlen .GT. maxlen) tlen = maxlen    ! hack to prevent crash
       int_buff = TM_LEFINT(lo,slen)
       IF (int_buff(1:1) .EQ. '-') int_buff(1:1) = 'N'
       CD_CHILDAX_NAME = axname(:tlen)//int_buff
       tlen = tlen+slen
+      IF (tlen .GT. maxlen) tlen = maxlen    ! hack to prevent crash
+
 
 * append the high subscript limit
       int_buff = TM_LEFINT(hi,slen)
       IF (int_buff(1:1) .EQ. '-') int_buff(1:1) = 'N'
       CD_CHILDAX_NAME = CD_CHILDAX_NAME(:tlen)//'_'//int_buff
       tlen = tlen+slen+1
-
+      IF (tlen .GT. maxlen) tlen = maxlen    ! hack to prevent crash
       RETURN
       END

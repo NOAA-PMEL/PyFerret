@@ -97,6 +97,9 @@
 * V450	11/14/96 - added LIST/CLOBBER
 *	5/97	 - added /NOAXES to SHADE, PLOT, CONTOUR, and VECTOR
 *       7/97     - added SHOW FUNCTIONS
+
+* v491  12.98    - added PATTERN support *jd*
+* v491  12.98    - added PATTERN alias *jd*
 * v500  2/99 - *kob* - add /QUIET to LIST command
 * V500  2/99 *sh* - added POLYGON command
 
@@ -626,6 +629,12 @@
 		DATA qualifiers  (nqual_at4a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at4a+23)/ 'PEN'/	!/pen=
 		DATA qualifiers  (nqual_at4a+24)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at4a+25)/ 'PATTERN'/	!/pattern=
+		DATA qualifiers  (nqual_at4a+26)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+27)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+29)/ '****'/	!
+
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -1023,6 +1032,11 @@
 		DATA qualifiers  (nqual_at18a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at18a+23)/ '****'/	! 
 		DATA qualifiers  (nqual_at18a+24)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at18a+25)/ 'PATTERN'/   !/pattern=
+		DATA qualifiers  (nqual_at18a+26)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+27)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+29)/ '****'/	!
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/
@@ -1263,13 +1277,16 @@
      .		alias(12)	/ 'PPL %LABEL' /,
      .		alias_name(13)	/ 'ANIMATE' /,
      .		alias_len(13)	/ 10 /,
-     .		alias(13)	/ 'SPAWN xds&' /
+     .		alias(13)	/ 'SPAWN xds&' /,
+     .		alias_name(14)	/ 'PATTERN' /,
+     .		alias_len(14)	/ 19 /,
+     .		alias(14)	/ 'PPL PATSET PATTERN=' /
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 137*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 137*4 /,
+     .                   / 136*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150)/ 136*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 137*unspecified_name4 /
+     .                   / 136*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,
@@ -1301,3 +1318,12 @@
 	DATA num_queries /0/   ! unused
 
 	END
+
+
+
+
+
+
+
+
+

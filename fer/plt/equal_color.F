@@ -42,6 +42,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510 *sh* 3/00 - based upon EQUAL_STRING
+*      *kob* 5/00 - minor change to declaration of colors array needed to
+*                   compile under nag f95 for linux
 
 * calling argument declarations
 	INTEGER		icolor, status
@@ -51,7 +53,9 @@
 	LOGICAL	MATCH4, TM_DIGIT
 	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code
 	REAL	val
-	CHARACTER	LEFINT*4, str*12, colors*12(6)
+*	CHARACTER	LEFINT*4, str*12, colors*12(6)
+	CHARACTER	LEFINT*4, str*12
+	CHARACTER*12    COLORS(6)
 
 * internal parameter declarations
 	INTEGER ncolors

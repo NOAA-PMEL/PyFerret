@@ -22,9 +22,9 @@
 # *kob* 4/98 - add status check after running bnxxx_all to prevent continuation
 #              of bench run
 # *sh* 2/99 - run bn500_all by default
+# *sh* request the EF directory. Benchmark versions no longer exist -- use CVS
 
-# usage % run_all [bench_version]
-# e.g   % run_all  bn311
+# usage % run_all
 
 # unable to redirect input on Solaris
 # to run benchmark on solaris:
@@ -48,18 +48,6 @@
 
 
 umask 002     #  make all files group deletable  3/16
-
-# benchmark version to run ?
-#	set bver = bn401   # changed 9/1/95
-if ( $#argv == 1 ) then
-	set bver = $argv[1]
-else
-#	set bver = bn430   # changed 7/25/97
-#	set bver = bn450   # changed 1/24/98
-#	set bver = bn490   # changed 2/02/98 *kob*
-#	set bver = bn491   # changed 2/11/99 *sh*es
-	set bver = bn500   
-endif
 
 # corona has HOSTTYPE=sun, dread has HOSTTYPE=solaris
 if ( $HOSTTYPE =~ *sun* ) then
@@ -93,6 +81,10 @@ if ( $status == 0 ) then
 	set machine = "x$machine"
 endif
 
+# which external function libraries to use
+echo "Enter the directory containing the external function libraries"
+set efdir = $<
+
 # background info to go in the benchmark file
 echo "Enter your name"
 set bmarker = $<
@@ -110,6 +102,8 @@ setenv FER_DESCR .
 setenv FER_DATA .
 setenv FER_DSETS .
 
+#set up external functions search path
+setenv FER_EXTERNAL_FUNCTIONS $efdir
 
 # set up the binary unformatted stream test file as a machine-specific link
 set machine_stream = "stream10by5_{$machine}.unf"
@@ -152,7 +146,7 @@ echo "Procedure run_all to run all FERRET benchmarks" >&$log_file
 
 echo "Running FERRET version $fver" >>&$log_file
 ls -l $fver >>&$log_file
-echo "Running benchmark version $bver" >>&$log_file
+echo "Using external functions from $efdir" >>&$log_file
 echo "Benchmark run by $bmarker" >>&$log_file
 echo "Note: $bcomment" >>&$log_file
 

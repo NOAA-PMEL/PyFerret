@@ -50,6 +50,13 @@ SET MODE VERIFY
 !   2/99 *sh* -- bn420_regrid_transform ==> bn500_regrid_transform
 !   3/1/99 *kob* - removed bn200_budget from distributable benchmarks 
 !   5/99 *kob* - added V50 bench files
+! V5.10:
+!  10/99 *sh* -- added bn_sample.jnl to test SAMPLEI,J,K,L
+!			bn_non_COARDS_netCDF.jnl
+!			bn_cache_hits.jnl, .sub
+!			bn_strides_revs_perms.jnl
+!			bn_regrid_to_user.jnl
+
 
 GO bn_reset
 GO bn_syntax
@@ -208,6 +215,23 @@ GO bn_polygon
 
 GO bn_reset
 GO bn500_bug_fixes
+
+! ******** V510 Additions below ***********
+
+GO bn_reset
+GO bn_sample			! internal (optimized) SAMPLE* functions
+
+GO bn_reset
+GO bn_strides_revs_perms	! netCDF fancy reads
+
+GO bn_reset
+GO bn_non_COARDS_netCDF		! non-standard netCDF files
+
+GO bn_reset
+GO bn_cache_hits		! cache hits on unspecified (full) regions
+
+GO bn_reset
+GO bn_regrid_to_user		! G=user_var and related
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

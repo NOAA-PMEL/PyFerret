@@ -25,7 +25,8 @@
 *	 	 - added isact_class_reconcile for command qualifiers
 *		 - check for explicit limits with @ITP 
 * V430:     7/96 - incorporate 4D transformations:  AVE, VAR, DIN, NDG, NBD
-* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
+* V490:  9/97 - *sh* OFFSET_SS returns status
+*	     - *kob* replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
 
@@ -104,7 +105,8 @@
 * possibly need different limits for component than for result
 	   IF ( grid .NE. unspecified_int4 ) THEN
 	      IF ( trans .LT. trans_compress_code ) THEN
-	         CALL OFFSET_SS( axis, lo_cx, lo_off, hi_off )
+	         CALL OFFSET_SS( axis, lo_cx, lo_off, hi_off, status )
+		 IF ( status .NE. ferr_ok ) GOTO 5000
 	         cx_lo_ss(hi_cx,axis) = cx_lo_ss(hi_cx,axis) + lo_off
 	         cx_hi_ss(hi_cx,axis) = cx_hi_ss(hi_cx,axis) + hi_off
 	         cx_by_ss(axis,hi_cx) = .TRUE.

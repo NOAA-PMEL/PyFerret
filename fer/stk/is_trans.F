@@ -22,6 +22,7 @@
 * V450: 5/97 - fillers different from smoothers when component data is
 *		insufficient for result. Should return original data rather
 *		than an all-bad field.
+* V455:  9/97 - OFFSET_SS returns status
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -196,7 +197,8 @@
 	      lo_off = 0
 	      hi_off = 0
 	   ELSE
-	      CALL OFFSET_SS( idim, res_cx, lo_off, hi_off )
+	      CALL OFFSET_SS( idim, res_cx, lo_off, hi_off, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
 	   ENDIF
 * ... computable limits from component
 * Note (8/92): when the requested limites are unknown the com_cx will be

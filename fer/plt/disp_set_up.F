@@ -104,6 +104,7 @@
 *		(with plot/vs and polygon)
 * V510	12/99 - *sh* plot of all bad data no longer an error
 *        3/00 - *sh* /NOLABELS to avoid xlab & ylab
+*	 5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -170,7 +171,8 @@
      .			lo1, lo2, hi1, hi2, size1, size2, size,
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
      .			style, justify, ipen, ndim, dims(4), ptitl,
-     .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos
+     .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
+     .			phlim, pvlim
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
@@ -190,6 +192,8 @@
 	   cty	  = cx_list  ( 2 )
 	   bad_y  = mr_bad_data( mvy )
 	ENDIF
+	phlim = qual_given( slash_hlimits )
+	pvlim = qual_given( slash_vlimits )
 	IF ( transpz ) THEN
 	  pxlim = qual_given( slash_ylimits )
 	  pylim = qual_given( slash_xlimits )
@@ -373,9 +377,19 @@
 * set up the axis formats (use exact limits, if given by /XLIMITS or /YLIMITS)
 	IF ( .NOT.overlay ) THEN
 	   IF ( pxlim .GT. 0 ) THEN
+	      IF (.NOT.denig_xylim_msg_done) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
      .				dim1, grid, xaxlo, xaxhi, delta,
      .				status )
+	      IF ( status .NE. ferr_OK ) GOTO 5000
+	   ELSEIF ( phlim.GT.0 ) THEN
+	      CALL EQUAL_RANGE_T(cmnd_buff(qual_start(phlim):qual_end(phlim)),
+     .				 bb_xaxis, grid, xaxlo, xaxhi, delta,
+     .				 status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
 	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_xpos) ), 
@@ -400,9 +414,19 @@
      .						curvilinear, cx_xpos,
      .						time_axis,xstyle,no_labels)
 	   IF ( pylim .GT. 0 ) THEN
+	      IF (.NOT.denig_xylim_msg_done) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pylim):qual_end(pylim)),
      .				dim2, grid, yaxlo, yaxhi, delta,
      .				status )
+	      IF ( status .NE. ferr_OK ) GOTO 5000
+	   ELSEIF ( pvlim.GT.0 ) THEN 
+	      CALL EQUAL_RANGE_T(cmnd_buff(qual_start(pvlim):qual_end(pvlim)),
+     .				 bb_yaxis, grid, yaxlo, yaxhi, delta,
+     .				 status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( curvilinear ) THEN
 	      CALL FIELD_MINMAX( memory(1,mr_blk1(mr_ypos) ),

@@ -96,6 +96,7 @@
 * V510 10/99 - *sh* plot/i=1:10 i/0 is not an error -- scale axis to -1:1
 *       3/00 - *sh* added use_line and sym_size args for PLOT/COLOR=/SIZE=
 *	     - pass no_labels to AXIS_FORMAT 
+*	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -157,7 +158,7 @@
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
      .			slen2, slen3, tax, plot_mem_used,
-     .			pxlim, pylim, ptitl
+     .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim
 	REAL		only_val, val1, dt_min,
      .			lo, hi, dep_len, ind_len,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
@@ -184,8 +185,10 @@
 	grid1 = cx_grid( cx )
 	indep_dim = plot_axis(1)
 	nline_in_mem = 0
-	pxlim = qual_given( slash_xlimits )
-	pylim = qual_given( slash_ylimits )
+	phlim = qual_given( slash_hlimits )
+	pvlim = qual_given( slash_vlimits )
+	pxlim = qual_given( slash_xlimits )	! denigrated
+	pylim = qual_given( slash_ylimits )	! denigrated
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
 
@@ -231,6 +234,16 @@
 	   indep_lab = ppl_ylab
 	   dep_len   = xlen
 	   ind_len   = ylen
+	   IF ( pxlim.GT.0 ) THEN
+	      pindeplim = pxlim
+	   ELSE
+	      pindeplim = pvlim
+	   ENDIF 
+	   IF ( pylim.GT.0 ) THEN
+	      pdeplim = pylim
+	   ELSE
+	      pdeplim = phlim
+	   ENDIF 
 	ELSE
 	     dep_ax  = 'Y'
 	   indep_ax  = 'X'
@@ -238,6 +251,16 @@
 	   indep_lab = ppl_xlab
 	   ind_len   = xlen
 	   dep_len   = ylen
+	   IF ( pxlim.GT.0 ) THEN
+	      pindeplim = pxlim
+	   ELSE
+	      pindeplim = phlim
+	   ENDIF 
+	   IF ( pylim.GT.0 ) THEN
+	      pdeplim = pylim
+	   ELSE
+	      pdeplim = pvlim
+	   ENDIF 
 	ENDIF
 
 * * * * * * *    - - - INDEPENDENT AXIS DATA - - - * * * * * * * * *
@@ -270,10 +293,16 @@
 * ... force axis scaling if the data has no range
 	   all_1_ind = NO_LINE_RANGE( indep_dat,npts,mr_bad_data(mv),val1 )
 	   delta = unspecified_val8
-	   IF ( pxlim .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
-	      CALL EQUAL_RANGE( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
-     .				indep_dim, ind_min, ind_max, delta,
-     .				formatted, status )
+	   IF ( pindeplim .GT. 0 ) THEN
+	      IF ( pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done ) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
+	      CALL EQUAL_RANGE(
+     .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
+     .			indep_dim, ind_min, ind_max, delta,
+     .			formatted, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
 	      IF ( val1 .EQ. mr_bad_data(mv) ) THEN
@@ -451,9 +480,14 @@
 	IF ( .NOT.overlay ) THEN
 	   IF ( .NOT. versus ) THEN
 	      delta = unspecified_val8
-	      IF ( pxlim .GT. 0 ) THEN              ! explicit /XLIMITS 10/93
+	      IF ( pindeplim .GT. 0 ) THEN
+	         IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
+	            CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	            CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	            denig_xylim_msg_done = .TRUE.
+	         ENDIF
 	         CALL EQUAL_RANGE(
-     .			cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
+     .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
      .			formatted, status )
 	         IF ( status .NE. ferr_OK ) GOTO 5000
@@ -476,7 +510,7 @@
 	         ENDIF
 	      ENDIF
 	      IF ( time_axis ) THEN
-	         IF ( pxlim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max )
+	         IF ( pindeplim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max )
 	         CALL TAXIS_STYLE( indep_ax, ind_min, ind_max, tstyle )
 * (6/99) Note: The time axis extrema symbols are only approximately correct
 *		since PLOT+ rounds out the time ranges ...
@@ -494,12 +528,32 @@
 	   ENDIF
 * ... dependent axis scaling
 *  force axis scaling if the data has no range
-	   IF ( pylim .GT. 0 ) THEN                 ! explicit /YLIMITS 10/93
+	   IF ( pdeplim .GT. 0 ) THEN
+	      IF (pylim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
 	      CALL EQUAL_RANGE(
-     .			cmnd_buff(qual_start(pylim):qual_end(pylim)),
+     .			cmnd_buff(qual_start(pdeplim):qual_end(pdeplim)),
      .			dep_dim, dep_min, dep_max, delta,
      .			formatted, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
+	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
+	   ELSEIF ( pvlim.GT.0 .OR. (flip .AND. phlim.GT.0) ) THEN
+	      IF (flip) THEN
+	         CALL EQUAL_RANGE(
+     .			cmnd_buff(qual_start(phlim):qual_end(phlim)),
+     .			dep_dim, dep_min, dep_max, delta,
+     .			formatted, status )
+	         IF ( status .NE. ferr_OK ) GOTO 5000
+	      ELSE
+	         CALL EQUAL_RANGE(
+     .			cmnd_buff(qual_start(pvlim):qual_end(pvlim)),
+     .			dep_dim, dep_min, dep_max, delta,
+     .			formatted, status )
+	         IF ( status .NE. ferr_OK ) GOTO 5000
+	      ENDIF
 	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99

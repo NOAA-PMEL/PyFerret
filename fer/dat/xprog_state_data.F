@@ -90,6 +90,7 @@
 *                  HP machines was 7 instead of 0
 * V420:	 4/28/96 - added initialization for IF-stack (ifstk)
 * V450:	 11/19/96 - eliminated MODE POLISH
+* V510 5/00 *sh* - added denig_x/ylim_msg_done
 
 #ifdef unix
 	include 'ferret.parm'
@@ -273,6 +274,9 @@
 * stack pointer for nested IF statements
 	DATA	ifstk		 / 0 /
      .		if_conditional	 / .FALSE. /
+
+* for issuing messages about the denigrated status of /XLIMITS and /YLIMITS
+	DATA	denig_xylim_msg_done / .FALSE. /
 
 * miscellaneous
 	DATA	saved_dset		/ unspecified_int4 /

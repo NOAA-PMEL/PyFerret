@@ -73,6 +73,7 @@
 *       6/99 - *jd* fix bug in 2 var form where x_dat(1) is reassigned
 * V510: *sh* 3/00 - trap if number of polygons is too large 
 *		  - new arg use_line for change in arguments to LINE_STYLE
+*	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -145,7 +146,8 @@
      .			npts, idim, color_dim, coord_dim,
      .			style, justify, ndim, dims(4), nfdim, fdims(4),
      .			plot_mem_used, pxlim, pylim, ptitl,
-     .			cx_buff_x, cx_buff_y
+     .			cx_buff_x, cx_buff_y,
+     .			phlim, pvlim, pxdenig, pydenig
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .			dt_min
@@ -171,8 +173,10 @@
 
 * initialize
 	nline_in_mem = 0
-	pxlim = qual_given( slash_xlimits )
-	pylim = qual_given( slash_ylimits )
+	pxlim = qual_given( slash_xlimits ) ! denigrated
+	pylim = qual_given( slash_ylimits ) ! denigrated
+	phlim = qual_given( slash_hlimits )
+	pvlim = qual_given( slash_vlimits )
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
 	cx_x = cx_list(1)
@@ -276,6 +280,16 @@
 	   x_lab = ppl_ylab
 	   y_len   = xlen
 	   x_len   = ylen
+	   IF (pxlim .GT. 0) THEN
+	      pxdenig = pxlim
+	   ELSE
+	      pxdenig = pvlim
+	   ENDIF
+	   IF (pylim .GT. 0) THEN
+	      pydenig = pylim
+	   ELSE
+	      pydenig = phlim
+	   ENDIF
 	ELSE
 	   y_ax  = 'Y'
 	   x_ax  = 'X'
@@ -283,6 +297,16 @@
 	   x_lab = ppl_xlab
 	   x_len   = xlen
 	   y_len   = ylen
+	   IF (pxlim .GT. 0) THEN
+	      pxdenig = pxlim
+	   ELSE
+	      pxdenig = phlim
+	   ENDIF
+	   IF (pylim .GT. 0) THEN
+	      pydenig = pylim
+	   ELSE
+	      pydenig = pvlim
+	   ENDIF
 	ENDIF
 
 * * * * * * *    - - - LOAD DATA - - -    * * * * * * * * *
@@ -498,10 +522,16 @@
 	IF ( .NOT.overlay ) THEN
 	   delta = unspecified_val8
 * ... X axis
-	   IF ( pxlim .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
-	      CALL EQUAL_RANGE( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
-     .				x_dim, vmin, vmax, delta,
-     .				formatted, status )
+	   IF ( pxdenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
+	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
+	      CALL EQUAL_RANGE( 
+     .			cmnd_buff(qual_start(pxdenig):qual_end(pxdenig)),
+     .			x_dim, vmin, vmax, delta,
+     .			formatted, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
      .			     vmin,vmax,delta)
@@ -516,10 +546,16 @@
 
 	   ENDIF
 * ... Y axis
-	   IF ( pylim .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
-	      CALL EQUAL_RANGE( cmnd_buff(qual_start(pylim):qual_end(pylim)),
-     .				y_dim, vmin, vmax, delta,
-     .				formatted, status )
+	   IF ( pydenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
+	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
+	      CALL EQUAL_RANGE( 
+     .			cmnd_buff(qual_start(pydenig):qual_end(pydenig)),
+     .			y_dim, vmin, vmax, delta,
+     .			formatted, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			     vmin,vmax,delta)

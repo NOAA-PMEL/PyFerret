@@ -11,6 +11,8 @@
 * 4/99 *sh* increased num_predefined_alias for PAUSE alias
 *      *sh* incresed qualifiers for DEFINE AXIS and SHOW AXIS
 * 6/99 *sh* increased num_predefined_alias for WHERE alias
+* V510 5/99 *sh* - increased number of quals for all graphics commands,
+*		for SHOW FUNC
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -136,7 +138,7 @@
      .			nqual2r = 1, nqual_at2s = nqual_at2r + nqual2r,	!'****'
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'****'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'****'
-     .			nqual2u = 5, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
+     .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
      .			nqual2v = 3, nqual_at3a = nqual_at2v + nqual2v	!'QUER'
      .		      )
 
@@ -174,8 +176,8 @@
      .			nqual3i = 1, nqual_at3j = nqual_at3i + nqual3i,	!'MOVI'
      .			nqual3j = 1, nqual_at3k = nqual_at3j + nqual3j,	!'VIEW'
      .			nqual3k = 3, nqual_at3l = nqual_at3k + nqual3k,	!'VARI'
-     .			nqual3l = 1, nqual_at3m = nqual_at3l + nqual3l,	!'META'
-     .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'****'
+     .			nqual3l = 1, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
+     .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
      .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'****'
      .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'****'
@@ -189,7 +191,7 @@
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 30,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 34,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,
@@ -201,7 +203,7 @@
 	INTEGER		nsub6      , nsub_at7  ,
      .			nqual6a    , nqual_at7a
 	PARAMETER    (	nsub6   = 1, nsub_at7   = nsub_at6   + nsub6,
-     .			nqual6a =25, nqual_at7a = nqual_at6a + nqual6a  )
+     .			nqual6a =34, nqual_at7a = nqual_at6a + nqual6a  )
 
 * GO		 - commmand # 7
 	INTEGER		nsub7      , nsub_at8   ,
@@ -251,13 +253,13 @@
 	INTEGER		nsub12      , nsub_at13  ,
      .			nqual12a    , nqual_at13a
 	PARAMETER    (	nsub12   = 1, nsub_at13   = nsub_at12   + nsub12,
-     .			nqual12a = 2, nqual_at13a = nqual_at12a + nqual12a  )
+     .			nqual12a = 4, nqual_at13a = nqual_at12a + nqual12a  )
 
 * VECTOR		 - commmand # 13
 	INTEGER		nsub13       , nsub_at14 ,
      .			nqual13a     ,nqual_at14a
 	PARAMETER    (	nsub13   = 1, nsub_at14    = nsub_at13   + nsub13,
-     .			nqual13a = 25,nqual_at14a  = nqual_at13a + nqual13a  )
+     .			nqual13a = 34,nqual_at14a  = nqual_at13a + nqual13a  )
 
 * PPLUS		 - commmand # 14
 	INTEGER		nsub14      , nsub_at15 ,
@@ -287,7 +289,7 @@
 	INTEGER		nsub18       , nsub_at19 ,
      .			nqual18a     ,nqual_at19a
 	PARAMETER    (	nsub18   = 1, nsub_at19    = nsub_at18   + nsub18,
-     .			nqual18a = 30,nqual_at19a  = nqual_at18a + nqual18a  )
+     .			nqual18a = 34,nqual_at19a  = nqual_at18a + nqual18a  )
 
 * SPAWN			 - commmand # 19
 	INTEGER		nsub19       , nsub_at20 ,
@@ -341,7 +343,7 @@
 	INTEGER		nsub27       , nsub_at28 ,
      .			nqual27a     ,nqual_at28a
 	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
-     .			nqual27a = 30,nqual_at28a  = nqual_at27a + nqual27a  )
+     .			nqual27a = 34,nqual_at28a  = nqual_at27a + nqual27a  )
 
 * ****/****/**** - command number 28
 	INTEGER		nsub28       , nsub_at29 ,
@@ -401,5 +403,17 @@
      .				alias_len,
      .				alias,
      .				queries, num_queries
+
+
+
+
+
+
+
+
+
+
+
+
 
 

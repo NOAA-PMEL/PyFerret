@@ -16,12 +16,13 @@
 * V420: 9/95 added plist_comma_del and plist_tab_del
 *	4/96 added controls for IF: if_*, pif_*, max_arg_list 20-->128
 * V450:11/96 added plist_cdf_cache
+* V510: 5/00 *sh* - added denig_xylim_msg_done. increased max_qual_list
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
      .			max_ifstk
 	PARAMETER     ( cmnd_buff_len = 500,
-     .			max_qual_list = 30 ,	! increased from 20 10/93
+     .			max_qual_list = 35 ,	! increased from 30 5/00
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 25 ,
      .			max_modes     = 25 ,
@@ -110,7 +111,8 @@
      .		mode_state( max_modes, mode_stack_size ),
      .		frame_on,
      .		interactive,
-     .		if_conditional
+     .		if_conditional,
+     .		denig_xylim_msg_done
 
 ! Note: available_char_var is unused
 	CHARACTER
@@ -152,6 +154,7 @@
      .		mode_state, mode_arg,
      .		saved_dset,
      .		saved_abstract_grid,
+     .		denig_xylim_msg_done,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,

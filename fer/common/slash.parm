@@ -41,6 +41,8 @@
      .
      .			slash_show_data_brief,
      .
+     .			slash_show_func_detail,
+     .
      .			slash_list_head,
      .			slash_list_nohead,
      .			slash_list_extend,
@@ -175,6 +177,8 @@
      .
      .			slash_show_data_brief = 2,
      .
+     .			slash_show_func_detail = 1+4,
+     .
      .			slash_list_head   = 10,
      .			slash_list_nohead = 11,
      .			slash_list_title  = 17,
@@ -274,11 +278,13 @@
      .			slash_noaxes		= 24 + 1 )
 
 	INTEGER		slash_xlimits, slash_ylimits, slash_title,
-     .			slash_pen
+     .			slash_pen, slash_hlimits, slash_vlimits
 	PARAMETER     ( slash_xlimits = 1 + 20,
      .			slash_ylimits = 1 + 21,
      .			slash_title   = 1 + 22,
-     .			slash_pen   = 1 + 23 )
+     .			slash_pen     = 1 + 23,
+     .			slash_hlimits = 1 + 30,
+     .			slash_vlimits = 1 + 31 )
 
         INTEGER		slash_polygon_line,
      .			slash_polygon_fill,

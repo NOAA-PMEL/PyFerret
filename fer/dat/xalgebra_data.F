@@ -339,6 +339,7 @@
      .	     alg_punct(  3 ) / ')' /
 
 * pseudo_variables:
+        DATA alg_pvar_head     / 0 /
 	DATA alg_pvar	(  1 ) / 'I       ' /,
      .       alg_pvar	(  2 ) / 'J       ' /,
      .       alg_pvar	(  3 ) / 'K       ' /,
@@ -660,7 +661,7 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_1d_to_4d(5) /trans_bad_pt/,
      .		alg_4d_trans(5) /trans_4d_bad_pt/
 
-
+        DATA    countervar_name_head /  0  /
 
 	END
 

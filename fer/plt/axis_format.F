@@ -1,6 +1,6 @@
 	SUBROUTINE AXIS_FORMAT( x_or_y, idim, grid, lo_val, hi_val,
      .				curvilinear, cx_curv,
-     .				its_calendar, tstyle )
+     .				its_calendar, tstyle, no_labels )
 
 *
 *
@@ -68,6 +68,7 @@
 * V450: 3/97 - support for curvilinear coordinate plots
 *		added args curvilinear and cx_curv
 * V500: 6/99 *sh* - save time axis infor to be used by PLOT/VS overlays
+* V510 *sh* 3/00 - added no_labels argument so /NOLABELS avoided xlab & ylab
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -93,7 +94,7 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL		its_calendar, curvilinear
+	LOGICAL		its_calendar, curvilinear, no_labels
 	INTEGER		idim, grid, cx_curv
 	CHARACTER	x_or_y*1, tstyle*3
 	REAL*8		lo_val, hi_val
@@ -104,10 +105,10 @@
 
 * internal variable declarations:
 	LOGICAL		GEOG_LABEL, GEOG_VAR, use_nice, special
-	INTEGER		TM_LENSTR1, dlen, places, ndec, dummy, itax
+	INTEGER		TM_LENSTR1, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
-     .			fmt*4, date*4
+     .			fmt*4
 	REAL		res_del, dt_min, time_unit
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
@@ -194,6 +195,7 @@
 	ENDIF
 
 * lat/long or x/y axis label
+	IF ( no_labels ) RETURN
 	IF ( curvilinear ) THEN
 	   risc_buff = VAR_TITLE( cx_curv)
 	   dlen = TM_LENSTR1(risc_buff)

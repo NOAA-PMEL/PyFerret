@@ -102,7 +102,8 @@
 * V500  4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
 *       6/99 - save time axis info in XPLOT_STATE to enable line plot overlays
 *		(with plot/vs and polygon)
-* V510	12/99 - *sh* all bad data no longer an error
+* V510	12/99 - *sh* plot of all bad data no longer an error
+*        3/00 - *sh* /NOLABELS to avoid xlab & ylab
 
 #ifdef unix
 	include 'ferret.parm'
@@ -397,7 +398,7 @@
 	   CALL AXIS_ENDS  ( 'X', dim1, grid, xaxlo, xaxhi, delta )
 	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi,
      .						curvilinear, cx_xpos,
-     .						time_axis, xstyle)
+     .						time_axis,xstyle,no_labels)
 	   IF ( pylim .GT. 0 ) THEN
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pylim):qual_end(pylim)),
      .				dim2, grid, yaxlo, yaxhi, delta,
@@ -424,7 +425,7 @@
 	   CALL AXIS_ENDS  ( 'Y', dim2, grid, yaxlo, yaxhi, delta )
 	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, 
      .						curvilinear, cx_ypos,
-     .						time_axis, ystyle )
+     .						time_axis,ystyle,no_labels)
         ENDIF
 
 * rotate vectors to make axis scale ratio correction ?

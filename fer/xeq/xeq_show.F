@@ -232,7 +232,7 @@
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
      .		rqst_dset, tmp_grid, num_predefined_axes, qfile, 
-     .          flen, wsize, wkblk, TM_LENSTR, len_test, len_mchars,
+     .          flen, wsize, wkblk, len_test, len_mchars,
      .          j, num_indices
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,

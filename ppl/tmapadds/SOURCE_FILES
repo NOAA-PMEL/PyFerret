@@ -37,6 +37,7 @@ set_gks_metafile.F\
 set_one_color.F\
 set_pat_size.F\
 set_window_size.F\
+setax_syms.F\
 setfont.F\
 setup_color_table.F\
 setup_defaults.F\
@@ -64,6 +65,7 @@ pplcmd_c.c\
 pplldc_envelope.c\
 pplldv_envelope.c\
 pplldx_envelope.c\
+reallo_envelope.c\
 reallo_ppl_memory.c\
 resize_xgks_window.c\
 set_background.c\

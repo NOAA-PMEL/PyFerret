@@ -23,7 +23,8 @@ levsrt.F\
 linear.F\
 linfit.F\
 list.F\
-minmax.F\
+stmnmx.F\
+rsmnmx.F\
 mplot.F\
 mult.F\
 opnppl.F\

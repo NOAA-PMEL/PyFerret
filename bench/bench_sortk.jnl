@@ -1,37 +1,27 @@
-
-
 ! Benchmark for sort and sample external Functions
-! ACM 5/99
+! ACM 7/99
 
-! test sortz, samplez
+! test sortk, samplek
  
-
-!  data set  gt160w011 is in the portable benchmark data area.
-
 can region
-use gt160w011
+use gt4d011
+set region/i=99/j=40/l=1
 
-set region/i=70/l=1
-shade temp
 
 let zsorted_indices = sortk(temp)
 let zsorted_temp = samplek(temp, zsorted_indices)
-shade zsorted_temp
-
-set region/j=10
-let len = zsorted_temp[k=@ngd]
-list len
+list zsorted_temp
 
 
 can region
 use ocean_atlas_monthly
 
-set region/i=70/l=1
-shade temp
+set region/i=70/j=90/l=1
+list temp
 
 let zsorted_indices = sortk(temp)
 let zsorted_temp = samplek(temp, zsorted_indices)
-shade zsorted_temp
+list zsorted_temp
 
 ! this should bail out with indices out of range:
 

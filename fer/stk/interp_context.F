@@ -45,6 +45,9 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510: 3/00 *sh* extracted from INTERP_STACK
+* V530: 3/01 *sh* bug fix - deallocate implicit grid 
+* V531: 4/01 *sh* insert missing value flag into the context
+* V532: 6/01 *sh* bug fix:  CALL DEALLO_UNFORMED_GRID instead of DEALLO_GRID
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -134,10 +137,17 @@
      .				cx_category(cx),
      .				cx_variable(cx), mod_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( cx_has_impl_grid(mod_cx) ) THEN
+	      CALL DEALLO_UNFORMED_GRID( status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	   ENDIF
 	ENDIF
 
 * fill in any unspecified limits with information from the grid
 	CALL COMPLETE_MISSING_LIMITS(cx)
+
+* insert the missing value flag
+	CALL GET_CONTEXT_BAD_FLAG(cx)
 
 * success
 	RETURN

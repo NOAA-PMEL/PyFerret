@@ -24,6 +24,7 @@ grp_cx_doc.F\
 inherited_limits.F\
 init_context_mods.F\
 init_empty_context.F\
+merge_axis_with_offsets.F\
 merge_context.F\
 merge_grid.F\
 mergify_cx.F\

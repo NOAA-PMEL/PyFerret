@@ -91,7 +91,11 @@ gerrorhand(errnr, fctid, efp)
     Gfile          *efp;
 {
     debug(("FORTRAN Errorhand:  errnr = %d, fctid = %d\n", errnr, fctid));
-
+    /* js 1.99 Set to stderr if efp == 0 */
+    if (efp == 0){
+      errfp = stderr;
+      efp = stderr;
+    }
     FC_NAME(gerhnd)((int *) &errnr, (int *) &fctid, &error_lun);
 
     debug(("Exit errorhand\n"));
@@ -122,6 +126,10 @@ gerlog(
 {
     debug(("Error log:  errnr = %d, fctid = %d\n", *errnr, *fctid));
 
+    /* js 1.99 Set to stderr if efp == 0 */
+    if (errfp == 0){
+      errfp = stderr;
+    }
     (void) gerrorlog((Gint) *errnr, (Gerrmap) *fctid, (Gfile *) errfp);
     debug(("Exit error log\n"));
 }

@@ -7,7 +7,6 @@
 #ifndef UD_udposix_h
 #define UD_udposix_h
 
-
 /*
  * Support for Standard C:
  */

@@ -141,7 +141,8 @@ typedef struct seg_st {
     struct seg_st  *seg_next;		/* pointer to next */
 }              *SEG_STATE_PTR, SEG_STATE_ENTRY;
 
-#define SHSIZE		128
+#define SHSIZE 128
+
 #define SHASH(segname)	(segname & (SHSIZE-1))
 
 /*
@@ -166,7 +167,11 @@ typedef struct seg_st {
 #define NOT_WISS(ws_id)	((ws_id) != xgks_state.wiss_id)
 
 /* Hash table where segment state information are stored */
+
 static SEG_STATE_PTR segtable[SHSIZE];
+#if 0
+static SEG_STATE_PTR *segtable = (SEG_STATE_PTR *)0;
+#endif
 
 OUT_PRIMI      *XgksDuplicatePrimi();
 
@@ -1466,6 +1471,11 @@ XgksInitGksSegments()
 {
     Gint            i;
 
+#if 0
+    if (segtable == 0){
+      segtable = (SEG_STATE_PTR*)umalloc(sizeof(SEG_STATE_PTR)*SHSIZE);
+    }
+#endif
     for (i = 0; i < SHSIZE; i++)
 	segtable[i] = (SEG_STATE_PTR) NULL;
     xgks_state.gks_open_seg = INVALID;

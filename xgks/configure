@@ -1641,6 +1641,16 @@ else
 fi
 
 EOF
+
+#
+# Under CYGWIN B.20, gcc -E incorrectly spits out //C:/ instead of //C/
+#
+if test "$OS" = "cygwin"; then
+    mv config.status config.status.$$
+    sed '1,$s,\(//[A-Z]\):,\1,g' config.status.$$ > config.status
+    rm -f config.status.$$
+fi    
+
 chmod +x config.status
 test -n "$no_create" || ./config.status
 if test -s conf.missing; then

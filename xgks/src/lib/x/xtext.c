@@ -39,6 +39,7 @@
 /*LINTLIBRARY*/
 
 #include "udposix.h"
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -641,7 +642,11 @@ xReadFont(f)
     /* FONTDBDIR set by Makefile or the environment */
     /* variable XGKSFontDir      (DWO)              */
     (void) sprintf(fontpath, "%s/%d", xgks_state.fontdbdir, f);
+#ifdef __CYGWIN__
+    if ((fd = open(fontpath, O_BINARY | O_RDONLY, 0644)) < 0) {
+#else
     if ((fd = open(fontpath, O_RDONLY, 0644)) < 0) {
+#endif
 	(void) close(fd);
 	return -1;
     }
@@ -653,10 +658,13 @@ xReadFont(f)
 	(void) close(fd);
 	return -1;
     }
-    if (read(fd, (char *) FontTable[f].f_font, (unsigned) size) != size) {
+    {
+      int status;
+      if (read(fd, (char *) FontTable[f].f_font, (unsigned) size) != size) {
 	ufree((voidp)FontTable[f].f_font);
 	(void) close(fd);
 	return -1;
+      }
     }
     (void) close(fd);
     FontTable[f].f_loaded = TRUE;

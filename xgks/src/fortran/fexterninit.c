@@ -20,5 +20,7 @@ int	error_lun		= -1;	/* error file LUN */
 char	*xgks_connection	= 0;
 char	*forttext		= 0;
 char	**wtypes		= 0;
-FILE	*errfp			= stderr;	/* error file */
+/* js 1.99 Wouldn't work on PC. Initialized when opening gks, or, if, 0
+   in error handling routine */
+FILE	*errfp			= 0;	/* error file */
 Gpoint	*fortpoints		= 0;

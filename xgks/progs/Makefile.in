@@ -19,10 +19,7 @@ LIBS		= -L$(LIBDIR) -lxgks \
 		  -L../port -ludport \
 		  $(LD_X11) \
 		  $(LD_SOCKET) \
-		  -lm \
-		  ../../ppl/tmapadds/ps.o \
-		  ../../ppl/tmapadds/gif.o \
-		  ../../ppl/tmapadds/gd*.o 
+		  -lm
 
 #	The following list is a subset of the XGKS programs contained
 #	in the original X11R4 distribution.  IMHO, it contains the 

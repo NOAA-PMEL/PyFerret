@@ -187,7 +187,11 @@ WriteFont()
 
     size = (char *) Vcp - (char *) &Font;
 
+#ifdef __CYGWIN__
+    if ((fd = open(Font.fn, O_CREAT | O_BINARY | O_RDWR, 0644)) < 0) {
+#else
     if ((fd = open(Font.fn, O_CREAT | O_RDWR, 0644)) < 0) {
+#endif
 	perror("open");
 	(void) exit(1);
     }

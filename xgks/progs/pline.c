@@ -38,9 +38,6 @@
     static char	afsid[]	= "$__Header$";
 #endif
 
-#include "udposix.h"
-#include <stdlib.h>
-#include <stdio.h>
 #include "xgks.h"
 
 

@@ -12,14 +12,14 @@ CPPFLAGS	= $(INCLUDES) $(DEFINES) @CPPFLAGS@
 CFLAGS		= @CFLAGS@
 
 headers		= f_errno.h fortmac.h fortxgks.h pdrutils.h ps2aixdefs.h
-SRCS		= control.fc error.fc escapes.fc fexterninit.c \
+SRCS		= control.fc error.fc escapes.fc escapes1.c fexterninit.c \
 		  finqpixel.fc fxgksvers.c gerhnd.fc getlunname.fc \
 		  inputevent.fc inputinit.fc inputmode.fc inputreq.fc \
 		  inputsamp.fc inqerrlist.fc inqgksdesc.fc inqgkslist.fc \
 		  inqlun.f inqseglist.fc inqstate.fc inqwsdesc.fc \
 		  inqwslist.fc meta.fc output.fc rep.fc segattr.fc \
 		  segment.fc transform.fc utils.fc wsioutattr.fc
-LIBOBJS		= control.o error.o escapes.o fexterninit.o finqpixel.o \
+LIBOBJS		= control.o error.o escapes.o escapes1.o fexterninit.o finqpixel.o \
 		  fxgksvers.o gerhnd.o getlunname.o inputevent.o \
 		  inputinit.o inputmode.o inputreq.o inputsamp.o \
 		  inqerrlist.o inqgksdesc.o inqgkslist.o inqlun.o \

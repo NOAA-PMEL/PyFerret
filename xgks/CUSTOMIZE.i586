@@ -1,0 +1,18 @@
+# Type of C compiler (default is `cc'):
+CC='gcc -I../../ppl/include/xgks -I../../../ppl/include/xgks/ -I../../include'
+#
+# C compiler flags (default is `-O'):
+CFLAGS='-g'
+#
+# C preprocessor flags (default is `-DNDEBUG'):
+# CPPFLAGS=-DDEBUG
+#
+# Installation prefix (default is `../..'):
+prefix=/usr/local
+
+FC='f77 -debug:partial -nopdbfile -iface:cref -iface:nomixed_str_len_arg /fpp /align:dcommons /f77rtl /align:dcommons /align:records -assume:nosource_include  -assume:underscore -names:lowercase' 
+#FC='g77 -g -c -fno-second-underscore'
+
+CPP_X11=/usr/X11R6.4/include
+LD_X11='-L/usr/X11R6.4/lib -lX11'
+OS=cygwin

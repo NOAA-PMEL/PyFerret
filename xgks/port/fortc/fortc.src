@@ -86,10 +86,14 @@ if sed -f $LibDir/pre1.sed $file > $tmp1  &&
 	sed -f $LibDir/pre2.sed $tmp1 > $tmp2  &&
 	m4 $LibDir/$OS.m4 $LibDir/common.m4 $tmp2 > $tmp1  &&
 	sed -f $LibDir/post.sed $tmp1 > $tmp2 &&
-	sed '/.*\(#line.*\)M4_FORTC_FILE/'"$sedcmd" $tmp2; then
+	sed '/.*\(#line.*\)M4_FORTC_FILE/'"$sedcmd" $tmp2 > $tmp1; then
     status=0
 fi
 
+case "$OS" in
+#    cygwin)  sed '/^[a-zA-Z0-9]/!s/[a-zA-Z0-9]*_len/\*&/g' $tmp1;;
+    *)      cat $tmp1;;
+esac
 
 # Cleanup:
 #

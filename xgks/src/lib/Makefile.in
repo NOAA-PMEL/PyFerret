@@ -21,7 +21,8 @@ csrcs		= act_ws.c aspect_flags.c cellarray.c choice.c colours.c \
 		  message.c metafile.c mkerrmsg.c open_gks.c open_ws.c pick.c \
 		  polylines.c polymarkers.c prmgr.c segments.c string.c \
 		  stroke.c text.c transforms.c umalloc.c update.c \
-		  valuator.c
+		  valuator.c \
+		  gif.c gd.c gdadds.c ps.c
 LIBOBJS		= act_ws.o aspect_flags.o cellarray.o choice.o colours.o \
 		  deferral_ws.o escape.o event.o externinit.o fillarea.o \
 		  gdp.o ggdp.o gks_error.o input.o inqWDT.o \
@@ -30,7 +31,9 @@ LIBOBJS		= act_ws.o aspect_flags.o cellarray.o choice.o colours.o \
 		  message.o metafile.o open_gks.o open_ws.o pick.o \
 		  polylines.o polymarkers.o prmgr.o segments.o string.o \
 		  stroke.o text.o transforms.o umalloc.o update.o \
-		  valuator.o
+		  valuator.o \
+		  gif.o gd.o gdadds.o ps.o
+
 SUBDIRS		= cgm gksm x
 SUBDIR_TARGETS	= cgm/all cgm/clean cgm/distclean \
 		  gksm/all gksm/clean gksm/distclean \

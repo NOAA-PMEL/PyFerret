@@ -57,8 +57,12 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * V530 10/00 *sh* - added delimited reads
-* v540 *acm* 10/01 increase length of ds_name
-* v540 *acm* 10/01  remove VMS include statements
+* V540 10/01 *sh* - auto-analysis of delimited files to tag MISSING fields
+*		    as FLOAT -- makes the file more intelligible to the user
+*		  - auto-analysis sets units and titles
+*	          - bug fix: if vars_gvn that determines analyzed num_types
+*      *acm* 10/01 increase length of ds_name
+*      *acm* 10/01  remove VMS include statements
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -98,7 +102,8 @@
 	INTEGER*4	TM_LENSTR1,
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
-     .			num_types, i, j, name_limit
+     .			num_types, i, j, name_limit, idummy(maxezvars),
+     .			l1, l2
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
 *
@@ -204,6 +209,10 @@
 	     DO 530 i = 1, num_types
 	       DO 520 j = 1, FTYP_NUM_TYPES
 	         IF (type_names(i)(1:2) .EQ. ftyp_name(j)(1:2)) THEN
+	            l1 = TM_LENSTR1(type_names(i))
+	            l2 = TM_LENSTR1(ftyp_name (j))
+	            IF (l1.GT.l2 ) GOTO 9300  ! ilegal type name
+	            IF (type_names(i)(:l1) .NE. ftyp_name(j)(:l1)) GOTO 9300
 	            field_type(i) = j
 	            GOTO 530
 	         ENDIF	       
@@ -212,19 +221,44 @@
 	       GOTO 9300
  530	     CONTINUE
 *            ... if only a single type was given use that type for all vars
-	     IF (vars_gvn .AND. num_types.EQ.1) THEN
-	       DO 535 i = 2, num_names
- 535	       field_type(i) = field_type(1)
-	       num_types = num_names
+	     IF (num_types .EQ. 1) THEN
+	       IF (vars_gvn) THEN
+	         DO 535 i = 2, num_names
+ 535	         field_type(i) = field_type(1)
+	         num_types = num_names
+	       ELSE
+*                ... analyze file for just to get number of fields
+*	         ... pass null terminated file name string in line_buff
+	         CALL TM_FTOC_STRNG( ds_des_name(dset)
+     .		     (:TM_LENSTR1(ds_des_name(dset))), line_buff, 2048 )
+	         CALL ANAL_FILE(line_buff, line_buff, delims, skip,
+     .	                       2000, 2048, num_types, idummy,
+     .			       maxezvars)
+	         DO i = 2, num_types
+	            field_type(i) = field_type(1)
+	         ENDDO
+	       ENDIF
 	     ENDIF
 	   ELSE
 *            ... analyze file for list of field types
-*	         ... pass null terminated file name string in line_buff
+*	     ... pass null terminated file name string in line_buff
 	     CALL TM_FTOC_STRNG( ds_des_name(dset)
      .		     (:TM_LENSTR1(ds_des_name(dset))), line_buff, 2048 )
 	     CALL ANAL_FILE(line_buff, line_buff, delims, skip,
      .	                       2000, 2048, num_types, field_type,
      .			       maxezvars)
+	     IF (vars_gvn) THEN
+	       IF (num_names .GT. num_types) THEN
+	         GOTO 9330
+	       ELSE
+	          num_types = num_names  ! use only fields requested by user
+	       ENDIF
+	     ENDIF
+*	     ... reset missing fields to ANAL_MISSING as flag for later treatment
+	     DO i = 1, num_types
+	       IF (field_type(i) .EQ. FTYP_MISSING)
+     .			field_type(i) = FTYP_ANAL_MISSING
+	     ENDDO
 	   ENDIF
 	   IF (vars_gvn) THEN
 	      DO 540 i = 1, num_names
@@ -290,6 +324,26 @@
 	  ELSE
 	    ds_var_type(nvar) = ptype_float
 	  ENDIF
+	  IF (its_delimited) THEN
+	    IF (field_type(ncnt) .EQ. FTYP_ANAL_MISSING) THEN
+	       ds_var_titl_mod(nvar) = 'all values missing'
+	       field_type(ncnt) = FTYP_NUMERIC
+	    ELSEIF (field_type(ncnt) .EQ. FTYP_EURODATE
+     .	       .OR. field_type(ncnt) .EQ. FTYP_DATE) THEN
+	       ds_var_titl_mod(nvar) = 'Julian days since 1-Jan-1900'
+	       ds_var_units(nvar) = 'days'
+	    ELSEIF (field_type(ncnt) .EQ. FTYP_TIME) THEN
+	       ds_var_titl_mod(nvar) = 'Time of day'
+	       ds_var_units(nvar) = 'hours'
+	    ELSEIF (field_type(ncnt) .EQ. FTYP_LAT) THEN
+	       ds_var_titl_mod(nvar) = 'Latitude'
+	       ds_var_units(nvar) = 'degrees_north'
+	    ELSEIF (field_type(ncnt) .EQ. FTYP_LON) THEN
+	       ds_var_titl_mod(nvar) = 'Longitude'
+	       ds_var_units(nvar) = 'degrees_east'
+	    ENDIF
+	  ENDIF
+
   170	CONTINUE
 *
 * Save number of variable names (including "-") in data set
@@ -368,6 +422,14 @@
  9320	CONTINUE
 	CALL TM_NOTE('Valid types are: '//line_buff(:jcnt), tooplu)
 	GOTO 9950
+
+ 9330	WRITE (line_buff,3100) num_names, num_types
+ 3100	FORMAT(I4,' var names but only',I3,' fields found in file scan')
+	i = TM_LENSTR1(line_buff)
+	CALL TM_ERRMSG ( merr_varlim, status, 'EZ_INIT_DSET',
+     .			 dset, no_stepfile,
+     .			 line_buff(:i),
+     .			 no_errstring, *9950)
 
  9400	CALL TM_ERRMSG ( merr_syntax, status, 'EZ_INIT_DSET',
      .			 dset, no_stepfile,

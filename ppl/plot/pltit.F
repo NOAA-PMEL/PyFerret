@@ -65,7 +65,9 @@
 *	  lost without it.
 * *sh*  - added commands PLOTPOL and FILLPOL
 * *jd*	- put in daxis after FILLPOL
-* *adm*	- 10/2000 add VECTOR/FLOWLINE, alias FLOWLINE
+* *acm*	- 10/2000 add VECTOR/FLOWLINE, alias FLOWLINE
+* *acm* - 12/2001 send third argument to FLOWLINE, work array for the
+*         flag grid, now allocated in disp_set_up.F
 
 *****************************************************
 
@@ -380,13 +382,15 @@ C ACM Add FLOWLINE call based on VECFLD
 
 	ELSE IF(MAKEP.EQ.'FLOW')THEN
 	    IF(JTYPE.EQ.-1)THEN
-		CALL FLOWLINE(X(1),X(NX*NY+1),NX,NY,X(1),X(1),XF,YF)
+		CALL FLOWLINE(X(1),X(NX*NY+1),X(2*NX*NY+1),NX,NY,X(1),
+     .             X(1),XF,YF)
 		IF ( interrupted ) GOTO 3333 
 	    ELSE
 		IP1=NX*NY+1
 		IP2=IP1+NX
 		IP3=IP2+NY
-  		CALL FLOWLINE(X(1),X(IP3),NX,NY,X(IP1),X(IP2),XF,YF)
+  		CALL FLOWLINE(X(1),X(IP3),X(IP3+NX+NY),NX,NY,X(IP1),
+     .             X(IP2),XF,YF)
 		IF ( interrupted ) GOTO 3333
 	    ENDIF
         ELSE IF(MAKEP.EQ.'VELVCT')THEN

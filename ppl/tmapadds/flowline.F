@@ -1,6 +1,4 @@
-        SUBROUTINE flowline (u, v, nxs,nys, px, py, xf, yf)
-	REAL u, v, xf, yf, px(nxs),py(nys)
-	INTEGER nxs, nys
+        SUBROUTINE flowline (u, v, flag, nxs, nys, px, py, xf, yf)
 
 
 C**
@@ -50,15 +48,21 @@ C**
 *
 *  ACM  implementing algorighm from grads -- gxstrm.c
 *       draw flowlines 
+
+C  From GrADS code, gxstrm.c
+C  and based on vecfld.F
+
+C void gxstrm (float *u, float *v, float *c, int is, int js,
+C   float uund, float vund, float cund, int flag, float *shdlvs,
+C   int *shdcls, int shdcnt, int den) 
+
+
 *  v4 2-oct-01 remove VMS includes
 *  ACM 12/01  remove ref to jscl; not used.
+*  ACM 12/01  remove GET_MEMORY call.  This is now done, with other 
+*             PPLUS memory allocation, in disp_set_up.F on the call 
+*             from xeq_vector.  Also clean up the declarations.
 
-C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
-C	NX BY NY GRID AND V(Y) IN THE SECOND
-C
-	DIMENSION U(NX,NY),V(NX,NY)
-C
-C
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -93,47 +97,28 @@ C
 *******************************************************************************
 
 
+C  Calling argument declarations
 
-C  From GrADS code, gxstrm.c
+      REAL xf, yf, px(nxs),py(nys)
+      REAL U(NXS,NYS),V(NXS,NYS), FLAG(*)
+      INTEGER nxs, nys
 
-C void gxstrm (float *u, float *v, float *c, int is, int js,
-C   float uund, float vund, float cund, int flag, float *shdlvs,
-C   int *shdcls, int shdcnt, int den) 
+C  Local declarations
 
-      
-      REAL    memory( mem_blk_size, max_mem_blks )
-      INTEGER  mblk1, nblks1, status
+      INTEGER siz, i, iscl, jscl
 
-C  from gxstrm.c Figure out the interval for the flag grid
 
-      integer siz, i, iscl, j, iss, jss
+C   Size of the flag grid, allocated in disp_set_up.F
 
-      i = NX
-      if (NY .GT. i) i = NY
+      i = MAX(NXS,NYS)
       iscl = 200/i
       iscl = iscl + density - 5
-      if (iscl .LT. 1) iscl=1
-      if (iscl .GT. 10) iscl=10
+      IF (iscl .LT.  1) iscl = 1
+      IF (iscl .GT. 10) iscl =10
 
-      iss = NX*iscl
-      jss = NY*iscl
-      siz = iss* jss
-
-C   Allocate memory for the flag grid
-
-      i = max(nx,ny)
       siz = i*i*iscl*iscl + i*iscl   ! see ii1index in flowline_sub
 
-      CALL GET_MEMORY( 4*siz, mblk1,nblks1,status )
-      IF ( status .NE. ferr_ok ) GOTO 5000
-
-      CALL flowline_sub (u, v, memory(1,mblk1), siz, density, nxs, nys, 
+      CALL flowline_sub (u, v, flag, siz, density, nxs, nys, 
      .                   px, py, xf, yf)
-
-* Cleanup
-      CALL FREE_MEMORY( mblk1, nblks1 )
-
-* error exits
- 5000 RETURN
 
       END

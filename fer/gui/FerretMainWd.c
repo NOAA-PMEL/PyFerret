@@ -648,7 +648,7 @@ static	void	activateCB_macro_pane_LandOutline(
 	XtPointer               UxClientData = cd;
 	XtPointer               UxCallbackArg = cb;
 	{ 
-	ferret_command("GO LAND", IGNORE_COMMAND_WIDGET);
+	ferret_command("GO land", IGNORE_COMMAND_WIDGET);
 	}
 }
 

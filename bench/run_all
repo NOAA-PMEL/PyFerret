@@ -23,6 +23,7 @@
 #              of bench run
 # *sh* 2/99 - run bn500_all by default
 # *sh* request the EF directory. Benchmark versions no longer exist -- use CVS
+# *sh* log the header information to a single benchmark history file
 
 # usage % run_all
 
@@ -150,6 +151,17 @@ echo "Using external functions from $efdir" >>&$log_file
 echo "Benchmark run by $bmarker" >>&$log_file
 echo "Note: $bcomment" >>&$log_file
 
+# put a record of this benchmark run into the benchmark log file
+set bench_hist = "benchmark_history.log"
+echo " " >>& $bench_hist
+echo " " >>& $bench_hist
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " >>& $bench_hist
+echo "Log output in $log_file  Errors in $err_file" >>& $bench_hist
+ls -l $fver >>&$bench_hist
+echo "Using external functions from $efdir" >>&$bench_hist
+echo "Benchmark run by $bmarker" >>&$bench_hist
+echo "Note: $bcomment" >>&$bench_hist
+
 touch F.cdf snoopy.dat
 set temp_files = "test.dat test.gt test.unf WV.J34K56L7 F*.cdf test*.cdf newjournal.jnl fort.41 bench.mgm"
 foreach file ($temp_files)
@@ -244,3 +256,5 @@ endif
 echo "Checking PLT, GIF and PS files......."
 ./check_metafiles
 
+# save size of log file as part of the history record
+ls -l $log_file >>&  $bench_hist

@@ -66,6 +66,7 @@
 *               time step processing
 * V510: *sh* 9/99 - remove warning about too-negative modulo. Change in
 *	TM_WORLD has hopefully made this a legitimate operation
+*	*sh* 1/00 - bug fix: @ITP failed to set subscripts if exact grid point
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
@@ -76,14 +77,13 @@
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CX_DIM_LEN, POTENT_SIZE,
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE,
      .		nrev, reversed(4),
-     .		trans, xtrans, grid, dset, lo_off, hi_off, aclass,
-     .		lo_cx, hi_cx, big_cx, lo_isp, lo_mr, int_arg, i, axis,
+     .		trans, grid, dset, lo_off, hi_off, aclass,
+     .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
      .		cxsize, split_ax, split_ax_len, frag, var, ss, lo_ss,
      .		hi_ss, nmod, nmodhi, npts, xlate, dup_cx, i4d
 
 	REAL	ax_frac
 	REAL*8	TM_WORLD, ww_given, ww_nrst
-	CHARACTER VAR_TRANS*48, buff*48
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -171,6 +171,9 @@
 	         ELSEIF( ww_given .GT. ww_nrst ) THEN
 	            cx_lo_ss(hi_cx,axis) = ss
 	            cx_hi_ss(hi_cx,axis) = MIN( ss+1, hi_ss )
+	         ELSE
+	            cx_lo_ss(hi_cx,axis) = ss
+	            cx_hi_ss(hi_cx,axis) = ss
 	         ENDIF
 	      ENDIF
 	   ENDIF

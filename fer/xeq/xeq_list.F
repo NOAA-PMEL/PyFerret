@@ -538,8 +538,10 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 * permute data to the desired output order
 	IF ( all_at_once ) THEN
 * ... if no axis order was specified determine the permutation
-	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
+c bug fix: see err540_write_order.jnl move inside loop:
+c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	   DO 200 ilist = 1, num_uvars_in_cmnd
+	      IF (.NOT.permute) CALL GET_CX_DIMS(is_cx(ilist),ndim,perm)
 	      CALL CREATE_PERMUTATION(	memory,
      .					is_cx  (ilist),
      .					is_mr  (ilist),
@@ -548,6 +550,9 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 	      IF ( status .NE. ferr_ok ) GOTO 500
               npermuted = npermuted + 1
  200	   CONTINUE
+
+* w/ the above fix, mr_perm is correct but perm needs to be reset.
+	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	ELSE
 * ... if no axis order was specified use the first variable as default
            IF ( .NOT.permute ) THEN

@@ -15,7 +15,6 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	LOGICAL		TM_DIGIT
 	INTEGER 	comma_pos, last_comma_pos, slen
 	CHARACTER	buff*64
 
@@ -35,7 +34,7 @@
 * trim around the enclosing "{}" brackets
 	IF ( string(slen:slen) .EQ. '}' ) slen = slen - 1
 	IF ( string (1:1) .EQ. '{' ) last_comma_pos = 1
-	IF (last_comma_pos .GE. slen) GOTO 5000
+	IF (last_comma_pos .GE. slen) GOTO 2000
 
 * loop through the comma list decoding and returning values
  100	CONTINUE
@@ -52,7 +51,11 @@
 	       array(n) = bad_val4			! comma as last item
 	   ELSE
 	      buff = string(last_comma_pos+1:slen)
-	      READ ( buff, *, ERR=5000 ) array(n)
+	      IF ( buff .EQ. ' ' ) THEN
+	         array(n) = bad_val4
+	      ELSE
+	         READ ( buff, *, ERR=5000 ) array(n)
+	      ENDIF
 	   ENDIF
 	   GOTO 1000
 	ELSEIF ( comma_pos .EQ. 1 ) THEN
@@ -72,6 +75,11 @@
 * success
  1000	status = ferr_ok
 	RETURN
+
+* null brackets
+ 2000	n = 1
+	array(1) = bad_val4
+	GOTO 1000
 
 * syntax error
  4999	RETURN

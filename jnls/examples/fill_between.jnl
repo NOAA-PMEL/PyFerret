@@ -59,7 +59,6 @@ DEFINE SYMBOL FBihi `FBy,return=($FBiax)end`
 define axis/($FBax) FBaxis=($FBax)[G($FBax)=$3] 
 LET/QUIET FBx = ($FBax)[G($FBax)=FBaxis,($FBiax)=($FBilo):($FBihi)]   !FBx=X[GX=ax,i=lo:hi]
 LET/QUIET FBx = ($FBax)[G($FBax)=$3,($FBiax)=($FBilo):($FBihi)]   !FBx=X[GX=ax,i=lo:hi]
-can mode ver
 ! assemble the vertices above and below
 LET/QUIET FBxup  = FBx
 LET/QUIET FByup  = FBy

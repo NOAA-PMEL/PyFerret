@@ -67,3 +67,14 @@ GO err570_sh_dat_nan.jnl
 ! Time reqest out of range on NOLEAP axes.
 GO bn_reset 
 GO err570_time_range.jnl
+
+! Fix for bug 1066; error doing 2-D polygon overlaying
+! a non-standard calendar axis
+GO bn_reset
+GO err570_poly_over_julian.jnl
+
+! Fix for bug 1077; return ERROR rather than NOTE when 
+! exiting from a script where query/ignore or other coached 
+! string substitution returns the user-given error message
+GO bn_reset
+go err570_coaching hello

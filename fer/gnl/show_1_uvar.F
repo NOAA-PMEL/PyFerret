@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * V402: 7/95 - extracted from XEQ_SHOW with additions for LET/D=
+* V510: 5/00 *sh* - show bad data flag if manually set
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -65,7 +66,7 @@
 	
 * local variable declarations:
 	INTEGER TM_LENSTR1, slen, llen
-	CHARACTER FULL_UVAR_NAME*64
+	CHARACTER FULL_UVAR_NAME*64, TM_FMT*12
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN
@@ -99,9 +100,17 @@
      .                       risc_buff, 0)
 	      risc_buff = ' '
 	   ENDIF
+* ... bad data flag if was manually set
+	   IF ( uvar_bad_data(uvar) .NE. bad_val4 ) THEN
+	      line = '          bad value flag = '//
+     .			TM_FMT(uvar_bad_data(uvar),7,12,slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun,
+     .                       line, 0)
+	      risc_buff = ' '
+	   ENDIF
 	ENDIF
 
- 4020   FORMAT (T20,'"',A,'"')
+ 4020   FORMAT (T10,'"',A,'"')
 
 	RETURN
 	END

@@ -90,7 +90,7 @@
 *	 3/26/96 - number of expressions to be merged was incorrect in call to
 *			MERGE_WHOI_CONTEXT
 * V450: 3/97 - modified AXIS_FORMAT args for curvilinear coordinate plots
-
+* V500 *kob* 3/99- up VAR_CODE  and VAR_UNITS to 64 chars
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -131,12 +131,14 @@
 	INTEGER		symbol, line_type,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
-	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation 
+	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
+ 
+* V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, flip, time_axis,
      .			all_1_dep, all_1_ind, formatted, user_title
 	CHARACTER*200	FULL_VAR_TITLE,  KEY_STRING, plot_title
-	CHARACTER	VAR_CODE*24, INTERNAL_WHOI_DATE*14, VAR_UNITS*32,
+	CHARACTER	VAR_CODE*64, INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*4, MERGED_WHOI_DATE*14,
      .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
      .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14

@@ -42,6 +42,7 @@
 *
 * V5.41 7/30/02 ACM Deallocate irregular dynamic axes defined by files too,
 *               by calling remove_axis.
+* V5.42 10/31/02ACM Check to see if axes are in use, and if so dont remove!
 
 
 * Parameters and commons
@@ -51,10 +52,12 @@
 	include	'tmap_errors.parm'
 	include 'xtm_grid.cmn_text'
         include 'ferret.parm'
+	include 'errmsg.parm'
 	external xgt_grid_data
 
 * Local declarations
-	INTEGER  TM_GET_LINENUM, islot, num_protected_axes
+	INTEGER TM_GET_LINENUM, TM_GET_GRID_OF_LINE,
+     .          islot, grid, status, num_protected_axes
 
 * Remove axis names
 
@@ -64,14 +67,41 @@
      .      num_protected_axes .LE. 0) num_protected_axes = 1
 
         DO 100 islot = num_protected_axes+1, line_ceiling
-           IF (line_name(islot) .NE. char_init16  .AND. 
-     .        (.NOT. line_regular(islot)) ) call remove_axis(islot)
-	   line_name(islot) = char_init16
+           if (islot .gt. 1000 .and. islot .lt. 1006) then
+              status = 0
+           endif
+           IF (line_name(islot) .NE. char_init16) THEN
+
+              line_keep_flag(islot) = 0
+              IF (line_use_cnt(islot) .LE. 0) THEN
+	         IF ( islot .LE. max_lines ) THEN
+                    IF (.NOT. line_regular(islot)) CALL REMOVE_AXIS(islot)
+		    line_name(islot) = char_init16
+	         ELSE
+	            CALL TM_DEALLO_DYN_LINE(islot)
+	         ENDIF
+              ELSE
+
+*     ... cannot delete - in use.  Locate the grid that is using it.
+
+	         grid = TM_GET_GRID_OF_LINE( islot )
+	         CALL WARN( 'Not deleted: '//line_name(islot))
+	         IF ( grid .NE. unspecified_int4 ) THEN
+	            CALL WARN( 
+     .		      'Axis is in use by grid '//grid_name(grid))
+	         ELSE
+	            CALL ERRMSG(ferr_internal, status,
+     .				'axis use count err', *5000)
+	         ENDIF
+	      ENDIF
+
+           ENDIF
+
   100	CONTINUE
 
-* Reset pointer for coordinate array
-
-        next_line_mem_pos = pline_mem_init
-
 	RETURN
+
+* error exits
+ 5000	RETURN
+
 	END

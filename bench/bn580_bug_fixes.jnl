@@ -35,3 +35,6 @@ GO err570_ppl_poly.jnl
 GO bn_reset
 GO err570_list_tab_coords.jnl
 
+! Fix bug in HASH_CX for large numbers of varibles
+GO bn_reset
+GO err570_many_variables.jnl

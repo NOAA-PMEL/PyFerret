@@ -59,6 +59,7 @@
 * V491: 4/98 - fix bug in check for itsa_uvar -- was bypassing ALL processing
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars  and err_string from 48 to 64
 *                  and VAR_TITLE from 24 to 128
+* V520 *kob* 6/00 - had to had risc_buff text buffer for sgi output
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -68,6 +69,7 @@
 	include	'xvariables.cmn'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
+	include 'xrisc.cnm'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
@@ -76,6 +78,7 @@
 	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
 	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
+	INCLUDE	'FERRET_CMN:XRISC.CMN'
 #endif
 
 * calling argument declarations:
@@ -235,8 +238,9 @@
 	ENDIF
 
  5900	buff = CX_DIM_STR(idim, cx, ':',full_precision,slen)
+	risc_buff = buff(:slen)
 	CALL ERRMSG( ferr_limits, status,
-     .		err_str(:lenstr)//' is not in the range '//buff(:slen)//
+     .		err_str(:lenstr)//' is not in the range '//risc_buff//
      .		pCR//'Axis extremes are '//CX_DIM_STR(idim, cx_buff, 
      .					  ':',full_precision,slen), *5000 )
 	END

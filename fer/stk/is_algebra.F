@@ -60,7 +60,15 @@
 *        4/98 - pass default context (lo_cx) to MERGE_CONTEXT *jc*
 * V500: 12/98 *sh* - add cat_const_var (like "{1,3,5}")
 *	 1/99 *sh* - add cat_string -- temporarily do not allow A="string"
-
+*	 3/99 *sh* - bug fix in context passing to GC args
+*		default cx must contain grid before call to
+*		GCF_IMPOSE_ARG_LIM_DFLTS  - so it can check if arg
+*		axes match result for (say) RESHAPE
+*		This requires a "2-pass" approach ("ugly hack", below).
+*	3/99 *sh* ==> NOT IMPLEMENTER (see "3/99" below)
+*		call TRANSFER_CONTEXT(big_cx, lo_cx) at end of
+*		EXPLICIT_UVAR, too, since changes to handling unspecified
+*		limits (see COMPLETE_MISSING_LIMITS)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -89,7 +97,7 @@
 	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, its_gc
 	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR,
      .		hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
-     .		operator, start, end,
+     .		operator, start, end, saved_grid,
      .		i, dset, lo_isp, uvar, item, itype, mr_constant, idim,
      .		nitem, grid, new_mr, len_name
 	REAL	constant
@@ -252,25 +260,34 @@
  310	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) RETURN
 	hi_cx = cx_stack_ptr
+	CALL GET_VAR_CONTEXT (  name(:len_name),
+     .				lo_cx,
+     .				hi_cx,
+     .				status )
+	IF ( status .NE. ferr_ok ) RETURN
+
+	IF (its_gc ) THEN
 * ... for GC variables the default context may get modified before using it
 *     to get an argument (e.g. for a fcn equivalent to x=@sbx:5 we'd have
 *     LIST/I=5:10 XSBX5(b) requiring I=3:12 of argument "b".
-	IF (its_gc ) THEN
+*     BUT: for RESHAPE the grid must already be known to guide this process 
+* ... ugly hack: temporarily insert grid into lo_cx
+	   saved_grid = cx_grid(lo_cx)
+	   cx_grid(lo_cx) = cx_grid(hi_cx)
 	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   dflt_cx = cx_stack_ptr
 	   CALL GCF_IMPOSE_ARG_LIM_DFLTS( name(:len_name), item,
      .					  lo_cx, dflt_cx, uvar, status )
 	   IF (status .NE. ferr_ok) RETURN
-	ELSE
-	   dflt_cx = lo_cx	! for non-GC variables
-	ENDIF
-	CALL GET_VAR_CONTEXT (  name(:len_name),
+	   cx_grid(lo_cx) = saved_grid		! restore HACK
+	   CALL GET_VAR_CONTEXT (  name(:len_name),
      .				dflt_cx,
      .				hi_cx,
      .				status )
-	IF ( status .NE. ferr_ok ) RETURN
-	IF (its_gc ) cx_stack_ptr = cx_stack_ptr - 1
+	   IF ( status .NE. ferr_ok ) RETURN
+	   cx_stack_ptr = cx_stack_ptr - 1	! release dflt_cx
+	ENDIF
 * ... request this variable on the interpretation stack ( via RETURN 1 )
 	CALL PUSH_INTERP_STACK( isp, status )
 	IF ( status .NE. ferr_ok ) RETURN
@@ -287,7 +304,17 @@
  400	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) RETURN
 	hi_cx = cx_stack_ptr
+	CALL PSEUDO_VAR_CONTEXT ( uvar_text(uvar)(start:end),
+     .				  lo_cx,
+     .				  hi_cx,
+     .				  idim,
+     .				  status )
+	IF ( status .NE. ferr_ok ) RETURN
+
 	IF (its_gc ) THEN	! see explanation under "variable' (stmt 310)
+* ... ugly hack: temporarily insert grid into lo_cx
+	   saved_grid = cx_grid(lo_cx)
+	   cx_grid(lo_cx) = cx_grid(hi_cx)
 	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   dflt_cx = cx_stack_ptr
@@ -295,16 +322,16 @@
 	   CALL GCF_IMPOSE_ARG_LIM_DFLTS( uvar_text(uvar)(start:end), item,
      .					  lo_cx, dflt_cx, uvar, status )
 	   IF (status .NE. ferr_ok) RETURN
-	ELSE
-	   dflt_cx = lo_cx	! for non-GC variables
-	ENDIF
-	CALL PSEUDO_VAR_CONTEXT ( uvar_text(uvar)(start:end),
+	   cx_grid(lo_cx) = saved_grid		! restore HACK
+	   CALL PSEUDO_VAR_CONTEXT ( uvar_text(uvar)(start:end),
      .				  dflt_cx,
      .				  hi_cx,
      .				  idim,
      .				  status )
-	IF ( status .NE. ferr_ok ) RETURN
-	IF (its_gc ) cx_stack_ptr = cx_stack_ptr - 1
+	   IF ( status .NE. ferr_ok ) RETURN
+	   cx_stack_ptr = cx_stack_ptr - 1	! release dflt_cx
+	ENDIF
+
 	IF ( cx_lo_ss(hi_cx,idim) .EQ. unspecified_int4 )  CALL ERRMSG
      .		(ferr_dim_underspec, status,uvar_text(uvar)(start:end), *5000)
 ! temp diag
@@ -461,6 +488,14 @@
      .			   memory(1,mr_blk1(new_mr)), new_mr )
 	   CALL PASS_AMBIG_LIMS( lo_cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+!		This change would fix a minor bug that occurs for "enhanced"
+!		CDF files and GT files (bn230_cdf.sub3), but it creates more
+!		serious problems of ignoring limits restrictions (1:6) in
+!			let a = temp[i=90:110:2]; list a[i=1:6]
+!		see bn491_dynamic_grids
+!	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )	! 3/99 correct cx, too
+
 	ELSE
 	   IF ( mr_category(hi_mr) .NE. cat_pseudo_var
      .	  .AND. mr_category(hi_mr) .NE. cat_constant   )

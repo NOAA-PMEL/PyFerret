@@ -92,7 +92,8 @@
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT 
-     .  ('Returns data sampled by interpolating to a set of times')
+     .  ('**Grid-changing fcn:  Returns data sampled by interpolating ',
+     .   'to a set of times')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 7)

@@ -103,15 +103,17 @@
 
       INTEGER id, arg
 
-      CHARACTER*110 arg_desc
+      CHARACTER*110 arg_desc, fcn_desc
 c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id,
-     .      'Computes fft amplitude spectra, normalized by 1/N' )
+      WRITE (fcn_desc, 20)
+      CALL ef_set_desc(id, fcn_desc)
+   20 FORMAT ( '**Grid-changing FCN: Computes fft amplitude spectra, ',
+     .          'normalized by 1/N' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

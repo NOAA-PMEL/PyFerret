@@ -82,15 +82,21 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id, arg
+      CHARACTER*110 fcn_desc
 
-      CALL ef_version_test(ef_version)
+
+c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id, 
-     . 'Compute autocorrelation of series, lags of 0, ..., N-1' )
+      WRITE (fcn_desc, 20)
+      CALL ef_set_desc(id, fcn_desc)
+   20 FORMAT ( '**Grid-changing FCN: Compute autocorrelation of ',
+     .        ' series, lags of 0, ..., N-1' )
+
+      CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 1)
 

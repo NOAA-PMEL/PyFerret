@@ -91,8 +91,8 @@
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT 
-     .  ('Returns data sampled at a subset of its grid points, ',
-     .   'defined by (XPTS, YPTS)')
+     .  ('**Grid-changing FCN: Returns data sampled at a subset of its ',
+     .   'grid points, defined by (XPTS, YPTS)')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)

@@ -110,7 +110,8 @@ c      CALL ef_version_test(ef_version)
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CALL ef_set_desc(id, 'Computes fft phase' )
+*                                                                      V
+      CALL ef_set_desc(id, '**Grid-changing FCN: Computes fft phase' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

@@ -62,6 +62,10 @@
  * we find the external function in efcn_gather_info  and set TRUE once
  * the internals have been set for the first time, also in efcn_gather_info.
 
+* Ansley Manke  August 2001
+ * add EOF_SPACE, EOF_STAT, EOF_TFUNC to the functions that are
+ * statically linked 
+
 /* .................... Includes .................... */
  
 #include <unistd.h>		/* for convenience */
@@ -296,6 +300,27 @@ void FORTRAN(xauto_cor_result_limits)(int *);
 void FORTRAN(xauto_cor_work_size)(int *);
 void FORTRAN(xauto_cor_compute)(int *, float *, float *, float *, 
                            float *, float *);
+						   
+void FORTRAN(eof_space_init)(int *);
+void FORTRAN(eof_space_result_limits)(int *);
+void FORTRAN(eof_space_work_size)(int *);
+void FORTRAN(eof_space_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *);
+						   
+void FORTRAN(eof_stat_init)(int *);
+void FORTRAN(eof_stat_result_limits)(int *);
+void FORTRAN(eof_stat_work_size)(int *);
+void FORTRAN(eof_stat_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *);
+						   
+void FORTRAN(eof_tfunc_init)(int *);
+void FORTRAN(eof_tfunc_result_limits)(int *);
+void FORTRAN(eof_tfunc_work_size)(int *);
+void FORTRAN(eof_tfunc_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *);
 
 /*
  *  End of declarations for internally linked external functions
@@ -344,7 +369,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 17
+#define N_INTEF 20
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -367,6 +392,10 @@ struct {
    strcpy(I_EFnames[14].funcname, "sortl");
    strcpy(I_EFnames[15].funcname, "tauto_cor");
    strcpy(I_EFnames[16].funcname, "xauto_cor");
+   strcpy(I_EFnames[17].funcname, "eof_stat");
+   strcpy(I_EFnames[18].funcname, "eof_tfunc");
+   strcpy(I_EFnames[19].funcname, "eof_space");
+
 
 /*    
  *  ------------------------------------ 
@@ -2227,6 +2256,24 @@ else if ( !strcmp(name,"xauto_cor_init_") ) return (void *)FORTRAN(xauto_cor_ini
 else if ( !strcmp(name,"xauto_cor_result_limits_") ) return (void *)FORTRAN(xauto_cor_result_limits);
 else if ( !strcmp(name,"xauto_cor_work_size_") ) return (void *)FORTRAN(xauto_cor_work_size);
 else if ( !strcmp(name,"xauto_cor_compute_") ) return (void *)FORTRAN(xauto_cor_compute);
+
+/* eof_space.F */
+else if ( !strcmp(name,"eof_space_init_") ) return (void *)FORTRAN(eof_space_init);
+else if ( !strcmp(name,"eof_space_result_limits_") ) return (void *)FORTRAN(eof_space_result_limits);
+else if ( !strcmp(name,"eof_space_work_size_") ) return (void *)FORTRAN(eof_space_work_size);
+else if ( !strcmp(name,"eof_space_compute_") ) return (void *)FORTRAN(eof_space_compute);
+
+/* eof_stat.F */
+else if ( !strcmp(name,"eof_stat_init_") ) return (void *)FORTRAN(eof_stat_init);
+else if ( !strcmp(name,"eof_stat_result_limits_") ) return (void *)FORTRAN(eof_stat_result_limits);
+else if ( !strcmp(name,"eof_stat_work_size_") ) return (void *)FORTRAN(eof_stat_work_size);
+else if ( !strcmp(name,"eof_stat_compute_") ) return (void *)FORTRAN(eof_stat_compute);
+
+/* eof_tfunc.F */
+else if ( !strcmp(name,"eof_tfunc_init_") ) return (void *)FORTRAN(eof_tfunc_init);
+else if ( !strcmp(name,"eof_tfunc_result_limits_") ) return (void *)FORTRAN(eof_tfunc_result_limits);
+else if ( !strcmp(name,"eof_tfunc_work_size_") ) return (void *)FORTRAN(eof_tfunc_work_size);
+else if ( !strcmp(name,"eof_tfunc_compute_") ) return (void *)FORTRAN(eof_tfunc_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

@@ -67,6 +67,7 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 *	 1/20/94 - changes to SAVE_FRAME call reflecting C-based procedures
 * V450:  5/29/97 - added /NOAXES qualifier (eventually for curvilinear plots)
+* V510 12/99 *sh* - allow all-missing data plots
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -105,7 +106,7 @@
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
-     .			set_up, noaxes
+     .			set_up, noaxes, no_data
 	INTEGER		status, cx, loc, ipen, limit,
      .			dim1, dim2, asp, dlen,
      .			ax1_blks, ax1_start,
@@ -198,11 +199,18 @@
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+* is there no valid input data?
+        no_data =  no_x_rng .AND. only_x.EQ.bad_val4
+        IF (no_data) CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
+     .                  ppl_centered, letsize_title,
+     .                  'No Valid Data',
+     .                  lab_loc_axlen_times, lab_loc_axlen_times )
+
 * increment counter of vector fields on the screen
 	nvect_on = nvect_on + 1
 
 * special set-up required only for the VECTOR command
-	IF ( .NOT.overlay ) THEN
+	IF ( .NOT.overlay .AND. .NOT.no_data ) THEN
 * ... vector length key below plot title (overlay written as key)
 	   WRITE ( ppl_buff, '(2F6.1)' ) 3.5, -1.2
 	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )

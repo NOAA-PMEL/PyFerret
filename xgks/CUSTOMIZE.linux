@@ -19,10 +19,10 @@
 #############################################################################
 #
 # Type of C compiler (default is `cc'):
-CC='gcc -I/usr/lib/gcc-lib/i386-redhat-linux/2.96/include -I/usr/include -I../../include/ -I../../../ppl/include/xgks/ '
+CC='gcc -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include -I/usr/include -I../../include/ -I../../../ppl/include/xgks/ '
 #
 # C compiler flags (default is `-O'):
-CFLAGS='-O2 -m486'
+CFLAGS='-O2 -mcpu=i486'
 #
 # C preprocessor flags (default is `-DNDEBUG'):
 # CPPFLAGS=-DDEBUG
@@ -33,5 +33,5 @@ prefix=..
 FC='g77 -fno-second-underscore -fno-backslash -fdollar-ok -fugly-init -fugly-logint -fintrin-case-any -ffixed-line-length-132 -malign-double ' 
 OS=linux
 
-
+LD_X11='-L/usr/X11R6/lib -lX11'
 

@@ -119,7 +119,7 @@
 
            istart = 1
 	   CALL INIT_COUNTER_VAR ( counter_name, cmnd_buff(equal_pos+1:last_pos), 
-     .             istart, last_pos-equal_pos, rlo, rhi, rdel, cvar, status )\
+     .             istart, last_pos-equal_pos, rlo, rhi, rdel, cvar, status )
 
 	   IF ( status .NE. ferr_ok ) RETURN
 

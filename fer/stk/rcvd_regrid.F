@@ -66,6 +66,8 @@
 * V530   3/01 *acm* alternative calendar axes:  Compare timesteps for source and
 *		    destination axes with respect to one of the calendars.
 * V530: 3/01 *sh* - added rgrd_nearest -- (unrestricted by source lims)
+* V550: 2/02 *sh* - did NOT change CAXIS_LEN to CAXIS_MODLEN
+*		    since subspan modulo default length is N not N+1
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max, status
@@ -83,7 +85,6 @@
 	REAL*8	TWORLD, TM_WORLD, SECS_TO_TSTEP,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww, s2d_lo_ww, s2d_hi_ww
-	CHARACTER*20 TM_SECS_TO_DATE, pdate
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -122,7 +123,6 @@
 * ... (cant use GRID_SS_EXTR because of line_modulo)
         ELSEIF ( modulo ) THEN
            dst_lo_ss = 1
-!           dst_hi_ss = line_dim(grid_line(axis,dst_grid)) ! needs TMAP CMN
            dst_hi_ss = CAXIS_LEN(axis, dst_cx)
            GOTO 500
         ENDIF

@@ -1,0 +1,53 @@
+#
+# Makefile for Ferret External Functions
+#
+# 2/01 *sh*
+
+#
+# include platform specific macro definitions
+#
+
+include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
+
+#
+# Macros
+#
+
+.SUFFIXES: .so
+
+DAT_OBJS = flag2ddups.o
+
+#
+# Rules
+#
+
+.c.o:
+	cc ${DATFLAGS} ${CFLAGS} $<
+
+.F.o:
+	$(F77) $(FFLAGS) $<
+
+.o.so:
+	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
+
+#
+# Targets
+#
+
+all:	ferret_cmn $(DAT_OBJS) scat2ddups.o scat2ddups.so
+
+debug:
+	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all
+
+ferret_cmn:
+	ln -s ../ef_utility/ferret_cmn ferret_cmn
+
+install:
+	cp *.so $(FER_LOCAL_EXTFCNS)
+
+clean:
+	-rm -f *.o *.so core a.out temp.* ferret_cmn
+
+#
+# End of Makefile
+#

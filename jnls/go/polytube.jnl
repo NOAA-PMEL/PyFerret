@@ -17,8 +17,15 @@
 !      is effective only in special cases. For "rough" paths, best results are
 !      obtained by smoothing the position data that is passed to this script. 
 
-! example
-!       GO polytube polygon/over/key lon lat sst
+! example -- make up a cruise track and data
+!	yes? let xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+!	yes? let ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+!	yes? let sst = 25 - ypts + RANDN(ypts)
+!	yes? go basemap x=120:250 Y=25s:65n 20
+!
+!	yes? go polytube polygon/over/key/title=sst xpts,ypts,sst
+!
+!	yes? plot/vs/over/nolab/line/sym xpts,ypts
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO polytube polygon_command xpts ypts values [scale] [smooth]"
@@ -63,20 +70,27 @@ LET/QUIET TUBExnorm = MISSING(TUBExnorm0[($TUBEax)=@sbx:$6"3"],TUBExnorm0)
 LET/QUIET TUBEynorm = MISSING(TUBEynorm0[($TUBEax)=@sbx:$6"3"],TUBEynorm0)
 
 ! compute midpoints -- base points to which the polygon deltas are added 
-LET/QUIET TUBExmid = (TUBEx + TUBEx[($TUBEax)=@shf])/2
-LET/QUIET TUBEymid = (TUBEy + TUBEy[($TUBEax)=@shf])/2
+! use MISSING to capture the very last 1/2 sized quadralateral
+LET/QUIET TUBExmid = MISSING( (TUBEx + TUBEx[($TUBEax)=@shf])/2, TUBEx )
+LET/QUIET TUBEymid = MISSING( (TUBEy + TUBEy[($TUBEax)=@shf])/2, TUBEy )
 
 ! at each midpoint, assemble the vertices above and below
-LET/QUIET TUBExup  = TUBExmid + TUBExnorm
-LET/QUIET TUBEyup  = TUBEymid + TUBEynorm
-LET/QUIET TUBExdn  = TUBExmid - TUBExnorm
-LET/QUIET TUBEydn  = TUBEymid - TUBEynorm
+!LET/QUIET TUBExup  = TUBExmid + TUBExnorm
+!LET/QUIET TUBEyup  = TUBEymid + TUBEynorm
+!LET/QUIET TUBExdn  = TUBExmid - TUBExnorm
+!LET/QUIET TUBEydn  = TUBEymid - TUBEynorm
 
+! create the 4 vertices for each quadrlateral of the tube
 LET/QUIET TUBEpindex = ($TUBEpoly_ax)[($TUBEpoly_ax)=1:4]
-LET/QUIET TUBEx4_0 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBExdn ELSE TUBExup
-LET/QUIET TUBEy4_0 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBEydn ELSE TUBEyup
-LET/QUIET TUBEx4_1 = IF TUBEpindex LE 2 then TUBEx4_0 ELSE TUBEx4_0[($TUBEax)=@shf:-1]
-LET/QUIET TUBEy4_1 = IF TUBEpindex LE 2 then TUBEy4_0 ELSE TUBEy4_0[($TUBEax)=@shf:-1]
+LET/QUIET TUBEx4_0 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBExmid-TUBExnorm ELSE TUBExmid+TUBExnorm
+LET/QUIET TUBEy4_0 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBEymid-TUBEynorm ELSE TUBEymid+TUBEynorm
+
+! x4p1,y4p1 just to capture the very first 1/2 sized quadralateral
+LET/QUIET TUBEx4p1 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBEx-TUBExnorm ELSE TUBEx+TUBExnorm
+LET/QUIET TUBEy4p1 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBEy-TUBEynorm ELSE TUBEy+TUBEynorm
+
+LET/QUIET TUBEx4_1 = IF TUBEpindex LE 2 then TUBEx4_0 ELSE MISSING( TUBEx4_0[($TUBEax)=@shf:-1], TUBEx4p1 )
+LET/QUIET TUBEy4_1 = IF TUBEpindex LE 2 then TUBEy4_0 ELSE MISSING( TUBEy4_0[($TUBEax)=@shf:-1], TUBEy4p1 )
 
 $1/coord_ax=($TUBEpoly_ax)  TUBEx4_1,TUBEy4_1,TUBEdata
 

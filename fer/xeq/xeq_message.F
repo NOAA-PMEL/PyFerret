@@ -59,7 +59,10 @@
 * Linux Port - *kob* 12/96 - had to put single quotes around hello 
 *			     in comment up above - linux f90 freaked out.
 *       10.28.98 *js* Don't pause for messages if in server mode
+* V510 5/00 *sh* - added MESSAGE/JOURNAL
+
 #ifdef unix
+	include 'ferret.parm'
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
@@ -74,12 +77,12 @@
 #endif
 
 * local parameter declarations
-	INTEGER		slash_continue, slash_quiet
+	INTEGER		slash_continue, slash_quiet, slash_journal
 	PARAMETER     (	slash_continue	  = 1,
-     .			slash_quiet	  = 2 )
+     .			slash_quiet	  = 2,
+     .			slash_journal	  = 3 )
 	
 * local variable declarations
-	LOGICAL fexist
 	LOGICAL is_server
 	INTEGER status
 
@@ -88,8 +91,18 @@
 
 * write the message if one has been supplied
 	IF ( num_args .EQ. 1 ) THEN
-	   CALL TM_SPLIT_MESSAGE( ttout_lun,
+	   IF ( qual_given( slash_journal ) .EQ. 0 ) THEN
+* ... message to operator
+	      CALL TM_SPLIT_MESSAGE( ttout_lun,
      .				cmnd_buff(arg_start(1):arg_end(1)) )
+	   ELSEIF (mode_journal .AND. jrnl_lun.NE.unspecified_int4) THEN
+* ... message logged in journal file
+	      WRITE (jrnl_lun, '(A)')
+     .				cmnd_buff(arg_start(1):arg_end(1))
+	      RETURN
+	   ELSE
+	      RETURN   ! journal file isn't open
+	   ENDIF
         ELSEIF ( qual_given(slash_continue) .GT. 0
      .	 .AND.  .NOT.mode_gui ) THEN
               WRITE ( ttout_lun, * ) 

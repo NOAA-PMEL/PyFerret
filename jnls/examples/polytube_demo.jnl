@@ -1,0 +1,21 @@
+! polytube_demo.jnl
+! *jd* 5.99
+
+! Description: demonstrate usage of polytube jnl file
+
+set mode verify
+use polydata
+
+! Default scale
+go basemap x=130:250 Y=20:65 20
+go polytube poly/over/key lon lat sst
+\message
+
+! A little smaller
+go basemap x=130:250 Y=20:65 20
+go polytube poly/over/key lon lat sst .4
+\message
+
+! Smaller yet and outline
+go basemap x=130:250 Y=20:65 20
+go polytube poly/over/key/line/fill lon lat sst .2

@@ -1,0 +1,21 @@
+! polymark_demo.jnl
+! *jd* 5.99
+
+! Description: demonstrate usage of polymark jnl file
+
+set mode verify
+use polydata
+
+! Default scale
+go basemap x=130:250 Y=20:65 20
+go polymark poly/over/key lon lat sst star 
+\message
+
+! A little smaller & outline
+go basemap x=130:250 Y=20:65 20
+go polymark poly/over/key/line/fill lon lat sst star .6
+\message
+
+! Use a square in a pattern & outline
+go basemap x=130:250 Y=20:65 20
+go polymark poly/over/key/pattern=tiny_grid/line/fill lon lat sst square .75

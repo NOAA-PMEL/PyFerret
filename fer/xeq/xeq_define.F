@@ -154,6 +154,12 @@
 *                  we are using.
 * v554 *acm* 3/4   The adjustment in definition of npoints needs fuzzy comparison
 *                  not strict .GE. (under g77 linux)
+* V570 *acm* 5/04  Add the calendar name 365_DAY as equivalent for NOLEAP, and add 
+*                  the calendar ALL_LEAP = 366_DAY.
+* V570 *acm* 5/05  Changes for CF bounds 
+*                  syntax for user-specified bounds:
+*                  DEFINE AXIS/X/BOUNDS xax={1,2,5}, {0.5,1.5,1.5,3,3,6}
+*                  DEFINE AXIS/Z/BOUNDS zax=zcoord,zbnd
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -200,7 +206,8 @@
      .		    slash_let_quiet,
      .		    slash_let_dset,
      .		    slash_let_bad,
-     .		    slash_define_vp_by_ax
+     .		    slash_define_vp_by_ax,
+     .              slash_bounds
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 9,
@@ -228,6 +235,7 @@
      .		    slash_let_dset   = 1 + 3,
      .		    slash_let_bad    = 1 + 4,
      .		    slash_define_vp_by_ax = 1 + 6,
+     .              slash_bounds     = 1+14,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -235,8 +243,9 @@
 
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
-     .		  TM_FPEQ, TM_DFPEQ, dup_name, delta_given, create, irreg,
-     .		  its_reg, its_edges, its_calendar, its_modulo, has_repeated
+     .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, 
+     .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
+     .            its_calendar, its_modulo, has_repeated, has_bounds
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  STR_CASE_BLIND_COMPARE, CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -251,16 +260,16 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal
+     .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, s2len
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
-     .            xoei,  yoei,   xcei,  ycei, scale, a
+     .            xoei,  yoei,   xcei,  ycei, scale
 
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small
-	CHARACTER reg_name*24, buff1*128, buff2*128, buff3*128, 
+	CHARACTER TM_FMT*16, reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
      .		  mon_names(12)*3
@@ -631,7 +640,7 @@
 	   ENDIF
 	ENDIF
 
-* DEFINE AXIS - what is "axisname" ?
+* DEFINE AXIS - modulo ?
 	iqual = qual_given( slash_modulo )
 	its_modulo = iqual .GT. 0 
 	IF ( its_modulo ) THEN
@@ -703,6 +712,10 @@
 * /EDGES?
 	its_edges =  qual_given( slash_edges ) .GT. 0
 
+* /BOUNDS?
+	has_bounds =  qual_given( slash_bounds ) .GT. 0
+        IF (has_bounds .AND. its_edges) GOTO 5730
+
 * /UNITS = DEGREES,METERS, ... SECONDS (or supply defaults)
 	iqual = qual_given( slash_units )
 	IF ( iqual .GT. 0 ) THEN
@@ -723,8 +736,10 @@
 * is it a calendar axis definition?
 	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
 
-* *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, 
+* *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 *       Gregorian is the default, also may be called STANDARD.
+*       NOLEAP may also be called 365_DAY.
+*       ALL_LEAP may also be called 366_DAY
 
         cal_name = 'GREGORIAN'		! default
         dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
@@ -745,6 +760,8 @@
         IF (cal_name .EQ. 'D360') cal_name = '360_DAY' 
         IF (cal_name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
         IF (cal_name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
+        IF (cal_name(1:6) .EQ. '365_DA') cal_name = 'NOLEAP' 
+        IF (cal_name(1:6) .EQ. '366_DA') cal_name = 'ALL_LEAP' 
         cal_id = TM_GET_CALENDAR_ID (cal_name)
 	IF (cal_id .LE. 0  .OR. cal_id .GT. max_calendars ) GO TO 5720
         CALL TM_GET_CALENDAR_ATTRIBUTES (cal_id, nmonths, 
@@ -766,6 +783,7 @@ C /calendar=/unit=year gets length of year in that calendar.
 	      IF (cal_id .EQ. d360) iunit = -9
 	      IF (cal_id .EQ. julian) iunit = -12
 	      IF (cal_id .EQ. noleap) iunit = -11
+	      IF (cal_id .EQ. all_leap) iunit = -8
 
 C /units=months  is 1/12 of the length of the year
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
@@ -777,8 +795,10 @@ C /units=months  is 1/12 of the length of the year
                     iunit = -13
                  ELSE IF (cal_id .eq. 3) THEN	! Julian
 		    iunit = -15
-		 ELSE IF (cal_id .eq. 4  .OR. cal_id .eq. 5) THEN	! 360_DAY
+		 ELSE IF (cal_id .eq. 4) THEN	! 360_DAY
 		    iunit = -14
+		 ELSE IF (cal_id .eq. 5) THEN	! ALL_LEAP
+		    iunit = -16
 	         ENDIF
 *  Append calendar name to units string.
 		 slen = TM_LENSTR1 (buff1)
@@ -829,21 +849,48 @@ C /units=months  is 1/12 of the length of the year
 * ... get axis points from a memory variable
 	   CALL GET_CMND_DATA ( memory, cx_last, ptype_float, status )
 	   IF ( status .NE. ferr_ok ) RETURN
-	   IF ( num_uvars_in_cmnd .NE. 1 ) GOTO 5580
-	   cx = is_cx(1)
-	   mr = is_mr(1)
+           IF ( num_uvars_in_cmnd .NE. 1 .AND.
+     .         (.NOT. has_bounds) )GOTO 5580
+           cx = is_cx(1)
 * ... make sure it's an line (not a point,plane,etc.) of data
 	   CALL GET_CX_DIMS( cx, ndim, dim )
 	   IF ( ndim .GT. 1 ) GOTO 5580
 	   idim = dim(1)
 	   n    = CX_DIM_LEN( idim, cx )
+
+* ... Checks on the bounds specification
+           IF (has_bounds) THEN
+	      IF ( num_uvars_in_cmnd .NE. 2 ) GOTO 5580
+              cx = is_cx(2)
+	      mr = is_mr(2)
+* ... make sure it's an line (not a point,plane,etc.) of data
+	      CALL GET_CX_DIMS( cx, ndim, dim )
+	      IF ( ndim .GT. 1 ) GOTO 5580
+* ... make sure the bounds have dimension 2*N
+              idim = dim(1)
+              n2   = CX_DIM_LEN( idim, is_cx(2) )
+              IF (2*n .NE. n2) GOTO 5740
+	   ENDIF
+
+* ... reset cx to read the coordinates first
+           cx = is_cx(1)
+	   mr = is_mr(1)
+	   CALL GET_CX_DIMS( cx, ndim, dim )
+	   idim = dim(1)
+	   n    = CX_DIM_LEN( idim, cx )
+
 * ... original start of free line memory
 	   frst_pt = next_line_mem_pos
 * ... allocate some storage for the coordinates
-	   IF (frst_pt+2*n .GT. maxlinestore) GOTO 5590
+	   IF (frst_pt+3*n .GT. maxlinestore) GOTO 5590
 
 * ... store coordinate positions (error status already checked)
-	   CALL NON_ARRAY_SUBSC( mr, 1 )
+           IF (has_bounds) THEN
+              CALL NON_ARRAY_SUBSC( is_mr, 2 )
+           ELSE
+              CALL NON_ARRAY_SUBSC( mr, 1 )
+           ENDIF
+
 	   IF (its_edges) THEN
 * ... "/edges" definition - 4/99
 	      n = n - 1  ! edges array is one longer than points
@@ -863,26 +910,26 @@ C /units=months  is 1/12 of the length of the year
 		 ENDIF
  515	      CONTINUE
 * ... make micro-adjustments if axis has repeated values (4/99)
-	   IF ( has_repeated ) THEN
-	      CALL WARN('Axis has repeated values -- micro-adjusting ...')
-	      IF (micro_adj .EQ. 0.D0) GOTO 5560
-	      DO 526  i1 = frst_pt+n+1, frst_pt+n+n
-	          IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
+	      IF ( has_repeated ) THEN
+	         CALL WARN('Axis has repeated values -- micro-adjusting ...')
+	         IF (micro_adj .EQ. 0.D0) GOTO 5560
+	         DO 526  i1 = frst_pt+n+1, frst_pt+n+n
+	             IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
 *    ... locate end of repeating block
-	             DO 520 i2 = i1, frst_pt+n+n
-	                IF (line_mem(i2) .GT. line_mem(i1)) GOTO 521
- 520		     CONTINUE
-	             i2 =  frst_pt+n+n+1    ! one beyond last value
+	                DO 520 i2 = i1, frst_pt+n+n
+	                   IF (line_mem(i2) .GT. line_mem(i1)) GOTO 521
+ 520		        CONTINUE
+	                i2 =  frst_pt+n+n+1    ! one beyond last value
 *    ... micro-adjust repeating values and edges from i1 to i2-1
- 521		     DO 522 i3 = i1, i2-1
-	                line_mem(i3) = line_mem(i3) +
-     .				(i3-i1+1)*micro_adj
- 522		     CONTINUE
-	             IF ( i2 .LE. frst_pt+n+n
-     .		    .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
-	          ENDIF
- 526	       CONTINUE
-	   ENDIF
+ 521		        DO 522 i3 = i1, i2-1
+	                   line_mem(i3) = line_mem(i3) +
+     .                         (i3-i1+1)*micro_adj
+ 522		        CONTINUE
+	                IF ( i2 .LE. frst_pt+n+n
+     .		       .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
+	             ENDIF
+ 526	          CONTINUE
+	      ENDIF
 * ... store points: midway between box boundaries ...
 	      has_repeated = .FALSE.
 	      DO 528 i1 = frst_pt+1, frst_pt+n
@@ -896,6 +943,7 @@ C /units=months  is 1/12 of the length of the year
      .               SNGL(line_mem(i1)-line_mem(i1-1))) )
      .						its_reg = .FALSE.
  530	      CONTINUE
+
 	   ELSE
 
 * NOT EDGES -- POINTS
@@ -920,47 +968,69 @@ C /units=months  is 1/12 of the length of the year
 	         ELSEIF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
 	            has_repeated = .TRUE.
 	         ENDIF
- 532		 CONTINUE
+ 532	      CONTINUE
 * ... make micro-adjustments if axis has repeated values (4/99)
-	   IF ( has_repeated ) THEN
-	      CALL WARN('Axis has repeated values -- micro-adjusting ...')
-	      IF (micro_adj .EQ. 0.D0) GOTO 5560
-	      DO 538  i1 = frst_pt+1, frst_pt+npoints-1
-	          IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
+	      IF ( has_repeated ) THEN
+	         CALL WARN('Axis has repeated values -- micro-adjusting ...')
+	         IF (micro_adj .EQ. 0.D0) GOTO 5560
+	         DO 538  i1 = frst_pt+1, frst_pt+npoints-1
+	            IF  (line_mem(i1-1) .EQ. line_mem(i1)) THEN
 *    ... locate end of repeating block
-	             DO 534 i2 = i1, frst_pt+npoints-1
-	                IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
- 534		     CONTINUE
-	             i2 =  frst_pt+npoints    ! one beyond last value
+	               DO 534 i2 = i1, frst_pt+npoints-1
+	                  IF (line_mem(i2) .GT. line_mem(i1)) GOTO 535
+ 534		       CONTINUE
+	                i2 =  frst_pt+npoints    ! one beyond last value
 *    ... micro-adjust repeating values from i1 to i2-1
- 535		     DO 536 i3 = i1, i2-1
-	                line_mem(i3) = line_mem(i3) +
-     .				(i3-i1+1)*micro_adj
- 536		     CONTINUE
-	             IF ( i2 .LT. frst_pt+npoints
-     .		    .AND. (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
-	          ENDIF
- 538	       CONTINUE
-	   ENDIF
-* ... store initial box lower bound (start of axis)
-	      line_mem(frst_pt+npoints) = line_mem(frst_pt) -
+ 535		        DO 536 i3 = i1, i2-1
+	                   line_mem(i3) = line_mem(i3) +
+     .	                     (i3-i1+1)*micro_adj
+ 536		        CONTINUE
+	                IF ( i2 .LT. frst_pt+npoints .AND. 
+     .		        (line_mem(i2-1) .GE. line_mem(i2))) GOTO 5560
+	             ENDIF
+ 538	          CONTINUE
+	      ENDIF
+
+* Bounds specified by user
+
+              IF (has_bounds) THEN
+
+                 cx = is_cx(2)
+                 mr = is_mr(2)
+                 n2 = 2*n
+	         CALL EXTRACT_DP_LINE2( cx, memory(1, mr_blk1(mr)),
+     .	  	    line_mem(next_line_mem_pos + n), idim, n2 )
+
+* Check that bounds enclose points, and that they are contiguous
+	         line_subsc1 ( iline ) = frst_pt
+                 line_dim    ( iline ) = npoints
+                 IF (.NOT. TM_CHECK_BNDS (iline, buff3) ) GO TO 5750
+
+              ELSE
+
+*... create bounds equidistant between grid points
+
+*    ... store initial box lower bound (start of axis)
+	         line_mem(frst_pt+npoints) = line_mem(frst_pt) -
      .			0.5 * ( line_mem(frst_pt+1) - line_mem(frst_pt) )
-* ... mid-axis box boundaries ...
-	      DO 539 i1 = frst_pt+1, frst_pt+npoints-1
-	         line_mem(i1+npoints) = (line_mem(i1-1)+line_mem(i1)) * 0.5
- 539	      CONTINUE
-* ... upper-most box bound (end of axis)
-	      i2 = frst_pt+npoints-1	! last box point
-	      line_mem(i2+npoints+1) = line_mem(i2) +
+*    ... mid-axis box boundaries ...
+	         DO 539 i1 = frst_pt+1, frst_pt+npoints-1
+	            line_mem(i1+npoints) = (line_mem(i1-1)+line_mem(i1)) * 0.5
+ 539	         CONTINUE
+*    ... upper-most box bound (end of axis)
+	         i2 = frst_pt+npoints-1	! last box point
+	         line_mem(i2+npoints+1) = line_mem(i2) +
      .			0.5 * ( line_mem(i2) - line_mem(i2-1) )
-	      its_reg = .TRUE.	! until proven otherwise
-	      start = line_mem(frst_pt)
-              delta = line_mem(frst_pt+1) - start
-              DO 550 i1 = frst_pt+2,frst_pt+npoints-1
-                 IF (.NOT.TM_FPEQ( SNGL(delta),
-     .               SNGL(line_mem(i1)-line_mem(i1-1))) )
-     .						its_reg = .FALSE.
- 550	      CONTINUE
+	         its_reg = .TRUE.	! until proven otherwise
+	         start = line_mem(frst_pt)
+                 delta = line_mem(frst_pt+1) - start
+                 DO 550 i1 = frst_pt+2,frst_pt+npoints-1
+                    IF (.NOT.TM_FPEQ( SNGL(delta),
+     .                  SNGL(line_mem(i1)-line_mem(i1-1))) )
+     .                       its_reg = .FALSE.
+ 550	         CONTINUE
+              ENDIF
+
 	   ENDIF
 
 * ... check to see if it was regularly spaced after all
@@ -974,7 +1044,9 @@ C /units=months  is 1/12 of the length of the year
 	      line_subsc1 ( iline ) = frst_pt
 	      line_start  ( iline ) = line_mem(frst_pt)
 	      line_delta  ( iline ) = unspecified_val8
+              line_dim    ( iline ) = npoints   ! need this here so TM_CHECK_BNDS works.
 	      line_regular( iline ) = .FALSE.
+
 	   ENDIF
 	ELSE
 
@@ -1110,11 +1182,13 @@ C /units=months  is 1/12 of the length of the year
 	ENDIF
 
 * ... coordinate pointer for next line to save
+* Bounds are stored as edges, so increase by N coordinates and N+1 edges
+
 * acm move this to before purge_mr_axis, which also resets next_line_mem_pos
 *     after it deletes old_line.
 
 	IF (irreg .AND. .NOT.line_regular(iline))
-     .			next_line_mem_pos = frst_pt + 2*n + 1
+     .			next_line_mem_pos = frst_pt + 2*n+1
 
 * automatic longitude modulo
 	axwwlen = TM_WW_AXLEN(iline)
@@ -1443,5 +1517,18 @@ C /units=months  is 1/12 of the length of the year
            len_cal = len_cal + slen
  5721   CONTINUE
         CALL ERRMSG( ferr_syntax, status,err_string, *5000 )
+
+5730	CALL ERRMSG( ferr_syntax,status,
+     .     'cannot have /BOUNDS and /EDGES together ',*5000 )
+
+5740	buff1 = TM_FMT(FLOAT( n), 14, 16, slen)
+        buff2 = TM_FMT(FLOAT(n2), 14, 16, s2len)
+        CALL ERRMSG( ferr_grid_definition, status,
+     .     'dimension of bounds ('// buff2(:s2len)//
+     .     ') must be 2*number of axis coordinates ('//
+     .     buff1(:slen) //')', *5000 )
+
+5750	CALL ERRMSG( ferr_grid_definition, status,
+     .     'BOUNDS specified do not enclose coordinate points', *5000 )
 
 	END

@@ -142,13 +142,14 @@
      .			do_epic, do_gt, do_cdf, do_unform, do_stream,
      .			do_comma_del, do_tab_del, do_dods,
      .			permute, all_at_once, list_at_eof, head_enh,
-     .			clobber, quiet
+     .			clobber, quiet, do_bounds
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
-     .                  npermuted, recsofar, do_stream_phase, nvars
+     .                  npermuted, recsofar, do_stream_phase, nvars, 
+     .                  edges_flag
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*80, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
@@ -240,8 +241,38 @@
         i = qual_given( slash_rigid )
         IF ( i .GT. 0 ) THEN
            cdf_recax = 'N'   ! no record axis
+           CALL WARN(
+     .       '/RIGID is deprecated. By default axis bounds are '//
+     .       'written for irregular axes.')
         ELSE
            cdf_recax = 'T'   ! "T" is record axis
+        ENDIF
+
+* /EDGES for netCDF ?
+        edges_flag = 0
+        IF ( qual_given(slash_list_edges) .GT. 0) edges_flag = 1
+        IF ( qual_given( slash_rigid ) .GT. 0) edges_flag = 2 
+
+* /BOUNDS for netCDF ?
+        do_bounds = qual_given( slash_list_bounds ) .GT. 0
+ 
+* only for cdf, and not both edges and bounds.  Use BOUNDS if both specified.
+
+        IF (do_bounds) THEN
+           IF (.NOT. do_cdf) CALL WARN(
+     .         '/BOUNDS is valid only for NetCDF output. Ignored')
+           IF (.NOT. do_cdf) CALL WARN(
+     .          '/BOUNDS is valid only for NetCDF output. Ignored')
+           IF (edges_flag .GT. 0) THEN
+             IF (qual_given( slash_list_edges ) .GT. 0)
+     .            CALL WARN('Cannot have both /BOUNDS and /EDGES '//
+     .           'Ignoring /EDGES')
+             IF (qual_given( slash_rigid ) .GT. 0)
+     .            CALL WARN('Cannot have both /BOUNDS and /RIGID '//
+     .           'Ignoring /RIGID')
+              cdf_recax = 'T'   ! "T" is record axis
+              edges_flag = 0
+           ENDIF
         ENDIF
 
 * get the requested data somehow
@@ -582,7 +613,8 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
      .			  mr_perm, is_cx, buff, head_enh,
-     .			  pcdf_mode_normal, clobber, status )
+     .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
+     .                    status )
 	ELSEIF( all_at_once ) THEN
 	   CALL LIST_MULTI( memory, mr_perm, is_cx, heading, perm,
      .			    wsize, memory(1, wkblk), clobber, status )

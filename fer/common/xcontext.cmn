@@ -9,6 +9,7 @@
 * V450: added cx_calendar to enable time < 0
 * V510: *sh* added cx_formatted to record user inputs like X=130E:80W
 *	also moved cx_xtra_doc inside COMMON to Solaris avoid compiler ragging
+* V530:  8/00 *sh* - added cx_type for better string support (and future ...)
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -60,6 +61,7 @@
      .		cx_category ( max_cx ),
      .		cx_variable ( max_cx ),
      .		cx_grid     ( max_cx ),
+     .		cx_type     ( max_cx ),
      .		cx_ovsiz    ( max_cx ),
      .		cx_impl_grid( max_cx )
 
@@ -91,6 +93,7 @@
      .		cx_variable,
      .		cx_bad_data,
      .		cx_grid,
+     .		cx_type,
      .		cx_ovsiz,
      .		cx_lo_ss,
      .		cx_hi_ss,

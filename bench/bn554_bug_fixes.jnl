@@ -49,7 +49,7 @@ GO err553_lev_c.jnl
 
 ! At lon = 0, we used to have an E; remove this.
 GO bn_reset
-GO err553_0_lon_label.jnl
+GO err553_lon_ax_0_label.jnl
 
 ! Errors listing string and numeric data together
 GO bn_reset

@@ -40,8 +40,12 @@
 * Returns variable interpolated onto an equally-spaced Y-Z grid.  
 * input and output data in x, y, depth, and time.
 *
-* ACM 11/00 Mirror scattered points around the ends when gridding to a modulo axis.
-*
+* Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end 
+*                 to use in gridding each end
+*              2) Check that the scattered points are listed on the I,J,or
+*                 K axis only, as they may be functions of time.
+*  (12/1/2000) 3) If the destination axis is modulo, treat the scattered
+*                 points as modulo too.*
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -417,6 +421,12 @@ C  Get coordinates of output axes.
          nscat = nypts
          CALL nobad (arg_1, arg_2, arg_3(ii3,jj3,kk3,l), 
      .         bad_flag(ARG3), nscat, yscat, zscat, fscat)
+
+*  If an output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered points.
+
+         IF (moduloy(2)) CALL modscat (yax, ny, nscat, yscat)
+         IF (moduloz(3)) CALL modscat (zax, nz, nscat, zscat)
 
 *  If an output axis is modulo, mirror the scattered points within NRNG
 *  of each end to the other end of the region.

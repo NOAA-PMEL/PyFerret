@@ -40,10 +40,12 @@
 * Input is scattered triples: (x, y, f(x,y)); may be functions of z and/or time.
 * Output is gridded data in x, y, z, and time.  Calls routine "zgrid".
 *
-
-* ACM 11/00 Mirror scattered points around the ends when gridding to a modulo axis.
-*
-
+* Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end 
+*                 to use in gridding each end
+*              2) Check that the scattered points are listed on the I,J,or
+*                 K axis only, as they may be functions of time.
+*  (12/1/2000) 3) If the destination axis is modulo, treat the scattered
+*                 points as modulo too.
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -416,6 +418,13 @@ C  Get coordinates of output axes.
          CALL nobad (arg_1, arg_2, arg_3(ii3,jj3,kk3,l), 
      .               bad_flag(ARG3), nscat, xscat, yscat, fscat)
 
+
+*  If an output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered points.
+
+         IF (modulox(1)) CALL modscat (xax, nx, nscat, xscat)
+         IF (moduloy(2)) CALL modscat (yax, ny, nscat, yscat)
+
 *  If an output axis is modulo, mirror the scattered points within NRNG
 *  of each end to the other end of the region.
 
@@ -430,7 +439,6 @@ C  Get coordinates of output axes.
             y1 = y1 - float(nrng)* dy
             ny = ny + 2* nrng
          ENDIF
-
 *  Initialize result variable to 0.
 
         DO 200 i = 1, nx*ny

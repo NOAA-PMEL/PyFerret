@@ -44,6 +44,8 @@
 *                 to use in gridding each end
 *              2) Check that the scattered points are listed on the I,J,or
 *                 K axis only, as they may be functions of time.
+*  (12/1/2000) 3) If the destination axis is modulo, treat the scattered
+*                 points as modulo too.
 *
 *
 *
@@ -473,6 +475,12 @@ C  Get coordinates of output axes.
 
             CALL pickoutxyz (arg_1, arg_2, arg_3(ii3,jj3,kk3,ll3), 
      .                    n, xx, zz, val)
+
+*  If an output axis is modulo, apply modulo adjustment to that coordinate
+*  of the scattered point.
+
+            IF (modulox(1)) CALL modscat (xax, nx, 1, xx)
+            IF (moduloz(3)) CALL modscat (zax, nz, 1, zz)
 
             IF ( val  .NE. bad_flag(ARG3) ) THEN
                CALL gausswt2 (xx, zz, tt, val, grid, wate, nx, nz, nm, 

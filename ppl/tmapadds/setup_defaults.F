@@ -1,6 +1,5 @@
         SUBROUTINE SETUP_DEFAULTS
-        
-*
+
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,13 +33,15 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
+
 *       Sets ppl+ defaults & the options for SHADE for initial calls 
 *       J Davison JISAO/PMEL/TMAP 8.24.88/7.27.89
 *	*jd* 2.11.92 Initialize item_* variables here
 *	*jd* 5.28.92 Inititalize sqfill to on for AREA command
 *	*jd* Use area bundles for DEC , but not for ATC -- too few available
-* 	*jd  Set default values for CENTERED & SET_DELTA in CONT.INC 8.15.95
+* 	*jd* Set default values for CENTERED & SET_DELTA in CONT.INC 8.15.95
+*       *jd* Set default values for patterns 10.98
+*       *jd* Initialize rgb_mapping 10.98
 
 #ifdef unix
         include         'tmap_pplv11inc/shade_vars.cmn'
@@ -70,6 +71,33 @@
 
 	real		rem
 	external	ws_types_init,pplp_ver_data
+
+        integer         i,solid/21/
+        integer         set_default_patterns(20)
+     .       /1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20/
+
+        character*25    set_pattern_list(21)
+     . /'TINY_TRIANGLES', 
+     .  'TINY_GRID',
+     .  'TINY_OPEN_SQUARES',
+     .	'TINY_SQUARES',
+     .	'LITE_HORIZONTAL',
+     .	'LITE_VERTICAL',
+     .	'DARK_HORIZONTAL',
+     .	'DARK_VERTICAL',
+     .	'DARK_UP_LEFT_TO_RIGHT',
+     .	'LITE_UP_LEFT_TO_RIGHT',
+     .	'DARK_UP_RIGHT_TO_LEFT',
+     .	'LITE_UP_RIGHT_TO_LEFT',
+     .	'LARGE_GRID',
+     .	'ANGLED_GRID',
+     .	'DOUBLE_VERTICAL',
+     .	'DOUBLE_HORIZONTAL',
+     .	'BALL_BEARINGS',
+     .	'WEAVE',
+     .	'FISH_SCALE',
+     .	'BRICK',
+     .  'SOLID'/
 
 ******************************************************************************
 
@@ -114,6 +142,13 @@
 *	area_bundles  = .true.
 *#endif
 	mncl = 0
+
+*       RGB MAPPING PARAMETERS
+        percent  = 0
+        by_value = 1
+        by_level = 2
+
+        rgb_mapping = percent
 
 	slvl(1) = 0.0
 	sr(1) = 0.8
@@ -179,6 +214,17 @@
 *	INITIALIZE CONT.INC ADD ONS
 	centered  = .false.
 	set_delta = .false.
+
+*       DEFAULTS FOR PATTERN SUPPORT
+        do 10 i = 1, 20
+           default_patterns(i) = set_default_patterns(i)
+           pattern_list(i) = set_pattern_list(i)
+ 10     end do
+
+*       DEFAULT PATTERN IS SOLID ("pattern" 21)
+        npat = 1
+        patterns(1) = solid
+        pattern_list(solid) = set_pattern_list(solid)
 
 	return
 	end

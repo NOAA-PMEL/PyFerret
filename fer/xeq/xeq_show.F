@@ -137,9 +137,6 @@
 * v540 *acm*  1/02 Change SHOW FUNC so that shared object files are 
 *                  not listed on the command: SHO FUNC/INTERNAL func_name
 
-and I'll get that checked in after
-
-
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'

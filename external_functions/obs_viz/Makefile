@@ -25,7 +25,7 @@ DAT_OBJS = flag2ddups.o
 	cc ${DATFLAGS} ${CFLAGS} $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
-.F.o:
+.F.so:
 	$(F77) $(FFLAGS) $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 

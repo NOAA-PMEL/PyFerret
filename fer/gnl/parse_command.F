@@ -96,6 +96,8 @@
 *		has enclosing quotes - and avoid calling PARSE_COMMA_LIST
 * V531 *sh* 4/01 - added continuation lines
 * V533 *sh* 7/01 - allow both single and double quotes
+* v541 *acm* 3/02 -bug fix; nested repeat loops, parsing parentheses in the command.
+*                  Make another copy of cmnd_buff AFTER removal of enclosing parens
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -248,6 +250,8 @@
 	ENDIF
 
 * save a copy of the command with untranslated symbols for use by REPEAT
+* and for building the complete command when continuation lines are used.
+
 	cmnd_copy = cmnd_buff
 	len_cmnd_copy = cmnd_len
 
@@ -277,6 +281,12 @@
      .                        cmnd_buff(1:cmnd_len), cmnd_len )
            ENDIF
         ENDIF
+
+* Again save a copy of the command with untranslated symbols for use by REPEAT
+* this time without enclosing parens.
+
+	cmnd_copy = cmnd_buff
+	len_cmnd_copy = cmnd_len
 
 * * * * * * * * *
 * process semicolon-separated command group  (2/93)

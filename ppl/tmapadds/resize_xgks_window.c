@@ -46,6 +46,9 @@
  * More hacks to support batch mode (i.e. no display available) *js* 8.97
  */
 
+/* Remove XCheckWindowEvent to see if that's causing the occasional hangs
+ * *jd* 2.23.99
+ */
 
 #include "udposix.h"
 #include "gks_implem.h"
@@ -116,10 +119,14 @@ float *y;
     tp = &t_now;
     t0 = time(0);
   
-    do { 
-      xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
-      time (tp);
-    } while (xw_event && (t_now - t0 < 3));
+/*
+ *    do { 
+ *    xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
+ *     time (tp);
+ *   } while (xw_event && (t_now - t0 < 3));
+ *
+ */
+
   } else if (ws->ewstype == MO){
     int type = ws->mf.cgmo->type;
     if (type == MF_GIF){
@@ -132,9 +139,3 @@ float *y;
     }
   }
 }
-
-
-
-
-
-

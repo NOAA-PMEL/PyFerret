@@ -245,6 +245,8 @@
 *  arg_5  Z axis of new grid
 *  arg_6  interpolation parameter   xscale
 *  arg_7  interpolation parameter   zscale
+*  arg_8  interpolation parameter   xcutoff
+*  arg_9  interpolation parameter   zcutoff
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'

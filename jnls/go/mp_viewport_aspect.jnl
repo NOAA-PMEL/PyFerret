@@ -1,0 +1,103 @@
+\cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_viewport_aspect.jnl -- Calculate the appropriate aspect ratio for the
+!                           current region and map projection and then define
+!                           a viewport with the appropriate dimensions.
+!		    		
+! Jonathan Callahan
+! 6/99
+
+! Description:  Define a viewport for plotting map projections
+!
+! Usage:           arg1   arg2   arg3     arg4         arg5
+!  go mp_viewport xlolim xhilim ylolim text_factor [viewport_name]
+!
+! arg 1 - X lo limit [0,1] (as in DEFINE VIEWPORT/XLIMITS=xlolim,xhilim)
+! arg 2 - X hi limit [0,1] (as in DEFINE VIEWPORT/XLIMITS=xlolim,xhilim)
+! arg 3 - Y lo limit [0,1] (as in DEFINE VIEWPORT/YLIMITS=ylolim,yhilim)
+! arg 4 - text prominence  (as in DEFINE VIEWPORT/TEXT=text_factor)
+! arg 5 - viewport name
+
+! Example 1: 2 viewports on an 8.5 X 11 plot
+!
+!  set win/size=.4/aspect=`11/8.5` ! set up desired page size and aspect
+!  use coads_climatology
+!  set grid sst                    ! out of habit, for map projections
+!  shade sst[l=1]                  ! to initialize the window
+!  set region/x=80w:40e/y=30n:80n
+!  go mp_bonne
+!  go margins 0.4 0.4 0.4 0.8      ! to specify narrow margins
+!  go mp_viewport_aspect 0 1 0 1 mp_vp1
+!  shade/noaxis/nolabel sst[l=7], x_page, y_page
+!  go mp_fland
+!  go mp_label 340 85 0 0 .3 "@TRJuly SST"
+!  go mp_viewport_aspect 0 1 0.5 1 mp_vp2
+!  shade/noaxis/nolabel sst[l=1], x_page, y_page
+!  go mp_fland
+!  go mp_label 340 85 0 0 .3 "@TRJanuary SST"
+!
+
+! Getting the right aspect ratio for plots in viewports is rather
+! complicated because of the interaction of various elements in 
+! plot plus.  In order to get the aspect ratios right, we need to
+! calculate and specify the X and Y axis lengths.
+!
+! The basic equations we need to know are the following:
+!
+! xaxlen = xfraction * plot_width - right_margin - left_margin
+! yaxlen = yfraction * plot_height - top_margin - bottom_margin
+! aspect_ratio = yaxlen / xaxlen
+!
+! For non-viewports xfraction and yfraction are both 1.0.
+!
+! When using viewports, 
+!
+! xfraction = scale * (xhilim - xlolim)
+! yfraction = scale * (yhilim - ylolim)
+! scale = 1 / sqrt(text_factor)
+!
+! If you know xhilim, xlolim, ylolim, text_factor and the
+! various margins, you can solve for yhilim which is what we do
+! below.
+
+
+! First determine the margins that are currently set
+!
+let/quiet mp_vp_top = `($vp_height) - ($ppl$yorg) - ($ppl$ylen)`
+let/quiet mp_vp_bottom = `($ppl$yorg)`
+let/quiet mp_vp_left = `($ppl$xorg)`
+let/quiet mp_vp_right = `($vp_width) - ($ppl$xorg) - ($ppl$xlen)`
+
+! Get the arguments 
+!
+let/quiet mp_vp_xlolim=$1"0"
+let/quiet mp_vp_xhilim=$2"1"
+let/quiet mp_vp_ylolim=$3"0"
+let/quiet mp_vp_text_factor = $4"1"
+let/quiet mp_vp_fractional_width = mp_vp_xhilim-mp_vp_xlolim
+
+! Calculate the aspect ratio
+!
+let/quiet mp_vp_x_axis_range = `x_page[i=@max,j=@max]` - `x_page[i=@min,j=@min]`
+let/quiet mp_vp_y_axis_range = `y_page[i=@max,j=@max]` - `y_page[i=@min,j=@min]`
+let/quiet mp_vp_ratio = mp_vp_y_axis_range / mp_vp_x_axis_range
+
+let mp_vp_xfrac = mp_vp_fractional_width / mp_vp_text_factor^0.5
+
+let mp_vp_fractional_height = (mp_vp_text_factor^0.5/($ppl$height)) * (mp_vp_ratio*(mp_vp_xfrac*($ppl$width)-mp_vp_left-mp_vp_right)+mp_vp_top+mp_vp_bottom)
+
+! Define the new viwport
+! Set the new viewport
+! Keep the original margin specification
+!
+define view/xlimits=`mp_vp_xlolim`,`mp_vp_xhilim`/ylimits=`mp_vp_ylolim`,`mp_vp_ylolim+mp_vp_fractional_height`/text=`mp_vp_text_factor` $5"mp_viewport"
+set view $5"mp_vewport"
+go margins `mp_vp_top` `mp_vp_bottom` `mp_vp_left` `mp_vp_right`
+
+! Clean up our mess
+!
+cancel variable mp_vp_*
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify
+ 

@@ -71,7 +71,6 @@ let landi_mapxmax = 0
 let landi_datxmin = continent_LON[x=@min]
 let landi_datxmax = continent_LON[x=@max]
 
-set mode verify
 let landi_basemap = $2"0|basemap>1|*>0"
 
 IF `landi_basemap EQ 0` THEN
@@ -104,11 +103,9 @@ ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>
 ! set up axis formatting in case it is a basemap
 ppl xfor (I7,''LONE'')
 ppl yfor (I7,''LAT'')
-ppl title ""
 
 ! draw it - as an overlay or as a basemap
 $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-can mode verify
 
 ! Draw any lines outside 0 to 360
 
@@ -234,9 +231,9 @@ IF `landi_subx NE 0` THEN
 ENDIF
 
 ! Restore data set and region
-! cancel data geo_borders_intermed
-! cancel var landi_*
+cancel data geo_borders_intermed
+cancel var landi_*
 
-! set region save
-! set data/restore
-! set mode/last verify
+set region save
+set data/restore
+set mode/last verify

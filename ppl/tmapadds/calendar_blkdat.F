@@ -49,7 +49,6 @@ C	Calendar index corresponding to calendar names:
 	data    gregorian   /1/
         data    noleap      /2/
         data    julian      /3/
-        data    d360        /4/
 
 C	*******************************************************************
 C	Array values are ordered by calendar indices.  Each row specifies

@@ -42,10 +42,10 @@
 * V500: 3/99 *jc* convert external function names to upper case
 
 * calling argument declarations
-	INTEGER ifcn, STR_UPCASE, status
+	INTEGER ifcn
 
 * internal variable declarations
-	INTEGER status
+        INTEGER STR_UPCASE, status
 	CHARACTER text*40
 
 * internal parameter declarations:

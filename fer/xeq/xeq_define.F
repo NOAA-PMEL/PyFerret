@@ -925,12 +925,15 @@
 	ELSE
 
 * ... start,end,delta specification for a REGULAR axis.  
-* acm These are properties of the line, so reset according to the calendar 
+* acm These are properties of the line, so reset according to the calendar.
+*     Need to do this only when it came in as a date string; these are flagged
+*     as negative in TRANSLATE_LIMIT
 
 	   start = cx_lo_ww(orient,mods_cx)
 	   end   = cx_hi_ww(orient,mods_cx)
 
-	   IF ( orient .EQ. t_dim .AND. cal_id .NE. 1) THEN
+	   IF ( orient .EQ. t_dim .AND. cal_id .NE. 1 .AND. 
+     .          start .LT. 0.) THEN
 	      CALL reset_secs_from_bc (-start, new_ww, dflt_cal_id, 
      .                                 cal_id, status)
 	      start = -1. * new_ww

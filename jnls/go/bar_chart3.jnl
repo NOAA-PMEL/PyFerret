@@ -1,0 +1,68 @@
+\cancel mode verify
+! bar_chart3.jnl
+! 6/99 *sh*
+
+! Description: Produce a color-filled bar chart
+
+! Usage:                    $1          $2          $3        $4
+! yes?	GO bar_chart3 polygon_command bar_data [color_data] [base]
+! $1 - the polygon command with qualifiers (eg POLYGON/OVER/NOLABEL)
+! $2 - a variable -- as if it were being plotted
+!       region for variable should be self-contained (not depend on SET REG
+!	or on command qualifiers)
+! $4 - base or offset value (this value will have a zero-sized bar)
+
+! example  (see also bar_chart_demo)
+! yes? go bar_chart3 poly/line/nolabel/fill RANDN(I[i=1:10]) RANDN(I[i=1:10]+1)
+
+! example 2 - two variables overlaid
+!let a = 1+RANDU(I[i=1:10])
+! plot/xlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5  ! axes + title
+!go bar_chart3 poly/line/palette=red/overlay/title="My reds" a
+! let b = RANDU(I[i=1:10]+1)
+!go bar_chart3 poly/line/palette=blue/overlayy/title="My blues" b
+
+! example 3
+!let a = RANDN(T[T=2-jan-1990:1-jun-1990:24])
+!plot/ylim=-3:3/title="hist-style plot" 0*a
+!go bar_chart3 poly/over/palette=no_green_centered/levels=(-3,3,.5)/nolab a a
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO bar_chart3 polygon_command bar_data [color_data] [base]"
+QUERY/IGNORE $2"<usage: yes? GO bar_chart3 polygon_command bar_data [color_data] [base]"
+
+! save the input expressions into simple variable definitions
+LET/QUIET BCHy = $2
+IF $3"0|*>1" THEN
+  DEFINE SYMBOL BCHcolor  ",$3"
+ELSE
+  DEFINE SYMBOL BCHcolor  " "
+ENDIF
+LET/QUIET BCHbase = $4"0"
+
+! determine the orientation of the data (and check that it is 1D)
+DEFINE SYMBOL BCHax `BCHy,return=shape`
+DEFINE SYMBOL BCHiax ($BCHax"|X>i|Y>j|Z>k|T>l|<error: data is not a line")
+DEFINE SYMBOL BCHbar_ax ($BCHax"|X>Z|Y>Z|Z>Y|T>Z)   ! pick a different axis
+
+! get the independent axis out as a separate variable
+! typically, "0*BCHy + X[i=lo:hi]", so X is inherited from BCHy
+DEFINE SYMBOL BCHilo `BCHy,return=($BCHiax)start`
+DEFINE SYMBOL BCHihi `BCHy,return=($BCHiax)end`
+LET/QUIET BCHx = 0*BCHy + ($BCHax)[($BCHiax)=($BCHilo):($BCHihi)]
+
+! compute midpoints along the independent axis so the "bars" are centered
+! (use MISSING to extrapolate down to the bottom end of the first bar)
+LET/QUIET BCHxmid = MISSING((BCHx + BCHx[($BCHiax)=@shf:-1])/2, 1.5*BCHx[($BCHiax)=($BCHilo)]-0.5*BCHx[($BCHiax)=`($BCHilo)+1`])
+
+! create rectangles (polygons) on the BCHbar_ax axis
+LET/QUIET BCHpindex = ($BCHbar_ax)[($BCHbar_ax)=1:4]
+LET/QUIET BCHy4 = IF BCHpindex EQ 1 OR BCHpindex EQ 4 then 0*BCHy+BCHbase ELSE BCHy
+LET/QUIET BCHx4 = MISSING(IF BCHpindex LE 2 then BCHxmid ELSE BCHxmid[($BCHiax)=@shf:1], 1.5*BCHx[($BCHiax)=($BCHihi)]-0.5*BCHx[($BCHiax)=`($BCHihi)-1`])
+
+! execute the polygon command
+$1/coord_ax=($BCHbar_ax)  BCHx4,BCHy4 ($BCHcolor)
+
+!cancel symbol BCH*
+!cancel variable BCH*
+set mode/last verify

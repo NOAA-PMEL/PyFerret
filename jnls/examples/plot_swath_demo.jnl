@@ -1,0 +1,26 @@
+! bar_chart.jnl
+! *sh* 6/99
+
+! Description: demonstrate usage of bar charts
+
+set mode verify
+! example 1 - difference between two points on a grid
+use coads_climatology
+let a = sst[y=0,l=1,x=20e:20e]
+let b = sst[y=10n,l=1,x=20e:20e]
+plot a,b
+go plot_swath poly/over/nolabels/palette=black  a b
+\pause
+
+! example 2 -- 3 colored time series
+let base =  T[T=1-jan-1990:1-feb-1990:24] - T[T=1-jan-1990]
+let y1 = base^0.5
+let y2 = base
+let y3 = base^1.1
+let y4 = base^1.2
+
+plot/nolabels y1,y2,y3,y4
+go plot_swath poly/over/nolabels/palette=red   y1,y2
+go plot_swath poly/over/nolabels/palette=green y2,y3
+go plot_swath poly/over/nolabels/palette=blue  y3,y4
+

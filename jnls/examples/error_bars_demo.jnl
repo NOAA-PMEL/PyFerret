@@ -1,0 +1,36 @@
+! error_bars_demo.jnl
+! *sh* 6/99
+
+! Description: demonstrate usage of error bars
+
+set mode verify
+
+! on an X axis
+define axis/x=1:15:1 x5
+let/quiet xp2 = X[gx=x5]
+let/quiet yp2 = SIN(xp2/4)
+let/quiet errup = 0.6 * RANDU(xp2)
+let/quiet errdn = 0.6 * RANDU(xp2+1)
+
+plot/title="X axis plot" yp2 
+GO error_bars polygon/line=4/title="uncertainty" xp2 yp2 errup
+\pause
+
+! on a time axis
+define axis/t0=1-jan-1990/t=2-jan-1990:6-jan-1990:2/unit=hours tt
+let/quiet xp3 = t[gt=tt]
+let/quiet yp3 =  SIN(xp3/20)
+let/quiet errors = 0.6 * RANDU(xp3)
+
+plot/xlimits="1-jan-1990:12:00":10-JAN-1990/title="time series" yp3
+GO error_bars polygon/line=8/nolab xp3[l=1:50:5] yp3[l=1:50:5] errors[l=1:50:5]
+\pause
+
+! on (vertical) Z axis
+define axis/z=1:15:1/depth/units=meters z5
+let/quiet xp4 = Z[gz=z5]
+let/quiet yp4 = SIN(xp4/5)
+let/quiet errors = 0.5/(xp4+5)
+
+plot/title="vertical profile" yp4 
+GO error_bars polygon/line=8/title="variability" xp4 yp4 errors

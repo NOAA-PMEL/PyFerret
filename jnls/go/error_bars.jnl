@@ -1,0 +1,76 @@
+\cancel mode verify
+! error_bars.jnl
+! 6/99 *sh*
+
+! Description: Overlay error bars on a plot
+
+! Usage:                   $1      $2 $3   $4       $5          $6
+! yes?  GO error_bars plot_command xp yp errors [err_down] ["transpose"]
+! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/LINE=2)
+! $2 - X coordinates of points to be marked
+! $3 - Y coordinates of points to be marked
+! $4 - error values associated with points (or error limit above)
+! $5 - [optional] error limit below (if different that $4)
+! $6 - [optional] "transpose" to interchange X and Y axes
+
+! example
+! Define synthetic data
+
+!	yes? let xpts = j[j=1:5]
+!	yes? let ypts = sin(xpts)
+!	yes? let errup = 0.6 * RANDU(xpts)
+!	yes? let errdn = 0.6 * RANDU(xpts+1)
+!
+!	yes? plot/xlimits=0:6/ylimits=-2:2/vs/line xpts, ypts
+!	yes? GO error_bars poly/line=2 xpts ypts errup errdn
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
+QUERY/IGNORE $2"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
+QUERY/IGNORE $3"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
+QUERY/IGNORE $4"<usage: yes? GO error_bars plot_command xp yp errors [err_down]"
+
+! save the input expressions into simple variable definitions
+LET/QUIET ERBx = ($2)
+LET/QUIET ERBy = ($3)
+LET/QUIET ERBerr_up = ($4)
+IF $5"0|*>1" THEN
+   LET/QUIET ERBerr_dn = ($5)
+ELSE
+   LET/QUIET ERBerr_dn = ERBerr_up
+ENDIF
+DEFINE SYMBOL ERBis_transposed  $6"0|*>1"
+
+! determine the orientation of the data (and check that it is 1D)
+DEFINE SYMBOL ERBdim `ERBx,return=shape`
+DEFINE SYMBOL ERBbar_dim ($ERBdim"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+
+! Z axis plots have a reversed sense of "transposed"
+IF ($ERBdim"|Z>1|*>0") THEN
+   DEFINE SYMBOL ERBis_transposed  ($ERBis_transposed"|0>1|1>0")
+ENDIF
+IF ($ERBis_transposed) THEN
+   DEFINE SYMBOL ERBtranspz "/transpose"
+ELSE
+   CANCEL SYMBOL ERBtranspz
+ENDIF
+
+! determine the orientation for the error bar coordinates
+LET/QUIET ERBxbar = ($ERBbar_dim)SEQUENCE({0,0,-1,1,0})
+LET/QUIET ERBybar = ($ERBbar_dim)SEQUENCE({0,1, 1,1,1})
+
+! scale the "T" on the error bar based on the  to data ...
+! NOTE: define the symbol "IbeamWidth" to control the cross bar
+IF ($ERBtranspz"0|*>1) THEN
+   LET/QUIET ERBwidth = ($IbeamWidth".005") * (($YAXIS_MAX"1")-(($YAXIS_MIN"0")))
+ELSE
+   LET/QUIET ERBwidth = ($IbeamWidth".005") * (($XAXIS_MAX"1")-(($XAXIS_MIN"0")))
+ENDIF
+
+$1($ERBtranspz"/over")/over/coord=($ERBbar_dim)) ERBx+ERBxbar*ERBwidth,ERBy+ERBerr_up*ERBybar
+$1($ERBtranspz"/over")/over/coord=($ERBbar_dim)/NOLABEL ERBx+ERBxbar*ERBwidth,ERBy-ERBerr_dn*ERBybar
+
+
+!cancel symbol ERB*
+!cancel variable ERB*
+set mode/last verify

@@ -206,4 +206,5 @@ tm_make_relative_ver.c\
 tm_number_sub.c\
 tm_set_free_event.c\
 tm_unix_versions.c\
-tm_world_recur.c
+tm_world_recur.c \
+tm_switch_nan.c

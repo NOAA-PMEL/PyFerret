@@ -21,7 +21,7 @@ IF   $1"True|*>False|"  THEN
   SAY "The base URL is:  ($DODS_base_url)"
   SAY " " 
   SAY "Example:"
-  SAY "go dods_cdc reynolds_sst/sst.wkmean.1981-1989"
+  SAY "go dods_cdc reynolds_sst/sst.wkmean.1981-1989.nc"
   QUIT
 ENDIF
 

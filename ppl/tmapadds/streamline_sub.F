@@ -495,7 +495,7 @@ C  Draw arrow heads
                yy = dy* y + ytm
 
                IF (icol .GT. -1) THEN
-                  IF (bflg .EQ. .TRUE.) THEN
+                  IF (bflg) THEN
 
                      IF (curvilinear) THEN
                         x_curv = xold

@@ -20,12 +20,13 @@
 * V530:10/00 *sh* - increased input command buffer size to 2048
 *		  - increased max_item_list 25 -> 250
 *       4/01 *sh* - added in_get_grid_mode (for future use)
+*      10/01 *acm*- increased max_qual_list; CONTOUR needed more with /AXES=
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
      .			max_ifstk
 	PARAMETER     ( cmnd_buff_len = 2048,
-     .			max_qual_list = 35 ,	! increased from 30 5/00
+     .			max_qual_list = 40 ,	! increased from 35 10/01
      .			max_arg_list  = 128 ,	! was 20 pre-4/96
      .			max_item_list = 250 ,
      .			max_modes     = 25 ,

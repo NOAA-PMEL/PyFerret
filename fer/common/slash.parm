@@ -10,6 +10,8 @@
 * V530 *acm* 5/01 - added slash_plot_dash
 * V533 *sh* 6/01 - added slash_set_var_name
 * V533 *acm*6/01 - added slash_is_logh, slash_is_logv
+* V540 *acm*7/01 - added /AXES[=TOP,BOTTOM,LEFT,RIGHT]  for plot commands
+*		     (PLOT, CONTOUR, POLYGON, SHADE, VECTOR)
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -101,6 +103,7 @@
      .			slash_cont_size,
      .			slash_cont_spacing,
      .			slash_cont_sigdig,
+     .			slash_cont_axes,
      .
      .			slash_vect_over_plot,
      .			slash_vect_set_up,
@@ -113,6 +116,7 @@
      .			slash_vect_thick,
      .			slash_vect_flowline,
      .			slash_vect_density,
+     .			slash_vect_axes,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -134,6 +138,7 @@
      .			slash_shad_key,
      .			slash_shad_nokey,
      .			slash_shad_pattern,
+     .			slash_shad_axes,
      .
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
@@ -147,7 +152,8 @@
      .			slash_plot_thick,
      .			slash_plot_symsize,
      .			slash_plot_step,
-     .			slash_plot_dash
+     .			slash_plot_dash,
+     .			slash_plot_axes
 
 
 	INTEGER		slash_wire_over,
@@ -259,6 +265,7 @@
      .			slash_cont_size		= 1+26,
      .			slash_cont_spacing	= 1+27,
      .			slash_cont_sigdig	= 1+28,
+     .			slash_cont_axes		= 1+34,
      .
      .			slash_vect_over_plot	= 9,
      .			slash_vect_set_up	= 10,
@@ -271,6 +278,7 @@
      .			slash_vect_thick	= 20,
      .			slash_vect_flowline     = 1+25,
      .			slash_vect_density      = 1+26,
+     .			slash_vect_axes		= 1+27,
      .
      .			slash_strm_over_plot	= 9,
      .			slash_strm_set_up	= 10,
@@ -292,6 +300,7 @@
      .			slash_shad_key		= 1+17,	
      .			slash_shad_nokey	= 1+18,
      .			slash_shad_pattern	= 1+25,
+     .			slash_shad_axes		= 1+23,
      .
      .			slash_plot_over_plot	= 9,
      .			slash_plot_set_up	= 10,
@@ -304,8 +313,9 @@
      .			slash_plot_color	= 18,
      .			slash_plot_thick	= 19,
      .			slash_plot_symsize	= 20,
-     .			slash_plot_step		= 1 + 23,
-     .			slash_plot_dash		= 1 + 25 )
+     .			slash_plot_step		= 1+23,
+     .			slash_plot_axes		= 1+27,
+     .			slash_plot_dash		= 1+25 )
 
 	PARAMETER     ( slash_wire_over		= 9,
      .			slash_wire_set_up	= 10,
@@ -320,8 +330,9 @@
      .			slash_frame_file	= 1 + 1,
      .
      .			slash_stat_brief	= 0 + 1,
+
+     .			slash_noaxes		= 1+24,
      .
-     .			slash_noaxes		= 24 + 1,
      .
      .                  slash_repeat_animate	= 9 + 1 ,
      .                  slash_repeat_loop	= 10 + 1)
@@ -344,12 +355,14 @@
      .	                slash_polygon_key,
      .			slash_polygon_nokey,
      .			slash_polygon_color,
-     .			slash_polygon_thick
+     .			slash_polygon_thick,
+     .			slash_polygon_axes
 
 	PARAMETER     ( slash_polygon_line  = 1 + 17,
      .                  slash_polygon_fill  = 1 + 26,
      .			slash_polygon_key   = 1 + 27,
      .			slash_polygon_nokey = 1 + 28,
      .			slash_polygon_color = 1 + 18,
-     .			slash_polygon_thick = 1 + 23 )
+     .			slash_polygon_thick = 1 + 23,
+     .			slash_polygon_axes  = 1 + 29 )
 

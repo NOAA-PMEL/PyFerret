@@ -14,6 +14,7 @@
 * V510 5/99 *sh* - increased number of quals for all graphics commands,
 *		for SHOW FUNC
 * V530 1/01 *kob*- increased number of quals for repeat command
+* V540 10/01*acm*- increased number of qualifiers for CONTOUR  (/AXES=)
 *
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -192,7 +193,7 @@
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 34,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 38,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,

@@ -104,7 +104,7 @@ MESSAGE
 ! where the algorithm uses scattered points which are within 
 !         cutoff* the scale width from the gridbox center.  We use 
 ! XSCALE = YSCALE = XCUTOFF = YCUTOFF = 2.
-</PRE>
+
 
 set window/new
 LET/QUIET xpts = x; LET/QUIET ypts = y

@@ -12,6 +12,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V5.00: 12/18/98 - based on CONSTANT_CONTEXT	
+*	 2/99 *sh* - bug fix on cx_given for normal axes
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -44,9 +45,10 @@
 	cx_variable( const_cx ) = 1000*uvar + item     ! packed info
 	cx_grid    ( const_cx ) = mgrid_xabstract
 
-* definition is entirely self-contained
-	DO 100 idim = 1, 4
- 100	cx_given( idim, const_cx ) = .TRUE.
+* definition applies only to the axis of the constant list
+	cx_given( x_dim, const_cx ) = .TRUE.
+	DO 100 idim =  y_dim, t_dim
+ 100	cx_given( idim, const_cx ) = .FALSE.
 
 * remove all axes limits
 	DO 200 idim = y_dim, t_dim

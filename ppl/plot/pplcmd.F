@@ -72,7 +72,8 @@ C**
 *       kob 9.98 - add external statement to force linker to find
 *                  block data statments
 *       J Davison 10.14.99 Mod to add CALENDAR command for multiple calendars
-c
+* V510: *sh* 3/0 - bug fix: TXLABP 0 was interpreted as TXLABP 1 cuz
+*		of SIGN() call near top of this routine
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -348,8 +349,12 @@ CCCCCCC data	        tmapdebug/.false./
 C
 C	SET UP LABELT STUFF
 C
-	ITXTPE=ABS(LABELT)
-	ITXLBP=SIGN(1,LABELT)
+	IF ( LABELT .EQ. 0 ) THEN
+	   ITXLBP= 0		! 3/00 bug fix for "TXLABP 0"
+	ELSE
+	   ITXTPE=ABS(LABELT)
+	   ITXLBP=SIGN(1,LABELT)
+	ENDIF
 C
 C	INITIALIZE COMMAND BUFFER
 C

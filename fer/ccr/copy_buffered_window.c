@@ -59,7 +59,7 @@ copy_buffered_window_(ws_id, anim_id)
   unsigned width, height;
   XWindowAttributes win_info, anim_win_info;
   int src_absx, src_absy, dest_absx, dest_absy;
-  int src_x, src_y, dest_x, dest_y, screen, tmp_id;
+  int screen, tmp_id;
   Window dummywin;
   Pixmap pixmap;
 
@@ -105,46 +105,19 @@ copy_buffered_window_(ws_id, anim_id)
     fprintf (stderr, "unable to translate window coordinates (%d,%d)\n");
   } 
 
-  /* handle any frame window 
-  if (!XTranslateCoordinates (anim->dpy, ws->win, anim->win,
-			      0, 0,
-			      &dest_absx, &dest_absy,
-			      &dummywin)) {
-    fprintf (stderr, "unable to translate window coordinates (%d,%d)\n");
-    }  */
-  
-  
   width = win_info.width;
   height = win_info.height;
 
-
-  src_x = src_absx - win_info.x;
-  src_y = src_absy - win_info.y;
-  dest_x = dest_absx - anim_win_info.x;
-  dest_y = dest_absy - anim_win_info.y;
-
-  /*   XCopyArea(anim->dpy, ws->win, anim->win, DefaultGC(anim->dpy, 
-	    DefaultScreen(anim->dpy)), win_info.x, win_info.y, 
-            width, height, anim_win_info.x, anim_win_info.y);   */
-
-  /*   XCopyArea(anim->dpy, ws->win, anim->win, DefaultGC(anim->dpy, 
-	    DefaultScreen(ws->dpy)), src_x, src_y, 
-            width, height, anim_win_info.x, anim_win_info.y);  
-  */
-
   /*    XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy, 
 	    DefaultScreen(ws->dpy)), src_x, src_y, 
-            width, height, (anim_win_info.x+30), (anim_win_info.y-40));  
-  */
-  /*    XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy, 
-	    DefaultScreen(ws->dpy)), src_x, src_y, 
-            width, height, (anim_win_info.x), (anim_win_info.y-30));  
-  */
-    XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy, 
-	    DefaultScreen(ws->dpy)), src_x, src_y, 
-            width, height, (anim_win_info.x), (anim_win_info.y));  
-    XSync(ws->dpy, 1);
-    xgks_x_events_();
+            width, height, (anim_win_info.x), (anim_win_info.y-30));  */
+
+  XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy,
+	    DefaultScreen(ws->dpy)), 0, 0,
+	    width, height, 0,0);  
+  /*    XSync(ws->dpy, 1);
+	xgks_x_events_(); */
+
 
 }
 

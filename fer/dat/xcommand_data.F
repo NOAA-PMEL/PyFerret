@@ -119,6 +119,7 @@
 *		  - added /DETAILED to SHOW FUNCTIONS and to MESSAGE
 *	5/00 *sh* - restored /PEN as a "denigrated" command
 * V520: 6/00 *sh* - added MESSAGE/ERROR
+* V530: 10/00 *sh* - added added SET DATA/EZ  /TYPE=/DELIMITERS=
 *      10/00 *AM* - added VECTOR/STREAMLINE (alias STREAMLINE)
 
 #ifdef unix
@@ -212,8 +213,8 @@
 		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       / 
 		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
 		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
-		DATA qualifiers  (nqual_at1g+13) / '****' / !avail
-		DATA qualifiers  (nqual_at1g+14) / '****' / !avail
+		DATA qualifiers  (nqual_at1g+13) / 'DELIMITER' /
+		DATA qualifiers  (nqual_at1g+14) / '****' /  ! available
 * SET MODE
 	   DATA subcommands      (nsub_at1 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at1 + 7)	/ nqual1h	/

@@ -141,6 +141,12 @@ while ($#argv != 0)
 	 shift argv
 
 	 breaksw
+      case -C:
+#	 Use CMYK color model 
+	 set translator_args = "$translator_args -C"
+	 shift argv
+
+	 breaksw
       default:
 	 # Everything else is passed to translator -- gotta be a file
 	 if (! -e $argv[1]) then
@@ -254,6 +260,7 @@ help:
    echo "   -#: print more than one copy of the plots"
    echo "   -l: line styles, ps == monochrome, cps == color"
    echo "   -R: do not rename files with a date stamp appended (default is to stamp)"
+   echo "   -C: Output a CMYK postscript file (default is RGB)" 
    echo "Examples: "
    echo "    Fprint metafile.plt*"
    echo "    Fprint -P our_color_printer -l cps -# 10 metafile.plt*"

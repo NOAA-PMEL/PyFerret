@@ -79,7 +79,9 @@
 * V450: 2/97  - Allow application of modulo to GC vars (but not other uvars)
 * V455    9/97 - added transforms @CDA,CDB,CIA,CIB
 * V500: 10/98 *jc* - added lines to ignore hidden @RDC
-*	12/98 - *sh* added call to IS_CONST_VAR
+*	12/98 *sh* added call to IS_CONST_VAR to support {1,3,5} notation
+*	 3/99 *sh* added call to COMPLETE_MISSING_LIMITS to improve cache hits
+*		and corresponding change in file reading to restrict limits
 
 #ifdef unix
 	include	'ferret.parm'
@@ -264,6 +266,9 @@
 	   GOTO 5000
 	ENDIF
 
+* 3/99 complete missing context limits as full-span: to improve cache hits
+	CALL COMPLETE_MISSING_LIMITS( cx )
+
 * check in memory to see if we already have the data 
 	CALL FIND_MEM_VAR( cx, mr, search_by_value )
 	IF ( mr .GT. mr_nonexist ) THEN
@@ -377,6 +382,10 @@
 	         ENDIF
 	      ENDIF
 	   
+* ... trim context limits to what is available in file (ds_grid_start/end)
+	      CALL RESTRICT_FILE_LIMITS( cx, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+
 * ... check to see if any axes need reversal
 	      IF ( TM_AXES_REVERSED(var,rev_axes) .GT. 0 ) THEN
 	         CALL IS_STRIP( isact_class_reverse, 1, *10, status )

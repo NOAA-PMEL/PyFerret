@@ -51,6 +51,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V510: 3/00 - based on EVAL_EXPR
+* V532: 5/01 *sh* - move the interpretation of region limits from the command
+*		    line external to this routine
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -74,12 +76,6 @@
 * delete any memory left-overs from last command
 !	CALL DELETE_MRS_IN_PROGRESS
 
-* * * * DETERMINE CONTEXT FOR COMMAND * * *
-* ==> this needs to be replaced with a version that can evaluate incomplete
-*	regions that have grave-accented region information
-	CALL GET_NEW_CX( dflt_cx, cx_cmnd, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-
 * store expression in the uvar list names as "EX#1"
 	CALL DELETE_OLD_EXPR
 	CALL BREAK_UP_EXPR( expression, num_uvars_in_cmnd, status )
@@ -92,12 +88,9 @@
 	cx_expr = cx_stack_ptr
 
 * evaluate the expression
-	CALL TRANSFER_CONTEXT( cx_cmnd, cx_expr )
+	CALL TRANSFER_CONTEXT( dflt_cx, cx_expr )
 	CALL INTERP_CONTEXT( 1, cx_expr, EXPR_NAME(1), status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
-
-! temp diagnostic
-	   IF ( cx_stack_ptr .NE. cx_cmnd+1 ) WRITE (6,*) 'get_cmnd_???'
 
 * success
 	RETURN

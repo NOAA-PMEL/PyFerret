@@ -944,9 +944,14 @@ C  Check number of columns and rows against Vis5D maxima.
          CALL ef_get_coordinates (id, m, T_AXIS, 
      .       arg_lo_ss(T_AXIS, m), arg_hi_ss(T_AXIS, m), ax_vals)
 
-         DO 100 l = 1, numtimes
-            IF (tax(l) .NE. ax_vals(l)) GO TO 999
- 100     CONTINUE
+         IF (numtimes .GT. 1) THEN
+
+            DO 100 l = 1, numtimes
+               IF (tax(l) .NE. ax_vals(l)) GO TO 999
+ 100        CONTINUE
+         ELSE
+            ax_vals(1) = tax(1)
+         ENDIF
 
  200  CONTINUE  
 

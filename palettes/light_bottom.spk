@@ -1,0 +1,16 @@
+! palette suited to data with low significance at low values  
+! *sh* 2/00
+
+RGB_Mapping Percent
+
+! Lev  R    G    B
+0     100. 100. 100.
+22     50. 100. 100.
+35     30.  30. 100.
+48     20.  20.  50.
+61     10.  60.  10.
+74     50. 100.  50.
+87    100. 100.   0.
+100   100.    0.  0.
+
+

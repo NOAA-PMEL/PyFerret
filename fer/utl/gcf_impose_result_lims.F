@@ -61,6 +61,7 @@
 *       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
 * V510: 9/99 *sh* - added SAMPLE* functions
 *       1/00 *sh* - RESHAPE behavior to inherit explicit cx lims from arg 2
+* V530: 10/00 *sh* - added return status to efcn_get_result_lims
 
 * debug declarations for TIMES2
 !	INTEGER	n_com1, n_grid, com1_grid
@@ -330,7 +331,9 @@
      .          .OR. axis_will_be(3) .EQ. pgc_axis_is_abstract
      .          .OR. axis_will_be(4) .EQ. pgc_axis_is_abstract)	THEN
               CALL EFCN_GET_RESULT_LIMITS(gcfcn, memory, mr_list, 
-     .             cx_list)
+     .             cx_list, status)
+              IF (status .NE. ferr_ok) CALL ERRMSG
+     .                          ( status, status,' ', *5000 )
            ENDIF
 
 	   DO 450 idim = 1, 4

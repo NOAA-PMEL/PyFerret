@@ -44,6 +44,7 @@
 * revision 0.0 - 4/3/86
 * V400 - 3/95 - changed "Revision" to "Version"
 * V402 - 8/95 - use XREVISION_TYPE to automate version info
+* V510 6/00 *sh* - if revision_type is "()" ignore it
 
 #ifdef unix
 	include 'xrevision.cmn'
@@ -65,7 +66,11 @@
 	INTEGER TM_LENSTR1
 
 * get revision type info (8/95 - kind of a hack)
-	progname_mod = revision_type
+	IF ( revision_type .EQ. '()' ) THEN
+	   progname_mod = ' '
+	ELSE
+	   progname_mod = revision_type
+	ENDIF
 	len_progname_mod = TM_LENSTR1(progname_mod)
 
 	WRITE  ( logical_unit, 3000)

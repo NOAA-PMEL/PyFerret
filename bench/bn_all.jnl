@@ -311,6 +311,15 @@ GO bn542_bug_fixes
 GO bn_reset
 GO bn_subspan_modulo
 
+GO bn_reset
+GO bn_dots
+
+GO bn_reset
+GO bn_lev_symbols
+
+GO bn_reset
+GO bench_extrema
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

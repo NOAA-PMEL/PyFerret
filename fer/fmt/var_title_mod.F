@@ -240,9 +240,12 @@
 	      ENDIF
 	      trans_title = ALG_TRANS_TITL( trans, cx )
 	      t_len = TM_LENSTR1( trans_title )
-	      IF ( cx_trans( idim, cx ) .EQ. trans_wgted_eq
-     .	      .OR. cx_trans( idim, cx ) .EQ. trans_event_mask ) THEN
+	      IF ( cx_trans( idim, cx ) .EQ. trans_wgted_eq ) THEN
                  trans_title = trans_title(:t_len)//' of '//
+     .                TM_FMT( cx_trans_arg(idim,cx), 4, 12, slen )
+                 t_len = t_len + 4 + slen
+	      ELSEIF ( cx_trans( idim, cx ) .EQ. trans_event_mask ) THEN
+                 trans_title = trans_title(:t_len)//' at '//
      .                TM_FMT( cx_trans_arg(idim,cx), 4, 12, slen )
                  t_len = t_len + 4 + slen
 	      ELSEIF ( cx_trans_arg( idim, cx ) .NE. bad_val4 ) THEN

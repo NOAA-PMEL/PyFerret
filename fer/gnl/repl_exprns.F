@@ -76,14 +76,16 @@
 * V530: *sh* 9/00 - added support for string variables
 *       *sh* 2/01 - added FORMAT = I4.4, etc. (NOT IMPLEMENTED)
 *	          - added WIDTH=width and ZWIDTH=width
-*	*sh* 3/01 - added RETURN=dset, dset_num, dset_path
+*	*sh* 3/01 - added RETURN=dset, dsetnum, dsetpath
 * V531: *sh* 4/01 - added RETURN=bad
 * V532: *sh* 5/01 - mod to EVAL_CONTEXT forced change here  
 * *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
 *            - Need to use risc_buff for arbitrary concatenations
+* v552: *acm* 4/03 - Issue a complete error message for wrong arguments
+*                    to RETURN=
+* v552: *acm* 4/03 - Add RETURN=DSETTITLE
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -92,14 +94,6 @@
 	include 'xtext_info.cmn'
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	  did_sub, info_query, itsa_subsc
@@ -123,7 +117,7 @@
 	REAL*8 TM_WORLD, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
-     .		  repl*(max_len), bad_str*(max_len)
+     .		  repl*(max_len), bad_str*(max_len), return_errmsg*256
 !	CHARACTER fmt*(max_len)
 
 * local parameter declarations
@@ -299,7 +293,15 @@
  190	   CONTINUE
 
 * ... RETURN= information request: "repl" contains the keyword
+*     Add to this error string when adding new arguments:
+
+           WRITE (return_errmsg,*)  
+     .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
+     .	     '      dsetnum,dsetpath,dsettitle,*size,*start,*end,',
+     ,       '*units,*axis'
+
 * ... RETURN=SHAPE
+
  200	   IF ( repl .EQ. "SHAPE" ) THEN
 	      repl = ' '
 	      str_len = 0
@@ -335,19 +337,21 @@
 	   ELSEIF ( repl .EQ. "GRID" ) THEN
 	      repl = grid_name( cx_grid(cx) )
 
-* ... RETURN=DSET, DSET_NUM, DSET_PATH
+* ... RETURN=DSET, DSETNUM, DSETPATH, DSETTITLE
 	   ELSEIF ( repl(1:4) .EQ. "DSET" ) THEN
 	      i2 = cx_data_set(cx)
 	      IF ( i2 .EQ. pdset_irrelevant
      .	     .OR.  i2 .EQ. unspecified_int4 ) THEN
 	         repl = bad_str
 	      ELSE
-	         IF ( repl .EQ. "DSETNUM" ) THEN
+	         IF ( repl .EQ. "DSETNUM") THEN
 	            repl = LEFINT(i2, str_len)
 	         ELSEIF ( repl .EQ. "DSETPATH" ) THEN
 	            CALL GET_DSET_NAME(i2, repl, str_len)
 	         ELSEIF ( repl .EQ. "DSET" ) THEN
 	            CALL GET_SHORT_DSET_NAME(i2, repl, str_len)
+	         ELSEIF ( repl .EQ. "DSETTITLE" ) THEN
+	            CALL GET_DSET_TITLE(i2, repl, str_len)
 	         ELSE 
 	            GOTO 5520
 	         ENDIF
@@ -362,6 +366,7 @@
 	   ELSEIF ( repl .EQ. "BAD" ) THEN
 	      result = cx_bad_data ( cx )
 	      repl = TM_FMT( result, use_digits, max_len, str_len )
+
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	
@@ -526,7 +531,5 @@
      .					//risc_buff, *5000)
  5520   risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,
-     .     'use RETURN=shape,size,grid,dset,dsetnum,dsetpath,'//pCR//
-     .	   '    bad,*size,*start,*end,*axis, or *units'
-     .				//pCR//risc_buff, *5000)
+     .     return_errmsg//pCR//risc_buff, *5000)
 	END

@@ -65,6 +65,8 @@
 *                    are animating
 * v540 *kob* 1/02 - fix bug in which last animation plot wasn't being
 *                   flushed to the screen
+* v541 *kob* 8/02 - for animating, check for Xserver backingstore and
+*                   don't animate if it's not set
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
 * RETURN 1 - used when no command can be supplied
@@ -72,8 +74,8 @@
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40,anim_win_id*16,GKS_X_CONID*16
-	INTEGER  anim_id
-
+	INTEGER  anim_id, bs, ws_id
+	
 #ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -141,23 +143,41 @@
 *             take the snapshot here
 	      IF (animate .EQV. .TRUE.) THEN
 		 IF (.NOT. first_frame) THEN
-		    IF (.NOT. wn_open(win_id9)) THEN 
+*       kob 8/02 - need to check and see if the X server has
+*                  backing store turned on.  If not, give an
+*                  error and stop animating.
+		    DO ws_id = 1,max_windows
+		       IF (wn_open(ws_id) ) GOTO 50
+		    end do
+		    CALL ERRMSG( ferr_invalid_command, status, 
+     .                              'No graphics window open', *1000 )
+ 50		    CALL BACKING_STORE_ENABLED(ws_id, bs)
+		    IF (bs .EQ. 1) THEN
+		       IF (.NOT. wn_open(win_id9)) THEN 
 *       * open an unmapped window
-		       CALL UNMAP_ANIMATE_WINDOW
-		       anim_win_id = GKS_X_CONID( win_id9 )
-		       CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
-		       if (status .EQ. ferr_ok) wn_open(win_id9) = .TRUE.
-		       CALL SETUP_LINE_BUNDLES( win_id9, wstype )
+			  CALL UNMAP_ANIMATE_WINDOW
+			  anim_win_id = GKS_X_CONID( win_id9 )
+			  CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
+			  if (status .EQ. ferr_ok) wn_open(win_id9) = .TRUE.
+			  CALL SETUP_LINE_BUNDLES( win_id9, wstype )
 *       swap active windows so the unampped window becomes the active
 *       window, and the newly created window is the animating window
-		       CALL SWAP_ACTIVE_WINDOW
-		    ELSE 
-		       wsid = win_id9
-		       anim_id = active_win_id
-		       CALL COPY_BUFFERED_WINDOW(wsid, anim_id)
-*  need to clear the double buffered unmapped window before next plot *kob*
-		       CALL CLEAR_WINDOW(wsid)
-		    ENDIF
+			  CALL SWAP_ACTIVE_WINDOW
+		       ELSE 
+			  wsid = win_id9
+			  anim_id = active_win_id
+			  CALL COPY_BUFFERED_WINDOW(wsid, anim_id)
+*       need to clear the double buffered unmapped window before next plot *kob*
+			  CALL CLEAR_WINDOW(wsid)
+		       ENDIF
+		    ELSE
+*       kob 8/02 - X server backing store not turned on so we
+*                  can't animate
+		       animate = .FALSE.
+		       CALL ERRMSG( ferr_not_implemented, status, 
+     .                  'Animations require X-server backingstore', *1000 )
+
+		    ENDIF   
 		 ELSE
 		    first_frame = .false.
 		 ENDIF   

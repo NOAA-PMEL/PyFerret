@@ -1,5 +1,6 @@
 SRCS_C = \
 add_c_pointer.c\
+backing_store_enabled.c\
 binaryRead.c\
 batch_graphics.c\
 c_strcmp.c\

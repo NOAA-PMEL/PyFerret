@@ -49,6 +49,8 @@
 * V312: 5/94 - array "memory" as a calling argument
 * v500: 2/99 - *kob* add call to new routine REPLACEABLE_BAD_FLAGS to allow
 *              and check for NaN as missing values
+* V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
+
 #ifdef unix
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -82,7 +84,8 @@
      .			sf_num, tmap_status, lo_ss(4), hi_ss(4),
      .			lo_s1, lo_s2, lo_s3, lo_s4, 
      .			hi_s1, hi_s2, hi_s3, hi_s4 
-	CHARACTER*24	VAR_CODE, variable_code
+* V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
+	CHARACTER*64	VAR_CODE, variable_code
 
 * *kob* 2/99 - add declaration for new c function
 	INTEGER REPLACEABLE_BAD_FLAGS

@@ -15,7 +15,7 @@ vec/noax/xskip=6/yskip=6/len=1/title="View From Space"  sst*0,(sst*0+1)*mp_mask,
 vec/over/len=1/xskip=6/yskip=6 (sst*0+1)*mp_mask,sst*0, x_page,y_page
 vec/over/xskip=6/yskip=6/color=blue/len=1.4  (sst*0+1)*mp_mask,(sst*0+1)*mp_mask, x_page,y_page
 
-go mp_fland
+!go mp_fland   ! wont work with bench datasets available.
 
 ! Sinusoidal projection; put data at the poles
 

@@ -45,6 +45,5 @@ godae godae &xml
 FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks &external_functions &bench
 
 # LAS with servlet code 
-lasxml_noui -a !lasxml/ui lasxml
-las &lasxml_noui &xml &las_servlet
+las -d las lasxml &xml &las_servlet
 

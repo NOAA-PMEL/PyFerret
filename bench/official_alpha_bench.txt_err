@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/r3/tmap/ferret/alpha/bin/ferret_v50
-lrwxrwxrwx   1 tmap     tmap          39 May 17 09:33 /home/r3/tmap/ferret/alpha/bin/ferret_v50 -> /usr/local/ferret/ferret/bin/ferret_v50
+Running FERRET version /home/ja4/kobrien/official_releases/v5.00/osf/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 kobrien  tmap     20619264 May 26 10:43 /home/ja4/kobrien/official_releases/v5.00/osf/FERRET/fer/ferretdods_gui
 Running benchmark version bn500
 Benchmark run by kob
-Note: official benchmark test for v500beta1.0 release
-Beginning at Tue May 18 15:59:16 PDT 1999
+Note: final test before world release - v500beta1.1 release
+Beginning at Wed May 26 13:45:19 PDT 1999
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -351,9 +351,6 @@ Bailing out of external function "samplel":
 
 Bailing out of external function "samplel":
 	Sampling index 148 in ARG1 is outside the range of L indices for ARG2 (1:60)
-
-ERROR in efcn_compute() allocating 1 bytes of memory
-      work array 1:  X=32000000:1, Y=1:1, Z=1:1, T=1:128000000
  **ERROR: invalid command: disallowed usage of z[gz=z10]
 set grid z[gz=z10]
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -414,4 +411,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue May 18 16:04:52 PDT 1999
+Ended at Wed May 26 13:50:21 PDT 1999

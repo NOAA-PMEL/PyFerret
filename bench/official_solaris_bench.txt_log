@@ -1,14 +1,14 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/r3/tmap/ferret/solaris/bin/ferret_v50
-lrwxrwxrwx   1 tmap           39 May 17 09:31 /home/r3/tmap/ferret/solaris/bin/ferret_v50 -> /opt/local/ferret/ferret/bin/ferret_v50
+Running FERRET version /home/ja4/kobrien/official_releases/v5.00/solaris/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 kobrien  28874556 May 26 11:07 /home/ja4/kobrien/official_releases/v5.00/solaris/FERRET/fer/ferretdods_gui
 Running benchmark version bn500
 Benchmark run by kob
-Note: official benchmark of v500beta1.0 release
-Beginning at Tue May 18 15:54:08 PDT 1999
+Note: final test before world release - v500beta1.1 release
+Beginning at Wed May 26 13:51:17 PDT 1999
  	NOAA/PMEL TMAP
- 	Program FERRET (V500beta1.0)
- 	Version 5.00 - 05/13/99
- 	18-May-99 15:54     
+ 	Program FERRET (V500beta1.1)
+ 	Version 5.00 - 05/26/99
+ 	26-May-99 13:51     
 
 yes? yes? yes? yes? yes? yes? yes? yes? yes? SET MODE VERIFY
 ! BN500_ALL.JNL
@@ -9443,9 +9443,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET (V500beta1.0) Ver. 5.00"
+LAB1 = "FERRET (V500beta1.1) Ver. 5.00"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "May 18 1999 15:54:33 "
+LAB3 = "May 26 1999 13:51:44 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10953,6 +10953,12 @@ GO bn_dynamic_grids	! added 9/27/95, V420 ->V491 4/98
 ! 2/96 - added GX=lo:hi:delta notation
 ! 4/98 *sh* changes once again to confine_axis -- earlier trapped error is once
 !		again an error
+! V500beta1.1 5/26/99 *kob* - As of v500beta1.1, there is a modification to
+!			      tm_world_recur.c which fixes a previous problem
+!		 	      w/ implicit strides on an underlying irregular grid.
+!			      This caused numerical differences in the output benchmark
+!			      log files when compared to pre beta5001.1 logs.  The
+!			      numericals results found here are verified to be correct
  
 ! deliberate dynamic grid errors
  
@@ -11605,17 +11611,17 @@ show grid/x
  Last successful data access was on grid (G002)
     GRID (G002)
  name       axis              # pts   start                end
- (AX003)   X                    5 i   121                  8281
+ (AX003)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
  
            I     X                 BOX_SIZE
-           1>  121                   480
-           2>  961                   1240
-           3>  2601                  2040
-           4>  5041                  2840
-           5>  8281                  2480
+           1>  1                     280
+           2>  441                   840
+           3>  1681                  1640
+           4>  3721                  2440
+           5>  6561                  4000
  
 use gtsa056_1
 list/i=1:10 x[gx=temp]			! from named variable
@@ -11675,7 +11681,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   121                  8281
+ (AX003)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -11708,7 +11714,7 @@ Dynamic grids:
  TIME21    TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   121                  8281
+ (AX003)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -11754,7 +11760,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   121                  8281
+ (AX003)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -11799,12 +11805,12 @@ list temp[j=45:55:3]
              DEPTH (m): 5
              TIME: 15-JAN-1982 14:00
              DATA SET: ./gtsa056_1.cdf
-              129.5W   128.5W   127.5W   126.5W   125.5W  
-              101      102      103      104      105
- 3.17N / 4:  25.7004  25.3081  24.9742  24.8433  24.9718
- 2.17N / 3:  25.0220  24.7100  24.5550  24.5427  24.7693
- 1.17N / 2:  24.3362  24.1527  24.0455  24.0427  24.2042
- 0.17N / 1:  23.9556  23.8461  23.7430  23.6629  23.6425
+             129.5W   128.5W   127.5W   126.5W   125.5W  
+             101      102      103      104      105
+ 2.8N / 4:  25.5051  25.1016  24.8243  24.7591  24.9401
+ 1.8N / 3:  24.7692  24.5204  24.3981  24.4013  24.6163
+ 0.8N / 2:  24.1567  23.9991  23.8888  23.8583  23.9770
+ 0.2S / 1:  23.9783  23.8819  23.7796  23.6864  23.6174
 ! ... by world coord
 list temp[y=0.5s:5n:1.5]
              TEMPERATURE (deg. C)
@@ -11828,7 +11834,7 @@ Dynamic grids:
  TIME21    TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   121                  8281
+ (AX003)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -11876,12 +11882,12 @@ list temp[gj=45:55:3]
              DEPTH (m): 5
              TIME: 15-JAN-1982 14:00
              DATA SET: ./gtsa056_1.cdf
-              129.5W   128.5W   127.5W   126.5W   125.5W  
-              101      102      103      104      105
- 3.17N / 4:  25.7004  25.3081  24.9742  24.8433  24.9718
- 2.17N / 3:  25.0220  24.7100  24.5550  24.5427  24.7693
- 1.17N / 2:  24.3362  24.1527  24.0455  24.0427  24.2042
- 0.17N / 1:  23.9556  23.8461  23.7430  23.6629  23.6425
+             129.5W   128.5W   127.5W   126.5W   125.5W  
+             101      102      103      104      105
+ 2.8N / 4:  25.5051  25.1016  24.8243  24.7591  24.9401
+ 1.8N / 3:  24.7692  24.5204  24.3981  24.4013  24.6163
+ 0.8N / 2:  24.1567  23.9991  23.8888  23.8583  23.9770
+ 0.2S / 1:  23.9783  23.8819  23.7796  23.6864  23.6174
 ! ... by world coord
 list temp[gy=0.5s:5n:1.5]
              TEMPERATURE (deg. C)
@@ -11942,12 +11948,12 @@ list temp[i=100:110:2,j=45:55:3]
              DEPTH (m): 5
              TIME: 15-JAN-1982 14:00
              DATA SET: ./gtsa056_1.cdf
-              130.5W   128.5W   126.5W   124.5W   122.5W   120.5W  
-                1        2        3        4        5        6
- 3.17N / 4:  26.0280  25.3081  24.8433  25.3450  25.9592  26.1835
- 2.17N / 3:  25.4442  24.7100  24.5427  25.2354  25.9379  25.8332
- 1.17N / 2:  24.5966  24.1527  24.0427  24.5341  25.2208  24.8153
- 0.17N / 1:  24.0902  23.8461  23.6629  23.7442  24.0341  23.8270
+             130.5W   128.5W   126.5W   124.5W   122.5W   120.5W  
+               1        2        3        4        5        6
+ 2.8N / 4:  25.8760  25.1016  24.7591  25.3616  25.9523  26.1052
+ 1.8N / 3:  25.1492  24.5204  24.4013  25.0592  25.8372  25.5690
+ 0.8N / 2:  24.3667  23.9991  23.8583  24.2480  24.7736  24.4029
+ 0.2S / 1:  24.0844  23.8819  23.6864  23.6291  23.8094  23.6664
 list temp[i=100:110:2,y=0.5s:5n:1.5]
              TEMPERATURE (deg. C)
              regrid: 2 deg on X, 1.5 deg on Y
@@ -11966,12 +11972,12 @@ list temp[x=130w:120W:3,j=45:55:3]
              DEPTH (m): 5
              TIME: 15-JAN-1982 14:00
              DATA SET: ./gtsa056_1.cdf
-              130W     127W     124W     121W    
-                1        2        3        4
- 3.17N / 4:  25.8642  24.9088  25.5284  26.1511
- 2.17N / 3:  25.2331  24.5488  25.4749  25.8898
- 1.17N / 2:  24.4664  24.0441  24.7395  24.9891
- 0.17N / 1:  24.0229  23.7029  23.8301  23.9069
+             130W     127W     124W     121W    
+               1        2        3        4
+ 2.8N / 4:  25.6905  24.7917  25.5507  26.0875
+ 1.8N / 3:  24.9592  24.3997  25.3139  25.6838
+ 0.8N / 2:  24.2617  23.8736  24.4085  24.5531
+ 0.2S / 1:  24.0313  23.7330  23.6749  23.7233
 list temp[x=130w:120W:3,y=0.5s:5n:1.5]
              TEMPERATURE (deg. C)
              regrid: 3 deg on X, 1.5 deg on Y
@@ -11994,7 +12000,7 @@ Dynamic grids:
  TIME21    TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G002)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   121                  8281
+ (AX003)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -12171,14 +12177,14 @@ list a[j=1:6]
              DEPTH (m): 5
              TIME: 15-JAN-1982 14:00
              DATA SET: ./gtsa056_1.cdf
-              129.5W   128.5W   127.5W   126.5W   125.5W  
-              101      102      103      104      105
- 5.17N / 6:  26.4619  26.3333  26.2380  26.2109  26.2952
- 4.17N / 5:  26.1359  25.8463  25.5332  25.2739  25.2657
- 3.17N / 4:  25.7004  25.3081  24.9742  24.8433  24.9718
- 2.17N / 3:  25.0220  24.7100  24.5550  24.5427  24.7693
- 1.17N / 2:  24.3362  24.1527  24.0455  24.0427  24.2042
- 0.17N / 1:  23.9556  23.8461  23.7430  23.6629  23.6425
+             129.5W   128.5W   127.5W   126.5W   125.5W  
+             101      102      103      104      105
+ 4.8N / 6:  26.3655  26.1878  26.0268  25.9290  25.9885
+ 3.8N / 5:  26.0047  25.6791  25.3175  25.0630  25.0886
+ 2.8N / 4:  25.5051  25.1016  24.8243  24.7591  24.9401
+ 1.8N / 3:  24.7692  24.5204  24.3981  24.4013  24.6163
+ 0.8N / 2:  24.1567  23.9991  23.8888  23.8583  23.9770
+ 0.2S / 1:  23.9783  23.8819  23.7796  23.6864  23.6174
 list a[j=1:6:2]
              TEMP[J=45:65:3]
              regrid: on Y
@@ -12187,9 +12193,9 @@ list a[j=1:6:2]
              DATA SET: ./gtsa056_1.cdf
              129.5W   128.5W   127.5W   126.5W   125.5W  
              101      102      103      104      105
- 4.2N / 3:  26.1359  25.8463  25.5332  25.2739  25.2657
- 2.2N / 2:  25.0220  24.7100  24.5550  24.5427  24.7693
- 0.2N / 1:  23.9556  23.8461  23.7430  23.6629  23.6425
+ 3.8N / 3:  26.0047  25.6791  25.3175  25.0630  25.0886
+ 1.8N / 2:  24.7692  24.5204  24.3981  24.4013  24.6163
+ 0.2S / 1:  23.9783  23.8819  23.7796  23.6864  23.6174
 list a[j=-2:8:2]		! clips to allowed limits
              TEMP[J=45:65:3]
              regrid: on Y
@@ -12198,10 +12204,10 @@ list a[j=-2:8:2]		! clips to allowed limits
              DATA SET: ./gtsa056_1.cdf
              129.5W   128.5W   127.5W   126.5W   125.5W  
              101      102      103      104      105
- 6.2N / 4:  26.6974  26.6625  26.6455  26.6755  26.7612
- 4.2N / 3:  26.1359  25.8463  25.5332  25.2739  25.2657
- 2.2N / 2:  25.0220  24.7100  24.5550  24.5427  24.7693
- 0.2N / 1:  23.9556  23.8461  23.7430  23.6629  23.6425
+ 5.8N / 4:  26.6294  26.5670  26.5361  26.5638  26.6554
+ 3.8N / 3:  26.0047  25.6791  25.3175  25.0630  25.0886
+ 1.8N / 2:  24.7692  24.5204  24.3981  24.4013  24.6163
+ 0.2S / 1:  23.9783  23.8819  23.7796  23.6864  23.6174
 list a[y=1S:8N:2]
              TEMP[J=45:65:3]
              regrid: 2 deg on Y
@@ -12211,9 +12217,9 @@ list a[y=1S:8N:2]
              129.5W   128.5W   127.5W   126.5W   125.5W  
              101      102      103      104      105
  7N   / 5:     ....     ....     ....     ....     ....
- 5N   / 4:  26.4076  26.2522  26.1206  26.0547  26.1236
- 3N   / 3:  25.5874  25.2084  24.9044  24.7932  24.9380
- 1N   / 2:  24.2727  24.1016  23.9951  23.9794  24.1106
+ 5N   / 4:  26.4095  26.2510  26.1116  26.0348  26.0997
+ 3N   / 3:  25.5883  25.1978  24.9065  24.8097  24.9649
+ 1N   / 2:  24.2587  24.0860  23.9737  23.9488  24.0835
  1S   / 1:     ....     ....     ....     ....     ....
 ! ... by world coord
 LET/QUIET a = temp[y=3.5s:5n:1.5]
@@ -16011,7 +16017,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 kobrien     14970 May 18 15:54 bench.mgm
+-rw-rw-r--   1 kobrien     14965 May 26 13:52 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -16030,7 +16036,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 kobrien    249709 May 18 15:55 bench.mgm
+-rw-rw-r--   1 kobrien    249674 May 26 13:52 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -23240,6 +23246,8 @@ show func sto*
 STORAGE(A)
     sets result equal to input/10
     A: input
+STORAGE_3(--)
+    sets result equal to input
  
 go bench_add_9
 set mode ignore_errors
@@ -24363,8 +24371,8 @@ cancel mode verify
  -DELETE 777-7777 D: 1  I:   80   80  J:   45   45  K: -111 -111  L:    1    1
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    1    1
- -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    3    3
  -DELETE 777-7777 D: 1  I:   81   85  J:    1    5  K: -111 -111  L:    1    3
+ -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    3    3
  -DELETE 777-7777 D: 1  I:   80   80  J:    1   90  K: -111 -111  L:    1    3
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    1    1
@@ -24389,8 +24397,8 @@ cancel mode verify
  -DELETE 777-7777 D: 1  I:   80   80  J:    1   90  K: -111 -111  L:    3    3
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    1    3
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    1    1
- -DELETE 777-7777 D: 1  I:   80   80  J:   45   45  K: -111 -111  L:    1    1
  -DELETE 777-7777 D: 1  I:    1  180  J:    1   90  K: -111 -111  L:    2    2
+ -DELETE 777-7777 D: 1  I:   80   80  J:   45   45  K: -111 -111  L:    1    1
  -DELETE 777-7777 D: 2  I:   70   72  J:    1  100  K:    1    1  L:    1    3
  -DELETE 777-7777 D: 3  I:   20   20  J:   45   89  K:    1    1  L:    1    5
  -DELETE 777-7777 D: 3  I:    1  160  J:    5   89  K:    1    2  L:    1    5
@@ -27132,7 +27140,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.00 (V500beta1.0) 18-May-99" ;
+		:history = "FERRET V5.00 (V500beta1.1) 26-May-99" ;
 data:
 
  T5 = 50757969 ;
@@ -27165,7 +27173,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.00 (V500beta1.0) 18-May-99" ;
+		:history = "FERRET V5.00 (V500beta1.1) 26-May-99" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -27369,7 +27377,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue May 18 15:55:32 PDT 1999
+Wed May 26 13:52:44 PDT 1999
  
 GO bn_reset
 cancel mode verify
@@ -27577,9 +27585,9 @@ PPL plot 231  complete
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	Program FERRET (V500beta1.0)
- 	Version 5.00 - 05/13/99
- 	18-May-99 15:55     
+ 	Program FERRET (V500beta1.1)
+ 	Version 5.00 - 05/26/99
+ 	26-May-99 13:52     
 
 yes? yes? yes? yes? yes? yes? yes? ! bn450_gif.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of gif file in batch mode using
@@ -27747,9 +27755,9 @@ plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
 frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
- 	Program FERRET (V500beta1.0)
- 	Version 5.00 - 05/13/99
- 	18-May-99 15:55     
+ 	Program FERRET (V500beta1.1)
+ 	Version 5.00 - 05/26/99
+ 	26-May-99 13:52     
 
 yes? yes? yes? yes? yes? yes? yes? ! bn450_ps.JNL - copied from bn450_plot.jnl
 ! this journal file only tests the writing of ps files in batch mode using
@@ -27855,4 +27863,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Tue May 18 15:55:49 PDT 1999
+Ended at Wed May 26 13:53:02 PDT 1999

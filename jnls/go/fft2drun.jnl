@@ -1,0 +1,84 @@
+! fft2drun.jnl 06/00
+! Description: computes and plots running power spectrum for variable "specvar"
+! Usage: go fft2drun "plot title" "Taxis" "tlo:thi:dt" window
+!
+! where;
+!1			-plot title
+!2	Taxis 		-the name of the input /T axis for specvar
+!3	tlo:thi:dt 	-is the time axis specification for the running power 
+!			 spectrum, and must not have more than 1100 grid points
+!			 (or memory limits will be hit)
+!4	window 		- (half window length)/dt
+!
+! Example: to plot running power spectrum of "myvar" with 200 gridpoint wide window
+!    for the time range of -2000 to -2 and where myvar has the time axis "Tw"
+!
+!	yes? Let specvar=myvar
+!	yes? Go fft2drun "my title" "Tw" "-2000:-2:2" 100
+!
+! Output: can use routine within the script with adjusted ranges and annotation
+! or else can use "series_fft*series_fft" with one's own plot routine
+! Note might need to modify smoothing of specvar within script ("let wtser...")
+!----------------------------------------------------------
+\cancel mode verify
+define region/default save
+set grid/save
+
+set memory/size=5.
+
+define axis/T=$3 lyear
+define axis/z=$3 lag_axis
+
+
+let wT = T[gt=lyear]
+let Tinv = T[gt=$2]
+let wL = L[gt=lyear]
+let NT = wT[l=@ngd]
+let NTin = Tinv[l=@ngd]
+
+let wtser=specvar[L=1:`NTin`@SBX:5] !smooth time series, MODIFY as needed
+let vts = wtser[gt=lyear]
+
+set view upper
+plot /tit="smoothed time series" vts
+
+DEFINE GRID /T=lyear gly
+
+let p= t[gt=lyear]
+let q=vts
+set grid q
+go regresst
+list rsquare
+
+
+Let wts=vts-qhat !linearly detrend timeseries
+
+set view lower
+plot /tit="detrended time series" wts
+pause
+can view
+
+! define a lag axis and a 2D version of the time series with a running window
+let window = $4
+let lag = K[gz=lag_axis] - 1
+let tseries_2d = IF (lag LT wl+window) and (wl LT lag + window) then wts ELSE 0
+
+! take the full FFT
+let series_fft = ffta(tseries_2d[l=1:`NT`]) 
+
+!set mode meta
+set region /Z=-1800:-200/T=0:0.06 !MODIFY as required
+fill /set_up  /transp series_fft*series_fft
+go remove_logo
+PPL LIST LABELS
+GO unlabel 4
+ppl ylab Frequency (cycles/kyr)
+ppl xlab Time (kyr)
+ppl title, "$1"
+ppl fill
+LABEL -1000,0.064,0,0,0.3 @C13 Running Power Spectrum
+!can mode meta
+
+set region save
+set grid/restore
+set mode/last verify

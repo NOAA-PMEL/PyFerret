@@ -57,6 +57,8 @@
 * v522 *kob* 12/00 - added xprog_state common file in order to check for
 *                    mode diagnostic.  only do sanity checking on step
 *                    files if mode diag is turned on.
+* v531: *kob* 5/01 - fix erroneous error reporting at label 5100
+
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -314,15 +316,12 @@
 
  5100  CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'MC_READ', unspecified_int4,
-     .     no_varid, 'could not open CDF output file: ',
-     .     sf_name(sfcnt), *5000 )
+     .     no_varid, no_errstring,
+     .     no_errstring, *5000 )
 
 
  5000	RETURN
 
 
 	END
-
-
-
 

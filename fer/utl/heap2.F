@@ -13,6 +13,7 @@ C  with change noted below for the case where N=1
 * From SHELLR
 * since the input array may be large but sparse, begin by sorting
 * the missing value flags to the end of the list
+
       ngd = 0
       DO j = 1, n
          IF (RA(j) .NE. bad) THEN
@@ -29,6 +30,8 @@ C  with change noted below for the case where N=1
 
       L = NGD/2 + 1
       IR = NGD
+
+      IF (NGD .LT. 1) RETURN
 
    10 CONTINUE
          IF (L .GT. 1) THEN

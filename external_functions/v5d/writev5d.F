@@ -69,7 +69,7 @@
 *                                                                      V
 
       CALL ef_set_desc (id,
-     .   'Write up to 8 variables to a Vis5D-formatted file' )
+     .   'Write up to 8 variables to a Vis5D-formatted file  V5.1' )
 
       CALL ef_set_num_args(id, 9)
       CALL ef_set_axis_reduction (id, REDUCED, REDUCED, 
@@ -177,15 +177,15 @@
       min_row = MAXROWS
       max_row = 1
       DO 111 iarg = 1, EF_MAX_ARGS
-         IF (arg_lo_ss(X_AXIS,iarg) .NE. unspecified_int4) min_row = 
-     .         min(min_row, arg_lo_ss(X_AXIS,iarg))
+         IF (arg_lo_ss(X_AXIS,iarg) .NE. ef_unspecified_int4) 
+     .     min_row = min(min_row, arg_lo_ss(X_AXIS,iarg))
 
-         IF (arg_hi_ss(X_AXIS,iarg) .NE. unspecified_int4) max_row = 
-     .     max(max_row, arg_hi_ss(X_AXIS,iarg))
+         IF (arg_hi_ss(X_AXIS,iarg) .NE. ef_unspecified_int4) 
+     .     max_row = max(max_row, arg_hi_ss(X_AXIS,iarg))
 
   111 CONTINUE
-      IF (min_row .EQ. unspecified_int4 .OR. 
-     .    max_row .EQ. unspecified_int4) THEN          
+      IF (min_row .EQ. ef_unspecified_int4 .OR. 
+     .    max_row .EQ. ef_unspecified_int4) THEN          
         min_row = 1
         max_row = 1
       ENDIF
@@ -195,15 +195,15 @@
       min_col = MAXCOLUMNS
       max_col = 1
       DO 222 iarg = 1, EF_MAX_ARGS
-         IF (arg_lo_ss(Y_AXIS,iarg) .NE. unspecified_int4) min_col = 
-     .     min(min_col, arg_lo_ss(Y_AXIS,iarg))
+         IF (arg_lo_ss(Y_AXIS,iarg) .NE. ef_unspecified_int4) 
+     .     min_col = min(min_col, arg_lo_ss(Y_AXIS,iarg))
 
-         IF (arg_hi_ss(Y_AXIS,iarg) .NE. unspecified_int4) max_col = 
-     .     max(max_col, arg_hi_ss(Y_AXIS,iarg))
+         IF (arg_hi_ss(Y_AXIS,iarg) .NE. ef_unspecified_int4) 
+     .     max_col = max(max_col, arg_hi_ss(Y_AXIS,iarg))
 
   222 CONTINUE
-      IF (min_col .EQ. unspecified_int4 .OR. 
-     .    max_col .EQ. unspecified_int4) THEN          
+      IF (min_col .EQ. ef_unspecified_int4 .OR. 
+     .    max_col .EQ. ef_unspecified_int4) THEN          
         min_col = 1
         max_col = 1
       ENDIF
@@ -215,17 +215,17 @@
       max_lev = 1
       max_lev_all = 0
       DO 333 iarg = 1, EF_MAX_ARGS
-         IF (arg_lo_ss(Z_AXIS,iarg) .NE. unspecified_int4) min_lev = 
-     .     min(min_lev, arg_lo_ss(Z_AXIS,iarg))
+         IF (arg_lo_ss(Z_AXIS,iarg) .NE. ef_unspecified_int4) 
+     .     min_lev = min(min_lev, arg_lo_ss(Z_AXIS,iarg))
 
-         IF (arg_hi_ss(Z_AXIS,iarg) .NE. unspecified_int4) THEN
+         IF (arg_hi_ss(Z_AXIS,iarg) .NE. ef_unspecified_int4) THEN
            max_lev = max(max_lev, arg_hi_ss(Z_AXIS,iarg))
            max_lev_all = max_lev_all + max_lev
          ENDIF
 
   333 CONTINUE
-      IF (min_lev .EQ. unspecified_int4 .OR. 
-     .    max_lev .EQ. unspecified_int4) THEN          
+      IF (min_lev .EQ. ef_unspecified_int4 .OR. 
+     .    max_lev .EQ. ef_unspecified_int4) THEN          
         min_lev = 1
         max_lev = 1
         max_lev_all = 1
@@ -849,6 +849,7 @@ C  Check number of columns and rows against Vis5D maxima.
       INTEGER numvars
 
       REAL*8 tax(MAXTIMES), ax_vals(*)
+      INTEGER lasttime, thistime, lastdate, thisdate
 
       INTEGER iyear, ihour, iminute, isec
       CHARACTER*3 cmon
@@ -860,13 +861,9 @@ C  Check number of columns and rows against Vis5D maxima.
 
       ier = 1
 
-*  Set time steps for Vis5D.
+*  Set time steps; check that there arent too many for Vis5D.
 
       CALL ef_get_arg_subscripts (id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-
-      CALL ef_get_coordinates (id, ARG1, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), tax)
 
       IF (arg_hi_ss(T_AXIS,ARG1) .EQ. arg_lo_ss(T_AXIS,ARG1) .or.
      .      arg_incr(T_AXIS,ARG1) .EQ. 0) THEN 
@@ -883,8 +880,13 @@ C  Check number of columns and rows against Vis5D maxima.
          END IF
       END IF
 
-*  Get time axis for variables.  Check that thay are the same as for
-*  the first variable.  
+*  Get time axis coordinates for first variable.
+
+      CALL ef_get_coordinates (id, ARG1, T_AXIS, 
+     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), tax)
+
+*  Get time axis for remaining variables.  Check that thay are 
+*  the same as for the first variable.  
 
       DO 200 m = 2, numvars
          IF (arg_hi_ss(T_AXIS,m) .EQ. arg_lo_ss(T_AXIS,m) .or.
@@ -975,6 +977,30 @@ C  Check number of columns and rows against Vis5D maxima.
   300    CONTINUE
 
       ENDIF		! IF (numtimes .EQ. 1) 
+
+      lastdate = datestamp(1)
+      lasttime = timestamp(1)
+
+      DO 400 l = 2, numtimes
+
+         thisdate = datestamp(l) 
+         thistime = timestamp(l)
+
+         IF ( (lastdate .GT. thisdate)  .OR. 
+     .        ( (lastdate .EQ. thisdate) .AND.  
+     .          (lasttime .GE. thistime) ) ) THEN
+
+            WRITE (err_msg,*) 
+     .     'Times must be strictly increasing ', datebuf(l-1),  
+     .     ' ', datebuf(l) 
+            GO TO 999
+         ENDIF
+
+         lasttime = thistime
+         lastdate = thisdate
+
+  400 CONTINUE
+
 
   110 FORMAT (i2, 1x, a3, 1x, i4)
   120 FORMAT (11x, 3(1x,i2))

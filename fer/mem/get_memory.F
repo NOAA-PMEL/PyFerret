@@ -53,6 +53,7 @@
 * V500:  3.20.99 Make sure num_words >= 0 (absurdly large grids can overflow
 *                integer) js
 * V520: 6/00 *sh* - improved error message
+* V522: 7/00 *sh* corrected typo in previous ... 
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -136,7 +137,7 @@
  5100	num_str = LEFINT(num_words,num_slen)
 	CALL ERRMSG( ferr_insuff_memory,status,
      .	num_str(:num_slen)//' words were requested. ')
- 5101   CALL WARN('You can se SET MEMORY/SIZE=xxx to increase memory.')
+ 5101   CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
         CALL WARN('The "Memory use" section of the FERRET '
      .            //'Users Guide has further tips.') 
         GOTO 5000

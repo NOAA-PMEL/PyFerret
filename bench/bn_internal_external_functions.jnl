@@ -3,6 +3,7 @@
 !  functions were not being tested - most notably win32   *kob*
 
 !  8/02/01 *acm* add bench_eof; now internally-linked.
+! 10/22/01 *acm* add bench_compress_by (compressi_by, compressj_by, ...)
 
 GO bn_reset
 go bench_fft
@@ -15,3 +16,6 @@ go bench_sort
 
 GO bn_reset
 go bench_eof
+
+GO bn_reset
+go bench_compress_by

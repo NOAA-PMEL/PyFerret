@@ -33,7 +33,7 @@ vec/over/xskip=16/yskip=8/color=blue/len=1.4 fsst*0+1*mp_mask,fsst*0+1*mp_mask, 
 go mp_graticule
 
 message "Irregular axes, and manual axis scaling" 
-set win/new
+set win/asp=1/new
 
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
 def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}

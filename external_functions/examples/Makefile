@@ -18,7 +18,7 @@ include platform_specific_flags.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
-EFN_OBJS = efn/*.o
+EF_OBJS = ef_utility/*.o
 
 #
 # Rules
@@ -26,7 +26,7 @@ EFN_OBJS = efn/*.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(EFN_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $*.o -o $*.so 
 	cp $@ $(FER_EXTERNAL_FUNCTIONS)
 
 
@@ -34,16 +34,16 @@ EFN_OBJS = efn/*.o
 # Targets
 #
 
-all:	efn ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so storage_nxy.so strings.so string_arg.so subtract.so times_table.so
+all:	ef_utility ferret_cmn add_9.so avet.so custom.so custom_nf.so extend.so pass_thru.so percent_good_t.so status.so storage.so storage_nxy.so strings.so string_arg.so subtract.so times_table.so
 
-efn:
-	ln -s ../efn efn
+ef_utility:
+	ln -s ../ef_utility ef_utility
 
 ferret_cmn:
-	ln -s ../efn/ferret_cmn ferret_cmn
+	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so core a.out temp.* ef_utility ferret_cmn
 
 #
 # End of Makefile

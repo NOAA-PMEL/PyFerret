@@ -18,7 +18,7 @@ include ../examples/platform_specific_flags.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
-EFN_OBJS = efn/*.o
+EF_OBJS = ef_utility/*.o
 
 V5D_OBJS = binio.o v5d.o
 
@@ -28,23 +28,23 @@ V5D_OBJS = binio.o v5d.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(EFN_OBJS) $(V5D_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $(V5D_OBJS) $*.o -o $*.so 
 	cp $@ $(FER_EXTERNAL_FUNCTIONS)
 
 #
 # Targets
 #
 
-all:	efn ferret_cmn binio.o v5d.o writev5d.so
+all:	ef_utility ferret_cmn binio.o v5d.o writev5d.so
 
-efn:
-	ln -s ../efn efn
+ef_utility:
+	ln -s ../ef_utility ef_utility
 
 ferret_cmn:
-	ln -s ../efn/ferret_cmn ferret_cmn
+	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 clean:
-	-rm -f *.o *.so core a.out temp.* efn ferret_cmn
+	-rm -f *.o *.so core a.out temp.* ef_utility ferret_cmn
 
 #
 # End of Makefile

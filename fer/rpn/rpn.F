@@ -3,8 +3,6 @@
      .			 natom_infx, natom_pstfx, pstfx_order,
      .			 status,err_msg)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -54,6 +52,7 @@
 *		 - Also, support for alg_grid_chg_fcn
 * Linux Port - kob- 4/97 - logic change in if statement to prevent an overflow
 *			   error when looking at atom_id array.
+* V532 5/01 *sh* - improve error message about unknon function in FCN(a)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -304,6 +303,10 @@
 	else if (inf_ptr .eq. atom_cnt) then
      	   err_msg = text(atom_start(las_ptr):atom_end(las_ptr))//
      .	   ' may not end an expression'  
+	else if (atom_type(inf_ptr).eq.alg_punctuation
+     .     .and. atom_id  (inf_ptr).eq.left_paren       ) then
+     	   err_msg = 'unknown function "'//
+     .			text(atom_start(las_ptr):atom_end(las_ptr))//'"'
 	else
 	   err_msg = text(atom_start(las_ptr):atom_end(las_ptr))//' before '
      .	   //text(atom_start(inf_ptr):atom_end(inf_ptr))//' is illegal'  

@@ -19,6 +19,7 @@
 *	*sh* 5/00 - add line_keep_flag for "solo" lines defined by a file
 *  * acm* 12/00  - add line_cal_name for alternative calendar types
 * V541 *sh* 2/01 - added line_modulo_len
+* V570 *acm* 5/04  Remove line_has_edges; never used.
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -33,7 +34,8 @@
      .			line_class, line_free_ptr, max_line_used,
      .                  pline_mem_init
 	LOGICAL		grid_out_prod, line_regular, line_modulo,
-     .			line_has_edges, line_keep_flag
+!     .			line_has_edges, line_keep_flag
+     .			line_keep_flag
 	REAL		line_tunit, grid_rotation
 	REAL*8		line_start, line_delta, line_mem, line_modulo_len
 
@@ -57,7 +59,7 @@
      .			next_line_mem_pos,
      .			line_parent	( 0:line_ceiling ),
      .			line_use_cnt	( 0:line_ceiling ),
-     .			line_has_edges	( 0:line_ceiling ),
+!     .			line_has_edges	( 0:line_ceiling ),
      .			line_flink	( max_lines:line_ceiling ),
      .			line_blink	( max_lines:line_ceiling ),
      .			line_class	( 0:line_ceiling ),

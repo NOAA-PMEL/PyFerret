@@ -43,6 +43,12 @@
 *           that is returned from ef_get_axis_dates
 *
 *  ACM 8/00 Initialize variable lowlev
+* 
+*  ACM 11/01 Change testing of Time axis values to allow creating single-time
+*            step files (later perhaps appended together)
+*          -  single timestep and t>=0 use it
+*          -  single timestep and t<0  use date=time=0 (some abstract axes...)
+*          -  multiple timesteps and any t<0 bail out. V5d doesn't allow neg times
 *
 * This function takes up to 8 variables from ferret data sets
 * and writes them in Vis5D format.  Send in variables to write in the
@@ -958,7 +964,7 @@ C  Check number of columns and rows against Vis5D maxima.
 * If the time axis of grid is not a normal axis, convert to dates and
 * write to timestamp and datestamp in the form that Vis5D expects.
 
-      IF (numtimes .EQ. 1) THEN
+      IF (numtimes .EQ. 1  .AND. tax(1) .LT. 0) THEN    ! some normal axes have -t.
          datestamp(1) = 0
          timestamp(1) = 0
 

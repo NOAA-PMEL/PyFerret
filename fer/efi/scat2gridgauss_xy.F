@@ -600,8 +600,8 @@ C                     other end, and use in the gridding computation.
 
    20 FORMAT ('Input scattered x, y have different # of points', 2i8)
 
-   30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
-     . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
+   30 FORMAT ('Scattered points must be indexed I,J,or L (May be,
+     .  fcns of time). Use RESHAPE to list them in I,J,or L.')
 
    40 FORMAT (a1,
      .    ' Mapping scale parameter must be positive. Argument', I2)

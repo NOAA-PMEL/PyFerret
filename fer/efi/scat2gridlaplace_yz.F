@@ -504,8 +504,8 @@ C  Get coordinates of output axes.
 
    20 FORMAT('Input scattered y, z have different # of points', 2i8)
 
-   30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
-     . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
+   30 FORMAT ('Scattered points must be indexed I,J,or L (May be,
+     .  fcns of time). Use RESHAPE to list them in I,J,or L.')
 
    40 FORMAT ('Gridding parameter CAY must be nonnegative Argument 6')
 

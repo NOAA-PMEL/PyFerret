@@ -29,7 +29,7 @@
 !  let a = temp[y=0,x=180]
 !  let b = temp[y=60,x=180]
 !  plot a,b
-!  go "/home/ja8/ansley/FERRET/jnls/examples/fb.jnl" poly/over/palette=green/line/nolab a zaxlevitr b
+!  go fill_between poly/over/palette=green/line/nolab a zaxlevitr b
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO  fill_between polygon_command data axis [base]"

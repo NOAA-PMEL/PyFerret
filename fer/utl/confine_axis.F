@@ -192,6 +192,8 @@
 	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
 	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
 	      cx_calendar(cx) = .FALSE. 
+              status = err_ww_lims	! in case of error
+
 	   ENDIF
 * ... confine values to the limits of the defining grid
 	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )

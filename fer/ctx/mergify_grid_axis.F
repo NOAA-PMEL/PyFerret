@@ -52,6 +52,7 @@
 *                  documentation changed, only
 * V420:  11/95   - was incorrectly giving uvlim_need_xact for b = a[i=@max]
 *			where a = temp[i=1:160]
+* V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
 	
 #ifdef unix
 	include 'ferret.parm'
@@ -74,6 +75,7 @@
 * There are subtlities associated with limits that are given in the UVAR
 * definition.  These are classified in uvar_given under these codings:
 *	uvlim_irrelevant- limits are irrelevant: NEW=10.1
+*	uvlim_hidden	- limits hidden inside on another axis: NEW=FFT(v)
 *	uvlim_gvn_gnl	- limits given in a gen'l way: NEW=U[K=1:5]
 *	uvlim_gvn_xact	- limits that reduce to a pt.: NEW=U[K=1:5@AVE]
 *	uvlim_needed	- no limit info. given
@@ -100,7 +102,8 @@
 	IF ( itsa_uvar ) THEN
 
 * ... first component is a user-variable with this axis irrelevant
-	   IF ( uvar_given(idim,var) .EQ. uvlim_irrelevant ) GOTO 100
+	   IF ( uvar_given(idim,var) .EQ. uvlim_irrelevant
+     .	  .OR.  uvar_given(idim,var) .EQ. uvlim_hidden ) GOTO 100
 
 	   class = NEST_REGION_CLASS( idim, cx, cx_variable(cx) )
 

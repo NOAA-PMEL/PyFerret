@@ -49,11 +49,14 @@
 *            8-4-97 -- substituted this edited version which didn't get
 *            into CVS. This version calls open_gks_ws as long as not in
 *            batch mode.
+*  v5.4 *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT 
+*             here  set polymarker area attributes to bundled.
+*      *acm* 10/01  remove VMS includes
+
 
 	integer 	asf(13),error
 	LOGICAL         ITS_BATCH_GRAPHICS, batch
 
-#ifdef unix
 	include 'pltcom_dat.decl'! with declarations    
 	include 'PLTCOM.DAT'! with declarations    
 	include 'gkscm1_inc.decl'! with declarations    
@@ -62,16 +65,6 @@
 	include 'ppl_in_ferret.cmn'
         include 'ws_types.cmn'
         include 'shade_vars.cmn'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'! with declarations    
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'! with declarations    
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'! with declarations    
-	INCLUDE 'PPLV11INC:GKSCM1.INC'! with declarations    
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'! WITH DECLARATIONS    
-	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-        INCLUDE 'tmap_pplv11inc:ws_types.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 #ifdef atc_gks
 #   ifdef unix
@@ -201,7 +194,14 @@ C
 								
 	asf(1)  = gbundl					 
 	asf(2)  = gbundl					 
-	asf(3)  = gbundl					 
+	asf(3)  = gbundl		
+
+*	SET POLYMARKER AREA ATTRIBUTES BUNDLED *acm* 8/2001
+*       (see ws_line_bundld.F and ps_line_bundle.F)
+
+	asf(4)  = gbundl
+	asf(5)  = gbundl
+	asf(6)  = gbundl
         
 	if (area_bundles) then
 	   asf(11) = gbundl					 

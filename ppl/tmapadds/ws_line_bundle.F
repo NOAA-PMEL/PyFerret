@@ -41,6 +41,22 @@
 *	*jd* 8.10.93 mod to support XGKS line colors -- force setting
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
+*       *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT  
+* gsplr: wkid, line index, line type, linewidth scale factor, color index
+* gspmr: wkid, marker index, marker type(dot=1), 
+*        size scale factor (const for dot), color index
+
+*        NOTE: as of 10/3/01  this is not working consistently. With 
+*        marktype=1, the documentation says the symbol will be a "point"
+*        and that the mark size is ignored.  In fact the mark size is not 
+*        ignored, and if I use the argument as in the /THICKNESS qualifier 
+*        for lines, we get three different sizes for the marks. The marks 
+*        are not round dots however.  Also, when saving the plot to a metafile, 
+*        the postscript image has the dots looking much smaller than they 
+*        do on the Ferret window or in a gif image.  They are so small they 
+*        are invisible in ghostview except for the largest size. They do print 
+*        as tiny dots.
+
 	integer		zwsid,zwstype,i,j
 
 #ifdef atc_gks
@@ -53,7 +69,7 @@
 
 	integer		max_pline,max_pmark,max_text,max_fill_area
 	integer		max_pattern,max_color,error
-	integer		fktr
+	integer		fktr, marktype
                                        
 	real		thickness
 
@@ -63,6 +79,8 @@
 	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,
      .	            max_text,max_fill_area,max_pattern,max_color)
 	if (error .ne. 0) goto 1000
+
+        marktype = 1    ! polymarker type 1=dot, (4=circle)
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100
@@ -79,6 +97,7 @@
 	do 20 j = 1,6 ! colors
 	   do 10 fktr = 1,3
 	      call gsplr (zwsid,(fktr-1)*6+j,1,real(fktr),j)
+	      call gspmr (zwsid,(fktr-1)*6+j,marktype,real(fktr),j)
 10	   continue
 20	continue
 
@@ -87,9 +106,9 @@
 *	MONOCHROME WORKSTATIONS:
 100	do 120 j = 1,3
 	   thickness = real (j)
-
 	   do 110 i = 1,6
 	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
+	      call gspmr (zwsid,i+6*(j-1),marktype,real(fktr),1)
 110	   continue
 120	continue                   
 

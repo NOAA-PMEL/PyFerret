@@ -38,6 +38,22 @@
 *	Routine to set up the line bundles for monochrome PS ws's
 *	J Davison JISAO/PMEL/TMAP 3.23.89
 *	*jd* 2.19.92 mod to support atc gks
+* 
+*       *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT  
+* gsplr: wkid, line index, line type, linewidth scale factor, color index
+* gspmr: wkid, marker index, marker type(dot=1), 
+*        size scale factor (const for dot), color index
+
+*        NOTE: as of 10/3/01  this is not working consistently. With 
+*        marktype=1, the documentation says the symbol will be a "point"
+*        and that the mark size is ignored.  In fact the mark size is not 
+*        ignored, and if I use the argument as in the /THICKNESS qualifier 
+*        for lines, we get three different sizes for the marks. The marks 
+*        are not round dots however.  Also, when saving the plot to a metafile, 
+*        the postscript image has the dots looking much smaller than they 
+*        do on the Ferret window or in a gif image.  They are so small they 
+*        are invisible in ghostview except for the largest size. They do print 
+*        as tiny dots.
 
 	integer		zwsid,i,j
 #ifdef atc_gks
@@ -48,16 +64,20 @@
         data            ltype/1,-5,3,4,-3,-1/
 #endif
 	real		thickness
+        integer		marktype
 
 C	For linux *jd* 12.96 put initialization in data statements
 	
 *******************************************************************************
 
+        marktype = 1    ! polymarker type 1=dot, (4=circle)
 	do 20 j = 1,3
 	   thickness = real (j)*2.0 - 1.0
 
 	   do 10 i = 1,6
 	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
+	      call gspmr (zwsid,i+6*(j-1),marktype,thickness,1) 
+
 10	   continue
 20	continue
 

@@ -1,6 +1,6 @@
 	SUBROUTINE PPLLDC(K,Z,MX,MY,IMN,IMX,JMN,JMX,
-     *		PI,PJ,NX1,NY1,XMIN1,YMIN1,DX1,DY1)
-	REAL PI(*),PJ(*),Z(MX,MY)
+     *		PI,PJ,NX1,NY1,XMIN1,YMIN1,DX1,DY1,pplmem)
+	REAL pplmem(*),PI(*),PJ(*),Z(MX,MY)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -49,6 +49,11 @@ C**
 C              Mod *sh* 4.1.91 Bug fix in PPLLDV fixed, see below
 C              Mod *sh* 5.15.91 dx,dy put into common block
 C              Mod *sh* 3.7.97 *sh* replace limits if curvilinear plot
+* V54 *acm*9/01 - changes for dynamic pplus buffer, call PPLLDC via pplldc_envelope.c
+*                  which checks pplmem_nsize (new name for NSIZE) and allocates 
+*                  more if needed.
+*      *acm* 10/01  remove VMS includes
+
 c
 c	k	=0 already on an equally spaced rectangular grid
 c		=1 on a unequally spaced, but rectangular grid
@@ -70,7 +75,6 @@ c	dy	spacing of y grid points in output buffer
 C
 C
 C
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRID.INC'
 	INCLUDE 'ZGRIDD.INC'
@@ -79,16 +83,7 @@ C
 	INCLUDE 'PPLDAT.INC'
 	INCLUDE 'HD.INC'
 	INCLUDE 'DATA.INC'
-#else
-        INCLUDE 'pplv11inc:PARAMPL5.DAT'
-        INCLUDE 'pplv11inc:ZGRID.INC'
-        INCLUDE 'pplv11inc:ZGRIDD.INC'
-        INCLUDE 'pplv11inc:MISS.INC'
-        INCLUDE 'pplv11inc:LINES.INC'
-        INCLUDE 'pplv11inc:PPLDAT.INC'
-        INCLUDE 'pplv11inc:HD.INC'
-        INCLUDE 'pplv11inc:DATA.INC'
-#endif
+
 	LOGICAL		ITS_CURVILINEAR
 	REAL		xmn, xmx, ymn, ymx
 
@@ -113,13 +108,13 @@ C
 	    NY=MY
 	    DO 100 I=IMN,IMX
 	    DO 100 J=JMN,JMX
-100		X(NX*(J-1)+I)=Z(I,J)
+100		pplmem(NX*(J-1)+I)=Z(I,J)
 	    IV=NX*NY
 	    DO 101 I=1,NX
-101		X(IV+I)=PI(I)
+101		pplmem(IV+I)=PI(I)
 	    IV=IV+NX
 	    DO 102 J=1,NY
-102		X(IV+J)=PJ(J)
+102		pplmem(IV+J)=PJ(J)
 C
 	ELSE
 C
@@ -135,7 +130,7 @@ C
 	    J=0
 	    DO 400 JJ=JMN,JMX
 	    J=J+1
-	    X(NX*(J-1)+I)=Z(II,JJ)
+	    pplmem(NX*(J-1)+I)=Z(II,JJ)
 400	    CONTINUE
 	ENDIF
 	linen=0
@@ -179,17 +174,17 @@ C
 * index values, are wrong -- set symbols based on the true axis ranges
 	IF ( ITS_CURVILINEAR() ) THEN
 	   CALL GET_CURVILINEAR_LIMITS( xmn, xmx, ymn, ymx )
-	   call stmnmx(x,nsize,xmn,xmx,ymn,ymx)
+	   call stmnmx(pplmem,pplmem_nsize,xmn,xmx,ymn,ymx)
 	ELSE
-	   call stmnmx(x,nsize,xmin,xmax,ymin,ymax)
+	   call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
 	ENDIF
 	RETURN
         end
 
-	SUBROUTINE PPLLDV(K,Z,MX,MY,IMN,IMX,JMN,JMX)
+	SUBROUTINE PPLLDV(K,Z,MX,MY,IMN,IMX,JMN,JMX,pplmem)
 !	ENTRY PPLLDV(K,Z,MX,MY,IMN,IMX,JMN,JMX)
 ! ... start of copied from pplldc
-#ifdef unix
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRID.INC'
 	INCLUDE 'ZGRIDD.INC'
@@ -198,16 +193,8 @@ C
 	INCLUDE 'PPLDAT.INC'
 	INCLUDE 'HD.INC'
 	INCLUDE 'DATA.INC'
-#else
-        INCLUDE 'pplv11inc:PARAMPL5.DAT'
-        INCLUDE 'pplv11inc:ZGRID.INC'
-        INCLUDE 'pplv11inc:ZGRIDD.INC'
-        INCLUDE 'pplv11inc:MISS.INC'
-        INCLUDE 'pplv11inc:LINES.INC'
-        INCLUDE 'pplv11inc:PPLDAT.INC'
-        INCLUDE 'pplv11inc:HD.INC'
-        INCLUDE 'pplv11inc:DATA.INC'
-#endif
+
+        REAL pplmem(*)
 	REAL Z(MX,MY)
 	COMMON/LDDXDY/ DX,DY
 ! ... end of copied from pplldc
@@ -224,15 +211,15 @@ C
 	    IVLEN=NX*NY+NX+NY
 	    DO 500 I=IMN,IMX
 	    DO 500 J=JMN,JMX
-500	    X(IVLEN+NX*(J-1)+I)=Z(I,J)
+500	    pplmem(IVLEN+NX*(J-1)+I)=Z(I,J)
 	    IV=IVLEN+NX*NY
 	    DO 501 I=1,NX
-!501	    X(IV+I)=PI(I)      ! illegal use of PI (not passed)
-501	    X(IV+I)=x(NX*NY+i) ! reuse coords from PPLLDC
+!501	    pplmem(IV+I)=PI(I)           ! illegal use of PI (not passed)
+501	    pplmem(IV+I)=pplmem(NX*NY+i) ! reuse coords from PPLLDC
 	    IV=IV+NX
 	    DO 502 J=1,NY
-!502	    X(IV+J)=PJ(J)      ! illegal use of PJ (not passed)
-502	    X(IV+J)=x(NX*NY+nx+j) ! reuse coords from PPLLDC
+!502	    pplmem(IV+J)=PJ(J)              ! illegal use of PJ (not passed)
+502	    pplmem(IV+J)=pplmem(NX*NY+nx+j) ! reuse coords from PPLLDC
 	ELSE
 C
 C	DATA ALREADY GRIDDED
@@ -247,10 +234,10 @@ C
 	    J=0
 	    DO 700 JJ=JMN,JMX
 	    J=J+1
-	    X(IVLEN+NX*(J-1)+I)=Z(II,JJ)
+	    pplmem(IVLEN+NX*(J-1)+I)=Z(II,JJ)
 700	    CONTINUE
 	ENDIF
 	linen=0
-	call stmnmx(x,nsize,xmin,xmax,ymin,ymax)
+	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
 	RETURN
 	END

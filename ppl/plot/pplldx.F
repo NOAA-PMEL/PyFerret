@@ -1,4 +1,4 @@
-	subroutine pplldx(icode,xt,yt,npts,tstrt,tref,xdt)
+	subroutine pplldx(icode,xt,yt,npts,tstrt,tref,xdt,pplmem)
 C**
 C**    @(#)pplldx.F	1.2    9/8/88
 C**
@@ -22,6 +22,7 @@ c	npts	number of xt and yt points
 c	tstrt	start time, corresponds to a value of xt=1.0
 c 	tref	added 11.95, a reference time (~tstart) ferret will set
 c	xdt	sample rate in minutes for x
+c	pplmem  data buffer for PPLUS data
 c
 c	tstrt and xdt are used only for TAXIS,ON.
 c
@@ -95,6 +96,10 @@ c
 *		limits are not computed
 * V510 *sh* 3/00 - allow loading of up to NPOLYGON lines (instead of NLINES)
 *		 - the X or Y inputs no longer both flagged as bad if either is
+* V540 *acm*9/01 - changes for dynamic pplus buffer, call PPLLDX via pplldx_envelope.c
+*                  which checks pplmem_nsize (new name for NSIZE) and allocates 
+*                  more if needed.
+*      *acm* 10/01  remove VMS includes
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -108,7 +113,6 @@ c
 !	include 'pplinc:cmrdl.inc'
 !	include 'pplinc:ppldat.inc'
 
-#ifdef unix
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
 	include 'hd_inc.decl'
@@ -123,25 +127,10 @@ c
 	include 'DATA.INC'
 	include 'axisl_inc.decl'
 	include 'AXISL.INC'
-	include 'ppldat_inc.decl'
 	include 'PPLDAT.INC'
-#else
-	INCLUDE 'PPLV11INC:parampl5.dat'
-	INCLUDE 'PPLV11INC:hd.inc'
-	INCLUDE 'PPLV11INC:lines.inc'
-	INCLUDE 'PPLV11INC:taxis.inc'
-	INCLUDE 'PPLV11INC:cmrdl.inc'
-	INCLUDE 'PPLV11INC:data.inc'
-	INCLUDE 'PPLV11INC:axisl.inc'
-	INCLUDE 'PPLV11INC:ppldat.inc'
-#endif
 
-#ifdef unix
 	include 'miss_inc.decl'
 	include 'MISS.INC'
-#else
-	INCLUDE 'PPLV11INC:miss.inc'
-#endif
 
 * 	Add external stmt for linux port
 	external range
@@ -155,6 +144,8 @@ c
 !	character tstrt*10
 !	integer*4 mtmin,tstart,tstop,time,tmin
 
+        REAL pplmem(*)
+      
 	REAL xt(*),yt(*)
 	CHARACTER BC2WHOI*14, tstrt*(*), tref*(*)
 	REAL*8 	  WHOI2BC, tstart,tstop,time,tmin
@@ -188,10 +179,12 @@ c
 	if (translate) then	
 c
 c	time axis is on.
-c
+c ** acm mod 9/01  Compare tref(1:1) rather than just tref. After
+c **               passing thru c routine, a blank tref is somehow different??
+
 	    if(linen.eq.1)then
 		iform='LDX'
-		if(iautot.eq.1 .AND. tref.NE.' ')itstrt=tref 
+		if(iautot.eq.1 .AND. tref(1:1).NE.' ')itstrt=tref 
 	    endif		
 c
 c	calculate offset and rate for time data
@@ -206,7 +199,7 @@ c
 c	load data
 c
 	ix=ibase-1
-	iy=ix+nsize/2
+	iy=ix+pplmem_nsize/2
 	if(icode.eq.0)then
 	    do 100 i=1,npts
 * FERRET mod 10/93 - apply transformation to Y data
@@ -214,33 +207,33 @@ c
 	        IF ( flip ) THEN
 
 	          IF ( yeq .AND. yt(i).EQ.cmyeq ) THEN
-	             x(iy+i) = bad_flag
+	             pplmem(iy+i) = bad_flag
 
 		  elseif (translate) then
-		     x(iy+i)=(yt(i)-1.0)*rate+off
+		     pplmem(iy+i)=(yt(i)-1.0)*rate+off
 		  else
-		     x(iy+i)=yt(i)
+		     pplmem(iy+i)=yt(i)
 		  endif
 
 	          IF ( xeq .AND. xt(i).EQ.cmxeq ) THEN
-	             x(ix+i) = bad_flag
+	             pplmem(ix+i) = bad_flag
 	          ELSE
-		     x(ix+i)=xt(i)
+		     pplmem(ix+i)=xt(i)
 	          ENDIF
 
 	        ELSE
 	          IF ( yeq .AND. yt(i).EQ.cmyeq ) THEN
-	             x(iy+i) = bad_flag
+	             pplmem(iy+i) = bad_flag
 	          ELSE
-		     x(iy+i)=yt(i)
+		     pplmem(iy+i)=yt(i)
 	          ENDIF
 
 	          IF ( xeq .AND. xt(i).EQ.cmxeq ) THEN
-	             x(ix+i) = bad_flag
+	             pplmem(ix+i) = bad_flag
 	          ELSEIF (translate) then
-		     x(ix+i)=(xt(i)-1.0)*rate+off
+		     pplmem(ix+i)=(xt(i)-1.0)*rate+off
 	          else
-		     x(ix+i)=xt(i)
+		     pplmem(ix+i)=xt(i)
 		  endif
 
 		ENDIF
@@ -252,33 +245,33 @@ c
 	    do 200 i=1,npts
 * FERRET mod 2/89 - screen bad data
 	        IF ( ( xeq .AND. xt(i).EQ.cmxeq ) ) THEN
-	           x(ix+i) = bad_flag
-	           x(iy+i) = i     ! 3/00 mod
+	           pplmem(ix+i) = bad_flag
+	           pplmem(iy+i) = i     ! 3/00 mod
 	           GOTO 200
 	        ENDIF
 * end of 2/89 FERRET mod
-		x(iy+i)=i
+		pplmem(iy+i)=i
 	        if (translate) then
-		   x(ix+i)=(xt(i)-1.0)*rate+off
+		   pplmem(ix+i)=(xt(i)-1.0)*rate+off
 	        else
-		   x(ix+i)=xt(i)
+		   pplmem(ix+i)=xt(i)
 	        endif
 200	    continue
 	else
 	    do 300 i=1,npts
 * FERRET mod 2/89 - screen bad data
 	        IF ( ( yeq .AND. yt(i).EQ.cmyeq ) ) THEN
-	           x(ix+i) = bad_flag
-	           x(iy+i) = bad_flag
+	           pplmem(ix+i) = bad_flag
+	           pplmem(iy+i) = bad_flag
 	           GOTO 300
 	        ENDIF
 * end of 2/89 FERRET mod
 		if (translate) then
-		   x(ix+i)=(float(i)-1.0)*rate+off
+		   pplmem(ix+i)=(float(i)-1.0)*rate+off
 	        else
-		   x(ix+i)=float(i)
+		   pplmem(ix+i)=float(i)
 	        endif
-		x(iy+i)=yt(i)
+		pplmem(iy+i)=yt(i)
 300	    continue
 	endif
 * FERRET mod 2/89 - replace bad data LIMITS flags
@@ -291,13 +284,13 @@ c
 	ymax=xmax
 	do 400 i=1,npts
 * FERRET mod 2/89 -*re-mod 3/00*  eliminate bad data from min/max calculation 
-	IF ( x(ix+i).NE.bad_flag ) THEN
- 	  if(xmin.gt.x(ix+i)) xmin=x(ix+i)
-	  if(xmax.lt.x(ix+i)) xmax=x(ix+i)
+	IF ( pplmem(ix+i).NE.bad_flag ) THEN
+ 	  if(xmin.gt.pplmem(ix+i)) xmin=pplmem(ix+i)
+	  if(xmax.lt.pplmem(ix+i)) xmax=pplmem(ix+i)
 	ENDIF
-	IF ( x(iy+i).NE.bad_flag ) THEN
-	  if(ymin.gt.x(iy+i)) ymin=x(iy+i)
-	  if(ymax.lt.x(iy+i)) ymax=x(iy+i)
+	IF ( pplmem(iy+i).NE.bad_flag ) THEN
+	  if(ymin.gt.pplmem(iy+i)) ymin=pplmem(iy+i)
+	  if(ymax.lt.pplmem(iy+i)) ymax=pplmem(iy+i)
 	ENDIF
 400	continue
 c
@@ -391,8 +384,8 @@ c
 
 	lleng(linen)=npts
 	pbuf=1
-* ORIG	call stmnmx(x,nsize,xmin,xmax,ymin,ymax,0.,0.)
-	call stmnmx(x,nsize,xmin,xmax,ymin,ymax)
+* ORIG	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax,0.,0.)
+	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)
 	lnum = linen
 	if(linen.ge.NPOLYGON)then
 	    linen=NPOLYGON - 1

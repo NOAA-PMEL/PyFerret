@@ -33,6 +33,7 @@ plotxy.F\
 plotz.F\
 pltit.F\
 pplcmd.F\
+pplcmd_f.F\
 ppldata.F\
 pplldc.F\
 pplldx.F\

@@ -33,7 +33,11 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
+
+
+* V54: *acm* 9/01 changes for dynamic allocation of PPLUS memory.
+*                 Pass array X to SAVEZ
+*      *acm* 10/01  remove VMS includes
 *
 C**    @(#)mplot.F	1.1    3/10/88
 C**
@@ -45,7 +49,6 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRID.INC'
 	INCLUDE 'PLT.INC'
@@ -59,21 +62,7 @@ C**
 	INCLUDE 'XYLABP.INC'
 	INCLUDE 'FILNAM.INC'
 	INCLUDE 'LUNITS.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:ZGRID.INC'
-        INCLUDE 'pplinc:PLT.INC'
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:LABELS.INC'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:MPLOT.INC'
-        INCLUDE 'pplinc:MPLOTX.INC'
-        INCLUDE 'pplinc:MPLOTS.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:XYLABP.INC'
-        INCLUDE 'pplinc:FILNAM.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-#endif
+
 C     SAVE ORGS AND HEIGHTS 
 	IF(IMCNT.EQ.0)THEN 
 	    XORGT=XORG 
@@ -142,7 +131,7 @@ C
 	CALL SAVEXY(LMULT,X,NSIZE)
 	ELSE
 C
-	CALL SAVEZ(LMULT,X,IPTS(7),IPTS(10))
+	CALL SAVEZ(LMULT,X,IPTS(7),IPTS(10),X)
 	ENDIF
 	IF(IZTYP.NE.0)CALL SAVEZG(LMULT)
 C
@@ -178,17 +167,13 @@ C
       LABELY=LABYT 
       RETURN 
       END 
-	SUBROUTINE SAVEZ(LN,Z,NXS,NYS)
-	DIMENSION Z(NXS,NYS)
-#ifdef unix
+	SUBROUTINE SAVEZ(LN,Z,NXS,NYS,X)
+	DIMENSION Z(NXS,NYS),X(*)
+
 	include 'PARAMPL5.DAT'
 	include 'HD.INC'
 	include 'PPLDAT.INC'
-#else
-	include 'pplinc:parampl5.dat'
-	include 'pplinc:hd.inc'
-	include 'pplinc:ppldat.inc'
-#endif
+
         IF(JTYPE.EQ.0)THEN
             WRITE(LN)Z
         ELSE IF(JTYPE.EQ.-1)THEN

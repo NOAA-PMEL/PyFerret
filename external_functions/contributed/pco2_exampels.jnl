@@ -1,0 +1,16 @@
+! pco2_examples.jnl
+! examples using pco2 function from Andreas Schmittner 
+! ACM 6/1/04
+
+! 1) list the pco2 at T=20 deg C, S=35 su, DIC=2.1617 mmol/m3 and
+!    ALK=2.4588 mmol/m3: 
+
+yes? list pco2(20,35,2.1617,2.4588) 
+         
+! 2) produce contour plot of pco2 as function of ALK and DIC in umol/kg at
+!    T=20 deg C, S=35 similar to Fig. 8.4 in "Najjar, R. G. 1992. Marine Biogeochemistry. 
+!    In: Climate System Modeling, Trenberth, K. (ed.), Cambridge University Press, Cambridge, England, 241-280."
+
+yes? DEFINE AXIS/x=1990:2350:40 xax
+yes? DEFINE AXIS/y=2320:2500:20 yax
+yes? CONTOUR pco2(20,35,x[gx=xax]*1e-6*1024.5,y[gy=yax]*1e-6*1024.5)

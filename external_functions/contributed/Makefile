@@ -34,7 +34,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 # Targets
 #
-all:    ferret_cmn chdir.so
+all:    ferret_cmn chdir.so neutral.so pco2.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

@@ -1,0 +1,61 @@
+\cancel mode verify
+
+!**************************************************************
+! Description: Set ratio and margins 
+!
+! Usage: go ratio_set [ratio] [margin=30] 
+!
+! Example: 
+!  yes? go ratio_set 2 25 
+!
+! Notes:
+!  * margin (as percentage of the smallest hor/vert side of the viewport; default=30)
+!
+! Calls: go margins 
+!
+! Author:
+! Contact: 
+!
+! Author: Patrick Brockmann 
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$ 
+! $Name$
+! $Revision$
+! History:
+! Modification:
+!  * put ratio as optionnal
+!  * put default margins = 30
+!  * width calculation
+!         r*min(w,r*h)
+!
+!**************************************************************
+
+if $1"true|*>false" then
+   go margins reset
+   exit
+endif
+
+!**************************************************************
+def sym ME_ratio = $1
+if `($ME_ratio) lt -10 or ($ME_ratio) gt 10` then
+   message/continue Error\! Must have -10 <= ratio <= 10
+   exit 
+endif
+
+def sym ME_margin = $2%30%
+if `($ME_margin) lt 0 or ($ME_margin) gt 100` then
+   message/continue Error\! Must have 0 <= marg <= 100
+   exit 
+endif
+
+!**************************************************************
+def sym ME_plot_width = `(1-($ME_margin)/100)*min(($vp_width),($ME_ratio)*($vp_height))`
+def sym ME_plot_height = `($ME_plot_width)/($ME_ratio)`
+ppl axlen ($ME_plot_width), ($ME_plot_height)
+ppl origin `(($vp_width)-($ME_plot_width))/2`,`(($vp_height)-($ME_plot_height))/2` 
+
+!**************************************************************
+cancel sym ME_*
+
+!**************************************************************
+set mode/last verify

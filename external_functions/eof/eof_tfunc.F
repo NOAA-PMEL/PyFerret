@@ -36,6 +36,8 @@
 * Ansley Manke
 * Sep 1998
 *
+* Aug 2000 change fcn description; argument can be fcn of Z as well as x,y,t
+*
 * Compute EOF/s and time amplitude funcions from a 2-d field.  Based on 
 * program (coadseof.f, etc.) by Dai McClurg and Ansley Manke and calls 
 * Billy Kessler's implementation of Chelton's '82 method for finding EOFs 
@@ -106,7 +108,7 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg, 'Variable in x,y,t')
+      CALL ef_set_arg_desc(id, arg,'Variable in x,y,t; may be fcn of z')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
 
       arg = 2

@@ -36,6 +36,8 @@
 * Ansley Manke
 * July 1999
 *
+* Aug 2000 change fcn description; argument can be fcn of Z as well as x,y,t
+*
 * Compute EOF/s and time amplitude funcions from a 2-d field.  
 
 * Return statistics: number of eof's computed, percent variance explained
@@ -120,7 +122,7 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg, 'Variable in x,y,t')
+      CALL ef_set_arg_desc(id, arg,'Variable in x,y,t; may be fcn of z')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2

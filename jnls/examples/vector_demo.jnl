@@ -199,6 +199,12 @@ go scattered_vectors  vdtmp_uv.dat 15 clock
 PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=black/THICKNESS=2/nolabels arrow_x,arrow_y
 GO land blue
 
+say ...
+say Finally, please also run the demo script poly_vec_demo.jnl for
+say a new way to plot color-filled vector arrows in both rectangular
+say and curvilinear coordinates.
+say ...
+
 ! clean up
 cancel data vdtmp_u.dat, vdtmp_v.dat, vdtmp_uv.dat
 sp rm -f vdtmp_*

@@ -50,6 +50,7 @@
 *	  11/95 - support for context reconciliation (isact_class_reconcile)
 *	   1/96 - bug fix: implicit grid kludge use of cx for gridnum crashes
 *		- use "strip" to determine if reconcilliation axis is relevant
+* V500 *kob* 3/99- up VAR_CODE and var decl's from 8 to 64 chars
 
 * calling argument declarations:
 	INTEGER	act_class, idim, cx
@@ -57,7 +58,8 @@
 
 * internal variable declarations:
 	INTEGER	  TM_LENSTR1, slen, clen, ii, i
-	CHARACTER VAR_CODE*24, VAR_TRANS*64, var*24, out_buff*64
+* V500 *kob* 3/99- up VAR_CODE and var decl from 8 to 64 chars
+	CHARACTER VAR_CODE*64, VAR_TRANS*64, var*64, out_buff*64
 
 #ifdef unix
 	include	'tmap_dims.parm'

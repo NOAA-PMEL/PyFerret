@@ -1,5 +1,9 @@
 SRCS_F = \
 shellsort.F\
+eof_space.F\
+eof_stat.F\
+eof_tfunc.F\
+eofsubs.F\
 fftsubs.F\
 ffta.F\
 fftp.F\

@@ -77,7 +77,7 @@
 *                         statements.  use and octal initialization instead
 * punctuation
 	CHARACTER*1	pCR
-	PARAMETER     ( pCR = O'011' )
+	PARAMETER     ( pCR = O'015' )
 
 
 

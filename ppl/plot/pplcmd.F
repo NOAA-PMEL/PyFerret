@@ -74,6 +74,7 @@ C**
 *       J Davison 10.14.99 Mod to add CALENDAR command for multiple calendars
 * V510: *sh* 3/0 - bug fix: TXLABP 0 was interpreted as TXLABP 1 cuz
 *		of SIGN() call near top of this routine
+*       ACM 10/2000  Add VECTOR/STREAMLINE, alias STREAMLINE  
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -285,7 +286,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,LABOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(111)*7
+	CHARACTER COMM(112)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -308,7 +309,8 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
-     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR'/
+     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
+     *  'STREAMLI'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -398,6 +400,7 @@ C
      .	  .or.makep .eq. 'PLOTUV'
      .	  .or.makep .eq. 'VELVCT'
      .	  .or.makep .eq. 'VECTOR'
+     .	  .or.makep .eq. 'STREAM'
      .	  .or.makep .eq. 'SHADE'
      .	  .or.makep .eq. 'FILL'
      .	  .or.makep .eq. 'PLOTPOL'
@@ -415,7 +418,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7=ICOM
-	DO 20 I=1,111
+	DO 20 I=1,112
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -447,7 +450,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175),I
+     *  9174,9175,9390),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -459,7 +462,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175),I
+     *  9174,9175,9390),I
         end if
         goto 10
 
@@ -1460,6 +1463,10 @@ C	VECTOR
 9110	MAKEP='VECTOR'
 	IF(IFLG1)VSKPX=P(1)
 	IF(IFLG2)VSKPY=P(2)
+	GOTO 6001
+C       STREAMLINE (VECTOR/STREAMLINE)
+9390	MAKEP='STREAM'
+	IF(IFLG1)DENSITY=P(1)
 	GOTO 6001
 C	VECSET
 9120	IF(IFLG1)VLEN=P(1)

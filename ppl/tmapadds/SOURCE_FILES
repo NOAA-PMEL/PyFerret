@@ -43,6 +43,8 @@ shade.F\
 shade_key.F\
 shade_set.F\
 shade_sub.F\
+streamline.F\
+streamline_sub.F\
 tek4014_fill_rep.F\
 tek4014_line_bundle.F\
 tek4107_fill_rep.F\

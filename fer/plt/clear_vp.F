@@ -26,6 +26,7 @@
 
 * internal variable declarations:
 	INTEGER	ivp, iseg
+	LOGICAL ITS_BATCH_GRAPHICS
 
 	IF ( vp_num .EQ. mvp_dflt ) THEN
 

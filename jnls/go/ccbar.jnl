@@ -1,0 +1,91 @@
+\cancel mode verify
+
+! Continuous colorbar script.   
+! uses a shade plot inside a viewport to make a colorbar
+! 5/16/02  ms and acm
+
+! Usage:
+
+!    GO ccbar xloc yloc xlen ylen v1 v2 dv orient
+ 
+! where the following arguments are in inches:
+!       1  xloc = x-coordinate of lower left corner of clorbar 
+!       2  yloc = y-coordinate of lower left corner of clorbar 
+!       3  xlen = x length of colorbar    
+!       4  ylen = y length of colorbar
+!       5  v1 = lo value on colorbar 
+!       6  v2 = hi value on colorbar
+!       7  dv = delta value for colorbar labels
+!       8  orientation = v for vertical or h for horizontal, default v
+
+! Check inputs. All except last are required
+
+QUERY/IGNORE $1%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $2%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $3%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $4%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $5%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $6%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $7%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
+QUERY/IGNORE $8%v%
+
+
+let ccb_orient = $8"1|v>1|h>2|*>1"
+
+! Define the viewport to contain the colorbar
+
+let ccb_x1 = $1/($ppl$width)
+let ccb_y1 = $2/($ppl$height)
+let ccb_x2 = ($1+$3)/($ppl$width)
+let ccb_y2 = ($2+$4)/($ppl$height)
+
+define view/axes/text=1/xlimits=`ccb_x1`,`ccb_x2`/ylimits=`ccb_y1`,`ccb_y2` ccb_cbar
+set view ccb_cbar
+
+!  Set up to plot a variable with desired range
+let ccb_v1 = $5
+let ccb_v2 = $6
+let ccb_dv = $7
+
+def axis/x=1:2:1 ccb_xcb ; def axis/y=`ccb_v1`:`ccb_v2`:`ccb_dv` ccb_ycb
+let ccb_var = 0*x[gx=ccb_xcb] + y[gy=ccb_ycb]
+
+!  Set the label format
+let ccb_fmt = 0
+if `ccb_v1 ge -99` then
+  let ccb_fmt = 1
+  if `ccb_v2 lt 1000` then def sym ccb_yform = (I3)
+endif
+
+if `ccb_v1 ge -9` then
+  let ccb_fmt = 1
+  if `ccb_v2 lt 100` then def sym ccb_yform = (I2)
+endif
+
+if `ccb_v1 ge 0` then 
+  let ccb_fmt = 1
+  if `ccb_v2 lt 10` then def sym ccb_yform = (I1)
+endif
+
+if `ccb_v2 - ccb_v1 lt 2` then 
+  let ccb_fmt = 0
+endif
+
+!  Plot the variable within the colorbar.
+
+if `ccb_orient eq 1` then
+   shade/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=0,0,0,1/set ccb_var
+   if `ccb_fmt eq 1` then ppl yfor ($ccb_yform)
+   ppl shade
+else
+   shade/trans/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=1,0,0,0/set ccb_var
+   if `ccb_fmt eq 1` then ppl xfor ($ccb_yform)
+   ppl shade
+endif
+
+! Clean up
+can var ccb_*
+can axis ccb_xcb
+can axis ccb_ycb
+
+set mode/last verify

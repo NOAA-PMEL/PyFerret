@@ -48,10 +48,16 @@ C**
 *	Mod J Davison 11.20.95 for 4 digit year and seconds
 
 	CHARACTER*(*) IT1,IT2
+*  *kob*     - Need the below to stop OSF crashing of v5.4 - w/ pplldx envelopes
+*              and c/fortran argument passing, need exact length strings to 
+*              pass into whoi2bc
+	CHARACTER*14 IT1_14, IT2_14
 	INTEGER*4 JDAY
 	REAL*8 DATE2, DATE1, WHOI2BC, RDATE
 	
-	RDATE = WHOI2BC(IT2) - WHOI2BC(IT1)
+	IT1_14 = IT1
+	IT2_14 = IT2
+	RDATE = WHOI2BC(IT2_14) - WHOI2BC(IT1_14)
 	DIFF  = RDATE
 
 *       Original code

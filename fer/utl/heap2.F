@@ -1,5 +1,9 @@
       SUBROUTINE HEAP2 (RA, IB, BAD, N)
 
+C  Ansley Manke
+C  From Numerical Recipes, Heapsort subroutine SORT2
+C  with change noted below for the case where N=1
+
       INTEGER N
       REAL RA(*), IB(*), BAD
 
@@ -9,20 +13,19 @@
 * From SHELLR
 * since the input array may be large but sparse, begin by sorting
 * the missing value flags to the end of the list
-        ngd = 0
-        DO j = 1, n
-           IF (RA(j) .NE. bad) THEN
-              ngd = ngd + 1
-              RA(ngd) = RA(j)
-              IB(ngd) = IB(j)
-           ENDIF 
-        END DO
+      ngd = 0
+      DO j = 1, n
+         IF (RA(j) .NE. bad) THEN
+            ngd = ngd + 1
+            RA(ngd) = RA(j)
+            IB(ngd) = IB(j)
+          ENDIF 
+      END DO
 
-        DO j = ngd+1, n
-           RA(j) = bad
-           IB(j) = 0.0  ! just for house-keeping
-        END DO
-
+      DO j = ngd+1, n
+         RA(j) = bad
+         IB(j) = 0.0  ! just for house-keeping
+      END DO
 
       L = NGD/2 + 1
       IR = NGD
@@ -38,7 +41,9 @@
             RA(IR) = RA(1)
             IB(IR) = IB(1)
             IR = IR - 1
-            IF (IR .LE. 1) THEN
+            IF (IR .LE. 1) THEN	! *acm* Num Recipes has .EQ. here,
+				!       but this fails in the case where	
+				!       the loop starts with L=1
                RA(1) = RRA
                IB(1) = IIB
                RETURN

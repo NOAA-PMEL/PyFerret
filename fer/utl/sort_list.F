@@ -45,6 +45,8 @@
 
 * V510 *sh* 8/99
 * V530 *sh* use sorting routine SHELL for improved performance
+* V530 *acm* 1/23/01 replace shell sort with HEAPSORT for even 
+*	better performance.
 
 #ifdef unix
 	include 'errmsg.parm'

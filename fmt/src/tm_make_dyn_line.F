@@ -2,8 +2,6 @@
      .					units, modulo,
      .					outline, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -49,6 +47,7 @@
 * "outline" returns with the number of the new dynamic line.
 
 * created 1/98 *sh* - based on tm_get_like_dyn_line
+* V5325/01 *sh* - eliminate (annoying) warning message about unknown units
 
 * Arguments
 	LOGICAL		modulo
@@ -88,9 +87,9 @@
 #endif
 *
 * Local definitions
-	INTEGER		TM_FIND_LIKE_LINE, TM_FIND_LIKE_DYN_LINE,
+	INTEGER		TM_FIND_LIKE_DYN_LINE,
      .			TM_LENSTR1, TM_UNIT_ID,
-     .			inline, line_match, iunit, since_T0
+     .			inline, iunit, since_T0
 
 	REAL*8 		dp_epsilon
 	PARAMETER 	( dp_epsilon = 1.D-10)
@@ -133,7 +132,8 @@
            line_unit_code(inline) = TM_UNIT_ID( line_units(inline) )
 	   iunit = line_unit_code(inline)	
            IF ( iunit .EQ. 0 ) THEN
-	     CALL WARN('unknown axis units: '//units)
+!	     CALL WARN('unknown axis units: '//units)
+	     CONTINUE
 	   ELSEIF (iunit .EQ. -5) THEN    ! "-5" is "MONTHS"
                CALL WARN(units//
      .			' is ambiguous ... using 1/12 of 365 days.') 

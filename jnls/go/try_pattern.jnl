@@ -1,0 +1,33 @@
+\cancel mode verify  
+
+! Description: View 4 plots to illustrate patterns
+
+query/ignore $1"<usage:  GO try_pattern patt_name"
+
+set wind/clear
+
+set view ul
+shade/i=1:120/j=1:120/lev=(0,120,40)/pattern=$1/palette=black/title="black palette, 3 levels" j+i-i
+
+set view ur
+shade/i=1:120/j=1:120/lev=(0,120,24)/pattern=$1/palette=rainbow/title="rainbow palette, 5 levels" j+i-i
+
+set view ll
+shade/i=1:120/j=1:120/lev=(0,120,15)/pattern=$1/palette=rainbow/title="rainbow palette, 8 levels" j+i-i
+
+set view lr
+shade/i=1:120/j=1:120/lev=(0,120,8)/pattern=$1/palette=red/title="red palette, 15 levels" j+i-i
+
+set mode/last verify
+
+
+
+
+
+
+
+
+
+
+
+

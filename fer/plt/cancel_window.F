@@ -16,6 +16,7 @@
 *		will be detected by mismatch between wn_open AND 
 *		gui_window_reported
 * *js* 12.12.97 Don't allow windows to be canceled when running in batch mode
+* *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 
 #ifdef unix
 	include 'ferret_cmn/errmsg.parm'
@@ -61,7 +62,7 @@
 	ENDIF
         
         if (its_batch_graphics()) then
-           call warn('Can\'t cancel window when in batch mode')
+           call warn('Cannot cancel window when in batch mode')
            goto 1000
         endif
 

@@ -42,6 +42,7 @@
 *			 read because linux/nag f90 needed a format width.
 * *js* Don't create new window with set win/new if batch graphics active
 *      Don't set window to any number but 1 if batch graphics active
+* *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -122,7 +123,7 @@
 
 * ... Don't create new window if batch graphics active
         if (ITS_BATCH_GRAPHICS().and.qual_given(slash_new).gt.0) then
-           call warn('Can\'t create new windows '//
+           call warn('Cannot create new windows '//
      $          'when batch mode set')
            qual_given(slash_new) = 0
         endif

@@ -13,6 +13,7 @@
 #              External Functions utility functions in the executable.
 #              (see note in ef_utility/Makefile: Don't put these in a library.)
 # 12/99 *sh* - changed "debug" to "alpha" as DEBUG_TITLE
+#  3/00 *acm* - Add efi library External Functions, internally linked
 
 # include platform specific macro definitions
 #
@@ -30,18 +31,18 @@ CFLAGS += -I../gui
 
 GUI_FAKES = special/gui_fakes.o
 
-DIRS	= ccr ctx dat doo efn ef_utility fmt gnl gui ino mem ocn plt \
-	rpn special stk utl xeq
+DIRS	= ccr ctx dat doo efi efn ef_utility fmt gnl gui ino mem  \
+	ocn plt rpn special stk utl xeq
 
-LIBS	= ccr ctx dat doo efn ef_utility fmt gnl gui ino mem ocn plt \
-	rpn stk utl xeq
+LIBS	= ccr ctx dat doo efi efn ef_utility fmt gnl gui ino mem \
+	ocn plt rpn stk utl xeq
 
 CLEANDIRS = $(DIRS)
 
 DEPDIRS = ccr gui
 
 FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
-	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefn
+	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefi -lefn
 
 PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr 
 

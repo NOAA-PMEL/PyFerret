@@ -65,17 +65,17 @@ all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 
 debug:	.FRC
-	touch ccr/fermain_c.c
+	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
 	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug: .FRC
-	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
 		"GUI=GUI" all
 gui_debug: .FRC
-	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
@@ -83,7 +83,7 @@ gui_debug: .FRC
 		"GUI_FAKES="  all
 
 DODS_gui_debug: .FRC
-	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
@@ -92,7 +92,7 @@ DODS_gui_debug: .FRC
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=debug" all
 DODS_gui: .FRC
-	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
+	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \

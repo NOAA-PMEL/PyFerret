@@ -12,3 +12,13 @@ GO err541_fill_tics
 GO bn_reset
 GO err541_non_gregorian
 
+
+! Could not write or read a NetCDF file with a 4-D string variable.
+GO bn_reset
+GO err541_string4d
+
+
+! Cancel axis/all did not check whether axes were in use
+GO bn_reset
+GO err541_cancel_axes
+

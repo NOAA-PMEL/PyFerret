@@ -1,4 +1,5 @@
 !From Andrew Wittenberg, non-Gregorian time axis bug 01 Oct 2002 
+! pre-542, second axis has just one point.
 
 def ax/cal=Gregorian/t=.5:11.5:1/unit=month/t0=1-jan-1980 tax1
 show ax tax2

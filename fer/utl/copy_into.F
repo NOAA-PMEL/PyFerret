@@ -1,7 +1,5 @@
 	SUBROUTINE COPY_INTO ( src, msrc, cxs, dst, mdst )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,34 +38,79 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V200:  6/8/89
 *	10/16/89 - use *_SUB - avoid adjustable dimensioning with array
+* V533:  *sh* 6/01 - allow for the possibility that there is a delta value
+*		   - support for string arrays
 
-#ifdef unix
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER msrc, cxs, mdst
 	REAL    src( * ), dst( * )
 
-	CALL COPY_INTO_SUB( cxs,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
+* internal variable declarations
+	INTEGER idim, soffset, doffset,
+     .		smlo(4), smhi(4),
+     .		dmlo(4), dmhi(4),
+     .		cxlo(4), cxhi(4)
+
+* set-up modified limits wherever delta is significant
+* cuz the FORTRAN dimensioned size can only have delta of 1 
+	DO idim = 1,4
+	  IF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
+	    IF (mr_delta(idim,msrc).NE.mr_delta(idim,mdst)
+     .	   .OR. mr_delta(idim,msrc).NE.cx_delta(idim,cxs) ) CALL WARN
+     .		('Internl_delta_err')
+	    soffset = (mr_lo_ss(msrc,idim)-cx_lo_ss(cxs,idim))/
+     .			mr_delta(idim,msrc)  + 1
+	    doffset = (mr_lo_ss(mdst,idim)-cx_lo_ss(cxs,idim))/
+     .			mr_delta(idim,msrc)  + 1
+	    cxlo(idim) = 1
+	    cxhi(idim) = 1 + (cx_hi_ss(cxs,idim)-cx_lo_ss(cxs,idim))/
+     .			     mr_delta(idim,msrc)
+	    dmlo(idim) = doffset
+	    dmhi(idim) = doffset +
+     .			     (mr_hi_ss(mdst,idim)-mr_lo_ss(mdst,idim))/
+     .			     mr_delta(idim,msrc)
+	    smlo(idim) = soffset
+	    smhi(idim) = soffset + 
+     .			     (mr_hi_ss(msrc,idim)-mr_lo_ss(msrc,idim))/
+     .			     mr_delta(idim,msrc)
+	  ELSE
+	    cxlo(idim) = cx_lo_ss(cxs, idim)
+	    cxhi(idim) = cx_hi_ss(cxs, idim)
+	    dmlo(idim) = mr_lo_ss(mdst,idim)
+	    dmhi(idim) = mr_hi_ss(mdst,idim)
+	    smlo(idim) = mr_lo_ss(msrc,idim)
+	    smhi(idim) = mr_hi_ss(msrc,idim)
+	  ENDIF
+	ENDDO
+
+	IF (mr_type(msrc) .EQ. ptype_string ) THEN
+	   CALL COPY_PTR_INTO_SUB( cxlo, cxhi,
+     .			    src, smlo(1), smhi(1),
+     .				 smlo(2), smhi(2),
+     .				 smlo(3), smhi(3),
+     .				 smlo(4), smhi(4),
+     .			    dst, dmlo(1), dmhi(1),
+     .				 dmlo(2), dmhi(2),
+     .				 dmlo(3), dmhi(3),
+     .				 dmlo(4), dmhi(4) )
+	ELSE
+	   CALL COPY_INTO_SUB( cxlo, cxhi,
+     .			    src, smlo(1), smhi(1),
+     .				 smlo(2), smhi(2),
+     .				 smlo(3), smhi(3),
+     .				 smlo(4), smhi(4),
+     .			    dst, dmlo(1), dmhi(1),
+     .				 dmlo(2), dmhi(2),
+     .				 dmlo(3), dmhi(3),
+     .				 dmlo(4), dmhi(4) )
+	ENDIF
 
 	RETURN
 	END 

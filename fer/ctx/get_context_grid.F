@@ -1,7 +1,5 @@
 	SUBROUTINE GET_CONTEXT_GRID ( cx, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -133,6 +131,7 @@
 * V532: *sh* 6/01 - bug fix: err522_impl_ax_ignored.jnl -- the variable
 *		impl_grid wasn't initialized if cx_impl_grid was set
 *		in get_context_mods by gx=name
+* V533: *sh* 6/01 - set regrid transform for strides to prgrd_xact_pts
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -245,6 +244,8 @@
      .						status)
 	            cx_lo_ss(cx,idim) = 1
 	            cx_hi_ss(cx,idim) = line_dim(grid_line(idim,impl_grid))
+	            IF (cx_regrid_trans(idim,cx) .EQ. unspecified_int4 )
+     .			 cx_regrid_trans(idim,cx) = prgrd_xact_pts
 	         ELSE
 * ... dont clip to axis world limits
 * Note: It would be nicer not to clip but instead to allow any new size of
@@ -374,7 +375,7 @@
 	   IF ( use_axis .EQ. std_axis ) THEN
 	      cx_regrid_trans( idim, cx ) = prgrd_exact
 	   ELSEIF ( cx_regrid_trans(idim,cx) .EQ. unspecified_int4 ) THEN
-	      cx_regrid_trans( idim, cx ) = prgrd_linear_interp	      
+	      cx_regrid_trans( idim, cx ) = prgrd_linear_interp
 	   ENDIF
  100	CONTINUE
 

@@ -1,7 +1,5 @@
 	SUBROUTINE DELETE_VARIABLE ( mr )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,7 +38,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 4/1/86
 * revision 0.1 - 1/29/87 - change to leave illegal limits in mr if deleted
@@ -60,6 +57,7 @@
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V510: 2/00 *sh* - free up the mr_grid pointer when variable is deleted
 * V530: 8/00 *sh* - if the variable was a string array then free the C memory
+* V533: 6/01 *sh* - allow for string variables with strides
 
 #ifdef unix
 	include		'tmap_dims.parm'
@@ -77,12 +75,12 @@
 	INTEGER		mr
 
 * internal variable declarations:
-	INTEGER		MGRID_SIZE, size, idim, prev, next
+	INTEGER		MGRID_SIZE_DELTA, size, idim, prev, next
 
 * if this is a srting array variable then free the "C" memory allocated
 	IF ( mr_type(mr)      .EQ. ptype_string 
      . .AND. mr_protected(mr) .NE. mr_table_entry_only ) THEN
-	   size = MGRID_SIZE(mr)
+	   size = MGRID_SIZE_DELTA(mr)
 	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
 	ENDIF
 

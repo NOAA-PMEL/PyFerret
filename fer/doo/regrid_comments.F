@@ -1,7 +1,5 @@
 	CHARACTER*(*) FUNCTION REGRID_COMMENTS ( cx, mlen )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -44,9 +42,10 @@
 * V450: 1/97 - corrected problem of missing blank when no units were defined
 * V510: 4/00 *sh* - netCDF grids are now dynamic, so "(" as first character
 *		    of name is basis for not using the associated variable
+* V533: 6/01 *sh* - @XACT doesn't need a comment if for xact strides
 
-#ifdef unix
 	include	'tmap_dims.parm'
+	include	'implicit.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'xtm_grid.cmn_text'
@@ -56,16 +55,6 @@
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN_TEXT'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER cx
@@ -103,8 +92,11 @@
 	   mlen = mlen + 1	! blank at end in case there's more
 * ... only go on if there are transforms to report
 	   DO 10 idim = 1, 4
- 10	   IF (cx_regrid_trans(idim,cx).NE.prgrd_linear_interp
-     .	 .AND. cx_regrid_trans(idim,cx).NE.prgrd_exact ) GOTO 50
+	     IF (cx_regrid_trans(idim,cx) .NE. prgrd_linear_interp
+     .	   .AND. cx_regrid_trans(idim,cx) .NE. prgrd_exact ) THEN
+	       GOTO 50
+	     ENDIF
+ 10	   CONTINUE
 	   RETURN
 	ENDIF
 
@@ -118,7 +110,9 @@
 	   IF ( axis .NE. grid_line(idim,std_grid) ) THEN
 	      n = n + 1
 	      non_atlin = non_atlin
-     .		     .OR. cx_regrid_trans(idim,cx).NE.prgrd_linear_interp
+     .	      .OR. ( cx_regrid_trans(idim,cx).NE.prgrd_linear_interp
+     .		.AND. .NOT.( cx_regrid_trans(idim,cx) .EQ. prgrd_xact_pts
+     .	               .AND. line_class(axis) .EQ. pline_class_stride ) )
 	   ENDIF
  100	CONTINUE
 

@@ -23,7 +23,8 @@
 *		insufficient for result. Should return original data rather
 *		than an all-bad field.
 * V455:  9/97 - OFFSET_SS returns status
-*	11/97 - bug fix: @ITP component WW coords must bracket result
+*	11/13/97 - bug fix: @ITP component WW coords must bracket result
+*	        (11/18/97 - repaired bug introduced 11/13)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -160,8 +161,8 @@
 	      ww    = cx_lo_ww(idim,res_cx)
 	      ss_lo = cx_lo_ss(com_cx,idim)
 	      ss_hi = cx_hi_ss(com_cx,idim)
-	      ww_lo = TM_WORLD( ss_lo, grid, idim, box_middle )
-	      ww_hi = TM_WORLD( ss_hi, grid, idim, box_middle )
+	      ww_lo = TM_WORLD( ss_lo, grid, idim, box_lo_lim )
+	      ww_hi = TM_WORLD( ss_hi, grid, idim, box_hi_lim )
 * ... allow ww_lo>ww_hi to accomodate time encodings
 	      IF ( (ww-ww_lo)*(ww-ww_hi) .GT. 0.0D0 ) GOTO 5300 
 

@@ -61,7 +61,7 @@ can region/x/y
 let/quiet mp_x = $2
 let/quiet mp_y = $3
 
-go trackplot $1 x_page*mp_mask y_page*mp_mask $4"0"
+go trackplot $1 x_page*mp_mask y_page*mp_mask $4"0" $5"1" $6"3"
 
 !
 ! Restore the region, grid and map projection equations

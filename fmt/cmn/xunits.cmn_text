@@ -23,7 +23,7 @@
      .			pun_millibars,
      .			pun_decibars
 
-	PARAMETER     ( pun_1st_time  = -15,
+	PARAMETER     ( pun_1st_time  = -16,
      .			pun_last_time = -1,
      .			pun_1st_len   = 1,
      .			pun_last_len  = 15, 

@@ -60,6 +60,8 @@
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
 *
+* V500 *kob* 4/99 - removed unneeded variable_record namelista
+*
 * arguments:
 *	dset_num	- number assigned to this data set (output)
 *			  ( 1 <= dset_num <= maxdsets - see COMMON XDSET_INFO)
@@ -130,13 +132,6 @@
      .				d_alert_on_output,d_message
 *
 *
-	NAMELIST /VARIABLE_RECORD/d_var_code,d_var_title,
-     .				d_var_titl_mod,d_var_units,
-     .				d_grid_name,d_missing_flag,
-     .				d_bad_flag,d_ordering,
-     .				d_grid_start,d_grid_end,
-     .				d_precision,d_aux_set_num
-
 *
 	NAMELIST /EXTRA_RECORD/ d_extra_des_info
 *

@@ -19,4 +19,12 @@ go bench_sortl.jnl
 set view full
 set wind/clear
 
+go bench_samplexy.jnl
+set view full
+set wind/clear
+
+go bench_samplet_date.jnl
+set view full
+set wind/clear
+
 

@@ -16,7 +16,9 @@
 * V491:  12/97 - add check to ensure natom_rpn returned from RPN isn't
 *                greater than max_uvar_items  *kob*
 * V495: 7/7/98 - *sh* variable names in single quotes - don't upcase them
-
+*     : 9/30/98 - NAG F90 (linux) received error on above change.  
+*                 need to put single  tick between double quotes  *kob*
+*               - also needed a definition for HEXDF variable used
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
 	include 'ferret_cmn/errmsg.parm'	
@@ -43,6 +45,13 @@
      .                  rpn_order(maxatoms), i2, is, ie
 	CHARACTER	err_string*255, c*1
 
+* kob 9/30/98 This needed for 7/7/98 code addition
+#ifdef FORTRAN_90
+      INTEGER HEXDF
+      DATA HEXDF/Z'DF'/
+#endif
+
+
 * initialize
 
 * algebraic expression too long ?
@@ -68,7 +77,12 @@
 	DO 100 i = txstart, txend
 	   i2 = i2 + 1
 	   c = text(i:i)
+* *kob* NAG f90 gave error on statement with three tick marks
+#ifdef FORTRAN_90
+	   IF ( c .EQ. "'" ) inquote = .NOT.inquote
+#else
 	   IF ( c .EQ. '\'' ) inquote = .NOT.inquote
+#endif
 	   IF ( inquote .OR. (c .LT. 'a' .OR. c .GT. 'z' ) ) THEN
 	      uvar_text(uvar)(i2:i2) = c   ! preserve case
 	   ELSE

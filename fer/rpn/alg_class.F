@@ -12,7 +12,8 @@
 *
 * V200: 11/24/89
 * V495: 7/7/98 - add single quotes as another character class (11) (old 11->12)
-
+*     : 9/30/98 - NAG F90 (linux) received error on above change.  
+*                 need to put single  tick between double quotes  *kob*
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 #else
@@ -63,7 +64,12 @@
 	   ALG_CLASS = 8
 	ELSEIF ( ctr.EQ.'.' ) THEN
 	   ALG_CLASS = 10
+* *kob* NAG f90 gave error on statement with three tick marks
+#ifdef FORTRAN_90
+	ELSEIF ( ctr.EQ. "'" ) THEN
+#else	
 	ELSEIF ( ctr.EQ.'\'' ) THEN
+#endif
 	   ALG_CLASS = 11
 	ELSE
 	   ALG_CLASS = 12

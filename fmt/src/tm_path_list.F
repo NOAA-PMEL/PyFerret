@@ -35,6 +35,7 @@
 *	     LIST/FORMAT=cache/FILE=directory  (DODS caching)
 * 7/97 *kob* Minor modification to error reporting.  Don't want to output
 *            a default extension, if an explicit extension is used.
+* 12/97 - *kob* - added check for "~/xxx" because it was cashing core dump
 * calling argument declarations:
       LOGICAL       do_errmsg
       INTEGER       status
@@ -91,8 +92,17 @@
               
 * set the tilde buff to be either ".~nnn~" or blank. Also reset filename
 * length so that it doesn't include the ".~nnn~"
+*
+* kob 12/9/97 - "go ~/xxxx" caused a crash, and the reason is that in that 
+*                instance, fname is only length 1, so tilde+1 exceeds the 
+*                bounds - 
       tilde = INDEX(fname,'~')
-      end_tilde = INDEX(fname(tilde+1:), '~')
+      flen = LEN(fname)
+      IF (tilde .EQ. flen) THEN
+	 end_tilde = INDEX(fname(tilde:), '~')
+      ELSE
+	 end_tilde = INDEX(fname(tilde+1:), '~')
+      ENDIF
       if (dot .EQ. tilde-1) dot_next_to_tilde = .true.
 
       if (tilde .EQ. 0) then

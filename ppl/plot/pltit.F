@@ -76,6 +76,8 @@
 *         computations need to be done in double precision.
 * *acm*   V550 12/02 For lines which are plotted with symbols, plot a 
 *            key having 3 points.
+* *acm*   v552  3/03 add word POLYGON so can say PPL FILLPOL, or PPL POLY
+ 
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
@@ -425,8 +427,8 @@ C ACM Add FLOWLINE call based on VECFLD
 	    IF ( interrupted ) GOTO 3333
 ***************************************************
 * TMAP addition for FILLPOL call
-	ELSE IF(MAKEP.EQ.'FILLPOL')THEN
-	    CALL FILLPOL(X,NXS,XF,YF)
+	ELSE IF(MAKEP.EQ.'FILLPOL' .OR. MAKEP.EQ.'POLYGON')THEN
+	    CALL FILLPOL(X,NXS,XF,YF,iwind)
 	    IF ( interrupted ) GOTO 3333
 
 	    if (sline) then

@@ -60,19 +60,15 @@ C
 *		 - involved eliminating CALL TRANS, which means that there
 *			isn't a need to copy the X,y coords to x/ypolybase
 * V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
+* V552 3/03 *acm* allow clipping to be set on or off via IWIND (ppl window off)
+* V552 3/03 *acm* Check for too many levels, as is done for FILL and CONTOUR plots.
 
-
-#ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
-	DIMENSION X(NXS)
+        INTEGER NXS
+	REAL X(NXS), XF, YF
 
-#ifdef unix
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'axis_inc.decl'
@@ -104,20 +100,8 @@ C
         include 'shade_vars.cmn'	! sh 11/97
 	include		'cont_inc.decl'
 	include		'CONT.INC'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PLTL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_TAXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_AXISL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
-#endif
+        include         'errmsg.parm'
+
 
 * 3/99 *kob*
 	EXTERNAL RANGE
@@ -141,6 +125,8 @@ C
 	real		dz,znp,zmp
 	integer		i,j,uprdn
 	logical         line_it, fill_it
+        integer         slen1, slen2
+        CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
 
         parameter       (epsilon = 1e-6)
 
@@ -193,7 +179,7 @@ C       Check switches
 
 	call gqclip (error,cflag,ndc)
 	if (error .ne. 0) goto 1000
-	if (cflag .ne. gclip) call gsclip (gclip)
+	if (cflag .NE. iwind) call gsclip (iwind)
 
 *************************************
 
@@ -294,7 +280,9 @@ C       Handle rounding errors *jd* 6.27.95/12.30.97
 		 IF (ABS(ZNP + DZ*(NLEV2-1) - ZMP) .LE. 
 	1	     ABS(EPSILON*ZMP)) 
 	1	      NLEV2 = NLEV2 + 1
-	      ENDIF
+	      ENDIF 
+
+              IF (NLEV2 .GT. ICNLEV) GO TO 5000
 
 	      DO 110 I=1,NLEV2 
 		 ZLEV(I)=ZNP+DZ*FLOAT(I-1) 
@@ -315,6 +303,9 @@ C       CONTOUR requires more than one level to work but SHADE doesn't
 	END IF 
 
 C ------------
+
+
+        IF (NLEV2 .GT. ICNLEV) GO TO 5000
 
 *	DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
 
@@ -423,6 +414,18 @@ C ------------
  1100	CALL COLOR(IPEN(0))
 
 	RETURN
+
+C  Error exit when too many levels specified.
+C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
+
+ 5000   ii = ICNLEV
+        buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
+        buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
+        err_msg = '# of levels > '// buff1(1:slen1) //
+     .          '  (' // buff2(1:slen2) // ')'
+        CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
+ 5002   return
+
 	END
 
 

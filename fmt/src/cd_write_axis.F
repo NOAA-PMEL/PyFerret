@@ -20,6 +20,8 @@
 *	   "degrees_east", "degrees_north"
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* v4.91 *kob* 12/97 - added maxchildlen paramater for the max length of 
+*                     a child axis
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -78,6 +80,9 @@ xx        include 'xxtmap_format/netcdf.inc'
      .          name*24, units*48
       REAL*8 TM_WORLD
 !      REAL*8 val8_cdf, val8_tmap
+* 12/97
+      INTEGER maxchildlen
+      PARAMETER (maxchildlen = 24)
 
 * initialize
       iaxis = grid_line(idim, grid)
@@ -102,7 +107,8 @@ xx        include 'xxtmap_format/netcdf.inc'
       axlen = hi - lo + 1
       IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
          name = CD_CHILDAX_NAME( name, lo, hi, nlen )
-         nlen = MIN(nlen,16)
+* *kob* 12/9/97 - use new paramater maxchildlen in length check
+         nlen = MIN(nlen,maxchildlen)
       ENDIF
       dimid = NCDID( cdfid, name(:nlen), cdfstat )
 

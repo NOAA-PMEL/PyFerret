@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version  /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61936860 Jun 14 13:45 /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
+Running FERRET version /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61943340 Jun 18 15:16 /home/ja8/ansley/FERRET_v_5_6_0_release/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: checkins for v5.70, plus  fix for bug 882 wasn t complete; add SET AXIS/CALENDAR /T0 /UNITS
+Note: everything checked in for v57beta2, and changes to cd_get_1_axis so EDGES attribute treated exactly as in previous versio
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET_v_5_6_0_release/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Mon Jun 14 14:04:25 PDT 2004
+Beginning at Fri Jun 18 15:20:59 PDT 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -508,6 +508,8 @@ def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
  **ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*number of axis coordinates (7)
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+ *** NOTE: bounds "TAX_bnds" do not enclose point on axis TAX
+ *** NOTE: Substituting coordinate midpoints
  **ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP
 def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -568,4 +570,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Jun 14 14:15:22 PDT 2004
+Ended at Fri Jun 18 15:33:08 PDT 2004

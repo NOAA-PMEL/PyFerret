@@ -1,10 +1,20 @@
-! test vector plots in curvilinear coordinates 
-
+! bn_vec_curv.jnl
+!
+! vector plots with curvilinear coordinates
+! shift the data north so as to see effect of projection.   
+!
+! ACM  10/23/01 
+!
 use gt4d011
-set reg/x=138w:122w/y=3s:3n/k=1/l=5
-go mp_sinusoidal; set grid u
-vec u,v,x_page,y_page
+def axis/y=20:70:1 northax
 
-go mp_orthographic 230 0; set grid u
-fill/nolab/noax psi,x_page,y_page
-vec/over/len=20 u,v,x_page,y_page
+let vn = v[gy=northax@asn]
+let un = u[gy=northax@asn]
+
+set reg/x=138w:122w/y=55:70/k=1/l=5
+
+go mp_orthographic 230 60; set grid un
+vec/noax/len=1  un*0,vn*0+1,x_page,y_page
+vec/over/len=1  un*0+1,vn*0,x_page,y_page
+vec/over/len=1  un*0+1,vn*0+1,x_page,y_page
+vec/over/len=2  un*0+1,vn*0+1,x_page,y_page

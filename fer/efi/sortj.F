@@ -39,6 +39,7 @@
 * ACM 1/3/2001  implement with merge rank translated from f90, originally from 
 *   http://www.fortran-2000.com/rank/index.html#1.1
 *
+* V5.4  12/11/2001  typo in argument description for DAT
 *
 * This function sorts data on Y axis in increasing order.  
 * Returns index of sorted values.
@@ -115,7 +116,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
-      CALL ef_set_arg_desc(id, arg, 'variable to sort in L')
+      CALL ef_set_arg_desc(id, arg, 'variable to sort in J')
       CALL ef_set_axis_influence(id, arg, YES, NO, YES, YES)
 *                                                                     ^
 *                                                                     |

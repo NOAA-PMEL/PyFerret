@@ -56,6 +56,9 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* v500 - *kob* 3/99 -  initialize ds_var_code, ds_var_units, ds_var_title
+*                      and ds_var_titl_mod w/ char_inits of proper new value
+	
 
 #ifdef unix
 #include "tmap_dset.parm"		
@@ -111,10 +114,10 @@
 	DATA	ds_time_axis		/maxdsets*int4_init/
 
 * Next clear variables associated with variable in that data set.
-	DATA	ds_var_code		/maxvars*char_init08/
-	DATA	ds_var_title		/maxvars*char_init40/
-	DATA	ds_var_titl_mod		/maxvars*char_init40/
-	DATA	ds_var_units		/maxvars*char_init24/
+	DATA	ds_var_code		/maxvars*char_init64/
+	DATA	ds_var_title		/maxvars*char_init128/
+	DATA	ds_var_titl_mod		/maxvars*char_init128/
+	DATA	ds_var_units		/maxvars*char_init64/
 	DATA	ds_grid_number		/maxvars*int4_init/
 	DATA	ds_missing_flag		/maxvars*real4_init/
 	DATA	ds_bad_flag		/maxvars*real4_init/

@@ -15,6 +15,11 @@
 *        7/29/92 - uses ALIAS_ID
 * V300: take abnormal return if alias substitution occurs
 * V313: *sh* AIX port.  logic for replacing buffer doesn't work
+* v4.5: 8/97 *kob* AIX bug fix - added check for cpos to locate tabs in
+*                           command line
+*     :10/97 *kob* Check to see if alen = clen. if so set buffer to the 
+*                  alias.  new version of DEC fortran caught the error in
+*                  the string concatenation.
 
 * calling argument declarations:
 	INTEGER	  clen
@@ -22,7 +27,10 @@
 
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, ALIAS_ID, 
-     .          alen, true_len, i, spos, bpos
+     .          alen, true_len, i, spos, bpos, cpos
+
+        CHARACTER*1     tab
+        PARAMETER     ( tab = CHAR(9) )
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -40,8 +48,13 @@
         alen = 8
         spos = INDEX(buffer(:alen),'/')
         bpos = INDEX(buffer(:alen),' ') 
+* 8/97 check for tab - it can be end of alias
+	cpos = INDEX(buffer(:alen),tab)
+	IF ( cpos .EQ. 0 ) cpos = clen + 1
+	if ( bpos .EQ. 0 ) bpos = clen + 1
+	bpos = MIN( cpos, bpos )
         IF ( spos .NE. 0 ) alen = spos - 1
-        IF ( bpos .NE. 0 ) alen = MIN( alen, bpos - 1 )
+        alen = MIN( alen, bpos - 1 )
         
 * identify the alias
         i = ALIAS_ID( buffer(:alen) ) 
@@ -49,12 +62,17 @@
 * substitute alias text if appropriate
         IF ( i .NE. unspecified_int4 ) THEN
 	   true_len = TM_LENSTR1( alias(i) )
+* 10/97 *kob* added check to see if passed in length is same as alias lenght
+	   IF (alen .EQ. clen) THEN
+	      buffer = alias(i)
+	   ELSE
 #ifdef AIX_XLF
-	   risc_buff = buffer(alen+1:clen)
-	   buffer = alias(i)(:true_len)//risc_buff(:clen-alen)
+	      risc_buff = buffer(alen+1:clen)
+	      buffer = alias(i)(:true_len)//risc_buff(:clen-alen)
 #else
-	   buffer = alias(i)(:true_len)//buffer(alen+1:clen)
+	      buffer = alias(i)(:true_len)//buffer(alen+1:clen)
 #endif
+	   ENDIF
 	   clen = clen + ( true_len - alen )	   
 	   RETURN 1    ! abnormal return if substitution
 	ENDIF

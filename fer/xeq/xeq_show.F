@@ -87,7 +87,8 @@
 * V420:  1/97 - bug fix: SHOW MEMORY/ALL is ignoring /ALL
 * V450:  7/97 - don't show child variables in SHOW VARIABLE
 *             - added SHOW FUNCTION -- with template matching (7/22)
-
+* *kob*  10/97 - added check for string length of zero at 1750.  This error
+*                caught by new DEC f77 version
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 #	include "tmap_format/tmap_dset.parm"
@@ -914,8 +915,14 @@
 	      GOTO 1710			! no match
 	   ENDIF
 * ... display the symbol definition
- 1750	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+* *kob* 10/97 added check for len = 0
+ 1750	   IF ( len .GT. 0 ) THEN
+	       CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .			arg30(:len0)//' = "'//show_str(:len)//'"', 0)
+	   ELSE 
+               CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .			arg30(:len0)//' = ""', 0)
+	   ENDIF
            GOTO 1710
 	ENDIF
 

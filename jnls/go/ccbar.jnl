@@ -8,23 +8,24 @@
 ! 
 !   yes? SET VIEW full      ! Or any other viewport
 !   yes? SHADE var          ! Or FILL var
-!   yes? GO ccbar xloc yloc xlen ylen v1 v2 dv orient
+!   yes? GO ccbar x1 x2 y1 y2 v1 v2 dv orient
 !
-!         x1 = Lower x bound (in fractional units) for colorbar 
-!         x2 = Upper x bound (in fractional units) for colorbar 
-!         y1 = Lower y bound (in fractional units) for colorbar 
-!         y2 = Upper y bound (in fractional units) for colorbar 
+!         x1 = x lo limit of rectangle for the colorbar
+!         x2 = x hi limit of rectangle for the colorbar
+!         y1 = y lo limit of rectangle for the colorbar
+!         y2 = y hi limit of rectangle for the colorbar
+
 !         v1 = lo value on colorbar 
 !         v2 = hi value on colorbar
-!         dv = delta value for colorbar axis
+!         dv = delta value for clorbar axis
+!
 !         orientation = v for vertical or h for horizontal, default v
-!         palette to use, optional (defaults to default Ferret palette)
+!         palette to use, optional
 
-! Where the first four arguments are in fractions of the
-! ENTIRE PLOT PAGE, as in the DEFINE VIEWPORT command, whose 
-! qualifiers /XLIMITS=x1,x2 and /YLIMITS=y1,y2 allow the user 
-! to specify a portion of the graphics window to be the defined
-! viewport.
+! Where the first four arguments define a rectangle, as a fraction 
+! of the entire plot page.  This is equivalent to how DEFINE VIEWPORT 
+! works.  Its qualifiers /XLIMITS=x1,x2 and /YLIMITS=y1,y2 allow the 
+! user to specify a portion of the graphics window as the viewport.
 
 ! Check inputs. First 7 are required
 

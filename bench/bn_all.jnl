@@ -341,6 +341,9 @@ GO bn_multi_line_labels.jnl
 GO bn_reset
 GO bn552_bug_fixes
 
+GO bn_reset
+GO bn_set_var_scale_off.jnl
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

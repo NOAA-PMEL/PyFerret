@@ -1,0 +1,9 @@
+*	pass char variables from pplcmd.F through to pplcmd_f.F,
+*       bypassing pplcmd_c.c
+*  v5.33 acm 9/01
+
+
+      CHARACTER*1 PPLFROMI, PPLLINEI
+      CHARACTER*50 PPLCOMBUF(5)
+
+      COMMON/PPLSTRINGS/ PPLFROMI, PPLLINEI, PPLCOMBUF

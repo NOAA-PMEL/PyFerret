@@ -1,4 +1,4 @@
-
+set window/asp=1/siz=0.5
 use gtbc011
 set reg/k=1/l=1/y=0:20
 vector/aspect u,v

@@ -22,3 +22,9 @@ GO err541_string4d
 GO bn_reset
 GO err541_cancel_axes
 
+
+! Make sure delimited reads are processing dates correctly
+! *kob*
+GO bn_reset
+GO err541_date_delim
+

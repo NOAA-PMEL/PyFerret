@@ -55,7 +55,18 @@ GO bn_reset
 GO err540_cd_use_recdim
 
 !missing data in xpts,ypts sample points wasnt checked 
+go bn_reset
 GO err540_samplexy_missing
 
 ! test the fixed delta stride bug
+go bn_reset
 GO err540_strides_rev.jnl
+
+! unknown data type for clauses with constants only
+go bn_reset
+GO err540_data_type.jnl
+
+! take delta strides into account when determining the size 
+! over which to apply bad data replacement
+go bn_reset
+GO err540_dods_set_bad.jnl

@@ -17,3 +17,4 @@ plot/vs xpts,ypts
 GO polymark POLYGON/KEY/LEV=0.01d xpts,ypts,sst,star
 
 SET MODE/LAST IGNORE_ERROR
+SET WIN/CLEAR

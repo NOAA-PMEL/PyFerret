@@ -1,6 +1,8 @@
 \cancel mode verify
 ! label_hi_lo
 ! *8/01 *acm* 
+! *1/02 *acm* range not gridpts for args 2 and 3 to find* functions
+!             result is listed on X axis, with j=1 xpts,j=2 ypts,j=3 values
 
 ! Description: overlay labels for local extrema with H and L or the
 !              values at those extrema
@@ -54,18 +56,18 @@ LET/QUIET ymin = ($ppl$ymin)
 LET/QUIET datlo = findlo($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
 LET/QUIET dathi = findhi($1[x=`xmin`:`xmax`,y=`ymin`:`ymax`], $3, $4)
 
-LET/QUIET xph = dathi[i=1]
-LET/QUIET yph = dathi[i=2]
-LET/QUIET zph = dathi[i=3]
+LET/QUIET xph = dathi[j=1]
+LET/QUIET yph = dathi[j=2]
+LET/QUIET zph = dathi[j=3]
 
-LET/QUIET xpl = datlo[i=1]
-LET/QUIET ypl = datlo[i=2]
-LET/QUIET zpl = datlo[i=3]
+LET/QUIET xpl = datlo[j=1]
+LET/QUIET ypl = datlo[j=2]
+LET/QUIET zpl = datlo[j=3]
 
 LOAD xph; LOAD yph; LOAD zph
 LOAD xpl; LOAD ypl; LOAD zpl
-let/quiet nhi = xph[y=@ngd]
-let/quiet nlo = xpl[y=@ngd]
+let/quiet nhi = xph[x=@ngd]
+let/quiet nlo = xpl[x=@ngd]
 
 ! I and J indices are used as indices of the extrema, so cancel the
 ! region that came in with the variable.
@@ -77,10 +79,10 @@ IF $2"|label>1|*>0|" THEN
 ! Allow either violet or purple to be specified.   
 
   GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$5%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xph,yph,zph,rectangle,1.8
-  REPEAT/K=1:`nhi` (LET/QUIET xp=xph[j=`k`]; LET/QUIET yp=yph[j=`k`]; LET/QUIET zp=zph[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  REPEAT/K=1:`nhi` (LET/QUIET xp=xph[i=`k`]; LET/QUIET yp=yph[i=`k`]; LET/QUIET zp=zph[i=`k`]; label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 
   GO polymark POLY/OVER/NOLABEL/PAL=white/LINE/COLOR=$6%black|black|red|green|blue|lightblue|purple|violet>purple|*>black% xpl,ypl,zpl,rectangle,1.8
-  REPEAT/K=1:`nlo` (LET/QUIET xp=xpl[j=`k`]; LET/QUIET yp=ypl[j=`k`]; LET/QUIET zp=zpl[j=`k`]; IF `xp NE 999` THEN IF `yp ne 999` THEN  label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
+  REPEAT/K=1:`nlo` (LET/QUIET xp=xpl[i=`k`]; LET/QUIET yp=ypl[i=`k`]; LET/QUIET zp=zpl[i=`k`]; label `xp`, `yp-0.8`, 0,0, 0.09, "`zp`")
 ENDIF
 
 IF $2"|mark>1|*>0|" THEN

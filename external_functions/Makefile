@@ -12,8 +12,8 @@
 # Macro Definitions
 #
 
-DIRS = cmprsi_by convolve date_and_time examples extrema fft sort v5d zaxr
-DIRS_INSTALL = cmprsi_by convolve date_and_time  extrema fft sort v5d zaxr
+DIRS = cmprsi_by convolve date_and_time examples extrema fft sort transpose v5d zaxr
+DIRS_INSTALL = cmprsi_by convolve date_and_time  extrema fft sort transpose v5d zaxr
 
 #
 # Targets

@@ -55,6 +55,9 @@
 *			  because it needed a preprocessor.
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
+* v500 *kob* 3/99 - modifications to allow datasets to start w/ a digit.
+*
+
 #ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -83,17 +86,20 @@
 	IF ( TM_DIGIT( dname ) ) THEN
 
 	   buff = dname				! buffer for AIX
+* *kob* 3/99 - change the err= to go to 50 rather than 500 - this is so a
+*              failed read a number is a clue that perhaps it is part of a name
+*              of a dataset (eg 5coads) rather than just an error
 c *kob* 4/97
 #ifdef MANDATORY_FORMAT_WIDTHS
-	   READ (buff,*, ERR=500 ) dset
+	   READ (buff,*, ERR=50 ) dset
 #else
-	   READ (buff, '(I)', ERR=500 ) dset
+	   READ (buff, '(I)', ERR=50 ) dset
 #endif
 	ELSE
 
 * 5/93 locate "true" end to the given filename (.des and .cdf are invisible)
 * note: filenames are always in CAPS since they may be embedded in the var defn
-	   full_len = TM_LENSTR1( dname )
+ 50	   full_len = TM_LENSTR1( dname )
 	   IF ( full_len .GT. 4 ) THEN
 	      cdf_name = dname(full_len-3:full_len) .EQ. '.cdf'
      .        .OR. dname(full_len-3:full_len) .EQ. '.CDF'

@@ -8,19 +8,21 @@ PPL AXLEN,7.8
 ! and state boundaries in red and green, so that the rivers
 ! show up on top of the national or state boundary lines.
 
-!go fland 40 white basemap solid x=232:295 y=24:50
 go fland 40 white basemap solid x=232:241 y=44:50
 go land_detail black overlay 8 9 blue lightblue
-frame/file=land_detail_1.gif
+! frame/file=land_detail_1.gif
 pause
 
-! Showing national boundaries and rivers.
+! Showing national boundaries and rivers. Access the detailed
+! topography/bathymetry data from Smith and Sandwell via DODS
 
-use etopo5
+use "http://ferret.pmel.noaa.gov/cgi-bin/nph-dods/data/PMEL/smith_sandwell_topo_v8_2.nc"
 fill/lev=(0,10000,10000)/pal=tan/x=0:24/y=30:46 rose
 fill/over/lev=(-5000,-1000,500)(-1000,0,50)/pal=topo/x=0:24/y=30:46 rose
 go land_detail black overlay red green blue blue
-frame/file=land_detail_2.gif
+! frame/file=land_detail_2.gif
+
+can data/all
 
 pause
 ! Showing international marine boundaries
@@ -31,4 +33,7 @@ fill/x=80:240/y=-50:20/pal=land_sea/lev=(-9000,9000,500) rose
 ! Show continental, national and international marine boundaries
 
 go land_detail black overlay red " " " " " " red
-frame/file=land_detail_3.gif
+
+can data/all
+
+! frame/file=land_detail_3.gif

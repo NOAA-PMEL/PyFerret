@@ -45,3 +45,6 @@ shade a[i=1:100:10]
 ppl list stats
 ppl list data  ! make screen wide -- shows the 1's matching the plot
 
+can mode stupid
+can mode diag
+set mem/size=6.4

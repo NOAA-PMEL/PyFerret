@@ -45,6 +45,8 @@
 *                    rather than a character array.  replace risc_buff and 
 *                    size_rbuff with int_buff and size_ibuff which is 
 *                    pulled from EF_Util.parm.
+* V553: 9/03 *kob* - increase locbuff to 512 from 100 - it was cutting strings
+*                    short
 
 	include 'ferret.parm'
 	include 'EF_Util.parm'
@@ -56,7 +58,7 @@
 
 * internal variable declarations
 	INTEGER  GET_C_STRING_LEN, flen
-	CHARACTER*100 locbuff
+	CHARACTER*512 locbuff
 
 * get the string
         slen = GET_C_STRING_LEN(ptr_array(i,j,k,l))
@@ -70,7 +72,8 @@
 * copy it into the FORTRAN string
         CALL TM_CTOF_STRNG (int_buff,locbuff, flen )
 
-	GET_STRING_ELEMENT = locbuff
+	
+	GET_STRING_ELEMENT = locbuff(:flen)
 	RETURN
 
 

@@ -70,6 +70,8 @@
 * V540: 11/01 *sh* - added LIST/WIDTH=
 *	           - expanded and reorganized the LIST heading
 * V552   2/03 *acm*- Increase line_buff to 10000
+* v553   9/03 *kob*- Increase GET_STRING_ELEMENT to 512 
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -120,7 +122,7 @@
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
-     .			GET_STRING_ELEMENT*255,
+     .			GET_STRING_ELEMENT*512,
      .			line_buff*10000,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32, cal_name*32
@@ -621,7 +623,11 @@
 
 * . . . will it fit ? - if not go back and try again with a shorter line
 	dlen = cleft + width*num_fields
-	IF ( dlen .GT. line_length ) THEN
+* . . . *kob* 9/03 - we do not want to set line_to_long to true for strings -
+*                    results in a hang because dlen doesn't get changed or 
+*                    shortened and so this will always be true for long strings
+*		     and we will be sent back to 410 ad naseum
+	IF ( dlen .GT. line_length .AND. .NOT. itsa_string ) THEN
 	   line_too_long = .TRUE.
 	   GOTO 410
 	ENDIF

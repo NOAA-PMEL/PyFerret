@@ -106,6 +106,8 @@
 *                  all irregular axis intervals as Nx2 bounds rather than Nx1 edges.
 *      *acm* 6/04  for compiler on rh7, need to pass dimensions of array into cd_rd_r8_bnds 
 *                  as scalar integers not array elements.
+*            6/18/04 Change order of operations so axes with edges are read the same as 
+*                  in previous versions.  Also treat 1-point axes having bounds correctly
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -149,7 +151,7 @@
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
-     .        got_edges, got_bnds, enclosed, centered
+     .        got_edges, got_bnds
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, 
@@ -158,8 +160,8 @@
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
      .        edgid, spacing_atlen, epic_t2var, since_T0,
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
-     .        blen, bndid, startpts(2), numpts(2), i1, next_line_storage,
-     .        newaxis, nlen, d1s, d1e, d2s, d2e
+     .        blen, bndid, startpts(2), numpts(2), next_line_storage,
+     .        newaxis, d1s, d1e, d2s, d2e
 
 
       REAL    rbuff, delta, first_delta
@@ -229,6 +231,14 @@
       ELSE
          line_regular(iaxis) = .FALSE. ! default
       ENDIF
+
+* Bounds or edges attribute?
+
+      got_bnds = CD_GET_ATTRIB( cdfid, ivar, 'bounds',
+     .                       do_warn, vname(:vlen), bname, 30 )
+     
+      got_edges = CD_GET_ATTRIB( cdfid, ivar, 'edges',
+     .                       do_warn, vname(:vlen), ename, 30 )
 
 * optional "true_size" parameter for 2 point representations of even axes
       IF ( line_regular(iaxis) ) THEN
@@ -702,7 +712,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 
 * ============= START OF IRREGULAR AXIS PROCESSING ========================
-      ELSE
+      ELSE 
 * adequate storage for the irregular coordinates and box edges ?
          line_start(iaxis) = unspecified_val8
          line_delta(iaxis) = unspecified_val8
@@ -759,16 +769,72 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
            ENDIF
   350   CONTINUE
 
-*  See if there are box edges or bounds in the file.
+* Check if axis is actually regularly spaced (though not flagged as "even")
 
+        last_coord = line_mem(ipte)
+        firs_coord = line_mem(ipt1)
+        delta = line_mem(ipt1+1) - line_mem(ipt1)  ! sing. prec., only
+        DO 360 i=ipt1+2,ipte
+           IF (.NOT. TM_FPEQ( delta,
+     .                   SNGL(line_mem(i)-line_mem(i-1))) ) GOTO 380
+  360   CONTINUE
+
+* yes, it's actually regular - save it as such
+        line_regular(iaxis) = .TRUE.
+        line_start  (iaxis) = line_mem(ipt1)
+        line_delta  (iaxis) = 
+     .              (line_mem(ipte)-line_mem(ipt1))/(npts-1)
+        line_subsc1 (iaxis) = unspecified_int4
+        last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+        firs_coord = line_start(iaxis)
+
+        GOTO 390
+
+* Compute the default locations of boundaries between grid boxes (midpoints)
+* Note: this may be modified by a subsequent "EDGES" or "BOUNDS" definition
+
+ 380    CALL TM_IRREGAX_MID( ipt1, npts )
+      ENDIF
+
+      IF (got_bnds .AND. npts .EQ. 1) THEN
+         line_regular(iaxis) = .FALSE.
+         ipt1 = next_line_mem_pos
+         ipte = next_line_mem_pos
+         line_mem(ipt1) = line_start(iaxis)
+      ENDIF
+
+* ============= END OF IRREGULAR AXIS PROCESSING ========================
+
+* hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
+ 390    IF ( (since_T0.GT.2)
+     .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
+     .  .AND.(cal_id .EQ. GREGORIAN) ) THEN
+
+* ... get time step of L=1
+           IF ( line_regular(iaxis) ) THEN
+              first = line_start(iaxis)   
+           ELSE
+              first = line_mem(ipt1)
+           ENDIF
+
+* ... compute seconds from 1-jan-0001
+           secs2firststep = un_convert(line_unit_code(iaxis)) * first
+* compute seconds from 1590
+           secs1590 = TM_SECS_FROM_BC (GREGORIAN, 1590,1,1,0,0,0,status)
+            IF ( status .NE. merr_ok ) GOTO 5900
+
+* ... correct axis if crosses 1590 threshhold
+           IF (secs2firststep .GT. secs1590) line_t0(iaxis)
+     .                                          = '30-DEC-0000 00:00:00'
+        ENDIF
+
+*  See if there are box edges or bounds in the file.
 
 ****************************************************************************
 *                              BOX EDGES                                   *
 ****************************************************************************
 
 * the attribute "edges=name" may point to a list of box boundaries
-      got_edges = CD_GET_ATTRIB( cdfid, ivar, 'edges',
-     .                       do_warn, vname(:vlen), ename, 30 )
       IF ( .NOT.got_edges ) GOTO 500
       IF ( line_regular(iaxis) ) THEN
          CALL TM_NOTE(
@@ -778,8 +844,6 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
       ENDIF
 
 * Cannot have both "edges" and "bounds" atrtributes
-      got_bnds = CD_GET_ATTRIB( cdfid, ivar, 'bounds',
-     .                       do_warn, vname(:vlen), bname, 30 )
       IF ( got_bnds )THEN
          CALL TM_NOTE(
      .     'Axis has both edges and bounds attributes: '//
@@ -814,7 +878,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * check to see that each data point is contained inside its box
         IF (.NOT.TM_CHECK_BOX_LOC(iaxis)) THEN
            CALL TM_NOTE('Edges "'//ename(:elen)//
-     .         '" do not enclose point on axis '//line_name(iaxis), tt)
+     .         '" do not enclose point on axis '//vname(:vlen), tt)
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
            CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )
@@ -848,22 +912,22 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         numpts(1) = 2
         numpts(2) = npts
 
-
         d1s = startpts(1)
         d1e = numpts(1)
         d2s = startpts(2)
         d2s = numpts(2)
 
+        blen = TM_LENSTR1(bname)
         CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartype, 
      .                    bname(:blen), line_mem(ipt1+npts),  
      .                    d1s, d1e, d2s, d2e, status )
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too 
-         IF ( first_delta .LT. 0.0 ) THEN
-            DO 550 i=ipt1+npts,(ipt1+npts)+2*npts
- 550        line_mem(i) = -1. * line_mem(i)
-         ENDIF
+        IF ( first_delta .LT. 0.0 ) THEN
+           DO 550 i=ipt1+npts,(ipt1+npts)+2*npts
+ 550       line_mem(i) = -1. * line_mem(i)
+        ENDIF
 
 * check to see that each data point is contained inside its box,
 * and if the bounds are contiguous, warning user if not. Change
@@ -872,81 +936,42 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         IF (.NOT. TM_CHECK_BNDS(iaxis, vname) ) THEN  
 
            CALL TM_NOTE('bounds "'//bname(:blen)//
-     .         '" do not enclose point on axis '//line_name(iaxis), tt)
+     .         '" do not enclose point on axis '//vname(:vlen), tt)
            CALL TM_NOTE('Substituting coordinate midpoints', tt)
            CALL TM_IRREGAX_MID( next_line_mem_pos,
      .                          line_dim   (iaxis) )
       
         ENDIF
 
- 600    CONTINUE
-
-* Check if axis is actually regularly spaced (though not flagged as "even")
-
-        last_coord = line_mem(ipte)
-        firs_coord = line_mem(ipt1)
-        delta = line_mem(ipt1+1) - line_mem(ipt1)  ! sing. prec., only
-        DO 360 i=ipt1+2,ipte
-           IF (.NOT. TM_FPEQ( delta,
-     .                   SNGL(line_mem(i)-line_mem(i-1))) ) GOTO 380
-  360   CONTINUE
-
 * For axes specified with BOUNDS, check whether coordinates are also 
 * centered in the boxes
 
-        IF (got_bnds) THEN
-           IF (.NOT. TM_CHECK_BNDS_CENTERED(iaxis)) GO TO 390
-        ENDIF
+        IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
 
-* yes, it's actually regular - save it as such
-        line_regular(iaxis) = .TRUE.
-        line_start  (iaxis) = line_mem(ipt1)
-        line_delta  (iaxis) = 
-     .              (line_mem(ipte)-line_mem(ipt1))/(npts-1)
-        line_subsc1 (iaxis) = unspecified_int4
-        last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
-        firs_coord = line_start(iaxis)
-
-        GOTO 390
-
-* If no bounds or edges, compute the default locations of boundaries 
-* between grid boxes (midpoints)
- 380    IF (.NOT.got_bnds .AND. .NOT.got_edges) 
-     .         CALL TM_IRREGAX_MID( ipt1, npts )
-
-      ENDIF
-* ============= END OF IRREGULAR AXIS PROCESSING ========================
-
-* hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
- 390    IF ( (since_T0.GT.2)
-     .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
-     .  .AND.(cal_id .EQ. GREGORIAN) ) THEN
-
-* ... get time step of L=1
-           IF ( line_regular(iaxis) ) THEN
-              first = line_start(iaxis)   
+* It's actually regular - save it as such
+           line_regular(iaxis) = .TRUE.
+           line_start  (iaxis) = line_mem(ipt1)
+           IF (npts .GT. 1) THEN
+              line_delta  (iaxis) = 
+     .            (line_mem(ipte)-line_mem(ipt1))/(npts-1)
            ELSE
-              first = line_mem(ipt1)
-           ENDIF
-
-* ... compute seconds from 1-jan-0001
-           secs2firststep = un_convert(line_unit_code(iaxis)) * first
-* compute seconds from 1590
-           secs1590 = TM_SECS_FROM_BC (GREGORIAN, 1590,1,1,0,0,0,status)
-            IF ( status .NE. merr_ok ) GOTO 5900
-
-* ... correct axis if crosses 1590 threshhold
-           IF (secs2firststep .GT. secs1590) line_t0(iaxis)
-     .                                          = '30-DEC-0000 00:00:00'
+              line_delta(iaxis) = 1
+           endif
+           line_subsc1 (iaxis) = unspecified_int4
+           last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+           firs_coord = line_start(iaxis)
         ENDIF
+
+ 600    CONTINUE
 
 * Save the axis name (upper case) and memory storage.  For all irregular axes, 
-* we have saved 2*N bounds for  the axis cells. Increment the pointer.   
-      line_name(iaxis) = vupcase
-      IF ( .NOT.line_regular(iaxis) ) THEN
-         line_subsc1(iaxis) = next_line_mem_pos
-         next_line_mem_pos =  next_line_storage + 2*npts+1 
-      ENDIF
+* we have saved N+1 edges for  the axis cells. Increment the pointer.   
+
+        line_name(iaxis) = vupcase
+        IF ( .NOT.line_regular(iaxis) ) THEN
+           line_subsc1(iaxis) = next_line_mem_pos
+           next_line_mem_pos =  next_line_storage + 2*npts+1 
+        ENDIF
 
 * if it is a longitude axis of 360 degrees or less let it default to MODULO
 * unless user has set it explicitly to false.
@@ -964,24 +989,25 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * if it is a calendar time axis and the first point is in year 0000 or 0001
 * then it is implicitly MODULO
+
         IF (got_torg) THEN
            line_direction(iaxis) = 'TI'
-c          secsperyear = cals_yeardays(cal_id)* 24*60*60
-          tmp = cals_yeardays(cal_id)
-          secsperyear = tmp * (24.D0*60.D0*60.D0)
+c           secsperyear = cals_yeardays(cal_id)* 24*60*60
+           tmp = cals_yeardays(cal_id)
+           secsperyear = tmp * (24.D0*60.D0*60.D0)
 
-          CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, year, month, day,
+           CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, year, month, day,
      .                       hour, minute, second, istat)
-          t0_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
+           t0_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
      .                               hour, minute, second, status)
-	  CALL TM_WW_AX_1_N(iaxis, first, tmp)
-	  secs2start = t0_secs + first*line_tunit(iaxis)
-          IF ( (secs2start .LE.  2*secsperyear)
-     .	 .AND. (axwwlen*line_tunit(iaxis) .LE. secsperyear) ) THEN
-            line_modulo(iaxis) = .TRUE.
-            IF (line_modulo_len(iaxis).EQ.0.0D0)
+           CALL TM_WW_AX_1_N(iaxis, first, tmp)
+ 	   secs2start = t0_secs + first*line_tunit(iaxis)
+           IF ( (secs2start .LE.  2*secsperyear)
+     .	    .AND. (axwwlen*line_tunit(iaxis) .LE. secsperyear) ) THEN
+              line_modulo(iaxis) = .TRUE.
+              IF (line_modulo_len(iaxis).EQ.0.0D0)
      .          line_modulo_len(iaxis) = secsperyear/line_tunit(iaxis)
-          ENDIF
+           ENDIF
         ENDIF
 
 * sanity check the modulo length

@@ -248,6 +248,11 @@ GO bn_dash_dot
 GO bn_reset
 GO bn_flowlines
 
+! ******** V533 Additions below ***********
+
+GO bn_reset
+GO bn_logaxes
+
 ! *kob* same tests for internal external functions but moved out of
 !       the bn_external_function jnl file.  
 GO bn_reset

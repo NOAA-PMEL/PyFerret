@@ -62,7 +62,10 @@ C**
 *       *acm* 10/24/01 Call mark(99) to plot a point when a vector is too small.
 *       *acm*  5/02    Bug fix: alen for curvilinear vectors could be 0.
 *       *ACM*  8/02    remove the call to plot a point with mark(99) -- need
-*                      to resolve PPLUS issues with polymark first.
+*                      to resolve PPLUS issues with polymark first
+*       *acm*  9/02    Yet another tweak on the length of curvlinear vectors.
+*                      Fix the computation of curv_len, page length of vector as 
+*                      it is drawn.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -94,7 +97,7 @@ C
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
-	real thfact,xn,yn,xl,yl,dy,dx, alen, close_len, this_len
+	real thfact,xn,yn,xl,yl,dy,dx, alen
 
 	integer ic,i,j,lnblk,iln, overedge
 
@@ -105,9 +108,8 @@ C
 
 C     Curvilinear coordinates declarations
         integer status, ii
-        real x_curv(12), y_curv(12), curv_len
-        real tail_i, tail_j, head_i, head_j
-        real arrow_i, arrow_j
+        real x_curv(12), y_curv(12), curv_len, xxc, yyc
+        real tail_i, tail_j, head_i, head_j, head_len
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -162,6 +164,7 @@ C
 	ELSE
 	    VFACT=VLEN/VUSRLN
 	ENDIF
+
 	CALL COLOR(IPEN(1))
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
@@ -192,27 +195,29 @@ C
 	    call trans(0,px(i),py(j),xx1,yy1)
 	ENDIF
 
- 50    IF (curvilinear) THEN
+ 50    IF (curvilinear) THEN   
+
+C  vclen is approx vector length; without curviness.
+
+           vclen = SQRT( (U(I,J)**2) + (V(I,J)**2))
+
+C Set up to plot the vector in pieces to make a curve.
+
            tail_i = xx1
            tail_j = yy1
            x_curv(1)=xx1
            y_curv(1)=yy1
-
            CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
 
            xx1=x_curv(1)
            yy1=y_curv(1)
-           xx2=x_curv(1)	! initialize, in case of bad data in loop 60 below
-           yy2=y_curv(1)
+           xxc=x_curv(1)	! initialize, in case of bad data in loop 60 below
+           yyc=y_curv(1)
            xx1orig = xx1
            yy1orig = yy1
 
-C  vclen is approx vector length; without curviness.
-           vclen = SQRT( (U(I,J)/xf)**2 + (V(I,J)/yf) **2)
-
            curv_len = 0.0
            overedge = 0
-	   close_len = cmzge
 
            DO 60, ii=1, 500
 
@@ -236,51 +241,46 @@ C  vclen is approx vector length; without curviness.
                  overedge = 1
               ENDIF
 
-              x_curv(1)=head_i
-              y_curv(1)=head_j
+              x_curv(1) = head_i
+              y_curv(1) = head_j
 
               CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status)
 
-              IF (x_curv(1) .ne. cmzeq) xx2=x_curv(1)
-              IF (y_curv(1) .ne. cmzeq) yy2=y_curv(1)
- 
+              IF (x_curv(1) .ne. cmzeq) xxc = x_curv(1)
+              IF (y_curv(1) .ne. cmzeq) yyc = y_curv(1)
+
               CALL PLOT(XX1,YY1,0,0)    
-              CALL PLOT(XX2,YY2,1,0)
+              CALL PLOT(xxc,yyc,1,0)
 
 C  curv_len is sum of vector pieces; actual vector length.  When 
-C  it is the standard vector length (vlen) VFACT=VLEN/VUSRLN we are done 
-C  plotting the vector.
+C  it is vclen we are done plotting the vector.
 
-              curv_len = curv_len + SQRT((xx2-xx1)**2 + (yy2-yy1)**2)
- 
+C   Note: len = distance from xx1 to xxc, which in page units is
+C   equivalent to xxc = xx1 + (len/xf), or len = (xxc-xx1)* xf
+
+              curv_len = curv_len + 
+     .           SQRT( ( (xxc-xx1)*xf )**2  +  ( (yyc-yy1)*yf )**2 )
+
               IF (overedge .EQ. 1) GO TO 80 
-cc              IF (curv_len/vlen .GE. vclen*VFACT) GOTO 70  !!WRONG
-              IF (curv_len/vlen .GE. VFACT) GOTO 70          !??
+
+              IF (curv_len .GE. vclen* vfact) GO TO 70
 
               tail_i = head_i
               tail_j = head_j
-              xx1 = xx2
-              yy1 = yy2
+              xx1 = xxc
+              yy1 = yyc
 
  60        CONTINUE
 
  70        CONTINUE
 
-C  save length in world coordinates, closest to VUSRLN.  For arrow key
-
-           this_len = sqrt((xx1orig-xx2)**2+(yy1orig-yy2)**2)
-           this_c_len = curv_len/vlen
-	   IF (ABS(vclen - vusrln) .LT. close_len) THEN
-               alen = this_len
-               close_len = MIN(close_len, ABS(vclen - vusrln))
-           ENDIF
-     
 C     DRAW ARROW HEADS
 
-	   IF (xx2 .NE. cmzeq  .AND. yy2 .NE. cmzeq) THEN
-              CALL vec_arrows(tail_i, tail_j, head_i, head_j, curv_len)
-	   ENDIF	! draw arrow if xx2 and yy2 were ok
-   80	CONTINUE	! vector went over edge
+	   IF (xxc .NE. cmzeq  .AND. yyc .NE. cmzeq) THEN
+              head_len = 2.*curv_len/(xf+yf)
+              CALL vec_arrows(tail_i, tail_j, head_i, head_j, head_len)
+	   ENDIF	! draw arrow if xxc and yyc were ok
+   80	   CONTINUE	! vector went over edge
 
         ELSE	! not curvilinear
 

@@ -5,12 +5,11 @@
  * Mod to use in X preview of metafiles *jd* 8.23.95 Convert inches to metres
  */
 
-#include <stdio.h>
-#include <string.h>
+#include "udposix.h"
 #include <stdlib.h>
 #include <time.h> 
-#include "udposix.h"
-#include "gks_implem.h"
+#include <string.h>
+#include <gks_implem.h>
 
 resize_xgks_window (ws_id, x, y)
 

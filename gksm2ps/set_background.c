@@ -5,11 +5,10 @@
  * *jd* Hacked for metafile interpretation 8.24.95
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "udposix.h"
-#include "gks_implem.h"
+#include <stdlib.h>
+#include <string.h>
+#include <gks_implem.h>
 
 set_background (ws_id, ndx)
 Gint ws_id; 

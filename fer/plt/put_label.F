@@ -111,7 +111,7 @@
      .	     labname(ppl_offset)/'OFFSET'/,
      .	     labname(ppl_dodsurl)/'DODS'/
 
-* if label hass single tic marks double them so PLOT+ doesnt interpret symbols
+* if label has single tic marks double them so PLOT+ doesnt interpret symbols
 	IF ( INDEX(string,"'date'") .GT. 0 ) THEN
 * ... hack to let PLOT+ date time symbols be evaluated (using single tics)
 	  risc_buff = string
@@ -157,6 +157,12 @@
 	ELSE
 	   font = '@AS'
 	ENDIF
+
+* Let user select the font if they want
+
+        IF (string(1:1) .EQ. "@") THEN
+           font = ' '
+        ENDIF
 
 * define the label to PPLUS
 	IF     ( labnum .EQ. ppl_title ) THEN

@@ -1,7 +1,5 @@
 	SUBROUTINE XEQ_DEFINE( memory )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -128,8 +126,13 @@
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 * v530  *acm* 2/01 - DEFINE AXIS/CALENDAR  calendar name for alternative 
 *                    calendar types.
+*	*sh* 4/01 - bug fix: DEFINE AXIS/FROM_DATA must check if n=1
+* V531: *sh* 5/01 - changed text of "unknown axis units" message
+*		  - during DEFINE GRID defer purging duplicate-name grid
+*		    until after new static one is defined -- else dynamic
+*		    axes that are needed can get wiped out
+*	*sh* 6/01 - increase buff1 size for DEFINE AXIS/LIKE=expr
 
-#ifdef unix
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_dims.parm'
@@ -149,23 +152,6 @@
 	include 'xcommand.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'	
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'	
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-#endif
 
 * local parameter declarations:
 	INTEGER	    slash_dflt,
@@ -245,7 +231,7 @@
 	REAL	  rbuff, bad_flag, yeardays
 	REAL*8	  SECS_FROM_BC, bc_to_t0, start, new_ww, delta, end, 
      .              micro_adj
-	CHARACTER reg_name*4, buff1*32, buff2*32, buff3*40, 
+	CHARACTER reg_name*4, buff1*256, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
      .		  mon_names(12)*3
@@ -428,17 +414,6 @@
 	IF ( dup_name ) THEN
 	   IF ( TM_GRID_MATCH( old_grid,mgrid_buff ) ) THEN
 	      RETURN					! dup name/dup def
-	   ELSE
-* ... redefinition makes all past assumptions incorrect
-	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
-     .			replmsg//'grid '//grid_name(old_grid), 0)
-	      CALL PURGE_MR_GRID( old_grid, status )
-	      IF ( status .NE. merr_ok ) GOTO 5000
-* ... deallocate dynamic axes used in previous definition of this grid
-	      DO 330 idim = 1,4
-	         CALL TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
- 330	      CONTINUE
-	      grid_name( old_grid ) = char_init16
 	   ENDIF
 	ENDIF
 
@@ -448,8 +423,22 @@
 
 * save the grid and name it (8/99 - also bump use counts of dynamic axes)
  340	CALL TM_COPY_GRID_W_LINE_USE( mgrid_buff, grid )
-! 340	CALL TM_COPY_GRID( mgrid_buff, grid )
 	grid_name( grid ) = buff3
+
+* purge old duplicate-name grid.  We deferred until after new static grid
+* was defined so new dynamic axes weren't wiped out
+	IF ( dup_name ) THEN
+* ... redefinition makes all past assumptions incorrect
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .			replmsg//'grid '//grid_name(old_grid), 0)
+	   CALL PURGE_MR_GRID( old_grid, status )
+	   IF ( status .NE. merr_ok ) GOTO 5000
+* ... deallocate dynamic axes used in previous definition of this grid
+	   DO 350 idim = 1,4
+	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
+ 350	   CONTINUE
+	   grid_name( old_grid ) = char_init16
+	ENDIF
 
 	RETURN
 
@@ -707,7 +696,8 @@
 	ELSE
 	   iunit = TM_UNIT_ID( buff1 )
 	   IF ( iunit .EQ. 0 ) THEN
-	       CALL WARN('unknown axis units: '//buff1)
+	       CALL WARN('(fyi) units are not subject to auto-conversion: '
+     .			//buff1)
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
               IF (cal_id .eq. gregorian) THEN
                  WRITE (err_string,3544) yeardays
@@ -786,6 +776,7 @@
 	   IF (its_edges) THEN
 * ... "/edges" definition - 4/99
 	      n = n - 1  ! edges array is one longer than points
+	      IF (n .LE. 0) GOTO 5520
 	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
      .				 line_mem(frst_pt+n), idim, n+1 )
 	      npoints = n
@@ -842,6 +833,13 @@
 	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
      .				 line_mem(frst_pt), idim, n )
 	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
+* ... a single point is always "regular"
+	      IF (n .EQ. 1) THEN
+	         start = line_mem(frst_pt)
+	         delta = 1
+	         its_reg = .TRUE.
+	         GOTO 560
+	      ENDIF
 	      micro_adj = 1E-6 *
      .		(line_mem(frst_pt+n-1) - line_mem(frst_pt))
 * ... are there repeated values?
@@ -896,7 +894,7 @@
 	   ENDIF
 
 * ... check to see if it was regularly spaced after all
-	   IF ( its_reg ) THEN
+ 560	   IF ( its_reg ) THEN
 	      line_start    ( iline ) = start
 	      line_delta    ( iline ) = delta
 	      line_regular  ( iline ) = .TRUE.

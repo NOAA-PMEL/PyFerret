@@ -1,7 +1,5 @@
 	SUBROUTINE GET_MEMORY ( num_words, mblk, num_blocks, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -54,6 +52,7 @@
 * V230:  4/30/92 - added coaching to error message
 * V500:  3.20.99 Make sure num_words >= 0 (absurdly large grids can overflow
 *                integer) js
+* V520: 6/00 *sh* - improved error message
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -137,9 +136,7 @@
  5100	num_str = LEFINT(num_words,num_slen)
 	CALL ERRMSG( ferr_insuff_memory,status,
      .	num_str(:num_slen)//' words were requested. ')
- 5101   CALL WARN('Use SET and SHOW REGION to ensure that the region'
-     .             //' is explicit;')
-        CALL WARN('then reissue your command.')
+ 5101   CALL WARN('You can se SET MEMORY/SIZE=xxx to increase memory.')
         CALL WARN('The "Memory use" section of the FERRET '
      .            //'Users Guide has further tips.') 
         GOTO 5000

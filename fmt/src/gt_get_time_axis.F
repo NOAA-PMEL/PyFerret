@@ -72,7 +72,9 @@
 *				     a problem in linux/nag f90, so we added a small
 *				     number (dp_epsilon = 1.d-10) to make sure INT operation
 *			   	     would give the correct integer.
-* 12/00  *acm*		add cal_id for alternative calendar axes.
+* 12/00  *acm*		add cal_id for alternative calendar axes
+* V541  4/02 *acm*      Improved error message if T0 missing or bad
+
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -80,7 +82,6 @@
 	INTEGER*4	dset_num, status
 *
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -95,17 +96,7 @@
 	external xunits_data
 	include 'xio.cmn_text'
 	external xio_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-#endif
+
 *
 * LOCAL DEFINITIONS
 	CHARACTER*80	def_error
@@ -226,7 +217,8 @@
      .	     status          .NE. merr_ok      ) THEN
 	  line_direction(scr) = 'NA'
 	  WRITE (tooplu, 1000) ds_name(dset_num)
- 1000	  FORMAT (' Warning: improper date/time format information in ',A)
+ 1000	  FORMAT 
+     .  (' Warning: missing or improper date/time format for T0 in ',A)
 	ELSE
 	  line_direction(scr) = 'TI'
 	ENDIF

@@ -31,9 +31,11 @@ PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 
 #
 
 LD		= cc
-LDFLAGS		= -non_shared
+#LDFLAGS		= -non_shared
+# I want this to be able to link shared libraries! *jc*
+LDFLAGS		=
  
-SYSLIB		= -lXm -lXt -lc -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE 
+SYSLIB		= -lXm -lXt -lc -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE -llist
 
 TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 

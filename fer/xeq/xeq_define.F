@@ -666,7 +666,7 @@
 * is it a calendar axis definition?
 	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
 
-* *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360DAY, 
+* *acm* other calendar names* /CALENDAR = GREGORIAN, NOLEAP, JULIAN, 360_DAY, 
 *       PECULIAR   Gregorian is the default, also may be called
 *       STANDARD.
 
@@ -683,11 +683,10 @@
 	   cal_name = 'GREGORIAN'
 	ENDIF
 
-* CF conventions have the calendar called 360 for a 360-day year.
-* Use 360DAY internally.  See cd_get_1_axis, cd_write_axis, xeq_define.
+* 9/01 CF conventions have adopted the name 360_day for a 360-day year.
 
-        IF (cal_name .EQ. '360') cal_name = '360DAY' 
-        IF (cal_name .EQ. 'D360') cal_name = '360DAY' 
+        IF (cal_name .EQ. '360') cal_name = '360_DAY' 
+        IF (cal_name .EQ. 'D360') cal_name = '360_DAY' 
         IF (cal_name .EQ. 'STANDARD') cal_name = 'GREGORIAN' 
         IF (cal_name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
         cal_id = TM_GET_CALENDAR_ID (cal_name)
@@ -714,7 +713,7 @@
                     iunit = -13
                  ELSE IF (cal_id .eq. 3) THEN	! Julian
 		    iunit = -15
-		 ELSE IF (cal_id .eq. 4  .OR. cal_id .eq. 5) THEN	! 360DAY
+		 ELSE IF (cal_id .eq. 4  .OR. cal_id .eq. 5) THEN	! 360_DAY
 		    iunit = -14
 	         ENDIF
 *  Append calendar name to units string.

@@ -48,6 +48,7 @@ C**
 *
 *  ACM  From vecfld.F  9/00
 *       and from GrADS module gxstrm.c
+C  ACM  11/1/00  Fix up arrow-sizing algorithm in strmar.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -133,7 +134,7 @@ C     Curvilinear coordinates declarations
 C  From vector
       CALL COLOR(IPEN(1))
 
-*  Get offset for true grid
+C  Get offset for true grid
 
       CALL trans(0,xmin,ymin,xtm,ytm)
       CALL trans(0,xmax,ymax,xtx,ytx)
@@ -163,14 +164,13 @@ C   Figure out the interval for the flag grid
 
 C  Adjust arrow lengths so they fit the plot
 
-      afact = 0.5*(float(nx) + float(ny) )/ 100.
+      afact = 0.5*(xf + yf)/ 2.
 
 C  Get max velocity for scaling the arrows
 
-c      sqsum = 0.
-c      velmx = 0.
       velmean = 0.
       count = 0.
+
       DO i = 1, nx
          DO j = 1, ny 
             up = u(i,j)
@@ -179,11 +179,7 @@ c      velmx = 0.
             IF (ZEQ .AND. (up .EQ. CMZEQ .OR. vp .EQ. CMZEQ)) GO TO 89
             IF (ZGE .AND. (up .GE. CMZGE .OR. vp .GE. CMZGE)) GO TO 89
 
-            vel = up*up + vp*vp
-c            sqsum = sqsum + vel
-            vel = sqrt(vel)
-
-c            velmx = max(velmx, vel)
+            vel = sqrt(up*up + vp*vp)
             velmean = velmean + vel
             count = count + 1.
 
@@ -192,7 +188,6 @@ c            velmx = max(velmx, vel)
       ENDDO 
       IF (count .GT. 0.) THEN
         velmean = velmean/ count
-c        sd = sqrt(sqsum/ count - velmean* velmean)
       ENDIF
 
 C  Initialize the flag grid
@@ -378,7 +373,8 @@ C  Draw arrow heads
 
                  vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
                  IF (icol .GT. -1) 
-     .               CALL strmar (xxsv, yysv, xx, yy, afact, vel)
+     .              CALL strmar (xxsv, yysv, xx, yy, vel, xf, yf)
+
                   acnt = 0
                ENDIF
 
@@ -523,7 +519,7 @@ C  Draw arrow heads
                      yyc=y_curv
                      CALL plot (xxc,yyc,1,0)
                   ELSE
-                       CALL plot(xx,yy,1,0)
+                     CALL plot(xx,yy,1,0)
                   ENDIF
                ELSE
                   bflg = 1
@@ -536,9 +532,8 @@ C  Draw arrow heads
 C  Draw arrow head
                IF (acnt .GT. 20) THEN
                  vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
-                 if (vel .lt. velmin) vel = velmin
                  IF (icol .GT. -1) 
-     .                 CALL strmar(xx, yy, xxsv, yysv, afact, vel)
+     .              CALL strmar(xx, yy, xxsv, yysv, vel, xf, yf) 
                   acnt = 0
                ENDIF
 
@@ -564,7 +559,7 @@ C  From vector
 
 C  arrows 
 
-      subroutine strmar (xx1, yy1, xx2, yy2, afact, vel) 
+      subroutine strmar (xx1, yy1, xx2, yy2, vel, xf, yf) 
       PARAMETER (a160 = 160.0*3.1416/180.0)
       REAL afact, vel, dir, xx1, xx2, yy1, yy2
 
@@ -580,44 +575,71 @@ C     Curvilinear coordinates declarations
       INTEGER status
       REAL x_curv, y_curv
 
-      arrw = afact* vel* 2.
-      dir = atan2(yy2-yy1,xx2-xx1)
+C  Set arrow length scale based on vel.
 
-      IF (curvilinear) then
+      arrwx = 0.07* vel/ xf
+      arrwy = 0.07* vel/ yf
+
+      IF (curvilinear) THEN
+          arrwx = 20. * arrwx
+          arrwy = 20. * arrwy
+      ENDIF
+
+C  Set directions for arrows.  Note they're based on the current 
+C  instantaneous direction of the velocity, but they angle back
+C  on recent past velocities along the curve.  When direction is
+C  large and changing rapidly, one side of the arrow may sit on
+C  top of the streamline curve.
+
+      IF ( ABS(xx2-xx1) .GT. ABS(yy2-yy1) ) THEN
+         dir = atan2(yy2-yy1, xx2-xx1)
+         addx1 = arrwx* cos(dir+a160)
+         addy1 = arrwy* sin(dir+a160) 
+         addx2 = arrwx* cos(dir-a160)
+         addy2 = arrwy* sin(dir-a160) 
+      ELSE
+         dir = atan2(xx2-xx1, yy2-yy1)
+         addx1 = arrwx* sin(dir+a160)
+         addy1 = arrwy* cos(dir+a160) 
+         addx2 = arrwx* sin(dir-a160)
+         addy2 = arrwy* cos(dir-a160) 
+      ENDIF
+
+
+      IF (curvilinear) THEN
 
           x_curv = xx2
           y_curv = yy2
           CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
           xxc=x_curv
           yyc=y_curv
-          CALL plot (xxc,yyc,0,0)
+          CALL plot (xxc, yyc, 0, 0)
 
-          x_curv = xx2+arrw*cos(dir+a160)
-          y_curv = yy2+arrw*sin(dir+a160)
+          x_curv = xx2 + addx1
+          y_curv = yy2 + addy1
           CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
-          xxd=x_curv
-          yyd=y_curv
-          CALL plot (xxd,yyd,1,0)
-          CALL plot (xxc,yyc,0,0)
+          xxd = x_curv
+          yyd = y_curv
 
+          CALL plot (xxd, yyd, 1, 0)
+          CALL plot (xxc, yyc, 0, 0)
 
-          x_curv = xx2+arrw*cos(dir-a160)
-          y_curv = yy2+arrw*sin(dir-a160)
+          x_curv = xx2 + addx2
+          y_curv = yy2 + addy2
           CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
-          xxe=x_curv
-          yye=y_curv
-          CALL plot (xxe,yye,1,0)
+          xxe = x_curv
+          yye = y_curv
 
-          CALL plot (xxc,yyc,0,0)
+          CALL plot (xxe, yye, 1, 0)
+          CALL plot (xxc, yyc, 0, 0)
 
       ELSE
-         dir = atan2(yy2-yy1,xx2-xx1)
+         CALL plot (xx2, yy2, 0, 0)
+         CALL plot (xx2+addx1, yy2+addy1, 1, 0)
+         CALL plot (xx2, yy2, 0, 0)
+         CALL plot (xx2+addx2, yy2+addy2, 1, 0)
+         CALL plot (xx2, yy2, 0, 0)
 
-         CALL plot (xx2,yy2,0,0)
-         CALL plot (xx2+arrw*cos(dir+a160),yy2+arrw*sin(dir+a160),1,0)
-         CALL plot (xx2,yy2,0,0)
-         CALL plot (xx2+arrw*cos(dir-a160),yy2+arrw*sin(dir-a160),1,0)
-         CALL plot (xx2,yy2,0,0)
       ENDIF
 
       RETURN

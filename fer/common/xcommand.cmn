@@ -128,7 +128,7 @@
      .			nqual2d =12, nqual_at2e = nqual_at2d + nqual2d,	!'AXIS'
      .			nqual2e = 1, nqual_at2f = nqual_at2e + nqual2e,	!'EXPR'
      .			nqual2f = 1, nqual_at2g = nqual_at2f + nqual2f,	!'LIST'
-     .			nqual2g = 6, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
+     .			nqual2g =10, nqual_at2h = nqual_at2g + nqual2g,	!'DATA'
      .			nqual2h = 1, nqual_at2i = nqual_at2h + nqual2h,	!'MODE'
      .			nqual2i = 1, nqual_at2j = nqual_at2i + nqual2i,	!'MOVI'
      .			nqual2j = 5, nqual_at2k = nqual_at2j + nqual2j,	!'VARI'

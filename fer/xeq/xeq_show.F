@@ -136,6 +136,8 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm*  1/02 Change SHOW FUNC so that shared object files are 
 *                  not listed on the command: SHO FUNC/INTERNAL func_name
+* V553 *acm* 8/03  New calls to make XML-style output for SHOW DATA, SHOW DATA/VAR
+*                  SHOW AXIS, SHOW GRID
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -177,7 +179,10 @@
      .		    slash_grid_dyn,
      .		    slash_var_dset,
      .		    slash_external,
-     .		    slash_internal
+     .		    slash_internal,
+     .		    slash_xml,
+     .              slash_grid_xml,
+     .              slash_axis_xml
 	PARAMETER ( len_show_str = 132,		! length of output line buffer
      .		    brief	 = .TRUE.,
      .		    slash_mem_temp = 1 + 2,
@@ -190,7 +195,10 @@
      .		    slash_grid_dyn = 1 + 9,
      .		    slash_var_dset = 1 + 1,
      .		    slash_external = 1 + 2,
-     .		    slash_internal = 1 + 3 )
+     .		    slash_internal = 1 + 3,
+     .		    slash_xml      = 1 + 5,
+     .		    slash_grid_xml = 1 + 10,
+     .		    slash_axis_xml = 1 + 9 )
 
 * calling argument declarations:
 	REAL memory( mem_blk_size, max_mem_blks )
@@ -198,7 +206,8 @@
 * local variable declarations:
 	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE,
      .		slash_all, limited_show, nothing, sdetail,
-     .		only_1, done_1, sfull, svars, sfile, sbrief, first
+     .		only_1, done_1, sfull, svars, sfile, sbrief, first,
+     .          sxml
 	INTEGER TM_LENSTR1, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE,
@@ -301,11 +310,13 @@
 
 * SHOW AXIS
 * show a particular named axis
- 400	IF ( num_args .EQ. 0 .AND. .NOT.slash_all ) THEN
+
+400	IF ( num_args .EQ. 0 .AND. .NOT.slash_all ) THEN
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .			'SHOW what axis ?', 0)
 	   RETURN
 	ENDIF
+ 	sxml  = qual_given( slash_axis_xml  ) .GT. 0 
 
 * decode the limit qualifiers
 	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
@@ -328,10 +339,12 @@
         CALL INIT_GRID( tmp_grid, char_init16, mnormal )
 
 * write column headings
-	WRITE ( risc_buff, 3000 )
- 3000	FORMAT ( T2,'name',T13,'axis',T31,'# pts',T39,
+        IF (.NOT. sxml) THEN
+	   WRITE ( risc_buff, 3000 )
+ 3000	   FORMAT ( T2,'name',T13,'axis',T31,'# pts',T39,
      .           'start',T60,'end' )
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        ENDIF
 	risc_buff = ' '
 	IF ( num_args .GT. 0 ) THEN
 	   DO 420 i = 1, num_items
@@ -344,14 +357,20 @@
 	         IF ( line_name(line) .EQ. char_init16 ) GOTO 410
 	         IF ( line_name(line)(1:1) .EQ. '(' ) GOTO 410
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
-                   CALL SHOW_LINE( line, .NOT.brief )
-	           DO 405 i2 = 1, 4
-	             IF (qual_given( slash_show_grid_x0+i2).GT.0
-     .              .OR. qual_given( slash_show_grid_i0+i2).GT.0) THEN
-                      grid_line(i2,tmp_grid) = line
-                      CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
-                    ENDIF
- 405               CONTINUE
+
+                   IF (sxml) THEN
+                      CALL SHOW_LINE_XML( ttout_lun, line)
+                   ELSE
+                      CALL SHOW_LINE( line, .NOT.brief )
+	              DO 405 i2 = 1, 4
+	                IF (qual_given( slash_show_grid_x0+i2).GT.0
+     .                 .OR. qual_given( slash_show_grid_i0+i2).GT.0)THEN
+                         grid_line(i2,tmp_grid) = line
+                         CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
+                        ENDIF
+ 405                  CONTINUE
+                   ENDIF
+
                  ENDIF
  410	      CONTINUE
 *  ... then show the dynamic lines
@@ -360,14 +379,20 @@
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
-                   CALL SHOW_LINE( line, .NOT.brief )
-	           DO 412 i2 = 1, 4
-	             IF (qual_given( slash_show_grid_x0+i2).GT.0
+
+                   IF (sxml) THEN
+                      CALL SHOW_LINE_XML( ttout_lun, line)
+                   ELSE
+                      CALL SHOW_LINE( line, .NOT.brief )
+	              DO 412 i2 = 1, 4
+	                IF (qual_given( slash_show_grid_x0+i2).GT.0
      .              .OR. qual_given( slash_show_grid_i0+i2).GT.0) THEN
-                      grid_line(i2,tmp_grid) = line
-                      CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
-                    ENDIF
- 412             CONTINUE
+                         grid_line(i2,tmp_grid) = line
+                         CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
+                       ENDIF
+ 412                 CONTINUE
+                   ENDIF
+
                  ENDIF
 	         GOTO 414
  416          CONTINUE
@@ -375,19 +400,25 @@
 	ELSE
 
 * show all the defined axes
-*  ... first show the static lines
+*  ... first show the static lines (but not for XML output)
 	   DO 450 line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	      IF ( line_name(line) .EQ. char_init16) GOTO 450
-	      CALL SHOW_LINE( line, brief )
+              IF (.NOT. sxml) THEN
+                 CALL SHOW_LINE( line, brief )
+              ENDIF
  450	   CONTINUE
 *  ... then show the dynamic lines
            line = 0
  460       CALL TM_NEXT_DYN_LINE( line, *470)
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	      CALL SHOW_LINE( line, brief )
+              IF (sxml) THEN
+                 CALL SHOW_LINE_XML( ttout_lun, line)
+              ELSE
+	         CALL SHOW_LINE( line, brief )
+              ENDIF
               GOTO 460
  470       CONTINUE
 	ENDIF
@@ -474,6 +505,7 @@
 	sfull  = qual_given( slash_full  ) .GT. 0
 	svars  = qual_given( slash_vars  ) .GT. 0   .OR. sfull
  	sfile  = qual_given( slash_file  ) .GT. 0   .OR. sfull
+ 	sxml  = qual_given( slash_xml  ) .GT. 0   
 	only_1 = num_args .GT. 0
 	IF ( only_1 ) THEN
 	   name = cmnd_buff(arg_start(1):arg_end(1))
@@ -482,7 +514,8 @@
 	ENDIF
 
 	WRITE ( risc_buff, 3700 )	! heading line
-	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+        IF (.NOT. sxml) 
+     .     CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	risc_buff = ' '
 
 	DO 790 iset = 1, maxdsets
@@ -502,12 +535,24 @@
 	   ENDIF
 	   len = TM_LENSTR1( ds_des_name( iset ) )
 	   WRITE (risc_buff,3710) iset,ds_des_name(iset)(:len),default(:len0)
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	   IF (.NOT. sxml)
+     .         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   risc_buff = ' '
 * ... by default only name and variables are shown
-	   IF ( svars       ) CALL SHOW_DATA_SET_PARAMS ( ttout_lun, iset )
-	   IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS( ttout_lun, iset, svars )
-	   IF ( sfile       ) CALL SHOW_DATA_FILES      ( ttout_lun, iset )
+           IF ( sxml) THEN
+              IF (svars) THEN
+                 CALL SHOW_DATA_SET_VARS_XML (ttout_lun, iset)
+              ELSE
+                 CALL SHOW_DATA_SET_XML (ttout_lun, iset)
+              ENDIF
+           ELSE
+	      IF ( svars       ) CALL SHOW_DATA_SET_PARAMS 
+     .                             (ttout_lun, iset)
+	      IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS
+     .                             (ttout_lun, iset, svars)
+	      IF ( sfile       ) CALL SHOW_DATA_FILES      
+     .                             (ttout_lun, iset)
+           ENDIF
  790	CONTINUE
 
 	IF ( limited_show ) RETURN
@@ -623,6 +668,7 @@
 *	SHOW VAR name		- show ALL user variables of this name
 *	SHOW VAR name[D=n]	- show only variable from named data set
 *	SHOW VAR/D=n name	- show only variable from named data set
+
 	   IF ( num_args .GT. 0 ) THEN
 	      DO 1020 i = 1, num_items
 	         i1 = STR_UPCASE(arg,cmnd_buff(item_start(i):item_end(i)))
@@ -646,8 +692,9 @@
 	               IF ( uvar_parent(ivar).NE.0
      .		      .AND. .NOT.mode_diagnostic   ) GOTO 1015     ! 7/97
 !	               IF (MATCH_NAME(arg,uvar_name_code(ivar)))
-	               IF (MATCH_TEMPLATE(uvar_name_code(ivar),arg))
-     .			CALL SHOW_1_UVAR
+
+                       IF (MATCH_TEMPLATE(uvar_name_code(ivar),arg))
+     .			 CALL SHOW_1_UVAR
      .				(ttout_lun, ivar, show_str,' ',.TRUE.)
  1015	            CONTINUE
 	         ENDIF
@@ -660,7 +707,7 @@
 	         IF ( rqst_dset .NE. uvar_dset(i)	  ) GOTO 1030
 	         IF ( uvar_parent(i).NE.0
      .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1030  ! 7/97
-	         CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+                 CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
  1030	      CONTINUE
 	   ELSE
 * ... show ALL user variables of every stripe
@@ -679,7 +726,7 @@
 	            IF ( dset .NE. uvar_dset(i)		     ) GOTO 1050
 	            IF ( uvar_parent(i).NE.0
      .		    .AND. .NOT.mode_diagnostic		     ) GOTO 1050 ! 7/97
-	            CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+                    CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
  1050	         CONTINUE
  1060	      CONTINUE
 * ... global variables defined without /D
@@ -696,7 +743,7 @@
      .		, 0)
 	            first = .FALSE.	            
 	         ENDIF
-	         CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+                 CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
  1070	      CONTINUE
 * ... global variables defined with /D
 	      first = .TRUE.
@@ -712,7 +759,8 @@
      .		, 0)
 	            first = .FALSE.	            
 	         ENDIF
-	         CALL SHOW_1_UVAR(ttout_lun,i,show_str,'     ',.TRUE.)
+                 CALL SHOW_1_UVAR(ttout_lun,i,show_str,
+     .                 '     ',.TRUE.)
  1080	      CONTINUE
 	   ENDIF
  4010	FORMAT (1x,A,' = ',A)
@@ -800,6 +848,7 @@
  1300	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	mods_cx = cx_stack_ptr
+ 	sxml  = qual_given( slash_grid_xml  ) .GT. 0 
 	CALL INIT_CONTEXT_MODS( mods_cx )
 	CALL GET_CONTEXT_MODS (	cx_last,
      .				cmnd_buff,
@@ -847,10 +896,14 @@
      .			  cx_last, status )
 	         IF ( status .NE. ferr_ok ) GOTO 1350
                  IF ( grid .EQ. unspecified_int4 ) GOTO 5300
-	         WRITE ( risc_buff, 4210 ) grid_name( grid )
-	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
-	         risc_buff = ' '
-	         CALL SHOW_GRID( grid, mods_cx )
+	         IF (sxml) THEN 
+                    CALL SHOW_GRID_XML(ttout_lun, grid )
+                 ELSE
+	            WRITE ( risc_buff, 4210 ) grid_name( grid )
+	            CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
+	            risc_buff = ' '
+	            CALL SHOW_GRID( grid, mods_cx )
+	         ENDIF
 	      ENDIF
  1350	   CONTINUE
  4210	   FORMAT ( 4X,'GRID ',A)

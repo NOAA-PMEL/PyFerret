@@ -23,6 +23,7 @@
 *      10/01 *acm*- increased max_qual_list; CONTOUR needed more with /AXES=
 * V540:11/00 *sh* - added array last_cmnd_buff (formerly in get_prot_cmnd_data)
 * V550:12/02 *acm*- new MODE LOGO and MODE LABELS
+* V553: 8/03 *acm*- new scriptfile_name and state its_script
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -110,7 +111,8 @@
      .		saved_abstract_grid,
      .		xwind_node_len,
      .		genl_storage(25),
-     .		ifstk, if_cs(max_ifstk), if_doing(max_ifstk)
+     .		ifstk, if_cs(max_ifstk), if_doing(max_ifstk),
+     .          its_script
 
 	LOGICAL
      .		list_format_given, list_unformatted, list_dsf, list_redirected,
@@ -135,7 +137,8 @@
      .		ppl_wait*6,
      .		frame_compress*8, available_char_var*80,
      .		journal_file*80, ppllist_file*80,
-     .		xwind_node*40
+     .		xwind_node*40,
+     .          scriptfile_name*2048
 
 	INTEGER	ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
      .		cmnd_lun, jrnl_lun, err_lun, frame_lun,
@@ -171,8 +174,9 @@
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,
-     .		genl_storage,
-     .		ppl_wait, mode_name	! moved to end for word alignment
+     .		genl_storage, its_script,
+     .		ppl_wait, mode_name,
+     .          scriptfile_name
 
 * individual mode variable names
 	LOGICAL		mode_diagnostic, mode_verify, mode_interpolate,

@@ -140,6 +140,7 @@
 * V541: 5/02 *acm* - add VECTOR/NOKEY
 *       6/02 *acm* - add CANCEL AXIS/ALL
 * V552: 4/02 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
+* V553: 7/03 *acm* - add SHOW DATA/DAS and /DDS
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -371,7 +372,7 @@
 		DATA qualifiers  (nqual_at2d+6)	/ 'Y'	/
 		DATA qualifiers  (nqual_at2d+7)	/ 'Z'	/
 		DATA qualifiers  (nqual_at2d+8)	/ 'T'	/
-		DATA qualifiers  (nqual_at2d+9)	/ '****'/
+		DATA qualifiers  (nqual_at2d+9)	/ 'XML'/
 		DATA qualifiers  (nqual_at2d+10)/ '****'/
 		DATA qualifiers  (nqual_at2d+11)/ '****'/
 * SHOW EXPRSIONION
@@ -396,7 +397,11 @@
 		DATA qualifiers  (nqual_at2g+2)	/ 'FULL'	/
 		DATA qualifiers  (nqual_at2g+3)	/ 'VARIABLE'	/
 		DATA qualifiers  (nqual_at2g+4)	/ 'FILE'	/
-		DATA qualifiers  (nqual_at2g+5)	/ '****'	/
+		DATA qualifiers  (nqual_at2g+5)	/ 'XML'		/
+		DATA qualifiers  (nqual_at2g+6)	/ '****'	/
+		DATA qualifiers  (nqual_at2g+7)	/ '****'	/
+		DATA qualifiers  (nqual_at2g+8)	/ '****'	/
+		DATA qualifiers  (nqual_at2g+9)	/ '****'	/
 * SHOW MODE
 	   DATA subcommands      (nsub_at2 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at2 + 7)	/ nqual2h	/
@@ -450,7 +455,7 @@
 		DATA qualifiers  (nqual_at2m+7)	/ 'Z   '	/
 		DATA qualifiers  (nqual_at2m+8)	/ 'T   '	/
 		DATA qualifiers  (nqual_at2m+9)	/ 'DYNAMIC'	/
-		DATA qualifiers  (nqual_at2m+10)/ '****'	/
+		DATA qualifiers  (nqual_at2m+10)/ 'XML'	/
 * SHOW VIEW
 	   DATA subcommands      (nsub_at2 +13)	/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at2 +13)	/ nqual2n	/

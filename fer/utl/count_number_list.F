@@ -6,6 +6,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500: *sh* 12/98
+* V510: *sh* 10/99 bug fix: single character {3} gave n=0
 
 * calling argument declarations
 	INTEGER		n
@@ -33,7 +34,7 @@
 * trim around the enclosing "{}" brackets
 	IF ( string(send:send) .EQ. '}' ) send = send - 1
 	IF ( string (1:1) .EQ. '{' ) start = start + 1
-	IF (start .GE. send) RETURN 
+	IF (start .GT. send) RETURN 
 
 * loop through the text counting commas
 	DO 100 i = start, send

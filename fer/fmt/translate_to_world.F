@@ -1,7 +1,5 @@
 	SUBROUTINE TRANSLATE_TO_WORLD ( val, idim, grid, ndec, string )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -41,7 +39,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 7/17/86
 * revision 0.1 - 7/14/87 - allowed field widths of 3 digits
@@ -62,19 +59,15 @@
 *		   meteorology community with millibars, etc.
 *	 1/27/95 - correct the longitude formatting of negative longitudes
 * V530: *acm* 12/00 alternative calendar types; cal_id
+* V533: *sh* 7/01 - bug fix: negative time steps still formatted as seconds
+*		    since BC.  A leftover from an Oct. 1997 change by K.O.
+*	            omitted from this documentation block
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'errmsg.parm'
 	include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER		idim, ndec, grid, line
@@ -85,7 +78,7 @@
 	CHARACTER	SECS_TO_DATE*20, TM_FMT*24, code*1, xtra*16
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, min_width, width, 
      .                  decim, numbers, n2, cal_id
-	LOGICAL		GEOG_LABEL, TM_DATE_OK, fancy, use_sig_fig,
+	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
      .                  modulo
 	REAL		val4, val4_orig
 
@@ -164,13 +157,15 @@
 	   ELSE
 * t - create date/time string and exit
 *  ( negative times are used in stored regions as axis-independent dates )
-	      IF ( val .LT. 0.0D0 ) THEN
+              IF ( val .LT. -47335449600D0 ) THEN
+! HACK! negatives time steps are formatted as valid times unless they
+! would be negative seconds from BC for dates later than 1-jan-1500
                  line       = grid_line( t_dim, grid )
                  cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
-	         string = SECS_TO_DATE( -val, cal_id )
-	      ELSE
-	         CALL TSTEP_TO_DATE( grid, val, decim, string )
-	      ENDIF
+                 string = SECS_TO_DATE( -val, cal_id )
+              ELSE
+                 CALL TSTEP_TO_DATE( grid, val, decim, string )
+              ENDIF
 	      RETURN
 	   ENDIF
 	ENDIF

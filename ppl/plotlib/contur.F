@@ -1,4 +1,4 @@
-	subroutine contur(z,nxs,nys,px,py,nx,ny,xf,xoff,yf,yoff,
+        subroutine contur(z,nxs,nys,px,py,nx,ny,xf,xoff,yf,yoff,
      *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xct,yct)
 
 *
@@ -60,6 +60,7 @@
 *
 * *jd	- 3/29/94 fix bug where specification of zero height contour labels
 *		  bombs out on ALPHA machines (divide by zero)
+* *jc*  - 3/26/99 added transformation to curvilinear coordinates
 
 ****************************************************************************
 C**
@@ -120,6 +121,7 @@ c     oceanography emr   dec/69
 	include 'CONLAB.INC'
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
+        include 'xcurvilinear.cmn'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
 	INCLUDE 'tmap_pplv11inc:tmap_dashzz.inc'
@@ -152,6 +154,11 @@ C	Place init into data stmt *jd* 12.96 linux
 	parameter (msplsz=2000)
 	real splxp(msplsz),splyp(msplsz),spltmp(msplsz),spls(msplsz)
 	integer splier
+
+C     Curvilinear coordinates declarations
+        integer icurv, status
+        real x_curv(1200), y_curv(1200)
+
 c
 c     initialize
 c*******************************************************************************
@@ -454,7 +461,7 @@ c
 590	kabov(l)=-1
 	if(zz(l)-zc)610,610,600
 600	kabov(l)=1
-610	xx(l)= px(il)*xf + xoff
+ 610    xx(l)= px(il)*xf + xoff
 620	yy(l)= py(jl)*yf + yoff
 	lused(4) = ind(1)/2
 	lused(1) = ind(1)-2*lused(4)
@@ -468,7 +475,30 @@ c*******************************************************************************
 c
 700	s(2)=0.
 	if(kmax-2)1000,1000,720
-720	do 750 k=3,kmax
+
+c
+c     For the three argument contour command, the px and py arrays contain
+c     fractional indices instead of axis values.  At this point in the code,
+c     the x and y arrays contain the page coordinates.  Here we undo the
+c     factor(xf/yf) and offset(xoff/yoff) calculations to retrieve the fractional
+c     indices, call CURV_COORD() to converts these indices into the transformed
+c     axis values, and then reapply the offset and factor.
+c
+ 720    IF (curvilinear) THEN
+           DO 722 icurv=1, kmax
+              x_curv(icurv)=(x(icurv)-xoff)/xf
+              y_curv(icurv)=(y(icurv)-yoff)/yf
+ 722       CONTINUE
+
+           CALL CURV_COORD(x_curv, y_curv, kmax, 1.0, 1.0, status) ! xform the pts
+
+           DO 724 icurv=1, kmax
+              x(icurv)=x_curv(icurv)*xf + xoff
+              y(icurv)=y_curv(icurv)*yf + yoff
+ 724       CONTINUE
+        ENDIF
+
+        do 750 k=3,kmax
 	dxx = x(k)-x(k-1)
 	dyy = y(k)-y(k-1)
 750	s(k) = s(k-1)+ sqrt(dxx*dxx+dyy*dyy)
@@ -805,6 +835,16 @@ c
 	  ylabc(nlabc)=ylab
 	endif
 c
+        IF (curvilinear .AND. .NOT.curvilinear) THEN
+           x_curv(1)=(xendl-xoff)/xf
+           y_curv(1)=(yendl-yoff)/yf
+
+           CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
+
+           xendl=x_curv(1)*xf + xoff
+           yendl=y_curv(1)*yf + yoff
+        ENDIF
+
 	call plotny(xendl,yendl,3,0)
 ! TMAP mod, spline fit:
 ! if spline_tension.ne.0 then you want to do a spline fit in the area

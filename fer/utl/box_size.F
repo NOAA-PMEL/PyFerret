@@ -52,6 +52,7 @@
 * V4.20 - 10/95 - remove references to line_mem to permit recursive line defs
 *	   1/96 - bug fix: only look at line_parent for dynamic lines
 *		           (code would be sweeter if ALL lines had line_parent)
+* V510 4/00 *sh -- all lines now DO have line_parent
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -71,8 +72,8 @@
 
 * internal variable declarations:
 	LOGICAL recursive
-	INTEGER	iaxis, isub0, isub
-	REAL*8	TM_WORLD, midpoint, lo_point, hi_point
+	INTEGER	iaxis, isub0
+	REAL*8	TM_WORLD, lo_point, hi_point
 
 * initialize
 	iaxis = grid_line( idim, grid )
@@ -98,8 +99,7 @@
 
 * only dynamic lines have the possibility of recursive definitions
 * (since FORTRAN doesn't protect "AND" clauses this test in 2 steps)
-	   recursive = iaxis .GT. max_lines
-	   IF ( recursive ) recursive = line_parent(iaxis) .NE. 0 
+	   recursive = line_parent(iaxis) .NE. 0 
 
 * use TM_WORLD to compute BOX_SIZE for recursive defs (10/95)
 	   IF ( recursive ) THEN

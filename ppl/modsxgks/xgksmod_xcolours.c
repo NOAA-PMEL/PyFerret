@@ -49,11 +49,11 @@
  * The 7.31.95 fix didn't work for TrueColor displays because the pixel value
  * could be quite large. Also, even if the color associated with a GKSindex
  * changed, the color would not be freed until the colormap was full -- this
- * could cause problems with other applications. This is now fixed. *js* 1.15.98
+ * could cause problems with other applications. New static functions have
+ * been added to solve this problem: addPixelTable, removePixelTable, 
+ * and getPixelTable -- a table of allocated pixels is associated with each
+ * workstations.
  */
-
-#define MAX_GKS_COLORS 256
-int XGKS_alloc_pixel[MAX_GKS_COLORS]; /* Use to indicate pixel allocated by XGKS *jd* */
 
 /*LINTLIBRARY*/
 
@@ -111,6 +111,54 @@ extern int		XgksSIGIO_OFF();
 extern int		XgksSIGIO_ON();
 
 static unsigned long	MaskToMult();
+
+#define MAX_GKS_COLORS 256
+
+#define MAX_TABLES 10		/* Max in Ferret is 8 */
+
+struct {
+  WS_STATE_PTR wstations[MAX_TABLES];
+  int *tables[MAX_TABLES];
+} PixelTable;
+
+static void addPixelTable(WS_STATE_PTR ws)
+{
+  int i;
+  for (i=0; i < MAX_TABLES; ++i){
+    if (PixelTable.wstations[i] == 0)
+      break;
+  }
+  assert(i < MAX_TABLES);
+  PixelTable.wstations[i] = ws;
+  PixelTable.tables[i] = (int *)malloc(sizeof(int)*MAX_GKS_COLORS);
+  memset(PixelTable.tables[i], 0, sizeof(int)*MAX_GKS_COLORS);
+  assert(PixelTable.tables[i]);
+}
+
+static void removePixelTable(WS_STATE_PTR ws)
+{
+  int i;
+  for (i=0; i < MAX_TABLES; ++i){
+    if (PixelTable.wstations[i] == ws)
+      break;
+  }
+  assert(i < MAX_TABLES);
+  PixelTable.wstations[i] = 0;
+}
+
+static int *getPixelTable(WS_STATE_PTR ws)
+{
+  int i;
+  for (i=0; i < MAX_TABLES; ++i){
+    if (PixelTable.wstations[i] == ws)
+      break;
+  }
+  if (i >= MAX_TABLES){
+    return 0;
+  } else {
+    return PixelTable.tables[i];
+  }
+}
 
 
     int
@@ -269,13 +317,7 @@ XcInit(ws, vinfo)
 
     map->NumEntries = vinfo->colormap_size;
 
-    {
-      int i;
-      for (i=0; i < MAX_GKS_COLORS; ++i){
-	XGKS_alloc_pixel[i] = 0;
-      }
-    }
-	
+    addPixelTable(ws);
 
     if (vinfo->class == TrueColor || vinfo->class == DirectColor) {
 	nbytes = sizeof(XcRGB) * vinfo->colormap_size;
@@ -432,11 +474,14 @@ XcSetColour(ws, GKSindex, GKSrep)
     Xrep.blue = 65535 * GKSrep->blue;
 
     /* Free color at this GKS index if already allocated */
-    if (XGKS_alloc_pixel[GKSindex] == 1){
-      unsigned long	pixel	= XcPixelValue(ws, GKSindex);
-      unsigned long	planes	= 0;
-      XFreeColors(ws->dpy, ws->dclmp, &pixel, 1, planes);
-      XGKS_alloc_pixel[GKSindex] = 0;
+    {
+      int *XGKS_alloc_pixel = getPixelTable(ws);
+      if (XGKS_alloc_pixel[GKSindex] == 1){
+	unsigned long	pixel	= XcPixelValue(ws, GKSindex);
+	unsigned long	planes	= 0;
+	XFreeColors(ws->dpy, ws->dclmp, &pixel, 1, planes);
+	XGKS_alloc_pixel[GKSindex] = 0;
+      }
     }
 
 
@@ -449,6 +494,7 @@ XcSetColour(ws, GKSindex, GKSrep)
 	XcMap          *map = &ws->XcMap;
 	XcTable        *ToX = &map->ToX;
 	XcTable        *ToGKS = &map->ToGKS;
+	int *XGKS_alloc_pixel = getPixelTable(ws);
 
 	/* Pixel successfully allocated by XGKS */
 	XGKS_alloc_pixel[GKSindex] = 1; /* jd */
@@ -594,6 +640,7 @@ XcEnd(ws)
     map = &ws->XcMap;
     ToX = &map->ToX;
     ToGKS = &map->ToGKS;
+    removePixelTable(ws); 
 
     if (map->SeparateRGB) {
 	if (ToX->rgb != NULL) {

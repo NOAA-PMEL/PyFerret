@@ -1009,7 +1009,7 @@ void EF_force_linking(int I_should_do_it)
     ef_set_axis_extend_( &i, &i, &i, &i, &i );
 
     ef_get_arg_subscripts_( &i, &i, &i, &i );
-    ef_get_arg_subscript_extremes_( &i, &i, &i );
+    ef_get_arg_ss_extremes_( &i, &i, &i );
     ef_get_one_val_( &i, &i, &f );
     ef_get_bad_flags_( &i, &f, &f );
 

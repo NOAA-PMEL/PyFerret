@@ -1091,7 +1091,8 @@
 	vp_segn ( ivp ) = 0
 
 * /AXES
-	vp_by_axis(ivp) = qual_given( slash_define_vp_by_ax )
+* 10/01 *kob* - add ".GT. 0" in below logical check
+	vp_by_axis(ivp) = qual_given( slash_define_vp_by_ax ) .GT. 0
 
 ***************** OLD CODE (retained for greater upwards compatibility)
 * /ORIGIN = x,y

@@ -1,7 +1,5 @@
 	SUBROUTINE RECONCILE_COM_DST_CX( com_cx, dst_cx, protected_ax )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,15 +44,16 @@
 
 * V420: 11/95 - code lifted from IS_REGRID **including warnings about untested
 *			alternatives**
+* V530: *sh* 3/01 - bug fix: preserve cx_has_impl_grid
 
-#ifdef unix
 	include	'ferret.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
+	include	'xcontext.cmn'
 
 * calling argument declarations:
 	INTEGER	com_cx, dst_cx, protected_ax
+
+* local variable declarations
+	LOGICAL has_impl
 
 * Make the destination context like the source data context on all except
 * the regrid axis.  That one keeps the user-requested size.
@@ -62,11 +61,17 @@
 * user-variable definition.  An alternative (untested 8/89) approach is to
 * call PASS_AMBIG_LI** for uvars)
 
+* save the implicit grid status of the destination
+	has_impl = cx_has_impl_grid(dst_cx)
+
 	CALL TRANSFER_CONTEXT( com_cx, cx_buff )
 
 	CALL TRANSFER_AXIS( protected_ax, dst_cx, cx_buff )
 
 	CALL TRANSFER_CONTEXT( cx_buff, dst_cx )
+
+* restore the implicit grid status of the destination
+	cx_has_impl_grid(dst_cx) = has_impl
 
 	RETURN
 	END	

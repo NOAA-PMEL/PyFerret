@@ -214,23 +214,9 @@
 *kob 1/01 check to see if we are in an animation repeat loop
 	animate = qual_given(slash_repeat_animate) .GT. 0
         IF (animate) THEN
-*       first time through, create a clone window
-	   IF ( .NOT.pplus_started ) THEN
-	      CALL START_PPLUS
-	   ENDIF
-	   IF (.NOT. wn_open(win_id9)) THEN 
-* open an unmapped window
-	      CALL UNMAP_ANIMATE_WINDOW
-	      anim_win_id = GKS_X_CONID( win_id9 )
-	      CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
-	      if (status .EQ. ferr_ok) wn_open(win_id9) = .TRUE.
-	      CALL SETUP_LINE_BUNDLES( win_id9, wstype )
-* swap active windows so the unampped window becomes the active
-* window, and the newly created window is the animating window
-	      CALL SWAP_ACTIVE_WINDOW
-	   ELSE 
-	      CALL CLEAR_WINDOW(win_id9)
-	   ENDIF
+* set first_frame to true - we don't need to animate first frame - its
+*   already in the plot window
+	   first_frame = .TRUE. 
 	ENDIF
 
 	RETURN

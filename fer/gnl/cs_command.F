@@ -70,8 +70,8 @@
 
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
-        CHARACTER CX_DIM_STR*40
-	INTEGER wsid, anim_id, temp_id
+        CHARACTER CX_DIM_STR*40,anim_win_id*16,GKS_X_CONID*16
+	INTEGER wsid, anim_id
 
 #ifdef unix
 	include 'ferret.parm'
@@ -84,6 +84,9 @@
 	include 'xinterrupt.cmn'
 	include 'xplot_setup.cmn'
 	include 'xplot_state.cmn'
+	include	'gkscm1_inc.decl'	! with gks common
+	include	'GKSCM1.INC'	                ! with gks common
+
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -129,11 +132,27 @@
 *       kob 12/00 - before we grab the next command, if we are animating lets
 *             take the snapshot here
 	      IF (animate .EQV. .TRUE.) THEN
-		 wsid = win_id9
-		 anim_id = active_win_id
-                 CALL COPY_BUFFERED_WINDOW(wsid, anim_id)
-* need to clear the double buffered unmapped window before next plot *kob*
-		 CALL CLEAR_WINDOW(wsid)
+		 IF (.NOT. first_frame) THEN
+		    IF (.NOT. wn_open(win_id9)) THEN 
+*       * open an unmapped window
+		       CALL UNMAP_ANIMATE_WINDOW
+		       anim_win_id = GKS_X_CONID( win_id9 )
+		       CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
+		       if (status .EQ. ferr_ok) wn_open(win_id9) = .TRUE.
+		       CALL SETUP_LINE_BUNDLES( win_id9, wstype )
+*       swap active windows so the unampped window becomes the active
+*       window, and the newly created window is the animating window
+		       CALL SWAP_ACTIVE_WINDOW
+		    ELSE 
+		       wsid = win_id9
+		       anim_id = active_win_id
+		       CALL COPY_BUFFERED_WINDOW(wsid, anim_id)
+*  need to clear the double buffered unmapped window before next plot *kob*
+		       CALL CLEAR_WINDOW(wsid)
+		    ENDIF
+		 ELSE
+		    first_frame = .false.
+		 ENDIF   
 	      ENDIF
 *       ... no - get the next command
 	      cmnd_line = cs_text( csp )

@@ -115,8 +115,8 @@ copy_buffered_window_(ws_id, anim_id)
   XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy,
 	    DefaultScreen(ws->dpy)), 0, 0,
 	    width, height, 0,0);  
-  /*    XSync(ws->dpy, 1);
-	xgks_x_events_(); */
+  XSync(ws->dpy, 0);
+  /*	xgks_x_events_(); */
 
 
 }

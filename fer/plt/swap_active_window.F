@@ -111,13 +111,11 @@
            anim_id = active_win_id
            wsid = win_id9
 *     deactivate what will become the animated window
-           CALL CLEAR_WINDOW( anim_id )
            CALL GDAWK( anim_id)
            wn_active(anim_id) = .FALSE.
 *     activate the unmapped window
            CALL GACWK( wsid)
            wn_active(wsid) = .TRUE.
-           CALL CLEAR_WINDOW( wsid )
 
 *     if we've already done a plot set window size accordingly
            IF (.NOT. new_window) THEN
@@ -128,7 +126,6 @@
               CALL SET_WINDOW_SIZE (anim_id,WKXMN,WKXMX,WKYMN,WKYMX)
            ELSE
               CALL GSELNT(wsid)
-*              CALL GSELNT(anim_id)
            ENDIF
 
            CALL XGKS_X_EVENTS
@@ -140,7 +137,7 @@
            IF ( vp_num .EQ. mvp_dflt ) THEN
 *     return to full screen - clear away everything
               DO 100 iseg = mvp_dflt, max_viewport
-                 IF (iseg .gt. 0) THEN
+                 IF (iseg .gt. 0 .AND. iseg .LE. max_viewport) THEN
                     vp_seg0(iseg) = 0
                     vp_segn(iseg) = 0
                  ENDIF
@@ -148,8 +145,7 @@
            ELSE
 *     delete any segments showing in this viewport
               DO 200 iseg = vp_seg0(vp_num)+1, vp_segn(vp_num)
-*             CALL GDSG( iseg ) 
-                 IF (iseg .gt. 0) THEN
+                 IF (iseg .gt. 0 .AND. iseg .LE. max_viewport) THEN
                     vp_seg0(iseg) = 0
                     vp_segn(iseg) = 0
                  ENDIF
@@ -170,12 +166,7 @@
 *     activate the mapped window for continued ferret use
            CALL GACWK(wsid)
            wn_active(wsid) = .TRUE.
-*     kludge to get window in proper state for next plot - otherwise 
-*     it doesn't clear upon next plotting commmand
-           CALL SYMBEL(0,0,0,.00001,20,'Done')
-*     set up workstation and window sizes
-           CALL GSWKWN(wsid,0.0,FCTX,0.0,FCTY)
-           CALL SET_WINDOW_SIZE (wsid,WKXMN,WKXMX,WKYMN,WKYMX)
+
 
               
            ENDIF

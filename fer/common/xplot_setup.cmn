@@ -16,7 +16,8 @@
      .		saved_ppl_yax,
      .		ul_dolab(4),
      .		ovkey_ll_full,
-     .          animate
+     .          animate,
+     .		first_frame
 	INTEGER	nvect_on,
      .		ncont_on,
      .		nlabs_on,
@@ -58,6 +59,7 @@
 
 	COMMON / XPLOT_SETUP /
      .		animate,
+     .		first_frame,
      .          active_win_id,
      .		key_doc,
      .		onedee_on,

@@ -36,8 +36,6 @@
 *
 * Ansley Manke
 * April 1998
-* ACM 1/3/2001  implement with merge rank translated from f90, originally from 
-*   http://www.fortran-2000.com/rank/index.html#1.1
 *
 * This function sorts data on x axis in increasing order.
 * Returns index of sorted values.  
@@ -112,7 +110,7 @@
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 3)
+      CALL ef_set_num_work_arrays(id, 2)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
@@ -160,10 +158,13 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
+      my_lo_l = 1
+      my_hi_l = 1
+
       arg = 1
 
-      my_lo_l = 1
       my_hi_l = arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1
+
 
       CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
 *                                                                     ^
@@ -194,7 +195,7 @@
 *
 * ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER mxdat, nstack
+      INTEGER mxdat
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
 
@@ -202,14 +203,12 @@
 
       mxdat = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
 
+
 * sort_dat
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxdat, 1, 1, 1)
 
 * sort_indx
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mxdat, 1, 1, 1)
-
-* iwork
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, mxdat, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -222,8 +221,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE sorti_compute(id, arg_1, result, sort_dat, 
-     .                               sort_indx, iwork)
+      SUBROUTINE sorti_compute(id, arg_1, result, sort_dat, sort_indx)
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -249,8 +247,9 @@
 *                                                                     V
 
       INTEGER id
-      INTEGER nbad, nsrt
-      INTEGER i, j, k, l, m
+      INTEGER nbad, m_indx
+      INTEGER m, nsrt
+      INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
 *  Dimension work arrays
@@ -259,8 +258,6 @@
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
       INTEGER sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
-      INTEGER iwork(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
-     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -288,29 +285,28 @@
                   ELSE
                      nsrt = nsrt + 1
                      sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
+                     sort_indx(nsrt,1,1,1) = i1
 
                   END IF
 
                   i1 = i1 + arg_incr(X_AXIS,ARG1)
  100           CONTINUE
       
-* Sort based on sort_dat.  sort_indx retured as rank.
+*
+* Sort based on sort_dat.  sort_indx goes along for the ride,
+* elements moved when elements of sort_dat moved.
+*
+c               IF (nsrt .GT. 1) CALL shell (sort_dat, sort_indx, nsrt)
+               IF (nsrt .GT. 1) CALL HEAP2 (sort_dat, sort_indx, 
+     .                                      bad_flag(arg1), nsrt)
 
-               IF (nsrt .GT. 1) CALL MRGRNK (sort_dat, sort_indx, iwork,
-     .                                        nsrt )
-
-* Put sorted indices in the array first, then bad flags.
-
-               i = res_lo_ss(X_AXIS)
                DO 200 m = 1, nsrt
-                  result(i,j,k,l) = sort_indx(m,1,1,1) +
-     .                                       arg_lo_ss(X_AXIS,ARG1) - 1
-                  i = i + res_incr(X_AXIS)
+                  result(m,j,k,l) = sort_indx(m,1,1,1)
  200           CONTINUE
 
                DO 300 m = 1, nbad
-                  result(i,j,k,l) = bad_flag_result
-                  i = i + 1
+                  m_indx = m + nsrt
+                  result(m_indx,j,k,l) = bad_flag_result
  300           CONTINUE
 
                l1 = l1 + arg_incr(T_AXIS, ARG1)
@@ -321,7 +317,10 @@
 
          j1 = j1 + arg_incr(Y_AXIS, ARG1)
  600  CONTINUE
+*                                                                     ^
+*                                                                     |
+*                                           USER CONFIGURABLE PORTION |
+***********************************************************************
 
       RETURN 
       END
-

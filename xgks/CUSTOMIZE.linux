@@ -28,7 +28,7 @@ CFLAGS='-O2 -m486'
 # CPPFLAGS=-DDEBUG
 #
 # Installation prefix (default is `../..'):
-prefix=../..
+prefix=../lib
 
 FC=f95
 OS=linux

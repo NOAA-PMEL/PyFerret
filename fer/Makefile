@@ -8,6 +8,7 @@
 #		 links to actual files in fer directory
 # 7/98 *kob* - reworking prior to source code distribution. add in 
 #	       fmt are as well so one make command compiles/links all
+# 7/99 *sh* - corrected misbehavior of make debug -- make update was not called
 # 8/99 *acm* - Add EFUOBJS and ef_utility to DIRS and LIBS so to include 
 #              External Functions utility functions in the executable.
 #              (see note in ef_utility/Makefile: Don't put these in a library.)
@@ -72,7 +73,8 @@ all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 debug:	.FRC
 	(cd ccr; $(CC) -c -g $(CFLAGS) gui_init.c)
-	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
+	$(MAKE) "DEBUG_TITLE=debug" update
+	$(MAKE) "DEBUG=-g" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)

@@ -1,25 +1,22 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/fer/ferret_v553
--rwxrwxrwx   1 kobrien  56008432 Sep 23 15:48 /home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/fer/ferret_v553
-Using external functions from /home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bin
+Running FERRET version ../fer/ferret_v553
+-rwxr-xr-x    1 sch      i         30425224 Oct  6 19:49 ../fer/ferret_v553
+Using external functions from ../bin
 Benchmark run by kob
-Note: v553 final build - i hope
+Note:  v553 final test - i hope after DODS updates and rebuild
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bench
-FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
-CVSROOT=/home/ja9/tmap/FERRET_ROOT
+PWD=/tmp_mnt/home/sch/FERRET/bench
 FER_DIR=.
-FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
-FER_DAT=.
-FER_GO=. /home/ja9/tmap/ferret/solaris/go /home/ja9/tmap/ferret/solaris/examples /home/ja9/tmap/ferret/solaris/contrib /home/ja9/tmap/ferret/tmap_go
+FER_WEB_BROWSER=netscape -ncols 60
+FER_EXTERNAL_FUNCTIONS=../bin
+FER_GO=. /home/sch/ferret/go /home/sch/ferret/examples /home/sch/ferret/contrib
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_MODEL_RUNS=/home/ja9/tmap/model_runs
-FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bin
-Beginning at Tue Sep 23 16:03:20 PDT 2003
+FER_PALETTE=. /home/sch/ferret/ppl
+FER_DAT=.
+Beginning at Mon Oct 6 19:52:32 EDT 2003
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -253,7 +250,6 @@ list a
  **ERROR: illegal limits: A is not in the range I=101:105
           Axis extremes are I=1:8
 list a
-rm: No match.
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
  **TMAP ERR: Requested data range is outside of data set limits
@@ -294,7 +290,6 @@ plot/xlimits=1:: i
 plot/xlimits=1:2: i
  **ERROR: invalid command: Must give a range: xlimits=5:5
 plot/xlimits=5:5 i
-bench.mgm: No such file or directory
  **TMAP ERR: Attempt to access unsupported feature
              Descriptor requests delta of 0, please use 1
              Data set: ./coads_clim_bad_delta.des
@@ -373,7 +368,7 @@ plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
  **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
           DASH arguments must be positive
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
- **ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0.
+ **ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0.00
 plot/hlog fcn
 
 Bailing out of external function "ffta":
@@ -453,7 +448,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: calendar attribute on axis "TIME" is not recognized: 365_DAYS
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY
  *** NOTE: A dummy axis of subscripts will be used
-input.txt not found
+Cannot access input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
                 dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
           axy, return=xx
@@ -530,4 +525,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Sep 23 16:12:25 PDT 2003
+Ended at Mon Oct 6 20:15:23 EDT 2003

@@ -1,25 +1,23 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/fer/ferret_v553
--rwxrwxrwx   1 kobrien  56008432 Sep 23 15:48 /home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/fer/ferret_v553
-Using external functions from /home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bin
+Running FERRET version /home/ja4/kobrien/solaris8/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 tmap     tmap     55459332 Sep 23 15:14 /home/ja4/kobrien/solaris8/FERRET/fer/ferretdods_gui
+Using external functions from /home/ja4/kobrien/solaris8/FERRET/bin
 Benchmark run by kob
-Note: v553 final build - i hope
+Note: v553 initial test on solaris8
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bench
-FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
-CVSROOT=/home/ja9/tmap/FERRET_ROOT
+PWD=/home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bench
 FER_DIR=.
-FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
-FER_DAT=.
-FER_GO=. /home/ja9/tmap/ferret/solaris/go /home/ja9/tmap/ferret/solaris/examples /home/ja9/tmap/ferret/solaris/contrib /home/ja9/tmap/ferret/tmap_go
+FER_WEB_BROWSER=netscape -ncols 60
+FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/solaris8/FERRET/bin
+FER_GO=. /opt/local/ferret/ferret/go /opt/local/ferret/ferret/examples /opt/local/ferret/ferret/contrib
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_MODEL_RUNS=/home/ja9/tmap/model_runs
-FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/kobrien/BETA_BUILDS/solaris/FERRET/bin
-Beginning at Tue Sep 23 16:03:20 PDT 2003
+FER_PALETTE=. /opt/local/ferret/ferret/ppl
+FER_LOCAL_EXTFCNS=/home/ja4/kobrien/solaris8/FERRET/bin/
+FER_DAT=.
+Beginning at Tue Sep 23 15:29:34 PDT 2003
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -453,7 +451,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: calendar attribute on axis "TIME" is not recognized: 365_DAYS
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY
  *** NOTE: A dummy axis of subscripts will be used
-input.txt not found
+input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
                 dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
           axy, return=xx
@@ -530,4 +528,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Sep 23 16:12:25 PDT 2003
+Ended at Tue Sep 23 15:41:28 PDT 2003

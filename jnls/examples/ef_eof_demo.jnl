@@ -126,7 +126,7 @@ SET REGION/X=67w:1w/Y=11S:11N
 !  Compute and save the spatial EOF functions.  These have the same units
 !  as the data.
 
-LET eof_xyfcn = eof_space(sst, 2.0, 0.5)
+LET eof_xyfcn = eof_space(sst, 0.5)
 SAVE/CLOBBER/FILE=sst_clim_eof_space.cdf eof_xyfcn
 
 
@@ -151,7 +151,7 @@ CANCEL REGION
 
 USE coads_climatology
 SET REGION/X=67w:1w/Y=11S:11N
-LET eofstat = eof_stat(sst[X=67w:1w,Y=11S:11N], 2.0, 0.5)
+LET eofstat = eof_stat(sst[X=67w:1w,Y=11S:11N], 0.5)
 
 LET nout = eofstat[i=1,j=1]
 LET pcts = eofstat[i=1:`nout`,j=2]
@@ -159,15 +159,15 @@ LET pcts = eofstat[i=1:`nout`,j=2]
 LET eigenv = eofstat[i=1:`nout`,j=3]
 
 LIST nout
-LIST pcts
-LIST eigenv
+LIST/I=1:6 pcts
+LIST/I=1:6 eigenv
 
 PAUSE
 
 !  Compute and save time amplitude functions: Note they are dimensionless.
 
 USE coads_climatology
-LET eoftime = eof_tfunc(sst[X=67w:1w,Y=11S:11N], 2.0, 0.5)
+LET eoftime = eof_tfunc(sst[X=67w:1w,Y=11S:11N], 0.5)
 
 SAVE/CLOBBER/FILE=sst_clim_eof_tfunc.cdf eoftime[i=1:`nout`]
 

@@ -1,5 +1,6 @@
 ! trackplot_demo.jnl
 ! *jd* 5.99
+! *acm* 7/01 update /line=  to /color=/thickness=
 
 ! Description: demonstrate usage of trackplot jnl file
 
@@ -35,8 +36,8 @@ SET REGION/L=1:120
 ! Use automatic scaling and baseline of plot
 go basemap x=120:260 Y=25s:65n 20
 plot/vs/line/over/title="Ship track" xtrack, ytrack
-go trackplot plot/vs/over/line=2/title="Variable MY_VAR" xtrack ytrack my_var
-go trackplot plot/vs/over/line=4/title="Variable OTHER_VAR" xtrack ytrack other_var
+go trackplot plot/vs/over/line/color=red/title="Variable MY_VAR" xtrack ytrack my_var
+go trackplot plot/vs/over/line/color=blue/title="Variable OTHER_VAR" xtrack ytrack other_var
 label/nouser `($ppl$xlen)/2` -1 0 0 .18 "@CRSynthetic track and 2 variables"
 \PAUSE
 
@@ -44,8 +45,8 @@ label/nouser `($ppl$xlen)/2` -1 0 0 .18 "@CRSynthetic track and 2 variables"
 SAY ($TRACKPLOTscale)			! notice default scaling = 5.5983 units/inch
 go basemap x=120:260 Y=25s:65n 20 
 plot/vs/line/over/title="Ship track" xtrack, ytrack
-go trackplot plot/vs/over/line=2/title="Variable MY_VAR" xtrack ytrack my_var 12
-go trackplot plot/vs/over/line=4/title="Variable OTHER_VAR" xtrack ytrack other_var 12 1
+go trackplot plot/vs/over/line/color=red/title="Variable MY_VAR" xtrack ytrack my_var 12
+go trackplot plot/vs/over/line/color=blue/title="Variable OTHER_VAR" xtrack ytrack other_var 12 1
 \PAUSE
 
 ! In this demo we will mark every 10th point on the ship track
@@ -54,8 +55,8 @@ go basemap x=120:260 Y=25s:65n 20
 plot/vs/line/over/title="Ship track" xtrack, ytrack
 plot/vs/over/NOLABEL/SYMBOL=88 xtrack[L=1:120:10], ytrack[L=1:120:10]
 label 220,-10,-1,0,.1 "@PM88@CR - every 10^t^h point"
-go trackplot plot/vs/over/line=2/title="Variable MY_VAR" xtrack ytrack my_var 4
+go trackplot plot/vs/over/line/color=red/title="Variable MY_VAR" xtrack ytrack my_var 4
 go scalemark 1 -1 2    ! position outside of plot rectangle using inches
-go trackplot plot/vs/over/line=4/title="Variable OTHER_VAR" xtrack ytrack other_var " " 1
+go trackplot plot/vs/over/line/color=blue/title="Variable OTHER_VAR" xtrack ytrack other_var " " 1
 go scalemark 180 0 2 user "2 units"
 label/user 180 -3 0 0 .08 "random values plus 1"

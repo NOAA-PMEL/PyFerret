@@ -1,5 +1,7 @@
 ! langrangian_example.jnl
 ! 10/17/95
+! *acm* 7/01 update ppl pen 1,2  to plot/color=
+
 ! illustration of tracer plots
 ! slow and klunky ... but it works
 
@@ -31,7 +33,7 @@ let is = i[i=1:24]	! 24 points in X
 let js = j[j=1:15]	! 15 points in Y
 let xpts = 125 + is*15 +(js-js)
 let ypts = (-22) + js*5 + (is-is)
-plot/vs/over/sym=22/nolab/set xpts,ypts; ppl pen 1,2; ppl plot/over ! red
+plot/vs/over/sym=22/color=red/nolab xpts,ypts
 
 user/command=sample/opt2=c/opt1="hole,standard_bad"/file=uwind.prev uwnd[d=monthly_navy_winds],xpts,ypts,1/0,1/0
 user/command=sample/opt2=c/opt1="hole,standard_bad"/file=vwind.prev vwnd[d=monthly_navy_winds],xpts,ypts,1/0,1/0

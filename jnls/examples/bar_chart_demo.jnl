@@ -1,5 +1,6 @@
 ! bar_chart.jnl
 ! *sh* 6/99
+! *acm* 7/01 update /xlimits to /hlimits
 
 ! Description: demonstrate usage of bar charts
 
@@ -16,7 +17,7 @@ label/nouser 2.5,-.1,1,90,.16 @CRItem 3
 ! overlay two variables on auto-formatted axes
 let a = 1+RANDU(I[i=1:10])
 ppl axset 0,1,1,0  ! remove top and right axes
-plot/xlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5
+plot/hlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5
 go bar_chart3 poly/line/palette=red/overlay/title="My reds" a
 let b = RANDU(I[i=1:10]+1)
 go bar_chart3 poly/line/palette=blue/overlayy/title="My blues" b

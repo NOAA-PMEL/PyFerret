@@ -1,7 +1,9 @@
 ! polytube_demo.jnl
 ! *jd* 5.99
+! *acm* 7/01 update /line= to /color=/thickness=
 
 ! Description: demonstrate "lagrangian" plots along a path using color fill
+
 
 set mode verify
 
@@ -41,6 +43,6 @@ plot/vs/line/sym/over/nolab xtrack, ytrack
 go basemap x=120:260 Y=25s:65n 20
 go polytube polygon/over/key/pal=no_green xtrack ytrack SST 0.3
 label/nouser `1.05*($ppl$xlen)`,-.5,0,0,.15 @CRSST
-go trackplot plot/vs/over/line=9/title="wind" xtrack ytrack wind
+go trackplot plot/vs/line/over/color=green/thickness=2/title="wind" xtrack ytrack wind
 
 

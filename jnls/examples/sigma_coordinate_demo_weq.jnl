@@ -1,5 +1,6 @@
 ! sigma_coordinate_demo.jnl 9/96 *sh*
 !    comments updated 11/97 for ZAXREPLACE() function availability
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
 
 ! Description: demo of how to handle sigma coordinate output
 
@@ -199,10 +200,10 @@ set variable/title="Flow as a function of depth" flow_on_depth
 !  Note: the missing points at the surface occur where the top H layer
 !        is thick enough so that the mid-point of the top layer is deeper
 !        than the first point of the new depth axis, tdepth
-   shade/levels/t=0:180/Y=0/ylimits=0:180:-20 flow_on_depth
+   shade/levels/t=0:180/Y=0/vlimits=0:180:-20 flow_on_depth
 !  ... overlay the bathymetry in black
    let bathy_field = (-1*bathymetry) - T[gt=tdepth]
-   fill/over/nolab/Y=0/ylimits=0:180:-20/lev=(-1000,0,1000)/palette=black bathy_field
+   fill/over/nolab/Y=0/vlimits=0:180:-20/lev=(-1000,0,1000)/palette=black bathy_field
 
    label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACCross-section: mid-way along channel
    message
@@ -220,8 +221,8 @@ fill/x=0/l=1/title="Flow as a function of layer" flow
    go magnify 1.2
 
 !  Now flow as a function of depth
-   shade/levels/t=0:180/X=0/transpose/ylimits=0:180:-20 flow_on_depth
+   shade/levels/t=0:180/X=0/transpose/vlimits=0:180:-20 flow_on_depth
 !  ... overlay the bathymetry in black
-   fill/over/nolab/X=0/trans/ylimits=0:180:-20/lev=(-1000,0,1000)/palette=black bathy_field
+   fill/over/nolab/X=0/trans/vlimits=0:180:-20/lev=(-1000,0,1000)/palette=black bathy_field
 
    label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACSection along channel axis

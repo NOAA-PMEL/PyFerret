@@ -2,9 +2,12 @@ define alias pause message
 
 ! constant_array_demo.jnl (4/99)
 
-! Description: Demonstration of the {1, 3, 5} "constant array"  syntax
+! Description: Demonstration of the {1, 3, 5} "constant array"  syntax 
 
 ! Constant array syntax introduced into Ferret in V5.0
+
+! *acm* 7/01 update /pen= to /color=/thickness=
+
 
 
 ! ** Constant arrays allow you quickly to enter lists of constant values.
@@ -35,7 +38,7 @@ pause
 
   LET xtriangle = {0,.5,1}
   LET ytriangle = {0,1,0}
-  POLYGON/LINE=8 xtriangle, ytriangle, 0
+  POLYGON/COLOR=red/THICKNESS=2 triangle, ytriangle, 0
 
 pause
 

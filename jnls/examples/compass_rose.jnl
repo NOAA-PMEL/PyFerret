@@ -1,6 +1,7 @@
 \CANCEL MODE VERIFY
 
 ! *sh* 3-28-95
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
 
 !Description: Demonstration of immediate mode expressions
 ! This script uses immediate mode expressions to compute the placement
@@ -17,7 +18,7 @@
 
 ! set up PLOT+ as if a plot had just been made
 SET WIND/CLEAR
-PLOT/XLIMITS=-2:2:1/YLIMITS=-2:2:1/nolabels/set_up 1
+PLOT/HLIMITS=-2:2:1/VLIMITS=-2:2:1/nolabels/set_up 1
 PPL AXSET 0,0,0,0
 PPL xlab; ppl ylab
 PPL PLOT

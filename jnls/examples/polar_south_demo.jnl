@@ -1,4 +1,12 @@
 ! Description: demonstrate South pole polar stereographic projections
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
+! *** Note: this demo is superseded by newer map projection  *** !
+! *** capabilities introduced in Ferret Version 5.0 see      *** !
+! *** "map projections" in Users Guide, and                  *** !
+! ***                                                        *** !
+! ***  yes? go mp_demo                                       *** !
+! ***                                                        *** !
 
 ! This demo will display the same plot twice: first with a standard
 ! latitude/longitude rectangular "projection" and again using a polar
@@ -31,8 +39,8 @@ set window/aspect=.6/size=.5
 fill/lev=(-2,30,2)/title="SST, winds, and AIRT"/pal=no_red sst
 go fland 60 gray
 go land
-vector/pen=2/overlay uwnd,vwnd
-contour/pen=1/levels=(-5,30,5)/overlay airt
+vector/color=red/overlay uwnd,vwnd
+contour/color=black/levels=(-5,30,5)/overlay airt
 plot/vs/overlay/nolabels/symbols ctd_casts_lon,ctd_casts_lat
 
 
@@ -43,8 +51,8 @@ set wind/aspect=1:ax/size=.5
 go polar_2d fill/lev=(-2,30,2)/title="SST,winds and AIRT"/pal=no_red sst,100,,,,,-1
 go polar_fland 60 gray
 go polar_land green,1.0
-go polar_vector vector/pen=2/overlay uwnd,vwnd,100,,,,-1
-go polar_2d contour/pen=1/levels=(-5,30,5)/overlay airt,100,,,,,-1
+go polar_vector vector/color=red/overlay uwnd,vwnd,100,,,,-1
+go polar_2d contour/color=black/levels=(-5,30,5)/overlay airt,100,,,,,-1
 go polar_vs plot/vs/overlay/nolabels/symbols ctd_casts_lon,ctd_casts_lat
 go polar_grid_fancy
 

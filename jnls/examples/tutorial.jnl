@@ -5,6 +5,7 @@ SAY   ... setting up demo environment ...
 ! tutorial.jnl - *sh* 11/91
 ! updated with V3.01 features 11/93 *sh*
 ! don't shrink the 4-panel anomaly window - too slow under XGKS 5/94 *sh*
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
 
 ! eliminate the program state left by previous activities
 CANCEL REGION
@@ -63,7 +64,7 @@ MESSAGE
 
 GO black
 LET/TITLE="My inverse of I" iinverse = 1/i
-PLOT/i=1:10/SYMBOLS=2/LINE/YLIMITS=-1:2:0.25  iinverse
+PLOT/i=1:10/SYMBOLS=2/LINE/VLIMITS=-1:2:0.25  iinverse
 
 ! ******************************************************************** 
 MESSAGE
@@ -85,7 +86,7 @@ PLOT/i=1:10  1/i
 SET VIEWPORT LL
 PLOT/i=1:10/SYMBOLS  1/i
 SET VIEWPORT LR
-PLOT/i=1:10/SYMBOLS=2/LINE/YLIMITS=-1:2:0.25  iinverse
+PLOT/i=1:10/SYMBOLS=2/LINE/VLIMITS=-1:2:0.25  iinverse
 SET VIEWPORT UR
 PLOT/i=1:10   1/i, 1/(i+3), 1/i + 1/(10-i)
 

@@ -2,6 +2,8 @@
 
 ! Description: demonstrates log plots using PLOT+ in FERRET
 
+! *acm* 7/01 update /xlimits to /hlimits
+
 cancel viewports
 set window/size=.75/aspect=1.2
 set mode verify
@@ -30,7 +32,7 @@ plot/x=1:100 sin(x/6)
 
 set view lower
 ppl axtype 2
-plot/x=1:100/xlimits=0:2 sin(x/6)
+plot/x=1:100/hlimits=0:2 sin(x/6)
 
 ! cleanup
 ppl axtype 1,1

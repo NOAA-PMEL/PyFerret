@@ -1,5 +1,6 @@
 ! 7/98 - demonstrate a shaded region (representing a region of uncertainty)
 ! behind a line plot
+! *acm* 7/01 update /ylimits to /vlimits
 
 ! This example uses a time series -- which has a special difficulty
 
@@ -10,7 +11,7 @@ DEFINE AXIS/t=1-jan-1980:1-jan-1981:24/UNIT=hours thr
 LET fcn = SIN(T[gt=thr]/500)
 
 ! basic plot of function
-PLOT/YLIMITS=-2:2 fcn
+PLOT/VLIMITS=-2:2 fcn
 
 ! 2D version of function
 LET fcn_2d = z[z=-2:2:.4] - fcn
@@ -29,7 +30,7 @@ DEFINE AXIS/t=1-jan-1980:1-jan-1981:1/UNIT=days tday
 LET fcnDAY = SIN(T[gt=tday]/(500/24))
 
 ! basic plot of function
-PLOT/YLIMITS=-2:2 fcnDAY
+PLOT/VLIMITS=-2:2 fcnDAY
 
 ! 2D version of function
 LET fcnDAY_2d = z[z=-2:2:.4] - fcnDAY

@@ -1,5 +1,6 @@
 ! plot_swath_demo.jnl
 ! *sh* 6/99
+! *acm* 7/01 update /pen=7 to /thickness=2
 
 ! Description: demonstrate "line plots" done with swaths of color
 
@@ -12,7 +13,7 @@ let mean = sst[x=130e:80w,y=0,l=1:12@ave]
 let std_dev = sst[x=130e:80w,y=0,l=1:12@var] ^ 0.5
 plot/title="Tropical SST variability" mean
 go plot_swath poly/over/pal=gray/nolab mean-std_dev, mean+std_dev
-plot/over/nolab/line=7 mean
+plot/over/nolab/thickness=2 mean
 \pause
 
 ! example 2 -- 3 colored time series

@@ -1,6 +1,8 @@
 \cancel mode verify
 ! ef_fft_demo.jnl
-! *am* 4/99
+! *acm* 4/99
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
 set mode verify
 ! Description: Demonstration of external functions for FFT:  
 ! FFTA computes amplitude spectrum
@@ -51,7 +53,7 @@ LET per = 1./a
 !  The PPL ccommands clean up the plot appearance.
 
 SET VIEW ur
-PLOT/VS/LINE/XLIMITS=0:24:2/TITLE="Amplitude Spectrum"/SET_UP per[l=1:`FFT_nf`], FFT_uwndfft
+PLOT/VS/LINE/HLIMITS=0:24:2/TITLE="Amplitude Spectrum"/SET_UP per[l=1:`FFT_nf`], FFT_uwndfft
 PPL XFOR (I2)
 PPL XLAB Period, months/cycle
 PPL YLAB 
@@ -70,7 +72,7 @@ PLOT FFT_uwndfftp
 !  And the phase in months/cycle
 
 SET VIEW lr
-PLOT/VS/LINE/XLIMITS=0:24:2/TITLE="FFT Phase"/SET_UP per[l=1:`FFT_nf`],FFT_uwndfftp
+PLOT/VS/LINE/HLIMITS=0:24:2/TITLE="FFT Phase"/SET_UP per[l=1:`FFT_nf`],FFT_uwndfftp
 PPL XFOR (I2)
 PPL XLAB Period, months/cycle
 PPL YLAB Deg

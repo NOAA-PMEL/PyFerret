@@ -3,6 +3,8 @@
 ! 4/94 *sh*
 ! updated 9/96 for Ferret V4.4
 
+! *acm* 7/01 update /LINE= to /COLOR=/THICKNESS=
+
 define alias wait message
 
 say **** Welcome to the vector plotting demo ****
@@ -141,13 +143,13 @@ say ...
 say .    yes? set wind/asp=.4/siz=.4
 say .    yes? set region/x=180/y=0
 say .    yes? set region/t=1-jan-1982:31-jan-1992
-say .    yes? GO stick_vectors plot/line=2/title="FNOC winds" uwnd vwnd
+say .    yes? GO stick_vectors plot/COLOR=red/title="FNOC winds" uwnd vwnd
 
 
 set wind/asp=.4/siz=.4
 set region/x=180/y=0
 set region/t=1-jan-1982:31-jan-1992
-GO stick_vectors plot/line=2/title="FNOC winds" uwnd vwnd
+GO stick_vectors plot/COLOR=red/title="FNOC winds" uwnd vwnd
 
 
 WAIT
@@ -188,13 +190,13 @@ file/var=vwnd,xp,yp vdtmp_v.dat
 list/nohead/file=vdtmp_uv.dat/format=(4f10.4)/i=1:999 xp,yp,uwnd[d=vdtmp_u.dat],vwnd[d=vdtmp_v.dat]
 sp echo "0 0 0 0" >> vdtmp_uv.dat
 
-say .    yes? ! now overlay the vectors (LINE=7 is heavy black)
+say .    yes? ! now overlay the vectors
 say .    yes? go scattered_vectors  vdtmp_uv.dat 15 clock
-say .    yes? PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE=7/nolab arrow_x,arrow_y
+say .    yes? PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=lack/THICK=2/nolab arrow_x,arrow_y
 
-! now overlay the vectors (LINE=7 is heavy black)
+! now overlay the vectors 
 go scattered_vectors  vdtmp_uv.dat 15 clock
-PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE=7/nolabels arrow_x,arrow_y
+PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=black/THICKNESS=2/nolabels arrow_x,arrow_y
 GO land blue
 
 ! clean up

@@ -2,6 +2,9 @@ set mode verify    ! display the commands at the user's console
 ! custom_contour.jnl *sh* 11/91 - added some axis customizations 11/93
 !                    *sh* 5/94 - restore default SET GRID on exit
 
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
+
 ! Description: show customizable features of PLOT+ contouring within FERRET
 
 ! in case there are left-over regions from previous commands
@@ -58,7 +61,7 @@ contour/levels=(1,30,3) my_var
 message
 
 ! give explicit axis bounds and tic interval
-contour/levels=(1,30,3)/xlimits=-20:20:10/ylimits=-20:20:10 my_var
+contour/levels=(1,30,3)/hlimits=-20:20:10/vlimits=-20:20:10 my_var
 
 ! restore normal operation
 ppl conpre

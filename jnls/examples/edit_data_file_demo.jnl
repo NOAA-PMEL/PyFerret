@@ -2,6 +2,9 @@
 
 ! Description: demo of a technique for "hand-editing" a variable
 
+! *acm* 7/01 update /line= to /color=
+
+
 ! This FERRET script demonstrates a technique for customizing data on an
 ! arbitrary basis - i.e. replacing arbitrary regions of a variable with
 ! arbitrarily selected values
@@ -21,14 +24,15 @@ go land
 ! Notice that Florida and Cuba appear to be ocean.
 ! We will fix this.
 
+pause
 ! First, save the full mask as-is
 spawn rm ocean_mask.cdf   ! so the script can be run over and over
 SAVE/file=ocean_mask.cdf ocean
 
 ! Lets mark Florida and Cuba (very roughly) to get the right locations
-plot/vs/over/symb=2/line=3 x[x=81w],y[y=27n]
-plot/vs/over/symb=2/line=3 x[x=81w],y[y=23n]
-plot/vs/over/symb=2/line=3 x[x=77w],y[y=21n]
+plot/vs/over/symb=2/color=green x[x=81w],y[y=27n]
+plot/vs/over/symb=2/color=green x[x=81w],y[y=23n]
+plot/vs/over/symb=2/color=green x[x=77w],y[y=21n]
 
 ! Now we'll save a 1 for land over these locations
 ! We need to use the SAME variable name, ocean,  so that SAVE will overwrite

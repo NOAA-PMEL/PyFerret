@@ -1,8 +1,8 @@
 	SUBROUTINE DISP_SET_UP( memory,
-     .				vector, aspect, overlay, transpz, no_labels, 
-     .				no_x_rng, valx1, density, is_logx, is_logy,
-     .				mr_list, nmv, cx_list, uvar,
-     .				s1_axis, s2_axis, pen, status )
+     .				vector, shade, aspect, overlay, transpz, 
+     .				no_labels, no_x_rng, valx1, density, 
+     .				is_logx, is_logy, mr_list, nmv, cx_list, 
+     .				uvar, s1_axis, s2_axis, pen, status )
 
 *
 *
@@ -120,7 +120,8 @@
 *                   this information variable name in the key below the plot.
 * v541 *acm*  8/02  For "No Valid Data" the test is: 
 *                    IF (no_x_rng .AND. (valx1.EQ.bad_val4) )
-
+* v5.5 *acm* 11/02  Set PPLUS memory for the pixel array used by cellarray 
+*                   in SHADE plots
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -157,7 +158,7 @@ C plus those starting w/ xbox_bounds:
 
 * calling argument declarations:
 	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
-     .			is_logx, is_logy, flows
+     .			is_logx, is_logy, flows, shade
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			density, pen, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -172,7 +173,9 @@ C plus those starting w/ xbox_bounds:
      .                  cal_name_2*32
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
-     .			regrid_1, regrid_2, no_y_rng, edges_ok
+     .			regrid_1, regrid_2, no_y_rng, edges_ok,
+     .			ITS_BATCH_GRAPHICS, batch, REGULARLY_SPACED,
+     .                  irregular
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
      .			ctx, cty, xblk1, yblk1, plot_mem_used, nvars,
@@ -182,7 +185,7 @@ C plus those starting w/ xbox_bounds:
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
-     .			TM_GET_CALENDAR_ID
+     .			TM_GET_CALENDAR_ID, mode_num
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -325,6 +328,7 @@ C   set up memory for the flag grid
 	   ENDIF
 	ENDIF
 
+
 * create temporary buffers to contain the plot data
 	CALL CREATE_TEMP_MEM_VAR( ctx, mvx_temp, status )
 	IF ( status .NE. ferr_ok ) RETURN
@@ -387,6 +391,26 @@ C   set up memory for the flag grid
 	ELSE
 	   icode = 0
 	ENDIF
+
+!  For SHADE plots, more PLOT+ memory needed for the pixel array
+!  used in cellarray call.  (s1_axis and s2_axis have been set by now.)
+
+        batch = ITS_BATCH_GRAPHICS()
+
+        irregular = .NOT. REGULARLY_SPACED(s1_axis, size1)
+        IF (.NOT. irregular)
+     .      irregular = .NOT. REGULARLY_SPACED(s2_axis, size2)
+
+        IF ( shade  .AND. 
+     .       (.NOT.overlay) .AND. 
+     .       (.NOT.batch) .AND. 
+     .       (.NOT.mode_metafile) .AND.
+     .       (.NOT.curvilinear) .AND. 
+     .       (.NOT.irregular) ) THEN
+           nsiz = size1* size2
+           plot_mem_used = plot_mem_used + nsiz
+        ENDIF
+
 
 * set up PLOT+ to ignore bad data flag
 	ppl_buff = ' '

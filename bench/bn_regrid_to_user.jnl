@@ -69,3 +69,20 @@ load/x=180/y=0 v2
 cancel variable a
 load/x=180/y=0 v2		! non-existent target grid
 set mode/last ignore
+
+! 12/99
+! bug fix: g=abstract now works
+! new multiple axis syntax: GXY=gg
+define axis/x=1:6:1 x1
+define axis/y=1:4:1 y1
+define axis/z=1:3:1 z1
+define axis/x=1:6:2 x2
+define axis/y=1:4:2 y2
+define axis/z=1:3:2 z2
+let a1 = x[gx=x1]+y[gy=y1]+z[gz=z1]
+let a2 = x[gx=x2]+y[gy=y2]+z[gz=z2]
+list a1
+list a1[gx=a2]
+list a1[gxy=a2]
+list a1[gzxy=a2]
+list a1[gxz=a2]

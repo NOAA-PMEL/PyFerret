@@ -93,8 +93,6 @@
            list_fmt_type = plist_tab_del
         ELSEIF ( upcase3 .EQ. 'CAC' ) THEN
            list_fmt_type = plist_cdf_cache
-        ELSEIF ( upcase3 .EQ. 'DOD' ) THEN
-           list_fmt_type = plist_dods
         ELSE
 
 * ... check out user-specified format

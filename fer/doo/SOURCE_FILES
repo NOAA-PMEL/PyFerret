@@ -34,6 +34,11 @@ do_locate.F\
 do_max.F\
 do_min.F\
 do_nbad.F\
+do_nearest.F\
+do_nearest_dist_above.F\
+do_nearest_dist_below.F\
+do_nearest_index_above.F\
+do_nearest_index_below.F\
 do_ngood.F\
 do_points.F\
 do_run_sum.F\
@@ -48,6 +53,7 @@ do_sum.F\
 do_var_sub.F\
 do_variance.F\
 do_window_regrid.F\
+do_xact_regrid.F\
 do_xyave_regrid.F\
 geog_cos_factor.F\
 get_linear_coef.F\
@@ -61,4 +67,5 @@ rho_unesco.F\
 theta_foff.F\
 welch_wt.F\
 window_regrid_1_axis.F\
+xact_regrid_1_axis.F\
 xyave_regrid.F 

@@ -55,10 +55,14 @@
 *		   Maintain cx_given for the merged data set.
 *		   Added a row to the ax_choice table to deal with merged
 *			axis that was "uvlim_irrelevant"
-* V491:   2/98   - 1/97 check at line 400 for unspec cx_lo_ww introduced a bug
+* V491:   2/23/98 - 1/97 check at line 400 for unspec cx_lo_ww introduced a bug
 *                 in cases like LET p=i[i=1:5]; LET q=i[i=1:5]; LET pq=p*q;
 *                 uvar_given for pq was set to uvlim_irrelevant instead of 
 *                 uvlim_gvn_gnl
+*         2/28/98 - further repair to resolve problem that re-appeared in
+*                 err490_l_ave.jnl: use "expl_com_lim" (explicit component
+*                 limits) **consistently** instead of cx_given to know whether
+*                 a new component does or does not possess its own limits
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -128,7 +132,7 @@
 * * * * * * * * GRID AXIS SELECTION TABLE * * *
 *			  C O M P O N E N T
 *	       1      2     3       4     5       6  
-*                     cx_given          .NOT.cx_given
+*                   expl_com_lim       .NOT.expl_com_lim 
 *                same          diff      same   diff 
 *  size:       1     >1      1     >1
 *	    ------------------------------------------
@@ -396,7 +400,8 @@
 * ... first the a/b option in the joint_limit_match table
 
 * ... first screen out irrelevant cases
-* 2/98 - for a component which is a uvar uvar_given tells if it is irrelevant  
+* 2/23/98 - for a component which is a user var, uvar_given tells if it
+*           is irrelevant  
 *        For a component which is not, cx_lo_ww was already used prior to 2/98
  400	   IF ( nest ) THEN
 	      IF (uvar_given(idim,com_uvar).EQ.uvlim_irrelevant) GOTO 500
@@ -425,8 +430,9 @@
 * if the new component or any previous lacks given limits so does the result
 * e.g. LIST/K=1:5 U - U[K=3]
 * (the /K limits are lacking in the overall expression)
+!    2/28/98: replaced:  	   .OR. .NOT.cx_given(idim,com_cx)
 	   IF ( uvar_given(idim,uvar).GE. uvlim_needed
-     .	   .OR. .NOT.cx_given(idim,com_cx)
+     .	   .OR. .NOT.expl_com_lim
      .	   .OR. .NOT.INHERITED_LIMITS(idim,com_cx) ) THEN
 	      uvar_given(idim,uvar) = uv_class + uvlim_needed
 	   ELSE

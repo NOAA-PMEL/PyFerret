@@ -44,9 +44,11 @@
 * revision 0.0 - 1/23/87
 * V200:  5/19/89 - 4D symmetrical
 *	10/11/89 - use COPY_GRID_SUB - avoid adjustable dimensioning with array
+* V530:  8/00 *sh* handle C string arrays, too
 
 #ifdef unix
 	include 'ferret.parm'
+	include 'errmsg.parm'
 	include	'xvariables.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
@@ -57,17 +59,49 @@
 	INTEGER msrc, mdst
 	REAL    src( * ), dst( * )
 
-	CALL COPY_GRID_SUB( src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .				 mr_bad_data( msrc ),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst),
-     .				 mr_bad_data( mdst )			)
+* internal variable declarations
+	INTEGER	MGRID_SIZE, 
+     .		stat
+
+	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
+
+* set up the C pointer variable in the destination variable
+	   CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mdst),
+     .				     dst,
+     .				     mr_c_pointer(mdst)      )
+
+* copy the strings
+	   CALL COPY_PTR_GRID_SUB(
+     .			  src, mr_lo_s1(msrc), mr_hi_s1(msrc),
+     .			       mr_lo_s2(msrc), mr_hi_s2(msrc),
+     .			       mr_lo_s3(msrc), mr_hi_s3(msrc),
+     .			       mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .			  dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
+     .			       mr_lo_s2(mdst), mr_hi_s2(mdst),
+     .			       mr_lo_s3(mdst), mr_hi_s3(mdst),
+     .			       mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .			       stat )
 
 
-	RETURN
+! NOTE: BUG here since error is reported but not returned to calling routine
+	   IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
+     .			stat, 'Unable to allocate C strings', *5000)
+
+	ELSE
+
+	   CALL COPY_GRID_SUB(
+     .			  src, mr_lo_s1(msrc), mr_hi_s1(msrc),
+     .			       mr_lo_s2(msrc), mr_hi_s2(msrc),
+     .			       mr_lo_s3(msrc), mr_hi_s3(msrc),
+     .			       mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .			       mr_bad_data( msrc ),
+     .			  dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
+     .			       mr_lo_s2(mdst), mr_hi_s2(mdst),
+     .			       mr_lo_s3(mdst), mr_hi_s3(mdst),
+     .			       mr_lo_s4(mdst), mr_hi_s4(mdst),
+     .			       mr_bad_data( mdst )			)
+
+	ENDIF
+
+ 5000	RETURN
 	END 

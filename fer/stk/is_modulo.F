@@ -50,6 +50,7 @@
 * V550: *sh* 2/02 - added support for subspan modulo axes
 *		    by CAXIS_LEN -> CAXIS_MODLEN
 *		  - pre-fill strings with null strings as with FILL_MEMORY
+* 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -124,7 +125,7 @@
 	IF (cx_delta(idim,res_cx) .EQ. unspecified_val8) THEN
 	   idel = 1
 	ELSE
-	   idel = cx_delta(idim,res_cx)
+	   idel = NINT(cx_delta(idim,res_cx))
 	ENDIF
 !	nonfactorstride = npts .NE. (npts/idel)*idel
 
@@ -195,6 +196,7 @@
 * ... watch for delta not a factor of npts -- parity shifts at each replication
 	nrepl = (cx_hi_ss(res_cx,idim) - cx_lo_ss(res_cx,idim))
      .		   / npts
+
 	res_hi = cx_lo_ss(res_cx,idim) - idel
 	DO 300 i = 1, nrepl + 1
 	   res_lo = res_hi + idel

@@ -40,6 +40,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V541: *sh* 2/02
+* V56: *acm* 4/04  If data was read using strides, then the axis having
+*                  a delta is ok.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -65,6 +67,8 @@
 	INTEGER CAXIS_MODLEN, MGRID_SIZE_DELTA,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
      .		npts, idim
+	LOGICAL	TM_ITS_CDF, done_by_strides
+        CHARACTER dtype*4
 
 * --- end of introductory code ---
 
@@ -77,7 +81,16 @@
 	com_cx     = is_cx( com_isp )
 	idim       = is_axis( res_isp )
 	npts	   = CAXIS_MODLEN( idim, com_cx )
-	IF (cx_delta(idim,res_cx) .NE. unspecified_val8) THEN
+
+* Check if a stride was specified on the axis.
+* This is ok if data was read with strides
+
+        done_by_strides = cx_category(res_cx) .EQ. cat_file_var 
+     .    .AND. TM_ITS_CDF(cx_data_set(res_cx), dtype )
+     .	  .AND. cx_delta(idim,res_cx) .NE. unspecified_val8
+
+	IF (.NOT. done_by_strides .AND. 
+     .      cx_delta(idim,res_cx) .NE. unspecified_val8) THEN
 	  CALL ERRMSG( ferr_internal, status,
      .		      'IS_SUBSPAN_FILL: delta found on axis', *5900) 
 	ENDIF

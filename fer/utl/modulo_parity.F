@@ -43,16 +43,20 @@
 * next modulo replication so it is parity=1. i=12 is parity=2, etc.
 
 * V533: *sh* 6/01
+* V56: *acm* 3/04 Fix bugs that occur when ss1 is negative.
 
 * calling argument declarations
 	INTEGER	ss1, modlen, delta
 
 * internal variable declarations
-	INTEGER nmod
+	INTEGER TM_MOD, nmod
 
 	nmod = (ss1-1)/modlen  ! number of modulo replications preceding ss1
 
-	MODULO_PARITY = MOD(ss1-(nmod*modlen)-1, delta) + 1
+* Start at the bottom of the modulo replication preceding ss1
+        IF (ss1 .LT. 0 .AND. nmod*modlen .NE. ss1-1) nmod = nmod - 1
+
+	MODULO_PARITY = TM_MOD(ss1-1-(nmod*modlen), delta) + 1
 
 	RETURN
 	END

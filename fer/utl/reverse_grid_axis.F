@@ -44,6 +44,7 @@
 *                     need to reset the indices to apply to the data
 *                     as it has been read, after the strides applied, 
 *                     e.g. reset 4:360:3 to 1:119:1
+* 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include 'ferret.parm'
 	include	'xcontext.cmn'
@@ -63,7 +64,7 @@
 	  IF (cx_delta(idim,cx) .EQ. unspecified_val8 ) THEN
 	    idel(idim) = 1
 	  ELSE
-	    idel(idim) = cx_delta(idim,cx)
+	    idel(idim) = NINT(cx_delta(idim,cx))
      
 c	    ihi(idim) = 1 + (ihi(idim) - ilo(idim)) / idel(idim)
 c	    ilo(idim) = 1

@@ -51,6 +51,7 @@
 *	5/99 - *sh* added strides to TMAP read calls
 * V533: 6/01 - *sh* initialize string input variable
 * v552: 4/03 - *acm* up VAR_CODE and local var variable_code to 128 chars
+* V556  4/04 - *acm* stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -109,7 +110,7 @@
 	   has_strides(idim) =  cx_delta(idim,cx) .NE. unspecified_val8
      .			 .AND.  cx_delta(idim,cx) .NE. 1 
 	   IF (has_strides(idim)) THEN
-	      stride(idim) = cx_delta(idim,cx)
+	      stride(idim) = NINT(cx_delta(idim,cx))
 	      has_a_stride = .TRUE.
 	   ELSE
 	      stride(idim) = 1

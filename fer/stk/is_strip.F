@@ -67,6 +67,7 @@
 *	*sh* 1/00 - bug fix: @ITP failed to set subscripts if exact grid point
 * V533: *sh* 6/01 - support for combined netCDF strides (cx_delta) and modulo
 * V541: *sh* 2/02 - support for modulo axis lengtha
+* 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
@@ -249,7 +250,7 @@
 	     IF (cx_delta(axis,lo_cx) .EQ. unspecified_val8) THEN
 	        cx_lo_ss(hi_cx, axis) = 1
 	     ELSE
-	        idel = cx_delta(axis,lo_cx)
+	        idel = NINT(cx_delta(axis,lo_cx))
 	        cx_lo_ss(hi_cx, axis) = MODULO_PARITY(cx_lo_ss(lo_cx,axis),
      .					npts, idel)
 	        allatonce = npts .EQ. (npts/idel)*idel   ! parity shift?

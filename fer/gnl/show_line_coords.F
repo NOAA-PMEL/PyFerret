@@ -43,8 +43,8 @@
 
 * V50 - *sh* 4/99 code extracted from SHOW_GRID
 * V530 - *sh* 1/01 - show lower limit value of grid box
+* 560 *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -56,17 +56,6 @@
 	include 'xcontext.cmn'
 	include 'xinterrupt.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER grid, cx, idim
@@ -138,7 +127,7 @@
 
 * determine delta increment for listing
 	IF ( cx_delta( idim, cx ) .NE. unspecified_val8 ) THEN
-	   delta =  cx_delta( idim, cx )
+	   delta = NINT(cx_delta( idim, cx ))
 	ELSE
 	   delta = 1
 	ENDIF

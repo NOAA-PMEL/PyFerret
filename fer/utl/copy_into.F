@@ -43,6 +43,7 @@
 *	10/16/89 - use *_SUB - avoid adjustable dimensioning with array
 * V533:  *sh* 6/01 - allow for the possibility that there is a delta value
 *		   - support for string arrays
+* 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include 'ferret.parm'
 	include	'xcontext.cmn'
@@ -53,33 +54,37 @@
 	REAL    src( * ), dst( * )
 
 * internal variable declarations
-	INTEGER idim, soffset, doffset,
+	INTEGER idim, soffset, doffset, mdel,
      .		smlo(4), smhi(4),
      .		dmlo(4), dmhi(4),
      .		cxlo(4), cxhi(4)
 
 * set-up modified limits wherever delta is significant
 * cuz the FORTRAN dimensioned size can only have delta of 1 
+
 	DO idim = 1,4
 	  IF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
+            mdel = NINT(mr_delta(idim,msrc))
+
 	    IF (mr_delta(idim,msrc).NE.mr_delta(idim,mdst)
      .	   .OR. mr_delta(idim,msrc).NE.cx_delta(idim,cxs) ) CALL WARN
      .		('Internl_delta_err')
 	    soffset = (mr_lo_ss(msrc,idim)-cx_lo_ss(cxs,idim))/
-     .			mr_delta(idim,msrc)  + 1
+     .			mdel  + 1
 	    doffset = (mr_lo_ss(mdst,idim)-cx_lo_ss(cxs,idim))/
-     .			mr_delta(idim,msrc)  + 1
+     .			mdel  + 1
 	    cxlo(idim) = 1
+
 	    cxhi(idim) = 1 + (cx_hi_ss(cxs,idim)-cx_lo_ss(cxs,idim))/
-     .			     mr_delta(idim,msrc)
+     .			     mdel
 	    dmlo(idim) = doffset
 	    dmhi(idim) = doffset +
      .			     (mr_hi_ss(mdst,idim)-mr_lo_ss(mdst,idim))/
-     .			     mr_delta(idim,msrc)
+     .			     mdel
 	    smlo(idim) = soffset
 	    smhi(idim) = soffset + 
      .			     (mr_hi_ss(msrc,idim)-mr_lo_ss(msrc,idim))/
-     .			     mr_delta(idim,msrc)
+     .			     mdel
 	  ELSE
 	    cxlo(idim) = cx_lo_ss(cxs, idim)
 	    cxhi(idim) = cx_hi_ss(cxs, idim)

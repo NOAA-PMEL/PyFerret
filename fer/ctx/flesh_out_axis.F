@@ -70,6 +70,7 @@
 * V530: *sh* 4/01 - added comment about in_get_grid_mode
 * V533: *sh* 6/01 - added logic for strides (cx_delta)
 * V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+* V560:*acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -186,8 +187,8 @@
 * if strides in use then set the upper subscript to correct parity
 	    IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
 	      ispread = cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim)
-	      ispread = (ispread/INT(cx_delta(idim,cx)))
-     .		      * INT(cx_delta(idim,cx))
+	      ispread = (ispread/NINT(cx_delta(idim,cx)))
+     .		      * NINT(cx_delta(idim,cx))
 	      cx_hi_ss(cx,idim) = cx_lo_ss(cx,idim) + ispread
 	    ENDIF
 

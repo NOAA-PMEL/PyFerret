@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V533 *sh* 6/01
+* V560 *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -55,7 +56,7 @@
 	size = 1
 	DO idim = 1, 4
 	  IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
-	    delta = cx_delta(idim,cx)
+	    delta = NINT(cx_delta(idim,cx))
 	  ELSE
 	    delta = 1
 	  ENDIF

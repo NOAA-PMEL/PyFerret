@@ -39,6 +39,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V533 *sh* like MGRID_SIZE but sensitive to _delta
+* V560 *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
 
 	include 'ferret.parm'
 	include 'xvariables.cmn'
@@ -53,7 +54,7 @@
 	size = 1
 	DO idim = 1, 4
 	  IF (mr_delta(idim,mr) .NE. unspecified_val8) THEN
-	    delta = mr_delta(idim,mr)
+	    delta = NINT(mr_delta(idim,mr))
 	  ELSE
 	    delta = 1
 	  ENDIF

@@ -2,6 +2,33 @@
 * samplexy.F
 *
 * Ansley Manke
+*  -------------------------------------------------------------------
+*  Replace samplexy_compute subroutine with the one sent by Bernadette Fritzsch 
+*  Subject: samplexy.F
+*  Date: Thu, 22 Jun 2000 11:07:25 +0200 (MET DST)
+*  From: Bernadette Fritzsch <fritzsch@AWI-Bremerhaven.DE>
+*  To: hankin@pmel.noaa.gov
+*  
+*  Hallo Steve,
+*  
+*  the external function samplexy was first only for the case that all points
+*  match the original axes. Now there is a version of samplexy, that interpolate
+*  the values between the points, what is more general. But in some cases it
+*  fails, when the point matches the axis but one of the neighbour point has bad values.
+*  
+*  Here are some modification of the code. To avoid to much if-then-else-endif
+*  constructs i modify the variable itop and jtop in the case of matching.
+*  In this case no interpolation is done but the condition if all numbers are not bad values
+*  is fullfilled.
+*  
+*  I attach my version of subroutine samplexy_compute. Modifications are marked
+*  as coloured.
+*  
+*  There is another problem where i did not find a solution.
+*  What about the case when axis is set modulo?
+*  
+*  -- Bernadette
+*  -------------------------------------------------------------------
 *
 * This function samples 4-d data on the x and y axes indicated by args 2 and 3
 * 9/10/99  Ansley Manke 
@@ -80,12 +107,12 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'XPTS')
-      CALL ef_set_arg_desc(id, arg, 'X indices of sample points')
+      CALL ef_set_arg_desc(id, arg, 'X values of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'YPTS')
-      CALL ef_set_arg_desc(id, arg, 'Y indices of sample points')
+      CALL ef_set_arg_desc(id, arg, 'Y values of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                     ^
 *                                                                     |
@@ -199,7 +226,10 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE samplexy_compute(id, arg_1, arg_2, arg_3, result, 
+
+
+
+      SUBROUTINE samplexy_compute(id, arg_1, arg_2, arg_3, result,
      .       xaxdat, yaxdat)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -208,19 +238,19 @@
       INTEGER id
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
      .     mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
      .     mem2lot:mem2hit)
-      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz,
      .     mem3lot:mem3hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .      memresloz:memreshiz, memreslot:memreshit)
 
 
-* After initialization, the 'res_' arrays contain indexing information 
-* for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+* After initialization, the 'res_' arrays contain indexing information
+* for the result axes.  The 'arg_' arrays will contain the indexing
+* information for each variable's axes.
 
       INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
@@ -247,6 +277,7 @@
       INTEGER i2,j2,k2,l2
       INTEGER i3,j3,k3,l3
 
+      INTEGER imatch, jmatch
       INTEGER ibot, itop, jbot, jtop
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
@@ -274,14 +305,13 @@
          GO TO 999
       ENDIF
 
-   10 FORMAT(
-     . 'samplexy Arguments 2 and 3 must be lists of equal length')
+   10 FORMAT('Arguments 2 and 3 must be lists of equal length')
 
 *  Get x and y coordinates of the data to be sampled.
 
-      CALL ef_get_coordinates(id, ARG1, X_AXIS, 
+      CALL ef_get_coordinates(id, ARG1, X_AXIS,
      .   arg_lo_ss(X_AXIS, ARG1), arg_hi_ss(X_AXIS, ARG1), xaxdat)
-      CALL ef_get_coordinates(id, ARG1, Y_AXIS, 
+      CALL ef_get_coordinates(id, ARG1, Y_AXIS,
      .   arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1), yaxdat)
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
@@ -294,43 +324,65 @@
       k3 = arg_lo_ss(Z_AXIS,ARG3)
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
-
-
-*  For each (xpt,ypt) pair, search the data array arg_1 for the nearest higher
+*  For each (xpt,ypt) pair, search the data array arg_1 for the nearest
+higher
 *  (x,y) grid coordinates.  Interpolate in 2 directions for the result.
 
-      j = res_lo_ss(Y_AXIS)
+      DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          ibot = arg_lo_ss(X_AXIS,ARG1)
-         DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1) 
+        imatch = 0
+
+         DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
             IF (arg_2(i2,j2,k2,l2) .GE. xaxdat(i1,1,1,1)) ibot = i1
+
+            if (arg_2(i2,j2,k2,l2).eq.xaxdat(i1,1,1,1))  imatch = i1
+cbf      may be some derivation from the exact value can be allowed:
+cbf      if (abs(arg_2(i2,j2,k2,l2)- xaxdat(i1,1,1,1)).le.eps)   imatch = i1
+
   100    CONTINUE
-         itop = ibot + 1
-                
-         jbot = arg_lo_ss(Y_AXIS,ARG1)
-         DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1) 
-            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) jbot = j1
+
+cbf       for matching the next neighbout is not of interest
+             if(imatch.ne.0) then
+                itop = ibot
+             else
+                itop = ibot + 1
+             endif
+
+cbf        analogously in y direction
+             jmatch = 0
+
+             jbot = arg_lo_ss(Y_AXIS,ARG1)
+             DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+               IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) jbot = j1
+               IF (arg_3(i3,j3,k3,l3) .eq.yaxdat(j1,1,1,1) ) jmatch = j1
+cbf         IF (abs(arg_3(i3,j3,k3,l3) -yaxdat(j1,1,1,1) ).le.eps) jmatch = j1
+
   200    CONTINUE
-         jtop = jbot+ 1
+              if(jmatch.ne.0) then
+                   jtop = jbot
+              else
+                    jtop = jbot + 1
+              endif
 
          k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
-            l3 = arg_lo_ss(T_AXIS,ARG3)
             DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-*  First interpolate in x, getting values of the fcn at (x,jbot)  and (x,jtop)
+*  First interpolate in x, getting values of the fcn at (x,jbot) and (x,jtop)
 
-               IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND. 
+               IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND.
      .              itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN
+
+cbf         what about axis modulo??
 
                   xbot = xaxdat(ibot,1,1,1)
                   xtop = xaxdat(itop,1,1,1)
 
-                  fbb = arg_1(ibot,jbot,k1,l1) 
+                  fbb = arg_1(ibot,jbot,k1,l1)
                   ftb = arg_1(itop,jbot,k1,l1)
                   fbt = arg_1(ibot,jtop,k1,l1)
                   ftt = arg_1(itop,jtop,k1,l1)
@@ -340,48 +392,61 @@
      .                fbt .NE. bad_flag(ARG1)  .AND.
      .                ftt .NE. bad_flag(ARG1) ) THEN
 
-
-                     frac = (arg_2(i2,j2,k2,l2) - xbot ) / (xtop - xbot)
-                     fxbot = fbb + frac* (ftb - fbb)
-                     fxtop = fbt + frac* (ftt - fbt)
+cbf                 for matching x-axis no interpolation is need
+                       if (imatch.ne.0) then
+                            fxbot = fbb
+                            fxtop = fbt
+                       else
+                            frac = (arg_2(i2,j2,k2,l2) - xbot )/
+     .                               (xtop - xbot)
+                            fxbot = fbb + frac* (ftb - fbb)
+                            fxtop = fbt + frac* (ftt - fbt)
+                       endif
 
 *  Now interpolate in y, getting value at (x,y)
 
-                    IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND. 
+                    IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND.
      .                   jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
                        ybot = yaxdat(jbot,1,1,1)
                        ytop = yaxdat(jtop,1,1,1)
 
-                        frac = (arg_3(i3,j3,k3,l3) - ybot)/ (ytop-ybot)
+                       if(jmatch.ne.0) then
+                             result(i,j,k,l) = fxbot
+                       else
+                            frac = (arg_3(i3,j3,k3,l3) - ybot)/ 
+     .                               (ytop-ybot)
 
-                        result(i,j,k,l) = fxbot + frac* (fxtop - fxbot)
+                            result(i,j,k,l) = fxbot + frac* 
+     .                                         (fxtop - fxbot)
+
+                       endif
                      ELSE
                         result(i,j,k,l) = bad_flag_result
                      ENDIF
 
                   ELSE
                         result(i,j,k,l) = bad_flag_result
-                  ENDIF		! bad_flag(ARG1) test
+                  ENDIF  ! bad_flag(ARG1) test
                ENDIF
 
 
                l1 = l1 + arg_incr(T_AXIS,ARG1)
-
+               l2 = l2 + arg_incr(T_AXIS,ARG2)
+               l3 = l3 + arg_incr(T_AXIS,ARG2)
  300        CONTINUE
 
             k1 = k1 + arg_incr(Z_AXIS,ARG1)
+            k2 = k2 + arg_incr(Z_AXIS,ARG2)
+            k3 = k3 + arg_incr(Z_AXIS,ARG3)
  400     CONTINUE
 
          i2 = i2 + arg_incr(X_AXIS,ARG2)
-         j2 = j2 + arg_incr(Y_AXIS,ARG2)
-         k2 = k2 + arg_incr(Z_AXIS,ARG2)
-         l2 = l2 + arg_incr(T_AXIS,ARG2)
-
          i3 = i3 + arg_incr(X_AXIS,ARG3)
+ 500  CONTINUE
+
+         j2 = j2 + arg_incr(Y_AXIS,ARG2)
          j3 = j3 + arg_incr(Y_AXIS,ARG3)
-         k3 = k3 + arg_incr(Z_AXIS,ARG3)
-         l3 = l3 + arg_incr(T_AXIS,ARG3)
-500   CONTINUE
+ 600  CONTINUE
 
       RETURN
  999  CALL ef_bail_out (id, err_msg)

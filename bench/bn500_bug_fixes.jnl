@@ -21,6 +21,7 @@ GO bn_reset
 GO err491_let_d.jnl
 
 ! *kob* commented out because it's still crashing!
+! *kob* uncommented out - now working 6/11/99
 !GO bn_reset
 !GO err491_long_gif_name.jnl
 
@@ -40,4 +41,6 @@ GO err491_time_regridding.jnl
 !GO bn_reset
 !GO err491_unknown_function.jnl
 
-
+! *kob* added 6/11/1999 
+GO bn_reset
+GO err500_IF_THEN_ELSE_quote.jnl

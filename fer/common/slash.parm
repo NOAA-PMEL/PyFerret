@@ -105,6 +105,8 @@
      .			slash_vect_xskip,
      .			slash_vect_yskip,
      .			slash_vect_thick,
+     .			slash_vect_streamline,
+     .			slash_vect_density,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -252,6 +254,8 @@
      .			slash_vect_xskip	= 18,
      .			slash_vect_yskip	= 19,
      .			slash_vect_thick	= 20,
+     .			slash_vect_streamline   = 1+25,
+     .			slash_vect_density      = 1+26,
      .
      .			slash_strm_over_plot	= 9,
      .			slash_strm_set_up	= 10,

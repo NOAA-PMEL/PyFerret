@@ -36,7 +36,6 @@
 * 7/97 *kob* Minor modification to error reporting.  Don't want to output
 *            a default extension, if an explicit extension is used.
 * 12/97 - *kob* - added check for "~/xxx" because it was cashing core dump
-*  2/98 - *kob* - add more thorough checks for the above condition
 * calling argument declarations:
       LOGICAL       do_errmsg
       INTEGER       status
@@ -106,27 +105,23 @@
       ENDIF
       if (dot .EQ. tilde-1) dot_next_to_tilde = .true.
 
-      if (tilde .EQ. 0) then
+* if tilde eq flen, then this isn't  a relative version issue *kob* 2/98
+      if (tilde .EQ. 0 .OR. tilde .EQ. flen) then
          tilde_buff = ' '
-* make sure tilde isn't equal to flen, otherwise a crash will occur *kob*
-      elseif ((tilde .GT. 0) .AND. (dot_next_to_tilde) .AND.
-     .             (tilde .NE. flen)) THEN
+      elseif ((tilde .GT. 0) .AND. (dot_next_to_tilde)) THEN
          flen = tilde - 2
          tilde_buff = fname(tilde-1: )
          path_buff = fname(:flen)
       else
-* *kob* tilde.eq.flen.eq.1 will crash at this point too, because flen 
-*       will become zero.  prevent that from happening.  
-	 IF (tilde .EQ. 1 .AND. tilde .NE. flen) flen = tilde -1
+         flen = tilde -1
          tilde_buff = fname(tilde: )
          path_buff = fname(:flen)
       endif
 
 * set the relative flag accordingly
       relative = .false.
-* once again, to prevent a crash w/ "go ~/xxx" don't let fname be accessed
-*       at an index greater than it's length  *kob*  2/98
-      if (tilde .EQ. 0 .OR. (tilde .eq. 1 .AND. tilde .EQ. flen)) then
+* if tilde eq flen, then this isn't  a relative version issue *kob* 2/98
+      if (tilde .EQ. 0 .OR. tilde .EQ. flen) then
          goto 50
       elseif (fname(tilde+1:tilde+1) .EQ. '0') then
          zero_ver = .true.

@@ -32,7 +32,7 @@ GUI_INCLUDES	=
 F77 		= f77
 CC              = cc
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
+CFLAGS          =  $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
 FFLAGS          = -c -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C $(FINCLUDES)
 
@@ -44,14 +44,16 @@ PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 
 #
 
 LD		= cc
-#LDFLAGS		= -non_shared
-# I want this to be able to link shared libraries! *jc*
-LDFLAGS		= -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib 
 
-# removed libc.so - DODS binary wouldn't link w/ it,and no one seems sure why
-# it's in here anyway.  i'll remove it and see if something breaks *kob*
-#SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE  /shlib/libc.so 
-SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE   
+LDFLAGS		= -call_shared -v 
+
+UforLIB  = /usr/lib/libUfor.a
+forLIB   = /usr/lib/libfor.a
+FutilLIB = /usr/lib/libFutil.a
+MotifLIB = /usr/lib/libXm.a
+XtLIB    = /usr/lib/libXt.a
+
+SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) -lots -lX11 -llist -ldnet_stub -lSM -lICE 
 
 TMLIB		= ../lib/tmap_lib.a
 
@@ -65,3 +67,4 @@ CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
 #
 # End of platform_specific_includes.mk.alpha
 #
+

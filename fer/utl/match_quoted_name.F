@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION MATCH_QUOTED_NAME ( test_string, model_string)
+	LOGICAL FUNCTION MATCH_QUOTED_NAME ( test_string, len_test, model_string, len_model_chars)
 
 *
 *
@@ -47,19 +47,23 @@
 * V495: 7/7/98 - *sh* if test name is in single quotes use case-sensitive comp.
 *     : 9/30/98 - NAG F90 (linux) received error on above change.  
 *                 need to put single  tick between double quotes  *kob*
+* ywei 05/04   changed function prototype to allow speed up
+*              before calling this function, make sure
+*              len_test = TM_LENSTR(test_string)
+*              len_model_chars = TM_LENSTR(model_string)
 
 * calling argument declarations:
 	CHARACTER*(*)	model_string
 	CHARACTER*(*)	test_string
+        INTEGER         len_test
+        INTEGER         len_model_chars
 
 * internal variable declarations:
 	LOGICAL         is_quoted
-	INTEGER		TM_LENSTR, len_model, len_test, len_model_chars, i
-	CHARACTER*1	UPPER_CASE
+	INTEGER		len_model, i
+        LOGICAL         result
 
 	len_model	= LEN( model_string )
-	len_model_chars	= TM_LENSTR( model_string )
-	len_test	= TM_LENSTR( test_string(1:LEN(test_string)) )
 
 * (7/98) is test string in quotations?
 	is_quoted = test_string(1:1) .EQ. "'" 
@@ -73,14 +77,11 @@
 
 
 	IF (is_quoted) THEN
-	   DO 100 i = 1,len_model_chars
-	      IF (model_string(i:i) .NE. test_string(i+1:i+1)) GOTO 200
- 100	   CONTINUE
+	   IF (model_string(1:len_model_chars) .NE. test_string(2:len_model_chars+1)) GOTO 200
 	ELSE
-	   DO 110 i = 1,len_model_chars
-	      IF ( model_string(i:i) .NE. 
-	1	   UPPER_CASE( test_string(i:i) ) ) GOTO 200
- 110	   CONTINUE
+           CALL tm_match_captial_name(test_string, model_string, 
+     .          len_model_chars, result)
+           IF(.NOT.result) GOTO 200	   
 	ENDIF
 
 * it matches

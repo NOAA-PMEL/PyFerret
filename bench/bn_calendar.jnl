@@ -106,7 +106,7 @@ can var/all
 can region
 
 use coads_climatology
-set region/x=180/y=0]
+set region/x=180/y=0
 
 define axis/t="1-jan-0000":"1-dec-0000":1/units=months/calendar=julian/modulo jmonths
 define grid/t=jmonths jgrid

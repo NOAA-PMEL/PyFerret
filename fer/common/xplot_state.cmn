@@ -2,14 +2,16 @@
 * COMMON describing the state of GKS
 * 7/97 *sh* - increased max_viewport from 50 to 200
 * 6/99 *sh* - include info about the time axis currently on the screen
-
+* 1/00 *kob* - add win_id9 for animate window id -always nine
 	INTEGER		max_windows,
      .			max_viewport,
-     .			mvp_dflt
+     .			mvp_dflt,
+     .			win_id9
 	REAl		wn_dflt_scale
-	PARAMETER     ( max_windows = 8,
+	PARAMETER     ( max_windows = 9,
      .			max_viewport= 200,
      .			mvp_dflt = 0,
+     .                  win_id9 =9,
      .			wn_dflt_scale = 0.83666 )	! SQRT(0.7)
 
 	LOGICAL		wn_open,

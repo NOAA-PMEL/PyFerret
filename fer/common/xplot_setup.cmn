@@ -9,14 +9,14 @@
 *	ends with "0"	--> refers to a suggested or pre-modification value
 *	  "space"	--> an abstract box within which a key must fit
 *         "size"	--> the portion of the abstract box that's occupied
-
+* *kob* 12/00 - add animate logical and active_win_id for animations
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
      .		twodee_on,
      .		saved_ppl_yax,
      .		ul_dolab(4),
-     .		ovkey_ll_full
-
+     .		ovkey_ll_full,
+     .          animate
 	INTEGER	nvect_on,
      .		ncont_on,
      .		nlabs_on,
@@ -26,7 +26,8 @@
      .		novkeys_ll,
      .		key_ncolmn,
      .		ul_nlabs,
-     .		plot_axis(4), nplot_axis
+     .		plot_axis(4), nplot_axis,
+     .		active_win_id
 
 	REAL	key_yspace0,
      .		key_yspace,
@@ -56,6 +57,8 @@
 	CHARACTER	ppl_buff*255
 
 	COMMON / XPLOT_SETUP /
+     .		animate,
+     .          active_win_id,
      .		key_doc,
      .		onedee_on,
      .		twodee_on,

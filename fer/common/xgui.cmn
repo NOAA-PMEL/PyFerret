@@ -6,7 +6,7 @@
 * same parameter as max_windows in xplot_state.cmn but I am too lazy to
 * reorganize COMMONs so that max_windows is a parameter in ferret.parm
 	INTEGER max_gui_windows
-	PARAMETER (max_gui_windows = 8)	! must be same as max_windows
+	PARAMETER (max_gui_windows = 9)	! must be same as max_windows
 
 	COMMON/ XGUI / pipe_open, pipe_lun,
      .		       gui_window_reported,

@@ -43,6 +43,7 @@
 * V500:  *sh* and *jd*
 *        *jd  fix for v5.01 for fill if /patt or /pal given 6.7.99
 *        *sh* 6/99 -- suppress color key for 2-argument version of command
+* V510:  *sh* 3/00 -- change to how line specifications are passed
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -91,16 +92,20 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-        LOGICAL         no_range, do_key, spectrum, pattern
+        LOGICAL         no_range, do_key, spectrum, pattern, use_line
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes
 	LOGICAL         line_it, fill_it
 	INTEGER         sp, patt, TM_LENSTR1
-	INTEGER		symbol, line_type, status, mr, cx, ipl,
-     .			loc, limit, slen, coord_ax,
+	INTEGER		symbol, color, status,
+     .			loc, limit, slen, coord_ax, thick,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start
-	REAL		val, only_val
+	REAL		val, only_val, sym_size
 	CHARACTER	LEFINT*4, TM_FMT*12, fname*128, poly_opt*10
+
+* internal parameter declarations
+	INTEGER ncolors
+	PARAMETER (ncolors = 6)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -130,14 +135,66 @@ CC       => Set values here instead.
 	noaxes    = qual_given( slash_noaxes         ).GT.0
 	coord_ax  = qual_given( slash_plot_vs	     )		! integer
 	symbol	  = qual_off	! or ??unspecified_int4??
-	line_type = unspecified_int4
+	sym_size  = 0.08	! default plot mark size
+	thick	  = 1		! default thickness
+	color	  = unspecified_int4
+	use_line = .FALSE.
         sp        = qual_given( slash_cont_spectrum  )
 
         spectrum  = sp .GT. 0 
         patt      = qual_given( slash_shad_pattern   )
         pattern   = patt .GT. 0
 
-	line_it   = qual_given(slash_polygon_line) .gt. 0 
+
+	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
+	CALL DISP_PREP( status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* decode qualifiers
+* ... POLYGON/COLOR=n
+	loc = qual_given( slash_polygon_color )
+	IF ( loc .GT. 0  ) THEN
+	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                           color, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   use_line = .TRUE.
+	ENDIF
+* ... POLYGON/THICKNESS=n
+ 200	loc = qual_given( slash_polygon_thick )
+	IF ( loc .GT. 0  ) THEN
+	   use_line = .TRUE.
+	   IF ( color .EQ. unspecified_int4 ) color = 1  ! /THICK -> "BLACK"
+	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( val .NE. unspecified_val4 ) THEN
+	      IF ( val.LE.0.0 .OR. val.GT.3 ) GOTO 5400
+	      thick = NINT( val )	! user-specified line style
+	   ELSE
+	      thick = 2  ! default if no value is specified
+	   ENDIF
+	   color = ncolors*(thick-1) + color
+	ENDIF
+* ... POLYGON/LINE_STYLE=n
+	loc = qual_given( slash_polygon_line )
+	IF ( loc .GT. 0  ) THEN
+	   use_line = .TRUE.
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )	! syntax check
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( val .NE. unspecified_val4 ) THEN
+	      limit = num_fancy_lines 			!was num_plain 1/94
+	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
+	      color = NINT( val )	! user-specified line style
+	   ELSEIF ( color .EQ. unspecified_int4 ) THEN
+	      color = qual_on		! auto selection of line style
+	   ENDIF
+	ENDIF
+
+
+* decide on line or fill or both
+	line_it   = use_line 
 
 	if (line_it) then
 	   fill_it = qual_given(slash_polygon_fill) .gt. 0 
@@ -154,41 +211,6 @@ CC       => Set values here instead.
 	   poly_opt = ' '
 	end if
 
-	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
-	CALL DISP_PREP( status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-
-* decode qualifiers
-* ... POLYGON/SYMBOL=n
-	loc = qual_given( slash_plot_symb )
-	IF ( loc .GT. 0  ) THEN
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      val, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( val .NE. unspecified_val4 ) THEN
-	      limit = max_sym 
-	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      symbol = NINT( val )	! user-specified symbol
-	   ELSE
-	      symbol = qual_on		! auto selection of symbols
-	   ENDIF
-	   line_type = qual_off		! default to no line w/ symbol	      
-	ENDIF
-* ... POLYGON/LINE_STYLE=n
-	loc = qual_given( slash_polygon_line )
-	IF ( loc .GT. 0  ) THEN
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      val, status )	! syntax check
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( val .NE. unspecified_val4 ) THEN
-	      limit = num_fancy_lines 			!was num_plain 1/94
-	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      line_type = NINT( val )	! user-specified line style
-	   ELSE
-	      line_type = qual_on		! auto selection of line style
-	   ENDIF
-	ENDIF
-
 	if (overlay) sover = .true.
 * set up the axes and title and load the data into PPLUS
 	CALL POLYGON_SET_UP   ( memory,
@@ -199,7 +221,8 @@ CC       => Set values here instead.
      .				no_range,
      .				only_val,
      .				symbol,
-     .				line_type,
+     .				color,
+     .				use_line,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -299,4 +322,7 @@ CC       => Set values here instead.
  5200	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to '//LEFINT(limit,slen), *1000 )
+ 5400	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'Legal range is 1 to 3', *1000 )
 	END

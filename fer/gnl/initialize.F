@@ -80,6 +80,7 @@
         include 'tmap_errors.parm'  ! error codes
 	include 'tmap_dims.parm'
 	include 'xio.cmn_text'
+        include 'xdset_info.cmn_text'
 	external xio_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -89,11 +90,13 @@
 	include	'gfdl.parm'			! from phil/sieg
 	include	'xonedim.cmn'		! from phil.sieg
 	include 'xprog_state.cmn'
+        include 'xalgebra.cmn'
 	include 'xvariables.cmn'
 	include 'xtoday.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'  ! error codes
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
 	INCLUDE 'TMAP_FORMAT:XIO.CMN'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -102,6 +105,7 @@
 	INCLUDE	'FERRET_CMN:GFDL.PARM'			! from Phil/Sieg
 	INCLUDE	'FERRET_CMN:XONEDIM.CMN'		! from Phil.Sieg
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
+        INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
 	INCLUDE 'FERRET_CMN:XTODAY.CMN'
 	INCLUDE '($SSDEF)'				! LIB_ return status
@@ -267,6 +271,35 @@
 
 *************** BRAINDEAD PLOT+ ******************************************
         CALL PPL_BDEAD
+
+        CALL string_array_init(alg_pvar_head,
+     .                         num_pseudo_vars,
+     .                         8,
+     .                         alg_pvar(1),
+     .                         alg_pvar_strlen(1))
+
+        CALL string_array_init(countervar_name_head,
+     .                         num_counter_vars,
+     .                         128,
+     .                         countervar_name(1),
+     .                         countervar_name_strlen(1))
+
+        CALL string_array_init(uvar_name_code_head,
+     .                         max_uvar,
+     .                         128,
+     .                         uvar_name_code(1),
+     .                         uvar_name_code_strlen(1))
+
+        CALL string_array_init(ds_var_code_head,
+     .                         maxvars,
+     .                         128,
+     .                         ds_var_code(1),
+     .                         ds_var_code_strlen(1))
+
+        CALL deleted_list_init(uvar_num_items_head,
+     .                         uvar_num_items(1),
+     .                         max_uvar,
+     .                         uvar_deleted)
 
 	RETURN
 

@@ -101,6 +101,8 @@
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 * V521	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
 *	7/00 - *sh* new argument range_rqd needed on EQUAL_RANGE
+* V530 *sh* 1/01 - change "denigrated" to "deprecated"
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -191,8 +193,8 @@
 	nline_in_mem = 0
 	phlim = qual_given( slash_hlimits )
 	pvlim = qual_given( slash_vlimits )
-	pxlim = qual_given( slash_xlimits )	! denigrated
-	pylim = qual_given( slash_ylimits )	! denigrated
+	pxlim = qual_given( slash_xlimits )	! deprecated
+	pylim = qual_given( slash_ylimits )	! deprecated
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
 
@@ -299,7 +301,7 @@
 	   delta = unspecified_val8
 	   IF ( pindeplim .GT. 0 ) THEN
 	      IF ( pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done ) THEN
-	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
@@ -486,7 +488,7 @@
 	      delta = unspecified_val8
 	      IF ( pindeplim .GT. 0 ) THEN
 	         IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
-	            CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	            CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	            CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	            denig_xylim_msg_done = .TRUE.
 	         ENDIF
@@ -534,7 +536,7 @@
 *  force axis scaling if the data has no range
 	   IF ( pdeplim .GT. 0 ) THEN
 	      IF (pylim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
-	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF

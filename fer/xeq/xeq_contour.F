@@ -75,6 +75,7 @@
 * V510 12/99 *sh* - allow plots of all-missing data
 *		  - added /SIZE=/SPACING=/SIGDIG= controls over contour labels
 *      5/00 *sh* - restored the /PEN qualifier (with "denigrated" remark
+* V530 *sh* 1/01 - change "denigrated" to "deprecated"
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -192,7 +193,7 @@
 	IF ( loc .GT. 0 ) THEN
 	   IF (.NOT.denig_pen_msg_done .AND. qual_given(slash_pen).GT.0)
      .									THEN
-	      CALL WARN( '/PEN is denigrated. Use /COLOR.')
+	      CALL WARN( '/PEN is deprecated. Use /COLOR.')
 	      denig_pen_msg_done = .TRUE.
 	   ENDIF
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),

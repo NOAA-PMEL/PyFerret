@@ -75,6 +75,7 @@
 *		  - new arg use_line for change in arguments to LINE_STYLE
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 * V510: *sh* 7/00 - added arg to EQUAL_RANGE 
+* V530 *sh* 1/01 - change "denigrated" to "deprecated"
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -178,8 +179,8 @@
 
 * initialize
 	nline_in_mem = 0
-	pxlim = qual_given( slash_xlimits ) ! denigrated
-	pylim = qual_given( slash_ylimits ) ! denigrated
+	pxlim = qual_given( slash_xlimits ) ! deprecated
+	pylim = qual_given( slash_ylimits ) ! deprecated
 	phlim = qual_given( slash_hlimits )
 	pvlim = qual_given( slash_vlimits )
 	ptitl = qual_given( slash_title )
@@ -529,7 +530,7 @@
 * ... X axis
 	   IF ( pxdenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
-	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
@@ -553,7 +554,7 @@
 * ... Y axis
 	   IF ( pydenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
-	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF

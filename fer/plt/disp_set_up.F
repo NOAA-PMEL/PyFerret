@@ -106,7 +106,7 @@
 *        3/00 - *sh* /NOLABELS to avoid xlab & ylab
 *	 5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
 * V520   6/00 *sh* - bug fix: trap ndim>2 on overlays
-
+* V530 *sh* 1/01 - change "denigrated" to "deprecated"
 
 #ifdef unix
 	include 'ferret.parm'
@@ -379,7 +379,7 @@
 	IF ( .NOT.overlay ) THEN
 	   IF ( pxlim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
-	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
@@ -416,7 +416,7 @@
      .						time_axis,xstyle,no_labels)
 	   IF ( pylim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
-	         CALL WARN( '/XLIMITS and /YLIMITS are denigrated.')
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF

@@ -54,6 +54,7 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
+	include 'xrisc_buff.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
@@ -171,9 +172,10 @@
  100	CONTINUE
 
 * echo the name of the output cache file
+* 1/03 *kob* g77 port demands the use of risc_buff
+	risc_buff = filename(1:TM_LENSTR1(filename))
 	CALL SPLIT_LIST(pttmode_bull, ttout_lun,
-     .		' LISTing to file '//filename(1:TM_LENSTR1(filename))
-     .								,0)
+     .		' LISTing to file '//risc_buff,0)
 
 	RETURN
 
@@ -187,8 +189,10 @@
  5300	CALL ERRMSG( ferr_invalid_command, status,
      .			'URL string too long to cache', *5000 )
 
- 5400	CALL ERRMSG( ferr_invalid_command, status,
+* 1/03 *kob* g77 port demands the use of risc_buff
+ 5400	risc_buff = filename
+	CALL ERRMSG( ferr_invalid_command, status,
      .			'/CLOBBER not specified and file exists: '
-     .			//filename, *5000 )
+     .			//risc_buff, *5000 )
 
 	END

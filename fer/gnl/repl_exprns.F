@@ -79,6 +79,9 @@
 *	*sh* 3/01 - added RETURN=dset, dset_num, dset_path
 * V531: *sh* 4/01 - added RETURN=bad
 * V532: *sh* 5/01 - mod to EVAL_CONTEXT forced change here  
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
+*            - Need to use risc_buff for arbitrary concatenations
 
 #ifdef unix
 	include 'ferret.parm'
@@ -125,7 +128,7 @@
 
 * local parameter declarations
 	CHARACTER	tab*1
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 * initialize
 	did_sub = .FALSE.    	! any substitutions done?
@@ -497,22 +500,28 @@
 
 * error exits
  5000   RETURN
- 5100   CALL ERRMSG( ferr_syntax, status,
-     .       'unpaired grave accents: '//cmnd(:lencmnd), *5000)
- 5200   CALL ERRMSG( ferr_invalid_command, status,
+ 5100	risc_buff = cmnd(:lencmnd)
+	CALL ERRMSG( ferr_syntax, status,
+     .       'unpaired grave accents: '//risc_buff, *5000)
+ 5200	risc_buff = cmnd(istart:iend)
+	CALL ERRMSG( ferr_invalid_command, status,
      .       'grave accent doesnt evaluate to scalar'//pCR
-     .                                  //cmnd(istart:iend), *5000)
- 5400   CALL ERRMSG( ferr_invalid_command, status,
+     .                                  //risc_buff, *5000)
+ 5400	risc_buff = cmnd(istart:iend)
+	CALL ERRMSG( ferr_invalid_command, status,
      .       'grave accent evaluates to string too long'//pCR
-     .					//cmnd(istart:iend), *5000)
- 5500   CALL ERRMSG( ferr_syntax, status,
+     .					//risc_buff, *5000)
+ 5500	risc_buff = cmnd(:lencmnd)
+	CALL ERRMSG( ferr_syntax, status,
      .       'options: "P=prec","B=bad","W=width","ZW=zero-width" or'
-     .	     //' "R=return-item"'//pCR//cmnd(:lencmnd), *5000)
- 5510   CALL ERRMSG( ferr_invalid_command, status,
+     .	     //' "R=return-item"'//pCR//risc_buff, *5000)
+ 5510	risc_buff = cmnd(i:qual_end)
+	CALL ERRMSG( ferr_invalid_command, status,
      .       'maximum precision is 10 digits: '
-     .					//cmnd(i:qual_end), *5000)
- 5520   CALL ERRMSG( ferr_invalid_command, status,
+     .					//risc_buff, *5000)
+ 5520   risc_buff = cmnd(i:qual_end)
+	CALL ERRMSG( ferr_invalid_command, status,
      .     'use RETURN=shape,size,grid,dset,dsetnum,dsetpath,'//pCR//
      .	   '    bad,*size,*start,*end,*axis, or *units'
-     .				//pCR//cmnd(i:qual_end), *5000)
+     .				//pCR//risc_buff, *5000)
 	END

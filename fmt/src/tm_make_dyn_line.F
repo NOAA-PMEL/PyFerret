@@ -49,6 +49,7 @@
 * created 1/98 *sh* - based on tm_get_like_dyn_line
 * V532 5/01 *sh* - eliminate (annoying) warning message about unknown units
 * V541 2/01 *sh* - added support for line_modulo_len
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 
 * Arguments
 	LOGICAL		modulo
@@ -77,6 +78,7 @@
 	include 'xtm_grid.cmn_text'
 	include 'xunits.cmn_text'
 	external xgt_grid_data
+	include 'xrisc_buff.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -137,7 +139,8 @@
 !	     CALL WARN('unknown axis units: '//units)
 	     CONTINUE
 	   ELSEIF (iunit .EQ. -5) THEN    ! "-5" is "MONTHS"
-               CALL WARN(units//
+	       risc_buff = units
+               CALL WARN(risc_buff(:TM_LENSTR1(risc_buff))//
      .			' is ambiguous ... using 1/12 of 365 days.') 
            ELSEIF ( iunit .NE. 0 ) THEN
 * ... Issue warning for inappropriate units like HOURS on X ax
@@ -148,8 +151,10 @@
      .             ( iunit.LT.pun_1st_len .OR.iunit.GT.pun_last_len  ) )
      .        .OR. ( idim.EQ.z_dim .AND.
      .               iunit.EQ.pun_degrees )  ) THEN     ! 7/96
-               CALL WARN
-     .               (units//' appear to conflict with orientation:'
+		risc_buff = units
+		CALL WARN
+     .               (risc_buff(:TM_LENSTR1(risc_buff))
+     .                  //' appear to conflict with orientation:'
      .                  //' no conversions possible')
                line_unit_code(inline) = 0
              ENDIF           

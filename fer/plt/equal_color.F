@@ -45,7 +45,9 @@
 *      *kob* 5/00 - minor change to declaration of colors array needed to
 *                   compile under nag f95 for linux
 * V520 6/00 *sh* - introduced "white" as color 19 (only thin available)
-
+*
+* 1/03 *kob* g77 port - requires use of risc_buff for concats
+*
 * calling argument declarations
 	INTEGER		icolor, status
 	CHARACTER*(*)	string
@@ -70,7 +72,7 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'plot_setup.parm'
-
+	include 'xrisc_buff.cmn'
 * initialize
 	slen	  = TM_LENSTR1( string )
 	equal_pos = INDEX( string, '=' )
@@ -122,11 +124,14 @@
 
 * syntax error
  5000	CALL ERRMSG( ferr_syntax, status, string, *4999 )
- 5100	CALL ERRMSG( ferr_invalid_command, status, 
-     .		string//pCR//
+ 5100	risc_buff = string
+	CALL ERRMSG( ferr_invalid_command, status, 
+     .		risc_buff(:TM_LENSTR1(risc_buff))//pCR//
      .	'Colors are Black,Red,Green,Blue,LightBlue,Purple, and White',
      .		*4999 )
- 5200	CALL ERRMSG( ferr_out_of_range, status, 
-     .		string//pCR//'Legal range is 1 to '
+ 5200	risc_buff = string
+	CALL ERRMSG( ferr_out_of_range, status, 
+     .		risc_buff(:TM_LENSTR1(risc_buff))
+     .          //pCR//'Legal range is 1 to '
      .		//LEFINT(num_fancy_lines+1,slen), *4999 )
 	END

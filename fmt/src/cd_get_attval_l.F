@@ -43,6 +43,9 @@
 * 12/02  *acm*
 * V550 *acm* 1/03 - Check for value of attribute " ", return TRUE if so.
 * 
+* 1/03 - *kob* g77 port - need to use risc_buff and also local var 
+*                         tmp_buff for arbitrary  string concats 
+ 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
 *       varid    - variable id in netCDF file
@@ -60,12 +63,14 @@
       include 'xio.parm'
       include 'netcdf.decl'
 #include "netcdf.inc"
+      include 'xrisc_buff.cmn'         !1/03 *kob*
 
 * internal variable declarations:
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL
       INTEGER vback
-      INTEGER TM_LENSTR1, lena, attype, cdfstat
+      INTEGER TM_LENSTR1, TM_LENSTR, lena, attype, cdfstat
       CHARACTER buff*132, upbuff*132
+      CHARACTER tmp_buff*2048          !1/03 *kob*	
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
@@ -118,10 +123,14 @@
 
 * error exit
  5000 CONTINUE
-
+ 
+* *kob* 1/03 - add risc_buff - needed for g77 port
       IF (do_warn) THEN
+	risc_buff = attrib(:lena)
+	tmp_buff = vname
 	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
-     .		      attrib(:lena)//' on variable '//vname, tooplu)
+     .		      risc_buff(:TM_LENSTR1(risc_buff))//' on variable '//
+     .                tmp_buff, tooplu)
         CALL TM_NOTE('modulo = "'//buff(:TM_LENSTR1(buff))//'"', tooplu)
 
       ENDIF

@@ -68,6 +68,9 @@
 *			 : CHARACTER*(*) variables cannot be used in concatenations,
 *			   so I used risc_buff.
 * v530 *kob* 1/00 - minor mods for remote mc aggregations
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations.  Remove
+*                         ifdef AIX and just use risc_buff by default
+*
 
 * arguments:
 *	fname	   - filename - possibly lacking extension
@@ -85,9 +88,8 @@
 #ifdef unix
 	include 'tmap_errors.parm'		! error codes
 #include "gt_lib.parm"
-#ifdef AIX_XLF
 	include 'xrisc_buff.cmn'
-#endif
+
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
@@ -218,17 +220,10 @@
      .			unspecified_int4, no_stepfile,
      .			'path list too long',
      .                  no_errstring, *9900)
-#ifdef AIX_XLF
  5202 risc_buff = fname
       CALL TM_ERRMSG (merr_syntax, status, 'TM_INQ_PATH',
      .			unspecified_int4, no_stepfile,
      .			'unknown environment variable: '//risc_buff(1:flen),
      .                  no_errstring, *9900)
-#else
- 5202 CALL TM_ERRMSG (merr_syntax, status, 'TM_INQ_PATH',
-     .			unspecified_int4, no_stepfile,
-     .			'unknown environment variable: '//fname(1:flen),
-     .                  no_errstring, *9900)
-#endif
  9900 RETURN
       END

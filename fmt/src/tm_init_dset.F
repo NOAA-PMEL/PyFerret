@@ -87,6 +87,7 @@
 * v541 *acm*  4/02  New descriptor d_caltype for nonstandard calendar types.
 *                   **also changes to descript.def**
 *      *acm*  5/02  When extension not specified, try .nc as well as .des, .cdf
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -106,7 +107,7 @@
 * Parameter and common files
 	include 'tmap_errors.parm'		! error codes
 #include "tmap_dset.parm"
-	include 'tmap_dims.parm'		! data set dimensions
+	include 'tmap_dims.parm'		! data set dimensions	
 #include "gt_lib.parm"
 	include 'xio.parm'
 	include 'xdset_info.cmn_text'	! data set common
@@ -115,6 +116,7 @@
         external xsys_names_data
         include 'xdiag_ctrl.cmn_text'
         external xdiag_ctrl_data
+	include 'xrisc_buff.cmn'
 
 * Define variables from Set File namelist records
 	include 'descript.def'
@@ -483,15 +485,19 @@
      .			dset_name,
      .			no_errstring, *9900)
 
- 5400	CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
+ 5400	risc_buff = dset_name
+ 	CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
      .			unspecified_int4, no_stepfile,
-     .			'Searched $FER_DESCR and $FER_DATA for '//dset_name//
+     .			'Searched $FER_DESCR and $FER_DATA for '
+     .                  //risc_buff(:TM_LENSTR1(risc_buff))//
      .                  '('//def_ext//','//def_cdf//',.nc)',
      .			no_errstring, *9950)
 
- 5500	CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
+ 5500	risc_buff = dset_name
+	CALL TM_ERRMSG (merr_notmounted, status, 'TM_INIT_DSET',
      .			unspecified_int4, no_stepfile,
-     .			dset_name//'('//def_ext//','//def_cdf//',.nc)',
+     .			risc_buff(:TM_LENSTR1(risc_buff))
+     .                  //'('//def_ext//','//def_cdf//',.nc)',
      .			no_errstring, *9950)
 
 

@@ -59,12 +59,14 @@
 *			at_start, at_end are relative to full text buffer
 *	12/99 *sh* - initialize uvar_lo/hi*
 * V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
-
+* 1/03 *kob* g77 port - requires use of risc_buff for concats
+*            bug fix - reference to uvar_text was missing uvar reference      
 #ifdef unix
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'
 	include 'xvariables.cmn'
+	include 'xrisc_buff.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'	
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
@@ -84,7 +86,8 @@
 * internal variable declarations:
 	LOGICAL inquote
 	INTEGER	STR_UPCASE, vax_code, i, natom_rpn,
-     .                  rpn_order(maxatoms), i2, quote_type
+     .                  rpn_order(maxatoms), i2, quote_type,
+     .                  TM_LENSTR1
 	CHARACTER	err_string*255, c*1
 
 * internal parameter declarations
@@ -153,7 +156,8 @@
 	      uvar_text(uvar)(i2:i2) = CHAR( IAND(HEXDF, ICHAR(c)) )
 # else
 * VMS needs IAND
-	      uvar_text(i2:i2) = CHAR( IAND('DF'X, ICHAR(c)) )
+* bug fix - forgot (uvar) in var reference
+	      uvar_text(uvar)(i2:12) = CHAR( IAND('DF'X, ICHAR(c)) )
 # endif
 #endif
 	   ENDIF
@@ -224,8 +228,10 @@
 
 * error exit
  5000	RETURN
- 5440   CALL ERRMSG( ferr_syntax, status,
-     .                  text(txstart:txend)//pCR//err_string, *5000 )
+ 5440	risc_buff = text(txstart:txend)
+	CALL ERRMSG( ferr_syntax, status,
+     .                  risc_buff(:TM_LENSTR1(risc_buff))
+     .                  //pCR//err_string, *5000 )
 * 12/97 *kob*
  5500   CALL ERRMSG( ferr_expr_too_complex, status,
      .                  text(txstart:txend), *5000 )

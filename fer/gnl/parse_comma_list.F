@@ -56,6 +56,8 @@
 * V532: *sh* 5/01 - ignore commas embedded in parentheses
 *		  - allow for nested parens and brackets
 * V533: *sh* 7/01 - allow both single and double quoted strings
+* 1/03 *kob* g77 port -  Need to use risc_buff for arbitrary concatenations
+
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -202,8 +204,10 @@
      .           //pCR//risc_buff(istart:iend), *5000 )
 
 * warning exit
- 6000	CALL WARN( 'command incompletely processed: '
-     .		//buffer(istart:iend) )
+* *kob 1/03 g77 port needs risc buff
+ 6000	risc_buff = buffer(istart:iend)
+	CALL WARN( 'command incompletely processed: '
+     .		//risc_buff )
 	CALL WARN( 'Maximum items in command: '//LEFINT(max_items,i))
 	RETURN
 

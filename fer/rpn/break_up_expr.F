@@ -55,6 +55,7 @@
 * V510: 5/00 *sh* - added "bad" (missing value flag) to INIT_UVAR arguments
 * V540:12/01 *acm*- for parsing expr like def axis/x x1={ 1, 2 } dont include
 *                   the brackets in risc_buff
+* 1/03 *kob* g77 port - requires use of risc_buff for concats
 
 #ifdef unix
 	include	'ferret.parm'
@@ -164,9 +165,10 @@ c        tlen = MIN( size_rbuff, LEN(text) )
 	RETURN
  5100	CALL ERRMSG( status, status,
      .			risc_buff(:tlen)//pCR//err_string, *5000 )
- 5200	CALL ERRMSG( ferr_syntax, status,
+ 5200	risc_buff = text(:tlen)
+	CALL ERRMSG( ferr_syntax, status,
      .		'comma does not separate any expressions: '
-     .			//text(:tlen), *5000 )
+     .			//risc_buff, *5000 )
  5300   write ( err_string, '(I4)' ) max_exp
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'Number of expressions in line must be less than'

@@ -66,6 +66,7 @@
 *	12/99 *sh* - for formatted lat or lon (e.g. Y[y=0:20n:2]), set units
 *	 4/00 *sh* - all grids and axes now maintain use counts
 * V530:  8/00 *sh* - assert float data type for pseudo-variable
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 
 #ifdef unix
 	include	'ferret.parm'
@@ -343,6 +344,8 @@
  5000	RETURN
  5100	IF (cx_has_impl_grid(pvar_cx)) CALL TM_DEALLO_DYN_GRID(impl_grid)
 	CALL ERRMSG( ferr_inconsist_grid, status, full_pvar_name, *5000 )
- 5200	CALL ERRMSG( ferr_invalid_command, status, 
-     .	'non-positive delta value: '//full_pvar_name, *5000 )
+* 1/03 *kob* g77 port requires risc buff for arbitrary string concats
+ 5200	risc_buff = full_pvar_name
+	CALL ERRMSG( ferr_invalid_command, status, 
+     .	'non-positive delta value: '//risc_buff, *5000 )
 	END

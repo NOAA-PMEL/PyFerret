@@ -60,7 +60,9 @@
 * V510: 3/00 *sh* bug fix - in the syntax "$1" the final " caused iptr mis-set
 * V531: 4/01 *sh* - allow 2-digit argument numbers
 *		  - increased argument buffers 255 -> 511
-
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
+*            - Need to use risc_buff for arbitrary concatenations
 * calling argument declarations:
 	LOGICAL   did_sub
 	INTEGER	  lencmnd, status
@@ -79,17 +81,15 @@
 
 * local parameter declarations
         CHARACTER*1     sing_quote
-        PARAMETER     ( sing_quote = CHAR(39) )
+        PARAMETER     ( sing_quote = O'047' )
         CHARACTER*1	tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 #ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -232,12 +232,8 @@
            GOTO 5100
         ELSE
 	   iptr = lencmnd ! temporary buffer
-#ifdef AIX_XLF
 	   risc_buff = cmnd(nexchar:)
            cmnd(dollar:) = arg(1:lenarg) // risc_buff
-#else
-           cmnd(dollar:) = arg(1:lenarg) // cmnd(nexchar:)
-#endif
            lencmnd = (dollar-1) + lenarg + (lencmnd-nexchar+1)   ! new length
 	   nexchar = nexchar + (lencmnd-iptr) ! shift by increase of cmnd len
         ENDIF
@@ -250,14 +246,21 @@
  5000   RETURN
  5100   CALL ERRMSG( ferr_invalid_command, status,
      .       'command argument strings are too long', *5000)
- 5150   CALL ERRMSG( ferr_syntax, status,
-     .       'arg number not in 1-99 range: '//cmnd(dollar:iptr), *5000 )
- 5300   CALL ERRMSG( ferr_syntax, status,
-     .       'missing closing paren: '//cmnd(dollar:iptr), *5000 )
- 5400   CALL ERRMSG( ferr_syntax, status,
-     .       'empty argument replacement string: '//cmnd(dollar:iptr),
+ 5150	risc_buff = cmnd(dollar:iptr)
+	CALL ERRMSG( ferr_syntax, status,
+     .       'arg number not in 1-99 range: '//risc_buff, *5000 )
+ 5300   risc_buff = cmnd(dollar:iptr)
+	CALL ERRMSG( ferr_syntax, status,
+     .       'missing closing paren: '//risc_buff, *5000 )
+ 5400   risc_buff = cmnd(dollar:iptr)
+	CALL ERRMSG( ferr_syntax, status,
+     .       'empty argument replacement string: '//risc_buff,
      .		 *5000 )
- 5500   CALL ERRMSG( ferr_invalid_command, status,
+ 5500   risc_buff = goline
+	CALL ERRMSG( ferr_invalid_command, status,
      .       'Value needed for argument '//carg(3-idig:)//' in command'//
-     .        pCR//'GO '//goline(:TM_LENSTR1(goline)), *5000)
+     .        pCR//'GO '//risc_buff(:TM_LENSTR1(goline)), *5000)
+
 	END
+
+

@@ -58,6 +58,8 @@
 *
 * IBM port 6/2/94 *kob* - Inherited length string concatenation error on IBM
 *			  aix compiler forces uses of risc_buff
+*
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 
 * calling argument declarations:
       INTEGER       status
@@ -66,9 +68,7 @@
 #ifdef unix
       include 'tmap_errors.parm'
 #include "gt_lib.parm"
-#ifdef AIX_XLF
       include 'xrisc_buff.cmn'
-#endif
 
 * internal variable declarations:
       LOGICAL there
@@ -96,12 +96,9 @@
 * ... next version with path name
  11      CALL TM_NEXT_VER_NAME( fname(postslash:), buff,
      .			        fname(:postslash-1))
-#ifdef AIX_XLF
   	 risc_buff = fname(:postslash-1)
-         CALL TM_RENAME( fname, risc_buff//buff, status )
-#else
-         CALL TM_RENAME( fname, fname(:postslash-1)//buff, status )
-#endif
+         CALL TM_RENAME( fname, risc_buff(:TM_LENSTR1(risc_buff))//buff, 
+     .                   status )
       ELSE
 * ... next version in this directory
          CALL TM_NEXT_VER_NAME(fname,buff,' ')

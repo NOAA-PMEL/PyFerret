@@ -44,7 +44,10 @@
 * V500 *sh* 7/99 - if numslashnum reading fails, try dd-mmm-yyyy (VAX)
 *		to support LDEA files with "months since 01-jan"
 * V530 *acm* 12/00 - add cal_id for alternative calendar axes
+* 
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V551 *acm*  2/03 - fix bug where seconds were wiped out. See cc comments
+
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
@@ -61,6 +64,7 @@
 	include 'tmap_errors.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+	include 'xrisc_buff.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -119,9 +123,11 @@ cc	   second = NINT(fsecond)	! information loss ...
 
 * error exits
  5000	RETURN
- 5100	CALL TM_ERRMSG (merr_badtimedef, status, 'TM_BREAL_FMT_DATE',
+ 5100	risc_buff = date(:dlen)
+        CALL TM_ERRMSG (merr_badtimedef, status, 'TM_BREAL_FMT_DATE',
      .			unspecified_int4, no_stepfile,
-     .			'syntax error in "'//date(:dlen),
+     .			'syntax error in "'//risc_buff,
      .			no_errstring, *5000)
 
 	END
+

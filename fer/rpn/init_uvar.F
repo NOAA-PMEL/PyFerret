@@ -86,12 +86,14 @@
 *	1/00 *sh* - bug fix: parent_uvar was always set to ultimate ancestor
 *		 instead of actual parent. Created gcf stack
 * V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
+* 1/03 *kob* g77 port - requires use of risc_buff for concats
 
 #ifdef unix
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'
 	include 'xvariables.cmn'
+	include 'xrisc_buff.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'	
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
@@ -304,8 +306,9 @@
  5100	CALL ERRMSG( ferr_prog_limit, status,
      .		'too many user-defined variables'//pCR//
      .		'cancel or redefine some variables', *5000 )
- 5200	CALL ERRMSG( ferr_syntax, status,
-     .		'unclosed parentheses: '//text(txstart:txend), *5000 )
+ 5200	risc_buff = text(txstart:txend)
+	CALL ERRMSG( ferr_syntax, status,
+     .		'unclosed parentheses: '//risc_buff, *5000 )
 
 * remove all child variables of the variable being initialized
  5900	CALL GCF_CHILD_VAR_NAME( uvar, 0, child_name )

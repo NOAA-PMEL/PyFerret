@@ -48,6 +48,8 @@
 *		and incorporating GIF output
 *       9/97 - now supports batch mode
 * V500: 4/99 *sh* increased filename string length from 128 to 255
+* 1/03 *kob* g77 port - requires use of risc_buff for concats
+*
 
 * calling argument declarations:
 	INTEGER		status
@@ -63,6 +65,7 @@
 	include 'movies.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
+	include 'xrisc_buff.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:MOVIES.PARM'
@@ -119,8 +122,9 @@
 
 * error exit
  5000	RETURN
- 5200	CALL ERRMSG( ferr_erreq, status, 'Unable to open GIF file: '
-     .		     //filename(:flen), *5000 )
+ 5200	risc_buff = filename(:flen)
+	CALL ERRMSG( ferr_erreq, status, 'Unable to open GIF file: '
+     .		     //risc_buff, *5000 )
  5300	CALL ERRMSG( ferr_invalid_command, status,
      .               errstr(:elen), *5000 )
 

@@ -43,6 +43,8 @@
 * revision 0.0 2/92 for TMAP library (from FERRET rouitine "WARN")
 * *sh* 2/28/95 - allow message to be sent to alternative location
 * *js* 12.12.97- changed to use tm_split_list
+* 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
+
 
 * calling argument declarations:
         INTEGER lunit
@@ -53,6 +55,7 @@
 
 #ifdef unix
 	include 'xalt_messages.cmn_text'
+	include 'xrisc_buff.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN'
 #endif
@@ -66,7 +69,8 @@
 	ELSE
 c	   WRITE ( lunit, 3000 ) string(:slen)
 c 3000	   FORMAT ( ' *** NOTE: ',A )
-	   call tm_split_message(lunit, ' *** NOTE: '//string)
+	   risc_buff = string
+	   call tm_split_message(lunit, ' *** NOTE: '//risc_buff)
 	ENDIF
 
 	RETURN

@@ -93,9 +93,8 @@
 	INTEGER next_free_line
 
 * take a line from the "free" list and put it on the "used" list
-	IF ( line_free_ptr .NE. 0 ) THEN
+	IF ( line .NE. 0 ) THEN
 * ... unhook from free list
-	   line = line_free_ptr
 	   next_free_line  	= line_flink(line)
 	   line_free_ptr	= next_free_line
 * ... hook onto front of used list

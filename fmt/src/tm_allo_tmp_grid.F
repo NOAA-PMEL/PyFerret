@@ -42,11 +42,29 @@
 
 * Include files
 	include 'tmap_dims.parm'
+#include 'tmap_dset.parm'
+	include 'xtm_grid.cmn_text'
+	include 'xbuild_grids.cmn'
 
 * Argument definitions
 	INTEGER grid, status
 
+* Local variable definitions
+	INTEGER	idim
+
 	CALL TM_ALLO_DYN_LINE_SUB( tmp_grid_hook, grid, status )
+
+* initialize grid to null state
+	grid_name(grid) = char_init16
+	grid_rotation (grid) = real4_init 
+	DO 100 idim = 1, 4
+	   grid_line(idim,grid) = int4_init
+	   grid_out_prod(idim,grid) = .FALSE.
+ 100	CONTINUE
+
+* save a pointer to temporary name storage needed during grid creation
+	num_tmp_grids = num_tmp_grids + 1
+	tmp_nam_ptr(grid) =  num_tmp_grids
 
 	RETURN
 	END

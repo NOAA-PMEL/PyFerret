@@ -1,7 +1,6 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+	SUBROUTINE TM_NEXT_TMP_LINE( line, * )
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,39 +33,23 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
-* Allocate a temporary line from the dynamic line area (above max_lines)
+* Return next temporary line in list ... or RETURN 1 if no more
 
 * Steve Hankin  NOAA/PMEL/TMAP
 
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
+* V510 *sh* 3/00
 
 * Include files
 	include 'tmap_dims.parm'
-	include 'implicit.parm'
-#include 'tmap_dset.parm'
 	include 'xtm_grid.cmn_text'
 
-* Argument definitions
-	INTEGER line, status
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
+* Local variable definitions
+	INTEGER line
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
-
-	line_subsc1(line)    = int4_init
+	IF (line.LE.0) line = tmp_line_hook
+	line = line_flink(line)
+	IF (line.EQ.tmp_line_hook) RETURN 1
 
 	RETURN
 	END

@@ -86,9 +86,8 @@
 	INTEGER next_free_grid
 
 * take a grid from the "free" list and put it at the start of the "used" list
-	IF ( grid_free_ptr .NE. 0 ) THEN
+	IF ( grid .NE. 0 ) THEN
 * ... unhook from free list
-	   grid = grid_free_ptr
 	   next_free_grid  	= grid_flink(grid)
 	   grid_free_ptr	= next_free_grid
 * ... hook onto front of used list

@@ -1,4 +1,4 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+	SUBROUTINE TM_PURGE_TMP_GRIDS( status )
 
 *
 *
@@ -34,39 +34,68 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
-* Allocate a temporary line from the dynamic line area (above max_lines)
+* This routine is normally called only for error conditions that occur
+* in the midst of building grids and axes for netCDF files.
+* The goal is to throw away all of the in-progress work on grids and
+* axes, including allocations (use count increments) of axes that came
+* from other data sets.
 
 * Steve Hankin  NOAA/PMEL/TMAP
 
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
+* V510 *sh* 3/00
 
 * Include files
 	include 'tmap_dims.parm'
-	include 'implicit.parm'
-#include 'tmap_dset.parm'
+#include 'gt_lib.parm'
 	include 'xtm_grid.cmn_text'
+	include 'xio.cmn_text'
+
 
 * Argument definitions
-	INTEGER line, status
+	INTEGER status
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
+* Local variable declarations
+	INTEGER grid, line, idim
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
 
-	line_subsc1(line)    = int4_init
+* over temporary grids
+ 100	CONTINUE
+	   grid = 0	! to get start of list
+	   CALL TM_NEXT_TMP_GRID(grid, *300)
 
-	RETURN
-	END
+* deallocate axes used by grid (NOTE: only dynamic axes are used by netCDF!)
+	   DO 200 idim = 1, 4
+	      IF ( grid_line(idim, grid) .GT. max_lines ) THEN
+	         CALL TM_DEALLO_DYN_LINE( grid_line(idim, grid) )
+	      ELSEIF (  grid_line(idim, grid) .NE. mpsnorm ) THEN
+	         CALL TM_NOTE('tm intern err: netCDF grid w/ static axis'
+     .			 ,lunit_errors)  ! should never happen
+	      ENDIF
+ 200	   CONTINUE
+
+	   CALL TM_DEALLO_DYN_GRID( grid )
+	GOTO 100
+
+* remove any stray lines that were never incorporated into grids
+ 300	CONTINUE
+	   line = 0		! to get start of list
+ 	   CALL TM_NEXT_TMP_LINE(line, *1000)
+
+* deallocate axes used by grid (NOTE: only dynamic axes are used by netCDF!)
+	   DO 400 idim = 1, 4
+	      IF ( line .GT. max_lines ) THEN
+	         IF (line_use_cnt(line) .GT. 1) CALL TM_NOTE(
+     .			'tm intern err: line over alloc.',lunit_errors)
+	         CALL TM_DEALLO_DYN_LINE( line )
+	      ELSEIF (  line .NE. mpsnorm ) THEN
+	         CALL TM_NOTE('intern err: netCDF static axis'
+     .			 ,lunit_errors)  ! should never happen
+	      ENDIF
+ 400	   CONTINUE
+
+	GOTO 300
+
+* successful completion
+ 1000	RETURN
+
+ 	END

@@ -43,7 +43,17 @@
      .				alg_fcn, 
      .				alg_punct,
      .				alg_struct,
+     .
+     .                          alg_pvar_head,
+     .                          alg_pvar_array_size,
+     .                          alg_pvar_string_size,
+     .                          alg_pvar_ptr_array,
+     .                          alg_pvar_hash_table,
+     .                          alg_pvar_string_array,
+     .                          alg_pvar_strlen_array,
      .				alg_pvar,
+     .                          alg_pvar_strlen,
+     .
      .				alg_trans_text,
      .				alg_trans_title,
      .				alg_regrid_code,
@@ -53,7 +63,16 @@
      .				alg_arg_units,
      .				alg_arg_descr,
      .                          alg_cvar,
-     .                          countervar_name
+     .
+     .                          countervar_name_head,
+     .                          countervar_name_array_size,
+     .                          countervar_name_string_size,
+     .                          countervar_name_ptr_array,
+     .                          countervar_name_hash_table,
+     .                          countervar_name_string_array,
+     .                          countervar_name_strlen_array,
+     .                          countervar_name,
+     .                          countervar_name_strlen
 
 	INTEGER		alg_num_fcn_args ( num_functions ),
      .			alg_fcn_arg_ptr  ( num_functions )
@@ -77,10 +96,26 @@
 	CHARACTER*12	alg_regrid_title ( max_regrid_trans )
 	INTEGER		alg_4d_trans	 ( max_4d_trans ),
      .			alg_1d_to_4d	 ( max_4d_trans ),
-     .			num_4d_trans
+     .			num_4d_trans,
+     .                  alg_pvar_head,
+     .                  alg_pvar_array_size,
+     .                  alg_pvar_string_size,
+     .                  alg_pvar_strlen  ( num_pseudo_vars ),
+     .                  countervar_name_head,
+     .                  countervar_name_array_size,
+     .                  countervar_name_string_size,
+     .                  countervar_name_strlen (num_counter_vars)
+
 	CHARACTER	alg_arg_name	 ( max_fcn_args )*80,
      .			alg_arg_units	 ( max_fcn_args )*24,
      .			alg_arg_descr	 ( max_fcn_args )*64
-
+        REAL*8          alg_pvar_ptr_array,
+     .                  alg_pvar_hash_table,
+     .                  alg_pvar_string_array,
+     .                  alg_pvar_strlen_array,
+     .                  countervar_name_ptr_array,
+     .                  countervar_name_hash_table,
+     .                  countervar_name_string_array,
+     .                  countervar_name_strlen_array
 
 

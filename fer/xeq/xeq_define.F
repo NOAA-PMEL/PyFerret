@@ -108,8 +108,9 @@
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V491+ - 7/98 *sh* - allow case-sensitive var name in DEFINE GRID/LIKE=varname
-* V500 - 4/99 *sh* use DELETE_USER_VAR to delete old definition when uvar
+* V500 - 4/16/99 *sh* use DELETE_USER_VAR to delete old definition when uvar
 *	name is redefined ... else child vars to not get removed
+*	 4/20/99 *sh* added DEFINE AXIS/EDGES
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -159,6 +160,7 @@
      .		    slash_depth,
      .		    slash_modulo,
      .		    slash_npoints,
+     .		    slash_edges,
      .		    slash_text,
      .		    slash_xlimits,
      .		    slash_ylimits,
@@ -181,6 +183,7 @@
      .		    slash_depth	 = 1 + 9,
      .		    slash_modulo = 1 + 10,
      .		    slash_npoints= 1 + 11,
+     .		    slash_edges  = 1 + 12,
      .              slash_text   = 1 + 0,
      .		    slash_xlimits= 1 + 1,
      .		    slash_ylimits= 1 + 2,
@@ -198,7 +201,8 @@
 
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
-     .		  TM_FPEQ, dup_name, delta_given, create, irreg, its_reg
+     .		  TM_FPEQ, dup_name, delta_given, create, irreg, its_reg,
+     .		  its_edges, its_calendar
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  STR_CASE_BLIND_COMPARE, CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -611,6 +615,9 @@
 	CALL STACK_PTR_DN ( cx_stack_ptr, cx_stack_ptr_base, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+* /EDGES?
+	its_edges =  qual_given( slash_edges ) .GT. 0
+
 * /UNITS = DEGREES,METERS, ... SECONDS (or supply defaults)
 	iqual = qual_given( slash_units )
 	IF ( iqual .GT. 0 ) THEN
@@ -654,6 +661,9 @@
 	   ENDIF
  	ENDIF
 
+* is it a calendar axis definition?
+	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
+
 * find a space to catalog it
 	status = ALLO_MANAGED_AXIS( iline )
 	IF ( status .NE. merr_ok ) GOTO 5000
@@ -670,7 +680,7 @@
 	   npoints = unspecified_int4
 	ENDIF
 
-* GET THE AXIS POINTS: irregular (from_variable) or regular
+* GET THE AXIS POINTS: IRREGULAR (from_variable) or regular
 	irreg = qual_given(slash_from) .GT. 0
 	IF ( irreg ) THEN
 * ... get axis points from a memory variable
@@ -688,33 +698,57 @@
 	   frst_pt = next_line_mem_pos
 * ... allocate some storage for the coordinates
 	   IF (frst_pt+2*n .GT. maxlinestore) GOTO 5590
+
 * ... store coordinate positions (error status already checked)
 	   CALL NON_ARRAY_SUBSC( mr, 1 )
-	   CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
-     .				 line_mem(frst_pt), idim, n )
-	   IF ( npoints .EQ. unspecified_int4 ) npoints = n
-* ... store initial box lower bound (start of axis)
-	   line_mem(frst_pt+npoints) = line_mem(frst_pt) -
-     .			0.5 * ( line_mem(frst_pt+1) - line_mem(frst_pt) )
-* ... mid-axis box boundaries ...
-	   DO 525 i1 = 1, npoints-1
-	      i2 = frst_pt + i1
-	      IF ( line_mem(i2-1) .GE. line_mem(i2) ) GOTO 5570
-	      line_mem(i2+npoints) = ( line_mem(i2-1) + line_mem(i2) ) * 0.5
- 525	   CONTINUE
-* ... upper-most box bound (end of axis)
-	   i2 = frst_pt+npoints-1	! last box point
-	   line_mem(i2+npoints+1) = line_mem(i2) +
-     .			0.5 * ( line_mem(i2) - line_mem(i2-1) )
-* ... check to see if it was regularly spaced after all
-	   its_reg = .TRUE.	! until proven otherwise
-	   start = line_mem(frst_pt)
-           delta = line_mem(frst_pt+1) - start
-           DO 550 i1 = frst_pt+2,frst_pt+npoints-1
-              IF (.NOT.TM_FPEQ( SNGL(delta),
+	   IF (its_edges) THEN
+* ... "/edges" definition - 4/99
+	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
+     .				 line_mem(frst_pt+n-1), idim, n )
+	      n = n - 1  ! edges array is one longer than points
+	      npoints = n
+* ... store points: midway between box boundaries ...
+	      DO 525 i1 = 1, n
+	         i2 = frst_pt + i1
+	         IF ( line_mem(i2+n-1) .GE. line_mem(i2+n) ) GOTO 5570
+	         line_mem(i2-1) = (line_mem(i2+n-1)+line_mem(i2+n)) * 0.5
+ 525	      CONTINUE
+	      its_reg = .TRUE.	! until proven otherwise
+	      start = line_mem(frst_pt+n)
+              delta = line_mem(frst_pt+n+1) - start
+              DO 530 i1 = frst_pt+n+2,frst_pt+n+n+1
+                 IF (.NOT.TM_FPEQ( SNGL(delta),
      .               SNGL(line_mem(i1)-line_mem(i1-1))) )
      .						its_reg = .FALSE.
- 550	   CONTINUE
+ 530	      CONTINUE
+	   ELSE
+* ... not edges -- points
+	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
+     .				 line_mem(frst_pt), idim, n )
+	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
+* ... store initial box lower bound (start of axis)
+	      line_mem(frst_pt+npoints) = line_mem(frst_pt) -
+     .			0.5 * ( line_mem(frst_pt+1) - line_mem(frst_pt) )
+* ... mid-axis box boundaries ...
+	      DO 535 i1 = 1, npoints-1
+	         i2 = frst_pt + i1
+	         IF ( line_mem(i2-1) .GE. line_mem(i2) ) GOTO 5570
+	         line_mem(i2+npoints) = (line_mem(i2-1)+line_mem(i2)) * 0.5
+ 535	      CONTINUE
+* ... upper-most box bound (end of axis)
+	      i2 = frst_pt+npoints-1	! last box point
+	      line_mem(i2+npoints+1) = line_mem(i2) +
+     .			0.5 * ( line_mem(i2) - line_mem(i2-1) )
+	      its_reg = .TRUE.	! until proven otherwise
+	      start = line_mem(frst_pt)
+              delta = line_mem(frst_pt+1) - start
+              DO 550 i1 = frst_pt+2,frst_pt+npoints-1
+                 IF (.NOT.TM_FPEQ( SNGL(delta),
+     .               SNGL(line_mem(i1)-line_mem(i1-1))) )
+     .						its_reg = .FALSE.
+ 550	      CONTINUE
+	   ENDIF
+* ... check to see if it was regularly spaced after all
 	   IF ( its_reg ) THEN
 	      line_start    ( iline ) = start
 	      line_delta    ( iline ) = delta
@@ -729,25 +763,43 @@
 	   ENDIF
 	ELSE
 
-* ... start,end,delta specification for a regular axis
+* ... start,end,delta specification for a REGULAR axis
 	   start = cx_lo_ww(orient,mods_cx)
 	   end   = cx_hi_ww(orient,mods_cx)
-	   IF ( npoints .EQ. unspecified_int4 ) THEN
-	      delta = cx_delta (orient,mods_cx)
-	      IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
-* 9/97 *kob* - check for negative time axis using cx_calendar
-*	      IF ( .NOT.(orient.EQ.t_dim .AND. start.LT.0.0D0) )
-	      IF ( .NOT.(orient.EQ.t_dim .AND. cx_calendar(mods_cx)) )
-     .			npoints = ( (end - start) / delta ) + 1.9999
-	   ELSEIF ( npoints .EQ. 1 ) THEN
-	      delta = 1.D0
-c	   ELSEIF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN
-	   ELSEIF ( orient.EQ.t_dim .AND. cx_calendar(mods_cx) ) THEN
-	      delta = (start - end) / ( (npoints-1)*un_convert(iunit) )
-	      IF ( delta .LE. 0.0D0 ) GOTO 5520
+	   IF ( its_edges ) THEN
+	     IF ( npoints .EQ. unspecified_int4 ) THEN
+	       delta = cx_delta (orient,mods_cx)
+	       IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
+	       IF ( .NOT.its_calendar ) THEN
+	          npoints = ( (end - start) / delta ) + 0.9999
+	       ENDIF
+	     ELSE
+	       delta = (end - start) / npoints
+	       IF (its_calendar) delta = -1 * delta/un_convert(iunit)
+	       IF ( delta .LE. 0.0D0 ) GOTO 5520
+	     ENDIF
+	     IF ( its_calendar ) THEN
+	       start = start - delta/2.0*un_convert(iunit)
+	       end   = end   + delta/2.0*un_convert(iunit)
+	     ELSE
+	       start = start + delta/2.0
+	       end   = end   - delta/2.0
+	     ENDIF
 	   ELSE
-	      delta = (end - start) / (npoints-1)
-	      IF ( delta .LE. 0.0D0 ) GOTO 5520
+	     IF ( npoints .EQ. unspecified_int4 ) THEN
+	       delta = cx_delta (orient,mods_cx)
+	       IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
+	       IF ( .NOT.its_calendar ) THEN
+	          npoints = ( (end - start) / delta ) + 1.9999
+	       ENDIF
+	     ELSEIF ( npoints .EQ. 1 ) THEN
+	       IF ( end .NE. start ) GOTO 5530
+	       delta = 1.D0
+	     ELSE
+	       delta = (end - start) / (npoints-1)
+	       IF (its_calendar) delta = -1 * delta/un_convert(iunit)
+	       IF ( delta .LE. 0.0D0 ) GOTO 5520
+	     ENDIF
 	   ENDIF
 	   line_start    ( iline ) = start
 	   line_delta    ( iline ) = delta
@@ -765,9 +817,7 @@ c	   ELSEIF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
 	ELSE
 	   buff2 = '15-JAN-1901'		! default
-* 11/95 - shift the default T0 to a value that is early enough
-*	   IF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN 
-	   IF ( orient.EQ.t_dim .AND. cx_calendar(mods_cx) ) THEN
+	   IF (its_calendar ) THEN
 	      i1 = 20
  560	      bc_to_t0 = SECS_FROM_BC( buff2, status )      
 	      IF ( status .NE. ferr_ok ) GOTO 5540
@@ -807,9 +857,7 @@ c	   ELSEIF ( orient.EQ.t_dim .AND. start.LT.0.0D0 ) THEN
            ENDIF
 
 * ... time axis specified as date strings  (ELSEIF mod 11/93 *sh*)
-	ELSEIF ( .NOT.irreg
-c     .	    .AND. orient .EQ. t_dim .AND. start .LT. 0.0D0 ) THEN
-     .	    .AND. orient .EQ. t_dim .AND. cx_calendar(mods_cx) ) THEN
+	ELSEIF ( .NOT.irreg  .AND. its_calendar ) THEN
 	   line_direction(iline) = 'TI'
 	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), status )
 	   line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
@@ -1086,6 +1134,8 @@ c     .	    .AND. orient .EQ. t_dim .AND. start .LT. 0.0D0 ) THEN
      .		'DEFINE AXIS needs /X,/Y,/Z or /T orientation', *5000 )
  5520	CALL ERRMSG( ferr_grid_definition, status,
      .			'error in start,end,delta', *5000 )
+ 5530	CALL ERRMSG( ferr_grid_definition, status,
+     .			'NPOINTS=1 incompatible with limits given', *5000 )
  5540	CALL ERRMSG( ferr_grid_definition, status,
      .		'/T0='//buff2(:TM_LENSTR1(buff2)), *5000 )
  5550	CALL ERRMSG( ferr_grid_definition, status,

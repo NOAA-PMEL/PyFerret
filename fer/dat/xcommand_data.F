@@ -105,6 +105,7 @@
 *       3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
 *       3/99 *jc* - added /INTERNAL to SHOW FUNCTION command
 *       4/99 *sh* - added PAUSE alias
+*	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/IJ/K/L 
 
 #ifdef unix
 	include 'ferret.parm'
@@ -330,6 +331,17 @@
 	   DATA qualifier_pointer(nsub_at2 + 3)	/ nqual_at2d	/
 * SHOW AXIS /ALL
 		DATA qualifiers  (nqual_at2d+0)	/ 'ALL '	/
+		DATA qualifiers  (nqual_at2d+1)	/ 'I'	/
+		DATA qualifiers  (nqual_at2d+2)	/ 'J'	/
+		DATA qualifiers  (nqual_at2d+3)	/ 'K'	/
+		DATA qualifiers  (nqual_at2d+4)	/ 'L'	/
+		DATA qualifiers  (nqual_at2d+5)	/ 'X'	/
+		DATA qualifiers  (nqual_at2d+6)	/ 'Y'	/
+		DATA qualifiers  (nqual_at2d+7)	/ 'Z'	/
+		DATA qualifiers  (nqual_at2d+8)	/ 'T'	/
+		DATA qualifiers  (nqual_at2d+9)	/ '****'/
+		DATA qualifiers  (nqual_at2d+10)/ '****'/
+		DATA qualifiers  (nqual_at2d+11)/ '****'/
 * SHOW EXPRSIONION
 	   DATA subcommands      (nsub_at2 + 4)	/ 'EXPRSION'	/
 	   DATA num_qualifs      (nsub_at2 + 4)	/ nqual2e	/
@@ -836,19 +848,22 @@
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at10 + 4)/ nqual10e	/
 	   DATA qualifier_pointer(nsub_at10 + 4)/ nqual_at10e	/
-* DEFINE AXIS /X/Y/Z/T
+* DEFINE AXIS /X/Y/Z/T /FILE /UNITS ...
 		DATA qualifiers  (nqual_at10e+ 0)/ 'X'	  /
 		DATA qualifiers  (nqual_at10e+ 1)/ 'Y'	  /
 		DATA qualifiers  (nqual_at10e+ 2)/ 'Z'	  /
 		DATA qualifiers  (nqual_at10e+ 3)/ 'T'	  /
 		DATA qualifiers  (nqual_at10e+ 4)/ 'FILE' /
-		DATA qualifiers  (nqual_at10e+ 5)/ 'UNIT' /
+		DATA qualifiers  (nqual_at10e+ 5)/ 'UNITS' /
 		DATA qualifiers  (nqual_at10e+ 6)/ 'T0' /
 		DATA qualifiers  (nqual_at10e+ 7)/ 'NAME' /
 		DATA qualifiers  (nqual_at10e+ 8)/ 'FROMDATA' /
 		DATA qualifiers  (nqual_at10e+ 9)/ 'DEPTH' /
 		DATA qualifiers  (nqual_at10e+ 10)/ 'MODULO' /
 		DATA qualifiers  (nqual_at10e+ 11)/ 'NPOINTS' /
+		DATA qualifiers  (nqual_at10e+ 12)/ 'EDGES' /
+		DATA qualifiers  (nqual_at10e+ 13)/ '****' /
+		DATA qualifiers  (nqual_at10e+ 14)/ '****' /
 * DEFINE VIEW
 	   DATA subcommands      (nsub_at10 + 5)/ 'VIEWPORT'	/
 	   DATA num_qualifs      (nsub_at10 + 5)/ nqual10f	/

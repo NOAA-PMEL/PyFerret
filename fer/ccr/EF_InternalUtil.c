@@ -30,7 +30,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 */
 
@@ -69,8 +69,8 @@
 /*
  * The memory_ptr, mr_list_ptr and cx_list_ptr are obtained from Ferret
  * and cached whenever they are passed into one of the "efcn_" functions.
- * These pointers can be accessed by the utility functions in libef_util
- * or lib_ef_c_util.  This way the EF writer does not need to see them.
+ * These pointers can be accessed by the utility functions in efn_ext/.
+ * This way the EF writer does not need to see these pointers.
  */
 
 static LIST  *GLOBAL_ExternalFunctionList;
@@ -83,7 +83,7 @@ float *GLOBAL_bad_flag_ptr;
 /*
  * The jumpbuffer is used by setjmp() and longjmp().
  * setjmp() is called by efcn_compute_() in EF_InternalUtil.c and
- * saves the stack environment in jimpbuffer for later use by longjmp().
+ * saves the stack environment in jumpbuffer for later use by longjmp().
  * This allows one to bail out of external functions and still
  * return control to Ferret.
  * Check "Advanced Progrmming in the UNIX Environment" by Stevens
@@ -128,6 +128,7 @@ void efcn_get_descr_( int *, char * );
 int  efcn_get_num_reqd_args_( int * );
 void efcn_get_has_vari_args_( int *, int * );
 void efcn_get_axis_will_be_( int *, int * );
+void efcn_get_axis_reduction_( int *, int * );
 void efcn_get_piecemeal_ok_( int *, int * );
 
 void efcn_get_axis_implied_from_( int *, int *, int * );
@@ -145,7 +146,7 @@ void efcn_get_arg_desc_( int *, int *, char * );
 void efcn_copy_array_dims_(void);
 void efcn_get_workspace_addr_(float *, int *, float *);
 
-static void sig_fpe_segv_handler(int);
+static void EF_signal_handler(int);
 
 void ef_err_bail_out_(int *, char *);
 void ef_err_not_found(int);
@@ -173,13 +174,20 @@ int  EF_New( ExternalFunction * );
  * should pass by reference and should end with an underscore.
  */
 
+/*
+ * Find all of the ~.so files in directories listed in the
+ * FER_EXTERNAL_FUNCTIONS environment variable and add all 
+ * the names and associated directory information to the 
+ * GLOBAL_ExternalFunctionList.
+ */
 int efcn_scan_( int *gfcn_num_internal )
 {
   
   FILE *file_ptr=NULL;
   ExternalFunction ef; 
  
-  char file[EF_MAX_NAME_LENGTH]="", *path=NULL;
+  char file[EF_MAX_NAME_LENGTH]="";
+  char *path_ptr=NULL, path[8192]="";
   char paths[8192]="", cmd[EF_MAX_DESCRIPTION_LENGTH]="";
   int count=0, status=LIST_OK;
 
@@ -191,7 +199,7 @@ int efcn_scan_( int *gfcn_num_internal )
   }
 
   if ( (GLOBAL_ExternalFunctionList = list_init()) == NULL ) {
-    fprintf(stderr, "ERROR: Unable to initialize GLOBAL_ExternalFunctionList.\n");
+    fprintf(stderr, "ERROR: efcn_scan: Unable to initialize GLOBAL_ExternalFunctionList.\n");
     return_val = -1;
     return return_val;
   }
@@ -208,7 +216,8 @@ int efcn_scan_( int *gfcn_num_internal )
 
   if ( !getenv("FER_EXTERNAL_FUNCTIONS") ) {
     if ( !I_have_warned_already ) {
-      fprintf(stderr, "\nWARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
+      fprintf(stderr, "\
+\nWARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
       I_have_warned_already = TRUE;
     }
     return_val = 0;
@@ -217,14 +226,12 @@ int efcn_scan_( int *gfcn_num_internal )
 
   sprintf(paths, "%s", getenv("FER_EXTERNAL_FUNCTIONS"));
     
-  path = strtok(paths, " \t");
-    
-  if (path[strlen(path)-1] != '/')
-    strcat(path, "/"); 
+  path_ptr = strtok(paths, " \t");
 
-  if ( path == NULL ) {
+  if ( path_ptr == NULL ) {
  
-    fprintf(stderr, "\nWARNING:No paths were found in the environment variable FER_EXTERNAL_FUNCTIONS\n\n");
+    fprintf(stderr, "\
+\nWARNING:No paths were found in the environment variable FER_EXTERNAL_FUNCTIONS.\n\n");
 
     return_val = 0;
     return return_val;
@@ -233,36 +240,47 @@ int efcn_scan_( int *gfcn_num_internal )
     
     do {
 
+	  strcpy(path, path_ptr);
+
+      if (path[strlen(path)-1] != '/')
+        strcat(path, "/"); 
+
       sprintf(cmd, "ls -1 %s", path);
 
+      /* Open a pipe to the "ls" command */
       if ( (file_ptr = popen(cmd, "r")) == (FILE *) NULL ) {
-	fprintf(stderr, "\nERROR: Cannot open pipe.\n\n");
-	return_val = -1;
-	return return_val;
+	    fprintf(stderr, "\nERROR: Cannot open pipe.\n\n");
+	    return_val = -1;
+	    return return_val;
       }
  
+      /*
+       * Read a line at a time.
+       * Any ~.so files are assumed to be external functions.
+       */
       while ( fgets(file, EF_MAX_NAME_LENGTH, file_ptr) != NULL ) {
 
         char *extension;
 
-	file[strlen(file)-1] = '\0';   /* chop off the carriage return */
-	extension = &file[strlen(file)-3];
-	if ( strcmp(extension, ".so") == 0 ) {
-      file[strlen(file)-3] = '\0'; /* chop off the ".so" */
-	  strcpy(ef.path, path);
-	  strcpy(ef.name, file);
-	  ef.id = *gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
-	  ef.already_have_internals = NO;
-	  ef.internals_ptr = NULL;
-	  list_insert_after(GLOBAL_ExternalFunctionList, &ef, sizeof(ExternalFunction));
-	}
+	    file[strlen(file)-1] = '\0';   /* chop off the carriage return */
+	    extension = &file[strlen(file)-3];
+	    if ( strcmp(extension, ".so") == 0 ) {
+          file[strlen(file)-3] = '\0'; /* chop off the ".so" */
+	      strcpy(ef.path, path);
+	      strcpy(ef.name, file);
+	      ef.id = *gfcn_num_internal + ++count; /* pre-increment because F arrays start at 1 */
+	      ef.already_have_internals = NO;
+	      ef.internals_ptr = NULL;
+	      list_insert_after(GLOBAL_ExternalFunctionList, &ef, sizeof(ExternalFunction));
+	    }
+
       }
  
       pclose(file_ptr);
  
-      path = strtok(NULL, " \t");
+      path_ptr = strtok(NULL, " \t"); /* get the next directory */
  
-    } while ( path != NULL );
+    } while ( path_ptr != NULL );
 
     I_have_scanned_already = TRUE;
   }
@@ -327,13 +345,13 @@ int efcn_gather_info_( int *id_ptr )
   strcat(ef_object, ".so");
 
   /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_LAZY)) == NULL ) {*/
-  /*  if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) { */
+  /* if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW || RTLD_GLOBAL)) == NULL ) { */
   /* kob - commented out above line, and removed RTLD_GBAL check from below on
      advice of jc - osf didn't have a definition for RTLD_GLOBAL */
   if ( (ef_ptr->handle = dlopen(ef_object, RTLD_NOW)) == NULL ) {
     fprintf(stderr, "\n\
 ERROR in efcn_gather_info:\n\
-dlopen(%s, RTLD_LAZY) generates the error:\n\
+dlopen(%s, RTLD_NOW) generates the error:\n\
 \t\"%s\"\n", ef_object, dlerror());
     return -1;
   }
@@ -361,6 +379,34 @@ dlopen(%s, RTLD_LAZY) generates the error:\n\
 
   } else if ( i_ptr->language == EF_F ) {
 
+    /*
+     * Prepare for bailout possibilities by setting a signal handler for
+     * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+     * environment with sigsetjmp (for the signal handler) and setjmp 
+     * (for the "bail out" utility function).
+     */   
+    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGFPE.\n");
+      return;
+    }
+    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGSEGV.\n");
+      return;
+    }
+    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGINT.\n");
+      return;
+    }
+    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() catching SIGBUS.\n");
+      return;
+    }
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      /* Warning message printed by signal handler. */
+      return;
+    }
+    canjump = 1;
+
     /* Information about the overall function */
 
     sprintf(tempText, "");
@@ -374,6 +420,26 @@ dlopen(%s, RTLD_LAZY) generates the error:\n\
     }
 
     (*f_init_ptr)(id_ptr);
+
+    /*
+     * Restore the default signal handlers.
+     */
+    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGFPE handler.\n");
+      return;
+    }
+    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGSEGV handler.\n");
+      return;
+    }
+    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGINT handler.\n");
+      return;
+    }
+    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGBUS handler.\n");
+      return;
+    }
 
   }
   
@@ -405,12 +471,60 @@ void efcn_get_custom_axes_( int *id_ptr, int *cx_list_ptr )
 
   if ( ef_ptr->internals_ptr->language == EF_F ) {
 
+    /*
+     * Prepare for bailout possibilities by setting a signal handler for
+     * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+     * environment with sigsetjmp (for the signal handler) and setjmp 
+     * (for the "bail out" utility function).
+     */   
+    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGFPE.\n");
+      return;
+    }
+    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGSEGV.\n");
+      return;
+    }
+    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGINT.\n");
+      return;
+    }
+    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() catching SIGBUS.\n");
+      return;
+    }
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      /* Warning message printed by signal handler. */
+      return;
+    }
+    canjump = 1;
+
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
     strcat(tempText, "_custom_axes_");
 
     fptr  = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
     (*fptr)( id_ptr );
+
+    /*
+     * Restore the default signal handlers.
+     */
+    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGFPE handler.\n");
+      return;
+    }
+    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGSEGV handler.\n");
+      return;
+    }
+    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGINT handler.\n");
+      return;
+    }
+    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_custom_axes() restoring default SIGBUS handler.\n");
+      return;
+    }
 
   } else {
 
@@ -446,12 +560,60 @@ void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int 
 
   if ( ef_ptr->internals_ptr->language == EF_F ) {
 
+    /*
+     * Prepare for bailout possibilities by setting a signal handler for
+     * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+     * environment with sigsetjmp (for the signal handler) and setjmp 
+     * (for the "bail out" utility function).
+     */   
+    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGFPE.\n");
+      return;
+    }
+    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGSEGV.\n");
+      return;
+    }
+    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGINT.\n");
+      return;
+    }
+    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() catching SIGBUS.\n");
+      return;
+    }
+    if (sigsetjmp(sigjumpbuffer, 1) != 0) {
+      /* Warning message printed by signal handler. */
+      return;
+    }
+    canjump = 1;
+
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
     strcat(tempText, "_result_limits_");
 
     fptr  = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
     (*fptr)( id_ptr);
+
+    /*
+     * Restore the default signal handlers.
+     */
+    if (signal(SIGFPE, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGFPE handler.\n");
+      return;
+    }
+    if (signal(SIGSEGV, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGSEGV handler.\n");
+      return;
+    }
+    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGINT handler.\n");
+      return;
+    }
+    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_get_result_limits() restoring default SIGBUS handler.\n");
+      return;
+    }
 
   } else {
 
@@ -620,17 +782,27 @@ ERROR in efcn_compute() allocating %d words of memory\n", size);
 
     /*
      * Prepare for bailout possibilities by setting a signal handler for
-     * SIGFPE and SIGSEGV and then by cacheing the stack environment with
-     * sigsetjmp (for the signal handler) and setjmp (for the "bail out"
-     * utility function).
+     * SIGFPE, SIGSEGV, SIGINT and SIGBUS and then by cacheing the stack 
+     * environment with sigsetjmp (for the signal handler) and setjmp 
+     * (for the "bail out" utility function).
      */   
-    if (signal(SIGFPE, sig_fpe_segv_handler) == SIG_ERR) {
+    if (signal(SIGFPE, EF_signal_handler) == SIG_ERR) {
       fprintf(stderr, "\nERROR in efcn_compute() catching SIGFPE.\n");
       *status = FERR_EF_ERROR;
       return;
     }
-    if (signal(SIGSEGV, sig_fpe_segv_handler) == SIG_ERR) {
+    if (signal(SIGSEGV, EF_signal_handler) == SIG_ERR) {
       fprintf(stderr, "\nERROR in efcn_compute() catching SIGSEGV.\n");
+      *status = FERR_EF_ERROR;
+      return;
+    }
+    if (signal(SIGINT, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_compute() catching SIGINT.\n");
+      *status = FERR_EF_ERROR;
+      return;
+    }
+    if (signal(SIGBUS, EF_signal_handler) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_compute() catching SIGBUS.\n");
       *status = FERR_EF_ERROR;
       return;
     }
@@ -642,7 +814,7 @@ ERROR in efcn_compute() allocating %d words of memory\n", size);
     canjump = 1;
 
     if (setjmp(jumpbuffer) != 0 ) {
-      /* Warning message printed by utility function. */
+      /* Warning message printed by bail-out utility function. */
       *status = FERR_EF_ERROR;
       return;
     }
@@ -835,6 +1007,16 @@ ERROR: External functions with more than %d arguments are not implemented yet.\n
       *status = FERR_EF_ERROR;
       return;
     }
+    if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGINT handler.\n");
+      *status = FERR_EF_ERROR;
+      return;
+    }
+    if (signal(SIGBUS, SIG_DFL) == SIG_ERR) {
+      fprintf(stderr, "\nERROR in efcn_compute() restoring default SIGBUS handler.\n");
+      *status = FERR_EF_ERROR;
+      return;
+    }
 
     /*
      * Now it's time to release the work space.
@@ -860,11 +1042,11 @@ ERROR: External Functions may not yet be written in C.\n\n");
 
 
 /*
- * A signal handler for SIGFPE and SIGSEGV signals generated
+ * A signal handler for SIGFPE, SIGSEGV, SIGINT and SIGBUS signals generated
  * while executing an external function.  See "Advanced Programming
  * in the UNIX Environment" p. 299 ff for details.
  */
-static void sig_fpe_segv_handler(int signo) {
+static void EF_signal_handler(int signo) {
 
   if (canjump == 0) return;
 
@@ -874,6 +1056,14 @@ static void sig_fpe_segv_handler(int signo) {
     siglongjmp(sigjumpbuffer, 1);
   } else if (signo == SIGSEGV) {
     fprintf(stderr, "\n\nERROR inexternal function: Segmentation Violation\n");
+    canjump = 0;
+    siglongjmp(sigjumpbuffer, 1);
+  } else if (signo == SIGINT) {
+    fprintf(stderr, "\n\nExternal function halted with Control-C\n");
+    canjump = 0;
+    siglongjmp(sigjumpbuffer, 1);
+  } else if (signo == SIGBUS) {
+    fprintf(stderr, "\n\nERROR inexternal function: Hardware Fault\n");
     canjump = 0;
     siglongjmp(sigjumpbuffer, 1);
   } else {
@@ -1074,7 +1264,28 @@ void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
- * fill in the axis sources (merged, normal, abstract, custom).
+ * fill in the axis_reduction (retained, reduced) information.
+ */
+void efcn_get_axis_reduction_( int *id_ptr, int *array_ptr )
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  array_ptr[X_AXIS] = ef_ptr->internals_ptr->axis_reduction[X_AXIS];
+  array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_reduction[Y_AXIS];
+  array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_reduction[Z_AXIS];
+  array_ptr[T_AXIS] = ef_ptr->internals_ptr->axis_reduction[T_AXIS];
+
+  return;
+}
+
+
+/*
+ * Find an external function based on its integer ID and
+ * fill in the piecemeal_ok information.  This lets Ferret
+ * know if it's ok to break up a calculation along an axis
+ * for memory management reasons.
  */
 void efcn_get_piecemeal_ok_( int *id_ptr, int *array_ptr )
 {
@@ -1324,6 +1535,7 @@ int EF_New( ExternalFunction *this )
       i_ptr->work_array_len[j][i] = 1;
     }
     i_ptr->axis_will_be[i] = IMPLIED_BY_ARGS;
+    i_ptr->axis_reduction[i] = RETAINED;
     i_ptr->piecemeal_ok[i] = NO;
   }
 

@@ -8,15 +8,16 @@
 
 !    GO ccbar xloc yloc xlen ylen v1 v2 dv orient
  
-! where the following arguments are in inches:
-!       1  xloc = x-coordinate of lower left corner of clorbar 
-!       2  yloc = y-coordinate of lower left corner of clorbar 
-!       3  xlen = x length of colorbar    
-!       4  ylen = y length of colorbar
-!       5  v1 = lo value on colorbar 
-!       6  v2 = hi value on colorbar
-!       7  dv = delta value for colorbar labels
-!       8  orientation = v for vertical or h for horizontal, default v
+! where the first four arguments are in inches:
+!         xloc = x-coordinate of lower left corner of clorbar 
+!         yloc = y-coordinate of lower left corner of clorbar 
+!         xlen = x length of colorbar    
+!         ylen = y length of colorbar
+!         v1 = lo value on colorbar 
+!         v2 = hi value on colorbar
+!         dv = delta value for colorbar labels
+!         orientation = v for vertical or h for horizontal, default v
+!         palette to use, optional
 
 ! Check inputs. All except last are required
 
@@ -28,9 +29,10 @@ QUERY/IGNORE $5%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $6%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $7%<Usage: GO ccbar xloc yloc xaxl yaxl v1 v2 dv orient"%
 QUERY/IGNORE $8%v%
-
-
 let ccb_orient = $8"1|v>1|h>2|*>1"
+
+def sym ccb_pal = /pal=$9"default"
+sh sym ccb_pal
 
 ! Define the viewport to contain the colorbar
 
@@ -50,7 +52,9 @@ let ccb_dv = $7
 def axis/x=1:2:1 ccb_xcb ; def axis/y=`ccb_v1`:`ccb_v2`:`ccb_dv` ccb_ycb
 let ccb_var = 0*x[gx=ccb_xcb] + y[gy=ccb_ycb]
 
-!  Set the label format
+! ----------------------------------------------------------------------
+!  Set the label format.  This could be further customized.
+
 let ccb_fmt = 0
 if `ccb_v1 ge -99` then
   let ccb_fmt = 1
@@ -70,21 +74,23 @@ endif
 if `ccb_v2 - ccb_v1 lt 2` then 
   let ccb_fmt = 0
 endif
+! ----------------------------------------------------------------------
 
 !  Plot the variable within the colorbar.
 
 if `ccb_orient eq 1` then
-   shade/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=0,0,0,1/set ccb_var
+   shade/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=0,0,0,1($ccb_pal)/set ccb_var
    if `ccb_fmt eq 1` then ppl yfor ($ccb_yform)
    ppl shade
 else
-   shade/trans/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=1,0,0,0/set ccb_var
+   shade/trans/lev=(`ccb_v1`,`ccb_v2+ccb_dv`,`ccb_dv`)/nokey/nolab/axes=1,0,0,0($ccb_pal)/set ccb_var
    if `ccb_fmt eq 1` then ppl xfor ($ccb_yform)
    ppl shade
 endif
 
 ! Clean up
 can var ccb_*
+can sym ccb_*
 can axis ccb_xcb
 can axis ccb_ycb
 

@@ -239,6 +239,9 @@ GO bn_regrid_to_user		! G=user_var and related
 GO bn_reset
 GO bn_calendar
 
+GO bn_reset
+GO bn_dash_dot
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

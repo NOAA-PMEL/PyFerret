@@ -32,3 +32,7 @@ GO err560_leap_years.jnl
 ! GO bn_reset
 ! GO err560_dyn_grids.jnl
  
+! err560_century.jnl
+! Century portion of years were not properly tested in numdm1.F
+GO bn_reset
+GO err560_century

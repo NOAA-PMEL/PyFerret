@@ -36,6 +36,9 @@
  * Modified by Joe Sirott, Pacific Marine Environmental Lab
  * Added support for PostScript and GIF metafile output.
  * Also, changed prototypes from K&R to ANSI C.
+ *
+ * all macros that call SEL_FUNC must call it with metafile *, not
+ *   metafile**    *js* 8.97
  */
 
 #define MAX_META_WSCOLOURS 256
@@ -113,21 +116,21 @@ static INT_PROC emptyProc(void)
  */
 
 #define MO_CELL_ARRAY(mf, num, ll, ur, lr, row, colour, dim) \
-	    SEL_FUNC(*mf, (INT_PROC)GMcellArray, (INT_PROC)CGMcellArray, \
+	    SEL_FUNC(mf, (INT_PROC)GMcellArray, (INT_PROC)CGMcellArray, \
 		     (INT_PROC)PScellArray,  (INT_PROC)GIFcellArray)\
 	    (mf, num, ll, ur, lr, row, colour, dim)
 #define MO_CLEAR(mf, num, flag)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMclear, (INT_PROC)CGMclear, (INT_PROC)PSclear, (INT_PROC)GIFclear)(mf, num, flag)
+	    SEL_FUNC(mf, (INT_PROC)GMclear, (INT_PROC)CGMclear, (INT_PROC)PSclear, (INT_PROC)GIFclear)(mf, num, flag)
 #define MO_CLOSE(mf)	\
 	    SEL_FUNC(mf, (INT_PROC)GMmoClose, (INT_PROC)CGMmoClose, (INT_PROC)PSmoClose, (INT_PROC)GIFmoClose)(mf)
 #define MO_CLOSE_SEG(mf, num)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMcloseSeg, (INT_PROC)CGMcloseSeg, (INT_PROC)PScloseSeg, (INT_PROC)GIFcloseSeg)(mf, num)
+	    SEL_FUNC(mf, (INT_PROC)GMcloseSeg, (INT_PROC)CGMcloseSeg, (INT_PROC)PScloseSeg, (INT_PROC)GIFcloseSeg)(mf, num)
 #define MO_DEFER(mf, num, defer_mode, regen_mode)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMdefer, (INT_PROC)CGMdefer, (INT_PROC)PSdefer, (INT_PROC)GIFdefer)(mf, num, defer_mode, regen_mode)
+	    SEL_FUNC(mf, (INT_PROC)GMdefer, (INT_PROC)CGMdefer, (INT_PROC)PSdefer, (INT_PROC)GIFdefer)(mf, num, defer_mode, regen_mode)
 #define MI_GET_NEXT_ITEM(mf)	\
 	    SEL_FUNC(mf, (INT_PROC)GMnextItem, (INT_PROC)CGMnextItem, emptyProc, emptyProc)(mf)
 #define MO_MESSAGE(mf, num, string)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMmessage, (INT_PROC)CGMmessage, (INT_PROC)PSmessage, (INT_PROC)GIFmessage)(mf, num, string)
+	    SEL_FUNC(mf, (INT_PROC)GMmessage, (INT_PROC)CGMmessage, (INT_PROC)PSmessage, (INT_PROC)GIFmessage)(mf, num, string)
 #define MI_OPEN(mf)	\
 	    SEL_FUNC(mf, (INT_PROC)GMmiOpen, (INT_PROC)CGMmiOpen, emptyProc, emptyProc)
 #define MO_OPEN(mf)	\
@@ -137,66 +140,66 @@ static INT_PROC emptyProc(void)
 #define MI_READ_ITEM(mf, record)	\
 	    SEL_FUNC(mf, (INT_PROC)GMreadItem, (INT_PROC)CGMreadItem, emptyProc, emptyProc)(mf, record)
 #define MO_REDRAW_ALL_SEG(mf, num)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMredrawAllSeg, (INT_PROC)CGMredrawAllSeg, (INT_PROC)PSredrawAllSeg, (INT_PROC)GIFredrawAllSeg)(mf, num)
+	    SEL_FUNC(mf, (INT_PROC)GMredrawAllSeg, (INT_PROC)CGMredrawAllSeg, (INT_PROC)PSredrawAllSeg, (INT_PROC)GIFredrawAllSeg)(mf, num)
 #define MO_RENAME_SEG(mf, num, old, new)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMrenameSeg, (INT_PROC)CGMrenameSeg, (INT_PROC)PSrenameSeg, (INT_PROC)GIFrenameSeg)(mf, num, old, new)
+	    SEL_FUNC(mf, (INT_PROC)GMrenameSeg, (INT_PROC)CGMrenameSeg, (INT_PROC)PSrenameSeg, (INT_PROC)GIFrenameSeg)(mf, num, old, new)
 #define MO_SET_ASF(mf, num)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetAsf, (INT_PROC)CGMsetAsf, (INT_PROC)PSsetAsf, (INT_PROC)GIFsetAsf)(mf, num)
+	    SEL_FUNC(mf, (INT_PROC)GMsetAsf, (INT_PROC)CGMsetAsf, (INT_PROC)PSsetAsf, (INT_PROC)GIFsetAsf)(mf, num)
 #define MO_SET_CHAR_UP(mf, num, up, base)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetCharUp, (INT_PROC)CGMsetCharUp, (INT_PROC)PSsetCharUp, (INT_PROC)GIFsetCharUp)(mf, num, up, base)
+	    SEL_FUNC(mf, (INT_PROC)GMsetCharUp, (INT_PROC)CGMsetCharUp, (INT_PROC)PSsetCharUp, (INT_PROC)GIFsetCharUp)(mf, num, up, base)
 #define MO_SET_CLIPPING(mf, num, rect)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetClip, (INT_PROC)CGMsetClip, (INT_PROC)PSsetClip, (INT_PROC)GIFsetClip)(mf, num, rect)
+	    SEL_FUNC(mf, (INT_PROC)GMsetClip, (INT_PROC)CGMsetClip, (INT_PROC)PSsetClip, (INT_PROC)GIFsetClip)(mf, num, rect)
 #define MO_SET_COLOUR_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetColRep, (INT_PROC)CGMsetColRep, (INT_PROC)PSsetColRep, (INT_PROC)GIFsetColRep)(mf, num, idx, rep)
+	    SEL_FUNC(mf, (INT_PROC)GMsetColRep, (INT_PROC)CGMsetColRep, (INT_PROC)PSsetColRep, (INT_PROC)GIFsetColRep)(mf, num, idx, rep)
 #define MO_SET_FILL_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetFillRep, (INT_PROC)CGMsetFillRep, (INT_PROC)PSsetFillRep, (INT_PROC)GIFsetFillRep)(mf, num, idx, rep)
+	    SEL_FUNC(mf, (INT_PROC)GMsetFillRep, (INT_PROC)CGMsetFillRep, (INT_PROC)PSsetFillRep, (INT_PROC)GIFsetFillRep)(mf, num, idx, rep)
 #define MO_SET_FILL_STYLE(mf, num, style)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetFillStyle, (INT_PROC)CGMsetFillStyle, (INT_PROC)PSsetFillStyle, (INT_PROC)GIFsetFillStyle)(mf, num, style)
+	    SEL_FUNC(mf, (INT_PROC)GMsetFillStyle, (INT_PROC)CGMsetFillStyle, (INT_PROC)PSsetFillStyle, (INT_PROC)GIFsetFillStyle)(mf, num, style)
 #define MO_SET_GRAPH_SIZE(mf, num, code, size)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetGraphSize, (INT_PROC)CGMsetGraphSize, (INT_PROC)PSsetGraphSize, (INT_PROC)GIFsetGraphSize)(mf, num, code, size)
+	    SEL_FUNC(mf, (INT_PROC)GMsetGraphSize, (INT_PROC)CGMsetGraphSize, (INT_PROC)PSsetGraphSize, (INT_PROC)GIFsetGraphSize)(mf, num, code, size)
 #define MO_SET_GRAPH_ATTR(mf, num, code, attr)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetGraphAttr, (INT_PROC)CGMsetGraphAttr, (INT_PROC)PSsetGraphAttr, (INT_PROC)GIFsetGraphAttr)(mf, num, code, attr)
+	    SEL_FUNC(mf, (INT_PROC)GMsetGraphAttr, (INT_PROC)CGMsetGraphAttr, (INT_PROC)PSsetGraphAttr, (INT_PROC)GIFsetGraphAttr)(mf, num, code, attr)
 #define MO_SET_LIMIT(mf, num, code, rect)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetLimit, (INT_PROC)CGMsetLimit, (INT_PROC)PSsetLimit, (INT_PROC)GIFsetLimit)(mf, num, code, rect)
+	    SEL_FUNC(mf, (INT_PROC)GMsetLimit, (INT_PROC)CGMsetLimit, (INT_PROC)PSsetLimit, (INT_PROC)GIFsetLimit)(mf, num, code, rect)
 #define MO_SET_LINE_MARKER_REP(mf, num, code, idx, type, size, colour)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetLineMarkRep, (INT_PROC)CGMsetLineMarkRep, (INT_PROC)PSsetLineMarkRep, (INT_PROC)GIFsetLineMarkRep)\
+	    SEL_FUNC(mf, (INT_PROC)GMsetLineMarkRep, (INT_PROC)CGMsetLineMarkRep, (INT_PROC)PSsetLineMarkRep, (INT_PROC)GIFsetLineMarkRep)\
 		(mf, num, code, idx, type, size, colour)
 #define MO_SET_PATTERN_REFPT(mf, num)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetPatRefpt, (INT_PROC)CGMsetPatRefpt, (INT_PROC)PSsetPatRefpt, (INT_PROC)GIFsetPatRefpt)(mf, num)
+	    SEL_FUNC(mf, (INT_PROC)GMsetPatRefpt, (INT_PROC)CGMsetPatRefpt, (INT_PROC)PSsetPatRefpt, (INT_PROC)GIFsetPatRefpt)(mf, num)
 #define MO_SET_PATTERN_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetPatRep, (INT_PROC)CGMsetPatRep, (INT_PROC)PSsetPatRep, (INT_PROC)GIFsetPatRep)(mf, num, idx, rep)
+	    SEL_FUNC(mf, (INT_PROC)GMsetPatRep, (INT_PROC)CGMsetPatRep, (INT_PROC)PSsetPatRep, (INT_PROC)GIFsetPatRep)(mf, num, idx, rep)
 #define MO_SET_PATTERN_SIZE(mf, num)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetPatSize, (INT_PROC)CGMsetPatSize, (INT_PROC)PSsetPatSize, (INT_PROC)GIFsetPatSize)(mf, num)
+	    SEL_FUNC(mf, (INT_PROC)GMsetPatSize, (INT_PROC)CGMsetPatSize, (INT_PROC)PSsetPatSize, (INT_PROC)GIFsetPatSize)(mf, num)
 #define MO_SET_SEG_ATTR(mf, num, name, code, attr)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetSegAttr, (INT_PROC)CGMsetSegAttr, (INT_PROC)PSsetSegAttr, (INT_PROC)GIFsetSegAttr)(mf, num, name, code, attr)
+	    SEL_FUNC(mf, (INT_PROC)GMsetSegAttr, (INT_PROC)CGMsetSegAttr, (INT_PROC)PSsetSegAttr, (INT_PROC)GIFsetSegAttr)(mf, num, name, code, attr)
 #define MO_SET_SEG_DETECT(mf, num, name, det)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetSegDetect, (INT_PROC)CGMsetSegDetect, (INT_PROC)PSsetSegDetect, (INT_PROC)GIFsetSegDetect)(mf, num, name, det)
+	    SEL_FUNC(mf, (INT_PROC)GMsetSegDetect, (INT_PROC)CGMsetSegDetect, (INT_PROC)PSsetSegDetect, (INT_PROC)GIFsetSegDetect)(mf, num, name, det)
 #define MO_SET_SEG_HILIGHT(mf, num, name, hilight)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetSegHilight, (INT_PROC)CGMsetSegHilight, (INT_PROC)PSsetSegHilight, (INT_PROC)GIFsetSegHilight\
+	    SEL_FUNC(mf, (INT_PROC)GMsetSegHilight, (INT_PROC)CGMsetSegHilight, (INT_PROC)PSsetSegHilight, (INT_PROC)GIFsetSegHilight\
 		(mf, num, name, hilight))
 #define MO_SET_SEG_PRI(mf, num, name, pri)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetSegPri, (INT_PROC)CGMsetSegPri, (INT_PROC)PSsetSegPri, (INT_PROC)GIFsetSegPri)(mf, num, name, pri)
+	    SEL_FUNC(mf, (INT_PROC)GMsetSegPri, (INT_PROC)CGMsetSegPri, (INT_PROC)PSsetSegPri, (INT_PROC)GIFsetSegPri)(mf, num, name, pri)
 #define MO_SET_SEG_TRANS(mf, num, name, matrix)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetSegTran, (INT_PROC)CGMsetSegTran, (INT_PROC)PSsetSegTran, (INT_PROC)GIFsetSegTran)(mf, num, name, matrix)
+	    SEL_FUNC(mf, (INT_PROC)GMsetSegTran, (INT_PROC)CGMsetSegTran, (INT_PROC)PSsetSegTran, (INT_PROC)GIFsetSegTran)(mf, num, name, matrix)
 #define MO_SET_SEG_VIS(mf, num, name, vis)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetSegVis, (INT_PROC)CGMsetSegVis, (INT_PROC)PSsetSegVis, (INT_PROC)GIFsetSegVis)(mf, num, name, vis)
+	    SEL_FUNC(mf, (INT_PROC)GMsetSegVis, (INT_PROC)CGMsetSegVis, (INT_PROC)PSsetSegVis, (INT_PROC)GIFsetSegVis)(mf, num, name, vis)
 #define MO_SET_TEXT_ALIGN(mf, num, align)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetTextAlign, (INT_PROC)CGMsetTextAlign, (INT_PROC)PSsetTextAlign, (INT_PROC)GIFsetTextAlign)(mf, num, align)
+	    SEL_FUNC(mf, (INT_PROC)GMsetTextAlign, (INT_PROC)CGMsetTextAlign, (INT_PROC)PSsetTextAlign, (INT_PROC)GIFsetTextAlign)(mf, num, align)
 #define MO_SET_TEXT_FP(mf, num, txfp)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetTextFP, (INT_PROC)CGMsetTextFP, (INT_PROC)PSsetTextFP, (INT_PROC)GIFsetTextFP)(mf, num, txfp)
+	    SEL_FUNC(mf, (INT_PROC)GMsetTextFP, (INT_PROC)CGMsetTextFP, (INT_PROC)PSsetTextFP, (INT_PROC)GIFsetTextFP)(mf, num, txfp)
 #define MO_SET_TEXT_PATH(mf, num, path)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetTextPath, (INT_PROC)CGMsetTextPath, (INT_PROC)PSsetTextPath, (INT_PROC)GIFsetTextPath)(mf, num, path)
+	    SEL_FUNC(mf, (INT_PROC)GMsetTextPath, (INT_PROC)CGMsetTextPath, (INT_PROC)PSsetTextPath, (INT_PROC)GIFsetTextPath)(mf, num, path)
 #define MO_SET_TEXT_REP(mf, num, idx, rep)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMsetTextRep, (INT_PROC)CGMsetTextRep, (INT_PROC)PSsetTextRep, (INT_PROC)GIFsetTextRep)(mf, num, idx, rep)
+	    SEL_FUNC(mf, (INT_PROC)GMsetTextRep, (INT_PROC)CGMsetTextRep, (INT_PROC)PSsetTextRep, (INT_PROC)GIFsetTextRep)(mf, num, idx, rep)
 #define MO_UPDATE(mf, num, regenflag)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMupdate, (INT_PROC)CGMupdate, (INT_PROC)PSupdate, (INT_PROC)GIFupdate)(mf, num, regenflag)
+	    SEL_FUNC(mf, (INT_PROC)GMupdate, (INT_PROC)CGMupdate, (INT_PROC)PSupdate, (INT_PROC)GIFupdate)(mf, num, regenflag)
 #define MO_GRAPHIC(mf, num, code, num_pt, pos)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMoutputGraphic, (INT_PROC)CGMoutputGraphic, (INT_PROC)PSoutputGraphic, (INT_PROC)GIFoutputGraphic)\
+	    SEL_FUNC(mf, (INT_PROC)GMoutputGraphic, (INT_PROC)CGMoutputGraphic, (INT_PROC)PSoutputGraphic, (INT_PROC)GIFoutputGraphic)\
 		(mf, num, code, num_pt, pos)
 #define MO_WRITE_ITEM(mf, num, type, length, data)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMwriteItem, (INT_PROC)CGMwriteItem, emptyProc, emptyProc)(mf, num, type, length, data)
+	    SEL_FUNC(mf, (INT_PROC)GMwriteItem, (INT_PROC)CGMwriteItem, emptyProc, emptyProc)(mf, num, type, length, data)
 #define MO_TEXT(mf, num, at, string)	\
-	    SEL_FUNC(*mf, (INT_PROC)GMtext, (INT_PROC)CGMtext, (INT_PROC)PStext, (INT_PROC)GIFtext)(mf, num, at, string)
+	    SEL_FUNC(mf, (INT_PROC)GMtext, (INT_PROC)CGMtext, (INT_PROC)PStext, (INT_PROC)GIFtext)(mf, num, at, string)
 
 
 /*

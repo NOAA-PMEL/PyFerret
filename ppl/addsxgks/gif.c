@@ -1,7 +1,10 @@
 /*
  * GIF driver for XGKS metafiles
  * Created by Joe Sirott, Pacific Marine Environmental Lab
+ * $Id$
  *
+ * umalloc(0) returns 0 on DEC alpha; eliminated assert(meta->style) in
+ *  set_lineStyle to avoid this problem, since length can be 0 *js* 8.97
  */
 
 /*
@@ -340,7 +343,6 @@ static void set_lineStyle(GIFmetafile *meta, Gint attr, Gasf type)
     if (meta->style)
       free(meta->style);
     meta->style = (int *)umalloc(sizeof(int) * length);
-    assert(meta->style);
     length = strlen(LineStyles[attr]);
     for (i=0; i < length; ++i){
       if (cp[i] == '-'){

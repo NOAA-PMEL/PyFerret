@@ -52,6 +52,7 @@
 * V320: 12/20/94 - Put "(-)" along with "m" and "r" so it doesn't get
 *		truncated now that DEPTH(units) is the label
 *       12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V510 *sh* 12/99 - show units even if line has no orientation
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -123,8 +124,14 @@
 
 * axis title
 	   IF ( orient .EQ. 0 ) THEN
-	      title = ' '
-	      dlen = 1
+	      title = line_units(line)
+	      IF (title .EQ. ' ') THEN
+	         dlen = 1
+	      ELSE
+	         dlen = TM_LENSTR1(title)
+	         title = '('//line_units(line)(:dlen)//')'
+	         dlen = dlen + 2
+	      ENDIF
 	   ELSE
 	      title = AX_TITLE( idim, grid, dlen )
 	   ENDIF

@@ -6,33 +6,51 @@
 * Unix/RISC changes: direct declaration of unsubscripted vars, equivalence
 * to arrays.  Ultrix/RISC/FORTRAN doesn't permit EQUIVALENCED object to be
 * used as array declaration bounds
-
+* V500: 7/97 - increased number of subscripts from 6 to 12
 
 ********************************************************************************
 ******			PARAMETER DEFINITIONS				  ******
 
 	INTEGER		max_mem_args
-	PARAMETER     ( max_mem_args = 6 )
+	PARAMETER     ( max_mem_args = 12 )	! was 6 pre 7/97
 
 	COMMON / XMEM_SUBSC /
-     .		m1lox, m2lox, m3lox, m4lox, m5lox, m6lox,
-     .		m1loy, m2loy, m3loy, m4loy, m5loy, m6loy,
-     .		m1loz, m2loz, m3loz, m4loz, m5loz, m6loz,
-     .		m1lot, m2lot, m3lot, m4lot, m5lot, m6lot,
-     .		m1hix, m2hix, m3hix, m4hix, m5hix, m6hix,
-     .		m1hiy, m2hiy, m3hiy, m4hiy, m5hiy, m6hiy,
-     .		m1hiz, m2hiz, m3hiz, m4hiz, m5hiz, m6hiz,
-     .		m1hit, m2hit, m3hit, m4hit, m5hit, m6hit
+     .		m1lox, m2lox, m3lox, m4lox,  m5lox,  m6lox,
+     .		m7lox, m8lox, m9lox, m10lox, m11lox, m12lox,
+     .		m1loy, m2loy, m3loy, m4loy,  m5loy,  m6loy,
+     .		m7loy, m8loy, m9loy, m10loy, m11loy, m12loy,
+     .		m1loz, m2loz, m3loz, m4loz,  m5loz,  m6loz,
+     .		m7loz, m8loz, m9loz, m10loz, m11loz, m12loz,
+     .		m1lot, m2lot, m3lot, m4lot,  m5lot,  m6lot,
+     .		m7lot, m8lot, m9lot, m10lot, m11lot, m12lot,
+     .
+     .		m1hix, m2hix, m3hix, m4hix,  m5hix,  m6hix,
+     .		m7hix, m8hix, m9hix, m10hix, m11hix, m12hix,
+     .		m1hiy, m2hiy, m3hiy, m4hiy,  m5hiy,  m6hiy,
+     .		m7hiy, m8hiy, m9hiy, m10hiy, m11hiy, m12hiy,
+     .		m1hiz, m2hiz, m3hiz, m4hiz,  m5hiz,  m6hiz,
+     .		m7hiz, m8hiz, m9hiz, m10hiz, m11hiz, m12hiz,
+     .		m1hit, m2hit, m3hit, m4hit,  m5hit,  m6hit,
+     .		m7hit, m8hit, m9hit, m10hit, m11hit, m12hit
 
 	INTEGER
-     .		m1lox, m2lox, m3lox, m4lox, m5lox, m6lox,
-     .		m1loy, m2loy, m3loy, m4loy, m5loy, m6loy,
-     .		m1loz, m2loz, m3loz, m4loz, m5loz, m6loz,
-     .		m1lot, m2lot, m3lot, m4lot, m5lot, m6lot,
-     .		m1hix, m2hix, m3hix, m4hix, m5hix, m6hix,
-     .		m1hiy, m2hiy, m3hiy, m4hiy, m5hiy, m6hiy,
-     .		m1hiz, m2hiz, m3hiz, m4hiz, m5hiz, m6hiz,
-     .		m1hit, m2hit, m3hit, m4hit, m5hit, m6hit
+     .		m1lox, m2lox, m3lox, m4lox,  m5lox,  m6lox,
+     .		m7lox, m8lox, m9lox, m10lox, m11lox, m12lox,
+     .		m1loy, m2loy, m3loy, m4loy,  m5loy,  m6loy,
+     .		m7loy, m8loy, m9loy, m10loy, m11loy, m12loy,
+     .		m1loz, m2loz, m3loz, m4loz,  m5loz,  m6loz,
+     .		m7loz, m8loz, m9loz, m10loz, m11loz, m12loz,
+     .		m1lot, m2lot, m3lot, m4lot,  m5lot,  m6lot,
+     .		m7lot, m8lot, m9lot, m10lot, m11lot, m12lot,
+     .
+     .		m1hix, m2hix, m3hix, m4hix,  m5hix,  m6hix,
+     .		m7hix, m8hix, m9hix, m10hix, m11hix, m12hix,
+     .		m1hiy, m2hiy, m3hiy, m4hiy,  m5hiy,  m6hiy,
+     .		m7hiy, m8hiy, m9hiy, m10hiy, m11hiy, m12hiy,
+     .		m1hiz, m2hiz, m3hiz, m4hiz,  m5hiz,  m6hiz,
+     .		m7hiz, m8hiz, m9hiz, m10hiz, m11hiz, m12hiz,
+     .		m1hit, m2hit, m3hit, m4hit,  m5hit,  m6hit,
+     .		m7hit, m8hit, m9hit, m10hit, m11hit, m12hit
 
 * equivalences to assist with passing subscripts
 	INTEGER

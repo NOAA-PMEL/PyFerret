@@ -69,7 +69,7 @@
 	include	'xvariables.cmn'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
-	include 'xrisc.cnm'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'

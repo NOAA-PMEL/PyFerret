@@ -53,7 +53,7 @@
 *              size of the dots by 4, the output is consistent from 
 *              ferret metafiles transformed to postscript, from 
 *              "ferret -batch" output, and gif files.
-*       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6.
+*       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6
 
 	integer		zwsid,zwstype,i,j
 

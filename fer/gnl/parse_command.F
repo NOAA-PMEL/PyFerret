@@ -4,7 +4,7 @@
      .				   num_quals, qualifier_list,
      .				   qual_start, qual_end,
      .				   num_args, arg_start, arg_end,
-     .				   err_lun, reverify, status )
+     .				   err_lun, reverify, arg1_quoted, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -92,6 +92,8 @@
 *		- so large numbers of grave accents can be in a single line
 * V530 *sh* 10/00 - modify so that symbols inside of REPEAT loops get
 *	translated inside of the loop (keep copy of input in risc_buff)
+*	*sh* 3/01 - added arg1_quoted to indicate if the first arg in the list
+*		has enclosing quotes - and avoid calling PARSE_COMMA_LIST
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -115,7 +117,7 @@
 *       For surrounding quotes the word start/end will exclude the quotes.
 
 * declare calling arguments of SUBROUTINE
-	LOGICAL		reverify
+	LOGICAL		reverify, arg1_quoted
 	REAL		memory(*)
 	CHARACTER*(*)	cmnd_buff
 	INTEGER		max_words,max_quals,cmnd_len,cmnd_num,subcmnd_num,
@@ -162,6 +164,7 @@
 	grave_start	= 1
 	nsubst_passes   = 0
 	reverify	= .FALSE.
+	arg1_quoted	= .FALSE.
 	status 		= ferr_ok
 	buff_len	= LEN ( cmnd_buff )
  5	pointer		= 1		! current position in cmnd_buff
@@ -581,6 +584,14 @@
 		arg_end  ( num_args ) 	= arg_end  ( iarg )
 	   ENDIF
  810	CONTINUE
+
+* is the first argument enclosed in quotation marks?
+* the nature of arg_start,end allows safe (??) decrement/increment
+	IF (num_args .GE. 1) THEN
+	   arg1_quoted =
+     .	       cmnd_buff(arg_start(1)-1:arg_start(1)-1) .EQ. '"'
+     .   .AND. cmnd_buff(arg_end(1)  +1:arg_end(1)  +1) .EQ. '"' 
+	ENDIF
 
 * REPEAT loops postpone symbol substitutions in arguments -- all 1 arg for now
 	IF ( cmnd_num .EQ. cmnd_repeat ) THEN

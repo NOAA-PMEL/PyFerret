@@ -53,6 +53,8 @@
 * Linux Port - 12/96 *kob
 *	     - had to close open quotes in above comment line - linux f77
 *	       was freaking out because of it...
+* V530: *sh* 3/01 - remove surrounding quotes from items in list
+
 #ifdef unix
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'	! for ttout_lun
@@ -84,7 +86,7 @@
      .  .OR. buffer(ip:ip) .EQ. '	' ) THEN
 * skip past leading tabs and blanks to find first character
 	   ip = ip + 1
-	   IF ( ip .GT. iend ) RETURN
+	   IF ( ip .GT. iend ) GOTO 1000
 	   GOTO 10
 	ELSE
 * found first character of item
@@ -97,7 +99,7 @@
 	IF ( buffer(ip:ip) .EQ. ',' ) THEN
 	   it_end(num_it) = ip
 	   ip = ip + 1
-	   IF ( ip .GE. iend ) RETURN
+	   IF ( ip .GE. iend ) GOTO 1000
 	   GOTO 10
 	ENDIF
 
@@ -106,7 +108,7 @@
  30	ip = ip + 1
 	IF ( ip .GE. iend ) THEN
 	   it_end(num_it) = iend
-	   RETURN
+	   GOTO 1000
 	ENDIF
 
 * ... ignore commas sandwiched between [ ]
@@ -149,6 +151,18 @@
 	   GOTO 30
 
 	ENDIF	   
+
+* remove surrounding quotes from individual items
+ 1000	DO i = 1, num_it
+	   IF (buffer(it_start(i):it_start(i)) .EQ. '"'
+     .   .AND. buffer(it_end  (i):it_end  (i)) .EQ. '"' ) THEN
+	      IF ( it_end(i) .GT. it_start(i)+1 ) THEN
+	         it_start(i) = it_start(i) + 1
+	         it_end(i)   = it_end(i)   - 1
+	      ENDIF
+	   ENDIF
+	ENDDO
+	RETURN
 
 * error exits
  5000	RETURN

@@ -79,7 +79,8 @@
 *                       order to use the Fortan Flush.  USE command has
 *                       to come right after subroutine name
 *     : 5/34/99 *kob* - call FLUSH for all systems
-* V530: 1/01 *sh* - suppress verify output during skipped IF lines 
+* V530: *sh* 1/01 - suppress verify output during skipped IF lines 
+*       *sh* 3/01 - do not call PARSE_COMMA_LIST if arg1 quoted
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -90,9 +91,8 @@
 	REAL		memory(*)
 	CHARACTER*(*)	called_string
 
-
 * internal variable declarations:
-	LOGICAL re_verify, do_verify, prefix_verify
+	LOGICAL re_verify, do_verify, prefix_verify, arg1_quoted
 	INTEGER	TM_LENSTR, TM_LENSTR1,
      .		iqual, ilist, cmnd_len, double_eof
 
@@ -255,7 +255,7 @@
      .			     num_qualifiers, qualifier_list,
      .			     qual_start, qual_end,
      .			     num_args, arg_start, arg_end,
-     .			     err_lun, re_verify, status	)
+     .			     err_lun, re_verify, arg1_quoted, status	)
 	IF ( status   .NE. ferr_ok ) RETURN 1	! messages already displayed
 	IF ( cmnd_num .EQ. 0 ) GOTO 20
 	IF ( re_verify ) THEN
@@ -280,10 +280,16 @@
 *************** BREAK APART ITEMS SEPARATED BY COMMAS IN FIRST ARGUMENT ********
 
 	IF ( num_args .GT. 0 ) THEN
-	   CALL PARSE_COMMA_LIST
+	   IF ( arg1_quoted ) THEN
+	      num_items = 1
+	      item_start(1) = arg_start(1)
+	      item_end(1)   = arg_end(1)
+	   ELSE
+	      CALL PARSE_COMMA_LIST
      .		      ( cmnd_buff, arg_start(1), arg_end(1), max_item_list,
      .			num_items, item_start, item_end, status )
-	   IF ( status .NE. ferr_ok ) RETURN 1
+	      IF ( status .NE. ferr_ok ) RETURN 1
+	   ENDIF
 	ELSE
 	   num_items = 0
 	ENDIF

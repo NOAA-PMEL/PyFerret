@@ -1,0 +1,18 @@
+set mode ignore_errors
+
+can region
+let a = pass_thru(x)
+plot a[i=1:20]
+set region/i=1:20
+plot sin(a)
+can var/all
+can region
+
+use coads_climatology
+let a = pass_thru(sst[l=@ave,y=@sbx:11])
+shade a
+let a = pass_thru(sst)
+set region/@w
+shade a                       ! DELIBERATE ERROR
+shade a[l=1]
+shade a[l=@ave,y=@sbx:11]

@@ -74,7 +74,11 @@
 *		  - added RETURN=SIZE
 * V522: 6/00 *sh* - added RETURN = XAXIS, YAXIS, ZAXIS, TAXIS
 * V530: *sh* 9/00 - added support for string variables
-*       *sh* 2/01 - added FORMAT = I4.4, etc.
+*       *sh* 2/01 - added FORMAT = I4.4, etc. (NOT IMPLEMENTED)
+*	          - added WIDTH=width and ZWIDTH=width
+*	*sh* 3/01 - added RETURN=dset, dset_num, dset_path
+* V531: *sh* 4/01 - added RETURN=bad
+* V532: *sh* 5/01 - mod to EVAL_CONTEXT forced change here  
 
 #ifdef unix
 	include 'ferret.parm'
@@ -264,7 +268,9 @@
  160	IF ( info_query ) THEN
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
-	   CALL EVAL_CONTEXT ( cx_last, cmnd(istart:iend), status )
+	   CALL GET_NEW_CX( cx_last, cx_cmnd, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   cx = is_cx(1)	! always comes back as the first context
 
@@ -321,10 +327,33 @@
 	   ELSEIF ( repl .EQ. "GRID" ) THEN
 	      repl = grid_name( cx_grid(cx) )
 
+* ... RETURN=DSET, DSET_NUM, DSET_PATH
+	   ELSEIF ( repl(1:4) .EQ. "DSET" ) THEN
+	      i2 = cx_data_set(cx)
+	      IF ( i2 .EQ. pdset_irrelevant
+     .	     .OR.  i2 .EQ. unspecified_int4 ) THEN
+	         repl = bad_str
+	      ELSE
+	         IF ( repl .EQ. "DSETNUM" ) THEN
+	            repl = LEFINT(i2, str_len)
+	         ELSEIF ( repl .EQ. "DSETPATH" ) THEN
+	            CALL GET_DSET_NAME(i2, repl, str_len)
+	         ELSEIF ( repl .EQ. "DSET" ) THEN
+	            CALL GET_SHORT_DSET_NAME(i2, repl, str_len)
+	         ELSE 
+	            GOTO 5520
+	         ENDIF
+	      ENDIF
+
 * ... RETURN=SIZE
 	   ELSEIF ( repl .EQ. "SIZE" ) THEN
 	      i2 = CGRID_SIZE ( cx )
 	      repl = LEFINT(i2, str_len)
+
+* ... RETURN=BAD
+	   ELSEIF ( repl .EQ. "BAD" ) THEN
+	      result = cx_bad_data ( cx )
+	      repl = TM_FMT( result, use_digits, max_len, str_len )
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	
@@ -483,6 +512,7 @@
      .       'maximum precision is 10 digits: '
      .					//cmnd(i:qual_end), *5000)
  5520   CALL ERRMSG( ferr_invalid_command, status,
-     .     'use R=shape,size,grid,*size,*start,*end,*axis, or *units'
+     .     'use RETURN=shape,size,grid,dset,dsetnum,dsetpath,'//pCR//
+     .	   '    bad,*size,*start,*end,*axis, or *units'
      .				//pCR//cmnd(i:qual_end), *5000)
 	END

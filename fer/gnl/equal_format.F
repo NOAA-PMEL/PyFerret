@@ -51,6 +51,8 @@
 * V320: 12/94 - added /FORMAT=STREAM
 * V420:  9/95 - added /FORMAT=COMMA-DELIMITED and /FORMAT=TAB-DELIMITED
 * V450: 11/96 - added /FORMAT=CACHE for DODS caching
+* V554   9/03 *acm* - add output in /DODS binary format
+
 
 * calling argument declarations
 	INTEGER		status
@@ -93,6 +95,8 @@
            list_fmt_type = plist_tab_del
         ELSEIF ( upcase3 .EQ. 'CAC' ) THEN
            list_fmt_type = plist_cdf_cache
+        ELSEIF ( upcase3 .EQ. 'DOD' ) THEN
+           list_fmt_type = plist_dods
         ELSE
 
 * ... check out user-specified format

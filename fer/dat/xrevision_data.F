@@ -1,7 +1,5 @@
 	BLOCK DATA XREVISION_DATA
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -63,18 +61,13 @@
 * V511 - 05/00 *kob*
 * V521 - *sh* minor bug fixes from V520
 * V530 - 10/00 *sh* beta 1
+* V534 - 9/01 *sh* alpha 1
 
-
-#ifdef unix
 	include	'xrevision.cmn'
-#else
-	INCLUDE	'FERRET_CMN:XREVISION.CMN'
-#endif
-
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.33   /
+	DATA revision_level	/  5.40   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

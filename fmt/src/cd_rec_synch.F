@@ -92,7 +92,7 @@
       INTEGER cdfid, lo, hi, tmrecax, start, axid, grid, vartyp, status
 
 * local variable declarations:
-      LOGICAL CD_GET_ATTRIB, TM_FPEQ, got_it, regular,
+      LOGICAL CD_GET_ATTRIB, TM_DFPEQ, got_it, regular,
      .        do_warn
       PARAMETER ( do_warn = .TRUE. )
       INTEGER TM_LENSTR1, STR_CASE_BLIND_COMPARE, NCVID,
@@ -158,7 +158,8 @@
            IF ( cdfstat.NE.merr_ok ) GOTO 5900
 * ... (determine the delta of the axis prior to writing new coordinates)
            IF ( npts .GE.2 ) delta = (hi_val - lo_val) / (npts - 1)
-           IF ( TM_FPEQ(SNGL(new), SNGL(hi_val)) ) THEN
+* 4/99 *kob* - call to new routine tm_dfpeq for double precision compares
+           IF ( TM_DFPEQ(new,hi_val) ) THEN
               start = npts
               GOTO 2000
            ELSEIF ( new .GT. hi_val ) THEN
@@ -175,7 +176,7 @@
 
 * binary search to locate new coordinate in file
 * ... initialize search with coordinate of first point
-        IF ( TM_FPEQ(SNGL(new), SNGL(lo_val)) ) THEN
+        IF ( TM_DFPEQ(new, lo_val) ) THEN
            start = 1
            GOTO 2000
         ELSEIF ( new .LT. lo_val ) THEN
@@ -189,7 +190,7 @@
  100    CALL CD_RD_R8_1( cdfid, axid, look, vartyp,
      .                   'axis: '//axnam(:alen), val, cdfstat )
         IF ( cdfstat.NE.merr_ok ) GOTO 5900
-        IF ( TM_FPEQ(SNGL(new), SNGL(val)) ) THEN
+        IF ( TM_DFPEQ(new, val) ) THEN
 * ... found it
            start = look
            GOTO 1000

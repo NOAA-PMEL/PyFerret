@@ -75,8 +75,9 @@
 *		the implicit grid is "owned" by someone.
 *	11/99 *sh* - bug fix: if child var occurred in the second (or higher)
 *			expression in a line the child var name was wrong
-*       11/99 ACM  Part of the fix noted just above causes trouble with external 
-*             functions that use custom axes.  See comments starting w/ ACM ***
+*	12/99 *sh* - reverted to this code following temporary commenting out
+*		of 10/99 fix by Ansley to keep EFs running. Changes to
+*		EF_GET_ARG_SUBSCRIPTS now permit 10/99 change to work
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -166,36 +167,17 @@
 	   ELSEIF ( at_id(iat) .EQ. right_paren ) THEN
 	      paren_level = paren_level - 1
 	   ENDIF
-
 * ... check for the end of an argument -- comma or final paren
 	   IF (  (at_id(iat).EQ.comma .AND. paren_level.EQ.1)
      .	    .OR. paren_level .EQ. 0   ) THEN
 * ...(2/98) treat lone constant like a "complex" argument (an expression)
 * ...(10/99)also treat sst[y=5s:5n:1] as a "complex" argument (has impl grid)
-
-
-* ACM *** 11/99
-* ACM *** The lines commented out with cc below, replaced by the line just 
-* ACM *** above are a "fix" to a problem with custom axes in external 
-* ACM *** functions, where the square bracket is treated wrong and we get:
- 
-* ACM ***        yes? LIST/L=30:35 ffta(sample_function[l=1:365])
-* ACM ***            **ERROR: illegal limits: VW_FFT is not in the range L=1
-* ACM ***            Axis extremes are L=1:-2147483
-
-* ACM *** Not the true fix but allows the FFT benchmarks to run.
-
 	      istart = at_start (gc_arg_start)
 	      iend   = at_end   (gc_arg_start)
 	      IF ( (at_type(gc_arg_start) .EQ. alg_child_var)
      .	     .OR.  ( (iat .EQ. gc_arg_start+1)
-
-     .         .AND. (at_type(gc_arg_start) .NE. alg_constant))) THEN
-
-cc     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
-cc     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN
-
-
+     .         .AND. (at_type(gc_arg_start) .NE. alg_constant)
+     .	       .AND. (INDEX(text(istart:iend),'[').EQ.0)    )   ) THEN
 * ... this argument is "simple" (a single atom) 
 	         gc_arg_start = iat + 1	! look for next
 	      ELSE

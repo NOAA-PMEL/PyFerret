@@ -58,6 +58,7 @@
 * V554 1/04 *acm* - additions for /RANGE repeat loop control
 * V56  3/04 *acm* - initialize cat flag before error checks; change messages when
 *                   user attempts to use a pseudo-variables for /NAME=
+*      6/04 ywei  - changed MATCH_NAME to allow optimization
 
 	include	'ferret.parm'
 	include	'command.parm'
@@ -84,6 +85,7 @@
 	REAL val
 	CHARACTER GKS_X_CONID*16, anim_win_id*16, counter_name*128
 	LOGICAL MATCH_NAME, loop
+        INTEGER TM_LENSTR, len_str, len_mchars
 
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
@@ -148,13 +150,18 @@
              cat = 0
 	     CALL FIND_VAR_NAME ( pdset_irrelevant, counter_name, 
      .                            cat, var )
-             IF ( cat .EQ. cat_pseudo_var   ) THEN  
+             IF ( cat .EQ. cat_pseudo_var   ) THEN
+                len_test = TM_LENSTR(counter_name(1:LEN(counter_name)))
                 DO var = 1, 9
-                  IF (MATCH_NAME(counter_name, alg_pvar(var) ) )
+                  len_mchars = TM_LENSTR(alg_pvar(var))
+                  IF (MATCH_NAME(counter_name, len_test, 
+     .                alg_pvar(var),len_mchars ) )
      .                 GOTO 5200
                 ENDDO
                 DO var = 10, num_pseudo_vars
-                  IF (MATCH_NAME(counter_name, alg_pvar(var) ) )
+                  len_mchars = TM_LENSTR(alg_pvar(var))
+                  IF (MATCH_NAME(counter_name, len_test,
+     .                alg_pvar(var),len_mchars ) )
      .                 GOTO 5250
                 ENDDO
              ENDIF

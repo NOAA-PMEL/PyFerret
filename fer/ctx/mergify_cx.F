@@ -1,7 +1,5 @@
 	SUBROUTINE MERGIFY_CX( dflt_cx, uvar, cx, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,24 +38,15 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:  6/20/89
+
 * V510 5/00 *sh* set the bad value flag for the merged context
+* V533 7/01 *sh* - set the data type of the result
 	
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xfr_grid.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	dflt_cx, uvar, cx, status
@@ -82,6 +71,9 @@
 * impose merged grid
 	cx_grid( cx ) = KNOWN_GRID( cx_data_set(cx), cat_user_var, uvar )
 	cx_unstand_grid( cx ) = .FALSE.
+
+* set the result data type (valid 
+	CALL KNOWN_DATA_TYPE(cx)
 
 * wipe out any transformations from first component of merged context
 	DO 100 idim = 1, 4

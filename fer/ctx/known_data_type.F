@@ -1,7 +1,5 @@
-	SUBROUTINE DEALLO_UVAR_GRIDS( uvar )
+	SUBROUTINE KNOWN_DATA_TYPE ( cx )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,56 +33,61 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* deallocate all dynamic grids associated with this user variable
-* (clearing any memory references to this grid)
+* find the data type for the given variable
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* V420 9/8/95 - new
-* V510 *sh* 4/00 - deallocate any grid, not just dynamic ones
-* V533 *sh* 7/01 - set data type of grid/variable
+* V533:  7/01
 
-#ifdef unix
-	include 'tmap_dims.parm'
-	include	'xtm_grid.cmn_text'
-	external xgt_grid_data
-	include 'ferret.parm'
-	include 'xvariables.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
+	include	'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
+	external xdset_info_data
+	include	'ferret.parm'
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xcalc_vars.cmn'
 
-* calling argument declarations
-	INTEGER	uvar
+* calling argument declarations:
+	INTEGER	cx
 
-* local declarations
-	INTEGER i
+* internal variable declarations:
+	INTEGER	dset, data_set, category, variable
 
+* initialize
+	category = cx_category(cx)
+	variable = cx_variable(cx)
+	data_set = cx_data_set(cx)
 
-* loop through all of the grids that may be associated with this
-* note: could be more efficient:  check to see if this is a data set
-*	dependent variable (or "EX#n") and delete only the single data set grid
+* different procedure for determining grid from each category
+	IF     ( category .EQ. cat_file_var ) THEN
 
-	DO 100 i = 0, max_gfdl_dsets
+	   cx_type(cx) =  ds_var_type(variable)
 
-* Remove the grid
-* (and possibly all memory resident variables that depend on it)
-	   IF ( uvar_grid(uvar,i) .GE. 1
-     .   .AND.  uvar_grid(uvar,i) .LE. max_dyn_grids ) THEN
-	      CALL DEALLO_DYN_GRID(uvar_grid(uvar,i))
+	ELSEIF ( category .EQ. cat_calc_var ) THEN
+
+           cx_type(cx) = ptype_float
+
+	ELSEIF ( category .EQ. cat_user_var ) THEN
+
+* ... allow "abstract" expressions that don't depend on data set
+	   IF ( .NOT.uvar_need_dset(variable)
+     .	   .OR. data_set .EQ. unspecified_int4 ) THEN
+	      dset = pdset_irrelevant
+	   ELSE
+	      dset = data_set
 	   ENDIF
+	   cx_type(cx) = uvar_data_type( variable, dset )
 
-* set the grid pointer to its initialized state
-	uvar_grid( uvar, i ) = unspecified_int4
+	ELSEIF ( category .EQ. cat_temp_var ) THEN
 
-* set the data type of the grid/variable
-	uvar_data_type( uvar, i ) = unspecified_int4
+	   cx_type(cx) = mr_type( variable )
 
- 100	CONTINUE
+	ELSE
+
+	   STOP 'KNOWN_TYP'
+
+	ENDIF
 
 	RETURN
 	END

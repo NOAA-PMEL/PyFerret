@@ -1,8 +1,6 @@
 	SUBROUTINE MERGE_GRID(	iarg, its_gc, com_text,
      .				mrg_cx, com_cx, uvar, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -107,9 +105,10 @@
 *	*sh*  4/00 - all grids and axes now maintain use counts 
 * V520  *sh* 6/00 - complete the support for uvlim_hidden. Was treated just
 *		    like uvlim_irrelevant in determining uvar_given
+* V533  *sh* 7/01 - determine data type of result
 
-#ifdef unix
 	include 'tmap_dims.parm'
+	include 'grid_chg_fcns.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
@@ -120,18 +119,6 @@
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
 	include	'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * calling argument declarations
 	LOGICAL		its_gc
@@ -139,9 +126,10 @@
 	CHARACTER	com_text*(*)
 
 * local variable declarations
-	LOGICAL		INHERITED_LIMITS, same, nest, expl_com_lim
+	LOGICAL		INHERITED_LIMITS, ITSA_PURE_SUM_VAR,
+     .			same, nest, expl_com_lim
 	INTEGER		CX_DIM_LEN, TM_LENSTR1, REGION_CLASS,
-     .			NEST_REGION_CLASS,  WHICH_GCFCN,
+     .			NEST_REGION_CLASS,  WHICH_GCFCN, GCF_RTN_TYPE,
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
@@ -272,6 +260,35 @@
 	ELSE
 	   cx_dset_gvn(mrg_cx) = cx_dset_gvn(mrg_cx) .AND.
      .	(cx_dset_gvn(com_cx).OR.cx_data_set(com_cx).EQ.pdset_irrelevant)
+	ENDIF
+
+* data type of result
+	IF (its_gc) THEN
+* ... can get result data type only when types of all arguments are known
+*     cuz it may be inherited from an argument
+	  IF (iarg .EQ. 1) THEN
+	    i = GCF_RTN_TYPE(gcfcn, com_cx)
+	    IF (i .EQ. pfcn_rtn_string) THEN
+	      cx_type(mrg_cx) = ptype_string
+	    ELSE
+	      cx_type(mrg_cx) = ptype_float
+	    ENDIF
+	  ENDIF
+	ELSE
+	  IF (uvar_num_items(uvar) .EQ. 1) THEN 
+	    cx_type(mrg_cx) = cx_type(com_cx)   ! v="a" or v=5
+
+* ... special HACK to allow string addition: "a" + "b"
+	  ELSEIF (ITSA_PURE_SUM_VAR(uvar)) THEN
+	    IF (cx_type(mrg_cx) .EQ. unspecified_int4) THEN
+	        cx_type(mrg_cx) = cx_type(com_cx)  ! inherit first arg type
+	    ELSEIF (cx_type(mrg_cx) .NE. cx_type(com_cx)) THEN
+	        cx_type(mrg_cx) = ptype_float      ! unmatched arg types
+	    ENDIF
+
+	  ELSE
+	    cx_type(mrg_cx) = ptype_float       ! expression float unless GC
+	  ENDIF
 	ENDIF
 
 * loop through the axes

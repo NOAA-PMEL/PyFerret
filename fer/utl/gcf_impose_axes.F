@@ -1,7 +1,5 @@
 	SUBROUTINE GCF_IMPOSE_AXES( cx_base, mrg_cx, uvar, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,25 +44,18 @@
 *	- 2) context limits on axes that do inherit must match exactly (cuz
 *			we have no idea what goes on inside the EF)
 *	*sh*  4/00 - all axes now maintain use counts, not just dynamic
+* V533: *sh* 7/01 - improve caching of some functions -- like SPAWN that
+*	            should have uvlim_hidden behavior equivalent to FFTA
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
+	include 'grid_chg_fcns.parm'
 	include 'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER		cx_base, mrg_cx, uvar, status
@@ -114,7 +105,14 @@
 	         uvar_given(idim,uvar) = uvlim_irrelevant
 	      ELSEIF ( gcfcn .GT. gfcn_num_internal ) THEN
 	         uvar_given(idim,uvar) = uvlim_hidden	! 12/99
+	      ELSEIF ( gcfcn .EQ. p_spawn ) THEN
+	         uvar_given(idim,uvar) = uvlim_hidden   ! 7/01
 	      ELSE
+* ... allows XSEQUENCE, etc. context to be determined w/out full evaluation
+*     This can make some scripts more efficient ... others maybe less because
+*     uvlim_hidden would make caching more effective.  Example like
+*       "let a = XSEQUENCE(J[j=1:5]); say `a[i=100:200],return=isize`"
+*     can actually yield a wrong answer
 	         uvar_given(idim,uvar) = uvlim_needed ! for fcns like RESHAPE
 	      ENDIF
 	   ELSE

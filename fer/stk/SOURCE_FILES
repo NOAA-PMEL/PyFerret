@@ -1,6 +1,7 @@
 SRCS_F = \
 bad_edges.F\
 bad_edges_sub.F\
+bad_ptr_edges_sub.F\
 clean_stack.F\
 constant_context.F\
 const_var_context.F\
@@ -53,5 +54,9 @@ setup_sample.F\
 stack_ptr_dn.F\
 stack_ptr_up.F\
 string_context.F\
+string_operate.F\
+string_concatenate.F\
+string_conditional.F\
 unprotect_cmnd_data.F\
 xerror.F 
+

@@ -4,8 +4,6 @@
      .			var_cx,
      .			status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -60,18 +58,15 @@
 * V500: 10/20/98 *jc* - added ADD_RDC_XFORM
 * V510: 8/99 *sh* - g=unknown_uvar is allowed now. If happening, then skip
 *	final steps of context getting
+* V533: 6/01 *sh* - set data type
 	
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
+        include 'tmap_dims.parm'
+        include 'xdset_info.cmn_text'
+        external xdset_info_data
 
 * calling argument declarations:
 	INTEGER		default_cx, var_cx, status
@@ -106,6 +101,9 @@
 
 * insert bad data flag for variable
 	CALL GET_CONTEXT_BAD_FLAG( var_cx )
+
+* insert data type for variable
+	CALL KNOWN_DATA_TYPE( var_cx )
 
 * determine the defining grid
 	CALL GET_CONTEXT_GRID ( var_cx, status )

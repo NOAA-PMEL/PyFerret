@@ -65,7 +65,7 @@ aix:
 hp:  
 	${MAKE} tmap_libs/tmap_lib.a FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun"
 
-linux:
+i486-linux:
 	${MAKE} tmap_libs/tmap_lib.a F77="f90" FFLAGS="-132 -c -dusty -C -f77 -fieee -Nl60 -x77 -w" CPPFLAGS="-P -Dunix -DFORTRAN_90 -DNEED_IAND" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -Dunix -Dsolaris -DVOID_SIGHANDLER -D_POSIX_VERSION -DNEED_IAND" DEBUG=" "
 	
 
@@ -99,7 +99,7 @@ aix_deblib:
 hp_deblib:
 	${MAKE} tmap_libs/tmap_deblib.a  FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun" DEBUG="-g"
 
-linux_deblib:
+i486-linux_deblib:
 	${MAKE} tmap_libs/tmap_deblib.a F77="f90" FFLAGS="-132 -c -dusty -C -f77 -fieee -g -Nl60 -x77 -w" CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DNEED_IAND" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -Dunix -Dsolaris -DVOID_SIGHANDLER -D_POSIX_VERSION -DNEED_IAND" DEBUG="-g"
 
 
@@ -155,7 +155,7 @@ aix_comp:
 hp_comp:  
 	${MAKE} comp FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun"
 
-linux_comp:
+i486-linux_comp:
 	${MAKE} comp_nocpp F77="f90" FFLAGS="-132 -c -dusty -C -f77 -fieee -Nl60 -x77 -w" CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DF90_SYSTEM_ERROR_CALLS -Dreclen_in_bytes" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -Dunix -Dsolaris -DVOID_SIGHANDLER -D_POSIX_VERSION -DNEED_IAND"
 	
 
@@ -183,7 +183,7 @@ aix_gcomp:
 hp_gcomp:  
 	${MAKE} comp FFLAGS="-c -C +es +e -u -w -Dsun -DREADONLY_ALLOWED -Dreclen_in_bytes -DNEED_IAND +U77" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO -DNO_ENTRY_NAME_UNDERSCORES -DHP_CC -Dsun" DEBUG="-g"
 
-linux_gcomp:
+i486-linux_gcomp:
 	${MAKE} comp_nocpp F77="f90" FFLAGS="-132 -c -dusty -C -f77 -fieee -Nl60 -x77 -w" CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DF90_SYSTEM_ERROR_CALLS -Dreclen_in_bytes" CCFLAGS="-Ireadline -I. -I/usr/local/include -c -Dunix -Dsolaris -DVOID_SIGHANDLER -D_POSIX_VERSION -DNEED_IAND" DEBUG="-g"
 	
 
@@ -198,7 +198,7 @@ comp_nocpp:
 	do \
 		touch `echo $${file} | sed -e 's/.F/.f/g'`; \
 		rm `echo $${file} | sed -e 's/.F/.f/g'`; \
-                /lib/cpp ${CPPFLAGS} $${file} > `echo $${file} | sed -e 's/.F/.f/g'`; \
+                /lib/cpp ${CPPFLAGS} -traditional $${file} > `echo $${file} | sed -e 's/.F/.f/g'`; \
                 ${F77} $(FFLAGS) $(DEBUG) `echo $${file} | sed -e 's/.F/.f/g'`; \
 	done
 	$(CC) $(CCFLAGS) $(DEBUG) *.c

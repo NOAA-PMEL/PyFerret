@@ -66,7 +66,7 @@
 	INTEGER mods_cx
 
 * local variable declarations:
-	INTEGER grid, line, dset, uvar, count, i
+	INTEGER grid, line, dset, uvar, count, i, TM_LENSTR1
 	CHARACTER sanity_msg*24
 
 * first show the dynamic grids
@@ -95,9 +95,13 @@
 	      sanity_msg = 'err: grid over-allocated'
 	   ENDIF
 * ... end of sanity check
-	   WRITE (risc_buff,3000) grid_name(grid), grid_use_cnt(grid),
+* 4/99 *kob* modify write and format statement - mostly for stylistic reasons
+	   WRITE (risc_buff,3000) 'GRID', 
+     .           grid_name(grid),
+     .            grid_use_cnt(grid),
      .					sanity_msg
- 3000	   FORMAT ( 4X,'GRID ',A, 'use count:',I4,5x,A)
+* *kob* 4/99 shorten dynamic grid name on output statment
+ 3000	   FORMAT ( 4X,A,1X,A16,16X, 'use count:',I4,5x,A)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   CALL SHOW_GRID(grid, mods_cx)
 	   grid = grid_flink(grid)
@@ -144,9 +148,9 @@
 	      sanity_msg = 'err: axis over-allocated'
 	   ENDIF
 * ... end of sanity check
-	   WRITE (risc_buff,3010) line_name(line), line_use_cnt(line),
+* *kob* 4/99 - reference format statement at 3000 - for stylistic reasons
+	   WRITE (risc_buff,3000) 'AXIS',line_name(line), line_use_cnt(line),
      .					sanity_msg
- 3010	   FORMAT ( 4X,'AXIS ',A, 'use count:',I4,5X,A)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   line = line_flink(line)
 	ENDIF

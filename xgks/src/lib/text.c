@@ -53,6 +53,7 @@
 
 /*LINTLIBRARY*/
 
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include <string.h>

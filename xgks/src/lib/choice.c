@@ -37,7 +37,8 @@
  */
 
 /*LINTLIBRARY*/
-
+#include <wchar.h>
+#include <wchar.h>
 #include "udposix.h"
 #include <unistd.h>
 #include <stdio.h>

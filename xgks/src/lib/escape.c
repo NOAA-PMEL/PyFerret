@@ -37,6 +37,7 @@
 /* 10/97 *kob* - had to move the include of stdlib ahead of string.h - linux
 		 gcc compiler crapped out otherwise  */
 
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include <string.h>

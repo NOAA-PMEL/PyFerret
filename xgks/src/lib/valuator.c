@@ -47,6 +47,7 @@
 
 /*LINTLIBRARY*/
 
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include <signal.h>

@@ -9,6 +9,7 @@
 #ifndef CGM_IMPLEM_H_SEEN
 #define CGM_IMPLEM_H_SEEN
 
+#include <wchar.h>
 
 /*
  * A CGM direct color:

@@ -98,6 +98,7 @@
 #include <ctype.h>
 #include <assert.h>
 #include <stdarg.h>
+#include <wchar.h>
 #include "udposix.h"
 #include "gks_implem.h"
 #include "cgm/cgm.h"		/* for public, API details */

@@ -56,6 +56,7 @@
     static char rcsid[] = "$Id$";
 #endif
 
+#include <wchar.h>
 #include "udposix.h"
 #include <stdlib.h>
 #include "gks_implem.h"

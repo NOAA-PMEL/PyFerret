@@ -7,6 +7,7 @@
     static char	rcsid[]	= "$Id$";
 #endif
 
+#include <wchar.h>
 /*
  * The conditionally-compiled code that follows defines items related
  * to the use of the BSD system(2) call.  These items are inherently 

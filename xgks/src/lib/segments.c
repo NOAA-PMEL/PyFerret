@@ -105,6 +105,7 @@
 
 /*LINTLIBRARY*/
 
+#include <wchar.h>
 #include "udposix.h"
 #include <stddef.h>		/* for "size_t" */
 #include <unistd.h>

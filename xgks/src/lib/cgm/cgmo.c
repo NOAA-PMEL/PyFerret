@@ -8,6 +8,8 @@
 
 /*LINTLIBRARY*/
 
+#include <wchar.h>
+
 /* POSIX includes: */
 #include "udposix.h"
 #include <sys/types.h>		/* for uid_t */
@@ -1059,14 +1061,15 @@ mo_asf(cgmo, num)
     mo_flush(cgmo, num, 0);
 }
 
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 
 /*
  * Write the current attribute elements.
  */
     static void
 mo_attributes(cgmo, num)
-    mf_cgmo	**cgmo;
-    int		num;
+  mf_cgmo ** cgmo;
+  int num;
 {
     mo_lineindex(cgmo, num);
     mo_linetype(cgmo, num);

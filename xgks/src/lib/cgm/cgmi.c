@@ -8,6 +8,8 @@
 
 /*LINTLIBRARY*/
 
+
+#include <wchar.h>
 /* Non-POSIX includes: */
 #include <sys/types.h>		/* for uid_t */
 

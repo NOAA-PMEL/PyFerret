@@ -47,6 +47,8 @@
 
 #define GKS_ERROR_C
 
+#include <wchar.h>
+#include <wchar.h>
 #include "udposix.h"
 #include "gks_implem.h"
 #include "gkserrmsg.h"		/* Defines static error-messages */

@@ -36,8 +36,12 @@
  * Event Queue maintenance routines.
  */
 
+#define NULL 0
+
 /*LINTLIBRARY*/
 
+#include <wchar.h>
+#include <wchar.h>
 #include "udposix.h"
 #include <sys/types.h>		/* for pid_t */
 #include <stdlib.h>

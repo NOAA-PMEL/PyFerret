@@ -12,6 +12,7 @@ INCLUDES        = -I../../ppl/include/xgks \
                   -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \
                   -I$(TMAP_LOCAL)/include \
                   -I/usr/openwin/include \
+		  -I/opt/SUNWmotif/include \
                   -I../common
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
@@ -33,7 +34,8 @@ LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
 LD_DYN_FLAGS = -G -z text -z muldefs
  
 SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
-		  -lV77 -lelf -lM77 -lF77 -Bdynamic -lsunmath -lm -lc \
+		  -lV77 -lelf -lM77 -lF77 -lXm -lXt -Bdynamic -lsunmath -lm \
+		  /usr/ccs/lib/libgen.a -lc \
 		  -Bstatic -L/usr/ucblib -lucb -Bdynamic 
 
 TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a

@@ -60,4 +60,4 @@ list/file=$6&squeeze&.spk/nohead/format=(4F10.1) new_pcent,red,green,blue
 cancel data/noerr $5&default&.spk
 set region husr
 set data/restore
-set mode verify/last
+set mode/last verify

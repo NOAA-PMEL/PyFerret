@@ -58,8 +58,6 @@
    };
    typedef struct String_Array_Header SA_Head;
 
-
-//upper case conversion
 #define uc(a) ((a>='a'&&a<='z')?((a)&0xDF):(a))
 
 #endif //_STRING_ARRAY.H_

@@ -66,6 +66,8 @@ SET MODE VERIFY
 ! V5.40:
 ! 9/01 *sh* -- added bn_axis_viewports
 !           -- added bn_strings
+! 10/01 *acm* -- added bn_axcontrol
+!             -- add EOF's and cmprsi_by to bn_internal_external_functions.jnl
 
 GO bn_reset
 GO bn_syntax
@@ -276,6 +278,9 @@ GO bn_strings
 
 GO bn_reset
 GO bn_axcontrol
+
+GO bn_reset
+GO bn_vec_curv
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

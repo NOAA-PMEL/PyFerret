@@ -1,0 +1,10 @@
+! test vector plots in curvilinear coordinates 
+
+use gt4d011
+set reg/x=138w:122w/y=3s:3n/k=1/l=5
+go mp_sinusoidal; set grid u
+vec u,v,x_page,y_page
+
+go mp_orthographic 230 0; set grid u
+fill/nolab/noax psi,x_page,y_page
+vec/over/len=20 u,v,x_page,y_page

@@ -72,6 +72,7 @@
 * V500:  1/99 *sh* comandeered the TIMES2 function for string argument testing
 *               renamed it to ECHO
 *       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
+*       3/99 - made ECHO into a 2 argument function
 
 #ifdef unix
 	include	'ferret.parm'
@@ -231,27 +232,27 @@
            item = coded_pointer - 1000*uvar
            start = uvar_item_start( item, uvar )
            end   = uvar_item_end  ( item, uvar )
+* ... echo string
            WRITE (6,'(1X,A)') 
      .          'You said: '//uvar_text(uvar)(start:end)
+* ... compute result from arg 2
+	   DO 1205 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	    DO 1205 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	      DO 1205 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	       DO 1205 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	         IF ( com2(i,j,k,l) .EQ. bad2 ) THEN
+	             res(i,j,k,l) = bad_res
+	         ELSE
+	             res(i,j,k,l) = com2(i,j,k,l) * 2.0
+	         ENDIF
+ 1205      CONTINUE
+
         ELSE
 * ... for future grids of strings
            STOP 'illegal string argument encoding'
 !          pointer to array of strings encoded in memory(k,blk)
 !          string = EXTRACT_FROM_STRING_GRID(memory(k,blk),i,j,k,l)
         ENDIF
-	DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 1210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 1210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 1210 i = mr_lo_s1(mres), mr_hi_s1(mres)
-
-!	   IF ( com1(i,j,k,l) .EQ. bad1
-!     .    .OR.  com1(i,j,k,l) .LE. 0.0 ) THEN    ! 8/92
-!	      res(i,j,k,l) = bad_res
-!	   ELSE
-!	      res(i,j,k,l) = com1(i,j,k,l) * 2.0
-!	   ENDIF
-            res(i,j,k,l) = 0.0
- 1210	CONTINUE
         RETURN
 
 * "RESHAPE" - reshape argument 1 into the grid of arg 2. Start output

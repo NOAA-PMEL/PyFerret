@@ -42,7 +42,9 @@
 * V491 - 1/98 - changed function TEST2 so that it replaces T axis
 * V500: 1/99 added gfcn_arg_type in support of string arguments
 *       2/99 changed UNRAVEL to XSEQUENCE, YSEQUENCE, ZSEQUENCE, TSEQUENCE
-*       3/99 *kob* fixed bugs in above additions - parameter references incorrect
+*       3/99 *kob* fixed bugs in above additions - parameter references
+*	incorrect
+*	3/99 *sh* added a numerical argument to ECHO to debug stack problem
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -106,7 +108,7 @@
 	INTEGER		p_times2_arg_start, p_times2_num_args 
 	PARAMETER     ( p_times2_arg_start = p_xunravel_arg_start +
      .					     p_xunravel_num_args,
-     .			p_times2_num_args  = 1 )
+     .			p_times2_num_args  = 2 )
 
 
 	DATA gfcn_name         (p_times2) /'ECHO'/
@@ -138,7 +140,20 @@
      .		  / 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
 	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.FALSE. /
+     .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
+* ... argument 2
+	DATA gfcn_arg_name(p_times2_arg_start+1)/'NUM'/
+	DATA gfcn_arg_type(p_times2_arg_start+1)/parg_type_float/
+	DATA gfcn_arg_units(p_times2_arg_start+1)/'anything'/
+	DATA gfcn_arg_descr(p_times2_arg_start+1)/'numerical variable'/
+	DATA (gfcn_arg_extend_lo (i,p_times2_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_times2_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 2 ?
+	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+1),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
 
 * RESHAPE(data,grid_and_start) - same values as input grid but reshaped
 *   into the grid of the 2nd arg ... starting at start point (1,1,1,1)

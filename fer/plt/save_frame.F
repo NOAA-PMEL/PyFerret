@@ -11,6 +11,7 @@
 *	8/94 - filename added as calling argument
 *	1/95 - major revamp using entirely X code instead of GKS (much faster)
 *		and incorporating GIF output
+*       9/97 - now supports batch mode
 
 * calling argument declarations:
 	INTEGER		status
@@ -19,6 +20,7 @@
 * internal variable declarations:
 	INTEGER		TM_LENSTR1, i, elen, flen, wsid
 	CHARACTER	errstr*128
+	logical         ITS_BATCH_GRAPHICS
 
 #ifdef unix
 	include 'ferret_cmn/errmsg.parm'
@@ -48,16 +50,23 @@
 	CALL TM_FTOC_STRNG( format, fmthol, 5 )
 
 * determine the current output window (GKS wkstn ID, that is)
-	DO 100 wsid = 1, max_windows
-           IF ( wn_active(wsid) ) GOTO 110
- 100    CONTINUE
+	DO wsid = 1, max_windows
+	   IF ( wn_active(wsid) ) GOTO 110
+	end do
 
 * blank out the error message return buffer (a C string)
- 110	DO 120 i = 1, slen
- 120	errhol(i) = 0	   
+ 110	DO i = 1, slen
+	   errhol(i) = 0	   
+	end do
 
-* capture the bitmap
- 	CALL PUT_FRAME( wsid, fnmhol, errhol, fmthol, status ) ! a C routine
+* if running in batch mode, take care of metafiles rather than
+* dumping window
+	if (ITS_BATCH_GRAPHICS()) then
+	   call put_frame_batch(wsid, fnmhol, fmthol, errhol, status)
+	else
+* capture the bitmap (C routine)
+	   CALL PUT_FRAME( wsid, fnmhol, errhol, fmthol, status )
+	end if
 
 * illegal filename errors in status, bitmap capture errors in errstr
 	IF ( status .LT. 0 ) THEN

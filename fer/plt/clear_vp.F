@@ -11,6 +11,8 @@
 * V200:  3/22/90 - check if WSID NE 0 before clearing wkstn (for CANC WIND/ALL)
 * V411:  9/5/95 - use CLEAR_WINDOW to clear the full screen
 *	(to avoid the XGKS memory leak from GCLRWK)
+*        9/9/97 - if batch is active, just clear workstation since XGKS
+*        doesn't delete metafile segments, and it avoids gdelseg warnings
 
 #ifdef unix
 	include 'ferret_cmn/xplot_state.cmn'		! viewport info
@@ -31,7 +33,8 @@
 	   IF ( wsid .NE. 0 ) THEN
 * explicitly delete segments to avoid XGKS memory leak
 	      DO 110 ivp =  mvp_dflt, max_viewport
-	         IF ( vp_seg0(ivp) .NE. 0 ) THEN 
+	         IF ( .not. ITS_BATCH_GRAPHICS() .and.
+     1  	      vp_seg0(ivp) .NE. 0 ) THEN 
 	            DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
  100	            CALL GDSG( iseg ) 
 	         ENDIF

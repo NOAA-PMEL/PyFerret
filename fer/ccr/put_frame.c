@@ -14,15 +14,18 @@ compile with these flags to locate the include files:
         -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm
 
 and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
+* *js* 9.97 added put_frame_batch 
 
 */
 
 
+#include "gks_implem.h" /* ditto */
+#include "wslist.h"
+#include "cgm/cgm.h"		/* for public, API details */
+#include "cgm/cgm_implem.h"		/* for implementation details */
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
-#include "udposix.h"    /* XGKS structures */
-#include "gks_implem.h" /* ditto */
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 put_frame( ws_id, filename, errstr, format, status )
@@ -53,7 +56,27 @@ put_frame_( ws_id, filename, errstr, format, status )
    return;
 }
 
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+void put_frame_batch(int *ws_id, char *filename, char *format,
+			       char *errmsg, int *status)
+#else
+void put_frame_batch_(int *ws_id, char *filename, char *format,
+			       char *errmsg, int *status)
+#endif
+{
+  char oldfilename[BUFSIZ];
+  WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
+  *status = 0;
 
+  if (ws->mf.any->type != MF_GIF){
+    strcpy(errmsg, "Batch FRAME only works for GIF files");
+    return;
+  }
+  if (GIFFlush(ws->mf, filename) != OK){
+    sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
+    return;
+  }
+}
       
 
 

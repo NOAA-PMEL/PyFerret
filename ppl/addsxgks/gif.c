@@ -464,6 +464,8 @@ XgksMDate(void)
     int
 GIFmoOpen(WS_STATE_PTR ws)
 {
+  /* Output file not opened or written to until flushed */
+
     Gint status = 1;
     initLogFlag();
     assert(ws != NULL);
@@ -472,18 +474,15 @@ GIFmoOpen(WS_STATE_PTR ws)
 	mf_cgmo	*cgmo	= ws->mf.cgmo;
 	cgmo->ws = ws;
 
-	if ((cgmo->fp = fopen(ws->conn, "w")) == NULL) {
-	    (void)GIFmoClose(&ws->mf);
+	if (find_meta(cgmo) != 0){
+	  msgWarn("GIFmoOpen:metafile already open\n");
 	} else {
-	  if (find_meta(cgmo) != 0){
-	    msgWarn("GIFmoOpen:metafile already open\n");
-	  } else {
-	    create_meta(cgmo, DefaultSize, DefaultSize);
-
-	    cgmo->ws = ws;
-	    cgmo->type = MF_GIF;
-	    status = OK;
-	  }
+	  create_meta(cgmo, DefaultSize, DefaultSize);
+	  
+	  cgmo->ws = ws;
+	  cgmo->type = MF_GIF;
+	  unlink(ws->conn);
+	  status = OK;
 	}
     }
     return status;
@@ -500,14 +499,9 @@ GIFmoClose(Metafile *mf)
   if (mf != NULL && mf->cgmo != NULL) {
     mf_cgmo *cgmo	= mf->cgmo;
     GIFmetafile *meta = find_meta(cgmo);
+    status = GIFFlush(mf, meta->ws->conn);
 
-
-    if (cgmo->fp != NULL && meta != 0){
-      gdImageGif(meta->image, cgmo->fp);
-      if (!ferror(cgmo->fp)){
-	status	= OK;
-	fflush(cgmo->fp);
-      }
+    if (meta != 0){
       destroy_meta(cgmo, meta);
     }
 
@@ -515,6 +509,26 @@ GIFmoClose(Metafile *mf)
     mf->cgmo	= NULL;
   }
 
+  return status;
+}
+
+int GIFFlush(Metafile *mf, char *filename)
+{
+  mf_cgmo *cgmo	= mf->cgmo;
+  GIFmetafile *meta = find_meta(cgmo);
+  int status = 1;
+
+  /* File w/ ".gif" only are not created (Ferret hack) */
+  if (strcasecmp(filename, ".gif") != 0){
+    FILE *fp = fopen(filename, "w");
+    if (fp != NULL && meta != 0){
+      status = OK;
+      gdImageGif(meta->image, fp);
+      fclose(fp);
+    }
+  } else {
+    status = OK;
+  }
   return status;
 }
 
@@ -1070,11 +1084,7 @@ GIFsetSegPri(Metafile *mf, int num, Gint name, double pri)
     return OK;
 }
 
-
-/*
- * Set segment detectability in an output GIF file.
- */
-    int
+int
 GIFsetSegDetect(Metafile *mf, int num, Gint name, Gsegdet det)
 {
     msgWarn("GIFsetSegDetect: Don't support this feature\n");

@@ -59,7 +59,7 @@
 *              around call to curv_coord_sub
 */
 
-
+ 
 /*#include "tmap_format/ferret.h"*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,10 +69,11 @@
 void help_text()
 {
   printf(
-"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-unmapped] [-help] \n\
+"Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-gif] [-unmapped] [-help] \n\
        -memsize:  specify the memory cache size in megawords (default 3.2)\n\
          -batch:  output directly to metafile \"outfile\" w/out X windows\n\
       -unmapped:  use invisible output windows (superceded by -batch)\n\
+           -gif:  output to GIF file w/o X windows only w/ FRAME command\n\
           -help:  obtain this listing\n");
   exit(0);
 }
@@ -118,6 +119,10 @@ main (int argc, char *argv[])
     } else if (strcmp(argv[i],"-unmapped")==0) {
       WindowMapping(0);  /* new routine added to xopws.c */
       i++;    /* advance to next argument */
+    } else if (strcmp(argv[i],"-gif")==0) {
+      char *meta_name = ".gif";	/* Unused dummy name */
+      set_batch_graphics_(meta_name);
+      ++i;
     } else if (strcmp(argv[i],"-batch")==0) {
       char *meta_name = "metafile.plt";
       if (++i < argc && argv[i][0] != '-'){

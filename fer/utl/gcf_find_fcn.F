@@ -3,13 +3,26 @@
 * return the ID number of a grid changing function based on its name 
 
 * V450: 12/96
+*       97.07.16 *jc* adding code to allow call to efcn_get_id()
 
 * calling argument declarations
 	CHARACTER name*(*)
 
 * internal variable declarations
-	INTEGER         STR_MATCH
+	INTEGER         STR_MATCH, llen, TM_LENSTR1
+	INTEGER efcn_scan, efcn_get_id, efcn_already_have_internals
 
+* internal parameter declarations:
+        INTEGER      slen
+        PARAMETER  ( slen = 40 )
+ 
+#ifdef sun
+        BYTE      fhol(slen)    ! c-type Hollerith string buffer
+#else
+        INTEGER*1 fhol(slen)    ! c-type Hollerith string buffer
+#endif
+
+ 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/xgrid_chg_fcns.cmn'
@@ -21,16 +34,40 @@
 * check the internal grid changing functions first
 	GCF_FIND_FCN = STR_MATCH ( name,
      .                               gfcn_name, gfcn_num_internal )
-        IF ( GCF_FIND_FCN .NE. atom_not_found ) THEN
 
+        IF ( GCF_FIND_FCN .NE. atom_not_found ) THEN
+	   RETURN
+	ENDIF
+
+
+* no match. so check external functions
+	IF ( efcn_scan(gfcn_num_internal) .EQ. 0 ) THEN
+
+	   GCF_FIND_FCN = unspecified_int4
 	   RETURN
 
 	ELSE
 
-	   GCF_FIND_FCN = unspecified_int4
+*       true string length
+*       convert to a null-terminated Hollerith
+*       call the external functions library routine to see if it is external
+
+	   llen = TM_LENSTR1( name )
+	   CALL TM_FTOC_STRNG( name(:llen), fhol, slen )
+	   GCF_FIND_FCN = efcn_get_id( fhol )
+
+	   IF (GCF_FIND_FCN .EQ. ATOM_NOT_FOUND ) THEN
+	      GCF_FIND_FCN = unspecified_int4
+	   ELSE
+*       chances are we're going to want to do something with this function
+	      if ( efcn_already_have_internals(gcf_find_fcn) .eq. 0 ) then
+		 call efcn_gather_info(gcf_find_fcn)
+	      endif
+	   ENDIF
 
 	ENDIF	   
 	
 	RETURN
 
 	END
+ 

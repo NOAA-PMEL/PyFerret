@@ -58,7 +58,7 @@
 	   DO 10 idim = 1, 4
  10	   axis_will_be(idim) = gfcn_axis_will_be(idim,gcfcn)
 	ELSE
-	   STOP 'gcf_get_imposed_axes: call for external function'
+	   call efcn_get_axis_will_be(gcfcn, axis_will_be)
 	ENDIF
 	has_imposed_axes = .FALSE. ! innocent until proven guilty
 
@@ -97,7 +97,9 @@
 
 	ELSEIF (gcfcn .GT. gfcn_num_internal ) THEN
 
-	   STOP 'need to request externally imposed axis'
+	   IF ( has_imposed_axes ) THEN
+	      STOP 'need to request externally imposed axis'
+	   ENDIF
 
 	ENDIF
 

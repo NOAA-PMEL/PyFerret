@@ -1,4 +1,5 @@
-	SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, cx_list, res_cx, status )
+	SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
+	1      cx_list, res_cx, status )
 
 * Complete the context for the result of a grid-changing function.
 * Fill in the limits for those axes of the grid changing function which
@@ -15,16 +16,19 @@
 * (opt)	GCF_IMPOSE_RESULT_LIMS	- fill in limits of "imposed" axes, if any
 
 * V450: 1/97
+* *jc* 12/97 adding external function capabilities
 
 * calling argument declarations
-	INTEGER	gcfcn, cx_list(*), res_cx, status
+	INTEGER	gcfcn, cx_list(*), mr_list(*), res_cx, status
+	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations
 	LOGICAL fix_me(4)
 	INTEGER	CGRID_SIZE, CAXIS_LEN, CGRID_AXIS, CX_DIM_LEN,
      .		com1_cx, com2_cx, idim, filled, size, uvar,
      .		res_grd, outlen(4), accum(2:4),
-     .		lo_off(4),  hi_off(4), action(4)
+     .		lo_off(4),  hi_off(4), action(4),
+     .		axis_will_be(4), lo_lim, hi_lim
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -152,7 +156,52 @@
 * ... does the external function need to impose special size limits
 *     onto the result? (perhaps a parameter of the function determines this?)
 * ... If so, impose 'em here
-	   STOP 'gcf_impose_result_lims: external functions not implemented'
+
+* What kind of axes are we dealing with?
+	   call efcn_get_axis_will_be(gcfcn, axis_will_be)
+
+	   DO 450 idim = 1, 4
+
+
+* If the axis is abstract ... 
+*   get the lo and hi limits for this axis
+*   create one as in UNRAVEL above
+
+	      IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract)	THEN
+
+		 call efcn_get_axis_abstract(gcfcn, memory, mr_list, 
+	1	      cx_list, idim, lo_lim,hi_lim)
+		 cx_lo_ss(res_cx,idim) = lo_lim
+		 cx_hi_ss(res_cx,idim) = hi_lim
+		 cx_by_ss(idim, res_cx) = .TRUE.
+		 CALL FLESH_OUT_AXIS( idim, res_cx, status )
+		 IF ( status .NE. ferr_ok ) GOTO 5000
+
+
+* If the axis is normal ... nothing needs to be done
+
+*	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_is_normal) THEN
+*       do nothing
+
+
+* If the axis is custom ... not supported yet
+
+	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein)
+	1	      THEN
+		 CALL ERRMSG( ferr_internal, status,
+	1	      'gcf_imposes_result_lims: external function 
+	2	      custom axes not supported', *5000 )
+
+
+* If the axis is implied_by_args ... nothing needs to be done
+
+*	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_implied_by_args)
+*	1	      THEN
+*       do nothing
+
+	      ENDIF
+
+ 450	   CONTINUE
 
 	ELSE
 
@@ -190,7 +239,7 @@
 *     limits
 
 	      CALL ERRMSG( ferr_internal, status,
-     .			'gcf_get_result_lims: incomplete cx', *5000 )
+     .			'gcf_impose_result_lims: incomplete cx', *5000 )
 
 	   ENDIF
  1000	CONTINUE

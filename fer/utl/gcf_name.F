@@ -3,6 +3,7 @@
 * return the name of a grid changing function from its ID number
 
 * V450: 1/97
+*       97.07.16 *jc* adding code to allow call to efcn_get_name()
 
 * calling argument declarations
 	INTEGER ifcn
@@ -10,6 +11,16 @@
 * internal variable declarations
 	INTEGER status
 
+* internal parameter declarations:
+        INTEGER      slen
+        PARAMETER  ( slen = 40 )
+ 
+#ifdef sun
+        BYTE      fhol(slen)    ! c-type Hollerith string buffer
+#else
+        INTEGER*1 fhol(slen)    ! c-type Hollerith string buffer
+#endif
+ 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/errmsg.parm'
@@ -31,7 +42,8 @@
 
 	ELSE
 
-	   STOP 'external fcns not yet imp: gcf_name'
+	   call efcn_get_name(ifcn, fhol)
+	   call TM_CTOF_STRNG( fhol, gcf_name, slen)
 
 	ENDIF	   
 	

@@ -5,9 +5,11 @@
 * ABS() equal to the number of **required** arguments
 
 * V450: 12/96
+*       97.07.16 *jc* adding code to query external functions
 
 * calling argument declarations
 	INTEGER		ifcn
+	INTEGER efcn_scan, efcn_get_num_reqd_args
 
 * internal variable declarations
 
@@ -21,7 +23,7 @@
 
 	IF ( ifcn .GT. gfcn_num_internal ) THEN
 
-	   STOP "GCF_NUM_ARGS - external fcn ??"
+	   GCF_NUM_ARGS = efcn_get_num_reqd_args(ifcn)
 
 	ELSE
 

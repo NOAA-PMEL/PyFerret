@@ -1,0 +1,21 @@
+! bn_all_leap.jnl
+! ACM 6/2004
+! Added ALL_LEAP, or 366_DAY calendar (which is in the CF conventions).
+! leap year every year
+
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=366_DAY tdays
+define grid/t=tdays tgrid
+let my_data = sin(l[g=tgrid])
+list my_data[t="27-feb-1988":"1-mar-1988"]
+list my_data[t="27-feb-1989":"1-mar-1989"]
+
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=all_leap tdays
+
+list my_data[t="27-feb-1988":"1-mar-1988"]
+list my_data[t="27-feb-1989":"1-mar-1989"]
+
+! Check the error message
+set mode ignore_error
+def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
+
+can mode ignore

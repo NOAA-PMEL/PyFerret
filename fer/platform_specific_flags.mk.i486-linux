@@ -36,8 +36,8 @@ CC              = cc
 F77		= /usr/local/src/NAGWare_f95/bin/f95
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
-FFLAGS          =  -132 -c -save -dusty -mismatch -fieee -Nl90 -x77 -w $(FINCLUDES) 
-PPLUS_FFLAGS    = -132 -c -save -dusty  -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
+FFLAGS          =  -132 -c -save -dusty -mismatch -fieee -maxcontin=150 -x77 -w $(FINCLUDES) 
+PPLUS_FFLAGS    = -132 -c -save -dusty  -fieee -maxcontin=150 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
 CPP_FLAGS       = $(INCLUDES) -P -Dunix -DNEED_IAND -DFORTRAN_90 \
 		  -DNO_OPEN_SHARED \

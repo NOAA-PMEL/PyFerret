@@ -14,9 +14,7 @@
 * is the business of this routine.
 
 * V450: 1/97
-* kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
-*               to have access to context information - needed for negative
-*               time step processing
+* V490: 11/97 - bug fix: when wiping out context axis wipe ww lims, too
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -46,7 +44,7 @@
 
 * local variable declarations
 	LOGICAL CGRID_AXIS
-	INTEGER	TM_LENSTR1, ISUBSCR_CX, KNOWN_GRID,
+	INTEGER	TM_LENSTR1, ISUBSCRIPT, KNOWN_GRID,
      .		gcfcn, idim, arg_grd, mods_cx, tmp_var_cx,
      .		lo_off(4), hi_off(4), action(4), uvgrid,
      .          WHICH_GCFCN
@@ -100,6 +98,8 @@
 	      cx_hi_ss(cx_out,idim)      = unspecified_int4
 	      cx_by_ss(idim,cx_out)      = .TRUE.
 	      cx_given(idim,cx_out)      = .FALSE.	! needed ?
+	      cx_lo_ww(idim,cx_out)      = unspecified_val8	! 11/97
+	      cx_hi_ww(idim,cx_out)      = unspecified_val8	! 11/97
 !	      cx_trans (idim,cx_out)     = trans_no_transform
 !	      cx_trans_arg(idim,cx_out)  = bad_val4
 
@@ -118,11 +118,11 @@
 * ... expand the subscript range by the offsets requested
 	         IF ( cx_hi_ww(idim,cx_out).NE.unspecified_val8 ) THEN
 	            cx_lo_ss(cx_out,idim) =
-     .				ISUBSCR_CX(cx_lo_ww(idim,cx_out),
-     .					   arg_grd, idim, cx_out,round_up)
+     .				ISUBSCRIPT(cx_lo_ww(idim,cx_out),
+     .					   arg_grd, idim, round_up)
 	            cx_hi_ss(cx_out,idim) = 
-     .				ISUBSCR_CX(cx_hi_ww(idim,cx_out),
-     .					   arg_grd, idim, cx_out,round_dn)
+     .				ISUBSCRIPT(cx_hi_ww(idim,cx_out),
+     .					   arg_grd, idim, round_dn)
 	            cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
      .					  + lo_off(idim)
 	            cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)

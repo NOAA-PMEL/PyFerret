@@ -4,6 +4,10 @@
 # Feb 28, 2000  -- based on other TMAP external functions makefiles
 # Ansley Manke
 # Jonathan Callahan (with some help from Joe Sirott)
+# 
+# *acm* 3/23/2000 link  ../common to ferret_cmn  rather than using the
+#       link in ef_utility (which may not be present when this is compiled.)
+#
 #
 #  Note that these functions must be decleared in ../ccr/EF_InternalUtil.c
 #  Run the perl script in this directory int_dlsym.pl ./ > intcode.c
@@ -39,7 +43,7 @@ $(LIB): $(OBJSF) $(OBJSf)
 	$(RANLIB) $@
 
 ferret_cmn:
-	ln -s ../ef_utility/ferret_cmn ferret_cmn
+	ln -s ../common ferret_cmn
 
 clean:
 	rm -f core *.o ferret_cmn

@@ -22,7 +22,7 @@ c*
 
       INTEGER cx_list(EF_MAX_ARGS), iarg
       INTEGER ss_lo_lim, ss_hi_lim
-      INTEGER idim, iarg, grid, i
+      INTEGER idim, grid, i
 
       REAL    values( ss_lo_lim:ss_hi_lim )
       REAL    BOX_SIZE

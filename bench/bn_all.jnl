@@ -379,7 +379,7 @@ GO bn_reset
 GO bn_test_nan.jnl
 
 GO bn_reset
-GO bn_553_bug_fixes.jnl
+GO bn553_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

@@ -61,13 +61,10 @@
 *		      for sgi
 * Linux Port *kob* 12/96 - had to remove a single quote from a comment line
 * 
-* v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.
-*			erroneously
-* V500 *sh* 4/99 - bug fix: single character substitution string caused
-*			error out as empty strings
-*      *js* 4/99 - yet another Ferret hack to add a byteorder symbol -- value
-*                can be BIG or LITTLE
-
+* v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.  erroneously
+*                       reused "clen" argument..changed it to clen2
+* v500 5/99 *kob* - bug fix:  erroneous error trap for single character symbol 
+*                             replacement
 * calling argument declarations:
 	LOGICAL	  did_sub
 	INTEGER	  clen, status
@@ -102,12 +99,6 @@
 	include 'xcommand.cmn'
 	include 'xplot_state.cmn'	! for PPL$XPIXEL
 	include 'xrisc.cmn'
-* #ifdef for endianness info. Don't you love this code?
-#ifdef sun
-	include 'xmachine_byte.cmn'
-#else
-	include 'xmachine_int1.cmn'
-#endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -197,17 +188,6 @@
 	      ELSE
 	         symval = LEFINT(nypix,nchar)
 	      ENDIF
-*
-* Hack to get byteorder of this architecture
-*
-	   ELSE IF (symname .eq. 'BYTEORDER') THEN
-	      if (active_cpu .eq. cptype_sun) then
-		 symval = 'BIG'
-		 nchar = 3
-	      ELSE
-		 symval = 'LITTLE'
-		 nchar = 6
-	      ENDIF
 	   ELSE
 	      CALL GETSYM(symname, symval, nchar, ierr)
 	      IF ( ierr .EQ. 1 ) nchar = 0	! use NULL string if undefined
@@ -218,7 +198,8 @@
 
 * perform the coached text substitution, if requested
 	IF ( coaching ) THEN
-	   IF (coach_start .GT. coach_end) GOTO 5400	 ! 4/99 (was ".GE.")
+* 4/99 *kob* bug fix  - change below to .GT. from .GE
+	   IF (coach_start .GT. coach_end) GOTO 5400
 *11/96 *kob* - concatenation w/in procedure call corrupted on sgis. !kob 12/96
 #ifdef crptd_cat_argument	
 	   cat_argument = 'symbol '//buffer(spos+2:sym_end)

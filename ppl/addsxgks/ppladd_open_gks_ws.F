@@ -11,6 +11,9 @@
 *	*jd* 8.6.93 Mod to use XGKS
 *       *sh* 3.4.97 (& 7/97) Mod to support metafile-only (no X) output
 *       through a cuckoo's egg implantation of meta_wsid in place of wsid
+*            8-4-97 -- substituted this edited version which didn't get
+*            into CVS. This version calls open_gks_ws as long as not in
+*            batch mode.
 
 	integer 	asf(13),error
 	LOGICAL         ITS_BATCH_GRAPHICS, batch

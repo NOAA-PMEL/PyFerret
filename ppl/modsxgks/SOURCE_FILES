@@ -67,4 +67,5 @@ xgksmod_escape.c\
 xgksmod_gksm.c\
 xgksmod_metafile.c\
 xgksmod_xcolours.c\
-xgksmod_xopws.c 
+xgksmod_xopws.c \
+xgksmod_segments.c

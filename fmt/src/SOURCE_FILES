@@ -78,6 +78,8 @@ tm_alternate_note.F\
 tm_axes_reversed.F\
 tm_axis_direction.F\
 tm_axis_order.F\
+tm_axis_recursive.F\
+tm_axis_stride.F\
 tm_break_date.F\
 tm_break_fmt_date.F\
 tm_break_str.F\
@@ -111,6 +113,7 @@ tm_errmsg.F\
 tm_exit.F\
 tm_exp_code.F\
 tm_f7721bug_inquire.F\
+tm_ferret_vartype.F\
 tm_fill.F\
 tm_find_grid_slot.F\
 tm_find_like_dyn_grid.F\
@@ -224,6 +227,7 @@ xunits_data.F
 SRCS_C = \
 alloca.c\
 cd_rd_r8_as_r4.c\
+cd_read_sub.c\
 nap.c\
 tm_blockify_ferret_strings.c\
 tm_break_fmt_date_c.c\
@@ -235,6 +239,7 @@ tm_internal_read_c.c\
 tm_make_relative_ver.c\
 tm_number_sub.c\
 tm_set_free_event.c\
+tm_unblockify_ferret_strings.c\
 tm_unix_versions.c\
 tm_world_recur.c \
 tm_switch_nan.c

@@ -1,8 +1,6 @@
 	SUBROUTINE SHORT_MOD_COPY( memory, res_lo, res_hi, idim,
      .				   tcom_cx, tcom_mr, res_cx, res_mr)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -50,8 +48,8 @@
 
 * V420: 11/95 - to accomodate modulo stripped on the main INTERP_STACK
 *	12/95 - fixed bug for negative subscripts
+* V533: *sh* 6/01 - added logic to cope with strides
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -59,25 +57,15 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	res_lo, res_hi, idim, tcom_cx, tcom_mr, res_cx, res_mr
 	REAL	memory( mem_blk_size, max_mem_blks )
 
-
 * internal variable declarations:
-	LOGICAL	allatonce
-	INTEGER CAXIS_LEN, npts, com_lo, com_hi, com_nshf, res_nshf,
-     .		nshift, xlate, uplim,
+	INTEGER CAXIS_LEN, MODULO_PARITY,
+     .		npts, com_lo, com_hi, com_nshf, res_nshf,
+     .		nshift, xlate, uplim, idel,
      .		cx_lo_sav, cx_hi_sav, mr_lo_sav, mr_hi_sav
 
 
@@ -116,7 +104,12 @@
 	npts = CAXIS_LEN( idim, tcom_cx )	! length of modulo axis
 	com_lo = cx_lo_ss(tcom_cx, idim)
 	com_hi = MIN( cx_hi_ss(tcom_cx,idim), com_lo+npts-1 )	
-	
+	IF (cx_delta(idim,res_cx) .EQ. unspecified_val8) THEN
+	   idel = 1
+	ELSE
+	   idel = cx_delta(idim,res_cx)
+	ENDIF
+
 * initialize the modulo shifting
 	IF ( com_lo .GT. 0 ) THEN
 	   com_nshf = (com_lo - 1) / npts
@@ -136,15 +129,18 @@
 	IF ( res_lo.GT.com_hi+xlate ) xlate = xlate - npts
 	IF ( res_lo.LT.com_lo+xlate ) xlate = xlate + npts
 	IF ( res_lo.GE.com_lo+xlate .AND. res_lo.LE.com_hi+xlate ) THEN
-* ... copy the region
+* ... copy the region (if the parity matches)
 	   uplim = MIN( res_hi, com_hi+xlate )
 	   cx_lo_ss(tcom_cx, idim) = res_lo
 	   cx_hi_ss(tcom_cx, idim) = uplim
 	   mr_lo_ss(tcom_mr, idim) = mr_lo_sav + xlate
 	   mr_hi_ss(tcom_mr, idim) = mr_hi_sav + xlate
-	   CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
-     .			   tcom_cx,
-     .			   memory(1,mr_blk1(res_mr)), res_mr )
+	   IF ( MODULO_PARITY(cx_lo_sav,             npts,idel)
+     .	   .EQ. MODULO_PARITY(cx_lo_ss(tcom_cx,idim),npts,idel) ) THEN
+	      CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
+     .			      tcom_cx,
+     .			      memory(1,mr_blk1(res_mr)), res_mr )
+	   ENDIF
 	   IF (uplim .EQ. res_hi) GOTO 1000	! STEP 2 not needed
 	ENDIF
 
@@ -160,9 +156,12 @@
 	   cx_hi_ss(tcom_cx, idim) = uplim
 	   mr_lo_ss(tcom_mr, idim) = mr_lo_sav + xlate
 	   mr_hi_ss(tcom_mr, idim) = mr_hi_sav + xlate
-	   CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
+	   IF ( MODULO_PARITY(cx_lo_sav,             npts,idel)
+     .	   .EQ. MODULO_PARITY(cx_lo_ss(tcom_cx,idim),npts,idel) ) THEN
+	      CALL COPY_INTO( memory(1,mr_blk1(tcom_mr)), tcom_mr,
      .			   tcom_cx,
      .			   memory(1,mr_blk1(res_mr)), res_mr )
+	   ENDIF
 	ENDIF
 
 * clean up - restore as before this call

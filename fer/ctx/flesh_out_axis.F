@@ -68,8 +68,8 @@
 *		    use line .LT. max_lines as a test of an implicit axes
 * v5.3 *acm* 1/01 - line_cal_name is part of the data set information
 * V530: *sh* 4/01 - added comment about in_get_grid_mode
+* V533: *sh* 6/01 - added logic for strides (cx_delta)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -83,17 +83,6 @@
 	include 'xtext_info.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, cx, status
@@ -101,7 +90,7 @@
 * internal variable declarations:
 	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, point, lim_redundant
 	INTEGER	TM_LENSTR1, ISUBSCR_CX,
-     .		ss, lo_ss, hi_ss, axis, grid, cat, var
+     .		ss, lo_ss, hi_ss, axis, grid, cat, var, ispread
 	INTEGER TM_GET_CALENDAR_ID, cal_id
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
 * kob 3/99 up VAR_CODE from 8 to 64 chars
@@ -192,6 +181,14 @@
 	      IF ( lo_ss.EQ.unspecified_int4 ) RETURN
 	      cx_lo_ss(cx,idim) = lo_ss
 	      cx_hi_ss(cx,idim) = hi_ss
+	    ENDIF
+
+* if strides in use then set the upper subscript to correct parity
+	    IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
+	      ispread = cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim)
+	      ispread = (ispread/INT(cx_delta(idim,cx)))
+     .		      * INT(cx_delta(idim,cx))
+	      cx_hi_ss(cx,idim) = cx_lo_ss(cx,idim) + ispread
 	    ENDIF
 
 * compute world positions as grid box edges

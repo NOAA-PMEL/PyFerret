@@ -64,21 +64,16 @@
 * V530:  3/01 *sh* - added g=ax@nrst
 * V530:	 3/01 *acm* return a status flag from rcvd_regrid, tests for
 *                   valid calendar axes.
-#ifdef unix
+* V533:	 6/01 *sh* - some regridding ops not allowed for string arrays
+*		   - mr_delta changes the handling of stride regridding
+
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
+	include	'xalgebra.cmn'   ! with alg_regrid_code
 
 * calling argument declarations:
 	INTEGER	status
@@ -88,7 +83,8 @@
 
 * internal variable declarations:
 	LOGICAL	TM_ITS_CDF,
-     .		xy_ave, valid, valid_y, has_impl_save, done_by_strides
+     .		xy_ave, valid, valid_y, has_impl_save, done_by_strides,
+     .		itsa_string
 	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(4), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
@@ -111,6 +107,7 @@
 	axis	 = is_axis( lo_isp )
 	naxis	 = 1
 	axis_list(1) = axis
+	itsa_string = cx_type(src_cx) .EQ. ptype_string
 
 * what is the regridding transformation for this axis ?
 	rgrd_trans = cx_regrid_trans( axis, dst_cx )
@@ -158,7 +155,6 @@
 * (Other axes may have been modified by information embedded within a
 * user-variable definition.  An alternative (untested 8/89) approach is to
 * call PASS_AMBIG_LI** for uvars)
-	IF (done_by_strides) CALL TRANSFER_AXIS ( axis, dst_cx, src_cx )
 	CALL TRANSFER_CONTEXT( src_cx, cx_buff )
 	DO 500 i = 1, naxis 
 	   idim = axis_list(i)
@@ -235,6 +231,7 @@
 	   CALL COPY_GRID( memory(1,mr_blk1(src_mr)),  src_mr,
      .			   memory(1,mr_blk1(dst_mr)),  dst_mr )
 	ELSEIF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
+	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_LIN_REGRID( cx_valid, axis,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
@@ -247,17 +244,20 @@
      .	 .OR.    rgrd_trans .EQ. prgrd_variance
      .	 .OR.    rgrd_trans .EQ. prgrd_sum
      .	 .OR.    rgrd_trans .EQ. prgrd_good_pt ) THEN
+	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_AVE_REGRID( cx_valid, axis, rgrd_trans,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), wk_size+1, 2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave ) THEN
+	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYAVE_REGRID( cx_valid,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), wk_size+1, wk_size+wk_size2 )
 	ELSEIF ( rgrd_trans.EQ.prgrd_min
      .	   .OR. rgrd_trans.EQ.prgrd_max ) THEN
+	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_WINDOW_REGRID( cx_valid, axis, rgrd_trans,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
@@ -274,6 +274,7 @@
      .			memory(1, blk1), wk_size+1, 2*wk_size )
 * modulo regridding
 	ELSE
+	   IF ( itsa_string ) GOTO 5010
 * ... for all modulo regridding cases allocate a temp variable to contain
 * ... the modngd (number of valid points) result -- this is used in all
 * ... of the modulo calculations.
@@ -321,23 +322,15 @@
      .			CALL DELETE_VARIABLE ( src_mr )
 	ENDIF
 
-* was a dynamic grid allocated for this regridding?  If so deallocate it.
-! no - (still during development).  This grid needs to remain in existence
-! until after the resulting component actually gets **used**.  That will
-! be at the same time that it is "unprotected".
-!	IF ( cx_has_impl_grid(dst_cx) ) THEN
-!	   IF ( mode_diagnostic )  CALL DIAG_OP
-!     .	  ('deallocate', isact_class_impl_grid, cx_grid(dst_cx), 0)
-!	   cx_has_impl_grid(dst_cx) = .FALSE.
-!	   CALL TM_DEALLO_DYN_GRID( cx_grid(dst_cx) )
-!	ENDIF
-
 * pop off context used by source grid
         cx_stack_ptr = cx_stack_ptr - 1
 	RETURN 1
 
 * error exits
  5000	RETURN
+ 5010	CALL ERRMSG( ferr_invalid_command, status,
+     .		'cant use this regrid transform on strings: @'
+     .		//alg_regrid_code(rgrd_trans), *5000)
  5100	CALL DELETE_VARIABLE( dst_mr )
  5200	CALL DELETE_VARIABLE( ngd_mr )
 	GOTO 5000

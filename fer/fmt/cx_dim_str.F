@@ -1,7 +1,5 @@
 	CHARACTER*(*) FUNCTION CX_DIM_STR( idim,cx,to_word,full_prec,slen )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -51,16 +49,11 @@
 * V230:  6/22/92 - if ss limits are unspec. then use world limits regardless
 *                  of cx_by_ss (needed for CDF_LIST documentation)
 *        8/18/92 - eliminated string(1:) notation for MAC compatibility
+* V533:  6/01 - allow for the possibility of negative subscripts
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations
 	LOGICAL	full_prec
@@ -92,7 +85,8 @@
 	   ELSE
 * ... uses leading zeros to ensure filenames generated automatically will colate
 	      CX_DIM_STR(3:cx_dim_str_len) = '0000000000000000'
-	      ndigits = LOG10( REAL(cx_hi_ss(cx,idim)) ) + 1.00001
+	      ndigits = LOG10( REAL(ABS(cx_hi_ss(cx,idim))) ) + 1.00001
+	      IF ( cx_hi_ss(cx,idim) .LT. 0 ) ndigits = ndigits + 1
 	      slen = 2 + ndigits	! right-most character
 	      buff = LEFINT( cx_lo_ss(cx,idim), llen )
 	      CX_DIM_STR(slen-llen+1:slen)=buff(:llen)

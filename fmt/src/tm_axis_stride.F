@@ -1,9 +1,5 @@
-	SUBROUTINE COPY_INTO_SUB( cxlo, cxhi,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit  )
+	INTEGER FUNCTION TM_AXIS_STRIDE (axis, i1)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -37,36 +33,41 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* copy data from source grid into dstination grid using limits of source
-* context (i.e. dstination grid is ASSUMED) big enough to hold data
+* Return the "stride" value and starting index for an axis that is the
+* child of another
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200: 10/16/89 - from COPY_INTO
-* V533 *sh* 6/01 - allowing delta values in mrs
+* V533 *sh* 6/01
 
-* calling argument declarations:
-	INTEGER cxlo(4), cxhi(4),
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+	include 'tmap_dims.parm'
+	include 'implicit.parm'
+	include	'xtm_grid.cmn_text'
 
-* internal variable declarations:
-	INTEGER	i, j, k, l
+* calling argument declarations
+	INTEGER axis, i1
 
-* --- end of introductory code ---
+* internal variable declarations
+	REAL	parent_delta
 
-	DO 100 l = cxlo(4), cxhi(4)
-	DO 100 k = cxlo(3), cxhi(3)
-	DO 100 j = cxlo(2), cxhi(2)
-	DO 100 i = cxlo(1), cxhi(1)
+	IF ( line_class(axis) .EQ. pline_class_stride ) THEN
 
-	   dst(i,j,k,l) = src(i,j,k,l)
+	   IF ( line_regular(axis) ) THEN
+	      parent_delta = line_delta(line_parent(axis))
+	      TM_AXIS_STRIDE = INT( 1.001 * line_delta(axis)/
+     .			                    parent_delta )
+	      i1 = INT( 1.001 *
+     .			(line_start(axis) - line_start(line_parent(axis))) / 
+     .			parent_delta ) + 1
+	   ELSE
+	      TM_AXIS_STRIDE = INT( line_delta(axis) )
+	      i1 = INT( line_start(axis) )
+	   ENDIF
 
- 100	CONTINUE
+	ELSE
+
+	   TM_AXIS_STRIDE = 1
+	   i1 = 1
+
+	ENDIF
 
 	RETURN
-	END 
+	END

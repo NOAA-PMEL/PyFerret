@@ -1,7 +1,5 @@
 	SUBROUTINE REGRID_LIMS( dst_cx, src_cx, axis, status, * )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -69,8 +67,8 @@
 *		    use same framework to handle XY averaging
 *	*sh* 4/00 - all grids and axes now maintain use counts and have
 *			line_class available
+* V533 *sh* 6/01 - allow strides and modulo to be combined
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
 	include	'xtm_grid.cmn_text'
@@ -80,15 +78,6 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	src_cx, axis, dst_cx, status
@@ -96,10 +85,12 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS,  TM_ITS_CDF,
-     .		xy_ave, last_axis, may_have_strides, has_strides, modulo
-	INTEGER	KNOWN_GRID, CAXIS_LEN,
+     .		xy_ave, last_axis, may_have_strides, has_strides,
+     .		unacceptable_modulo
+	INTEGER	KNOWN_GRID, CAXIS_LEN, TM_AXIS_STRIDE, CX_DIM_LEN,
      .		idim, axis_list(4), naxis, var_grid, src_grid, dst_grid,
-     .		next_axis, dst_axis, var_axis, mr, i
+     .		next_axis, dst_axis, var_axis, i, axlen, i1
+	REAL	fraction
 	CHARACTER VAR_CODE*64, dtype*4
 
 * initialize
@@ -165,7 +156,7 @@
 	    dst_axis = grid_line(idim,dst_grid)
 	    var_axis = grid_line(idim,var_grid)
 	    IF (dst_axis.EQ.var_axis) GOTO 100
-	    IF (cx_regrid_trans(idim,dst_cx).EQ.prgrd_linear_interp
+	    IF (cx_regrid_trans(idim,dst_cx).EQ.prgrd_xact_pts
      .     .OR. cx_regrid_trans(idim,dst_cx).EQ.prgrd_exact) THEN
 	      IF ( line_class(dst_axis) .EQ. pline_class_stride ) THEN
 	        IF (idim .NE. axis) naxis = naxis + 1
@@ -227,17 +218,34 @@
 *    this above, but since RQST_REGRID does all the work, we waited
 * 2) if the complete source data is already in cache don't reread w/ strides
 	IF (has_strides) THEN
-	   CALL FIND_MEM_VAR( src_cx, mr, search_by_value )
-	   modulo = .FALSE.
+	   unacceptable_modulo = .FALSE.
 	   DO 400 i = 1, naxis
 	      idim = axis_list(i)
-	      modulo = modulo
-     .       .OR.  cx_hi_ss(src_cx,idim) .GT. CAXIS_LEN(idim,src_cx)
-     .	     .OR.  cx_lo_ss(src_cx,idim) .LT. 1
+	      axlen = CAXIS_LEN(idim, src_cx)
+	      IF (CX_DIM_LEN(idim,src_cx) .GT. axlen) THEN
+*     ...  for multi-cycle modulo stride must be an integer factor of ax length
+	         fraction = FLOAT(axlen) /
+     .			    TM_AXIS_STRIDE(grid_line(idim,dst_grid), i1)
+	         unacceptable_modulo = unacceptable_modulo
+     .				 .OR.  fraction .NE. INT(fraction)
+	      ENDIF
  400	   CONTINUE
-           IF ( modulo .OR. mr .GT. mr_nonexist ) THEN
+! THE COMMENTED OUT CODE BELOW CAN BE USED TO TURN ON LOGIC THAT WILL REUSE
+! CACHED (NON_STRIDES) DATA RATHER THAN REREADING USING STRIDES. IT IS
+! COMMENTED OUT AS NOT ENTIRELY DESIRABLE: 1) IT CREATES MULTIPLE CODE PATHS
+! FOR THE SAME OPERATION; 2) IT CAN CAUSE UNACCEPTABLE MEMORY USAGE AS THE
+! NON-STRIDED BASE REGION GETS MODULO-REPLICATED BEFORE SUBSAMPLING
+* ... if full source region is already in memory without strides then
+*     do striding from it in memory -- no new IO needed (optimization)
+!	   CALL FIND_MEM_VAR( src_cx, mr, search_by_value )
+!           IF ( unacceptable_modulo .OR. mr.GT.mr_nonexist ) THEN
+           IF ( unacceptable_modulo ) THEN
 	      may_have_strides = .FALSE.
 	      CALL TRANSFER_CONTEXT( cx_buff, src_cx)
+!	      IF ( unacceptable_modulo ) THEN
+	        CALL WARN('Not using NetCDF strides for multi-cycle modulo')
+	        CALL WARN('Stride value not a factor of axis length')  
+!	      ENDIF
 	      GOTO 50			! re-do w/out strides
 	   ENDIF
 	ENDIF

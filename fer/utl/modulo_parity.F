@@ -1,9 +1,5 @@
-	SUBROUTINE COPY_INTO_SUB( cxlo, cxhi,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit  )
+	INTEGER FUNCTION MODULO_PARITY(ss1, modlen, delta)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -37,36 +33,26 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* copy data from source grid into dstination grid using limits of source
-* context (i.e. dstination grid is ASSUMED) big enough to hold data
+* Determine the "parity" that is associated with the starting subscript ss1
+* given a modulo length of lenmod and a stride value of delta
+* for example, if the modulo length is 10
+*	i=1:10:3  - parity = 1  ... ditto i=4:10:3
+*	i=2:10:3  - parity = 2  ... ditto i=5:10:3
+*	i=3:10:3  - parity = 3  ... ditto i=6:10:3
+* Although i=11 would seem to be parity=2, it is the starting index of the
+* next modulo replication so it is parity=1. i=12 is parity=2, etc.
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200: 10/16/89 - from COPY_INTO
-* V533 *sh* 6/01 - allowing delta values in mrs
+* V533: *sh* 6/01
 
-* calling argument declarations:
-	INTEGER cxlo(4), cxhi(4),
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+* calling argument declarations
+	INTEGER	ss1, modlen, delta
 
-* internal variable declarations:
-	INTEGER	i, j, k, l
+* internal variable declarations
+	INTEGER nmod
 
-* --- end of introductory code ---
+	nmod = (ss1-1)/modlen  ! number of modulo replications preceding ss1
 
-	DO 100 l = cxlo(4), cxhi(4)
-	DO 100 k = cxlo(3), cxhi(3)
-	DO 100 j = cxlo(2), cxhi(2)
-	DO 100 i = cxlo(1), cxhi(1)
-
-	   dst(i,j,k,l) = src(i,j,k,l)
-
- 100	CONTINUE
+	MODULO_PARITY = MOD(ss1-(nmod*modlen)-1, delta) + 1
 
 	RETURN
-	END 
+	END

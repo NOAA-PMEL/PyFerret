@@ -1,7 +1,5 @@
 	SUBROUTINE ASSIGN_MR_CX( cx, mr )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -39,20 +37,14 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 
 * V200:  6/26/89 - extracted from ASSIGN_VARIABLE
 * V530:  8/00 *sh* save data type, too
+* V530:  6/01 *sh* save the delta value, too
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		cx, mr
@@ -79,6 +71,7 @@
 	   mr_trans( idim, mr )   = trans
 	   mr_lo_ss( mr, idim )   = cx_lo_ss( cx, idim )
 	   mr_hi_ss( mr, idim )   = cx_hi_ss( cx, idim )
+	   mr_delta( idim, mr )   = cx_delta( idim, cx )
 	   mr_trans_arg(idim, mr) = cx_trans_arg(idim, cx)
 	   mr_regrid_trans( idim, mr ) = cx_regrid_trans( idim, cx )
 

@@ -1,7 +1,5 @@
 	SUBROUTINE IS_STRIP( act_class, idim, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -67,16 +65,18 @@
 * V510: *sh* 9/99 - remove warning about too-negative modulo. Change in
 *	TM_WORLD has hopefully made this a legitimate operation
 *	*sh* 1/00 - bug fix: @ITP failed to set subscripts if exact grid point
+* V533: *sh* 6/01 - support for combined netCDF strides (cx_delta) and modulo
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
 * RETURN 1 - goes back to strip off any remaining transformations
 
 * internal variable declarations:
-	LOGICAL	ITSA_MODULO_REGRID, itsa_uvar, modulo_dest_regrid
+	LOGICAL	ITSA_MODULO_REGRID, itsa_uvar, modulo_dest_regrid,
+     .		allatonce
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CX_DIM_LEN, POTENT_SIZE,
-     .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE,
-     .		nrev, reversed(4),
+     .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
+     .		nrev, reversed(4), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
      .		cxsize, split_ax, split_ax_len, frag, var, ss, lo_ss,
@@ -85,7 +85,6 @@
 	REAL	ax_frac
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -95,17 +94,6 @@
 	include	'xprog_state.cmn'
 	include	'xalgebra.cmn'
 	include	'xax_speed.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XAX_SPEED.CMN'
-#endif
 
 * --- end of introductory code ---
 * initiailize - ! temp:always called at bottom of stack frame for transform
@@ -229,8 +217,20 @@
 	   cx_lo_ss(hi_cx, axis) = cx_lo_ss(lo_cx, axis) - xlate
 	   cx_hi_ss(hi_cx, axis) = MIN( npts, 
      .				   cx_hi_ss(lo_cx, axis) - xlate )
-	   IF ( cx_hi_ss(lo_cx, axis)-cx_lo_ss(lo_cx,axis) .GE. npts )
-     .	      cx_lo_ss(hi_cx, axis) = 1
+* if requested span exceeds axis length we can modulo from one request
+* note that with strides the parity may shift in the right hand replication
+*      regrid_lims only lets those cases thru to here if rqsted span le npts
+	   allatonce = cx_hi_ss(lo_cx,axis)-cx_lo_ss(lo_cx,axis) .GE. npts
+	   IF ( allatonce ) THEN
+	     IF (cx_delta(axis,lo_cx) .EQ. unspecified_val8) THEN
+	        cx_lo_ss(hi_cx, axis) = 1
+	     ELSE
+	        idel = cx_delta(axis,lo_cx)
+	        cx_lo_ss(hi_cx, axis) = MODULO_PARITY(cx_lo_ss(lo_cx,axis),
+     .					npts, idel)
+	        allatonce = npts .EQ. (npts/idel)*idel   ! parity shift?
+	     ENDIF
+	   ENDIF
 * ... always request full base region for modulo regridding
 	   IF ( modulo_dest_regrid ) THEN
 	      cx_lo_ss(hi_cx, axis) = unspecified_int4  ! implying "1"
@@ -256,8 +256,7 @@
 	   ELSE
 	      nmodhi = cx_hi_ss(lo_cx, axis) / npts - 1
 	   ENDIF
-	   IF ( cx_hi_ss(hi_cx,axis)-cx_lo_ss(hi_cx,axis)+1 .GE. npts
-     .	   .OR. nmod .EQ. nmodhi 				) THEN
+	   IF ( allatonce .OR. nmod.EQ.nmodhi 		) THEN
 	      is_phase ( lo_isp ) = isphase_allatonce
 	   ELSE
 	      is_phase ( lo_isp ) = isphase_1

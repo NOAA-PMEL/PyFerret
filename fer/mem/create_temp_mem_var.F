@@ -1,7 +1,5 @@
 	SUBROUTINE CREATE_TEMP_MEM_VAR( cx, mr, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,28 +44,23 @@
 * revision 0.0 - 4/14/88 - from CREATE_MEM_VAR ver 0.0
 * V530   8/00 *sh* - double the memory allocation for string variables
 *			(to support 64 bit pointers)
+* V533   6/01 *sh* - use CGRID_SIZE_DELTA to allow mem vars with delta values
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		cx, mr, status
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE,
+	INTEGER	CGRID_SIZE_DELTA,
      .		grid_size, start_block, num_blocks
 
 * amount of storage space required
-	grid_size = CGRID_SIZE( cx )
+	grid_size = CGRID_SIZE_DELTA( cx )
+* ... note: later we will want an array of word sizes indexed by type
 	IF (cx_type(cx) .EQ. ptype_string) grid_size = grid_size*2 ! 8 byte ptr
 
 * claim the storage space

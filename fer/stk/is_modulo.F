@@ -1,7 +1,5 @@
 	SUBROUTINE IS_MODULO( memory, *, *, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -48,8 +46,8 @@
 *		lies strictly in the base region
 *	      - If the result is "pathological" then flag it as "un-cached"
 *		so it will not be reused.
+* V533: *sh* 6/01 - allow modulo of variables with strides (cx_delta) 
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -57,15 +55,6 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -80,10 +69,11 @@
 *	 isp	<--	current stack level (for moduloing )
 
 * internal variable declarations:
-	INTEGER CAXIS_LEN, CX_DIM_LEN,
+!	LOGICAL	nonfactorstride
+	INTEGER CAXIS_LEN, CX_DIM_LEN, MODULO_PARITY, MGRID_SIZE_DELTA,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
      .		npts, idim, i, phase, res_lo, res_hi, xlate, nmod,
-     .		tmp_mr, nrepl, rqst_cx
+     .		tmp_mr, nrepl, rqst_cx, idel, lo_parity
 
 
 * --- end of introductory code ---
@@ -127,6 +117,12 @@
 	idim       = is_axis( res_isp )
 	npts	   = CAXIS_LEN( idim, com_cx )
 	phase	   = is_phase(isp)
+	IF (cx_delta(idim,res_cx) .EQ. unspecified_val8) THEN
+	   idel = 1
+	ELSE
+	   idel = cx_delta(idim,res_cx)
+	ENDIF
+!	nonfactorstride = npts .NE. (npts/idel)*idel
 
 * diagnostic mode output: " doing modulo VAR_NAME[x=lo:hi,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -148,8 +144,15 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   is_mr( res_isp ) = res_mr
 
+	   IF ( mr_type(res_mr) .EQ. ptype_string ) THEN
+	      CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
+     .                               memory(1, mr_blk1(res_mr)),
+     .                               mr_c_pointer(res_mr)      )
+	   ENDIF
+
 * 11/95: if there might be voids in the result pre-fill with missing data flags
-	   IF ( CX_DIM_LEN(idim,com_cx) .LT. npts ) CALL FILL_MEMORY
+	   IF ( CX_DIM_LEN(idim,com_cx) .LT. npts
+     .	  .AND. mr_type(res_mr) .EQ. ptype_float  ) CALL FILL_MEMORY
      .				( memory,mr_blk1(res_mr),mr_nblks(res_mr),
      .                            mr_bad_data(res_mr) )
 	ENDIF
@@ -182,17 +185,21 @@
 
 * * * * *
 * Copy the component data into the result, replicating as we go
+* ... watch for delta not a factor of npts -- parity shifts at each replication
 	nrepl = (cx_hi_ss(res_cx,idim) - cx_lo_ss(res_cx,idim))
      .		   / npts
-	res_hi = cx_lo_ss(res_cx,idim) - 1
+	res_hi = cx_lo_ss(res_cx,idim) - idel
 	DO 300 i = 1, nrepl + 1
-	   res_lo = res_hi + 1
-	   res_hi = MIN( res_lo+npts-1, cx_hi_ss(res_cx,idim) )
+	   res_lo = res_hi + idel
+	   lo_parity = MODULO_PARITY(res_lo, npts, idel)
+	   res_hi = MIN(res_lo+(((npts-lo_parity)/idel)*idel),
+     .		        cx_hi_ss(res_cx,idim))
 	   CALL SHORT_MOD_COPY( memory,
      .				res_lo, res_hi, idim,
      .				com_cx, tmp_mr, res_cx, res_mr)
  300	CONTINUE
 * * * * *
+
 
 * Set up context to go back for data that is still needed
 	IF( phase .EQ. isphase_1 ) THEN
@@ -200,7 +207,13 @@
 *     note: the variable EX#N may have become category file variable in com_cx 
 	   nmod = cx_hi_ss(res_cx, idim) / npts
 	   xlate = nmod * npts
-	   cx_lo_ss(rqst_cx, idim) = 1
+
+* set lo to the parity of the first point needed in the right hand modulo
+	   lo_parity = MODULO_PARITY(cx_lo_ss(res_cx,idim), npts, idel)
+	   i = cx_lo_ss(res_cx,idim)+((npts-lo_parity)/idel+1)*idel
+	   IF ((cx_lo_ss(res_cx,idim)/npts)*npts .EQ. cx_lo_ss(res_cx,idim))
+     .		i = i - idel
+	   cx_lo_ss(rqst_cx, idim) = MODULO_PARITY(i, npts, idel)
 	   cx_hi_ss(rqst_cx, idim) = cx_hi_ss(res_cx, idim) - xlate
 	   cx_by_ss(idim,rqst_cx) = .TRUE.
 	   CALL FLESH_OUT_AXIS( idim, rqst_cx, status )
@@ -212,6 +225,8 @@
 * ... remove the component protection that signaled we needed it here
 	   CALL MR_NOT_IN_USE( com_mr )
 	   CALL DELETE_VARIABLE( tmp_mr )  ! delete the extra table entry
+	   IF (mr_delta(idim,com_mr).NE.unspecified_val8)
+     .		 CALL DELETE_VARIABLE( com_mr )  ! invalid since using mr_delta
 
 * ... push the interpretation stack and go get the final component
 	   is_phase(isp) = isphase_2
@@ -223,6 +238,8 @@
 	ELSE
 	   CALL MR_NOT_IN_USE( com_mr )	! remove memory protection on component
 	   CALL DELETE_VARIABLE( tmp_mr )  ! delete extra table entry
+	   IF (mr_delta(idim,com_mr).NE.unspecified_val8)
+     .		 CALL DELETE_VARIABLE( com_mr )  ! invalid since using mr_delta
 	   cx_stack_ptr = cx_stack_ptr - 1 ! pop rqst_cx from context stack
 	   cx_stack_ptr = cx_stack_ptr - 1 ! pop com_cx  from context stack
 	   status = ferr_ok

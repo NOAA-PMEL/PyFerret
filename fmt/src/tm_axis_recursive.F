@@ -1,9 +1,5 @@
-	SUBROUTINE COPY_INTO_SUB( cxlo, cxhi,
-     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit  )
+	LOGICAL FUNCTION TM_AXIS_RECURSIVE (axis)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -37,36 +33,23 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* copy data from source grid into dstination grid using limits of source
-* context (i.e. dstination grid is ASSUMED) big enough to hold data
+* Return flag indicating if the parent axis definition is required in order
+* to evaluate coordinates on this axis
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200: 10/16/89 - from COPY_INTO
-* V533 *sh* 6/01 - allowing delta values in mrs
 
-* calling argument declarations:
-	INTEGER cxlo(4), cxhi(4),
-     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
-	REAL    src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
-     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
+* V533 *sh* 6/01
 
-* internal variable declarations:
-	INTEGER	i, j, k, l
+	include 'tmap_dims.parm'
+	include 'implicit.parm'
+	include	'xtm_grid.cmn_text'
 
-* --- end of introductory code ---
+* calling argument declarations
+	INTEGER axis
 
-	DO 100 l = cxlo(4), cxhi(4)
-	DO 100 k = cxlo(3), cxhi(3)
-	DO 100 j = cxlo(2), cxhi(2)
-	DO 100 i = cxlo(1), cxhi(1)
+* internal variable declarations
 
-	   dst(i,j,k,l) = src(i,j,k,l)
-
- 100	CONTINUE
+	TM_AXIS_RECURSIVE = line_parent(axis) .NE.0
+     .		      .AND. .NOT.line_regular(axis)
 
 	RETURN
-	END 
+	END

@@ -1,6 +1,5 @@
 	SUBROUTINE READ_TM ( memory, cx, mr, status )
 
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -50,8 +49,8 @@
 *              and check for NaN as missing values
 *	3/99 - *kob* up VAR_CODE and local var variable_code to 64 chars
 *	5/99 - *sh* added strides to TMAP read calls
+* V533: 6/01 - *sh* initialize string input variable
 
-#ifdef unix
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -63,17 +62,6 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, mr, status
@@ -81,7 +69,7 @@
 
 * internal variable declarations:
 	LOGICAL	has_a_stride, has_strides(4)
-	INTEGER CAXIS_LEN,
+	INTEGER MGRID_SIZE,
      .			idim, variable, category, data_set, grid,
      .			sf_num, tmap_status, lo_ss(4), hi_ss(4),
      .			lo_s1, lo_s2, lo_s3, lo_s4, 
@@ -107,6 +95,12 @@
 	grid = cx_grid( cx )
 	variable_code = VAR_CODE( category, variable )
 
+* check data type
+	IF ( cx_type(cx) .NE. ds_var_type(variable) ) THEN
+	   CALL WARN('Internal err: read data type mismatch')
+	   cx_type(cx) = ds_var_type(variable)
+	ENDIF
+
 * strides indicated in cx_delta e.g. SST[I=110:180:10] ?
 * If so, transfer this info to the stride array
 	has_a_stride = .FALSE.
@@ -121,23 +115,28 @@
 	   ENDIF
  100	CONTINUE
 
-* if strides are invloved the memory requirement is less ...
-	CALL TRANSFER_CONTEXT(cx, cx_buff)
-	IF (has_a_stride) THEN
-	   DO 200 idim = 1, 4
-	      IF  (has_strides(idim)) THEN
-	         cx_lo_ss( cx_buff, idim ) = 1 
-	         cx_hi_ss( cx_buff, idim ) = 
-     .				(cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim))
-     .		              / INT(cx_delta(idim,cx))  + 1
-	         cx_delta(idim,cx_buff) = unspecified_val8
-	      ENDIF
- 200      CONTINUE
-	ENDIF
+! not required 6/01 when CREATE_MEM_VAR became sensitive to cx_delta
+!* if strides are invloved the memory requirement is less ...
+!	CALL TRANSFER_CONTEXT(cx, cx_buff)
+!	IF (has_a_stride) THEN
+!	   DO 200 idim = 1, 4
+!	      IF  (has_strides(idim)) THEN
+!	         cx_lo_ss( cx_buff, idim ) = 1 
+!	         cx_hi_ss( cx_buff, idim ) = 
+!     .				(cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim))
+!     .		              / INT(cx_delta(idim,cx))  + 1
+!	         cx_delta(idim,cx_buff) = unspecified_val8
+!	      ENDIF
+! 200      CONTINUE
+!	ENDIF
 
 * reserve and catalog space for the result
-	CALL CREATE_MEM_VAR( cx_buff, mr, status )
+	CALL CREATE_MEM_VAR( cx, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
+	IF (ds_var_type(variable) .EQ. ptype_string)
+     .		CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
+     .			                  memory(1,mr_blk1(mr)),
+     .					  mr_c_pointer(mr)      )
 
 * un-cache it?
 * Turns out that uncaching the result here causes all of its descendants to

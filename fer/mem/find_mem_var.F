@@ -70,6 +70,8 @@
 *	 4/99 *sh* - check mode_arg for mode_stupid
 * V510: 12/99 *sh* - modulo axis to not prevent uvlin_gvn_xact hit
 * V533: 6/01 *sh* - added @EVNT - check as in trans_run_sum
+*	          - check that the data type matches
+*		  - check that the delta value matches
 
 * (V510) How on cache hits on external functions (EFs) work:
 * uvar_given is used to encapsulate information about cache reuse for EF
@@ -95,7 +97,6 @@
 * slightly different rules for setting uvar_given -- see gcf_impose_axes.F
 
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -104,15 +105,6 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		cx, mr
@@ -178,6 +170,9 @@
      .	.OR. mr_data_set ( mv ) .NE. cx_data_set(cx)
      .	.OR. mr_grid ( mv ) .NE. defining_grid	     )		GOTO 100
 
+* check variable type
+	IF ( mr_type(mv) .NE. cx_type(cx) ) GOTO 100
+
 * right instance (coordinate ranges and transformations) ?
 	IF ( itsa_uvar ) THEN
 
@@ -205,6 +200,9 @@
 	      IF ( mr_lo_ww(idim,mv) .GT. cx_lo_ww(idim,cx)
      .        .OR. mr_hi_ww(idim,mv) .LT. cx_hi_ww(idim,cx)) GOTO 100
 
+* insist that the delta values match
+	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
+
  40	   CONTINUE
 
 * right instance (coordinate ranges and transformations) ?
@@ -221,6 +219,9 @@
 * insist that the  grid stored in memory encompasses the requested data
 	      IF ( mr_lo_ww(idim, mv) .GT. cx_lo_ww(idim, cx)
      .        .OR. mr_hi_ww(idim, mv) .LT. cx_hi_ww(idim, cx))	GOTO 100
+
+* insist that the delta values match
+	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
 
  50	   CONTINUE
 
@@ -241,6 +242,9 @@
 * ... always untransformed --> normal axes always have a span on 1 point
 	      IF ( mr_lo_ss(mv, idim) .GT. cx_lo_ss(cx, idim)
      .	      .OR. mr_hi_ss(mv, idim) .LT. cx_hi_ss(cx, idim))	GOTO 100
+
+* insist that the delta values match
+	      IF ( mr_delta(idim,mv) .NE. cx_delta(idim,cx) ) GOTO 100
 
  60	   CONTINUE
 	ENDIF

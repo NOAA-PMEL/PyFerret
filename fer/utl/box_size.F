@@ -1,7 +1,5 @@
 	REAL FUNCTION BOX_SIZE( isubscript, grid, idim )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,7 +38,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 12/9/86
 * revision 1.0 - 3/10/87 - line data stored in COMMON/~VARIABLES/
@@ -54,25 +51,19 @@
 *		           (code would be sweeter if ALL lines had line_parent)
 * V510 4/00 *sh* -- all lines now DO have line_parent
 *      6/00 *sh* -- bug fix: children of irregular modulo axes 
+* V533 6/01 *sh* -- using TM_AXIS_RECURSIVE
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	isubscript, grid, idim
 
 * internal variable declarations:
-	LOGICAL recursive, modulo
+	LOGICAL TM_AXIS_RECURSIVE, recursive, modulo
 	INTEGER	iaxis, isub0
 	REAL*8	TM_WORLD, lo_point, hi_point
 
@@ -100,7 +91,7 @@
 
 * only dynamic lines have the possibility of recursive definitions
 * (since FORTRAN doesn't protect "AND" clauses this test in 2 steps)
-	   recursive = line_parent(iaxis) .NE. 0 
+	   recursive = TM_AXIS_RECURSIVE(iaxis)
 
 * use modulo logic if the parent line is modulo (6/00)
 	   modulo = line_modulo(iaxis)

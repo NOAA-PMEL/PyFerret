@@ -43,25 +43,20 @@
 
 * V530 10/00 *sh* - extracted from tm_world so that it could be called from
 *		    routines that know the axis but not a container grid
+* V533 6/01 *sh* - using TM_AXIS_RECURSIVE
 
 * Include files
-#ifdef unix
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	isubscript, iaxis, where_in_box
 
 * internal variable declarations:
 	LOGICAL	recursive
-	INTEGER	isub, line_len, rmod
+	INTEGER	TM_AXIS_RECURSIVE, isub, line_len, rmod
 	REAL*8	TM_WORLD_RECUR, midpoint, box_size, tempwld
 
 * initialize
@@ -71,7 +66,7 @@
 * axis then use a recursive C routine to find the answer
 	recursive = iaxis .GT. max_lines
 	IF ( recursive ) THEN
-	  recursive = line_parent(iaxis) .NE. 0 
+	  recursive = TM_AXIS_RECURSIVE(iaxis) 
 	  IF ( recursive ) THEN
 	    TM_WORLD_AX = TM_WORLD_RECUR(
      .			isubscript,iaxis,where_in_box,max_lines,

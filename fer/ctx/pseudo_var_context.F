@@ -57,6 +57,9 @@
 *	11/95   - code to deal with T[T=date:date:delta]
 * 
 * kob  8/25/97 - use newly created cx_calender to check whether time is a date or time_step
+* V500: 2/22/99 *sh* - if ABSTRACT grid or normal axis then use XABSTRACT (or
+*			YABSTRACT, ZABSTRACT, TABSTRACT)
+*		       see Note at "the_real-ABSTRACT"
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -93,7 +96,7 @@
 * internal variable declarations:
 	LOGICAL		MATCH_NAME, its_dyn, has_impl_axis, calendar
 	INTEGER		CGRID_AXIS, mods_cx, idim, cat, pvax, base_grid,
-     .			impl_grid, like, tmp
+     .			impl_grid, like, tmp, the_real_ABSTRACT
 
 * internal parameter declarations
 	REAL*8		daysinsecs
@@ -102,6 +105,9 @@
 * initialize fixed length string for RISC
         risc_buff = full_pvar_name
         len_rbuff = MIN( size_rbuff, LEN(full_pvar_name) )
+* ... Note: the variable mgrid_abstract gets changed by SET GRID, so here
+*     we use an ugly hack to capture the grid that is actually named "ABSTRACT"
+	the_real_ABSTRACT = mgrid_xabstract - 2
 
 * use default context as a starting point
 	CALL TRANSFER_CONTEXT ( dflt_cx, pvar_cx )
@@ -172,7 +178,12 @@
 	   IF ( cx_grid(mods_cx) .NE. unspecified_int4 ) THEN
 	      base_grid = cx_grid(mods_cx)
 	   ELSE
-	      base_grid = mgrid_abstract
+! 2/22/99 addition
+	      IF (mgrid_abstract .EQ. the_real_ABSTRACT) THEN
+	         base_grid = mgrid_xabstract + pvdim - 1
+	      ELSE
+		 base_grid = mgrid_abstract
+	      ENDIF
 	   ENDIF
 	   impl_grid = cx_impl_grid(pvar_cx)
 	   DO 50 idim = 1, 4
@@ -274,9 +285,18 @@
 * for an algebraic expression but not OK when it's time to evaluate the expr.
 	IF ( cx_grid(pvar_cx) .EQ. unspecified_int4 ) GOTO 500
 
+* if the grid is ABSTRACT change it to X/Y/Z/TABSTRACT so other axes than
+* pvdim are not effected (2/22/99)
+	IF ( cx_grid(pvar_cx) .EQ. the_real_ABSTRACT )
+     .		 cx_grid(pvar_cx) = mgrid_xabstract + pvdim - 1
+
 * does the grid have a suitable axis for the pseudo-variable ?
 	pvax = CGRID_AXIS( pvdim, pvar_cx )
-	IF ( pvax.EQ.mnormal .OR. pvax.EQ. munknown ) GOTO 5100
+	IF ( pvax.EQ.mnormal ) THEN
+	   cx_grid(pvar_cx) = mgrid_xabstract + pvdim - 1  ! 2/22/99
+	ELSEIF (pvax.EQ. munknown ) THEN
+	   GOTO 5100
+	ENDIF
 
 * insert bad data flag for variable
 	CALL GET_CONTEXT_BAD_FLAG( pvar_cx )

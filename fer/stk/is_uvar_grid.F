@@ -56,6 +56,12 @@
 *	      - and process grid-changing variables
 *        7/97 - generate child var name using GCF_PARENT_UVAR
 * V500: *sh* 12/98 - support for cat_const_var -- fixed arrays like "{1,3,5}"
+*       *sh*  2/99 - if ABSTRACT grid or normal axis then use XABSTRACT (or
+*                       YABSTRACT, ZABSTRACT, TABSTRACT)
+*		     A significant consequence of this is that 2 passes are
+*		     needed ANY TIME that pseudo-variables which do not state
+*		     their own axes are used, becuase they may be generating
+*		     abstract axes. For example, the grid of "SST+Z"
 
 * calling argument declarations:
 	INTEGER	status
@@ -64,12 +70,12 @@
 * exit #2 is to signal that the grid has been obtained and stored in uvar_grid
 
 * internal variable declarations:
-	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc
+	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass
 	INTEGER KNOWN_GRID, TM_FIND_LIKE_GRID, TM_FIND_LIKE_DYN_GRID,
      .		TM_LENSTR1, GCF_PARENT_UVAR,
      .		 hi_cx, lo_cx, big_cx, operator, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
-     .		hi_grid, var, len_name
+     .		hi_grid, var, len_name, pass_number, cx_save
 	CHARACTER VAR_CODE*4, LEFINT*6, name*128
 
 #ifdef unix
@@ -113,6 +119,10 @@
 	dset   = cx_data_set( lo_cx )
 	nitem  = uvar_num_items( uvar )
 	its_gc = ITSA_GCVAR(uvar)
+* ... initialization to support 2/99 pass-2 changes
+	pass_number = 1
+	need_another_pass = .FALSE.
+	cx_save = cx_stack_ptr		! restored on pass #2 (2/99)
 
 * process the next item in the expression from the uvar buffer (last to first)
  100	is_phase(isp) = is_phase(isp) + 1
@@ -151,7 +161,8 @@
 	   GOTO 500		! yup - merge it
 	ELSE
 * nope! Set flag indicating a 2nd pass is needed
-	   uvar_given( idim, uvar ) = uvlim_unknown
+	   uvar_given( idim, uvar ) = uvlim_unknown  ! ?? irrelevant from 2/99
+	   need_another_pass = .TRUE.
 	   cx_stack_ptr = cx_stack_ptr - 1
 	ENDIF
 	GOTO 100
@@ -297,7 +308,9 @@
 	   GOTO 2000
 	ELSEIF (uvar_grid(uvar,pdset_irrelevant).EQ.mgrid_abstract) THEN
 * ... abstract grid after second pass
-	   GOTO 2000
+* (2/99 comment this out since pseudo-vars now determine their own grids:
+*	XABSTRACT, YABSTRACT, ZABSTRACT, or TABSTRACT
+!	   GOTO 2000	! removed 2/99
 	ENDIF
 
 * catalog this result checking for matching previously existing grid
@@ -321,20 +334,26 @@
 
 * * * SECOND PASS CHECK * * *
 * need a second pass to include pseudo_vars in calculation ?
- 2000	DO 1150 idim = 1, 4
-	   IF ( uvar_given(idim,uvar) .EQ. uvlim_unknown ) THEN
-* ... yes. a 2nd pass - re-initialize some things and go do it all again
-* (uvar_grid and data set info are NOT re-initialized)
-	      DO 1110 i = 1, 4
- 1110	      uvar_given(i,uvar) = uvlim_irrelevant
-	      is_phase( isp ) = 0
-	      is_sum( isp ) = isalg_transfer
-	      cx_grid( lo_cx ) = gnum	! set default for pseudo-vars
-	      IF ( mode_diagnostic )
-     .			CALL DIAGNOSTIC_OUT( 'pass #2', lo_cx, point_to_cx )
-	      GOTO 100
+ 2000	IF ( need_another_pass ) THEN 
+* ... uvar_grid and data set info are NOT re-initialized
+	   IF ( pass_number .GT. 1 ) GOTO 9000	! caught in a loop ...
+	   DO 1110 i = 1, 4
+ 1110	   uvar_given(i,uvar) = uvlim_irrelevant
+	   is_phase( isp ) = 0
+	   is_sum( isp ) = isalg_transfer
+	   cx_stack_ptr = cx_save
+	   need_another_pass = .FALSE.
+	   pass_number = pass_number + 1
+	   cx_grid( lo_cx ) = gnum	! set default for pseudo-vars
+* ... if the grid so far is dynamic then deallocate it since it will be
+*     allocated again on the next pass
+	   IF (gnum .GT. max_grids) CALL TM_DEALLO_DYN_GRID( gnum )
+	   IF ( mode_diagnostic ) THEN
+	      CALL DIAG_OP('dealloc ',isact_class_impl_grid,gnum,0)
+	      CALL DIAGNOSTIC_OUT( 'pass #2', lo_cx, point_to_cx )
 	   ENDIF
- 1150	CONTINUE
+	   GOTO 100
+	ENDIF
 
 * release context (lo_cx, big_cx), IS and grid stack space used in grid-getting
 	IF ( big_cx .NE. cx_stack_ptr

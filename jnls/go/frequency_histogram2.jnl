@@ -53,6 +53,9 @@ query/ignore $2"<Usage: GO frequency_histogram expression lo hi del [weight]"
 query/ignore $3"<Usage: GO frequency_histogram expression lo hi del [weight]"
 query/ignore $4"<Usage: GO frequency_histogram expression lo hi del [weight]"
 
+let style = $7"0"
+
+
 ! cleanup from previous
 set data/save
 cancel data/noerror frequency_h.dat
@@ -86,13 +89,13 @@ LET/QUIET wt_count = missing(fh_wc,0.)
 
 
 ! do a hollow or filed plot
-let style = $7"0"
-list style
 IF `style EQ 0` THEN
   message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
   message/cont >>>  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T" clear [Ymin]
   go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T"
 ELSE
+  message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
+  message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]
   go bar_chart3 poly/line/nolabel/fill wt_count
 
 set mode/last verify

@@ -94,7 +94,6 @@ IF `style EQ 0` THEN
   go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T"
 ELSE
   message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
-  message/cont Or base argument 
   message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]
   go bar_chart3 poly/line/nolabel/fill wt_count[d=frequency_h.dat] 
 ENDIF

@@ -54,8 +54,8 @@
 *       Jerry's tm_calendars_secs_to_date
 *       *acm* 3/01  Treat Julian calendar as a separate case.
 *       *ACm* 4/24/01 INT(tot_days/366. + 307./366.)  is 0 under linux,
-*                     when the expression is 1.  workaround: compute
-*		      INT((tot_days_0.1)/366. + 307./366.) 
+*                     when the expression is 1.  Use simple IF test on
+*		      tot_days instead to see if we're before or after day 59.
 
 * Argument definitions
 	REAL*8		num_secs
@@ -73,7 +73,7 @@
 	INTEGER		year, month, day, hour,
      .			minute, second, leapadj, cent_cnt, status,
      .			year_cnt, cent4_cnt, year4_cnt, tot_days,
-     .			tmp_days
+     .			tmp_days, ge59
 	REAL		yeardays, a
 	REAL*8		secs_in_minute, secs_in_hour, secs_in_day,
 	1    secs_in_year, secs_in_4years, secs_in_cent,
@@ -158,9 +158,15 @@ C  Get calendar attributes
 	   total_secs = total_secs - tot_days*secs_in_day
 	   
 *          DECIDE WHAT MONTH/DAY IT IS
+c acm  The following INT evaluates to 0 when tot_days=59 under Linux
+c acm  using FLOAT(tot_days) does not change this
+c acm  Use a simpler IF test instead.
 
-	   tmp_days = tot_days - leapadj*
-     .			INT((tot_days+0.1)/366. + 307./366.)
+c acm	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+
+           ge59 = 0
+           IF (tot_days .GE. 59) ge59 = 1
+	   tmp_days = tot_days - leapadj* ge59
 	   IF (tmp_days .LT. 0) 
 	1	STOP 'negative subscript in TM_SECS_TO_DATE'
 	   month = month_by_day(tmp_days+1)
@@ -226,8 +232,17 @@ C  Get calendar attributes
 	   total_secs = total_secs - tot_days*secs_in_day
 
 *          DECIDE WHAT MONTH/DAY IT IS
-	   tmp_days = tot_days - leapadj*
-     .			INT((tot_days+0.1)/366. + 307./366.)
+
+c acm  The following INT evaluates to 0 when tot_days=59 under Linux
+c acm  using FLOAT(tot_days) does not change this
+c acm  Use a simpler IF test instead.
+
+c acm	   tmp_days = tot_days - leapadj*INT(tot_days/366. + 307./366.)
+
+           ge59 = 0
+           IF (tot_days .GE. 59) ge59 = 1
+	   tmp_days = tot_days - leapadj* ge59
+
 	   IF (tmp_days .LT. 0) 
 	1	STOP 'negative subscript in TM_SECS_TO_DATE'
 	   month = month_by_day(tmp_days+1)

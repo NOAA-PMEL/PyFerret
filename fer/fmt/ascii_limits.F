@@ -53,18 +53,13 @@
 * V200:  1/12/90 - "of nnn" text string non-integer transform args
 * V430:  7/96 - pass cx to ALG_TRANS_TITL so it can document 4D transformations
 * v530  *acm* 3/01 - Show calendar name for alternative calendar types.
+* v570  *acm* 5/04 - When showing calendar, need  cal_id .LE. max_calendars, not .LT.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		cx, idim, slen
@@ -132,7 +127,7 @@
 	   grid = cx_grid(cx)
 	   cal_name = TM_GET_CAL (grid)
 	   cal_id = TM_GET_CALENDAR_ID (cal_name)
-	   IF (cal_id .GT. gregorian .AND. cal_id .LT. max_calendars) THEN
+	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
 	      len_cal = TM_LENSTR(cal_name)
 	      string =  string(1:slen)//' '//cal_name(:len_cal)
 	      slen = MIN( max_len, slen+len_cal+1 )

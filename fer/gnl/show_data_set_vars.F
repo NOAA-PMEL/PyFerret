@@ -66,6 +66,7 @@
 * v530  *acm* 3/01 - Show calendar name for alternative calendar types.
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+* V570  *acm* when showing calendar, need  cal_id .LE. max_calendars, not .LT.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -259,7 +260,7 @@
 * calendar name?  only if not Gregorian.
 	   cal_name = TM_GET_CAL (grid)
 	   cal_id = TM_GET_CALENDAR_ID (cal_name)
-	   IF (cal_id .GT. gregorian .AND. cal_id .LT. max_calendars) THEN
+	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
 	      len_cal = TM_LENSTR(cal_name)
 	      CALL SPLIT_LIST(pttmode_explct, lun,
      .	       '  time range: '//line(:dlen)//

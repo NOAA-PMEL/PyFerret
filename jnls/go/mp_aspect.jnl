@@ -1,0 +1,41 @@
+\cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_aspect.jnl --  Adjust the window aspect ratio for the currently
+!                   displayed plot.  This routine is for use with 
+!                   map  projection scripts.
+!		    		
+! Jonathan Callahan
+! 4/99
+
+! Description:  Calculate the appropriate aspect ration
+!
+! Usage:             arg1
+!  go mp_aspect [aspect action]
+!
+! arg 1 - action to take after calculating the appropriate aspect ratio
+!         0 - print out appropriate aspect ratio
+!         1 - issue SET WIN/ASPECT=`aspect_ratio`:ax command
+
+! Example 1: basic gridded field
+!
+!  use coads_climatology 
+!  set region/x=140:240/y=40n:70n/l=1
+!  set grid sst
+!  go mp_mercator
+!  go mp_aspect
+!  shade sst[l=1], x_page, y_page
+!
+
+let/quiet x_axis_range = `x_page[i=@max,j=@max]` - `x_page[i=@min,j=@min]`
+let/quiet y_axis_range = `y_page[i=@max,j=@max]` - `y_page[i=@min,j=@min]`
+let/quiet y_over_x = y_axis_range / x_axis_range
+
+if `$1%1% eq 0` then
+    message/cont The appropriate aspect ratio is `y_over_x`
+elif `$1%1% eq 1` then
+    set win/aspect=`y_over_x`:axis
+endif
+
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

@@ -65,6 +65,9 @@
 * v500: *kob* 3/99 - fixed which crashed ferret when  let/d didn't have a 
 *                    dataset present
 *	*sh* 3/99 - bug fix: bug introduced with string arguments 
+*	*sh* 4/99 - bug fix: 2/99 2nd pass check "need_another_pass" state
+*		is lost is a component is fetched afterwards. Instead, save
+*		this state as a negative is_phase
 
 * calling argument declarations:
 	INTEGER	status
@@ -124,7 +127,9 @@
 	its_gc = ITSA_GCVAR(uvar)
 * ... initialization to support 2/99 pass-2 changes
 	pass_number = 1
-	need_another_pass = .FALSE.
+! 4/99
+	need_another_pass = is_phase(isp) .LT. 0  ! saved from last time here
+	is_phase(isp) = ABS( is_phase(isp) )
 	cx_save = cx_stack_ptr		! restored on pass #2 (2/99)
 
 * process the next item in the expression from the uvar buffer (last to first)
@@ -280,6 +285,7 @@
 * grid for this component is not known.  Back to IS stack to get it
 * ... repeat this phase again when we get back
  900	is_phase(isp) = is_phase(isp) - 1
+	IF (need_another_pass) is_phase(isp) = -1 * is_phase(isp)  ! 4/99
 * load the new variable info onto the IS stack
 	CALL PUSH_INTERP_STACK( isp, status )
 	IF ( status .NE. ferr_ok ) RETURN

@@ -119,9 +119,9 @@ ln -s $machine_stream stream_data_link.unf
 # set up descriptors for mc data files.  this necessary because linux/F90 
 # requires a different format of input for the namelist reads.  *kob* 4/99
 if ($machine == "linux") then
-    foreach file (coads*.des_template)
-	./linuxize_descriptors $file >! $file:r.des
-    end
+#     foreach file (coads*.des_template)
+#	./linuxize_descriptors $file >! $file:r.des
+#    end
 else
     foreach file (coads*.des_template)
 	cp -f $file $file:r.des

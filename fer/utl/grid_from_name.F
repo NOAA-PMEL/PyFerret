@@ -1,7 +1,5 @@
 	INTEGER FUNCTION GRID_FROM_NAME(lc_name, dflt_cx, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -49,23 +47,20 @@
 * V300: 2/93 - return unspecified if error exit (caught by f77 3.2)
 * V500 7/98 *sh* - allow case-sensitive variable names in single quotes 
 *      3/99 *sh* - disallow implicit grids (e.g. "Z[gz=zax]")
+* V532 5/01 *sh* - use EVAL_CONTEXT to get grid of expression
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-#endif
+	include	'xcontext.cmn'
+	include	'xvariables.cmn'
 
 * calling argument declarations:
 	INTEGER		dflt_cx, status
 	CHARACTER*(*)	lc_name
 
 * local variable declarations:
-	LOGICAL		made_impl_grid
-	INTEGER		STR_UPCASE, TM_GET_GRIDNUM, TM_LENSTR1,
-     .			vax_code, iset, grid, category, variable
+	INTEGER		STR_UPCASE, TM_GET_GRIDNUM,
+     .			vax_code, grid
 	CHARACTER	name*32
 
 * change it to upper case
@@ -75,18 +70,15 @@
 	grid = TM_GET_GRIDNUM( name )
 	IF ( grid .NE. unspecified_int4 ) GOTO 1000
 	
-* well then, identify the variable named and get its grid
-	CALL PARSE_NAM_DSET_GRD( lc_name, dflt_cx,
-     .	  iset, grid, category, variable, made_impl_grid, status )
-	IF (made_impl_grid) THEN		!3/99
-	   CALL DEALLO_GRID( status )
-	   GOTO 5100
-	ENDIF
-        IF ( status .NE. ferr_ok ) GOTO 5000       ! 11/91 *sh*
-	IF ( variable .EQ. munknown_var_name ) CALL ERRMSG
-     .       ( ferr_unknown_grid, status,
-     .             lc_name(:TM_LENSTR1(lc_name)),*5000 )
-	
+* prepare a clean context to work from
+	CALL INIT_EMPTY_CONTEXT(cx_buff)
+	cx_data_set( cx_buff ) = cx_data_set( cx_last )
+
+* get the grid for a variable or expression
+	CALL EVAL_CONTEXT ( cx_buff, lc_name, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+	grid = cx_grid(is_cx(1))
+
 * success
  1000	GRID_FROM_NAME = grid
 	status = ferr_ok

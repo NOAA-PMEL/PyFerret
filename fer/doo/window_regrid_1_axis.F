@@ -57,7 +57,8 @@
 * 	NOAA/PMEL,Seattle,WA - Tropical Modeling and Analysis Program
 
 * V420: 1/96 - removed SUM and NGD from here to ave_regrid_1_axis (weighted)
-
+* V500: 4/99 *kob* bug fix:  fixed loops for y,z,t axis to loop
+*                            only to srcss_hi-1
 #ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -181,7 +182,7 @@
 	      ENDIF
 	      npts = 0
 
-	      DO 210 srcss = srcss_lo, srcss_hi
+	      DO 210 srcss = srcss_lo, srcss_hi-1
 
 * ... ignore missing source data
 	         IF ( src(i, srcss, k, l) .EQ. bad_src ) GOTO 210
@@ -223,7 +224,7 @@
 	      ENDIF
 	      npts = 0
 
-	      DO 310 srcss = srcss_lo, srcss_hi
+	      DO 310 srcss = srcss_lo, srcss_hi-1
 
 * ... ignore missing source data
 	         IF ( src(i, j, srcss, l) .EQ. bad_src ) GOTO 310
@@ -265,7 +266,7 @@
 	      ENDIF
 	      npts = 0
 
-	      DO 410 srcss = srcss_lo, srcss_hi
+	      DO 410 srcss = srcss_lo, srcss_hi-1
 
 * ... ignore missing source data
 	         IF ( src(i, j, k, srcss) .EQ. bad_src ) GOTO 410

@@ -28,6 +28,8 @@
 *               - add function PPLGRID
 *       10/30/97 - fixed bug in UNRAVEL introduced in 7/25 changes
 *                       "m5lox" --> "m10lox", etc.
+*       11/12/97 - bug fix in ZAXREPLACE when destination field has missing
+*                       values. New routine EXTRACT_Z_AXIS
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -73,7 +75,7 @@
      .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
      .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4,
      .		si5, sj5, sk5, sl5, si6, sj6, sk6, sl6
-        INTEGER nz, ndim, ndx_lo, wkblk
+        INTEGER klo, khi, ndim, ndx_lo, wkblk
 
 	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0, bad_res,
@@ -230,73 +232,59 @@
 	CALL GET_WORK_SPC( m2hiz-m2loz+1, wkblk, status )
         IF ( status .NE. ferr_ok ) GOTO 5000
 
-* ... and creating a context to describe a single profile
-	CALL TRANSFER_CONTEXT( cx2, cx_buff )
-
-!* ... now extract the desired vertical axis points in single prec.
-!	CALL MAKE_AXIS(mr_grid(mr3), z_dim, sk2, hiz, memory(1,wkblk))
-!  (not used because only one work buffer was easily available ...
-!             TM_WORLD calls are needed repeatedly, instead)
-
 * ... loop over the X,Y,T range of the input fields
 	l1 = sl1
 	l2 = sl2
 	DO 1450 l = mr_lo_s4(mres), mr_hi_s4(mres)
 	l1 = l1 + dl1
 	l2 = l2 + dl2
-	cx_lo_s4(cx_buff) = l2
-	cx_hi_s4(cx_buff) = l2
 	j1 = sj1
 	j2 = sj2
 	 DO 1450 j = mr_lo_s2(mres), mr_hi_s2(mres)
 	 j1 = j1 + dj1
 	 j2 = j2 + dj2
-	 cx_lo_s2(cx_buff) = j2 
-	 cx_hi_s2(cx_buff) = j2 
 	 i1 = si1
 	 i2 = si2
 	  DO 1450 i = mr_lo_s1(mres), mr_hi_s1(mres)
 	  i1 = i1 + di1
 	  i2 = i2 + di2
-	  cx_lo_s1(cx_buff) = i2 
-	  cx_hi_s1(cx_buff) = i2 
 
 * ... extract the vertical profile at this I,J,L location
-           CALL EXTRACT_LINE ( cx_buff,
-     .                      com2,
-     .                      mr2,
-     .                      memory(1,wkblk),
-     .                      idim,	! unused
-     .                      ndim,	! unused
-     .                      nz,
-     .                      status      )
-           IF ( status .NE. ferr_ok ) THEN
-              CALL RELEASE_WORK_SPC
-              GOTO 5000
-           ENDIF
+          CALL EXTRACT_Z_LINE ( com2, bad2, i2, j2, l2,
+     .          	m2lox,m2hix,m2loy,m2hiy,m2loz,m2hiz,m2lot,m2hit,
+     .                  memory(1,wkblk), klo, khi )
+
+          IF ( klo .LT. 1 ) THEN
+* ... no valid data in component 2 at this location
+	    DO 1405 k = mr_lo_s3(mres), mr_hi_s3(mres)
+ 1405          res(i,j,k,l) = bad_res
+
+          ELSE
 
 * loop over the desired output Z-axis points
-          ndx_lo = 0    ! no guess for location of first depth
-	  DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+            ndx_lo = 0    ! no guess for location of first depth
+	    DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
 
 * ... next Z axis value (com3) to locate
-           zval = SNGL(TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
+             zval = SNGL(TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
 
 * ... search the Z field (com2) for the index just below this value
-	   CALL HUNT_R4(memory(1,wkblk), 1, nz, zval, ndx_lo, frac)
+	     CALL HUNT_R4(memory(1,wkblk), klo, khi, zval, ndx_lo, frac)
 
-           IF ( frac .LT. 0.0 ) THEN
+             IF ( frac .LT. 0.0 ) THEN
 * ... no luck -- the Z axis value we seek is outside the range in com2
-              res(i,j,k,l) = bad_res
-           ELSEIF ( frac .EQ. 1.0 ) THEN
-	      res(i,j,k,l) =  com1(i1,j1,sk1+ndx_lo,l1)
-           ELSE
+                res(i,j,k,l) = bad_res
+             ELSEIF ( frac .EQ. 1.0 ) THEN
+	        res(i,j,k,l) =  com1(i1,j1,sk1+ndx_lo,l1)
+             ELSE
 * ... interpolate data com1 field to get result
-	      res(i,j,k,l) =  frac   * com1(i1,j1,sk1+ndx_lo,  l1)
-     .			   + (1-frac)* com1(i1,j1,sk1+ndx_lo+1,l1)
+	        res(i,j,k,l) =  frac   * com1(i1,j1,sk1+ndx_lo,  l1)
+     .			     + (1-frac)* com1(i1,j1,sk1+ndx_lo+1,l1)
+             ENDIF
+ 1410	    CONTINUE
+
            ENDIF
 
- 1410	  CONTINUE
  1450	CONTINUE
         CALL RELEASE_WORK_SPC
         RETURN

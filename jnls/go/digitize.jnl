@@ -1,0 +1,104 @@
+\cancel mode verify
+! digitize.jnl
+! 7/99 *sh*
+
+! Description: Click cursor on plot -- get value or surrounding block
+
+! Note that the output position is available in the symbols
+! ($xmouse) and ($ymouse) given in the units of the coordinate axes of the plot
+! The digitized value is available in the symbol ($digitized)
+
+! Usage:                $1        $2       $3
+! yes?  GO digitize expression [output] ["quiet"]
+! $1 - the expression must match what is on the plot
+! $2 - [optional] output may be
+!	"interpolate" - value at exact cursor location [DEFAULT]
+!	"nearest"     - value of the grid cell containing cursor
+!	n - an integer indicating a spread of data surrounding the point
+! $3 - [optional] - if "quiet" the digitized output will not be displayed
+
+!	Note: if region qualifiers were given on the plotting commend, then
+!		those regions must be enclosed in square brackets on the
+!		expression
+!	Example: if the plotting command was
+!			yes? PLOT/Y=0 SST
+!		then the expression must be "SST[Y=0]"
+
+
+! example
+!	yes? USE coads_climatology
+!	yes? SHADE SST[L=1]
+!	yes? GO digitize SST[L=1]		! get one grid point value
+!	yes? SAY ($digitized)			! see the value
+!	yes? GO digitize SST[L=1] interpolate	! get one exact location value
+!	yes? GO digitize SST[L=1] 2		! see a block of 5x5 points
+
+! save the input expressions into simple variable definitions
+LET/QUIET DIGexpr = $1%<usage: yes? GO digitize expression [output] ["quiet"]%
+IF $2"1|nearest>0|interpolate>1|interp>1|*>0" THEN
+  DEFINE SYMBOL DIGinterp @ITP
+ELSE
+  CANCEL SYMBOL DIGinterp	! effectly a blank symbol
+ENDIF
+DEFINE SYMBOL DIGblock $2"0|nearest>0|interpolate>0|interp>0|*>1"
+DEFINE SYMBOL DIGquiet $3"0|quiet>1|<error: invalid argument 3 value"
+IF `($DIGquiet)+($DIGblock)` THEN
+  DEFINE SYMBOL DIGverify 0
+ELSE
+  DEFINE SYMBOL DIGverify 1
+ENDIF
+
+! determine the orientation of the data (and check if it is 1D or 2D)
+DEFINE SYMBOL DIGdims `DIGexpr,return=shape`
+DEFINE SYMBOL DIGndim ($DIGdims"|X>1|Y>1|Z>1|T>1|XY>2|XZ>2|XT>2|YZ>2|YT>2|ZT>2|<error: expression is not plottable -- 1D or 2D")
+IF `($DIGndim) EQ 2` THEN
+  DEFINE SYMBOL DIGax1 ($DIGdims"|XY>X|XZ>X|XT>X|YZ>Y|YT>Y|ZT>Z|")
+  DEFINE SYMBOL DIGax2 ($DIGdims"|XY>Y|XZ>Z|XT>T|YZ>Z|YT>T|ZT>T|")
+ENDIF
+
+! get the digitized location on the plot
+WHERE
+
+! get the value from the given expression and return in symbol ($digitize)
+! e.g. (1d) DIGexpr[X=133.25@ITP] or (2d) DIGexpr[X=55.3,Y=13.9]
+IF `($DIGndim) EQ 1` THEN
+  LET/QUIET DIGresult = DIGexpr[($DIGdims)=($xmouse)($DIGinterp)]
+  DEFINE SYMBOL digitize `DIGresult`
+ELSE
+  LET/QUIET DIGresult = DIGexpr[($DIGax1)=($xmouse)($DIGinterp),($DIGax2)=($ymouse)($DIGinterp)]
+  DEFINE SYMBOL digitize `DIGresult`
+ENDIF
+
+! report result
+IF ($DIGverify) THEN LIST DIGresult
+
+! show a block of surrounding points ?
+! procedure: LET ipos = I[X=xmouse]; LIST expr[I=ipos-width:ipos+width]
+IF  $2"0|nearest>0|interpolate>0|interp>0|*>1" THEN
+  LET/QUIET DIGgrid = MISSING(DIGresult,0)
+  DEFINE SYMBOL DIGwidth $2
+  IF `($DIGndim) EQ 1` THEN
+    SAY "Value=($digitize)  X=($xmouse)"
+    DEFINE SYMBOL DIGiax ($DIGdims"|X>I|Y>J|Z>K|T>L|")
+    LET/QUIET ipos = 0*DIGgrid + ($DIGiax)[($DIGdims)=($xmouse)]
+    DEFINE SYMBOL DIGilo `ipos - $2`
+    DEFINE SYMBOL DIGihi `ipos + $2`
+    LIST DIGexpr[($DIGiax)=($DIGilo):($DIGihi)]
+  ENDIF
+  IF `($DIGndim) EQ 2` THEN
+    SAY "Value=($digitize)  X=($xmouse)  Y=($ymouse)"
+    DEFINE SYMBOL DIGiax1 ($DIGax1"|X>I|Y>J|Z>K|T>L|")
+    DEFINE SYMBOL DIGiax2 ($DIGax2"|X>I|Y>J|Z>K|T>L|")
+    LET/QUIET ipos =  0*DIGgrid + ($DIGiax1)[($DIGax1)=($xmouse)]
+    LET/QUIET jpos =  0*DIGgrid + ($DIGiax2)[($DIGax2)=($ymouse)]
+    DEFINE SYMBOL DIGilo `ipos - $2`
+    DEFINE SYMBOL DIGihi `ipos + $2`
+    DEFINE SYMBOL DIGjlo `jpos - $2`
+    DEFINE SYMBOL DIGjhi `jpos + $2`
+    LIST DIGexpr[($DIGiax1)=($DIGilo):($DIGihi),($DIGiax2)=($DIGjlo):($DIGjhi)]
+  ENDIF
+ENDIF
+
+cancel symbol DIG*
+cancel variable DIG*
+set mode/last verify

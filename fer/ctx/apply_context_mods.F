@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* modify the indicated destination context based on mods in mods_cx
 * apply only those modifications that can be done without for-certain knowledge
 * of the underlying grid.  For example, translating subscript values into
 * WORLD coordinates will be done in FINISH_CONTEXT_MODS instead of here

@@ -83,6 +83,7 @@
 # 7/7/97 *kob* - updated solaris sections for ferret v5
 
 # 7/24/97 *kob* - add a FER_LINK_DIR so that CVS makes wil now work
+# 8/15/97 *kob* - added MIXING_NAG_F90_AND_C flag to linux compile
 FER_LINK_DIR=..
 GUI =no GUI
 DEBUG =
@@ -722,8 +723,8 @@ aix_FORTRAN:
                 F77=xlf \
 		LD=xlf \
 		CC=cc \
-		FFLAGS="-c -u -qfixed=80 -qxlf77=oldboz" \
-		CPPFLAGS="-P -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF" \
+		FFLAGS="-c -u -qfixed=80" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
 		LDFLAGS="-v" \
 		XTRA_OBJ="ccr/fermain_c.o special/aix_routines.o $(FEROBJS_DFLT)" \
 		FCHECKOUT="$(FCHECKOUT)" \
@@ -747,8 +748,8 @@ aix:
                 F77=xlf \
 		LD=cc \
 		CC=cc \
-		FFLAGS="-c -u -qfixed=80 -qxlf77=oldboz" \
-		CPPFLAGS="-P -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF" \
+		FFLAGS="-c -u -qfixed=80" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
 		LDFLAGS="-v -bloadmap:load.txt" \
 		XTRA_OBJ="ccr/fermain_c.o special/aix_routines.o $(FEROBJS_DFLT)" \
 		FCHECKOUT="$(FCHECKOUT)" \
@@ -773,8 +774,8 @@ aix_gui:
 		CC=cc \
                 FERMAIN="gui/ferret.o" \
                 GUI_LIB="gui/libgui.a -llist" \
-                FFLAGS="-c -u -qfixed=80 -qxlf77=oldboz" \
-		CPPFLAGS="-P -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF" \
+                FFLAGS="-c -u -qfixed=80" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix  -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_PASSED_CONCAT" \
 		LDFLAGS="-v -bloadmap:load.txt" \
 		XTRA_OBJ="ccr/fermain_c.o special/aix_routines.o $(FEROBJS_DFLT)" \
 		FCHECKOUT="$(FCHECKOUT)" \
@@ -832,7 +833,7 @@ linux:
 		FFLAGS="-132 -c -dusty -C -f77 -fieee -Nl90 -x77 -w" \
 		LDFLAGS="-v -static $(GFLAG)" \
 		XTRA_OBJ=" " \
-		FEROBJS="ccr/fermain_c.o  special/linux_routines.o special/ppl_fake_externals.o dat/*.o $(FER_LINK_DIR)/fmt/src/x*.o ccr/save_arg_pointers.o  $(FEROBJS_DFLT)"\
+		FEROBJS="ccr/fermain_c.o  special/linux_routines.o  dat/*.o $(FER_LINK_DIR)/fmt/src/x*.o ccr/save_arg_pointers.o  $(FEROBJS_DFLT)"\
 		FCHECKOUT="$(FCHECKOUT)" \
 		TMCHECKOUT="$(TMCHECKOUT)" \
 		GUICHECKOUT="$(GUICHECKOUT)" \
@@ -939,8 +940,8 @@ hp_gcompile:
 aix_gcompile:
 	${MAKE} go_compile_aix \
                 F77=xlf \
-		FFLAGS="-c -u -gi -qfixed=85 -qxlf77=oldboz" \
-		CPPFLAGS="-P -DMANDATORY_FORMAT_WIDTHS -Dunix -Ddebug -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES" \
+		FFLAGS="-c -u -gi -qfixed=85" \
+		CPPFLAGS="-P -Dreclen_in_bytes -DMANDATORY_FORMAT_WIDTHS -Dunix -Ddebug -DNO_SNGL  -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT" \
 		CCFLAGS="-Ireadline -I. -I../common -I$TMAP_LOCAL/src/xgks-2.5.5/port -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm -c -DSGI_SIGNALS"
 
 aix_gcompile_1:
@@ -949,14 +950,14 @@ aix_gcompile_1:
                 DIR=${DIR} \
 		F77=xlf \
 		FFLAGS="-c -u -g -qfixed=80" \
-		CPPFLAGS="-P -DMANDATORY_FORMAT_WIDTHS -Dunix -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"
+		CPPFLAGS="-P -Dreclen_in_bytes -DMANDATORY_FORMAT_WIDTHS -Dunix -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT"
 
 linux_gcompile:
 	${MAKE} go_compile_linux \
 		F77=f77 \
 		FFLAGS="-132 -c -dusty -C -f77 -fieee -g -Nl90 -x77 -w" \
-		CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND" \
-		CCFLAGS="-g -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND-Ireadline -I. -I../common -I$TMAP_LOCAL/src/xgks-2.5.5/port -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm -c"
+		CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND -DMIXING_NAG_F90_AND_C" \
+		CCFLAGS="-g -Dunix -DMIXING_NAG_F90_AND_C -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND-Ireadline -I. -I../common -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c"
 		
 	
 nogcompile:
@@ -1016,8 +1017,8 @@ hp_nogcompile:
 aix_nogcompile:
 	${MAKE} go_compile_aix \
                 F77=xlf \
-		FFLAGS="-c -u -qfixed=85  -qxlf77=oldboz -bnso -bI:/usr/lib/syscalls.exp" \
-		CPPFLAGS="-P -Dunix -DNO_SNGL -DMANDATORY_FORMAT_WIDTHS -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES" \
+		FFLAGS="-c -u -qfixed=85  -bnso -bI:/usr/lib/syscalls.exp" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DNO_SNGL -DMANDATORY_FORMAT_WIDTHS -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT" \
 		CCFLAGS="-Ireadline -I. -I../common -I$TMAP_LOCAL/src/xgks-2.5.5/port -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib -I$TMAP_LOCAL/src/xgks-2.5.5/src/lib/gksm -c -DSGI_SIGNALS"
 
 aix_nogcompile_1:
@@ -1025,15 +1026,15 @@ aix_nogcompile_1:
 		SOURCE=${SOURCE} \
                 DIR=${DIR} \
 		F77=xlf \
-		FFLAGS="-c -u -qfixed=85 -qxlf77=oldboz -bnso -bI:/usr/lib/syscalls.exp" \
-		CPPFLAGS="-P -Dunix -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES"
+		FFLAGS="-c -u -qfixed=85  -bnso -bI:/usr/lib/syscalls.exp" \
+		CPPFLAGS="-P -Dreclen_in_bytes -Dunix -DMANDATORY_FORMAT_WIDTHS -DNO_SNGL -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE $(GKSFFLAGS) $(MEMFLAGS) -Daix -DAIX_XLF -DNO_ENTRY_NAME_UNDERSCORES -DNO_PASSED_CONCAT"
 
 linux_nogcompile:
 	${MAKE} go_compile_linux \
 		F77=f77 \
 		FFLAGS="-132 -c -dusty -C -f77 -fieee -Nl90 -x77 -w" \
-		CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND " \
-		CCFLAGS="-Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND -I. -I../common -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c"
+		CPPFLAGS="-P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND -DMIXING_NAG_F90_AND_C" \
+		CCFLAGS="-Dunix -DMIXING_NAG_F90_AND_C -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH -DF90_OPEN_FILE_APPEND -I. -I../common -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c"
 
 
 # FERRET code (order of libraries is essential to correct loading)

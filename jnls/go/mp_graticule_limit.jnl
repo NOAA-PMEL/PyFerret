@@ -38,15 +38,16 @@
 ! arg 9 - maximum x to plot, in page-coordinates   all four must be provided.)
 ! arg10 - minimum y to plot, in page-coordinates
 ! arg11 - maximum y to plot, in page-coordinates
+! arg12 - dash characteristics, dash(dn,up,dn,up)
 !
 ! example:  Limit the plot to a square, in terms of plot page coordinates.
-!   use coads_climatology
+!   use etopo60
 !   set region/y=0:90
 !   go mp_stereographic_north
-!   set grid sst
+!   set grid rose
 !   go mp_aspect
-!   shade/l=1/hlim=-1:1/vlim=-1:1/noax/nolab sst,x_page,y_page
-!   go mp_graticule " ", " ", " ", " ", " ", " ", " ", -1,1,-1,1
+!   shade/l=1/hlim=-1:1/vlim=-1:1/noax/nolab rose,x_page,y_page
+!   go mp_graticule_limit " ", " ", " ", " ", " ", " ", " ", -1,1,-1,1, dash=(.1,.15,.1,.15)
 !   plot/over/vs/line/nolabel/color=black {-1,1,1,-1,-1}, {-1,-1,1,1,-1}
 !
 !
@@ -100,6 +101,7 @@ let/quiet mp_maxxp = $9%99%
 let/quiet mp_minyp = $10%99%
 let/quiet mp_maxyp = $11%99%
 
+def sym dashline = /$12%dash=(1,0,1,0)%
 
 ! This test will keep the central meridians defined by "from space" views
 !
@@ -177,7 +179,7 @@ ELSE
   let limit_y_page = masked_y_page
 ENDIF
 
-plot/vs/over/nolab/line=$7"1" limit_x_page, limit_y_page
+plot/vs/over/nolab/line=$7"1"($dashline) limit_x_page, limit_y_page
 
 !
 ! Now for the appropriate longitude lines:
@@ -220,8 +222,7 @@ ELSE
   let limit_y_page = masked_y_page
 ENDIF
 
-
-plot/vs/over/nolab/line=$7"1"/hlim=-1:1/vlim=-1:1 limit_x_page, limit_y_page
+plot/vs/over/nolab/line=$7"1"($dashline) limit_x_page, limit_y_page
 
 
 !

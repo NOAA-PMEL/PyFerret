@@ -14,7 +14,7 @@ GO bn_cache_hits.sub sst
 LET sst5 = sst+5
 GO bn_cache_hits.sub sst5
 
-EXIT/COMMAND_FILE
+EXIT
 
 ! --------------------------
 ! NOTE: the altered logic for handling unspecified regions will EFFECT THE

@@ -19,5 +19,5 @@ set list/prec=8
 list/form=comma myvar
 
 list/clobber/head=enh/form=(f9.5)/file=fine.dat myvar
-sp more fine.dat
+sp cat fine.dat
 sp rm -f fine.dat

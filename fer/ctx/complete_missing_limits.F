@@ -42,6 +42,7 @@
 
 *  V500 *sh* 3/99
 *       *sh* 4/99 - bug fix: ABSTRACT axes completed on some user vars
+*	*sh* 4/99 - add mode_stupid check
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -50,6 +51,7 @@
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
+	include 'xprog_state.cmn'
 	include 'xfr_grid.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
@@ -69,6 +71,9 @@
 * internal variable declarations:
 	LOGICAL needs_limits, its_unspec
 	INTEGER idim, cat, var, grid, mabstract, line, status
+
+* possible skip this routine
+	IF (mode_stupid) GOTO 1000
 
 * initialize
 	var  = cx_variable( cx )
@@ -121,6 +126,6 @@
 
  100	CONTINUE
 
-	RETURN
+ 1000	RETURN
 
 	END

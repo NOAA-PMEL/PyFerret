@@ -58,6 +58,7 @@
 *       12/29/94 - eliminate unnecessary tty error message ("12/94")
 *	 1/18/94 - added SET MODE VERIFY:ALWAYS (iarg=3)
 *		   (bug fix for MODE VERIFY:garbage error msgs 2/3/95)
+* V500: 4/99 *sh* - added MODE STUPID:weak_cache
 
 #ifdef unix
 	include	'ferret.parm'
@@ -87,6 +88,7 @@
 	status = ferr_ok
 	IF ( text .EQ. ' ' ) THEN
 	   IF ( mode .EQ. pmode_verify ) arg = 1   ! reset to "DEFAULT"
+           IF ( mode .EQ. pmode_stupid ) arg = 2   ! same as unspecified_int4
 	   RETURN
 	ENDIF
 
@@ -139,6 +141,16 @@
 	   ppllist_file = text
 	ELSEIF ( mode .EQ. pmode_metafile ) THEN
 	   CONTINUE     ! processed in XEQ_SET in case PLOT+ not opened yet
+* ... SET MODE STUPID:weak_cache
+	ELSEIF ( mode .EQ. pmode_stupid ) THEN
+           vax_code = STR_CASE_BLIND_COMPARE(text(1:4), 'weak' )
+           IF ( vax_code .EQ. vms_str_success ) THEN
+              arg = 1
+              GOTO 1000
+           ELSE
+	      GOTO 5010
+           ENDIF
+
 	ELSE
 	   GOTO 5010	! mode does not accept argument
 

@@ -131,6 +131,7 @@
 *                   - added /EXTERNAL qualifier to SHOW FUNCTION
 *                   - fixed EFCN_MATCH_TEMPLATE to behave like MATCH_TEMPLATE
 *                     so that multiple functions are shown
+*       4/99 *sh* - added MODE STUPID:weak_cache
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -235,7 +236,7 @@
 
 	INTEGER efcn_scan
 
-* for string passing to C function in SHOW FUNCTION
+* for string passing to C function in SHOW MODE FUNCTION
       INTEGER      slen
       PARAMETER  ( slen = ef_max_description )
 #ifdef sun
@@ -510,6 +511,8 @@
 	      show_str(36:) = ppllist_file
 	   ELSEIF ( mode .EQ. pmode_metafile ) THEN
 	      show_str(36:) = meta_file			! from GKSCM2  1/94
+	   ELSEIF ( mode .EQ. pmode_STUPID ) THEN
+	      IF (mode_arg(mode,1).EQ.1) show_str(36:) = 'weak_cache'
 	   ELSEIF ( mode_arg( mode,1 ) .NE. unspecified_int4 ) THEN
 	      WRITE ( show_str(36:42), '(I7)' ) mode_arg( mode,1 )
 	   ENDIF

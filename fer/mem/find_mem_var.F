@@ -69,6 +69,7 @@
 *				to bypass checks
 * V500: 12/98 *sh* - added support for cat_const_var ("{1,3,5}") (uncached)
 *        1/99 *sh* - added support for cat_string (uncached)
+*	 4/99 *sh* - check mode_arg for mode_stupid
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -100,7 +101,8 @@
         REAL*8          TM_WORLD, ww_hi_bound
 
 * in "STUPID" mode the program can't find anything in memory
-	IF ( mode_stupid ) GOTO 5000
+*  (4/99) if mode_arg is 1 we are are using "weak_cache", so do not skip out
+	IF (mode_stupid .AND. mode_arg(pmode_stupid,1).NE.1) GOTO 5000
 
 * initialize
 	defining_grid = cx_grid( cx )

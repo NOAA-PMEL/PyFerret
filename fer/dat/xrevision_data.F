@@ -62,12 +62,14 @@
 * V521 - *sh* minor bug fixes from V520
 * V530 - 10/00 *sh* beta 1
 * V534 - 9/01 *sh* alpha 1
+* V550 - 7/02 *sh* alpha 1
+
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.42   /
+	DATA revision_level	/  5.50   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

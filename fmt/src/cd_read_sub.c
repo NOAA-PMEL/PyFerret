@@ -45,6 +45,17 @@
     revision history:
     V533: 6/01 *sh* - original
 
+    v540: 11/01 *kob* - change passed in values for start,count,stride
+                        and imap to temp variables which are declared
+			compatibly with the passed in types from the 
+			fortran routine CD_READ.F.  Once in, need to 
+			convert these to the proper type that the 
+			netcdf c routines expect.  This may vary from
+			o.s. to o.s. depending on what, for example,
+			size_t and ptrdiff_t are typdef'd as.  They are
+			typedef'd as different things under solaris and 
+			compaq Tru64, for example
+
     compile this with
     cc -c -g -I/opt/local/netcdf-3.4/include cd_read_sub.c
 */ 
@@ -65,20 +76,38 @@ void tm_unblockify_ferret_strings(void *dat, char *pbuff,
 				int bufsiz, int outstrlen);
 
 void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims, 
-			   size_t start[], size_t count[], 
-			   ptrdiff_t stride[], ptrdiff_t imap[],
+			   int *tmp_start, int *tmp_count, 
+			   int *tmp_stride, int *tmp_imap,
 			   void *dat, int *cdfstat )
 {
 
   /* convert FORTRAN-index-ordered, FORTRAN-1-referenced ids, count,
      and start to C equivalent
+
+     *kob* need start,count,stride and imap variables of the same type
+           as is predfined for each O.S.
   */
+
+  size_t start[4], count[4];
+  ptrdiff_t stride[4], imap[4];
+
   int tmp, i, maxstrlen, ndimsp, *dimids;
   size_t bufsiz;
   char *pbuff;
   int ndim = *dims - 1; /* C referenced to zero */
   int vid = *varid;
   nc_type vtyp;
+
+
+  /* cast passed in int values (from fortran) to proper types, which can
+     be different depending on o.s       *kob* 11/01 */
+  for (i=0; i<=ndim; i++) {
+    start[i] = (size_t)tmp_start[i];
+    count[i] = (size_t)tmp_count[i];
+    stride[i] = (ptrdiff_t)tmp_stride[i];
+    imap[i] = (ptrdiff_t)tmp_imap[i];
+  }
+
 
   /* change FORTRAN indexing and offsets to C */
   vid--;

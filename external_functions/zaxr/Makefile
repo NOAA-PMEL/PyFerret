@@ -36,7 +36,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 all:	ferret_cmn zaxreplace_avg.so zaxreplace_bin.so
 
 ferret_cmn:
-	ln -s ef_utility/ferret_cmn ferret_cmn
+	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

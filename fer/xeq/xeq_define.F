@@ -139,8 +139,11 @@
 *                  axis is cancelled; redefine line_mem pointer before 
 *                  call to purge_mr_axis.
 * V542: *sh* 7/02 - added support for sub-span modulo axes
-* V550: *acm*10/02- Change reg_name to char*24, to match cx_name
-
+* V550: *acm* 10/02 - Change reg_name to char*24, to match cx_name
+* V551: *acm*  2/03 - On DEFINE AXIS/x name=expr, only reset num_args when
+*                     the expression is a const array {  }  (fixes bug w/ more
+*                     complex expr, for example "DEF AX/X  xax = a/2 + b/2")
+ 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_dims.parm'
@@ -601,8 +604,10 @@
 
 * consolidate arguments broken up by command parser back into a single arg
 
-              IF (cmnd_buff(pos:pos) .EQ. '{') CALL all_1_arg
-	      num_args = 1	 ! used by GET_CMND_DATA
+              IF (cmnd_buff(pos:pos) .EQ. '{') THEN
+                 CALL all_1_arg
+	         num_args = 1	 ! used by GET_CMND_DATA
+              ENDIF
 	      arg_start(1) = pos ! skip over "name ="
 	   ELSE
 	      CONTINUE ! pos=0 signals that no expression was given

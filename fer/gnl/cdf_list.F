@@ -2,8 +2,6 @@
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -70,12 +68,16 @@
 * V500 *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
 * V512; *sh* 7/00 - allow SAVE/ILIMITS=n:n (no range) - new arg to EQUAL_RANGE
+* V530; *sh* 12/00 - defer writing of axis coordinates and variable data values
+*		to a single consolidated point at the end -- to alleviate
+*		performance problems due to switching netCDF modes
 
 #ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
         include 'cd_lib.parm'
+        include 'cdf_tmap.parm'
         include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'xdset_info.cmn_text'	! for DODS caching
@@ -117,12 +119,13 @@
         CHARACTER*1     crecdim
 
 * internal variable declarations:
-        LOGICAL         TM_LEGAL_NAME, 
-     .			itsa_uvar, need_doc, new, formatted
+        LOGICAL         TM_LEGAL_NAME,
+     .			itsa_uvar, need_doc, new, formatted, flushed
 	INTEGER		TM_LENSTR1, ISUBSCR_CX,
-     .			cx, mr, dset, grid, cdfid, ivar,
+     .			cx, mr, dset, grid, cdfid, ivar, nready,
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
+     .			final_status,
      .			write_lo(4), write_hi(4), make_lo(4), make_hi(4)
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
@@ -172,7 +175,11 @@
      .			 range_not_rqd = .FALSE. )
 
 * initialize
+	 ivar = 1  ! just house-keeping -- make sure all is init'ed
+	 flushed = .FALSE. ! on error, whether OK variables were written
+	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
+         CALL CD_DEFER_COORD_WRITE(0,0,0,0,0, pcd_defer_init)
 
 * open/create the file
          CALL CD_OPEN_OUT( fname, append, cdfid, clobber, status )
@@ -202,7 +209,11 @@
            IF ( status .NE. merr_ok ) GOTO 5800
 	ENDIF
 
-        DO 100 ivar = 1, nvars
+*
+*  Loop tp create all of the variables and their metadata
+*  (defer writing of binary data until end) 
+*
+       DO 100 ivar = 1, nvars
 	   cx  = cx_list(ivar)
 	   mr  = mr_list(ivar)
 	   grid	= cx_grid( cx )
@@ -239,7 +250,7 @@
 	            CALL EQUAL_RANGE_T(
      .			cmnd_buff(qual_start(loc):qual_end(loc)),
      .                  idim, grid, user_lo, user_hi, delta, status )
-                    IF ( status .NE. ferr_OK ) GOTO 5990
+                    IF ( status .NE. ferr_OK ) GOTO 5800
 	            CALL GRID_WORLD_EXTREMES( loest_ww, hiest_ww,
      .			grid, idim )
 	            IF ( .NOT.line_modulo(iaxis) 
@@ -284,10 +295,7 @@
               recdim = 0
            ENDIF
 
-* check for interrupts - dont check again until entire variable is written
-           IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
-
-* create the variable and its grid
+* create the variable and its grid (coordinate output gets deferred)
            CALL CD_MAKE_VAR( cdfid, varcode, NCFLOAT, grid,
      .               make_lo, make_hi, recdim, enhead, new, status )
            IF ( status .NE. merr_ok ) GOTO 5800
@@ -379,26 +387,60 @@
 
            ENDIF
 
+ 100    CONTINUE
+	nready = nvars
+
+*****
+* Finally, write all of the coordinates and data values -- in netCDF DATA mode
+* Note that this block of code is also executed following an error to
+* ensure that all deferred coordinates and "ready" variables are flushed
+ 400	flushed = .TRUE.	! errors from here to exit may leave corrupted file
+*
+* write the deferred coordinates
+*
+	CALL CD_WRITE_DEFER_COORD( cdfid, status )
+	IF ( status .NE. merr_OK ) GOTO 5800
+*
+* write the variables
+*
+        DO 500 ivar = 1, nready
+	   cx  = cx_list(ivar)
+	   mr  = mr_list(ivar)
+	   grid	= cx_grid( cx )
+           cat = cx_category(cx)
+           var = cx_variable(cx)
+           varcode = SANITARY_VAR_CODE( cat, var )
+           IF ( cat .EQ. cat_pseudo_var ) varcode =
+     .                            varcode(:TM_LENSTR1(varcode))//"_"
+
+* get slab limits to use for writing the values of this variable
+           DO 450 idim = 1, 4
+              write_lo(idim) = cx_lo_ss(cx,idim)
+              write_hi(idim) = cx_hi_ss(cx,idim)
+ 450        CONTINUE
+
+* check for interrupts - dont check again until entire variable is written
+           IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
+
 * write the data for this variable
            CALL CD_WRITE_VAR ( cdfid, varcode, grid, write_lo, write_hi,
      .                         memory(1,mr_blk1(mr)), status )
            IF ( status .NE. merr_ok ) GOTO 5800
-
- 100    CONTINUE
+ 500	CONTINUE
 
 * close the file
         CALL NCCLOS(cdfid, cdfstat)
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+        IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CDF_LIST', unspecified_int4,
+     .     no_varid, 'could not close CDF output file: ',
+     .     fname, *5990 )
 
-* successful completion
-	status = ferr_ok
+
+* final completion -- maybe after an error
+	status = final_status
 	RETURN
 
 * error exit(s)
- 5100    CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CDF_LIST', unspecified_int4,
-     .     no_varid, 'could not close CDF output file: ',
-     .     fname, *5800 )
  5200    CALL ERRMSG ( ferr_syntax, status,
      .                 'illegal output variable name: '//varcode,
      .                 *5210 )
@@ -424,9 +466,10 @@
 
  5400    CALL ERRMSG ( ferr_TMAP_error, status, ' ', *5990 )
 
- 5800    CALL NCCLOS(cdfid, status)
+ 5800   CALL ERRMSG ( ferr_TMAP_error, final_status, ' ', *5810 )
+ 5810	nready = ivar - 1
+	IF (.NOT.flushed) GOTO 400 ! yea ... a bit of spagetti code ... 
+	CALL NCCLOS(cdfid, cdfstat)
  5990   RETURN
 	END
-
-
 

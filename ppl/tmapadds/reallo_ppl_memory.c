@@ -37,6 +37,7 @@ NOTE: Needs error checking to see that the realloc actually worked.
 /* reallo_ppl_memory.c
 
    Enlarge the memory allocated to the PLOT+ buffer.
+   Ferret v5.52 *acm* 6/5/04 fix typo in print statement 
 */
 
 #include <unistd.h>
@@ -69,7 +70,7 @@ void reallo_ppl_memory(int *this_size)
 /* Check that the memory was allocated OK*/
 
   if ( ppl_memory == (float *)0 ) {
-    printf("Unable to allocate the requested %e words of PLOT memory.\n",*this_size);
+    printf("Unable to allocate the requested %d words of PLOT memory.\n",*this_size);
     exit(0);
    }
 /* save the size of what was allocated */

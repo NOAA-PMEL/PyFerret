@@ -47,6 +47,8 @@
 *  (12/1/2000) 3) If the destination axis is modulo, treat the scattered
 *                 points as modulo too.
 *
+*   12/7/2000  Add error checking on gridding parameters
+*
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of time.  
 * Output is gridded data in x, y and time.  Calls routine "gausswt2".
@@ -426,6 +428,9 @@ C  Get coordinates of output axes.
       zsc  = arg_7(arg_lo_ss(X_AXIS,ARG7), arg_lo_ss(Y_AXIS,ARG7), 
      .            arg_lo_ss(Z_AXIS,ARG7), arg_lo_ss(T_AXIS,ARG7))
 
+      IF (ysc .LE. 0.) GOTO 910
+      IF (zsc .LE. 0.) GOTO 920
+
 *  And cutoff parameters:
 
       ycutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
@@ -434,6 +439,8 @@ C  Get coordinates of output axes.
       zcutoff  = arg_9(arg_lo_ss(X_AXIS,ARG9), arg_lo_ss(Y_AXIS,ARG9), 
      .            arg_lo_ss(Z_AXIS,ARG9), arg_lo_ss(T_AXIS,ARG9))
 
+      IF (ycutoff .LE. 0.) GOTO 930
+      IF (zcutoff .LE. 0.) GOTO 940
 
       nyaxis = arg_hi_ss(Y_AXIS,ARG4) - arg_lo_ss(Y_AXIS,ARG4) + 1
       nzaxis = arg_hi_ss(Z_AXIS,ARG5) - arg_lo_ss(Z_AXIS,ARG5) + 1
@@ -556,25 +563,49 @@ C                     other end, and use in the gridding computation.
 
       RETURN
 
+
 900   CONTINUE
 
-      IF (nypts .NE. nypts) THEN
+      IF (nypts .NE. nzpts) THEN
          WRITE (errtxt,20) nypts, nzpts
       ELSE IF (nypts .EQ. 0) THEN
          WRITE (errtxt, 30) 
       ENDIF
+      GOTO 999 
+
+ 910  CONTINUE
+      WRITE (errtxt,40) 'Y', 6
+      GOTO 999
+
+ 920  CONTINUE
+      WRITE (errtxt,40) 'Z', 7
+      GOTO 999
+
+ 930  CONTINUE
+      write (errtxt, 50) 'Y', 8
+      GOTO 999
+
+ 940  CONTINUE
+      write (errtxt, 50) 'Z', 9
+      GOTO 999
+
+ 999  CALL EF_BAIL_OUT(id, errtxt)
+      RETURN
+
 
    20 FORMAT ('Input scattered y, z have different # of points', 2i8)
+
    30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
      . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
+   40 FORMAT (a1,
+     .    ' Mapping scale parameter must be positive. Argument', I2)
 
- 999  CALL EF_BAIL_OUT(id, errtxt)
+   50 FORMAT (a1,' Cutoff parameter must be positive. Argument', I2)
 
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 ************************************************************************
 
-      RETURN 
       END

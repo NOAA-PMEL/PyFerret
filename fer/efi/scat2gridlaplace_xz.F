@@ -47,7 +47,9 @@
 *                 K axis only, as they may be functions of time.
 *  (12/1/2000) 3) If the destination axis is modulo, treat the scattered
 *                 points as modulo too.
-
+*
+*   12/7/2000  Add error checking on gridding parameters
+*
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -402,6 +404,9 @@ C  Get coordinates of output axes.
       nrng = arg_7(arg_lo_ss(X_AXIS,ARG7), arg_lo_ss(Y_AXIS,ARG7), 
      .            arg_lo_ss(Z_AXIS,ARG7), arg_lo_ss(T_AXIS,ARG7)) 
 
+      IF (cay .LT. 0.) GOTO 910
+      IF (nrng .LE. 0) GOTO 920
+
 *  Compute result at each time, and over range of y.
 
       DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
@@ -485,13 +490,27 @@ C  Get coordinates of output axes.
       ELSE IF (nxpts .EQ. 0) THEN
          WRITE (errtxt, 30) 
       ENDIF
+      GOTO 999
+
+  910 CONTINUE
+      WRITE (errtxt,40)
+      GOTO 999
+
+  920 CONTINUE
+      WRITE (errtxt,50)
+      GOTO 999
+
+ 999  CALL EF_BAIL_OUT(id, errtxt)
 
    20 FORMAT('Input scattered x, z have different # of points', 2i8)
 
    30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
      . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
- 999  CALL EF_BAIL_OUT(id, errtxt)
+   40 FORMAT ('Gridding parameter CAY must be nonnegative Argument 6')
+
+   50 FORMAT ('Gridding parameter NRNG must be positive. Argument 7')
+
       
 *                                                                      ^
 *                                                                      |

@@ -1,4 +1,4 @@
-	SUBROUTINE MERGE_CONTEXT( its_gc, iarg,
+	SUBROUTINE MERGE_CONTEXT( its_gc, iarg, dflt_cx,
      .				  mrg_cx, com_cx, com_str, status )
 
 *

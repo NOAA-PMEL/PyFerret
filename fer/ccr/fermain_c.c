@@ -50,6 +50,10 @@
 *			  doesnt need trailing underscores for c/fortran 
 *			  compatibility
 *    3/5/97 *sh* changes to incorporate "-batch" qualifier
+* Linux Port 5/97 *kob*   Using NAG f90 for linux, we first have to 
+*                         call f90_io_init() to set up lun's etc, and then
+*                         call f90_io_finish() after we are done 
+*                         to flush buffers,etc
 *    7/25/97 *js* changes to incorporate output file for -batch
 */
 
@@ -94,6 +98,10 @@ main (int argc, char *argv[])
       mem_size =  PMEM_BLK_SIZE * PMAX_MEM_BLKS,
       ttout_lun=TTOUT_LUN;
   float rmem_size;
+
+#ifdef MIXING_NAG_F90_AND_C
+  f90_io_init();
+#endif
 
 /* allocate the shared buffer */
   sBuffer = (sharedMem *)malloc(sizeof(sharedMem));
@@ -241,5 +249,11 @@ main (int argc, char *argv[])
 
     }
   }
+/* 
+ *kob* 5/97 - need to close f90 files and flush buffers.....
+ */
+#ifdef MIXING_NAG_F90_AND_C
+  f90_io_finish();
+#endif
 }
 

@@ -1,0 +1,45 @@
+! palette_demo.jnl
+! *jd* 5.99
+
+! Description: short demo of V5.0 palette capabilities
+
+! BY_LEVELS palette uses exact colors specified at each level
+! and repeats the color palette if necessary
+
+PALETTE rainbow_by_levels
+ppl list shaset
+
+SHADE/i=1:10/j=1:10/lev=(0,120,20) i*j
+\message
+
+SHADE/i=1:10/j=1:10/lev=20 i+j
+\message
+
+! The traditional PERCENT palette uses the entire palette only once
+! and interpolates within the palette to span the number of levels
+
+PALETTE rainbow
+ppl list shaset
+
+SHADE/i=1:10/j=1:10 i+j
+\message
+
+SHADE/i=1:10/j=1:10/lev=20 i+j
+\message
+
+set data levitus_climatology
+set reg/@t
+
+! The palette BY_VALUE specifies colors to be determined by
+! the value of the field that is plotted.
+
+PALETTE ocean_temp
+ppl list shaset
+
+PALETTE rainbow
+
+SHADE/k=1 temp; go land thick
+message
+
+repeat/k=1:17:4 (SHADE/pal=ocean_temp temp; go land thick; message)
+

@@ -191,8 +191,6 @@ c      ENDIF
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       j1 = arg_lo_ss(Y_AXIS,ARG1)
-      k1 = arg_lo_ss(Z_AXIS,ARG1)
-      l1 = arg_lo_ss(T_AXIS,ARG1)
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
@@ -202,7 +200,10 @@ c      ENDIF
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
 
+      l1 = arg_lo_ss(T_AXIS,ARG1)
       DO l = res_lo_ss(T_AXIS),res_hi_ss(T_AXIS)
+
+         k1 = arg_lo_ss(Z_AXIS,ARG1)
          DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             CALL apply_mapping ( arg_1(i1,j1,k1,l1), 
@@ -211,9 +212,10 @@ c      ENDIF
      .        result(i,j,k,l), nlon_src, nlat_src, nlon_dst, 
      .        nlat_dst, num_nbrs, bad_flag(ARG1), bad_flag_result )
 
-            l1 = l1 + arg_incr(T_AXIS,ARG1)
+            k1 = k1 + arg_incr(Z_AXIS,ARG1)
          ENDDO
-         k1 = k1 + arg_incr(Z_AXIS,ARG1)
+
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
       ENDDO
 
 

@@ -33,6 +33,9 @@
 *	 11/95 - added modulo regridding: "@MOD"
 * V430:   7/96 - incorporate 4D transformations: AVE, VAR, DIN, NDG, NBD
 * V450:   7/97 - added function descriptions
+* V455    9/97 - added transforms @CDA,CDB,CIA,CIB
+* V490   10/97 - added regrid transform @XACT (removed unimplemented g=@NRS)
+*	       - changed title for g=@ASN from "1 to 1" to "index assn"
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -503,19 +506,41 @@
      .		alg_trans_num  ( 32 )	/ trans_4d_bad_pt	/,
      .		alg_trans_its_int ( 32)	/ .FALSE.		/,
      .		alg_trans_has_arg ( 32)	/ .FALSE.		/,
-     .		alg_trans_dflt_arg( 32)	/ bad_val4		/,
-     .		alg_trans_text ( 33 )	/ rubout 		/,   ! unused
-     .		alg_trans_title( 33 )	/ ' '			/,
-     .		alg_trans_num  ( 33 )	/ unspecified_int4	/,
-     .		alg_trans_its_int ( 33)	/ .FALSE.		/,
-     .		alg_trans_has_arg ( 33)	/ .FALSE.		/,
-     .		alg_trans_dflt_arg( 33)	/ bad_val4		/
+     .		alg_trans_dflt_arg( 32)	/ bad_val4		/
+	DATA
+     .		alg_trans_text ( 33 )	/ 'CDA' 		/,
+     .		alg_trans_title( 33 )	/ 'closest dist above'  /,
+     .		alg_trans_num  ( 33 )	/ trans_nrst_dist_abv	/,
+     .		alg_trans_its_int ( 33)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 33)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 33)	/ 1			/,
+     .		alg_trans_text ( 34 )	/ 'CDB' 		/,
+     .		alg_trans_title( 34 )	/ 'closest dist below'  /,
+     .		alg_trans_num  ( 34 )	/ trans_nrst_dist_blw	/,
+     .		alg_trans_its_int ( 34)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 34)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 34)	/ 1			/,
+     .		alg_trans_text ( 35 )	/ 'CIA' 		/,
+     .		alg_trans_title( 35 )	/ 'closest index above' /,
+     .		alg_trans_num  ( 35 )	/ trans_nrst_indx_abv	/,
+     .		alg_trans_its_int ( 35)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 35)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 35)	/ 1			/,
+     .		alg_trans_text ( 36 )	/ 'CIB' 		/,
+     .		alg_trans_title( 36 )	/ 'closest index below' /,
+     .		alg_trans_num  ( 36 )	/ trans_nrst_indx_blw	/,
+     .		alg_trans_its_int ( 36)	/ .TRUE.		/,
+     .		alg_trans_has_arg ( 36)	/ .TRUE.		/,
+     .		alg_trans_dflt_arg( 36)	/ 1			/,
+     .		alg_trans_text ( 37 )	/ rubout 		/,   ! unused
+     .		alg_trans_title( 37 )	/ ' '			/,
+     .		alg_trans_num  ( 37 )	/ unspecified_int4	/,
+     .		alg_trans_its_int ( 37)	/ .FALSE.		/,
+     .		alg_trans_has_arg ( 37)	/ .FALSE.		/,
+     .		alg_trans_dflt_arg( 37)	/ bad_val4		/
 
-
-
-
-        DATA    (alg_trans_num(i),i = 34, num_transforms)
-     .            /27*unspecified_int4 /
+        DATA    (alg_trans_num(i),i = 38, num_transforms)
+     .            /23*unspecified_int4 /
 
 	DATA
      .		alg_regrid_title( prgrd_exact )		/ ' '	/,
@@ -526,9 +551,9 @@
      .		alg_regrid_code ( prgrd_average )	/ 'AVE'	/,
      .		alg_regrid_title( prgrd_xy_ave )	/ 'area avgd'	/,
      .		alg_regrid_code ( prgrd_xy_ave )	/ 'AAV'	/,
-     .		alg_regrid_title( prgrd_nearest )	/ 'nearest'	/,
-     .		alg_regrid_code ( prgrd_nearest )	/ 'NRS'	/,
-     .		alg_regrid_title( prgrd_associate )	/ '1 to 1'	/,
+     .		alg_regrid_title( prgrd_xact_pts )	/ 'exact match'	/,
+     .		alg_regrid_code ( prgrd_xact_pts )	/ 'XACT'	/
+     .		alg_regrid_title( prgrd_associate )	/ 'index assn'	/,
      .		alg_regrid_code ( prgrd_associate )	/ 'ASN'	/,
      .		alg_regrid_title( prgrd_variance )	/ 'variance'	/,
      .		alg_regrid_code ( prgrd_variance )	/ 'VAR'	/,

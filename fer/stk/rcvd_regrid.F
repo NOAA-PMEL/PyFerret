@@ -19,7 +19,8 @@
 *			such as min, max, ...
 *	   11/95 - modulo regridding - source region independent of result
 *	 1/96    - shifted @SUM and @NGD to weighted calcs like @AVE
-*     9/97 *kob* - mods to include negative time axis processing
+* V490:9/97 *kob* - mods to include negative time axis processing
+*   10/6/97  *sh* - added g=@xact regridding 
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
@@ -74,6 +75,7 @@
 * for interpolation we need source points surrounding the destination points
 * for averaging     we need source area   surrounding the destination area
 * for "window"ing   we need source area   containing  the destination area
+* for exact match   we need source points aligning w/ the destination points
 	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
 	   where_loest = box_middle
 	   where_hiest = box_middle
@@ -88,6 +90,9 @@
      .	    .OR. rgrd_trans .EQ. prgrd_average ) THEN
 	   where_loest = box_lo_lim
 	   where_hiest = box_hi_lim
+	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN	! 10/97
+	   where_loest = box_middle
+	   where_hiest = box_middle
 	ENDIF
 
 * find the available source region for regridding

@@ -21,7 +21,8 @@
 *		   (1/96 - set cx_given to FALSE ... omitted earlier)
 *	 1/96    - shifted @SUM and @NGD to weighted calcs like @AVE
 *	 2/96    - issue warning that G=@NRS is not implemented
-*     9/97 *kob* - mods to include negative time axis processing
+* V490:  9/97 *kob* - mods to include negative time axis processing
+*     10/6/97 *sh*  - added g=@xact regridding 
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -86,6 +87,7 @@
 
 * for interpolation we need source points surrounding the destination points
 * for averaging     we need source area   surrounding the destination area
+* for exact match   we need source points aligning w/ the destination points
 	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
 	   where_loest = box_middle
 	   where_hiest = box_middle
@@ -102,8 +104,9 @@
 	   where_hiest = box_hi_lim
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN
            CONTINUE
-	ELSEIF ( rgrd_trans .EQ. prgrd_nearest ) THEN
-	   CALL ERRMSG( ferr_not_implemented, status, 'G=@NRS', *5000 )
+	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN	! 10/97
+	   where_loest = box_middle
+	   where_hiest = box_middle
 	ELSE
 	   CALL ERRMSG( ferr_internal, status, 'rgrd transf', *5000 )
 	ENDIF
@@ -128,7 +131,7 @@
            IF     ( dst_lo_ss .GT. src_hi_ss ) THEN   ! 3/93
               src_lo_ss = src_hi_ss                   ! 3/93 request top point
            ELSEIF ( dst_hi_ss .LT. src_lo_ss ) THEN   ! 3/93
-              src_hi_ss = src_lo_ss         ! 3/93 request low point (possible?)
+              src_hi_ss = src_lo_ss        ! 3/93 request low point (possible?)
            ELSE
 	      IF ( dst_lo_ss .GT. src_lo_ss ) src_lo_ss = dst_lo_ss
 	      IF ( dst_hi_ss .LT. src_hi_ss ) src_hi_ss = dst_hi_ss

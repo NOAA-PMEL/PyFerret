@@ -24,6 +24,7 @@
 *	1/96	 - bug check against attempt to regrid a compressed axis
 *	1/29/96	 - regridding @SUM and @NGD are not weighted
 *		   (done in ave_regrid_1_axis instead of window_regrid_1_axis)
+* V500: 10/97	 - add G=@XACT
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -178,6 +179,11 @@
 	ELSEIF ( rgrd_trans.EQ.prgrd_min
      .	   .OR. rgrd_trans.EQ.prgrd_max ) THEN
 	   CALL DO_WINDOW_REGRID( cx_valid, axis, rgrd_trans,
+     .			memory(1,mr_blk1(src_mr)), src_mr,
+     .			memory(1,mr_blk1(dst_mr)), dst_mr,
+     .			memory(1, blk1), wk_size+1, 2*wk_size )
+	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN
+	   CALL DO_XACT_REGRID( cx_valid, axis,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
      .			memory(1, blk1), wk_size+1, 2*wk_size )

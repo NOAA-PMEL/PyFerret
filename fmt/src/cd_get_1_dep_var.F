@@ -198,6 +198,14 @@
      .			ds_bad_flag(ivtm)*cd_scale_factor(ivtm)
      .			+ cd_add_offset(ivtm)
 	     ENDIF
+* ... *kob* Also need to see about unpacking _FillValue
+             IF ( got_missing ) THEN
+	        CALL NCAINQ(cdfid, ivcd, '_FillValue', attype,
+     .			    i, istat )
+	        IF ( attype .EQ. vartyp ) ds_missing_flag(ivtm) =
+     .			ds_missing_flag(ivtm)*cd_scale_factor(ivtm)
+     .			+ cd_add_offset(ivtm)
+	     ENDIF
           ENDIF
           IF ( got_bad .AND. .NOT.got_missing )
      .        ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)

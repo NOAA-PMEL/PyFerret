@@ -64,24 +64,20 @@
 #endif
 
 * initialize
-	uvar = uvar_parent(child_uvar)
+	uvar = child_uvar
 	c = start
 
- 100	CONTINUE
 	IF (uvar_parent(uvar) .NE. 0) THEN
 	   
 * compute the character address of this function within its parent
 	   READ (uvar_name_code(uvar)(3:5),'(I3)',ERR=5000) offset
-	   c = c + offset
+	   c = c + offset - 1
 
-* get the parent of this parent
-	   uvar = uvar_parent(uvar)
-	   GOTO 100
-	ELSE
-* end of the lineage -- this parent has no parent
-	   GCF_PARENT_CHAR = c
-	   RETURN
 	ENDIF
+
+* end of the lineage -- this parent has no parent
+	GCF_PARENT_CHAR = c
+	RETURN
 
 * funky error exit
  5000	 GCF_PARENT_CHAR = 0	! will generate an error downstream

@@ -72,6 +72,7 @@
 *                    independent variable caused a crash.
 * V510: 8/99 *sh* - allow G=uvar on both uvars and pseudo-vars.
 *			If uvar grid is unknown, go get it!
+*	1/00 *sh* - bug fix for nested GC variables 
 
 * calling argument declarations:
 	INTEGER	status
@@ -81,12 +82,12 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass
-	INTEGER KNOWN_GRID, TM_FIND_LIKE_GRID, TM_FIND_LIKE_DYN_GRID,
-     .		TM_LENSTR1, GCF_PARENT_UVAR,
-     .		 hi_cx, lo_cx, big_cx, operator, start, end, grid,
+	INTEGER KNOWN_GRID,
+     .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
+     .		 hi_cx, lo_cx, big_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
-     .		hi_grid, var, len_name, pass_number, cx_save
-	CHARACTER VAR_CODE*4, LEFINT*6, name*128
+     .		var, len_name, pass_number, cx_save
+	CHARACTER VAR_CODE*4, name*128
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -198,7 +199,8 @@
 * its name is not found in the text. Instead generate its name from
 * its position and its parent variable
 * see IS_ALGEBRA for example
- 300	CALL GCF_CHILD_VAR_NAME( GCF_PARENT_UVAR(uvar), start, name )
+ 300	CALL GCF_CHILD_VAR_NAME( GCF_PARENT_UVAR(uvar),
+     .				 GCF_PARENT_CHAR(uvar,start), name )
 	len_name = TM_LENSTR1(name)
 	GOTO 310
 

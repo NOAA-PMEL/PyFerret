@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V450 7/97 - guts of routine moved to DELETE_USER_VAR_SUB
+* V510 *sh* 1/00 - bug fixes to support nested GC variables
 
 #ifdef unix
 	include 'ferret.parm'
@@ -55,13 +56,16 @@
 	INTEGER	uvar
 
 * internal variable declarations:
-	INTEGER	uv, uv_parent
+	INTEGER	uv, uvar_ancestor
 
 * delete child vars
 	DO 200 uv = 1, max_uvar
 	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
-* ... delete if this variable is a child of uvar
-	   IF (uvar_parent(uv).EQ.uvar) CALL DELETE_USER_VAR_SUB(uv)
+* ... delete if this variable is a child of uvar 
+*	uvar_name_code for child vars is "(Cnnn,Vmmm)" -- the "mmm" is the ancestor
+	   IF (uvar_name_code(uv)(1:2) .NE. '(C' ) GOTO 200
+	   READ (uvar_name_code(uv)(8:10),'(I3)',ERR=200) uvar_ancestor
+	   IF (uvar_ancestor.EQ.uvar) CALL DELETE_USER_VAR_SUB(uv)
  200	CONTINUE
 
 * now delete the variable itself

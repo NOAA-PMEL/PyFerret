@@ -51,6 +51,11 @@
 *	yes? LET (013,001) = TFFT(v)
 *	yes? LET vfft = (013,001) + A + B
 
+* Note that the addition of grid-changing variables and child variables
+* was introduced as a series of "hacks" that have made the code needlessly complex.
+* Could be cleaned up ... (*sh*)
+
+
 * revision 0.0 - 2/19/87
 * revision 0.1 - 9/22/87 - ferr_uvar_max --> *_prog_limit
 * V200:  6/20/89 - re-worked user defined variable logic
@@ -78,6 +83,8 @@
 *	12/99 *sh* - reverted to this code following temporary commenting out
 *		of 10/99 fix by Ansley to keep EFs running. Changes to
 *		EF_GET_ARG_SUBSCRIPTS now permit 10/99 change to work
+*	1/00 *sh* - bug fix: parent_uvar was always set to ultimate ancestor
+*		 instead of actual parent. Created gcf stack
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -98,17 +105,31 @@
      .			at_type  (maxatoms), at_id  (maxatoms),
      .			at_start (maxatoms), at_end (maxatoms), dset
 
+* internal parameter declarations
+	LOGICAL		itsa_gc
+	INTEGER		max_gcf_stack
+	PARAMETER     ( max_gcf_stack = 15 )
 * internal variable declarations:
-	INTEGER		tlen, iat, paren_level, atoms_lost, uvar_child,
-     .			child_start, child_end, gc_arg_start, istart, iend
+	LOGICAL		has_children
+	INTEGER		tlen, iat, paren_level, atoms_lost, uvar_child, gcfstk, 
+     .			child_start, child_end, gc_arg_start, istart, iend,
+     .			parent,
+     .			gcf_start(0:max_gcf_stack), gcf_uvar(0:max_gcf_stack)
 	CHARACTER	child_name*16
 
 * initialize
 	tlen  =  txend - txstart + 1
+	has_children = .FALSE.
 
-* find an unused uvar slot for the variable
+* find an unused uvar slot for the variable and initialize grid chg fcn stack
 	DO 100 uvar = 1, max_uvar
-	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 200
+	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) THEN
+	      gcfstk = 0	
+	      gcf_start(0) = 0
+	      gcf_uvar (0) = uvar ! assignment never used but what the heck ...
+	      uvar_num_items( uvar ) = uvar_on_hold
+	      GOTO 200
+	   ENDIF
  100	CONTINUE
 	GOTO 5100
 
@@ -117,12 +138,24 @@
 * These variables will be invisible to the user of Ferret (except when
 * using mode diagnostic). They have the special property that their result
 * grid cannot necessarily be inferred from the component arguments.
- 200	child_start = 0		! assume no grid changing fcn present
-	DO 300 iat = 1, natom
+ 200	paren_level = 0
+	DO 300 iat = gcf_start(gcfstk)+1, natom
 	   IF ( at_type(iat).EQ. alg_grid_chg_fcn ) THEN
-	      child_start = iat
+* ... find the variable number for this "child variable"
+*     Note that for the simple non-nested case of LET v = GCF(arg, arg, ...)
+*     no child variables are needed - so at the end of this routine we clean
+*     up left-over "on_hold" uvars
+	      DO 250 uvar_child = 1, max_uvar
+	         IF ( uvar_child .EQ. uvar ) GOTO 250
+	         IF ( uvar_num_items( uvar_child ) .EQ. uvar_deleted ) GOTO 260
+ 250	      CONTINUE
+	      GOTO 5900
+ 260	      gcfstk = gcfstk + 1 ! new stack level for the child
+	      uvar_num_items( uvar_child ) = uvar_on_hold
+	      gcf_uvar (gcfstk) = uvar_child
+	      gcf_start(gcfstk) = iat
 	      paren_level = 0
-	   ELSEIF ( child_start .GT. 0
+	   ELSEIF ( gcfstk .GT. 0
      .	    .AND.   at_type(iat).EQ. alg_punctuation ) THEN
 	      IF ( at_id(iat) .EQ. left_paren ) THEN
 	         paren_level = paren_level + 1
@@ -130,24 +163,14 @@
 	         paren_level = paren_level - 1
 	         child_end = iat
 * ... found the bounds of a grid changing function call ?
-	         IF ( paren_level .EQ. 0 ) GOTO 500
+	         IF ( paren_level .EQ. 0 ) GOTO 700
 	      ENDIF
 	   ENDIF
  300	CONTINUE
-	IF ( child_start .NE. 0 ) GOTO 5200	! syntax error
+	IF ( gcfstk .NE. 0 ) GOTO 5200	! syntax error
 
 * no (more) child definitions. Go initialize the parent
 	GOTO 1000
-
-* initialize a "child variable"
-*      -- a variable which consists only of a grid changing function
-*	  and its parentheses-enclosed arguments.
-* find an unused uvar slot for the child variable
- 500	DO 600 uvar_child = 1, max_uvar
-	   IF ( uvar_child .EQ. uvar ) GOTO 600
-	   IF ( uvar_num_items( uvar_child ) .EQ. uvar_deleted ) GOTO 700
- 600	CONTINUE
-	GOTO 5900
 
 * Grid-changing functions need to know the grids of each of their arguments
 * This requires that each argument be "simple" -- expressions like a+b are not
@@ -158,7 +181,8 @@
 * At this point we know there are no grid-changing functions used in the args.
 * In this very simple parsing operation any arg with more than one "atom"
 * will generate a separate child variable, including "gcfcn( (A) )"
- 700	gc_arg_start = child_start + 2		! past first paren 
+ 700	child_start = gcf_start(gcfstk)
+	gc_arg_start = child_start + 2		! past first paren 
 	paren_level = 1
 	DO 750 iat = child_start+2, child_end
 	   IF ( at_type(iat) .NE. alg_punctuation ) GOTO 750
@@ -190,26 +214,46 @@
  750	CONTINUE
 
 * There were no complex arguments in this grid-changing function
-* If the envire definition is LET A = GCFCN(args) then no nned for child fcns
-	IF ( child_start .EQ. 1
+* If the entire definition is LET A = GCFCN(args) then no need for child fcns
+	IF ( gcfstk .EQ. 1
+     . .AND. .NOT.has_children
+     . .AND. child_start .LE. 1
      . .AND. child_end   .EQ. natom ) GOTO 1000
 
-* generate name of child variable
+* generate name of child variable -- points to *ancestor*, not parent
  800	CALL GCF_CHILD_VAR_NAME( uvar,
      .				 at_start(child_start)-(at_start(1)-1),
      .				 child_name )
+	itsa_gc = at_type(child_start) .EQ. alg_grid_chg_fcn
+
+	IF ( itsa_gc ) THEN
+	   uvar_child = gcf_uvar(gcfstk)
+	   parent = gcf_uvar(gcfstk-1)
+	ELSE
+	   DO 850 uvar_child = 1, max_uvar
+	      IF ( uvar_child .EQ. uvar ) GOTO 850
+	      IF ( uvar_num_items( uvar_child ) .EQ. uvar_deleted ) THEN
+	         parent = gcf_uvar(gcfstk)
+	         GOTO 860
+	      ENDIF
+ 850	   CONTINUE
+	   GOTO 5900
+	ENDIF
 
 * initialize the child variable
-	CALL INIT_UVAR_SUB (
+ 860	CALL INIT_UVAR_SUB (
      .			     child_name,
-     .			     text, 'child of '//name, ' ', dset,
-     .                       implct_defn, uvar_child, uvar,
+     .			     text, ' ', ' ', dset,
+     .                       implct_defn, uvar_child,parent,
      .			     at_type(child_start), at_id(child_start),
      .			     at_start(child_start), at_end(child_start),
      .			     child_end-child_start+1,
      .			     at_start(child_start), at_end(child_end),
      .			     status )
 	IF ( status .NE. ferr_OK ) GOTO 5900
+
+* ... if the child we just created was a GC then pop the gc stack
+	IF ( itsa_gc ) gcfstk = gcfstk - 1
 
 * consolidate the parent atom definitions so that the child appears as a
 * single atom (a variable) in the definition
@@ -225,6 +269,7 @@
 	   at_id(child_start)    = at_id(iat)
  900	CONTINUE
 	natom = natom - atoms_lost
+	has_children = .TRUE.
 	GOTO 200		! back for more children
 
 *============================================================
@@ -237,12 +282,23 @@
 
 	IF ( status .NE. ferr_OK ) GOTO 5900
 
+* clean up left-over on-hold variables
+	DO 1100 uvar_child = 1, max_uvar
+	   IF (uvar_num_items(uvar_child) .EQ. uvar_on_hold)
+     .			uvar_num_items(uvar_child) = uvar_deleted
+ 1100	CONTINUE
+
 * successful completion
 	status = ferr_ok
 	RETURN
 
 * error exit
- 5000	RETURN
+* ... remove any holds left on variable slots
+ 5000	DO 5010 uvar = 1, max_uvar
+ 5010	IF  ( uvar_num_items(uvar) .EQ. uvar_on_hold )
+     .	      uvar_num_items(uvar) = uvar_deleted
+	RETURN
+
  5100	CALL ERRMSG( ferr_prog_limit, status,
      .		'too many user-defined variables'//pCR//
      .		'cancel or redefine some variables', *5000 )
@@ -252,8 +308,12 @@
 * remove all child variables of the variable being initialized
  5900	CALL GCF_CHILD_VAR_NAME( uvar, 0, child_name )
 	DO 5910 uvar_child = uvar, max_uvar
-	   IF (uvar_name_code(uvar_child)(:6) .EQ. child_name(:6))
-     .			uvar_num_items( uvar_child ) = uvar_deleted
+	   IF ( uvar_name_code(uvar_child)(7:10)
+     .     .EQ. child_name(7:10) ) THEN
+	      uvar_num_items( uvar_child ) = uvar_deleted
+	      uvar_name_code( uvar_child ) = " "
+	      uvar_text     ( uvar_child ) = " "
+	   ENDIF
  5910	CONTINUE
 	GOTO 5000
 

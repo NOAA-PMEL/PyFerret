@@ -50,7 +50,7 @@ sun4:
 	${MAKE} tmap_libs/tmap_lib.a FFLAGS="-c -Nl60 -w -u" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -D_NO_PROTO -c"
 
 solaris:
-	${MAKE} tmap_libs/tmap_lib.a FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris -DUSG -I/opt/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" RANLIB="touch" 
+	${MAKE} tmap_libs/tmap_lib.a FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris -DUSG -I/opt/local/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" RANLIB="touch" 
 
 decstation:
 	${MAKE} tmap_libs/tmap_lib.a F77="f77" FFLAGS="-c -u -cpp -w1 -G 0 -fpe1 -check underflow -check overflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c"
@@ -85,7 +85,7 @@ sun4_deblib:
 	${MAKE} tmap_libs/tmap_deblib.a FFLAGS="-c -Nl60 -w -u" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c -D_NO_PROTO" DEBUG="-g"
 
 solaris_deblib:
-	${MAKE} tmap_libs/tmap_deblib.a FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris -DUSG _/opt/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" RANLIB="touch" DEBUG="-g"
+	${MAKE} tmap_libs/tmap_deblib.a FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris -DUSG -I/opt/local/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" RANLIB="touch" DEBUG="-g"
 
 decstation_deblib:
 	${MAKE} tmap_libs/tmap_deblib.a F77="f77" FFLAGS="-c -u -cpp -w1 -G 0 -fpe1 -check underflow -check overflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c" DEBUG="-g"
@@ -141,7 +141,7 @@ sun4_comp:
 	${MAKE} comp CC="/usr/ucb/cc"  FFLAGS="-c -Nl60 -w -u" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -D_NO_PROTO -c" 
 
 solaris_comp:  
-	${MAKE} comp CC="cc"  FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris -DUSG -I/opt/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" 
+	${MAKE} comp CC="cc"  FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris -DUSG -I/opt/local/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" 
 
 decstation_comp:
 	${MAKE} comp F77="f77" FFLAGS="-c -u -cpp -w1 -G 0 -fpe1 -check underflow -check overflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c"
@@ -169,7 +169,7 @@ sun4_gcomp:
 	${MAKE} comp CC="/usr/ucb/cc"  FFLAGS="-c -Nl60 -w -u" CCFLAGS="-I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -D_NO_PROTO -c" DEBUG="-g"
 
 solaris_gcomp:  
-	${MAKE} comp CC="cc"  FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris  -DUSG -I/opt/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" DEBUG="-g"
+	${MAKE} comp CC="cc"  FFLAGS="-c  -Dreclen_in_bytes -DNEED_BYTE -DACCEPTS_BYTE_DECLARATION -Nl60 -w -u" CCFLAGS="-Dsolaris  -DUSG -I/opt/local/include -I/usr/ucbinclude -Ireadline -I. -I/usr/local/include -c" DEBUG="-g"
 
 decstation_gcomp:
 	${MAKE} comp F77="f77" FFLAGS="-c -u -cpp -w1 -G 0 -fpe1 -check underflow -check overflow" CCFLAGS="-Ireadline -I. -I/usr/local/include -c" DEBUG="-g"

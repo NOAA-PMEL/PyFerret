@@ -8,11 +8,6 @@
 
 ! function definition from objective_analysis_demo.jnl
 
-define view/ylim=.6,1/text=.5 vupper
-define view/xlim=0.,.5/ylim=.3,.55/text=.2 vul
-define view/xlim=.5,1./ylim=.3,.55/text=.2 vur
-define view/xlim=0.,.5/ylim=0.05,.3/text=.2 vll
-define view/xlim=.5,1./ylim=0.05,.3/text=.2 vlr
 define axis/x=0:10:0.05 x10
 define axis/y=0:10:0.05 y10
 define grid/x=x10/y=y10 g10x10
@@ -31,7 +26,7 @@ let Y0 = 8
 LET sample_function = fcn1 + wave
 
 let xpts = x; let ypts = y
-GO draw_it "sample_function" "A field with 200 sample points marked" "SHADE" upper
+SHADE/title="A field with 200 sample points marked" sample_function 
 
 let xpts = 10*randu(i); let ypts = 10*randu(i+2)
 set region/i=1:200
@@ -39,86 +34,21 @@ plot/vs/over/symbols xpts,ypts
 
 define axis/x=1:10:.5 xax5
 define axis/y=1:10:.5 yax5
+
+set view ul
 let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
-GO draw_it sgrid "Laplace Gridding (5,5) to 20x20 grid" "SHADE" upper_left
+SHADE/TITLE="Laplace Gridding (5,5) to 20x20 grid" sgrid 
 
+set view ur
 let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
-GO draw_it sgrid "Laplace Gridding (1,1) to 20x20" "SHADE" lower_left
+SHADE/TITLE="Laplace Gridding (1,1) to 20x20" sgrid  
 
+set view ll
 let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
-GO draw_it sgrid "Gauss Gridding (2) to 20x20 grid" "SHADE" upper_right
+SHADE/TITLE="Gauss Gridding (2) to 20x20 grid" sgrid  
 
+set view lr
 let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
-GO draw_it sgrid "Gauss Gridding (6) to 20x20 grid" "SHADE" lower_right
-
-
-message
-
- ! NOAA/PMEL TMAP
- ! Program FERRET (GUI)
- ! Version 4.91 - 05/19/98
- ! 29-Jul-98 11:09     
-
-! Call scatter2gridlaplace_xz.jnl to put scattered data, sampled from a 
-! defined function onto a regularly spaced grid.
-
-DEFINE VIEW/YLIM=.6,1/TEXT=.5 vupper
-DEFINE VIEW/XLIM=0.,.5/YLIM=.3,.55/TEXT=.2 vul
-DEFINE VIEW/XLIM=.5,1./YLIM=.3,.55/TEXT=.2 vur
-DEFINE VIEW/XLIM=0.,.5/YLIM=0.05,.3/TEXT=.2 vll
-DEFINE VIEW/XLIM=.5,1./YLIM=0.05,.3/TEXT=.2 vlr
-
-DEFINE AXIS/x=0:10:0.05 x10
-DEFINE AXIS/z=0:10:0.05 z10
-DEFINE GRID/x=x10/z=z10 g10x10
-SET GRID g10x10
-
-LET fcn1 = sin(kx*xpts + kz*zpts - phase) /2.
-LET fcn2 = cos(r)/(r+1)
-LET r = ((xpts-x0)^2+ 7*(zpts-z0)^2)^0.5
-LET phase = 0.
-LET kx = 0.5
-LET kz = 0.3
-LET x0 = 2
-LET z0 = 6
-
-
-!  Plot an analytic function and sample some points.
-
-LET sample_function = fcn1 - fcn2
-
-LET xpts = x; LET zpts = z
-SET VIEW vupper
-SHADE/LEVELS=(-1., 1., 0.2)/TITLE="An x-z field with 250 sample points marked" sample_function
-
-LET xpts = 10*randu(i); LET zpts = 10*randu(i+2)
-SET region/i=1:250
-PLOT/VS/OVER/SYMBOLS xpts,zpts
-
-!  Compute the field from the sampled points and plot.
-
-DEFINE AXIS/x=1:10:.2 xax2
-DEFINE AXIS/z=1:10:.2 zax2
-
-LET sgrid1 = scatter2gridgauss_xz (xpts, zpts, sample_function, x[gx=xax2], z[gz=zax2], 0.6)
-SET VIEW vul
-SHADE/LEVELS=(-1., 1., 0.2)/TITLE="Gaussian gridding(0.6) to 50x50 grid" sgrid1
-
-!  Use different parameters in the gridding function.
-
-LET sgrid2 = scatter2gridgauss_xz (xpts, zpts, sample_function, x[gx=xax2], z[gz=zax2], 2.)
-SET VIEW vll
-SHADE/LEVELS=(-1., 1., 0.2)/TITLE="Gaussian gridding(2) to 50x50 grid" sgrid2
-
-
-!  Two sets of parameters, calling another gridding function. 
-
-LET sgrid3 = scatter2gridlaplace_xz (xpts, zpts, sample_function, x[gx=xax2], z[gz=zax2], 5., 3)
-SET VIEW vur
-SHADE/LEVELS=(-1., 1., 0.2)/TITLE="scatter2gridlaplace_xz (5,5) to 50x50 grid" sgrid3
-
-SET VIEW vlr
-LET sgrid4 = scatter2gridlaplace_xz (xpts, zpts, sample_function, x[gx=xax2], z[gz=zax2], 100., 5)
-SHADE/LEVELS=(-1., 1., 0.2)/TITLE="scatter2gridlaplace_xz (100.,5) to 50x50 grid" sgrid4
+SHADE/TITLE="Gauss Gridding (6) to 20x20 grid" sgrid  
 
 

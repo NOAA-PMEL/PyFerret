@@ -58,6 +58,7 @@
 * v500 *kob* 3/99 - modifications to allow datasets to start w/ a digit.
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
+* v551 *acm* 1/03  Also check for extension .NC along with .DES, .CDF
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -71,7 +72,7 @@
 
 * internal variable declarations:
 	LOGICAL		TM_DIGIT, TM_HAS_STRING,
-     .		        cdf_name, des_name, full_name_used
+     .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len
 	CHARACTER	buff*256
@@ -92,7 +93,7 @@ c *kob* 4/97
 	   GOTO 200
 	ENDIF
 
-* 5/93 locate "true" end to the given filename (.des and .cdf are invisible)
+* 5/93 locate "true" end to the given filename (.des, .cdf, and .nc are invisible)
 * note: filenames are always in CAPS since they may be embedded in the var defn
  50	   full_len = TM_LENSTR1( dname )
 	   IF ( full_len .GT. 4 ) THEN
@@ -100,6 +101,8 @@ c *kob* 4/97
      .        .OR. dname(full_len-3:full_len) .EQ. '.CDF'
 	      des_name = dname(full_len-3:full_len) .EQ. '.des'
      .        .OR. dname(full_len-3:full_len) .EQ. '.DES'
+	      nc_name = dname(full_len-2:full_len) .EQ. '.nc'
+     .        .OR. dname(full_len-2:full_len) .EQ. '.NC'
 	   ELSE
 	      cdf_name = .FALSE.
 	      des_name = .FALSE.
@@ -111,6 +114,11 @@ c *kob* 4/97
 	      short_len = full_len
               full_name_used = .TRUE.
 	   ENDIF
+	   IF ( nc_name ) THEN
+	      short_len = full_len - 3
+	      full_name_used = .FALSE.
+              cdf_name = .TRUE.
+           ENDIF
 
 * compare with filenames stored by the TMAP library
 	   DO 100 dset = 1, maxdsets

@@ -1,7 +1,7 @@
 ! bench_gridding.jnl  
 ! *acm* 8/99
 
-! Call scatter2gridlaplace_xy  and scatter2gridgauss_xy
+! Call scat2gridlaplace_xy  and scat2gridgauss_xy
 ! to put scattered data onto a regularly spaced grid.
 
 ! function definition from objective_analysis_demo.jnl
@@ -34,14 +34,14 @@ set region/i=1:200
 define axis/x=1:10:.5 xax5
 define axis/y=1:10:.5 yax5
 
-let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
+let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
 list/x=4:5/y=1 sgrid
 
-let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
+let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
 list/x=4:5/y=1 sgrid
 
-let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
+let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
 list/x=4:5/y=1 sgrid
 
-let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 6)
+let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 6)
 list/x=4:5/y=1 sgrid

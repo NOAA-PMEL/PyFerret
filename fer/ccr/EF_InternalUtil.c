@@ -221,39 +221,39 @@ void FORTRAN(samplexy_work_size)(int *);
 void FORTRAN(samplexy_compute)(int *, float *, float *,
       float *, float *, float *, float *);
 
-void FORTRAN(scatter2gridgauss_xy_init)(int *);
-void FORTRAN(scatter2gridgauss_xy_work_size)(int *);
-void FORTRAN(scatter2gridgauss_xy_compute)(int *, float *, float *, float *, 
+void FORTRAN(scat2gridgauss_xy_init)(int *);
+void FORTRAN(scat2gridgauss_xy_work_size)(int *);
+void FORTRAN(scat2gridgauss_xy_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *, float *);
 
-void FORTRAN(scatter2gridgauss_xz_init)(int *);
-void FORTRAN(scatter2gridgauss_xz_work_size)(int *);
-void FORTRAN(scatter2gridgauss_xz_compute)(int *, float *, float *, float *, 
+void FORTRAN(scat2gridgauss_xz_init)(int *);
+void FORTRAN(scat2gridgauss_xz_work_size)(int *);
+void FORTRAN(scat2gridgauss_xz_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *, float *);
 
-void FORTRAN(scatter2gridgauss_yz_init)(int *);
-void FORTRAN(scatter2gridgauss_yz_work_size)(int *);
-void FORTRAN(scatter2gridgauss_yz_compute)(int *, float *, float *, float *, 
+void FORTRAN(scat2gridgauss_yz_init)(int *);
+void FORTRAN(scat2gridgauss_yz_work_size)(int *);
+void FORTRAN(scat2gridgauss_yz_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *, float *);
 
-void FORTRAN(scatter2gridlaplace_xy_init)(int *);
-void FORTRAN(scatter2gridlaplace_xy_work_size)(int *);
-void FORTRAN(scatter2gridlaplace_xy_compute)(int *, float *, float *, float *, 
+void FORTRAN(scat2gridlaplace_xy_init)(int *);
+void FORTRAN(scat2gridlaplace_xy_work_size)(int *);
+void FORTRAN(scat2gridlaplace_xy_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *);
 
-void FORTRAN(scatter2gridlaplace_xz_init)(int *);
-void FORTRAN(scatter2gridlaplace_xz_work_size)(int *);
-void FORTRAN(scatter2gridlaplace_xz_compute)(int *, float *, float *, float *, 
+void FORTRAN(scat2gridlaplace_xz_init)(int *);
+void FORTRAN(scat2gridlaplace_xz_work_size)(int *);
+void FORTRAN(scat2gridlaplace_xz_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *);
 
-void FORTRAN(scatter2gridlaplace_yz_init)(int *);
-void FORTRAN(scatter2gridlaplace_yz_work_size)(int *);
-void FORTRAN(scatter2gridlaplace_yz_compute)(int *, float *, float *, float *, 
+void FORTRAN(scat2gridlaplace_yz_init)(int *);
+void FORTRAN(scat2gridlaplace_yz_work_size)(int *);
+void FORTRAN(scat2gridlaplace_yz_compute)(int *, float *, float *, float *, 
                            float *, float *, float *, float *, float *, 
                            float *, float *);
 
@@ -346,12 +346,12 @@ struct {
    strcpy(I_EFnames[2].funcname, "sampleij");
    strcpy(I_EFnames[3].funcname, "samplet_date");
    strcpy(I_EFnames[4].funcname, "samplexy");
-   strcpy(I_EFnames[5].funcname, "scatter2gridgauss_xy");
-   strcpy(I_EFnames[6].funcname, "scatter2gridgauss_xz");
-   strcpy(I_EFnames[7].funcname, "scatter2gridgauss_yz");
-   strcpy(I_EFnames[8].funcname, "scatter2gridlaplace_xy");
-   strcpy(I_EFnames[9].funcname, "scatter2gridlaplace_xz");
-   strcpy(I_EFnames[10].funcname, "scatter2gridlaplace_yz");
+   strcpy(I_EFnames[5].funcname, "scat2gridgauss_xy");
+   strcpy(I_EFnames[6].funcname, "scat2gridgauss_xz");
+   strcpy(I_EFnames[7].funcname, "scat2gridgauss_yz");
+   strcpy(I_EFnames[8].funcname, "scat2gridlaplace_xy");
+   strcpy(I_EFnames[9].funcname, "scat2gridlaplace_xz");
+   strcpy(I_EFnames[10].funcname, "scat2gridlaplace_yz");
    strcpy(I_EFnames[11].funcname, "sorti");
    strcpy(I_EFnames[12].funcname, "sortj");
    strcpy(I_EFnames[13].funcname, "sortk");
@@ -2076,35 +2076,35 @@ else if ( !strcmp(name,"samplexy_result_limits_") ) return (void *)samplexy_resu
 else if ( !strcmp(name,"samplexy_work_size_") ) return (void *)samplexy_work_size_;
 else if ( !strcmp(name,"samplexy_compute_") ) return (void *)samplexy_compute_;
 
-/* scatter2gridgauss_xy.F */
-else if ( !strcmp(name,"scatter2gridgauss_xy_init_") ) return (void *)FORTRAN(scatter2gridgauss_xy_init);
-else if ( !strcmp(name,"scatter2gridgauss_xy_work_size_") ) return (void *)FORTRAN(scatter2gridgauss_xy_work_size);
-else if ( !strcmp(name,"scatter2gridgauss_xy_compute_") ) return (void *)FORTRAN(scatter2gridgauss_xy_compute);
+/* scat2gridgauss_xy.F */
+else if ( !strcmp(name,"scat2gridgauss_xy_init_") ) return (void *)FORTRAN(scat2gridgauss_xy_init);
+else if ( !strcmp(name,"scat2gridgauss_xy_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xy_work_size);
+else if ( !strcmp(name,"scat2gridgauss_xy_compute_") ) return (void *)FORTRAN(scat2gridgauss_xy_compute);
 
-/* scatter2gridgauss_xz.F */
-else if ( !strcmp(name,"scatter2gridgauss_xz_init_") ) return (void *)FORTRAN(scatter2gridgauss_xz_init);
-else if ( !strcmp(name,"scatter2gridgauss_xz_work_size_") ) return (void *)FORTRAN(scatter2gridgauss_xz_work_size);
-else if ( !strcmp(name,"scatter2gridgauss_xz_compute_") ) return (void *)FORTRAN(scatter2gridgauss_xz_compute);
+/* scat2gridgauss_xz.F */
+else if ( !strcmp(name,"scat2gridgauss_xz_init_") ) return (void *)FORTRAN(scat2gridgauss_xz_init);
+else if ( !strcmp(name,"scat2gridgauss_xz_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xz_work_size);
+else if ( !strcmp(name,"scat2gridgauss_xz_compute_") ) return (void *)FORTRAN(scat2gridgauss_xz_compute);
 
-/* scatter2gridgauss_yz.F */
-else if ( !strcmp(name,"scatter2gridgauss_yz_init_") ) return (void *)FORTRAN(scatter2gridgauss_yz_init);
-else if ( !strcmp(name,"scatter2gridgauss_yz_work_size_") ) return (void *)FORTRAN(scatter2gridgauss_yz_work_size);
-else if ( !strcmp(name,"scatter2gridgauss_yz_compute_") ) return (void *)FORTRAN(scatter2gridgauss_yz_compute);
+/* scat2gridgauss_yz.F */
+else if ( !strcmp(name,"scat2gridgauss_yz_init_") ) return (void *)FORTRAN(scat2gridgauss_yz_init);
+else if ( !strcmp(name,"scat2gridgauss_yz_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yz_work_size);
+else if ( !strcmp(name,"scat2gridgauss_yz_compute_") ) return (void *)FORTRAN(scat2gridgauss_yz_compute);
 
-/* scatter2gridlaplace_xy.F */
-else if ( !strcmp(name,"scatter2gridlaplace_xy_init_") ) return (void *)FORTRAN(scatter2gridlaplace_xy_init);
-else if ( !strcmp(name,"scatter2gridlaplace_xy_work_size_") ) return (void *)FORTRAN(scatter2gridlaplace_xy_work_size);
-else if ( !strcmp(name,"scatter2gridlaplace_xy_compute_") ) return (void *)FORTRAN(scatter2gridlaplace_xy_compute);
+/* scat2gridlaplace_xy.F */
+else if ( !strcmp(name,"scat2gridlaplace_xy_init_") ) return (void *)FORTRAN(scat2gridlaplace_xy_init);
+else if ( !strcmp(name,"scat2gridlaplace_xy_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_xy_work_size);
+else if ( !strcmp(name,"scat2gridlaplace_xy_compute_") ) return (void *)FORTRAN(scat2gridlaplace_xy_compute);
 
-/* scatter2gridlaplace_xz.F */
-else if ( !strcmp(name,"scatter2gridlaplace_xz_init_") ) return (void *)FORTRAN(scatter2gridlaplace_xz_init);
-else if ( !strcmp(name,"scatter2gridlaplace_xz_work_size_") ) return (void *)FORTRAN(scatter2gridlaplace_xz_work_size);
-else if ( !strcmp(name,"scatter2gridlaplace_xz_compute_") ) return (void *)FORTRAN(scatter2gridlaplace_xz_compute);
+/* scat2gridlaplace_xz.F */
+else if ( !strcmp(name,"scat2gridlaplace_xz_init_") ) return (void *)FORTRAN(scat2gridlaplace_xz_init);
+else if ( !strcmp(name,"scat2gridlaplace_xz_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_xz_work_size);
+else if ( !strcmp(name,"scat2gridlaplace_xz_compute_") ) return (void *)FORTRAN(scat2gridlaplace_xz_compute);
 
-/* scatter2gridlaplace_yz.F */
-else if ( !strcmp(name,"scatter2gridlaplace_yz_init_") ) return (void *)FORTRAN(scatter2gridlaplace_yz_init);
-else if ( !strcmp(name,"scatter2gridlaplace_yz_work_size_") ) return (void *)FORTRAN(scatter2gridlaplace_yz_work_size);
-else if ( !strcmp(name,"scatter2gridlaplace_yz_compute_") ) return (void *)FORTRAN(scatter2gridlaplace_yz_compute);
+/* scat2gridlaplace_yz.F */
+else if ( !strcmp(name,"scat2gridlaplace_yz_init_") ) return (void *)FORTRAN(scat2gridlaplace_yz_init);
+else if ( !strcmp(name,"scat2gridlaplace_yz_work_size_") ) return (void *)FORTRAN(scat2gridlaplace_yz_work_size);
+else if ( !strcmp(name,"scat2gridlaplace_yz_compute_") ) return (void *)FORTRAN(scat2gridlaplace_yz_compute);
 
 /* sorti.F */
 else if ( !strcmp(name,"sorti_init_") ) return (void *)sorti_init_;

@@ -3,7 +3,7 @@
  ! Version 4.91 - 05/19/98
  ! 29-Jul-98 11:09     
 
-! Call scatter2gridlaplace_xy 
+! Call scat2gridlaplace_xy 
 ! to put scattered data onto a regularly spaced grid.
 
 ! function definition from objective_analysis_demo.jnl
@@ -38,19 +38,19 @@ set wind/clear
 
 
 set view ul
-let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
+let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 5., 5)
 SHADE/TITLE="Laplace Gridding (5,5) to 20x20 grid" sgrid 
 
 set view ur
-let sgrid = scatter2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
+let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.,1)
 SHADE/TITLE="Laplace Gridding (1,1) to 20x20" sgrid  
 
 set view ll
-let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
+let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
 SHADE/TITLE="Gauss Gridding (2) to 20x20 grid" sgrid  
 
 set view lr
-let sgrid = scatter2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
+let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 2)
 SHADE/TITLE="Gauss Gridding (6) to 20x20 grid" sgrid  
 
 set view full

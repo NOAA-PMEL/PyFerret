@@ -69,6 +69,9 @@
 *		    & call ax_on_off to implement /NOAXES.
 *      *acm* 10/01  remove VMS includes
 * V540 *acm*  2/02  restore persistence of PPL AXSET settings
+* V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
+*                   done with qualifiers /AXES= or /NOAXES
+* V541 *acm*  3/02  Allow PLOT/VS/LINE/DASH
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -267,12 +270,19 @@ c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
 	ENDIF	   
 
 * ... PLOT/DASH=(dn1,up1,dn2,up2)
+*     3/02 No reason we can't do PLOT/VS/DASH 
+
 	loc = qual_given( slash_plot_dash )
-	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
+c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
+	IF ( loc .GT. 0 ) THEN
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
            do_dash = 1
+
+           DO 100 i = 1, 4
+              dashstyle(i) = 0.
+ 100       ENDDO
 
 	   IF ( buff .NE. ' ' ) THEN
 * Check for optional parentheses
@@ -289,17 +299,17 @@ c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
               nparm = 4
               CALL parse_comma_list ( buff, s1, s2, nparm, num_it,
      .             it_start, it_end, status)
-              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /DASH=()
-                 DO 100 i = 1, 4
+              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN
+                 DO 200 i = 1, 4
                     dashstyle(i) = 0.
- 100             ENDDO
+ 200             ENDDO
               ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
                  GOTO 5420
               ELSE
-                 DO 200 i = 1, nparm
+                 DO 300 i = 1, nparm
                     READ (buff(it_start(i):it_end(i)), *) dashstyle(i)
                     IF (dashstyle(i) .LT. 0.) GOTO 5430
- 200             CONTINUE
+ 300             CONTINUE
               ENDIF
            ENDIF
               
@@ -331,10 +341,9 @@ c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
 
 * turn off axes? 
 	IF ( noaxes ) THEN 
-           DO 300 i = 1, 4
+           DO 400 i = 1, 4
               iax(i) = 0
- 300       ENDDO
-          call ppl_axes_off (set_up)
+ 400       ENDDO
         ENDIF
 
 * turn on (one or more) axes? (7/11/01)
@@ -362,21 +371,21 @@ c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
               CALL parse_comma_list ( buff, s1, s2, nparm, 
      .             num_it, it_start, it_end, status)
               IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /AXES=()
-                 DO 400 i = 1, 4
+                 DO 500 i = 1, 4
                     iax(i) = 0
- 400             ENDDO
+ 500             ENDDO
               ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
                  GOTO 5440
               ELSE
-                 DO 500 i = 1, nparm
+                 DO 600 i = 1, nparm
                     READ (buff(it_start(i):it_end(i)), *) iax(i)
                     IF (iax(i) .LT. 0  .OR.  iax(i) .GT. 1) GOTO 5450
- 500             CONTINUE
+ 600             CONTINUE
               ENDIF
            ELSE		! turn on all axes
-	      DO 600 i = 1, 4
+	      DO 700 i = 1, 4
 		 iax(i) = 1
- 600	      CONTINUE
+ 700	      CONTINUE
            ENDIF
               
 	ENDIF
@@ -394,12 +403,11 @@ c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
 	   CALL PPLCMD ( ' ', ' ', 0, 'PLOT/LATCH/'//ppl_wait//' ', 1, 1 )
 	ENDIF
 
-* restore axes? (5/29/97  revised 2/2002)
-c 7/01	IF ( noaxes ) CALL PPL_AXES_RESTORE
+* restore axes? (5/29/97  revised 3/2002
+        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
-        IF ( noaxes ) CALL PPL_AXES_RESTORE
-	loc = qual_given( slash_plot_axes )
-	IF ( loc .GT. 0) CALL PPL_AXES_RESTORE
+* restore dash settings? (5/29/97  revised 3/2002
+        IF ( do_dash ) CALL PPL_DASH_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

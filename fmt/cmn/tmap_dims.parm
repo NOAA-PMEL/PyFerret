@@ -39,13 +39,9 @@
 	PARAMETER (ngrid_prenamed=11)	! # of pre-defined grids
 	PARAMETER (nvari_prenamed=7)	! # of pre-named variables
 	PARAMETER (maxdsets = 100)	! maximum # of data sets simultaneously
-	PARAMETER (maxstepfiles = 1000)	! # of files with time step data (up from 500 12/02)
-!	PARAMETER (maxstepfiles = 500)	! # of files with time step data 
-!	PARAMETER (maxvars = 200)	! max # of ALL vars *parmchg: pre 7/92
-!	PARAMETER (maxvars = 300)	! max # of ALL vars *parmchg: pre 7/97
-!	PARAMETER (maxvars = 500)	! max # of ALL vars *parmchg: now
+	PARAMETER (maxstepfiles = 5000)	! # of files with time step data (up from 500 12/02)
 	PARAMETER (maxvars = 2000)	! max # of ALL vars *parmchg: now
-	PARAMETER (maxvarfiles = 1000)	! # of files with time step data
+	PARAMETER (maxvarfiles = 500)	! # of files with time step data
 	PARAMETER (maxaux = 50)		! max # of ALL auxiliary sets
 !	PARAMETER (max_grids = 60)	! max # of grids *parmchg: pre 7/92
 !	PARAMETER (max_grids = 200)	! max # of grids *parmchg: pre 11/95

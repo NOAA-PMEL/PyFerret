@@ -41,7 +41,7 @@ SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE 
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 
-GKSLIB		= -L../lib -lxgks
+GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
 HDFLIB		= -L/usr/local/lib -ldf -ljpeg -lz
 

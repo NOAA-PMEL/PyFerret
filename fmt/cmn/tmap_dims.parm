@@ -23,7 +23,7 @@
 *	*sh* 5/00 - bump num_dyn_grids from 100 to 500
 * v5.50 *acm*9/02 - up maxdsets from 30 to 100 
 *       *acm*12/02  up maxstepfiles from 500 to 1000
-* v5.51+*acm* 3/03  maxvarfiles needs to be 1000 also
+* v552  *acm* 3/03  increase maxstepfiles to 5000)
 
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,

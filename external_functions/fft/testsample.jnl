@@ -1,0 +1,18 @@
+
+DEFINE AXIS/t=1-Jan-1990:31-Dec-1990:24 dayt
+DEFINE GRID/T=dayt  tgrid
+SH GRID tgrid
+SET GRID tgrid
+LET fcn1 = sin(kt*tpts - phase) /2.
+LET fcn2 = cos(pt*tpts)
+LET phase = 6.
+LET kt = 0.5
+LET pt = 0.3
+!  Use an analytic function.
+LET sample_function = fcn1 - fcn2
+LET tpts = t
+LET days_fft = ffta_sample(sample_function[l=1:365])
+LIST/L=30:35 days_fft
+
+LET p_fft = fftp_sample(sample_function[l=1:365])
+STAT p_fft

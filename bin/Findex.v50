@@ -1,0 +1,18 @@
+#! /bin/csh -f
+#! Findex
+#! 6/99 *kob* Temp holder while V5.0 Documents are not available text format
+
+echo " " 
+echo " "
+echo "*************************************************************"
+echo "*    Ferret v5.00 Documents are not yet available as Text   *"
+echo "*                                                           *"
+echo "*                                                           *"
+echo "*    Please see http://www.ferret.noaa.gov/Ferret for       *"
+echo "*    access to the HTML versions of the v5.0 Users Guide    *"
+echo "*                                                           *"
+echo "*    For command-line access to v4.91 documents, type:      *"
+echo "*         Findex.v491                                       *"
+echo "*************************************************************"
+echo " " 
+echo " "

@@ -34,9 +34,9 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include
 CC              = cc
 F77		= f90
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
-FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
-PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
+CFLAGS          = -O -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
+FFLAGS          = -O -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
+PPLUS_FFLAGS    = -O -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
 CPP_FLAGS       = $(INCLUDES)-P -Dunix -DNEED_IAND -DFORTRAN_90 \
 		  -DNO_OPEN_SHARED \
@@ -53,19 +53,21 @@ CPP_FLAGS       = $(INCLUDES)-P -Dunix -DNEED_IAND -DFORTRAN_90 \
 #
 
 LD		= cc
-LDFLAGS		= -v -static
+LDFLAGS		= -v -static --verbose
  
 
 
 SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /usr/local/lib/f90/libf90.a -lm -ldl $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
 
-TMLIB		= ../fmt/libs/tmap_lib.a
+TMLIB		= ../lib/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
 HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 
 CDFLIB		= -lnetcdf
+
+DODS_LIBS   	= -L$(TMAP_LOCAL)/src/DODS/lib -L$(TMAP_LOCAL)/src/DODS/packages/lib $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -ldap++  $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6
 
 LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

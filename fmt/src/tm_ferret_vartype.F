@@ -36,6 +36,9 @@
 * Given a netCDF variable type return the corresponding Ferret parameter
 
 * V533 *sh* 6/01
+* V540 *acm* per SH email of 10/19/01  For datasets with datatype "short"
+*            Ferret translates the "short" to "float" but the new code 
+*            made it think that the variable is, indeed, of type short.
 
 	include 'tmap_dtypes.parm'
         include 'netcdf.decl'
@@ -60,6 +63,11 @@
 	  CALL WARN('Internal err: unknown data type')
 	  TM_FERRET_VARTYPE = ptype_float
 	ENDIF
+
+* full data type support not implemented as-of 10/01. 
+* cd_read will convert all numeric data to float
+
+       IF ( ncvtype .NE. NCCHAR) TM_FERRET_VARTYPE =  ptype_float
 
 	RETURN
 	END

@@ -1,0 +1,65 @@
+! REPEAT/RANGE=[/NAME=]  for looping without depending
+! on the grid\
+! ACM March 12, 2004
+
+! simplest syntax
+
+repeat/range=5:1:-1 say what
+repeat/range=1:5:3/name=s (list/nohead s)
+sh var s  ! counter variable goes away after a repeat
+
+! Nested loops, and calling a function
+repeat/range=1:5:3/name=s (repeat/range=1:3/name=tt list sin(tt))
+
+! Nested, use counter variables in computation
+can mode ver
+repeat/range=80:1:-20/name=m (can mode ver; repeat/ran=6:10/name=p \
+ (if `mod(p,2) eq 0` then list/nohead m, p, p*m)  )
+set mode ver
+
+! Nested with a standard repeat loop over Z
+repeat/range=100:200:50/name=m (repeat/z=8:10 list m*z)
+repeat/z=1:3 (repeat/range=1000:2000:1000/name=m list m*z)
+
+! With regions defined
+set reg/x=-9:9
+repeat/range=1:4/name=m (repeat/range=44:45/name=p list p)
+
+set reg/x=-180:-160/y=1:15/z=-10000:-1000/t="1-jan-1990"
+repeat/range=1:5 (let a = 6; list a)
+repeat/range=1:5/name=p (let a = 6; list p)
+
+! Region applies to data, not to loop index.
+use coads_climatology
+let xx = x[gx=sst]
+set reg/x=-180:-160/y=1:15/z=-10000:-1000/t="1-jan-1990"
+repeat/range=1:5/name=p (list p*xx)
+
+can region
+
+! factorial
+can mode ver
+let a = 0; let f = 1
+let labl = "factorial"
+repeat/range=1:6 (let/quiet a = `a+1`; let/quiet f = `f*a`; list/nohead a,labl, f)
+set mode ver
+
+! with some data
+use coads_climatology
+repeat/range=80:120:40/name=p (list/L=1/y=1 sst[x=1:360:`p`])
+
+set reg/x=300:360/y=0:50
+repeat/range=1:12:4/name=m (list sst[l=`m`,x=@ave,y=@ave])
+
+! Look for "reading SST" lines; each has a different X range
+can data/all
+can mem
+can region
+use coads_climatology
+
+set mode diag
+set reg/y=0:50/L=1
+repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
+cancel mode diag
+
+set mode verify:default

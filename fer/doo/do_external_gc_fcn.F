@@ -43,19 +43,19 @@
 
 * calling argument declarations:
 	INTEGER	fcn, num_com, com_cx(9), status,
-     .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres
-        REAL	memory( mem_blk_size, max_mem_blks )
-	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
-     .		com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
-     .		com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
-     .		com5( m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit ),
-     .		com6( m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,m6lot:m6hit ),
-     .		com7( m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,m7lot:m7hit ),
-     .		com8( m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,m8lot:m8hit ),
-     .		com9( m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,m9lot:m9hit ),
-     .		 res( m10lox:m10hix,m10loy:m10hiy,
-     .					  m10loz:m10hiz,m10lot:m10hit )
+     .       mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres
+        REAL memory( mem_blk_size, max_mem_blks )
+	REAL com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
+     .       com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
+     .       com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
+     .       com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
+     .       com5( m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit ),
+     .       com6( m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,m6lot:m6hit ),
+     .       com7( m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,m7lot:m7hit ),
+     .       com8( m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,m8lot:m8hit ),
+     .       com9( m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,m9lot:m9hit ),
+     .       res( m10lox:m10hix,m10loy:m10hiy,
+     .       m10loz:m10hiz,m10lot:m10hit )
 
 * internal variable declarations:
         INTEGER mr_arg_offset_array(10)
@@ -63,7 +63,8 @@
 
 * internal parameter declarations:
 	REAL*8          pdays_by_1900
-	PARAMETER     ( pdays_by_1900 = 59958230400.0 / (60.*60.*24.) )
+	PARAMETER     ( pdays_by_1900 = 59958230400.0 / 
+     .       (60.*60.*24.) )
 
         status = ferr_ok
 
@@ -91,7 +92,8 @@
 * the result should always have index MAX_EF_ARGS+1
        bad_flag_array(10) = mr_bad_data ( mres )
 
-       call efcn_compute(fcn, num_com, com_cx, bad_flag_array, 
+
+       call efcn_compute(fcn, num_com, com_cx, mres, bad_flag_array, 
      .      mr_arg_offset_array, memory)
 
  

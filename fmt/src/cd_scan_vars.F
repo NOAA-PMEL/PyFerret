@@ -59,6 +59,8 @@
 *		declaration line.
 * 7/98 *sh* - allow broader flexibility in variable names through retaining
 *             original case when appropriate
+* 1/99 *sh* - fixed bug introduced in 7/98 changes -- blows up when file has
+*		only coord variables (e.g. climatological_axes)
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -102,7 +104,7 @@
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, CD_GET_BOUNDS,
      .        TM_LEGAL_NAME,
      .        got_it, got_bad, got_missing, tf2, its_epic, 
-     .        do_warn
+     .        do_warn, got_a_variable
       PARAMETER (do_warn = .TRUE. )
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
      .        ndims, nvars, cdfstat, las_pos, first_pos, idim,
@@ -156,7 +158,7 @@
 
 * loop through all variables in the net CDF file
 	las_pos  = 1    ! reduces redundant search for space
-	first_pos = 0
+	got_a_variable = .FALSE.
 	DO 200 ivcd = 1,nvars
 
 * get the vital statistics for this variable
@@ -190,7 +192,8 @@
 	  GOTO 5100
 
  151      las_pos = ivtm
-	  IF ( first_pos .EQ. 0) first_pos = ivtm
+	  IF (.NOT.got_a_variable) first_pos = ivtm
+	  got_a_variable = .TRUE.
 * set obvious defaults for this variable
           cd_varid(ivtm)        = ivcd ! netCDF variable ID
           ds_var_setnum(ivtm  ) = dset
@@ -314,19 +317,21 @@
 * pass through the variable names making sure that case-sensitive
 * duplicates (e.g. 'var' and 'VAR') retain case and that names which
 * would be illegal variable names to Ferret are retained in original form
-	DO 310 ivtm = first_pos,las_pos
-	  IF (ds_var_setnum(ivtm) .NE. dset) GOTO 310
-	  IF (.NOT.TM_LEGAL_NAME(ds_var_code(ivtm))) GOTO 310  ! leave as-is
+	IF (got_a_variable) THEN
+	  DO 310 ivtm = first_pos,las_pos
+	    IF (ds_var_setnum(ivtm) .NE. dset) GOTO 310
+	    IF (.NOT.TM_LEGAL_NAME(ds_var_code(ivtm))) GOTO 310  ! leave as-is
 * ... see if this name case-blind duplicates any other in the data set
-	  DO 300 i = first_pos,las_pos
-	    IF ( i .EQ. ivtm ) GOTO 300
-	    istat = STR_CASE_BLIND_COMPARE(ds_var_code(ivtm),
-     .                                     ds_var_code(i)    )
-	    IF ( istat .EQ. str_eq ) GOTO 310                  ! leave as-is
- 300	  CONTINUE
+	    DO 300 i = first_pos,las_pos
+	      IF ( i .EQ. ivtm ) GOTO 300
+	      istat = STR_CASE_BLIND_COMPARE(ds_var_code(ivtm),
+     .                                       ds_var_code(i)    )
+	      IF ( istat .EQ. str_eq ) GOTO 310                  ! leave as-is
+ 300	    CONTINUE
 * ... (finally) upcase the name
 	  istat = STR_UPCASE( ds_var_code(ivtm), ds_var_code(ivtm) )
  310    CONTINUE
+	ENDIF
 
 * successful completion
 	status = merr_ok

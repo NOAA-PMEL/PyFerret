@@ -56,7 +56,8 @@
 * V320: 2/95 - increased number of readable vars from 10 to 20
 *	3/95 - fixed bug - reserve "buff" of size "column" instead of "nrepeat"
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars
-
+* V510: *sh* 3/00 - bug fix: needless (?) reference to cx_last
+*		(see err500_2nd_try.jnl)
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -91,9 +92,9 @@
 * internal variable declarations:
 	INTEGER 	CGRID_SIZE, CX_DIM_LEN,
      .			idim, ask_var, category, data_set, grid, ivar,
-     .			tmap_status, fvar, nvar20, the_var, nleft, nsize,
+     .			fvar, nvar20, the_var, nleft, nsize,
      .			cx0, cx1, cx20(20), mr20(20), nread,
-     .			mr1, ndim, las_dim, fst_dim, dims(4), col1, rec1,
+     .			mr1, ndim, las_dim, fst_dim, dims(4), rec1,
      .			rec_to_read, nrepeat, columns, num_names, buffblk
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars
 	CHARACTER	VAR_CODE*64
@@ -255,8 +256,7 @@
 	cx1 = cx20(the_var)
 	DO 900 idim = 1, 4
 	   IF ( cx_hi_ss(cx,idim) .GT. cx_hi_ss(cx1,idim) ) THEN
-	      IF ( cx_hi_ss(cx_last,idim) .NE. unspecified_int4
-     .	     .OR.  cx_given(idim,cx) ) THEN
+	      IF ( cx_given(idim,cx) ) THEN  ! 3/00 cut mystery cx_last ref.
 * ... error: the user explicitly requested more than there is
 	         GOTO 5600
               ELSEIF (cx_lo_ss(cx,idim) .GT. cx_hi_ss(cx1,idim)) THEN

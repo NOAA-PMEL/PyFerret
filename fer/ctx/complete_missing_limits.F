@@ -46,6 +46,13 @@
 *	*sh* 5/99 - complete limits on implicit axes
 *  V510 *sh* 4/00 - netCDF variables may now have dynamic axes, so chg the
 *		    logic that checked for these
+*  V520 *sh* 6/00 - a cmnd with unspecified lims a conflicting X axes like
+*			LIST Xshort-Xlong
+*		    needs to generate an error. It does not because this
+*		    routine requests I=1:short from both components.
+*		    Change cx_by_ss to FALSE in here -- meaning that the
+*		    misleading behavior can occur only when each component
+*		    has the same number of points in the same world coord span
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -138,6 +145,10 @@
 * flesh out the world coordinates, too
 	         CALL  FLESH_OUT_AXIS( idim, cx, status )
 * ... status ignored ...
+
+* matches to this region must be based on world coordinates (see 6/00 comments)
+	         cx_by_ss(idim, cx) = .FALSE.
+
 
 	      ENDIF
 

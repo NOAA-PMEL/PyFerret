@@ -34,8 +34,6 @@
 *
 */
 
-
-
 /* Main.c
  *
  * John Osborne
@@ -61,6 +59,7 @@ VARIABLE_type;
 /* .................... Internal Declarations .................... */
 
 static void JC_DataFrame_Initialize( void );
+static void DatasetNameList_AddDODS();
 
 
 void MaintainMainWdBtns( void )
@@ -1814,6 +1813,8 @@ void SetInitialState(void)
    * - Set the initial modes for Ferret.
    */
   JC_DatasetNameList_Initialize();
+  /* kob - gui hack to allow displaying of DODS dataset choices */
+  DatasetNameList_AddDODS();
   JC_DataFrame_Initialize();
   JC_ContextFrame_Initialize();
   JC_Map_Show();
@@ -1989,6 +1990,37 @@ WARNING in main.c: DatasetNameList_Initialize(): No paths were found in the envi
      list_remove_rear(GLOBAL_DatasetNameList);
 }
 
+
+void DatasetNameList_AddDODS()
+{
+     char *home;
+     FILE *fp;
+     char init_command[256];
+     char dset[256]="";
+     int i=0;
+
+  /*
+   * Set up to read $HOME/.ferret_dods_data if it exists:
+   */
+
+  home = (char *)getenv("HOME");
+  if (home != 0) {
+    strcpy(init_command, home);
+    strcat(init_command, "/.ferret_dods_data");
+    fp = fopen( init_command, "r");
+    if (fp != NULL) {
+      list_mvrear(GLOBAL_DatasetNameList);
+      /* keep reading and appending datasets that appear in the 
+	 $HOME/.ferret_dods_data file */
+      while (fscanf(fp,"%s",dset) == 1) {
+	list_insert_after(GLOBAL_DatasetNameList, dset, sizeof(dset));
+      }
+    }
+    /* close the $HOME/.ferret_dods_data file */
+    if (fclose(fp) != 0) 
+      fprintf (stderr, "Error closing .ferret_dods_data file");
+  }
+}
 
 void CancelInitialState()
 {

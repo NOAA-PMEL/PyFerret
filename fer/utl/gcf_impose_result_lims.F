@@ -72,7 +72,8 @@
      .	      .NE. pgc_axis_supplied_herein) GOTO 100	! 100 if not custom
 	   ELSE
 * ... external function imposing custom axis?
-	      STOP 'EF code must GOTO 100 if not custom axis'
+*             STOP 'EF code must GOTO 100 if not custom axis'
+	      GOTO 100
 	   ENDIF
 
 * get size of custom output axis
@@ -255,8 +256,8 @@
 	      ELSEIF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein)
      .                THEN
 		 CALL ERRMSG( ferr_internal, status,
-     .                'gcf_impose_result_lims: external function' 
-     .                //'custom axes not supported', *5000 )
+     .                'gcf_impose_result_lims: external function'// 
+     .                'custom axes not supported', *5000 )
 
 
 * If the axis is implied_by_args ... nothing needs to be done
@@ -279,7 +280,8 @@ c* *jc* 01/98 Removing this section to allow for arguments which are constants.
 c*
 	RETURN
 
-#ifdef (0)
+c#ifdef (0) !This doesn't compile on solaris *jc* 1/27/98
+
 ********************************
 * Reconcile the limits of the arguments with the limits of the result where
 * offsets are imposed.
@@ -317,7 +319,9 @@ c*
  1000	CONTINUE
 
 	RETURN
-#endif
+
+c#endif !This doesn't compile on solaris *jc* 1/27/98
+
 
 * error exit
  5000	RETURN

@@ -55,6 +55,8 @@
 * V552: 5/03 - If the axis is known to be regular, dont do the test on 
 *              whether "regrid" is needed. (this flagged fine axes as
 *              irregular when in fact they arent).
+* V553: 6/03 - the calculation of d_regrid for regular axes was wrong if 
+*              theres a subspan-modulo void point
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -103,6 +105,11 @@
 * ... and determine smallest grid interval
 	regrid = .FALSE.		! assume it's not needed
         d_regrid = axis( lo_cx + 1 ) - axis( lo_cx )
+
+* The above calculation of d_regrid is wrong if theres a subspan-modulo void point
+
+        IF (lo_cx + 2 .LT. hi_cx) 
+     .      d_regrid = axis( lo_cx + 2 ) - axis( lo_cx + 1)
 
         IF (irregular) THEN
 	   DO 200 i = lo_cx+1, hi_cx-1

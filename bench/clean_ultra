@@ -8,4 +8,4 @@
 
 # produces output file name "clean_ultra_{log_file_name}"
 
-sed -e s/\(G...\)/\(G999\)/g -e s/\(AX...\)/\(AX999\)/g < $argv[1] | egrep -v '^ alloc|^ deallo|^ \-DELE|^ getgrid|^ found|^ eval|^PPL plot|^ reading|^ regrid|^ nulgrd|^ nulrgd|^ rdstride|^ pseudo|^ constan cnst|^ const_v|^ pseudo|^ pass #2' >! clean_ultra_$argv[1]
+sed -e s/\(G...\)/\(G999\)/g -e s/\(AX...\)/\(AX999\)/g < $argv[1] | egrep -v '^ alloc|^ deallo|^ \-DELE|^ getgrid|^ found|^ eval|^PPL plot|^ reading|^ regrid|^ nulgrd|^ nulrgd|^ rdstride|^ pseudo|^ constan cnst|^ const_v|^ pseudo|^ pass #2|SESSION_DATE|SESSION_TIME' >! clean_ultra_$argv[1]

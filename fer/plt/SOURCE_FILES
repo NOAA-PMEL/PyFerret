@@ -65,4 +65,5 @@ store_palette.F\
 taxis_style.F\
 swap_active_window.F\
 viewport_number.F\
+vp_axlim2lim.F\
 whoi_date.F 

@@ -132,6 +132,7 @@
 *		    until after new static one is defined -- else dynamic
 *		    axes that are needed can get wiped out
 *	*sh* 6/01 - increase buff1 size for DEFINE AXIS/LIKE=expr
+* V540:	*sh* 9/01 - added DEFINE VIEWPORT/AXES
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -177,7 +178,9 @@
      .		    slash_let_units,
      .		    slash_let_quiet,
      .		    slash_let_dset,
-     .		    slash_let_bad
+     .		    slash_let_bad,
+     .		    slash_define_vp_by_ax
+
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 9,
      .		    slash_file   = 1 + 4,
@@ -203,6 +206,7 @@
      .		    slash_let_quiet  = 1 + 2,
      .		    slash_let_dset   = 1 + 3,
      .		    slash_let_bad    = 1 + 4,
+     .		    slash_define_vp_by_ax = 1 + 6,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -226,9 +230,12 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal, elen
+     .            mon_by_d(366), d_in_mon(12), len_cal
 
-	REAL	  rbuff, bad_flag, yeardays
+	REAL	  rbuff, bad_flag, yeardays,
+     .            xlovp, ylovp,  xhivp, yhivp,
+     .            xoei,  yoei,   xcei,  ycei, scale
+
 	REAL*8	  SECS_FROM_BC, bc_to_t0, start, new_ww, delta, end, 
      .              micro_adj
 	CHARACTER reg_name*4, buff1*256, buff2*128, buff3*128, 
@@ -1084,10 +1091,14 @@
 	vp_seg0 ( ivp ) = 0
 	vp_segn ( ivp ) = 0
 
+* /AXES
+	vp_by_axis(ivp) = qual_given( slash_define_vp_by_ax )
+
 ***************** OLD CODE (retained for greater upwards compatibility)
 * /ORIGIN = x,y
 	qp = qual_given( slash_origin )
 	IF ( qp .GT. 0 ) THEN
+	   IF (vp_by_axis(ivp)) GOTO 5660
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   buff2, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -1100,6 +1111,7 @@
 * /SIZE=q
 	qp = qual_given( slash_size )
 	IF ( qp .GT. 0 ) THEN
+	   IF (vp_by_axis(ivp)) GOTO 5660
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   vp_size(ivp), status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -1113,6 +1125,7 @@
 * /CLIP = x,y
 	qp = qual_given( slash_clip )
 	IF ( qp .GT. 0 ) THEN
+	   IF (vp_by_axis(ivp)) GOTO 5660
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   buff2, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -1180,6 +1193,19 @@
 	ELSEIF ( qual_given(slash_size) .EQ. 0 ) THEN     ! auto-sizing
            vp_size(ivp) = SQRT( (vp_xclip(ivp)-vp_xorg(ivp))
      .                        * (vp_yclip(ivp)-vp_yorg(ivp)) )
+	   IF (vp_by_axis(ivp)) THEN
+* ... vieport size is inferred from users axis limits and depends upon scale
+* ... iterate a few times to approximate the correct scale factor
+	      DO i1 = 1, 3
+	        scale = 1.0 / SQRT( ABS(vp_size(ivp)) )
+	        CALL VP_AXLIM2LIM( scale,
+     .				   vp_xorg(ivp),  vp_yorg(ivp),
+     .				   vp_xclip(ivp), vp_yclip(ivp),
+     .                             xlovp, ylovp,  xhivp, yhivp,
+     .                             xoei,  yoei,   xcei,  ycei )
+	        vp_size(ivp) = SQRT((xhivp-xlovp) * (yhivp-ylovp))
+	     ENDDO
+	   ENDIF
 	ENDIF
 
 * successfully defined viewport
@@ -1288,6 +1314,10 @@
      .			'cannot re-define FULL viewport', *5000 )
  5650 	CALL ERRMSG( ferr_syntax, status,
      .	'DEFINE VIEWPORT/SIZE and /TEXT are mutually exclusive', *5000 )
+
+ 5660 	CALL ERRMSG( ferr_syntax, status,
+     .	'DEFINE VIEWPORT/AXES cannot be used with obsolete /ORIGIN'
+     .  //', /CLIP/ or /SIZE', *5000 )
 
  5710	CALL ERRMSG( ferr_prog_limit, status,
      .		'use CANCEL ALIAS to reclaim space', *5000 )

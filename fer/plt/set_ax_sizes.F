@@ -1,7 +1,6 @@
-	SUBROUTINE SET_AX_SIZES( xfrac, yfrac )
+	SUBROUTINE SET_AX_SIZES( xfrac, yfrac,
+     .			         xspc_lo, yspc_lo, xspc_hi, yspc_hi )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -43,21 +42,15 @@
 
 * V230:  11/5/92 - removed from SET_PLOT_SIZE for auto-viewports
 * V301:  11/3/93 - set PLOT+ symbols VP_WIDTH and VP_HEIGHT
+* V540 *sh* 9/01 - white space limits passed as arguments
 
-#ifdef unix
 	include 'plot_setup.parm'
         include 'xplot_setup.cmn'      ! 10/91 for saved_ppl_yax
         include 'plt_inc.decl'     ! with width/height
         include 'PLT.INC'
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-        INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'      ! 10/91 for saved_ppl_yax
-        INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'     ! with width/height
-        INCLUDE 'PPLV11INC:PLT.INC'
-#endif
 
 * calling argument declarations:
-        REAL xfrac, yfrac
+        REAL xfrac, yfrac, xspc_lo, yspc_lo, xspc_hi, yspc_hi
 
 * internal variable declarations:
 	INTEGER slen
@@ -68,8 +61,8 @@
 * calculate plot size
 	xsize = xfrac*width
 	ysize = yfrac*height
-        xaxlen = MAX( 0.001, xsize - 2.2 )
-        yaxlen = MAX( 0.001, ysize - 2.8 )
+        xaxlen = MAX( 0.001, xsize - (xspc_lo+xspc_hi) )
+        yaxlen = MAX( 0.001, ysize - (yspc_lo+yspc_hi) )
 
 * tell axis lengths to PPLUS
 	WRITE ( buff, 3000 ) xaxlen, yaxlen
@@ -84,9 +77,10 @@
 	buff = TM_FMT(ysize,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_HEIGHT '//buff, 1, 1 )
 
-* unsave previous values and restore the origin
+* unsave previous values and set the origin
         saved_ppl_yax = .FALSE.
-        CALL PPLCMD ( from, line, 0, 'ORIGIN 1.2,1.4', 1, 1 )
+	WRITE ( buff, 3000 ) xspc_lo, yspc_lo
+	CALL PPLCMD ( from, line, 0, 'ORIGIN '//buff, 1, 1 )
 
 	RETURN
 	END

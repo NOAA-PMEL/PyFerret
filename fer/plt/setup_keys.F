@@ -1,7 +1,5 @@
 	SUBROUTINE SETUP_KEYS( nvar )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -47,8 +45,9 @@
 * V420:  4/23/96 - number of columns was computed without respect to nvar
 *	  	thus if the plot could fit 3 keys across but only 2 were needed
 *	  	they didn't end up centered
+* V540: *sh* 9/01 - do not adjust Y axis origin of PLOT command if user
+*			specifies not to
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'plot_setup.parm'
 	include	'command.parm'
@@ -57,24 +56,18 @@
 	include	'xprog_state.cmn'
 	include 'axis_inc.decl'		! axis lengths
 	include 'AXIS.INC'		! axis lengths
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE	'FERRET_CMN:COMMAND.PARM'
-	INCLUDE	'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'		! axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC'		! axis lengths
-#endif
 
 * calling argument declarations
 	INTEGER	nvar
 
 * local variable declarations:
-	LOGICAL	change_yorg, change_ysize
+	LOGICAL	change_yorg, change_ysize, yadjust
 	INTEGER	nrow, idim
 	REAL	ysqueeze, yspace_needed, yspace_avail
+
+* local parameter declarations
+	INTEGER     slash_plot_noyadjust
+	PARAMETER ( slash_plot_noyadjust = 1+26 )
 
 * how many columns of keys can fit on the plot ?
 	key_ncolmn  = MAX( 1, INT((xlen - key_xorigin)/key_xspace0) )
@@ -105,7 +98,9 @@
 *  1) the keys will fit using the default y origin and key label size
 *  2) the keys will fit but only by shrinking the label size
 *  3) the keys will fit only by shifting the y origin (y location of x axis)
-	IF ( cmnd_num .NE. cmnd_plot ) THEN
+	yadjust = cmnd_num .EQ. cmnd_plot  ! added 9/01 *sh*
+	IF (yadjust) yadjust = qual_given(slash_plot_noyadjust).EQ.0
+	IF ( .NOT.yadjust ) THEN
 	   change_ysize = .FALSE.
 	   change_yorg  = .FALSE.
 	ELSE

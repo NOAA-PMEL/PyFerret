@@ -1,7 +1,5 @@
 	BLOCK DATA XPLOT_STATE_DATA
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -50,14 +48,10 @@
 * V230:  11/4/92 - 4 corner viewports (ll,lr,ul,ur) with clipping ON
 * V301:  22/2/94 - changed wn_scale(1) from 1.0 to 0.7
 * V500: 6/99 *sh* - added saved time axis information
+* V540: 9/01 *sh* - added vp_by_axis
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xplot_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
 	INTEGER i
 
@@ -92,70 +86,80 @@
      .		vp_xorg ( mvp_dflt ) / 0.0 /,
      .		vp_yorg ( mvp_dflt ) / 0.0 /,
      .		vp_xclip( mvp_dflt ) / unspecified_val4 /,
-     .		vp_yclip( mvp_dflt ) / unspecified_val4 /
+     .		vp_yclip( mvp_dflt ) / unspecified_val4 /,
+     .		vp_by_axis(mvp_dflt) / .FALSE. /
 
 	DATA	vp_name ( 1 ) / 'UPPER' /,	! upper half
      .		vp_size ( 1 ) / 1.0 /,
      .		vp_xorg ( 1 ) / 0.0 /,
      .		vp_yorg ( 1 ) / 0.5 /,
      .		vp_xclip( 1 ) / 1.0 /,
-     .		vp_yclip( 1 ) / 1.0 /
+     .		vp_yclip( 1 ) / 1.0 /,
+     .		vp_by_axis(1) / .FALSE. /
 
 	DATA	vp_name ( 2 ) / 'LOWER' /,	! lower half
      .		vp_size ( 2 ) / 1.0 /,
      .		vp_xorg ( 2 ) / 0.0 /,
      .		vp_yorg ( 2 ) / 0.0 /,
      .		vp_xclip( 2 ) / 1.0 /,
-     .		vp_yclip( 2 ) / 0.5 /
+     .		vp_yclip( 2 ) / 0.5 /,
+     .		vp_by_axis(2) / .FALSE. /
 
 	DATA	vp_name ( 3 ) / 'RIGHT' /,	! right half
      .		vp_size ( 3 ) / 1.0 /,
      .		vp_xorg ( 3 ) / 0.5 /,
      .		vp_yorg ( 3 ) / 0.0 /,
      .		vp_xclip( 3 ) / 1.0 /,
-     .		vp_yclip( 3 ) / 1.0 /
+     .		vp_yclip( 3 ) / 1.0 /,
+     .		vp_by_axis(3) / .FALSE. /
 
 	DATA	vp_name ( 4 ) / 'LEFT' /,	! left half
      .		vp_size ( 4 ) / 1.0 /,
      .		vp_xorg ( 4 ) / 0.0 /,
      .		vp_yorg ( 4 ) / 0.0 /,
      .		vp_xclip( 4 ) / 0.5 /,
-     .		vp_yclip( 4 ) / 1.0 /
+     .		vp_yclip( 4 ) / 1.0 /,
+     .		vp_by_axis(4) / .FALSE. /
 
 	DATA	vp_name ( 5 ) / 'LL' /,	! Lower Left
      .		vp_size ( 5 ) / 0.5 /,
      .		vp_xorg ( 5 ) / 0.0 /,
      .		vp_yorg ( 5 ) / 0.0 /,
      .		vp_xclip( 5 ) / 0.5 /,
-     .		vp_yclip( 5 ) / 0.5 /
+     .		vp_yclip( 5 ) / 0.5 /,
+     .		vp_by_axis(5) / .FALSE. /
 
 	DATA	vp_name ( 6 ) / 'LR' /,	! Lower Right
      .		vp_size ( 6 ) / 0.5 /,
      .		vp_xorg ( 6 ) / 0.5 /,
      .		vp_yorg ( 6 ) / 0.0 /,
      .		vp_xclip( 6 ) / 1.0 /,
-     .		vp_yclip( 6 ) / 0.5 /
+     .		vp_yclip( 6 ) / 0.5 /,
+     .		vp_by_axis(6) / .FALSE. /
 
 	DATA	vp_name ( 7 ) / 'UL' /,	! Upper Left
      .		vp_size ( 7 ) / 0.5 /,
      .		vp_xorg ( 7 ) / 0.0 /,
      .		vp_yorg ( 7 ) / 0.5 /,
      .		vp_xclip( 7 ) / 0.5 /,
-     .		vp_yclip( 7 ) / 1.0 /
+     .		vp_yclip( 7 ) / 1.0 /,
+     .		vp_by_axis(7) / .FALSE. /
 
 	DATA	vp_name ( 8 ) / 'UR' /,	! Upper Right
      .		vp_size ( 8 ) / 0.5 /,
      .		vp_xorg ( 8 ) / 0.5 /,
      .		vp_yorg ( 8 ) / 0.5 /,
      .		vp_xclip( 8 ) / 1.0 /,
-     .		vp_yclip( 8 ) / 1.0 /
+     .		vp_yclip( 8 ) / 1.0 /,
+     .		vp_by_axis(8) / .FALSE. /
 
 	DATA	vp_name ( 9 ) / 'FULL' /,	! FULL window
      .		vp_size ( 9 ) / 1.0 /,
      .		vp_xorg ( 9 ) / 0.0 /,
      .		vp_yorg ( 9 ) / 0.0 /,
      .		vp_xclip( 9 ) / 1.0 /,
-     .		vp_yclip( 9 ) / 1.0 /
+     .		vp_yclip( 9 ) / 1.0 /,
+     .		vp_by_axis(9) / .FALSE. /
 
 	DATA	(vp_name(i),i=10,max_viewport) /mvp_maxm9*unspecified_name4/
 

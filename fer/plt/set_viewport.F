@@ -1,7 +1,5 @@
       SUBROUTINE SET_VIEWPORT( ivp )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -49,13 +47,16 @@
 * V230:  11/4/92 - added call to SET_AX_SIZES to auto-size viewport axes
 *        11/9/92 - incorporated SHASET PROTECT to save color tables
 *        3/29/93 - restore the old-style functioning of DEFINE VIEW/SIZE
+* V540: 9/01 *sh* - DEF VIEW/AXES: viewports based on *axis* positions
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
+	include 'xplot_setup.cmn'
 	include	'pltcom_dat.decl' ! with sizing data, etc.
 	include	'PLTCOM.DAT'	         ! with sizing data, etc.
+        include 'plt_inc.decl'     ! with width/height
+        include 'PLT.INC'
 	include	'ppl_in_ferret.cmn'	! with ppl_in_ferret
 	include	'gkscm1_inc.decl'	! with gks common
 	include	'GKSCM1.INC'	! with gks common
@@ -63,17 +64,6 @@
 C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	INTEGER*4  GNCLIP,GCLIP
 	DATA       GNCLIP,GCLIP/  0,    1/
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST' ! with sizing data, etc.
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	! with sizing data, etc.
-	INCLUDE	'PPLV11INC:PPL_in_FERRET.CMN'	! with PPL_in_FERRET
-	INCLUDE	'TMAP_PPLV11INC:GKSCM1_INC.DECL/LIST'	! with GKS common
-	INCLUDE	'PPLV11INC:GKSCM1.INC/LIST'	! with GKS common
-	INCLUDE 'SYS$LIBRARY:GKSDEFS.BND'		! with gclip
-#endif
 	
 * calling argument declarations:
 	INTEGER	ivp
@@ -81,7 +71,8 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 * internal variable declarations:
 	LOGICAL clip, newstyle_vp
 	INTEGER	iseg, i, old_vp
-	REAL	scale, fctx, fcty, xclip, yclip, xfrac, yfrac
+	REAL	scale, fctx, fcty, xclip, yclip, xfrac, yfrac,
+     .          xcei, ycei, xoei, yoei, xcv, xov, ycv, yov
 
 * main window opened yet ?
 	IF ( .NOT.pplus_started ) CALL START_PPLUS
@@ -136,21 +127,39 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	   yclip = 1.0
 	ENDIF
 
+* determine the scale factor to be applied to the axis length to create
+* the "text_prominence" effect
+	scale = 1.0 / SQRT( ABS(vp_size(vp_num)) )
+
+* ... V5.22 default behaviors (viewport not specified by axis)
+        xoei = xwhitelo  ! ppl xorigin
+        yoei = ywhitelo  ! ppl yorigin
+        xcei = xwhitehi  ! white space to right of X axis
+        ycei = ywhitehi  ! white space for docmtn at top of plot
+        xov = vp_xorg(vp_num)
+        xcv = xclip
+        yov = vp_yorg(vp_num)
+        ycv = yclip
+        IF (vp_by_axis(vp_num)) THEN
+          CALL VP_AXLIM2LIM( scale, xov,  yov,  xcv,  ycv,
+     .                              xov,  yov,  xcv,  ycv,
+     .                              xoei, yoei, xcei, ycei )
+        ENDIF
 * set viewport in NDC to limits requested
-	CALL GSVP(wsid,fctx*vp_xorg(vp_num), fctx*xclip,
-     .		    fcty*vp_yorg(vp_num), fcty*yclip )
+	CALL GSVP(wsid,fctx*xov, fctx*xcv,
+     .		       fcty*yov, fcty*ycv )
 
 * set world coordinate window to preserve 1:1 aspect
-	scale = 1.0 / SQRT( ABS(vp_size(vp_num)) )
-	CALL GSWN(wsid, 0.0, ( xclip-vp_xorg(vp_num) )*asize*scale,
-     .		     0.0, ( yclip-vp_yorg(vp_num) )*bsize*scale  )
+	CALL GSWN(wsid, 0.0, ( xcv-xov )*asize*scale,
+     .		        0.0, ( ycv-yov )*bsize*scale  )
 
 	IF ( newstyle_vp ) THEN
 
 * auto-size the axes to fit the plot window
-           xfrac = scale*(xclip-vp_xorg(vp_num))
-           yfrac = scale*(yclip-vp_yorg(vp_num))
-           CALL SET_AX_SIZES( xfrac, yfrac )
+           xfrac = scale*(xcv-xov)
+           yfrac = scale*(ycv-yov)
+           CALL SET_AX_SIZES( xfrac, yfrac,
+     .                        xoei, yoei, xcei, ycei )
 	   CALL GSELNT(wsid)     ! no clipping 11/92 (below) for PPL BOX ON 
 
 	ELSE

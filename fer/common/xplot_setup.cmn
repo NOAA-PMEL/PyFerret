@@ -10,6 +10,9 @@
 *	  "space"	--> an abstract box within which a key must fit
 *         "size"	--> the portion of the abstract box that's occupied
 * *kob* 12/00 - add animate logical and active_win_id for animations
+* *sh* 9/01 - added white space defaults -- distance above/below axis ends
+*		to window or viewport edge (below == PLOT+ origin)
+
 	LOGICAL	key_doc(0:10),
      .		onedee_on,
      .		twodee_on,
@@ -53,7 +56,11 @@
      .		ul_labht0,
      .		ul_yspace0,
      .		ul_xorigin,
-     .		ul_yorigin
+     .		ul_yorigin,
+     .		xwhitelo,
+     .		ywhitelo,
+     .		xwhitehi,
+     .		ywhitehi
 
 	CHARACTER	ppl_buff*255
 
@@ -101,8 +108,13 @@
      .		ul_xorigin,
      .		ul_yorigin,
      .		ul_dolab,
+     .		xwhitelo,
+     .		ywhitelo,
+     .		xwhitehi,
+     .		ywhitehi,
      .		ppl_buff
 
 * equivalences
 	LOGICAL		use_keys
 	EQUIVALENCE   ( key_doc(0), use_keys )
+

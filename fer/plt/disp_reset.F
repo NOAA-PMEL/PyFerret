@@ -1,7 +1,5 @@
 	SUBROUTINE DISP_RESET
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,24 +44,20 @@
 * V200:   1/3/89 - added ALINE, AXLSZE
 * V230:  11/4/92 - call SET_VIEWPORT(dflt_vp)
 *        11/9/92 - unprotect all colors
+* V540:  *sh* 9/01 - grab the PLOT+ origin from COMMON
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
 	include 'xplot_state.cmn'
 	include 'xrevision.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XREVISION.CMN'
-#endif
+
+* local variable declarations
+	CHARACTER buff*24
 
 * local parameters
-      LOGICAL     physical
-      PARAMETER ( physical = .TRUE. )
+        LOGICAL     physical
+        PARAMETER ( physical = .TRUE. )
 
 * PLOT5 re-initialization (to forget previous states)
 !	CALL PPLCMD ( from, line, 0, 'GET FERRET_PPLINIT', 1, 1 )
@@ -76,7 +70,10 @@
 	CALL PPLCMD ( from, line, 0, 'AXSET 1,1,1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'PEN 0,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'PEN 1,1', 1, 1 )
-	CALL PPLCMD ( from, line, 0, 'ORIGIN 1.2,1.4', 1, 1 )
+	buff = ' '
+	WRITE ( buff, 3000 ) xwhitelo, ywhitelo
+ 3000	FORMAT(F9.3,F9.3)
+	CALL PPLCMD ( from, line, 0, 'ORIGIN '//buff, 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXATIC 10,10', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'LABS', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'ALINE', 1, 1 )

@@ -128,15 +128,10 @@
 * V533: 6/01 *sh* - added SET VARIABLE/NAME=
 *            *acm* - added PLOT/VLOG, PLOT/HLOG: plot qualifiers to set log,
 *                    inverse log axes and log depth axes.
+* V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
 
-
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcommand.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-#endif
 
 * local variable declarations:
         INTEGER i
@@ -762,7 +757,7 @@
 		DATA qualifiers  (nqual_at6a+23)/ 'STEP'/	!/step
 		DATA qualifiers  (nqual_at6a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at6a+25)/ 'DASH'/	!/dash
-		DATA qualifiers  (nqual_at6a+26)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+26)/ 'NOYADJUST'/	!/noyadjust
 		DATA qualifiers  (nqual_at6a+27)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+28)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+29)/ '****'/	!/unused
@@ -913,7 +908,7 @@
 		DATA qualifiers  (nqual_at10f+ 3)/ 'SIZE' /
 		DATA qualifiers  (nqual_at10f+ 4)/ 'ORIGIN' /
 		DATA qualifiers  (nqual_at10f+ 5)/ 'CLIP' /
-		DATA qualifiers  (nqual_at10f+ 6)/ '****' /
+		DATA qualifiers  (nqual_at10f+ 6)/ 'AXES' /
 		DATA qualifiers  (nqual_at10f+ 7)/ '****' /
 * DEFINE ALIAS
 	   DATA subcommands      (nsub_at10 + 6)/ 'ALIAS'	/

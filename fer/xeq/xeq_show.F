@@ -132,8 +132,8 @@
 *      5/00 *sh* - added SHOW FUNC/DETAILS
 * V522 7/00 *sh* - SHOW SYMBOLS now shows special symbols, too
 * V530 8/00 *sh* - bug fix to SHOW SYMBOLS - avoid accidental PPL$XPIXEL eval
+* V540 9/01 *sh* - SHOW VIEWPORT to show state of /AXES
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -160,32 +160,6 @@
 	include	'xgrid_chg_fcns.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'EF_Util.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_PPLV11INC:GKSCM2.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:MOVIES.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XREVISION.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-	INCLUDE	'FERRET_CMN:XGKS_DEVICES.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-
-#endif  
 
 * local parameter declarations:
 	LOGICAL	    brief
@@ -231,9 +205,14 @@
      .		rqst_dset, tmp_grid
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
-     .		default*10, show_str*255, arg*24, name*32, arg30*30
+     .		default*10, show_str*255, arg*24, name*32, arg30*30,
+     .          axesOrCorner*6(2)
 
 	INTEGER efcn_scan
+
+* local data declarations
+        DATA axesOrCorner(1)/'axes '/,
+     .       axesOrCorner(2)/'edges'/
 
 * for string passing to C function in SHOW MODE FUNCTION
       INTEGER      slen
@@ -954,10 +933,16 @@
 		    ELSE
 		       xtemp = vp_xclip(ivp)
 		       ytemp = vp_yclip(ivp)
-		    ENDIF		 
+		    ENDIF
+                    IF (vp_by_axis(ivp)) THEN
+                      i2 = 1
+                    ELSE
+                      i2 = 2
+                    ENDIF
 	            WRITE (risc_buff,3146) vp_name(ivp), vp_size(ivp),
      .					   vp_xorg(ivp), xtemp,
-     .					   vp_yorg(ivp), ytemp
+     .					   vp_yorg(ivp), ytemp,
+     .                                     axesOrCorner(i2)
 	            CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	            risc_buff = ' '
 	         ENDIF
@@ -974,9 +959,15 @@
 		    xtemp = vp_xclip(ivp)
 		    ytemp = vp_yclip(ivp)
 		 ENDIF		 
+                 IF (vp_by_axis(ivp)) THEN
+                   i2 = 1
+                 ELSE
+                   i2 = 2
+                 ENDIF
 	         WRITE (risc_buff,3146)	vp_name(ivp), vp_size(ivp),
      .					vp_xorg(ivp), xtemp,
-     .					vp_yorg(ivp), ytemp
+     .					vp_yorg(ivp), ytemp,
+     .                                  axesOrCorner(i2)
 	         CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	         risc_buff = ' '
 	      ENDIF
@@ -988,8 +979,8 @@
 	risc_buff = ' '
 
  	RETURN
- 3142	FORMAT(' name',T19,'text',T27,'xlimits',T39,'ylimits')
- 3146	FORMAT(1X,A,T18,F5.2,T26,F4.2,',',F4.2,T38,F4.2,',',F4.2)
+ 3142	FORMAT(' name',T19,'text',T27,'xlimits',T39,'ylimits',T50,'mode')
+ 3146	FORMAT(1X,A,T18,F5.2,T26,F4.2,',',F4.2,T38,F4.2,',',F4.2,T50,A)
  3148	FORMAT( T4,'current viewport is ',A)
 
 * SHOW TRANSFORMS

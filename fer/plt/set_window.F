@@ -1,7 +1,5 @@
       SUBROUTINE SET_WINDOW( status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -39,7 +37,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * revision 0.0 - 6/28/88
 * revision 0.1 - 8/1/88  - set window/size defaults to current window
@@ -78,6 +75,7 @@
 * *js* Don't create new window with set win/new if batch graphics active
 *      Don't set window to any number but 1 if batch graphics active
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
+* V540 *sh* 9/01 - pass axis white space to SET_AX_SIZE (from PLOT_SETUP.cmn)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -318,7 +316,8 @@
 	      vp_segn(ivp) = 0
  80	   CONTINUE
            CALL SET_PLOT_SIZE( width, height )   ! from PPL COMMON PLT.INC
-           CALL SET_AX_SIZES( 1.0, 1.0 )
+           CALL SET_AX_SIZES( 1.0, 1.0,
+     .                        xwhitelo, ywhitelo, xwhitehi, ywhitehi )
 	ENDIF
 
 * create new window ?

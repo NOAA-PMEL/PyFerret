@@ -1,7 +1,5 @@
 	BLOCK DATA XPLOT_SETUP_DATA
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -38,18 +36,13 @@
 * initialization of COMMON / XPLOT_SETUP /
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 
 * revision 0.1 - 9/12/88 - reduced number of defined colors to 10
 * V200: 12/21/89
+* V540: *sh* 9/01 - added xwhitelo, ywhitelo, ...
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xplot_setup.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-#endif
 
 	DATA
      .		saved_ppl_yax	/ .FALSE. /,
@@ -69,6 +62,10 @@
      .		ul_labht0	/0.12 /,
      .		ul_yspace0	/0.2  /,
      .		ul_xorigin	/ 0.0 /,	! measured from Y axis
-     .		ul_yorigin	/ 0.6 /		! measured from top x axis
+     .		ul_yorigin	/ 0.6 /,	! measured from top x axis
+     .		xwhitelo	/ 1.2 /,	! PLOT+ xorigin
+     .		ywhitelo	/ 1.4 /,	! PLOT+ yorigin
+     .		xwhitehi	/ 1.0 /,
+     .		ywhitehi	/ 1.4 /
 
 	END

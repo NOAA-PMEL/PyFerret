@@ -7,6 +7,7 @@ c*
 c* V510 12/99 *sh* - cope with unspecified limits (default=full axis range)
 c*               and limits embedded inside of user variable definitions
 c*               as in LET a = sst[L=5:9]; LIST FFT(a) (info from uvar_*)
+c*      3/00 *sh* - bug fix: above logic applies only to CUSTOM axes 
 
 
 c*
@@ -63,7 +64,7 @@ c* to be accessible to the external function.
                 arg_lo_ss(idim,iarg) = uvar_lo_ss(var, idim)
                 arg_hi_ss(idim,iarg) = uvar_hi_ss(var, idim)
               ELSE
-                IF (ax_src(idim) .EQ. IMPLIED_BY_ARGS) THEN
+                IF (ax_src(idim) .NE. CUSTOM) THEN
 * ... result axis inherits limits from SET REGION and command qualifiers, etc.
 * NOTE: ARG LIMITS WILL BE WRONG IF USED DURING GRID-CREATION
 *       (which should never happen ...)

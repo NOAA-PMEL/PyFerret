@@ -56,6 +56,7 @@
 *	 1/99 - allow strings in double quotes (as args to function)
 * V553:1/04   - check variable to see if its a counter_var.
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
+*      6/04 ywei - change MATCH_NAME function
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -72,6 +73,7 @@
 	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, MATCH_NAME
 	INTEGER		STR_MATCH, GCF_FIND_FCN,
      .			imatch, i, i2, j, brac_pos, aend
+        INTEGER         TM_LENSTR, len_test, len_mchars
 
 	DO 100 i = 1, natom
 
@@ -189,9 +191,11 @@
 
 * start by checking counter variable names
 	DO 240 i = 1, natom
+           len_test = TM_LENSTR(text(at_start(i):at_end(i)))
            DO 220 j = 1, num_counter_vars
-              IF ( MATCH_NAME(text(at_start(i):at_end(i)), 
-     .             countervar_name(j) ) ) THEN
+              len_mchars = TM_LENSTR(countervar_name(j))
+              IF ( MATCH_NAME(text(at_start(i):at_end(i)),len_test, 
+     .             countervar_name(j),len_mchars ) ) THEN
 	         at_type(i) = alg_counter_var
 	         at_id(i)   = unspecified_int4
 	      ENDIF

@@ -24,12 +24,10 @@ USE coads_climatology
 SET REGION/X=120:180/Y=20:60/L=1
 
 ! poly_vectors.jnl must have the plot parameters (such as axis lengths) 
-! already set.  Draw a 2-D plot over the region of interest.  Zero-length
-! vectors are a handy underlying plot, as this gives us the labels for the
-! vector field.
+! already set.  Draw a 2-D plot over the region of interest.  
 
-VECTOR/NOKEY/TITLE="COADS uwnd,vwnd" 0*uwnd, 0*vwnd
-GO fland 20
+GO basemap x=120:180 y=20:60 20
+LABEL/NOUSER `($ppl$xlen)/2`, `($ppl$yorigin)-1`, 0, 0, 0.16, "UWND, VWND"
 
 ! The inputs to poly_vectors.jnl are the components of the vectors to be 
 ! plotted and the X and Y lcoordinates of the vectors.  We need to limit 
@@ -60,16 +58,14 @@ GO poly_arrow_key "winds", "5 m/s"
 ! sending them as arguments to the poly_vectors script.
 PAUSE
 
-
 CAN VAR/ALL
 USE coads_climatology
 CAN REGION
 SET REGION/L=1/X=0:360/Y=-80:80
 
-! Make a 2-D plot to set plot parameters.
-
-VECTOR/NOKEY/XSKIP=60/YSKIP=30/TITLE="Wind Vectors Colored by SLP" 0*uwnd,0*vwnd
-GO fland
+! Make any 2-D plot to set plot parameters.
+GO basemap x=0:360 y=-80:80 20
+LABEL/NOUSER `($ppl$xlen)/2`, `($ppl$yorigin)-1`, 0, 0, 0.16, "Wind Vectors Colored by SLP"
 
 ! Subsample the vector data and set up the vectors to be plotted as polygons
 PAUSE
@@ -91,10 +87,11 @@ GO poly_arrow_key "", "8 m/s", red
 
 ! Next we will do some polygon-vector plots using map projections. 
 
-! The steps are: Define a subset of the data to plot, set up a map projection, 
-! and draw a plot, using the curvilinear form of the plotting command. Define 
-! variables with with U, V, X, and Y for the vectors, call mp_poly_vectors to set
-! up the polygon coordinates and use a curvlinear polygon plot command to plot them.
+! The steps are: Define a subset of the data to plot, define a map projection, 
+! and draw some plot in the map projection, using the curvilinear form 
+! of the plotting command. Define variables with with U, V, X, and Y for the 
+! vectors, call mp_poly_vectors to set up the polygon coordinates and use a 
+! curvlinear polygon command to plot them.
 
 PAUSE
 CAN REGION
@@ -111,8 +108,7 @@ SET GRID uwnd
 GO mp_aspect
 
 ! Make a FILL plot to set the plot parameters for the mp_poly_vectors script
-FILL/NOAXIS/NOKEY/NOLAB/PAL=greyscale/TITLE="Winds Colored by Pressure" slp, x_page,y_page
-
+FILL/NOAXIS/NOKEY/PAL=greyscale/TITLE="Winds Colored by Pressure" slp, x_page,y_page
 GO mp_fland 20 black
 
 ! Call mp_poly_vectors to set up the vectors to be plotted as polygons
@@ -141,9 +137,9 @@ GO poly_arrow_key "left top key", 4, blue, " ", 2, `($ppl$height)-1.5`
 GO poly_arrow_key "centered bottom", 4, violet, " ", c, 0.2
 GO poly_arrow_key "upper right", 4, green, line, `($ppl$width)-1.6`, `($ppl$height)-1.5`,0.14
 
-! Now, a view from space.  We need the mp_mask for this 
-! projection; apply it to the polygon data as it is plotted.
-! This time we regrid the vector components to a coarser grid.
+! Next we'll make a view from space.  We need the mp_mask for this 
+! projection; apply it to the polygon data as it is plotted. This time we 
+! will use explicit regridding to put the vector components onto a coarser grid.
 
 PAUSE
 CAN DATA/ALL
@@ -171,7 +167,7 @@ GO mp_orthographic 210 45
 SET GRID gxy
 GO mp_aspect
 
-VECTOR/NOAX/NOKEY/XSKIP=10/YSKIP=10/TITLE="Wind vectors colored by SLP" 0*u_vec, 0*v_vec, x_page,y_page
+FILL/NOAXIS/NOKEY/NOLAB/PAL=white/TITLE="Winds Colored by Pressure" u_vec, x_page,y_page
 GO mp_fland
 GO mp_graticule 0 360 30 -90 90 20
 

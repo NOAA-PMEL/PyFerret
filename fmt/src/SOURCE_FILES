@@ -41,7 +41,9 @@ cd_write_attval.F\
 cd_write_axis.F\
 cd_write_defer_coord.F\
 cd_write_grid.F\
+cd_write_strdim.F\
 cd_write_var.F\
+cd_write_var_sub.F\
 ez_delimited_read.F\
 ez_init_dset.F\
 ez_init_permute.F\
@@ -223,6 +225,7 @@ SRCS_C = \
 alloca.c\
 cd_rd_r8_as_r4.c\
 nap.c\
+tm_blockify_ferret_strings.c\
 tm_break_fmt_date_c.c\
 tm_c_rename.c\
 tm_dfp_convert.c\

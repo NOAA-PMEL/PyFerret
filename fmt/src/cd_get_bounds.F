@@ -1,8 +1,6 @@
 	LOGICAL FUNCTION CD_GET_BOUNDS ( cdfid, ivar, lo, hi, tmrecdim,
      .                                   status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -52,6 +50,8 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * V500 4/99 *kob*: increase size of vname and buff from 24 to 64
+* V533 *sh* 6/01 - add support for string variables (NCCHAR)
+
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -105,10 +105,19 @@
 * get the vital statistics for the CDF file
         CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
 
+* if it is a character variable, then the first dimension of it is the strlen
+        IF (vartyp .EQ. NCCHAR) THEN
+	   DO idim = 1, 5
+	      vdims(idim) = vdims(idim+1)
+	   ENDDO
+	   nvdim = nvdim - 1
+	ENDIF
+
 * get the vital statistics for this variable
         CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
      .              nvatts,cdfstat)
         vlen = TM_LENSTR1(vname)
+
 
 * get the lower bounds
         got_lo = CD_GET_ATTVAL( cdfid, ivar, 'slab_min_index',

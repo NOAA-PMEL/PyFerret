@@ -1,4 +1,4 @@
-	SUBROUTINE CD_MAKE_VAR ( cdfid, varname, type, grid,
+	SUBROUTINE CD_MAKE_VAR ( cdfid, varname, type, maxstrlen, grid,
      .                           lo, hi, recdim, enhead, new, status )
 
 *
@@ -55,11 +55,14 @@
 *               16 to 24
 * v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24 to match longer line_name
+* V533 *sh* 6/01 - added support for netCDF output string variables
+*		 - check for consistency of data type on APPEND operations
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
 *     varname - name of variable
 *     type    - data type for variable
+*    maxstrlen- if a string variable, longest string len
 *     grid    - defining grid for variable
 *     lo      - low indices of variable hyperslab
 *     hi      - high indices of variable hyperslab
@@ -69,7 +72,6 @@
 *     status  - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -83,32 +85,20 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xio.cmn_text'
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-#endif
 
 * argument declarations
       LOGICAL enhead, new
-      INTEGER cdfid, type, grid, lo(4), hi(4), recdim, status
+      INTEGER cdfid, type, maxstrlen, grid, lo(4), hi(4), recdim, status
       CHARACTER*(*) varname
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, CD_USE_RECDIM, 
-     .        itsa_slab, need_child(4)
-      INTEGER TM_LENSTR1, CD_ISIT_RECDIM,
+     .        itsa_slab, need_child(4), itsa_strvar
+      INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
      .        NCDID, NCVID, NCVDEF,
-     .        dimid(4), iaxis, cdfstat, dims, idim, varid, vartyp,
+     .        dimid(5), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(6), nvatts, nlen, glen, vlen, ax_type,
-     .        lo2(4), hi2(4), what_recdim
+     .        lo2(4), hi2(4), what_recdim, strdim
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64, lname*64,
@@ -119,10 +109,12 @@ xx        include 'netcdf.decl'  ! untested
       CHARACTER*1     ww_dim_nam(4)
       DATA dimnam/'I', 'J', 'K', 'L'/
       DATA ww_dim_nam/'X', 'Y', 'Z', 'T'/
+
 * has the variable already been created ?
       vname = varname    ! Ultrix f77 is fussy about CHAR*(*) vars
       vlen = TM_LENSTR1( vname )
       varid = NCVID( cdfid, vname(:vlen), cdfstat )
+      itsa_strvar = type .EQ. NCCHAR
 
 * already exists: limited consistency check - size of each axis, only
       new = cdfstat .NE. NCNOERR
@@ -135,6 +127,14 @@ xx        include 'netcdf.decl'  ! untested
             recdim = 0
          ENDIF
          IF ( status .NE. merr_ok ) GOTO 5900
+	 IF (type .NE. vartyp) GOTO 5050
+* ... first dimension of string variable is actually max string len
+	 IF (itsa_strvar) THEN
+	   maxstrlen = vdims(1)
+	   DO 10 idim = 1, 5
+ 10	   vdims(idim) = vdims(idim+1)
+	   nvdims = nvdims - 1
+	 ENDIF
          dims = 0
          DO 100 idim = 1, 4
             IF ( grid_line(idim,grid) .EQ. mpsnorm
@@ -203,7 +203,8 @@ xx        include 'netcdf.decl'  ! untested
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
-
+	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, status)
+         IF ( status .NE. merr_ok ) GOTO 5900
       ELSE
 * 1/95 - create the full-span or sub-span axes as appropriate
          DO 260 idim = 1, 4
@@ -219,10 +220,17 @@ xx        include 'netcdf.decl'  ! untested
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
+	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, status)
+         IF ( status .NE. merr_ok ) GOTO 5900
       ENDIF
 
 * determine the netCDF dimension id's to use for the variable
-      dims = 0
+      IF (itsa_strvar) THEN
+	dimid(1) = strdim   ! 1st dim of string array is character axis
+	dims = 1
+      ELSE
+        dims = 0
+      ENDIF
       DO 300 idim = 1, 4
          iaxis = grid_line(idim,grid)
          lname = CD_AXIS_NAME(grid, idim, nlen )
@@ -285,6 +293,13 @@ xx        include 'netcdf.decl'  ! untested
       RETURN
 
 * error messages
+ 5050 CALL TM_ERRMSG
+     . ( merr_badgriddef, status, 'CD_MAKE_VAR', unspecified_int4,
+     .   unspecified_int4,
+     .   'data type of variable '//vname(:vlen)//
+     .   ' is inconsist. w/ CDF file',
+     .   no_errstring, *5900 )
+
  5100 CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_MAKE_VAR', unspecified_int4,
      .   unspecified_int4,

@@ -1,8 +1,6 @@
 	SUBROUTINE CD_WRITE_VAR ( cdfid, vname, grid, lo, hi, dat, 
      .                            status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -52,6 +50,7 @@
 *	      - had to use F90 Intrinsic function TRANSFER to properly
 *		pass single values to NCVPT as arrays of 1 element
 * 6/97	*kob* - fix introduced bug in call to NCVPT
+* V533 *sh* 6/01 - add support for string variables (NCCHAR)
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -63,7 +62,6 @@
 *     status  - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -75,16 +73,6 @@
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * argument declarations
       INTEGER cdfid, grid, lo(4), hi(4), status
@@ -97,12 +85,13 @@ xx        include 'netcdf.decl'  ! untested
       INTEGER TM_LENSTR1, NCVID,
      .        start(4), count(4), idim, iaxis, cdfstat, vlen,
      .        slab_min(4), slab_max(4), tmrecax, cdrecax, dims, varid,
-     .        hilim, i100, i, recaxvar, lorec, hirec, rectyp
+     .        hilim, i100, i, recaxvar, lorec, hirec, rectyp,
+     .	      vartyp, nvdim, vdims(6), nvatts
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, got_it
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(4)
       DATA  	   dimnam/'I','J','K','L'/
-      CHARACTER*24 vbuff     ! needed because of fussy f772.1 DEC compiler
+      CHARACTER*64 vbuff     ! needed because of fussy f772.1 DEC compiler
       REAL*8 r100_8(100)
       REAL*8 TM_WORLD
 
@@ -115,6 +104,10 @@ xx        include 'netcdf.decl'  ! untested
 * get the variable id
       varid = NCVID( cdfid, vname(:vlen), cdfstat )
       IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+
+* get the vital statistics for this variable
+      CALL NCVINQ(cdfid, varid, vbuff, vartyp, nvdim, vdims,
+     .              nvatts,cdfstat)
 
 * enter data mode so data can be read and written
 * (CD_GET_GENERIC_BOUNDS needs to read coordinate values)
@@ -215,9 +208,11 @@ xx        include 'netcdf.decl'  ! untested
       ENDIF
 
 * write the slab
-      CALL NCVPT( cdfid, varid, start,count, dat, cdfstat )
+      CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start, count, 
+     .	vdims(1), dat, cdfstat )
       IF ( cdfstat .NE. NCNOERR ) GOTO 5300
-!      CALL NCREDF( cdfid, cdfstat )    ! obsoleted 10/92 by CD_SET_MODE
+!      CALL NCVPT( cdfid, varid, start,count, dat, cdfstat )
+!      IF ( cdfstat .NE. NCNOERR ) GOTO 5300
 
 * successful completion
  1000 status = merr_ok

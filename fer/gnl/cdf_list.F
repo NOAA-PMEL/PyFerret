@@ -73,8 +73,8 @@
 *		performance problems due to switching netCDF modes
 * V530 *acm* 3/01 pass calendar ID to EQUAL_RANGE
 *            4/16/01 properly declare TM_GET_CALENDAR_ID as integer
+* V533 *sh* 6/01 - added support for netCDF output string variables
 
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
@@ -92,25 +92,6 @@
 	include 'xrevision.cmn'
 	include 'xtoday.cmn'
 	include 'xinterrupt.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRIDS.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! FOR DODS CACHING
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'	! FOR DODS CACHING
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XREVISION.CMN'
-	INCLUDE 'FERRET_CMN:XTODAY.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-        INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
-#endif
 
 * calling argument declarations:
         LOGICAL         append, enhead, clobber
@@ -122,12 +103,14 @@
 
 * internal variable declarations:
         LOGICAL         TM_LEGAL_NAME,
-     .			itsa_uvar, need_doc, new, formatted, flushed
-	INTEGER		TM_LENSTR1, ISUBSCR_CX,
+     .			itsa_uvar, need_doc, new, formatted, flushed,
+     .			itsa_string
+	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
+     .			MGRID_SIZE,
      .			cx, mr, dset, grid, cdfid, ivar, nready,
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
-     .			final_status,
+     .			final_status, type, maxstrlen,
      .			write_lo(4), write_hi(4), make_lo(4), make_hi(4)
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
@@ -228,6 +211,7 @@
            IF ( cat .EQ. cat_pseudo_var ) varcode =
      .                            varcode(:TM_LENSTR1(varcode))//"_"
            itsa_uvar = cat .EQ. cat_user_var
+	   itsa_string = cx_type(cx) .EQ. ptype_string
 
            tax = grid_line(t_dim,grid)
            cal_name = line_cal_name(tax)
@@ -238,6 +222,14 @@
            CALL FIND_VAR_NAME ( pdset_irrelevant, varcode, cat1, var1 )
            IF (  var1 .NE. munknown_var_name
      .     .AND. cat1 .EQ. cat_pseudo_var    ) GOTO 5200
+
+* if a string variable, then find max len
+	   IF (itsa_string) THEN
+	      maxstrlen = GET_MAX_C_STRING_LEN(
+     .				   mr_c_pointer(mr), MGRID_SIZE(mr))
+	   ELSE
+	      maxstrlen = 0
+	   ENDIF
 
 * get slab limits to use for writing the values of this variable
            DO 50 idim = 1, 4
@@ -303,22 +295,42 @@
               recdim = 0
            ENDIF
 
+* convert the data type into netCDF parameter value
+	   IF (cx_type(cx) .EQ. ptype_float) THEN
+	      type = NCFLOAT
+	   ELSEIF  (cx_type(cx) .EQ. ptype_string) THEN
+	      type = NCCHAR
+	   ELSEIF  (cx_type(cx) .EQ. ptype_double) THEN
+	      type = NCDOUBLE
+	   ELSEIF  (cx_type(cx) .EQ. ptype_int4) THEN
+	      type = NCLONG
+	   ELSEIF  (cx_type(cx) .EQ. ptype_int2) THEN
+	      type = NCSHORT
+	   ELSEIF  (cx_type(cx) .EQ. ptype_int1) THEN
+	      type = NCBYTE
+	   ELSE
+	      CALL WARN('Internal err: unknown data type')
+	      type = NCFLOAT
+	   ENDIF
+
 * create the variable and its grid (coordinate output gets deferred)
-           CALL CD_MAKE_VAR( cdfid, varcode, NCFLOAT, grid,
+           CALL CD_MAKE_VAR( cdfid, varcode, type, maxstrlen, grid,
      .               make_lo, make_hi, recdim, enhead, new, status )
            IF ( status .NE. merr_ok ) GOTO 5800
 
 * if its a newly-created variable write attributes
            IF ( new ) THEN
 * bad data flag
-              CALL CD_WRITE_ATTVAL(cdfid,varcode,'missing_value',
+	      IF ( .NOT.itsa_string ) THEN
+                 CALL CD_WRITE_ATTVAL(cdfid,varcode,'missing_value',
      .                          mr_bad_data(mr), 1, NCFLOAT, status )
-              IF ( status .NE. merr_ok ) GOTO 5800
+                 IF ( status .NE. merr_ok ) GOTO 5800
 
 * fill value for uninitialized regions of output file
-              CALL CD_WRITE_ATTVAL(cdfid,varcode,'_FillValue',
+                 CALL CD_WRITE_ATTVAL(cdfid,varcode,'_FillValue',
      .                          mr_bad_data(mr), 1, NCFLOAT, status )
-              IF ( status .NE. merr_ok ) GOTO 5800
+                 IF ( status .NE. merr_ok ) GOTO 5800
+	      ENDIF
 
 * variable title
               buff = VAR_TITLE( cx )

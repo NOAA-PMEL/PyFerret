@@ -1,8 +1,6 @@
 	SUBROUTINE CD_GET_GENERIC_BOUNDS
      .       ( cdfid, ivar, grid, tmlo, cdflo, cdfhi, tmrecdim, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -48,7 +46,10 @@
 *  11/96 *kob* - Linux Port - had to use F90 intrinsic function TRANSFER
 *			    - to properly pass cvdim variable (not array)
 *		   	      to the NCVINQ routine.
-* V500 4/99 *kob*: increase size of vname and axnam from 24 to 64 - for wacky DODS variables
+* V500 4/99 *kob*: increase size of vname and axnam from 24 to 64
+*	- for wacky DODS variables
+* V533 *sh* 6/01 - add support for string variables (NCCHAR)
+
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -64,7 +65,6 @@
      .		tmrecdim, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -75,21 +75,10 @@
         external xio_data
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-        EXTERNAL XIO_DATA
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * local variable declarations:
       LOGICAL CD_USE_RECDIM, TM_FPEQ, no_file_coords
-      INTEGER CD_AXLEN, TM_LENSTR1, TM_SUBSC, NCVID, 
+      INTEGER TM_LENSTR1, TM_SUBSC, NCVID, 
      .        idim, vartyp, nvdim,
      .        ndims, cdfstat, vdims(6), nvatts,
      .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset
@@ -107,6 +96,14 @@
 * get the vital statistics for this variable
         CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
      .              nvatts,cdfstat)
+
+* if it is a character variable, then the first dimension of it is the strlen
+        IF (vartyp .EQ. NCCHAR) THEN
+	   DO idim = 1, 5
+	      vdims(idim) = vdims(idim+1)
+	   ENDDO
+	   nvdim = nvdim - 1
+	ENDIF
 
 * get the lo/hi bounds
         ndims = 0

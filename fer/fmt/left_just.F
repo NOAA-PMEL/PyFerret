@@ -43,6 +43,8 @@
 
 * revision 0.0 - 7/13/87
 * revision 0.1 - 8/21/88 - returned length is measured to last non-blank
+* V510 *sh* 3/00 - skip leading tabs as well as blanks
+
 
 * calling argument declarations:
 	CHARACTER*(*) source, dest
@@ -51,13 +53,18 @@
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, slen, dlen, first
 
+* internal parameter declarations
+	CHARACTER*1 tab
+	PARAMETER     ( tab = CHAR(9) )
+
 * how long are the strings ?
 	slen = LEN( source )
 	dlen = LEN( dest   )
 
 * find left-most non-blank
 	DO 100 first = 1, slen
-	   IF ( source(first:first) .NE. ' ' ) GOTO 200
+	   IF ( source(first:first) .NE. ' '
+     .	  .AND. source(first:first) .NE. tab ) GOTO 200
  100	CONTINUE
 	first = slen
 

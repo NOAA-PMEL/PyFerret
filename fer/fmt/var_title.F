@@ -57,7 +57,7 @@
 * V420: variable units may be modified by regrid transforms of the variable
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 * V500 *kob* 3/99- up VAR_CODE to 64 chars
-
+* V530  8/00 *sh8 - added support for cat_string
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -133,11 +133,20 @@
 
 	ELSEIF ( cat .EQ. cat_constant ) THEN
 
-	   var_title = ' '
+	   var_title = 'constant'
 
 	ELSEIF ( cat .EQ. cat_const_var ) THEN
 
 	   uvar = cx_variable(cx)/1000
+           item = cx_variable(cx) - 1000*uvar
+           start = uvar_item_start( item, uvar )
+           end   = uvar_item_end  ( item, uvar )
+	   var_title = uvar_text(uvar)(start:end)
+
+	ELSEIF ( cat .EQ. cat_string ) THEN
+
+* determine the string to be stored
+           uvar = cx_variable(cx)/1000
            item = cx_variable(cx) - 1000*uvar
            start = uvar_item_start( item, uvar )
            end   = uvar_item_end  ( item, uvar )

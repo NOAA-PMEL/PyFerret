@@ -1,5 +1,5 @@
-	SUBROUTINE MERGE_CONTEXT( its_gc, iarg,
-     .				  mrg_cx, com_cx, com_str, status )
+      SUBROUTINE MERGE_CONTEXT( its_gc, iarg, dflt_cx,
+     .     mrg_cx, com_cx, com_str, status )
 
 * combine new space/time/data_set/variable/grid context information into a 
 * single context checking for consistency 
@@ -36,7 +36,7 @@
 
 * calling argument declarations
 	LOGICAL		its_gc
-	INTEGER		iarg, mrg_cx, com_cx, status
+	INTEGER		iarg, dflt_cx, mrg_cx, com_cx, status
 	CHARACTER*(*)	com_str
 
 * local variable declarations
@@ -46,7 +46,8 @@
      .			choice(4,5), i, icom, imrg, uvar,
      .			com_str_slen, mrg_str_slen,
      .			com_int_slen, mrg_int_slen, gcfcn,
-     .			axis_source(4), lo_off(4),  hi_off(4), action(4)
+     .			axis_source(4), lo_off(4),  hi_off(4), action(4),
+     .                  temp_ss, ui4
 	CHARACTER	CX_DIM_STR*16, LEFINT*8, com_lims*16, mrg_lims*16,
      .			com_int*8, mrg_int*8
 
@@ -150,26 +151,46 @@
 	DO 500 idim = 1,4
 
 * argument of grid-changing function? (1/97)
-	IF (its_gc ) THEN
-	   IF (    axis_source(idim).EQ.pgc_ignore_axis) THEN
-	      GOTO 500
-	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
-* ... cannot merge limits from axis with offset because we might be right
-*     up to the grid edge where offsets couldn't be applied
-	      GOTO 500
-	   ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
-	      IF (action(idim) .EQ. pset_to_unspec) THEN
-* ... IS_DO_GC_FUNC will fill in the result limits on the imposed axes
-	         GOTO 500  ! leave it in its initialized (vacant) condition
-	      ELSE
-* ... This is the special case of an imposed axis that matches the argument ax
-	         CONTINUE
-	      ENDIF
-	   ELSE
-* ... it is evidently, a mergible axis ... continue on
-	      CONTINUE
-	   ENDIF	      
-	ENDIF
+*
+*     If we should ignore the axis:     don't merge
+*     Else if we should impose an axis 
+*        If (pset_to_unspec):           don't merge
+*        Else (ppass_along):            imposed axis matches arg axis --> merge
+*     Else (we should merge an axis)
+*        If we have offsets:            special merge
+*        Else:                          all OK --> merge
+*     Endif
+
+           IF (its_gc ) THEN
+
+              IF (axis_source(idim).EQ.pgc_ignore_axis) THEN
+
+                 GOTO 500
+
+              ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
+
+                 IF (action(idim) .EQ. pset_to_unspec) THEN
+*     ... IS_DO_GC_FUNC will fill in the result limits on the imposed axes
+                    GOTO 500    ! leave it in its initialized (vacant) condition
+                 ELSE
+*     ... This is the special case of an imposed axis that matches the argument ax
+                    CONTINUE
+                 ENDIF
+
+              ELSE !(axis_source(idim) .EQ. pgc_merge_axis)
+
+                 IF  (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
+                    CALL MERGE_AXIS_WITH_OFFSETS(dflt_cx, mrg_cx, 
+     .                   com_cx, idim, lo_off, hi_off)
+                    GOTO 500
+                 ELSE
+                    CONTINUE
+                 ENDIF
+
+              ENDIF	 
+              
+           ENDIF
+
 
 * ignore axes for which region isn't known (e.g. X axis of pseudo-variable "Y")
 	   IF ( cx_lo_ww(idim,com_cx) .EQ. unspecified_val8 ) GOTO 500

@@ -52,6 +52,10 @@
 * V420: 10/95 - can apply SET VARIABLE/BAD=/UNIT=/TITLE= to GT and CDF files
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V510 5/00 *sh* - allow SET VARIABLE/BAD applied to user variables
+*		 - on file variables (e.g. netCDF) interchange the 2 missing
+*		   flags so that the output will inherit the manually set value
+
 #ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -172,16 +176,21 @@
 	   IF ( bad  .NE. real4_init  ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
-	      ds_missing_flag(var) = bad
+	      ds_missing_flag(var) = ds_bad_flag(var)
+	      ds_bad_flag    (var) = bad
 	   ENDIF
 	   IF ( units .NE. char_init16 ) ds_var_units( var ) = units
 	   IF ( title .NE. char_init80 ) ds_var_title( var ) = title
 	ELSE
 * ... user-defined var
 	   IF ( grid .NE. int4_init   ) GOTO 5110
-	   IF ( bad  .NE. real4_init  ) GOTO 5115
 	   IF ( units .NE. char_init16 ) uvar_units( var ) = units
 	   IF ( title .NE. char_init80 ) uvar_title( var ) = title
+	   IF ( bad  .NE. real4_init  ) THEN
+	      CALL PURGE_ALL_UVARS	 ! delete invalidated uvars
+	      uvar_bad_data(var) = bad
+	   ENDIF
+
 	ENDIF
 
 * successful completion
@@ -210,8 +219,5 @@
  5112   CALL ERRMSG( ferr_invalid_command, status,
      .               'cannot specify grid for '//risc_buff(:len_rbuff),
      .               						*5000 )
- 5115   CALL ERRMSG( ferr_invalid_command, status,
-     .		     'Cannot specify bad value for '//risc_buff(:len_rbuff),
-     .							*5000 )
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
 	END

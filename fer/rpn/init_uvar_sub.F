@@ -1,4 +1,4 @@
-	SUBROUTINE INIT_UVAR_SUB ( name, text, title, units, dset,
+	SUBROUTINE INIT_UVAR_SUB ( name, text, title, units, dset, bad,
      .                             implct_defn, uvar, parent_uvar,
      .			           at_type, at_id, at_start, at_end,
      .			           natom, txstart, txend, status )
@@ -58,6 +58,7 @@
 *        3/99 *sh* - bug fix: pass the full error text to RPN, since
 *			at_start, at_end are relative to full text buffer
 *	12/99 *sh* - initialize uvar_lo/hi*
+* V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -78,6 +79,7 @@
      .			parent_uvar,
      .			at_type  (maxatoms), at_id  (maxatoms),
      .			at_start (maxatoms), at_end (maxatoms)
+	REAL		bad
 
 * internal variable declarations:
 	LOGICAL inquote
@@ -158,10 +160,11 @@
  100	CONTINUE
 * (7/98) end of quote-sensitive case changing loop
 
-* copy title, units, and dset into buffers
+* copy title, units, dset, and missing flag into buffers
 	uvar_title( uvar ) = title
         uvar_units( uvar ) = units
         uvar_dset ( uvar ) = dset
+        uvar_bad_data ( uvar ) = bad
 
 * save the ID of the parent variable (or zero if this is a parent, itself)
 	uvar_parent( uvar ) = parent_uvar

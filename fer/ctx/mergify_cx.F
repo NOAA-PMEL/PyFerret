@@ -43,6 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  6/20/89
+* V510 5/00 *sh* set the bad value flag for the merged context
 	
 #ifdef unix
 	include 'ferret.parm'
@@ -74,6 +75,9 @@
 * point context to this user variable
 	cx_variable( cx ) = uvar
 	cx_category( cx ) = cat_user_var
+
+* get the missing value flag that corresponds to this variable
+	CALL GET_CONTEXT_BAD_FLAG( cx )
 
 * impose merged grid
 	cx_grid( cx ) = KNOWN_GRID( cx_data_set(cx), cat_user_var, uvar )

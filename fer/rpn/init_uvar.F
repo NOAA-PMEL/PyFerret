@@ -1,4 +1,4 @@
-	SUBROUTINE INIT_UVAR ( name, text, title, units, dset,
+	SUBROUTINE INIT_UVAR ( name, text, title, units, dset, bad,
      .                         implct_defn, uvar,
      .			       at_type, at_id, at_start, at_end,
      .			       natom, txstart, txend, status )
@@ -85,6 +85,7 @@
 *		EF_GET_ARG_SUBSCRIPTS now permit 10/99 change to work
 *	1/00 *sh* - bug fix: parent_uvar was always set to ultimate ancestor
 *		 instead of actual parent. Created gcf stack
+* V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
 
 #ifdef unix
 	include 'ferret.parm'	
@@ -104,6 +105,7 @@
 	INTEGER		uvar, natom, txstart, txend, status,
      .			at_type  (maxatoms), at_id  (maxatoms),
      .			at_start (maxatoms), at_end (maxatoms), dset
+	REAL		bad
 
 * internal parameter declarations
 	LOGICAL		itsa_gc
@@ -243,7 +245,7 @@
 * initialize the child variable
  860	CALL INIT_UVAR_SUB (
      .			     child_name,
-     .			     text, ' ', ' ', dset,
+     .			     text, ' ', ' ', dset, bad,
      .                       implct_defn, uvar_child,parent,
      .			     at_type(child_start), at_id(child_start),
      .			     at_start(child_start), at_end(child_start),
@@ -275,7 +277,7 @@
 *============================================================
 
 * initialize the parent user variable, "uvar"
- 1000	CALL INIT_UVAR_SUB ( name, text, title, units, dset,
+ 1000	CALL INIT_UVAR_SUB ( name, text, title, units, dset, bad,
      .                         implct_defn, uvar, 0,
      .			       at_type, at_id, at_start, at_end,
      .			       natom, txstart, txend, status )

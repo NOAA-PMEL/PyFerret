@@ -35,6 +35,7 @@
 * V510: 8/99 *sh* allow other categories of cached mvars (mpv_nocache area)
 *	12/99 *sh* added uvar_lo/hi_ss/ww and uvar_by_ss
 *		(also fixed messed up comments)
+* V510: 5/00 *sh* added variable uvar_bad_data
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -126,6 +127,7 @@
 *	uvar_by_ss	- when uvlims are given in expression this tells how
 *	uvar_lo/hi_ss	- when uvlims are given in expression this tells what
 *	uvar_lo/hi_ww	- when uvlims are given in expression this tells what
+*	uvar_bad_data	- missing value flag to be used for this variable
 
 *	isp	 	- interpretation stack pointer
 *	is_act   	- activity currently in progress
@@ -222,6 +224,7 @@
      .		uvar_by_ss	 ( 4, max_uvar ),
      .		uvar_lo_ss	 ( max_uvar, 4 ),
      .		uvar_hi_ss	 ( max_uvar, 4 ),
+     .		uvar_bad_data	 ( max_uvar ),
      .		uvar_title	 ( max_uvar ),
      .		uvar_title_w_text( max_uvar ),
      .		uvar_name_code	 ( max_uvar ),
@@ -273,7 +276,9 @@
 	LOGICAL		mr_unstand_grid
 
 	REAL		mr_bad_data  	,
-     .			mr_trans_arg
+     .			mr_trans_arg	,
+     .			uvar_bad_data
+
 	REAL*8		mr_lo_ww	,
      .			mr_hi_ww	,
      .			uvar_lo_ww	,

@@ -52,6 +52,7 @@
 * V402:  7/95 - Added "dset" argument to INIT_UVAR for  LET/D=dset var = ... 
 * V450:  11/96 - Using reformulated version of INIT_UVAR (RPN called
 *		 from there). Part of changes to support external function.
+* V510: 5/00 *sh* - added "bad" (missing value flag) to INIT_UVAR arguments
 
 #ifdef unix
 	include	'ferret.parm'
@@ -76,7 +77,7 @@
 	PARAMETER     ( implct_defn = .TRUE. )
 
 * internal variable declarations:
-	INTEGER	TM_LENSTR, tlen, uvar, natom, i, paren_level, at1,
+	INTEGER	tlen, uvar, natom, i, paren_level, at1,
      .		at_type  (maxatoms), at_id  (maxatoms),
      .		at_start (maxatoms), at_end (maxatoms),
      .		exp_start(max_exp), exp_end(max_exp),
@@ -129,7 +130,7 @@
 	DO 200 i = 1, num_parts
 	   at1 = atom_1(i)
 	   CALL INIT_UVAR( EXPR_NAME(i),text,' ', ' ', unspecified_int4,
-     .			   implct_defn, uvar,
+     .			   bad_val4, implct_defn, uvar,
      .			   at_type(at1),  at_id(at1),
      .			   at_start(at1), at_end(at1),
      .			   atom_n(i)-at1+1,

@@ -113,6 +113,10 @@
 *		  - added POLYGON/COLOR=/THICKNESS=
 *		  - changed /PEN to /COLOR on CONTOUR and VECTOR
 *		  - added VECTOR/THICK
+*	5/00 *sh* - added DEFINE VARIABLE/BAD=
+*	5/00 *sh* - added CANCEL GRID
+*	5/00 *sh* - added /HLIMITS and /VLIMITS to graphics commands
+*		  - added /DETAILED to SHOW FUNCTIONS and to MESSAGE
 
 #ifdef unix
 	include 'ferret.parm'
@@ -480,7 +484,9 @@
 		DATA qualifiers  (nqual_at2u+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2u+2)	/ 'EXTERNAL'	/
 		DATA qualifiers  (nqual_at2u+3)	/ 'INTERNAL'	/
-		DATA qualifiers  (nqual_at2u+4)	/ '****'	/
+		DATA qualifiers  (nqual_at2u+4)	/ 'DETAILS'	/
+		DATA qualifiers  (nqual_at2u+5)	/ '****'	/
+		DATA qualifiers  (nqual_at2u+6)	/ '****'	/
 * SHOW QUERIES							 
 	   DATA subcommands      (nsub_at2 +21)	/ 'QUERIES'	/
 	   DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/
@@ -579,8 +585,8 @@
 	   DATA num_qualifs      (nsub_at3 +11)	/ nqual3l	/
 	   DATA qualifier_pointer(nsub_at3 +11)	/ nqual_at3l	/
 		DATA qualifiers  (nqual_at3l+0)	/ 'MODULO'	/
-* CANCEL ****							  ! unused(m)
-	   DATA subcommands      (nsub_at3 +12)	/ '****'	/
+* CANCEL GRID
+	   DATA subcommands      (nsub_at3 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/
 	   DATA qualifier_pointer(nsub_at3 +12)	/ nqual_at3m	/
 		DATA qualifiers  (nqual_at3m+0)	/ '****'	/
@@ -663,6 +669,10 @@
 		DATA qualifiers  (nqual_at4a+27)/ 'SPACING'/	!/spacing
 		DATA qualifiers  (nqual_at4a+28)/ 'SIGDIG'/	!/sigdig
 		DATA qualifiers  (nqual_at4a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at4a+32)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+33)/ '****'/	!
 
 
 * LIST	 - command # 5
@@ -739,6 +749,15 @@
 		DATA qualifiers  (nqual_at6a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at6a+23)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+24)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at6a+25)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+26)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+27)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+28)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+29)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+30)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at6a+31)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at6a+32)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+33)/ '****'/	!/unused
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
@@ -849,7 +868,7 @@
 		DATA qualifiers  (nqual_at10d+ 1)/ 'UNITS' /
 		DATA qualifiers  (nqual_at10d+ 2)/ 'QUIET' /
 		DATA qualifiers  (nqual_at10d+ 3)/ 'DATASET' /
-		DATA qualifiers  (nqual_at10d+ 4)/ '****' /
+		DATA qualifiers  (nqual_at10d+ 4)/ 'BAD' /
 		DATA qualifiers  (nqual_at10d+ 5)/ '****' /
 * DEFINE AXIS
 	   DATA subcommands      (nsub_at10 + 4)/ 'AXIS'	/
@@ -922,6 +941,8 @@
 		DATA qualifiers  (nqual_at12a+0)/ 'CONTINUE'	/
 * MESSAGE/QUIET
 		DATA qualifiers  (nqual_at12a+1)/ 'QUIET'	/
+		DATA qualifiers  (nqual_at12a+2)/ 'JOURNAL'	/
+		DATA qualifiers  (nqual_at12a+3)/ '****'	/
 
 * VECTOR - command # 13
 	DATA commands(13)			/ 'VECTOR'	/
@@ -957,6 +978,15 @@
 		DATA qualifiers  (nqual_at13a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at13a+23)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
+		DATA qualifiers  (nqual_at13a+25)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+26)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+27)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at13a+32)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+33)/ '****'/	!
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/
@@ -1069,6 +1099,10 @@
 		DATA qualifiers  (nqual_at18a+27)/ '****'/	!
 		DATA qualifiers  (nqual_at18a+28)/ '****'/	!
 		DATA qualifiers  (nqual_at18a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+30)/ 'HLIMITS'/	! horiz
+		DATA qualifiers  (nqual_at18a+31)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at18a+32)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+33)/ '****'/	!
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/
@@ -1238,6 +1272,10 @@
 		DATA qualifiers  (nqual_at27a+27)/ 'KEY'/	!/key
 		DATA qualifiers  (nqual_at27a+28)/ 'NOKEY'/	!/nokey
 		DATA qualifiers  (nqual_at27a+29)/ '****'/	!unused
+		DATA qualifiers  (nqual_at27a+30)/ 'HLIMITS'/	! horizontal
+		DATA qualifiers  (nqual_at27a+31)/ 'VLIMITS'/	! vertical
+		DATA qualifiers  (nqual_at27a+32)/ '****'/	!unused
+		DATA qualifiers  (nqual_at27a+33)/ '****'/	!unused
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/

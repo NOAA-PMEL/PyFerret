@@ -80,6 +80,7 @@
 *	1/00 *sh* naming bug corrected for nested GC functions
 *	2/00 *sh* bug in check for SAMPLE finctions -- use nitem not "3"
 *	3/00 *sh* bug in ERRMSG call at 5900 - extra comma in args
+* V510: 5/00 *sh* - set bad flag on user variables
 
 #ifdef unix
 	include	'ferret.parm'
@@ -110,8 +111,8 @@
      .		start_sampling
 	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR,
      .		GCF_FIND_FCN, GCF_ARG_EVAL_ORDER, GET_VAR_GRID,
-     .		hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
-     .		start, end, saved_grid, ifcn,
+     .		MGRID_SIZE, hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
+     .		start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
      .		nitem, new_mr, len_name
 	CHARACTER name*128
@@ -525,6 +526,13 @@
 * flags removed (otherwise done when they're used as operands)
 	IF ( mr_category( hi_mr ) .EQ. cat_temp_var ) THEN
 * ... result of algebraic computation
+* ... if user set the missing value flag make sure it is used
+	   IF ( cx_bad_data(big_cx) .NE. mr_bad_data(hi_mr) ) THEN
+	      size = MGRID_SIZE( hi_mr )
+	      CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(hi_mr),
+     .			                  memory(1,mr_blk1(hi_mr)), size,
+     .                                    cx_bad_data(big_cx)  )
+	   ENDIF
 	   CALL RE_ASSIGN_VARIABLE( hi_mr, big_cx )
 	   CALL PASS_AMBIG_LIMS( lo_cx, hi_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
@@ -557,6 +565,16 @@
      .	  .AND. mr_category(hi_mr) .NE. cat_constant   )
      .						CALL MR_NOT_IN_USE(hi_mr)
 	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
+	ENDIF
+
+* if user set the missing value flag make sure it is used
+	IF ( cx_bad_data(lo_cx) .NE. mr_bad_data(is_mr(lo_isp)) ) THEN
+	   new_mr = is_mr(lo_isp)
+	   size = MGRID_SIZE( new_mr )
+	   CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(new_mr),
+     .			               memory(1,mr_blk1(new_mr)), size,
+     .                                 cx_bad_data(lo_cx)  )
+	   mr_bad_data(new_mr) = cx_bad_data(lo_cx)
 	ENDIF
 
 * pop off context for the last component received and "big" (merged) context

@@ -4,10 +4,11 @@
 ! Description: draw examples of the pen color/thickness in PLOT+
 ! 1/94 *sh*
 ! updated 6/99 *sh*
+! 7/01 *acm* update /ylimits to /vlimits
 
 
 ! plot a sample of each /LINE= type
-plot/line=1/ylimits=1:18:1/xlimits=0:20:1/nolab/set i[i=1:20]*0+1
+plot/line=1/vlimits=1:18:1/hlimits=0:20:1/nolab/set i[i=1:20]*0+1
 ppl title .15 @SRLine color and thickness for qualifier /LINE= and command PPL PEN 1,n
 ppl axset 0,0,1,0;ppl yfor (I3); ppl axlint 1,1; ppl tics 0,0
 ppl plot

@@ -4,6 +4,8 @@
 ! Description: make a CONTOUR,SHADE, or FILL plot with a split vertical axis
 ! producing a "magnified" view of the near-surface waters
 
+! 7/01 *acm* update /xlimits and /ylimits  to /hlimits and /vlimits
+
 ! usage:	       $1       $2    $3  $4  $5   $6     $7
 !   yes? GO split_z command  qualifs var top mid bottom split
 ! $1 - the plot command (SHADE,FILL or CONT)  (default, "FILL")
@@ -45,7 +47,7 @@ define symbol upper_axlen `($ppl$yorg)+($PPL$YLEN)`
 define symbol orig_yorg ($ppl$yorg)
 ppl origin ,0
 ppl axlen ,($upper_axlen)
-(($cmnd)/($quals)/z=($topZ):($botZ)/ylimits=($topZ):($splitZ)/set_up ($var))
+(($cmnd)/($quals)/z=($topZ):($botZ)/vlimits=($topZ):($splitZ)/set_up ($var))
 ppl title   	! no title under plot
 ppl axset 1,0	! no lower axis
 ppl xlab	! no X axis label
@@ -58,7 +60,7 @@ set view sp_l
 define symbol axis_gap 0.15
 define symbol lower_axlen `($VP_HEIGHT)-($ppl$yorg)-($axis_gap)`
 ppl axlen ,($lower_axlen)
-(($cmnd)/($quals)/z=($topZ):($botZ)/ylimits=($splitZ):($botZ)/set_up ($var))
+(($cmnd)/($quals)/z=($topZ):($botZ)/vlimits=($splitZ):($botZ)/set_up ($var))
 ppl axset 0,1	! no upper axis
 ppl ylab	! no Y axis label on this part
 ppl labs

@@ -1,6 +1,7 @@
 \cancel mode verify
 ! bar_chart3.jnl
 ! 6/99 *sh*
+! 7/01 *acm* update /xlimits to /hlimits
 
 ! Description: Produce a color-filled bar chart
 
@@ -17,7 +18,7 @@
 
 ! example 2 - two variables overlaid
 !let a = 1+RANDU(I[i=1:10])
-! plot/xlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5  ! axes + title
+! plot/hlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5  ! axes + title
 !go bar_chart3 poly/line/palette=red/overlay/title="My reds" a
 ! let b = RANDU(I[i=1:10]+1)
 !go bar_chart3 poly/line/palette=blue/overlayy/title="My blues" b

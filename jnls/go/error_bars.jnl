@@ -1,6 +1,7 @@
 \cancel mode verify
 ! error_bars.jnl
 ! 6/99 *sh*
+! 7/01 *acm* update /xlimits to /hlimits
 
 ! Description: Overlay error bars on a plot
 
@@ -20,7 +21,7 @@
 !	yes? let errup = 0.6 * RANDU(xpts)
 !	yes? let errdn = 0.6 * RANDU(xpts+1)
 !
-!	yes? plot/xlimits=0:6/ylimits=-2:2/vs/line xpts, ypts
+!	yes? plot/hlimits=0:6/vlimits=-2:2/vs/line xpts, ypts
 !	yes? GO error_bars poly/line=2 xpts ypts errup errdn
 
 ! argument check

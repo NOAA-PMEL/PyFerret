@@ -2,6 +2,7 @@
 ! stick_vectors.jnl
 ! 4/94
 ! 4/95 - instructions on how to use "PLOTV" and angle/increment arguments
+! 7/01 *acm* update /ylimits to /vlimits
 
 ! Description: Make a stick vector plot of a line of U,V values
 
@@ -21,7 +22,7 @@
 !	yes? SET REGION/T=16-JAN-1985:16-JAN-1990/X=180/Y=0
 !	yes? GO stick_vectors plot uwnd vwnd
 !  or
-!	yes? GO stick_vectors plot/title=test/line=2/ylimits=-5:5:1 uwnd vwnd
+!	yes? GO stick_vectors plot/title=test/line=2/vlimits=-5:5:1 uwnd vwnd
 
 
 ! 4/95 -- alternative approach using PLOTV

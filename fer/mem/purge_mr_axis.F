@@ -47,6 +47,8 @@
 *			  because it needed a preprocessor.
 * V450: 11/14/97 - check dynamic grids as well as static grids
 *		(err450_redefine_axis_in_dyn_grid.jnl)
+* V500 - *kob* 3/99 - initialiaze line_name w/ 64 char string to match new
+*                     length 
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -112,7 +114,8 @@
 	   CALL WARN( I6//' words of axis coordinate storage lost' )
 	   line_subsc1( old_axis ) = unspecified_int4
 	ENDIF
-	line_name( old_axis ) = char_init16
+* initialiaze w/ 64 char string to match line_name lenght 3/99
+	line_name( old_axis ) = char_init64
 
 	status = ferr_ok
 	RETURN

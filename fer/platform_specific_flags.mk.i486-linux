@@ -25,7 +25,7 @@ INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include \
 FINCLUDES	= -I../../ppl/tmap_inc \
 		   -I../include -I../../fmt/cmn \
 		   -I../common \
-		   -I../../ppl/include 
+		   -I../../ppl/include  -I../../fer/common
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
  
@@ -36,7 +36,7 @@ F77		= f90
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
-PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch
+PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
 CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
 		  -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME \

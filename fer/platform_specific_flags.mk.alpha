@@ -23,7 +23,7 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
 FINCLUDES	= -I../../ppl/tmap_inc \
 		   -I../include -I../../fmt/cmn \
 		   -I../common \
-		   -I../../ppl/include 
+		   -I../../ppl/include  -I../../fer/common
 
 GUI_INCLUDES	=
 
@@ -36,7 +36,7 @@ FFLAGS          = -c -align dcommons -align records -integer_size 32 -real_size 
 		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C $(FINCLUDES)
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -Nl160 -Dxgks -static -fpe2
+		  -Nl160 -Dxgks -static -fpe2 $(FINCLUDES)
 
 #
 # Below this line are macro definitions used only for the final linking of the executable

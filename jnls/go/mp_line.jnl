@@ -1,4 +1,4 @@
-\ cancel mode verify	
+! \ cancel mode verify	
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 ! mp_line.jnl --  Plot data using a particular map projection.  For working
 !                  with map projection scripts in Ferret v4.50
@@ -33,9 +33,9 @@ query/ignore $3%<Specify all arguments: plot_command xpos ypos%
 ! Save the region and grid
 
 define region/default save
-set grid/save
 
-set grid abstract
+let/quiet mp_central_meridian = `mp_central_meridian`
+let/quiet mp_standard_paralell = `mp_standard_paralell`
 
 
 ! Cancel the region because the I index info is used to restrict
@@ -45,8 +45,8 @@ can region/x/y
 
 ! Check to make sure the xpos and ypos arrays are one dimensional
 
-let/quiet mp_xpos = ($2)
-let/quiet mp_ypos = ($2)
+let/quiet mp_xpos = $2
+let/quiet mp_ypos = $3
 define symbol mp_shape_x `mp_xpos,RESULT=SHAPE`
 define symbol mp_shape_y `mp_ypos,RESULT=SHAPE`
 query/ignore ($mp_shape_x%|X|Y|Z|T|<error: x position array must be 1-dimensional%)
@@ -57,19 +57,18 @@ can variable mp_ypos
 
 ! Alter the map projection equations to use xpos and ypos
 
-let/quiet mp_x = XSEQUENCE($2)
-let/quiet mp_y = XSEQUENCE($3)
+let/quiet mp_x = $2
+let/quiet mp_y = $3
 
 $1 x_page*mp_mask, y_page*mp_mask
 
 
-! Restore the region, grid and map projection equations
+! Restore the region and map projection equations
 
 set region save
-set grid/restore
 
-let/quiet mp_x = x
-let/quiet mp_y = y
+let/quiet mp_x = x[g=($mp_grid_variable)]
+let/quiet mp_y = y[g=($mp_grid_variable)]
 
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 set mode/last verify

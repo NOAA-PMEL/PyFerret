@@ -46,7 +46,9 @@
 *
 * V200: 10/16/89 - extracted from PERMUTE
 *	 3/16/90 - fixed bug: "src(i,j,l,k)" --> "src(i,j,k,l)"
-
+*
+* v541: 3/02 - *kob* need to replace ifdef 0 because IRIX preprocessor
+*                    didn't like it
 #ifdef unix
 	include 'ferret.parm'
 	include	'xcontext.cmn'
@@ -77,7 +79,7 @@
 	INTEGER	i_ax, j_ax, k_ax, l_ax
 	PARAMETER  (i_ax=1, j_ax=2, k_ax=3, l_ax=4)
 
-#ifdef 0
+#ifdef NEVER_EVER_USE_THE_BELOW 
 * 1/00 *kob* -  the below code was used to upgrade permute_sub.F for
 *		v5.30.  However, a bug in the DEC optimizer caused the
 *		loop to be unrolled incorrectly, leading to improper

@@ -1,0 +1,18 @@
+!bn_test_nan.jnl
+! test to make sure that NaN is able to be set by user
+!  as bad value.  If this fails, Ferret will crash
+! 9/03 *kob*
+!
+
+
+! this file is nothing except for nans
+use test_nan.nc
+
+! set bad to nan
+set var/bad=nan p1
+
+! list should be all "...."
+list p1
+
+
+

@@ -1,4 +1,5 @@
-	SUBROUTINE EQUAL_RANGE( string,idim,lo,hi,delta,formatted,status )
+	SUBROUTINE EQUAL_RANGE( string,idim,lo,hi,delta,formatted,
+     .				range_rqd, status )
 
 *
 *
@@ -47,9 +48,10 @@
 * 1/97 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
 * V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
+* V521 *sh* - added boolean "range_rqd" argument
 
 * calling argument declarations
-	LOGICAL		formatted
+	LOGICAL		formatted, range_rqd
 	INTEGER		idim, status
 	REAL*8		lo, hi, delta
 	CHARACTER*(*)	string
@@ -170,7 +172,9 @@
 	ENDIF
 
 * check for valid range
-	IF ( lo .EQ. hi ) GOTO 5100
+	IF ( range_rqd ) THEN
+	   IF ( lo .EQ. hi ) GOTO 5100
+	ENDIF
 
 * success
  1000	RETURN

@@ -47,6 +47,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V3.00  20/10/93 - *sh*
+* V522 7/00 *sh* - added add'l argument to EQUAL_RANGE
 
 * calling argument declarations
 	INTEGER		idim, grid, status
@@ -56,6 +57,10 @@
 * internal variable declarations
 	LOGICAL		GEOG_LABEL, formatted
 	REAL*8		SECS_TO_TSTEP, tmp
+
+* local parameter declarations:
+	LOGICAL         range_rqd
+	PARAMETER     ( range_rqd = .TRUE. )
 
 #ifdef unix
 	include 'ferret.parm'
@@ -67,7 +72,7 @@
 
 * first get EQUALL_RANGE to convert the data normally
 	CALL EQUAL_RANGE( string, idim, lo, hi, delta,
-     .			  formatted, status )
+     .			  formatted,  range_rqd, status )
 	IF ( status .NE. ferr_OK ) RETURN
 
 	IF ( idim .EQ. t_dim ) THEN

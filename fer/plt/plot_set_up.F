@@ -99,8 +99,8 @@
 *       3/00 - *sh* added use_line and sym_size args for PLOT/COLOR=/SIZE=
 *	     - pass no_labels to AXIS_FORMAT 
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
-* V522	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
-
+* V521	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
+*	7/00 - *sh* new argument range_rqd needed on EQUAL_RANGE
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -169,10 +169,11 @@
      .			ind_min, ind_max, dep_min, dep_max, delta, tmp
 
 * local parameter declarations:
-	LOGICAL		main, norm_labs, pnot_curv
+	LOGICAL		main, norm_labs, pnot_curv, range_rqd
 	PARAMETER     ( main = .TRUE.,
      .			norm_labs = .FALSE.,
-     .			pnot_curv = .FALSE. )
+     .			pnot_curv = .FALSE.,
+     .			range_rqd = .TRUE. )
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -305,7 +306,7 @@
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
-     .			formatted, status )
+     .			formatted, range_rqd, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	   ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
 	      IF ( val1 .EQ. mr_bad_data(mv) ) THEN
@@ -492,7 +493,7 @@
 	         CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
-     .			formatted, status )
+     .			formatted, range_rqd, status )
 	         IF ( status .NE. ferr_OK ) GOTO 5000
 * convert time given in time steps to absolute units	   
 	         IF ( time_axis .AND. .NOT.formatted ) THEN
@@ -540,7 +541,7 @@
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pdeplim):qual_end(pdeplim)),
      .			dep_dim, dep_min, dep_max, delta,
-     .			formatted, status )
+     .			formatted, range_rqd, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 	      CALL AXIS_ENDS( dep_ax, t_dim, grid, dep_min, dep_max, delta )
 	   ELSEIF ( all_1_dep ) THEN

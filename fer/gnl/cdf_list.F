@@ -69,6 +69,7 @@
 *               time step processing
 * V500 *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
+* V512; *sh* 7/00 - allow SAVE/ILIMITS=n:n (no range) - new arg to EQUAL_RANGE
 
 #ifdef unix
         include 'netcdf.decl'
@@ -163,11 +164,12 @@
 
 * local parameter declarations
         INTEGER         buff_size, sslimits0, wwlimits0
-        LOGICAL         full_precision, DODS_cache
+        LOGICAL         full_precision, DODS_cache, range_not_rqd
         PARAMETER     ( buff_size = 140,
      .			sslimits0 = 1+19-1,
      .			wwlimits0 = 1+23-1,
-     .                  full_precision = .TRUE. )
+     .                  full_precision = .TRUE.,
+     .			 range_not_rqd = .FALSE. )
 
 * initialize
 	 DODS_cache = mode .EQ. pcdf_mode_cache
@@ -260,7 +262,7 @@
 	            CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(loc):qual_end(loc)),
      .                  idim, user_lo, user_hi, delta, formatted,
-     .			status )
+     .			range_not_rqd, status )
                     IF ( status .NE. ferr_OK ) GOTO 5990
 	            make_lo(idim) = user_lo
 	            make_hi(idim) = user_hi

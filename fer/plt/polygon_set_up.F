@@ -74,6 +74,7 @@
 * V510: *sh* 3/00 - trap if number of polygons is too large 
 *		  - new arg use_line for change in arguments to LINE_STYLE
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
+* V510: *sh* 7/00 - added arg to EQUAL_RANGE 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -152,6 +153,10 @@
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
      .			dt_min
 	REAL*8		vmin, vmax, delta
+
+* local parameter declarations:
+	LOGICAL		range_rqd
+	PARAMETER     ( range_rqd = .TRUE. )
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
@@ -531,7 +536,7 @@
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pxdenig):qual_end(pxdenig)),
      .			x_dim, vmin, vmax, delta,
-     .			formatted, status )
+     .			formatted, range_rqd, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
      .			     vmin,vmax,delta)
@@ -555,7 +560,7 @@
 	      CALL EQUAL_RANGE( 
      .			cmnd_buff(qual_start(pydenig):qual_end(pydenig)),
      .			y_dim, vmin, vmax, delta,
-     .			formatted, status )
+     .			formatted, range_rqd, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			     vmin,vmax,delta)

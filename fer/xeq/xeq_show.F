@@ -127,6 +127,10 @@
 *                caught by new DEC f77 version
 * V500 - *kob* 3/99 - initialiaze line_name w/ 64 char string to match new
 *                     length 
+*        3/99 *jc*  - added a blank line between internal and external functions
+*                   - added /EXTERNAL qualifier to SHOW FUNCTION
+*                   - fixed EFCN_MATCH_TEMPLATE to behave like MATCH_TEMPLATE
+*                     so that multiple functions are shown
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -154,6 +158,7 @@
 	include	'xalgebra.cmn'
 	include	'xgrid_chg_fcns.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
+        include 'EF_Util.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -193,7 +198,8 @@
      .		    slash_file,
      .		    slash_grid_dyn,
      .		    slash_var_dset,
-     .		    slash_external
+     .		    slash_external,
+     .		    slash_internal
 	PARAMETER ( len_show_str = 132,		! length of output line buffer
      .		    brief	 = .TRUE.,
      .		    slash_mem_temp = 1 + 2,
@@ -205,7 +211,8 @@
      .		    slash_file     = 1 + 4,
      .		    slash_grid_dyn = 1 + 9,
      .		    slash_var_dset = 1 + 1,
-     .		    slash_external = 1 + 2 )
+     .		    slash_external = 1 + 2,
+     .		    slash_internal = 1 + 3 )
 
 * calling argument declarations:
 	REAL memory( mem_blk_size, max_mem_blks )
@@ -217,7 +224,7 @@
 	INTEGER TM_LENSTR1, UVAR_NUMBER, ALIAS_ID, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		TM_GET_LINENUM, VIEWPORT_NUMBER, STR_CASE_BLIND_COMPARE,
-     .		GCF_FIND_FCN, GCF_MATCH_FCN,
+     .		GCF_FIND_FCN, EFCN_MATCH_TEMPLATE,
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
@@ -227,6 +234,16 @@
      .		default*10, show_str*255, arg*24, name*32, arg30*30
 
 	INTEGER efcn_scan
+
+* for string passing to C function in SHOW FUNCTION
+      INTEGER      slen
+      PARAMETER  ( slen = ef_max_description )
+#ifdef sun
+      BYTE      fhol(slen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(slen)      ! c-type Hollerith string buffer
+#endif
+
 
 * command given with /ALL ?
 	risc_buff = ' '
@@ -987,27 +1004,37 @@
 
 * show a whole list or named functions, only?
 	IF ( num_args .GT. 0 ) THEN
+
 * ... one or more functions were explicitly named
 	   DO 2110 i = 1, num_items
-	      i1 = STR_UPCASE(arg,cmnd_buff(item_start(i):item_end(i)))
+           i1 = STR_UPCASE(arg,cmnd_buff(item_start(i):item_end(i)))
 	      len0 = item_end(i) - item_start(i) + 1
 * ... identify the named function
 * ... first try internal, non-grid-changing functions ...
-	      DO 2108 i2 = 1, num_functions
+	      DO 2104 i2 = 1, num_functions
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	         IF (MATCH_TEMPLATE(alg_fcn(i2),arg(:len0))) THEN
-	            CALL SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i2)
-*	            GOTO 2110
-	         ENDIF
- 2108	      CONTINUE
+	         IF (MATCH_TEMPLATE(alg_fcn(i2),arg(:len0)))
+     .           CALL SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i2)
+ 2104         CONTINUE
+* ... second try internal, grid-changing functions
+	      DO 2106 i2 = 1, gfcn_num_internal
+	         IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+              IF ( MATCH_TEMPLATE(gfcn_name(i2),arg(:len0)) ) CALL
+     .                SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i2)
+ 2106         CONTINUE
+* ... third try external functions
+	      DO 2108 i2 = gfcn_num_internal+1, gfcn_num_internal+
+     .             efcn_scan(gfcn_num_internal)
+	         IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+              CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
+              IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
+     .            SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i2)
+ 2108         CONTINUE
+ 2110      CONTINUE
 
-* JC_TODO: these should be changed to print all matches, not just the first one
-* ... now try grid-changing functions ...
-              i2 = GCF_MATCH_FCN( arg(:len0) )
-              IF ( i2 .NE. unspecified_int4 ) CALL
-     .			SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i2)
- 2110	   CONTINUE
 
 * show lists of functions
 	ELSE
@@ -1019,20 +1046,27 @@
      .			'Functions internal to Ferret:', 0)
 	      DO 2120 i = 1, num_functions
 	         IF ( alg_fcn(i) .NE. unspecified_name4 ) CALL
-     .			SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i)
- 2120	      CONTINUE
+     .                SHOW_1_FUNCTION(ttout_lun, .FALSE., sbrief, i)
+ 2120         CONTINUE
 * ... internal grid-changing functions
 	      DO 2130 i = 1, gfcn_num_internal
 	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i)
- 2130	      CONTINUE
+ 2130         CONTINUE
 	   ENDIF
+
 * ... show all the external functions
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .		'Externally defined functions available to Ferret:', 0)
+	   IF ( qual_given(slash_internal) .EQ. 0 ) THEN
+              CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .             '', 0)       ! Print a blank line
+              CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .           'Externally defined functions available to Ferret:',
+     .             0)
 	      DO 2140 i = gfcn_num_internal+1, gfcn_num_internal+
-     .          efcn_scan(gfcn_num_internal)
+     .             efcn_scan(gfcn_num_internal)
 	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i)
  2140	      CONTINUE
+	   ENDIF
+
 	ENDIF
 	IF ( limited_show ) RETURN
 

@@ -6,7 +6,7 @@
 *
 * This function locates local extrema, returning "lows".
 *
-* 1/21/01 change order of axes: result is on X axis, J index
+* 1/21/01 change order of axes: pts listed on X axis, J index
 *         gives component of result (x,y,z)
 *         And change arguments 2 and 3 to RANGE rather than # Grid cells
 *

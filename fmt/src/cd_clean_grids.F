@@ -48,7 +48,7 @@
 * revision 0.0 - 2/92
 * v500 - 3/99 *kob* - up length of variable vname to correspond w/ increased
 *                     size of line_name
-
+*      - 4/99 *kob* - need to increase size of temp_axnams as well
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid	- netCDF id number for already opened CDF file
@@ -78,7 +78,8 @@
 
 * argument declarations
 	INTEGER	 dset, cdfid, status
-        CHARACTER*16 temp_axnams(4,max_temp_grid)
+*4/99 *kob*
+        CHARACTER*64 temp_axnams(4,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     max_grd_per_cdf

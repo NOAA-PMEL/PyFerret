@@ -53,6 +53,7 @@
 * 5/98 *kob* - make sure that the sf_lunit is reset to file_not_open
 *              when cdf file is closed - for mc datasets only
 * V500 *sh* 3/99 - consolidated cd_scan_vars and cd_get_axes
+*     *kob* 4/99 - increase size of temp_axnams to 64
 
 * argument declarations:
 	INTEGER	dset, status
@@ -81,7 +82,8 @@
 
 * local variable declarations:
       INTEGER cdfid, remote_dods_id,istat
-      CHARACTER*16 temp_axnams(4,max_temp_grid)
+* 4/99 *kob* increase temp_axnams
+      CHARACTER*64 temp_axnams(4,max_temp_grid)
       LOGICAL reversed(0:max_lines)
 
 * open the netCDF data file and save global information

@@ -48,6 +48,8 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* V500:  4/99 *kob* - increase size of temp_axnams and vname from 16 to 64
+
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -85,7 +87,8 @@
 * argument declarations
 	INTEGER	 dset, cdfid, status
         LOGICAL reversed(0:max_lines)
-	CHARACTER*16 temp_axnams(4,max_temp_grid)
+* 4/99 *kob* 
+	CHARACTER*64 temp_axnams(4,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     str_eq
@@ -100,7 +103,8 @@
      .        igrid, iaxis, istat, tmvar, ivar, ndim, idim
       CHARACTER*16 gname
 * variables for final (unnecessary?) check
-      CHARACTER TM_STRING*13, vname*16, buff*64
+* 4/99 *kob* increase vname to 64 from 16
+      CHARACTER TM_STRING*13, vname*64, buff*64
       INTEGER TM_LENSTR1,
      .        vartyp, nvdim, vdims(6), nvatts, dim, npts, vlen
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line

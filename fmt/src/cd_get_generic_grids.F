@@ -52,6 +52,7 @@
 *		declaration line.
 * V500: 3/99 *sh* - if an axis doesn't exist matching the dimension name, then
 *	create a 1,2,3...n axis without error message
+*       4/99 *kob* - increase size of temp_axnams to 64
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -92,7 +93,8 @@ xx        include 'netcdf.decl'  ! untested
 * argument declarations
 	LOGICAL reversed(0:max_lines)
 	INTEGER	 dset, cdfid, status
-        CHARACTER*16 temp_axnams(4,max_temp_grid)
+* 4/99 *kob*
+        CHARACTER*64 temp_axnams(4,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     str_eq

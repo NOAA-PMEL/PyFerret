@@ -14,9 +14,11 @@
         include         'tmap_pplv11inc/gkspar.inc'
 #   endif
         include         'tmap_pplv11inc/ws_types.cmn'
+	include         'tmap_pplv11inc/gkscm2.cmn'
 #else
         include         'sys$library:gksdefs.bnd'
         include         'tmap_pplv11inc:ws_types.inc'
+	include         'tmap_pplv11inc:gkscm2.cmn'
 #endif
 
 	integer		wsid,ierr,conid,wstype
@@ -59,6 +61,10 @@
 	endif
 #elif xgks
 	call resize_xgks_window (wsid,xmax-xmin,ymax-ymin)
+c       Also need to resize the metafile window, if it is open *js* 8.97
+	if (meta_actv) then
+	   call resize_xgks_window (meta_wsid, xmax-xmin,ymax-ymin)
+	end if
 #else
 	call gswkvp (wsid,xmin,xmax,ymin,ymax)
 #endif

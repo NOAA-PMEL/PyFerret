@@ -73,7 +73,7 @@ float *y;
     }
   gescsetdcsize (*ws_id, size);
 
-  if (ws->dpy){
+  if (ws->ewstype == X_WIN && ws->dpy){
     XResizeWindow (ws->dpy,ws->win,ix,iy);
     tp = &t_now;
     t0 = time(0);

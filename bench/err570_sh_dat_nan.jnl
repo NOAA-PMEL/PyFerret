@@ -1,0 +1,10 @@
+! err570_sh_dat_nan.jnl
+! 4-Nov-2004 acm
+
+! See bug 1070.
+! Data has missing value flag of NaN. Under linux, SHOW DATA/FULL 
+! crashed on trying to format value for the output buffer.   
+
+use nan_missing.nc
+show data/full
+

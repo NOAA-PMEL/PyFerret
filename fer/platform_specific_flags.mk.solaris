@@ -6,6 +6,7 @@
 
 
 INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+		  -I../../ppl/include/xgks \
 		  -I/usr/ucbinclude \
                   -I/usr/openwin/include \
 		  -I$(TMAP_LOCAL)/src/xgks/port \

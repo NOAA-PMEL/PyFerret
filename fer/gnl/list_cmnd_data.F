@@ -338,8 +338,9 @@
 	      IF (itsa_string) THEN
 	         llen = 0
 	         DO 270 i = lo1, hi1, del1
-	            line_buff(llen+1:) = GET_STRING_ELEMENT
-     .					(mr,i,j,k,l,max_line_len, slen)
+	            line_buff(llen+1:) = GET_STRING_ELEMENT(
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			grid_data,i,j,k,l,max_line_len,slen )
 	            llen = MIN(max_line_len-1, llen+slen)
 	            IF (do_stream) THEN
 	               llen = llen + 1
@@ -356,8 +357,9 @@
 ! Note: FORMATTED output cannot be passed through SPLIT_AXIS because a
 !	single WRITE may imply many records of output
 	            DO 272 i = lo1, hi1, del1
-	               line_buff = GET_STRING_ELEMENT
-     .					(mr,i,j,k,l,max_line_len, slen)
+	               line_buff = GET_STRING_ELEMENT(
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			grid_data,i,j,k,l,max_line_len,slen )
 	               WRITE (list_lun,list_format, ERR=5010)
      .							line_buff(:slen)
  272		    CONTINUE
@@ -457,7 +459,9 @@
 	         DO 340 i = lo1, hi1, del1
 	            IF ( itsa_string ) THEN
 	               line_buff = line_buff(:alen)//tab_or_COMMA//
-     .			GET_STRING_ELEMENT(i,j,k,l,max_line_len,vlen)
+     .			GET_STRING_ELEMENT(
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			grid_data,i,j,k,l,max_line_len,vlen )
 	            ELSE
 	               line_buff = line_buff(:alen)//tab_or_COMMA//
      .			TM_FMT(grid_data(i,j,k,l),prec_digits,16,vlen)

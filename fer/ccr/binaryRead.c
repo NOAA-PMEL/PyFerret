@@ -90,7 +90,7 @@ static char *grabMemChunk(FileInfo *file){
     mi->size = chunkSize;
     mi->fileStartPos = position;
   }
-  if (mi->data <= 0){
+  if (mi->data <= (char *)0){
     mi->data = 0;
     setError("Can't allocate enough memory for file %s", file->name);
   }
@@ -296,6 +296,9 @@ static int readVars(FileInfo *file) {
 	    int dataSize;
 	    char type;
 
+	    if (src == (char *)0){
+	      return 0;
+	    }
 	    indexes[0] = i;
 	    var = &file->vars[indexes[file->vindex]];
 	    dataSize = var->dataSize;

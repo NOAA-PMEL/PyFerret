@@ -53,6 +53,8 @@ C                with "*(*)" for the linux port
 
 *       J Davison 10.20.99   Modified to support multiple calendars.
 *  *acm* 12/00 Change calendars to match NetCDF standard 
+*  V5.70 *acm* 5/2004 Include the century in year iy, to get correct
+*              evaluation of whether it is a leap year! (Bug 882)
 
       INCLUDE 'calendar.decl'
       INCLUDE 'calendar.cmn'
@@ -63,6 +65,7 @@ C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
       CHARACTER*(*) it
 
       call time3(it,iy,im,idd,ih,ix,isec,icen) 
+      iy = icen* 1000 + iy
 
       CALL tm_get_calendar_attributes (calendar_id, num_months, 
      .                 num_days, yeardays, month_names, days_in_month, 

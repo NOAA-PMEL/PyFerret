@@ -5,8 +5,7 @@
      .				mr_list, cx_list, nmv,
      .				x_dat, y_dat, status )
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -38,13 +37,12 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
+
 * Set up for single or multiple polygons to be  ploted by loading data
 * and labels and defining axis formats
 
-* The POLYGON command accepts single and multi-dimensionalarguments
-* either ("1D FORM")
+* The POLYGON command accepts single and multi-dimensional arguments
+* "1D FORM"
 *	   yes? POLYGON xpoly1D, ypoly1D, values
 *   where if xpoly1D or ypoly1D contain missing values, those represent
 *   the end of one polygon and the start of the next. The length of the values
@@ -53,7 +51,7 @@
 *    x1,x1,x1,x1,BAD,x2,x2,x2,BAD,x3,x3,x3,x3,x3,x3,x3,x3,BAD,...
 * where the "1","2","3" refer to the successive polygons
 
-* or ("2D FORM")
+* "2D FORM"
 *	   yes?  POLYGON xpoly2D, ypoly2D, values
 *   where values must be 1-dimensional and its axis must match in size and
 *   orientation one of the axes from the 2D arrays. The other axis of the
@@ -112,7 +110,7 @@
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
 
 * internal variable declarations:
-	LOGICAL		NO_LINE_RANGE,
+	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
 	CHARACTER	VAR_UNITS*32, LEFINT*4,
@@ -120,7 +118,7 @@
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
      .			slen, slen2, x_lab, y_lab, nline_in_mem, i,
-     .			npolygon, ncolor, ipoly, row, start, end,
+     .			npolygon, ncolor, ipoly, xrow, yrow, start, end,
      .			npts, idim, color_dim, coord_dim, i0,
      .			style, justify, ndim, dims(4), nfdim, fdims(4),
      .			plot_mem_used, pxlim, pylim, ptitl,
@@ -143,8 +141,6 @@
 	cx_y = cx_list(2)
 	mr_x = mr_list(1)
 	mr_y = mr_list(2)
-	cx_color = cx_list(3)
-	mr_color = mr_list(3)
 	plot_mem_used = 0
 	lox = arbitrary_large_val4
 	hix = arbitrary_small_val4
@@ -153,8 +149,11 @@
 !	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
 
-* perform sanity checks on the arguments
 	IF (nmv .NE. 3) GOTO 5200	! must be 3: xc,yc,color
+	cx_color = cx_list(3)
+	mr_color = mr_list(3)
+
+* perform sanity checks on the arguments
 * ... check the X coordinate variable for shape
 	CALL GET_CX_DIMS( cx_x, ndim, dims)
 	IF (ndim .EQ. 0) GOTO 5210		! npoints = 1 !!! yuk!
@@ -166,8 +165,6 @@
 	   IF (dims(idim) .NE. fdims(idim)) GOTO 5210
 	   IF ( CX_DIM_LEN(dims(idim),cx_x)
      .    .NE.  CX_DIM_LEN(dims(idim),cx_y) ) GOTO 5210
-	   IF ( cx_lo_ss(cx_x,dims(idim))
-     .    .NE.  cx_lo_ss(cx_y,dims(idim)) ) GOTO 5210
  100	CONTINUE
 * ... check the color value array for consistent structure
 	oneD_form = ndim .EQ. 1
@@ -176,23 +173,38 @@
 
 * determine coordinate axes for polygon coords and fill color values
 	IF (oneD_form) THEN
+* 1-dimensional form of command
 	   coord_dim = dims(1)	! axis of points in the polygon(s)
 	   color_dim = coord_dim
-	ELSE		! 2-dimensional form of command
-	   IF (nfdim .EQ. 1) THEN
-* ... abmiguous 2D form since since color_array
+	ELSE
+* 2-dimensional form of command
+* ... does the color value axis match one of the coordinate array axes?
+	   IF (nfdim .EQ. 0) THEN
+	      ambiguous_coord_axis = .TRUE.
+	   ELSE
+	      DO 105 idim = 1, ndim
+	         IF (dims(idim) .EQ. fdims(1)) THEN
+	            ambiguous_coord_axis = .FALSE.
+	            GOTO 106
+	         ENDIF
+ 105          CONTINUE
+	      ambiguous_coord_axis = .TRUE.
+	   ENDIF
+ 106	   IF (ambiguous_coord_axis) THEN
+* ... abmiguous 2D form since since color_array is a scalar
 	      IF (coord_ax .GT. 0 ) THEN
-* ... the user has specified the coordinate axis
+* ... the user has specified the coordinate axis (e.g. "/COORD_AX=J")
 	         CALL EQUAL_STRING( cmnd_buff(qual_start(coord_ax):
-     .					   qual_end  (coord_ax)),
+     .					      qual_end  (coord_ax)),
      .				    buff, status )
                  IF ( status .NE. ferr_ok ) RETURN
                  DO 120 coord_dim = 1,4
-	            IF (ww_dim_name(coord_dim) .EQ. buff(1:1)) THEN
+	            IF (ww_dim_name(coord_dim) .EQ. buff(1:1)
+     .		   .OR. ss_dim_name(coord_dim) .EQ. buff(1:1) ) THEN
 *      ... is the specified axis an axis of the arrays?
 	               DO 110 idim = 1, 2
  110		       IF (coord_dim .EQ. dims(idim)) GOTO 150
-	               GOTO 5300		! invalid coordinate dim given
+	               GOTO 5300	! invalid coordinate dim given
 	            ENDIF
  120	         CONTINUE
 	         GOTO 5300	! coord dim wasn't "X","Y","Z", or "T"
@@ -208,12 +220,14 @@
 	      ELSE
 	         color_dim = dims(1)
 	      ENDIF
-	   ELSE		! fill value array is a scalar
-	      coord_dim = dims(1)
-	      color_dim = dims(2)
-	      CALL WARN('2D polygon coord orientation ambiguous')
-	      CALL WARN('Continuing as /POLYGON='//
-     .			 ww_dim_name(coord_dim))
+	   ELSE
+* color fill value array is 1D and matches an axis of the coordinate arrays
+	      color_dim = fdims(1)
+	      IF (dims(1) .EQ. color_dim) THEN
+	         coord_dim = dims(2)
+	      ELSE
+	         coord_dim = dims(1)
+	      ENDIF
 	   ENDIF
 	ENDIF
 
@@ -253,7 +267,8 @@
 	IF (oneD_form) THEN
 	   end  = 0
 	ELSE
-	   row = cx_lo_ss(cx_x,color_dim) - 1
+	   xrow = cx_lo_ss(cx_x,color_dim) - 1
+	   yrow = cx_lo_ss(cx_y,color_dim) - 1
 	ENDIF
 
 * tell PLOT+ the bad data flags used
@@ -281,12 +296,13 @@
      .	     .GE. cx_hi_ss(cx_buff_x,coord_dim)) GOTO 290 ! exit DO_WHILE loop
 	   ELSE
 *    ... coords are 2D arrays of color_dim X coord_dim
-	      row = row + 1  ! advance to next polygon in the 2D array
-	      IF (row .GT. cx_hi_ss(cx_x,color_dim)) GOTO 290	! exit the DO_WHILE loop
-	      cx_lo_ss(cx_buff_x,color_dim) = row
-	      cx_hi_ss(cx_buff_x,color_dim) = row
-	      cx_lo_ss(cx_buff_y,color_dim) = row
-	      cx_hi_ss(cx_buff_y,color_dim) = row
+	      xrow = xrow + 1  ! advance to next polygon in the 2D array
+	      yrow = yrow + 1  ! advance to next polygon in the 2D array
+	      IF (xrow .GT. cx_hi_ss(cx_x,color_dim)) GOTO 290	! exit the DO_WHILE loop
+	      cx_lo_ss(cx_buff_x,color_dim) = xrow
+	      cx_hi_ss(cx_buff_x,color_dim) = xrow
+	      cx_lo_ss(cx_buff_y,color_dim) = yrow
+	      cx_hi_ss(cx_buff_y,color_dim) = yrow
 	   ENDIF
 
 * ... extract 1-dimensional arrays -- possibly with embedded missing values
@@ -381,7 +397,7 @@
 	IF (ncolor .EQ. 1) THEN
 	   DO 300 ipoly = 1, npolygon
  300	   x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
-	   npts = npolygon
+	   ncolor = npolygon
 	ENDIF
 	IF (ncolor .NE. npolygon) GOTO 5220		! color array size doesn't match polygons 
 	CALL PPLLDX(0,x_dat,x_dat,ncolor,' ',' ',1.0)
@@ -394,6 +410,7 @@
 * most of the work is avoiding an error if there is no data range with
 * which to make a scale ...
 	IF ( .NOT.overlay ) THEN
+	   delta = unspecified_val8
 * ... X axis
 	   IF ( pxlim .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      CALL EQUAL_RANGE( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
@@ -407,6 +424,10 @@
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
      .			DBLE(lox-1.0),DBLE(lox+1.0), 0.5D0)
+	   ELSE
+              CALL AXIS_ENDS(x_ax,coord_dim,cx_grid(cx_x),
+     .			DBLE(lox),DBLE(hix), delta)
+
 	   ENDIF
 * ... Y axis
 	   IF ( pylim .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
@@ -421,6 +442,10 @@
 * ... no data range -- provide artifical axis limits
               CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
      .			DBLE(loy-1.0),DBLE(loy+1.0), 0.5D0)
+	   ELSE
+              CALL AXIS_ENDS(y_ax,coord_dim,cx_grid(cx_y),
+     .			DBLE(loy),DBLE(hiy), delta)
+
 	   ENDIF
 	ENDIF
 

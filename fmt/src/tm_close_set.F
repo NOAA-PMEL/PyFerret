@@ -205,9 +205,13 @@
 	  sf_index(f_num)		=	char_init23
 	  sf_regvars(f_num)		=	.TRUE.
 	  sf_regtimes(f_num)		=	.TRUE.
+  130	CONTINUE
+
+        DO 140 f_num = 1, maxvarfiles
 	  vf_firstvar(f_num)		=	int4_init
 	  vf_lastvar(f_num)		=	int4_init
-  130	CONTINUE
+  140   CONTINUE
+
  9000	status = merr_ok
 
  9900	RETURN

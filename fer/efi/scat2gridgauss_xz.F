@@ -85,7 +85,7 @@
 
       SUBROUTINE  scat2gridgauss_xz_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -184,8 +184,8 @@
 *
       SUBROUTINE scat2gridgauss_xz_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -246,8 +246,8 @@
 *  arg_6  interpolation parameter   xscale
 *  arg_7  interpolation parameter   zscale
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result

@@ -33,7 +33,7 @@ TMAPDATALIBS = -ltmapdata
 PPLDATALIBS = -lpplblkdata
 
 FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
-	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -llist
+	-lctx -lfmt -lino -lmem -lutl -ldat -lccr
 
 XGKSMODS = -L../lib -lmodsxgks -laddsxgks
 PPLLIBS = -L../lib -lplot -lplotlib -lsymlib -lcomplot \

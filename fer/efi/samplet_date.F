@@ -82,7 +82,7 @@
 
       SUBROUTINE samplet_date_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -161,7 +161,7 @@
 
       SUBROUTINE samplet_date_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
@@ -208,8 +208,8 @@
 *
       SUBROUTINE samplet_date_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -262,8 +262,8 @@
      .      arg_4, arg_5, arg_6, arg_7, result, taxdat, 
      .      datebuf)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,

@@ -79,7 +79,7 @@
 
       SUBROUTINE xauto_cor_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
       CHARACTER*110 fcn_desc
@@ -127,8 +127,8 @@ c      CALL ef_version_test(ef_version)
 
       SUBROUTINE xauto_cor_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -164,8 +164,8 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
 *
       SUBROUTINE xauto_cor_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -214,8 +214,8 @@ C  Autocorrelation returns corelations for lags of 0 to N-1.
       SUBROUTINE xauto_cor_compute(id, arg_1, result, pmean, 
      .           pvar, box)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 

@@ -1,6 +1,5 @@
 #
-# platform_specific_includes.mk.i486-linux
-#
+# $Id$
 # This file is included in other Makefiles and defines
 # platform specific macros
 
@@ -12,6 +11,7 @@ INCLUDES        =  -I$(XGKSHOME)/gif \
 		   -I$(XGKSHOME)/port \
 		   -I$(XGKSHOME)/src/lib \
 		   -I$(XGKSHOME)/src/lib/gksm \
+		   -I/usr/local/netcdf/include \
 		   -I../common \
 		   -I../../fmt/cmn \
 		   -I../../ppl/include \
@@ -22,6 +22,7 @@ INCLUDES        =  -I$(XGKSHOME)/gif \
 FINCLUDES	= -I..\\\\..\\\\ppl\\\\tmap_inc \
 		   -I..\\\\include -I..\\\\..\\\\fmt\\\\cmn \
 		   -I..\\\\common \
+		   -I..\\\\usr\\\\local\\\\netcdf\\\\include \
 		   -I..\\\\..\\\\ppl\\\\include 
 
 CC              = gcc
@@ -39,7 +40,7 @@ FFLAGS		= -debug:partial -nopdbfile \
 		   $(FINCLUDES)
 
 .c.o:
-	(cc $(CFLAGS) -c $(DEBUG) $(<F))
+	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))
 
 #.F.o:
 #	((gcc -P -E $(FPROFLAGS) $(INCLUDES) $< > $*_tmp.f; $(F77) $(FFLAGS) -c $*_tmp.f)  && mv $*_tmp.obj $*.o)
@@ -53,7 +54,7 @@ FFLAGS		= -debug:partial -nopdbfile \
 # Below this line are macro definitions used only for the final linking of the executable
 #
 
-SYSLIB		= -llist -lreadline -L/usr/X11R6.4/lib -lX11 -lm -lforrt -lg2c
+SYSLIB		= -lforrt -lg2c -lreadline -ltermcap -L/usr/X11R6.4/lib -lX11 -lm 
 #SYSLIB		= -llist -lreadline -L/usr/X11R6.4/lib -lXt -lXext -lX11 -lm -ldfor -lg2c
 
 TMLIB		= ../lib/tmap_lib.a

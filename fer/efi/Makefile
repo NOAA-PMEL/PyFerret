@@ -23,6 +23,8 @@ include ../platform_specific_flags.mk.$(HOSTTYPE)
 include ./SOURCE_FILES
 include ./LIB_NAME
 
+INCLUDES += -Iferret_cmn
+
 #
 # Macros
 #

@@ -99,7 +99,7 @@
 
       SUBROUTINE ffta_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -145,7 +145,7 @@ c      CALL ef_version_test(ef_version)
 
       SUBROUTINE ffta_custom_axes(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
       INTEGER id
 
 * **********************************************************************
@@ -228,8 +228,8 @@ C  Set label for the frequency axis CYC/units.
 
       SUBROUTINE ffta_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -275,8 +275,8 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 *
       SUBROUTINE ffta_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -324,8 +324,8 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 *
       SUBROUTINE ffta_compute(id, arg_1, result, a, b, wft, ts)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id, arg
 

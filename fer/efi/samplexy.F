@@ -78,7 +78,7 @@
 
       SUBROUTINE samplexy_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -135,7 +135,7 @@
 
       SUBROUTINE samplexy_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
@@ -177,8 +177,8 @@
 *
       SUBROUTINE samplexy_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -233,8 +233,8 @@
       SUBROUTINE samplexy_compute(id, arg_1, arg_2, arg_3, result,
      .       xaxdat, yaxdat)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 

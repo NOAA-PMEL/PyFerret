@@ -90,7 +90,7 @@
 
       SUBROUTINE sortl_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -137,7 +137,7 @@
 
       SUBROUTINE sortl_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id
 
@@ -179,8 +179,8 @@
 *
       SUBROUTINE sortl_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -221,8 +221,8 @@
 *
       SUBROUTINE sortl_compute(id, arg_1, result, sort_dat, sort_indx)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       COMMON / sortllim / my_lo_l, my_hi_l
       INTEGER my_lo_l, my_hi_l

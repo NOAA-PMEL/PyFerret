@@ -89,7 +89,7 @@
 
       SUBROUTINE sorti_init(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -137,7 +137,7 @@
 
       SUBROUTINE sorti_result_limits(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'EF_Util.cmn'
 
       INTEGER id
 
@@ -182,8 +182,8 @@
 *
       SUBROUTINE sorti_work_size(id)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -223,8 +223,8 @@
 *
       SUBROUTINE sorti_compute(id, arg_1, result, sort_dat, sort_indx)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 

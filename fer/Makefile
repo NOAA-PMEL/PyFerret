@@ -66,7 +66,7 @@ EXECNAME = ferret_c
 
 WHATGKS = xgks
 
-LD = cc
+LD = $(CC) 
 
 EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 

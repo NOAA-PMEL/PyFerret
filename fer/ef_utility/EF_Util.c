@@ -11,8 +11,8 @@
 
 /* .................... Includes .................... */
 
-#include <stdio.h>	 	/* for convenience */
 #include <stdlib.h> 		/* for convenience */
+#include <stdio.h>	 	/* for convenience */
 #include <string.h> 		/* for convenience */
 
 #include <sys/types.h> 	        /* required for "NULL" */

@@ -161,7 +161,11 @@ c
       integer FILLONG
       REAL FILFLOAT
       integer*2 FILSHORT
+#ifdef STAR_1_SUPPORTED
+      integer*1 FILCHAR,FILBYTE
+#else
       byte FILCHAR,FILBYTE
+#endif
       parameter (FILDOUB = 9.9692099683868690e+36)
       parameter (FILLONG = -2147483647)
       parameter (FILFLOAT = 9.9692099683868690e+36)

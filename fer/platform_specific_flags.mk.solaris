@@ -39,7 +39,8 @@ LD_DYN_FLAGS = -G -z text -z muldefs
 SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
 		  -lV77 -lelf -lM77 -lF77 -lXm -lXt -Bdynamic -lsunmath -lm \
 		  /usr/ccs/lib/libgen.a -lc \
-		  -Bstatic -L/usr/ucblib -lucb -Bdynamic
+		  -Bstatic -L/usr/ucblib -lucb -Bdynamic /usr/lib/libICE.so \
+                  /usr/lib/libSM.so
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 

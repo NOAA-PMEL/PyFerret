@@ -4,7 +4,8 @@
 * revision 1.00 - 05/26/88 - added numerical constants
 * revision 1.10 - 11/29/88 - mpsunkn,mpsnorm changed values to munknown,mnormal
 * revision 1.11 - 12/07/89 - unspecified_int4 changed to -111 from -9999
-*
+* revision 1.12 - 2/17/99 - radius changed from 6370.E5 to 6366.707E5
+* 
 * Function return codes
 	INTEGER*4	str_match
 	PARAMETER	(str_match = 0)
@@ -12,7 +13,7 @@
 * numerical constants
         REAL            deg2rad, radius, deg2km, deg2m, m_radius
         PARAMETER     ( deg2rad = 3.141592 / 180,
-     .                  radius = 6370.E5,               ! cm
+     .                  radius = 6366.707E5,               ! cm
      .                  m_radius = radius / 100.,       ! meters
      .                  deg2km = deg2rad * radius * 1.E-5,
      .                  deg2m  = deg2km * 1000.  )

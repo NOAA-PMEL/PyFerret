@@ -58,6 +58,7 @@
 *		 - nvar's variables eliminated
 *		 - temporary variables represented via mr_protected
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
+* V510: 2/00 *sh* - free up the mr_grid pointer when variable is deleted
 
 #ifdef unix
 	include		'tmap_dims.parm'
@@ -75,8 +76,7 @@
 	INTEGER		mr
 
 * internal variable declarations:
-	INTEGER		i, idim, prev, next
-	CHARACTER*4	VAR_CODE
+	INTEGER		idim, prev, next
 
 * diagnostic "delete" message
 	IF (mode_diagnostic) THEN
@@ -124,6 +124,10 @@
 * release bulk memory that the variable used
 	IF ( mr_protected( mr ) .NE. mr_table_entry_only )
      .		CALL FREE_MEMORY( mr_blk1(mr), mr_nblks(mr) )
+
+
+* eliminate any stray indications that this variable points to a grid
+	mr_grid( mr ) = unspecified_int4
 
 * set protection to indicate deleted
 	mr_protected( mr ) = mr_deleted

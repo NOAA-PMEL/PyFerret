@@ -73,6 +73,7 @@
 * V510 *sh* 1/00 - fixed argument checks on DAYS1900
 *                - allow pre-1900, forbid month>12
 *      5/00 *sh* - bug fix in line checking month>12
+* v5.40*acm* add comment: days1900 returns days since 1-jan-1900, STANDARD CALENDAR
 
 #ifdef unix
 	include	'ferret.parm'
@@ -1104,6 +1105,8 @@
 
 * "DAYS1900(year, month, day)" - number of days since 1900
 * three components - each may be a different XYZT shape
+* *** note: returns days since 1-jan-1900, on the STANDARD CALENDAR
+
  4000	l1 = sl1
 	l2 = sl2
 	l3 = sl3

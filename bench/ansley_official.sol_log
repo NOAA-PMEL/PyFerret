@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     67245080 Oct  7 13:03 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     63882404 Nov  4 11:30 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  Fix bug in using Cnnn to change pen when in multi-line labels.  Fix precision of coordinates listed in LIST/FORM=tab, comma, HEAD=ENH
+Note: Final changes to XML output, and fix for bug 1049: indices for regridding taking on value of -111. Changes to bn_xml.jnl and new script err570_index111.jnl
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Thu Oct 7 13:11:16 PDT 2004
+Beginning at Thu Nov 4 11:38:52 PST 2004
  	NOAA/PMEL TMAP
  	FERRET v5.70  
- 	Solaris 5.6 - 10/07/04
- 	 7-Oct-04 13:11     
+ 	Solaris 5.6 - 11/04/04
+ 	 4-Nov-04 11:38     
 
 yes? !bn500_all_shell
 yes? 
@@ -10125,8 +10125,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.70"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 7-Oct-04"
-SESSION_TIME = "13:11"
+SESSION_DATE = " 4-Nov-04"
+SESSION_TIME = "11:38"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10144,8 +10144,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.70"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 7-Oct-04"
-SESSION_TIME = "13:11"
+SESSION_DATE = " 4-Nov-04"
+SESSION_TIME = "11:38"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10153,8 +10153,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 7-Oct-04"
-SESSION_TIME = "13:11"
+SESSION_DATE = " 4-Nov-04"
+SESSION_TIME = "11:38"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10164,13 +10164,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 7-Oct-04"
-SESSION_TIME = "13:11"
+SESSION_DATE = " 4-Nov-04"
+SESSION_TIME = "11:38"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 7-Oct-04"
-SESSION_TIME = "13:11"
+SESSION_DATE = " 4-Nov-04"
+SESSION_TIME = "11:38"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10204,7 +10204,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.70"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Oct  7 2004 13:12:57 "
+LAB3 = "Nov  4 2004 11:40:37 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10305,8 +10305,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.70"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 7-Oct-04"
-SESSION_TIME = "13:11"
+SESSION_DATE = " 4-Nov-04"
+SESSION_TIME = "11:38"
  
  
 GO bn_reset
@@ -18327,7 +18327,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23049 Oct  7 13:14 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23045 Nov  4 11:42 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18346,7 +18346,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419387 Oct  7 13:14 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419356 Nov  4 11:42 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26510,7 +26510,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26535,7 +26535,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26687,7 +26687,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Thu Oct  7 13:16:22 PDT 2004
+Thu Nov  4 11:43:55 PST 2004
  
 GO bn_reset
 cancel mode verify
@@ -26858,12 +26858,12 @@ list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
  eval    (C09,V02 C: 11 I:   30   30  J: -111 -111  K: -111 -111  L: -111 -111
  reading SST      M:142 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 11 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:130 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:118 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 11 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:121 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:112 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:145 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE SST      M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:132 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE tpry     M:130 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:149 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST[L=1,Y=-2:2],{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -26876,11 +26876,11 @@ list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
  1S   / 45:  28.5607
  -DELETE (C01,V02 M:149 I:    2    2  J:   45   46  K: -111 -111  L:    1    1
 cancel memory/all
- -DELETE (C09,V02 M:118 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:121 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE (C09,V02 M:129 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
- -DELETE (C09,V02 M:133 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE (C09,V02 M:110 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:112 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE (C09,V02 M:116 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE (C09,V02 M:132 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:142 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  -DELETE (C01,V02 M:146 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
@@ -26895,12 +26895,12 @@ list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
  eval    EX#1     C:  5 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
  const_v {30-,50} M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
- reading SST      M:130 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:121 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:118 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE          M:133 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ reading SST      M:118 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:112 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:110 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE          M:132 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE SST      M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:129 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE tpry     M:116 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -26911,9 +26911,9 @@ list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
  1N   / 46:  28.2222  28.1992  28.4514
  1S   / 45:  28.1514  28.5607  28.8326
 cancel memory/all
- -DELETE SST      M:118 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:121 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:110 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:112 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  -DELETE EX#1     M:142 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -26928,14 +26928,14 @@ list/l=1/y=-2:2  SAMPLEI(a  ,{30,40,50})
  const_v {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
  eval    A        C:  9 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:118 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:110 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  eval    A        C:  9 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:133 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:132 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  eval    A        C:  9 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:132 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:121 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
- -DELETE SST      M:130 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:129 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:130 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:112 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ -DELETE SST      M:118 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE tpry     M:116 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(A  ,{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -26948,10 +26948,10 @@ list/l=1/y=-2:2  SAMPLEI(a  ,{30,40,50})
  
 ! these should NOT break up the access into chunks
 cancel memory/all
- -DELETE SST      M:118 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
- -DELETE EX#1     M:130 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:132 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:133 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:110 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:118 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:130 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:132 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE A        M:145 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
  -DELETE A        M:146 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  -DELETE A        M:149 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
@@ -26971,10 +26971,10 @@ list/l=1/y=-2:2  SAMPLEI(sst[i=30:40],{30,40,50})
  const_v {30-,50} M:149 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
  eval    (C09,V02 C: 11 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:133 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:132 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE A        M:145 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE A        M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:130 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE tpry     M:118 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:149 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST[I=30:40],{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -26989,10 +26989,10 @@ let/quiet a = sst[i=30:40]
  dealloc  dynamic grid (G027)          ABSTRACT  COADSY    NORMAL    TIME4
  -DELETE (C01,V02 M:146 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  dealloc  dynamic grid (G027)          ABSTRACT  COADSY    NORMAL    TIME4
- -DELETE (C09,V02 M:132 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE (C09,V02 M:130 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
 cancel memory/all
- -DELETE SST      M:133 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:132 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
@@ -27002,14 +27002,14 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  allocate dynamic grid (G027)          ABSTRACT  COADSY    NORMAL    TIME4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
- const_v {30-,50} M:133 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ const_v {30-,50} M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
  eval    A        C:  9 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
  reading SST      M:149 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE          M:146 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
- -DELETE          M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE          M:130 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:145 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
- -DELETE {30-,50} M:133 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE {30-,50} M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(A,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 by 2 points (X-LATITUDE)
@@ -27019,8 +27019,8 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  1N   / 46:  28.2222  28.1992     ....
  1S   / 45:  28.1514  28.5607     ....
 cancel memory/all
- -DELETE A        M:130 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
- -DELETE EX#1     M:132 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE A        M:118 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:130 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:149 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -27033,9 +27033,9 @@ list/l=1/y=-2:2  SAMPLEI(a,{30})		! sample at just 1 point
  const_v {30}     M:149 I:    1    1  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     1
  eval    A        C:  9 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:133 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
- -DELETE A        M:130 I:    1    1  J: -111 -111  K: -111 -111  L:    1    1
- -DELETE EX#1     M:132 I:    1    1  J: -111 -111  K: -111 -111  L: -111 -111
+ reading SST      M:132 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE A        M:118 I:    1    1  J: -111 -111  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:130 I:    1    1  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:146 I:    1    1  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30}     M:149 I:    1    1  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(A,{30})
@@ -27048,8 +27048,8 @@ list/l=1/y=-2:2  SAMPLEI(a,{30})		! sample at just 1 point
  1N   / 46:  28.2222
  1S   / 45:  28.1514
 cancel memory/all
- -DELETE EX#1     M:132 I:    1    1  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:133 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:130 I:    1    1  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:132 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE A        M:145 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -27069,9 +27069,9 @@ list/l=1/y=-2:2  SAMPLEI(a,30)			! sample at just 1 point
  doing sampling tpry on I axis:     1     1
  eval    A        C: 11 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
  reading SST      M:149 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
- -DELETE EX#1     M:132 I:    1    1  J: -111 -111  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:130 I:    1    1  J: -111 -111  K: -111 -111  L:    1    1
  -DELETE cnst     M:145 I:    1    1  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:130 I:    1    1  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE tpry     M:118 I:    1    1  J:   45   46  K: -111 -111  L:    1    1
              VARIABLE : SAMPLEI(A,30)
              FILENAME : coads_climatology.cdf
              SUBSET   : 2 points (LATITUDE)
@@ -27082,7 +27082,7 @@ list/l=1/y=-2:2  SAMPLEI(a,30)			! sample at just 1 point
  1N   / 46:  28.2222
  1S   / 45:  28.1514
 cancel memory/all
- -DELETE (C11,V02 M:133 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE (C11,V02 M:132 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE (C01,V02 M:145 I:    1    1  J:   45   46  K: -111 -111  L:    1    1
  -DELETE A        M:146 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:149 I:   30   40  J:   45   46  K: -111 -111  L:    1    1
@@ -27110,13 +27110,13 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  eval    FSST     C: 12 I: -111 -111  J:   45   46  K: -111 -111  L:    1    1
  strip --> SST[I=1:180@FLN:1,D=1]
  strip moduloing SST on X axis:     0   181
- reading SST      M:133 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:132 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
  doing moduloing SST on X axis:     1   180
  doing --> SST[I=1:180@FLN:1,D=1]
  doing --> FSST[I=1:180@IIN,D=1]
  -DELETE          M:145 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE A        M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:121 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE tpry     M:112 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:149 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(A,{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -27127,11 +27127,11 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  1N   / 46:  182891008.  245831328.  306859840.
  1S   / 45:  183677008.  246905024.  309503200.
 cancel memory/all
- -DELETE FSST     M:118 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
- -DELETE A        M:129 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:    0  181  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE FSST     M:110 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE A        M:116 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:    0  181  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:130 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:132 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:133 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
  -DELETE FSST     M:142 I:    1  180  J:   45   46  K: -111 -111  L:    1    1
  -DELETE EX#1     M:146 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
@@ -27156,12 +27156,12 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  eval    EX#1     C:  5 I: -111 -111  J:   45   45  K: -111 -111  L:    1    1
  const_v {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
- reading SST      M:130 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
- reading SST      M:118 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:110 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
  reading SST      M:149 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:132 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
- -DELETE SST      M:133 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:129 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:130 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ -DELETE SST      M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE tpry     M:116 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -27174,9 +27174,9 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  2   / 2:  28.5607
  3   / 3:  28.8326
 cancel memory/all
- -DELETE SST      M:118 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
- -DELETE EX#1     M:133 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:110 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:132 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
  -DELETE SST      M:146 I:   30   50  J:   45   45  K: -111 -111  L:    1    1
  -DELETE SST      M:149 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
@@ -27196,11 +27196,11 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  eval    EX#1     C:  5 I: -111 -111  J:   45   45  K: -111 -111  L:    1    1
  const_v {30-,50} M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
- reading SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
- reading SST      M:129 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
- reading SST      M:132 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
- -DELETE EX#1     M:133 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ reading SST      M:110 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:116 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:130 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ -DELETE EX#1     M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:142 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST,{30,40,50})
@@ -27214,10 +27214,10 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  2   / 2:  28.5607
  3   / 3:  28.8326
 cancel memory/all
- -DELETE SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:129 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:132 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
- -DELETE EX#1     M:133 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:110 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:116 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:130 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:132 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
  -DELETE SST      M:149 I:   30   39  J:   45   45  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -27234,15 +27234,15 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  allocate dynamic grid (G027)          ABSTRACT  COADSY    NORMAL    TIME4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I: -111 -111  J:   45   45  K: -111 -111  L:    1    1
- const_v {30-,50} M:133 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ const_v {30-,50} M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
- reading SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:110 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
  reading SST      M:142 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
- reading SST      M:130 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:129 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
- -DELETE SST      M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ reading SST      M:118 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:116 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ -DELETE SST      M:130 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:146 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
- -DELETE {30-,50} M:133 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE {30-,50} M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (X)
@@ -27254,9 +27254,9 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  2   / 2:  28.5607
  3   / 3:  28.8326
 cancel memory/all
- -DELETE SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
- -DELETE EX#1     M:132 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:110 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE EX#1     M:130 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
  -DELETE SST      M:142 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
  -DELETE SST      M:149 I:   30   40  J:   45   45  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
@@ -27276,12 +27276,12 @@ list/l=1/y=0  SAMPLEI(sst,{30,40,50})
  eval    EX#1     C:  5 I: -111 -111  J:   45   45  K: -111 -111  L:    1    1
  const_v {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
- reading SST      M:118 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:110 I:   30   30  J:   45   45  K: -111 -111  L:    1    1
  reading SST      M:146 I:   40   40  J:   45   45  K: -111 -111  L:    1    1
- reading SST      M:129 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
- -DELETE SST      M:130 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
- -DELETE EX#1     M:132 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:133 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
+ reading SST      M:116 I:   50   50  J:   45   45  K: -111 -111  L:    1    1
+ -DELETE SST      M:118 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ -DELETE EX#1     M:130 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE tpry     M:132 I:    1    3  J:   45   45  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST,{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -27570,12 +27570,12 @@ list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48})
  eval    (C09,V02 C: 10 I:   31   35  J: -111 -111  K: -111 -111  L: -111 -111
  reading SST      M:137 I:   31   35  J:   48   48  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 10 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
- reading SST      M:129 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M:121 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 10 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
- reading SST      M:118 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M:116 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
  -DELETE SST      M:142 I:    1    7  J: -111 -111  K: -111 -111  L:    7    7
  -DELETE (C01,V02 M:145 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:130 I:    1    7  J:   48   48  K: -111 -111  L:    1    1
+ -DELETE tpry     M:129 I:    1    7  J:   48   48  K: -111 -111  L:    1    1
  -DELETE {31-,48} M:149 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST[L=1,Y=5N],{31,33,35,37,44,46,48})
              FILENAME : coads_climatology.cdf
@@ -27599,13 +27599,13 @@ list SAMPLEI(sst[l=1,y=5N],{31,33,35,37,44,46,48}) !   <-- CACHE HIT FAILS!!!
  const_v {31-,48} M:149 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     7
  eval    (C09,V02 C: 10 I:   31   35  J: -111 -111  K: -111 -111  L: -111 -111
- reading SST      M:109 I:   31   35  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M:110 I:   31   35  J:   48   48  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 10 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
- reading SST      M:133 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M:132 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 10 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
  reading SST      M:106 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
  -DELETE SST      M:142 I:    1    7  J: -111 -111  K: -111 -111  L:    7    7
- -DELETE tpry     M:130 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE tpry     M:129 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:146 I:    1    7  J:   48   48  K: -111 -111  L:    1    1
  -DELETE {31-,48} M:149 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST[L=1,Y=5N],{31,33,35,37,44,46,48})
@@ -27633,14 +27633,14 @@ list a 			!   <-- CACHE HIT FAILS!!!
  const_v {31-,48} M:102 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     7
  eval    (C09,V01 C: 12 I:   31   35  J: -111 -111  K: -111 -111  L: -111 -111
- reading SST      M: 77 I:   31   35  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M:100 I:   31   35  J:   48   48  K: -111 -111  L:    1    1
  eval    (C09,V01 C: 12 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
- reading SST      M: 38 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M: 69 I:   37   37  J:   48   48  K: -111 -111  L:    1    1
  eval    (C09,V01 C: 12 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
- reading SST      M: 21 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
+ reading SST      M: 25 I:   44   48  J:   48   48  K: -111 -111  L:    1    1
  -DELETE SST      M:142 I:    1    7  J: -111 -111  K: -111 -111  L:    7    7
  -DELETE          M:115 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M: 69 I:    1    7  J:   48   48  K: -111 -111  L:    1    1
+ -DELETE tpry     M: 76 I:    1    7  J:   48   48  K: -111 -111  L:    1    1
  -DELETE {31-,48} M:102 I:    1    7  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(SST[L=1,Y=5N],{31,33,35,37,44,46,48})
              FILENAME : coads_climatology.cdf
@@ -30710,9 +30710,9 @@ stat $1xyt
  strip regrid on X: SST --> GXYT             @LIN
  strip regrid on Y: SST --> XNTERMED         @LIN
  reading SST      M:102 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
- regrid  SST      M:100 I:   55  131  J:    1   41  K: -111 -111  L:    1    1
- regrid  SST      M: 98 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
- -DELETE SST      M:100 I:   55  131  J:    1   41  K: -111 -111  L:    1    1
+ regrid  SST      M:101 I:   55  131  J:    1   41  K: -111 -111  L:    1    1
+ regrid  SST      M:100 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
+ -DELETE SST      M:101 I:   55  131  J:    1   41  K: -111 -111  L:    1    1
  
              SST[G=GXYT]
              LONGITUDE: 129.5E to 79.5W
@@ -30735,7 +30735,7 @@ stat $1[x=@ave]
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
  strip --> SST[X=20E:20E(380)@AVE,D=1]
- reading SST      M: 96 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
+ reading SST      M: 98 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  doing --> SST[X=20E:20E(380)@AVE,D=1]
  
              SEA SURFACE TEMPERATURE
@@ -31055,9 +31055,9 @@ stat $1[gx=xtrop]
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -111 -111  K: -111 -111  L:    1    1
  reading SST      M:  9 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
- constan cnst     M:101 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE cnst     M:101 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- regrid  SST5     M:101 I:    1  151  J:    1   90  K: -111 -111  L:    1    1
+ constan cnst     M: 96 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M: 96 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  SST5     M: 96 I:    1  151  J:    1   90  K: -111 -111  L:    1    1
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  
              SST+5
@@ -31076,16 +31076,16 @@ stat $1[gx=xtrop]
  Standard deviation: 9.8848
 CONFUSE
  dealloc  dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
- -DELETE SST5     M:101 I:    1  151  J:    1   90  K: -111 -111  L:    1    1
+ -DELETE SST5     M: 96 I:    1  151  J:    1   90  K: -111 -111  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  pass #2 EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    5  J: -111 -111  K: -111 -111  L:    1    1
- pseudo  I        M:101 I:    1    5  J: -111 -111  K: -111 -111  L: -111 -111
+ pseudo  I        M: 96 I:    1    5  J: -111 -111  K: -111 -111  L: -111 -111
 stat $1[gx=xtrop]
  !-> stat sst5[gx=xtrop]
- -DELETE I        M:101 I:    1    5  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE I        M: 96 I:    1    5  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid XABSTRACT       ABSTRACT  NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
@@ -31095,7 +31095,7 @@ stat $1[gx=xtrop]
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -111 -111  K: -111 -111  L:    1    1
- reading SST      M:101 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
+ reading SST      M: 96 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
  constan cnst     M: 51 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE cnst     M: 51 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  regrid  SST5     M: 51 I:    1  151  J:    1   90  K: -111 -111  L:    1    1
@@ -31480,7 +31480,7 @@ stat $1xyt
 let $1xyt = $1[g=gxyt]
  !-> DEFINE VARIABLE sst5xyt = sst5[g=gxyt]
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
- -DELETE SSTXYT   M:100 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
+ -DELETE SSTXYT   M:101 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  -DELETE SSTXYT   M:109 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  dealloc  dynamic grid GXYT            XTROP     YTROP     NORMAL    TIME4
  -DELETE SSTXAVE  M: 72 I: -111 -111  J:    1   90  K: -111 -111  L:    1    1
@@ -31834,8 +31834,8 @@ stat $1sbx
  strip --> SST5[X=???@SBX:3,D=1]
  eval    SST5     C:  9 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
  reading SST      M:109 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
- constan cnst     M:100 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE cnst     M:100 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ constan cnst     M:101 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:101 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  doing --> SST5[I=1:180@SBX:3,D=1]
  
              SST5[X=@SBX]
@@ -31904,7 +31904,7 @@ let a = XSEQUENCE(j[j=1:5])
  -DELETE SST5     M: 81 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST5     M: 87 I: -111 -111  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST5     M: 94 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
- -DELETE SST5     M:100 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
+ -DELETE SST5     M:101 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST5     M:103 I: -111 -111  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST5     M:114 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST5     M:117 I: -111 -111  J:    1   90  K: -111 -111  L:    1    1
@@ -32146,10 +32146,10 @@ cancel mode verify
  -DELETE SST      M: 90 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST      M: 92 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST      M: 95 I: -111 -111  J:    1   90  K: -111 -111  L:    1    1
- -DELETE SST      M: 96 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
+ -DELETE SST      M: 96 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST      M: 97 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
- -DELETE SST      M: 98 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
- -DELETE SST      M:101 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
+ -DELETE SST      M: 98 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
+ -DELETE SST      M:100 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  -DELETE SST      M:102 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
  -DELETE SST      M:106 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  -DELETE SST      M:107 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
@@ -34389,7 +34389,7 @@ list/nohead a[i=106:145:5]
 set mode diag
 list/nohead str[i=18:23:2] ! using rdstride
  dealloc  dynamic grid (G021)          (AX008)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:101 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:100 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G022)          (AX021)   NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G022)          (AX021)   NORMAL    NORMAL    NORMAL
@@ -34400,11 +34400,11 @@ list/nohead str[i=18:23:2] ! using rdstride
  strip moduloing STR on X axis:    18    22
  rdstride STR      C:  9 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:    18    20
- -DELETE STR      M:101 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M:100 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  rdstride STR      C:  9 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:     2     2
- -DELETE STR      M:101 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
- nulrgd  STR      M:101 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M:100 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
+ nulrgd  STR      M:100 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE STR      M: 98 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX021)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
@@ -34980,7 +34980,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Oct  7 13:17 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Nov  4 11:45 testa.v5d
  
 can region
 use coads_climatology
@@ -34992,7 +34992,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Oct  7 13:17 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Nov  4 11:45 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35060,7 +35060,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35123,7 +35123,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  GFP3 = "" ;
@@ -35343,7 +35343,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -42410,20 +42410,36 @@ GO bn_xml_output.jnl
 !bn_xml_output.jnl
 ! new-V553 output in XML-style format
 ! Illustrate the SHOW commands with /XML xml-style output
- 
+! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
 USE gtsa056_2.cdf
  
+SHO DATA/XML
+<datasets>
+<dataset name="./gtsa056_2.cdf" default="true">
+<title> </title>
+<var name="TEMP" />
+<var name="U" />
+<var name="W" />
+<var name="TAUX" />
+</dataset>
+</datasets>
+ 
 SHO DATA/VAR/XML
+<datasets>
+<dataset name="./gtsa056_2.cdf" default="true">
+<title> </title>
 <var name="TEMP">
 <units>deg. C</units>
 <long_name>TEMPERATURE</long_name>
 <_FillValue>-1.E+34</_FillValue>
 <missing_value>-1.E+34</missing_value>
 <grid name="PS3DT1">
+<axes>
 <xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZT</zaxis>
 <taxis>TIME6</taxis>
+</axes>
 </grid>
 </var>
 <var name="U">
@@ -42432,10 +42448,12 @@ SHO DATA/VAR/XML
 <_FillValue>-1.E+34</_FillValue>
 <missing_value>-1.E+34</missing_value>
 <grid name="PS3DU1">
+<axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
 <zaxis>PSZT</zaxis>
 <taxis>TIME6</taxis>
+</axes>
 </grid>
 </var>
 <var name="W">
@@ -42444,10 +42462,12 @@ SHO DATA/VAR/XML
 <_FillValue>-1.E+34</_FillValue>
 <missing_value>-1.E+34</missing_value>
 <grid name="PS3DW1">
+<axes>
 <xaxis>PSXT1</xaxis>
 <yaxis>PSYT</yaxis>
 <zaxis>PSZW</zaxis>
 <taxis>TIME6</taxis>
+</axes>
 </grid>
 </var>
 <var name="TAUX">
@@ -42456,21 +42476,28 @@ SHO DATA/VAR/XML
 <_FillValue>-1.E+34</_FillValue>
 <missing_value>-1.E+34</missing_value>
 <grid name="PS2DU1">
+<axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
 <taxis>TIME6</taxis>
+</axes>
 </grid>
 </var>
+</dataset>
+</datasets>
  
 SHO GRID/XML ps3du1
 <grid name="PS3DU1">
+<axes>
 <xaxis>PSXU</xaxis>
 <yaxis>PSYU</yaxis>
 <zaxis>PSZT</zaxis>
 <taxis>TIME6</taxis>
+</axes>
 </grid>
  
 SHO AXIS/XML psxu
+<axes>
 <axis name="PSXU">
 <units>LONGITUDE</units>
 <length>160</length>
@@ -42480,7 +42507,9 @@ SHO AXIS/XML psxu
 <modulo>yes</modulo>
 <modulo_length>360</modulo_length>
 </axis>
+</axes>
 SHO AXIS/XML psyu
+<axes>
 <axis name="PSYU">
 <units>LATITUDE</units>
 <length>100</length>
@@ -42489,7 +42518,9 @@ SHO AXIS/XML psyu
 <point_spacing>uneven</point_spacing>
 <modulo>no</modulo>
 </axis>
+</axes>
 SHO AXIS/XML pszt
+<axes>
 <axis name="PSZT">
 <units>METERS</units>
 <length>27</length>
@@ -42499,7 +42530,9 @@ SHO AXIS/XML pszt
 <point_spacing>uneven</point_spacing>
 <modulo>no</modulo>
 </axis>
+</axes>
 SHO AXIS/XML time
+<axes>
 <axis name="TIME">
 <units>HOURS</units>
 <length>20</length>
@@ -42508,6 +42541,233 @@ SHO AXIS/XML time
 <point_spacing>even</point_spacing>
 <modulo>yes</modulo>
 </axis>
+</axes>
+ 
+! Define a dataset variable
+! SHOW/XML commands list it w/ its dataset (even if dataset is not default)
+LET/D=gtsa056_2 temp_180 = temp[X=160E:160W@AVE]
+ 
+USE coads_climatology
+ 
+SHOW DATA/XML
+<datasets>
+<dataset name="./gtsa056_2.cdf" default="false">
+<title> </title>
+<var name="TEMP" />
+<var name="U" />
+<var name="W" />
+<var name="TAUX" />
+<var name="TEMP_180" />
+</dataset>
+<dataset name="./coads_climatology.cdf" default="true">
+<title> </title>
+<var name="SST" />
+</dataset>
+</datasets>
+SHO DATA/VAR/XML
+<datasets>
+<dataset name="./gtsa056_2.cdf" default="false">
+<title> </title>
+<var name="TEMP">
+<units>deg. C</units>
+<long_name>TEMPERATURE</long_name>
+<_FillValue>-1.E+34</_FillValue>
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DT1">
+<axes>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT</yaxis>
+<zaxis>PSZT</zaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="U">
+<units>cm/sec</units>
+<long_name>ZONAL VELOCITY</long_name>
+<_FillValue>-1.E+34</_FillValue>
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DU1">
+<axes>
+<xaxis>PSXU</xaxis>
+<yaxis>PSYU</yaxis>
+<zaxis>PSZT</zaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="W">
+<units>cm/sec</units>
+<long_name>VERTICAL VELOCITY</long_name>
+<_FillValue>-1.E+34</_FillValue>
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DW1">
+<axes>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT</yaxis>
+<zaxis>PSZW</zaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="TAUX">
+<units>dynes/cm**2</units>
+<long_name>ZONAL WIND STRESS</long_name>
+<_FillValue>-1.E+34</_FillValue>
+<missing_value>-1.E+34</missing_value>
+<grid name="PS2DU1">
+<axes>
+<xaxis>PSXU</xaxis>
+<yaxis>PSYU</yaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="TEMP_180">
+<_FillValue>-1.E+34</_FillValue>
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DT1">
+<axes>
+<yaxis>PSYT</yaxis>
+<zaxis>PSZT</zaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+<dataset name="./coads_climatology.cdf" default="true">
+<title> </title>
+<var name="SST">
+<units>Deg C</units>
+<long_name>SEA SURFACE TEMPERATURE</long_name>
+<_FillValue>-1.E+34</_FillValue>
+<missing_value>-1.E+34</missing_value>
+<grid name="GSQ1">
+<axes>
+<xaxis>COADSX</xaxis>
+<yaxis>COADSY</yaxis>
+<taxis>TIME4</taxis>
+</axes>
+</grid>
+</var>
+</dataset>
+</datasets>
+ 
+ 
+! tests of SHOW VAR/XML for global variables.
+CAN DATA/ALL
+CAN VAR/ALL
+ 
+USE coads_climatology
+USE gtsa056_2
+ 
+! Define a dataset variable
+LET/D=gtsa056_2 temp_20 temp[Z=0:20@SUM]
+ 
+! Define a global variable
+LET t30 = temp[Z=0:30@SUM]
+ 
+! Another variable, setting title, units, bad flag.
+LET/UNITS="Deg C"/BAD=100/TITLE="Indefinite integral of SALT" salty = salt[Z=@IIN]
+ 
+! Define a constant
+LET pi = 3.14
+ 
+! Another variable, irrelevant in the current context
+LET my_sst = sst*12
+ 
+! This lists all the variables except my_sst
+ 
+SHO VAR/XML
+<global>
+<var name="TEMP_20[D=gtsa056_2]" def="TEMP[Z=0:20@SUM]">
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DT1">
+<axes>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT</yaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="T30" def="TEMP[Z=0:30@SUM]">
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DT1">
+<axes>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT</yaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="PI" def="3.14">
+<missing_value>-1.E+34</missing_value>
+<grid name="ABSTRACT">
+<axes>
+</axes>
+</grid>
+</var>
+</global>
+ 
+! Now change datasets, so my_sst has a context, but t30
+! does not temp_20 is listed because it is defined on a dataset
+ 
+SET DATA coads_climatology
+SHO VAR/XML
+<global>
+<var name="TEMP_20[D=gtsa056_2]" def="TEMP[Z=0:20@SUM]">
+<missing_value>-1.E+34</missing_value>
+<grid name="PS3DT1">
+<axes>
+<xaxis>PSXT1</xaxis>
+<yaxis>PSYT</yaxis>
+<taxis>TIME6</taxis>
+</axes>
+</grid>
+</var>
+<var name="PI" def="3.14">
+<missing_value>-1.E+34</missing_value>
+<grid name="ABSTRACT">
+<axes>
+</axes>
+</grid>
+</var>
+<var name="MY_SST" def="SST*12">
+<missing_value>-1.E+34</missing_value>
+<grid name="GSQ1">
+<axes>
+<xaxis>COADSX</xaxis>
+<yaxis>COADSY</yaxis>
+<taxis>TIME4</taxis>
+</axes>
+</grid>
+</var>
+</global>
+ 
+! Change default dataset. Now we should just see pi and my_sst
+ 
+CAN DATA gtsa056_2
+SHOW VAR/XML
+<global>
+<var name="PI" def="3.14">
+<missing_value>-1.E+34</missing_value>
+<grid name="ABSTRACT">
+<axes>
+</axes>
+</grid>
+</var>
+<var name="MY_SST" def="SST*12">
+<missing_value>-1.E+34</missing_value>
+<grid name="GSQ1">
+<axes>
+<xaxis>COADSX</xaxis>
+<yaxis>COADSY</yaxis>
+<taxis>TIME4</taxis>
+</axes>
+</grid>
+</var>
+</global>
+ 
  
 GO bn_reset
 cancel mode verify
@@ -43681,18 +43941,18 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- strip regrid on X: TAUX --> (G021)           @XACT
+ allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ strip regrid on X: TAUX --> (G032)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:133 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
 can mem/all
  -DELETE A        M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43700,28 +43960,28 @@ can mem/all
  TEMPORARY data cleared from memory
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- strip regrid on X: TAUX --> (G021)           @XACT
+ allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ strip regrid on X: TAUX --> (G032)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
  
 can mem/all
  -DELETE TAUX     M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43729,8 +43989,8 @@ can mem/all
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 can data/all
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -43801,16 +44061,16 @@ LIST VAR[i=2:4:2,j=1:3:2]
  dealloc  dynamic grid (G015)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:144 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
- allocate dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G015)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:133 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:144 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX025)   (AX044)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43833,13 +44093,13 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX025)   (AX044)   ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G015)          (AX027)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G015)          (AX027)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G015)          (AX027)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G015)          (AX027)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: VAR --> (G015)           @XACT
@@ -43847,7 +44107,7 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
  reading VAR      M:147 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4
  regrid  VAR      M:144 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G015)          (AX027)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -43868,7 +44128,7 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G015)          (AX027)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G015)          (AX044)   (AX043)   ZAX1_2    TAX1_1
  dealloc  dynamic grid (G015)          (AX044)   (AX043)   ZAX1_2    TAX1_1
@@ -43897,16 +44157,16 @@ LIST VAR[i=2:6:2,j=1:5:2]
  dealloc  dynamic grid (G015)          (AX044)   (AX043)   ZAX1_2    TAX1_1
  -DELETE VAR      M:144 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G015)          (AX044)   (AX027)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G015)          (AX044)   (AX027)   ZAX1_2    TAX1_1
- allocate dynamic grid (G015)          (AX044)   (AX027)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX044)   (AX025)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G015)          (AX044)   (AX027)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G015)          (AX044)   (AX025)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G015)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:144 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G015)          (AX044)   (AX027)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX044)   (AX025)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43923,7 +44183,7 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G015)          (AX044)   (AX027)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G015)          (AX044)   (AX025)   ZAX1_2    TAX1_1
  -DELETE VAR      M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -44000,17 +44260,17 @@ cancel mem/all
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  dealloc  dynamic grid (G028)          (AX044)   (AX043)   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX027)   YUNEVEN1  ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX027)   YUNEVEN1  ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX027)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX027)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:144 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:147 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX027)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -44028,7 +44288,7 @@ set region/i=3:6/j=2:4/k=1:2/l=1
  
 use/order=yx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G028)          (AX027)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:144 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G028)          (AX043)   (AX045)   (AX046)   TAX1_10
@@ -44847,7 +45107,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44910,7 +45170,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44968,7 +45228,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45048,7 +45308,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -45271,7 +45531,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45340,7 +45600,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45417,7 +45677,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.70    7-Oct-04" ;
+		:history = "FERRET V5.70    4-Nov-04" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -46881,9 +47141,6 @@ coordinates,155.1W   ,155.1W   ,155.1W   ,155.1W   ,155.1W
 19.7N,224.60146,224.60197,224.60248,224.60298,224.60349
 19.7N,224.60197,224.6025,224.603,224.6035,224.604
  LISTing to file fine.dat
-::::::::::::::
-fine.dat
-::::::::::::::
              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
@@ -46935,10 +47192,29 @@ DATA:
 224.60300
 224.60350
 224.60400
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+             VARIABLE : T[GT=TJUL]
+                        regrid: on T@NRST
+             SUBSET   : 12 points (TIME)
+ 16-JAN-1997 12 /  1:  850692.00
+ 15-FEB-1997 00 /  2:  851400.00
+ 16-MAR-1997 12 /  3:  852108.00
+ 16-APR-1997 00 /  4:  852840.00
+ 16-MAY-1997 12 /  5:  853572.00
+ 16-JUN-1997 00 /  6:  854304.00
+ 16-JUL-1997 12 /  7:  855036.00
+ 16-AUG-1997 12 /  8:  855780.00
+ 16-SEP-1997 00 /  9:  856512.00
+ 16-OCT-1997 12 / 10:  857244.00
+ 16-NOV-1997 00 / 11:  857976.00
+ 16-DEC-1997 12 / 12:  858708.00
  	NOAA/PMEL TMAP
  	FERRET v5.70  
- 	Solaris 5.6 - 10/07/04
- 	 7-Oct-04 13:25     
+ 	Solaris 5.6 - 11/04/04
+ 	 4-Nov-04 11:51     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -47121,8 +47397,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.70  
- 	Solaris 5.6 - 10/07/04
- 	 7-Oct-04 13:25     
+ 	Solaris 5.6 - 11/04/04
+ 	 4-Nov-04 11:51     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -47235,4 +47511,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Thu Oct 7 13:25:40 PDT 2004
+Ended at Thu Nov 4 11:51:43 PST 2004

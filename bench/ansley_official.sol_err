@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     67245080 Oct  7 13:03 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     63882404 Nov  4 11:30 /home/ja8/ansley/FERRET_v_5_7_0_bug_fix_1/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  Fix bug in using Cnnn to change pen when in multi-line labels.  Fix precision of coordinates listed in LIST/FORM=tab, comma, HEAD=ENH
+Note: Final changes to XML output, and fix for bug 1049: indices for regridding taking on value of -111. Changes to bn_xml.jnl and new script err570_index111.jnl
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Thu Oct 7 13:11:16 PDT 2004
+Beginning at Thu Nov 4 11:38:52 PST 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -467,6 +467,12 @@ list/t=1-jan-1990 dummy
 SET VAR/OFFSET=1 x1
  **ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets
 SET VAR/SCALE=10 x2
+SHO VAR/XML
+SHO VAR/XML
+SHO VAR/XML
+SHO VAR/XML
+SHOW VAR/XML
+SHOW VAR/XML
  **ERROR: invalid command: REPEAT/NAME requires /RANGE
 rep/name=a say `a`
  **ERROR: command syntax: L is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/L=
@@ -572,4 +578,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Thu Oct 7 13:25:40 PDT 2004
+Ended at Thu Nov 4 11:51:43 PST 2004

@@ -27,19 +27,21 @@ EF_OBJS = ef_utility/*.o
 .F.so:
 	$(F77) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $*.o -o $*.so 
-	cp $@ $(FER_EXTERNAL_FUNCTIONS)
 
 #
 # Targets
 #
 
-all:	ef_utility ferret_cmn samplei.so samplej.so samplek.so samplel.so sorti.so sortj.so sortk.so sortl.so 
+all:	ef_utility ferret_cmn samplei.so samplej.so samplek.so samplel.so samplexy.so sorti.so sortj.so sortk.so sortl.so 
 
 ef_utility:
 	ln -s ../ef_utility ef_utility
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
+
+install:
+	cp *.so $(FER_EXTERNAL_FUNCTIONS)
 
 clean:
 	-rm -f *.o *.so core a.out temp.* ef_utility ferret_cmn

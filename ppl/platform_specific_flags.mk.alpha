@@ -19,9 +19,9 @@ GUI_INCLUDES	=
 
 CC              = cc
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
+CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
 FFLAGS          = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -u -Df7732_bug -DDEC_FORTRAN -Ddebug -Dxgks -DFlarge_mem -fpe2 -C
+		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -Nl160 -Dxgks -static -fpe2
@@ -31,11 +31,13 @@ PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 
 #
 
 LD		= cc
-LDFLAGS		= -non_shared
+#LDFLAGS		= -non_shared
+# I want this to be able to link shared libraries! *jc*
+LDFLAGS		=
  
-SYSLIB		= -lXm -lXt -lc -lm -lUfor -lfor -llist -lFutil -lots -lX11 -ldnet_stub
+SYSLIB		= -lXm -lXt -lc -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE -llist
 
-TMLIB		= ../fmt/libs/tmap_lib.a
+TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 

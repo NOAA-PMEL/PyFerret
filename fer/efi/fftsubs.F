@@ -681,8 +681,8 @@ C             DESTROYED BETWEEN CALLS OF COST.
 C                                                                               
       SUBROUTINE COST (N,X,WSAVE)                                               
       REAL       X(*)       ,WSAVE(*)         
-      INTEGER N, NM1, NP1, NS2, MODN, K, I
-      REAL X1H, X1P3, TX2, KC, T1, T2, C1, XI, XIM2
+      INTEGER N, NM1, NP1, NS2, MODN, K, KC, I
+      REAL X1H, X1P3, TX2, T1, T2, C1, XI, XIM2
 C                                                                               
       NM1 = N-1                                                                 
       NP1 = N+1                                                                 

@@ -14,6 +14,9 @@
 # sort -n myintegers.dat | awk -f TS_frequency.awk | grep -v "XXXXX"
 
 #printf("XXXXXXXXX  %d %d\n",$1,$2)   # doesn't work w/out this ???
+#
+# *acm* 10/02 This line was after the else, but it's wrong: bin 1 always 0!
+#	      if (ndx==1) wt=0       # index 1 used to capture garbage
 
 BEGIN   {ndx=1
          wt=0}
@@ -26,7 +29,6 @@ BEGIN   {ndx=1
             if ($1 == ndx) {
             wt = wt + $2
 	    } else {
-	      if (ndx==1) wt=0       # index 1 used to capture garbage
 	      printf("%d   %f\n",ndx,wt)
               wt = 0
 	      for (i=ndx+1; i<$1; i++) printf("%d   %f\n",i,wt)

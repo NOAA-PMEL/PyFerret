@@ -55,6 +55,9 @@
 *		    based on these be child axes, rather than being dynamic
 *		  - also switched to using TM_WORLD rather than direct refs
 *		    to line_mem
+*      3/01 *sh* - bug fix to 10/00 bug fix ... Still need to make sure
+*	            it is the *same* child of an irreg axis by checking
+*	            the lo/hi/delta
 
 * Include files
 	include 'tmap_dims.parm'
@@ -109,14 +112,14 @@
 	  IF ( line_parent(line1) .NE. line_parent(line2) ) GOTO 1000
 
 * check coordinate and box locations
-	  IF (line_regular(line2)) THEN
+	  IF ( line_regular(line2)
+     .	.OR.   (line_class (line1) .EQ. pline_class_stride)
+     .	.OR.   (line_class (line1) .EQ. pline_class_midpt)   ) THEN
             IF ( .NOT. TM_FPEQ( SNGL(line_start(line1)),
      .                          SNGL(line_start(line2)) ) ) GOTO 1000
             IF ( .NOT. TM_FPEQ( SNGL(line_delta(line1)),
      .                          SNGL(line_delta(line2)) ) ) GOTO 1000
-! pre 10/00	  ELSEIF (.NOT.dynamic) THEN
-	  ELSEIF ((line_class (line1) .NE. pline_class_stride)
-     .	    .AND. (line_class (line1) .NE. pline_class_midpt ) ) THEN
+	  ELSE
 * irregular lines
 	    DO 100 j = 1,line_dim(line1)
 * first check the grid points

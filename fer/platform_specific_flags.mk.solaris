@@ -59,7 +59,7 @@ socketlib = /usr/lib/libsocket.a
 SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/lib \
 		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
 		  /usr/ccs/lib/libgen.a -lc \
-		  -Bstatic /usr/ucblib/libucb.a -Bdynamic /usr/lib/libICE.so \
+		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
 		  /usr/lib/libSM.so 
 
 

@@ -105,6 +105,8 @@
 *	*sh* 12/99 - bug fix: rules for merging embodied in joint_match were
 *			wrong when new component is xact
 *	*sh*  4/00 - all grids and axes now maintain use counts 
+* V520  *sh* 6/00 - complete the support for uvlim_hidden. Was treated just
+*		    like uvlim_irrelevant in determining uvar_given
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -452,8 +454,14 @@
 *           is irrelevant  
 *        For a component which is not, cx_lo_ww was already used prior to 2/98
  400	   IF ( nest ) THEN
-	      IF (uvar_given(idim,com_uvar).EQ.uvlim_irrelevant
-     .	      .OR. uvar_given(idim,com_uvar).EQ.uvlim_hidden) GOTO 500
+	      IF (uvar_given(idim,com_uvar).EQ.uvlim_irrelevant) THEN
+	         GOTO 500
+* (6/0) ... pass hidden limits if no specification preceded it
+	      ELSEIF (uvar_given(idim,com_uvar).EQ.uvlim_hidden) THEN
+	         IF ( uvar_given(idim,uvar).EQ.uvlim_irrelevant )
+     .				uvar_given(idim,uvar) = uvlim_hidden
+	         GOTO 500
+	      ENDIF
 	   ELSE
 	      IF (cx_lo_ww(idim,com_cx) .EQ. unspecified_val8) GOTO 500 ! 1/97
 	   ENDIF

@@ -118,6 +118,7 @@
 *	5/00 *sh* - added /HLIMITS and /VLIMITS to graphics commands
 *		  - added /DETAILED to SHOW FUNCTIONS and to MESSAGE
 *	5/00 *sh* - restored /PEN as a "denigrated" command
+* V520: 6/00 *sh* - added MESSAGE/ERROR
 
 #ifdef unix
 	include 'ferret.parm'
@@ -943,7 +944,7 @@
 * MESSAGE/QUIET
 		DATA qualifiers  (nqual_at12a+1)/ 'QUIET'	/
 		DATA qualifiers  (nqual_at12a+2)/ 'JOURNAL'	/
-		DATA qualifiers  (nqual_at12a+3)/ '****'	/
+		DATA qualifiers  (nqual_at12a+3)/ 'ERROR'	/
 
 * VECTOR - command # 13
 	DATA commands(13)			/ 'VECTOR'	/

@@ -60,6 +60,7 @@
 *			     in comment up above - linux f90 freaked out.
 *       10.28.98 *js* Don't pause for messages if in server mode
 * V510 5/00 *sh* - added MESSAGE/JOURNAL
+* V520 6/00 *sh* - added MESSAGE/ERROR
 
 #ifdef unix
 	include 'ferret.parm'
@@ -77,10 +78,12 @@
 #endif
 
 * local parameter declarations
-	INTEGER		slash_continue, slash_quiet, slash_journal
+	INTEGER		slash_continue, slash_quiet, slash_journal,
+     .			slash_error	
 	PARAMETER     (	slash_continue	  = 1,
      .			slash_quiet	  = 2,
-     .			slash_journal	  = 3 )
+     .			slash_journal	  = 3,
+     .			slash_error	  = 4 )
 	
 * local variable declarations
 	LOGICAL is_server
@@ -91,22 +94,36 @@
 
 * write the message if one has been supplied
 	IF ( num_args .EQ. 1 ) THEN
-	   IF ( qual_given( slash_journal ) .EQ. 0 ) THEN
-* ... message to operator
-	      CALL TM_SPLIT_MESSAGE( ttout_lun,
-     .				cmnd_buff(arg_start(1):arg_end(1)) )
-	   ELSEIF (mode_journal .AND. jrnl_lun.NE.unspecified_int4) THEN
-* ... message logged in journal file
-	      WRITE (jrnl_lun, '(A)')
+
+* ... message to stderr
+	   IF ( qual_given( slash_error ) .GT. 0 ) THEN
+	      WRITE (err_lun, '(A)')
      .				cmnd_buff(arg_start(1):arg_end(1))
 	      RETURN
+
+* ... message logged in journal file
+	   ELSEIF ( qual_given( slash_journal ) .GT. 0 ) THEN
+	      IF (mode_journal .AND. jrnl_lun.NE.unspecified_int4) THEN
+	         WRITE (jrnl_lun, '(A)')
+     .				cmnd_buff(arg_start(1):arg_end(1))
+	         RETURN
+	      ELSE
+	         RETURN   ! journal file isn't open
+	      ENDIF
+
+* ... message to operator
 	   ELSE
-	      RETURN   ! journal file isn't open
+	      CALL TM_SPLIT_MESSAGE( ttout_lun,
+     .				cmnd_buff(arg_start(1):arg_end(1)) )
+
 	   ENDIF
+
+* no message supplied. Just send a CR
         ELSEIF ( qual_given(slash_continue) .GT. 0
      .	 .AND.  .NOT.mode_gui ) THEN
               WRITE ( ttout_lun, * ) 
         ENDIF
+
 * continue or wait ?
 	IF ( qual_given( slash_continue ) .GT. 0
      .	.OR. mode_gui .OR. is_server()) RETURN

@@ -2,6 +2,7 @@
 # Makefile for Ferret External Functions
 #
 # *sh* 12/27/00
+# *sh* 1/02 -- updated to add expndi_by
 #
 #
 # include platform specific macro definitions
@@ -29,7 +30,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn cmprsi_by.so
+all:	ferret_cmn cmprsi_by.so expndi_by.so 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

@@ -26,9 +26,11 @@
 # spread out over the entire source repository.
 
 fer	fer
-fer_src fer/src
-fer_cmn fer/common
-fer_gui fer/gui
+ppl	ppl
+fmt 	fmt
+gksm2ps gksm2ps
+fer_all fer ppl fmt gksm2ps
+
 #new one
 corba 	corba
 

@@ -1,0 +1,22 @@
+!err570_hlimit_onepoint.jnl
+! 15-Oct-2004  ACM
+
+! range includes just one coordinate point on the axis
+! Fix so we can plot this with /HLIMIT (previously gave 
+! misleading error)
+! If no /HLIMIT, should issue an error 
+
+
+! ! ! ! ! ! ! 
+!  For now comment out the contents of this; it changes
+!  the output of several benchmark scripts
+! ! ! ! ! ! !
+
+! set mode ignore_error
+
+! use coads_vwnd
+! set reg/x=180:200/y=35:45/t=1-jan-1985:1-feb-1985
+! plot/sym/siz=0.3/hlim="1-jan-1985 18": "1-feb-1985 20" 0*t[gt=vwnd]
+
+! plot/sym/siz=0.3 0*t[gt=vwnd]
+! set mode/last ignore_error

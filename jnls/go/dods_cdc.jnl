@@ -1,0 +1,49 @@
+\cancel mode verify
+! dods_pmel.jnl - 4/99 *sh and *kob*
+
+! DESCRIPTION: "Use" a dods data set from NOAA/PMEL
+
+! usage:              arg 1 
+!	GO dods_pmel data_set
+
+! examples:
+!  blah blah
+
+! Set the base DODS URL for this supplier
+DEFINE SYMBOL dods_base_url "http://www.cdc.noaa.gov/cgi-bin/nph-nc/Datasets/"
+
+! check if data set argument was given. If not, do a query
+IF   $1"True|*>False|"  THEN
+  sp $FER_WEB_BROWSER http://www.cdc.noaa.gov/Datasets/ &
+  SAY ----------------------------------
+  SAY "Spawning external viewer to display listings of Available Data"
+  SAY " "
+  SAY "The base URL is:  ($DODS_base_url)"
+  SAY " " 
+  SAY "Example:"
+  SAY "go dods_cdc reynolds_sst/sst.wkmean.1981-1989"
+  QUIT
+ENDIF
+
+!!! ==>
+! NOTE 1: If a given supplier has a Web site at which the list of data
+! sets can be seen, the QUERY option can be used here to bring up a Web
+! browser pointing to that site
+
+! NOTE 2: abbreviations for data set names can be created here
+
+! abbreviation examples
+IF  $1"|sst1981-89>1|*>0|" THEN
+  DEFINE SYMBOL DODS_data_set reynolds_sst/sst.wkmean.1981-1989.nc
+
+
+! all non-abbreviated data set (INCLUDING BLOOPERS!!)
+ELSE
+  DEFINE SYMBOL DODS_data_set $1 
+ENDIF
+
+! SET DATA
+SET DATA "($DODS_base_url)($DODS_data_set)"
+
+! clean up
+SET MODE/LAST verify

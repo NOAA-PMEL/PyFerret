@@ -118,6 +118,10 @@
 *	*sh* 11/00 - fixed bug: permutation for all vars written was determined
 *		     from context of first var, only
 *       *sh8 1/01  - bug fix to 11/00 bug fix!
+* v542  *kob* 10/02 - add F90_OPEN_FILE_CLOBBER option to make sure that the F90 
+*                     OPEN POSITION directive is not blank when opening an 
+*                     existing file for rewrite.  This causes an F90 OPEN error
+*
 
 #ifdef unix
         include 'tmap_errors.parm'
@@ -396,7 +400,10 @@
 	         ENDIF
 	      ELSEIF ( clobber ) THEN	! 11/96
 	         faccess = 'SEQUENTIAL'
-	         fstatus = 'OLD'
+	         fstatus = 'REPLACE'
+#ifdef F90_OPEN_FILE_CLOBBER
+		 fposition = 'ASIS'
+#endif
 	      ELSE
 	         GOTO 5050	! attempt to clobber a file
 	      ENDIF

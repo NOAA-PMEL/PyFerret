@@ -17,11 +17,12 @@
 *            and pfcn_return_string, pfcn_return_float
 *	     and p_spawn
 * V540: 10/01 -- more generalizable parg_type definitions
+*       12/01 -- added p_strcmp
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
      .			p_yunravel, p_zunravel, p_tunravel,
      .			p_samplei, p_samplej, p_samplek, p_samplel,
-     .			p_spawn
+     .			p_spawn, p_strcmp
 
 	PARAMETER     ( p_xunravel = 1,
      .			p_times2   = p_xunravel + 1,
@@ -34,7 +35,8 @@
      .			p_samplej  = p_samplei  + 1,
      .			p_samplek  = p_samplej	+ 1,
      .			p_samplel  = p_samplek 	+ 1,
-     .			p_spawn    = p_samplel 	+ 1 )
+     .			p_spawn    = p_samplel 	+ 1,
+     .			p_strcmp   = p_spawn 	+ 1 )
 
 * parameters to control the passing of context information
 	INTEGER		pset_to_unspec, ppass_along

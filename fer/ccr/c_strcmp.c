@@ -37,7 +37,7 @@
    Allocate storage and copy the given input string,
    returning the output pointer
 
-    V540: *sh* 9/01 - added support for string arrays
+   V540: *sh* 12/01
 */
 
 #include <assert.h>
@@ -45,20 +45,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void copy_c_string_(in_ptr, out_ptr)
-     char** out_ptr;
-     char** in_ptr;
+float c_strcmp_(in_ptr1, in_ptr2, out_ptr)
+     char** in_ptr1;
+     char** in_ptr2;
+     int* out_ptr;
 {
 
-  if ( *out_ptr ) free(*out_ptr);
+  *out_ptr = strcmp(*in_ptr1, *in_ptr2);
 
-  if ( *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1)) )
-    {
-      strcpy(*out_ptr, *in_ptr);
-    }
-  else
-    assert(*out_ptr);
-
-   return;
-
+  return;
 }

@@ -576,7 +576,7 @@
      .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
 
 
-* SPAWN(arg) - execute a Unix system command and return strings
+* SPAWN("unix cmnd") - execute a Unix system command and return strings
 	INTEGER		p_spawn_arg_start, p_spawn_num_args
 	PARAMETER     ( p_spawn_arg_start = p_samplel_arg_start +
      .					    p_samplel_num_args,
@@ -611,16 +611,64 @@
 	DATA (gfcn_axis_implied_from(i, p_spawn_arg_start+0),i=1,4)
      .		/.FALSE., .FALSE., .FALSE.,.FALSE. /
 
+* STRCMP(string1, string2) - compare 2 string *arrays* as in C function
+	INTEGER		p_strcmp_arg_start, p_strcmp_num_args
+	PARAMETER     ( p_strcmp_arg_start = p_spawn_arg_start +
+     .					    p_spawn_num_args,
+     .			p_strcmp_num_args  = 2 )
+	DATA gfcn_name         (p_strcmp) /'STRCMP'/
+	DATA gfcn_version      (p_strcmp) / 1.0 /
+	DATA gfcn_descr        (p_strcmp) /
+     .	'compare strings: +, 0, or - for str1 >, =, or < str2 rspctvly' /
+	DATA gfcn_rtn_type     (p_strcmp) /pfcn_rtn_float /
+	DATA gfcn_num_reqd_args(p_strcmp) /p_strcmp_num_args/
+	DATA gfcn_has_vari_args(p_strcmp) /.FALSE./
+	DATA (gfcn_axis_will_be(i,p_strcmp),i=1,4)/
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args,
+     .					pgc_axis_implied_by_args/
+	DATA (gfcn_piecemeal_ok(i,p_strcmp),i=1,4) / .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE.,
+     .						    .FALSE. /
+	DATA gfcn_arg_ptr(p_strcmp) /p_strcmp_arg_start/
+
+* ... description of argument 1
+	DATA gfcn_arg_name(p_strcmp_arg_start+0)/'STR1'/
+	DATA gfcn_arg_type(p_strcmp_arg_start+0)/parg_type_string/
+	DATA gfcn_arg_units(p_strcmp_arg_start+0)/' '/
+	DATA gfcn_arg_descr(p_strcmp_arg_start+0)/'string array 1'/
+	DATA (gfcn_arg_extend_lo (i,p_strcmp_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcmp_arg_start+0),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strcmp_arg_start+0),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+
+* ... description of argument 2
+	DATA gfcn_arg_name(p_strcmp_arg_start+1)/'STR2'/
+	DATA gfcn_arg_type(p_strcmp_arg_start+1)/parg_type_string/
+	DATA gfcn_arg_units(p_strcmp_arg_start+1)/' '/
+	DATA gfcn_arg_descr(p_strcmp_arg_start+1)/'string array 2'/
+	DATA (gfcn_arg_extend_lo (i,p_strcmp_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+	DATA (gfcn_arg_extend_hi (i,p_strcmp_arg_start+1),i=1,4)
+     .		  / 0, 0, 0, 0 /
+* ... merge the axes implied by argument 1 ?
+	DATA (gfcn_axis_implied_from(i, p_strcmp_arg_start+1),i=1,4)
+     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
 
 
 * internal parameters helpful for initialization
-	DATA gfcn_num_internal/p_spawn/
+	DATA gfcn_num_internal/p_strcmp/
 
 * template for next function ...
 	INTEGER		p_next, p_next_arg_start, p_next_num_args 
-	PARAMETER     ( p_next = p_spawn + 1,
-     .			p_next_arg_start = p_spawn_arg_start +
-     .					   p_spawn_num_args,
+	PARAMETER     ( p_next = p_strcmp + 1,
+     .			p_next_arg_start = p_strcmp_arg_start +
+     .					   p_strcmp_num_args,
      .			p_next_num_args  = 1 )
 
 	END

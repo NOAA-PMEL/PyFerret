@@ -75,6 +75,7 @@
 *               the work is done in IS_ALGEBRA and IS_SAMPLE
 * V533: *sh* 6/01 - arguments and result may be string or float
 *                 - added SPAWN function
+* V540: *sh* 12/01 - added STRCMP function
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -102,9 +103,9 @@
 
 * internal variable declarations:
 	INTEGER CX_DIM_LEN,  CGRID_SIZE, count, size,
-     .		i, j, k, l, icom, idim,
+     .		i, j, k, l, icom, idim, ii,
      .		cx1, cx2, cx3, cx4, cx5, cx6, cx7, cx8, cx9,
-     .		i1, j1,     l1, i2, j2, k2, l2,
+     .		i1, j1, k1, l1, i2, j2, k2, l2,
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
      .		di3, dj3, dk3, dl3, di4, dj4, dk4, dl4,
      .		di5, dj5, dk5, dl5, di6, dj6, dk6, dl6,
@@ -551,7 +552,39 @@
           CALL STORE_SYS_STRINGS(buff,  res_cx, mres, 1, nnew, status)
           RETURN
 
+* STRCMP function
  2300	CONTINUE
+	l1 = sl1
+	l2 = sl2
+	DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	l1 = l1 + dl1
+	l2 = l2 + dl2
+	k1 = sk1
+	k2 = sk2
+	 DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	 k1 = k1 + dk1
+	 k2 = k2 + dk2
+	 j1 = sj1
+	 j2 = sj2
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  j1 = j1 + dj1
+	  j2 = j2 + dj2
+	  i1 = si1
+	  i2 = si2
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   i1 = i1 + di1
+	   i2 = i2 + di2
+
+	     CALL C_STRCMP(com1(1,i1,j1,k1,l1),
+     .                     com2(1,i2,j2,k2,l2), ii)
+             res(1,i,j,k,l) = FLOAT(ii)
+
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+        RETURN
+
  2400	CONTINUE
  2500	CONTINUE
  2600	CONTINUE
@@ -561,37 +594,6 @@
  3000	CONTINUE
 	STOP 'GC FUNCTION NOT IMPLEMENTED'
 
-
-! helpful for editing ...
-! 1400	l1 = sl1
-!	l2 = sl2
-!	DO 1410 l = mr_lo_s4(mres), mr_hi_s4(mres)
-!	l1 = l1 + dl1
-!	l2 = l2 + dl2
-!	k1 = sk1
-!	k2 = sk2
-!	 DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
-!	 k1 = k1 + dk1
-!	 k2 = k2 + dk2
-!	 j1 = sj1
-!	 j2 = sj2
-!	  DO 1410 j = mr_lo_s2(mres), mr_hi_s2(mres)
-!	  j1 = j1 + dj1
-!	  j2 = j2 + dj2
-!	  i1 = si1
-!	  i2 = si2
-!	   DO 1410 i = mr_lo_s1(mres), mr_hi_s1(mres)
-!	   i1 = i1 + di1
-!	   i2 = i2 + di2
-!
-!	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
-!     .	   .OR. com2(i2,j2,k2,l2) .EQ. bad2 ) THEN
-!	      res(i,j,k,l) = bad_res
-!	   ELSE
-!	      res(i,j,k,l) = com1(i1,j1,k1,l1) + com2(i2,j2,k2,l2)
-!	   ENDIF
-!
-! 1410	CONTINUE
 
 * error exits
  5000	RETURN

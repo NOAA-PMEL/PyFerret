@@ -2,6 +2,7 @@ SRCS_C = \
 add_c_pointer.c\
 binaryRead.c\
 batch_graphics.c\
+c_strcmp.c\
 copy_buffered_window.c\
 concatenate_c_strings.c\
 compare_c_strings.c\

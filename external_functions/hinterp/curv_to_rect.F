@@ -1,5 +1,5 @@
 
-! curv_to_rect.F  
+! curv_to_rect_subset_subset.F.F  
 ! From Matt Harrison hinterp.F
 ! to call only the spherical interpolation modules, and
 ! recast in F77-compileable format.
@@ -44,10 +44,16 @@
 *
 
 
-! acm 12/2004 Compute the sum of weights in routine apply_mapping; 
-!             sum of weights used when there is good data contributing 
-!             to the destination point.
-!             Remove use of mask_dst variable; never used.
+* acm 12/2004 Compute the sum of weights in routine apply_mapping; 
+*             sum of weights used when there is good data contributing 
+*             to the destination point.
+*             Remove use of mask_dst variable; never used.
+* acm  3/2005 The curvilinear data may be a subset.  If it was saved
+*             with SAVE/HEADING=ENHANCED, then the lo and hi subscripts
+*             in the dataset correspond to the subset, and we can use
+*             a map pre-computed using the entire dataset for this regridding.
+*             Pass the subscripts of the input curvilinear data to the 
+*             apply_mapping routine (if not a subset these are 1:max_ss).
 
 
 ! In this SUBROUTINE we provide information about
@@ -85,7 +91,7 @@
 !
 
 
-      SUBROUTINE curv_to_rect_init(id)
+      SUBROUTINE curv_to_rect_subset_init(id)
         
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
@@ -116,7 +122,7 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'mapping')
       WRITE (descr, 30)
-   30 FORMAT ('mapping computed by CURV_TO_RECT_MAP')
+   30 FORMAT ('mapping computed by curv_to_rect_subset_MAP')
       CALL ef_set_arg_desc(id, arg, descr)
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
 
@@ -126,13 +132,13 @@
 !***********************************************************************
 
       RETURN 
-      END  ! SUBROUTINE curv_to_rect_init
+      END  ! SUBROUTINE curv_to_rect_subset_init
 
 
 !
 ! In this SUBROUTINE we compute the result
 !
-      SUBROUTINE curv_to_rect_compute(id, arg_1, arg_2, result)
+      SUBROUTINE curv_to_rect_subset_compute(id, arg_1, arg_2, result)
 
       IMPLICIT none
       
@@ -164,7 +170,7 @@
 !                                                                     |
 !                                                                     V
 
-      INTEGER  i, j, k, l, i1, j1, k1, l1, i2, j2, k2, l2, 
+      INTEGER  i, j, k, l, i1, j1, k1, l1, i2, j2, k2, l2, ih, jh,
      .         num_nbrs, nlon_src, nlat_src, nlon_dst, nlat_dst
 
       num_nbrs = 4
@@ -181,6 +187,8 @@
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       j1 = arg_lo_ss(Y_AXIS,ARG1)
+      ih = arg_hi_ss(X_AXIS,ARG1)
+      jh = arg_hi_ss(Y_AXIS,ARG1)
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
@@ -197,6 +205,7 @@
          DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
             CALL apply_mapping ( arg_1(i1,j1,k1,l1), 
+     .        i1, ih, j1, jh,
      .        arg_2(i2,j2,k2,l2), arg_2(i2,j2,k2,l2+1),
      .        arg_2(i2,j2,k2,l2+2), result(i,j,k,l), nlon_src,
      .        nlat_src, nlon_dst, nlat_dst, num_nbrs, 
@@ -215,12 +224,12 @@
 !**********************************************************************
 
       RETURN 
-      END  ! SUBROUTINE curv_to_rect_compute
+      END  ! SUBROUTINE curv_to_rect_subset_compute
 
 !#######################################################################
             
-       subroutine apply_mapping (data_in, wt, i_lon, j_lat, 
-     .                           data_out, 
+       subroutine apply_mapping (data_in, ilo, ihi, jlo, jhi,
+     .                           wt, i_lon, j_lat, data_out, 
      .                           nlon_src, nlat_src, nlon_dst, nlat_dst,
      .                           num_nbrs, bad_flag_in, bad_flag_out)
 
@@ -235,7 +244,8 @@
 ! acm 12/2004 Compute the sum of weights here; weights only used when there
 !             is good data contributing to the destination point.
 
-       real data_in(nlon_src, nlat_src)   ! input
+       integer ilo, ihi, jlo, jhi
+       real data_in(ilo:ihi, jlo:jhi)     ! input field
        real data_out(nlon_dst, nlat_dst)  ! output
        real wt(nlon_dst, nlat_dst, num_nbrs)  
 
@@ -251,6 +261,7 @@
        integer nlon_in, nlat_in, nlon_out, nlat_out, num_neighbors,
      .               m, n, k, i, j
        real sum
+       logical okij
 !-----------------------------------------------------------------
 
 ! parameters
@@ -273,14 +284,24 @@ cc      parameter (epsln=1.e-10, large=1.e20)
                i = i_lon(m,n,k)
                j = j_lat(m,n,k)
 
-               if (i.GT.0 .and. j.GT.0) THEN
+               okij = .TRUE.
+               IF (i .LT. ilo  .OR. i .GT. ihi) THEN
+                  okij = .FALSE.
+               ENDIF
+               IF (j .LT. jlo  .OR.  j .GT. jhi) THEN
+                  okij = .FALSE.
+               ENDIF
+
+
+               if (i.GT.0 .and. j.GT.0 .AND. okij) THEN
                   IF (data_in(i,j) .NE. bad_flag_in ) THEN
                      data_out(m,n) = data_out(m,n)+
      .                                  data_in(i,j)*wt(m,n,k)
                      sum = sum + wt(m,n,k)
-                  ENDIF
+                  endif
                else
                   data_out(m,n) = bad_flag_out
+                  GO TO 33
                endif
             enddo
 
@@ -289,6 +310,8 @@ cc      parameter (epsln=1.e-10, large=1.e20)
             ELSE
                data_out(m,n) = bad_flag_out
             ENDIF
+  33        continue
+
          enddo
          enddo
       

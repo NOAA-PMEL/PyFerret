@@ -25,6 +25,9 @@
 *		      added crptd_cat_argument ifdef and set it to true
 *		      for sgi
 * Linux Port *kob* 12/96 - had to remove a single quote from a comment line
+* 
+* v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.  erroneously
+*                       reused "clen" argument..changed it to clen2
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -50,7 +53,7 @@
 
 * 11/96 *kob*
 #ifdef crptd_cat_argument
-	INTEGER clen
+	INTEGER clen2
 	CHARACTER cat_argument*48
 #endif 
 
@@ -163,8 +166,8 @@
 *11/96 *kob* - concatenation w/in procedure call corrupted on sgis. !kob 12/96
 #ifdef crptd_cat_argument	
 	   cat_argument = 'symbol '//buffer(spos+2:sym_end)
-	   clen = MIN(48,7 + sym_end-spos-1)
-	   CALL COACHED_STR_SUB( cat_argument(:clen),
+	   clen2 = MIN(48,7 + sym_end-spos-1)
+	   CALL COACHED_STR_SUB( cat_argument(:clen2),
      .		symval, buffer(coach_start:coach_end), risc_buff,
      .		nchar, status ) 
 #else

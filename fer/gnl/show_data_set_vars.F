@@ -294,7 +294,7 @@
 	      line(len:len) = c  ! printable character
 	    ELSE
 	      len = len + 3
-	      WRITE (line(len-2:len),'(I3.3)') INT(c) 
+	      WRITE (line(len-2:len),'(I3.3)') ICHAR(c) 
 	    ENDIF
 	    len = len + 1
 	    line(len:len) = ','

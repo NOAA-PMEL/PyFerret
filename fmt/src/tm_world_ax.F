@@ -1,5 +1,5 @@
-	DOUBLE PRECISION FUNCTION TM_WORLD_AX ( isubscript, iaxis, idim,
-     .					     where_in_box )
+	DOUBLE PRECISION FUNCTION TM_WORLD_AX( isubscript, iaxis,
+     .					       where_in_box )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -57,7 +57,7 @@
 #endif
 
 * calling argument declarations:
-	INTEGER	isubscript, iaxis, idim, where_in_box
+	INTEGER	isubscript, iaxis, where_in_box
 
 * internal variable declarations:
 	LOGICAL	recursive

@@ -105,3 +105,8 @@ GO err570_dods_url_label.jnl
 ! Fix for bug 906: auto-formatting of labels on color keys loses precision
 GO bn_reset
 GO err570_keylabels.jnl
+
+! Fix for bug 1130: error and crash on some systems polygon command
+! where polygon arguments have latitude or longitude units
+GO bn_reset
+GO err570_poly_lonlat_axis.jnl

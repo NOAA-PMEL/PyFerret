@@ -55,7 +55,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns indices of data, sorted on the K axis (v1.1)')
+   10 FORMAT ('Returns indices of data, sorted on the K axis')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 1)

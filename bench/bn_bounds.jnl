@@ -53,7 +53,7 @@ list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
  
 ! Define an axis using bounds.  Note the coordinates need not be
 ! centered in the axis cells.
-def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
 list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
 
 ! Define an axis using bounds, with discontinuity between bounds,
@@ -158,3 +158,12 @@ can data/all
 
 use gappy_bounds.nc
 list a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
+
+cancel dat/all
+
+! bounds_noenclose has bounds that dont enclose the axis coordinate
+! points.  Use axis midpoints instead.
+
+use bounds_noenclose
+sh axis/t tax
+

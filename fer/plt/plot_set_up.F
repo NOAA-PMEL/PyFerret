@@ -107,7 +107,7 @@
 *      *sh* 1/01 - added argument step_inc for PLOT/STEP
 *	         - bug fix: PLOT+ mem limit check off by x2 --  X&Y components
 *      *acm* 5/01 - added  PLOT/DASH  (do_dash, dashstyle)
-
+*      *acm* 5/01 - correct STEP bug: send NLOAD rather than NPTS2 to PPLLDX 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -167,11 +167,11 @@
      .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14,
      .                  TM_GET_CALENDAR_NAME*32, cal_name*32, 
      .                  cal_name_new*32
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, i,
+	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
-     .			slen2, slen3, tax, plot_mem_used, nload,
+     .			slen2, slen3, tax, plot_mem_used, nload, i,
      .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
@@ -533,10 +533,9 @@
 	   ENDIF
 
 	   IF ( flip ) THEN
-
-	      CALL PPLLDX(0,dep_dat,indep_dat,npts2,t1_date,tref,dt_min)
+	      CALL PPLLDX(0,dep_dat,indep_dat,nload,t1_date,tref,dt_min)
 	   ELSE
-	      CALL PPLLDX(0,indep_dat,dep_dat,npts2,t1_date,tref,dt_min)
+	      CALL PPLLDX(0,indep_dat,dep_dat,nload,t1_date,tref,dt_min)
 	   ENDIF
 * ... increment number of lines on plot
 	   nline_on     = nline_on     + 1

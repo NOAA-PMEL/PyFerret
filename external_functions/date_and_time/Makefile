@@ -15,7 +15,6 @@
 #
 
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
-include date_and_time_platform_specific_flags.mk.$(HOSTTYPE)
 
 #
 # Macros

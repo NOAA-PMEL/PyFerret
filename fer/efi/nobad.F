@@ -33,19 +33,24 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-C  Ansley Manke 5/99
-*  If there is a missing value routine zgrid does not grid the data in a zone 
-*  around that point, even if there are other nearby good data points.
-*  Remove missing/bad data from the input (x,y,zscat) points.
+*  Ansley Manke 5/99
+*  Called by scat2gridlaplace* gridding functions.
+*  If there is a missing value routine zgrid does not grid the data in 
+*  a zone around that point, even if there are other nearby good data 
+*  points.  Remove missing/bad data from the input (x,y,zscat) points.
+
+* ACM 11/00 change so not exact comparison: wasnt catching all bad values.
 
       REAL xin(*), yin(*), zin(*), badz
       REAL xscat(*), yscat(*), zscat(*)
       INTEGER nscat, ngood, i
+      REAL badcompare
 
       ngood = 0
+      badcompare = abs(badz) - 1.
 
       DO 100 i = 1, nscat
-         IF (zscat(i) .ne. badz) THEN
+         IF (abs(zin(i)) .LT. badcompare) THEN
             ngood = ngood + 1
             xscat(ngood) = xin(i)
             yscat(ngood) = yin(i)
@@ -57,4 +62,3 @@ C  Ansley Manke 5/99
 
       RETURN
       END
-

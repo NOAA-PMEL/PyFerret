@@ -1,0 +1,7 @@
+#
+# v5d_platform_specific_includes.mk.alpha
+#
+# This file is included in the Vis5D External Function Makefile and defines
+# platform specific macros: -DLITTLE FOR alpha machines.
+
+CFLAGS          = -DLITTLE $(CFLAGS)

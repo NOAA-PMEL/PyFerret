@@ -1,0 +1,6 @@
+#
+# v5d_platform_specific_includes.mk.sun4
+#
+# This file is included in the Vis5D External Function Makefiles and defines
+# platform specific macros (none for sun4)
+

@@ -16,6 +16,9 @@ C
 C Aug 2001 move to fer/efi directory, EPFs to be statically linked to Ferret.  
 C	   Change INCLUDE statements to remove directory spec.
 C
+
+C v5.41 *kob* 6/02 - remove unneeded ferret_cmn from INCLUDE lines - 
+C                    cygwin doesn't like them for some reason
 C
 c Date: Thu, 18 Jan 2001 16:44:10 -0800 (PST)
 c From: kessler@pmel.noaa.gov (Billy Kessler)
@@ -110,8 +113,9 @@ C  Calling argument declarations.
         INTEGER   NX, NT
 	REAL      DATA(NX,*),PCT(*),VAL(*),VEC(NX,*),TAF(NX,*),C(NX,*)
 
-	INCLUDE 'ferret_cmn/EF_Util.cmn'
-	INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+	INCLUDE 'EF_Util.cmn'
+	INCLUDE 'EF_mem_subsc.cmn'
 
 	REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
      .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
@@ -255,8 +259,8 @@ C---------------------------------------------------------------------
      .        ic, is
       REAL ct, eps, sumljgji, beta, tvar
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
      .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
@@ -500,8 +504,8 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
 * 5/99 ACM  Use a work array eofwork rather than explicitly dimensioned
 *           arrays ALPHA, BETA, BB, and P (originally declared in HOUSEH)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       REAL eofwork(wrk9lox:wrk9hix, wrk9loy:wrk9hiy,
      .               wrk9loz:wrk9hiz, wrk9lot:wrk9hit)
@@ -837,8 +841,8 @@ C BACKTRANSFORMATION
 *  Find number of time series with valid data.  This will be neof.
 *  Set array OK to mark which (x,y) have some good data.
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
 
       INTEGER id
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
@@ -895,8 +899,8 @@ C BACKTRANSFORMATION
 
 *  put arg_1(x,y,t) into one list ddat_1d(neof,nt)
 
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_mem_subsc.cmn'
       INTEGER id
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)

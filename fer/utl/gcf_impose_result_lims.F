@@ -59,8 +59,8 @@
 * V500:  1/99 *sh* remove test code regarding function TIMES2
 *       a.k.a. "ECHO"  now used for string argument testing
 *       2/99 changed UNRAVEL to XUNRAVEL. Added YUNRAVEL, ZUNRAVEL, TUNRAVEL
-*V510: 9/99 *sh* - added SAMPLE* functions
-
+* V510: 9/99 *sh* - added SAMPLE* functions
+*       1/00 *sh* - RESHAPE behavior to inherit explicit cx lims from arg 2
 
 * debug declarations for TIMES2
 !	INTEGER	n_com1, n_grid, com1_grid
@@ -242,12 +242,14 @@
 * ... determine the size of the output "container"
 	   com2_cx = cx_list(2) 	! the reshaping grid
 	   DO 310 idim = 1, 4
-	      IF ( action(idim) .EQ. ppass_along ) THEN
-	         outlen(idim) = CX_DIM_LEN(idim, com2_cx)
+              IF ( action(idim) .EQ. ppass_along ) THEN
+	         outlen(idim) = CX_DIM_LEN(idim, com1_cx)
 	      ELSE
-	         outlen(idim) = CAXIS_LEN (idim, com2_cx)
-	      ENDIF
+                 outlen(idim) = CX_DIM_LEN(idim, com2_cx) ! inherit if explicit
+              ENDIF
  310	   CONTINUE
+
+        
 
 * set default limits: full ax len or match com1 depending on "action"
 	   DO 320 idim = 1, 4
@@ -257,8 +259,8 @@
 	           cx_lo_ss(res_cx,idim) = cx_lo_ss(com1_cx,idim)
 	           cx_hi_ss(res_cx,idim) = cx_hi_ss(com1_cx,idim)
 	        ELSE
-	           cx_lo_ss(res_cx,idim) = 1
-	           cx_hi_ss(res_cx,idim) = outlen(idim)
+	           cx_lo_ss(res_cx,idim) = cx_lo_ss(com2_cx,idim)
+	           cx_hi_ss(res_cx,idim) = cx_hi_ss(com2_cx,idim)
 	        ENDIF
 	      ELSE
 	         cx_lo_ss(res_cx,idim) = unspecified_int4
@@ -305,7 +307,7 @@
  350	   CONTINUE
 
 * flesh out the axes
- 360	   DO 370 idim = 1, 4
+ 360       DO 370 idim = 1, 4
               CALL CONFINE_AXIS( idim, res_cx, status )
               IF ( status .NE. ferr_ok ) GOTO 5000  ! added 10/98 *sh*
 	      cx_by_ss(idim, res_cx) = .TRUE.

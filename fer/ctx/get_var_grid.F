@@ -92,7 +92,11 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * can't do more if the grid isn't known
-	IF ( cx_grid(var_cx) .EQ. unspecified_int4 ) GOTO 5100
+	IF ( cx_grid(var_cx) .EQ. unspecified_int4 ) THEN
+	   GOTO 5100
+	ELSE
+	   GET_VAR_GRID = cx_grid(var_cx)
+	ENDIF
 
 * relinquish the stack space used for the modifications
  100	CALL STACK_PTR_DN ( cx_stack_ptr, cx_stack_ptr_base, status )

@@ -1,4 +1,8 @@
 ! err491_RESHAPE_ctx
+
+! modified 3/2000 to reflect new significance of context limits
+! on arg 2
+
 ! 3/99 *sh* (bug reported by Jennifer Adams)
 ! Ferret fails to recognize that source and dest T axes are different
 ! so it erroneously passes T context to src argument
@@ -18,7 +22,8 @@ list src
 ! reshaping grid - TCAL ==> 12 month by years
 def axis/t=1951:1952:1 tyear
 def axis/z=1:12:1 zmonth
-let out_grid = x[g=gsrc,i=1] + y[g=gsrc,j=1] + z[gz=zmonth,k=1] + t[gt=tyear,l=1]
+!let out_grid = x[g=gsrc,i=1] + y[g=gsrc,j=1] + z[gz=zmonth,k=1] + t[gt=tyear,l=1]  ! pre 3/00
+let out_grid = x[g=gsrc] + y[g=gsrc] + z[gz=zmonth] + t[gt=tyear]
 
 ! reshape the source data -- OK
 let out = reshape(src,out_grid)

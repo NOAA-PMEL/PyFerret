@@ -9,7 +9,7 @@ SAY Use the LET/QUIET command to define the variable(s) P (and Q) as
 SAY your variable(s) of interest (e.g. yes? LET/QUIET P = u[x=180,y=0])
 SAY The variance of P will be variable P_VAR  (Q --> Q_VAR)
 SAY The covariance will be COVAR The correlation will be CORREL.
-SAY Type GO TVAR_N to obtain n/n+1 statistical correction factor
+SAY Type GO VAR_N to obtain n/n+1 statistical correction factor
 SAY ...
 
 ! deviations, squared deviations, cross deviations

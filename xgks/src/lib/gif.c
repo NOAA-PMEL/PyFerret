@@ -847,8 +847,33 @@ GIFtext(Metafile *mf, int num, Gpoint *at, Gchar *string)
     int
 GIFcellArray(Metafile *mf, int num, Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row, Gint *colour, Gipoint *dim)
 {
-    msgWarn("GIFcellArray: Don't support this feature\n");
-    return OK;
+	int     xx1, yy1, xx2, yy2, c;
+    int		lx, ly, index, imf;
+
+    mf_cgmo		**cgmo	= &mf->cgmo;
+    for (imf = 0; imf < num; ++imf) {
+	Gint	i;
+	GIFmetafile *meta = find_meta(cgmo[imf]);
+	assert(meta);
+	assert(num_pt > 0);
+	meta->resize = 0;	/* Not OK to resize */
+
+
+	xform(meta, ll->x, ll->y, &xx1, &yy1);
+	
+	xform(meta, ur->x, ur->y, &xx2, &yy2);
+	
+	index = 0;
+	for (ly = yy1; (ly < yy2); ly++) {
+		for (lx = xx1; (lx < xx2); lx++) {
+			c = colour[index];
+			gdImageSetPixel(meta->image, lx, ly, c);
+			index = index + 1;
+			}
+		}
+	}	
+		
+		return OK;
 }
 
 

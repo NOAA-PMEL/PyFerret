@@ -29,6 +29,7 @@
 * 10/95: if a longitude axis has 360 degrees then default to MODULO
 * 11/95: recognize units "degrees_north" as a latitude
 *  4/96: bug: millibar and decibar units identified by wrong constants
+*  8/97: bug: X axis with "y" in axis name is mis-identified 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -237,13 +238,24 @@
       IF ( units .LT. 0 ) THEN
          line_direction(iaxis) = 'TI'  ! time
       ELSEIF ( units .EQ. 4 ) THEN     ! degrees
-         IF ( INDEX(vupcase, 'Y')   .GT. 0
-     .   .OR. INDEX(vupcase, 'LAT') .GT. 0
-     .   .OR. TM_HAS_STRING(line_units(iaxis), 'NORTH')
+        IF  ( TM_HAS_STRING(line_units(iaxis), 'NORTH')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'SOUTH')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN 
             line_direction(iaxis) = 'SN'
-         ELSE
+	 ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'EAST')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'WEST')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN 
+            line_direction(iaxis) = 'WE'
+         ELSEIF ( vupcase(1:1) .EQ. 'Y'
+     .   .OR. INDEX(vupcase, 'LAT') .GT. 0 ) THEN
+            line_direction(iaxis) = 'SN'
+         ELSEIF ( vupcase(1:1) .EQ. 'X'
+     .   .OR. INDEX(vupcase, 'LON') .GT. 0 ) THEN
+            line_direction(iaxis) = 'WE'
+! 8/97: "Y" anywhere in name as a last ditch attempt to id it
+         ELSEIF ( INDEX(vupcase, 'Y')   .GT. 0 ) THEN
+            line_direction(iaxis) = 'SN'
+	 ELSE
             line_direction(iaxis) = 'WE'
          ENDIF
       ELSEIF ( units .EQ. pun_millibars

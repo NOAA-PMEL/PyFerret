@@ -143,7 +143,20 @@
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .				'setting up polygons', 19)
 
-	IF (nmv .NE. 3) GOTO 5200	! must be 3: xc,yc,color
+* Permit 2 arguments, ginn up dummy 3rd in that case
+        IF (nmv .EQ. 3) THEN
+	   cx_color = cx_list(3)
+	   mr_color = mr_list(3)
+        ELSEIF (nmv .EQ. 2) THEN
+	   CALL INIT_EMPTY_CONTEXT(cx_buff)
+	   CALL CONSTANT_CONTEXT("0", cx_buff, cx_buff, status)
+				!        ignore status ... always OK
+	   memory(1, mr_blk1(dummy_mr)) = 0 ! just for good house-keeping ...
+	   cx_color = cx_buff
+	   mr_color = dummy_mr
+        ELSE
+	   GOTO 5200 
+        ENDIF
 
 * initialize
 	nline_in_mem = 0
@@ -162,9 +175,6 @@
 	hiy = arbitrary_small_val4
 !	ind_dim = plot_axis(1)
 	stack_up = .FALSE.
-
-	cx_color = cx_list(3)
-	mr_color = mr_list(3)
 
 * perform sanity checks on the arguments
 * ... check the X coordinate variable for shape
@@ -413,7 +423,11 @@ CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
 	stack_up = .FALSE.
 
 * pass the color value array to PLOT+ (use x_dat as a buffer)
-	CALL EXTRACT_LINE (	cx_color,
+	if (nmv .eq. 2) then
+	   x_dat(1) = 0
+	   ncolor = 1
+	else
+	   CALL EXTRACT_LINE (	cx_color,
      .				memory( 1, mr_blk1(mr_color) ),
      .				mr_color,
      .				x_dat,
@@ -421,7 +435,8 @@ CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
      .				ndim,
      .				ncolor,
      .				status	)
-	IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	endif
 	IF (ncolor .EQ. 1) THEN
 	   DO 300 ipoly = 1, npolygon
  300	   x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
@@ -574,7 +589,8 @@ C	   slen = TM_LENSTR1( plot_title )
 	CALL ERRMSG( ferr_prog_limit, status,
      .		'Plot buffer size is: '//buff(:slen), *5000 )
  5200	CALL ERRMSG( ferr_invalid_command, status,
-     .		'POLYGON requires 3 args: xpts,ypts,color_value',
+     .		'POLYGON may use 2 args (xpts,ypts) with /LINE only,' //
+     .          ' or 3 args (xpts,ypts,color_value)',
      .		*5000)
  5210	CALL ERRMSG( ferr_invalid_command, status,
      .		'illegal dimensions for polygon coordinate(s) or values',

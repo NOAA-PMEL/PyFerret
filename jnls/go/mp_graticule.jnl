@@ -13,6 +13,8 @@
 !                  central meridian using the wrong x range 
 ! *acm* 6/15/2001  add ppl window off  (and on at the end)  so graticule lines 
 !		   around the plot edge are complete.
+! *acm* 11/30/2001 change the name of the local variable mp_test to mp_gtest. 
+!                  Defining and cancelling it has an impact on mp_land.jnl
 
 ! Description:  Overlay a graticule on a map.
 !
@@ -90,19 +92,19 @@ endif
 !
 ! This test will keep the central meridians defined by "from space" views
 !
-let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+let/quiet mp_gtest = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
 
-if `mp_test eq 0` then
+if `mp_gtest eq 0` then
    let/quiet mp_central_meridian = `(mp_x[i=@max] + mp_x[i=@min])/2`
 endif
 
-let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+let/quiet mp_gtest = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
 
-if `mp_test eq 0` then
+if `mp_gtest eq 0` then
    let/quiet mp_standard_parallel = `(mp_y[j=@max] + mp_y[j=@min])/2`
 endif
 
-cancel variable mp_test
+cancel variable mp_gtest
 
 let/quiet mp_std_parallel_north = `mp_y[j=@max]`
 let/quiet mp_std_parallel_south = `mp_y[j=@min]`
@@ -190,18 +192,18 @@ ppl window on
 let/quiet mp_x = x
 let/quiet mp_y = y
 
-let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+let/quiet mp_gtest = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
 
-if `mp_test eq 0` then
+if `mp_gtest eq 0` then
    let/quiet mp_central_meridian = (mp_x[i=@max] + mp_x[i=@min])/2
 endif
 
-let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
-if `mp_test eq 0` then
+let/quiet mp_gtest = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+if `mp_gtest eq 0` then
    let/quiet mp_standard_parallel = (mp_y[j=@max] + mp_y[j=@min])/2
 endif
 
-cancel variable mp_test
+cancel variable mp_gtest
 
 let/quiet mp_std_parallel_north = mp_y[j=@max]
 let/quiet mp_std_parallel_south = mp_y[j=@min]

@@ -116,3 +116,7 @@ let nsst = sst[gt=jgrid@nrst]
 list/l=1:4 sst
 list/l=1:4 jsst, nsst
 
+! test negative time step formatting -- added 7/01 *sh*
+! this is not specifically a calendar test, but it is a change in V5.3x
+define axis/units=days/t/t0=1-jan-1980 tax_neg = {-3,-2,-1}
+show axis/l tax_neg

@@ -1,6 +1,7 @@
 \cancel mode verify
 ! polytube.jnl
 ! 4/99 *sh* and *jd*
+! 10/00 *sh* bug fix to scaling algorithm
 
 ! Description: Plot a colored tube of variable values along a plotted track
 
@@ -41,18 +42,11 @@ LET/QUIET TUBEdata = ($4)
 DEFINE SYMBOL TUBEax `TUBEx,return=shape`
 DEFINE SYMBOL TUBEpoly_ax ($TUBEax"|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a line")
 
-! determine default scale for tube thickness
-LET/QUIET TUBEyrange = (($yaxis_max))-(($yaxis_min))
-LET/QUIET TUBEdefault_scale = 0.05 * TUBEyrange*((($ppl$ylen))/(($ppl$xlen)))
-LET/QUIET TUBEscale = $5"1" * TUBEdefault_scale 
-
-! compute factor to compensate for unequal scaling of X and Y plot axes
-LET/QUIET TUBExscale = ((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
-LET/QUIET TUBEyscale = ((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
-
-LET/QUIET TUBEaxscale_factor = TUBEyscale/TUBExscale
-LET/QUIET TUBEx_correction = TUBEscale * (1 + TUBEaxscale_factor^2)^0.5
-LET/QUIET TUBEy_correction = TUBEaxscale_factor * TUBEx_correction
+! units/inch scale factors
+LET/QUIET TUBEdefault_scale =$5"1" *  0.25
+LET/QUIET TUBEx_correction = TUBEdefault_scale*((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
+LET/QUIET TUBEy_correction = TUBEdefault_scale*((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
+LET/QUIET TUBEaxscale_factor = TUBEy_correction/TUBEx_correction
 
 ! compute the local normal vector components -- (COS,SIN) --> (-SIN,COS)
 ! this will be used to create offsets from track line

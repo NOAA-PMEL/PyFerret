@@ -1,6 +1,7 @@
 \cancel mode verify
 ! polymark.jnl
 ! 4/99 *sh* and *jd*
+! 10/00 *sh* bug fix to scaling algorithm
 
 ! Description: Plot symbols colored by values of a variable along a track
 
@@ -46,18 +47,10 @@ LET/QUIET PLMpolydata = $4"0"
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
 DEFINE SYMBOL PLMpoly_ax ($PLMax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
 
-LET/QUIET PLMxscale = ((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
-LET/QUIET PLMyscale = ((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
-
-! determine default scale
-LET/QUIET PLMyrange = (($yaxis_max))-(($yaxis_min))
-LET/QUIET PLMdefault_scale = 0.04 * PLMyrange*((($ppl$ylen))/(($ppl$xlen)))
-LET/QUIET PLMscale = $6"1" * PLMdefault_scale 
-
-! compute factor to compensate for unequal scaling of X and Y plot axes
-LET/QUIET PLMaxscale_factor = PLMyscale/PLMxscale
-LET/QUIET PLMx_correction = PLMscale * (1 + PLMaxscale_factor^2)^0.5
-LET/QUIET PLMy_correction = PLMaxscale_factor * PLMx_correction
+! units/inch scale factors
+LET/QUIET PLMdefault_scale =$6"1" *  0.1
+LET/QUIET PLMx_correction = PLMdefault_scale*((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
+LET/QUIET PLMy_correction = PLMdefault_scale*((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
 
 ! optionally create the polygon coordinates, xpolyshape, ypolyshape
 ! else check that the coordinates exist

@@ -44,7 +44,7 @@
 *	from atc_update to process_x_events
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
@@ -56,7 +56,7 @@
         character*80 	str(1), datarec(1), odr(1)
 
 #   ifdef unix
-        include        'atc_gksdir/gkspar.inc'
+        include        'gkspar.inc'
 #   else
         INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif

@@ -59,14 +59,14 @@ c  Modified to set PPLUS symbol PPL$EPIC_DATAFILE(n), NNS, Aug 87.
 c  Modified for CTD report-generator, NNS, Dec 87.
 c
 #ifdef unix
-	include 'pplinc/PARAMPL5.DAT'
-	include 'epicinc/COMDATF.INC'
-	include 'epicinc/COMEPV.INC'
-	include 'epicinc/COMEPS.INC'
-	include 'epicinc/COMVAR.INC'
-	include 'epicinc/COMTHDR.INC'
-	include 'pplinc/LABELS.INC'
-	include 'pplinc/DATA.INC'
+	include 'PARAMPL5.DAT'
+	include 'COMDATF.INC'
+	include 'COMEPV.INC'
+	include 'COMEPS.INC'
+	include 'COMVAR.INC'
+	include 'COMTHDR.INC'
+	include 'LABELS.INC'
+	include 'DATA.INC'
 #else
 	include 'pplinc:parampl5.dat'
 	include 'epicinc:comdatf.inc'

@@ -69,7 +69,7 @@ c
 c	D. Denbo  February 1985
 c
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif
@@ -95,7 +95,7 @@ C	fills the file buffer with a flush function
 C
 	DIMENSION XB(63),YB(63)
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

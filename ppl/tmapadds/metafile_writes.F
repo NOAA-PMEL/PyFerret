@@ -51,7 +51,7 @@
 	SUBROUTINE META_CLEAR (control_flag)
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
@@ -84,7 +84,7 @@ C	consistency with WRITE_ITEM call to gwitm.
 	SUBROUTINE META_WS_XFORM (x_wn,y_wn,big_x_vp,big_y_vp)
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
@@ -137,10 +137,10 @@ C	consistency with WRITE_ITEM call to gwitm.
 	SUBROUTINE META_SHADE_SET
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
-	include		'tmap_pplv11inc/shade_vars.cmn'
-        include         'tmap_pplv11inc/gkscm1_inc.decl'
-        include         'pplv11inc/GKSCM1.INC'
+        include         'gkscm2.cmn'
+	include		'shade_vars.cmn'
+        include         'gkscm1_inc.decl'
+        include         'GKSCM1.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
@@ -211,8 +211,8 @@ C	for consistency with WRITE_ITEM call to gwitm.
 	SUBROUTINE META_PROTECT
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
-	include		'tmap_pplv11inc/shade_vars.cmn'
+        include         'gkscm2.cmn'
+	include		'shade_vars.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_shade_vars.inc'
@@ -262,7 +262,7 @@ C	consistency with WRITE_ITEM call to gwitm.
 	integer		fill_ndx
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
@@ -286,13 +286,13 @@ C	consistency with WRITE_ITEM call to gwitm.
 	SUBROUTINE META_VERSION
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
 
 #ifdef unix
-        include 	'tmap_pplv11inc/pplp_ver_date.cmn'
+        include 	'pplp_ver_date.cmn'
 #else
         INCLUDE 	'TMAP_PPLV11INC:PPLP_VER_DATE.CMN'
 #endif
@@ -331,7 +331,7 @@ C	consistency with WRITE_ITEM call to gwitm.
 *	J Davison 2.25.92
 
 #ifdef unix
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif

@@ -78,7 +78,7 @@ C**
 
 * TMAP interrupt flag
 #ifdef unix
-	include 'tmap_pplv11inc/xinterrupt.cmn'
+	include 'xinterrupt.cmn'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
 #endif

@@ -40,14 +40,14 @@
 *	J Davison 11.28.88 modified for compatibility to v1.1 PPL
 *	k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
 #ifdef unix
-	include 'tmap_pplv11inc/symkey_inc.decl'
-	include 'pplv11inc/SYMKEY.INC'
-	include 'tmap_pplv11inc/cmdcom_inc.decl'
-	include 'pplv11inc/CMDCOM.INC'
-	include 'tmap_pplv11inc/lunits_inc.decl'
-	include 'pplv11inc/LUNITS.INC'
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
+	include 'symkey_inc.decl'
+	include 'SYMKEY.INC'
+	include 'cmdcom_inc.decl'
+	include 'CMDCOM.INC'
+	include 'lunits_inc.decl'
+	include 'LUNITS.INC'
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
 #else
 	INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
 	INCLUDE 'PPLV11INC:SYMKEY.INC'
@@ -59,7 +59,7 @@
 	INCLUDE 'PPLV11INC:PLTCOM.DAT'
 #endif
 #ifdef core
-        include 'pltinc/CORECM.INC'
+        include 'CORECM.INC'
 #endif
 C
 C	CLOSES FILES USED BY PLOT5+
@@ -99,8 +99,8 @@ C
 *       J Davison 9.27.88
 
 #ifdef unix
-        include         'tmap_pplv11inc/pltcom_dat.decl'
-        include         'pplv11inc/PLTCOM.DAT'
+        include         'pltcom_dat.decl'
+        include         'PLTCOM.DAT'
 #else
         INCLUDE         'PPLV11INC:pltcom.dat'
 #endif

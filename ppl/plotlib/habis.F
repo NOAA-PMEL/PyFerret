@@ -45,8 +45,8 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pltinc/PLTCOM.DAT'
-	INCLUDE 'cmdinc/SYSTEM.INC'
+	INCLUDE 'PLTCOM.DAT'
+	INCLUDE 'SYSTEM.INC'
 #else
 	include '[-.complot]pltcom.dat'
 	include 'cmdinc:system.inc'

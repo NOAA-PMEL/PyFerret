@@ -40,17 +40,17 @@
 *	11.9.93 Mod to put immediate mode output in segments
 
 #ifdef unix
-	include 	'tmap_pplv11inc/parampl5_dat.decl'            
-	include 	'pplv11inc/PARAMPL5.DAT'            
-	include 	'tmap_pplv11inc/cmrd_inc.decl'            
-	include 	'pplv11inc/CMRD.INC'            
-	include 	'tmap_pplv11inc/cmrdl_inc.decl'            
-	include 	'pplv11inc/CMRDL.INC'            
-	include 	'tmap_pplv11inc/lines_inc.decl'            
-	include 	'pplv11inc/LINES.INC'            
-	include 	'tmap_pplv11inc/aline.cmn'            
-	include 	'tmap_pplv11inc/switch_inc.decl'            
-	include 	'pplv11inc/SWITCH.INC'            
+	include 	'parampl5_dat.decl'            
+	include 	'PARAMPL5.DAT'            
+	include 	'cmrd_inc.decl'            
+	include 	'CMRD.INC'            
+	include 	'cmrdl_inc.decl'            
+	include 	'CMRDL.INC'            
+	include 	'lines_inc.decl'            
+	include 	'LINES.INC'            
+	include 	'aline.cmn'            
+	include 	'switch_inc.decl'            
+	include 	'SWITCH.INC'            
 #else
 	INCLUDE 	'tmap_pplv11inc:tmap_parampl5.dat'            
 	INCLUDE 	'tmap_pplv11inc:tmap_cmrd.inc'            
@@ -62,7 +62,7 @@
 
 * special COMMON to let this routine know if FERRET is in control
 #ifdef unix
-        include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+        include 'ppl_in_ferret.cmn'
 #else
         INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 #endif

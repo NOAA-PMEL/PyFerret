@@ -1,6 +1,3 @@
-#ifndef unix
-	OPTIONS /CHECK=NOBOUNDS
-#endif
 	SUBROUTINE SHADE (z)
 
 *
@@ -54,27 +51,27 @@
 *       *jd* 1.98 Fix bug: shade misses top level, when top level is lt 0.
 
 #ifdef unix
-	include		'tmap_pplv11inc/parampl5_dat.decl'
-	include		'pplv11inc/PARAMPL5.DAT'
+	include		'parampl5_dat.decl'
+	include		'PARAMPL5.DAT'
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'
 #endif
 
 #ifdef unix
-	include		'tmap_pplv11inc/axis_inc.decl'
-	include		'pplv11inc/AXIS.INC'
-	include		'tmap_pplv11inc/plt_inc.decl'
-	include		'pplv11inc/PLT.INC'
-	include		'tmap_pplv11inc/miss_inc.decl'
-	include		'pplv11inc/MISS.INC'
-	include		'tmap_pplv11inc/hd_inc.decl'
-	include		'pplv11inc/HD.INC'
-	include		'tmap_pplv11inc/cont_inc.decl'
-	include		'pplv11inc/CONT.INC'
-	include		'tmap_pplv11inc/zgrid_inc.decl'
-	include		'pplv11inc/ZGRID.INC'
-	include		'tmap_pplv11inc/zgridd_inc.decl'
-	include		'pplv11inc/ZGRIDD.INC'
+	include		'axis_inc.decl'
+	include		'AXIS.INC'
+	include		'plt_inc.decl'
+	include		'PLT.INC'
+	include		'miss_inc.decl'
+	include		'MISS.INC'
+	include		'hd_inc.decl'
+	include		'HD.INC'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
+	include		'zgrid_inc.decl'
+	include		'ZGRID.INC'
+	include		'zgridd_inc.decl'
+	include		'ZGRIDD.INC'
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_plt.inc'

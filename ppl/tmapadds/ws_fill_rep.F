@@ -48,10 +48,10 @@
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
-        include         'tmap_pplv11inc/gkscm1_inc.decl'
-        include         'tmap_pplv11inc/gkscm2.cmn'
-        include         'pplv11inc/GKSCM1.INC'
+        include         'shade_vars.cmn'
+        include         'gkscm1_inc.decl'
+        include         'gkscm2.cmn'
+        include         'GKSCM1.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
         INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
@@ -60,13 +60,13 @@
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
+	include        'gkspar.inc'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif
 #else
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
+  	include        'gkspar.inc'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
 #   endif

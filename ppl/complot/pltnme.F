@@ -48,7 +48,7 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 	CHARACTER NME*(*)
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

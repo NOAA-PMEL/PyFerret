@@ -39,20 +39,20 @@
 *	J Davison JISAO/PMEL/TMAP 3.23.89
 *	*jd* mod to support atc gks                                                                         
 #ifdef unix
-	include		'tmap_pplv11inc/gkscm2.cmn'
+	include		'gkscm2.cmn'
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_gkscm2.inc'
 #endif
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
+	include        'gkspar.inc'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif
 #else
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
+  	include        'gkspar.inc'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
 #   endif

@@ -39,8 +39,8 @@
 *	J Davison 5.17.90
 
 #ifdef unix
-	include		'tmap_pplv11inc/axis_inc.decl'
-	include		'pplv11inc/AXIS.INC'
+	include		'axis_inc.decl'
+	include		'AXIS.INC'
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'
 #endif

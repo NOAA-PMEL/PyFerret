@@ -56,16 +56,16 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-        include 'tmap_pplv11inc/parampl5_dat.decl'
-        include 'pplv11inc/PARAMPL5.DAT'
-        include 'tmap_pplv11inc/lines_inc.decl'
-        include 'pplv11inc/LINES.INC'
-        include 'tmap_pplv11inc/data_inc.decl'
-        include 'pplv11inc/DATA.INC'
-        include 'tmap_pplv11inc/miss_inc.decl'
-        include 'pplv11inc/MISS.INC'
-	include 'tmap_pplv11inc/hd_inc.decl'
-	include 'pplv11inc/HD.INC'
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        include 'data_inc.decl'
+        include 'DATA.INC'
+        include 'miss_inc.decl'
+        include 'MISS.INC'
+	include 'hd_inc.decl'
+	include 'HD.INC'
 #else
         INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
         INCLUDE 'PPLV11INC:PARAMPL5.DAT'
@@ -251,10 +251,10 @@ C
 C	RESET MIN MAX SYMBOLS AND SET LINE_COUNT TO ZERO
 C
 #ifdef unix
-        include 'tmap_pplv11inc/parampl5_dat.decl'
-        include 'pplv11inc/PARAMPL5.DAT'
-        include 'tmap_pplv11inc/lines_inc.decl'
-        include 'pplv11inc/LINES.INC'
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
 #else
         INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
         INCLUDE 'PPLV11INC:PARAMPL5.DAT'

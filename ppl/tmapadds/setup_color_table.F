@@ -41,11 +41,11 @@
 *       Mod JD 10.98 setup by percent, by_value, or by_level
 
 #ifdef unix
-        include         'tmap_pplv11inc/parampl5_dat.decl'
-        include         'pplv11inc/PARAMPL5.DAT'
-        include         'tmap_pplv11inc/shade_vars.cmn'
-        include         'tmap_pplv11inc/cont_inc.decl'
-        include         'pplv11inc/CONT.INC'
+        include         'parampl5_dat.decl'
+        include         'PARAMPL5.DAT'
+        include         'shade_vars.cmn'
+        include         'cont_inc.decl'
+        include         'CONT.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'

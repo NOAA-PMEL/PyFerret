@@ -56,7 +56,7 @@ C     CHARACTERS IF A BAUD RATE OTHER THAN 2400 IS BEING USED.
 C
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

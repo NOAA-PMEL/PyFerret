@@ -73,8 +73,8 @@ C                with "*(*)" for the linux port
 
 
 #ifdef unix
-	include 'pplv11inc/CMDCOM.INC'
-	include 'pplv11inc/LUNITS.INC'
+	include 'CMDCOM.INC'
+	include 'LUNITS.INC'
 #else
 	include 'pplv11inc:CMDCOM.INC'
 	include 'pplv11inc:lunits.inc'

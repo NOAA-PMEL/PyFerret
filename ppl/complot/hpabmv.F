@@ -53,7 +53,7 @@ C
 C	D. DENBO   MARCH 1984
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

@@ -60,11 +60,11 @@ c
 c  Programmed by N. Soreide, May 86.
 c
 #ifdef unix
-	include 'pplinc/CMRD.INC'
-	include 'pplinc/CMRDL.INC'
-	include 'pplinc/TAXIS.INC'
-	include 'epicinc/COMEPV.INC'
-	include 'epicinc/COMEPS.INC'
+	include 'CMRD.INC'
+	include 'CMRDL.INC'
+	include 'TAXIS.INC'
+	include 'COMEPV.INC'
+	include 'COMEPS.INC'
 #else
 	include 'pplinc:CMRD.INC'
 	include 'pplinc:CMRDL.INC'

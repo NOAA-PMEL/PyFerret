@@ -78,14 +78,15 @@ c	CHARACTER PLTFIL*80
 C
 C
 #ifdef unix
-	INCLUDE 'pplv11inc/PLTCOM.DAT'
+	INCLUDE 'PLTCOM.DAT'
 #else
 	INCLUDE 'pplv11inc:PLTCOM.DAT'
 #endif
 
 
 #ifdef unix
-1010	OPEN(LUSY,FILE=fontdir(:dirlen)//'/'//DNAME(ID),STATUS='OLD',
+ 1010	continue
+	OPEN(LUSY,FILE=fontdir(:dirlen)//'/'//DNAME(ID),STATUS='OLD',
      *	FORM='UNFORMATTED',ERR=5000)
 #else
 1010	open(lusy,file=dname(id),status='old',readonly,
@@ -112,16 +113,22 @@ C
 C
 C	READ NEW FONT
 C
-1008	READ(LUSY)ICNT,IBASE,IRAST
+ 1008	READ(LUSY,ERR=5010)ICNT,IBASE,IRAST
 	IBASE4 = IBASE
 	IRAST4 = IRAST
-	READ(LUSY)(ASCII(IJ,II),IJ=1,127)
+	READ(LUSY,ERR=5010)(ASCII(IJ,II),IJ=1,127)
 	BASE(II)=FLOAT(IBASE4)
 	RAST(II)=21./FLOAT(IRAST4)
 	IADD=IOFF(II)+1
-	READ(LUSY)(SX(IJ),IJ=IADD,IADD+DLEN(ID)-1)
-	READ(LUSY)(SY(IJ),IJ=IADD,IADD+DLEN(ID)-1)
+	READ(LUSY,ERR=5010)(SX(IJ),IJ=IADD,IADD+DLEN(ID)-1)
+	READ(LUSY,ERR=5010)(SY(IJ),IJ=IADD,IADD+DLEN(ID)-1)
 	CLOSE(LUSY)
+	return
 
-5000	return
+ 5000	write(6,*) "setfont: Couldn't open font file:"//
+     .               fontdir(:dirlen)//'/'//DNAME(ID)
+	stop
+ 5010	write(6,*) "setfont: Read error on font file:"//
+     .               fontdir(:dirlen)//'/'//DNAME(ID)
+	stop
 	end

@@ -8,12 +8,19 @@
 INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
   		  -I../../ppl/include/xgks \
 		  -I/usr/local/include \
+		  -I$(TMAP_LOCAL)/src/xgks/gif \
+		  -I$(TMAP_LOCAL)/src/xgks/ps \
 		  -I$(TMAP_LOCAL)/src/xgks/port \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
 		  -I../common \
 		  -I. -Ireadline 
+
+FINCLUDES	= -I../tmap_inc -I../include -I../../fmt/cmn \
+		-I../../fer/common
+
+
 
 GUI_INCLUDES	=
 
@@ -23,10 +30,11 @@ CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
 FFLAGS          = -c -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C
+		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C \
+		  $(FINCLUDES)
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -Nl160 -Dxgks -static -fpe2
+		  -Nl160 -Dxgks -static -fpe2 $(FINCLUDES)
 
 #
 # Below this line are macro definitions used only for the final linking of the executable

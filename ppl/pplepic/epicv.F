@@ -57,7 +57,7 @@ c
 c  Programmed by N. Soreide, May 86.
 c
 #ifdef unix
-	include 'pplinc/TAXIS.INC'
+	include 'TAXIS.INC'
 #else
 	include 'pplinc:taxis.inc'
 #endif

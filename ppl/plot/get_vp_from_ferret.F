@@ -48,10 +48,10 @@
 * V300:  3/20/93 - use ABS() to avoid negative size passed to PLOT+
 
 #ifdef unix
-	include 'ferret_cmn/ferret.parm'		! with unspecified_val4
-	include 'ferret_cmn/xplot_state.cmn'		! viewport info
-	include 'tmap_pplv11inc/gkscm1_inc.decl'	! with wsid
-	include 'pplv11inc/GKSCM1.INC'	! with wsid
+	include 'ferret.parm'		! with unspecified_val4
+	include 'xplot_state.cmn'		! viewport info
+	include 'gkscm1_inc.decl'	! with wsid
+	include 'GKSCM1.INC'	! with wsid
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'		! with unspecified_val4
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'		! viewport info

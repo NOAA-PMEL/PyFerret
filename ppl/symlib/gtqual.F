@@ -68,7 +68,7 @@ C       Mod *JD* 3.22.91 to permit use of / in command qualifiers for unix.
 C       Not a complete fix as will screw up unix paths elsewhere in PPL
 
 #ifdef unix
-	INCLUDE 'pplv11inc/SWITCH.INC'
+	INCLUDE 'SWITCH.INC'
 #else
 	INCLUDE 'pplv11inc:SWITCH.INC'
 #endif

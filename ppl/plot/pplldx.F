@@ -107,22 +107,22 @@ c
 !	include 'pplinc:ppldat.inc'
 
 #ifdef unix
-	include 'tmap_pplv11inc/parampl5_dat.decl'
-	include 'pplv11inc/PARAMPL5.DAT'
-	include 'tmap_pplv11inc/hd_inc.decl'
-	include 'pplv11inc/HD.INC'
-	include 'tmap_pplv11inc/lines_inc.decl'
-	include 'pplv11inc/LINES.INC'
-	include 'tmap_pplv11inc/taxis_inc.decl'
-	include 'pplv11inc/TAXIS.INC'
-	include 'tmap_pplv11inc/cmrdl_inc.decl'
-	include 'pplv11inc/CMRDL.INC'
-	include 'tmap_pplv11inc/data_inc.decl'
-	include 'pplv11inc/DATA.INC'
-	include 'tmap_pplv11inc/axisl_inc.decl'
-	include 'pplv11inc/AXISL.INC'
-	include 'tmap_pplv11inc/ppldat_inc.decl'
-	include 'pplv11inc/PPLDAT.INC'
+	include 'parampl5_dat.decl'
+	include 'PARAMPL5.DAT'
+	include 'hd_inc.decl'
+	include 'HD.INC'
+	include 'lines_inc.decl'
+	include 'LINES.INC'
+	include 'taxis_inc.decl'
+	include 'TAXIS.INC'
+	include 'cmrdl_inc.decl'
+	include 'CMRDL.INC'
+	include 'data_inc.decl'
+	include 'DATA.INC'
+	include 'axisl_inc.decl'
+	include 'AXISL.INC'
+	include 'ppldat_inc.decl'
+	include 'PPLDAT.INC'
 #else
 	INCLUDE 'PPLV11INC:parampl5.dat'
 	INCLUDE 'PPLV11INC:hd.inc'
@@ -135,8 +135,8 @@ c
 #endif
 
 #ifdef unix
-	include 'tmap_pplv11inc/miss_inc.decl'
-	include 'pplv11inc/MISS.INC'
+	include 'miss_inc.decl'
+	include 'MISS.INC'
 #else
 	INCLUDE 'PPLV11INC:miss.inc'
 #endif

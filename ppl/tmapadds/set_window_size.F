@@ -46,10 +46,10 @@
 
 #ifdef unix
 #   ifndef atc_gks
-        include         'tmap_pplv11inc/gkspar.inc'
+        include         'gkspar.inc'
 #   endif
-        include         'tmap_pplv11inc/ws_types.cmn'
-	include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'ws_types.cmn'
+	include         'gkscm2.cmn'
 #else
         include         'sys$library:gksdefs.bnd'
         include         'tmap_pplv11inc:ws_types.inc'

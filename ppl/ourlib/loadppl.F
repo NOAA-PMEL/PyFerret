@@ -49,7 +49,7 @@ c	load and read grid information into ppl header
 c
 	character info*(*),gty*(*),str*32
 #ifdef unix
-	include 'pplinc/PPL.INC'
+	include 'PPL.INC'
 #else
 	include 'pplinc:PPL.INC'
 #endif
@@ -90,7 +90,7 @@ c	load the 120 character comments for the ppl header
 c
 	character cma*(*),cmb*(*),cmc*(*),cmd*(*),cme*(*)
 #ifdef unix
-	include 'pplinc/PPL.INC'
+	include 'PPL.INC'
 #else
 	include 'pplinc:PPL.INC'
 #endif
@@ -117,7 +117,7 @@ c	load the 32 character user strings into the ppl header
 c
 	character usa*(*),usb*(*),usc*(*),usd*(*)
 #ifdef unix
-	include 'pplinc/PPL.INC'
+	include 'PPL.INC'
 #else
 	include 'pplinc:PPL.INC'
 #endif
@@ -142,7 +142,7 @@ c	load the plot identification information for the ppl header
 c
 	character ident*(*),source*(*),dte*(*),tme*(*)
 #ifdef unix
-	include 'pplinc/PPL.INC'
+	include 'PPL.INC'
 #else
 	include 'pplinc:PPL.INC'
 #endif
@@ -170,7 +170,7 @@ c
 	character name*(*),dte*(*),tme*(*),ident*(*),str*16
 	real mean,var,std,rms,min,max,jdate,lat,long
 #ifdef unix
-	include 'pplinc/PPL.INC'
+	include 'PPL.INC'
 #else
 	include 'pplinc:PPL.INC'
 #endif
@@ -256,7 +256,7 @@ c	load the axis labels into the ppl header
 c
 	character xlab*(*),ylab*(*),mlab*(*)
 #ifdef unix
-	include 'pplinc/PPL.INC'
+	include 'PPL.INC'
 #else
 	include 'pplinc:PPL.INC'
 #endif

@@ -9,16 +9,16 @@
 *       *jd* 10.98 handle "atomic" colors
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
-	include		'tmap_pplv11inc/gkscm1_inc.decl'
-	include		'pplv11inc/GKSCM1.INC'
+        include         'shade_vars.cmn'
+	include		'gkscm1_inc.decl'
+	include		'GKSCM1.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_gkscm1.inc'
 #endif
 
 #   ifdef unix
-        include        'tmap_pplv11inc/gkspar.inc'
+        include        'gkspar.inc'
 #   else
         INCLUDE        'sys$library:gksdefs.bnd'
 #   endif

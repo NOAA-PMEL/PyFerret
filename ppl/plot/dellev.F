@@ -45,8 +45,8 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/CONT.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'CONT.INC'
 #else
 	INCLUDE 'pplinc:PARAMPL5.DAT'
 	INCLUDE 'pplinc:CONT.INC'

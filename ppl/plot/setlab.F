@@ -48,9 +48,9 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 
 #ifdef unix
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/AXISL.INC'
+	INCLUDE 'AXIS.INC'
+	INCLUDE 'TAXIS.INC'
+	INCLUDE 'AXISL.INC'
 #else
         INCLUDE 'pplinc:AXIS.INC'
         INCLUDE 'pplinc:TAXIS.INC'

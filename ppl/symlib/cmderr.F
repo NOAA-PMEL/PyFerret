@@ -78,9 +78,9 @@ C  	    Modified:
 C  
 C  
 #ifdef unix
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'cmdinc/CMDCOM.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'CMDCOM.INC'
+	INCLUDE 'LUNITS.INC'
 #else
 	INCLUDE 'cmdinc:SYSTEM.INC'
 	INCLUDE 'cmdinc:CMDCOM.INC'

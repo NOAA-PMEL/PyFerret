@@ -54,14 +54,14 @@
 	LOGICAL         ITS_BATCH_GRAPHICS, batch
 
 #ifdef unix
-	include 'tmap_pplv11inc/pltcom_dat.decl'! with declarations    
-	include 'pplv11inc/PLTCOM.DAT'! with declarations    
-	include 'tmap_pplv11inc/gkscm1_inc.decl'! with declarations    
-	include 'pplv11inc/GKSCM1.INC'! with declarations    
-	include 'tmap_pplv11inc/gkscm2.cmn'! with declarations    
-	include 'tmap_pplv11inc/ppl_in_ferret.cmn'
-        include 'tmap_pplv11inc/ws_types.cmn'
-        include 'tmap_pplv11inc/shade_vars.cmn'
+	include 'pltcom_dat.decl'! with declarations    
+	include 'PLTCOM.DAT'! with declarations    
+	include 'gkscm1_inc.decl'! with declarations    
+	include 'GKSCM1.INC'! with declarations    
+	include 'gkscm2.cmn'! with declarations    
+	include 'ppl_in_ferret.cmn'
+        include 'ws_types.cmn'
+        include 'shade_vars.cmn'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'! with declarations    
 	INCLUDE 'PPLV11INC:PLTCOM.DAT'! with declarations    
@@ -75,7 +75,7 @@
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
+	include        'gkspar.inc'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif
@@ -83,7 +83,7 @@
 	character	GKS_X_CONID*16, xwind_id*16
 	external	gks_x_conid
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
+  	include        'gkspar.inc'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
 #   endif
@@ -162,9 +162,9 @@ C
 	CALL GOPWK(WSID, 0, 0)
 #else
 	if (ppl_in_ferret) then
-	   call gesspn ('FERRET_1',8)
+	   call gesspn ('FERRET_1')
 	else
-	   call gesspn ('PPLP',4)
+	   call gesspn ('PPLP')
 	endif
   	CALL GOPWK(WSID,6,4)       
 #endif

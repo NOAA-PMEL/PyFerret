@@ -68,7 +68,7 @@ C		added missing data types, and speeded it up
 C
 C
 #ifdef unix
-	INCLUDE 'pplinc/MISS.INC'
+	INCLUDE 'MISS.INC'
 #else
 	INCLUDE 'pplinc:MISS.INC'
 #endif
@@ -175,20 +175,12 @@ C
 	    DO 220 I=1,NIX
 	    IF(XST.EQ.X(I))GOTO 221
 220	    CONTINUE
-#ifdef FORTRAN_90
 221	    IF(I.EQ.1)GOTO 226
 	    DO 225 J=I,NIX
 	    JJ=J-I+1
 	    X(JJ)=X(J)
 225	    CONTINUE
 226	    CONTINUE
-#else
-221	    IF(I.EQ.1)GOTO 225
-	    DO 225 J=I,NIX
-	    JJ=J-I+1
-	    X(JJ)=X(J)
-225	    CONTINUE
-#endif
 	    NIX=NIX-I+1
 C
 C	    Setup the IXS array
@@ -226,20 +218,12 @@ C
 	    DO 320 I=1,NIY
 	    IF(YST.EQ.Y(I))GOTO 321
 320	    CONTINUE
-#ifdef FORTRAN_90
 321	    IF(I.EQ.1)GOTO 326
 	    DO 325 J=I,NIY
 	    JJ=J-I+1
 	    Y(JJ)=Y(J)
 325	    CONTINUE
 326	    CONTINUE
-#else
-321	    IF(I.EQ.1)GOTO 325
-	    DO 325 J=I,NIY
-	    JJ=J-I+1
-	    Y(JJ)=Y(J)
-325	    CONTINUE
-#endif
 	    NIY=NIY-I+1
 C
 C	    Setup the IYS array

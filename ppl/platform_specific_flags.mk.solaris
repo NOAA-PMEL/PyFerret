@@ -9,6 +9,8 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I../../ppl/include/xgks \
 		  -I/usr/ucbinclude \
                   -I/usr/openwin/include \
+		  -I$(TMAP_LOCAL)/src/xgks/gif \
+		  -I$(TMAP_LOCAL)/src/xgks/ps \
 		  -I$(TMAP_LOCAL)/src/xgks/port \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
@@ -18,6 +20,9 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
                   -I../common \
 		  -I. -Ireadline
 
+FINCLUDES	= -I../tmap_inc -I../include -I../../fmt/cmn \
+		-I../../fer/common
+
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
  
@@ -25,8 +30,8 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 CC              = cc
 RANLIB          = /bin/touch
 CFLAGS          = -xO2 -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
-FFLAGS          = -O -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes
-PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL
+FFLAGS          = -O -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES)
+PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL $(FINCLUDES)
 
 #
 # Below this line are macro definitions used only for the final linking of the executable

@@ -45,9 +45,9 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
+	INCLUDE 'CMRDL.INC'
+	INCLUDE 'LUNITS.INC'
+	INCLUDE 'SYSTEM.INC'
 C
 	IF(.NOT.QUIETF)WRITE(LTTOUT,998)ICOM
 998	FORMAT(' COMMAND : ',A12,' NOT RECOGNIZED')

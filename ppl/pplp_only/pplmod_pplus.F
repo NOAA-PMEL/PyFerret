@@ -52,9 +52,9 @@ C     Had problem with buffered output.  See also opnppl
 * 	  *jd* 2.93 add date info to output header
 
 #ifdef unix
-	INCLUDE 'pplv11inc/PLT.INC'
-	INCLUDE 'pplv11inc/SYSTEM.INC'
-	INCLUDE 'pplv11inc/SWITCH.INC'
+	INCLUDE 'PLT.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'SWITCH.INC'
 C
 	CHARACTER FROM*80,TEMP*255,LINE*255,TYPE*81
 	CHARACTER COMBUF(5)*255,FILE*81,DTE*24
@@ -71,15 +71,15 @@ C
 #endif
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 #endif
 
 #ifdef unix
-        include 	'tmap_pplv11inc/pplp_ver_date.cmn'
+        include 	'pplp_ver_date.cmn'
 #else
         INCLUDE 	'TMAP_PPLV11INC:PPLP_VER_DATE.CMN'
 #endif

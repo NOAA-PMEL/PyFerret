@@ -65,7 +65,7 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 
 #ifdef unix
-	INCLUDE 'cmdinc/CMDCOM.INC'
+	INCLUDE 'CMDCOM.INC'
 	CHARACTER PMT*(*)
 	IF(N.NE.0)THEN
 	    PRMPT=PMT

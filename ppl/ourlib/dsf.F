@@ -46,7 +46,7 @@ C**
 C**
 	dimension H(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -89,7 +89,7 @@ C	READ THE REST
 	SUBROUTINE RDDDSV(LN,IRQ,DAT,IACT,ILOC)
 	dimension DAT(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -131,7 +131,7 @@ C                with "*(*)" for the linux port
 	SUBROUTINE OPNDSF(NME,DIR,LN)
 	CHARACTER NME*(*),DIR*(*),FILE*81
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -223,7 +223,7 @@ C	POSITION FILE AND READ FILE NAME AND POINTER
 	SUBROUTINE WRDDSF(LN,ILEN,DAT)
 	DIMENSION DAT(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -269,7 +269,7 @@ C	FILL PARTIAL BUFFER
 	SUBROUTINE RDDDSF(LN,IRQ,DAT,IACT)
 	DIMENSION DAT(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -310,7 +310,7 @@ C	MOVE THE REST
 	CHARACTER DTE*10,TME*10,FDTE*24
 	dimension H(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -351,7 +351,7 @@ C	FIRST BUFFER
 	END
 	SUBROUTINE CHKDSF(LN,JRW,I)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -367,7 +367,7 @@ C                with "*(*)" for the linux port
 	SUBROUTINE RWDDSF(NME)
 	CHARACTER NME*(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -381,7 +381,7 @@ C                with "*(*)" for the linux port
 	END
 	SUBROUTINE CLSDSF(LN)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -436,7 +436,7 @@ C
 	CHARACTER DTE*10,TME*10,FDTE*24
 	DIMENSION H(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -478,7 +478,7 @@ C	FIRST BUFFER
 	SUBROUTINE WRDDSV(LN,ILEN,DAT,ILOC)
 	dimension DAT(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -524,7 +524,7 @@ C	FILL PARTIAL BUFFER
 	SUBROUTINE RDHDSF(LN,IRQ,H,IACT)
 	DIMENSION H(*)
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif
@@ -566,7 +566,7 @@ C	READ THE REST
 
 	BLOCK DATA DSFCOM_INIT
 #ifdef unix
-	INCLUDE 'pplinc/DSFCOM.DAT'
+	INCLUDE 'DSFCOM.DAT'
 #else
         INCLUDE 'pplinc:DSFCOM.DAT'
 #endif

@@ -64,7 +64,7 @@ C              included .DAT file.  the latter was causing mutliple
 C              references 
 
 #ifdef unix
-      include 'pplv11inc/PLTCOM.DAT'
+      include 'PLTCOM.DAT'
       external pltdat_block_data
 #else
       include 'pplv11inc:PLTCOM.DAT'

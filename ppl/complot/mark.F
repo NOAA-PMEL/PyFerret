@@ -53,7 +53,7 @@ C     INTEGER MRKTAB(2,44),TABT(200)
       INTEGER*2 MRKTAB(2,44),TABT(200)
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

@@ -49,11 +49,11 @@ C	DSFLAB fills the PLOT5 labels with information from the
 C	BIBO header of a DSF file.
 C
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/LABELS.INC'
-	INCLUDE 'pplinc/BIBO.COM'
-	INCLUDE 'pplinc/TBLE.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'CMRD.INC'
+	INCLUDE 'LABELS.INC'
+	INCLUDE 'BIBO.COM'
+	INCLUDE 'TBLE.INC'
 #else
         INCLUDE 'pplinc:PARAMPL5.DAT'
         INCLUDE 'pplinc:CMRD.INC'
@@ -67,7 +67,7 @@ C
 	CHARACTER MORINT*16,LAT*11,LON*11,NS*1,EW*1,DEP*10
 	INTEGER MORLEN,LATLEN,LONLEN,DEPLEN
 #ifdef unix
-C	INCLUDE 'pplinc/BIBO.DAT'
+C	INCLUDE 'BIBO.DAT'
 #endif
 C
 C	fill the XLAB 

@@ -52,15 +52,15 @@
 *		changed
 
 #ifdef unix
-	include		'tmap_pplv11inc/parampl5_dat.decl'
-	include		'pplv11inc/PARAMPL5.DAT'
-	include		'tmap_pplv11inc/miss_inc.decl'
-	include		'pplv11inc/MISS.INC'
-        include         'tmap_pplv11inc/hd_inc.decl'
-        include         'pplv11inc/HD.INC'
-	include		'tmap_pplv11inc/cont_inc.decl'
-	include		'pplv11inc/CONT.INC'
-	include		'tmap_pplv11inc/shade_vars.cmn'
+	include		'parampl5_dat.decl'
+	include		'PARAMPL5.DAT'
+	include		'miss_inc.decl'
+	include		'MISS.INC'
+        include         'hd_inc.decl'
+        include         'HD.INC'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
+	include		'shade_vars.cmn'
 
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'

@@ -49,11 +49,11 @@ C	Subroutine called by REDSF to keep track of the maximum and
 C	minimum times for the data
 C
 #ifdef unix
-	INCLUDE 'pplinc/BIBO.COM'
-	INCLUDE 'pplinc/AXISL.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/DATA.INC'
+	INCLUDE 'BIBO.COM'
+	INCLUDE 'AXISL.INC'
+	INCLUDE 'TAXIS.INC'
+	INCLUDE 'CMRD.INC'
+	INCLUDE 'DATA.INC'
 #else
         INCLUDE 'pplinc:BIBO.COM'
         INCLUDE 'pplinc:AXISL.INC'

@@ -46,19 +46,19 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/ZGRID.INC'
-	INCLUDE 'pplinc/PLT.INC'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/LABELS.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/MPLOT.INC'
-	INCLUDE 'pplinc/MPLOTX.INC'
-	INCLUDE 'pplinc/MPLOTS.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/XYLABP.INC'
-	INCLUDE 'pplinc/FILNAM.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'ZGRID.INC'
+	INCLUDE 'PLT.INC'
+	INCLUDE 'AXIS.INC'
+	INCLUDE 'LABELS.INC'
+	INCLUDE 'HD.INC'
+	INCLUDE 'MPLOT.INC'
+	INCLUDE 'MPLOTX.INC'
+	INCLUDE 'MPLOTS.INC'
+	INCLUDE 'TAXIS.INC'
+	INCLUDE 'XYLABP.INC'
+	INCLUDE 'FILNAM.INC'
+	INCLUDE 'LUNITS.INC'
 #else
         INCLUDE 'pplinc:PARAMPL5.DAT'
         INCLUDE 'pplinc:ZGRID.INC'
@@ -181,9 +181,9 @@ C
 	SUBROUTINE SAVEZ(LN,Z,NXS,NYS)
 	DIMENSION Z(NXS,NYS)
 #ifdef unix
-	include 'pplinc/PARAMPL5.DAT'
-	include 'pplinc/HD.INC'
-	include 'pplinc/PPLDAT.INC'
+	include 'PARAMPL5.DAT'
+	include 'HD.INC'
+	include 'PPLDAT.INC'
 #else
 	include 'pplinc:parampl5.dat'
 	include 'pplinc:hd.inc'
@@ -215,8 +215,8 @@ C
 	END
 	SUBROUTINE SAVEXY(LN,X,NSIZE)
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/LINES.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'LINES.INC'
 #else
         INCLUDE 'pplinc:PARAMPL5.DAT'
         INCLUDE 'pplinc:LINES.INC'

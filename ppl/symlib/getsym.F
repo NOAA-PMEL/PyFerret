@@ -68,8 +68,8 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 
 #ifdef unix
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'cmdinc/SYMKEY.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'SYMKEY.INC'
 	CHARACTER STR*(*),LABEL*(*),DTE*24
 #else
 	INCLUDE 'cmdinc:SYSTEM.INC'
@@ -123,8 +123,8 @@ C
 	END
 	SUBROUTINE GTSYM2(STR,LABEL,NC,SYS,IER)
 #ifdef unix
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'cmdinc/SYMKEY.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'SYMKEY.INC'
 #else
 	INCLUDE 'cmdinc:SYSTEM.INC'
 	INCLUDE 'cmdinc:SYMKEY.INC'

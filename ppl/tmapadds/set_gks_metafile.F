@@ -57,14 +57,14 @@
 	LOGICAL		ITS_BATCH_GRAPHICS, batch
 
 #ifdef unix
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
-	include 'tmap_pplv11inc/cmrdl_inc.decl'
-	include 'pplv11inc/CMRDL.INC'
-	include 'tmap_pplv11inc/gkscm1_inc.decl'
-	include 'pplv11inc/GKSCM1.INC'
-	include 'tmap_pplv11inc/gkscm2.cmn'
-	include 'tmap_pplv11inc/ws_types.cmn'
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
+	include 'cmrdl_inc.decl'
+	include 'CMRDL.INC'
+	include 'gkscm1_inc.decl'
+	include 'GKSCM1.INC'
+	include 'gkscm2.cmn'
+	include 'ws_types.cmn'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_pltcom.dat'
 	INCLUDE 'tmap_pplv11inc:tmap_cmrdl.inc'
@@ -220,7 +220,7 @@
 
 	subroutine save_metafile_name(mname, clen)
 	implicit none
-	include 'tmap_pplv11inc/gkscm2.cmn'
+	include 'gkscm2.cmn'
 	integer clen
 #ifdef sun
 	byte mname(clen) 

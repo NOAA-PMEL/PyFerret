@@ -47,8 +47,8 @@
 * revision 0.0 - 1/24/89
 
 #ifdef unix
-	include 'ferret_cmn/errmsg.parm'
-	include 'ferret_cmn/xplot_state.cmn'
+	include 'errmsg.parm'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'

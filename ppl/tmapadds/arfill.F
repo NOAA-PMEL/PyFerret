@@ -70,12 +70,12 @@ C     V4.50 *jc* 5.97 Add curvilinear coordinates code
 C     v5.00 *jd* 2.99 Add fill optimization 
 
 #ifdef unix
-	include 	'pplv11inc/ARFILL.INC'
-        include         'pplv11inc/GKSCM1.INC'
-        include         'tmap_pplv11inc/gkscm2.cmn'
-        include         'tmap_pplv11inc/miss_inc.decl'
-        include         'pplv11inc/MISS.INC'
-        include         'ferret_cmn/xcurvilinear.cmn'
+	include 	'ARFILL.INC'
+        include         'GKSCM1.INC'
+        include         'gkscm2.cmn'
+        include         'miss_inc.decl'
+        include         'MISS.INC'
+        include         'xcurvilinear.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_miss.inc'
 	INCLUDE 	'pplinc:ARFILL.INC'
@@ -84,9 +84,9 @@ C     v5.00 *jd* 2.99 Add fill optimization
 #endif
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
@@ -255,10 +255,10 @@ c:
 c
 
 #ifdef unix
-        include         'tmap_pplv11inc/miss_inc.decl'
-        include         'pplv11inc/MISS.INC'
-        include         'tmap_pplv11inc/shade_vars.cmn'
-        include         'ferret_cmn/xcurvilinear.cmn'
+        include         'miss_inc.decl'
+        include         'MISS.INC'
+        include         'shade_vars.cmn'
+        include         'xcurvilinear.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_miss.inc'
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
@@ -425,9 +425,9 @@ C======================================================================
       subroutine buffer_fillpoly (xarg,yarg,npts,index)
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
@@ -464,11 +464,11 @@ C =========================================================================
       subroutine flush_buffered_fillpoly
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
-        include         'tmap_pplv11inc/shade_vars.cmn'
-	include 	'pplv11inc/ARFILL.INC'
-        include         'ferret_cmn/xcurvilinear.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
+        include         'shade_vars.cmn'
+	include 	'ARFILL.INC'
+        include         'xcurvilinear.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'

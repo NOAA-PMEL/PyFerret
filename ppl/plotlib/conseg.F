@@ -79,7 +79,7 @@ C       *jc* 5.97 Major clean up and commenting
 C       *jc* 5.97 Added code for curvilinear coordinates
 
 #ifdef unix
-	include 'pplinc/MISS.INC'
+	include 'MISS.INC'
 #else
 	include 'pplinc:miss.inc'
 #endif

@@ -45,16 +45,16 @@
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
-        include        'tmap_pplv11inc/shade_vars.cmn'
+	include        'gkspar.inc'
+        include        'shade_vars.cmn'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
         INCLUDE        'tmap_pplv11inc:tmap_shade_vars.inc'
 #   endif
 #else
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
-        include         'tmap_pplv11inc/shade_vars.cmn'
+  	include        'gkspar.inc'
+        include         'shade_vars.cmn'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
         INCLUDE        'tmap_pplv11inc:tmap_shade_vars.inc'

@@ -48,7 +48,7 @@ C
 CC  DEFINITION OF INDEXES USED FOR BIBO FORMAT:
 C
 #ifdef unix
-	INCLUDE 'pplinc/BIBO.COM'
+	INCLUDE 'BIBO.COM'
 #else
         INCLUDE 'pplinc:BIBO.COM'
 #endif
@@ -129,7 +129,7 @@ C
 CC  DEFINITION OF INDEXES USED FOR BIBO FORMAT:
 C
 #ifdef unix
-	INCLUDE 'pplinc/BIBO.COM'
+	INCLUDE 'BIBO.COM'
 #else
         INCLUDE 'pplinc:BIBO.COM'
 #endif
@@ -204,7 +204,7 @@ C
 CC  DEFINITION OF INDEXES USED FOR BIBO FORMAT:
 C
 #ifdef unix
-	INCLUDE 'pplinc/BIBO.COM'
+	INCLUDE 'BIBO.COM'
 #else
         INCLUDE 'pplinc:BIBO.COM'
 #endif

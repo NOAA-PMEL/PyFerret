@@ -57,8 +57,8 @@ C     DIMENSION AMXMN(2),BMXMN(2)
       EQUIVALENCE (AMXMN(1),AMAX),(BMXMN(1),BMAX)
 
 #ifdef unix
-      include 'tmap_pplv11inc/pltcom_dat.decl'
-      include 'pplv11inc/PLTCOM.DAT'
+      include 'pltcom_dat.decl'
+      include 'PLTCOM.DAT'
 #else
       INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
       INCLUDE 'pplv11inc:pltcom.dat'

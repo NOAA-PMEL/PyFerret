@@ -50,9 +50,9 @@ c
 c  Programmed by N. Soreide, May 86.
 c
 #ifdef unix
-	include 'pplinc/AXISL.INC'
-	include 'pplinc/TAXIS.INC'
-	include 'pplinc/DATA.INC'
+	include 'AXISL.INC'
+	include 'TAXIS.INC'
+	include 'DATA.INC'
 #else
 	include 'pplinc:axisl.inc'
 	include 'pplinc:taxis.inc'

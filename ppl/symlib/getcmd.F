@@ -86,10 +86,10 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
         common/tmdebug/ tmapdebug
 
 #ifdef unix
-	INCLUDE 'pplv11inc/CMDCOM.INC'
-	INCLUDE 'pplv11inc/SYSTEM.INC'
-	INCLUDE 'pplv11inc/SWITCH.INC'
-	INCLUDE 'pplv11inc/LUNITS.INC'
+	INCLUDE 'CMDCOM.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'SWITCH.INC'
+	INCLUDE 'LUNITS.INC'
 #else
 	INCLUDE 'PPLV11INC:CMDCOM.INC'
 	INCLUDE 'PPLV11INC:SYSTEM.INC'

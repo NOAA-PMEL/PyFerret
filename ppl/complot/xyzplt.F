@@ -1,6 +1,3 @@
-#ifndef unix
-OPTIONS /CHECK=NOBOUNDS		! ROUTINE OVERFLOWS BOUNDS (see below)
-#endif
       SUBROUTINE XYZPLT
 
 *
@@ -67,8 +64,8 @@ C      DIMENSION XMXMN(2),YMXMN(2)
       REAL xinter, yinter, zinter, dx, dy, dz, cosx, cosy, cosz, dist
 
 #ifdef unix
-      include 'tmap_pplv11inc/pltcom_dat.decl'
-      include 'pplv11inc/PLTCOM.DAT'
+      include 'pltcom_dat.decl'
+      include 'PLTCOM.DAT'
 #else
       INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
 #endif

@@ -50,9 +50,9 @@
 *        doesn't delete metafile segments, and it avoids gdelseg warnings
 
 #ifdef unix
-	include 'ferret_cmn/xplot_state.cmn'		! viewport info
-	include 'tmap_pplv11inc/gkscm1_inc.decl'	! with wsid
-	include 'pplv11inc/GKSCM1.INC'	! with wsid
+	include 'xplot_state.cmn'		! viewport info
+	include 'gkscm1_inc.decl'	! with wsid
+	include 'GKSCM1.INC'	! with wsid
 #else
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'		! viewport info
 	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'	! with WSID

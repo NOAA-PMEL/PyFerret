@@ -54,7 +54,7 @@ C     PAGE HAS NO EFFECT ON THE ZETA AND BENSON OR PRINTRONIX PLOTTERS.
 C
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

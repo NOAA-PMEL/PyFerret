@@ -43,13 +43,13 @@
 
 #ifdef unix
 #   ifndef atc_gks
-        include        'tmap_pplv11inc/gkspar.inc'
+        include        'gkspar.inc'
 #   endif
-	include		'tmap_pplv11inc/cmrd_inc.decl'
-        include         'pplv11inc/CMRD.INC'
-	include		'tmap_pplv11inc/gkscm1_inc.decl'
-        include         'pplv11inc/GKSCM1.INC'
-	include		'tmap_pplv11inc/gkscm2.cmn'
+	include		'cmrd_inc.decl'
+        include         'CMRD.INC'
+	include		'gkscm1_inc.decl'
+        include         'GKSCM1.INC'
+	include		'gkscm2.cmn'
 #else
 	include		'tmap_pplv11inc:tmap_cmrd.inc'
 	include		'tmap_pplv11inc:tmap_gkscm1.inc'

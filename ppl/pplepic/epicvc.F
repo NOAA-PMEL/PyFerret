@@ -54,10 +54,10 @@ c  Programmed by N. Soreide, May 86.
 c  Modified for CTD data 1/87, NNS.
 c
 #ifdef unix
-	include 'pplinc/DATA.INC'
-	include 'epicinc/COMTHDR.INC'
-	include 'epicinc/COMEPV.INC'
-	include 'epicinc/COMEPS.INC'
+	include 'DATA.INC'
+	include 'COMTHDR.INC'
+	include 'COMEPV.INC'
+	include 'COMEPS.INC'
 #else
 	include 'pplinc:data.inc'
 	include 'epicinc:comthdr.inc'

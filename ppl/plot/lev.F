@@ -11,10 +11,10 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/CONT.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'CMRDL.INC'
+	INCLUDE 'CMRD.INC'
+	INCLUDE 'CONT.INC'
 #else
         INCLUDE 'pplinc:PARAMPL5.DAT'
         INCLUDE 'pplinc:CMRDL.INC'

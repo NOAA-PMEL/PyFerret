@@ -67,7 +67,7 @@ C        YLO    - MINIMUM Y-VALUE TO BE PLOTTED IN USER'S UNITS.
 C
 C
 #ifdef unix
-	INCLUDE 'pltinc/PLTCOM.DAT'
+	INCLUDE 'PLTCOM.DAT'
 #else
 	INCLUDE 'pltinc:PLTCOM.DAT'
 #endif

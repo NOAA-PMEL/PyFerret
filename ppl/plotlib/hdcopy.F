@@ -52,7 +52,7 @@ C     TEKTERMINAL.
 C
 C
 #ifdef unix
-	INCLUDE 'pltinc/PLTCOM.DAT'
+	INCLUDE 'PLTCOM.DAT'
 #else
 	include 'pltinc:pltcom.dat'
 #endif

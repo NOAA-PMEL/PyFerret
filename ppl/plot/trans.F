@@ -45,9 +45,9 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/LINES.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'AXIS.INC'
+	INCLUDE 'LINES.INC'
 #else
         INCLUDE 'pplinc:PARAMPL5.DAT'
         INCLUDE 'pplinc:AXIS.INC'

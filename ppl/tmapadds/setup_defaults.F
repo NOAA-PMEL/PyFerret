@@ -44,22 +44,22 @@
 *       *jd* Initialize rgb_mapping 10.98
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif
 
 #ifdef unix
-        include         'tmap_pplv11inc/parampl5_dat.decl'
-        include         'pplv11inc/PARAMPL5.DAT'
-        include         'tmap_pplv11inc/axis_inc.decl'
-        include         'pplv11inc/AXIS.INC'
-        include         'tmap_pplv11inc/plt_inc.decl'
-        include         'pplv11inc/PLT.INC'
-        include         'tmap_pplv11inc/gkscm2.cmn'
-        include         'pplv11inc/ARFILL.INC'
-        include         'tmap_pplv11inc/cont_inc.decl'
-        INCLUDE         'pplv11inc/CONT.INC'
+        include         'parampl5_dat.decl'
+        include         'PARAMPL5.DAT'
+        include         'axis_inc.decl'
+        include         'AXIS.INC'
+        include         'plt_inc.decl'
+        include         'PLT.INC'
+        include         'gkscm2.cmn'
+        include         'ARFILL.INC'
+        include         'cont_inc.decl'
+        INCLUDE         'CONT.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_parampl5.dat'
         INCLUDE         'tmap_pplv11inc:tmap_axis.inc'

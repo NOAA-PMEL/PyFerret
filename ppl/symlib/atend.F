@@ -62,10 +62,10 @@ C**		  changes for memory buffer added
 C**
 C**
 #ifdef unix
-	include 'cmdinc/SYSTEM.INC'
-	include 'cmdinc/CMDCOM.INC'
-	include 'cmdinc/SYMKEY.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
+	include 'SYSTEM.INC'
+	include 'CMDCOM.INC'
+	include 'SYMKEY.INC'
+	INCLUDE 'LUNITS.INC'
 #else
 	INCLUDE 'cmdinc:SYSTEM.INC'
 	INCLUDE 'cmdinc:CMDCOM.INC'

@@ -122,7 +122,7 @@ C
 C
 	CHARACTER IFMT*6,XLAB*8,YLAB*8
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

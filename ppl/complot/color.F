@@ -69,12 +69,12 @@ C
 	character*1 cnum(0:8)
 C
 #ifdef unix
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
-	include 'tmap_pplv11inc/gkscm1_inc.decl'
-	include 'pplv11inc/GKSCM1.INC'
-	include 'tmap_pplv11inc/pltl_inc.decl'
-	include 'pplv11inc/PLTL.INC'
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
+	include 'gkscm1_inc.decl'
+	include 'GKSCM1.INC'
+	include 'pltl_inc.decl'
+	include 'PLTL.INC'
 
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'

@@ -57,7 +57,7 @@ C	WRITTEN TO LUN ATTACHED TO THE FILE
 C	D. DENBO  JUNE 1983   UPDATED MARCH 1984
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

@@ -45,7 +45,7 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/LABCOM.INC'
+	INCLUDE 'LABCOM.INC'
 #else
 	INCLUDE 'pplinc:LABCOM.INC'
 #endif

@@ -53,7 +53,7 @@ C     DINATE SYSTEM.  PERSPECTIVE IS REMOVED IF APPROPRIATE.
 C
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

@@ -50,7 +50,7 @@
 #ifdef xgks
       character*8     window_name
 
-      include         'tmap_pplv11inc/gkspar.inc' 
+      include         'gkspar.inc' 
       
       write (unit=kwsid,fmt='(i2)') ws_id
 
@@ -67,7 +67,7 @@
       character*80    conid_options 
       character*80    conid_opt/' -nc64 -ox 2 -u 2'/,conid_opt_def
 #else
-      include         'tmap_pplv11inc/gkspar.inc' 
+      include         'gkspar.inc' 
 
       integer         i,fctid,mldr,mlodr,odr
       integer         il,ia,rl,ra,sl,lstr(1),errind,ldr,lidr,lodr
@@ -76,9 +76,9 @@
 #endif
 
 #ifdef unix
-      include 'tmap_pplv11inc/gkscm1_inc.decl'
-      include 'pplv11inc/GKSCM1.INC'
-      include 'tmap_pplv11inc/ws_types.cmn'
+      include 'gkscm1_inc.decl'
+      include 'GKSCM1.INC'
+      include 'ws_types.cmn'
 #else
       INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'
       INCLUDE 'PPLV11INC:GKSCM1.INC'

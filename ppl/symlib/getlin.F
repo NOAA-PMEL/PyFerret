@@ -61,8 +61,8 @@ C**	    Modified:
 C**
 C**
 #ifdef unix
-	INCLUDE 'cmdinc/CMDCOM.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
+	INCLUDE 'CMDCOM.INC'
+	INCLUDE 'SYSTEM.INC'
 #else
 	INCLUDE 'cmdinc:CMDCOM.INC'
 	INCLUDE 'cmdinc:SYSTEM.INC'

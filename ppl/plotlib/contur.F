@@ -1,7 +1,3 @@
-#ifndef unix
-	OPTIONS /CHECK=(NOBOUNDS,NOUNDERFLOW) 	! OVERFLOWS BOUNDS (see below)
-#endif
-
 	subroutine contur(z,nxs,nys,px,py,nx,ny,xf,xoff,yf,yoff,
      *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xct,yct)
 
@@ -117,13 +113,13 @@ c     oceanography emr   dec/69
 ! TMAP mod, spline fit:
 ! added gkscm2.cmn which includes spline_tension and draftsman
 #ifdef unix
-	include 'tmap_pplv11inc/gkscm2.cmn'
-	include 'tmap_pplv11inc/dashzz_inc.decl'
-	include 'pplv11inc/DASHZZ.INC'
-	include 'tmap_pplv11inc/conlab_inc.decl'
-	include 'pplv11inc/CONLAB.INC'
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
+	include 'gkscm2.cmn'
+	include 'dashzz_inc.decl'
+	include 'DASHZZ.INC'
+	include 'conlab_inc.decl'
+	include 'CONLAB.INC'
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
 	INCLUDE 'tmap_pplv11inc:tmap_dashzz.inc'
@@ -133,7 +129,7 @@ c     oceanography emr   dec/69
 
 * TMAP interrupt flag
 #ifdef unix
-	include 'tmap_pplv11inc/xinterrupt.cmn'
+	include 'xinterrupt.cmn'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
 #endif

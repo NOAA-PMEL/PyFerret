@@ -77,11 +77,11 @@ C
 !	include 'PLTCOM.DAT'
 !	include 'GKSCM1.INC'
 #ifdef unix
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
-	include 'tmap_pplv11inc/gkscm1_inc.decl'
-	include 'pplv11inc/GKSCM1.INC'
-	include 'tmap_pplv11inc/gkscm2.cmn' !jd 3.20.89 for private gclrwk
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
+	include 'gkscm1_inc.decl'
+	include 'GKSCM1.INC'
+	include 'gkscm2.cmn' !jd 3.20.89 for private gclrwk
 #else
 	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
 	INCLUDE 'PPLV11INC:PLTCOM.DAT'
@@ -96,7 +96,7 @@ C
 * special COMMON to let this routine know if FERRET is in control
 
 #ifdef unix
-	include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+	include 'ppl_in_ferret.cmn'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 #endif

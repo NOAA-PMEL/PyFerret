@@ -39,8 +39,8 @@
 *	INTERRUPT actually does something so it's not really a dummy -
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'

@@ -49,9 +49,9 @@ C     Mod *JD* 3.5.91 to use unit 6 rather than 5 for unix terminal lun
 C     Had problem with buffered output.  See also opnppl
 
 #ifdef unix
-	INCLUDE 'pplinc/PLT.INC'
-	INCLUDE 'pplinc/SYSTEM.INC'
-	INCLUDE 'pplinc/SWITCH.INC'
+	INCLUDE 'PLT.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'SWITCH.INC'
 C
 	CHARACTER FROM*80,TEMP*255,LINE*255,TYPE*81
 	CHARACTER COMBUF(5)*255,FILE*81,DTE*24

@@ -44,11 +44,11 @@
 #      ifndef xgks
 	include		'/usr/include/GKS3D/GKS3Dforbnd.f'
 #      else
-	include		'tmap_pplv11inc/gkspar.inc'
+	include		'gkspar.inc'
 #      endif
 #   endif
-	include		'tmap_pplv11inc/ws_types.cmn'
-        include         'tmap_pplv11inc/gkscm2.cmn'
+	include		'ws_types.cmn'
+        include         'gkscm2.cmn'
 #else
 	include		'sys$library:gksdefs.bnd'
 	include		'tmap_pplv11inc:ws_types.inc'

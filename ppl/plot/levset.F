@@ -45,7 +45,7 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/CMRDL.INC'
+	INCLUDE 'CMRDL.INC'
 #else
 	INCLUDE 'pplinc:CMRDL.INC'
 #endif

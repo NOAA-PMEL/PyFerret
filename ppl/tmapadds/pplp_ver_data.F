@@ -39,7 +39,7 @@
 *	J Davison 2.24.93
 
 #ifdef unix
-	include 'tmap_pplv11inc/pplp_ver_date.cmn'
+	include 'pplp_ver_date.cmn'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PPLP_VER_DATE.CMN'
 #endif

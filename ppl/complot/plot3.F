@@ -58,7 +58,7 @@ C        IMARK  - DATA MARK CODE (0-88).
 C
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

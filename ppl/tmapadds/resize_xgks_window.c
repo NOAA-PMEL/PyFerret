@@ -129,15 +129,16 @@ float *y;
  *
  */
 
-  } else if (ws->ewstype == MO){
-    int type = ws->mf.cgmo->type;
-    if (type == MF_GIF){
-      Gpoint nsize;
-      nsize.x = ix;
-      nsize.y = iy;
-      GIFresize(ws, nsize);
-    } else if (type == MF_PS){
-      PSresize(ws, size);
+    } else if (ws->ewstype == MO){
+      int type = ws->mf.cgmo->type;
+      if (type == MF_GIF){
+	Gpoint nsize;
+	nsize.x = ix;
+	nsize.y = iy;
+	GIFresize(ws, nsize);
+      } else if (type == MF_PS){
+	PSresize(ws, size);
+      }
     }
   }
 }

@@ -73,8 +73,8 @@
 	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, a_line
 * TMAP include files with explicit type declarations:
 #ifdef unix
-	include 'tmap_pplv11inc/parampl5_dat.decl'
-	include 'pplv11inc/PARAMPL5.DAT'
+	include 'parampl5_dat.decl'
+	include 'PARAMPL5.DAT'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
 	INCLUDE 'PPLV11INC:PARAMPL5.DAT'
@@ -116,34 +116,34 @@
 *
 *
 #ifdef unix
-	include 'tmap_pplv11inc/lines_inc.decl'
-	include 'pplv11inc/LINES.INC'
-	include 'tmap_pplv11inc/pen_inc.decl'
-	include 'pplv11inc/PEN.INC'
-	include 'tmap_pplv11inc/axis_inc.decl'
-	include 'pplv11inc/AXIS.INC'
-	include 'tmap_pplv11inc/hd_inc.decl'
-	include 'pplv11inc/HD.INC'
-	include 'tmap_pplv11inc/taxis_inc.decl'
-	include 'pplv11inc/TAXIS.INC'
-	include 'tmap_pplv11inc/axisl_inc.decl'
-	include 'pplv11inc/AXISL.INC'
-	include 'tmap_pplv11inc/plt_inc.decl'
-	include 'pplv11inc/PLT.INC'
-	include 'tmap_pplv11inc/pltl_inc.decl'
-	include 'pplv11inc/PLTL.INC'
-	include 'tmap_pplv11inc/mplot_inc.decl'
-	include 'pplv11inc/MPLOT.INC'
-	include 'tmap_pplv11inc/cmrd_inc.decl'
-	include 'pplv11inc/CMRD.INC'
-	include 'tmap_pplv11inc/prmcom_inc.decl'
-	include 'pplv11inc/PRMCOM.INC'
-	include 'tmap_pplv11inc/switch_inc.decl'
-	include 'pplv11inc/SWITCH.INC'
-	include 'tmap_pplv11inc/system_inc.decl'
-	include 'pplv11inc/SYSTEM.INC'
-	include 'tmap_pplv11inc/cont_inc.decl'  !added to get ivcomp v1.1
-	include 'pplv11inc/CONT.INC'  !added to get ivcomp v1.1
+	include 'lines_inc.decl'
+	include 'LINES.INC'
+	include 'pen_inc.decl'
+	include 'PEN.INC'
+	include 'axis_inc.decl'
+	include 'AXIS.INC'
+	include 'hd_inc.decl'
+	include 'HD.INC'
+	include 'taxis_inc.decl'
+	include 'TAXIS.INC'
+	include 'axisl_inc.decl'
+	include 'AXISL.INC'
+	include 'plt_inc.decl'
+	include 'PLT.INC'
+	include 'pltl_inc.decl'
+	include 'PLTL.INC'
+	include 'mplot_inc.decl'
+	include 'MPLOT.INC'
+	include 'cmrd_inc.decl'
+	include 'CMRD.INC'
+	include 'prmcom_inc.decl'
+	include 'PRMCOM.INC'
+	include 'switch_inc.decl'
+	include 'SWITCH.INC'
+	include 'system_inc.decl'
+	include 'SYSTEM.INC'
+	include 'cont_inc.decl'  !added to get ivcomp v1.1
+	include 'CONT.INC'  !added to get ivcomp v1.1
 #else
 	INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
 	INCLUDE 'PPLV11INC:LINES.INC'
@@ -176,17 +176,17 @@
 #endif
 
 #ifdef unix
-	include 'tmap_pplv11inc/xinterrupt.cmn'	! 1/89 *sh* - interrupts
+	include 'xinterrupt.cmn'	! 1/89 *sh* - interrupts
 #else
 	INCLUDE 'TMAP_PPLV11INC:XINTERRUPT.CMN'	! 1/89 *sh* - interrupts
 #endif
 
 * special COMMON to let this routine know if FERRET is in control
 #ifdef unix
-	include 'tmap_pplv11inc/ppl_in_ferret.cmn'
-	include 'tmap_pplv11inc/aline.cmn'	! jd for aline call
-	include 'tmap_pplv11inc/gkscm2.cmn' 
-	include 'tmap_pplv11inc/shade_vars.cmn' 
+	include 'ppl_in_ferret.cmn'
+	include 'aline.cmn'	! jd for aline call
+	include 'gkscm2.cmn' 
+	include 'shade_vars.cmn' 
 #else
 	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 	INCLUDE 'tmap_pplv11inc:tmap_aline.inc'	! JD For ALINE call

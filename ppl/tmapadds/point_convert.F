@@ -39,10 +39,10 @@
 *	J Davison 10.17.89
 
 #ifdef unix
-	include		'tmap_pplv11inc/plt_inc.decl'
-	include		'pplv11inc/PLT.INC'
-	include		'tmap_pplv11inc/axis_inc.decl'
-	include		'pplv11inc/AXIS.INC'
+	include		'plt_inc.decl'
+	include		'PLT.INC'
+	include		'axis_inc.decl'
+	include		'AXIS.INC'
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_plt.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_axis.inc'

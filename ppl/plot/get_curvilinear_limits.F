@@ -47,7 +47,7 @@
 *                it was deemed more apporpriate in this directory
 
 #ifdef unix
-	include 'ferret_cmn/xcurvilinear.cmn'
+	include 'xcurvilinear.cmn'
 #else
 #endif
 

@@ -39,18 +39,18 @@
 *       J Davison JISAO/PMEL/TMAP 8.24.88
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif
 
 #ifdef unix
-	include		'tmap_pplv11inc/cmrd_inc.decl'
-	include		'pplv11inc/CMRD.INC'
-        include         'tmap_pplv11inc/axis_inc.decl'
-        include         'pplv11inc/AXIS.INC'
-        include         'tmap_pplv11inc/plt_inc.decl'
-        include         'pplv11inc/PLT.INC'
+	include		'cmrd_inc.decl'
+	include		'CMRD.INC'
+        include         'axis_inc.decl'
+        include         'AXIS.INC'
+        include         'plt_inc.decl'
+        include         'PLT.INC'
 #else
 	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
         INCLUDE         'tmap_pplv11inc:tmap_axis.inc'

@@ -55,8 +55,8 @@ C
 *	*sh* 11/97 based on SHADESUB and PLOTXY
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
@@ -65,31 +65,31 @@ C
 	DIMENSION X(NXS)
 
 #ifdef unix
-        include 'tmap_pplv11inc/parampl5_dat.decl'
-        include 'pplv11inc/PARAMPL5.DAT'
-        include 'tmap_pplv11inc/axis_inc.decl'
-        include 'pplv11inc/AXIS.INC'
-        include 'tmap_pplv11inc/lines_inc.decl'
-        include 'pplv11inc/LINES.INC'
-        include 'tmap_pplv11inc/pen_inc.decl'
-        include 'pplv11inc/PEN.INC'
-        include 'tmap_pplv11inc/pltl_inc.decl'
-        include 'pplv11inc/PLTL.INC'
-        include 'tmap_pplv11inc/miss_inc.decl'
-        include 'pplv11inc/MISS.INC'
-        include 'tmap_pplv11inc/hd_inc.decl'
-        include 'pplv11inc/HD.INC'
-        include 'tmap_pplv11inc/taxis_inc.decl'
-        include 'pplv11inc/TAXIS.INC'
-        include 'tmap_pplv11inc/axisl_inc.decl'
-        include 'pplv11inc/AXISL.INC'
-        include 'tmap_pplv11inc/cmrd_inc.decl'
-        include 'pplv11inc/CMRD.INC'
-        include 'tmap_pplv11inc/gkscm1_inc.decl'	! sh 11/97
-        include 'pplv11inc/GKSCM1.INC'		! sh 11/97
-!        include 'tmap_pplv11inc/gkscm2.cmn' ! jd 3.22.89
-        include 'tmap_pplv11inc/gkspar.inc'	! sh 11/97
-        include 'tmap_pplv11inc/shade_vars.cmn'	! sh 11/97
+        include 'parampl5_dat.decl'
+        include 'PARAMPL5.DAT'
+        include 'axis_inc.decl'
+        include 'AXIS.INC'
+        include 'lines_inc.decl'
+        include 'LINES.INC'
+        include 'pen_inc.decl'
+        include 'PEN.INC'
+        include 'pltl_inc.decl'
+        include 'PLTL.INC'
+        include 'miss_inc.decl'
+        include 'MISS.INC'
+        include 'hd_inc.decl'
+        include 'HD.INC'
+        include 'taxis_inc.decl'
+        include 'TAXIS.INC'
+        include 'axisl_inc.decl'
+        include 'AXISL.INC'
+        include 'cmrd_inc.decl'
+        include 'CMRD.INC'
+        include 'gkscm1_inc.decl'	! sh 11/97
+        include 'GKSCM1.INC'		! sh 11/97
+!        include 'gkscm2.cmn' ! jd 3.22.89
+        include 'gkspar.inc'	! sh 11/97
+        include 'shade_vars.cmn'	! sh 11/97
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'

@@ -47,10 +47,10 @@ c	construct device dependent plotting code
 c
 c
 #ifdef unix
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
-	include 'tmap_pplv11inc/gkscm1_inc.decl'
-	include 'pplv11inc/GKSCM1.INC'
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
+	include 'gkscm1_inc.decl'
+	include 'GKSCM1.INC'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
 	INCLUDE 'tmap_pplv11inc:tmap_GKSCM1.INC'

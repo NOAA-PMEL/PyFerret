@@ -41,7 +41,7 @@
 *	*jd* 2.19.92 mod to support atc gks
 
 #ifdef unix
-	include		'tmap_pplv11inc/ws_types.cmn'
+	include		'ws_types.cmn'
 #else
 	include		'tmap_pplv11inc:ws_types.inc'
 #endif

@@ -46,7 +46,7 @@
 	integer	zwsid,zwstype
 
 #ifdef unix
-	include		'tmap_pplv11inc/ws_types.cmn'
+	include		'ws_types.cmn'
 #else
 	include		'tmap_pplv11inc:ws_types.inc'
 #endif

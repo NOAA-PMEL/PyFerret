@@ -44,8 +44,8 @@
 * revision 0.0 - 1/24/89
 
 #ifdef unix
-	include 'tmap_pplv11inc/axis_inc.decl'
-	include 'pplv11inc/AXIS.INC'
+	include 'axis_inc.decl'
+	include 'AXIS.INC'
 #else
 	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
 	INCLUDE 'PPLV11INC:AXIS.INC'

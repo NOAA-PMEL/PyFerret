@@ -59,7 +59,7 @@ C**	    Modified:
 C**
 C**
 #ifdef unix
-	include 'cmdinc/CMDCOM.INC'
+	include 'CMDCOM.INC'
 #else
 	INCLUDE 'cmdinc:CMDCOM.INC'
 #endif

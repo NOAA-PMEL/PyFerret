@@ -135,12 +135,12 @@ C ^THE PERSPECTIVE REPRESENTATION OF FUNCTIONS OF TWO VARIABLES,^
 C J.ACM (VOL. 15, NO. 2) APRIL 1968. PP. 193-204.
       DIMENSION F(1)
 #ifdef unix
-	include 'tmap_pplv11inc/plt_inc.decl'
-	include 'pplv11inc/PLT.INC'
-	include 'tmap_pplv11inc/miss_inc.decl'
-	include 'pplv11inc/MISS.INC'
-	include 'tmap_pplv11inc/axis_inc.decl'
-	include 'pplv11inc/AXIS.INC'
+	include 'plt_inc.decl'
+	include 'PLT.INC'
+	include 'miss_inc.decl'
+	include 'MISS.INC'
+	include 'axis_inc.decl'
+	include 'AXIS.INC'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'
 	INCLUDE 'PPLV11INC:PLT.INC'
@@ -156,7 +156,7 @@ C J.ACM (VOL. 15, NO. 2) APRIL 1968. PP. 193-204.
 
 * TMAP interrupt flag
 #ifdef unix
-	include 'tmap_pplv11inc/xinterrupt.cmn'
+	include 'xinterrupt.cmn'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
 #endif
@@ -440,8 +440,8 @@ C         1 IF THE POINT IS VIEWABLE FROM ABOVE
 C  F   - THE ARRAY OF VALUES.
       DIMENSION F(1)
 #ifdef unix
-	include 'tmap_pplv11inc/miss_inc.decl'
-	include 'pplv11inc/MISS.INC'
+	include 'miss_inc.decl'
+	include 'MISS.INC'
 #else
 	INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
 	INCLUDE 'PPLV11INC:MISS.INC'

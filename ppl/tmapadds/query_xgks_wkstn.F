@@ -10,8 +10,8 @@ c v491 *kob* 2/98 - moved this out of ppladd_open_metafile
 
 	implicit none
 #ifdef unix
-	include 'tmap_pplv11inc/gkscm2.cmn'! with declarations    
-	include 'tmap_pplv11inc/ws_types.cmn'
+	include 'gkscm2.cmn'! with declarations    
+	include 'ws_types.cmn'
 #else
 	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'! WITH DECLARATIONS    
 	INCLUDE 'TMAP_PPLV11INC:WS_TYPES.CMN'

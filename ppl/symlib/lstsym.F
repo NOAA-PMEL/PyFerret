@@ -71,7 +71,7 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 
 #ifdef unix
-	INCLUDE 'cmdinc/SYMKEY.INC'
+	INCLUDE 'SYMKEY.INC'
 #else
 	INCLUDE 'cmdinc:SYMKEY.INC'
 #endif

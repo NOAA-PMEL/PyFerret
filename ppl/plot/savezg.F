@@ -45,8 +45,8 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/ZGRIDD.INC'
-	INCLUDE 'pplinc/ZGRID.INC'
+	INCLUDE 'ZGRIDD.INC'
+	INCLUDE 'ZGRID.INC'
 #else
         INCLUDE 'pplinc:ZGRIDD.INC'
         INCLUDE 'pplinc:ZGRID.INC'

@@ -1,0 +1,47 @@
+#
+# platform_specific_includes.mk.solaris
+#
+# This file is included in other Makefiles and defines
+# platform specific macros
+
+XGKSHOME	=  ../../xgks
+INCLUDES        =  -I$(XGKSHOME)/gif \
+		   -I$(XGKSHOME)/ps \
+		   -I$(XGKSHOME)/port \
+		   -I$(XGKSHOME)/src/lib \
+		   -I$(XGKSHOME)/src/lib/gksm \
+		   -I../common \
+		   -I/usr/X11R6.4/include \
+		   -I. -Ireadline
+
+FINCLUDES	= -I..\\\\tmap_inc -I..\\\\include -I..\\\\..\\\\fmt\\\\cmn \
+		-I..\\\\..\\\\fer\\\\common
+
+CC              = gcc
+RANLIB          = ranlib
+CFLAGS          = -Dunix -g -DX_REFRESH -DXT_CODE $(INCLUDES) 
+FPROFLAGS	= /fpp -Dunix -Dxgks -DNO_OPEN_READONLY \
+		  -DNO_OPEN_CARRIAGECONTROL -D__CYGWIN__\
+		  -DFlarge_mem -static
+		  
+FFLAGS		= -debug:partial -nopdbfile \
+		  -iface:cref  -iface:nomixed_str_len_arg \
+		   /align:dcommons /align:records /f77rtl \
+		   -assume:nosource_include \
+		   -assume:underscore -names:lowercase \
+		   $(FINCLUDES)
+		   
+		   
+
+.f.o:
+	$(F77) $(FFLAGS) -c $< && mv $*.obj $*.o 
+
+.F.o:
+	$(F77) $(FPROFLAGS) $(FFLAGS) -c $< && mv $*.obj $*.o
+
+#.F.o:
+#	((gcc -P -E $(FPROFLAGS) $< > $*_tmp.f; $(F77) $(FFLAGS) -c $*_tmp.f; rm -f $*_tmp.f)  && mv $*_tmp.obj $*.o)
+
+#
+# End of platform_specific_includes.mk.i586
+#

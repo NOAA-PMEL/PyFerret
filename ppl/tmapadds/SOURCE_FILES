@@ -53,11 +53,7 @@ ws_line_bundle.F\
 ws_types_init.F\
 yabd.F 
 SRCS_C = \
-gd.c\
-gdadds.c\
-gif.c\
 its_gksm.c\
-ps.c\
 resize_xgks_window.c\
 set_background.c\
 wait_on_resize.c\

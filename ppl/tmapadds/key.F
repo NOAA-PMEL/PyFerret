@@ -51,14 +51,14 @@
 * 	Mod to provide identical endpoint values for a constant field/jd/5.96
 
 #ifdef unix
-	include 	'tmap_pplv11inc/parampl5_dat.decl'
-	include 	'pplv11inc/PARAMPL5.DAT'
-	include		'tmap_pplv11inc/cont_inc.decl'
-	include		'pplv11inc/CONT.INC'
-        include 	'tmap_pplv11inc/pltcom_dat.decl'
-        include 	'pplv11inc/PLTCOM.DAT'
-        include 	'tmap_pplv11inc/pltl_inc.decl'
-        include 	'pplv11inc/PLTL.INC'
+	include 	'parampl5_dat.decl'
+	include 	'PARAMPL5.DAT'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
+        include 	'pltcom_dat.decl'
+        include 	'PLTCOM.DAT'
+        include 	'pltl_inc.decl'
+        include 	'PLTL.INC'
 #else
 	INCLUDE 	'tmap_pplv11inc:tmap_parampl5.dat'
 	INCLUDE		'tmap_pplv11inc:tmap_cont.inc'
@@ -71,12 +71,12 @@
 #endif
 
 #ifdef unix
-        include         'tmap_pplv11inc/axis_inc.decl'
-        include         'pplv11inc/AXIS.INC'
-        include         'tmap_pplv11inc/plt_inc.decl'
-        include         'pplv11inc/PLT.INC'
-        include         'tmap_pplv11inc/pen_inc.decl'
-        include         'pplv11inc/PEN.INC'
+        include         'axis_inc.decl'
+        include         'AXIS.INC'
+        include         'plt_inc.decl'
+        include         'PLT.INC'
+        include         'pen_inc.decl'
+        include         'PEN.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_axis.inc'
         INCLUDE         'tmap_pplv11inc:tmap_plt.inc'
@@ -84,10 +84,10 @@
 #endif
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
-        include         'tmap_pplv11inc/gkscm1_inc.decl'
-        include         'pplv11inc/GKSCM1.INC'
-        include         'tmap_pplv11inc/gkscm2.cmn'
+        include         'shade_vars.cmn'
+        include         'gkscm1_inc.decl'
+        include         'GKSCM1.INC'
+        include         'gkscm2.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
         INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
@@ -96,13 +96,13 @@
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
+	include        'gkspar.inc'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif
 #else
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
+  	include        'gkspar.inc'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
 #   endif
@@ -122,7 +122,7 @@
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
 #ifdef unix
-	include 	'tmap_pplv11inc/ppl_in_ferret.cmn'	
+	include 	'ppl_in_ferret.cmn'	
 #else
 	INCLUDE 	'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'	
 #endif

@@ -77,15 +77,15 @@ C
       integer i,nout,fill_ndx
 
 #ifdef unix
-	include 'pplv11inc/PLTCOM.DAT'
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'tmap_pplv11inc/shade_vars.cmn'
-        include 'tmap_pplv11inc/axis_inc.decl'
-        include 'pplv11inc/AXIS.INC'
-        include 'tmap_pplv11inc/gkscm1_inc.decl'
-        include 'pplv11inc/GKSCM1.INC'
-        include 'tmap_pplv11inc/gkscm2.cmn' 
-        include 'ferret_cmn/xcurvilinear.cmn'
+	include 'PLTCOM.DAT'
+	include 'pltcom_dat.decl'
+	include 'shade_vars.cmn'
+        include 'axis_inc.decl'
+        include 'AXIS.INC'
+        include 'gkscm1_inc.decl'
+        include 'GKSCM1.INC'
+        include 'gkscm2.cmn' 
+        include 'xcurvilinear.cmn'
 
 #else
 	include 'pplv11inc:PLTCOM.DAT'
@@ -97,7 +97,7 @@ C
 #endif
 
 #ifdef unix
-	include 	'tmap_pplv11inc/ppl_in_ferret.cmn'	
+	include 	'ppl_in_ferret.cmn'	
 #else
 	INCLUDE 	'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'	
 #endif

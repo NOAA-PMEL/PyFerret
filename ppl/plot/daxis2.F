@@ -48,24 +48,24 @@ C**
 *     MOD *JD* 10.91 to eliminate PLOT COMPLETE msg if in ferret
 
 #ifdef unix
-	INCLUDE 'pplv11inc/PARAMPL5.DAT'
-	INCLUDE 'pplv11inc/AXIS.INC'
-	INCLUDE 'pplv11inc/LABELS.INC'
-	INCLUDE 'pplv11inc/LABCOM.INC'
-	INCLUDE 'pplv11inc/PLT.INC'
-	INCLUDE 'pplv11inc/HAB.INC'
-	INCLUDE 'pplv11inc/LINES.INC'
-	INCLUDE 'pplv11inc/MPLOT.INC'
-	INCLUDE 'pplv11inc/TAXIS.INC'
-	INCLUDE 'pplv11inc/TICS.INC'
-	INCLUDE 'pplv11inc/TICS2.INC'
-	INCLUDE 'pplv11inc/AXISL.INC'
-	INCLUDE 'pplv11inc/XYLABP.INC'
-	INCLUDE 'pplv11inc/CMRDL.INC'
-	INCLUDE 'pplv11inc/LUNITS.INC'
-	INCLUDE 'pplv11inc/PRMCOM.INC'
-	INCLUDE 'pplv11inc/SYSTEM.INC'
-	INCLUDE 'pplv11inc/SWITCH.INC'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'AXIS.INC'
+	INCLUDE 'LABELS.INC'
+	INCLUDE 'LABCOM.INC'
+	INCLUDE 'PLT.INC'
+	INCLUDE 'HAB.INC'
+	INCLUDE 'LINES.INC'
+	INCLUDE 'MPLOT.INC'
+	INCLUDE 'TAXIS.INC'
+	INCLUDE 'TICS.INC'
+	INCLUDE 'TICS2.INC'
+	INCLUDE 'AXISL.INC'
+	INCLUDE 'XYLABP.INC'
+	INCLUDE 'CMRDL.INC'
+	INCLUDE 'LUNITS.INC'
+	INCLUDE 'PRMCOM.INC'
+	INCLUDE 'SYSTEM.INC'
+	INCLUDE 'SWITCH.INC'
 #else
         INCLUDE 'pplv11inc:PARAMPL5.DAT'
         INCLUDE 'pplv11inc:AXIS.INC'
@@ -89,8 +89,8 @@ C**
 #endif
 
 #ifdef unix
-        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
-        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+        include         'xinterrupt.cmn' ! 1/89 *sh*
+        include         'ppl_in_ferret.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
         INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'

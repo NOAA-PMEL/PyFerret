@@ -39,7 +39,7 @@
 *	J Davison JISAO/PMEL/TMAP 8.1.89
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif

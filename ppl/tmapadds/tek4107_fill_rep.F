@@ -42,8 +42,8 @@
 *	*jd* 2.19.92 mod to support atc gks
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
-	include		'tmap_pplv11inc/ws_types.cmn'
+        include         'shade_vars.cmn'
+	include		'ws_types.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 	include		'tmap_pplv11inc:ws_types.inc'
@@ -51,13 +51,13 @@
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
+	include        'gkspar.inc'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif
 #else
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
+  	include        'gkspar.inc'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
 #   endif

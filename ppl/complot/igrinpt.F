@@ -87,7 +87,7 @@ C
 	CHARACTER*80 RECORD(10),CONID
 	REAL EAREA(4),LOCX,LOCY,WIND(4),VIEW(4),NULLR
 #else
-	include 'pplinc/CORECM.INC'
+	include 'CORECM.INC'
 c
 	integer initializedevice,setechoposition
 	integer setecho,setechosurface
@@ -104,7 +104,7 @@ c
 #endif
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+	include 'PLTCOM.DAT'
 #else
 	include 'pplinc:PLTCOM.DAT'
 #endif

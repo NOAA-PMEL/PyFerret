@@ -49,12 +49,12 @@ C**
 *     11.6.92 *jd* Mod to use viewport sizes when in FERRET
 
 #ifdef unix
-        include 'tmap_pplv11inc/parampl5_dat.decl'
-	INCLUDE 'pplv11inc/PARAMPL5.DAT'
-        include 'tmap_pplv11inc/plt_inc.decl'
-	INCLUDE 'pplv11inc/PLT.INC'
-        include 'tmap_pplv11inc/pen_inc.decl'
-	INCLUDE 'pplv11inc/PEN.INC'
+        include 'parampl5_dat.decl'
+	INCLUDE 'PARAMPL5.DAT'
+        include 'plt_inc.decl'
+	INCLUDE 'PLT.INC'
+        include 'pen_inc.decl'
+	INCLUDE 'PEN.INC'
 #else
         INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
 	INCLUDE 'PPLV11INC:PARAMPL5.DAT'
@@ -65,7 +65,7 @@ C**
 #endif
 
 #ifdef unix
-        include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+        include 'ppl_in_ferret.cmn'
 #else
         INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 #endif

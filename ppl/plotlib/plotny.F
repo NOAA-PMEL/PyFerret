@@ -56,7 +56,7 @@ c     dotted line routine improved july/74
 c 
 	common/rotcon/xk,yk,snthta,csthta
 #ifdef unix
-	include 'pplinc/DASHZZ.INC'
+	include 'DASHZZ.INC'
 #else
 	include 'pplinc:dashzz.inc'
 #endif

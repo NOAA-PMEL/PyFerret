@@ -43,7 +43,7 @@
 
 * special COMMON to let this routine know if FERRET is in control
 #ifdef unix
-	include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+	include 'ppl_in_ferret.cmn'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
 #endif
@@ -51,6 +51,8 @@
 	DATA	PPL_in_FERRET / .FALSE. /	
 
 	end
-
+#else
+	subroutine yabd_foobar
+	return
+	end
 #endif
-

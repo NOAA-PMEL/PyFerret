@@ -37,13 +37,13 @@
 *       J Davison JISAO/PMEL/TMAP 10.23.98
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
-        include 	'tmap_pplv11inc/cmrdl_inc.decl'            
-        include 	'pplv11inc/CMRDL.INC'            
-        include 	'tmap_pplv11inc/gkscm1_inc.decl'            
-        include 	'pplv11inc/GKSCM1.INC'            
-        include 	'tmap_pplv11inc/gkscm2.cmn'            
-	include		'pplv11inc/CMRD.INC'
+        include         'shade_vars.cmn'
+        include 	'cmrdl_inc.decl'            
+        include 	'CMRDL.INC'            
+        include 	'gkscm1_inc.decl'            
+        include 	'GKSCM1.INC'            
+        include 	'gkscm2.cmn'            
+	include		'CMRD.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
         INCLUDE 	'tmap_pplv11inc:tmap_cmrdl.inc'            
@@ -54,13 +54,13 @@
 
 #ifdef atc_gks
 #   ifdef unix
-	include        'atc_gksdir/gkspar.inc'
+	include        'gkspar.inc'
 #   else
 	INCLUDE        'atc_gksdir:gkspar.inc'
 #   endif
 #else
 #   ifdef unix
-  	include        'tmap_pplv11inc/gkspar.inc'
+  	include        'gkspar.inc'
 #   else
   	INCLUDE        'sys$library:gksdefs.bnd'
 #   endif
@@ -115,9 +115,9 @@
 	SUBROUTINE PATTERN_LEVELS (str,end)
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
-	include		'tmap_pplv11inc/cmrd_inc.decl'
-	include		'pplv11inc/CMRD.INC'
+        include         'shade_vars.cmn'
+	include		'cmrd_inc.decl'
+	include		'CMRD.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
@@ -228,7 +228,7 @@
         SUBROUTINE PATTERN_DEFAULT
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif
@@ -252,10 +252,10 @@
 	SUBROUTINE PATTERN_READ (str,beg,end,there)
 
 #ifdef unix
-        include 	'tmap_format/tmap_errors.parm'    
-	include		'tmap_pplv11inc/cmrd_inc.decl'
-	include		'pplv11inc/CMRD.INC'
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include 	'tmap_errors.parm'    
+	include		'cmrd_inc.decl'
+	include		'CMRD.INC'
+        include         'shade_vars.cmn'
 #else
 
         INCLUDE 	'TMAP_FORMAT:TMAP_ERRORS.PARM'
@@ -358,7 +358,7 @@
 	SUBROUTINE PATTERN_SAVE (str,beg,end)
 
 #ifdef unix
-        include         'tmap_pplv11inc/shade_vars.cmn'
+        include         'shade_vars.cmn'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif

@@ -61,8 +61,8 @@ C
 C
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
-	include 'pplinc/GKSCM1.INC'
+	include 'PLTCOM.DAT'
+	include 'GKSCM1.INC'
 #else
 	include 'pplinc:PLTCOM.DAT'
 	include 'pplinc:GKSCM1.INC'

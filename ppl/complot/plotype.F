@@ -74,10 +74,10 @@ C
 	integer	icode
 
 #ifdef unix
-	include 'tmap_pplv11inc/pltcom_dat.decl'
-	include 'pplv11inc/PLTCOM.DAT'
-	include 'tmap_pplv11inc/cmrdl_inc.decl'
-	include 'pplv11inc/CMRDL.INC'
+	include 'pltcom_dat.decl'
+	include 'PLTCOM.DAT'
+	include 'cmrdl_inc.decl'
+	include 'CMRDL.INC'
 #else
 	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
 	INCLUDE 'PPLV11INC:PLTCOM.DAT'

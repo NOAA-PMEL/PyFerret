@@ -1,11 +1,11 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61656868 Mar 17 10:10 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     61679072 Mar 25 14:54 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: fresh checkout of benchmarks
+Note:  v5.6 with fixes and further tests of REPEAT/RANGE
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja8/ansley/test/FERRET/bench
+PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
 CVSROOT=/home/ja9/tmap/FERRET_ROOT
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Mar 17 10:40:02 PST 2004
+Beginning at Thu Mar 25 14:55:40 PST 2004
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 03/17/04
- 	17-Mar-04 10:40     
+ 	Solaris 5.6 - 03/25/04
+ 	25-Mar-04 14:55     
 
 yes? !bn500_all_shell
 yes? 
@@ -10122,8 +10122,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "17-Mar-04"
-SESSION_TIME = "10:40"
+SESSION_DATE = "25-Mar-04"
+SESSION_TIME = "14:55"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10141,8 +10141,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "17-Mar-04"
-SESSION_TIME = "10:40"
+SESSION_DATE = "25-Mar-04"
+SESSION_TIME = "14:55"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10150,8 +10150,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "17-Mar-04"
-SESSION_TIME = "10:40"
+SESSION_DATE = "25-Mar-04"
+SESSION_TIME = "14:55"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10161,13 +10161,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "17-Mar-04"
-SESSION_TIME = "10:40"
+SESSION_DATE = "25-Mar-04"
+SESSION_TIME = "14:55"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "17-Mar-04"
-SESSION_TIME = "10:40"
+SESSION_DATE = "25-Mar-04"
+SESSION_TIME = "14:55"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10201,7 +10201,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.53"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Mar 17 2004 10:41:33 "
+LAB3 = "Mar 25 2004 14:57:26 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10302,8 +10302,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.53"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "17-Mar-04"
-SESSION_TIME = "10:40"
+SESSION_DATE = "25-Mar-04"
+SESSION_TIME = "14:55"
  
  
 GO bn_reset
@@ -18304,7 +18304,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23043 Mar 17 10:42 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23040 Mar 25 14:59 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18323,7 +18323,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419305 Mar 17 10:43 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419209 Mar 25 14:59 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26473,7 +26473,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   17-Mar-04" ;
+		:history = "FERRET V5.53   25-Mar-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26498,7 +26498,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.53   17-Mar-04" ;
+		:history = "FERRET V5.53   25-Mar-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26650,7 +26650,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Mar 17 10:44:36 PST 2004
+Thu Mar 25 15:01:31 PST 2004
  
 GO bn_reset
 cancel mode verify
@@ -34940,7 +34940,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Mar 17 10:45 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar 25 15:03 testa.v5d
  
 can region
 use coads_climatology
@@ -34952,7 +34952,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Mar 17 10:45 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar 25 15:03 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35020,7 +35020,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.53   17-Mar-04" ;
+		:history = "FERRET V5.53   25-Mar-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35083,7 +35083,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.53   17-Mar-04" ;
+		:history = "FERRET V5.53   25-Mar-04" ;
 data:
 
  GFP3 = "" ;
@@ -35303,7 +35303,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.53   17-Mar-04" ;
+		:history = "FERRET V5.53   25-Mar-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -43100,16 +43100,16 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
 !-> REPEAT: M:300
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- constan cnst     M:149 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE cnst     M:138 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ constan cnst     M:138 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:136 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  !-> list sst[x=280:300@ave,y=@ave]
- -DELETE cnst     M:149 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:138 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -111 -111  J:   46   70  K: -111 -111  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
- reading SST      M:149 I:  131  140  J:   46   70  K: -111 -111  L:    1    1
+ reading SST      M:138 I:  131  140  J:   46   70  K: -111 -111  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -43121,16 +43121,16 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- constan cnst     M:136 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE cnst     M:135 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ constan cnst     M:135 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:134 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  !-> list sst[x=280:330@ave,y=@ave]
- -DELETE cnst     M:136 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:135 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -111 -111  J:   46   70  K: -111 -111  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
- reading SST      M:136 I:  131  155  J:   46   70  K: -111 -111  L:    1    1
+ reading SST      M:135 I:  131  155  J:   46   70  K: -111 -111  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -43142,16 +43142,16 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- constan cnst     M:134 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE cnst     M:133 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ constan cnst     M:129 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:128 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  !-> list sst[x=280:360@ave,y=@ave]
- -DELETE cnst     M:134 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE cnst     M:129 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid ABSTRACT        ABSTRACT  ABSTRACT  ABSTRACT  ABSTRACT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  eval    EX#1     C:  4 I: -111 -111  J:   46   70  K: -111 -111  L:    1    1
  strip --> SST[Y=0:50N@AV4,D=1]
- reading SST      M:134 I:  131  170  J:   46   70  K: -111 -111  L:    1    1
+ reading SST      M:129 I:  131  170  J:   46   70  K: -111 -111  L:    1    1
  doing --> SST[Y=0:50N@AV4,D=1]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
              FILENAME : coads_climatology.cdf
@@ -43161,7 +43161,62 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
           210.385
 cancel mode diag
  
-set mode verify:default
+! order of qualifiers doesnt matter
+repeat/name=a/range=1:3 say `a`
+!-> REPEAT: A:1
+ !-> MESSAGE/CONTINUE 1
+1
+!-> REPEAT: A:2
+ !-> MESSAGE/CONTINUE 2
+2
+!-> REPEAT: A:3
+ !-> MESSAGE/CONTINUE 3
+3
+ 
+! Test using a file variable name
+use coads_climatology
+repeat/name=sst/range=1:5 (list sst)
+!-> REPEAT: SST:1
+             VARIABLE : constant
+          1.00000
+!-> REPEAT: SST:2
+             VARIABLE : constant
+          2.00000
+!-> REPEAT: SST:3
+             VARIABLE : constant
+          3.00000
+!-> REPEAT: SST:4
+             VARIABLE : constant
+          4.00000
+!-> REPEAT: SST:5
+             VARIABLE : constant
+          5.00000
+list/l=1/x=181/y=1 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             FILENAME : coads_climatology.cdf
+             LONGITUDE: 179W
+             LATITUDE : 1N
+             TIME     : JAN
+          283.839
+can data/all
+ 
+! Intentional errors
+set mode ignore
+ 
+! /NAME without /RANGE
+rep/name=a say `a`
+ 
+! Cannot use pseudo-variables.
+rep/range=1:3/name=l list/nohead sst[i=1,j=1]
+ 
+! Nested REPEAT with the same counter variable name
+repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
+!-> REPEAT: A:1
+!-> REPEAT: A:2
+!-> REPEAT: A:3
+!-> REPEAT: A:4
+ 
+cancel mode ignore
  
 GO bn_reset
 cancel mode verify
@@ -43540,56 +43595,56 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
- strip regrid on X: TAUX --> (G021)           @XACT
+ allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ strip regrid on X: TAUX --> (G030)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- -DELETE TAUX     M:130 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ -DELETE TAUX     M:133 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
+ dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
 can mem/all
- -DELETE A        M:130 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
+ -DELETE A        M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
- dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- strip regrid on X: TAUX --> (G021)           @XACT
+ allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ strip regrid on X: TAUX --> (G030)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- nulrgd  TAUX     M:130 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
+ nulrgd  TAUX     M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
  
 can mem/all
- -DELETE TAUX     M:130 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
+ -DELETE TAUX     M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE A        M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 can data/all
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -43641,7 +43696,7 @@ LIST VAR[i=2:4:2]
  strip regrid on X: VAR --> (G015)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    2    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:144 I:    1    2  J:    2    3  K:    1    2  L:    1    1
- -DELETE VAR      M:130 I:    2    4  J:    2    3  K:    1    2  L:    1    1
+ -DELETE VAR      M:133 I:    2    4  J:    2    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G015)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
@@ -43667,7 +43722,7 @@ LIST VAR[i=2:4:2,j=1:3:2]
  allocate dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G015)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- nulrgd  VAR      M:130 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ nulrgd  VAR      M:133 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:144 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  dealloc  dynamic grid (G015)          (AX027)   (AX044)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
@@ -43684,7 +43739,7 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  12121.0  12141.0
  3   / 2:  12321.0  12341.0
 CANC MEM/ALL
- -DELETE VAR      M:130 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE VAR      M:133 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:147 I:    3    4  J:    2    3  K:    1    2  L:    1    1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -43721,7 +43776,7 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
  7    / 3:  11131.0
  10   / 4:  11121.0
 cancel axis/modulo XAX1_4
- -DELETE VAR      M:130 I:    1   10  J:    1    1  K:    1    1  L:    1    1
+ -DELETE VAR      M:133 I:    1   10  J:    1    1  K:    1    1  L:    1    1
  -DELETE VAR      M:144 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  -DELETE VAR      M:147 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  
@@ -43811,7 +43866,7 @@ list/j=1/k=1/l=1 a[i=3:5]
  11   / 3:  1121.00
  16   / 4:  1126.00
  21   / 5:  1131.00
- -DELETE A        M:130 I:    1    1  J:    3    5  K:    1    1  L:    1    1
+ -DELETE A        M:133 I:    1    1  J:    3    5  K:    1    1  L:    1    1
 list/k=1/l=1 a[i=3:5,j=1:8:2]
  dealloc  dynamic grid (G015)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -43827,7 +43882,7 @@ list/k=1/l=1 a[i=3:5,j=1:8:2]
  strip regrid on X: BIGVAR --> (G015)           @XACT
  rdstride BIGVAR   C: 11 I:    1   36  J:    1    7  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M:139 I:    1    8  J:    1    7  K:    1    1  L:    1    1
- -DELETE BIGVAR   M:130 I:    1   36  J:    1    7  K:    1    1  L:    1    1
+ -DELETE BIGVAR   M:133 I:    1   36  J:    1    7  K:    1    1  L:    1    1
  dealloc  dynamic grid (G015)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
  regrid  A        M:125 I:    3    5  J:    1    4  K:    1    1  L:    1    1
  dealloc  dynamic grid (G028)          (AX044)   (AX043)   ZAX1_20   TAX1_10
@@ -43848,7 +43903,7 @@ list/k=1/l=1 a[i=3:5,j=1:8:2]
  
 cancel mem/all
  -DELETE A        M:125 I:    3    5  J:    1    4  K:    1    1  L:    1    1
- -DELETE A        M:130 I:    1    8  J:    1    7  K:    1    1  L:    1    1
+ -DELETE A        M:133 I:    1    8  J:    1    7  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:139 I:    1    8  J:    1    7  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:144 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  -DELETE A        M:147 I:    1    8  J:    1    1  K:    1    1  L:    1    1
@@ -44529,8 +44584,8 @@ can sym lev*
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 03/17/04
- 	17-Mar-04 10:52     
+ 	Solaris 5.6 - 03/25/04
+ 	25-Mar-04 15:09     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44706,8 +44761,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.53  
- 	Solaris 5.6 - 03/17/04
- 	17-Mar-04 10:52     
+ 	Solaris 5.6 - 03/25/04
+ 	25-Mar-04 15:09     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44820,4 +44875,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Mar 17 10:52:16 PST 2004
+Ended at Thu Mar 25 15:09:58 PST 2004

@@ -22,7 +22,7 @@ shade a
 let a3 = 1000
 shade a
 
-use gt160w011.cdf
+use gtbc011
 let a3 = temp[k=1]
 shade a                   ! DELIBERATE ERROR
 

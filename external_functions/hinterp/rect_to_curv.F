@@ -90,8 +90,7 @@
 !                                                                     V
 
       WRITE (descr, 10)
-   10 FORMAT ('bilinear interpolation from rectangular grid ',
-     .        'to curvilinear grid')
+   10 FORMAT ('Regrid from rectangular to curvilinear grid')
       CALL ef_set_desc(id, descr)
 
       CALL ef_set_num_args(id, 4)
@@ -102,23 +101,26 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
-      CALL ef_set_arg_desc(id, arg, 'values F(x,y,z,t)')
+      CALL ef_set_arg_desc(id, arg,
+     ,  'variable V(x,y,z,t) on rectilinear grid')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'lon_bounds_out')
+      CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
-     .  'Dest grid longitude bounds(2-D)')
+     .  'Destination curvilinear grid longitude bounds(2-D)')
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'lat_bounds_out')
+      CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
-     .  'Dest grid latitude bounds(2-D)')
+     .  'Destination curvilinear grid latitude bounds(2-D)')
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)   
       
       arg = 4
-      CALL ef_set_arg_name(id, arg, 'missing values allowed')
+      CALL ef_set_arg_name(id, arg, 'missing_allowed')
       WRITE (descr, 20)
    20 FORMAT ('number of missing values allowed in four ',
      .   'surrounding source cells: 0 to 3')

@@ -88,7 +88,7 @@
 
       WRITE (descr, 10)
    10 FORMAT
-     . ('Compute mapping for spherical interpolation: curvilinear to ',
+     . ('Compute mapping for regridding: curvilinear to ',
      .  'rectangular grid.')
       CALL ef_set_desc(id, descr)
 
@@ -100,27 +100,31 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'lon_in')
+      CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
-     .   'Source grid longitudes (2-D), in Degrees')
+     .   'Source grid longitudes (2-D)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'lat_in')
+      CALL ef_set_arg_unit(id, arg, 'degrees')
       CALL ef_set_arg_desc(id, arg, 
-     .  'Source grid latitudes (2-D), in Degrees')
+     .  'Source grid latitudes (2-D)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'grid_out')
+      CALL ef_set_arg_unit(id, arg, 'degrees')
       WRITE (descr, 20)
-   20 FORMAT ('Any variable on output Longitude-Latitude ',
-     .        'grid, Lon and Lat in Degrees')
+   20 FORMAT ('Any variable on destination Longitude-Latitude ',
+     .        'grid, Lon and Lat')
       CALL ef_set_arg_desc(id, arg, descr)
      .  
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'radius')
+      CALL ef_set_arg_unit(id, arg, 'degrees')
       WRITE (descr, 30)
    30 FORMAT ('Source points falling ',
      .   'within radius are included in mapping to destination point')

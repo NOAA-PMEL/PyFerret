@@ -6,10 +6,6 @@
 ! ACM 3/2004
 !
 !   
-!  Beta version of this routine, July 2004:
-!   -- need to implement 2-step process, computing and
-!      saving output of horiz_interp_init_sphe for a pair
-!      of grids.
 !   -- Check use of and document issue of cell bounds 
 !      vs cell centers.
 !
@@ -95,7 +91,7 @@
 
       WRITE (descr, 10)
    10 FORMAT
-     . ('Spherical interpolation: curvilinear to rectangular grid')
+     .('Apply mapping to regrid from curvilinear to rectangular grid')
       CALL ef_set_desc(id, descr)
 
       CALL ef_set_num_args(id, 2)
@@ -106,7 +102,7 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'V')
       CALL ef_set_arg_desc(id, arg, 
-     .  'values on curvilinear grid V(x,y,z,t)')
+     .  'Variable to regrid, on curvilinear grid V(x,y,z,t)')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
 
       arg = 2

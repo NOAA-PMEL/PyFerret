@@ -1,7 +1,5 @@
 	SUBROUTINE VAR_STAT( dat, mv, cx, lun, full )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -62,6 +60,7 @@
 *               declaration line.
 * V530: 9/00 *sh* - increase rbuff size to allow longer "(isiz*jsiz*ksiz*lsiz)"
 *		  - added support for string variables
+* V532: 5/01 *sh* - minor bug fix: "small" and "large" init'ed to wrong dtype
 
 #ifdef unix
 	include 'ferret.parm'
@@ -104,8 +103,8 @@
 	bad   = mr_bad_data( mv )
 	nbad  = 0
 	ngood = 0
-	small = arbitrary_large_val8
-	large = arbitrary_small_val8
+	small = arbitrary_large_val4
+	large = arbitrary_small_val4
 	sum   = 0.0D0
         sumsq_dev = 0.0
 

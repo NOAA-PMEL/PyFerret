@@ -15,6 +15,7 @@
 * V530: *sh* 8/00 -- added ptype_* - data types
 *	*sh* 10/00 - increased max_context to support more complex expressions
 *	*sh* 3/00 -- added g=ax@near
+* V532: *sh* 5/01 - redefined arbitrary_large/small_<type>
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -48,20 +49,22 @@
      .				unspecified_val4
 	CHARACTER*4		unspecified_name4
 * note: unspecified_int4 was changed from -9999 because of FORTRAN dimens. bug
-	PARAMETER	      ( unspecified_val8	= -2.E34,
-     .				unspec_val8_2		= -2.1E34,
-     .				arbitrary_large_val8	=  3.E33,	! D33?
-     .				arbitrary_small_val8	= -3.E33,	! D33?
-     .				arbitrary_large_val4	=  3.E33,
-     .				arbitrary_small_val4	= -3.E33,
-     .				arbitrary_large_int4	=  1000000000,
-     .				arbitrary_small_int4	= -1000000000,
-     .				ambiguous_val8		= -2.1E33,
-     .				unspecified_int4	= -111 ,
-     .				ambiguous_int4		= -8888 ,
-     .				bad_val4		= -1.E34,
-     .				unspecified_name4	= '&&&&',
-     .				unspecified_val4	= -2.5E34 )
+! 5/01 redefined arbitrary_* using /usr/include/float.h and limits.h on Solaris
+! DBL_MAX, FLT_MAX, INT_MAX, and INT_MIN
+	PARAMETER  (	unspecified_val8	= -2.E34,
+     .		  	unspec_val8_2		= -2.1E34,
+     .		arbitrary_large_val8	=  1.7976931348623157E+308,  ! DBL_MAX
+     .		arbitrary_small_val8	= (-arbitrary_large_val8),
+     .		arbitrary_large_val4	=  3.402823466E+38, ! FLT_MAX
+     .		arbitrary_small_val4	= -arbitrary_large_val4,
+     .		arbitrary_large_int4	=  2147483647, ! INT_MAX
+     .		arbitrary_small_int4	= (-2147483647-1), ! INT_MIN
+     .			ambiguous_val8		= -2.1E33,
+     .			unspecified_int4	= -111 ,
+     .			ambiguous_int4		= -8888 ,
+     .			bad_val4		= -1.E34,
+     .			unspecified_name4	= '&&&&',
+     .			unspecified_val4	= -2.5E34 )
 
 * punctuation
 	CHARACTER*1	pCR

@@ -68,6 +68,7 @@
 *	*sh* 4/00 - all grids and axes now maintain use counts and have
 *			line_class available
 * V533 *sh* 6/01 - allow strides and modulo to be combined
+* V550 *sh*  2/02 - support for subspan modulo axes
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -77,6 +78,7 @@
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
+	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
 
 * calling argument declarations:
@@ -87,7 +89,7 @@
 	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS,  TM_ITS_CDF,
      .		xy_ave, last_axis, may_have_strides, has_strides,
      .		unacceptable_modulo
-	INTEGER	KNOWN_GRID, CAXIS_LEN, TM_AXIS_STRIDE, CX_DIM_LEN,
+	INTEGER	KNOWN_GRID, CAXIS_MODLEN, TM_AXIS_STRIDE, CX_DIM_LEN,
      .		idim, axis_list(4), naxis, var_grid, src_grid, dst_grid,
      .		next_axis, dst_axis, var_axis, i, axlen, i1
 	REAL	fraction
@@ -120,7 +122,7 @@
 * ... strip off the destination modulo wraps if any with abnormal return
 * (so we compute just the base limits, 1-N, of the modulo axis)
 	   IF ( cx_lo_ss(dst_cx,axis) .NE. unspecified_int4 ) THEN
-	      IF (cx_hi_ss(dst_cx,axis ) .GT. CAXIS_LEN(axis,dst_cx)
+	      IF (cx_hi_ss(dst_cx,axis ) .GT. CAXIS_MODLEN(axis,dst_cx)
      .       .OR. cx_lo_ss(dst_cx,axis ) .LT. 1 ) RETURN 1
 	   ENDIF
 	ENDIF
@@ -221,7 +223,7 @@
 	   unacceptable_modulo = .FALSE.
 	   DO 400 i = 1, naxis
 	      idim = axis_list(i)
-	      axlen = CAXIS_LEN(idim, src_cx)
+	      axlen = CAXIS_MODLEN(idim, src_cx)
 	      IF (CX_DIM_LEN(idim,src_cx) .GT. axlen) THEN
 *     ...  for multi-cycle modulo stride must be an integer factor of ax length
 	         fraction = FLOAT(axlen) /
@@ -242,10 +244,10 @@
            IF ( unacceptable_modulo ) THEN
 	      may_have_strides = .FALSE.
 	      CALL TRANSFER_CONTEXT( cx_buff, src_cx)
-!	      IF ( unacceptable_modulo ) THEN
+	       IF (mode_diagnostic) THEN
 	        CALL WARN('Not using NetCDF strides for multi-cycle modulo')
 	        CALL WARN('Stride value not a factor of axis length')  
-!	      ENDIF
+	       ENDIF
 	      GOTO 50			! re-do w/out strides
 	   ENDIF
 	ENDIF

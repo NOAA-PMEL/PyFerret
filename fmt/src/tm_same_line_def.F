@@ -1,7 +1,5 @@
 	LOGICAL FUNCTION TM_SAME_LINE_DEF ( line1, line2 )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -58,6 +56,7 @@
 *      3/01 *sh* - bug fix to 10/00 bug fix ... Still need to make sure
 *	            it is the *same* child of an irreg axis by checking
 *	            the lo/hi/delta
+* V541 2/02 *sh* - added support for line_modulo_len
 
 * Include files
 	include 'tmap_dims.parm'
@@ -88,6 +87,12 @@
 
 * Same modulo?
 	  IF (line_modulo(line1) .NEQV. line_modulo(line2)) GOTO 1000
+
+* Same modulo length?
+	  IF (line_modulo(line1)) THEN
+	     IF (line_modulo_len(line1) .NE. line_modulo_len(line2))
+     .								GOTO 1000
+	  ENDIF
 
 * Check length
 	  IF (line_dim(line1) .NE. line_dim(line2)) GOTO 1000

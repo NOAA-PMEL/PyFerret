@@ -52,6 +52,7 @@
 * V510 4/00 *sh* -- all lines now DO have line_parent
 *      6/00 *sh* -- bug fix: children of irregular modulo axes 
 * V533 6/01 *sh* -- using TM_AXIS_RECURSIVE
+* V541  2/02 *sh* -- support for subspan modulo axes
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -63,41 +64,55 @@
 	INTEGER	isubscript, grid, idim
 
 * internal variable declarations:
-	LOGICAL TM_AXIS_RECURSIVE, recursive, modulo
-	INTEGER	iaxis, isub0
+	LOGICAL TM_AXIS_RECURSIVE, TM_ITS_SUBSPAN_MODULO,
+     .		recursive, modulo, regular
+	INTEGER	TM_MODULO_LINE_DIM, axis, isub0, llen
 	REAL*8	TM_WORLD, lo_point, hi_point
 
 * initialize
-	iaxis = grid_line( idim, grid )
-	IF ( iaxis .EQ. mnormal .OR. iaxis .EQ. munknown ) THEN
+	axis = grid_line( idim, grid )
+	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
 	   BOX_SIZE = bad_val4
 	   RETURN
 	ENDIF
 
-	IF ( line_regular( iaxis ) ) THEN
+* special consideration for sub-span modulo axis outside its core range
+	llen = TM_MODULO_LINE_DIM(axis)
+	IF (TM_ITS_SUBSPAN_MODULO(axis) ) THEN
+	   IF ( isubscript.LT.1 .OR. isubscript.GE.llen ) THEN
+	      regular = .FALSE.
+	   ELSE
+	      regular = line_regular( axis )
+	   ENDIF
+	ELSE
+	   regular = line_regular( axis )
+	ENDIF
+
+
+	IF ( regular ) THEN
 * regularly spaced points all have same grid box size
-	   BOX_SIZE = SNGL( line_delta( iaxis ) )
+	   BOX_SIZE = SNGL( line_delta( axis ) )
 
 	ELSE
 * irregularly spaced points
 * keep subscript within bounds ( between 1 and dimension of axis ) by ...
-           IF ( line_modulo( iaxis ) ) THEN
+           IF ( line_modulo( axis ) ) THEN
 * ... modulo-ing to the appropriate value
-              isub0 = MOD(isubscript-1,line_dim(iaxis)) + 1
+              isub0 = MOD(isubscript-1,llen) + 1
            ELSE
 * ... truncating to the appropriate value
-	      isub0 = MIN( line_dim(iaxis), MAX( 1, isubscript ) )
+	      isub0 = MIN( llen, MAX( 1, isubscript ) )
            ENDIF
 
 * only dynamic lines have the possibility of recursive definitions
 * (since FORTRAN doesn't protect "AND" clauses this test in 2 steps)
-	   recursive = TM_AXIS_RECURSIVE(iaxis)
+	   recursive = TM_AXIS_RECURSIVE(axis)
 
 * use modulo logic if the parent line is modulo (6/00)
-	   modulo = line_modulo(iaxis)
+	   modulo = line_modulo(axis)
 	   IF (recursive) THEN
 	      modulo = modulo .OR.
-     .		       line_modulo( line_parent(iaxis) )
+     .		       line_modulo( line_parent(axis) )
 	   ENDIF
 
 * use TM_WORLD to compute BOX_SIZE for recursive defs (10/95)
@@ -109,7 +124,7 @@
 	         lo_point = (TM_WORLD(isub0,   grid, idim, box_middle) 
      .			  +  TM_WORLD(isub0-1, grid, idim, box_middle)) / 2
 	      ENDIF
-	      IF ( isub0.EQ.line_dim(iaxis) .AND. .NOT.modulo ) THEN
+	      IF ( isub0.EQ.llen .AND. .NOT.modulo ) THEN
 	         hi_point =  TM_WORLD(isub0,   grid, idim, box_hi_lim)
 	      ELSE
 	         hi_point = (TM_WORLD(isub0,   grid, idim, box_middle) 

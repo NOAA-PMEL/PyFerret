@@ -120,6 +120,7 @@
 * V530:10/00 *sh* - added FILE/FORMAT=delimited/TYPE=/DELIMITERS=
 * V533 6/01 *sh* - bug fix "SET GRID" w/out arg didn't check for -111
 * v540 *acm* 10/01 increase length of ds_name
+* V542: *sh* 7/02 - added support for sub-span modulo axes
 * V550: *acm*10/02- Change arg to char*24, to match longer region names (cx_name)
 
 	include 'tmap_dims.parm'
@@ -170,7 +171,7 @@
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
-     .                  do_ez, tregular
+     .                  do_ez, tregular, its_changed
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -665,12 +666,25 @@ c *kob* 4/97
  1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
         IF ( axis .EQ. unspecified_int4 ) GOTO 6210
 * /MODULO
-	IF ( qual_given(slash_set_axis_modulo) .GT. 0 ) THEN
-           IF ( .NOT.line_modulo(axis) ) THEN
-              line_modulo( axis ) = .TRUE.
+	lp = qual_given(slash_set_axis_modulo)
+	IF ( lp .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .			      val_buf, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF (val_buf .EQ. unspecified_val4) THEN
+	      val_buf = 0.0
+	   ELSE
+	      val_buf = ABS(val_buf)  ! ABS to tolerate negatives
+	   ENDIF
+	   its_changed = .NOT.line_modulo(axis)
+     .		    .OR.  val_buf .NE. line_modulo_len(axis)
+           line_modulo( axis ) = .TRUE.
+	   line_modulo_len( axis ) = val_buf
+
 * ... wipe memory clear of stored variables - this could change all definitions
 *      ( could be more selective for efficiency by checking to see where this
 *      axis gets used )
+	   IF ( its_changed ) THEN
               DO 1210 i = 1,max_mr_avail
  1210         IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )

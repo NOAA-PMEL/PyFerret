@@ -12,6 +12,7 @@ cd_get_1_axis.F\
 cd_get_1_dep_var.F\
 cd_get_attrib.F\
 cd_get_attval.F\
+cd_get_attvalc.F\
 cd_get_bounds.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
@@ -155,6 +156,7 @@ tm_int4_swap.F\
 tm_internal_read.F\
 tm_irregax_mid.F\
 tm_its_cdf.F\
+tm_its_subspan_modulo.F\
 tm_itsa_model_run.F\
 tm_lefint.F\
 tm_legal_name.F\
@@ -168,6 +170,8 @@ tm_make_4d_grids.F\
 tm_make_basic_axis.F\
 tm_make_dyn_line.F\
 tm_make_fmt_date.F\
+tm_modulo_axlen.F\
+tm_modulo_line_dim.F\
 tm_new_grid_name.F\
 tm_new_line_name.F\
 tm_next_dyn_grid.F\
@@ -206,6 +210,9 @@ tm_use_line.F\
 tm_world.F\
 tm_world_ax.F\
 tm_write_gridfile.F\
+tm_ww_ax_1_n.F\
+tm_ww_axlen.F\
+tm_ww_axlims.F\
 tm_ymd_time_convrt.F\
 ts_find_var.F\
 ts_get_time_axis.F\

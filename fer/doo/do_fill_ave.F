@@ -3,8 +3,7 @@
      .					res, res_mr, res_cx,
      .					buff	)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,8 +45,9 @@
 *
 * V200:  6/2/89
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
+* V550 *sh* 8/2/02 - support for modulo lengths. ensure that filling 
+*		    does not operate acros the subspan modulo void point
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -55,15 +55,6 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -72,8 +63,12 @@
      .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * internal variable declarations:
-	INTEGER i, j, k, l, ii, n, haf, lo_sub(4), hi_sub(4),
-     .		ii_com, lo_com, hi_com
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, has_mod_void
+	INTEGER	TM_MODULO_LINE_DIM, CGRID_AXIS, 
+     .		i, j, k, l, ii, n, haf, lo_sub(4), hi_sub(4),
+     .		ii_com, lo_com, hi_com, lo_com0, hi_com0,
+     .		lo_modlim, hi_modlim, nmod, nmod_prev, modlen
+
 	REAL	bad_res, sum, comp
 
 * internal (convenience) equivalences
@@ -90,14 +85,24 @@
 * initialize
 	haf = arg * .5
 	bad_res = mr_bad_data( com_mr )
+	nmod_prev = -99999
 
 * compute limits within which calculation is straightforward
 	DO 10 ii = 1, 4
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
  10	CONTINUE
-	lo_com = cx_lo_ss(com_cx,idim)
-	hi_com = cx_hi_ss(com_cx,idim)
+	lo_com0 = cx_lo_ss(com_cx,idim)
+	hi_com0 = cx_hi_ss(com_cx,idim)
+	lo_com = lo_com0
+	hi_com = hi_com0
+
+* it his a subspan modulo axis?
+	has_mod_void = TM_ITS_SUBSPAN_MODULO( CGRID_AXIS(idim,com_cx) )
+	IF (has_mod_void) THEN
+	   modlen = TM_MODULO_LINE_DIM( CGRID_AXIS(idim,com_cx) )
+	   has_mod_void = lo_com.LE.0 .OR. hi_com.GE.modlen
+	ENDIF
 
 * FILL ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
@@ -105,6 +110,23 @@
 	   DO 110 k = lo_s3, hi_s3
 	   DO 110 j = lo_s2, hi_s2
 	   DO 110 i = lo_s1, hi_s1
+*  ... do not allow filling based upon values across a subspan modulo void
+	      IF (has_mod_void) THEN
+	         IF (MOD(i,modlen) .EQ. 0) THEN
+	            res(i,j,k,l) = com(i,j,k,l)
+	            GOTO 110
+	         ENDIF
+	         nmod = (i-1)/modlen 
+	         IF (i.LE.0) nmod = nmod - 1
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_com = MAX( lo_modlim, lo_com0 )
+	            hi_com = MIN( hi_modlim, hi_com0  )
+	         ENDIF
+	      ENDIF
+* ... end of subspan modulo adjustment
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
 	         res(i,j,k,l) = com(i,j,k,l)
 	         GOTO 110
@@ -129,9 +151,26 @@
 
 * FILL ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 j = lo_s2, hi_s2
+	   DO 220 l = lo_s4, hi_s4
+	   DO 220 k = lo_s3, hi_s3
+	   DO 220 j = lo_s2, hi_s2
+*  ... do not allow filling based upon values across a subspan modulo void
+	      IF (has_mod_void) THEN
+	         IF (MOD(j,modlen) .EQ. 0) THEN
+	            res(i,j,k,l) = com(i,j,k,l)
+	            GOTO 220
+	         ENDIF
+	         nmod = (j-1)/modlen 
+	         IF (j.LE.0) nmod = nmod - 1
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_com = MAX( lo_modlim, lo_com0 )
+	            hi_com = MIN( hi_modlim, hi_com0  )
+	         ENDIF
+	      ENDIF
+* ... end of subspan modulo adjustment
 	   DO 210 i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
 	         res(i,j,k,l) = com(i,j,k,l)
@@ -154,11 +193,29 @@
 	         res(i,j,k,l) = bad_res
 	      ENDIF
  210	   CONTINUE
+ 220	   CONTINUE
 
 * FILL ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 k = lo_s3, hi_s3
+	   DO 320 l = lo_s4, hi_s4
+	   DO 320 k = lo_s3, hi_s3
+*  ... do not allow filling based upon values across a subspan modulo void
+	      IF (has_mod_void) THEN
+	         IF (MOD(k,modlen) .EQ. 0) THEN
+	            res(i,j,k,l) = com(i,j,k,l)
+	            GOTO 320
+	         ENDIF
+	         nmod = (k-1)/modlen 
+	         IF (k.LE.0) nmod = nmod - 1
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_com = MAX( lo_modlim, lo_com0 )
+	            hi_com = MIN( hi_modlim, hi_com0  )
+	         ENDIF
+	      ENDIF
+* ... end of subspan modulo adjustment
 	   DO 310 j = lo_s2, hi_s2
 	   DO 310 i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
@@ -182,10 +239,28 @@
 	         res(i,j,k,l) = bad_res
 	      ENDIF
  310	   CONTINUE
+ 320	   CONTINUE
 
 * FILL ALONG T AXIS
 	ELSE
-	   DO 410 l = lo_s4, hi_s4
+	   DO 420 l = lo_s4, hi_s4
+*  ... do not allow filling based upon values across a subspan modulo void
+	      IF (has_mod_void) THEN
+	         IF (MOD(l,modlen) .EQ. 0) THEN
+	            res(i,j,k,l) = com(i,j,k,l)
+	            GOTO 420
+	         ENDIF
+	         nmod = (l-1)/modlen 
+	         IF (l.LE.0) nmod = nmod - 1
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_com = MAX( lo_modlim, lo_com0 )
+	            hi_com = MIN( hi_modlim, hi_com0  )
+	         ENDIF
+	      ENDIF
+* ... end of subspan modulo adjustment
 	   DO 410 k = lo_s3, hi_s3
 	   DO 410 j = lo_s2, hi_s2
 	   DO 410 i = lo_s1, hi_s1
@@ -210,6 +285,7 @@
 	         res(i,j,k,l) = bad_res
 	      ENDIF
  410	   CONTINUE
+ 420	   CONTINUE
 	ENDIF
 
 * always success
@@ -217,3 +293,4 @@
 	RETURN
 
 	END	
+

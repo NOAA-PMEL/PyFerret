@@ -60,6 +60,7 @@
 * V510 *sh* 3/00 - initialize through line/grid_ceiling -- for dynamic netCDF
 *			grid and line management
 * V530*acm* 1/01 - add line_cal_name for alternative calendar types.
+* V550 *sh* 11/02 - add initialize line_modulo_len
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -93,7 +94,8 @@
      .		line_unit_code  (mpsxt) / pun_degrees   /,
      .		line_direction	(mpsxt)	/ 'WE'		/,
      .		line_regular	(mpsxt)	/ .TRUE.	/,
-     .		line_modulo	(mpsxt) / .FALSE.       /,
+     .		line_modulo	(mpsxt) / .TRUE.        /,
+     .		line_modulo_len	(mpsxt) / 360.0D0       /,
      .		line_start	(mpsxt)	/ 130.5		/,
      .		line_delta	(mpsxt)	/ 1.0		/
 	DATA
@@ -104,7 +106,8 @@
      .		line_unit_code  (mpsxu) / pun_degrees   /,
      .		line_direction	(mpsxu)	/ 'WE'		/,
      .		line_regular	(mpsxu)	/ .TRUE.	/,
-     .		line_modulo	(mpsxu) / .FALSE.       /,
+     .		line_modulo	(mpsxu) / .TRUE.        /,
+     .		line_modulo_len	(mpsxu) / 360.0D0       /,
      .		line_start	(mpsxu)	/ 131.0		/,
      .		line_delta	(mpsxu)	/ 1.0		/
 	DATA
@@ -116,6 +119,7 @@
      .		line_direction	(mpsyt)	/ 'SN'		/,
      .		line_regular	(mpsyt)	/ .FALSE.	/,
      .		line_modulo	(mpsyt) / .FALSE.       /,
+     .		line_modulo_len	(mpsyt) / 0.0D0         /,
      .		line_start	(mpsyt)	/ unspecified_val8 /,
      .		line_delta	(mpsyt)	/ unspecified_val8 /
 	DATA
@@ -127,6 +131,7 @@
      .		line_direction	(mpsyu)	/ 'SN'		/,
      .		line_regular	(mpsyu)	/ .FALSE.	/,
      .		line_modulo	(mpsyu) / .FALSE.       /,
+     .		line_modulo_len	(mpsyu) / 0.0D0         /,
      .		line_start	(mpsyu)	/ unspecified_val8 /,
      .		line_delta	(mpsyu)	/ unspecified_val8 /
 	DATA
@@ -138,6 +143,7 @@
      .		line_direction	(mpszt)	/ 'UD'		/,
      .		line_regular	(mpszt)	/ .FALSE.	/,
      .		line_modulo	(mpszt) / .FALSE.       /,
+     .		line_modulo_len	(mpszt) / 0.0D0         /,
      .		line_start	(mpszt)	/ unspecified_val8 /,
      .		line_delta	(mpszt)	/ unspecified_val8 /
 	DATA
@@ -149,6 +155,7 @@
      .		line_direction	(mpszw)	/ 'UD'		/,
      .		line_regular	(mpszw)	/ .FALSE.	/,
      .		line_modulo	(mpszw) / .FALSE.       /,
+     .		line_modulo_len	(mpszw) / 0.0D0         /,
      .		line_start	(mpszw)	/ unspecified_val8 /,
      .		line_delta	(mpszw)	/ unspecified_val8 /
 
@@ -261,6 +268,12 @@
 
 	DATA	(line_cal_name(i),i=0,line_ceiling)
      .			/line_ceiling*'GREGORIAN', 'GREGORIAN'/
+
+	DATA	(line_modulo(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*.FALSE./
+
+	DATA	(line_modulo_len(i),i=nlne_def+1,line_ceiling)
+     .			/lines_left*0.0D0/
 
 c comment out to speed compilation and decrease mem needs *kob* 7/92
 c	DATA	(line_mem(i),i=pline_mem_next,maxlinestore)

@@ -83,6 +83,7 @@
 *			(see err500_del_var_corruption)
 *	     4/00 - netCDF files now defining dynamic grids and axes. Need
 *		to check among these for previously defined objects
+* V541: *sh* 2/02 - minor change to set line_modulo_len
 
 * arguments
 	CHARACTER*(*)	gfile_name
@@ -332,6 +333,7 @@
 	  reg_coords = TM_HAS_STRING( buff(p_lstore), 'START')
 	  irreg_coords = TM_HAS_STRING( buff(p_lstore), 'GIVEN')
 	  line_modulo(temp) = TM_HAS_STRING( buff(p_modulo), 'MODULO')
+	  line_modulo_len(temp) = 0.0D0
 	  line_t0(temp) = char_init20
 	  line_tunit(temp) = real4_init
 	  IF (reg_coords) THEN

@@ -1,6 +1,5 @@
 	LOGICAL FUNCTION TM_Line_match ( line1, line2 )
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -47,6 +46,7 @@
 *			   using NEQV and EQV
 * 1/96 *sh* "bug" fix: match was based on exactly identical unit strings
 *		this meant that "DEGREES" didn't match "LONGITUDE".
+* V541 *sh* 2/02 - check line_modulo_len
 
 * Include files
 #ifdef unix
@@ -66,7 +66,7 @@
 	INTEGER*4	line1, line2
 
 * Local definitions
-	INTEGER*4	i, j, lc1, lc2
+	INTEGER*4	j, lc1, lc2
 	LOGICAL		TM_FPEQ
 
 * Same regularity/irregularity?
@@ -74,6 +74,12 @@
 
 * Same modularity?
 	IF (line_modulo(line1) .NEQV. line_modulo(line2)) GOTO 110
+
+* Same modulo length?
+	IF (line_modulo(line1)) THEN
+	  IF (line_modulo_len(line1) .NE. line_modulo_len(line2))
+     .							  GOTO 110
+	ENDIF
 
 * Check length
 	IF (line_dim(line1) .NE. line_dim(line2)) GOTO 110

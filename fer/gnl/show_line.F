@@ -1,7 +1,5 @@
 	SUBROUTINE SHOW_line( line, brief )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -45,8 +43,8 @@
 * V200:  9/22/89 - added "orient" for axes without particular orientations
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V530:  3/01    - indicate the calendar for non-Gregorian calendar types 
+* V541 *sh*  2/02 - describe axis span and modulo length
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -57,23 +55,17 @@
 	include 'xtext_info.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations
 	LOGICAL		brief
 	INTEGER 	line
 
 * local variable declarations:
-	INTEGER		idim, orient
-	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, len
-	CHARACTER	cal_name*32
+	LOGICAL		TM_ITS_SUBSPAN_MODULO
+	INTEGER		idim, orient, slen, i
+	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
+	CHARACTER	TM_FMT*32, buff*80
+	REAL*8		TM_WW_AXLEN
 
 * determine orientation
 	DO 100 idim = 1, 5
@@ -99,14 +91,38 @@
 	   CALL SPLIT_LIST
      .		(pttmode_explct, ttout_lun, 'T0 = '//line_t0(line), 0)
 
-	   cal_name = line_cal_name (line)
-	   cal_id = TM_GET_CALENDAR_ID (cal_name)
+* report the calendar of a time axis if "interesting"
+	   buff = line_cal_name (line)
+	   cal_id = TM_GET_CALENDAR_ID (buff)
 	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
-	      len = TM_LENSTR1(cal_name)
-	      CALL SPLIT_LIST (pttmode_explct, 
-     .		          ttout_lun, 'CALENDAR = '//cal_name(:len), 0)
+	      slen = TM_LENSTR1(buff)
+	      CALL SPLIT_LIST (pttmode_explct, ttout_lun, 
+     .		               'CALENDAR = '//buff(:slen), 0)
 	   ENDIF
 	ENDIF
 
+* report the full span of the axis
+	buff =  '   Axis span (to cell edges) = '//
+     .		TM_FMT( SNGL(TM_WW_AXLEN(line)),7,32,slen )
+	slen = slen + 31
+
+* if line is modulo, report its modulo cycle length
+	IF ( line_modulo(line) ) THEN
+	   IF ( TM_ITS_SUBSPAN_MODULO(line) ) THEN
+	     buff = buff(:slen)// ' (modulo length = ' //
+     .		   TM_FMT( SNGL(line_modulo_len(line)),7,32,i )
+	     slen = slen + i + 18
+	     buff = buff(:slen) //')'
+	     slen = slen + 1
+	   ELSE
+	     buff = buff(:slen) // ' (modulo length = axis span)'
+	     slen = slen + 28
+	   ENDIF
+	ENDIF
+	CALL SPLIT_LIST (pttmode_explct, ttout_lun, buff, slen)
+
 	RETURN
 	END
+
+
+

@@ -66,15 +66,17 @@
 *	TM_WORLD has hopefully made this a legitimate operation
 *	*sh* 1/00 - bug fix: @ITP failed to set subscripts if exact grid point
 * V533: *sh* 6/01 - support for combined netCDF strides (cx_delta) and modulo
+* V541: *sh* 2/02 - support for modulo axis lengtha
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
 * RETURN 1 - goes back to strip off any remaining transformations
 
 * internal variable declarations:
-	LOGICAL	ITSA_MODULO_REGRID, itsa_uvar, modulo_dest_regrid,
-     .		allatonce
-	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CX_DIM_LEN, POTENT_SIZE,
+	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, 
+     .		itsa_uvar, modulo_dest_regrid, allatonce
+	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN,
+     .		CGRID_AXIS, POTENT_SIZE,
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
      .		nrev, reversed(4), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
@@ -207,20 +209,42 @@
 !	      CALL WARN('This can crash FERRET!!!'//
 !     .		' --> Use higher coordinate values.')
 !	   ENDIF
-	   npts	   = CAXIS_LEN( axis, lo_cx )
-	   IF ( cx_lo_ss(lo_cx, axis) .GE. 1 ) THEN
-	      nmod = ( cx_lo_ss(lo_cx, axis) - 1 ) / npts
-	   ELSE
-	      nmod = cx_lo_ss(lo_cx, axis) / npts - 1
-	   ENDIF
+* shift the requested range into the base modulo (1:n) limits
+	   npts	   = CAXIS_MODLEN( axis, hi_cx )
+	   nmod = ( cx_lo_ss(lo_cx, axis) - 1 ) / npts
+	   IF ( cx_lo_ss(lo_cx, axis) .LE. 0 ) nmod = nmod - 1
 	   xlate = npts * nmod
 	   cx_lo_ss(hi_cx, axis) = cx_lo_ss(lo_cx, axis) - xlate
-	   cx_hi_ss(hi_cx, axis) = MIN( npts, 
-     .				   cx_hi_ss(lo_cx, axis) - xlate )
+	   cx_hi_ss(hi_cx, axis) = cx_hi_ss(lo_cx, axis) - xlate
+* for subspan modulo axis do not request the fictitious "n+1" point
+	   IF ( TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(axis, lo_cx)) ) THEN
+	     IF (cx_lo_ss(hi_cx,axis).EQ.npts) THEN
+	       IF (cx_hi_ss(hi_cx,axis).GT.npts) THEN
+* ... improper translation was based upon void start point
+	         nmod = nmod + 1
+	         cx_lo_ss(hi_cx,axis) = 1
+	         cx_hi_ss(hi_cx,axis) = cx_hi_ss(hi_cx,axis) - npts
+	       ELSE
+* ... only a void point was requested, hack is to request the last valid point
+	         cx_lo_ss(hi_cx,axis) = npts - 1
+	         cx_hi_ss(hi_cx,axis) = npts - 1
+	       ENDIF
+	     ENDIF
+	     IF (cx_hi_ss(hi_cx,axis) .GE. npts)
+     .	        cx_hi_ss(hi_cx,axis) = npts - 1
+	   ELSE
+* trim the (first) request to the limits of the data
+	     IF (cx_hi_ss(hi_cx,axis) .GT. npts)
+     .	        cx_hi_ss(hi_cx,axis) = npts
+	   ENDIF
+	   IF (cx_lo_ss(hi_cx,axis) .GT. cx_hi_ss(hi_cx,axis))
+     .	     cx_lo_ss(hi_cx,axis) = cx_hi_ss(hi_cx,axis)
+
 * if requested span exceeds axis length we can modulo from one request
 * note that with strides the parity may shift in the right hand replication
 *      regrid_lims only lets those cases thru to here if rqsted span le npts
-	   allatonce = cx_hi_ss(lo_cx,axis)-cx_lo_ss(lo_cx,axis) .GE. npts
+	   allatonce = cx_hi_ss(lo_cx,axis)-cx_lo_ss(lo_cx,axis)
+     .		  .GE. CAXIS_LEN(axis,lo_cx)
 	   IF ( allatonce ) THEN
 	     IF (cx_delta(axis,lo_cx) .EQ. unspecified_val8) THEN
 	        cx_lo_ss(hi_cx, axis) = 1
@@ -262,6 +286,21 @@
 	      is_phase ( lo_isp ) = isphase_1
 	   ENDIF
 	   aclass = isact_class_modulo
+
+	ELSEIF( aclass .EQ. isact_class_subspan_fill ) THEN
+* SET UP TO INSERT PHANTOM POINT INTO VOID AT END OF SUBSPAN MODULO AXIS
+* ... update the axis, omitting the top point
+	   npts	= CAXIS_LEN( axis, lo_cx )
+	   IF (cx_hi_ss(hi_cx, axis) .NE. npts+1) CALL ERRMSG
+     .		( ferr_internal, status, 'subspan_fill_not_N+1', *5000 )
+	   cx_hi_ss(hi_cx, axis) = npts
+	   IF ( cx_lo_ss(hi_cx, axis) .GT. npts )
+     .			     cx_lo_ss(hi_cx, axis) = npts ! was void pt, alone
+	   cx_by_ss(axis,hi_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( axis, hi_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   is_act ( lo_isp ) = isact_subspan_fill
+	   aclass = isact_class_subspan_fill
 
 	ELSEIF( aclass .EQ. isact_class_reconcile ) THEN
 * SET UP TO RECONCILE POSSIBLE DIFFERENCES BETWEEN REQUEST AND WHAT IS RECEIVED

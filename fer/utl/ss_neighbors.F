@@ -1,8 +1,6 @@
 	SUBROUTINE SS_NEIGHBORS ( world_coord, grid, idim,
      .				  extrapolate, sslo, sshi, factor )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -57,17 +55,12 @@
 * V301 - 2/94 - based on ISUBSCRIPT
 * V420 - 10/95 - allow line defs to be recursive (dynamic lines) by avoiding
 *		 direct use of line_mem
+* V541 - *sh* 2/02 - added support for subspan modulo axes
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	LOGICAL extrapolate
@@ -75,57 +68,61 @@
 	REAL	world_coord, factor
 
 * internal variable declarations:
-	INTEGER	lo_look, hi_look, iaxis, ibot, itop, look,
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, regular
+	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		isub0, line_len, isubsc, num_mod, point
 	REAL 	subsc
-	REAL*8	TM_WORLD, wcoord, start, aend, span, first, last, wwindex
+	REAL*8	TM_WORLD,  TM_WW_AXLEN, 
+     .		wcoord, start, aend, span, first, last, wwindex
 
 * initialize 
 	wcoord = world_coord	! switch to REAL*8
 	extrapolate = .FALSE.
 
 * which axis are we on ?
-	iaxis    = grid_line ( idim, grid )
-	line_len = line_dim( iaxis )
+	axis    = grid_line ( idim, grid )
+	line_len = line_dim( axis )
 
 * check for peculiar calls
-	IF (  iaxis .EQ. mnormal
-     .	 .OR. iaxis .EQ. munknown ) THEN
+	IF (  axis .EQ. mnormal
+     .	 .OR. axis .EQ. munknown ) THEN
 	   sslo = unspecified_int4
 	   RETURN
 	ENDIF
 
-* initialize pointers for axes with irregularly spaced points
-	IF ( .NOT.line_regular( iaxis ) ) THEN
-	   isub0 = line_subsc1( iaxis ) - 1
-	   ibot  = isub0 + 1
-	   itop  = isub0 + line_len
+* special consideration for sub-span modulo axis outside its core range
+	CALL TM_WW_AX_1_N(axis, first, last)
+	IF (TM_ITS_SUBSPAN_MODULO(axis) ) THEN
+	   IF ( wcoord.LT.first .OR. wcoord.GT.last ) THEN
+	      line_len = line_len + 1
+	      last = TM_WORLD(line_len, grid, idim, box_middle)
+	      regular = .FALSE.
+	   ELSE
+	      regular = line_regular( axis )  ! optimization - simple treatment
+	   ENDIF
+	ELSE
+	   regular = line_regular( axis )
 	ENDIF
 
-* get positions of first and last points on axis
-	IF ( line_regular( iaxis ) ) THEN
-	   first = line_start( iaxis )
-	   last  = first + line_delta( iaxis ) * (line_len-1)
-        ELSE
-           first = TM_WORLD(       1, grid, idim, box_middle)
-           last  = TM_WORLD(line_len, grid, idim, box_middle)
+* initialize pointers for axes with irregularly spaced points
+	IF ( .NOT.regular ) THEN
+	   isub0 = line_subsc1( axis ) - 1
+	   ibot  = isub0 + 1
+	   itop  = isub0 + line_len
 	ENDIF
 
 * ***** SOLUTIONS WHEN GIVEN POINT BEYOND AXIS ENDS
 	IF ( wcoord .LT. first .OR. wcoord .GT. last ) THEN
 * ... begin by computing axis limits as outer edges of end boxes
-	   IF ( line_regular( iaxis ) ) THEN
-	      span  = line_delta( iaxis ) * line_len
-	      start = line_start( iaxis ) - line_delta( iaxis )/2.
-	      aend  = start + span
-           ELSE
-              start = TM_WORLD(       1, grid, idim, box_lo_lim)
-              aend  = TM_WORLD(line_len, grid, idim, box_hi_lim)
-              span  = aend - start
+	   span = TM_WW_AXLEN(axis)
+	   CALL TM_WW_AXLIMS(axis, start, aend)
+	   IF (TM_ITS_SUBSPAN_MODULO(axis)) THEN
+	      span = line_modulo_len(axis)
+	      aend = start + span
 	   ENDIF
 
 * Modulo axis: translate world coord to within axis range
-	   IF ( line_modulo( iaxis ) ) THEN
+	   IF ( regular ) THEN
 * ... now translate to within axis limits saving modulo number
 	      IF     ( wcoord .GT. aend  ) THEN
 	         num_mod = ( wcoord - start ) / span
@@ -144,7 +141,7 @@
 * ... three cases: modulo (always solution), exrapolate(maybe sol'n), or
 *     not extrap. (nexer solution)
 	   IF ( wcoord .LT. first ) THEN
-	      IF ( line_modulo(iaxis) ) THEN
+	      IF ( line_modulo(axis) ) THEN
 	         sslo = 1
 	         sshi = line_len
 	         factor = 1. - (first-wcoord)/(first+span-last)
@@ -157,7 +154,7 @@
 	         GOTO 1000		! no solution
 	      ENDIF
 	   ELSEIF ( wcoord .GT. last ) THEN
-	      IF ( line_modulo(iaxis) ) THEN
+	      IF ( line_modulo(axis) ) THEN
 	         sslo = 1
 	         sshi = line_len
 	         factor = (wcoord-last)/(first+span-last)
@@ -181,8 +178,8 @@
 * ***** END OF SOLUTIONS BEYOND AXIS ENDS
 
 * ***** AXIS POINTS ARE REGULARLY SPACED --> QUICK CALCULATION!
-	IF ( line_regular( iaxis ) ) THEN
-	   subsc = (wcoord-first)/line_delta(iaxis)
+	IF ( regular ) THEN
+	   subsc = (wcoord-first)/line_delta(axis)
 	   isubsc = INT( subsc )
 	   IF ( subsc .EQ. FLOAT(isubsc) ) THEN
 	      point = isubsc + 1
@@ -197,45 +194,6 @@
 
 	ELSE			! AXIS POINTS ARE IRREGULAR !!!!
 
-! This optimization is untested and was never compiled because searches
-! of irregluar axes are relatively rare
-!	   IF ( sslo.GE.1 .AND. sshi.LE.line_len ) THEN
-!* ***** PRE-SCAN NEIGHBORING POINTS TO FIND QUICK SOLN FOR IRREG AXIS
-!	      ibot = isub0 + sslo
-!	      itop = isub0 + sshi
-!* ... does the last solution still work?
-!	      IF ( line_mem(ibot) .LE. wcoord
-!     .       .AND. line_mem(itop) .GE. wcoord ) THEN
-!	         factor = SNGL(line_mem(itop) - wcoord)
-!     .	 		/ SNGL(line_mem(itop) - line_mem(ibot))
-!	         RETURN
-!* ... is the answer one of the neighboring points?
-!	      ELSEIF ( wcoord .LT. line_mem(ibot) ) THEN
-!* ... new value is smaller than last time
-!	         IF ( wcoord .GT. line_mem(ibot-1) ) THEN
-!	            sshi = sslo
-!	            sslo = sslo - 1
-!	            factor = SNGL(line_mem(ibot) - wcoord)
-!     .			   / SNGL(line_mem(ibot) - line_mem(ibot-1))
-!	            RETURN
-!	         ELSE
-!	            itop = ibot
-!	            ibot = 1
-!	         ENDIF
-!	      ELSE
-!* ... new value is larger than last time
-!	         IF ( wcoord .LT. line_mem(itop+1) ) THEN
-!	            sslo = sshi
-!	            sshi = sshi + 1
-!	            factor = SNGL(line_mem(itop+1) - wcoord)
-!     .			   / SNGL(line_mem(itop+1) - line_mem(itop))
-!	            RETURN
-!	         ELSE
-!	            ibot = itop
-!	            itop = line_len
-!	         ENDIF
-!	      ENDIF
-!	   ENDIF
 * ***** END OF PRE-SCAN NEIGHBORING POINTS
 
 * binary search if axis points are irregularly spaced

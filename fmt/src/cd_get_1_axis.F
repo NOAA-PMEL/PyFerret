@@ -1,8 +1,7 @@
         SUBROUTINE CD_GET_1_AXIS(cdfid, ivar, iaxis, its_epic,
      .                           reversed, tregular, status)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -79,6 +78,8 @@
 *                        somehow checked into CVS w/o proper merging
 * V533 *acm*  8/30/01  change calendar name 360 to 360_day
 *      *acm* 10/01  remove VMS includes
+* V550 *sh*  2/02 - added support for line_modulo_len
+*      *sh* 11/02 - automatically detect subspan modulo longitude and time axes
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -117,16 +118,18 @@
 
 * local variable declarations:
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
-     .        TM_HAS_STRING, TM_FPEQ, got_it, got_torg, do_warn,
+     .        TM_HAS_STRING, TM_FPEQ, TM_DFPEQ, CD_GET_ATTVALC,
+     .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time
-      INTEGER TM_UNIT_ID, TM_LENSTR1,
+      INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
      .        edgid, spacing_atlen, epic_t2var, since_T0,
-     .        TM_GET_CALENDAR_ID, cal_id, slen, len_cal
+     .        cal_id, year, month, day, hour, minute, second
+
       REAL    rbuff, delta, first_delta
-      REAL*8  TM_LONW2LONE, tmp
+      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen, tmp
       CHARACTER*12 TM_LEFINT
 * 4/99 *kob* increase vname and vupcase from 24 to 64 chars 
       CHARACTER vname*64, ename*30, vupcase*64, words(8)*24,
@@ -138,8 +141,7 @@
       EQUIVALENCE (tt,lunit_errors)
 
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
-     .          t0_secs, last_secs, last_coord, firs_coord, yr_len
-      INTEGER   year, month, day, hour, minute, second
+     .         t0_secs, last_coord, firs_coord, secsperyear, secs2start
 
 * parameter declarations
         REAL*8          psecs_per_day
@@ -287,9 +289,10 @@ c         ENDIF
          line_tunit(iaxis) = un_convert(line_unit_code(iaxis))
       ENDIF
 
-* optional "modulo" flag
-      line_modulo(iaxis) = CD_GET_ATTRIB( cdfid, ivar, 'modulo',
-     .                             do_warn, vname(:vlen), buff, 1 )
+* optional "modulo" flag (and optionally the associated length)
+      line_modulo(iaxis) = CD_GET_ATTVALC( cdfid, ivar, 'modulo',
+     .                             do_warn, vname(:vlen), rbuff, 0.0 )
+      line_modulo_len(iaxis) = rbuff
 
 * optional time_origin and time_unit values for time axis
 * (time origin could have been set by the units "... since time_origin")
@@ -649,35 +652,44 @@ c         ENDIF
      .                          line_dim   (iaxis) )
         ENDIF
 
-* if it is a longitude axis of 360 degrees let it default to MODULO
- 500    IF (line_direction(iaxis).EQ.'WE' .AND. units.EQ.4) THEN
-           npts = line_dim(iaxis)
-           IF ( line_regular(iaxis) ) THEN
-              delta = npts * line_delta(iaxis)
-           ELSE
-              ipt1  = line_subsc1(iaxis)
-              delta = line_mem(ipt1+2*npts) - line_mem(ipt1+npts)
-           ENDIF
-           IF ( TM_FPEQ(delta,360.0) ) line_modulo(iaxis) = .TRUE.
+* if it is a longitude axis of 360 degrees or less let it default to MODULO
+ 500    axwwlen = TM_WW_AXLEN(iaxis)
+        IF ( line_direction(iaxis).EQ.'WE'
+     . .AND. units.EQ.4
+     . .AND. axwwlen .LE. 360.D0                              ) THEN
+           line_modulo(iaxis) = .TRUE.
+           IF (line_modulo_len(iaxis).EQ.0.0D0)
+     .                    line_modulo_len(iaxis) = 360.D0
         ENDIF
 
-* if it is a calendar time axis it might be implicitly MODULO
-* must have T0 in year 0000 or 0001, have a year length roughly correct,
-* and have a final tstep in year 0000 or 0001
+* if it is a calendar time axis and the first point is in year 0000 or 0001
+* then it is implicitly MODULO
+        IF (got_torg) THEN
+          secsperyear = cals_yeardays(cal_id) * (24*60*60)
+          CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, year, month, day,
+     .                       hour, minute, second, istat)
+          t0_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
+     .                               hour, minute, second, status)
+	  CALL TM_WW_AX_1_N(iaxis, first, tmp)
+	  secs2start = t0_secs + first*line_tunit(iaxis)
+          IF ( (secs2start .LE.  secsperyear)
+     .	 .AND. (axwwlen*line_tunit(iaxis) .LE. secsperyear) ) THEN
+            line_modulo(iaxis) = .TRUE.
+            IF (line_modulo_len(iaxis).EQ.0.0D0)
+     .          line_modulo_len(iaxis) = secsperyear/line_tunit(iaxis)
+          ENDIF
+        ENDIF
 
-        IF (got_torg .AND. .NOT.line_modulo(iaxis)) THEN
-           CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, year, month, day,
-     .                            hour, minute, second, istat)
-           IF (istat.EQ.merr_ok .AND. year.LE.1) THEN
-              t0_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
-     .                                   hour, minute, second, status)
-              last_secs = t0_secs + last_coord*line_tunit(iaxis)
-              yr_len = last_secs - 
-     .                 t0_secs + firs_coord*line_tunit(iaxis)
-              IF ( yr_len.GE.359.*psecs_per_day
-     .       .AND. yr_len.LE.367.*psecs_per_day) 
-     .             line_modulo(iaxis)
-     .                   = last_secs .LE. 2.*366.*psecs_per_day
+* sanity check the modulo length
+* a whisker too small is assumed a precision error
+* a whisker larger is assumed to be deliberate
+        IF (line_modulo(iaxis).AND.line_modulo_len(iaxis).NE.0.D0) THEN
+           IF (line_modulo_len(iaxis) .LT. axwwlen) THEN
+             line_modulo_len(iaxis) = 0.0D0
+             IF (.NOT. TM_DFPEQ(axwwlen, line_modulo_len(iaxis)))
+     .          CALL TM_NOTE(
+     .          'Ignored modulo length exceeding axis length: '
+     .          //vname(:vlen), tt )
            ENDIF
         ENDIF
 

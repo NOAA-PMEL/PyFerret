@@ -18,6 +18,7 @@
 *		 - dimension line_parent and line_class for all lines
 *	*sh* 5/00 - add line_keep_flag for "solo" lines defined by a file
 *  * acm* 12/00  - add line_cal_name for alternative calendar types
+* V541 *sh* 2/01 - added line_modulo_len
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -34,11 +35,12 @@
 	LOGICAL		grid_out_prod, line_regular, line_modulo,
      .			line_has_edges, line_keep_flag
 	REAL		line_tunit, grid_rotation
-	REAL*8		line_start, line_delta, line_mem
+	REAL*8		line_start, line_delta, line_mem, line_modulo_len
 
 	COMMON / XGRID /
      .			line_start	( 0:line_ceiling ),
      .			line_delta	( 0:line_ceiling ),
+     .			line_modulo_len	( 0:line_ceiling ),
      .			line_mem	( maxlinestore),
      .
      .			grid_filename	( maxgridfiles),

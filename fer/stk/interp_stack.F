@@ -89,22 +89,14 @@
 *		exceeds actual file size misses cache because
 *		COMPLETE_MISSING_LIMITS inserts full EZ ax limits)
 * V533: 6/01 *sh* - added @EVNT
+* V541: 2/02 *sh* - added support for modulo lengths (subspan modulo)
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xinterrupt.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		isp_base, dflt_cx, status
@@ -113,10 +105,10 @@
 
 * internal variable declarations:
 	LOGICAL		ITS_UN_CACHED, ITSA_MODULO_REGRID, ITSA_GCVAR,
-     .			ITSA_MODULO_GCF,
+     .			ITSA_MODULO_GCF, TM_ITS_SUBSPAN_MODULO,
      .			look_again, modulo_axes(4), explicit_qualifiers
-	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, CAXIS_LEN,
-     .			TM_AXES_REVERSED, rev_axes(4),
+	INTEGER		UVAR_NUMBER, KNOWN_GRID, CGRID_AXIS, 
+     .			CAXIS_MODLEN, TM_AXES_REVERSED, rev_axes(4),
      .			cx, mr, idim, cat, act, uvar_pointer,
      .			com_mr, var
 
@@ -347,13 +339,26 @@
 ! A[I=1:10] behaves inconsistently wrt  A[I=1:20] for A=VAR[I=3:7] on a
 ! modulo axis of length 10 because is_modulo reconciles differences between
 ! the component and the result differently from non-modulo vars
-	      IF (cx_hi_ss(cx,idim ) .GT. CAXIS_LEN(idim,cx)
+	      IF (cx_hi_ss(cx,idim ) .GT. CAXIS_MODLEN(idim,cx)
      .	     .OR. cx_lo_ss(cx,idim ) .LT. 1 ) THEN
 	         CALL IS_STRIP( isact_class_modulo, idim, *10, status )
 	         GOTO 5000
 	      ENDIF
 	   ENDIF
  250	CONTINUE
+
+* ... strip off creation of virtual "void" point on subspan modulo axes
+	DO 255 idim = 1, 4
+	   IF ( modulo_axes(idim)
+     .	  .AND. cx_lo_ss(cx,idim) .NE. unspecified_int4 ) THEN
+	     IF (TM_ITS_SUBSPAN_MODULO(CGRID_AXIS(idim, cx))) THEN
+	      IF (cx_hi_ss(cx,idim) .EQ. CAXIS_MODLEN(idim, cx)) THEN
+	        CALL IS_STRIP(isact_class_subspan_fill,idim,*10,status)
+	        GOTO 5000
+	      ENDIF
+	    ENDIF
+	  ENDIF
+ 255	CONTINUE
 
 * ... strip off need for regridding data ?
  260	IF ( cx_unstand_grid( cx ) ) THEN
@@ -478,6 +483,8 @@
 	      CALL IS_ALGEBRA( memory, *10, *2500, isp_base, status )
 	   ELSEIF ( act .EQ. isact_modulo		) THEN
 	      CALL IS_MODULO( memory, *10, *2500, status )     ! 12/94
+	   ELSEIF ( act .EQ. isact_subspan_fill		) THEN
+	      CALL IS_SUBSPAN_FILL( memory, *10, *2500, status )! 7/02
 	   ELSEIF ( act .EQ. isact_reverse		) THEN
 	      CALL IS_REVERSE( memory, *10, *2500, status )     ! 2/95
 	   ELSEIF ( act .EQ. isact_gather		) THEN

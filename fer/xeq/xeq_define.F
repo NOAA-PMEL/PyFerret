@@ -138,6 +138,7 @@
 * V541: *acm*8/02  Changes to recover line_mem storage when irregular
 *                  axis is cancelled; redefine line_mem pointer before 
 *                  call to purge_mr_axis.
+* V542: *sh* 7/02 - added support for sub-span modulo axes
 * V550: *acm*10/02- Change reg_name to char*24, to match cx_name
 
 	include	'tmap_errors.parm'
@@ -220,8 +221,8 @@
 
 * local variable declarations:
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
-     .		  TM_FPEQ, dup_name, delta_given, create, irreg, its_reg,
-     .		  its_edges, its_calendar, has_repeated
+     .		  TM_FPEQ, TM_DFPEQ, dup_name, delta_given, create, irreg,
+     .		  its_reg, its_edges, its_calendar, its_modulo, has_repeated
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  STR_CASE_BLIND_COMPARE, CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -238,13 +239,14 @@
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
      .            mon_by_d(366), d_in_mon(12), len_cal
 
-	REAL	  rbuff, bad_flag, yeardays,
+	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
      .            xoei,  yoei,   xcei,  ycei, scale
 
-	REAL*8	  SECS_FROM_BC, bc_to_t0, start, new_ww, delta, end, 
-     .              micro_adj
-	CHARACTER reg_name*24, buff1*256, buff2*128, buff3*128, 
+	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
+     .		  bc_to_t0, start, new_ww, delta, end, secs2start,
+     .            micro_adj, axwwlen, rmod_len, secsperyear
+	CHARACTER reg_name*4, buff1*256, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
      .		  mon_names(12)*3
@@ -607,6 +609,22 @@
 	   ENDIF
 	ENDIF
 
+* DEFINE AXIS - what is "axisname" ?
+	iqual = qual_given( slash_modulo )
+	its_modulo = iqual .GT. 0 
+	IF ( its_modulo ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      rbuff, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF (rbuff .EQ.  unspecified_val4) THEN
+	      rmod_len = 0.0D0
+	   ELSE
+	      rmod_len = ABS(rbuff)  ! ABS to tolerate negatives
+	   ENDIF
+	ELSE
+	   rmod_len = 0.0D0
+	ENDIF
+
 * is this to be a regular or irregular definition?
 	irreg = qual_given(slash_name) .GT. 0
      .	  .OR. (qual_given(slash_name) .EQ. 0
@@ -648,7 +666,13 @@
 	ENDIF
         IF ( qual_given(slash_depth) .GT. 0
      . .AND. orient .NE. z_dim            ) GOTO 5505
-	IF ( orient .EQ. unspecified_int4 ) GOTO 5510
+
+* if orientation is unclear then assume it is X
+	IF ( orient .EQ. unspecified_int4 ) THEN
+	   CALL WARN (
+     .	     "Orientation not specified via /X,/Y,/Z, or /T. X assumed.")
+	   orient = x_dim
+	ENDIF
 
 * release context stack space
 	CALL STACK_PTR_DN ( cx_stack_ptr, cx_stack_ptr_base, status )
@@ -702,7 +726,7 @@
         IF (cal_name(1:6) .EQ. 'COMMON') cal_name = 'NOLEAP' 
         cal_id = TM_GET_CALENDAR_ID (cal_name)
 	IF (cal_id .LE. 0  .OR. cal_id .GT. max_calendars ) GO TO 5720
-        CALL tm_get_calendar_attributes (cal_id, nmonths, 
+        CALL TM_GET_CALENDAR_ATTRIBUTES (cal_id, nmonths, 
      .                 ndays, yeardays, mon_names, d_in_mon, 
      .                 d_before_mon, mon_by_d)
 
@@ -842,7 +866,6 @@
      .               SNGL(line_mem(i1)-line_mem(i1-1))) )
      .						its_reg = .FALSE.
  530	      CONTINUE
-
 	   ELSE
 
 * NOT EDGES -- POINTS
@@ -935,11 +958,11 @@
 
 	   IF ( orient .EQ. t_dim .AND. cal_id .NE. 1 .AND. 
      .          start .LT. 0.) THEN
-	      CALL reset_secs_from_bc (-start, new_ww, dflt_cal_id, 
+	      CALL RESET_SECS_FROM_BC (-start, new_ww, dflt_cal_id, 
      .                                 cal_id, status)
 	      start = -1. * new_ww
 
-	      CALL reset_secs_from_bc (-end, new_ww, dflt_cal_id, 
+	      CALL RESET_SECS_FROM_BC (-end, new_ww, dflt_cal_id, 
      .                                 cal_id, status)
 	      IF ( status .NE. ferr_ok ) RETURN
 
@@ -1023,9 +1046,6 @@
 	line_direction( iline ) = 'NA'
 	IF ( orient .EQ. t_dim ) line_tunit(iline) = un_convert( iunit )
 
-* is it a modulo axis ?
-        line_modulo( iline ) = qual_given(slash_modulo) .GT. 0
-
 * is it a formattable axis ?
 	IF ( orient .EQ. x_dim .AND. iunit .EQ. pun_degrees ) THEN
 	   line_direction( iline ) = 'WE'
@@ -1058,6 +1078,40 @@
 
 	IF (irreg .AND. .NOT.line_regular(iline))
      .			next_line_mem_pos = frst_pt + 2*n + 1
+
+* automatic longitude modulo
+	axwwlen = TM_WW_AXLEN(iline)
+	IF (line_direction(iline) .EQ. 'WE' ) THEN
+	  IF (axwwlen .LE. 360.D0) THEN
+	     its_modulo = .TRUE.
+	     IF (rmod_len .EQ. 0.0D0)  rmod_len = 360.D0
+	  ENDIF
+*  automatic calendar modulo
+	ELSEIF (line_direction(iline) .EQ. 'TI' ) THEN
+	  secsperyear = cals_yeardays(cal_id) * (24 * 60 * 60)
+	  bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
+	  CALL TM_WW_AX_1_N(iline, start, end)
+	  secs2start = bc_to_t0 + start*line_tunit(iline)
+	  IF ( (secs2start .LE. secsperyear)
+     .	 .AND. (axwwlen*line_tunit(iline) .LE. secsperyear) ) THEN
+	     its_modulo = .TRUE.
+	     IF (rmod_len .EQ. 0.0D0)  rmod_len =
+     .				       secsperyear/line_tunit(iline)
+	  ENDIF
+	ENDIF
+* set modulo and sanity check it
+	line_modulo( iline) = its_modulo
+	line_modulo_len( iline ) = rmod_len
+	IF (rmod_len .NE. 0.0D0) THEN
+	   IF (axwwlen .GT. rmod_len) THEN
+             IF (TM_DFPEQ(axwwlen, rmod_len)) THEN
+	       line_modulo_len( iline ) = 0.0D0
+             ELSE
+               GOTO 5525
+	     ENDIF
+           ENDIF
+	ENDIF
+
 
 * check for redefinitions
 	IF ( dup_name ) THEN
@@ -1304,9 +1358,12 @@
  5505	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE AXIS/DEPTH needs /Z=lo:hi:del', *5000 )
  5510	CALL ERRMSG( ferr_invalid_command, status,
-     .		'DEFINE AXIS needs /X,/Y,/Z or /T orientation', *5000 )
+     .		'Conflicting /X,/Y,/Z or /T axis orientations given',
+     .								*5000 )
  5520	CALL ERRMSG( ferr_grid_definition, status,
      .			'error in start,end,delta', *5000 )
+ 5525	CALL ERRMSG( ferr_grid_definition, status,
+     .			'Axis length exceeds modulo length', *5000 )
  5530	CALL ERRMSG( ferr_grid_definition, status,
      .			'NPOINTS=1 incompatible with limits given', *5000 )
  5540	CALL ERRMSG( ferr_grid_definition, status,

@@ -45,6 +45,9 @@
 *		    routines that know the axis but not a container grid
 * V533 6/01 *sh* - using TM_AXIS_RECURSIVE
 *      10/01 *kob* - change TM_AXIS_RECURSIVE to proper logical type
+* V541 2/02 *sh* - added support for subspan modulo axes
+*		 - slight change to calculation for all modulo axes
+* V542 10/02 *sh* - bug fix for irregular, subspan modulo
 
 * Include files
 #include "gt_lib.parm"
@@ -56,12 +59,14 @@
 	INTEGER	isubscript, iaxis, where_in_box
 
 * internal variable declarations:
-	LOGICAL	TM_AXIS_RECURSIVE, recursive
-	INTEGER	 isub, line_len, rmod
-	REAL*8	TM_WORLD_RECUR, midpoint, box_size, tempwld
+	LOGICAL	TM_AXIS_RECURSIVE, TM_ITS_SUBSPAN_MODULO,
+     .		 recursive
+	INTEGER	TM_MODULO_LINE_DIM, isub, line_len, rmod
+	REAL*8	TM_WORLD_RECUR, TM_MODULO_AXLEN, 
+     .		midpoint, box_size, tempwld, lo, hi
 
 * initialize
-	line_len = line_dim( iaxis )
+	line_len = TM_MODULO_LINE_DIM( iaxis )
 
 * if this is a child (e.g. every Nth point) of an irregularly-spaced
 * axis then use a recursive C routine to find the answer
@@ -72,7 +77,8 @@
 	    TM_WORLD_AX = TM_WORLD_RECUR(
      .			isubscript,iaxis,where_in_box,max_lines,
      .			line_mem,line_parent,line_class,line_dim,line_start,
-     .			line_delta,line_subsc1,line_modulo,line_regular )
+     .			line_delta,line_subsc1,line_modulo,
+     .			line_modulo_len,line_regular )
 	    RETURN
 	  ENDIF
 	ENDIF
@@ -84,8 +90,28 @@
 	ELSE
 	  isub = MIN( line_len, MAX( 1, isubscript ) )
 	ENDIF
+
+	IF ( TM_ITS_SUBSPAN_MODULO(iaxis) .AND. isub.EQ.line_len ) THEN
+* given index falls in the "void" region of a subspan modulo axis
+* ... get the box_hi_lim of the Nth point in the core region
+	  CALL TM_WW_AXLIMS(iaxis, lo, hi)
+* ... now where within the grid box ?
+	  IF ( where_in_box .EQ. box_lo_lim ) THEN
+	    tempwld = hi
+	  ELSEIF ( where_in_box .EQ. box_middle ) THEN
+	    tempwld = ((lo+line_modulo_len(iaxis)) + hi) / 2.
+	  ELSE
+	    tempwld = lo + line_modulo_len(iaxis)
+	  ENDIF
+	  IF (isubscript .LE. 0) THEN
+	    rmod = isubscript/line_len - 1
+	  ELSE
+	    rmod = (isubscript-1)/line_len
+	  ENDIF
+	  TM_WORLD_AX = tempwld + rmod*line_modulo_len(iaxis)
+
+	ELSEIF ( line_regular( iaxis ) ) THEN
 * regularly spaced points
-	IF ( line_regular( iaxis ) ) THEN
 * ... calculate midpoint and box_size values
 	  midpoint = line_start(iaxis) + (isub-1)*line_delta(iaxis)
 	  box_size = line_delta(iaxis)
@@ -99,25 +125,26 @@
 	  ENDIF
 	  IF ( line_modulo( iaxis ) ) THEN
 	    IF (isubscript .LE. 0) THEN
-	      rmod = line_len * ( isubscript/line_len - 1 )
+	      rmod = isubscript/line_len - 1
 	    ELSE
-	      rmod = line_len * ( (isubscript-1)/line_len )
+	      rmod = (isubscript-1)/line_len
 	    ENDIF
-	    TM_WORLD_AX = tempwld + rmod*line_delta(iaxis)
+	    TM_WORLD_AX = tempwld + rmod*TM_MODULO_AXLEN(iaxis)
 	  ELSE
 	    TM_WORLD_AX = tempwld
 	  ENDIF
+
 	ELSE
-* not regularly spaced points
+* irregularly spaced points
 * ... keep subscript within bounds ( between 1 and dimension of axis )
 	  isub  = isub + line_subsc1(iaxis) - 1
 * ... now where within the grid box ?
 	  IF ( where_in_box .EQ. box_lo_lim ) THEN
-	    tempwld = line_mem(isub+line_len)
+	    tempwld = line_mem(isub+line_dim(iaxis))
 	  ELSEIF ( where_in_box .EQ. box_middle ) THEN
 	    tempwld = line_mem(isub)
 	  ELSE
-	    tempwld = line_mem(isub+line_len+1)
+	    tempwld = line_mem(isub+line_dim(iaxis)+1)
 	  ENDIF
 	  IF ( line_modulo( iaxis ) ) THEN
 	    IF (isubscript .LE. 0) THEN
@@ -125,12 +152,11 @@
 	    ELSE
 	      rmod = (isubscript-1)/line_len
 	    ENDIF
-	    TM_WORLD_AX = tempwld + rmod*
-     .	                     ( line_mem(line_subsc1(iaxis)+2*line_len) -
-     .	                       line_mem(line_subsc1(iaxis)+  line_len) )
+	    TM_WORLD_AX = tempwld + rmod*TM_MODULO_AXLEN(iaxis)
 	  ELSE
 	    TM_WORLD_AX = tempwld
 	  ENDIF
+
 	ENDIF
 
 	RETURN

@@ -1,6 +1,5 @@
 	SUBROUTINE TM_MAKE_4D_GRIDS ( dnum, status )
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -65,6 +64,7 @@
 *		each grid
 * V530 1/00 *kob* - mods for aggregating time_independent files in an MC
 *                   context
+* V541 2/02 *sh* - minor change to support line_modulo_len
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -162,8 +162,9 @@
 * Do not set line modulo if data is time-independent ----------> kob 6/91
 	         IF (ds_time_modulo(dnum) .AND. (INDEX(temp_t0time,
      .                'INDEPENDENT') .EQ. 0))
-     .				line_modulo(ds_time_axis(dnum)) = .TRUE.
-	      ENDIF	         
+     .			     line_modulo(ds_time_axis(dnum)) = .TRUE.
+	         line_modulo_len(ds_time_axis(dnum)) = 0.0D0
+	      ENDIF
 
 * ... Transfer things to position 0 ("new") from old 3D grid
 	      CALL TM_COPY_GRID(ngrd,new)

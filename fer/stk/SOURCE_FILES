@@ -34,6 +34,7 @@ is_regrid.F\
 is_reverse.F\
 is_string.F\
 is_strip.F\
+is_subspan_fill.F\
 is_sample.F\
 is_trans.F\
 is_uvar_grid.F\

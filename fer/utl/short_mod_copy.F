@@ -49,6 +49,8 @@
 * V420: 11/95 - to accomodate modulo stripped on the main INTERP_STACK
 *	12/95 - fixed bug for negative subscripts
 * V533: *sh* 6/01 - added logic to cope with strides
+* V541: *sh*  2/02 - support for subspan modulo axes
+*	See NOTE in code below
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -63,7 +65,7 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	INTEGER CAXIS_LEN, MODULO_PARITY,
+	INTEGER CAXIS_MODLEN, MODULO_PARITY,
      .		npts, com_lo, com_hi, com_nshf, res_nshf,
      .		nshift, xlate, uplim, idel,
      .		cx_lo_sav, cx_hi_sav, mr_lo_sav, mr_hi_sav
@@ -101,7 +103,7 @@
 	mr_hi_sav = mr_hi_ss(tcom_mr, idim)
 
 * initialize
-	npts = CAXIS_LEN( idim, tcom_cx )	! length of modulo axis
+	npts = CAXIS_MODLEN( idim, tcom_cx )	! length of modulo axis
 	com_lo = cx_lo_ss(tcom_cx, idim)
 	com_hi = MIN( cx_hi_ss(tcom_cx,idim), com_lo+npts-1 )	
 	IF (cx_delta(idim,res_cx) .EQ. unspecified_val8) THEN
@@ -141,6 +143,10 @@
      .			      tcom_cx,
      .			      memory(1,mr_blk1(res_mr)), res_mr )
 	   ENDIF
+* NOTE:  it is KNOWN that sometimes this routine needlessle copies the same
+*	 region of component into the same region of result at both STEP 1
+*	 and STEP 2.  This has not been debugged because the consequences
+*	 are negligible (*sh* 11/02)
 	   IF (uplim .EQ. res_hi) GOTO 1000	! STEP 2 not needed
 	ENDIF
 

@@ -3,8 +3,6 @@
      .					res, res_mr, res_cx,
      .					coords	)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -47,8 +45,9 @@
 * V230:  3/23/92 - based on DO_FILL_AVE
 * V301:  2/15/94 - upgrade to accomodate modulo axes
 * V402:   8/9/95 - bug fix: T=@FLN had "lo_coord = coords(k-pos0)"
+* V550 *sh* 8/2/02 - support for modulo lengths. ensure that filling 
+*		    does not operate acros the subspan modulo void point
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -59,17 +58,6 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -78,14 +66,16 @@
      .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * internal variable declarations:
-	LOGICAL	modulo_axis, modulo, no_lo_val
-	INTEGER i, j, k, l, ii, jj, kk, ll, lo_sub(4), hi_sub(4),
-     .		ii_com, lo_edge, hi_edge, pos0, edge,
-     .		lo_com, hi_com, line, grid, axdim, look,
+	LOGICAL	TM_ITS_SUBSPAN_MODULO,
+     .		modulo_axis, modulo, no_lo_val, has_mod_void
+	INTEGER TM_MODULO_LINE_DIM, CGRID_AXIS,
+     .		i, j, k, l, ii, jj, kk, ll, lo_sub(4), hi_sub(4),
+     .		lo_edge, hi_edge, pos0, edge, lo_index, hi_index,
+     .		lo_com, hi_com, line, axdim, look,
      .		coord_lo_ss, coord_hi_ss, next_hi_ss
 	REAL	bad_res, lo_coord, hi_coord, coord, lo_val, hi_val,
      .		axlen
-	REAL*8	TM_WORLD
+	REAL*8	TM_MODULO_AXLEN
 
 * internal (convenience) equivalences
 	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, hi_s1, hi_s2, hi_s3, hi_s4
@@ -96,7 +86,7 @@
 
 * local parameter declarations
 	INTEGER     no_point
-	PARAMETER ( no_point = -1 )
+	PARAMETER ( no_point = -99999 )
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -111,17 +101,21 @@
 	hi_com = cx_hi_ss(com_cx, idim)
 
 * is it a modulo axis with sufficient component span provided to wrap around
-	grid = cx_grid(com_cx)
-	line = grid_line( idim, grid )
+	line = CGRID_AXIS(idim, com_cx)
 	IF ( line .EQ. mnormal .OR. line .EQ. munknown ) THEN
 	   modulo_axis = .FALSE.
 	ELSE
-	   axdim = line_dim(line)
+	   axdim = TM_MODULO_LINE_DIM(line)   ! 2/02
 	   modulo_axis = line_modulo(line)
      .		    .AND. hi_com-lo_com+1 .GE. axdim
 	ENDIF
-	IF ( modulo_axis ) axlen = TM_WORLD(axdim,grid,idim,box_hi_lim)
-     .				 - TM_WORLD( 1,   grid,idim,box_lo_lim)
+	IF ( modulo_axis ) axlen = TM_MODULO_AXLEN(line)
+
+* it his a subspan modulo axis?
+	has_mod_void = TM_ITS_SUBSPAN_MODULO(line)
+	IF (has_mod_void) THEN
+	   has_mod_void = lo_com.LE.0 .OR. hi_com.GE.axdim
+	ENDIF
 
 * save the desired result region
 	DO 10 ii = 1, 4
@@ -162,8 +156,12 @@
 	      ENDIF
               IF ( com(look,j,k,l) .NE. bad_res ) THEN
                  lo_val = com(look,j,k,l)
+	         lo_index = look
 	         lo_coord = coords(look-pos0)
-	         IF ( modulo ) lo_coord = lo_coord - axlen
+	         IF ( modulo ) THEN
+	            lo_index = lo_index - axdim
+	            lo_coord = lo_coord - axlen
+	         ENDIF
                  no_lo_val = .FALSE.
 	         GOTO 102
               ENDIF
@@ -173,6 +171,7 @@
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
 	         res(i,j,k,l) = com(i,j,k,l)
                  lo_val = com(i,j,k,l)
+	         lo_index = i
 	         lo_coord = coords(i-pos0)
                  no_lo_val = .FALSE.
 	         GOTO 110
@@ -194,8 +193,12 @@
                     IF ( com(look,j,k,l) .NE. bad_res ) THEN
                        next_hi_ss = look
                        hi_val = com(look,j,k,l)
+	               hi_index = look
 	               hi_coord = coords(next_hi_ss-pos0)
-		       IF ( modulo ) hi_coord = hi_coord + (ii/axdim)*axlen
+		       IF ( modulo ) THEN
+	                  hi_index = hi_index + (ii/axdim)*axdim
+	                  hi_coord = hi_coord + (ii/axdim)*axlen
+	               ENDIF
                        GOTO 108
                     ENDIF
  104             CONTINUE
@@ -204,10 +207,15 @@
                  GOTO 110
               ENDIF
 * ... fill in interpolating value
- 108          coord    = coords(i-pos0)
+ 108	      coord    = coords(i-pos0)
               res(i,j,k,l) = ( hi_val*(coord-lo_coord)
      .                     +   lo_val*(hi_coord-coord) )
      .                     / (hi_coord - lo_coord)
+* ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+	      IF (has_mod_void) THEN
+	        IF ( lo_index/axdim .NE. hi_index/axdim
+     .	       .OR.   MOD(i,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	      ENDIF
  110	   CONTINUE
 
 * FILL ALONG Y AXIS
@@ -227,8 +235,12 @@
               ENDIF
               IF ( com(i,look,k,l) .NE. bad_res ) THEN
                  lo_val = com(i,look,k,l)
-                 lo_coord = coords(look-pos0)
-                 IF ( modulo ) lo_coord = lo_coord - axlen
+	         lo_index = look
+	         lo_coord = coords(look-pos0)
+	         IF ( modulo ) THEN
+	            lo_index = lo_index - axdim
+	            lo_coord = lo_coord - axlen
+	         ENDIF
                  no_lo_val = .FALSE.
                  GOTO 202
               ENDIF
@@ -238,6 +250,7 @@
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
 	         res(i,j,k,l) = com(i,j,k,l)
                  lo_val = com(i,j,k,l)
+	         lo_index = j
                  lo_coord = coords(j-pos0)
                  no_lo_val = .FALSE.
 	         GOTO 210
@@ -259,8 +272,12 @@
                     IF ( com(i,look,k,l) .NE. bad_res ) THEN
                        next_hi_ss = look
                        hi_val = com(i,look,k,l)
+	               hi_index = look
 		       hi_coord = coords(next_hi_ss-pos0)
-		       IF ( modulo ) hi_coord = hi_coord + (jj/axdim)*axlen
+		       IF ( modulo ) THEN
+	                  hi_index = hi_index + (jj/axdim)*axdim
+	                  hi_coord = hi_coord + (jj/axdim)*axlen
+	               ENDIF
                        GOTO 208
                     ENDIF
  204             CONTINUE
@@ -269,10 +286,15 @@
                  GOTO 210
               ENDIF
 * ... fill in interpolating value
- 208           coord    = coords(j-pos0)
+ 208          coord    = coords(j-pos0)
               res(i,j,k,l) = ( hi_val*(coord-lo_coord)
      .                     +   lo_val*(hi_coord-coord) )
      .                     / (hi_coord - lo_coord)
+* ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+	      IF (has_mod_void) THEN
+	        IF ( lo_index/axdim .NE. hi_index/axdim
+     .	       .OR.   MOD(j,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	      ENDIF
  210	   CONTINUE
 
 * FILL ALONG Z AXIS
@@ -292,8 +314,12 @@
               ENDIF
               IF ( com(i,j,look,l) .NE. bad_res ) THEN
                  lo_val = com(i,j,look,l)
-                 lo_coord = coords(look-pos0)
-                 IF ( modulo ) lo_coord = lo_coord - axlen
+	         lo_index = look
+	         lo_coord = coords(look-pos0)
+	         IF ( modulo ) THEN
+	            lo_index = lo_index - axdim
+	            lo_coord = lo_coord - axlen
+	         ENDIF
                  no_lo_val = .FALSE.
 	         GOTO 302
               ENDIF
@@ -303,6 +329,7 @@
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
 	         res(i,j,k,l) = com(i,j,k,l)
                  lo_val = com(i,j,k,l)
+	         lo_index = k
                  lo_coord = coords(k-pos0)
                  no_lo_val = .FALSE.
 	         GOTO 310
@@ -324,8 +351,12 @@
                     IF ( com(i,j,look,l) .NE. bad_res ) THEN
                        next_hi_ss = kk
                        hi_val = com(i,j,look,l)
+	               hi_index = look
                        hi_coord = coords(next_hi_ss-pos0)
-		       IF ( modulo ) hi_coord = hi_coord + (kk/axdim)*axlen
+		       IF ( modulo ) THEN
+	                  hi_index = hi_index + (kk/axdim)*axdim
+	                  hi_coord = hi_coord + (kk/axdim)*axlen
+	               ENDIF
                        GOTO 308
                     ENDIF
  304             CONTINUE
@@ -338,6 +369,11 @@
               res(i,j,k,l) = ( hi_val*(coord-lo_coord)
      .                     +   lo_val*(hi_coord-coord) )
      .                     / (hi_coord - lo_coord)
+* ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+	      IF (has_mod_void) THEN
+	        IF ( lo_index/axdim .NE. hi_index/axdim
+     .	       .OR.   MOD(k,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	      ENDIF
  310	   CONTINUE
 
 * FILL ALONG T AXIS
@@ -357,8 +393,12 @@
               ENDIF
               IF ( com(i,j,k,look) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,look)
-                 lo_coord = coords(look-pos0)
-                 IF ( modulo ) lo_coord = lo_coord - axlen
+	         lo_index = look
+	         lo_coord = coords(look-pos0)
+	         IF ( modulo ) THEN
+	            lo_index = lo_index - axdim
+	            lo_coord = lo_coord - axlen
+	         ENDIF
                  no_lo_val = .FALSE.
 	         GOTO 402
               ENDIF
@@ -368,6 +408,7 @@
 	      IF ( com(i,j,k,l) .NE. bad_res ) THEN
 	         res(i,j,k,l) = com(i,j,k,l)
                  lo_val = com(i,j,k,l)
+	         lo_index = l
                  lo_coord = coords(l-pos0)	! fixed 8/95
                  no_lo_val = .FALSE.
 	         GOTO 410
@@ -389,8 +430,12 @@
                     IF ( com(i,j,k,look) .NE. bad_res ) THEN
                        next_hi_ss = look
                        hi_val = com(i,j,k,look)
+	               hi_index = look
                        hi_coord = coords(next_hi_ss-pos0)
-		       IF ( modulo ) hi_coord = hi_coord + (ll/axdim)*axlen
+		       IF ( modulo ) THEN
+	                  hi_index = hi_index + (ll/axdim)*axdim
+	                  hi_coord = hi_coord + (ll/axdim)*axlen
+	               ENDIF
                        GOTO 408
                     ENDIF
  404             CONTINUE
@@ -403,6 +448,11 @@
               res(i,j,k,l) = ( hi_val*(coord-lo_coord)
      .                     +   lo_val*(hi_coord-coord) )
      .                     / (hi_coord - lo_coord)
+* ... bad if this interp crosses or lands on the void of a subspan modulo axis 
+	      IF (has_mod_void) THEN
+	        IF ( lo_index/axdim .NE. hi_index/axdim
+     .	       .OR.   MOD(l,axdim)  .EQ. 0 )  res(i,j,k,l) = bad_res
+	      ENDIF
  410	   CONTINUE
 	ENDIF
 

@@ -2,8 +2,6 @@
      .				     edges_ok, mr_xpos, mr_ypos,
      .				     cx_xpos, cx_ypos, cx_val, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,19 +44,14 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V450: 3/97
+* V541:  2/02 *sh - allow for subspan modulo axes
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xtext_info.cmn'
 	include 'xcurvilinear.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	edges_ok
@@ -73,8 +66,8 @@
      .		xspan_np1_dim1, xspan_np1_dim2,
      .		yspan_np1_dim1, yspan_np1_dim2
 
-	INTEGER	CX_DIM_LEN, CAXIS_LEN,
-     .		dim, span, x1span, x2span, y1span, y2span,
+	INTEGER	CAXIS_MODLEN,
+     .		dim, x1span, x2span, y1span, y2span,
      .          span_dim1, span_dim2
 	CHARACTER*1	fieldname
 
@@ -182,10 +175,10 @@
 	dim1_modulo = ITSA_MODULO_AXIS(cx_val,dim1)
 	IF ( dim1_modulo ) THEN
 	   dim1_modulo = (xspan_1_dim1
-     .		     .OR. x1span .EQ. CAXIS_LEN(dim1,cx_xpos))
+     .		     .OR. x1span .EQ. CAXIS_MODLEN(dim1,cx_xpos))
      .		.AND.
      .		         (yspan_1_dim1
-     .		     .OR. y1span .EQ. CAXIS_LEN(dim1,cx_ypos))
+     .		     .OR. y1span .EQ. CAXIS_MODLEN(dim1,cx_ypos))
      .		.AND.
      .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,1)
 	ENDIF
@@ -193,10 +186,10 @@
 	dim2_modulo = ITSA_MODULO_AXIS(cx_val,dim2)
 	IF ( dim2_modulo ) THEN
 	   dim2_modulo = (xspan_1_dim2
-     .		     .OR. x2span .EQ. CAXIS_LEN(dim2,cx_xpos))
+     .		     .OR. x2span .EQ. CAXIS_MODLEN(dim2,cx_xpos))
      .		.AND.
      .		         (yspan_1_dim2
-     .		     .OR. y2span .EQ. CAXIS_LEN(dim2,cx_ypos))
+     .		     .OR. y2span .EQ. CAXIS_MODLEN(dim2,cx_ypos))
      .		.AND.
      .		         ITSA_MODULO_CURVI_AXIS(xpos,ypos,mr_xpos,mr_ypos,2)
 	ENDIF

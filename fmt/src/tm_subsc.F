@@ -1,7 +1,5 @@
 	INTEGER FUNCTION TM_SUBSC ( world_coord, grid, idim, clue )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -50,6 +48,7 @@
 *  1/96 - many references to isub0 remained despite 10/95 changes
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+* V542 2/02 *sh* - added support for modulo length > axis length
 
 * calling arguments:
 * world_coord	- coordinate vaule to be translated to subscript
@@ -73,11 +72,12 @@
 	REAL*8	world_coord
 
 * internal variable declarations:
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, regular
 	INTEGER	lo_look, hi_look, ibot, itop, look, axis,
      .		line_len, isubsc
 	INTEGER	num_mod
 	REAL 	subsc
-	REAL*8	TM_WORLD,
+	REAL*8	TM_WORLD, TM_WW_AXLEN,
      .		half_way, start, aend, span, first, last, wcoord, wwindex
 
 * we need to be able to modify the search value for modulo axes
@@ -87,8 +87,21 @@
 	axis    = grid_line ( idim, grid )
 	line_len = line_dim( axis )
 
+* special consideration for sub-span modulo axis outside its core range
+	IF (TM_ITS_SUBSPAN_MODULO(axis) ) THEN
+	   CALL TM_WW_AX_1_N(axis, start, aend)
+	   IF ( wcoord.LT.start .OR. wcoord.GT.aend ) THEN
+	      line_len = line_len + 1
+	      regular = .FALSE.
+	   ELSE
+	      regular = line_regular( axis )
+	   ENDIF
+	ELSE
+	   regular = line_regular( axis )
+	ENDIF
+
 * initialize pointers for axes with irregularly spaced points
-	IF ( .NOT.line_regular( axis ) ) THEN
+	IF ( .NOT.regular ) THEN
 	   IF ( clue.GE.1 .AND. clue.LE.line_len ) THEN
 	      wwindex = TM_WORLD(clue, grid, idim, box_middle)
 * ... check clue - (clue accepted only for exact equality of coordinates)
@@ -101,19 +114,15 @@
 	   itop  = line_len
 	ENDIF
 
-
 * Modulo axis: translate world coord to within axis range
         IF ( line_modulo( axis ) ) THEN
 * ... begin by computing axis limits as outer edges of end boxes
-           IF ( line_regular( axis ) ) THEN
-              span  = line_delta( axis ) * line_len
-              start = line_start( axis ) - line_delta( axis )/2.
-              aend  = start + span
-           ELSE
-              start = TM_WORLD(       1, grid, idim, box_lo_lim)
-              aend  = TM_WORLD(line_len, grid, idim, box_hi_lim)
-              span  = aend - start
-           ENDIF
+	   span = TM_WW_AXLEN(axis)
+	   CALL TM_WW_AXLIMS(axis, start, aend)
+	   IF (TM_ITS_SUBSPAN_MODULO(axis)) THEN
+	      span = line_modulo_len(axis)
+	      aend = start + span
+	   ENDIF
 
 * ... now translate wcoord to within axis limits saving modulo number
            IF     ( wcoord .GT. aend  ) THEN
@@ -131,7 +140,7 @@
         ENDIF
 
 * get positions of first and last points on axis
-	IF ( line_regular( axis ) ) THEN
+	IF ( regular ) THEN
 	   first = line_start( axis )
 	   last  = first + line_delta( axis ) * line_len
         ELSE
@@ -146,7 +155,7 @@
 	   isubsc = line_len
 
 * quick sol'n if axis points are regularly spaced
-	ELSEIF ( line_regular( axis ) ) THEN
+	ELSEIF ( regular ) THEN
 	   subsc  = SNGL( (wcoord-first)/line_delta(axis) ) + .5
 	   isubsc = INT( subsc ) + 1		! round up if ambiguous
 

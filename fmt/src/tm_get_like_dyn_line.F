@@ -51,6 +51,7 @@
 *			  nine rather than ten points.
 * V533 *sh* 6/01 - save line_parent for regular stride axes, too
 *		   else the stride and delta cannot be recovered 
+* V541 *sh* 2/02 - added support for parent modulo length less than axis length
 
 * Arguments
 	INTEGER		idim, like, class, outline, status
@@ -73,6 +74,7 @@
 	external xgt_grid_data
 *
 * Local definitions
+	LOGICAL		TM_ITS_SUBSPAN_MODULO
 	INTEGER		inline
 	INTEGER		TM_FIND_LIKE_DYN_LINE
 
@@ -87,7 +89,12 @@
 * create a scratch line matching the request
 	IF ( like .NE. unspecified_int4 ) THEN
 * ... copy the template
+* ... a child axis is usually regular if the parent is regular
+*     but for sub-span modulo only if the child doesnt cause modulo-ing
 	   CALL TM_COPY_LINE( like, inline )
+	   line_regular(inline) = line_regular(like) .AND.
+     .	        ( (.NOT.TM_ITS_SUBSPAN_MODULO(like)  )
+     .	     .OR. (lo.GE.1 .AND. hi.LE.line_dim(like)) )
 	ELSE
 * ... or initialize to defaults
 	   line_regular(inline)    = .TRUE.
@@ -99,7 +106,8 @@
 	ENDIF
 	line_name(inline) = 'scratch'
 	line_class(inline) = class
-	line_modulo(inline)    = .FALSE.	! modulo subset doesn't cut it
+	line_modulo(inline)     = .FALSE.	! modulo subset doesn't cut it
+	line_modulo_len(inline) = 0.0D0
 
 * set up the scratch line as per its class
 * Note: for computational efficiency axes with regularly-spaced points will
@@ -120,7 +128,7 @@
 	   ENDIF
 * ... every nth index of parent line
 	ELSEIF ( class .EQ. pline_class_stride ) THEN
-	   IF ( line_regular(like) ) THEN
+	   IF ( line_regular(inline) ) THEN
 	      line_parent(inline)    = like
 	      line_start(inline)     = line_start(like)
      .				     + (lo-1)*line_delta(like)

@@ -1,5 +1,5 @@
 	SUBROUTINE TM_MAKE_DYN_LINE(idim, lo, hi, del,
-     .					units, modulo,
+     .					units, modulo, mod_len,
      .					outline, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -47,12 +47,13 @@
 * "outline" returns with the number of the new dynamic line.
 
 * created 1/98 *sh* - based on tm_get_like_dyn_line
-* V5325/01 *sh* - eliminate (annoying) warning message about unknown units
+* V532 5/01 *sh* - eliminate (annoying) warning message about unknown units
+* V541 2/01 *sh* - added support for line_modulo_len
 
 * Arguments
 	LOGICAL		modulo
 	INTEGER		idim, outline, status
-	REAL*8		lo, hi, del
+	REAL*8		lo, hi, del, mod_len
 	CHARACTER*(*)	units
 
 * argument description:
@@ -110,6 +111,7 @@
 
 * set user-specified (boolean) modulo flag
 	line_modulo(inline)    = modulo		! "TRUE" untested 1/98 !!!
+	line_modulo_len(inline) = mod_len
 
 * set user-specified units -- attempting to interpret them (a pain!)
 	line_units(inline)     = units

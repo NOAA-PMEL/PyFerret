@@ -61,6 +61,7 @@
 * V530 *sh* 12/00 - avoid performance problems of switching between netCDF
 *	DEFINE and DATA mode by deferring actual coordinate writes until later
 * v530 *acm* 1/01  calendar axes: write the calendar name if non-Gregorian
+* v541 *sh* 2/02 - added support for line_modulo_len
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -254,7 +255,12 @@ C  ACM  kludge just for testing!!!
       ENDIF
 
       IF ( line_modulo(iaxis) ) THEN
-         CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
+	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
+           CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
+	 ELSE
+           CALL NCAPT( cdfid,axid,'modulo',NCDOUBLE,1,
+     .		       line_modulo_len(iaxis), cdfstat )
+	 ENDIF
       ENDIF
       IF ( idim.EQ.z_dim .AND. line_direction(iaxis).EQ.'UD') THEN
          CALL NCAPTC( cdfid, axid, 'positive', NCCHAR, 4,

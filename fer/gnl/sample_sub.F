@@ -4,8 +4,6 @@
      .				fmt, fix_holes, ssorww,
      .				out_lun, binary, columns, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -54,8 +52,8 @@
 
 * V301:  1/94
 * V312: 5/94 - array "memory" as a calling argument
+* V541: 2/02 *sh* - added support for modilo lengths
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -65,16 +63,6 @@
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 	include 'xmem_subsc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL fix_holes, binary
@@ -91,8 +79,9 @@
 
 * internal variable declarations:
 	LOGICAL	extrapolate, condensed
-	INTEGER	ii(4), di(4), ss(4,2), grid, idim, mr, mv_temp, ipt,
-     .		i, j, k, l, ix, jy, kz, lt, hi_surrnd(4), nbuf,
+	INTEGER	TM_MODULO_LINE_DIM,
+     .		ii(4), di(4), ss(4,2), grid, idim, mr, mv_temp, ipt,
+     .		i, j, k, l, ix, jy, kz, lt, hi_surrnd(4), nbuf, llen,
      .		nfix, ssfix(4,-1:1), ssp1(4), ssm1(4), line, lohi
 	REAL lin_fact(4), surrnd(2,2,2,2), result, missing, res_flag,
      .		coord, missing_coord(4), sumfix
@@ -233,11 +222,12 @@
  800	            ssfix(idim,lohi) = ss(idim,i) + lohi
 	            DO 810 idim = 1, 4    	 ! modulo-based subscripts
 	               line = grid_line(idim,grid)
+	               llen = TM_MODULO_LINE_DIM(line)
 	               IF ( line.EQ.mnormal .OR. line.EQ.munknown ) GOTO 810
 	               IF ( line_modulo(line) ) THEN
 		          IF ( ssfix(idim,-1) .EQ. 0 )
-     .					ssfix(idim,-1) = line_dim(line)
-		          IF ( ssfix(idim,+1) .GT. line_dim(line) )
+     .					ssfix(idim,-1) = llen
+		          IF ( ssfix(idim,+1) .GT. llen )
      .					ssfix(idim,+1) = 1
 	               ENDIF
  810	            CONTINUE

@@ -53,18 +53,13 @@
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN 
 * V500: bug fix *sh* & *kob* 4/99 -  add code to make sure that component
 *                                    limits are adequate
+* V550: support for subspan modulo axes -- ensure that convolution does not
+*	cross the void point
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	idim, hlen, com_mr, com_cx, res_mr, res_cx
@@ -73,7 +68,10 @@
      .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * internal variable declarations:
-	INTEGER i, j, k, l, ii, lo_sub(4), hi_sub(4)
+	LOGICAL TM_ITS_SUBSPAN_MODULO, has_mod_void
+	INTEGER	TM_MODULO_LINE_DIM, CGRID_AXIS, 
+     .		i, j, k, l, ii, lo_sub(4), hi_sub(4), lo_lim, hi_lim,
+     .		hlen1, lo_modlim, hi_modlim, nmod, nmod_prev, modlen
 	REAL	bad_com, bad_res, comp, sum
 
 * internal (convenience) equivalences
@@ -86,12 +84,23 @@
 * initialize
 	bad_com = mr_bad_data( res_mr )
 	bad_res = mr_bad_data( com_mr )
+	hlen1 = hlen
+	lo_lim = cx_lo_ss(com_cx,idim)
+	hi_lim = cx_hi_ss(com_cx,idim) 
+	nmod_prev = -99999
 
 * compute limits within which calculation is possible
 	DO 10 ii = 1, 4
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
  10	CONTINUE
+
+* it his a subspan modulo axis?
+	has_mod_void = TM_ITS_SUBSPAN_MODULO( CGRID_AXIS(idim,com_cx) )
+	IF (has_mod_void) THEN
+	   modlen = TM_MODULO_LINE_DIM( CGRID_AXIS(idim,com_cx) )
+	   has_mod_void = lo_lim.LE.0 .OR. hi_lim.GE.modlen
+	ENDIF
 
 * !temp - not optimized for speed yet
 * ... though treating each axis separately is to avoid testing inside the loop
@@ -101,11 +110,26 @@
 	   DO 110 k = lo_s3, hi_s3
 	   DO 110 j = lo_s2, hi_s2
 	   DO 110 i = lo_s1, hi_s1
+	      IF (has_mod_void) THEN
+*  ... do not allow convolution across the modulo void
+	         IF (i.GE.1) THEN  ! get # of modulos to curr index
+	            nmod = (i-1)/modlen 
+	         ELSE
+	            nmod = i/modlen - 1
+	         ENDIF
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_lim = MAX( lo_modlim, cx_lo_ss(com_cx,idim) )
+	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
+	         ENDIF
+	      ENDIF
 	      sum = 0.0
-	      DO 100 ii = -hlen, hlen
+	      DO 100 ii = -hlen1, hlen1
 * test limits of component data before using
-                 IF ( i+ii .GE. cx_lo_ss(com_cx,idim)
-     .          .AND. i+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                 IF ( i+ii .GE. lo_lim
+     .          .AND. i+ii .LE. hi_lim ) THEN
                     comp = com(i+ii,j,k,l)
                  ELSE
                     res(i,j,k,l) = bad_res
@@ -127,12 +151,27 @@
 	   DO 210 l = lo_s4, hi_s4
 	   DO 210 k = lo_s3, hi_s3
 	   DO 210 j = lo_s2, hi_s2
+	      IF (has_mod_void) THEN
+*  ... do not allow convolution across the modulo void
+	         IF (j.GE.1) THEN  ! get # of modulos to curr index
+	            nmod = (j-1)/modlen 
+	         ELSE
+	            nmod = j/modlen - 1
+	         ENDIF
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_lim = MAX( lo_modlim, cx_lo_ss(com_cx,idim) )
+	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
+	         ENDIF
+	      ENDIF
 	   DO 210 i = lo_s1, hi_s1
 	      sum = 0.0
-	      DO 200 ii = -hlen, hlen
+	      DO 200 ii = -hlen1, hlen1
 * test limits of component data before using
-                 IF ( j+ii .GE. cx_lo_ss(com_cx,idim)
-     .          .AND. j+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                 IF ( j+ii .GE. lo_lim
+     .          .AND. j+ii .LE. hi_lim ) THEN
                     comp = com(i,j+ii,k,l)
                  ELSE
                     res(i,j,k,l) = bad_res
@@ -153,13 +192,28 @@
 	ELSEIF ( idim .EQ. z_dim ) THEN
 	   DO 310 l = lo_s4, hi_s4
 	   DO 310 k = lo_s3, hi_s3
+	      IF (has_mod_void) THEN
+*  ... do not allow convolution across the modulo void
+	         IF (k.GE.1) THEN  ! get # of modulos to curr index
+	            nmod = (k-1)/modlen 
+	         ELSE
+	            nmod = k/modlen - 1
+	         ENDIF
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_lim = MAX( lo_modlim, cx_lo_ss(com_cx,idim) )
+	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
+	         ENDIF
+	      ENDIF
 	   DO 310 j = lo_s2, hi_s2
 	   DO 310 i = lo_s1, hi_s1
 	      sum = 0.0
-	      DO 300 ii = -hlen, hlen
+	      DO 300 ii = -hlen1, hlen1
 * test limits of component data before using
-                 IF ( k+ii .GE. cx_lo_ss(com_cx,idim)
-     .          .AND. k+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                 IF ( k+ii .GE. lo_lim
+     .          .AND. k+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k+ii,l)
                  ELSE
                     res(i,j,k,l) = bad_res
@@ -179,14 +233,29 @@
 * CONVOLVE ALONG T AXIS
 	ELSE
 	   DO 410 l = lo_s4, hi_s4
+	      IF (has_mod_void) THEN
+*  ... do not allow convolution across the modulo void
+	         IF (l.GE.1) THEN  ! get # of modulos to curr index
+	            nmod = (l-1)/modlen 
+	         ELSE
+	            nmod = l/modlen - 1
+	         ENDIF
+	         IF ( nmod .NE. nmod_prev ) THEN
+	            nmod_prev = nmod
+	            lo_modlim = nmod*modlen + 1
+	            hi_modlim = (nmod+1) * modlen
+	            lo_lim = MAX( lo_modlim, cx_lo_ss(com_cx,idim) )
+	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
+	         ENDIF
+	      ENDIF
 	   DO 410 k = lo_s3, hi_s3
 	   DO 410 j = lo_s2, hi_s2
 	   DO 410 i = lo_s1, hi_s1
 	      sum = 0.0
-	      DO 400 ii = -hlen, hlen
+	      DO 400 ii = -hlen1, hlen1
 * test limits of component data before using
-                 IF ( l+ii .GE. cx_lo_ss(com_cx,idim)
-     .          .AND. l+ii .LE. cx_hi_ss(com_cx,idim) ) THEN
+                 IF ( l+ii .GE. lo_lim
+     .          .AND. l+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k,l+ii)
                  ELSE
                     res(i,j,k,l) = bad_res

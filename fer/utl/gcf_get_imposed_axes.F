@@ -54,6 +54,7 @@
 * V530: 10/00 *sh* - bug fix: need to pass an *array* of argument contexts
 *       to the C routine efcn_get_custom_axes
 *                  - changed EFCN_GET_CUSTOM_AXES so it returns a status
+* V541: 2/02 *sh* - support for modulo length
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -208,7 +209,7 @@
 *	external functions 
 * Use TM_GET_LIKE_DYN_LINE to create axes which are children of an argument ax
 	   CALL TM_MAKE_DYN_LINE(t_dim, dlo, dhi, del,
-     .                                  'Hertz', .FALSE.,
+     .                                  'Hertz', .FALSE., 0.0D0,
      .                                  axes(t_dim), status)
 	   IF (status .NE. ferr_ok) GOTO 5000
 
@@ -240,7 +241,7 @@
                  CALL EFCN_GET_CUSTOM_AXIS(gcfcn, idim, dlo, dhi, del,
      .                unit, modulo)
                  CALL TM_MAKE_DYN_LINE(idim, dlo, dhi, del,
-     .                unit, modulo, axes(idim), status)
+     .                unit, modulo, 0.0D0, axes(idim), status)
                  IF (status .NE. ferr_ok) GOTO 5000
               ENDIF
 

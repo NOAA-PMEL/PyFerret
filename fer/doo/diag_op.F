@@ -1,7 +1,5 @@
 	SUBROUTINE DIAG_OP( doing, act_class, cx, idim )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -52,6 +50,7 @@
 *		- use "strip" to determine if reconcilliation axis is relevant
 * V500 *kob* 3/99- up VAR_CODE and var decl's from 8 to 64 chars
 * V510 *sh* 8/99 - added isact_class_sample
+* V541 *sh*  2/02 - added isact_class_subspan_fill
 
 * calling argument declarations:
 	INTEGER	act_class, idim, cx
@@ -62,7 +61,6 @@
 * V500 *kob* 3/99- up VAR_CODE and var decl from 8 to 64 chars
 	CHARACTER VAR_CODE*64, VAR_TRANS*64, var*64, out_buff*64
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -74,17 +72,6 @@
         include 'xalgebra.cmn'
 	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
 
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-        INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'		! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * initialize
 ! 1/96 - kludge of using cx for grid # causes this extra IF -- awful!
@@ -171,6 +158,14 @@
 	   WRITE ( risc_buff, 3070 ) doing, out_buff(:clen),
      .				     var(1:slen)
  3070	   FORMAT (1X,A5,' limits reconciliation',A,': ',A)
+	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
+
+* subspan modulo axis void filling
+	ELSEIF( act_class .EQ. isact_class_subspan_fill ) THEN
+	   WRITE ( risc_buff, 3080 ) doing, var(1:slen),
+     .                  ww_dim_name( idim ),
+     .			cx_lo_ss(cx,idim), cx_hi_ss(cx,idim)
+ 3080	   FORMAT (1X,A5,' modulo-void-filling ',A,' on ',A1,' axis:',2I6)
 	   CALL SPLIT_LIST(pttmode_ops, ttout_lun, risc_buff, 0 )
 
 	ELSE

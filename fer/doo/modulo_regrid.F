@@ -1,8 +1,6 @@
 	SUBROUTINE MODULO_REGRID( cx_lims, axis, trans,
      .			src, msrc, dst, mdst, ngd, mngd, ave, mave)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -56,7 +54,8 @@
 * kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
-#ifdef unix
+* V541:	 *sh*  2/02 - support for subspan modulo axes -- dont use line_dim 
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'		! for line_dim
 	include 'ferret.parm'
@@ -64,15 +63,6 @@
 	include 'xcontext.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'		! for line_dim
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, trans, msrc, mdst, mngd, mave
@@ -83,7 +73,7 @@
      .		ave( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit )
 
 * local variable declarations:
-	INTEGER	ISUBSCR_CX, 
+	INTEGER	ISUBSCR_CX, TM_MODULO_LINE_DIM,
      .		dstss, srcss, src_grid, dst_grid,
      .		i, j, k, l, nmod, nfold, dst_start,
      .		srcss_lo, srcss_hi, dstss_lo, dstss_hi, status
@@ -134,7 +124,7 @@
 	
 * the modulo index length of the destination axis
 ! ...	nmod = CAXIS_LEN(axis,cx_dst)	if cx_dst were known ...
-	nmod = line_dim( grid_line(axis,dst_grid) )
+	nmod = TM_MODULO_LINE_DIM( grid_line(axis,dst_grid) )
 
 * the number of times the destination axis was folded before the first dstss_lo
 !	nfold = INT(dstss_lo/nmod) * nmod

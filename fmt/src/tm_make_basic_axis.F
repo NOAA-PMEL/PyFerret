@@ -43,6 +43,7 @@
 
 * revision 0.0 - 2/92
 * V510 *sh* 3/00 - convert to dynamic grids and axes for netCDF files
+* V550 *sh* 11/02 - initialize line_modulo_len (just for good house keeping)
 
 * argument definitions:
 *       name      - name for axis
@@ -92,6 +93,7 @@
       line_units(iaxis)     = ' '
       line_unit_code(iaxis) = 0
       line_modulo(iaxis)    = .FALSE.
+      line_modulo_len(iaxis)= 0.0D0
       line_t0(iaxis)        = char_init20
       line_tunit(iaxis)     = real4_init
       line_direction(iaxis) = 'NA'

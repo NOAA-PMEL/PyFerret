@@ -1,7 +1,5 @@
 	INTEGER FUNCTION ISUBSCRIPT ( world_coord, grid, idim, round_code )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -64,70 +62,68 @@
 *	 1/96 - bug fix: many references to sub0 remained despite 10/95 chgs
 * 9/97 *kob* - w/ negative time axis capablities, this routine will not have
 *	      to worry about date strings...
-#ifdef unix
+* V541: *sh* 2/02 - added support for subspan modulo axes
+
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	grid, idim, round_code
 	REAL*8	world_coord
 
 * internal variable declarations:
-	LOGICAL	TM_FPEQ
-	INTEGER	lo_look, hi_look, iaxis, ibot, itop, look,
+	LOGICAL	TM_FPEQ, TM_ITS_SUBSPAN_MODULO, regular
+	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
      .		line_len, isubsc, num_mod
 	REAL 	subsc
-	REAL*8	SECS_TO_TSTEP, TM_WORLD, 
+	REAL*8	TM_WORLD, TM_WW_AXLEN, 
      .		wwindex, wcoord, half_way, start, aend, span, first, last
 
 * which axis are we on ?
-	iaxis    = grid_line ( idim, grid )
-	line_len = line_dim( iaxis )
+	axis    = grid_line ( idim, grid )
+	line_len = line_dim( axis )
 
 * check for peculiar calls
-	IF (  iaxis .EQ. mnormal
-     .	 .OR. iaxis .EQ. munknown ) THEN
-	   ISUBSCRIPT = iaxis
+	IF (  axis .EQ. mnormal
+     .	 .OR. axis .EQ. munknown ) THEN
+	   ISUBSCRIPT = axis
 	   RETURN
 	ELSEIF ( world_coord .EQ. unspecified_val8 ) THEN
 	   ISUBSCRIPT = unspecified_int4
 	   RETURN
 	ENDIF
-* 9/97 *kob* removed below block of code w/ advent of negative time
-*            axis capabilities
-* time expressed as seconds since BC ?
-*	IF ( idim .EQ. t_dim .AND. world_coord .LT. 0.0D0 ) THEN
-*	   wcoord = SECS_TO_TSTEP( grid, -world_coord )
-*	ELSE
-*	   wcoord = world_coord
-*	ENDIF
 
 	   wcoord = world_coord
 
+* special consideration for sub-span modulo axis outside its core range
+	IF (TM_ITS_SUBSPAN_MODULO(axis) ) THEN
+	   CALL TM_WW_AX_1_N(axis, start, aend)
+	   IF ( wcoord.LT.start .OR. wcoord.GT.aend ) THEN
+	      line_len = line_len + 1
+	      regular = .FALSE.
+	   ELSE
+	      regular = line_regular( axis )
+	   ENDIF
+	ELSE
+	   regular = line_regular( axis )
+	ENDIF
+
 * initialize pointers for axes with irregularly spaced points
-	IF ( .NOT.line_regular( iaxis ) ) THEN
+	IF ( .NOT.regular ) THEN
 	   ibot  = 1
 	   itop  = line_len
 	ENDIF
 
 * Modulo axis: translate world coord to within axis range
-	IF ( line_modulo( iaxis ) ) THEN
+	IF ( line_modulo( axis ) ) THEN
 * ... begin by computing axis limits as outer edges of end boxes
-	   IF ( line_regular( iaxis ) ) THEN
-	      span  = line_delta( iaxis ) * line_len
-	      start = line_start( iaxis ) - line_delta( iaxis )/2.
-	      aend  = start + span
-           ELSE
-              start = TM_WORLD(       1, grid, idim, box_lo_lim)
-              aend  = TM_WORLD(line_len, grid, idim, box_hi_lim)
-              span  = aend - start
+	   span = TM_WW_AXLEN(axis)
+	   CALL TM_WW_AXLIMS(axis, start, aend)
+	   IF (TM_ITS_SUBSPAN_MODULO(axis)) THEN
+	      span = line_modulo_len(axis)
+	      aend = start + span
 	   ENDIF
 
 * ... now translate to within axis limits saving modulo number
@@ -146,9 +142,9 @@
 	ENDIF
 
 * get positions of first and last points on axis
-	IF ( line_regular( iaxis ) ) THEN
-	   first = line_start( iaxis )
-	   last  = first + line_delta(iaxis) * (line_len-1) !4/94 was *line_len
+	IF ( regular ) THEN
+	   first = line_start( axis )
+	   last  = first + line_delta(axis) * (line_len-1) !4/94 was *line_len
         ELSE
            first = TM_WORLD(       1, grid, idim, box_middle)
            last  = TM_WORLD(line_len, grid, idim, box_middle)
@@ -161,8 +157,8 @@
 	   isubsc = line_len
 
 * quick sol'n if axis points are regularly spaced
-	ELSEIF ( line_regular( iaxis ) ) THEN
-	   subsc = SNGL( (wcoord-first)/line_delta(iaxis) ) + .5
+	ELSEIF ( regular ) THEN
+	   subsc = SNGL( (wcoord-first)/line_delta(axis) ) + .5
 	   isubsc = INT( subsc )
 	   IF ( subsc .EQ. FLOAT( isubsc ) ) THEN
 * ...... value is on box boundary
@@ -236,7 +232,7 @@
 	ENDIF
 
 * add modulo axis correction
-	IF ( line_modulo(iaxis) ) THEN
+	IF ( line_modulo(axis) ) THEN
 	   ISUBSCRIPT = isubsc + num_mod*line_len
 	ELSE
 	   ISUBSCRIPT = isubsc

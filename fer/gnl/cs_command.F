@@ -59,6 +59,8 @@
 *              do not depend on the grid. This seemed too much trouble 
 *              given the small consequeunces."
 
+* V510 *sh* 3/00 - interrupts need to be processed in here!!
+*		   [IN FACT THIS TURNS OUT TO BE IRRELEVANT ... ]
 
 
 * calling argument declarations:
@@ -77,6 +79,7 @@
 	include 'xcontext.cmn'
 	include 'xcontrol.cmn'
         include 'xrisc.cmn'
+	include 'xinterrupt.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -87,8 +90,11 @@
 	INCLUDE 'FERRET_CMN:XRISC.CMN'
 #endif
 
-* internal error ?
-	IF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
+	IF ( interrupted ) THEN
+
+	   CALL ERRMSG( ferr_interrupt,status,' ', *1000 )
+
+	ELSEIF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
 
 ***** REPEAT loop *******
 * done yet ?

@@ -37,3 +37,13 @@ GO err553_year_yr.jnl
 ! strides, Ferret did a regridding instead.  Test the fix for this
 GO bn_reset
 GO err553_stride_def_grid.jnl
+
+! DEFINE AXIS can get the axis too long (bug 673)
+GO bn_reset
+GO err553_axis_too_long.jnl
+
+! Under linux, some shade and fill plots with /LEVELS=c had a 
+! non-centered shade key
+GO bn_reset
+GO err553_lev_c.jnl
+

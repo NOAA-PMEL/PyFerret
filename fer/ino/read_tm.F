@@ -182,7 +182,7 @@
 
 * replace multiple bad data flags in some variables
 * IF ( ds_bad_flag( variable ) .NE. ds_missing_flag( variable ) )
-* *kob* 2/99 - call new routine to check for usage of NaN.
+* *kob* 2/99 - call new routine to check for usage of NaN
 	IF (REPLACEABLE_BAD_FLAGS(ds_bad_flag(variable), 
      .                            ds_missing_flag(variable)) .EQ. 1)
      .	   CALL REPLACE_BAD_DATA

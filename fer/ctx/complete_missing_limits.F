@@ -53,6 +53,11 @@
 *		    Change cx_by_ss to FALSE in here -- meaning that the
 *		    misleading behavior can occur only when each component
 *		    has the same number of points in the same world coord span
+*
+*  V541 *kob* 10/02 - BUG FIX - need to check the axis number for the 
+*                               abstract grid for EACH dimension - not
+*                               just x dimension, in order to correctly
+*                               have limits set
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -91,10 +96,13 @@
 	cat  = cx_category( cx )
 	grid = cx_grid    ( cx )
 
-* get the axis number for the abstract axis
-        mabstract = grid_line( x_dim, mgrid_abstract )
 
 	DO 100 idim = 1, 4
+
+* get the axis number for the abstract axis
+* 10/02 - need to do this for each dimension, not just x_dim
+	   mabstract = grid_line( idim, mgrid_abstract )
+
 
 	   IF ( cx_by_ss(idim, cx) ) THEN
 	      its_unspec = cx_lo_ss(cx,idim) .EQ. unspecified_int4

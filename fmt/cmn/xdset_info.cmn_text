@@ -10,6 +10,8 @@
 * revision 1.04 - 05/11/92 - *sh* increased ds_var_code string length
 * revision 1.05 - 3/99 - *kob* increase ds_var_code and ds_var_units to
 *			       length 64 and ds_var_title to 128
+* revision 1.06 - 4/99 - *kob* increase size of ds_des_name for lengthy DODS
+*			  datasets
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
      .		ds_delstep(maxdsets),
@@ -81,7 +83,7 @@
 
 * additional calculated or derived values pertaining to data sets
 	CHARACTER*40	ds_name
-	CHARACTER*128	ds_des_name
+	CHARACTER*256	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps
 	REAL*8		ds_1step,ds_lastep,ds_delstep

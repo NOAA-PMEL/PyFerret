@@ -4,6 +4,8 @@
 *
 * *sh* 3/91 - Unix/RISC port: added fp_convert and compress
 *      4/91 - increased size of sf_name to accomodate full path name
+* *kob*4/99 - further increase size of sf_name to accomodate full DODS
+*             path names
 
 	COMMON /XSTEP_FILES/
      .				sf_name   	(maxstepfiles),	! names of 'em
@@ -25,7 +27,7 @@
      .				vf_firstvar	(maxvarfiles),	! 1st var in set
      .				vf_lastvar	(maxvarfiles)	! lst var in set
 
-	CHARACTER*128	sf_name
+	CHARACTER*256	sf_name
 	CHARACTER*23	sf_index
 	INTEGER		sf_setnum,sf_aux_set_num,sf_skip,sf_lunit,
      .			sf_reclen,sf_nrecperstep,sf_cpu_type

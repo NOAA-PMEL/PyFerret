@@ -76,6 +76,8 @@
 *			   tmap_dset.parm contains an ifdef
 * *kob* 7/97 - modification to eliminate unnecessary error messages when
 *              searching for files w/out extensions (ie ".cdf")
+* *kob* 4/99 - increase size of TM_INQ_PATH and des_name
+*              to accomodate lenghty DODS dataset names
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -135,7 +137,7 @@
 	CHARACTER	def_ext*4, def_cdf*4, ext*4, cdf_path*12, path*12
         CHARACTER*40    TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
-	CHARACTER*128	TM_INQ_PATH, des_name
+	CHARACTER*256   TM_INQ_PATH, des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
 	INTEGER*4	TM_LENSTR, TM_LENSTR1

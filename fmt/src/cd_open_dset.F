@@ -60,7 +60,8 @@
 *		  integers in DATA statements.  Added a 
 *		  FORTRAN_90 ifdef to accomplish this.
 * *sh* 11/12/96 - changes to accomodate caching of DODS data 
-
+* *kob* 4/99 - increase size of TM_INQ_PATH, cdf_file and raw_file 
+*              to accomodate lenghty DODS dataset names
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *       cdfid   - returned pointer to open CDF file (or cache)
@@ -111,8 +112,8 @@
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
       INTEGER flen, iin, iout, ilast, dlen
       CHARACTER    TM_STRING*13, ch*1
-* *kob* 7/95
-      CHARACTER*128 TM_INQ_PATH, cdf_file, raw_file
+* *kob* 4/99
+      CHARACTER*256 TM_INQ_PATH, cdf_file, raw_file
 
 #ifdef FORTRAN_90
 	INTEGER HEX40

@@ -58,7 +58,7 @@
 *			   tmap_dset.parm contains an ifdef
 * v500 - *kob* 3/99 -  initialize ds_var_code, ds_var_units, ds_var_title
 *                      and ds_var_titl_mod w/ char_inits of proper new value
-	
+* v500 - *kob* 4/99 - initialize ds_des_name with char_init256	
 
 #ifdef unix
 #include "tmap_dset.parm"		
@@ -104,7 +104,7 @@
 	DATA	ds_alert_on_output	/maxdsets*.FALSE./
 	DATA	ds_message		/maxdsets*char_init80/
 ********************************************************************************
-	DATA	ds_des_name		/maxdsets*char_init128/
+	DATA	ds_des_name		/maxdsets*char_init256/
 	DATA	ds_name			/maxdsets*char_init40/
 	DATA	ds_1step		/maxdsets*real8_init/
 	DATA	ds_lastep		/maxdsets*real8_init/

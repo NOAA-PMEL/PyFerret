@@ -69,7 +69,8 @@
 * EPIC netCDF *sh* 3/93
 * v500 - *kob* 3/99 -  initialize ds_var_code, ds_var_units, ds_var_title
 *                      and ds_var_titl_mod w/ char_inits of proper new value
-	
+* v500 - *kob* 4/99 - increase size of sf_name and ds_des_name for lengthly
+*	              DODS filenames
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
 
@@ -130,7 +131,7 @@
 	ds_alert_on_output(ds_num)	= 	.FALSE.
 	ds_message(ds_num)		=	char_init80
 ********************************************************************************
-	ds_des_name(ds_num)		=	char_init128
+	ds_des_name(ds_num)		=	char_init256
 	ds_name(ds_num)			=	char_init40
 	ds_1step(ds_num)		=	real8_init
 	ds_lastep(ds_num)		=	real8_init
@@ -192,7 +193,7 @@
 	  ENDIF
 
 * delete step file from tables
-	  sf_name(f_num)		=	char_init128    ! *sh* 4/91
+	  sf_name(f_num)		=	char_init256    ! *kob* 4/99
 	  sf_setnum(f_num)		=	set_not_open
 	  sf_aux_set_num(f_num)		=	int4_init
 	  sf_nrecperstep(f_num)		=	int4_init

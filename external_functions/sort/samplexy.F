@@ -9,6 +9,7 @@
 *         and keeps the z and t axes of the input 4-d data.
 *
 * 1/13/2000 acm -- fix so that xpts and/or ypts can be on any axis.
+* 3/ 1/2000 ACM -- fix bug in the definition of the work arrays
 *
 *
 * In this subroutine we provide information about
@@ -117,6 +118,7 @@
 *                                                                     V
 
       INTEGER my_lo_l, my_hi_l
+      INTEGER nx, ny, nz, nt
 
 *     Use utility functions to get context information about the 
 *     1st argument, to set the abstract axis lo and hi indices.
@@ -161,7 +163,7 @@
 *
 * ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER mxh, myh
+      INTEGER mxh, myh, mxl, myl
 
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
@@ -173,16 +175,16 @@
       mxl = arg_lo_ss(X_AXIS,ARG1)
       myl = arg_lo_ss(Y_AXIS,ARG1)
 
-      mxh = arg_lo_ss(X_AXIS,ARG1) + 
+      mxh = mxl + 
      .     2* (arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1)
-      myh = arg_lo_ss(Y_AXIS,ARG1) + 
+      myh = myl + 
      .     2* (arg_hi_ss(Y_AXIS,ARG1)  - arg_lo_ss(Y_AXIS,ARG1) + 1)
 
 *  xaxdat
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxh, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, mxl, 1, 1, 1, mxh, 1, 1, 1)
 
 *  yaxdat
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, myh, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, myl, 1, 1, 1, myh, 1, 1, 1)
 
 
 *                                                                      ^
@@ -234,17 +236,20 @@
 
 *  Set up work arrays
 
-      REAL*8 xaxdat(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
+      REAL*8 xaxdat(wrk1lox:wrk1lox+(wrk1hix-wrk1lox)/2,wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      REAL*8 yaxdat(wrk2lox:wrk2hix/2, wrk2loy:wrk2hiy,
+      REAL*8 yaxdat(wrk2lox:wrk2lox+(wrk2hix-wrk2lox)/2,wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+
+      INTEGER i, j, k, l
+      INTEGER i1,j1,k1,l1
+      INTEGER i2,j2,k2,l2
+      INTEGER i3,j3,k3,l3
 
       INTEGER ibot, itop, jbot, jtop
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
-      integer i1,j1,k1,l1
-      integer i2,j2,k2,l2
-      integer i3,j3,k3,l3
-
+      REAL xbot, xtop, ybot, ytop
+      REAL frac
       CHARACTER*255 err_msg
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -312,7 +317,6 @@
             DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
 *  First interpolate in x, getting values of the fcn at (x,jbot)  and (x,jtop)
-
 
                IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND. 
      .              itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN

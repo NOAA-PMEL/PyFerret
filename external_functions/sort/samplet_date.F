@@ -8,6 +8,7 @@
 * 5/20/99  Ansley Manke 
 *         Times may be oriented along any axis; 
 *         Result is abstract on the sampled axis.
+* 3/1/00  ACM fixed bug in definition of the work array datebuf
 *
 *
 * In this subroutine we provide information about
@@ -186,7 +187,7 @@
 * Set the work arrays,  X/Y/Z/T dimensions
 *
 *
-      INTEGER mtdat, mt2, mt5
+      INTEGER mtdat, mt2, mt20
 
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
@@ -199,13 +200,13 @@
       mtdat = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
 
       mt2 = mtdat* 2	! real*8  takes twice what a real*4 does
-      mt5 = mtdat* 5	! character*20: character*1 takes 1 byte
+      mt20 = mtdat* 20	! character*20: character*1 takes 1 byte
 
 *  taxdat (real*8)
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mt2, 1, 1, 1)
 
 *  datebuf (character*20)
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mt5, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mt20, 1, 1, 1)
 
 *  date_axis
       CALL ef_set_work_array_dims (id, 3, arg_lo_ss(T_AXIS,ARG1), 
@@ -262,7 +263,8 @@
 *                                                                     V
 
       INTEGER id
-      INTEGER i, j, k, l
+      INTEGER iarg
+      INTEGER i, j, k, l, m
       INTEGER arg
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
@@ -272,7 +274,10 @@
       INTEGER i6, j6, k6, l6
       INTEGER i7, j7, k7, l7
       INTEGER numtimes
+      INTEGER lbot, ltop
       REAL ayr, amo, ada, ahr, amn, asc
+      REAL byr, bmo, bda, bhr, bmn, bsc
+      REAL tbot, ttop, timepoint, frac
 
       CHARACTER ax_name(4,7)*64, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
@@ -492,7 +497,7 @@ C  Return sequential day in variable ada.
       REAL daymo(12)           ! Number of days in each month
       DATA daymo/31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/
       REAL amo, ada, ayr
-      INTEGER iyr, imo
+      INTEGER iyr, imo, i
 
       iyr = ayr
       IF (MOD(iyr, 4) .EQ. 0) THEN

@@ -12,9 +12,12 @@
 *			       length 64 and ds_var_title to 128
 * revision 1.06 - 4/99 - *kob* increase size of ds_des_name for lengthy DODS
 *			  datasets
+* V530 *sh* 10/00 - added ds_var_type and ds_file_info_ptr
+
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
      .		ds_delstep(maxdsets),
+     .		ds_file_info_ptr(maxdsets),
      .		ds_type(maxdsets),ds_format(maxdsets),
      .		ds_source_class(maxdsets),ds_source(maxdsets),
      .		ds_subsource(maxdsets),ds_prog_rev(maxdsets),
@@ -36,6 +39,7 @@
      .		ds_grid_number(maxvars),ds_missing_flag(maxvars),
      .		ds_bad_flag(maxvars),ds_ordering(4,maxvars),
      .		ds_grid_start(4,maxvars),ds_grid_end(4,maxvars),
+     .	 	ds_var_type(maxvars),
      .		ds_precision(maxvars),
 **************************************************************************
      .		ds_aux_set_num(maxvars),
@@ -80,13 +84,15 @@
 	INTEGER*4	ds_aux_set_num
 *    - only in TS sets
 	INTEGER*4	min_ds_tstart,max_ds_tend,ds_tdelta
+	INTEGER*4	ds_var_type
 
 * additional calculated or derived values pertaining to data sets
 	CHARACTER*40	ds_name
 	CHARACTER*256	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps
-	REAL*8		ds_1step,ds_lastep,ds_delstep
+	REAL*8		ds_1step,ds_lastep,ds_delstep,
+     .			ds_file_info_ptr
 
 * additional calculated or derived values pertaining to variables
 	INTEGER*4	ds_ndataperrec,ds_nrecpervar,ds_nrecb4var,

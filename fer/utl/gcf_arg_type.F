@@ -9,6 +9,7 @@
 
 * internal variable declarations
 	INTEGER		iptr
+	INTEGER efcn_get_arg_type
 
 #ifdef unix
 	include 'ferret.parm'
@@ -22,8 +23,7 @@
 
 	IF ( gcfcn .GT. gfcn_num_internal ) THEN
 * ... external function
-!	   GCF_ARG_TYPE = efcn_xxxx(gcfcn, iarg)
-	   GCF_ARG_TYPE = parg_type_float   ! place-holder
+	   GCF_ARG_TYPE = efcn_get_arg_type(gcfcn, iarg)
 
 	ELSE
 * ... internal grid-changing function

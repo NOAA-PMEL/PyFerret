@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     55458152 Nov 13 09:55 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     55851728 Nov 22 12:55 /home/ja8/ansley//FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  bug fix (solaris) show_region.F 
+Note: polygon ppl-memory bug fix, correct internal documentation of scat2grid fcns, new scat2grid*t fcns, ferret-nojnl switch, bug fix: precision in XOFF ans YOFF in plotz.F and pltit.F
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -13,15 +13,14 @@ FER_DIR=.
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /opt/local/ferret/ferret/go /opt/local/ferret/ferret/examples /opt/local/ferret/ferret/contrib
+FER_GO=. /home/ja9/tmap/ferret/solaris/go /home/ja9/tmap/ferret/solaris/examples /home/ja9/tmap/ferret/solaris/contrib /home/ja9/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
-FER_PALETTE=. /opt/local/ferret/ferret/ppl
+FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-FER_LOCAL_EXTFCNS=/home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
-Beginning at Wed Nov 13 09:59:00 PST 2002
+Beginning at Fri Nov 22 13:14:42 PST 2002
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -504,4 +503,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Nov 13 10:05:18 PST 2002
+Ended at Fri Nov 22 13:21:05 PST 2002

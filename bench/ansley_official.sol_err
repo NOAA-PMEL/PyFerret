@@ -1,4 +1,4 @@
-Procedure run_all to run all FERRET benchmarks
+Procedure run_all to run all FERRET benchmarks 
 Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
 -rwxrwxrwx   1 ansley   tmap     61656488 Mar 15 13:49 /home/ja8/ansley//FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs

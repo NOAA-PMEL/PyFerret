@@ -65,7 +65,7 @@ C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
       CHARACTER*(*) it
 
       call time3(it,iy,im,idd,ih,ix,isec,icen) 
-      iy = icen* 1000 + iy
+      iy = icen* 100 + iy
 
       CALL tm_get_calendar_attributes (calendar_id, num_months, 
      .                 num_days, yeardays, month_names, days_in_month, 

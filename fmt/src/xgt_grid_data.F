@@ -266,8 +266,8 @@
 	DATA	(line_tunit(i),i=1,line_ceiling)
      .			/line_ceiling*real4_init/
 
-	DATA	(line_cal_name(i),i=1,line_ceiling)
-     .			/line_ceiling*'GREGORIAN'/
+	DATA	(line_cal_name(i),i=0,line_ceiling)
+     .			/line_ceiling*'GREGORIAN', 'GREGORIAN'/
 
 c comment out to speed compilation and decrease mem needs *kob* 7/92
 c	DATA	(line_mem(i),i=pline_mem_next,maxlinestore)

@@ -1,18 +1,34 @@
 #! /bin/csh -f
+#! *sh* 10/91
 #! Findex
-#! 6/99 *kob* Temp holder while V5.0 Documents are not available text format
+#! browse the Index of the Ferret Users Guide
 
-echo " " 
-echo " "
-echo "*************************************************************"
-echo "*    Ferret v5.00 Documents are not yet available as Text   *"
-echo "*                                                           *"
-echo "*                                                           *"
-echo "*    Please see http://www.ferret.noaa.gov/Ferret for       *"
-echo "*    access to the HTML versions of the v5.0 Users Guide    *"
-echo "*                                                           *"
-echo "*    For command-line access to v4.91 documents, type:      *"
-echo "*         Findex.v491                                       *"
-echo "*************************************************************"
-echo " " 
-echo " "
+# enter the Index at the top
+if ($#argv == "0") then
+   echo "Note: Index page numbers refer to the hard copy FERRET User's Guide"
+   echo "      The on-line FERRET User's Guide is not page numbered"
+   echo -n "Hit <CR> to continue ..."
+   echo " " 
+   set pause = $<
+   more -d $FER_DIR/doc/ferret_ug_index.txt
+   exit
+endif
+
+# too many arguments: explain the syntax
+if ($#argv >= 2) then
+     echo " "
+     echo "*** Syntax error in command entered ***"
+     echo " "
+     echo "     Usage:  Findex    or    Findex  string"
+     echo " "
+     echo "     Note: multi-word strings need to be enclosed in quotations"
+     echo " "
+     exit
+endif
+
+# use grep for case-insensitive search
+   echo "*** Index page numbers refer to the hard copy or PDF FERRET User's Guide ***"
+   echo "*** The on-line document is not page numbered                     ***"
+   echo "*********************************************************************"
+   echo " "
+   grep -i "$argv[1]" $FER_DIR/doc/ferret_ug_index.txt

@@ -13,6 +13,7 @@
 
 * V5.00: 12/18/98 - based on CONSTANT_CONTEXT	
 *	 2/99 *sh* - bug fix on cx_given for normal axes
+* V530:  8/00 *sh* - allow constant arrays of strings
 
 #ifdef unix
 	include	'ferret.parm'
@@ -33,8 +34,7 @@
 	CHARACTER*(*)	text
 
 * internal variable declarations:
-	INTEGER		mods_cx, idim
-	REAL		const_buff
+	INTEGER		idim
 
 * initialize
 	CALL TRANSFER_CONTEXT ( default_cx, const_cx )
@@ -44,6 +44,13 @@
 	cx_dset_gvn( const_cx ) = .TRUE.
 	cx_variable( const_cx ) = 1000*uvar + item     ! packed info
 	cx_grid    ( const_cx ) = mgrid_xabstract
+
+* identify a constant array of strings by the presence of a quotation mark
+	IF (INDEX(text,'"') .GT. 0) THEN
+	   cx_type(const_cx) = ptype_string
+	ELSE
+	   cx_type(const_cx) = ptype_float
+	ENDIF
 
 * definition applies only to the axis of the constant list
 	cx_given( x_dim, const_cx ) = .TRUE.

@@ -63,6 +63,8 @@
 * Linux Port - 5/97 *kob*
 *	     - added ifdef check for double slash because f90/linux didn't
 *	       need two of them together for escapes
+* V510: 9/99 *sh* - added RETURN=XSTART (X-Y-Z-T, START-END))
+
 #ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -70,6 +72,8 @@
 	include 'xrisc.cmn'
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
+	include 'tmap_dims.parm'
+	include 'xtm_grid.cmn_text'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -80,22 +84,25 @@
 #endif
 
 * calling argument declarations:
-	LOGICAL	  did_sub, info_query
+	LOGICAL	  did_sub, info_query, itsa_subsc
 	INTEGER	  lencmnd, istart, max_check, digits, status
 	REAL	  memory( mem_blk_size, max_mem_blks )
 	CHARACTER cmnd*(*)
 
 * local parameter declarations
 	INTEGER	   max_len
-	PARAMETER (max_len = 16)
+	PARAMETER (max_len = 128)
 
 * internal variable declarations:
-	INTEGER   CGRID_SIZE, TM_LENSTR1, MR_DIM_LEN,
-     .		  str_len, lenbuff, iend, itmp,
+	LOGICAL need_formatting
+	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, MR_DIM_LEN,
+     .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim
 	REAL	  result
-	CHARACTER TM_FMT*16, LEFINT*16, repl*16, bad_str*16	! max_len=16
+	REAL*8 TM_WORLD, ww
+	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*128, VAR_UNITS*128,
+     .			repl*128, bad_str*128	! max_len=128
 
 * local parameter declarations
 	CHARACTER	tab*1
@@ -225,6 +232,7 @@
 * is this a single number request or a RETURN= query?
 	IF ( info_query ) THEN
 * ... RETURN= information request: "repl" contains the keyword
+* ... RETURN=SHAPE
 	   IF ( repl .EQ. "SHAPE" ) THEN
 	      repl = ' '
 	      str_len = 0
@@ -238,23 +246,69 @@
 	         repl = "POINT"
 	         str_len = 5
 	      ENDIF
+
+* ... RETURN=T0
+	   ELSEIF ( repl .EQ. "T0" ) THEN
+	      repl = ' '	! default
+	      axis = CGRID_AXIS ( T_dim, cx )
+	      IF ( axis.NE.mnormal) THEN
+	          IF (line_direction(axis) .EQ. 'TI')
+     .		      repl = line_T0(axis)
+	      ENDIF
+
+* ... RETURN=UNITS
+	   ELSEIF ( repl(1:4) .EQ. "UNIT" ) THEN	! or "=UNITS"
+	      repl = VAR_UNITS( cx )
+
+* ... RETURN=TITLE
+	   ELSEIF ( repl .EQ. "TITLE" ) THEN
+	      repl = VAR_TITLE( cx )
+
+* ... RETURN=GRID
+	   ELSEIF ( repl .EQ. "GRID" ) THEN
+	      repl = grid_name( cx_grid(cx) )
+
+* ... RETURN=*SIZE, *START, *END, *UNITS
 	   ELSE	
-* ... axis specific requests - must start with i,j,k, or l
+* ... axis specific requests - must start with i,j,k,l or x,y,z,t
 	      DO 220 idim = 1, 4
- 220	      IF ( repl(1:1) .EQ. ss_dim_name(idim) ) GOTO 221
+	         IF ( repl(1:1) .EQ. ss_dim_name(idim) ) THEN
+	            itsa_subsc = .TRUE.
+	            GOTO 221
+	         ELSEIF ( repl(1:1) .EQ. ww_dim_name(idim) ) THEN
+	            itsa_subsc = .FALSE.
+	            GOTO 221
+	         ENDIF
+ 220	      CONTINUE
 	      GOTO 5520
- 221	      IF ( repl(2:5) .EQ. "SIZE" ) THEN
+ 221	      need_formatting = .TRUE.
+	      IF ( repl(2:5) .EQ. "SIZE" ) THEN
+	         IF (.NOT.itsa_subsc) GOTO 5520
 	         i2 = cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim) + 1
 	      ELSEIF ( repl(2:6) .EQ. "START" ) THEN
 	         i2 = cx_lo_ss(cx,idim)
 	      ELSEIF ( repl(2:4) .EQ. "END" ) THEN
 	         i2 = cx_hi_ss(cx,idim)
+	      ELSEIF ( repl(2:5) .EQ. "UNIT" ) THEN
+	         axis = CGRID_AXIS ( idim, cx )
+	         repl = line_units( axis )
+	         need_formatting = .FALSE.
 	      ELSE
 	         GOTO 5520
 	      ENDIF
-	      IF (i2 .EQ. unspecified_int4) i2 = 0
-	      repl = LEFINT(i2, str_len)
+	      IF ( need_formatting ) THEN
+	         IF ( itsa_subsc) THEN
+	            IF (i2 .EQ. unspecified_int4) i2 = 0
+	            repl = LEFINT(i2, str_len)
+	         ELSE
+	            ww = TM_WORLD( i2, cx_grid(cx), idim, box_middle )
+	            CALL TRANSLATE_TO_WORLD( ww, idim, cx_grid(cx),
+     .				             use_digits, repl )
+	         ENDIF
+	      ENDIF
 	   ENDIF
+	   str_len = TM_LENSTR1(repl)
+
 	ELSE
 * single number answer desired
 * ... make sure the result is a single, valid value

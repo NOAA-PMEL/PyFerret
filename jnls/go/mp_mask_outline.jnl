@@ -2,6 +2,7 @@
 ! mp_mask_outline.jnl
 ! 
 ! *acm 6/01 
+!      6/20/01 simplify logic to call mask_outline
 
 ! Description: For a plot using map projections, define a contour field with 
 !              squared off lines for a 1-0 mask
@@ -23,7 +24,7 @@
 !   yes? go mp_orthographic 315 35
 !   yes? set grid rose
 !   yes? go mp_aspect
-!   yes? shade rose, x_page, y_page
+!   yes? shade/noaxis rose, x_page, y_page
 !
 !   yes? let ocean_mask = IF rose LT 0 THEN 1 ELSE 0 
 !   yes? GO mp_mask_outline ocean_mask, , , x_page, y_page
@@ -36,27 +37,9 @@
 ! use "yes? SHOW ALIAS *ovmo" to see or modify the contour command
 
 
-!Set up to call mask_outline.jnl
+! Call mask_outline.jnl
 
-!  See if the second and third arguments were specified -- call with null
-!  arguments if not.
-
-def symbol secondarg = $2"null2"
-def symbol thirdarg  = $3"null3"
-
-IF ($secondarg%|null2>TRUE|%) THEN
-   IF ($thirdarg%|null3>TRUE|%) THEN
-     GO mask_outline $1, , ,  $4, $5
-   ELSE
-     GO mask_outline $1, , $3, $4, $5 
-   ENDIF
-ELSE
-   IF ($thirdarg%|null3>TRUE|%) THEN
-     GO mask_outline $1, $2, $3, $4, $5
-   ELSE
-     GO mask_outline $1, $2, , $4, $5 
-   ENDIF
-ENDIF
+    GO mask_outline $1%" "% $2%" "%  $3%" "% $4%" "% $5%" "%
 
 ! Regrid x_page and y_page to x_page_mo and y_page_mo
 

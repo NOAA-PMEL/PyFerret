@@ -60,6 +60,8 @@
 * V420	 2/7/96  - added STAT/BRIEF
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
+* V530: 9/00 *sh* - increase rbuff size to allow longer "(isiz*jsiz*ksiz*lsiz)"
+*		  - added support for string variables
 
 #ifdef unix
 	include 'ferret.parm'
@@ -68,7 +70,7 @@
 	include 'xcontext.cmn'
         include 'xrisc.cmn'           ! for Unix/RISC bugs (&12/94)
 * special equivalence needed only with risc compiler: bug fix
-        CHARACTER rbuff(4)*12
+        CHARACTER rbuff(4)*24
         EQUIVALENCE ( rbuff, risc_buff )
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
@@ -83,13 +85,13 @@
 	REAL    dat( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit )
 
 * internal variable declarations:
-	INTEGER	TM_LENSTR1,
+	INTEGER	TM_LENSTR1, CGRID_SIZE, GET_MAX_STRING_LEN,
      .		i, j, k, l, nbad, ngood, ntot, idim,
      .		len_line, len_set_name, grid, slen
 	REAL	datum, bad, std_dev, large, small, mean, sumsq_dev, dev
 	REAL*8	sum
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
-	CHARACTER	TM_FMT*12, LEFINT*8, AX_TITLE*32, CX_SIZE_STR*12,
+	CHARACTER	TM_FMT*12, LEFINT*8, AX_TITLE*32, CX_SIZE_STR*24,
      .			line_buff*130, title*32, bl13*13
 	PARAMETER (bl13 = '             ' )
 
@@ -137,6 +139,19 @@
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .		bl13//'DATA SET: '//line_buff(:len_set_name), 0)
 
+	ENDIF
+
+* string variables
+	IF ( mr_type(mv) .EQ. ptype_string ) THEN
+	   rbuff(1) = LEFINT(GET_MAX_STRING_LEN(cx,mv,dat), slen) 
+	   rbuff(2) = LEFINT(CGRID_SIZE(cx), slen)
+	   rbuff(3) = CX_SIZE_STR(cx,len_line)
+	   CALL SPLIT_LIST(pttmode_explct, lun,
+     .			' Total # of strings: '//
+     .			 rbuff(2)(:slen)//' ('//rbuff(3)(:len_line)//')',0)
+	   CALL SPLIT_LIST(pttmode_explct, lun,
+     .			' Maximum string length: '//rbuff(1),0)
+	   RETURN
 	ENDIF
 
 * pass 1: compute mean 
@@ -195,7 +210,8 @@
            rbuff(1) = TM_FMT(small, sig_fig, 12, slen)
            rbuff(2) = TM_FMT(large, sig_fig, 12, slen)
            IF ( ABS(sum) .GE. 3.D35 ) THEN
-              rbuff(3) = '**too big**' 
+              rbuff(3) = '**too big**'
+	      slen = 11
            ELSE
               rbuff(3) = TM_FMT(mean , sig_fig, 12, slen)
            ENDIF
@@ -204,7 +220,7 @@
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Maximum value: '//rbuff(2), 0)
 	   CALL SPLIT_LIST(pttmode_explct, lun,
-     .			' Mean    value: '//rbuff(3)//
+     .			' Mean    value: '//rbuff(3)(:slen)//
      .					' (unweighted average)', 0)
 	ENDIF
 	IF ( full .AND. ngood.GT.1 ) THEN

@@ -13,8 +13,8 @@
 !  go mp_aspect [aspect action]
 !
 ! arg 1 - action to take after calculating the appropriate aspect ratio
-!         0 - print out appropriate aspect ratio
-!         1 - issue SET WIN/ASPECT=`aspect_ratio`:ax command
+!         LIST - print out appropriate aspect ratio
+!         1(default) - issue SET WIN/ASPECT=`aspect_ratio`:ax command
 
 ! Example 1: basic gridded field
 !

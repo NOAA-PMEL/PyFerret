@@ -1,6 +1,5 @@
-	LOGICAL FUNCTION CD_GET_ATTVALC ( cdfid, varid, attrib,
-     .                                    do_warn, vname,
-     .                                    val, blank_val )
+	LOGICAL FUNCTION CD_GET_ATTVAL_L ( cdfid, varid, attrib,
+     .                                     do_warn, vname, val )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,14 +34,13 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* This routine is like cd_attval except that it allows for the possibility
-* that the required numerical value is stored in a character attribute
-* and it can return only a single value
+* This routine is like cd_attvalc except it checks for a yes-or-no result.
+* It can return only a single value, of type LOGICAL.
 
-* Programmer Steve Hankin
+* Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-* 2/02  *sh*
+* 12/02  *acm*
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -50,14 +48,13 @@
 *       attrib   - attribute to search for
 *	do_warn	 - logical flag to issue warning if invalid attribute
 *       vname    - name of variable owning attribute (used in error msgs)
-*       val      - array into which to return result
-*       blank_val- if a blank character attribute, then return this default
+*       val      - logical result, if modulo = "T" or "NO", etc was set.
 
 * argument declarations
       LOGICAL       do_warn
       INTEGER	    cdfid, varid
       CHARACTER*(*) attrib, vname
-      REAL	    val, blank_val
+      LOGICAL       val
 
       include 'xio.parm'
       include 'netcdf.decl'
@@ -67,8 +64,7 @@
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL
       INTEGER vback
       INTEGER TM_LENSTR1, lena, attype, cdfstat
-      CHARACTER buff*132
-
+      CHARACTER buff*132, upbuff*132
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
@@ -76,35 +72,59 @@
 
       IF ( cdfstat .EQ. NCNOERR ) THEN
 	IF (attype .EQ. NCCHAR) THEN
-* get a text attribute as a value
-	   CD_GET_ATTVALC = CD_GET_ATTRIB(cdfid,varid,attrib(:lena),
-     .                                    do_warn,vname,buff,132 )
-	   IF (.NOT.CD_GET_ATTVALC) THEN
+
+* get a text attribute
+
+	   CD_GET_ATTVAL_L = CD_GET_ATTRIB(cdfid,varid,attrib(:lena),
+     .                                     do_warn,vname,buff,132 )
+	   IF (.NOT.CD_GET_ATTVAL_L) THEN
 	     RETURN
-	   ELSEIF (buff .EQ. ' ') THEN
-	     val = blank_val
+
 	   ELSE
-	     READ (buff,*,ERR=5000) val  ! convert text to value
-	   ENDIF 
-	 ELSE
-* get a value attribute
-	   CD_GET_ATTVALC = CD_GET_ATTVAL(cdfid,varid,attrib(:lena),
-     .                                    do_warn,vname,val,1,vback )
+             CALL STR_UPCASE (upbuff, buff)	     
+
+             IF ( upbuff .EQ. 'Y' .OR. upbuff .EQ. 'YES' .OR.
+     .            upbuff .EQ. 'T' .OR. upbuff .EQ. 'TRUE' .OR.
+     .            upbuff .EQ. 'ON' ) THEN
+	       CD_GET_ATTVAL_L = .TRUE.
+               val = .TRUE.
+
+             ELSE IF ( upbuff .EQ. 'N' .OR. upbuff .EQ. 'NO' .OR.
+     .                 upbuff .EQ. 'F' .OR. upbuff .EQ. 'FALSE'.OR.
+     .                 upbuff .EQ. 'OFF' ) THEN
+	       CD_GET_ATTVAL_L = .TRUE.
+               val = .FALSE.
+
+             ELSE
+               GOTO 5000
+
+             ENDIF
+           ENDIF
+
+	 ELSE  ! not a char type
+
+	   CD_GET_ATTVAL_L = .FALSE.
 	 ENDIF
+
       ELSE
+
 * didnt get nothin
-	 CD_GET_ATTVALC = .FALSE.
+	 CD_GET_ATTVAL_L = .FALSE.
       ENDIF
 
       RETURN
 
 * error exit
  5000 CONTINUE
-c      IF (do_warn) THEN
-c	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
-c     .		      attrib(:lena)//' on variable '//vname, tooplu)
-c	CALL TM_NOTE('"buff(:TM_LENSTR1(buff))"', tooplu)
-c      ENDIF
-      CD_GET_ATTVALC = .FALSE.
+
+      IF (do_warn) THEN
+	CALL TM_NOTE('Undecipherable value of netCDF attribute '//
+     .		      attrib(:lena)//' on variable '//vname, tooplu)
+        CALL TM_NOTE('modulo = "'//buff(:TM_LENSTR1(buff))//'"', tooplu)
+
+      ENDIF
+
+      CD_GET_ATTVAL_L = .FALSE.
+
       RETURN
       END

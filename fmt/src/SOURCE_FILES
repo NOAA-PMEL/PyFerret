@@ -13,6 +13,7 @@ cd_get_1_dep_var.F\
 cd_get_attrib.F\
 cd_get_attval.F\
 cd_get_attvalc.F\
+cd_get_attval_l.F\
 cd_get_bounds.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\

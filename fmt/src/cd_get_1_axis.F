@@ -120,10 +120,13 @@
 
 * local variable declarations:
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
-     .        TM_HAS_STRING, TM_FPEQ, TM_DFPEQ, CD_GET_ATTVALC,
+     .        TM_HAS_STRING, TM_FPEQ, TM_DFPEQ, CD_GET_ATTVALC, 
+     .        CD_GET_ATTVAL_L, 
      .        got_it, got_torg, do_warn,
-     .        epic_time, west_lon, yyyymmdd_time
-      INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,
+     .        epic_time, west_lon, yyyymmdd_time, 
+     .        got_mod, mod_tf, setmodfalse
+
+      INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
@@ -293,9 +296,24 @@ c         ENDIF
       ENDIF
 
 * optional "modulo" flag (and optionally the associated length)
+      
+      rbuff = 0.
       line_modulo(iaxis) = CD_GET_ATTVALC( cdfid, ivar, 'modulo',
      .                             do_warn, vname(:vlen), rbuff, 0.0 )
       line_modulo_len(iaxis) = rbuff
+
+* See if there is modulo attrib, with yes, true, false, etc.
+
+      got_mod = .FALSE.
+      mod_tf = .TRUE.
+
+      IF (.NOT. line_modulo(iaxis)) THEN 
+         got_mod = CD_GET_ATTVAL_L( cdfid, ivar, 'modulo',
+     .                             do_warn, vname(:vlen),mod_tf)
+         IF (got_mod) line_modulo(iaxis) = mod_tf
+
+      ENDIF
+      setmodfalse = (.NOT.mod_tf  .AND. got_mod)
 
 * optional time_origin and time_unit values for time axis
 * (time origin could have been set by the units "... since time_origin")
@@ -708,10 +726,13 @@ c         ENDIF
         ENDIF
 
 * if it is a longitude axis of 360 degrees or less let it default to MODULO
+* unless user has set it explicitly to false.
  500    axwwlen = TM_WW_AXLEN(iaxis)
+
         IF ( line_direction(iaxis).EQ.'WE'
      . .AND. units.EQ.4
-     . .AND. axwwlen .LE. 360.D0                              ) THEN
+     . .AND. axwwlen .LE. 360.D0
+     . .AND. (.NOT.setmodfalse)                    ) THEN
            line_modulo(iaxis) = .TRUE.
            IF (line_modulo_len(iaxis).EQ.0.0D0)
      .                    line_modulo_len(iaxis) = 360.D0
@@ -789,7 +810,6 @@ c         ENDIF
      .                  no_descfile, no_stepfile,
      .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
      .                  no_errstring, *1000)                    ! 3/99 soft error
-
 * error exit
  5900   RETURN
         END

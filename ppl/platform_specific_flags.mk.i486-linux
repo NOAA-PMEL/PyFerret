@@ -39,7 +39,7 @@ CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -
 FFLAGS          = -132 -c -save -dusty  -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES) 
 PPLUS_FFLAGS    = -132 -c -save -dusty  -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
-CPP_FLAGS       = $(INCLUDES)-P -Dunix -DNEED_IAND -DFORTRAN_90 \
+CPP_FLAGS       = $(INCLUDES) -P -Dunix -DNEED_IAND -DFORTRAN_90 \
 		  -DNO_OPEN_SHARED \
 		  -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME \
 		  -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS \
@@ -81,7 +81,7 @@ LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/pplda
 .F.o:
 	rm -f $*.f
 	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de	/de /g' | sed -e  's/de 	/de /g' > $*.f
-	$(F77) $(FFLAGS) $*.f
+	$(F77) $(PPLUS_FFLAGS) $*.f
 
 
 #

@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V50 - *sh* 4/99 code extracted from SHOW_GRID
+* V530 - *sh* 1/01 - show lower limit value of grid box
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -72,12 +73,12 @@
 
 * local variable declarations:
 	LOGICAL	GEOG_LABEL, calendar
-	INTEGER ISUBSCR_CX, TM_LENSTR, 
+	INTEGER ISUBSCR_CX, TM_LENSTR, TM_LENSTR1,
      .		lo, hi, i, line, loest, hiest, dlen,
-     .		ndec, status, delta
-	CHARACTER TM_FMT*14, buff*14, lo_str*20, hi_str*20, extra*30
+     .		ndec, status, delta, exlen
+	CHARACTER TM_FMT*14, buff*14, pt_str*20, lo_str*20, extra*24
 	REAL	BOX_SIZE
-	REAL*8	TM_WORLD, lo_val8, SECS_TO_TSTEP
+	REAL*8	TM_WORLD, SECS_TO_TSTEP, pt_val8, lo_val8
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -93,13 +94,16 @@
 
 	calendar = idim .EQ. t_dim .AND. GEOG_LABEL( idim, grid )	
 	IF ( calendar ) THEN
-	   extra = 'TIME_STEP ('//line_units(line)
+	   extra = 'TSTEP ('//line_units(line)
 	   extra = extra(:TM_LENSTR(extra))//')'
 	ELSE
 	   extra = ' '
 	ENDIF
+	exlen = TM_LENSTR1(extra)
 	risc_buff = ' '
 	WRITE ( risc_buff, 3030 ) ss_dim_name(idim),
+     .				  ww_dim_name(idim),
+     .				  ww_dim_name(idim),
      .				  ww_dim_name(idim), extra
 	CALL SPLIT_LIST(pttmode_explct, ttout_lun, ' ', 1)
 	CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
@@ -143,27 +147,29 @@
 	DO 120 i = lo, hi, delta
 	   IF ( interrupted ) CALL ERRMSG
      .		( ferr_interrupt, status, ' ', *1000 )
-	   lo_val8 = TM_WORLD( i, grid, idim, box_middle )
+	   lo_val8 = TM_WORLD( i, grid, idim, box_lo_lim )
+	   pt_val8 = TM_WORLD( i, grid, idim, box_middle )
 	   IF ( calendar ) THEN
 	      ndec = 6	! was 5 1/95
 	   ELSE
 	      ndec = -sig_figs
 	   ENDIF
+	   CALL TRANSLATE_TO_WORLD( pt_val8,idim,grid,ndec,pt_str )
 	   CALL TRANSLATE_TO_WORLD( lo_val8,idim,grid,ndec,lo_str )
 	   IF ( calendar ) extra = 
-     .	         	TM_FMT( SNGL(lo_val8), sig_figs, 14, dlen )
+     .	         	TM_FMT( SNGL(pt_val8), sig_figs, 14, dlen )
            buff = TM_FMT(
      .                       BOX_SIZE(i,grid,idim), sig_figs, 14, dlen )
 	   risc_buff = ' '
 	   WRITE ( risc_buff, 3040 ) 
-     .			i, lo_str,
-     .			buff,
-     .			extra
+     .			i, pt_str,
+     .			buff, lo_str,
+     .			extra(:exlen)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
  120	CONTINUE
 
- 3030	FORMAT ( T12,A1,T18,A1,T36,'BOX_SIZE',T51,A28 )
- 3040	FORMAT ( T7,I6,'> ',T16,A20,T38,A14,T53,A14 )
+ 3030	FORMAT ( T8,A1,T14,A1,T34,A1,'BOX  ',T44,A1,'BOXLO',T62,A28 )
+ 3040	FORMAT ( T3,I6,'> ',T12,A20,T34,A9,T44,A20,T66,A14 )
 
 * successful completion
  1000	RETURN

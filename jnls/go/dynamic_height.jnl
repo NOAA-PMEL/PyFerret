@@ -40,7 +40,9 @@ say may be expressed as e.g. z=500m to 1000m --> DYN_HT[Z=500:1000]
 ! where f is 2*OMEGA*SIN(latitude), OMEGA = 2*3.14159/86164 = 7.29212E-5 s-1
 
 let SVanom = 1/rho_UN(dyn_s,dyn_t,dyn_p) - 1/rho_UN(35,0,dyn_p)
-let dyn_mask = if temp[z=@nbd] eq 0 then 1
+! 8/99 *kob* bug fix temp was incorrectly being used in dyn_mask
+! definition.  Pointed out by Russel Fiedler
+let dyn_mask = if dyn_t[z=@nbd] eq 0 then 1
 let/title="Dynamic Height(dyn-cm)" DYN_HT  = 1E5 * dyn_mask * SVanom[z=@din]
 let/title="Dynamic Height(dyn-cm)" DYN_HTz = 1E5 * dyn_mask * (SVanom[z=@din]-SVanom[z=@iin])
 let/title="Geostrophic U (cm/sec)" GEO_U = -10/(1.458424E-4*SIN(Y/57.29578)) * DYN_HT[Y=@DDC]

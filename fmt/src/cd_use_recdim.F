@@ -91,13 +91,23 @@
 * get the statistics for the given variable
         CALL NCVINQ(cdfid, varid, vname, vartyp, nvdims, vdims,
      .              nvatts,cdfstat)
+
+
         IF (cdfstat.NE.NCNOERR) GOTO 5100
 
 * does it use the record axis?
-        IF ( vdims(nvdims) .EQ. recdim ) THEN
-           CD_USE_RECDIM = .TRUE.
-        ELSE
+
+* acm 3/14/02 if its a scalar, NCVINQ returns nvdims=0, so set CD_USE_RECDIM =F
+
+        IF (nvdims .EQ. 0) THEN
            CD_USE_RECDIM = .FALSE.
+        ELSE
+
+           IF ( vdims(nvdims) .EQ. recdim ) THEN
+              CD_USE_RECDIM = .TRUE.
+           ELSE
+              CD_USE_RECDIM = .FALSE.
+           ENDIF
         ENDIF
 
 * successful completion

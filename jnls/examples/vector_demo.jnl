@@ -37,7 +37,7 @@ say .    yes? vector uwnd,vwnd
 say .    yes? go land red
 
 
-set data monthly_navy_winds.cdf
+set data monthly_navy_winds
 set region/t=1-jan-1990
 vector uwnd,vwnd
 go land red

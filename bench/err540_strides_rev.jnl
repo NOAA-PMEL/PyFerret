@@ -1,0 +1,47 @@
+! err540_strides_rev.jnl
+
+! reported Feb '02
+! fixed April 17, '02
+
+! Symptom: plots appear to be "tiled" -- repreating content
+
+! file test_100x100 has a diagonal line of 1s in a field of 0s
+sp rm -f test_100x100.nc
+set region/i=1:100/j=1:100
+let a0 = 0
+let a = if i eq j then 1 else a0
+!shade a
+save/file=test_100x100.nc a
+cancel data/all
+cancel var/all
+
+! works fine in V5.33
+! try these lines for reference
+!    yes? use test_100x100.nc 
+!    yes? shade a
+!    yes? shade a[i=1:100:10]
+
+! explanation of bug:
+! Following the implicit regrid in IS_REGRID the resultant cx did not
+! have the delta value(s) removed, so the mr thinks
+! that it is 1:10:10 instead of simply 1:10
+
+! this causes an inadequate amount of memory to be allocated and
+! subsequent variables try to occupy the same memory already in use
+! COPY_GRID is where the tiling effect happens, though it is not the
+! cause of the problem
+
+set mode stupid
+set mode diag
+set mem/size=0.05
+show mem/free
+
+use/ord=x-y test_100x100.nc
+list/prec=1 a[i=1:100:10] !  this looks just right!!
+show grid
+
+! should be a diagonal path of steps all the way across the plot
+shade a[i=1:100:10]
+ppl list stats
+ppl list data  ! make screen wide -- shows the 1's matching the plot
+

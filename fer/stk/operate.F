@@ -33,6 +33,8 @@
 * Linux Port  12/96 *kob* - had to pass 0.0 to RANDU and RANDN rather 
 *			    than the 0 that was being passed. F90 
 *			    complained about inconsistent datatypes
+* v491: 4/98 *kob* - had to fix incorrect array references using i1,j1,k1 for
+*                    arrays com2, com3
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 	include	'ferret_cmn/errmsg.parm'
@@ -1092,12 +1094,14 @@
 	   i2 = i2 + di2
 	   i3 = i3 + di3
 
+* 4/98, 2nd references to com2, com3 incorrectly used i1,etc for array references
+*       fixed that up - kob
 	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
      .     .OR. com2(i2,j2,k2,l2) .EQ. bad2
      .     .OR. com3(i3,j3,k3,l3) .EQ. bad3
      .     .OR. com1(i1,j1,k1,l1) .LT. 1900.0
-     .     .OR. com2(i1,j1,k1,l1) .LT. 1.0
-     .     .OR. com3(i1,j1,k1,l1) .LT. 0.0    ) THEN
+     .     .OR. com2(i2,j2,k2,l2) .LT. 1.0
+     .     .OR. com3(i3,j3,k3,l3) .LT. 0.0    ) THEN
               res(i,j,k,l) = bad_res
            ELSE
               res(i,j,k,l) = DAYS_FROM_DAY0( pdays_by_1900,

@@ -70,7 +70,8 @@
 *                                                                      |
 *                                                                      V
 
-      CALL ef_set_desc(id,'test for bad flags in data' )
+      CALL ef_set_desc(id,
+     . '(demonstration function) returns % good data at each time' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -81,7 +82,6 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
-      CALL ef_set_arg_unit(id, arg, 'none')
       CALL ef_set_arg_desc(id, arg, 'data to be checked')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 *                                                                      ^

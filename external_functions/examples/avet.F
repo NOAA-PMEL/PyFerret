@@ -55,7 +55,8 @@
 *                                                                     |
 *                                                                     V
 
-      CALL ef_set_desc(id,'returns the time average' )
+      CALL ef_set_desc(id,
+     . '(demonstration function) returns the time average' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_has_vari_args(id, NO)
@@ -64,6 +65,8 @@
       CALL ef_set_piecemeal_ok(id, YES, YES, YES, NO)
 
       arg = 1
+      CALL ef_set_arg_name(id, arg, 'A')
+      CALL ef_set_arg_desc(id, arg, 'data to be time averaged')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 *                                                                     ^
 *                                                                     |

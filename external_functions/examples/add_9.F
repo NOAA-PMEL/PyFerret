@@ -55,7 +55,7 @@
 *                                                                      |
 *                                                                      V
 
-      CALL ef_set_desc(id,'adds 9 arguments' )
+      CALL ef_set_desc(id,'(demonstration function) adds 9 arguments' )
 
       CALL ef_set_num_args(id, 9)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -65,30 +65,39 @@
 * All arguments should be on the same grid
 
       arg = 1
+      CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 2
+      CALL ef_set_arg_name(id, arg, 'B')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 3
+      CALL ef_set_arg_name(id, arg, 'C')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 4
+      CALL ef_set_arg_name(id, arg, 'D')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 5
+      CALL ef_set_arg_name(id, arg, 'E')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 6
+      CALL ef_set_arg_name(id, arg, 'F')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 7
+      CALL ef_set_arg_name(id, arg, 'G')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 8
+      CALL ef_set_arg_name(id, arg, 'H')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 9
+      CALL ef_set_arg_name(id, arg, 'I')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 *                                                                      ^
 *                                                                      |

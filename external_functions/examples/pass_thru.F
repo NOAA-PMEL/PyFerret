@@ -58,7 +58,8 @@
 *                                                                      |
 *                                                                      V
 
-      CALL ef_set_desc(id,'sets result equal to input' )
+      CALL ef_set_desc(id,
+     . '(demonstration function) sets result equal to input' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -67,7 +68,6 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
-      CALL ef_set_arg_unit(id, arg, 'none')
       CALL ef_set_arg_desc(id, arg, 'this arg is passed through')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 *                                                                      ^

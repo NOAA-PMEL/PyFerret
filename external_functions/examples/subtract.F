@@ -55,7 +55,7 @@
 *                                                                      |
 *                                                                      V
 
-      CALL ef_set_desc(id,'returns: A - B' )
+      CALL ef_set_desc(id,'(demonstration function) returns: A - B' )
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)

@@ -35,7 +35,7 @@ GO mp_aspect
 !   are at 7.5, 8.2
 
 FILL/NOAXES/NOLAB/PALETTE=land_sea/SET_UP masked_rose, x_page, y_page
-PPL SHAKEY 1, 0, 0.1, 2, , , 2.5, 8.5, 7.5, 8.2
+PPL SHAKEY 1, 0, 0.1, 2, , , 2.5, 8.5, 7.5, 7.8
 PPL FILL
 
 GO mp_land

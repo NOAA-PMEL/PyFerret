@@ -4,6 +4,10 @@
 ! External Functions introduced in Ferret V5.0
 ! Two interpolation techniques are available for gridding
 
+! Note that both techniques are applicable ONLY for output
+! grids which are REGULAR, that is to say, have EQUALLY-SPACED
+! coordinates.
+
 set grid/save
 
 ! Set viewports

@@ -46,6 +46,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/92
+* v500 - 3/99 *kob* - up length of variable vname to correspond w/ increased
+*                     size of line_name
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -88,7 +90,8 @@
       INTEGER TM_LENSTR1, TM_GET_LINENUM, TM_GET_GRIDNUM,
      .        igrid, iaxis, vlen, count, idim, i_dup_name, ivar,
      .        npts, cdfstat
-      CHARACTER*24 vname*24, buff*64
+* upped vname to 64 - also removed the *24 from the CHARACTER
+      CHARACTER vname*64, buff*64
 
 ***** AXES ******
 * check for duplicate name / guts of axes

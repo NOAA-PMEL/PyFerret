@@ -42,7 +42,7 @@ SUB_OBJS = fftsubs.o
 all:	ferret_cmn fftsubs.o ffta.so fftp.so
 
 ferret_cmn:
-	ln -s ef_utility/ferret_cmn ferret_cmn
+	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
 	cp *.so $(FER_LOCAL_EXTFCNS)

@@ -57,6 +57,7 @@
 *        23/9/91 - unused ferr_gks --> ferr_not_implemented
 * V230:   8/5/92 - "ignored" removed from text of ferr_too_many_args
 *        11/9/92 - text of unknown variable mentions not in data set
+* V530: *sh* 9/00 - added ferr_data_type
 
 #ifdef unix
 	include 'errmsg.parm'	! parameter definitions
@@ -259,5 +260,10 @@
      .		/ 'unknown command'				/
 	DATA report_err_code( ferr_unknown_command - greport )
      .		/ 'unknown_command' /
+
+	DATA err_text( ferr_data_type - greport )
+     .		/ 'illegal data type (float,string,...) for operation'/
+	DATA report_err_code( ferr_data_type - greport )
+     .		/ 'data_type' /
 
 	END

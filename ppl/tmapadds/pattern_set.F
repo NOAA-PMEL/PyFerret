@@ -122,8 +122,9 @@
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
 #endif
-
-	integer		i,j,ndx,npatp1,solid/21/
+* 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
+	integer		i,j,ndx,npatp1,solid
+        DATA            solid/21/
 
         integer         beg,end,andx
         character*255   str                                

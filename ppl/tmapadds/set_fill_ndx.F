@@ -7,6 +7,7 @@
 *	J Davison 10.12.92
 *       *jd* 7.31.97 mode to change call to gqlwk to query_xgks_wkstn
 *       *jd* 10.98 handle "atomic" colors
+* 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
 
 #ifdef unix
         include         'shade_vars.cmn'
@@ -23,7 +24,8 @@
         INCLUDE        'sys$library:gksdefs.bnd'
 #   endif
 
-	integer		fill_ndx,style,pattern_ndx,solid/21/
+	integer		fill_ndx,style,pattern_ndx,solid
+	DATA            solid/21/
         integer         max_pline,max_pmark,max_text,max_fill_area
         integer         max_pattern,max_color,error,color_ndx
 	real		incr,spc,min_spc,delta_spc

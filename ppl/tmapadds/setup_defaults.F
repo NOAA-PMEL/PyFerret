@@ -42,6 +42,7 @@
 * 	*jd* Set default values for CENTERED & SET_DELTA in CONT.INC 8.15.95
 *       *jd* Set default values for patterns 10.98
 *       *jd* Initialize rgb_mapping 10.98
+* 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
 
 #ifdef unix
         include         'shade_vars.cmn'
@@ -72,11 +73,14 @@
 	real		rem
 	external	ws_types_init,pplp_ver_data
 
-        integer         i,solid/21/
+        integer         i,solid
+        DATA            solid/21/
         integer         set_default_patterns(20)
-     .       /1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20/
+        DATA            set_default_patterns
+     .          /1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20/
 
         character*25    set_pattern_list(21)
+        DATA            set_pattern_list
      . /'TINY_TRIANGLES', 
      .  'TINY_GRID',
      .  'TINY_OPEN_SQUARES',

@@ -1,6 +1,6 @@
-      SUBROUTINE READSQ(X,NXS,NYS,NSIZE,IBASE,NAME) 
+        SUBROUTINE READSQ(X,NXS,NYS,NSIZE,IBASE,NAME)
 	DIMENSION X(NSIZE),XT(1000,20)
-C** 
+C**
 C**    @(#)readsq.F	1.2    3/18/88
 C**
 C**
@@ -11,48 +11,69 @@ C**
 C***********************************************************************
 C**
 C**
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/ZGRIDD.INC'
-	INCLUDE 'pplinc/ZGRID.INC'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/DATA.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/LABELS.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'epicinc/COMEPS.INC'
-	INCLUDE 'epicinc/COMTHDR.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/AXISL.INC'
-	INCLUDE 'cmdinc/SWITCH.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/zgridd_inc.decl'
+        include 'pplv11inc/ZGRIDD.INC'
+        include 'tmap_pplv11inc/zgrid_inc.decl'
+        include 'pplv11inc/ZGRID.INC'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
+        include 'tmap_pplv11inc/hd_inc.decl'
+        include 'pplv11inc/HD.INC'
+        include 'tmap_pplv11inc/data_inc.decl'
+        include 'pplv11inc/DATA.INC'
+        include 'tmap_pplv11inc/cmrd_inc.decl'
+        include 'pplv11inc/CMRD.INC'
+        include 'tmap_pplv11inc/cmrdl_inc.decl'
+        include 'pplv11inc/CMRDL.INC'
+        include 'tmap_pplv11inc/labels_inc.decl'
+        include 'pplv11inc/LABELS.INC'
+        include 'tmap_pplv11inc/miss_inc.decl'
+        include 'pplv11inc/MISS.INC'
+        include 'tmap_pplv11inc/lunits_inc.decl'
+        include 'pplv11inc/LUNITS.INC'
+        include 'tmap_pplv11inc/system_inc.decl'
+        include 'pplv11inc/SYSTEM.INC'
+        include 'tmap_pplv11inc/comeps_inc.decl'
+        include 'pplv11inc/COMEPS.INC'
+        include 'tmap_pplv11inc/comthdr_inc.decl'
+        include 'pplv11inc/COMTHDR.INC'
+        include 'tmap_pplv11inc/taxis_inc.decl'
+        include 'pplv11inc/TAXIS.INC'
+        include 'tmap_pplv11inc/axisl_inc.decl'
+        include 'pplv11inc/AXISL.INC'
+        include 'tmap_pplv11inc/switch_inc.decl'
+        include 'pplv11inc/SWITCH.INC'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:ZGRIDD.INC'
-        INCLUDE 'pplinc:ZGRID.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:LABELS.INC'
-        INCLUDE 'pplinc:MISS.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'CMDINC:SYSTEM.INC'
-        INCLUDE 'epicinc:COMEPS.INC'
-        INCLUDE 'epicinc:COMTHDR.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'CMDINC:SWITCH.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
+        INCLUDE 'tmap_pplv11inc:tmap_ZGRIDD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_ZGRID.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_DATA.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LABELS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LUNITS.INC'
+        INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
+        INCLUDE 'PPLV11INC:SYSTEM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_COMEPS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_COMTHDR.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_TAXIS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_AXISL.INC'
+        INCLUDE 'TMAP_PPLV11INC:SWITCH_INC.DECL'
+        INCLUDE 'PPLV11INC:SWITCH.INC'
 #endif
 	INTEGER*4 IEPIC1,IEPIC2
-	CHARACTER NAME*81
-C     NREC=NUMBER OF RECORDS TO BE READ 
-C     NGRP=NUMBER OF GROUPS TO BE READ PER RECORD 
-C     NVAR=NUMBER OF VARIABLE PER GROUP 
+	CHARACTER NAME*(*)
+C     NREC=NUMBER OF RECORDS TO BE READ
+C     NGRP=NUMBER OF GROUPS TO BE READ PER RECORD
+C     NVAR=NUMBER OF VARIABLE PER GROUP
 	IX=IBASE-1
 	IY=NSIZE/2+IX
 	IF(SVECTR)THEN
@@ -66,11 +87,11 @@ C     NVAR=NUMBER OF VARIABLE PER GROUP
 	ELSE
 	    IVLEN=0
 	    IZLEN=0
-	    IF(JX.GT.0.AND.JZ.GT.0)THEN 
+	    IF(JX.GT.0.AND.JZ.GT.0)THEN
 	    	CALL STPRMP('rd>',3)
 	    	IF(.NOT.QUIETF)WRITE(LTTOUT,'('' ENTER # PTS TO READ'')')
 	     	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
-	    	CALL STPRMP('ppl>',4)
+	    	CALL STPRMP('ppl+>',5)
 C
 C	RSX-11M
 C
@@ -81,31 +102,31 @@ C	END RSX-11M
 C
 	    	IF(IFLG(1).EQ.0)P(1)=IZSE
 	    	NREC=MIN0(IZSE,INT(P(1)))/NGRP
-	    END IF 
+	    END IF
 	ENDIF
 	II=1
 	JJ=1
 	DO 50 KK=1,NREC
 	IF(IFORM(1:3).NE.'UNF'.AND.IFORM(1:3).NE.'EPI')THEN
-	    IF(IFORM(1:4).EQ.'FREE')THEN 
+	    IF(IFORM(1:4).EQ.'FREE')THEN
 		READ(LUNN,*,END=11,ERR=1000)((XT(K,J),J=1,NVAR),
-     *		K=1,NGRP) 
-	    ELSE 
+     *		K=1,NGRP)
+	    ELSE
 		READ(LUNN,IFORM,END=11,ERR=1000)((XT(K,J),J=1,NVAR),
-     *		K=1,NGRP) 
-	    END IF 
-	ELSE 
-C     IF UNFORMATTED USE NGRP OR NREC WHICH EVER IS LARGER 
+     *		K=1,NGRP)
+	    END IF
+	ELSE
+C     IF UNFORMATTED USE NGRP OR NREC WHICH EVER IS LARGER
 	    READ(LUNN,END=11,ERR=1000)((XT(K,J),J=1,NVAR),K=1,NGRP)
-	END IF 
-	IF(JZ.GT.0)GOTO 100 
-	IF(JX.GT.0)THEN 
-	    IF(JY.GT.0)THEN 
+	END IF
+	IF(JZ.GT.0)GOTO 100
+	IF(JX.GT.0)THEN
+	    IF(JY.GT.0)THEN
 		DO 20 I=1,NGRP
-		X(IX+II)=XT(I,JX) 
-		X(IY+II)=XT(I,JY) 
+		X(IX+II)=XT(I,JX)
+		X(IY+II)=XT(I,JY)
 20		II=II+1
-	    ELSE 
+	    ELSE
 C
 C		If EPIC data and switch STIME (read EPIC time words),
 C		make time variable = a sequence number which is 1 for
@@ -127,18 +148,18 @@ C
 221		    FORMAT (F6.0,F4.0)
 		    CALL EPICSQ (EPDATE,EPTIME,IEPIC1)
 		    DO 200 I=1,NGRP
-		    X(IX+II)=XT(I,JX) 
+		    X(IX+II)=XT(I,JX)
 		    CALL EPICSQ (XT(I,1),XT(I,2),IEPIC2)
 		    X(IY+II) = FLOAT(IEPIC2-IEPIC1) / DT + 1. + EPICO
 200		    II=II+1
 		ELSE
 		    DO 21 I=1,NGRP
-		    X(IX+II)=XT(I,JX) 
-		    X(IY+II)=FLOAT(II) 
+		    X(IX+II)=XT(I,JX)
+		    X(IY+II)=FLOAT(II)
 21		    II=II+1
 	    	ENDIF
-	    END IF 
-	ELSE 
+	    END IF
+	ELSE
 	    IF (LSTIME .AND. IFORM(1:3).EQ.'EPI') THEN
 		IF (LSOFFS) THEN
 		    READ (THEADER(3)(61:78),222) EPICO
@@ -151,32 +172,32 @@ C
 	        DO 210 I=1,NGRP
 		CALL EPICSQ (XT(I,1),XT(I,2),IEPIC2)
 		X(IX+II) = FLOAT(IEPIC2-IEPIC1) / DT + 1. + EPICO
-	        X(IY+II)=XT(I,JY) 
+	        X(IY+II)=XT(I,JY)
 210	        II=II+1
 	    ELSE
 	        DO 22 I=1,NGRP
-	        X(IX+II)=FLOAT(II) 
-	        X(IY+II)=XT(I,JY) 
+	        X(IX+II)=FLOAT(II)
+	        X(IY+II)=XT(I,JY)
 22	        II=II+1
 	    ENDIF
-	END IF 
+	END IF
 	GOTO 50
 100	IF(JX.LE.0)THEN
 	    DO 30 IC=1,NGRP
 	    X(IVLEN+NXS*(JJ-1)+II)=XT(IC,JZ)
-	    IF(ITYPEZ.EQ.0)THEN 
+	    IF(ITYPEZ.EQ.0)THEN
 		II=II+1
 		IF(II.GT.NX)THEN
 		    JJ=JJ+1
 		    II=1
 		ENDIF
-	    ELSE 
+	    ELSE
 		JJ=JJ+1
 		IF(JJ.GT.NY)THEN
 		    II=II+1
 		    JJ=1
 		ENDIF
-	    END IF 
+	    END IF
 30     CONTINUE
 	ELSE
 	    DO 31 IC=1,NGRP
@@ -204,25 +225,25 @@ C
 	IF(LEN.LE.0)RETURN
 	IF(JZ.GT.0)GOTO 400
 	JTYPE=1
-	ZMIN=0. 
-	ZMAX=ZMIN 
-	XMIN=1.E38 
-	YMIN=XMIN 
-	XMAX=-XMIN 
-	YMAX=XMAX 
-	DO 23 I=1,LEN 
+	ZMIN=0.
+	ZMAX=ZMIN
+	XMIN=1.E38
+	YMIN=XMIN
+	XMAX=-XMIN
+	YMAX=XMAX
+	DO 23 I=1,LEN
 	IF((XLE.AND.X(IX+I).LE.CMXLE).OR.
      *	   (XEQ.AND.X(IX+I).EQ.CMXEQ).OR.
      *	   (XGE.AND.X(IX+I).GE.CMXGE).OR.
      *	   (YLE.AND.X(IY+I).LE.CMYLE).OR.
      *	   (YEQ.AND.X(IY+I).EQ.CMYEQ).OR.
      *	   (YGE.AND.X(IY+I).GE.CMYGE))GOTO 23
-	IF(X(IX+I).LT.XMIN)XMIN=X(IX+I) 
-	IF(X(IX+I).GT.XMAX)XMAX=X(IX+I) 
-	IF(X(IY+I).LT.YMIN)YMIN=X(IY+I) 
-	IF(X(IY+I).GT.YMAX)YMAX=X(IY+I) 
-23	CONTINUE 
-	RETURN 
+	IF(X(IX+I).LT.XMIN)XMIN=X(IX+I)
+	IF(X(IX+I).GT.XMAX)XMAX=X(IX+I)
+	IF(X(IY+I).LT.YMIN)YMIN=X(IY+I)
+	IF(X(IY+I).GT.YMAX)YMAX=X(IY+I)
+23	CONTINUE
+	RETURN
 400	JTYPE=0
 	IF(SVECTR)JTYPE=-1
 C
@@ -238,13 +259,13 @@ C	END RSX-11M
 C
 	IF(.NOT.SVECTR)THEN
 	    CALL STPRMP('rd>',3)
-	    IF(.NOT.QUIETF)WRITE(LTTOUT,'('' ENTER XMIN,XMAX,YMIN,YMAX'')') 
+	    IF(.NOT.QUIETF)WRITE(LTTOUT,'('' ENTER XMIN,XMAX,YMIN,YMAX'')')
 	    CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
-	    CALL STPRMP('ppl>',4)
-	    XMIN=P(1) 
-	    XMAX=P(2) 
-	    YMIN=P(3) 
-	    YMAX=P(4) 
+	    CALL STPRMP('ppl+>',5)
+	    XMIN=P(1)
+	    XMAX=P(2)
+	    YMIN=P(3)
+	    YMAX=P(4)
 	ENDIF
 	IF(JX.GT.0)THEN
 	    DX=(XMAX-XMIN)/FLOAT(NX-1)
@@ -291,14 +312,14 @@ C
 C	END VAX/VMS
 C
 	ENDIF
-	RETURN 
-C	ERRORS 
+	RETURN
+C	ERRORS
 1000	IF(.NOT.QUIETF)WRITE(LTTOUT,
-     *	'('' FATAL READ ERRORS IN READSEQ'')') 
-	IF(.NOT.QUIETF)WRITE(LTTOUT,9999) NAME,IFORM 
+     *	'('' FATAL READ ERRORS IN READSEQ'')')
+	IF(.NOT.QUIETF)WRITE(LTTOUT,9999) NAME,IFORM
 9999	FORMAT('  NAME= ',A30,'   TYPE= ',A20)
 #ifndef unix
 	CALL ERRTST(64,I)
 #endif
-	RETURN 
-	END 
+	RETURN
+	END

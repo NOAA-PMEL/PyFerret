@@ -1,4 +1,12 @@
-	subroutine   arc(x,y,nask,eps,xx,yy,nret) 
+	subroutine   arc(x,y,nask,eps,xx,yy,nret,
+     ,      ks,kmax,xl,yl,splxp,splyp,spls,spline_tension)
+
+* revised for TMAP
+*
+* *sh*  - 1/26/93 modified routine to call spline under tension fit
+*                 if spline_tension is not zero.  otherwise, it will
+*		  use the fit that this algorithm calculates (cubic).
+*******************************************************************
 C** 
 C**    @(#)arc.f	1.1    3/10/88
 C**
@@ -25,6 +33,8 @@ c	oceanography emr  december 1969
 c 
 	dimension x(*),y(*)
 	dimension  xx(11),yy(11),slope(3),ds(3) 
+! TMAP mod, spline fit:
+	dimension xl(*),yl(*),splxp(*),splyp(*),spls(*)
 c 
 	if(nask-2) 10,10,20 
 10	nret=2 
@@ -34,7 +44,20 @@ c
 	yy(2)=y(3) 
 	return 
 c 
-20	pi=3.1415926 
+20	continue
+c
+! TMAP mod, spline fit:
+	if (spline_tension.ne.0.) then
+	nret=nask
+	do 141, k=1,nret
+	  splt=(spls(ks)+float(k)/float(nret)*
+     *         (spls(ks+1)-spls(ks)))/spls(kmax)
+	  call kurv2(splt,xx(k),yy(k),kmax,xl,yl,
+     *         splxp,splyp,spls,spline_tension)
+141	continue
+	else
+c
+	pi=3.1415926 
 	hafpi =pi*.50 
 	angmax =pi*.25 
 	xcent = (x(2)+x(3))*.5 
@@ -76,9 +99,14 @@ c
 	dx=2./(nret-1) 
 	xt=-1.-dx 
 	do 140 k=1,nret 
-	xt=xt+dx 
-	yt=(c+d*xt)*(xt*xt-1.) 
-	xx(k)=(xt*cos2-yt*sin2)*ds2*.5+xcent 
-140	yy(k)=(xt*sin2+yt*cos2)*ds2*.5+ycent 
+	  xt=xt+dx
+	  yt=(c+d*xt)*(xt*xt-1.) 
+	  xx(k)=(xt*cos2-yt*sin2)*ds2*.5+xcent 
+	  yy(k)=(xt*sin2+yt*cos2)*ds2*.5+ycent 
+140	continue
+c
+! TMAP mod, spline fit:
+	endif
+c
 	return 
 	end 

@@ -10,6 +10,27 @@ C**
 C***********************************************************************
 C**
 C**
+C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
+C       *jd* 7.92 variable IF renamed to KIF for MAC
+*       *jd* 11.94 
+*       Modification uses TM_NUMBER to determine if "value" is a number rather
+*       than the ERR= branch of a READ which fails on AIX/xlf
+
+*	Mod *jd* 11.30.95 to fix ragged symbols to to precision loss
+*
+*       Mod *kob* 1.28.97 - Reorganization of the original code to remove
+*			    an illegal (f90) fortran forward reference into
+*			    the middle of a do loop.  This change was 
+*		            necessary to get this routine to compile on linux
+*			    and also to fix a plotting bug with the new 
+*			    solaris version (v4.0) of f77.  This change has 
+*			    occurred in the middle of releasing v4.45 of 
+*		  	    Ferret to the world.  Aix, Sgi, HP, OSF and SunOs
+*			    have already been released, and this change is
+*		            not a part of them.  This change is needed
+*			    to release linux and more importantly solaris.
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -18,7 +39,7 @@ C
 C	THE VARIOUS PARAMETERS AND THEIR DEFINITIONS ARE LISTED
 C	BELOW:
 C        X,Y    - COORDINATES OF THE LOWER LEFT-HAND CORNER OF
-C                 THE FIRST CHARACTER IN USER"S UNITS.
+C                 THE FIRST CHARACTER IN USERS UNITS.
 C        DEGRES - ANGLE AT WHICH THE CHARACTERS ARE TO BE DRAWN
 C                 IN DEGREES RELATIVE TO THE X-AXIS.
 C        HEIGHT - HEIGHT OF THE CHARACTERS IN INCHES (OR MM).
@@ -31,35 +52,30 @@ C
 C
 	LOGICAL SYMROT,READIR,PLOT,COLRF
 c	CHARACTER PLTFIL*80
-	CHARACTER ICOM*2,ICHR*1,STRING*120,DNME(35)*2,DNUM(35)*2
+	CHARACTER ICOM*2,ICHR*1,STRING*(*),DNME(35)*2,DNUM(35)*2
 	CHARACTER DNAME(35)*80,KIF(4)*2,IFN(4)*2
-
-*       *jd* 7.92 variable IF renamed to KIF for MAC
-*       *jd* 11.94 
-*       Modification uses TM_NUMBER to determine if "value" is a number rather
-*       than the ERR= branch of a READ which fails on AIX/xlf
-
 	CHARACTER*1 KSUB,KSUPER,KBKSP,KCALL,PENS(16)
 #ifdef unix
 	INTEGER*2 SX,SY
+
         integer       dirlen
         character*255 fontdir
 #else
 	byte sx,sy
 #endif
 	INTEGER*2 ICNT,IBASE,IRAST
+*added for linux port
+	INTEGER*4 IBASE4,IRAST4
 	INTEGER*2 ASCII
 	INTEGER*2 DTYPE,DLEN,IOFF,IFLEN,ITYPE
 	INTEGER COLOLD
 	LOGICAL ASCFNT
 C
-        LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
-
 C
 #ifdef unix
-	INCLUDE 'pplinc/PLTCOM.DAT'
+	INCLUDE 'pplv11inc/PLTCOM.DAT'
 #else
-	INCLUDE 'pplinc:PLTCOM.DAT'
+	INCLUDE 'pplv11inc:PLTCOM.DAT'
 #endif
 C
 	DATA DNUM,DNME/35*'@@',35*'@@'/
@@ -72,13 +88,63 @@ C
 	DATA PENS/'1','2','3','4','5','6','7','8','9','A',
      *	'B','C','D','E','F','G'/
 	DATA READIR/.FALSE./
+
+        LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
+
+* Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
+        external scale, size
+
 C
 C	DEFINE THE SCALE FACTOR TO BE THE AMOUNT OF MAGNIFICATION
 C	REQUIRED TO CONVERT THE CHARACTERS IN THE CHARACTER DEFI-
 C	NITION TABLE TO THE SIZE SPECIFIED BY THE USER.
 C
+        CALL INQSCL(XSCL,YSCL,ABIAS,BBIAS,XLO,YLO) ! Bug fix? 11.95
+        CALL SCALE(XSCL,YSCL,ABIAS,BBIAS,0.,0.)
+
 	COLRF=.FALSE.
-	IF(.NOT.READIR)GOTO 2020
+C	IF(.NOT.READIR)GOTO 2020
+
+* kob 1/97 - old 2020 code region now contained w/in if-then below.
+	IF(.NOT.READIR) THEN
+#ifdef unix
+C *JD* Mod below fix for unix  -- use environment variable 3.19.91	
+	   call getenv ('PLOTFONTS',fontdir)
+       	   dirlen = lnblk (fontdir,255)
+
+	   OPEN(LUSY,FILE=fontdir(:dirlen)//'/fondat.dat',
+     *	        STATUS='OLD')
+#else
+	   open(lusy,file='plotfonts:fondat.dat',readonly,
+     *	       status='old')
+#endif
+C
+C	FILE EXISTS
+C
+	   READ(LUSY,983,END=1009)(DNUM(IJ),DNME(IJ),DTYPE(IJ),
+     *	   DLEN(IJ),DNAME(IJ),IJ=1,35)
+#ifdef unix
+C Mod here from A to A9 for read of DNAME *JD* 3.8.91
+C983	   FORMAT(1X,2A2,I2,I5,A)
+983	   FORMAT(1X,2A2,I2,I5,A9)
+#else
+983	   format(1x,2a2,i2,i5,a30)
+#endif
+1009	   NFNT=IJ-1
+    	   CLOSE(LUSY)
+C
+C	READ DEFAULT FONT
+C
+	   IOFF(1)=0
+	   II=1
+	   ID=1
+	   READIR = .TRUE.			
+	   call SETFONT(fontdir,dirlen,dname,ifont,ii,kif,dnme,
+     .               ifn,dnum,itype,dtype,iflen, dlen,ioff,
+     .               icnt,ascii,base,rast,iadd,
+     .		     sx,sy,id)
+	ENDIF
+
 2000	SYMSC = HEIGHT * FACTOR / 21.0
 C
 C	ROTATE THE CHARACTER STRING.
@@ -109,9 +175,9 @@ C
 C
 C	START AT THE LOWER LEFT-HAND CORNER OF THE FIRST CHARACTER.
 C
-	IF(NCHAR .EQ. 0)RETURN
-	XTEMP = X * XSCALE
-	YTEMP = Y * YSCALE
+	IF(NCHAR .EQ. 0) GOTO 300 	! Mod 11.30, was RETURN
+	XTEMP = (X - XLO) * XSCALE	! was X * XSCALE
+	YTEMP = (Y - YLO) * YSCALE	! was Y * YSCALE
 	PENF = .FALSE.
 	PLOT=NCHAR.GT.0
 	IF(PLOT)CALL XYZPLT
@@ -340,7 +406,14 @@ C
 C	FIND WHERE FONT WILL FIT
 C
 	DO 1005 II=4,1,-1
-	IF(ILEN+IOFF(II).LE.12000)GOTO 1010
+	IF(ILEN+IOFF(II).LE.12000) THEN
+* *kob* 1/97 setfont call takes place of branch to old 1010
+	    call SETFONT(fontdir,dirlen,dname,ifont,ii,kif,dnme,
+     .               ifn,dnum,itype,dtype,iflen, dlen,ioff,
+     .               icnt,ascii,base,rast,iadd,
+     .		     sx,sy,id)
+	    goto 169
+	ENDIF
 1005	CONTINUE
 C
 C	ERROR IF NO ROOM ANYWHERE!
@@ -350,42 +423,9 @@ c1006	IF(.NOT.NEWFIL)THEN
 c	    INQUIRE(UNIT=LUHP,NAME=PLTFIL)
 c	    CLOSE(LUHP)
 c	ENDIF
-#ifdef unix
-1010	OPEN(LUSY,FILE=fontdir(:dirlen)//DNAME(ID),STATUS='OLD',
-     *	FORM='UNFORMATTED',ERR=169)
-#else
-1010	open(lusy,file=dname(id),status='old',readonly,
-     *	form='unformatted',err=169)
-#endif
-C
-C	SETUP FOR NEW FONT
-C
-	IFONT=II
-	KIF(II)=DNME(ID)
-	IFN(II)=DNUM(ID)
-	ITYPE(II)=DTYPE(ID)
-	IFLEN(II)=DLEN(ID)
-C
-C	SETUP IOFF
-C
-	IF(II.EQ.4)GOTO 1008
-	DO 1007 IJ=II+1,4
-	IOFF(IJ)=12000
-	KIF(IJ)='@@'
-	IFN(IJ)='@@'
-1007	IFLEN(IJ)=0
-	IOFF(II+1)=IOFF(II)+IFLEN(II)
-C
-C	READ NEW FONT
-C
-1008	READ(LUSY)ICNT,IBASE,IRAST
-	READ(LUSY)(ASCII(IJ,II),IJ=1,127)
-	BASE(II)=FLOAT(IBASE)
-	RAST(II)=21./FLOAT(IRAST)
-	IADD=IOFF(II)+1
-	READ(LUSY)(SX(IJ),IJ=IADD,IADD+DLEN(ID)-1)
-	READ(LUSY)(SY(IJ),IJ=IADD,IADD+DLEN(ID)-1)
-	CLOSE(LUSY)
+
+
+
 c	IF(.NOT.NEWFIL)THEN
 c	    IF(PTYPE.EQ.0 .OR. PTYPE.EQ.2 .OR. PTYPE.EQ.4)THEN
 c		OPEN(LUHP,FILE=PLTFIL,FORM='UNFORMATTED',STATUS='OLD',
@@ -397,56 +437,19 @@ c	ENDIF
 C
 C	DONE
 C
-	IF(READIR)GOTO 169
-	READIR=.TRUE.
-	GOTO 2000
+C	IF(READIR)GOTO 169
+C	READIR=.TRUE.
+C	GOTO 2000
 C
 C	READ DIRECTORY
 C
-c2020	IF(.NOT.NEWFIL)THEN
-c	    INQUIRE(UNIT=LUHP,NAME=PLTFIL)
-c	    CLOSE(LUHP)
-c	ENDIF
-#ifdef unix
-C *JD* Mod below fix for unix  -- use environment variable 3.19.91
-C2020	OPEN(LUSY,FILE='FONTFIL',
 
- 2020   call getenv ('PLOTFONTS',fontdir)
-        dirlen = lnblk (fontdir,255)
-
-	OPEN(LUSY,FILE=fontdir(:dirlen)//'fondat.dat',
-     *	STATUS='OLD')
-#else
-2020	open(lusy,file='plotfonts:fondat.dat',readonly,
-     *	status='old')
-#endif
-C
-C	FILE EXISTS
-C
-	READ(LUSY,983,END=1009)(DNUM(IJ),DNME(IJ),DTYPE(IJ),
-     *	DLEN(IJ),DNAME(IJ),IJ=1,35)
-#ifdef unix
-C Mod here from A to A9 for read of DNAME *JD* 3.8.91
-C983	FORMAT(1X,2A2,I2,I5,A)
-983	FORMAT(1X,2A2,I2,I5,A9)
-#else
-983	format(1x,2a2,i2,i5,a30)
-#endif
-1009	NFNT=IJ-1
-    	CLOSE(LUSY)
-C
-C	READ DEFAULT FONT
-C
-	IOFF(1)=0
-	II=1
-	ID=1
-	GOTO 1010
 302	IFONT=K
 169	ASCFNT=ITYPE(IFONT).EQ.-1
 170	CONTINUE
 180	IF(.NOT.PLOT)THEN
 	    X=SYMWID*HEIGHT/21.
-	    RETURN
+	    GOTO 300 ! Mod 11.30, was RETURN
 	END IF
 C
 C	SCALE AND ROTATE THE FINAL COORDINATES.
@@ -466,11 +469,15 @@ C
 C	RESET COLOR
 C
 	IF(COLRF.AND.(COLOLD.NE.COLOUR))CALL COLOR(COLOLD)
+300     CALL SCALE(XSCL,YSCL,ABIAS,BBIAS,XLO,YLO) ! bug fix(?) 11.95
+
 	RETURN
 C
 	END
 	FUNCTION SYMWID(HEIGHT,NCHAR,STRING)
-	CHARACTER STRING*255
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+	CHARACTER STRING*(*)
 	NC=-IABS(NCHAR)
 C
 C	THIS FUNCTION RETURNS THE WIDTH OF THE STRING WITHOUT DRAWING IT
@@ -480,26 +487,4 @@ C
 	SYMWID=SS
 	RETURN
 	END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -24,6 +24,12 @@ C**
 	CHARACTER PRSE*255
 
 *       *jd* rename variable IF to INTIF for MAC 7.92
+* 	*jd* 5.6.96 Add code to fix bug in specification of levels
+*	where level should be zero but round off error results in near but
+*	non zero value.
+
+	parameter	(epsilon = 1e-6)
+
 
 	DIMENSION VAL(4),INTIF(4)
 
@@ -95,6 +101,8 @@ C
 		J=NLEV+I
 		ZLEV(J)=VAL(1)+VAL(3)*(I-1)
 		LWGT(J)=2
+CC		Bug fix for non zero levels that ought to be zero *jd*
+		IF (ABS(ZLEV(J)) .LT. EPSILON*ABS(VAL(1))) ZLEV(J)=0.0	
 		IF(ZLEV(J).EQ.0.0)GOTO 100
 		IF(ZLEV(J).GT.0)THEN
 		    LWGT(J)=1

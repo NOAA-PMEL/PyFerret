@@ -1,4 +1,4 @@
-	INTEGER*4 FUNCTION JDAY(IYR,IMON,IDAY,IHR,IMIN)
+	INTEGER*4 FUNCTION JDAY(IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 C** 
 C**    @(#)jday.F	1.1    3/10/88
 C**
@@ -10,12 +10,17 @@ C**
 C***********************************************************************
 C**
 C**
+*	Mod J Davison 11.22.95 For 4 digit year
+
+*       Year to be calendar year - 1900, eg, 1880 = -20, 2001 = 101
+	IYCEN = IYR + (ICEN - 19)*100
+
 	IF(IMON.GT.2)THEN
-	IM=IMON+1
-	IY=IYR
+	   IM=IMON+1
+	   IY=IYCEN
 	ELSE
-	IM=IMON+13
-	IY=IYR-1
+	   IM=IMON+13
+	   IY=IYCEN-1
 	ENDIF
 #ifdef unix
 	JDAY=(INT(365.25*IY)+INT(30.6001*IM)+IDAY)*1440+

@@ -31,22 +31,32 @@ C**		  Changes made for VAX/VMS version
 C**
 C**
 C     Mod *JD* 3.5.91 problems with buffered terminal output in unix
+*     Mod *jd* 8.30.93 to handle FORTRAN read error you get w XGKS if the 
+*	window is clicked with the mouse.
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
 
 #ifdef unix
-	include 'cmdinc/CMDCOM.INC'
-	include 'pplinc/LUNITS.INC'
+	include 'pplv11inc/CMDCOM.INC'
+	include 'pplv11inc/LUNITS.INC'
 #else
-	include 'cmdinc:CMDCOM.INC'
-	include 'pplinc:lunits.inc'
+	include 'pplv11inc:CMDCOM.INC'
+	include 'pplv11inc:lunits.inc'
 #endif
-	character str*255,prmt*30
+	character str*(*),prmt*(*)
 #ifdef unix
 	write(LTTOUT,999)prmt(:inpl)
 C     Mod format *JD* 3.5.91 get problem with output held in buffer
-C 999	format(1x,a,$) original
+# ifdef FORTRAN_90
 999	format(a)
+# else
+999	format(1x,a,$) !original
+# endif
+C OK in Sun?? 999	format(a)
+	call flush(LTTOUT)
 C Leave this out JD 3.5.91	call flush(LTTOUT)
-	read(CMDLUN,998)str(:in)
+100	read(CMDLUN,998,err=100,end=100)str(:in)
 998	format(a)
 #else
         INTEGER*2 IOSB(4)

@@ -1,5 +1,5 @@
 	subroutine opndev(termf,clear)
-C** 
+C**
 C**    @(#)opndev.F	1.1    3/10/88
 C**
 C**
@@ -10,7 +10,23 @@ C**
 C***********************************************************************
 C**
 C**
-c
+* revised for TMAP
+* from PPLUS :
+*       Directory PMEL:[PLOT5.PPLV11.COMPLOT]OPNDEV.F -->.FOR via "PREPRS"
+* search for "TMAP" to find all revisions
+* *sh* 8/26/88 - rev 1.0 - for FERRET 1.10+
+* *sh* 1/20/89 - rev 1.1 - for FERRET 1.10+ from V11 of PPLUS
+*       - only delete segments currently in use to permit multiple viewports
+* *jd* 3.20.89 Modified for GKS metafiles to write private GCLRWK to metafile
+*	as metafile system doesn't write it for some unknown reason.
+* *jd* 7.12.90 Mod to not call CHOUT if dimension arg eq 0
+* *jd* 10.26.93 Mod to eliminate private GCLRWK for xgks
+* *jd* 12.96 Numerous comments including control characters of various
+* 	nature (eg ^) eliminated.  They confuse the linux F90 compiler
+
+
+*****************************************************
+
 C
 C	CALL OPNDEV(TERMF,CLEAR)
 C
@@ -22,13 +38,35 @@ C		 IF TRUE THE COMMANDS ARE COMING FROM THE TERMINAL
 C	CLEAR -- LOGICAL IF TRUE CLEAR THE DEVICE  (I.E. START NEW)
 C
 C
+* TMAP mod 8/26/88
+!	include 'PLTCOM.DAT'
+!	include 'GKSCM1.INC'
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
-	include 'pplinc/GKSCM1.INC'
+	include 'tmap_pplv11inc/pltcom_dat.decl'
+	include 'pplv11inc/PLTCOM.DAT'
+	include 'tmap_pplv11inc/gkscm1_inc.decl'
+	include 'pplv11inc/GKSCM1.INC'
+	include 'tmap_pplv11inc/gkscm2.cmn' !jd 3.20.89 for private gclrwk
 #else
-	include 'pplinc:PLTCOM.DAT'
-	include 'pplinc:GKSCM1.INC'
+	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
+	INCLUDE 'PPLV11INC:PLTCOM.DAT'
+	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'
+	INCLUDE 'PPLV11INC:GKSCM1.INC'
+	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' !JD 3.20.89 for private GCLRWK
 #endif
+
+	INTEGER	iseg, ivp, lens, itype, i, j, nterm, ndelay ! local declarations
+	integer	control_flag ! For private GCLRWK
+
+* special COMMON to let this routine know if FERRET is in control
+
+#ifdef unix
+	include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+#else
+	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
+#endif
+
+* end of TMAP mods 8/26/88 & 1/20/89
 C
 C	THIS IS A VAX/VMS SUBROUTINE AT THIS TIME
 C
@@ -39,16 +77,13 @@ C
 	byte FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
 	byte ER4010(2),ER41XX(8)
 #else
-	INTEGER FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
-	INTEGER ER4010(2),ER41XX(8)
+        INTEGER FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
+        INTEGER ER4010(2),ER41XX(8)
 #endif
 	CHARACTER TERM(12)*10,TYPE*10
 	INTEGER ITERM(12),FIRSTL(12),SECNDL(12)
 	LOGICAL SEGMNL(12),SEGMN,FCLOSL(12),FCLOS
 C
-C	ER4010  =   <ESC>^L
-C
-C	ER41XX  =   <ESC>SK!<ESC>SE1
 C
 	DATA ER4010/27,12/,ER41XX/27,83,75,33,27,83,69,49/
 	DATA TERM/'VT240','GVT+','ZENITH','TEK4010','TEK41XX','MAC',
@@ -56,35 +91,6 @@ C
 	DATA ITERM/1,2,3,4,5,4,6,7,4,8,9,10/,FRST/.TRUE./,NTERM/12/
 C
 C
-C	VT240  FIRST-  <ESC>[?38h
-C	       SECND-  <ESC>[?38l
-C
-C	GVT+   FIRST-  ^/
-C	       SECND-  ^X
-C
-C	ZENITH FIRST-  <ESC>[2J
-C	       SECND-  <ESC>:8f
-C
-C	TK4010 FIRST-  
-C	       SECND-  
-C
-C	TK41XX FIRST-  <ESC>%!0<ESC>LV0<ESC>SV!1
-C              SECND-  <ESC>SN<ESC>SV!0<ESC>LV1<ESC>%!1
-C
-C	TAB    FIRST-  ^]
-C	       SECND-  <ESC>"0g
-C
-C	TK4105 FIRST-  <ESC>%!0<ESC>LV0
-C	       SECND-  <ESC>LV1<ESC>%!1
-C
-C	HIREZ  FIRST-  <ESC>[2J<ESC>1
-C	       SECND-  <ESC>2
-C
-C	HP2397 FIRST-  <ESC>*df<ESC>*dc<ESC>[38h
-C	       SECND-  <ESC>[38l<ESC>*dd<ESC>*de
-C
-C	GP220  FIRST-  ^]
-C	       SECND-  ^B
 C
 	DATA FIRSTB/27,91,63,51,56,104,14*0,
      *		    28,19*0,
@@ -145,9 +151,9 @@ C	SET UP FOR SPECIFIC TERMINAL TYPE
 C
 	IF(FRST)THEN
 #ifdef unix
-	    call getenv('GRAPHTERM',TYPE)
-	    LENS=lnblk(type,10)
-	    IF(lens.le.0)then
+            call getenv('GRAPHTERM',TYPE)
+            LENS=lnblk(type,10)
+            IF(lens.le.0)then
 #else
 	    stat=lib$get_symbol('GRAPHTERM',type,len)
 	    lens=len
@@ -184,7 +190,7 @@ C
 C
 C	OPEN DEVICE FOR GRAPHICS AND ERASE THE SCREEN
 C
-		CALL CHOUT(FIRST,FIRSTL(ITYPE))
+		if (firstl(itype) .gt. 0) CALL CHOUT(FIRST,FIRSTL(ITYPE))
 		TRMOPN=.TRUE.
 	    ENDIF
 	    IF(CLEAR)THEN
@@ -205,20 +211,35 @@ c30		    CALL CHOUT(SYN,1)
 C
 C	DEVICE IS A GKS DEVICE
 C
-	    CALL GFLUSH
+	    CALL PPLGFLUSH
 #ifdef core
-	    if(.not.gksopn)then
-		call crinit
-		gksopn=.true.
-	    endif
+            if(.not.gksopn)then
+                call crinit
+                gksopn=.true.
+            endif
 c
-	    if(clear)then
-		call delallretainsegs()
-		call newframe()
-		call createretainseg(1)
-	    endif
+            if(clear)then
+                call delallretainsegs()
+                call newframe()
+                call createretainseg(1)
+            endif
 #else
-	    IF(CLEAR)CALL GCLRWK(WSID,0)
+* TMAP mod 8/26/88, PPL_in_FERRET added 1/20/89
+	    IF(CLEAR) THEN
+	       IF ( PPL_in_FERRET ) THEN
+	         CALL CLEAR_VP
+	       ELSE
+!	         CALL GCLRWK(WSID,0)				! original
+		 control_flag = 0				! Mod JD
+	         CALL GCLRWK(WSID,control_flag)			! Mod JD
+#ifdef xgks
+* leave out	 if (meta_actv) CALL GCLRWK(meta_wsid,control_flag) ! Mod JD
+#else
+		 if (meta_actv) call meta_clear (control_flag)	! Mod JD
+#endif
+	       ENDIF
+	    ENDIF
+* end of TMAP mods 8/26/88
 #endif
 	ENDIF
 	IF(PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)THEN
@@ -315,14 +336,14 @@ c40		CALL CHOUT(SYN,1)
 C
 C	GO TO COMMAND SCREEN
 C
-	    CALL CHOUT(SECND,SECNDL(ITYPE))
+	    if (secndl (itype) .gt. 0) CALL CHOUT(SECND,SECNDL(ITYPE))
 	    TRMOPN=.FALSE.
 	    CALL CHDMP
 	ELSE IF(PTYPE.EQ.3.OR.PTYPE.EQ.4)THEN
 C
 C	DEVICE IS GKS
 C
-	    CALL GFLUSH
+	    CALL PPLGFLUSH
 	ELSE IF((PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)
      *		.AND.CLEAR)THEN
 	    IF(PLTFLG)THEN

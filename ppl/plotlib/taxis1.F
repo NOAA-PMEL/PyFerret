@@ -1,6 +1,19 @@
-      SUBROUTINE TAXIS1(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IDDB,IMDB,    TAXIS1
+      SUBROUTINE TAXIS1(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IDDB,IMDB,
      1    TFACT,Y,YFACT,CSIZE)
-C** 
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAXIS1.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+
+* *jd* Mod for 4 digit years
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+C**
 C**    @(#)taxis1.f	1.1    3/10/88
 C**
 C**
@@ -11,10 +24,18 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER ITIME3*10
-	CHARACTER SYM*20,ITIME1*10,ITIME*10,ITIME2*10,MON*3,DAY*2
+	CHARACTER ITIME3*14
+	CHARACTER SYM*21,ITIME1*(*),ITIME*14,ITIME2*(*),MON*3,DAY*2
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
+
+* TMAP interrupt flag
+#ifdef unix
+	include 'tmap_pplv11inc/xinterrupt.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
+#endif
+
 C
 C     THIS ROUTINE PLOTS A TIME AXIS AND LABELS IT WITH THE DAY OF THE M
 C     AND THE MONTH.
@@ -96,7 +117,7 @@ C     SET PARAMETERS.
 	IF(LABEL.NE.0)XWID=(4.0+FIDDB)*CSIZE+YTEMP
       T=TLO
       ITIME=ITIME1
-      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN)
+      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
       TMON=T
       CALL PLOT(TLO,Y,0,0)
 	IF(IDAY.EQ.1)THEN
@@ -106,18 +127,19 @@ C     SET PARAMETERS.
 	ENDIF
 C      LOOP:
    10     CALL PLOT(T,Y,0,0)
+	  IF ( interrupted ) RETURN		! TMAP interrupt
           DO 20 I=1,NSMTIC
               CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
    20         CONTINUE
           CALL TIME1(1,ITIME,2,' ',I3,ITIME3,1440.)
-          CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3)
+          CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
 	IF(IDAY3.EQ.1)THEN
 	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
 	ELSE
 	       CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 	ENDIF
 C         THE LABELS
-         CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN)
+         CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
          IF(IDDB.EQ.0.OR.LABEL.EQ.0) GO TO 50
          IF(IDAY.NE.IDDB*(IDAY/IDDB)) GO TO 50
              CALL TIME2(ITIME,SYM)

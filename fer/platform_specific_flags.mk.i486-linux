@@ -5,24 +5,27 @@
 # platform specific macros
 
 
-INCLUDES        = -I../../ppl/include/xgks \
+INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include \
+		  -I$(TMAP_LOCAL)/src/xgks/include \
+		  -I. -Ireadline \
+		  -I../../ppl/include/xgks \
 		  -I/usr/include \
 		  -I/usr/include/X11 \
-		  -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \
+		  -I$(TMAP_LOCAL)/src/xgks/port \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
                   -Ipplinc/xgks \
-		  -I../common
+		  -I../common 
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
  
 
 
 CC              = cc
-FC		= f90
+F77		= f90
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
+CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch
 PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch
 CPP		= /lib/cpp
@@ -42,9 +45,9 @@ CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
 LD		= cc
 LDFLAGS		= -v -static
  
-SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/ark/kobrien/src/f2c/libF77/libF77.a /home/ark/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
+SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/lotus/kobrien/src/f2c/libF77/libF77.a /home/lotus/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm -ldl $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
 
-TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
+TMLIB		= ../fmt/libs/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
@@ -52,9 +55,9 @@ HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 
 CDFLIB		= -lnetcdf
 
-LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ccr/dl*_linux.o
+LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 
-.IGNORE:
+# .IGNORE:
 
 .F.o:
 	rm -f $*.f

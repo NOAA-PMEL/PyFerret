@@ -7,7 +7,6 @@ cancel_window.F\
 check_graphics.F\
 choose_cx_ww.F\
 ck_gks_active.F\
-clear_vp.F\
 clear_window.F\
 compound_key.F\
 curv_coord_sub.F\
@@ -19,11 +18,8 @@ disp_reset.F\
 disp_set_up.F\
 equal_range.F\
 equal_range_t.F\
-ferret_plot_complete.F\
-get_curvilinear_limits.F\
 get_frame_size.F\
 get_view_size.F\
-get_vp_from_ferret.F\
 get_window_pixels.F\
 gks_windows.F\
 gks_x_conid.F\

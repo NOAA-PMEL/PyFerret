@@ -5,15 +5,17 @@
 # platform specific macros
 
 
-INCLUDES        = -I../../ppl/include/xgks \
-		  -I/usr/ucbinclude -I/usr/local/include \
-		  -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \
-                  -I$(TMAP_LOCAL)/include \
+INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+		  -I/usr/ucbinclude \
                   -I/usr/openwin/include \
+		  -I$(TMAP_LOCAL)/src/xgks/port \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
+                  -I$(TMAP_LOCAL)/include \
 		  -I/opt/SUNWmotif/include \
-                  -I../common
+		  -I/opt/local/include \
+                  -I../common \
+		  -I. -Ireadline
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
@@ -21,7 +23,7 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES)
+CFLAGS          = -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
 FFLAGS          = -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem
 PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL
 
@@ -38,7 +40,7 @@ SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
 		  /usr/ccs/lib/libgen.a -lc \
 		  -Bstatic -L/usr/ucblib -lucb -Bdynamic 
 
-TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
+TMLIB		= ../fmt/libs/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 

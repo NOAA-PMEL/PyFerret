@@ -1,6 +1,27 @@
 	SUBROUTINE TAYIS3(TLO,ITIME1,ITIME2,DT,NDAY,LABEL,IMDB,IYDB,
      *	TFACT,X,XFACT,CSIZE)
-C** 
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAYIS0.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+
+* *jd* Mod for 4 digit years 11.27.95
+* *jd* 11.29.95	Mod century axis
+* *jd* 2.8.96 Exclude consideration of seconds when comparing times and
+*		deciding whether to continue drawing time axis.  Ferret uses
+*		PPLLDX to compute time axis locations rather than the PPL
+*		TIME command.  It uses single precision reals which can be
+*		rounded.  Rounding can lead to the time axis being drawn too
+*		long.
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
+C**
 C**    @(#)tayis3.f	1.1    3/10/88
 C**
 C**
@@ -11,10 +32,22 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER ITIME1*10,ITIME*10,ITIME2*10,SYM*20,MON*3
-	CHARACTER YR*2,ITIME3*10
+	CHARACTER ITIME1*(*),ITIME2*(*)
+	CHARACTER ITIME*14,SYM*21,MON*3
+	CHARACTER CEN*2,YR*2,ITIME3*14
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
+
+	LOGICAL*4 cenflag, not_zero_size
+	COMMON/CENTURY/ cenflag
+
+* TMAP interrupt flag
+#ifdef unix
+	include 'tmap_pplv11inc/xinterrupt.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
+#endif
+
 C
 C     THIS ROUTINE PLOTS A TIME AXIS AND LABELS IT WITH THE MONTH OF THE
 C     AND THE YEAR.
@@ -57,7 +90,8 @@ C
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME1(5:10).NE.'010000')STOP ',1'
 	IF(ITIME2(5:10).NE.'010000')STOP ',2'
-	IF(ITIME1.GE.ITIME2) STOP',3'
+        IF(ITIME1(13:14)//ITIME1(1:12).GE.
+     .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
 C
 C     SET PARAMETERS.
 
@@ -83,6 +117,9 @@ C     SET PARAMETERS.
 	    IHVY=-10
 	    INML=-6
 	ENDIF
+
+	NOT_ZERO_SIZE = .NOT.(INML.EQ.-5.AND.TSMY.EQ.0)
+
 	IF(IMDB.NE.0)THEN
 	    FIMDB=0.0
 	ELSE
@@ -98,32 +135,65 @@ C     SET PARAMETERS.
 	IF(LABEL.NE.0)YWID=(4.0+FIMDB)*CSIZE+XTEMP
 	T=TLO
 	ITIME=ITIME1
-	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN)
+	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	TYR=T
 	CALL PLOT(X,TLO,0,0)
-	IF(IMON.EQ.1)THEN
-	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+
+*       Century axis mod
+	IF (cenflag) THEN
+	   IF (IMON.NE.1) GOTO 10
+	
+	   IF (MOD(ICEN*100+IYR,IYDB).EQ.0) THEN
+	      CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+	   ELSE
+	      IF(NOT_ZERO_SIZE) ! Don't plot zero length tic
+     .		CALL PLOTT7(X,TLO,XFACT,TFACT,1,INML)
+	   ENDIF
 	ELSE
-	    CALL PLOTT7(X,TLO,XFACT,TFACT,1,INML)
+	   IF(IMON.EQ.1)THEN
+	      CALL PLOTT7(X,TLO,XFACT,TFACT,1,IHVY)
+	   ELSE
+	      IF(NOT_ZERO_SIZE) ! Don't plot zero length tic
+     .		CALL PLOTT7(X,TLO,XFACT,TFACT,1,INML)
+	   ENDIF
 	ENDIF
+
 C     LOOP:
 10	CALL PLOT(X,T,0,0)
+	IF ( interrupted ) RETURN		! TMAP interrupt
 	SECMON=FLOAT(NUMDM1(ITIME))*1440.
 	TIC=SECMON/DT
 	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,SECMON)
-	CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3)
-	IF(IMON3.EQ.1)THEN
-	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
+	CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
+
+*       Century axis mod
+	IF (cenflag) THEN
+	   IF (IMON3.NE.1) GOTO 11
+	
+	   IF (MOD(ICEN3*100+IYR3,IYDB).EQ.0) THEN
+	      CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
+	   ELSE
+	      IF(NOT_ZERO_SIZE) ! Don't plot zero length tic
+     .		CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+	   ENDIF
 	ELSE
-	    CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+	   IF(IMON3.EQ.1)THEN
+	      CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
+	   ELSE
+	      IF(NOT_ZERO_SIZE) ! Don't plot zero length tic
+     .		CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
+	   ENDIF
 	ENDIF
+
 C         THE LABELS
-	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN)
+11	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	IF(IMDB.EQ.0.OR.LABEL.EQ.0) GO TO 50
 	IF(IMON.NE.IMDB*(IMON/IMDB)) GO TO 50
+ 	IF (cenflag) GOTO 50 ! No month labels for multiple years
+
 	CALL TIME2(ITIME,SYM)
-	READ(SYM,30)MON,YR
-30	FORMAT(6X,A3,6X,A2)
+	READ(SYM,30)MON,CEN,YR
+30	FORMAT(6X,A3,4X,A2,A2)
 	WRITE(SYM,40)MON,YR
 40	FORMAT(A3,' ',A2)
         TSYM=T+(TIC-SYMWID(CSIZE,NC,SYM)/TFACT)*.5
@@ -131,13 +201,13 @@ C         THE LABELS
 50	CONTINUE
 	IF(IYDB.EQ.0.OR.NC.EQ.6) GO TO 70
 	IF(IYR.EQ.IYR3) GO TO 70
-	IF((1900+IYR).NE.IYDB*((1900+IYR)/IYDB)) GO TO 60
+	IF((ICEN*100+IYR).NE.IYDB*((ICEN*100+IYR)/IYDB)) GO TO 60
 C             ELSE:
 	IF(T-TYR.GT.83333.33/DT)THEN
 	    CALL TIME2(ITIME,SYM)
-	    READ(SYM,30)MON,YR
-	    WRITE(SYM,55)YR
-55	    FORMAT('19',A2)
+	    READ(SYM,30)MON,CEN,YR
+	    WRITE(SYM,55)CEN,YR
+55	    FORMAT(A2,A2)
 	    TSYM=TYR+(T+TIC-TYR-SYMWID(1.5*CSIZE,4,SYM)/TFACT)*.5
 	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,4,SYM)
 	ENDIF
@@ -145,22 +215,32 @@ C             ELSE:
 70	CONTINUE
 	ITIME=ITIME3
 	T=T+TIC
-	IF(ITIME.LT.ITIME2) GO TO 10
+
+*** 2.8.96                       IF( ITIME(13:14)// ITIME(1:12).LT.
+*** Don't use seconds    .	     ITIME2(13:14)//ITIME2(1:12)) GO TO 10
+
+          IF( ITIME(13:14)// ITIME(1:10).LT.
+     .	     ITIME2(13:14)//ITIME2(1:10)) GO TO 10
+
+*     Draw complete time axis -- mods not to draw minor tics require it
+      CALL PLOT(X,TLO,0,0)
+      CALL PLOT(X,T,1,0)
+
 	IF(IYDB.EQ.0.OR.LABEL.EQ.0) GO TO 80
 C     ELSE:
 	IF(IABS(LABEL).NE.2.AND.IYR.EQ.IYDB*(IYR/IYDB)
      .	.AND.IMON3.GE.4)THEN
 	    CALL TIME2(ITIME,SYM)
-	    READ(SYM,30)MON,YR
-	    WRITE(SYM,55)YR
+	    READ(SYM,30)MON,CEN,YR
+	    WRITE(SYM,55)CEN,YR
 	    TSYM=TYR+(T-TYR-SYMWID(1.5*CSIZE,4,SYM)/TFACT)*.5
 	    CALL SYMBEL(XTEMP2,TSYM,90.,1.5*CSIZE,4,SYM)
 	ENDIF
 C
 C     THE SECTION OF CODE THAT PUTS ON THE SMALL TIC MARKS.
 80	IF(NDAY.LE.0)RETURN
-	CALL TIME3(ITIME1,IYR,IMON,IDAY,IHR,IMIN)
-	CALL TIME3(ITIME2,IYR3,IMON3,IDAY3,IHR3,IMIN3)
+	CALL TIME3(ITIME1,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+	CALL TIME3(ITIME2,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
 	IDELT=12*(IYR3-IYR)+IMON3-IMON
 	ITIME=ITIME1
 	TIC=NDAY*1440./DT

@@ -1,201 +1,231 @@
       SUBROUTINE ABPLT
-C** 
-C**    @(#)abplt.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C
-C     CALL ABPLT
-C
-C     THIS SUBROUTINE PERFORMS SCREEN CLIPPING AND THEN MOVES THE
-C     PEN FROM THE CURRENT POSITION TO A NEW POINT.
-C
-C
-      DIMENSION AMXMN(2),BMXMN(2)
+                
+****************************************************************
+* revised for FERRET
+* from PPLUS :
+*	Directory PMEL:[PLOT5.LIBRARY.COMPLOT]
+*	ABPLT.FOR;2               9   5-FEB-1985 11:33 
+* search for "FERRET" to find all revisions
+* *sh* 9/13/88 - rev 1.0 for FERRET 1.10+
+*	- if GKS (ptype>2) then bypass clipping at screen limits
+****************************************************************
+*     CALL ABPLT
+
+*     THIS SUBROUTINE PERFORMS SCREEN CLIPPING AND THEN MOVES THE
+*     PEN FROM THE CURRENT POSITION TO A NEW POINT.
+
+
+******************************************************************
+* FERRET mod - for explicit declarations - 9-13-88
+C     DIMENSION AMXMN(2),BMXMN(2)
+      REAL AMXMN(2),BMXMN(2), binter, ainter
       EQUIVALENCE (AMXMN(1),AMAX),(BMXMN(1),BMAX)
-C
+
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
+      include 'tmap_pplv11inc/pltcom_dat.decl'
+      include 'pplv11inc/PLTCOM.DAT'
 #else
-	include 'pplinc:PLTCOM.DAT'
+      INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
+      INCLUDE 'pplv11inc:pltcom.dat'
 #endif
-C
+C end of FERRET mod
+******************************************************************
+
 C     CALCULATE THE NEW OFF-SCREEN FLAG.
-C
-      OSFLG = 0
-      IF(ANEW - 0.001 .GT. AMAX)OSFLG = 1
-      IF(ANEW + 0.001 .LT. AMIN)OSFLG = 2
-      IF(BNEW - 0.001 .GT. BMAX)OSFLG = OSFLG + 4
-      IF(BNEW + 0.001 .LT. BMIN)OSFLG = OSFLG + 8
-C
+
+******************************************************************
+C FERRET mod - bypass GKS clipping - 9-13-88
+      IF ( ptype .LT. 3 ) THEN
+          OSFLG = 0
+          IF(ANEW - 0.001 .GT. AMAX)OSFLG = 1
+          IF(ANEW + 0.001 .LT. AMIN)OSFLG = 2
+          IF(BNEW - 0.001 .GT. BMAX)OSFLG = OSFLG + 4
+          IF(BNEW + 0.001 .LT. BMIN)OSFLG = OSFLG + 8
+       ELSE
+          OSFLG = 0
+          losflg = 0            ! reset by many PPLUS routines
+       ENDIF
+* end of FERRET mod
+******************************************************************
+
 C     CHECK THE PEN POSITION.
-C
-      IF(.NOT. PENF)GO TO 90
-C
+
+       IF(.NOT. PENF)GO TO 90
+
 C     CHECK THE PLOTTING MODE.
-C
+
       IF(PMODE .EQ. POINT)GO TO 80
-C
+
 C     CHECK THE OLD AND NEW POINTS TO SEE IF THEY ARE BOTH OUT-
 C     SIDE THE BOUNDARY OF THE SCREEN IN THE SAME DIRECTION.  IF
 C     SO, NO INTERCEPT EXISTS.
-C
+
 #ifdef unix
+# ifdef NEED_IAND
+      IF(IAND(LOSFLG,OSFLG) .NE. 0)GO TO 100
+# else
       IF(AND(LOSFLG,OSFLG) .NE. 0)GO TO 100
+# endif
 #else
       IF(IAND(LOSFLG,OSFLG) .NE. 0)GO TO 100
 #endif
-C
 C     CHECK THE OLD POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
 C     THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
-C
+
       IF(LOSFLG .EQ. 0)GO TO 30
-C
+
 C     CHECK THE HORIZONTAL LIMITS OF THE SCREEN.
-C
+
 #ifdef unix
-#ifdef sun
-	if(rshift(losflg,2) .eq. 0)goto 10
+# ifdef NEED_IAND
+        if(ishft(losflg,-2) .eq. 0)goto 10
+# else
+        if(rshift(losflg,2) .eq. 0)goto 10
+# endif
 #else
-      IF(LSHIFT(LOSFLG,-2) .EQ. 0)GO TO 10
+        if(ishft(losflg,-2) .eq. 0)goto 10
 #endif
-#else
-	if(ishft(losflg,-2) .eq. 0)goto 10
-#endif
-C
-C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE SCREEN.
-C     CALCULATE THE INTERCEPT.
-C
+
+C    THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE SCREEN.
+C    CALCULATE THE INTERCEPT.
+       
 #ifdef unix
-#ifdef sun
-	binter = bmxmn(rshift(losflg,2))
+# ifdef NEED_IAND
+        binter = bmxmn(ishft(losflg,-2))
+# else
+        binter = bmxmn(rshift(losflg,2))
+# endif
 #else
-      BINTER = BMXMN(LSHIFT(LOSFLG,-2))
-#endif
-#else
-	binter = bmxmn(ishft(losflg,-2))
+        binter = bmxmn(ishft(losflg,-2))
 #endif
       AINTER = (ANEW - AOLD) * (BINTER - BOLD) / (BNEW - BOLD) +
      * AOLD
-C
+    
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE SCREEN.
-C
+
       IF(AINTER + 0.001 .GE. AMIN .AND. AINTER - 0.001 .LE. AMAX)
      * GO TO 20
-C
+
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
-C
+
 #ifdef unix
-   10 AINTER = AMXMN(AND(LOSFLG,3))
+# ifdef NEED_IAND
+ 10         ainter = amxmn(iand(losflg,3))
+# else
+ 10         AINTER = AMXMN(AND(LOSFLG,3))
+# endif
 #else
-10	ainter = amxmn(iand(losflg,3))
+ 10         ainter = amxmn(iand(losflg,3))
 #endif
       BINTER = (BNEW - BOLD) * (AINTER - AOLD) / (ANEW - AOLD) +
      * BOLD
-C
+
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE SCREEN.
-C
+
       IF(BINTER + 0.001 .LT. BMIN .OR. BINTER - 0.001 .GT. BMAX)
      * GO TO 100
-C
+
 C     PLOT TO THE INTERCEPT WITH THE PEN UP.
-C
-   20 A = AINTER - AMIN
+
+  20  A = AINTER - AMIN
       B = BINTER - BMIN
       PEN = .FALSE.
       CALL ABMV
       GO TO 40
-C
+
 C     CHECK THE OLD POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
 C     THE WINDOW.  IF NOT, PLOT TO THE INTERCEPT WITH THE PEN UP.
-C
-   30 IF(LOWFLG .EQ. 0)GO TO 40
+
+  30  IF(LOWFLG .EQ. 0)GO TO 40
       A = AOLD - AMIN
       B = BOLD - BMIN
       PEN = .FALSE.
       CALL ABMV
-C
-C     CHECK THE NEW POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
-C     THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
-C
-   40 IF(OSFLG .EQ. 0)GO TO 70
-C
+
+C      CHECK THE NEW POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
+C      THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
+
+  40  IF(OSFLG .EQ. 0)GO TO 70
+
 C     CHECK THE HORIZONTAL LIMITS OF THE SCREEN.
-C
 #ifdef unix
 #ifdef sun
-	if(rshift(osflg,2) .eq. 0)goto 50
+        if(rshift(osflg,2) .eq. 0)goto 50
 #else
-      IF(LSHIFT(OSFLG,-2) .EQ. 0)GO TO 50
+# ifdef NEED_IAND
+        IF(ISHFT(OSFLG,-2) .EQ. 0)GO TO 50
+# else
+        IF(LSHIFT(OSFLG,-2) .EQ. 0)GO TO 50
+# endif
 #endif
 #else
-	if(ishft(osflg,-2) .eq. 0)goto 50
+        IF(ISHFT(OSFLG,-2) .EQ. 0)GO TO 50
 #endif
-C
+
 C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
-C
 #ifdef unix
 #ifdef sun
-	binter = bmxmn(rshift(osflg,2))
+        binter = bmxmn(rshift(osflg,2))
 #else
-      BINTER = BMXMN(LSHIFT(OSFLG,-2))
+# ifdef NEED_IAND
+        BINTER = BMXMN(ISHFT(OSFLG,-2))
+# else
+        BINTER = BMXMN(LSHIFT(OSFLG,-2))
+# endif
 #endif
 #else
-	binter = bmxmn(ishft(osflg,-2))
+        BINTER = BMXMN(ISHFT(OSFLG,-2))
 #endif
       AINTER = (ANEW - AOLD) * (BINTER - BOLD) / (BNEW - BOLD) +
      * AOLD
-C
+
 C     CHECK THE INTERCEPT TO INSURE THAT IT IS ON THE BOUNDARY
 C     OF THE SCREEN.
-C
+
       IF(AINTER + 0.001 .GE. AMIN .AND. AINTER - 0.001 .LE. AMAX)
      * GO TO 60
-C
+
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
-C
 #ifdef unix
-   50 AINTER = AMXMN(AND(OSFLG,3))
+# ifdef NEED_IAND
+ 50    AINTER = AMXMN(IAND(OSFLG,3))
+# else
+ 50    AINTER = AMXMN(AND(OSFLG,3))
+# endif
 #else
-50	ainter = amxmn(iand(osflg,3))
+ 50    AINTER = AMXMN(IAND(OSFLG,3))
 #endif
       BINTER = (BNEW - BOLD) * (AINTER - AOLD) / (ANEW - AOLD) +
      * BOLD
-C
+
 C     PLOT TO THE INTERCEPT WITH THE PEN DOWN.
-C
-   60 A = AINTER - AMIN
+
+  60  A = AINTER - AMIN
       B = BINTER - BMIN
       PEN = .TRUE.
       CALL ABMV
       GO TO 100
-C
+
 C     PLOT TO THE POINT WITH THE PEN DOWN.
-C
-   70 A = ANEW - AMIN
+
+  70  A = ANEW - AMIN
       B = BNEW - BMIN
       PEN = .TRUE.
       CALL ABMV
       GO TO 100
-C
+
 C     CHECK THE NEW POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
 C     THE SCREEN.  IF NOT, DO NOT PLOT IT.
-C
-   80 IF(OSFLG .NE. 0)GO TO 100
-C
+
+  80  IF(OSFLG .NE. 0)GO TO 100
+
 C     PLOT TO THE POINT WITH THE PEN UP AND THEN DRAW A DOT.
-C
+
       A = ANEW - AMIN
       B = BNEW - BMIN
       PEN = .FALSE.
@@ -203,26 +233,26 @@ C
       PEN = .TRUE.
       CALL ABMV
       GO TO 100
-C
+
 C     CHECK THE NEW POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
 C     THE SCREEN.  IF NOT, DO NOT PLOT IT.
-C
-   90 IF(OSFLG .NE. 0)GO TO 100
-C
+
+  90  IF(OSFLG .NE. 0)GO TO 100
+
 C     PLOT TO THE POINT WITH THE PEN UP.
-C
+
       A = ANEW - AMIN
       B = BNEW - BMIN
       PEN = .FALSE.
       CALL ABMV
-C
+
 C     MOVE THE COORDINATES OF THE NEW POINT TO THE OLD POINT.
-C
-  100 AOLD = ANEW
+
+ 100  AOLD = ANEW
       BOLD = BNEW
       AOSOLD = A
       BOSOLD = B
       LOSFLG = OSFLG
       RETURN
-C
+
       END

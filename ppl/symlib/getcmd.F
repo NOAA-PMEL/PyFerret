@@ -47,18 +47,22 @@ C**		  Changes made to support IF ... ELSE ... ENDIF
 C**		      and made to support WHILE ... ENDW
 C**
 C**
+C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
+        logical         tmapdebug
+        common/tmdebug/ tmapdebug
+
 #ifdef unix
-	INCLUDE 'cmdinc/CMDCOM.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'cmdinc/SWITCH.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
+	INCLUDE 'pplv11inc/CMDCOM.INC'
+	INCLUDE 'pplv11inc/SYSTEM.INC'
+	INCLUDE 'pplv11inc/SWITCH.INC'
+	INCLUDE 'pplv11inc/LUNITS.INC'
 #else
-	INCLUDE 'cmdinc:CMDCOM.INC'
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:SWITCH.INC'
-	include 'pplinc:lunits.inc'
+	INCLUDE 'PPLV11INC:CMDCOM.INC'
+	INCLUDE 'PPLV11INC:SYSTEM.INC'
+	INCLUDE 'PPLV11INC:SWITCH.INC'
+	include 'PPLV11INC:lunits.inc'
 #endif
-	CHARACTER COM*30,LABEL*255,LINE*255,SYM*30,VALUE*255,FILE*80
+	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*255,FILE*80
 	CHARACTER ICOM*255
 	LOGICAL RESULT,NUM
 	DIMENSION X(*),IF(*)
@@ -170,6 +174,13 @@ C
 		CALL CMDERR(IER,LINE,ILEN,LBSTRT+IST2)
 	    ENDIF
 	ELSE IF(COM(1:1).EQ.'@')THEN
+C     Brain dead exclusion of @ mod
+            if (.not.tmapdebug) then
+	       IF(.NOT.QUIETF)WRITE(LTTOUT,'(1X,A)')
+     .             'COMMAND NOT SUPPORTED IN THIS VERSION OF PPLUS: @'
+               COM = ' '
+               RETURN 
+            end if
 	    ISPC=INDEX(LINE,' ')-1
 	    ICMA=INDEX(LINE,',')-1
 #ifdef unix

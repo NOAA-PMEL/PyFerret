@@ -11,7 +11,10 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER*10 IT1,IT2
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
+	CHARACTER*(*) IT1,IT2
 	GOTO (10,20,20,30)IT+1
 10	CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE)
 	RETURN

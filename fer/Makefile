@@ -6,6 +6,8 @@
 #
 # 10/97 *kob*  - pltform specific files will reside in ppl directory and be 
 #		 links to actual files in fer directory
+# 7/98 *kob* - reworking prior to source code distribution. add in 
+#	       fmt are as well so one make command compiles/links all
 
 #
 # include platform specific macro definitions
@@ -29,9 +31,9 @@ CLEANDIRS = $(DIRS)
 DEPDIRS = ccr gui
 
 FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
-	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefn
+	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefn 
 
-PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr
+PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr 
 
 FERMAIN = ccr/fermain_c.o
 
@@ -41,7 +43,7 @@ FEROBJS_DFLT = $(LINUX_OBJS) \
 
 FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
 
-PPLOBJS = ../ppl/modsxgks/*.o ../ppl/addsxgks/*.o
+PPLOBJS =  ../ppl/tmapadds/*.o 
 
 EXECNAME = ferret_c
 
@@ -51,7 +53,7 @@ WHATGKS = xgks
 # Targets
 #
 
-all:	fer_libraries ppl_libraries special_code ferret
+all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 
 
@@ -110,6 +112,9 @@ update_date:
 libraries: ppl_libraries fer_libraries
 
 
+fmt_libraries:
+	(cd ../fmt/src ; $(MAKE));
+
 fer_libraries:
 	for i in $(LIBS) ; \
         do \
@@ -120,14 +125,14 @@ fer_libraries:
 
 
 ppl_libraries:
-	(cd ../ppl ; $(MAKE) all);
+	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS)" all);
 
 
 special_code:
 	(cd special ; $(MAKE) all);
 
 
-clean: ppl_clean fer_clean
+clean: fmt_clean ppl_clean fer_clean 
 	(cd ../lib ; rm -f *.a *.so);
 
 ppl_clean:
@@ -138,6 +143,9 @@ fer_clean:
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; $(MAKE) clean); \
         done
+
+fmt_clean:
+	(cd ../fmt/src; rm -f *.[fo])
 
 depend:
 	(cd ../ppl ; $(MAKE) depend);

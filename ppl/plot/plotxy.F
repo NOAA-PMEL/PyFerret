@@ -17,34 +17,79 @@ C                     STARTING AT X(NXS/2+1), ALL Y'S FOR LINE1,
 C                     ALL Y'S FOR LINE2...
 C  XF AND YF ARE FACTORS TO CONVERT TO INCHES FROM USER UNITS
 C
+*	Modified *jd* J Davison JISAO/PMEL/TMAP 3.22.89
+*	To exlude Denbo line dashing in favor of GKS line bundles 
+*	Mod *jd* 8.3.92 to add interrupts 
+*	Mod *sh* 11/97 to add PLOTPOL command
+
+#ifdef unix
+        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
+        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+#else
+        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
+        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
+#endif
+
 	DIMENSION X(NXS)
 
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/PEN.INC'
-	INCLUDE 'pplinc/PLTL.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/AXISL.INC'
-	INCLUDE 'pplinc/CMRD.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/axis_inc.decl'
+        include 'pplv11inc/AXIS.INC'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
+        include 'tmap_pplv11inc/pen_inc.decl'
+        include 'pplv11inc/PEN.INC'
+        include 'tmap_pplv11inc/pltl_inc.decl'
+        include 'pplv11inc/PLTL.INC'
+        include 'tmap_pplv11inc/hd_inc.decl'
+        include 'pplv11inc/HD.INC'
+        include 'tmap_pplv11inc/miss_inc.decl'
+        include 'pplv11inc/MISS.INC'
+        include 'tmap_pplv11inc/taxis_inc.decl'
+        include 'pplv11inc/TAXIS.INC'
+        include 'tmap_pplv11inc/axisl_inc.decl'
+        include 'pplv11inc/AXISL.INC'
+        include 'tmap_pplv11inc/cmrd_inc.decl'
+        include 'pplv11inc/CMRD.INC'
+        include 'tmap_pplv11inc/gkscm2.cmn' ! jd 3.22.89
+        include 'tmap_pplv11inc/gkspar.inc'	! sh 11/97
+        include 'tmap_pplv11inc/shade_vars.cmn'	! sh 11/97
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:PEN.INC'
-        INCLUDE 'pplinc:PLTL.INC'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:MISS.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'pplinc:CMRD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
+        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PLTL.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_TAXIS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_AXISL.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' ! JD 3.22.89
 #endif
+
 	REAL MAXVEL
 
+	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
+     .		nvertex, fill_ndx			! 11/97
+
+	INTEGER GET_NDX
+
+* GKS initialization vars
+	integer		error,trans_no,cflag
+        integer         my_trans
+        data            my_trans/20/
+	real	 	w(4),v(4),ndc(4),uc(4)
+	real		xinv,yinv
+
+	logical		valid
+
+*************************************
+
 	IPV=0
+	nl = lnum	! 11/97
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -75,6 +120,7 @@ C
 	      XT= (XFCT(I)*X(IBASE+J)*CS - YFCT(I)*X(IBASE2+J)*SN)*ZT
 	      CALL PLOT(X(IBASE1+J)+XOFF(I),YOFF(I),0,0)
 	      CALL PLOT(X(IBASE1+J)+XOFF(I)+XT,YOFF(I)+YT,1,0)
+	      if (interrupted) goto 51 ! *jd* 8.3.92
 95	    CONTINUE
 	    IBASE=IBASE2+LLENG(I+1)
 	    IBASE1=IBASE1+LLENG(I+1)+LLENG(I)
@@ -82,7 +128,8 @@ C
 	  GOTO 51
 	END IF
 
-	DO 50 I=1,LNUM
+******** LOOP OVER LINES STORED
+	DO 50 I=1,nl
 	  CALL MARKH(HMARK(I))
 	  CALL COLOR(IPEN(I))
 
@@ -132,8 +179,10 @@ C     DRAW VECTORS
 	      CALL DRAWVEC(xtail,ytail,xhead,yhead,rlenfact,0,xf,yf)
 100	    CONTINUE
 	    CALL DRAWVEC(maxvel,ytail,xhead,yhead,rlenfact,1,xf,yf)
-	  ELSE
-	    IF(ITYPE(I).GE.4)THEN
+
+* standard line or point plot
+	  ELSEIF (ipv .EQ. 0) THEN
+	    IF(ITYPE(I).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89
 	      CALL DASHSZ(DN1(I),UP1(I),DN2(I),UP2(I))
 	      CALL DASHES
 	    ELSE
@@ -154,6 +203,7 @@ C     DO NOT CHECK POINTS FOR MISSING DATA
 	    ELSE
 C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	      DO 70 J=IBASE+1,IBASE+LLENG(I)
+* ... locate first point
 		IF(XLE.AND.X(J).LE.CMXLE)GOTO 70
 		IF(XEQ.AND.X(J).EQ.CMXEQ)GOTO 70
 		IF(XGE.AND.X(J).GE.CMXGE)GOTO 70
@@ -168,6 +218,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        GOTO 71
 70	      CONTINUE
 71	      IF=1
+* ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
      *		   (XEQ.AND.X(K).EQ.CMXEQ).OR.
@@ -179,6 +230,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        ELSE
 	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
 	          CALL PLOT(XT,YT,IF,0)
+		  if (interrupted) goto 51 ! *jd* 8.3.92
 	          CALL MARK(IM)
 	          IF(IF.EQ.0)THEN
 	            IF=1
@@ -187,16 +239,41 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 72	      CONTINUE
 	    END IF
 	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))
+
 	  END IF
+
+	if (interrupted) go to 51 !*jd* 8.3.92
 50	IBASE=IBASE+LLENG(I)
-51 	CALL COLOR(IPEN(0))
+
+******** END OF LOOP OVER LINES STORED
+
+*** FINALIZE
+ 51	CALL COLOR(IPEN(0))
 	RETURN
+
+**************************************
+***** OTHER ENTRY POINTS *************
 
 	ENTRY PLOTV(X,NXS,XF,YF)
 	IPV=1
+	nl = lnum
 	GOTO 1000
 
 	ENTRY VELVCT(X,NXS,XF,YF)
 	IPV=2
+	nl = lnum
 	GOTO 1000
+
+********
+
+* added 11/97
+	ENTRY PLOTPOL(X,NXS,XF,YF)
+	IPV=3
+	nl = lnum
+	STOP  'PLOTPOL not yet implemented'
+	GOTO 1000
+
 	END
+
+
+

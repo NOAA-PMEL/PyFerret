@@ -10,8 +10,13 @@ C**
 C***********************************************************************
 C**
 C**
+*	*jd* MOD 3.29.93 READ fails on SGI with comma in string.  Eliminate.
+*	*jd* MOD 11.1.94 READ fails on IBM AIX without it.  Put back in.
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
 	LOGICAL BLNK
-	CHARACTER PRSE*255
+	CHARACTER PRSE*(*)
 
 *       variable IF renamed to INTIF for MAC *jd* 7.92
 
@@ -28,7 +33,12 @@ C**
 	IF(ISTPP.NE.1)THEN
 		INTIF(I)=1
 		PRSE(ISTPP:ISTPP)=','
+
+#ifdef AIX_XLF
 		READ(PRSE(:ISTPP),996,ERR=1000)VAL(I)
+#else
+		READ(PRSE(:ISTPP-1),996,ERR=1000)VAL(I)
+#endif
 996		FORMAT(E20.0)
 	ENDIF
 20	ISTPP=ISTPP+1

@@ -1,6 +1,8 @@
 	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
 C**
-C**    @(#)pplcmd.F   1.4    11/8/88
+
+C**    @(#)pplcmd.F   1.4    11/8/88 !Mod added 12.6.88 JD
+C**    @(#)pplcmd.F   1.3     9/8/88
 C**
 C**
 C***********************************************************************
@@ -10,6 +12,29 @@ C**
 C***********************************************************************
 C**
 C**
+*       Modified 8.12.88 J Davison TMAP/JISAO/PMEL   
+*       to include SHADE command.                    
+*	J Davison 11.28.88 Modified for compatibility to v1.1 PPL
+*	J Davison 05.04.89 Added pixmap call to capture color bitmap
+*	J Davison 10.04.89 Added aline call to plot a line
+*	J Davison 01.25.90 Modified CLSPLT to handle metafiles
+*	J Davison 04.10.90 Mod to support 'PEN N,0' command => color index 0
+*       J Davison 08.02.91 Mods to generate brain dead version of ppl
+*       J Davison 11.15.91 Mod to support 'COLOR' command
+*       J Davison 01.14.92 Mod to include AREA, SQFILL
+*	*jd* 10.16.92 Mod to add save & restore function for pen command
+*	*tc* 01.26.93 Mod to handle draftsman and spline_tension with
+*	     CONSET command.  use variables 9 (spl_ten) and 10 (drman).
+*	     by the way, the array size of p and iflg is 20 in cmrd.inc so
+*	     a command can handle up to 20 inputs.
+*	J Davison 11.09.93 Mod to add segments to advanced commands
+*	J Davison 01.06.94 Mod to use PLTNME to set metafile name
+*	J Davison 01.25.94 Mod to call PPLGFLUSH to flush output at each call
+*	J Davison 11.19.95 Mod for 4 digit year capability
+*	J Davison 11.29.95 Mod for century axis
+*	S Hankin  11.25.97 Mod to add commands PLOTPOL and FILLPOL
+*       kob 9.98 - add external statement to force linker to find
+*                  block data statments
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -19,97 +44,216 @@ c	icmdim	dimensioned length of combuf
 c	icmsze	number of lines in combuf
 c
 #ifdef unix
-	include 'epicinc/COMEPS.INC'
-	include 'epicinc/COMEPV.INC'
-	INCLUDE 'pplinc/COMEPL.INC'
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/PPLDAT.INC'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/PEN.INC'
-	INCLUDE 'pplinc/LABELS.INC'
-	INCLUDE 'pplinc/LABCOM.INC'
-	INCLUDE 'pplinc/CONT.INC'
-	INCLUDE 'pplinc/DASHZZ.INC'
-	INCLUDE 'pplinc/CONLAB.INC'
-	INCLUDE 'pplinc/PLT.INC'
-	INCLUDE 'pplinc/PLTL.INC'
-	INCLUDE 'pplinc/HAB.INC'
-	INCLUDE 'pplinc/DATA.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/MPLOT.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/TICS.INC'
-	INCLUDE 'pplinc/TICS2.INC'
-	INCLUDE 'pplinc/AXISL.INC'
-	INCLUDE 'pplinc/XYLABP.INC'
-	INCLUDE 'pplinc/VIEW.INC'
-	INCLUDE 'pplinc/ZGRID.INC'
-	INCLUDE 'pplinc/FILNAM.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
-	INCLUDE 'pplinc/VECTOR.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'cmdinc/CMDCOM.INC'
-	INCLUDE 'cmdinc/SYMKEY.INC'
-	INCLUDE 'cmdinc/SWITCH.INC'
-	INCLUDE 'pplinc/PRMCOM.INC'
+        include 'tmap_pplv11inc/comepl_inc.decl'  ! added 9.6.88 j davison 
+        include 'pplv11inc/COMEPL.INC'  ! added 9.6.88 j davison 
+	include 'tmap_pplv11inc/comeps_inc.decl'
+	include 'pplv11inc/COMEPS.INC'
+	include 'tmap_pplv11inc/comepv_inc.decl'
+	include 'pplv11inc/COMEPV.INC'
+	include 'tmap_pplv11inc/parampl5_dat.decl'
+	include 'pplv11inc/PARAMPL5.DAT'
+	include 'tmap_pplv11inc/ppldat_inc.decl'
+	include 'pplv11inc/PPLDAT.INC'
+	include 'tmap_pplv11inc/axis_inc.decl'
+	include 'pplv11inc/AXIS.INC'
+	include 'tmap_pplv11inc/lines_inc.decl'
+	include 'pplv11inc/LINES.INC'
+	include 'tmap_pplv11inc/pen_inc.decl'
+	include 'pplv11inc/PEN.INC'
+	include 'tmap_pplv11inc/labels_inc.decl'
+	include 'pplv11inc/LABELS.INC'
+	include 'tmap_pplv11inc/labcom_inc.decl'
+	include 'pplv11inc/LABCOM.INC'
+	include 'tmap_pplv11inc/cont_inc.decl'
+	include 'pplv11inc/CONT.INC'
+	include 'tmap_pplv11inc/dashzz_inc.decl'
+	include 'pplv11inc/DASHZZ.INC'
+	include 'tmap_pplv11inc/conlab_inc.decl'
+	include 'pplv11inc/CONLAB.INC'
+	include 'tmap_pplv11inc/plt_inc.decl'
+	include 'pplv11inc/PLT.INC'
+	include 'tmap_pplv11inc/pltl_inc.decl'
+	include 'pplv11inc/PLTL.INC'
+	include 'tmap_pplv11inc/hab_inc.decl'
+	include 'pplv11inc/HAB.INC'
+	include 'tmap_pplv11inc/data_inc.decl'
+	include 'pplv11inc/DATA.INC'
+	include 'tmap_pplv11inc/cmrd_inc.decl'
+	include 'pplv11inc/CMRD.INC'
+	include 'tmap_pplv11inc/cmrdl_inc.decl'
+	include 'pplv11inc/CMRDL.INC'
+	include 'tmap_pplv11inc/hd_inc.decl'
+	include 'pplv11inc/HD.INC'
+	include 'tmap_pplv11inc/mplot_inc.decl'
+	include 'pplv11inc/MPLOT.INC'
+	include 'tmap_pplv11inc/miss_inc.decl'
+	include 'pplv11inc/MISS.INC'
+	include 'tmap_pplv11inc/taxis_inc.decl'
+	include 'pplv11inc/TAXIS.INC'
+	include 'tmap_pplv11inc/tics_inc.decl'
+	include 'pplv11inc/TICS.INC'
+	include 'tmap_pplv11inc/tics2_inc.decl'
+	include 'pplv11inc/TICS2.INC'
+	include 'tmap_pplv11inc/axisl_inc.decl'
+	include 'pplv11inc/AXISL.INC'
+	include 'tmap_pplv11inc/xylabp_inc.decl'
+	include 'pplv11inc/XYLABP.INC'
+	include 'tmap_pplv11inc/view_inc.decl'
+	include 'pplv11inc/VIEW.INC'
+	include 'tmap_pplv11inc/zgrid_inc.decl'
+	include 'pplv11inc/ZGRID.INC'
+	include 'tmap_pplv11inc/filnam_inc.decl'
+	include 'pplv11inc/FILNAM.INC'
+	include 'tmap_pplv11inc/lunits_inc.decl'
+	include 'pplv11inc/LUNITS.INC'
+	include 'tmap_pplv11inc/vector_inc.decl'
+	include 'pplv11inc/VECTOR.INC'
+	include 'tmap_pplv11inc/system_inc.decl'
+	include 'pplv11inc/SYSTEM.INC'
+	include 'tmap_pplv11inc/cmdcom_inc.decl'
+	include 'pplv11inc/CMDCOM.INC'
+	include 'tmap_pplv11inc/symkey_inc.decl'
+	include 'pplv11inc/SYMKEY.INC'
+	include 'tmap_pplv11inc/switch_inc.decl'
+	include 'pplv11inc/SWITCH.INC'
+	include 'tmap_pplv11inc/prmcom_inc.decl'
+	include 'pplv11inc/PRMCOM.INC'
+	include 'tmap_pplv11inc/gkscm2.cmn'
+        include 'pplv11inc/ARFILL.INC'
 #else
-	include 'epicinc:comeps.inc'
-	include 'epicinc:comepv.inc'
-	INCLUDE 'pplinc:PARAMPL5.DAT'
-	INCLUDE 'pplinc:PPLDAT.INC'
-	INCLUDE 'pplinc:AXIS.INC'
-	INCLUDE 'pplinc:LINES.INC'
-	INCLUDE 'pplinc:PEN.INC'
-	INCLUDE 'pplinc:LABELS.INC'
-	INCLUDE 'pplinc:LABCOM.INC'
-	INCLUDE 'pplinc:CONT.INC'
-	INCLUDE 'pplinc:DASHZZ.INC'
-	INCLUDE 'pplinc:CONLAB.INC'
-	INCLUDE 'pplinc:PLT.INC'
-	INCLUDE 'pplinc:PLTL.INC'
-	INCLUDE 'pplinc:HAB.INC'
-	INCLUDE 'pplinc:DATA.INC'
-	INCLUDE 'pplinc:CMRD.INC'
-	INCLUDE 'pplinc:CMRDL.INC'
-	INCLUDE 'pplinc:HD.INC'
-	INCLUDE 'pplinc:MPLOT.INC'
-	INCLUDE 'pplinc:MISS.INC'
-	INCLUDE 'pplinc:TAXIS.INC'
-	INCLUDE 'pplinc:TICS.INC'
-	INCLUDE 'pplinc:TICS2.INC'
-	INCLUDE 'pplinc:AXISL.INC'
-	INCLUDE 'pplinc:XYLABP.INC'
-	INCLUDE 'pplinc:VIEW.INC'
-	INCLUDE 'pplinc:ZGRID.INC'
-	INCLUDE 'pplinc:FILNAM.INC'
-	INCLUDE 'pplinc:LUNITS.INC'
-	INCLUDE 'PPLINC:VECTOR.INC'
-	INCLUDE 'CMDINC:SYSTEM.INC'
-	INCLUDE 'CMDINC:CMDCOM.INC'
-	INCLUDE 'CMDINC:SYMKEY.INC'
-	INCLUDE 'CMDINC:SWITCH.INC'
-	INCLUDE 'PPLINC:PRMCOM.INC'
+        INCLUDE 'TMAP_PPLV11INC:tmap_comepl.inc'  ! Added 9.6.88 J Davison 
+	INCLUDE 'TMAP_PPLV11INC:tmap_comeps.inc'
+	INCLUDE 'TMAP_PPLV11INC:tmap_comepv.inc'
+	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
+	INCLUDE 'PPLV11INC:PARAMPL5.DAT'
+	INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL'
+	INCLUDE 'PPLV11INC:PPLDAT.INC'
+	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
+	INCLUDE 'PPLV11INC:AXIS.INC'
+	INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
+	INCLUDE 'PPLV11INC:LINES.INC'
+	INCLUDE 'TMAP_PPLV11INC:PEN_INC.DECL'
+	INCLUDE 'PPLV11INC:PEN.INC'
+	INCLUDE 'TMAP_PPLV11INC:LABELS_INC.DECL'
+	INCLUDE 'PPLV11INC:LABELS.INC'
+	INCLUDE 'TMAP_PPLV11INC:LABCOM_INC.DECL'
+	INCLUDE 'PPLV11INC:LABCOM.INC'
+	INCLUDE 'TMAP_PPLV11INC:CONT_INC.DECL'
+	INCLUDE 'PPLV11INC:CONT.INC'
+	INCLUDE 'TMAP_PPLV11INC:DASHZZ_INC.DECL'
+	INCLUDE 'PPLV11INC:DASHZZ.INC'
+	INCLUDE 'TMAP_PPLV11INC:CONLAB_INC.DECL'
+	INCLUDE 'PPLV11INC:CONLAB.INC'
+	INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'
+	INCLUDE 'PPLV11INC:PLT.INC'
+	INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
+	INCLUDE 'PPLV11INC:PLTL.INC'
+	INCLUDE 'TMAP_PPLV11INC:HAB_INC.DECL'
+	INCLUDE 'PPLV11INC:HAB.INC'
+	INCLUDE 'TMAP_PPLV11INC:DATA_INC.DECL'
+	INCLUDE 'PPLV11INC:DATA.INC'
+	INCLUDE 'TMAP_PPLV11INC:CMRD_INC.DECL'
+	INCLUDE 'PPLV11INC:CMRD.INC'
+	INCLUDE 'TMAP_PPLV11INC:CMRDL_INC.DECL'
+	INCLUDE 'PPLV11INC:CMRDL.INC'
+	INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
+	INCLUDE 'PPLV11INC:HD.INC'
+	INCLUDE 'TMAP_PPLV11INC:MPLOT_INC.DECL'
+	INCLUDE 'PPLV11INC:MPLOT.INC'
+	INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
+	INCLUDE 'PPLV11INC:MISS.INC'
+	INCLUDE 'TMAP_PPLV11INC:TAXIS_INC.DECL'
+	INCLUDE 'PPLV11INC:TAXIS.INC'
+	INCLUDE 'TMAP_PPLV11INC:TICS_INC.DECL'
+	INCLUDE 'PPLV11INC:TICS.INC'
+	INCLUDE 'TMAP_PPLV11INC:TICS2_INC.DECL'
+	INCLUDE 'PPLV11INC:TICS2.INC'
+	INCLUDE 'TMAP_PPLV11INC:AXISL_INC.DECL'
+	INCLUDE 'PPLV11INC:AXISL.INC'
+	INCLUDE 'TMAP_PPLV11INC:XYLABP_INC.DECL'
+	INCLUDE 'PPLV11INC:XYLABP.INC'
+	INCLUDE 'TMAP_PPLV11INC:VIEW_INC.DECL'
+	INCLUDE 'PPLV11INC:VIEW.INC'
+	INCLUDE 'TMAP_PPLV11INC:ZGRID_INC.DECL'
+	INCLUDE 'PPLV11INC:ZGRID.INC'
+	INCLUDE 'TMAP_PPLV11INC:FILNAM_INC.DECL'
+	INCLUDE 'PPLV11INC:FILNAM.INC'
+	INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
+	INCLUDE 'PPLV11INC:LUNITS.INC'
+	INCLUDE 'TMAP_PPLV11INC:VECTOR_INC.DECL'
+	INCLUDE 'PPLV11INC:VECTOR.INC'
+	INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
+	INCLUDE 'PPLV11INC:SYSTEM.INC'
+	INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
+	INCLUDE 'PPLV11INC:CMDCOM.INC'
+	INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
+	INCLUDE 'PPLV11INC:SYMKEY.INC'
+	INCLUDE 'TMAP_PPLV11INC:SWITCH_INC.DECL'
+	INCLUDE 'PPLV11INC:SWITCH.INC'
+	INCLUDE 'TMAP_PPLV11INC:PRMCOM_INC.DECL'
+	INCLUDE 'PPLV11INC:PRMCOM.INC'
+	INCLUDE 'TMAP_PPLV11INC:GKSCM2.CMN'
+        INCLUDE 'PPLV11INC:ARFILL.INC'
+
 #endif
+
+* special COMMON to let this routine know if FERRET is in control
+#ifdef unix
+        include 'tmap_pplv11inc/ppl_in_ferret.cmn'
+#else
+        INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
+#endif
+
+        logical         tmapdebug
+CCCCCCC Assign value below rather than initialize here.  F90 complains (linux)
+CCCCCCC data	        tmapdebug/.false./
+
+        common/tmdebug/ tmapdebug
+
+*       Declarations added J Davison 9.2.88                    
+        integer         icmdim,is,isi,icmsze,i,ier,isym        
+        integer         j,k,ic,ierr,lun1,lun11                 
+        integer         idum1,iy1,ix1,ix3                   
+        integer         lnblk,ws_state
+                                                               
+        real            xm,ym,xt,xdum1,xdum2,xdum3,xdum4       
+        real            xdum5,zmn,zmx,p1,x1,y1,y2,x3,x4     
+        real            diff,symwid                            
+                                                               
+        external        lnblk,diff,symwid                      
+                                                               
+        logical         first_time_thru               
+        data            first_time_thru/.true./                
+
+*       End declarations 9.2.88
+                                
+*	Declarations added J Davison 11.30.88
+	real		xft,yft,xlt,ylt,xht,yht,xtit,xtlt
+	integer		nmxt,nmyt,ilen
+*	End declarations 11.30.88
+
+	integer	  ipen_save(0:nlines)
+	data	  ipen_save/1,nlines*1/
+
+	character strr*255
+
 	CHARACTER DTE*10,TEMP*255,TEMP2*255,FILE*81,FROM*80,LINE*255
 	CHARACTER SYM*30
 	CHARACTER FROMI*(*),LINEI*(*)
 	CHARACTER COMBUF(ICMDIM)*(*)
-        CHARACTER YES*3,NO*2
-        LOGICAL LEOF
-        LOGICAL IFLG1,IFLG2,LABON,LABOFF
-        DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
-        DIMENSION X4(4)
-        CHARACTER COMM(98)*7
-        EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
-        EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
-     *        (HLAB1,Y2(1))
-        DATA YES,NO/'YES','NO'/
-        DATA FILE/' '/
-        DATA COMM/'AUTO','BAUD','EXIT','PLTYPE','RWDSEQ','SIZE',
+	CHARACTER YES*3,NO*2
+	LOGICAL LEOF
+	LOGICAL IFLG1,IFLG2,LABON,LABOFF
+	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
+	DIMENSION X4(4)
+	CHARACTER COMM(109)*7
+	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
+	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
+     *		(HLAB1,Y2(1))
+	INTEGER	ISTAT,IFLAG !Added back in -- deleted for some reason in v1.1
+	DATA YES,NO/'YES','NO'/
+	DATA FILE/' '/
+	DATA COMM/'AUTO','BAUD','EXIT','PLTYPE','RWDSEQ','SIZE',
      *  'SMOOTH',
      *  'TKTYPE','XLAB','YLAB','FORMAT','CONTOUR','PLOT','READSEQ',
      *  'VARS','XAXIS','YAXIS','NLINES','LINE','LABS','LABSET',
@@ -123,7 +267,39 @@ c
      *  'HLABS','CONPRE','CONPST','TRANSXY','MARKH','LINFIT','DFLTFNT',
      *  'GRID','TEKNME','ECHO','VELVCT','TIME','TXTYPE','TXLSZE',
      *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
-     *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR'/
+     *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
+     *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
+     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL'/
+
+!  *  'SQFILL','AREA'/ NAME CHANGE *jd*
+ 
+	CHARACTER*15 TMPCHR
+
+* JD 11.29.95 Mod for century axis
+
+	LOGICAL*4 cenflag
+	COMMON/CENTURY/cenflag
+
+*	*jd* linux external stmt below inserted	
+	external scale
+
+* *kob* add external statment 9/98
+	EXTERNAL 
+     .          BIBO5,
+     .          TBLES,
+     .          DSFCOM_INIT,
+     .          PPLDAT,
+     .          WS_TYPES_INIT
+
+*****************************************************************************
+
+*       SETUP SHADE ROUTINE DEFAULTS             
+        if (first_time_thru) then                
+	   tmapdebug = .false.
+           first_time_thru = .false.             
+           call setup_defaults                   
+        end if                                   
+
 C
 C	SET UP LABELT STUFF
 C
@@ -138,7 +314,8 @@ C
 	MEMBUF=ICMSZE.GE.1
 	BUFSZE=ICMSZE
 	IF(MEMBUF)THEN
-	    M=BUFDIM
+!	    M=BUFDIM No longer defined in v1.1 -- see cmdcom.inc
+	    M=IBFDIM
 	    M=MIN0(M,BUFSZE)
 	    DO 30 I=1,M
 30	    CMDBUF(I)=COMBUF(I)
@@ -147,9 +324,9 @@ C
 	    IS=0
 	ENDIF
 #ifdef unix
-	TERMF=FROM.EQ.'/dev/tty'
+        TERMF=FROM.EQ.'/dev/tty'
 #else
-	TERMF=FROM.EQ.'TT:'
+        TERMF=FROM.EQ.'TT:'
 #endif
 	CMDLEV=0
 	CALL ATSTRT(FROM,LINE,IS,IER)
@@ -161,13 +338,43 @@ C
 C	READ COMMAND FROM INPUT AND PARSE
 C
 	MBUFF=1
-10	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
-	IF(DONEF)RETURN
-	DO 20 I=1,98
+10	call gqops (ws_state)
+!	If GKS WS is active, flush output buffer before leaving if just plotted
+	if (ws_state .ge. 3) then
+	  if (makep .eq. 'CONTOUR'
+     .	  .or.makep .eq. 'PLOT'
+     .	  .or.makep .eq. 'VIEW'
+     .	  .or.makep .eq. 'PLOTV'
+     .	  .or.makep .eq. 'PLOTUV'
+     .	  .or.makep .eq. 'VELVCT'
+     .	  .or.makep .eq. 'VECTOR'
+     .	  .or.makep .eq. 'SHADE'
+     .	  .or.makep .eq. 'FILL'
+     .	  .or.makep .eq. 'PLOTPOL'
+     .	  .or.makep .eq. 'FILLPOL'
+     .	  .or. icom(1:1) .eq. '%') then
+             IF ( PPL_in_FERRET ) CALL SEG_ON( )
+             call pplgflush
+             IF ( PPL_in_FERRET ) CALL SEG_OFF
+	   endif
+	endif
+	makep = ' '
+
+	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
+	IF (DONEF) RETURN
+
+	DO 20 I=1,109
 	    IF(ICOM.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
-	    CALL PRMTIV(X,NSIZE)
+! 	   Mod 11.9.93 to insert advanced command output into segments
+*          TMAP check that output window is active
+           IF ( PPL_in_FERRET ) CALL CK_GKS_ACTIVE( *9999 ) 
+*          TMAP addition to turn on segment
+           IF ( PPL_in_FERRET ) CALL SEG_ON( )
+
+	   CALL PRMTIV(X,NSIZE)
+           IF ( PPL_in_FERRET ) CALL SEG_OFF
 	ELSE
 	    CALL SPWN
 	ENDIF
@@ -176,15 +383,44 @@ C
 	IFLG2=(M.GE.2.AND.IFLG(2).NE.0)
 	LABON=(LABEL.EQ.'ON'.OR.LABEL.EQ.'on')
 	LABOFF=(INDEX(LABEL,'OFF')+INDEX(LABEL,'off')).NE.0
+C       Mod below for brain dead version *JD* 8.2.91
+        if (tmapdebug) then
 	GOTO (100,200,300,500,600,700,900,1000,1100,1200,1300,
-     *  1400,1500,1600,1800,1900,2000,2100,2200,2300,2500,2600,
-     *  2700,2800,2900,3300,3400,3500,3600,4000,4200,4300,
-     *  4400,4500,4600,4700, 600,1600,3300,4900,5000,5100,5200,
-     *  5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
-     *  6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
-     *  7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
-     *  8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
-     *  9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140),I
+     *	1400,1500,1600,1800,1900,2000,2100,2200,2300,2500,2600,
+     *	2700,2800,2900,3300,3400,3500,3600,4000,4200,4300,
+     *	4400,4500,4600,4700, 600,1600,3300,4900,5000,5100,5200,
+     *	5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
+     *	6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
+     *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
+     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
+     *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
+     *	9150,9160,9170,9180,9190,98,  9191,9380,9171,9172,9173),I
+        else
+	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
+     *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
+     *	2700,2800,2900,99,3400,3500,3600,4000,4200,4300,
+     *	4400,4500,4600,4700,99,99,99,4900,5000,5100,5200,
+     *	5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
+     *	6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
+     *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
+     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
+     *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
+     *	9150,9160,9170,9180,9190,98,  9191,9380,9171,9172,9173),I
+        end if
+        goto 10
+
+C     TMDEBUG
+ 98   call upper (label,255)
+      if (label .eq. 'ON')  tmapdebug = .true.
+      if (label .eq. 'OFF') tmapdebug = .false.
+      goto 10
+C
+C     Brain dead response for RDing
+C
+ 99   IF(.NOT.QUIETF)WRITE(LTTOUT,
+     . '(1X,''COMMAND NOT SUPPORTED IN THIS VERSION OF PPLUS: '',A7)') 
+     . ICOM(:7)
+      GOTO 10
 C     AUTO
 100	IF(LABON)THEN
 	    IPAUSE=0
@@ -203,6 +439,12 @@ C     EXIT
 	RETURN
 C     PLTYPE
 500	ICODE=IFIX(P(1))
+C       More brain dead mods:
+        IF (ICODE .NE. 3 .AND. .not. tmapdebug) THEN
+           IF(.NOT.QUIETF)WRITE(LTTOUT,'(1X,A)')
+     .          'PLTYPE 3 ONLY IS SUPPORTED IN THIS VERSION OF PPLUS'
+           GOTO 10
+        ENDIF
 	CALL PLTYPE(ICODE)
 	CALL TKTYPE(MOD)
 	GOTO 10
@@ -281,21 +523,33 @@ C     NLINES
 2100	CALL RSMNMX
 	LINEN=0
 	IBASE=1
-        PBUF=0
-        LNUM=1
-        GOTO 10
-c     lines
- 2200   I=IFIX(P(1))
-        IF(IFLG2)IMARK(I)=IFIX(P(2))
-        IF(M.GE.3.AND.IFLG(3).NE.0)ITYPE(I)=IFIX(P(3))
-        if(m.ge.4.and.iflg(4).ne.0)xoff(i)=p(4)
-        if(m.ge.5.and.iflg(5).ne.0)yoff(i)=p(5)
-        if(m.ge.6.and.iflg(6).ne.0)dn1(i)=p(6)
-        if(m.ge.7.and.iflg(7).ne.0)up1(i)=p(7)
-        if(m.ge.8.and.iflg(8).ne.0)dn2(i)=p(8)
-        if(m.ge.9.and.iflg(9).ne.0)up2(i)=p(9)
-        IF(M.GE.10.AND.IFLG(10).NE.0)IPEN(I)=IFIX(P(10))
-        GOTO 10
+	PBUF=0
+	LNUM=1
+	GOTO 10
+2200	I=IFIX(P(1))
+	IF(IFLG2)IMARK(I)=IFIX(P(2))
+	IF(M.GE.3.AND.IFLG(3).NE.0)ITYPE(I)=IFIX(P(3))
+        if(m.ge.4.and.iflg(4).ne.0)xoff(i)=p(4)     
+        if(m.ge.5.and.iflg(5).ne.0)yoff(i)=p(5)     
+        if(m.ge.6.and.iflg(6).ne.0)dn1(i)=p(6)      
+        if(m.ge.7.and.iflg(7).ne.0)up1(i)=p(7)      
+        if(m.ge.8.and.iflg(8).ne.0)dn2(i)=p(8)      
+        if(m.ge.9.and.iflg(9).ne.0)up2(i)=p(9)      
+	IF(M.GE.10.AND.IFLG(10).NE.0)IPEN(I)=IFIX(P(10))
+	GOTO 10
+
+!	All references to X2 deleted for 1.4 version of PPLCMD
+!	N=M
+!	IF(M.GE.10)N=9
+!	DO 2201 J=4,N
+!	    IF(J.LT.6)THEN
+!		K=J-3
+!	    ELSE
+!		K=J-1
+!	    ENDIF
+!	    IF(IFLG(J).NE.0)X2(I,K)=P(J)
+!2201	CONTINUE
+
 C     LABS
 2300	IF(P(1).EQ.0..OR.M.EQ.0)THEN
 	    DO 2301 I=1,NLABS
@@ -340,6 +594,11 @@ C     CONSET
 	IF(M.GE.6.AND.IFLG(6).NE.0)CAY=P(6)
 	IF(M.GE.7.AND.IFLG(7).NE.0)NRNG=IFIX(P(7))
 	IF(M.GE.8.AND.IFLG(8).NE.0)DSLAB=P(8)
+! TMAP mod, spline fit:
+	if(m.ge.9.and.iflg(9).ne.0)spline_tension=p(9)
+! TMAP mod, horz contour labels:
+	if(m.ge.10.and.iflg(10).ne.0.and.p(10).ne.0.)draftsman=.true.	
+	if(m.ge.10.and.iflg(10).ne.0.and.p(10).eq.0.)draftsman=.false.	
 	GOTO 10
 C     CROSS
 3600	ICROSS=0
@@ -354,7 +613,7 @@ C	GOTO 10
 C     SAVE
 4200	IF(N.EQ.0)GOTO 10
 #ifdef unix
-	temp=label
+        temp=label
 #else
 	CALL WLDFLE('SY:.PPL_SAVE',LABEL,TEMP,ISTAT,IFLAG)
 #endif
@@ -380,10 +639,11 @@ C
 C	GET
 4300	IF(N.EQ.0)GOTO 10
 #ifdef unix
-	temp=label
+        temp=label
 #else
-	CALL WLDFLE('SY:.PPL_SAVE',LABEL,TEMP,ISTAT,IFLAG)
+        CALL WLDFLE('SY:.PPL_SAVE',LABEL,TEMP,ISTAT,IFLAG)
 #endif
+	CALL WLDFLE('SY:.PPL_SAVE',LABEL,TEMP,ISTAT,IFLAG)
 	OPEN(UNIT=LMULT,FILE=TEMP,STATUS='OLD',
      *	FORM='UNFORMATTED',ERR=4301)
 	IF(IMULT.EQ.1)THEN
@@ -430,9 +690,8 @@ C     ORIGIN
 	SYM='*PPL$YORG'
 	CALL PUTVAL(SYM,YORG,4,IER)
 	if(pltopn)then
-	    call setax(x,nsize,xft,yft,xlt,ylt,xht,yht,nmxt,
-     *	    nmyt,xtit,xtlt)
-	    call scale(xft,yft,xorg,yorg,xlo,ylo)
+	    call setax(x,nsize,xft,yft,xlt,ylt,xht,yht,nmxt,nmyt,xtit,xtlt)
+     	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10
 C     WINDOW
@@ -509,7 +768,16 @@ C	TMIN
 	    IT1=LABEL(2:11)
 	    IF(ITSTRT.EQ.' ')ITSTRT=IT1
 	ENDIF
-	GOTO 6102
+
+C	Linux port. *jd* 12.96 F90 compiler has problem with the statement
+C	below "Invalid forward reference to 6102 detected at DT (end of stmt)"
+C	This is into an IF THEN ELSE clause.  As there is but one command 
+C	before another GOTO I have copied the code from line 6102 and 
+C	GOTO 10 right here.
+
+CCC	GOTO 6102
+	TLO=1.-DIFF(IT1,ITSTRT)/DT ! Needs to be == line 6102
+	GOTO 10
 C	TMAX
 6000	IF(N.NE.0)THEN
 	    IT2=LABEL(2:11)
@@ -526,10 +794,21 @@ C	TSTART
 	ENDIF
 C	PEN
 6200	I=IFIX(P(1))
+	if (label .ne. ' ') then 
+	   call upnsquish (label,strr,end)
+	   if (strr .eq. 'SAVE') then
+	      ipen_save(i) = ipen(i)
+	      goto 6201
+	   elseif (strr .eq. 'RESTORE') then
+	      ipen(i) = ipen_save(i)
+	      goto 6201
+	   endif
+	endif
 	IF(M.LT.2.OR.IFLG(2).EQ.0)GOTO 10
 	IF(I.LT.1)I=0
 	IPEN(I)=IFIX(P(2))
-	GOTO 10
+	if (ipen(i) .eq. 0) ipen(i) = 19  !JD 10.16.92 [post atc] for 'PEN N,0'
+6201	GOTO 10
 C	AXLEN
 6300	IF(IFLG1)XLEN=P(1)
 	IF(IFLG2)YLEN=P(2)
@@ -618,12 +897,22 @@ C	DATPT
 	    IF(IFLG2)IZMRK=P(2)
 	    GOTO 10
 C	PLTNME
+*8000	    IF(N.EQ.0)THEN
+*		TEMP='ppl.meta'
+*	    ELSE
+*		TEMP=LABEL
+*	    ENDIF
+*	    CALL PLTNME(TEMP)
+*	    SYM='*PPL$PLTNME'
+*	    ISYM=LNBLK(TEMP,255)
+*	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
 8000	    IF(N.EQ.0)THEN
-		TEMP='ppl.meta'
+		meta_file='metafile.plt'
+		TEMP='metafile.plt'
 	    ELSE
+		meta_file=LABEL
 		TEMP=LABEL
 	    ENDIF
-	    CALL PLTNME(TEMP)
 	    SYM='*PPL$PLTNME'
 	    ISYM=LNBLK(TEMP,255)
 	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
@@ -708,7 +997,7 @@ C	GRID
 C	TEKNME
 8900	    IF(N.EQ.0)THEN
 #ifdef unix
-		TEMP='/dev/tty'
+                TEMP='/dev/tty'
 #else
 		TEMP='TT:'
 #endif
@@ -739,7 +1028,19 @@ C
 	    IF(IC.EQ.0)IC=256
 	    IS=INDEX(LABEL,' ')
 	    IS=MIN0(IS,IC)
-	    IT1=LABEL(2:IS-1)
+
+!*JD*	    IT1=LABEL(2:IS-1)
+	    TMPCHR = LABEL(1:IS-1)
+
+	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
+		IT1=TMPCHR(2:11)         ! old format
+	 	IT1(11:14) = '0019'
+	    ELSE
+		IT1(1:12)=TMPCHR(4:15)   ! enhanced format
+		IF (tmpchr(11:12) .EQ. ' ') IT1(11:12)='00' 
+		IT1(13:14) = TMPCHR(2:3) ! century
+	    ENDIF
+
 	    IF(ITSTRT.EQ.' ')ITSTRT=IT1
 	    IF(IC.NE.0)IS=IS+1
 9210	    IF(LABEL(IS:IS).EQ.' ')THEN
@@ -760,7 +1061,19 @@ C
 	    IF(IC.EQ.0)IC=256
 	    IS=INDEX(LABEL,' ')
 	    IS=MIN0(IS,IC)
-	    IT2=LABEL(2:IS-1)
+
+!*JD*	    IT2=LABEL(2:IS-1)
+	    TMPCHR = LABEL(1:IS-1)
+
+	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
+		IT2=TMPCHR(2:11)         ! old format
+		IT2(11:14) = '0019'
+	    ELSE
+		IT2(1:12)=TMPCHR(4:15)   ! enhanced format
+		IF (TMPCHR(11:12) .EQ. ' ') IT2(11:12)='00' 
+		IT2(13:14) = TMPCHR(2:3) ! century
+	    ENDIF
+
 	    IF(IC.NE.0)IS=IS+1
 9220	    IF(LABEL(IS:IS).EQ.' ')THEN
 		IS=IS+1
@@ -769,7 +1082,19 @@ C
 	    ELSE
 		LABEL=LABEL(IS:)
 	    ENDIF
-9202	    ITSTRT=LABEL(2:11)
+
+!*JD* 9202  ITSTRT=LABEL(2:11)
+9202	    TMPCHR = LABEL(1:15)
+
+	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
+		ITSTRT=TMPCHR(2:11)         ! old format
+		ITSTRT(11:14) = '0019'
+	    ELSE
+		ITSTRT(1:12)=TMPCHR(4:15)   ! enhanced format
+		IF (TMPCHR(11:12) .EQ. ' ') ITSTRT(11:12)='00' 
+		ITSTRT(13:14) = TMPCHR(2:3) ! century
+	    ENDIF
+
 9203	    TLO=1.-DIFF(IT1,ITSTRT)/DT
 	    GOTO 10
 C	TXTYPE
@@ -808,6 +1133,13 @@ C
 		ELSE
 		    ITXTPE=1
 		ENDIF
+
+*               Century axis mod
+	        IF(INDEX(LABEL,'MULTIY').NE.0) THEN
+		  CENFLAG = .TRUE.
+	        ELSE
+	          CENFLAG = .FALSE.		   
+	        ENDIF
 	    ENDIF
 	    LABELT=ITXTPE*ITXLBP
 	    GOTO 10
@@ -867,6 +1199,14 @@ C	VPOINT
 	    GOTO 10
 C	CLSPLT
 9950	    CALL PLTYPE(ICODE)
+*	    MOD *JD* 1.25.90 to accomodate use of clsplt and metafiles
+	    if (meta_open .and. .not. meta_clsplt .and. .not. first_meta) then
+	       if (meta_actv) call gdawk (meta_wsid)
+	       call gclwk (meta_wsid)
+	       close (meta_lun)
+	       meta_clsplt = .true.
+	       vpt_was_set = .false.
+	    end if        
 	    GOTO 10
 C     RWDSEQ & RWD
 600	    CALL OPENF(FILE,IERR)
@@ -998,7 +1338,7 @@ C	ENTER
 	NX=I
 	NY=1
 	CALL RDSEQ2(X,NSIZE,PBUF,IBASE,FILE)
-	CALL STPRMP('ppl>',4)
+	CALL STPRMP('ppl+>',5)
 	GOTO 10
 C     MULTPLT
 4900	CALL MULT
@@ -1029,7 +1369,7 @@ C	PLOTUV
 	    CALL MPLOT(X,NSIZE)
 	    IF(IMCNT.LT.MNX*MNY)GOTO 10
 #ifdef unix
-	    rewind(lmult)
+            rewind(lmult)
 #else
 	    OPEN(LMULT,FILE=MULTFL,STATUS='OLD',
      *	    FORM='UNFORMATTED')
@@ -1048,7 +1388,7 @@ C	PLOTUV
 		CALL PLTIT(X,NSIZE)
 6003	    CONTINUE
 #ifdef unix
-6004	    CLOSE(LMULT)
+ 6004         CLOSE(LMULT)
 #else
 6004	    CLOSE(LMULT,DISP='DELETE')
 #endif
@@ -1091,6 +1431,90 @@ c	usr
 	    call echo(temp2,ilen+7)
 	endif
 	goto 10
+C	SHADE
+9150    MAKEP = 'SHADE'                                                       
+        IF(N.NE.0)LAB1=LABEL                                                  
+        ICOUNT=ICOUNT+1                                                       
+        IF(IMULT.NE.1)THEN                                                    
+            CALL PLTIT(X,NSIZE)                                               
+        ELSE                                                                  
+            CALL MPLOT(X,NSIZE)                                               
+            IF(IMCNT.LT.MNX*MNY)GOTO 10                                       
+            OPEN(LMULT,FILE=MULTFL,STATUS='OLD',                              
+     *      FORM='UNFORMATTED')                                               
+            DO 9151 IMCNT=1,MNX*MNY                                           
+            READ(LMULT,END=9152)IPTS,MXBOT,MYLEF                              
+	    READ(LMULT,END=9152)XLABS,YLABS,RLABS,LTYPE,XLLABS,YLLABS,LLTYPE, 
+     *	    RHLABS,USRLBS                                                     
+            CALL GET(LMULT)                                                   
+            IF(JTYPE.EQ.1)THEN                                                
+                CALL GETXY(LMULT,X,NSIZE)                                     
+            ELSE                                                              
+                CALL GETZ(LMULT,X,NX,NY)                                      
+            ENDIF                                                             
+            IF(IZTYP.NE.0)CALL GETZG(LMULT)                                   
+            CALL PLTIT(X,NSIZE)                                               
+9151        CONTINUE    
+#ifdef FORTRAN_90                                           
+9152        CLOSE(LMULT,STATUS='DELETE')                             
+#else
+9152        CLOSE(LMULT,DISP='DELETE')                             
+#endif
+c                                                                  
+c       show mult file is closed by clearing the file name         
+c                                                                  
+            MULTFL=' '                                             
+            CALL MPLOT2(X,NSIZE)                                   
+        ENDIF                                                      
+        GOTO 10                                                    
+C       SHAKEY                                                     
+9160    call shade_key                                             
+        goto 10                                                    
+C       SHAKEY                                                     
+9170    call shade_set                                             
+        goto 10                                                    
+c       area
+*!9171 makep='AREA' NAME CHANGE *jd*
+9171   makep='FILL'
+        if(iflg1)then
+            ivcomp=p(1)
+        else
+            ivcomp=1
+        endif
+        if(iflg2)cangle=p(2)
+        GOTO 6001
+ 9172	makep='PLOTPOL'
+        if(iflg1)then
+            ivcomp=p(1)
+        else
+            ivcomp=1
+        endif
+        if(iflg2)cangle=p(2)
+        GOTO 6001
+ 9173	makep='FILLPOL'
+        if(iflg1)then
+            ivcomp=p(1)
+        else
+            ivcomp=1
+        endif
+        if(iflg2)cangle=p(2)
+        GOTO 6001
+#ifdef unix
+9180    continue
+#else
+9180    call pixmap                                             
+#endif
+        goto 10                                                    
+9190	call aline (x,nsize)
+	goto 10
+9191    call set_one_color
+        goto 10
+c sqfill
+ 9380   if(labon)sqfflg=.true.
+        if(laboff .or. n.eq.0)sqfflg=.false.
+        goto 10
+9999	RETURN
+
 	END
 	SUBROUTINE OPENF(FILE,IER)
 c  If format is EPIC:
@@ -1103,28 +1527,49 @@ c  Modified for pointer file, Oct 85.
 c  Patched up Feb 88
 c
 	character line*132
+
+*       Declarations added 9.6.88 J Davison          
+        integer ier,isym,lnblk,i,ix                  
+                                                     
+        external lnblk                               
+*       End declarations 9.6.88                      
+
 c
 c
 c  Get EPIC (RIM) file with data file names
 c
 #ifdef unix
-	INCLUDE 'pplinc/COMEPL.INC'
-	INCLUDE 'pplinc/EPICLUN.INC'
-	INCLUDE 'pplinc/DATA.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
+	include 'tmap_pplv11inc/comepl_inc.decl'
+	include 'pplv11inc/COMEPL.INC'
+	include 'tmap_pplv11inc/epiclun_inc.decl'
+	include 'pplv11inc/EPICLUN.INC'
+	include 'tmap_pplv11inc/data_inc.decl'
+	include 'pplv11inc/DATA.INC'
+	include 'tmap_pplv11inc/cmrd_inc.decl'
+	include 'pplv11inc/CMRD.INC'
+	include 'tmap_pplv11inc/cmrdl_inc.decl'
+	include 'pplv11inc/CMRDL.INC'
+	include 'tmap_pplv11inc/lunits_inc.decl'
+	include 'pplv11inc/LUNITS.INC'
+	include 'tmap_pplv11inc/system_inc.decl'
+	include 'pplv11inc/SYSTEM.INC'
 #else
-	INCLUDE 'pplinc:COMEPL.INC'
-	INCLUDE 'pplinc:EPICLUN.INC'
-	INCLUDE 'pplinc:DATA.INC'
-	INCLUDE 'pplinc:CMRD.INC'
-	INCLUDE 'pplinc:CMRDL.INC'
-	INCLUDE 'pplinc:LUNITS.INC'
-	INCLUDE 'CMDINC:SYSTEM.INC'
+	INCLUDE 'TMAP_PPLV11INC:COMEPL_INC.DECL'
+	INCLUDE 'PPLV11INC:COMEPL.INC'
+	INCLUDE 'TMAP_PPLV11INC:EPICLUN_INC.DECL'
+	INCLUDE 'PPLV11INC:EPICLUN.INC'
+	INCLUDE 'TMAP_PPLV11INC:DATA_INC.DECL'
+	INCLUDE 'PPLV11INC:DATA.INC'
+	INCLUDE 'TMAP_PPLV11INC:CMRD_INC.DECL'
+	INCLUDE 'PPLV11INC:CMRD.INC'
+	INCLUDE 'TMAP_PPLV11INC:CMRDL_INC.DECL'
+	INCLUDE 'PPLV11INC:CMRDL.INC'
+	INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
+	INCLUDE 'PPLV11INC:LUNITS.INC'
+	INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
+	INCLUDE 'PPLV11INC:SYSTEM.INC'
 #endif
-	CHARACTER FILE*81,SYM*30
+	CHARACTER FILE*(*),SYM*30
 	IER=0
 	IF(N.EQ.0)THEN
 	    IF(FILE.EQ.' ')THEN
@@ -1140,7 +1585,7 @@ c
 	    CALL PUTSYM(SYM,LABEL,ISYM,IER)
 	    CLOSE(LUNN)
 #ifdef unix
-	    FILE=LABEL
+            FILE=LABEL
 #else
 	    I=INDEX(LABEL,':')
 	    IF(I.LE.0)THEN
@@ -1160,10 +1605,10 @@ c
 	    CLOSE(LUN1)
 	    CLOSE(LUN11)
 #ifdef unix
-	    open (unit=LUN11, form='formatted', status='old',
-     1	    file=FILE,err=100 )
+            open (unit=LUN11, form='formatted', status='old',
+     1      file=FILE,err=100 )
 #else
-	    open (unit=LUN11, form='formatted', status='old',
+open (unit=LUN11, form='formatted', status='old',
      1	    readonly,file=FILE,err=100 )
 #endif
 c
@@ -1180,14 +1625,14 @@ c
 	    rewind (LUN11)
 	ELSE IF(IFORM(1:3).NE.'UNF')THEN
 #ifdef unix
-	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100)
-	ELSE
-	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,
-     *	    FORM='UNFORMATTED')
+            OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100)
+        ELSE
+            OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,
+     *      FORM='UNFORMATTED')
 #else
 	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,READONLY)
 	ELSE
-	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,READONLY,
+     	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,READONLY,
      *	    FORM='UNFORMATTED')
 #endif
 	ENDIF

@@ -1,7 +1,7 @@
 	SUBROUTINE VECFLD(U,V,NXS,NYS,PX,PY,XF,YF)
 	real u,v,px,py,xf,yf
 	integer nxs,nys
-C** 
+C**
 C**    @(#)vecfld.F	1.5    9/21/89
 C**
 C**
@@ -12,6 +12,10 @@ C**
 C***********************************************************************
 C**
 C**
+*	*sh* 04-16-90 	Mod to retain VUSRLN for user defined vector lengths
+*       *jd* 8.3.92     Mod to add interrupts
+*	*jd* 12.92	Mod to handle fields of 0 length vectors
+*	*sh* 12/8/93    corrected bug: vectors blow on divide by zero
 C
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -20,36 +24,59 @@ C
 C
 C
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-        INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/PEN.INC'
-	INCLUDE 'pplinc/CMRD.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	INCLUDE 'cmdinc/SWITCH.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/LABCOM.INC'
-	INCLUDE 'pplinc/VECTOR.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
+        include 'tmap_pplv11inc/pen_inc.decl'
+        include 'pplv11inc/PEN.INC'
+        include 'tmap_pplv11inc/cmrd_inc.decl'
+        include 'pplv11inc/CMRD.INC'
+        include 'tmap_pplv11inc/miss_inc.decl'
+        include 'pplv11inc/MISS.INC'
+        include 'tmap_pplv11inc/switch_inc.decl'
+        include 'pplv11inc/SWITCH.INC'
+        include 'tmap_pplv11inc/hd_inc.decl'
+        include 'pplv11inc/HD.INC'
+        include 'tmap_pplv11inc/axis_inc.decl'
+        include 'pplv11inc/AXIS.INC'
+        include 'tmap_pplv11inc/labcom_inc.decl'
+        include 'pplv11inc/LABCOM.INC'
+        include 'tmap_pplv11inc/vector_inc.decl'
+        include 'pplv11inc/VECTOR.INC'
 #else
-        INCLUDE 'PPLINC:PARAMPL5.DAT'
-        INCLUDE 'PPLINC:LINES.INC'
-        INCLUDE 'PPLINC:PEN.INC'
-        INCLUDE 'PPLINC:CMRD.INC'
-        INCLUDE 'PPLINC:MISS.INC'
-        INCLUDE 'CMDINC:SWITCH.INC'
-        INCLUDE 'PPLINC:HD.INC'
-        INCLUDE 'PPLINC:AXIS.INC'
-        INCLUDE 'PPLINC:LABCOM.INC'
-        INCLUDE 'PPLINC:VECTOR.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
+        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LABCOM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_VECTOR.INC'
 #endif
+
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
 	real thfact,xn,yn,xl,yl,dy,dx
 	integer ic,i,j,lnblk,iln
+
 	CHARACTER VECLAB*20
 C
 C	VECTOR,X,Y,VFACT,LABEL
 C
+
+#ifdef unix
+        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
+        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+#else
+        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
+        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
+#endif
+
+*******************************************************************************
+
 	    IF(VUSER)THEN
 	    	XFUSER=1.
 		YFUSER=1.
@@ -87,16 +114,24 @@ C
 	    IC=IC+1
 10	    CONTINUE
 	    IF(IC.EQ.0)IC=1
-	    ZAVE=ZAVE/FLOAT(IC)
+*	    Mod to handle field of length 0 vectors *jd* 12.92
+	    if (zave .eq. 0.0) then 
+	       zave = 0.5
+	    else
+	       ZAVE=ZAVE/FLOAT(IC)
+	    endif
 	    VFACT=VLEN/(2.0*ZAVE)
+	    vusrln = (2.0*ZAVE)		!  *sh* 4/90
 	ELSE
 	    VFACT=VLEN/VUSRLN
 	ENDIF
 	CALL COLOR(IPEN(1))
 	call trans(0,xmin,ymin,xtm,ytm)
 	call trans(0,xmax,ymax,xtx,ytx)
-	DX=(xtx-xtm)/(NX-1)
-	DY=(ytx-ytm)/(NY-1)
+!*sh*	DX=(xtx-xtm)/(NX-1)
+!*sh*	DY=(ytx-ytm)/(NY-1)
+	DX=(xtx-xtm)/MAX(NX-1,1)
+	DY=(ytx-ytm)/MAX(NY-1,1)
 	DO 100 I=1,NX,VSKPX
 	DO 100 J=1,NY,VSKPY
 	XX2=U(I,J)
@@ -162,7 +197,8 @@ C
 	CALL PLOT(XX2,YY2,1,0)
 C
 	CALL PLOT(XX1,YY1,1,0)
-100	CONTINUE
+100	if (interrupted) goto 3333 ! *jd* 8.3.92
+	CONTINUE
 C
 C	DRAW SCALE  MAKE SCALE 1 INCH LONG AT XT,YT
 C
@@ -205,6 +241,6 @@ C
 	XL = XX2 + .125/XF
 	YL = YY2 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
-	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
+3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 	RETURN
 	END

@@ -1,5 +1,5 @@
       SUBROUTINE COLOR(ICODE)
-C** 
+C**
 C**    @(#)color.F	1.1    3/10/88
 C**
 C**
@@ -19,8 +19,13 @@ C     POSITION TURRET HEAD ON THE GERBER PLOTTER.  IT CAN BE USED
 C     TO CHANGE THE COLOR OF THE INK USED FOR PLOTTING.
 C
 C
+*	Modified J Davison JISAO/PMEL/TMAP 3.23.89
+*	To accomodate GKS changes to bundled line attributes
+ 
+	integer	icode
+
 #ifdef unix
-	INTEGER TEKCLR(6),TK41XX(3)
+        INTEGER TEKCLR(6),TK41XX(3)
         INTEGER NUM(0:15),setlineindex
 #else
 	byte TEKCLR(6),TK41XX(3)
@@ -29,12 +34,19 @@ C
 	character*1 cnum(0:8)
 C
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
-	include 'pplinc/GKSCM1.INC'
+	include 'tmap_pplv11inc/pltcom_dat.decl'
+	include 'pplv11inc/PLTCOM.DAT'
+	include 'tmap_pplv11inc/gkscm1_inc.decl'
+	include 'pplv11inc/GKSCM1.INC'
+	include 'tmap_pplv11inc/pltl_inc.decl'
+	include 'pplv11inc/PLTL.INC'
+
 #else
-	include 'pplinc:PLTCOM.DAT'
-	include 'pplinc:GKSCM1.INC'
+	INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
+	INCLUDE 'tmap_pplv11inc:tmap_GKSCM1.INC'
+	INCLUDE 'tmap_pplv11inc:tmap_pltl.INC'
 #endif
+
 C
 	data cnum/'0','1','2','3','4','5','6','7','8'/
         DATA NUM/48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63/
@@ -61,6 +73,14 @@ C
 C
 C	SEND SEQUENCE FOR TEK 41XX TERMINALS
 C
+
+CC	Mod for linux *jd* 12.96  
+CC	"Inconsistent structure for arg 1 in call to CHOUT" compiler error
+CC	as CHOUT is called with arg 1 a scalar, and also an array.
+CC	Will commence using the compile option -mismatch, where 
+CC	match of subroutine arguments is not forced.
+
+
 	CALL CHOUT(TK41XX,3)
 	CALL CHOUT(NUM(COLOUR),1)
 	ENDIF	
@@ -110,7 +130,7 @@ C
 20	COLOUR=ICODE
 	IF(.NOT.GKSOPN)THEN
 #ifdef core
-	    call crinit
+            call crinit
 #else
 	    call gkinit
 	    CALL GCLRWK(WSID,0)
@@ -118,12 +138,15 @@ C
 C
 	    GKSOPN=.TRUE.
 	ENDIF
-	CALL GFLUSH
+	CALL PPLGFLUSH
 #ifdef core
-	istat=setlineindex(icode)
+        istat=setlineindex(icode)
 #else
-	CALL GSPLCI(ICODE)
+*	CALL GSPLCI(ICODE) ! original
 #endif
+
+1000	call gspli (max(icode,1)) ! JD 3.23.89 & 3.13.90
+
 100	GOTO(50,30,30,30,40,30,40),PTYPE + 3
    40  COLOUR = ICODE
 	IF(.NOT.PLTFLG)THEN

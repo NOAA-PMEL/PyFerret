@@ -10,6 +10,10 @@ dellev.F\
 drawvec.F\
 dsflab.F\
 dsflim.F\
+ferret_plot_complete.F\
+get_curvilinear_limits.F\
+get_vp_from_ferret.F\
+interrupt.F\
 labdrw.F\
 lev.F\
 level.F\

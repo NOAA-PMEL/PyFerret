@@ -1,6 +1,9 @@
 	SUBROUTINE OPNPPL(EFILE,ELUN,DLUN,MLUN,CLUN,LTT,
      *			  KEY1,KEY2,EPLUN1,EPLUN2)
-C** 
+*	Mod to set SYM='*PPL$PLTNME' to metafile.plt by default *jd* 1.7.94
+*	Mod to not reference "getlog" routine for linux port *kob* 3.11.97	
+*       Mod to set SYM='*PPL$PLTNME' to value of meta_file *js* 7.25.97
+C**
 C**    @(#)opnppl.F	1.1    3/10/88
 C**
 C**
@@ -11,8 +14,6 @@ C**
 C***********************************************************************
 C**
 C**
-C     Mod *JD* 3.5.91 for Unix side -- do not explicitly open terminal lun
-C     and use 6 rather than 5 for output -- due to buffering of output
 c
 c	efile  -- echo file name
 c	elun   -- echo lun
@@ -26,37 +27,56 @@ c	eplun1 -- first EPIC lun
 c	eplun2 -- second EPIC lun
 c
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/EPICLUN.INC'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/DATA.INC'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/PLT.INC'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/CONLAB.INC'
-	INCLUDE 'pplinc/LABCOM.INC'
-	INCLUDE 'pplinc/FILNAM.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
-	INCLUDE 'pplinc/PEN.INC'
-	INCLUDE 'pplinc/SYMKEY.INC'
-	INCLUDE 'pplinc/SYSTEM.INC'
-	INCLUDE 'pplinc/CMDCOM.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/epiclun_inc.decl'
+        include 'pplv11inc/EPICLUN.INC'
+        include 'tmap_pplv11inc/axis_inc.decl'
+        include 'pplv11inc/AXIS.INC'
+        include 'tmap_pplv11inc/data_inc.decl'
+        include 'pplv11inc/DATA.INC'
+        include 'tmap_pplv11inc/cmrdl_inc.decl'
+        include 'pplv11inc/CMRDL.INC'
+        include 'tmap_pplv11inc/plt_inc.decl'
+        include 'pplv11inc/PLT.INC'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
+        include 'tmap_pplv11inc/conlab_inc.decl'
+        include 'pplv11inc/CONLAB.INC'
+        include 'tmap_pplv11inc/labcom_inc.decl'
+        include 'pplv11inc/LABCOM.INC'
+        include 'tmap_pplv11inc/filnam_inc.decl'
+        include 'pplv11inc/FILNAM.INC'
+        include 'tmap_pplv11inc/lunits_inc.decl'
+        include 'pplv11inc/LUNITS.INC'
+        include 'tmap_pplv11inc/pen_inc.decl'
+        include 'pplv11inc/PEN.INC'
+        include 'tmap_pplv11inc/symkey_inc.decl'
+        include 'pplv11inc/SYMKEY.INC'
+        include 'tmap_pplv11inc/system_inc.decl'
+        include 'pplv11inc/SYSTEM.INC'
+        include 'tmap_pplv11inc/cmdcom_inc.decl'
+        include 'pplv11inc/CMDCOM.INC'
+	include 'tmap_pplv11inc/gkscm2.cmn'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:EPICLUN.INC'
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:PLT.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:CONLAB.INC'
-        INCLUDE 'pplinc:LABCOM.INC'
-        INCLUDE 'pplinc:FILNAM.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'pplinc:PEN.INC'
-        INCLUDE 'PPLINC:SYMKEY.INC'
-        INCLUDE 'PPLINC:SYSTEM.INC'
-        INCLUDE 'PPLINC:CMDCOM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
+        INCLUDE 'tmap_pplv11inc:tmap_EPICLUN.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_DATA.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PLT.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_CONLAB.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LABCOM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_FILNAM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LUNITS.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
+        INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
+        INCLUDE 'PPLV11INC:SYMKEY.INC'
+        INCLUDE 'TMAP_PPLV11INC:SYSTEM_INC.DECL'
+        INCLUDE 'PPLV11INC:SYSTEM.INC'
+        INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
+        INCLUDE 'PPLV11INC:CMDCOM.INC'
 #endif
 C
 C	USE OF IP FLAGS
@@ -80,6 +100,7 @@ C
         BYTE BUF(80),CRB,ESCB
 #endif
 	CHARACTER EFILE*(*)
+C	CHARACTER EFILE*81
 	INTEGER ELUN,DLUN,MLUN,CLUN,LTT,KEY1,KEY2,EPLUN1,EPLUN2
 #ifndef unix
 	CHARACTER ESC*1,CR*1
@@ -91,7 +112,7 @@ C
 	CHARACTER TYPE*81
 C
 #ifdef unix
-	DATA CRB,ESCB/13,27/,TEMP/'/dev/tty'/,TERM/'/dev/tty'/
+        DATA CRB,ESCB/13,27/,TEMP/'/dev/tty'/,TERM/'/dev/tty'/
 #else
         DATA CRB,ESCB/13,27/,TEMP/'TT:'/,TERM/'TT:'/
         EQUIVALENCE (BUF(1),LABEL),(CR,CRB),(ESC,ESCB)
@@ -126,14 +147,16 @@ C
 	CALL ERRSET(30,,.FALSE.,,.FALSE.)
 #endif
 	CALL BAUD(IR)
-	CALL PLTYPE(ICODE) 
+	CALL PLTYPE(ICODE)
 C
 #ifdef unix
-	call getlog(type)
-	BATCHF = TYPE.EQ.' '
+#ifndef F90_NO_GETLOG
+        call getlog(type)
+#endif
+        BATCHF = TYPE.EQ.' '
 C
-	call getenv('GRAPHTERM',type)
-	len=lnblk(type,81)
+        call getenv('GRAPHTERM',type)
+        len=lnblk(type,81)
 #else
         STAT=LIB$GETJPI(JPI$_MODE,,,ISTAT,TYPE,LEN)
         BATCHF = TYPE(:LEN).EQ.'BATCH'
@@ -152,7 +175,7 @@ C	OPEN ECHO FILE
 C
 	IF(EFILE.NE.' ')THEN
 #ifdef unix
-	    OPEN(ECHLUN,FILE=EFILE,STATUS='UNKNOWN')
+            OPEN(ECHLUN,FILE=EFILE,STATUS='UNKNOWN')
 #else
             OPEN(ECHLUN,FILE=EFILE,STATUS='NEW',CARRIAGECONTROL='LIST')
 #endif
@@ -161,12 +184,12 @@ c
 c	open key file
 c
 #ifdef unix
-	call dbmopen('PPL$KEY.001',11,keyln1)
+        call dbmopen('PPL$KEY.001',11,keyln1)
 c
-	IF(BATCHF)TERM='/dev/null'
+        IF(BATCHF)TERM='/dev/null'
 C
 C Don't open below -- problem w/ Ultrix *JD* 3.5.91
-C	OPEN(UNIT=LTTOUT,FILE=TERM,STATUS='UNKNOWN')
+C       OPEN(UNIT=LTTOUT,FILE=TERM,STATUS='UNKNOWN')
 #else
         OPEN(KEYLN1,FILE='PPL$KEY.001',STATUS='NEW',
      *  ORGANIZATION='INDEXED',ACCESS='KEYED',
@@ -178,7 +201,7 @@ C
         OPEN(UNIT=LTTOUT,FILE=TERM,STATUS='UNKNOWN',RECL=255)
 #endif
 C
-	CALL STPRMP('ppl>',4)
+	CALL STPRMP('ppl+>',5)
 C
 C	SET DEFAULT SYMBOL DEFINITIONS
 C
@@ -186,11 +209,12 @@ C
 	ISYM=LNBLK(IFORM,80)
 	CALL PUTSYM(SYM,IFORM,ISYM,IER)
 	SYM='*PPL$PLTNME'
-	TEMP='ppl.meta'
-	CALL PUTSYM(SYM,TEMP,8,IER)
+C	TEMP='metafile.plt'
+C	CALL PUTSYM(SYM,TEMP,12,IER)
+	call putsym(sym, meta_file, LNBLK(meta_file,128), ier)
 	SYM='*PPL$TEKNME'
 #ifdef unix
-	TEMP='/dev/tty'
+        TEMP='/dev/tty'
 #else
 	TEMP='TT:'
 #endif
@@ -259,17 +283,32 @@ C**     Description:
 C**             This routine closes all files and deletes temporary files
 C**
 C**     History:
-C**         Written: 
+C**         Written:
 C**             2-AUG-86        by Donald W. Denbo
 C**         Modified:
 C**
 C**
         INTEGER*4 STATUS
-        INCLUDE 'pplinc:FILNAM.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'CMDINC:SYMKEY.INC'
-        INCLUDE 'CMDINC:CMDCOM.INC'
-        INCLUDE 'pplinc:PLTCOM.DAT'
+#ifdef unix
+        include 'tmap_pplv11inc/filnam_inc.decl'
+        include 'pplv11inc/FILNAM.INC'
+        include 'tmap_pplv11inc/lunits_inc.decl'
+        include 'pplv11inc/LUNITS.INC'
+        include 'tmap_pplv11inc/symkey_inc.decl'
+        include 'pplv11inc/SYMKEY.INC'
+        include 'tmap_pplv11inc/cmdcom_inc.decl'
+        include 'pplv11inc/CMDCOM.INC'
+        include 'tmap_pplv11inc/pltcom_dat.decl'
+        include 'pplv11inc/PLTCOM.DAT'
+#else
+        INCLUDE 'tmap_pplv11inc:tmap_FILNAM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_LUNITS.INC'
+        INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
+        INCLUDE 'PPLV11INC:SYMKEY.INC'
+        INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
+        INCLUDE 'PPLV11INC:CMDCOM.INC'
+        INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
+#endif
 C
 C       CLOSE ALL OPEN COMMAND FILES
 C
@@ -290,5 +329,5 @@ C
             CALL BINFSH
         ENDIF
         RETURN
-        END      
+        END
 #endif

@@ -10,6 +10,7 @@ check.F\
 chin.F\
 chout.F\
 circle.F\
+clear_vp.F\
 color.F\
 dashes.F\
 dashsz.F\
@@ -50,7 +51,6 @@ scale3.F\
 shade.F\
 size.F\
 symbel.F\
-symbel_tplate.F\
 symbol.F\
 tabmv.F\
 teklun.F\

@@ -1,7 +1,27 @@
 	SUBROUTINE SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,
      *	XTI,XTL)
-	DIMENSION X(NXS)
-C** 
+*
+*	Modified J Davison 11.28.88 for compatibility to v1.1 PPL
+*
+*       Declarations added 9.6.88 J Davison                           
+*	Mod for 4 year digits *jd* 11.21.95
+
+
+        real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl,xf,xl,xh  
+        real            xmn,xmx,xt,yf,yl,yh,yt                        
+                                                                      
+        integer         nxs,iy,nmx,i,ibasex,ibasey,len,j,nmy          
+                                                                      
+        external        diff                                          
+*       End declarations 9.6.88
+*	
+*	Declarations added 11.28.88
+	real		xtx,ytx,xtm,ytm
+*	End declarations 11.28.88
+
+	external RANGE
+
+C**
 C**    @(#)setax.F	1.2    9/8/88
 C**
 C**
@@ -12,34 +32,56 @@ C**
 C***********************************************************************
 C**
 C**
+	DIMENSION X(NXS)
 C	KTYPE = 0 -XY  1 -Z  2-VECTOR
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/PEN.INC'
-	INCLUDE 'pplinc/PLTL.INC'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/AXISL.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	INCLUDE 'pplinc/CMRDL.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
+        include 'tmap_pplv11inc/pen_inc.decl'
+        include 'pplv11inc/PEN.INC'
+        include 'tmap_pplv11inc/pltl_inc.decl'
+        include 'pplv11inc/PLTL.INC'
+        include 'tmap_pplv11inc/axis_inc.decl'
+        include 'pplv11inc/AXIS.INC'
+        include 'tmap_pplv11inc/hd_inc.decl'
+        include 'pplv11inc/HD.INC'
+        include 'tmap_pplv11inc/taxis_inc.decl'
+        include 'pplv11inc/TAXIS.INC'
+        include 'tmap_pplv11inc/axisl_inc.decl'
+        include 'pplv11inc/AXISL.INC'
+        include 'tmap_pplv11inc/miss_inc.decl'
+        include 'pplv11inc/MISS.INC'
+        include 'tmap_pplv11inc/cmrdl_inc.decl'
+        include 'pplv11inc/CMRDL.INC'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:PEN.INC'
-        INCLUDE 'pplinc:PLTL.INC'
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'pplinc:MISS.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
+        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
+        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
+        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
+        INCLUDE 'PPLV11INC:LINES.INC'
+        INCLUDE 'TMAP_PPLV11INC:PEN_INC.DECL'
+        INCLUDE 'PPLV11INC:PEN.INC'
+        INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
+        INCLUDE 'PPLV11INC:PLTL.INC'
+        INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
+        INCLUDE 'PPLV11INC:AXIS.INC'
+        INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
+        INCLUDE 'PPLV11INC:HD.INC'
+        INCLUDE 'TMAP_PPLV11INC:TAXIS_INC.DECL'
+        INCLUDE 'PPLV11INC:TAXIS.INC'
+        INCLUDE 'TMAP_PPLV11INC:AXISL_INC.DECL'
+        INCLUDE 'PPLV11INC:AXISL.INC'
+        INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
+        INCLUDE 'PPLV11INC:MISS.INC'
+        INCLUDE 'TMAP_PPLV11INC:CMRDL_INC.DECL'
+        INCLUDE 'PPLV11INC:CMRDL.INC'
 #endif
 	LOGICAL CONTR,VECTR
-	CHARACTER IT1TMP*10,IT2TMP*10
+	CHARACTER IT1TMP*14,IT2TMP*14
+
 C	SETUP AXIS FOR ALL PLOT TYPES.
-	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'
+	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.makep.eq.'SHADE'
      *	.OR.MAKEP.EQ.'VECTOR'
 	VECTR=MAKEP.EQ.'PLOTV'.OR.MAKEP.EQ.'PLOTUV'
      *	.OR.MAKEP.EQ.'VELVCT'

@@ -19,7 +19,7 @@ include platform_specific_flags.mk.$(HOSTTYPE)
 # Macros
 #
 
-DIRS	= addsxgks complot modsxgks ourlib plot \
+DIRS	= tmapadds complot ourlib plot \
 	plotlib pplepic pplp_only pplusr symlib
 
 LIBS	= complot ourlib plot plotlib pplepic \

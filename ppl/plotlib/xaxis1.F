@@ -1,6 +1,18 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
      *    IFORMT,XFACT,Y,YFACT,CSIZE)
-C** 
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]XAXIS1.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+*	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
+*			in small non-zero values
+
+C**
 C**    @(#)xaxis1.f	1.1    3/10/88
 C**
 C**
@@ -11,10 +23,20 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER IFORMT*20,XLAB*20
+	CHARACTER IFORMT*(*),XLAB*20
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
-C
+
+	parameter (epsilon = 1.e-6)
+
+
+* TMAP interrupt flag
+#ifdef unix
+	include 'tmap_pplv11inc/xinterrupt.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
+#endif
+
 C     THIS ROUTINE DRAWS AN X AXIS.  IT LABELS THE AXIS BELOW
 C     IF LABEL=-1, ABOVE IF LABEL=1, AND NOT AT ALL
 C     IF LABEL=0.  IF LABEL.NE.0 IFORMT TELLS US WHAT FORMAT TO WRITE
@@ -31,9 +53,10 @@ C     IN FACT IF YOU DIMENSION IFORMT IN THE CALLING PROGRAM YOU
 C     CAN EVEN USE FORMAT STATEMENTS THAT ARE LONGER THAN 10 CHARACTERS.
 C     HOWEVER, THE PRINTED LABEL MUST BE <=20 CHARACTERS.
 C
-C     THE FOLLOWING SECTION OF CODE MAKES THIS ROUTINE UPWARD COMPATIABLE.
-      ABSSZ=ABS(CSIZE)
-      SIGSZ=SIGN(1.,CSIZE)
+CCC
+CCC     THE FOLLOWING SECTION OF CODE MAKES THIS ROUTINE UPWARD COMPATIABLE.
+        ABSSZ=ABS(CSIZE)
+        SIGSZ=SIGN(1.,CSIZE)
 C
 C	DRAW AXIS
 C
@@ -47,6 +70,7 @@ C
 	CALL PLOTT7(XT,Y,XFACT,YFACT,1,-8)
 	X=XT
 	DO 100 I=1,ISTOP
+	IF ( interrupted ) RETURN		! TMAP interrupt
 	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y)
 	X=X+XTIC
 	CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
@@ -70,11 +94,20 @@ C
 		X=XT
 	ENDIF
 	ISTOP=INT((XHI-X)/(XTIC*LINTX)+0.000001)
+
+	x0 = x
 	DO 200 I=0,ISTOP
-	TEMP=SIGSZ*X/XUNIT
-	CALL NUMCDE(TEMP,XLAB,NC,IFORMT)
-	CALL SCINOT(X,YTEMP,0.,ABSSZ,NC,XLAB,0,WID,XFACT,YFACT)
-	X=X+XTIC*LINTX
+	IF ( interrupted ) RETURN		! TMAP interrupt
+        TEMP=SIGSZ*X/XUNIT
+        CALL NUMCDE(TEMP,XLAB,NC,IFORMT)
+        CALL SCINOT(X,YTEMP,0.,ABSSZ,NC,XLAB,0,WID,XFACT,YFACT)
+
+CC	Original code
+CC	X=X+XTIC*LINTX
+
+	X=x0+XTIC*LINTX*(i+1)
+	if (abs(x) .lt. epsilon*abs(x0)) x = 0.0
+
 200	CONTINUE
 	RETURN
 	END

@@ -1,6 +1,23 @@
-      SUBROUTINE TAXIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,    TAXIS0
+      SUBROUTINE TAXIS0(TLO,ITIME1,ITIME2,DT,NSMTIC,LABEL,IHDB,IDDB,
      1    TFACT,Y,YFACT,CSIZE)
-C** 
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]TAXIS0.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+* *sh*  - 4/19/89 FERRET 1.21  (repeat of correction made earlier)
+*       - changed "mon" to "date" in calls to SYMWID and SYMBEL.
+*         "mon" is the wrong data type                          
+                                                                
+* *jd* Mod for 4 digit years 11.27.95
+C *kob* 04/07/96 passed in character strings had to be declared 
+C                with "*(*)" for the linux port 
+
+C**
 C**    @(#)taxis0.f	1.1    3/10/88
 C**
 C**
@@ -11,10 +28,18 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER ITIME3*10,DATE*6
-	CHARACTER ITIME*10,ITIME1*10,ITIME2*10,SYM*20
+	CHARACTER ITIME3*14,DATE*6
+	CHARACTER ITIME*14,ITIME1*(*),ITIME2*(*),SYM*21
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
 	COMMON/AXLWID/XWID,YWID
+
+* TMAP interrupt flag
+#ifdef unix
+	include 'tmap_pplv11inc/xinterrupt.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
+#endif
+
 C     THIS ROUTINE PLOTS A TIME AXIS AND LABELS IT WITH THE DAY OF THE M
 C     AND THE MONTH.
 C     VARIBLES:
@@ -52,7 +77,8 @@ C
 C     CHECK THE PARAMETERS PASSED TO THE SUBROUTINE.
 	IF(ITIME1(9:10).NE.'00')STOP ',1'
 	IF(ITIME2(9:10).NE.'00')STOP ',2'
-      IF(ITIME1.GE.ITIME2) STOP',3'
+        IF(ITIME1(13:14)//ITIME1(1:12).GE.
+     .	   ITIME2(13:14)//ITIME2(1:12)) STOP',3'
 C
 C     SET PARAMETERS.
       TIC = 60./DT
@@ -84,7 +110,7 @@ C     SET PARAMETERS.
 	IF(LABEL.NE.0)XWID=(4.0+FIHDB)*CSIZE+YTEMP
       T=TLO
       ITIME=ITIME1
-      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN)
+      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
       TDAY=T
       CALL PLOT(TLO,Y,0,0)
 	IF(IHR.EQ.0)THEN
@@ -101,10 +127,11 @@ C      ELSE:
 	CALL SCINOT(T,YTEMP1,0.,CSIZE,2,SYM,0,WID,TFACT,YFACT)
 C      LOOP:
    10     CALL PLOT(T,Y,0,0)
+	  IF ( interrupted ) RETURN		! TMAP interrupt
           DO 20 I=1,NSMTIC
               CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
    20         CONTINUE
-          CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN)
+          CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	IF(IHR.EQ.0)THEN
 	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
 	ELSE
@@ -118,7 +145,7 @@ C         THE LABELS
    50     CONTINUE
           CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
           IF(IDDB.EQ.0.OR.IABS(LABEL).NE.1) GO TO 70
-              CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3)
+              CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
               IF(IDAY.EQ.IDAY3) GO TO 70
               IF(IDAY.NE.IDDB*(IDAY/IDDB))GO TO 60
 C             ELSE:
@@ -139,8 +166,13 @@ C             ELSE:
      .	.AND.IHR3.GE.4)THEN
       CALL TIME2(ITIME,SYM)
 	READ(SYM,55) DATE
-      TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,MON)/TFACT)*.5
-      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,6,MON)
+* TMAP mod 9/17/89 *sh*                                 
+! original:  ("mon" --> "date")                           
+!      TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,MON)/TFACT)*.5
+!      CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,6,MON)
+	TSYM=TDAY+(T-TDAY-SYMWID(1.5*CSIZE,6,date)/TFACT)*.5
+	CALL SYMBEL(TSYM,YTEMP2,0.,1.5*CSIZE,6,date)        
+* end of 9/17/89 TMAP mod
       ENDIF
       RETURN
       END

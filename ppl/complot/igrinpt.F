@@ -33,6 +33,12 @@ C     UP, 1 = DOWN) IS RETURNED AS THE VALUE OF THE FUNCTION, AND
 C     THE COORDINATES IN USER'S UNITS ARE RETURNED IN THE PARAM-
 C     ETERS.
 C
+*	Mods J Davison 3.21.94 for xgks
+*	1) Change PET to 3
+*	2) Change echo area for xgks coords in GINCH and not call GINLC
+* 	*jd* linux port 12.96 change hp -> NEED_IAND for CPP choices
+
+C
 C
 #ifndef core
 C
@@ -78,6 +84,19 @@ C
 C
 	DATA T4662N/27,67,75/,T4662F/27,67,76/,
      *  T4663/27,67,65,71,49,59/
+
+
+CC	Linux port:
+	integer octal37
+
+#ifdef FORTRAN_90
+	data 	octal37/O'37'/
+#else
+	data 	octal37/'37'O/
+#endif
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
 C
 C     SET ALPHAS MODE.
 C
@@ -155,7 +174,7 @@ c
 C
 C	    GKS DEVICE
 C
-	    CALL GFLUSH
+	    CALL PPLGFLUSH
 	    CALL GQCHS(1,1,10,ERRIND,MODE,ESW,ISTAT,ICHOICE,PET,EAREA,
      *	    LDR,RECORD)
 	    STRING(5) = 'Left'
@@ -168,19 +187,30 @@ C
 	    SIZES(3) = 5
 	    SIZES(2) = 4
 	    SIZES(1) = 10
-c	    PET = 3
+
+#ifndef xgks
 	    PET = 1
 	    EAREA(1)=0.0
 	    EAREA(2)=0.1
 	    EAREA(3)=0.0
 	    EAREA(4)=0.1
+#else
+            PET = 3
+	    EAREA(1)=10.0
+	    EAREA(2)=250.0
+	    EAREA(3)=10.0
+	    EAREA(4)=250.0
+#endif
 	    LDR=5
 	    IRECSZ=10
+
 	    CALL GPREC(0,NULLI,0,NULLR,5,SIZES,STRING,IRECSZ,
      *	    ISTAT,LDR,RECORD)
 	    CALL GINCH(1,1,1,5,PET,EAREA(1),EAREA(2),EAREA(3),
      *	    EAREA(4),LDR,RECORD)
+
 	    CALL GRQCH(1,1,ISTAT,ICHOICE)
+
 	    IGRNPT=CHCE(ICHOICE)
 	    CALL GSVPIP(1,0,0)
 	    CALL GQLCS(1,1,1,7,ERRIND,MODE,ESW,XFORM,LOCX,LOCY,
@@ -190,8 +220,11 @@ c	    PET = 3
 	    CALL GQDSP(WSTYPE,ERRIND,DCUNIT,DCX,DCY,IRSX,IRSY)
 	    EAREA(2)=DCX
 	    EAREA(4)=DCY
+
+#ifndef xgks
 	    CALL GINLC(1,1,XFORM,LOCX,LOCY,PET,EAREA(1),EAREA(2),
      *	    EAREA(3),EAREA(4),LDR,RECORD)
+#endif
 	    CALL GSLCM(1,1,0,1)
 	    CALL GRQLC(1,1,ISTAT,XFORM,LOCX,LOCY)
 	    CALL GQNT(XFORM,ERRIND,WIND,VIEW)
@@ -222,7 +255,11 @@ C
 	CALL CHDMP
 #ifdef unix
 	call chin(in,5,0)
+# ifdef NEED_IAND
+       IGRNPT = IAND(IN(1),127)
+# else
        IGRNPT = AND(IN(1),127)
+# endif
 #else
 	call chin(inn,5,0)
 	do 100 ik=1,5
@@ -234,6 +271,23 @@ C     CHECK THE TEKTERMINAL TYPE.
 C
       IF(TTYPE .LT. 4100 .AND. TTYPE .NE. 4014)THEN
 #ifdef unix
+# ifdef NEED_IAND
+C
+C     CALCULATE THE COORDINATES OF THE POINT.  10 BIT TEK401X
+C
+        AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),octal37),5),IAND(IN(3),octal37)
+     *   )) / PLTOTA + AMIN
+        BOLD = FLOAT(IOR(ISHFT(IAND(IN(4),octal37),5),IAND(IN(5),octal37)
+     *   )) / PLTOTB + BMIN
+      ELSE
+C
+C     CALCULATE THE COORDINATES OF THE POINT.  12 BIT TEK41XX
+C
+        AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),octal37),7),ISHFT(IAND(IN(3),
+     *   octal37),2))) / PLTOTA + AMIN
+        BOLD = FLOAT(IOR(ISHFT(IAND(IN(4),octal37),7),ISHFT(IAND(IN(5),
+     *   octal37),2))) / PLTOTB + BMIN
+# else
 C
 C     CALCULATE THE COORDINATES OF THE POINT.  10 BIT TEK401X
 C
@@ -249,22 +303,23 @@ C
      *   31),2))) / PLTOTA + AMIN
         BOLD = FLOAT(OR(LSHIFT(AND(IN(4),31),7),LSHIFT(AND(IN(5),
      *   31),2))) / PLTOTB + BMIN
+# endif
 #else
 C
 C     CALCULATE THE COORDINATES OF THE POINT.  10 BIT TEK401X
 C
-        AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),'37'O),5),IAND(IN(3),'37'O)
+        AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),octal37),5),IAND(IN(3),octal37)
      *   )) / PLTOTA + AMIN
-        BOLD = FLOAT(IOR(ISHFT(IAND(IN(4),'37'O),5),IAND(IN(5),'37'O)
+        BOLD = FLOAT(IOR(ISHFT(IAND(IN(4),octal37),5),IAND(IN(5),octal37)
      *   )) / PLTOTB + BMIN
       ELSE
 C
 C     CALCULATE THE COORDINATES OF THE POINT.  12 BIT TEK41XX
 C
-        AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),'37'O),7),ISHFT(IAND(IN(3),
-     *   '37'O),2))) / PLTOTA + AMIN
-        BOLD = FLOAT(IOR(ISHFT(IAND(IN(4),'37'O),7),ISHFT(IAND(IN(5),
-     *   '37'O),2))) / PLTOTB + BMIN
+        AOLD = FLOAT(IOR(ISHFT(IAND(IN(2),octal37),7),ISHFT(IAND(IN(3),
+     *   octal37),2))) / PLTOTA + AMIN
+        BOLD = FLOAT(IOR(ISHFT(IAND(IN(4),octal37),7),ISHFT(IAND(IN(5),
+     *   octal37),2))) / PLTOTB + BMIN
 #endif
       ENDIF
       GO TO 20
@@ -311,7 +366,11 @@ C
 #ifdef sun
 	igrnpt = rshift(and(in(7),4),2)
 #else
+# ifdef NEED_IAND
+      IGRNPT = ISHFT(IAND(IN(7),4),-2)
+# else
       IGRNPT = LSHIFT(AND(IN(7),4),-2)
+# endif
 #endif
 #else
 	do 200 ik=1,7
@@ -328,16 +387,23 @@ C
       BOLD=FLOAT(OR(OR(LSHIFT(AND(IN(2),31),7),LSHIFT(AND(IN(4),
      * 31),2)),rSHIFT(AND(IN(6),31),3))) / PLTOTB + BMIN
 #else
+# ifdef NEED_IAND 
+      AOLD=FLOAT(IOR(IOR(ISHFT(IAND(IN(1),octal37),7),ISHFT(IAND(IN(3),
+     * octal37),2)),ISHFT(IAND(IN(5),octal37),-3))) / PLTOTA + AMIN
+      BOLD=FLOAT(IOR(IOR(ISHFT(IAND(IN(2),octal37),7),ISHFT(IAND(IN(4),
+     * octal37),2)),ISHFT(IAND(IN(6),octal37),-3))) / PLTOTB + BMIN
+# else
       AOLD=FLOAT(OR(OR(LSHIFT(AND(IN(1),31),7),LSHIFT(AND(IN(3),
      * 31),2)),LSHIFT(AND(IN(5),31),-3))) / PLTOTA + AMIN
       BOLD=FLOAT(OR(OR(LSHIFT(AND(IN(2),31),7),LSHIFT(AND(IN(4),
      * 31),2)),LSHIFT(AND(IN(6),31),-3))) / PLTOTB + BMIN
+# endif
 #endif
 #else
-      AOLD=FLOAT(IOR(IOR(ISHFT(IAND(IN(1),'37'O),7),ISHFT(IAND(IN(3),
-     * '37'O),2)),ISHFT(IAND(IN(5),'37'O),-3))) / PLTOTA + AMIN
-      BOLD=FLOAT(IOR(IOR(ISHFT(IAND(IN(2),'37'O),7),ISHFT(IAND(IN(4),
-     * '37'O),2)),ISHFT(IAND(IN(6),'37'O),-3))) / PLTOTB + BMIN
+      AOLD=FLOAT(IOR(IOR(ISHFT(IAND(IN(1),octal37),7),ISHFT(IAND(IN(3),
+     * octal37),2)),ISHFT(IAND(IN(5),octal37),-3))) / PLTOTA + AMIN
+      BOLD=FLOAT(IOR(IOR(ISHFT(IAND(IN(2),octal37),7),ISHFT(IAND(IN(4),
+     * octal37),2)),ISHFT(IAND(IN(6),octal37),-3))) / PLTOTB + BMIN
 C
 #endif
 C
@@ -363,3 +429,8 @@ C
       RETURN
 C
       END
+
+
+
+
+

@@ -5,14 +5,17 @@
 # platform specific macros
 
 
-INCLUDES        = -I../../ppl/include/xgks \
-		  -I/usr/ucbinclude -I/usr/local/include \
-		  -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \
-                  -I$(TMAP_LOCAL)/include \
+INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+		  -I/usr/ucbinclude \
                   -I/usr/openwin/include \
-                  -I../common
+		  -I$(TMAP_LOCAL)/src/xgks/port \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
+                  -I$(TMAP_LOCAL)/include \
+		  -I/opt/SUNWmotif/include \
+		  -I/opt/local/include \
+                  -I../common \
+		  -I. -Ireadline
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
@@ -20,8 +23,8 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 
 CC              = cc
 RANLIB          = /bin/touch
-CFLAGS          = -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES)
-FFLAGS          = -Nl160 -u -C -Dsolaris -Ddebug -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem
+CFLAGS          = -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
+FFLAGS          = -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem
 PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL
 
 #
@@ -29,19 +32,21 @@ PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL
 #
 
 LD		= cc
-LDFLAGS		= -L/usr/openwin/lib -v
+LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
 LD_DYN_FLAGS = -G -z text -z muldefs
  
-SYSLIB		= -lX11 -ldl -llist -Bstatic -L/usr/ucblib -lucb -L/opt/SUNWspro/SC4.0/lib \
-		  -lV77 -lelf -lM77 -lF77 -Bdynamic -lsunmath -lm -lc
+SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
+		  -lV77 -lelf -lM77 -lF77 -lXm -lXt -Bdynamic -lsunmath -lm \
+		  /usr/ccs/lib/libgen.a -lc \
+		  -Bstatic -L/usr/ucblib -lucb -Bdynamic 
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
-HDFLIB		= /opt/lib/libdf.a
+HDFLIB		= /opt/local/lib/libdf.a
 
-CDFLIB		= /opt/lib/libnetcdf.a
+CDFLIB		= /opt/local/lib/libnetcdf.a
 
 #
 # End of platform_specific_includes.mk.solaris

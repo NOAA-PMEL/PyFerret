@@ -12,6 +12,9 @@ C**
 C***********************************************************************
 C**
 C**
+C              Mod *sh* 4.1.91 Bug fix in PPLLDV fixed, see below
+C              Mod *sh* 5.15.91 dx,dy put into common block
+C              Mod *sh* 3.7.97 *sh* replace limits if curvilinear plot
 c
 c	k	=0 already on an equally spaced rectangular grid
 c		=1 on a unequally spaced, but rectangular grid
@@ -34,25 +37,29 @@ C
 C
 C
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/ZGRID.INC'
-	INCLUDE 'pplinc/ZGRIDD.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/PPLDAT.INC'
-	INCLUDE 'pplinc/HD.INC'
-	INCLUDE 'pplinc/DATA.INC'
+	INCLUDE 'pplv11inc/PARAMPL5.DAT'
+	INCLUDE 'pplv11inc/ZGRID.INC'
+	INCLUDE 'pplv11inc/ZGRIDD.INC'
+	INCLUDE 'pplv11inc/MISS.INC'
+	INCLUDE 'pplv11inc/LINES.INC'
+	INCLUDE 'pplv11inc/PPLDAT.INC'
+	INCLUDE 'pplv11inc/HD.INC'
+	INCLUDE 'pplv11inc/DATA.INC'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:ZGRID.INC'
-        INCLUDE 'pplinc:ZGRIDD.INC'
-        INCLUDE 'pplinc:MISS.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:PPLDAT.INC'
-        INCLUDE 'pplinc:HD.INC'
-        INCLUDE 'pplinc:DATA.INC'
+        INCLUDE 'pplv11inc:PARAMPL5.DAT'
+        INCLUDE 'pplv11inc:ZGRID.INC'
+        INCLUDE 'pplv11inc:ZGRIDD.INC'
+        INCLUDE 'pplv11inc:MISS.INC'
+        INCLUDE 'pplv11inc:LINES.INC'
+        INCLUDE 'pplv11inc:PPLDAT.INC'
+        INCLUDE 'pplv11inc:HD.INC'
+        INCLUDE 'pplv11inc:DATA.INC'
 #endif
-	SAVE DX,DY
+	LOGICAL		ITS_CURVILINEAR
+	REAL		xmn, xmx, ymn, ymx
+
+
+	COMMON/LDDXDY/ DX,DY
 C
 	call rsmnmx
 	JTYPE=0
@@ -98,9 +105,44 @@ C
 400	    CONTINUE
 	ENDIF
 	linen=0
-	call stmnmx(x,nsize,xmin,xmax,ymin,ymax)
+
+* for a curvilinear plot the apparent min/max, which are in fact the min/max
+* index values, are wrong -- set symbols based on the true axis ranges
+	IF ( ITS_CURVILINEAR() ) THEN
+	   CALL GET_CURVILINEAR_LIMITS( xmn, xmx, ymn, ymx )
+	   call stmnmx(x,nsize,xmn,xmx,ymn,ymx)
+	ELSE
+	   call stmnmx(x,nsize,xmin,xmax,ymin,ymax)
+	ENDIF
 	RETURN
-	ENTRY PPLLDV(K,Z,MX,MY,IMN,IMX,JMN,JMX)
+        end
+
+	SUBROUTINE PPLLDV(K,Z,MX,MY,IMN,IMX,JMN,JMX)
+!	ENTRY PPLLDV(K,Z,MX,MY,IMN,IMX,JMN,JMX)
+! ... start of copied from pplldc
+#ifdef unix
+	INCLUDE 'pplv11inc/PARAMPL5.DAT'
+	INCLUDE 'pplv11inc/ZGRID.INC'
+	INCLUDE 'pplv11inc/ZGRIDD.INC'
+	INCLUDE 'pplv11inc/MISS.INC'
+	INCLUDE 'pplv11inc/LINES.INC'
+	INCLUDE 'pplv11inc/PPLDAT.INC'
+	INCLUDE 'pplv11inc/HD.INC'
+	INCLUDE 'pplv11inc/DATA.INC'
+#else
+        INCLUDE 'pplv11inc:PARAMPL5.DAT'
+        INCLUDE 'pplv11inc:ZGRID.INC'
+        INCLUDE 'pplv11inc:ZGRIDD.INC'
+        INCLUDE 'pplv11inc:MISS.INC'
+        INCLUDE 'pplv11inc:LINES.INC'
+        INCLUDE 'pplv11inc:PPLDAT.INC'
+        INCLUDE 'pplv11inc:HD.INC'
+        INCLUDE 'pplv11inc:DATA.INC'
+#endif
+	REAL Z(MX,MY)
+	COMMON/LDDXDY/ DX,DY
+! ... end of copied from pplldc
+
 C
 C	LOAD THE SECOND SET OF GRID INFORMATION FOR VECTOR PLOTS
 C
@@ -116,10 +158,12 @@ C
 500	    X(IVLEN+NX*(J-1)+I)=Z(I,J)
 	    IV=IVLEN+NX*NY
 	    DO 501 I=1,NX
-501	    X(IV+I)=PI(I)
+!501	    X(IV+I)=PI(I)      ! illegal use of PI (not passed)
+501	    X(IV+I)=x(NX*NY+i) ! reuse coords from PPLLDC
 	    IV=IV+NX
 	    DO 502 J=1,NY
-502	    X(IV+J)=PJ(J)
+!502	    X(IV+J)=PJ(J)      ! illegal use of PJ (not passed)
+502	    X(IV+J)=x(NX*NY+nx+j) ! reuse coords from PPLLDC
 	ELSE
 C
 C	DATA ALREADY GRIDDED

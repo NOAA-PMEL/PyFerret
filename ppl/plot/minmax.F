@@ -1,6 +1,15 @@
 	SUBROUTINE STMNMX(X,NSIZE,XMIN1,XMAX1,YMIN1,YMAX1)
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOT]MINMAX.FOR
+
+* search for "TMAP" to find all revisions
+* *sh* - 1/27/89 corrected bug: min/max search improperly rejects LIMITs points
+* *sh* - 12/8/93 corrected bug: vectors blow on divied by zero attempt
+
 	DIMENSION X(NSIZE)
-C** 
+C**
 C**    @(#)minmax.F	1.1    3/10/88
 C**
 C**
@@ -12,17 +21,27 @@ C***********************************************************************
 C**
 C**
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/DATA.INC'
-	INCLUDE 'pplinc/MISS.INC'
-	include 'pplinc/HD.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
+        include 'tmap_pplv11inc/data_inc.decl'
+        include 'pplv11inc/DATA.INC'
+        include 'tmap_pplv11inc/miss_inc.decl'
+        include 'pplv11inc/MISS.INC'
+	include 'tmap_pplv11inc/hd_inc.decl'
+	include 'pplv11inc/HD.INC'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:MISS.INC'
-	include 'pplinc:HD.INC'
+        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
+        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
+        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
+        INCLUDE 'PPLV11INC:LINES.INC'
+        INCLUDE 'TMAP_PPLV11INC:DATA_INC.DECL'
+        INCLUDE 'PPLV11INC:DATA.INC'
+        INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
+        INCLUDE 'PPLV11INC:MISS.INC'
+	INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
+	INCLUDE 'PPLV11INC:HD.INC'
 #endif
 	CHARACTER SYM*30,VAL*10
 C
@@ -59,19 +78,31 @@ c
 	    else
 		ivlen=nx*ny+nx+ny
 	    endif
-            DO 300 J=1,NY
             DO 300 I=1,NX
+            DO 300 J=1,NY
 		if(jtype.ge.0)then
-		    XT=X(NX*(J-1)+I)
+* TMAP mods begin:
+* note: a major bug still exists here: X and Y screening set by LIMITS command
+*	are ignored
+*  LIMITS screening test for jtype.ge.0 moved from below
+                    XT=X(NX*(J-1)+I)
+        	    IF(ZLE.AND.XT.LE.CMZLE)GOTO 300
+        	    IF(ZEQ.AND.XT.EQ.CMZEQ)GOTO 300
+        	    IF(ZGE.AND.XT.GE.CMZGE)GOTO 300
 		else
-		    xtt1=x(nx*(j-1)+i)
-		    xtt2=x(ivlen+nx*(j-1)+i)
-		    if (xtt1.ge.1.e35 .or. xtt2.ge.1.e35) goto 300
+                    xtt1=x(nx*(j-1)+i)
+                    xtt2=x(ivlen+nx*(j-1)+i)
+*  ... LIMITS screening test for vector plots modified
+!	old code:   if (xtt1.ge.1.e35 .or. xtt2.ge.1.e35) goto 300
+        	    IF(ZLE.AND.xtt1.LE.CMZLE)GOTO 300
+        	    IF(ZEQ.AND.xtt1.EQ.CMZEQ)GOTO 300
+        	    IF(ZGE.AND.xtt1.GE.CMZGE)GOTO 300
+        	    IF(ZLE.AND.xtt2.LE.CMZLE)GOTO 300
+        	    IF(ZEQ.AND.xtt2.EQ.CMZEQ)GOTO 300
+        	    IF(ZGE.AND.xtt2.GE.CMZGE)GOTO 300
 		    xt=sqrt(xtt1**2+xtt2**2)
 		endif
-        	IF(ZLE.AND.XT.LE.CMZLE)GOTO 300
-        	IF(ZEQ.AND.XT.EQ.CMZEQ)GOTO 300
-        	IF(ZGE.AND.XT.GE.CMZGE)GOTO 300
+* end of TMAP mod
         	IF(XT.LT.ZMIN)then
 		    ZMIN=XT
 		    jmn=j
@@ -92,11 +123,13 @@ c
 		yhigh=x(ivlen+jmx)
 		ylow=x(ivlen+jmn)
 	    else
-		dx=(xmax-xmin)/(nx-1)
+!*sh*		dx=(xmax-xmin)/(nx-1)
+		dx=(xmax-xmin)/MAX(nx-1,1)
 		xhigh=xmin+dx*(imx-1)
 		xlow=xmin+dx*(imn-1)
 c
-		dy=(ymax-ymin)/(ny-1)
+!*sh*		dy=(ymax-ymin)/(ny-1)
+		dy=(ymax-ymin)/MAX(ny-1,1)
 		yhigh=ymin+dy*(jmx-1)
 		ylow=ymin+dy*(jmn-1)
 	    endif
@@ -158,7 +191,7 @@ C
 	    CALL PUTVAL(SYM,XT,4,IER)
 	    WRITE(SYM,998)'YFIRST',LINEN
 	    CALL PUTVAL(SYM,YT,4,IER)
-	    GOTO 30	    
+	    GOTO 30	
 20	    CONTINUE
 30	    DO 40 J=LEN,1,-1
 	    IF((XLE.AND.X(IBASEX+J).LE.CMXLE).OR.
@@ -183,11 +216,15 @@ C
 C	RESET MIN MAX SYMBOLS AND SET LINE_COUNT TO ZERO
 C
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/LINES.INC'
+        include 'tmap_pplv11inc/parampl5_dat.decl'
+        include 'pplv11inc/PARAMPL5.DAT'
+        include 'tmap_pplv11inc/lines_inc.decl'
+        include 'pplv11inc/LINES.INC'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
+        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
+        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
+        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
+        INCLUDE 'PPLV11INC:LINES.INC'
 #endif
 	CHARACTER SYM*30,TEMP*2
 C

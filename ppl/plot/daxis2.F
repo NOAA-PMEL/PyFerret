@@ -10,46 +10,59 @@ C**
 C***********************************************************************
 C**
 C**
+*     MOD *JD* 10.91 to eliminate PLOT COMPLETE msg if in ferret
+
 #ifdef unix
-	INCLUDE 'pplinc/PARAMPL5.DAT'
-	INCLUDE 'pplinc/AXIS.INC'
-	INCLUDE 'pplinc/LABELS.INC'
-	INCLUDE 'pplinc/LABCOM.INC'
-	INCLUDE 'pplinc/PLT.INC'
-	INCLUDE 'pplinc/HAB.INC'
-	INCLUDE 'pplinc/LINES.INC'
-	INCLUDE 'pplinc/MPLOT.INC'
-	INCLUDE 'pplinc/TAXIS.INC'
-	INCLUDE 'pplinc/TICS.INC'
-	INCLUDE 'pplinc/TICS2.INC'
-	INCLUDE 'pplinc/AXISL.INC'
-	INCLUDE 'pplinc/XYLABP.INC'
-	INCLUDE 'pplinc/CMRDL.INC'
-	INCLUDE 'pplinc/LUNITS.INC'
-	INCLUDE 'pplinc/PRMCOM.INC'
-	INCLUDE 'cmdinc/SYSTEM.INC'
-	INCLUDE 'cmdinc/SWITCH.INC'
+	INCLUDE 'pplv11inc/PARAMPL5.DAT'
+	INCLUDE 'pplv11inc/AXIS.INC'
+	INCLUDE 'pplv11inc/LABELS.INC'
+	INCLUDE 'pplv11inc/LABCOM.INC'
+	INCLUDE 'pplv11inc/PLT.INC'
+	INCLUDE 'pplv11inc/HAB.INC'
+	INCLUDE 'pplv11inc/LINES.INC'
+	INCLUDE 'pplv11inc/MPLOT.INC'
+	INCLUDE 'pplv11inc/TAXIS.INC'
+	INCLUDE 'pplv11inc/TICS.INC'
+	INCLUDE 'pplv11inc/TICS2.INC'
+	INCLUDE 'pplv11inc/AXISL.INC'
+	INCLUDE 'pplv11inc/XYLABP.INC'
+	INCLUDE 'pplv11inc/CMRDL.INC'
+	INCLUDE 'pplv11inc/LUNITS.INC'
+	INCLUDE 'pplv11inc/PRMCOM.INC'
+	INCLUDE 'pplv11inc/SYSTEM.INC'
+	INCLUDE 'pplv11inc/SWITCH.INC'
 #else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:LABELS.INC'
-        INCLUDE 'pplinc:LABCOM.INC'
-        INCLUDE 'pplinc:PLT.INC'
-        INCLUDE 'pplinc:HAB.INC'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:MPLOT.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-        INCLUDE 'pplinc:TICS.INC'
-        INCLUDE 'pplinc:TICS2.INC'
-        INCLUDE 'pplinc:AXISL.INC'
-        INCLUDE 'pplinc:XYLABP.INC'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'PPLINC:PRMCOM.INC'
-        INCLUDE 'CMDINC:SYSTEM.INC'
-        INCLUDE 'CMDINC:SWITCH.INC'
+        INCLUDE 'pplv11inc:PARAMPL5.DAT'
+        INCLUDE 'pplv11inc:AXIS.INC'
+        INCLUDE 'pplv11inc:LABELS.INC'
+        INCLUDE 'pplv11inc:LABCOM.INC'
+        INCLUDE 'pplv11inc:PLT.INC'
+        INCLUDE 'pplv11inc:HAB.INC'
+        INCLUDE 'pplv11inc:LINES.INC'
+        INCLUDE 'pplv11inc:MPLOT.INC'
+        INCLUDE 'pplv11inc:TAXIS.INC'
+        INCLUDE 'pplv11inc:TICS.INC'
+        INCLUDE 'pplv11inc:TICS2.INC'
+        INCLUDE 'pplv11inc:AXISL.INC'
+        INCLUDE 'pplv11inc:XYLABP.INC'
+        INCLUDE 'pplv11inc:CMRDL.INC'
+        INCLUDE 'pplv11inc:LUNITS.INC'
+        INCLUDE 'pplv11inc:PRMCOM.INC'
+        INCLUDE 'pplv11inc:SYSTEM.INC'
+        INCLUDE 'pplv11inc:SWITCH.INC'
 	byte inc
 #endif
+
+#ifdef unix
+        include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
+        include         'tmap_pplv11inc/ppl_in_ferret.cmn'
+#else
+        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
+        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
+#endif 
+
+******************************************************************************
+
 	CHARACTER OUT*255
 	CALL VECTRS
 	DO 80 I=1,NLAB
@@ -141,11 +154,19 @@ C**
 	    ELSE
 		CALL HABIS(IPLOT,0,IHDCPY,INC)
 	    ENDIF
-	IF(.NOT.QUIETF)WRITE(LTTOUT,'('' PLOT'',I8,
-     *      '' COMPLETE'')')ICOUNT
-	    IF(INC.EQ.27)THEN
-		CALL ATFLSH
-	    ENDIF
-	ENDIF
+
+*     Mod is here
+        if (ppl_in_ferret) then   
+           call ferret_plot_complete (icount)
+        else
+	   IF(.NOT.QUIETF)WRITE(LTTOUT,'('' PLOT'',I8,
+     *         '' COMPLETE'')')ICOUNT
+	       IF(INC.EQ.27)THEN
+		  CALL ATFLSH
+	       ENDIF
+	endif
+
+        ENDIF
 	RETURN
 	END
+

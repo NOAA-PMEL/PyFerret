@@ -10,6 +10,8 @@ C**
 C***********************************************************************
 C**
 C**
+C     Mod *JD* 4.5.91 to include PLTDAT.DAT in unix/vms system dependent way
+
 C     CALL ABMV
 C
 C     ALL PLOTTING EVENTUALLY MUST BE ACCOMPLISHED BY MOVING THE
@@ -23,17 +25,21 @@ C        BABMV  - BENSON PLOTTER
 C	 GKSMV  - GKS DRIVER
 C
 C
+C *kob* 9/98 - use external statemen to initialize block data rather than an
+C              included .DAT file.  the latter was causing mutliple 
+C              references 
+
 #ifdef unix
-      include 'pplinc/PLTCOM.DAT'
+      include 'pplv11inc/PLTCOM.DAT'
+      external pltdat_block_data
 #else
-      include 'pplinc:PLTCOM.DAT'
+      include 'pplv11inc:PLTCOM.DAT'
+      include 'pplv11inc:PLTDAT_VMS.DAT'
 #endif
 C
-#ifdef unix
-       include 'pplinc/PLTDAT_UNIX.DAT'
-#else
-       include 'pplinc:PLTDAT_VMS.DAT'
-#endif
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
 C
 C     CHECK THE PLOT TYPE.
 C

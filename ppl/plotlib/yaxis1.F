@@ -1,6 +1,20 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
      *    IFORMT,YFACT,CSIZE)
-C** 
+
+* revised for TMAP
+* from PPLUS :
+*	Directory PMEL:[PLOT5.PPLV11.PLOTLIB]YAXIS1.FOR
+
+* search for "TMAP" to find all revisions
+* *sh*  - 1/23/89 added interrupt detection
+*		  ... no explicit declarations (too much trouble !) so it must
+*		      be compiled with /WARNINGS=NODECLARATIONS
+*	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
+*			in small non-zero values
+
+
+
+C**
 C**    @(#)yaxis1.f	1.1    3/10/88
 C**
 C**
@@ -11,9 +25,19 @@ C**
 C***********************************************************************
 C**
 C**
-	CHARACTER IFORMT*20,YLAB*20
+	CHARACTER IFORMT*(*),YLAB*20
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
-	COMMON/AXLWID/XWID,YWID
+	COMMON/AXLWID/XWID,YWID 
+
+	parameter (epsilon = 1.e-6)
+
+* TMAP interrupt flag
+#ifdef unix
+	include 'tmap_pplv11inc/xinterrupt.cmn'
+#else
+	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
+#endif
+C
 C
 C     THIS ROUTINE DRAWS A Y AXIS.  IT LABELS THE AXIS ON THE LEFT
 C     IF LABEL=-1, ON THE RIGHT IF LABEL=1, AND NOT AT ALL
@@ -50,6 +74,7 @@ C
 	CALL PLOTT7(X,YT,XFACT,YFACT,1,-6)
 	Y=YT
 	DO 100 I=1,ISTOP
+	IF ( interrupted ) RETURN		! TMAP interrupt
 	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY)
 	Y=Y+YTIC
 	CALL PLOTT7(X,Y,XFACT,YFACT,1,-6)
@@ -88,13 +113,24 @@ C
 	ENDIF
 	ISTOP=INT((YHI-Y)/(YTIC*LINTY)+0.000001)
 	YWIDT=0.
+
+	y0 = y
 	DO 200 I=0,ISTOP
-	TEMP=SIGSZ*Y/YUNIT
-	CALL NUMCDE(TEMP,YLAB,NC,IFORMT)
-	CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
-	Y=Y+YTIC*LINTY
+	IF ( interrupted ) RETURN		! TMAP interrupt
+        TEMP=SIGSZ*Y/YUNIT
+        CALL NUMCDE(TEMP,YLAB,NC,IFORMT)
+        CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
+
+CC	Original code
+CC	Y=Y+YTIC*LINTY
+
+	Y=y0+YTIC*LINTY*(i+1)
+	if (abs(y) .lt. epsilon*abs(y0)) y = 0.0
+
 	IF(WID.GT.YWIDT)YWIDT=WID
 200	CONTINUE
 	IF(LABEL.LT.0)YWID=YWID+YWIDT
 	RETURN
 	END
+
+

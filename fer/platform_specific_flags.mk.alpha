@@ -5,13 +5,15 @@
 # platform specific macros
 
 
-INCLUDES        = -I../../ppl/include/xgks \
+INCLUDES        = -I$(TMAP_LOCAL)/src/xgks/include \
+  		  -I../../ppl/include/xgks \
 		  -I/usr/local/include \
-		  -I$(TMAP_LOCAL)/src/xgks-2.5.5/port \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib \
-                  -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm \
+		  -I$(TMAP_LOCAL)/src/xgks/port \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib \
+                  -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
-		  -I../common
+		  -I../common \
+		  -I. -Ireadline 
 
 GUI_INCLUDES	=
 
@@ -20,7 +22,7 @@ GUI_INCLUDES	=
 CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
-FFLAGS          = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
+FFLAGS          = -c -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
@@ -33,13 +35,13 @@ PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 
 LD		= cc
 #LDFLAGS		= -non_shared
 # I want this to be able to link shared libraries! *jc*
-LDFLAGS		=  -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib 
+LDFLAGS		= -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib 
 
-SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE -llist /shlib/libc.so 
+SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE  /shlib/libc.so 
 
-TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
+TMLIB		= ../fmt/libs/tmap_lib.a
 
-GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
+GKSLIB		= -L../lib -lxgks
 
 HDFLIB		= -L/usr/local/lib -ldf -ljpeg -lz
 

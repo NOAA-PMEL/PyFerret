@@ -1,5 +1,5 @@
 	SUBROUTINE GKSMV
-C** 
+C**
 C**    @(#)gksmv.F	1.1    3/10/88
 C**
 C**
@@ -10,6 +10,11 @@ C**
 C***********************************************************************
 C**
 C**
+*
+*	Mod 1.9.90 J Davison to reduce the maximum #pts in any one call to 
+*	polyline to 100 as GKS 4.0 under VMS 5.2, i.e., DECWindows, blows up
+*	with too many points
+*
 C
 C	CALL GKSMV
 C
@@ -18,15 +23,17 @@ c	construct device dependent plotting code
 c
 c
 #ifdef unix
-	include 'pplinc/PLTCOM.DAT'
-	include 'pplinc/GKSCM1.INC'
+	include 'tmap_pplv11inc/pltcom_dat.decl'
+	include 'pplv11inc/PLTCOM.DAT'
+	include 'tmap_pplv11inc/gkscm1_inc.decl'
+	include 'pplv11inc/GKSCM1.INC'
 #else
-	include 'pplinc:PLTCOM.DAT'
-	include 'pplinc:GKSCM1.INC'
+	INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
+	INCLUDE 'tmap_pplv11inc:tmap_GKSCM1.INC'
 #endif
 	IF(.NOT.GKSOPN)THEN
 #ifdef core
-	    call crinit
+            call crinit
 #else
 	    call gkinit
 C
@@ -42,38 +49,44 @@ C
 	ENDIF
 	RETURN
 	END
-*	SUBROUTINE GKPLOT(XN,YN,IP,II) *jd* 7.92 Param list reduced for MAC
+*jd*	SUBROUTINE GKPLOT(XN,YN,IP,II) Number of args reduced to 3 for MAC 7.92
 	SUBROUTINE GKPLOT(XN,YN,IP)
 #ifdef core
-	if(ip.ne.0)then
-	    call lineabs2(xn,yn)
-	else
-	    call moveabs2(xn,yn)
-	endif
+        if(ip.ne.0)then
+            call lineabs2(xn,yn)
+        else
+            call moveabs2(xn,yn)
+        endif
 #else
-	DIMENSION X(10000),Y(10000)
+*	*jd* 1.9.90  Max was 10,000
+	integer	max
+	parameter (max=100)
+*	*jd* 1.9.90
+
+	DIMENSION X(max),Y(max)
+
 	DATA IPT/0/
+
 	IF(IP.EQ.0)THEN
 	    CALL DOIT(IPT,X,Y)
 	    IPT=1
 	ELSE
 	    IPT=IPT+1
-
-	    IF(IPT.GT.10000)THEN
-		CALL DOIT(10000,X,Y)
+	    IF(IPT.GT.max)THEN
+		CALL DOIT(max,X,Y)
 		IPT=2
-		X(1)=X(10000)
-		Y(1)=Y(10000)
+		X(1)=X(max)
+		Y(1)=Y(max)
 	    ENDIF
 	ENDIF
 	X(IPT)=XN
 	Y(IPT)=YN
 #endif
 	RETURN
-	ENTRY GFLUSH
+	ENTRY PPLGFLUSH
 #ifdef core
-	return
-	end
+        return
+        end
 #else
 	CALL DOIT(IPT,X,Y)
 	IPT=0
@@ -91,4 +104,3 @@ C
 	RETURN
 	END
 #endif
-

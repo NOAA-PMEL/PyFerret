@@ -12,6 +12,9 @@ void init_journal( );
 void proclaim_c( );
 void init_memory( );
 void ferret_dispatch( );
+void save_ppl_memory_size( );
+void get_ppl_memory_size( );
+void reallo_ppl_memory();
 /* 04.20.99 *jc*
  * Folded in from fer/gui/ferret_fortran.h
  */
@@ -34,6 +37,8 @@ void init_journal_( );
 void proclaim_c_( );
 void init_memory_( );
 void ferret_dispatch_( );
+void save_ppl_memory_size_( );
+void get_ppl_memory_size_( );
 /* 04.20.99 *jc*
  * Folded in from fer/gui/ferret_fortran.h
  */
@@ -105,7 +110,6 @@ __global float *memory;
 /*
  * End of 04.20.99
  */
-
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifndef FORTRAN

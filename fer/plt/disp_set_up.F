@@ -186,7 +186,7 @@ C plus those starting w/ xbox_bounds:
      .			n1_regrid, n2_regrid, grid, slen, pxlim, pylim,
      .			style, justify, ipen, ndim, dims(4), ptitl,
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
-     .			phlim, pvlim,slen, slen2,
+     .			phlim, pvlim, slen2,
      .			TM_GET_CALENDAR_ID, cal_id, tax
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,

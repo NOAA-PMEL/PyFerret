@@ -73,7 +73,9 @@
 *	              DODS filenames
 * V510 *sh* 4/00 - deallocate grids and axes used by variables in this data set
 * v540 *acm* 10/01 increase length of ds_name
-* v540 *acm* 10/01  remove VMS include statements
+* v540 *acm* 10/01 remove VMS include statements
+* v552 *acm*  3/03 bug fix: If maxstepfiles > maxvarfiles, got error on closing dataset.
+*                  
 
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)

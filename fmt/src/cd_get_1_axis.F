@@ -30,6 +30,9 @@
 * 11/95: recognize units "degrees_north" as a latitude
 *  4/96: bug: millibar and decibar units identified by wrong constants
 *  8/97: bug: X axis with "y" in axis name is mis-identified 
+* 5/98 *kob* : mod so that CDC datafiles w/ two day offsets are compatible
+*              w/ ferret.  
+
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -97,6 +100,9 @@
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
+
+      REAL*8   first, secs2firststep, secs1590, TM_SECS_FROM_BC
+
 
 * initialize for EPIC
       do_warn = .NOT.its_epic     ! EPIC files can get away with anything
@@ -457,8 +463,28 @@
  380    CALL TM_IRREGAX_MID( ipt1, npts )
       ENDIF
 
+ 390	IF ( (since_T0.GT.2)
+     .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') ) THEN
+
+* ... get time step of L=1
+	   IF ( line_regular(iaxis) ) THEN
+	      first = line_start(iaxis)   
+	   ELSE
+	      first = line_mem(ipt1)
+	   ENDIF
+
+* ... compute seconds from 1-jan-0001
+	   secs2firststep = un_convert(line_unit_code(iaxis)) * first
+* compute seconds from 1590
+	   secs1590 = TM_SECS_FROM_BC (1590,1,1,0,0,0)
+
+* ... correct axis if crosses 1590 threshhold
+	   IF (secs2firststep .GT. secs1590) line_t0(iaxis)
+     .						= '30-DEC-0000 00:00:00'
+	ENDIF
+
 * Save the axis name (upper case) and memory storage     
- 390  line_name(iaxis) = vupcase
+      line_name(iaxis) = vupcase
       IF ( .NOT.line_regular(iaxis) ) THEN
 	     line_subsc1(iaxis) = next_line_mem_pos
              next_line_mem_pos =  next_line_mem_pos + 2*npts + 1

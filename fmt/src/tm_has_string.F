@@ -47,6 +47,7 @@
 *			     that will work correctly (MAV)
 * revision 0.10 - 01/20/91 - replaced VAX runtim library reference with INDEX
 *                            FORTRAN intrinsic function
+* V530 *sh* 11/00 - more graceful behavior if 255 max is exceeded
 
 * calling argument declarations
 	CHARACTER*(*)	string, substring
@@ -54,13 +55,15 @@
 * local variable declarations
 	INTEGER	STR_UPCASE, TM_LENSTR1,
      .		vms_stat, sublen, strlen
-	CHARACTER*255	up_string, up_sub
+	CHARACTER*512	up_string, up_sub
 
 * length of substring
 	sublen = TM_LENSTR1( substring )
 	strlen = TM_LENSTR1( string )
-	IF (sublen .GT. 255 .OR. strlen .GT. 255)
-     .	  STOP 'STRING TRUNCATION IN TM_HAS_STRING - CONTACT PROGRAMMER'
+	IF (sublen .GT. 512) THEN
+	   TM_HAS_STRING = .FALSE.
+	   RETURN
+	ENDIF
 
 * convert to upper case
 	vms_stat = STR_UPCASE( up_string, string )

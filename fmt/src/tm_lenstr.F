@@ -43,23 +43,15 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 11/21/85 - identical to LENSTR rev 0.00 apart from name
+* ywei - 05/04 call C tm_get_strlen function to speed up
 *
 * Argument definition
 	CHARACTER*(*)	line
-	INTEGER		mright,i
+	INTEGER		mright, len_str
 
 * initialize: find highest possible right hand limit of string
 	mright = LEN(line)
-
-	DO 100 i = mright,1,-1
-	IF (line(i:i) .NE. ' ') GOTO 200
- 100	CONTINUE
-
-* for all blanks
-	TM_LENSTR = 0
-	RETURN
-
-* found non-blank
- 200	TM_LENSTR = i
+        CALL TM_GET_STRLEN(len_str, mright, line)
+        TM_LENSTR=len_str
 	RETURN
 	END

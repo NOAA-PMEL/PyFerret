@@ -1,4 +1,4 @@
-! err570_null_symbol
+! err570_null_symbol.jnl
 ! null input -- > wierd error message see bug 919
 ! 
 !    **ERROR: invalid command: DEFINE what name?

@@ -39,6 +39,7 @@
 * locations (lat.,long., etc.) requiring special label formatting
 
 * V450: 3/97 - based on GEOG_LABEL
+* *acm* 12/00 cleanup: TM_DATE_OK declared but not called
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -66,7 +67,6 @@
 	INTEGER		idim, cx
 
 * internal variable declarations:
-        LOGICAL         TM_DATE_OK
 	INTEGER		TM_UNIT_ID, units
 	CHARACTER*80	VAR_UNITS
 

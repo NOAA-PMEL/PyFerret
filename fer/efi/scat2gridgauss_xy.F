@@ -135,13 +135,15 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 4
-      CALL ef_set_arg_name(id, arg, 'XAX')
-      CALL ef_set_arg_desc(id, arg, 'X axis of output grid')
+      CALL ef_set_arg_name(id, arg, 'XAXPTS')
+      CALL ef_set_arg_desc(id, arg,
+     .                    'X axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
 
       arg = 5
-      CALL ef_set_arg_name(id, arg, 'YAX')
-      CALL ef_set_arg_desc(id, arg, 'Y axis of output grid')
+      CALL ef_set_arg_name(id, arg, 'YAXPTS')
+      CALL ef_set_arg_desc(id, arg,
+     .                    'Y axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
 
       arg = 6

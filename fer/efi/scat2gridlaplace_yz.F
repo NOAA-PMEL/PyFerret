@@ -132,13 +132,15 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 4
-      CALL ef_set_arg_name(id, arg, 'YAX')
-      CALL ef_set_arg_desc(id, arg, 'Y axis of output grid')
+      CALL ef_set_arg_name(id, arg, 'YAXPTS')
+      CALL ef_set_arg_desc(id, arg,
+     .                    'Y axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
 
       arg = 5
-      CALL ef_set_arg_name(id, arg, 'ZAX')
-      CALL ef_set_arg_desc(id, arg, 'Z axis of output grid')
+      CALL ef_set_arg_name(id, arg, 'ZAXPTS')
+      CALL ef_set_arg_desc(id, arg,
+     .                    'Z axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, NO)
 
       arg = 6

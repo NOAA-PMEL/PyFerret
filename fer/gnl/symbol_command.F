@@ -63,6 +63,8 @@
 * 
 * v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.  erroneously
 *                       reused "clen" argument..changed it to clen2
+* v5 *js* 4/99 - yet another Ferret hack to add a byteorder symbol -- value
+*                can be BIG or LITTLE
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -98,6 +100,12 @@
 	include 'xcommand.cmn'
 	include 'xplot_state.cmn'	! for PPL$XPIXEL
 	include 'xrisc.cmn'
+* #ifdef for endianness info. Don't you love this code?
+#ifdef sun
+	include 'xmachine_byte.cmn'
+#else
+	include 'xmachine_int1.cmn'
+#endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -186,6 +194,17 @@
 	         symval = LEFINT(nxpix,nchar)
 	      ELSE
 	         symval = LEFINT(nypix,nchar)
+	      ENDIF
+*
+* Hack to get byteorder of this architecture
+*
+	   ELSE IF (symname .eq. 'BYTEORDER') THEN
+	      if (active_cpu .eq. cptype_sun) then
+		 symval = 'BIG'
+		 nchar = 3
+	      ELSE
+		 symval = 'LITTLE'
+		 nchar = 6
 	      ENDIF
 	   ELSE
 	      CALL GETSYM(symname, symval, nchar, ierr)

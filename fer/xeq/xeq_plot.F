@@ -74,6 +74,8 @@
 * V541 *acm*  3/02  Allow PLOT/VS/LINE/DASH
 * V541 *ACM*  8/02  Remove the call with dot_sym=99 for PLOT/SYM=DOT-- need
 *                      to resolve PPLUS issues with polymark first.
+* V550 *acm* 12/02  Restore dot_sym = 99 and warnings that /THICK and /SIZE 
+!                    do not apply to DOT
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -175,8 +177,7 @@ CC       => Set values here instead.
      .                        buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF (buff .EQ. 'dot') THEN
-c              symbol = dot_sym
-              GO TO 5460
+              symbol = dot_sym
            ELSE
 
 	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -208,8 +209,9 @@ c              symbol = dot_sym
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE. 0.0 ) GOTO 5210
 	      sym_size = val		! user-specified symbol
-c              IF ( symbol .EQ. dot_sym) 
-c     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
+              IF ( symbol .EQ. dot_sym) 
+     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
+              sym_size = 0.08
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR=n
@@ -235,8 +237,8 @@ c     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
 	   ENDIF
 	   color = ncolors*(thick-1) + color
            IF ( symbol .EQ. dot_sym) THEN
-c              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
+              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
            ENDIF
 	ENDIF
 * ... PLOT/LINE_STYLE=n
@@ -464,8 +466,5 @@ c	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )
- 5460	CALL ERRMSG( ferr_out_of_range, status, 
-     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .		'/SYMBOL=DOT not implemented in this version of Ferret', *1000 )
 
 	END

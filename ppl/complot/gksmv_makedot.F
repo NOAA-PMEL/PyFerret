@@ -90,11 +90,11 @@ C
 	    IPT=1
 	ELSE
 	    IPT=IPT+1
-	    IF(ipt.GE.max)THEN
+	    IF(ipt.GE.maxdot)THEN
 		CALL DOIT_makedot(ipt,xdot,ydot)
 		IPT=2
-		xdot(1)=xdot(max)
-		ydot(1)=ydot(max)
+		xdot(1)=xdot(maxdot)
+		ydot(1)=ydot(maxdot)
 	    ENDIF
 	ENDIF
 	xdot(IPT)=XN

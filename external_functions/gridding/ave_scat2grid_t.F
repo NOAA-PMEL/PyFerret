@@ -37,9 +37,9 @@
 * Ansley Manke
 * Sep 2004
 
-* Input is a set of T coordinates on an abstract axis, and an output time axis.
-* Returns a time series which is the average, based on the number of points that 
-* fall inside of each T cell. 
+* Inputs are a set of T coordinates and a variable on an abstract axis, and an 
+* output time axis. Returns a time series which is the average of the variable, 
+* based on the number of points that fall inside of each T cell. 
 * From scat2grid_t.F
 
 *
@@ -92,19 +92,19 @@
       CHARACTER*126 buff
       WRITE (buff, 10)
    10 FORMAT (
-     .'Compute average number of t points in each cell of output axis')
+     . 'Compute average of a variable in each cell of output time axis')
       CALL ef_set_desc(id, buff)
 
-      CALL ef_set_num_args(id, 2)
+      CALL ef_set_num_args(id, 3)
 
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
-     .      IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_inheritance(id, NORMAL, NORMAL, NORMAL, 
+     .                             IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 1)
+      CALL ef_set_num_work_arrays(id, 2)
 
-* output grid is determined by argument 2. 
+* output grid is determined by argument 3. 
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'TPTS')
@@ -113,6 +113,12 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 2
+      CALL ef_set_arg_name(id, arg, 'VPTS')
+      CALL ef_set_arg_desc(id, arg, 
+     .     'Variable at times in TPTS')
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
+      arg = 3
       CALL ef_set_arg_name(id, arg, 'TAXIS')
       CALL ef_set_arg_desc(id, arg, 
      .     'Output time axis')
@@ -151,18 +157,18 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      ntout = 1 + arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2)
+      ntout = 1 + arg_hi_ss(T_AXIS,ARG3) - arg_lo_ss(T_AXIS,ARG3)
 
       nt2 = (ntout+1)* 2
 
 * tax  output t axis
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nt2, 1, 1, 1)
 
-* workspace for computing average or variance; same as result T axis
+* workspace for computing average; same as result T axis
 
       CALL ef_set_work_array_dims (id, 2, 
-     .                             arg_lo_ss(T_AXIS,ARG2), 1, 1, 1, 
-     .                             arg_hi_ss(T_AXIS,ARG2), 1, 1, 1)
+     .      arg_lo_ss(T_AXIS,ARG3), 1, 1, 1, 
+     .      arg_hi_ss(T_AXIS,ARG3), 1, 1, 1)
 
       RETURN
       END
@@ -171,8 +177,8 @@
 * In this subroutine we compute the result
 *
 
-      SUBROUTINE ave_scat2grid_t_compute(id, arg_1, arg_2,
-     .                               result, tax)
+      SUBROUTINE ave_scat2grid_t_compute(id, arg_1, arg_2, arg_3,
+     .                               result, tax, counts)
 
 *  arg_1  tpts  Scattered t values to be gridded.
 *  arg_2  taxis to use for output
@@ -186,6 +192,8 @@
      .     mem1lot:mem1hit)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .     mem2lot:mem2hit)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, mem3loz:mem3hiz, 
+     .     mem3lot:mem3hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
@@ -204,16 +212,13 @@
 *                                                                      |
 *                                                                      V
       INTEGER i, j, k, l, m, n
-      INTEGER i1, i1n, i2, i2n, ntgrid
-      INTEGER ntpts
-      REAL tt
+      INTEGER i1, i1n, i3, i3n, ntgrid
+      INTEGER ntpts, nvpts
+      REAL tt, vv
       CHARACTER*250 errtxt
-
-c      INTEGER STR_UPCASE, arg, iflag
       REAL factr
 
-
-C  variables for checking axis characteristics (modulo axes)
+*  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulot(4), regular(4)
@@ -222,6 +227,8 @@ C  variables for checking axis characteristics (modulo axes)
 
       REAL*8 tax(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+      REAL counts(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
 
       REAL*8 top_box
 
@@ -231,7 +238,7 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check to see if output axis is modulo
 
-      CALL ef_get_axis_info (id, 2, ax_name, ax_units, backward, 
+      CALL ef_get_axis_info (id, 3, ax_name, ax_units, backward, 
      .                       modulot, regular)
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
@@ -247,31 +254,47 @@ C  variables for checking axis characteristics (modulo axes)
          ENDIF
  100  CONTINUE
 
+* Check that arguments 1 and 2 have the same number of values
+
+      nvpts = 0
+
+      DO 200 m = X_AXIS, T_AXIS
+         IF (arg_lo_ss(m,ARG2) .GE. 1) THEN
+            i1 = arg_lo_ss(m,ARG2)
+            i1n = arg_hi_ss(m,ARG2)
+            if (i1n-i1 .NE. 0) nvpts = 1 + (i1n - i1)
+         ENDIF
+ 200  CONTINUE
+
       IF (ntpts .EQ. 0) GOTO 900
+      IF (nvpts .NE. ntpts) THEN
+        errtxt = 'arguments 1 and 2 must have the same number of values'
+        GOTO 900
+      ENDIF
 
 *  Check tax is a T axis
 
-      i2 = arg_lo_ss(T_AXIS,ARG2)
-      i2n = arg_hi_ss(T_AXIS,ARG2)
-      ntgrid = i2n - i2 + 1
+      i3 = arg_lo_ss(T_AXIS,ARG3)
+      i3n = arg_hi_ss(T_AXIS,ARG3)
+      ntgrid = i3n - i3 + 1
 
-      IF (i2 .EQ. ef_unspecified_int4) THEN
-         WRITE (errtxt, *) 'Second argument must be a T axis'
+      IF (i3 .EQ. ef_unspecified_int4) THEN
+         WRITE (errtxt, *) 'Third argument must be a T axis'
          GO TO 999
       ENDIF
 
 *  Get coordinates of output axis.
 
-      call ef_get_coordinates(id, ARG2, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), tax)
+      call ef_get_coordinates(id, ARG3, T_AXIS, 
+     .   arg_lo_ss(T_AXIS, ARG3), arg_hi_ss(T_AXIS, ARG3), tax)
 
 *  Get cell boundaries
 
-      CALL ef_get_box_lo_lim (id, ARG2, T_AXIS, 
-     .   arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), tax)
+      CALL ef_get_box_lo_lim (id, ARG3, T_AXIS, 
+     .   arg_lo_ss(T_AXIS, ARG3), arg_hi_ss(T_AXIS, ARG3), tax)
 
-      CALL ef_get_box_hi_lim (id, ARG2, T_AXIS,
-     .   arg_hi_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), top_box)
+      CALL ef_get_box_hi_lim (id, ARG3, T_AXIS,
+     .   arg_hi_ss(T_AXIS, ARG3), arg_hi_ss(T_AXIS, ARG3), top_box)
 
       L = res_hi_ss(T_AXIS)+1
       tax(L,1,1,1) = top_box
@@ -285,6 +308,7 @@ C  variables for checking axis characteristics (modulo axes)
       k = res_lo_ss(Z_AXIS)
       DO 300 L = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
          result(i,j,k,l)= 0.
+         counts(L,1,1,1)= 0.
  300  CONTINUE
 
 *  Loop over input tpts
@@ -294,19 +318,23 @@ C  variables for checking axis characteristics (modulo axes)
       DO 500 n = 1, ntpts
 
         CALL pickout (arg_1, n, tt)
+        CALL pickout (arg_2, n, vv)
 
 *  If an output axis is modulo, apply modulo adjustment to that coordinate
 *  of the scattered point.
 
         IF (modulot(4)) CALL modscat (tax, ntgrid, 1, tt)
 
-        IF ( tt  .NE. bad_flag(ARG3) ) THEN
+        IF ( tt .NE. bad_flag(ARG3) .AND. 
+     .       vv .NE. bad_flag(ARG2) ) THEN
            DO 400 L = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
               IF (n .EQ. 1 .AND. tt .EQ. tax(L,1,1,1) ) THEN
-                 result(i,j,k,l) = result(i,j,k,l) + 1.
+                 result(i,j,k,l) = result(i,j,k,l) + vv
+                 counts(L,1,1,1) = counts(L,1,1,1) + 1
               ELSE IF (tt .GT. tax(L,1,1,1) .AND. 
      .                 tt .LE. tax(L+1,1,1,1) ) THEN
-                result(i,j,k,l) = result(i,j,k,l) + 1.
+                result(i,j,k,l) = result(i,j,k,l) + vv
+                counts(L,1,1,1) = counts(L,1,1,1) + 1
               ENDIF
   400      CONTINUE
 
@@ -315,25 +343,23 @@ C  variables for checking axis characteristics (modulo axes)
  500  CONTINUE
 
 * Compute average
-      
-      factr = 1./FLOAT(ntpts)
+
       DO 600 L = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
-         result(i,j,k,l) = result(i,j,k,l)* factr
+         IF (counts(L,1,1,1) .GT. 0.) THEN
+           result(i,j,k,l) = result(i,j,k,l)/ counts(L,1,1,1)
+         ELSE
+           result(i,j,k,l) = bad_flag_result
+         ENDIF
  600  CONTINUE
 
       RETURN
 
 900   CONTINUE
 
-      IF (ntpts .EQ. 0) THEN
-        WRITE (errtxt, 30)
-      ENDIF
-      GOTO 999 
 
  999  CALL EF_BAIL_OUT(id, errtxt)
       RETURN
 
-   30 FORMAT ('No data in scattered T points')
 
 *                                                                      ^
 *                                                                      |

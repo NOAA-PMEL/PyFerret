@@ -2,7 +2,8 @@
      .                      zminlist, nzmin)
 C
 C  based on NCAR routine MINMAX, return minima
-C
+C  From the NCAR graphics library at http://ngwww.ucar.edu version 4.2
+C  Modified by Ansley Manke to regurn only the minima for subroutine findlo.F
 C-------------------------------------------------------------
 C	$Id$
 C                                                                      

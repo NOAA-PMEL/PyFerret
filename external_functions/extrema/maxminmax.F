@@ -3,7 +3,8 @@
      .                      zmaxlist, nzmax)
 C
 C  based on NCAR routine MINMAX, return maxima
-C
+C  From the NCAR graphics library at http://ngwww.ucar.edu version 4.2
+C  Modified by Ansley Manke to regurn only the maxima for subroutine findhi.F
 C-------------------------------------------------------------
 C	$Id$
 C                                                                      
@@ -48,6 +49,10 @@ C
      .		js, nm, jt, jk, ik, nzmax, neigh_x, neigh_y
 
       real	Z(L,NN), aa, an, badz, zmaxlist(3,*)
+      real tol, q
+
+
+      tol = 0.
 C
       M = MM
       N = NN
@@ -96,6 +101,7 @@ C
          IT = IP-IM-1
          IF (IS .GT. IT) GO TO 106
          DO 105 II=IS,IT
+            q = Z(II,JP) - aa
             IF (AA .LE. Z(II,JP)) GO TO 112
   105    CONTINUE
   106    IS = IP+2
@@ -105,6 +111,7 @@ C
             IF (Z(II,JP).NE.badz) GO TO 107
             IP = II-1
             GO TO 125
+            q = Z(II,JP) - aa
   107       IF (AA .LE. Z(II,JP)) GO TO 112
   108    CONTINUE
 C
@@ -117,6 +124,7 @@ C
          DO 111 JK=JS,JT
             IF (JK .EQ. JP) GO TO 111
             DO 110 IK=IS,IT
+               q = Z(IK,JK)-AA
                IF (Z(IK,JK).GE.AA .OR. (Z(IK,JK).EQ.badz)) GO TO 112
   110       CONTINUE
   111    CONTINUE
@@ -127,56 +135,9 @@ C
 	 zmaxlist(3,nzmax) = z(ip,jp)
 
   112    IM = 1
-         IF (IP-MM1) 113,127,127
+         GO TO 127
+
 C
-C CONTROL RETURNS TO STATEMENT 20 AS LONG AS THE FUNCTION IS DECREASING
-C ALONG THE LINE - WE SEEK A POSSIBLE MINIMUM
-C
-  113    IP = IP+1
-         AA = AN
-         IF (IP .EQ. MM1) GO TO 116
-         AN = Z(IP+1,JP)
-         IF (AN.EQ.badz) GO TO 125
-         IF (AA-AN) 116,115,114
-  114    IM = IM+1
-         GO TO 113
-  115    IM = 0
-         GO TO 113
-C
-C FUNCTION INCREASED - TEST FOR MINIMUM ON LINE
-C
-  116    IF (IM .GE. MN) GO TO 118
-         IS = max(1,IP-MN)
-         IT = IP-IM-1
-         IF (IS .GT. IT) GO TO 118
-         DO 117 II=IS,IT
-            IF (AA .GE. Z(II,JP)) GO TO 124
-  117    CONTINUE
-  118    IS = IP+2
-         IT = min(M,IP+MN)
-         IF (IS .GT. IT) GO TO 121
-         DO 120 II=IS,IT
-            IF (Z(II,JP).NE.badz) GO TO 119
-            IP = II-1
-            GO TO 125
-  119       IF (AA .GE. Z(II,JP)) GO TO 124
-  120    CONTINUE
-C
-C WE HAVE MINIMUM ON LINE - DO TWO-DIMENSIONAL TEST FOR MINIMUM OF FIELD
-C
-  121    JS = max(1,JP-NM)
-         JT = min(N,JP+NM)
-         IS = max(1,IP-MN)
-         IT = min(M,IP+MN)
-         DO 123 JK=JS,JT
-            IF (JK .EQ. JP) GO TO 123
-            DO 122 IK=IS,IT
-               IF (Z(IK,JK).LE.AA .OR. (Z(IK,JK).EQ.badz)) GO TO 124
-  122       CONTINUE
-  123    CONTINUE
-C
-  124    IM = 1
-         IF (IP-MM1) 101,127,127
 C
 C SKIP SPECIAL VALUES ON LINE
 C
@@ -188,10 +149,9 @@ C
          IF (IM .LE. MN) GO TO 126
          IM = 1
          AN = Z(IP+1,JP)
-         IF (Z(IP,JP)-AN) 101,103,113
+         IF (Z(IP,JP)-AN) 101,103,127
 C
   127 CONTINUE
-C
       RETURN
 
       END

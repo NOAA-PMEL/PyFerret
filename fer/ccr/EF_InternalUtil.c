@@ -339,6 +339,11 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
  *  int_dlsym.pl.  Check that N_INTEF is correctly defined below.
  */
 
+  /*  *******NOTE******
+      *kob*  6/01 -  The below initialization code should really be in
+      it's own, separate c routine.  So, the next time and internal 
+      external function is added, please move the code to it's own routine */
+
 #define N_INTEF 17
 
 struct {
@@ -418,7 +423,14 @@ struct {
 \nWARNING: environment variable FER_EXTERNAL_FUNCTIONS not defined.\n\n");
       I_have_warned_already = TRUE;
     }
-    return_val = 0;
+    /* *kob* v5.32 - the return val was set to 0 below but that was wrong. 
+       That didn't take into account that on any system, the 
+       FER_EXTERNAL_FUNCTIONS env variable might not be set.  If that were the
+       case, a core dump occurred on all systems.  Set return_val to count, 
+       which was generated above - also have to  note that the ef's 
+       have been scanned*/
+    return_val = count; 
+    I_have_scanned_already = TRUE;
     return return_val;
   }
 

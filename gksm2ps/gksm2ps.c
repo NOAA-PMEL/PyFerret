@@ -58,6 +58,7 @@
  * *jd* 12.23.97  Mod: Handle polyline rep setting for monochrome devices    *
  * *jd* 10.12.98  Mod: Support fill patterns                                 *
  *                                                                           *
+ * *kob* 11.02    Mod: Support CMYK output
  *****************************************************************************/
 
 /*  
@@ -104,6 +105,7 @@ int     scaling_completed = 0;          /* 1 when plot has been scaled to page *
 int     absolute_scale = 0;             /* 1 when wsvp size plot is desired */
 int     color_lines = 0;                /* 1 when color is used for lines */
 int     rename_file = 1;                /* 1 if input files will be renamed */
+int     use_cmyk = 0;                   /* 1 if PS output should be CMYK rather than RGB  *kob* 11/02 */
 
 int	xborder = 18;			/* border on paper */
 int	yborder = 18;
@@ -315,7 +317,10 @@ initpage ()		/* Initializes PostScript */
    fprintf(ps_output, "/np {newpath} def\n" );
    fprintf(ps_output, "/cp {closepath} def\n" );
    fprintf(ps_output, "/lw {3000 div setlinewidth} def\n" );
-   fprintf(ps_output, "/o {ct exch get aload pop setrgbcolor} def\n" );
+   if (use_cmyk) 
+     fprintf(ps_output, "/o {ct exch get aload pop setrgbcolor currentcmykcolor setcmykcolor} def\n" );
+   else 
+     fprintf(ps_output, "/o {ct exch get aload pop setrgbcolor} def\n" );
    fprintf(ps_output, "\n" );
    fprintf(ps_output, "/rect {\n" );
    fprintf(ps_output, "   np\n" );
@@ -1077,7 +1082,7 @@ main (argc, argv)
       if (strcmp(argv[i], "-H")==0 || strcmp(argv[i], "-h")==0 || strcmp(argv[i], "-?")==0 || strcmp(argv[i], "-help")==0) {
 	 printf("gksm2ps: Send PostScript translation of GKSM metafiles to a file\n");
 	 printf("  usage: gksm2ps [-h] [-p landscape||portrait] [-l ps||cps] [-d cps||phaser] \\\n");
-	 printf("         [-X || -o <ps_output_file>] [-R] [-a] [-g WxH+X+Y] [-v] file(s)\n\n");	
+	 printf("         [-X || -o <ps_output_file>] [-R] [-a] [-g WxH+X+Y] [-v] [-C] file(s)\n\n");	
 	 printf("     -h: print this help message\n");
 	 printf("     -p: page orientation, landscape or portrait (default fits to page)\n");
 	 printf("     -l: line styles,  ps == monochrome (default), cps == color\n");
@@ -1088,6 +1093,7 @@ main (argc, argv)
 	 printf("     -a: make hard copy the size of the original plot (default fits to page)\n");
 	 printf("     -g: WxH+X+Y  WIDTH, HEIGHT, XOFFSET, & YOFFSET in points (72 pts = 1 in)\n");
 	 printf("     -v: list version number of gksm2ps and do nothing else\n");
+	 printf("     -C: Output a CMYK postscript file (default is RGB)\n\n");
 
 	 printf("file(s): The specific metafile(s) to be translated.\n\n");
 	 exit(0);
@@ -1145,6 +1151,10 @@ main (argc, argv)
       else if ( !strcmp(argv[i], "-version") || !strcmp(argv[i], "-v") ) {
 	fprintf ( stderr,"Version number of gksm2ps: Mod %s / %s\n", mod,gksm2ps_version);
 	exit (0);
+      }
+
+      else if ( !strcmp(argv[i], "-C")) {
+         use_cmyk = 1;
       }
 
       else {

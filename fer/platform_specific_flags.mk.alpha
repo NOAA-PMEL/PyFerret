@@ -53,7 +53,7 @@ LDFLAGS		= -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib
 #SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE  /shlib/libc.so 
 SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE   
 
-TMLIB		= ../fmt/libs/tmap_lib.a
+TMLIB		= ../lib/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 

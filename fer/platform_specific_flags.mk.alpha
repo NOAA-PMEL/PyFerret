@@ -27,6 +27,8 @@ FINCLUDES	= -I../../ppl/tmap_inc \
 
 GUI_INCLUDES	=
 
+PLATFORM = Tru64 V4.0E
+
  
 F77 		= f77
 CC              = cc

@@ -847,6 +847,27 @@ ERROR in efcn_compute() allocating %d bytes of memory\n\
 
     if (setjmp(jumpbuffer) != 0 ) {
       /* Warning message printed by bail-out utility function. */
+
+      /*
+       * Restore the old signal handlers.
+       */
+      if (signal(SIGFPE, (*fpe_handler)) == SIG_ERR) {
+        fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGFPE handler.\n");
+        return;
+      }
+      if (signal(SIGSEGV, (*segv_handler)) == SIG_ERR) {
+        fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGSEGV handler.\n");
+        return;
+      }
+      if (signal(SIGINT, (*int_handler)) == SIG_ERR) {
+        fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGINT handler.\n");
+        return;
+      }
+      if (signal(SIGBUS, (*bus_handler)) == SIG_ERR) {
+        fprintf(stderr, "\nERROR in efcn_gather_info() restoring default SIGBUS handler.\n");
+        return;
+      }
+
       *status = FERR_EF_ERROR;
       return;
     }

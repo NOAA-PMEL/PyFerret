@@ -19,7 +19,7 @@ list tsorted_indices, tsorted_sst
 ! test on 2-d data
 
 can region
-set data coads_climatology
+!set data coads_climatology
 set region/l=5
 
 let xsorted_indices = sorti(sst)

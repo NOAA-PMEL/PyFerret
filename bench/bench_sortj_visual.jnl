@@ -18,7 +18,7 @@ list tsorted_indices, tsorted_sst
 ! 
 
 can region
-set data coads_climatology
+!set data coads_climatology
 set region/l=5
 
 

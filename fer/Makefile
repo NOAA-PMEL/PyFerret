@@ -186,7 +186,8 @@ fer_libraries: .FRC
 
 
 ppl_libraries: .FRC
-	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS) $(GKS_INCLUDES)" all);
+	(cd ../ppl ; $(MAKE) "PPLUS_FFLAGS=$(DEBUG) $(PPLUS_FFLAGS) $(GKS_INCLUDES)" \
+                              "CFLAGS=$(DEBUG) $(CFLAGS) $(GKS_INCLUDES)" all);
 
 
 special_code: .FRC

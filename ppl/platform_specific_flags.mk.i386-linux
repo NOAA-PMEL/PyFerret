@@ -1,5 +1,5 @@
 	#
-	# platform_specific_includes.mk.i486-linux
+	# platform_specific_includes.mk.i386-linux
 	#
 	# This file is included in other Makefiles and defines
 	# platform specific macros
@@ -55,7 +55,7 @@
 			  -DG77_SIGNAL -DG77 -DusingDODSf2cUnderscore \
 			  -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG
 
-	CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4
+	CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -march=i486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4
 	FFLAGS          =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 	PPLUS_FFLAGS    =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 
@@ -90,5 +90,5 @@
 	TERMCAPLIB 	=/usr/lib/libncurses.a
 
 	#
-	# End of platform_specific_includes.mk.i486-linux
+	# End of platform_specific_includes.mk.i386-linux
 #

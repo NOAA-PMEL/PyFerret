@@ -411,6 +411,9 @@ GO bn570_bug_fixes.jnl
 ! ******** V5.8 Additions below ***********
 
 GO bn_reset
+GO bn_modstats
+
+GO bn_reset
 GO bn580_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

@@ -157,17 +157,81 @@
 
       INCLUDE 'v5df_fer.h'
 
-      INTEGER array_num
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+     .     arg_incr(4,EF_MAX_ARGS)
 
-*  Set work array size.     MAX's are from v5df_fer.h
-*  gwork is a work array whose output dimensions are reset in 
-*  routine wrt_v5d_steps
+      INTEGER max_row, min_col, max_col, min_lev, max_lev
+      INTEGER array_num, unspecified_int4
+      INTEGER nwork
 
-      INTEGER NWORK
-      PARAMETER (NWORK=MAXROWS*MAXCOLUMNS*MAXLEVELS)
 
+*  Set work array size. gwork is a work array whose output dimensions
+*  are reset in routine wrt_v5d_steps
+
+      unspecified_int4 = -111
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+*  Get max number of rows in all variables
+      min_row = MAXROWS
+      max_row = 1
+      DO 111 iarg = 1, EF_MAX_ARGS
+         IF (arg_lo_ss(X_AXIS,iarg) .NE. unspecified_int4) min_row = 
+     .         min(min_row, arg_lo_ss(X_AXIS,iarg))
+
+         IF (arg_hi_ss(X_AXIS,iarg) .NE. unspecified_int4) max_row = 
+     .     max(max_row, arg_hi_ss(X_AXIS,iarg))
+
+  111 CONTINUE
+      IF (min_row .EQ. unspecified_int4 .OR. 
+     .    max_row .EQ. unspecified_int4) THEN          
+        min_row = 1
+        max_row = 1
+      ENDIF
+      max_row = max_row - min_row + 1
+
+*  Get max number of columns in all variables
+      min_col = MAXCOLUMNS
+      max_col = 1
+      DO 222 iarg = 1, EF_MAX_ARGS
+         IF (arg_lo_ss(Y_AXIS,iarg) .NE. unspecified_int4) min_col = 
+     .     min(min_col, arg_lo_ss(Y_AXIS,iarg))
+
+         IF (arg_hi_ss(Y_AXIS,iarg) .NE. unspecified_int4) max_col = 
+     .     max(max_col, arg_hi_ss(Y_AXIS,iarg))
+
+  222 CONTINUE
+      IF (min_col .EQ. unspecified_int4 .OR. 
+     .    max_col .EQ. unspecified_int4) THEN          
+        min_col = 1
+        max_col = 1
+      ENDIF
+      max_col = max_col - min_col + 1
+
+*  Get total number of levels in all variables together
+
+      min_lev = MAXLEVELS
+      max_lev = 1
+      max_lev_all = 0
+      DO 333 iarg = 1, EF_MAX_ARGS
+         IF (arg_lo_ss(Z_AXIS,iarg) .NE. unspecified_int4) min_lev = 
+     .     min(min_lev, arg_lo_ss(Z_AXIS,iarg))
+
+         IF (arg_hi_ss(Z_AXIS,iarg) .NE. unspecified_int4) THEN
+           max_lev = max(max_lev, arg_hi_ss(Z_AXIS,iarg))
+           max_lev_all = max_lev_all + max_lev
+         ENDIF
+
+  333 CONTINUE
+      IF (min_lev .EQ. unspecified_int4 .OR. 
+     .    max_lev .EQ. unspecified_int4) THEN          
+        min_lev = 1
+        max_lev = 1
+        max_lev_all = 1
+      ENDIF
+      IF (max_lev_all .eq. 0) max_lev_all = 1
+
+      nwork = max_row* max_col* max_lev_all
       array_num = 1
-
       CALL ef_set_work_array_dims(id, array_num, 1, 1, 1, 1, 
      .     NWORK, 1, 1, 1)
 
@@ -609,14 +673,17 @@ c
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER ier, inc
+      INTEGER ier
       INTEGER i, j, m
       INTEGER numvars, nc, nr, ncm, nrm
 
-      REAL*8 xax(*), yax(*), tol, gwork(*)
-      REAL*8 dx, dy, dxoff, dyoff
+      REAL*8 xax(*), yax(*), gwork(*)
+      REAL   dx, dy
 
       CHARACTER*(*) err_msg
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4)
 
       IF (numvars .LT. 1) THEN
          ier = 1
@@ -624,33 +691,27 @@ c
          ier = 1
          CALL ef_get_arg_subscripts (id, arg_lo_ss, arg_hi_ss, arg_incr)
 
+         CALL ef_get_axis_info (id, 1, ax_name, ax_units, backward,
+     .     modulo, regular)
 
 *  Set number of elements in each direction.  Let a NORMAL axis have 
 *  one element.
 
-      tol = 1.e-4
       IF (arg_hi_ss(X_AXIS,ARG1) .EQ. arg_lo_ss(X_AXIS,ARG1)  .OR.  
      .       arg_incr(X_AXIS,ARG1) .EQ. 0) THEN 
          dx = 1.
          nc = 1
       ELSE
          dx = abs(xax(2) - xax(1))
-         IF (arg_incr(X_AXIS,ARG1) .NE. 0) inc = arg_incr(X_AXIS,ARG1)
-         nc = 
-     .     (arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1)/ 
-     .      arg_incr(X_AXIS,ARG1)
+         nc = arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1) + 1
 
-*  Check that the axis is equally-spaced.
+*  Check that the x axis is equally-spaced.
 
-         DO 100 i = 2, nc - 1
-            dxoff = 1. - (xax(i+1) - xax(i))/ dx
-            IF (dxoff .gt. tol) THEN
-
-               WRITE (err_msg, *) 'Vis5D uses only equally spaced ',
-     .            'x-axis.  Regrid the data in x.'
-               GO TO 999
-            END IF
-  100    CONTINUE
+         IF (.NOT. regular(1)) THEN
+            WRITE (err_msg, *) 'Vis5D uses only equally spaced ',
+     .            'X-axis.  Regrid the data in x.'
+            GO TO 999
+         END IF
 
       END IF
 
@@ -660,22 +721,17 @@ c
          nr = 1
       ELSE
          dy = abs(yax(2) - yax(1))
-         IF (arg_incr(Y_AXIS,ARG1) .NE. 0) inc = arg_incr(Y_AXIS,ARG1)
-         nr = 
-     .     (arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1)/ 
-     .      arg_incr(Y_AXIS,ARG1)
+         nr = arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1) + 1
 
 *  Check that the axis is equally-spaced.
 
-         DO 200 j = 2, nr - 1
-            dyoff = 1. - (yax(j+1) - yax(j))/ dy
-            IF (dyoff .gt. tol) THEN
-               WRITE (err_msg, *) 'Vis5D uses only equally spaced ',
+         IF (.NOT. regular(2)) THEN
+            WRITE (err_msg, *) 'Vis5D uses only equally spaced ',
      .            'Y-axis.  Regrid the data in y.'
-               GO TO 999
-            END IF
-  200    CONTINUE
+            GO TO 999
+         END IF
 
+  
       END IF
 
 C  Check number of columns and rows against Vis5D maxima.

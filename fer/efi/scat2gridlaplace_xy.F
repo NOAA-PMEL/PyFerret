@@ -1,7 +1,6 @@
 *
 *  scat2gridlaplace_xy.F
 *
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -42,6 +41,8 @@
 * Output is gridded data in x, y, z, and time.  Calls routine "zgrid".
 *
 
+* ACM 11/00 Mirror scattered points around the ends when gridding to a modulo axis.
+*
 
 *
 * In this subroutine we provide information about
@@ -91,6 +92,8 @@
 *                                                                      V
 
       CHARACTER*100 fcn_desc
+
+
       WRITE (fcn_desc, 10)
    10 FORMAT ('Use Laplace weighting to grid scattered data to an ',
      .        'XY grid.')
@@ -174,25 +177,34 @@
 *
 * ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER nxout, nyout, nx2, ny2, nxyout
+      INTEGER nxout, nyout, nx2, ny2, nxygrid
       INTEGER nxin, nyin, nzin, ntin, nin
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
 
+      INTEGER nrng
+      REAL value
+
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      CALL ef_get_one_val(id, 7, value)   ! nrng: extend axes for modulo axis case
+      nrng = value
 
       nxin = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
       nyin = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
       nzin = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
       ntin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
-      nin = max(nxin,nyin,nzin,ntin)
+      nin = 2* max(nxin,nyin,nzin,ntin)
 
       nxout = 1 + arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4)
       nyout = 1 + arg_hi_ss(Y_AXIS,ARG5) - arg_lo_ss(Y_AXIS,ARG5)
 
       nx2 = nxout* 2
       ny2 = nyout* 2
-      nxyout = nxout* nyout
+
+      nxout = 2*nrng + nxout
+      nyout = 2*nrng + nyout
+      nxygrid = nxout* nyout
 
 * xax  output x axis
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
@@ -201,7 +213,7 @@
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
 
 * zgridded  work array - gridded data. 
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nxyout, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nxygrid, 1, 1, 1)
 
 * xscat - scattered points with gaps removed.
       CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, nin, 1, 1, 1)
@@ -298,7 +310,19 @@
       REAL fscat(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
      .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
 
-      CHARACTER*100 errtxt
+      CHARACTER*250 errtxt
+
+C  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulox(4), moduloy(4), regular(4)
+
+*  Check to see if output axes are modulo
+
+      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
+     .                       modulox, regular)
+      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
+     .                       moduloy, regular)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -306,6 +330,9 @@
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, or Z axis of the input arguments.
+
+      nxpts = 0
+      nypts = 0
 
       DO 100 m = X_AXIS, Z_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
@@ -323,7 +350,7 @@
          ENDIF
  110  CONTINUE
 
-      IF (nypts .NE. nxpts ) GOTO 999
+      IF (nypts .NE. nxpts .OR. nxpts .EQ. 0) GOTO 999
 
       nscat = nxpts
 
@@ -337,8 +364,6 @@
 
       nx = 1 + (i4n - i4)
       ny = 1 + (j5n - j5)
-      nxsize = nx
-      nysize = ny
 
       call ef_get_coordinates(id, ARG4, X_AXIS, 
      .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
@@ -361,7 +386,6 @@
       nrng = arg_7(arg_lo_ss(X_AXIS,ARG7), arg_lo_ss(Y_AXIS,ARG7), 
      .            arg_lo_ss(Z_AXIS,ARG7), arg_lo_ss(T_AXIS,ARG7)) 
 
-
 *  Compute result at each time, and each depth.
 
       DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
@@ -377,39 +401,53 @@
 
          nscat = nxpts
          CALL nobad (arg_1, arg_2, arg_3(ii3,jj3,kk3,l), 
-     .         bad_flag(ARG3), nscat, xscat, yscat, fscat)
+     .               bad_flag(ARG3), nscat, xscat, yscat, fscat)
+
+*  If an output axis is modulo, mirror the scattered points within NRNG
+*  of each end to the other end of the region.
+
+         IF (modulox(1)) THEN
+            CALL copyscat (xax, nx, nrng, nscat, xscat, yscat, fscat)
+            x1 = x1 - float(nrng)* dx
+            nx = nx + 2* nrng
+         ENDIF
+
+         IF (moduloy(2)) THEN
+            CALL copyscat (yax, ny, nrng, nscat, yscat, xscat, fscat)
+            y1 = y1 - float(nrng)* dy
+            ny = ny + 2* nrng
+         ENDIF
 
 *  Initialize result variable to 0.
 
-         DO 200 i = 1, nx*ny
+        DO 200 i = 1, nx*ny
             zgridded(i,1,1,1) = 0.
  200     CONTINUE
 
-*  Grid the data. !ACM Tried using result(1,1,k,l) instead of zgridded, 
-*  but the program goes off into endless computation.  !?
+*  Grid the data. 
 
+          nxsize = nx
+          nysize = ny
           CALL zgrid (zgridded, nxsize, nysize, nx, ny, x1, y1, 
      .              dx, dy, xscat, yscat, fscat, nscat, cay, nrng)
-
-c         CALL zgrid (zgridded, nxsize, nysize, nx, ny, x1, y1, 
-c     .              dx, dy, arg_1, arg_2, arg_3(ii3,jj3,kk3,l), 
-c     .              nscat, cay, nrng)
 
 *  Put gridded z into result variable.  Use "bad_flag_result" rather than
 *  "big" to mark bad data.
 
          iz = 1
+         IF (modulox(1)) iz = nrng + 1
          DO 410 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
             jz = 1
+            IF (moduloy(2)) jz = nrng + 1
             DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
                ij_index = (jz-1)* nx + iz
 
-               IF (zgridded(ij_index,1,1,1) .EQ. big) 
-     .              zgridded(ij_index,1,1,1) = bad_flag_result
-
-               result(i,j,k,l) = zgridded(ij_index,1,1,1)
-
+               IF (zgridded(ij_index,1,1,1) .EQ. big) THEN
+                  result(i,j,k,l) = bad_flag_result
+               ELSE
+                  result(i,j,k,l) = zgridded(ij_index,1,1,1)
+               ENDIF
                jz = jz + 1
 
   400       CONTINUE
@@ -422,8 +460,17 @@ c     .              nscat, cay, nrng)
       RETURN
 
 999   CONTINUE
-   20 FORMAT('Input x, y have different # of points', 2i8)
-      WRITE (errtxt,20) nxpts, nypts
+
+      IF (nxpts .NE. nypts) THEN
+         WRITE (errtxt,20) nxpts, nypts
+      ELSE IF (nxpts .EQ. 0) THEN
+         WRITE (errtxt, 30) 
+      ENDIF
+
+   20 FORMAT('Input scattered x, y have different # of points', 2i8)
+
+   30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
+     . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
       CALL EF_BAIL_OUT(id, errtxt)
 

@@ -41,6 +41,11 @@
 * June 2000 ACM pass 4 gridding arguments:  x and y radius of influence,
 *               and x and y cutoffs. 
 *
+* Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end 
+*                 to use in gridding each end
+*              2) Check that the scattered points are listed on the I,J,or
+*                 K axis only, as they may be functions of time.
+*
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of time.  
 * Output is gridded data in x, y and time.  Calls routine "gausswt_2".
@@ -312,14 +317,31 @@
       REAL wate(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
      .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
 
-      CHARACTER*100 errtxt
+      CHARACTER*250 errtxt
+
+C  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulox(4), moduloy(4), regular(4)
+
+      REAL dx, dy, xcut, ycut, xxbeg, xxend, yybeg, yyend
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+*  Check to see if output axes are modulo
+
+      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
+     .                       modulox, regular)
+      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
+     .                       moduloy, regular)
+
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, or Z axis of the input arguments.
+
+      nxpts = 0
+      nypts = 0
 
       DO 100 m = X_AXIS, Z_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
@@ -337,8 +359,7 @@
          ENDIF
  110  CONTINUE
 
-      IF (nypts .NE. nxpts ) GOTO 999
-
+      IF (nypts .NE. nxpts .OR. nxpts .EQ. 0) GOTO 900
       nscat = nxpts
 
 *  Compute number of points in output axes.
@@ -420,10 +441,8 @@
 
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
-      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS), 
-     .                       max(1,res_incr(T_AXIS))
-         DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS), 
-     .                       max(1,res_incr(Z_AXIS))
+      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  Loop over x and y, compute the weighted sums for gaussian-weighted mapping
 *  onto the grid.  Lat and longitude may be on the X,Y or Z axis of ARG1 and
@@ -436,16 +455,60 @@
          ll3 = arg_lo_ss(T_AXIS,ARG3) - 1 + l
          if (arg_lo_ss(T_AXIS,ARG3) .eq. ef_unspecified_int4) 
      .                  ll3 = ef_unspecified_int4
+
          DO 300 n = 1, nscat
 
             CALL pickoutxyz (arg_1, arg_2, arg_3(ii3,jj3,kk3,ll3), 
      .                    n, xx, yy, val)
 
-            IF ( val  .NE. bad_flag(ARG3) )
+            IF ( val .NE. bad_flag(ARG3) ) THEN
 
-     .      CALL gausswt2 (xx, yy, tt, val, grid, wate, nx, ny, nm, 
+               CALL gausswt2 (xx, yy, tt, val, grid, wate, nx, ny, nm, 
      .                x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, xcutoff, 
      .                ycutoff, iwflag, nxaxis, nyaxis)
+
+C ACM modulo 11/9/00  Put points within cutoff of the end just beyond the
+C                     other end, and use in the gridding computation.
+               IF (modulox(1)) THEN
+                  dx = xf - x1
+                  IF (nx .GT. 1) dx = (xf-x1)/real(nx-1)  ! gridbox size in data units
+                  xcut = xcutoff*xsc/dx		          ! cutoff scaled to grid units
+                     
+                  IF ((xx-x1 .GE. 0.) .AND. (xx-x1 .LT. xcut) ) THEN
+                     xxend = xf + (xx-x1)
+                     CALL gausswt2(xxend, yy, tt, val, grid, wate, nx, 
+     .                   ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
+     .                   xcutoff, ycutoff, iwflag, nxaxis, nyaxis)
+                  ENDIF
+                     
+                  IF ((xf-xx .GE. 0.)  .AND. (xf-xx .LT. xcut) ) THEN
+                     xxbeg = x1 - (xf-xx)
+                     CALL gausswt2(xxbeg, yy, tt, val, grid, wate, nx, 
+     .                   ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
+     .                   xcutoff, ycutoff, iwflag, nxaxis, nyaxis)
+                  ENDIF
+               ENDIF
+
+               IF (moduloy(2)) THEN
+                  dy = yf - y1
+                  IF (ny .GT. 1) dy = (yf-y1)/real(ny-1)  ! gridbox size in data units
+                  ycut = ycutoff*ysc/dy		          ! cutoff scaled to grid units
+
+                  IF ((yy-y1 .GE. 0.0) .AND.  (yy-y1  .LT. ycut) ) THEN
+                     yyend = yf + (yy-y1)
+                     CALL gausswt2(xx, yyend, tt, val, grid, wate, nx, 
+     .                   ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
+     .                   xcutoff, ycutoff, iwflag, nxaxis, nyaxis)
+                  ENDIF
+                     
+                  IF ((yf-yy .LT. 0.)  .AND.  (yf-yy .LT. ycut) ) THEN
+                     yybeg = y1 - (yf-yy)
+                     CALL gausswt2(xx, yybeg, tt, val, grid, wate, nx, 
+     .                   ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
+     .                   xcutoff, ycutoff, iwflag, nxaxis, nyaxis)
+                  ENDIF
+               ENDIF
+            ENDIF
 
  300     CONTINUE
 
@@ -473,13 +536,19 @@
 
       RETURN
 
-999   CONTINUE
+900   CONTINUE
 
-   20 FORMAT('Input x, y have different # of points', 2i8)
-      WRITE (errtxt,20) nxpts, nypts
+      IF (nxpts .NE. nypts) THEN
+         WRITE (errtxt,20) nxpts, nypts
+      ELSE IF (nxpts .EQ. 0) THEN
+         WRITE (errtxt, 30) 
+      ENDIF
+
+   20 FORMAT ('Input scattered x, y have different # of points', 2i8)
+   30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
+     . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
       CALL EF_BAIL_OUT(id, errtxt)
-
 
 *                                                                      ^
 *                                                                      |

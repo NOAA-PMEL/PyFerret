@@ -40,6 +40,12 @@
 * June 2000 ACM pass 4 gridding arguments:  x and z radius of influence,
 *               and x and z cutoffs. 
 *
+* Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end 
+*                 to use in gridding each end
+*              2) Check that the scattered points are listed on the I,J,or
+*                 K axis only, as they may be functions of time.
+*
+*
 *
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); may be functions of z and/or time.
@@ -313,15 +319,31 @@
       REAL wate(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
      .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
 
-      CHARACTER*100 errtxt
+      CHARACTER*250 errtxt
+
+C  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulox(4), moduloz(4), regular(4)
+
+      REAL dx, dz, xcut, zcut, xxbeg, xxend, zzbeg, zzend
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+*  Check to see if output axes are modulo
+
+      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
+     .                       modulox, regular)
+      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
+     .                       moduloz, regular)
+
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, or Z axis of the input arguments.
 
+      nxpts = 0
+      nzpts = 0
       DO 100 m = X_AXIS, Z_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
             i1 = arg_lo_ss(m,ARG1)
@@ -338,8 +360,7 @@
          ENDIF
  110  CONTINUE
 
-      IF (nzpts .NE. nxpts ) GOTO 999
-
+      IF (nzpts .NE. nxpts  .OR. nxpts .EQ. 0) GOTO 900
       nscat = nxpts
 
 *  Compute number of points in output axes.
@@ -420,10 +441,8 @@
 *  Compute result at each time, and each depth.
 
 
-      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS), 
-     .                       max(1,res_incr(T_AXIS))
-         DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS), 
-     .                       max(1,res_incr(Y_AXIS))
+      DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO 500 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
 *  Loop over x and z, compute the weighted sums for gaussian-weighted mapping
 *  onto the grid.  Lat and longitude may be on the X,Y or Z axis of ARG1 and
@@ -442,10 +461,56 @@
             CALL pickoutxyz (arg_1, arg_2, arg_3(ii3,jj3,kk3,ll3), 
      .                    n, xx, zz, val)
 
-            IF ( val  .NE. bad_flag(ARG3) )
-     .      CALL gausswt2 (xx, zz, tt, val, grid, wate, nx, nz, nm, 
+            IF ( val  .NE. bad_flag(ARG3) ) THEN
+               CALL gausswt2 (xx, zz, tt, val, grid, wate, nx, nz, nm, 
      .                    x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
      .                    xcutoff, zcutoff, iwflag, nxaxis, nzaxis) 
+
+C ACM modulo 11/9/00  Put points within cutoff of the end just beyond the
+C                     other end, and use in the gridding computation.
+
+               IF (modulox(1)) THEN
+                  dx = xf - x1
+                  IF (nx .GT. 1) dx = (xf-x1)/real(nx-1)  ! gridbox size in data units
+                  xcut = xcutoff*xsc/dx		          ! cutoff scaled to grid units
+                     
+                  IF ((xx-x1 .GE. 0.) .AND. (xx-x1 .LT. xcut) ) THEN
+                     xxend = xf + (xx-x1)
+                     CALL gausswt2(xxend, zz, tt, val, grid, wate, nx, 
+     .                    nz, nm, x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
+     .                    xcutoff, zcutoff, iwflag, nxaxis, nzaxis) 
+                  ENDIF
+                     
+                  IF ((xf-xx .GE. 0.)  .AND. (xf-xx .LT. xcut) ) THEN
+                     xxbeg = x1 - (xf-xx)
+                     CALL gausswt2(xxbeg, zz, tt, val, grid, wate, nx, 
+     .                    nz, nm, x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
+     .                    xcutoff, zcutoff, iwflag, nxaxis, nzaxis) 
+
+                  ENDIF
+               ENDIF
+
+               IF (moduloz(2)) THEN
+                  dz = zf - z1
+                  IF (nz .GT. 1) dz = (zf-z1)/real(nz-1)  ! gridbox size in data units
+                  zcut = zcutoff*zsc/dz		          ! cutoff scaled to grid units
+
+                  IF ((zz-z1 .GE. 0.0) .AND.  (zz-z1  .LT. zcut) ) THEN
+                     zzend = zf + (zz-z1)
+                     CALL gausswt2(xx, zzend, tt, val, grid, wate, nx, 
+     .                    nz, nm, x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
+     .                    xcutoff, zcutoff, iwflag, nxaxis, nzaxis) 
+
+                  ENDIF
+                     
+                  IF ((zf-zz .LT. 0.)  .AND.  (zf-zz .LT. zcut) ) THEN
+                     zzbeg = z1 - (zf-zz)
+                     CALL gausswt2(xx, zzbeg, tt, val, grid, wate, nx, 
+     .                    nz, nm, x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
+     .                    xcutoff, zcutoff, iwflag, nxaxis, nzaxis) 
+                  ENDIF
+               ENDIF
+            ENDIF
 
  300     CONTINUE
 
@@ -473,11 +538,17 @@
 
       RETURN
 
-999   CONTINUE
+ 900  CONTINUE
 
-   20 FORMAT('Input x, z have different # of points', 2i8)
+      IF (nxpts .NE. nzpts) THEN
+         WRITE (errtxt,20) nxpts, nzpts
+      ELSE IF (nxpts .EQ. 0) THEN
+         WRITE (errtxt, 30) 
+      ENDIF
 
-      WRITE (errtxt,20) nxpts, nzpts
+   20 FORMAT ('Input scattered x, z have different # of points', 2i8)
+   30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
+     . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
       CALL EF_BAIL_OUT(id, errtxt)
 

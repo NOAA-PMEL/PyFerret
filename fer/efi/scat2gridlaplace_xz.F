@@ -41,6 +41,8 @@
 * input and output data in x, y, depth, and time.
 *
 *
+* ACM 11/00 Mirror scattered points around the ends when gridding to a modulo axis.
+*
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -92,7 +94,6 @@
    10 FORMAT ('Use Laplace interpolation to grid scattered data to ',
      .        'an XZ grid.')
       CALL ef_set_desc(id, fcn_desc)
-
 
       CALL ef_set_num_args(id, 7)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -172,25 +173,34 @@
 *
 * ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER nxout, nzout, nx2, nz2, nxzout
+      INTEGER nxout, nzout, nx2, nz2, nxzgrid
       INTEGER nxin, nyin, nzin, ntin, nin
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
 
+      INTEGER nrng
+      REAL value
+
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      CALL ef_get_one_val(id, 7, value)   ! nrng: extend axes for modulo axis case
+      nrng = value
 
       nxin = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
       nyin = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
       nzin = 1 + arg_hi_ss(Z_AXIS,ARG1) - arg_lo_ss(Z_AXIS,ARG1)
       ntin = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
-      nin = max(nxin,nyin,nzin,ntin)
+      nin = 2* max(nxin,nyin,nzin,ntin)
 
       nxout = 1 + arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4)
       nzout = 1 + arg_hi_ss(Z_AXIS,ARG5) - arg_lo_ss(Z_AXIS,ARG5)
 
       nx2 = nxout* 2
       nz2 = nzout* 2
-      nxzout = nxout* nzout
+
+      nxout = 2*nrng + nxout
+      nzout = 2*nrng + nzout
+      nxzgrid = nxout* nzout
 
 * xax  output x axis
       CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
@@ -199,7 +209,7 @@
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, nz2, 1, 1, 1)
 
 * zgridded  work array - gridded data. 
-      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nxzout, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, nxzgrid, 1, 1, 1)
 
 * xscat - scattered points with gaps removed.
       CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, nin, 1, 1, 1)
@@ -297,7 +307,19 @@
       REAL fscat(wrk6lox:wrk6hix, wrk6loy:wrk6hiy,
      .               wrk6loz:wrk6hiz, wrk6lot:wrk6hit)
 
-      CHARACTER*100 errtxt
+      CHARACTER*250 errtxt
+
+C  variables for checking axis characteristics (modulo axes)
+
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulox(4), moduloz(4), regular
+
+*  Check to see if output axes are modulo
+
+      CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
+     .                       modulox, regular)
+      CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
+     .                       moduloz, regular)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -305,6 +327,9 @@
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, or Z axis of the input arguments.
+
+      nxpts = 0
+      nzpts = 0
 
       DO 100 m = X_AXIS, Z_AXIS
          IF (arg_lo_ss(m,ARG1) .GE. 1) THEN
@@ -322,7 +347,7 @@
          ENDIF
  110  CONTINUE
 
-      IF (nzpts .NE. nxpts) GOTO 999
+      IF (nzpts .NE. nxpts .OR. nxpts .eq. 0) GOTO 999
 
       nscat = nxpts
 
@@ -336,8 +361,6 @@
 
       nx = 1 + i4n - i4
       nz = 1 + k5n - k5
-      nxsize = nx
-      nzsize = nz
 
       call ef_get_coordinates(id, ARG4, X_AXIS, 
      .   arg_lo_ss(X_AXIS, ARG4), arg_hi_ss(X_AXIS, ARG4), xax)
@@ -378,12 +401,29 @@
          CALL nobad (arg_1, arg_2, arg_3(ii3,jj3,kk3,l), 
      .         bad_flag(ARG3), nscat, xscat, zscat, fscat)
 
+*  If an output axis is modulo, mirror the scattered points within NRNG
+*  of each end to the other end of the region.
+
+         IF (modulox(1)) THEN
+            CALL copyscat (xax, nx, nrng, nscat, xscat, zscat, fscat)
+            x1 = x1 - float(nrng)* dx
+            nx = nx + 2* nrng
+         ENDIF
+
+         IF (moduloz(3)) THEN
+            CALL copyscat (zax, nz, nrng, nscat, zscat, xscat, fscat)
+            z1 = z1 - float(nrng)* dz
+            nz = nz + 2* nrng
+         ENDIF
+
 *  Initialize result variable to 0.
 
          DO 200 i = 1, nx*nz
             zgridded(i,1,1,1) = 0.
-  200   CONTINUE
+  200    CONTINUE
 
+         nxsize = nx
+         nzsize = nz
          CALL zgrid (zgridded, nxsize, nzsize, nx, nz, x1, z1, 
      .              dx, dz, xscat, zscat, fscat, nscat, cay, nrng)
 
@@ -391,8 +431,10 @@
 *  rather than "big" to mark bad data.
 
          iz = 1
+         IF (modulox(1)) iz = nrng + 1
          DO 410 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
             kz = 1
+            IF (moduloz(3)) kz = nrng + 1
             DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
                ik_index = (kz-1)* nx + iz
@@ -413,12 +455,19 @@
       RETURN
 
 999   CONTINUE
-   20 FORMAT('Input x, z have different # of points', 2i8)
-      WRITE (errtxt,20) nxpts, nzpts
+
+      IF (nxpts .NE. nzpts) THEN
+         WRITE (errtxt,20) nxpts, nzpts
+      ELSE IF (nxpts .EQ. 0) THEN
+         WRITE (errtxt, 30) 
+      ENDIF
+
+   20 FORMAT('Input scattered x, z have different # of points', 2i8)
+
+   30 FORMAT ('Scattered points must be indexed I,J,or L (May be'
+     . ' fcns of time). Use RESHAPE to list them in I,J,or L.')
 
       CALL EF_BAIL_OUT(id, errtxt)
-
-
       
 *                                                                      ^
 *                                                                      |

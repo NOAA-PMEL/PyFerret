@@ -52,6 +52,8 @@
 *		 - eliminated FIND_MEMORY
 *	  4/5/90 - spruced up error message
 * V230:  4/30/92 - added coaching to error message
+* V500:  3.20.99 Make sure num_words >= 0 (absurdly large grids can overflow
+*                integer) js
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -69,6 +71,10 @@
 * internal variable declarations:
 	INTEGER	mr, next, prev, size, new_mblk, num_slen
 	CHARACTER  LEFINT*12, num_str*12
+
+* Number of words reasonable?
+	if (num_words .lt. 0) goto 5200
+	   
 
 * COMPUTE # BLOCKS NEEDED
 	num_blocks = ( num_words + mem_blk_size - 1 ) / mem_blk_size
@@ -130,11 +136,16 @@
  5000	RETURN
  5100	num_str = LEFINT(num_words,num_slen)
 	CALL ERRMSG( ferr_insuff_memory,status,
-     .	num_str(:num_slen)//' words were requested', *5101)
+     .	num_str(:num_slen)//' words were requested. ')
  5101   CALL WARN('Use SET and SHOW REGION to ensure that the region'
      .             //' is explicit;')
         CALL WARN('then reissue your command.')
         CALL WARN('The "Memory use" section of the FERRET '
      .            //'Users Guide has further tips.') 
         GOTO 5000
+ 5200	num_str = LEFINT(num_words,num_slen)
+	CALL ERRMSG( ferr_insuff_memory,status,
+     .	'A negative number of words were requested. ')
+     	CALL WARN('The current grid is most likely too large')
+	RETURN
 	END

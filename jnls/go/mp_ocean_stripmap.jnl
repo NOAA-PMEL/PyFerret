@@ -26,9 +26,9 @@
 !
 
 
-define viewport/xlim=0,.333/ylim=0,.5 mp_ll
-define viewport/xlim=.333,.75/ylim=0,.5 mp_lm
-define viewport/xlim=.75,.999/ylim=0,.5 mp_lr
+define viewport/xlim=0,.333/ylim=0,.51 mp_ll
+define viewport/xlim=.333,.75/ylim=0,.51 mp_lm
+define viewport/xlim=.75,.999/ylim=0,.51 mp_lr
 define viewport/xlim=0,.25/ylim=.5,1 mp_ul
 define viewport/xlim=.25,.667/ylim=.5,1 mp_um
 define viewport/xlim=.667,.999/ylim=.5,1 mp_ur
@@ -42,33 +42,21 @@ palette $3
 set view mp_ll
 set region/x=20:140
 go margins 0,0,0,0
-shade/set_up/nolab/$2 $1, x_page, y_page
-ppl axset,0,0,0,0
-ppl axlabp,0,0
-ppl box,OFF
-ppl shade
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
 if $4 then go mp_fland
 if $5 then go mp_land
 
 set view mp_lm
 set region/x=140:290
 go margins 0,0,0,0
-shade/set_up/nolab/$2 $1, x_page, y_page
-ppl axset,0,0,0,0
-ppl axlabp,0,0
-ppl box,OFF
-ppl shade
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
 if $4 then go mp_fland
 if $5 then go mp_land
 
 set view mp_lr
 set region/x=290:380
 go margins 0,0,0,0
-shade/set_up/nolab/$2 $1, x_page, y_page
-ppl axset,0,0,0,0
-ppl axlabp,0,0
-ppl box,OFF
-ppl shade
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
 if $4 then go mp_fland
 if $5 then go mp_land
 
@@ -77,33 +65,21 @@ set region/y=0:90
 set view mp_ul
 set region/x=20:110
 go margins 0,0,0,0
-shade/set_up/nolab/$2 $1, x_page, y_page
-ppl axset,0,0,0,0
-ppl axlabp,0,0
-ppl box,OFF
-ppl shade
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
 if $4 then go mp_fland
 if $5 then go mp_land
 
 set view mp_um
 set region/x=110:260
 go margins 0,0,0,0
-shade/set_up/nolab/$2 $1, x_page, y_page
-ppl axset,0,0,0,0
-ppl axlabp,0,0
-ppl box,OFF
-ppl shade
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
 if $4 then go mp_fland
 if $5 then go mp_land
 
 set view mp_ur
 set region/x=260:380
 go margins 0,0,0,0
-shade/set_up/nolab/$2 $1, x_page, y_page
-ppl axset,0,0,0,0
-ppl axlabp,0,0
-ppl box,OFF
-ppl shade
+shade/noaxes/nokey/nolab/$2 $1, x_page, y_page
 if $4 then go mp_fland
 if $5 then go mp_land
 

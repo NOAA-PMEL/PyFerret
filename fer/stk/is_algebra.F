@@ -81,6 +81,7 @@
 *	2/00 *sh* bug in check for SAMPLE finctions -- use nitem not "3"
 *	3/00 *sh* bug in ERRMSG call at 5900 - extra comma in args
 * V510: 5/00 *sh* - set bad flag on user variables
+*	5/00 *sh* - bug fix: ifcn not init'ed in time for MERGE_CONTEXT(big_cx)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -148,6 +149,11 @@
 
 * is it a grid-changing variable?
 	its_gc = ITSA_GCVAR(uvar)
+	IF ( its_gc ) THEN
+	   start = uvar_item_start( nitem, uvar )  ! nitem has the fcn itself
+	   end   = uvar_item_end  ( nitem, uvar )
+	   ifcn = GCF_FIND_FCN( uvar_text(uvar)(start:end) )
+	ENDIF
 
 * create, initialize or merge overall context for the algebraic expression
 	IF ( is_phase(lo_isp) .EQ. 0 ) THEN
@@ -211,9 +217,6 @@
 
 * is it a SAMPLE* function? (8/99)
 	IF ( its_gc ) THEN
-	   start = uvar_item_start( nitem, uvar )  ! nitem has the fcn itself
-	   end   = uvar_item_end  ( nitem, uvar )
-	   ifcn = GCF_FIND_FCN( uvar_text(uvar)(start:end) )
 	   its_sample = ifcn .GE. p_samplei
      .		.AND.   ifcn .LE. p_samplel
 	ELSE

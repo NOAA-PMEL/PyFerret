@@ -49,7 +49,8 @@
 * V500 - *jd* 5.3.99 Add axis extrema symbols
 *	 *sh* 6/99 - consolidated axis extrema symbols into AXIS_END_SYMS
 *             7/99 - use 7 digits of output precision
-
+*        *kob* 9/99 - fixed minor bug in which length of val_buff was one
+*                     character too short.  this only showed up under Linux
 #ifdef unix
 	include 'ferret.parm'
 	include 'plot_setup.parm'
@@ -67,7 +68,7 @@
 	REAL*8		first, last, delta
 
 * internal variable declarations:
-	CHARACTER*44    val_buff
+	CHARACTER*45    val_buff
 	REAL		x1, x2, uminr, umaxr, dint
 
 * convert to single precision and reverse order if a depth plot on Y axis

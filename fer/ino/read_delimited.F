@@ -42,6 +42,7 @@
 
 * V530: 11/00 *sh*
 * V533: 6/01 *sh* - check that data type is correct instead of asserting it
+* V540: 10/01 *sh* - undo the erroneous change of V533 (why was V533 chg done?)
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -117,13 +118,10 @@
 	     IF ( status .NE. ferr_ok ) RETURN
 	     cxlist(ivar) = cx_stack_ptr
 	     CALL TRANSFER_CONTEXT( cx, cx_stack_ptr )
-	     IF (cx_type(cx_stack_ptr) .NE. ds_var_type(fvar) ) THEN
-	        CALL WARN('Intern data type mismatch')
-	        cx_type( cx_stack_ptr ) = ds_var_type( fvar )
-	     ENDIF
 	     cx_variable( cx_stack_ptr ) = fvar
-	     cx_grid( cx_stack_ptr ) = ds_grid_number( fvar )
+	     cx_grid    ( cx_stack_ptr ) = ds_grid_number( fvar )
 	     cx_bad_data( cx_stack_ptr ) = ds_bad_flag( fvar )	! 12/93 add'n
+	     cx_type    ( cx_stack_ptr ) = ds_var_type( fvar )
 	     DO 200 idim = 1, 4
 	        cx_lo_ss(cx_stack_ptr, idim) = ds_grid_start(idim, fvar)
 	        cx_hi_ss(cx_stack_ptr, idim) = ds_grid_end  (idim, fvar)

@@ -57,7 +57,7 @@ all:	fer_libraries ppl_libraries special_code ferret
 
 debug:
 	touch ccr/fermain_c.c
-	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "GUI_FAKES=special/gui_fakes.o" all
+	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
 
 gui_nodebug:
 	(cd ccr; $(CC) -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
@@ -70,7 +70,7 @@ gui_debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
-		"GUI=GUI" "DEBUG_TITLE=debug" all
+		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" all
 
 fortran:
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all

@@ -1,0 +1,10 @@
+#
+# platform_specific_includes.mk.i486-linux
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros
+
+# FFT functions need the -mismatch_all flag
+
+
+FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch_all $(FINCLUDES)

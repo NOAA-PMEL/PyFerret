@@ -1,0 +1,6 @@
+#
+# fft_platform_specific_includes.mk.alpha
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros (blank)
+

@@ -58,7 +58,7 @@ LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -export-dynamic
 
 
 #SYSLIB		= -L/usr/X11R6/lib -lX11 /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /usr/local/lib/f90/libf90.a -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE  
-SYSLIB		= -L/usr/X11R6/lib  /usr/lib/libf2c.a /usr/local/lib/f90/libf90.a -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE  -lc
+SYSLIB		= -L/usr/X11R6/lib  /usr/lib/libf2c.a /usr/local/lib/f90/libf90.a -lm -ldl /usr/X11R6/lib/libXpmstatic.a $(TMAP_LOCAL)/lib/liblist.a -lXmstatic -lXtstatic -lXextstatic -lX11static -lSMstatic -lICEstatic  -lc
 
 TMLIB		= ../lib/tmap_lib.a
 

@@ -37,3 +37,5 @@ Ferret corba/Ferret
 utility corba/utility
 
 WebFerret WebFerret &Ferret &CGIservlet &utility
+
+lasxml lasxml &xml

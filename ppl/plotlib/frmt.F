@@ -48,13 +48,14 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 * V530 *sh* 11/00 - added extra digits for E formats with close-spaced
 *       range -- like [9080,1020]
+*      *sh* 12/00 -- further tweak to use E format less often
 
       CHARACTER*(*) IF 
 C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD 
       DX=ABS(XMAX-XMIN) 
       XX=ABS(XMAX) 
       IF(XX.LT.ABS(XMIN))XX=ABS(XMIN) 
-      IF(XX.GE.1000..OR.XX.LT..1)GOTO 100 
+      IF(XX.GE.100000..OR.XX.LT..001)GOTO 100 
 200   IP=ABS(IPRES) 
       ID=IP-IFIX(ALOG10(DX)+.5) 
       IF(ID.LT.0)ID=0 

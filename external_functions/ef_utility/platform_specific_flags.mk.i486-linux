@@ -14,10 +14,10 @@ CCSHFLAG        =
 CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = -c -u -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
-FC              = f95
-F77		= f95
-F77SHFLAG       = -shared
-FFLAGS          = -132 -c -u -save -dusty -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
+FC              = g77
+F77		= g77
+F77SHFLAG       = 
+FFLAGS          = -c -fno-second-underscore -fno-backslash -fdollar-ok -fugly-init -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 LD_DYN_FLAGS    = -G -shared
 SYSLIBS         = -lc
 

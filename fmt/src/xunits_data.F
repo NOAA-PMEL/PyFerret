@@ -68,21 +68,16 @@
 *		   years and 1/12 of those for "month"
 * V532: 5/01 *sh* - added "metre"
 * V554: 2/04 *acm*  default year length is 365.2425 days
+* V570 *acm* 5/04  Add the calendar ALL_LEAP = 366_DAY, and units for the corresp. month.
 
 * local variable declarations
 !	INTEGER	i
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xunits.cmn_text'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN_TEXT'
-#endif
+
 
 	DATA	un_name   ( 0)	/ ' '	/,	! FOR UNIDENTIFIED UNITS
      .		un_convert( 0)	/ 1.0 /
@@ -155,6 +150,7 @@ c     .		un_convert( -6)	/ 31536000.	/, ! sec per 365 day year (OLD default)
      .		un_convert(-13)	/ 2628000.	/ ! 1/12 of sec per 365 day year
      .		un_convert(-14)	/ 2592000.	/ ! 1/12 of sec per 360 day year
      .		un_convert(-15)	/ 2629800.	/ ! 1/12 of sec per 365.25 day year
+     .		un_convert(-16)	/ 2635200.	/ ! 1/12 of sec per 366 day year
 
 	DATA	un_alt_name ( 1) / 'centim'	/,
      .		un_alt_subsc( 1) / 1 /,

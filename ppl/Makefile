@@ -6,6 +6,7 @@
 #
 # 10/97 *kob*  - pltform specific files will reside in ppl directory and be 
 #		 links to actual files in fer directory
+# v5.4 *kob* - add the removal of .f files - for linux
 
 #
 # include platform specific definitions of:
@@ -55,7 +56,7 @@ libraries:
 clean:
 	for i in $(CLEANDIRS) ; \
         do \
-        (cd $$i ; echo "making" $@ "in $$i..."; $(MAKE) clean); \
+        (cd $$i ; echo "making" $@ "in $$i..."; rm -f *.f; $(MAKE) clean); \
         done
 
 depend:

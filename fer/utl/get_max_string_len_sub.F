@@ -1,4 +1,5 @@
-	SUBROUTINE PERMUTE( src_cx, src, msrc, dst, mdst, perm )
+	SUBROUTINE GET_MAX_STRING_LEN_SUB(cx, grid_data,
+     .		lox, hix, loy, hiy, loz, hiz, lot, hit, smax )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,60 +33,33 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* permute the 4D data from the source grid into the destination grid
-* - 24 possible permutations  (!4)
+* Return the length of the longest string in this context
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:  8/31/89
-*	10/16/89 - modified array declarations using *_SUB call
+* V530: 8/00 *sh*
 
 	include 'ferret.parm'
-	include 'errmsg.parm'
-	include	'xcontext.cmn'
-	include	'xvariables.cmn'
+	include 'xcontext.cmn'
 
-* calling argument declarations:
-	INTEGER src_cx, msrc, mdst, perm(4)
-	REAL    src( * ),dst( * )
+* calling argument declarations
+	INTEGER  cx, smax, lox, hix, loy, hiy, loz, hiz,lot, hit
+	REAL*8 grid_data( lox:hix,loy:hiy,loz:hiz,lot:hit )
 
-* local variable declarations:
-	INTEGER  MGRID_SIZE, stat
+* internal variable declarations:
+	INTEGER  GET_C_STRING_LEN, i, j, k, l, slen
 
-	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
+* initialize
+	smax = 1
 
-* ... set up the C pointer variable in the destination variable
-           CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mdst),
-     .                               dst,
-     .                               mr_c_pointer(mdst)      )
+	DO 100 l = cx_lo_s4(cx), cx_hi_s4(cx)
+	DO 100 k = cx_lo_s3(cx), cx_hi_s3(cx)
+	DO 100 j = cx_lo_s2(cx), cx_hi_s2(cx)
+	DO 100 i = cx_lo_s1(cx), cx_hi_s1(cx)
 
-	   CALL PERMUTE_PTR_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst), stat  )
-! NOTE: BUG here since error is reported but not returned to calling routine
-           IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
-     .                  stat, 'Unable to allocate C strings', *5000)
+	   slen = GET_C_STRING_LEN( grid_data(i,j,k,l) )
+	   IF ( slen .GT. smax ) smax = slen
+           
+ 100	CONTINUE
 
-	ELSE	
-	   CALL PERMUTE_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst)  )
-	ENDIF
-
- 5000	RETURN
-	END 
+	RETURN
+	END
+ 

@@ -1,4 +1,4 @@
-	SUBROUTINE PERMUTE( src_cx, src, msrc, dst, mdst, perm )
+	SUBROUTINE STORE_STRING( text, mr, offset, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -31,61 +31,50 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-* permute the 4D data from the source grid into the destination grid
-* - 24 possible permutations  (!4)
+
+
+* Store a given FORTRAN character string into dynamic memory
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:  8/31/89
-*	10/16/89 - modified array declarations using *_SUB call
 
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include	'xcontext.cmn'
+* V530:  8/00 *sh*
+
+	include	'ferret.parm'
+	include	'errmsg.parm'
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER src_cx, msrc, mdst, perm(4)
-	REAL    src( * ),dst( * )
+	INTEGER	mr, offset, status
+!	REAL    memory( mem_blk_size, max_mem_blks )
+	CHARACTER*(*) text
 
-* local variable declarations:
-	INTEGER  MGRID_SIZE, stat
+* internal variable declarations:
+	INTEGER	clen, istat
 
-	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
+* --- end of introductory code ---
 
-* ... set up the C pointer variable in the destination variable
-           CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mdst),
-     .                               dst,
-     .                               mr_c_pointer(mdst)      )
+* length of string to be stored
+	clen = LEN(text)
 
-	   CALL PERMUTE_PTR_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst), stat  )
-! NOTE: BUG here since error is reported but not returned to calling routine
-           IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
-     .                  stat, 'Unable to allocate C strings', *5000)
+* convert to a null-terminated C string
+! instead we are using the assumption that FORTRAN character arrays are
+! passed with the correct starting address
+!	CALL GET_WORK_SPC( 1+clen/4, wrk1, status )
+!	IF (status .NE. ferr_ok) RETURN
 
-	ELSE	
-	   CALL PERMUTE_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst)  )
+!	CALL TM_FTOC_STRNG (text,
+!     .			    memory(1,wrk1), clen )
+
+* allocate dynamic storage and save the pointer in the Ferret grid
+	CALL SAVE_C_STRING(text, clen,
+     .			   mr_c_pointer(mr), offset, istat )
+	IF (istat .NE. 0) THEN
+	   CALL ERRMSG(ferr_insuff_memory, status,
+     .			'dynamic memory for string', *5000)
+	ELSE
+	   status = ferr_ok
 	ENDIF
 
  5000	RETURN
-	END 
+	END	

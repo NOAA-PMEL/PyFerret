@@ -1,4 +1,7 @@
-	SUBROUTINE PERMUTE( src_cx, src, msrc, dst, mdst, perm )
+	CHARACTER*(*) FUNCTION GET_STRING_ELEMENT(
+     .				lox,hix,loy,hiy,loz,hiz,lot,hit,
+     .				ptr_array, i, j, k, l,
+     .				maxlen, slen)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,60 +35,39 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* permute the 4D data from the source grid into the destination grid
-* - 24 possible permutations  (!4)
+* Return the string stored at the indicated i,j,k,l, subscript
+* The horse-pucky about the lo:hi subscripts is required because the pointer
+* array needs to be dimensioned as 8-byte quantities
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:  8/31/89
-*	10/16/89 - modified array declarations using *_SUB call
+* V530: 8/00 *sh*
 
 	include 'ferret.parm'
-	include 'errmsg.parm'
-	include	'xcontext.cmn'
-	include	'xvariables.cmn'
+	include 'xrisc.cmn'
 
-* calling argument declarations:
-	INTEGER src_cx, msrc, mdst, perm(4)
-	REAL    src( * ),dst( * )
+* calling argument declarations
+	INTEGER  lox,hix,loy,hiy,loz,hiz,lot,hit,
+     .		 i, j, k, l, maxlen, slen
+	REAL*8	 ptr_array(lox:hix,loy:hiy,loz:hiz,lot:hit)
 
-* local variable declarations:
-	INTEGER  MGRID_SIZE, stat
+* internal variable declarations
+	INTEGER  GET_C_STRING_LEN, flen
+	CHARACTER*100 locbuff
 
-	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
+* get the string
+        slen = GET_C_STRING_LEN(ptr_array(i,j,k,l))
 
-* ... set up the C pointer variable in the destination variable
-           CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mdst),
-     .                               dst,
-     .                               mr_c_pointer(mdst)      )
+* get the a null-terminated C string
+        CALL GET_C_STRING(ptr_array(i,j,k,l), risc_buff, slen+1)
 
-	   CALL PERMUTE_PTR_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst), stat  )
-! NOTE: BUG here since error is reported but not returned to calling routine
-           IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
-     .                  stat, 'Unable to allocate C strings', *5000)
+* the longest length we can use ...
+        flen = MIN(slen, size_rbuff)
 
-	ELSE	
-	   CALL PERMUTE_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst)  )
-	ENDIF
+* copy it into the FORTRAN string
+        CALL TM_CTOF_STRNG (risc_buff,locbuff, flen )
 
- 5000	RETURN
-	END 
+	GET_STRING_ELEMENT = locbuff
+	RETURN
+
+
+	END
+ 

@@ -1,5 +1,9 @@
-	SUBROUTINE PERMUTE( src_cx, src, msrc, dst, mdst, perm )
+	SUBROUTINE PERMUTE_PTR_SUB( src_cx, perm,
+     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit, stat )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,57 +39,58 @@
 *
 * permute the 4D data from the source grid into the destination grid
 * - 24 possible permutations  (!4)
+* note: can probably be done in a more condensed form using EQUIVALENCES and
+* perm to set up the loop indices. PERMUTE_SUB, likewise.
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* V200:  8/31/89
-*	10/16/89 - modified array declarations using *_SUB call
+* V200: 10/16/89 - extracted from PERMUTE
+*	 3/16/90 - fixed bug: "src(i,j,l,k)" --> "src(i,j,k,l)"
 
+#ifdef unix
 	include 'ferret.parm'
-	include 'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
+#else
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
+#endif
 
 * calling argument declarations:
-	INTEGER src_cx, msrc, mdst, perm(4)
-	REAL    src( * ),dst( * )
+	INTEGER src_cx, perm(4), stat,
+     .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
+	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
+     .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
 
-* local variable declarations:
-	INTEGER  MGRID_SIZE, stat
+* internal variable declarations:
+	INTEGER	loi, loj, lok, lol, hii, hij, hik, hil, i, j, k, l, idim
+	INTEGER	lo(4), hi(4), ii(4)
+	EQUIVALENCE
+     .		(lo(1), loi), (hi(1), hii), (ii(1), i),
+     .		(lo(2), loj), (hi(2), hij), (ii(2), j),
+     .		(lo(3), lok), (hi(3), hik), (ii(3), k),
+     .		(lo(4), lol), (hi(4), hil), (ii(4), l)
 
-	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
+* --- end of introductory code ---
 
-* ... set up the C pointer variable in the destination variable
-           CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mdst),
-     .                               dst,
-     .                               mr_c_pointer(mdst)      )
+* initialize - save loop limits as unsubscripted variables
+	DO 100 idim = 1, 4
+	   lo(idim) = cx_lo_ss(src_cx,idim)
+	   hi(idim) = cx_hi_ss(src_cx,idim)
+ 100	CONTINUE
 
-	   CALL PERMUTE_PTR_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst), stat  )
-! NOTE: BUG here since error is reported but not returned to calling routine
-           IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
-     .                  stat, 'Unable to allocate C strings', *5000)
+	DO 200  l = lol, hil
+	DO 200  k = lok, hik
+	DO 200  j = loj, hij
+	DO 200  i = loi, hii
+	   CALL COPY_C_STRING( src(i,j,k,l),
+     .		dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4))), stat )
+           IF ( stat .NE. 0 ) RETURN
+ 200	CONTINUE
 
-	ELSE	
-	   CALL PERMUTE_SUB (    src_cx, perm,
-     .			    src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .				 mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .				 mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .				 mr_lo_s4(msrc), mr_hi_s4(msrc),
-     .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
-     .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
-     .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst)  )
-	ENDIF
-
- 5000	RETURN
+	RETURN
 	END 

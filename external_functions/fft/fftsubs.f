@@ -26,10 +26,9 @@ c   save X
 
       CALL RFFTF (ND, X, WFT)   !  -> 2 Cn exp(iwt)
 
-      XN = 1.0/ ND
-      DO I = 1, ND
-        X(I) = XN* X(I)
-      ENDDO
+c      XN = 1.0/ REAL(ND)	! normalization.  Not using this.
+      XN = 1.0
+      XN = 0.5			! we're returning half the spectrum. scale by .5
 
 c   restore X and compute complex Cn
 
@@ -37,13 +36,13 @@ c   restore X and compute complex Cn
       CN = 0.5* X(2) 
 
       DO I = 1, NF-1
-        J = I + I
+        J = J + 2
         CR = CREAL(I)
         CI = CIMAG(I)
         X(J-1) = CR
         X(J)   = CI
-        CREAL(I) = X(J+1)
-        CIMAG(I) = X(J+2)
+        CREAL(I) = xn* X(J+1)
+        CIMAG(I) = xn* X(J+2)
       ENDDO
       CR = CREAL(NF)
       CI = CIMAG(NF)

@@ -22,7 +22,8 @@
 #                  to system specific SYS_LIBS macro in platform specific files
 #  v5.4 10/01 *kob* - add the removal of .f files - for linux
 #  v5.41 4/02 *acm* - Add -g flag for debug compiles of C code.  
-#
+# v5.54  8/04 *acm* - Add target "profiling", to compile with -pg option.
+# 
 # include platform specific macro definitions
 #
 
@@ -115,6 +116,18 @@ DODS_gui_debug: .FRC
                 "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
 		"DEBUG_TITLE=alpha" all
+                
+profiling: .FRC
+	(cd ccr; $(CC) -g $(PROF_FLAGS) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
+	$(MAKE) "CFLAGS = -g $(PROF_FLAGS) $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
+		"EXECNAME=ferretdods_gui" \
+		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"MOVIELIB="  \
+                "LD = g++ $(PROF_FLAGS) " "CDFLIB = $(DODS_LIBS)" \
+		"FFLAGS = $(PROF_FLAGS) $(FFLAGS) -Ddebug" "GUI_FAKES=" \
+		"DEBUG_TITLE=alpha" all
+
 DODS_gui: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
@@ -191,7 +204,7 @@ ppl_libraries: .FRC
 
 
 special_code: .FRC
-	(cd special ; $(MAKE) all);
+	(cd special ; $(MAKE) "FFLAGS=$(DEBUG) $(FFLAGS)" all);
 
 
 clean: fmt_clean ppl_clean fer_clean 

@@ -5,7 +5,7 @@
 # platform specific macros
 
 
-INCLUDES        = -I/opt/local/netcdf-2.4.2/include \
+INCLUDES        = -I/opt/local/netcdf-3.4/include \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I../../ppl/include/xgks \
 		  -I/usr/ucbinclude \
@@ -74,8 +74,8 @@ HDFLIB		= /opt/local/lib/libdf.a
 
 #CDFLIB		= /opt/local/lib/libnetcdf.a
 #CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
-CDFLIB          = /opt/local/netcdf-2.4.2/lib/libnetcdf.a
-
+#CDFLIB          = /opt/local/netcdf-2.4.2/lib/libnetcdf.a
+CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
 
 #
 # End of platform_specific_includes.mk.solaris

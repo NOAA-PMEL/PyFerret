@@ -6,7 +6,9 @@
 #
 # 10/97 *kob*  - pltform specific files will reside in ppl directory and be 
 #		 links to actual files in fer directory
-
+#
+# 2/03 *kob* - remove unneedd .F dependency - get it from platform specifics 
+#              flag	
 #
 # include platform specific definitions of:
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
@@ -19,9 +21,6 @@ include ./SOURCE_FILES
 # non-default suffix rules
 #
 
-.F.o:
-	$(F77) $(PPLUS_FFLAGS) -c $<
- 
 
 #
 # Macros

@@ -8,6 +8,8 @@
 #		 links to actual files in fer directory
 # 2/03 *kob* g77 port - move include for platform specifics file
 #                       to correct place and fix f77 macro reference
+# 2/03 *kob* - remove unneedd .F dependency - get it from platform specifics 
+#              flag	
 #
 # include platform specific definitions of:
 #       CC, FC, RANLIB, CFLAGS, FFLAGS, PPLUS_FFLAGS
@@ -19,9 +21,6 @@ include ./LIB_NAME
 #
 # non-default suffix rules
 #
-
-.F.o:
-	$(FC) $(PPLUS_FFLAGS) -c $<
  
 
 #

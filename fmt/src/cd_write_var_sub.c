@@ -47,6 +47,19 @@
     revision history:
     V533: 6/01 *sh* - original
 
+    v540: 11/01 *kob* - change passed in values for start and count
+                        to temp variables which are declared
+			compatibly with the passed in types from the 
+			fortran routine CD_READ.F.  Once in, need to 
+			convert these to the proper type that the 
+			netcdf c routines expect.  This may vary from
+			o.s. to o.s. depending on what, for example,
+			size_t and ptrdiff_t are typdef'd as.  They are
+			typedef'd as different things under solaris and 
+			compaq Tru64, for example
+
+
+
     compile this with
     cc -c -g -I/opt/local/netcdf-3.4/include cd_write_var_sub.c
 */ 
@@ -67,13 +80,19 @@ void tm_blockify_ferret_strings(void *dat, char *pbuff,
 				int bufsiz, int outstrlen);
 
 void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
-				int *dims, size_t start[], size_t count[], 
+				int *dims, int *tmp_start, int *tmp_count, 
 				int *strdim, void *dat, int *cdfstat )
 
 {
   /* convert FORTRAN-index-ordered, FORTRAN-1-referenced ids, count,
      and start to C equivalent
+
+     *kob*  11/01 need start and count  variables of the same type
+                  as is predfined for each O.S.
+
   */
+
+  size_t start[4], count[4];
   int tmp, i, maxstrlen;
   size_t bufsiz;
   char *pbuff;
@@ -82,6 +101,14 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
   int did = *strdim;
   vid--;
   did--;
+
+  /* cast passed in int values (from fortran) to proper types, which can
+     be different depending on o.s       *kob* 11/01 */
+  for (i=0;i<=ndim;i++) {
+    start[i] = (size_t)tmp_start[i];
+    count[i] = (size_t)tmp_count[i];
+  }
+
   for (i=0; i<=ndim; i++)
     start[i]--;
   for (i=0; i<=ndim/2; i++) {

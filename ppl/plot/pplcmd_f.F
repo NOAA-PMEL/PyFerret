@@ -1474,7 +1474,7 @@ c
 C       SHAKEY                                                     
 9160    call shade_key                                             
         goto 10                                                    
-C       SHAKEY                                                     
+C       SHASET                                                     
 9170    call shade_set                                             
         goto 10
                                                  

@@ -1,4 +1,7 @@
-*
+**   subroutine fillpoly(x,y,npts,index) *jc*
+      subroutine fillpoly(xarg,yarg,npts,index)
+      real xarg(*),yarg(*)
+      integer npts,index
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,11 +35,6 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-**   subroutine fillpoly(x,y,npts,index) *jc*
-      subroutine fillpoly(xarg,yarg,npts,index)
-      real xarg(*),yarg(*)
-      integer npts,index
 C** 
 C**    @(#)fillpoly.F	1.2   1/27/91
 C**
@@ -73,8 +71,9 @@ C
 *     V4.50 *jc* 04.25.97 add 'curvilinear' capability
 *                'x' and 'y' are  arrays of 50 to match xt, yt, etc.
 *                (What is the maximum number of vertices in a polygon?)
+*       Mod *jd* 02.16.99 Make arrays 128 not 50 for better FILL optimization
 
-      real x(50),y(50),xt(50),yt(50),xc(50),yc(50),xtrns,ytrns
+      real x(128),y(128),xt(128),yt(128),xc(128),yc(128),xtrns,ytrns
       integer i,nout,fill_ndx
 
 #ifdef unix

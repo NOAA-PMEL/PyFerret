@@ -51,6 +51,9 @@
 * V500 *kob* 3/99- up VAR_CODE and var decl's from 8 to 64 chars
 * V510 *sh* 8/99 - added isact_class_sample
 * V541 *sh*  2/02 - added isact_class_subspan_fill
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
+* v552 *acm* 4/03  up VAR_TRANS to 150 characters (variables are up to 128, plus
+*                  space for the transformation specifier)
 
 * calling argument declarations:
 	INTEGER	act_class, idim, cx
@@ -58,8 +61,8 @@
 
 * internal variable declarations:
 	INTEGER	  TM_LENSTR1, slen, clen, ii, i
-* V500 *kob* 3/99- up VAR_CODE and var decl from 8 to 64 chars
-	CHARACTER VAR_CODE*64, VAR_TRANS*64, var*64, out_buff*64
+	CHARACTER*128 VAR_CODE,  var
+	CHARACTER*150 VAR_TRANS, out_buff
 
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'

@@ -64,8 +64,8 @@
 *		    destination axes with respect to one of the calendars.
 * V530:  3/01 *sh* - added prgrd_nearest
 *        6/01 *acm* remove redundant calendar=.FALSE. after line 134
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars 
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -73,13 +73,7 @@
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
+
 !	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
 #ifdef unix
 	include	'xalgebra.cmn'
@@ -93,7 +87,6 @@
 	LOGICAL strides
 	INTEGER	src_cx, dst_cx, status
 
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	GEOG_LABEL, ITSA_MODULO_REGRID,
      .		last_axis, src_modulo, calendar
@@ -105,7 +98,7 @@
 	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww, d2s_lo_ww, d2s_hi_ww
-	CHARACTER	VAR_CODE*6, TM_SECS_TO_DATE*20, pdate*20
+	CHARACTER	VAR_CODE*128, TM_SECS_TO_DATE*20, pdate*20
 
 * initialize
 	dst_grid = cx_grid( dst_cx )

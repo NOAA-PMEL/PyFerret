@@ -43,20 +43,16 @@
 *
 * V402: 7/95 - extracted from XEQ_SHOW with additions for LET/D=
 * V510: 5/00 *sh* - show bad data flag if manually set
+* v552: 4/03 *acm*  Increase length of variable names to 128 characters
+*                   (variables are up to 128, so FULL_UVAR_NAME needs extra 
+*                   space i.e. for a transformation specifier)
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
 	include	'xvariables.cmn'
 	include	'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	full
@@ -66,7 +62,7 @@
 	
 * local variable declarations:
 	INTEGER TM_LENSTR1, slen, llen
-	CHARACTER FULL_UVAR_NAME*64, TM_FMT*12
+	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN

@@ -44,28 +44,22 @@
 *
 * revision 0.0 - 3/92
 * V500 4/99 *kob*: increase upcase_var from 24 to 64 chars - to match passed in vname
+* V552 5/03 *acm*: increase size of upcase_var from 64 to 128 chars
 * calling argument declarations
+
 	INTEGER		dset
 	CHARACTER*(*)	vname
 
 * include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 * local variable declarations:
       INTEGER STR_UPCASE, TM_LENSTR1, istat, slen, ivar
-* 4/99 *kob*
-      CHARACTER upcase_var*64
+      CHARACTER upcase_var*128
 
 * convert to upper case
       istat = STR_UPCASE( upcase_var, vname )     ! 4/91

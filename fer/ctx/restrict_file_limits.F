@@ -46,6 +46,7 @@
 *		NOTE: possible bug introduced with strides since the region
 *			checks here are bypassed altogether
 * V530: 11/00 *sh* - return "modified" flag
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -60,7 +61,7 @@
 	INTEGER 	TM_LENSTR1, 
      .			idim, variable, category,
      .			slen, slen2, hilim, lolim
-	CHARACTER*64	VAR_CODE, variable_code
+	CHARACTER*128	VAR_CODE, variable_code
 	CHARACTER	LEFINT*5, CX_DIM_STR*48, buff1*48, buff2*5
 
 * local parameter declarations

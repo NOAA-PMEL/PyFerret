@@ -48,8 +48,8 @@
 * V230:  11/4/92 - expanded variable name length
 * V420: 11/95 - indicate un-cached variables
 * V500 *kob* 3/99- up VAR_CODE and vname decl's to 64 chars
+* V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -61,28 +61,18 @@
 	include 'xtext_info.cmn'
 	include 'xalgebra.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * calling argument declarations:
 	INTEGER	mr
 
 * V500 *kob* 3/99- up VAR_CODE and vname decl's to 64 chars
+* V552 *acm* 4/03- up VAR_CODE and vname decl's from 64 to 128 chars
 * local variable declarations:
 	LOGICAL	ITS_UN_CACHED
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
      .		idim, ndim, mrlen, bk1len, nbklen, dset
-	CHARACTER VAR_CODE*64, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*8,
-     .		  protection*4, shape*4, dname*14, gname*12, vname*64,
+	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*8,
+     .		  protection*4, shape*4, dname*14, gname*12, vname*128,
      .		  ww_lo(4)*20, ww_hi(4)*20, ss_lo(4)*6, ss_hi(4)*6,
      .		  mrbuf*4, bk1buf*4, 
      .		  nbkbuf*4, cache_stat*8

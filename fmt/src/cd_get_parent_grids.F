@@ -47,6 +47,7 @@
 *		declaration line.
 * V500: 4/99 *kob* - increase size of temp_axnams and vname to 64
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
+* V552 *acm* 5/03   increase vnameto 128 chars 
 
 * argument definitions:
 *	cdfid	       - netCDF id number for already opened CDF file
@@ -54,7 +55,6 @@
 *	status	       - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -70,18 +70,6 @@
 	external xgt_grid_data
 	include 'xunits.cmn_text'
 	external xunits_data
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-#endif
 
 * argument declarations
 	INTEGER	 cdfid, status
@@ -105,7 +93,7 @@ xx        include 'netcdf.decl'  ! untested
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
      .        grid_cnt, cdfstat, istat, idim, npts
 * 4/99 *kob*
-      CHARACTER vname*64, words(8)*24
+      CHARACTER vname*128, words(8)*24
       CHARACTER*132 TM_CMPRSS, buff, cbuff
 
       INTEGER tt  ! nice short name

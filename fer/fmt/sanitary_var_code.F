@@ -45,22 +45,18 @@
 * V200:  12/4/89 - created to make more honest VAR_CODE for other purposes
 * V230:  11/4/92 - expanded user variable name length
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER category, variable
 
 * internal variable declarations:
 	INTEGER		HASH_NAME
-	CHARACTER	VAR_CODE*64, vcode*64
+	CHARACTER	VAR_CODE*128, vcode*128
 
 * get basic variable code
 	vcode = VAR_CODE( category, variable )

@@ -60,6 +60,7 @@
 *       upcased, anyway??)
 * V500 4/99 *kob*: increase upcase_var 24 --> 64 chars matching passed vname
 *      5/99 *sh* - added strides to CD_READ call
+* V552 5/03 *acm*: increase size of upcase_var from 64 to 128 chars
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -109,7 +110,7 @@
      .			iadj, jadj, kadj, ladj
 	INTEGER		tmp_lo(4), tmp_hi(4), adj_lo(4), adj_hi(4),
      .			adj(4), actual_lo(4), actual_hi(4)
-        CHARACTER*64    upcase_var     ! (was *24 until 4/99 *kob*)
+        CHARACTER*128    upcase_var
 	EQUIVALENCE	(tmp_lo(1),i_lo),
      .			(tmp_lo(2),j_lo),
      .			(tmp_lo(3),k_lo),

@@ -58,7 +58,8 @@
 
 * v533 9/01 *acm*- Check that SET VARIABLE/NAME doesnt give a name already in the dataset
 *                - and that not using a variable from a GT or TS data set
-* V552: *acm* 4/02 - add SET VARIABLE/SCALEFAC/OFFSET
+* V552: 4/03 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
+* v552: 4/03 *acm*  Increase length of variable names to 128 characters
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -82,7 +83,7 @@
 	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, 
      .			dset, grid, cat, var, loc, TMAP_status, testvar
 	REAL		bad, scalefac, offset
-	CHARACTER	grid_name*16, title*128, units*64, newname*64
+	CHARACTER	grid_name*16, title*128, units*64, newname*128
 
 * Initialize
 
@@ -94,9 +95,9 @@
         gtts = .FALSE.
         ncfile = .FALSE.
         ez = .FALSE.
-	newname = char_init80
-	title = char_init80
-	units = char_init16
+	newname = char_init128
+	title = char_init128
+	units = char_init64
 	grid_name = char_init16
 
 * decode specified variable name of form VNAME[D=dset]

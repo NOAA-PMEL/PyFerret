@@ -58,6 +58,7 @@
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 * V500 *kob* 3/99- up VAR_CODE to 64 chars
 * V530  8/00 *sh8 - added support for cat_string
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -88,8 +89,7 @@
 	LOGICAL 	UNIT_CHG_AX
 	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
      .			uvar, item, start, end
-* V500 *kob* 3/99- up VAR_CODE to 64 chars
-	CHARACTER	AX_TITLE*32, VAR_CODE*64, TM_FMT*10,
+	CHARACTER	AX_TITLE*32, VAR_CODE*128, TM_FMT*10,
      .                  REPLACE_DEQ*180,   ! .GT. uvar_text_len
      .                  buff1*32, buff2*10
 

@@ -132,6 +132,7 @@
 *		impl_grid wasn't initialized if cx_impl_grid was set
 *		in get_context_mods by gx=name
 * V533: *sh* 6/01 - set regrid transform for strides to prgrd_xact_pts
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -160,8 +161,7 @@
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
      .		  base_grid, impl_grid
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
-* V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
-	CHARACTER VAR_CODE*64
+	CHARACTER VAR_CODE*128
 
 * initialize
 	cat  = cx_category( cx )

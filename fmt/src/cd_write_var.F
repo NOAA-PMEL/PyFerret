@@ -51,6 +51,7 @@
 *		pass single values to NCVPT as arrays of 1 element
 * 6/97	*kob* - fix introduced bug in call to NCVPT
 * V533 *sh* 6/01 - add support for string variables (NCCHAR)
+* V552 *acm* 5/03   increase vbuff to 128 chars 
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -91,7 +92,7 @@
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(4)
       DATA  	   dimnam/'I','J','K','L'/
-      CHARACTER*64 vbuff     ! needed because of fussy f772.1 DEC compiler
+      CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
       REAL*8 r100_8(100)
       REAL*8 TM_WORLD
 

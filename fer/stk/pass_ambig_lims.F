@@ -89,28 +89,20 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
 * V530:  8/00 *sh* - added cx_type support
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars 
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	cx, mr, status
 
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * local variable declarations
 	INTEGER		idim, uvar
-	CHARACTER	VAR_CODE*64
+	CHARACTER	VAR_CODE*128
 
 * initialize
 	uvar = mr_variable( mr )

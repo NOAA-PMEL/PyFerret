@@ -85,6 +85,9 @@
 *		accumulated and used up mvars -- err522_too_many_vars.jnl
 * V533: 7/01 *sh* - added support for functions returning different data types
 *		  - alg_no_op removed to allow string IF-THEN-ELSE exprns
+* v552: 4/03 *acm*  Increase length of variable names to 128 characters
+*                   (variables are up to 128, so **name** needs extra space
+*                   i.e. for a transformation specifier)
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -110,7 +113,7 @@
      .		start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
      .		nitem, new_mr, len_name
-	CHARACTER name*128
+	CHARACTER name*150
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents

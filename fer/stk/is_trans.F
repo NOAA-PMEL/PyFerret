@@ -69,6 +69,9 @@
 *		variables
 * V530:  8/00 *sh* changed string trap to be based on data type, not category
 * V533:  7/01 *sh* transform @SHF supported for strings
+* v552   4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
+*                   space for the transformation specifier)
+
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -95,7 +98,7 @@
      .		mrlist(2), axes(4), idim1, i, ndim
 	REAL	arg
 	REAL*8	TM_WORLD, ww, ww_lo, ww_hi
-	CHARACTER VAR_TRANS*64, buff*64
+	CHARACTER VAR_TRANS*150, buff*150
 
 * --- end of introductory code ---
 

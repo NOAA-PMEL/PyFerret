@@ -48,6 +48,8 @@
 * V455:  9/97 - trap illegal offset arguments, return status
 *	      - added transforms @CDA,CDB,CIA,CIB
 * V533:  *sh* 6/01 - added @EVNT
+* v552  4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
+*                  space for the transformation specifier)
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_off, hi_off, status
@@ -62,7 +64,7 @@
      .		offset_lo   ( 2:max_plane_transform ),
      .		offset_hi   ( 2:max_plane_transform )
 	REAL	arg
-	CHARACTER*64 VAR_TRANS, buff
+	CHARACTER*150 VAR_TRANS, buff
 
 * pre-stored offsets needed for transformations
 	DATA offset_lo  	( trans_integ_indef )	/  0  /,

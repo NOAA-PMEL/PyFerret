@@ -87,6 +87,7 @@
 * V530: *sh* 9/00 - added data type ad an argument
 *		  - increased size of "last" stored command
 * V540: *sh* 11/00 - "last" var init moved to DELETE_OLD_EXPR
+* v552: *acm* 4/03   Increase length of variable names to 128 characters
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -102,7 +103,7 @@
 
 * local variable declarations
 	INTEGER		TM_LENSTR1, nu, cx_expr
-	CHARACTER	EXPR_NAME*8, VAR_CODE*32, buff*32
+	CHARACTER	EXPR_NAME*8, VAR_CODE*128, buff*128
 
 * initialize grid stack pointer (pushes down from top)
 	grd_stk_ptr = max_grids

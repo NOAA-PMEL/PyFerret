@@ -58,6 +58,7 @@
 *                    mode diagnostic.  only do sanity checking on step
 *                    files if mode diag is turned on.
 * v531: *kob* 5/01 - fix erroneous error reporting at label 5100
+* V552 5/03 *acm*: increase size of vname to 128 chars
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -79,7 +80,6 @@
      .                      a_lo_t:a_hi_t)
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -99,17 +99,7 @@
         include 'xmachine_int1.cmn'
 #endif
 	include 'xsys_names.cmn_text'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! err code PARM defs
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'		! Axis setup params
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set info common
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'		! Step file common
-	INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
+
 
 * local definitions
 	INTEGER*4 tmp_lo(4), tmp_hi(4), start_read_lstep,end_read_lstep,
@@ -124,7 +114,7 @@
 	INTEGER   TM_SUBSC, NCOPN, NCVID
 	LOGICAL   more_to_read, TM_FPEQ
         CHARACTER*256   TM_INQ_PATH, tstep_file
-	CHARACTER*24 vname
+	CHARACTER*128 vname
 	CHARACTER*64 dim_name
 	INTEGER*4 STR_CASE_BLIND_COMPARE
 	REAL*8 r8buff

@@ -43,7 +43,8 @@
 *
 * V420: 11/95
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
-#ifdef unix
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars 
+
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -51,15 +52,6 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	status
@@ -73,12 +65,11 @@
 *	isp+1	<--	level of last activity ( component just computed )
 *	 isp	<--	current stack level (for moduloing )
 
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	by_ss(4), given(4)
 	INTEGER i, mr, com_cx, res_cx,	com_isp, res_isp,
      .		com_lo, com_hi, res_lo(4), res_hi(4)
-	CHARACTER VAR_CODE*64, qual*1
+	CHARACTER VAR_CODE*128, qual*1
 
 * --- end of introductory code ---
 

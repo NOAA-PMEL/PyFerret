@@ -69,6 +69,7 @@
 *			line_class available
 * V533 *sh* 6/01 - allow strides and modulo to be combined
 * V550 *sh*  2/02 - support for subspan modulo axes
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars 
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -84,7 +85,6 @@
 * calling argument declarations:
 	INTEGER	src_cx, axis, dst_cx, status
 
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS,  TM_ITS_CDF,
      .		xy_ave, last_axis, may_have_strides, has_strides,
@@ -93,7 +93,7 @@
      .		idim, axis_list(4), naxis, var_grid, src_grid, dst_grid,
      .		next_axis, dst_axis, var_axis, i, axlen, i1
 	REAL	fraction
-	CHARACTER VAR_CODE*64, dtype*4
+	CHARACTER VAR_CODE*128, dtype*4
 
 * initialize
 * this is a bit of a hack for implementing netCDF strides

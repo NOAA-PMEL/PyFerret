@@ -44,6 +44,8 @@
 * V534: 9/01 *sh* doubled default memory size
 * v5.50 *acm*9/02 - up max_uvar from 400 to 2000
 
+* v552  *acm4/03 - increase uvar_name_code to 128 (also change test in xeq_define)
+
 * Terminology:
 *	"mr"	- "memory resident"
 *	("mv")	  table of information about variables currently stored in
@@ -118,7 +120,7 @@
 *	uvar_title_w_text
 *			- logical to determine if variable definition is part 
 *			  of title
-*	uvar_name_code	- 64 character user variable name
+*	uvar_name_code	- 128 character user variable name
 *	uvar_units	- units string for variable
 *	uvar_text	- text of the algebraic expression defining the variable
 *	uvar_num_items	- number of "items" (functions,variables,operators,...)
@@ -313,8 +315,8 @@
      .			mr_type 	,
      .			mr_regrid_trans
 
-	CHARACTER*128	uvar_title	
-	CHARACTER*64	uvar_name_code, uvar_units
+	CHARACTER*128	uvar_title, uvar_name_code
+	CHARACTER*64	uvar_units
 	CHARACTER*512	uvar_text	
 	LOGICAL		uvar_title_w_text,
      .			uvar_need_dset,

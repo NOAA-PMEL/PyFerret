@@ -51,6 +51,8 @@
 *		declaration line.
 * V500 4/99 *kob*: increase size of vname and buff from 24 to 64
 * V533 *sh* 6/01 - add support for string variables (NCCHAR)
+* V500 4/99 *kob*: increase size of vname and buff from 24 to 64
+* V552 *acm* 5/03   increase vname and buff to 128 chars 
 
 
 * argument definitions:
@@ -65,21 +67,12 @@
 	INTEGER	 cdfid, ivar, lo(4), hi(4), tmrecdim, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
 	include 'cd_lib.parm'
         include 'xio.cmn_text'
         external xio_data
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-        EXTERNAL XIO_DATA
-#endif
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -92,7 +85,7 @@
      .        vartyp, nvdim, vdims(6), nvatts, vlen,
      .        ngatts, npts, recdim
       REAL    r4_lo(4), r4_hi(4)
-      CHARACTER vname*64, buff*64
+      CHARACTER vname*128, buff*128
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)

@@ -82,6 +82,11 @@
 * V541  4/02 *sh* - fix bug in IF-THEN: err540_data_type.jnl
 *                   constants were not processed, so PLOT IF X GT 5 THEN 1
 *                   failed to pick up the data type of the constant 1
+* v552: 4/03 *acm*  Increase length of variable names to 128 characters
+*                   (variables are up to 128, so **name** needs extra space
+*                   i.e. for a transformation specifier)
+* v552: 5/03 *acm*  Use just the current item when dealing w/ G=uvar with 
+*                   target grid not yet known (intermediate variable buff)
 
 * calling argument declarations:
 	INTEGER	status
@@ -98,7 +103,7 @@
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type
-	CHARACTER VAR_CODE*4, name*128
+	CHARACTER VAR_CODE*4, name*150, buff*2048
 
 	include	'tmap_errors.parm'
 	include 'tmap_dims.parm'
@@ -341,6 +346,10 @@
 * deal with G=uvar with target grid not yet known -- get the target grid (8/99)
  800	CONTINUE
 * ... decode the character position of the "G=" target variable name
+* 5/03 bug fix acm: use buff here for just the current item, not the 
+*                   whole uvar_text(uvar) 
+* 
+        buff = uvar_text(uvar)(start:end)
 	end = (-cx_grid(hi_cx))/2000
 	start = (-cx_grid(hi_cx)) - 2000*end + unspecified_int4
 * 2/03 *kob* g77 port - need the '*' on call to errmsg to make it an
@@ -351,7 +360,7 @@
      .	.OR. end   .GT. cmnd_buff_len ) CALL ERRMSG(
      .			ferr_internal, status, 'G=uvar', *5000)
 
-	name = uvar_text(uvar)(start:end)
+	name = buff(start:end)
 	len_name = end - start + 1
 * ... the context stack is already pushed from above
 	CALL GET_VAR_CONTEXT (  name(:len_name),

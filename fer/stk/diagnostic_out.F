@@ -50,6 +50,7 @@
 * V450: 7/7/97 - make a readable short name from VAR_CODE
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars and change buff24 to buff64
 * V530 9/00 *sh* - output context or mr pointer rather than data set
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars and change buff64 to buff128
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
@@ -57,9 +58,8 @@
 
 * internal argument declarations:
 	INTEGER	    TM_LENSTR1, lenbuff, i
-	CHARACTER   VAR_CODE*64, buff64*64, buff8*8
+	CHARACTER   VAR_CODE*128, buff128*128, buff8*8
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
@@ -67,34 +67,25 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include 'xrisc.cmn'		! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'		! 12/94 SPLIT_LIST BUFFER
-#endif
 
 	risc_buff = ' '
 
 * readable variable name code
 	IF ( pointer_type .EQ. point_to_cx ) THEN
- 	   buff64 = VAR_CODE( cx_category(isub), cx_variable(isub) )
+ 	   buff128 = VAR_CODE( cx_category(isub), cx_variable(isub) )
 	ELSE
-	   buff64 = VAR_CODE( mr_category(isub), mr_variable(isub) )
+	   buff128 = VAR_CODE( mr_category(isub), mr_variable(isub) )
 	ENDIF
-	IF ( buff64(:2) .EQ. '(C' ) THEN
+	IF ( buff128(:2) .EQ. '(C' ) THEN
 ! ... use low order 2 digits from 3-digit numbers (shortening to 2-digits)
-	   buff8 = '(C'//buff64(4:5)//',V'//buff64(9:10)
+	   buff8 = '(C'//buff128(4:5)//',V'//buff128(9:10)
 	ELSE
-	   lenbuff = TM_LENSTR1(buff64)
+	   lenbuff = TM_LENSTR1(buff128)
 ! ... assemble short name from beginning and end of full name 
 	   IF (lenbuff .GT. 8 ) THEN
-	      buff8 = buff64(1:3)//'-'//buff64(lenbuff-3:lenbuff)
+	      buff8 = buff128(1:3)//'-'//buff128(lenbuff-3:lenbuff)
 	   ELSE
-	      buff8 = buff64
+	      buff8 = buff128
 	   ENDIF
 	ENDIF
 

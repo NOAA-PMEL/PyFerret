@@ -7,6 +7,7 @@
 * written for VAX computer under VMS operating system
 *
 * 9/99 *js*  First version hacked from read_binary
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars
 
 
 	include	'tmap_errors.parm'
@@ -40,7 +41,7 @@
      .			rec_to_read, nrepeat, columns, num_names, buffblk
 	INTEGER         lengths(5)
 	LOGICAL         firstTime
-	CHARACTER	VAR_CODE*24
+	CHARACTER	VAR_CODE*128
 	CHARACTER*256   cname,cerrmsg,ferrmsg
 
 * --- end of introductory code ---

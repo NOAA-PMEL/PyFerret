@@ -49,6 +49,8 @@
 * V500 4/99 *kob*: increase size of vname and axnam from 24 to 64
 *	- for wacky DODS variables
 * V533 *sh* 6/01 - add support for string variables (NCCHAR)
+* V500 4/99 *kob*: increase size of vname and axnam from 24 to 64
+* V552 *acm* 5/03   increase vname to 128 chars 
 
 
 * argument definitions:
@@ -83,7 +85,7 @@
      .        ndims, cdfstat, vdims(6), nvatts,
      .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset
 * 4/99 *kob* 
-      CHARACTER vname*64, axnam*64
+      CHARACTER vname*128, axnam*64
       REAL*8 TM_WORLD, file_val, mem_val
 
 * determine if this variable uses the record dimension

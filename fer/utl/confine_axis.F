@@ -61,8 +61,8 @@
 *                  and VAR_TITLE from 24 to 128
 * V520 *kob* 6/00 - had to had risc_buff text buffer for sgi output
 * V530 *acm* 1/01 - add cal_id for alternative calendar types
+* V552 *acm* 4/03- up VAR_CODE and err_str to 128 chars 
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -72,16 +72,6 @@
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, idim, status
@@ -92,10 +82,9 @@
 	INTEGER	ISUBSCRIPT, TM_LENSTR1, ss, min_ss, max_ss, lo_ss, hi_ss,
      .		axis, grid, lenstr, slen, cat, var, istat
 	REAL*8	SECS_FROM_BC, bc_to_t0, ww, min_ww, max_ww, lo_ww, hi_ww
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars  and err_string from 48 to 64
 *                  and VAR_TITLE from 24 to 128
-	CHARACTER VAR_CODE*64, CX_DIM_STR*48, VAR_TITLE*128,
-     .		  buff*48, err_str*64, expr_num*1
+	CHARACTER VAR_CODE*128, CX_DIM_STR*48, VAR_TITLE*128,
+     .		  buff*48, err_str*128, expr_num*1
 
 * internal parameter declarations:
 	LOGICAL     full_precision

@@ -8,6 +8,9 @@
 *
 * 7/98 *js*  First version hacked from read_ez
 * 3/99 *kob* - nag F90 wants to use eqv for logical expressions
+* V552 4/03 *acm* Up VAR_CODE to 128 characters
+* V552 5/03 *acm* Use ds_des_name(data_set) when opening the data; it has
+*                 the pathname as well as the filename
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -40,7 +43,7 @@
      .			rec_to_read, nrepeat, columns, num_names, buffblk
 	INTEGER         lengths(5), permutes(5), skip, doRead
 	LOGICAL         firstTime
-	CHARACTER	VAR_CODE*24
+	CHARACTER	VAR_CODE*128
 	CHARACTER*256   cname,cerrmsg,ferrmsg
 
 * --- end of introductory code ---
@@ -144,7 +147,8 @@
  3000	continue
 
 * initialize the binary reader
-	call toChar(ds_name(data_set), cname)
+!	call toChar(ds_name(data_set), cname)
+	call toChar(ds_des_name(data_set), cname)
 	if (BR_OPEN(cname, lengths, permutes,
      1      skip) .eq. 0) goto 6000
 

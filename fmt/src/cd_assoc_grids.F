@@ -50,6 +50,7 @@
 * V500:  4/99 *kob* - increase size of temp_axnams and vname from 16 to 64
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
 * V533 *sh* 6/01 - support for string variables
+* V552:  3/03 *acm* - increase size of vname to 128
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -91,8 +92,7 @@
      .        igrid, iaxis, istat, tmvar, ivar, ndim, idim
       CHARACTER*16 gname
 * variables for final (unnecessary?) check
-* 4/99 *kob* increase vname to 64 from 16
-      CHARACTER TM_STRING*13, vname*64, buff*64
+      CHARACTER TM_STRING*13, vname*128, buff*128
       INTEGER TM_LENSTR1,
      .        vartyp, nvdim, vdims(6), nvatts, dim, npts, vlen
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line

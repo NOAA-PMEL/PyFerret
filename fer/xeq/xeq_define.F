@@ -145,6 +145,8 @@
 *                     complex expr, for example "DEF AX/X  xax = a/2 + b/2")
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead 
+* v552: *acm* 4/03 Bug Fix: checking length of variable name. Length now 128
+
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_dims.parm'
@@ -250,7 +252,7 @@
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear
-	CHARACTER reg_name*4, buff1*256, buff2*128, buff3*128, 
+	CHARACTER reg_name*4, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
      .		  mon_names(12)*3
@@ -477,7 +479,7 @@
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
 	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5410
-        IF ( TM_LENSTR1(buff1) .GT. 24 ) GOTO 5410
+        IF ( TM_LENSTR1(buff1) .GT. 128 ) GOTO 5410
 	CALL FIND_VAR_NAME ( pdset_irrelevant, buff1, cat, var )
 	IF (  var .NE. munknown_var_name
      .	.AND. cat .EQ. cat_pseudo_var    ) GOTO 5420

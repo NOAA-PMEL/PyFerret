@@ -43,6 +43,8 @@
 * V530: 11/00 *sh*
 * V533: 6/01 *sh* - check that data type is correct instead of asserting it
 * V540: 10/01 *sh* - undo the erroneous change of V533 (why was V533 chg done?)
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -72,8 +74,7 @@
      .			field_type(maxezvars),
      .			mr1, ndim, las_dim, fst_dim, dims(4),
      .			rec_to_read, buffblk
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars
-	CHARACTER	VAR_CODE*64, delims*80
+	CHARACTER	VAR_CODE*128, delims*80
 
 * --- end of introductory code ---
 

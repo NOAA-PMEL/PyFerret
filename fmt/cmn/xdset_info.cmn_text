@@ -15,6 +15,9 @@
 * V530 *sh* 10/00 - added ds_var_type and ds_file_info_ptr
 * revision 1.07 - 12/00 - *acm* add line_cal_name for alternate calendar axes.	
 * V540 *acm 10/01 - increase length of ds_name 
+* V552 *acm* 5/03 increase ds_var_code to 128 characters
+*                 NOTE this is the max: NetCDF parameter NC_MAX_NAME = 128
+*                 
 
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
@@ -79,7 +82,7 @@
 
 * "VARIABLE RECORD (one record per file variable)
 	CHARACTER*1	ds_precision
-	CHARACTER*64	ds_var_code       ! was *24 (*kob* 3/99)
+	CHARACTER*128	ds_var_code !NOTE this is the max: NetCDF param NC_MAX_NAME=128
 	CHARACTER*64	ds_var_units
 	CHARACTER*128	ds_var_title,ds_var_titl_mod
 	INTEGER*4	ds_grid_start,ds_grid_end,ds_grid_number,

@@ -85,6 +85,7 @@
 * V550 *acm* 1/03 - Account for differences in behavior of CD_GET_ATTVALC
 *                   under OSF and PC.
 * V552 *acm* 1/03 - error checking on value of calendar attribute.
+* V552 *acm* 5/03   increase vname and vupcase to 128 chars 
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -139,8 +140,7 @@
       REAL    rbuff, delta, first_delta
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen, tmp
       CHARACTER*12 TM_LEFINT
-* 4/99 *kob* increase vname and vupcase from 24 to 64 chars 
-      CHARACTER vname*64, ename*30, vupcase*64, words(8)*24,
+      CHARACTER vname*128, ename*30, vupcase*128, words(8)*24,
      .        spacing_attr*14
       CHARACTER*13 TM_STRING
       CHARACTER*132 buff

@@ -70,6 +70,7 @@
 *              parameter values
 * V510 *sh* 3/00: added tregular argument
 *		- convert to dynamic grid and axis management
+* V552 5/03 *acm*: increase size of vname from 64 to 128 chars
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -78,7 +79,6 @@
 *	status	- return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -95,18 +95,6 @@
         include 'xdset_info.cd_equiv'
         include 'xio.cmn_text'
         external xio_data
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-        EXTERNAL XIO_DATA
-#endif
 
 * argument declarations:
 	LOGICAL        reversed(max_lines:line_ceiling), tregular
@@ -131,12 +119,14 @@
      .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
      .        ngatts, recdim, istat, npts, lasdim, attype, epic_t2
 * 4/99 *kob*
-      CHARACTER    vname*64, name*16, buff*64
+      CHARACTER    vname*128, name*16, buff*128
       CHARACTER*13 TM_STRING
       REAL*4  global_bad
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
+      INTEGER max_vnamelen
+      PARAMETER (max_vnamelen = 128)
 
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv because "BYTE"
 * isn't supported on DECstation
@@ -220,8 +210,8 @@
            IF ( its_epic .AND. vname(:vlen).EQ.'time2' ) GOTO 1000
 
 * Is it an edge definition ? If so, process w/ corresponding axis
-           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'edges',
-     .                            do_warn, vname(:vlen), buff, 64 ) !linenamlen
+           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'edges', do_warn, 
+     .                            vname(:vlen), buff, max_vnamelen ) !linenamlen
            IF ( got_it .AND. buff.EQ.' ' ) GOTO 1000
 
 * or is it really a child axis (avail for. generic CDF apps but not needed) ?

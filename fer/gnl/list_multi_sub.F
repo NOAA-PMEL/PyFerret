@@ -61,8 +61,8 @@
 *			  because it needed a preprocessor.
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
 * V530  8/00 - added support for string variables
+* V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -76,20 +76,6 @@
 	include 'xtext_info.cmn'
 	include 'xinterrupt.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST BUFFER
-#endif
 
 * local parameter declarations:
 	LOGICAL		no_decims
@@ -109,6 +95,7 @@
 * ss_save removed from integer declaration and put in logical decl.  *kob* 8/94	
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's to 64 chars and KEY_STRING
 *                  to 128 and VAR_UNITS to 64
+* V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
 * local variable declarations:
 	LOGICAL		all_bad, do_unform,ss_save
 	INTEGER		TM_LENSTR1, CGRID_AXIS, GET_MAX_STRING_LEN,
@@ -121,14 +108,14 @@
      .			min_width, row_ww_wid
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
-     .			CX_DIM_STR*16, VAR_CODE*64,
+     .			CX_DIM_STR*16, VAR_CODE*128,
      .			buff1*16, buff2*16, buff3*16, line_buff*500,
      .			row_ss_fmt*14, bad_ax*5,
      .			col_head_format*32, sep*1
 	REAL		big, small, biggest
 	REAL*8		TM_WORLD
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
-     .			vcode(max_intrp)*64
+     .			vcode(max_intrp)*128
 #ifdef DEC_FORTRAN
 	INTEGER		ios
 #endif

@@ -57,6 +57,7 @@
 *          cdfname, vname and gname to 64 from 24 to match longer line_name
 * V533 *sh* 6/01 - added support for netCDF output string variables
 *		 - check for consistency of data type on APPEND operations
+* V552 *acm* 5/03   increase vname to 128 chars 
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -101,8 +102,9 @@
      .        lo2(4), hi2(4), what_recdim, strdim
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
+* acm* vname to 128
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64, lname*64,
-     .		cdfname*64, vname*64, gname*64
+     .		cdfname*64, vname*128, gname*64
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       CHARACTER*1     dimnam(4)

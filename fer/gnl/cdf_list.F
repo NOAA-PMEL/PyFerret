@@ -74,6 +74,7 @@
 * V530 *acm* 3/01 pass calendar ID to EQUAL_RANGE
 *            4/16/01 properly declare TM_GET_CALENDAR_ID as integer
 * V533 *sh* 6/01 - added support for netCDF output string variables
+* V552 *acm* 4/03- up SANITARY_VAR_CODE and local variable varcode to 128 chars
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -114,9 +115,11 @@
      .			write_lo(4), write_hi(4), make_lo(4), make_hi(4)
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
-	CHARACTER	SANITARY_VAR_CODE*64, VAR_TITLE*140,
+* V552 *acm* 4/03- up SANITARY_VAR_CODE and local variable varcode to 128 chars
+
+	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
-     .                  varcode*64, buff*140, revnum*4, c1*1
+     .                  varcode*128, buff*140, revnum*4, c1*1
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
 

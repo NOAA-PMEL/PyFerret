@@ -59,8 +59,8 @@
 * V510: *sh* 3/00 - bug fix: needless (?) reference to cx_last
 *		(see err500_2nd_try.jnl)
 * V510: 6/00 *sh* - bug fix trap /COLUMNS= >grid size
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars
 
-#ifdef unix
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -73,18 +73,6 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	cx, mr, status
@@ -97,8 +85,7 @@
      .			cx0, cx1, cx20(20), mr20(20), nread,
      .			mr1, ndim, las_dim, fst_dim, dims(4), rec1,
      .			rec_to_read, nrepeat, columns, num_names, buffblk
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars
-	CHARACTER	VAR_CODE*64
+	CHARACTER	VAR_CODE*128
 
 * --- end of introductory code ---
 

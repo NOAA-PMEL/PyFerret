@@ -49,6 +49,7 @@
 *      3/99 *sh* - disallow implicit grids (e.g. "Z[gz=zax]")
 * V532 5/01 *sh* - use EVAL_CONTEXT to get grid of expression
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
+* v552: 4/03 *acm*  Increase length of variable names to 128 characters
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -63,7 +64,7 @@
 * local variable declarations:
 	INTEGER		STR_UPCASE, TM_GET_GRIDNUM,
      .			vax_code, grid
-	CHARACTER	name*32
+	CHARACTER	name*128
 
 * change it to upper case
 	vax_code = STR_UPCASE( name, lc_name )

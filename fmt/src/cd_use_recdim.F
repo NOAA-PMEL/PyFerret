@@ -47,6 +47,7 @@
 * 2jun94 *kob* initialization of cd_use_recdim needs to be boolean .FALSE
 * 		instead of 0
 * V500 4/99 *kob*: increase size of vname from32 to 64
+* V552 *acm* 5/03   increase vname to 128 chars 
 
 
 * argument definitions:
@@ -58,21 +59,14 @@
 	INTEGER	      cdfid, varid, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * local variable declarations:
       INTEGER ndims, nvars, ngatts, recdim, cdfstat, vartyp, nvdims,
      .        vdims(6), nvatts
-* 4/99 *kob*
-      CHARACTER vname*64
+      CHARACTER vname*128
 
 *initialize
 * 2jun94 *kob* changed initialization from 0 to .FALSE.

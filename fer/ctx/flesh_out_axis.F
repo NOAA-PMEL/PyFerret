@@ -69,6 +69,7 @@
 * v5.3 *acm* 1/01 - line_cal_name is part of the data set information
 * V530: *sh* 4/01 - added comment about in_get_grid_mode
 * V533: *sh* 6/01 - added logic for strides (cx_delta)
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -93,8 +94,7 @@
      .		ss, lo_ss, hi_ss, axis, grid, cat, var, ispread
 	INTEGER TM_GET_CALENDAR_ID, cal_id
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
-* kob 3/99 up VAR_CODE from 8 to 64 chars
-	CHARACTER	VAR_CODE*64, string*40
+	CHARACTER	VAR_CODE*128, string*128
 
 * initialize
 	var  = cx_variable( cx )

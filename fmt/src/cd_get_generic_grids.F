@@ -57,6 +57,7 @@
 *			checked for dup names later
 *	     3/00 - convert to dynamic grids and axes
 * V533: *sh* 6/01 - support for string variable input
+* V552 *acm* 5/03   increase vname to 128 chars 
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -103,7 +104,7 @@
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        axid, tmvar, tmpgrid, npts, dim, tmplines(4), ndim,
      .	      grid_dims(4), trans(4), indices(4), i
-      CHARACTER name*64, vname*64	! 4/99:both were  16 chars
+      CHARACTER name*64, vname*128
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)

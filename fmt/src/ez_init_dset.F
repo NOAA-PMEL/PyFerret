@@ -65,6 +65,7 @@
 *      *acm* 10/01  remove VMS include statements
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead
+* V552 5/03 *acm*: increase size of var_name to 128 chars
 
 
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -106,7 +107,8 @@
 *
 * Local definitions
         LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited
-	CHARACTER*24	var_names(maxezvars), type_names(maxezvars)
+	CHARACTER*24	type_names(maxezvars)
+	CHARACTER*128	var_names(maxezvars)
 	INTEGER*4	TM_LENSTR1,
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),

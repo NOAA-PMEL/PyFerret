@@ -10,6 +10,7 @@ c*
 c* This returns the name, title and dataset associated 
 c* with an argument.
 c*
+* V552 *acm* 4/03- up VAR_CODE decl from 64 to 128 chars
 
       SUBROUTINE ef_get_arg_info(id, iarg, name, title, units )
 
@@ -21,7 +22,7 @@ c*
       INTEGER cat, var
 
       CHARACTER*(*) name, title, units
-      CHARACTER var_code*24, var_title*128, var_units*32
+      CHARACTER var_code*128, var_title*128, var_units*32
 
       INTEGER cx_list(EF_MAX_ARGS)
 

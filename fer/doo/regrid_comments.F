@@ -43,6 +43,7 @@
 * V510: 4/00 *sh* - netCDF grids are now dynamic, so "(" as first character
 *		    of name is basis for not using the associated variable
 * V533: 6/01 *sh* - @XACT doesn't need a comment if for xact strides
+* V552  4/03 *acm*  up gname_from_number to 128 characters (variable names)
 
 	include	'tmap_dims.parm'
 	include	'implicit.parm'
@@ -64,7 +65,7 @@
 	INTEGER	TM_LENSTR1, KNOWN_GRID,
      .		var, categ, dset, mlen, maxlen, idim, std_grid, n,
      .		axis, slen
-	CHARACTER TM_FMT*16, GNAME_FROM_NUMBER*32, units*24, trans*8
+	CHARACTER TM_FMT*16, GNAME_FROM_NUMBER*128, units*24, trans*8
 
 * initialize
 	IF ( .NOT. cx_unstand_grid(cx) ) THEN

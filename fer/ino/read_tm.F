@@ -50,6 +50,7 @@
 *	3/99 - *kob* up VAR_CODE and local var variable_code to 64 chars
 *	5/99 - *sh* added strides to TMAP read calls
 * V533: 6/01 - *sh* initialize string input variable
+* v552: 4/03 - *acm* up VAR_CODE and local var variable_code to 128 chars
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -76,7 +77,7 @@
      .			hi_s1, hi_s2, hi_s3, hi_s4,
      .			stride(4)
 * V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
-	CHARACTER*64	VAR_CODE, variable_code
+	CHARACTER*128	VAR_CODE, variable_code
 
 * *kob* 2/99 - add declaration for new c function
 	INTEGER REPLACEABLE_BAD_FLAGS

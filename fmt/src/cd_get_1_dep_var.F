@@ -47,6 +47,7 @@
 * V533 6/01 *sh* -- set the variables data type
 * V542 11/02*acm*  For 4-D string NetCDF files, allow nvdim to be 5 when
 *                  code checks for "Unsupported netCDF # of axes".
+* V552 5/03 *acm*: increase size of vname from 64 to 128 chars
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -63,7 +64,7 @@
 	REAL*4	      global_bad
 
 * include files
-#ifdef unix
+
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -75,18 +76,7 @@
         include 'xdset_info.cd_equiv'
         include 'xio.cmn_text'
         external xio_data
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-        EXTERNAL XIO_DATA
-#endif
+
 
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, CD_GET_BOUNDS,
      .        TM_LEGAL_NAME,
@@ -99,7 +89,7 @@
      .        vartyp, nvdim, vdims(6), nvatts, i, vlen,
      .        ngatts, recdim, istat, npts, lasdim, attype
 * 4/99 *kob* increase size of vname
-      CHARACTER    vname*64, buff*64
+      CHARACTER    vname*128, buff*128
       CHARACTER*13 TM_STRING
 
       INTEGER tt  ! nice short name

@@ -70,8 +70,9 @@
 * Linux Port 5/97 *kob* - had to add ifdef F90_OPEN_FILE_APPEND because f90
 *			  uses "POSITION" instead of "ACCESS" to specify 
 *			  opening a file for append.
+* v552  4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
+*                  space for the transformation specifier)
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -80,14 +81,6 @@
 	include 'xtext_info.cmn'
 #ifdef NO_PASSED_CONCAT	
 	include 'xrisc.cmn'
-#endif
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
 #endif
 
 * calling argument declarations:
@@ -105,7 +98,7 @@
      .		ssorww(4), out_lun,
      .		i, flen, fmlen, npts, cx, ndim, dim(4), cxpts(2:5)
 	REAL	missing
-	CHARACTER VAR_TRANS*48, buff*48
+	CHARACTER VAR_TRANS*150, buff*150
 	
 * internal parameter definitions
 	INTEGER by_ss, by_ww, by_nothin

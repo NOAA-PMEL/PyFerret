@@ -75,6 +75,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01 remove VMS include statements
 * v552 *acm*  3/03 bug fix: If maxstepfiles > maxvarfiles, got error on closing dataset.
+* V552 *acm*  5/03 increase size of ds_var_code from 64 to 128 chars
 *                  
 
 * arguments:
@@ -148,7 +149,7 @@
 	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 120
 * ... deallocate grids and axes used by the dat aset
 	  CALL TM_DEALLO_DYN_GRID( ds_grid_number(ivar))
-	  ds_var_code(ivar)		=	char_init64
+	  ds_var_code(ivar)		=	char_init128
 	  ds_var_title(ivar)		=	char_init128
 	  ds_var_titl_mod(ivar)		=	char_init128
 	  ds_var_units(ivar)		=	char_init64

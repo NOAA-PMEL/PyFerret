@@ -46,8 +46,8 @@
 * V230:  11/4/92 - expanded variable name length
 * V420:	 9/25/95 - comments appropriate to dynamic grids
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars and VAR_TITLE to 128
+* V552 *acm* 4/03- up VAR_CODE  to 128 chars and name to 256 (ds_name)
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xtext_info.cmn'
@@ -56,26 +56,17 @@
 	external xgt_grid_data
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 * calling argument declarations
 	LOGICAL	flags(0:10)
 	INTEGER	cx, slen
 
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars
 * local variable declarations:
 	LOGICAL		save_by_ss
 	INTEGER		TM_LENSTR1, idim, maxlen, plen, categ, var, dset
-	CHARACTER 	ALG_TRANS_CODE*3, ARG_STRING*12, VAR_CODE*64,
+	CHARACTER 	ALG_TRANS_CODE*3, ARG_STRING*12, VAR_CODE*128,
      .			VAR_TITLE*128, CX_DIM_STR*40, REGRID_COMMENTS*64,
-     .			prefix*1, dim_name*1, name*48
+     .			prefix*1, dim_name*1, name*256
 
 * local parameter declarations:
 	LOGICAL		full_prec

@@ -63,6 +63,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v552 *acm*  4/03 Initialize ds_var_off, ds_var_scale, ds_var_scaleit
+* v552 *acm*  5/03 change ds_var_code length to 128
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
@@ -113,7 +114,7 @@
 	DATA	ds_time_axis		/maxdsets*int4_init/
 
 * Next clear variables associated with variable in that data set.
-	DATA	ds_var_code		/maxvars*char_init64/
+	DATA	ds_var_code		/maxvars*char_init128/
 	DATA	ds_var_title		/maxvars*char_init128/
 	DATA	ds_var_titl_mod		/maxvars*char_init128/
 	DATA	ds_var_units		/maxvars*char_init64/
@@ -135,8 +136,8 @@
 	DATA	min_ds_tstart		/int4_init/
 	DATA	max_ds_tend		/int4_init/
 	DATA	ds_tdelta		/int4_init/
-	DATA	ds_var_off		/maxvars*0./
-	DATA	ds_var_scale		/maxvars*1./
+	DATA	ds_var_off		/maxvars*0.0/
+	DATA	ds_var_scale		/maxvars*1.0/
 	DATA	ds_var_scaleit		/maxvars*.FALSE./
 
 	END

@@ -51,6 +51,7 @@
 *      - 7/99 *sh* - bug fix: need conosotent use of char_init16 on line_name
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
 *		 - use TM_GET_LINEMATCH to ensure that renamed axes also match
+* V552 *acm* 5/03   increase vname and buff to 128 chars 
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -60,7 +61,6 @@
 *	status	- return status
 
 * include files
-#ifdef unix
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -69,15 +69,7 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'xdset_info.cmn_text'
-#else
-        INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-#endif
+
 
 * argument declarations
 	INTEGER	 dset, cdfid, status
@@ -95,7 +87,8 @@
      .        igrid, iaxis, count, idim, i_dup, ivar,
      .        npts, cdfstat,  reused(max_lines:line_ceiling)
 * upped vname to 64 - also removed the *24 from the CHARACTER
-      CHARACTER vname*64, buff*64
+* upped vname to 128 
+      CHARACTER vname*128, buff*128
 
 ***** AXES ******
 * check for duplicate name / guts of axes

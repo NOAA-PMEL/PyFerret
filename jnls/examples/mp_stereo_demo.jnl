@@ -25,10 +25,10 @@ LET masked_rose = rose * mp_mask
 GO mp_aspect
 
 !   Plot the data.  Use SHAKEY to make the color key at the top of the plot and
-!   control its size and location.  For a description of SHAKEY see the document
-!   "Ferret-specific PPLUS enhancements" at
-!   http://ferret.pmel.noaa.GOv/Ferret/Documentation/PPLUS_Users_Guide/pplus_enhance_user_guide.html
+!   control its size and location.  For a description of SHAKEY see the on-line
+!   Ferret Users' Guide at http://www.ferret.noaa.gov/Ferret/Documentation/Users_Guide/current/fer_html.htm
 
+!   The arguments to SHAKEY are 
 !   SHAKEY do_key, orient, klab_siz, klab_inc, klab_dig, klab_len, kx_lo, kx_hi, ky_lo, ky_hi
 !   Here we place a key at the top, label size 0.1.  Every second interval is labelled.
 !   The x-coordinates of the corners of the key are 2.5, 8.5  and the bottom and top 

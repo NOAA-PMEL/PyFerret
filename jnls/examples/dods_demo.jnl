@@ -32,7 +32,7 @@ PAUSE
 
 
 
-set data "http://ferret.pmel.noaa.gov/cgi-bin/nph-nc/data/coads_climatology.nc"
+set data "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/coads_climatology.nc"
 show data
 
 

@@ -30,4 +30,4 @@
 #
 # Installation prefix (default is `../..'):
 # prefix=/usr/local/unidata
- prefix=${XGKS_PREFIX:-/home/l2/tmap/local/solaris}
+prefix=../lib

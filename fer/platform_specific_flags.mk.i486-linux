@@ -31,7 +31,7 @@ FINCLUDES	= -I../../ppl/tmap_inc \
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
  
 # New platform type var - *kob* 10/01
-PLATFORM = Linux 2.4.3-12smp
+PLATFORM = Linux(g77) 2.4.x
 
 
 
@@ -53,7 +53,7 @@ CPP_FLAGS       = $(INCLUDES) -P -Dunix   \
 		  -DXT_CODE -Dsun4 -DLINUX -DNO_PASSED_CONCAT \
 	          -Dcrptd_cat_argument \
 	          -DG77_SIGNAL -DG77 -DusingDODSf2cUnderscore \
-	          -DNO_INTRINSIC_IN_PARAMETER
+	          -DNO_INTRINSIC_IN_PARAMETER -DINTERNAL_READ_FORMAT_BUG
 
 CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
 FFLAGS          =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
@@ -72,18 +72,21 @@ LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -export-dynamic
 
 
 SYSLIB		= -L/usr/X11R6/lib  /usr/local/lib/libf2c.a -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/2.96/libg2c.a
+#SYSLIB		= -L/usr/X11R6/lib   -lm -ldl /usr/X11R6/lib/libXpm.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp -lXmu -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/libg2c.a
 
 TMLIB		= ../lib/tmap_lib.a
-
-GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
+GKSLIB          = /home/ja9/kobrien/BETA_BUILDS/linux/FERRET/xgks/src/lib/libxgks.a
+#GKSLIB		= /home/ja4/kobrien/linux/g77/FERRET/xgks/src/lib/libxgks.a
 #GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
 READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
 
-HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
+HDFLIB		= -L/usr/local/src/HDF/lib  -ldf -ljpeg -lz
 
 CDFLIB		= -lnetcdf
 
-DODS_LIBS   	= -L$(TMAP_LOCAL)/src/DODS/lib -L$(TMAP_LOCAL)/src/DODS/packages/lib $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -ldap++  $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6
+DODS_LIBS   	= -L/home/stout/kobrien/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypto.a /usr/lib/libssl.a /usr/lib/libpthread.a /usr/lib/libcrypto.a -lrx -lz
+
+TERMCAPLIB	= -lncurses
 
 LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

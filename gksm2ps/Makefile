@@ -63,10 +63,10 @@ hp:
 i486-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include/ -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
+		CFLAGS=" -I/usr/lib/gcc-lib/i386-redhat-linux/2.96/include/ -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
-		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
-		LIB="-L/usr/X11R6/lib -lX11static -lm"
+		GKLIB="../xgks/src/lib/libxgks.a" \
+		LIB="-L/usr/X11R6/lib -lX11 -lm"
 
 i586:
 	${MAKE} gksm2ps \

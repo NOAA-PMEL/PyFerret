@@ -403,6 +403,9 @@ GO bn_reset
 GO bn_all_leap.jnl
 
 GO bn_reset
+GO bn_reset_attributes.jnl
+
+GO bn_reset
 GO bn570_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

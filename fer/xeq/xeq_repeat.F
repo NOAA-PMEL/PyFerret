@@ -74,11 +74,11 @@
 
 * local variable declarations
 	LOGICAL	by_date, report_unknown, range
-	INTEGER	i, idim, limits_cx, status, csp1, rlo, rhi, rdel
+	INTEGER	INDEX, i, idim, limits_cx, status, csp1, rlo, rhi, rdel
 	REAL*8	temp
  
 	INTEGER STR_UPCASE, loc, equal_pos, last_pos, dflt_cx, cvar,
-     .          istart, iflag
+     .          istart, iflag, locr, cat, var
 	REAL val
 	CHARACTER GKS_X_CONID*16, anim_win_id*16, counter_name*128
 	LOGICAL loop
@@ -87,14 +87,46 @@
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
      .			( ferr_invalid_command, status, 'REPEAT what ?', *5000 )
 
+
+* Did they specify /NAME without /RANGE=?
+
+          loc = qual_given(slash_repeat_name) 
+          IF (loc .GT. 0) THEN
+             locr = qual_given(slash_repeat_range) 
+
+	     IF (locr .LE. 0) GO TO  5100
+
+          ENDIF
+
 *acm 1/01 check to see if we are using /RANGE=
        loc = qual_given(slash_repeat_range) 
        range = (qual_given(slash_repeat_range) .GT. 0)
        IF (range) THEN
           idim = 1
 
-           equal_pos = INDEX(cmnd_buff, '=')
            last_pos = qual_end(loc)
+           equal_pos = 
+     .          INDEX(cmnd_buff(qual_start(loc):last_pos), '=') +
+     .          qual_start(loc) - 1
+
+
+* Did they specify /RANGE and also /I/J/K/L/X/Y/Z/T ?
+	   report_unknown = .FALSE.
+	   limits_cx = cx_stack_ptr_base + 1
+	   CALL INIT_CONTEXT_MODS ( limits_cx )
+	   CALL GET_CONTEXT_MODS ( cx_last,
+     .				cmnd_buff,
+     .				limits_cx,
+     .				max_qual_list,
+     .				num_qualifiers,
+     .				qual_start,
+     .				qual_end,
+     .				report_unknown,
+     .				status	)
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   DO 100 i = 1,4
+	      IF ( cx_given(i,limits_cx) ) GOTO 5300
+ 100	   CONTINUE
 
 * Are we using a name for the repeat counter?
           counter_name = 'REPCOUNT'
@@ -104,11 +136,21 @@
 
 	     CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        counter_name, status )
+
              IF ( status .NE. ferr_ok ) GOTO 5000
+
+* Check for legal name: not already defined, not a pseudo-var
+
+	     CALL FIND_VAR_NAME ( pdset_irrelevant, counter_name, 
+     .                            cat, var )
+             IF ( cat .EQ. cat_pseudo_var   ) GOTO 5200
+             IF ( cat .EQ. cat_counter_var   ) GOTO 5400
+
           ENDIF
 
 * allocate next spot for the given limits on the control stack
 * ... but leave the stack in place in case of errors in this routine
+
 	   CALL STACK_PTR_UP( csp, cs_max, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   csp1 = csp
@@ -119,7 +161,7 @@
 
            istart = 1
 	   CALL INIT_COUNTER_VAR ( counter_name, cmnd_buff(equal_pos+1:last_pos), 
-     .             istart, last_pos-equal_pos, rlo, rhi, rdel, cvar, status )
+     .             istart, last_pos-equal_pos, rlo, rhi, rdel, cvar, status )\
 
 	   IF ( status .NE. ferr_ok ) RETURN
 
@@ -196,7 +238,7 @@
 	      first_frame = .TRUE. 
 	   ENDIF
 
-        ELSE  ! not range
+        ELSE  ! not /RANGE
 
 * get the limits for repeating
 *  eg. "REPEAT/X=160E:140W:10 LIST/X=-5D:+5D/Y=0D:5D TEMP"
@@ -220,7 +262,7 @@
 
 * determine the (unique) axis of REPEATing
 	   idim = unspecified_int4
-	   DO 100 i = 1,4
+	   DO 200 i = 1,4
 	      IF ( cx_given(i,limits_cx) ) THEN
 	         IF ( idim .EQ. unspecified_int4 ) THEN
 	            idim = i
@@ -229,7 +271,7 @@
      .			'Use nested REPEAT for multiple axes', *5000 )
 	         ENDIF
  	      ENDIF
- 100	   CONTINUE
+ 200	   CONTINUE
 	   IF ( idim .EQ. unspecified_int4 ) CALL ERRMSG
      .		(ferr_invalid_command,status,'REPEAT on which axis ?',*5000)
 
@@ -343,6 +385,19 @@
 * error exit
 * ... control stack pointer, CSP, corrected in GFD_ERROR_HANDLER
  5000	RETURN
+
+ 5100	CALL ERRMSG( ferr_invalid_command, status,
+     .		'REPEAT/NAME requires /RANGE', *5000 )
+ 5200   CALL ERRMSG( ferr_syntax,status,
+     .  'cannot use pseudo-variable name for repeat counter: '
+     .              //counter_name,*5000 )
+ 5300   CALL ERRMSG( ferr_syntax,status,
+     .  'REPEAT/RANGE cannot be used with an axis qualifier '//cmnd_buff ,*5000 )
+
+ 5400   CALL ERRMSG( ferr_syntax,status,
+     .  'nested REPEAT loops with the same counter name '
+     .             //counter_name,*5000 )
+
 	END
 
 

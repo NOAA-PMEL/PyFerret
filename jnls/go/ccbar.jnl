@@ -1,14 +1,11 @@
 \CANCEL MODE verify
+! ccbar.jnl - 5/02  ms and acm
 
-! Continuous colorbar script.   
-! uses a shade plot inside a viewport to make a colorbar
-! 5/16/02  ms and acm
-
-! Usage:
+! Description: Continuous colorbar script: uses a shade plot in a viewport to make a colorbar
 ! 
-!   yes? SET VIEW full      ! Or any other viewport
-!   yes? SHADE var          ! Or FILL var
-!   yes? GO ccbar x1 x2 y1 y2 v1 v2 dv orient
+
+!          arg 1  arg 2  arg 3  arg 4  arg 5  arg 6  arg 7  arg 8
+! GO ccbar  x1     x2     y1     y2     v1     v2     dv     orient
 !
 !         x1 = x lo limit of rectangle for the colorbar
 !         x2 = x hi limit of rectangle for the colorbar
@@ -19,13 +16,24 @@
 !         v2 = hi value on colorbar
 !         dv = delta value for clorbar axis
 !
-!         orientation = v for vertical or h for horizontal, default v
-!         palette to use, optional
+!         arg 7 = orientation, v for vertical or h for horizontal, default v
+!         arg 8 = palette to use, optional
 
 ! Where the first four arguments define a rectangle, as a fraction 
 ! of the entire plot page.  This is equivalent to how DEFINE VIEWPORT 
 ! works.  Its qualifiers /XLIMITS=x1,x2 and /YLIMITS=y1,y2 allow the 
 ! user to specify a portion of the graphics window as the viewport.
+
+!  Example:
+!   yes? SET VIEW full
+!   yes? SHADE/i=1:50/y=1:50/NOKEY i+j
+!   yes? GO ccbar .91 .94 .2 .8 0 100 2 
+!
+!  Or, a horizontal colorbar with a viewport plot:
+!   yes? SET VIEW ur
+!   yes? FILL/I=1:50/J=1:50/LEV=(0,110,2)/NOKEY/PAL=no_green i+j
+!   yes? GO ccbar 0.65,0.9, 0.92,0.94, 0,110,2, h, no_green
+
 
 ! Check inputs. First 7 are required
 
@@ -80,14 +88,14 @@ ENDIF
 !  I2 format if range in [-9,99]
 
 IF `ccb_v1 GE -9` THEN
-  IF `ccb_v2 LT 1000` THEN LET ccb_fmt = 1
-  IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I2)
+  IF `ccb_v2 LT 100` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 100` THEN DEFINE SYM ccb_yform = (I2)
 ENDIF
 
 !  I1 if in range 0 [0,9]   This may not be adequate!
 IF `ccb_v1 GE 0` THEN 
-  IF `ccb_v2 LT 1000` THEN LET ccb_fmt = 1
-  IF `ccb_v2 LT 1000` THEN DEFINE SYM ccb_yform = (I1)
+  IF `ccb_v2 LT 10` THEN LET ccb_fmt = 1
+  IF `ccb_v2 LT 10` THEN DEFINE SYM ccb_yform = (I1)
 ENDIF
 
 ! Otherwise use default axis labelling...
@@ -95,6 +103,7 @@ ENDIF
 IF `ccb_v2 - ccb_v1 LT 2` THEN 
   LET ccb_fmt = 0
 ENDIF
+
 ! ----------------------------------------------------------------------
 
 !  Plot the variable within the colorbar.
@@ -112,8 +121,8 @@ set mode ver
 ENDIF
 
 ! Clean up
-CANCEL VAR ccb_*
-CANCEL AXIS ccb_xcb
-CANCEL AXIS ccb_ycb
+!CANCEL VAR ccb_*
+!CANCEL AXIS ccb_xcb
+!CANCEL AXIS ccb_ycb
 
 SET MODE/LAST verify

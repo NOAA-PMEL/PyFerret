@@ -10,6 +10,8 @@
 * 7/98 - *sh* increased num_state and num_class to add single quoted varnames
 * 12/98 - *sh*  increased num_state and num_class to add {1,3,5} notation
 *  1/99 - *sh*  increased num_state and num_class to add string variables
+* V530  10/00 - *sh*  increased maxatoms and max_exp
+
 	integer		maxatoms,
      .			max_fcn,
      .			max_exp,
@@ -26,9 +28,9 @@
      .			num_state,
      .			num_class
 
-	parameter     ( maxatoms		= 250,
+	parameter     ( maxatoms		= 1000,
      .			max_fcn 		= 25,
-     .			max_exp 		= 20,
+     .			max_exp 		= 200,
      .			max_wte			= 3,
      .			where			= 1,
      .			pthen			= 2,

@@ -1,0 +1,13 @@
+! bn580_bug_fixes.jnl
+! test various fixes that went into version 5.80
+! 7/04 *acm*
+!
+
+! POLYGON (or SHADE) plots with a single level had no fill color
+GO bn_reset
+GO err570_fill_singlecolor.jnl
+
+! colorbar labels too close to the bar, when user sets bar location
+GO bn_reset
+GO err570_shakeylab.jnl
+

@@ -7,6 +7,7 @@
 * 12.98   - increased num_predefined_alias -> 14 for alias "pattern" *jd*
 * 2/99 *sh* - added POLYGON command
 * 3/99 *jd* - increase qualifiers for POLYGON to 30   
+* 3/99 *jc* - increased possible qualifiers for SHOW FUNCTION
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -132,7 +133,7 @@
      .			nqual2r = 1, nqual_at2s = nqual_at2r + nqual2r,	!'****'
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'****'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'****'
-     .			nqual2u = 3, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
+     .			nqual2u = 5, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
      .			nqual2v = 3, nqual_at3a = nqual_at2v + nqual2v	!'QUER'
      .		      )
 

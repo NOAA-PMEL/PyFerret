@@ -7,7 +7,7 @@ C  with change noted below for the case where N=1
       INTEGER N
       REAL RA(*), IB(*), BAD
 
-      INTEGER L, L, IR, J, I, NGD
+      INTEGER L, IR, J, I, NGD
       REAL RRA, IIB
 
 * From SHELLR

@@ -204,19 +204,22 @@
 
 *  Check that we do have an index of ARG_2; set the result
 
-                  IF (aorder .EQ. bad_flag(ARG1)  .OR. 
-     .                arg_2(iorder,j2,k2,l2) .EQ. bad_flag(ARG2))
-     .              THEN
-                        result(i,j,k,l) = bad_flag_result
+                  IF (aorder .EQ. bad_flag(ARG1)) THEN
+                     result(i,j,k,l) = bad_flag_result
+                  ELSE
 
-                   ELSE
-                      IF (iorder .LT. arg_lo_ss(X_AXIS,ARG2)  .OR.
-     .                    iorder .GT. arg_hi_ss(X_AXIS,ARG2) ) THEN
+                     IF (iorder .LT. arg_lo_ss(X_AXIS,ARG2)  .OR.
+     .                   iorder .GT. arg_hi_ss(X_AXIS,ARG2) ) THEN
                         GO TO 999
+                     ELSE
 
-                      ELSE
-                        result(i,j,k,l) = arg_2(iorder,j2,k2,l2)
-
+                        IF (arg_2(iorder,j2,k2,l2) .EQ. bad_flag(ARG2))
+     .                   THEN
+                           result(i,j,k,l) = bad_flag_result
+                        ELSE
+                           result(i,j,k,l) = arg_2(iorder,j2,k2,l2)
+ 
+                        END IF
                      END IF
                   END IF
 

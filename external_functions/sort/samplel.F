@@ -184,6 +184,7 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+
       i1 = arg_lo_ss(X_AXIS, ARG1)
       i2 = arg_lo_ss(X_AXIS, ARG2)
       DO 400 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
@@ -208,19 +209,22 @@
 
 *  Check that we do have an index of ARG_2; set the result
 
-                  IF (aorder .EQ. bad_flag(ARG1)  .OR. 
-     .                arg_2(i2,j2,k2,lorder) .EQ. bad_flag(ARG2))
-     .              THEN
-                        result(i,j,k,l) = bad_flag_result
+                  IF (aorder .EQ. bad_flag(ARG1)) THEN
+                     result(i,j,k,l) = bad_flag_result
+                  ELSE
 
-                   ELSE
-                      IF (lorder .LT. arg_lo_ss(T_AXIS,ARG2)  .OR.
-     .                    lorder .GT. arg_hi_ss(T_AXIS,ARG2) ) THEN
+                     IF (lorder .LT. arg_lo_ss(T_AXIS,ARG2)  .OR.
+     .                   lorder .GT. arg_hi_ss(T_AXIS,ARG2) ) THEN
                         GO TO 999
+                     ELSE
 
-                      ELSE
-                        result(i,j,k,l) = arg_2(i2,j2,k2,lorder)
-
+                        IF (arg_2(i2,j2,k2,lorder) .EQ. bad_flag(ARG2))
+     .                   THEN
+                           result(i,j,k,l) = bad_flag_result
+                        ELSE
+                           result(i,j,k,l) = arg_2(i2,j2,k2,lorder)
+ 
+                        END IF
                      END IF
                   END IF
 

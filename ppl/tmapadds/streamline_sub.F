@@ -249,7 +249,7 @@ C     flag boxes.
             iisav = -999
             iacc = 0
             acnt = 0
-            bflg = 0
+            bflg = .FALSE.
 
             DO WHILE (x .GT. 0.0 .AND. x .LT. REAL(is-1) .AND. 
      .                y .GT. 0.0 .AND. y .LT. REAL(js-1)) 
@@ -347,7 +347,7 @@ C     flag boxes.
                         CALL plot(xold,yold,0,0)
                      ENDIF
 
-                     bflg=0
+                     bflg = .FALSE.
                   ENDIF
 
                   IF (curvilinear) THEN
@@ -362,7 +362,7 @@ C     flag boxes.
                      CALL plot(xx,yy,1,0)
                   ENDIF
                ELSE
-                  bflg = 1
+                  bflg = .TRUE.
                ENDIF
 
                xold = xx
@@ -386,7 +386,7 @@ C  Draw arrow heads
             ENDDO
 
    19       CONTINUE
-            bflg = 0
+            bflg = .FALSE.
             x = xsav 
             y = ysav
             xx = dx* x + xtm
@@ -508,7 +508,7 @@ C  Draw arrow heads
                      ELSE
                         CALL plot(xold,yold,0,0)
                      ENDIF
-                     bflg=0
+                     bflg = .FALSE.
                   ENDIF
 
                   IF (curvilinear) THEN
@@ -523,7 +523,7 @@ C  Draw arrow heads
                      CALL plot(xx,yy,1,0)
                   ENDIF
                ELSE
-                  bflg = 1
+                  bflg = .TRUE.
                ENDIF
 
                xold = xx

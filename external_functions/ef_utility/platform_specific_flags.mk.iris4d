@@ -5,24 +5,25 @@
 # platform specific macros.  Changed by jimp 01/20/99.
 # NOTE:  SGI compilation requires the -Dsun flag to be set for compilation
 # ACM 2/2001 debug flags
+# updated for builds at GFDL *kob* 4/2002
+
 
 INCLUDES        = -I. -I$(TMAP_LOCAL)/include
 
-FINCLUDES       =  -I../common
-
+FINCLUDES       = -I../ef_utility/ferret_cmn
 
 CCSHFLAG        =
 CC              = cc
 RANLIB          = /usr/bin/ranlib
-CFLAGS          = -c -n32 $(CCSHFLAG) $(INCLUDES)
-FC              = /usr/bin/f77
+CFLAGS          = -c -n32 -mips3 $(CCSHFLAG) $(INCLUDES)
+F77              = /usr/bin/f90
 F77SHFLAG       = -shared
-FFLAGS          = -KPIC -n32 -c -u
+FFLAGS          = -KPIC -n32 -c -u -mips3
 
 LD_DYN_FLAGS    = -shared -n32
 #SYSLIBS         = -lc -ldl
 
 CPP             = /lib/cpp
 CPP_FLAGS       = -P -traditional $(INCLUDES)
-CFLAGS_DEBUG	= -g -Ddebug
-FFLAGS_DEBUG	= -g -C -Ddebug
+CFLAGS_DEBUG    = -g -Ddebug
+FFLAGS_DEBUG    = -g -C -Ddebug

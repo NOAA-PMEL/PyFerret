@@ -8,7 +8,9 @@
 
 !    GO ccbar xloc yloc xlen ylen v1 v2 dv orient
  
-! where the first four arguments are in inches:
+! where the first four arguments are in inches, relative to the
+! ENTIRE PLOT PAGE
+!
 !         xloc = x-coordinate of lower left corner of clorbar 
 !         yloc = y-coordinate of lower left corner of clorbar 
 !         xlen = x length of colorbar    
@@ -40,8 +42,8 @@ LET ccb_y1 = $2/($ppl$height)
 LET ccb_x2 = ($1+$3)/($ppl$width)
 LET ccb_y2 = ($2+$4)/($ppl$height)
 
-DEFINE VIEW/AXES/TEXT=1/XLIMITS=`ccb_x1`,`ccb_x2`/YLIMITS=`ccb_y1`,`ccb_y2` ccb_cbar
-SET VIEW ccb_cbar
+DEFINE VIEW/AXES/TEXT=1/XLIMITS=`ccb_x1`,`ccb_x2`/YLIMITS=`ccb_y1`,`ccb_y2` ccb_cbar$1$2$3$4
+SET VIEW ccb_cbar$1$2$3$4
 
 !  Set up to plot a variable with desired range
 LET ccb_v1 = $5
@@ -90,7 +92,6 @@ ENDIF
 
 ! Clean up
 CANCEL VAR ccb_*
-CANCEL SYM ccb_*
 CANCEL AXIS ccb_xcb
 CANCEL AXIS ccb_ycb
 

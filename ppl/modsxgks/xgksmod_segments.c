@@ -99,6 +99,10 @@
  * and convenient way of storing and retrieving segment attributes.
  */
 
+/* ****KOB***  THIS ROUTINE WAS TAGGED ALONG W/ FERRET V490, BUT WAS NOT
+   COMPILED NOR TESTED ON OSF OR SOLARIS */
+
+
 /*LINTLIBRARY*/
 
 #include "udposix.h"

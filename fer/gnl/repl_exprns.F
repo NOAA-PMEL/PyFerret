@@ -2,8 +2,6 @@
      .				istart, max_check,
      .				digits, did_sub, status  )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -76,6 +74,7 @@
 *		  - added RETURN=SIZE
 * V522: 6/00 *sh* - added RETURN = XAXIS, YAXIS, ZAXIS, TAXIS
 * V530: *sh* 9/00 - added support for string variables
+*       *sh* 2/01 - added FORMAT = I4.4, etc.
 
 #ifdef unix
 	include 'ferret.parm'
@@ -104,18 +103,21 @@
 * local parameter declarations
 	INTEGER	   max_len
 	PARAMETER (max_len = 128)
+!	INTEGER	   fmt_len
+!	PARAMETER (fmt_len = 64 )
 
 * internal variable declarations:
-	LOGICAL need_formatting
+	LOGICAL   need_formatting, zero_fill
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
-     .		  qual_end, brkt, idim
-	REAL	  result
+     .		  qual_end, brkt, idim, use_width
+	REAL	  result, val
 	REAL*8 TM_WORLD, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len)
+!	CHARACTER fmt*(max_len)
 
 * local parameter declarations
 	CHARACTER	tab*1
@@ -126,6 +128,9 @@
 	lenbuff = LEN( cmnd )
 	use_digits = digits
 	bad_str = 'bad'
+!	fmt = ' '
+	use_width = 0
+	zero_fill = .FALSE.
 	info_query = .FALSE.
 
 * begin the search/replace at the point specified in the call.  (This is done
@@ -219,6 +224,25 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      info_query = .TRUE.
 	      GOTO 131
+	   ELSEIF (cmnd(i:i).EQ.'w' .OR. cmnd(i:i).EQ.'W') THEN
+* ... decode width = width (blank-filled width)
+	      CALL EQUAL_VAL(cmnd(i:qual_end), val, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF (val.GT.0 .AND. val.LT.max_len) use_width = INT(val)
+	      GOTO 131
+	   ELSEIF (cmnd(i:i).EQ.'z' .OR. cmnd(i:i).EQ.'Z') THEN
+* ... decode zwidth = width (zero-filled width)
+	      CALL EQUAL_VAL(cmnd(i:qual_end), val, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF (val.GT.0 .AND. val.LT.max_len) use_width = INT(val)
+	      zero_fill = .TRUE.
+	      GOTO 131
+! unimplemented code to allow user to control format
+!	   ELSEIF (cmnd(i:i).EQ.'f' .OR. cmnd(i:i).EQ.'F') THEN
+!* ... decode FORMAT = string
+!	      CALL EQUAL_STRING(cmnd(i:qual_end), fmt, status)
+!	      IF ( status .NE. ferr_ok ) GOTO 5000
+!	      GOTO 131
 	   ELSE
 	      GOTO 5500
 	   ENDIF
@@ -347,9 +371,17 @@
 	            IF (i2 .EQ. unspecified_int4) i2 = 0
 	            repl = LEFINT(i2, str_len)
 	         ELSE
-	            ww = TM_WORLD( i2, cx_grid(cx), idim, box_middle )
-	            CALL TRANSLATE_TO_WORLD( ww, idim, cx_grid(cx),
+	            ww = TM_WORLD(i2, cx_grid(cx), idim, box_middle)
+! unimplemented code to allow user to control format
+!	            IF ( fmt .NE. ' ' ) THEN
+!*    ... use user-specified time format
+!	              CALL TRANSLATE_FORMATTED( ww, idim, cx_grid(cx),
+!     .					        fmt, bad_str, repl )
+!	            ELSE
+*   ... default formatting for world coordinates
+	              CALL TRANSLATE_TO_WORLD( ww, idim, cx_grid(cx),
      .				             use_digits, repl )
+!	            ENDIF
 	         ENDIF
 	      ENDIF
 	   ENDIF
@@ -399,8 +431,26 @@
 	   CALL DELETE_VARIABLE( mr_temp )
 	ENDIF
 
+* adjust the field width if requested by the user
+ 500	IF (use_width .GT. 0) THEN
+	   IF (str_len .LT. use_width) THEN
+	      i2 = use_width - str_len
+	      DO i = use_width, i2+1, -1   ! shift characters to right
+	        repl(i:i) = repl(i-i2:i-i2)
+	      END DO
+	      DO i = 1, i2
+	        IF (zero_fill) THEN
+	          repl(i:i) = '0'
+	        ELSE
+	          repl(i:i) = ' '
+	        ENDIF
+	      END DO
+	   ENDIF
+	   str_len = use_width
+	ENDIF
+
 * replace the expression text (incl grave accents) with the formatted string
- 500	IF ( (istart-1)+str_len+(lencmnd-true_end-1) .GT. lenbuff ) THEN
+	IF ( (istart-1)+str_len+(lencmnd-true_end-1) .GT. lenbuff ) THEN
            GOTO 5400					! too big to fit
         ELSE
 	   IF ( iend+2 .LE. lencmnd ) THEN
@@ -427,8 +477,8 @@
      .       'grave accent evaluates to string too long'//pCR
      .					//cmnd(istart:iend), *5000)
  5500   CALL ERRMSG( ferr_syntax, status,
-     .       'invalid "P=prec", "B=bad", or "R=key" qualifier: '
-     .		//cmnd(:lencmnd), *5000)
+     .       'options: "P=prec","B=bad","W=width","ZW=zero-width" or'
+     .	     //' "R=return-item"'//pCR//cmnd(:lencmnd), *5000)
  5510   CALL ERRMSG( ferr_invalid_command, status,
      .       'maximum precision is 10 digits: '
      .					//cmnd(i:qual_end), *5000)

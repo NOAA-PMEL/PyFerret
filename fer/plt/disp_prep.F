@@ -58,7 +58,8 @@
 *		filter doesn't corrupt this routine
 * V400:	 8/24/94 - allow /LEVELS=n to set the recommended number of levels
 * V4.1+  7/25/95 - allow automatic centered levels and delta-only levels 
-
+* v500 - 1/26/99 - *kob* add PPLCMD call for aline reinitialization - needed for
+*                   nolabel plot overlays
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/errmsg.parm'
@@ -92,6 +93,7 @@
 	LOGICAL TM_DIGIT, lev_given, len_given
 	INTEGER	TM_LENSTR1, lev_loc, len_loc, str_len, ii
 	REAl	val
+* v500 - 1/26/99 *kob* double buffer size for /levels text
 	CHARACTER str_buff*80
 
 * local parameter definitions:
@@ -108,6 +110,11 @@
 	set_delta = .FALSE.	! 7/95
 	centered  = .FALSE.	! 7/95
 	ii = 0
+
+* reinitialize - *kob* 
+* forget line specimen definitions that were used in previous plots
+        CALL PPLCMD ( from, line, 0, 'ALINE ', 1, 1 )
+
 
 * what qualifiers will effect the initialization of PLOT+
 	lev_loc = qual_given( slash_levels )

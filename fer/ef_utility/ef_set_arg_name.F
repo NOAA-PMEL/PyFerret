@@ -15,7 +15,7 @@ c
 
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       INTEGER id, arg
       CHARACTER*(*) text

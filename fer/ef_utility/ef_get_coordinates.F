@@ -18,7 +18,7 @@ c*
       INCLUDE 'ferret.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       INTEGER id, iarg, idim
       INTEGER ss_lo_lim, ss_hi_lim

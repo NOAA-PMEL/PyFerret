@@ -16,7 +16,7 @@ c*
 
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xtm_grid.cmn_text'
 

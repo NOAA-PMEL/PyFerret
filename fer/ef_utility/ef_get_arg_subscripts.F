@@ -15,7 +15,7 @@ c*
 
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       INTEGER id, arg_lo_ss(4,EF_MAX_ARGS+1), 
      .     arg_hi_ss(4,EF_MAX_ARGS+1), arg_incr(4,EF_MAX_ARGS+1)

@@ -18,7 +18,7 @@ c*
       INCLUDE 'ferret.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xmem_subsc.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       REAL    value
 

@@ -15,7 +15,7 @@ c*
 
       INCLUDE 'ferret.parm'
       INCLUDE 'xvariables.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       INTEGER id, res_lo_ss(4), res_hi_ss(4), res_incr(4)
       INTEGER idim

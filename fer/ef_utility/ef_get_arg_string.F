@@ -19,7 +19,7 @@ c*  declared in xvariables.cmn.)
       INCLUDE 'errmsg.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       INTEGER id, iarg, mr
       CHARACTER*(*) text

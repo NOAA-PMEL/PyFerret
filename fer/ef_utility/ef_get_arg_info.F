@@ -15,7 +15,7 @@ c*
 
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'EF_Util.parm'
 
       INTEGER id, iarg
       INTEGER cat, var

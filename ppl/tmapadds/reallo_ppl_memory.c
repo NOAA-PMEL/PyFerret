@@ -69,7 +69,7 @@ void reallo_ppl_memory(int *this_size)
 /* Check that the memory was allocated OK*/
 
   if ( ppl_memory == (float *)0 ) {
-    printf("Unable to allocate the requested %f words of PLOT memory.\n",*this_size);
+    printf("Unable to allocate the requested %e words of PLOT memory.\n",*this_size);
     exit(0);
    }
 /* save the size of what was allocated */

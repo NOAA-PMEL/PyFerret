@@ -53,7 +53,7 @@ static void setError(char *str, ...) {
 #endif
 
 static void setError(char *str, char *mess) {
-  fprintf(stderr, str, mess);
+  sprintf(Errbuf, str, mess);
 }
 
 static void tidyUp(FileInfo *file) {
@@ -189,10 +189,6 @@ static void deleteVar(VarInfo *theVar) {
 }
 
 static void deleteBinaryReader(FileInfo *fi){
-  int i;
-  for (i=0; i < fi->nvars; ++i){
-    deleteVar(&fi->vars[i]);
-  }
   free(fi->vars);
   tidyUp(fi);
   free(fi->name);

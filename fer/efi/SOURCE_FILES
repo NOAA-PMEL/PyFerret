@@ -21,5 +21,6 @@ xauto_cor.F\
 day_of_year.F\
 gausswt.F\
 nobad.F\
+copyscat.F\
 pickindex.F\
 pickoutxyz.F

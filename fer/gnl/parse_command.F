@@ -153,7 +153,6 @@
      .		grave_start, grave_end, in, out, nest,
      .		paren_level
 	CHARACTER c1*1
-	CHARACTER cmnd_copy*2048  ! must match cmnd_buff_len
 
 * local parameter declarations:
 	INTEGER		grave_digits

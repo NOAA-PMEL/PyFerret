@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* output a text description about the specified function
 
 * there are 3 classes of functions:
 *  classic internal Ferret functions (non-grid-changing) e.g. SIN(X)

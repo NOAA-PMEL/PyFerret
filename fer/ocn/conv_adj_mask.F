@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute a mask with bad data flags indicating regions of convective adjustment
 * and 1's indicating regions without it
 * note: at K=1 this algorithm fails to detect a pass #1 convective adjustment
 *	that gets wiped out by pass #2 - ie k=1 is mixed with  k=2 on pass one,

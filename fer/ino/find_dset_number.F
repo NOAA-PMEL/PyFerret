@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find the data set number of set "dname"
 * dname may be either the name (without directory pathname or .DES extension)
 * or the number
 * check that the number is valid before exiting

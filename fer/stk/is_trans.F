@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a complete context describing the result of the transformation
 * create a memory resident slot to receive the result and initiate the
 * transformation
 

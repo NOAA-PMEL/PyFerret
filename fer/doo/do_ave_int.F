@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* perform both averaging and integrating (definite) - since they differ only
 * by a multiplying factor
 
 * programmer - steve hankin

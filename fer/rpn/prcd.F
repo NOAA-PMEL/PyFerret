@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Function to determine precedence values of atoms in the infix
 *	string and the stack
 
 *	J Davison TMAP/JISAO/PMEL/NOAA

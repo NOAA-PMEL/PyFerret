@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* The 1980 UNESCO International Equation of State (IES80)
 * *sh* 8/5/92 - adapted from C version supplied by John Osborne, PMEL
 
 *       This calculates rho (density kg/m^3) at salinity, 

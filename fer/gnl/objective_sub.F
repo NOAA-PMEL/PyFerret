@@ -40,6 +40,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* "work routine" to perform an objective analysis of 3 arrays onto a 2D grid
 * using the same code as PLOT+ does for scattered arrays
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* allocate and claim sufficient memory space, and assign and fill a slot in the 
 * memory variable table for the variable or expression indicated in the context
 
 * programmer - steve hankin

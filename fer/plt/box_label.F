@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a PLOT+ label that fits within the designated box
 * if necessary, use commas in the text as places where the string can be broken
 * into 2 lines
 * the position given refers to the lower left of the box

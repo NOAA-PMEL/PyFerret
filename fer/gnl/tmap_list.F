@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a complete time step of 1 to several variables (all given in a single
 * command) in GT format including the STEP record
 
 * programmer - steve hankin

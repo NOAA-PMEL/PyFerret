@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return instructions to Ferret on how this particular argument will
 * get merged into the joint context of a grid-changing function
 
 * V450: 1/97

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a context describing data to be regridded to a destination grid
 * - select one of the axes needing regridding
 * - create, if necessary, an intermediate grid that differs from the
 *	destination grid by only this single axis

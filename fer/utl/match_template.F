@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check to see if the name matches the template
 * the template may contain
 *	"*" which matches 0 or more of any characters 
 *	"?" which match any single character

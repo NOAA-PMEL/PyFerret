@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create an array of Hanning filter weights
 
 * programmer - steve hankin and Paul Rogers
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

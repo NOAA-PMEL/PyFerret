@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Process the intermediate logic of an ELIF ("ELSEIF") statement in a
 * multi-line IF compound statement
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a skeletal context with a known grid transfor the subscript coord
 * data to world coordinates and world to subscript on the specified axis
 * make sure all time coordinates are in time step values (vs. secs from BC)
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* describe the 4 axes of a grid and then give coordinate data about those
 * axes as indicated in cx
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* for axes in which limits are fully contained in the definition the
 * requesting context limits are not necessarily complete or correct
 * when the variable is computed (via IS_ALGEBRA) the limits are
 * corrected and stored with the memory resident variable.

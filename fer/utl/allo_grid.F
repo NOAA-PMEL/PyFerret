@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* allocate a scratch space in the grid COMMON to work on a grid definition
 * Space is allocated in high grid subscripts working down
 
 * programmer - steve hankin

@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* (what about COSINE weighting along Y axis if in XY plane ??)
 * determine the variance along the indicated axis
 * nested with DO_VARIANCE in order to ease the dimension checking of box
 

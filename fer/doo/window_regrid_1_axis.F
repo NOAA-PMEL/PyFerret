@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 	Using data values from src organized on grid src_grid, regrid to
 * 	grid dst_grid within boxes along one axis
 
 *	The algorithm used for regridding is determined by "trans", the

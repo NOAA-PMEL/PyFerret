@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* this routine is called to save a group of commands separated by semicolons
 * and bump the FERRET "control stack" to place that group of commands in
 * control
 

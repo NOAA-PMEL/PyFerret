@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* put background labels onto plot - data set name and information
 * about axes not apparent on the plot (eg. time and depth in an xy view)
 
 * programmer - steve hankin

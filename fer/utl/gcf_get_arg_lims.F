@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Return guidance for the passing of context information between 
 * argument "arg" and the result (downstream) or default (upstream) context.
 * This guidance is determined primarily from the user-specified parameters of
 * the GC function (as returned by GCF_GET_ARG_PARMS), but we also watch

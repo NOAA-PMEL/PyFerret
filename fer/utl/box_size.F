@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a subscript value on a grid and an axis return the length of the
 * grid box
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* transfer the list of arguments into a list of items
 
 * this is a bit of a kludge recognizing that the Ferret command language
 * is confusing if it requires uses to recognize the difference between

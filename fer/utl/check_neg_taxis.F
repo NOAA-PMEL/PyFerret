@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check to make sure that the time axis of the data set doesn't have any
 * negative time step values
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* bring together a full data grid from fragmentary pieces by requesting those
 * pieces one by one on the interpretation stack
 
 * programmer - steve hankin

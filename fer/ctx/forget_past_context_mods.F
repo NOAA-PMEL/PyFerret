@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* erase/clear away indicators of when last modifications were made to the given
 * context
 
 * programmer - steve hankin

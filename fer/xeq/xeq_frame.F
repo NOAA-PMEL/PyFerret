@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the FRAME command
 * make a movie frame of the current output graphics
 
 * FRAME/FILM	- to trigger actual movie frame

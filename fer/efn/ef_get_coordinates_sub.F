@@ -63,6 +63,7 @@ c*
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*     defining grid for output data
       grid = cx_grid( cx_list(iarg) )
 
       DO 100 i = ss_lo_lim, ss_hi_lim

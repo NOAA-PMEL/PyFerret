@@ -39,6 +39,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* sample the given field at the specified XYZT coordinates
 
 * Each output record will consist of
 *	value xcoord ycoord zcoord tcoord code

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* lexical analyzer to break up algebraic expressions into atoms of known
 * type.  Possibly more than one expression separated by commas
 
 * programmer - steve hankin

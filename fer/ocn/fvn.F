@@ -39,6 +39,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute meridional flux terms on the uv grid needed in the calculation of
 * both W_U ( W on uv grid columns ) and horizontal momentum advection
 
 * programmer - steve hankin

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert the incoming coordinate arrays (xi,yj), which are "fractional
 * indices" into true (X,Y) world coordinates by bi-linear interpolation
 * in the coordinate arrays, xfield, yfield
 

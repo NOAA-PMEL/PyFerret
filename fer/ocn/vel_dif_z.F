@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute vertical diffusion of velocity components
 * add wind stress effects if at surface
 * note: the identical code applies to both U and V
 

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 	Using data values from src organized on grid src_grid, regrid to
 * 	grid dst_grid by "modulo averaging".  Specifically, average all
 *	of the source points that fall within the modulo-replications
 *	of each destination point.

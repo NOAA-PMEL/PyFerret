@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Scan an expression given in Reverse Polish order for illegal atom types
 * and break up the expression if there are commas
 * other error checking is done at run time
 

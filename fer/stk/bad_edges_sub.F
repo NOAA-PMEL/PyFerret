@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* context cx contains the limits of the valid data within array X
 * fill the edges of array X with bad-data flags
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* transfer the information indicated in the current control stack level into
 * the default ("LAST") context
 
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

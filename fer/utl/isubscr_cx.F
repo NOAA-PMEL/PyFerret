@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 9/97 *kob*   - NEW ROUTINE
 *              - needed in order to implement new method of handling negative
 *                time steps.  this routine is nearly identicle to ISUBSCRIPT 
 *                except it will use cx_calendar to determine if t dimension

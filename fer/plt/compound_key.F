@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a full title for a plot 
 * - possibly with more than one variable documented
 
 * programmer - steve hankin

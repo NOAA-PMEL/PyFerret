@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine whether a particular axis of a grid changing variable should have
 * modulo applied to the RESULT of the function rather than to the arguments,
 * as is normal for non-GC uvars
 

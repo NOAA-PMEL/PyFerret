@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* PLOT+ routine for use inside FERRET:
 * Supply to PLOT+ the bounds of n grid boxes from X or Y axis of the contour
 * data currently in PLOT+.  Pointers to the appropriate FERRET axes are in
 * COMMON.

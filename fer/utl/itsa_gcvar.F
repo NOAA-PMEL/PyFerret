@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* is the indicated variable one which is contains a grid changing function?
 
 * V450: 1/97
 

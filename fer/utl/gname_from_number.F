@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a grid number return the name of the first file variable in this dset
 * that is defined on this grid.  If the variable is from a different
 * data set than the one passed in the call qualify the variable name with
 * [D=name]

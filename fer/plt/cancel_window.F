@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete a window from the display.  If it was currently active then make the
 * main window active
 
 * programmer - steve hankin

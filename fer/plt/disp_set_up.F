@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* set up for contour and vector plots by loading data and title and 
 * defining axis formats
 
 * programmer - steve hankin

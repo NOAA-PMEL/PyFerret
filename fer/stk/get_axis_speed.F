@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* order the axes X,Y,Z and T into array ds_ax_speed with the fastest (axis of
 * records) in position 1, the slowest in position 4, and the others
 * ordered from fast to slow if possible.
 * normal axes will be regarded as fast (but slower than the record axis)

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find or make a full grid, including a time axis, for each cvar variable in 
 * the given data set based on information stored in COMMON by INIT_DSET.
 * results are stored COMMON/~VARIABLES/ in cvar_grid
 

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* combine new space/time/data_set/variable/grid context information into a 
 * single context checking for consistency 
 * (the merged grid is determined in advance by IS_UVAR_GRID)
 

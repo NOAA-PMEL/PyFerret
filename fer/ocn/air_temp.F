@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute air temperature: either climatological field (unmodified)
 *			   or SST-const south of j=91 and climatol. to the north
 
 * programmer - steve hankin

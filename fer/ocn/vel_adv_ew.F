@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute zonal advection of velocity components
 * note: the identical code applies to both U and V
 
 * programmer - steve hankin

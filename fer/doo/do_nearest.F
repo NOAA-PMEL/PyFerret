@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* for each point, locate the valid point along the specified axis
 * that is nearest to the point
 
 * This function performs 4 transformations

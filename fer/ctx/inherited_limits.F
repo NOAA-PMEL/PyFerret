@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine if the limits given within a definition (or within component
 * variables of the definition) should be inherited by a parent definition
 
 * for example: if A=SST[T=1-jan-1980:1-jan-1990]

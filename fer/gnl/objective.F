@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* perform an objective analysis of 3 arrays, xpts, ypts, zpts, onto a 2D grid
 * using the same code as PLOT+ does for scattered arrays
 
 * programmer - steve hankin

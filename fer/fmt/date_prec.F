@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the precision level needed for a date string to resolve "dt"
 * in units appropriate for the given grid time axis
 
 * programmer - steve hankin

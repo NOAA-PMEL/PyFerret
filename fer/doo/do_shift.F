@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* shift the data from a component grid into the result grid along axis idim
 * by amount ishift
 
 * programmer - steve hankin

@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to take an infix expression in the character variable text and 
 *	convert to a postfix format.
 
 *	J Davison TMAP/JISAO/PMEL/NOAA

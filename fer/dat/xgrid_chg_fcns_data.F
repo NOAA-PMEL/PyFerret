@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* function names and descriptive information for internally-defined grid-
 * changing functions
 
 * V450 - 7/79 - minor change to text on ZAXREPLACE

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* strip away the requirement for a transformation of a variable on the
 * interpretation stack by dedicating a stack level to the evaluation of that
 * transformation and putting a request for the first required component of the
 * calculation onto the stack.

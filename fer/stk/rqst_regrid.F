@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a destination context and an axis to be regridded
 * determine the source data limits that should be requested ("rqst")
 
 * programmer - steve hankin

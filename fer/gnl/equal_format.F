@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* from a string of the form "FORMAT=xxxx" determine the listing format and
 * save the information in COMMON
 
 * programmer - steve hankin

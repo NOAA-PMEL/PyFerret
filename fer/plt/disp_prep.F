@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* prepare the plot package (PPLUS) for another variable.  This routine is
 * called even for overlays
 
 * programmer - steve hankin

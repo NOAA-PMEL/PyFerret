@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* deallocate all scratch space from the grid COMMON stack
 * (9/95) also deallocate any dynamic grids that were in progress
 * (used following error conditions)
 

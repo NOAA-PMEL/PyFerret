@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       Regrid from the source to the destination grid using an algorithm
 *       of inserting values into the result ONLY when the source grid has
 *       a value at exactly the same coordinate on this axis.
 

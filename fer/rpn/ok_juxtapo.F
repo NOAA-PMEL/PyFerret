@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Determines whether juxtaposition of two atom types in the infix string
 *	is allowed in the syntax of things.
 
 *	J Davison TMAP/JISAO/PMEL/NOAA

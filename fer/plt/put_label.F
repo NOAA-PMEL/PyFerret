@@ -40,6 +40,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* define a single label to PPLUS after checking to see if it needs to be shrunk
 * save its definition in a PPLUS symbol for customizing by user
 * possibly place the label on the plot relative to axis lengths
 

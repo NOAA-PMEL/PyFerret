@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* are the curvilinear coordinates grid points or box edges for this dimension
 
 * V450: 3/97
 

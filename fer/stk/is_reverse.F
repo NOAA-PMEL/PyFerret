@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* reverse the ordering of the data along the axes indicated in ds_ordering
 * and delete the (backwards) component data from memory
 
 * programmer - steve hankin

@@ -47,6 +47,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute a grid changing function
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:

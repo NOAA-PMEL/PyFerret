@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* push context stack to allocate space for a new context and copy the source
 * context into the new slot as default
 
 * programmer - steve hankin

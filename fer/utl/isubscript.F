@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a "world" coordinate into the subscript value on an axis of the grid
 * box containing this value.  When the coordinate lies directly on the boundary
 * use round_code to resolve the ambiguity.
 

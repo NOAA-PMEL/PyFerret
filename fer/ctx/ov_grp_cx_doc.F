@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* merge additional variable contexts with those already merged into the
 * joint context for a plot to produce a list of documentation flags suitable
 * to make a key for this new context.  See GRP_CX_DOC
 

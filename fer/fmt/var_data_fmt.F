@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* prepare a format suitable to write out gridded data in a minimum width that
 * provides the requested precision.  May use E or F format, depending on size
 * "min_width" prevents the field from being less than xxx columns
 

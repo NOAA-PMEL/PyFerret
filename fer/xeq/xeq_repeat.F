@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* sets up the control stack (COMMON/~CONTROL/) to repeat the indicated
 * command for a range of default contexts
 * eg. "REPEAT/T=27740:35000:10 CONTOUR/@N/K=1 TEMP"
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string of the form (e.g.) "I:22  X:130.5E"
 * if grid is unknown then "I:22", alone
 * if subscript is unknown then "I:*"
 

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* setup to create a DODS NetCDF cache
 * create a list of contexts appropriate to describe the (1,1,1,1) element
 * of each variable in the DODS data set.
 

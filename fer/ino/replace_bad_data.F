@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* replace all occurances of the value "old_bad" with the bad data flag
 * associated with this msrc
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the number of values used on the grid
 * of the specified context
 
 * unlike CGRID_SIZE which uses "1" as the size of unspecified regions this

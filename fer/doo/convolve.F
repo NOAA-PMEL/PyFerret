@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convolve the component grid, com, with the weight function, wt
 * along axis idim
 * note: the component context may not be of adequate size for the full
 *	calculation.  Missing data flags will be inserted where computation is

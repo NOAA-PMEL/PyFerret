@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the EXIT command
 * if program is not under interactive control the /COMMAND_FILE qualifier is
 * required
 

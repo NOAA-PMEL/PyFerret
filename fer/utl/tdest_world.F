@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a subscript value on a grid into a "world" coordinate
 * if the axis is a valid time axis then a second level conversion will convert
 * the time step value on the source grid into the equivalent time step on a
 * destination grid.  That grid must have been previously specified with

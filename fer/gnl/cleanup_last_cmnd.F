@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* clean up the mess left by the previous command - esp. preparing a buffer
 * of messages for the calling program, if any
 
 * programmer - steve hankin

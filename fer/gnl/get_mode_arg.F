@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* interpret the text string accompanying the SET MODE command
 *	eg. SET MODE TIME:HOURS
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given the reveived ("rcvd") source context (of actually available data) and
 * the requested output region determine the limits of the result that can be
 * calculated
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* "evaluate expression"
 * calculate grid of data based on the expression given
 * Saves (temporarily) expression in user-variable (uvar) structure.
 * when done - return with the variable un-"protected" (flagged as deletable)

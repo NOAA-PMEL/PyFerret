@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* set up a "null" context suitable to merge other contexts on top of
 
 * V450: 1/97 - part of changes to accomodate grid-changing functions
 * 9/97 *kob* - initialize cx_calendar as well

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* eliminate all stored mrs that use a given axis
 * and replace all references within grids to the old axis with the new axis
 
 * programmer - steve hankin

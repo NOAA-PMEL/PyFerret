@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* flag a memory variable as not cache-retreivable
 * do this by shifting the variable to a "hash pile" which is not searched
 
 * programmer - steve hankin

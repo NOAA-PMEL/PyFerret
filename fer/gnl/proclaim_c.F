@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* pass arguments from C language to the "PROCLAIM" routine
 * make a movie frame of the current output graphics
 
 * programmer - steve hankin

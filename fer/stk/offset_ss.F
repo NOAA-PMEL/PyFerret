@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine offsets to subscripts of the specified axis needed to request
 * a region of component data adequate to compute the result region
 
 * programmer - steve hankin

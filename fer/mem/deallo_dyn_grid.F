@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* deallocate the specified dynamic grid (no check made on grid number)
 * and clear any memory references to this grid
 
 * programmer - steve hankin

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* replace the input string with the text implied in the coaching
 * possibly displaying an error string
 
 * if the input string is blank and no default then report error

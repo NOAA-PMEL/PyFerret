@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the number of characters and the number of decimal places needed
 * to represent the range of data from lo_val to hi_val with precision small_val
 
 * programmer - steve hankin

@@ -40,6 +40,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a pseudo-variable
 * return in pvar_cx context information describing the exact instance
 * including grid and region
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* copy data from source grid into dstination grid using limits of source
 * context (i.e. dstination grid is ASSUMED) big enough to hold data
 
 * programmer - steve hankin

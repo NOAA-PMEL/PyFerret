@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* prepare a format suitable to label the subscripts and world coords at the
 * left edge of each row of data.  The style will be (e.g.)
 * "1.17N / 49:  26.31  26.06  26.01  26.04  26.14"
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the ID number of the first grid changing function whose name
 * matches the template
 
 * V450: 12/96

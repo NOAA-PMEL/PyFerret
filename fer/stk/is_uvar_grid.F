@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* examine an algebraic evpression component by component on the 
 * interpretation stack in order to determine a defining grid for the overall
 * expression.
 * Detailed description of the underlying logic is in MERGE_CONTEXT

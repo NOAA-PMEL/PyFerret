@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* following an error during stack computation restore the stack variables
 * to a "clean" state
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* interpret delta coordinate limits of the FORM DX
 * ... slash_dx0 is the qualifier number of dx less 1
 * qualifiers are assumed to be ordered dx,dy,dz,dt,di,dj,dk,dl
 

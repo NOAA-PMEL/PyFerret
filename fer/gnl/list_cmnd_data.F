@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* list a gridded variable stored in memory - 0 to 4 dimensions
 * Note: the looping/axis labelling procedures of LIST_MULTI are cleaner and
 *	more efficient than this - this could be improved easily (*sh* 7/90)
 

@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* AIX replacement routine for CALL DATE(str) which
 * is missing in IBM's xlf libraries
 
 *	Steve Hankin 10/27/94

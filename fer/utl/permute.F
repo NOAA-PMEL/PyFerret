@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* permute the 4D data from the source grid into the destination grid
 * - 24 possible permutations  (!4)
 
 * programmer - steve hankin

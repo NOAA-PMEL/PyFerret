@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert an ascii representation of a coordinate value into a floating point 
 * representation using special format rules
 
 * programmer - steve hankin

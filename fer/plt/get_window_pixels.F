@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Capture size in pixels of GKS ws with id ws_id
 *       J Davison 12.23.92
 *	Mod 3.11.93 for Ferret to capture entire screen when in viewport
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find the position of the atom within the string
 * if the atom is the last character in the string this represents an error
 
 * programmer - steve hankin

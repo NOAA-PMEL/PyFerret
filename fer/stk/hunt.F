@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Routine to determine nearest neighbor index (lower index)
 *	on GRID1 for points on GRID2.
 
 *	Taken from Numerical Recipes, Chapter 3, Section "Search With

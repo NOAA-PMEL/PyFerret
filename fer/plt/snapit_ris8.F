@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Subroutine called from movie_frame_ris8 to capture the GKS image
 *       and store in HDF RIS8 format.  Modification of SNAPIT of yore.
 
 *	Jerry Davison NOAA/PMEL/TMAP					 

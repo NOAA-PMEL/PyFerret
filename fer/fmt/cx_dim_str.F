@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string describing the region and transformation along an axis
 * for example: X=160E:140W@SBX:5
 * the argument full_prec ("full precision") indicates number of decimals for
 * world coordinates (see LOHI_WORLD) or skip/not skip leading integer 0's

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete all memory variables with data from a particular data set
 * eliminate all context references to it, too
 
 * programmer - steve hankin

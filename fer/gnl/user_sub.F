@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* modify this template routine to perform calculations and to output desired
 * background information
 * Sample information about the variables that have been passed is extracted
 * for you below by way of example

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* generate a pseudo-random pile number between 1 and pmv_npiles based on
 * information in the passed context
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* restore the PLOT+ axes after they have been turned off by PPL_AXES_OFF
 
 * V450:  
 

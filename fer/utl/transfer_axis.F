@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* transfer region and transformation information about one axis from one
 * context buffer to another
 
 * programmer - steve hankin

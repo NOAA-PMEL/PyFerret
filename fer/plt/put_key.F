@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a key for a plot using a PLOT+ movable label and an ALINE
 * (xsize,ysize) is the size of the "key box" (including the line specimen
 * (xpos,ypos) is the lower left corner of the box
 * as of V2.00 of FERRET the "style" is always line specimen to left of text

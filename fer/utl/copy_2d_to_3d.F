@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* copy data from a 2D (XY and T) grid to a 3D grid and then replicate the
 * data along the Z axis of the dstination
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert an absolute time measured in seconds from 1-JAN-0000:00:00:00
 * into a time step value relevant on a particular grid, "grid"
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get a grid of "calculated" data - ie. a variable which does not exist on
 * disk but which can be computed from disk data by model-diagnostic code
 * ( eg computing heat advection from temperature and velocity fields )
 

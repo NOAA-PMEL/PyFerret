@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get next command line from the GUI input source
 * if it is a coded query respond instantly
 
 * programmer - steve hankin

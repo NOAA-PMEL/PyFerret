@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* flag that the specified variable is available to be used as a component and
 * to be deleted should memory space be tight
 
 * programmer - steve hankin

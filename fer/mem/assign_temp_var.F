@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* catalog in memory the description of this temporary variable
 * typically an intermediate result in a calculation
 
 * programmer - steve hankin

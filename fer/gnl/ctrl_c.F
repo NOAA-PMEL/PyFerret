@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* turn on facility to trap keyboard interrupts
 * the interrupt handler defined here simply sets the common variable
 * "interrupted" to .TRUE.
 

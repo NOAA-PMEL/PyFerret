@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given an explicit context which may or may not contain data and an
 * implicit context which is always fleshed out determine the proper
 * world coordinate limits for the specified axis
 

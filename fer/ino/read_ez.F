@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a file of EZ-type (ASCII or unformatted) data
 * return only the requested variable in "mr"
 * note: always read and store the entire grid limits of data
 

@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* sample the given field at the specified XYZT coordinates
 * opt1_string contains special instructions
 *	"FILL" indicates to fill holes when the field contains missing values
 * opt2_string contains flags to indicate if the coordinates are given as

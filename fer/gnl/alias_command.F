@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check to see if an alias was used to abbreviate the command and replace with
 * the full string if so
 
 * programmer - steve hankin

@@ -45,6 +45,7 @@ C**
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* additions by *SH* 6/90 for PLOT+ enhancements
 * kob/jd 1/97- comment out unneeded itmes for linux/f90 port
 	ENTRY GCLKS
 	ENTRY GCLWK

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a subscript value on a grid into a "world" coordinate
 * if the axis is a valid time axis then convert the time step value into
 * seconds from jan-1-0000:00:00 so that all time axes are on an absolute scale
 

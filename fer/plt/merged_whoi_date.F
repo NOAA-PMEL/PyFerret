@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string of the form YYMMDDHHMMSSCC (internal ordering) based
 * on the earlies time to be plotted from the given contexts
 
 * programmer - steve hankin

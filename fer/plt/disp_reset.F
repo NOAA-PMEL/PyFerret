@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* initialize or reset the underlying plot package (PPLUS) to FERRET defaults
 * (this routine is called only at start-up or by the command PPLUS/RESET)
 
 * programmer - steve hankin

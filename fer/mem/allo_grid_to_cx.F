@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Allocate a temporary grid from the grid stack (not a managed dynamic grid)
 * and place the necessary flags about it in the given context
 
 * programmer - steve hankin

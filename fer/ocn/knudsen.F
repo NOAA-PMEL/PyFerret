@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* lifted from COX routine KNUDSEN to compute the density of sea water via
 * the Knudsen formula 
 
 * programmer - steve hankin

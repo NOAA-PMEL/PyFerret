@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* locate the indicated argument value along the indicated axis and leave
 * behind an "interpolating kernel": linear interpolating weights on the
 * points immediately before and after the located value
 

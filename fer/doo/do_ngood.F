@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the number of valid (not flagged bad) points along the given axis
 * (done by calling a single routine used for both ngood and nbad)
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string describing the data set, region, transformations and variable
 * that is suitable for a filename for listed output
 
 * format is Wdddddddvvvv.iiiiijjjjjkkkkklllll

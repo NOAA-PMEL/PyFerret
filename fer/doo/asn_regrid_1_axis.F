@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* perform a regrid by "association"  (i.e. copy the data)
 
 * 	programmer - Steve Hankin
 * 	NOAA/PMEL,Seattle,WA - Tropical Modeling and Analysis Program

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* this routine is called when the process of obtaining Ferret commands is
 * under the control of a multi-line IF clause
 * This routine inspects the currently available command and decides whether
 * to execute it or to skip it. It also updates the IF-stack as needed.

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the (hidden) name of a child variable constructed from
 * the number of its parent variable and the start character of the
 * grid-changing reference within the parent definition
 

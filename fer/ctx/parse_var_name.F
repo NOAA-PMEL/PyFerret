@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* parse a full variable specification of the form:
 *			(eg.) TEMP[X=170E:170W,K=+1D,T=188979]
 * return the context modifications in the modification buffer passed
 * and the updated (but not completed) variable context in the var context passed

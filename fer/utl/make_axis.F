@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a REAL*4 array of world coordinates over a range of subscripts along
 * axis IDIM of grid GRID.  Begin the axis at subscript 1 of AXIS.
 
 * programmer - steve hankin

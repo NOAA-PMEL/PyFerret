@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* modify the joint context and document flags for a plot so that information
 * which is implicitly documented via the plotting axes is not duplicated in
 * the plot labels
 

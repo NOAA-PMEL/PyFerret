@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine if the GKS is installed on the system and can be used from the
 * current environment
 * ... as of 5/01/91 the latter requirement isn't really checked ...
 

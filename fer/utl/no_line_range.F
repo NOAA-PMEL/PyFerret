@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine if all the data indicated are of the same value
 * if true val1=bad_flag if all points are bad-data flags
 
 * programmer - steve hankin

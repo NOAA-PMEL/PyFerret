@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the SHOW VARIABLES/MEMORY command - display a priority-sorted list 
 * of the data in memory
 
 * programmer - steve hankin

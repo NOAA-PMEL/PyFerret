@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute a 1 step derivative of the component along axis idim
 * note: for a forward  derivative shf=0, and com limits are res_lo:res_hi+1
 *       for a backward derivative shf=1, and com limits are res_lo-1:res_hi
 

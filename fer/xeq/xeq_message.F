@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the MESSAGE command
 
 * MESSAGE text of message	- displays message, prompts for <CR> and waits
 * MESSAGE/QUIET text		- displays message and waits for <CR>

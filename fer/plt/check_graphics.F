@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check to see if there is a graphics output ready to recieve output
 * (this routine assumes that PPLUS has been started)
 
 * programmer - steve hankin

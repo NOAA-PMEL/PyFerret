@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get the name of the given data set if that is meaningful
 * else get a string describing the nature of the name 
 
 * programmer - steve hankin

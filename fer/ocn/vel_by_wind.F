@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute contribution to velocity in surface layer due to wind stress
 * note1: the same code applies to both X and Y components
 * note2: a value of rho=1 is assumed for dimensional correctness
 

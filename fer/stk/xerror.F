@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* dummy error routine for CMLIB package
 * used to avoid changes to UNI.FOR
 
 	CHARACTER*(*) messg

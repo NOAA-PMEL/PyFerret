@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return a contiguous region of bulk memory to the free list merging it with
 * the surrounding free regions if they are contiguous
 * ( return the merged size via COMMON in mr_del_last_size )
 * see documentation in XVARIABLES.CMN

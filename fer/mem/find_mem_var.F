@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* look in the list of variables in memory to see if the requested one is there
 * search may be done based on subscript or on world coordinate values.
 
 * programmer - steve hankin

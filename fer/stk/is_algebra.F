@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* evaluate an algebraic evpression component by component on the 
 * interpretation stack.  When component variables are required request them
 * by return to the top of the stack processor in "request" mode (RETURN 1).
 

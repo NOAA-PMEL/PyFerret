@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* do bookkeeping and call up calculation to perform grid changing fcn
 * (which may be an externally-defined function)
 
 * V450:  1/97 - based on IS_DO_OP

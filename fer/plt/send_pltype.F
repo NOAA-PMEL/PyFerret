@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* send the PLTYPE command to PPLUS including workstation type and metafile
 * information
 
 * programmer - steve hankin

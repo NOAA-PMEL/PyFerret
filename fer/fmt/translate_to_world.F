@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert a coordinate value to a string using appropriate lat/long/depth/time
 * format.  String will be left justified within the given field width.  Number
 * of decimal places of precision is specified by the argument ndec
 

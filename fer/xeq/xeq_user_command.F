@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the USER_COMMAND command
 * this is a template routine that can be modified to include any code of
 * a user's choice, thereby customizing the FERRET program
 

@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute horizontal diffusion of velocity components
 * note: the identical code applies to both U and V
 * ! temp - this is very inefficient code (as is XY_HDIFFUS) that could be
 *	greatly sped up by pre-computation of coefficients

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string describing a world coordinate range
 * for example: 160E:140W or 10m (if lo depth = hi)
 
 * programmer - steve hankin

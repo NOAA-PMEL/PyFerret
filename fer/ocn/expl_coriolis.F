@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute the explicit Coriolis effect based on velocity
 * components from the preceeding time step
 *			correction based on an implicit scheme
 

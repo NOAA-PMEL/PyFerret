@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete a user-defined variable 
 * First locate each of its children and delete them
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* turn on GKS segment
 * ( this permits re-sizing of windows )
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a unique name for a user-defined variable
 * "expr#1","expr#2",..."expr#9","expr#:","expr#,",etc. from ASCII table
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* this routine is called to get the next command when the program is under
 * "internal" control (one command executing another)
 * its function is to return the next command to execute or to flag that the
 * internal level controlling the program has completed

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the X and Y size of the current viewport in Denbo inches
 * This routine is to be called directly from PLOT+.
 * It requires an External declaration in the main program to ensure
 * that it is loaded at link time.

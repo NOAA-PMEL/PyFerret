@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 	Using data values from src organized on grid src_grd, interpolate to
 * 	values dst on grid dst_grd.
 
 * 	msrc and mdst point to data structures in COMMON/XVARIABLES/ which

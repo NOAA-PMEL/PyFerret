@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the given string with enclosing parens around it and its length
 * if the given string is blank then return a blank string
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* command names, subcommands and qualifiers
 * numbers of subcommands and qualifiers is determined by COMMON/XCOMMAND/
 * see XCOMMAND.CMN for instructions on adding new options
 

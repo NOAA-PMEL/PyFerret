@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* re-assign the data which is currently cataloged in the memory variable
 * table under mr to the context information stored in new_cx
 
 * programmer - steve hankin

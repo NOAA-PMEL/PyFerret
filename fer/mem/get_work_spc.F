@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* provide a region of temporary working space to the calling routine.
 * For greatest speed simply reuse the last provided if it is large enough
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* "get protected command data"
 * calculate grid(s) of data based on the expression given or implied.
 * Expression(s) are in user-variable (uvar) structures.
 * Implied expression is left from last command

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* append to the given user variable name the data set information
 *	var[D=dset_name]
 
 * programmer - steve hankin

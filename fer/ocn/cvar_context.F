@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a new variable context by combining the information pointed to by the
 * cvar table component pointer, com, with the default context, def_cx
 
 * programmer - steve hankin

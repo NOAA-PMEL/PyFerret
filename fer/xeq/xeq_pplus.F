@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* access program PPLUS ( the underlying graphics package ) directly - either
 * by sending a single command to it or by entering the PPLUS command interpreter
 
 * programmer - steve hankin

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Execute a FERRET command
 * WHILE MODE GUI is "CANCELLED" control will remain inside this routine
 * If "command" contains text that command will be executed immediately
 * (formatted as a c-style, null-terminated string)

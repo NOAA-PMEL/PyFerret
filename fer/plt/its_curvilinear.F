@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* are we being asked to do a curvilinear coordinate plot?
 
 * V450: 3/97
 

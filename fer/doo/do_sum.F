@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute a simple sum of the data between the indicated limits
 * Boxes at the ends of the region will always be fully counted - no weighting
 * based on the fraction of the box within the region as with integrals
 

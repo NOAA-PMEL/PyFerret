@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* parse the command line replacing the first expression that is enclosed
 * between grave accents with text strings representing their values
 * this routine will be called once for each such expression so that the
 * entire command line can be re-parsed between calls.  This makes it possible

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* extract a single line of data from a memory variable grid.  Determine
 * which line to extract from the given context
 
 * programmer - steve hankin

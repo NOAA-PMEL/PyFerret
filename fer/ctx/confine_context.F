@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a skeletal context with a known grid confine the context limits to
 * within the grid limits
 * if date/time limits were specified convert to time steps here
 

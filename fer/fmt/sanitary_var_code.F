@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return name code for variable that is "sanitary" in the sense that it can
 * be used as a part of a filename
 
 * programmer - steve hankin

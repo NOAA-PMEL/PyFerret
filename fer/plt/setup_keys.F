@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine parameters needed to layout titles and keys on the plot based on
 * how many variables are in the plot
 
 * programmer - steve hankin

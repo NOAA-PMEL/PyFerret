@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* read a grid of data from a system file
 * this routine merely looks at the class of data set to decide on the
 * appropriate underlying routine to actually get the data
 

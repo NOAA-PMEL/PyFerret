@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* modified by steve hankin to contain explicit declarations
 	INTEGER	I
 
 C***BEGIN PROLOGUE  I1MACH

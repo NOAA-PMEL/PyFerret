@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* *kob* New routine for Linux/f90 port
 
 #ifdef unix
         include 'ferret_cmn/xwindow_state.cmn'

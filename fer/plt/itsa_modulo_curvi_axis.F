@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       determine whether a particular curvilinear context grid axis is a modulo one
 
 *       programmer - jonathan callahan
 *       NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

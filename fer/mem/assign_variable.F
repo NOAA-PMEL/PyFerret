@@ -40,6 +40,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* assign and fill a slot in the memory variable table to the variable or
 * expression indicated in the context cx
 * the assigned variable will always be designated as "in-progress"
 

@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* interpolate the component grid along the given axis
 * note: if requested interpolation lies beyond the first or last grid point
 *	(but within the edge grid box) then the component context will be
 *	only that single edge point (ss_lo=ss_hi).  The code below will

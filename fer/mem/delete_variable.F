@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete a memory resident variable releaseing its space in the memory
 * variable table and bulk memory
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the correct name for the CONID to open the next GKS output window
 * the value of wsid is assumed to be 1 for the first window, 2,3,... for
 * subsequent windows
 * the name stored in xwind_node is assumed to end with ":0" or "::0"

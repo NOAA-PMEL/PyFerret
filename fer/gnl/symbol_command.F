@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check to see if any PLOT+ symbols were used and replace the first one with
 * the "value" string if so
 
 * replacing only the first allows the calling routine to trap recursions

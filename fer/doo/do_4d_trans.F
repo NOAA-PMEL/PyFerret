@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* perform a multi-axis transformation
 
 * multi-axis transformations are those special cases where sequential
 * application of single-axis transforms may yield improper results. For

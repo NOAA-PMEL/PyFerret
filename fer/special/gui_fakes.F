@@ -46,6 +46,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* calling argument declarations:
 	INTEGER fhol, ftxout_append
 
 	WRITE (err_lun, *) 

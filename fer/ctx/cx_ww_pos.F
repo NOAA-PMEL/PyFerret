@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return a single value representing the position of a context along an axis
 * if the axis has been reduced to a point by, say, averaging then return the
 * midpoint.
 * If no reasonable position can be found then return bad_val4

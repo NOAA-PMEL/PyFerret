@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a "pseudo-variable" - numerical grid of data based solely on the
 * underlying grid (not involving external data)
 
 * programmer - steve hankin

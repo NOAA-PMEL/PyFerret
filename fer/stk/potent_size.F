@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the "potential" size of context cx - that is, the total number of
 * values that will need to be accessed in order to perform the indicated
 * compressing transformations (transf. that reduce axis to a point)
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find the extreme bounds of the indicated grid on the indicated axis
 * in SUBSCRIPT values
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* treat all the arguments identified by PARSE_COMMAND as a single argument
 * example cases that this has to address:
 *	message "hello world" 
 *	message "hello" "world"

@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* convert required points of axis to single precision and determine
 * re-gridding needs for non-constant spaced points
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get parameter values for data set - 1st set defaults, then read (if possible)
 * from the 205 data base, then over-ride using any parameters given in the
 * descriptor
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get the modulo status of all 4 axes of a context grid
 * ... all 4 at once for performance reasons -- so this is called 1/4 as often
 
 * programmer - steve hankin

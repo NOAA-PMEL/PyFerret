@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute the length of axis between the low and high limits given 
 * converted to uniform units ( m ) in x, y and z
 
 * programmer - steve hankin

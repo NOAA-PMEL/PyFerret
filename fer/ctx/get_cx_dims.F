@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the "shape" of the region specified in context cx by returning
 * array, dim, which contains a permutation of the 4 defining axes 1,2,3,4
 * and, ndim, the number of axes for which there is a range of data.
 * The permutation is first those axes which contain a range of data

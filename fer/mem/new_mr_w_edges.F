@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* allocate and claim sufficient memory space, and assign and fill a slot in the 
 * memory variable table for the variable or expression indicated in the context
 * the region of valid data within the cx_model context is indicated by the
 * cx_valid context ... fill the invalid regions with bad data flags

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the length of the axis from a particular context
 
 * this routine is to minimize the need for TMAP COMMON areas in FERRET code
 

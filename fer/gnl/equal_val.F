@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* from a string of the form "name=value", return the value
 * if the string is simply "name" then return unspecified value
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the GO command
 * GO filename	indicates that the commands in file filename are to be executed
 
 * programmer - steve hankin

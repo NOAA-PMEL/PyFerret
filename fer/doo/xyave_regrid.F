@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* 	Using data values from src organized on grid src_grid, regrid to
 * 	grid dst_grid by averaging withing boxes
 
 * 	msrc and mdst point to data structures in COMMON/XVARIABLES/ which

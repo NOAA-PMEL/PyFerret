@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* deallocate all dynamic grids associated with this user variable
 * (clearing any memory references to this grid)
 
 * programmer - steve hankin

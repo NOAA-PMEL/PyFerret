@@ -44,6 +44,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* interpret a list of coordinate limit specifiers and other special qualifiers
 * and put the interpreted list of modifications into the buffer mods_cx
 * note: no initialization is done except on those dimensions that are modified
 

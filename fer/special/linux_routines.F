@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Linux replacement for fdate/date routines.  
 *
 * kob 3.11.97
 

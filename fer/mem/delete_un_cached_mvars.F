@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* clear (delete) the entire list of uncached memory variables
 * (sanity check along the way)
 
 * programmer - steve hankin

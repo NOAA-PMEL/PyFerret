@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* average the component grid into the result grid
 * (done by calling a single routine used for both averaging and integrating)
 
 * programmer - steve hankin

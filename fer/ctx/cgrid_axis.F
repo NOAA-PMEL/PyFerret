@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the axis number for the indicated orientation of the grid in the
 * given context
 
 * programmer - steve hankin

@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* save the dimensioning information about the X position and Y position
 * arrays so these arrays will be accessible from inside of PLOT+ routines.
 * A C subroutine will be used to cache the pointers to these 2 arrays.
 * COMMON will be used to store the size/shape information.

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the uvar number of the parent of this (child) uvar
 * Note that the "TRUE" parent may be a grand-parent or great-grand
 * For example, in the expression
 *     A = FCN1(v1+v2) + B

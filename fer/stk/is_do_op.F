@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* do bookkeeping and call up calculation to perform op_num between
 * 0,1,2 or 3 grids
 
 * programmer - steve hankin

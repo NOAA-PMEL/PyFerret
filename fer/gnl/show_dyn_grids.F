@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* summarize the dynamic grids and axes currently in existence
 * also do sanity checks that use counts are appropriate
 
 * programmer - steve hankin

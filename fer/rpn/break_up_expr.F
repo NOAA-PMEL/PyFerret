@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* text may have more than one algebraic expression separated by commas
 * this routine will delimit the expressions and store them in reverse Polish
 * order in the user-var structure
 

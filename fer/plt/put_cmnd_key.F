@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a key for a plot using PLOT+ movable labels
 * that will document a SHADE, CONTOUR or VECTOR overlay
 * (xsize,ysize) is the size of the "key box" (including the line specimen
 * (xll,yll) is the lower left corner of the box

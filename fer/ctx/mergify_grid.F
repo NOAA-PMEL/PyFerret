@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* initialize the grid information about a uvar with information from the
 * last (first merged) component in its definition
 
 * programmer - steve hankin

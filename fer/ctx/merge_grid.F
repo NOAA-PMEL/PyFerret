@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* combine the grid from a new component into the grid information from the
 * already-merged components
 * compute: 1) the aggregate grid (as a collection of 4 axes)
 *	   2) uvar_given - which tells how limits must be specified for each

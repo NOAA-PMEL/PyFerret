@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string describing the size of a 4D region
 * for example: 160*100*27*12
 
 * programmer - steve hankin

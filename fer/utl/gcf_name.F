@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the name of a grid changing function from its ID number
 
 * V450: 1/97
 *       97.07.16 *jc* adding code to allow call to efcn_get_name()

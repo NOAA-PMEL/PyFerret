@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the width of field needed to write out value "val" in a formatting
 * style appropriate to axis "idim" of grid "grid" with ndec decimal points
 * also return the number of characters needed exclusive of the extra formatting
 * ("numbers")

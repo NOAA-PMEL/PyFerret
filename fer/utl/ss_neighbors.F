@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* locate the subscript values immediately surrounding the given world
 * coordinate on the indicated axis.
 * Return also the linear interpolation factor with respect to the first
 * subscript.

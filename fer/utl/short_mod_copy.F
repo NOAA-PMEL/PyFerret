@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* copy into the result over the range lo:hi from the component data
 * the range lo:hi is assumed to be not more than Nmod points
 
 * copying takes place in 2 stages ... with possible voids before,between,

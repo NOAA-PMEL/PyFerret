@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the grid to use for a single variable evaluation
 * the given context must have the logical cx_unstand_grid set and
 * if .TRUE. it must have a cx_grid value
 

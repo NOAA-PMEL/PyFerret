@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       support routine for ITSA_MODULO_CURVI_AXIS
 *       
 *       programmer - jonathan callahan
 *       NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program

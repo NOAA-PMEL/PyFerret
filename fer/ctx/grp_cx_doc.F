@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* set up joint context and document flags to summarize the contexts
 * of one or more variables that will be plotted (or listed) simultaneously
 * For example, PLOT U[Z=20],U[Z=50] will place data set and X,Y,T locations
 * in cx_plot and set up key_doc to display the Z location

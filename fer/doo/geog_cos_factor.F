@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine whether a particular axis of a grid represents geographical
 * locations (lat.,long., etc.) requiring COS corrections
 
 * programmer - steve hankin

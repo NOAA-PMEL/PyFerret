@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* re-orient vectors so that they point in the correct direction on the plot
 * preserving the overall magnitude
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Determine the defining grid for user-defined variable, uvar
 * The procedure is performed on the (IS) interpretation stack using stack
 * frames on the IS stack, the CX (context) stack and the grid stack.
 * In order the determine the requested grid the grids for all of the user

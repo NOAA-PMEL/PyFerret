@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Insert a FORTRAN character string into a "C" string (a character array)
 * using a carriage return followed by null as the terminator.
 * Return with the insertion point pointing to the null.
 

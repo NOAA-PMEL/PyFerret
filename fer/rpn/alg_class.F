@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* subroutine for lexical analyzer
 * determine chatacter class of character
 * note: the routine could be made simpler and faster by simply providing a
 *	DATA statement associating each character number (ICHAR('C')) with a

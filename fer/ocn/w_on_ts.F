@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute W ( vertical velocity ) on TEMP/SALT columns via zero divergence 
 * condition
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine how many digits are needed left and right of decimal point to
 * represent "value" with nsig_digits significant digits
 
 * programmer - steve hankin

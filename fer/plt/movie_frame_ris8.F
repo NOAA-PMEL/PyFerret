@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*       Modification of original MOVIE_FRAME to capture GKS graphical output
 *       in a pixmap.  This routine stores images in HDF RIS8 format for
 *       playback by X Data Slice (XDS) or Ximage
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete a user-defined variable (7/97) ON THE ASSUMPTION THAT IT HAS
 * NO CHILDREN (children are handled by DELETE_USER_VAR)
 * this involves not only eliminating the variable from the list of user var
 * definitions but also eliminating in memory any stored grids that depend on

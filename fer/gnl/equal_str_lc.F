@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* from a string of the form "name=value", return the "value" string
 * if the string is simply "name" then return ' ' (blank)
 * this version preserves the upper/lower case of the string
 

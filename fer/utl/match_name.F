@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* check to see if test string is same as model string to full length of model
 * string
 * model string must be all upper case - test string ignores case
 * programmer - steve hankin

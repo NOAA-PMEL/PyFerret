@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* which grid-changing fuction is used by the indicated GC variable?
 
 * V450: 1/97
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* release one claim of being required for calculations from variable mr
 * if this release leaves the variable unneeded for any calculations then return
 * it to the deletable variable chain
 

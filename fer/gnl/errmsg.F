@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* display explanatory message of error, transfer error code to output variable,
 * and always take alternate return to serve as error branch in
 * calling program
 * programmer - steve hankin

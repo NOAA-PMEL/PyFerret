@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* flag that the specified variable is in use as a component of a calculation
 * and is therefore not available to be deleted
 * (multiple calculations can claim the same component by incrementing the
 * protection counter)

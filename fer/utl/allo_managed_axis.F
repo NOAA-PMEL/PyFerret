@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Locates an unused axis (line) slot and returns it.
 * This routine parallels TM_FIND_LINE_SLOT in function but whereas that
 * routine allocates from lower memory in grid common and leaves gaps
 * as axes are deleted this routine allocates from upper memory and uses

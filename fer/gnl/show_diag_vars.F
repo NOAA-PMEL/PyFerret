@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* execute the SHOW VARIABLES/DIAGNOSTIC command - display an alphabetized list 
 * of the available variables
 
 * programmer - steve hankin

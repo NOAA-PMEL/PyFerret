@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Fill in a user variable structure with a new expression
 * Expression should arrive with the atoms identified in at_type but
 * still in infix order. Since multiple expressions may exist within
 * the same text string (text) this routine has txstart and txend

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* transfer the lo:hi subscript information for the given list of memory-resident
 * variables to non-array storage where it can be used for adjustable array
 * dimensioning
 

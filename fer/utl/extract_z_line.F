@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Extract a single Z line of data from a memory variable grid.
 * Identify contiguously valid data region and report in klo, khi
 * Return values in buffer that always starts with the first valid value
 

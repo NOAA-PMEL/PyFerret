@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* generate a string that describes the given context using the flags as
 * guidelines for what limits, transformations, etc. to document
 
 * programmer - steve hankin

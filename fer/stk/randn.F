@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute a quasi-random number with a standard normal distribution
 * based on the routine "GASDEV" on p.203 of Numerical Recipes
 * W.H.Press,B.P.Flannery,S.A.Teukolsky,W.T.Vetterling
 

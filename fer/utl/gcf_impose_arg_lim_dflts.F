@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* This routine is used in setting the context used for **obtaining**
 * the component arguments to a grid changing function.
 * This is the so-called "upstream" passing of context.
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the region-limits class (uvar_given) of a user-defined variable
 * used as a component in another user-defined variable
 
 * for example,	DEFINE VARIABLE A = U[K=@AVE]

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return the number of arguments to this grid changing function
 * variable argument functions return a negative value with the
 * ABS() equal to the number of **required** arguments
 

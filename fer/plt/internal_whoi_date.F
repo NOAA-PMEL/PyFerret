@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a string of the form YYMMDDHHMMSSCC (internal ordering) from the
 * time step
 
 * programmer - steve hankin

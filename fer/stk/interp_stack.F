@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Return a grid of data and a buffer of context info about the grid given 
 * a default context for evaluation and the text of an expression.
 * Transformations, regrids, rotations, etc. are all controlled
 * by this routine.  Nesting of these operations is possible because all

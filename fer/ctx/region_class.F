@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the region-limits class of a component in an expression
 * the region-limits class encodes how limits must be specified in order to
 * match with memory-resident data.  (It is uvar_given without the 
 * "need"/"given" information.)

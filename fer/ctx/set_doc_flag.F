@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* maintain the document flag structure
 * if "init" then preset all flags to false
 
 * programmer - steve hankin

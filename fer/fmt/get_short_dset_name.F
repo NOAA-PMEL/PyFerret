@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get the name, only - not the full path) of the given data set
 * if that is meaningful
 * else get a string describing the nature of the name 
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* initialize a data set of type "EZ" (simple ASCII or unformatted file with
 * no attendant descriptor
 
 * programmer - steve hankin

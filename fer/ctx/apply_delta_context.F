@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* apply delta coordinate limits of the FORM DX
 * to the indicated context
 
 * programmer - steve hankin

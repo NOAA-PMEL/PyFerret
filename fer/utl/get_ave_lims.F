@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* for regridding axis idim from source grid to destination grid:
 * determine source grid boxes containing destination box edges
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine the number of values in a 2D grid that lies within the plane
 * of the specified variable stored in memory
 
 * programmer - steve hankin

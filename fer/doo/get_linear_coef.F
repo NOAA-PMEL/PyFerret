@@ -37,6 +37,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* for regridding axis axis from source grid to destination grid:
 * determine linear interpolation coefficients and nearest lower neighbor point 
 
 * programmer - steve hankin

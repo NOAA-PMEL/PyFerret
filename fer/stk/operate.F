@@ -40,6 +40,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* perform an operation involving portions of 0,1,2 or 3 input grids
 * and producing an entire result grid
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* depending on the state of mode_gui either write this string to the
 * out_lun unit number or send it to the GUI
 
 * Note that line_len=0 means this routine will determine the line length

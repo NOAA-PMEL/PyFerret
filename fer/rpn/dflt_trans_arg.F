@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* if no argument was specified for the given transformation then insert
 * a default
 
 * programmer - steve hankin

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* sets up the control stack (COMMON/~CONTROL/) to handle single line
 * conditional "IF" or the IF-stack (ifstk) to handle multiple line IF
 * Single line IF (e.g. IF cond THEN command1 ELSE command2 ENDIF)
 * or a multi-line IF -- e.g.

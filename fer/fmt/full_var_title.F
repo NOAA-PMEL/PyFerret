@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a title for a memory variable including:
 * i)   the variable's title, 
 * ii)  modifications to the title ( either mods given as a part of the name or
 *      remarks about transformations performed on the variable )

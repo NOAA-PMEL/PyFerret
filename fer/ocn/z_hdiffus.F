@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* compute vertical component of heat diffussion using temperature at
 * 3 layers (tkm,tk,tkp) and vertical diffussion coefficient at 2 (vdcM,vdc)
 * and using surface boundary fluxes if at the surface
 

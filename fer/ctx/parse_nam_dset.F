@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a full variable specification of the form:
 *			(eg.) TEMP[D=n,G=gname] (with optional region info)
 * return context information describing variable and data set
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* from a string of the form "perm=XYZT", return array perm with the ordering
 * expressed as integerd
 
 * programmer - steve hankin

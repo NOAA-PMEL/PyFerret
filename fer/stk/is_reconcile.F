@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* reconcile any conflicts between the component requested and the one received
 * for example, LIST/I=3:7  test[i=2:5]
 
 * programmer - steve hankin

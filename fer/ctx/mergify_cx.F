@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* impose a "merged look" on context cx by setting the data set to the default,
 * an dsetting the grid to the merged grid
 
 * programmer - steve hankin

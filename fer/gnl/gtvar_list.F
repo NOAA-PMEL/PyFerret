@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* write out a the records of data for a single variable in GT format
 * note: all output files are ordered XYZT for sequence numbering
 
 * programmer - steve hankin

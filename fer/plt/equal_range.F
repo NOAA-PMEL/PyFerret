@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* from a string of the form "name=value", return the lo/high value range
 * if the string is simply "name" then return unspecified values
 * the "delta" value is optional - return unspecfied_val8 if not given
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* at this point a grid has been determined which lacks only those
 * axes which are to be imposed by a grid changing variable. This routine
 * completes that grid and the uvar_given associated with it.
 

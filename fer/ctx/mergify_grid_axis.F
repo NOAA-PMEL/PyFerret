@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Determine the nature of how a particular axis of a requested user variable
 * depends on the context region and initialize uvar_given for the user var.
 * The component passed (cx) is assumed to be the first that contains relevant
 * information about this axis.

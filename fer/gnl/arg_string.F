@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return a text string representing the value "val"
 * if val is unspecified (bad_val4) then return blank, else start with a colon
 * if val is integer then format it as such
 * declare length of ARG_STRING in calling program to be at least 11

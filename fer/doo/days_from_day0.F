@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* return a relative day number since the day of date0_days where date0_days
 * is in units of days since 1-JAN-0000
 
 * programmer - steve hankin

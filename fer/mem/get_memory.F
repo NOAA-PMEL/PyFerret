@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find and reserve a section of contiguous memory sufficient to hold num_words 
 * procedure:
 * first check the list of free memory regions to see if there's one big enough
 * if not then delete variables working from the tail of the priority chain

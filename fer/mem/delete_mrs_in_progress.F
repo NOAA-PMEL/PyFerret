@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete from memory all in-progress grids ( grids that have been cataloged in
 * the memory variable table but whose computation is not yet completed )
 * 6/89 - and other temporary data
 

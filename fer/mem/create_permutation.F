@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a memory-resident variable from input data, msrc, using region limits
 * from context cx permuted into the order specified by array perm
 * To optimize speed pre-test to see if the input data is already suitably
 * organized

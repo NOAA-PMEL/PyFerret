@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Complete the context for the result of a grid-changing function.
 * Fill in the limits for those axes of the grid changing function which
 * were "imposed" by the function.
 * Reconcile the limits of the arguments with the limits of the result where

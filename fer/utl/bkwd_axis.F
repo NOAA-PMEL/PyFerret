@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine whether a particular axis of a grid is backwards relative to
 * the normal sense of a right hand coordinate system
 * note: only backwards Z axes are supported
 

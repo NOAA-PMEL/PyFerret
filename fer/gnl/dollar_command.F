@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* parse the command line replacing "dollar" arguments in GO files
 * with the appropriate strings
 
 * formats supported:

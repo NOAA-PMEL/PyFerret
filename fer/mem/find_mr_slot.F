@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* locate an unused slot in the memory variable table and assign it to the
 * hash pile associated with the given context (cx)
 
 * programmer - steve hankin

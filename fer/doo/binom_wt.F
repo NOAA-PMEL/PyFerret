@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create an array of binomial weights
 * by repeated convolutions with the filter [1/2,1/2]
 
 * programmer - steve hankin

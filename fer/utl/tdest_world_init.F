@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Initialize COMMON in preparation for time coordinate conversion calls to
 * TDEST_WORLD (see detailed docs in tdest_world.F)
 
 * This routine exists to optimize performance in converting between time axes

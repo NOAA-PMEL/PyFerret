@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* replace the blank in "dd-mmm-yyyy hh:mm:ss" with a colon
 * axe the time field from climatological dates: "dd-mmm      hh:mm" -> "dd-mmm"
 * replace 19E(379) with the unambiguous 379E
 

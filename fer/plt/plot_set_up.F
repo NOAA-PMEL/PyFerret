@@ -39,6 +39,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* set up for line plot by loading data and title and defining axis formats
 * (the routine is confusing as a result of simultaneously coping with the needs
 * of single variables, multiple variables, /VS, /TRANSPOSE and /OVERLAY)
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* find the defining grid for the given variable
 * if unknown - return unknown flag
 
 * programmer - steve hankin

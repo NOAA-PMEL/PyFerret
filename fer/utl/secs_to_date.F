@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Convert secs since 01-JAN-0000 00:00:00 to a date of the form
 * $_-mm-dd hh:mm:ss
 * difference from TM_SECS_TO_DATE: if year=0 or 1 then blank year field 
 

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* turn off the PLOT+ axes with the AXSET command but save the current
 * state so the axes can be restored
 
 * V450:  

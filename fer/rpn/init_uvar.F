@@ -38,6 +38,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Compile a user variable structure into one or more user variables.
 * Expression should arrive with the atoms identified in at_type but
 * still in inifx order. Since multiple expressions may exist within
 * the same text string (text) this routine has txstart and txend 

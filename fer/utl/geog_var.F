@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine whether a particular axis of a VARIABLE represents geographical
 * locations (lat.,long., etc.) requiring special label formatting
 
 * V450: 3/97 - based on GEOG_LABEL

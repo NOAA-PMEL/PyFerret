@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+*	Captures current color map in use by GKS ws and stores as 
 *	current palette in HDF RIS8 image file.
 *	J Davison 1.7.92
 *       *jd* && *sh* 3-30-93 - retain indices 1-6 in the raster 8 file

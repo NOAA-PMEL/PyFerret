@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* push the interpretation stack pointer to the next higher level and copy
 * the most common objects to the new level
 
 * programmer - steve hankin

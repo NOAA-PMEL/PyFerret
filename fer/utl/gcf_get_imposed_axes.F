@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* supply the axes for those axes of the grid changing function which
 * are "imposed" by the function
 
 * the addition (or major modification) of an internal grid-changing function

@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* Return parameters about the grid changing function, gcfcn, on how the
 * limits of the argument, iarg, should be determined relative to the
 * default limits of the grid changing variable
 

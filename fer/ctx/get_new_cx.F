@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* using the default context supplied and the context modifiers given with the
 * command produce a new context
 
 * programmer - steve hankin

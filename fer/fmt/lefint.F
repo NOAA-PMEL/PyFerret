@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* create a left-justified integer string from ival
 * typical usage:
 * i) declare length of function in calling routine 
 *	eg. CHARACTER*8 LEFINT

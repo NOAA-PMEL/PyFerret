@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* pull together the pieces of a "modulo" (wrap-around) read along an axis by
 * inserting pieces obtained by non-modulo reads (within the base axis limits)
 
 * programmer - steve hankin

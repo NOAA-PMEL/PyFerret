@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* determine if the given "user-defined" variable was explicitly created (with
 * DEFINE VARIABLE) or implicitly (e.g. with LIST U*V)
 
 

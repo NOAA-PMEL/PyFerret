@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* given a name which may be the name of a grid or the name of a variable
 * with possible data set and grid name modifiers return a grid number
 
 * programmer - steve hankin

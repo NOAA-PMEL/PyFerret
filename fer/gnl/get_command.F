@@ -36,6 +36,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* get next command line and decode it placing information in COMMON
 * source of command may be calling argument string, operator, command file,
 * or internal macro command (e.g. REPEAT or semicolon command group)
 

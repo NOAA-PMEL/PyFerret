@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* produce a formatted string representing the space or time limits along the
 * specified axes within the specified context
 
 * programmer - steve hankin

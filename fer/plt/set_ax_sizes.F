@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* adjust PPLUS AXLEN and ORIGIN commands to fit current plot size
 * xfrac and yfrac allow viewports to specify fractions of the window size
 
 * programmer - steve hankin

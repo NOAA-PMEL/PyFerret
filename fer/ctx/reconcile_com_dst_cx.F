@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* The component context is fully fleshed out (necessarily, since
 * the component has already been obtained) whereas the destination (result)
 * context may still have some unknown axis limits.  So pass the component
 * information over to the destination on all except the critical axis

@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* delete from memory all "expression" variables - internally defined user-vars
 * that were created by expressions given with the commmand line
 
 * programmer - steve hankin

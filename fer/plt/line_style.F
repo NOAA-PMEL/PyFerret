@@ -35,6 +35,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* In Ferret the concept of the PLOT+ PEN command is generalized to combine
 * line type (dashing), color and symbol into this single call
 * Line number ipen will always be associated with line style ipen.
 * Prior to this call colors and line types have already been combined via GKS

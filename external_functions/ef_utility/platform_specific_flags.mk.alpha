@@ -15,6 +15,6 @@ RANLIB          = /usr/bin/ranlib
 CFLAGS          = -g $(CCSHFLAG) $(INCLUDES)
 F77             = f77
 F77SHFLAG       = -shared
-FFLAGS          = -g -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
+FFLAGS          = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -fpe2 -C $(F77SHFLAG) $(FINCLUDES)
 LD_DYN_FLAGS    = -shared

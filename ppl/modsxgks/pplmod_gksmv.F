@@ -83,7 +83,7 @@ C
 	Y(IPT)=YN
 #endif
 	RETURN
-	ENTRY GFLUSH
+	ENTRY PPLGFLUSH
 #ifdef core
         return
         end

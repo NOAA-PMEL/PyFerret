@@ -138,7 +138,7 @@ C
 C
 	    GKSOPN=.TRUE.
 	ENDIF
-	CALL GFLUSH
+	CALL PPLGFLUSH
 #ifdef core
         istat=setlineindex(icode)
 #else

@@ -211,7 +211,7 @@ c30		    CALL CHOUT(SYN,1)
 C
 C	DEVICE IS A GKS DEVICE
 C
-	    CALL GFLUSH
+	    CALL PPLGFLUSH
 #ifdef core
             if(.not.gksopn)then
                 call crinit
@@ -343,7 +343,7 @@ C
 C
 C	DEVICE IS GKS
 C
-	    CALL GFLUSH
+	    CALL PPLGFLUSH
 	ELSE IF((PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)
      *		.AND.CLEAR)THEN
 	    IF(PLTFLG)THEN

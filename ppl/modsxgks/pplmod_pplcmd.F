@@ -29,7 +29,7 @@ C**
 *	     a command can handle up to 20 inputs.
 *	J Davison 11.09.93 Mod to add segments to advanced commands
 *	J Davison 01.06.94 Mod to use PLTNME to set metafile name
-*	J Davison 01.25.94 Mod to call GFLUSH to flush output at each call
+*	J Davison 01.25.94 Mod to call PPLGFLUSH to flush output at each call
 *	J Davison 11.19.95 Mod for 4 digit year capability
 *	J Davison 11.29.95 Mod for century axis
 
@@ -342,7 +342,7 @@ C
      .	  .or.makep .eq. 'FILL'
      .	  .or. icom(1:1) .eq. '%') then
              IF ( PPL_in_FERRET ) CALL SEG_ON( )
-             call gflush
+             call pplgflush
              IF ( PPL_in_FERRET ) CALL SEG_OFF
 	   endif
 	endif

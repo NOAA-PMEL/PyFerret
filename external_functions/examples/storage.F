@@ -1,12 +1,12 @@
 *
 * storage.F
 *
-* Jonathan Callahan
-* Feb 19th 1998
+* Ansley Manke  (from Jonathan Callahan's storage)
+* Dec 10 1998
 *
-* This function sets the second argument to be equal
-* to the first one and has all the necessary calls to
-* acquire some work storage.
+* This function allocates working storage which is 
+* the size of the first argument and then uses that
+* storage in calculation of the result.
 *
 
 
@@ -58,7 +58,7 @@
 *                                                                      |
 *                                                                      V
 
-      CALL ef_set_desc(id,'sets result equal to input' )
+      CALL ef_set_desc(id,'sets result equal to input/10' )
 
       CALL ef_set_num_args(id, 1)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -69,8 +69,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
-      CALL ef_set_arg_unit(id, arg, ' ')
-      CALL ef_set_arg_desc(id, arg, 'this arg is passed through')
+      CALL ef_set_arg_desc(id, arg, 'input')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
 *                                                                      ^
@@ -89,6 +88,7 @@
       SUBROUTINE storage_work_size(id)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -100,10 +100,22 @@
 *
 * Set the work array X/Y/Z/T dimensions
 *
-* ef_set_work_array_lens(id, array #, X len, Y len, Z len, T len)
+* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
+      INTEGER id, array_num
+      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
+     .     arg_incr(4,1:EF_MAX_ARGS)
 
-      CALL ef_set_work_array_lens(id,1,256,5,1,1)
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      array_num = 1
+
+      CALL ef_set_work_array_dims(id, array_num,
+     .     arg_lo_ss(X_AXIS,ARG1), arg_lo_ss(Y_AXIS,ARG1), 
+     .     arg_lo_ss(Z_AXIS,ARG1), arg_lo_ss(T_AXIS,ARG1), 
+     .     arg_hi_ss(X_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1), 
+     .     arg_hi_ss(Z_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1))
+
 
 *                                                                      ^
 *                                                                      |
@@ -123,13 +135,14 @@
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
           INTEGER id
-
+*
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit)
-      REAL workspace(1:256, 1:4, 1:1, 1:1)
+      REAL workspace(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -170,7 +183,9 @@
 
                   ELSE
 
-                     result(i,j,k,l) = arg_1(i1,j1,k1,l1)
+                     workspace(i1,j1,k1,l1) = arg_1(i1,j1,k1,l1) / 10.
+                     result(i,j,k,l) = workspace(i1,j1,k1,l1)
+
 
                   END IF
 

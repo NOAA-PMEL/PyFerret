@@ -78,7 +78,7 @@
 
 	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
 * pass along the axis limits
-	      IF ( cx_by_ss(cx_out,idim) ) THEN
+	      IF ( cx_by_ss(idim,cx_out) ) THEN
 * ... expand the subscript range by the offsets requested
 	         IF ( cx_hi_ss(cx_out,idim).NE.unspecified_int4 ) THEN
 	            cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)

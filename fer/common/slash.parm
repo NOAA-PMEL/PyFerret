@@ -7,6 +7,7 @@
 * V530 *sh* 10/00 - added slash_set_data_type, slash_set_data_delimiters
 *	*sh* 1/01 - added slash_plot_step
 * V530 *kob* 1/01 - added slash_repeat_animate, slash_repeat_loop
+* V530 *acm* 5/01 - added slash_plot_dash
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -142,7 +143,9 @@
      .			slash_plot_color,
      .			slash_plot_thick,
      .			slash_plot_symsize,
-     .			slash_plot_step
+     .			slash_plot_step,
+     .			slash_plot_dash
+
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -295,7 +298,8 @@
      .			slash_plot_color	= 18,
      .			slash_plot_thick	= 19,
      .			slash_plot_symsize	= 20,
-     .			slash_plot_step		= 1 + 23 )
+     .			slash_plot_step		= 1 + 23,
+     .			slash_plot_dash		= 1 + 25 )
 
 	PARAMETER     ( slash_wire_over		= 9,
      .			slash_wire_set_up	= 10,

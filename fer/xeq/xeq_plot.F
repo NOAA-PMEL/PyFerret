@@ -60,6 +60,8 @@
 * V510 *sh* 3/00 - added PLOT/COLOR=/SIZE= qualifiers
 * V521 6/00 *sh* - bug fix: PLOT/LINE/SYM should auto-select colors
 * V530 *sh* 1/01 - added PLOT/STEP
+* V530 *acm* 5/01 - added PLOT/DASH
+*	            and PLOT/SYMBOL=dot
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -110,16 +112,18 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, use_line
-	INTEGER		symbol, color, status,
+	INTEGER		TM_LENSTR1, symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
-     .			ax2_blks, ax2_start
-	REAL		val, sym_size
-	CHARACTER	LEFINT*4, buff*4
+     .			ax2_blks, ax2_start,
+     .			do_dash, it_start(4), it_end(4),
+     .			ndashparm, num_it, i
+	REAL		val, sym_size, dot_sym, dashstyle(4)
+	CHARACTER	LEFINT*4, buff*4, dashbuf*25
 
 * internal parameter declarations
 	INTEGER ncolors
-	PARAMETER (ncolors = 6)
+	PARAMETER (ncolors = 6, dot_sym = 99)
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -153,6 +157,7 @@ CC       => Set values here instead.
 	thick	  = 1		! default thickness
 	color     = qual_on	! automatic selection as default
 	step_inc  = 1
+        do_dash   = 0		! default no dashes
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -169,16 +174,27 @@ CC       => Set values here instead.
 * ... PLOT/SYMBOL=n
 	loc = qual_given( slash_plot_symb )
 	IF ( loc .GT. 0  ) THEN
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      val, status )	! syntax check
+
+*  Is it SYMBOL=DOT?
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( val .NE. unspecified_val4 ) THEN
-	      limit = max_sym 
-	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
-	      symbol = NINT( val )	! user-specified symbol
-	   ELSE
-	      symbol = qual_on		! auto selection of symbols
-	   ENDIF
+	   IF (buff .EQ. 'dot') THEN
+              symbol = dot_sym
+           ELSE
+
+	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      val, status )	! syntax check
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+
+	      IF ( val .NE. unspecified_val4 ) THEN
+	         limit = max_sym 
+	         IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
+	         symbol = NINT( val )	! user-specified symbol
+	      ELSE
+	         symbol = qual_on		! auto selection of symbols
+	      ENDIF
+           ENDIF
 	   use_line = .FALSE.		! default to no line w/ symbol
 ! 6/00	   color = 1			! default symbol color	      
 	ENDIF
@@ -196,6 +212,8 @@ CC       => Set values here instead.
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE. 0.0 ) GOTO 5210
 	      sym_size = val		! user-specified symbol
+              IF ( symbol .EQ. dot_sym) 
+     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR=n
@@ -206,7 +224,7 @@ CC       => Set values here instead.
            IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 * ... PLOT/THICKNESS=n
- 200	loc = qual_given( slash_plot_thick )
+ 	loc = qual_given( slash_plot_thick )
 	IF ( loc .GT. 0  ) THEN
 	   IF ( color .EQ. qual_on ) color = 1  ! /THICK alone means "BLACK"
 	   color = MOD(color-1,ncolors)+1  ! eliminate thickness
@@ -220,6 +238,10 @@ CC       => Set values here instead.
 	      thick = 2  ! default if no value is specified
 	   ENDIF
 	   color = ncolors*(thick-1) + color
+           IF ( symbol .EQ. dot_sym) THEN
+              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
+           ENDIF
 	ENDIF
 * ... PLOT/LINE_STYLE=n
 	loc = qual_given( slash_plot_line )
@@ -254,6 +276,38 @@ CC       => Set values here instead.
 	   ENDIF
 	ENDIF	   
 
+* ... PLOT/DASH=(dn1,up1,dn2,up2)
+	loc = qual_given( slash_plot_dash )
+	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        dashbuf, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+           do_dash = 1
+
+	   IF ( dashbuf .NE. ' ' ) THEN
+* Check parentheses
+              slen = TM_LENSTR1(dashbuf)
+              IF (dashbuf(1:1) .NE. '(' .OR. dashbuf(slen:slen) .NE. ')' ) 
+     .           GOTO 5420
+              ndashparm = 4
+              CALL parse_comma_list ( dashbuf, 2, slen-1, ndashparm, num_it,
+     .             it_start, it_end, status)
+              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /DASH=()
+                 DO 100 i = 1, 4
+                    dashstyle(i) = 0.
+ 100             ENDDO
+              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. ndashparm) THEN
+                 GOTO 5420
+              ELSE
+                 DO 200 i = 1, ndashparm
+                    READ (dashbuf(it_start(i):it_end(i)), *) dashstyle(i)
+                    IF (dashstyle(i) .LT. 0.) GOTO 5430
+ 200             CONTINUE
+              ENDIF
+           ENDIF
+              
+	ENDIF	   
+
 * set up the axes and title and load the data into PPLUS
 	CALL PLOT_SET_UP   ( 	memory,
      .				overlay,
@@ -265,6 +319,8 @@ CC       => Set values here instead.
      .				color,
      .				use_line,
      .				step_inc,
+     .				do_dash,
+     .				dashstyle,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -318,4 +374,11 @@ CC       => Set values here instead.
  5400	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to 3', *1000 )
+ 5420	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	'DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument', *1000 )
+ 5430	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'DASH arguments must be positive', *1000 )
+
 	END

@@ -78,6 +78,7 @@
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
 *	    1/01 - remove makep setting so segments are not pre-activated
 * V5.3 *ACM* 1/03  cal_id for alternative calendar axes.
+* V5.3 *ACM* 5/09  add arguments (unused here) to line_style call.
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -128,11 +129,11 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels, no_range, use_line
-	INTEGER		symbol, line_type, coord_ax, iunits,
+	INTEGER		symbol, line_type, coord_ax, iunits, do_dash,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
-	REAL            only_val
+	REAL            only_val, dashstyle(4)
 
 * internal variable declarations:
 	LOGICAL         missing_polygon
@@ -481,7 +482,9 @@
 	   makep = ' '
 
 * NOW set the line style
-	CALL LINE_STYLE( symbol, 0.08, line_type, use_line, 1, 1 )
+        do_dash = 0
+	CALL LINE_STYLE( symbol, 0.08, line_type, use_line, 
+     .                   do_dash, dashstyle, 1, 1 )
 
 * release context stack buffers
 	cx_stack_ptr = cx_stack_ptr - 2

@@ -1,5 +1,6 @@
 	SUBROUTINE LINE_STYLE( symbol, sym_size, color,
-     .			       use_line, line_number, so_far )
+     .			       use_line, do_dash, dashstyle,
+     .			       line_number, so_far )
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -56,7 +57,8 @@
 * V230:  7/23/92 - when /LINE_STYLE is given /SYMBOLS must default to OFF
 * V301:  1/27/94 - when /LINE_STYLE is given w/out /SYMBOL use num_fancy_lines
 * V510 *sh* 3/00 - added args use_line and sym_size to suport PLOT/COLOR=/SIZE=
-
+* V530 *acm 5/01 - added args do_dash and dashstyle for 
+*		   PLOT/DASH[=(dn1,up1,dn2,up2)]
 
 #ifdef unix
 	include	'slash.parm'
@@ -70,12 +72,12 @@
 
 * calling argument declarations
 	LOGICAL use_line
-	INTEGER symbol, color, line_number, so_far
-	REAL	sym_size
+	INTEGER symbol, color, line_number, so_far, do_dash
+	REAL	sym_size, dashstyle(*)
 
 * internal variable declarations
         LOGICAL unique_symbol, symbol_only1, select_lines
-	INTEGER	style, ppl_draw_line, sym_so_far
+	INTEGER	style, ppl_draw_line, sym_so_far, i
         SAVE sym_so_far     ! # symbols on the screen ... *sh* 10/91
 
 * internal parameter declarations
@@ -84,6 +86,7 @@
 
 * internal variable declarations
 	INTEGER	itype, imark, style0, sym(num_sym)
+        LOGICAL setdash
 	DATA	sym/1,3,17,19,21,23,25,27,29,31,33,35,39,41,43,47,51/
 
 * initialize
@@ -130,8 +133,7 @@
 	ELSE
 	   itype = 1
 	   imark = 0
-	ENDIF
-	   
+	ENDIF	   
 * replace selections with forced values if supplied
 	IF ( symbol    .GT. 0 ) THEN
 	  imark = symbol
@@ -142,10 +144,10 @@
 	ENDIF
 	IF ( color .GT. 0 ) itype = color
 
-* communicate this to PLOT+
 	WRITE ( ppl_buff, 3000 ) line_number, itype
  3000	FORMAT('PEN ',2I4)
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+
 	IF ( imark .GT. 0 ) THEN
 * ... "LINE 8 3 1" - symbol number 3 on line 8
 	   WRITE ( ppl_buff, 3100 ) line_number, imark, ppl_draw_line
@@ -162,6 +164,27 @@
  3300	   FORMAT ('MARKH ',I4,F8.3)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	ENDIF
+
+*  User-requested dash overrides automatic selections
+        IF (do_dash) THEN
+	   itype = 4
+
+* communicate this to PLOT+
+           setdash = .FALSE.
+           DO 100 i = 1, 4
+              IF (dashstyle(i) .NE. 0.) setdash = .TRUE.
+  100	   CONTINUE
+           IF (setdash) THEN
+              WRITE (ppl_buff, 3400) line_number, itype, (dashstyle(i),i=1,4)
+ 3400         FORMAT ('LINE ', I4, ' 0 ', I4, ' 0 0 ',4F7.3)
+           ELSE 
+              WRITE (ppl_buff, 3500) line_number, itype
+ 3500         FORMAT ('LINE ', I4, ' 0 ', I4)
+           ENDIF
+
+	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+        ENDIF
+
 
 	RETURN
 	END

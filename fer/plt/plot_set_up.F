@@ -1,7 +1,8 @@
       SUBROUTINE PLOT_SET_UP( memory,
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
-     .				step_inc, mv_list, cx_list, nmv,
+     .				step_inc, do_dash, dashstyle,
+     .				mv_list, cx_list, nmv,
      .				indep_dat, dep_dat, status )
 
 *
@@ -105,6 +106,8 @@
 * V5.3 *ACM* 1/01  cal_id for alternative calendar axes.
 *      *sh* 1/01 - added argument step_inc for PLOT/STEP
 *	         - bug fix: PLOT+ mem limit check off by x2 --  X&Y components
+*      *acm* 5/01 - added  PLOT/DASH  (do_dash, dashstyle)
+
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -147,9 +150,10 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line
-	INTEGER		symbol, color, step_inc,
+	INTEGER		symbol, color, step_inc, do_dash,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
-	REAL		memory( mem_blk_size, max_mem_blks ), sym_size
+	REAL		memory( mem_blk_size, max_mem_blks ), sym_size,
+     .                  dashstyle(*)
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
  
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
@@ -539,7 +543,7 @@
 	   nline_in_mem = nline_in_mem + 1
 * ... assign line style for the data plotting:
 	   CALL LINE_STYLE(symbol, sym_size, color, use_line,
-     .			   nline_in_mem,nline_on)
+     .			   do_dash, dashstyle, nline_in_mem, nline_on)
  200	CONTINUE
 
 * axis scaling and formatting

@@ -36,6 +36,11 @@
 * Steve Hankin
 * Jan, 2001
 
+* FV5.50 12/12/02 *acm* bug fix: under linux, the parameter psecsto1900
+*                 immediately gets a wrong value (precision?).  re-cast 
+*                 it as ( pdays_by_1900 = 59958230400.0 / (60.*60.*24.), 
+*                 as is done elsewhere in the Ferret code.
+
 * This function converts a Julian day from 1-jan-1900 to a trio of 3 values
 * on the Z axis: year, month, day
 
@@ -182,8 +187,11 @@
         REAL sec
         REAL*8 num_secs
 
-        REAL*8  psecsto1900  ! seconds from 1-jan-0000 to 1-jan-1900
-        PARAMETER ( psecsto1900 = 59958230400. )
+c        REAL*8 psecsto1900  ! seconds from 1-jan-0000 to 1-jan-1900
+c        PARAMETER ( psecsto1900 = 59958230400. )
+
+        REAL*8 pdays_by_1900
+        PARAMETER ( pdays_by_1900 = 59958230400.0 / (60.*60.*24.) )
 
 * get the subscripting limits and flags
         CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -208,8 +216,9 @@
 
                  ELSE
 
-                    num_secs = 24.D0*60.D0*60.D0 * arg_1(i,j,k1,l)
-     .                       + psecsto1900
+                    num_secs = 24.D0*60.D0*60.D0 * (arg_1(i,j,k1,l)
+     .                       + pdays_by_1900)
+
                     CALL SECS_TO_YMDHMS( num_secs,
      .                                   yr, mon, day, hr, min, sec )
                     result(i,j,1,l) = FLOAT(yr)

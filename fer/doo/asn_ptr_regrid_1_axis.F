@@ -1,5 +1,8 @@
-	SUBROUTINE NEW_MR_W_EDGES(memory,cx_valid,cx_model,mr,status)
+	SUBROUTINE ASN_PTR_REGRID_1_AXIS( cx_lims, axis, dst_lo, dst_hi,
+     .				      src, msrc, dst, mdst )
 
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,47 +36,43 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* allocate and claim sufficient memory space, and assign and fill a slot in the 
-* memory variable table for the variable or expression indicated in the context
-* the region of valid data within the cx_model context is indicated by the
-* cx_valid context ... fill the invalid regions with bad data flags
+* perform a regrid by "association"  (i.e. copy the data)
+* on a pointer (string) array
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:   8/3/89
-* V312: 5/94 - array "memory" as a calling argument
+* 	programmer - Steve Hankin
+* 	NOAA/PMEL,Seattle,WA - Tropical Modeling and Analysis Program
 
-#ifdef unix
+* V533:  6/01 *sh*
+
 	include 'ferret.parm'
-	include 'errmsg.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
+	include	'xmem_subsc.cmn'
+	include 'xcontext.cmn'
 
-* calling argument declarations:
-	INTEGER	cx_valid, cx_model, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks )
+* Calling argument declarations:
+	INTEGER	  cx_lims, axis, dst_lo, dst_hi, msrc, mdst
+	REAL*8    src( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
+     .		  dst( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
-* internal variable declarations
-	INTEGER MGRID_SIZE
+* Internal variable declarations:
+	INTEGER i, j, k, l, idim, lo_lim(4), hi_lim(4)
 
-* create the memory variable
-	CALL CREATE_MEM_VAR( cx_model, mr, status )
-	IF ( status .NE. ferr_ok ) RETURN
 
-	IF ( mr_type(mr) .EQ. ptype_string ) THEN
-           CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
-     .                               memory(1, mr_blk1(mr)),
-     .                               mr_c_pointer(mr)      )
-	ENDIF
+* Initialize: limits for calculation
+        DO 10 idim = 1, 4
+           lo_lim(idim) = cx_lo_ss(cx_lims, idim)
+           hi_lim(idim) = cx_hi_ss(cx_lims, idim)
+ 10     CONTINUE
+        lo_lim(axis) = MAX( dst_lo, mr_lo_ss(msrc,axis) )
+        hi_lim(axis) = MIN( dst_hi, mr_hi_ss(msrc,axis) )
 
-* fill edges
-	CALL BAD_EDGES( cx_valid, memory(1, mr_blk1(mr)), mr )
+
+* Copy the data to the destination grid
+	DO 100 l = lo_lim(t_dim), hi_lim(t_dim)
+	DO 100 k = lo_lim(z_dim), hi_lim(z_dim)
+	DO 100 j = lo_lim(y_dim), hi_lim(y_dim)
+	DO 100 i = lo_lim(x_dim), hi_lim(x_dim)
+ 100	CALL COPY_C_STRING( src(i,j,k,l), dst(i,j,k,l))
 
 	RETURN
 	END

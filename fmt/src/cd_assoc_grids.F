@@ -49,6 +49,7 @@
 *			   tmap_dset.parm contains an ifdef
 * V500:  4/99 *kob* - increase size of temp_axnams and vname from 16 to 64
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
+* V533 *sh* 6/01 - support for string variables
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -58,7 +59,6 @@
 *	status	    - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -71,17 +71,6 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'xdset_info.cd_equiv'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'  ! untested
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
 
 * argument declarations
 	INTEGER	 dset, cdfid, status
@@ -179,6 +168,13 @@
           CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
      .                 nvatts,istat)
           vlen = TM_LENSTR1(vname)
+* ... if a string variable, the first dimension is the string axis (ignore it)
+	  IF (vartyp .EQ. NCCHAR) THEN
+	     nvdim = nvdim - 1
+	     DO idim = 1, nvdim
+	        vdims(idim) = vdims(idim+1)
+	     ENDDO
+	  ENDIF
           IF ( ndim .NE. nvdim ) GOTO 5300 
           DO 500 idim = 1, 4
              dim = ds_ordering(idim,tmvar)

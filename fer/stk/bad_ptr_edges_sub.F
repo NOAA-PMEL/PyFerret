@@ -1,5 +1,9 @@
-	SUBROUTINE BAD_EDGES( cx, x, mx )
+	SUBROUTINE BAD_PTR_EDGES_SUB( cx,
+     .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit )
 
+
+*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -40,35 +44,94 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* V200:   8/3/89
-*	10/16/89 - modified array declarations via call to *_SUB
-* V533: *sh* 6/01 - added string support
+* V533: 6/01 - like BAD_EDGES_SUB but initialize null pointers
 
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
+	include	'xmem_subsc.cmn'
 
 * calling argument declarations:
-	INTEGER cx, mx
-	REAL    x( * )
+	INTEGER cx, slox, shix, sloy, shiy, sloz, shiz, slot, shit
+	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit )
+
+* internal variable declarations:
+	INTEGER	i, j, k, l, i_lo, j_lo, k_lo, l_lo, i_hi, j_hi, k_hi, l_hi
 
 * --- end of introductory code ---
 
-	IF (mr_type(mx) .EQ. ptype_string) THEN
-	   CALL BAD_PTR_EDGES_SUB( cx, x,
-     .			    mr_lo_s1(mx), mr_hi_s1(mx),
-     .			    mr_lo_s2(mx), mr_hi_s2(mx),
-     .			    mr_lo_s3(mx), mr_hi_s3(mx),
-     .			    mr_lo_s4(mx), mr_hi_s4(mx) )
-	ELSE
-	   CALL BAD_EDGES_SUB( cx, x,
-     .			    mr_lo_s1(mx), mr_hi_s1(mx),
-     .			    mr_lo_s2(mx), mr_hi_s2(mx),
-     .			    mr_lo_s3(mx), mr_hi_s3(mx),
-     .			    mr_lo_s4(mx), mr_hi_s4(mx),
-     .			    mr_bad_data(mx) )
-	ENDIF
+* valid limits
+	i_lo = cx_lo_s1(cx)
+	j_lo = cx_lo_s2(cx)
+	k_lo = cx_lo_s3(cx)
+	l_lo = cx_lo_s4(cx)
+	i_hi = cx_hi_s1(cx)
+	j_hi = cx_hi_s2(cx)
+	k_hi = cx_hi_s3(cx)
+	l_hi = cx_hi_s4(cx)
+
+* 3/93
+* if a low valid limit exceeds a high limit then there must be no valid region
+        IF ( i_lo .GT. i_hi
+     .  .OR. j_lo .GT. j_hi
+     .  .OR. k_lo .GT. k_hi
+     .  .OR. l_lo .GT. l_hi ) THEN
+* fill entire result with bad flags
+	   DO 10 i = slox, shix
+	   DO 10 j = sloy, shiy
+	   DO 10 k = sloz, shiz
+	   DO 10 l = slot, shit
+ 10	   CALL SET_NULL_C_STRING(src(i,j,k,l))
+           RETURN
+        ENDIF
+
+* fill in along X axis
+	DO 100 i = slox, i_lo-1
+	DO 100 j = j_lo, j_hi
+	DO 100 k = k_lo, k_hi
+	DO 100 l = l_lo, l_hi
+ 100	CALL SET_NULL_C_STRING(src(i,j,k,l))
+	DO 110 i = i_hi+1, shix
+	DO 110 j = j_lo, j_hi
+	DO 110 k = k_lo, k_hi
+	DO 110 l = l_lo, l_hi
+ 110	CALL SET_NULL_C_STRING(src(i,j,k,l))
+
+* fill in along Y axis
+	DO 200 j = sloy, j_lo-1
+	DO 200 i = i_lo, i_hi
+	DO 200 k = k_lo, k_hi
+	DO 200 l = l_lo, l_hi
+ 200	CALL SET_NULL_C_STRING(src(i,j,k,l))
+	DO 210 j = j_hi+1, shiy
+	DO 210 i = i_lo, i_hi
+	DO 210 k = k_lo, k_hi
+	DO 210 l = l_lo, l_hi
+ 210	CALL SET_NULL_C_STRING(src(i,j,k,l))
+
+* fill in along Z axis
+	DO 300 k = sloz, k_lo-1
+	DO 300 i = i_lo, i_hi
+	DO 300 j = j_lo, j_hi
+	DO 300 l = l_lo, l_hi
+ 300	CALL SET_NULL_C_STRING(src(i,j,k,l))
+	DO 310 k = k_hi+1, shiz
+	DO 310 i = i_lo, i_hi
+	DO 310 j = j_lo, j_hi
+	DO 310 l = l_lo, l_hi
+ 310	CALL SET_NULL_C_STRING(src(i,j,k,l))
+
+* fill in along T axis
+	DO 400 l = slot, l_lo-1
+	DO 400 i = i_lo, i_hi
+	DO 400 j = j_lo, j_hi
+	DO 400 k = k_lo, k_hi
+ 400	CALL SET_NULL_C_STRING(src(i,j,k,l))
+	DO 410 l = l_hi+1, shit
+	DO 410 i = i_lo, i_hi
+	DO 410 j = j_lo, j_hi
+	DO 410 k = k_lo, k_hi
+ 410	CALL SET_NULL_C_STRING(src(i,j,k,l))
 
 	RETURN
 	END 
-

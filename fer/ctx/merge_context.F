@@ -1,8 +1,6 @@
 	SUBROUTINE MERGE_CONTEXT( its_gc, iarg, dflt_cx,
      .				  mrg_cx, com_cx, com_str, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -51,8 +49,10 @@
 * V450: 1/97	 - changes to accomodate grid changing functions.
 *		   MERGE_CONTEXT needs to know the argument number. Use this
 *		   to determine the nature of the context merging.
+* V533: *sh* 6/01 - merge data types (removed to MERGIFY_CX)
+*		  - allow longer char buffer for error message to prevent
+*			crash in pathological cases
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'
@@ -60,14 +60,6 @@
 	include	'xtext_info.cmn'
 	include	'xfr_grid.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations
 	LOGICAL		its_gc
@@ -81,9 +73,8 @@
      .			choice(4,5), i, icom, imrg, uvar,
      .			com_str_slen, mrg_str_slen,
      .			com_int_slen, mrg_int_slen, gcfcn,
-     .			axis_source(4), lo_off(4),  hi_off(4), action(4),
-     .                  temp_ss, ui4
-	CHARACTER	CX_DIM_STR*16, LEFINT*8, com_lims*16, mrg_lims*16,
+     .			axis_source(4), lo_off(4),  hi_off(4), action(4)
+	CHARACTER	CX_DIM_STR*24, LEFINT*8, com_lims*24, mrg_lims*24,
      .			com_int*8, mrg_int*8
 
 * local parameter declarations:
@@ -168,6 +159,14 @@
 **************************************************************************
 * get the variable under consideration from the merged context
 	uvar = cx_variable( mrg_cx )
+
+* merge data types  (removed to MERGIFY_CX -- uvars via uvar_data_type)
+!	IF (cx_type(mrg_cx) .EQ. ptype_unknown) THEN
+!	   cx_type(mrg_cx) = cx_type(com_cx)
+!	ELSEIF( cx_type(mrg_cx) .NE. cx_type(com_cx) ) THEN
+!! temporary hack until function return types are implemented
+!	   cx_type(mrg_cx) = ptype_float
+!	ENDIF
 
 * is this a grid changing variable? (1/97)
 	IF (its_gc) THEN

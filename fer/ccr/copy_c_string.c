@@ -38,22 +38,24 @@
    returning the output pointer
 */
 
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void copy_c_string_(in_ptr, out_ptr, stat)
+void copy_c_string_(in_ptr, out_ptr)
      char** out_ptr;
      char** in_ptr;
-     int* stat;
 {
 
-  if ( *out_ptr = (char *) malloc(sizeof(char) * strlen(*in_ptr)) )
+  if ( *out_ptr ) free(*out_ptr);
+
+  if ( *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1)) )
     {
       strcpy(*out_ptr, *in_ptr);
-      *stat = 0;
     }
   else
-    *stat = 1;
+    assert(*out_ptr);
 
    return;
 

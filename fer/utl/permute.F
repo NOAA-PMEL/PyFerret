@@ -53,7 +53,7 @@
 	REAL    src( * ),dst( * )
 
 * local variable declarations:
-	INTEGER  MGRID_SIZE, stat
+	INTEGER  MGRID_SIZE
 
 	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
 
@@ -70,10 +70,7 @@
      .			    dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .				 mr_lo_s2(mdst), mr_hi_s2(mdst),
      .				 mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .				 mr_lo_s4(mdst), mr_hi_s4(mdst), stat  )
-! NOTE: BUG here since error is reported but not returned to calling routine
-           IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
-     .                  stat, 'Unable to allocate C strings', *5000)
+     .				 mr_lo_s4(mdst), mr_hi_s4(mdst) )
 
 	ELSE	
 	   CALL PERMUTE_SUB (    src_cx, perm,

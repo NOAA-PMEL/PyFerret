@@ -1,7 +1,5 @@
 	SUBROUTINE COPY_GRID ( src, msrc, dst, mdst )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -39,29 +37,37 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
+
 * revision 0.0 - 1/23/87
 * V200:  5/19/89 - 4D symmetrical
 *	10/11/89 - use COPY_GRID_SUB - avoid adjustable dimensioning with array
-* V530:  8/00 *sh* handle C string arrays, too
+* V530:  8/00 *sh* - handle C string arrays, too
+* V530:  8/00 *sh* - if input grid uses strides then copy based upon output
+*	             grid limits -- the axes MUST BE the same length
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER msrc, mdst
 	REAL    src( * ), dst( * )
 
 * internal variable declarations
-	INTEGER	MGRID_SIZE, 
-     .		stat
+	INTEGER	MGRID_SIZE
+	INTEGER idim, lo_ss(4), hi_ss(4)
+
+* set-up modified source limits wherever delta is significant
+* cuz the FORTRAN dimensioned size can only have delta of 1 
+	DO idim = 1,4
+	  IF (mr_delta(idim,msrc) .NE. unspecified_val8) THEN
+	    lo_ss(idim) = mr_lo_ss(mdst,idim)
+	    hi_ss(idim) = mr_hi_ss(mdst,idim)
+	  ELSE
+	    lo_ss(idim) = mr_lo_ss(msrc,idim)
+	    hi_ss(idim) = mr_hi_ss(msrc,idim)
+	  ENDIF
+	ENDDO
 
 	IF ( mr_type(msrc) .EQ. ptype_string ) THEN
 
@@ -72,28 +78,22 @@
 
 * copy the strings
 	   CALL COPY_PTR_GRID_SUB(
-     .			  src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .			       mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .			       mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .			       mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .			  src, lo_ss(1), hi_ss(1),
+     .			       lo_ss(2), hi_ss(2),
+     .			       lo_ss(3), hi_ss(3),
+     .			       lo_ss(4), hi_ss(4),
      .			  dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .			       mr_lo_s2(mdst), mr_hi_s2(mdst),
      .			       mr_lo_s3(mdst), mr_hi_s3(mdst),
-     .			       mr_lo_s4(mdst), mr_hi_s4(mdst),
-     .			       stat )
-
-
-! NOTE: BUG here since error is reported but not returned to calling routine
-	   IF ( stat .NE. 0 ) CALL ERRMSG(ferr_insuff_memory,
-     .			stat, 'Unable to allocate C strings', *5000)
+     .			       mr_lo_s4(mdst), mr_hi_s4(mdst) )
 
 	ELSE
 
 	   CALL COPY_GRID_SUB(
-     .			  src, mr_lo_s1(msrc), mr_hi_s1(msrc),
-     .			       mr_lo_s2(msrc), mr_hi_s2(msrc),
-     .			       mr_lo_s3(msrc), mr_hi_s3(msrc),
-     .			       mr_lo_s4(msrc), mr_hi_s4(msrc),
+     .			  src, lo_ss(1), hi_ss(1),
+     .			       lo_ss(2), hi_ss(2),
+     .			       lo_ss(3), hi_ss(3),
+     .			       lo_ss(4), hi_ss(4),
      .			       mr_bad_data( msrc ),
      .			  dst, mr_lo_s1(mdst), mr_hi_s1(mdst),
      .			       mr_lo_s2(mdst), mr_hi_s2(mdst),

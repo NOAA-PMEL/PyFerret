@@ -1,6 +1,6 @@
 	SUBROUTINE COPY_PTR_GRID_SUB (
      .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit, stat )
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -41,7 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * written for VAX computer under VMS operating system
 *
-* V200: 10/12/89
+* V533: 6/01 *sh*
 
 #ifdef unix
 	include 'ferret.parm'
@@ -51,8 +51,7 @@
 
 * calling argument declarations:
 	INTEGER slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit,
-     .		stat
+     .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
 	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
      .		dst( dlox:dhix,dloy:dhiy,dloz:dhiz,dlot:dhit )
 
@@ -66,8 +65,7 @@
 	DO 100 j = dloy, dhiy
 	DO 100 i = dlox, dhix
 
-	   CALL COPY_C_STRING( src(i,j,k,l), dst(i,j,k,l), stat )
-	   IF ( stat .NE. 0 ) RETURN
+	   CALL COPY_C_STRING( src(i,j,k,l), dst(i,j,k,l))
 
  100	CONTINUE
 

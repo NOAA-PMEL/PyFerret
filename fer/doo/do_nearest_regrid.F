@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V530: 3/01 *sh* based on do_xact_regrid
+* V533: 6/01 *sh* added string regridding support
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst, icoef, itot
@@ -54,10 +55,18 @@
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
 #endif
 
-	CALL NEAREST_REGRID_1_AXIS( cx_lims, axis,
+	IF (cx_type(cx_lims) .EQ. ptype_string ) THEN
+	   CALL NEAREST_PTR_REGRID_1_AXIS( cx_lims, axis,
      .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
      .			    src, msrc, dst, mdst, 
      .			    work(1), work(icoef) )
+	ELSE
+	   CALL NEAREST_REGRID_1_AXIS( cx_lims, axis,
+     .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
+     .			    src, msrc, dst, mdst, 
+     .			    work(1), work(icoef) )
+	ENDIF
+	
 
 	RETURN
 	END	

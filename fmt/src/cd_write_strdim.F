@@ -39,6 +39,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V533 *sh* 6/01 
+*     *kob* 6/01 - remove redundant declaration NF_INQ_DIMLEN
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -49,28 +50,30 @@
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
+	include 'cdf_tmap.parm'
 #include "gt_lib.parm"
 
 * argument declarations
       INTEGER cdfid, maxstrlen, status
 
 * local variable declarations:
-      CHARACTER dimname*12, buff*5
-      INTEGER NCDID, NCDDEF, cdfstat, clen, dimid
+      CHARACTER CD_CHILDAX_NAME*16, dimname*16
+      INTEGER NCDID, NCDDEF, cdfstat, clen, nlen, dimid
 
 * initialize
-      WRITE(buff,'(I5.5)') maxstrlen
-      dimname = 'STRINGS'//buff
+      dimname = CD_CHILDAX_NAME('STRING', 1, maxstrlen, nlen )
 
 * is the dimension already defined ?
-      dimid = NCDID( cdfid, dimname, cdfstat )
+      dimid = NCDID( cdfid, dimname(:nlen), cdfstat )
       IF ( cdfstat .EQ. NCNOERR ) THEN
 * ... yes. make sure defn is consistent
 	cdfstat = NF_INQ_DIMLEN(cdfid, dimid, clen)
 	IF (clen .NE. maxstrlen) GOTO 5100
       ELSE
 * ... no. define it
-        dimid = NCDDEF( cdfid, dimname, maxstrlen, cdfstat )
+        CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
+        IF ( status .NE. merr_ok ) RETURN
+        dimid = NCDDEF( cdfid, dimname(:nlen), maxstrlen, cdfstat )
         IF ( cdfstat .NE. NCNOERR ) GOTO 5200
       ENDIF
 
@@ -83,13 +86,13 @@
  5100 CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_WRITE_STRDIM', unspecified_int4,
      .   unspecified_int4,
-     .  'dimension '//dimname(:9)//' doesnt match CDF file',
+     .  'dimension '//dimname(:nlen)//' doesnt match CDF file',
      .  no_errstring, *5900 )
 
  5200        CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_WRITE_STRDIM', cdfid,
      .       unspecified_int4, 'Failed creating dimension '
-     .       //dimname(:9), no_errstring, *5900 )
+     .       //dimname(:nlen), no_errstring, *5900 )
 
 * error exit
  5900   RETURN

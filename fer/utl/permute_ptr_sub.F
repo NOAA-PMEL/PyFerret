@@ -1,9 +1,7 @@
 	SUBROUTINE PERMUTE_PTR_SUB( src_cx, perm,
      .		src, slox, shix, sloy, shiy, sloz, shiz, slot, shit,
-     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit, stat )
+     .		dst, dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -44,23 +42,15 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
-* V200: 10/16/89 - extracted from PERMUTE
-*	 3/16/90 - fixed bug: "src(i,j,l,k)" --> "src(i,j,k,l)"
+* V533: 6/01 *sh*
 
-#ifdef unix
 	include 'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
-	INTEGER src_cx, perm(4), stat,
+	INTEGER src_cx, perm(4),
      .		slox, shix, sloy, shiy, sloz, shiz, slot, shit,
      .		dlox, dhix, dloy, dhiy, dloz, dhiz, dlot, dhit
 	REAL*8  src( slox:shix,sloy:shiy,sloz:shiz,slot:shit ),
@@ -88,8 +78,7 @@
 	DO 200  j = loj, hij
 	DO 200  i = loi, hii
 	   CALL COPY_C_STRING( src(i,j,k,l),
-     .		dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4))), stat )
-           IF ( stat .NE. 0 ) RETURN
+     .		dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4))))
  200	CONTINUE
 
 	RETURN

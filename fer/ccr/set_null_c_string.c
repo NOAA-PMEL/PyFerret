@@ -1,5 +1,5 @@
-	SUBROUTINE NEW_MR_W_EDGES(memory,cx_valid,cx_model,mr,status)
-
+/*
+*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -30,50 +30,31 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-* allocate and claim sufficient memory space, and assign and fill a slot in the 
-* memory variable table for the variable or expression indicated in the context
-* the region of valid data within the cx_model context is indicated by the
-* cx_valid context ... fill the invalid regions with bad data flags
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*/
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V200:   8/3/89
-* V312: 5/94 - array "memory" as a calling argument
+/* 
+   V533 *sh* 6/01 
+  
+   Allocate storage for null string and set into Ferret string array
+*/
 
-#ifdef unix
-	include 'ferret.parm'
-	include 'errmsg.parm'
-	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-* calling argument declarations:
-	INTEGER	cx_valid, cx_model, mr, status
-	REAL	memory( mem_blk_size, max_mem_blks )
+void set_null_c_string_(out_ptr)
+     char** out_ptr;
+{
 
-* internal variable declarations
-	INTEGER MGRID_SIZE
+  if ( *out_ptr ) free(*out_ptr);
 
-* create the memory variable
-	CALL CREATE_MEM_VAR( cx_model, mr, status )
-	IF ( status .NE. ferr_ok ) RETURN
+  *out_ptr = (char *) malloc(sizeof(char));
+  assert(*out_ptr);
+  **out_ptr = NULL;
+      
 
-	IF ( mr_type(mr) .EQ. ptype_string ) THEN
-           CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
-     .                               memory(1, mr_blk1(mr)),
-     .                               mr_c_pointer(mr)      )
-	ENDIF
+   return;
 
-* fill edges
-	CALL BAD_EDGES( cx_valid, memory(1, mr_blk1(mr)), mr )
-
-	RETURN
-	END
+}

@@ -1,8 +1,6 @@
 	SUBROUTINE DO_XACT_REGRID( cx_lims, axis, src, msrc, dst, mdst,
      .				   work, icoef, itot )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -42,6 +40,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * revision 0.0 - 10/97
+* V533 *sh* 6/01 - added string regridding support
 
 * calling argument declarations:
 	INTEGER	cx_lims, axis, msrc, mdst, icoef, itot
@@ -55,10 +54,17 @@
 	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
 #endif
 
-	CALL XACT_REGRID_1_AXIS( cx_lims, axis,
+	IF (cx_type(cx_lims) .EQ. ptype_string ) THEN
+	   CALL XACT_PTR_REGRID_1_AXIS( cx_lims, axis,
      .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
      .			    src, msrc, dst, mdst, 
      .			    work(1), work(icoef) )
+	ELSE
+	   CALL XACT_REGRID_1_AXIS( cx_lims, axis,
+     .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
+     .			    src, msrc, dst, mdst, 
+     .			    work(1), work(icoef) )
+	ENDIF
 
 	RETURN
 	END	

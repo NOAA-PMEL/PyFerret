@@ -1,6 +1,5 @@
 	SUBROUTINE GT_INIT_DSET ( dset_num, lunit, status)
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -96,6 +95,7 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* V533 *sh* 6/01 - set data type
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -108,28 +108,18 @@
 	INTEGER		dset_num, lunit, status
 
 * Parameter and common files
-#ifdef unix
 	include 'tmap_errors.parm'		! error codes
 #include "tmap_dset.parm"	
 	include 'tmap_dims.parm'		! data set dimensions
 #include "gt_lib.parm"
 	include 'xio.parm'
+	include 'tmap_dtypes.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xdset_info.cmn_text'		! data set common
 	external xdset_info_data
 	include 'xstep_files.cmn_text'		! step file common
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! Data set constants
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimensions
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XIO.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set common
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'		! Step file common
-#endif
 
 * Define variables from Set File namelist records
 #ifdef unix
@@ -226,6 +216,7 @@
 
         istat = STR_UPCASE( ds_var_code(ivar), d_var_code )     ! 3/91
 	ds_var_setnum(ivar) = dset_num
+	ds_var_type(ivar) = ptype_float
 	ds_var_units(ivar) = d_var_units
 	ds_var_titl_mod(ivar) = d_var_titl_mod
 	ds_var_title(ivar) = d_var_title

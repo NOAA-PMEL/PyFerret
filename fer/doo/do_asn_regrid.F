@@ -1,7 +1,5 @@
 	SUBROUTINE DO_ASN_REGRID( cx_lims, axis, src, msrc, dst, mdst )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -41,22 +39,24 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V230:  8/22/92
+* V533:  6/01 *sh* - added string regridding
 
 * calling argument declarations:
-	INTEGER	cx_lims, axis, msrc, mdst, icoef, itot
+	INTEGER	cx_lims, axis, msrc, mdst
 	REAL	src(*), dst(*)
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
-	CALL ASN_REGRID_1_AXIS( cx_lims, axis,
+	IF ( cx_type(cx_lims) .EQ. ptype_string ) THEN
+	   CALL ASN_PTR_REGRID_1_AXIS( cx_lims, axis,
      .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
      .			    src, msrc, dst, mdst )
+	ELSE
+	   CALL ASN_REGRID_1_AXIS( cx_lims, axis,
+     .			    cx_lo_ss(cx_lims,axis), cx_hi_ss(cx_lims,axis),
+     .			    src, msrc, dst, mdst )
+	ENDIF
 
 	RETURN
 	END	

@@ -3,7 +3,10 @@
 * 4/23/96 - increased total_num_alias from 30 to 150
 *	  - increased number of commands by 6 (adding IF, ELSE, ELIF, ENDIF)
 *			and room for growth
+* 8.98    - increased possible qualifiers for CONTOUR and SHADE *jd*
+* 12.98   - increased num_predefined_alias -> 14 for alias "pattern" *jd*
 * 2/99 *sh* - added POLYGON command
+
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -182,7 +185,7 @@
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 25,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 30,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,
@@ -280,7 +283,7 @@
 	INTEGER		nsub18       , nsub_at19 ,
      .			nqual18a     ,nqual_at19a
 	PARAMETER    (	nsub18   = 1, nsub_at19    = nsub_at18   + nsub18,
-     .			nqual18a = 25,nqual_at19a  = nqual_at18a + nqual18a  )
+     .			nqual18a = 30,nqual_at19a  = nqual_at18a + nqual18a  )
 
 * SPAWN			 - commmand # 19
 	INTEGER		nsub19       , nsub_at20 ,
@@ -365,7 +368,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 13,
+     .	                num_predefined_alias    = 14,
      .			max_queries		= 50 )
 
 * declarations

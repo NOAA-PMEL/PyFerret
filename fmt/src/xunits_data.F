@@ -66,6 +66,7 @@
 *       1 day later: ops -- "hour" should be the standard, not "hr"
 * V530: 2/01 *acm* add units for alternative calendars, secs per various
 *		   years and 1/12 of those for "month"
+* V532: 5/01 *sh* - added "metre"
 
 * local variable declarations
 !	INTEGER	i
@@ -207,7 +208,9 @@
      .		un_alt_name (19) / 'hr'		/,
      .		un_alt_subsc(19) / -3 /,
      .
-     .		un_alt_name (20) / char_init12	/,
-     .		un_alt_subsc(20) / 0 /
+     .		un_alt_name (20) / 'metre'	/, ! those Brits ...
+     .		un_alt_subsc(20) /  pun_meters /
+!     .		un_alt_name (20) / char_init12	/,
+!     .		un_alt_subsc(20) / 0 /
 
 	END

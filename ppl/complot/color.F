@@ -57,6 +57,10 @@ C
 *	Modified J Davison JISAO/PMEL/TMAP 3.23.89
 *	To accomodate GKS changes to bundled line attributes
  
+*  8/2001  acm  for PLOT/SYMBOL=DOT
+*  Call GSPMI for polymarker with call to GSPLI for polyline
+*      *acm* 10/01  remove VMS includes
+
 	integer	icode
 
 #ifdef unix
@@ -68,19 +72,12 @@ C
 #endif
 	character*1 cnum(0:8)
 C
-#ifdef unix
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-	INCLUDE 'tmap_pplv11inc:tmap_GKSCM1.INC'
-	INCLUDE 'tmap_pplv11inc:tmap_pltl.INC'
-#endif
 
 C
 	data cnum/'0','1','2','3','4','5','6','7','8'/
@@ -178,9 +175,11 @@ C
         istat=setlineindex(icode)
 #else
 *	CALL GSPLCI(ICODE) ! original
+*	CALL GSPMCI(ICODE) ! acm 8/7/01 for reference,not called
 #endif
 
 1000	call gspli (max(icode,1)) ! JD 3.23.89 & 3.13.90
+	call gspmi (max(icode,1)) ! acm 8/7/01  polymarker index
 
 100	GOTO(50,30,30,30,40,30,40),PTYPE + 3
    40  COLOUR = ICODE

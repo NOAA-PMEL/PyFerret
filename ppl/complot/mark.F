@@ -32,7 +32,10 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
+
+*  8/2001  acm  for PLOT/SYMBOL=DOT, call makedot
+*      *acm* 10/01  remove VMS includes
+
 *
 C**    @(#)mark.F	1.1    3/10/88
 C**
@@ -52,12 +55,8 @@ C     THE NEXT LINE IS MACHINE DEPENDENT AND MAY BE REPLACED BY
 C     INTEGER MRKTAB(2,44),TABT(200)
       INTEGER*2 MRKTAB(2,44),TABT(200)
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
-C
+
       DATA MRKTAB/    5,   9,  11,  15,  14,  15,  11,  12,
      *               26,  31,  32,  37,  38,  43,  44,  49,
      *                1,   5,  64,  67,   5,  15,  50,  54,
@@ -82,8 +81,10 @@ C
      *20,21,13,12,0,9,45,0,33,41,42,34,33,14,44,10,0,9,41,0,
      *42,12,46,0,0,0,0,0,0,0/
 C
-C     CHECK THE DATA MARK CODE.
+C     CHECK THE DATA MARK CODE.  For PLOT/DOT, call makedot to call POLYMARK
 C
+      IF (IMARK .EQ. 99) CALL makedot
+
       IF(IMARK .LT. 1 .OR. IMARK .GT. 88)RETURN
 C
 C     DETERMINE THE SIZE OF THE DATA MARK AND ITS CODE.

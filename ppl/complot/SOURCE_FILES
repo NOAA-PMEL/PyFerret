@@ -1,6 +1,8 @@
 SRCS_F = \
 abmv.F\
+abmv_makedot.F\
 abplt.F\
+abplt_makedot.F\
 alphas.F\
 axis.F\
 axisl.F\
@@ -18,12 +20,14 @@ englsh.F\
 erase.F\
 gkinit.F\
 gksmv.F\
+gksmv_makedot.F\
 grid.F\
 hdcopy.F\
 hpabmv.F\
 igrinpt.F\
 line.F\
 line3.F\
+makedot.F\
 mark.F\
 markh.F\
 metric.F\

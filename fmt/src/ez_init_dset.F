@@ -63,13 +63,16 @@
 *	          - bug fix: if vars_gvn that determines analyzed num_types
 *      *acm* 10/01 increase length of ds_name
 *      *acm* 10/01  remove VMS include statements
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
+
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
 	PARAMETER 	(ez_rev = '1.11')
-	PARAMETER	( tab = CHAR(9) )
+	PARAMETER	( tab = O'011' )
 *
 * Arguments:
 *	filename	- name of data file
@@ -106,6 +109,7 @@
      .			l1, l2
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
+
 *
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 100 set_cnt = 1,maxdsets

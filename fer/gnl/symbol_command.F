@@ -69,6 +69,8 @@
 *                             replacement
 * V522 7/00 *sh* - hack to add symbol "FERRET_VERSION"
 *	         - call upon the new routine SPECIAL_SYMBOL
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -90,7 +92,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 * 11/96 *kob*
 #ifdef crptd_cat_argument

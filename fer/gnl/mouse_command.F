@@ -46,6 +46,8 @@
 * V314: 8/19/94 *kob* IBM port - Modified format statements, added 
 *				 ifdef MANDATORY_FORMAT_WIDTHS for I format
 *			         descriptor 
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -73,7 +75,7 @@
      .		status, iqual, ilist, cmnd_len, query, i
 
         CHARACTER*1 backslash
-        PARAMETER ( backslash = CHAR(92) )
+        PARAMETER ( backslash = O'134' )
 
 
 * read from standard input without prompt

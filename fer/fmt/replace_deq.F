@@ -45,6 +45,8 @@
 *				 I format descriptor
 * V420: 10/5/95 - bug detected in syntax var2[d=1]- VAR1[d=2,G=[VAR2[D=1]]
 *		- actual bug was that i1 is improperly set in branches to 10
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
 
 #ifdef unix
 	include	'ferret.parm'
@@ -67,7 +69,7 @@
      .       dset, nlen, maxlen
 
         CHARACTER*1 tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 * initialize
         i0 = 1

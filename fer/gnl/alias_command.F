@@ -55,6 +55,9 @@
 *     :10/97 *kob* Check to see if alen = clen. if so set buffer to the 
 *                  alias.  new version of DEC fortran caught the error in
 *                  the string concatenation.
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
+
 
 * calling argument declarations:
 	INTEGER	  clen
@@ -65,7 +68,7 @@
      .          alen, true_len, i, spos, bpos, cpos
 
         CHARACTER*1     tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'015' )
 
 #ifdef unix
 	include 'ferret.parm'

@@ -67,6 +67,8 @@
 * V510: *sh8 3/00 - add DODS URL label
 * V533: *sh8 7/01 - if label contains single tic marks double them so PLOT+
 *		    doesn't try to interpret symbols
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -94,7 +96,7 @@
 * local parameter declarations:
 	INTEGER		maxsym, len_in, i
 	CHARACTER*1	esc
-	PARAMETER     ( esc = CHAR(27),
+	PARAMETER     ( esc = O'033',
      .			maxsym = 102   )! max. symbol length for PPLUS (PPL bug)
 
 * data initialization

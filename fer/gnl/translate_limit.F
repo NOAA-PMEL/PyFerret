@@ -62,6 +62,8 @@
 * V420 (IBM/AIX port of V411): 10/5/95 - buff for "READ(var,*"
 * V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
 * V53 *acm* - 3/01 calendar axes:  pass in calendar ID
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -99,7 +101,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 * initialize fixed length string for RISC
         risc_buff = string

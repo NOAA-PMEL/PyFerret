@@ -46,6 +46,9 @@
 * 11/6/94 *sh* Kludge for AIX port (fixes to PLOT+ to avoid problems with
 *	FORTRAN READ ERR= branches):  check for "/" following "." since
 *	path names often begin with "./name"
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
+
 
 #include "gt_lib.parm"
 
@@ -58,7 +61,7 @@
 	
 * local parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 * skip leading blanks
 	DO 100 i = 1, LEN(string)

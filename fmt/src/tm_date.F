@@ -47,7 +47,10 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 3/12/91 needed for Unix/RISC port
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
 *
+
 * calling argument declarations:
 	CHARACTER*(*)	string
 
@@ -57,7 +60,7 @@
 	
 * local parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 * initialize assuming failure
 	TM_DATE = .FALSE.

@@ -43,6 +43,8 @@
 * V420:  avoid breaking apart "[]" as at the comma in "var[x=1,y=2]"
 * V510: 3/00 *sh* - allow backslash escapes to protect quotations
 * V531 *sh* 4/01 - allow 2-digit argument numbers and enclosing parens
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
@@ -56,7 +58,7 @@
 
 * internal parameter declarations
 	CHARACTER*1     tab
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 #ifdef unix
 	include 'ferret.parm'

@@ -98,6 +98,8 @@
 * V533 *sh* 7/01 - allow both single and double quotes
 * v541 *acm* 3/02 -bug fix; nested repeat loops, parsing parentheses in the command.
 *                  Make another copy of cmnd_buff AFTER removal of enclosing parens
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -160,7 +162,7 @@
 * local parameter declarations:
 	INTEGER		grave_digits
 	CHARACTER*1	tab
-	PARAMETER     ( tab = CHAR(9),
+	PARAMETER     ( tab = O'011',
      .			grave_digits = 5 )
 
 * intialize

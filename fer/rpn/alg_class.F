@@ -50,6 +50,8 @@
 *                 need to put single  tick between double quotes  *kob*
 * V500: 12/98 - add "{" and "}" to support "{1,3,5}" notation
 *	 1/99 - allow strings in quoble quotes (as fcn args)
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 #ifdef unix
 	include	'ferret.parm'
@@ -62,7 +64,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 * classes of characters
 *	C1 - + -

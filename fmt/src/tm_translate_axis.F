@@ -52,6 +52,9 @@
 *
 * revision 0.00 - 12/13/88 - from TRANSLATE_LIMITS by Steve Hankin
 * V530: *acm* 12/00 add calendar types; cal_id 
+*
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
 
 * Include files
 #ifdef unix
@@ -75,8 +78,9 @@
 	REAL*8		TM_SECS_FROM_BC
 
 * internal parameter declarations:
-	CHARACTER*1	tab
-	PARAMETER     ( tab = CHAR(9) )
+	CHARACTER*1     tab 
+	PARAMETER     ( tab = O'011' )
+
 
 	end_pos = TM_LENSTR1( string )
 

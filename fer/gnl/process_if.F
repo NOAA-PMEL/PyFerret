@@ -47,6 +47,8 @@
 * V420:  4/28/96
 *     : bug fix 5/96: ENDIF processed wrong for nested IF
 * V530: 1/01 *sh* - skip white space at start of line
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 * calling argument declarations:
 	INTEGER		slen
@@ -74,7 +76,7 @@
 
 * internal parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 * sanity check
 	IF ( ifstk.LT.1 .OR. ifstk.GT.max_ifstk ) GOTO 5000

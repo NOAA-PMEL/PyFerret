@@ -39,6 +39,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V510 - 12/99 *sh* - extracted from XEQ_DEFINE
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 #ifdef unix
 	include	'ferret.parm'
@@ -58,7 +60,7 @@
 	INTEGER STR_UPCASE, pos, i1
 
 	CHARACTER*1 tab
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 * find name to define
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"

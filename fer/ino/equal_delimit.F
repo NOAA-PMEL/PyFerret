@@ -40,6 +40,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V530: *sh* 11/00
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 * calling argument declarations
 	INTEGER		status
@@ -55,7 +57,7 @@
 
 * internal parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 * input is comma separated, may include "\t", "\,", and HEX characters
 

@@ -78,6 +78,8 @@
 * V530   1/01 - *sh* - added XBOXLO, XBOXHI and family ...
 *	 3/01 - *sh* - adde g=ax@nrst
 * V533   6/01 - *sh* - added transformation @EVNT
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
 
 #ifdef unix
 	include	'ferret.parm'
@@ -88,7 +90,7 @@
 #endif
 
 	CHARACTER*1	rubout
-	PARAMETER     ( rubout = CHAR(127) )
+	PARAMETER     ( rubout = O'177' )
 	INTEGER	i
 
 * single character operators:
@@ -651,4 +653,7 @@ c     .     alg_trans_dflt_arg( 38) / bad_val4      /
      .		alg_1d_to_4d(5) /trans_bad_pt/,
      .		alg_4d_trans(5) /trans_4d_bad_pt/
 
+
+
 	END
+

@@ -64,6 +64,8 @@
 * V510: 4/00 *sh* - search dynamic grids for netCDF time axis
 * V530: 10/00 *sh* - added information about data typed
 * v530  *acm* 3/01 - Show calendar name for alternative calendar types.
+* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
+*              equivalent - needed for g77 port
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -100,7 +102,7 @@
 
 * internal parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = CHAR(9) )
+        PARAMETER     ( tab = O'011' )
 
 
 * initiailze

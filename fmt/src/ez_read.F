@@ -71,6 +71,9 @@
 * V500 3/99 *kob* - Initialize buff at 610 to prevent use of previous values
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
+*
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
 
 * Arguments:
 *	dset	- data set number
@@ -108,8 +111,8 @@
 *
 *internal parameter declarations *kob* 4apr94
         CHARACTER*1     cr,lf
-        PARAMETER       ( cr = CHAR(13),
-     .                    lf = CHAR(10))
+        PARAMETER       ( cr = O'015',
+     .                    lf = O'012')
 * Local definitions
 	CHARACTER*11	file_format
 	CHARACTER*13	TM_STRING
@@ -124,6 +127,8 @@
 	LOGICAL		unformatted, file_exists, file_open,
      .			permuted, stream
 	REAL		bad(0:maxezvars-1)
+
+
 
 * Does data set exist?
 	IF (ds_name(dset) .EQ. char_init256) GOTO 9300

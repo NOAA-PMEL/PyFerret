@@ -48,6 +48,7 @@ usage:
   exit 1
 endif
 
+
 # set some variables
 set num_args = $#argv
 set nonomatch
@@ -61,9 +62,13 @@ set SED = /bin/sed
 #check for sunos 5.x
 if (`uname` =~ *Sun* && `uname -r` =~ *5.*) then
 	set TEST = /usr/ucb/test
+else if (`uname` =~ *inux* ) then
+	set TEST = /usr/bin/test
+        set EGREP = /bin/egrep
 else
 	set TEST = /bin/test
 endif
+
 
 
 # check to see if file contains .pat or not

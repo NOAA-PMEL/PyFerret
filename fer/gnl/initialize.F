@@ -175,8 +175,10 @@
 	CALL FDATE(today_date)
 	CALL FTIME(today_time)
 #else
-	CALL DATE( today_date )
-	CALL TIME( today_time )
+*	CALL DATE( today_date )
+*	CALL TIME( today_time )
+* *kob*  try new routine for y2k fix
+	CALL GET_DATE_AND_TIME (today_date, today_time)
 #endif
 	today_time = today_time(:5)	! w/out seconds
 

@@ -43,6 +43,9 @@
 * rev 0.1 6/92 *sh* - added EXTERNAL declaration needed on port to MAC
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
+* V50 - 2/99 *kob* modifications for y2k preparedness.  call 
+*                  GET_DATE_AND_TIME which uses FDATE to get
+*                  date and time rather than DATE and TIME
 * arguments:
 	INTEGER*4	gnum, lunit
 
@@ -61,7 +64,7 @@
 	INCLUDE 'TMAP_FORMAT:XIO.CMN'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
 #endif
-
+* 2/99 kob - need only one var to store date and time w
 	CHARACTER*8	ctime
 	CHARACTER*9	cdate
         EXTERNAL        TRIM    ! added 6/92
@@ -96,8 +99,11 @@
 	ENDIF
 *
 * Write out DATE/TIME info
-	CALL DATE (cdate)
-	CALL TIME (ctime)
+*	CALL DATE (cdate)
+*	CALL TIME (ctime)
+* 2/99 *kob* modifications for y2k preparedness.  call GET_DATE_AND_TIME
+*            to get date and time
+	CALL GET_DATE_AND_TIME(cdate,ctime)
 	WRITE (lunit,'(4A)') '* GRID FILE CREATED ',cdate,':',ctime
 *
 * Write out line info header

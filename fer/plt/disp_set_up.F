@@ -124,6 +124,9 @@
 *                   in SHADE plots
 *      *acm* 12/02  When setting has_time_axis flag, only do it if an
 *                   axis being used IS a time axis
+* v5.51*acm*  1/03  Comment out the cellarray implementation; xgks doesnt
+*                      completely implement it & has a precision bug for 
+*                      large plots.  see comment lines: c no_cellarray
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -160,7 +163,7 @@ C plus those starting w/ xbox_bounds:
 
 * calling argument declarations:
 	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
-     .			is_logx, is_logy, flows, shade
+     .			is_logx, is_logy, flows, shade 
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
      .			density, pen, status
 	REAL		memory( mem_blk_size, max_mem_blks )
@@ -178,6 +181,8 @@ C plus those starting w/ xbox_bounds:
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			ITS_BATCH_GRAPHICS, batch, REGULARLY_SPACED,
      .                  irregular
+c no cellarray       LOGICAL          use_cell
+
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
      .			ctx, cty, xblk1, yblk1, plot_mem_used, nvars,
@@ -187,7 +192,7 @@ C plus those starting w/ xbox_bounds:
      .			arg_xpos, cx_xpos, cx_ypos, mr_xpos, mr_ypos,
      .			phlim, pvlim, slen2, cal_id, tax,
      .			x_axtyp, y_axtyp, iscl, siz, nsiz, 
-     .			TM_GET_CALENDAR_ID, mode_num
+     .			TM_GET_CALENDAR_ID, mode_num, axis1, axis2
 	REAL		s, w1_lo, w1_hi, w2_lo, w2_hi, valy1,
      .			d1_regrid, d2_regrid, bad_x, bad_y, rlo, rhi,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -228,6 +233,8 @@ C plus those starting w/ xbox_bounds:
 * get 4D shape of data region to load (already oversized)
 	dim1 = plot_axis(1)
 	dim2 = plot_axis(2)
+	axis1 = grid_line(dim1, grid)
+	axis2 = grid_line(dim2, grid)
 	size1 = CX_DIM_LEN( dim1, ctx )
 	size2 = CX_DIM_LEN( dim2, ctx )
 	size  = size1 * size2
@@ -396,22 +403,27 @@ C   set up memory for the flag grid
 
 !  For SHADE plots, more PLOT+ memory needed for the pixel array
 !  used in cellarray call.  (s1_axis and s2_axis have been set by now.)
+!  Commented out as of 1/30/03  until cellarray can be sorted out.
 
-        batch = ITS_BATCH_GRAPHICS()
+c no_cellarray
+c        batch = ITS_BATCH_GRAPHICS()
 
-        irregular = .NOT. REGULARLY_SPACED(s1_axis, size1)
-        IF (.NOT. irregular)
-     .      irregular = .NOT. REGULARLY_SPACED(s2_axis, size2)
+c        irregular = .NOT. ( line_regular(axis1) )
+c        IF (.NOT. irregular)
+c     .      irregular = .NOT. ( line_regular(axis2) )
 
-        IF ( shade  .AND. 
-     .       (.NOT.overlay) .AND. 
-     .       (.NOT.batch) .AND. 
-     .       (.NOT.mode_metafile) .AND.
-     .       (.NOT.curvilinear) .AND. 
-     .       (.NOT.irregular) ) THEN
-           nsiz = size1* size2
-           plot_mem_used = plot_mem_used + nsiz
-        ENDIF
+c        use_cell  = .FALSE.
+c        IF ( shade  .AND. 
+c     .       (.NOT.overlay) .AND. 
+c     .       (.NOT.batch) .AND. 
+c     .       (.NOT.mode_metafile) .AND.
+c     .       (.NOT.curvilinear) .AND. 
+c     .       (.NOT.irregular) ) use_cell = .TRUE.
+c        IF (use_cell) THEN
+c           nsiz = size1* size2
+c           plot_mem_used = plot_mem_used + nsiz
+c        ENDIF
+c no_cellarray
 
 
 * set up PLOT+ to ignore bad data flag

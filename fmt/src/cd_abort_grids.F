@@ -48,11 +48,11 @@
 
 * include files
 #ifdef unix
-        include 'xbuild_grids.cmn'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
+        include 'xbuild_grids.cmn'
 #else
         INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
@@ -61,18 +61,11 @@
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
 #endif
 
-* local variable declarations:
-      INTEGER igrid, iaxis
+* local variable declarations
+	INTEGER status
 
-* restore grid names to their "unused" markers
- 	DO 200 igrid = firstgrid, lastgrid
- 200    grid_name(igrid) = char_init
-
-* restore axis names to their "unused" markers
-        DO 300 iaxis = firstax, lastax
-	    line_name  (iaxis) = char_init16
-	    line_subsc1(iaxis) = unspecified_int4
- 300    CONTINUE
+* remove temporary in-progress grids and all associated use counts
+	CALL TM_PURGE_TMP_GRIDS( status )	! ststus ignored!!
 
 * return line memory to unused state
 	next_line_mem_pos = orig_line_mem

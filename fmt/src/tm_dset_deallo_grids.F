@@ -1,6 +1,5 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+	SUBROUTINE TM_DSET_DEALLO_GRIDS( dset )
 
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,42 +32,43 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-
-* Allocate a temporary line from the dynamic line area (above max_lines)
+*
+*
+* deallocate all grids used by variables in this data set (and through them
+* all of the axes used, too)
 
 * Steve Hankin  NOAA/PMEL/TMAP
 
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
+* V510 *sh* 4/00
 
 * Include files
+#ifdef unix
 	include 'tmap_dims.parm'
-	include 'implicit.parm'
-	include 'tmap_errors.parm'
-#include 'tmap_dset.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'
 	include 'xtm_grid.cmn_text'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+#endif
 
 * Argument definitions
-	INTEGER line, status
+	INTEGER dset
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
-	IF ( status .NE. merr_ok) RETURN
+* Local definitions
+	INTEGER i
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
+* bump the use counts of grids used by variables in this data set
+	DO 50 i = 1, maxvars
+	   IF ( ds_var_setnum(i) .EQ. dset ) THEN
+	      CALL TM_DEALLO_DYN_GRID( ds_grid_number(i))
+	   ENDIF
+ 50	CONTINUE
 
-	line_subsc1(line)    = int4_init
-
+* always successful completion
 	RETURN
+
 	END

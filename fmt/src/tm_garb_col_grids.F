@@ -1,7 +1,6 @@
-	SUBROUTINE TM_GARB_COL_GRIDS ( first, last )
+	SUBROUTINE TM_GARB_COL_GRIDS (dset)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,7 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* garbage collect wasted space in newly defined grids
+* set use counts for grids and axes. Remove temporaries.
 
 * Programmer Steve Hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
@@ -44,11 +43,10 @@
 * V5.0 *sh* 7/99 - with the change in definition to char_init this routine
 *		may **for the first time** be doing work!!
 *		Found a logic bug in the loop that re-assigns ds_grid_number
+* V5.1 *sh* 4/00 - using dynamic grids and axes
 
 * argument definitions:
-*       first   - highest number grid to check
-*       last    - lowest number grid to check
-* note: grids are allocated from high to low
+*	dset - the current data set
 
 * include files
 #ifdef unix
@@ -70,41 +68,75 @@
 #endif
 
 * calling argument declarations:
-      INTEGER  first, last
+      INTEGER dset
 
 * local variable declarations:
-      INTEGER igrid, higrid, i
+      INTEGER igrid, iaxis, idim
 
-* initialize grid loop
-!  like: DO 200 igrid = first, last  but last keeps shifting down
-      igrid = first
-      higrid = last
+* reset the use counts of all newly-created grids to zero
+* (They are set to 1 when allocated, but we set them to zero to put them
+*  on a par with grids not created by this dtaa set, but used by it)
+*  recatalog the grids defined by this data set
+	igrid = 0		! to get start of linked list
+ 10	CALL TM_NEXT_TMP_GRID( igrid, *19)
+	   grid_use_cnt(igrid) = 0
+	   GOTO 10
+ 19	CONTINUE
 
-* is this a hole ?
- 10   IF ( grid_name(igrid) .NE. char_init ) GOTO 300
+* bump the use counts of grids used by variables in this data set
+	CALL TM_DSET_USE_GRIDS( dset )
 
-* modify grid pointers saved in the variables
-           DO 100 i = 1, maxvars
-* ... pre-7/99 ds_grid_number was **never** reassigned (was .LT., .GE., below)
-              IF ( ds_grid_number(i) .GT. igrid
-     .       .AND. ds_grid_number(i) .LE. higrid ) 
-     .                ds_grid_number(i) = ds_grid_number(i) - 1
- 100       CONTINUE
+*  recatalog the grids defined by this data set
+ 100	igrid = 0		! to get start of linked list
+	   CALL TM_NEXT_TMP_GRID( igrid, *199)
 
-* shift all the definitions back to fill the hole
-           DO 200 i = igrid+1, higrid
- 200       CALL TM_COPY_GRID( i, i-1 )
+* ... bump use counts on all lines used by these grids
+	   IF ( grid_name(igrid) .NE. char_init ) THEN
+	      DO 110 idim = 1, 4
+ 110	      CALL TM_USE_LINE( grid_line(idim,igrid) )
 
-* initialize new hole at end
-           grid_name(higrid) = char_init
-           higrid = higrid - 1
-           igrid = igrid - 1    ! to nullify decrement, below
+!* ... a use count of zero indicates that this explicit parent grid is not used
+!*	set its use count to 1 to indicate that it uses itself
+!	      IF ( grid_use_cnt(igrid) .EQ. 0 ) grid_use_cnt(igrid) = 1
 
-! like: 300    CONTINUE
- 300    igrid = igrid + 1
-        IF ( igrid .LE. higrid ) GOTO 10
+* ... recatalog as a valid dynamic grid
+	      CALL TM_RE_ALLO_TMP_GRID( igrid )
+
+	   ELSE
+	      CALL TM_USE_DYN_GRID( igrid )  ! to avoid error trap
+	      CALL TM_DEALLO_DYN_GRID_SUB( igrid )
+
+	   ENDIF
+
+	   GOTO 100
+ 199	CONTINUE
+
+
+* recatalog the axes defined by this data set -- use counts are zero so far
+ 300	iaxis = 0	! to get start of linked list
+	   CALL TM_NEXT_TMP_LINE( iaxis, *1000)
+
+* ... add to list of valid dynamic lines
+	   IF ( line_name(iaxis) .NE. char_init16 ) THEN
+
+* ... a use count of zero indicates that this axis was defined but never used
+*	(as, for example, in the file climatological_axes.cdf)
+*	Flag it is a keeper -- requiring explicit deletion
+	      IF ( line_use_cnt(iaxis) .EQ. 0 )
+     .					line_keep_flag( iaxis ) = .TRUE.
+
+	      CALL TM_RE_ALLO_TMP_LINE( iaxis )
+
+	   ELSE
+	      CALL TM_USE_LINE( iaxis )  ! to avoid error trap
+	      CALL TM_DEALLO_DYN_LINE( iaxis )
+
+	   ENDIF
+
+	GOTO 300
+
 
 * successful completion
-        RETURN
+ 1000	RETURN
 
 	END

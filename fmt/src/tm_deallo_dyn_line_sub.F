@@ -41,6 +41,7 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * 10/3/95 for Ferret version 4.2
+* V510 *sh( 4/00 - allow deallocation of non-dynamic lines
 
 * Include files
 #ifdef unix
@@ -69,14 +70,17 @@
 * initialize
 	TM_DEALLO_DYN_LINE_SUB = 0
 
-* must be a dynamic line
-	IF ( line .LE. max_lines ) THEN
-	   CALL TM_NOTE('Intern err: TM_DEALLO_DYN_LINE:1 !!!', lunit_errors)
-	   RETURN
-	ENDIF
+* screen out garbage (may come from temporary grids)
+	IF ( line .LT. 1 .OR. line .GT. max_dyn_lines ) RETURN
 
 * decrement the used count for this line
 	line_use_cnt(line) = line_use_cnt(line) - 1
+	IF ( line_use_cnt(line) .LT. 0 ) line_use_cnt(line) = 0
+
+* if not a dynamic line or it is a "keeper" then we are done
+	IF ( line.LE.max_lines .OR. line_keep_flag(line) ) THEN
+	   RETURN
+	ENDIF
 
 * does anyone still have a claim on this line?
 	IF ( line_use_cnt(line) .GT. 0 ) THEN
@@ -84,7 +88,10 @@
 
 * a use count of -1 results from a line which was allocated and then promptly
 * deallocated without being used
-	ELSEIF ( line_use_cnt(line) .GE. -1 ) THEN
+	ELSEIF ( line_use_cnt(line) .EQ. 0 ) THEN
+
+	   line_name(line) = char_init16
+
 * take this line from the "used" list and put it on the "free" list
 * ... hook onto free list
 	   next_used_line   = line_flink(line)

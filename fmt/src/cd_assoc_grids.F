@@ -1,8 +1,7 @@
 	SUBROUTINE CD_ASSOC_GRIDS (dset, cdfid, reversed, 
      .				   temp_axnams, status)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -49,7 +48,7 @@
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
 * V500:  4/99 *kob* - increase size of temp_axnams and vname from 16 to 64
-
+* V510 *sh* 3/00 - convert to use of dynamic grids and axes
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -62,11 +61,11 @@
 #ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
-        include 'xbuild_grids.cmn'
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
@@ -86,7 +85,7 @@
 
 * argument declarations
 	INTEGER	 dset, cdfid, status
-        LOGICAL reversed(0:max_lines)
+        LOGICAL  reversed(max_lines:line_ceiling)
 * 4/99 *kob* 
 	CHARACTER*64 temp_axnams(4,max_temp_grid)
 
@@ -123,20 +122,21 @@
           got_it = CD_GET_ATTRIB( cdfid, ivar, 'parent_grid',
      .                         .NOT.do_warn, ' ', gname, 16 )   !gridnamlen
           IF ( .NOT.got_it ) THEN
-             IF ( ds_grid_number(tmvar) .LT. firstgrid
-     .       .OR. ds_grid_number(tmvar) .GT. lastgrid ) GOTO 5100
+* ... check that it is a current temporary grid -- should ALWAYS be true
+	     IF (ds_grid_number(tmvar) .LT. max_grids    ) GOTO 5100
+	     IF (tmp_nam_ptr(ds_grid_number(tmvar)).EQ.0 ) GOTO 5100
              GOTO 1000
           ENDIF
 
 * locate the grid it points to
-          DO 100 igrid = firstgrid, lastgrid
+	  igrid = 0	! to get start of linked list
+ 100	  CALL TM_NEXT_TMP_GRID( igrid, *5100)
              istat = STR_CASE_BLIND_COMPARE(gname, grid_name(igrid))
              IF ( istat .EQ. str_eq ) THEN
                 ds_grid_number(tmvar) = igrid
                 GOTO 110
              ENDIF
- 100      CONTINUE
-          GOTO 5100  ! no parent grid defined
+	  GOTO 100
 
 * set ds_ordering if not explicitly given in file
 * e.g. map X NORMAL Z T to 1 3 4 0
@@ -199,13 +199,15 @@
 * So we need to check by name (among the axes defined in this data set)
 * to find this axis and see if this axis is reversed.
 	     IF ( grid_line(dim,igrid) .EQ. unspecified_int4 ) THEN
-	       vname = temp_axnams(dim, igrid - firstgrid + 1)
-	       DO 600 iaxis = firstax, lastax
+	       vname = temp_axnams(dim, tmp_nam_ptr(igrid))
+	       iaxis = 0	! to get start of linked list
+* ... search the linked list of axes defined in this dtaa set
+ 600	       CALL TM_NEXT_TMP_LINE( iaxis, *610)
                  IF ( vname .EQ. line_name(iaxis) ) THEN
 	           IF (reversed(iaxis)) ds_ordering(idim,tmvar) = -1*dim
                    GOTO 610
                  ENDIF
- 600           CONTINUE
+	       GOTO 600
 	    ENDIF
  610	  CONTINUE
 

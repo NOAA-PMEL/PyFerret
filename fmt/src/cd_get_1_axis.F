@@ -70,7 +70,8 @@
 * V500 3/99 *sh*: instead of erroring out, simply return iaxis=0 for an
 *	invalid coordinate axis -- to be handled by calling program
 * V500 4/99 *kob*:  increase vname and vupcase from 24 to 64 chars 
-* V510 3/00 *sh*: added tregular argument
+* V510 *sh* 3/00 - added tregular argument
+*		 - convert to dynamic grids and axes
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -84,11 +85,11 @@
 #ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
-        include 'xbuild_grids.cmn'
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xio.cmn_text'
@@ -112,7 +113,7 @@
 #endif
 
 * argument declarations
-        LOGICAL  its_epic, reversed(0:max_lines), tregular
+        LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular
 	INTEGER	 cdfid, ivar, iaxis, status
 
 * local parameter definitions:
@@ -123,7 +124,7 @@
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ, got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time
-      INTEGER TM_UNIT_ID, TM_LENSTR1, TM_FIND_LINE_SLOT,
+      INTEGER TM_UNIT_ID, TM_LENSTR1,
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
@@ -164,10 +165,9 @@
 ! removed 3/93          IF ( npts_cdf .EQ. 0 ) GOTO 5150
       npts = npts_cdf      ! differ only if "true_size" is used
 
-* next location to store axis info; if too many axess - give error
-      status = TM_FIND_LINE_SLOT ( iaxis )
+* grab a temporary dynamic axis slot for it
+      CALL TM_ALLO_TMP_LINE(iaxis, status)
       IF (status .NE. merr_ok) GOTO 5900
-      lastax = iaxis   ! remember how many we've done
 
 * optional point spacing parameter: even, uneven, disordered
       IF ( its_epic ) THEN
@@ -484,10 +484,6 @@
               CALL TM_NOTE(
      .             'A dummy axis of subscripts will be used', tt)
 	      GOTO 1000
-!              line_start  (iaxis) = 1.0D0
-!              line_delta  (iaxis) = 1.0D0
-!              line_subsc1 (iaxis) = unspecified_int4
-!              line_regular(iaxis) = .TRUE.
            ENDIF
   350	CONTINUE
 
@@ -511,6 +507,7 @@
       ENDIF
 * ============= END OF IRREGULAR AXIS PROCESSING ========================
 
+* hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
  390	IF ( (since_T0.GT.2)
      .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') ) THEN
 
@@ -618,7 +615,8 @@
         RETURN
 
 * 3/99-style "soft" error - invalid axis but CDF file need not be rejected
- 1000	iaxis = 0
+ 1000	CALL TM_DEALLO_DYN_LINE(iaxis)
+	iaxis = 0
 	status = merr_ok
 	RETURN
 

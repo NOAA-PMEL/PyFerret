@@ -41,7 +41,8 @@
 * Warning: if new_name is less than 5 characters this routine may STOP
 *
 * revision 0.00 - 11/22/88
-*
+* V510 *sh* 4/00 - shift to dynamic grids -- check dynamic grid names
+
 * Arguments
 	CHARACTER*(*)	suggested_name, new_name
 *                                           
@@ -68,15 +69,27 @@
 	newnum   = 0.
 
 * check for an identical name
-  10	DO 100 igrd = 1, max_grids
-	  IF (grid_name(igrd) .EQ. new_name) GOTO 200
-  100	CONTINUE
+ 10	DO 100 igrd = 1, max_grids
+	   IF (grid_name(igrd) .EQ. new_name) GOTO 200
+ 100	CONTINUE
+
+* check among the dynamic grids
+	igrd = 0		! to get start of linked list
+ 110	CALL TM_NEXT_DYN_GRID( igrd, *199)
+	   IF (grid_name(igrd) .EQ. new_name) GOTO 200
+	GOTO 110
+
+* check among the newly-created grids
+ 199	igrd = 0		! to get start of linked list
+ 210	CALL TM_NEXT_TMP_GRID( igrd, *299)
+	   IF (grid_name(igrd) .EQ. new_name) GOTO 200
+	GOTO 210
 
 * clean bill of health - no name match
-	RETURN
+ 299	RETURN
 *
 * yes there's a duplicate - try to "uniqueify" the name
-  200	newnum = newnum + 1.
+ 200	newnum = newnum + 1.
 	add_on = TM_FMT(newnum, 4, 4, addlen )
 	uselen  = MIN( suglen, outlen-addlen )
 	IF ( uselen .LE. 0 ) STOP 'TM_NEW_GRID_NAME'

@@ -41,7 +41,8 @@
 * and "gridnum" returns with the number of the new slot.
 *
 * revision 0.00 - 11/22/88
-*
+* V510 *sh* 4/00 - use TM_COPY_GRID_W_LINE_USE
+
 * Arguments
 	INTEGER*4	newgrid, gridnum, status
 	CHARACTER*(*)	newname
@@ -78,7 +79,7 @@
 	IF (status .NE. merr_ok) GOTO 9000
 *
 * Move everything over
-	CALL TM_COPY_GRID( newgrid, gridnum )
+	CALL TM_COPY_GRID_W_LINE_USE( newgrid, gridnum )
 *
 * Name the new grid
 	grid_name(gridnum) = newname

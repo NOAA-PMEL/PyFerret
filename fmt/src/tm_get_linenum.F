@@ -44,6 +44,8 @@
 *
 * *kob* 10/96 	- Linux port.  Linux didn't like tabs between "include"
 *	          and what was being included.  removed them
+* V510 *sh* 4/00 - conversion to dynamic grids and axes -- check 'em
+
 * Include files
 #ifdef unix
 #include "tmap_dset.parm"	
@@ -62,15 +64,28 @@
 	INTEGER*4	nline, istat
 	INTEGER*4	STR_CASE_BLIND_COMPARE
 
+* check the static axes
 	DO 100 nline=1,max_lines
 	  istat = STR_CASE_BLIND_COMPARE(line_name(nline),user_line)
 	  IF (istat .EQ. str_match) THEN
 	    TM_GET_LINENUM = nline
 	    GOTO 900
 	  ENDIF
-100	CONTINUE
+ 100	CONTINUE
 
-	TM_GET_LINENUM = unspecified_int4
+* check the dynamic grids
+	nline = 0
+ 200	CALL TM_NEXT_DYN_LINE( nline, *299)
+	  istat = STR_CASE_BLIND_COMPARE(line_name(nline),user_line)
+	  IF (istat .EQ. str_match) THEN
+	    TM_GET_LINENUM = nline
+	    GOTO 900
+	  ENDIF
+	GOTO 200
 
-900	RETURN
+* not found
+ 299	TM_GET_LINENUM = unspecified_int4
+
+* found
+ 900	RETURN
 	END

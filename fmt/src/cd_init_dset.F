@@ -55,7 +55,8 @@
 * V500 *sh* 3/99 - consolidated cd_scan_vars and cd_get_axes
 *     *kob* 4/99 - increase size of temp_axnams to 64
 *     *sh*  6/99 - added "perm" (permutation) argument
-* V510 *sh* 3/99 - added tregular argument
+* V510 *sh* 3/00 - added tregular argument
+*	    3/00 - convert to using dynamic grids and axes
 
 * argument declarations:
 	LOGICAL tregular
@@ -63,11 +64,11 @@
 
 * include files
 #ifdef unix
-        include 'xbuild_grids.cmn'
 #include "gt_lib.parm"
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'
+        include 'xbuild_grids.cmn'
 * add below *kob* 5/98
 	include 'xstep_files.cmn_text'
 	include 'xdset_info.cmn_text'
@@ -87,7 +88,7 @@
       INTEGER cdfid, remote_dods_id,istat
 * 4/99 *kob* increase temp_axnams
       CHARACTER*64 temp_axnams(4,max_temp_grid)
-      LOGICAL reversed(0:max_lines)
+      LOGICAL reversed(max_lines:line_ceiling)
 
 * open the netCDF data file and save global information
       CALL CD_OPEN_DSET ( dset, cdfid, remote_dods_id, status )
@@ -119,9 +120,8 @@
       CALL CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
-* close up holes left by duplicate definitions
-      CALL TM_GARB_COL_LINES ( firstax, lastax )
-      CALL TM_GARB_COL_GRIDS ( firstgrid, lastgrid )
+* set use counts and clean up temporary grids and axes
+      CALL TM_GARB_COL_GRIDS (dset)
 
 * summarize the special axes in the data set
       CALL CD_GET_TIME_AXIS( dset, t_dim, status )

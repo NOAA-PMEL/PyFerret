@@ -54,8 +54,10 @@
 *	create a 1,2,3...n axis without error message
 *       4/99 *kob* - increase size of temp_axnams, vname and name to 64
 * *sh*  6/99 - added "perm" (permutation) argument
-* V510: *sh* 1/00 - when a "BASIC" axis is created cuz the file has no coords that
-*	axis needs to bump "lastax" to get checked for dup names later
+* V510: *sh* 1/00 - when a "BASIC" axis is created cuz the file has no
+*			coords that axis needs to bump "lastax" to get
+*			checked for dup names later
+*	     3/00 - convert to dynamic grids and axes
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -69,11 +71,11 @@
 #ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
-        include 'xbuild_grids.cmn'
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xio.cmn_text'
@@ -95,10 +97,9 @@ xx        include 'netcdf.decl'  ! untested
 #endif
 
 * argument declarations
-	LOGICAL reversed(0:max_lines)
+	LOGICAL  reversed(max_lines:line_ceiling)
 	INTEGER	 dset, cdfid, perm(4), status
-* 4/99 *kob*
-        CHARACTER*64 temp_axnams(4,max_temp_grid)
+	CHARACTER*64 temp_axnams(4,max_temp_grid)
 
 * local parameter definitions:
       INTEGER     str_eq
@@ -121,6 +122,11 @@ xx        include 'netcdf.decl'  ! untested
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
+* initialize temporary grid name pointer
+	num_tmp_grids = 0
+	DO 5 i = max_grids, grid_ceiling
+ 5	   tmp_nam_ptr(i) = 0
+
 * * * * loop through each variable in this TMAP data set * * *
 * if it doesn't have a grid pointer create a suitable one and point to it
         DO 500 tmvar = 1,maxvars
@@ -141,7 +147,7 @@ xx        include 'netcdf.decl'  ! untested
            vlen = TM_LENSTR1(vname)
 
 * use the next grid building slot to build a grid for this variable
-           tmpgrid = lastgrid - firstgrid + 2
+           tmpgrid = num_tmp_grids + 1
 
 * initialize the axis names in case there are fewer than 4 from CDF variable
            DO 10 idim = 1, 4
@@ -159,18 +165,18 @@ xx        include 'netcdf.decl'  ! untested
      .       vname(:vlen), 'cant get dimensions', *5900 )
  
 * ... locate the axis by that name (processed in CD_GET_AXES)
-              DO 100 iaxis = firstax, lastax
-                 istat = STR_CASE_BLIND_COMPARE(name, line_name(iaxis))
-                 IF ( istat .EQ. str_eq ) GOTO 150
- 100          CONTINUE
+	      iaxis = 0
+ 100	      CALL TM_NEXT_TMP_LINE(iaxis, *120)  ! 120 if no more
+	         istat = STR_CASE_BLIND_COMPARE(name, line_name(iaxis))
+	         IF ( istat .EQ. str_eq ) GOTO 150  ! got a match
+	      GOTO 100
 
 * ... axis doesn't exist - perhaps it is a dimension with no variable defn
 * *sh* 3/99: or perhaps a 2D variable with name matching the dimension name
 *  either way -- not an error condition if we need to synthesize an axis ...
-              CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
+ 120	      CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
      .                                 iaxis, status )
               IF ( status .NE. merr_ok ) GOTO 5900
-	      lastax = iaxis	! so it gets checked as a dup name later
 
 * save a pointer to the axis just found
  150          IF (idim.LE.4) tmplines(idim) = iaxis
@@ -228,26 +234,26 @@ xx        include 'netcdf.decl'  ! untested
  250       CONTINUE
 
 * is the temporary grid we just created unique ?
-           DO 310 igrid = firstgrid, lastgrid
-              grid_cnt = igrid - firstgrid + 1
-              DO 300 idim = 1, 4
+	   igrid = 0
+ 300	   CALL TM_NEXT_TMP_GRID( igrid, *320)
+	      grid_cnt = tmp_nam_ptr(igrid)
+              DO 310 idim = 1, 4
                  IF ( temp_axnams(idim,tmpgrid )
-     .          .NE.  temp_axnams(idim,grid_cnt) ) GOTO 310
- 300          CONTINUE
+     .          .NE.  temp_axnams(idim,grid_cnt) ) GOTO 300
+ 310          CONTINUE
 * ... not unique - exact match with one that already exists
               GOTO 350
- 310       CONTINUE
+ 320	   CONTINUE
 
 * allocate a new grid
 * find next location to store info; if too many grids - give error
-	  status = TM_FIND_GRID_SLOT ( igrid )
+	  CALL TM_ALLO_TMP_GRID(igrid, status)
 	  IF (status .NE. merr_ok) GOTO 5900
 
 * make up a unique grid name "GXXnn" where XX is hashed from data set name
           grid_name(igrid) = 'G'//cd_dset_code(dset)(:2)
           CALL TM_NEW_GRID_NAME( grid_name(igrid), name )
           grid_name(igrid) = name
-          lastgrid = igrid
 
 * basic defaults
           grid_rotation(igrid) = 0.0
@@ -264,5 +270,6 @@ xx        include 'netcdf.decl'  ! untested
         RETURN
 
 * error exit
- 5900   RETURN
+ 5900	RETURN
+
 	END

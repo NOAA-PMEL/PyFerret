@@ -1,4 +1,4 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+	SUBROUTINE TM_re_allo_tmp_line( line )
 
 *
 *
@@ -34,41 +34,60 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 
-* Allocate a temporary line from the dynamic line area (above max_lines)
+* The input line is currently stored in the tmp linked list.
+* This routine shifts it to the dynamic line list.
 
 * Steve Hankin  NOAA/PMEL/TMAP
 
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
+* V510 *sh* 3/00
 
 * Include files
+#ifdef unix
 	include 'tmap_dims.parm'
-	include 'implicit.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'tmap_errors.parm'
-#include 'tmap_dset.parm'
 	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xio.cmn_text'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
+#endif
 
 * Argument definitions
-	INTEGER line, status
+	INTEGER line
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
-	IF ( status .NE. merr_ok) RETURN
+* Local definitions
+	INTEGER next_used_line,  next_free_line 
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
+* it is not necessary to do this in 2 stages, but it was simpler --
+* just hacked from well-tested code
 
-	line_subsc1(line)    = int4_init
+* take this line from the "tmp" list and put it on the "free" list
+* ... hook onto free list
+	   next_used_line   = line_flink(line)
+	   line_flink(line) = line_free_ptr  
+	   line_free_ptr    = line
+	   
+* ... unhook from used list
+	   line_flink(line_blink(line)) = next_used_line
+	   line_blink(next_used_line)   = line_blink(line)
+
+* take off the "free" list and put it at the start of the "used" list
+* ... unhook from free list
+	   next_free_line  	= line_flink(line)
+	   line_free_ptr	= next_free_line
+* ... hook onto front of used list
+	   line_flink(line)	 = line_flink(max_lines)
+	   line_blink(line)	 = max_lines
+	   line_flink(max_lines) = line
+	   line_blink(line_flink(line))	= line
 
 	RETURN
 	END
+

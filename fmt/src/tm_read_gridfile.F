@@ -79,8 +79,10 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * V500: 7/99 *sh* - bug fix: need consistent use of char_init16 on line_name
-* V510: 8/99 bug fix: grid_out_prod not set for NORMAL axis
+* V510: *sh* 8/99 bug fix: grid_out_prod not set for NORMAL axis
 *			(see err500_del_var_corruption)
+*	     4/00 - netCDF files now defining dynamic grids and axes. Need
+*		to check among these for previously defined objects
 
 * arguments
 	CHARACTER*(*)	gfile_name
@@ -124,7 +126,7 @@
 	CHARACTER*80	def_error
         CHARACTER*128   TM_INQ_PATH, gfile_path
 	CHARACTER*132	TM_CMPRSS, input_buf, cmprss_buf
-	INTEGER*4	lunit, i, j, ipt1, ipte, npts, gdup, lcnt,
+	INTEGER*4	lunit, i, j, ipt1, ipte, npts,
      .			cline, tline, temp
 	PARAMETER	(temp = 0)		!kob 10/96
 	INTEGER*4	p_gname, p_gline(4), p_grot, p_lname, p_llen,
@@ -136,7 +138,7 @@
 	REAL*8		rdummy
 	INTEGER*4	TM_UNIT_ID, STR_CASE_BLIND_COMPARE,
      .			TM_FIND_GRID_SLOT, TM_FIND_LINE_SLOT
-	LOGICAL		file_exist, opened
+	LOGICAL		opened
 	LOGICAL		TM_HAS_STRING, TM_GRID_MATCH, TM_LINE_MATCH,
      .			TM_CHECK_BOX_LOC
 
@@ -250,6 +252,7 @@
 	      grid_line(i,temp) = mpsnorm
 	      GOTO 200
 	    ENDIF
+* ... check among static axes to see if it already exists
 	    DO 190 j = 1, nline
 	      istat = STR_CASE_BLIND_COMPARE ( line_name(j), newline )
 	      IF (istat .EQ. str_match) THEN
@@ -257,7 +260,15 @@
 		GOTO 200
 	      ENDIF
   190	    CONTINUE
-	    GOTO 9300  !Doesn't exist
+* Check among dynamic lines  to see if it already exists
+	    j = 0		! to get start of linked list
+ 195	    CALL TM_NEXT_DYN_LINE( j, *9300)   ! 9300 if doesn't exist
+	      istat = STR_CASE_BLIND_COMPARE( line_name(j), newline )
+	      IF (istat .EQ. str_match) THEN
+	        grid_line(i,temp) = j
+		GOTO 200
+	      ENDIF
+	    GOTO 195
 
 *  Inner or outer product?
   200	    outer = STR_CASE_BLIND_COMPARE('OUTER',buff(p_goutp(i)))
@@ -271,7 +282,7 @@
 	    ENDIF
   210	  CONTINUE
 
-* Check for unique grid name
+* Check among static grids for unique grid name
 	  DO 220 i = 1, ngrid
 	    istat = STR_CASE_BLIND_COMPARE(grid_name(i),buff(p_gname))
 	    IF (istat .EQ. str_match) THEN
@@ -283,12 +294,25 @@
 	    ENDIF
   220	  CONTINUE
 
+* Check among dynamic grids for unique grid name
+	i = 0		! to get start of linked list
+ 230	CALL TM_NEXT_DYN_GRID( i, *235)
+	    istat = STR_CASE_BLIND_COMPARE(grid_name(i),buff(p_gname))
+	    IF (istat .EQ. str_match) THEN
+	      IF (TM_GRID_MATCH(i,temp)) THEN
+	        GOTO 170		! Already defined - no need to re-store
+	      ELSE
+	        GOTO 9100		! Whoops - same name - different def.
+	      ENDIF
+	    ENDIF
+	GOTO 230
+
 * Name is unique .. Next location to store info; if too many grids - give error
-	  status = TM_FIND_GRID_SLOT ( ngrid )
+ 235	status = TM_FIND_GRID_SLOT ( ngrid )
 	  IF (status .NE. merr_ok) GOTO 9200
 
 * Seems ok - transfer to permanent spot
-	  CALL TM_COPY_GRID ( temp, ngrid )
+	  CALL TM_COPY_GRID_W_LINE_USE ( temp, ngrid )
 * Store grid name as flag of completed grid definition
 	  grid_name(ngrid) = buff(p_gname)
 
@@ -348,7 +372,7 @@
 
 * If line is irregular - store it now and check it later
   250	  IF (reg_coords) THEN
-* Check for unique line name
+* Check among static lines for unique line name
 	    DO 260 i  = 1, nline
 	      istat = STR_CASE_BLIND_COMPARE(line_name(i),buff(p_lname))
 	      IF (istat .EQ. str_match) THEN
@@ -360,9 +384,23 @@
 	        ENDIF
 	      ENDIF
   260	    CONTINUE
+* Check among dynamic lines for unique line name
+	    i = 0		! to get start of linked list
+ 265	    CALL TM_NEXT_DYN_LINE( i, *266)
+	      istat = STR_CASE_BLIND_COMPARE(line_name(i),buff(p_lname))
+	      IF (istat .EQ. str_match) THEN
+* Check for unique definition
+	        IF (TM_LINE_MATCH(i,temp)) THEN
+	          GOTO 170		! Already defined - no need to re-store
+	        ELSE
+	          GOTO 9400		! Whoops - same name - different def.
+	        ENDIF
+	      ENDIF
+	    GOTO 265
 	  ENDIF
+
 * Name is unique .. Next location to store info; if too many lines - give error
-	  status = TM_FIND_LINE_SLOT ( nline )
+ 266	  status = TM_FIND_LINE_SLOT ( nline )
 	  IF (status .NE. merr_ok) GOTO 9500
 
 * Seems ok - transfer to permanent spot

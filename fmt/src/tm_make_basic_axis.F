@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/92
+* V510 *sh* 3/00 - convert to dynamic grids and axes for netCDF files
 
 * argument definitions:
 *       name      - name for axis
@@ -75,12 +76,12 @@
         CHARACTER*(*) name
 
 * local variable declarations:
-      INTEGER TM_FIND_LINE_SLOT, STR_UPCASE,
+      INTEGER STR_UPCASE,
      .        istat
 
-* locate storage space for the axis definition
-      status = TM_FIND_LINE_SLOT ( iaxis )
-      IF (status .NE. merr_ok) GOTO 5900
+* allocate a temporary slot for the axis
+	CALL TM_ALLO_TMP_LINE(iaxis, status)
+	IF (status .NE. merr_ok) GOTO 5900
 
 * build axis
       istat = STR_UPCASE( line_name(iaxis), name )

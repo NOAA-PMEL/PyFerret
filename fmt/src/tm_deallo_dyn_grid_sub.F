@@ -1,4 +1,4 @@
-	SUBROUTINE TM_allo_tmp_line( line, status )
+	SUBROUTINE TM_deallo_dyn_grid_sub( grid )
 
 *
 *
@@ -33,42 +33,75 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-
-* Allocate a temporary line from the dynamic line area (above max_lines)
+*
+*
+* Deallocate a grid from the dynamic grid area (above max_grids)
+* Without regard to the axes used by the grid
 
 * Steve Hankin  NOAA/PMEL/TMAP
 
-* V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
+* V510 *sh* 4/00 - extracted from tm_deallo_dyn_grid
 
 * Include files
+#ifdef unix
 	include 'tmap_dims.parm'
-	include 'implicit.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'tmap_errors.parm'
-#include 'tmap_dset.parm'
 	include 'xtm_grid.cmn_text'
+	external xgt_grid_data
+	include 'xio.cmn_text'
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
+	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
+	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
+	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
+#endif
 
 * Argument definitions
-	INTEGER line, status
+	INTEGER grid
 
-	CALL TM_ALLO_DYN_LINE_SUB( tmp_line_hook, line, status )
-	IF ( status .NE. merr_ok) RETURN
+* Local definitions
+	INTEGER next_used_grid
 
-* initialize the line to a null content
-	line_name(line)	     = char_init16
-        line_t0(line)        = char_init20
-        line_tunit(line)     = real4_init
-        line_parent(line)    = 0
-        line_regular(line)   = .TRUE.
-        line_class(line)     =  pline_class_basic
-        line_direction(line) = 'NA'
-        line_modulo(line)    = .FALSE.
-        line_units(line)     = char_init16
-	line_unit_code(line) = int4_init
-        line_start(line)     = real8_init
-        line_delta(line)     = real8_init
-        line_dim(line)       = int4_init
+* screen out incoming garbage
+	IF ( grid.LT.1 .OR. grid.GT.max_dyn_grids ) RETURN
 
-	line_subsc1(line)    = int4_init
+* decrement the used count for this grid
+	grid_use_cnt(grid) = grid_use_cnt(grid) - 1
+	IF ( grid_use_cnt(grid) .LT. 0 ) grid_use_cnt(grid) = 0
 
+* if not a dynamic grid then we're done
+	IF ( grid .LE. max_grids ) THEN
+	   RETURN
+	ENDIF
+
+* does anyone still have a claim on this grid?
+	IF ( grid_use_cnt(grid) .GT. 0 ) THEN
+	   RETURN
+
+	ELSEIF ( grid_use_cnt(grid) .EQ. 0 ) THEN
+
+	   grid_name(grid) = char_init16
+
+* take this grid from the "used" list and put it on the "free" list
+* ... hook onto free list
+	   next_used_grid   = grid_flink(grid)
+	   grid_flink(grid) = grid_free_ptr  
+	   grid_free_ptr    = grid
+	   
+* ... unhook from used list
+	   grid_flink(grid_blink(grid)) = next_used_grid
+	   grid_blink(next_used_grid)   = grid_blink(grid)
+
+	ELSE
+* internal error -- the use count is negative!!
+	   CALL TM_NOTE('Intern err: TM_DEALLO_DYN_GRID:2 !!!', lunit_errors)
+	ENDIF
+
+* successful completion
 	RETURN
+
 	END

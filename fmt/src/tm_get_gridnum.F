@@ -44,6 +44,7 @@
 *
 * *kob* 10/96 	- Linux port.  Linux didn't like tabs between "include"
 *	          and what was being included.  removed them
+* V510 *sh* 4/00 - conversion to dynamic grids and axes -- check 'em
 
 #ifdef unix
 # include "tmap_dset.parm"	
@@ -62,15 +63,28 @@
 	INTEGER*4	ngrid, istat
 	INTEGER*4	STR_CASE_BLIND_COMPARE
 
+* check the static grids
 	DO 100 ngrid=1,max_grids
 	  istat = STR_CASE_BLIND_COMPARE(grid_name(ngrid),user_grid)
 	  IF (istat .EQ. str_match) THEN
 	    TM_GET_GRIDNUM = ngrid
 	    GOTO 900
 	  ENDIF
-100	CONTINUE
+ 100	CONTINUE
 
-	TM_GET_GRIDNUM = unspecified_int4
+* check the dynamic grids
+	ngrid = 0
+ 200	CALL TM_NEXT_DYN_GRID( ngrid, *299)
+	  istat = STR_CASE_BLIND_COMPARE(grid_name(ngrid),user_grid)
+	  IF (istat .EQ. str_match) THEN
+	    TM_GET_GRIDNUM = ngrid
+	    GOTO 900
+	  ENDIF
+	GOTO 200
 
-900	RETURN
+* not found
+ 299	TM_GET_GRIDNUM = unspecified_int4
+
+* found
+ 900	RETURN
 	END

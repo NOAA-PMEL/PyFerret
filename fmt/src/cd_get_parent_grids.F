@@ -1,7 +1,6 @@
 	SUBROUTINE CD_GET_PARENT_GRIDS (cdfid,temp_axnams,status)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -47,6 +46,7 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * V500: 4/99 *kob* - increase size of temp_axnams and vname to 64
+* V510 *sh* 3/00 - convert to use of dynamic grids and axes
 
 * argument definitions:
 *	cdfid	       - netCDF id number for already opened CDF file
@@ -57,11 +57,11 @@
 #ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
-        include 'xbuild_grids.cmn'
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+        include 'xbuild_grids.cmn'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xio.cmn_text'
@@ -99,7 +99,7 @@ xx        include 'netcdf.decl'  ! untested
      .        got_it, do_warn, centers
       PARAMETER (do_warn = .TRUE. ) 
       PARAMETER (centers = .TRUE. )
-      INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT,
+      INTEGER TM_LENSTR1,
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
      .        ndims, nvars, ngatts, recdim, igrid, vback,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
@@ -140,7 +140,7 @@ xx        include 'netcdf.decl'  ! untested
           IF ( istat .NE. str_eq ) GOTO 500
 
 * find next location to store info; if too many grids - give error
-	  status = TM_FIND_GRID_SLOT ( igrid )
+	  CALL TM_ALLO_TMP_GRID(igrid, status)
 	  IF (status .NE. merr_ok) GOTO 5900
 
 * get the mandatory list of axis names for this grid
@@ -154,11 +154,10 @@ xx        include 'netcdf.decl'  ! untested
           ENDIF
 
 * store grid name (upper case)
-          grid_cnt = igrid - firstgrid + 1
-          lastgrid = igrid
           istat = STR_UPCASE( grid_name(igrid), vname )
 
 * parse the list and store the axis names in the temporary grid definition
+	  grid_cnt = num_tmp_grids    ! temporary name holder pointer
 	  cbuff = TM_CMPRSS(buff)
 	  DO 180 idim =1,4
  180      words(idim) = ' '

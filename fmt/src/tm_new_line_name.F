@@ -41,7 +41,8 @@
 * Warning: if new_name is less than 5 characters this routine may STOP
 *
 * revision 0.00 - 12/12/88
-*
+* V510 *sh* 4/00 - shift to dynamic grids -- check dynamic line names
+
 * Arguments
 	CHARACTER*(*)	suggested_name, new_name
 *                                           
@@ -72,8 +73,20 @@
 	  IF (line_name(ilne) .EQ. new_name) GOTO 200
   100	CONTINUE
 
+* check among the dynamic lines
+	ilne = 0		! to get start of linked list
+ 110	CALL TM_NEXT_DYN_LINE( ilne, *199)
+	   IF (line_name(ilne) .EQ. new_name) GOTO 200
+	GOTO 110
+
+* check among the newly-created lines
+ 199	ilne = 0		! to get start of linked list
+ 210	CALL TM_NEXT_TMP_LINE( ilne, *299)
+	   IF (line_name(ilne) .EQ. new_name) GOTO 200
+	GOTO 210
+
 * clean bill of health - no name match
-	RETURN
+ 299	RETURN
 *
 * yes there's a duplicate - try to "uniqueify" the name
   200	newnum = newnum + 1.

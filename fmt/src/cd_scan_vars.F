@@ -68,7 +68,8 @@
 *	rejecting the netCDF file 
 * 3/99 *kob* - make sure to pass the correct string length for newly upped
 *              parameter values
-* V510 3/00 *sh*: added tregular argument
+* V510 *sh* 3/00: added tregular argument
+*		- convert to dynamic grid and axis management
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -108,7 +109,7 @@
 #endif
 
 * argument declarations:
-	LOGICAL       reversed(0:max_lines), tregular
+	LOGICAL        reversed(max_lines:line_ceiling), tregular
 	INTEGER	      dset, cdfid, status
 
 * local parameter definitions:
@@ -124,7 +125,7 @@
      .        TM_LEGAL_NAME,
      .        got_it, got_bad, got_missing, tf2, its_epic, 
      .        got_a_variable, failed_axis
-      INTEGER TM_FIND_GRID_SLOT, TM_FIND_LINE_SLOT, NCVID,
+      INTEGER NCVID,
      .	      STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
      .        ndims, nvars, cdfstat, las_pos, first_pos, idim, iaxis,
      .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
@@ -161,18 +162,18 @@
 	orig_line_mem = next_line_mem_pos
 
 * ... flag all axes as non-reversed as the default
-	DO 10 i = 0, max_lines
+	DO 10 i = max_lines, line_ceiling
  10	reversed(i) = .FALSE.
 
-* ... how many grid spaces used before we start ?
-	status = TM_FIND_GRID_SLOT ( firstgrid )
-        lastgrid = firstgrid - 1
-	IF (status .NE. merr_ok) GOTO 5900
-
-* ... how many line spaces used before we start ?
-	status = TM_FIND_LINE_SLOT ( firstax )
-        lastax = firstax - 1
-	IF (status .NE. merr_ok) GOTO 5900
+!* ... how many grid spaces used before we start ?
+!	status = TM_FIND_GRID_SLOT ( firstgrid )
+!        lastgrid = firstgrid - 1
+!	IF (status .NE. merr_ok) GOTO 5900
+!
+!* ... how many line spaces used before we start ?
+!	status = TM_FIND_LINE_SLOT ( firstax )
+!        lastax = firstax - 1
+!	IF (status .NE. merr_ok) GOTO 5900
 
 * get the vital statistics for the CDF file
         CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )

@@ -46,6 +46,9 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* V530 *sh* 11/00 - added extra digits for E formats with close-spaced
+*       range -- like [9080,1020]
+
       CHARACTER*(*) IF 
 C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD 
       DX=ABS(XMAX-XMIN) 
@@ -60,7 +63,12 @@ C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD
 999   FORMAT('(F',I2,'.',I1,')') 
       RETURN 
 100   IF(IPRES.LT.0)GOTO 200 
-      ID=IPRES-1 
+
+* increased digits for ranges like [9080,1020] - 11/00
+        ip = MAX(ipres,
+     .       (IFIX(ALOG10(xx*1.00001)) +1) - IFIX(ALOG10(dx)) )
+        
+      ID=ip-1 
       IF(ID.LT.0)ID=0 
       WRITE(IF,998) ID+7,ID 
 998   FORMAT('(1PE',I2,'.',I1,')') 

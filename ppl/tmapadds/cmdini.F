@@ -41,6 +41,10 @@ C**
 	CHARACTER FROM*80,TO*80,TEMP*255,LINE*255,CR*1,ESC*1
 	INTEGER*4 STATUS,IFLAG
 
+* 1/03 *kob* - g77 port requires that equivalence line comes before 
+*              variable declaration
+	EQUIVALENCE (BUF(1),LINE),(CR,CRB),(ESC,ESCB)
+
 #ifdef STAR_1_SUPPORTED
 	integer*1 BUF(80),CRB,ESCB
 #else
@@ -89,7 +93,7 @@ C**
 *	DATA KEYLN1,KEYLN2,ECHLUN,CMDLUN/21,22,23,24/
 
 c	DATA FROM,TO/'PL5KEY:SYMBOL.KEY','SY:SYSTEM.KEY'/
-	EQUIVALENCE (BUF(1),LINE),(CR,CRB),(ESC,ESCB)
+C	EQUIVALENCE (BUF(1),LINE),(CR,CRB),(ESC,ESCB)
 C
 #ifndef unix
 	CALL ERRSET(36,.TRUE.,.FALSE.,.TRUE.,.FALSE.)

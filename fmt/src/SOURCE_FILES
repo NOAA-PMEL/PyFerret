@@ -249,8 +249,10 @@ tm_c_rename.c\
 tm_dfp_convert.c\
 tm_ep_time_convrt.c\
 tm_ftoc_readline.c\
+tm_get_strlen.c\
 tm_internal_read_c.c\
 tm_make_relative_ver.c\
+tm_match_capital_name.c\
 tm_number_sub.c\
 tm_set_free_event.c\
 tm_unblockify_ferret_strings.c\

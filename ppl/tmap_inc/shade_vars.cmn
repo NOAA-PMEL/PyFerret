@@ -4,7 +4,8 @@
 *	J Davison JISAO/PMEL/NOAA
 *	7.9.88
 *	*jd* 10.23.98 Add pattern support variables
-
+*	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
+*		ensure contiguous 8-byte organization
 
 *	I_LO,I_HI,J_LO,J_HI are the lo and hi indices of the grid data
 *	X_LO,X_HI,Y_LO,Y_HI are the corresponding lon & lat coordinates
@@ -104,10 +105,10 @@
      .			   area_bundles,protect_used_colors,
      .			   mncl,mslvl,msr,msg,msb,
      .			   patterns,npat,mpatterns,mnpat,
-     .			   default_patterns, pattern_list,
+     .			   default_patterns,
      .			   rgb_mapping, percent, by_level, by_value,
      .			   mrgb_mapping, ilast,
      .			   buffer_empty, num_buffered,
-     .		     	   xbuff, ybuff, upperflg, upper_first
-
+     .		     	   xbuff, ybuff, upperflg, upper_first,
+     .			   pattern_list
 

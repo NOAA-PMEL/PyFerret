@@ -4,6 +4,7 @@
 
 * V430: added trans_4d
 * V450: added descriptions of functions
+* V510: *sh* reordered elements to avoid "padding before alg_4d_trans"
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,
@@ -28,6 +29,10 @@
      .				alg_trans_has_arg,
      .				alg_trans_dflt_arg,
      .				alg_trans_num,
+     .				alg_4d_trans,
+     .				alg_1d_to_4d,
+     .				num_4d_trans,
+     .				alg_fcn_arg_ptr,
      .				alg_op, 
      .				alg_fcn, 
      .				alg_punct,
@@ -37,10 +42,6 @@
      .				alg_trans_title,
      .				alg_regrid_code,
      .				alg_regrid_title,
-     .				alg_4d_trans,
-     .				alg_1d_to_4d,
-     .				num_4d_trans,
-     .				alg_fcn_arg_ptr,
      .				alg_fcn_descr,
      .				alg_arg_name,
      .				alg_arg_units,

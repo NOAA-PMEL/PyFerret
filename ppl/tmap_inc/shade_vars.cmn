@@ -3,6 +3,7 @@
 *	Variables used in the SHADE suite of routines
 *	J Davison JISAO/PMEL/NOAA
 *	7.9.88
+*	*jd* 10.23.98 Add pattern support variables
 
 
 *	I_LO,I_HI,J_LO,J_HI are the lo and hi indices of the grid data
@@ -34,14 +35,42 @@
 *	AREA_BUNDLES determines whether bundles will be used in shading
 *	PROTECT_USED_COLORS if true causes SHADE/FILL to preserve colors used
 *	MNCL,MSLVL,MSR,MSG,MSB are shaset levels stored for later use in mem.
+*	RGB_MAPPING sets (0,1,2)->(interpolated,atomic,data-based) color scale
+*	PERCENT, BY_LEVEL, BY_VALUE are the integers just named
+*	MRGB_MAPPING is rgb_mapping stored for later use in mem.
 
-	integer		spec_size,max_windows
-	parameter	(spec_size=100,max_windows=12)
+*	** PATTERN SUPPORT VARIABLES **
+*
+*	PATTERN_NUM is the number of pattern levels allowed to be specified
+* 	PATTERNS is the array of specified pattern indices (positive values)
+*	NPAT is the number of pattern levels specified in the pattern table
+*	DEFAULT_PATTERNS are the indices of a default pattern list
+*	PATTERN_LIST is the list of named patterns
+*	MNPAT,MPATTERNS are patterns stored for later use in memory.
 
+
+*	** FILL OPTIMIZATION SUPPORT **
+
+*	ILAST is the index of the level (ie color) of the last buffered polygon
+*	BUFFER_MAX is the maximum number of polygons that can be buffered
+*	BUFFER_EMPTY is .true. if no polygons are currently buffered
+*	NUM_BUFFERED is the number of currently buffered polygons
+*	UPPERFLG is true when the upper triangle calls drawpoly
+*	UPPER_FIRST is true when the upper triangle is first cell in a buffer
+	
+	integer		spec_size,max_windows,pattern_num
+	parameter	(spec_size=100,max_windows=12,pattern_num=50)
 
 	integer		i_lo,i_hi,j_lo,j_hi,shd_levels,lo_color_ndx
 	integer		klab_dig,klab_len,klab_incr,ncl,hi_color_ndx
-	integer		mncl
+	integer		mncl,rgb_mapping,percent,by_level,by_value
+	integer		mrgb_mapping
+
+	integer		patterns(pattern_num),npat
+	integer		default_patterns(pattern_num)
+	integer		mpatterns(pattern_num),mnpat
+
+	character*25	pattern_list(21)
 
 	real		x_lo,x_hi,y_lo,y_hi
 	real		bad_val,shd_min,shd_max
@@ -55,6 +84,11 @@
 	logical		vertical_key,kuser_loc,custom_colors
 	logical		protect_used_colors
 
+	logical		buffer_empty, upperflg, upper_first
+	integer		ilast, buffer_max, num_buffered
+	parameter	(buffer_max=50)
+
+	real		xbuff(4,buffer_max), ybuff(4,buffer_max)
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
      .			   x_lo,x_hi,y_lo,y_hi,
@@ -68,8 +102,12 @@
      .			   lo_color_ndx(max_windows),
      .			   hi_color_ndx(max_windows),
      .			   area_bundles,protect_used_colors,
-     .			   mncl,mslvl,msr,msg,msb
-
-
+     .			   mncl,mslvl,msr,msg,msb,
+     .			   patterns,npat,mpatterns,mnpat,
+     .			   default_patterns, pattern_list,
+     .			   rgb_mapping, percent, by_level, by_value,
+     .			   mrgb_mapping, ilast,
+     .			   buffer_empty, num_buffered,
+     .		     	   xbuff, ybuff, upperflg, upper_first
 
 

@@ -3,9 +3,12 @@
 *
 * Ansley Manke
 * July 02, 2001
-* jan 2002 -- change to use neighborhood in data units, not Ngridpoints.
 *
 * This function locates local extrema, returning "lows".
+*
+* 1/21/01 change order of axes: result is on X axis, J index
+*         gives component of result (x,y,z)
+*         And change arguments 2 and 3 to RANGE rather than # Grid cells
 *
 *
 * In this subroutine we provide information about
@@ -56,12 +59,10 @@
 *                                                                      V
       CHARACTER*120 fcn_descr
 
-      CALL ef_set_desc(id, 'Computes local extrema, return LOWS' )
-
       WRITE (fcn_descr,100) 
       CALL ef_set_desc(id, fcn_descr)
   100 FORMAT('Find local minima of var, return',
-     .        ' LOWS on Y axis. i=1 xpos,i=2 ypos,i=3 LO value')
+     .        ' LOWS on X axis. j=1 xpos,j=2 ypos,j=3 LO value')
 
 
       CALL ef_set_num_args(id, 3)
@@ -79,20 +80,21 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, YES, YES)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'XRNG')
+      CALL ef_set_arg_name(id, arg, 'XRANGE')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local minima in neighborhood +- XRNG, in data units')
+     .'Find local minima in neighborhood +- XRANGE, data units')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'YRNG')
+      CALL ef_set_arg_name(id, arg, 'YRANGE')
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local minima in neighborhood +- YRNG, in data units')
+     .'Find local minima in neighborhood +- YRANGE, data units')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -134,7 +136,7 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      CALL ef_set_axis_limits(id, X_AXIS, 1, 3)
+      CALL ef_set_axis_limits(id, Y_AXIS, 1, 3)
 
       my_lo = 1
       my_hi = 1
@@ -144,7 +146,7 @@
       ny = arg_hi_ss(Y_AXIS,arg) - arg_lo_ss(Y_AXIS,arg) + 1
       my_hi = nx* ny	! an absolute upper bound
 
-      CALL ef_set_axis_limits(id, Y_AXIS, my_lo, my_hi)
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo, my_hi)
       my_lo = 1
       my_hi = 1
 
@@ -177,7 +179,7 @@
 *
 * ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      INTEGER mx1, my1, mxy, mxdim
+      INTEGER mx1, my1, mxy, mydim
 
       INTEGER iwork
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
@@ -188,7 +190,7 @@
       mx1 = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
       my1 = 1 + arg_hi_ss(Y_AXIS,ARG1) - arg_lo_ss(Y_AXIS,ARG1)
 
-      mxdim = 3
+      mydim = 3
       mxy = mx1 * my1
 
 
@@ -200,7 +202,7 @@
 *  zminlist
       iwork = 2
       CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mxdim, mxy, 1, 1)
+     .   mydim, mxy, 1, 1)
 
 *  xax
       iwork = 3
@@ -256,7 +258,7 @@
 
       INTEGER i, j, k, l, i1, j1, k1, l1, arg, nx, ny, nzmin, ip, jp, 
      .        neigh_x, neigh_y
-      REAL    dx, dy, xsc, ysc
+      REAL    dx, dy, xrange, yrange
 
 *  Dimension the work arrays.
 
@@ -294,10 +296,10 @@ C POINT WITHIN A CERTAIN NEIGHBORHOOD OF THE POINT.  THE NEIGHBORHOOD USED
 C HERE IS + OR - neigh_x IN THE X DIRECTION AND + OR - neigh_y IN THE Y 
 C DIRECTION
 
-      CALL ef_get_one_val (id, ARG2, xsc)
-      neigh_x = MAX(1, INT (xsc/dx))
-      CALL ef_get_one_val (id, ARG3, ysc)
-      neigh_y = MAX(1, INT (ysc/dy))
+      CALL ef_get_one_val (id, ARG2, xrange)
+      neigh_x = MAX(1, INT (xrange/dx))
+      CALL ef_get_one_val (id, ARG3, yrange)
+      neigh_y = MAX(1, INT (yrange/dy))
 
 *  For each level and each time, call minminmax to get the minima.
 *  Determine the coordinates of the min's and put with the min value
@@ -322,20 +324,22 @@ C DIRECTION
             CALL MINMINMAX (xyfield, nx, nx, ny, neigh_x, neigh_y, 
      .                      bad_flag(ARG1), zminlist, nzmin)
 
-C  result(1,j,k,l) = x-index of min
-C  result(2,j,k,l) = y-index of min
-C  result(3,j,k,l) = z value at min
+C  result(i,1,k,l) = X index of max
+C  result(i,2,k,l) = Y index of max
+C  result(i,3,k,l) = z value at max
 
-            DO 210 j = 1, nzmin
-               ip = INT(zminlist(1,j,1,1))
-               jp = INT(zminlist(2,j,1,1))
-               result(1,j,k,l) = xax(ip,1,1,1)
-               result(2,j,k,l) = yax(jp,1,1,1)
-               result(3,j,k,l) = zminlist(3,j,1,1)
+            DO 210 i = 1, nzmin
+               ip = INT(zminlist(1,i,1,1))
+               jp = INT(zminlist(2,i,1,1))
+               result(i,1,k,l) = xax(ip,1,1,1)
+               result(i,2,k,l) = yax(jp,1,1,1)
+               result(i,3,k,l) = zminlist(3,i,1,1)
  210        CONTINUE
-            DO 230 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-               DO 220 j = nzmin+1, res_hi_ss(Y_AXIS)
+C  Fill end of result with missing-data flags
+
+            DO 230 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+               DO 220 i = nzmin+1, res_hi_ss(X_AXIS)
                   result(i,j,k,l) = bad_flag_result
  220           CONTINUE
  230        CONTINUE

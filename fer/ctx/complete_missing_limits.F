@@ -43,6 +43,7 @@
 *  V500 *sh* 3/99
 *       *sh* 4/99 - bug fix: ABSTRACT axes completed on some user vars
 *	*sh* 4/99 - add mode_stupid check
+*		    MODE STUPID:weak_cache in case future EF problems arise
 *	*sh* 5/99 - complete limits on implicit axes
 *  V510 *sh* 4/00 - netCDF variables may now have dynamic axes, so chg the
 *		    logic that checked for these
@@ -58,6 +59,8 @@
 *                               abstract grid for EACH dimension - not
 *                               just x dimension, in order to correctly
 *                               have limits set
+* V550 *sh* 11/02 - added remark about weak_cache to 4/99 comments
+*			(remark copied from ChangeLog)
 
 #ifdef unix
 	include 'tmap_dims.parm'

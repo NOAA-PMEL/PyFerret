@@ -10,7 +10,7 @@
 ! Note that the repair caused a bug in err490_l_ave to re-emerge. That bug
 ! was fixed through a further repair to MERGE_GRID (2/28/98)
 
-SET MODE DIAGNOSTIC
+!SET MODE DIAGNOSTIC - removed *sh* 10/99
 
 ! Wetzler bug
 ! @AVE is ignored -- size of result on X is 5 points instead of 1

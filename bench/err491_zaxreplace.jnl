@@ -14,7 +14,7 @@
 !    5) SET REGION/I=lo:hi ignored
 !	( fixed somehow in the course of other changes ...)
 
-set mode diag
+!set mode diag - removed *sh* 10/99
 
 use dlw
 

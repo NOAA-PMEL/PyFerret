@@ -23,7 +23,7 @@
 !	implement in GET_VAR_CONTEXT and PARSE_VAR_NAME
 
 
-set mode diag
+!set mode diag - removed *sh* 10/99
 
 let vx = SIN(X[X=1:60:1])
 stat vx

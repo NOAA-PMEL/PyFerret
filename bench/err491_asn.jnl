@@ -4,7 +4,7 @@
 
 ! fixed with repair to RECVD_REGRID
 
-set mode diag
+!set mode diag - removed *sh* 10/99
 set mode ignore	! added for benchmark suite...
 
 let test = y[y=101:200:1]

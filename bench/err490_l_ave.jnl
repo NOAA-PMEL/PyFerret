@@ -36,7 +36,7 @@
 !		not all tmap disks were available.
 
 cancel memory/all
-set mode diag
+!set mode diag ! removed *sh* 10/99
 
 ! *kob* set data coads
 set data coads_vwnd

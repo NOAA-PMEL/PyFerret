@@ -1,0 +1,61 @@
+c* EF_Util.parm
+c*
+c* Jonathan Callahan
+c* July 10th 1997
+c*
+c* This is the header file to be included by routines which
+c* are part of the Ferret External Function library.
+c*
+c*       EXTERNAL ef_version 1.1: *jc* 9.98 Added       EXTERNAL ef_max_work_arrays
+c* 
+c*            1.3: *jc* 4.99 Changed "work_array_len" to "work_array_lo/hi" in EF_Util.h
+c* 
+c*                 *ac* 7.99 Added unspecified_int4
+c*		   *sh* 8.99 Changed unspeficied_int4 to EF_unspecified_int4
+c*				because of conflict with same-name parameter
+c*				in ferret.parm
+c*		   *ac* 9.99 Separate the parameters (previously EF_Util.cmn)  
+c*				external statements which will be included
+c*				in external functions code.
+
+	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
+     .  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9,
+     .  t_axis, custom, implied_by_args, normal, abstract,
+     .  retained, reduced, float_arg, string_arg, 
+     .	ef_max_args, ef_max_work_arrays, ef_max_name_length, 
+     .  ef_max_description, ef_unspecified_int4
+
+	parameter ( ef_c = 1,
+     .	ef_f = 2,
+     .	yes = 1,
+     .	no = 0, 
+     .	x_axis=1, 
+     .	y_axis=2, 
+     .	z_axis=3, 
+     .	t_axis=4, 
+     .  arg1 = 1,
+     .  arg2 = 2,
+     .  arg3 = 3,
+     .  arg4 = 4,
+     .  arg5 = 5,
+     .  arg6 = 6,
+     .  arg7 = 7,
+     .  arg8 = 8,
+     .  arg9 = 9,
+     .	custom = 101, 
+     .	implied_by_args=102, 
+     .	normal = 103, 
+     .	abstract = 104, 
+     .  retained = 201,
+     .  reduced = 202,
+     .  float_arg = 1,
+     .  string_arg = 2,
+     .	ef_max_args=9, 
+     .	ef_max_work_arrays=9, 
+     .	ef_max_name_length=40, 
+     .	ef_max_description = 128, 
+     .	ef_unspecified_int4 = -111 )
+
+	real ef_version
+
+	parameter (ef_version = 1.3) 

@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     59123372 Apr 15 14:01 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     59175884 Apr 24 14:13 /home/ja8/ansley//FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: allow input of zero-length strings, less-picky matching of NetCDF attributes,  fix error msg on RETURN=, new RETURN=dsettitle, fix for @AVE regrid bug
+Note: new qualifiers SET VAR/OFFSET/SCALE  and new RETURN=nc_scale,nc_off,user_scale,user_off
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Tue Apr 15 14:11:57 PDT 2003
+Beginning at Thu Apr 24 14:46:14 PDT 2003
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -86,11 +86,11 @@ MESSAGE/CONTINUE `1*/3`
           * before / is illegal
 MESSAGE/CONTINUE `sst*/3,return=lunits`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
-                dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis
+                dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
-                dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis
+                dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
  **ERROR: unknown data set: NOEXIST
@@ -455,6 +455,14 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY
  *** NOTE: A dummy axis of subscripts will be used
 input.txt: No such file or directory
+ **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
+                dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
+          axy, return=xx
+MESSAGE/CONTINUE `axy, return=xx`
+ **ERROR: invalid command: Can SET VARIABLE/OFFSET= only with NetCDF datasets
+SET VAR/OFFSET=1 x1
+ **ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets
+SET VAR/SCALE=10 x2
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -513,4 +521,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Apr 15 14:20:02 PDT 2003
+Ended at Thu Apr 24 14:56:07 PDT 2003

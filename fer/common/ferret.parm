@@ -12,6 +12,8 @@
 *  8/99: *sh* added cat_work_mr
 * 12/99: *sh* added uvlim_hidden
 * V510 *sh* 1/00 - added uvar_on_hold
+* V530: *sh* 8/00 -- added ptype_* - data types
+*	*sh* 10/00 - increased max_context to support more complex expressions
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -369,7 +371,7 @@
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)
 	INTEGER		max_context, min_context, max_cx_predefined
-	PARAMETER     ( max_context = 100,
+	PARAMETER     ( max_context = 400,
      .			max_cx_predefined = 10,
      .			min_context = 1 - max_cx_predefined )
 
@@ -555,3 +557,22 @@
      .          pgc_span_reduced
 	PARAMETER ( pgc_span_retained = 201,
      .          pgc_span_reduced  = 202 )
+
+* data types
+	INTEGER		ptype_native,
+     .			ptype_float,
+     .			ptype_int4,
+     .			ptype_int2,
+     .			ptype_int1,
+     .			ptype_char,
+     .			ptype_string,
+     .			ptype_double
+	PARAMETER     ( ptype_native = 0,
+     .			ptype_float = 1,
+     .			ptype_int4 = 2,
+     .			ptype_int2 = 3,
+     .			ptype_int1 = 4,
+     .			ptype_char = 5,
+     .			ptype_string = 6,
+     .			ptype_double = 7 )
+

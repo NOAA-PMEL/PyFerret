@@ -17,6 +17,9 @@
 *	       - had to add an real*4 buffer to the buff equivalence.  
 *		 Linux f77 complained aobut inconsistent datatypes
 *
+* 4/98  *kob*  - bonehead move above.  removing the r4 buffer because it
+*                was causing problems with double precision attribute values
+
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
 *       varid    - variable id in netCDF file
@@ -77,8 +80,8 @@
             CALL NCAGT(cdfid,varid,attrib,val,cdfstat)
             CD_GET_ATTVAL = .TRUE.
          ELSE
-!           CALL NCAGT(cdfid,varid,attrib,r8buff,cdfstat) *kob* 11/9 
-            CALL NCAGT(cdfid,varid,attrib,r4buff,cdfstat)
+            CALL NCAGT(cdfid,varid,attrib,r8buff,cdfstat)
+!            CALL NCAGT(cdfid,varid,attrib,r4buff,cdfstat)   !kob 4/98
             CD_GET_ATTVAL = .TRUE.
 * convert data types
             IF (attype.EQ.NCBYTE .OR. attype.EQ.NCCHAR ) THEN
@@ -92,8 +95,8 @@
  300           val(i) = i4buff(i)
             ELSE
                DO 400 i = 1, vback
-! 400           val(i) = r8buff(i)   *kob* 11/96
- 400           val(i) = r4buff(i)
+ 400           val(i) = r8buff(i)  
+! 400           val(i) = r4buff(i)   ! kob 4/98
             ENDIF
          ENDIF
       ELSE

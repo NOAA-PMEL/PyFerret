@@ -1,0 +1,80 @@
+! bn_modulo_strides.jnl
+! 6/01 *sh*
+! exercise the combination of modulo and netCDF strides IO
+
+define axis/modulo/x=1:20:1 x20
+LET a = X[gx=x20]
+LET str_raw = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t"}
+!list b_raw
+let str = str_raw[gx=x20@asn]
+save/clobber/file=test_modulo.cdf a, str
+cancel variable a, str
+use test_modulo
+
+! verify that both single IO and double IO cases are doing rdstride
+cancel memory/all
+set mode diag
+let b =  a[i=18:23:2] 
+list/nohead b            ! using rdstride
+list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
+list/nohead b            ! reuse of cached result
+set mode/last diag
+
+! less than one modulo cycle -- grab in 2 pieces
+! ... delta(2) a factor of npts(20)
+list/nohead a[i=18:23:2]
+list/nohead a[i=19:23:2]
+list/nohead a[i=20:23:2]
+list/nohead a[i=18:24:2]
+list/nohead a[i=19:24:2]
+list/nohead a[i=20:24:2]
+
+! ... delta(3) not a factor of npts(20)
+list/nohead a[i=17:23:3]
+list/nohead a[i=18:23:3]
+list/nohead a[i=19:23:3]
+list/nohead a[i=20:23:3]
+list/nohead a[i=17:24:3]
+list/nohead a[i=18:24:3]
+list/nohead a[i=19:24:3]
+list/nohead a[i=20:24:3]
+list/nohead a[i=17:25:3]
+list/nohead a[i=18:25:3]
+list/nohead a[i=19:25:3]
+list/nohead a[i=20:25:3]
+
+! more than one modulo cycle -- grab in one piece
+list/nohead a[i=1:45:5]
+list/nohead a[i=2:45:5]
+list/nohead a[i=3:45:5]
+list/nohead a[i=4:45:5]
+list/nohead a[i=5:45:5]
+list/nohead a[i=6:45:5]
+list/nohead a[i=101:145:5]
+list/nohead a[i=102:145:5]
+list/nohead a[i=103:145:5]
+list/nohead a[i=104:145:5]
+list/nohead a[i=105:145:5]
+list/nohead a[i=106:145:5]
+
+
+!  ***** STRING TESTS *****
+set mode diag
+list/nohead str[i=18:23:2] ! using rdstride
+list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
+set mode/last diag
+
+! less than one modulo cycle -- grab in 2 pieces
+! ... delta(2) a factor of npts(20)
+list/nohead str[i=18:23:2]
+list/nohead str[i=20:23:2]
+
+! ... delta(3) not a factor of npts(20)
+list/nohead str[i=17:23:3]
+list/nohead str[i=18:23:3]
+
+! more than one modulo cycle -- grab in one piece
+list/nohead str[i=1:45:5]
+list/nohead str[i=5:45:5]
+list/nohead str[i=101:145:5]
+list/nohead str[i=105:145:5]

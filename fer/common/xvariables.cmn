@@ -39,6 +39,7 @@
 *	12/95	- added uvar_mod_pseudo to postpone modulo ops on uvars with
 *		  pseudo vars X,Y,Z,T,I,J,K, or L
 * V450: 7/97   - added uvar_parent and increates max_uvar
+* V491: 12/97  - increased max_uvar_items from 40 to 100 *kob*
 
 * BULK MEMORY MANAGEMENT:
 *  The free bulk memory list is organized as follows:
@@ -152,7 +153,7 @@
      .			uvar_dset,
      .			max_intrp
 	PARAMETER     (	max_uvar      	  = 400,! total # uvars incl. "EX#."
-     .			max_uvar_items    = 40,	! complexity of uvar expression
+     .			max_uvar_items    = 100,! complexity of uvar expression
      .			uvar_text_len	  = 160,! max length of uvar expression
      .			max_intrp	  = 40  )
 

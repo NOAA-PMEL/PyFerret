@@ -52,10 +52,9 @@ C**
 *       Draw flowlines based on a velocity field.
 *  ACM  June 08, 2001  remove extra declaration of i, and
 *       change MAX(1, x + 1) to MAX(1., x + 1)
+*  ACM  Aug 2001 remove subroutine strmar to separate file (arrow-drawing)
+*      *acm* 10/01  remove VMS includes
 
-C
-C
-#ifdef unix
         include 'ferret.parm'
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -78,26 +77,8 @@ C
         include 'vector_inc.decl'
         include 'VECTOR.INC'
         include 'xcurvilinear.cmn'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LABCOM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_VECTOR.INC'
-#endif
-
-#ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
 
 *******************************************************************************
@@ -838,83 +819,6 @@ c	XL = XX1 + 2.* hlabs/XF+0.2/xf
 	YL = YY1 - HLABS*0.5/YF
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
-
-      RETURN
-      END
-
-C  arrows 
-
-      subroutine strmar (xx1, yy1, xx2, yy2, vel, xf, yf) 
-      PARAMETER (a160 = 160.0*3.1416/180.0)
-      REAL xf, yf
-      REAL arrlen, vel, dir, xx1, xx2, yy1, yy2
-
-#ifdef unix
-        include 'vector_inc.decl'
-        include 'VECTOR.INC'
-        include 'xcurvilinear.cmn'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_VECTOR.INC'
-#endif
-
-C     Curvilinear coordinates declarations
-      INTEGER status
-      REAL x_curv, y_curv
-
-*  Set directions for arrows.
-
-      dir = atan2(yy2-yy1, xx2-xx1)
-
-*  Set arrow length scale based on vel.
-
-      arrlen = 0.2* vel/(xf+yf)
-
-      IF (curvilinear) THEN
-          arrlen = 5. * arrlen
-          arrlen = 5. * arrlen
-      ENDIF
-
-      addx1 = arrlen* cos(dir+a160)
-      addy1 = arrlen* sin(dir+a160)
-      addx2 = arrlen* cos(dir-a160)
-      addy2 = arrlen* sin(dir-a160)
-
-      IF (curvilinear) THEN
-
-          x_curv = xx2
-          y_curv = yy2
-          CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
-          xxc=x_curv
-          yyc=y_curv
-          CALL plot (xxc, yyc, 0, 0)
-
-          x_curv = xx2 + addx1
-          y_curv = yy2 + addy1
-          CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
-          xxd = x_curv
-          yyd = y_curv
-
-          CALL plot (xxd, yyd, 1, 0)
-          CALL plot (xxc, yyc, 0, 0)
-
-          x_curv = xx2 + addx2
-          y_curv = yy2 + addy2
-          CALL curv_coord (x_curv, y_curv, 1, 1.0, 1.0, status)
-          xxe = x_curv
-          yye = y_curv
-
-          CALL plot (xxe, yye, 1, 0)
-          CALL plot (xxc, yyc, 0, 0)
-
-      ELSE
-
-         CALL plot (xx2, yy2, 0, 0)
-         CALL plot (xx2+addx1, yy2+addy1, 1, 0)
-         CALL plot (xx2, yy2, 0, 0)
-         CALL plot (xx2+addx2, yy2+addy2, 1, 0)
-         CALL plot (xx2, yy2, 0, 0)
-
-      ENDIF
 
       RETURN
       END

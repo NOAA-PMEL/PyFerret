@@ -50,6 +50,7 @@ C**
 *
 *  ACM  implementing algorighm from grads -- gxstrm.c
 *       draw flowlines 
+*  v4 2-oct-01 remove VMS includes
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -58,14 +59,9 @@ C
 C
 C
 
-#ifdef unix
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
-#else
-	INCLUDE		'tmap_pplv11inc:tmap_parampl5.dat'
-#endif
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
@@ -90,23 +86,6 @@ C
 	include 'VECTOR.INC'
 #ifdef NO_PASSED_CONCAT	
 	include 'xrisc.cmn'
-#endif
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'tmap_pplv11inc:tmap_axis.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_plt.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_miss.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_hd.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_cont.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_zgrid.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_zgridd.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_vector.inc'
-
 #endif
 
 
@@ -149,7 +128,7 @@ C   Allocate memory for the flag grid
       IF ( status .NE. ferr_ok ) GOTO 5000
 
       CALL flowline_sub (u, v, memory(1,mblk1), siz, density, nxs, nys, 
-     .                   px, py, xf, yf,)
+     .                   px, py, xf, yf)
 
 * Cleanup
       CALL FREE_MEMORY( mblk1, nblks1 )

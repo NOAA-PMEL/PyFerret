@@ -19,4 +19,9 @@ set region/j=10
 let len = zsorted_temp[k=@ngd]
 list len
 
+! this should bail out with indices out of range:
+
+let zsorted_indices = sortk(temp) - 100
+let zsorted_temp = samplek(zsorted_indices, temp)
+shade zsorted_temp
 

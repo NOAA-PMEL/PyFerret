@@ -55,6 +55,7 @@
 * V230:  3/3/92  - replace "D=#" with "D=name" in title
 *       11/4/92 - expanded user variable name length
 * V420: variable units may be modified by regrid transforms of the variable
+* V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
@@ -83,7 +84,8 @@
 
 * internal variable declarations
 	LOGICAL 	UNIT_CHG_AX
-	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans
+	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
+     .			uvar, item, start, end
 	CHARACTER	AX_TITLE*32, VAR_CODE*24, TM_FMT*10,
      .                  REPLACE_DEQ*180,   ! .GT. uvar_text_len
      .                  buff1*32, buff2*10
@@ -129,6 +131,14 @@
 	ELSEIF ( cat .EQ. cat_constant ) THEN
 
 	   var_title = ' '
+
+	ELSEIF ( cat .EQ. cat_const_var ) THEN
+
+	   uvar = cx_variable(cx)/1000
+           item = cx_variable(cx) - 1000*uvar
+           start = uvar_item_start( item, uvar )
+           end   = uvar_item_end  ( item, uvar )
+	   var_title = uvar_text(uvar)(start:end)
 
 	ELSE
 

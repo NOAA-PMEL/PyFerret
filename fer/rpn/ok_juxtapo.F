@@ -44,6 +44,8 @@
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line. used DATA rather than PARAMETER stmnt.
 * V450: 12/96 - add checks for grid changing functions and child variables
+* V500: 12/98 *sh*  added alg_const_var -- for fixed arrays such as "{1,3,5}"
+*	 1/99 - added alg_string   
 
 #ifdef unix
 	include		'ferret_cmn/ferret.parm'
@@ -67,7 +69,8 @@
      .					0,0,1,0,0,1,0,0,
      .					0,0,1,1,1,1,0,0,
      .					1,1,0,1,1,0,1,0/
-********************************************************************************
+
+*******************************************************************************
 
 	atom(1) = las_ptr
 	atom(2) = inf_ptr
@@ -94,6 +97,8 @@
 	   if  (atom_type(atom(i)) .eq. alg_constant
      .	   .or.	atom_type(atom(i)) .eq. alg_variable
      .	   .or.	atom_type(atom(i)) .eq. alg_pseudo_var
+     .	   .or.	atom_type(atom(i)) .eq. alg_const_var
+     .	   .or.	atom_type(atom(i)) .eq. alg_string
      .	   .or.	atom_type(atom(i)) .eq. alg_child_var
      .	   .or. atom_type(atom(i)) .eq. alg_operand ) then
 	      ndx(i) = 3

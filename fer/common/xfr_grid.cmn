@@ -1,5 +1,6 @@
 * XFR_GRID.CMN
 * common to supplement XTM_GRID in the TMAP_FORMAT library
+* 12/98 - added mgrid_xabstract, mgrid_yabstract, etc. z, and t
 
 	INTEGER		max_special_grids
 	PARAMETER     ( max_special_grids = 10 )
@@ -13,6 +14,14 @@
      .		special_grids( max_special_grids )
 
 * EQUIVALENCES
-	INTEGER mgrid_abstract,	mgrid_ez_dflt
+	INTEGER mgrid_abstract,	mgrid_ez_dflt,
+     .		mgrid_xabstract, mgrid_yabstract, 
+     .		mgrid_zabstract, mgrid_tabstract
+
 	EQUIVALENCE	( special_grids(1), mgrid_abstract ),
-     .			( special_grids(2), mgrid_ez_dflt  )
+     .			( special_grids(2), mgrid_ez_dflt  ),
+     .			( special_grids(3), mgrid_xabstract ),
+     .			( special_grids(4), mgrid_yabstract ),
+     .			( special_grids(5), mgrid_zabstract ),
+     .			( special_grids(6), mgrid_tabstract )
+

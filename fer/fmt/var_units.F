@@ -1,3 +1,4 @@
+
 	CHARACTER*(*) FUNCTION VAR_UNITS( cx )
 
 *
@@ -47,6 +48,7 @@
 *	 1/12/90 - allow unit changes by transforms
 *       10/22/92 - added units on uvars
 * V420: variable units may be modified by regrid transforms of the variable
+* V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
 
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
@@ -96,7 +98,8 @@
 	   VAR_UNITS = uvar_units( variable )
 
 	ELSEIF ( category .EQ. cat_pseudo_var 
-     .	   .OR.  category .EQ. cat_constant ) THEN
+     .	   .OR.  category .EQ. cat_constant
+     .	   .OR.  category .EQ. cat_const_var ) THEN
 
 	   VAR_UNITS = ' '
 

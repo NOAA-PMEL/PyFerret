@@ -39,11 +39,12 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+
 *
 * V200:  6/22/89
 *	10/23/89 - added ez_dflt
 * V300: 6/93 - lengthened axis EZ x10 so that accidental truncations were rarer
+* V500: 12/98 - added XABSTRACT, YABSTRACT, ZABSTRACT, and TABSTRACT
 
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
@@ -65,7 +66,7 @@
 
 * local variable declarations:
 	INTEGER	TM_FIND_LINE_SLOT, TM_FIND_GRID_SLOT,
-     .		iline, igrid, idim, status
+     .		iline, igrid, idim, iline_abstract, status
 
 * "ABSTRACT" axis
 * find a space to catalog it
@@ -84,6 +85,7 @@
 	line_t0       ( iline ) = ' '
 	line_subsc1   ( iline ) = unspecified_int4	! since regular
 	line_direction( iline ) = 'NA'
+	iline_abstract = iline
 
 * "ABSTRACT" grid
 * find a space to catalog it
@@ -92,7 +94,7 @@
 
 * make grid with 4 abstract axes
 	DO 100 idim = 1, 4
-	   grid_line    (idim, igrid) = iline
+	   grid_line    (idim, igrid) = iline_abstract
            grid_out_prod(idim, igrid) = .TRUE.
  100	CONTINUE	
 	grid_rotation( igrid ) = 0.0
@@ -136,6 +138,79 @@
 
 * save pointer to grid
 	mgrid_ez_dflt = igrid
+
+
+* "XABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 abstract axis
+	DO 300 idim = 1, 4
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 300	CONTINUE
+	grid_line(x_dim, igrid) = iline_abstract
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'XABSTRACT'
+
+* save pointer to grid
+	mgrid_xabstract = igrid
+
+* "YABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 abstract axis
+	DO 400 idim = 1, 4
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 400	CONTINUE
+	grid_line(y_dim, igrid) = iline_abstract
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'YABSTRACT'
+
+* save pointer to grid
+	mgrid_yabstract = igrid
+
+
+* "ZABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 abstract axis
+	DO 500 idim = 1, 4
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 500	CONTINUE
+	grid_line(z_dim, igrid) = iline_abstract
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'ZABSTRACT'
+
+* save pointer to grid
+	mgrid_zabstract = igrid
+
+* "TABSTRACT" grid
+* find a space to catalog it
+	status = TM_FIND_GRID_SLOT( igrid )
+	IF ( status .NE. merr_ok ) GOTO 5000
+
+* make grid with 1 abstract axis
+	DO 600 idim = 1, 4
+	   grid_line    (idim, igrid) = mnormal
+           grid_out_prod(idim, igrid) = .TRUE.
+ 600	CONTINUE
+	grid_line(t_dim, igrid) = iline_abstract
+	grid_rotation( igrid ) = 0.0
+	grid_name    ( igrid ) = 'TABSTRACT'
+
+* save pointer to grid
+	mgrid_tabstract = igrid
+
+
+
 	RETURN
 
  5000	STOP 'DFN_SPC_GRD'

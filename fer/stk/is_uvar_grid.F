@@ -77,6 +77,8 @@
 *			dynamic grid needs logic change
 * V530 10/00 *sh* - fixed bug that was revealed by new ability of
 *		    GCF_IMPOSE_AXES to take an error exit
+*	          - process string variables so that they may be obtained
+*		    by EFs during custom axis creation
 
 * calling argument declarations:
 	INTEGER	status
@@ -149,14 +151,16 @@
 	itype = uvar_item_type ( item, uvar )
 	start = uvar_item_start( item, uvar )
 	end   = uvar_item_end  ( item, uvar )
-	IF     ( itype .EQ. alg_pseudo_var ) THEN
+	IF     ( itype .EQ. alg_pseudo_var  ) THEN
 	   GOTO 200
 	ELSEIF ( itype .EQ. alg_const_var   ) THEN
 	   GOTO 250
 	ELSEIF ( itype .EQ. alg_child_var   ) THEN
 	   GOTO 300
-	ELSEIF ( itype .EQ. alg_variable   ) THEN
+	ELSEIF ( itype .EQ. alg_variable    ) THEN
 	   GOTO 305
+	ELSEIF ( itype .EQ. alg_string      ) THEN
+	   GOTO 400
 	ELSE
 	   GOTO 100
 	ENDIF
@@ -245,6 +249,18 @@
 	ELSE
 	   GOTO 9000	! err: grid for non-user vars should always be known
 	ENDIF
+
+* string constant
+ 400	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	hi_cx = cx_stack_ptr
+        CALL STRING_CONTEXT (   uvar,
+     .                          item,
+     .                          lo_cx,
+     .                          hi_cx,
+     .                          status )
+        IF ( status .NE. ferr_ok ) RETURN
+	GOTO 500		! go merge it
 
 * create, initialize buffer to receive the grid
  500	IF ( is_sum(isp) .EQ. isalg_transfer ) THEN
@@ -335,8 +351,9 @@
 * for grid-changing vars all of the arguments contextx are still on the stack 
 	IF ( its_gc ) THEN
 	   DO 1010 i = 1, nitem - 1	! 3/99 - strings not on stack
-	      IF (uvar_item_type(i,uvar).NE. alg_string)
-     .			cx_stack_ptr = cx_stack_ptr - 1
+	      cx_stack_ptr = cx_stack_ptr - 1
+!	      IF (uvar_item_type(i,uvar).NE. alg_string)
+!     .			cx_stack_ptr = cx_stack_ptr - 1
  1010	   CONTINUE
 	ENDIF
 * have any variables been encountered ?

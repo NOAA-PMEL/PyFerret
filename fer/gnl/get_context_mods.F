@@ -123,6 +123,9 @@
 *	3/00  *sh* - remove old trap for mixed dates and time steps
 *	4/00  *sh* - since netCDF uses dynamic grids now, DEALLOC will
 *		     deallocate axes within implicit grids. Accomodate that.
+* V520: 6/00 *sh* bug fix: cx_grid_needs_dset is not set correctly when the
+*		   - syntax is X[Gx=var[D=dset]]
+
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -177,7 +180,7 @@
      .			atsin, colon, colon2, atcolon, first_time(4),
      .			kludge_gx_to_x(4), set_implicitly(4),
      .			fmat_lo, fmat_hi, logical_dummy, single_char,
-     .			has_g_eq_unkn_uvar
+     .			has_g_eq_unkn_uvar, gdset_included
 	INTEGER		ATOM_POS, STR_CASE_BLIND_COMPARE, STR_UPCASE,
      .			TM_GET_GRIDNUM, KNOWN_GRID, FIND_DSET_NUMBER,
      .			REGION_NUMBER, TM_GET_LINENUM, TM_AXIS_DIRECTION,
@@ -437,9 +440,11 @@
  112	            CONTINUE
  114	            IF ( state .NE. done_looking ) GOTO 5056
 	            gdset = FIND_DSET_NUMBER( name(dstart:dend) )
+	            gdset_included = .TRUE.
 *33333333333333333
 	         ELSE
 	            gdset = dset
+	            gdset_included = .FALSE.
 *33333333333333333
 	         ENDIF
 * ... end of 7/95 additions
@@ -451,6 +456,9 @@
 	         IF ( variable .NE. munknown_var_name ) THEN
 	            grid = KNOWN_GRID(gdset,category,variable)
 		    cx_grid_needs_dset = .NOT.cx_dset_gvn( mods_cx )
+* ... 6/00 bug fix for syntax X[gx=var[d=dset]] -- look for [d=...]
+	            IF ( cx_grid_needs_dset )  cx_grid_needs_dset
+     .					       = .NOT.gdset_included
 * ... 8/99 -- allow G=uvar where uvar may be unknown at this point
 		    IF ( grid     .EQ. unspecified_int4
      .		   .AND. category .EQ. cat_user_var ) THEN	! g=??uvar??

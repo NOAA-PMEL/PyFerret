@@ -116,6 +116,9 @@
      .	     (mr_del_blink(i),i=1,max_mrs)/ max_mrs*unspecified_int4 /
 
 * user-defined variables
+        DATA uvar_name_code_head / 0 /
+        DATA uvar_name_code      /max_uvar*' '/
+        DATA uvar_num_items_head / 0 /
 	DATA uvar_num_items	/ max_uvar*uvar_deleted /
 	DATA num_uvars_in_cmnd	/ cmnd_uvars_not_given	/
 	END

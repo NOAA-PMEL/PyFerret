@@ -1,0 +1,124 @@
+\cancel mode verify
+
+!**************************************************************
+! Description: Computes statistics for Taylor diagram (weights by area array defined a priori)
+!              Define FERRET variables Taylor Diagram Calculation (wt by area)
+!
+! Usage: 
+!
+! Example:
+!   yes? SET DATA coads_climatology
+!   yes? LET p = sst[x=180,y=0]; LET q = airt[x=180,y=0]
+!   yes? GO variance
+!   yes? list p, q
+!
+! Notes:
+!        ... Instructions to get Taylor Diagram variables: 
+!        See Taylor, K.E., Summarizing multiple aspects of model peformance in 
+!            a single diagam (JGR, 106, D7, 7183--7192,2001)
+!        Define variables P and Q as follows
+!         e.g. yes? LET/quiet P = model_field 
+!              yes? let/quiet q = dataref_field
+!              yes? let/quiet area_o = area * mask
+!        * IMPORTANT: P must be the model field and Q the data (reference) field!
+!        *            Both fields should have identical grids with identical masks
+!        *            (area is the surface area; mask = 1 if ocean, 0 if land)
+!
+! Calls: 
+!
+! Author: James Orr 
+! Contact: James.Orr@cea.fr
+! $Date$ 
+! $Name$
+! $Revision$
+! History:
+! Modification:
+! 
+!**************************************************************
+
+let/quiet area_toto = area_o[i=@sum,j=@sum,t=@ave]
+say "Ocean area (should be ~3e+14 m^2):" `area_toto`
+! list area_toto
+
+! Wt. Averages, deviations, squared deviations, weighted sqared deviations
+! ------------------------------------------------------------------------
+!say ... taylor_wtarea: averaging
+let/quiet P_w = P * area_o/area_toto
+let/quiet Q_w = Q * area_o/area_toto
+let/quiet P_ave = P_w[i=@sum,j=@sum,k=@sum,l=@ave]
+let/quiet Q_ave = Q_w[i=@sum,j=@sum,k=@sum,l=@ave]
+let/quiet P_dev = P - P_ave
+let/quiet Q_dev = Q - Q_ave
+let/quiet P_dsq = P_dev * P_dev
+let/quiet Q_dsq = Q_dev * Q_dev
+let/quiet P_dsqW = P_dsq * area_o/area_toto
+let/quiet Q_dsqW = Q_dsq * area_o/area_toto
+
+! Differences, squared differences, weighted squared differences
+! --------------------------------------------------------------
+!say ... taylor_wtarea: dif
+let PmQ = P - Q
+let PmQ_SQ = PmQ * PmQ
+let PmQ_sqW = PmQ_SQ * area_o/area_toto
+let/quiet PmQ_dev = P_dev - Q_dev
+let/quiet PmQ_devsq = PmQ_dev * PmQ_dev
+let/quiet PmQ_devsqW = PmQ_devsq * area_o/area_toto
+ 
+! Weighted Variance, weighted std dev.
+! ------------------------------------
+!say ... taylor_wtarea: var
+!let/quiet/title="Variance of Model" P_var = P_dsq[i=@ave,j=@ave,k=@ave,l=@ave]
+let/quiet/title="Wt. Variance of Model" P_var = P_dsqW[i=@sum,j=@sum,k=@sum,l=@ave]
+let/quiet/title="Wt. Variance of Reference" Q_var = Q_dsqW[i=@sum,j=@sum,k=@sum,l=@ave]
+let/quiet/title="Wt. Std. Dev. of Model" P_sigma = P_var^.5
+let/quiet/title="Wt. Std. Dev. of Reference" Q_sigma = Q_var^.5
+
+! Wt. Regression coefficient
+! --------------------------
+!say ... taylor_wtarea: R
+let/quiet pq_dev = (P_dev * Q_dev) * area_o/area_toto
+let/quiet pq_sigma = P_sigma * Q_sigma
+let/quiet/title="Regression Coeff." Rcoeff = pq_dev[i=@sum,j=@sum,k=@sum,l=@ave] / pq_sigma
+
+! RMS
+! ---
+! (E_bar is Overall bias, E_prime is centered RMS difference, E is RMS difference)
+! Following are 2 consistency Tests (which you should check): 
+!      (1) Check if E^2 = Ebar^2 + Eprime^2
+!      (2) Check if Eprime^2 = P_sigma^2 + Q_sigma^2 - 2*P_sigma*Q_sigma*Rcoeff
+let E_bar = P_ave - Q_ave
+let E_prime =  (PmQ_devsqW[i=@sum,j=@sum,k=@sum,l=@ave])^.5
+let E =  (PmQ_sqW[i=@sum,j=@sum,k=@sum,l=@ave])^.5
+let Etest = (E_bar^2 + E_prime^2)^.5
+let E_primetest =  (P_sigma^2 + Q_sigma^2 - 2*P_sigma*Q_sigma*Rcoeff)^.5
+
+!list E, Etest, E_prime, E_primetest
+
+! Nondimensionalize by dividing sigma's and E's by Q_sigma (Conversely R is identical)
+! (Needed for comparing different types of fields on same Taylor Diagram)
+! ------------------------------------------------------------------------------------
+
+let Ehat = E/Q_sigma
+let Ehat_bar = E_bar/Q_sigma
+let Ehat_prime = E_prime/Q_sigma
+let Phat_sigma = P_sigma/Q_sigma
+
+set var/title="Overall bias (RMS)" E_bar
+set var/title="Centered RMS difference" E_prime
+set var/title="RMS difference" E
+set var/title="Normalized Overall bias (RMS)" Ehat_bar
+set var/title="Normalized Centered RMS difference" Ehat_prime
+set var/title="Normalized RMS difference" Ehat
+
+let/title="Normalized Std. Dev. of Model" Radi   = Phat_sigma
+let/title="Angle in radians (arcos(Regr. Coeff.))" Angle = acos (Rcoeff)
+
+!**************************************************************
+set mode verify
+
+
+
+
+
+
+

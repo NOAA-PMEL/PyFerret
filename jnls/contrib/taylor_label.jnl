@@ -1,0 +1,43 @@
+\cancel mode verify
+
+!**************************************************************
+! Description:
+!
+! Usage: go taylor_label Standard_Deviation Correlation "text" [justification=0] [character height=0.3] [angle=0]
+!
+! Example:
+!
+! Notes: * Takes into account height of character to set precisely the text
+!          Useful when you want to place with accuracy a letter as a identifier 
+!
+! Calls:
+!
+! Author: Patrick Brockmann
+! Contact: Patrick.Brockmann@ipsl.jussieu.fr
+! $Date$
+! $Name$
+! $Revision$
+! History:
+! Modification:
+!
+!**************************************************************
+
+let ME_std = $1
+let ME_cor = $2 
+let ME_x = ME_std*cos(acos(ME_cor))
+let ME_y = ME_std*sin(acos(ME_cor))
+
+def sym ME_text=$3
+def sym ME_just=$4%0%
+def sym ME_labheight=`$5%0.3%/2.54`   ! cm to inch
+def sym ME_angle=$6%0%
+
+!**************************************************************
+label `ME_x`,`ME_y-(($ME_labheight)/(($PPL$YLEN)-($PPL$YORG)))`,($ME_just),($ME_angle),($ME_labheight),"($ME_text)"
+
+!**************************************************************
+cancel variable ME_*
+cancel symbol ME_*
+
+!**************************************************************
+set mode verify

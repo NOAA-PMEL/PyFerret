@@ -52,7 +52,9 @@ c
 c
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
-
+C
+C *kob* 1/03 - g77 port requires format of nX, rather than just X.  
+C              Assuming 1x is proper
 	character varcd*(*), labsml*(*), label*(*), comment*(*)
 #ifdef unix
 	character varrd*4
@@ -62,7 +64,7 @@ c
 #ifdef unix
 	rewind(lun21)
 10	read (lun21, 100,err=200,end=200) varrd, labsml, label, comment
-100	format (a4, x, a3, x, a25, x, a97)
+100	format (a4, 1x, a3, 1x, a25, 1x, a97)
 	if(varrd.ne.varcd)goto 10
 #else
         read (lun21, 100, key=varcd, err=200) labsml, label, comment

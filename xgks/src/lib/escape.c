@@ -34,10 +34,15 @@
  * Author: Yu Pan
  */
 
+/* 10/97 *kob* - had to move the include of stdlib ahead of string.h - linux
+		 gcc compiler crapped out otherwise  */
+
 #include "udposix.h"
-#include "gks_implem.h"
+#include <stdlib.h>
 #include <string.h>
-#include <stdlib.h> 
+#include "gks_implem.h"
+#include "cgm/cgm.h"		/* for public, API details */
+#include "cgm/cgm_implem.h"		/* for implementation details */
 
 /* LINTLIBRARY */
 
@@ -180,8 +185,9 @@ gescsetdcsize(ws_id, size)
     xXgksUpdateTrans(ws);
     XgksUpdateWsClip(ws, &(xgks_state.cliprec.rec));
 
-    /* redraw the workstation content */
-    XgksXReDrawWs(ws);
+    /* GIFresize now in ppladd_resize_xgks_window.c */
+    if (ws->ewstype != MO)
+      XgksXReDrawWs(ws);
 
     return OK;
 }

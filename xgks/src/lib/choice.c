@@ -56,7 +56,7 @@
     static char	rcsid[]	= "$Id$";
 #endif
 
-#define DEF_CHO_FONT    "8x13"
+#define DEF_CHO_FONT    "fixed"
 static XFontStruct	*MFontInfo	= (XFontStruct *)NULL;
 
 /*

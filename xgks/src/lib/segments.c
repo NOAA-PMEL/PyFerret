@@ -99,6 +99,10 @@
  * and convenient way of storing and retrieving segment attributes.
  */
 
+/* ****KOB***  THIS ROUTINE WAS TAGGED ALONG W/ FERRET V490, BUT WAS NOT
+   COMPILED NOR TESTED ON OSF OR SOLARIS */
+
+
 /*LINTLIBRARY*/
 
 #include "udposix.h"
@@ -2245,8 +2249,11 @@ XgksDelAllMoSeg(ws)
     for (i = 0; i < SHSIZE; i++) {
 	seg = segtable[i];
 	while (seg != NULL) {
+	/* Bug fix -- XgksDelAssocWs can free a SEG_STATE_PTR
+	   so we get the next pointer before possibly freeing it JS */
+	    SEG_STATE_PTR nextseg = seg->seg_next;
 	    (void) XgksDelAssocWs(seg, ws->ws_id);
-	    seg = seg->seg_next;
+	    seg = nextseg;
 	}
     }
 }

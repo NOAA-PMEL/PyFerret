@@ -115,10 +115,13 @@ typedef struct Xwindow {
 
 /*
  * Type of Metafile:
+ * Added PostScript and GIF types *js* 7/16/97
  */
 typedef enum mf_type {
     MF_GKSM	= 0,
-    MF_CGM
+    MF_CGM,
+    MF_PS,
+    MF_GIF
 }		mf_type;
 
 

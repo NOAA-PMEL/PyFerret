@@ -38,6 +38,27 @@
  *	xXgksInqColourRep():
  */
 
+/* Mod J Davison 7.31.95 to fix bug wherein XGKS attempts to free colors
+ * it has not allocated.  This can be a problem when other applications are 
+ * using private color maps and the pixel value given to free is in the 
+ * private color map.  It happens because XcInit uses sequential values to 
+ * initialize color indices without actually allocating the color.
+ *
+ * Direct mapped color algorithm was incorrect. *js* 12.30.97
+ *
+ * The 7.31.95 fix didn't work for TrueColor displays because the pixel value
+ * could be quite large. Also, even if the color associated with a GKSindex
+ * changed, the color would not be freed until the colormap was full -- this
+ * could cause problems with other applications. New static functions have
+ * been added to solve this problem: addPixelTable, removePixelTable, 
+ * and getPixelTable -- a table of allocated pixels is associated with each
+ * workstations.
+ *
+ * 2.17.98 Modified XgksMaxColours to return MAX_GKS_COLOURS if display is
+ * TrueColor or DirectColor, since the previous algorithm incorrectly 
+ * returned the size of the colormap. 
+ */
+
 /*LINTLIBRARY*/
 
 #include "udposix.h"
@@ -78,9 +99,9 @@
  * value) for visuals with separate RGB palettes:
  */
 #define RGB(map,tbl,color)	(\
-	RED(map, (tbl)->rgb[IRED(map,color)].red) + \
-	GRN(map, (tbl)->rgb[IGRN(map,color)].green) + \
-	BLU(map, (tbl)->rgb[IBLU(map,color)].blue))
+	RED(map, (tbl)->rgb[color].red) + \
+	GRN(map, (tbl)->rgb[color].green) + \
+	BLU(map, (tbl)->rgb[color].blue))
 
 /*
  * Macro for computing the color value (either GKS colour-index or X pixel-
@@ -94,6 +115,55 @@ extern int		XgksSIGIO_OFF();
 extern int		XgksSIGIO_ON();
 
 static unsigned long	MaskToMult();
+extern XVisualInfo *getBestVisual(Display *, int *);
+
+#define MAX_GKS_COLORS 256
+
+#define MAX_TABLES 10		/* Max in Ferret is 8 */
+
+struct {
+  WS_STATE_PTR wstations[MAX_TABLES];
+  int *tables[MAX_TABLES];
+} PixelTable;
+
+static void addPixelTable(WS_STATE_PTR ws)
+{
+  int i;
+  for (i=0; i < MAX_TABLES; ++i){
+    if (PixelTable.wstations[i] == 0)
+      break;
+  }
+  assert(i < MAX_TABLES);
+  PixelTable.wstations[i] = ws;
+  PixelTable.tables[i] = (int *)malloc(sizeof(int)*MAX_GKS_COLORS);
+  memset(PixelTable.tables[i], 0, sizeof(int)*MAX_GKS_COLORS);
+  assert(PixelTable.tables[i]);
+}
+
+static void removePixelTable(WS_STATE_PTR ws)
+{
+  int i;
+  for (i=0; i < MAX_TABLES; ++i){
+    if (PixelTable.wstations[i] == ws)
+      break;
+  }
+  assert(i < MAX_TABLES);
+  PixelTable.wstations[i] = 0;
+}
+
+static int *getPixelTable(WS_STATE_PTR ws)
+{
+  int i;
+  for (i=0; i < MAX_TABLES; ++i){
+    if (PixelTable.wstations[i] == ws)
+      break;
+  }
+  if (i >= MAX_TABLES){
+    return 0;
+  } else {
+    return PixelTable.tables[i];
+  }
+}
 
 
     int
@@ -250,10 +320,13 @@ XcInit(ws, vinfo)
     ToX = &map->ToX;
     ToGKS = &map->ToGKS;
 
-    map->NumEntries = vinfo->colormap_size;
 
+    addPixelTable(ws);
+
+    ws->wscolour = 0;
+    map->NumEntries = XgksMaxColours(ws->wstype);
     if (vinfo->class == TrueColor || vinfo->class == DirectColor) {
-	nbytes = sizeof(XcRGB) * vinfo->colormap_size;
+	nbytes = sizeof(XcRGB) * map->NumEntries;
 
 	map->SeparateRGB = 1;
 	map->red_mask = vinfo->red_mask;
@@ -276,7 +349,7 @@ XcInit(ws, vinfo)
 		register        i;
 
 		/* Initialize mapping table with trivial mapping */
-		for (i = 0; i < vinfo->colormap_size; ++i)
+		for (i = 0; i < map->NumEntries; ++i)
 		    ToX->rgb[i].red
 			= ToX->rgb[i].green
 			= ToX->rgb[i].blue
@@ -317,7 +390,7 @@ XcInit(ws, vinfo)
     } else {					/* single palette */
 	map->SeparateRGB = 0;
 
-	nbytes = sizeof(unsigned long) * vinfo->colormap_size;
+	nbytes = sizeof(unsigned long) * map->NumEntries;
 
 	if ((ToX->color = (unsigned long *) malloc((size_t)nbytes)) == NULL) {
 	    (void) fprintf(stderr,
@@ -333,15 +406,17 @@ XcInit(ws, vinfo)
 		register        i;
 
 		/* Initialize mapping table with trivial mapping */
-		for (i = 0; i < vinfo->colormap_size; ++i)
+		for (i = 0; i < map->NumEntries; ++i)
+		  {
 		    ToX->color[i] = ToGKS->color[i] = i;
+		  }
 
 		/* Set background GKS -> WhitePixel() */
 		ToX->color[0] = WhitePixel(ws->dpy, DefaultScreen(ws->dpy));
 
 		/* Set foreground GKS -> BlackPixel() */
 		ToX->color[1] = BlackPixel(ws->dpy, DefaultScreen(ws->dpy));
-
+	
 		/* Set WhitePixel() -> background GKS */
 		ToGKS->color[ToX->color[0]] = 0;
 
@@ -404,6 +479,18 @@ XcSetColour(ws, GKSindex, GKSrep)
     Xrep.green = 65535 * GKSrep->green;
     Xrep.blue = 65535 * GKSrep->blue;
 
+    /* Free color at this GKS index if already allocated */
+    {
+      int *XGKS_alloc_pixel = getPixelTable(ws);
+      if (XGKS_alloc_pixel[GKSindex] == 1){
+	unsigned long	pixel	= XcPixelValue(ws, GKSindex);
+	unsigned long	planes	= 0;
+	XFreeColors(ws->dpy, ws->dclmp, &pixel, 1, planes);
+	XGKS_alloc_pixel[GKSindex] = 0;
+      }
+    }
+
+
     /*
      * Get the X-server color closest to the desired GKS one and save its
      * color-cell index (i.e. pixel-value) in the table.  Also, set the
@@ -413,21 +500,31 @@ XcSetColour(ws, GKSindex, GKSrep)
 	XcMap          *map = &ws->XcMap;
 	XcTable        *ToX = &map->ToX;
 	XcTable        *ToGKS = &map->ToGKS;
+	int *XGKS_alloc_pixel = getPixelTable(ws);
+
+	/* Pixel successfully allocated by XGKS */
+	XGKS_alloc_pixel[GKSindex] = 1; /* jd */
 
 	if (map->SeparateRGB) {
-	    ToX->rgb[IRED(map, GKSindex)].red
+	  /* Bug fix --  direct mapped colors were incorrectly assigned
+	     an index using IRED() rather than GKSindex *js* */
+	    ToX->rgb[GKSindex].red
 		= (unsigned) IRED(map, Xrep.pixel);
-	    ToX->rgb[IGRN(map, GKSindex)].green
+	    ToX->rgb[GKSindex].green
 		= (unsigned) IGRN(map, Xrep.pixel);
-	    ToX->rgb[IBLU(map, GKSindex)].blue
+	    ToX->rgb[GKSindex].blue
 		= (unsigned) IBLU(map, Xrep.pixel);
 
+	    /* The following code is disabled, as it won't work, and the
+	       the ToGKS array isn't used by Ferret. */
+#if 0
 	    ToGKS->rgb[IRED(map, Xrep.pixel)].red
 		= (unsigned) IRED(map, GKSindex);
 	    ToGKS->rgb[IGRN(map, Xrep.pixel)].green
 		= (unsigned) IGRN(map, GKSindex);
 	    ToGKS->rgb[IBLU(map, Xrep.pixel)].blue
 		= (unsigned) IBLU(map, GKSindex);
+#endif
 	} else {
 	    ToX->color[GKSindex] = Xrep.pixel;
 	    ToGKS->color[Xrep.pixel] = (unsigned long) GKSindex;
@@ -436,22 +533,9 @@ XcSetColour(ws, GKSindex, GKSrep)
 	ReturnStatus = 1;
 
     } else {
-	static int	SecondTry	= 0;	/* second attempt? */
-
-	if (SecondTry) {
-	    (void) fprintf(stderr,
+      (void) fprintf(stderr,
 		    "XcSetColour: Couldn't allocate X color: RGB = %u %u %u.\n",
-			   Xrep.red, Xrep.green, Xrep.blue);
-	} else {
-	    unsigned long	pixel	= XcPixelValue(ws, GKSindex);
-	    unsigned long	planes	= 0;
-
-	    if (XFreeColors(ws->dpy, ws->dclmp, &pixel, 1, planes) == 0) {
-		SecondTry	= 1;
-		ReturnStatus	= XcSetColour(ws, GKSindex, GKSrep);
-		SecondTry	= 0;
-	    }
-	}
+		     Xrep.red, Xrep.green, Xrep.blue);
     }
 
     return ReturnStatus;
@@ -510,6 +594,9 @@ XcPixelValue(ws, ColourIndex)
  *
  * OUTPUT: GKS colour-index corresponding to X pixel-value.  Out-of-range
  *	   X pixel-values are mapped to the nearest GKS colour-index.
+ *
+ * Note: This routine should never be executed, as the direct mapped color
+ * algorithm doesn't work. The assert statement is used to guarantee this.
  */
     Gint
 XcColourIndex(ws, PixelValue)
@@ -519,6 +606,7 @@ XcColourIndex(ws, PixelValue)
     XcMap          *map;		/* color mapping */
     Gint            ColourIndex;	/* returned value */
 
+    assert(0);			/* Disable this routine */
     assert(ws != NULL);
 
     map = &ws->XcMap;
@@ -558,6 +646,7 @@ XcEnd(ws)
     map = &ws->XcMap;
     ToX = &map->ToX;
     ToGKS = &map->ToGKS;
+    removePixelTable(ws); 
 
     if (map->SeparateRGB) {
 	if (ToX->rgb != NULL) {
@@ -580,4 +669,59 @@ XcEnd(ws)
     }
 
     return 1;
+}
+
+/*
+ * find the number of colour table entries supportted by an X server.
+ * returns the number of entries or -1 if the server does not respond.
+ *
+ * Moved from XGKS colours.c to use correct visual when determining number
+ * of available colors
+ */
+XgksMaxColours(server)
+    char           *server;
+{
+    int             i, colours;
+    Display        *dpy;
+    char           *getenv();
+
+
+    /* wait till dpy is known to turn SIGIO off  AIX PORT #d1 */
+
+    /* default server is in the Unix environment */
+    if (server == NULL)
+	server = getenv("DISPLAY");
+
+    /* check for existing connection to this server. */
+    for (i = 0; i < MAX_OPEN_WS; i++) {
+	if (xgks_state.openedws[i].ws_id == INVALID
+		|| xgks_state.openedws[i].ws->ewstype != X_WIN)
+	    continue;
+	if (STRCMP(xgks_state.openedws[i].ws->wstype, server) == 0)
+	    break;
+    }
+    if (i < MAX_OPEN_WS && xgks_state.openedws[i].ws->wscolour > 0) {  
+	dpy = xgks_state.openedws[i].ws->dpy;
+	(void) XgksSIGIO_OFF(dpy);
+	colours = xgks_state.openedws[i].ws->wscolour;
+    } else {					/* build a connection */
+	dpy = XOpenDisplay(server);
+	(void) XgksSIGIO_OFF(dpy);
+	if (dpy == NULL)
+	    return -1;
+	{
+	  int index;
+	  XVisualInfo *visList = getBestVisual(dpy, &index);
+	  XVisualInfo *vinfo = &visList[index];
+	  if (vinfo->class == TrueColor || vinfo->class == DirectColor)
+	    colours = MAX_GKS_COLORS;
+	  else
+	    colours = vinfo->colormap_size;
+	}
+	XCloseDisplay(dpy);
+    }
+
+    (void) XgksSIGIO_ON(dpy);
+
+    return colours;
 }

@@ -20,7 +20,7 @@
  * SOFTWARE.
  *
  *
- * University of Illinois at Urbana-Champaign
+  * University of Illinois at Urbana-Champaign
  * Department of Computer Science
  * 1304 W. Springfield Ave.
  * Urbana, IL	61801
@@ -33,15 +33,32 @@
  * Author: Sung Hsien Ching Kelvin
  * Author: Yu Pan
  *
+ * Mod to GetWindowGeometry to change default window size *jd* 3.21.94
+ * Mod to AllocGroundColors to set background/foreground defaults *jd* 3.21.94
+ * Added WindowMapping to control output window visibility *sh* 16-sep-94
+ *
+ * XGKS doesn't work correctly on non-indexed color displays. So, the quick
+ * fix utilized here is to 1) see if the default visual uses a color table;
+ * if so, use that. 2) If not, we look for the best color table (if any) to
+ * use. If there are no indexed visuals, we're out of luck *js* 7.29.97
+ *
+ * Disabled quick fix listed above due to fix of XGKS code to support 
+ * non-indexed color visuals
+ *
  * XGKS open workstation function
  * Open display wk->conn if necessary, then create and map the workstation 
  * window wk: workstation list pointer return: (0)---- open succeeds (21)-- 
  * open fails .
+ *
+ * 2.17.98 Modified workstation initialization code to use XgksMaxColours
+ * to avoid setting the number of colors used in two places *js* 
+ * 
  */
 
 /*LINTLIBRARY*/
 
 #include "udposix.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <sys/types.h>			/* for uid_t */
 #include <unistd.h>			/* NeXTOS requires that this be */
@@ -70,6 +87,27 @@ static void     AllocGroundColors();
 static void     GetWMHints();
 static void     CreateGC();
 static void     UpdateOpenWSTable();
+
+/* ******** *sh* 16-sep-94 code added for external control of window mapping */
+/* further mods inside xXgksOpenWs */
+
+static int map_that_window=1;  /* static external */
+
+/*
+use WindowMapping(0) for invisible windows; WindowMapping(1) for mapped ones.
+*/
+
+void WindowMapping( map_it )
+int map_it;
+{
+  map_that_window = map_it;
+  return;
+}
+
+/* ******** end of 16-sep-94 code */
+
+
+
 
 /*
  * The following may be changed by applications programs to the name of
@@ -113,9 +151,13 @@ xXgksOpenWs(wk)
 		XWindowAttributes WinAtt;	/* window attributes */
 
 		/* Map window.  Wait for exposure-event. */
-		XMapWindow(wk->dpy, wk->win);
-		XWindowEvent(wk->dpy, wk->win, ExposureMask, &xev);
-		XSync(wk->dpy, 0);
+
+/* *sh* 16-sep-94: bypass this code for invisible, unmapped windows */
+		if ( map_that_window ) {
+		  XMapWindow(wk->dpy, wk->win);
+		  XWindowEvent(wk->dpy, wk->win, ExposureMask, &xev);
+		  XSync(wk->dpy, 0);
+		}
 
 		/* Get size of actual window obtained. */
 		XGetWindowAttributes(wk->dpy, wk->win, &WinAtt);
@@ -183,11 +225,6 @@ InsureConn(wk)
 	    } else {
 		STRCPY(wk->conn, ptr);
 
-		/* Set the screen default colour map ID. */
-		wk->dclmp = DefaultColormap(wk->dpy,
-					    DefaultScreen(wk->dpy));
-		wk->wclmp = wk->dclmp;
-
 		XSelectInput(wk->dpy, DefaultRootWindow(wk->dpy),
 			     0);
 	    }
@@ -240,6 +277,75 @@ BoolResource(prog, name, class, rDB)
     return ison;
 }
 
+XVisualInfo *getBestVisual(Display *dpy, int *index)
+{
+  XVisualInfo *visualList;
+  XVisualInfo     visualTemplate;
+  int numMatched;
+
+  /* Try default visual first */
+  visualTemplate.screen = DefaultScreen(dpy);
+  visualTemplate.visualid =
+    XVisualIDFromVisual(DefaultVisual(dpy, DefaultScreen(dpy)));
+  visualList =
+    XGetVisualInfo(dpy, VisualScreenMask | VisualIDMask, &visualTemplate,
+		   &numMatched);
+  *index = 0;
+  return visualList;
+}
+
+
+/* getBestVisual has been deprecated, due to fix of direct mapped color
+   problems
+*/
+#if 0
+static int VisualsToUse[] = {
+  PseudoColor, StaticColor, GrayScale, StaticGray
+};
+
+static XVisualInfo *getBestVisual(Display *dpy, int *index)
+{
+  XVisualInfo *visualList;
+  XVisualInfo     visualTemplate;
+  int numMatched;
+
+  /* Try default visual first */
+  visualTemplate.screen = DefaultScreen(dpy);
+  visualTemplate.visualid =
+    XVisualIDFromVisual(DefaultVisual(dpy, DefaultScreen(dpy)));
+  visualList =
+    XGetVisualInfo(dpy, VisualScreenMask | VisualIDMask, &visualTemplate,
+		   &numMatched);
+  *index = 0;
+
+  if (visualList == NULL || visualList->class == TrueColor ||
+      visualList->class == DirectColor){	/* Plan B -- get best supported visual */
+    int class, i;
+    visualList = NULL;
+    for (i=0; i < sizeof(VisualsToUse)/sizeof(int); ++i){
+      visualTemplate.class = VisualsToUse[i];
+      visualList =
+	XGetVisualInfo(dpy,VisualScreenMask | VisualClassMask,
+		       &visualTemplate, &numMatched);
+      if (visualList != NULL)
+	break;
+    }
+    if (visualList){
+      /* Get deepest visual */
+      int j;
+      int maxDepth = -1;
+      for (j=0; j < numMatched; ++j){
+	if (visualList[j].depth > maxDepth){
+	  maxDepth = visualList[j].depth;
+	}
+      }
+      assert(maxDepth > 0);
+      *index = i;
+    }
+  }
+  return visualList;
+}
+#endif
 
 /*
  * Create an XGKS window -- with all its associated attributes.
@@ -255,21 +361,31 @@ CreateWindow(name, rDB, wk)
     Display        *dpy = wk->dpy;	/* for convenience */
     XSizeHints      SizeHints;		/* window size hints */
     XSetWindowAttributes xswa;		/* window attributes */
-    XVisualInfo     VisualTemplate;
-    XVisualInfo    *VisualList;
+    XVisualInfo    *VisualList, *theVisual;
+    int visualIndex;
 
-    /* Initialize color-mapping. */
-    wk->wscolour = DisplayCells(dpy, DefaultScreen(dpy));
+
+    VisualList = getBestVisual(dpy, &visualIndex);
+    
     /* size of colour map */
-    VisualTemplate.screen = DefaultScreen(dpy);
-    VisualTemplate.visualid =
-	DefaultVisual(dpy, DefaultScreen(dpy))->visualid;
-    if ((VisualList = XGetVisualInfo(dpy, VisualScreenMask | VisualIDMask,
-				     &VisualTemplate, &NumMatched)) == NULL ||
-	    !XcInit(wk, VisualList)) {
-
-	status = 26;
+    if (VisualList == NULL || !XcInit(wk, &VisualList[visualIndex])) {
+      fprintf(stderr, "Ferret cannot run on this X server\n");
+      exit(1);
     } else {
+      theVisual = &VisualList[visualIndex];
+      /* Set the screen default colour map ID. */
+      if (theVisual->visual == DefaultVisual(wk->dpy, DefaultScreen(wk->dpy))){
+	wk->dclmp = DefaultColormap(wk->dpy,
+				    DefaultScreen(wk->dpy));
+      } else {
+	wk->dclmp = XCreateColormap(wk->dpy, DefaultRootWindow(wk->dpy),
+				    theVisual->visual, AllocNone);
+      }
+    /* Initialize color-mapping. */
+      wk->wscolour = 0;
+      wk->wscolour = XgksMaxColours(wk->wstype);
+      wk->wclmp = wk->dclmp;
+
 	/*
 	 * Get foreground and background colors (and set them in the
 	 * colormap).
@@ -319,8 +435,8 @@ CreateWindow(name, rDB, wk)
 				     (int) SizeHints.x, (int) SizeHints.y,
 			      (int) SizeHints.width, (int) SizeHints.height,
 				     5,		/* border width */
-				     DefaultDepth(dpy, DefaultScreen(dpy)),
-			InputOutput, DefaultVisual(dpy, DefaultScreen(dpy)),
+				     VisualList[visualIndex].depth,
+			InputOutput, VisualList[visualIndex].visual,
 	    (unsigned long) (CWDontPropagate | CWBackPixel | CWBorderPixel |
 	     CWEventMask | CWColormap | CWBackingStore), &xswa)) == False) {
 
@@ -374,9 +490,10 @@ CreateWindow(name, rDB, wk)
 	}					/* window created */
     }						/* color-mapping initialized */
 
-    if (VisualList != NULL)
-	XFree((char *) VisualList);
-
+    if (VisualList != NULL){
+      XFree((char *)VisualList);
+    }
+	
     return status;
 }
 
@@ -435,6 +552,7 @@ GetWindowGeometry(name, dpy, rDB, SizeHints)
     char            buf[1024];
     char           *str_type[20];
     XrmValue        value;
+    float           xf, yf;
 
     SizeHints->flags = 0;
 
@@ -442,8 +560,16 @@ GetWindowGeometry(name, dpy, rDB, SizeHints)
      * Set to program-specified values and then override with any
      * user-specified values.
      */
-    SizeHints->width = 640;
-    SizeHints->height = 512;
+
+    xf = ((float) DisplayWidth(dpy, DefaultScreen(dpy))) / ((float) DisplayWidthMM(dpy, DefaultScreen(dpy)));
+
+    yf = ((float) DisplayHeight(dpy, DefaultScreen(dpy)))/((float) DisplayHeightMM(dpy, DefaultScreen(dpy)));
+
+    /* Size window to (10.2,8.8)*sqrt(0.7) inches */
+
+    SizeHints->width  = xf * 8.533932 * 25.4; /* was 640 */
+    SizeHints->height = yf * 7.362608 * 25.4; /* was 512 */
+
     SizeHints->x = (DisplayWidth(dpy, DefaultScreen(dpy)) -
 		    SizeHints->width) >> 1;
     SizeHints->y = (DisplayHeight(dpy, DefaultScreen(dpy)) -
@@ -511,6 +637,18 @@ AllocGroundColors(wk, name, rDB, fg, bg)
     /*
      * Set XGKS background color.
      */
+
+    if (1) /* Set background to white by default */ {
+
+	    Gcobundl        GKSrep;
+
+	    GKSrep.red   = 1.0;
+	    GKSrep.green = 1.0;
+	    GKSrep.blue  = 1.0;
+
+	    (void) XcSetColour(wk, (Gint) 0, &GKSrep);
+	}
+/*
     if (XrmGetResource(rDB, strcat(strcpy(buf, name), ".background"),
 		       "Xgks.Background", str_type, &value) == True) {
 
@@ -534,9 +672,25 @@ AllocGroundColors(wk, name, rDB, fg, bg)
 			   " not known.  Using default.");
 	}
     }
+*/
+
     /*
      * Set XGKS foreground color.
      */
+
+
+    if (1) /* Set foreground to black by default */ {
+
+	    Gcobundl        GKSrep;
+
+	    GKSrep.red   = 0.0;
+	    GKSrep.green = 0.0;
+	    GKSrep.blue  = 0.0;
+
+	    (void) XcSetColour(wk, (Gint) 1, &GKSrep);
+	}
+
+/*
     if (XrmGetResource(rDB, strcat(strcpy(buf, name), ".foreground"),
 		       "Xgks.Foreground", str_type, &value) == True) {
 
@@ -560,6 +714,7 @@ AllocGroundColors(wk, name, rDB, fg, bg)
 			   " not known.  Using default.");
 	}
     }
+*/
 }
 
 

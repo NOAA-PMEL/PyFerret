@@ -1,6 +1,7 @@
 # $Id$
 #
 # Makefile for the "demonstration programs" subdirectory of the XGKS package.
+# add tmapadds object files for linking *kob* 9/98
 
 DEFINES		=
 CPP_X11		= @CPP_X11@
@@ -13,12 +14,15 @@ FSRCS		= gksdemo.f star.f
 SHELL		= /bin/sh
 #LD_SOCKET	= @LD_SOCKET@
 LD_X11		= @LD_X11@
-LIBS		= -L../src/lib -lxgks \
+LIBS		= -L$(LIBDIR) -lxgks \
+		  -L../src/lib -lxgks \
 		  -L../port -ludport \
-		  -L$(LIBDIR) -lxgks \
 		  $(LD_X11) \
 		  $(LD_SOCKET) \
-		  -lm
+		  -lm \
+		  ../../ppl/tmapadds/ps.o \
+		  ../../ppl/tmapadds/gif.o \
+		  ../../ppl/tmapadds/gd*.o 
 
 #	The following list is a subset of the XGKS programs contained
 #	in the original X11R4 distribution.  IMHO, it contains the 

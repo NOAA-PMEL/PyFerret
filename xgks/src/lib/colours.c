@@ -422,6 +422,8 @@ loadcache(dpy, index)
  * find the number of colour table entries supportted by an X server.
  * returns the number of entries or -1 if the server does not respond.
  */
+/*  commenting out this version of the XgksMaxColours routine.  It has been 
+    moved to the x/xcolours.c routine for TMAP/Ferret purposes. 
 XgksMaxColours(server)
     char           *server;
 {
@@ -430,13 +432,13 @@ XgksMaxColours(server)
     char           *getenv();
 
 
-    /* wait till dpy is known to turn SIGIO off  AIX PORT #d1 */
+    wait till dpy is known to turn SIGIO off  AIX PORT #d1 
 
-    /* default server is in the Unix environment */
+    /* default server is in the Unix environment 
     if (server == NULL)
 	server = getenv("DISPLAY");
 
-    /* check for existing connection to this server. */
+    /* check for existing connection to this server. 
     for (i = 0; i < MAX_OPEN_WS; i++) {
 	if (xgks_state.openedws[i].ws_id == INVALID
 		|| xgks_state.openedws[i].ws->ewstype != X_WIN)
@@ -444,11 +446,11 @@ XgksMaxColours(server)
 	if (STRCMP(xgks_state.openedws[i].ws->wstype, server) == 0)
 	    break;
     }
-    if (i < MAX_OPEN_WS) {			/* found a connection */
+    if (i < MAX_OPEN_WS) {			/* found a connection
 	dpy = xgks_state.openedws[i].ws->dpy;
 	(void) XgksSIGIO_OFF(dpy);
 	colours = DisplayCells(dpy, DefaultScreen(dpy));
-    } else {					/* build a connection */
+    } else {					/* build a connection 
 	dpy = XOpenDisplay(server);
 	(void) XgksSIGIO_OFF(dpy);
 	if (dpy == NULL)
@@ -461,3 +463,4 @@ XgksMaxColours(server)
 
     return colours;
 }
+    */

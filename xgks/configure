@@ -110,9 +110,9 @@ case $srcdir in
   .|/*|~*) ;;
   *) srcdir=`cd $srcdir; pwd` ;; # Make relative path absolute.
 esac
- if [ -r CUSTOMIZE ]; then
-  echo reading configuration customizations
-  . ./CUSTOMIZE
+ if [ -r CUSTOMIZE.$HOSTTYPE ]; then
+  echo reading configuration customizations from file CUSTOMIZE.$HOSTTYPE
+  . ./CUSTOMIZE.$HOSTTYPE
 fi
     for arg in udposix.h.in; do
     case "$PORT_MANIFEST" in

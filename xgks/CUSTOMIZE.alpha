@@ -22,11 +22,11 @@
 # CC='gcc -traditional'
 #
 # C compiler flags (default is `-O'):
-  CFLAGS="-I../../ppl/include/xgks -I../../../ppl/include/xgks/ -I/home/r3/tmap/local/osf/src/xgks-2.5.5/port -I/home/r3/tmap/local/osf/src/xgks-2.5.5/src/lib -I/home/r3/tmap/local/osf/src/xgks-2.5.5/src/lib/gksm -g -O"
+  CFLAGS="-I../../ppl/include/xgks -I../../../ppl/include/xgks/ -g -O"
 #
 # C preprocessor flags (default is `-DNDEBUG'):
 # CPPFLAGS=-DDEBUG
 #
 # Installation prefix (default is `../..'):
 #  prefix=/home/e1/tmap/local/osf
-  prefix=../lib
+  prefix=..

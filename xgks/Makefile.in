@@ -21,7 +21,7 @@ MANIFEST        = COPYRIGHT CUSTOMIZE HISTORY INSTALL MANIFEST \
 
 all::		port/all port/install src/all fontdb/all progs/all doc/all
 
-install::	src/install fontdb/install progs/install doc/install
+install::	src/install fontdb/install 
 
 clean::		port/clean \
 		src/clean fontdb/clean progs/clean doc/clean

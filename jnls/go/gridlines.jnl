@@ -1,0 +1,41 @@
+\cancel mode verify  
+
+!**************************************************************
+! Description: plot over the grid of a plot 
+!
+! Example: use levitus_climatology
+!          shade/lev=25 temp[k=1]
+!          go land
+!          go gridlines 30        ! for graticules every 30 degrees
+!
+!         go gridlines 20 1
+!          will plot every 20 on the physical xaxis a vertical bar
+!          made of line of 1% of the physical yaxis
+!      and will plot every 20 on the physical yaxis a horizontal bar
+!          made of line of 1% of the physical xaxis
+!
+!
+! Notes: default hdelta and vdelta are 1%       
+!
+! Calls: go xgridlines
+!        go ygridlines
+!
+! Author: Patrick Brockmann
+! Contact: brock@lsce.saclay.cea.fr
+!
+! Creation: Sept 2000
+! Version: 1.0
+! History:
+! Modification:
+!
+!**************************************************************
+
+query/ignore $1%<Usage: go gridlines hdelta [vdelta]%
+
+go xgridlines $1 $2%1%
+go ygridlines $1 $2%1%
+
+!**************************************************************
+set mode/last verify
+
+

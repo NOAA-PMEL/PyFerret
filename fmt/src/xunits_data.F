@@ -60,6 +60,7 @@
 *                  gregorian_year
 * *sh* 12/99 - add "degree" as an alternate name since exact match is now
 *	required on names
+* V510: 3/00 *sh* - added "minute" and "month"
 
 * local variable declarations
 !	INTEGER	i
@@ -178,11 +179,11 @@
      .		un_alt_name (15) / 'degree'	/,
      .		un_alt_subsc(15) / pun_degrees /,
      .
-     .		un_alt_name (16) / char_init12	/,
-     .		un_alt_subsc(16) / 0 /,
+     .		un_alt_name (16) / 'month'	/,
+     .		un_alt_subsc(16) / -5 /,
      .
-     .		un_alt_name (17) / char_init12	/,
-     .		un_alt_subsc(17) / 0 /,
+     .		un_alt_name (17) / 'minute'	/,
+     .		un_alt_subsc(17) / -2 /,
      .
      .		un_alt_name (18) / char_init12	/,
      .		un_alt_subsc(18) / 0 /,

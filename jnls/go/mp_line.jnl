@@ -35,7 +35,7 @@ query/ignore $3%<Specify all arguments: plot_command xpos ypos%
 define region/default save
 
 let/quiet mp_central_meridian = `mp_central_meridian`
-let/quiet mp_standard_paralell = `mp_standard_paralell`
+let/quiet mp_standard_parallel = `mp_standard_parallel`
 
 
 ! Cancel the region because the I index info is used to restrict

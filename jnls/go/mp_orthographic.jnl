@@ -9,7 +9,7 @@
 ! Description:  Sets up variables for a Orthographic map of the world
 !
 ! Usage:                    arg1             arg2
-!  go mp_orthographic central_meridian standard_paralell
+!  go mp_orthographic central_meridian standard_parallel
 !
 ! arg 1 - longitude used for the center of the projection
 ! arg 2 - latitude used for the center of the projection
@@ -41,7 +41,7 @@ let/quiet mp_x = x
 let/quiet mp_y = y
 
 let/quiet mp_central_meridian = $1
-let/quiet mp_standard_paralell = $2
+let/quiet mp_standard_parallel = $2
 
 let/quiet Pi = 3.14159265
 let/quiet deg2rad = Pi / 180.0
@@ -51,7 +51,7 @@ let/quiet mp_k0 = 1
 let/quiet mp_lambda0 = mp_central_meridian * deg2rad
 let/quiet mp_lambda = mp_x * deg2rad
 let/quiet mp_phi = mp_y * deg2rad
-let/quiet mp_phi1 = mp_standard_paralell * deg2rad
+let/quiet mp_phi1 = mp_standard_parallel * deg2rad
 
 let/quiet mp_bigK = 1
 let/quiet mp_cos_z = sin(mp_phi1)*sin(mp_phi) + cos(mp_phi1)*cos(mp_phi)*cos(mp_lambda-mp_lambda0)                    ! eqn (112)

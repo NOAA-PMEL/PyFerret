@@ -77,14 +77,14 @@ let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
 if `mp_test eq 0` then
    let/quiet mp_central_meridian = `(mp_x[i=@max] + mp_x[i=@min])/2`
 endif
-let/quiet mp_test = `mp_standard_paralell` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
 if `mp_test eq 0` then
-   let/quiet mp_standard_paralell = `(mp_y[j=@max] + mp_y[j=@min])/2`
+   let/quiet mp_standard_parallel = `(mp_y[j=@max] + mp_y[j=@min])/2`
 endif
 cancel variable mp_test
 
-let/quiet mp_std_paralell_north = `mp_y[j=@max]`
-let/quiet mp_std_paralell_south = `mp_y[j=@min]`
+let/quiet mp_std_parallel_north = `mp_y[j=@max]`
+let/quiet mp_std_parallel_south = `mp_y[j=@min]`
 
 !
 ! Now for the appropriate latitude lines:
@@ -146,13 +146,13 @@ let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
 if `mp_test eq 0` then
    let/quiet mp_central_meridian = (mp_x[i=@max] + mp_x[i=@min])/2
 endif
-let/quiet mp_test = `mp_standard_paralell` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+let/quiet mp_test = `mp_standard_parallel` - `(mp_y[j=@max] + mp_y[j=@min])/2`
 if `mp_test eq 0` then
-   let/quiet mp_standard_paralell = (mp_y[j=@max] + mp_y[j=@min])/2
+   let/quiet mp_standard_parallel = (mp_y[j=@max] + mp_y[j=@min])/2
 endif
 cancel variable mp_test
-let/quiet mp_std_paralell_north = mp_y[j=@max]
-let/quiet mp_std_paralell_south = mp_y[j=@min]
+let/quiet mp_std_parallel_north = mp_y[j=@max]
+let/quiet mp_std_parallel_south = mp_y[j=@min]
 let/quiet mp_lambda = mp_x * deg2rad
 let/quiet mp_phi = mp_y * deg2rad
 

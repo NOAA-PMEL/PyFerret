@@ -9,7 +9,7 @@
 ! Description:  Sets up variables for a Eckert III map of the world
 !
 ! Usage:                   arg1               arg2
-!  go mp_eckert_iii [central meridian] [standard paralell]
+!  go mp_eckert_iii [central meridian] [standard parallel]
 !
 ! arg 1 - longitude used for the center of the projection
 ! arg 2 - latitude used for the center of the projection
@@ -28,7 +28,7 @@
 !  go mp_eckert_iii
 !  set grid sst
 !  shade sst[l=1], x_page, y_page
-!  go mp_eckert_iii `mp_central_meridian` `mp_standard_paralell`
+!  go mp_eckert_iii `mp_central_meridian` `mp_standard_parallel`
 !  set region/x=40e:110e/y=60s:20s
 !  shade/over slp[l=1], x_page, y_page
 !
@@ -44,15 +44,15 @@
 ! Equation numbers refer to the equation number in this book.
 
 if `$2%0% gt 90` then
-    query/ignore $3"<The standard paralell must be between -90 and 90"
+    query/ignore $3"<The standard parallel must be between -90 and 90"
 elif `$2%0% lt (-90)` then
-    query/ignore $3"<The standard paralell must be between -90 and 90"
+    query/ignore $3"<The standard parallel must be between -90 and 90"
 endif
 
 let/quiet mp_x = x
 let/quiet mp_central_meridian = $1%(mp_x[i=@max] + mp_x[i=@min])/2%
 let/quiet mp_y = y
-let/quiet mp_standard_paralell = $2%(mp_y[j=@max] + mp_y[j=@min])/2%
+let/quiet mp_standard_parallel = $2%(mp_y[j=@max] + mp_y[j=@min])/2%
 
 let/quiet Pi = 3.14159265
 let/quiet deg2rad = Pi / 180.0

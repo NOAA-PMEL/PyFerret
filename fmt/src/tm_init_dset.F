@@ -89,6 +89,7 @@
 *      *acm*  5/02  When extension not specified, try .nc as well as .des, .cdf
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * 4/03 *acm* - Use STR_SAME to compare strings
+* 5/03 *acm* - Compare ds_name to char_init256 as that is its length...
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -297,7 +298,7 @@
 
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 110 set_cnt = 1,maxdsets
-	  IF (ds_name(set_cnt) .EQ. char_init40) THEN
+	  IF (ds_name(set_cnt) .EQ. char_init256) THEN
 	    dset_num = set_cnt
 	    ds_des_name(dset_num) = des_name
             ds_name(dset_num) = TM_CLEAN_FILENAME( dset_name )

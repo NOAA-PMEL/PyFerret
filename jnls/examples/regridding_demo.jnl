@@ -111,11 +111,11 @@ message
 SHOW GRID/Y=1N:5N sst[d=esku_heat_budget] sst[d=coads_climatology]
 message
 
-! Now we will use "g=coads1" to regrid the Esbensen-Kushnir sst to the (finer)
-! COADS grid ("coads1" is from the  SHOW GRID output just past).
-! And shade the difference field using a zero-centered color palette.
+! Now we will use the grid from the COADS data set to regrid the 
+! Esbensen-Kushnir sst to the (finer) COADS grid. And shade the difference 
+! field using a zero-centered color palette.
 
-LET DIFF = sst[d=esku_heat_budget,g=coads1] - sst[d=coads_climatology]
+LET DIFF = sst[d=esku_heat_budget,g=sst[d=coads_climatology]] - sst[d=coads_climatology]
 SHADE/T="15-JAN"/LEVELS=(-3,3,0.5) diff
 GO rgb_centered
 GO land

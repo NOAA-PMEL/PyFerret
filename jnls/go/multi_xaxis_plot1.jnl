@@ -1,0 +1,78 @@
+\cancel mode verify
+! multi_xaxis_plot1.jnl
+
+! Description: Draw a plot formatted for later overlays using multiple X axes
+
+! This is the [optional] initialization routine for multi_xaxis_overlay
+
+! replaced 'GO magnify 1' with pertinent lines of magnify.jnl (problem
+! with state of mode verify) 11/93
+
+! usage:
+!  GO multi_xaxis_plot1 expression [#_overlays_below_axis]
+! 1		FERRET expression to be plotted
+! 2 optional:	#_overlays_below_axis  0 or positive (# of overlays to follow)
+
+!  example 1: temp, salt, and u with X axes stacked **above** the original
+!	yes? SET REGION/Z=0:500
+!	yes? GO multi_xaxis_plot1 temp
+!	yes? GO multi_xaxis_overlay salt 1	! new axis drawn above original
+!	yes? GO multi_xaxis_overlay    u 2
+
+!  example 2: temp, salt, and u with X axes stacked **below** the original
+!	yes? SET REGION/Z=0:500
+!	yes? GO multi_xaxis_plot1 temp 2    	! 2 plots follow w/ axes below
+!	yes? GO multi_xaxis_overlay salt 1 "-"  ! "-" -> below axis overlay 
+!	yes? GO multi_xaxis_overlay    u 2 "-"
+
+! Note that a non-zero value for #_overlays_below_axis will alter the Y
+!	plot origin and Y axis length.  Use SET VIEWPORT, CANCEL VIEWPORT,
+!	or PPL/RESET to restore axis positions following this plot
+
+! reset axis sizes and positions
+!GO magnify 1
+ppl origin 1.2, 1.4
+ppl set tmpx 'vp_width' - 2.2
+ppl set tmpy 'vp_height' - 2.8
+ppl axlen 'tmpx','tmpy'
+
+! initialize  (FERRET initializes PLOT+ through "plot/set")
+ppl set axov_number 1
+ppl set axov_ypos 0
+ppl set axov_spacing 0.9		! space between axes
+plot/set $1
+
+! shift X axis up to allow room for other axes below
+ppl set axov_yoffset 'axov_spacing' * $2"0"
+ppl set tmp 'ppl$yorg' + 'axov_yoffset'
+ppl origin ,'tmp'
+ppl set tmp 'ppl$ylen' - 'axov_yoffset'
+ppl axlen ,'tmp'
+
+! reinitialize PLOT+ with shifted origin and axis length
+ppl nlines
+plot/set $1
+ppl set axov_midpoint 'ppl$xlen' / 2.0
+ppl set axov_ylabpos 'axov_ypos' - 0.55
+ppl set axov_xlabpos 'axov_midpoint' - 1.2
+ppl set axov_aline_start 'axov_midpoint' - 2.9
+ppl set axov_aline_end 'axov_midpoint' - 1.4
+ppl set axov_aline_ypos 'axov_ypos' - 0.50
+
+! no title (interferes with axes below)
+ppl title
+
+! use this labelling scheme to get good black and white hard copy
+ppl xlab
+ppl labs/nouser 2,'axov_xlabpos','axov_ylabpos',-1 @AS'labtit'
+ppl hlabs 2,0.12
+
+! use this labelling scheme instead for color devices
+!ppl xlab @P'axov_pen'@AS'labtit'
+
+! draw the plot
+ppl pen 1,1
+ppl plot
+ppl aline/nouser 1,'axov_aline_start','axov_aline_ypos','axov_aline_end','axov_aline_ypos'
+
+set mode/last verify

@@ -1,0 +1,65 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_orthographic.jnl --  Sets up variables for a Orthographic projection using
+!                  'curvilinear coordinates' code in Ferret v4.50
+!		    		
+! Jonathan Callahan
+! 5/97
+
+! Description:  Sets up variables for a Orthographic map of the world
+!
+! Usage:                    arg1             arg2
+!  go mp_orthographic central_meridian standard_paralell
+!
+! arg 1 - longitude used for the center of the projection
+! arg 2 - latitude used for the center of the projection
+
+! Example:
+!  use coads_climatology 
+!  go mp_orthographic 300 45
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+
+! This journal file comes from equations in the following book:
+!
+!    An Album of Map Projections
+!    U.S. Geological Survey
+!    Professional Paper 1453
+!
+! Equation numbers refer to the equation number in this book.
+
+query/ignore $1"<Please supply a longitude and latitude:    go mp_orthographic 300 45"
+query/ignore $2"<Please supply a longitude and latitude:    go mp_orthographic 300 45"
+
+if `$2 gt 90` then
+	query/ignore $3"<The latitude must be between -90 and 90"
+elif `$2 lt (-90)` then
+	query/ignore $3"<The latitude must be between -90 and 90"
+endif
+
+let/quiet mp_x = x
+let/quiet mp_y = y
+
+let/quiet mp_central_meridian = $1
+let/quiet mp_standard_paralell = $2
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet mp_R = 1
+let/quiet mp_k0 = 1
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+let/quiet mp_phi1 = mp_standard_paralell * deg2rad
+
+let/quiet mp_bigK = 1
+let/quiet mp_cos_z = sin(mp_phi1)*sin(mp_phi) + cos(mp_phi1)*cos(mp_phi)*cos(mp_lambda-mp_lambda0)                    ! eqn (112)
+
+let/quiet x_page = mp_R * mp_bigK * cos(mp_phi) * sin(mp_lambda-mp_lambda0)                                    ! eqn (114)
+let/quiet y_page = mp_R * mp_bigK * ( cos(mp_phi1)*sin(mp_phi) - sin(mp_phi1)*cos(mp_phi)*cos(mp_lambda-mp_lambda0) )   ! eqn (115)
+
+let/quiet mp_mask = if mp_cos_z ge 0 then 1 
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

@@ -1,0 +1,26 @@
+\can mode verify
+! Description: Set up for two viewports on an 8.5 x 11 page
+message/continue .....
+message/continue The viewports are sized to fit well on an 8 1/2 x 11 page
+message/continue Viewport names are: bot2,top2
+message/continue Use "SET VIEWPORT bot2" to select the bottom half, etc.
+message/continue Use CANCEL VIEWPORT and PPL/RESET to restore default graphics
+message/continue For hard copy use the "-p portrait" option with mtp
+message/continue .....
+
+
+ppl/reset
+set window/aspect=1.3  ! 11.5/2 x 8.5
+
+\set mode verify
+\! define viewports
+
+define view/xlimits=0,1/ylimits=.47,1 top2
+define view/xlimits=0,1/ylimits=0,.53 bot2
+
+\message/continue .....
+\message/continue To decrease the amount of "dead space" in the plot,
+\message/continue simply modify the ylimits as defined above so
+\message/continue that the viewports slightly overlap each other
+\message/continue .....
+

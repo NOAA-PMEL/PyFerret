@@ -1,0 +1,106 @@
+\cancel mode verify
+
+! Description: show some styles of plots with multiple dependent axes
+
+cancel viewports
+set data levitus_climatology
+set window/aspect=.6/size=0.6
+set mode verify
+alias WAITING MESSAGE
+
+! **********   MULTIPLE-VARIABLE PLOTTING TOOLS  *************
+
+! This demonstration will introduce some options for multi-variable plotting
+! using separate axes for each variable on the plot
+
+! As the demonstration runs please continue to read the text on the screen.
+! You will see exactly the commands that are controlling the FERRET program.
+! Lines that begin with "!" are comment lines - for your information only.
+
+! ********************************************************************
+WAITING
+
+! FIRST, THE DEFAULT FOR FERRET - VARIABLES SHARING THE SAME Y AXIS
+! No special tools are required for these plots.  For example,
+
+set region/y=0/z=0/x=130e:80w 				! a line in X
+plot temp[z=0], temp[z=50], temp[z=100], temp[z=200]
+
+waiting
+
+! * A COMMON REQUIREMENT - 2 VARIABLES WITH DIFFERENT AXES
+!   An attractive and simple style is to locate 2 axes left and right
+
+set region/y=0/z=0/x=130e:80w     ! line in X
+go left_axis_plot temp
+go right_axis_plot salt
+
+waiting
+
+! ** QUICK AND DIRTY - NO ADVANCE PLANNING
+!    Use this if one variable has already been plotted and you want
+!    to overlay additional variables quickly using new Y axes
+
+let dens = rho_un(salt,temp,0) - 1000
+set region/y=0/z=0/x=130e:80w	! line in X
+plot temp			! quick and dirty plot
+go multi_yaxis_overlay	salt	! quick and dirty multi-axis overlay
+go multi_yaxis_overlay	dens 2	! "2" indicating a second overlay
+
+waiting
+
+! ** ... WITH JUST A LITTLE PLANNING:
+!   we can set up several variables more attractively
+
+set region/y=0/z=0/x=130e:80w		! line in X
+go multi_yaxis_plot1 temp 2		! "2" variables to follow
+go multi_yaxis_overlay salt 1 "-"	! overlay #1 left of axis ("-")
+go multi_yaxis_overlay dens 2 "-"	! overlay #2 left of axis ("-")
+
+waiting
+
+! ** ... SIMILARLY ...
+! ** 3 variables using differing X axes
+
+set window/aspect=1.5
+set region/y=0/x=160e/Z=0:500		! line in Z
+let dens = rho_un(salt,temp,0) - 1000
+go multi_xaxis_plot1 temp 2		! "2" variables to follow
+go multi_xaxis_overlay salt 1 "-"	! overlay #1 below axis ("-")
+go multi_xaxis_overlay dens 2 "-"	! overlay #2 below axis ("-")
+
+waiting
+
+! ** CUSTOM CONTROLS:
+! for detailed customization of these plots additional arguments are
+! provided.  The arguments are documented in the files multi_xaxis_overlay.jnl,
+! etc.  Here is a quick example in which customizations are applied to
+! axis scaling, axis labels, axis spacing, tic label sizes, and tic spacing
+
+set window/aspect=.6
+set region/y=0/z=0/x=130e:80w		! line in X
+let dens = rho_un(salt,temp,0) - 1000
+go multi_yaxis_plot1 temp 3 "0.21  @CRPlot With Customized Axes"
+go multi_yaxis_overlay salt 1 "-" "33,36,0.5" "My Salinity" 0.25 1.5
+go multi_yaxis_overlay dens 2 "-" " " @CI"Density" .3 1.5  ",1,,,.13,(1PG10.3)"
+
+waiting
+
+set window/aspect=0.8
+! *** MULTI-VARIAABLE PLOT STYLES INSIDE VIEWPORTS
+
+set view ul			! upper left
+set region/y=0/z=0/x=130e:80w
+plot temp[z=0], temp[z=50]
+set view ur			! upper right
+go left_axis_plot temp "Double Variable Plot"
+go right_axis_plot salt
+set view ll			! lower left
+let dens = rho_un(salt,temp,0) - 1000
+go multi_yaxis_plot1 temp 1
+go multi_yaxis_overlay salt 1 "-"
+set view lr			! lower right
+set region/x=160E/y=0/z=0:200
+go multi_xaxis_plot1 temp 1
+go multi_xaxis_overlay salt 1 "-"
+

@@ -1,0 +1,37 @@
+\cancel mode verify
+
+! Description: demonstrates log plots using PLOT+ in FERRET
+
+cancel viewports
+set window/size=.75/aspect=1.2
+set mode verify
+
+! the command PPL AXTYPE xax,yax controls plot type:  
+!   type=1 - linear, type=2 - log
+
+ppl axtype 1,1     ! reset to normal linear plots
+
+! example 1: Y axis as log axis
+set view upper
+plot/x=1:100 exp(-1*x/5)
+
+set view lower
+ppl axtype 1,2
+plot/x=1:100 exp(-1*x/5)
+
+message
+set window/clear
+ppl axtype 1,1     ! reset to normal linear plots
+
+! example 2: X axis as log axis
+! note that the axis limits are interpreted as powers of 10 in this case!!
+set view upper
+plot/x=1:100 sin(x/6)
+
+set view lower
+ppl axtype 2
+plot/x=1:100/xlimits=0:2 sin(x/6)
+
+! cleanup
+ppl axtype 1,1
+

@@ -1,0 +1,12 @@
+\cancel mode verify      ! ... now setting window to 11 x 8 1/2 size
+! Description: Set up for 11 x 8.5 page
+message/continue .....
+message/continue Use PPL/RESET to restore default graphics
+message/continue .....
+
+!ppl size 11,8.5
+!ppl axlen 8.8,5.7	! x axis has 2.2 inches space.  y axis has 2.8 inches
+
+set wind/asp=.8	! adjust screen size - immediate redraw
+
+set mode/last verify

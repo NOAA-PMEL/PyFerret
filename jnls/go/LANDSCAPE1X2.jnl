@@ -1,0 +1,16 @@
+\cancel mode verify      ! ... now defining 2 viewports vertically
+! Description: Set up for 2 viewports placed horizontally on an 11 x 8.5 page
+message/continue .....
+message/continue The viewports are sized to fit well on an 8 1/2 x 11 page
+message/continue Use "SET VIEWPORT upper"  to select the upper, etc.
+message/continue Use CANCEL VIEWPORT and PPL/RESET to restore default graphics
+message/continue .....
+
+! The sizing is to fill a landscape 8 1/2 x 11 page.
+! use pre-defined viewports
+
+ppl/reset
+set window/aspect=0.8	
+
+
+set mode/last verify

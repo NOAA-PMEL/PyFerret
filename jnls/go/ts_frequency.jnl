@@ -1,0 +1,91 @@
+\cancel mode verify
+! ts_frequency.jnl - *sh* 8/94
+! 2/95 - *sh* fixed bugs from points out of range showing up inside plot
+
+! Description: produce a TS frequency "histogram"
+! i.e. on a 2D plot with axes of temp and salt display the number of
+! grid points within that temp/salt grid box range
+
+! The procedure gives a choice of plotting numbers of grid cells in each
+! TS "bin" or volume of water (assuming lat/long/depth units are deg/deg/m)
+
+! Note that this procedure can actually plot a frequency histogram for **ANY**
+! two variables - just specify the appropriate variable names and ranges
+! as arguments  (axis labels, however, will still say temperature and salinity)
+
+! Usage:  first set set data set and region
+!	  make sure the variables TV and SV are defined as temperature
+!	  (degrees C) and salinity (28 to 42)
+
+!    GO ts_frequency [tvar] [svar] [tlo] [thi] [tdel] [slo] [shi] [sdel] [wt]
+
+!	defaults: tvar="TEMP", svar="SALT", tlo=-5, thi=35, tdel=0.1,
+!	                                    slo=28, shi=42, sdel=0.1
+!		  wt= weight of "1" for every cell
+
+! "wt" is an optional variable name that can be passed to indicate the
+! weight to be assigned to each grid cell - typically the volume of the cell
+! For example (contributed by Tony Craig):
+!let r=6370		! radius of earth
+!let pi=atan(1.)*4.
+!let deg2rad=pi/180.
+!let deg2km=2*pi*r/360.
+!let wt=zbox[g=TEMP]/1000.*xbox[g=TEMP]*ybox[g=TEMP]*cos(y[g=TEMP]*deg2rad)*deg2km*deg2km
+! GO ts_frequency TEMP SALT 0 30 .5 29 41 .2 wt
+
+! Sample usage:
+!	yes? SET DATA levitus_climatology
+!	yes? SET REGION/X=0:360/Y=90S:90N/Z=0    ! global surface
+!	yes? GO ts_frequency
+
+! e.g. to use smax=38 try
+!	yes? GO go ts_frequency temp,salt,,,,,38
+
+! check arguments
+QUERY/IGNORE $1"<Usage: GO ts_frequency my_temp my_salt [tlo] [thi] [tdel] [slo] [shi] [sdel] [wt]"
+QUERY/IGNORE $2"<Usage: GO ts_frequency my_temp my_salt [tlo] [thi] [tdel] [slo] [shi] [sdel] [wt]"
+
+! cleanup from previous
+cancel data/noerror ts_frequency.dat
+
+! compute a 1D index that numbers all the grid boxes on the desired output plot
+! also cope with missing values ("MISSING()") and data below the minimums
+! ("MAX()").  Data above the max is simply not read in the final commands
+! because it lies beyond the number of points in the grid gindex
+LET/QUIET tmin = $3"-5"
+LET/QUIET tmax = $4"35"
+LET/QUIET tdelta = $5"0.1"
+LET/QUIET smin = $6"28"
+LET/QUIET smax = $7"42"
+LET/QUIET sdelta = $8"0.1"
+LET/QUIET tn = INT((tmax-tmin)/tdelta + 0.5) + 1
+LET/QUIET tusable = $1"TEMP" GT (tmin-0.5*tdelta) AND $1"TEMP" LT (tmax+0.5*tdelta)
+LET/QUIET tindex = IF tusable THEN INT(($1"TEMP"-tmin)/tdelta + 0.5) + 1 ! 1 to tn
+LET/QUIET sn = INT((smax-smin)/sdelta + 0.5) + 1
+LET/QUIET susable = $2"SALT" GT (smin-0.5*sdelta) AND $2"SALT" LT (smax+0.5*sdelta)
+LET/QUIET sindex = IF susable THEN INT(($2"SALT"-smin)/sdelta + 0.5) + 1 ! 1 to sn
+LET/QUIET index = IF (tusable AND susable) THEN MAX(0, (sindex-1)*tn + tindex) ELSE 0		  ! 1 to tn*sn with 0 for bad values
+
+! function to compute volume of each grid cell
+LET/QUIET wt_index = $9"1"
+
+! create an output file with all TS grid boxes represented in order
+sp rm -f ts_frequency.raw ts_frequency.dat
+list/nohead/form=(F10.0,1PG14.7)/file=ts_frequency.raw index, wt_index
+list/nohead/form=(F10.0,1PG14.7)/file=ts_frequency.raw/append sn*tn+1, 0 ! MAX index+1
+sp sort -n ts_frequency.raw | awk -f $FER_DIR/go/frequency.awk | grep -v "XXXXX" > ts_frequency.dat
+
+define axis/x=$3"-5":$4"35":$5"0.1"/unit="temperature" xax
+define axis/y=$6"28":$7"42":$8"0.1"/unit="salinity" yax
+define grid/x=xax/y=yax gindex
+set data/save
+file/grid=gindex/var="-,wt_count" ts_frequency.dat
+set variable/title="Sum of Weights" wt_count
+set data/restore
+
+set mode/last verify
+
+! do a shaded plot
+message/cont >>> shade/x=$3"-5":$4"35"/y=$6"28":$7"42" wt_count[d=ts_frequency.dat]
+shade/x=$3"-5":$4"35"/y=$6"28":$7"42" wt_count[d=ts_frequency.dat]
+

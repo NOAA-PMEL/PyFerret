@@ -1,0 +1,34 @@
+\cancel mode verify  
+
+! Description: View 4 plots to illustrate color bar densities
+! see also try_saz_palette.jnl
+
+query/ignore $1"<usage:  GO try_saz_palette palette_name"
+
+set wind/clear
+
+set view ul
+shade/i=1:120/j=1:120/lev=(-90,90,60)/palette=$1/title="3 levels" j-i
+
+set view ur
+shade/i=1:120/j=1:120/lev=(-100,100,40)/palette=$1/title="5 levels" j-i
+
+set view ll
+shade/i=1:120/j=1:120/lev=(-105,105,30)/palette=$1/title="7 levels" j-i
+
+set view lr
+shade/i=1:120/j=1:120/lev=(-120,120,16)/palette=$1/title="15 levels" j-i
+
+set mode/last verify
+
+
+
+
+
+
+
+
+
+
+
+

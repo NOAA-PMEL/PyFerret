@@ -1,0 +1,7 @@
+CANCEL MODE VERIFY     ! ... now changing color spectrum
+! set color spectrum to a gray scale
+! Description:  An obsolete tool equivalent to "PALETTE greyscale"
+
+ppl shaset spectrum=greyscale
+
+SET MODE/LAST VERIFY

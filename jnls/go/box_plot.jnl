@@ -1,0 +1,28 @@
+\cancel mode verify
+! 2/94 - box_plot.jnl
+
+! Description: produce a plot with "bare" axes (no tics, no labels)
+
+! usage:  GO box_plot plot_command
+
+! plot_command:	A full plot command including qualifiers and arguments
+
+! Note on plot command qualifiers:
+!  If /SET_UP is used manual setting and resetting of PPL tics and axlabp
+!  commands will be required
+
+! check that parameters are OK to the best we can
+query/ignore $1%<Use: GO box_plot complete_plot_command%
+
+! set up PLOT+ without axis tics
+ppl tics 0,0,0,0
+ppl axlabp 0,0
+
+! produce the plot (whatever plot command they gave)
+$*
+
+! restore PLOT+ defaults
+ppl tics 0.125,.25,.125,.25
+ppl axlabp -1,-1
+
+set mode/last verify

@@ -1,0 +1,16 @@
+CANCEL MODE VERIFY
+
+! Description: Correct "GO variance" definitions by n/n-1 factor
+
+! compute n/n-1 factor to get the variances exact
+let l1 = l
+let nm1 = l1[l=@max] - l1[l=@min]
+let ndnm1 = (nm1+1)/nm1
+
+! redefine terms with n/n-1 factor 
+let/title="VARIANCE OF P" 	   P_VAR = P_DSQ[l=@ave] * ndnm1
+let/title="VARIANCE OF Q" 	   Q_VAR = Q_DSQ[l=@ave] * ndnm1
+let/title="COVARIANCE OF P AND Q"  COVAR = PQ_DSQ[l=@ave] * ndnm1
+
+SET GRID P
+SET MODE/LAST VERIFY

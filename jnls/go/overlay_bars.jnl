@@ -1,0 +1,36 @@
+\CANCEL MODE VERIFY
+! overlay_bars.jnl 10/96
+
+! DESCRIPTION: Overlay error bars on a time series (or frequency) plot
+
+! This is a simple routine to overlay error bars. It is applicable only to
+! T axis plots and it creates only a simple vertical line (no I bar).
+
+! A more sophisticated script could be both faster and higher functioning.
+
+! Usage:                   1        2      3
+!       GO overlay_bars spectrum errors [color]
+
+! Arguments:
+
+!  spectrum - 1D field to be plotted (on T axis)
+!
+!  errors   - a 1D field of errors (bars from spectrum-error to spectrum+error)
+!
+!  color    - color of the error bars
+
+! check color parameter
+DEFINE SYMBOL ob_color $3"1|1|2|3|4|5|6|7|8|9|10|11|12|13|14|black>1|red>2|green>3|blue>4|<Unknown color argument"
+
+! define a 2-point vertical line with this variable
+LET/QUIET kk=k		! to work around a known bug in Ferret V4.4
+LET/QUIET vbar = if kk eq 1 then (-1)*$2 else $2
+
+! error bar plot
+REPEAT/L=`$1,return=lstart`:`$1,return=lend` PLOT/OVER/VS/LINE=($ob_color)/K=1:2/NOLAB $1*kk*0+T,$1+vbar
+
+! clean up
+CANCEL REGION/l
+CANCEL VARIABLE kk, vbar
+CANCEL SYMBOL ob_color
+SET MODE/LAST VERIFY

@@ -1,0 +1,99 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_polyconic.jnl --  Sets up variables for a Polyconic projection using
+!                  'curvilinear coordinates' code in Ferret v4.50
+!		    		
+! Jonathan Callahan
+! 5/97
+
+! Description:  Sets up variables for a Polyconic map of the world
+!
+! Usage:                   arg1               arg2             arg3             arg4
+!  go mp_polyconic [central meridian] [standard paralell][std paralell N] [std paralell S]
+!
+! arg 1 - longitude used for the center of the projection
+! arg 2 - latitude used for the center of the projection
+! arg 3 - latitude used for the northern edge of the projection
+! arg 4 - latitude used for the southern edge of the projection
+
+! Example:
+!  use coads_climatology 
+!  go mp_polyconic
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!
+! Note 1: If you intend to plot an overlay which is a subregion
+!         of the original plot you will need to specify the two
+!         optional arguments as in:
+!
+!  use coads_climatology 
+!  go mp_polyconic
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!  go mp_polyconic `mp_central_meridian` `mp_standard_paralell`
+!  set region/x=40e:110e/y=60s:20s
+!  shade/over slp[l=1], x_page, y_page
+!
+! Note 2: The x-range for the subregion to be overlayed must
+!         be: ( `mp_cent_mer` - 180 < x < `mp_cent_mer` + 180 )
+
+! This journal file comes from equations in the following book:
+!
+!    An Album of Map Projections
+!    U.S. Geological Survey
+!    Professional Paper 1453
+!
+! Equation numbers refer to the equation number in this book.
+
+if `$2%0% gt 90` then
+    query/ignore $9"<The standard paralell must be between -90 and 90"
+elif `$2%0% lt (-90)` then
+    query/ignore $9"<The standard paralell must be between -90 and 90"
+endif
+
+if `$3%60% gt 90` then
+    query/ignore $9"<The northern paralell must be between -90 and 90"
+elif `$3%60% lt (-90)` then
+    query/ignore $9"<The northern paralell must be between -90 and 90"
+endif
+
+if `$4%60% gt 90` then
+    query/ignore $9"<The southern paralell must be between -90 and 90"
+elif `$4%60% lt (-90)` then
+    query/ignore $9"<The southern paralell must be between -90 and 90"
+endif
+
+let/quiet mp_x = x
+let/quiet mp_central_meridian = $1%(mp_x[i=@max] + mp_x[i=@min])/2%
+let/quiet mp_y = y
+let/quiet mp_standard_paralell = $2%(mp_y[j=@max] + mp_y[j=@min])/2%
+
+let/quiet mp_std_paralell_north = $3%mp_y[j=@max]%
+let/quiet mp_std_paralell_south = $4%mp_y[j=@min]%
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet mp_R = 1
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+let/quiet mp_phi2 = mp_std_paralell_north * deg2rad
+let/quiet mp_phi1 = mp_std_paralell_south * deg2rad
+
+let/quiet mp_phi0 = (mp_phi2 + mp_phi1) / 2                               ! eqn (91)
+let/quiet mp_cot_phi = cos(mp_phi) / sin(mp_phi)
+
+!if (mp_phi eq 0) then
+!   let/quiet x_page = mp_R * (mp_lambda - mp_lambda0)                     ! eqn (1)
+!   let/quiet y_page = (-1.0) * mp_R * mp_phi0                          ! eqn (94)              
+!else
+   let/quiet mp_E = (mp_lambda - mp_lambda0) * sin(mp_phi)                   ! eqn (95)
+   let/quiet x_page = mp_R * mp_cot_phi * sin(mp_E)                       ! eqn (96)
+   let/quiet y_page = mp_R * ( mp_phi - mp_phi0 + mp_cot_phi*(1 - cos(mp_E)))   ! eqn (97)
+!endif
+
+let/quiet mp_mask = 1
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

@@ -1,0 +1,57 @@
+! symbol_demo.jnl  6/95 *sh*
+
+!Description: Demonstration of symbols to customize plot layout
+
+! usage:
+!	yes? GO symbol_demo  variable time
+
+! e.g.	yes? GO symbol_demo SLP L=6
+
+
+set data coads_climatology
+
+ppl/reset
+set wind/asp=1.5
+set mode calendar:days
+set region /$2"l=1"
+
+! ==========================
+! +++++ upper panel ++++++++
+! ==========================
+set view upper
+shade $1"sst"
+
+! diagonal remark about the plot
+label/nouser `($ppl$xlen)/2` `($ppl$ylen)/2` 0,45,.28 @TRNORMAL LAYOUT
+
+! ==========================
+! +++++ lower panel ++++++++
+! ==========================
+set view lower
+ppl origin ,2	! shift plot rectangle upwards
+
+! remove Ferret logo
+GO unlabel 1
+GO unlabel 2
+GO unlabel 3
+
+! move the time label to the bottom left
+ppl labs/nouser ($labnum_t) 0,-0.6,-1 @P2@AC($lab4)
+
+! move the data set label to the bottom right and
+! remove "DATA SET:" from the string "DATA SET: coads_climatology"
+PPL SET dset_len $LENGTH( lab($labnum_datitl) )   ! "$LENGTH(lab5)"
+PPL SET new_dset $EXTRACT(11,($dset_len),lab($labnum_dset))
+ppl labs/nouser ($labnum_dset) ($ppl$xlen),-0.6,+1 @P2@AC($new_dset)
+
+! use data set title as a second plot title at the bottom
+ppl labs/nouser ($labnum_datitl) `($ppl$xlen)/2`,-1.3,0 @P4@AC<<($lab($labnum_datitl))>>
+ppl hlabs ($labnum_datitl), .18
+
+! actually draw it
+ppl shade
+! diagonal remark about the plot
+label/nouser `($ppl$xlen)/2` `($ppl$ylen)/2` 0,45,.28 @TRSPECIAL LAYOUT
+
+! clean up
+ppl origin 1.2,1.4

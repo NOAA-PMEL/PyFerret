@@ -1,0 +1,106 @@
+\cancel mode verify
+!Description: Demonstration of interpolating scattered data to grids 
+say Welcome to the objective analysis demo
+say setting up ...
+set grid/save
+define alias wait message
+
+define view/ylim=.6,1/text=.5 vupper
+define view/xlim=0.,.5/ylim=.3,.55/text=.2 vul
+define view/xlim=.5,1./ylim=.3,.55/text=.2 vur
+define view/xlim=0.,.5/ylim=0.05,.3/text=.2 vll
+define view/xlim=.5,1./ylim=0.05,.3/text=.2 vlr
+
+define axis/x=0:10:0.05 x10
+define axis/y=0:10:0.05 y10
+define grid/x=x10/y=y10 g10x10
+set grid g10x10
+
+let WAVE = SIN(KX*XPTS + KY*YPTS - PHASE) / 3
+let PHASE = 0
+let KAPPA = 0.4
+let KX = 0.4
+let KY = 0.7
+
+let FCN1 = SIN(R)/(R+1)
+let R = ((XPTS-X0)^2+ 5*(YPTS-Y0)^2)^0.5
+let X0 = 3
+let Y0 = 8
+
+LET sample_function = fcn1 + wave
+
+say ...
+say For simplicity this demo will work with abstract mathematical functions
+say rather than with "real" data.  We will create an abstract function in
+say the XY plane and use it as a model of "reality".  Our goal is to
+say sample this "reality" at scattered (X,Y) points and then attempt to
+say recreate the original field through interpolation and objectibe analysis
+say techniques. 
+say ...
+say From here on the lines you see will be exactly the lines executed in this
+say demonstration script.  To focus attention on the issues of regridding
+say and avoid the clutter of graphics layout commands you will notice that
+say graphics are performed by a script called "draw_it".
+say ...
+WAIT
+set mode verify
+
+! **********************************************************
+! To display "reality" we will first let our sample points (xpts,ypts) be
+! simply the X and y points of a grid.  Then we will change (xpts,ypts) to
+! be 200 sampling locations and mark them with symbols on the plot.
+! We will draw this output in the "upper" viewport.
+
+! points on the (X,Y) grid
+let xpts = x; let ypts = y
+GO draw_it "fcn1+wave" "A field with 200 sample points marked" "SHADE" upper
+
+! points randomly sampled in (X,Y)
+let xpts = 10*randu(i); let ypts = 10*randu(i+2)
+set region/i=1:200
+plot/vs/over/symbols xpts,ypts
+WAIT
+
+! **********************************************************
+! Now we will interpolate those 200 (X,Y,value) triples back onto a regular
+! grid in the (X,Y) plane.  The output grid will be from 1 to 10 by .5 along
+! both the X and y axes.  Defaults will be used for all other interpolation
+! controls.
+! Under the "SHADEd" (raster-style) plot we will display the very same result
+! as a filled contour.
+
+GO objective xpts ypts "fcn1+wave" "1:10:.5" "1:10:.5"
+GO draw_it "gridded[d=fer_objective.unf]" "Interpolated to 20x20 grid" "SHADE" upper_left
+GO draw_it "gridded[d=fer_objective.unf]" "Same as above but FILL-contoured" "FILL" lower_left
+WAIT
+
+! **********************************************************
+! Now we perform the identical analysis but we will, instead interpolate onto
+! a higher resolution grid.  The gaps in the output are because there are
+! points on this output grid that are unacceptable far from any sample points
+! using the default interpolation parameters.
+go objective xpts ypts "fcn1+wave" "1:10:.2" "1:10:.2"
+GO draw_it "gridded[d=fer_objective.unf]" "Interpolated to 50x50 grid" "SHADE" upper_right
+GO draw_it "gridded[d=fer_objective.unf]" "Same as above but FILL-contoured" "FILL" lower_right
+
+set grid/restore
+exit
+
+! This demo is not yet complete.
+! Still to come are illustrations of the effects of the cay parameter
+! in GO objective which controls the balance between Laplacian and spline
+! interpolation and the nrng parameter which controls the radius within
+! which a destination grid point will admit source point inputs.
+
+message
+ppl shaset reset
+set view vul
+go objective xpts ypts "fcn1+wave" "1:10:.1" "1:10:.1"
+GO draw_it "gridded[d=fer_objective.unf]" "... onto 100x100 grid with nrng=5" "SHADE"
+set view vll
+go objective xpts ypts "fcn1+wave" "1:10:.1" "1:10:.1" " " 20
+GO draw_it "gridded[d=fer_objective.unf]" "... onto 100x100 grid with nrng=20" "SHADE"
+
+
+
+

@@ -1,0 +1,28 @@
+\cancel mode verify
+! bullseye_box.jnl
+
+! Description: draw box around bullseye search region
+! Note: this is a subroutine of bullseye.jnl
+
+! created 4/29/97
+
+! Usage:	arg        1
+!	GO bullseye_box pen_color
+
+!  arg 1 (pen_color)	- color of box to draw
+
+! test validity of arguments
+query/ignore $1%<Usage: GO bullseye_box pen_color%
+
+! define variables -- arrays of X and of Y (possibly of differing lengths)
+LET/QUIET xlims = X[($xrng)]
+LET/QUIET ylims = Y[($yrng)]
+
+! draw the box
+PLOT/VS/LINE=$1/OVERLAY/NOLAB xlims, 0*xlims+ylims[y=@min]
+PLOT/VS/LINE=$1/OVERLAY/NOLAB xlims, 0*xlims+ylims[y=@max]
+PLOT/VS/LINE=$1/OVERLAY/NOLAB 0*ylims+xlims[x=@min], ylims
+PLOT/VS/LINE=$1/OVERLAY/NOLAB 0*ylims+xlims[x=@max], ylims
+
+! clean up
+set mode/last verify

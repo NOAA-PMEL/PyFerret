@@ -1,0 +1,82 @@
+\ cancel mode verify
+! margins.jnl (10/30/95) (NKL)
+
+! Description: specify plot margins (layout of plot axes to window edges)
+
+! usage:             1       2       3      4
+!       GO margins [top] [bottom] [left] [right]
+!
+!       Arguments not specified will not be modified from current settings.
+!       Margins are specified in "inches" from edge of viewport.
+!
+! defaults          1.4     1.4     1.2    1.0
+!
+! also
+!       GO margins  "reset"     -- RESETS to default plot margins
+!       GO margins              -- query the current plot margins
+!
+! example:
+!       yes? go margins 0.2 0.6 " " 1.0
+!                                           
+!  	set margins to 0.2 on top, 0.6 bottom, left is unchanged, 1.0 on right
+!
+! a sample session - lay out two frames vertically:
+!	yes? SET DATA coads_climatology	! demo data set
+!	yes? SET VIEW upper		! use upper half of plot frame
+!	yes? SHADE/NOLAB sst[l=1]	! default plot layout
+!	yes? GO margins			! look at the current margins
+!	yes? GO margins 0.2 0.75	! adjust the vertical margins
+!	yes? SHADE/NOLAB sst[l=1]	! look at the resulting plot
+!	yes? GO margins  " ",,0.9,0.8	! adjust the horizontal margins
+!	yes? SHADE/NOLAB sst[l=1]	! look at the resulting plot
+!	yes? GO margins			! ask to look at the new margins
+!	yes? SET VIEW lower		! use lower half of plot frame
+!	yes? GO margins 0.2 0.75 0.9 0.8! use the same modified margins
+!	yes? SHADE/NOLAB sst[l=6]	! make the lower plot
+!	yes? GO margins   RESET		! return to default settings
+
+! Note 1: Issue "GO margins ..." AFTER changing the viewport with SET VIEWPORT
+!	  because SET VIEWPORT recomputes the origin and axis lengths.
+! Note 2: The "PLOT" command recomputes the vertical origin and axis length in
+!	  order to accomodate label keys. When adjusting margins for the
+!	  PLOT command follow the sequence:
+!	  	"PLOT/SET_UP ..." , then "GO margins ..." , then "PPL PLOT"
+
+! -----------make sure ppl is up and running
+ppl set junk            1
+ppl delete junk 
+
+! -----------prepare to process a query (if no arguments were given)
+define alias cmd0 "query/ignore"
+define alias cmd1 "message/continue"
+define symbol do_query cmd`$1"1|*>0"*$2"1|*>0"*$3"1|*>0"*$4"1|*>0"`  ! 1 or 0
+
+! -----------set symbols - default to current conditions
+define symbol top    $1"($vp_height) - ($ppl$yorg) - ($ppl$ylen)|reset>-10|*|"
+define symbol bottom $2"($ppl$yorg)"
+define symbol left   $3"($ppl$xorg)"
+define symbol right  $4"($vp_width) - ($ppl$xorg) - ($ppl$xlen)"
+
+! -----------Old conditions
+($do_query) "                            T     B     L    R"
+($do_query) "margins are  -- GO margins `($vp_height) - ($ppl$yorg) - ($ppl$ylen)`   `($ppl$yorg)`   `($ppl$xorg)`   `($vp_width) - ($ppl$xorg) - ($ppl$xlen)`"
+
+! ----------Reset is top = -10
+define symbol bottom    `if (($top)) le (-10) then 1.4 else (($bottom))`
+define symbol left      `if (($top)) le (-10) then 1.2 else (($left))`
+define symbol right     `if (($top)) le (-10) then 1.0 else (($right))`
+define symbol top       `if (($top)) le (-10) then 1.4 else (($top))`
+
+! -----------change origin, axis length
+ppl origin ($left),($bottom)
+ppl axlen `($vp_width) - ($left) - ($right)`,`($vp_height) - ($bottom) - ($top)`
+
+! clean up
+cancel alias cmd0
+cancel alias cmd1
+cancel symbol do_query
+cancel symbol top
+cancel symbol bottom
+cancel symbol left
+cancel symbol right
+set mode/last verify

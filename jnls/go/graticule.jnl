@@ -1,0 +1,14 @@
+\ cancel mode verify
+! graticule.jnl  (12/93)
+
+! Description: Set the plot axis style to use a graticule (see GO tics)
+
+! Usage:  GO graticule
+! 	(to restore the normal tic style use  "GO tics")
+
+! This script needs to be exectuted AFTER changes in aspect ration
+! (It uses the current axis lengths to set up)
+
+ppl tics,,'ppl$ylen',,'ppl$xlen',1,1
+
+set mode/last verify

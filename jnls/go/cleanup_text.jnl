@@ -1,0 +1,13 @@
+\cancel mode verify
+! cleanup_text.jnl  (4/93)
+
+! Description: cleanup FERRET and PLOT+ settings following GO setup_text
+
+! this block of code resets the PLOT+ environment following "GO setup_text"
+! updated 10/93 for Ferret V3.01
+
+ppl axset 1,1,1,1
+ppl origin 1.2,1.4
+cancel viewport     ! forces reset of axis lengths
+
+set mode/last verify

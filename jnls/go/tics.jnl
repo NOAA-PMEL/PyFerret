@@ -1,0 +1,11 @@
+\ cancel mode verify
+! tics.jnl  (12/93)
+
+! Description: Reset the plot style to use axis tics (see GO graticule)
+
+! Usage:  GO tics
+! 	(to obtain a graticule instead of tics use  "GO graticule")
+
+ppl tics,,.25,,.25,-1,-1
+
+set mode/last verify

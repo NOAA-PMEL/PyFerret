@@ -1,0 +1,76 @@
+\cancel mode verify
+! multi_yaxis_overlay.jnl
+
+! Description: PLOT/Overlay a variable plot using a new Y axis
+
+! This GO file presents one possible style for overlaying multiple plots
+! on multiple Y axes.
+! Copy and modify this file to customize to individual needs.
+
+! usage:
+!   GO multi_yaxis_overlay exprn overlay_# ["-"] [scale] [key] [hgt]
+!					   [axis_spacing] [args]
+! 1		exprn - FERRET expression to be plotted
+! 2		overlay_# 1-n, increasing as each overlay is added
+! 3 optional: 	"-" to locate axis on negative (left) side of plot (v.s. "+")
+! 4 optional:   scale - "low,high,delta" in quotes for axis scaling
+! 5 optional:	key - title string documenting the variable to be plotted
+! 6 optional:	hgt - PLOT+ character height for key string [default 0.12]
+! 7 optional:	"axis_spacing" controls axis location [default 1.1]
+! 8 optional:	"args" specifies all other %yaxis options [",,,,,(1PG10.3)"]
+!		(see PLOT+ Users' Guide, chapter 10)
+
+! Note: If the values require axis labels that are many digits (e.g. 1024.35
+! or 0.00124) it may be necessary to specify argument 4, "scale", manually.
+
+!  e.g. (temp, salt, and u on a single plot)
+!	yes? SET REGION/l=0:500
+!	yes? PLOT/TITLE="Time Series" temp
+!	yes? GO multi_yaxis_overlay salt 1
+!	yes? GO multi_yaxis_overlay    u 2
+
+! tell FERRET to introduce PLOT+ to this variable
+plot/over/set $1
+ppl labs
+ppl aline
+
+ppl set axov_spacing $7"1.1"    	! space between axes
+ppl set axov_number $2"1"
+ppl set tmp 'axov_number' + 1
+ppl set axov_pen $INTEGER(tmp)
+ppl set tmp $3" "'axov_number'
+ppl set axov_xpos 'tmp' * 'axov_spacing'
+ppl set axov_midpoint 'ppl$ylen' / 2.0
+ppl set axov_xlabpos 'axov_xpos' - 0.8
+ppl set axov_ylabpos 'axov_midpoint' - 0.5 
+ppl set axov_aline_start 'axov_midpoint' - 2.2
+ppl set axov_aline_end 'axov_midpoint' - 0.7
+ppl set axov_aline_xpos 'axov_xpos' - 0.85
+
+! set pen color
+ppl pen 1,'axov_pen'
+
+! set up label to match pen color
+! use this labelling scheme to get good black and white hard copy
+ppl ylab
+ppl labs/nouser 1,'axov_xlabpos','axov_ylabpos',-1 $5"@AS'labkey'"
+ppl rlabs 1,90
+ppl hlabs 1,$6"0.12"
+
+! set up scaling and draw axis
+ppl %range 'PPL$YMIN1','PPL$YMAX1',10
+ppl %yaxis/nouser $4"'ppl$range_low','ppl$range_high','ppl$range_inc'",'axov_xpos',$8",,,,,(1PG10.3)"
+
+! draw the overlay
+ppl window off
+ppl plot/over
+
+! draw the line specimen
+ppl aline/nouser 1,'axov_aline_xpos','axov_aline_start','axov_aline_xpos','axov_aline_end'
+
+! cleanup
+ppl window on
+ppl rlabs 1,0
+ppl pen 1,1
+
+set mode/last verify

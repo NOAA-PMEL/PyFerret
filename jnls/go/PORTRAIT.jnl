@@ -1,0 +1,10 @@
+\cancel mode verify    !. . . . now setting window to 8 1/2 x 11 size
+! Description: Set up for 8.5 x 11 page size
+message/continue ......
+message/continue Use PPL/RESET to restore default graphics
+message/continue For hardcopy, use the "-p portrait" option with mtp
+message/continue ......
+
+set wind/asp=1.3
+
+set mode/last verify

@@ -1,0 +1,85 @@
+\cancel mode verify
+! exact_colors.jnl  *sh* 5/93
+! updated 10/93 for Ferret V3.01
+! fixed error in "SET MODE/LAST VERIFY" 12/95
+
+! Description: Setup FERRET and PLOT+ to modify single SHADE or CONT colors
+
+say For detailed instructions examine the file  $FER_DIR/go/exact_colors.jnl
+
+! Usage:   GO exact_colors #_of_colors  [input_spectrum] [output_filename]
+! sample:  GO exact_colors 12 rnb rnb12.save
+! defaults:  input_spectrum = default.spk   output_filename = exact_colors.spk
+
+! The colors specified with the PLOT+ SHASET command (& w/ spectrum files)
+! define points in an abstract color space that runs from 0 to 100 percent.
+! The actual colors used by SHADE or FILL are determined by dividing this
+! abstract color scale into n equal percentage increments, where n is the
+! number of colors, and linearly interpolating between the SHASET values.
+
+! exact_colors.jnl determines the actual RGB values for each SHADE or FILL
+! color and writes those results to exact_colors.spk (or the specified output
+! file).  The command "PALETTE exact_colors" is then used to make
+! those colors the current SHASET values thereby eliminating the abstraction
+! of the color scale.  Thereafter modifying any individual SHASET color will
+! change only one unique SHADE or FILL color on the display.
+
+! FERRET example 1:
+!	yes? SET DATA levitus_climatology	! distributed with ferret
+!	yes? SET REGION/Z=0/Y=60S:60N
+!	yes? SHADE/lev=(0,30,2) temp   ! 15 colors (16 levels)
+!	yes? GO exact_colors 15        ! (saves results in exact_colors.spk)
+!	yes? PPL LIST SHASET           ! notice there are 15 shaset points
+!	yes? PPL SHASET 50 100 100 100 ! change one of the colors to white
+!	
+! FERRET example 2:
+!       If you use the qualifier /PALETTE= to control the colors of a plot
+!	FERRET changes the SHASET colors only for the moment of the plot.  As
+!	soon as the plot is on the screen FERRET "protects" the colors on 
+!	screen and restores the previous SHASET colors.  If you wish to
+!	modify the colors on the screen after this you must "unprotect"
+!	them with
+!		yes? PPL SHASET RESET
+! e.g.
+!	yes? SET DATA levitus_climatology
+!	yes? SET REGION/Z=0/Y=60S:60N
+!	yes? SHADE/lev=(0,30,2)/PALETTE=greyscale temp
+!	yes? GO exact_colors 15 greyscale	! spectrum file "greyscale.spk"
+!	yes? PPL LIST SHASET
+!	yes? PPL SHASET RESET			! unprotect the colors
+!	yes? PPL SHASET 50.0 100 0 0            ! change one a color to red
+
+alias argcheck "CANCEL EXPRESSION"        ! a no-op used to check arguments
+argcheck $1"<Must specify number of colors on screen.  Usage:GO exact_colors n"
+
+cancel region/x
+
+! read the specified input spectrum name (Default:$FER_PALETTE/default.spk)
+! using its "percentage" variable as the data set axis
+file/var=pcentin,redin,greenin,bluein "$FER_PALETTE/$2&default&.spk"
+define axis/from/x/name=axin pcentin
+define grid/x=axin  gin
+cancel data/noerr $2&default&.spk
+file/var=pcentin,redin,greenin,bluein/grid=gin "$FER_PALETTE/$2&default&.spk"
+
+! number of desired colors 
+let percent = 100*(i-1)/($1-1) 
+
+! split the 0 to 100% range into n equally-spaced regions
+! using g=gout linear-interpolation regridding
+define axis/from/x/name=axout percent[i=1:$1]
+define grid/x=axout gout
+let pcentout = x[g=gout]
+let redout   = redin[g=gout]    ! linear interpolation
+let greenout = greenin[g=gout]  ! linear interpolation
+let blueout  = bluein[g=gout]   ! linear interpolation
+
+spawn rm -f $3"exact_colors.spk"
+! note: output precision restricted to 1 decimal place consistent with PLOT+ 
+list/file=$3"exact_colors.spk"/nohead/format=(4F10.1)/i=1:$1 pcentout,redout,greenout,blueout
+
+ppl shaset spectrum=$3"exact_colors.spk"
+
+cancel data/noerr $2&default&.spk
+set mode/last verify
+

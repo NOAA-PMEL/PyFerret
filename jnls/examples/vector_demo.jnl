@@ -1,0 +1,204 @@
+\cancel mode verify
+! Description: Demonstration of various vector plotting options
+! 4/94 *sh*
+! updated 9/96 for Ferret V4.4
+
+define alias wait message
+
+say **** Welcome to the vector plotting demo ****
+say .
+say This demo will lead you through a number of options and styles for
+say vector plotting in FERRET.  The commands that are producing the
+say plots you will see are set off in the style
+say
+say .   yes? [command]
+say
+say 
+WAIT
+
+! clean up from any previous activity
+define region/default save
+cancel region
+set wind/asp=.75:ax
+go white
+
+! ***********************************************************
+say ...
+say We will begin by examining the global FNOC winds on Jan. 1, 1990
+say The FNOC data set (monthly_navy_winds) has variables "uwnd", and "vwnd"
+say We will overlay the continentintal boundaries in red.
+say ...
+
+say .    yes? set data monthly_navy_winds
+say .    yes? set region/t=1-jan-1990
+say .    yes? vector uwnd,vwnd
+say .    yes? go land red
+
+
+set data monthly_navy_winds
+set region/t=1-jan-1990
+vector uwnd,vwnd
+go land red
+
+WAIT
+
+! ***********************************************************
+say ...
+say Now the same plot done a little nicer ...
+say (Pen number 2 is red.)
+say ...
+
+say .    yes? go fland 60 red basemap
+say .    yes? vector/overlay/length=10/title="wind speed"  uwnd,vwnd
+
+
+go fland 60 red basemap
+vector/overlay/length=10/title="wind speed"  uwnd,vwnd
+
+
+WAIT
+
+! ***********************************************************
+say ...
+say The command qualifiers /XSKIP and /YSKIP control the thinning of vectors.
+say By altering the spacing we can bring out the zonal structure of the winds.
+say ...
+
+
+say .    yes? go fland 60 black basemap
+say .    yes? vector/over/len=10/title="wind speed"/xskip=5/yskip=1/pen=2 uwnd,vwnd
+
+go fland 60 black basemap
+vector/overlay/length=10/title="wind speed"/xskip=5/yskip=1/pen=2 uwnd,vwnd
+
+
+
+WAIT
+
+! ***********************************************************
+say ...
+say In this plot we will see the important effect of the /ASPECT qualifier.
+say In this thin slice of the world from latitude 10S to 10N the scaling
+say of longitude is very different from latitude.  The /ASPECT qualifier
+say rotates the vectors to compensate while preserving their magnitudes.
+say ...
+
+ 
+say .    yes? set view upper
+say .    yes? set region/y=10s:10n
+say .    yes? go fland 60 red basemap
+say .    yes? vector/over/len=10/title="wind speed"/xskip=1/yskip=1 uwnd,vwnd
+say
+say .    yes? set view lower
+say .    yes? go fland 60 red basemap
+say .    yes? vector/over/len=10/title="wind speed"/xskip=1/yskip=1/aspect uwnd,vwnd
+
+
+set view upper
+set region/y=10s:10n
+go magnify 1.5
+go fland 60 red basemap
+vector/overlay/length=10/title="wind speed"/xskip=1/yskip=1 uwnd,vwnd
+
+set view lower
+go magnify 1.5
+go fland 60 red basemap
+vector/overlay/length=10/title="wind speed"/xskip=1/yskip=1/aspect uwnd,vwnd
+
+
+WAIT
+
+! ***********************************************************
+say ...
+say Now we will look at the same data but subtly modify the vectors
+say by centering them over their coordinate locations.  By default the
+say end point of each vector is located at its coordinate point.
+say We use the FERRET GO tool "GO centered_vectors".
+say ...
+
+
+say .    yes? set view upper
+say .    yes? go fland 60 red basemap
+say .    yes? go centered_vectors vector/overlay/title="wind speed" uwnd,vwnd 10 
+
+
+set view upper
+go magnify 1.5
+go fland 60 red basemap
+go centered_vectors vector/overlay/title="wind speed" uwnd,vwnd 10 
+go magnify 1     ! return to normal
+
+
+WAIT
+
+! ***********************************************************
+say ...
+say Oceanographers commonly want to look at a line of vectors with a
+say "stick" plot.  The GO tool "GO stick_vectors" can provide this.
+say ...
+
+
+say .    yes? set wind/asp=.4/siz=.4
+say .    yes? set region/x=180/y=0
+say .    yes? set region/t=1-jan-1982:31-jan-1992
+say .    yes? GO stick_vectors plot/line=2/title="FNOC winds" uwnd vwnd
+
+
+set wind/asp=.4/siz=.4
+set region/x=180/y=0
+set region/t=1-jan-1982:31-jan-1992
+GO stick_vectors plot/line=2/title="FNOC winds" uwnd vwnd
+
+
+WAIT
+set wind/asp=.75:ax/siz=.6
+set region/t=1-jan-1990
+sp rm -f vdtmp_*
+
+! ***********************************************************
+say ...
+say To complete the demonstration we will try a more challenging display.
+say We will use FERRET's ability to sub-sample from a data set to generate
+say a scatter of vector wind speeds on North Atlantic coasts.
+say Then we will use the tool "GO scattered_vectors" to display them.
+say
+say We will start by displaying a map of the region.
+say ...
+
+say .    yes? set region/x=100w:10w/y=0:60     	! North Atlantic
+say .    yes? set data etopo60		 	! 60 minute bathymetry data set
+say .    yes? FILL/PALETTE=land_sea/TITLE="Coastal Winds" rose
+say .    yes? GO land blue
+say
+say Now we will create a data file of scattered X,Y,U,V quadruples
+say to be plotted.  Use "Fgo -more vector_demo.jnl" to see the FERRET commands
+
+set region/x=100w:10w/y=0:60     		! North Atlantic
+set data etopo60		 		! 60 minute bathymetry data set
+FILL/PALETTE=land_sea/TITLE="Coastal Winds"/level=(-10000,0,1000)(0,3000,300) rose
+
+! create a data file of scattered X,Y,U,V quadruples to be plotted
+let coastmask = if rose[d=etopo60] ge 0 and rose[d=etopo60] le 20 then 1
+user/command=sample/opt2=c/file=vdtmp_u.raw uwnd[d=monthly_navy_winds], x*coastmask, y*coastmask, 1/0, 1/0
+user/command=sample/opt2=c/file=vdtmp_v.raw vwnd[d=monthly_navy_winds], x*coastmask, y*coastmask, 1/0, 1/0
+sp grep -v "99.9" vdtmp_u.raw > vdtmp_u.dat
+sp grep -v "99.9" vdtmp_v.raw > vdtmp_v.dat
+file/var=uwnd,xp,yp vdtmp_u.dat
+file/var=vwnd,xp,yp vdtmp_v.dat
+list/nohead/file=vdtmp_uv.dat/format=(4f10.4)/i=1:999 xp,yp,uwnd[d=vdtmp_u.dat],vwnd[d=vdtmp_v.dat]
+sp echo "0 0 0 0" >> vdtmp_uv.dat
+
+say .    yes? ! now overlay the vectors (LINE=7 is heavy black)
+say .    yes? go scattered_vectors  vdtmp_uv.dat 15 clock
+say .    yes? PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE=7/nolab arrow_x,arrow_y
+
+! now overlay the vectors (LINE=7 is heavy black)
+go scattered_vectors  vdtmp_uv.dat 15 clock
+PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE=7/nolabels arrow_x,arrow_y
+GO land blue
+
+! clean up
+cancel data vdtmp_u.dat, vdtmp_v.dat, vdtmp_uv.dat
+sp rm -f vdtmp_*
+set region save
+set mode/last verify

@@ -1,0 +1,60 @@
+\cancel mode verify
+! line_segments.jnl
+! 4/25/94 *sh*
+
+! Description:  general routine for plotting a sequence of line segments
+
+! suitable for unequally spaced axis tic marks, etc.
+
+! Usage GO line_segments plot_command xlo ylo xhi yhi n [axis]
+! plot_command	- the plotting command (with qualifiers) to display the lines
+! xlo,ylo	- the coordinates (expressions) of the line segment starts
+! xhi,yhi	- the coordinates (expressions) of the line segment ends
+! n		- the number of line segments to plot
+! axis		- "X", "Y", "Z", or "T" axis used in expression [default="X"]
+
+! dumb example:
+!    yes? SET REGION/I=1:50
+!    yes? go line_segments plot/line=2 i/10 sin(i/10) i/10 sin(i/10)+.1 50
+
+! check for required filename and haf_inch_value and valid style
+QUERY/IGNORE $1%<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+QUERY/IGNORE $2%<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+QUERY/IGNORE $3%<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+QUERY/IGNORE $4%<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+QUERY/IGNORE $5%<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+QUERY/IGNORE $6%<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+QUERY/IGNORE $7%X|X|Y|Z|T|<Usage: GO line_segments plot_command xlo ylo xhi yhi n [axis]%
+
+LET/QUIET p1x = $2
+LET/QUIET p1y = $3
+LET/QUIET p2x = $4
+LET/QUIET p2y = $5
+DEFINE REGION/$7"X|X|Y|Z|T|"=0:$6 seg
+
+LOAD p1x,p1y,p2x,p2y   ! so grids are determined
+
+DEFINE AXIS/$7"X|X|Y|Z|T|"=.333333333:1000.333333333:1 x31    ! start points
+DEFINE AXIS/$7"X|X|Y|Z|T|"=.666666667:1000.666666667:1 x32    ! end   points
+DEFINE AXIS/$7"X|X|Y|Z|T|"=.333333333:1000:.3333333333   x3   ! both  points
+DEFINE GRID/LIKE=p1x/$7"X|X|Y|Z|T|"=x31 g31
+DEFINE GRID/LIKE=p1x/$7"X|X|Y|Z|T|"=x32 g32
+DEFINE GRID/LIKE=p1x/$7"X|X|Y|Z|T|"=x3  g3
+
+
+LET/QUIET p1xg = p1x[g=g31@asn]
+LET/QUIET p1yg = p1y[g=g31@asn]
+LET/QUIET p2xg = p2x[g=g32@asn]
+LET/QUIET p2yg = p2y[g=g32@asn]
+
+LET/QUIET index = MOD($7"I|X>I|Y>J|Z>K|T>L"[g=g3]-1,3) + 1
+LET/QUIET p1xg0 = IF (index EQ 1 ) THEN p1xg[g=g3]
+LET/QUIET p1yg0 = IF (index EQ 1 ) THEN p1yg[g=g3]
+LET/QUIET p2xg0 = IF (index EQ 2 ) THEN p2xg[g=g3]
+LET/QUIET p2yg0 = IF (index EQ 2 ) THEN p2yg[g=g3]
+
+LET/QUIET px = MISSING(p1xg0,p2xg0)
+LET/QUIET py = MISSING(p1yg0,p2yg0)
+
+! plot command
+$1/VS/@seg px,py

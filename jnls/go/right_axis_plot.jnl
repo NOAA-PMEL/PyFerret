@@ -1,0 +1,63 @@
+\cancel mode verify
+! right_yaxis_plot.jnl
+
+! Description: Overlay a plot of one variable using an axis on the right
+
+! Overlay a second variable on a plot placing the vertical axis on the right
+! The routine left_axis_plot should be used before this.
+
+! usage:
+!   yes? GO right_yaxis_plot expression_to_plot [scale] [key] [hgt] [args]
+
+! 1		exprn - FERRET expression to be plotted
+! 2 optional:   scale - "low,high,delta" in quotes for axis scaling
+! 3 optional:	key - title string documenting the variable to be plotted
+! 4 optional:	hgt - PLOT+ character height for key string [default 0.12]
+! 5 optional:	"args" specifies all other %yaxis options [",,,,,(1PG10.3)"]
+!		(see PLOT+ Users' Guide, chapter 10)
+
+!  example: temp and salt on same plot
+!	yes? SET REGION/L=0:500
+!	yes? GO left_axis_plot temp
+!	yes? GO right_axis_plot salt
+!  or (for example)
+!  GO right_axis_plot salt "33,36,0.5" "My Salinity" 0.25 ",2,,+1,.13,(I2)"
+
+! initialize  (FERRET initializes PLOT+ through "plot/set")
+plot/set $1
+ppl title
+ppl labs
+ppl set axov_midpoint 'ppl$ylen' / 2.0
+ppl set axov_ylabpos 'axov_midpoint' - 0.5
+ppl set axov_xlabpos 'ppl$xlen' + 0.65
+ppl set axov_aline_start 'axov_midpoint' - 2.2
+ppl set axov_aline_end 'axov_midpoint' - 0.7
+ppl set axov_aline_xpos  'ppl$xlen' + 0.7
+
+! always a red line
+ppl pen 1,2
+
+! use this labelling scheme to get good black and white hard copy
+ppl ylab
+ppl labs/nouser 1,'axov_xlabpos','axov_ylabpos',+1 $3"@AS'labtit'"
+ppl hlabs 1,$4"0.12"
+ppl rlabs 1,-90
+
+! lay on the new axis
+ppl %range 'PPL$YMIN1','PPL$YMAX1',10
+ppl %yaxis/nouser $2"'ppl$range_low','ppl$range_high','ppl$range_inc'",'ppl$xlen',$5",,,+1,,(1PG10.3)"
+
+! set up the line specimen
+ppl aline/nouser 1,'axov_aline_xpos','axov_aline_start','axov_aline_xpos','axov_aline_end',on
+
+! draw the plot
+ppl window off
+ppl plot/over
+ppl plot/over    ! needs 2 times to get aline to work - don't know why
+
+! clean up
+ppl window on
+ppl axset 1,1,1,1
+ppl rlabs 1,0
+ppl pen 1,1
+set mode/last verify

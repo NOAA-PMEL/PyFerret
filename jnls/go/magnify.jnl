@@ -1,0 +1,86 @@
+\ cancel mode verify
+!
+! magnify.jnl  (11/93)
+! modified to take separate X and Y factors 10/95
+! modified to take arguments shifting the origin 10/95 (NKL)
+ 
+! Description: rescale and shift the data plotting area (area inside the axes)
+
+! reset the default plotting with     yes? GO magnify 1
+
+ ! use this procedure as follows:
+!		      1         2         3        4
+!       GO magnify [factor] [yfactor] [xshift] [yshift]
+!               factor          - magnification factor (or X mag factor, only,
+!                                 when separate Y factor is supplied)
+!                                 (default = 100)
+!                       = 1     - restore default sizing
+!                       > 1     - increase plot area, decrease edge space
+!                       < 1     - decresae plot area, increase edge space
+!               yfactor         - separate factor for Y axis
+!                                 (default = same as X)
+!		xshift		- the distance (in plot inches) to shift the
+!				  x origin
+!		yshift		- the distance (in plot inches) to shift the
+!				  y origin
+! basic examples
+!	yes? contour/i=1:5/j=1:5 exp(j/2)/i	! default plot
+!       yes? GO magnify				! maximum magnification
+!	yes? contour/i=1:5/j=1:5 exp(j/2)/i	! magnified plot
+!       yes? GO magnify 1			! restore default sizing
+!	yes? contour/i=1:5/j=1:5 exp(j/2)/i	! default plot, again
+! more examples
+!       yes? GO magnify 0.5		!reduce plot area
+!       yes? GO magnify 0.9 2		!magnify X by 0.9 and Y by 2
+!	yes? GO magnify 0.9 2 1.1 -.7	! ... also shift right and down
+
+ ! Note 1: Magnification greater that 100 may have unpredictable results
+!       due to a 4 significant digit limit in PLOT+ symbols
+!       (e.g. 10.20 - 3.4000E-03  -> 10.20 using PLOT+ symbols)
+!       Magnifications less than 1 will have unpredictable results if they
+!       cause the expanded margins (below) to exceed the plot size
+ 
+! Note 2: This procedure must be called again AFTER each "SET VIEWPORT" or
+!	"SET WINDOW/ASPECT=xx" command
+
+! Note 3: The PLOT command recomputes the Y origin and axis length internally
+!	in order to allow room for plot keys.  When using this procedure
+!	together with PLOT follow this procedure:
+!	  yes? GO magnify
+!	  yes? PLOT/SET_UP ... your plot command ...
+!	  yes? GO magnify		! repeat the command
+!	  yes? PPL PLOT
+
+! standard plot margins are (dx,dy) = (1.2,1.4) in the lower left
+!                           (dx,dy) = (1.0,1.4) in the upper right
+! this procedure will divide those margins by the given factor
+ 
+! in case PLOT+ is not yet up and running ...
+PPL origin	! a no-op
+
+! define factors (inverse of the arguments passed)
+DEFINE SYMBOL x_mag_factor 1 / $1"100"
+DEFINE SYMBOL y_mag_factor 1 / $2"($x_mag_factor)"
+ 
+! origin shift requests
+DEFINE SYMBOL x_shift $3"0"
+DEFINE SYMBOL y_shift $4"0"
+
+! origin before shift
+DEFINE SYMBOL mag_xorg `1.2 * ($x_mag_factor)`
+DEFINE SYMBOL mag_yorg `1.4 * ($y_mag_factor)`
+
+! compute axis lengths based on origin and upper right margin
+DEFINE SYMBOL tmpx `1.0 * ($x_mag_factor)`
+DEFINE SYMBOL tmpy `1.4 * ($y_mag_factor)`
+DEFINE SYMBOL tmpx `($tmpx) + ($mag_xorg)`
+DEFINE SYMBOL tmpy `($tmpy) + ($mag_yorg)`
+DEFINE SYMBOL mag_xlen `($vp_width)  - ($tmpx)`
+DEFINE SYMBOL mag_ylen `($vp_height) - ($tmpy)`
+
+
+! set origin and axis length
+ppl origin `($mag_xorg)+($x_shift)`  `($mag_yorg)+($y_shift)`	! reset origin
+ppl axlen  ($mag_xlen)  ($mag_ylen)               	! reset axis lengths
+ 
+set mode/last verify

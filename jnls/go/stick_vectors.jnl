@@ -1,0 +1,48 @@
+\cancel mode verify
+! stick_vectors.jnl
+! 4/94
+! 4/95 - instructions on how to use "PLOTV" and angle/increment arguments
+
+! Description: Make a stick vector plot of a line of U,V values
+
+! Usage:
+
+!    GO stick_vectors PLOT/[quals] U V [angle] [increment]
+! 1 command	   - PLOT with optional /OVERLAY, /TITLE, /NOLAB
+!		   Note: other qualifiers will not function properly (see note)
+! 2 U              - expression for the U component
+! 3 V              - expression for the V component
+! 4 angle          - rotation offset angle of vectors (default=0.0)
+! 5 increment      - plot every Nth vector (default=1)
+
+! example:
+!	yes? SET WINDOW/ASPECT=.4/SIZE=.5    ! long and skinny looks right
+!	yes? SET DATA  monthly_navy_winds
+!	yes? SET REGION/T=16-JAN-1985:16-JAN-1990/X=180/Y=0
+!	yes? GO stick_vectors plot uwnd vwnd
+!  or
+!	yes? GO stick_vectors plot/title=test/line=2/ylimits=-5:5:1 uwnd vwnd
+
+
+! 4/95 -- alternative approach using PLOTV
+! The approach below uses the FERRET command PLOT to load data as 2 variables
+! U and V into PLOT+.  Then it uses "PPL PLOTUV" to perform the plot.
+! An alternative approach is to use the FERRET "PLOT/VS" command to load the
+! data into PLOT+ as "X" and "Y".  Then use "PPL XAXIS" and "PPL YAXIS" to
+! eliminate the incorrect axis limits for the stick plot and use PPL PLOTV
+! to draw the plot.  The X axis will be the numbers 1 ... N
+
+
+! check for required filename and haf_inch_value and valid style
+QUERY/IGNORE $1%<Usage: GO stick_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $2%<Usage: GO stick_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $3%<Usage: GO stick_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+
+! set up the PLOT+ as if for a 2-line plot
+$1/SET_UP $2, $3
+
+! ... but display it with the PLOTUV command
+PPL PLOTUV $4"0" $5"1"
+
+set mode/last verify
+

@@ -1,0 +1,36 @@
+\ cancel mode verify
+! setup_text.jnl  (4/93)  updated 11/93 to use vp_width/height
+
+! Description: set up FERRET and PLOT+ to layout text easily
+
+! this block of code sets up PLOT+ to draw a blank screen
+! the X and Y axes are scaled from zero to one across the full window
+! or viewport
+
+! use this procedure as follows:
+!
+!	GO setup_text
+
+!	ppl labset,,,,default_label_size
+!	ppl labs 1,xposition,yposition,justify  "Text with fonts"
+!	ppl labs 2,xposition,yposition,justify  "Text with fonts"
+!		 .
+!		 .
+!		 .
+!	ppl plot       ! writes the text
+
+! optional:  (use /line= to control color)
+!	plot/over/nolab/vs/i=1:2 (i-1),(i-i)+yvalue  ! a horizontal line 
+! optional:  (use /line= to control color)
+!	plot/over/nolab/vs/i=1:2 (i-i)+xvalue,(i-1)  ! a vertical line 
+
+!	GO cleanup_text     ! restore normal FERRET graphics
+
+plot/set/nolab/i=1:2 i-i-99   ! -99's
+ppl labs; ppl title; ppl xlab; ppl ylab
+ppl axset 0,0,0,0
+ppl origin 0,0
+ppl yaxis 0,1,1; ppl xaxis 0,1,1
+ppl axlen 'VP_WIDTH','VP_HEIGHT'
+
+set mode/last verify

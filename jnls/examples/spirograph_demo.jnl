@@ -1,0 +1,43 @@
+! spirograph.jnl - cute pictures - *sh* 11/91
+! Description: demo of fun line plots
+
+! Clean up from whatever the user has been doing ...
+SET GRID abstract
+CANCEL VARIABLES/ALL
+
+
+! Use the straightening of 2D arrays into 1D to quickly create a cute picture.
+PLOT/VS/LINE/I=1:50/J=1:50 6*I/J,5*J/I
+MESSAGE
+
+! Now define the variable, ODD, to separate odd and even points.
+! Then plot alternatine points on the circumference of a circle.
+LET ODD = MOD(I,2) EQ 0
+LET XPT = IF ODD THEN (-1*SIN(I/100)) ELSE SIN(I/100)
+LET YPT = IF ODD THEN COS(I/100) ELSE (-1*COS(I/100))
+PLOT/VS/LINE/I=1:314 XPT,YPT
+MESSAGE
+
+! Variation on a theme: place the circumference points 10 times
+! further apart but go around the circle 10 times.
+LET XPT2 = IF ODD THEN (-1*SIN(I/10)) ELSE SIN(I/10)
+LET YPT2 = IF ODD THEN COS(I/10) ELSE (-1*COS(I/10))
+PLOT/VS/LINE/I=1:314 XPT2,YPT2
+MESSAGE
+
+! A bit wilder, still ...
+LET XPT3 = IF ODD THEN (-1*SIN(I/10)) ELSE 1/(2+SIN(I/10))
+LET YPT3 = IF ODD THEN COS(I/10) ELSE (1/(2+COS(I/10)))
+PLOT/VS/LINE/I=1:314 XPT3,YPT3
+MESSAGE
+
+! Now for some true art ...
+! Move the circle center while drawing circumference points.
+LET XCNTR = COS(I/30)
+LET YCNTR = SIN(I/30)
+LET XPT4 = IF ODD THEN (-1*SIN(I/10)) ELSE SIN(I/10)
+LET YPT4 = IF ODD THEN COS(I/10) ELSE (-1*COS(I/10))
+LET XPT5 = XPT4 + XCNTR
+LET YPT5 = YPT4 + YCNTR
+PLOT/VS/LINE/I=1:380 XPT5,YPT5
+

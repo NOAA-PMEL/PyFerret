@@ -1,0 +1,56 @@
+\cancel mode verify
+! fland.jnl - a land mask (overlay or "basemap" (default 60 minute resolution)
+! 4/93
+! 	 10/93 - updated for Ferret V3.01
+! 	 2/94  - added [basemap]
+! 	 11/94 - added transparent overlays and "detail" control
+!	  3/95 - added region arguments -- mostly to help point-and-click
+
+! Description: Plot or overlay an area-filled map of the continents
+
+! usage:       arg1        arg2        arg3          arg4      arg5      arg6
+!  GO fland [resolution] [palette] [overlay_style] [detail] [x=lo:hi] [y=lo:hi]
+
+! arg 1 - resolution - may be 120,60,40,20,10, or 5     default=60
+!	  To use resolution "nnn" the file etoponnn must exist.
+! arg 2 - palette - may be any palette on your system.  Normally solid colors
+!		    like black, gray,red, etc. (see Fpalette '*') default=gray
+! arg 3 - overlay_style - "basemap", "transparent", or "overlay" (default)
+! arg 4 - detailed - may be "detailed", "all" or "solid"  default=solid
+!	  Use "detailed" together with a spectrum like dark_terrestrial
+!	  Use "all" to plot oceans as well as land.
+! arg 5 - longitude limits - specify as for any FERRET longitude range
+! arg 6 - latitude  limits - specify as for any FERRET latitude  range
+ 
+! examples:
+!	  GO fland 		! default - 60 minute resolution, color gray
+!	  GO fland 120		!  120 minute resolution
+!	  GO fland 5		! 5 minute resolution - caution! it's LARGE
+!	  GO fland 40 red	! 20 minute resolution with palette red.spk
+!	  GO fland 40 red basemap
+!	  GO fland 40 dark_terrestrial overlay detailed
+!	  GO fland 20 gray transparent
+!	  GO fland " " red	! default (60) minute resolution in red
+!	  GO fland 40 dark_terrestrial overlay detailed x=160e:140w y=20s:20n
+! or for a good time try
+!	SET DATA monthly_navy_winds; VECTOR/l=1 uwnd,vwnd
+!	GO fland  60 dark_terrestrial transparent detailed
+
+! Note 1: To use resolution "nnn" the file etoponnn must exist.
+! Note 2: If "basemap" is given then the current default region will determine
+!	  the region to be plotted
+! Note 3: The transparent option creates a see-through overlay land mask
+
+! check the overlay/basemap/transparent option
+query/ignore $3%overlay|overlay|basemap|transparent<3rd argument of GO fland must be "overlay", "basemap", or "transparent"%
+query/ignore $4%not_required|detailed|solid|all> <4th argument of GO basemap may be "detailed", "solid" or "all" (ocean, too)%
+
+set data/save
+
+set data etopo$1"60"
+
+shade/nolab/nokey/lev=$4"(0,10000,10000)|detailed>(0,200,50)(200,1000,100)(1000,10000,1000)|solid>(0,10000,10000)|all>(-200,200,50)(-1000,1000,200)(-8000,8000,1000)"/pal=$2"gray"$3"/overlay|basemap> |*>/overlay"$5" |*>/*"$6" |*>/*" $3"rose|transparent>if mod(i+j,2) eq 0 then rose|*>rose"
+
+cancel data etopo$1"60"
+set data/restore
+set mode/last verify

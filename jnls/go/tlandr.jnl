@@ -1,0 +1,19 @@
+cancel mode verify	! ... now overlaying coastal outline ...
+! Description: an outdated routine equivalent to "GO land"
+
+set data/save
+define axis/x=1:8850:1 axtlandr
+define grid/x=axtlandr gtlandr
+
+file/col=2/form=unform/var="xtlandr,ytlandr"/grid=gtlandr unf_tlandr.dat
+
+set variable/bad=1E35 xtlandr
+set variable/bad=1E35 ytlandr
+plot/set/vs/over/nolab/x=1:8850 xtlandr,ytlandr
+ppl pen 1 1
+ppl plot/over
+
+cancel data unf_tlandr.dat
+set data/restore
+set mode/last verify
+

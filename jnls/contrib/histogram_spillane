@@ -1,0 +1,64 @@
+# /bin/csh -f
+# contributed by Mick Spillane - 5/93
+# revised 8/93: does not assume positive data - *ms*
+#
+# histogram - script to summarize binned data, assuming one entry per record.
+#             the class values are determined by the data format (fortran i or
+#             f format) e.g. f8.2 will result in class increments of 0.01
+#
+# i/o files used are:
+#       histo.input   - file of binned data (perhaps produced by ferret)
+#       histo.output  - output of this script with count and class_value
+#                       for each bin present
+#       get_histo.jnl - file of ferret instructions to plot histogram
+#
+# example of usage from within ferret:
+#       yes? let hisvar = ...            ! defines the binning of the data
+#       yes? list/nohead/file=histo.input/form=(f8.2) hisvar  ! write data
+#       yes? spawn histogram                          ! form the histogram
+#       yes? go get_histo                      ! returns & plots histogram
+#
+# mick spillane               noaa/pmel/ocrd                      8/2/1993
+#
+# step 1 - remove missing data records
+  grep -v '\*' histo.input >! histo.inp2
+# step 2 - sort the resulting file
+  sort -n histo.inp2 >! histo.sort
+# step 3a - compute count for each bin
+  uniq -c histo.sort  >! histo.out1
+# step 3b - form an integer from the bin variable
+  awk '{print $2}' histo.out1 | sed 's/\.//;s/^0//;s/-0/-/' >! histo.out2
+  paste histo.out1 histo.out2 >! histo.out
+# step 4a - form awk script to fill missing bins
+  set fbin = `head -1 histo.out | sed 's/\.//' | awk '{print $3}'`
+  @ nbin = ($lbin - $fbin) + 1
+  echo '{'                                           >! fillgap.awk
+  echo '  bin[$3] = $2'                              >> fillgap.awk
+  echo '  count[$3] = $1'                            >> fillgap.awk
+  echo '}'                                           >> fillgap.awk
+  echo 'END {'                                       >> fillgap.awk
+  echo '  fac = bin['$fbin']/'$fbin                  >> fillgap.awk
+  echo '  for ( i = '$fbin' ; i <= '$lbin' ; i++ )'  >> fillgap.awk
+  echo '    if ( count[i] >= 1 )'                    >> fillgap.awk
+  echo '      print bin[i], count[i]'                >> fillgap.awk
+  echo '    else'                                    >> fillgap.awk
+  echo '      print i*fac, "0"'                      >> fillgap.awk
+  echo '}'                                           >> fillgap.awk
+# step 4b - apply the script
+  awk -f fillgap.awk histo.out >! histo.output
+# step 5 - produce a get_histo.jnl file to plot the histogram in ferret
+  echo 'define axis/x=1:'$nbin':1 xh'                      >! get_histo.jnl
+  echo 'define grid/x=xh gh'                               >> get_histo.jnl
+  echo 'file/grid=gh/for=free/var="bin,npts" histo.output' >> get_histo.jnl
+  echo 'region/x=1:'$nbin                                  >> get_histo.jnl
+  echo 'plot/vs bin,npts'                                  >> get_histo.jnl
+# step 6 - clean up unwanted files
+  \rm histo.sort histo.input histo.inp2 histo.out1 histo.out2 histo.out
+#
+  echo '*****************************************************'
+  echo '* use get_histo.jnl in ferret to plot the histogram *'
+  echo '*****************************************************'
+#
+# end of script
+
+

@@ -1,0 +1,194 @@
+! sigma_coordinate_demo_zaxreplace.jnl 9/96 *sh*
+!    updated 11/97 using ZAXREPLACE() function
+
+! Description: demo of how to handle sigma coordinate output
+
+! This demo will proceed in several steps:
+! 1) We will create an artificial sigma coordinate model output data set
+!    Clearly in **your** application you would not do this -- you
+!    would be working with your own model outputs
+! 2) We will define the "depth" function as the vertical integral of
+!    layer thickness and produce some reference plots from it
+! 3) We will show how to transform the 4-dimensional X-Y-LAYER-TIME data
+!    set into an X-Y-DEPTH-TIME representation:
+! 3a) Simple case -- where Z is a single fixed depth
+!     For example, a time series at a fixed depth
+! 3b) General case -- where the "view" of the data requires a range of depths
+!     For example, a vertical section contour plot
+ 
+
+! ----------------------
+! 1) CREATE AN ARTIFICIAL SIGMA COORDINATE MODEL OUTPUT
+
+! Create variables to define a bottom bathymetry on a grid
+! and a vertical sigma coordinate system of 10 layers.
+! We will invent a (non-physical) flow field in a channel.
+
+! The variables we create will be
+!	bathymetry - the bottom bathymetry for the model
+!	h	   - layer thickness (a fcn of X,Y,Z, and T)
+!	flow	   - the flow field
+
+! house-keeping for the demo
+cancel wind 2
+set wind 1
+define view/x=0.0:.33 v1
+define view/x=.33:.67 v2
+define view/x=.67:1.0 v3
+
+define axis/x=-50:50:2/unit=km xchannel
+define axis/y=-30:30:2/unit=km yrise
+define axis/z=1:10:1/unit=layer/depth zlayer
+define axis/T=1:20:1/unit=hours time
+define grid/x=xchannel/y=yrise/z=zlayer/t=time gg
+
+! bathymetry: a channel with a rise along the axis of the channel
+let pi = 3.14159
+let nominal_depth = 100
+let cross_channel_size = nominal_depth * (1 + COS(X[g=gg]/60*pi))
+let xchannel = -1 * cross_channel_size
+let rise_shape = (1 + COS(Y[g=gg]/40*pi))/6
+let bathymetry = xchannel + rise_shape*CROSS_CHANNEL_SIZE
+set variable/title="Channel Bathymetry"/unit=meters bathymetry
+
+! sigma layer thickness: varies in X, Y, Z, and T in this example
+let time_evolve = 0 + L[g=gg]/100
+let h0 = EXP(time_evolve*K[g=gg])
+let h_normalized = h0/h0[k=1:10@sum]
+let h = h_normalized * (-1 * bathymetry)
+set variable/title="layer thickness"/unit=meters h
+
+! fictitious flow field:
+! ... faster near surface
+!     faster at mid-channel than near the edges
+!     speeds up over the rise
+!     speed increases with sinusoidal variation in time
+let flow_profile = LOG((11-K[g=gg]))
+let time_ramp = 1 + L[g=gg]/20 + 0.2*SIN((L[g=gg]-1)/2)
+let flow = time_ramp * flow_profile * cross_channel_size / (1-rise_shape)
+set variable/title="non-physical flow field" flow
+
+! ----------------------
+! 2) DEFINE "DEPTH" --  THE VERTICAL INTEGRAL OF LAYER THICKNESS
+
+! The depth of each (x,y,k) grid point is computed by integrating H.
+! We subtract h/2 because we want the depth of the midpoint of the layer.
+let depth = h[k=@rsum]-h/2
+set variable/title="DEPTH function"/unit=meters depth
+
+! * * * PLOT: a 3-frame plot to serve as a reference
+   set wind/asp=.4/size=.7 1
+   set view v1
+   go magnify 1.1
+   wire/view=-30,-80,150 bathymetry	! from 150m above and 80 km upstream
+
+   set view v2
+   go magnify 1.1
+   shade/y=0/l=1 depth
+   contour/y=0/l=1/levels=(50)DARK(50)/over/nolab/palette=black depth
+   label 0 2 0,0,.15 @AC(50m depth marked)
+
+   set view v3
+   go magnify 1.1
+   fill/y=0/l=1/levels=(0,320,20) flow
+   contour/y=0/l=1/levels=(50)DARK(50)/over/nolab/palette=black depth
+   label 0 2.4 0,0,.15 @AC(50m depth marked)
+
+   label/nouser -1 -.65 0,0,.2 @ACMid-way
+   label/nouser -1 -.90 0,0,.2 @ACdown channel
+
+   message
+
+! ----------------------
+! DEFINE FLOW FIELD ON A DEPTH AXIS
+
+define axis/z=0:180:2/unit=meters/depth zdepth
+LET flow_on_depth = ZAXREPLACE(flow,depth, z[gz=zdepth])
+set variable/title="Flow as a function of depth" flow_on_depth
+
+   message
+
+! ----------------------
+! VISUALIZE FLOW WHERE Z IS A SINGLE FIXED DEPTH
+! Note: this demo is graphical but the procedure is valid for analyses, as well
+
+LET flow_at_50 = flow_on_depth[Z=50]
+set variable/title="Flow at 50 meters" flow_at_50
+
+! * * * PLOT: a 2-frame plot comparing flow field in a single layer
+!	with flow at fixed depth
+   set wind/asp=.5 2
+   set wind/clear
+   set view left
+   go magnify 1.2
+
+!  ... flow field within a single layer
+   fill/k=8/l=1/title="Flow in layer 8"/level=(0,320,20) flow
+
+   set view right
+   go magnify 1.2
+
+!  Note: the missing points between the flow and the black mask occur
+!  ... because the deepest layer of flow is considered to be 1/2 grid box above
+!  ... the bottom
+   shade/l=1/level flow_at_50
+   shade/over/nolab/palette=black IF bathymetry GT (-50) then 1
+   plot/vs/over/line x[g=gg], -1 * bathymetry[y=0]
+   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACPlan View
+   message
+
+! Make a time-series plot comparing flow in a layer with flow at a fixed depth
+! (at the top of the rise along the channel mid-line)
+   cancel view
+   set wind/asp=.5
+   plot/x=0/y=0/l=1:20 flow[k=8], flow_at_50
+
+   label/nouser  `($ppl$xlen)/2` `($ppl$ylen)+0.3` 0,0,.25 @ACTime series
+
+   message
+
+! ----------------------
+! VISUALIZE FLOW WHERE THE "VIEW" OF THE DATA REQUIRES A RANGE OF DEPTHS
+! Note: this demo is graphical but the procedure is valid for analyses, as well
+
+
+! * * * PLOT: across-channel flow field at the "rise" along the channel
+! 	Compare flow as a function of layer with flow as a function of depth
+   set wind/clear
+   set wind/asp=.5
+   set view left
+   go magnify 1.2
+
+!  First flow as a function of layer
+   fill/Y=0/l=1/level=(0,320,20)/title="Flow as a function of layer" flow
+
+   set view right
+   go magnify 1.2
+
+!  Now flow as a function of depth
+!  Note: the missing points at the surface occur where the top H layer
+!        is thick enough so that the mid-point of the top layer is deeper
+!        than the first point of the new depth axis, zdepth
+   shade/levels/z=0:180/Y=0/L=1 flow_on_depth
+   plot/vs/over/line x[g=gg], -1 * bathymetry[y=0]
+
+   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACCross-section: mid-way along channel
+   message
+
+! * * * PLOT: along-channel flow at mid-channel
+! 	Compare flow as a function of layer with flow as a function of depth
+   set wind/clear
+   set view left
+   go magnify 1.2
+
+!  First flow as a function of layer
+   fill/x=0/l=1/title="Flow as a function of layer" flow
+
+   set view right
+   go magnify 1.2
+
+!  Now flow as a function of depth
+   shade/levels/z=0:180/X=0/L=1 flow_on_depth
+   plot/vs/over/line y[g=gg], -1 * bathymetry[x=0]
+
+   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACSection along channel axis

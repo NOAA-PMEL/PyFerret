@@ -1,0 +1,93 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_label.jnl --  Place a label on a map projection.  For working
+!                  with map projection scripts in Ferret v4.50
+!		    		
+! Jonathan Callahan
+! 5/97
+
+! Description:  Place a label on a map projection using user coordinates
+!
+! This script presumes that following are predefined a projection script
+! run previous to this script:
+!
+!	mp_lambda  longitude in radians
+!       mp_phi     latitude in radians
+!	x_page	field describing transformation from lat/lon to X page coordinates
+!	x_page	field describing transformation from lat/lon to Y page coordinates
+!
+! Usage:        arg1   arg2    arg3    arg4    arg5   arg6
+!  go mp_label [xpos] [ypos] [center] [angle] [size] [text]
+!
+! arg 1 - X position in user units (world longitude)
+! arg 2 - Y position in user units (world latitude)
+! arg 3 - justification -1:left  0:center  1:right
+! arg 4 - angle in degrees, 0 degrees a 3 o'clock
+! arg 5 - size of text in inches
+! arg 6 - text to use as label
+!
+! Example:
+!	  go mp_label 237.7 47.6 -1 20 .1 @p2@IISeattle     ! mark "Seattle" on the map
+!
+
+query/ignore $1%<Specify all arguments: [xpos] [ypos] [center] [angle] [size] [text]%
+query/ignore $2%<Specify all arguments: [xpos] [ypos] [center] [angle] [size] [text]%
+query/ignore $3%<Specify all arguments: [xpos] [ypos] [center] [angle] [size] [text]%
+query/ignore $4%<Specify all arguments: [xpos] [ypos] [center] [angle] [size] [text]%
+query/ignore $5%<Specify all arguments: [xpos] [ypos] [center] [angle] [size] [text]%
+query/ignore $6%<Specify all arguments: [xpos] [ypos] [center] [angle] [size] [text]%
+
+define region/default save
+set grid/save
+
+let/quiet mp_x = x
+let/quiet mp_y = y
+
+let/quiet mp_std_paralell_north = `mp_y[j=@max]`
+let/quiet mp_std_paralell_south = `mp_y[j=@min]`
+
+!
+! This test will keep the central meridians defined by "from space" views
+!
+let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_central_meridian = `(mp_x[i=@max] + mp_x[i=@min])/2`
+endif
+let/quiet mp_test = `mp_standard_paralell` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_standard_paralell = `(mp_y[j=@max] + mp_y[j=@min])/2`
+endif
+cancel variable mp_test
+
+
+let/quiet mp_lambda = $1 * deg2rad
+let/quiet mp_phi = $2 * deg2rad
+
+label `x_page`, `y_page`, $3, $4, $5  $6
+
+!
+! Restore previous settings
+!
+set region save
+set grid/restore
+
+let/quiet mp_x = x
+let/quiet mp_y = y
+let/quiet mp_test = `mp_central_meridian` - `(mp_x[i=@max] + mp_x[i=@min])/2`
+
+if `mp_test eq 0` then
+   let/quiet mp_central_meridian = (mp_x[i=@max] + mp_x[i=@min])/2
+endif
+let/quiet mp_test = `mp_standard_paralell` - `(mp_y[j=@max] + mp_y[j=@min])/2`
+if `mp_test eq 0` then
+   let/quiet mp_standard_paralell = (mp_y[j=@max] + mp_y[j=@min])/2
+endif
+
+cancel variable mp_test
+let/quiet mp_std_paralell_north = mp_y[j=@max]
+let/quiet mp_std_paralell_south = mp_y[j=@min]
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

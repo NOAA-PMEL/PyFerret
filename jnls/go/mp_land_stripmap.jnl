@@ -1,0 +1,152 @@
+\cancel mode verify
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_land_stripmap.jnl --  Creates an composite map based on the predefined
+!                           map projection.  
+!		    		
+! Jonathan Callahan
+! 9/97
+!
+
+! Description:  This journal file is not "nice" and is provided as an example only.
+!
+! Usage:                   arg1          arg2            arg3     arg4   arg5
+!  go mp_ocean_stripmap [variable] [levels qualifier] [palette] [fland] [land]
+!
+! arg 1 - variable to be plotted
+! arg 2 - a Ferret style levels qualifier
+! arg 3 - the palette to use
+! arg 4 - flag determining whether mp_go_fland is turned on[1] or off[0]
+! arg 5 - flag determining whether mp_go_land is turned on[1] or off[0]
+
+! Example:
+!   use coads_clmatology
+!   go mp_sinusoidal
+!   set grid sst
+!   go mp_land_stripmap sst lev=(-2,20,4)(20,34,2) no_green 1 0
+!
+
+
+define viewport/xlim=0,.222/ylim=0,.5 mp_l1
+define viewport/xlim=.222,.444/ylim=0,.5 mp_l2
+define viewport/xlim=.444,.722/ylim=0,.5 mp_l3
+define viewport/xlim=.722,.999/ylim=0,.5 mp_l4
+define viewport/xlim=0,.389/ylim=.5,1 mp_u1
+define viewport/xlim=.389,.999/ylim=.5,1 mp_u2
+
+set data/save
+
+set region/y=-90:0
+
+set grid $1
+palette $3
+set view mp_l1
+set region/x=180:260
+go margins 0,0,0,0
+shade/set_up/nolab/$2 $1, x_page, y_page
+ppl axset,0,0,0,0
+ppl axlabp,0,0
+ppl box,OFF
+ppl shade
+if $4 then
+  set data etopo60
+  set grid rose
+  palette gray
+  shade/over/nolab/lev=(0,8000,8000) rose, x_page, y_page
+endif
+
+set data/restore
+set grid $1
+palette $3
+set view mp_l2
+set region/x=260:340
+go margins 0,0,0,0
+shade/set_up/nolab/$2 $1, x_page, y_page
+ppl axset,0,0,0,0
+ppl axlabp,0,0
+ppl box,OFF
+ppl shade
+if $4 then
+  set data etopo60
+  set grid rose
+  palette gray
+  shade/over/nolab/lev=(0,8000,8000) rose, x_page, y_page
+endif
+
+set data/restore
+set grid $1
+palette $3
+set view mp_l3
+set region/x=340:440
+go margins 0,0,0,0
+shade/set_up/nolab/$2 $1, x_page, y_page
+ppl axset,0,0,0,0
+ppl axlabp,0,0
+ppl box,OFF
+ppl shade
+if $4 then
+  set data etopo60
+  set grid rose
+  palette gray
+  shade/over/nolab/lev=(0,8000,8000) rose, x_page, y_page
+endif
+
+set data/restore
+set grid $1
+palette $3
+set view mp_l4
+set region/x=440:540
+go margins 0,0,0,0
+shade/set_up/nolab/$2 $1, x_page, y_page
+ppl axset,0,0,0,0
+ppl axlabp,0,0
+ppl box,OFF
+ppl shade
+if $4 then
+  set data etopo60
+  set grid rose
+  palette gray
+  shade/over/nolab/lev=(0,8000,8000) rose, x_page, y_page
+endif
+
+set region/y=0:90
+
+set data/restore
+set grid $1
+palette $3
+set view mp_u1
+set region/x=180:320
+go margins 0,0,0,0
+shade/set_up/nolab/$2 $1, x_page, y_page
+ppl axset,0,0,0,0
+ppl axlabp,0,0
+ppl box,OFF
+ppl shade
+if $4 then
+  set data etopo60
+  set grid rose
+  palette gray
+  shade/over/nolab/lev=(0,8000,8000) rose, x_page, y_page
+endif
+
+set data/restore
+set grid $1
+palette $3
+set view mp_u2
+set region/x=320:540
+go margins 0,0,0,0
+shade/set_up/nolab/$2 $1, x_page, y_page
+ppl axset,0,0,0,0
+ppl axlabp,0,0
+ppl box,OFF
+ppl shade
+if $4 then
+  set data etopo60
+  set grid rose
+  palette gray
+  shade/over/nolab/lev=(0,8000,8000) rose, x_page, y_page
+endif
+
+
+set grid $1
+set data/restore
+set mode/last verify

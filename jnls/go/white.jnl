@@ -1,0 +1,9 @@
+\CANCEL MODE VERIFY     ! ... setting white background
+! updated 10/93 for Ferret V3.01
+
+! Description: set video background to white, foreground to black
+
+ppl color 1 0 0 0
+ppl color 0 100 100 100
+
+SET MODE/LAST VERIFY

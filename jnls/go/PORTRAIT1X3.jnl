@@ -1,0 +1,32 @@
+\cancel mode verify      ! ... now defining 3 viewports: bottom,middle,top
+! Description: Set up for three viewports on an 8.5 x 11 page
+message/continue .....
+message/continue The viewports are sized to fit well on an 8 1/2 x 11 page
+message/continue Viewport names are: bot3,mid3,top3
+message/continue Use "SET VIEWPORT bot3" to select the bottom third, etc.
+message/continue Use CANCEL VIEWPORT and PPL/RESET to restore default graphics
+message/continue For hard copy use the "-p portrait" option with mtp
+
+! Create 3 viewports on a portrait plot - 3 down
+! The sizing is to fill a portrait 8 1/2 x 11 page.
+
+ppl/reset
+set window/aspect=1.32  
+
+! define viewports
+set mode/last verify
+
+define view/xlimits=0,1/ylimits=0,.33 bot3
+define view/xlimits=0,1/ylimits=.33,.66 mid3
+define view/xlimits=0,1/ylimits=.66,1 top3
+
+\message/continue .....
+\message/continue In order to decrease amount of "dead space" in the plot,
+\message/continue simply modify the ylimits as defined above so that the
+\message/continue viewports slightly overlap each other.
+\message/continue .....
+
+
+
+\set window/size = 0.6	! immediate redraw / appropriate screen size
+

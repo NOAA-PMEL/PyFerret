@@ -1,0 +1,22 @@
+\cancel mode verify	! ... removing the Ferret logo from a plot.
+! usage:   GO remove_logo
+
+! The Ferret logo is automatically placed on each plot made by Ferret, giving
+! the version of Ferret and the date of the plot.  You may wish to remove this
+! logo from your plots, for example, for publications.
+!
+!   e.g.  remove the Ferret logo from a plot
+!	   yes? PLOT/SET_UP/I=1:100 SIN(I/6)
+!	   yes? GO remove_logo
+!	   yes? PPL PLOT
+
+! Label 1, the FERRET version number
+PPL LABS/NOUSER 1,0,0 @AS
+
+! Label 2, the NOAA/PMEL/TMAP citation
+PPL LABS/NOUSER 2,0,0 @AS
+
+! Label 3, the date stamp
+PPL LABS/NOUSER 3,0,0 @AS
+
+set mode/last verify

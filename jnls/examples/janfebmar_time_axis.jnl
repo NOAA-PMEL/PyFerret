@@ -1,0 +1,61 @@
+! janfebmar_time_axis.jnl 2/96 *sh*
+
+! based on question from user Donna Sengelaub at Naval Postgraduate School
+
+! Description: a time axis of Jan,Feb,Mar only from successive years
+
+! ============================
+
+! define some fictitious data ...
+! suppose the data is on a weekly axis
+define axis/t=1-jan-1987:1-jan-1997:7/unit=days t_weeks
+define grid/t=t_weeks g_weeks
+let my_data = sin(l[g=g_weeks])
+
+! regrid to daily data so the data points fill each month
+define axis/t="1-jan-1987:12:00":"1-jan-1997:12:00":1/unit=days t_days
+define grid/t=t_days g_days
+let my_data_daily = my_data[g=g_days]
+
+set wind/asp=.5	! looks nicer for time series plot
+
+! plot the first year of data
+define view/xlim=0,.1/text=1 y87
+set view y87
+ppl axlen ($VP_width)
+plot/t=1-jan-1987:31-mar-1987/title=" "/set_up my_data_daily
+ppl axset 1,1,1,0		! no right hand axis
+GO unlabel 1; GO unlabel 2; GO unlabel 3
+ppl plot
+
+! plot the second year of data
+define view/xlim=.1,.2/text=1 y88
+set view y88
+ppl axlen ($VP_width)
+plot/t=1-jan-1988:31-mar-1988/title=" "/set_up my_data_daily
+ppl axset 1,1,0,0		! no right or left hand axis
+GO unlabel 1; GO unlabel 2; GO unlabel 3
+ppl plot
+
+! plot the third year of data
+define view/xlim=.2,.3/text=1 y89
+set view y89
+ppl axlen ($VP_width)
+plot/t=1-jan-1989:31-mar-1989/title=" "/set my_data_daily
+GO unlabel 1; GO unlabel 2; GO unlabel 3
+ppl plot
+
+! repeat for other years
+REPEAT/I=3:6 (define view/xlim=`i/10`,`(i+1)/10`/text=1 y`87+i`; set view y`87+i`; ppl axlen ($VP_width); plot/t=1-jan-19`87+i`:31-mar-19`87+i`/title=" "/set my_data_daily; GO unlabel 1; GO unlabel 2; GO unlabel 3; ppl plot)
+
+! plot the final year of data
+define view/xlim=.7,.8/text=1 y94
+set view y94
+ppl axlen ($VP_width)
+ppl axset 1,1,0,1
+plot/t=1-jan-1989:31-mar-1989/title=" " my_data_daily
+
+! clean up
+ppl axset 1,1,1,1
+
+

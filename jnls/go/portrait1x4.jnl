@@ -1,0 +1,35 @@
+\cancel mode verify      ! ... now defining 4 viewports: bot4,bm4,tm4,top4
+! Description: Set up for four viewports on an 8.5 x 11 page
+message/continue .....
+message/continue The viewports are sized to fit well on an 8 1/2 x 11 page
+message/continue Viewport names are: bb4,ub4,lt4,tt4
+message/continue bb4 ----> bottom bottom
+message/continue ub4 ----> upper bottom
+message/continue lt4 ----> lower top
+message/continue tt4 ----> top top
+message/continue Use "SET VIEWPORT ub4" to select the 2nd quarter from the
+message/continue bottom, etc.
+message/continue Use CANCEL VIEWPORT and PPL/RESET to restore default graphics
+message/continue For hard copy use the "-p portrait" option with mtp
+message/continue .....
+
+! Create 4 viewports on a portrait plot - 4 down
+! The sizing is to fill a portrait 8 1/2 x 11 page.
+
+ppl/reset
+set window/aspect=1.32  
+
+set mode/last verify
+
+define view/xlimits=0,1/ylimits=0,.26   bb4
+define view/xlimits=0,1/ylimits=.24,.51 ub4
+define view/xlimits=0,1/ylimits=.51,.76 lt4
+define view/xlimits=0,1/ylimits=.76,1   tt4
+
+\message/continue .....
+\message/continue To decrease the amount of "dead space" in the plot,
+\message/continue simply modify the ylimits as defined above so
+\message/continue that the viewports slightly overlap each other
+\message/continue .....
+
+\set window/size = 0.6	! immediate redraw / appropriate screen size

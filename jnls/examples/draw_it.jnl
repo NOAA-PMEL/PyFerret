@@ -1,0 +1,15 @@
+\cancel mode verify
+!Description: Support routine for objective_analysis demonstration
+! usage:
+!	 GO draw_it variable "title" "graphics_style" "viewport"
+!  e.g.  GO draw_it my_variable "Title of my variable" SHADE upper_left
+
+set view $4"|upper>vupper|upper_right>vur|upper_left>vul|lower_right>vlr|lower_left>vll"
+go magnify 1.4
+$3/x=1:10/y=1:10/lev=(-0.6,.8,.1)/nolab/set_up $1
+ppl labs; ppl ylab; ppl xlab
+ppl title .3 @AC$2
+ppl $3
+ppl shaset reset
+set mode verify
+

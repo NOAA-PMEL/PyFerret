@@ -1,0 +1,41 @@
+SET MODE VERIFY  ! histogram.notes
+! -------
+! The command "GO histogram" can be used to produce a histogram-like plot.
+! Basic instructions on its use are given when the command is issued.
+! You will need only to define the variable HISTOVAR and set the region
+! of interest.
+! What follows are notes on the advanced usage of the command.
+! -------
+! SMOOTHING THE OUTPUT PLOT:
+! By default a smoothing window of width 11 points (@SBX:11) is applied 
+! to HPDF, the unsmoothed estimate of the Probability Density Function.
+! To modify the width of the smoothing window use the commands
+! "SHOW ALIAS HISTPLOT" and "DEFINE ALIAS HISTPLOT ...".  Redefine the 
+! smoothing window and then give the command "GO histogram.plot"
+! Also, by default the variable HPDF is computed using an approximate
+! derivative based on an interval of 10 data points.  For large data sets a
+! a larger interval may be preferable.  Use "SHOW VARIABLE HPDF" to see the
+! current definition and enlarge it to, say, 20 points with
+! LET HPDF = 20/((HVAL[I=@SHF:+10]-HVAL[I=@SHF:-10])*HCOUNT[X=@MAX])
+! Then give the command "GO histogram.plot"
+message ****
+! -------
+! VERY LARGE AMOUNTS OF DATA
+! By default "GO histogram" can accept up to 40000 points.  To increase
+! this limit copy the file $FER_DIR/fer/go/histogram.jnl into your own
+! directory and modify the line which defines the axis HISTSIZE.
+! -------
+! WIDE-RANGING DATA VALUES
+! FERRET writes your data to a disk file and uses the Unix command sort to
+! assist with producing histograms.  By default FERRET writes your data to
+! disk using a FORTRAN format of F18.9.  If this is inadequate to describe
+! your data copy the file $FER_DIR/fer/go/histogram.jnl into your own
+! directory and modify the FORTRAN FORMAT statement in it.
+! -------
+! HISTOGRAM PLOTS AND VIEWPORTS
+! The GO histogram command uses viewports to help with labelling the plot.
+! If this conflicts with your uses of viewports copy the file
+! $FER_DIR/fer/go/histogram.plot into your own directory and modify 
+! the definitions of viewports hvp1 and hvp2 to suit your needs. 
+
+SET MODE/LAST VERIFY

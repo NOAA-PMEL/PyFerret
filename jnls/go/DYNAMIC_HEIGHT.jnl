@@ -1,0 +1,52 @@
+cancel mode verify      ! defining dynamic height terms
+! dynamic_height.jnl
+! updated 10/93 for Ferret V3.01
+! Description:  Define FERRET variables for dynamic height calculations
+
+say *** INSTRUCTIONS:
+say 1) Use LET to define three variables:
+say dyn_S   -   your salinity          (PPT/1000 - 1)
+say dyn_T   -   your temperature       (degrees C)
+say dyn_P   -   your pressure          (millibars) (or depth in meters)
+say note: if you use "Z" for pressure use the G= syntax e.g. Z[G=TEMP]
+say       so that FERRET knows which Z axis to use
+say   
+say
+say 2) Use the SET REGION command to specify the depth of zero motion
+say e.g. SET REGION/Z=0:1000 to set 1000 meters as the zero motion depth
+say
+say 
+say 3) Results will be available as the following LET variables:
+say Result                         XY plane    XZ or YZ plane
+say ---------                      --------    --------------
+say Dynamic height (dynamic cm)     DYN_HT        DYN_HTz
+say Geostriphic velocity(cm/sec)  GEO_U,GEO_V   GEO_Uz,GEO_Vz
+say 
+say 4) Examples: yes? CONTOUR/X=160e:160w/y=10s:10n DYN_HT   <-- in the XY plane 
+say or           yes? CONTOUR/X=180/Y=10S:10n DYN_HTz        <-- in the YZ plane
+say The difference in dynamic height between two depths (pressure levels)
+say may be expressed as e.g. z=500m to 1000m --> DYN_HT[Z=500:1000]
+
+! description of calculation used:
+!
+! dynamic ht = INTEGRAL[ SVanom dZ ]
+! where SVanom = SV - SV(35,0,0)
+! and SV = 1/RHO, the specific volume
+! Z in meters or decibars
+
+! geostrophic velocity is given by 
+! Ug = -10/f d/dy(D)
+! Vg =  10/f d/dx(D)
+! where f is 2*OMEGA*SIN(latitude), OMEGA = 2*3.14159/86164 = 7.29212E-5 s-1
+
+let SVanom = 1/rho_UN(dyn_s,dyn_t,dyn_p) - 1/rho_UN(35,0,dyn_p)
+let dyn_mask = if temp[z=@nbd] eq 0 then 1
+let/title="Dynamic Height(dyn-cm)" DYN_HT  = 1E5 * dyn_mask * SVanom[z=@din]
+let/title="Dynamic Height(dyn-cm)" DYN_HTz = 1E5 * dyn_mask * (SVanom[z=@din]-SVanom[z=@iin])
+let/title="Geostrophic U (cm/sec)" GEO_U = -10/(1.458424E-4*SIN(Y/57.29578)) * DYN_HT[Y=@DDC]
+let/title="Geostrophic V (cm/sec)" GEO_V =  10/(1.458424E-4*SIN(Y/57.29578)) * DYN_HT[X=@DDC]
+let/title="Geostrophic U (cm/sec)" GEO_Uz = -10/(1.458424E-4*SIN(Y/57.29578)) * DYN_HTz[Y=@DDC]
+let/title="Geostrophic V (cm/sec)" GEO_Vz =  10/(1.458424E-4*SIN(Y/57.29578)) * DYN_HTz[X=@DDC]
+
+set mode/last verify
+

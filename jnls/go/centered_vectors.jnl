@@ -1,0 +1,77 @@
+\cancel mode verify
+! centered_vectors.jnl
+! 4/94
+! updated 9/96 for Ferret V4.4 -- default PLOT/vs is now symbols
+
+! Description: Vector plot with coords at vector midpoints
+
+! Usage:
+
+!    GO centered_vectors VECTOR/[quals] U V half_inch_value ["clock"] ["stick"]
+! 1 command	   - VECTOR with optional /OVERLAY, /TITLE, /NOLAB
+!		   Note: other qualifiers will not function properly (see note)
+! 2 U              - expression for the U component
+! 3 V              - expression for the V component
+! 4 haf_inch_value - the scale value - value of a 1/2 inch vector
+! 5 arrow center   - "clock" for clock-hand vectors or "centered" [default]
+! 6 arrow head     - "stick" for no head or "head" [default]
+
+! Note: To achieve the effects of /XSKIP and /YSKIP requires regridding
+!	see example below
+
+! example:
+!	yes? SET DATA  monthly_navy_winds
+!	yes? SET REGION/L=1/X=130E:80W/Y=10S:30N
+!	yes? GO centered_vectors vector uwnd vwnd 10	! centered with heads
+!	yes? GO centered_vectors vector/title=test uwnd vwnd 10 " " stick
+
+! or to get /XSKIP and /YSKIP functionality use regridding:
+!	yes? SET REGION/X=50E:0/Y=80S:80N     ! too many vectors
+!	yes? DEFINE AXIS/X=50E:0/NPOINTS=50/UNIT=DEGREE xskip
+!	yes? DEFINE AXIS/Y=80S:80N/NPOINTS=40/UNIT=DEGREE yskip
+!	yes? DEFINE GRID/LIKE=uwnd/X=xskip/Y=yskip gskip
+!	yes? GO centered_vectors vector uwnd[G=gskip] vwnd[G=gskip] 10
+
+! check for required filename and haf_inch_value and valid style
+QUERY/IGNORE $1%<Usage: GO centered_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $2%<Usage: GO centered_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $3%<Usage: GO centered_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $4%<Usage: GO centered_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $5%0|centered|clock|center|<Usage: GO centered_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+QUERY/IGNORE $6%0|stick|head|<Usage: GO centered_vectors "VECTOR"/[QUALS] U V half_inch_value ["clock"] ["stick"]%
+
+! set up the PLOT+ environment so that the scalings, etc. are known
+$1/ASPECT/LENGTH=$4/XSKIP=1/YSKIP=1 $2-$2, $3-$3
+
+! Write the given vector fields to a properly formatted file
+! Each file record contains x,y,u,v
+! The sequence of x,y, coordinates need not represent a grid
+! The file must have a 0,0,0,0 record on the end or the last vector
+! will be truncated
+
+! initialize
+SET GRID/SAVE
+cancel data/noerr custom_vectors.dat
+sp rm -f custom_vectors.dat    ! sometimes this doesn't work ???
+sp rm -f custom_vectors.dat
+
+! define variable with known missing flag and in case an expression was passed
+LET/QUIET uexpr = missing($2,-9999.)
+LET/QUIET vexpr = missing($3,-9999.)
+LOAD uexpr,vexpr    	! this computes the grid so SET GRID will work reliably
+SET GRID uexpr
+
+! list the data to a file - grid structure buried in X,Y coordinates
+! add a line of zeros at the end because the
+! regridding operation needs to be able to interpolate
+LIST/NOHEAD/FILE=custom_vectors.dat/FORMAT=(4(1PG15.7)) X, Y, uexpr, vexpr
+sp echo "0 0 0 0" >> custom_vectors.dat   ! 0 length vector at end
+
+! prepare to use data from file
+SET GRID/restore
+
+! now use another tool to do all the work
+GO scattered_vectors custom_vectors.dat $4 $5"centered" $6"head"
+PLOT/VS/LINE/D=custom_vectors.dat/@aros/nolab/overlay arrow_x,arrow_y
+
+set mode/last verify

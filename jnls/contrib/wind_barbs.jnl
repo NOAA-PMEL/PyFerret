@@ -1,0 +1,76 @@
+! wind_barbs.jnl
+! Description: illustrates how to draw wind barbs "from scratch" using ALINE
+! (as an alternative to vector arrows)
+
+! 4/10/95 *sh*
+
+! Note that this does NOT cope with corrections for the aspect ratio of the
+! plot as VECTOR/ASPECT does.  It also does not cope with the added subtlety
+! that the aspect ratio effectively changes as a function of latitude
+! Those corrections could be applied in the same spirit as the shafts and
+! barbs below using these equations:
+
+! procedure:    at each point
+!          x --> xprime = A * x
+!          y --> yprime = B * y
+!       where
+!          x**2 + y**2 = xprime**2 + yprime**2
+!       and  A/B = s, a constant
+
+!       let dx          the range of data on the x axis
+!           dy          the range of data on the y axis
+!           aspect      the ratio of axis lengths ylen/xlen
+!           xscale      the scale factor (units/inch) on the x axis
+!           s           the ratio of scale factors, yscale/xscale
+!           tan         the ratio of the vector components y/x at any point
+!       then
+!           s = (dy/dx)/aspect
+
+!       and, from the constraints on the transformation, above
+!           B = { (1 + tan**2) / (s**2 + tan**2) } **.5
+!           A = s * B
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+! a basic FERRET vector plot to serve as a comparison
+set data coads_climatology
+set window 1
+set region/x=60w:20w/y=35n:55n/l=1
+vector uwnd,vwnd
+! **********************************
+
+
+! in a separate window (for comparison) we'll draw wind barbs
+
+! define variables to draw the shafts of the arrows
+let xstart = x[g=uwnd]+y-y
+let ystart = y[g=uwnd]+x-x
+let scale = 0.4    ! plotted degree per m/sec of wind
+let xend = xstart + uwnd*scale
+let yend = ystart + vwnd*scale
+
+! define variables to draw the barbs of the arrows
+let barb_length = 0.5
+let barb_angle = -0.2
+let line_angle = atan2(uwnd,vwnd)
+let angle = barb_angle + line_angle
+let ybarb = yend - COS(angle)*barb_length
+let xbarb = xend - SIN(angle)*barb_length
+
+! delete files left over from last time
+sp rm -f shafts.jnl barbs.jnl
+list/format=("ppl aline 1 ",4F7.2)/nohead/file=shafts.jnl xstart,ystart,xend,yend
+list/format=("ppl aline 1 ",4F7.2)/nohead/file=barbs.jnl xend,yend,xbarb,ybarb
+
+set wind 2
+vector/set_up uwnd,vwnd
+ppl pen 1,0	! invisible arrows
+ppl vector
+ppl pen 1,1
+
+cancel mode verify     ! avoid seeing a jillion arrows drawn
+GO shafts
+GO barbs
+set mode verify

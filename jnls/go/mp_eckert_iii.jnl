@@ -1,0 +1,71 @@
+\cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_eckert_iii.jnl --  Sets up variables for a Eckert III projection using
+!                  'curvilinear coordinates' code in Ferret v4.50
+!		    		
+! Jonathan Callahan
+! 5/97
+
+! Description:  Sets up variables for a Eckert III map of the world
+!
+! Usage:                   arg1               arg2
+!  go mp_eckert_iii [central meridian] [standard paralell]
+!
+! arg 1 - longitude used for the center of the projection
+! arg 2 - latitude used for the center of the projection
+
+! Example:
+!  use coads_climatology 
+!  go mp_eckert_iii
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!
+! Note 1: If you intend to plot an overlay which is a subregion
+!         of the original plot you will need to specify the two
+!         optional arguments as in:
+!
+!  use coads_climatology 
+!  go mp_eckert_iii
+!  set grid sst
+!  shade sst[l=1], x_page, y_page
+!  go mp_eckert_iii `mp_central_meridian` `mp_standard_paralell`
+!  set region/x=40e:110e/y=60s:20s
+!  shade/over slp[l=1], x_page, y_page
+!
+! Note 2: The x-range for the subregion to be overlayed must
+!         be: ( `mp_cent_mer` - 180 < x < `mp_cent_me`r + 180 )
+
+! This journal file comes from equations in the following book:
+!
+!    An Album of Map Projections
+!    U.S. Geological Survey
+!    Professional Paper 1453
+!
+! Equation numbers refer to the equation number in this book.
+
+if `$2%0% gt 90` then
+    query/ignore $3"<The standard paralell must be between -90 and 90"
+elif `$2%0% lt (-90)` then
+    query/ignore $3"<The standard paralell must be between -90 and 90"
+endif
+
+let/quiet mp_x = x
+let/quiet mp_central_meridian = $1%(mp_x[i=@max] + mp_x[i=@min])/2%
+let/quiet mp_y = y
+let/quiet mp_standard_paralell = $2%(mp_y[j=@max] + mp_y[j=@min])/2%
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet mp_R = 1
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+
+let/quiet x_page = 2 * (1 + (1-(2*mp_phi/Pi)^2)^.5) * mp_R * (mp_lambda-mp_lambda0) / (4 * Pi + Pi^2)^.5  ! eqn (38)
+let/quiet y_page = 4 * mp_R * mp_phi / (4 * Pi + Pi^2)^.5                                           ! eqn (39)
+
+let/quiet mp_mask = 1
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

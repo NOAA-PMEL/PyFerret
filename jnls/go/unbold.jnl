@@ -1,0 +1,23 @@
+\cancel mode verify
+! Description: restore PLOT+ & FERRET to normal styling following "GO bold"
+! created 10/93 *sh*
+
+! normal ASCII fonts
+set mode ascii
+ppl dfltfnt SR
+
+! normal axis numbering size
+ppl axlsze .10,.10
+
+! normal contour numbers
+ppl conset .08
+ppl conpre 
+
+! normal thickness lines
+ppl pen 0,1
+ppl pen 1,1
+
+! can increase default label sizes
+ppl labset .16,.12,.12,.12
+
+set mode/last verify

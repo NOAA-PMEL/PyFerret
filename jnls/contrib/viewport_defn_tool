@@ -1,0 +1,43 @@
+# contributed by Michael Spillane <spillane@panda.noaapmel.gov>
+# 21 June 1993
+#
+# viewport_defn_tool - script to produce a ferret viewport definition with
+#           the ferret lines needed written to "name".jnl
+#
+# usage: viewport_defn_tool px py ax ay ox oy dx dy name
+#                                  ___________________________
+# where px = page width            |<----------px----------->| ^
+#       py = page height           |     ....................| |
+#       ax = x-axis length         |     .  ferret margin   .| |
+#       ay = y-axis length         |     .   ____________   .| |
+#       ox = x-component of origin |     <mx>|  plot    | ^ .| |
+#       oy = y-component of origin |     .   | region   | ay.| py
+#       mx = ferret margin in x    |(ox,oy)->!__________| v .| |
+#       my = ferret margin in y    |     .             ^    .| |
+# all values in inches and         |     .             my   .| |
+#     name = name for viewport     |     ..............v.....| |
+#                                  |       overall page      | |
+# go "name"  will invoke viewport  |_________________________| v
+
+# viewport_defn_tool (or spawn viewport_defn_tool in ferret) without arguments will
+# display the usage and definition text above
+
+#! /bin/csh -f
+
+if ( $#argv < 9 ) then
+   head -19 viewport_defn_tool
+else
+   set jnl = $9:r.jnl
+
+   echo $1 $2 $3 $4 $5 $6 $7 $8 $9  | awk '{           \
+   origx = ($5-$7)/$1    ; origy = ($6-$8)/$2        ; \
+   clipx = ($5+$3+$7)/$1 ; clipy = ($6+$4+$8)/$2     ; \
+   str1  = "def view/size=1/orig=" ; str2 = "/clip=" ; \
+   print "ppl size",$1,$2 ; print "ppl axlen",$3,$4  ; \
+   print "ppl origin",$7,$8                          ; \
+   print str1 origx","origy str2 clipx","clipy,$9    ; \
+   print "set view",$9 }' >! $jnl
+endif
+
+# end of script
+

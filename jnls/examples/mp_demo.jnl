@@ -1,0 +1,148 @@
+!
+! Here is your basic Ferret plot:
+!
+!
+message
+
+use coads_climatology
+set region/x=0:360/y=-90:90/l=1
+shade/title="Standard Plot" sst
+go fland
+
+!
+! Here is a sampling of what you can do with map
+! projections.  In this case:  a view from space.
+!
+message
+
+set win/aspect=1:ax 2
+go mp_orthographic 210 45
+set grid sst
+let masked_sst = sst * mp_mask
+ppl axlabp,0,0
+ppl axset 0, 0, 0, 0
+fill/title="View From Space" masked_sst, x_page, y_page
+go mp_fland
+go mp_land
+
+!
+! Let's add some labels in world coordinates:
+!
+go mp_label 237.7 47.6 -1 0 .1 @p5@IISeattle
+go mp_label 204.4 19.5 -1 0 .1 @p5@IIHawaii
+
+!
+! And two graticules:
+!   One for the whole world
+!   and one for the Bering Sea
+!
+go mp_graticule
+go mp_graticule 160 200 40 50 65 15 11
+go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
+
+!
+! Now a menagerie of projections from among
+! those provided with Ferret.
+!
+message
+
+set win/aspect=1:ax 3
+
+define viewport/xlimits=0.000,0.333/ylim=0.666,0.999 tl
+define viewport/xlimits=0.000,0.333/ylim=0.333,0.666 ml 
+define viewport/xlimits=0.000,0.333/ylim=0.000,0.333 bl
+define viewport/xlimits=0.333,0.666/ylim=0.666,0.999 tm
+define viewport/xlimits=0.333,0.666/ylim=0.333,0.666 mm
+define viewport/xlimits=0.333,0.666/ylim=0.000,0.333 bm
+define viewport/xlimits=0.666,0.999/ylim=0.666,0.999 tr
+define viewport/xlimits=0.666,0.999/ylim=0.333,0.666 mr 
+define viewport/xlimits=0.666,0.999/ylim=0.000,0.333 br
+ 
+ppl axset 0, 0, 0, 0
+ppl axlabp, 0, 0
+set region/x=0:360/y=-90:90/l=1
+
+set view tl
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst
+go fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Standard Plot
+
+set view tm
+go mp_sinusoidal
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Sinusoidal
+
+set view tr
+go mp_lambert_cyl
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Lambert Equal Area
+
+set view ml
+go mp_bonne
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Bonne
+
+set view mm
+go mp_mcbryde_fpp
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 McBryde Flat Polar
+
+set view mr
+go mp_polyconic
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Polyconic
+
+set view bl
+go mp_orthographic 300 45
+go margins .2, .6, .2, .2
+let masked_sst = sst * mp_mask
+shade/nolab/nokey masked_sst, x_page, y_page
+go mp_graticule
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 OrthoGraphic
+
+set view bm
+set region/x=240:420
+go mp_stereographic_eq
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule 240 420 30 -90 90 15
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic Equatorial
+
+set view br
+set region/x=0:360/y=00:90
+go mp_stereographic_north
+go margins .2, .6, .2, .2
+shade/nolab/nokey sst, x_page, y_page
+go mp_graticule 0 360 30 0 90 15
+go mp_fland 120 gray
+label/nouser `($PPL$XLEN)*0.5`,-0.4,0,0,.20 Stereographic North
+
+!
+! Finally, we'll create a fancy strip map centered on the Pacific.
+!
+message
+
+set win/size=.4/aspect=.5 3
+go mp_hammer
+set grid sst
+go mp_ocean_stripmap sst lev=(-2,20,4)(20,34,2) no_green 1 0
+
+

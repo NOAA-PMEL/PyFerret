@@ -95,7 +95,6 @@ C  Calling argument declarations
       INTEGER siz, den, nxs, nys, startflag(*)
       REAL xf, yf, px(nxs),py(nys), u(nx,ny),v(nx,ny)
 
-
 C  From from GrADS module gxstrm.c
 C void gxstrm (float *u, float *v, float *c, int is, int js,
 C   float uund, float vund, float cund, int flag, float *shdlvs,
@@ -113,13 +112,16 @@ C  Local declarations
       REAL up, vp, x, y, xx, yy, uv1, uv2, uv, vv1, vv2, vv, auv, avv, 
      .     xsav, ysav, xold, yold, fact, rscl, xxsv, yysv, xtm, ytm, 
      .     xtx, ytx, upsv, vpsv, xup, yup, xinterp, yinterp, 
-     .     vel, velmean, sqsum, cos_factor
-      INTEGER i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
+     .     vel, velmean, sqsum, cos_factor, dx, dy, count, sd, xxc, yyc,
+     .     upi, upj, upij, vpi, vpj, vpij, xfuser, yfuser, ylousr,
+     .     xlousr, xt, yt, xx1, yy1, xl, yl
+      INTEGER LNBLK, i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
-     .     jmn, j, iz, jz, iss, jss
+     .     jmn, j, iz, jz, iss, jss, imx, jmx, iln
       LOGICAL bflg
 
       CHARACTER*30 veclab
+      EXTERNAL lnblk
 
 C     Curvilinear coordinates declarations
       INTEGER status
@@ -221,10 +223,6 @@ C     flag boxes.
          IF (iacc .EQ. 0) THEN
             x = REAL((i2-1))/rscl
             y = REAL((j2-1))/rscl
-
-            if (j2 .eq. 92)then
-               nothing = 0
-            endif
 
             xsav = x
             ysav = y

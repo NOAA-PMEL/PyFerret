@@ -1,4 +1,4 @@
-! \ cancel mode verify	
+\ cancel mode verify	
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 ! mp_line.jnl --  Plot data using a particular map projection.  For working
 !                  with map projection scripts in Ferret v4.50

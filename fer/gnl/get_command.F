@@ -78,10 +78,20 @@
 * V420:  3/8/96 - add FLUSH on Solaris to keep the journal file up to date
 *	4/28/96 - call PROCESS_IF for multi-line IF's
 
+* v500: 5/24/99 *kob* - Have to insert call to NAG F90_UNIX module in
+*                       order to use the Fortan Flush.  USE command has
+*                       to come right after subroutine name
+*     : 5/34/99 *kob* - call FLUSH for all systems
+
+#ifdef MIXING_NAG_F90_AND_C
+	USE F90_UNIX
+#endif
+
 * calling argument declarations:
 	INTEGER		status
 	REAL		memory(*)
 	CHARACTER*(*)	called_string
+
 
 * internal variable declarations:
 	LOGICAL reverify
@@ -128,12 +138,12 @@
      .	    .AND. cmnd_len .GT. 0
      .	    .AND. cmnd_buff(1:1) .NE. backslash ) then
 	      WRITE (jrnl_lun,'(A)') cmnd_buff(1:cmnd_len)
-#ifdef AIX_XLF
+
+* *kob* 5/99 - Flush buffer
 	      CALL FLUSH(jrnl_lun)
-#endif
-#ifdef solaris
-	      CALL FLUSH(jrnl_lun)
-#endif
+
+
+
 	   ENDIF
 	   GOTO 1000
 	ENDIF
@@ -184,12 +194,10 @@
      .	 .AND. cmnd_len .GT. 0
      .	 .AND. cmnd_buff(1:1) .NE. backslash ) then
 	   WRITE (jrnl_lun,'(A)') cmnd_buff(1:cmnd_len)
-#ifdef AIX_XLF
+
+* *kob* 5/99 - Flush buffer
 	   CALL FLUSH(jrnl_lun)
-#endif
-#ifdef solaris
-	      CALL FLUSH(jrnl_lun)
-#endif
+	      
 	endif
 	GOTO 1000
 

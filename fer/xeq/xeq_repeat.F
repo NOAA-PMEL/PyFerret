@@ -75,6 +75,7 @@
 	include	'GKSCM1.INC'            ! with gks common
         include 'rpn.parm'              ! with maxatoms
         include 'xalgebra.cmn'
+        include 'xvariables.cmn'
 
 * local variable declarations
 	LOGICAL	by_date, report_unknown, range
@@ -82,11 +83,11 @@
 	REAL*8	temp
  
 	INTEGER STR_UPCASE, TM_LENSTR1, loc, equal_pos, last_pos, 
-     .          cvar, istart, iflag, locr, cat, var, slen
+     .          cvar, istart, iflag, locr, cat, var, slen,
+     .          j, num_indices
 	REAL val
 	CHARACTER counter_name*128
-	LOGICAL MATCH_NAME, loop
-        INTEGER TM_LENSTR, len_mchars, len_test
+	LOGICAL loop
 
 * check that something was given to repeat
 	IF ( num_args .EQ. 0 ) CALL ERRMSG
@@ -152,19 +153,34 @@
 	     CALL FIND_VAR_NAME ( pdset_irrelevant, counter_name, 
      .                            cat, var )
              IF ( cat .EQ. cat_pseudo_var   ) THEN
-                len_test = TM_LENSTR(counter_name(1:LEN(counter_name)))
-                DO var = 1, 9
-                  len_mchars = TM_LENSTR(alg_pvar(var))
-                  IF (MATCH_NAME(counter_name, len_test, 
-     .                alg_pvar(var),len_mchars ) )
-     .                 GOTO 5200
-                ENDDO
-                DO var = 10, num_pseudo_vars
-                  len_mchars = TM_LENSTR(alg_pvar(var))
-                  IF (MATCH_NAME(counter_name, len_test,
-     .                alg_pvar(var),len_mchars ) )
-     .                 GOTO 5250
-                ENDDO
+*                len_test = TM_LENSTR(counter_name(1:LEN(counter_name)))
+*                DO var = 1, 9
+*                  len_mchars = TM_LENSTR(alg_pvar(var))
+*                  IF (MATCH_NAME(counter_name, len_test, 
+*     .                alg_pvar(var),len_mchars ) )
+*     .                 GOTO 5200
+*                ENDDO
+*                DO var = 10, num_pseudo_vars
+*                  len_mchars = TM_LENSTR(alg_pvar(var))
+*                  IF (MATCH_NAME(counter_name, len_test,
+*     .                alg_pvar(var),len_mchars ) )
+*     .                 GOTO 5250
+*                ENDDO
+
+	         CALL string_array_find(alg_pvar_head,
+     .                           counter_name,
+     .                           LEN(counter_name),
+     .                           string_array_result(1),
+     .                           max_uvar,
+     .                           num_indices)
+                 IF(num_indices.GT.0) THEN
+                    var=string_array_result(1)
+                    IF(var.LE.9)THEN
+                        GOTO 5200
+                    ELSE
+                        GOTO 5250
+                    ENDIF
+                 ENDIF
              ENDIF
              IF ( cat .EQ. cat_counter_var   ) GOTO 5400
 

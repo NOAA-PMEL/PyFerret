@@ -111,6 +111,8 @@
 * V450: 7/7/97 - added external for XGRID_CHG_FCNS block data
 * V500: 2/99 *sh* - added POLYGON command
 * V530: 10/00 *sh* - added external declaration for new xez_info_data
+* V554:  9/03 *acm*- Loop 2 ran to 200; change to cmnd_buff_len 
+*                    (came up when implementing the -script command-line option)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -193,7 +195,8 @@
 
 * transfer the c-style string into a FORTRAN string
 	cmnd_buff = ' '
-	DO 2 i = 1, 200
+c	DO 2 i = 1, 200
+	DO 2 i = 1, cmnd_buff_len
 	   IF ( command(i) .EQ. 0 ) GOTO 5
  2	cmnd_buff(i:i) = CHAR( command(i) )
 

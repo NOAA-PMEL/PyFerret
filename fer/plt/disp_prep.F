@@ -91,11 +91,13 @@
 
 * internal variable declarations:
 	LOGICAL TM_DIGIT, lev_given, len_given
-	INTEGER	TM_LENSTR1, lev_loc, len_loc, str_len, ii
+	INTEGER	TM_LENSTR1, lev_loc, len_loc, str_len, ii, 
+     .          ilen, ier, ist
 	REAl	val
 * v500 - 1/26/99 *kob* double buffer size for /levels text
 * v532 - 5/11/01 *kob* increase buffer size for /levels text to 1028
 	CHARACTER str_buff*1028
+        CHARACTER*255 labsym_buff
 
 * local parameter definitions:
 	INTEGER		slash_levels,
@@ -131,6 +133,17 @@
 	   CALL EQUAL_STRING( 
      .          cmnd_buff(qual_start(lev_loc):qual_end(lev_loc)),
      .			      str_buff, status )
+
+
+* Set symbol LEV_TEXT with the users input to the LABEL command.
+
+        labsym_buff = "LEV_TEXT "//str_buff
+        ilen = TM_LENSTR1(labsym_buff)
+        ier = 0
+        ist = 0
+        CALL SETSYM (labsym_buff, ilen, ier, ist)
+
+
 	   IF ( str_buff .NE. ' ' ) THEN
 * ... pass the levels string given by the user to PLOT+
 	      str_len = TM_LENSTR1( str_buff )

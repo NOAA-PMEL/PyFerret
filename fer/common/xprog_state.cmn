@@ -24,6 +24,7 @@
 * V540:11/00 *sh* - added array last_cmnd_buff (formerly in get_prot_cmnd_data)
 * V550:12/02 *acm*- new MODE LOGO and MODE LABELS
 * V553: 8/03 *acm*- new scriptfile_name and state its_script
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -47,7 +48,8 @@
      .			pmode_depth_lab, pmode_segment, pmode_font_ascii,
      .			pmode_wait, pmode_reject, pmode_desparate, pmode_rpn,
      .			pmode_gks, pmode_xwindows, pmode_metafile,
-     .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels
+     .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
+     .                  pmode_grat
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -71,7 +73,8 @@
      .			pmode_ppllist		= 20,
      .			pmode_gui		= 21,
      .			pmode_logo		= 22,
-     .			pmode_labels		= 23 )
+     .			pmode_labels		= 23,
+     .			pmode_grat		= 24 )
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
 
@@ -127,7 +130,8 @@
      .		denig_xylim_msg_done,
      .		denig_pen_msg_done,
      .		in_get_grid_mode,
-     .          its_script
+     .          its_script,
+     .          grat_on
 
 
 ! Note: available_char_var is unused
@@ -142,7 +146,8 @@
      .		frame_compress*8, available_char_var*80,
      .		journal_file*80, ppllist_file*80,
      .		xwind_node*40,
-     .          scriptfile_name*2048
+     .          scriptfile_name*2048,
+     .          mode_grat_buff*512
 
 	INTEGER	ttin_lun, ttout_lun, cmnd_file_lun, list_lun,
      .		cmnd_lun, jrnl_lun, err_lun, frame_lun,
@@ -160,6 +165,7 @@
      .		input_source, mouse_input,
      .		if_conditional, ifstk, if_cs, if_doing,
      .		cmnd_buff, last_cmnd_buff,
+     .          mode_grat_buff,
      .		len_cmnd, len_last_cmnd, cmnd_num, subcmnd_num,
      .		num_qualifiers, qualifier_list(max_qual_list),
      .		qual_start(max_qual_list), qual_end(max_qual_list),
@@ -180,7 +186,8 @@
      .		xwind_node, xwind_node_len,
      .		genl_storage, its_script,
      .		ppl_wait, mode_name,
-     .          scriptfile_name
+     .          scriptfile_name,
+     .          grat_on
 
 * individual mode variable names
 	LOGICAL		mode_diagnostic, mode_verify, mode_interpolate,
@@ -189,7 +196,8 @@
      .			mode_depth_lab, mode_segment, mode_font_ascii,
      .			mode_wait, mode_reject, mode_desparate, mode_rpn,
      .			mode_gks, mode_xwindows, mode_metafile,
-     .			mode_ppllist, mode_gui, mode_logo, mode_labels
+     .			mode_ppllist, mode_gui, mode_logo, mode_labels,
+     .                  mode_grat
 	EQUIVALENCE
      .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
      .		( mode_state( pmode_verify      ,1), mode_verify      ),
@@ -213,7 +221,8 @@
      .		( mode_state( pmode_ppllist     ,1), mode_ppllist     ),
      .		( mode_state( pmode_gui         ,1), mode_gui         ),
      .		( mode_state( pmode_logo        ,1), mode_logo        ),
-     .		( mode_state( pmode_labels      ,1), mode_labels      )
+     .		( mode_state( pmode_labels      ,1), mode_labels      ),
+     .		( mode_state( pmode_grat        ,1), mode_grat        )
 
 * axis label modes
 	LOGICAL		ax_fmt(4)

@@ -4,6 +4,7 @@ ppladd_aline_sub.F\
 ppladd_bad_xy_coord.F\
 ppladd_bc2whoi.F\
 ppladd_daxis_box.F\
+ppladd_fillpol.F\
 ppladd_get_ndx.F\
 ppladd_get_user_coords.F\
 ppladd_hatch_fill_rep.F\

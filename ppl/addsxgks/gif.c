@@ -72,6 +72,7 @@
 static const int DefaultSize = 600;
 
 /* Line styles */
+static const int MaxLineStyleLength = 64;
 static char *LineStyles[5] = {
   "",
   "",
@@ -295,7 +296,8 @@ static GIFmetafile *copy_meta(mf_cgmo *cgmo, GIFmetafile *old,
   newmeta->fillIndex = old->fillIndex;
   newmeta->styleIndex = old->styleIndex;
   newmeta->fillStyleIndex = old->fillStyleIndex;
-  newmeta->style = old->style;
+  newmeta->style = (int *)umalloc(sizeof(int) * MaxLineStyleLength);
+  memcpy(newmeta->style, old->style, sizeof(int)*MaxLineStyleLength);
   newmeta->ws = old->ws;
 
   /* Copy the color info */
@@ -347,7 +349,7 @@ static void set_lineStyle(GIFmetafile *meta, Gint attr, Gasf type)
     assert(currColor != -1);
     if (meta->style)
       free(meta->style);
-    meta->style = (int *)umalloc(sizeof(int) * length);
+    meta->style = (int *)umalloc(sizeof(int) * MaxLineStyleLength);
     length = strlen(LineStyles[attr]);
     for (i=0; i < length; ++i){
       if (cp[i] == '-'){

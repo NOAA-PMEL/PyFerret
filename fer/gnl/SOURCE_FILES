@@ -66,6 +66,7 @@ show_mem_vars.F\
 show_region.F\
 show_regrid_transforms.F\
 show_transforms.F\
+special_symbol.F\
 stat.F\
 symbol_command.F\
 tmap_list.F\

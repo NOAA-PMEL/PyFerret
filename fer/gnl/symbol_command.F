@@ -67,6 +67,9 @@
 *                can be BIG or LITTLE
 * v500 5/99 *kob* - bug fix:  erroneous error trap for single character symbol 
 *                             replacement
+* V522 7/00 *sh* - hack to add symbol "FERRET_VERSION"
+*	         - call upon the new routine SPECIAL_SYMBOL
+
 * calling argument declarations:
 	LOGICAL	  did_sub
 	INTEGER	  clen, status
@@ -81,8 +84,8 @@
 * internal variable declarations:
 	LOGICAL coaching
 	INTEGER	STR_UPCASE, lenbuff, spos, epos, nchar, ierr,
-     .		wsid, nxpix, nypix, i, i2, coach_start, coach_end, sym_end
-	CHARACTER LEFINT*16, symname*30, c1*1,
+     .		i, i2, coach_start, coach_end, sym_end
+	CHARACTER symname*30, c1*1,
      .					symval*255	! to match PPLUS
 
 * internal parameter declarations:
@@ -99,14 +102,7 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcommand.cmn'
-	include 'xplot_state.cmn'	! for PPL$XPIXEL
 	include 'xrisc.cmn'
-* #ifdef for endianness info. Don't you love this code?
-#ifdef sun
-	include 'xmachine_byte.cmn'
-#else
-	include 'xmachine_int1.cmn'
-#endif
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -114,8 +110,6 @@
 	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'	! FOR PPL$XPIXEL
 	INCLUDE 'FERRET_CMN:XRISC.CMN'
 #endif
-
-
 
 * initialize
 	did_sub = .FALSE.
@@ -148,7 +142,7 @@
 	GOTO 5100	! no closing paren was supplied
  110	sym_end = epos - 1
 
-* 3/96 identify and locate any "coahing" text that accompanies the symbol
+* 3/96 identify and locate any "coaching" text that accompanies the symbol
 * ... look for a character between '!' and '&' in the ASCII table
 *     but not a dollar sign
 	coaching = .FALSE.
@@ -185,29 +179,10 @@
  	IF ( spos+2 .LE. sym_end ) THEN 	! 11/95 bug fix: "LT" --> "LE"
 !	   symname = buffer(spos+2:sym_end)	! change case for PPL$XPIXEL
 	   ierr = STR_UPCASE( symname, buffer(spos+2:sym_end) )	! 10/95
-	   IF (symname.EQ.'PPL$XPIXEL' .OR. symname.EQ.'PPL$YPIXEL') THEN
-* ... determine the current output window (GKS wkstn ID, that is)
-              DO 300 wsid = 1, max_windows
-                 IF ( wn_active(wsid) ) GOTO 310
- 300          CONTINUE
- 310          CALL GET_WINDOW_PIXELS(wsid, nxpix, nypix)
-	      IF ( symname.EQ.'PPL$XPIXEL' ) THEN
-	         symval = LEFINT(nxpix,nchar)
-	      ELSE
-	         symval = LEFINT(nypix,nchar)
-	      ENDIF
-*
-* Hack to get byteorder of this architecture
-*
-	   ELSE IF (symname .eq. 'BYTEORDER') THEN
-	      if (active_cpu .eq. cptype_sun) then
-		 symval = 'BIG'
-		 nchar = 3
-	      ELSE
-		 symval = 'LITTLE'
-		 nchar = 6
-	      ENDIF
-	   ELSE
+* ... check for special internal Ferret symbols 
+	   CALL SPECIAL_SYMBOL(0, symname, symval, nchar)
+	   IF (nchar .EQ. 0) THEN
+* ... translate a standard PLOT+ symbol
 	      CALL GETSYM(symname, symval, nchar, ierr)
 	      IF ( ierr .EQ. 1 ) nchar = 0	! use NULL string if undefined
 	   ENDIF

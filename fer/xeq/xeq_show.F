@@ -1,7 +1,5 @@
     	SUBROUTINE XEQ_SHOW( memory )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -132,6 +130,7 @@
 *       4/99 *sh* - added SHOW AXIS/lims=lo:hi
 * V510 4/00 *sh* - netCDF grids are now dynamic
 *      5/00 *sh* - added SHOW FUNC/DETAILS
+* V522 7/00 *sh* - SHOW SYMBOLS now shows special symbols, too
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -1037,8 +1036,29 @@
 * SHOW SYMBOLS sym1 sym2 ...
 *           or SHOW SYMBOL/ALL
  1700	slash_all = slash_all .OR. num_args .EQ. 0
-* (this lovely piece of loop code is borrowed from the PLOT+ routine getcmd.F)
+* SPECIAL SYMBOLS
 	i1=0
+ 1702   i1 = i1 + 1
+        CALL SPECIAL_SYMBOL(i1, arg30,show_str,len) ! get next symbol
+	len0 = TM_LENSTR1(arg30)
+        IF(len.GT.0)THEN
+	   IF ( num_args .GE. 1 ) THEN
+* ... check the names specified by template matching 
+	      DO 1703 i = 1, num_items
+	         n = STR_UPCASE(arg,
+     .			cmnd_buff(item_start(i):item_end(i)))
+	         IF ( MATCH_TEMPLATE(arg30(:len0),arg) ) GOTO 1705
+ 1703         CONTINUE
+	      GOTO 1702			! no match
+	   ENDIF
+* ... display the symbol definition
+ 1705	  CALL SPLIT_LIST(pttmode_explct, ttout_lun,
+     .			arg30(:len0)//' = "'//show_str(:len)//'"', 0)
+           GOTO 1702
+	ENDIF
+
+* PLOT+ SYMBOLS
+ 1709   i1=0
  1710   CALL LSTSYM(arg30,show_str,len,i1,i2)	! get next symbol
 	len0 = TM_LENSTR1(arg30)
         IF(i2.EQ.0)THEN

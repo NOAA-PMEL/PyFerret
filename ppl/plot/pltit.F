@@ -64,6 +64,7 @@
 * *jd*	- mod to put back use of daxis as cross and interior tics are
 *	  lost without it.
 * *sh*  - added commands PLOTPOL and FILLPOL
+* *jd*	- put in daxis after FILLPOL
 
 *****************************************************
 
@@ -336,11 +337,11 @@ C
 	    IF(MAKEP.EQ.'FILL') CALL DAXIS_BOX
 
 
-	ELSE IF(MAKEP.EQ.'PLOT')THEN
-	    CALL PLOTXY(X,NXS,XF,YF)
-	    if (interrupted) go to 3333
-**** JD * ALINE CALL 
-	    CALL WINDOW(0.,0.,0.,0.)
+	ELSE IF(MAKEP.EQ.'PLOT') THEN
+	   CALL PLOTXY(X,NXS,XF,YF)
+	   if (interrupted) go to 3333
+****    JD * ALINE CALL 
+	   CALL WINDOW(0.,0.,0.,0.)
 C
 	    do 100 a_line = 1,lnum
 		if (.not. aline_on(a_line)) goto 100
@@ -411,6 +412,35 @@ C
 	ELSE IF(MAKEP.EQ.'FILLPOL')THEN
 	    CALL FILLPOL(X,NXS,XF,YF)
 	    IF ( interrupted ) GOTO 3333
+
+	    if (sline) then
+	       CALL WINDOW(0.,0.,0.,0.)
+	       
+*              Only one line at a time to label
+	       do 200 a_line = 1,1
+		  if (.not. aline_on(a_line)) goto 200
+		  
+		  if (aline_user(a_line)) then
+		     minx = aline_minx(a_line)
+		     miny = aline_miny(a_line)
+		     maxx = aline_maxx(a_line)
+		     maxy = aline_maxy(a_line)
+		  else
+		     call point_convert 
+     .	               (aline_minx(a_line),aline_miny(a_line),
+     .		        minx,miny)
+		     call point_convert 
+     .	               (aline_maxx(a_line),aline_maxy(a_line),
+     .                  maxx,maxy)
+		  end if
+		  call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
+		  
+		  IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
+ 200	       continue
+	    end if
+
+	    CALL DAXIS(XF,YF,NMX,NMY)
+	    CALL DAXIS_BOX
 ***************************************************
 	ENDIF
 

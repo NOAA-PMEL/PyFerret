@@ -65,8 +65,8 @@
 * V530 *sh* 10/00 - added /FORMAT=delimited/TYPE=data_types
 * V533 *sh* 7/01 - bug fix: filenames beginning with digits
 * V540 *sh* 10/01 - bug fig -- process TMAP error from ez_init_dset
-* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
-*              equivalent - needed for g77 port
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -98,7 +98,7 @@
 
 * local parameter declarations
 	CHARACTER*1	tab
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 * functions
 	INTEGER         br_set_type

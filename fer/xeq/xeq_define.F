@@ -140,12 +140,11 @@
 *                  call to purge_mr_axis.
 * V542: *sh* 7/02 - added support for sub-span modulo axes
 * V550: *acm*10/02- Change reg_name to char*24, to match cx_name
-* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
 * V551: *acm*  2/03 - On DEFINE AXIS/x name=expr, only reset num_args when
 *                     the expression is a const array {  }  (fixes bug w/ more
 *                     complex expr, for example "DEF AX/X  xax = a/2 + b/2")
- 
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_dims.parm'
@@ -257,7 +256,7 @@
      .		  mon_names(12)*3
 
         CHARACTER*1 tab
-        PARAMETER     ( tab = O'011' )
+        PARAMETER     ( tab = '\t' )
 
 	DATA	  basic_orients / 'WE','SN','UD','TI' /,
      .		  replmsg/'Replacing definition of '/

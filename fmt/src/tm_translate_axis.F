@@ -54,7 +54,7 @@
 * V530: *acm* 12/00 add calendar types; cal_id 
 *
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+*                         statements.  use an character constant instead
 
 * Include files
 #ifdef unix
@@ -79,7 +79,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab 
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 
 	end_pos = TM_LENSTR1( string )

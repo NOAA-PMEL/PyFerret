@@ -72,8 +72,8 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 *
-* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use character constant instead
 
 * Arguments:
 *	dset	- data set number
@@ -111,8 +111,8 @@
 *
 *internal parameter declarations *kob* 4apr94
         CHARACTER*1     cr,lf
-        PARAMETER       ( cr = O'015',
-     .                    lf = O'012')
+        PARAMETER       ( cr = '\r',
+     .                    lf = '\n')
 * Local definitions
 	CHARACTER*11	file_format
 	CHARACTER*13	TM_STRING

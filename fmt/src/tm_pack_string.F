@@ -42,8 +42,8 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 03/04/87
-* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead
 
 *
 * calling argument declarations:
@@ -52,7 +52,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 * internal variable declarations:
 	INTEGER	i_in, i_out, str_len, str_end

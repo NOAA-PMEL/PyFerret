@@ -49,8 +49,8 @@
 *    5/99 *sh* Added booleans "fill" argument to control if permutation array
 *	       is filled, var_ok arg to determine if "V" is allowable, and
 *	       neg_ok for acceptable minus signs
-* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
-*              equivalent - needed for g77 port
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead
 
 * calling argument declarations
 	LOGICAL		fill, v_ok, neg_ok
@@ -64,7 +64,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 #ifdef unix
 	include 'ferret.parm'

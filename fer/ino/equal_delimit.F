@@ -40,8 +40,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V530: *sh* 11/00
-* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
-*              equivalent - needed for g77 port
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead 
 
 * calling argument declarations
 	INTEGER		status
@@ -57,7 +57,7 @@
 
 * internal parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = O'011' )
+        PARAMETER     ( tab = '\t' )
 
 * input is comma separated, may include "\t", "\,", and HEX characters
 

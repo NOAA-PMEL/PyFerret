@@ -69,8 +69,8 @@
 *                             replacement
 * V522 7/00 *sh* - hack to add symbol "FERRET_VERSION"
 *	         - call upon the new routine SPECIAL_SYMBOL
-* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
-*              equivalent - needed for g77 port
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead 
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -92,7 +92,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 * 11/96 *kob*
 #ifdef crptd_cat_argument

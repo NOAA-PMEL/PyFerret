@@ -47,7 +47,7 @@
 *	FORTRAN READ ERR= branches):  check for "/" following "." since
 *	path names often begin with "./name"
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+*                         statements.  use an character constant instead
 
 
 #include "gt_lib.parm"
@@ -61,7 +61,7 @@
 	
 * local parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = O'011' )
+        PARAMETER     ( tab = '\t' )
 
 * skip leading blanks
 	DO 100 i = 1, LEN(string)

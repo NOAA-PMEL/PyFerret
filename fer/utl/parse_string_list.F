@@ -10,8 +10,8 @@
 * V533: *sh*  7/01 - allow single quoted strings
 *		   - save null strings for missing values
 * V540:  9/01 *sh* - change "SYSTEM:" to "SPAWN:"
-* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use an character constant instead 
 
 * calling argument declarations
 	INTEGER		cx, mr, status
@@ -25,7 +25,7 @@
 
 * internal parameter declarations
 	CHARACTER*1     tab
-	PARAMETER     ( tab = O'011' )
+	PARAMETER     ( tab = '\t' )
 
 	include 'ferret.parm'
 	include 'errmsg.parm'

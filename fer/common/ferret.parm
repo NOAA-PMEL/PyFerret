@@ -74,10 +74,10 @@
      .			unspecified_val4	= -2.5E34 )
 
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+*                         statements.  use  character constant instead
 * punctuation
 	CHARACTER*1	pCR
-	PARAMETER     ( pCR = O'015' )
+	PARAMETER     ( pCR = '\r' )
 
 
 

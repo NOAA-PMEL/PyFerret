@@ -60,8 +60,8 @@
 * V510: 3/00 *sh* bug fix - in the syntax "$1" the final " caused iptr mis-set
 * V531: 4/01 *sh* - allow 2-digit argument numbers
 *		  - increased argument buffers 255 -> 511
-* *kob* 1/03 - replace call to intrinsic func CHAR with its octal
-*              equivalent - needed for g77 port
+* 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use character constant instead
 *            - Need to use risc_buff for arbitrary concatenations
 * calling argument declarations:
 	LOGICAL   did_sub
@@ -81,9 +81,9 @@
 
 * local parameter declarations
         CHARACTER*1     sing_quote
-        PARAMETER     ( sing_quote = O'047' )
+        PARAMETER     ( sing_quote = '\039' )
         CHARACTER*1	tab
-        PARAMETER     ( tab = O'011' )
+        PARAMETER     ( tab = '\t' )
 
 #ifdef unix
 	include 'ferret.parm'

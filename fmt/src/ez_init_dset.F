@@ -64,7 +64,7 @@
 *      *acm* 10/01 increase length of ds_name
 *      *acm* 10/01  remove VMS include statements
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+*                         statements.  use an character constant instead
 
 
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -72,7 +72,7 @@
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
 	PARAMETER 	(ez_rev = '1.11')
-	PARAMETER	( tab = O'011' )
+	PARAMETER	( tab = '\t' )
 *
 * Arguments:
 *	filename	- name of data file

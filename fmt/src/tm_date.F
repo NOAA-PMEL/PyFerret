@@ -48,7 +48,7 @@
 *
 * revision 0.00 - 3/12/91 needed for Unix/RISC port
 * 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use and octal initialization instead
+*                         statements.  use an character constant instead
 *
 
 * calling argument declarations:
@@ -60,7 +60,7 @@
 	
 * local parameter declarations:
         CHARACTER*1     tab
-        PARAMETER     ( tab = O'011' )
+        PARAMETER     ( tab = '\t' )
 
 * initialize assuming failure
 	TM_DATE = .FALSE.

@@ -1,5 +1,8 @@
 * ERRMSG.PARM
 * error code PARAMETERS pertaining to program GFDL
+
+* V530: *sh* 9/00 - added ferr_data_type
+
 * error coding:
 *	gspecial +1--> gnoreport	- error codes requiring special action
 *	gnoreport+1--> greport		- error codes not requiring messages
@@ -68,7 +71,8 @@
      .			ferr_trans_nest,
      .			ferr_state_not_set,
      .			ferr_unknown_command,
-     .			ferr_ef_error
+     .			ferr_ef_error,
+     .			ferr_data_type
 	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
      .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
      .			ferr_perm_var		= ferr_too_many_vars	+ 1,
@@ -104,6 +108,7 @@
      .			ferr_bad_delta		= ferr_descriptor	+ 1,
      .			ferr_trans_nest		= ferr_bad_delta	+ 1,
      .			ferr_state_not_set	= ferr_trans_nest	+ 1,
-     .			ferr_unknown_command	= ferr_state_not_set + 1,
-     .			ferr_ef_error	    = ferr_unknown_command	+ 1)
-	PARAMETER     ( gnum_report	= 37 )
+     .			ferr_unknown_command	= ferr_state_not_set    + 1,
+     .			ferr_ef_error	        = ferr_unknown_command	+ 1,
+     .			ferr_data_type	        = ferr_ef_error 	+ 1)
+	PARAMETER     ( gnum_report	= 38 )

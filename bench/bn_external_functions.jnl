@@ -2,18 +2,11 @@
 go bench_examples
 
 !Ansley's benchmarks
+! *kob* move bench tests that test internal external functions to their
+!       own file
 
 GO bn_reset
 go bench_compress
-
-GO bn_reset
-go bench_fft
-
-GO bn_reset
-go bench_gridding 
-
-GO bn_reset
-go bench_sort
 
 GO bn_reset
 go bench_v5d 

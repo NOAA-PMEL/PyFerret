@@ -1,0 +1,12 @@
+! test internal external functions.  These moved from bn_external_functions
+!  6/01 because on systems w/out external functions support, the internal
+!  functions were not being tested - most notably win32   *kob*
+
+GO bn_reset
+go bench_fft
+
+GO bn_reset
+go bench_gridding 
+
+GO bn_reset
+go bench_sort

@@ -60,7 +60,7 @@ SET MODE VERIFY
 ! 6/01 *acm*  -- add	bn_calendar
 !			bn_dash_dot
 !			bn_flowlines
-
+! 6/08 *kob*  -- add	bn_internal_external_functions
 GO bn_reset
 GO bn_syntax
 cancel mode metafile      !9/97
@@ -247,6 +247,11 @@ GO bn_dash_dot
 
 GO bn_reset
 GO bn_flowlines
+
+! *kob* same tests for internal external functions but moved out of
+!       the bn_external_function jnl file.  
+GO bn_reset
+GO bn_internal_external_functions
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

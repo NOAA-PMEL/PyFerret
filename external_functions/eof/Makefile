@@ -8,6 +8,10 @@
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
 #  ACM  2/2001  debug macros
+#  ACM  Jul 2001 Move to statically linked code in fer/efi.  name functions
+#                eofspace, eofstat, eoftfunc; with same code as in fer/efi,
+#                but with different INCLUDE statements for use in testing
+#                as dynamically-linked functions.
 #
 # include platform specific macro definitions
 #
@@ -27,15 +31,22 @@ SUB_OBJS = eofsubs.o
 # Rules
 #
 
+#   once eof_space etc are linked into Ferret dont need SUB_OBJS
 .f.so:
 	$(F77) $(FFLAGS)  $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
+
+
+#.f.so:
+#	$(F77) $(FFLAGS)  $<
+#	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #
 # Targets
 #
 
-all:	ferret_cmn eofsubs.o eof_space.so eof_tfunc.so eof_stat.so
+# all:	ferret_cmn eofsubs.o eoft.so eof_space.so eof_tfunc.so eof_stat.so
+all:	ferret_cmn 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

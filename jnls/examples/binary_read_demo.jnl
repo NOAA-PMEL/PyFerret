@@ -1,11 +1,11 @@
 set mode verify
 ! 
-!streamDemo.jnl (4/99) *js*
+!binary_read_demo.jnl (4/99) *js*
 !
 
 !Description: Demonstration of v5.0 binary read capabilities
 
-!Usage: yes? GO streamDemo
+!Usage: yes? GO binary_read_demo
 
 
 

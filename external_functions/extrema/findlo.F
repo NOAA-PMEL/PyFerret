@@ -53,14 +53,15 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CHARACTER*100 fcn_descr
+      CHARACTER*120 fcn_descr
 
       CALL ef_set_desc(id, 'Computes local extrema, return LOWS' )
 
       WRITE (fcn_descr,100) 
       CALL ef_set_desc(id, fcn_descr)
-  100 FORMAT ('Compute local maxima, return LOWS on Y axis. ',
-     .        'i=1 xpos,i=2 ypos,i=3 value of LOW')
+  100 FORMAT('Find local minima of var, return',
+     .        ' LOWS on Y axis. i=1 xpos,i=2 ypos,i=3 LO value')
+
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_axis_inheritance(id, ABSTRACT, ABSTRACT, 
@@ -81,7 +82,7 @@
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local mins in neighborhood +- NEIGH_X around each point')
+     .'Find local minima in neighborhood +- NEIGH_X gridpoints')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
@@ -89,7 +90,7 @@
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local mins in neighborhood +- NEIGH_Y around each point')
+     .'Find local minima in neighborhood +- NEIGH_X gridpoints')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                      ^
 *                                                                      |

@@ -52,12 +52,12 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CHARACTER*100 fcn_descr
+      CHARACTER*120 fcn_descr
 
       WRITE (fcn_descr,100) 
       CALL ef_set_desc(id, fcn_descr)
-  100 FORMAT ('Compute local maxima, return HIGHS on Y axis. ',
-     .        'i=1 xpos,i=2 ypos,i=3 value of HI')
+  100 FORMAT('Find local maxima of var, return',
+     .        ' HIGHS on Y axis. i=1 xpos,i=2 ypos,i=3 HI value')
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_axis_inheritance(id, ABSTRACT, ABSTRACT, 
@@ -78,7 +78,7 @@
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local mins in neighborhood +- NEIGH_X around each point')
+     .'Find local maxima in neighborhood +- NEIGH_X gridpoints')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
@@ -86,7 +86,7 @@
       CALL ef_set_arg_unit(id, arg, ' ')
 
       CALL ef_set_arg_desc(id, arg, 
-     .'Find local mins in neighborhood +- NEIGH_Y around each point')
+     .'Find local maxima in neighborhood +- NEIGH_Y gridpoints')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                      ^
 *                                                                      |

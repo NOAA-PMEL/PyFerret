@@ -3,10 +3,6 @@ shellsort.F\
 fftsubs.F\
 ffta.F\
 fftp.F\
-samplei.F\
-samplej.F\
-samplek.F\
-samplel.F\
 sampleij.F\
 samplet_date.F\
 samplexy.F\

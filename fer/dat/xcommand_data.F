@@ -108,6 +108,11 @@
 *	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/IJ/K/L 
 *	     *sh* - added SET AXIS/DEPTH
 *	6/99 *sh* - added WHERE alias
+* V510  3/00 *sh* - added SET DATA/REGULAR_T
+*		  - added PLOT/COLOR=/THICKNESS=/SIZE=
+*		  - added POLYGON/COLOR=/THICKNESS=
+*		  - changed /PEN to /COLOR on CONTOUR and VECTOR
+*		  - added VECTOR/THICK
 
 #ifdef unix
 	include 'ferret.parm'
@@ -197,9 +202,9 @@
 		DATA qualifiers  (nqual_at1g+7)	/ 'SAVE'	/
 		DATA qualifiers  (nqual_at1g+8)	/ 'RESTORE'	/
 		DATA qualifiers  (nqual_at1g+9)	/ 'ORDER'	/   !5/94
-		DATA qualifiers  (nqual_at1g+10) / 'TYPE'        / 
-		DATA qualifiers  (nqual_at1g+11) / 'SWAP'        / 
-		DATA qualifiers  (nqual_at1g+12) / '****' / !avail
+		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       / 
+		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
+		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
 		DATA qualifiers  (nqual_at1g+13) / '****' / !avail
 		DATA qualifiers  (nqual_at1g+14) / '****' / !avail
 * SET MODE
@@ -651,12 +656,12 @@
 		DATA qualifiers  (nqual_at4a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at4a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at4a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at4a+23)/ 'PEN'/	!/pen=
+		DATA qualifiers  (nqual_at4a+23)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at4a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at4a+25)/ 'PATTERN'/	!/pattern=
-		DATA qualifiers  (nqual_at4a+26)/ '****'/	!
-		DATA qualifiers  (nqual_at4a+27)/ '****'/	!
-		DATA qualifiers  (nqual_at4a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+26)/ 'SIZE'/	!/size
+		DATA qualifiers  (nqual_at4a+27)/ 'SPACING'/	!/spacing
+		DATA qualifiers  (nqual_at4a+28)/ 'SIGDIG'/	!/sigdig
 		DATA qualifiers  (nqual_at4a+29)/ '****'/	!
 
 
@@ -726,9 +731,9 @@
 		DATA qualifiers  (nqual_at6a+14)/ 'SYMBOL'/	!/symbol
 		DATA qualifiers  (nqual_at6a+15)/ 'NOLABEL'/	!/nolabel
 		DATA qualifiers  (nqual_at6a+16)/ 'LINE'/	!/line
-		DATA qualifiers  (nqual_at6a+17)/ '****'/	!/unused
-		DATA qualifiers  (nqual_at6a+18)/ '****'/	!/unused
-		DATA qualifiers  (nqual_at6a+19)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+17)/ 'COLOR'/	!/color
+		DATA qualifiers  (nqual_at6a+18)/ 'THICKNESS'/	!/thickness
+		DATA qualifiers  (nqual_at6a+19)/ 'SIZE'/	!/size
 		DATA qualifiers  (nqual_at6a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at6a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at6a+22)/ 'TITLE'/	!/title
@@ -946,11 +951,11 @@
 		DATA qualifiers  (nqual_at13a+16)/ 'LENGTH'/	!/length_same
 		DATA qualifiers  (nqual_at13a+17)/ 'XSKIP'/	!/xskip
 		DATA qualifiers  (nqual_at13a+18)/ 'YSKIP'/	!/yskip
-		DATA qualifiers  (nqual_at13a+19)/ '****'/	!/ ****
+		DATA qualifiers  (nqual_at13a+19)/ 'THICK'/	!/thick
 		DATA qualifiers  (nqual_at13a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at13a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at13a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at13a+23)/ 'PEN'/	!/pen=
+		DATA qualifiers  (nqual_at13a+23)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
 
 * PPLUS	 - command # 14
@@ -1217,22 +1222,22 @@
 		DATA qualifiers  (nqual_at27a+11)/ 'D'   /	!/data_set
 		DATA qualifiers  (nqual_at27a+12)/ 'TRANPOSE'/	!/transpose
 		DATA qualifiers  (nqual_at27a+13)/ 'COORD_AX'/	!/coord_ax
-		DATA qualifiers  (nqual_at27a+14)/ 'SYMBOL'/	!/symbol
+		DATA qualifiers  (nqual_at27a+14)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at27a+15)/ 'NOLABEL'/	!/nolabel
 		DATA qualifiers  (nqual_at27a+16)/ 'LEVELS'/	!/levels_same
 		DATA qualifiers  (nqual_at27a+17)/ 'LINE'/	!/line
-		DATA qualifiers  (nqual_at27a+18)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+18)/ 'COLOR'/	!/color
 		DATA qualifiers  (nqual_at27a+19)/ 'PALETTE'/	!/palette=
 		DATA qualifiers  (nqual_at27a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at27a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at27a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at27a+23)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+23)/ 'THICKNES'/	!/thickness
 		DATA qualifiers  (nqual_at27a+24)/ 'NOAXES'/	!/noaxes
 	        DATA qualifiers  (nqual_at27a+25)/ 'PATTERN'/   !/pattern=
 		DATA qualifiers  (nqual_at27a+26)/ 'FILL'/	!/fill
 		DATA qualifiers  (nqual_at27a+27)/ 'KEY'/	!/key
 		DATA qualifiers  (nqual_at27a+28)/ 'NOKEY'/	!/nokey
-		DATA qualifiers  (nqual_at27a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at27a+29)/ '****'/	!unused
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/

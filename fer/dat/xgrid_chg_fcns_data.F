@@ -4,6 +4,7 @@
 * changing functions
 
 * V450 - 7/79 - minor change to text on ZAXREPLACE
+* V491 - 1/98 - changed function TEST2 so that it replaces T axis
 
 * the addition (or major modification) of an internal grid-changing function
 * requires changes to these routines:
@@ -65,6 +66,7 @@
 
 
 * TIMES2(arg) - multiply input value by 2 --> debugging function
+* 1/98 - changed TIMES2 to test custom axis replacement of T axis
 	INTEGER		p_times2_arg_start, p_times2_num_args 
 	PARAMETER     ( p_times2_arg_start = p_unravel_arg_start +
      .					     p_unravel_num_args,
@@ -81,7 +83,7 @@
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
      .						pgc_axis_implied_by_args,
-     .						pgc_axis_implied_by_args/
+     .						pgc_axis_supplied_herein/
 	DATA (gfcn_piecemeal_ok(i,p_times2),i=1,4) / .TRUE.,
      .						     .TRUE.,
      .						     .TRUE.,
@@ -98,7 +100,7 @@
      .		  / 0, 0, 0, 0 /
 * ... merge the axes implied by argument 1 ?
 	DATA (gfcn_axis_implied_from(i, p_times2_arg_start+0),i=1,4)
-     .		/.TRUE., .TRUE., .TRUE.,.TRUE. /
+     .		/.TRUE., .TRUE., .TRUE.,.FALSE. /
 
 * RESHAPE(data,grid_and_start) - same values as input grid but reshaped
 *   into the grid of the 2nd arg ... starting at start point (1,1,1,1)

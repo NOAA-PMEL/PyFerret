@@ -20,7 +20,7 @@
 *		mode. This is to differentiate from them.
 * V442 - 12/06/96 *kob* - gui bug fixes and quality control checks
 * V445 - 1/14/97 *sh* - more gui bug fixes and uniform version numbering
-* V500 - 4/5/97 *sh* - still in development at this date
+* V490 - 4/5/97 *sh* - still in development at this date
 
 #ifdef unix
 	include	'ferret_cmn/xrevision.cmn'
@@ -31,7 +31,7 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  4.90    /
+	DATA revision_level	/  4.91    /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

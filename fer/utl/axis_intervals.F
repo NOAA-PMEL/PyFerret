@@ -1,7 +1,7 @@
 	SUBROUTINE AXIS_INTERVALS(
      .				horiz_or_vert, mr, cx, idim, curvilinear,
      .				axis, lo_ss, hi_ss, lo_world, hi_world,
-     .				n_regrid, d_regrid, regrid )
+     .				n_regrid, d_regrid, regrid, irregular )
 
 *
 *
@@ -52,20 +52,17 @@
 *	10/16/89 - eliminated invalid adjustable array subscripts
 *        1/28/93 - allow axes of length 1
 * V450: 3/97 - support for curvilinear coordinate plots
+* V552: 5/03 - If the axis is known to be regular, dont do the test on 
+*              whether "regrid" is needed. (this flagged fine axes as
+*              irregular when in fact they arent).
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
-	LOGICAL	curvilinear, regrid
-	INTEGER	mr, cx, idim, lo_ss, hi_ss, size, n_regrid
+	LOGICAL	curvilinear, regrid, irregular
+	INTEGER	mr, cx, idim, lo_ss, hi_ss, n_regrid
 	REAL 	axis( lo_ss:hi_ss )
 	REAL 	lo_world, hi_world, d_regrid
 	CHARACTER*1 horiz_or_vert
@@ -106,14 +103,18 @@
 * ... and determine smallest grid interval
 	regrid = .FALSE.		! assume it's not needed
         d_regrid = axis( lo_cx + 1 ) - axis( lo_cx )
-	DO 200 i = lo_cx+1, hi_cx-1
+
+        IF (irregular) THEN
+	   DO 200 i = lo_cx+1, hi_cx-1
 * ... test within precision limits that may be visible in a plot
-	   IF (ABS((axis(i+1)-axis(i))/d_regrid - 1.0) .GT. 3.E-6) THEN
-		regrid = .TRUE.
-		d_regrid = MIN( d_regrid, axis(i+1)-axis(i) )
-	   ENDIF
- 200	CONTINUE
-	
+
+	      IF (ABS((axis(i+1)-axis(i))/d_regrid - 1.0) .GT. 3.E-6) THEN
+		   regrid = .TRUE.
+		   d_regrid = MIN( d_regrid, axis(i+1)-axis(i) )
+	      ENDIF
+ 200	   CONTINUE
+	ENDIF
+
 * regridding parameters
 	lo_world = axis(lo_cx)
 	hi_world = axis(hi_cx)

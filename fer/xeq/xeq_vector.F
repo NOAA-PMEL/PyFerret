@@ -85,7 +85,8 @@
 *                   variable name in the key below the plot.
 *      *acm*  5/02  Add /NOKEY option.  Also, if /NOLAB specifed, do not
 *                   plot a key.
-* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by vector)
+* V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by vector)
 
 
 	include 'tmap_dims.parm'
@@ -110,7 +111,7 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
      .			set_up, noaxes, axes, no_data, flows, 
-     .			is_logh, is_logv, no_key, is_shade
+     .			is_logh, is_logv, no_key, is_shade, use_cell
 	INTEGER		TM_LENSTR1, status, cx, 
      .			loc, ipen, thick,
      .			dim1, dim2, asp,
@@ -126,8 +127,7 @@
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, vector
 	PARAMETER     ( norm_dims_only  = .FALSE.,
-     .			vector		= .TRUE.,
-     .                  is_shade        = .FALSE.  )
+     .			vector		= .TRUE.)
 	INTEGER ncolors
 	PARAMETER (ncolors = 6)
 
@@ -155,6 +155,8 @@
 	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for vector
 	no_key    = qual_given( slash_vect_nokey     ).GT.0  ! for vector
         IF (no_labels) no_key = .TRUE.
+        is_shade  = .FALSE.
+        use_cell  = .FALSE.
 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
@@ -238,6 +240,7 @@
 	CALL DISP_SET_UP   ( 	memory,
      .				vector,
      .                          is_shade,
+     .                          use_cell,
      .				aspect,
      .				overlay,
      .				transpz,

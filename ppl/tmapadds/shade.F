@@ -1,4 +1,4 @@
-	SUBROUTINE SHADE (z, pixel)
+	SUBROUTINE SHADE (z, cells)
 
 
 *
@@ -52,9 +52,10 @@
 *       *jd* 1.98 Fix bug: shade misses top level, when top level is lt 0.
 * V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
 * V550 11/02*acm* To use cellarray calls for rectangular shade plots, pass 
-*                 pixel in as a work array.  Remove VAX includes
+*                 cells in as a work array.  Remove VAX includes
 * V550 12/02*acm* After levels are set, call setlab_syms to create the LEVELS symbols
 * V552  3/03*acm* Check for too many levels, as is done for FILL and CONTOUR plots.
+* v552  6/03*acm* Rename the array used for cellarray call.
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -74,10 +75,11 @@
 	include		'zgridd_inc.decl'
 	include		'ZGRIDD.INC'
         include         'errmsg.parm'
+        include         'shade_vars.cmn'
 
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
-	integer		i, j, pixel(*), slen1, slen2
+	integer		i, j, cells(*), slen1, slen2
         CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
 
         parameter       (epsilon = 1e-6)
@@ -217,13 +219,16 @@ C              =-2 2-d second component of a vector irregular grid
 C
 
 C
+        IF (use_cell) JTYPE = 1
+
 C       If it's a 2-d irregular grid, the irregular grid values
 C       are also stored in the Z array.  Pass them to shade_sub.
+
 
 	IF (JTYPE.EQ.2 .OR. JTYPE.EQ.-2) THEN
 
 	   CALL SHADE_SUB(Z,Z(1,NY+1),Z(1,NY+2),XX(IZSE-NX-1),
-     .        YY(IZSE-NY-1), pixel)
+     .        YY(IZSE-NY-1), cells)
 
 C       For all other plot types fill in XX() and YY() by
 C       multiplying the index value by the DX or DY delta values.
@@ -240,10 +245,10 @@ C       multiplying the index value by the DX or DY delta values.
 	      YY(IZLEN+J)=DY*(J-1)+YMIN
  510	   CONTINUE
 
-c *kob* 8/97 had to move the conintation marker to col 5 - it was in col 8
+c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
 c       this bombed aix compiler, though it seems to work on others
 	   CALL SHADE_SUB(Z,XX(IZLEN+1),YY(IZLEN+1),XX(IZLEN+NX+1),
-     1	       YY(IZLEN+NY+1), pixel)
+     1	       YY(IZLEN+NY+1), cells)
 
 	ENDIF
 

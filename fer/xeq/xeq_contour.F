@@ -91,7 +91,8 @@
 *                   variable name in the key below the plot.
 * v541 *acm*  5/02 add option to control outline on the shade key boxes 
 *                   /KEY=continuous
-* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by contour)
+* V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by contour)
 
 
 	include 'tmap_dims.parm'
@@ -121,10 +122,10 @@
 	CHARACTER TM_FMT*12, fname*128, buff*25
 
 * internal parameter declarations:
-	LOGICAL		norm_dims_only, not_vector, cont_key, is_shade
+	LOGICAL		norm_dims_only, not_vector, cont_key, 
+     .                  is_shade, use_cell
 	PARAMETER     ( norm_dims_only  = .FALSE.,
-     .			not_vector	= .FALSE.,
-     .                  is_shade        = .FALSE. )
+     .			not_vector	= .FALSE. )
 
 * set up the graphics environment
 
@@ -146,6 +147,8 @@
 	axes      = qual_given( slash_cont_axes      ).GT.0
         sp        = qual_given( slash_cont_spectrum  )
         spectrum  = sp .GT. 0 .AND. fill
+        is_shade  = .FALSE.
+        use_cell  = .FALSE.
 
         patt     = qual_given( slash_cont_pattern  )
         pattern  = patt .GT. 0 .AND. fill
@@ -221,6 +224,7 @@
 	CALL DISP_SET_UP   ( 	memory,
      . 			 	not_vector,
      .				is_shade,
+     .				use_cell,
      .				aspect,
      .				overlay,
      .				transpz,

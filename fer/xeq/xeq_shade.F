@@ -80,7 +80,9 @@
 * v541 *acm*  5/02 add option to control outline on the shade key boxes 
 *                   /KEY=continuous
 * V550: *acm*11/02 add argument is_shade to DISP_SET_UP call, allocate
-*                  PPLUS memory for pixel array in cellarray calls.
+*                  PPLUS memory for cells array in cellarray calls.
+* V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call, so it can be
+*                  passed on to PPLUS
 
 
 	include 'tmap_dims.parm'
@@ -100,7 +102,7 @@
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, transpz, no_labels, do_key,
      .            spectrum, set_up, noaxes, axes, pattern, no_data,
-     .		  is_logh, is_logv, is_shade
+     .		  is_logh, is_logv, is_shade, use_cell
 
 	INTEGER	  TM_LENSTR1, status, slen, sp, patt,
      .		  ax1_blks, ax1_start,
@@ -150,6 +152,7 @@
 	CALL DISP_SET_UP   (    memory,
      .				not_vector,
      .				is_shade,
+     .				use_cell,
      .				aspect,
      .				overlay,
      .				transpz,
@@ -307,6 +310,7 @@ c done in disp_set_up.
      .			'SHADE/OVER/' //ppl_wait//' ' , 1, 1 )
 	      end if
 	   ELSE
+              IF (use_cell) CALL PPLCMD (' ', ' ', 0, 'S_CELL 1', 1,1 )
 	      if (qual_given(slash_shad_line) .gt. 0) then
 		 CALL PPLCMD ( ' ', ' ', 0,
      .			'SHADE/LATCH/'//ppl_wait//' ', 1, 1 )

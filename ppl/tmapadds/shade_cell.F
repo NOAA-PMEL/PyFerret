@@ -1,4 +1,6 @@
-/*
+        SUBROUTINE SHADE_CELL (flag)
+        
+*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -30,80 +32,23 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*/
+*
+*       Sets the flag to use CELLARRAY plot -- determined in disp_set_up
+*       called on the Ferret side from xeq_shade.
+*       ACM  5/03
 
+        include         'shade_vars.cmn'
+	include		'cmrd_inc.decl'
+	include		'CMRD.INC'
 
+*******************************************************************************
 
-/* batch_graphics.c
+*       default is no cellarray call.
 
-* contains entries
-*     void set_batch_graphics()    ! sets program state
-* and
-*     int its_batch_graphics       ! queries program state
+	use_cell	= .FALSE.
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* revision 0.0 - 3/5/97
-* v552 *acm* 6/5/03 check for the new flag its_gif
-
-* compile with
-*    cc -g -c batch_graphics.c
-*  or
-*    cc    -c batch_graphics.c
-
-*/
-
-
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-
-/* local static variable to contain the state */
-static int its_batch=0;
-static int its_gif=0;
-
-/* set_batch_graphics */
-void FORTRAN(set_batch_graphics)(char *outfile)
-{
-  int length;
-  char * result;
-
-  assert(outfile);
-  length = strlen(outfile);
-  FORTRAN(save_metafile_name)(outfile, &length);
-  its_batch = -1;
-
-  result = strstr(outfile,"gif"); 
-  if (result)  {
-      its_gif = -1;
-   }
-  return;
-}
-
-/* its_batch_graphics */
-int FORTRAN(its_batch_graphics)()
-{
-   return (its_batch);
-}
-
-
-      /* its_gif_graphics */
-int FORTRAN(its_gif_graphics)()
-{
-   return (its_gif);
-}
-
-
-      
-
-
+	IF  (m .GE. 1 .AND. p(1) .EQ. 1.)  use_cell = .TRUE.
+	RETURN
+	END

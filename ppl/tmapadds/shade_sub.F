@@ -1,4 +1,4 @@
-	SUBROUTINE SHADE_SUB (data,xc,yc,xs,ys, pixel)
+	SUBROUTINE SHADE_SUB (data,xc,yc,xs,ys, cells)
 
 *
 *
@@ -120,9 +120,9 @@ C       data statement of my_trans added for linux port *jd* 12.96
 
 	logical		valid
 
-        INTEGER		pixel(*), pmax
+        INTEGER		cells(*), pmax
 	LOGICAL		ITS_BATCH_GRAPHICS, REGULARLY_SPACED,
-     .                  batch, irregular, use_cell
+     .                  batch, irregular
 
 * declarations for curvilinear coordinates
 	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES, BAD_XY_COORD,
@@ -270,80 +270,74 @@ C       data statement of my_trans added for linux port *jd* 12.96
 #ifndef xgks
         IF (meta_actv) CALL meta_shade_set
 #endif
-c no_cellarray
 c
 c* For cellarray shade plots:
 c
-c*       For version 5.5 cellarray called only for X output, when
-c*       there is no metafile open, and we are not in -batch mode.
+c*       For version 5.52 cellarray called only for gif batch mode.
 c*       cellarray call is for rectangular, evenly spaced grids,
-c*       to be filled with solid colors.
-c*       Use older calls using fillarea when there is meta or ps output.
-c
-c      use_cell = ((.NOT. meta_actv ) .AND. (.NOT.batch) .AND.
-c     .            (.NOT.curvilinear) .AND. (mnpat.EQ.0) .AND.
-c     .            (.NOT.irregular)   .AND. (.NOT.SOVER) ) 
-c
-c      IF (use_cell) THEN
-c
-c* Collect color indices in cellarray pixel array.
-c
-c        cx1 = uc(1)*xinv   
-c        cx2 = uc(2)*xinv   
-c        cy1 = uc(3)*yinv
-c        cy2 = uc(4)*yinv
-c
-c* Get the number of grid cells to be plotted 
-c
-c        mx = 0
-c        my = 0
-c
-c        DO 60 i = 1, nx
-c           IF (xc(i) .GE. cx1 .AND. xc(i) .LE. cx2) mx = mx + 1
-c  60    CONTINUE
-c        DO 65 j = 1, ny
-c           IF (yc(j) .GE. cy1 .AND. yc(j) .LE. cy2) my = my + 1
-c  65    CONTINUE
-c
-c        k = 0
-c        DO 80 j = 1,ny
-c	   DO 70 i = 1,nx
-c
-c           IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
-c
-c           IF (xc(i) .GT. cx1 .AND. xc(i) .LE. cx2  .AND.
-c     .         yc(j) .GT. cy1 .AND. yc(j) .LE. cy2 ) THEN
-c
-c              fill_ndx  = GET_NDX (data(i,j),fill_ndx)
-c              k = k + 1
-c
-c	      IF (fill_ndx .NE. -999) THEN
-c                 pixel(k) = fill_ndx + lo_color_ndx(wsid)-2
-c                 pmax = max (pixel(k), pmax)
-c
-c              ELSE
-c                 pixel(k) = 0
-c
-c              ENDIF
-c
-c           ENDIF
-c
-c70         CONTINUE
-c80      CONTINUE
-c
-c*  Render the field using the cellarray primitive call.
-c
-c         DO 90 i = 0, pmax
-c            CALL gsfaci (i)
-c90       CONTINUE
-c
-c         CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, pixel)
-c      ELSE  ! non-cellarray:
-c
-c* Previous code for SHADE plot, when either a pattern is used or 
-c* we have curvilinear coordinates
+c*       to be filled with solid colors. Use previously-implemented 
+c*       calls tha use fillarea when there is meta or ps output.
+c*       use_cell is determined in disp_set_up, called on the Ferret 
+c*       side from xeq_shade.
 
-c no_cellarray
+      IF (use_cell) THEN
+
+* Collect color indices in cellarray cells array.
+
+        cx1 = uc(1)*xinv   
+        cx2 = uc(2)*xinv   
+        cy1 = uc(3)*yinv
+        cy2 = uc(4)*yinv
+
+* Get the number of grid cells to be plotted 
+
+        mx = 0
+        my = 0
+
+        DO 60 i = 1, nx
+           IF (xc(i) .GE. cx1 .AND. xc(i) .LE. cx2) mx = mx + 1
+  60    CONTINUE
+        DO 65 j = 1, ny
+           IF (yc(j) .GE. cy1 .AND. yc(j) .LE. cy2) my = my + 1
+  65    CONTINUE
+
+        k = 0
+        DO 80 j = ny,1,-1
+	   DO 70 i = 1,nx
+
+           IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
+
+           IF (xc(i) .GT. cx1 .AND. xc(i) .LE. cx2  .AND.
+     .         yc(j) .GT. cy1 .AND. yc(j) .LE. cy2 ) THEN
+
+              fill_ndx  = GET_NDX (data(i,j),fill_ndx)
+              k = k + 1
+
+	      IF (fill_ndx .NE. -999) THEN
+                 cells(k) = fill_ndx + lo_color_ndx(wsid)-2
+                 pmax = max (cells(k), pmax)
+
+              ELSE
+                 cells(k) = 0
+
+              ENDIF
+
+           ENDIF
+
+70         CONTINUE
+80      CONTINUE
+
+*  Render the field using the cellarray primitive call.
+
+         DO 90 i = 0, pmax
+            CALL gsfaci (i)
+90       CONTINUE
+
+         CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
+      ELSE  ! non-cellarray:
+
+* Previous code for SHADE plot, when either a pattern is used or 
+* we have curvilinear coordinates
 
 
 *	LAY FILL DOWN ON SCREEN IN PROPER PLACE
@@ -442,10 +436,7 @@ c no_cellarray
 	   GOTO 40
 50	CONTINUE
 
-c no_cellarray
-c      ENDIF
-c no_cellarray
-
+      ENDIF	! use_cell
 
  3333	CONTINUE					! 1/89 - *sh*
 * post-interrupt re-entry				! 1/89 - *sh*

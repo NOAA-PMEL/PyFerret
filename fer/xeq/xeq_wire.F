@@ -52,8 +52,9 @@
 *               declaration line.
 * V530: *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
 *                  (only used for PLOT command)
-* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call.
+* V550: *acm*11/02 add argument is_shade to DISP_SET_UP call (not used by wire)
 *                  remove VMS includes.
+* V552: *acm* 5/03 add argument use_cell to DISP_SET_UP call (not used by wire)
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -72,7 +73,7 @@
 
 * internal variable declarations:
 	LOGICAL	  no_range, overlay, no_labels, transpz, got_vpoint,
-     .		  is_logh, is_logv, is_shade
+     .		  is_logh, is_logv, is_shade, use_cell
 	INTEGER	  status, qp,
      .		  ax1_blks, ax1_start,
      .		  ax2_blks, ax2_start, density
@@ -83,8 +84,7 @@
 * internal parameter declarations:
 	LOGICAL		norm_dims_only, not_vector
 	PARAMETER     ( norm_dims_only  = .FALSE.,
-     .			not_vector	= .FALSE.,
-     .                  is_shade        = .FALSE. )
+     .			not_vector	= .FALSE.)
 
 * set up the graphics environment
 	CALL START_PPLUS
@@ -99,7 +99,10 @@
 	no_labels = qual_given( slash_wire_nolabels  ).GT.0
 	transpz   = qual_given( slash_wire_transpz   ).GT.0
 	is_logh   = qual_given( slash_is_logh        ).GT.0 ! Not valid quals
-	is_logv   = qual_given( slash_is_logv        ).GT.0 ! for wire 
+	is_logv   = qual_given( slash_is_logv        ).GT.0 ! for wire fill
+        is_shade  = .FALSE.
+        use_cell  = .FALSE.
+
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,
      .                                     is_cx, num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
@@ -143,6 +146,7 @@
 	CALL DISP_SET_UP   ( 	memory,
      .				not_vector,
      .                          is_shade,
+     .                          use_cell,
      .				aspect,
      .				overlay,
      .				transpz,

@@ -146,6 +146,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead 
 * v552: *acm* 4/03 Bug Fix: checking length of variable name. Length now 128
+* V553  *acm* 6/03 Use 'XX' or 'YY' for line_direction for non-lat/lon axes. 
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1061,11 +1062,13 @@
 	IF ( orient .EQ. t_dim ) line_tunit(iline) = un_convert( iunit )
 
 * is it a formattable axis ?
-	IF ( orient .EQ. x_dim .AND. iunit .EQ. pun_degrees ) THEN
-	   line_direction( iline ) = 'WE'
+	IF ( orient .EQ. x_dim ) THEN
+	   line_direction( iline ) = 'XX'
+           IF (iunit .EQ. pun_degrees) line_direction( iline ) = 'WE'
 
-	ELSEIF ( orient .EQ. y_dim .AND. iunit .EQ. pun_degrees ) THEN
-	   line_direction( iline ) = 'SN'
+	ELSEIF ( orient .EQ. y_dim  ) THEN
+           line_direction( iline ) = 'YY'
+	   IF (iunit .EQ. pun_degrees) line_direction( iline ) = 'SN'
 
 	ELSEIF ( orient .EQ. z_dim ) THEN
            IF ( qual_given( slash_depth ) .GT. 0 ) THEN
@@ -1084,6 +1087,8 @@
 * ... time axis specified as time step values with T0 given
 	ELSEIF ( orient.EQ.t_dim .AND. qual_given(slash_T0).GT.0 ) THEN
 	   line_direction(iline) = 'TI'
+	ELSEIF ( orient.EQ.t_dim .AND. line_direction(iline) .EQ. 'NA') THEN
+	   line_direction(iline) = 'TT'
 	ENDIF
 
 * ... coordinate pointer for next line to save

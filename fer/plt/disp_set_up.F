@@ -1,8 +1,9 @@
 	SUBROUTINE DISP_SET_UP( memory,
-     .				vector, shade, aspect, overlay, transpz, 
-     .				no_labels, no_x_rng, valx1, density, 
-     .				is_logx, is_logy, mr_list, nmv, cx_list, 
-     .				uvar, s1_axis, s2_axis, pen, status )
+     .				vector, shade, use_cell, aspect, overlay, 
+     .				transpz, no_labels, no_x_rng, valx1, 
+     .				density, is_logx, is_logy, mr_list, nmv, 
+     .				cx_list, uvar, s1_axis, s2_axis, pen, 
+     .				status )
 
 *
 *
@@ -120,7 +121,7 @@
 *                   this information variable name in the key below the plot.
 * v541 *acm*  8/02  For "No Valid Data" the test is: 
 *                    IF (no_x_rng .AND. (valx1.EQ.bad_val4) )
-* v5.5 *acm* 11/02  Set PPLUS memory for the pixel array used by cellarray 
+* v5.5 *acm* 11/02  Set PPLUS memory for the cells array used by cellarray 
 *                   in SHADE plots
 *      *acm* 12/02  When setting has_time_axis flag, only do it if an
 *                   axis being used IS a time axis
@@ -128,6 +129,9 @@
 *                      completely implement it & has a precision bug for 
 *                      large plots.  see comment lines: c no_cellarray
 * V552 *acm*  3/03  Send the key string to key_loc since it may be multi-line
+*      *acm*  5/03  Send the flag irregular to AXIS_INTERVALS.  
+* v5.52*acm*  6/03  Restore cellarray setup. uses its_gif flag so these are
+*                   only done in -gif mode
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -180,9 +184,9 @@ C plus those starting w/ xbox_bounds:
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, user_title, time_axis,
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
-     .			ITS_BATCH_GRAPHICS, batch, REGULARLY_SPACED,
+     .			ITS_GIF_GRAPHICS, its_gif, REGULARLY_SPACED,
      .                  irregular
-c no cellarray       LOGICAL          use_cell
+        LOGICAL         use_cell
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
@@ -390,41 +394,47 @@ C   set up memory for the flag grid
 	ENDIF
 
 * determine axis re-gridding needs
+
+        irregular = .NOT. ( line_regular(axis1) )
 	CALL AXIS_INTERVALS( 'X', mvx_temp, ctx, dim1, curvilinear, s1_axis,
      .			     mr_lo_ss(mvx_temp,dim1), mr_hi_ss(mvx_temp,dim1),
-     .			     w1_lo, w1_hi, n1_regrid, d1_regrid, regrid_1 )
+     .			     w1_lo, w1_hi, n1_regrid, d1_regrid, regrid_1,
+     .                       irregular )
+
+        irregular = .NOT. ( line_regular(axis1) )
 	CALL AXIS_INTERVALS( 'Y', mvx_temp, ctx, dim2, curvilinear, s2_axis,
      .			     mr_lo_ss(mvx_temp,dim2), mr_hi_ss(mvx_temp,dim2),
-     .			     w2_lo, w2_hi, n2_regrid, d2_regrid, regrid_2 )
+     .			     w2_lo, w2_hi, n2_regrid, d2_regrid, regrid_2,
+     .                       irregular )
+
 	IF ( regrid_1 .OR. regrid_2 ) THEN
 	   icode = 1
 	ELSE
 	   icode = 0
 	ENDIF
 
-!  For SHADE plots, more PLOT+ memory needed for the pixel array
+!  For SHADE plots, more PLOT+ memory needed for the cells array
 !  used in cellarray call.  (s1_axis and s2_axis have been set by now.)
-!  Commented out as of 1/30/03  until cellarray can be sorted out.
 
-c no_cellarray
-c        batch = ITS_BATCH_GRAPHICS()
+        its_gif = ITS_GIF_GRAPHICS()
 
-c        irregular = .NOT. ( line_regular(axis1) )
-c        IF (.NOT. irregular)
-c     .      irregular = .NOT. ( line_regular(axis2) )
+        irregular = .NOT. ( line_regular(axis1) )
+        IF (.NOT. irregular)
+     .      irregular = .NOT. ( line_regular(axis2) )
 
-c        use_cell  = .FALSE.
-c        IF ( shade  .AND. 
-c     .       (.NOT.overlay) .AND. 
-c     .       (.NOT.batch) .AND. 
-c     .       (.NOT.mode_metafile) .AND.
-c     .       (.NOT.curvilinear) .AND. 
-c     .       (.NOT.irregular) ) use_cell = .TRUE.
-c        IF (use_cell) THEN
-c           nsiz = size1* size2
-c           plot_mem_used = plot_mem_used + nsiz
-c        ENDIF
-c no_cellarray
+        use_cell  = .FALSE.
+
+        IF ( shade  .AND. 
+     .       (.NOT.overlay) .AND. 
+     .       (its_gif) .AND. 
+     .       (.NOT.mode_metafile) .AND.
+     .       (.NOT.curvilinear) .AND. 
+     .       (.NOT.irregular) ) use_cell = .TRUE.
+        IF (use_cell) THEN
+           nsiz = size1* size2
+           plot_mem_used = plot_mem_used + nsiz
+        ENDIF
+
 
 
 * set up PLOT+ to ignore bad data flag

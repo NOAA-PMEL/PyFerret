@@ -104,7 +104,7 @@
 	parameter	(buffer_max=50)
 
 	real		xbuff(4,buffer_max), ybuff(4,buffer_max)
-        logical         cont_key
+        logical         cont_key, use_cell
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
      .			   x_lo,x_hi,y_lo,y_hi,
@@ -124,6 +124,6 @@
      .			   rgb_mapping, percent, by_level, by_value,
      .			   mrgb_mapping, ilast,
      .			   buffer_empty, num_buffered,
-     .		     	   xbuff, ybuff, upperflg, upper_first,
+     .		     	   xbuff, ybuff, upperflg, upper_first,use_cell,
      .			   pattern_list
 

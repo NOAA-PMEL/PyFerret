@@ -62,7 +62,8 @@
 *           location of the shade key -- can reset any of the four, and
 *           others will be filled in by making the key the default size
 *           in that direction.  See shade_key.F 
-
+* v553 *acm* Fix bug where length of the first numeric key label was not
+*           taken into account when determining label size: computing max_len
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -95,10 +96,10 @@
 
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def
 
-	character*12	text,tm_fmt, txt_out, blanks
+	character*12	text,TM_FMT, txt_out, blanks
 	logical		ITSA_AXIS_VIEW, windof_hold
 
-	external	tm_fmt
+	external	TM_FMT
 
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
@@ -178,6 +179,9 @@
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
+	text = tm_fmt (zlev(1),klab_dig,klab_len,str_len)  
+        if (max_len .lt. str_len) max_len = str_len	   
+
 	do 10 ndx = 2, max (2,shd_levels + 1)
 	   px(1) = kx_lo + real (ndx - 2) * x_inc
 	   px(2) = kx_lo + real (ndx - 2) * x_inc
@@ -333,6 +337,10 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
+
+	text = tm_fmt (zlev(1),klab_dig,klab_len,str_len)
+	if (max_len .lt. str_len) max_len = str_len	
+
 	do 1010 ndx = 2, max (2,shd_levels + 1)
 	   px(1) = kx_lo
 	   px(2) = kx_lo + 4.0*x_inc

@@ -45,25 +45,24 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 05/05/87 - based on TM_LENSTR rev. 0.00
+* ywei - 05/04 call C tm_get_strlen function to speed up
 *
 * calling argument declarations:
 	CHARACTER*(*) line
 
 * internal variable declarations:
-	INTEGER	i, mright
+	INTEGER	mright, len_str
 
 * initialize: find highest possible right hand limit of string
 	mright = LEN(line)
 
-	DO 100 i = mright,1,-1
-	IF (line(i:i) .NE. ' ') GOTO 200
- 100	CONTINUE
-
+        CALL TM_GET_STRLEN(len_str, mright, line)
 * for all blanks
-	TM_LENSTR1 = 1
-	RETURN
+        IF(len_str .EQ. 0) THEN
+            TM_LENSTR1 = 1 
+        ELSE
+            TM_LENSTR1 = len_str
+        ENDIF
 
-* found non-blank
- 200	TM_LENSTR1 = i
 	RETURN
 	END

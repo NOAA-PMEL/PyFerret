@@ -47,6 +47,14 @@
 * USAGE EXAMPLE:
 *	CONTOUR/Z=`TEMP[Z=0:1000@LOC:15]` SALINITY*`some_factor`
 
+* NOTE (3/00) THE POTENTIAL FOR WRONG RESULTS WITH OPERATIONS SUCH AS MATRIX
+* TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS.
+* THIS COULD BE FIXED BY FORCING FULL EVALUATION OF EVERY EXPRESSION THAT
+* CONTAINS A GC FUNCTION WITH AN IMPOSED AXIS. (For now we leave this
+* bug in favor of the performance increase ... important in automated scripts
+* that want to test the size of a result before computing it.
+
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
@@ -63,7 +71,9 @@
 * Linux Port - 5/97 *kob*
 *	     - added ifdef check for double slash because f90/linux didn't
 *	       need two of them together for escapes
-* V510: 9/99 *sh* - added RETURN=XSTART (X-Y-Z-T, START-END))
+* V510: 9/99 *sh* - added RETURN=XSTART (X-Y-Z-T, START-END-UNITS))
+*	3/00 *sh* - RETURN= options computed without evaluating the expression
+*		  - added RETURN=SIZE
 
 #ifdef unix
 	include 'ferret.parm'
@@ -95,7 +105,7 @@
 
 * internal variable declarations:
 	LOGICAL need_formatting
-	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, MR_DIM_LEN,
+	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim
@@ -217,27 +227,43 @@
 
 * is the expression just white space?	(1/96 ... quick fix with GOTO's)
  149	DO 150 i = istart, iend
- 150	IF ( cmnd(i:i) .NE. ' ' .AND. cmnd(i:i) .NE. tab ) GOTO 200
+ 150	IF ( cmnd(i:i) .NE. ' ' .AND. cmnd(i:i) .NE. tab ) GOTO 160
 * ... weird - they gave us pure white space - no numerical result possible
 	repl = bad_str
 	str_len = 3
 	GOTO 500
 
-* evaluate the expression
- 200	CALL EVAL_EXPR ( memory, cx_last, cmnd(istart:iend), status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	cx = is_cx(1)		! always comes back as the first context
-	mr = is_mr(1)
-
 * is this a single number request or a RETURN= query?
-	IF ( info_query ) THEN
+ 160	IF ( info_query ) THEN
+* ... evaluate the context without computing the expression
+*	this is a major performance consideration, but not 100% reliable
+	   CALL EVAL_CONTEXT ( cx_last, cmnd(istart:iend), status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   cx = is_cx(1)	! always comes back as the first context
+
+* ... if the result has any axes with unknown limits then we have to do a
+*	full evaluation. This happens (only?) from grid-changing fcns that
+*	return ABSTRACT axes, on which limits may depend on data values
+* NOTE THE POTENTIAL FOR WRONG RESULTS WITH OPERATIONS SUCH AS MATRIX
+* TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
+	   DO 190 idim = 1, 4
+	      IF ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
+     .	    .AND. CGRID_AXIS(idim, cx) .NE. mnormal ) THEN
+	         CALL EVAL_EXPR ( memory, cx_last,
+     .				  cmnd(istart:iend), status )
+	         IF ( status .NE. ferr_ok ) GOTO 5000
+	         cx = is_cx(1)	! always comes back as the first context
+	         GOTO 200
+	      ENDIF
+ 190	   CONTINUE
+
 * ... RETURN= information request: "repl" contains the keyword
 * ... RETURN=SHAPE
-	   IF ( repl .EQ. "SHAPE" ) THEN
+ 200	   IF ( repl .EQ. "SHAPE" ) THEN
 	      repl = ' '
 	      str_len = 0
 	      DO 210 idim = 1, 4
-	         IF ( MR_DIM_LEN( idim, mr ) .GT. 1 ) THEN
+	         IF ( CX_DIM_LEN( idim, cx ) .GT. 1 ) THEN
 	            str_len = str_len + 1
 	            repl(str_len:str_len) = ww_dim_name(idim)
 	         ENDIF
@@ -268,6 +294,11 @@
 	   ELSEIF ( repl .EQ. "GRID" ) THEN
 	      repl = grid_name( cx_grid(cx) )
 
+* ... RETURN=SIZE
+	   ELSEIF ( repl .EQ. "SIZE" ) THEN
+	      i2 = CGRID_SIZE ( cx )
+	      repl = LEFINT(i2, str_len)
+
 * ... RETURN=*SIZE, *START, *END, *UNITS
 	   ELSE	
 * ... axis specific requests - must start with i,j,k,l or x,y,z,t
@@ -284,7 +315,7 @@
  221	      need_formatting = .TRUE.
 	      IF ( repl(2:5) .EQ. "SIZE" ) THEN
 	         IF (.NOT.itsa_subsc) GOTO 5520
-	         i2 = cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim) + 1
+	         i2 = CX_DIM_LEN(idim, cx)
 	      ELSEIF ( repl(2:6) .EQ. "START" ) THEN
 	         i2 = cx_lo_ss(cx,idim)
 	      ELSEIF ( repl(2:4) .EQ. "END" ) THEN
@@ -311,6 +342,12 @@
 
 	ELSE
 * single number answer desired
+* ... evaluate the expression
+	   CALL EVAL_EXPR ( memory, cx_last, cmnd(istart:iend), status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   cx = is_cx(1)	! always comes back as the first context
+	   mr = is_mr(1)
+
 * ... make sure the result is a single, valid value
 	   IF ( CGRID_SIZE(cx) .NE. 1 ) GOTO 5200	! result not a scalar
 
@@ -366,6 +403,6 @@
      .       'maximum precision is 10 digits: '
      .					//cmnd(i:qual_end), *5000)
  5520   CALL ERRMSG( ferr_invalid_command, status,
-     .       'RETURN="shape","isize","istart","iend","jsize",... '
+     .     'RETURN="shape","size","grid","isize","jend", ... '
      .				//pCR//cmnd(i:qual_end), *5000)
 	END

@@ -58,7 +58,8 @@
 
 * internal variable declarations:
 	LOGICAL		explicit_qualifiers
-	INTEGER		UVAR_NUMBER, KNOWN_GRID, idim, uvar
+	INTEGER		UVAR_NUMBER, KNOWN_GRID, idim, uvar,
+     .			start, end, mod_cx
 
 * calling arguments:
 * in	isp_base	- stack level at which to begin calculations
@@ -109,15 +110,6 @@
 	   ENDIF
  5	CONTINUE
 	
-* was a regridding operation implied through the command qualifier cx_delta?
-* (5/99) test moved from transformation stripping section below
-	DO 8 idim = 1, 4
-	   IF ( cx_delta(idim, cx) .NE. unspecified_val8 ) THEN
-	      CALL ERRMSG( ferr_invalid_command, status,
-     .			'delta values may only modify variable names', *5000 )
-	   ENDIF
- 8	CONTINUE
-
 * copy uvar_* limits into the output context
 	DO 100 idim = 1, 4
 	   IF ( cx_lo_ss(cx, idim) .EQ. unspecified_int4 ) THEN
@@ -131,6 +123,18 @@
 	      ENDIF
 	   ENDIF
  100	CONTINUE
+
+* if the expression is a single variable, then "EX#1" becmes that variable
+	IF ( uvar_num_items(uvar) .EQ. 1
+     . .AND. uvar_item_type(1,uvar) .EQ. alg_variable ) THEN
+	   start = uvar_item_start( 1, uvar )
+	   end   = uvar_item_end  ( 1, uvar )
+	   CALL PARSE_NAM_DSET( uvar_text(uvar)(start:end),
+     .				cx, cx_data_set(cx),
+     .				cx_category(cx),
+     .				cx_variable(cx), mod_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
 
 * fill in any unspecified limits with information from the grid
 	CALL COMPLETE_MISSING_LIMITS(cx)

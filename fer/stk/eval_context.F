@@ -39,6 +39,14 @@
 * calculate grid and completed context based on the expression given
 * without actually evaluating the expression
 
+* NOTE THAT THIS ROUTINE CAN RETURN WRONG REGION INFORMATION FOR THE SPECIAL
+* case of expressions like
+*	let a = XSEQUENCE(J[j=1:3])
+*	`a[i=100:200]`
+* where explicit limits are given that do not match returns on ABSTRACT axes
+* or on enhanced-header CDF files with incomplete axis regions included
+
+
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 

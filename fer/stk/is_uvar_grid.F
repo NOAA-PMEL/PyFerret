@@ -64,6 +64,7 @@
 *		     abstract axes. For example, the grid of "SST+Z"
 * v500: *kob* 3/99 - fixed which crashed ferret when  let/d didn't have a 
 *                    dataset present
+*	*sh* 3/99 - bug fix: bug introduced with string arguments 
 
 * calling argument declarations:
 	INTEGER	status
@@ -270,13 +271,7 @@
 * for all uvars; handling GC variables differently was a choice in
 * order to minimize changes to already working code
 	IF ( is_phase(isp).NE.0 ) THEN
-	   IF ( its_gc ) THEN
-	      IF (item.EQ.1) THEN
-	         cx_stack_ptr = cx_stack_ptr - (nitem-1)
-	      ELSE
-	         CONTINUE ! let the cx stack accumulate the argument contexts
-	      ENDIF
-	   ELSE
+	   IF (.NOT.its_gc) THEN
 	      cx_stack_ptr = cx_stack_ptr - 1
 	   ENDIF
 	ENDIF
@@ -293,8 +288,15 @@
 	is_act  ( isp ) = isact_get_grid	! temp diagnostic
 	RETURN 1
 	
-* DONE - clean up
+***  DONE - clean up
  1000	CONTINUE
+* for grid-changing vars all of the arguments contextx are still on the stack 
+	IF ( its_gc ) THEN
+	   DO 1010 i = 1, nitem - 1	! 3/99 - strings not on stack
+	      IF (uvar_item_type(i,uvar).NE. alg_string)
+     .			cx_stack_ptr = cx_stack_ptr - 1
+ 1010	   CONTINUE
+	ENDIF
 * have any variables been encountered ?
 * is this a completely abstract expression like X+Y*2 ?
 * ... 8/95 check uvar_dset: LET/D variable needs uvar_need_dset always true 

@@ -67,6 +67,7 @@ legal_chars.F\
 make_axis.F\
 match4.F\
 match_name.F\
+match_quoted_name.F\
 match_template.F\
 minmax.F\
 mode_gui_on.F\

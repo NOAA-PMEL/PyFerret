@@ -14,6 +14,7 @@
 *		- Also, id grid-changing fcns as category alg_grid_chg_fcn
 *		- and check for negative constants 
 *		==> Note that this may modify natom
+* V495: 7/7/98 - allow variable names in single quotes - bypass name check
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -110,7 +111,10 @@
 	   ENDIF
 
 * cant identify it - we will call it an variable for now
-	   IF ( .NOT.TM_LEGAL_NAME(text(at_start(i):aend)) ) GOTO 5100
+	   IF (text(at_start(i):at_start(i)) .NE. '\'' ) THEN
+* (7/98) only check name if it is not in quotation marks
+	     IF ( .NOT.TM_LEGAL_NAME(text(at_start(i):aend)) ) GOTO 5100
+	   ENDIF
 	   at_type(i) = alg_variable
 	   at_id(i)   = unspecified_int4
 

@@ -15,6 +15,8 @@
 * V450:  7/97 - save the value of parent_uvar in uvar_parent
 * V491:  12/97 - add check to ensure natom_rpn returned from RPN isn't
 *                greater than max_uvar_items  *kob*
+* V495: 7/7/98 - *sh* variable names in single quotes - don't upcase them
+
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
 	include 'ferret_cmn/errmsg.parm'	
@@ -36,9 +38,10 @@
      .			at_start (maxatoms), at_end (maxatoms)
 
 * internal variable declarations:
+	LOGICAL inquote
 	INTEGER	STR_UPCASE, vax_code, i, natom_rpn,
-     .                  rpn_order(maxatoms)
-	CHARACTER	err_string*255
+     .                  rpn_order(maxatoms), i2, is, ie
+	CHARACTER	err_string*255, c*1
 
 * initialize
 
@@ -57,7 +60,32 @@
 
 * copy name code and text into slot and change to all upper case
 	vax_code = STR_UPCASE( uvar_name_code( uvar ), name )
-	vax_code = STR_UPCASE( uvar_text     ( uvar ), text(txstart:txend) )
+* (7/98) - don't upcase portions of the string inside single quotes
+!	vax_code = STR_UPCASE( uvar_text     ( uvar ), text(txstart:txend) )
+	uvar_text(uvar) = ' '
+	i2 = 0
+	inquote = .FALSE.
+	DO 100 i = txstart, txend
+	   i2 = i2 + 1
+	   c = text(i:i)
+	   IF ( c .EQ. '\'' ) inquote = .NOT.inquote
+	   IF ( inquote .OR. (c .LT. 'a' .OR. c .GT. 'z' ) ) THEN
+	      uvar_text(uvar)(i2:i2) = c   ! preserve case
+	   ELSE
+* ... convert lower case character to upper case
+#if defined unix  && ! defined NEED_IAND
+	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
+#else
+# ifdef FORTRAN_90
+	      uvar_text(uvar)(i2:i2) = CHAR( IAND(HEXDF, ICHAR(c)) )
+# else
+* VMS needs IAND
+	      uvar_text(i2:i2) = CHAR( IAND('DF'X, ICHAR(c)) )
+# endif
+#endif
+	   ENDIF
+ 100	CONTINUE
+* (7/98) end of quote-sensitive case changing loop
 
 * copy title, units, and dset into buffers
 	uvar_title( uvar ) = title
@@ -79,7 +107,21 @@
 !	uvar_item_type (natom_rpn,uvar) = alg_finished
 
 * store number of items in definition
- 310	uvar_num_items( uvar ) = natom_rpn
+	uvar_num_items( uvar ) = natom_rpn
+
+!* 7/98 - remove surrounding single quotes from variable names
+! no - keep 'em in to signal special name -- use 'em in MATCH_NAME
+!	DO 310 i = 1, natom_rpn
+!	   IF ( uvar_item_type (i,uvar) .EQ. alg_variable ) THEN
+!	      is = uvar_item_start(i,uvar)
+!	      ie = uvar_item_end(i,uvar)
+!	      IF ( uvar_text(uvar)(is:is) .EQ.'\''
+!	1	   .AND. uvar_text(uvar)(ie:ie).EQ.'\'') THEN
+!		 uvar_item_start(i,uvar) = is + 1
+!		 uvar_item_end  (i,uvar) = ie - 1
+!	      ENDIF
+!	   ENDIF
+! 310	CONTINUE
 
 * by default assume the definition requires an external data set specification
 	uvar_need_dset( uvar ) = .TRUE.

@@ -11,6 +11,7 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 11/24/89
+* V495: 7/7/98 - add single quotes as another character class (11) (old 11->12)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -36,7 +37,8 @@
 *	C8 - blank tab
 *	C9 - E e
 *	C10- .
-*	C11- all others
+*       C11- '
+*	C12- all others
 
 	IF     ( ctr.EQ.'+' .OR.  ctr.EQ.'-' ) THEN
 	   ALG_CLASS = 1
@@ -61,8 +63,10 @@
 	   ALG_CLASS = 8
 	ELSEIF ( ctr.EQ.'.' ) THEN
 	   ALG_CLASS = 10
-	ELSE
+	ELSEIF ( ctr.EQ.'\'' ) THEN
 	   ALG_CLASS = 11
+	ELSE
+	   ALG_CLASS = 12
 	ENDIF
 
 	RETURN

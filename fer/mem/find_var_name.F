@@ -14,6 +14,10 @@
 * V200:  6/20/89 - eliminated "named" variables
 *	 1/25/90 - padded cvar_name_code with 4 blanks avoid QADXT=QADX match
 * V402:  7/95 - Added support for  LET/D=dset var = ...
+* V495: 7/7/98 - *sh* allow case-sensitive variable names in quotes from dsets
+*       user variable names are allowed in quotations just for
+*       consistency. Pseudo-variable names in quotes are not allowed -- so they
+*       don't get confused
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -40,7 +44,7 @@
 
 * internal variable declarations:
 	INTEGER		ivar, uvdset
-	LOGICAL		MATCH_NAME, single_dset
+	LOGICAL		MATCH_NAME, MATCH_QUOTED_NAME, single_dset
 
 * initialize
 	single_dset = dset_num .NE. unspecified_int4
@@ -60,7 +64,8 @@
 	   DO 40 ivar = 1, max_uvar
 	      IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 40
 	      IF ( uvar_dset( ivar ) .NE. dset_num ) GOTO 40
-	      IF ( MATCH_NAME( test_name, uvar_name_code( ivar ) ) ) THEN
+	      IF ( MATCH_QUOTED_NAME(test_name,uvar_name_code(ivar)) )
+	1	   THEN
 	         category = cat_user_var
 	         variable = ivar
 	         RETURN
@@ -73,7 +78,8 @@
 	      DO 60 ivar = 1, max_uvar
 	         IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 60
 	         IF ( uvar_dset( ivar ) .NE. uvdset ) GOTO 60
-	         IF ( MATCH_NAME( test_name, uvar_name_code( ivar ) ) ) THEN
+	         IF ( MATCH_QUOTED_NAME( test_name,uvar_name_code(ivar)) )
+	1	      THEN
 	            category = cat_user_var
 	            variable = ivar
 	            RETURN
@@ -86,19 +92,19 @@
 	DO 100 ivar = 1, max_uvar
 	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 100
 	   IF ( uvar_dset( ivar ) .NE. unspecified_int4 ) GOTO 100
-	   IF ( MATCH_NAME( test_name, uvar_name_code( ivar ) ) ) THEN
+	   IF ( MATCH_QUOTED_NAME( test_name,uvar_name_code(ivar)) )
+	1	THEN
 	      category = cat_user_var
 	      variable = ivar
 	      RETURN
 	   ENDIF
  100	CONTINUE
 
-
 * check file variables from this data set
 	DO 200 ivar = 1, maxvars
 	   IF ( single_dset
      .	  .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
-	   IF ( MATCH_NAME( test_name, ds_var_code( ivar ) ) ) THEN
+	   IF ( MATCH_QUOTED_NAME( test_name, ds_var_code( ivar ) ) ) THEN
 	      category = cat_file_var
 	      variable = ivar
 	      RETURN
@@ -109,7 +115,8 @@
 	DO 250 ivar = 1, max_uvar
 	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 250
 	   IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 250
-	   IF ( MATCH_NAME( test_name, uvar_name_code( ivar ) ) ) THEN
+	   IF ( MATCH_QUOTED_NAME( test_name,uvar_name_code(ivar)) )
+	1	THEN
 	      category = cat_user_var
 	      variable = ivar
 	      RETURN
@@ -118,7 +125,8 @@
 
 * check table of calculatable variables (padded to 8 characters)
 	DO 300 ivar = 1, num_calc_vars
-	   IF ( MATCH_NAME( test_name, cvar_name_code(ivar)//'    ' ) ) THEN
+	   IF (MATCH_QUOTED_NAME(test_name,cvar_name_code(ivar)//'    '))
+	1	THEN
 	      category = cat_calc_var
 	      variable = ivar
 	      RETURN

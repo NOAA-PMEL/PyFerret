@@ -10,6 +10,8 @@
 *
 * V200: 11/24/89
 * V402: 7/95 - Allow nested [] of the form vname1[G=vname2[D=dset]]
+* V495: 7/7/98 - allow variable names in single quotes - add new state S10
+*                and new character class 11 (single quote)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -42,6 +44,7 @@
 *	S7 - just missed last character of atom
 *	S8 - interpreting exponent
 *	S9 - inside of nested []	(mod 7/95)
+*       S10- inside of single quote pair
 
 * classes of characters
 *	C1 - + -
@@ -54,18 +57,31 @@
 *	C8 - blank tab
 *	C9 - E
 *	C10- .
-*	C11- all others
+*       C11- "
+*	C12- all others
 *						... CHARACTER CLASS ...
 *				      C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 C11
-	DATA (next_state(i,1),i=1,11)/ 2, 3, 4,-1,-1, 5, 5, 1, 4,  3, -2/
-	DATA (next_state(i,2),i=1,11)/ 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, -2/
-	DATA (next_state(i,3),i=1,11)/ 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, -2/
-	DATA (next_state(i,4),i=1,11)/ 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, -2/
-	DATA (next_state(i,5),i=1,11)/-9,-9,-9,-9,-9,-9,-9,-9,-9, -9, -2/
-	DATA (next_state(i,6),i=1,11)/ 6, 6, 6, 9, 5, 6, 6, 6, 6,  6,  6/
-	DATA (next_state(i,7),i=1,11)/-9,-9,-9,-9,-9,-9,-9,-9,-9, -9, -2/
-	DATA (next_state(i,8),i=1,11)/ 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, -2/
-	DATA (next_state(i,9),i=1,11)/ 9, 9, 9, 9, 9, 9, 9, 9, 9,  9,  9/
+	DATA (next_state(i,1),i=1,num_class)
+	1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10, -2/
+	DATA (next_state(i,2),i=1,num_class)
+	1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, -2/
+	DATA (next_state(i,3),i=1,num_class)
+	1    / 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, 7, -2/
+	DATA (next_state(i,4),i=1,num_class)
+	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, 7, -2/
+	DATA (next_state(i,5),i=1,num_class)
+	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9, -2/
+	DATA (next_state(i,6),i=1,num_class)
+	1    / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6,  6/
+	DATA (next_state(i,7),i=1,num_class)
+	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9, -2/
+	DATA (next_state(i,8),i=1,num_class)
+	1    / 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, 7, -2/
+	DATA (next_state(i,9),i=1,num_class)
+	1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9/
+	DATA (next_state(i,10),i=1,num_class)
+	1    / 10,10,10,10,10,10,10,10,10,10, 10,10/
+
 
 * initialize
 *    "was_operand" flags the character of the previous atom to distinguish the
@@ -121,8 +137,8 @@
 	ENDIF
 
 * take appropriate action
-*		 S1  S2  S3  S4  S5  S6  S7  S8   S9
-	GOTO ( 9999,100,100,100,500,100,700,100, 900 ) state
+*		 S1  S2  S3  S4  S5  S6  S7  S8   S9  S10
+	GOTO ( 9999,100,100,100,500,100,700,100, 900,1000 ) state
 
 * continue to next character
  100	GOTO 5
@@ -151,18 +167,43 @@
 	ENDIF
 	GOTO 5
 
+* single-quoted strings (mod 7/98)
+* this probably violates the theoretical underpinnings of the finite state
+* engine but ... what the heck, it's an easy hack
+* stay in this state until the matching \" is found
+* Note: this crude code cannot deal with nested quotations or escaped quotes
+*    Also, quoted names inside of square brackets will not be handled here
+ 1000	IF (class .EQ. 11) THEN		! quote found
+	   IF (last_state .EQ. 10) THEN      
+	      at_end(natom) = p         ! closing quote
+	      IF ( at_end(natom)-at_start(natom) .LT. 2 ) GOTO 5400
+	      atom_open = .FALSE.
+	      state = 1
+	   ELSE
+	      atom_open = .TRUE.        ! opening quote
+	   ENDIF
+	ELSE          
+	   CONTINUE                     ! inside of quote
+	ENDIF
+	GOTO 5
+
 * error exits
  5000	status = ferr_syntax
  5005	RETURN
  5100	err_string = 'illegal character: '//text(p:p)
-	GOTO 5000
+	GOTO 5000 
  5200	err_string = text(MAX(1,p-6):MIN(tlen,p+2))
 	GOTO 5000
  5300	err_string = '['//text(MAX(1,p-8):p)//'\\\]'
 	status = ferr_expr_too_complex
 	GOTO 5005
+ 5400	err_string = 'empty quotes not allowed'
+	GOTO 5000 
  5900	err_string = '*** lex state'
 	status = ferr_internal
 	GOTO 5005
  9999	STOP 'ALG_BREAK_UP'
 	END
+
+
+

@@ -7,6 +7,7 @@
 * 7/95 - increased number of states from 8 to 9 *sh* (see alg_break_up.F)
 * 12/96 *sh* added parameter right_paren
 * 7/97 - *sh* increased maxatoms
+* 7/98 - *sh* increased num_state and num_class to add qouble quoted varnames
 
 	integer		maxatoms,
      .			max_fcn,
@@ -37,5 +38,5 @@
      .			right_paren		= 3,
      .			inf_flg 		= 1,
      .			stk_flg 		= 2,
-     .			num_state		= 9,
-     .			num_class		= 11 )
+     .			num_state		= 10,
+     .			num_class		= 12 )

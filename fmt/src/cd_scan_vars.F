@@ -22,6 +22,8 @@
 *	  2/95 - check data type of missing_value.  Possibly convert
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* 7/98 *sh* - allow broader flexibility in variable names through retaining
+*             original case when appropriate
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -63,11 +65,12 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, CD_GET_BOUNDS,
+     .        TM_LEGAL_NAME,
      .        got_it, got_bad, got_missing, tf2, its_epic, 
      .        do_warn
       PARAMETER (do_warn = .TRUE. )
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
-     .        ndims, nvars, cdfstat, las_pos, idim,
+     .        ndims, nvars, cdfstat, las_pos, first_pos, idim,
      .        ivcd, ivtm, vartyp, nvdim, vdims(6), nvatts, i, vlen,
      .        ngatts, recdim, istat, npts, lasdim, attype
       CHARACTER    vname*24, buff*64
@@ -118,6 +121,7 @@
 
 * loop through all variables in the net CDF file
 	las_pos  = 1    ! reduces redundant search for space
+	first_pos = 0
 	DO 200 ivcd = 1,nvars
 
 * get the vital statistics for this variable
@@ -151,6 +155,7 @@
 	  GOTO 5100
 
  151      las_pos = ivtm
+	  IF ( first_pos .EQ. 0) first_pos = ivtm
 * set obvious defaults for this variable
           cd_varid(ivtm)        = ivcd ! netCDF variable ID
           ds_var_setnum(ivtm  ) = dset
@@ -265,9 +270,28 @@
           ENDIF
 
 * officially claim this variable slot
-        istat = STR_UPCASE( ds_var_code(ivtm), vname(:vlen) )
+* 7/98 - save in case-sensitive form at this point -- will check over later
+!        istat = STR_UPCASE( ds_var_code(ivtm), vname(:vlen) )
+        ds_var_code(ivtm) = vname
 
  200    CONTINUE
+
+* pass through the variable names making sure that case-sensitive
+* duplicates (e.g. 'var' and 'VAR') retain case and that names which
+* would be illegal variable names to Ferret are retained in original form
+	DO 310 ivtm = first_pos,las_pos
+	  IF (ds_var_setnum(ivtm) .NE. dset) GOTO 310
+	  IF (.NOT.TM_LEGAL_NAME(ds_var_code(ivtm))) GOTO 310  ! leave as-is
+* ... see if this name case-blind duplicates any other in the data set
+	  DO 300 i = first_pos,las_pos
+	    IF ( i .EQ. ivtm ) GOTO 300
+	    istat = STR_CASE_BLIND_COMPARE(ds_var_code(ivtm),
+     .                                     ds_var_code(i)    )
+	    IF ( istat .EQ. str_eq ) GOTO 310                  ! leave as-is
+ 300	  CONTINUE
+* ... (finally) upcase the name
+	  istat = STR_UPCASE( ds_var_code(ivtm), ds_var_code(ivtm) )
+ 310    CONTINUE
 
 * successful completion
 	status = merr_ok

@@ -20,6 +20,9 @@
 * revision 0.41 - 4/91 *sh* Unix/RISC port: upcase the variable code and use
 *                           in error message
 * revision 0.5  - 11/92 *sh* increased variable name lengths to 24 characters
+* *sh* 7/98 V4.91 - want to allow case-sensitive variables in single quotes
+*       so dont upcase the variable name when comparing (why was it
+*       upcased, anyway??)
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -92,7 +95,8 @@
 	actual_hi(2) = a_hi_y
 	actual_hi(3) = a_hi_z
 	actual_hi(4) = a_hi_t
-        istat = STR_UPCASE( upcase_var, variable )     ! 4/91
+!        istat = STR_UPCASE( upcase_var, variable )     ! 4/91
+        upcase_var = variable     ! 7/98
 
 * check for valid variable and get variable number
 	DO 100 ivar = 1,maxvars

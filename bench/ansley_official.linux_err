@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/linux/v_5_7_0_bug_fix_1/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     34645105 Nov 17 09:46 /home/ja8/ansley/linux/v_5_7_0_bug_fix_1/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     36437537 Nov 24 14:04 /home/ja8/ansley/linux/v_5_7_0_bug_fix_1/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/linux/ext_func/libs
 Benchmark run by ansley
-Note: fix  bug 1009; hlimits when axis has just one point, also bug 1066
+Note: fixes for bugs 1102 and 1098, with new benchmark scripts
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/linux/ext_func/libs
-Beginning at Wed Nov 17 09:58:16 PST 2004
+Beginning at Wed Nov 24 14:05:30 PST 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -118,7 +118,7 @@ load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
           X[I=6:9] has 4 points (I=6:9)
           expression has 5 points (I=1:5)
 LIST X[I=1:5] - X[I=6:9]
-set_fname_ **ERROR: dimensions improperly specified: specified data is not a line
+ **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -146,7 +146,7 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-set_fname_set_fname_set_fname_ **ERROR: invalid command: color=noexist
+ **ERROR: invalid command: color=noexist
           Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
 plot/over/i=1:10/color=noexist i
  **ERROR: value out of legal range: thick=4
@@ -163,20 +163,20 @@ cont/over/i=1:10/thick=4 i
  **ERROR: value out of legal range: sigdig=-1
           Value must be positive
 cont/over/i=1:10/sigdig=-1 i
-set_fname_set_fname_ **ERROR: inconsistent sizes of data regions: Y coord field lies
+ **ERROR: inconsistent sizes of data regions: Y coord field lies
           in different plane from data to be plotted
 shade/nolabel sst, x_page, y_page
  **ERROR: all data have same value: X coordinate field
 shade/nolabel sst, 0*x_page, y_page
  **ERROR: all data have same value: Y coordinate field
 shade/nolabel sst, x_page, 0*y_page
-set_fname_set_fname_ **ERROR: inconsistent sizes of data regions: Y axis of X position array
+ **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: value out of legal range: Y coordinates
           missing value where val is needed
 shade/nolabel sst, x_page, asin(y_page)
 gsetviewport()   52 Viewport is not within the Normalized Device Coordinate unit square
-set_fname_ **ERROR: inconsistent sizes of data regions: Y axis of X position array
+ **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
  **ERROR: command syntax: illegal name: TEST*
 define symbol test* = hello
@@ -350,7 +350,7 @@ define axis/from/x/name=xax {6,6,6.000001,7}
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
  **ERROR: command syntax: unknown region name: @w
 set region/@w
-set_fname_set_fname_set_fname_ **ERROR: command syntax: noname(i)
+ **ERROR: command syntax: noname(i)
           unknown function "noname"
 stat i, noname(i)
  **ERROR: invalid command: delta values may only modify variable names
@@ -534,7 +534,9 @@ message/cont $3">greetings|hello|goodbye"
 message/continue ($test2"|hello|bye|")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
-set_fname_ **ERROR: dimensions improperly specified: specified data is not a line
+ **ERROR: invalid command: delta non-positive on X axis of EX#1
+list/l=1/j=40/i=0:300:0 sst
+ **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -562,7 +564,7 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-set_fname_ **ERROR: dimensions improperly specified: specified data is not a line
+ **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
  **ERROR: dimensions improperly specified: specified data is not a line
@@ -592,4 +594,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Nov 17 10:01:28 PST 2004
+Ended at Wed Nov 24 14:08:58 PST 2004

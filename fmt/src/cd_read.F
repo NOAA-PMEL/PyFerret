@@ -255,15 +255,15 @@
  220	CONTINUE
 * ... compress the gaps out of the map -- e.g. XYT ==> has a zero in imap(3)
 *     and other arrays
-	ndim = 0
+	idim2 = 0
 	DO 225 idim = 1, 4
 	   IF (imap(idim) .EQ. 0) GOTO 225
-	   ndim = ndim + 1
-	   imap(ndim)      = imap(idim)
-	   filsize(ndim)   = filsize(idim)
-	   start(ndim)     = start(idim)
-	   count(ndim)     = count(idim)
-	   filstride(ndim) = filstride(idim)
+	   idim2 = idim2 + 1
+	   imap(idim2)      = imap(idim)
+	   filsize(idim2)   = filsize(idim)
+	   start(idim2)     = start(idim)
+	   count(idim2)     = count(idim)
+	   filstride(idim2) = filstride(idim)
  225	CONTINUE
 
 * read the data
@@ -275,24 +275,15 @@
 *               an additional underscore to routine names already containing
 *               and underscore.  The real solution is to configure dods 
 *               correctly, but for now, this kludge is applied
+* v5.33 *sh* - actual reading is buried in a C subroutine
 
-#ifdef usingDODSf2cUnderscore
-	cdfstat = NF_GET_VARM_REAL_(cdfid, varid, start, count,
+	CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
      .		   filstride, imap,
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
-     .                 use_lo(4)))
-#else
-	cdfstat = NF_GET_VARM_REAL(cdfid, varid, start, count,
-     .		   filstride, imap,
-     .             var(use_lo(1),
-     .                 use_lo(2),
-     .                 use_lo(3),
-     .                 use_lo(4)))
-#endif
+     .                 use_lo(4)), cdfstat)
 	IF ( cdfstat .NE. NCNOERR ) GOTO 5500	
-
 
 * if data has mean or range removed rescale it
         IF ( cd_scaled( ivar ) ) CALL TM_SCALE(

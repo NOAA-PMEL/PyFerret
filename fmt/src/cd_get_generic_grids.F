@@ -1,8 +1,6 @@
 	SUBROUTINE CD_GET_GENERIC_GRIDS (dset,cdfid,temp_axnams,reversed,
      .					 perm, status)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -58,6 +56,7 @@
 *			coords that axis needs to bump "lastax" to get
 *			checked for dup names later
 *	     3/00 - convert to dynamic grids and axes
+* V533: *sh* 6/01 - support for string variable input
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -68,7 +67,6 @@
 *	status	    - return status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
 	include 'tmap_errors.parm'
@@ -83,18 +81,6 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'xdset_info.cd_equiv'
-#else
-xx        include 'netcdf.decl'  ! untested
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:XBUILD_GRIDS.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
-#endif
 
 * argument declarations
 	LOGICAL  reversed(max_lines:line_ceiling)
@@ -145,6 +131,14 @@ xx        include 'netcdf.decl'  ! untested
      .     ( cdfstat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
      .       no_errstring, no_errstring, *5900 )
            vlen = TM_LENSTR1(vname)
+
+* if a string variable, the first dimension is the string axis (ignore it)
+	   IF (vartyp .EQ. NCCHAR) THEN
+	      nvdims = nvdims - 1
+	      DO idim = 1, nvdims
+	         vdims(idim) = vdims(idim+1)
+	      ENDDO
+	   ENDIF
 
 * use the next grid building slot to build a grid for this variable
            tmpgrid = num_tmp_grids + 1

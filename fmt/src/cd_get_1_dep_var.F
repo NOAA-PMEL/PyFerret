@@ -1,8 +1,6 @@
 	SUBROUTINE CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
      .				      ivtm, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,6 +44,7 @@
 
 * V500 3/99 *sh* -- new with code extracted from cd_scan_vars.F
 *      4/99 *kob*: increase size of vname from 24 to 64 chars
+* V533 6/01 *sh* -- set the variables data type
  
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -93,6 +92,7 @@
      .        do_warn
       PARAMETER (do_warn = .TRUE. )
       INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
+     .	      TM_FERRET_VARTYPE,
      .        ndims, nvars, cdfstat, first_pos, idim,
      .        vartyp, nvdim, vdims(6), nvatts, i, vlen,
      .        ngatts, recdim, istat, npts, lasdim, attype
@@ -156,6 +156,7 @@
 
 * is it a supported data type ?
           cd_data_type(ivtm) = vartyp
+	  ds_var_type(ivtm) = TM_FERRET_VARTYPE(vartyp)  ! 6/01
 
 * is it a supported dimensionality ?
           IF ( nvdim .GT. 4 ) THEN

@@ -88,6 +88,7 @@
 *		   ignores the possibility of uvlim_irrelevant
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
+* V530:  8/00 *sh* - added cx_type support
 
 #ifdef unix
 	include	'ferret.parm'
@@ -120,6 +121,9 @@
 
 * take bad data flag from the memory resident result
 	cx_bad_data( cx ) = mr_bad_data( mr )
+	
+* take data type from the memory resident result
+	cx_type( cx ) = mr_type( mr )
 	
 * axis limits and subscripts:
 	DO 100 idim = 1,4

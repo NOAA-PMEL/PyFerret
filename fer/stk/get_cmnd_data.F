@@ -1,4 +1,4 @@
-	SUBROUTINE GET_CMND_DATA ( memory, dflt_cx, status )
+	SUBROUTINE GET_CMND_DATA ( memory, dflt_cx, dtype, status )
 
 *
 *
@@ -62,6 +62,7 @@
 *                  used during command (e.g. LIST command needs to create
 *                  permutations)
 * V312: 5/94 - array "memory" as a calling argument
+* V530 *sh* 9/00 - added initial support for multiple data types
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -70,13 +71,13 @@
 #endif
 
 * calling argument declarations
-	INTEGER	dflt_cx, status
+	INTEGER	dflt_cx, dtype, status
 	REAL	memory(*)
 
 * local variable declarations
 * ...
 
-        CALL GET_PROT_CMND_DATA( memory, dflt_cx, status )
+        CALL GET_PROT_CMND_DATA( memory, dflt_cx, dtype, status )
         IF ( status .NE. ferr_ok ) RETURN
 
         CALL UNPROTECT_CMND_DATA

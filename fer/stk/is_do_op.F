@@ -71,6 +71,7 @@
 * V500:  1/99 *sh* Trap as errors attempts to use string variables as
 *		arguments. Strings may be passed only to grid-changing
 *		functions (see IS_DO_GC_FC)
+* V530:  8/00 *sh* added support for string arrays
 
 #ifdef unix
 	include	'ferret.parm'
@@ -161,7 +162,7 @@
 * trap attempts to pass string variables as errors (1/99)
 	DO 100 icom = 1, num_com
 	   com_cx  = is_cx(frame_bottom+icom-1)
-	   IF (cx_category(com_cx) .EQ. cat_string) GOTO 5100
+	   IF (cx_type(com_cx) .EQ. ptype_string) GOTO 5100
  100	CONTINUE
 
 * allocate context space for the result

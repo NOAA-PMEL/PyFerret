@@ -6,6 +6,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500:  1/99 - based on IS_CONST_VAR
+* V530:  8/00 *sh* - support for string arrays -- use dynamic memory alloc
 
 #ifdef unix
 	include	'ferret.parm'
@@ -28,43 +29,43 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE,
-     .		mr, cx
-
+	INTEGER	MGRID_SIZE, mr, cx, uvar, item, start, end
 
 * --- end of introductory code ---
 
-* WHEN THE TIME COMES TO RECOVER THIS STRING, HERE IS THE TECHNIQUE:
-* ... note that the uvar number and item number of the string are
-*     packed together in the cx_variable value
-!	IF ( cx_variable(cx) .GT. 0 ) THEN
-!	   uvar = cx_variable(cx)/1000
-!	   item = cx_variable(cx) - 1000*uvar
-!	   start = uvar_item_start( item, uvar )
-!	   end   = uvar_item_end  ( item, uvar )
-!	   string   =  uvar_text(uvar)(start:end)
-!	ELSE
-! ... for future grids of strings
-!	   pointer to array of strings encoded in memory(k,blk)
-!	   string = EXTRACT_FROM_STRING_GRID(memory(k,blk),i,j,k,l)
-!	ENDIF
+* NOTE: it is by historical accident that this routine exists at all.
+* To be fully consistent the string variables created by this routine should
+* be created by is_constant with a cx_type of ptype_string and a cx_category
+* of cat_constant. So it goes ...
+
+* This routine extracts the sring given in a user variable definition and
+* inserts it into a Ferret string variable. The string, itself, is stored
+* in dynamic storage via C. The pointer to the string is put into the
+* Ferret mr storage.
 
 * initialize
 	cx = is_cx( isp )
 
-* reserve and catalog space for the result
-* ... note 1: the size of the memory reserved will be equal to the size
-*     of the underlying grid. For a string used as an argument in a function
-*     call this will be a scalar (size=1). This is incomplete logic ...
-*     headed for the eventual support of grids of strings, possibly computed
-*     by functions (e.g. DATE_STRING(day,mon,yr,"format") )
-* ... note 2: could create a lasting variable, but would need to make sure
-*     that when DELETE_VARIABLE is called it also purges all cat_const_var
-*     component variables. This approached seemed to add more complexity
-*     than value ...
-	CALL CREATE_TEMP_MEM_VAR( cx, mr, status )
+* reserve and catalog space for the pointer(s) to the string
+	CALL CREATE_MEM_VAR( cx, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	is_mr( isp ) = mr
+
+* save the pointer array address in cx_c_pointer
+	CALL INIT_C_STRING_ARRAY( MGRID_SIZE(mr),
+     .				  memory(1,mr_blk1(mr)),
+     .				  mr_c_pointer(mr)      )
+
+* determine the string to be stored
+	uvar = cx_variable(cx)/1000
+	item = cx_variable(cx) - 1000*uvar
+	start = uvar_item_start( item, uvar ) + 1  ! +1 skip quote
+	end   = uvar_item_end  ( item, uvar ) - 1  ! -1 skip quote
+
+* save the string in dynamic memory
+	CALL STORE_STRING(uvar_text(uvar)(start:end),
+     .			  mr, 0, status)
+	IF (status .NE. ferr_ok) GOTO 5000
 
 * diagnostic output
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('string',mr,point_to_mr)

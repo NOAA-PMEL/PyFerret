@@ -6,6 +6,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500: 12/98 - based on IS_CONSTANT
+* V530:  8/00 *sh* - allow lists of strings
 
 #ifdef unix
 	include	'ferret.parm'
@@ -43,7 +44,6 @@
 *     than value ...
 	CALL CREATE_TEMP_MEM_VAR( cx, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
-	is_mr( isp ) = mr
 
 * diagnostic output
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('const_v',mr,point_to_mr)
@@ -56,16 +56,35 @@
 	start = uvar_item_start( item, uvar )
 	end   = uvar_item_end  ( item, uvar )
 
+	IF ( INDEX(uvar_text(uvar)(start:end), '"') .GT. 0 ) THEN
+* ... set up FORTRAN-independent pointer
+	   CALL INIT_C_STRING_ARRAY( size,
+     .				     memory(1,mr_blk1(mr)),
+     .				     mr_c_pointer(mr)      )
+
+* ... array of strings
+* NOTE: this routine will alter the context size and replace the mr
+* (allocating a larger block of memory) if the SYSTEM: syntax is used
+	   CALL PARSE_STRING_LIST(cx,
+     .				  uvar_text(uvar)(start:end),
+     .			          mr,
+     .			          status)
+	ELSE
+* ... array of numbers
 ! ... as-of 12/98 limited to one block max array lentgh
-	CALL PARSE_NUMBER_LIST(uvar_text(uvar)(start:end),
-     .			       memory( 1, mr_blk1(mr)),
-     .			       size,
-     .			       n,
-     .			       status)
+	   CALL PARSE_NUMBER_LIST(uvar_text(uvar)(start:end),
+     .			          memory( 1, mr_blk1(mr)),
+     .			          size,
+     .			          n,
+     .			          status)
+	ENDIF
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * set the bad data flag
 	mr_bad_data( mr ) = bad_val4
+
+* result is ready to return to the stack
+	is_mr( isp ) = mr
 
 * got the requested component
 	RETURN 2

@@ -68,7 +68,7 @@
 	CHARACTER*(*)	const_text
 
 * internal variable declarations:
-	INTEGER		mods_cx, idim
+	INTEGER		idim
 	REAL		const_buff
 	CHARACTER	buff*24
 
@@ -82,6 +82,7 @@
 	cx_bad_data( const_cx ) = bad_val4
 	cx_data_set( const_cx ) = pdset_irrelevant
 	cx_dset_gvn( const_cx ) = .TRUE.
+	cx_type    ( const_cx ) = ptype_float
 
 * get the value of the constant
 * bug is that if a "*" follows the numeric text the error branch is taken

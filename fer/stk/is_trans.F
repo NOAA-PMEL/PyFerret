@@ -69,6 +69,7 @@
 *		indicates the result size is self-defined (Is this risky??)
 * V500:  1/99 *sh* Trap as errors attempts to apply transform to string
 *		variables
+* V530:  8/99 *sh* changed string trap to be based on data type, not category
 
 #ifdef unix
 	include	'ferret.parm'
@@ -122,7 +123,7 @@
 	grid    = cx_grid( com_cx )
 
 * screen out attempts to transform a string
-	IF (cx_category(com_cx) .EQ. cat_string) GOTO 5400
+	IF (cx_type(com_cx) .EQ. ptype_string) GOTO 5400
 
 * determine if this is a 1D or a 4D (multiple axis) transformation
 	its_4d = .FALSE.

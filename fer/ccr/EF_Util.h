@@ -27,12 +27,16 @@
 #define HI    1
 
 #define ATOM_NOT_FOUND 0  /* This should match the atom_not_found parameter in ferret.parm. */
+#define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
+#define FERR_EF_ERROR 437  /* This should match the ferr_ef_error parameter in errmsg.parm. */
 
 #define EF_VERSION 1.1
 
 #define EF_MAX_NAME_LENGTH 40
 #define EF_MAX_DESCRIPTION_LENGTH 128
 #define EF_MAX_ARGS 9
+#define EF_MAX_WORK_ARRAYS 9
+#define EF_MAX_COMPUTE_ARGS 19 /* = EF_MAX_ARGS + EF_MAX_WORK_ARRAYS + 1 */
 
 enum { EF_C=1, EF_F } EF_LANGUAGE_type;
 
@@ -64,6 +68,8 @@ typedef struct {
   char description[EF_MAX_DESCRIPTION_LENGTH];
   int  language;
   int  num_reqd_args, has_vari_args;
+  int  num_work_arrays;
+  int  work_array_len[EF_MAX_WORK_ARRAYS][4];
   int  axis_will_be[4];
   int  piecemeal_ok[4];
   Axis axis[4];

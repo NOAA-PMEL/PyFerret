@@ -3,6 +3,7 @@
 #
 # *sh* 12/27/00
 # *sh* 1/02 -- updated to add expndi_by
+# *sh* 2/02 -- updated to add expndi_by_z
 #
 #
 # include platform specific macro definitions
@@ -30,7 +31,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn cmprsi_by.so expndi_by.so 
+all:	ferret_cmn cmprsi_by.so expndi_by.so expndi_by_z.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

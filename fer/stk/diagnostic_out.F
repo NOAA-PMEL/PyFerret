@@ -50,6 +50,7 @@
 * 			 - Added a preprocessor include for tmap_dset.parm
 *			   because it needed a preprocessor.
 * V450: 7/7/97 - make a readable short name from VAR_CODE
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars and change buff24 to buff64
 
 * calling argument declarations:
 	INTEGER		isub, pointer_type
@@ -57,7 +58,7 @@
 
 * internal argument declarations:
 	INTEGER	    TM_LENSTR1, lenbuff, i, dset
-	CHARACTER   VAR_CODE*24, buff24*24, buff8*8
+	CHARACTER   VAR_CODE*64, buff64*64, buff8*8
 
 #ifdef unix
 	include	'ferret.parm'
@@ -81,20 +82,20 @@
 
 * readable variable name code
 	IF ( pointer_type .EQ. point_to_cx ) THEN
- 	   buff24 = VAR_CODE( cx_category(isub), cx_variable(isub) )
+ 	   buff64 = VAR_CODE( cx_category(isub), cx_variable(isub) )
 	ELSE
-	   buff24 = VAR_CODE( mr_category(isub), mr_variable(isub) )
+	   buff64 = VAR_CODE( mr_category(isub), mr_variable(isub) )
 	ENDIF
-	IF ( buff24(:2) .EQ. '(C' ) THEN
+	IF ( buff64(:2) .EQ. '(C' ) THEN
 ! ... use low order 2 digits from 3-digit numbers (shortening to 2-digits)
-	   buff8 = '(C'//buff24(4:5)//',V'//buff24(9:10)
+	   buff8 = '(C'//buff64(4:5)//',V'//buff64(9:10)
 	ELSE
-	   lenbuff = TM_LENSTR1(buff24)
+	   lenbuff = TM_LENSTR1(buff64)
 ! ... assemble short name from beginning and end of full name 
 	   IF (lenbuff .GT. 8 ) THEN
-	      buff8 = buff24(1:3)//'-'//buff24(lenbuff-3:lenbuff)
+	      buff8 = buff64(1:3)//'-'//buff64(lenbuff-3:lenbuff)
 	   ELSE
-	      buff8 = buff24
+	      buff8 = buff64
 	   ENDIF
 	ENDIF
 

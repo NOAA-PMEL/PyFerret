@@ -1,3 +1,6 @@
+* V530 10/00 *sh* - added COMPLEX declarations to force link FORTRAN complex
+* variable code for use in external functions
+   
 	subroutine fakes
 
 #ifdef unix
@@ -6,7 +9,8 @@
 	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
 #endif
 
-      INTEGER status
+	INTEGER status
+	COMPLEX a
 
         entry	odr_op
         entry	odr_quit
@@ -17,6 +21,8 @@
      .				'Unix-based laser disk movies', *20 )
  20     write (0,*)  'Use the HDF-based on-screen animations'
         write (0,*)  'or use the VMS version of FERRET'
+	a=CMPLX(0.,1.)
+	a=AIMAG(a) 
 	RETURN
 
         entry	epic_list

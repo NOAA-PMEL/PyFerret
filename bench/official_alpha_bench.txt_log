@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja4/kobrien/osf/FERRET/fer/ferret_v540
--rwxr-xr-x   1 kobrien  tmap     37371904 Jan 28 14:59 /home/ja4/kobrien/osf/FERRET/fer/ferret_v540
-Using external functions from /home/ja9/tmap/ferret/alpha/ext_func/libs
+Running FERRET version /home/ja4/kobrien/alpha/FERRET/fer/ferret_v541
+-rwxr-xr-x   1 kobrien  tmap     37609472 Aug 30 15:57 /home/ja4/kobrien/alpha/FERRET/fer/ferret_v541
+Using external functions from /home/ja4/kobrien/alpha/FERRET/bin
 Benchmark run by kob
-Note: v5.4 w/ all updates and my string bug fixes
+Note: v541 final test (hopefully) with Ansleys julian calendar bug fix
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja4/kobrien/FERRET/bench
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/alpha
@@ -17,12 +17,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/alpha/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/alpha/ext_func/libs
-Beginning at Mon Jan 28 15:27:47 PST 2002
+FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/alpha/FERRET/bin
+Beginning at Wed Sep 4 10:30:12 PDT 2002
  	NOAA/PMEL TMAP
- 	FERRET v5.40  
- 	Tru64 V4.0E - 01/28/02
- 	28-Jan-02 15:27     
+ 	FERRET v5.41  
+ 	Tru64 V4.0E - 08/30/02
+ 	 4-Sep-02 10:30     
 
 yes? !bn500_all_shell
 yes? 
@@ -104,6 +104,9 @@ SET MODE VERIFY
 ! 10/01 *acm* -- added bn_axcontrol
 !             -- add EOF's and cmprsi_by to bn_internal_external_functions.jnl
 ! 11/01 *sh* -- added bn_delimited_read
+!
+! V5.41:
+! 3/02 *acm*-- Add bn540_bug_fixes.jnl
  
 GO bn_reset
 cancel mode verify
@@ -10099,10 +10102,10 @@ show symbols/all
 PPL$XPIXEL = "806"
 PPL$YPIXEL = "806"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.40"
+FERRET_VERSION = " 5.41"
 FERRET_PLATFORM = "Tru64 V4.0E"
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "15:27"
+SESSION_DATE = " 4-Sep-02"
+SESSION_TIME = "10:30"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10118,10 +10121,10 @@ show symbol/all
 PPL$XPIXEL = "806"
 PPL$YPIXEL = "806"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.40"
+FERRET_VERSION = " 5.41"
 FERRET_PLATFORM = "Tru64 V4.0E"
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "15:27"
+SESSION_DATE = " 4-Sep-02"
+SESSION_TIME = "10:30"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10129,8 +10132,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "15:27"
+SESSION_DATE = " 4-Sep-02"
+SESSION_TIME = "10:30"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10140,13 +10143,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "15:27"
+SESSION_DATE = " 4-Sep-02"
+SESSION_TIME = "10:30"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "15:27"
+SESSION_DATE = " 4-Sep-02"
+SESSION_TIME = "10:30"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10178,9 +10181,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 5.40"
+LAB1 = "FERRET Ver. 5.41"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jan 28 2002 15:29:12 "
+LAB3 = "Sep  4 2002 10:31:40 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10279,10 +10282,10 @@ show symbols/all
 PPL$XPIXEL = "806"
 PPL$YPIXEL = "806"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.40"
+FERRET_VERSION = " 5.41"
 FERRET_PLATFORM = "Tru64 V4.0E"
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "15:27"
+SESSION_DATE = " 4-Sep-02"
+SESSION_TIME = "10:30"
  
  
 GO bn_reset
@@ -18198,7 +18201,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 kobrien  tmap      199948 Jan 28 15:31 bench.mgm
+-rw-rw-r--   1 kobrien  tmap       22958 Sep  4 10:33 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18217,7 +18220,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 kobrien  tmap     2977748 Jan 28 15:31 bench.mgm
+-rw-rw-r--   1 kobrien  tmap      417703 Sep  4 10:34 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -24834,7 +24837,6 @@ show axis/x xax
        3>  5                     3         3.5
 define axis/x/from_data/name=xax/edges {1,2,5}
 Replacing definition of axis XAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            2 i   1.5                  3.5
@@ -24857,7 +24859,6 @@ T0 = 1-JAN-1990
        3>  06-JAN-1990 00:00:00  3         04-JAN-1990 12:00:00    5
 define axis/t/from_data/name=tax/unit=days/t0=1-jan-1990/edges {1,2,5}
 Replacing definition of axis TAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/t tax
  name       axis              # pts   start                end
  TAX       TIME                 2 i   02-JAN-1990 12:00    04-JAN-1990 12:00
@@ -24874,7 +24875,6 @@ let tstep = DAYS1900(1980+add_year,month,1)
 define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:`20*12+1`]
  !-> define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:241]
 Replacing definition of axis TAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis/l=1:20 tax
  name       axis              # pts   start                end
  TAX       TIME               240 i   16-JAN-1980 12:00    16-DEC-1999 12:00
@@ -24936,7 +24936,6 @@ let end_date = tstep[t=27-may-0001]
 define axis/from_data/T/units=days/name=tax/t0=1-jan-0000/edges/modulo {`start_date,p=7`,`end_date,p=7`,`start_date+365.2425,p=7`}
  !-> define axis/from_data/T/units=days/name=tax/t0=1-jan-0000/edges/modulo {439,512,804.2425}
 Replacing definition of axis TAX
- *** NOTE:    240 words of axis coordinate storage lost
 show axis/l=1:6 tax
  name       axis              # pts   start                end
  TAX       TIME                 2mi   20-APR      12:00    20-OCT      02:54
@@ -24966,7 +24965,6 @@ T0 = 1-JAN-0000
 define axis/from/x/name=xax {5,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            4 i   5                    7
@@ -24979,7 +24977,6 @@ show axis/x xax
 define axis/from/x/name=xax {5,6,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      4 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            5 i   5                    7
@@ -24993,7 +24990,6 @@ show axis/x xax
 define axis/from/x/name=xax {5,6,6,6}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      5 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            4 i   5                    6
@@ -25006,7 +25002,6 @@ show axis/x xax
 define axis/from/x/name=xax {6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      4 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            3 i   6                    7
@@ -25019,7 +25014,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {5,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            3 i   5.5                  6.5
@@ -25031,7 +25025,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {5,6,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            4 i   5.5                  6.5
@@ -25044,7 +25037,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {5,6,6}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      4 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            2 i   5.5                  6
@@ -25055,7 +25047,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            2 i   6                    6.5
@@ -25111,7 +25102,6 @@ show axis/z zax2
 ! units inferred from formatting
 define axis/X=130e:180:5 xax2
 Replacing definition of axis XAX2
- *** NOTE:      3 words of axis coordinate storage lost
 show axis xax2
  name       axis              # pts   start                end
  XAX2      LONGITUDE           11 r   130E                 180E
@@ -25260,21 +25250,21 @@ list a - sst[l=@ave]
              TIME     : 01-JAN      00:45 to 01-APR      08:12
                    1S       
                    45
- 151E   / 66:  0.00000E+00
+ 151E   / 66: -1.90735E-06
  153E   / 67:  0.00000E+00
- 155E   / 68:  0.00000E+00
+ 155E   / 68: -1.90735E-06
  157E   / 69:  0.00000E+00
  159E   / 70:  0.00000E+00
  161E   / 71: -1.90735E-06
- 163E   / 72:  0.00000E+00
- 165E   / 73:  0.00000E+00
+ 163E   / 72:  1.90735E-06
+ 165E   / 73: -1.90735E-06
  167E   / 74:  0.00000E+00
  169E   / 75:  0.00000E+00
  171E   / 76:  0.00000E+00
  173E   / 77:  0.00000E+00
- 175E   / 78:  0.00000E+00
+ 175E   / 78: -1.90735E-06
  177E   / 79:  0.00000E+00
- 179E   / 80:  0.00000E+00
+ 179E   / 80:  1.90735E-06
  
 can region
 let a = x[i=1:9,k=1:5] + t[l=1:5]
@@ -26343,7 +26333,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
+		:history = "FERRET V5.41    4-Sep-02" ;
 data:
 
  T5 = 50757969 ;
@@ -26367,7 +26357,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
+		:history = "FERRET V5.41    4-Sep-02" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26519,7 +26509,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Jan 28 15:33:14 PST 2002
+Wed Sep  4 10:35:45 PDT 2002
  
 GO bn_reset
 cancel mode verify
@@ -29582,9 +29572,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
  doing reversing MIDVAR on Y axis:     2     5
- -DELETE MIDVAR   M:149 I:    1    5  J:    5    8  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX027)   (AX025)   (AX026)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -29615,9 +29605,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    4    8  J:    2    5  K:    3    5  L:    1    1
  doing reversing MIDVAR on X axis:     1     5
- -DELETE MIDVAR   M:149 I:    4    8  J:    2    5  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX025)   (AX027)   (AX023)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -29680,9 +29670,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    4    7  K:    3    5  L:    7    7
  doing reversing MIDVAR on X axis:     1     5
- -DELETE MIDVAR   M:147 I:    2    6  J:    4    7  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX025)   (AX027)   (AX023)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -29744,9 +29734,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
  doing reversing MIDVAR on Y axis:     2     5
- -DELETE MIDVAR   M:149 I:    2    6  J:    5    8  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX025)   (AX027)   (AX023)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -32738,10 +32728,10 @@ list/l=1:4 jsst, nsst
  Column  1: JSST is SST[GT=JGRID]
  Column  2: NSST is SST[GT=JGRID@NRST]
                     JSST     NSST 
-02-JAN      / 1:  28.2732  28.2022
-01-FEB      / 2:  28.2886  28.3646
-02-MAR      / 3:  28.3588  28.3538
-02-APR      / 4:  28.2732  28.2022
+01-JAN      / 1:  28.2782  28.3538
+31-JAN      / 2:  28.2832  28.2022
+01-MAR      / 3:  28.3592  28.3646
+01-APR      / 4:  28.2782  28.3538
  
 ! test negative time step formatting -- added 7/01 *sh*
 ! this is not specifically a calendar test, but it is a change in V5.3x
@@ -32763,17 +32753,18 @@ cancel mode verify
 GO bn_dash_dot
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
+! *acm* 8/02 Remove calls to SYMBOL=DOT until postscript issues are resolved.
  
 plot/dash/i=1:1000 sin(62.8*i)
 plot/over/dash=(0.4,0.1,0.4,0.1)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
 plot/over/dash=(0.1,0.1,0.04,0.05)/color=blue/thick=1/i=1:1000 sin(62.8*(i+20) )
  
-plot/symbol=dot/i=1:1000 sin(62.8*i)
-plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
+!plot/symbol=dot/i=1:1000 sin(62.8*i)
+!plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
  
 ! test warnings
-plot/symbol=dot/thick/over/i=1:1000 sin(62.8*(i+10) )
-plot/symbol=dot/size=0.5/over/i=1:1000 sin(62.8*(i+10) )
+!plot/symbol=dot/thick/over/i=1:1000 sin(62.8*(i+10) )
+!plot/symbol=dot/size=0.5/over/i=1:1000 sin(62.8*(i+10) )
  
 ! intentional errors
 set mode ignore
@@ -32785,7 +32776,7 @@ cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 GO bn_flowlines
- 
+set window/asp=1/siz=0.5
 use gtbc011
 set reg/k=1/l=1/y=0:20
 vector/aspect u,v
@@ -32836,7 +32827,6 @@ can view
 ! transpose axes for /HLOG on depth axis
 def axis/z/depth dlog=exp(k[k=1:10])
 Replacing definition of axis DLOG
- *** NOTE:     10 words of axis coordinate storage lost
 let fcnd = k[gz=dlog]
 plot/trans/hlog fcnd
  
@@ -32846,7 +32836,6 @@ plot/trans/hlog fcnd
 set mode ignore
 def axis/x dlog = -1*(10-i[i=1:10])
 Replacing definition of axis DLOG
- *** NOTE:     10 words of axis coordinate storage lost
 let fcn = (i[gx=dlog])^2
 plot/hlog fcn
  
@@ -32863,6 +32852,7 @@ GO bn_internal_external_functions
  
 !  8/02/01 *acm* add bench_eof; now internally-linked.
 ! 10/22/01 *acm* add bench_compress_by (compressi_by, compressj_by, ...)
+! 06/02 *kob* add bench_internal_string_functions (strlen, strcat, strindex, etc)
  
 GO bn_reset
 cancel mode verify
@@ -33132,18 +33122,6 @@ SORTK(DAT)
 SORTL(DAT)
     Returns indices of data, sorted on the L axis  in increasing order
     DAT: variable to sort in L
-SORTI(DAT)
-    Returns indices of data, sorted on the I axis in increasing order
-    DAT: variable to sort in I
-SORTJ(DAT)
-    Returns indices of data, sorted on the J axis  in increasing order
-    DAT: variable to sort in L
-SORTK(DAT)
-    Returns indices of data, sorted on the K axis in increasing order
-    DAT: variable to sort in K
-SORTL(DAT)
-    Returns indices of data, sorted on the L axis  in increasing order
-    DAT: variable to sort in L
 sh func/ext sample*
 SAMPLEI(TO_BE_SAMPLED,X_INDICES)
     sample a field at a list of X indices
@@ -33176,35 +33154,6 @@ SAMPLET_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
     MIN: Minute(s) mm
     SEC: Second(s) ss
 SAMPLEXY(DAT_TO_SAMPLE,XPTS,YPTS)
-    Returns data sampled at a set of (X,Y) points, using linear interpolation
-    DAT_TO_SAMPLE: variable (x,y,z,t) to sample
-    XPTS: X values of sample points
-    YPTS: Y values of sample points
-SAMPLEIJ(DAT_TO_SAMPLE,XPTS,YPTS)
-    Returns data sampled at a subset of its grid points, defined by (XPTS, YPTS)
-    DAT_TO_SAMPLE: variable (x,y,z,t) to sample
-    XPTS: X indices of grid points
-    YPTS: Y indices of grid points
-SAMPLET_DATE(DAT_TO_SAMPLE,YR,MO,DAY,HR,MIN,SEC)
-    Returns data sampled by interpolating to a set of times
-    DAT_TO_SAMPLE: data to sample at set of times
-    YR: Year(s) yyyy
-    MO: Month(s), integer mm
-    DAY: Day(s) of month dd
-    HR: Hour(s) hh
-    MIN: Minute(s) mm
-    SEC: Second(s) ss
-SAMPLEXY(DAT_TO_SAMPLE,XPTS,YPTS)
-    Returns data sampled at a set of (X,Y) points, using linear interpolation
-    DAT_TO_SAMPLE: variable (x,y,z,t) to sample
-    XPTS: X indices of sample points
-    YPTS: Y indices of sample points
-SAMPLEXYFIX(DAT_TO_SAMPLE,XPTS,YPTS)
-    Returns data sampled at a set of (X,Y) points, using linear interpolation
-    DAT_TO_SAMPLE: variable (x,y,z,t) to sample
-    XPTS: X indices of sample points
-    YPTS: Y indices of sample points
-SAMPLEXYMOD(DAT_TO_SAMPLE,XPTS,YPTS)
     Returns data sampled at a set of (X,Y) points, using linear interpolation
     DAT_TO_SAMPLE: variable (x,y,z,t) to sample
     XPTS: X values of sample points
@@ -33846,6 +33795,101 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+GO bench_internal_string_functions
+! test internal string functions:
+!       strlen
+!	upcase
+!	dncase
+!	strindex
+!	strrindex
+!	substring
+!	strcat
+!	float  - return float value from string
+!
+!	*kob*  6/02   Ferret v5.41
+ 
+ 
+! STRLEN
+! Result should be 35
+list strlen("This string should be 35 characters")
+             VARIABLE : STRLEN("This string should be 35 characters")
+          35.0000
+! Result should be 0
+list strlen("")
+             VARIABLE : STRLEN("")
+          0.000000
+ 
+ 
+! UPCASE
+! Result should be in all caps
+list upcase ("this String sHould be iN aLl Caps")
+             VARIABLE : UPCASE ("this String sHould be iN aLl Caps")
+        "THIS STRING SHOULD BE IN ALL CAPS"
+ 
+! DNCASE
+! Result should be all lower case
+list dncase ("this String sHould be iN loWer caSE")
+             VARIABLE : DNCASE ("this String sHould be iN loWer caSE")
+        "this string should be in lower case"
+ 
+! STRINDEX
+! Find first occurence string "fun" in longer string
+! Result should be 11
+list strindex("Ferret is fun for the whole family - real fun, family fun", "fun");
+             VARIABLE : STRINDEX("Ferret is fun for the whole family - real fun, family fun", "fun")
+          11.0000
+ 
+! STRRINDEX
+! Find last occurence string "fun" in longer string
+! Result should be 55
+list strrindex("Ferret is fun for the whole family - real fun, family fun", "fun");
+             VARIABLE : STRRINDEX("Ferret is fun for the whole family - real fun, family fun", "fun")
+          55.0000
+ 
+! SUBSTRING
+! Clip a substring from a string - result should be "ferret"
+list substring("Have you fed your ferret today", 19, 6)
+             VARIABLE : SUBSTRING("Have you fed your ferret today", 19, 6)
+        "ferret"
+! Ask for offset greater than string lenght - result should be ""
+list substring("Have you fed your ferret today", 50, 6)
+             VARIABLE : SUBSTRING("Have you fed your ferret today", 50, 6)
+        ""
+! Ask for more chars than in string - result should be "ferret today"
+list substring("Have you fed your ferret today", 19, 60)
+             VARIABLE : SUBSTRING("Have you fed your ferret today", 19, 60)
+        "ferret today"
+ 
+ 
+! STRCAT
+! concatenate two strings
+list strcat ("All work and no play", " makes Ferret a dull boy")
+             VARIABLE : STRCAT ("All work and no play", " makes Ferret a dull boy")
+        "All work and no play makes Ferret a dull boy"
+ 
+ 
+! FLOAT
+! return float value - result should be 7.85
+list (strfloat("3.14")*10)/4
+             VARIABLE : (STRFLOAT("3.14")*10)/4
+          7.85000
+ 
+ 
+! the below are deliberate errors for incorrect argument detection
+set mode ignore
+list strindex("Ferret is fun for the whole family - real family fun");
+list strrindex("Ferret is fun for the whole family - real family fun");
+list substring("Have you fed your ferret today", 19)
+list substring("Have you fed your ferret today")
+list strcat ("All work and no play")
+ 
+set mode/last ignore
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 GO bn_modulo_strides
 ! bn_modulo_strides.jnl
 ! 6/01 *sh*
@@ -33886,7 +33930,7 @@ list/nohead b            ! using rdstride
  doing moduloing A on X axis:     2     2
  -DELETE A        M:148 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  A        M:148 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE A        M:105 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:108 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33905,7 +33949,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  strip moduloing A on X axis:     1    25
  reading A        M:139 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     1    20
- regrid  A        M: 88 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  A        M:115 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G021)          (AX005)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.0000
  4    / 2:   4.0000
@@ -33918,7 +33962,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  25   / 9:   5.0000
 list/nohead b            ! reuse of cached result
  dealloc  dynamic grid (G021)          (AX005)   NORMAL    NORMAL    NORMAL
- -DELETE A        M: 88 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:115 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
@@ -33928,11 +33972,11 @@ list/nohead b            ! reuse of cached result
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:    18    20
- -DELETE A        M: 88 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:115 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  rdstride A        C: 11 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     2     2
- -DELETE A        M: 88 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
- nulrgd  A        M: 88 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:115 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
+ nulrgd  A        M:115 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE A        M:147 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
@@ -34152,7 +34196,7 @@ list/nohead str[i=18:23:2] ! using rdstride
  doing moduloing STR on X axis:     2     2
  -DELETE STR      M:104 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  STR      M:104 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE STR      M:115 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M:102 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
@@ -34169,9 +34213,9 @@ list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: STR --> (G021)           @XACT
  strip moduloing STR on X axis:     1    25
- reading STR      M:115 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
+ reading STR      M:102 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:     1    20
- regrid  STR      M:100 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  STR      M: 98 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G021)          (AX005)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
@@ -34727,7 +34771,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 kobrien  tmap       12704 Jan 28 15:34 testa.v5d
+-rw-rw-r--   1 kobrien  tmap       12704 Sep  4 10:36 testa.v5d
  
 can region
 use coads_climatology
@@ -34739,7 +34783,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 kobrien  tmap       12704 Jan 28 15:34 test.v5d
+-rw-rw-r--   1 kobrien  tmap       12704 Sep  4 10:36 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -34806,7 +34850,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
+		:history = "FERRET V5.41    4-Sep-02" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -34867,7 +34911,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
+		:history = "FERRET V5.41    4-Sep-02" ;
 data:
 
  GFP3 = "" ;
@@ -35085,7 +35129,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
+		:history = "FERRET V5.41    4-Sep-02" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -35405,6 +35449,8 @@ let my = exp(y[y=1:3.4:0.2])
 let mxpage = mx + 0*my
 let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
+ 
+can view
  
 GO bn_reset
 cancel mode verify
@@ -35768,7 +35814,6 @@ show data 2
 ! sanity check date encodings
 define axis/t/units=days/T0=1-jan-1900  tax = v5
 Replacing definition of axis TAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis tax
  name       axis              # pts   start                end
  TAX       TIME                 4 r   01-DEC-1999 00:00    04-DEC-1999 00:00
@@ -36479,12 +36524,1389 @@ file/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
 cancel mode ignore
  
  
+ 
+! ******** V5.41 Additions below ***********
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn540_bug_fixes
+! bn541_bug_fixes.jnl
+! test various fixes that went into version 5.41
+! 3/02 *acm*
+!
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+! tics on horiz log axes were wrong; (plot only)
+! GO bn_reset
+! tested in bn_logaxes (the plots will be different in 5.40 and 5.41)
+ 
+ 
+!missing vertices in polygon call
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_polymissing
+! err540_polymissing.jnl
+! 3/02 *acm*
+! A previous fix to polygon cut off loading of poly's if a vertex was
+! missing.  restore old behavior.  (polygon_set_up.F)
+ 
+ 
+use coads_climatology
+let xpts0=x[g=sst,x=110:150,y=20:40,l=1]*y[g=sst,x=110:150,y=20:40,l=1]*0+x[g=sst,x=110:150,y=20:40,l=1]
+let ypts0=x[g=sst,x=110:150,y=20:40,l=1]*y[g=sst,x=110:150,y=20:40,l=1]*0+y[g=sst,x=110:150,y=20:40,l=1]
+let values0=sst[x=110:150,y=20:40,l=1]
+LET xpts=ysequence(xpts0)
+LET ypts=ysequence(ypts0)
+LET values=ysequence(values0)
+ 
+LET xtriangle = {0,1,2}
+LET ytriangle = {0,2,0}
+LET xvertex = xpts+xtriangle
+LET yvertex = ypts+ytriangle
+polygon xvertex,yvertex,values
+ 
+let xvertex1= IF values NE -1E+34 THEN xvertex
+polygon  xvertex1,yvertex,values
+ 
+! dynamic memory setup for POLYGON
+! GO bn_reset
+! see ~ansley/ans_ferret/users/brockmann/err540/err540_polygon2.jnl
+ 
+! formatting axis label numbers
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_ill_format.jnl
+! err540_ill_format.jnl
+! 3/02 *acm*
+ 
+!  formatting of small-magnitude negative numbers on axes is wrong
+!  e.g. -0.002 becomes ******
+!  fix in frmt.F
+ 
+plot/i=1:100  0.001 - 0.002/ i
+ 
+plot/trans/i=1:100  0.001 - 0.002/ i
+ 
+ 
+ 
+ 
+! variable permutation in netCDF writes
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_write_order
+! err540_write_order.jnl
+! *sh* 3/02
+ 
+! the permutation of gridsvariables during writing is inferred *incorrectly*
+! from the context of the first variable only in xeq_list.F
+ 
+! I think (??) that we need to replace this
+!   * ... if no axis order was specified determine the permutation
+!           IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
+!           DO 200 ilist = 1, num_uvars_in_cmnd
+!              CALL CREATE_PERMUTATION(  memory,
+ 
+! with this
+!   * ... if no axis order was specified determine the permutation
+!           DO 200 ilist = 1, num_uvars_in_cmnd
+!              IF (.NOT.permute) CALL GET_CX_DIMS(is_cx(ilist),ndim, perm )
+!              CALL CREATE_PERMUTATION(  memory,
+ 
+ 
+define axis/x=1:2:1 x12
+define axis/y=3:4:1 y34
+define axis/z=5:6:1 z56
+ 
+let yz =              10*y[gy=y34] + 100*z[gz=z56]
+let xyz = x[gx=x12] + 10*y[gy=y34] + 100*z[gz=z56]
+ 
+! before
+list xyz
+             VARIABLE : X[GX=X12] + 10*Y[GY=Y34] + 100*Z[GZ=Z56]
+             SUBSET   : 2 by 2 by 2 points (X-Y-Z)
+              1        2     
+              1        2
+ ---- K:1 Z:   5
+ 3   / 1:  531.000  532.000
+ 4   / 2:  541.000  542.000
+ ---- K:2 Z:   6
+ 3   / 1:  631.000  632.000
+ 4   / 2:  641.000  642.000
+ 
+save/clobber/file=test_good_order.cdf xyz, yz
+ LISTing to file test_good_order.cdf
+save/clobber/file=test_bad_order.cdf yz, xyz
+ LISTing to file test_bad_order.cdf
+cancel var/all
+ 
+! after
+use test_good_order
+list xyz
+             VARIABLE : X[GX=X12] + 10*Y[GY=Y34] + 100*Z[GZ=Z56]
+             FILENAME : test_good_order.cdf
+             SUBSET   : 2 by 2 by 2 points (X-Y-Z)
+              1        2     
+              1        2
+ ---- K:1 Z:   5
+ 3   / 1:  531.000  532.000
+ 4   / 2:  541.000  542.000
+ ---- K:2 Z:   6
+ 3   / 1:  631.000  632.000
+ 4   / 2:  641.000  642.000
+use test_bad_order
+list xyz
+             VARIABLE : X[GX=X12] + 10*Y[GY=Y34] + 100*Z[GZ=Z56]
+             FILENAME : test_bad_order.cdf
+             SUBSET   : 2 by 2 by 2 points (X-Y-Z)
+              1        2     
+              1        2
+ ---- K:1 Z:   5
+ 3   / 1:  531.000  532.000
+ 4   / 2:  541.000  542.000
+ ---- K:2 Z:   6
+ 3   / 1:  631.000  632.000
+ 4   / 2:  641.000  642.000
+ 
+sp rm -f test_good_order.cdf
+sp rm -f test_bad_order.cdf
+ 
+!@AVE error when plotting unlike grids together
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_ax_ave
+!err540_ax_ave.jnl
+! 3/02 *acm
+! @AVE getting wrong set of indices for forming the average, having
+! loaded range of indices on the first plot.  ave_regrid_1_axis.F
+ 
+use coads_climatology
+def axis/edges/t=1:7306:1461/t0="01-jan-0000"/unit=hour t2
+plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
+ 
+def axis/edges/t=1:1600:731/t0="01-jan-0000"/unit=hour t2
+Replacing definition of axis T2
+plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
+ 
+!Make PPL AXSET settings persist, but not settings made w/ qualifiers /AXES= or /NOAXES
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_axset
+!err540_axset.jnl
+! 3/02 *acm
+! backwards compatibility: PPL AXSET settings persist, and
+! PLOT/AXES  or PLOT/NOAXES override these, but only for one plot.
+ 
+! define a 6 viewport window
+def view/xlim=   0,.333/ylim=0,.5 ll6
+Re-defining viewport LL6
+def view/xlim=   0,.333/ylim=.5,1 ul6
+Re-defining viewport UL6
+def view/xlim=.333,.666/ylim=0,.5 lm6
+Re-defining viewport LM6
+def view/xlim=.333,.666/ylim=.5,1 um6
+Re-defining viewport UM6
+def view/xlim=.666,   1/ylim=0,.5 lr6
+Re-defining viewport LR6
+def view/xlim=.666,   1/ylim=.5,1 ur6
+Re-defining viewport UR6
+ 
+SET VIEW ul6;PLOT/NOAXES/I=1:10/TITLE="PLOT/NOAXES" 1./I
+SET VIEW um6;SHADE/I=1:10/J=1:7/TITLE="No qualifiers" I+J
+ 
+PPL AXSET 0,1,1,0
+SET VIEW ur6;FILL/I=1:10/J=1:7/TITLE="with PPL AXSET 0,1,1,0" I+J
+ 
+SET VIEW ll6;CONTOUR/AXES=1,0,0,1/I=1:10/J=1:7/TITLE="CONTOUR/AXES=" I+J
+ 
+SET VIEW lm6;VECTOR/I=1:10/J=1:7/TITLE="Prev. PPL AXSET setting" I+J, I-0.5*J
+ 
+SET VIEW lr6;PLOT/i=1:10/SET/TITLE="plot/SET, new setting" 1./I
+PPL AXSET 0,1,0,0
+PPL PLOT
+ 
+PPL axset 1,1,1,1
+CAN VIEW
+ 
+ 
+!Previously couldn't do PLOT/VS/DASH, but no reason not to allow it.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_vs_dash
+! PLOT/VS/DASH  previously was not allowed.
+ 
+define axis/x=20e:10w:10/unit=degree xax
+Replacing definition of axis XAX
+define axis/y=60s:60n/unit=degree/npoints=41 yax
+Replacing definition of axis YAX
+define axis/z=0:1000:40/unit=meter/depth zax
+Replacing definition of axis ZAX
+define axis/t=1-jan-1960:15-dec-1999:5/unit=days tax
+Replacing definition of axis TAX
+define grid/x=xax/y=yax/z=zax/t=tax gformat
+ 
+*  XZ shade with VS/DASH/OVER
+set grid gformat
+shade/y=-60:60/z=0:1000 sin(y/3)*ABS(z)^1.5
+ 
+let ypts = {-60,-50,-40,-30,-20,-10,  0,  8, 15, 30, 35, 40, 60}
+let zpts = {700,667,669,801,732,755,765,789,808,788,822,699,700}
+ 
+plot/vs/over/thick/line/dash ypts,zpts
+plot/vs/over/thick=3/line/dash=0.05,0.05,0.15,0.15 ypts,zpts+100
+ 
+*  XY shade with VS/DASH/OVER
+set grid abstract
+shade/pal=grayscale/x=1:100/y=101:200 sin(x/6)*cos(y/9)
+ 
+let xpts = {  0,  8, 12, 15, 23, 28, 30, 35, 40, 44, 54, 60, 75}
+let ypts = {142,147,149,141,142,155,145,149,148,148,152,146,143}
+ 
+plot/vs/over/thick/color=red/dash xpts,ypts
+plot/vs/over/thick=3/color=red/dash=0.05,0.05,0.15,0.15 xpts+10,ypts+30
+ 
+!  Here, test that settings made with PPL LINE command persist,
+! whereas PLOT/DASH settings do not.
+ 
+let ypts=y[gy=1:80:1]
+ppl line, 2, 0, 4, 0, 0, 0.04, 0.04, 0.15,0.15
+ppl line, 3, 0, 4, 0, 0, 0.2, 0.2, 0.2,0.2
+plot/thick/dash/vlimits=0:1000 50*sin(ypts/3)+100, 30*cos(ypts/3)+200
+plot/over/color=red/thick/dash=0.04,0.04,0.04,0.04 50*sin(ypts/3)+400, 30*cos(ypts/3)+500
+plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(ypts/5)+900, 20*sin(ypts)+950
+ 
+ 
+!overlay on polygon plots
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_poly_overlay
+!overlay on polygon plots
+ 
+polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
+shade/over/i=1:2/j=0:2/patt i+j
+ 
+!polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_axis_symbols
+! err540_axis_symbols.jnl
+! 3/02 *acm*
+! Define YAXIS_MIN and YAXIS_MAX after PPLUS auto-scaling is done.
+! e.g. polytube failed overlaying on PLOT/VS plots, because symbols
+! YAXIS_MIN and YAXIS_MAX or the XAXIS symbols aren't set.
+ 
+can var/all
+ 
+let xpts = i[i=1:100]
+set view left
+plot/line/vs xpts, sin(xpts/10)
+sh sym YAXIS_MAX
+YAXIS_MAX = "1"
+!go polytube polygon/over  xpts, sin(xpts/10), sin(xpts/10)
+ 
+set view right
+ 
+let xpts = {3,5,6,7,8,9,10,13,15,16,17,18,19,21,22}
+let ypts = {1,2,3,4,5,6, 7, 8, 9, 4, 5, 6, 7, 8, 9}
+let zpts = {1,2,3,4,5,1, 2, 3, 4, 5, 1, 2, 3, 4, 5}
+ 
+plot/vs/trans/line xpts,ypts
+sh sym XAXIS_MAX
+XAXIS_MAX = "10"
+!go polytube polygon/trans/over xpts,ypts,zpts
+ 
+can view
+ 
+!nested repeat loops and parsing parentheses
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_parse_repeat
+! err540_parse_repeat.jnl
+! 3/03 *acm
+ 
+!yes? rep/k=1:2 (rep/j=1:1 (say hello))
+!-> REPEAT: K=1
+!-> REPEAT: J=1              <-----------lots of these
+!-> REPEAT: J=1
+!...
+! **ERROR: stack overflow
+!rep/j=1:1 (rep/j=1:1 (say hello))
+!Command file, command group, or REPEAT execution aborted
+ 
+ 
+!Cause is parsing parentheses in REPEAT section of parse_command.F
+ 
+rep/k=1:2 (rep/j=1:1 (say hello))
+!-> REPEAT: K=1
+!-> REPEAT: J=1
+hello
+!-> REPEAT: K=2
+!-> REPEAT: J=1
+hello
+rep/k=1:2 (rep/j=1:1 say hello; say why not)
+!-> REPEAT: K=1
+!-> REPEAT: J=1
+hello
+why not
+!-> REPEAT: K=2
+!-> REPEAT: J=1
+hello
+why not
+rep/k=1:2 (rep/j=1:1 (say hello; (say why not)))
+!-> REPEAT: K=1
+!-> REPEAT: J=1
+hello
+why not
+!-> REPEAT: K=2
+!-> REPEAT: J=1
+hello
+why not
+ 
+! appending a scalar to NetCDF file
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_cd_use_recdim
+! err540_cd_use_recdim
+! 3/02 *sh*
+ 
+! crash appending scalar variable into file
+ 
+define axis/x=1:50:1 xprofile
+define axis/y=0:360/npoints=10/edges ylon
+define axis/z=-90:90/npoints=10/edges zlat
+define axis/t=1-jan-1900:31-dec-1995/T0=1-jan-1900/npoints=10/edges tdate
+ 
+let maxprof = 5
+let temp = X[gx=xprofile] + Y[gy=ylon] + Z[gz=zlat] + T[gt=tdate]
+ 
+save/clobber/file=profiles.nc  temp   ! 4D variable
+ LISTing to file profiles.nc
+save/append/file=profiles.nc maxprof  ! append a scalar variable
+ LISTing to file profiles.nc
+ 
+use profiles.nc
+sh data
+     currently SET data sets:
+    1> ./profiles.nc  (default)
+ name     title                             I         J         K         L
+ TEMP     X[GX=XPROFILE] + Y[GY=YLON] + Z  1:50      1:10      1:10      1:10
+ MAXPROF  5                                ...       ...       ...       ...
+ 
+sp rm -f profiles.nc
+ 
+! ================================= quit
+!save/append/file=profiles.nc maxprof
+!
+! LISTing to file profiles.nc
+!Subscript out of range on file cd_use_recdim.F, line 97,
+!procedure cd_use_recdim.
+!Subscript number 1 has value 0 in array vdims.
+!Abort
+ 
+ 
+ 
+ 
+!missing data in xpts,ypts sample points wasnt checked
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_samplexy_missing
+! err540_samplexy_missing.jnl
+! 3/03 *acm
+ 
+! previously missing data in the sample points caused Ferret to hang
+ 
+use coads_climatology
+let asst = samplexy(sst, {171,173,-1.e34}, {-1,1,13})
+list asst
+             VARIABLE : SAMPLEXY(SST, {171,173,-1.E34}, {-1,1,13})
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 by 3 points (X-TIME)
+                      1        2        3     
+                      1        2        3
+ 16-JAN      / 1:  29.0045  27.8955     ....
+ 15-FEB      / 2:  28.5508  28.2499     ....
+ 17-MAR      / 3:  28.8764  28.4775     ....
+ 
+let asst = samplexy(sst, {171,173,169}, {-1,,13})
+list asst
+             VARIABLE : SAMPLEXY(SST, {171,173,169}, {-1,,13})
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 by 3 points (X-TIME)
+                      1        2        3     
+                      1        2        3
+ 16-JAN      / 1:  29.0045     ....  26.9596
+ 15-FEB      / 2:  28.5508     ....  26.7875
+ 17-MAR      / 3:  28.8764     ....  27.1092
+ 
+! test the fixed delta stride bug
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_strides_rev.jnl
+! err540_strides_rev.jnl
+ 
+! reported Feb '02
+! fixed April 17, '02
+ 
+! Symptom: plots appear to be "tiled" -- repreating content
+ 
+! file test_100x100 has a diagonal line of 1s in a field of 0s
+sp rm -f test_100x100.nc
+set region/i=1:100/j=1:100
+let a0 = 0
+let a = if i eq j then 1 else a0
+!shade a
+save/file=test_100x100.nc a
+ LISTing to file test_100x100.nc
+cancel data/all
+cancel var/all
+ 
+! works fine in V5.33
+! try these lines for reference
+!    yes? use test_100x100.nc
+!    yes? shade a
+!    yes? shade a[i=1:100:10]
+ 
+! explanation of bug:
+! Following the implicit regrid in IS_REGRID the resultant cx did not
+! have the delta value(s) removed, so the mr thinks
+! that it is 1:10:10 instead of simply 1:10
+ 
+! this causes an inadequate amount of memory to be allocated and
+! subsequent variables try to occupy the same memory already in use
+! COPY_GRID is where the tiling effect happens, though it is not the
+! cause of the problem
+ 
+set mode stupid
+set mode diag
+set mem/size=0.05
+ Cached data cleared from memory
+GO "$HOME/.ferret"
+show mem/free
+Current size of FERRET memory cache: 0.05 MegaWords  (1 word = 4 bytes)
+            total memory table slots: 150
+            total memory blocks: 500
+            memory block size: 100
+ 
+            number of free memory blocks: 500
+            largest free region: 500
+            number of free regions: 1
+            free memory table slots: 150
+            number of UN-CACHED variables: 0
+ 
+use/ord=x-y test_100x100.nc
+list/prec=1 a[i=1:100:10] !  this looks just right!!
+ getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ allocate dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+ eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+ strip regrid on X: A --> (G030)           @XACT
+ strip reversing A on Y axis:     1   100
+ rdstride A        C:  8 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ doing reversing A on Y axis:     1   100
+ -DELETE A        M:  1 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ nulrgd  A        M:  1 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
+ -DELETE A        M:  2 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ dealloc  dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+             VARIABLE : IF I EQ J THEN 1 ELSE A0
+                        regrid: 10 delta on X
+             FILENAME : test_100x100.nc
+             SUBSET   : 10 by 100 points (X-Y)
+               1   11  21  31  41  51  61  71  81  91  
+                1   2   3   4   5   6   7   8   9  10
+ 1     /   1:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 2     /   2:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 3     /   3:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 4     /   4:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 5     /   5:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 6     /   6:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 7     /   7:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 8     /   8:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 9     /   9:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 10    /  10:  0.  0.  0.  0.  0.  0.  0.  0.  0.  1.
+ 11    /  11:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 12    /  12:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 13    /  13:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 14    /  14:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 15    /  15:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 16    /  16:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 17    /  17:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 18    /  18:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 19    /  19:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 20    /  20:  0.  0.  0.  0.  0.  0.  0.  0.  1.  0.
+ 21    /  21:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 22    /  22:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 23    /  23:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 24    /  24:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 25    /  25:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 26    /  26:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 27    /  27:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 28    /  28:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 29    /  29:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 30    /  30:  0.  0.  0.  0.  0.  0.  0.  1.  0.  0.
+ 31    /  31:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 32    /  32:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 33    /  33:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 34    /  34:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 35    /  35:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 36    /  36:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 37    /  37:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 38    /  38:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 39    /  39:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 40    /  40:  0.  0.  0.  0.  0.  0.  1.  0.  0.  0.
+ 41    /  41:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 42    /  42:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 43    /  43:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 44    /  44:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 45    /  45:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 46    /  46:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 47    /  47:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 48    /  48:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 49    /  49:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 50    /  50:  0.  0.  0.  0.  0.  1.  0.  0.  0.  0.
+ 51    /  51:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 52    /  52:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 53    /  53:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 54    /  54:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 55    /  55:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 56    /  56:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 57    /  57:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 58    /  58:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 59    /  59:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 60    /  60:  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.
+ 61    /  61:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 62    /  62:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 63    /  63:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 64    /  64:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 65    /  65:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 66    /  66:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 67    /  67:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 68    /  68:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 69    /  69:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 70    /  70:  0.  0.  0.  1.  0.  0.  0.  0.  0.  0.
+ 71    /  71:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 72    /  72:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 73    /  73:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 74    /  74:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 75    /  75:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 76    /  76:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 77    /  77:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 78    /  78:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 79    /  79:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 80    /  80:  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.
+ 81    /  81:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 82    /  82:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 83    /  83:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 84    /  84:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 85    /  85:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 86    /  86:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 87    /  87:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 88    /  88:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 89    /  89:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 90    /  90:  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.
+ 91    /  91:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 92    /  92:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 93    /  93:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 94    /  94:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 95    /  95:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 96    /  96:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 97    /  97:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 98    /  98:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 99    /  99:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 100   / 100:  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+show grid
+ Default grid for DEFINE VARIABLE is ABSTRACT
+ Last successful data access was on grid (G030)
+    GRID (G030)
+ name       axis              # pts   start                end
+ (AX013)   X                   10 r   1                    91
+ YAX1_100  Y                  100 r   1                    100
+ normal    Z
+ normal    T
+ 
+! should be a diagonal path of steps all the way across the plot
+shade a[i=1:100:10]
+ eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+ strip regrid on X: A --> (G030)           @XACT
+ strip reversing A on Y axis:     1   100
+ rdstride A        C:  8 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ doing reversing A on Y axis:     1   100
+ -DELETE A        M:  2 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ nulrgd  A        M:  2 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
+ -DELETE A        M:  3 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ dealloc  dynamic grid (G030)          (AX013)   YAX1_100  NORMAL    NORMAL
+setting up 2D plot
+ -DELETE A        M:  3 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
+PPL plot 278  complete
+ppl list stats
+
+
+         DATA OF TYPE CONTOUR                       
+                   MIN            MAX
+         X     1.0000E+00     9.1000E+01
+         Y     1.0000E+00     1.0000E+02
+         Z     0.0000E+00     1.0000E+00
+         NX=  10 NY= 100
+ppl list data  ! make screen wide -- shows the 1's matching the plot
+
+
+         DATA OF TYPE CONTOUR                       
+                   MIN            MAX
+         X     1.0000E+00     9.1000E+01
+         Y     1.0000E+00     1.0000E+02
+         Z     0.0000E+00     1.0000E+00
+         NX=  10 NY= 100
+                  1         2         3         4         5         6         7
+           1  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           2  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           3  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           4  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           5  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           6  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           7  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           8  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           9  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          10  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          11  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          12  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          13  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          14  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          15  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          16  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          17  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          18  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          19  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          20  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          21  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          22  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          23  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          24  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          25  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          26  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          27  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          28  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          29  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          30  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          31  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          32  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          33  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          34  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          35  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          36  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          37  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          38  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          39  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          40  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  1.00E+00
+          41  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          42  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          43  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          44  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          45  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          46  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          47  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          48  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          49  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          50  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  1.00E+00  0.00E+00
+          51  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          52  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          53  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          54  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          55  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          56  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          57  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          58  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          59  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          60  0.00E+00  0.00E+00  0.00E+00  0.00E+00  1.00E+00  0.00E+00  0.00E+00
+          61  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          62  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          63  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          64  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          65  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          66  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          67  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          68  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          69  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          70  0.00E+00  0.00E+00  0.00E+00  1.00E+00  0.00E+00  0.00E+00  0.00E+00
+          71  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          72  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          73  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          74  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          75  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          76  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          77  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          78  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          79  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          80  0.00E+00  0.00E+00  1.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          81  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          82  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          83  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          84  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          85  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          86  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          87  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          88  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          89  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          90  0.00E+00  1.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          91  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          92  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          93  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          94  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          95  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          96  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          97  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          98  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          99  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+         100  1.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+
+
+                  8         9        10
+           1  0.00E+00  0.00E+00  0.00E+00
+           2  0.00E+00  0.00E+00  0.00E+00
+           3  0.00E+00  0.00E+00  0.00E+00
+           4  0.00E+00  0.00E+00  0.00E+00
+           5  0.00E+00  0.00E+00  0.00E+00
+           6  0.00E+00  0.00E+00  0.00E+00
+           7  0.00E+00  0.00E+00  0.00E+00
+           8  0.00E+00  0.00E+00  0.00E+00
+           9  0.00E+00  0.00E+00  0.00E+00
+          10  0.00E+00  0.00E+00  1.00E+00
+          11  0.00E+00  0.00E+00  0.00E+00
+          12  0.00E+00  0.00E+00  0.00E+00
+          13  0.00E+00  0.00E+00  0.00E+00
+          14  0.00E+00  0.00E+00  0.00E+00
+          15  0.00E+00  0.00E+00  0.00E+00
+          16  0.00E+00  0.00E+00  0.00E+00
+          17  0.00E+00  0.00E+00  0.00E+00
+          18  0.00E+00  0.00E+00  0.00E+00
+          19  0.00E+00  0.00E+00  0.00E+00
+          20  0.00E+00  1.00E+00  0.00E+00
+          21  0.00E+00  0.00E+00  0.00E+00
+          22  0.00E+00  0.00E+00  0.00E+00
+          23  0.00E+00  0.00E+00  0.00E+00
+          24  0.00E+00  0.00E+00  0.00E+00
+          25  0.00E+00  0.00E+00  0.00E+00
+          26  0.00E+00  0.00E+00  0.00E+00
+          27  0.00E+00  0.00E+00  0.00E+00
+          28  0.00E+00  0.00E+00  0.00E+00
+          29  0.00E+00  0.00E+00  0.00E+00
+          30  1.00E+00  0.00E+00  0.00E+00
+          31  0.00E+00  0.00E+00  0.00E+00
+          32  0.00E+00  0.00E+00  0.00E+00
+          33  0.00E+00  0.00E+00  0.00E+00
+          34  0.00E+00  0.00E+00  0.00E+00
+          35  0.00E+00  0.00E+00  0.00E+00
+          36  0.00E+00  0.00E+00  0.00E+00
+          37  0.00E+00  0.00E+00  0.00E+00
+          38  0.00E+00  0.00E+00  0.00E+00
+          39  0.00E+00  0.00E+00  0.00E+00
+          40  0.00E+00  0.00E+00  0.00E+00
+          41  0.00E+00  0.00E+00  0.00E+00
+          42  0.00E+00  0.00E+00  0.00E+00
+          43  0.00E+00  0.00E+00  0.00E+00
+          44  0.00E+00  0.00E+00  0.00E+00
+          45  0.00E+00  0.00E+00  0.00E+00
+          46  0.00E+00  0.00E+00  0.00E+00
+          47  0.00E+00  0.00E+00  0.00E+00
+          48  0.00E+00  0.00E+00  0.00E+00
+          49  0.00E+00  0.00E+00  0.00E+00
+          50  0.00E+00  0.00E+00  0.00E+00
+          51  0.00E+00  0.00E+00  0.00E+00
+          52  0.00E+00  0.00E+00  0.00E+00
+          53  0.00E+00  0.00E+00  0.00E+00
+          54  0.00E+00  0.00E+00  0.00E+00
+          55  0.00E+00  0.00E+00  0.00E+00
+          56  0.00E+00  0.00E+00  0.00E+00
+          57  0.00E+00  0.00E+00  0.00E+00
+          58  0.00E+00  0.00E+00  0.00E+00
+          59  0.00E+00  0.00E+00  0.00E+00
+          60  0.00E+00  0.00E+00  0.00E+00
+          61  0.00E+00  0.00E+00  0.00E+00
+          62  0.00E+00  0.00E+00  0.00E+00
+          63  0.00E+00  0.00E+00  0.00E+00
+          64  0.00E+00  0.00E+00  0.00E+00
+          65  0.00E+00  0.00E+00  0.00E+00
+          66  0.00E+00  0.00E+00  0.00E+00
+          67  0.00E+00  0.00E+00  0.00E+00
+          68  0.00E+00  0.00E+00  0.00E+00
+          69  0.00E+00  0.00E+00  0.00E+00
+          70  0.00E+00  0.00E+00  0.00E+00
+          71  0.00E+00  0.00E+00  0.00E+00
+          72  0.00E+00  0.00E+00  0.00E+00
+          73  0.00E+00  0.00E+00  0.00E+00
+          74  0.00E+00  0.00E+00  0.00E+00
+          75  0.00E+00  0.00E+00  0.00E+00
+          76  0.00E+00  0.00E+00  0.00E+00
+          77  0.00E+00  0.00E+00  0.00E+00
+          78  0.00E+00  0.00E+00  0.00E+00
+          79  0.00E+00  0.00E+00  0.00E+00
+          80  0.00E+00  0.00E+00  0.00E+00
+          81  0.00E+00  0.00E+00  0.00E+00
+          82  0.00E+00  0.00E+00  0.00E+00
+          83  0.00E+00  0.00E+00  0.00E+00
+          84  0.00E+00  0.00E+00  0.00E+00
+          85  0.00E+00  0.00E+00  0.00E+00
+          86  0.00E+00  0.00E+00  0.00E+00
+          87  0.00E+00  0.00E+00  0.00E+00
+          88  0.00E+00  0.00E+00  0.00E+00
+          89  0.00E+00  0.00E+00  0.00E+00
+          90  0.00E+00  0.00E+00  0.00E+00
+          91  0.00E+00  0.00E+00  0.00E+00
+          92  0.00E+00  0.00E+00  0.00E+00
+          93  0.00E+00  0.00E+00  0.00E+00
+          94  0.00E+00  0.00E+00  0.00E+00
+          95  0.00E+00  0.00E+00  0.00E+00
+          96  0.00E+00  0.00E+00  0.00E+00
+          97  0.00E+00  0.00E+00  0.00E+00
+          98  0.00E+00  0.00E+00  0.00E+00
+          99  0.00E+00  0.00E+00  0.00E+00
+         100  0.00E+00  0.00E+00  0.00E+00
+
+
+ 
+can mode stupid
+can mode diag
+set mem/size=6.4
+ Cached data cleared from memory
+GO "$HOME/.ferret"
+ 
+! unknown data type for clauses with constants only
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_data_type.jnl
+! err540_data_type
+! 2/19/02 *sh*
+ 
+! Ferret fails to identifies the data type and gets
+! "**ERROR: illegal data type (float,string,...) for operation: A"
+ 
+! in disp_data_set_up XEQ_PLOT is insisting on ptype_float.
+! The type that is coming back from "a" is "0" (ptype_unknown)
+ 
+! The problem is that uvar_data_type(uvar=1="A", dset=0) is ptype_unknown=0
+! this is happening because its correct value is lost in IS_UVAR_GRID
+ 
+! solved 4/02:
+! The constant ("1") was being ignored -- needed to get its data type
+! change to IS_UVAR_GRID.F
+ 
+! Note - initial soln lead to further problems to resolve for
+!        IF cond THEN pseudo + const
+ 
+!set mode diag
+ 
+! bad
+plot IF {1,3,5} GE 3 THEN 1  ! data type unknown
+ 
+! ok  -- no error if constant is buried within a user variable
+!let V = 1
+!plot IF {1,3,5} GE 3 THEN v
+ 
+ 
+! gridding scattered points to modulo axis had bug
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_modscat.jnl
+! test gridding scattered points to modulo axis.
+! Show Southern hemisphere.
+ 
+use coads_climatology
+ 
+let xpts = 360*randu(i+10)-180; let ypts = 80*randu(i) -80
+let sstpts = samplexy(sst[l=1], xpts[i=1:1000], ypts[i=1:1000])
+ 
+def axis/x=180w:180e:1/modulo xax
+Replacing definition of axis XAX
+def axis/y=-89:0:1 yax
+Replacing definition of axis YAX
+def grid/x=xax/y=yax mygrid
+Replacing definition of grid MYGRID
+ 
+let a  = scat2gridgauss_xy (xpts[i=1:1000], ypts[i=1:1000], sstpts, x[gx=mygrid], y[gy=mygrid], 6, 1,6, 6)
+ 
+let b = if sst[l=1,gx=mygrid,gy=mygrid] then a
+ 
+shade b
+plot/vs/over xpts[i=1:1000]+360, ypts[i=1:1000]
+ 
+! make sure the USE bug reported 5/01 by A Wittenberg is fixed
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_use.jnl
+! err540_use.jnl
+!
+! very subtle bug fix in the "USE" command.  What would happen is if dataset A and
+! dataset B were "used", then dset A was cancelled, if the next dataset (dataset C)
+! "used" had a similarly named variable as dataset B, then Ferret would mistakingly
+! set the similarly named variable in dataset C to lower case, making it inaccessible.
+! This was because the logic in cd_scan_vars.F didn't take into account that variables from
+! different datasets may be overlapped in the ds_var_code array.
+ 
+! Create three simple files containing variables with lowercase names.
+let a = 1
+let b = 2
+save/q/clob/file=f.nc a
+save/q/clob/file=f2.nc a,b
+save/q/clob/file=g.nc b
+can var a b
+ 
+sp ncrename -h -v A,a f.nc
+sp ncrename -h -v A,a -v B,b f2.nc
+sp ncrename -h -v B,b g.nc
+use f.nc
+use f2.nc
+use g.nc
+sh data
+     currently SET data sets:
+    1> ./f.nc
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ 
+    2> ./f2.nc
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ B        2                                ...       ...       ...       ...
+ 
+    3> ./g.nc  (default)
+ name     title                             I         J         K         L
+ B        2                                ...       ...       ...       ...
+ 
+can data/all
+ 
+! Use two of the files and cancel the first one.
+use f.nc
+sh data
+     currently SET data sets:
+    1> ./f.nc  (default)
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ 
+use g.nc
+sh data
+     currently SET data sets:
+    1> ./f.nc
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ 
+    2> ./g.nc  (default)
+ name     title                             I         J         K         L
+ B        2                                ...       ...       ...       ...
+ 
+can dat 1
+ 
+! Now open the f2 file which as both a and b variables
+use f2.nc
+ 
+! All variables from BOTH datasets should be capitals.
+show dat
+     currently SET data sets:
+    1> ./f2.nc  (default)
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ B        2                                ...       ...       ...       ...
+ 
+    2> ./g.nc
+ name     title                             I         J         K         L
+ B        2                                ...       ...       ...       ...
+ 
+ 
+! This should work
+list b[d=1]
+             VARIABLE : 2
+             FILENAME : f2.nc
+          2.00000
+ 
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_cancel_axes
+ ! NOAA/PMEL TMAP
+ ! FERRET v5.40
+ ! Solaris 5.6 - 02/15/02
+ !  5-Jun-02 10:54
+ 
+let ind1 = 1*i
+let tim1 = 20500*randu(ind1[i=1:20500])
+let ind2 = sorti(tim1)
+let tim2 = samplei(tim1, ind2)
+list/format=comma/file=longax.dat/clobber tim2
+ LISTing to file longax.dat
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+! longax cancel axis axname
+repeat/k=1:10 go bn_cancel_axes_1.sub
+!-> REPEAT: K=1
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=2
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=3
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=4
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=5
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=6
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=7
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=8
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=9
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=10
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+! longax cancel axis/all
+repeat/k=1:10 (go bn_cancel_axes_2.sub; cancel axis/all; cancel grid tim_grd)
+!-> REPEAT: K=1
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=2
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=3
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=4
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=5
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=6
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=7
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=8
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=9
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=10
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+ 
+! test remaining axes are intact when we cancel one.
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+define axis/x ax1={2,4,5,6,9}
+define axis/x ax2={30,60,90,100}
+sh axis/x ax2
+ name       axis              # pts   start                end
+ AX2                            4 i   30                   100
+ 
+       I     X                   XBOX      XBOXLO
+       1>  30                    30        15
+       2>  60                    30        45
+       3>  90                    20        75
+       4>  100                   10        95
+can axis ax1
+ *** NOTE: Not deleted: AX1
+ *** NOTE: Axis is in use by grid EVEN
+sh axis/x ax2
+ name       axis              # pts   start                end
+ AX2                            4 i   30                   100
+ 
+       I     X                   XBOX      XBOXLO
+       1>  30                    30        15
+       2>  60                    30        45
+       3>  90                    20        75
+       4>  100                   10        95
+ 
+! Test interaction with irreg axes from datasets
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+cancel data climatological_axes
+sh axis/t month_irreg
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+T0 = 01-JAN-0000 00:00:00
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  16-JAN      12:00:00  31        01-JAN      00:00:00    15.5
+       2>  15-FEB      02:54:36  28.2425   01-FEB      00:00:00    45.12125
+       3>  15-MAR      17:49:12  31        29-FEB      05:49:12    74.7425
+       4>  15-APR      05:49:12  30        31-MAR      05:49:12    105.2425
+       5>  15-MAY      17:49:12  31        30-APR      05:49:12    135.7425
+       6>  15-JUN      05:49:12  30        31-MAY      05:49:12    166.2425
+       7>  15-JUL      17:49:12  31        30-JUN      05:49:12    196.7425
+       8>  15-AUG      17:49:12  31        31-JUL      05:49:12    227.7425
+       9>  15-SEP      05:49:12  30        31-AUG      05:49:12    258.2425
+      10>  15-OCT      17:49:12  31        30-SEP      05:49:12    288.7425
+      11>  15-NOV      05:49:12  30        31-OCT      05:49:12    319.2425
+      12>  15-DEC      17:49:12  31        30-NOV      05:49:12    349.7425
+ 
+def axis/x ax1 = {1, 3, 4, 5, 9}
+Replacing definition of axis AX1
+can axis ax1
+ *** NOTE: Not deleted: AX1
+ *** NOTE: Axis is in use by grid EVEN
+sh axis/t month_irreg
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+T0 = 01-JAN-0000 00:00:00
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  16-JAN      12:00:00  31        01-JAN      00:00:00    15.5
+       2>  15-FEB      02:54:36  28.2425   01-FEB      00:00:00    45.12125
+       3>  15-MAR      17:49:12  31        29-FEB      05:49:12    74.7425
+       4>  15-APR      05:49:12  30        31-MAR      05:49:12    105.2425
+       5>  15-MAY      17:49:12  31        30-APR      05:49:12    135.7425
+       6>  15-JUN      05:49:12  30        31-MAY      05:49:12    166.2425
+       7>  15-JUL      17:49:12  31        30-JUN      05:49:12    196.7425
+       8>  15-AUG      17:49:12  31        31-JUL      05:49:12    227.7425
+       9>  15-SEP      05:49:12  30        31-AUG      05:49:12    258.2425
+      10>  15-OCT      17:49:12  31        30-SEP      05:49:12    288.7425
+      11>  15-NOV      05:49:12  30        31-OCT      05:49:12    319.2425
+      12>  15-DEC      17:49:12  31        30-NOV      05:49:12    349.7425
+ 
+cancel axis/all
+ 
+def axis/x ax1 = {1, 3, 4, 5, 9}
+sh axis/x ax1
+ name       axis              # pts   start                end
+ AX1                            5 i   1                    9
+ 
+       I     X                   XBOX      XBOXLO
+       1>  1                     2         0
+       2>  3                     1.5       2
+       3>  4                     1         3.5
+       4>  5                     2.5       4.5
+       5>  9                     4         7
+can axis ax1
+ 
+sh axis/t month_irreg
+ name       axis              # pts   start                end
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.40  
- 	Tru64 V4.0E - 01/28/02
- 	28-Jan-02 15:35     
+ 	FERRET v5.41  
+ 	Tru64 V4.0E - 08/30/02
+ 	 4-Sep-02 10:39     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -36659,9 +38081,9 @@ plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
 frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.40  
- 	Tru64 V4.0E - 01/28/02
- 	28-Jan-02 15:35     
+ 	FERRET v5.41  
+ 	Tru64 V4.0E - 08/30/02
+ 	 4-Sep-02 10:39     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -36774,4 +38196,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Mon Jan 28 15:35:23 PST 2002
+Ended at Wed Sep 4 10:39:29 PDT 2002

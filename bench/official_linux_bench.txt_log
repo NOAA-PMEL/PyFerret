@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja4/kobrien/linux/FERRET/fer/ferret_v540
--rwxr-xr-x    1 kobrien  tmap     18431544 Jan 28 14:18 /home/ja4/kobrien/linux/FERRET/fer/ferret_v540
-Using external functions from /home/ja4/kobrien/linux/FERRET/external_functions/libs
+Running FERRET version /home/ja4/kobrien/linux/FERRET/fer/ferret_v541
+-rwxr-xr-x    1 kobrien  tmap     25367412 Aug 30 13:52 /home/ja4/kobrien/linux/FERRET/fer/ferret_v541
+Using external functions from /home/ja4/kobrien/linux/FERRET/bin
 Benchmark run by kob
-Note: v5.4 with all updates and my string bug fixes
+Note: v541 final test (hopefully) and includes Ansleys julian calendar fix
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja4/kobrien/FERRET/bench
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/linux
@@ -17,13 +17,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/linux/FERRET/external_functions/libs
-CVSROOT=/home/ja9/tmap/FERRET_ROOT/
-Beginning at Mon Jan 28 16:04:40 PST 2002
+FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/linux/FERRET/bin
+Beginning at Wed Sep 4 10:26:12 PDT 2002
  	NOAA/PMEL TMAP
- 	FERRET v5.40  
- 	Linux 2.4.3-12smp - 01/28/02
- 	28-Jan-02 16:04     
+ 	FERRET v5.41  
+ 	Linux 2.4.3-12smp - 08/30/02
+ 	04-Sep-02 10:26     
 
 yes? !bn500_all_shell
 yes? 
@@ -105,6 +104,9 @@ SET MODE VERIFY
 ! 10/01 *acm* -- added bn_axcontrol
 !             -- add EOF's and cmprsi_by to bn_internal_external_functions.jnl
 ! 11/01 *sh* -- added bn_delimited_read
+!
+! V5.41:
+! 3/02 *acm*-- Add bn540_bug_fixes.jnl
  
 GO bn_reset
 cancel mode verify
@@ -147,28 +149,28 @@ SHOW DATA/VARIABLES
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
-             deg. C on grid PS3DT1 with -1.000000E+34 for missing data
+             deg. C on grid PS3DT1 with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  Z=0:4149  
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
              frac. by wt. less .035 on grid PS3DT1 with 0.01 for missing data
              X=161W:159W  Y=30S:50N  Z=0:4149  
  U        ZONAL VELOCITY                  69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.8S:51.4N  Z=0:4149  
  V        MERIDIONAL VELOCITY             69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.8S:51.4N  Z=0:4149  
  W        VERTICAL VELOCITY               70:71      1:100     1:27      1:3
-             cm/sec on grid PS3DW1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DW1 with -1.E+34 for missing data
              X=161W:159W  Y=30S:50N  Z=5:4149  
  TAUX     ZONAL WIND STRESS               69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.8S:51.4N  
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.8S:51.4N  
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
-             cm**3/sec on grid PS2DU1 with -1.000000E+34 for missing data
+             cm**3/sec on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:156.5W  Y=28.8S:51.4N  
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
@@ -192,28 +194,28 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
-             deg. C on grid PS3DT1 with -1.000000E+34 for missing data
+             deg. C on grid PS3DT1 with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  Z=0:4149  
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
              frac. by wt. less .035 on grid PS3DT1 with 0.01 for missing data
              X=161W:159W  Y=30S:50N  Z=0:4149  
  U        ZONAL VELOCITY                  69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.8S:51.4N  Z=0:4149  
  V        MERIDIONAL VELOCITY             69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.8S:51.4N  Z=0:4149  
  W        VERTICAL VELOCITY               70:71      1:100     1:27      1:3
-             cm/sec on grid PS3DW1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DW1 with -1.E+34 for missing data
              X=161W:159W  Y=30S:50N  Z=5:4149  
  TAUX     ZONAL WIND STRESS               69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.8S:51.4N  
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.8S:51.4N  
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
-             cm**3/sec on grid PS2DU1 with -1.000000E+34 for missing data
+             cm**3/sec on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:156.5W  Y=28.8S:51.4N  
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
@@ -252,7 +254,7 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  V1       V1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20480.5  
  
  /FORMAT = FREE
@@ -278,10 +280,10 @@ SHOW DATA/FULL
      quick and dirty
  name     title                             I         J         K         L
  P        my P variable                    1:999999  1:999999  1:999999  1:999999
-               on grid ABSTRACT with -1.000000E+34 for missing data
+               on grid ABSTRACT with -1.E+34 for missing data
              X=0.5:10000000  Y=0.5:10000000  Z=0.5:10000000  
  Q        Q                                1:999999  1:999999  1:999999  1:999999
-               on grid ABSTRACT with -1.000000E+34 for missing data
+               on grid ABSTRACT with -1.E+34 for missing data
              X=0.5:10000000  Y=0.5:10000000  Z=0.5:10000000  
  
  /FORMAT = UNF
@@ -1655,7 +1657,7 @@ show data/full 1
  
  name     title                             I         J         K         L
  AIRT     CLIMATOLOGICAL AIR TEMPERATURE   1:160     1:100     ...       1:12
-             deg. C on grid GGT1 with -1.000000E+34 for missing data
+             deg. C on grid GGT1 with -1.E+34 for missing data
              X=130E:70W  Y=30S:50N  
  
   time range: 12-JAN-1982 12:00 to 13-DEC-1982 02:00
@@ -9354,7 +9356,7 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  V1       V1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = FREE
@@ -9384,10 +9386,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  X2       X2                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = FREE
@@ -9420,10 +9422,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  X2       X2                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = FREE
@@ -9464,10 +9466,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  X2       X2                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = FREE
@@ -9502,10 +9504,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  X2       X2                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = FREE
@@ -9537,10 +9539,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  X2       X2                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = (3(F14.0,F7.0))
@@ -9575,10 +9577,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  X2       X2                               1:20480   ...       ...       ...
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /FORMAT = (3(F14.0,F7.0)/)
@@ -9622,10 +9624,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:3       1:20480   ...       ...
-               on grid GEZ1 with -1.000000E+34 for missing data
+               on grid GEZ1 with -1.E+34 for missing data
              X=0.5:3.5  Y=0.5:20481  
  X2       X2                               1:3       1:20480   ...       ...
-               on grid GEZ1 with -1.000000E+34 for missing data
+               on grid GEZ1 with -1.E+34 for missing data
              X=0.5:3.5  Y=0.5:20481  
  
  /FORMAT = FREE
@@ -9662,10 +9664,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:1       1:3       1:2       1:20480
-               on grid GEZ2 with -1.000000E+34 for missing data
+               on grid GEZ2 with -1.E+34 for missing data
              X=0.5:1.5  Y=0.5:3.5  Z=0.5:2.5  
  X2       X2                               1:1       1:3       1:2       1:20480
-               on grid GEZ2 with -1.000000E+34 for missing data
+               on grid GEZ2 with -1.E+34 for missing data
              X=0.5:1.5  Y=0.5:3.5  Z=0.5:2.5  
  
  /FORMAT = FREE
@@ -9702,10 +9704,10 @@ SHOW DATA/FULL
  
  name     title                             I         J         K         L
  X1       X1                               1:8       ...       ...       ...
-               on grid GEZ3 with -1.000000E+34 for missing data
+               on grid GEZ3 with -1.E+34 for missing data
              X=0.5:8.5  
  X2       X2                               1:8       ...       ...       ...
-               on grid GEZ3 with -1.000000E+34 for missing data
+               on grid GEZ3 with -1.E+34 for missing data
              X=0.5:8.5  
  
  /FORMAT = FREE
@@ -10097,13 +10099,13 @@ GO bn_symbols	! added 6/22/95
  
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "806"
-PPL$YPIXEL = "806"
+PPL$XPIXEL = "431"
+PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.40"
+FERRET_VERSION = " 5.41"
 FERRET_PLATFORM = "Linux 2.4.3-12smp"
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "16:04"
+SESSION_DATE = "04-Sep-02"
+SESSION_TIME = "10:26"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10116,13 +10118,13 @@ define symbol t_($s1) = hi	! define "t_hello" as a symbol
  
 ! exercise SHOW SYMBOL
 show symbol/all
-PPL$XPIXEL = "806"
-PPL$YPIXEL = "806"
+PPL$XPIXEL = "431"
+PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.40"
+FERRET_VERSION = " 5.41"
 FERRET_PLATFORM = "Linux 2.4.3-12smp"
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "16:04"
+SESSION_DATE = "04-Sep-02"
+SESSION_TIME = "10:26"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10130,8 +10132,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "16:04"
+SESSION_DATE = "04-Sep-02"
+SESSION_TIME = "10:26"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10141,13 +10143,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "16:04"
+SESSION_DATE = "04-Sep-02"
+SESSION_TIME = "10:26"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "16:04"
+SESSION_DATE = "04-Sep-02"
+SESSION_TIME = "10:26"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10179,9 +10181,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 5.40"
+LAB1 = "FERRET Ver. 5.41"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jan 28 02 16:04:55"
+LAB3 = "Sep 04 02 10:26:27"
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10280,10 +10282,10 @@ show symbols/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
-FERRET_VERSION = " 5.40"
+FERRET_VERSION = " 5.41"
 FERRET_PLATFORM = "Linux 2.4.3-12smp"
-SESSION_DATE = "28-Jan-02"
-SESSION_TIME = "16:04"
+SESSION_DATE = "04-Sep-02"
+SESSION_TIME = "10:26"
  
  
 GO bn_reset
@@ -13904,78 +13906,78 @@ show data/full
  
  name     title                             I         J         K         L
  I1       I                                1:10      ...       ...       ...
-               on grid GEU1 with -1.000000E+34 for missing data
+               on grid GEU1 with -1.E+34 for missing data
              X=0.5:10.5  
  J1       J                                ...       1:20      ...       ...
-               on grid GEU2 with -1.000000E+34 for missing data
+               on grid GEU2 with -1.E+34 for missing data
              Y=0.5:20.5  
  K1       K                                ...       ...       1:100     ...
-               on grid GEU3 with -1.000000E+34 for missing data
+               on grid GEU3 with -1.E+34 for missing data
              Z=0.5:100.5  
  L1       L[G=GCENTURY]                    ...       ...       ...       1:12
-               on grid GEU4 with -1.000000E+34 for missing data
+               on grid GEU4 with -1.E+34 for missing data
              
  L2       L                                ...       ...       ...       1:10
-               on grid GEU5 with -1.000000E+34 for missing data
+               on grid GEU5 with -1.E+34 for missing data
              
  IJ       I+J                              1:10      1:20      ...       ...
-               on grid GEU6 with -1.000000E+34 for missing data
+               on grid GEU6 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  
  IK       I+K                              1:10      ...       1:100     ...
-               on grid GEU7 with -1.000000E+34 for missing data
+               on grid GEU7 with -1.E+34 for missing data
              X=0.5:10.5  Z=0.5:100.5  
  IL       I+L1                             1:10      ...       ...       1:12
-               on grid GEU8 with -1.000000E+34 for missing data
+               on grid GEU8 with -1.E+34 for missing data
              X=0.5:10.5  
  JK       J+K                              ...       1:20      1:100     ...
-               on grid GEU9 with -1.000000E+34 for missing data
+               on grid GEU9 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IJK      I+J+K                            1:10      1:20      1:100     ...
-               on grid GEU10 with -1.000000E+34 for missing data
+               on grid GEU10 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
  IKL      I+K+L1                           1:10      ...       1:100     1:12
-               on grid GEU11 with -1.000000E+34 for missing data
+               on grid GEU11 with -1.E+34 for missing data
              X=0.5:10.5  Z=0.5:100.5  
  IJL      I+J+L1                           1:10      1:20      ...       1:12
-               on grid GEU12 with -1.000000E+34 for missing data
+               on grid GEU12 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  
  JKL      J+K+L1                           ...       1:20      1:100     1:12
-               on grid GEU13 with -1.000000E+34 for missing data
+               on grid GEU13 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IJKL     I+J+K+L1                         1:10      1:20      1:100     1:12
-               on grid GEU14 with -1.000000E+34 for missing data
+               on grid GEU14 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
  IJK2     I+J+K                            ...       1:20      1:100     ...
        (X=0.5:10.5@AVE)
-               on grid GEU9 with -1.000000E+34 for missing data
+               on grid GEU9 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IKL2     I+K+L1                           ...       ...       1:100     1:12
        (X=0.5:10.5@AVE, box smoothed by 3 pts on Z)
-               on grid GEU15 with -1.000000E+34 for missing data
+               on grid GEU15 with -1.E+34 for missing data
              Z=0.5:100.5  
  IJL2     I+J+L1                           ...       ...       ...       1:12
        (X=0.5:10.5@AV4, Y=0.5:20.5@AV4)
-               on grid GEU4 with -1.000000E+34 for missing data
+               on grid GEU4 with -1.E+34 for missing data
              
  JKL2     J+K+L1                           ...       1:20      ...       ...
        (Z=0.5:100.5@AV4, T=03-JAN-1902 12:00:08-JAN-1902 12:00@AV4)
-               on grid GEU2 with -1.000000E+34 for missing data
+               on grid GEU2 with -1.E+34 for missing data
              Y=0.5:20.5  
  IAVEJKL  IJKL[I=@AVE]                     ...       1:20      1:100     1:12
        (X=0.5:10.5)
-               on grid GEU13 with -1.000000E+34 for missing data
+               on grid GEU13 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IJAVEKL  IJKL[J=@AVE]                     1:10      ...       1:100     1:12
        (Y=0.5:20.5)
-               on grid GEU11 with -1.000000E+34 for missing data
+               on grid GEU11 with -1.E+34 for missing data
              X=0.5:10.5  Z=0.5:100.5  
  IJKAVEL  IJKL[K=@AVE]                     1:10      1:20      ...       1:12
        (Z=0.5:100.5)
-               on grid GEU12 with -1.000000E+34 for missing data
+               on grid GEU12 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  
  IJKLAVE  IJKL[L=@AVE]                     1:10      1:20      1:100     ...
        (T=03-JAN-1902 12:00:08-JAN-1902 12:00)
-               on grid GEU10 with -1.000000E+34 for missing data
+               on grid GEU10 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
  
   time range: 01-JAN-1902 00:00 to 12-JAN-1902 00:00
@@ -14000,78 +14002,78 @@ show data/full
  
  name     title                             I         J         K         L
  I1       I                                1:10      ...       ...       ...
-               on grid GEU1 with -1.000000E+34 for missing data
+               on grid GEU1 with -1.E+34 for missing data
              X=0.5:10.5  
  J1       J                                ...       1:20      ...       ...
-               on grid GEU2 with -1.000000E+34 for missing data
+               on grid GEU2 with -1.E+34 for missing data
              Y=0.5:20.5  
  K1       K                                ...       ...       1:100     ...
-               on grid GEU3 with -1.000000E+34 for missing data
+               on grid GEU3 with -1.E+34 for missing data
              Z=0.5:100.5  
  L1       L[G=GCENTURY]                    ...       ...       ...       1:15
-               on grid GEU4 with -1.000000E+34 for missing data
+               on grid GEU4 with -1.E+34 for missing data
              
  L2       L                                ...       ...       ...       1:10
-               on grid GEU5 with -1.000000E+34 for missing data
+               on grid GEU5 with -1.E+34 for missing data
              
  IJ       I+J                              1:10      1:20      ...       ...
-               on grid GEU6 with -1.000000E+34 for missing data
+               on grid GEU6 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  
  IK       I+K                              1:10      ...       1:100     ...
-               on grid GEU7 with -1.000000E+34 for missing data
+               on grid GEU7 with -1.E+34 for missing data
              X=0.5:10.5  Z=0.5:100.5  
  IL       I+L1                             1:10      ...       ...       1:15
-               on grid GEU8 with -1.000000E+34 for missing data
+               on grid GEU8 with -1.E+34 for missing data
              X=0.5:10.5  
  JK       J+K                              ...       1:20      1:100     ...
-               on grid GEU9 with -1.000000E+34 for missing data
+               on grid GEU9 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IJK      I+J+K                            1:10      1:20      1:100     ...
-               on grid GEU10 with -1.000000E+34 for missing data
+               on grid GEU10 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
  IKL      I+K+L1                           1:10      ...       1:100     1:15
-               on grid GEU11 with -1.000000E+34 for missing data
+               on grid GEU11 with -1.E+34 for missing data
              X=0.5:10.5  Z=0.5:100.5  
  IJL      I+J+L1                           1:10      1:20      ...       1:15
-               on grid GEU12 with -1.000000E+34 for missing data
+               on grid GEU12 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  
  JKL      J+K+L1                           ...       1:20      1:100     1:15
-               on grid GEU13 with -1.000000E+34 for missing data
+               on grid GEU13 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IJKL     I+J+K+L1                         1:10      1:20      1:100     1:15
-               on grid GEU14 with -1.000000E+34 for missing data
+               on grid GEU14 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
  IJK2     I+J+K                            ...       1:20      1:100     ...
        (X=0.5:10.5@AVE)
-               on grid GEU9 with -1.000000E+34 for missing data
+               on grid GEU9 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IKL2     I+K+L1                           ...       ...       1:100     1:15
        (X=0.5:10.5@AVE, box smoothed by 3 pts on Z)
-               on grid GEU15 with -1.000000E+34 for missing data
+               on grid GEU15 with -1.E+34 for missing data
              Z=0.5:100.5  
  IJL2     I+J+L1                           ...       ...       ...       1:15
        (X=0.5:10.5@AV4, Y=0.5:20.5@AV4)
-               on grid GEU4 with -1.000000E+34 for missing data
+               on grid GEU4 with -1.E+34 for missing data
              
  JKL2     J+K+L1                           ...       1:20      ...       ...
        (Z=0.5:100.5@AV4, T=03-JAN-1902 12:00:08-JAN-1902 12:00@AV4)
-               on grid GEU2 with -1.000000E+34 for missing data
+               on grid GEU2 with -1.E+34 for missing data
              Y=0.5:20.5  
  IAVEJKL  IJKL[I=@AVE]                     ...       1:20      1:100     1:15
        (X=0.5:10.5)
-               on grid GEU13 with -1.000000E+34 for missing data
+               on grid GEU13 with -1.E+34 for missing data
              Y=0.5:20.5  Z=0.5:100.5  
  IJAVEKL  IJKL[J=@AVE]                     1:10      ...       1:100     1:15
        (Y=0.5:20.5)
-               on grid GEU11 with -1.000000E+34 for missing data
+               on grid GEU11 with -1.E+34 for missing data
              X=0.5:10.5  Z=0.5:100.5  
  IJKAVEL  IJKL[K=@AVE]                     1:10      1:20      ...       1:15
        (Z=0.5:100.5)
-               on grid GEU12 with -1.000000E+34 for missing data
+               on grid GEU12 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  
  IJKLAVE  IJKL[L=@AVE]                     1:10      1:20      1:100     ...
        (T=03-JAN-1902 12:00:08-JAN-1902 12:00)
-               on grid GEU10 with -1.000000E+34 for missing data
+               on grid GEU10 with -1.E+34 for missing data
              X=0.5:10.5  Y=0.5:20.5  Z=0.5:100.5  
  
   time range: 01-JAN-1902 00:00 to 16-JAN-1902 00:00
@@ -14253,28 +14255,28 @@ show data/full
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
-             deg. C on grid PS3DT1 with -1.000000E+34 for missing data
+             deg. C on grid PS3DT1 with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  Z=0:4149  
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
              frac. by wt. less .035 on grid PS3DT1 with 0.01 for missing data
              X=161W:159W  Y=30S:50N  Z=0:4149  
  U        ZONAL VELOCITY                  69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  V        MERIDIONAL VELOCITY             69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  W        VERTICAL VELOCITY               70:71      1:100     1:27      1:3
-             cm/sec on grid PS3DW1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DW1 with -1.E+34 for missing data
              X=161W:159W  Y=30S:50N  Z=5:4149  
  TAUX     ZONAL WIND STRESS               69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
-             cm**3/sec on grid PS2DU1 with -1.000000E+34 for missing data
+             cm**3/sec on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:156.5W  Y=28.84S:51.43N  
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
@@ -14283,67 +14285,67 @@ show data/full
  
  name     title                             I         J         K         L
  I1       X[G=TEMP,I=1:10]                 1:10      ...       ...       ...
-               on grid PS3DT1_NYZT with -1.000000E+34 for missing data
+               on grid PS3DT1_NYZT with -1.E+34 for missing data
              X=130E:140E  
  J1       Y[G=TEMP,J=5:10]                 ...       5:10      ...       ...
-               on grid PS3DT1_NXZT with -1.000000E+34 for missing data
+               on grid PS3DT1_NXZT with -1.E+34 for missing data
              Y=21.11S:12.52S  
  K1       Z[G=U,K=5:15]                    ...       ...       5:15      ...
-               on grid PS3DU1_NXYT with -1.000000E+34 for missing data
+               on grid PS3DU1_NXYT with -1.E+34 for missing data
              Z=40:190  
  L1       L[G=U,L=1:3]                     ...       ...       ...       1:3
-               on grid GRH1 with -1.000000E+34 for missing data
+               on grid GRH1 with -1.E+34 for missing data
              
  L2       L                                ...       ...       ...       1:2
-               on grid GRH2 with -1.000000E+34 for missing data
+               on grid GRH2 with -1.E+34 for missing data
              
  IJ       TAUX[L=@AVE]                    69:71      1:100     ...       ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
-               on grid PS2DU1_NT with -1.000000E+34 for missing data
+               on grid PS2DU1_NT with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  IK       I1+K1                            1:10      ...       5:15      ...
-               on grid G031_NYT with -1.000000E+34 for missing data
+               on grid G031_NYT with -1.E+34 for missing data
              X=130E:140E  Z=40:190  
  IL       I1+L1                            1:10      ...       ...       1:3
-               on grid G031_NYZ with -1.000000E+34 for missing data
+               on grid G031_NYZ with -1.E+34 for missing data
              X=130E:140E  
  JK       J1+K1                            ...       5:10      5:15      ...
-               on grid G029_NXT with -1.000000E+34 for missing data
+               on grid G029_NXT with -1.E+34 for missing data
              Y=21.11S:12.52S  Z=40:190  
  IJK      TEMP[L=@AVE]                    70:72      1:100     1:27      ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
-               on grid PS3DT1_NT with -1.000000E+34 for missing data
+               on grid PS3DT1_NT with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  Z=0:4149  
  IKL      TEMP[J=@AVE]                    70:72      ...       1:27      1:3
        (Y=30S:50N)
-               on grid PS3DT1_NY with -1.000000E+34 for missing data
+               on grid PS3DT1_NY with -1.E+34 for missing data
              X=161W:158W  Z=0:4149  
  IJL      TEMP[K=@AVE]                    70:72      1:100     ...       1:3
        (Z=0:4149)
-               on grid PS3DT1_NZ with -1.000000E+34 for missing data
+               on grid PS3DT1_NZ with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  
  JKL      TEMP[I=@AVE]                     ...       1:100     1:27      1:3
        (X=161W:158W)
-               on grid GRH3 with -1.000000E+34 for missing data
+               on grid GRH3 with -1.E+34 for missing data
              Y=30S:50N  Z=0:4149  
  IJKL     U                               69:72      1:100     1:27      1:3
-               on grid PS3DU1 with -1.000000E+34 for missing data
+               on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  IAVEJKL  IJKL[I=@AVE]                     ...       1:100     1:27      1:3
        (X=161.5W:157.5W)
-               on grid GRH4 with -1.000000E+34 for missing data
+               on grid GRH4 with -1.E+34 for missing data
              Y=28.84S:51.43N  Z=0:4149  
  IJAVEKL  IJKL[J=@AVE]                    69:72      ...       1:27      1:3
        (Y=28.84S:51.43N)
-               on grid PS3DU1_NY with -1.000000E+34 for missing data
+               on grid PS3DU1_NY with -1.E+34 for missing data
              X=161.5W:157.5W  Z=0:4149  
  IJKAVEL  IJKL[K=@AVE]                    69:72      1:100     ...       1:3
        (Z=0:4149)
-               on grid PS3DU1_NZ with -1.000000E+34 for missing data
+               on grid PS3DU1_NZ with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  
  IJKLAVE  IJKL[L=@AVE]                    69:72      1:100     1:27      ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
-               on grid PS3DU1_NT with -1.000000E+34 for missing data
+               on grid PS3DU1_NT with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
@@ -14462,28 +14464,28 @@ show data/full
  
  name     title                             I         J         K         L
  TEMP     TEMPERATURE                     70:72      1:100     1:27      1:3
-             deg. C on grid PS3DT1 with -1.000000E+34 for missing data
+             deg. C on grid PS3DT1 with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  Z=0:4149  
  SALT     (SALINITY(ppt) - 35) /1000      70:71      1:100     1:27      1:3
              frac. by wt. less .035 on grid PS3DT1 with 0.01 for missing data
              X=161W:159W  Y=30S:50N  Z=0:4149  
  U        ZONAL VELOCITY                  69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  V        MERIDIONAL VELOCITY             69:72      1:100     1:27      1:3
-             cm/sec on grid PS3DU1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DU1 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  W        VERTICAL VELOCITY               70:71      1:100     1:27      1:3
-             cm/sec on grid PS3DW1 with -1.000000E+34 for missing data
+             cm/sec on grid PS3DW1 with -1.E+34 for missing data
              X=161W:159W  Y=30S:50N  Z=5:4149  
  TAUX     ZONAL WIND STRESS               69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  TAUY     MERIDIONAL WIND STRESS          69:71      1:100     ...       1:3
-             dynes/cm**2 on grid PS2DU1 with -1.000000E+34 for missing data
+             dynes/cm**2 on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  PSI      STREAM FUNCTION                 69:73      1:100     ...       1:3
-             cm**3/sec on grid PS2DU1 with -1.000000E+34 for missing data
+             cm**3/sec on grid PS2DU1 with -1.E+34 for missing data
              X=161.5W:156.5W  Y=28.84S:51.43N  
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
@@ -14492,67 +14494,67 @@ show data/full
  
  name     title                             I         J         K         L
  I1       X[G=TEMP,I=1:10]                 1:10      ...       ...       ...
-               on grid GLZ1 with -1.000000E+34 for missing data
+               on grid GLZ1 with -1.E+34 for missing data
              X=130E:140E  
  J1       Y[G=TEMP,J=5:10]                 ...       1:6       ...       ...
-               on grid GLZ2 with -1.000000E+34 for missing data
+               on grid GLZ2 with -1.E+34 for missing data
              Y=21.11S:12.52S  
  K1       Z[G=U,K=5:15]                    ...       ...       1:11      ...
-               on grid GLZ3 with -1.000000E+34 for missing data
+               on grid GLZ3 with -1.E+34 for missing data
              Z=40:190  
  L1       L[G=U,L=1:3]                     ...       ...       ...       1:3
-               on grid GLZ4 with -1.000000E+34 for missing data
+               on grid GLZ4 with -1.E+34 for missing data
              
  L2       L                                ...       ...       ...       1:2
-               on grid GLZ5 with -1.000000E+34 for missing data
+               on grid GLZ5 with -1.E+34 for missing data
              
  IJ       TAUX[L=@AVE]                     1:3       1:100     ...       ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
-               on grid GLZ6 with -1.000000E+34 for missing data
+               on grid GLZ6 with -1.E+34 for missing data
              X=161.5W:158.5W  Y=28.84S:51.43N  
  IK       I1+K1                            1:10      ...       1:11      ...
-               on grid GLZ7 with -1.000000E+34 for missing data
+               on grid GLZ7 with -1.E+34 for missing data
              X=130E:140E  Z=40:190  
  IL       I1+L1                            1:10      ...       ...       1:3
-               on grid GLZ8 with -1.000000E+34 for missing data
+               on grid GLZ8 with -1.E+34 for missing data
              X=130E:140E  
  JK       J1+K1                            ...       1:6       1:11      ...
-               on grid GLZ9 with -1.000000E+34 for missing data
+               on grid GLZ9 with -1.E+34 for missing data
              Y=21.11S:12.52S  Z=40:190  
  IJK      TEMP[L=@AVE]                     1:3       1:100     1:27      ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
-               on grid GLZ10 with -1.000000E+34 for missing data
+               on grid GLZ10 with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  Z=0:4149  
  IKL      TEMP[J=@AVE]                     1:3       ...       1:27      1:3
        (Y=30S:50N)
-               on grid GLZ11 with -1.000000E+34 for missing data
+               on grid GLZ11 with -1.E+34 for missing data
              X=161W:158W  Z=0:4149  
  IJL      TEMP[K=@AVE]                     1:3       1:100     ...       1:3
        (Z=0:4149)
-               on grid GLZ12 with -1.000000E+34 for missing data
+               on grid GLZ12 with -1.E+34 for missing data
              X=161W:158W  Y=30S:50N  
  JKL      TEMP[I=@AVE]                     ...       1:100     1:27      1:3
        (X=161W:158W)
-               on grid GLZ13 with -1.000000E+34 for missing data
+               on grid GLZ13 with -1.E+34 for missing data
              Y=30S:50N  Z=0:4149  
  IJKL     U                                1:4       1:100     1:27      1:3
-               on grid GLZ14 with -1.000000E+34 for missing data
+               on grid GLZ14 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  IAVEJKL  IJKL[I=@AVE]                     ...       1:100     1:27      1:3
        (X=161.5W:157.5W)
-               on grid GLZ15 with -1.000000E+34 for missing data
+               on grid GLZ15 with -1.E+34 for missing data
              Y=28.84S:51.43N  Z=0:4149  
  IJAVEKL  IJKL[J=@AVE]                     1:4       ...       1:27      1:3
        (Y=28.84S:51.43N)
-               on grid GLZ16 with -1.000000E+34 for missing data
+               on grid GLZ16 with -1.E+34 for missing data
              X=161.5W:157.5W  Z=0:4149  
  IJKAVEL  IJKL[K=@AVE]                     1:4       1:100     ...       1:3
        (Z=0:4149)
-               on grid GLZ17 with -1.000000E+34 for missing data
+               on grid GLZ17 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  
  IJKLAVE  IJKL[L=@AVE]                     1:4       1:100     1:27      ...
        (T=15-MAR-1983 09:30:15-MAR-1983 11:30)
-               on grid GLZ18 with -1.000000E+34 for missing data
+               on grid GLZ18 with -1.E+34 for missing data
              X=161.5W:157.5W  Y=28.84S:51.43N  Z=0:4149  
  
   time range: 15-MAR-1983 10:00 to 15-MAR-1983 12:00
@@ -14583,14 +14585,14 @@ show data/var
  
  name     title                             I         J         K         L
  FCN_NORM COS(X/10)*SIN(Y/2)               1:51      1:21      ...       ...
-               on grid GAF1 with -1.000000E+34 for missing data
+               on grid GAF1 with -1.E+34 for missing data
              X=129.5E:179.5W  Y=10.5S:10.5N  
  FCN_REV  COS(X/10)*SIN(Y/2)               1:51      1:21      ...       ...
-               on grid GAF2 with -1.000000E+34 for missing data
+               on grid GAF2 with -1.E+34 for missing data
              X=129.5E:179.5W  Y=10.5S:10.5N  
  FCN_REV_SUB
           COS(X/10)*SIN(Y/2)               1:51     10:19      ...       ...
-               on grid GREV with -1.000000E+34 for missing data
+               on grid GREV with -1.E+34 for missing data
              X=129.5E:179.5W  Y=1.5S:8.5N  
  
  
@@ -17986,9 +17988,7 @@ list atime[gt=thour@max]
  01-JAN-1990 00 / 1:  32493.0
  02-JAN-1990 00 / 2:  32494.0
  03-JAN-1990 00 / 3:  32495.0
- 04-JAN-1990 -rw-rw-r--    1 kobrien  tmap       201828 Jan 28 16:05 bench.mgm
--rw-rw-r--    1 kobrien  tmap      3022381 Jan 28 16:05 bench.mgm
-00 / 4:  32496.0
+ 04-JAN-1990 00 / 4:  32496.0
  05-JAN-1990 00 / 5:  32497.0
 show grid
  Default grid for DEFINE VARIABLE is ABSTRACT
@@ -18017,7 +18017,9 @@ GO bn_axis_limits	! added 10/27/93
  
 define axis/x=20e:10w:10/unit=degree xax
 define axis/y=60s:60n/unit=degree/npoints=41 yax
-define axis/z=0:1000:40/unit=meter/depth zax
+define axis/z=0:1000:40-rw-rw-r--    1 kobrien  tmap        22938 Sep  4 10:26 bench.mgm
+-rw-rw-r--    1 kobrien  tmap       417390 Sep  4 10:27 bench.mgm
+/unit=meter/depth zax
 define axis/t=1-jan-1960:15-dec-1999:5/unit=days tax
 define grid/x=xax/y=yax/z=zax/t=tax gformat
  
@@ -19425,7 +19427,7 @@ CAN MODE VERIFY
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:6
-             Deg C on grid GHB1 with -1.000000E+34 for missing data
+             Deg C on grid GHB1 with -1.E+34 for missing data
              X=20E:20E(380)  Y=90S:90N  
  
   time range: 366 to 4018.4
@@ -19490,7 +19492,7 @@ CAN MODE VERIFY
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:6
-             Deg C on grid GHB1 with -1.000000E+34 for missing data
+             Deg C on grid GHB1 with -1.E+34 for missing data
              X=20E:20E(380)  Y=90S:90N  
  
   time range: 366 to 4018.4
@@ -19499,7 +19501,7 @@ CAN MODE VERIFY
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
-             Deg C on grid GJR1 with -1.000000E+34 for missing data
+             Deg C on grid GJR1 with -1.E+34 for missing data
              X=20E:20E(380)  Y=90S:90N  
  
   time range: 366 to 3287.9
@@ -19555,7 +19557,7 @@ CAN MODE VERIFY
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
-             Deg C on grid GQO1 with -1.000000E+34 for missing data
+             Deg C on grid GQO1 with -1.E+34 for missing data
              X=20E:20E(380)  Y=90S:90N  
  
   time range: 366 to 3287.9
@@ -19565,7 +19567,7 @@ CAN MODE VERIFY
      COAD
  name     title                             I         J         K         L
  SST      SEA SURFACE TEMPERATURE          1:180     1:90      ...       1:3
-             Deg C on grid GCQ1 with -1.000000E+34 for missing data
+             Deg C on grid GCQ1 with -1.E+34 for missing data
              X=20E:20E(380)  Y=90S:90N  
  
   time range: 366 to 3287.9
@@ -24835,7 +24837,6 @@ show axis/x xax
        3>  5                     3         3.5
 define axis/x/from_data/name=xax/edges {1,2,5}
 Replacing definition of axis XAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            2 i   1.5                  3.5
@@ -24858,7 +24859,6 @@ T0 = 1-JAN-1990
        3>  06-JAN-1990 00:00:00  3         04-JAN-1990 12:00:00    5
 define axis/t/from_data/name=tax/unit=days/t0=1-jan-1990/edges {1,2,5}
 Replacing definition of axis TAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/t tax
  name       axis              # pts   start                end
  TAX       TIME                 2 i   02-JAN-1990 12:00    04-JAN-1990 12:00
@@ -24875,7 +24875,6 @@ let tstep = DAYS1900(1980+add_year,month,1)
 define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:`20*12+1`]
  !-> define axis/from_data/T/units=days/name=tax/t0=1-jan-1900/edges tstep[l=1:241]
 Replacing definition of axis TAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis/l=1:20 tax
  name       axis              # pts   start                end
  TAX       TIME               240 i   16-JAN-1980 12:00    16-DEC-1999 12:00
@@ -24937,7 +24936,6 @@ let end_date = tstep[t=27-may-0001]
 define axis/from_data/T/units=days/name=tax/t0=1-jan-0000/edges/modulo {`start_date,p=7`,`end_date,p=7`,`start_date+365.2425,p=7`}
  !-> define axis/from_data/T/units=days/name=tax/t0=1-jan-0000/edges/modulo {439,512,804.2425}
 Replacing definition of axis TAX
- *** NOTE:    240 words of axis coordinate storage lost
 show axis/l=1:6 tax
  name       axis              # pts   start                end
  TAX       TIME                 2mi   20-APR      12:00    20-OCT      02:54
@@ -24967,7 +24965,6 @@ T0 = 1-JAN-0000
 define axis/from/x/name=xax {5,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            4 i   5                    7
@@ -24980,7 +24977,6 @@ show axis/x xax
 define axis/from/x/name=xax {5,6,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      4 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            5 i   5                    7
@@ -24994,7 +24990,6 @@ show axis/x xax
 define axis/from/x/name=xax {5,6,6,6}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      5 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            4 i   5                    6
@@ -25007,7 +25002,6 @@ show axis/x xax
 define axis/from/x/name=xax {6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      4 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            3 i   6                    7
@@ -25020,7 +25014,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {5,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            3 i   5.5                  6.5
@@ -25032,7 +25025,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {5,6,6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      3 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            4 i   5.5                  6.5
@@ -25045,7 +25037,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {5,6,6}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      4 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            2 i   5.5                  6
@@ -25056,7 +25047,6 @@ show axis/x xax
 define axis/from/x/name=xax/edges {6,6,7}
  *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis/x xax
  name       axis              # pts   start                end
  XAX                            2 i   6                    6.5
@@ -25112,7 +25102,6 @@ show axis/z zax2
 ! units inferred from formatting
 define axis/X=130e:180:5 xax2
 Replacing definition of axis XAX2
- *** NOTE:      3 words of axis coordinate storage lost
 show axis xax2
  name       axis              # pts   start                end
  XAX2      LONGITUDE           11 r   130E                 180E
@@ -26231,49 +26220,7 @@ list out
  4    /  4:  440480.  440481.  440482.  440483.  440484.
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
- 7    /  7:  442672.  442673.  442674netcdf out {
-dimensions:
-	T5 = UNLIMITED ; // (1 currently)
-variables:
-	double T5(T5) ;
-		T5:units = "MIN since 1901-01-15 00:00:00" ;
-		T5:time_origin = "15-JAN-1901" ;
-	float MY_VAR(T5) ;
-		MY_VAR:missing_value = -1.e+34f ;
-		MY_VAR:_FillValue = -1.e+34f ;
-		MY_VAR:long_name = "T[GT=T5]" ;
-
-// global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
-data:
-
- T5 = 50757969 ;
-
- MY_VAR = 5.075797e+07 ;
-}
-netcdf out {
-dimensions:
-	T5 = UNLIMITED ; // (2 currently)
-variables:
-	double T5(T5) ;
-		T5:units = "MIN since 1901-01-15 00:00:00" ;
-		T5:time_origin = "15-JAN-1901" ;
-	float MY_VAR(T5) ;
-		MY_VAR:missing_value = -1.e+34f ;
-		MY_VAR:_FillValue = -1.e+34f ;
-		MY_VAR:long_name = "T[GT=T5]" ;
-
-// global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
-data:
-
- T5 = 50757969, 50757974 ;
-
- MY_VAR = 5.075797e+07, 5.075798e+07 ;
-}
-abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Mon Jan 28 16:05:34 PST 2002
-.  442675.  442676.
+ 7    /  7:  442672.  442673.  442674.  442675.  442676.
  8    /  8:  443402.  443403.  443404.  443405.  443406.
  9    /  9:  444132.  444133.  444134.  444135.  444136.
  10   / 10:  444863.  444864.  444865.  444866.  444867.
@@ -26303,7 +26250,49 @@ list/l=1 out
                 1        2        3        4        5
  1    /  1:  438289.  438290.  438291.  438292.  438293.
  2    /  2:  439019.  439020.  439021.  439022.  439023.
- 3    /  3:  439750.  439751.  439752.  439753.  439754.
+ 3    /  3:  439750.  439751.  439752.  4netcdf out {
+dimensions:
+	T5 = UNLIMITED ; // (1 currently)
+variables:
+	double T5(T5) ;
+		T5:units = "MIN since 1901-01-15 00:00:00" ;
+		T5:time_origin = "15-JAN-1901" ;
+	float MY_VAR(T5) ;
+		MY_VAR:missing_value = -1.e+34f ;
+		MY_VAR:_FillValue = -1.e+34f ;
+		MY_VAR:long_name = "T[GT=T5]" ;
+
+// global attributes:
+		:history = "FERRET V5.41   04-Sep-02" ;
+data:
+
+ T5 = 50757969 ;
+
+ MY_VAR = 5.075797e+07 ;
+}
+netcdf out {
+dimensions:
+	T5 = UNLIMITED ; // (2 currently)
+variables:
+	double T5(T5) ;
+		T5:units = "MIN since 1901-01-15 00:00:00" ;
+		T5:time_origin = "15-JAN-1901" ;
+	float MY_VAR(T5) ;
+		MY_VAR:missing_value = -1.e+34f ;
+		MY_VAR:_FillValue = -1.e+34f ;
+		MY_VAR:long_name = "T[GT=T5]" ;
+
+// global attributes:
+		:history = "FERRET V5.41   04-Sep-02" ;
+data:
+
+ T5 = 50757969, 50757974 ;
+
+ MY_VAR = 5.075797e+07, 5.075798e+07 ;
+}
+abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Wed Sep  4 10:27:09 PDT 2002
+39753.  439754.
  4    /  4:  440480.  440481.  440482.  440483.  440484.
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
@@ -29589,9 +29578,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
  doing reversing MIDVAR on Y axis:     2     5
- -DELETE MIDVAR   M:149 I:    1    5  J:    5    8  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX027)   (AX025)   (AX026)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -29622,9 +29611,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    4    8  J:    2    5  K:    3    5  L:    1    1
  doing reversing MIDVAR on X axis:     1     5
- -DELETE MIDVAR   M:149 I:    4    8  J:    2    5  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX025)   (AX027)   (AX023)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -29687,9 +29676,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    4    7  K:    3    5  L:    7    7
  doing reversing MIDVAR on X axis:     1     5
- -DELETE MIDVAR   M:147 I:    2    6  J:    4    7  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX025)   (AX027)   (AX023)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -29751,9 +29740,9 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
  doing reversing MIDVAR on Y axis:     2     5
- -DELETE MIDVAR   M:149 I:    2    6  J:    5    8  K:    3    5  L:    1    1
+ -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- -DELETE MIDVAR   M:147 I:    1    2  J:    1    2  K:    1    2  L:    1    1
+ -DELETE MIDVAR   M:147 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  dealloc  dynamic grid (G032)          (AX025)   (AX027)   (AX023)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
@@ -32745,10 +32734,10 @@ list/l=1:4 jsst, nsst
  Column  1: JSST is SST[GT=JGRID]
  Column  2: NSST is SST[GT=JGRID@NRST]
                     JSST     NSST 
-02-JAN      / 1:  28.2732  28.2022
-01-FEB      / 2:  28.2886  28.3646
-02-MAR      / 3:  28.3588  28.3538
-02-APR      / 4:  28.2732  28.2022
+01-JAN      / 1:  28.2782  28.3538
+31-JAN      / 2:  28.2832  28.2022
+01-MAR      / 3:  28.3592  28.3646
+01-APR      / 4:  28.2782  28.3538
  
 ! test negative time step formatting -- added 7/01 *sh*
 ! this is not specifically a calendar test, but it is a change in V5.3x
@@ -32770,17 +32759,18 @@ cancel mode verify
 GO bn_dash_dot
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
+! *acm* 8/02 Remove calls to SYMBOL=DOT until postscript issues are resolved.
  
 plot/dash/i=1:1000 sin(62.8*i)
 plot/over/dash=(0.4,0.1,0.4,0.1)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
 plot/over/dash=(0.1,0.1,0.04,0.05)/color=blue/thick=1/i=1:1000 sin(62.8*(i+20) )
  
-plot/symbol=dot/i=1:1000 sin(62.8*i)
-plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
+!plot/symbol=dot/i=1:1000 sin(62.8*i)
+!plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
  
 ! test warnings
-plot/symbol=dot/thick/over/i=1:1000 sin(62.8*(i+10) )
-plot/symbol=dot/size=0.5/over/i=1:1000 sin(62.8*(i+10) )
+!plot/symbol=dot/thick/over/i=1:1000 sin(62.8*(i+10) )
+!plot/symbol=dot/size=0.5/over/i=1:1000 sin(62.8*(i+10) )
  
 ! intentional errors
 set mode ignore
@@ -32792,7 +32782,7 @@ cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 GO bn_flowlines
- 
+set window/asp=1/siz=0.5
 use gtbc011
 set reg/k=1/l=1/y=0:20
 vector/aspect u,v
@@ -32843,7 +32833,6 @@ can view
 ! transpose axes for /HLOG on depth axis
 def axis/z/depth dlog=exp(k[k=1:10])
 Replacing definition of axis DLOG
- *** NOTE:     10 words of axis coordinate storage lost
 let fcnd = k[gz=dlog]
 plot/trans/hlog fcnd
  
@@ -32853,7 +32842,6 @@ plot/trans/hlog fcnd
 set mode ignore
 def axis/x dlog = -1*(10-i[i=1:10])
 Replacing definition of axis DLOG
- *** NOTE:     10 words of axis coordinate storage lost
 let fcn = (i[gx=dlog])^2
 plot/hlog fcn
  
@@ -32870,6 +32858,7 @@ GO bn_internal_external_functions
  
 !  8/02/01 *acm* add bench_eof; now internally-linked.
 ! 10/22/01 *acm* add bench_compress_by (compressi_by, compressj_by, ...)
+! 06/02 *kob* add bench_internal_string_functions (strlen, strcat, strindex, etc)
  
 GO bn_reset
 cancel mode verify
@@ -33812,6 +33801,101 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+GO bench_internal_string_functions
+! test internal string functions:
+!       strlen
+!	upcase
+!	dncase
+!	strindex
+!	strrindex
+!	substring
+!	strcat
+!	float  - return float value from string
+!
+!	*kob*  6/02   Ferret v5.41
+ 
+ 
+! STRLEN
+! Result should be 35
+list strlen("This string should be 35 characters")
+             VARIABLE : STRLEN("This string should be 35 characters")
+          35.0000
+! Result should be 0
+list strlen("")
+             VARIABLE : STRLEN("")
+          0.000000
+ 
+ 
+! UPCASE
+! Result should be in all caps
+list upcase ("this String sHould be iN aLl Caps")
+             VARIABLE : UPCASE ("this String sHould be iN aLl Caps")
+        "THIS STRING SHOULD BE IN ALL CAPS"
+ 
+! DNCASE
+! Result should be all lower case
+list dncase ("this String sHould be iN loWer caSE")
+             VARIABLE : DNCASE ("this String sHould be iN loWer caSE")
+        "this string should be in lower case"
+ 
+! STRINDEX
+! Find first occurence string "fun" in longer string
+! Result should be 11
+list strindex("Ferret is fun for the whole family - real fun, family fun", "fun");
+             VARIABLE : STRINDEX("Ferret is fun for the whole family - real fun, family fun", "fun")
+          11.0000
+ 
+! STRRINDEX
+! Find last occurence string "fun" in longer string
+! Result should be 55
+list strrindex("Ferret is fun for the whole family - real fun, family fun", "fun");
+             VARIABLE : STRRINDEX("Ferret is fun for the whole family - real fun, family fun", "fun")
+          55.0000
+ 
+! SUBSTRING
+! Clip a substring from a string - result should be "ferret"
+list substring("Have you fed your ferret today", 19, 6)
+             VARIABLE : SUBSTRING("Have you fed your ferret today", 19, 6)
+        "ferret"
+! Ask for offset greater than string lenght - result should be ""
+list substring("Have you fed your ferret today", 50, 6)
+             VARIABLE : SUBSTRING("Have you fed your ferret today", 50, 6)
+        ""
+! Ask for more chars than in string - result should be "ferret today"
+list substring("Have you fed your ferret today", 19, 60)
+             VARIABLE : SUBSTRING("Have you fed your ferret today", 19, 60)
+        "ferret today"
+ 
+ 
+! STRCAT
+! concatenate two strings
+list strcat ("All work and no play", " makes Ferret a dull boy")
+             VARIABLE : STRCAT ("All work and no play", " makes Ferret a dull boy")
+        "All work and no play makes Ferret a dull boy"
+ 
+ 
+! FLOAT
+! return float value - result should be 7.85
+list (strfloat("3.14")*10)/4
+             VARIABLE : (STRFLOAT("3.14")*10)/4
+          7.85000
+ 
+ 
+! the below are deliberate errors for incorrect argument detection
+set mode ignore
+list strindex("Ferret is fun for the whole family - real family fun");
+list strrindex("Ferret is fun for the whole family - real family fun");
+list substring("Have you fed your ferret today", 19)
+list substring("Have you fed your ferret today")
+list strcat ("All work and no play")
+ 
+set mode/last ignore
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 GO bn_modulo_strides
 ! bn_modulo_strides.jnl
 ! 6/01 *sh*
@@ -33852,7 +33936,7 @@ list/nohead b            ! using rdstride
  doing moduloing A on X axis:     2     2
  -DELETE A        M:148 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  A        M:148 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE A        M:102 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:107 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33871,7 +33955,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  strip moduloing A on X axis:     1    25
  reading A        M:139 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     1    20
- regrid  A        M: 86 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  A        M:115 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G021)          (AX005)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.0000
  4    / 2:   4.0000
@@ -33884,7 +33968,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  25   / 9:   5.0000
 list/nohead b            ! reuse of cached result
  dealloc  dynamic grid (G021)          (AX005)   NORMAL    NORMAL    NORMAL
- -DELETE A        M: 86 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:115 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
@@ -33894,11 +33978,11 @@ list/nohead b            ! reuse of cached result
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:    18    20
- -DELETE A        M: 86 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:115 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  rdstride A        C: 11 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     2     2
- -DELETE A        M: 86 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
- nulrgd  A        M: 86 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:115 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
+ nulrgd  A        M:115 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE A        M:147 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
@@ -34118,7 +34202,7 @@ list/nohead str[i=18:23:2] ! using rdstride
  doing moduloing STR on X axis:     2     2
  -DELETE STR      M:101 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  STR      M:101 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE STR      M:115 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M: 98 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX013)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
@@ -34135,9 +34219,9 @@ list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: STR --> (G021)           @XACT
  strip moduloing STR on X axis:     1    25
- reading STR      M:115 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
+ reading STR      M: 98 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:     1    20
- regrid  STR      M: 94 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  STR      M: 93 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G021)          (AX005)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
@@ -34419,9 +34503,7 @@ ppl list xaxis
          XAXIS QUALITIES
          LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 4.74E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
-         MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 -rw-rw-r--    1 kobrien  tmap        12704 Jan 28 16:05 testa.v5d
--rw-rw-r--    1 kobrien  tmap        12704 Jan 28 16:05 test.v5d
-NTIC= 10
+         MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 1.20E+00  AUTO LABELLING
 ppl list yaxis
 
@@ -34650,7 +34732,72 @@ list/nohead {",a",',b'}
 list/nohead {'"'}, {"'"}
 I / *:    """ "'"
  
-let d = {"INITIALIZE", spawn:"ls *.str_test", "INSERT", spawn:"ls *.string_tst"}
+let d = {"INITIALIZE", spawn:"ls *.-rw-rw-r--    1 kobrien  tmap        12704 Sep  4 10:27 testa.v5d
+-rw-rw-r--    1 kobrien  tmap        12704 Sep  4 10:27 test.v5d
+netcdf test_string {
+dimensions:
+	XAX1_3 = 3 ;
+	STRING1_10 = 10 ;
+	STRING1_16 = 16 ;
+variables:
+	double XAX1_3(XAX1_3) ;
+		XAX1_3:point_spacing = "even" ;
+	char A(XAX1_3, STRING1_10) ;
+		A:long_name = "{\"hello\",\"goodbye\", \"wave to me\"}" ;
+	char B(STRING1_16) ;
+		B:long_name = "\"one line of text\"" ;
+
+// global attributes:
+		:history = "FERRET V5.41   04-Sep-02" ;
+data:
+
+ XAX1_3 = 1, 2, 3 ;
+
+ A =
+  "hello",
+  "goodbye",
+  "wave to me" ;
+
+ B = "one line of text" ;
+}
+netcdf test_string {
+dimensions:
+	grid_definition = 1 ;
+	XAX1_19 = 19 ;
+	XAX1_192_5 = 4 ;
+	STRING1_15 = 15 ;
+variables:
+	char GFP3(grid_definition) ;
+		GFP3:axes = "XAX1_19 NORMAL NORMAL NORMAL" ;
+	double XAX1_19(XAX1_19) ;
+		XAX1_19:point_spacing = "even" ;
+	double XAX1_192_5(XAX1_192_5) ;
+		XAX1_192_5:child_axis = " " ;
+		XAX1_192_5:point_spacing = "even" ;
+	char D(XAX1_192_5, STRING1_15) ;
+		D:parent_grid = "GFP3" ;
+		D:slab_min_index = 2, 1, 1, 1 ;
+		D:slab_max_index = 5, 1, 1, 1 ;
+		D:long_name = "partial filename list" ;
+		D:history = "From test_string" ;
+
+// global attributes:
+		:history = "FERRET V5.41   04-Sep-02" ;
+data:
+
+ GFP3 = "" ;
+
+ XAX1_19 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ;
+
+ XAX1_192_5 = 2, 3, 4, 5 ;
+
+ D =
+  "dummy1.str_test",
+  "dummy2.str_test",
+  "dummy3.str_test",
+  "dummy4.str_test" ;
+}
+str_test", "INSERT", spawn:"ls *.string_tst"}
 list d
              VARIABLE : {"INITIALIZE", SPAWN:"ls *.str_test", "INSERT", SPAWN:"ls *.string_tst"}
              SUBSET   : 19 points (X)
@@ -34707,104 +34854,7 @@ sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
  
-! removed because it is internal and largely unintelligiblenetcdf test_string {
-dimensions:
-	XAX1_3 = 3 ;
-	STRING1_10 = 10 ;
-	STRING1_16 = 16 ;
-variables:
-	double XAX1_3(XAX1_3) ;
-		XAX1_3:point_spacing = "even" ;
-	char A(XAX1_3, STRING1_10) ;
-		A:long_name = "{\"hello\",\"goodbye\", \"wave to me\"}" ;
-	char B(STRING1_16) ;
-		B:long_name = "\"one line of text\"" ;
-
-// global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
-data:
-
- XAX1_3 = 1, 2, 3 ;
-
- A =
-  "hello",
-  "goodbye",
-  "wave to me" ;
-
- B = "one line of text" ;
-}
-netcdf test_string {
-dimensions:
-	grid_definition = 1 ;
-	XAX1_19 = 19 ;
-	XAX1_192_5 = 4 ;
-	STRING1_15 = 15 ;
-variables:
-	char GFP3(grid_definition) ;
-		GFP3:axes = "XAX1_19 NORMAL NORMAL NORMAL" ;
-	double XAX1_19(XAX1_19) ;
-		XAX1_19:point_spacing = "even" ;
-	double XAX1_192_5(XAX1_192_5) ;
-		XAX1_192_5:child_axis = " " ;
-		XAX1_192_5:point_spacing = "even" ;
-	char D(XAX1_192_5, STRING1_15) ;
-		D:parent_grid = "GFP3" ;
-		D:slab_min_index = 2, 1, 1, 1 ;
-		D:slab_max_index = 5, 1, 1, 1 ;
-		D:long_name = "partial filename list" ;
-		D:history = "From test_string" ;
-
-// global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
-data:
-
- GFP3 = "" ;
-
- XAX1_19 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ;
-
- XAX1_192_5 = 2, 3, 4, 5 ;
-
- D =
-  "dummy1.str_test",
-  "dummy2.str_test",
-  "dummy3.str_test",
-  "dummy4.str_test" ;
-}
-netcdf foo {
-dimensions:
-	XAX1_4 = 4 ;
-	STRING1_1 = 1 ;
-	YAX1_3 = 3 ;
-variables:
-	double XAX1_4(XAX1_4) ;
-		XAX1_4:point_spacing = "even" ;
-	char A(XAX1_4, STRING1_1) ;
-		A:long_name = "{\"a\",,\" \",\"\"}" ;
-	double YAX1_3(YAX1_3) ;
-		YAX1_3:point_spacing = "even" ;
-	char B(YAX1_3, STRING1_1) ;
-		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
-
-// global attributes:
-		:history = "FERRET V5.40   28-Jan-02" ;
-data:
-
- XAX1_4 = 1, 2, 3, 4 ;
-
- A =
-  "a",
-  "",
-  " ",
-  "" ;
-
- YAX1_3 = 1, 2, 3 ;
-
- B =
-  "b",
-  "",
-  "a" ;
-}
-
+! removed because it is internal and largely unintelligible
 !show mem/all
 !cancel mem/all
 !show mem/all
@@ -35027,7 +35077,41 @@ sh grid
  Default grid for DEFINE VARIABLE is ABSTRACT
  Last successful data access was on grid TABSTRACT
     GRID TABSTRACT
- name       axis              # pts   start                end
+ name       axis              # pts   start               netcdf foo {
+dimensions:
+	XAX1_4 = 4 ;
+	STRING1_1 = 1 ;
+	YAX1_3 = 3 ;
+variables:
+	double XAX1_4(XAX1_4) ;
+		XAX1_4:point_spacing = "even" ;
+	char A(XAX1_4, STRING1_1) ;
+		A:long_name = "{\"a\",,\" \",\"\"}" ;
+	double YAX1_3(YAX1_3) ;
+		YAX1_3:point_spacing = "even" ;
+	char B(YAX1_3, STRING1_1) ;
+		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
+
+// global attributes:
+		:history = "FERRET V5.41   04-Sep-02" ;
+data:
+
+ XAX1_4 = 1, 2, 3, 4 ;
+
+ A =
+  "a",
+  "",
+  " ",
+  "" ;
+
+ YAX1_3 = 1, 2, 3 ;
+
+ B =
+  "b",
+  "",
+  "a" ;
+}
+ end
  normal    X
  normal    Y
  normal    Z
@@ -35090,14 +35174,7 @@ list  reshape(a,I[I=1:2]+J[J=1:3])
              SUBSET   : 2 by 3 points (X-Y)
            1  2  
            1  2
- 1   / 1:"col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
-a""b"
+ 1   / 1:"a""b"
  2   / 2:"" "d"
  3   / 3:"e""f"
 list  reshape(a,I[I=1:3]+J[J=1:3])
@@ -35343,7 +35420,14 @@ let fsst = missing(sst,-5)
  
 set reg/l=1
 vec/noax/xskip=16/yskip=8/len=1/title="Sinusoidal Projection" fsst*0,fsst*0+1*mp_mask, x_page,y_page
-vec/over/xskip=16/yskip=8/len=1 fsst*0+1*mp_mask,fsst*0, x_page,y_page
+vec/over/xskip=16/yskip=8col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+/len=1 fsst*0+1*mp_mask,fsst*0, x_page,y_page
 vec/over/xskip=16/yskip=8/color=blue/len=1.4 fsst*0+1*mp_mask,fsst*0+1*mp_mask, x_page,y_page
 go mp_graticule
 Replacing definition of axis LON_FIELD_I_AXIS
@@ -35379,6 +35463,8 @@ let mxpage = mx + 0*my
 let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
  
+can view
+ 
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
@@ -35403,52 +35489,52 @@ show data/var
  V1       V1                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V2       V2                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V3       V3                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V4       V4                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V5       V5                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V6       V6                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V7       V7                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V8       V8                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V9       V9                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V10      V10                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /DELIMITERS="\t,\,"
@@ -35550,7 +35636,12 @@ show data
  name     title                             I         J         K         L
  A1       A1                               1:20480   ...       ...       ...
  A2       A2                               1:20480   ...       ...       ...
- A3       A3                               1:20480   ...       ...       ...
+ A3       A3       col1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+                        1:20480   ...       ...       ...
  A4       A4                               1:20480   ...       ...       ...
  A5       A5                               1:20480   ...       ...       ...
  
@@ -35591,12 +35682,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 3   / 3:......  3.30000  24.0000  130.000     ....    0.030......     ....
 4   / 4:......     ....     ....     ....     ....     ..........     ....
 5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
-6   / 6:......     ....    col1,col2,col3,col4,col5
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
- ....     ....     ....     ..........     ....
+6   / 6:......     ....     ....     ....     ....     ..........     ....
  
 ! insist that all columns be treated as latitude
 file/format=delim/skip=1/type=latitude bn_delimited_read_1.dat
@@ -35734,7 +35820,6 @@ show data 2
 ! sanity check date encodings
 define axis/t/units=days/T0=1-jan-1900  tax = v5
 Replacing definition of axis TAX
- *** NOTE:      2 words of axis coordinate storage lost
 show axis tax
  name       axis              # pts   start                end
  TAX       TIME                 4 r   01-DEC-1999 00:00    04-DEC-1999 00:00
@@ -35757,7 +35842,11 @@ list v1,v2,v3,v4,v5,v6,v7,v8
  Column  5: V5 is V5 (days)(Julian days since 1-Jan-1900)
  Column  6: V6 is V6 (days)(Julian days since 1-Jan-1900)
  Column  7: V7 is V7 (days)(Julian days since 1-Jan-1900)
- Column  8: V8 is V8 (days)(Julian days since 1-Jan-1900)
+ Column  8: V8 is V12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+8 (days)(Julian days since 1-Jan-1900)
               V1       V2 V3 V4       V5       V6 V7 V8 
 1   / 1:  36493.0  36218.0......  36493.0  36218.0......
 2   / 2:  36494.0  36219.0......  36494.0  36219.0......
@@ -35786,11 +35875,7 @@ show data 2
  
  
 columns/type=time bn_delimited_read_date_time.dat
-list v1,v2,v3,v4,v5,v6,v7,v812/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-
+list v1,v2,v3,v4,v5,v6,v7,v8
              DATA SET: ./bn_delimited_read_date_time.dat
              X: 0.5 to 4.5
  Column  1: V1 is V1 (hours)(Time of day)
@@ -35978,363 +36063,363 @@ show data/full
  V1       V1                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V2       V2                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V3       V3                               1:20480   ...       ...       ...
             Data type = TEXT
             Conversion /TYPE=TEXT
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V4       V4                               1:20480   ...       ...       ...
        (Julian days since 1-Jan-1900)
             Data type = NUMERIC
             Conversion /TYPE=DATE
-             days on grid EZ with -1.000000E+34 for missing data
+             days on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V5       V5                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V6       V6                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V7       V7                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V8       V8                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V9       V9                               1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V10      V10                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V11      V11                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V12      V12                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V13      V13                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V14      V14                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V15      V15                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V16      V16                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V17      V17                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V18      V18                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V19      V19                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V20      V20                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V21      V21                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V22      V22                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V23      V23                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V24      V24                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V25      V25                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V26      V26                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V27      V27                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V28      V28                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V29      V29                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V30      V30                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V31      V31                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V32      V32                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V33      V33                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V34      V34                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V35      V35                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V36      V36                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V37      V37                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V38      V38                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V39      V39                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V40      V40                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V41      V41                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V42      V42                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V43      V43                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V44      V44                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V45      V45                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V46      V46                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V47      V47                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V48      V48                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V49      V49                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V50      V50                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V51      V51                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V52      V52                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V53      V53                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V54      V54                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V55      V55                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V56      V56                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V57      V57                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V58      V58                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V59      V59                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V60      V60                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V61      V61                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V62      V62                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V63      V63                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V64      V64                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V65      V65                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V66      V66                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V67      V67                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V68      V68                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V69      V69                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V70      V70                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V71      V71                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  V72      V72                              1:20480   ...       ...       ...
             Data type = NUMERIC
             Conversion /TYPE=NUMERIC
-               on grid EZ with -1.000000E+34 for missing data
+               on grid EZ with -1.E+34 for missing data
              X=0.5:20481  
  
  /DELIMITERS="\t,\,"
@@ -36445,12 +36530,1389 @@ file/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
 cancel mode ignore
  
  
+ 
+! ******** V5.41 Additions below ***********
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn540_bug_fixes
+! bn541_bug_fixes.jnl
+! test various fixes that went into version 5.41
+! 3/02 *acm*
+!
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+! tics on horiz log axes were wrong; (plot only)
+! GO bn_reset
+! tested in bn_logaxes (the plots will be different in 5.40 and 5.41)
+ 
+ 
+!missing vertices in polygon call
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_polymissing
+! err540_polymissing.jnl
+! 3/02 *acm*
+! A previous fix to polygon cut off loading of poly's if a vertex was
+! missing.  restore old behavior.  (polygon_set_up.F)
+ 
+ 
+use coads_climatology
+let xpts0=x[g=sst,x=110:150,y=20:40,l=1]*y[g=sst,x=110:150,y=20:40,l=1]*0+x[g=sst,x=110:150,y=20:40,l=1]
+let ypts0=x[g=sst,x=110:150,y=20:40,l=1]*y[g=sst,x=110:150,y=20:40,l=1]*0+y[g=sst,x=110:150,y=20:40,l=1]
+let values0=sst[x=110:150,y=20:40,l=1]
+LET xpts=ysequence(xpts0)
+LET ypts=ysequence(ypts0)
+LET values=ysequence(values0)
+ 
+LET xtriangle = {0,1,2}
+LET ytriangle = {0,2,0}
+LET xvertex = xpts+xtriangle
+LET yvertex = ypts+ytriangle
+polygon xvertex,yvertex,values
+ 
+let xvertex1= IF values NE -1E+34 THEN xvertex
+polygon  xvertex1,yvertex,values
+ 
+! dynamic memory setup for POLYGON
+! GO bn_reset
+! see ~ansley/ans_ferret/users/brockmann/err540/err540_polygon2.jnl
+ 
+! formatting axis label numbers
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_ill_format.jnl
+! err540_ill_format.jnl
+! 3/02 *acm*
+ 
+!  formatting of small-magnitude negative numbers on axes is wrong
+!  e.g. -0.002 becomes ******
+!  fix in frmt.F
+ 
+plot/i=1:100  0.001 - 0.002/ i
+ 
+plot/trans/i=1:100  0.001 - 0.002/ i
+ 
+ 
+ 
+ 
+! variable permutation in netCDF writes
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_write_order
+! err540_write_order.jnl
+! *sh* 3/02
+ 
+! the permutation of gridsvariables during writing is inferred *incorrectly*
+! from the context of the first variable only in xeq_list.F
+ 
+! I think (??) that we need to replace this
+!   * ... if no axis order was specified determine the permutation
+!           IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
+!           DO 200 ilist = 1, num_uvars_in_cmnd
+!              CALL CREATE_PERMUTATION(  memory,
+ 
+! with this
+!   * ... if no axis order was specified determine the permutation
+!           DO 200 ilist = 1, num_uvars_in_cmnd
+!              IF (.NOT.permute) CALL GET_CX_DIMS(is_cx(ilist),ndim, perm )
+!              CALL CREATE_PERMUTATION(  memory,
+ 
+ 
+define axis/x=1:2:1 x12
+define axis/y=3:4:1 y34
+define axis/z=5:6:1 z56
+ 
+let yz =              10*y[gy=y34] + 100*z[gz=z56]
+let xyz = x[gx=x12] + 10*y[gy=y34] + 100*z[gz=z56]
+ 
+! before
+list xyz
+             VARIABLE : X[GX=X12] + 10*Y[GY=Y34] + 100*Z[GZ=Z56]
+             SUBSET   : 2 by 2 by 2 points (X-Y-Z)
+              1        2     
+              1        2
+ ---- K:1 Z:   5
+ 3   / 1:  531.000  532.000
+ 4   / 2:  541.000  542.000
+ ---- K:2 Z:   6
+ 3   / 1:  631.000  632.000
+ 4   / 2:  641.000  642.000
+ 
+save/clobber/file=test_good_order.cdf xyz, yz
+ LISTing to file test_good_order.cdf
+save/clobber/file=test_bad_order.cdf yz, xyz
+ LISTing to file test_bad_order.cdf
+cancel var/all
+ 
+! after
+use test_good_order
+list xyz
+             VARIABLE : X[GX=X12] + 10*Y[GY=Y34] + 100*Z[GZ=Z56]
+             FILENAME : test_good_order.cdf
+             SUBSET   : 2 by 2 by 2 points (X-Y-Z)
+              1        2     
+              1        2
+ ---- K:1 Z:   5
+ 3   / 1:  531.000  532.000
+ 4   / 2:  541.000  542.000
+ ---- K:2 Z:   6
+ 3   / 1:  631.000  632.000
+ 4   / 2:  641.000  642.000
+use test_bad_order
+list xyz
+             VARIABLE : X[GX=X12] + 10*Y[GY=Y34] + 100*Z[GZ=Z56]
+             FILENAME : test_bad_order.cdf
+             SUBSET   : 2 by 2 by 2 points (X-Y-Z)
+              1        2     
+              1        2
+ ---- K:1 Z:   5
+ 3   / 1:  531.000  532.000
+ 4   / 2:  541.000  542.000
+ ---- K:2 Z:   6
+ 3   / 1:  631.000  632.000
+ 4   / 2:  641.000  642.000
+ 
+sp rm -f test_good_order.cdf
+sp rm -f test_bad_order.cdf
+ 
+!@AVE error when plotting unlike grids together
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_ax_ave
+!err540_ax_ave.jnl
+! 3/02 *acm
+! @AVE getting wrong set of indices for forming the average, having
+! loaded range of indices on the first plot.  ave_regrid_1_axis.F
+ 
+use coads_climatology
+def axis/edges/t=1:7306:1461/t0="01-jan-0000"/unit=hour t2
+plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
+ 
+def axis/edges/t=1:1600:731/t0="01-jan-0000"/unit=hour t2
+Replacing definition of axis T2
+plot/x=140w/y=0/sym/line sst,sst[gt=t2@ave]
+ 
+!Make PPL AXSET settings persist, but not settings made w/ qualifiers /AXES= or /NOAXES
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_axset
+!err540_axset.jnl
+! 3/02 *acm
+! backwards compatibility: PPL AXSET settings persist, and
+! PLOT/AXES  or PLOT/NOAXES override these, but only for one plot.
+ 
+! define a 6 viewport window
+def view/xlim=   0,.333/ylim=0,.5 ll6
+Re-defining viewport LL6
+def view/xlim=   0,.333/ylim=.5,1 ul6
+Re-defining viewport UL6
+def view/xlim=.333,.666/ylim=0,.5 lm6
+Re-defining viewport LM6
+def view/xlim=.333,.666/ylim=.5,1 um6
+Re-defining viewport UM6
+def view/xlim=.666,   1/ylim=0,.5 lr6
+Re-defining viewport LR6
+def view/xlim=.666,   1/ylim=.5,1 ur6
+Re-defining viewport UR6
+ 
+SET VIEW ul6;PLOT/NOAXES/I=1:10/TITLE="PLOT/NOAXES" 1./I
+SET VIEW um6;SHADE/I=1:10/J=1:7/TITLE="No qualifiers" I+J
+ 
+PPL AXSET 0,1,1,0
+SET VIEW ur6;FILL/I=1:10/J=1:7/TITLE="with PPL AXSET 0,1,1,0" I+J
+ 
+SET VIEW ll6;CONTOUR/AXES=1,0,0,1/I=1:10/J=1:7/TITLE="CONTOUR/AXES=" I+J
+ 
+SET VIEW lm6;VECTOR/I=1:10/J=1:7/TITLE="Prev. PPL AXSET setting" I+J, I-0.5*J
+ 
+SET VIEW lr6;PLOT/i=1:10/SET/TITLE="plot/SET, new setting" 1./I
+PPL AXSET 0,1,0,0
+PPL PLOT
+ 
+PPL axset 1,1,1,1
+CAN VIEW
+ 
+ 
+!Previously couldn't do PLOT/VS/DASH, but no reason not to allow it.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_vs_dash
+! PLOT/VS/DASH  previously was not allowed.
+ 
+define axis/x=20e:10w:10/unit=degree xax
+Replacing definition of axis XAX
+define axis/y=60s:60n/unit=degree/npoints=41 yax
+Replacing definition of axis YAX
+define axis/z=0:1000:40/unit=meter/depth zax
+Replacing definition of axis ZAX
+define axis/t=1-jan-1960:15-dec-1999:5/unit=days tax
+Replacing definition of axis TAX
+define grid/x=xax/y=yax/z=zax/t=tax gformat
+ 
+*  XZ shade with VS/DASH/OVER
+set grid gformat
+shade/y=-60:60/z=0:1000 sin(y/3)*ABS(z)^1.5
+ 
+let ypts = {-60,-50,-40,-30,-20,-10,  0,  8, 15, 30, 35, 40, 60}
+let zpts = {700,667,669,801,732,755,765,789,808,788,822,699,700}
+ 
+plot/vs/over/thick/line/dash ypts,zpts
+plot/vs/over/thick=3/line/dash=0.05,0.05,0.15,0.15 ypts,zpts+100
+ 
+*  XY shade with VS/DASH/OVER
+set grid abstract
+shade/pal=grayscale/x=1:100/y=101:200 sin(x/6)*cos(y/9)
+ 
+let xpts = {  0,  8, 12, 15, 23, 28, 30, 35, 40, 44, 54, 60, 75}
+let ypts = {142,147,149,141,142,155,145,149,148,148,152,146,143}
+ 
+plot/vs/over/thick/color=red/dash xpts,ypts
+plot/vs/over/thick=3/color=red/dash=0.05,0.05,0.15,0.15 xpts+10,ypts+30
+ 
+!  Here, test that settings made with PPL LINE command persist,
+! whereas PLOT/DASH settings do not.
+ 
+let ypts=y[gy=1:80:1]
+ppl line, 2, 0, 4, 0, 0, 0.04, 0.04, 0.15,0.15
+ppl line, 3, 0, 4, 0, 0, 0.2, 0.2, 0.2,0.2
+plot/thick/dash/vlimits=0:1000 50*sin(ypts/3)+100, 30*cos(ypts/3)+200
+plot/over/color=red/thick/dash=0.04,0.04,0.04,0.04 50*sin(ypts/3)+400, 30*cos(ypts/3)+500
+plot/over/thick/dash/color=blue 50*sin(ypts/3)+700, 30*cos(ypts/3)+800, 20*cos(ypts/5)+900, 20*sin(ypts)+950
+ 
+ 
+!overlay on polygon plots
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_poly_overlay
+!overlay on polygon plots
+ 
+polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
+shade/over/i=1:2/j=0:2/patt i+j
+ 
+!polytube failed on plot/over; go polytube, because YAXIS_MIN, _MAX not defined.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_axis_symbols
+! err540_axis_symbols.jnl
+! 3/02 *acm*
+! Define YAXIS_MIN and YAXIS_MAX after PPLUS auto-scaling is done.
+! e.g. polytube failed overlaying on PLOT/VS plots, because symbols
+! YAXIS_MIN and YAXIS_MAX or the XAXIS symbols aren't set.
+ 
+can var/all
+ 
+let xpts = i[i=1:100]
+set view left
+plot/line/vs xpts, sin(xpts/10)
+sh sym YAXIS_MAX
+YAXIS_MAX = "1"
+!go polytube polygon/over  xpts, sin(xpts/10), sin(xpts/10)
+ 
+set view right
+ 
+let xpts = {3,5,6,7,8,9,10,13,15,16,17,18,19,21,22}
+let ypts = {1,2,3,4,5,6, 7, 8, 9, 4, 5, 6, 7, 8, 9}
+let zpts = {1,2,3,4,5,1, 2, 3, 4, 5, 1, 2, 3, 4, 5}
+ 
+plot/vs/trans/line xpts,ypts
+sh sym XAXIS_MAX
+XAXIS_MAX = "10"
+!go polytube polygon/trans/over xpts,ypts,zpts
+ 
+can view
+ 
+!nested repeat loops and parsing parentheses
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_parse_repeat
+! err540_parse_repeat.jnl
+! 3/03 *acm
+ 
+!yes? rep/k=1:2 (rep/j=1:1 (say hello))
+!-> REPEAT: K=1
+!-> REPEAT: J=1              <-----------lots of these
+!-> REPEAT: J=1
+!...
+! **ERROR: stack overflow
+!rep/j=1:1 (rep/j=1:1 (say hello))
+!Command file, command group, or REPEAT execution aborted
+ 
+ 
+!Cause is parsing parentheses in REPEAT section of parse_command.F
+ 
+rep/k=1:2 (rep/j=1:1 (say hello))
+!-> REPEAT: K=1
+!-> REPEAT: J=1
+hello
+!-> REPEAT: K=2
+!-> REPEAT: J=1
+hello
+rep/k=1:2 (rep/j=1:1 say hello; say why not)
+!-> REPEAT: K=1
+!-> REPEAT: J=1
+hello
+why not
+!-> REPEAT: K=2
+!-> REPEAT: J=1
+hello
+why not
+rep/k=1:2 (rep/j=1:1 (say hello; (say why not)))
+!-> REPEAT: K=1
+!-> REPEAT: J=1
+hello
+why not
+!-> REPEAT: K=2
+!-> REPEAT: J=1
+hello
+why not
+ 
+! appending a scalar to NetCDF file
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_cd_use_recdim
+! err540_cd_use_recdim
+! 3/02 *sh*
+ 
+! crash appending scalar variable into file
+ 
+define axis/x=1:50:1 xprofile
+define axis/y=0:360/npoints=10/edges ylon
+define axis/z=-90:90/npoints=10/edges zlat
+define axis/t=1-jan-1900:31-dec-1995/T0=1-jan-1900/npoints=10/edges tdate
+ 
+let maxprof = 5
+let temp = X[gx=xprofile] + Y[gy=ylon] + Z[gz=zlat] + T[gt=tdate]
+ 
+save/clobber/file=profiles.nc  temp   ! 4D variable
+ LISTing to file profiles.nc
+save/append/file=profiles.nc maxprof  ! append a scalar variable
+ LISTing to file profiles.nc
+ 
+use profiles.nc
+sh data
+     currently SET data sets:
+    1> ./profiles.nc  (default)
+ name     title                             I         J         K         L
+ TEMP     X[GX=XPROFILE] + Y[GY=YLON] + Z  1:50      1:10      1:10      1:10
+ MAXPROF  5                                ...       ...       ...       ...
+ 
+sp rm -f profiles.nc
+ 
+! ================================= quit
+!save/append/file=profiles.nc maxprof
+!
+! LISTing to file profiles.nc
+!Subscript out of range on file cd_use_recdim.F, line 97,
+!procedure cd_use_recdim.
+!Subscript number 1 has value 0 in array vdims.
+!Abort
+ 
+ 
+ 
+ 
+!missing data in xpts,ypts sample points wasnt checked
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_samplexy_missing
+! err540_samplexy_missing.jnl
+! 3/03 *acm
+ 
+! previously missing data in the sample points caused Ferret to hang
+ 
+use coads_climatology
+let asst = samplexy(sst, {171,173,-1.e34}, {-1,1,13})
+list asst
+             VARIABLE : SAMPLEXY(SST, {171,173,-1.E34}, {-1,1,13})
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 by 3 points (X-TIME)
+                      1        2        3     
+                      1        2        3
+ 16-JAN      / 1:  29.0045  27.8955     ....
+ 15-FEB      / 2:  28.5508  28.2499     ....
+ 17-MAR      / 3:  28.8764  28.4775     ....
+ 
+let asst = samplexy(sst, {171,173,169}, {-1,,13})
+list asst
+             VARIABLE : SAMPLEXY(SST, {171,173,169}, {-1,,13})
+             FILENAME : coads_climatology.cdf
+             SUBSET   : 3 by 3 points (X-TIME)
+                      1        2        3     
+                      1        2        3
+ 16-JAN      / 1:  29.0045     ....  26.9596
+ 15-FEB      / 2:  28.5508     ....  26.7875
+ 17-MAR      / 3:  28.8764     ....  27.1092
+ 
+! test the fixed delta stride bug
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_strides_rev.jnl
+! err540_strides_rev.jnl
+ 
+! reported Feb '02
+! fixed April 17, '02
+ 
+! Symptom: plots appear to be "tiled" -- repreating content
+ 
+! file test_100x100 has a diagonal line of 1s in a field of 0s
+sp rm -f test_100x100.nc
+set region/i=1:100/j=1:100
+let a0 = 0
+let a = if i eq j then 1 else a0
+!shade a
+save/file=test_100x100.nc a
+ LISTing to file test_100x100.nc
+cancel data/all
+cancel var/all
+ 
+! works fine in V5.33
+! try these lines for reference
+!    yes? use test_100x100.nc
+!    yes? shade a
+!    yes? shade a[i=1:100:10]
+ 
+! explanation of bug:
+! Following the implicit regrid in IS_REGRID the resultant cx did not
+! have the delta value(s) removed, so the mr thinks
+! that it is 1:10:10 instead of simply 1:10
+ 
+! this causes an inadequate amount of memory to be allocated and
+! subsequent variables try to occupy the same memory already in use
+! COPY_GRID is where the tiling effect happens, though it is not the
+! cause of the problem
+ 
+set mode stupid
+set mode diag
+set mem/size=0.05
+ Cached data cleared from memory
+GO "$HOME/.ferret"
+show mem/free
+ Current size of FERRET memory cache: 0.05 MegaWords  (1 word = 4 bytes)
+            total memory table slots: 150
+            total memory blocks: 500
+            memory block size: 100
+ 
+            number of free memory blocks: 500
+            largest free region: 500
+            number of free regions: 1
+            free memory table slots: 150
+            number of UN-CACHED variables: 0
+ 
+use/ord=x-y test_100x100.nc
+list/prec=1 a[i=1:100:10] !  this looks just right!!
+ getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
+ allocate dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+ eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+ strip regrid on X: A --> (G021)           @XACT
+ strip reversing A on Y axis:     1   100
+ rdstride A        C:  8 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ doing reversing A on Y axis:     1   100
+ -DELETE A        M:  1 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ nulrgd  A        M:  1 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
+ -DELETE A        M:  2 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ dealloc  dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+             VARIABLE : IF I EQ J THEN 1 ELSE A0
+                        regrid: 10 delta on X
+             FILENAME : test_100x100.nc
+             SUBSET   : 10 by 100 points (X-Y)
+               1   11  21  31  41  51  61  71  81  91  
+                1   2   3   4   5   6   7   8   9  10
+ 1     /   1:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 2     /   2:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 3     /   3:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 4     /   4:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 5     /   5:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 6     /   6:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 7     /   7:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 8     /   8:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 9     /   9:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 10    /  10:  0.  0.  0.  0.  0.  0.  0.  0.  0.  1.
+ 11    /  11:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 12    /  12:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 13    /  13:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 14    /  14:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 15    /  15:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 16    /  16:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 17    /  17:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 18    /  18:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 19    /  19:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 20    /  20:  0.  0.  0.  0.  0.  0.  0.  0.  1.  0.
+ 21    /  21:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 22    /  22:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 23    /  23:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 24    /  24:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 25    /  25:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 26    /  26:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 27    /  27:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 28    /  28:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 29    /  29:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 30    /  30:  0.  0.  0.  0.  0.  0.  0.  1.  0.  0.
+ 31    /  31:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 32    /  32:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 33    /  33:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 34    /  34:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 35    /  35:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 36    /  36:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 37    /  37:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 38    /  38:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 39    /  39:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 40    /  40:  0.  0.  0.  0.  0.  0.  1.  0.  0.  0.
+ 41    /  41:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 42    /  42:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 43    /  43:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 44    /  44:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 45    /  45:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 46    /  46:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 47    /  47:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 48    /  48:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 49    /  49:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 50    /  50:  0.  0.  0.  0.  0.  1.  0.  0.  0.  0.
+ 51    /  51:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 52    /  52:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 53    /  53:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 54    /  54:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 55    /  55:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 56    /  56:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 57    /  57:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 58    /  58:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 59    /  59:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 60    /  60:  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.
+ 61    /  61:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 62    /  62:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 63    /  63:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 64    /  64:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 65    /  65:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 66    /  66:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 67    /  67:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 68    /  68:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 69    /  69:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 70    /  70:  0.  0.  0.  1.  0.  0.  0.  0.  0.  0.
+ 71    /  71:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 72    /  72:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 73    /  73:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 74    /  74:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 75    /  75:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 76    /  76:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 77    /  77:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 78    /  78:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 79    /  79:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 80    /  80:  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.
+ 81    /  81:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 82    /  82:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 83    /  83:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 84    /  84:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 85    /  85:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 86    /  86:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 87    /  87:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 88    /  88:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 89    /  89:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 90    /  90:  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.
+ 91    /  91:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 92    /  92:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 93    /  93:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 94    /  94:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 95    /  95:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 96    /  96:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 97    /  97:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 98    /  98:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 99    /  99:  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+ 100   / 100:  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.
+show grid
+ Default grid for DEFINE VARIABLE is ABSTRACT
+ Last successful data access was on grid (G021)
+    GRID (G021)
+ name       axis              # pts   start                end
+ (AX013)   X                   10 r   1                    91
+ YAX1_100  Y                  100 r   1                    100
+ normal    Z
+ normal    T
+ 
+! should be a diagonal path of steps all the way across the plot
+shade a[i=1:100:10]
+ eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -111 -111  L: -111 -111
+ allocate dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+ strip regrid on X: A --> (G021)           @XACT
+ strip reversing A on Y axis:     1   100
+ rdstride A        C:  8 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ doing reversing A on Y axis:     1   100
+ -DELETE A        M:  2 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ nulrgd  A        M:  2 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
+ -DELETE A        M:  3 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
+ dealloc  dynamic grid (G021)          (AX013)   YAX1_100  NORMAL    NORMAL
+setting up 2D plot
+ -DELETE A        M:  3 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
+PPL plot 278  complete
+ppl list stats
+
+
+         DATA OF TYPE CONTOUR                       
+                   MIN            MAX
+         X     1.0000E+00     9.1000E+01
+         Y     1.0000E+00     1.0000E+02
+         Z     0.0000E+00     1.0000E+00
+         NX=  10 NY= 100
+ppl list data  ! make screen wide -- shows the 1's matching the plot
+
+
+         DATA OF TYPE CONTOUR                       
+                   MIN            MAX
+         X     1.0000E+00     9.1000E+01
+         Y     1.0000E+00     1.0000E+02
+         Z     0.0000E+00     1.0000E+00
+         NX=  10 NY= 100
+                  1         2         3         4         5         6         7
+           1  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           2  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           3  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           4  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           5  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           6  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           7  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           8  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+           9  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          10  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          11  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          12  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          13  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          14  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          15  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          16  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          17  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          18  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          19  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          20  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          21  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          22  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          23  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          24  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          25  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          26  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          27  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          28  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          29  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          30  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          31  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          32  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          33  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          34  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          35  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          36  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          37  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          38  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          39  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          40  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  1.00E+00
+          41  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          42  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          43  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          44  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          45  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          46  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          47  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          48  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          49  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          50  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  1.00E+00  0.00E+00
+          51  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          52  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          53  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          54  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          55  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          56  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          57  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          58  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          59  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          60  0.00E+00  0.00E+00  0.00E+00  0.00E+00  1.00E+00  0.00E+00  0.00E+00
+          61  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          62  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          63  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          64  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          65  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          66  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          67  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          68  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          69  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          70  0.00E+00  0.00E+00  0.00E+00  1.00E+00  0.00E+00  0.00E+00  0.00E+00
+          71  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          72  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          73  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          74  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          75  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          76  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          77  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          78  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          79  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          80  0.00E+00  0.00E+00  1.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          81  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          82  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          83  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          84  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          85  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          86  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          87  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          88  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          89  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          90  0.00E+00  1.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          91  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          92  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          93  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          94  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          95  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          96  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          97  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          98  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+          99  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+         100  1.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00  0.00E+00
+
+
+                  8         9        10
+           1  0.00E+00  0.00E+00  0.00E+00
+           2  0.00E+00  0.00E+00  0.00E+00
+           3  0.00E+00  0.00E+00  0.00E+00
+           4  0.00E+00  0.00E+00  0.00E+00
+           5  0.00E+00  0.00E+00  0.00E+00
+           6  0.00E+00  0.00E+00  0.00E+00
+           7  0.00E+00  0.00E+00  0.00E+00
+           8  0.00E+00  0.00E+00  0.00E+00
+           9  0.00E+00  0.00E+00  0.00E+00
+          10  0.00E+00  0.00E+00  1.00E+00
+          11  0.00E+00  0.00E+00  0.00E+00
+          12  0.00E+00  0.00E+00  0.00E+00
+          13  0.00E+00  0.00E+00  0.00E+00
+          14  0.00E+00  0.00E+00  0.00E+00
+          15  0.00E+00  0.00E+00  0.00E+00
+          16  0.00E+00  0.00E+00  0.00E+00
+          17  0.00E+00  0.00E+00  0.00E+00
+          18  0.00E+00  0.00E+00  0.00E+00
+          19  0.00E+00  0.00E+00  0.00E+00
+          20  0.00E+00  1.00E+00  0.00E+00
+          21  0.00E+00  0.00E+00  0.00E+00
+          22  0.00E+00  0.00E+00  0.00E+00
+          23  0.00E+00  0.00E+00  0.00E+00
+          24  0.00E+00  0.00E+00  0.00E+00
+          25  0.00E+00  0.00E+00  0.00E+00
+          26  0.00E+00  0.00E+00  0.00E+00
+          27  0.00E+00  0.00E+00  0.00E+00
+          28  0.00E+00  0.00E+00  0.00E+00
+          29  0.00E+00  0.00E+00  0.00E+00
+          30  1.00E+00  0.00E+00  0.00E+00
+          31  0.00E+00  0.00E+00  0.00E+00
+          32  0.00E+00  0.00E+00  0.00E+00
+          33  0.00E+00  0.00E+00  0.00E+00
+          34  0.00E+00  0.00E+00  0.00E+00
+          35  0.00E+00  0.00E+00  0.00E+00
+          36  0.00E+00  0.00E+00  0.00E+00
+          37  0.00E+00  0.00E+00  0.00E+00
+          38  0.00E+00  0.00E+00  0.00E+00
+          39  0.00E+00  0.00E+00  0.00E+00
+          40  0.00E+00  0.00E+00  0.00E+00
+          41  0.00E+00  0.00E+00  0.00E+00
+          42  0.00E+00  0.00E+00  0.00E+00
+          43  0.00E+00  0.00E+00  0.00E+00
+          44  0.00E+00  0.00E+00  0.00E+00
+          45  0.00E+00  0.00E+00  0.00E+00
+          46  0.00E+00  0.00E+00  0.00E+00
+          47  0.00E+00  0.00E+00  0.00E+00
+          48  0.00E+00  0.00E+00  0.00E+00
+          49  0.00E+00  0.00E+00  0.00E+00
+          50  0.00E+00  0.00E+00  0.00E+00
+          51  0.00E+00  0.00E+00  0.00E+00
+          52  0.00E+00  0.00E+00  0.00E+00
+          53  0.00E+00  0.00E+00  0.00E+00
+          54  0.00E+00  0.00E+00  0.00E+00
+          55  0.00E+00  0.00E+00  0.00E+00
+          56  0.00E+00  0.00E+00  0.00E+00
+          57  0.00E+00  0.00E+00  0.00E+00
+          58  0.00E+00  0.00E+00  0.00E+00
+          59  0.00E+00  0.00E+00  0.00E+00
+          60  0.00E+00  0.00E+00  0.00E+00
+          61  0.00E+00  0.00E+00  0.00E+00
+          62  0.00E+00  0.00E+00  0.00E+00
+          63  0.00E+00  0.00E+00  0.00E+00
+          64  0.00E+00  0.00E+00  0.00E+00
+          65  0.00E+00  0.00E+00  0.00E+00
+          66  0.00E+00  0.00E+00  0.00E+00
+          67  0.00E+00  0.00E+00  0.00E+00
+          68  0.00E+00  0.00E+00  0.00E+00
+          69  0.00E+00  0.00E+00  0.00E+00
+          70  0.00E+00  0.00E+00  0.00E+00
+          71  0.00E+00  0.00E+00  0.00E+00
+          72  0.00E+00  0.00E+00  0.00E+00
+          73  0.00E+00  0.00E+00  0.00E+00
+          74  0.00E+00  0.00E+00  0.00E+00
+          75  0.00E+00  0.00E+00  0.00E+00
+          76  0.00E+00  0.00E+00  0.00E+00
+          77  0.00E+00  0.00E+00  0.00E+00
+          78  0.00E+00  0.00E+00  0.00E+00
+          79  0.00E+00  0.00E+00  0.00E+00
+          80  0.00E+00  0.00E+00  0.00E+00
+          81  0.00E+00  0.00E+00  0.00E+00
+          82  0.00E+00  0.00E+00  0.00E+00
+          83  0.00E+00  0.00E+00  0.00E+00
+          84  0.00E+00  0.00E+00  0.00E+00
+          85  0.00E+00  0.00E+00  0.00E+00
+          86  0.00E+00  0.00E+00  0.00E+00
+          87  0.00E+00  0.00E+00  0.00E+00
+          88  0.00E+00  0.00E+00  0.00E+00
+          89  0.00E+00  0.00E+00  0.00E+00
+          90  0.00E+00  0.00E+00  0.00E+00
+          91  0.00E+00  0.00E+00  0.00E+00
+          92  0.00E+00  0.00E+00  0.00E+00
+          93  0.00E+00  0.00E+00  0.00E+00
+          94  0.00E+00  0.00E+00  0.00E+00
+          95  0.00E+00  0.00E+00  0.00E+00
+          96  0.00E+00  0.00E+00  0.00E+00
+          97  0.00E+00  0.00E+00  0.00E+00
+          98  0.00E+00  0.00E+00  0.00E+00
+          99  0.00E+00  0.00E+00  0.00E+00
+         100  0.00E+00  0.00E+00  0.00E+00
+
+
+ 
+can mode stupid
+can mode diag
+set mem/size=6.4
+ Cached data cleared from memory
+GO "$HOME/.ferret"
+ 
+! unknown data type for clauses with constants only
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_data_type.jnl
+! err540_data_type
+! 2/19/02 *sh*
+ 
+! Ferret fails to identifies the data type and gets
+! "**ERROR: illegal data type (float,string,...) for operation: A"
+ 
+! in disp_data_set_up XEQ_PLOT is insisting on ptype_float.
+! The type that is coming back from "a" is "0" (ptype_unknown)
+ 
+! The problem is that uvar_data_type(uvar=1="A", dset=0) is ptype_unknown=0
+! this is happening because its correct value is lost in IS_UVAR_GRID
+ 
+! solved 4/02:
+! The constant ("1") was being ignored -- needed to get its data type
+! change to IS_UVAR_GRID.F
+ 
+! Note - initial soln lead to further problems to resolve for
+!        IF cond THEN pseudo + const
+ 
+!set mode diag
+ 
+! bad
+plot IF {1,3,5} GE 3 THEN 1  ! data type unknown
+ 
+! ok  -- no error if constant is buried within a user variable
+!let V = 1
+!plot IF {1,3,5} GE 3 THEN v
+ 
+ 
+! gridding scattered points to modulo axis had bug
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_modscat.jnl
+! test gridding scattered points to modulo axis.
+! Show Southern hemisphere.
+ 
+use coads_climatology
+ 
+let xpts = 360*randu(i+10)-180; let ypts = 80*randu(i) -80
+let sstpts = samplexy(sst[l=1], xpts[i=1:1000], ypts[i=1:1000])
+ 
+def axis/x=180w:180e:1/modulo xax
+Replacing definition of axis XAX
+def axis/y=-89:0:1 yax
+Replacing definition of axis YAX
+def grid/x=xax/y=yax mygrid
+Replacing definition of grid MYGRID
+ 
+let a  = scat2gridgauss_xy (xpts[i=1:1000], ypts[i=1:1000], sstpts, x[gx=mygrid], y[gy=mygrid], 6, 1,6, 6)
+ 
+let b = if sst[l=1,gx=mygrid,gy=mygrid] then a
+ 
+shade b
+plot/vs/over xpts[i=1:1000]+360, ypts[i=1:1000]
+ 
+! make sure the USE bug reported 5/01 by A Wittenberg is fixed
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err540_use.jnl
+! err540_use.jnl
+!
+! very subtle bug fix in the "USE" command.  What would happen is if dataset A and
+! dataset B were "used", then dset A was cancelled, if the next dataset (dataset C) 
+! "used" had a similarly named variable as dataset B, then Ferret would mistakingly 
+! set the similarly named variable in dataset C to lower case, making it inaccessible.  
+! This was because the logic in cd_scan_vars.F didn't take into account that variables from
+! different datasets may be overlapped in the ds_var_code array.  
+ 
+! Create three simple files containing variables with lowercase names.
+let a = 1
+let b = 2
+save/q/clob/file=f.nc a
+save/q/clob/file=f2.nc a,b
+save/q/clob/file=g.nc b
+can var a b
+ 
+sp ncrename -h -v A,a f.nc
+sp ncrename -h -v A,a -v B,b f2.nc
+sp ncrename -h -v B,b g.nc
+use f.nc
+use f2.nc
+use g.nc
+sh data
+     currently SET data sets:
+    1> ./f.nc
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ 
+    2> ./f2.nc
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ B        2                                ...       ...       ...       ...
+ 
+    3> ./g.nc  (default)
+ name     title                             I         J         K         L
+ B        2                                ...       ...       ...       ...
+ 
+can data/all
+ 
+! Use two of the files and cancel the first one.
+use f.nc
+sh data
+     currently SET data sets:
+    1> ./f.nc  (default)
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ 
+use g.nc
+sh data
+     currently SET data sets:
+    1> ./f.nc
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ 
+    2> ./g.nc  (default)
+ name     title                             I         J         K         L
+ B        2                                ...       ...       ...       ...
+ 
+can dat 1
+ 
+! Now open the f2 file which as both a and b variables
+use f2.nc
+ 
+! All variables from BOTH datasets should be capitals.
+show dat
+     currently SET data sets:
+    1> ./f2.nc  (default)
+ name     title                             I         J         K         L
+ A        1                                ...       ...       ...       ...
+ B        2                                ...       ...       ...       ...
+ 
+    2> ./g.nc
+ name     title                             I         J         K         L
+ B        2                                ...       ...       ...       ...
+ 
+ 
+! This should work
+list b[d=1]
+             VARIABLE : 2
+             FILENAME : f2.nc
+          2.00000
+ 
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_cancel_axes
+ ! NOAA/PMEL TMAP
+ ! FERRET v5.40
+ ! Solaris 5.6 - 02/15/02
+ !  5-Jun-02 10:54
+ 
+let ind1 = 1*i
+let tim1 = 20500*randu(ind1[i=1:20500])
+let ind2 = sorti(tim1)
+let tim2 = samplei(tim1, ind2)
+list/format=comma/file=longax.dat/clobber tim2
+ LISTing to file longax.dat
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+! longax cancel axis axname
+repeat/k=1:10 go bn_cancel_axes_1.sub
+!-> REPEAT: K=1
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=2
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=3
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=4
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=5
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=6
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=7
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=8
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=9
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+!-> REPEAT: K=10
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+can grid tim_grd
+can axis tim_ax
+can data longax.dat
+ 
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+! longax cancel axis/all
+repeat/k=1:10 (go bn_cancel_axes_2.sub; cancel axis/all; cancel grid tim_grd)
+!-> REPEAT: K=1
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=2
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=3
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=4
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=5
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=6
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=7
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=8
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=9
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+!-> REPEAT: K=10
+! cancel axis axname
+! Defining lots of irregular axes, used up coordinate storage.
+! Now coordinage storage is recovered; also have the option to cancel axis/all
+ 
+set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
+def axis/from_data/t/name=tim_ax/units=days tim
+ *** NOTE: Axis has repeated values -- micro-adjusting ...
+def grid/t=tim_ax tim_grd
+ 
+! test remaining axes are intact when we cancel one.
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+define axis/x ax1={2,4,5,6,9}
+define axis/x ax2={30,60,90,100}
+sh axis/x ax2
+ name       axis              # pts   start                end
+ AX2                            4 i   30                   100
+ 
+       I     X                   XBOX      XBOXLO
+       1>  30                    30        15
+       2>  60                    30        45
+       3>  90                    20        75
+       4>  100                   10        95
+can axis ax1
+ *** NOTE: Not deleted: AX1
+ *** NOTE: Axis is in use by grid EVEN
+sh axis/x ax2
+ name       axis              # pts   start                end
+ AX2                            4 i   30                   100
+ 
+       I     X                   XBOX      XBOXLO
+       1>  30                    30        15
+       2>  60                    30        45
+       3>  90                    20        75
+       4>  100                   10        95
+ 
+! Test interaction with irreg axes from datasets
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+cancel data climatological_axes
+sh axis/t month_irreg
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+T0 = 01-JAN-0000 00:00:00
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  16-JAN      12:00:00  31        01-JAN      00:00:00    15.5
+       2>  15-FEB      02:54:36  28.2425   01-FEB      00:00:00    45.12125
+       3>  15-MAR      17:49:12  31        29-FEB      05:49:12    74.7425
+       4>  15-APR      05:49:12  30        31-MAR      05:49:12    105.2425
+       5>  15-MAY      17:49:12  31        30-APR      05:49:12    135.7425
+       6>  15-JUN      05:49:12  30        31-MAY      05:49:12    166.2425
+       7>  15-JUL      17:49:12  31        30-JUN      05:49:12    196.7425
+       8>  15-AUG      17:49:12  31        31-JUL      05:49:12    227.7425
+       9>  15-SEP      05:49:12  30        31-AUG      05:49:12    258.2425
+      10>  15-OCT      17:49:12  31        30-SEP      05:49:12    288.7425
+      11>  15-NOV      05:49:12  30        31-OCT      05:49:12    319.2425
+      12>  15-DEC      17:49:12  31        30-NOV      05:49:12    349.7425
+ 
+def axis/x ax1 = {1, 3, 4, 5, 9}
+Replacing definition of axis AX1
+can axis ax1
+ *** NOTE: Not deleted: AX1
+ *** NOTE: Axis is in use by grid EVEN
+sh axis/t month_irreg
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+T0 = 01-JAN-0000 00:00:00
+ 
+       L     T                   TBOX      TBOXLO                TSTEP (DAYS)
+       1>  16-JAN      12:00:00  31        01-JAN      00:00:00    15.5
+       2>  15-FEB      02:54:36  28.2425   01-FEB      00:00:00    45.12125
+       3>  15-MAR      17:49:12  31        29-FEB      05:49:12    74.7425
+       4>  15-APR      05:49:12  30        31-MAR      05:49:12    105.2425
+       5>  15-MAY      17:49:12  31        30-APR      05:49:12    135.7425
+       6>  15-JUN      05:49:12  30        31-MAY      05:49:12    166.2425
+       7>  15-JUL      17:49:12  31        30-JUN      05:49:12    196.7425
+       8>  15-AUG      17:49:12  31        31-JUL      05:49:12    227.7425
+       9>  15-SEP      05:49:12  30        31-AUG      05:49:12    258.2425
+      10>  15-OCT      17:49:12  31        30-SEP      05:49:12    288.7425
+      11>  15-NOV      05:49:12  30        31-OCT      05:49:12    319.2425
+      12>  15-DEC      17:49:12  31        30-NOV      05:49:12    349.7425
+ 
+cancel axis/all
+ 
+def axis/x ax1 = {1, 3, 4, 5, 9}
+sh axis/x ax1
+ name       axis              # pts   start                end
+ AX1                            5 i   1                    9
+ 
+       I     X                   XBOX      XBOXLO
+       1>  1                     2         0
+       2>  3                     1.5       2
+       3>  4                     1         3.5
+       4>  5                     2.5       4.5
+       5>  9                     4         7
+can axis ax1
+ 
+sh axis/t month_irreg
+ name       axis              # pts   start                end
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.40  
- 	Linux 2.4.3-12smp - 01/28/02
- 	28-Jan-02 16:05     
+ 	FERRET v5.41  
+ 	Linux 2.4.3-12smp - 08/30/02
+ 	04-Sep-02 10:27     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -36625,9 +38087,9 @@ plot/vs/title="My Custom Key"/i=1:100/over/nolabel sin(i/7),sin(i/10)
 frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.40  
- 	Linux 2.4.3-12smp - 01/28/02
- 	28-Jan-02 16:05     
+ 	FERRET v5.41  
+ 	Linux 2.4.3-12smp - 08/30/02
+ 	04-Sep-02 10:27     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -36740,4 +38202,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Mon Jan 28 16:05:49 PST 2002
+Ended at Wed Sep 4 10:27:35 PDT 2002

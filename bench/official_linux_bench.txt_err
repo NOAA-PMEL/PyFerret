@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja4/kobrien/linux/FERRET/fer/ferret_v540
--rwxr-xr-x    1 kobrien  tmap     18431544 Jan 28 14:18 /home/ja4/kobrien/linux/FERRET/fer/ferret_v540
-Using external functions from /home/ja4/kobrien/linux/FERRET/external_functions/libs
+Running FERRET version /home/ja4/kobrien/linux/FERRET/fer/ferret_v541
+-rwxr-xr-x    1 kobrien  tmap     25367412 Aug 30 13:52 /home/ja4/kobrien/linux/FERRET/fer/ferret_v541
+Using external functions from /home/ja4/kobrien/linux/FERRET/bin
 Benchmark run by kob
-Note: v5.4 with all updates and my string bug fixes
+Note: v541 final test (hopefully) and includes Ansleys julian calendar fix
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja4/kobrien/FERRET/bench
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/linux
@@ -17,9 +17,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/linux/FERRET/external_functions/libs
-CVSROOT=/home/ja9/tmap/FERRET_ROOT/
-Beginning at Mon Jan 28 16:04:40 PST 2002
+FER_EXTERNAL_FUNCTIONS=/home/ja4/kobrien/linux/FERRET/bin
+Beginning at Wed Sep 4 10:26:12 PDT 2002
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -386,6 +385,21 @@ LIST vw_fft
  **ERROR: illegal limits: VWND does not contain L=102:150
           Data are available in L =    1:60
 list tsorted_indices, tsorted_wnd
+ **ERROR: command syntax: strindex("Ferret is fun for the whole family - real family fun")
+          The strindex function has an incorrect number of arguments
+list strindex("Ferret is fun for the whole family - real family fun")
+ **ERROR: command syntax: strrindex("Ferret is fun for the whole family - real family fun")
+          The strrindex function has an incorrect number of arguments
+list strrindex("Ferret is fun for the whole family - real family fun")
+ **ERROR: command syntax: substring("Have you fed your ferret today", 19)
+          The substring function has an incorrect number of arguments
+list substring("Have you fed your ferret today", 19)
+ **ERROR: command syntax: substring("Have you fed your ferret today")
+          The substring function has an incorrect number of arguments
+list substring("Have you fed your ferret today")
+ **ERROR: command syntax: strcat ("All work and no play")
+          The strcat function has an incorrect number of arguments
+list strcat ("All work and no play")
  **ERROR: command syntax: "string2"}
 list e
  **ERROR: command syntax: 5, "string2"}
@@ -486,4 +500,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Jan 28 16:05:49 PST 2002
+Ended at Wed Sep 4 10:27:35 PDT 2002

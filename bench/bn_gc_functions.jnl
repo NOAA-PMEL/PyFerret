@@ -5,6 +5,7 @@
 ! Note: OFFSET VALUES NOT YET TESTED
 
 ! 2/99 "UNRAVEL" renamed to XSEQUENCE
+! 1/00 changes to RESHAPE tests ==> "K=1" removed
 
 CANCEL REGION
 CANCEL VIEWPORTS
@@ -39,13 +40,12 @@ LET V3d =  X[x=1:3:1] + Y[Y=.1:.3:.1] + Z[Z=.01:.09:.01]	! same size
 LIST v3d
 LIST RESHAPE(v4d, v3d)
 ! if source and dest grid share an axis then the region is passed to the arg
-LIST RESHAPE(v4d[i=2:3,j=2:3], v3d[k=1])		! I,J preserved
-LIST/k=2:3 RESHAPE(v4d[i=2:3,j=2:3,k=2:3], v3d[k=1])	! K,L not preserved
-LIST/I=2:3/J=2:3  RESHAPE(v4d, v3d[k=1])
-LIST/I=2:3/J=2:3/K=2:3  RESHAPE(v4d, v3d[k=1])	! K refers to result, only
-
-! BUG
-!LIST RESHAPE(v4d, v3d[i=1,j=1,k=1])	! BUG!! not same result
+LIST RESHAPE(v4d[i=2:3,j=2:3], v3d)		! I,J preserved
+LIST/k=2:3 RESHAPE(v4d[i=2:3,j=2:3,k=2:3], v3d)	! K,L not preserved
+LIST/I=2:3/J=2:3  RESHAPE(v4d, v3d)
+LIST/I=2:3/J=2:3/K=2:3  RESHAPE(v4d, v3d)	! K refers to result, only
+LIST/I=2:3/J=2:3  RESHAPE(v4d[k=1:3], v3d[k=2:5])	! output to a subregion in K
+LIST/I=2:3/J=2:3/K=4:5  RESHAPE(v4d[k=1:3], v3d[k=2:5])	! "conflicting" K specs
 
 ! ZAXREPLACE function
 ! definitions taken from sigma_coordinate_demo.jnl 9/96 *sh*

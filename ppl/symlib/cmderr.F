@@ -108,8 +108,14 @@ C
 	    WRITE(ECHLUN,998)'C',LINE(:ILEN)
 	    IF(IPOS.LE.ILEN)WRITE(ECHLUN,FRMT)'C'
 	ENDIF
+
 C *kob* 4/99 minor mod - add (0) to exit call
+C *js* 9/00 Problems with exit call in cygwin, just halt instead
+#ifdef __CYGWIN__
+	IF(BATCHF)STOP
+#else
 	IF(BATCHF)CALL EXIT(0)
+#endif
 	IF(.NOT.TERMF)THEN
 C
 C	     If not interactive abort command file

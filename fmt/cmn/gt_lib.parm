@@ -6,6 +6,11 @@
 * revision 1.11 - 12/07/89 - unspecified_int4 changed to -111 from -9999
 * revision 1.12 - 2/17/99 - radius changed from 6370.E5 to 6366.707E5
 * 
+* V50 *kob* 8/99 -   Changed FOR agreement with GDFL/MOM3. The previous 
+*                    (BETA) definition, based on conversion between degrees 
+*		     and nautical miles, was not accurate since conversion 
+*                    from degrees to nautical mile is not well definied 
+*                    due to the non-spherical earth
 * Function return codes
 	INTEGER*4	str_match
 	PARAMETER	(str_match = 0)
@@ -13,7 +18,7 @@
 * numerical constants
         REAL            deg2rad, radius, deg2km, deg2m, m_radius
         PARAMETER     ( deg2rad = 3.141592 / 180,
-     .                  radius = 6366.707E5,               ! cm
+     .                  radius = 6371.E5,               ! cm  8/99 *kob*
      .                  m_radius = radius / 100.,       ! meters
      .                  deg2km = deg2rad * radius * 1.E-5,
      .                  deg2m  = deg2km * 1000.  )

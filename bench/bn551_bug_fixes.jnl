@@ -18,3 +18,12 @@ GO err550_view_axes_position.jnl
 ! SHADE bug: hlimits, vlimits without effect
 GO bn_reset
 GO err550_shade_limits.jnl
+
+! Redefining an axis with a new calendar definition
+GO bn_reset
+GO err550_redefine_calendar_axis.jnl
+
+! Bug in defining axis from an expression.
+GO bn_reset
+GO err550_redefine_calendar_axis.jnl
+

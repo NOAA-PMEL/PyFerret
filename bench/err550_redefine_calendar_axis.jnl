@@ -1,0 +1,9 @@
+! err550_redefine_calendar_axis.jnl
+! different calendar axis not recognized as a different specifier,
+! requiring the axis to be redefined.   
+
+def axis/cal=gregorian/t=1-jan-2000:1-jan-2001:1/unit=days tax
+sh axis tax
+def axis/cal=julian/t=1-jan-2000:1-jan-2001:1/unit=days tax
+sh axis tax
+

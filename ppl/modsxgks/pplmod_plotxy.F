@@ -81,7 +81,6 @@ C
 	integer		error,trans_no,cflag
         integer         my_trans
         data            my_trans/20/
-	real		data(nx,ny),xc(nx),yc(ny),xs(nx+1),ys(ny+1)
 	real	 	w(4),v(4),ndc(4),uc(4)
 	real		xinv,yinv
 

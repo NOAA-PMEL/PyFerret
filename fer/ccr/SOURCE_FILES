@@ -7,7 +7,11 @@ ferret_query.c\
 grab_image_xwd.c\
 linux_routines_c.c\
 put_frame.c\
+replaceable_bad_flags.c \
+replace_bad_data_sub.c \
 save_arg_pointers.c\
 signal.c\
 wgif.c\
-whdf.c 
+whdf.c
+
+

@@ -18,7 +18,7 @@ include ./LIB_NAME
 #
 
 .F.o:
-	$(FC) $(PPLUS_FFLAGS) -c $<
+	$(FC) $(PPLUS_FFLAGS) $(INCLUDES) -c $<
  
 # 10/97 *kob* - had to move this below to prevent the .F.o dependency from
 #     	        being ignored on linux

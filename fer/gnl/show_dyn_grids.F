@@ -1,7 +1,5 @@
     	SUBROUTINE SHOW_DYN_GRIDS(mods_cx)
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,6 +44,7 @@
 *			  because it needed a preprocessor.
 * V510 *sh* 4/00 - grids may also be allocated by data set variables
 *                  Use /DYNAMIC/ALL to see them.
+* V532 5/01 *sh* - bug fix: ignore deleted static grids when chking axis usage
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -155,9 +154,11 @@
 	   count = 0
 * ... in use by static grids
 	   DO 225 grid = 1, max_grids-1
-	      DO 220 i = 1, 4
-	         IF ( grid_line(i,grid) .EQ. line ) count = count + 1
- 220	      CONTINUE
+              IF ( grid_name(grid) .NE. char_init16 ) THEN
+	        DO 220 i = 1, 4
+	           IF ( grid_line(i,grid) .EQ. line ) count = count + 1
+ 220	        CONTINUE
+              ENDIF
  225	   CONTINUE
 * ... in use by dynamic grids
 	   grid = grid_flink(max_grids)

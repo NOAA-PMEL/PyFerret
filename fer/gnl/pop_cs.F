@@ -47,7 +47,12 @@
 *      - generate warning if multi-line IF is unclosed
 * V500 4/99 *sh* - remove the informative message about an unclosed IF
 *    This is not an error in IF cond THEN stmt; QUIT ENDIF 
-
+* V530:  8/00 *sh* - when restoring the original context after a REPEAT it
+*	is necessary to set the unsaved region (as per cx_by_ss) to unspecified
+*	(The need to do this represents a bug somewhere up the line -- region
+*		information is used without regard to cx_by_ss)
+*	see err522_repeat_leftover.jnl
+ 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN, stat, axis
 
@@ -92,9 +97,13 @@
            IF ( cs_save_by_ss( csp ) ) THEN
               cx_lo_ss (cx_last,axis) = cs_save_lo( csp )
               cx_hi_ss (cx_last,axis) = cs_save_hi( csp )
+              cx_lo_ww (axis,cx_last) = unspecified_val8
+              cx_hi_ww (axis,cx_last) = unspecified_val8
            ELSE
               cx_lo_ww (axis,cx_last) = cs_save_lo( csp )
               cx_hi_ww (axis,cx_last) = cs_save_hi( csp )
+              cx_lo_ss (cx_last,axis) = unspecified_int4
+              cx_hi_ss (cx_last,axis) = unspecified_int4
            ENDIF
 	ENDIF
 	csp = csp - 1

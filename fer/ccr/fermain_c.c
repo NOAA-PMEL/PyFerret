@@ -104,9 +104,12 @@
 *                   numerous LINK_GUI_AS_MAIN ifdefs. Also added new gui_get_memory
 *                   function since the GUI uses a global memory variable ptr and
 *                   the non-GUI uses a stack ptr that was #ifdef'd.
+*     9/18/01 *acm* Add ppl memory buffer ppl_memory, defined in ferret_shared_buffer.h
+*                  along with Ferret *memory.  Initialize its size, and call
+*                  save_ppl_memory_size so the size is available via common to 
+*                  Fortran routines.  New declaration of save_ppl_memory_size 
+*                  in ferret.h
 */
-
- 
 
 #include <unistd.h>
 #include <stdio.h>
@@ -118,7 +121,6 @@ void gui_run(int *, char **);
 int gui_init();
 float **gui_get_memory();
 static void command_line_run(float **memory);
-
 
 void help_text()
 {
@@ -144,6 +146,7 @@ static int ttout_lun=TTOUT_LUN,
   max_mem_blks=PMAX_MEM_BLKS,
   mem_blk_size,
   old_mem_blk_size,
+  pmemsize,
   mem_size = PMEM_BLK_SIZE * PMAX_MEM_BLKS;
 
 
@@ -158,6 +161,8 @@ main (int oargc, char *oargv[])
   int i=1;
   float rmem_size;
   int using_gui = 0;
+  int pplmem_size;
+
   int gui_enabled = gui_init();
 
 #ifdef MIXING_NAG_F90_AND_C
@@ -212,8 +217,17 @@ main (int oargc, char *oargv[])
   if ( *memory == (float *)0 ) {
     printf("Unable to allocate the requested %f Mwords of memory.\n",mem_size/1.E6);
     exit(0);
-
   }
+ 
+  /* initial allocation of PPLUS memory size pointer*/
+  pplmem_size = 0.5* 1.E6;  
+  FORTRAN(save_ppl_memory_size)( &pplmem_size ); 
+  ppl_memory = (float *) malloc(sizeof(float) * pplmem_size );
+
+  if ( ppl_memory == (float *)0 ) {
+    printf("Unable to allocate the initial %f words of PLOT memory.\n",pplmem_size);
+    exit(0);
+ }
   /* initialize stuff: keyboard, todays date, grids, GFDL terms, PPL brain */
   FORTRAN(initialize)();
 
@@ -222,6 +236,8 @@ main (int oargc, char *oargv[])
 
   /* initialize size and shape of memory and linked lists */
   FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
+
+  
 
   if ( using_gui ) {
     gui_run(&argc, argv);

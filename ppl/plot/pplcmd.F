@@ -37,6 +37,7 @@
 *                  routine pplcmd_c, which gets the global pointer to PPLUS 
 *                  memory and passes it to pplcmd_f.F  which has the original code.
 *                  Put the strings in common to avoid wierdness with strings in C.
+* v541 *acm* 5/02  Slightly more graceful stop in case IDMDIM too large
 
 c	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
 
@@ -49,8 +50,7 @@ c     internal parameter declarations:
       INTEGER      slen
       PARAMETER  ( slen = 255 )
 
-      if (icmdim .gt. 5) 
-     . print *, ' icmdim in pplcmd_strings.cmn too small', icmdim
+      IF (ICMDIM .GT. 5) GO TO 5000
 
       DO i = 1, ICMDIM
          PPLCOMBUF(i) = COMBUF(i)
@@ -62,4 +62,5 @@ c     internal parameter declarations:
       CALL pplcmd_c  (ISI, ICMDIM, ICMSZE)
 
       RETURN
+ 5000 STOP 'ICMDIM in PPLCMD too small'
       END

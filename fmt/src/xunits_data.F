@@ -61,6 +61,8 @@
 * *sh* 12/99 - add "degree" as an alternate name since exact match is now
 *	required on names
 * V510: 3/00 *sh* - added "minute" and "month"
+* V520: 6/00 *sh* bug fix: exact matching in TM_UNIT_ID broke "seconds" match
+*		         - add "hr" as an abbreviation for hours
 
 * local variable declarations
 !	INTEGER	i
@@ -98,7 +100,7 @@
 
 	DATA	un_name( -1)	/ 'sec'		/,
      .		un_name( -2)	/ 'min'		/,
-     .		un_name( -3)	/ 'hour'	/,
+     .		un_name( -3)	/ 'hr'	/,
      .		un_name( -4)	/ 'day'		/,
      .		un_name( -5)	/ 'mon'		/,
      .		un_name( -6)	/ 'yr'		/,
@@ -185,11 +187,11 @@
      .		un_alt_name (17) / 'minute'	/,
      .		un_alt_subsc(17) / -2 /,
      .
-     .		un_alt_name (18) / char_init12	/,
-     .		un_alt_subsc(18) / 0 /,
+     .		un_alt_name (18) / 'second'	/,
+     .		un_alt_subsc(18) / -1 /,
      .
-     .		un_alt_name (19) / char_init12	/,
-     .		un_alt_subsc(19) / 0 /,
+     .		un_alt_name (19) / 'hour'	/,
+     .		un_alt_subsc(19) / -3 /,
      .
      .		un_alt_name (20) / char_init12	/,
      .		un_alt_subsc(20) / 0 /

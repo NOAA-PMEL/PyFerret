@@ -1,4 +1,4 @@
-	SUBROUTINE GET_SHORT_DSET_NAME( dset_num, name, len_text )
+	SUBROUTINE GET_SHORT_DSET_NAME( dset, name, len_text )
 
 *
 *
@@ -46,6 +46,8 @@
 * Unix/RISC port 5/2/91 *sh*: based on GET_DSET_NAME
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V510: *sh* 3/00 - IRI Web server trap - if "dods" is the dset name then
+*		give long version 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -61,28 +63,46 @@
 #endif
 
 * calling argument declarations:
-	INTEGER		dset_num, len_text
+	INTEGER		dset, len_text
 	CHARACTER*(*)	name
 
 * internal variable declarations:
-	INTEGER		TM_LENSTR1, len_name
+	INTEGER		TM_LENSTR1, max_len_out, i1, slash
+
+* internal parameter declarations
+	INTEGER arb_outmax
+	PARAMETER (arb_outmax = 40)	! limit DODS output len
 
 * initialize
-	len_name  = LEN( name )
+	max_len_out  = LEN( name )
 
 * consider the options
-	IF     ( dset_num .EQ. pdset_irrelevant	)	THEN	! no name
-	   name(1:len_name) = 'N/A'
+	IF     ( dset .EQ. pdset_irrelevant	)	THEN	! no name
+	   name  = 'N/A'
 	   len_text = 3
 
 	ELSE
-	   len_text = TM_LENSTR1( ds_name( dset_num ) )
-           IF ( len_text .GT. len_name ) THEN
+	   len_text = TM_LENSTR1( ds_name( dset ) )
+           IF ( len_text .GT. max_len_out ) THEN
 * ... too long to fit
-              name = ds_name(dset_num)(len_text-len_name+1:)
-              len_text = len_name
+              name = ds_name(dset)(len_text-max_len_out+1:)
+              len_text = max_len_out
+	   ELSEIF ( ds_name(dset) .EQ. 'dods'
+     .	    .AND.   ds_des_name(dset)(1:7) .EQ. 'http://' ) THEN
+	      len_text = TM_LENSTR1(ds_des_name(dset))
+* ... find start of IRI name as in "http://ip.address/directory/name/dods"
+	      slash = INDEX(ds_des_name(dset)(8:),'/')
+	      slash = 8 + slash + INDEX(ds_des_name(dset)(8+slash:),'/')
+	      IF (slash .GT. 0 ) THEN
+	         i1 = slash + 1
+	      ELSE
+	         i1 = MAX(1,len_text-max_len_out+1)
+	         i1 = MIN(i1,arb_outmax)
+	      ENDIF
+              name = ds_des_name(dset)(i1:len_text)
+              len_text = len_text - i1 + 1
            ELSE
-              name = ds_name( dset_num )
+              name = ds_name( dset )
            ENDIF
 
 	ENDIF

@@ -50,8 +50,9 @@
 *	Mod to use SYMBEL rather than GTX for key labels *jd* 3.4.93
 * 	Mod to provide identical endpoint values for a constant field/jd/5.96
 *       Mod for FILLPOL *jd* 3.99
+* v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
+*                  also remove VMS INCLUDES
 
-#ifdef unix
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
 	include		'cont_inc.decl'
@@ -60,54 +61,20 @@
         include 	'PLTCOM.DAT'
         include 	'pltl_inc.decl'
         include 	'PLTL.INC'
-#else
-	INCLUDE 	'tmap_pplv11inc:tmap_parampl5.dat'
-	INCLUDE		'tmap_pplv11inc:tmap_cont.inc'
-        INCLUDE 	'TMAP_PPLV11INC:LINES_INC.DECL'
-        INCLUDE 	'PPLV11INC:LINES.INC'
-        INCLUDE 	'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-        INCLUDE 	'PPLV11INC:PLTCOM.DAT'
-        INCLUDE 	'TMAP_PPLV11INC:PLTL_INC.DECL'
-        INCLUDE 	'PPLV11INC:PLTL.INC'
-#endif
 
-#ifdef unix
         include         'axis_inc.decl'
         include         'AXIS.INC'
         include         'plt_inc.decl'
         include         'PLT.INC'
         include         'pen_inc.decl'
         include         'PEN.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_axis.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_plt.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_pen.inc'
-#endif
 
-#ifdef unix
         include         'shade_vars.cmn'
         include         'gkscm1_inc.decl'
         include         'GKSCM1.INC'
         include         'gkscm2.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
 
-#ifdef atc_gks
-#   ifdef unix
 	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
-#else
-#   ifdef unix
-  	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
-#endif
 
 	integer		ndx,str_len,max_len,incr
 
@@ -122,11 +89,8 @@
 
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
-#ifdef unix
 	include 	'ppl_in_ferret.cmn'	
-#else
-	INCLUDE 	'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'	
-#endif
+
 
 *******************************************************************************
 
@@ -184,7 +148,7 @@
 
 	   kpx(5) = kpx(1)
 	   kpy(5) = kpy(1)
-	   call gpl (5,kpx,kpy)
+	   IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
 	   text = tm_fmt (zlev(ndx),klab_dig,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	   
@@ -279,7 +243,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
            kpx(5) = kpx(1)
            kpy(5) = kpy(1)
-           call gpl (5,kpx,kpy)
+           IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
 	   text = tm_fmt (zlev(ndx),klab_dig,klab_len,str_len)
 	   if (max_len .lt. str_len) max_len = str_len	

@@ -44,6 +44,7 @@ setup_defaults.F\
 setup_line_bundles.F\
 shade.F\
 shade_key.F\
+shade_key_cont.F\
 shade_set.F\
 shade_sub.F\
 strmar.F\

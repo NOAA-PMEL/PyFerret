@@ -6,6 +6,7 @@
 *	*jd* 10.23.98 Add pattern support variables
 *	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
 *		ensure contiguous 8-byte organization
+* v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
 
 *	I_LO,I_HI,J_LO,J_HI are the lo and hi indices of the grid data
 *	X_LO,X_HI,Y_LO,Y_HI are the corresponding lon & lat coordinates
@@ -59,6 +60,7 @@
 *	UPPERFLG is true when the upper triangle calls drawpoly
 *	UPPER_FIRST is true when the upper triangle is first cell in a buffer
 	
+
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=100,max_windows=12,pattern_num=50)
 
@@ -90,6 +92,7 @@
 	parameter	(buffer_max=50)
 
 	real		xbuff(4,buffer_max), ybuff(4,buffer_max)
+        logical         cont_key
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
      .			   x_lo,x_hi,y_lo,y_hi,
@@ -110,5 +113,5 @@
      .			   mrgb_mapping, ilast,
      .			   buffer_empty, num_buffered,
      .		     	   xbuff, ybuff, upperflg, upper_first,
-     .			   pattern_list
+     .			   pattern_list, cont_key
 

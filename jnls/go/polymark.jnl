@@ -1,0 +1,67 @@
+\cancel mode verify
+! polymark.jnl
+! 4/99 *sh* and *jd*
+
+! Description: Plot symbols colored by values of a variable along a track
+
+! Usage:                  $1        $2    $3     $4      $5      $6
+! Yes?	GO polymark polygon_command xpts ypts [values] [shape] [scale]
+! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
+! $2 - X coordinates of track 
+! $3 - Y coordinates of track 
+! $4 - variable whose values will be plotted along the track (eg SST)
+! $5 - shape of the symbol, as defined by polyshape.jnl 
+! $6 - scale the values by this factor (optional, default 1)
+
+!      shape names include:
+!           triangle           delta           square
+!           diamond            pentagon        hexagon
+!           circle             star            plus
+!           ex
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $2"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $3"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
+
+! save the input expressions into simple variable definitions
+LET/QUIET PLMxpoly = ($2)
+LET/QUIET PLMypoly = ($3)
+LET/QUIET PLMpolydata = $4"0"
+
+! determine the orientation of the data (and check that it is 1D or a point)
+DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
+DEFINE SYMBOL PLMpoly_ax ($PLMax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+
+LET/QUIET PLMxscale = ((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
+LET/QUIET PLMyscale = ((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
+
+! determine default scale
+LET/QUIET PLMyrange = (($yaxis_max))-(($yaxis_min))
+LET/QUIET PLMdefault_scale = 0.04 * PLMyrange
+LET/QUIET PLMscale = $6"1" * PLMdefault_scale 
+
+! compute factor to compensate for unequal scaling of X and Y plot axes
+LET/QUIET PLMaxscale_factor = PLMyscale/PLMxscale
+LET/QUIET PLMx_correction = PLMscale * (1 + PLMaxscale_factor^2)^0.5
+LET/QUIET PLMy_correction = PLMaxscale_factor * PLMx_correction
+
+! optionally create the polygon coordinates, xpolyshape, ypolyshape
+! else check that the coordinates exist
+IF $5"0|*>1" THEN
+   GO polyshape $5
+ELSE
+   LOAD xpolyshape, ypolyshape  ! THESE MUST BE DEFINED BY GO polyshape
+ENDIF
+
+! make sure that the polygon coordinates are along the correct axis
+! and correct the coordinates for unequal axis scaling and user scale factor 
+LET/QUIET PLMxpolymark = ($PLMpoly_ax)SEQUENCE(xpolyshape) * PLMx_correction
+LET/QUIET PLMypolymark = ($PLMpoly_ax)SEQUENCE(ypolyshape) * PLMy_correction
+
+$1/coord_ax=($PLMpoly_ax)  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
+
+cancel symbol PLM*
+cancel variable PLM*
+set mode/last verify
+

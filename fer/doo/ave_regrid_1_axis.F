@@ -61,6 +61,10 @@
 *	 1/96 - handles @SUM and @NGD as well
 * V510: *sh* 1/00 variance of a grid box with only a single value
 *	contributing is undefined
+* v541: *acm* 3/02 In some cases the source indices include a range
+*                  outside the destination indices, so ddist < 0.  Test
+*                  for this and only have a contribution to the avg from 
+*                  portions of the source axis that overlap the dest box.
 
 #ifdef unix
 	include 'ferret.parm'
@@ -150,16 +154,18 @@
 	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         IF (trans .EQ. prgrd_sum ) THEN
-	            sum   = sum  + src(srcss, j, k, l)
+                 IF (ddist .GT. 0.) THEN
+	            distance  = distance + ddist
+	            IF (trans .EQ. prgrd_sum ) THEN
+	               sum   = sum  + src(srcss, j, k, l)
      .			         * ddist/(xsrc_max-xsrc_min)
-	         ELSEIF (trans .EQ. prgrd_good_pt ) THEN
-	            sum   = sum  + ddist/(xsrc_max-xsrc_min)
+	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
+	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
 
-	         ELSE	! average or variance
-	            sum   = sum  + ddist * src(srcss, j, k, l)
-	         ENDIF
+	            ELSE	! average or variance
+	               sum   = sum  + ddist * src(srcss, j, k, l)
+	            ENDIF
+                 ENDIF
 
  110	      CONTINUE
 
@@ -217,16 +223,18 @@
 	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         IF (trans .EQ. prgrd_sum ) THEN
-	            sum   = sum  + src(i, srcss, k, l)
+                 IF (ddist .GT. 0.) THEN
+	            distance  = distance + ddist
+	            IF (trans .EQ. prgrd_sum ) THEN
+	               sum   = sum  + src(i, srcss, k, l)
      .			         * ddist/(xsrc_max-xsrc_min)
-	         ELSEIF (trans .EQ. prgrd_good_pt ) THEN
-	            sum   = sum  + ddist/(xsrc_max-xsrc_min)
+	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
+	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
 
-	         ELSE	! average or variance
-	            sum   = sum  + ddist * src(i, srcss, k, l)
-	         ENDIF
+	            ELSE	! average or variance
+	               sum   = sum  + ddist * src(i, srcss, k, l)
+	            ENDIF
+                 ENDIF
 
  210	      CONTINUE
 
@@ -283,16 +291,18 @@
 	         ddist   = xsrc_hi-xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         IF (trans .EQ. prgrd_sum ) THEN
-	            sum   = sum  + src(i, j, srcss, l)
+                 IF (ddist .GT. 0.) THEN
+	            distance  = distance + ddist
+	            IF (trans .EQ. prgrd_sum ) THEN
+	               sum   = sum  + src(i, j, srcss, l)
      .			         * ddist/(xsrc_max-xsrc_min)
-	         ELSEIF (trans .EQ. prgrd_good_pt ) THEN
-	            sum   = sum  + ddist/(xsrc_max-xsrc_min)
+	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
+	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
 
-	         ELSE	! average or variance
-	            sum   = sum  + ddist * src(i, j, srcss, l)
-	         ENDIF
+	            ELSE	! average or variance
+	               sum   = sum  + ddist * src(i, j, srcss, l)
+	            ENDIF
+                 ENDIF
 
  310	      CONTINUE
 
@@ -352,15 +362,17 @@
 	         ddist   = xsrc_hi - xsrc_lo
 
 * ... contribution from this source box
-	         distance  = distance + ddist
-	         IF (trans .EQ. prgrd_sum ) THEN
-	            sum   = sum  + src(i, j, k, srcss)
+                 IF (ddist .GT. 0.) THEN
+	            distance  = distance + ddist
+	            IF (trans .EQ. prgrd_sum ) THEN
+	               sum   = sum  + src(i, j, k, srcss)
      .			         * ddist/(xsrc_max-xsrc_min)
-	         ELSEIF (trans .EQ. prgrd_good_pt ) THEN
-	            sum   = sum  + ddist/(xsrc_max-xsrc_min)
+	            ELSEIF (trans .EQ. prgrd_good_pt ) THEN
+	               sum   = sum  + ddist/(xsrc_max-xsrc_min)
 
-	         ELSE	! average or variance
-	            sum   = sum  + ddist * src(i, j, k, srcss)
+	            ELSE	! average or variance
+	               sum   = sum  + ddist * src(i, j, k, srcss)
+	            ENDIF
 	         ENDIF
  410	      CONTINUE
 
@@ -584,6 +596,7 @@
 	         xsrc_hi = MIN( TM_WORLD(srcss,src_grid,axis,box_hi_lim),
      .                          xdst_hi )
 	         ddist   = xsrc_hi - xsrc_lo
+                 IF (ddist .LT. 0.) ddist = 0.
 
 * ... contribution from this source box
  	         IF (ddist .GT. 0.0) THEN

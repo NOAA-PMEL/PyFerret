@@ -37,7 +37,7 @@ LD		= cc
 # I want this to be able to link shared libraries! *jc*
 LDFLAGS		= -L -L/usr/ccs/lib -L/usr/lib/cmplrs/cc -L/usr/lib -L/usr/local/lib 
 
-SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -ldnet_stub -lSM -lICE  /shlib/libc.so 
+SYSLIB		= -lXm -lXt -lm -lUfor -lfor -lFutil -lots -lX11 -llist -ldnet_stub -lSM -lICE  /shlib/libc.so 
 
 TMLIB		= ../fmt/libs/tmap_lib.a
 

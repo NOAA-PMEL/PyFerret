@@ -44,12 +44,31 @@ set grid/save
 let/quiet mp_x = x
 let/quiet mp_y = y
 
-let/quiet mp_xmin = $1"0"
-let/quiet mp_xmax = $2"360"
-let/quiet mp_xdel = $3"30"
-let/quiet mp_ymin = $4"-90"
-let/quiet mp_ymax = $5"90"
-let/quiet mp_ydel = $6"15"
+!
+! create reasonable defaults for graticule spacing
+!
+let/quiet mp_xmin = $1"`mp_x[i=@min]`"
+let/quiet mp_xmax = $2"`mp_x[i=@max]`"
+if `mp_xmax-mp_xmin ge 180` then
+  let/quiet mp_xdel = $3"30"
+elif `mp_xmax-mp_xmin ge 60` then
+  let/quiet mp_xdel = $3"10"
+elif `mp_xmax-mp_xmin ge 10` then
+  let/quiet mp_xdel = $3"5"
+else
+  let/quiet mp_xdel = $3"1"
+endif
+let/quiet mp_ymin = $4"`mp_y[j=@min]`"
+let/quiet mp_ymax = $5"`mp_y[j=@max]`"
+if `mp_ymax-mp_ymin ge 180` then
+  let/quiet mp_ydel = $6"30"
+elif `mp_ymax-mp_ymin ge 60` then
+  let/quiet mp_ydel = $6"10"
+elif `mp_ymax-mp_ymin ge 10` then
+  let/quiet mp_ydel = $6"5"
+else
+  let/quiet mp_ydel = $6"1"
+endif
 
 !
 ! This test will keep the central meridians defined by "from space" views

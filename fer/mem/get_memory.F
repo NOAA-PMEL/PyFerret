@@ -55,6 +55,9 @@
 * V520: 6/00 *sh* - improved error message
 * V522: 7/00 *sh* corrected typo in previous ... 
 * V530: 5/01 - further improved error mesages (for 9999999 words)
+* v553: 9/03 *kob* - need to update error calls to include alternate return
+*                    label.  Bug showed up on IRIX with missing elements
+*		     of error statement
 
 #ifdef unix
 	include 'errmsg.parm'
@@ -138,20 +141,20 @@
  5100	num_str = LEFINT(num_words,num_slen)
 	IF ( num_words .EQ. 9999999 ) THEN
 	   CALL ERRMSG( ferr_dim_underspec, status,
-     .	  num_str(:num_slen)//' words were requested. ')
-	  CALL WARN('Check for unspecified limits on an ABSTRACT axis')
+     .	  num_str(:num_slen)//' words were requested. ', *5125)
+ 5125	  CALL WARN('Check for unspecified limits on an ABSTRACT axis')
           CALL WARN('Use the SHOW GRID command to see the axes')
 	ELSE
 	  CALL ERRMSG( ferr_insuff_memory,status,
-     .	  num_str(:num_slen)//' words were requested. ')
-	  CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
+     .	  num_str(:num_slen)//' words were requested. ', *5130)
+ 5130	  CALL WARN('You can use SET MEMORY/SIZE=xxx to increase memory.')
           CALL WARN('The "Memory use" section of the FERRET '
      .              //'Users Guide has further tips.') 
 	ENDIF
         GOTO 5000
  5200	num_str = LEFINT(num_words,num_slen)
 	CALL ERRMSG( ferr_insuff_memory,status,
-     .	'A negative number of words were requested. ')
-     	CALL WARN('The current grid is most likely too large')
+     .	'A negative number of words were requested. ', *5210)
+ 5210	CALL WARN('The current grid is most likely too large')
 	RETURN
 	END

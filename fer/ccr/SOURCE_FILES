@@ -1,5 +1,6 @@
 SRCS_C = \
 binaryRead.c\
+perl_read.c\
 EF_InternalUtil.c\
 batch_graphics.c\
 fermain_c.c\

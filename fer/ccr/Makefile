@@ -36,6 +36,11 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
 
+#
+# Special case for Perl interpreter
+#
+#perl_read.o : perl_read.c
+#	cc -g -c perl_read.c `perl -MExtUtils::Embed -e ccopts`
 
 clean:
 	rm -f core *.o *.a

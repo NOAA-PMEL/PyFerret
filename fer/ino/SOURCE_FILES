@@ -8,6 +8,7 @@ laser_status.F\
 make_cvar_grids.F\
 read_ez.F\
 read_binary.F\
+read_perl.F\
 read_tm.F\
 repl_tm_find_grid_slot.F\
 replace_bad_data.F\

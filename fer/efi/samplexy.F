@@ -323,7 +323,8 @@ C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
-      REAL delmodx, delmody, xpt, ypt, xlo, xhi, ylo, yhi
+      INTEGER xlo, xhi, ylo, yhi
+      REAL delmodx, delmody, xpt, ypt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

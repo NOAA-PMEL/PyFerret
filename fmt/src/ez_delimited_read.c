@@ -37,6 +37,8 @@
 
 /* Revision history
    V530 - *sh* added ability to read dates formatted as YYYYMMDD
+   V540 *sh* 10/01 - when analyzing a file insist on ENUF_IN_A_ROW records
+                     successfully evaluated
 */
 
 /*
@@ -186,7 +188,11 @@ int decode_file (char* fname, char *recptr, char *delims, int *skip,
 
       if ( fgets(recptr,*reclen,fp) )
 	{
-      /* overwrite the newline record terminator with a NULL */
+	  /* skip leading blanks */
+	  while (*recptr==' ')
+	    recptr++;
+
+	  /* overwrite the newline record terminator with a NULL */
 	  if ((slen = strlen(recptr)) > 0)
 	    if (recptr[slen-1] == '\n')
 	      recptr[slen-1] = NULL;
@@ -236,8 +242,10 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
 			int field_type[], int *max_fields)     
 {
 
+#define ENUF_IN_A_ROW 25  /* insist on this many successful record evals */
   FILE *fp;
   int slen, i, rec;
+  int nsuccess = 0;
 
   fp = fopen(fname,"r");
 
@@ -260,6 +268,10 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
 	{
 	  rec++;
 
+	  /* skip leading blanks */
+	  while (*recptr==' ')
+	    recptr++;
+
 	  /* overwrite the newline record terminator with a NULL */
 	  if ((slen = strlen(recptr)) > 0)
 	    recptr[slen-1] = NULL;
@@ -271,8 +283,14 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
 	  while ( i<*nfields && (field_type[i] != FTYP_MISSING) )
 	    i++;
 
-	  /* success */
+	  /* success at analyzing one full record */
 	  if (i == *nfields)
+	    nsuccess++;
+	  else
+	    nsuccess = 0;
+
+	  /* success at analyzing 25 records in a row is enough */
+	  if (nsuccess > ENUF_IN_A_ROW)
 	    {
 	      fclose(fp);
 	      return 0;
@@ -281,11 +299,14 @@ int FORTRAN(anal_file) (char* fname, char *recptr, char *delims, int* skip,
     }
 
   /*
-    all records have been analyzed and missing fields still remain
+    all records in file have been analyzed
   */
   fclose(fp);
 
-  /* only an incomplete analysis of the file was possible */
+  /* only an incomplete analysis of the file was possible
+     Note that following 10/01 changes it is no longer certain that the
+     analysis contains fields of all missing values. See ENUF_IN_A_ROW
+  */
   return FANAL_HAS_MISSING;
 
 }
@@ -347,7 +368,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = dummy;
 	else if (sscanf(p,"%f%1[Ss]",&dummy,str1) == 2)
 	  (*(numeric_fields+i))[rec] = -1 * dummy;
-	else
+	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
 	
@@ -357,7 +378,7 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	  (*(numeric_fields+i))[rec] = dummy;
 	else if (sscanf(p,"%f%1[Ww]",&dummy,str1) == 2)
 	  (*(numeric_fields+i))[rec] = -1 * dummy;
-	else
+	else if ( sscanf(p,"%f%1s",&((*(numeric_fields+i))[rec]),errstr ) != 1)
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
 	
@@ -420,7 +441,13 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	/* character field */
       case FTYP_CHARACTER:
 	{
-	  (*(text_fields+i))[rec*pinc] = (char *) malloc(sizeof(char)*strlen(p));
+	  /* remove surrounding quotations, if any */
+	  if (strlen(p)>1 && *p=='"' && *(p+strlen(p)-1)=='"') {
+	    *(p+strlen(p)-1) = NULL;
+	    p++;
+	  }
+	  (*(text_fields+i))[rec*pinc] =
+	    (char *) malloc(sizeof(char)*(strlen(p)+1));
 	  strcpy( (*(text_fields+i))[rec*pinc], p );
 	}
 	break;
@@ -513,10 +540,12 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
 	else if (field_type[(*nfields)] != FTYP_TIME)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
       }
-    else if (sscanf(p,"%f%1[NnSs]%1s",&dummy,latlon1,str1) == 2)
+    else if (sscanf(p,"%f%1[NnSs]%1s",&dummy,latlon1,str1) == 2
+	     && dummy>-90.1 && dummy<90.1 )
       /* latitude */
       {
-	if (field_type[(*nfields)] == FTYP_MISSING)
+	if (field_type[(*nfields)] == FTYP_MISSING
+	    || field_type[(*nfields)] == FTYP_NUMERIC)
 	  field_type[(*nfields)] = FTYP_LAT;
 	else if (field_type[(*nfields)] != FTYP_LAT)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
@@ -524,7 +553,8 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
     else if (sscanf(p,"%f%1[EeWw]%1s",&dummy,latlon1,str1) == 2)
       /* longitude */
       {
-	if (field_type[(*nfields)] == FTYP_MISSING)
+	if (field_type[(*nfields)] == FTYP_MISSING
+	    || field_type[(*nfields)] == FTYP_NUMERIC)
 	  field_type[(*nfields)] = FTYP_LON;
 	else if (field_type[(*nfields)] != FTYP_LON)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
@@ -536,9 +566,15 @@ void analRec(char *recptr, char *delims, int* nfields, int field_type[],
       }
     else if (sscanf(p,"%f",&dummy) == 1)
       /* numeric field */
+      /* note that pure numeric fields may be lats or longs */
       {
 	if (field_type[(*nfields)] == FTYP_MISSING)
 	  field_type[(*nfields)] = FTYP_NUMERIC;
+	else if (field_type[(*nfields)] == FTYP_LAT
+		 && dummy>-90.1 && dummy<90.1 )
+	  field_type[(*nfields)] = FTYP_LAT;
+	else if (field_type[(*nfields)] == FTYP_LON)
+	  field_type[(*nfields)] = FTYP_LON;
 	else if (field_type[(*nfields)] != FTYP_NUMERIC)
 	  field_type[(*nfields)] = FTYP_CHARACTER;
       }
@@ -580,30 +616,31 @@ char *nexstrtok(char *s1, char *s2)
 
      /* note - this routine will modify the s1 string */
 {
-  char *p1 = s1;
-  char *p2;
+  char *p2, *nex;
 
   /* sanity check that we have a valid input record */
-  if (p1 == NULL)
+  if (s1 == NULL)
     return NULL;
 
-  /* blanks are a special delimiter in that multiple blanks act as a single
-     delimiter -- they do not indicate skipped fields
-     Skip over leading blanks when blank is a delimiter character
-  */
-  if ( strpbrk(s2, " ") != NULL )
-    while (*p1==' ')
-      p1++;
-
   /* find the next delimiter */
-  p2 = strpbrk( p1, s2 );
+  p2 = strpbrk( s1, s2 );
 
   if (p2 == NULL)
     return NULL;
   else
     {
-      *p2 = 0;
-      return p2+1;
+      nex = p2 + 1;
+
+      /* skip trailing blanks in this field */
+      while (*(p2-1)==' ')
+	p2--;
+      *p2 = NULL;
+
+      /* Skip leading blanks in next field */
+      while (*nex==' ')
+	nex++;
+
+      return nex;
     }
 }
 

@@ -111,7 +111,7 @@
 *             6/02 For irregular axes, on CANCEL AXIS axname, recover line_mem
 *                  space with call to remove_axis
 * v541 *acm*  7/02 Capitalize routine names in CALL REMOVE_AXIS, DEALLO_ALL_AXES.
-
+* v551 *acm*  1/03 Bug fix: datasets starting with digit not correctly cancelled.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -283,7 +283,14 @@
 * interpret and check the data set specified
 	      IF ( TM_DIGIT(buff) ) THEN
 	         arg30 = buff(:blen)			! 10/95 for AIX
-	         READ ( arg30,*,ERR=5030 ) iset
+
+*  (1/03 *acm*) See xeq_set
+#ifdef MANDATORY_FORMAT_WIDTHS
+	         READ ( arg30,*,ERR=610 ) iset
+#else
+	         READ ( arg30,'(I)',ERR=610 ) iset
+#endif
+
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030
 	         IF (  ds_name( iset ) .EQ. char_init256) THEN
@@ -293,8 +300,22 @@
 	               GOTO 710
 	            ENDIF
 	         ENDIF
+	         GOTO 705
+
+*     argument starts with a number but is not a number.
+*     Check for a valid dataset name
+
+ 610	         iset = FIND_DSET_NUMBER( buff(:blen) )
+	         IF (  iset .EQ. unspecified_int4 )then
+	            IF ( report_error ) THEN
+	               GOTO 5030
+   	            ELSE
+	               GOTO 710
+	            ENDIF
+	         ENDIF
+
 	      ELSE
-	         iset = FIND_DSET_NUMBER( buff(:blen) )
+  	         iset = FIND_DSET_NUMBER( buff(:blen) )
 	         IF (  iset .EQ. unspecified_int4 )then
 	            IF ( report_error ) THEN
 	               GOTO 5030
@@ -303,7 +324,8 @@
 	            ENDIF
 	         ENDIF
 	      ENDIF
-	      CALL CANCEL_DATA_SET( iset, status )
+
+ 705	      CALL CANCEL_DATA_SET( iset, status )
  710	   CONTINUE
 * ... if only one set remains then point to it
 	   iset = unspecified_int4

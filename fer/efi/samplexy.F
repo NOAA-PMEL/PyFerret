@@ -325,9 +325,9 @@
       k3 = arg_lo_ss(Z_AXIS,ARG3)
       l3 = arg_lo_ss(T_AXIS,ARG3)
 
-*  For each (xpt,ypt) pair, search the data array arg_1 for the nearest
-higher
-*  (x,y) grid coordinates.  Interpolate in 2 directions for the result.
+*  For each (xpt,ypt) pair, search the data array 
+*   arg_1 for the nearest higher (x,y) grid coordinates.  Interpolate 
+*   in 2 directions for the result.
 
       j = res_lo_ss(Y_AXIS)
       DO 500 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)

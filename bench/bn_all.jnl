@@ -323,6 +323,12 @@ GO bench_extrema
 GO bn_reset
 GO bn_mode_logo_lab
 
+GO bn_reset
+GO bn_modulo_attribute
+
+GO bn_reset
+GO bn550_bug_fixes
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

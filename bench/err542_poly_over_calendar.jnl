@@ -1,0 +1,6 @@
+! POLY/OVER when data has a non-standard calendar caused
+! calendar mismatch error, even on a plot with no time axis.
+
+use err542_poly_over_calendar.nc
+shade pc
+poly/over/color=red/line=2/title="polygon" {220,240,280,250},{-20,70,40,-30}

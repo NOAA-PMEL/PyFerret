@@ -1,0 +1,11 @@
+! Ferret V5.50 m
+
+! Modulo attribute can take numerical values to indicate 
+! the modulo length of axis (subspan modulo changes)
+! This script tests various string values of the attribute             
+
+use modulo_lon_time
+
+sh ax lon*
+sh ax tim*
+

@@ -62,12 +62,14 @@
 3	IF (ndx_hi - ndx_lo .eq. 1) THEN
 
 * return result -- including interpolation fraction
-	   IF (x2 .EQ. x1(ndx_mid)) THEN
-	      ndx_lo = ndx_mid
-	      frac = 1.0
-	   ELSEIF (ndx_lo.GE.lo_dim .AND. ndx_lo.LT.hi_dim) THEN
-	      frac = (x1(ndx_hi)-x2) / (x1(ndx_hi)-x1(ndx_lo))
-	   ELSE
+
+	   IF (ndx_lo.GE.lo_dim .AND. ndx_lo.LT.hi_dim) THEN
+	      IF (x2 .EQ. x1(ndx_lo)) THEN
+	         frac = 1.0
+	      ELSE
+	         frac = (x1(ndx_hi)-x2) / (x1(ndx_hi)-x1(ndx_lo))
+	      ENDIF
+	   ELSE    
 	      frac = -999.0
 	   ENDIF
 	   return

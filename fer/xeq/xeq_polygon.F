@@ -107,7 +107,6 @@
      .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
-
 * Initialize the lines buffer in PPL before setting up
 	overlay   = qual_given( slash_plot_over_plot ).GT.0
 	if (overlay) SOVER = .true.

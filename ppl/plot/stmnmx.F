@@ -69,6 +69,8 @@ C**
 	include 'HD.INC'
         include 'switch_inc.decl'
         include 'SWITCH.INC'
+        include 'pltl_inc.decl'
+        include 'PLTL.INC'
 #else
         INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
         INCLUDE 'PPLV11INC:PARAMPL5.DAT'
@@ -81,6 +83,8 @@ C**
 	INCLUDE 'TMAP_PPLV11INC:HD_INC.DECL'
 	INCLUDE 'PPLV11INC:HD.INC'
         INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
+        INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
+        INCLUDE 'PPLV11INC:PLTL.INC'
 #endif
 	CHARACTER SYM*30,VAL*10
 C
@@ -194,7 +198,9 @@ c
 c
 	    sym='*PPL$YLOW'
 	    call putval(sym,ylow,4,ier)
-	ELSE
+
+C       Don't define line symbols for FILLPOL/POLYGON
+	ELSE if (makep .ne. 'FILLPOL') then
 C
 C	LINE DATA
 

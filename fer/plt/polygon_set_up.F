@@ -88,6 +88,8 @@
 	include 'PPLDAT.INC'       ! with nsize
         include 'switch_inc.decl'
         include 'SWITCH.INC'
+        include 'pltl_inc.decl'
+        include 'PLTL.INC'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
@@ -105,22 +107,26 @@
 	INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL/LIST'       ! with nsize
 	INCLUDE 'PPLV11INC:PPLDAT.INC/LIST'       ! with nsize
         INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
+        INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
+        INCLUDE 'PPLV11INC:PLTL.INC'
 #endif
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, no_labels
-	INTEGER		symbol, line_type, coord_ax,
+	INTEGER		symbol, line_type, coord_ax, iunits,
      .			nmv, mr_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL		x_dat(*), y_dat(*)     ! dynamic space allocation 
 
 * internal variable declarations:
+	LOGICAL         missing_polygon
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up
 	CHARACTER*200	KEY_STRING, FULL_VAR_TITLE, plot_title
 * 3/99 *kob* - upped VAR_UNITS from 32 to 64 chars
 	CHARACTER	VAR_UNITS*64, LEFINT*4,
      .			x_ax*1, y_ax*1,buff*8, buff2*4
+	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
      .			slen, slen2, x_lab, y_lab, nline_in_mem, i,
@@ -279,12 +285,13 @@
 	ENDIF
 
 * tell PLOT+ the bad data flags used
-!( the coordinates are prescreened to avoid missing values so this is unneeded)
-!	WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), x_ax
-!	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-!	WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), y_ax
-!	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-! 3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
+	WRITE ( ppl_buff, 3005 ) mr_bad_data( mr_x ), x_ax
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+	WRITE ( ppl_buff, 3005 ) mr_bad_data( mr_y ), y_ax
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+ 	WRITE ( ppl_buff, 3005 ) mr_bad_data( mr_color ), 'Z'
+	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+ 3005	FORMAT ( 'LIMITS ',G15.8,1X,A1,'EQ' )
 	
 * loop through all the polygons variables loading them into PPLUS
 * construct a funky FORTRAN 77 DO-WHILE loop
@@ -336,6 +343,9 @@
 
 * ... locate the (next) contiguous segment in the arrays
 *    ...search for start of segment
+	   missing_polygon = .false.
+	   start = npts
+	   end   = npts
 	   DO 210 i = 1, npts
 	      IF ( x_dat(i) .NE. mr_bad_data(mr_x) 
      .       .AND. y_dat(i) .NE. mr_bad_data(mr_y) ) THEN
@@ -343,7 +353,7 @@
 	         GOTO 220
 	      ENDIF
  210	   CONTINUE
-	   GOTO 290		! no more polygons: exit DO-WHILE
+	   GOTO 240   ! This polygon is all missing in X - omit		
 *    ... find the end of the segment
  220	   DO 230 i = start, npts
 	      IF ( x_dat(i) .EQ. mr_bad_data(mr_x) 
@@ -352,8 +362,8 @@
 	         GOTO 250
 	      ENDIF
  230	   CONTINUE
-	   end = npts
-	   IF (start .GE. end) GOTO 290	 ! no more polygons: exit DO-WHILE
+
+ 240	   IF (start .GE. end ) missing_polygon = .true.
 
 * ... check for adequate PLOT+ memory
  250	   npts = end-start+1
@@ -372,7 +382,13 @@
 
 	   if (overlay) SOVER = .true.
 
-	   IF ( transpz ) THEN
+*          Let PPL know what's going on
+	   makep = 'FILLPOL'
+
+	   if (missing_polygon) then
+	      CALL PPLLDX(0,mr_bad_data(mr_x),mr_bad_data(mr_y),1,
+     .    	   ' ',' ',1.0)	
+	   ELSE IF ( transpz ) THEN
 	      CALL PPLLDX(0,y_dat(start),x_dat(start),npts,' ',' ',1.0)
 	   ELSE
 	      CALL PPLLDX(0,x_dat(start),y_dat(start),npts,' ',' ',1.0)
@@ -383,12 +399,14 @@
 	   nline_in_mem = nline_in_mem + 1
 
 * ... assign the same line style ("1") to all polygons
-	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
+CCC	   CALL LINE_STYLE( symbol, line_type, nline_in_mem, 1 )
 
 	npolygon = npolygon + 1
 	GOTO 200	! end of DO-WHILE loop
- 290	IF (npolygon .EQ. 0) GOTO 5230
-* ----
+ 290	IF (npolygon .EQ. 0 ) GOTO 5230
+
+* NOW set the line style
+	CALL LINE_STYLE( symbol, line_type, 1, 1 )
 
 * release context stack buffers
 	cx_stack_ptr = cx_stack_ptr - 2
@@ -412,11 +430,28 @@
 	IF (ncolor .NE. npolygon) GOTO 5220		! color array size doesn't match polygons 
 
 	if (overlay) SOVER = .true.
+	makep = 'FILLPOL'
+
 	CALL PPLLDX(0,x_dat,x_dat,ncolor,' ',' ',1.0)
 
-* turn off axis formatting for polygon plots
-        CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
-        CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
+* turn on lon/lat axis formatting for polygon plots, otherwise off
+
+	IF (.NOT.overlay) THEN
+	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
+	   IF (iunits .EQ. 4) THEN
+	      CALL PPLCMD ( from, line, 0, 'XFOR (I7,''LONE'')', 1, 1 )
+	   else
+	      CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
+	   endif
+	   
+	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
+	   IF (iunits .EQ. 4) THEN
+	      CALL PPLCMD ( from, line, 0, 'YFOR (I7,''LAT'')', 1, 1 )
+	   else
+	      CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
+	   endif
+	ENDIF
+	
 
 * axis scaling -- only applies if it is a fresh plot (not an overlay)
 * most of the work is avoiding an error if there is no data range with

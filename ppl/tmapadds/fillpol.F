@@ -207,7 +207,8 @@ C *jd*
 	zzmax = -1e33
 	nlm1  = nl - 1
 
-	do 100 i = 0, nlm1 
+	do 100 i = 0, nlm1 	      
+	   if (ZEQ.AND.x(zpolybase+i).EQ.CMZEQ) GOTO 100
 	   if (x(zpolybase+i) .gt. zzmax) zzmax = x(zpolybase+i)
 	   if (x(zpolybase+i) .lt. zzmin) zzmin = x(zpolybase+i)
  100	end do
@@ -334,17 +335,37 @@ C ------------
 
 	   if (fill_it) then
 *             Determine the color index for the fill
+	      if (ZEQ.AND.x(zpolybase+I-1).EQ.CMZEQ) GOTO 157
+
 	      fill_ndx = GET_NDX (x(zpolybase+I-1),fill_ndx)
-	      if (fill_ndx .eq. -999) goto 200
+	      if (fill_ndx .eq. -999) goto 157
 
 *             Draw the filled polygon
-	      if (line_it) call gselnt (my_trans)
 	      CALL SET_FILL_NDX (fill_ndx)
-	      CALL GFA(nvertex, x(xpolybase), x(ypolybase)) 
+
+	      do 155 j = xpolybase, xpolybase+nvertex-1
+		 IF (XEQ.AND.X(J).EQ.CMXEQ) GOTO 157
+ 155	      continue
+
+	      do 156 j = ypolybase, ypolybase+nvertex-1
+		 IF (YEQ.AND.X(J).EQ.CMYEQ) GOTO 157
+ 156	      continue
+
+	      if (nvertex .gt. 2) then
+		 if (line_it) call gselnt (my_trans)
+		 CALL GFA(nvertex, x(xpolybase), x(ypolybase)) 
+	      end if
 	   end if
 
-	   if (line_it) then
+ 157	   if (line_it) then
 *             Outline the polygon
+
+	      nvertex = 0
+	      DO 158 J=IBASE+1,IBASE+LLENG(I)
+		 nvertex = nvertex + 1
+		 IF (XEQ.AND.X(xpolybase+nvertex-1).EQ.CMXEQ) GOTO 199
+		 IF (YEQ.AND.X(ypolybase+nvertex-1).EQ.CMYEQ) GOTO 199
+ 158	      CONTINUE
 
 	      if (fill_it) call gselnt (trans_no)
 	      nvertex = 0
@@ -363,7 +384,7 @@ C ------------
 	   end if
 
 	   if (interrupted) go to 1000 !*jd* 8.3.92
-	   IBASE=IBASE+LLENG(I)		! prepare for next line
+ 199    IBASE=IBASE+LLENG(I)	! prepare for next line
  200	CONTINUE
 
 ******** END OF LOOP OVER LINES STORED

@@ -31,13 +31,21 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 	$(F77) $(FFLAGS) $<
 	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
+.c.o:
+	cc ${CFLAGS} $<
+
+.f.o:
+	$(F77) $(FFLAGS) $<
+
 #
 # Targets
 #
 
 all:	ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so subtract.so factorial.so 
  
-extra:	ferret_cmn add_9.so avet.so custom.so custom_nf.so custom_x.so extend.so pass_thru.so percent_good_t.so status.so storage.so strings.so subtract.so times_table.so transpose_xy.so
+new:	ferret_cmn pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
+ 
+extra:	ferret_cmn custom.so extend.so  status.so  strings.so times_table.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

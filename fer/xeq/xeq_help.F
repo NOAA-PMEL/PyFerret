@@ -52,114 +52,29 @@
 * V5.0: 1/1/99 - Start up appropriate Web browser on PC
 * v500: 1/26/99 - *kob* update help to reflect current options
 
-#ifdef unix
+* V5.6  3/2004 - update help to point only to web resources and SHOW commands
+
         include 'ferret.parm'
         include 'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XERRMSG_TEXT.CMN'
-	INCLUDE	'FERRET_CMN:XLBR_IO.CMN'
-	INCLUDE '($HLPDEF)'
 
-	EXTERNAL PUT_OUTPUT, GET_INPUT
-#endif
 
-#ifdef unix
-#ifdef __CYGWIN__
-	call SPLIT_LIST(pttmode_help, ttout_lun,
-     .   ' Starting your default Web browser...'
-     .								, 0)
-	call system('bash.exe startDefaultBrowser&');
-#else
 	CALL SPLIT_LIST(pttmode_help, ttout_lun,
-     .   ' Detailed help is available from several sources:'
+     .   ' Detailed help is available online at www.ferret.noaa.gov'
      .								, 0)
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
-     .   '  o The Web version of the Users Guide at www.ferret.noaa.gov'
-     .								, 0)
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
-     .   '  o Hard copy of the Users Guide from directory $FER_DIR/doc'
-     .								, 0)
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
-     .   '  o Text search of the Users Guide via the Unix command Fhelp'
-     .								, 0)
-	CALL SPLIT_LIST(pttmode_help, ttout_lun,
-     .   ' To execute Fhelp from the "yes?" prompt type   SPAWN Fhelp'
-     .								, 0)
+
 	CALL SPLIT_LIST(pttmode_help, ttout_lun,
      .   ' To obtain a list of FERRET commands type    SHOW COMMANDS'
      .								, 0)
-#endif
+
+	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .' To obtain a list of FERRET functions type    SHOW FUNCTIONS'
+     .								, 0)
+
+	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .' To obtain a list of FERRET transforms type    SHOW TRANSFORM'
+     .								, 0)
 
         RETURN
-#else
 
-* internal variable declarations:
-	INTEGER		LBR$OUTPUT_HELP, PUT_OUTPUT, GET_INPUT
-	INTEGER		status, vax_code
-	CHARACTER*24	ferret_help_lib / 'FERRET_HELP' /	! logical name
-	CHARACTER*16	err_code
-
-* initialize page control
-	line_count = 0
-	stop_output = .FALSE.
-
-* call for HELP in the method requested
-	IF ( num_args .EQ. 0 ) THEN
-
-* just "HELP" was cried out
-	WRITE ( ttout_lun, * )
-     .	'Use "HELP error" to get help on the most recent ',
-     .						'program error message'
-	   vax_code = LBR$OUTPUT_HELP(
-     .				PUT_OUTPUT,
-     .				,
-     .				' ',
-     .				ferret_help_lib,
-     .				HLP$M_PROMPT,
-     .				GET_INPUT	)
-
-	ELSEIF ( num_args .EQ. 1 .AND.
-     .		 cmnd_buff( arg_start(1):arg_start(1)+2 ) .EQ. 'err' .OR.
-     .		 cmnd_buff( arg_start(1):arg_start(1)+2 ) .EQ. 'ERR' ) THEN
-
-* "HELP error"
-	   IF     ( last_error .GT. greport   ) THEN
-	      err_code = report_err_code( last_error - greport   )
-	   ELSEIF ( last_error .GT. gnoreport ) THEN
-	      err_code = noreport_err_code( last_error - gnoreport )
-	   ELSEIF ( last_error .GT. gspecial ) THEN
-	      err_code = special_err_code( last_error - gspecial  )
-	   ELSE
-              err_code = 'unknown_err'
-	   ENDIF
-	   vax_code = LBR$OUTPUT_HELP(
-     .				PUT_OUTPUT,
-     .				,
-     .				'error '//err_code,
-     .				ferret_help_lib,
-     .				0,
-     .				GET_INPUT	)
-	
-	ELSE
-* "HELP somethin-or-other" was given
-	   vax_code = LBR$OUTPUT_HELP(
-     .				PUT_OUTPUT,
-     .				,
-     .				cmnd_buff(arg_start(1):len_cmnd),
-     .				ferret_help_lib,
-     .				HLP$M_PROMPT,
-     .				GET_INPUT	)
-	ENDIF
-
-	IF ( MOD(vax_code,2) .EQ. 0 ) CALL ERRMSG
-     .			( ferr_internal, status, ferret_help_lib, *5000 )
-	RETURN
-
-* error exit
- 5000	RETURN
-#endif
 	END
 

@@ -20,7 +20,7 @@ c* number as a string.  Calls internal Ferret routine tm_fmt.
       SUBROUTINE ef_set_real_to_string ( val, str_len, outstring )
 
       REAL val
-      INTEGER digits, max_len, str_len
+      INTEGER str_len
       CHARACTER*(*) outstring
       CHARACTER*8 TM_FMT
 

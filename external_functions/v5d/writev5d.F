@@ -42,6 +42,8 @@
 *  ACM 8/99 Read either a date and time or a timestep from the "datebuf"
 *           that is returned from ef_get_axis_dates
 *
+*  ACM 8/00 Initialize variable lowlev
+*
 * This function takes up to 8 variables from ferret data sets
 * and writes them in Vis5D format.  Send in variables to write in the
 * first several parameter positions; fill the remaining positions with "0"
@@ -383,6 +385,9 @@
       CHARACTER*10 varname(MAXVARS_OUT)
       DATA varname/'var1', 'var2', 'var3', 'var4', 'var5', 'var6', 
      .          'var7', 'var8'/
+
+*  Initialize lowlev
+      DATA lowlev/MAX_V5_VARS*0/
  
 *  Names of Vis5D utility functions.
 

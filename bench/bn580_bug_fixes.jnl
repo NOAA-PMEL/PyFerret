@@ -5,7 +5,7 @@
 
 ! POLYGON (or SHADE) plots with a single level had no fill color
 GO bn_reset
-GO err570_fill_singlecolor.jnl
+GO err570_singlecolor.jnl
 
 ! colorbar labels too close to the bar, when user sets bar location
 GO bn_reset
@@ -18,3 +18,16 @@ GO err570_null_symbol.jnl
 ! Replace text expression with its value: string variable was too short
 GO bn_reset
 GO err570_parse_labelcommand.jnl
+
+! result of COMPRESSK_BY function does not vary in X
+GO bn_reset
+GO err570_compressk_by.jnl
+
+! Command parsing on PPL side had string lengths too short
+GO bn_reset
+GO err570_long_label.jnl
+
+! Allow PPL POLYGON after a POLY/SET (previously was PPL FILLPOL)
+GO bn_reset
+GO err570_ppl_poly.jnl
+

@@ -1,28 +1,29 @@
 \cancel mode verify
 ! dods_pmel.jnl - 4/99 *sh and *kob*
+! 7/01 *acm*  update DODS base URL and example directory name
 
 ! DESCRIPTION: "Use" a dods data set from JPL
 
-! usage:              arg 1 
-!	GO dods_pmel data_set
+! usage: arg 1
+! GO dods_pmel data_set
 
 ! examples:
-!  blah blah
+! blah blah
 
 ! Set the base DODS URL for this supplier
-DEFINE SYMBOL dods_base_url "http://dods.jpl.nasa.gov/cgi-bin/nph-hdf/pub/"
+DEFINE SYMBOL dods_base_url "http://dods.jpl.nasa.gov/dods-bin/nph-hdf/pub/"
 
 ! check if data set argument was given. If not, do a query
-IF   $1"True|*>False|"  THEN
-  sp netscape ftp://podaac.jpl.nasa.gov/pub &
-  SAY ----------------------------------
-  SAY "Spawning external viewer to display listings of Available Data"
-  SAY " "
-  SAY "The base URL is:  ($DODS_base_url)"
-  SAY " " 
-  SAY "Example:"
-  SAY "go dods_jpl ocean_wind/ssmi/derived_winds/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf "
-  QUIT
+IF $1"True|*>False|" THEN
+sp netscape ftp://podaac.jpl.nasa.gov/pub &
+SAY ----------------------------------
+SAY "Spawning external viewer to display listings of Available Data"
+SAY " "
+SAY "The base URL is: ($DODS_base_url)"
+SAY " "
+SAY "Example:"
+SAY "go dods_jpl ocean_wind/ssmi/atlas_ssmi/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf"
+QUIT
 ENDIF
 
 !!! ==>
@@ -33,17 +34,18 @@ ENDIF
 ! NOTE 2: abbreviations for data set names can be created here
 
 ! abbreviation examples
-IF  $1"|atlas950103>1|*>0|" THEN
-  DEFINE SYMBOL DODS_data_set ocean_wind/ssmi/derived_winds/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf
-
+IF $1"|atlas950103>1|*>0|" THEN
+DEFINE SYMBOL DODS_data_set
+ocean_wind/ssmi/atlas_ssmi/hdf/data/level3.5_5day/1995/atlas.ssmi.ver02.level3.5_5day.s950103.hdf
 
 ! all non-abbreviated data set (INCLUDING BLOOPERS!!)
 ELSE
-  DEFINE SYMBOL DODS_data_set $1 
+DEFINE SYMBOL DODS_data_set $1
 ENDIF
 
 ! SET DATA
 SET DATA "($DODS_base_url)($DODS_data_set)"
+SHOW DATA
 
 ! clean up
 SET MODE/LAST verify

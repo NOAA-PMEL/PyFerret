@@ -1,4 +1,5 @@
 SRCS_F = \
 efcn_copy_array_dims.F\
 efcn_get_custom_axis.F\
-efcn_get_workspace_addr.F 
+efcn_get_workspace_addr.F \
+efcn_set_work_array_dims.F

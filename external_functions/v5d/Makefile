@@ -38,10 +38,10 @@ V5D_OBJS = binio.o v5d.o
 all:	efn ferret_cmn binio.o v5d.o writev5d.so
 
 efn:
-	ln -s ../examples/efn efn
+	ln -s ../efn efn
 
 ferret_cmn:
-	ln -s ../examples/efn/ferret_cmn ferret_cmn
+	ln -s ../efn/ferret_cmn ferret_cmn
 
 clean:
 	-rm -f *.o *.so core a.out temp.* efn ferret_cmn

@@ -1055,9 +1055,11 @@
 	   ENDIF
 
 * ... show all the external functions
+* 3/24/99 *kob* clean up duty - change below to blank space rather than
+*               null string
 	   IF ( qual_given(slash_internal) .EQ. 0 ) THEN
               CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .             '', 0)       ! Print a blank line
+     .             ' ', 0)       ! Print a blank line
               CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .           'Externally defined functions available to Ferret:',
      .             0)

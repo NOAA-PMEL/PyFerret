@@ -84,6 +84,7 @@
 *                   order of precedence for axis orientation.
 * V550 *acm* 1/03 - Account for differences in behavior of CD_GET_ATTVALC
 *                   under OSF and PC.
+* V552 *acm* 1/03 - error checking on value of calendar attribute.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -126,14 +127,14 @@
      .        CD_GET_ATTVAL_L, 
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
-     .        got_mod, mod_tf, setmodfalse
+     .        got_mod, mod_tf, setmodfalse, ok_cal
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
      .        edgid, spacing_atlen, epic_t2var, since_T0,
-     .        cal_id, year, month, day, hour, minute, second
+     .        cal_id, year, month, day, hour, minute, second, slen, nc
 
       REAL    rbuff, delta, first_delta
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen, tmp
@@ -144,6 +145,7 @@
       CHARACTER*13 TM_STRING
       CHARACTER*132 buff
       CHARACTER*1 axis_dir
+      CHARACTER*50 allcals
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -221,13 +223,35 @@
      .                        vname(:vlen), buff, 48 )
       IF (got_it) then
          istat = STR_UPCASE (buff, buff)
-         line_cal_name(iaxis) = buff
-         IF (line_cal_name(iaxis) .EQ. '360') 
-     .        line_cal_name(iaxis) = '360_DAY' 
-         IF (line_cal_name(iaxis) .EQ. 'STANDARD') 
-     .        line_cal_name(iaxis) = 'GREGORIAN' 
-         IF (line_cal_name(iaxis)(1:6) .EQ. 'COMMON') 
-     .        line_cal_name(iaxis) = 'NOLEAP' 
+
+         IF (buff(1:3) .EQ. '360') buff = '360_DAY' 
+         IF (buff .EQ. 'STANDARD') buff = 'GREGORIAN' 
+         IF (buff(1:6) .EQ. 'COMMON') buff = 'NOLEAP' 
+
+         ok_cal = .FALSE.
+         nc = 1
+         allcals = ' '
+
+         DO 100 i = 1, mxcals
+  111       FORMAT (a9,' ')
+            slen = TM_LENSTR1( allowed_calendars(i)(1:9) )
+            write (allcals(nc:nc+9), 111) allowed_calendars(i)
+            nc = nc + 10
+
+            IF (buff(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
+               ok_cal = .TRUE.
+               line_cal_name(iaxis) = allowed_calendars(i)
+            ENDIF
+  100    CONTINUE
+         IF (.NOT. ok_cal) THEN
+            slen = TM_LENSTR1(buff)
+            CALL TM_NOTE('calendar attribute on axis "'//vupcase(:vlen)//
+     .                '" is not recognized: '//buff(1:slen), tt)
+            CALL TM_NOTE('Valid calendars are '//allcals, tt)
+            CALL TM_NOTE(
+     .             'A dummy axis of subscripts will be used', tt)
+            GOTO 1000
+         ENDIF
       ENDIF
       cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
 
@@ -760,7 +784,7 @@ c         ENDIF
      .                               hour, minute, second, status)
 	  CALL TM_WW_AX_1_N(iaxis, first, tmp)
 	  secs2start = t0_secs + first*line_tunit(iaxis)
-          IF ( (secs2start .LE.  secsperyear)
+          IF ( (secs2start .LE.  2*secsperyear)
      .	 .AND. (axwwlen*line_tunit(iaxis) .LE. secsperyear) ) THEN
             line_modulo(iaxis) = .TRUE.
             IF (line_modulo_len(iaxis).EQ.0.0D0)

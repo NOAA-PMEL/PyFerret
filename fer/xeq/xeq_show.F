@@ -205,8 +205,9 @@
      .		rqst_dset, tmp_grid
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
-     .		default*10, show_str*255, arg*24, name*32, arg30*30,
-     .          axesOrCorner*6(2)
+     .		default*10, show_str*255, arg*24, name*32, arg30*30
+* 10/01 *kob* had to change decl of axesOrCorner for picky f95
+        CHARACTER*6 axesOrCorner(2)
 
 	INTEGER efcn_scan
 

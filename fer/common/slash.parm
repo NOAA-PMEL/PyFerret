@@ -6,6 +6,7 @@
 * V522+ *acm* 10/00 - added VECTOR/STREAMLINE (alias STREAM)
 * V530 *sh* 10/00 - added slash_set_data_type, slash_set_data_delimiters
 *	*sh* 1/01 - added slash_plot_step
+* V530 *kob* 1/01 - added slash_repeat_animate, slash_repeat_loop
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -157,7 +158,10 @@
      .
      .			slash_stat_brief,
      .
-     .			slash_noaxes
+     .			slash_noaxes,
+     .
+     .			slash_repeat_animate,
+     .			slash_repeat_loop		
 
 
 	PARAMETER     ( qual_on	 = -11,
@@ -307,7 +311,10 @@
      .
      .			slash_stat_brief	= 0 + 1,
      .
-     .			slash_noaxes		= 24 + 1 )
+     .			slash_noaxes		= 24 + 1,
+     .
+     .                  slash_repeat_animate	= 9 + 1 ,
+     .                  slash_repeat_loop	= 10 + 1)
 
 	INTEGER		slash_xlimits, slash_ylimits, slash_title,
      .			slash_pen, slash_hlimits, slash_vlimits,

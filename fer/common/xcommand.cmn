@@ -13,7 +13,8 @@
 * 6/99 *sh* increased num_predefined_alias for WHERE alias
 * V510 5/99 *sh* - increased number of quals for all graphics commands,
 *		for SHOW FUNC
-
+* V530 1/01 *kob*- increased number of quals for repeat command
+*
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
 * arrays SUBCOMMANDS and QUALIFIERS.  This is done so that new commands,
@@ -277,7 +278,7 @@
 	INTEGER		nsub16       , nsub_at17 ,
      .			nqual16a     ,nqual_at17a
 	PARAMETER    (	nsub16   = 1, nsub_at17    = nsub_at16   + nsub16,
-     .			nqual16a =10,nqual_at17a  = nqual_at16a + nqual16a  )
+     .			nqual16a =13,nqual_at17a  = nqual_at16a + nqual16a  )
 
 * STATISTICS		 - commmand # 17
 	INTEGER		nsub17       , nsub_at18 ,

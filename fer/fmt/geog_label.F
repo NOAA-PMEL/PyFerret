@@ -12,6 +12,9 @@
 *       7/92 - use TM_DATE_OK for this
 *            - vertical axis requires meters units AND UD orientation
 * V320: 12/19/94 - recognize millibars and decibars as special axes
+* v491: 2/23/98 *kob* - add check for undefined axis which can cause
+*                       a crash if REPEAT command doesn't have fully 
+*                       mature context to work with.
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -52,7 +55,9 @@
 
 * initialize
 	line = grid_line( idim, grid )
-	IF ( line .EQ. mnormal .OR. line .EQ. munknown ) THEN
+* 2/98 *kob* add check for undefined axis 
+	IF ( line .EQ. mnormal .OR. line .EQ. munknown 
+     .         .OR. line .EQ. unspecified_int4) THEN
 	   GEOG_LABEL = .FALSE.
 	   RETURN
 	ELSE

@@ -18,6 +18,7 @@ metafile_writes.F\
 new_gks_window.F\
 open_gks_ws.F\
 open_metafile.F\
+pattern_set.F\
 pltdat_block_data.F\
 point_convert.F\
 pplp_ver_data.F\

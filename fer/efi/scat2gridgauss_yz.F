@@ -303,7 +303,7 @@
       INTEGER ny, nz, nyaxis, nzaxis
       INTEGER nysize, nzsize
       INTEGER i3, j3, k3, l3
-      INTEGER i1, i1n, i2, i2n, l3
+      INTEGER i1, i1n, i2, i2n
 
       REAL y1, z1, yf, zf, t1, tf
       REAL yy, zz, tt

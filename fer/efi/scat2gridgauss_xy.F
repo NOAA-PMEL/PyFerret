@@ -305,7 +305,7 @@
       INTEGER nx, ny, nxaxis, nyaxis
       INTEGER nxsize, nysize
       INTEGER i3, j3, k3, l3
-      INTEGER i1, i1n, i2, i2n, l3
+      INTEGER i1n, i2n
 
       REAL x1, y1, xf, yf, t1, tf
       REAL xx, yy, tt

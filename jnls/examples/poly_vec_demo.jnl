@@ -31,7 +31,7 @@ LABEL/NOUSER `($ppl$xlen)/2`, `($ppl$yorigin)-1`, 0, 0, 0.16, "UWND, VWND"
 
 
 ! The inputs to poly_vectors.jnl are the components of the vectors to be 
-! plotted and the X and Y lcoordinates of the vectors.  We need to limit 
+! plotted and the X and Y coordinates of the vectors.  We need to limit 
 ! the region of the data explicitly, so that the calculations are done 
 ! only for the vectors we are interested in.
 

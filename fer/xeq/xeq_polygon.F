@@ -50,6 +50,9 @@
 *                  PLOT/VLOG or PLOT/HLOG
 * V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
 *                   done with qualifiers /AXES= or /NOAXES.
+* v541 *acm*  5/02 add option to control outline on the shade key boxes 
+*                   /KEY=continuous
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -93,9 +96,11 @@
 * internal parameter declarations
 	INTEGER ncolors
 	PARAMETER (ncolors = 6)
+        LOGICAL cont_key
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
+
 	CALL DISP_DATA_SET_UP( memory,
      .		ax1_start, ax1_blks, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
@@ -238,6 +243,19 @@ CC       => Set values here instead.
 	IF (qual_given(slash_polygon_nokey) .gt. 0) do_key = .FALSE.
 	IF ( do_key ) THEN
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
+
+* ... /KEY=continouus ?
+              loc = qual_given(slash_polygon_key )
+              IF ( loc .GT. 0) THEN
+	         CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+	         IF ( buff(1:3) .EQ. 'con' ) THEN
+                    cont_key = .TRUE.
+                    CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
+                 ENDIF
+              ENDIF
+
 	ELSE
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
 	ENDIF
@@ -345,6 +363,9 @@ CC       => Set values here instead.
 
 * restore axes? (5/29/97) revised 3/02
 	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+
+* restore default (non-continuous) key style?
+        IF (cont_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

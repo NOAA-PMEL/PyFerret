@@ -1213,8 +1213,8 @@
 		DATA qualifiers  (nqual_at27a+24)/ 'NOAXES'/	!/noaxes
 	        DATA qualifiers  (nqual_at27a+25)/ 'PATTERN'/   !/pattern=
 		DATA qualifiers  (nqual_at27a+26)/ 'FILL'/	!/fill
-		DATA qualifiers  (nqual_at27a+27)/ '****'/	!
-		DATA qualifiers  (nqual_at27a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at27a+27)/ 'KEY'/	!/key
+		DATA qualifiers  (nqual_at27a+28)/ 'NOKEY'/	!/nokey
 		DATA qualifiers  (nqual_at27a+29)/ '****'/	!
 
 * **** - command # 28

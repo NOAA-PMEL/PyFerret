@@ -179,10 +179,10 @@
      .          'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
 
 * default key
-	do_key =  (qual_given(slash_shad_key)  .GT. 0)
-     .          .OR. ( (qual_given(slash_shad_line) .EQ. 0)
+	do_key =  (qual_given(slash_polygon_key)  .GT. 0)
+     .          .OR. ( (qual_given(slash_polygon_line) .EQ. 0)
      .           .AND. .NOT.overlay )
-	IF (qual_given(slash_shad_nokey) .gt. 0) do_key = .FALSE.
+	IF (qual_given(slash_polygon_nokey) .gt. 0) do_key = .FALSE.
 	IF ( do_key ) THEN
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 	ELSE

@@ -261,9 +261,11 @@
      .			slash_title   = 1 + 22,
      .			slash_pen   = 1 + 23 )
 
+        INTEGER		slash_polygon_line, slash_polygon_fill,
+     .	                slash_polygon_key, slash_polygon_nokey
 
-        INTEGER		slash_polygon_line,slash_polygon_fill
-
-	PARAMETER     ( slash_polygon_line = 1 + 17,
-     .                  slash_polygon_fill = 1 + 26 )
+	PARAMETER     ( slash_polygon_line  = 1 + 17,
+     .                  slash_polygon_fill  = 1 + 26,
+     .			slash_polygon_key   = 1 + 27,
+     .			slash_polygon_nokey = 1 + 28 )
 

@@ -58,7 +58,15 @@ LET/QUIET TRKynorm = MISSING(TRKynorm0[($TRKax)=@sbx:$6"3"],TRKynorm0)
 ! determine default scale
 LET/QUIET TRKyrange = (($yaxis_max))-(($yaxis_min))
 LET/QUIET TRKdata_range = TRKdata[($TRKax)=@max] - TRKdata[($TRKax)=@min]
-LET/QUIET TRKdefault_scale = 0.1 * TRKyrange/TRKdata_range
+
+! Handle constant fields & custom scaling...
+IF  $5"FALSE|*>TRUE" THEN 
+    LET/QUIET TRKdefault_scale = 0.1 * TRKyrange
+  ELIF `TRKdata_range eq 0` THEN 
+    LET/QUIET TRKdefault_scale = 0.1 * TRKyrange
+  ELSE
+    LET/QUIET TRKdefault_scale = 0.1 * TRKyrange/TRKdata_range
+ENDIF
 
 LET/QUIET TRKscale = $5"1" * TRKdefault_scale * ((($ppl$ylen))/(($ppl$xlen)))
 

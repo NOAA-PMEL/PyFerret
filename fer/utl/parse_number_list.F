@@ -7,6 +7,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500: *sh* 12/98
+*	   2/99 - bug fix - 2 commas together
 
 * calling argument declarations
 	INTEGER		nmax, n, status
@@ -38,15 +39,21 @@
 
 * loop through the comma list decoding and returning values
  100	CONTINUE
-	IF ( .NOT.TM_DIGIT(string(last_comma_pos+1:slen)) ) GOTO 5000
-
-	comma_pos = INDEX( string(last_comma_pos+1:slen), ',' )
+	IF (last_comma_pos .GE. slen) THEN
+	   comma_pos = 0	! last item
+	ELSE
+	   comma_pos = INDEX( string(last_comma_pos+1:slen), ',' )
+	ENDIF
 	n = n + 1
 	If ( n .GT. nmax ) GOTO 5100   ! should never happen
 	IF ( comma_pos .EQ. 0 ) THEN
 *  ... last item in list
-	   buff = string(last_comma_pos+1:slen)
-	   READ ( buff, *, ERR=5000 ) array(n)
+	   IF (last_comma_pos .GE. slen) THEN
+	       array(n) = bad_val4			! comma as last item
+	   ELSE
+	      buff = string(last_comma_pos+1:slen)
+	      READ ( buff, *, ERR=5000 ) array(n)
+	   ENDIF
 	   GOTO 1000
 	ELSEIF ( comma_pos .EQ. 1 ) THEN
 	   array(n) = bad_val4				! 2 commas together
@@ -67,7 +74,8 @@
 	RETURN
 
 * syntax error
+ 4999	RETURN
  5000	CALL ERRMSG( ferr_syntax, status, string(last_comma_pos+1:),
-     .							*1000 )
- 5100	CALL ERRMSG( ferr_internal, status, string, *1000 )
+     .							*4999 )
+ 5100	CALL ERRMSG( ferr_internal, status, string, *4999 )
 	END

@@ -109,6 +109,7 @@
 * V420: 4/23/96 - added new commands IF, ELSE, ELIF, ENDIF
 * Linux Port *kob* 1/97 - Added external for XWINDOW_STATE_DATA block data
 * V450: 7/7/97 - added external for XGRID_CHG_FCNS block data
+* V500: 2/99 *sh* - added POLYGON command
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -198,7 +199,7 @@
 
 	GOTO (	 10, 20, 30, 40, 50, 60, 70, 80, 90,100,
      .		110,120,130,140,150,160,170,180,190,200,
-     .          210,220,230,240,250,260 ) cmnd_num
+     .          210,220,230,240,250,260,270 ) cmnd_num
 
  10	CALL XEQ_SET( memory, reconfig )
 	IF ( reconfig .NE. 0 ) GOTO 400
@@ -252,6 +253,8 @@
  250	CALL XEQ_ELIF
 	GOTO 300
  260	CALL XEQ_ENDIF
+	GOTO 300
+ 270	CALL XEQ_POLYGON( memory )
 	GOTO 300
 
 * finished a single command

@@ -3,6 +3,7 @@
 * 4/23/96 - increased total_num_alias from 30 to 150
 *	  - increased number of commands by 6 (adding IF, ELSE, ELIF, ENDIF)
 *			and room for growth
+* 2/99 *sh* - added POLYGON command
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -329,11 +330,11 @@
 	PARAMETER    (	nsub26   = 1, nsub_at27    = nsub_at26   + nsub26,
      .			nqual26a = 2,nqual_at27a  = nqual_at26a + nqual26a  )
 
-* ****/****/**** - command number 27
+* POLYGON	- commmand number 27
 	INTEGER		nsub27       , nsub_at28 ,
      .			nqual27a     ,nqual_at28a
 	PARAMETER    (	nsub27   = 1, nsub_at28    = nsub_at27   + nsub27,
-     .			nqual27a = 4,nqual_at28a  = nqual_at27a + nqual27a  )
+     .			nqual27a = 25,nqual_at28a  = nqual_at27a + nqual27a  )
 
 * ****/****/**** - command number 28
 	INTEGER		nsub28       , nsub_at29 ,

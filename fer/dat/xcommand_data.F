@@ -97,6 +97,7 @@
 * V450	11/14/96 - added LIST/CLOBBER
 *	5/97	 - added /NOAXES to SHADE, PLOT, CONTOUR, and VECTOR
 *       7/97     - added SHOW FUNCTIONS
+* V500  2/99 *sh* - added POLYGON command
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -1151,25 +1152,46 @@
 		DATA qualifiers  (nqual_at26a+0)/ '****'	/
 		DATA qualifiers  (nqual_at26a+1)/ '****'	/
 
-* **** - command # 27
-	DATA commands(27)			/ '****'	/
-	DATA num_subcommands(27)		/ nsub27	/
+* POLYGON - command # 27
+	DATA commands(27)			/ 'POLYGON'	/
+	DATA num_subcommands(27)			/ nsub6		/
 	DATA subcommand_pointer(27)		/ nsub_at27	/
-* **** '    '
-	   DATA subcommands      (nsub_at27 + 0)	/ '    '	/
-	   DATA num_qualifs      (nsub_at27 + 0)	/ nqual27a	/
-	   DATA qualifier_pointer(nsub_at27 + 0)	/ nqual_at27a	/
-* **** / ****
-		DATA qualifiers  (nqual_at27a+0)/ '****'	/
-		DATA qualifiers  (nqual_at27a+1)/ '****'	/
-		DATA qualifiers  (nqual_at27a+2)/ '****'	/
-		DATA qualifiers  (nqual_at27a+3)/ '****'	/
+* POLYGON '    '
+	   DATA subcommands      (nsub_at27 + 0)/ '    '	/
+	   DATA num_qualifs      (nsub_at27 + 0)/ nqual6a	/
+	   DATA qualifier_pointer(nsub_at27 + 0)/ nqual_at27a	/
+* POLYGON/I/J/K/L/X/Y/Z/T/D/OVERLAY/SET_UP/FRAME/TRANSPOSE/COORD_AX
+		DATA qualifiers  (nqual_at27a+0)/ 'I'	/
+		DATA qualifiers  (nqual_at27a+1)/ 'J'	/
+		DATA qualifiers  (nqual_at27a+2)/ 'K'	/
+		DATA qualifiers  (nqual_at27a+3)/ 'L'	/
+		DATA qualifiers  (nqual_at27a+4)/ 'X'	/
+		DATA qualifiers  (nqual_at27a+5)/ 'Y'	/
+		DATA qualifiers  (nqual_at27a+6)/ 'Z'	/
+		DATA qualifiers  (nqual_at27a+7)/ 'T'	/
+		DATA qualifiers  (nqual_at27a+8)/ 'OVERLAY'/	!/overlays
+		DATA qualifiers  (nqual_at27a+9)/ 'SET_UP'/	!/set_up
+		DATA qualifiers  (nqual_at27a+10)/ 'FRAME'/	!/frame
+		DATA qualifiers  (nqual_at27a+11)/ 'D'   /	!/data_set
+		DATA qualifiers  (nqual_at27a+12)/ 'TRANPOSE'/	!/transpose
+		DATA qualifiers  (nqual_at27a+13)/ 'COORD_AX'/	!/coord_ax
+		DATA qualifiers  (nqual_at27a+14)/ 'SYMBOL'/	!/symbol
+		DATA qualifiers  (nqual_at27a+15)/ 'NOLABEL'/	!/nolabel
+		DATA qualifiers  (nqual_at27a+16)/ 'LINE'/	!/line
+		DATA qualifiers  (nqual_at27a+17)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+18)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+19)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+20)/ 'XLIMITS'/	!/xlimits
+		DATA qualifiers  (nqual_at27a+21)/ 'YLIMITS'/	!/ylimits
+		DATA qualifiers  (nqual_at27a+22)/ 'TITLE'/	!/title
+		DATA qualifiers  (nqual_at27a+23)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at27a+24)/ 'NOAXES'/	!/noaxes
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/
 	DATA num_subcommands(28)		/ nsub28	/
 	DATA subcommand_pointer(28)		/ nsub_at28	/
-* **** '    '
+* **** '   
 	   DATA subcommands      (nsub_at28 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at28 + 0)	/ nqual28a	/
 	   DATA qualifier_pointer(nsub_at28 + 0)	/ nqual_at28a	/

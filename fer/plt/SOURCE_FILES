@@ -35,6 +35,7 @@ load_curvilinear.F\
 merged_whoi_date.F\
 movie_frame_ris8.F\
 plot_set_up.F\
+polygon_set_up.F\
 pos_lab.F\
 ppl_axes_off.F\
 ppl_axes_restore.F\

@@ -1,5 +1,7 @@
 * COMMAND.PARM
 * command numbers
+* V500 *sh* 2/99 -- added POLYGON command
+
 	INTEGER		cmnd_set,
      .			cmnd_show,
      .			cmnd_cancel,
@@ -26,6 +28,7 @@
      .			cmnd_else,
      .			cmnd_elif,
      .			cmnd_endif,
+     .			cmnd_polygon,
      .			cmnd_semicolon
 	INTEGER		subcmnd_variable,
      .			subcmnd_set_data,
@@ -59,6 +62,7 @@
      .			cmnd_else    = 24,
      .			cmnd_elif    = 25,
      .			cmnd_endif   = 26,
+     .			cmnd_polygon = 27,
      .			cmnd_semicolon = -123 ) ! not a real command
 	PARAMETER     (	subcmnd_variable = 4,
      .			subcmnd_set_data = 6,

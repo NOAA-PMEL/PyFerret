@@ -47,6 +47,7 @@
 * V230:   6/9/92 - added WIRE command
 *        7/22/92 - turn off in-plane key info e.g. xy plane: VECT u,v[g=temp]
 *  1/28/93 - for SHADE, CONTOUR and VECTOR return a 2D region if possible
+* V500: *sh* added POLYGON command
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -72,6 +73,7 @@
 
 * for PLOT/VS and WIRE the along-axis limits do need to be displayed
         IF ( cmnd_num .EQ. cmnd_wire
+     . .OR.  cmnd_num .EQ. cmnd_polygon
      . .OR. (cmnd_num .EQ. cmnd_plot
      . .AND. qual_given(slash_plot_vs).GT.0) ) RETURN
 

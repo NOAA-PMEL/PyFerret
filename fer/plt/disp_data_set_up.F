@@ -51,13 +51,16 @@
 * V301:   1/7/94 - don't unprotect the command data cuz' GET_MEMORY is called
 *		   during set-up of plots
 * V312: 5/94 - array "memory" as a calling argument
+* V500: 2/99 *sh* - added support for POLYGON command -- working storage needs
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 	include 'ferret_cmn/errmsg.parm'
 	include 'ferret_cmn/slash.parm'
+	include 'ferret_cmn/command.parm'
 	include 'ferret_cmn/xvariables.cmn'
 	include 'ferret_cmn/xcontext.cmn'
+	include 'ferret_cmn/xprog_state.cmn'
 #else
 	INCLUDE	'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -71,21 +74,37 @@
 	REAL memory(*)
 
 * internal variable declarations:
-	INTEGER	MR_DIM_LEN, CGRID_SIZE, ndim, dim(4), arg_num, mr1, ax_len
+	INTEGER	MR_DIM_LEN, CGRID_SIZE,
+     .		idim, ndim, dim(4), arg_num, mr1, ax_len, cx
 
 * get the requested data somehow  (and leave it protected 1/94)
 	CALL GET_PROT_CMND_DATA ( memory, cx_last, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
-* allocate memory used for single precision axes
-* make them each equal to MAX in case axes get transposed or mulit-dim PLOT/VS
-	mr1 = is_mr( 1 )
-	CALL GET_CX_DIMS( is_cx(1), ndim, dim )
-	ax_len = MAX( MR_DIM_LEN( dim(1), mr1 ),
-     .		      MR_DIM_LEN( dim(2), mr1 ),
-     .		      CGRID_SIZE( is_cx(1) )    )
+* compute working storage
+	IF (cmnd_num .EQ. cmnd_polygon) THEN
+* ... allocate buffers used to extract individual polygon coord arrays
+*     set buffer size to the longest axis of 1st coord arg
+	   cx = is_cx(1)
+	   CALL GET_CX_DIMS(cx, ndim, dim)
+	   ax_len = 1
+	   DO 100 idim = 1, ndim
+ 100	   ax_len = MAX(ax_len,
+     .			cx_hi_ss(cx,dim(idim)) - 
+     .			cx_lo_ss(cx,dim(idim)) + 1 )
+	ELSE
+* ... allocate memory used for single precision axes
+*     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
+	   mr1 = is_mr( 1 )
+	   CALL GET_CX_DIMS( is_cx(1), ndim, dim )
+	   ax_len = MAX( MR_DIM_LEN( dim(1), mr1 ),
+     .		         MR_DIM_LEN( dim(2), mr1 ),
+     .		         CGRID_SIZE( is_cx(1) )    )
+	ENDIF
+
+* allocate working storage
 	CALL GET_MEMORY( ax_len, ax1_start, ax1_blks, status )
-	IF ( status .NE. ferr_ok ) GOTO 5100
+	IF ( status .NE. ferr_ok ) GOTO 5020
 	CALL GET_MEMORY( ax_len, ax2_start, ax2_blks, status )
 	IF ( status .NE. ferr_ok ) GOTO 5010
 
@@ -95,5 +114,6 @@
 * error exits - release the memory used for axis buffers
 ! 5000	CALL FREE_MEMORY( ax2_start, ax2_blks )
  5010	CALL FREE_MEMORY( ax1_start, ax2_blks )
+ 5020	CALL UNPROTECT_CMND_DATA	! added 2/99
  5100	RETURN
 	END

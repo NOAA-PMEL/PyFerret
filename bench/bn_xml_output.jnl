@@ -2,6 +2,11 @@
 ! new-V553 output in XML-style format
 ! Illustrate the SHOW commands with /XML xml-style output
 ! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
+
+! 22-Feb-2005 use SHO AXIS/XML `temp,return=taxis` instead
+! of naming the axes; other axes of the same name (e.g. TIME) 
+! may have been defined in other benchmark scrips.
+
 USE gtsa056_2.cdf
 
 SHO DATA/XML
@@ -10,10 +15,10 @@ SHO DATA/VAR/XML
 
 SHO GRID/XML ps3du1
 
-SHO AXIS/XML psxu
-SHO AXIS/XML psyu
-SHO AXIS/XML pszt
-SHO AXIS/XML time
+SHO AXIS/XML `temp,return=xaxis`
+SHO AXIS/XML `temp,return=yaxis`
+SHO AXIS/XML `temp,return=zaxis`
+SHO AXIS/XML `temp,return=taxis`
 
 ! Define a dataset variable
 ! SHOW/XML commands list it w/ its dataset (even if dataset is not default)

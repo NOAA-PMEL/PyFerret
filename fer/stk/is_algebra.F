@@ -82,6 +82,9 @@
 *	3/00 *sh* bug in ERRMSG call at 5900 - extra comma in args
 * V510: 5/00 *sh* - set bad flag on user variables
 *	5/00 *sh* - bug fix: ifcn not init'ed in time for MERGE_CONTEXT(big_cx)
+* V530: 8/00 *sh* - added support for string arrays
+*	12/00 *sh* bug fix: constants as in LET a = 5 were not deleted -- they
+*		accumulated and used up mvars -- err522_too_many_vars.jnl
 
 #ifdef unix
 	include	'ferret.parm'
@@ -163,6 +166,7 @@
 	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	   IF ( status .NE. ferr_ok ) RETURN
 	   big_cx = cx_stack_ptr
+	   CALL INIT_EMPTY_CONTEXT( big_cx)  ! moved from below 8/00 *sh*
 	   is_big_cx( lo_isp ) = big_cx
 	   is_sum   ( lo_isp ) = isalg_transfer
 !	ELSEIF ( cx_category( hi_cx ) .EQ. cat_constant
@@ -180,8 +184,10 @@
 *	result 
 	ELSEIF ( its_gc ) THEN
 	   IF ( is_sum(lo_isp) .EQ. isalg_transfer ) THEN
-	      CALL INIT_EMPTY_CONTEXT( big_cx)
+!	      CALL INIT_EMPTY_CONTEXT( big_cx)  ! moved 8/00 for no-arg fcns
+! NOTE: SET FUNCTION OUTPUT DATA TYPE HERE!! cx_type(big_cx) = GC_FCN_TYPE ...
 	      CALL MERGIFY_CX( lo_cx, uvar, big_cx, status )
+	      cx_type(big_cx) = ptype_float   ! TEMPORARY - UNTIL STRNG FCNS
 	      is_sum( lo_isp ) = isalg_merge_1
 	   ELSEIF ( is_sum(lo_isp) .EQ. isalg_merge_1 ) THEN
 * ... this allows us to distinguish between single component and
@@ -204,6 +210,7 @@
 	   IF (  is_sum(lo_isp) .EQ. isalg_merge_1 ) THEN
 	      CALL MERGIFY_CX( lo_cx, uvar, big_cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      cx_type(big_cx) = ptype_float   ! only GC vars allow strings (??)
 	      is_sum( lo_isp ) = isalg_merge_n
 	   ENDIF
 	   item = is_phase(lo_isp)		! points into uvar_text
@@ -439,7 +446,7 @@
 	IF ( start_sampling ) GOTO 900
 	RETURN 1
 
-* "string"
+* "string" in quotes in variable definition
 * ... get the context here, then RETURN 1 to evaluate
  800	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	IF ( status .NE. ferr_ok ) RETURN
@@ -539,15 +546,12 @@
 	   CALL RE_ASSIGN_VARIABLE( hi_mr, big_cx )
 	   CALL PASS_AMBIG_LIMS( lo_cx, hi_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	ELSEIF (mr_category(hi_mr) .EQ. cat_string) THEN
-! ... string variables not yet implemented 1/99 *sh*
-	   GOTO 5100
+!	ELSEIF (mr_category(hi_mr) .EQ. cat_string) THEN
+!! ... string variables not yet implemented 1/99 *sh*
+!	   GOTO 5100
 	ELSEIF ( EXPLICIT_UVAR(uvar) ) THEN
 * ... result of a simple definition like DEFINE VARIABLE UAVE=U[K=@AVE]
 *	or DEFINE VARIABLE NEW=X
-	   IF ( mr_category(hi_mr) .NE. cat_pseudo_var
-     .	  .AND. mr_category(hi_mr) .NE. cat_constant   )
-     .						CALL MR_NOT_IN_USE(hi_mr)
 	   CALL CREATE_MEM_VAR( big_cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   is_mr( lo_isp ) = new_mr
@@ -555,6 +559,13 @@
      .			   memory(1,mr_blk1(new_mr)), new_mr )
 	   CALL PASS_AMBIG_LIMS( lo_cx, new_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+* component no longer needed
+* 12/00 allow contstants to be deleted
+	   IF ( mr_category(hi_mr) .EQ. cat_constant ) THEN
+	      CALL DELETE_VARIABLE(hi_mr)
+	   ELSEIF ( mr_category(hi_mr) .NE. cat_pseudo_var ) THEN
+	      CALL MR_NOT_IN_USE(hi_mr)
+	   ENDIF
 
 !		This change would fix a minor bug that occurs for "enhanced"
 !		CDF files and GT files (bn230_cdf.sub3), but it creates more
@@ -565,8 +576,8 @@
 
 	ELSE
 	   IF ( mr_category(hi_mr) .NE. cat_pseudo_var
-     .	  .AND. mr_category(hi_mr) .NE. cat_constant   )
-     .						CALL MR_NOT_IN_USE(hi_mr)
+     .    .AND. mr_category(hi_mr) .NE. cat_constant   )
+     .                                        CALL MR_NOT_IN_USE(hi_mr)
 	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
 	ENDIF
 

@@ -110,6 +110,7 @@
 * v541 *acm*  6/02 Add CANCEL AXIS/ALL
 *             6/02 For irregular axes, on CANCEL AXIS axname, recover line_mem
 *                  space with call to remove_axis
+* v541 *acm*  7/02 Capitalize routine names in CALL REMOVE_AXIS, DEALLO_ALL_AXES.
 
 
 	include 'tmap_dims.parm'
@@ -512,7 +513,7 @@
 * CANCEL AXIS/ALL
 
         ELSE IF ( qual_given(slash_canc_axis_all) .GT. 0 ) THEN 	
-	   CALL deallo_all_axes
+	   CALL DEALLO_ALL_AXES
         ELSE
 
 * ... CANCEL AXIS
@@ -525,7 +526,7 @@
 	      line_keep_flag(axis) = .FALSE.  ! see tm_garb_col_grids.F
 	      IF (line_use_cnt(axis) .LE. 0) THEN
 	         IF ( axis .LE. max_lines ) THEN
-                    IF (.NOT. line_regular(axis)) CALL remove_axis(axis)
+                    IF (.NOT. line_regular(axis)) CALL REMOVE_AXIS(axis)
 		    line_name(axis) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(axis)

@@ -1,8 +1,7 @@
         SUBROUTINE VECFLD(U,V,NXS,NYS,PX,PY,XF,YF)
-	real u,v,px,py,xf,yf
-	integer nxs,nys
+        real u,v,px,py,xf,yf
+        integer nxs,nys
 C**
-C**    @(#)vecfld.F	1.5    9/21/89   
 C**
 C**
 C***********************************************************************
@@ -51,14 +50,22 @@ C**
 *       *jd* 8.3.92     Mod to add interrupts
 *	*jd* 12.92	Mod to handle fields of 0 length vectors
 *	*sh* 12/8/93    corrected bug: vectors blow on divide by zero
-C
+*       *acm*7/01	apply scaling to vectors when curv. coords.
+*       *acm*		NOTE: If this routine plots vectors directly along
+*                       the "edge" of the region for modulo axes, try setting
+*                       the region to one grid point less than the whole
+*                       globe, e.g. /X=0:357.5   When curv_coord_sub.F applies
+*			the modulo correction it "interpolates" between two 
+*			x values that are the same.  Also see notes in 
+*                       ~ansley/ans_ferret/curvilinear/curv_coord_sub.F
+C*      *acm* 10/01  remove VMS includes
+
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
 C
 	DIMENSION U(NXS,NYS),V(NXS,NYS),PX(NXS),PY(NYS)
 C
 C
-#ifdef unix
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
@@ -80,23 +87,12 @@ C
         include 'vector_inc.decl'
         include 'VECTOR.INC'
         include 'xcurvilinear.cmn'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LABCOM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_VECTOR.INC'
-#endif
 
 	real xfuser,yfuser,xlousr,ylousr,zave,xt,yt
 	real xx2,yy2,zz,vfact,xtm,ytm,xtx,ytx,xx1,yy1,vx,vy,vclen
-	real thfact,xn,yn,xl,yl,dy,dx
-	integer ic,i,j,lnblk,iln
+	real thfact,xn,yn,xl,yl,dy,dx, alen, the_diff, this_len
+
+	integer ic,i,j,lnblk,iln, overedge
 
 	CHARACTER VECLAB*20
 C
@@ -104,21 +100,17 @@ C	VECTOR,X,Y,VFACT,LABEL
 C
 
 C     Curvilinear coordinates declarations
-        integer icurv, status, ii
+        integer status, ii,mypen
         real x_curv(12), y_curv(12), curv_len
         real tail_i, tail_j, head_i, head_j
         real arrow_i, arrow_j
 
-#ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
 *******************************************************************************
 
+         mypen = 1
 	    IF(VUSER)THEN
 	    	XFUSER=1.
 		YFUSER=1.
@@ -157,11 +149,11 @@ C
 10	    CONTINUE
 	    IF(IC.EQ.0)IC=1
 *	    Mod to handle field of length 0 vectors *jd* 12.92
-	    if (zave .eq. 0.0) then 
+	    IF (zave .eq. 0.0) THEN 
 	       zave = 0.5
 	    else
 	       ZAVE=ZAVE/FLOAT(IC)
-	    endif
+	    ENDIF
 	    VFACT=VLEN/(2.0*ZAVE)
 	    vusrln = (2.0*ZAVE)		!  *sh* 4/90
 	ELSE
@@ -207,182 +199,170 @@ C
 
            xx1=x_curv(1)
            yy1=y_curv(1)
-
-        ENDIF
-
-        IF (curvilinear) THEN
-
-           vclen = SQRT(U(I,J)**2 + V(I,J)**2)
-
-           IF (vclen .GT. 1.0) THEN
-
-              curv_len = 0.0
-              DO 60, ii=1, 500
-
-                 head_i = tail_i + U(I,J)/10
-                 head_j = tail_j + V(I,J)/10
-
-                 x_curv(1)=head_i
-                 y_curv(1)=head_j
-
-                 CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status)
-
-                 xx2=x_curv(1)
-                 yy2=y_curv(1)
-                 
-                 CALL PLOT(XX1,YY1,0,0)    
-                 CALL PLOT(XX2,YY2,1,0)
-
-                 curv_len = curv_len + SQRT((xx2-xx1)**2 + (yy2-yy1)**2)
-
-                 tail_i = head_i
-                 tail_j = head_j
-                 xx1 = xx2
-                 yy1 = yy2
-                 
-                 IF (curv_len*2 .GE. vclen*VFACT) GOTO 70
-
- 60           CONTINUE
-
-C     Now for the arrowhead
-
-
-C     
-C     CALC REAL LENGTH
-C     
- 70           VX=U(I,J)
-              VY=V(I,J)
-C     
-C     SET UP THE ARROW FACTOR HEAD LENGTH SCALE
-C     
-              IF(VCLEN.GT.ARMAX)THEN
-                 THFACT=ARMAX*HFACT/VCLEN
-              ELSE IF(VCLEN.LT.ARMIN)THEN
-                 THFACT=ARMIN*HFACT/VCLEN
-              ELSE
-                 THFACT=HFACT
-              ENDIF
-C     
-C     DRAW ARROW HEADS
-C     
-              arrow_i = head_i + (-VX-.35*VY)*THFACT/XF * 20
-              arrow_j = head_j + (-VY+.35*VX)*THFACT/YF * 20
-              CALL CURV_COORD(arrow_i, arrow_j, 1, 1.0, 1.0, status)
-              CALL PLOT(arrow_i, arrow_j,1,0)
-              CALL PLOT(XX2,YY2,1,0)
-C     
-              arrow_i = head_i + (-VX+.35*VY)*THFACT/XF * 20
-              arrow_j = head_j + (-VY-.35*VX)*THFACT/YF * 20
-              CALL CURV_COORD(arrow_i, arrow_j, 1, 1.0, 1.0, status)
-              CALL PLOT(arrow_i, arrow_j,1,0)
-              CALL PLOT(XX2,YY2,1,0)
-
-           ENDIF
-
-           GOTO 100
-
-        ENDIF
-
-C
-C	HEAD LOCATION USER UNITS
-C
-
-        IF (curvilinear) THEN
-
-           head_i = tail_i + xx2
-           head_j = tail_j + yy2
-
-           x_curv(1)=head_i
-           y_curv(1)=head_j
-
-           CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status) ! xform the pts
-
-           xx2=x_curv(1)
+           xx2=x_curv(1)	! initialize, in case of bad data in loop 60 below
            yy2=y_curv(1)
+           xx1orig = xx1
+           yy1orig = yy1
 
-        ELSE
+           vclen = SQRT( (U(I,J)/xf)**2 + (V(I,J)/yf) **2)
+
+c           call color (mypen)
+c           mypen = mypen + 1 
+c           IF (mypen .GT. 15) mypen = 1
+
+           curv_len = 0.0
+           overedge = 0
+	   the_diff = cmzge
+
+           DO 60, ii=1, 500
+
+              head_i = tail_i + U(I,J)*vfact/10
+              head_j = tail_j + V(I,J)*vfact/10
+
+              IF (head_i .GT. xtx .AND. (.NOT. dim1_modulo)) THEN
+                 head_i = xtx
+                 overedge = 1
+              ENDIF
+              IF (head_j .GT. ytx .AND. (.NOT. dim2_modulo)) THEN
+                 head_j = ytx
+                 overedge = 1
+              ENDIF
+              IF (head_i .LT. xtm .AND. (.NOT. dim1_modulo)) THEN
+                 head_i = xtm
+                 overedge = 1
+              ENDIF
+              IF (head_j .LT. ytm .AND. (.NOT. dim2_modulo)) THEN
+                 head_j = ytm
+                 overedge = 1
+              ENDIF
+
+              x_curv(1)=head_i
+              y_curv(1)=head_j
+
+              CALL CURV_COORD(x_curv, y_curv, 1, 1.0, 1.0, status)
+
+              IF (x_curv(1) .ne. cmzeq) xx2=x_curv(1)
+              IF (y_curv(1) .ne. cmzeq) yy2=y_curv(1)
+ 
+              CALL PLOT(XX1,YY1,0,0)    
+              CALL PLOT(XX2,YY2,1,0)
+              curv_len = curv_len + SQRT((xx2-xx1)**2 + (yy2-yy1)**2)
+ 
+              IF (overedge .EQ. 1) GO TO 80 
+              IF (curv_len/vlen .GE. vclen*VFACT) GOTO 70
+
+              tail_i = head_i
+              tail_j = head_j
+              xx1 = xx2
+              yy1 = yy2
+
+ 60        CONTINUE
+
+ 70        CONTINUE
+
+C  save length in world coordinates, closest to VUSRLN.  For arrow key
+
+           this_len = sqrt((xx1orig-xx2)**2+(yy1orig-yy2)**2)
+	   IF (ABS(vclen - vusrln) .LT. the_diff) alen = this_len
+     
+C     DRAW ARROW HEADS
+
+	   IF (xx2 .NE. cmzeq  .AND. yy2 .NE. cmzeq) THEN
+              CALL vec_arrows(tail_i, tail_j, head_i, head_j, curv_len)
+	   ENDIF	! draw arrow if xx2 and yy2 were ok
+   80	CONTINUE	! vector went over edge
+
+        ELSE	! not curvilinear
 
            XX2 = XX1 + XX2*VFACT/XF
            YY2 = YY1 + YY2*VFACT/YF
-
-        ENDIF
-
 C
 C	CALC REAL LENGTH
 C
-	VX=(XX2-XX1)*XF
-	VY=(YY2-YY1)*YF
-	VCLEN=SQRT(VX**2+VY**2)
+           VX=(XX2-XX1)*XF
+           VY=(YY2-YY1)*YF
+           VCLEN=SQRT(VX**2+VY**2)
 C
 C	IF VECTOR IS TOO SMALL PLOT A POINT
 C
-	IF(VCLEN.LT.VMINLN)THEN
-	    CALL PLOT(XX1,YY1,0,0)
-	    CALL PLOT(XX1,YY1,1,0)
-	    GOTO 100
-	ENDIF
+           IF(VCLEN .LT. VMINLN)THEN
+	      CALL PLOT(XX1,YY1,0,0)
+	      CALL PLOT(XX1,YY1,1,0)
+	      GOTO 100
+           ENDIF
 C
 C	SET UP THE ARROW FACTOR HEAD LENGTH SCALE
 C
-	IF(VCLEN.GT.ARMAX)THEN
-	    THFACT=ARMAX*HFACT/VCLEN
-	ELSE IF(VCLEN.LT.ARMIN)THEN
-	    THFACT=ARMIN*HFACT/VCLEN
-	ELSE
-	    THFACT=HFACT
-	ENDIF
+           IF(VCLEN .GT. ARMAX)THEN
+	      THFACT=ARMAX*HFACT/VCLEN
+           ELSE IF(VCLEN .LT. ARMIN .AND. VCLEN.GT.0.)THEN
+	      THFACT=ARMIN*HFACT/VCLEN
+           ELSE
+	      THFACT=HFACT
+           ENDIF
 C
 C	DRAW ARROW HEADS
 C
-	XN=XX2+(-VX-.35*VY)*THFACT/XF
-	YN=YY2+(-VY+.35*VX)*THFACT/YF
-	CALL PLOT(XN,YN,0,0)
-	CALL PLOT(XX2,YY2,1,0)
+           XN=XX2+(-VX-.35*VY)*THFACT/XF
+           YN=YY2+(-VY+.35*VX)*THFACT/YF
+           CALL PLOT(XN,YN,0,0)
+           CALL PLOT(XX2,YY2,1,0)
 C
-	XN=XX2+(-VX+.35*VY)*THFACT/XF
-	YN=YY2+(-VY-.35*VX)*THFACT/YF
-	CALL PLOT(XN,YN,1,0)
-	CALL PLOT(XX2,YY2,1,0)
+           XN=XX2+(-VX+.35*VY)*THFACT/XF
+           YN=YY2+(-VY-.35*VX)*THFACT/YF
+           CALL PLOT(XN,YN,1,0)
+           CALL PLOT(XX2,YY2,1,0)
+C
+           CALL PLOT(XX1,YY1,1,0)
+        ENDIF
 
-C
-	CALL PLOT(XX1,YY1,1,0)
-100	if (interrupted) goto 3333 ! *jd* 8.3.92
+100	IF (interrupted) goto 3333 ! *jd* 8.3.92
 	CONTINUE
 C
-C	DRAW SCALE  MAKE SCALE 1 INCH LONG AT XT,YT
+C	DRAW SCALE  MAKE SCALE .5 INCH LONG AT XT,YT
 C
 	IF(.NOT.VKEY)THEN
 	    CALL COLOR(IPEN(0))
 	    RETURN
 	ENDIF
 	CALL WINDOW(0.,0.,0.,0.)
-	XX1=XT
-	YY1=YT
-	XX2=XT+VLEN/XF
-	YY2=YT
+
+        IF (curvilinear) THEN
+	   xx2 = xt + alen
+	   xx1 = xt 
+	   yy1 = yt
+	   yy2 = yt
+           alen = alen* xf
+	ELSE
+	   XX1=XT
+	   YY1=YT
+	   XX2=XT+VLEN/XF
+	   YY2=YT
+           alen = vlen
+	ENDIF
 C
-C	DRAW ARROW HEADS
+C	DRAW ARROW 
 C
-	IF(VLEN.GT.ARMAX)THEN
-	    THFACT=ARMAX*HFACT/VLEN
-	ELSE IF(VLEN.LT.ARMIN)THEN
-	    THFACT=ARMIN*HFACT/VLEN
+	IF(alen.GT.ARMAX)THEN
+	    THFACT=ARMAX*HFACT/alen
+	ELSE IF(alen.LT.ARMIN)THEN
+	    THFACT=ARMIN*HFACT/alen
 	ELSE
 	    THFACT=HFACT
 	ENDIF
-	XN=XX2-THFACT*VLEN/XF
-	YN=YY2+.35*THFACT*VLEN/YF
+	XN=XX2-THFACT*alen/XF
+	YN=YY2+.35*THFACT*alen/YF
 
 	CALL PLOT(XN,YN,0,0)
 	CALL PLOT(XX2,YY2,1,0)
 C
-	XN=XX2-THFACT*VLEN/XF
-	YN=YY2-.35*THFACT*VLEN/YF
+	XN=XX2-THFACT*alen/XF
+	YN=YY2-.35*THFACT*alen/YF
 	CALL PLOT(XN,YN,1,0)
 	CALL PLOT(XX2,YY2,1,0)
 C
 	CALL PLOT(XX1,YY1,1,0)
- 
+       
 C
 C	DRAW LABEL
 C
@@ -391,7 +371,6 @@ C
 	ILN=LNBLK(VECLAB,20)
 	XL = XX2 + .125/XF
 	YL = YY2 - HLABS*0.5/YF
-
 	CALL SYMBEL(XL,YL,0.,HLABS,ILN,VECLAB)
 3333	IF(IWIND.GT.0)CALL WINDOW(XLO,YLO,XHI,YHI)
 	RETURN

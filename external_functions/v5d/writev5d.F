@@ -4,8 +4,11 @@
 * Ansley Manke
 * June 30 1998
 
-*  8/May/99 Use REDUCED axes, 
-*  call ef_set_work_array_lens function to set gwork
+*  ACM 8/May/99 Use REDUCED axes, call ef_set_work_array_lens 
+*               function to set gwork
+*
+*  ACM 8/99 Read either a date and time or a timestep from the "datebuf"
+*           that is returned from ef_get_axis_dates
 *
 * This function takes up to 8 variables from ferret data sets
 * and writes them in Vis5D format.  Send in variables to write in the
@@ -161,14 +164,13 @@
      .     arg_incr(4,EF_MAX_ARGS)
 
       INTEGER max_row, min_col, max_col, min_lev, max_lev
-      INTEGER array_num, unspecified_int4
+      INTEGER array_num
       INTEGER nwork, nax
 
 
 *  Set work array size. gwork is a work array whose output dimensions
 *  are reset in routine wrt_v5d_steps
 
-      unspecified_int4 = -111
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
 *  Get max number of rows in all variables
@@ -403,7 +405,6 @@ C  Set projection arguments for the Vis5D file.
       proj_args(2) = 360. - xax(1)
       proj_args(4) = dx
 
-
 C  Get file name. variable names, and variable units from ferret internal 
 C  definitions
 
@@ -425,8 +426,7 @@ C  Get  variable names, and variable units from ferret internal definitions
          zaxis_units(n) = ax_units(3)
          ibkwd(n) = backward(3) 
 
-   50 CONTINUE         
-
+   50 CONTINUE 
 
 C  Set time steps.
 
@@ -454,9 +454,9 @@ C  Set time steps.
      .             ndep, varname, timestamp, datestamp, compress, 
      .             projection, proj_args, vertical, vert_args)
 
-
       IF (ier .EQ. 0) THEN
-        WRITE (err_msg,*) ' Error during v5d file create.'
+        WRITE (err_msg,*) 
+     . '(Above are v5dcreate error msgs.) Error during v5d file create.'
         GO TO 999
       END IF
 
@@ -492,7 +492,8 @@ c      END IF
       ier = v5dclose()
 
       IF (ier .EQ. 0) THEN
-         WRITE (err_msg,*) ' Error during v5d file close. '
+         WRITE (err_msg,*) 
+     . '(Above are v5dclose error msgs.) Error during v5d file close. '
          GO TO 999
       END IF
 
@@ -789,7 +790,7 @@ C  Check number of columns and rows against Vis5D maxima.
  400     CONTINUE  
 
          IF (ier .eq. 0) THEN
-            WRITE (err_msg, *) 'Vis5D x axes for all variables must ',
+            WRITE (err_msg, *) 'Vis5D X axes for all variables must ',
      .           ' be the same.'
             go to 999
          ENDIF
@@ -837,12 +838,15 @@ C  Check number of columns and rows against Vis5D maxima.
 * After initialization, the 'arg_' arrays will contain the indexing 
 * information for each variable's axes. 
 
-      INTEGER id
+
+      INTEGER id, iarg, l
+      INTEGER numtimes
+
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
-      INTEGER iarg, ier, m, nlm, l, icentury
-      INTEGER numtimes, numvars
+      INTEGER ier, m, nlm, icentury
+      INTEGER numvars
 
       REAL*8 tax(MAXTIMES), ax_vals(*)
 
@@ -859,6 +863,7 @@ C  Check number of columns and rows against Vis5D maxima.
 *  Set time steps for Vis5D.
 
       CALL ef_get_arg_subscripts (id, arg_lo_ss, arg_hi_ss, arg_incr)
+
 
       CALL ef_get_coordinates (id, ARG1, T_AXIS, 
      .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), tax)
@@ -916,53 +921,73 @@ C  Check number of columns and rows against Vis5D maxima.
 
       ELSE
 
+*  If there are negative time-axis values, bail out.
+
+         DO 101 l = 1, numtimes
+            IF (tax(l) .LT. 0) THEN
+               WRITE (err_msg,*) 
+     .          ' Vis5D does not allow negative values on time axis.'
+               GO TO 999
+            ENDIF
+
+101      CONTINUE
+
          iarg = 1
-         call ef_get_axis_dates (id, iarg, tax, numtimes, datebuf)
-         
+         CALL ef_get_axis_dates (id, iarg, tax, numtimes, datebuf)
+
+*  Set up the datestamp and timestamp
+
          DO 300 l = 1, numtimes
 
-            READ (datebuf(l), 110, err=900) day_of_mon, cmon, iyear
-            CALL juldate (cmon, day_of_mon, iyear, day_of_year)
 
-            READ (datebuf(l), 120, err=900) ihour, iminute, isec
+*  If datebuf is in form "DD-MON-YYYY HH:MM:SS".  Read date and time; convert
+*  to Vis5D time and date stamps.
+
+            IF (datebuf(l)(3:3) .EQ. '-') THEN
+               READ (datebuf(l), 110, err=900) day_of_mon, cmon, iyear
+               CALL juldate (cmon, day_of_mon, iyear, day_of_year)
+
+               READ (datebuf(l), 120, err=900) ihour, iminute, isec
 
 * note:  Vis5D uses 2-digit years; years YY <=50 are considered to be 20YY,
 *        years YY > 50 are considered to be 19YY.
 
-            IF (iyear .GT. 0) THEN
-               icentury = iyear/ 100
-               icentury = icentury * 100
-               iyear = iyear - icentury
-               if (iyear .eq. 100) iyear = 0
+               IF (iyear .GT. 0) THEN
+                  icentury = iyear/ 100
+                  icentury = icentury * 100
+                  iyear = iyear - icentury
+                  if (iyear .eq. 100) iyear = 0
 
-            END IF
-
-            datestamp(l) = 1000* iyear + day_of_year	
-            timestamp(l) = isec + 100 * iminute + 10000* ihour
-
-c            IF (l .EQ. 1 .OR. l .EQ. numtimes) 
-c     .         WRITE (*,*) datebuf(l), iyear, day_of_year, datestamp(l), 
-c     .         timestamp(l)
+               END IF
  
+               datestamp(l) = 1000* iyear + day_of_year	
+               timestamp(l) = isec + 100 * iminute + 10000* ihour
+
+*  datebuf not in form "DD-MON-YYYY HH:MM:SS".  Try just reading the time as 
+*  a number...
+
+            ELSE
+               datestamp(l) = 0
+               READ (datebuf(l), *, err=900) timestamp(l)
+
+            ENDIF	! IF (datebuf(l)(3:3) .EQ. '-')
+
   300    CONTINUE
-      ENDIF
+
+      ENDIF		! IF (numtimes .EQ. 1) 
+
   110 FORMAT (i2, 1x, a3, 1x, i4)
   120 FORMAT (11x, 3(1x,i2))
 
       RETURN
 
-*  If error reading the dates/times, just assign sequence numbers. 
+*  Error reading the dates/times. 
 
   900 CONTINUE
 
-c      WRITE (*,*) 'Cannot get dates from time axis.  Using sequence',
-c     .  ', numbers 1 to ', numtimes 
-
-      DO 400 l = 1, numtimes
-         datestamp(l) = l
-         timestamp(l) = 0
-  400 CONTINUE
-      RETURN
+      WRITE (err_msg,*) 
+     .  'Error assigning dates/times to timestamp for Vis5D',  
+     .  datebuf(l)
 
   999 ier = 0
       RETURN
@@ -1149,8 +1174,8 @@ c     .  ', numbers 1 to ', numtimes
   500    CONTINUE
 
          if (nlev .GT. MAXLEVELS) THEN
-            WRITE (*,*) 'Too many levels, all variables together. ',
-     .           'Max is ', MAXLEVELS
+            WRITE (err_msg,*) 'Too many levels, all variables ',
+     .           'together. Max is ', MAXLEVELS
             ier = 0
             goto 999
          ENDIF
@@ -1178,7 +1203,7 @@ c     .  ', numbers 1 to ', numtimes
   700       CONTINUE
 
             IF (.NOT. seq) THEN
-               WRITE (*,*) ' IF levels for different variables ', 
+               WRITE (err_msg,*) ' IF levels for different variables ', 
      .             'intersect they must be in sequence with no ', 
      .             'skips.  Levels for argument ', m, 
      .             ' not sequential'
@@ -1197,8 +1222,7 @@ c     .  ', numbers 1 to ', numtimes
 
       RETURN
 
-  999 WRITE (*,*) ' error RETURN from setzlevs'
-      ier = 0
+  999 ier = 0
 
       RETURN
       END
@@ -1236,4 +1260,5 @@ c     .  ', numbers 1 to ', numtimes
       SDAT(L)=S
       RETURN
       END !SUROUTINE SWAP
+
 

@@ -51,6 +51,15 @@ set data/save
 set grid/save
 
 set data etopo$1"60"
+
+! NOTE:  Ferret does not handle zero length strings.
+! A non existent symbol needs to be compared against " " in Ferret.
+IF `strcmp(" ","($mp_grid_variable)")` THEN
+  go mp_grid rose
+ELSE
+  set grid rose
+ENDIF
+
 set grid rose
 
 let/quiet masked_rose = mp_mask * rose

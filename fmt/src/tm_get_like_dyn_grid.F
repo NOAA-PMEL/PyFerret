@@ -51,6 +51,8 @@
 *	       grids for variables.  This argument prevents accidental
 *	       matches against those scratch grids
 
+* V511: 5/00 *sh* even static grids get "used" now
+
 * Arguments
 	LOGICAL		its_dyn
 	INTEGER		ingrid, outgrid, static_lim, status
@@ -72,7 +74,6 @@
 #endif
 *
 * Local definitions
-	INTEGER		grid_match, idim
 	INTEGER		TM_FIND_LIKE_GRID, TM_FIND_LIKE_DYN_GRID
 
 * initialize
@@ -84,6 +85,7 @@
      ..AND. outgrid .LT. static_lim       ) THEN
 * ... yes - it matches an explicit grid
 	   its_dyn = .FALSE.
+	   CALL TM_USE_DYN_GRID( outgrid )	! added 5/00
 	ELSE
 
 * does it exist already among the existing, dynamic grids?

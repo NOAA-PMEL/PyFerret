@@ -52,11 +52,13 @@
 *		because TM_UNIT_ID was incorrectly interpreting "mbar"
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
-* *kob* 3/99 - add gregorian_ye[ar], year360, year366 units and also added
+* V5 *kob* 3/99 - add gregorian_ye[ar], year360, year366 units and also added
 *              year356 as an alternate unit to the common year.
+*    *sh* 7/99 - add alias "dbar" and change "month" definition to 1/12
+*		 of 365.2425 day year 
 
 * local variable declarations
-	INTEGER	i
+!	INTEGER	i
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -82,7 +84,7 @@
      .		un_name( 7)	/ 'mile'	/,
      .		un_name( 8)	/ 'mm'		/,
      .		un_name(pun_millibars)	/ 'mb'		/,
-     .		un_name(pun_decibars)	/ 'decibar'	/,
+     .		un_name(pun_decibars)	/ 'dbar'	/,
      .		un_name(11)	/ char_init12	/,
      .		un_name(12)	/ char_init12	/,
      .		un_name(13)	/ char_init12	/,
@@ -120,7 +122,7 @@
      .		un_convert( -2)	/ 60.		/,
      .		un_convert( -3)	/ 3600.		/,	! sec per hour
      .		un_convert( -4)	/ 86400.	/,	! sec per day
-     .		un_convert( -5)	/ 2628000.	/,	! sec per 730 hr month
+     .		un_convert( -5)	/ 2629746.	/,	! 1/12 of 365.2425 year
      .		un_convert( -6)	/ 31536000.	/,	! sec per 365 day year
      .		un_convert( -7)	/ 44712.	/,	! sec per M2 cycle
      .		un_convert( -8)	/ 31622400.	/,      ! sec per 366 day year
@@ -163,8 +165,8 @@
      .		un_alt_name (12) / 'common_year'/,
      .		un_alt_subsc(12) / -6 /,
      .
-     .		un_alt_name (13) / char_init12	/,
-     .		un_alt_subsc(13) / 0 /,
+     .		un_alt_name (13) / 'mbar'	/,
+     .		un_alt_subsc(13) / pun_millibars /,
      .
      .		un_alt_name (14) / char_init12	/,
      .		un_alt_subsc(14) / 0 /,

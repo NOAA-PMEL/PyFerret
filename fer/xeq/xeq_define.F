@@ -112,6 +112,7 @@
 *	name is redefined ... else child vars to not get removed
 *	 4/20/99 *sh* added DEFINE AXIS/EDGES
 *	 4/28/99 *sh* allow DEFINE AXIS with repeated values -> microadjust
+*	 7/99 *sh* - changed def'n of "month" so change warning message
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -644,7 +645,7 @@
 	       CALL WARN('unknown axis units: '//buff1)
 	   ELSEIF (iunit .EQ. -5) THEN    ! 1/97: "-5" is "MONTHS"
 	         CALL WARN
-     .		('/UNIT=MONTHS is ambiguous ... using 1/12 of 365 days.') 
+     .		('/UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days') 
 	   ELSE
 * ... Issue warning for inappropriate units like HOURS on X ax
 *     and render the units unconvertible

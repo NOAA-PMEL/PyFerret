@@ -61,6 +61,7 @@
 *             original case when appropriate
 * 1/99 *sh* - fixed bug introduced in 7/98 changes -- blows up when file has
 *		only coord variables (e.g. climatological_axes)
+* 2/99 *kob* - adding call to SWITCH_NAN for NaN recognition
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -263,6 +264,9 @@
      .        ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
           IF ( got_missing .AND. .NOT.got_bad )
      .        ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
+
+*  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
+	  CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))
 
 * see what special FERRET attributes can be read: axis ordering and
 * sub-hyperslab bounds

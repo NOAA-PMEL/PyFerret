@@ -81,6 +81,8 @@
 *     : 5/34/99 *kob* - call FLUSH for all systems
 * V530: *sh* 1/01 - suppress verify output during skipped IF lines 
 *       *sh* 3/01 - do not call PARSE_COMMA_LIST if arg1 quoted
+* V531: *sh* 4/01 - chenge prompt for continuation line
+*	*sh* 5/01 - ignore DOS carriage returns in journal files
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -140,8 +142,6 @@
 * *kob* 5/99 - Flush buffer
 	      CALL FLUSH(jrnl_lun)
 
-
-
 	   ENDIF
 	   GOTO 1000
 	ENDIF
@@ -171,7 +171,11 @@
 
 #ifdef unix
 * ... gnu readline with a FORTRAN jacket
-           CALL TM_FRIENDLY_READ(prompt(:prompt_len),cmnd_buff,*20)
+	   IF ( has_continuation_cmnd ) THEN
+              CALL TM_FRIENDLY_READ('...? ',cmnd_buff,*20)
+	   ELSE
+              CALL TM_FRIENDLY_READ(prompt(:prompt_len),cmnd_buff,*20)
+	   ENDIF
 	   cmnd_len = TM_LENSTR( cmnd_buff )
 	   double_eof = 0	! in case comment or blank line returns here
 #else
@@ -204,6 +208,10 @@
 
  200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
 	cmnd_len = TM_LENSTR1( cmnd_buff )
+	IF (cmnd_buff(cmnd_len:cmnd_len) .EQ. pCR ) THEN
+	    cmnd_buff(cmnd_len:cmnd_len) = ' '
+	    IF (cmnd_len .GT. 1) cmnd_len = cmnd_len - 1
+	ENDIF
         IF ( cmnd_buff(1:1) .EQ. backslash ) THEN
            cmnd_buff(1:1) = ' '
 	   do_verify = .FALSE.
@@ -242,10 +250,12 @@
 	ENDIF
 
 *********** LEFT JUSTIFY THE COMMAND  ********************
-	CALL LEFT_JUST( cmnd_buff, cmnd_buff, cmnd_len )
-        IF ( cmnd_buff(1:1) .EQ. '?' ) THEN   ! should be an ALIAS!!
-	   cmnd_buff = 'HELP'    ! 8/92
-	   cmnd_len = 4
+	IF ( .NOT.has_continuation_cmnd ) THEN
+	   CALL LEFT_JUST( cmnd_buff, cmnd_buff, cmnd_len )
+           IF ( cmnd_buff(1:1) .EQ. '?' ) THEN   ! should be an ALIAS!!
+	      cmnd_buff = 'HELP'    ! 8/92
+	      cmnd_len = 4
+	   ENDIF
 	ENDIF
 
 *************** DECODE THE COMMAND LINE ***************************************

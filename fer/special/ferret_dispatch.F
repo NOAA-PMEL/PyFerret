@@ -111,7 +111,7 @@
 * V450: 7/7/97 - added external for XGRID_CHG_FCNS block data
 * V500: 2/99 *sh* - added POLYGON command
 * V530: 10/00 *sh* - added external declaration for new xez_info_data
-* V554:  9/03 *acm*- Loop 2 ran to 200; change to cmnd_buff_len 
+* V553:  9/03 *acm*- Loop 2 ran to 200; change to cmnd_buff_len 
 *                    (came up when implementing the -script command-line option)
 
 #ifdef unix

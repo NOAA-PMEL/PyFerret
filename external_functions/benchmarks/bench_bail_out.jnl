@@ -1,0 +1,5 @@
+set data coads
+set region/i=130:150/y=12N:30N/l=400:450
+sh data
+let b = bail_out(sst)
+load b

@@ -1,0 +1,133 @@
+!  Write climatology data to a Vis5D file.  The first argument to the 
+!  GO script is the file, arguments 2 through 9 are variable names to be written.
+ 
+!  Note: By default Vis5D looks for variables named U and V to plot as 
+!        horizontal winds so it is convenient to name them this way.
+ 
+can region
+use coads_climatology
+
+let u =  uwnd
+let v =  vwnd 
+ 
+GO vis5d_write " " sst airt wspd u v slp
+
+! ***************************************************************************
+!  Write the top 10 layers of the levitus climatology to a Vis5D file.  
+!  (One time step.)
+
+can region 
+use levitus_climatology
+set region/x=200:270/Y=5:25/K=1:10
+ 
+GO vis5d_write levitus-test.v5d temp salt
+
+! ***************************************************************************
+!  Write coads_climatology and levitus_climatology data to a Vis5D file.  The 
+!  first argument to the GO script is the file name, arguments 2 through 9 are 
+!  names of data variables to write.
+ 
+can region
+use coads_climatology, levitus_climatology
+set region/x=200:270/Y=5:25
+ 
+! Use the horizontal grid from coads_climatology.
+! and a regularly-spaced depth grid, upper 500 meters of the ocean.
+ 
+define axis/z=0:500:50/depth dep500 
+define grid/like=sst[d=coads_climatology]/z=dep500 cl_grid
+ 
+! Levitus_climatology has one time step; apply the 1:1@ave so that the 
+! time axes of both grids are defined as time-averaged.
+ 
+let sst_tav = sst[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let lev_tmp = temp[d=levitus_climatology, g=cl_grid, l=1:1@ave]
+ 
+GO vis5d_write coads_levitus_test.v5d lev_tmp sst_tav
+ 
+
+! ***************************************************************************
+!  Write coads_climatology and levitus_climatology data to a Vis5D file.  The 
+!  first argument to the GO script is the file name, arguments 2 through 9 are 
+!  names of data variables to write.
+ 
+can region
+use coads_climatology, levitus_climatology
+set region/x=200:270/Y=5:25
+
+! Use the horizontal grid from coads_climatology.
+! and a regularly-spaced depth grid, upper 500 meters of the ocean.
+
+define axis/z=0:500:50/depth dep500 
+define grid/like=sst[d=coads_climatology]/z=dep500 cl_grid
+
+! Levitus_climatology has one time step; apply the 1:1@ave so that the 
+! time axes of both grids are defined as time-averaged.
+
+let sst_tav = sst[d=coads_climatology, g=cl_grid, l=1:12@ave]
+! let lev_tmp = temp[d=levitus_climatology, g=cl_grid, l=1:1@ave]
+
+let airt_tav = airt[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let speh_tav = speh[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let wspd_tav = wspd[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let uwnd_tav = uwnd[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let vwnd_tav = vwnd[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let slp_tav = slp[d=coads_climatology, g=cl_grid, l=1:12@ave]
+let tmp_lev = temp[d=levitus_climatology, g=cl_grid, l=1:1@ave]
+
+go vis5d_write cltest.v5d tmp_lev sst_tav airt_tav uwnd_tav vwnd_tav slp_tav wspd_tav slp_tav
+
+! ***************************************************************************
+use coads, ncep_pac_otemp_mon
+set region/x=120:270/Y=20:60/K=1:15/t=3-jan-1981:3-jan-1982
+
+show grid otemp[d=ncep_pac_otemp_mon]
+let sstcoads = sst[d=coads, g=gdv1]
+
+go vis5d_write coads_sst_ncep_otemp.v5d OTEMP[D=ncep_pac_otemp_mon] sstcoads
+
+
+! ***************************************************************************
+
+ 
+!  Define different levels for different variables.
+!
+use ocean_atlas_monthly, ecmwf_u10m, ecmwf_v10m
+define axis/z=0:100:20/units=m/depth topz
+define axis/z=100:500:25/units=m/depth botz
+define axis/z=9.9:10.1:0.1/units=m z10m
+ 
+define grid/like=goj1/z=topz goj1top
+define grid/like=goj1/z=botz goj1bot
+ 
+set region/x=120e:270e/y=10s:10n
+
+let o_temp = temp[d=ocean_atlas_monthly,g=goj1top] 
+let o_salt = salt[d=ocean_atlas_monthly,g=goj1bot] 
+let u10 = U10M[d=ecmwf_u10m,g=goj1bot]  
+let v10 = V10M[d=ecmwf_v10m,g=goj1bot]
+
+
+go vis5d_write  ocean_at_ecmuv.v5d o_temp  o_salt u10  v10
+
+! ***************************************************************************
+
+use ocean_atlas_monthly, ecmwf_u10m, ecmwf_v10m
+define axis/z=0:100:20/units=m/depth topz
+define axis/z=100:500:25/units=m/depth botz
+define axis/z=9.9:10.1:0.1/units=m z10m
+ 
+define grid/like=goj1/z=topz goj1top
+define grid/like=goj1/z=botz goj1bot
+ 
+set region/x=120e:270e/y=10s:10n
+
+let o_temp = temp[d=ocean_atlas_monthly,g=goj1top] 
+let o_salt = salt[d=ocean_atlas_monthly,g=goj1bot] 
+let u10 = U10M[d=ecmwf_u10m,g=goj1bot]  
+let v10 = V10M[d=ecmwf_v10m,g=goj1bot]
+
+
+go vis5d_write  ocean_at_ecmuv.v5d o_temp  o_salt u10  v10
+
+say *****  NOTE:  Clean up the *.v5d files written by this script

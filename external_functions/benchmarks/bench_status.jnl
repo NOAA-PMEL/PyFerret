@@ -1,0 +1,15 @@
+
+set data coads
+sh data
+set region/i=130:150/y=12N:30N/l=400:450
+let b = status(sst)
+list b
+
+let b = status(sst[i=130:150, y=12N:30N])
+list b
+
+let c = status2(sst[i=130:150, y=12N:30N])
+list c
+! note:  status2 returns all 0's  it doesnt loop over all the input
+!        region but over the result indices so doesn't look at all
+!        the data in the argument sst[i=130:150, y=12N:30N]

@@ -44,6 +44,7 @@
 *       *jd* Initialize rgb_mapping 10.98
 * 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
 * V552 5/03 *acm* Move shade key setup to routine SHADE_KEY
+* V553 6/03 *acm* Keep the initialization of do_key here.
 
         include         'shade_vars.cmn'
         include         'parampl5_dat.decl'
@@ -171,8 +172,10 @@
 	sg(6) = 0.0
 	sb(6) = 0.0
 
-*       DO THE KEY --- move this setup to routine SHADE_KEY; values
+*       DO THE KEY --- move most of this setup to routine SHADE_KEY; values
 *       need to be initialized with each call.
+
+	do_key	     	= .true.
 
 *	INITIALIZE SQFFLG TO TRUE
 	sqfflg = .true.

@@ -62,7 +62,7 @@
 
 *      key defaults
 
-	do_key	     	= .true.
+c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
         vertical_key 	= .true.
         do 100 i = 1, 4
            kuser_loc(i) = .false.

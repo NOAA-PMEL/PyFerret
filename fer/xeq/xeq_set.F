@@ -165,7 +165,7 @@
      .                  TM_GET_LINENUM, LIB_GET_LUN,
      .			equal_pos, colon_pos, dset_num,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
-     .			cx, i, grid, axis, loc, perm(4)
+     .			cx, i, grid, axis, loc, perm(4), buff_len, TM_LENSTR
 	REAL		val_buf
 	CHARACTER	title*128, subtitle*64, arg*24,
      .			buff1*512, buff2*80, data_form*3
@@ -382,7 +382,7 @@ c *kob* 4/97
 		IF ( .NOT. TM_DIGIT(buff1(ch:ch))) GOTO 740
  730	      CONTINUE
 	      READ (buff1,*) dset_num
-#else if defined MANDATORY_FORMAT_WIDTHS
+#elif MANDATORY_FORMAT_WIDTHS
 	      READ (buff1,*,ERR=740) dset_num
 #else
 	      READ (buff1,'(I)',ERR=740) dset_num

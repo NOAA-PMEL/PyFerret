@@ -62,6 +62,7 @@
 * V510 - 10/99 *sh*
 * V511 - 05/00 *kob*
 * V521 - *sh* minor bug fixes from V520
+* V522 - *sh* final bug fixes, FERRET_VERSION symbol defined
 
 
 #ifdef unix
@@ -73,7 +74,7 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.21    /
+	DATA revision_level	/  5.22    /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

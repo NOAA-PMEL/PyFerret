@@ -65,7 +65,7 @@
 *	  5/8/90 - bug: MATCH4 --> MATCH_NAME ("OV" doesn't match "OVER")
 
 * search the viewport_names
-        len_test = TM_LENSTR(view_name(1:LEN(view_name)))
+        len_test = TM_LENSTR(view_name)
 	DO 10 ivp = 1, max_viewport
            len_mchars = TM_LENSTR(vp_name(ivp))
 	   IF ( MATCH_NAME(view_name, len_test, 

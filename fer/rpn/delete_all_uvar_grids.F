@@ -55,12 +55,16 @@
 * ...
 
 * internal variable declarations:
-	INTEGER	i, uvar
+	INTEGER	i, uvar, j, num_indices
 
 * loop through the user-defined variables
-	DO 500 uvar = 1, max_uvar
-	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 500
-
+*	DO 500 uvar = 1, max_uvar
+*	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 500
+        CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+        DO 500 j = 1, num_indices
+           uvar = deleted_list_result(j)
 * return to default that all limits are irrelevant
 	   DO 100 i = 1, 4
  100	   uvar_given(i,uvar) = uvlim_irrelevant

@@ -56,11 +56,16 @@
 	INTEGER	uvar
 
 * internal variable declarations:
-	INTEGER	uv, uvar_ancestor
+	INTEGER	i, uv, uvar_ancestor, num_indices, result_array(max_uvar)
 
 * delete child vars
-	DO 200 uv = 1, max_uvar
-	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
+*	DO 200 uv = 1, max_uvar
+*	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
+        CALL deleted_list_get_undel(uvar_num_items_head, 
+     .                          result_array(1),
+     .                          max_uvar, num_indices )
+         DO 200 i =1, num_indices
+           uv = result_array(i)
 * ... delete if this variable is a child of uvar 
 *	uvar_name_code for child vars is "(Cnnn,Vmmm)" -- the "mmm" is the ancestor
 	   IF (uvar_name_code(uv)(1:2) .NE. '(C' ) GOTO 200

@@ -58,8 +58,7 @@
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,stat,axis,ivar,cvar
-        INTEGER TM_LENSTR, len_test, len_mchars
-        LOGICAL MATCH_NAME
+        INTEGER j, num_indices
 
 	include 'ferret.parm'
 	include 'command.parm'
@@ -68,6 +67,7 @@
 	include 'xcontrol.cmn'
         include 'xcontext.cmn'
         include 'xalgebra.cmn'
+        include 'xvariables.cmn'
 
 
 * internal error ?
@@ -86,8 +86,9 @@
 * clean up old level
 	IF ( cs_cmnd_num( csp ) .EQ. cmnd_go ) THEN
 * ... close input GO file
-	   CLOSE( UNIT = cmnd_lun, ERR = 10 )
- 10	   stat = LIB_FREE_LUN( cmnd_lun )
+*	   CLOSE( UNIT = cmnd_lun, ERR = 10 )
+* 10	   stat = LIB_FREE_LUN( cmnd_lun )
+           CALL my_close(cmnd_lun)
 	ELSEIF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
 * ... restore context prior to REPEAT loop (along repeat axis only)
            axis = cs_axis( csp )
@@ -107,19 +108,33 @@
 * clean up counter variable 
 
            cvar = 0
-           len_test = TM_LENSTR(cs_repeatname(csp))
-	   DO 20 ivar =  num_counter_vars, 1, -1
-              len_mchars = TM_LENSTR(countervar_name(ivar))
-	      IF ( MATCH_NAME( cs_repeatname(csp), len_test,
-     .           countervar_name(ivar), len_mchars ) ) THEN
-                cvar = ivar
-                GOTO 1000
-              ENDIF
-  20	   CONTINUE
-1000       CONTINUE
+*           len_test = TM_LENSTR(cs_repeatname(csp))
+*	   DO 20 ivar =  num_counter_vars, 1, -1
+*              len_mchars = TM_LENSTR(countervar_name(ivar))
+*	      IF ( MATCH_NAME( cs_repeatname(csp), len_test,
+*     .           countervar_name(ivar), len_mchars ) ) THEN
+*                cvar = ivar
+*                GOTO 1000
+*              ENDIF
+*  20	   CONTINUE
+*1000       CONTINUE
+ 	CALL string_array_find(countervar_name_head,
+     .                         cs_repeatname(csp),
+     .                         LEN(cs_repeatname(csp)),
+     .                         string_array_result(1),
+     .                         max_uvar,
+     .                         num_indices)
+        IF(num_indices.GT.0) THEN
+              cvar = string_array_result(1)
+        ENDIF
 
            IF (cvar .GT. 0) THEN
-              countervar_name(cvar) = unspecified_name4
+*              countervar_name(cvar) = unspecified_name4
+              CALL string_array_modify(countervar_name_head,
+     .                                 cvar,
+     .                                 unspecified_name4,
+     .                                 LEN(unspecified_name4))
+
               alg_cvar( cvar ) = unspecified_name4
               cs_repeatname( csp ) = unspecified_name4
               csp_cvar( csp ) = unspecified_int4

@@ -62,14 +62,24 @@
 	CHARACTER*(*)	name_code
 
 * internal variable declarations:
-	INTEGER	STR_CASE_BLIND_COMPARE, vax_code, uvar
+	INTEGER uvar, j, num_indices
+
 
 * locate the requested variable in the uvar variables
-	DO 100 uvar = 1, max_uvar
-	   vax_code = STR_CASE_BLIND_COMPARE( name_code, 
-     .                       uvar_name_code(uvar) )
-	   IF ( vax_code .EQ. vms_str_success
-     .	  .AND. uvar_num_items( uvar ) .NE. uvar_deleted ) THEN
+*	DO 100 uvar = 1, max_uvar
+*	   vax_code = STR_CASE_BLIND_COMPARE( name_code, 
+*     .                       uvar_name_code(uvar) )
+*	   IF ( vax_code .EQ. vms_str_success
+*     .	  .AND. uvar_num_items( uvar ) .NE. uvar_deleted ) THEN
+        CALL string_array_find_caseblind(uvar_name_code_head,
+     .                                   name_code,
+     .                                   LEN(name_code),
+     .                                   string_array_result(1),
+     .                                   max_uvar,
+     .                                   num_indices)
+        DO 100 j = 1, num_indices
+           uvar = string_array_result(j)
+           IF(uvar_num_items(uvar) .NE. uvar_deleted) THEN
 	      UVAR_NUMBER = uvar
 	      RETURN
 	   ENDIF

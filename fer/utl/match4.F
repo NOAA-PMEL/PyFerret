@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION MATCH4 ( test_string, model_string)
+	LOGICAL FUNCTION MATCH4 (test_string,len_test,model_string,len_model)
 
 *
 *
@@ -49,9 +49,10 @@
 	CHARACTER*1	UPPER_CASE
 	CHARACTER*4	model_string
 	CHARACTER*(*)	test_string
+        LOGICAL         result
 
-	len_model = TM_LENSTR( model_string )
-	len_test  = TM_LENSTR( test_string(1:LEN(test_string)) )
+*	len_model = TM_LENSTR( model_string )
+*	len_test  = TM_LENSTR( test_string(1:LEN(test_string)) )
 
 * if model string is fewer than 4 characters the test string must not be longer
 	IF (      len_model .LT. 4
@@ -59,10 +60,13 @@
 
 	len_to_test = MIN( len_test, len_model )
 
-	DO 100 i = 1,len_to_test
-	IF ( model_string(i:i) .NE. UPPER_CASE( test_string(i:i) ) ) GOTO 200
- 100	CONTINUE
+*	DO 100 i = 1,len_to_test
+*	IF ( model_string(i:i) .NE. UPPER_CASE( test_string(i:i) ) ) GOTO 200
+* 100	CONTINUE
+        CALL tm_match_captial_name(test_string, model_string, 
+     .          len_to_test, result)
 
+        IF(.NOT.result) GOTO 200
 * it matches
 	MATCH4 = .TRUE.
 	RETURN

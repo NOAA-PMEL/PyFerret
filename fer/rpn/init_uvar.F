@@ -131,7 +131,9 @@
 	      gcfstk = 0	
 	      gcf_start(0) = 0
 	      gcf_uvar (0) = uvar ! assignment never used but what the heck ...
-	      uvar_num_items( uvar ) = uvar_on_hold
+*	      uvar_num_items( uvar ) = uvar_on_hold
+              CALL deleted_list_modify(uvar_num_items_head, uvar,
+     .                uvar_on_hold)
 	      GOTO 200
 	   ENDIF
  100	CONTINUE
@@ -155,7 +157,9 @@
  250	      CONTINUE
 	      GOTO 5900
  260	      gcfstk = gcfstk + 1 ! new stack level for the child
-	      uvar_num_items( uvar_child ) = uvar_on_hold
+*	      uvar_num_items( uvar_child ) = uvar_on_hold
+              CALL deleted_list_modify(uvar_num_items_head, uvar_child,
+     .                                 uvar_on_hold)
 	      gcf_uvar (gcfstk) = uvar_child
 	      gcf_start(gcfstk) = iat
 	      paren_level = 0
@@ -288,8 +292,11 @@
 
 * clean up left-over on-hold variables
 	DO 1100 uvar_child = 1, max_uvar
+*	   IF (uvar_num_items(uvar_child) .EQ. uvar_on_hold)
+*     .			uvar_num_items(uvar_child) = uvar_deleted
 	   IF (uvar_num_items(uvar_child) .EQ. uvar_on_hold)
-     .			uvar_num_items(uvar_child) = uvar_deleted
+     .	      CALL deleted_list_modify(uvar_num_items_head, uvar_child,
+     .                                  uvar_deleted )
  1100	CONTINUE
 
 * successful completion
@@ -299,8 +306,11 @@
 * error exit
 * ... remove any holds left on variable slots
  5000	DO 5010 uvar = 1, max_uvar
+* 5010	IF  ( uvar_num_items(uvar) .EQ. uvar_on_hold )
+*     .	      uvar_num_items(uvar) = uvar_deleted
  5010	IF  ( uvar_num_items(uvar) .EQ. uvar_on_hold )
-     .	      uvar_num_items(uvar) = uvar_deleted
+     .	  CALL deleted_list_modify(uvar_num_items_head, uvar,
+     .                            uvar_deleted )
 	RETURN
 
  5100	CALL ERRMSG( ferr_prog_limit, status,
@@ -315,8 +325,14 @@
 	DO 5910 uvar_child = uvar, max_uvar
 	   IF ( uvar_name_code(uvar_child)(7:10)
      .     .EQ. child_name(7:10) ) THEN
-	      uvar_num_items( uvar_child ) = uvar_deleted
-	      uvar_name_code( uvar_child ) = " "
+*	      uvar_num_items( uvar_child ) = uvar_deleted
+              CALL deleted_list_modify(uvar_num_items_head, 
+     .                         uvar_child, uvar_deleted )
+
+*	      uvar_name_code( uvar_child ) = " "
+              CALL string_array_modify(uvar_name_code_head, uvar_child,
+     .                                  " ", 1)
+
 	      uvar_text     ( uvar_child ) = " "
 	   ENDIF
  5910	CONTINUE

@@ -85,7 +85,7 @@
 
 * internal variable declarations:
 	LOGICAL inquote
-	INTEGER	STR_UPCASE, vax_code, i, natom_rpn,
+	INTEGER	        i, natom_rpn,
      .                  rpn_order(maxatoms), i2, quote_type,
      .                  TM_LENSTR1
 	CHARACTER	err_string*255, c*1
@@ -118,7 +118,10 @@
 	IF (natom_rpn .GE. max_uvar_items) GOTO 5500
 
 * copy name code and text into slot and change as needed to upper case
-	vax_code = STR_UPCASE( uvar_name_code( uvar ), name )
+*	vax_code = STR_UPCASE( uvar_name_code( uvar ), name )
+        CALL string_array_modify_upcase(uvar_name_code_head, uvar, 
+     .                                  name, LEN(name))
+
 * (7/98) - don't upcase portions of the string inside single quotes
 * (1/99) - same deal for double quotes
 !	vax_code = STR_UPCASE( uvar_text     ( uvar ), text(txstart:txend) )
@@ -185,7 +188,9 @@
 !	uvar_item_type (natom_rpn,uvar) = alg_finished
 
 * store number of items in definition
-	uvar_num_items( uvar ) = natom_rpn
+*	uvar_num_items( uvar ) = natom_rpn
+        CALL deleted_list_modify(uvar_num_items_head, uvar,
+     .                           natom_rpn )
 
 !* 7/98 - remove surrounding single quotes from variable names
 ! no - keep 'em in to signal special name -- use 'em in MATCH_NAME

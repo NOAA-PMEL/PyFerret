@@ -86,7 +86,7 @@
 * internal variable declarations:
 	INTEGER		STR_UPCASE,
      .			du_list( max_uvar ), ndu, kdu, uv, vax_code, ind,
-     .			i
+     .			i, j, num_indices
 	CHARACTER*24	check_name
 
 * procedure:
@@ -108,8 +108,14 @@
 *	use risc_buff as temporary storage for an upvase version
 *	(unnecessary as of 2/91 but possibly lower case in future)
  100	check_name = uvar_name_code( du_list( kdu ) )	! upper case
-	DO 200 uv = 1, max_uvar
-	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
+
+*	DO 200 uv = 1, max_uvar
+*	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
+        CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+        DO 200 j = 1, num_indices
+           uv = deleted_list_result(j)
 	   vax_code = STR_UPCASE( risc_buff, uvar_text( uv ) )
 	   ind = INDEX( check_name, risc_buff )
 	   IF ( ind .EQ. 0 ) GOTO 200
@@ -137,8 +143,12 @@
 	CALL DEALLO_UVAR_GRIDS(uvar)
 
 * eliminate the named variable from the list of uvars
-	uvar_num_items( uvar ) = uvar_deleted
-	uvar_name_code( uvar ) = " "
+*	uvar_num_items( uvar ) = uvar_deleted
+        CALL deleted_list_modify(uvar_num_items_head,uvar,uvar_deleted)
+
+*	uvar_name_code( uvar ) = " "
+        CALL string_array_modify(uvar_name_code_head, uvar, " ", 1 )
+
 	uvar_text     ( uvar ) = " "
 	      
 	RETURN

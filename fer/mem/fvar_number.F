@@ -62,18 +62,31 @@
 	CHARACTER*(*)	name_code
 
 * internal variable declarations:
-	INTEGER		STR_CASE_BLIND_COMPARE, fvar, vax_code
+	INTEGER	        fvar, j, num_indices 
 
 * loop through all file variables
-	DO 100 fvar = 1, maxvars
-	   IF ( ds_var_setnum( fvar ) .NE. dset_num ) GOTO 100
-	   vax_code = STR_CASE_BLIND_COMPARE( name_code, ds_var_code(fvar) )
+*	DO 100 fvar = 1, maxvars
+*	   IF ( ds_var_setnum( fvar ) .NE. dset_num ) GOTO 100
+*	   vax_code = STR_CASE_BLIND_COMPARE( name_code, ds_var_code(fvar) )
 
 * found the name code ?
-	   IF ( vax_code .EQ. vms_str_success ) THEN
-	      FVAR_NUMBER = fvar
-	      RETURN
-	   ENDIF
+*	   IF ( vax_code .EQ. vms_str_success ) THEN
+*               FVAR_NUMBER = fvar
+*	       RETURN
+*	   ENDIF
+* 100	CONTINUE
+
+        CALL string_array_find_caseblind(ds_var_code_head,
+     .                                   name_code,
+     .                                   LEN(name_code),
+     .                                   string_array_result1(1),
+     .                                   maxvars,
+     .                                   num_indicse)
+        DO 100 j = 1, num_indices
+           fvar = string_array_result1(j)
+           IF ( ds_var_setnum( fvar ) .NE. dset_num ) GOTO 100
+	   FVAR_NUMBER = fvar
+	   RETURN
  100	CONTINUE
 
 * not found

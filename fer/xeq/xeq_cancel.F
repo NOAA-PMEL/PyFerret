@@ -154,7 +154,8 @@
      .			ivp, i, blen, ier, i1, num_protected_axes,
      .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
-     .			mode, cx, axis, grid, mod_cx
+     .			mode, cx, axis, grid, mod_cx,
+     .                  TM_LENSTR, len_test, len_mchars
 	LOGICAL		MATCH4, TM_DIGIT, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims
@@ -356,9 +357,11 @@
  800	IF ( num_items .EQ. 0 ) GOTO 5010
 	DO 820 item = 1, num_items
 * identify the specified mode to CANCEL
+           len_test = TM_LENSTR(cmnd_buff( item_start(item):item_end(item) ))
 	   DO 810 mode = 1, max_modes
+              len_mchars = TM_LENSTR(mode_name( mode)(:4))
 	      IF ( MATCH4( cmnd_buff( item_start(item):item_end(item) ),
-     .			   			      mode_name( mode ) )) THEN
+     .			  len_test, mode_name( mode),len_mchars )) THEN
 	         IF ( mode.EQ.pmode_GKS .AND. gksopn ) GOTO 5820
 * ... ignore MODE VERIFY from a GO file if MODE VERIFY:ALWAYS is set
 	         IF ( mode.EQ.pmode_verify

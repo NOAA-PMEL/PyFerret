@@ -58,7 +58,8 @@
 
 * internal variable declarations
 	LOGICAL	MATCH4, TM_DIGIT
-	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code
+	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, strt, vax_code,
+     .          TM_LENSTR, len_test, len_mchars
 	REAL	val
 *	CHARACTER	LEFINT*4, str*12, colors*12(6)
 	CHARACTER	LEFINT*4, str*12
@@ -111,8 +112,11 @@
 	   icolor = NINT( val )	! user-specified line style
 	 ELSE
 * ... compare with allowable colors
+           len_test = TM_LENSTR(str)
 	   DO 200 icolor = 1, ncolors
-	      IF ( MATCH4(str, colors(icolor)) ) GOTO 210
+              len_mchars = TM_LENSTR(colors(icolor)(:4))
+	      IF ( MATCH4(str, len_test,
+     .             colors(icolor),len_mchars ) ) GOTO 210
  200	   CONTINUE
 	   GOTO 5100   ! unknown color
  210	   IF (icolor .EQ. 7) icolor = 19   ! WHITE

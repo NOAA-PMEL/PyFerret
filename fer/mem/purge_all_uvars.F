@@ -59,11 +59,15 @@
 #endif
 
 * internal variable declarations:
-	INTEGER	uvar, i
+	INTEGER	uvar, i, j, num_indices
 
-	DO 500 uvar = 1, max_uvar                      
-	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 500  
-
+*	DO 500 uvar = 1, max_uvar                      
+*	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 500  
+        CALL deleted_list_get_undel(uvar_num_items_head, 
+     .                          deleted_list_result(1),
+     .                          max_uvar, num_indices )
+        DO 500 j = 1, num_indices
+           uvar = deleted_list_result(j)
 * eliminate all memory resident instances of this variable
 	   CALL PURGE_USER_VAR( uvar )
 

@@ -63,6 +63,7 @@
 	include 'rpn.parm'
 	include 'xalgebra.cmn'
 	include 'xrisc.cmn'
+        include 'xvariables.cmn'
 
 * calling argument declarations:
 	INTEGER		natom, at_start(maxatoms), at_end(maxatoms),
@@ -73,7 +74,7 @@
 	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, MATCH_NAME
 	INTEGER		STR_MATCH, GCF_FIND_FCN,
      .			imatch, i, i2, j, brac_pos, aend
-        INTEGER         TM_LENSTR, len_test, len_mchars
+        INTEGER         num_indices
 
 	DO 100 i = 1, natom
 
@@ -137,13 +138,25 @@
 	   ELSE
 	      aend = at_end(i)
 	   ENDIF
-	   imatch = STR_MATCH (	text(at_start(i):aend),
-     .				alg_pvar, num_pseudo_vars )
-	   IF ( imatch .NE. atom_not_found ) THEN
+*	   imatch = STR_MATCH (	text(at_start(i):aend),
+*     .				alg_pvar, num_pseudo_vars )
+*	   IF ( imatch .NE. atom_not_found ) THEN
+*	      at_type(i) = alg_pseudo_var
+*	      at_id(i)   = imatch
+*	      GOTO 100
+*	   ENDIF
+
+           CALL string_array_find_caseblind(alg_pvar_head,
+     .                         text(at_start(i):aend),
+     .                         LEN(text(at_start(i):aend)),
+     .                         string_array_result(1),
+     .                         max_uvar,
+     .                         num_indices)
+          IF(num_indices.GT.0) THEN
 	      at_type(i) = alg_pseudo_var
-	      at_id(i)   = imatch
-	      GOTO 100
-	   ENDIF
+	      at_id(i)   = string_array_result(1)
+              GOTO 100              
+          ENDIF
 
 * constant array of the form "{1,3,5}" ?
 	  IF ( text(at_start(i):at_start(i)).EQ."{"
@@ -191,15 +204,25 @@
 
 * start by checking counter variable names
 	DO 240 i = 1, natom
-           len_test = TM_LENSTR(text(at_start(i):at_end(i)))
-           DO 220 j = 1, num_counter_vars
-              len_mchars = TM_LENSTR(countervar_name(j))
-              IF ( MATCH_NAME(text(at_start(i):at_end(i)),len_test, 
-     .             countervar_name(j),len_mchars ) ) THEN
-	         at_type(i) = alg_counter_var
-	         at_id(i)   = unspecified_int4
-	      ENDIF
- 220	   CONTINUE
+*           len_test = TM_LENSTR(text(at_start(i):at_end(i)))
+*           DO 220 j = 1, num_counter_vars
+*              len_mchars = TM_LENSTR(countervar_name(j))
+*              IF ( MATCH_NAME(text(at_start(i):at_end(i)),len_test, 
+*     .             countervar_name(j),len_mchars ) ) THEN
+*	         at_type(i) = alg_counter_var
+*	         at_id(i)   = unspecified_int4
+*	      ENDIF
+* 220	   CONTINUE
+ 	CALL string_array_find(countervar_name_head,
+     .                         text(at_start(i):at_end(i)),
+     .                         LEN(text(at_start(i):at_end(i))),
+     .                         string_array_result(1),
+     .                         max_uvar,
+     .                         num_indices)
+        IF(num_indices.GT.0) THEN
+	   at_type(i) = alg_counter_var
+	   at_id(i)   = unspecified_int4
+        ENDIF
  240	CONTINUE
 
 * 12/96 kludge ...

@@ -98,7 +98,8 @@
 * internal variable declarations:
 	LOGICAL re_verify, do_verify, prefix_verify, arg1_quoted
 	INTEGER	TM_LENSTR, TM_LENSTR1,
-     .		iqual, ilist, cmnd_len, double_eof
+     .		iqual, ilist, cmnd_len, double_eof,
+     .          has_more
 
         CHARACTER*1 backslash
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -211,7 +212,10 @@
 
 *************** COMMAND FILE AS SOURCE OF COMMAND LINE ***********************
 
- 200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
+* 200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
+ 200	CALL my_readline(cmnd_lun,cmnd_buff,LEN(cmnd_buff),has_more)
+        IF(has_more.NE.1) goto 210
+
 	cmnd_len = TM_LENSTR1( cmnd_buff )
 	IF (cmnd_buff(cmnd_len:cmnd_len) .EQ. pCR ) THEN
 	    cmnd_buff(cmnd_len:cmnd_len) = ' '

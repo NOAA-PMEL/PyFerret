@@ -228,7 +228,8 @@
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
      .		rqst_dset, tmp_grid, num_predefined_axes, qfile, 
-     .          flen, wsize, wkblk
+     .          flen, wsize, wkblk, TM_LENSTR, len_test, len_mchars,
+     .          j, num_indices
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
@@ -686,9 +687,12 @@
 	   IF ( mode_name ( mode ) .EQ. pmode_unused ) GOTO 850
 * show this mode ?
 	   IF ( .NOT. slash_all ) THEN
+              len_mchars = TM_LENSTR(mode_name(mode)(:4))
 	      DO 810 i = 1, num_items
 	         name = cmnd_buff( item_start(i):item_end(i) )
-	         IF ( MATCH4( name, mode_name( mode ) )) GOTO 820
+                 len_test = TM_LENSTR(name)
+	         IF ( MATCH4( name, len_test,
+     .             mode_name( mode),len_mchars )) GOTO 820
  810	      CONTINUE
 	      GOTO 850	! no match
 	   ENDIF
@@ -807,8 +811,13 @@
 	            CALL SHOW_1_UVAR(ttout_lun,ivar,show_str,' ',.TRUE.)
 	         ELSE
 * ... show ALL user variables matching this name (or name template 4/96)
-	            DO 1015 ivar = 1, max_uvar
-	               IF (uvar_num_items(ivar).EQ.uvar_deleted) GOTO 1015
+*	            DO 1015 ivar = 1, max_uvar
+*	               IF (uvar_num_items(ivar).EQ.uvar_deleted) GOTO 1015
+                    CALL deleted_list_get_undel(uvar_num_items_head,
+     .                                         deleted_list_result(1),
+     .                                         max_uvar, num_indices )
+                    DO 1015 j = 1, num_indices
+                       ivar = deleted_list_result(j)
 	               IF ( uvar_parent(ivar).NE.0
      .		      .AND. .NOT.mode_diagnostic   ) GOTO 1015     ! 7/97
 !	               IF (MATCH_NAME(arg,uvar_name_code(ivar)))
@@ -821,8 +830,13 @@
  1020	      CONTINUE
 	   ELSEIF (rqst_dset .NE. unspecified_int4) THEN
 * ... show user variables belonging to the specified data set
-	      DO 1030 i = 1, max_uvar
-	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1030
+*	      DO 1030 i = 1, max_uvar
+*	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1030
+              CALL deleted_list_get_undel(uvar_num_items_head,
+     .                                    deleted_list_result(1),
+     .                                    max_uvar, num_indices )
+              DO 1030 j = 1, num_indices
+                 i = deleted_list_result(j)
 	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1030
 	         IF ( rqst_dset .NE. uvar_dset(i)	  ) GOTO 1030
 	         IF ( uvar_parent(i).NE.0
@@ -840,8 +854,13 @@
  1035	      CONTINUE
  1040	      DO 1060 dset = 1, i1
 * ... loop through the currently initialized data sets
-	         DO 1050 i = 1, max_uvar
-	            IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1050
+*	         DO 1050 i = 1, max_uvar
+*	            IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1050
+                 CALL deleted_list_get_undel(uvar_num_items_head,
+     .                                      deleted_list_result(1),
+     .                                      max_uvar, num_indices )
+                 DO 1050 j = 1, num_indices
+                    i = deleted_list_result(j)
 	            IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1050
 	            IF ( dset .NE. uvar_dset(i)		     ) GOTO 1050
 	            IF ( uvar_parent(i).NE.0
@@ -851,8 +870,13 @@
  1060	      CONTINUE
 * ... global variables defined without /D
 	      first = .TRUE.
-	      DO 1070 i = 1, max_uvar
-	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1070
+*	      DO 1070 i = 1, max_uvar
+*	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1070
+              CALL deleted_list_get_undel(uvar_num_items_head,
+     .                                    deleted_list_result(1),
+     .                                    max_uvar, num_indices )
+              DO 1070 j = 1, num_indices
+                 i = deleted_list_result(j)
 	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1070
 	         IF ( uvar_dset(i) .NE. unspecified_int4  ) GOTO 1070
 	         IF ( uvar_parent(i).NE.0
@@ -867,8 +891,13 @@
  1070	      CONTINUE
 * ... global variables defined with /D
 	      first = .TRUE.
-	      DO 1080 i = 1, max_uvar
-	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1080
+*	      DO 1080 i = 1, max_uvar
+*	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1080
+              CALL deleted_list_get_undel(uvar_num_items_head,
+     .                                    deleted_list_result(1),
+     .                                    max_uvar, num_indices )
+              DO 1080 j = 1, num_indices
+                 i = deleted_list_result(j)
 	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1080
 	         IF ( uvar_dset(i) .NE. pdset_irrelevant  ) GOTO 1080
 	         IF ( uvar_parent(i).NE.0
@@ -901,13 +930,15 @@
  4100	   FORMAT(' Commands in Program ',A,1X,A,' version',F5.2,':')
 	ENDIF
 * ... loop through commands
+        len_test = TM_LENSTR(cmnd_buff(arg_start(1):arg_end(1)))
 	DO 1130 icmnd = 1, total_num_commands
 	   IF ( commands(icmnd)(:4) .EQ. '****' ) GOTO 1130
 	   IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 * ... if  only 1 command is of interest is this it ?
+           len_mchars = TM_LENSTR(commands(icmnd)(:4))
 	   IF ( only_1 .AND. .NOT.MATCH4(cmnd_buff(arg_start(1):arg_end(1)),
-     .				commands(icmnd)(:4)) ) GOTO 1130
+     .		len_test,commands(icmnd),len_mchars) ) GOTO 1130
 	   done_1 = .TRUE.
 	   len0 = TM_LENSTR1( commands(icmnd) )
 * ... and for each command, its subcommands

@@ -73,7 +73,7 @@
 
 * local variable declarations:
 	LOGICAL	in_set
-	INTEGER	TM_LENSTR1, var, dset2
+	INTEGER	TM_LENSTR1, var, dset2, slen
 
 * search for a file variable on both the right grid and data set
 	DO 100 var = 1, maxvars
@@ -99,8 +99,9 @@
 
 * right grid but another data set
  300	dset2 = ds_var_setnum(var)
+        CALL string_array_get_strlen1(ds_var_code_head, var, slen)
 	GNAME_FROM_NUMBER = 
-     .           ds_var_code(var)(:TM_LENSTR1(ds_var_code(var)))//
+     .           ds_var_code(var)(:slen)//
      .		'[D='//ds_name(dset2)(:TM_LENSTR1(ds_name(dset2)))//']'
 	GOTO 500
 

@@ -73,7 +73,8 @@
 
 * local variable declarations:
 	LOGICAL MATCH4, all, full
-	INTEGER i, i2, temp, len, icomp, comp0, iend, var, status
+	INTEGER i, i2, temp, len, icomp, comp0, iend, var, status,
+     .          TM_LENSTR, len_test, len_mchars
 	CHARACTER	var_code*4, comp_buff*64
 	DATA		comp_buff(1:9) / '-->using:' /
 
@@ -105,11 +106,14 @@
      .		'Diagnostic variables:',21)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .		'name         title',18)
+           len_test = TM_LENSTR(name)
 	   DO 300 i2 = 1, num_calc_vars
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *1000 )
 	      i = order( i2 )
-	      IF ( all .OR. MATCH4(name,cvar_name_code(i)) ) THEN
+              len_mchars = TM_LENSTR(cvar_name_code(i)(:4))
+	      IF ( all .OR. MATCH4(name,len_test, 
+     .            cvar_name_code(i),len_mchars) ) THEN
 	         CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .			cvar_name_code(i)//'      '//cvar_primary_name(i), 0)
 	         IF ( .NOT.full ) GOTO 300

@@ -159,7 +159,7 @@
      .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
      .		iqual, iqual_ptr, iarg, i, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
-     .		paren_level
+     .		paren_level,len_test,len_mchars
 	CHARACTER c1*1
 
 * local parameter declarations:
@@ -575,9 +575,11 @@ cc  Allow it to be zero-length
            GOTO 5025
         ENDIF
 * search the list of options
+        len_test = TM_LENSTR(cmnd_buff(arg_start(1):arg_end(1)))
 	DO 510 cmnd_num = 1, total_num_commands
-	   IF ( MATCH4( cmnd_buff(arg_start(1):arg_end(1)),
-     .			commands(cmnd_num)(:4)			 ) )  GOTO 600
+           len_mchars = TM_LENSTR(commands(cmnd_num)(:4))
+	   IF ( MATCH4( cmnd_buff(arg_start(1):arg_end(1)),len_test,
+     .			commands(cmnd_num), len_mchars ) )  GOTO 600
  510	CONTINUE
 * no matches against known 4 character command names --> error
 	GOTO 5020					! error exit
@@ -590,10 +592,15 @@ cc  Allow it to be zero-length
 * no other words - therefore no subcommand was given
 	GOTO 650
 * look for a match in the list of subcommands for this command
- 620	DO 630 subcmnd_num = 2, num_subcommands(cmnd_num)
+ 620	len_test = 
+     .     TM_LENSTR(cmnd_buff(arg_start(isub_word):arg_end(isub_word)))
+        DO 630 subcmnd_num = 2, num_subcommands(cmnd_num)
 	   isubcmnd_ptr = subcmnd_num + subcommand_pointer(cmnd_num) - 1
+           len_mchars = TM_LENSTR(subcommands( isubcmnd_ptr)(:4))
 	   IF ( MATCH4( cmnd_buff(arg_start(isub_word):arg_end(isub_word)),
-     .			subcommands( isubcmnd_ptr)(:4)  )  ) THEN
+     .                  len_test,
+     .			subcommands( isubcmnd_ptr),  
+     .                  len_mchars)  ) THEN
 * ... legal syntax of subcommand ?  (avoid, e.g., "SET REGION@T")
               IF ( .NOT.TM_LEGAL_NAME
      .        (cmnd_buff(arg_start(isub_word):arg_end(isub_word))) )
@@ -636,11 +643,14 @@ cc  Allow it to be zero-length
 	   iterm = arg_end(iqual_word) + 1	! no funny terminator
 
 * identify against list of qualifiers for this subcommand
- 720	   DO 730 iqual = 1,num_qualifs(isubcmnd_ptr)
+ 720	   len_test = TM_LENSTR(cmnd_buff(arg_start(iqual_word):iterm-1))
+           DO 730 iqual = 1,num_qualifs(isubcmnd_ptr)
 	   iqual_ptr = iqual + qualifier_pointer(isubcmnd_ptr) - 1
+           len_mchars = TM_LENSTR(qualifiers(iqual_ptr)(:4))
 	   known_qualifier = 
      .		MATCH4( cmnd_buff(arg_start(iqual_word):iterm - 1 ),
-     .			qualifiers(iqual_ptr) )
+     .                  len_test,
+     .			qualifiers(iqual_ptr),len_mchars )
 * "@/anything" will be permitted to pass
 * (8/92 - this should be lifted outside of this loop for speed!!! *sh*)
 	   atsin_qualifier  = 

@@ -55,7 +55,8 @@
 
 * internal variable declarations
 	LOGICAL	MATCH4
-	INTEGER	TM_LENSTR1, iif, iit, equal_pos, slen
+	INTEGER	TM_LENSTR1, TM_LENSTR, iif, iit, equal_pos, slen,
+     .          len_test, len_mchars
 	CHARACTER*9 ftypes(maxtypes)
 
 	include 'ferret.parm'
@@ -100,9 +101,11 @@
 
 * identify each field
 	  DO 200 iif = 1, nfields
+            len_test = TM_LENSTR(string(wk_start(iif):wk_end(iif)))
 	    DO 100 iit = 1, maxtypes
-	      IF (MATCH4(string(wk_start(iif):wk_end(iif)),
-     .			 ftypes(iit)(:4)))			THEN
+              len_mchars = TM_LENSTR(ftypes(iit)(:4))
+	      IF (MATCH4(string(wk_start(iif):wk_end(iif)),len_test,
+     .			 ftypes(iit),len_mchars)) THEN
 	        field_type(iif) = iit 
 	        GOTO 200
 	      ENDIF

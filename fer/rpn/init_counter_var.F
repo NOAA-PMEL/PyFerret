@@ -82,7 +82,12 @@
 
 
 * copy name code and text into slot and change as needed to upper case
-	iflag = STR_UPCASE( countervar_name( cvar ), name )
+*	iflag = STR_UPCASE( countervar_name( cvar ), name )
+        CALL string_array_modify_upcase(countervar_name_head,
+     .                           cvar,
+     .                           name,
+     .                           LEN(name))
+
         iflag = STR_UPCASE( alg_cvar( cvar ), text(txstart:txend) )
 
 * get the X range

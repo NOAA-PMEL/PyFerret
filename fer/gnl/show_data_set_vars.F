@@ -94,7 +94,7 @@
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, 
      .			ivar, i, dlen, len, grid, taxis, slen(4), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
-     .			cal_id, len_cal
+     .			cal_id, len_cal, j, num_indices
 	CHARACTER	LEFINT*6, LOHI_STRING*48, TM_FMT*14, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
@@ -273,8 +273,13 @@
 
 * show the data-set-specific user-defined variables
 	first_time = .TRUE.
-	DO 600 i = 1, max_uvar
-	   IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 600
+*	DO 600 i = 1, max_uvar
+*	   IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 600
+        CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+        DO 600 j = 1, num_indices
+           i = deleted_list_result(j)
 	   IF (uvar_dset(i) .EQ. dset) THEN
 	      IF ( first_time ) THEN
 	         CALL SPLIT_LIST(pttmode_explct, lun,

@@ -83,7 +83,7 @@
 	INTEGER	TM_LENSTR1, FIND_DSET_NUMBER, IGRID, TM_GET_LINENUM,
      .		STR_CASE_BLIND_COMPARE, TM_GET_GRIDNUM, ISUBSCR_CX,
      .		i, n, dim, dset, cat, var, axis, grid, reg, modulo,
-     .		calendar, dummy, istat, slen
+     .		calendar, dummy, istat, slen, ds_var_len
 	INTEGER TM_GET_CALENDAR_ID, cal_id
 
 
@@ -173,8 +173,12 @@
 	DO 420 var = 1, maxvars
            IF ( ds_var_setnum(var) .NE. dset ) GOTO 420
            IF ( ds_var_code(var) .EQ. '-' ) GOTO 420
+*           WRITE (risc_buff,'(A)')
+*     .			ds_var_code(var)(1:TM_LENSTR1(ds_var_code(var)))
+           CALL string_array_get_strlen1(ds_var_code_head, var, ds_var_len)
            WRITE (risc_buff,'(A)')
-     .			ds_var_code(var)(1:TM_LENSTR1(ds_var_code(var)))
+     .			ds_var_code(var)(1:ds_var_len)
+
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	   risc_buff = ' '
  420    CONTINUE

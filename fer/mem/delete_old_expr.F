@@ -57,11 +57,16 @@
 	include 'xprog_state.cmn'
 
 * internal variable declarations:
-	INTEGER	uvar
+	INTEGER	uvar, j, num_indices, result_array(max_uvar)
 
 * eliminate all user variables created by the last expression given
-	DO 100 uvar = 1, max_uvar
-	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 100
+*	DO 100 uvar = 1, max_uvar
+*	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 100
+        CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              result_array(1),
+     .                              max_uvar, num_indices )
+        DO 100 j = 1, num_indices
+           uvar = result_array(j)        
 	   IF ( uvar_name_code(uvar)(:3) .EQ. 'EX#' )
      .					CALL DELETE_USER_VAR( uvar )
  100	CONTINUE

@@ -68,8 +68,11 @@
 
 * delete LET-defined variables that belong to this data set
 	DO 100 ii = 1, max_uvar
-	   IF (uvar_dset(ii) .EQ. dset) uvar_num_items(ii) =
-     .					uvar_deleted
+*	   IF (uvar_dset(ii) .EQ. dset) uvar_num_items(ii) =
+*     .					uvar_deleted
+	   IF (uvar_dset(ii) .EQ. dset) 
+     .        CALL deleted_list_modify(uvar_num_items_head, ii,
+     .	            uvar_deleted)
  100	CONTINUE
 
 

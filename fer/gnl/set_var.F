@@ -262,7 +262,10 @@
 	      ds_missing_flag(var) = ds_bad_flag(var)
 	      ds_bad_flag    (var) = bad
 	   ENDIF
-	   IF (newname.NE. char_init16 ) ds_var_code ( var ) = newname
+*	   IF (newname.NE. char_init16 ) ds_var_code ( var ) = newname
+	   IF (newname.NE. char_init16 )
+     .         CALL string_array_modify( ds_var_code_head, var,
+     .                                   newname, LEN(newname))
 	   IF ( units .NE. char_init16 ) ds_var_units( var ) = units
 	   IF ( title .NE. char_init80 ) ds_var_title( var ) = title
 
@@ -281,7 +284,12 @@
 	ELSE
 * ... user-defined var
 	   IF ( grid .NE. int4_init   ) GOTO 5110
-	   IF (newname.NE. char_init16 ) uvar_name_code(var)= newname
+*	   IF (newname.NE. char_init16 ) uvar_name_code(var)= newname
+	   IF (newname.NE. char_init16 ) 
+     .         CALL string_array_modify(uvar_name_code_head,
+     .                                  var,
+     .                                  newname,
+     .                                  LEN(newname))
 	   IF ( units .NE. char_init16 ) uvar_units( var )  = units
 	   IF ( title .NE. char_init80 ) uvar_title( var )  = title
 	   IF ( bad  .NE. real4_init  ) THEN

@@ -95,7 +95,8 @@
   
 * ... output variable code
 
-           slen = TM_LENSTR1(ds_var_code(ivar))
+*           slen = TM_LENSTR1(ds_var_code(ivar))
+           CALL string_array_get_strlen1(ds_var_code_head, ivar, slen)
            WRITE ( risc_buff, 2040 ) ds_var_code(ivar)(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 

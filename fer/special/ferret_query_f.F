@@ -90,7 +90,8 @@
 	INTEGER	TM_LENSTR1, FIND_DSET_NUMBER, IGRID, TM_GET_LINENUM,
      .		TM_GET_GRIDNUM, TM_GET_CALENDAR_ID,
      .		i, i2, n, dim, dset, cat, var, axis, grid,
-     .		slen, insert_pt, stride, status, cal_id
+     .		slen, insert_pt, stride, status, cal_id,
+     .          j, num_indices
 	REAL*8	TWORLD, TM_WORLD, SECS_FROM_BC, lo, hi, delta
 	CHARACTER AX_TITLE*32, TM_FMT*16, buff1*32,
      .		  farg1*80, farg2*80, farg3*80, farg4*80, farg5*80
@@ -165,7 +166,9 @@
 	DO 410 var = 1, maxvars
 	   IF ( ds_var_setnum(var) .NE. dset ) GOTO 410
 	   IF ( ds_var_code(var) .EQ. '-' ) GOTO 410
-	   slen = TM_LENSTR1(ds_var_code(var))
+*	   slen = TM_LENSTR1(ds_var_code(var))
+           CALL string_array_get_strlen1(ds_var_code_head,
+     .                                    var,  slen)
 	   CALL CSTRING_INSERT( ds_var_code(var),
      .				slen, ctext, ntext, insert_pt)
 	   IF ( insert_pt .GT. ntext ) THEN
@@ -267,11 +270,17 @@
 	   qstatus = QSTAT_INVALID_ARG
 	   RETURN
 	ENDIF
-	DO 1110 var = 1, max_uvar
-           IF (uvar_num_items(var) .EQ. uvar_deleted  ) GOTO 1110
+*	DO 1110 var = 1, max_uvar
+*           IF (uvar_num_items(var) .EQ. uvar_deleted  ) GOTO 1110
+        CALL deleted_list_get_undel(uvar_num_items_head,
+     .                              deleted_list_result(1),
+     .                              max_uvar, num_indices )
+        DO 1110 j = 1, num_indices
+           var = deleted_list_result(j)
            IF (uvar_name_code(var)(1:3) .EQ. 'EX#'    ) GOTO 1110
            IF ( dset .NE. uvar_dset(var)         ) GOTO 1110
-           slen = TM_LENSTR1(uvar_name_code(var))
+*           slen = TM_LENSTR1(uvar_name_code(var))
+           CALL string_array_get_strlen1(uvar_name_code_head, var, slen)
 	   CALL CSTRING_INSERT( uvar_name_code(var),
      .				slen, ctext, ntext, insert_pt)
 

@@ -7,6 +7,9 @@
 
 * V300:  10/93 - *sh* extracted logic from AXIS_FORMAT
 * V420: 11/27/95 - 4-digit PLOT+ YEARS!!
+* V450: 11/14/97 - the arbitrary tstart, 1 year before start of interval,
+*	causes the /XLIMITS=lo_date:hi_date to mis-represent the data
+*	(see err450_time_xlimits.jnl). Eliminated tstart.
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -26,30 +29,31 @@
 	REAL*8	  lo_val, hi_val
 
 * internal variable declarations:
-	REAL*8	  tstart
+!	REAL*8	  tstart
 	CHARACTER ABS_WHOI_DATE*14
 
 * internal parameter declarations
 	REAL*8		yrofsecs
 	PARAMETER     ( yrofsecs = 60.*60.*24.*365. )
 
-* set tstart 1 year before the beginning
-	tstart = MAX( 0.0D0, lo_val - yrofsecs )
+!* set tstart 1 year before the beginning
+!	tstart = MAX( 0.0D0, lo_val - yrofsecs )
 
 * TIME command (time axis limits)
 #ifdef unix
               rbuff(1) = ABS_WHOI_DATE( lo_val )      ! f77 bug
               rbuff(2) = ABS_WHOI_DATE( hi_val )
-              rbuff(3) = ABS_WHOI_DATE( tstart )
+!              rbuff(3) = ABS_WHOI_DATE( tstart )
               WRITE ( ppl_buff, 3020 )  'W'//rbuff(1),
-     .                                  'W'//rbuff(2),
-     .                                  'W'//rbuff(3)
+     .                                  'W'//rbuff(2)
+!     .                                  'W'//rbuff(3)
 #else
 	      WRITE ( ppl_buff, 3020 )	'W'//ABS_WHOI_DATE( lo_val ),
-     .					'W'//ABS_WHOI_DATE( hi_val ),
-     .					'W'//ABS_WHOI_DATE( tstart )
+     .					'W'//ABS_WHOI_DATE( hi_val )
+!     .					'W'//ABS_WHOI_DATE( tstart )
 #endif
- 3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
+! 3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
+ 3020	      FORMAT ('TIME ',A15,',',A15)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	RETURN
       END

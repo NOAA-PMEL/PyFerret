@@ -52,7 +52,8 @@ IF $4"0|*>1" THEN
 ELSE
   DEFINE SYMBOL PSWilo `PSWylo,return=($PSWiax)start`
   DEFINE SYMBOL PSWihi `PSWylo,return=($PSWiax)end`
-  LET/QUIET PSWx = 0*PSWylo + ($PSWax)[($PSWiax)=($PSWilo):($PSWihi)]
+  LET/QUIET PSWx_raw =  0*PSWylo + ($PSWax)
+  LET/QUIET PSWx = PSWx_raw[($PSWiax)=($PSWilo):($PSWihi)]
 ENDIF
 
 ! break swath into a sequence of discrete quadralaterals

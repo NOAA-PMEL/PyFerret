@@ -31,6 +31,11 @@
 !  2) use  GO line_samples    to view the first 6 pen numbers
 !       Higher pen numbers cycle with thicker lines (max 18)
 !  3) For more control over basemaps use "GO basemap"
+!
+!  4) 10/12/2004 ACM
+! This script has additions similar to commands in land_detail
+! to draw replications  +/-360 degrees longitude beyond the data
+! in geo_borders. This gives us -540 to 1100 degrees.
 
 ! test argument before performing any actions
 query/ignore $1%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
@@ -41,6 +46,37 @@ query/ignore $4%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|
 ! introduce the outline data set
 set data/save
 use geo_borders
+
+!*!*from land_detail: allow modulo duplications
+! Initialize
+let landi_subx = 0
+let landi_addx = 0
+let landi_mapxmin = 0
+let landi_mapxmax = 0
+let landi_datxmin = continent_LON[x=@min]
+let landi_datxmax = continent_LON[x=@max]
+
+let landi_basemap = $2"0|basemap>1|*>0"
+
+IF `landi_basemap EQ 0` THEN
+
+   let landi_mapxmin = ($xaxis_min)
+   let landi_mapxmax = ($xaxis_max)
+
+   IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
+   IF `landi_mapxmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
+
+ELSE
+   
+   shade/pal=white/nokey/nolab x[x=28:380:1] + y[y=-90:90:1]
+   let landi_mapxmin = 20.
+   let landi_mapxmax = 380.
+
+   IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
+   IF `landi_mapxmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
+
+ENDIF
+!*!*
 
 ! always do the continents
 $1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/line=1/$2"i=1:22585/overlay|basemap>i=4886:13712|fast>i=4886:13712/overlay|*>i=1:22585/overlay" CONTINENT_LON, CONTINENT_LAT
@@ -55,6 +91,23 @@ ppl yfor (I7,''LAT'')
 ! draw it - as an overlay or as a basemap
 $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
 
+
+!*!*
+! Draw any lines outside 0 to 360
+
+IF `landi_addx NE 0` THEN 
+   plot/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_addx, CONTINENT_LAT
+   ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
+   ppl plot/overlay
+ENDIF
+
+IF `landi_subx NE 0` THEN 
+   plot/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_subx, CONTINENT_LAT
+   ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
+   ppl plot/overlay
+ENDIF
+!*!*
+
 ! **** now the optional country borders
 $3"query/ignore|*>plot/set/vs/nolab/line=1/x=1:91083/overlay" COUNTRY_LON, COUNTRY_LAT
 
@@ -64,6 +117,19 @@ ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|
 ! draw it - as an overlay or as a basemap
 $3"query/ignore|*>ppl plot/overlay"
 
+!*!*
+! Draw any lines outside 0 to 360
+IF `landi_addx NE 0` THEN 
+   $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" COUNTRY_LON+landi_addx, COUNTRY_LAT
+   ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   $3"query/ignore|*>ppl plot/overlay"
+ENDIF
+IF `landi_subx NE 0` THEN 
+   $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" COUNTRY_LON+landi_subx, COUNTRY_LAT
+   ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   $3"query/ignore|*>ppl plot/overlay"
+ENDIF
+!*!*
 
 ! **** now the optional state borders
 $4"query/ignore|*>plot/set/vs/nolab/line=1/x=1:7034/overlay" STATE_LON, STATE_LAT
@@ -74,6 +140,18 @@ ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|
 ! draw it - as an overlay or as a basemap
 $4"query/ignore|*>ppl plot/overlay"
 
+!*!*
+IF `landi_addx NE 0` THEN 
+   $4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" STATE_LON+landi_addx, STATE_LAT
+   ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   $4"query/ignore|*>ppl plot/overlay"
+ENDIF
+IF `landi_subx NE 0` THEN 
+   $4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" STATE_LON+landi_subx, STATE_LAT
+   ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   $4"query/ignore|*>ppl plot/overlay"
+ENDIF
+!*!*
 
 cancel data geo_borders
 set data/restore

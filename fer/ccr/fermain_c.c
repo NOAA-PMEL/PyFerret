@@ -257,11 +257,11 @@ static void command_line_run(float **memory){
     strcpy( init_command, home );
     strcat( init_command, "/.ferret" );
     fp = fopen( init_command, "r" );
-    if ( fp == NULL )
+    if ( fp == NULL ) 
       strcpy( init_command, " " );
-    else
+    else {
       strcpy( init_command, "GO \"$HOME/.ferret\"" );
-    fclose( fp );
+      fclose( fp ); }     /* moved close inside brackets - can't close a null fp *kob* */
   } else {
     strcpy( init_command, " " );
   }

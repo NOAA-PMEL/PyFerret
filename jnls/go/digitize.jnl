@@ -8,9 +8,9 @@
 ! ($xmouse) and ($ymouse) given in the units of the coordinate axes of the plot
 ! The digitized value is available in the symbol ($digitized)
 
-! Usage:                $1        $2                     $3
-! yes?  GO digitize expression ["interp" "nearest" or n] ["full" "brief" or "quiet"]
-! $1 - the expression must match what is on the plot
+! Usage:                $1            $2           $3        $4
+! yes?  GO digitize expression ["nearest" or n] [format] [output_file]
+! $1 - supply the same expression that is on the plot (see note, below)
 ! $2 - [optional] output may be
 !	"interpolate" - value at exact cursor location [DEFAULT]
 !	"nearest"     - value of the grid cell containing cursor
@@ -18,11 +18,12 @@
 ! $3 - [optional] - if "brief" just the digitized value will be displayed
 !		    if "quiet" the digitized output will not be displayed
 !		    if "full"  the LIST command is used to display the output
+! $4 - [optional] name of output file
 
 !	Note: if region qualifiers were given on the plotting commend, then
 !		those regions must be enclosed in square brackets on the
-!		expression
-!	Example: if the plotting command was
+!		expression.
+!	        For example, if the plotting command was
 !			yes? PLOT/Y=0 SST
 !		then the expression must be "SST[Y=0]"
 
@@ -32,11 +33,13 @@
 !	yes? SHADE SST[L=1]
 !	yes? GO digitize SST[L=1]		! get one grid point value
 !	yes? SAY ($digitized)			! see the value
-!	yes? GO digitize SST[L=1] interpolate	! get one exact location value
+!	yes? GO digitize SST[L=1] nearest	! get actual grid point value
 !	yes? GO digitize SST[L=1] 2		! see a block of 5x5 points
+!	yes? GO digitize SST[L=1] interpolate brief 	    ! brief format
+!	yes? GO digitize SST[L=1] interpolate brief out.dat ! output to file
 
 ! save the input expressions into simple variable definitions
-LET/QUIET DGTexpr = $1%<usage: GO digitize expression ["interpolate" "nearest" or n] ["full" "brief" or "quiet"]%
+LET/QUIET DGTexpr = $1%<usage: GO digitize expression ["interpolate" "nearest" or n] ["full" "brief" or "quiet"] [out_filename]%
 IF $2"1|nearest>0|interpolate>1|interp>1|*>0" THEN
   DEFINE SYMBOL DGTinterp @ITP
 ELSE
@@ -70,22 +73,27 @@ WHERE
 ! e.g. (1d) DGTexpr[X=133.25@ITP] or (2d) DGTexpr[X=55.3,Y=13.9]
 IF `($DGTndim) EQ 1` THEN
   LET/QUIET DGTresult = DGTexpr[($DGTdims)=($xmouse)($DGTinterp)]
-  DEFINE SYMBOL digitize `DGTresult`
+  DEFINE SYMBOL digitize `DGTresult,p=7`
 ELSE
   LET/QUIET DGTresult = DGTexpr[($DGTax1)=($xmouse)($DGTinterp),($DGTax2)=($ymouse)($DGTinterp)]
-  DEFINE SYMBOL digitize `DGTresult`
+  DEFINE SYMBOL digitize `DGTresult,p=7`
 ENDIF
 
 ! report result - either in brief style or full [default] style
 IF ($DGTbrief_verify) THEN 
   IF `($DGTndim) EQ 1` THEN
-     SAY "Value=($digitize)  X=($xmouse)"
+      SAY "Value=($digitize)  X=($xmouse)"
+      IF $4"0|*>1" THEN SPAWN echo "($digitize),($xmouse)" >> $4%??%
   ENDIF
   IF `($DGTndim) EQ 2` THEN
     SAY "Value=($digitize)  X=($xmouse)  Y=($ymouse)"
+      IF $4"0|*>1" THEN SPAWN echo "($digitize),($xmouse),($ymouse)" >> $4%??%
   ENDIF
 ENDIF
-IF ($DGTfull_verify) THEN LIST DGTresult
+IF ($DGTfull_verify) THEN
+  LIST/PREC=7 DGTresult
+  IF $4"0|*>1" THEN LIST/APPEND/PREC=7/QUIET/FILE="$4%??%" DGTresult
+ENDIF
 
 ! show a block of surrounding points ?
 ! procedure: LET ipos = I[X=xmouse]; LIST expr[I=ipos-width:ipos+width]
@@ -97,7 +105,8 @@ IF  $2"0|nearest>0|interpolate>0|interp>0|*>1" THEN
     LET/QUIET ipos = 0*DGTgrid + ($DGTiax)[($DGTdims)=($xmouse)]
     DEFINE SYMBOL DGTilo `ipos - $2`
     DEFINE SYMBOL DGTihi `ipos + $2`
-    LIST DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
+    LIST/PREC=7 DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
+    IF $4"0|*>1" THEN LIST/APPEND/PREC=7/QUIET/FILE="$4%??%" DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
   ENDIF
   IF `($DGTndim) EQ 2` THEN
     DEFINE SYMBOL DGTiax1 ($DGTax1"|X>I|Y>J|Z>K|T>L|")
@@ -108,7 +117,8 @@ IF  $2"0|nearest>0|interpolate>0|interp>0|*>1" THEN
     DEFINE SYMBOL DGTihi `ipos + $2`
     DEFINE SYMBOL DGTjlo `jpos - $2`
     DEFINE SYMBOL DGTjhi `jpos + $2`
-    LIST DGTexpr[($DGTiax1)=($DGTilo):($DGTihi),($DGTiax2)=($DGTjlo):($DGTjhi)]
+    LIST/PREC=7 DGTexpr[($DGTiax1)=($DGTilo):($DGTihi),($DGTiax2)=($DGTjlo):($DGTjhi)]
+    IF $4"0|*>1" THEN LIST/APPEND/PREC=7/QUIET/FILE="$4%??%" DGTexpr[($DGTiax1)=($DGTilo):($DGTihi),($DGTiax2)=($DGTjlo):($DGTjhi)]
   ENDIF
 ENDIF
 

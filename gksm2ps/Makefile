@@ -10,21 +10,21 @@ all_systems:
 decstation:
 	${MAKE} gksm2ps \
 		CC=cc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lX11 -lm"
 sun4:
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lX11 -lm"
 alpha:	
 	${MAKE} gksm2ps \
 		CC=cc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS="-non_shared" \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks$(G) " \
 		LIB="-lX11 -lm -ldnet_stub"
@@ -32,14 +32,14 @@ alpha:
 solaris:	
 	${MAKE} gksm2ps \
 		CC=cc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I/usr/openwin/share/include -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I/usr/openwin/share/include -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS="-z muldefs" \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lnsl -L/usr/openwin/lib -lX11 -lm"
 sgi:
 	${MAKE} gksm2ps \
 		CC=cc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lX11 -lm"
@@ -47,7 +47,7 @@ sgi:
 aix:
 	${MAKE} gksm2ps \
 		CC=cc \
-		CFLAGS="-I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lX11 -lm"
@@ -55,7 +55,7 @@ aix:
 hp:
 	${MAKE} gksm2ps \
 		CC=cc \
-		CFLAGS=" -I../xgks/port -I../xgks/src/lib -I/usr/include/X11R5 -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS=" -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I/usr/include/X11R5 -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="/usr/lib/X11R5/libX11.a -lm"
@@ -63,7 +63,7 @@ hp:
 i486-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include/ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include/ -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-L/usr/X11R6/lib -lX11 -lm"

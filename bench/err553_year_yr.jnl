@@ -1,0 +1,47 @@
+! err553_year_yr.jnl
+! 2/2004 ACM
+! DEFINE AXIS/UNITS=year and UNITS=yr should be the same;
+! and year length should match the length of a year in 
+! the specified calendar
+
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=noleap/unit=year tax1
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=noleap/unit=yr tax2
+show axis tax1
+show axis tax2
+list/l=1186:1189 t[gt=tax1]
+list/l=1186:1189 t[gt=tax2]
+
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=julian/unit=year tax1
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=julian/unit=yr tax2
+show axis tax1
+show axis tax2
+list/l=1186:1189 t[gt=tax1]
+list/l=1186:1189 t[gt=tax2]
+
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=standard/unit=year tax1
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=standard/unit=yr tax2
+show axis tax1
+show axis tax2
+list/l=1186:1189 t[gt=tax1]
+list/l=1186:1189 t[gt=tax2]
+
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/unit=year tax1
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/unit=yr tax2
+show axis tax1
+show axis tax2
+list/l=1186:1189 t[gt=tax1]
+list/l=1186:1189 t[gt=tax2]
+
+! v553 and before also had a bug in where D360 not properly defined in
+! calendar_blkdat.F so length of year not correct.
+
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=d360/unit=year tax1
+def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=d360/unit=yr tax2
+show axis tax1
+show axis tax2
+set mode ignore
+list/l=1186:1189 t[gt=tax1]
+list/l=1186:1189 t[gt=tax2]
+list/l=1168:1171 t[gt=tax1]
+list/l=1168:1171 t[gt=tax2]
+can mode ignore

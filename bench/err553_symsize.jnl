@@ -1,0 +1,5 @@
+! PLOT/SYM/SIZE= does not change the size from the default.
+! acm 11/03
+! 
+plot/i=1:10/sym=20/siz=.4 i
+plot/over/i=1:10/sym=20/siz=0.2 i

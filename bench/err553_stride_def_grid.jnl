@@ -1,0 +1,120 @@
+
+use gtsa056_2.cdf
+set mode diag
+let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
+load a
+can mem/all
+
+def grid/like=taux agrid
+set mode diag
+let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
+load a
+
+can mem/all
+can data/all
+
+! Some tests taken from  bn_strides_revs_perms.jnl but with
+! DEFINE GRID/LIKE= testing permuting and reversing axes
+
+! first with an XYZT variable
+set region/i=3:6/j=2:4/k=1:2/l=1
+use bn_strides
+define grid/like=var agrid
+define grid/like=midvar bgrid
+define grid/like=bigvar cgrid
+define grid/like=unevenvar dgrid
+define grid/like=xytvar egrid
+canc data/all
+
+
+! cache hit from full region cache -- bypass use of strides
+cancel memory/all
+use bn_strides
+load var
+LIST VAR[i=2:4:2]
+LIST VAR[i=2:4:2,j=1:3:2]
+CANC MEM/ALL
+
+! modulo requests cannot use strides (as this example shows)
+set axis/modulo XAX1_4
+LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
+cancel axis/modulo XAX1_4
+
+! strides applied to more than one axis need special attention in IS_REGRID
+LIST VAR[i=2:4:2,j=1:3:2]
+LIST VAR[i=2:6:2,j=1:5:2]
+
+! test sub-region selection on strides axis
+let a = bigvar[i=1:40:5]
+list/j=1/k=1/l=1 a[i=3:5]
+list/k=1/l=1 a[i=3:5,j=1:8:2]
+
+! ****** unequally spaced points on parent axis
+
+cancel mem/all
+
+! basic strides
+LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
+
+! * * * * * MIXED STRIDES and PERMUTATIONS * * * * *
+
+set region/i=3:6/j=2:4/k=1:2/l=1
+
+use/order=yx bn_strides
+list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
+canc data/all
+
+use/order=zyx bn_strides
+list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
+canc data/all
+
+! now with xytvar
+cancel region
+set region/i=1:4/j=1:3/l=1:2
+use bn_strides
+
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
+
+use/order=tyx bn_strides
+show grid xytvar
+
+list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
+canc data/all
+
+! map into Z instead of T
+use/order=zxy bn_strides
+show grid xytvar
+
+list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
+canc data/all
+
+
+cancel region; set region/l=1
+
+! reference output
+use/order=yx bn_strides
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+use/order=-yx bn_strides
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+! reference output
+use/order=tyx bn_strides
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
+use/order=-t-y-x bn_strides
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+! reference output
+use/order=txy bn_strides
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all
+
+use/order=-t-x-y bn_strides
+list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
+canc data/all

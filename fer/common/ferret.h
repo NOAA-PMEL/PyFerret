@@ -1,3 +1,7 @@
+#ifndef _FERRET_H 
+#define _FERRET_H
+
+
 /* non-ANSI function prototypes */
 #ifdef NO_ENTRY_NAME_UNDERSCORES      /*added ifdef for HP port *kob* 6.95*/
 void ctrlc_ast();   /* pointer to ^C interrupt routine */
@@ -8,6 +12,19 @@ void init_journal( );
 void proclaim_c( );
 void init_memory( );
 void ferret_dispatch( );
+/* 04.20.99 *jc*
+ * Folded in from fer/gui/ferret_fortran.h
+ */
+void ferret_dispatch_c();
+void WindowMapping();
+void mode_gui_on();
+void secs_to_date_c();
+double tm_secs_from_bc();
+void xgks_x_events();
+void gescinqxattr();
+/*
+ * End of 04.20.99
+ */
 #else
 void ctrlc_ast_();   /* pointer to ^C interrupt routine */
 void initialize_();
@@ -17,6 +34,20 @@ void init_journal_( );
 void proclaim_c_( );
 void init_memory_( );
 void ferret_dispatch_( );
+/* 04.20.99 *jc*
+ * Folded in from fer/gui/ferret_fortran.h
+ */
+void ferret_dispatch_c();
+void WindowMapping();
+void mode_gui_on();
+void secs_to_date_c();
+double tm_secs_from_bc_();
+void xgks_x_events();
+void gescinqxattr();
+/*
+ * End of 04.20.99
+ */
+
 #endif
 
 /* memory configuration defaults */
@@ -46,14 +77,34 @@ the given command was really multiple commands and they are not yet complete*/
 #define			FCTRL_IN_FERRET    2
 
 /* what special action has FERRET requested in return_buff(frtn_action) ? */
-#define			FACTN_NO_ACTION		 0
-#define			FACTN_MEM_RECONFIGURE	 1
-#define			FACTN_EXIT		 2
-#define			FACTN_DISPLAY_WARNING	 3
-#define			FACTN_DISPLAY_ERROR	 4
-#define			FACTN_DISPLAY_TEXT	 5
-#define                 FACTN_SYNCH_SET_DATA     6  ! added 11/1/94
-#define                 FACTN_SYNCH_LET          7
+#define			FACTN_NO_ACTION		   0
+#define			FACTN_MEM_RECONFIGURE  1
+#define			FACTN_EXIT		       2
+#define			FACTN_DISPLAY_WARNING  3
+#define			FACTN_DISPLAY_ERROR	   4
+#define			FACTN_DISPLAY_TEXT	   5
+#define         FACTN_SYNCH_SET_DATA   6  /* added 11/1/94 */
+#define         FACTN_SYNCH_LET        7
+/* 04.20.99 *jc*
+ * Folded in from fer/gui/ferret_fortran.h
+ */
+#define         FACTN_SYNCH_WINDOW     8
+#define         FACTN_PAUSE            10
+/*
+#ifdef __globalDefs
+#define __global
+#else
+#define __global extern
+#endif
+
+__global float *memory;
+
+#undef global
+*/
+/*
+ * End of 04.20.99
+ */
+
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifndef FORTRAN
@@ -63,3 +114,6 @@ the given command was really multiple commands and they are not yet complete*/
 #define FORTRAN(a) a##_
 #endif
 #endif
+
+#endif /* _FERRET_H */
+

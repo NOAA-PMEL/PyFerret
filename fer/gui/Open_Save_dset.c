@@ -57,7 +57,7 @@
 *******************************************************************************/
 
 #include "ferret_structures.h"
-#include "ferret_fortran.h"
+#include "ferret.h"
 
 #define charset XmSTRING_DEFAULT_CHARSET
 

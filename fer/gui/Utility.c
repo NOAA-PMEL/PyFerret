@@ -57,7 +57,7 @@
 
 #include <Xm/CascadeB.h>
 #include "ferret_structures.h"
-#include "ferret_fortran.h"
+#include "ferret.h"
 #include "ferret_shared_buffer.h"
 
 typedef struct _menu_item {
@@ -299,8 +299,8 @@ int hasYear;
 
 	if (!mmm) {
 		/* an error occurred */
-		return INTERNAL_ERROR;
 		XtFree(tDate);	
+		return INTERNAL_ERROR;
 	}
 
 	/* year */
@@ -326,8 +326,8 @@ int hasYear;
 #else
 	refSecs = tm_secs_from_bc_(&yy, &mmm, &dd, &hh, &mm, &ss);
 #endif
-	return refSecs;
 	XtFree(tDate);
+	return refSecs;
 }
 
 int LeapYear(year)
@@ -735,6 +735,7 @@ double inNum;
 
 	sprintf(tText, "%.2f", inNum);
 	return tText;
+/*
 	i = strlen(tText) - 1;
 	while (i >= 0) {
 		if (tText[i] == '0')
@@ -748,6 +749,7 @@ double inNum;
 		i--;
 	}
 	return tText;
+*/
 }
 
 double AbsVal(x)

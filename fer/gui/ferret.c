@@ -97,7 +97,7 @@ extern void SetInitialState(void);
 #define __globalDefs
 
 #include "ferret_shared_buffer.h"
-#include "ferret_fortran.h"
+#include "ferret.h"
 #include "ferret_structures.h"
 
 #include "JC_Utility.h" /* for windows[] and window_count in the SGI_POPUPS section */

@@ -70,7 +70,7 @@
 #include "UxXt.h" /* for UxTopLevel used in the SGI_POPUS section */
 
 #include "ferret_structures.h"
-#include "ferret_fortran.h"
+#include "ferret.h"
 #include "ferret_shared_buffer.h"
 
 

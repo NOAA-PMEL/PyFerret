@@ -21,6 +21,7 @@ ppladd_pplp_ver_data.F\
 ppladd_process_x_events.F\
 ppladd_ps_line_bundle.F\
 ppladd_query_display_size.F\
+ppladd_query_xgks_wkstn.F\
 ppladd_say_interrupted.F\
 ppladd_set_default_colors.F\
 ppladd_set_fill_area_rep.F\

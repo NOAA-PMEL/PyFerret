@@ -56,25 +56,19 @@
 * 7/95 *sh* have "CDF" map into "M"
 * 9/95 *sh* - remove special "BURST" kludge of Ben Giese's - some of the recent
 *		runs contain the word "Burst" in their titles, too
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 *  Argument definitions
 	INTEGER*4	ds_num
 
 *  Include files
-#ifdef unix
 	include	'tmap_errors.parm'
 	include 'xio.parm'
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XIO.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 *  Local definitions
 	CHARACTER*6	temp_code
@@ -85,7 +79,7 @@
 	temp_code(1:6) = ' '
 
 *  Is the requested data set initialized?
-	IF (ds_name(ds_num) .EQ. char_init40) GOTO 9000
+	IF (ds_name(ds_num) .EQ. char_init256) GOTO 9000
 
 *  If data set type is 'GT' then check for burst experiment
 * add a check for model runs using MOM (new, vibrant cray code) 4/92 kob

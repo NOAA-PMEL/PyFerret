@@ -56,22 +56,15 @@
 *	    4/97 *kob* - added ifdef for MANDATORY_FORMAT_WIDTHS on internal
 *			 read because linux/nag f90 needed a format width.
 * v500 *kob* 3/99 - modifications to allow datasets to start w/ a digit.
-*
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
 	include 'gfdl_vms.parm'	
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'	
-#endif
 
 * calling argument declarations:
 	CHARACTER*(*)	dname
@@ -81,7 +74,7 @@
      .		        cdf_name, des_name, full_name_used
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len
-	CHARACTER	buff*24
+	CHARACTER	buff*256
 
 	IF ( TM_DIGIT( dname ) ) THEN
 
@@ -122,7 +115,7 @@ c *kob* 4/97
 * compare with filenames stored by the TMAP library
 	   DO 100 dset = 1, maxdsets
 
-	      IF ( ds_name(dset) .EQ. char_init40 ) GOTO 100
+	      IF ( ds_name(dset) .EQ. char_init256) GOTO 100
 
 * special name match checks to account for implied .cdf or .des   5/93
 	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')) THEN

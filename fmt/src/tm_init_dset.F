@@ -82,6 +82,8 @@
 *	    4/00 - converted to dynamic grids -- bump use counts here
 * v530 *kob* 1/00 - minor mods for remote mc aggregations
 * v530 *acm* 1/01 - initialize ds_cal_name  calendar name
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -99,7 +101,6 @@
 	CHARACTER*(*)	dset_name
 
 * Parameter and common files
-#ifdef unix
 	include 'tmap_errors.parm'		! error codes
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'		! data set dimensions
@@ -111,24 +112,9 @@
         external xsys_names_data
         include 'xdiag_ctrl.cmn_text'
         external xdiag_ctrl_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! Data set constants
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimensions
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XIO.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set common
-        INCLUDE 'TMAP_FORMAT:XSYS_NAMES.CMN'
-        INCLUDE 'TMAP_FORMAT:XDIAG_CTRL.CMN_TEXT'
-        EXTERNAL XDIAG_CTRL_DATA
-#endif
 
 * Define variables from Set File namelist records
-#ifdef unix
 	include 'descript.def'
-#else
-	INCLUDE 'TMAP_FORMAT:DESCRIPT.DEF'
-#endif
 
 * Parameter for number of known types and number of format_revs
 	INTEGER*4	num_known, num_revs
@@ -140,7 +126,7 @@
 	CHARACTER*4	format_rev(num_revs,num_known)
 	CHARACTER*13	TM_STRING
 	CHARACTER	def_ext*4, def_cdf*4, ext*4, cdf_path*12, path*12
-        CHARACTER*40    TM_CLEAN_FILENAME
+        CHARACTER*256   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
 	CHARACTER*256   TM_INQ_PATH, des_name
 	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,

@@ -72,11 +72,12 @@
 * v500 - *kob* 4/99 - increase size of sf_name and ds_des_name for lengthly
 *	              DODS filenames
 * V510 *sh* 4/00 - deallocate grids and axes used by variables in this data set
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 * arguments:
 *	ds_num	- data set number (see COMMON /XSTEP_FILES/)
 
-#ifdef unix
 	include 'tmap_errors.parm'	! error code parameter defs
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
@@ -84,20 +85,13 @@
 	external xstep_files_data
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'	! error code PARAMETER defs
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 * internal variable declarations
         LOGICAL   its_cdf
 	INTEGER   ds_num,status,f_num,ivar,iparm,iaux
 
 * initialize: do we have an open set?
-	IF (ds_name(ds_num) .EQ. char_init40) GOTO 9000
+	IF (ds_name(ds_num) .EQ. char_init256) GOTO 9000
 
 * save the data format
         its_cdf = ds_type(ds_num) .EQ. 'CDF'
@@ -134,7 +128,7 @@
 	ds_message(ds_num)		=	char_init80
 ********************************************************************************
 	ds_des_name(ds_num)		=	char_init256
-	ds_name(ds_num)			=	char_init40
+	ds_name(ds_num)			=	char_init256
 	ds_1step(ds_num)		=	real8_init
 	ds_lastep(ds_num)		=	real8_init
 	ds_delstep(ds_num)		=	real8_init

@@ -44,6 +44,8 @@
 * revision 1.0	- 1/10/94 *kob* file/order upgrade to allow specification
 *		  of axis permutations.
 * V530: change to xez_info.cmn requires ez_lib.parm first
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 * Arguments:
 *	dset	- data set number
@@ -58,7 +60,6 @@
 	INTEGER*4	dset, grid, skip, order(4), status,idim
 *
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'  
 #include "tmap_dset.parm"  
 	include 'tmap_errors.parm'
@@ -69,20 +70,12 @@
 	external xdset_info_data
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'  
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'  
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XEZ_INFO.CMN'  
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'  
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
 *
 * Local definitions
 	INTEGER*4	vcnt, scnt
 *
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init40) GOTO 9000
+	IF (ds_name(dset) .EQ. char_init256) GOTO 9000
 *
 * Defining title?
 	IF (title .NE. char_init80) ds_title(dset) = title

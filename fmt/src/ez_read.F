@@ -69,6 +69,8 @@
 * 11/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
 * V500 3/99 *kob* - Initialize buff at 610 to prevent use of previous values
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 * Arguments:
 *	dset	- data set number
@@ -92,7 +94,6 @@
 
 *
 * Include files
-#ifdef unix
 	include 'ez_lib.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -104,16 +105,6 @@
 	external xdset_info_data
 	include 'xstep_files.cmn_text'
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:EZ_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XEZ_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XEZ_ORDER.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
 *
 *internal parameter declarations *kob* 4apr94
         CHARACTER*1     cr,lf
@@ -135,7 +126,7 @@
 	REAL		bad(0:maxezvars-1)
 
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init30) GOTO 9300
+	IF (ds_name(dset) .EQ. char_init256) GOTO 9300
 *
 * Locate Step file entry
 	DO 10 sfcnt = 1,maxstepfiles

@@ -133,6 +133,7 @@
 * V522 7/00 *sh* - SHOW SYMBOLS now shows special symbols, too
 * V530 8/00 *sh* - bug fix to SHOW SYMBOLS - avoid accidental PPL$XPIXEL eval
 * V540 9/01 *sh* - SHOW VIEWPORT to show state of /AXES
+* v540 *acm* 10/01 increase length of ds_name
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -486,7 +487,7 @@
 	   IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 
-	   IF ( ds_name(iset) .EQ. char_init40
+	   IF ( ds_name(iset) .EQ. char_init256
      .	   .OR. (only_1 .AND. iset .NE. dset) ) GOTO 790
 
 * ... is it the default data set?
@@ -666,7 +667,7 @@
      .			' Created by DEFINE VARIABLE:', 0)
 * ... locate the highest data set number in use
 	      DO 1035 i1 = maxdsets, 1, -1
-	         IF ( ds_name(i1) .NE. char_init40 ) GOTO 1040
+	         IF ( ds_name(i1) .NE. char_init256) GOTO 1040
  1035	      CONTINUE
  1040	      DO 1060 dset = 1, i1
 * ... loop through the currently initialized data sets

@@ -57,6 +57,8 @@
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
 * V530 10/00 *sh* - added delimited reads
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -76,7 +78,6 @@
 	INTEGER*4	skip, columns, dset, status
 *
 * Include files
-#ifdef unix
 	include 'xio.parm'
 #include "gt_lib.parm"
 	include 'ez_lib.parm'
@@ -90,16 +91,6 @@
 	external xstep_files_data
 	include 'xez_info.cmn_text'
 	external xez_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:XIO.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:EZ_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-#endif
 *
 * Local definitions
         LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited
@@ -113,7 +104,7 @@
 *
 * Assign data set number, exiting if maximum number of data sets are open
 	DO 100 set_cnt = 1,maxdsets
-	  IF (ds_name(set_cnt) .EQ. char_init40) THEN
+	  IF (ds_name(set_cnt) .EQ. char_init256) THEN
 	    dset = set_cnt
 	    ds_des_name(dset) = filename
 * Parse input line to obtain just filename without directory or extension

@@ -46,6 +46,8 @@
 * V530: change to xez_info.cmn requires ez_lib.parm first
 * V532 5/01 *sh* - when the grid is modified must handle dynamic allocation
 * V533 6/01 *sh* - added argument "name"
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
 * Arguments:
 *	dset	- data set number
@@ -78,7 +80,7 @@
 * Local definitions
 *
 * Does data set exist?
-	IF (ds_name(dset) .EQ. char_init40) GOTO 9100
+	IF (ds_name(dset) .EQ. char_init256) GOTO 9100
 *
 * Defining variable title?
   200	IF (title .NE. char_init80) ds_var_title(vpos) = title

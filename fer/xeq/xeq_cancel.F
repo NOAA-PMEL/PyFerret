@@ -105,8 +105,9 @@
 * V450:    7/97  - update CANCEL VAR/ALL so it handles child vars and dynamic
 *                  grids/axes
 * V510: 5/00 *sh* - added CANCEL AXIS and CANCEL GRID
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01 remove VMS include statements
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'
@@ -135,33 +136,6 @@
 	include	'SWITCH.INC'	! with deflts
         include 'LUNITS.INC'          ! with lttout
         include 'lunits_inc.decl'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:PLOT_SETUP.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XDIAG_CTRL.CMN'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:MOVIES.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVIDEO.CMN'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE	'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'	! with gksopn
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	! with gksopn
-	INCLUDE	'TMAP_PPLV11INC:SWITCH_INC.DECL/LIST'	! with deflts
-	INCLUDE	'PPLV11INC:SWITCH.INC/LIST'	! with deflts
-        INCLUDE 'PPLV11INC:LUNITS.INC'          ! WITH LTTOUT
-        INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
-#endif
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -307,7 +281,7 @@
 	         READ ( arg30,*,ERR=5030 ) iset
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030
-	         IF (  ds_name( iset ) .EQ. char_init40 ) THEN
+	         IF (  ds_name( iset ) .EQ. char_init256) THEN
 	            IF ( report_error ) THEN
 	               GOTO 5030
 	            ELSE
@@ -329,7 +303,7 @@
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
 	   DO 715 i = 1, maxdsets
-	     IF ( ds_name(i) .EQ. char_init40 ) GOTO 715
+	     IF ( ds_name(i) .EQ. char_init256) GOTO 715
 	     IF ( iset .EQ. unspecified_int4 ) THEN
 	         iset = i
 	     ELSE
@@ -340,7 +314,7 @@
 
 	ELSEIF ( slash_all ) THEN
 	   DO 720 iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init40 ) GOTO 720
+	      IF ( ds_name(iset) .EQ. char_init256) GOTO 720
 	      CALL CANCEL_DATA_SET( iset, status )
  720	   CONTINUE
 	ELSE

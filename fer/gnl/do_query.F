@@ -52,8 +52,9 @@
 *               to have access to context information - needed for negative
 *               time step processing
 * V5.3  1/01 *acm* cal_id for alternative calendar types: call to TM_DATE_OK
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
-#ifdef unix
         include 'tmap_dims.parm'
 #        include "tmap_dset.parm"
         include 'xdset_info.cmn_text'
@@ -72,24 +73,6 @@
 	include 'xalgebra.cmn'
 	include 'xgui.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-        INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XGUI.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'          ! 12/94 SPLIT_LIST buffer
-#endif
 
 * calling argument declarations
 	INTEGER chout, query, status
@@ -156,12 +139,12 @@
 *   ... count data sets
  	   n = 0
 	   DO 310 i = 1,  maxdsets
- 310	   IF ( ds_name(i) .NE. char_init40 ) n = n + 1
+ 310	   IF ( ds_name(i) .NE. char_init256) n = n + 1
 *   ... list 'em
 	   WRITE (risc_buff, fmt ) n, queries(query), tag
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	   DO 320 i = 1,  maxdsets
-	      IF (ds_name(i).NE.char_init40) THEN
+	      IF (ds_name(i).NE.char_init256) THEN
 	         WRITE (risc_buff,'(A)')
      .			ds_name(i)(1:TM_LENSTR1(ds_name(i)))
 	         CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
@@ -329,7 +312,7 @@
  1900	CONTINUE
 	done = .FALSE.
 	DO 1910 dset = 1, maxdsets
-           IF ( ds_name(dset) .EQ. char_init40 ) GOTO 1910
+           IF ( ds_name(dset) .EQ. char_init256) GOTO 1910
 	   IF ( dset .EQ. cx_data_set(cx_last) ) THEN
 	      WRITE (risc_buff, fmt ) 1, queries(query), tag
 	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)

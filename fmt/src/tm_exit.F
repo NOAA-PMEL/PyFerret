@@ -37,8 +37,9 @@
 
 * exit the TMAP library, closing all open files as we do so
 * V510 - *sh* 12/99 -- needed for netCDF caching to work right
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
-#ifdef unix
 	include 'tmap_errors.parm'	! error code parameter defs
 #include "tmap_dset.parm"
 	include 'tmap_dims.parm'
@@ -46,13 +47,6 @@
 	external xstep_files_data
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'	! error code PARAMETER defs
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-#endif
 
 * internal variable declarations
         LOGICAL   its_cdf
@@ -60,7 +54,7 @@
 
 * loop over all data sets
 	DO 500 ds_num = 1, maxdsets
-	   IF (ds_name(ds_num) .EQ. char_init40) GOTO 500
+	   IF (ds_name(ds_num) .EQ. char_init256) GOTO 500
 
 * save the data format
            its_cdf = ds_type(ds_num) .EQ. 'CDF'

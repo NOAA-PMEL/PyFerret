@@ -13,9 +13,9 @@
 * revision 1.06 - 4/99 - *kob* increase size of ds_des_name for lengthy DODS
 *			  datasets
 * V530 *sh* 10/00 - added ds_var_type and ds_file_info_ptr
+* revision 1.07 - 12/00 - *acm* add line_cal_name for alternate calendar axes.	
+* V540 *acm 10/01 - increase length of ds_name 
 
-* revision 1.07 - 12/00 - *acm* add line_cal_name for alternate calendar axes.
-	
 	COMMON/XDSET_INFO/
      .		ds_1step(maxdsets),ds_lastep(maxdsets),
      .		ds_delstep(maxdsets),
@@ -91,7 +91,7 @@
 	INTEGER*4	ds_var_type
 
 * additional calculated or derived values pertaining to data sets
-	CHARACTER*40	ds_name
+	CHARACTER*256	ds_name
 	CHARACTER*256	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps

@@ -48,8 +48,9 @@
 *			  because it needed a preprocessor.
 * V500 *sh* 7/99 - issue warning, only, if grid is in-use in a data set
 * V510: 5/00 *sh* - BUG fix: special grids exceed "6"
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
-#ifdef unix
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_errors.parm'
@@ -60,24 +61,8 @@
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xfr_grid.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-#endif
-!	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#ifdef unix
 	include 'xvariables.cmn'
 	include 'xcalc_vars.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCALC_VARS.CMN'
-#endif
-!	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
 
 * calling argument declaration:
 	INTEGER	grid, status
@@ -110,7 +95,7 @@
 * make sure it isn't implicitly used by a cvar that depends on file variables
 * NOTE: cvars are irrelevant as of V500 ...
 !	DO 25 dset = 1, maxdsets
-!	   IF ( ds_name(dset) .EQ. char_init40 ) GOTO 25
+!	   IF ( ds_name(dset) .EQ. char_init256) GOTO 25
 !	   DO 20 cvar = 1, num_calc_vars
 ! 20	   IF ( cvar_grid(cvar,dset) .EQ. grid ) GOTO 5100
 ! 25	CONTINUE

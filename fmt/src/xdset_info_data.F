@@ -60,16 +60,12 @@
 *                      and ds_var_titl_mod w/ char_inits of proper new value
 * v500 - *kob* 4/99 - initialize ds_des_name with char_init256	
 * v530 - *acm* 1/01 - add ds_cal_name
+* v540 *acm* 10/01 increase length of ds_name
+* v540 *acm* 10/01  remove VMS include statements
 
-#ifdef unix
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
 	include 'xdset_info.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! parameter definitions
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! parameter definitions
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN_TEXT'
-#endif
 
 * local parameters
 	INTEGER		max6axes, max4vars, maxdsets_aux, maxdsets_parm
@@ -107,7 +103,7 @@
 	DATA	ds_message		/maxdsets*char_init80/
 ********************************************************************************
 	DATA	ds_des_name		/maxdsets*char_init256/
-	DATA	ds_name			/maxdsets*char_init40/
+	DATA	ds_name			/maxdsets*char_init256/
 	DATA	ds_1step		/maxdsets*real8_init/
 	DATA	ds_lastep		/maxdsets*real8_init/
 	DATA	ds_delstep		/maxdsets*real8_init/

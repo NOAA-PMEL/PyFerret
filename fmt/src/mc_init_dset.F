@@ -1,4 +1,4 @@
-	SUBROUTINE MC_INIT_DSET ( dset_num, lunit, perm, status)
+	SUBROUTINE MC_INIT_DSET(dset_num,lunit,perm,tregular,status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -62,7 +62,9 @@
 *
 * V500 *kob* 4/99 - removed unneeded variable_record namelista
 *	*sh* 7/99 - added perm argument needed for netCDF permutations
-*
+* V510 *sh* 3/00 - added tregular argumant
+
+
 * arguments:
 *	dset_num	- number assigned to this data set (output)
 *			  ( 1 <= dset_num <= maxdsets - see COMMON XDSET_INFO)
@@ -72,6 +74,7 @@
 *
 * 
 * Argument definitions
+			LOGICAL tregular
 	INTEGER		dset_num, lunit, perm(4), status
 
 * Parameter and common files
@@ -323,7 +326,7 @@
 	status = merr_ok
 	
 
-	CALL CD_INIT_DSET( dset_num, perm, status)
+	CALL CD_INIT_DSET( dset_num, perm, tregular, status)
 
 	GOTO 9990
 

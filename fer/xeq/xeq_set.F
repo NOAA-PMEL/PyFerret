@@ -116,6 +116,8 @@
 * V500:  4/28/99 *sh* - added SET AXIS/DEPTH 
 *	    5/99 *sh* - implemented SET DATA/ORDER=
 *	    8/99 *sh* - bug fix: adjust grid_use_count
+* V510: 3/00 *sh* - remove check for negative values on time axis
+*		  - add qualifier /TREGULAR to SET DATA for netCDF data sets
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -186,19 +188,17 @@
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
-     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR,
-     .			equal_pos, colon_pos, category, variable, dset_num,
+     .                  TM_GET_LINENUM, LIB_GET_LUN,
+     .			equal_pos, colon_pos, dset_num,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4)
-	REAL*8		lo_tstep, hi_tstep
 	REAL		val_buf
-	CHARACTER*1	UPPER_CASE, ic
-	CHARACTER	title*128, subtitle*64, arg*4, frame_file_status*8,
+	CHARACTER	title*128, subtitle*64, arg*4,
      .			buff1*24, buff2*80, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
-     .                  do_ez
+     .                  do_ez, tregular
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -376,6 +376,10 @@ c *kob* 4/97
      .  .OR. qual_given(slash_set_data_title) .GT. 0 
      .  .OR. qual_given(slash_set_data_skip ) .GT. 0 ) GOTO 5700
 
+* interpret the /TREGULAR qualifier (force reg T axis) for netCDF data sets
+        loc = qual_given(slash_set_data_tregular )
+	tregular = loc .GT. 0
+
 * interpret the /ORDER permutation qualifier for a non-EZ data set
 	DO 720 idim = 1,4
  720	perm(idim) = unspecified_int4 ! set default
@@ -422,7 +426,7 @@ c *kob* 4/97
 
 * initialize a TMAP-supported data set
  	   CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
-     .			      perm, dset_num, tmap_status )
+     .			      perm, dset_num, tregular, tmap_status )
 	   IF ( tmap_status .EQ. merr_no_action ) THEN
 	      GOTO 745					! already init'ed
 	   ELSEIF ( tmap_status .NE. merr_ok )	  THEN
@@ -437,7 +441,7 @@ c *kob* 4/97
 	   CALL GET_AXIS_SPEED( dset_num )
 
 * check for negative time step values (warning, only)
-	   CALL CHECK_NEG_TAXIS( dset_num )
+! 3/00	   CALL CHECK_NEG_TAXIS( dset_num )
 
 * build completed ( with time axis ) grids for computable variables
 	   CALL MAKE_CVAR_GRIDS( dset_num, status )

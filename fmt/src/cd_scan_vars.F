@@ -1,4 +1,4 @@
-	SUBROUTINE CD_SCAN_VARS ( dset, cdfid, reversed, status )
+	SUBROUTINE CD_SCAN_VARS(dset,cdfid,reversed,tregular,status)
 
 *
 *
@@ -68,6 +68,8 @@
 *	rejecting the netCDF file 
 * 3/99 *kob* - make sure to pass the correct string length for newly upped
 *              parameter values
+* V510 3/00 *sh*: added tregular argument
+
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -106,7 +108,7 @@
 #endif
 
 * argument declarations:
-	LOGICAL       reversed(0:max_lines)
+	LOGICAL       reversed(0:max_lines), tregular
 	INTEGER	      dset, cdfid, status
 
 * local parameter definitions:
@@ -243,7 +245,7 @@
 
 * PROCESS AN AXIS	   
  100        CALL CD_GET_1_AXIS(cdfid, ivcd, iaxis,
-     .                         its_EPIC, reversed, status)
+     .                         its_EPIC, reversed, tregular, status)
            IF ( status .NE. merr_ok ) GOTO 5900
 	   IF (iaxis .NE. 0) GOTO 1000		! iaxis>0 if axis was made
 	   failed_axis = .TRUE.			! go on and treat as a dep. var

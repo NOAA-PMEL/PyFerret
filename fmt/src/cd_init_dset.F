@@ -1,4 +1,4 @@
-	SUBROUTINE CD_INIT_DSET ( dset, perm, status )
+	SUBROUTINE CD_INIT_DSET ( dset, perm, tregular, status )
 
 *
 *
@@ -55,8 +55,10 @@
 * V500 *sh* 3/99 - consolidated cd_scan_vars and cd_get_axes
 *     *kob* 4/99 - increase size of temp_axnams to 64
 *     *sh*  6/99 - added "perm" (permutation) argument
+* V510 *sh* 3/99 - added tregular argument
 
 * argument declarations:
+	LOGICAL tregular
 	INTEGER	dset, perm(4), status
 
 * include files
@@ -97,7 +99,7 @@
 
 * read through the netCDF variables to read variable attributes
 * and  load the TMAP axes
-      CALL CD_SCAN_VARS( dset, cdfid, reversed, status )
+      CALL CD_SCAN_VARS( dset, cdfid, reversed, tregular, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables w/out parent grids and associate with variables

@@ -1,5 +1,5 @@
 	SUBROUTINE CD_GET_1_AXIS(cdfid, ivar, iaxis, its_epic,
-     .				 reversed, status)
+     .				 reversed, tregular, status)
 
 *
 *
@@ -70,6 +70,7 @@
 * V500 3/99 *sh*: instead of erroring out, simply return iaxis=0 for an
 *	invalid coordinate axis -- to be handled by calling program
 * V500 4/99 *kob*:  increase vname and vupcase from 24 to 64 chars 
+* V510 3/00 *sh*: added tregular argument
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -111,7 +112,7 @@
 #endif
 
 * argument declarations
-        LOGICAL  its_epic, reversed(0:max_lines)
+        LOGICAL  its_epic, reversed(0:max_lines), tregular
 	INTEGER	 cdfid, ivar, iaxis, status
 
 * local parameter definitions:
@@ -126,7 +127,7 @@
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, soft_err,
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
-     .        edgid, spacing_atlen, epic_t2var, nmsg, since_T0
+     .        edgid, spacing_atlen, epic_t2var, since_T0
       REAL    rbuff, delta, first_delta
       REAL*8  TM_LONW2LONE, tmp
       CHARACTER*12 TM_LEFINT
@@ -362,6 +363,13 @@
      .  .OR. 	( its_epic
      .      .AND. vupcase .EQ. 'LON'
      .	    .AND. .NOT.TM_HAS_STRING(line_units(iaxis),'east') )
+
+
+* was a regular time axis forced on us by the user?
+      IF (tregular) THEN
+	IF (line_direction(iaxis).EQ."TI") line_regular(iaxis) = .TRUE.
+      ENDIF
+
 
 * get the axis coordinates - none, regular, or irregular
       IF ( npts .EQ. 0 ) THEN

@@ -66,6 +66,7 @@
  * add EOF_SPACE, EOF_STAT, EOF_TFUNC to the functions that are
  * statically linked 
 
+* V5.4 *acm* 10/01 add cmprsi_by to the statically linked fcns 
 /* .................... Includes .................... */
  
 #include <unistd.h>		/* for convenience */
@@ -322,6 +323,12 @@ void FORTRAN(eof_tfunc_compute)(int *, float *, float *, float *,
                            float *, float *, float *, float *, 
                            float *, float *, float *, float *, float *);
 
+void FORTRAN(cmprsi_by_init)(int *);
+void FORTRAN(cmprsi_by_result_limits)(int *);
+void FORTRAN(cmprsi_by_compute)(int *, float *, float *, float *, 
+                           float *, float *, float *, float *, 
+                           float *, float *, float *, float *, float *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -369,7 +376,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 20
+#define N_INTEF 21
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -395,6 +402,7 @@ struct {
    strcpy(I_EFnames[17].funcname, "eof_stat");
    strcpy(I_EFnames[18].funcname, "eof_tfunc");
    strcpy(I_EFnames[19].funcname, "eof_space");
+   strcpy(I_EFnames[20].funcname, "cmprsi_by");
 
 
 /*    
@@ -2274,6 +2282,11 @@ else if ( !strcmp(name,"eof_tfunc_init_") ) return (void *)FORTRAN(eof_tfunc_ini
 else if ( !strcmp(name,"eof_tfunc_result_limits_") ) return (void *)FORTRAN(eof_tfunc_result_limits);
 else if ( !strcmp(name,"eof_tfunc_work_size_") ) return (void *)FORTRAN(eof_tfunc_work_size);
 else if ( !strcmp(name,"eof_tfunc_compute_") ) return (void *)FORTRAN(eof_tfunc_compute);
+
+/* cmprsi_by.F */
+else if ( !strcmp(name,"cmprsi_by_init_") ) return (void *)FORTRAN(cmprsi_by_init);
+else if ( !strcmp(name,"cmprsi_by_result_limits_") ) return (void *)FORTRAN(cmprsi_by_result_limits);
+else if ( !strcmp(name,"cmprsi_by_compute_") ) return (void *)FORTRAN(cmprsi_by_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

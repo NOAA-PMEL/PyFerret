@@ -99,7 +99,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('**Grid-changing Fcn: Returns indices of data, sorted ',
+   10 FORMAT ('Returns indices of data, sorted ',
      . 'on the J axis  in increasing order')
       CALL ef_set_desc(id, fcn_desc)
 

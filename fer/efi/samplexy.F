@@ -92,7 +92,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('**Grid-changing FCN:  Returns data sampled at a set of ',
+   10 FORMAT ('Returns data sampled at a set of ',
      .   '(X,Y) points, using linear interpolation')
       CALL ef_set_desc(id, fcn_desc)
 

@@ -112,7 +112,7 @@ c      CALL ef_version_test(ef_version)
 *                                                                      V
       WRITE (fcn_desc, 20)
       CALL ef_set_desc(id, fcn_desc)
-   20 FORMAT ( '**Grid-changing FCN: Computes fft amplitude spectra, ',
+   20 FORMAT ( 'Computes fft amplitude spectra, ',
      .          'normalized by 1/N' )
 
       CALL ef_set_num_args(id, 1)

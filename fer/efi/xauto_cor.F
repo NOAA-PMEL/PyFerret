@@ -92,7 +92,7 @@ c      CALL ef_version_test(ef_version)
 *                                                                      V
       WRITE (fcn_desc, 20)
       CALL ef_set_desc(id, fcn_desc)
-   20 FORMAT ( '**Grid-changing FCN: Compute autocorrelation of ',
+   20 FORMAT ( 'Compute autocorrelation of ',
      .        ' series, lags of 0, ..., N-1' )
 
       CALL ef_set_num_args(id, 1)

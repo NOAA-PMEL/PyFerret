@@ -94,6 +94,7 @@
 	include 'axis_inc.decl'		! axis lengths
 	include 'AXIS.INC'		        ! axis lengths
 !	include 'gksdefs.for'		! escape code
+        include 'xplot_setup.cmn'       ! for animate boolean
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
@@ -166,8 +167,10 @@
 	IF ( num_args .EQ. 0 .AND. qual_given(slash_new) .GT. 0 ) THEN
            
 * ... find next free number
+* *kob* 1/00 - check to make sure user doesnt open window 9 - reserved
+*              for animation purposes
            chg_window = .TRUE.
-           DO 50 n = 1, max_windows
+           DO 50 n = 1, (max_windows-1)
               IF ( .NOT.wn_open( n ) ) GOTO 60
  50        CONTINUE
            CALL ERRMSG(ferr_prog_limit,status,'# windows',*5000)
@@ -195,7 +198,10 @@
 	ENDIF	   
 
 * valid number ? 
- 60	IF ( n.LT.1 .OR. n.GT.max_windows ) CALL ERRMSG
+* *kob* 1/00 - check to make sure user doesnt open window 9 - reserved
+*              for animation purposes
+ 60	IF ( (n.LT.1 .OR. n.GT.(max_windows-1)) .AND. 
+     .          .NOT.animate  ) CALL ERRMSG
      .		( ferr_out_of_range, status, 'legal numbers are 1-8', *5000 )
 * ... Only one window can be open with batch graphics
         if (ITS_BATCH_GRAPHICS() .and. n.ne.1) then
@@ -205,7 +211,7 @@
 
 * clear the screen ? (which deletes all segments from window)
 * (moved from near end of routine 
-	IF ( qual_given( slash_clear ) .GT. 0 ) THEN
+	IF ( qual_given( slash_clear ) .GT. 0 .AND. .NOT.animate) THEN
 	   CALL CLEAR_WINDOW( n )
 ! segments already deleted inside CLEAR_WINDOW 9/95
 !	   DO 1010 ivp = mvp_dflt, max_viewport
@@ -219,7 +225,8 @@
 * /SIZE=q
 	qp = qual_given( slash_size )
 	physical_chg = qp .GT. 0
-	IF ( physical_chg ) THEN
+* *kob* 1/01 - no changing of size if we are in the middle of animating
+	IF ( physical_chg .AND. .NOT.animate) THEN
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   scale, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -229,7 +236,8 @@
 
 * /ASPECT=ratio[:"AXIS" or "EDGE"(default)]
 	qp = qual_given( slash_aspect )
-	IF ( qp .GT. 0 ) THEN
+* *kob* 1/01 - no changing aspect ratio if we are in the middle of animating
+	IF ( qp .GT. 0  .AND. .NOT.animate) THEN
 * ... decode the ratio and possible ":SIZE" or ":AXES" qualifier
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   buffer, status )

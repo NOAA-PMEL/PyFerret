@@ -102,7 +102,8 @@ ferret:	update
 
 update:
 	${MAKE} update_date DATE=`/bin/date +%D`
-	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template >! special/xrevision_type_data.F 
+	rm -f special/xrevision_type_data.F
+	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
 	(cd special;make)
 
 update_date:

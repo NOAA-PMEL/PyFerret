@@ -6,6 +6,7 @@ apply_delta_context.F\
 cgrid_axis.F\
 cgrid_size.F\
 cgrid_size_max.F\
+complete_missing_limits.F\
 confine_context.F\
 create_new_context.F\
 cs_set_context.F\
@@ -40,5 +41,6 @@ plotify_grp_cx.F\
 pseudo_var_context.F\
 reconcile_com_dst_cx.F\
 region_class.F\
+restrict_file_limits.F\
 set_doc_flag.F\
 transfer_context.F 

@@ -58,6 +58,8 @@
 *	            the lo/hi/delta
 * V541 2/02 *sh* - added support for line_modulo_len
 
+* V570 5/04 *acm* - Use TM_DFPEQ to weaken  irregular coords check
+
 * Include files
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -70,7 +72,7 @@
 	INTEGER*4	line1, line2
 
 * Local definitions
-        LOGICAL         TM_FPEQ, dynamic
+        LOGICAL         TM_FPEQ, TM_DFPEQ, dynamic
 	INTEGER*4	j
 	REAL*8		TM_WORLD_AX, xx1, xx2
 
@@ -130,7 +132,7 @@
 * first check the grid points
 	      xx1 = TM_WORLD_AX(j, line1, box_middle)
 	      xx2 = TM_WORLD_AX(j, line2, box_middle)
-	      IF (ABS(xx1) .EQ. -ABS(xx2)) GOTO 1000
+	      IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
               IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
 	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
@@ -148,11 +150,11 @@
 * now the grid cell bounds
 	      xx1 = TM_WORLD_AX(j, line1, box_lo_lim)
 	      xx2 = TM_WORLD_AX(j, line2, box_lo_lim)
-	      IF (ABS(xx1) .EQ. -ABS(xx2)) GOTO 1000
+	      IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
               IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
 	         IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 100
-* ... they're not equal but they may be within acceptable limits
+* ... they re not equal but they may be within acceptable limits
 	         IF ( ABS((xx2-xx1)/(xx2+xx1)) .GT. haf_sp_eps )
      .							    GOTO 1000
               ELSE
@@ -167,7 +169,7 @@
 * finally the upper limit of the top cell
 	    xx1 = TM_WORLD_AX(j, line1, box_hi_lim)
 	    xx2 = TM_WORLD_AX(j, line2, box_hi_lim)
-	    IF (ABS(xx1) .EQ. -ABS(xx2)) GOTO 1000
+	    IF ( TM_DFPEQ(ABS(xx1), -1*ABS(xx2)) ) GOTO 1000
             IF ( ABS(xx2) .LT. max_sp_compare ) THEN
 * ... single precision comparison
 	       IF ( SNGL(xx2) .EQ. SNGL(xx1) ) GOTO 500

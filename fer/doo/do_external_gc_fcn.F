@@ -27,6 +27,7 @@
 *       7/25/97 - increase number of args from 4 to 9
 *               - add function PPLGRID
 * V500: 10/26/98 - *jc* add CREATE_PERMUTATION section
+*        7/99 *sh* check ststus on retun from efvn_compute
 
 #ifdef unix
 	include	'ferret.parm'
@@ -130,10 +131,12 @@
 
        call efcn_compute(fcn, num_com, com_cx, com_mr, mres, 
      .      bad_flag_array, mr_arg_offset_array, memory, status)
+        IF (status .NE. ferr_ok) CALL ERRMSG(ferr_ef_error, status,
+     .          'error in external function', *190)
 
  
 * clean temporary results from memory cache
-       DO 200 i = 1, num_com
+ 190    DO 200 i = 1, num_com
           mr = mr_perm(i)
           IF ( mr_protected(mr) .EQ. mr_temporary
      .         .OR. mr_protected(mr) .EQ. mr_table_entry_only )

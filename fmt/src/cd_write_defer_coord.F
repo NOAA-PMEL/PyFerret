@@ -43,7 +43,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V530 *sh* - 12/00
-
+*	    -  1/01 bug fix -- upper box bound of last coord wrong
 * argument declarations:
 	INTEGER cdfid, status
 
@@ -88,7 +88,7 @@
 
 * ... for edge defn tag on the upper bound of the top grid box
 	  IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
-            buff(1) = TM_WORLD(i, dfr_grid(iax), 
+            buff(1) = TM_WORLD(dfr_hi(iax), dfr_grid(iax), 
      .			       dfr_idim(iax), box_hi_lim)
             CALL NCVPT1(cdfid, dfr_cdaxis(iax),
      .			dfr_hi(iax)-dfr_lo(iax)+2, buff, cdfstat)

@@ -56,7 +56,6 @@ C
 *	To exclude Denbo line dashing in favor of GKS line bundles 
 *	Mod *jd* 8.3.92 to add interrupts 
 *	Mod *sh* 11/97 to add PLOTPOL command
-*          *acm* 5/01 add plot/symbol=dot  and change variable named "IF" to "IG"
 
 *  ACM  8-30-2000 Go back to calling the line dash subroutine.   
 
@@ -108,12 +107,12 @@ C
         INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' ! JD 3.22.89
 #endif
 
-	REAL MAXVEL, epsx, epsy
+	REAL MAXVEL
+
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, fill_ndx
 
-	INTEGER GET_NDX, dot_sym
-        data dot_sym/ 99/
+	INTEGER GET_NDX
 
 * GKS initialization vars
 	integer		error,trans_no,cflag
@@ -229,8 +228,7 @@ C     DRAW VECTORS
 	    ELSE
 	      CALL VECTRS
 	    END IF
-c	    IF(ITYPE(I).EQ.3)CALL POINTS
-	    call vectrs
+	    IF(ITYPE(I).EQ.3)CALL POINTS
 	    IF(.NOT.(XLE.OR.XEQ.OR.XGE.OR.YLE.OR.YEQ.OR.YGE))THEN
 C     DO NOT CHECK POINTS FOR MISSING DATA
 	      CALL TRANS(I,X(IBASE+1),X(IY+IBASE+1),XT,YT)
@@ -268,34 +266,15 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
      *		 (YLE.AND.X(IY+K).LE.CMYLE).OR.
      *		 (YEQ.AND.X(IY+K).EQ.CMYEQ).OR.
      *		 (YGE.AND.X(IY+K).GE.CMYGE))THEN
-	          IG=0
+	          IF=0
 	        ELSE
 	          CALL TRANS(I,X(K),X(IY+K),XT,YT)
-	          CALL PLOT(XT,YT,IG,0)
-
-       IF(ITYPE(I).eq.3 .and. IMARK(i) .EQ. dot_sym .and. IG .eq.1) THEN
-                  CALL PLOT (XT,YT,0,0)
-                  CALL PLOT (XT,YT,1,0)
-      epsx = 10.
-      epsy = 2./100.
-                  call color (2)
-                  call plot (xt     ,yt+epsy,1,0)
-                  call color (3)
-                  call plot (xt+epsx,yt+epsy,1,0)
-                  call color (4)
-                  call plot (xt+epsx,yt,     1,0)
-                  call color (6)
-                  call plot (xt     ,yt,     1,0)
-c                  CALL PLOT(XT,YT,0,0)
-	          CALL COLOR(IPEN(I))
-
-	endif
-
-
+	          CALL PLOT(XT,YT,IF,0)
 		  if (interrupted) goto 51 ! *jd* 8.3.92
 	          CALL MARK(IM)
-	          IF(IG.EQ.0) IG=1
-
+	          IF(IF.EQ.0)THEN
+	            IF=1
+	          END IF
 	        END IF
 72	      CONTINUE
 	    END IF

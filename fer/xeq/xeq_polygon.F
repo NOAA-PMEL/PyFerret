@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500:  *sh*
+*        *jd* mods for v500
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -70,13 +71,16 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
+        LOGICAL         no_range, do_key, spectrum, pattern
 	LOGICAL		overlay, transpz, no_labels, set_up, noaxes
+	LOGICAL         line_it, fill_it
+	INTEGER         sp, patt, TM_LENSTR1
 	INTEGER		symbol, line_type, status, mr, cx, ipl,
      .			loc, limit, slen, coord_ax,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start
-	REAL		val
-	CHARACTER	LEFINT*4
+	REAL		val, only_val
+	CHARACTER	LEFINT*4, TM_FMT*12, fname*128, poly_opt*10
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -93,6 +97,28 @@
 	coord_ax  = qual_given( slash_plot_vs	     )		! integer
 	symbol	  = qual_off	! or ??unspecified_int4??
 	line_type = unspecified_int4
+        sp        = qual_given( slash_cont_spectrum  )
+
+        spectrum  = sp .GT. 0 
+        patt      = qual_given( slash_shad_pattern   )
+        pattern   = patt .GT. 0
+
+	line_it   = qual_given(slash_polygon_line) .gt. 0 
+
+	if (line_it) then
+	   fill_it = qual_given(slash_polygon_fill) .gt. 0 
+	else
+	   fill_it   = .true.
+	end if
+
+	if (line_it .and. fill_it) then
+	   poly_opt = '/LINE/FILL'
+	else if (line_it .and. .not. fill_it) then
+	   poly_opt = '/LINE'
+	else
+	   poly_opt = ' '
+	end if
+
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -114,7 +140,7 @@
 	   line_type = qual_off		! default to no line w/ symbol	      
 	ENDIF
 * ... POLYGON/LINE_STYLE=n
-	loc = qual_given( slash_plot_line )
+	loc = qual_given( slash_polygon_line )
 	IF ( loc .GT. 0  ) THEN
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      val, status )	! syntax check
@@ -127,6 +153,9 @@
 	      line_type = qual_on		! auto selection of line style
 	   ENDIF
 	ENDIF
+
+* Initialize the lines buffer in PPL before setting up
+	   CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )
 
 * set up the axes and title and load the data into PPLUS
 	CALL POLYGON_SET_UP   ( memory,
@@ -144,18 +173,71 @@
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+* PPLUS blows up setting auto contour levels if all data have same value
+	IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
+     .          CALL PPLCMD ( from, line, 0, 
+     .          'LEV () ('//TM_FMT(only_val, 3, 12, slen)//')' , 1, 1 )
+
+* default key
+	do_key =  (qual_given(slash_shad_key)  .GT. 0)
+     .          .OR. ( (qual_given(slash_shad_line) .EQ. 0)
+     .           .AND. .NOT.overlay )
+	IF (qual_given(slash_shad_nokey) .gt. 0) do_key = .FALSE.
+	IF ( do_key ) THEN
+	   CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
+	ELSE
+	   CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
+	ENDIF
+
+* protect colors already on-screen before a color overlay
+	IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
+
+* save old and reset to new color spectrum if requested
+	IF ( spectrum ) THEN
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(sp):qual_end(sp)),
+     .             fname, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( fname .EQ. ' ' ) fname = 'default'
+	   CALL PPL_SHASET( 'SAVE' )
+	   CALL PPL_SHASET( 'SPECTRUM='//fname(1:TM_LENSTR1(fname)) )
+	ENDIF
+
+* save old and set to new pattern if requested (a la spectrum)
+	IF ( pattern ) THEN
+	   CALL EQUAL_STR_LC( 
+     .             cmnd_buff(qual_start(patt):qual_end(patt)),
+     .             fname, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( fname .EQ. ' ' ) fname = 'default'
+	   CALL PPL_PATSET( 'SAVE' )
+	   CALL PPL_PATSET( 'PATTERN='//fname(1:TM_LENSTR1(fname)) )
+	ENDIF
+
 * turn off axes? (5/29/97)
 	IF ( noaxes ) CALL PPL_AXES_OFF(set_up)
 
 * /set_up only requested ?
 	IF ( set_up ) GOTO 1000
 
-* plot it 
-	IF ( overlay ) THEN
-	   CALL PPLCMD (' ',' ',0,'FILLPOL/OVER/'//ppl_wait//' ',1,1)
-	ELSE
-	   CALL PPLCMD (' ',' ',0,'FILLPOL/LATCH/'//ppl_wait//' ',1,1)
-	ENDIF
+* polygon it 
+	   IF ( overlay ) THEN
+	      CALL PPLCMD ( ' ', ' ', 0,
+     .          'FILLPOL/OVER/'//ppl_wait//poly_opt//' ' , 1, 1 )
+	   ELSE
+	      CALL PPLCMD ( ' ', ' ', 0,
+     .		'FILLPOL/'//ppl_wait//poly_opt//' ', 1, 1 )
+	   ENDIF
+
+* protect the new colors and restore the original color spectrum
+           IF ( spectrum ) THEN
+              CALL PPL_SHASET( 'PROTECT' )
+              CALL PPL_SHASET( 'SPECTRUM' )
+           ENDIF
+
+* restore the original pattern
+           IF ( pattern ) THEN
+              CALL PPL_PATSET( 'PATTERN' )
+           ENDIF
 
 * restore axes? (5/29/97)
 	IF ( noaxes ) CALL PPL_AXES_RESTORE

@@ -71,7 +71,7 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'K_INDICES')
       CALL ef_set_arg_desc(id, arg, 'ordered indices')
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
+      CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -112,7 +112,6 @@
 
       COMMON / samplei / my_lo_l, my_hi_l
       INTEGER my_lo_l, my_hi_l
-      INTEGER nx, ny, nz, nt
 
 *     Use utility functions to get context information about the 
 *     1st argument, to set the abstract axis lo and hi indices.

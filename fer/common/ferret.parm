@@ -53,10 +53,12 @@
 	CHARACTER*4		unspecified_name4
 * note: unspecified_int4 was changed from -9999 because of FORTRAN dimens. bug
 ! 5/01 redefined arbitrary_* using /usr/include/float.h and limits.h on Solaris
+! 10/01 *kob* - fixed formatting bug - put "D" format rather than "E" for
+*                   arbitrary_large_val8 
 ! DBL_MAX, FLT_MAX, INT_MAX, and INT_MIN
 	PARAMETER  (	unspecified_val8	= -2.E34,
      .		  	unspec_val8_2		= -2.1E34,
-     .		arbitrary_large_val8	=  1.7976931348623157E+308,  ! DBL_MAX
+     .		arbitrary_large_val8	=  1.7976931348623157D+308,  ! DBL_MAX
      .		arbitrary_small_val8	= (-arbitrary_large_val8),
      .		arbitrary_large_val4	=  3.402823466E+38, ! FLT_MAX
      .		arbitrary_small_val4	= -arbitrary_large_val4,

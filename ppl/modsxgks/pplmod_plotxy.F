@@ -20,6 +20,7 @@ C
 *	Modified *jd* J Davison JISAO/PMEL/TMAP 3.22.89
 *	To exlude Denbo line dashing in favor of GKS line bundles 
 *	Mod *jd* 8.3.92 to add interrupts 
+*	Mod *sh* 11/97 to add PLOTPOL command
 
 #ifdef unix
         include         'tmap_pplv11inc/xinterrupt.cmn' ! 1/89 *sh*
@@ -53,6 +54,8 @@ C
         include 'tmap_pplv11inc/cmrd_inc.decl'
         include 'pplv11inc/CMRD.INC'
         include 'tmap_pplv11inc/gkscm2.cmn' ! jd 3.22.89
+        include 'tmap_pplv11inc/gkspar.inc'	! sh 11/97
+        include 'tmap_pplv11inc/shade_vars.cmn'	! sh 11/97
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
@@ -69,7 +72,25 @@ C
 
 	REAL MAXVEL
 
+	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
+     .		nvertex, fill_ndx			! 11/97
+
+	INTEGER GET_NDX
+
+* GKS initialization vars
+	integer		error,trans_no,cflag
+        integer         my_trans
+        data            my_trans/20/
+	real		data(nx,ny),xc(nx),yc(ny),xs(nx+1),ys(ny+1)
+	real	 	w(4),v(4),ndc(4),uc(4)
+	real		xinv,yinv
+
+	logical		valid
+
+*************************************
+
 	IPV=0
+	nl = lnum	! 11/97
 C
 C  JTYPE IS DATA TYPE (0 FOR 2D, 1 FOR 1D)
 C
@@ -108,7 +129,8 @@ C
 	  GOTO 51
 	END IF
 
-	DO 50 I=1,LNUM
+******** LOOP OVER LINES STORED
+	DO 50 I=1,nl
 	  CALL MARKH(HMARK(I))
 	  CALL COLOR(IPEN(I))
 
@@ -158,7 +180,9 @@ C     DRAW VECTORS
 	      CALL DRAWVEC(xtail,ytail,xhead,yhead,rlenfact,0,xf,yf)
 100	    CONTINUE
 	    CALL DRAWVEC(maxvel,ytail,xhead,yhead,rlenfact,1,xf,yf)
-	  ELSE
+
+* standard line or point plot
+	  ELSEIF (ipv .EQ. 0) THEN
 	    IF(ITYPE(I).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89
 	      CALL DASHSZ(DN1(I),UP1(I),DN2(I),UP2(I))
 	      CALL DASHES
@@ -180,6 +204,7 @@ C     DO NOT CHECK POINTS FOR MISSING DATA
 	    ELSE
 C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	      DO 70 J=IBASE+1,IBASE+LLENG(I)
+* ... locate first point
 		IF(XLE.AND.X(J).LE.CMXLE)GOTO 70
 		IF(XEQ.AND.X(J).EQ.CMXEQ)GOTO 70
 		IF(XGE.AND.X(J).GE.CMXGE)GOTO 70
@@ -194,6 +219,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	        GOTO 71
 70	      CONTINUE
 71	      IF=1
+* ... plot remaining points
 	      DO 72 K=J+1,IBASE+LLENG(I)
 		IF((XLE.AND.X(K).LE.CMXLE).OR.
      *		   (XEQ.AND.X(K).EQ.CMXEQ).OR.
@@ -214,22 +240,41 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 72	      CONTINUE
 	    END IF
 	    IF(ITYPE(I).EQ.2.OR.ITYPE(I).EQ.5)CALL MARK(IMARK(I))
+
 	  END IF
+
 	if (interrupted) go to 51 !*jd* 8.3.92
 50	IBASE=IBASE+LLENG(I)
-51 	CALL COLOR(IPEN(0))
+
+******** END OF LOOP OVER LINES STORED
+
+*** FINALIZE
+ 51	CALL COLOR(IPEN(0))
 	RETURN
+
+**************************************
+***** OTHER ENTRY POINTS *************
 
 	ENTRY PLOTV(X,NXS,XF,YF)
 	IPV=1
+	nl = lnum
 	GOTO 1000
 
 	ENTRY VELVCT(X,NXS,XF,YF)
 	IPV=2
+	nl = lnum
 	GOTO 1000
+
+********
+
+* added 11/97
+	ENTRY PLOTPOL(X,NXS,XF,YF)
+	IPV=3
+	nl = lnum
+	STOP  'PLOTPOL not yet implemented'
+	GOTO 1000
+
 	END
-
-
 
 
 

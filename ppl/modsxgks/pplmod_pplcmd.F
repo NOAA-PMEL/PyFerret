@@ -32,6 +32,7 @@ C**
 *	J Davison 01.25.94 Mod to call PPLGFLUSH to flush output at each call
 *	J Davison 11.19.95 Mod for 4 digit year capability
 *	J Davison 11.29.95 Mod for century axis
+*	S Hankin  11.25.97 Mod to add commands PLOTPOL and FILLPOL
 
 c
 c	fromi	command file or device (/dev/tty or TT: for terminal)
@@ -244,7 +245,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,LABOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(107)*7
+	CHARACTER COMM(109)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -267,7 +268,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
-     *  'SQFILL','FILL'/
+     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -340,6 +341,8 @@ C
      .	  .or.makep .eq. 'VECTOR'
      .	  .or.makep .eq. 'SHADE'
      .	  .or.makep .eq. 'FILL'
+     .	  .or.makep .eq. 'PLOTPOL'
+     .	  .or.makep .eq. 'FILLPOL'
      .	  .or. icom(1:1) .eq. '%') then
              IF ( PPL_in_FERRET ) CALL SEG_ON( )
              call pplgflush
@@ -351,7 +354,7 @@ C
 	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
 	IF (DONEF) RETURN
 
-	DO 20 I=1,107
+	DO 20 I=1,109
 	    IF(ICOM.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -382,7 +385,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
-     *	9150,9160,9170,9180,9190,98,9191,9380,9171),I
+     *	9150,9160,9170,9180,9190,98,  9191,9380,9171,9172,9173),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -393,7 +396,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
-     *	9150,9160,9170,9180,9190,98,9191,9380,9171),I
+     *	9150,9160,9170,9180,9190,98,  9191,9380,9171,9172,9173),I
         end if
         goto 10
 
@@ -1464,6 +1467,22 @@ C       SHAKEY
 c       area
 *!9171 makep='AREA' NAME CHANGE *jd*
 9171   makep='FILL'
+        if(iflg1)then
+            ivcomp=p(1)
+        else
+            ivcomp=1
+        endif
+        if(iflg2)cangle=p(2)
+        GOTO 6001
+ 9172	makep='PLOTPOL'
+        if(iflg1)then
+            ivcomp=p(1)
+        else
+            ivcomp=1
+        endif
+        if(iflg2)cangle=p(2)
+        GOTO 6001
+ 9173	makep='FILLPOL'
         if(iflg1)then
             ivcomp=p(1)
         else

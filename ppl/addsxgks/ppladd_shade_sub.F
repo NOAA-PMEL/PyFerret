@@ -38,6 +38,8 @@
 *				code to retain function, yet
 *	*jd*  01.27.94  Fix bug in assigning shd_levels -- always >= 1
 *	*sh*  03.07.97  Allow external transformation to curvilinear coords
+*	*sh*  25.11.97  changed calling args of GET_NDX by eliminating "i,j"
+*			and by returning -999 for no index found
 
 #ifdef unix
 	include		'tmap_pplv11inc/parampl5_dat.decl'
@@ -93,7 +95,7 @@
 
 	integer		error,i,j,trans_no,cflag
 
-        integer         my_trans,fill_ndx,next_ndx,get_ndx
+        integer         my_trans,fill_ndx,next_ndx,GET_NDX
         data            my_trans/20/
 
 C       data statement of my_trans added for linux port *jd* 12.96
@@ -114,7 +116,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	REAL		px(maxpts), py(maxpts)
 
 *	parameter	(my_trans = 10)
-	external	get_ndx
+	external	GET_NDX
 
 *	MY_TRANS is the normalization transformation used in laying down the
 *	area fill overlay.
@@ -261,8 +263,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 *	(It was just too much trouble for the potential benefit *sh*)
 	      IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 40
 	   ENDIF
-	   fill_ndx = get_ndx (data,i,j,fill_ndx)
-	   if (fill_ndx .eq. bad_val) goto 40
+	   fill_ndx = GET_NDX (data(i,j),fill_ndx)
+	   if (fill_ndx .eq. -999) goto 40
 	   pt1 = i
 	   npt = 1
 
@@ -280,7 +282,7 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	         IF ( npt .GE. maxpt_ov2 ) GOTO 48
 	      ENDIF
 
-              next_ndx = get_ndx (data,i,j,next_ndx)
+              next_ndx = GET_NDX (data(i,j),next_ndx)
 	      IF (.NOT.curvilinear) THEN
 	         IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 48
 	      ENDIF

@@ -28,6 +28,7 @@
 *	  with call to daxis_box 8.18.95 - also use with SHADE
 * *jd*	- mod to put back use of daxis as cross and interior tics are
 *	  lost without it.
+* *sh*  - added commands PLOTPOL and FILLPOL
 
 *****************************************************
 
@@ -155,7 +156,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
      *	  .AND.JTYPE.EQ.1).OR.
      *	  ((MAKEP.EQ.'VECTOR').AND.JTYPE.GT.-1).OR.
      *	  ((MAKEP.EQ.'PLOT'.OR.MAKEP.EQ.'PLOTV'.OR.
-     *	  MAKEP.EQ.'PLOTUV'.OR.MAKEP.EQ.'VELVCT')
+     *	  MAKEP.EQ.'PLOTUV'.OR.MAKEP.EQ.'VELVCT'.OR.
+     *	  MAKEP.EQ.'PLOTPOL'.OR.MAKEP.EQ.'FILLPOL')
      *	  .AND.JTYPE.NE.1))RETURN
 	CONTR=MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'
      *		.OR.MAKEP.EQ.'VECTOR'.or.makep.eq.'SHADE'  
@@ -330,6 +332,16 @@ C
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
 	    CALL DAXIS(XF,YF,NMX,NMY)
 	    CALL DAXIS_BOX
+***************************************************
+* TMAP addition for PLOTPOL call
+	ELSE IF(MAKEP.EQ.'PLOTPOL')THEN
+	    CALL PLOTPOL(X,NXS,XF,YF)
+	    IF ( interrupted ) GOTO 3333
+***************************************************
+* TMAP addition for FILLPOL call
+	ELSE IF(MAKEP.EQ.'FILLPOL')THEN
+	    CALL FILLPOL(X,NXS,XF,YF)
+	    IF ( interrupted ) GOTO 3333
 ***************************************************
 	ENDIF
 

@@ -157,7 +157,7 @@
 
 * 7/99 *kob* add in initialization for line_name and mpsnorm.  
 *            needed for v3.4 of netcdf use
-	DATA    line_name       (mpsnorm) /''/
+	DATA    line_name       (mpsnorm) /' '/
 
 * DEFINE GRIDS NEXT
 * 2 dimensional defining grid for wind stress magnitude

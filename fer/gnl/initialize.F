@@ -259,6 +259,12 @@
 * TMAP librabry routine errors to same output unit as other errors
 	lunit_errors = err_lun
 
+*************** INITIALIZE SPECIAL CHARACTERS *************************
+*
+*       Initialize special characters in COMMON - needed for g77 port to
+*         comply with other compilers *kob*  3/03
+	pCR = CHAR(15)
+
 *************** BRAINDEAD PLOT+ ******************************************
         CALL PPL_BDEAD
 

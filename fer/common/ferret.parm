@@ -73,11 +73,11 @@
      .			unspecified_name4	= '&&&&',
      .			unspecified_val4	= -2.5E34 )
 
-* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
-*                         statements.  use  character constant instead
-* punctuation
+* 3/03 *kob* - kludge: this COMMON inserted to allow g77 to comply with all
+*              other compilers
 	CHARACTER*1	pCR
-	PARAMETER     ( pCR = '\r' )
+	COMMON /XINIT_PROBLEMS/ pCR 
+*	PARAMETER     ( pCR = o'015' )
 
 
 

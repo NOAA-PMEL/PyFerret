@@ -35,3 +35,7 @@ GO err580_long_veckey.jnl
 ! fix for bug 1201: mistranslation of time region.
 GO bn_reset
 GO err580_cal360_region.jnl
+
+! fix for bug 1203: crash if time range left off.
+GO bn_reset
+GO err580_def_tax_norange.jnl

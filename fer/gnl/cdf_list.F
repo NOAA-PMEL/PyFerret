@@ -67,6 +67,8 @@
 * kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
+* V500 *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
+*             and VAR_UNITS to 64
 
 #ifdef unix
         include 'netcdf.decl'
@@ -121,9 +123,11 @@
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
      .			write_lo(4), write_hi(4), make_lo(4), make_hi(4)
-	CHARACTER	SANITARY_VAR_CODE*24, VAR_TITLE*140,
-     .                  VAR_TITLE_MOD*140, VAR_UNITS*32, CX_DIM_STR*48,
-     .                  varcode*24, buff*140, revnum*4, c1*1
+* *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
+*             and VAR_UNITS to 64
+	CHARACTER	SANITARY_VAR_CODE*64, VAR_TITLE*140,
+     .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
+     .                  varcode*64, buff*140, revnum*4, c1*1
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
 

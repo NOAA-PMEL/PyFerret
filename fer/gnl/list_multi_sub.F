@@ -60,6 +60,7 @@
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
+* V530  8/00 - added support for string variables
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -93,7 +94,7 @@
 * local parameter declarations:
 	LOGICAL		no_decims
 	INTEGER		line_length
-	PARAMETER     ( line_length  = 200,
+	PARAMETER     ( line_length  = 500,
      .			no_decims = .FALSE. )
 
 * calling argument declarations:
@@ -110,25 +111,22 @@
 *                  to 128 and VAR_UNITS to 64
 * local variable declarations:
 	LOGICAL		all_bad, do_unform,ss_save
-	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN, CGRID_AXIS,
-     .			FIELD_WIDTH, DATE_PREC, 
-     .			E_size, F_size, w0, w, grid, data_len,
-     .			ndim, lo(4), hi(4), del(4), pt(4), lab1, valid_ax(4),
-     .			temp, num_fld_est, nleft, nright, alen, num_fields,
-     .			idim, vlen, len_set_name, istart, iend, ifield,
-     .			cleft, usable_line_len, max_fields, row_ax, row_ss,
-     .			col_ax, places, col_dec, row_dec,
-     .			numbers, first, idum, cx, slen1, slen2, slen3, i,
+	INTEGER		TM_LENSTR1, CGRID_AXIS, GET_MAX_STRING_LEN,
+     .			GET_OFFSET_C_STRING_LEN, 
+     .			w0, w, data_len, nleft, nright, alen,
+     .			lo(4), hi(4), del(4), pt(4), valid_ax(4),
+     .			idim, vlen, cleft, col_ax, col_dec,
+     .			cx, slen1, slen2, slen3, i,
      .			ivar, point, word, block, iwd, iblk, dset, ax, new_ax,
      .			min_width, row_ww_wid
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*64,
-     .			buff1*16, buff2*16, buff3*16, line_buff*200,
-     .			good_data_form*10, row_ss_fmt*14, bad_ax*5,
-     .			bad_data_form*10, col_head_format*32, sep*1
-	REAL		BOX_SIZE, big, small, biggest, value
-	REAL*8		TM_WORLD, val8
+     .			buff1*16, buff2*16, buff3*16, line_buff*500,
+     .			row_ss_fmt*14, bad_ax*5,
+     .			col_head_format*32, sep*1
+	REAL		big, small, biggest
+	REAL*8		TM_WORLD
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
      .			vcode(max_intrp)*64
 #ifdef DEC_FORTRAN
@@ -337,6 +335,7 @@
 
 * loop through all variables for each record
 	      DO 250 ivar = 1, num_uvars_in_cmnd
+	         IF (mr_type(mr_list(ivar)) .EQ. ptype_string) GOTO 5040
 * ... optimized calculation for full-region variables
 	         IF ( xact_range(ivar) ) THEN
 	            out(ivar) = memory( word+1, pt_blk(ivar)+block ) 
@@ -386,21 +385,29 @@
 
 * ... determine numeric format to fit nicely in each field
 * ... first find largest value to be printed
-	   CALL MINMAX( memory(1,pt_blk(ivar)), msize(ivar),
-     .			bad(ivar), small, big )
-	   all_bad = small .EQ. arbitrary_large_val4
+	   IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
+	       nleft = GET_MAX_STRING_LEN(cx_list(ivar),
+     .					  mr_list(ivar),
+     .					  memory(1,pt_blk(ivar)) )
+	   ELSE 
+	      CALL MINMAX( memory(1,pt_blk(ivar)), msize(ivar),
+     .			   bad(ivar), small, big )
+	      all_bad = small .EQ. arbitrary_large_val4
 
 * . . . how many digits right and left of decimal point ?
-	   biggest = MAX( ABS( small ), big )
-	   CALL GET_SIG_DIGITS( biggest, list_digits, nleft, nright )
-	   nleft = MAX( 1, nleft )			! at least "0" to left
+	      biggest = MAX( ABS( small ), big )
+	      CALL GET_SIG_DIGITS( biggest, list_digits, nleft, nright )
+	      nleft = MAX( 1, nleft )			! at least "0" to left
+	   ENDIF
 
 * ... field must be wide enough to accomodate the variable code heading
 *     (to a max of 8 characters)
 	   min_width = MIN( 8, TM_LENSTR1( vcode(ivar) ) + 1 )
 
 * . . . determine FORTRAN format for listing of this variable
-	   IF ( all_bad ) THEN
+	   IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
+              width(ivar) = MIN(nleft+3, 24)  ! arbitrary 24 char max   
+	   ELSEIF ( all_bad ) THEN
 	      width(ivar) = min_width
 	      WRITE ( bad_fmt(ivar), 3002 ) min_width
  3002	FORMAT ( '(A',I2,')' )	
@@ -489,27 +496,55 @@
 
 * loop through all variables for each record
 	   DO 550 ivar = 1, num_uvars_in_cmnd
-* ... optimized calculation for full-region variables
-	      IF ( xact_range(ivar) ) THEN
-	         out(ivar) = memory( word+1, pt_blk(ivar)+block ) 
+	      w = w0 + width(ivar) ! points to last column of field
+	      IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
+* ... string variable
+	         line_buff(w0+2:w0+2) = '"'
+	         line_buff(w0+3:w) = ' '
+	         IF ( xact_range(ivar) ) THEN
+	            iwd = point
+	         ELSE	
+	            iwd = 0
+	            IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
+	            DO 530 i = 3, 1, -1
+	              iwd = iwd*size(i,ivar)
+	              IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
+ 530	            CONTINUE
+	         ENDIF
+	         slen1 = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr_list(ivar)),
+     .					 iwd )
+	         CALL GET_OFFSET_C_STRING(mr_c_pointer(mr_list(ivar)),
+     .				   iwd,
+     .				   line_buff(w0+3:),
+     .				   width(ivar)-2     )
+	         IF (slen1 .GT. width(ivar)-2) THEN
+	            line_buff(w-3:w) = '..."'
+	         ELSE
+	            line_buff(w0+slen1+3:w0+slen1+3) = '"'
+	         ENDIF
 	      ELSE
+* ... numerical variable
+* ... optimized calculation for full-region variables
+	        IF ( xact_range(ivar) ) THEN
+	           out(ivar) = memory( word+1, pt_blk(ivar)+block ) 
+	        ELSE
 * ... separate pointer calcs for non-full region variables
 * ... e.g. a 2D field listed with a 3D will replicate at each 3rd-D location
-	         iwd = 0
-	         IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
-	         DO 540 i = 3, 1, -1
-	         iwd = iwd*size(i,ivar)
-	         IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
- 540	         CONTINUE
-	         iblk = iwd / mem_blk_size
-	         iwd  = iwd - iblk*mem_blk_size
-	         out(ivar) = memory( iwd+1, pt_blk(ivar)+iblk ) 
-	      ENDIF
-	      w = w0 + width(ivar)
-	      IF ( out(ivar) .EQ. bad(ivar) ) THEN
-	         WRITE(line_buff(w0+1:w),bad_fmt(ivar)) '....'
-	      ELSE
-	         WRITE(line_buff(w0+1:w),good_fmt(ivar)) out(ivar)
+	           iwd = 0
+	           IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
+	           DO 540 i = 3, 1, -1
+	           iwd = iwd*size(i,ivar)
+	           IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
+ 540	           CONTINUE
+	           iblk = iwd / mem_blk_size
+	           iwd  = iwd - iblk*mem_blk_size
+	           out(ivar) = memory( iwd+1, pt_blk(ivar)+iblk ) 
+	        ENDIF
+	        IF ( out(ivar) .EQ. bad(ivar) ) THEN
+	           WRITE(line_buff(w0+1:w),bad_fmt(ivar)) '....'
+	        ELSE
+	           WRITE(line_buff(w0+1:w),good_fmt(ivar)) out(ivar)
+	        ENDIF
 	      ENDIF
 	      w0 = w
 
@@ -541,4 +576,7 @@
  5030	CALL ERRMSG( ferr_invalid_command, status,
      .		'list of variables too long for output lines'//pCR//
      .		'Reduce SET LIST/PRECISION or specify /FORMAT', *5000 )
+ 5040	CALL ERRMSG( ferr_invalid_command, status,
+     .		'format disallowed for multiple variables w/ strings',
+     .		*5000 )
 	END

@@ -43,6 +43,8 @@
 * search for "FERRET" to find all revisions
 * *sh* 9/13/88 - rev 1.0 for FERRET 1.10+
 *	- if GKS (ptype>2) then bypass clipping at screen limits
+* 
+* *kob* 3/02 - need to add sgi to ifdef statement 
 ****************************************************************
 *     CALL ABPLT
 
@@ -187,7 +189,7 @@ C      THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
 
 C     CHECK THE HORIZONTAL LIMITS OF THE SCREEN.
 #ifdef unix
-#ifdef sun
+#if defined sun || defined sgi
         if(rshift(osflg,2) .eq. 0)goto 50
 #else
 # ifdef NEED_IAND
@@ -203,7 +205,7 @@ C     CHECK THE HORIZONTAL LIMITS OF THE SCREEN.
 C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
 #ifdef unix
-#ifdef sun
+#if defined sun || defined sgi
         binter = bmxmn(rshift(osflg,2))
 #else
 # ifdef NEED_IAND

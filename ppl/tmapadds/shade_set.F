@@ -1,6 +1,5 @@
         SUBROUTINE SHADE_SET
-        
-*
+
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,7 +33,7 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
+
 *       Sets the options for SHADE -- fill_missing, custom_colors
 *       J Davison JISAO/PMEL/TMAP 8.24.88
 *	Completely rewritten J Davison 7.27.89
@@ -45,7 +44,8 @@
 *       *jd* eliminate call meta_protect for xgks -- but haven't replaced
 *			functionality with other code
 *	*jd* 6.94 add option to have comments in .spk files -- !-begun lines
-
+*       *jd* 10.98 Add control for rgb interpolation, atomic colors, or data
+*                 based levels in color bar
 
 #ifdef unix
         include         'tmap_pplv11inc/shade_vars.cmn'
@@ -81,11 +81,19 @@
 
 ******************************************************************************
 
-*	IF NO LABELS IN THE SHASET COMMAND THEN PROCESS LEVELS AS SPECIFIED
       	call upnsquish (label,str,end)
         call squish (label,1,255)
+
+*	IF NO LABELS IN THE SHASET COMMAND THEN PROCESS LEVELS AS SPECIFIED
 	if (end .eq. 0) then
 	   call shade_levels
+	   goto 10
+	end if
+
+*	IF RGB MAPPING MODIFIED, SET FLAG
+	beg = index (str,'RGB_MAPPING')
+	if (beg .ne. 0) then
+	   call shade_mapping  (str)
 	   goto 10
 	end if
 
@@ -137,30 +145,42 @@
 	SUBROUTINE SHADE_LEVELS 
 
 #ifdef unix
+        include         'tmap_pplv11inc/parampl5_dat.decl'
+        include         'pplv11inc/PARAMPL5.DAT'
+        include         'tmap_pplv11inc/cont_inc.decl'
+        include         'pplv11inc/CONT.INC'
         include         'tmap_pplv11inc/shade_vars.cmn'
 	include		'tmap_pplv11inc/cmrd_inc.decl'
 	include		'pplv11inc/CMRD.INC'
 #else
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
+        INCLUDE         'tmap_pplv11inc:tmap_PARAMPL5.DAT'
+        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
+        INCLUDE         'tmap_pplv11inc:tmap_CONT.INC'
 #endif
 
 	integer		i,j
 
-********************************************************************************
+*******************************************************************************
 
 	custom_colors = .true.
 
 *	NO PARAMETERS RESETS SPECTRUM TO GRAY SCALE
 	if (m .eq. 0) then
-	   ncl = 2
 
-	   slvl(1) = 0.0
+           if (rgb_mapping .eq. by_value) then
+              ncl = 0
+           else
+              ncl = 2
+              slvl(1) = 0.0
+              slvl(2) = 100.0
+           end if
+                   
 	   sr(1) = 0.0
 	   sg(1) = 0.0
 	   sb(1) = 0.0
 
-	   slvl(2) = 100.0
 	   sr(2) = 1.0
 	   sg(2) = 1.0
 	   sb(2) = 1.0
@@ -168,33 +188,52 @@
 	   return
 	end if
 
-*	FIRST PARAMETER NEGATIVE DELETES THAT LEVEL
-	if (p(1) .lt. 0.0 .and. p(1) .ne. -100.0) then
-	   do 5 i = 1,ncl
-	      if (p(1) .eq. -slvl(i))then
-		 ncl = ncl - 1
-		 do 1 j = i,ncl
-		    slvl(j) = slvl(j+1)
-		    sr(j) = sr(j+1)       
-		    sg(j) = sg(j+1)       
-		    sb(j) = sb(j+1)       
-1		 end do
-		 return
-	      end if
-5	   end do
-	end if
+*	LISTING ONLY THE FIRST PARAMETER DELETES THAT LEVEL
+	if (m .eq. 1) then
+           if (rgb_mapping .eq. percent .and. 
+     .          (p(1) .eq. 0.0 .or. abs(p(1)) .ge. 100.0)) return
+
+           if (ncl .eq. 1) then
+              ncl = 0
+           else if (ncl .gt. 1) then
+              do 5 i = 1,ncl
+                 if (p(1) .eq. slvl(i)) then
+                    ncl = ncl - 1
+                    do 1 j = i,ncl
+                       slvl(j) = slvl(j+1)
+                       sr(j) = sr(j+1)       
+                       sg(j) = sg(j+1)       
+                       sb(j) = sb(j+1)       
+ 1                  end do
+                    return
+                 end if
+ 5            end do
+           end if
+        end if
 
 *	NEED COMPLETE SET OF ARGUMENTS OTHERWISE
 	if (m .ne. 4) return
 
 *	REJECT PERCENT OF SPECTRUM OUTSIDE 0 TO 100	
-	if (p(1) .lt. 0.0 .or. p(1) .gt. 100.0) return
+	if (rgb_mapping .eq. percent .and. 
+     .       (p(1) .lt. 0.0 .or. p(1) .gt. 100.0)) return
 
 *	REJECT PERCENT OF R,G,B OUTSIDE 0 TO 100
 	if (p(2) .lt. 0.0 .or. p(2) .gt. 100.0) return
 	if (p(3) .lt. 0.0 .or. p(3) .gt. 100.0) return
 	if (p(4) .lt. 0.0 .or. p(4) .gt. 100.0) return
 
+*	IF FIRST VALUE, ENTER INTO TABLE
+        if (ncl .eq. 0) then
+           slvl(1) = p(1)
+           sr(1) = p(2)/100.0
+           sg(1) = p(3)/100.0
+           sb(1) = p(4)/100.0
+           ncl = 1
+
+           return
+        end if
+       
 *	REPLACE OLDER VALUES WITH NEW IF RESPECIFIED
 	do 10 i = 1,ncl
 	   if (p(1) .eq. slvl(i)) then
@@ -221,15 +260,24 @@
 	      sr(i+1) = p(2)/100.0
 	      sg(i+1) = p(3)/100.0
 	      sb(i+1) = p(4)/100.0
-	
+
 	      return
 	   end if
 20	end do
-
+          
+        if (p(1) .gt. slvl(ncl)) then 
+           ncl = ncl + 1
+           
+           slvl(ncl) = p(1)
+           sr(ncl) = p(2)/100.0
+           sg(ncl) = p(3)/100.0
+           sb(ncl) = p(4)/100.0
+        end if
+ 
 	return
 	end
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	SUBROUTINE SHADE_DEFAULT
 
@@ -239,13 +287,50 @@
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif
 
-********************************************************************************
+*******************************************************************************
 
 	custom_colors = .false.
 	return
 	end
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	SUBROUTINE SHADE_MAPPING  (str)
+
+* Set mapping for color bar:
+*     PERCENT    -> 0
+*     BY_VALUE   -> 1
+*     BY_LEVEL   -> 2
+
+#ifdef unix
+        include         'tmap_pplv11inc/shade_vars.cmn'
+#else
+        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
+#endif
+
+        character*255   str
+
+*******************************************************************************
+
+	if (index (str, 'PERCENT') .ne. 0) then
+           rgb_mapping = percent
+           goto 10
+	end if
+
+        if (index (str, 'BY_VALUE') .ne. 0) then
+           rgb_mapping = by_value
+           goto 10
+	end if
+
+        if (index (str, 'BY_LEVEL') .ne. 0) then
+           rgb_mapping = 2
+           goto 10
+	end if
+
+ 10     return
+	end
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	SUBROUTINE SHADE_READ (str,beg,end,there)
 
@@ -266,11 +351,18 @@
 
 	logical		there
 	integer		beg,end,i,j,speclen,lnblk,status
+        integer         test_end
 	character*255	str,sfile,instr,label,specdir,tm_inq_path
-
+        character*255   test_str
 	external 	lnblk
 
+        integer         mapping,percentage,value,level 
+
 *******************************************************************************
+
+*       DEFAULT MAPPING IS PERCENT FOR COMPATIBILITY WITH ORIGINAL SYSTEM
+        rgb_mapping = percent
+        ncl = 0
 
 *	IF NO FILE NAME GIVEN, READ IN FROM MEMORY
 	if (end .lt. 10) then
@@ -278,6 +370,7 @@
 
 	   custom_colors = .true.
 	   ncl = mncl
+           rgb_mapping = mrgb_mapping
 
 	   do 4 i = 1,ncl
 	      slvl(i) = mslvl(i)
@@ -323,9 +416,6 @@
  5      open (70,file=sfile,readonly,status='old',err=100)
 #endif
 #endif
-*	RESET THE SPECTRUM FIRST OFF
-	m = 0
-	call shade_levels
 
 *	NOW READ IN THE LEVELS AND SET THEM
 10	read (70,'(a)',end=30,err=90) instr
@@ -339,7 +429,42 @@
 
 *	PERMIT COMMENTS 
 20	if (instr(j:j) .eq. '!') goto 10
-	call parsex (instr(j:j+79),80,p,iflg,m,label,n)
+
+*       DETERMINE MAPPING
+        call upnsquish (instr,test_str,test_end)
+ 
+        if (index(test_str, 'RGB_MAPPING') .ne. 0) then
+ 
+           percentage     = index (test_str, 'PERCENT')
+           value          = index (test_str, 'BY_VALUE')
+           level          = index (test_str, 'BY_LEVEL') 
+
+           if (percentage .ne. 0) rgb_mapping = percent
+           if (value .ne. 0)      rgb_mapping = by_value
+           if (level .ne. 0)      rgb_mapping = by_level
+
+*	   RESET SPECTRUM TO GRAY SCALE
+
+           if (rgb_mapping .eq. by_value) then
+              ncl = 0
+           else
+              ncl = 2
+              slvl(1) = 0.0
+              slvl(2) = 100.0
+           end if
+                   
+	   sr(1) = 0.0
+	   sg(1) = 0.0
+	   sb(1) = 0.0
+
+	   sr(2) = 1.0
+	   sg(2) = 1.0
+	   sb(2) = 1.0
+
+           goto 10
+        end if
+        
+        call parsex (instr(j:j+79),80,p,iflg,m,label,n)
 	call shade_levels
 	goto 10
 
@@ -369,11 +494,13 @@
 	integer		beg,end,i
 	character*255	str,sfile
 
+
 *******************************************************************************
 
 *	WRITE TO MEMORY IF NO FILE NAME GIVEN
 	if (end .lt. 6) then
 	   mncl = ncl
+           mrgb_mapping = rgb_mapping
 
 	   do 10 i = 1,ncl
 	      mslvl(i) = slvl(i)
@@ -414,10 +541,31 @@
 #endif
 #endif
 *	WRITE OUT THE SPECTRUM
-	do i = 1,ncl
-	   write (70,'(4f7.1)') slvl(i),sr(i)*100.0,sg(i)*100.0,sb(i)*100.0
-	end do
+        if (rgb_mapping .eq. percent) then
+           write(70,'(a/" "/"! SetPt    Red  Green   Blue")') 
+     .          'RGB_Mapping Percent'
 
+        else if (rgb_mapping .eq. by_value) then
+           write(70,'(a/" "/"! SetPt    Red  Green   Blue")') 
+     .          'RGB_Mapping By_value'
+
+        else if (rgb_mapping .eq. by_level) then
+           write(70,'(a/" "/"! Level    Red  Green   Blue")') 
+     .          'RGB_Mapping By_level'
+        end if
+
+        if (rgb_mapping .ne. by_level) then
+           do i = 1,ncl
+              write (70,'(4f7.1)') slvl(i),
+     .             sr(i)*100.0,sg(i)*100.0,sb(i)*100.0
+           end do
+        else
+           do i = 1,ncl
+              write (70,'(i7,3f7.1)') i,
+     .             sr(i)*100.0,sg(i)*100.0,sb(i)*100.0
+           end do
+        end if
+        
 	close (70)
 	return
 

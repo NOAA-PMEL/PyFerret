@@ -75,6 +75,7 @@
 * 5/2001  acm -- allow modulo axes
 * 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
 * 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
+*  2/2001 acm -- check that modulo axes are also regular, and fix delmodx, delmody
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -326,7 +327,7 @@ C  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
       INTEGER xlo, xhi, ylo, yhi
-      REAL delmodx, delmody, xpt, ypt
+      REAL dx, dy, delmodx, delmody, xpt, ypt
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -388,8 +389,24 @@ C  variables for checking axis characteristics (modulo axes)
       ylo = arg_lo_ss(Y_AXIS,ARG1)
       yhi = arg_hi_ss(Y_AXIS,ARG1)
 
-      IF ( modulo(1) ) delmodx = xaxdat(xhi,1,1,1) - xaxdat(xlo,1,1,1)
-      IF ( modulo(2) ) delmody = yaxdat(yhi,1,1,1) - yaxdat(ylo,1,1,1)
+      IF ( modulo(1) ) THEN
+         IF (.NOT. regular(1)) THEN
+            err_msg = 'cannot handle MODULO axis that is not regular'
+            go to 999
+         ELSE
+            dx = xaxdat(xlo+1,1,1,1) - xaxdat(xlo,1,1,1)
+            delmodx = xaxdat(xhi,1,1,1) - xaxdat(xlo,1,1,1) + dx
+         ENDIF
+      ENDIF
+      IF ( modulo(2) ) THEN
+         IF (.NOT. regular(2)) THEN
+            err_msg = 'cannot handle MODULO axis that is not regular'
+            go to 999
+         ELSE
+            dy = yaxdat(ylo+1,1,1,1) - yaxdat(ylo,1,1,1)
+            delmody = yaxdat(yhi,1,1,1) - yaxdat(ylo,1,1,1)
+         ENDIF
+      ENDIF
 
 *  For each (xpt,ypt) pair, search the data array 
 *   arg_1 for the nearest higher (x,y) grid coordinates.  Interpolate 

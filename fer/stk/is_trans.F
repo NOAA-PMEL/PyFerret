@@ -25,6 +25,13 @@
 * V455:  9/97 - OFFSET_SS returns status
 *	11/13/97 - bug fix: @ITP component WW coords must bracket result
 *	        (11/18/97 - repaired bug introduced 11/13)
+* V491:  1/2/98 - component size can exceed result in case like
+*                       let vx = SIN(X[X=1:60:1])
+*                       list/i=13:18 vx[x=@sbx:3]
+*               As an easy (but not necessarily "correct") fix  we REDUCE
+*		the component size here to fit the result. We need to flag the
+*		result as not cache-retreivable because the uvar_given value
+*		indicates the result size is self-defined (Is this risky??)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -201,10 +208,10 @@
 	IF ( trans .LT. trans_compress_code ) THEN
 	   idim = idim1				! should be equal already
 	   IF ( ITSA_FILL_TRANS(trans) ) THEN	! 5/97 - filler are difrnt
-* 5/97: for fillers the DO_ routines handle result regions beyond the bounds
-*  of the component data 
 	      lo_off = 0
 	      hi_off = 0
+* 5/97: for fillers the DO_ routines handle result regions beyond the
+*	bounds of the component data 
 	   ELSE
 	      CALL OFFSET_SS( idim, res_cx, lo_off, hi_off, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
@@ -224,6 +231,30 @@
      .		.OR. cx_hi_ss(res_cx,idim) .GT. cx_hi_ss(cx_valid,idim) ) THEN
 * ... insufficient component data to compute the entire requested region
 	      CALL BAD_EDGES( cx_valid, memory(1,mr_blk1(res_mr)), res_mr )
+	   ELSEIF (  cx_lo_ss(res_cx,idim) .GT. cx_lo_ss(cx_valid,idim)
+     .		.OR. cx_hi_ss(res_cx,idim) .LT. cx_hi_ss(cx_valid,idim) ) THEN
+* ... *1/98* component data is BIGGER than expected for requested result
+* ... reduce the apparent size of the component data (dangerous??)
+* e.g.                      let vx = SIN(X[X=1:60:1])
+*                           list/i=13:18 vx[x=@sbx:3]
+*     Note that this situation occurs when the component variable being xformed
+*	thinks that it has self-describing limits (uvar_given<uvlim_gvn_xact).
+*       Since the transformed version of the variable (the result) is getting
+*	its limits from elsewhere uncache the result so it won't be recalled.
+*	==> THIS IS A KLUDGE: The right solution is that the limits i=13:18
+*	should never get applied to vx ... but this is too difficult to
+*	implement in GET_VAR_CONTEXT and PARSE_VAR_NAME
+	      CALL UN_CACHE( res_mr )
+* ... fillers and smoothers are equivalent here ... so recompute offsets
+	      CALL OFFSET_SS( idim, res_cx, lo_off, hi_off, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF ( cx_lo_ss(res_cx,idim) .GT. cx_lo_ss(cx_valid,idim) )
+     .			cx_lo_ss(com_cx,idim) = cx_lo_ss(res_cx,idim) + lo_off
+	      IF ( cx_hi_ss(res_cx,idim) .LT. cx_hi_ss(cx_valid,idim) )
+     .			cx_hi_ss(com_cx,idim) = cx_hi_ss(res_cx,idim) + hi_off
+	      cx_by_ss(idim,res_cx) = .TRUE.
+	      CALL FLESH_OUT_AXIS( idim, com_cx, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
 	   ENDIF
 	ENDIF
 

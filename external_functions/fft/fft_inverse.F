@@ -38,6 +38,8 @@
 * Ansley Manke
 * November 2001
 *
+* v5.50  *acm* 10/02 Simplify the error message for missing data when the 
+*                    input is a simple 1-D time series.
 *
 * This function computes inverse fft transform spectrum for each A,B,
 * where these are the real and imaginary part of the FFT coefficients.
@@ -285,6 +287,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
       CHARACTER*80 err_msg
 
    40 FORMAT ('FFTA encountered missing data at (i,j,k,l)', 4I5)
+   50 FORMAT ('FFTA encountered missing data at L=', I5)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -336,7 +339,14 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
                DO 100 l = 1, nfreq
                   IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(ARG1) .OR.
      .                arg_2(i1,j1,k1,l1) .EQ. bad_flag(ARG2)) THEN
+
                      WRITE (err_msg, 40) i1,j1,k1,l
+
+                     IF (i1 .EQ. ef_unspecified_int4 .AND.
+     .                   j1 .EQ. ef_unspecified_int4 .AND.
+     .                   k1 .EQ. ef_unspecified_int4 )
+     .                     WRITE (err_msg, 50) l
+
                      GO TO 999 
                   ENDIF
 

@@ -2,6 +2,7 @@
 ! test various fixes that went into version 5.52
 ! 3/03 *acm*
 !
+! 4/03 *kob*  Add fixes for string bugs
 
 ! Default behavior (all axes on) was not reset after a plot/set/AXES=
 GO bn_reset
@@ -15,3 +16,7 @@ GO err551_num_levels.jnl
 ! Check for invalid value of calendar attribute on reading NetCDF files.
 GO bn_reset
 GO err551_invalid_calendar.jnl
+
+! String bug fixes *kob*
+GO bn_reset
+GO err551_strings.jnl

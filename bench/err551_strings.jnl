@@ -1,0 +1,36 @@
+
+
+! first make sure file is non-existent
+sp rm input.txt
+
+! first bug - first list always worked fine, and second list would crash.
+!	      fix turned out to be that you still had to (m)alloc space even
+!             for a null pointer in get_sys_cmnd.c
+! 	
+! define string variable
+let a = {"first", spawn:"ls input.txt", "last"}
+list a
+list a
+
+
+! second bug fix - this used to crash during the list command.
+!		   fix turned out to be that needed make sure to (m)alloc enough
+! 		   space for string plus "\n" character - in get_sys_cmnd.c
+
+sp echo "GANGES_BRAHMAPUTRA" > input.txt
+sp echo "X=86e:93e/Y=20n:25n  " >> input.txt
+sp echo "X=118e:123e/Y=29n:34n  " >> input.txt
+sp echo "X=65w:57w/Y=7n:12n  " >> input.txt
+let a = {spawn:"cat input.txt"}
+load a
+list a
+
+! last one - make sure bug gabe found is fixed as well 
+!            used to have incorrect results on second list command
+!   	     fix turned out to be that strcmp function was declared "float"
+!            when it should have been void.
+
+let mystring = {"a","b","a","c"}
+list strcmp("b", mystring)
+list strcmp("b", mystring)
+

@@ -42,7 +42,6 @@ gcf_get_imposed_axes.F\
 gcf_impose_arg_lim_dflts.F\
 gcf_impose_axes.F\
 gcf_impose_result_lims.F\
-gcf_match_fcn.F\
 gcf_name.F\
 gcf_num_args.F\
 gcf_parent_uvar.F\

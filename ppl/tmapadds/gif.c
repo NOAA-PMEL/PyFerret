@@ -355,7 +355,7 @@ static GIFmetafile *copy_meta(mf_cgmo *cgmo, GIFmetafile *old,
 
 static void xform(GIFmetafile *meta, float x, float y, int *xp, int *yp)
 {
-  static int margin = 10;
+  static int margin = 0;
   int maxdim = meta->sx > meta->sy ? meta->sx : meta->sy;
   maxdim -= 2 * margin;
   *xp = x * maxdim + margin;

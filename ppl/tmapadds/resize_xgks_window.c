@@ -44,6 +44,7 @@
 /* Changed include order of gks_implem.h to remove errors in compile (set 
  * **before** stdlib.h) for linux port *jd* 1.28.97
  * More hacks to support batch mode (i.e. no display available) *js* 8.97
+ * Prevent null pointer dereference for ws if no X display available *js* 2.99
  */
 
 /* Remove XCheckWindowEvent to see if that's causing the occasional hangs
@@ -89,7 +90,7 @@ float *y;
 /*****************************************************************************/
 
   ws  = OPEN_WSID (*ws_id);
-  if (ws->dpy){
+  if (ws && ws->dpy){
     scr = DefaultScreen (ws->dpy);
 
     xf = ((float) DisplayWidth(ws->dpy,scr)) /((float) DisplayWidthMM(ws->dpy,scr));
@@ -114,10 +115,11 @@ float *y;
     }
   gescsetdcsize (*ws_id, size);
 
-  if (ws->ewstype == X_WIN && ws->dpy){
-    XResizeWindow (ws->dpy,ws->win,ix,iy);
-    tp = &t_now;
-    t0 = time(0);
+  if (ws){
+    if (ws->ewstype == X_WIN && ws->dpy){
+      XResizeWindow (ws->dpy,ws->win,ix,iy);
+      tp = &t_now;
+      t0 = time(0);
   
 /*
  *    do { 

@@ -42,10 +42,9 @@
 * search for "TMAP" to find all revisions
 * *sh*  - 1/23/89 added interrupt detection from interrupts in lower routines
 *	  	  no explicit declarations - use FORT/WARN=NODECLARATIONS
-* *acm* - 6/01   Plot qualifiers to set log axes,
-*                inverse log axes and log depth axes.
-*                 ITYPEY = 4 is inverse log plot
-*                 ITYPEY = 3 is unchanged from original PPLUS meaning
+* v5.41 *acm* - 3/02  bug fix: xaxis2 call for log plots caused the tics for log 
+*               axes to be wrong.
+*               Also remove VMS include statements.
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -57,7 +56,6 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
 	include 'axis_inc.decl'
@@ -84,42 +82,11 @@ C**
 	include 'TICS2.INC'
 	include 'axisl_inc.decl'
 	include 'AXISL.INC'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-	INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'
-	INCLUDE 'TMAP_PPLV11INC:LABELS_INC.DECL'
-	INCLUDE 'PPLV11INC:LABELS.INC'
-	INCLUDE 'TMAP_PPLV11INC:LABCOM_INC.DECL'
-	INCLUDE 'PPLV11INC:LABCOM.INC'
-	INCLUDE 'TMAP_PPLV11INC:HAB_INC.DECL'
-	INCLUDE 'PPLV11INC:HAB.INC'
-	INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-	INCLUDE 'PPLV11INC:LINES.INC'
-	INCLUDE 'TMAP_PPLV11INC:PEN_INC.DECL'
-	INCLUDE 'PPLV11INC:PEN.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLTL_INC.DECL'
-	INCLUDE 'PPLV11INC:PLTL.INC'
-	INCLUDE 'TMAP_PPLV11INC:MPLOT_INC.DECL'
-	INCLUDE 'PPLV11INC:MPLOT.INC'
-	INCLUDE 'TMAP_PPLV11INC:TAXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:TAXIS.INC'
-	INCLUDE 'TMAP_PPLV11INC:TICS_INC.DECL'
-	INCLUDE 'PPLV11INC:TICS.INC'
-	INCLUDE 'TMAP_PPLV11INC:TICS2_INC.DECL'
-	INCLUDE 'PPLV11INC:TICS2.INC'
-	INCLUDE 'TMAP_PPLV11INC:AXISL_INC.DECL'
-	INCLUDE 'PPLV11INC:AXISL.INC'
-#endif
+
 	CHARACTER IFX*20,IFY*20
 
 * TMAP interrupt flag
-#ifdef unix
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
 
 	IF(IMCNT.LE.1)THEN
 	    CALL BOX
@@ -134,11 +101,6 @@ C
 	  IY=ITY
 C
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
-
-C	ITYPEY = 1  LINEAR
-C	ITYPEY = 2  LOG
-C	ITYPEY = 3  LOG on left, inverse log on right
-C	ITYPEY = 4  INVERSE LOG
 C
           IF(ITFLG.EQ.-1)THEN
               CALL TAYIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,
@@ -146,14 +108,11 @@ C
 	  ELSE IF(ITYPEY.EQ.1)THEN
 	CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
      *	    YCSIZE)
-	  ELSE IF (ITYPEY  .EQ. 2  .OR.  ITYPEY .EQ. 3) THEN
+	  ELSE
             CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE)
-	  ELSE		! inverse log
-            CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,ITYPEY,YF,YCSIZE)
           END IF
       END IF
-      IF ( interrupted ) GOTO 3333		! TMAP interrupt
-
+	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(IAXON(4).EQ.1)THEN
 	IY=-ITY
         IF(ITFLG.EQ.-1)THEN
@@ -161,13 +120,10 @@ C
      *      YF,XHI,XF,TCSIZE)
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
-     1      YCSIZE)
-	ELSE IF (ITYPEY .EQ. 2  .OR.  ITYPEY .EQ. 3) THEN
-	    CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE)
+     1     YCSIZE)
 	ELSE
-	    CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY,YF,YCSIZE)
+	    CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE)
 	ENDIF
-
       ENDIF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
       IF(IAXON(1).EQ.1)THEN
@@ -184,8 +140,7 @@ C
      *	       XCSIZE)
           ELSE
 c	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,ITYPEX-1,XF,YHI,YF,XCSIZE)
-	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,ITYPEX,XF,YHI,YF,XCSIZE)
-
+	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE)
           END IF
       END IF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
@@ -197,10 +152,8 @@ c	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,ITYPEX-1,XF,YHI,YF,XCSIZE)
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
      *	      XCSIZE)
-          ELSE	! acm.  
-c	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE)
-	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,ITYPEX,XF,YLO,YF,XCSIZE)
-
+          ELSE
+	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE)
           END IF
       END IF
 

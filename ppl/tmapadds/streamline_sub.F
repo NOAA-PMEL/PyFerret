@@ -118,7 +118,7 @@ C   int *shdcls, int shdcnt, int den)
 
       REAL up, vp 
       REAL x,y,xx,yy,uv1,uv2,uv,vv1,vv2,vv,auv,avv,xsav,ysav,xold,yold
-      INTEGER i,ii,jj,ipen,ii1,ij1,i2,j2,ipt,acnt,icol,scol,dis
+      INTEGER i,ii,jj,ii1,ij1,i2,j2,ipt,acnt,icol,scol,dis
       INTEGER iindex, jjndex, ii1index
       INTEGER iacc,iisav,iscl,imn,imx,jmn,jmx,iz,jz,iss,jss,bflg
       REAL fact,rscl,xxsv,yysv
@@ -271,9 +271,9 @@ C     flag boxes.
 
                IF (ZLE .AND.
      .               (up .LE. CMZLE .OR. upi .LE. CMZLE .OR.
-     .                upj.LE. CMZLE .OR. upij.LE. CMCLE .OR.          
-     .                vp .LE. CMZLE .OR. vpi .LE. CMCLE .OR.
-     .                vpj.LE. CMZLE .OR. vpij.LE. CMCLE)) GO TO 19
+     .                upj.LE. CMZLE .OR. upij.LE. CMZLE .OR.          
+     .                vp .LE. CMZLE .OR. vpi .LE. CMZLE .OR.
+     .                vpj.LE. CMZLE .OR. vpij.LE. CMZLE)) GO TO 19
 
                IF (ZEQ .AND.
      .               (up .EQ. CMZEQ .OR. upi .EQ. CMZEQ .OR.
@@ -430,9 +430,9 @@ C  Draw arrow heads
 
                IF (ZLE .AND.
      .               (up .LE. CMZLE .OR. upi .LE. CMZLE .OR.
-     .                upj.LE. CMZLE .OR. upij.LE. CMCLE .OR.          
-     .                vp .LE. CMZLE .OR. vpi .LE. CMCLE .OR.
-     .                vpj.LE. CMZLE .OR. vpij.LE. CMCLE)) GO TO 29
+     .                upj.LE. CMZLE .OR. upij.LE. CMZLE .OR.          
+     .                vp .LE. CMZLE .OR. vpi .LE. CMZLE .OR.
+     .                vpj.LE. CMZLE .OR. vpij.LE. CMZLE)) GO TO 29
 
                IF (ZEQ .AND.
      .               (up .EQ. CMZEQ .OR. upi .EQ. CMZEQ .OR.

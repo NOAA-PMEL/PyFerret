@@ -114,6 +114,7 @@
 *			 read because linux/nag f90 needed a format width.
 *          12/98 *js* - Disallow set mem command is in secure mode
 * V500:  4/28/99 *sh* - added SET AXIS/DEPTH 
+*	    5/99 *sh* - implemented SET DATA/ORDE=
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -184,13 +185,13 @@
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
-     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR1,
+     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR,
      .			equal_pos, colon_pos, category, variable, dset_num,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
-     .			cx, i, grid, axis, loc
+     .			cx, i, grid, axis, loc, perm(4)
 	REAL*8		lo_tstep, hi_tstep
 	REAL		val_buf
-	CHARACTER*1	UPPER_CASE
+	CHARACTER*1	UPPER_CASE, ic
 	CHARACTER	title*128, subtitle*64, arg*4, frame_file_status*8,
      .			buff1*24, buff2*80, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
@@ -331,6 +332,7 @@ c *kob* 4/97
      .					cx_data_set(cx_last) = saved_dset
 	   RETURN
 	ENDIF
+
 * initialize an EZ data set
 * ... EZ may be implicit in /FORMAT="unformatted" or "(f77 format)"
         loc = qual_given(slash_set_data_form )
@@ -373,6 +375,17 @@ c *kob* 4/97
      .  .OR. qual_given(slash_set_data_title) .GT. 0 
      .  .OR. qual_given(slash_set_data_skip ) .GT. 0 ) GOTO 5700
 
+* interpret the /ORDER permutation qualifier for a non-EZ data set
+	DO 720 idim = 1,4
+ 720	perm(idim) = unspecified_int4 ! set default
+        loc = qual_given(slash_set_data_order )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_PERMUTE(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   .FALSE., .FALSE., .TRUE., perm, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	ENDIF
+
 	DO 750 item = 1, num_items
 
 * check to see if data set was referred to by number
@@ -408,7 +421,7 @@ c *kob* 4/97
 
 * initialize a TMAP-supported data set
  	   CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
-     .			   dset_num, tmap_status )
+     .			      perm, dset_num, tmap_status )
 	   IF ( tmap_status .EQ. merr_no_action ) THEN
 	      GOTO 745					! already init'ed
 	   ELSEIF ( tmap_status .NE. merr_ok )	  THEN
@@ -743,6 +756,9 @@ c *kob* 4/97
  5710	CALL ERRMSG( ferr_invalid_command, status,
      .		     'illegal qualifier or argument'//pCR//cmnd_buff(:len_cmnd),
      .			*5000 )
+ 5720	CALL ERRMSG( ferr_invalid_command, status,
+     .		     '/ORDER must be permutation of XYZT (with minus signs)'//
+     .			pCR//cmnd_buff(:len_cmnd), *5000 )
  5800	CALL ERRMSG( ferr_syntax, status,
      .		     'To reconfigure use SET MEMORY/SIZE=megawords'
      .		     //pCR//cmnd_buff(:len_cmnd), *5000 )

@@ -1,7 +1,5 @@
-	SUBROUTINE RQST_REGRID( dst_cx, src_cx, axis, status )
+	SUBROUTINE RQST_REGRID( dst_cx, src_cx, axis, strides, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -33,14 +31,13 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
+
+
 * given a destination context and an axis to be regridded
 * determine the source data limits that should be requested ("rqst")
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 
 * V200:  12/1/89 - extracted from REGRID_LIMS
 * 	 2/26/90 - repaired minor bug in error message
@@ -60,7 +57,9 @@
 *     10/6/97 *sh*  - added g=@xact regridding 
 * V500:  2/99 *sh* - modified behavior when region is unspecified -- request
 *		full  dest axis limits of source rather than unspecified limts
-* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
+*  *kob* 3/99- up VAR_CODE  to 64 chars 
+*        5/99 *sh* for netCDF vars of form var[I=1:10:3] pass along the
+*		  delta value in cx_delta to be used as a "stride" in I/O 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -86,6 +85,7 @@
 #endif
 
 * calling argument declarations:
+	LOGICAL strides
 	INTEGER	src_cx, dst_cx, status
 
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
@@ -94,12 +94,12 @@
      .		last_axis, src_modulo, calendar
 	INTEGER	ISUBSCRIPT, CAXIS_LEN, axis,
      .		dst_grid, src_grid, src_lo_ss, src_hi_ss,
-     .		src_min_ss, src_max_ss,
+     .		src_min_ss, src_max_ss, line, src_line,
      .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans
 	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww
-	CHARACTER	VAR_CODE*64
+	CHARACTER	VAR_CODE*6
 
 * initialize
 	dst_grid = cx_grid( dst_cx )
@@ -241,6 +241,18 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	CALL FLESH_OUT_AXIS( axis, src_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* (5/99) flag the use of netCDF strides by inserting cx_delta value
+	IF (strides) THEN
+	   line = grid_line(axis,dst_grid)
+	   IF (line_regular(line)) THEN
+	      src_line  = grid_line(axis,src_grid)
+	      cx_delta(axis,src_cx) = line_delta(line)
+     .				    / line_delta(src_line)
+	   ELSE
+	      cx_delta(axis,src_cx) = line_delta(line)
+	   ENDIF
+	ENDIF
 
 * success
 	RETURN

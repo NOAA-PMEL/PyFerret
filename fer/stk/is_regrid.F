@@ -59,7 +59,10 @@
 *	1/96	 - bug check against attempt to regrid a compressed axis
 *	1/29/96	 - regridding @SUM and @NGD are not weighted
 *		   (done in ave_regrid_1_axis instead of window_regrid_1_axis)
-* V500: 10/97	 - add G=@XACT
+* V491: 10/97 *sh* - add G=@XACT
+* V500:  5/99 *sh* - check if implicit regridding was already done by netCDF
+*			read using strides (check cx_delta of src cx)
+*		     Allow for the possibility of multiple axes
 
 #ifdef unix
 	include	'ferret.parm'
@@ -84,11 +87,13 @@
 * exit #1 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	xy_ave, valid, valid_y, has_impl_save
+	LOGICAL	TM_ITS_CDF,
+     .		xy_ave, valid, valid_y, has_impl_save, done_by_strides
 	INTEGER ISUBSCRIPT, hi_isp, lo_isp, span, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(4), wk_size, wk_size2,
      .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		tot, blk1, i21, t
+     .		tot, blk1, i21, t, axis_list(4), naxis, i
+	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -104,12 +109,18 @@
 	dst_cx   = is_cx( lo_isp )
 	src_cx   = is_cx( hi_isp )
 	axis	 = is_axis( lo_isp )
+	naxis	 = 1
+	axis_list(1) = axis
 
 * what is the regridding transformation for this axis ?
 	rgrd_trans = cx_regrid_trans( axis, dst_cx )
 	xy_ave = rgrd_trans .EQ. prgrd_xy_ave
-	IF ( xy_ave .AND. (axis.NE.x_dim) ) CALL ERRMSG
+	IF ( xy_ave ) THEN
+	   IF (axis.NE.x_dim) CALL ERRMSG
      .		( ferr_internal, status, 'rgrd_xy_ave', *5000 )	! diagnostic
+	   naxis = 2
+	   axis_list(2) = y_dim
+	ENDIF
 
 * bug check:  has someone attempted to regrid a compressed axis?
 * (possible bug in check ... could we have unspec limits for another reason?)
@@ -121,18 +132,39 @@
      .		 'attempt to regrid on a compressed axis', *5000 )
 	ENDIF
 
+* (5/99) for netCDF variables strides may have been used in READ_TM and
+* the regridding already performed there. The src cx then contains the
+* limits appropriate to netCDF ... not to Ferret. So, make the source cx
+* into a clone of the final result.
+	IF ( cx_category(dst_cx) .EQ. cat_file_var ) THEN
+	   done_by_strides = 
+     .		TM_ITS_CDF(cx_data_set(dst_cx), dtype )
+     .    .AND. cx_has_impl_grid(dst_cx)
+     .	  .AND. cx_delta(axis,src_cx) .NE. unspecified_val8
+	ELSE
+	   done_by_strides = .FALSE.
+	ENDIF
+	IF (done_by_strides) THEN
+	   DO 400 idim = axis+1, 4
+	      IF (cx_delta(idim,src_cx) .NE. unspecified_val8) THEN
+	         naxis = naxis + 1
+	         axis_list(naxis) = idim
+	      ENDIF
+ 400	   CONTINUE
+	ENDIF
+
 * Make the destination context like the source data context on all except
 * the regrid axis.  That one keeps the user-requested size.
 * (Other axes may have been modified by information embedded within a
 * user-variable definition.  An alternative (untested 8/89) approach is to
 * call PASS_AMBIG_LI** for uvars)
+	IF (done_by_strides) CALL TRANSFER_AXIS ( axis, dst_cx, src_cx )
 	CALL TRANSFER_CONTEXT( src_cx, cx_buff )
-	CALL TRANSFER_AXIS( axis, dst_cx, cx_buff )
-	cx_regrid_trans( axis, cx_buff ) = cx_regrid_trans( axis, dst_cx )
-	IF ( xy_ave ) THEN
-	   CALL TRANSFER_AXIS( y_dim, dst_cx, cx_buff )
-	   cx_regrid_trans( y_dim, cx_buff ) = cx_regrid_trans( y_dim, dst_cx )
-	ENDIF
+	DO 500 i = 1, naxis 
+	   idim = axis_list(i)
+	   CALL TRANSFER_AXIS( idim, dst_cx, cx_buff )
+	   cx_regrid_trans( idim, cx_buff ) = cx_regrid_trans( idim, dst_cx )
+ 500	CONTINUE
 	cx_grid( cx_buff ) = cx_grid( dst_cx )
 	cx_unstand_grid( cx_buff ) = .TRUE.
 	has_impl_save = cx_has_impl_grid(dst_cx)
@@ -141,26 +173,31 @@
 
 * create a context with the limits that can actually be regridded
 * ... if limits were unspecified in request allow full axis size
-	cx_valid = cx_buff
-	CALL RCVD_REGRID( src_cx, dst_cx, axis, wk_size,
+	IF (done_by_strides) THEN
+	   cx_valid = dst_cx
+	   valid = .TRUE.
+	ELSE
+	   cx_valid = cx_buff
+	   CALL RCVD_REGRID( src_cx, dst_cx, axis, wk_size,
      .			  cx_lo_ss(cx_valid,axis), cx_hi_ss(cx_valid,axis) )
-	cx_by_ss( axis, cx_valid ) = .TRUE.
-        valid = cx_lo_ss(cx_valid,axis) .LE. cx_hi_ss(cx_valid,axis)  ! 3/93
-        IF ( valid ) THEN   ! 3/93
-	   CALL CONFINE_AXIS( axis, cx_valid, status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-        ENDIF
-	IF ( xy_ave ) THEN
-	   CALL RCVD_REGRID( src_cx, dst_cx, y_dim, wk_size2,
-     .			     cx_lo_ss(cx_valid,y_dim),cx_hi_ss(cx_valid,y_dim))
-	   cx_by_ss( y_dim, cx_valid ) = .TRUE.
-           valid_y = cx_lo_ss(cx_valid,y_dim)
-     .          .LE. cx_hi_ss(cx_valid,y_dim)
-           IF ( valid_y ) THEN
-	      CALL CONFINE_AXIS( y_dim, cx_valid, status )
+	   cx_by_ss( axis, cx_valid ) = .TRUE.
+           valid = cx_lo_ss(cx_valid,axis) .LE. cx_hi_ss(cx_valid,axis)  ! 3/93
+           IF ( valid ) THEN   ! 3/93
+	      CALL CONFINE_AXIS( axis, cx_valid, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
-           valid = valid .AND. valid_y
+	   IF ( xy_ave ) THEN
+	      CALL RCVD_REGRID( src_cx, dst_cx, y_dim, wk_size2,
+     .			     cx_lo_ss(cx_valid,y_dim),cx_hi_ss(cx_valid,y_dim))
+	      cx_by_ss( y_dim, cx_valid ) = .TRUE.
+              valid_y = cx_lo_ss(cx_valid,y_dim)
+     .             .LE. cx_hi_ss(cx_valid,y_dim)
+              IF ( valid_y ) THEN
+	         CALL CONFINE_AXIS( y_dim, cx_valid, status )
+	         IF ( status .NE. ferr_ok ) GOTO 5000
+              ENDIF
+              valid = valid .AND. valid_y
+	   ENDIF
 	ENDIF
 
 * create a space for the new result possibly with the edges flagged as bad
@@ -172,8 +209,13 @@
         IF ( .NOT.valid ) GOTO 1000      ! 3/93
 
 * diagnostic message ?
-	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('regrid ',dst_mr,
-     .                                            point_to_mr)
+	IF (mode_diagnostic) THEN
+	   IF (done_by_strides) THEN
+	      CALL DIAGNOSTIC_OUT('nulrgd ',dst_mr,  point_to_mr)
+	   ELSE
+	      CALL DIAGNOSTIC_OUT('regrid ',dst_mr,  point_to_mr)
+	   ENDIF
+	ENDIF
 
 * set up 4D array limits as unsubscripted variables in COMMON
 	mrlist(1) = src_mr
@@ -189,7 +231,10 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * do the regridding
-	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
+	IF ( done_by_strides ) THEN
+	   CALL COPY_GRID( memory(1,mr_blk1(src_mr)),  src_mr,
+     .			   memory(1,mr_blk1(dst_mr)),  dst_mr )
+	ELSEIF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
 	   CALL DO_LIN_REGRID( cx_valid, axis,
      .			memory(1,mr_blk1(src_mr)), src_mr,
      .			memory(1,mr_blk1(dst_mr)), dst_mr,
@@ -261,6 +306,7 @@
 
 * indicate we are done with the component
  1000   CALL MR_NOT_IN_USE( src_mr )
+	IF (done_by_strides) CALL DELETE_VARIABLE( src_mr ) ! invalid lims in mr
 
 * intermediate grid ? deallocate grid space and delete intermediate data
 	IF ( is_phase( lo_isp ) .EQ. prgrd_from_ntrmed ) THEN

@@ -1,7 +1,7 @@
 	SUBROUTINE TM_CHOOSE_READ ( dset_num, varpos,
      .				    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .				    a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .				    use_lo, use_hi,
+     .				    use_lo, use_hi, stride,
      .				    data_grid, file_num, status )
 *
 *
@@ -50,6 +50,7 @@
 * revision 0.20 - 12/06/89 - changed arrays for dimensions to single variables
 *   3/92 - added CDF file reads using CD_READ (calling arg list chgd 10/92)
 *   3/93 - treat ECDF (EPIC) like CDF
+* V500 5/99 *sh* - added strides to CD_READ call
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -63,7 +64,7 @@
 	INTEGER		dset_num, varpos, file_num, status
 	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4)
+     .			use_lo(4), use_hi(4), stride(4)
         REAL            data_grid(a_lo_x:a_hi_x,
      .                            a_lo_y:a_hi_y,
      .                            a_lo_z:a_hi_z,
@@ -115,7 +116,7 @@
 	    CALL MC_READ  ( dset_num, varpos,
      .			    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			    a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			    use_lo, use_hi,
+     .			    use_lo, use_hi, stride,
      .			    data_grid, file_num, status )
 	    IF (status .NE. merr_ok) GOTO 9999
 * It's a TS data set
@@ -132,7 +133,7 @@
           CALL CD_READ( dset_num, varpos,
      .			a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .                  use_lo, use_hi,
+     .                  use_lo, use_hi, stride,
      .                  data_grid, cd_stepfile(dset_num),status)
 	  IF (status .NE. merr_ok) GOTO 9999
         ELSE

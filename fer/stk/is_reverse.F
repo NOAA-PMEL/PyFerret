@@ -43,6 +43,8 @@
 *
 * V320: 2/16/95
 * V411: 9/11/95 (IBM port) array "reversed" is declared wrong type
+* V500: 7/99 *sh* is strides were applied to reversed axes need special
+*	handling of the limits
 
 #ifdef unix
 	include	'ferret.parm'
@@ -73,7 +75,7 @@
 *	 isp	<--	current stack level (for moduloing )
 
 * internal variable declarations:
-	LOGICAL	short_span
+	LOGICAL	short_span, has_a_stride, has_strides(4)
 	INTEGER CAXIS_LEN, TM_AXES_REVERSED, nrev,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
      .		axis, i, idim, var, hi_ss, lo_ss, itmp, reversed(4)
@@ -99,21 +101,45 @@
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing',isact_class_reverse, res_cx, axis )
 
+* strides indicated in cx_delta e.g. SST[I=110:180:10] ?
+* If so, transfer this info to the stride array
+        has_a_stride = .FALSE.
+        DO 100 idim = 1, 4
+           has_strides(idim) =  cx_delta(idim,res_cx) .NE. unspecified_val8
+     .                   .AND.  cx_delta(idim,res_cx) .NE. 1 
+           IF (has_strides(idim))  has_a_stride = .TRUE.
+ 100    CONTINUE
+
+* if strides are invloved memory requirement is less ... (cloned from READ_TM)
+        CALL TRANSFER_CONTEXT(res_cx, cx_buff)
+        IF (has_a_stride) THEN
+           DO 200 idim = 1, 4
+              IF  (has_strides(idim)) THEN
+                 cx_lo_ss( cx_buff, idim ) = 1 
+                 cx_hi_ss( cx_buff, idim ) = 
+     .                (cx_hi_ss(res_cx,idim) - cx_lo_ss(res_cx,idim))
+     .              / INT(cx_delta(idim,res_cx))  + 1
+                 cx_delta(idim,cx_buff) = unspecified_val8
+              ENDIF
+ 200      CONTINUE
+        ENDIF
+
 * create the space for the result in memory
-	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
+	CALL CREATE_MEM_VAR( cx_buff, res_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 	is_mr( res_isp ) = res_mr
 
 * the component data thinks that its subscripts are from "the other end" of
 * the axis (from whence the data were read).  In order to prevent subscript
 * errors we will disabuse the data of that misconception atthis point
-	DO 100 i = 1, nrev
+	DO 300 i = 1, nrev
 	   axis = reversed(i)
+	   IF (has_strides(axis)) GOTO 300	  ! already handled above
 	   CALL VAR_SS_LIMS( axis, res_cx, lo_ss, hi_ss )
 	   itmp = mr_lo_ss( com_mr, axis )
 	   mr_lo_ss(com_mr,axis) = hi_ss + lo_ss - mr_hi_ss(com_mr,axis)
 	   mr_hi_ss(com_mr,axis) = hi_ss + lo_ss - itmp
- 100	CONTINUE
+ 300	CONTINUE
 
 * copy the source data into the result
 	CALL COPY_GRID(
@@ -121,10 +147,10 @@
      .    memory( 1, mr_blk1(res_mr) ), res_mr   )
 
 * reverse the result along all of the required axes
-	DO 200 i = 1, nrev
+	DO 400 i = 1, nrev
 	   CALL REVERSE_GRID_AXIS
-     .		( reversed(i), res_cx, res_mr,memory(1, mr_blk1(res_mr)) )
- 200	CONTINUE
+     .		( reversed(i), cx_buff, res_mr,memory(1, mr_blk1(res_mr)) )
+ 400	CONTINUE
 
 * successful completion of modulo operation
  1000	CALL MR_NOT_IN_USE( com_mr )	! remove memory protection on component

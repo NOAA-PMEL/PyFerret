@@ -1,7 +1,7 @@
 	SUBROUTINE MC_READ ( dset, ivar,
      .                       a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                       a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			     use_lo, use_hi,
+     .			     use_lo, use_hi, stride,
      .			     var, sf_num, status )
 *
 *
@@ -48,11 +48,11 @@
 * 7/97 *kob* - fix bug in which status is not being checked
 * 5/98 *kob* - fix bug in which step files were not being properly reset after 
 *              they were closed
-*
-* V500 5/99 *kob* - 1) fixed bug occurring when correctly setting up variable in 
-*	               common
+* V500 5/99 *kob* - 1) fixed bug occurring when correctly setting up variable
+*	               in common
 *                   2) minor mod to only open set entire path of cdf file if it
 *                      hasn't already been opened
+*           *sh* - added strides to CD_READ call
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -66,7 +66,7 @@
 	INTEGER		dset, ivar, sf_num, status, ndim,
      .                  a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4)
+     .			use_lo(4), use_hi(4), stride(4)
 	REAL		var(a_lo_x:a_hi_x,
      .                      a_lo_y:a_hi_y,
      .                      a_lo_z:a_hi_z,
@@ -148,7 +148,7 @@
 	   CALL CD_READ( dset, ivar,
      .		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .		a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .		use_lo, use_hi,
+     .		use_lo, use_hi, stride,
      .		var(a_lo_x, a_lo_y, a_lo_z,
      .		a_lo_t),
      .		mc_init_stepfile, status)
@@ -274,7 +274,7 @@
 	   CALL CD_READ( dset, ivar,
      .		a_lo_x, a_lo_y, a_lo_z, a_lo_t_offset,
      .		a_hi_x, a_hi_y, a_hi_z, a_hi_t_offset,
-     .	        tmp_lo, tmp_hi,
+     .	        tmp_lo, tmp_hi, stride,
      .	        var(a_lo_x, a_lo_y, a_lo_z,
      .	        a_lo_t+(start_read_lstep-use_lo(4))),
      .		sfcnt, status)

@@ -61,6 +61,7 @@
 *      7/98 *js*   Mods to support new /swap and /type qualifiers for stream
 *                  datasets
 * 3/99 *kob* - nag F90 wants to use eqv for logical expressions
+* 5/99 *sh* - added arguments to EQUAL_PERMUTE call
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -209,7 +210,7 @@
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
            CALL EQUAL_PERMUTE( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                         order, status )
+     .                         .TRUE., .TRUE., .FALSE., order, status )
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
 	   DO 500 idim = 1,5

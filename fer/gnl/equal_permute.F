@@ -1,4 +1,4 @@
-	SUBROUTINE EQUAL_PERMUTE( string, perm, status )
+	SUBROUTINE EQUAL_PERMUTE(string,fill,v_ok,neg_ok,perm,status )
 
 *
 *
@@ -46,14 +46,18 @@
 * V230: 4/92 (SUN port) - bug fix on loop: "fill in any missing dimensions"
 *
 * 7/15/98 *js* Added support for "XYZTV" permutations. 
+*    5/99 *sh* Added booleans "fill" argument to control if permutation array
+*	       is filled, var_ok arg to determine if "V" is allowable, and
+*	       neg_ok for acceptable minus signs
 
 * calling argument declarations
+	LOGICAL		fill, v_ok, neg_ok
 	INTEGER		perm(5), status
 	CHARACTER*(*)	string
 
 * internal variable declarations
 	INTEGER	TM_LENSTR1, STR_UPCASE, equal_pos, slen, pos, vax_code,
-     .		idim, ndim, i
+     .		idim, ndim, i, rev, pmax
 	CHARACTER*1	ax
 
 * internal parameter declarations:
@@ -74,50 +78,63 @@
 	slen	  = TM_LENSTR1( string )
 	equal_pos = INDEX( string, '=' )
 	IF ( equal_pos .EQ. 0 .OR. equal_pos .EQ. slen ) GOTO 5100
+	IF (v_ok) THEN
+	   pmax = 5
+	ELSE
+	   pmax = 4
+	ENDIF
 
 * skip blanks and tabs
 	DO  pos = equal_pos+1, slen
 	   IF ( string(pos:pos) .NE. ' '
-     .	  .AND. string(pos:pos) .NE. tab ) GOTO 200
+     .	  .AND. string(pos:pos) .NE. tab ) GOTO 100
 	END DO
 	GOTO 5100
 
+* remove quotation marks
+ 100       IF ( string(pos:pos)   .EQ. '"' ) pos  = pos + 1
+           IF ( string(slen:slen) .EQ. '"' ) slen = slen - 1
+
 * decode permutation string
- 200	IF ( slen-pos .GT. 4 ) GOTO 5100
 	ndim = 0
+	rev = 1	 ! reversed axis ?
 	DO 250 pos = pos, slen
 	   vax_code = STR_UPCASE( ax, string(pos:pos) )
-	   DO idim = 1, 4
-	      IF ( ax .EQ. ss_dim_name(idim)
-     .	      .OR. ax .EQ. ww_dim_name(idim) ) THEN
-	         ndim = ndim + 1
-	         perm(ndim) = idim
-	         GOTO 250
-	      ENDIF
- 	   END DO
-	   IF ( ax .EQ. 'V') THEN   ! Variable name permutation
+	   IF ( v_ok .AND. ax .EQ. 'V') THEN   ! Variable name permutation
 	      ndim = ndim + 1
-	      perm(ndim) = idim
-	      GOTO 250
-	   END IF
-	   GOTO 5100
+	      perm(ndim) = 5
+	   ELSEIF ( neg_ok .AND. ax .EQ. '-' ) THEN
+	      rev = -1
+	   ELSE
+	      DO 220 idim = 1, 4
+	         IF ( ax .EQ. ss_dim_name(idim)
+     .	         .OR. ax .EQ. ww_dim_name(idim) ) THEN
+	            IF (ndim .EQ. pmax) GOTO 5100
+*   ... check for duplicates
+	            DO 210 i = 1, ndim
+ 210		    IF ( idim .EQ. ABS(perm(i)) ) GOTO 5100
+*  ... save the axis
+	            ndim = ndim + 1
+	            perm(ndim) = idim * rev
+	            rev = 1
+	            GOTO 250
+	         ENDIF
+ 220	      CONTINUE
+	      GOTO 5100
+	   ENDIF
  250	CONTINUE
 
 * fill in any missing dimensions (e.g. "perm=YX" is interpreted as YXZT)
-	DO 350 ndim = ndim+1, 5
-	   DO 320 idim = 1, 5
-	      DO 310 i = 1, ndim-1   ! loop of slots already set (4/92 bug fix)
- 310	      IF ( perm(i) .EQ. idim ) GOTO 320
-	      perm(ndim) = idim
-	      GOTO 350
- 320	   CONTINUE
- 350	CONTINUE
-
-* check that no axis is given twice
-	DO 410 idim = 1, 5
-	   DO 400 i = idim+1, 5
- 400	   IF ( perm(i) .EQ. perm(idim) ) GOTO 5100
- 410	CONTINUE
+	IF (fill) THEN
+	  DO 350 ndim = ndim+1, 5
+	     DO 320 idim = 1, 5
+	        DO 310 i = 1, ndim-1   ! slots already set (4/92 bug fix)
+ 310	        IF ( perm(i) .EQ. idim ) GOTO 320
+	        perm(ndim) = idim
+	        GOTO 350
+ 320	     CONTINUE
+ 350	  CONTINUE
+	ENDIF
 
 * success
 	status = ferr_ok

@@ -110,7 +110,8 @@
 *       7/98 *js* Changed size of perm to 5 to support parsing of 
 *                 xyztv permutations (unsupported for now)
 *      12/98 *js* Disable listing to files if in secure mode
-* v500  2/99  - *kob* added LIST/QUIET
+* V500  2/99  - *kob* added LIST/QUIET
+*	5/99 - *sh- added arguments to EQUAL_PERMUTE
 
 #ifdef unix
         include 'tmap_errors.parm'
@@ -267,11 +268,7 @@
 	   IF ( do_gt ) GOTO 5030
 	   i = qual_given( slash_permute )
 	   CALL EQUAL_PERMUTE( cmnd_buff(qual_start(i):qual_end(i)),
-     .			       perm, status )
-c Check for unsupported variable permutations
-	   do idim = 1,4
-	      if (perm(idim) .eq. 5) goto 5080
-	   end do
+     .			       .TRUE., .FALSE., .FALSE., perm, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 

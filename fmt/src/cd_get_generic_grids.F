@@ -1,5 +1,5 @@
 	SUBROUTINE CD_GET_GENERIC_GRIDS (dset,cdfid,temp_axnams,reversed,
-     .					 status)
+     .					 perm, status)
 
 *
 *
@@ -53,12 +53,14 @@
 * V500: 3/99 *sh* - if an axis doesn't exist matching the dimension name, then
 *	create a 1,2,3...n axis without error message
 *       4/99 *kob* - increase size of temp_axnams, vname and name to 64
+* *sh*  6/99 - added "perm" (permutation) argument
 
 * argument definitions:
 *       dset        - TMAP data set pointer
 *	cdfid	    - netCDF id number for already opened CDF file
 *       temp_axnams - 4 axis names per grid: temp until grids are assembled
 *       reversed    - logical array to record which axes have reversed coords
+*       perm        - user-specified permutation (e.g. "YXZT"=2,1,3,4)
 *	status	    - return status
 
 * include files
@@ -92,7 +94,7 @@ xx        include 'netcdf.decl'  ! untested
 
 * argument declarations
 	LOGICAL reversed(0:max_lines)
-	INTEGER	 dset, cdfid, status
+	INTEGER	 dset, cdfid, perm(4), status
 * 4/99 *kob*
         CHARACTER*64 temp_axnams(4,max_temp_grid)
 
@@ -109,8 +111,9 @@ xx        include 'netcdf.decl'  ! untested
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
      .        NCVID, igrid, iaxis, grid_cnt, cdfstat, istat, idim,
-     .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
-     .        axid, tmvar, tmpgrid, npts, dim, tmplines(4)
+     .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
+     .        axid, tmvar, tmpgrid, npts, dim, tmplines(4), ndim,
+     .	      grid_dims(4), trans(4), indices(4), i
       CHARACTER name*64, vname*64	! 4/99:both were  16 chars
 
       INTEGER tt  ! nice short name
@@ -160,7 +163,7 @@ xx        include 'netcdf.decl'  ! untested
  100          CONTINUE
 
 * ... axis doesn't exist - perhaps it is a dimension with no variable defn
-* *sh* 3/99: or perhaps it is a 2D variable with name matching the dimension name
+* *sh* 3/99: or perhaps a 2D variable with name matching the dimension name
 *  either way -- not an error condition if we need to synthesize an axis ...
               CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
      .                                 iaxis, status )
@@ -173,24 +176,52 @@ xx        include 'netcdf.decl'  ! untested
 
 * reorder the axes into the most likely order if not explicitly given
            IF ( ds_ordering(1,tmvar) .EQ. unspecified_int4 ) THEN
-              CALL TM_AXIS_ORDER(tmplines, ds_ordering(1,tmvar),
+              CALL TM_AXIS_ORDER(tmplines, perm, ds_ordering(1,tmvar),
      .                           nvdims, vname(:vlen))
            ENDIF
+
+* ... make a sorted list of the relevant axes in grid_dims
+*     and a list of the index ordering of the axes in indices
+	ndim = 0
+	DO 210 idim = 1, 4
+	   trans(idim) =  ABS(ds_ordering(idim,tmvar))
+	   grid_dims(idim) = trans(idim)
+	   indices(idim) = idim
+	   IF (trans(idim) .NE. 0 ) THEN
+	      ndim = ndim + 1
+	   ENDIF
+ 210	CONTINUE
+	DO 220 idim = 1, ndim
+	   DO 215 idim2 = idim+1, ndim
+	      IF (grid_dims(idim) .GT. grid_dims(idim2)) THEN
+	         dim = grid_dims(idim)
+	         grid_dims(idim ) = grid_dims(idim2)
+	         grid_dims(idim2) = dim
+	      ENDIF
+ 215	   CONTINUE
+ 220	CONTINUE
+	DO 230 idim = 1, ndim
+	   i = 1
+	   DO 225 idim2 = 1, ndim
+	      IF (trans(idim2) .LT. trans(idim)) i = i + 1
+ 225	   CONTINUE
+	   indices(idim) = i
+ 230	CONTINUE
 
 * save the axis names in the proper order
            DO 240 idim = 1, 4
               ds_grid_start(idim,tmvar) = 1
               ds_grid_end  (idim,tmvar) = 1
  240       CONTINUE
-           DO 250 idim = 1, 4
-              iaxis = tmplines(idim)
-              dim = ds_ordering(idim,tmvar)
-              IF ( dim .NE. 0 ) THEN
-                 temp_axnams(dim,tmpgrid) = line_name(iaxis)
-                 ds_grid_end  (dim,tmvar) = line_dim(iaxis)
+           DO 250 idim = 1, ndim
+              dim = trans(idim)
+              iaxis = tmplines(indices(idim))
+	      idim2 = grid_dims(idim)
+              temp_axnams(idim2,tmpgrid) = line_name(iaxis)
+              ds_grid_end(idim2,tmvar)   = line_dim(iaxis)
 * ... flag reverse-ordered coordinate axis of variable (2/95)
-	         IF ( reversed(iaxis) ) ds_ordering(idim,tmvar) = -1*dim
-              ENDIF
+	      IF ( reversed(iaxis) ) ds_ordering(idim,tmvar)
+     .			      = -1 * ds_ordering(idim,tmvar)
  250       CONTINUE
 
 * is the temporary grid we just created unique ?

@@ -1,4 +1,4 @@
-	SUBROUTINE MC_INIT_DSET ( dset_num, lunit, status)
+	SUBROUTINE MC_INIT_DSET ( dset_num, lunit, perm, status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -61,16 +61,18 @@
 *			   tmap_dset.parm contains an ifdef
 *
 * V500 *kob* 4/99 - removed unneeded variable_record namelista
+*	*sh* 7/99 - added perm argument needed for netCDF permutations
 *
 * arguments:
 *	dset_num	- number assigned to this data set (output)
 *			  ( 1 <= dset_num <= maxdsets - see COMMON XDSET_INFO)
 *	lunit		- logical unit descriptor is opened on
+*	perm		- permutation of data (unused for MC data sets)
 *	status		- return status
 *
 * 
 * Argument definitions
-	INTEGER		dset_num, lunit, status
+	INTEGER		dset_num, lunit, perm(4), status
 
 * Parameter and common files
 #ifdef unix
@@ -320,7 +322,7 @@
 	status = merr_ok
 	
 
-	CALL CD_INIT_DSET( dset_num, status)
+	CALL CD_INIT_DSET( dset_num, perm, status)
 
 	GOTO 9990
 

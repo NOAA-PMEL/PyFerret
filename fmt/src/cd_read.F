@@ -1,7 +1,7 @@
 	SUBROUTINE CD_READ ( dset, ivar,
      .                       a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                       a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			     use_lo, use_hi,
+     .			     use_lo, use_hi, stride,
      .			     var, sf_num, status )
 *
 *
@@ -56,6 +56,7 @@
 * 2/95 - small change to allow negative ds_ordering to represent reversed axis
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* 5/99 *sh* (V5.0) - implement strides, reversals, and permutations 
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -63,6 +64,7 @@
 *       actual_dims - "a_" full dimensions of data_grid array passed
 *	use_lo      - low indices of model data block desired
 *	use_hi      - high indices of model data block desired
+*	stride	    - every nth point to be read from disk file
 *	var         - array containing model data (output)
 *	sf_num      - stepfile number (returned from GT_FIND_TSTEP (output)
 *	status      - error status upon completion (output)
@@ -70,7 +72,7 @@
 	INTEGER		dset, ivar, sf_num, status, ndim,
      .                  a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4)
+     .			use_lo(4), use_hi(4), stride(4)
 	REAL		var(a_lo_x:a_hi_x,
      .                      a_lo_y:a_hi_y,
      .                      a_lo_z:a_hi_z,
@@ -108,9 +110,12 @@
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
+	LOGICAL      permuted
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
-     .               start(4), size(4), totsize, dim_lo(4), dim_hi(4)
+     .               start(4), filsize(4), totsize, dim_lo(4), dim_hi(4),
+     .		     imap(4), trans(4), memsize(4), count(4),
+     .		     grid_dims(4), fildim, memdim, filstride(4)
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
 	DATA  		dimnam/'I','J','K','L'/
@@ -141,6 +146,7 @@
         dim_hi(2) = a_hi_y
         dim_hi(3) = a_hi_z
         dim_hi(4) = a_hi_t
+	permuted  = .FALSE.
 
 * check for error conditions
         DO 10 idim = 1, 4
@@ -150,13 +156,31 @@
      .    .OR.  use_lo(idim) .LT. dim_lo(idim)
      .    .OR.  use_hi(idim) .GT. dim_hi(idim) ) GOTO 5300
  10     CONTINUE
+
+* summarize the axis permutation specification in ds_order
         lasdim = 0
+	ndim = 0
         DO 20 idim = 1, 4
            IF ( ds_ordering(idim,ivar) .EQ. 0 ) GOTO 20
+	   ndim = ndim + 1
            IF ( ABS(ds_ordering(idim,ivar)) .LE. lasdim )
-     .          write (6,*) 'permuted CDF order not supported'
+     .          permuted = .TRUE.
            lasdim = ABS(ds_ordering(idim,ivar))
  20     CONTINUE
+* ... sort the list of relevant axes into grid_dims
+	DO 30 idim = 1, 4
+	   trans(idim) =  ABS(ds_ordering(idim,ivar))
+	   grid_dims(idim) = trans(idim)
+ 30	CONTINUE
+	DO 34 idim = 1, ndim
+	   DO 32 idim2 = idim+1, ndim
+	      IF (grid_dims(idim) .GT. grid_dims(idim2)) THEN
+	         dim = grid_dims(idim)
+	         grid_dims(idim ) = grid_dims(idim2)
+	         grid_dims(idim2) = dim
+	      ENDIF
+ 32	   CONTINUE
+ 34	CONTINUE
 
 * check for an attempt to read into a sub-portion of a grid
 * (fully supported in GT and TS libs but only partially supported here)
@@ -173,28 +197,70 @@
 * determine size from the low/hi limits requested
 * and compute lower corner relative to the hyper slab in the  netCDF file
 * skip unused dimensions resulting from NORMAL axes
-        totsize = 1
-	ndim = 0
-        DO 100 idim = 1, 4
-           dim = ABS(ds_ordering(idim,ivar))
-           IF ( dim .EQ. 0 ) GOTO 500
-	   ndim = ndim + 1
-           size(idim) = use_hi(dim) - use_lo(dim) + 1
-           start(idim) = use_lo(dim) - ds_grid_start(dim,ivar) + 1
-           totsize = totsize*size(idim)
+        DO 100 idim = 1, ndim
+           fildim = trans(idim)
+	   memdim = grid_dims(idim)
+           filsize(fildim) = use_hi(memdim) - use_lo(memdim) + 1
+	   count(fildim)   = (filsize(fildim)-1)/stride(memdim) + 1
+           start(fildim)   = use_lo(memdim) - ds_grid_start(memdim,ivar) + 1
+	   filstride(fildim) = stride(memdim)
  100    CONTINUE
+
+        totsize = 1
+        DO 110 idim = 1, 4
+ 110	totsize = totsize * (use_hi(idim)-use_lo(idim)+1)
+
+*  compute the memory array size (for cases where strides are used)
+* note: transposed compared to filsize
+ 190	DO 200 idim = 1, 4
+	   memsize(idim) =  (use_hi(idim)-use_lo(idim))/stride(idim) + 1
+ 200	CONTINUE
+
+* compute the map vector (for strides, reversals, and permutations)
+	DO 210 idim = 1, 4
+ 210	imap(idim) = 0
+	IF ( cd_data_type(ivar) .EQ. NCDOUBLE ) THEN
+	   imap(trans(1)) = 8
+	ELSEIF ( cd_data_type(ivar) .EQ. NCFLOAT
+     .      .OR. cd_data_type(ivar) .EQ. NCLONG )  THEN
+	   imap(trans(1)) = 4
+	ELSEIF ( cd_data_type(ivar) .EQ. NCSHORT ) THEN
+	   imap(trans(1)) = 2
+	ELSE			! NCBYTE, NCCHAR
+	   imap(trans(1)) = 1
+	ENDIF
+	DO 220 idim = 2,ndim
+	   imap(trans(idim)) = imap(trans(idim-1))
+     .			     * (1 + (memsize(grid_dims(idim-1))-1))
+ 220	CONTINUE
+* ... compress the gaps out of the map -- e.g. XYT ==> has a zero in imap(3)
+*     and other arrays
+	ndim = 0
+	DO 225 idim = 1, 4
+	   IF (imap(idim) .EQ. 0) GOTO 225
+	   ndim = ndim + 1
+	   imap(ndim)      = imap(idim)
+	   filsize(ndim)   = filsize(idim)
+	   start(ndim)     = start(idim)
+	   count(ndim)     = count(idim)
+	   filstride(ndim) = filstride(idim)
+ 225	CONTINUE
 
 * read the data
  500	IF ( cd_data_type(ivar) .EQ. NCDOUBLE ) THEN
 * read double precision variables (requires special routine) 5/94
-	   CALL CD_RD_R8_AS_R4(cdfid, varid, start, size, ndim,
+! !!! XXX REPLACE WITH netCDF V3 DOUBLE READ CALL WHEN POSSIBLE XXX !!!
+	   IF ( permuted ) WRITE (6,*)
+     .			"Permuted order of non-FLOAT not supported yet"
+	   CALL CD_RD_R8_AS_R4(cdfid, varid, start, filsize, ndim,
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
      .                 use_lo(4)) , cdfstat)
 	   IF ( cdfstat .NE. NCNOERR ) GOTO 5500
 	ELSE
- 	   CALL NCVGT(cdfid, varid, start, size,
+ 	   CALL NCVGTG(cdfid, varid, start, count,
+     .		   filstride, imap,
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),

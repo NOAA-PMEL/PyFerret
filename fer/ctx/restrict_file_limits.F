@@ -42,6 +42,11 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V500: 3/99 - *sh*
+*       5/99 *sh* - when strides are used on a netCDF variable, we may be
+*		looking at an implicit grid. In this case VAR_SS_LIMS returns
+*		unspecified_int4.
+*		NOTE: possible bug introduced with strides since the region
+*			checks here are bypassed altogether
 
 #ifdef unix
 	include	'ferret.parm'
@@ -83,6 +88,7 @@
 	DO 10 idim = 1, 4
 	   IF ( cx_lo_ss(cx,idim) .EQ. unspecified_int4 ) GOTO 10
 	   CALL VAR_SS_LIMS( idim, cx, lolim, hilim )
+	   IF ( lolim .EQ. unspecified_int4 ) GOTO 10
 	   IF ( cx_lo_ss(cx,idim) .GT. hilim .OR.
      .          cx_hi_ss(cx,idim) .LT. lolim )
      .		GOTO 5100

@@ -43,6 +43,7 @@
 *  V500 *sh* 3/99
 *       *sh* 4/99 - bug fix: ABSTRACT axes completed on some user vars
 *	*sh* 4/99 - add mode_stupid check
+*	*sh* 5/99 - complete limits on implicit axes
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -95,9 +96,19 @@
 
 	      line = grid_line( idim, grid )
 
-	      needs_limits = line .NE. mnormal
+ 11	    needs_limits = line .NE. mnormal
      .		       .AND. line .NE. mabstract
-	      IF ( needs_limits .AND. cat.EQ.cat_user_var ) THEN
+
+* If the limits are given in the definition of the variable (e.g. A=B[J=3:5])
+* then it is not possible to complete the limits from the axis length, alone.
+* (5/99) However, do complete implicit axis ( >=max_lines ) lims, since
+* implicit axes are always full length. This will improve cache hits on
+* LOAD a, where a=netCDFvar[i=1:10:2] which uses netCDF strides
+* WARNING: For b=a[i=10:100:10];c=b[i=3:5] we have an implicit axis where the
+* axis length is NOT applicable. HOPEFULL completing these limits will not
+* cause a problem.
+	      IF ( needs_limits .AND. cat.EQ.cat_user_var
+     .	    .AND.  line .LT. max_lines ) THEN
 	         needs_limits = uvar_given(idim,var) .GE. uvlim_needed
 	      ENDIF
 

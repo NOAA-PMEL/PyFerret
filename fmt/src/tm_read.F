@@ -1,7 +1,7 @@
 	SUBROUTINE TM_READ ( dset_num, variable,
      .			     a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			     a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			     use_lo, use_hi,
+     .			     use_lo, use_hi, stride,
      .			     data_grid, file_num, status )
 *
 *
@@ -58,8 +58,8 @@
 * *sh* 7/98 V4.91 - want to allow case-sensitive variables in single quotes
 *       so dont upcase the variable name when comparing (why was it
 *       upcased, anyway??)
-* V500 4/99 *kob*: increase upcase_var from 24 to 64 chars - to match passed in vname
-*
+* V500 4/99 *kob*: increase upcase_var 24 --> 64 chars matching passed vname
+*      5/99 *sh* - added strides to CD_READ call
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -74,7 +74,7 @@
 	INTEGER		dset_num, file_num, status
 	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			use_lo(4), use_hi(4)
+     .			use_lo(4), use_hi(4), stride(4)
         REAL            data_grid(a_lo_x:a_hi_x,
      .                            a_lo_y:a_hi_y,
      .                            a_lo_z:a_hi_z,
@@ -165,7 +165,7 @@
 	  CALL TM_CHOOSE_READ ( dset_num, varpos,
      .			 a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			 a_hi_x, a_hi_y, a_hi_z, a_hi_t,
-     .			 use_lo, use_hi,
+     .			 use_lo, use_hi, stride,
      .			 data_grid, file_num, status )
 	  IF (status .NE. merr_ok) GOTO 9999
 
@@ -201,7 +201,7 @@
 	  CALL TM_CHOOSE_READ ( dset_num, varpos,
      .			 adj_lo(1),adj_lo(2),adj_lo(3),adj_lo(4),
      .			 adj_hi(1),adj_hi(2),adj_hi(3),adj_hi(4),
-     .			 tmp_lo, tmp_hi,
+     .			 tmp_lo, tmp_hi, stride,
      .			 data_grid, file_num, status )
 	  IF (status .NE. merr_ok) GOTO 9999
 
@@ -214,7 +214,7 @@
 	    CALL TM_CHOOSE_READ ( dset_num, varpos,
      .			   adj_lo(1),adj_lo(2),adj_lo(3),adj_lo(4),
      .			   adj_hi(1),adj_hi(2),adj_hi(3),adj_hi(4),
-     .			   tmp_lo, tmp_hi,
+     .			   tmp_lo, tmp_hi, stride,
      .			   data_grid, file_num, status )
 	    IF (status .NE. merr_ok) GOTO 9999
 	  ENDIF

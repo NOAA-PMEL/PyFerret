@@ -1,4 +1,4 @@
-	SUBROUTINE TM_INIT_DSET ( dset_name, dset_num, status)
+	SUBROUTINE TM_INIT_DSET ( dset_name, perm, dset_num, status)
 
 *
 *
@@ -78,6 +78,7 @@
 *              searching for files w/out extensions (ie ".cdf")
 * *kob* 4/99 - increase size of TM_INQ_PATH and des_name
 *              to accomodate lenghty DODS dataset names
+* *sh*  6/99 - added "perm" (permutation) argument
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -91,7 +92,7 @@
 * Argument definitions
 *	CHARACTER*(*)	dset_name, dset_type  removed 4/92 kob
 	CHARACTER*(*)	dset_name
-	INTEGER		dset_num, status
+	INTEGER		perm(4), dset_num, status
 
 * Parameter and common files
 #ifdef unix
@@ -293,7 +294,7 @@
 * netCDF file ?
  120    IF ( ds_dset_type .EQ. 'CDF' ) THEN
            ds_dset_type = ' '     ! reset the coaching shared by outside world
-           CALL CD_INIT_DSET( dset_num, status )
+           CALL CD_INIT_DSET( dset_num, perm, status )
            IF ( status .NE. merr_ok ) GOTO 9900
            RETURN
         ENDIF
@@ -425,7 +426,7 @@
 	  CALL TM_MAKE_4D_GRIDS(dset_num, status)
 !*kob*
 	ELSE IF (d_type .EQ. '  MC') THEN
-	  CALL MC_INIT_DSET(dset_num, lunit,status)
+	  CALL MC_INIT_DSET(dset_num, lunit, perm, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num,status)
 	ENDIF

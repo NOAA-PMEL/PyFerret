@@ -82,6 +82,9 @@
 *	12/98 *sh* added call to IS_CONST_VAR to support {1,3,5} notation
 *	 3/99 *sh* added call to COMPLETE_MISSING_LIMITS to improve cache hits
 *		and corresponding change in file reading to restrict limits
+*	 5/99 *sh* remove delta values error trap
+*		(cx_delta is now used by netCDF vars to signal that the
+*		read_tm should use strides)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -241,6 +244,17 @@
 	   ENDIF
  5	CONTINUE
 	
+* was a regridding operation implied through the command qualifier cx_delta?
+* (5/99) test moved from transformation stripping section below
+	DO 8 idim = 1, 4
+	   IF ( cx_delta(idim, dflt_cx) .NE. unspecified_val8 ) THEN
+	      CALL ERRMSG( ferr_invalid_command, status,
+     .			'delta values may only modify variable names', *5000 )
+	   ENDIF
+ 8	CONTINUE
+
+
+
 * special pre-initialization of stack to reconcile differences between command
 * qualifiers and expression -- e.g. LIST/I=1:5 a[i=3:4]
 	IF ( explicit_qualifiers ) THEN
@@ -284,15 +298,6 @@
 ******************************************************************************
 * * * * * * * * STRIP AWAY TRANSFORMATIONS ONTO STACK * * * * * * * * * * * * 
 ******************************************************************************
-* ... is a regridding operation implied ?
-	DO 100 idim = 1, 4
-	   IF ( cx_delta(idim, cx) .NE. unspecified_val8 ) THEN
-	      CALL ERRMSG( ferr_invalid_command, status,
-     .			'delta values may only modify variable names', *5000 )
-!	      CALL IS_STRIP( isact_class_regrid, idim, *10, status )
-!	      GOTO 5000
-	   ENDIF
- 100	CONTINUE
 
 * ... strip off a transformation ?
 * ... reverse loop order ensures that X transformations are done BEFORE

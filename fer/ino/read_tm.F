@@ -1,7 +1,6 @@
 	SUBROUTINE READ_TM ( memory, cx, mr, status )
 
 *
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -47,9 +46,10 @@
 * V230:  7/30/92 - must CALL ERRMSG to stop command files, etc. following error
 *        11/6/92 - increased variable length to 24 characters
 * V312: 5/94 - array "memory" as a calling argument
-* v500: 2/99 - *kob* add call to new routine REPLACEABLE_BAD_FLAGS to allow
+* V500: 2/99 - *kob* add call to new routine REPLACEABLE_BAD_FLAGS to allow
 *              and check for NaN as missing values
-* V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
+*	3/99 - *kob* up VAR_CODE and local var variable_code to 64 chars
+*	5/99 - *sh* added strides to TMAP read calls
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -80,10 +80,13 @@
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-	INTEGER 	idim, variable, category, data_set, grid,
+	LOGICAL	has_a_stride, has_strides(4)
+	INTEGER CAXIS_LEN,
+     .			idim, variable, category, data_set, grid,
      .			sf_num, tmap_status, lo_ss(4), hi_ss(4),
      .			lo_s1, lo_s2, lo_s3, lo_s4, 
-     .			hi_s1, hi_s2, hi_s3, hi_s4 
+     .			hi_s1, hi_s2, hi_s3, hi_s4,
+     .			stride(4)
 * V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
 	CHARACTER*64	VAR_CODE, variable_code
 
@@ -104,15 +107,46 @@
 	grid = cx_grid( cx )
 	variable_code = VAR_CODE( category, variable )
 
+* strides indicated in cx_delta e.g. SST[I=110:180:10] ?
+* If so, transfer this info to the stride array
+	has_a_stride = .FALSE.
+	DO 100 idim = 1, 4
+	   has_strides(idim) =  cx_delta(idim,cx) .NE. unspecified_val8
+     .			 .AND.  cx_delta(idim,cx) .NE. 1 
+	   IF (has_strides(idim)) THEN
+	      stride(idim) = cx_delta(idim,cx)
+	      has_a_stride = .TRUE.
+	   ELSE
+	      stride(idim) = 1
+	   ENDIF
+ 100	CONTINUE
+
+* if strides are invloved the memory requirement is less ...
+	CALL TRANSFER_CONTEXT(cx, cx_buff)
+	IF (has_a_stride) THEN
+	   DO 200 idim = 1, 4
+	      IF  (has_strides(idim)) THEN
+	         cx_lo_ss( cx_buff, idim ) = 1 
+	         cx_hi_ss( cx_buff, idim ) = 
+     .				(cx_hi_ss(cx,idim) - cx_lo_ss(cx,idim))
+     .		              / INT(cx_delta(idim,cx))  + 1
+	         cx_delta(idim,cx_buff) = unspecified_val8
+	      ENDIF
+ 200      CONTINUE
+	ENDIF
+
 * reserve and catalog space for the result
-	CALL CREATE_MEM_VAR( cx, mr, status )
+	CALL CREATE_MEM_VAR( cx_buff, mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
-* diagnostic output
-	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('reading',mr,point_to_mr)
+* un-cache it?
+* Turns out that uncaching the result here causes all of its descendants to
+* become uncached, as well, and lowers the cache hit rate. Instead, we will
+* handle invalid mr limits left by strides in IS_REGRID
+!	IF ( has_a_stride ) CALL UN_CACHE( mr )   ! since lo:hi are "fake"
 
 * set up array of subscripts
-	DO 100 idim = 1, 4
+	DO 300 idim = 1, 4
 	   IF ( grid_line( idim, grid ) .EQ. mnormal ) THEN
 	      lo_ss( idim ) = 1
 	      hi_ss( idim ) = 1
@@ -120,7 +154,16 @@
 	      lo_ss( idim ) = cx_lo_ss( cx, idim )
 	      hi_ss( idim ) = cx_hi_ss( cx, idim )
 	   ENDIF
- 100	CONTINUE
+ 300	CONTINUE
+
+* diagnostic output
+	IF (mode_diagnostic) THEN
+	   IF ( has_a_stride) THEN
+	     CALL DIAGNOSTIC_OUT('rdstride',cx,point_to_cx)
+	   ELSE
+	     CALL DIAGNOSTIC_OUT('reading',mr,point_to_mr)
+	   ENDIF
+	ENDIF
 
 * read the data
 	CALL TM_READ  ( data_set,
@@ -129,6 +172,7 @@
      .			hi_s1, hi_s2, hi_s3, hi_s4,
      .			lo_ss,
      .			hi_ss,
+     .			stride,
      .			memory( 1, mr_blk1( mr ) ),
      .			sf_num,
      .			tmap_status		)

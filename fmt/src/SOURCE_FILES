@@ -105,6 +105,7 @@ tm_find_like_dyn_line.F\
 tm_find_like_grid.F\
 tm_find_like_line.F\
 tm_find_line_slot.F\
+tm_firm_axis_orient.F\
 tm_fmt.F\
 tm_fp_convert.F\
 tm_fpeq.F\
@@ -122,6 +123,7 @@ tm_get_like_line.F\
 tm_get_linenum.F\
 tm_get_varnum.F\
 tm_grid_match.F\
+tm_has_all_strides.F\
 tm_has_string.F\
 tm_hash_name.F\
 tm_init_dset.F\
@@ -131,6 +133,7 @@ tm_int2_swap.F\
 tm_int4_swap.F\
 tm_internal_read.F\
 tm_irregax_mid.F\
+tm_its_cdf.F\
 tm_itsa_model_run.F\
 tm_lefint.F\
 tm_legal_name.F\

@@ -63,6 +63,8 @@
 *  *KOB* 9/97    - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in 
 *                  order to use cx_calendar to determine style of taxis
 * V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
+*      *sh*  5/99 - go ahead and flesh out implicit axes (to improve cache hits
+*		    when netCDF strides are invoked)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -135,7 +137,12 @@
 
 * axes with fully "given" regions will have their regions determined via
 * MERGE_CONTEXT (when computed) or PASS_AMBIG_LIMS (when found in memory)
-	ELSEIF ( .NOT.cx_given(idim,cx) .AND. lim_redundant ) THEN
+* 5/99 - added ".AND. axis .LT. max_lines" -- we will go ahead with
+* fleshing out implicit axes (e.g. a[i=10:100:10])
+* to improve the cache hit rate when netCDF strides are used. Note the peril
+* in this is the behavior of a[i=3:5] where a=b[i=10:100:10]
+	ELSEIF ( .NOT.cx_given(idim,cx) .AND. lim_redundant
+     .		.AND. axis .LT. max_lines ) THEN
 ****
 * 7/92 kludge:
 * this routine is called by is_uvar_grid (while determining the grid)

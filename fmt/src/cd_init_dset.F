@@ -1,4 +1,4 @@
-	SUBROUTINE CD_INIT_DSET ( dset, status )
+	SUBROUTINE CD_INIT_DSET ( dset, perm, status )
 
 *
 *
@@ -54,9 +54,10 @@
 *              when cdf file is closed - for mc datasets only
 * V500 *sh* 3/99 - consolidated cd_scan_vars and cd_get_axes
 *     *kob* 4/99 - increase size of temp_axnams to 64
+*     *sh*  6/99 - added "perm" (permutation) argument
 
 * argument declarations:
-	INTEGER	dset, status
+	INTEGER	dset, perm(4), status
 
 * include files
 #ifdef unix
@@ -101,7 +102,7 @@
 
 * build grids for variables w/out parent grids and associate with variables
       CALL CD_GET_GENERIC_GRIDS (dset,cdfid,temp_axnams,reversed,
-     .					status)
+     .				 perm, status)
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables with parent grids

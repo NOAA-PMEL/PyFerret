@@ -65,9 +65,12 @@
 *		   Also corrected undetected bug: in intermediate grid for
 *		   XY averaging need to deallo the y_dim not the "axis"
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
+*      *sh*  5/99 - incorporate logic for netCDF strides. Allow for multi-axes
+*		    use same framework to handle XY averaging
 
 #ifdef unix
 	include 'tmap_dims.parm'
+	include 'implicit.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
@@ -86,14 +89,23 @@
 #endif
 
 * calling argument declarations:
-	INTEGER	src_cx, dst_cx, status
+	INTEGER	src_cx, axis, dst_cx, status
 
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
-	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS, last_axis, xy_ave
+	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS,  TM_ITS_CDF,
+     .		xy_ave, last_axis, may_have_strides, has_strides, modulo
 	INTEGER	KNOWN_GRID, CAXIS_LEN,
-     .		idim, axis, var_grid, src_grid, dst_grid, next_axis
-	CHARACTER*64 VAR_CODE
+     .		idim, axis_list(4), naxis, var_grid, src_grid, dst_grid,
+     .		next_axis, dst_axis, var_axis, mr, i
+	CHARACTER VAR_CODE*64, dtype*4
+
+* initialize
+* this is a bit of a hack for implementing netCDF strides
+* Under circumstances listed near bottom we may abort the intention to use
+* strides In that case, we come back and do this routine over again.
+* We save a copy of the src_cx in case of this eventuality
+	CALL TRANSFER_CONTEXT(src_cx, cx_buff)
 
 * insert source grid ( defining grid for this variable )
 	dst_grid = cx_grid( dst_cx )
@@ -101,7 +113,7 @@
      .			  cx_category(src_cx),
      .			  cx_variable(src_cx)	)
 
-* select an axis for regridding
+* initially select a single axis for regridding
 	DO 10 axis = 1, 4
  10	IF (grid_line(axis,dst_grid).NE.grid_line(axis,var_grid)) GOTO 20
 * ... signal calling routine that there's nothing to regrid
@@ -120,19 +132,64 @@
 	   ENDIF
 	ENDIF
 
-* is this a 2D (XY averaging) regrid?
+* (5/99) should more than one axis be regridded at once?
+* yes if XY average regridding
+* yes if multiple axis strides in a netCDF file
+* for stride axes, we cannot have modulo and cannot have other
+* types of regridding needed also
+
+* If the regrid is of the form netCDFvar[i=lo:hi:del] then it is
+* currently represented as a regrid to a dynamic axis. Since the netCDF
+* library can do strides, we will allow it to as long as a variety
+* of conditions are met. The "flag" that will trigger strides in the netCDF
+* IO is the presence of a cx_delta value (see rqst_regrid.F and read_tm.F)
+* Note that modulo regrids cannot be handled with strides: suppose X axis
+* is 1:360 degrees by one degree, then V[I=1:720:7] will select different
+* points in the 1:360 range than in the 361:720 range.
+	may_have_strides =  cx_category(dst_cx) .EQ. cat_file_var
+	IF (may_have_strides) THEN
+	   may_have_strides = TM_ITS_CDF(cx_data_set(dst_cx), dtype )
+     .                  .AND. cx_has_impl_grid(dst_cx)
+	ENDIF
+ 50	naxis = 1
+	axis_list(1) = axis	
+	has_strides = .FALSE.
 	xy_ave = cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave
-	IF ( xy_ave ) THEN
-	   next_axis = z_dim
-	ELSE
-	   next_axis = axis + 1
+	IF ( cx_regrid_trans(axis,src_cx) .EQ. prgrd_xy_ave ) THEN
+	   naxis = 2
+	   axis_list(2) = y_dim
+	ELSEIF ( may_have_strides ) THEN
+	  DO 100 idim = axis, 4
+	    dst_axis = grid_line(idim,dst_grid)
+	    var_axis = grid_line(idim,var_grid)
+	    IF (dst_axis.EQ.var_axis) GOTO 100
+	    IF (cx_regrid_trans(idim,dst_cx).EQ.prgrd_linear_interp
+     .     .OR. cx_regrid_trans(idim,dst_cx).EQ.prgrd_exact) THEN
+	      IF ( dst_axis .GE. max_lines ) THEN  ! implicit axis ?
+	        IF ( line_class(dst_axis) .EQ. pline_class_stride ) THEN
+	          IF (idim .NE. axis) naxis = naxis + 1
+	          axis_list(naxis) = idim
+	        ELSE
+	          GOTO 110	! abort
+	        ENDIF
+	      ELSE
+	        GOTO 110	! abort
+	      ENDIF
+	    ELSE
+	      GOTO 110		! abort
+	    ENDIF
+ 100	  CONTINUE
+	  has_strides = .TRUE.  ! all axes meet the conditions
+ 110	  IF (.NOT.has_strides) naxis = 1
 	ENDIF
 
-* is this the last axis to regrid ?
+* will there be more axes to regrid after this/these?
+	next_axis = axis_list(naxis) + 1
 	last_axis = .TRUE.
-	DO 25 idim = next_axis, 4
- 25	IF ( grid_line(idim,dst_grid) .NE. grid_line(idim,var_grid) )
+	DO 200 idim = next_axis, 4
+ 200	IF ( grid_line(idim,dst_grid) .NE. grid_line(idim,var_grid) )
      .							last_axis = .FALSE.
+	IF (.NOT.last_axis) has_strides = .FALSE.  ! (can never happen)
 
 * if its the last axis then the source data will be on its defining grid
 	IF ( last_axis ) THEN
@@ -164,10 +221,32 @@
 	cx_grid( src_cx ) = src_grid
 
 * get limits to request
-	CALL RQST_REGRID( dst_cx, src_cx, axis, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
-	IF (xy_ave) CALL RQST_REGRID( dst_cx, src_cx, y_dim, status ) 
-	IF ( status .NE. ferr_ok ) GOTO 5000
+	DO 300 idim = 1, naxis
+	   CALL RQST_REGRID( dst_cx, src_cx, axis_list(idim),
+     .			     has_strides, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+ 300	CONTINUE
+
+* if doing strides then we may decide to abort
+* 1) if it turns out to be a modulo stride operation (e.g. I=1:720:11 on
+*    a 360 point modulo longitude axis. Note that we could have checked for
+*    this above, but since RQST_REGRID does all the work, we waited
+* 2) if the complete source data is already in cache don't reread w/ strides
+	IF (has_strides) THEN
+	   CALL FIND_MEM_VAR( src_cx, mr, search_by_value )
+	   modulo = .FALSE.
+	   DO 400 i = 1, naxis
+	      idim = axis_list(i)
+	      modulo = modulo
+     .       .OR.  cx_hi_ss(src_cx,idim) .GT. CAXIS_LEN(idim,src_cx)
+     .	     .OR.  cx_lo_ss(src_cx,idim) .LT. 1
+ 400	   CONTINUE
+           IF ( modulo .OR. mr .GT. mr_nonexist ) THEN
+	      may_have_strides = .FALSE.
+	      CALL TRANSFER_CONTEXT( cx_buff, src_cx)
+	      GOTO 50			! re-do w/out strides
+	   ENDIF
+	ENDIF
 
 * success
 	RETURN

@@ -67,6 +67,7 @@
 * V450:  5/29/97 - added /NOAXES qualifier (eventually for curvilinear plots)
 * V510 *sh* 12/99 - allow plots of all-missing data
 *		  - replace /PEN qualifier with /COLOR, supporting named colors
+*      5/00 *sh* - restored the /PEN qualifier (with "denigrated" remark
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -169,8 +170,13 @@
 	ENDIF
 
 * user-specified pen color ?  (2/94)
-	loc = qual_given( slash_pen )
+	loc = MAX( qual_given(slash_pen), qual_given(slash_color))
 	IF ( loc .GT. 0 ) THEN
+	   IF (.NOT.denig_pen_msg_done .AND. qual_given(slash_pen).GT.0)
+     .									THEN
+	      CALL WARN( '/PEN is denigrated. Use /COLOR.')
+	      denig_pen_msg_done = .TRUE.
+	   ENDIF
 	   CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                           ipen, status )
            IF ( status .NE. ferr_ok ) GOTO 5000

@@ -112,7 +112,8 @@
      .		frame_on,
      .		interactive,
      .		if_conditional,
-     .		denig_xylim_msg_done
+     .		denig_xylim_msg_done,
+     .		denig_pen_msg_done
 
 ! Note: available_char_var is unused
 	CHARACTER
@@ -155,6 +156,7 @@
      .		saved_dset,
      .		saved_abstract_grid,
      .		denig_xylim_msg_done,
+     .		denig_pen_msg_done,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,

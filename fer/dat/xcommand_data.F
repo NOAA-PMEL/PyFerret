@@ -117,6 +117,7 @@
 *	5/00 *sh* - added CANCEL GRID
 *	5/00 *sh* - added /HLIMITS and /VLIMITS to graphics commands
 *		  - added /DETAILED to SHOW FUNCTIONS and to MESSAGE
+*	5/00 *sh* - restored /PEN as a "denigrated" command
 
 #ifdef unix
 	include 'ferret.parm'
@@ -668,7 +669,7 @@
 		DATA qualifiers  (nqual_at4a+26)/ 'SIZE'/	!/size
 		DATA qualifiers  (nqual_at4a+27)/ 'SPACING'/	!/spacing
 		DATA qualifiers  (nqual_at4a+28)/ 'SIGDIG'/	!/sigdig
-		DATA qualifiers  (nqual_at4a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at4a+29)/ 'PEN'/	!/pen (denig!!)
 		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at4a+32)/ '****'/	!
@@ -982,7 +983,7 @@
 		DATA qualifiers  (nqual_at13a+26)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+27)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
-		DATA qualifiers  (nqual_at13a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
 		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at13a+32)/ '****'/	!

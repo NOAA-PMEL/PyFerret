@@ -275,8 +275,9 @@
 	DATA	ifstk		 / 0 /
      .		if_conditional	 / .FALSE. /
 
-* for issuing messages about the denigrated status of /XLIMITS and /YLIMITS
+* for issuing messages about the denigrated status of qualifiers
 	DATA	denig_xylim_msg_done / .FALSE. /
+	DATA	denig_pen_msg_done / .FALSE. /
 
 * miscellaneous
 	DATA	saved_dset		/ unspecified_int4 /

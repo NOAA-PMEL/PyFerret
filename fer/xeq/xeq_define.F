@@ -226,7 +226,7 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal
+     .            mon_by_d(366), d_in_mon(12), len_cal, elen
 
 	REAL	  rbuff, bad_flag, yeardays
 	REAL*8	  SECS_FROM_BC, bc_to_t0, start, new_ww, delta, end, 
@@ -1291,8 +1291,14 @@
 
  5710	CALL ERRMSG( ferr_prog_limit, status,
      .		'use CANCEL ALIAS to reclaim space', *5000 )
- 5720	CALL ERRMSG( ferr_syntax, status,
-     .		'Invalid calendar name', *5000 )
+ 5720	err_string = 'Invalid calendar name. Names are'
+        DO 5721 i1=1, max_calendars
+           len_cal = TM_LENSTR1(err_string)
+           slen = TM_LENSTR1(allowed_calendars(i1))
+           err_string = err_string(:len_cal)//', '//
+     .                   allowed_calendars(i1)(:slen)
+           len_cal = len_cal + slen
+ 5721   CONTINUE
+        CALL ERRMSG( ferr_syntax, status,err_string, *5000 )
 
 	END
-

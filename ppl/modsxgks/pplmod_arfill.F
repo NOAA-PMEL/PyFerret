@@ -67,7 +67,7 @@ C     V4.50 *jc* 5.97 Add curvilinear coordinates code
 
 
 C     *jd* mod to allow filling single level fields
-        if (nlev .le .1) return
+        if (nlev .le. 1) return
 
 	shd_levels = nlev - 1
 

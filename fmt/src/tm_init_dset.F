@@ -84,6 +84,9 @@
 * v530 *acm* 1/01 - initialize ds_cal_name  calendar name
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
+* v541 *acm*  4/02  New descriptor d_caltype for nonstandard calendar types.
+*                   **also changes to descript.def**
+*      *acm*  5/02  When extension not specified, try .nc as well as .des, .cdf
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -125,7 +128,8 @@
 	CHARACTER*4	known_type(num_known)
 	CHARACTER*4	format_rev(num_revs,num_known)
 	CHARACTER*13	TM_STRING
-	CHARACTER	def_ext*4, def_cdf*4, ext*4, cdf_path*12, path*12
+	CHARACTER	def_ext*4, def_cdf*4, def_nc*3, ext*4, 
+     .                  cdf_path*12, path*12
         CHARACTER*256   TM_CLEAN_FILENAME
 	CHARACTER*42	reading_nml
 	CHARACTER*256   TM_INQ_PATH, des_name
@@ -142,6 +146,8 @@
      .				   '    ',
      .				   '    '/
 	DATA		def_ext  /'.des'/, def_cdf/'.cdf'/
+        DATA            def_nc/'.nc'/
+
         DATA            cdf_path/'FER_DATA'/
 
 * namelist declarations
@@ -155,7 +161,7 @@
      .				   d_ntegrate_tstep,d_ntuple,d_time_run,
      .				   d_who_ranit,d_time_made,d_who_madeit,
      .				   d_aux_modnum,d_add_parm,
-     .				   d_grid_filename
+     .				   d_grid_filename,d_caltype
 
 * initialize
         got_lun = .FALSE.    ! controls error clean-up
@@ -222,7 +228,7 @@
 	ENDIF
 	IF ( status .NE. merr_ok .AND. explicit_ext ) GOTO 9950
 	IF ( status .NE. merr_ok) THEN
-* interchange and try the other (.sed/.cdf) data set type
+* interchange and try the other (.des/.cdf) data set type
 	   IF ( ext .EQ. def_ext ) THEN
 	      ext  = def_cdf	! was .des
 	      path = cdf_path
@@ -233,9 +239,29 @@
 	      ds_dset_type = ' '
 	   ENDIF
 	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
+
+* 4/02 *acm* try .nc extension
+	   IF ( status .NE. merr_ok ) THEN
+	      ext  = def_nc
+	      path = cdf_path
+	      ds_dset_type = 'CDF'
+           ENDIF
+	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
+
+
+	   IF ( status .NE. merr_ok ) THEN
+	      ext  = def_nc
+	      path = tmap_sets
+	      ds_dset_type = 'CDF'
+           ENDIF
+	   des_name = TM_INQ_PATH(dset_name,path,ext,.FALSE.,status)
+
+
+
 * 7/97 *kob* check to see which error message should be output - don't
 *            want to output same error message twice.
 	   IF ( status .NE. merr_ok ) THEN
+
 	      IF (status .EQ. merr_syntax .OR. status .EQ. merr_erreq) THEN
 		 GOTO 9950
 	      ELSE 
@@ -351,6 +377,9 @@
 	DO 190 cnt = 1,num_gridfiles
   190	d_grid_filename(cnt) = ' '
 
+
+        d_caltype       = 'GREGORIAN'
+
 	reading_nml = 'BACKGROUND_RECORD'
 	READ  (lunit, NML=BACKGROUND_RECORD, END=5100, ERR=5200)
 
@@ -372,7 +401,7 @@
 	ds_ntegrate_tstep(dset_num) = d_ntegrate_tstep
 	ds_ntuple(dset_num)         = d_ntuple
 	ds_time_run(dset_num)       = d_time_run
-        ds_cal_name(dset_num)       = 'GREGORIAN'
+        ds_cal_name(dset_num)       = d_caltype
 
 	DO 200 aux_cnt = 1,num_aux
 	  ds_aux_modnum(aux_cnt,dset_num)    = d_aux_modnum(aux_cnt)

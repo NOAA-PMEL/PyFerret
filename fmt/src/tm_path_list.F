@@ -72,6 +72,10 @@
 *            a default extension, if an explicit extension is used.
 * 12/97 - *kob* - added check for "~/xxx" because it was cashing core dump
 *  1/99 - js - on PC's, path separator is ';' rather than ' '
+* v5.41 5/02 *acm* - If there are .'s within the filename, the logic for adding
+*                    the extension is not adequate (statement 50). When file not
+*                    found, go back and see if adding the extension works.
+
 * calling argument declarations:
       LOGICAL       do_errmsg
       INTEGER       status
@@ -89,7 +93,7 @@
       INTEGER tilde, tilde_len, dot,path_len,lext           
       INTEGER vers_int,vers_len,end_tilde,path_tries
       LOGICAL file_exist,pos_ver,zero_ver
-      LOGICAL relative, dot_next_to_tilde
+      LOGICAL relative, dot_next_to_tilde, retry_ext
       CHARACTER  ext*8, path_buff*128,suffix*16,TM_LEFINT*8
       CHARACTER  tilde_buff*8,vers_no*8,temp_fname*128
 	
@@ -106,6 +110,9 @@
 #include "gt_lib.parm"
 
 * initialize
+      retry_ext = .false.
+
+  60  CONTINUE
 *      end = 0          10/91
       end = -1
       path_tries = 0
@@ -115,6 +122,7 @@
       pos_ver= .false.
       zero_ver = .false.
       dot_next_to_tilde = .false.
+
 
 * check for relative version number in file name. eg ferret.jnl.~nnn~
 * If nnn > or = 0 then relative is false, else it is true.
@@ -171,14 +179,17 @@
 * apply default extension if filename doesn't have one
 * must check if there is a "dot" but ...
 * avoid detecting "../path/name" as a significant "dot"
- 50      IF ( INDEX( fname(:flen), '.' ) .GT. 0 ) THEN
+
+ 50      IF ( INDEX( fname(:flen), '.' ) .GT. 0 .AND. 
+     .        .NOT. retry_ext)  THEN
+
+         lext = INDEX( fname(:flen), '.' )      ! just to see what this is...
          ext = ' '
          lext= 0
       ELSE
          ext = def_ext
          lext = TM_LENSTR1(ext)
       ENDIF
-
 
 * does the filename contain its own path ?
       IF ( path_list .EQ. ' ' ) THEN
@@ -267,7 +278,22 @@
       GOTO 100
 
 * file not found
- 1000 TM_PATH_LIST = ' '
+ 1000 CONTINUE
+
+* try forcing addition of the default extension -- if there are internal .'s 
+* in the filename, the IF test at Statement# 50 is not adequate.  Go back, 
+* reinitialize everything, and try again.
+
+      IF (.NOT. retry_ext) THEN
+         ext = def_ext
+         lext = TM_LENSTR1(ext)
+         retry_ext = .TRUE.
+         GO TO 60
+      ENDIF
+
+* file still not found
+
+      TM_PATH_LIST = ' '
       status = merr_notmounted
       IF ( do_errmsg ) THEN
          GOTO 5000

@@ -3,12 +3,12 @@
 #else
 c      
 c     Functions in the FORTRAN interface
-
 * This block of external declarations was added when netCDF upgraded
 * from version 1 to version 2.x.  Since these declarations exist
 * explicitly where they are needed in the individual TMAP library source
 * modules their presence here causes "multiple declaration" warnings.
 * *sh* and *kob* 4/94
+*
 *      integer nccre, ncopn, ncddef, ncdid, ncvdef, ncvid, nctlen
 *      integer ncsfil
 *      external nccre, ncopn, ncddef, ncdid, ncvdef, ncvid, nctlen
@@ -57,7 +57,7 @@ c     header info has changed (X'80')
       parameter(NCHDIRTY = 128)
 c     prefill vars on endef and increase of record, the default behavior
       parameter(NCFILL = 0)
-c     don't fill vars on endef and increase of record (X'100')
+c     do not fill vars on endef and increase of record (X'100')
       parameter(NCNOFILL = 256)
 c     isa link (X'8000')
       parameter(NCLINK = 32768)
@@ -84,9 +84,9 @@ c
 c     Advisory Maximums
 c     
       parameter(MAXNCOP = 32)
-      parameter(MAXNCDIM = 32)
-      parameter(MAXNCATT = 512)
-      parameter(MAXNCVAR = 512)
+      parameter(MAXNCDIM = 100)
+      parameter(MAXNCATT = 2000)
+      parameter(MAXNCVAR = 2000)
 c     Not enforced 
       parameter(MAXNCNAM = 128)
       parameter(MAXVDIMS = MAXNCDIM)
@@ -153,4 +153,19 @@ c     Initialized in lerror.c
 c     
       parameter(NCFATAL = 1)
       parameter(NCVERBOS = 2)
+
+c
+c     Default fill values.  These must be the same as in the C interface.
+c
+      double precision FILDOUB
+      integer FILLONG
+      REAL FILFLOAT
+      integer*2 FILSHORT
+      byte FILCHAR,FILBYTE
+      parameter (FILDOUB = 9.9692099683868690e+36)
+      parameter (FILLONG = -2147483647)
+      parameter (FILFLOAT = 9.9692099683868690e+36)
+      parameter (FILSHORT = -32767)
+      parameter (FILCHAR = 0)
+      parameter (FILBYTE = -127)
 #endif

@@ -3,9 +3,9 @@
 #
 # This file is included in other Makefiles and defines
 # platform specific macros
+# -I$(TMAP_LOCAL)/src/netcdf-2.3.2
 
-
-INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
+INCLUDES        = -I/opt/local/netcdf-2.4.2/include \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I../../ppl/include/xgks \
 		  -I/usr/ucbinclude \
@@ -38,6 +38,7 @@ RANLIB          = /bin/touch
 CFLAGS          = -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
 FFLAGS          = -e -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE
 PPLUS_FFLAGS    = -e -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
+#PPLUS_FFLAGS    = -O4 -fast -e -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
 
 #
 # Below this line are macro definitions used only for the final linking of the executable
@@ -63,7 +64,8 @@ GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 HDFLIB		= /opt/local/lib/libdf.a
 
 #CDFLIB		= /opt/local/lib/libnetcdf.a
-CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
+#CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
+CDFLIB		= /opt/local/netcdf-2.4.2/lib/libnetcdf.a
 
 #
 # End of platform_specific_includes.mk.solaris

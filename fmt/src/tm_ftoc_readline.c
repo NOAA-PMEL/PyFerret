@@ -49,6 +49,8 @@
 /* v51 *kob* - upgraded to new version of readline, which is now seperate
    from tmap library - modified readline include to that end */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdio.h>
 #include <strings.h>
 #include "readline.h"

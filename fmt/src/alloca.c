@@ -69,6 +69,8 @@ static char	SCCSid[] = "@(#)alloca.c	1.1";	/* for the "what" utility */
 #endif
 
 #ifdef emacs
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include "config.h"
 #ifdef static
 /* actually, only want this if static is defined as ""

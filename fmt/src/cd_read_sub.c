@@ -64,6 +64,8 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_read_sub.c
 */ 
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <netcdf.h>

@@ -50,6 +50,8 @@
 */
 
 /*#include "tmap_format/netcdf.h"*/
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <netcdf.h>      /* usually in /usr/local/include */
 /* Suns need to include stdio.h to get definition for NULL */
 /* #include <stdlib.h> */

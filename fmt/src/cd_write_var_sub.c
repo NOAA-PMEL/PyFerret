@@ -64,8 +64,10 @@
     cc -c -g -I/opt/local/netcdf-3.4/include cd_write_var_sub.c
 */ 
 
-#include <stdio.h>
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
 #include <stdlib.h>
+#include <wchar.h>
+#include <stdio.h>
 #include <netcdf.h>
 #include <assert.h>
 

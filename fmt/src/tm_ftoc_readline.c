@@ -42,8 +42,21 @@
 /* had to add ifdef check for trailing underscore in routine name
    for aix port *kob* 10/94 */
 
+/* Readline is very slow for piped I/O, so run w/o readline for Ferret server
+ * *js* 12/98
+ */
+
 #include <stdio.h>
+#include <strings.h>
 #include "readline/readline.h"
+
+/* Easier way of handling FORTRAN calls with underscore/no underscore */
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+#define FORTRAN(a) a
+#else
+#define FORTRAN(a) a##_
+#endif
+
 
 /* A static variable for holding the line. */
 static char *line_read = (char *)NULL;
@@ -62,7 +75,21 @@ char *do_gets ( prompt )
     }
 
   /* Get a line from the user. */
-  line_read = readline (prompt);
+  /* If running in server mode, don't use fancy readline stuff */
+
+  if (!FORTRAN(is_server)()){
+    line_read = readline (prompt);
+  } else {
+    char* loc;
+    fputs(prompt, stdout);
+    fflush(stdout);
+    line_read = (char *)malloc(2048);
+    fgets(line_read, 2047, stdin);
+    loc = rindex(line_read, '\n');
+    if (loc != 0){
+      *loc = '\0';
+    }
+  }
 
   /* If the line has any text in it, save it on the history. */
   if (line_read && *line_read)

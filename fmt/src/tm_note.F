@@ -42,6 +42,7 @@
 
 * revision 0.0 2/92 for TMAP library (from FERRET rouitine "WARN")
 * *sh* 2/28/95 - allow message to be sent to alternative location
+* *js* 12.12.97- changed to use tm_split_list
 
 * calling argument declarations:
         INTEGER lunit
@@ -63,8 +64,9 @@
 	IF ( alt_messages ) THEN
 	   CALL TM_ALTERNATE_NOTE( string, lunit )
 	ELSE
-	   WRITE ( lunit, 3000 ) string(:slen)
- 3000	   FORMAT ( ' *** NOTE: ',A )
+c	   WRITE ( lunit, 3000 ) string(:slen)
+c 3000	   FORMAT ( ' *** NOTE: ',A )
+	   call tm_split_message(lunit, ' *** NOTE: '//string)
 	ENDIF
 
 	RETURN

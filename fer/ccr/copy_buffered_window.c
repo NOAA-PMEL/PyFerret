@@ -79,44 +79,13 @@ copy_buffered_window_(ws_id, anim_id)
   
   screen = DefaultScreen(ws->dpy);
   
-  /* handle any frame window */
-  if (!XTranslateCoordinates (ws->dpy, ws->win, 
-			      RootWindow (ws->dpy, screen), 0, 0, 
-			      &src_absx, &src_absy, &dummywin)) {
-    fprintf (stderr,  "unable to translate window coordinates\n");
-    }  
-   
-  
-  /*
-   * Get the parameters of the window being dumped to.
-   */
-  if(!XGetWindowAttributes(anim->dpy, anim->win, &anim_win_info)) 
-    {
-      fprintf (stderr, "Can't get target window attributes.");
-      exit(1);
-    }
-
-  screen = DefaultScreen(anim->dpy);
-  
-  /* handle any frame window  */
-  if (!XTranslateCoordinates (ws->dpy, anim->win, 
-			      RootWindow (anim->dpy, screen), 
-			      0, 0, &dest_absx, &dest_absy, &dummywin)) {
-    fprintf (stderr, "unable to translate window coordinates (%d,%d)\n");
-  } 
-
   width = win_info.width;
   height = win_info.height;
 
-  /*    XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy, 
-	    DefaultScreen(ws->dpy)), src_x, src_y, 
-            width, height, (anim_win_info.x), (anim_win_info.y-30));  */
 
   XCopyArea(ws->dpy, ws->win, anim->win, DefaultGC(ws->dpy,
 	    DefaultScreen(ws->dpy)), 0, 0,
 	    width, height, 0,0);  
-  XSync(ws->dpy, 0);
-  /*	xgks_x_events_(); */
 
 
 }

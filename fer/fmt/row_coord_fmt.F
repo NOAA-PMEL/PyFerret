@@ -1,8 +1,6 @@
 	SUBROUTINE ROW_COORD_FMT( idim, cx, lo_ss, hi_ss, del_ss,
      .				  fmt, decimal, row_ww, cleft )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -42,19 +40,14 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 *
 * V200:   7/9/90 - extracted from LIST_CMND_DATA
 * V313:  31/10/94 - commas are mandatory in FORMAT statement on IBM/AIX
 *		    changed format 3000 for all cases
+* V540:  11/01 - allow for the possibility of non-positive (modulo) subscripts 
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_ss, hi_ss, del_ss, decimal, row_ww, cleft
@@ -63,7 +56,7 @@
 * local variable declarations:
 	LOGICAL	GEOG_LABEL, date_str
 	INTEGER DATE_PREC, FIELD_WIDTH,
-     .		grid, j, places, row_ss, numbers
+     .		grid, j, places, row_ss, row_ss_lo, numbers
 	REAL	BOX_SIZE, small
 	REAL*8	TM_WORLD
 
@@ -98,7 +91,20 @@
  200	CONTINUE
 
 * how many digits in the largest subscript ?
- 500	row_ss = INT( LOG10(REAL(ABS(hi_ss))) ) + 1	! ABS for unspecified ss
+ 500	IF ( hi_ss .NE. 0 ) THEN 
+	  row_ss     = INT( LOG10(REAL(ABS(hi_ss))) ) + 1
+	  IF (hi_ss .LT. 0) row_ss    = row_ss    + 1
+	ELSE
+	  row_ss   = 2
+	ENDIF
+	IF ( lo_ss .NE. 0 ) THEN 
+	  row_ss_lo  = INT( LOG10(REAL(ABS(lo_ss))) ) + 1
+	  IF (lo_ss .LT. 0) row_ss_lo = row_ss_lo + 1
+	ELSE
+	  row_ss_lo = 2
+	ENDIF
+	IF (row_ss_lo .GT. row_ss) row_ss = row_ss_lo
+
 	WRITE ( fmt, 3000 ) row_ss + 1	! blank before digits
 ! 3000	FORMAT ( '('' /''I',I1,''':'')' ) 	! pre-AIX
  3000	FORMAT ( '('' /'',I',I1,',',''':'')' )	! typical: (' /',I3,':') 

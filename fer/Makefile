@@ -8,8 +8,10 @@
 #		 links to actual files in fer directory
 # 7/98 *kob* - reworking prior to source code distribution. add in 
 #	       fmt are as well so one make command compiles/links all
+# 8/99 *acm* - Add EFUOBJS and ef_utility to DIRS and LIBS so to include 
+#              External Functions utility functions in the executable.
+#              (see note in ef_utility/Makefile: Don't put these in a library.)
 
-#
 # include platform specific macro definitions
 #
 
@@ -26,10 +28,10 @@ CFLAGS += -I../gui
 
 GUI_FAKES = special/gui_fakes.o
 
-DIRS	= ccr ctx dat doo efn fmt gnl gui ino mem ocn plt \
+DIRS	= ccr ctx dat doo efn ef_utility fmt gnl gui ino mem ocn plt \
 	rpn special stk utl xeq
 
-LIBS	= ccr ctx dat doo efn fmt gnl gui ino mem ocn plt \
+LIBS	= ccr ctx dat doo efn ef_utility fmt gnl gui ino mem ocn plt \
 	rpn stk utl xeq
 
 CLEANDIRS = $(DIRS)
@@ -37,7 +39,7 @@ CLEANDIRS = $(DIRS)
 DEPDIRS = ccr gui
 
 FERLIBS = -L../lib -lxeq -lgnl -lferplt -lrpn -lstk -ldoo -locn \
-	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefn 
+	-lctx -lfmt -lino -lmem -lutl -ldat -lccr -lefn
 
 PPLLIBS = -L../lib -lplt -lpll -lsym -lcmp -lour -lepi -lusr 
 
@@ -51,11 +53,15 @@ FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
 
 PPLOBJS =  ../ppl/tmapadds/*.o 
 
+EFUOBJS = ef_utility/*.o
+
 EXECNAME = ferret_c
 
 WHATGKS = xgks
 
 LD = cc
+
+EF_CMNS = common/EF_Util.cmn common/EF_Util.parm common/EF_mem_subsc.cmn
 
 #
 # Targets
@@ -115,6 +121,7 @@ ferret:
 		$(GUILIB) \
 		$(GKSOBJ) \
 		$(PPLOBJS) \
+		$(EFUOBJS) \
 		$(BDEAD) \
 		$(FERLIBS) \
 		$(PPLLIBS) \
@@ -185,6 +192,8 @@ depend: .FRC
         $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
                 "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
         done
+
+
 
 
 .FRC:

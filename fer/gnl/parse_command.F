@@ -7,8 +7,6 @@
      .				   err_lun, reverify, status )
 
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -92,7 +90,9 @@
 *                     number of elements for itsa_qualifer logical array
 * V500 *sh* 4/99 - Increased nsubst_passes to 100 for detecting recursion
 *		- so large numbers of grave accents can be in a single line
-*
+* V530 *sh* 10/00 - modify so that symbols inside of REPEAT loops get
+*	translated inside of the loop (keep copy of input in risc_buff)
+
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
 *	 the command buffer
@@ -124,23 +124,12 @@
      .			num_args,arg_start(max_words),arg_end(max_words),
      .			err_lun,status
 
-#ifdef unix
 	include	'errmsg.parm'
 	include	'ferret.parm'
 	include	'command.parm'
 	include 'xcommand.cmn'
 	include 'xcontrol.cmn'
 	include 'xvariables.cmn'	! for num_uvars_in_cmnd
-!        include 'xrisc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:XCOMMAND.CMN'
-	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'	! for num_uvars_in_cmnd
-!        INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * local variable declarations:
 *
@@ -150,16 +139,18 @@
 
 * modified def of MATCH4 from INTEGER to LOGICAL *kob* IBM port 8/94
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
-     .          surround_quote, subst, 
+     .          surround_quote, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
      .          MATCH4, escape
 	INTEGER TM_LENSTR
-	INTEGER	cmnd_buff_len, bang_position, pointer, quote_end,
+	INTEGER	buff_len, bang_position, pointer, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
      .		isubcmnd_pointer, iword, last_qual, iqual_word, iterm,
      .		iqual, iqual_pointer, iarg, i, nparen, nsubst_passes,
-     .		grave_start, grave_end, in, out, nest
+     .		grave_start, grave_end, in, out, nest,
+     .		paren_level, len_copy
 	CHARACTER c1*1
+	CHARACTER cmnd_copy*2048  ! must match cmnd_buff_len
 
 * local parameter declarations:
 	INTEGER		grave_digits
@@ -172,13 +163,13 @@
 	nsubst_passes   = 0
 	reverify	= .FALSE.
 	status 		= ferr_ok
-	cmnd_buff_len	= LEN ( cmnd_buff )
+	buff_len	= LEN ( cmnd_buff )
  5	pointer		= 1		! current position in cmnd_buff
 	word_num	= 0		! current "word" in cmnd_buff
 	num_quals	= 0
 	num_args	= 0
 	cmnd_num 	= 0		! in case of comment line
-	cmnd_buff (cmnd_buff_len:cmnd_buff_len) = ' '	! always end with blank
+	cmnd_buff (buff_len:buff_len) = ' '	! always end with blank
 
 * full length of text
 	cmnd_len = TM_LENSTR (cmnd_buff)
@@ -228,6 +219,10 @@
 	   RETURN	! no text before !
 	ENDIF
 
+* save a copy of the command with untranslated symbols for use by REPEAT
+	cmnd_copy = cmnd_buff
+	len_copy = cmnd_len
+
 * * * * * * * * *
 * remove parens enclosing entire command or command group
 * modified 10/95 to protect "($name) at line start
@@ -276,8 +271,8 @@
         ENDIF
 
 !* check for buffer overflow (too-long command line)
-! 90     IF ( cmnd_len .EQ. cmnd_buff_len ) GOTO  5005
-!	cmnd_buff (cmnd_buff_len:cmnd_buff_len) = ' '	! always end with blank
+! 90     IF ( cmnd_len .EQ. buff_len ) GOTO  5005
+!	cmnd_buff (buff_len:buff_len) = ' '	! always end with blank
 
 * * * * * * * * *
 * substitute GO command arguments, if any
@@ -586,6 +581,39 @@
 		arg_end  ( num_args ) 	= arg_end  ( iarg )
 	   ENDIF
  810	CONTINUE
+
+* REPEAT loops postpone symbol substitutions in arguments -- all 1 arg for now
+	IF ( cmnd_num .EQ. cmnd_repeat ) THEN
+	   IF ( cmnd_buff(arg_end(num_args):arg_end(num_args)) .EQ. ')' 
+     .    .AND. cmnd_buff(arg_start(1):arg_start(1)) .EQ. '(' ) THEN
+*   ... search backwards for left paren
+	    first_paren = .TRUE.
+	    paren_level = 1
+	    DO 850 i = len_copy-1, 1, -1
+	      IF (cmnd_copy(i:i) .EQ. ')') THEN
+	        paren_level = paren_level + 1
+	        first_paren = .FALSE.
+	      ELSEIF (cmnd_copy(i:i) .EQ. '(') THEN
+	        paren_level = paren_level - 1
+	        IF (first_paren) THEN
+*   ... dont confuse symbol at end "($sym)" with paren-enclosed command group 
+	          IF (cmnd_copy(i+1:i+1) .EQ. '$') GOTO 890
+	          first_paren = .FALSE.
+	        ENDIF
+	        IF ( paren_level .EQ. 0 ) THEN
+*   ... found the block of REPEAT argument - replace the text with original
+	          cmnd_buff(arg_start(1):) = cmnd_copy(i:len_copy)
+	          cmnd_len = arg_start(1) + (len_copy-i)
+	          num_args = 1
+	          arg_end(1) = cmnd_len
+	          GOTO 890
+	        ENDIF
+	      ENDIF
+ 850	    CONTINUE
+*   ... no matching left paren ever found (probably a syntax error ...)
+	  ENDIF
+	ENDIF
+ 890	CONTINUE
 
 * +++++++++ grave-accented immediate-mode expressions +++++++++++  3/95
 * evaluate and substitute the first grave accent-surrounded expression, if any

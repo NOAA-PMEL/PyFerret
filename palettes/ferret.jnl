@@ -1,0 +1,11 @@
+ ! NOAA/PMEL TMAP
+ ! Program FERRET (BETA)
+ ! Revision 3.01 - 11/01/93
+ ! 02-Nov-93 10:38   
+
+shade/i=1:10/j=1:10 i+j
+palette bluescale
+palette inverse_bluescale
+palette grayscale
+palette bluescale
+q

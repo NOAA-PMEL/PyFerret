@@ -23,6 +23,7 @@
 *		insufficient for result. Should return original data rather
 *		than an all-bad field.
 * V455:  9/97 - OFFSET_SS returns status
+*	11/97 - bug fix: @ITP component WW coords must bracket result
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -56,10 +57,10 @@
 	LOGICAL	ITSA_FILL_TRANS, its_4d
 	INTEGER CX_DIM_LEN, slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
-     .		trans, grid, lo_off, hi_off, lo_ss, hi_ss, wksiz, wkblk,
+     .		trans, grid, lo_off, hi_off, ss_lo, ss_hi, wksiz, wkblk,
      .		mrlist(2), axes(4), idim1, i, ndim
 	REAL	arg
-	REAL*8	TM_WORLD, lo_ww, hi_ww
+	REAL*8	TM_WORLD, ww, ww_lo, ww_hi
 	CHARACTER VAR_TRANS*64, buff*64
 
 * --- end of introductory code ---
@@ -155,7 +156,14 @@
 * 11/95 - is interpolation the only case of a compressing transform
 * where the component ww range normally doesn't match the result?
 	   ELSEIF ( trans .EQ. trans_interpolate ) THEN
-	      CONTINUE
+* ... component range must **bracket** the result, however (11/97)
+	      ww    = cx_lo_ww(idim,res_cx)
+	      ss_lo = cx_lo_ss(com_cx,idim)
+	      ss_hi = cx_hi_ss(com_cx,idim)
+	      ww_lo = TM_WORLD( ss_lo, grid, idim, box_middle )
+	      ww_hi = TM_WORLD( ss_hi, grid, idim, box_middle )
+* ... allow ww_lo>ww_hi to accomodate time encodings
+	      IF ( (ww-ww_lo)*(ww-ww_hi) .GT. 0.0D0 ) GOTO 5300 
 
 * 11/95 - compressing transform where variable limits are in a nested def'n
 *    e.g.   list b[i=1:5] where b = a[i=@ave] and a = temp[i=1:100]
@@ -265,4 +273,8 @@
  5200	buff = VAR_TRANS( idim, com_cx, slen )
 	CALL ERRMSG( ferr_trans_nest, status, 'interpolation on '//
      .		     buff(:slen)//'--> DEFINE a new variable', *5000 )
+ 5300	buff = VAR_TRANS( idim, res_cx, slen )
+	CALL ERRMSG( ferr_limits, status,
+     .		     buff(:slen)//' exceeds interpolation range',
+     .		     *5000 )
 	END	

@@ -1,4 +1,4 @@
-      SUBROUTINE streamline_sub (u, v, startflag, siz, den)
+      SUBROUTINE streamline_sub (u, v, startflag, siz, den, xf, yf)
 
 
 C**
@@ -54,6 +54,7 @@ C	NX BY NY GRID AND V(Y) IN THE SECOND
 C       startflag is a work array.
 C
       INTEGER siz, den
+      REAL xf, yf
       INTEGER startflag(*)
       REAL u(nx,ny),v(nx,ny)
 C
@@ -162,11 +163,14 @@ C   Figure out the interval for the flag grid
 
 C  Adjust arrow lengths so they fit the plot
 
-      afact = (float(nx) + float(ny) )/ 100.
+      afact = 0.5*(float(nx) + float(ny) )/ 100.
 
 C  Get max velocity for scaling the arrows
 
-      velmx = 0.
+c      sqsum = 0.
+c      velmx = 0.
+      velmean = 0.
+      count = 0.
       DO i = 1, nx
          DO j = 1, ny 
             up = u(i,j)
@@ -175,12 +179,21 @@ C  Get max velocity for scaling the arrows
             IF (ZEQ .AND. (up .EQ. CMZEQ .OR. vp .EQ. CMZEQ)) GO TO 89
             IF (ZGE .AND. (up .GE. CMZGE .OR. vp .GE. CMZGE)) GO TO 89
 
-            vel = sqrt(up*up + vp*vp)
-            velmx = max(velmx, vel)
+            vel = up*up + vp*vp
+c            sqsum = sqsum + vel
+            vel = sqrt(vel)
+
+c            velmx = max(velmx, vel)
+            velmean = velmean + vel
+            count = count + 1.
 
   89        CONTINUE
          ENDDO
       ENDDO 
+      IF (count .GT. 0.) THEN
+        velmean = velmean/ count
+c        sd = sqrt(sqsum/ count - velmean* velmean)
+      ENDIF
 
 C  Initialize the flag grid
 
@@ -362,7 +375,8 @@ C     flag boxes.
 C  Draw arrow heads
 
                IF (acnt .GT. 20) THEN
-                 vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmx
+
+                 vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
                  IF (icol .GT. -1) 
      .               CALL strmar (xxsv, yysv, xx, yy, afact, vel)
                   acnt = 0
@@ -521,7 +535,8 @@ C  Draw arrow heads
 
 C  Draw arrow head
                IF (acnt .GT. 20) THEN
-                 vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmx
+                 vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
+                 if (vel .lt. velmin) vel = velmin
                  IF (icol .GT. -1) 
      .                 CALL strmar(xx, yy, xxsv, yysv, afact, vel)
                   acnt = 0
@@ -566,7 +581,6 @@ C     Curvilinear coordinates declarations
       REAL x_curv, y_curv
 
       arrw = afact* vel* 2.
-
       dir = atan2(yy2-yy1,xx2-xx1)
 
       IF (curvilinear) then

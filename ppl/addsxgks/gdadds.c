@@ -279,3 +279,14 @@ void gdImageWideLines(gdImagePtr im, gdPointPtr pts, int num,
   }
 }
 
+/*
+ * Block fill an entire image
+ */
+
+void gdImageBlockFill(gdImagePtr image, int color)
+{
+  int i,j;
+  for (i=0; i < image->sx; ++i){
+    memset(image->pixels[i], color, image->sy);
+  }
+}

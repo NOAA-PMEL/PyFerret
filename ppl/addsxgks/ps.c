@@ -271,7 +271,7 @@ PSmoOpen(WS_STATE_PTR ws)
 	    cgmo->ws			= ws;
 	    cgmo->type			= MF_PS;
 	    fputs(header, ws->mf.any->fp);
-	    fputs("%%Page:1 1\n", ws->mf.any->fp);
+	    fputs("\n%%Page:1 1\n", ws->mf.any->fp);
 	    allocate_color(cgmo, 0, 1, 1, 1);
 	    allocate_color(cgmo, 1, 0, 0, 0);
 	    status	= OK;
@@ -324,10 +324,15 @@ PSmoClose(Metafile *mf)
  * Set the clear flag in an output PostScript file.
  */
     int
-PSclear(Metafile **mf, int num, Gclrflag flag)
+PSclear(Metafile *mf, int num, Gclrflag flag)
 {
-				/* Nop for now */
-  msgWarn("PSclear: Don't support this feature\n");
+  if (mf != NULL && mf->cgmo != NULL) {
+    mf_cgmo *cgmo	= mf->cgmo;
+    FILE *fp = cgmo->fp;
+    if (fp != NULL){
+      fprintf(fp, "clippath 1 setgray fill\n");
+    }
+  }
   return OK;
 }
 

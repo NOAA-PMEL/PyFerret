@@ -527,10 +527,18 @@ void GIFresize(WS_STATE_PTR ws, Gpoint size)
  * Set the clear flag in an output GIF file.
  */
     int
-GIFclear(Metafile **mf, int num, Gclrflag flag)
+GIFclear(Metafile *mf, int num, Gclrflag flag)
 {
-				/* Nop for now */
-    msgWarn("GIFclear: Don't support this feature\n");
+    int		imf;
+    mf_cgmo		**cgmo	= &mf->cgmo;
+    for (imf = 0; imf < num; ++imf) {
+	Gint	i;
+	GIFmetafile *meta = find_meta(cgmo[imf]);
+	GIFcolor *color;
+	assert(meta);
+	color = &meta->colors[0];
+	gdImageBlockFill(meta->image, color->index);
+    }
     return OK;
 }
 

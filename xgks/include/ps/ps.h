@@ -55,7 +55,7 @@ extern int PSmoClose	PROTO((
     Metafile	*mf
 ));
 extern int PSclear	PROTO((
-    Metafile	**mf,
+    Metafile	*mf,
     int		num,
     Gclrflag	flag
 ));

@@ -55,7 +55,7 @@ extern int GIFmoClose	PROTO((
     Metafile	*mf
 ));
 extern int GIFclear	PROTO((
-    Metafile	**mf,
+    Metafile	*mf,
     int		num,
     Gclrflag	flag
 ));

@@ -37,6 +37,10 @@
 * that is less than (or not equal to) its full span
 
 * V541 *sh* 2/02
+* V552 *acm*6/03  Too precise a test. When modulo_axlen is from a cdf file, 
+*                 it is single precision. When put into double prec, the last 
+*                 several digits have random stuff, so got a return of TRUE  
+*                 from this fcn when it wasnt.  Do single-precision comparison.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -46,14 +50,21 @@
 
 * internal variable declarations
 	REAL*8 TM_WW_AXLEN, TM_MODULO_AXLEN
-
+        LOGICAL TM_FPEQ
+        REAL wwlen, modlen
 
 	IF ( axis .LT. 0 .OR. axis .GT. line_ceiling ) THEN
 	   TM_ITS_SUBSPAN_MODULO = .FALSE.
 	ELSEIF ( line_modulo(axis) ) THEN
-	   TM_ITS_SUBSPAN_MODULO = TM_WW_AXLEN    (axis)
-     .		              .NE. TM_MODULO_AXLEN(axis)
-	ELSE
+
+cc           TM_ITS_SUBSPAN_MODULO = TM_WW_AXLEN    (axis)
+cc     .                        .NE. TM_MODULO_AXLEN(axis)
+
+           wwlen = TM_WW_AXLEN(axis)
+           modlen = TM_MODULO_AXLEN(axis) 
+	   TM_ITS_SUBSPAN_MODULO = (.NOT. TM_FPEQ(wwlen, modlen) )
+
+	ELSE 
 	   TM_ITS_SUBSPAN_MODULO = .FALSE.
 	ENDIF
 

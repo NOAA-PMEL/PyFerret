@@ -40,9 +40,9 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-* V500:  *sh*
-*        *jd* mods for v500
+* V500:  *sh* and *jd*
 *        *jd  fix for v5.01 for fill if /patt or /pal given 6.7.99
+*        *sh* 6/99 -- suppress color key for 2-argument version of command
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -196,6 +196,8 @@ CC       => Set values here instead.
      .				transpz,
      .				coord_ax,
      .				no_labels,
+     .				no_range,
+     .				only_val,
      .				symbol,
      .				line_type,
      .				is_mr,
@@ -214,7 +216,9 @@ CC       => Set values here instead.
 * default key
 
 	do_key =  (qual_given(slash_polygon_key)  .GT. 0)
-     .          .OR. ( fill_it .AND. .NOT.overlay )
+     .          .OR. (fill_it
+     .		     .AND. .NOT.overlay
+     .		     .AND. num_uvars_in_cmnd.GT.2)
 	IF (qual_given(slash_polygon_nokey) .gt. 0) do_key = .FALSE.
 	IF ( do_key ) THEN
 	   CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )

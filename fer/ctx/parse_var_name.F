@@ -60,6 +60,7 @@
 *		etc. to avoid conflict. (But share the max_item_list parameter
 *		from the COMMON area.
 * V530:  8/00 *sh* - set the variables data type
+* V550: 10/02 *acm*- Look for @ in full_var_name when determining name_len
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -81,7 +82,7 @@
 
 * internal variable decalrations:
 	INTEGER		full_name_len, left_bracket, right_bracket, name_len,
-     .			idim,  brac_nest, i
+     .			atsign, idim,  brac_nest, i
  	LOGICAL		name_only
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
@@ -112,6 +113,15 @@
  210	   IF (   right_bracket .LE. left_bracket + 1
      .	     .OR. name_len      .LE. 0			) GOTO 5000
 	ENDIF
+
+* If full_var_name is b@asn, which can occur if b not yet loaded, return 
+* name_len is just up to the @
+
+        atsign = INDEX ( full_var_name, '@' )
+        IF (atsign .GT. 0  .AND. name_only) THEN
+           name_len = atsign - 1
+    	   IF (   name_len      .LE. 0			) GOTO 5000
+        ENDIF
 
 * break up the "[...,...,...]" into comma-separated arguments
 	IF ( .NOT.name_only ) THEN

@@ -18,7 +18,8 @@ GO bn_cache_hits.sub sst5
 
 GO bn_cache_hits_gcfcn.sub
 
-EXIT
+! v5.4 *kob* 10/01 - need to add exit/script - new exit command qualifiers
+EXIT/SCRIPT
 
 ! --------------------------
 ! NOTE: the altered logic for handling unspecified regions will EFFECT THE

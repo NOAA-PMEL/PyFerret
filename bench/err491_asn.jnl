@@ -16,7 +16,10 @@ list test2[gy=y50@asn]		! request association onto 1:50
 !list/y=1:50 test2[gy=y50@asn]		! same misbehavior and crash
 
 cancel mode ignore	! added for benchmark suite...
-quit !=====================================
+
+! v5.4 *kob* 10/01 - need to add exit/script - new exit command qualifiers
+exit/script
+!quit !=====================================
 
 list test2[gy=y50@asn]          ! request association onto 1:50
  getgrid EX#1     D:-9  I:    1    1  J:    1    1  K:    1    1  L:    1    1

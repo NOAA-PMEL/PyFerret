@@ -76,6 +76,7 @@
 * 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
 * 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
 *  2/2001 acm -- check that modulo axes are also regular, and fix delmodx, delmody
+*  2/2002 acm -- check xpt and ypt (x and y points to sample) that values arent missing.
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -114,7 +115,7 @@
 
       SUBROUTINE samplexy_init(id)
 
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id, arg
 
@@ -171,7 +172,7 @@
 
       SUBROUTINE samplexy_result_limits(id)
 
-      INCLUDE 'EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
 
       INTEGER id
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
@@ -213,8 +214,8 @@
 *
       SUBROUTINE samplexy_work_size(id)
 
-      INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -269,8 +270,8 @@
       SUBROUTINE samplexy_compute(id, arg_1, arg_2, arg_3, result,
      .       xaxdat, yaxdat)
 
-      INCLUDE 'EF_Util.cmn'
-      INCLUDE 'EF_mem_subsc.cmn'
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -429,150 +430,162 @@ C  variables for checking axis characteristics (modulo axes)
          imatch = 0
 
 	 xpt = arg_2(i2,j2,k2,l2)
-         DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-            IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
-            if (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
+	 ypt = arg_3(i3,j3,k3,l3)
+         IF (xpt .EQ. bad_flag(ARG2) .OR. ypt .EQ. bad_flag(ARG3)) THEN
+            DO 700 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+               DO 600 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+                    result(i,j,k,l) = bad_flag_result
+  600          CONTINUE
+  700       CONTINUE
+
+         ELSE
+
+            DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+               IF (xpt .GE. xaxdat(i1,1,1,1)) ibot = i1
+               IF (xpt .EQ. xaxdat(i1,1,1,1)) imatch = i1
 
 cbf      may be some derivation from the exact value can be allowed:
 cbf      if (xpt - xaxdat(i1,1,1,1)).le.eps)   imatch = i1
 
 *  Locate the X point within the range of modulo X axis 
 
-	    IF (modulo(1)) THEN
-	       DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
-                  xpt = xpt - delmodx
-	       ENDDO
-	       DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
-		  xpt = xpt + delmodx
-	       ENDDO
-	    ENDIF
+ 	       IF (modulo(1)) THEN
+	          DO WHILE (xpt .GE. xaxdat(xhi,1,1,1) ) 
+                     xpt = xpt - delmodx
+	          ENDDO
+	          DO WHILE (xpt .LT. xaxdat(xlo,1,1,1) )
+		     xpt = xpt + delmodx
+	          ENDDO
+	       ENDIF
 
-  100    CONTINUE
-         i1 = arg_hi_ss(X_AXIS,ARG1)
-         IF (xpt .GT. xaxdat(i1,1,1,1)) THEN
-             ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 
-						! (non modulo)
-         ENDIF
+  100       CONTINUE
+            i1 = arg_hi_ss(X_AXIS,ARG1)
+            IF (xpt .GT. xaxdat(i1,1,1,1)) THEN
+               ibot = ef_unspecified_int4		! ARG_2 XPT outside of range 
+		           				! (non modulo)
+            ENDIF
 
 cbf       for matching the next neighbour is not of interest
-         IF (imatch .NE. 0) then
-            itop = ibot
-         ELSE
-            itop = ibot + 1
-         ENDIF
-         IF (ibot .EQ. ef_unspecified_int4) itop = ibot
+            IF (imatch .NE. 0) then
+               itop = ibot
+            ELSE
+               itop = ibot + 1
+            ENDIF
+            IF (ibot .EQ. ef_unspecified_int4) itop = ibot
 
 cbf        analogously in y direction
-         jbot = ef_unspecified_int4	! Check if ypt points in yax range.
-         jmatch = 0
+            jbot = ef_unspecified_int4	! Check if ypt points in yax range.
+            jmatch = 0
 
-	 ypt = arg_3(i3,j3,k3,l3)
-         DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-            IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1
+   	    ypt = arg_3(i3,j3,k3,l3)
+            DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+               IF (ypt .GE. yaxdat(j1,1,1,1) ) jbot = j1
             IF (ypt .EQ. yaxdat(j1,1,1,1) ) jmatch = j1
 cbf         IF (ypt - yaxdat(j1,1,1,1) ) .LE. eps) jmatch = j1
 
 *  Locate the Y point within the range of modulo Y axis 
 
-	    IF (modulo(2)) THEN
-	       DO WHILE (ypt .GE. yaxdat(yhi,1,1,1) ) 
-                  ypt = ypt - delmody
-	       ENDDO
-	       DO WHILE (ypt .LT. yaxdat(ylo,1,1,1) )
-		  ypt = ypt + delmody
-	       ENDDO
-	    ENDIF
+	       IF (modulo(2)) THEN
+	          DO WHILE (ypt .GE. yaxdat(yhi,1,1,1) ) 
+                     ypt = ypt - delmody
+	          ENDDO
+	          DO WHILE (ypt .LT. yaxdat(ylo,1,1,1) )
+		     ypt = ypt + delmody
+	          ENDDO
+	       ENDIF
 
-  200    CONTINUE
-         j1 = arg_hi_ss(Y_AXIS,ARG1)
-         IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) THEN
-            jbot = ef_unspecified_int4		! ARG_3 YPT outside of range 
-						! (non modulo)
+  200       CONTINUE
+            j1 = arg_hi_ss(Y_AXIS,ARG1)
+            IF (arg_3(i3,j3,k3,l3) .GE. yaxdat(j1,1,1,1) ) THEN
+                jbot = ef_unspecified_int4		! ARG_3 YPT outside of range 
+						        ! (non modulo)
 
-         ENDIF
+            ENDIF
 
-         IF (jmatch .NE. 0) then
-            jtop = jbot
-         ELSE
-            jtop = jbot + 1
-         ENDIF
-         IF (jbot .EQ. ef_unspecified_int4) jtop = jbot
-         IF (jtop .GE. arg_hi_ss(Y_AXIS,ARG1)) 
-     .                        jtop = arg_hi_ss(Y_AXIS,ARG1)        !10/2001 acm
+            IF (jmatch .NE. 0) then
+                jtop = jbot
+            ELSE
+               jtop = jbot + 1
+            ENDIF
+            IF (jbot .EQ. ef_unspecified_int4) jtop = jbot
+            IF (jtop .GE. arg_hi_ss(Y_AXIS,ARG1)) 
+     .                           jtop = arg_hi_ss(Y_AXIS,ARG1)        !10/2001 acm
 
-         k1 = arg_lo_ss(Z_AXIS,ARG1)
-         DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            k1 = arg_lo_ss(Z_AXIS,ARG1)
+            DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-            l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
-            l3 = arg_lo_ss(T_AXIS,ARG3)
-            DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+               l1 = arg_lo_ss(T_AXIS,ARG1)
+               l2 = arg_lo_ss(T_AXIS,ARG2)
+               l3 = arg_lo_ss(T_AXIS,ARG3)
+               DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
 *  First interpolate in x, getting values of the fcn at (x,jbot) and (x,jtop)
 
-	       IF (ibot .EQ. ef_unspecified_int4  .OR.  
-     .		   jbot .EQ. ef_unspecified_int4) THEN
-                 result(i,j,k,l) = bad_flag_result
-	       ELSE 
-                  IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND.
-     .                itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN
+	          IF (ibot .EQ. ef_unspecified_int4  .OR.  
+     .		      jbot .EQ. ef_unspecified_int4) THEN
+                     result(i,j,k,l) = bad_flag_result
+	          ELSE 
+                     IF (ibot .GE. arg_lo_ss(X_AXIS,ARG1)  .AND.
+     .                 itop .LE. arg_hi_ss(X_AXIS,ARG1) ) THEN
 
-                     xbot = xaxdat(ibot,1,1,1)
-                     xtop = xaxdat(itop,1,1,1)
+                        xbot = xaxdat(ibot,1,1,1)
+                        xtop = xaxdat(itop,1,1,1)
 
-                     fbb = arg_1(ibot,jbot,k1,l1)
-                     ftb = arg_1(itop,jbot,k1,l1)
-                     fbt = arg_1(ibot,jtop,k1,l1)
-                     ftt = arg_1(itop,jtop,k1,l1)
+                        fbb = arg_1(ibot,jbot,k1,l1)
+                        ftb = arg_1(itop,jbot,k1,l1)
+                        fbt = arg_1(ibot,jtop,k1,l1)
+                        ftt = arg_1(itop,jtop,k1,l1)
 
-                     IF (fbb .NE. bad_flag(ARG1)  .AND.
-     .                   ftb .NE. bad_flag(ARG1)  .AND.
-     .                   fbt .NE. bad_flag(ARG1)  .AND.
-     .                   ftt .NE. bad_flag(ARG1) ) THEN
+                        IF (fbb .NE. bad_flag(ARG1)  .AND.
+     .                      ftb .NE. bad_flag(ARG1)  .AND.
+     .                      fbt .NE. bad_flag(ARG1)  .AND.
+     .                      ftt .NE. bad_flag(ARG1) ) THEN
 
 cbf                 for matching x-axis no interpolation is need
-                          if (imatch.ne.0) then
-                             fxbot = fbb
-                             fxtop = fbt
-                          else
-                             frac = (xpt - xbot )/ (xtop - xbot)
-                             fxbot = fbb + frac* (ftb - fbb)
-                             fxtop = fbt + frac* (ftt - fbt)
-                          endif
+                             if (imatch.ne.0) then
+                                fxbot = fbb
+                                fxtop = fbt
+                             else
+                                frac = (xpt - xbot )/ (xtop - xbot)
+                                fxbot = fbb + frac* (ftb - fbb)
+                                fxtop = fbt + frac* (ftt - fbt)
+                             endif
 
 *  Now interpolate in y, getting value at (x,y)
 
-                       IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND.
-     .                     jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
-                          ybot = yaxdat(jbot,1,1,1)
-                          ytop = yaxdat(jtop,1,1,1)
+                          IF (jbot .GE. arg_lo_ss(Y_AXIS,ARG1)  .AND.
+     .                        jtop .LE. arg_hi_ss(Y_AXIS,ARG1) ) THEN
+                             ybot = yaxdat(jbot,1,1,1)
+                             ytop = yaxdat(jtop,1,1,1)
 
-                          if(jmatch.ne.0) then
-                             result(i,j,k,l) = fxbot
-                          else
-                            frac = (ypt - ybot)/ (ytop-ybot)
+                             IF (jmatch .NE. 0) THEN
+                                result(i,j,k,l) = fxbot
+                             ELSE
+                               frac = (ypt - ybot)/ (ytop-ybot)
 
-                            result(i,j,k,l) = fxbot + frac* 
-     .                                         (fxtop - fxbot)
+                               result(i,j,k,l) = fxbot + frac* 
+     .                                            (fxtop - fxbot)
 
-                          endif
+                             ENDIF
+                          ELSE
+                             result(i,j,k,l) = bad_flag_result
+                          ENDIF
+
                        ELSE
                            result(i,j,k,l) = bad_flag_result
-                       ENDIF
+                       ENDIF  ! bad_flag(ARG1) test
+                     ENDIF	   ! fbb,ftp, etc not bad flags
 
-                    ELSE
-                        result(i,j,k,l) = bad_flag_result
-                    ENDIF  ! bad_flag(ARG1) test
-                  ENDIF	   ! fbb,ftp, etc not bad flags
+	          ENDIF  ! itop, jtop not ef_unspecified_int4
 
-	       ENDIF  ! itop, jtop not ef_unspecified_int4
+                  l1 = l1 + arg_incr(T_AXIS,ARG1)
 
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
+ 300           CONTINUE
 
- 300        CONTINUE
+               k1 = k1 + arg_incr(Z_AXIS,ARG1)
+ 400        CONTINUE
 
-            k1 = k1 + arg_incr(Z_AXIS,ARG1)
- 400     CONTINUE
+         ENDIF  ! xpt and ypt not bad values
 
          i2 = i2 + arg_incr(X_AXIS,ARG2)
          j2 = j2 + arg_incr(Y_AXIS,ARG2)

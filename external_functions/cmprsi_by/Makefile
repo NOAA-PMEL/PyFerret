@@ -21,10 +21,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Rules
 #
 
-.F.o:
+.F.so:
 	$(F77) $(FFLAGS) $<
-
-.o.so:
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
 
 #

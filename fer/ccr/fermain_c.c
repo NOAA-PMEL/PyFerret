@@ -109,6 +109,9 @@
 *                  save_ppl_memory_size so the size is available via common to 
 *                  Fortran routines.  New declaration of save_ppl_memory_size 
 *                  in ferret.h
+*    10/19/01 *kob* fix output formatting bug which was printing memory size
+*                   (in Mwords) divided by float 1.E6 as a decimal, rather than
+*                   a float value - changed in three places
 */
 
 #include <unistd.h>
@@ -313,12 +316,12 @@ static void command_line_run(float **memory){
       free ( (void *) *memory );
       *memory = (float *) malloc(mem_size*sizeof(float));
       if ( *memory == 0 ) {
-	printf("Unable to allocate %d Mwords of memory.\n",mem_size/1.E6 );
+	printf("Unable to allocate %f Mwords of memory.\n",mem_size/1.E6 );
 	mem_blk_size = old_mem_blk_size;
 	mem_size = mem_blk_size * max_mem_blks;
 	*memory = (float *) malloc(mem_size*sizeof(float));
 	if ( *memory == (float *)0 ) {
-	  printf("Unable to reallocate previous memory of %d Mwords.\n",mem_size/1.E6 );
+	  printf("Unable to reallocate previous memory of %f Mwords.\n",mem_size/1.E6 );
 	  exit(0);
 	} else {
 	  printf("Restoring previous memory of %f Mwords.\n",mem_size/1.E6 );

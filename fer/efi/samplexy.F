@@ -92,8 +92,8 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns data sampled at a set of (X,Y) points, ',
-     .   'using linear interpolation')
+   10 FORMAT ('**Grid-changing FCN:  Returns data sampled at a set of ',
+     .   '(X,Y) points, using linear interpolation')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
@@ -112,12 +112,12 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'XPTS')
-      CALL ef_set_arg_desc(id, arg, 'X indices of sample points')
+      CALL ef_set_arg_desc(id, arg, 'X coordinates of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'YPTS')
-      CALL ef_set_arg_desc(id, arg, 'Y indices of sample points')
+      CALL ef_set_arg_desc(id, arg, 'Y coordinates of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                     ^
 *                                                                     |

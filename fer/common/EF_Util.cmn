@@ -23,7 +23,7 @@ c*
      .	implied_by_args=102, 
      .	normal = 103, 
      .	abstract = 104, 
-     .	ef_max_args=3, 
+     .	ef_max_args=9, 
      .	ef_max_name_length=40, 
      .	ef_max_description = 128 )
 

@@ -33,7 +33,7 @@
 
 #define EF_MAX_NAME_LENGTH 40
 #define EF_MAX_DESCRIPTION_LENGTH 128
-#define EF_MAX_ARGS 3
+#define EF_MAX_ARGS 9
 
 enum { EF_C=1, EF_F } EF_LANGUAGE_type;
 

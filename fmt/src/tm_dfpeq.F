@@ -48,7 +48,7 @@
 
 * local parameters
 	REAL*8	   epsilon
-	PARAMETER (epsilon = 2.E-47)
+	PARAMETER (epsilon = 4.E-16)
 
 * treat relative error case (non-zero) separate fron zero case
 
@@ -57,7 +57,6 @@
 	   tm_dfpeq =  ABS(a-b) .LE. ABS(b)*epsilon		! relative error
 
 	ELSE
-
 	   tm_dfpeq =	ABS(a) .LT. epsilon
      .		.AND.   ABS(b) .LT. epsilon			! absolute error
 

@@ -62,5 +62,6 @@ snapit_ris8.F\
 start_pplus.F\
 store_palette.F\
 taxis_style.F\
+swap_active_window.F\
 viewport_number.F\
 whoi_date.F 

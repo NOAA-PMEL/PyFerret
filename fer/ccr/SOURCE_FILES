@@ -30,4 +30,7 @@ signal.c\
 sizeof_pointer.c\
 wgif.c\
 whdf.c\
+copy_buffered_window.c\
+unmap_animate_window.c\
+resize_animation_window.c\
 xfer_c_ptrs.c

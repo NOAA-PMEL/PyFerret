@@ -75,7 +75,10 @@ void tm_dfp_convert_( dval, author_cpu )
 /* nsmsk       - sign bit removal mask               */
 /* vax_f1_msk  - f bits from INT*2 word 1 of VAX D   */
 /* vax_shf_msk - f bits to shift off right hand end  */
-  short int smsk=0100000, nsmsk=077777;
+/* for some reason, linux cc needed smsk and nsmsk declared
+     on seperate lines - 3/99 *kob* */
+  short int smsk =010000;
+  short int nsmsk=077777;
   short int vax_f1_msk=0177, vax_shf_msk=07;
         
   union { double dum;

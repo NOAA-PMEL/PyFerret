@@ -65,6 +65,8 @@
 *			  because it needed a preprocessor.
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 * V530:  8/00 *sh* - added support for string variables
+* V530:  3/01 *acm*- Put the calendar name in the heading if TIME not
+*		     otherwise listed, and if non-gregorian calendar.
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -81,6 +83,8 @@
 	include 'xtext_info.cmn'
 	include 'xinterrupt.cmn'
 	include 'xrisc.cmn'
+	include 'calendar.decl'
+	include 'calendar.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -115,7 +119,7 @@
      .			do_stream, do_comma_del, do_tab_del, itsa_string
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE,
-     .			GET_MAX_C_STRING_LEN,
+     .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
      .			width, w0, grid, dlen, prec_digits,
      .			ndim, lo(4), hi(4), del(4),
      .			i, j, k, l, npts,
@@ -123,14 +127,14 @@
      .			idim, vlen, len_set_name, istart, iend, ifield,
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
-     .			numbers, first, slen, llen, axis, lp
+     .			numbers, first, slen, llen, axis, lp, cal_id
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
      .			GET_STRING_ELEMENT*255,
      .			line_buff*3600,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
-     .			bad_data_form*10, col_head_format*32
+     .			bad_data_form*10, col_head_format*32, cal_name*32
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value
 	REAL*8		TM_WORLD, val8
 #ifdef DEC_FORTRAN
@@ -210,15 +214,29 @@
 	   IF ( ndim .EQ. 2 .AND. cx_trans(perm(1),cx).GT.trans_compress_code )
      .		need_doc(1) = .TRUE.
 	ENDIF
+
+	cal_name = line_cal_name( grid_line(t_dim, grid) )
+	cal_id = TM_GET_CALENDAR_ID (cal_name)
+
 	DO 60 i = 1, 4
-	   IF ( .NOT.need_doc(i) ) GOTO 60
 	   idim = perm(i)
-	   IF ( cx_lo_ww( idim,cx ) .EQ. unspecified_val8 ) GOTO 60
-	   CALL ASCII_LIMITS( cx, idim, line_buff, vlen )
-	   col_head_format = AX_TITLE( idim, grid, alen )
-	   CALL SPLIT_LIST( pttmode_explct, list_lun, '             '//
+	   IF ( need_doc(i) ) THEN
+	      IF ( cx_lo_ww( idim,cx ) .NE. unspecified_val8 ) THEN 
+	         CALL ASCII_LIMITS( cx, idim, line_buff, vlen )
+	         col_head_format = AX_TITLE( idim, grid, alen )
+	         CALL SPLIT_LIST( pttmode_explct, list_lun, '             '//
      .			col_head_format( :alen )//': '//line_buff(1:vlen),
      .			alen+vlen+15)
+	      ENDIF
+* ...    if not indicated in time label show a nonstandard calendar name
+	   ELSE IF (idim .EQ. t_dim  .AND. 
+     .	     cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
+
+	      slen = TM_LENSTR(cal_name)
+	      CALL SPLIT_LIST( pttmode_explct, list_lun, '             '//
+     .                      'Calendar: '//cal_name(:slen),
+     .			alen+slen+23)
+	   ENDIF
  60	CONTINUE
 
 * ... then data set name or names

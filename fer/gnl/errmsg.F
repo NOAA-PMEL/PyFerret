@@ -79,6 +79,8 @@
 *	status_out	- error code (echoed) back to calling program
 *	err_string	- error text supplied from calling program - typically
 *				a filename or variable name
+* *acm 1/02  -v5.41  -- Check for mode ignore_error before closing out all open 
+*                       IF blocks on error  (at label 1000)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -221,8 +223,11 @@
 	END IF
 
 * close out all open IF blocks on error (4/96)
- 1000	ifstk = 0
-	if_conditional = .FALSE.
+* but only if we're not ignoring errors (4/02)
+ 1000	IF ( .NOT.mode_ignore_err) then
+           ifstk = 0
+	   if_conditional = .FALSE.
+        ENDIF
 
 * if program was under internal control ( from the control stack ) this error
 * indicates that control is to be returned to the operator

@@ -174,7 +174,7 @@ C   Figure out the interval for the flag grid
       iss = nx*iscl
       jss = ny*iscl
 
-C  Get max velocity for scaling the arrows
+C  Get mean velocity for scaling the arrows
 
       sqsum = 0.
       vel = 0.

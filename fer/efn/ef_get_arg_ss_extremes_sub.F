@@ -1,5 +1,5 @@
 c*
-c* ef_get_subscript_extremes_sub.F
+c* ef_get_arg_ss_extremes_sub.F
 c*
 c* Jonathan Callahan
 c* Mar 27th 1998
@@ -11,7 +11,7 @@ c* This subroutine is called by code inside EF_ExternalUtil.c. It will
 c* return the minimum and maximum subscripts for a grid.  
 c*
 
-      SUBROUTINE EF_GET_ARG_SUBSCRIPT_EXTREMES_SUB(cx_list, num_args,
+      SUBROUTINE EF_GET_ARG_SS_EXTREMES_SUB(cx_list, num_args,
      .     ss_min, ss_max)
 
       INCLUDE 'ferret_cmn/ferret.parm'

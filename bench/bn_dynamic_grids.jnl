@@ -3,6 +3,12 @@
 ! 2/96 - added GX=lo:hi:delta notation
 ! 4/98 *sh* changes once again to confine_axis -- earlier trapped error is once
 !		again an error
+! V500beta1.1 5/26/99 *kob* - As of v500beta1.1, there is a modification to 
+!			      tm_world_recur.c which fixes a previous problem
+!		 	      w/ implicit strides on an underlying irregular grid.
+!			      This caused numerical differences in the output benchmark
+!			      log files when compared to pre beta5001.1 logs.  The 
+!			      numericals results found here are verified to be correct
 
 ! deliberate dynamic grid errors
 

@@ -103,7 +103,7 @@ C	VECTOR,X,Y,VFACT,LABEL
 C
 
 C     Curvilinear coordinates declarations
-        integer status, ii,mypen
+        integer status, ii
         real x_curv(12), y_curv(12), curv_len
         real tail_i, tail_j, head_i, head_j
         real arrow_i, arrow_j
@@ -113,7 +113,6 @@ C     Curvilinear coordinates declarations
 
 *******************************************************************************
 
-         mypen = 2
 	    IF(VUSER)THEN
 	    	XFUSER=1.
 		YFUSER=1.
@@ -207,11 +206,8 @@ C
            xx1orig = xx1
            yy1orig = yy1
 
+C  vclen is approx vector length; without curviness.
            vclen = SQRT( (U(I,J)/xf)**2 + (V(I,J)/yf) **2)
-
-c           call color (mypen)
-c           mypen = mypen + 1 
-c           IF (mypen .GT. 15) mypen = 1
 
            curv_len = 0.0
            overedge = 0
@@ -249,10 +245,16 @@ c           IF (mypen .GT. 15) mypen = 1
  
               CALL PLOT(XX1,YY1,0,0)    
               CALL PLOT(XX2,YY2,1,0)
+
+C  curv_len is sum of vector pieces; actual vector length.  When 
+C  it is the standard vector length (vlen) VFACT=VLEN/VUSRLN we are done 
+C  plotting the vector.
+
               curv_len = curv_len + SQRT((xx2-xx1)**2 + (yy2-yy1)**2)
  
               IF (overedge .EQ. 1) GO TO 80 
-              IF (curv_len/vlen .GE. vclen*VFACT) GOTO 70
+cc              IF (curv_len/vlen .GE. vclen*VFACT) GOTO 70  !!WRONG
+              IF (curv_len/vlen .GE. VFACT) GOTO 70          !??
 
               tail_i = head_i
               tail_j = head_j
@@ -266,6 +268,7 @@ c           IF (mypen .GT. 15) mypen = 1
 C  save length in world coordinates, closest to VUSRLN.  For arrow key
 
            this_len = sqrt((xx1orig-xx2)**2+(yy1orig-yy2)**2)
+           this_c_len = curv_len/vlen
 	   IF (ABS(vclen - vusrln) .LT. close_len) THEN
                alen = this_len
                close_len = MIN(close_len, ABS(vclen - vusrln))
@@ -334,19 +337,14 @@ C
 	ENDIF
 	CALL WINDOW(0.,0.,0.,0.)
 
-        IF (curvilinear) THEN
-	   xx2 = xt + alen
-	   xx1 = xt 
-	   yy1 = yt
-	   yy2 = yt
-           alen = alen* xf
-	ELSE
-	   XX1=XT
-	   YY1=YT
-	   XX2=XT+VLEN/XF
-	   YY2=YT
-           alen = vlen
-	ENDIF
+C Note don't need different arrow length for curvilinear case.
+C it is a standard half inch.
+
+	XX1=XT
+	YY1=YT
+	XX2=XT+VLEN/XF
+	YY2=YT
+        alen = vlen
 C
 C	DRAW ARROW 
 C

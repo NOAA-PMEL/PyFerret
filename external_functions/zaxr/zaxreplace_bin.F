@@ -36,7 +36,8 @@
 * Ansley Manke
 * Oct 1999
 * 11/2001  clarify function description
-*
+*  7/2003  fix bug in finding the source points in this destination box
+
 * Replace Z axis, using unweighted averaging over bins.
 * Find the source points within each destination box, average them.
 
@@ -318,30 +319,32 @@
 
                sum = 0.
                count = 0.
-               nsrc_lo = 1
-               nsrc_hi = 1
 
                DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  Find the first and last source point in this destination box
 
+                  nsrc_lo = 1
+                  nsrc_hi = 1
+
                   DO WHILE 
      .                  (arg_2(i2,j2,nsrc_lo,l2) .LT. 
-     .                      dbox_lo_lim(1,1,k,1)   .AND.
-     .                   nsrc_lo .LE. arg_hi_ss(Z_AXIS, ARG2))
-
+     .                      dbox_lo_lim(1,1,k,1) )
                      nsrc_lo = nsrc_lo + 1
+                     IF (nsrc_lo .GT. arg_hi_ss(Z_AXIS, ARG2)) GO TO 11
                   ENDDO
+  11              CONTINUE
 
 
 *  Find any portion of the source box lying in the destination box.
 
                   DO WHILE 
      .                  (arg_2(i2,j2,nsrc_hi,l2) .LT. 
-     .                      dbox_hi_lim(1,1,k,1)   .AND.
-     .                   nsrc_hi .LE. arg_hi_ss(Z_AXIS, ARG2))
+     .                      dbox_hi_lim(1,1,k,1) )
                      nsrc_hi = nsrc_hi + 1
+                     IF (nsrc_hi .GT. arg_hi_ss(Z_AXIS, ARG2)) GO TO 22
                   ENDDO
+  22              CONTINUE
 
                   nsrc_hi = nsrc_hi - 1
 

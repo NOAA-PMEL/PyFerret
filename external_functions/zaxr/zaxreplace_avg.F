@@ -36,6 +36,9 @@
 * Ansley Manke
 * Oct 1998
 * 11/2001  clarify function description
+*  7/2003  Bug fix; last source point wasnt associated with a dest box
+*          when the destination axis continues beyond the source range
+*
 *
 * Replace Z axis, using weighted averaging over bins
 *
@@ -379,19 +382,21 @@ c      CHARACTER*132 err_msg
 
                   DO WHILE 
      .                  (sbox_lo_new(1,1,nsrc_lo,1) .LT. 
-     .                      dbox_lo_lim(1,1,k,1)   .AND.
-     .                   nsrc_lo .LE. arg_hi_ss(Z_AXIS, ARG2))
+     .                      dbox_lo_lim(1,1,k,1) )
                      nsrc_lo = nsrc_lo + 1
+                     IF (nsrc_lo .GT. arg_hi_ss(Z_AXIS, ARG2)) GO TO 11
                   ENDDO
+  11              CONTINUE
 
 *  Find any portion of the source box lying in the destination box.
 
                   DO WHILE 
-     .                  (sbox_lo_new(1,1,nsrc_hi,1) .LT. 
-     .                      dbox_hi_lim(1,1,k,1)   .AND.
-     .                   nsrc_hi .LT. arg_hi_ss(Z_AXIS, ARG2))
+     .                  (sbox_lo_new(1,1,nsrc_hi,1) .LE. 
+     .                      dbox_hi_lim(1,1,k,1) )
                      nsrc_hi = nsrc_hi + 1
+                     IF (nsrc_hi .GT. arg_hi_ss(Z_AXIS, ARG2)) GO TO 22
                   ENDDO
+  22              CONTINUE
 
                   nsrc_hi = nsrc_hi - 1
 
@@ -405,7 +410,6 @@ c      CHARACTER*132 err_msg
                      ENDIF
                      GO TO 160
                   ENDIF
-
 
                   DO 90 nsrc = nsrc_lo, nsrc_hi
 

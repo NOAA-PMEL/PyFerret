@@ -1,0 +1,16 @@
+! Benchmark for EOF functions
+! Statically linked as of ferret V5.34
+! Ansley Manke  8/2/2001
+
+
+USE coads_climatology
+LET eofxyfcn = eof_space(sst[X=27w:23w,Y=1S:3N], 1.)
+list/l=1:2 eofxyfcn
+
+LET eofstat = eof_stat(sst[X=27w:23w,Y=1S:3N], 1.)
+list/i=1:3/j=1:3 eofstat
+
+LET eoftime = eof_tfunc(SST[X=27W:23W,Y=1S:3N], 1.)
+list/i=1:2 eoftime
+
+

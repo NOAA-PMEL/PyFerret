@@ -1,0 +1,13 @@
+ ! err551_return_message.jnl
+ ! 4/15/03 ACM  
+
+use dstitle
+
+! This is not a valid argument for RETURN.  The error message
+! has been improved to include all valid arguments.
+
+say `axy, return=xx`
+
+! This is a new argument: title from the global attributes secion.
+say `axy,return=dsettitle`
+

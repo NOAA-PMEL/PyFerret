@@ -20,3 +20,13 @@ GO err551_invalid_calendar.jnl
 ! String bug fixes *kob*
 GO bn_reset
 GO err551_strings.jnl
+
+! 2-D @AVE bug fix
+GO bn_reset
+GO err551_2dave.jnl
+
+! RETURN error message, and new var,RETURN=dsettitle  argument
+GO bn_reset
+GO err551_return_message.jnl
+
+

@@ -54,7 +54,8 @@ FERMAIN = ccr/fermain_c.o ccr/gui_init.o
 
 FEROBJS_DFLT = $(LINUX_OBJS) \
 	special/ferret_dispatch.o special/xmake_date_data.o special/fakes3.o \
-	special/ferret_query_f.o  special/xrevision_type_data.o
+	special/ferret_query_f.o  special/xrevision_type_data.o \
+	special/xplatform_type_data.o
 
 FEROBJS = ccr/save_arg_pointers.o $(FEROBJS_DFLT)
 
@@ -152,6 +153,8 @@ update: .FRC
 	${MAKE} update_date DATE=`/bin/date +%D`
 	rm -f special/xrevision_type_data.[Ffo]
 	sed -e 's&mmmmmmmm&($(DEBUG_TITLE)/$(GUI))&' -e 's&(/&(&' -e 's&/)&)&' < special/xrevision_type_data.template > special/xrevision_type_data.F 
+	rm -f special/xplatform_type_data.[Ffo]
+	sed -e 's&mmmmmmmm&$(PLATFORM)&' -e 's&(/&(&' -e 's&/)&)&' < special/xplatform_type_data.template > special/xplatform_type_data.F 
 	(cd special;make)
 
 update_date:

@@ -196,6 +196,7 @@ C plus those starting w/ xbox_bounds:
 	cal_id    = 1
 	x_axtyp   = 1
 	y_axtyp   = 1
+        plot_mem_used = 0
 
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )

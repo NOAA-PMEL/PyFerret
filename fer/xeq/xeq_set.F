@@ -120,6 +120,7 @@
 * V530:10/00 *sh* - added FILE/FORMAT=delimited/TYPE=/DELIMITERS=
 * V533 6/01 *sh* - bug fix "SET GRID" w/out arg didn't check for -111
 * v540 *acm* 10/01 increase length of ds_name
+* V550: *acm*10/02- Change arg to char*24, to match longer region names (cx_name)
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -164,7 +165,7 @@
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4)
 	REAL		val_buf
-	CHARACTER	title*128, subtitle*64, arg*4,
+	CHARACTER	title*128, subtitle*64, arg*24,
      .			buff1*24, buff2*80, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  set_last, any_delta, dset_cdf,

@@ -20,6 +20,7 @@
 *	          - ptype_native -> ptype_unknown
 *	     7/01 - replace alg_no_op with alg_if_marker and alg_then_marker
 * V550: *acm*9/02 - Increase max_gfdl_dsets to 100, along with maxdsets.
+*       *acm*10/02- Increase max_cx_predefined to 100: more user-defined regions.
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -388,7 +389,7 @@
 * (contexts describe space/time/variable/transformation/data_set,etc.)
 	INTEGER		max_context, min_context, max_cx_predefined
 	PARAMETER     ( max_context = 400,
-     .			max_cx_predefined = 10,
+     .			max_cx_predefined = 100,
      .			min_context = 1 - max_cx_predefined )
 
 	INTEGER		cx_none,

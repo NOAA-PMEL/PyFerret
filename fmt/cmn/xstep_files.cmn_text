@@ -35,7 +35,7 @@
 	LOGICAL*1	sf_valid,sf_regvars,sf_regtimes,
      .			sf_compress
 
-	CHARACTER*128	vf_name(maxvarfiles)
+	CHARACTER*512	vf_name(maxvarfiles)         ! ???same as s_filename in descript.def
 	CHARACTER*23	vf_index(maxvarfiles)
 	INTEGER		vf_setnum(maxvarfiles),vf_firstvar,
      .			vf_lastvar,vf_skip(maxvarfiles),

@@ -10,6 +10,7 @@
 * V510: *sh* added cx_formatted to record user inputs like X=130E:80W
 *	also moved cx_xtra_doc inside COMMON to Solaris avoid compiler ragging
 * V530:  8/00 *sh* - added cx_type for better string support (and future ...)
+* V550: *acm*10/02- Change cx_name to char*24
 
 * the declarations below represent a stack of depth max_context for saving
 * the nested contexts.  The bottom few entries in the stack have special uses:
@@ -79,7 +80,7 @@
      .		cx_trans_arg	( 4, min_context:max_cx )
 
 	CHARACTER
-     .		cx_name		( min_context:0 )*4
+     .		cx_name		( min_context:0 )*24
 
 	COMMON / XCONTEXT /
      .		cx_lo_ww,

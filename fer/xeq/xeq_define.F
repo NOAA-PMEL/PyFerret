@@ -138,6 +138,7 @@
 * V541: *acm*8/02  Changes to recover line_mem storage when irregular
 *                  axis is cancelled; redefine line_mem pointer before 
 *                  call to purge_mr_axis.
+* V550: *acm*10/02- Change reg_name to char*24, to match cx_name
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -243,7 +244,7 @@
 
 	REAL*8	  SECS_FROM_BC, bc_to_t0, start, new_ww, delta, end, 
      .              micro_adj
-	CHARACTER reg_name*4, buff1*256, buff2*128, buff3*128, 
+	CHARACTER reg_name*24, buff1*256, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
      .		  mon_names(12)*3

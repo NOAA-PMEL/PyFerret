@@ -58,7 +58,7 @@
 	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN_TEXT'
 #endif
 
-	DATA	sf_name			/maxstepfiles*char_init128/
+	DATA	sf_name			/maxstepfiles*char_init512/
 	DATA	sf_setnum		/maxstepfiles*set_not_open/
 	DATA	sf_aux_set_num		/maxstepfiles*set_not_open/
 	DATA	sf_nrecperstep		/maxstepfiles*int4_init/

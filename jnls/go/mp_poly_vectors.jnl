@@ -1,0 +1,243 @@
+\cancel mode verify
+! mp_poly_vectors:  Sets up the drawing of a sequence of color-filled vectors scattered on a map projection
+
+! The vector tail coordinates are projected from the earth to the map.
+! The vector directions are such that poleward vectors will lie along projected
+! meridians and zonal vectors along parallels.  Vectors at other angles will
+! lie proportionately between meridians and parallels.   
+
+! Programmed by E. D. Cokelet, NOAA/PMEL, 11 Feb 2003
+! Last modified 12 Mar 2003
+
+! Usage:
+
+! go mp_poly_vectors lon_vect lat_vect u_east v_north vector_scale "arrow"
+! polygon/over/nolabel mp_x_arrow, mp_y_arrow, my_values[j=1:`num_vectors`]
+
+! with inputs:
+!       lon_vect = sequence of longitudes of vector tails
+!       lat_vect = sequence of latitudes  of vector tails
+!       u_east   = sequence of eastward  components of vectors
+!       v_north  = sequence of northward components of vectors
+!       vector_scale = vector length in user units (e.g. cm/s) corresponding to
+!                      a half-inch-long vector
+!       "arrow" or "stick" = with or without arrow heads
+! and with outputs:
+!       num_vectors = number of vector arrow polygons to plot
+!       mp_x_arrow = (7 x num_vectors) x-y array whose x-values are the
+!                    x-components of the vector arrow polygons on the map.
+!                    The y-values are counters, one for each vector.   
+!       mp_y_arrow = (7 x num_vectors) x-y array whose x-values are the
+!                    y-components of the vector arrow polygons on the map.
+
+! and where: 
+!       my_values = An input y array of num_vectors values corresponding to the
+!                   color-fill levels of the vectors.
+
+! Note 1:  A map must have been drawn using Ferret map projections (e.g. mp_mercator)
+!          before calling mp_poly_vectors.
+! Note 2:  Any polygon command can be used to plot the vectors.
+! Note 3:  This script writes and subsequently removes a work file called
+!          work_mp_poly_vectors.cdf in the current working directory.
+
+
+define region/default save
+cancel region
+
+set data/save
+
+
+! Place vector positions and components on a y axis
+
+let vect_tail_lon1   = ysequence( $1 )  ! Sequence on abstract axis
+let vect_tail_lat1   = ysequence( $2 )  ! Sequence on abstract axis
+let vect_east_comp1  = ysequence( $3 )  ! Sequence on abstract axis
+let vect_north_comp1 = ysequence( $4 )  ! Sequence on abstract axis
+
+let mag_per_inch = `$5 * 2`
+
+let arrowhead_draw = $6"|arrow>0|stick>1|<You must specify arrow or stick."
+
+let num_vectors = vect_east_comp1[j=@ngd] + vect_east_comp1[j=@nbd]
+
+define axis/y=1:`num_vectors`:1 y_vect_cnt
+
+define grid/y=y_vect_cnt vect_cnt_grd
+
+let vect_tail_lon   = vect_tail_lon1[g=vect_cnt_grd@asn]
+let vect_tail_lat   = vect_tail_lat1[g=vect_cnt_grd@asn]
+let vect_east_comp  = vect_east_comp1[g=vect_cnt_grd@asn]
+let vect_north_comp = vect_north_comp1[g=vect_cnt_grd@asn]
+
+
+! **************** Compute vector direction in map coordinates **************
+
+! At each vector location compute the angle, meridian_angle, between the map's
+! y-axis and north and the angle, parallel_angle, between the map's y-axis and
+! east.
+
+! meridian_angle = atan( dx/dy ) with longitude held constant. 
+! parallel_angle = atan( dx/dy ) with latitude  held constant. 
+
+
+! Compute dx/dy numerically at constant longitude
+
+cancel variable mp_x, mp_y
+
+let mp_x = vect_tail_lon        ! Sets x_page via mp_<projection> transform
+let mp_y = vect_tail_lat        ! Sets y_page via mp_<projection> transform
+
+let map_x = x_page
+let map_y = y_page
+let map_x_del_lat = map_x       ! Dummy place holder in file
+let map_y_del_lat = map_y       ! Dummy place holder in file
+let map_x_del_lon = map_x       ! Dummy place holder in file
+let map_y_del_lon = map_y       ! Dummy place holder in file
+
+save/rigid/clobber/quiet/file=work_mp_poly_vectors.cdf map_x, map_y, map_x_del_lat,  map_y_del_lat, map_x_del_lon, map_y_del_lon     ! Must save results in file because mp_x, mp_y, x_page & y_page are reused
+
+let del_lat = 0.1 + 0*y[g=vect_cnt_grd]  ! An infinitesimal increment in latitude (degrees)
+
+let mp_x = vect_tail_lon           ! Sets x_page via mp_<projection> transform
+let mp_y = vect_tail_lat + del_lat ! Sets y_page via mp_<projection> transform
+
+let map_x_del_lat = x_page
+let map_y_del_lat = y_page
+
+save/append/quiet/file=work_mp_poly_vectors.cdf map_x_del_lat, map_y_del_lat       ! Must save results in file because mp_x, mp_y, x_page & y_page are reused
+
+
+! Compute dx/dy numerically at constant latitude
+
+let del_lon = 0.1 + 0*y[g=vect_cnt_grd]  ! An infinitesimal increment in longitude (degrees)
+
+let mp_x = vect_tail_lon + del_lon ! Sets x_page via mp_<projection> transform
+let mp_y = vect_tail_lat           ! Sets y_page via mp_<projection> transform
+
+let map_x_del_lon = x_page
+let map_y_del_lon = y_page
+
+save/append/quiet/file=work_mp_poly_vectors.cdf map_x_del_lon, map_y_del_lon       ! Must save results in file because mp_x, mp_y, x_page & y_page are reused
+
+
+! Compute meridian_angle, parallel_angle, vector azimuth and direction on map
+
+cancel variable map_x, map_y, map_x_del_lat, map_y_del_lat, map_x_del_lon, map_y_del_lon
+
+use work_mp_poly_vectors.cdf
+
+let pi = 4*atan(1)
+
+let meridian_angle = atan2( map_x_del_lat[d=work_mp_poly_vectors.cdf] - map_x[d=work_mp_poly_vectors.cdf], map_y_del_lat[d=work_mp_poly_vectors.cdf] -  map_y[d=work_mp_poly_vectors.cdf])
+
+let parallel_angle = atan2( map_x_del_lon[d=work_mp_poly_vectors.cdf] - map_x[d=work_mp_poly_vectors.cdf], map_y_del_lon[d=work_mp_poly_vectors.cdf] -  map_y[d=work_mp_poly_vectors.cdf])
+
+set data/restore
+
+
+! Compute the projected azimuth angle depending on the earth azimuth angle
+
+let vect_az_earth1 = atan2( vect_east_comp, vect_north_comp )
+let vect_az_earth = if (vect_az_earth1 lt 0) then vect_az_earth1 + `2*pi`  else vect_az_earth1
+
+let vect_az_map1 = if (vect_az_earth ge 0 and vect_az_earth lt `pi/2`)  then 2*(parallel_angle - meridian_angle)*vect_az_earth/`pi` 
+
+let vect_az_map2 = if (vect_az_earth ge `pi/2` and vect_az_earth lt `pi`)  then 2*(`pi` - parallel_angle + meridian_angle)*vect_az_earth/`pi` +  2*(parallel_angle - meridian_angle) - `pi` else vect_az_map1
+ 
+let vect_az_map3 = if (vect_az_earth ge `pi` and vect_az_earth lt `3*pi/2`)  then 2*(parallel_angle - meridian_angle)*vect_az_earth/`pi` + `pi` -  2*(parallel_angle - meridian_angle) else vect_az_map2
+ 
+let vect_az_map4 = if (vect_az_earth ge `3*pi/2` and vect_az_earth le 2*pi)  then 2*(`pi` + meridian_angle - parallel_angle)*vect_az_earth/`pi` -  4*(meridian_angle - parallel_angle + `pi`/2) else vect_az_map3
+
+
+! Ensure vector azimuth on map does not differ by more than pi from vector azimuth on earth.
+
+let vect_az_map5 = if (vect_az_map4 - vect_az_earth ge 0.99*pi) then vect_az_map4 - pi else vect_az_map4
+
+let vect_az_map = if (vect_az_map5 - vect_az_earth le (-0.99)*pi) then vect_az_map5 + pi else vect_az_map5
+
+let vect_map_angle = meridian_angle + vect_az_map
+
+! ******************* End vector direction calculation *********************
+
+
+! Compute the arrow lengths in inches as they lie along the x-axis with tails at the origin.
+! For each y, polygon vertices are functions of x. 
+
+define axis/x=1:7:1 x_poly_vert
+define grid/x=x_poly_vert poly_vert_grd
+
+let vect_mag = (vect_east_comp^2 + vect_north_comp^2)^0.5
+let vect_inch = vect_mag / mag_per_inch
+
+let arrow_hd_ln = if (arrowhead_draw eq 0) then 0.15 else 0   ! arrow head length (inches)
+
+let arrow_hd_half_wd = if (arrowhead_draw eq 0) then 0.05 else 0   ! arrow head half-width (inches)
+
+let arrow_shft_half_thk = 0.01  ! arrow shaft half-thickness (inches)
+
+let vect_inch_add = {0, `arrow_hd_ln`, `arrow_hd_ln`, 0, `arrow_hd_ln`, `arrow_hd_ln`, 0} + 0*x[g=poly_vert_grd]
+
+let vect_inch_mul = {0,   1,   1, 1,   1,   1, 0} + 0*x[g=poly_vert_grd]
+
+let x_arrow_inch0 = (vect_inch - vect_inch_add)*vect_inch_mul
+
+let x_arrow_inch1 = if (x_arrow_inch0 lt 0) then 0 else x_arrow_inch0   !Truncate arrow heads of short vectors
+
+let y_arrow_inch1 = {-`arrow_shft_half_thk`, -`arrow_shft_half_thk`, -`arrow_hd_half_wd`, 0.00, `arrow_hd_half_wd`, `arrow_shft_half_thk`, `arrow_shft_half_thk`} + 0*x[g=poly_vert_grd]
+
+let x_std_arrow = (0.5 - vect_inch_add)*vect_inch_mul
+let y_std_arrow = y_arrow_inch1
+
+! Rotate the arrows to their proper direction on the map
+
+let x_arrow_inch2 = (x_arrow_inch1*sin(vect_map_angle) - y_arrow_inch1*cos(vect_map_angle))
+
+let y_arrow_inch2 = (y_arrow_inch1*sin(vect_map_angle) + x_arrow_inch1*cos(vect_map_angle))
+
+
+! Compute the map scaling. 
+
+let mp_x_inch_span = `($PPL$XLEN)` + 0*x[g=poly_vert_grd]
+let mp_y_inch_span = `($PPL$YLEN)` + 0*x[g=poly_vert_grd]
+
+let mp_x_user_span = `($xaxis_max)` - `($xaxis_min)` + 0*x[g=poly_vert_grd]
+let mp_y_user_span = `($yaxis_max)` - `($yaxis_min)` + 0*x[g=poly_vert_grd]
+
+let mp_x_per_inch = mp_x_user_span/mp_x_inch_span
+let mp_y_per_inch = mp_y_user_span/mp_y_inch_span
+
+
+! Compute the arrow lengths in map units
+
+let x_arrow_plot = x_arrow_inch2*mp_x_per_inch
+let y_arrow_plot = y_arrow_inch2*mp_y_per_inch
+
+
+! Displace the arrow tails in map units
+
+let mp_x = vect_tail_lon
+let mp_y = vect_tail_lat
+
+let mp_x_arrow = ( x_page + x_arrow_plot )
+let mp_y_arrow = ( y_page + y_arrow_plot )
+
+
+! Clean up
+
+let mp_key_x = {1, 1.4, 1.4, 1.5, 1.4, 1.4, 1}
+let mp_key_y = {-1.02, -1.02, -1.14, -1.0, -0.86, -0.98, -0.98}
+
+
+!can data work_mp_poly_vectors.cdf
+sp "\rm work_mp_poly_vectors.cdf*"
+
+
+set data/restore
+
+say
+say *** MP_POLY_VECTORS:  Issue commands such as follow to plot the vectors ***
+say *** POLYGON/OVER/NOLABEL/KEY/NOAXES MP_X_ARROW, MP_Y_ARROW, MY_VALUES[J=1:`NUM_VECTORS`] ***
+say *** SET REGION SAVE ***
+say
+
+set mode/last verify

@@ -1,0 +1,118 @@
+! bn_calendar.jnl
+! Version 5.3  
+! Add definitions of calendar axes as a NetCDF attribute of the time axis
+! DEFINE AXIS/CALENDAR
+! regridding between different calendar axes
+! write and read NetCDF files with the new attribute.
+
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=360DAY tdays
+define grid/t=tdays tgrid
+let my_data = sin(l[g=tgrid])
+list my_data[t="27-feb-1988":"1-mar-1988"]
+
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=noleap tdays
+define grid/t=tdays tgrid
+let my_data = sin(l[g=tgrid])
+list my_data[t="27-feb-1988":"1-mar-1988"]
+
+
+
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=julian tdays
+define grid/t=tdays tgrid
+let my_data = sin(l[g=tgrid])
+list my_data[t="27-feb-1988":"1-mar-1988"]
+
+define axis/t="1-jan-1988":"1-jan-1990":1/units=days/calendar=gregorian tdays
+define grid/t=tdays tgrid
+let my_data = sin(l[g=tgrid])
+list my_data[t="27-feb-1988":"1-mar-1988"]
+
+
+
+! Regrid between different calendar axes using @lin(default) @asn and @nrst
+use gt4d011
+
+set region/x=132w/y=2n/k=1
+define axis/t="20-aug-1982":"1-jan-1983":7/units=days/calendar=noleap tweeks
+define grid/t=tweeks tgrid
+let ndata = temp[gt=tgrid]
+list/l=15:18 ndata
+
+define axis/t="20-aug-1982":"1-jan-1983":7/units=days/calendar=360day tweeks
+let ndata = temp[gt=tgrid@asn]
+list/l=15:18 ndata
+
+
+define axis/t="20-aug-1982":"1-jan-1983":7/units=days/calendar=julian tweeks
+let ndata = temp[gt=tgrid@nrst]
+list/t="25-nov-1982":"18-dec-1982" ndata
+
+
+
+
+! Regrid to a new calendar, write to NetCDF file and read back in.
+can data/all
+can region
+can var/all
+
+use gt4d011
+
+set region/k=1
+define axis/t="20-aug-1982":"1-jan-1983":7/units=days/calendar=noleap tweeks
+define grid/t=tweeks tgrid
+let ndata = temp[gt=tgrid]
+
+save/clobber/file=calsst.cdf/x=140w:130w/y=2s:2n ndata
+
+can data/all
+can var/all
+can region
+
+use calsst
+sh data
+sh grid ndata
+sh axis tweeks
+
+stat/x=135w/y=0 ndata
+
+sp rm -f calsst.cdf
+
+
+can data/all
+can var/all
+can region
+
+! regrid between weekly, daily, monthly axes.
+use gt4d011
+set region/x=132w/y=2n/k=1
+
+define axis/t="18-aug-1982":"1-jan-1983":1/units=months/calendar=360day tmonths
+define grid/t=tmonths tgrid
+let ndata = temp[gt=tgrid@nrst]
+list/t="25-sep-1982":"18-dec-1982" ndata
+
+
+define axis/t="20-aug-1982":"1-jan-1983":1/units=days/calendar=noleap tdays
+define grid/t=tdays tgrid
+let ndata = temp[gt=tgrid]
+list/t="5-dec-1982":"8-dec-1982" ndata
+
+
+
+! Regrid to a modulo calendar axis.
+
+can data/all
+can var/all
+can region
+
+use coads_climatology
+set region/x=180/y=0]
+
+define axis/t="1-jan-0000":"1-dec-0000":1/units=months/calendar=julian/modulo jmonths
+define grid/t=jmonths jgrid
+let jsst = sst[gt=jgrid]
+let nsst = sst[gt=jgrid@nrst]
+
+list/l=1:4 sst
+list/l=1:4 jsst, nsst
+

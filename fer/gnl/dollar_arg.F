@@ -43,13 +43,14 @@
 
 * V300: 4/21/93
 * V420:  avoid breaking apart "[]" as at the comma in "var[x=1,y=2]"
+* V510: 3/00 *sh* - allow backslash escapes to protect quotations
 
 * calling argument declarations:
 	INTEGER	  lenarg, status
 	CHARACTER carg*1, goline*(*), arg*(*)
 
 * internal variable declarations:
-	LOGICAL quote, found_comma
+	LOGICAL quote, found_comma, bslash
 	INTEGER	TM_LENSTR1,lengo, iarg, goptr, start, end, karg,
      .		open_paren, open_brkt
 	CHARACTER c1*1
@@ -109,11 +110,21 @@
 * ignore commas inside of parentheses to protect "/LEV=(lo,hi,delta)"
 * 10/95 ignore commas inside of sqr brackets to protect "VAR[x=1,y=2]"
  110	   quote = .FALSE.
+	   bslash = .FALSE.
 	   open_paren = 0
 	   open_brkt  = 0
 	   DO 200 goptr = start, lengo
 	      c1 = goline(goptr:goptr)
-	      IF ( c1 .EQ. '"' ) THEN
+	      IF (bslash) THEN
+	         GOTO 190	! bypass looking at this character
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+              ELSEIF (c1 .EQ. '\' ) THEN
+#else
+              ELSEIF (c1 .EQ. '\\') THEN
+#endif
+	         bslash=.TRUE.  ! bypass looking at next character
+	         GOTO 200
+	      ELSEIF ( c1 .EQ. '"' ) THEN
 	         quote = .NOT.quote
 	      ELSEIF ( quote ) THEN
 	         CONTINUE           ! skip over quoted text
@@ -135,6 +146,7 @@
 	         end = goptr - 1
 	         GOTO 500
 	      ENDIF
+ 190	      bslash = .FALSE.
  200	   CONTINUE
 	   end = lengo     ! end of buffer is end of arg
 
@@ -154,7 +166,9 @@
               lenarg = 0
 	ELSE
 	   arg = goline(start:end)
-	   lenarg = end - start + 1
+!	   lenarg = end - start + 1
+* ... remove one level of backslash escapes from the arg
+	   CALL DE_ESCAPE_STRING(arg, lenarg)
 	ENDIF
 
 * a set of empty quotes is regarded as a place-holder for the default

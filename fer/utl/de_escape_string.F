@@ -1,4 +1,4 @@
-	SUBROUTINE DE_ESCAPE_STRING ( string )
+	SUBROUTINE DE_ESCAPE_STRING ( string, slen )
 
 *
 *
@@ -48,19 +48,18 @@
 * V510: 3/00 *sh*
 
 * calling argument declarations
-	CHARACTER string
+	CHARACTER string*(*)
 
 * internal variable declarations
-	INTEGER	slen, iin, iout
-
-	slen = LEN(string)
+	INTEGER	TM_LENSTR1, slen, iin, iout
 
 ! initialize
+	slen = TM_LENSTR1(string)
 	iin = 1
 	iout = iin
 
 ! a DO-WHILE loop
- 10	CONTINUE
+ 10	IF ( iin .GT. slen ) GOTO 50
 
 !    ... do not copy a slash -- but always copy the character that follows it
 #ifdef NO_DOUBLE_ESCAPE_SLASH
@@ -74,12 +73,12 @@
 	   iin = iin + 1
 	   iout = iout + 1
 	   GOTO 10
-	ELSE
-
-!    ...  blank out any remaining characters.
-	   DO 100 iin = iout+1, slen
- 100	   string(iin:iin) = " " 
-	   RETURN
-
 	ENDIF
+
+!   blank out any remaining characters
+ 50	DO 100 iin = iout, slen
+ 100	string(iin:iin) = " " 
+	slen = MAX(iout-1, 1)	! new string length
+	RETURN
+
 	END

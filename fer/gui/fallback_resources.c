@@ -35,7 +35,6 @@
 */
 
 
-
 String fallbacks[] = {
 "Ferret*Background: gray80",
 "Ferret*Foreground: black",
@@ -47,7 +46,7 @@ String fallbacks[] = {
 "Ferret*FerretMainWd*form_XYZT.label_RegriddingStatus.FontList: *-courier-medium-r-normal*120*",
 "Ferret*Splash*ferret_version.FontList: *lucida-bold-r-normal-sans-34-*",
 "Ferret*Splash*ferret_version.Foreground: blue",
-"Ferret*Splash*author.FontList: *palatino-bold-r-normal--12*",
+"Ferret*Splash*author.FontList: *-times-medium-r-normal*120*",
 "Ferret*Splash*scrolledText1*fontList: *-courier-medium-r-normal*120*",
 "Ferret*JC_SelectRegridding.form1.label1.fontList:	 *-courier-bold-r-normal*140*",
 "Ferret*JC_SelectRegridding*form_uniform*XmRowColumn.topOffset: 2",

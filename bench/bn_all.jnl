@@ -369,6 +369,9 @@ GO bn_zaxr_fcns.jnl
 GO bn_reset
 GO bn_fill_irregular.jnl
 
+GO bn_reset
+GO bn_xml_output.jnl
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

@@ -1,5 +1,6 @@
 	SUBROUTINE PARSE_NAM_DSET_GRD( full_var_name, default_cx,
-     .				       dset, grid, cat, var, status )
+     .				       dset, grid, cat, var, 
+     .				       made_impl_grid, status )
 
 *
 *
@@ -49,6 +50,8 @@
 * V200:   8/9/89 - eliminated unknown data set error
 * V402: 7/95 - Allow nested [] of the form vname1[G=vname2[D=dset]]
 *	     - Guts of routine extracted to PARSE_NAM_DSET
+* V500 *sh* 3/99 - added argument made_impl_grid so calling program can
+*		   manage implicit grids (from GET_CONTEXT_MODS by "Z[gz=ax]")
 	
 #ifdef unix
 	include	'ferret.parm'
@@ -61,6 +64,7 @@
 #endif
 
 * calling argument declarations:
+	LOGICAL		made_impl_grid
 	INTEGER		default_cx, dset, grid, cat, var, status
 	CHARACTER*(*)	full_var_name
 
@@ -71,6 +75,9 @@
 	dset = unspecified_int4		! no prejudices ??? (7/95)
 	CALL PARSE_NAM_DSET( full_var_name, default_cx,
      .			     dset, cat, var, mods_cx, status )
+
+* did we just create an implicit grid?
+	made_impl_grid = cx_has_impl_grid(mods_cx)
 
 * determine the defining grid
 * (although mods_cx has been deallocated nothing has over-written it yet)

@@ -20,6 +20,13 @@ include platform_specific_flags.mk.$(HOSTTYPE)
 # Macros
 #
 
+#*kob* 2/99 - set GUI_FAKES so that by default it is assumed no gui
+#	      stuff is needed.  in order to allow the "make" command 
+#	      by itself to work.
+
+
+GUI_FAKES = special/gui_fakes.o
+
 DIRS	= ccr ctx dat doo efn fmt gnl gui ino mem ocn plt \
 	rpn special stk utl xeq
 
@@ -56,7 +63,6 @@ WHATGKS = xgks
 all:	fmt_libraries fer_libraries ppl_libraries special_code ferret
 
 
-
 debug:
 	touch ccr/fermain_c.c
 	$(MAKE) "DEBUG=-g" "DEBUG_TITLE=debug" "FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=special/gui_fakes.o" all
@@ -66,13 +72,14 @@ gui_nodebug:
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
-		"GUI=GUI" all
+		"GUI=GUI" "GUI_FAKES=" all
 gui_debug:
 	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g"\
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
-		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" all
+		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" \
+		"GUI_FAKES="  all
 
 fortran:
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all

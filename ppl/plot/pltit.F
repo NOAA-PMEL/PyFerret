@@ -74,22 +74,20 @@
 *         was icorrect for irregular-grid case (JTYPE .ne. -1) See PPLLDC.
 * *acm*   V550 11/02 For fine grids, XLPLOT, XHPLOT, YLPLOT, YHPLOT 
 *         computations need to be done in double precision.
-
+* *acm*   V550 12/02 For lines which are plotted with symbols, plot a 
+*            key having 3 points.
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
 	REAL	DIFF, x, xf, yf, xl, yl, xh, yh, xti, xtl, thi
 	REAL*8	XLPLOT,YLPLOT,XHPLOT,YHPLOT
-	real	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
+	REAL	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
 	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line
+
 * TMAP include files with explicit type declarations:
-#ifdef unix
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-	INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-#endif
+
 	DIMENSION X(NXS) ! Was VIRTUAL, changed for linux *jd*
 *
 *
@@ -266,6 +264,12 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	IF(.NOT.SOVER)THEN
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL)
 	    CALL DAXIS(XF,YF,NMX,NMY)
+
+		XLPLOT=DBLE(XL) 
+		XHPLOT=DBLE(XH)
+		YLPLOT=DBLE(YL)
+		YHPLOT=DBLE(YH)
+
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
 	ELSE
 	    IF(ITFLG.NE.0)THEN
@@ -342,7 +346,12 @@ C
 		   call point_convert (aline_maxx(a_line),aline_maxy(a_line),
      .		   maxx,maxy)
 		end if
-		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
+
+***  ACM 12/02 For lines which are plotted with symbols, plot a 
+***            key having 3 points.
+
+C		call aline_sub (x,nxs,a_line,minx,miny,maxx,maxy)
+		call line_key (x,nxs,a_line,minx,miny,maxx,maxy)
 		IF ( interrupted ) GOTO 3333 !*jd* 8.3.92
 100	    continue
 ****
@@ -395,12 +404,17 @@ C ACM Add FLOWLINE call based on VECFLD
         else if (makep .eq. 'SHADE') then
             IF(JTYPE.EQ.-1.AND.ivcomp.eq.2) then
                 IVLOC=NX*NY+1
+		IP1=NX*NY+1
+		IP2=IP1+NX
+		IP3=IP2+NY
+                IP4=2*NX*NY + 2*(NX+NY)
             ELSE IF(JTYPE.EQ.-2.AND.ivcomp.eq.2) then
                 IVLOC=NX*NY+NX+NY+1
             ELSE
                 IVLOC=1
+                IP4=NX*NY+1
             ENDIF
-            call shade(x(ivloc))
+            call shade(x(ivloc), x(IP4) )
 	    IF ( interrupted ) GOTO 3333		! 1/89 - *sh*
 	    CALL DAXIS(XF,YF,NMX,NMY)
 	    CALL DAXIS_BOX

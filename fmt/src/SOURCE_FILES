@@ -202,11 +202,7 @@ xunits_data.F
 SRCS_C = \
 alloca.c\
 cd_rd_r8_as_r4.c\
-funmap.c\
-history.c\
-keymaps.c\
 nap.c\
-readline.c\
 tm_break_fmt_date_c.c\
 tm_c_rename.c\
 tm_dfp_convert.c\

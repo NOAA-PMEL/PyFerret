@@ -46,9 +46,12 @@
  * *js* 12/98
  */
 
+/* v51 *kob* - upgraded to new version of readline, which is now seperate
+   from tmap library - modified readline include to that end */
+
 #include <stdio.h>
 #include <strings.h>
-#include "readline/readline.h"
+#include "readline.h"
 
 /* Easier way of handling FORTRAN calls with underscore/no underscore */
 #ifdef NO_ENTRY_NAME_UNDERSCORES

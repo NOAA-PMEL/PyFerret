@@ -1,11 +1,11 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version  /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61663064 Apr  2 12:38 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja9/tmap/ferret/solaris/bin/ferret
+lrwxrwxrwx   1 root     other         11 Apr 13 09:07 /home/ja9/tmap/ferret/solaris/bin/ferret -> ferret_v560
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  fixes for modulo strides bugs, wide ascii listing
+Note: Official 5.6 release, with jnl directories updated
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja8/ansley/FERRET/bench
+PWD=/export/home/ja8/ansley/FERRET_v_5_6_0_release/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
 CVSROOT=/home/ja9/tmap/FERRET_ROOT
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Fri Apr 2 12:41:15 PST 2004
+Beginning at Fri May 21 08:28:11 PDT 2004
  	NOAA/PMEL TMAP
  	FERRET v5.60  
- 	Solaris 5.6 - 04/02/04
- 	 2-Apr-04 12:41     
+ 	Solaris 5.6 - 04/09/04
+ 	21-May-04 08:28     
 
 yes? !bn500_all_shell
 yes? 
@@ -10122,8 +10122,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 2-Apr-04"
-SESSION_TIME = "12:41"
+SESSION_DATE = "21-May-04"
+SESSION_TIME = "08:28"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10141,8 +10141,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 2-Apr-04"
-SESSION_TIME = "12:41"
+SESSION_DATE = "21-May-04"
+SESSION_TIME = "08:28"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10150,8 +10150,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 2-Apr-04"
-SESSION_TIME = "12:41"
+SESSION_DATE = "21-May-04"
+SESSION_TIME = "08:28"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10161,13 +10161,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 2-Apr-04"
-SESSION_TIME = "12:41"
+SESSION_DATE = "21-May-04"
+SESSION_TIME = "08:28"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 2-Apr-04"
-SESSION_TIME = "12:41"
+SESSION_DATE = "21-May-04"
+SESSION_TIME = "08:28"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10201,7 +10201,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.60"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Apr  2 2004 12:42:51 "
+LAB3 = "May 21 2004 08:29:43 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10302,8 +10302,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.60"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 2-Apr-04"
-SESSION_TIME = "12:41"
+SESSION_DATE = "21-May-04"
+SESSION_TIME = "08:28"
  
  
 GO bn_reset
@@ -14804,7 +14804,7 @@ load temp[g=u@lin,gy=@asn]
  strip regrid on Y: TEMP --> XNTERMED         @ASN
  reading TEMP     M:133 I:  100  106  J:   45   49  K:    1    2  L:    3    4
  regrid  TEMP     M:122 I:  100  106  J:   45   49  K:    1    2  L:    3    4
- regrid  TEMP     M:121 I:  100  105  J:   45   49  K:    1    2  L:    3    4
+ regrid  TEMP     M:119 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  -DELETE TEMP     M:122 I:  100  106  J:   45   49  K:    1    2  L:    3    4
 load temp[g=u,gx=@ave,gy=@asn]
  dealloc  dynamic grid PS3DU2          PSXU      PSYU      PSZT      TIME2
@@ -16117,13 +16117,13 @@ LIST temp[g=g5_10,gz=g5_10@asn]
  strip regrid on Z: TEMP --> YNTERMED         @ASN
  strip regrid on T: TEMP --> ZNTERMED         @LIN
  reading TEMP     M: 44 I:  100  101  J:   45   50  K:    1    1  L:    2    5
+ regrid  TEMP     M: 41 I:  100  101  J:   45   50  K:    1    1  L:    2    3
  regrid  TEMP     M: 39 I:  100  101  J:   45   50  K:    1    1  L:    2    3
- regrid  TEMP     M: 38 I:  100  101  J:   45   50  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 41 I:  100  101  J:   45   50  K:    1    1  L:    2    3
+ regrid  TEMP     M: 41 I:  100  101  J:   45   49  K:    1    1  L:    2    3
  -DELETE TEMP     M: 39 I:  100  101  J:   45   50  K:    1    1  L:    2    3
- regrid  TEMP     M: 39 I:  100  101  J:   45   49  K:    1    1  L:    2    3
- -DELETE TEMP     M: 38 I:  100  101  J:   45   50  K:    1    1  L:    2    3
- regrid  TEMP     M: 38 I:   12   12  J:   45   49  K:    1    1  L:    2    3
- -DELETE TEMP     M: 39 I:  100  101  J:   45   49  K:    1    1  L:    2    3
+ regrid  TEMP     M: 39 I:   12   12  J:   45   49  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 41 I:  100  101  J:   45   49  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: G5_10 on X@LIN, on Y@LIN, on Z@ASN, on T@LIN
              FILENAME : gtsa056_1.cdf
@@ -16142,14 +16142,14 @@ LIST temp[g=g5_10,gt=g5_10@asn]
  strip regrid on Y: TEMP --> XNTERMED         @LIN
  strip regrid on Z: TEMP --> YNTERMED         @LIN
  strip regrid on T: TEMP --> ZNTERMED         @ASN
- reading TEMP     M: 39 I:  100  101  J:   45   50  K:    1    2  L:    2    3
- regrid  TEMP     M: 37 I:  100  101  J:   45   50  K:    1    2  L:    2    3
- regrid  TEMP     M: 36 I:  100  101  J:   45   50  K:    1    1  L:    2    3
- -DELETE TEMP     M: 37 I:  100  101  J:   45   50  K:    1    2  L:    2    3
- regrid  TEMP     M: 37 I:  100  101  J:   45   49  K:    1    1  L:    2    3
- -DELETE TEMP     M: 36 I:  100  101  J:   45   50  K:    1    1  L:    2    3
- regrid  TEMP     M: 36 I:   12   12  J:   45   49  K:    1    1  L:    2    3
- -DELETE TEMP     M: 37 I:  100  101  J:   45   49  K:    1    1  L:    2    3
+ reading TEMP     M: 41 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid  TEMP     M: 38 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid  TEMP     M: 37 I:  100  101  J:   45   50  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 38 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ regrid  TEMP     M: 38 I:  100  101  J:   45   49  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 37 I:  100  101  J:   45   50  K:    1    1  L:    2    3
+ regrid  TEMP     M: 37 I:   12   12  J:   45   49  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 38 I:  100  101  J:   45   49  K:    1    1  L:    2    3
              VARIABLE : TEMPERATURE (deg. C)
                         regrid: G5_10 on X@LIN, on Y@LIN, on Z@LIN, on T@ASN
              FILENAME : gtsa056_1.cdf
@@ -16170,7 +16170,7 @@ load temp
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS3DT2          PSXT1     PSYT      PSZT      TIME2
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    3
- reading TEMP     M: 37 I:    1  160  J:    5   89  K:    1    2  L:    1    3
+ reading TEMP     M: 38 I:    1  160  J:    5   89  K:    1    2  L:    1    3
 load temp[g=u]
  dealloc  dynamic grid PS3DT2          PSXT1     PSYT      PSZT      TIME2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -16551,7 +16551,7 @@ plot/over temp[g=u@asn]
  doing moduloing TEMP on X axis:     1   140
  -DELETE TEMP     M:133 I:  100  106  J:   45   49  K:    1    2  L:    3    4
  doing --> TEMP[Y=0@ITP,D=1]
- -DELETE TEMP     M:121 I:  100  105  J:   45   49  K:    1    2  L:    3    4
+ -DELETE TEMP     M:119 I:  100  105  J:   45   49  K:    1    2  L:    3    4
  doing --> TEMP[T=21-JAN-198200:00@ITP,D=1]
 setting up plot
 PPL plot 74   complete
@@ -16978,8 +16978,8 @@ load temp[i=50:51,j=45:56,k=1:2,l=1:172]  ! preload to save time
  -DELETE TEMP     M: 44 I:  100  101  J:   45   50  K:    1    1  L:    2    5
  reading TEMP     M: 44 I:   50   51  J:   45   50  K:    1    2  L:    1  168
  doing moduloing TEMP on T axis:     1   168
- -DELETE TEMP     M: 38 I:   12   12  J:   45   49  K:    1    1  L:    2    3
- -DELETE TEMP     M: 39 I:  100  101  J:   45   50  K:    1    2  L:    2    3
+ -DELETE TEMP     M: 39 I:   12   12  J:   45   49  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 41 I:  100  101  J:   45   50  K:    1    2  L:    2    3
 plot temp
  dealloc  dynamic grid PS3DT1          PSXT1     PSYT      PSZT      TIME1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -16988,11 +16988,11 @@ plot temp
  strip --> EX#1[X=180E@ITP,D=2]
  eval    EX#1     C:  6 I:   50   51  J:   45   46  K:    1    1  L:    3  170
  strip moduloing TEMP on T axis:     3   170
- reading TEMP     M: 39 I:   50   51  J:   45   46  K:    1    1  L:    3  168
+ reading TEMP     M: 41 I:   50   51  J:   45   46  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
- -DELETE TEMP     M: 36 I:   12   12  J:   45   49  K:    1    1  L:    2    3
- -DELETE TEMP     M: 37 I:    1  160  J:    5   89  K:    1    2  L:    1    3
- reading TEMP     M: 37 I:   50   51  J:   45   46  K:    1    1  L:    1    2
+ -DELETE TEMP     M: 37 I:   12   12  J:   45   49  K:    1    1  L:    2    3
+ -DELETE TEMP     M: 38 I:    1  160  J:    5   89  K:    1    2  L:    1    3
+ reading TEMP     M: 38 I:   50   51  J:   45   46  K:    1    1  L:    1    2
  doing moduloing TEMP on T axis:     1     2
  -DELETE TEMP     M: 35 I:    1  160  J:    5   89  K:    1    2  L:    1    3
  doing --> TEMP[X=180E@ITP,D=2]
@@ -17222,11 +17222,11 @@ plot/over temp[g=u,gt=u@ave]
  strip regrid on Y: TEMP --> XNTERMED         @LIN
  -DELETE TEMP     M:126 I:    0  140  J: -111 -111  K:    1    1  L:    2    3
  reading TEMP     M:126 I:   50   51  J:   44   46  K:    1    1  L:    3  168
- -DELETE TEMP     M:119 I:    0  140  J: -111 -111  K:    1    1  L: -111 -111
- regrid  TEMP     M:119 I:   50   51  J:   44   45  K:    1    1  L:    3  168
+ -DELETE TEMP     M:121 I:    0  140  J: -111 -111  K:    1    1  L: -111 -111
+ regrid  TEMP     M:121 I:   50   51  J:   44   45  K:    1    1  L:    3  168
  -DELETE TEMP     M:116 I:    1  141  J:   44   46  K:    1    1  L:    2    5
  regrid  TEMP     M:116 I:   50   50  J:   44   45  K:    1    1  L:    3  168
- -DELETE TEMP     M:119 I:   50   51  J:   44   45  K:    1    1  L:    3  168
+ -DELETE TEMP     M:121 I:   50   51  J:   44   45  K:    1    1  L:    3  168
  doing moduloing TEMP on T axis:     3   168
  -DELETE TEMP     M:114 I:    1  140  J:   44   45  K:    1    1  L:    2    3
  strip regrid on X: TEMP --> PS3DU1           @LIN
@@ -17304,13 +17304,13 @@ plot/over temp[g=g5day,gt=g5day@asn]  ! invalid interpretation of data
  strip regrid on T: TEMP --> YNTERMED         @ASN
  -DELETE TEMP     M: 57 I:    0  140  J:   44   45  K:    1    1  L:    2    3
  reading TEMP     M: 57 I:   50   51  J:   44   46  K:    1    1  L:    2  104
- -DELETE TEMP     M: 41 I:    0  140  J: -111 -111  K:    1    1  L:    2    3
- regrid  TEMP     M: 41 I:   50   51  J:   44   46  K:    1    1  L:    2  104
- -DELETE TEMP     M: 40 I:    0  140  J: -111 -111  K:    1    1  L: -111 -111
- regrid  TEMP     M: 40 I:   50   51  J:   44   45  K:    1    1  L:    2  104
- -DELETE TEMP     M: 41 I:   50   51  J:   44   46  K:    1    1  L:    2  104
- regrid  TEMP     M: 41 I:   50   50  J:   44   45  K:    1    1  L:    2  104
- -DELETE TEMP     M: 40 I:   50   51  J:   44   45  K:    1    1  L:    2  104
+ -DELETE TEMP     M: 40 I:    0  140  J: -111 -111  K:    1    1  L:    2    3
+ regrid  TEMP     M: 40 I:   50   51  J:   44   46  K:    1    1  L:    2  104
+ -DELETE TEMP     M: 36 I:    0  140  J: -111 -111  K:    1    1  L: -111 -111
+ regrid  TEMP     M: 36 I:   50   51  J:   44   45  K:    1    1  L:    2  104
+ -DELETE TEMP     M: 40 I:   50   51  J:   44   46  K:    1    1  L:    2  104
+ regrid  TEMP     M: 40 I:   50   50  J:   44   45  K:    1    1  L:    2  104
+ -DELETE TEMP     M: 36 I:   50   51  J:   44   45  K:    1    1  L:    2  104
  doing --> TEMP[Y=0@ITP,D=2]
 setting up plot
 PPL plot 105  complete
@@ -18304,7 +18304,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23051 Apr  2 12:44 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23057 May 21 08:30 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18323,7 +18323,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419390 Apr  2 12:44 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419535 May 21 08:31 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -19371,8 +19371,17 @@ set window/size=.5/aspect=1:ax 1
 USE clim_airt_lev
 go polar_2d shade AIRT[l=1] 100 120
 Note: Polar-projected data is variable "polar" in polar_grid.dat
+NOTE: The map projection capabilities beginning with Ferret v5.0
+provide far more flexibility for plots with curvilinear coordinates.
+Run the script  mp_demo  for an introduction
 The following plotting command can be modified and reused:
 >>>GO box_plot shade/x=-1:1/y=-1:1 polar[d=polar_grid.dat]
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+NOTE: The map projection capabilities beginning with Ferret v5.0
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+provide far more flexibility for plots with curvilinear coordinates.
+message/continue "Run the script  mp_demo  for an introduction"
+Run the script  mp_demo  for an introduction
  
  
 ! test the OBJECTIVE command using a synthetic field
@@ -26473,7 +26482,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.60    2-Apr-04" ;
+		:history = "FERRET V5.60   21-May-04" ;
 data:
 
  T5 = 50757969 ;
@@ -26498,7 +26507,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.60    2-Apr-04" ;
+		:history = "FERRET V5.60   21-May-04" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26650,7 +26659,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri Apr  2 12:46:40 PST 2004
+Fri May 21 08:32:37 PDT 2004
  
 GO bn_reset
 cancel mode verify
@@ -26823,7 +26832,7 @@ list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
  eval    (C09,V02 C: 11 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  reading SST      M:130 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  eval    (C09,V02 C: 11 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:120 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:121 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:145 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE SST      M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:132 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
@@ -26840,7 +26849,7 @@ list/i=2 SAMPLEI(sst[l=1,y=-2:2],{30,40,50})	! only I=2 from result
  -DELETE (C01,V02 M:149 I:    2    2  J:   45   46  K: -111 -111  L:    1    1
 cancel memory/all
  -DELETE (C09,V02 M:118 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:120 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:121 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
  -DELETE (C09,V02 M:129 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:130 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE (C09,V02 M:133 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
@@ -26859,7 +26868,7 @@ list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
  const_v {30-,50} M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  doing sampling tpry on I axis:     1     3
  reading SST      M:130 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
- reading SST      M:120 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ reading SST      M:121 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  reading SST      M:118 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
  -DELETE          M:133 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE SST      M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
@@ -26875,7 +26884,7 @@ list/l=1/y=-2:2  SAMPLEI(sst,{30,40,50})
  1S   / 45:  28.1514  28.5607  28.8326
 cancel memory/all
  -DELETE SST      M:118 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:120 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE SST      M:121 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  -DELETE SST      M:130 I:   30   30  J:   45   46  K: -111 -111  L:    1    1
  -DELETE EX#1     M:142 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  PERMANENT data cleared from memory
@@ -26896,7 +26905,7 @@ list/l=1/y=-2:2  SAMPLEI(a  ,{30,40,50})
  reading SST      M:133 I:   40   40  J:   45   46  K: -111 -111  L:    1    1
  eval    A        C:  9 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
  reading SST      M:132 I:   50   50  J:   45   46  K: -111 -111  L:    1    1
- -DELETE SST      M:120 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
+ -DELETE SST      M:121 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE SST      M:130 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE tpry     M:129 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:142 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
@@ -27079,7 +27088,7 @@ list/l=1/y=-2:2  SAMPLEI(a,{30,40,50})
  doing --> FSST[I=1:180@IIN,D=1]
  -DELETE          M:145 I:    1    3  J: -111 -111  K: -111 -111  L:    3    3
  -DELETE A        M:146 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE tpry     M:120 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
+ -DELETE tpry     M:121 I:    1    3  J:   45   46  K: -111 -111  L:    1    1
  -DELETE {30-,50} M:149 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
              VARIABLE : SAMPLEI(A,{30,40,50})
              FILENAME : coads_climatology.cdf
@@ -30505,7 +30514,7 @@ stat $1[g=gxyt]
  strip regrid on Y: SST --> XNTERMED         @LIN
  reading SST      M:129 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
  regrid  SST      M:132 I:   55  131  J:    1   41  K: -111 -111  L:    1    1
- regrid  SST      M:120 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
+ regrid  SST      M:121 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  -DELETE SST      M:132 I:   55  131  J:    1   41  K: -111 -111  L:    1    1
  
              SEA SURFACE TEMPERATURE
@@ -31166,7 +31175,7 @@ stat $1[g=gx]
  allocate dynamic grid (G015)          XTROP     COADSY    NORMAL    TIME4
  strip regrid on X: SST5 --> (G015)           @LIN
  eval    SST5     C:  7 I:   55  131  J: -111 -111  K: -111 -111  L:    1    1
- reading SST      M:119 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
+ reading SST      M:120 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
  constan cnst     M:117 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE cnst     M:117 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  regrid  SST5     M:117 I:    1  151  J:    1   90  K: -111 -111  L:    1    1
@@ -32123,8 +32132,8 @@ cancel mode verify
  -DELETE SST      M:115 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
  -DELETE SST      M:116 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  -DELETE SST      M:118 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
- -DELETE SST      M:119 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
- -DELETE SST      M:120 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
+ -DELETE SST      M:120 I:   55  131  J:    1   90  K: -111 -111  L:    1    1
+ -DELETE SST      M:121 I:    1  151  J:    1   41  K: -111 -111  L:    1    1
  -DELETE SST      M:123 I:    1  180  J:    1   90  K: -111 -111  L:    1    1
  -DELETE SST      M:129 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
  -DELETE SST      M:130 I:   55  131  J:   35   56  K: -111 -111  L:    1    1
@@ -34940,7 +34949,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr  2 12:47 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 May 21 08:33 testa.v5d
  
 can region
 use coads_climatology
@@ -34952,7 +34961,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr  2 12:47 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 May 21 08:33 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35020,7 +35029,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.60    2-Apr-04" ;
+		:history = "FERRET V5.60   21-May-04" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35083,7 +35092,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.60    2-Apr-04" ;
+		:history = "FERRET V5.60   21-May-04" ;
 data:
 
  GFP3 = "" ;
@@ -35303,7 +35312,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.60    2-Apr-04" ;
+		:history = "FERRET V5.60   21-May-04" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -38216,7 +38225,7 @@ show axis/all
  LAT_FIELD_I_AXIS X            17 r   50                   66
  LAT_FIELD_J_AXIS Y             2 r   160                  200
  Z999999   DEPTH (m)       999999 r-  5                    15
- LON_FIELD_I_AXIS X            42 r   160                  201
+ LON_FIELD_I_AXIS X             7 r   160                  208
  XIRREG    X                   10 i   1                    8281
  TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
  TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
@@ -38390,7 +38399,7 @@ show axis/all
  LAT_FIELD_I_AXIS X            17 r   50                   66
  LAT_FIELD_J_AXIS Y             2 r   160                  200
  Z999999   DEPTH (m)       999999 r-  5                    15
- LON_FIELD_I_AXIS X            42 r   160                  201
+ LON_FIELD_I_AXIS X             7 r   160                  208
  XIRREG    X                   10 i   1                    8281
  TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
  TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
@@ -38695,7 +38704,7 @@ show axis/all
  LON_FIELD_J_AXIS Y             2 r   50                   65
  LAT_FIELD_I_AXIS X            17 r   50                   66
  LAT_FIELD_J_AXIS Y             2 r   160                  200
- LON_FIELD_I_AXIS X            42 r   160                  201
+ LON_FIELD_I_AXIS X             7 r   160                  208
  XIRREG    X                   10 i   1                    8281
  TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
  TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
@@ -38908,7 +38917,7 @@ show axis/all
  LON_FIELD_J_AXIS Y             2 r   50                   65
  LAT_FIELD_I_AXIS X            17 r   50                   66
  LAT_FIELD_J_AXIS Y             2 r   160                  200
- LON_FIELD_I_AXIS X            42 r   160                  201
+ LON_FIELD_I_AXIS X             7 r   160                  208
  XIRREG    X                   10 i   1                    8281
  TCENTURY  TIME             39448 r   01-JAN-1902 00:00    01-JAN-2010 00:00
  TAX5DAY   TIME               159 r   15-JAN-1982 00:00    15-MAR-1984 00:00
@@ -40568,8 +40577,8 @@ sh ax lon*
  name       axis              # pts   start                end
  LON_FIELD_J_AXIS Y             2 r   50                   65
    Axis span (to cell edges) = 30
- LON_FIELD_I_AXIS X            42 r   160                  201
-   Axis span (to cell edges) = 42
+ LON_FIELD_I_AXIS X             7 r   160                  208
+   Axis span (to cell edges) = 56
  LON_TRUE  LONGITUDE            5mr   1.875W(-1.875)       13.125E
    Axis span (to cell edges) = 18.75 (modulo length = 360)
  LON_MODERR (meters)            5 r   0                    15
@@ -43618,18 +43627,18 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
- strip regrid on X: TAUX --> (G030)           @XACT
+ allocate dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
+ strip regrid on X: TAUX --> (G021)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:133 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
 can mem/all
  -DELETE A        M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43637,28 +43646,28 @@ can mem/all
  TEMPORARY data cleared from memory
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
- dealloc  dynamic grid (G030)          (AX010)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G021)          (AX010)   (AX022)   NORMAL    (AX028)
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- strip regrid on X: TAUX --> (G030)           @XACT
+ allocate dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ strip regrid on X: TAUX --> (G021)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:147 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
  
 can mem/all
  -DELETE TAUX     M:133 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43666,8 +43675,8 @@ can mem/all
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 can data/all
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
- dealloc  dynamic grid (G030)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
+ dealloc  dynamic grid (G021)          (AX022)   (AX010)   NORMAL    (AX026)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -44719,19 +44728,25 @@ GO err553_list_width.jnl
 ! Fix for bug 837; creating a format for very wide ascii listing
 ! (this caused an outright crash)
  
+! Note had /wid=9999, but this crashes Ferret under irix,
+! listing to std output and also to an ascii file.
+! Fortran limit for sequential files?  1024 works, 2047 did not.
+! The bug, seen under solaris and linux for pre-v5.6, appears
+! with /WIDTH=9999 but not with /WIDTH=1024.
+ 
 set mode ignore
-def axis/x=1:10000:1 xax
+def axis/x=1:5000:1 xax
 Replacing definition of axis XAX
 def axis/y=1:2:1 yax
 Replacing definition of axis YAX
-list/wid=99999/y=1:2 sin(x[gx=xax]) + y[gy=yax]
+list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
              VARIABLE : SIN(X[GX=XAX]) + Y[GY=YAX]
-             SUBSET   : 10000 by 2 points (X-Y)
-      ... listing every  10th point
-              1       11       21       31       41       51       61       71       81       91       101      111      121      131      141      151      161      171      181      191      201      211      221      231      241      251      261      271      281      291      301      311      321      331      341      351      361      371      381      391      401      411      421      431      441      451      461      471      481      491      501      511      521      531      541      551      561      571      581      591      601      611      621      631      641      651      661      671      681      691      701      711      721      731      741      751      761      771      781      791      801      811      821      831      841      851      861      871      881      891      901      911      921      931      941      951      961      971      981      991     1001     1011     1021     1031     1041     1051     1061     1071     1081     1091     1101     1111     1121     1131     1141     1151     1161     1171     1181     1191     1201     1211     1221     1231     1241     1251     1261     1271     1281     1291     1301     1311     1321     1331     1341     1351     1361     1371     1381     1391     1401     1411     1421     1431     1441     1451     1461     1471     1481     1491     1501     1511     1521     1531     1541     1551     1561     1571     1581     1591     1601     1611     1621     1631     1641     1651     1661     1671     1681     1691     1701     1711     1721     1731     1741     1751     1761     1771     1781     1791     1801     1811     1821     1831     1841     1851     1861     1871     1881     1891     1901     1911     1921     1931     1941     1951     1961     1971     1981     1991     2001     2011     2021     2031     2041     2051     2061     2071     2081     2091     2101     2111     2121     2131     2141     2151     2161     2171     2181     2191     2201     2211     2221     2231     2241     2251     2261     2271     2281     2291     2301     2311     2321     2331     2341     2351     2361     2371     2381     2391     2401     2411     2421     2431     2441     2451     2461     2471     2481     2491     2501     2511     2521     2531     2541     2551     2561     2571     2581     2591     2601     2611     2621     2631     2641     2651     2661     2671     2681     2691     2701     2711     2721     2731     2741     2751     2761     2771     2781     2791     2801     2811     2821     2831     2841     2851     2861     2871     2881     2891     2901     2911     2921     2931     2941     2951     2961     2971     2981     2991     3001     3011     3021     3031     3041     3051     3061     3071     3081     3091     3101     3111     3121     3131     3141     3151     3161     3171     3181     3191     3201     3211     3221     3231     3241     3251     3261     3271     3281     3291     3301     3311     3321     3331     3341     3351     3361     3371     3381     3391     3401     3411     3421     3431     3441     3451     3461     3471     3481     3491     3501     3511     3521     3531     3541     3551     3561     3571     3581     3591     3601     3611     3621     3631     3641     3651     3661     3671     3681     3691     3701     3711     3721     3731     3741     3751     3761     3771     3781     3791     3801     3811     3821     3831     3841     3851     3861     3871     3881     3891     3901     3911     3921     3931     3941     3951     3961     3971     3981     3991     4001     4011     4021     4031     4041     4051     4061     4071     4081     4091     4101     4111     4121     4131     4141     4151     4161     4171     4181     4191     4201     4211     4221     4231     4241     4251     4261     4271     4281     4291     4301     4311     4321     4331     4341     4351     4361     4371     4381     4391     4401     4411     4421     4431     4441     4451     4461     4471     4481     4491     4501     4511     4521     4531     4541     4551     4561     4571     4581     4591     4601     4611     4621     4631     4641     4651     4661     4671     4681     4691     4701     4711     4721     4731     4741     4751     4761     4771     4781     4791     4801     4811     4821     4831     4841     4851     4861     4871     4881     4891     4901     4911     4921     4931     4941     4951     4961     4971     4981     4991     5001     5011     5021     5031     5041     5051     5061     5071     5081     5091     5101     5111     5121     5131     5141     5151     5161     5171     5181     5191     5201     5211     5221     5231     5241     5251     5261     5271     5281     5291     5301     5311     5321     5331     5341     5351     5361     5371     5381     5391     5401     5411     5421     5431     5441     5451     5461     5471     5481     5491     5501     5511     5521     5531     5541     5551     5561     5571     5581     5591     5601     5611     5621     5631     5641     5651     5661     5671     5681     5691     5701     5711     5721     5731     5741     5751     5761     5771     5781     5791     5801     5811     5821     5831     5841     5851     5861     5871     5881     5891     5901     5911     5921     5931     5941     5951     5961     5971     5981     5991     6001     6011     6021     6031     6041     6051     6061     6071     6081     6091     6101     6111     6121     6131     6141     6151     6161     6171     6181     6191     6201     6211     6221     6231     6241     6251     6261     6271     6281     6291     6301     6311     6321     6331     6341     6351     6361     6371     6381     6391     6401     6411     6421     6431     6441     6451     6461     6471     6481     6491     6501     6511     6521     6531     6541     6551     6561     6571     6581     6591     6601     6611     6621     6631     6641     6651     6661     6671     6681     6691     6701     6711     6721     6731     6741     6751     6761     6771     6781     6791     6801     6811     6821     6831     6841     6851     6861     6871     6881     6891     6901     6911     6921     6931     6941     6951     6961     6971     6981     6991     7001     7011     7021     7031     7041     7051     7061     7071     7081     7091     7101     7111     7121     7131     7141     7151     7161     7171     7181     7191     7201     7211     7221     7231     7241     7251     7261     7271     7281     7291     7301     7311     7321     7331     7341     7351     7361     7371     7381     7391     7401     7411     7421     7431     7441     7451     7461     7471     7481     7491     7501     7511     7521     7531     7541     7551     7561     7571     7581     7591     7601     7611     7621     7631     7641     7651     7661     7671     7681     7691     7701     7711     7721     7731     7741     7751     7761     7771     7781     7791     7801     7811     7821     7831     7841     7851     7861     7871     7881     7891     7901     7911     7921     7931     7941     7951     7961     7971     7981     7991     8001     8011     8021     8031     8041     8051     8061     8071     8081     8091     8101     8111     8121     8131     8141     8151     8161     8171     8181     8191     8201     8211     8221     8231     8241     8251     8261     8271     8281     8291     8301     8311     8321     8331     8341     8351     8361     8371     8381     8391     8401     8411     8421     8431     8441     8451     8461     8471     8481     8491     8501     8511     8521     8531     8541     8551     8561     8571     8581     8591     8601     8611     8621     8631     8641     8651     8661     8671     8681     8691     8701     8711     8721     8731     8741     8751     8761     8771     8781     8791     8801     8811     8821     8831     8841     8851     8861     8871     8881     8891     8901     8911     8921     8931     8941     8951     8961     8971     8981     8991     9001     9011     9021     9031     9041     9051     9061     9071     9081     9091     9101     9111     9121     9131     9141     9151     9161     9171     9181     9191     9201     9211     9221     9231     9241     9251     9261     9271     9281     9291     9301     9311     9321     9331     9341     9351     9361     9371     9381     9391     9401     9411     9421     9431     9441     9451     9461     9471     9481     9491     9501     9511     9521     9531     9541     9551     9561     9571     9581     9591     9601     9611     9621     9631     9641     9651     9661     9671     9681     9691     9701     9711     9721     9731     9741     9751     9761     9771     9781     9791     9801     9811     9821     9831     9841     9851     9861     9871     9881     9891     9901     9911     9921     9931     9941     9951     9961     9971     9981     9991    
-              1       11       21       31       41       51       61       71       81       91      101      111      121      131      141      151      161      171      181      191      201      211      221      231      241      251      261      271      281      291      301      311      321      331      341      351      361      371      381      391      401      411      421      431      441      451      461      471      481      491      501      511      521      531      541      551      561      571      581      591      601      611      621      631      641      651      661      671      681      691      701      711      721      731      741      751      761      771      781      791      801      811      821      831      841      851      861      871      881      891      901      911      921      931      941      951      961      971      981      991     1001     1011     1021     1031     1041     1051     1061     1071     1081     1091     1101     1111     1121     1131     1141     1151     1161     1171     1181     1191     1201     1211     1221     1231     1241     1251     1261     1271     1281     1291     1301     1311     1321     1331     1341     1351     1361     1371     1381     1391     1401     1411     1421     1431     1441     1451     1461     1471     1481     1491     1501     1511     1521     1531     1541     1551     1561     1571     1581     1591     1601     1611     1621     1631     1641     1651     1661     1671     1681     1691     1701     1711     1721     1731     1741     1751     1761     1771     1781     1791     1801     1811     1821     1831     1841     1851     1861     1871     1881     1891     1901     1911     1921     1931     1941     1951     1961     1971     1981     1991     2001     2011     2021     2031     2041     2051     2061     2071     2081     2091     2101     2111     2121     2131     2141     2151     2161     2171     2181     2191     2201     2211     2221     2231     2241     2251     2261     2271     2281     2291     2301     2311     2321     2331     2341     2351     2361     2371     2381     2391     2401     2411     2421     2431     2441     2451     2461     2471     2481     2491     2501     2511     2521     2531     2541     2551     2561     2571     2581     2591     2601     2611     2621     2631     2641     2651     2661     2671     2681     2691     2701     2711     2721     2731     2741     2751     2761     2771     2781     2791     2801     2811     2821     2831     2841     2851     2861     2871     2881     2891     2901     2911     2921     2931     2941     2951     2961     2971     2981     2991     3001     3011     3021     3031     3041     3051     3061     3071     3081     3091     3101     3111     3121     3131     3141     3151     3161     3171     3181     3191     3201     3211     3221     3231     3241     3251     3261     3271     3281     3291     3301     3311     3321     3331     3341     3351     3361     3371     3381     3391     3401     3411     3421     3431     3441     3451     3461     3471     3481     3491     3501     3511     3521     3531     3541     3551     3561     3571     3581     3591     3601     3611     3621     3631     3641     3651     3661     3671     3681     3691     3701     3711     3721     3731     3741     3751     3761     3771     3781     3791     3801     3811     3821     3831     3841     3851     3861     3871     3881     3891     3901     3911     3921     3931     3941     3951     3961     3971     3981     3991     4001     4011     4021     4031     4041     4051     4061     4071     4081     4091     4101     4111     4121     4131     4141     4151     4161     4171     4181     4191     4201     4211     4221     4231     4241     4251     4261     4271     4281     4291     4301     4311     4321     4331     4341     4351     4361     4371     4381     4391     4401     4411     4421     4431     4441     4451     4461     4471     4481     4491     4501     4511     4521     4531     4541     4551     4561     4571     4581     4591     4601     4611     4621     4631     4641     4651     4661     4671     4681     4691     4701     4711     4721     4731     4741     4751     4761     4771     4781     4791     4801     4811     4821     4831     4841     4851     4861     4871     4881     4891     4901     4911     4921     4931     4941     4951     4961     4971     4981     4991     5001     5011     5021     5031     5041     5051     5061     5071     5081     5091     5101     5111     5121     5131     5141     5151     5161     5171     5181     5191     5201     5211     5221     5231     5241     5251     5261     5271     5281     5291     5301     5311     5321     5331     5341     5351     5361     5371     5381     5391     5401     5411     5421     5431     5441     5451     5461     5471     5481     5491     5501     5511     5521     5531     5541     5551     5561     5571     5581     5591     5601     5611     5621     5631     5641     5651     5661     5671     5681     5691     5701     5711     5721     5731     5741     5751     5761     5771     5781     5791     5801     5811     5821     5831     5841     5851     5861     5871     5881     5891     5901     5911     5921     5931     5941     5951     5961     5971     5981     5991     6001     6011     6021     6031     6041     6051     6061     6071     6081     6091     6101     6111     6121     6131     6141     6151     6161     6171     6181     6191     6201     6211     6221     6231     6241     6251     6261     6271     6281     6291     6301     6311     6321     6331     6341     6351     6361     6371     6381     6391     6401     6411     6421     6431     6441     6451     6461     6471     6481     6491     6501     6511     6521     6531     6541     6551     6561     6571     6581     6591     6601     6611     6621     6631     6641     6651     6661     6671     6681     6691     6701     6711     6721     6731     6741     6751     6761     6771     6781     6791     6801     6811     6821     6831     6841     6851     6861     6871     6881     6891     6901     6911     6921     6931     6941     6951     6961     6971     6981     6991     7001     7011     7021     7031     7041     7051     7061     7071     7081     7091     7101     7111     7121     7131     7141     7151     7161     7171     7181     7191     7201     7211     7221     7231     7241     7251     7261     7271     7281     7291     7301     7311     7321     7331     7341     7351     7361     7371     7381     7391     7401     7411     7421     7431     7441     7451     7461     7471     7481     7491     7501     7511     7521     7531     7541     7551     7561     7571     7581     7591     7601     7611     7621     7631     7641     7651     7661     7671     7681     7691     7701     7711     7721     7731     7741     7751     7761     7771     7781     7791     7801     7811     7821     7831     7841     7851     7861     7871     7881     7891     7901     7911     7921     7931     7941     7951     7961     7971     7981     7991     8001     8011     8021     8031     8041     8051     8061     8071     8081     8091     8101     8111     8121     8131     8141     8151     8161     8171     8181     8191     8201     8211     8221     8231     8241     8251     8261     8271     8281     8291     8301     8311     8321     8331     8341     8351     8361     8371     8381     8391     8401     8411     8421     8431     8441     8451     8461     8471     8481     8491     8501     8511     8521     8531     8541     8551     8561     8571     8581     8591     8601     8611     8621     8631     8641     8651     8661     8671     8681     8691     8701     8711     8721     8731     8741     8751     8761     8771     8781     8791     8801     8811     8821     8831     8841     8851     8861     8871     8881     8891     8901     8911     8921     8931     8941     8951     8961     8971     8981     8991     9001     9011     9021     9031     9041     9051     9061     9071     9081     9091     9101     9111     9121     9131     9141     9151     9161     9171     9181     9191     9201     9211     9221     9231     9241     9251     9261     9271     9281     9291     9301     9311     9321     9331     9341     9351     9361     9371     9381     9391     9401     9411     9421     9431     9441     9451     9461     9471     9481     9491     9501     9511     9521     9531     9541     9551     9561     9571     9581     9591     9601     9611     9621     9631     9641     9651     9661     9671     9681     9691     9701     9711     9721     9731     9741     9751     9761     9771     9781     9791     9801     9811     9821     9831     9841     9851     9861     9871     9881     9891     9901     9911     9921     9931     9941     9951     9961     9971     9981     9991
- 1   / 1:  1.84147  0.00001  1.83666  0.59596  0.84138  1.67023  0.03388  1.95105  0.37011  1.10599  1.45203  0.13545  1.99882  0.18840  1.36317  1.20215  0.29759  1.97659  0.06355  1.59491  0.93811  0.50895  1.88594  0.00432  1.78496  0.67841  0.75472  1.73321  0.01485  1.92001  0.44124  1.01767  1.52911  0.09441  1.99060  0.24322  1.27939  1.28793  0.23742  1.99178  0.09822  1.52153  1.02658  0.43387  1.92347  0.01642  1.72712  0.76337  0.66998  1.79045  0.00353  1.88177  0.51673  0.92922  1.60205  0.06046  1.97464  0.30396  1.19341  1.37146  0.18322  1.99921  0.13996  1.44406  1.11484  0.36322  1.95377  0.03622  1.66359  0.85018  0.58783  1.84150  0.00001  1.83662  0.59602  0.84132  1.67027  0.03387  1.95104  0.37016  1.10593  1.45208  0.13542  1.99881  0.18843  1.36312  1.20221  0.29755  1.97660  0.06357  1.59486  0.93817  0.50890  1.88597  0.00432  1.78492  0.67846  0.75466  1.73325  0.01484  1.91999  0.44129  1.01761  1.52916  0.09438  1.99059  0.24326  1.27933  1.28799  0.23738  1.99179  0.09825  1.52147  1.02664  0.43382  1.92349  0.01643  1.72708  0.76343  0.66992  1.79049  0.00352  1.88174  0.51679  0.92916  1.60210  0.06044  1.97462  0.30401  1.19336  1.37152  0.18319  1.99921  0.13999  1.44400  1.11490  0.36317  1.95379  0.03624  1.66354  0.85024  0.58777  1.84154  0.00001  1.83659  0.59607  0.84126  1.67032  0.03385  1.95102  0.37021  1.10587  1.45213  0.13539  1.99881  0.18847  1.36306  1.20227  0.29751  1.97662  0.06359  1.59481  0.93823  0.50885  1.88599  0.00433  1.78489  0.67852  0.75460  1.73329  0.01483  1.91997  0.44134  1.01755  1.52921  0.09436  1.99059  0.24330  1.27927  1.28805  0.23734  1.99180  0.09828  1.52142  1.02670  0.43377  1.92352  0.01644  1.72704  0.76349  0.66987  1.79053  0.00352  1.88171  0.51684  0.92910  1.60214  0.06042  1.97461  0.30405  1.19330  1.37157  0.18315  1.99921  0.14002  1.44395  1.11496  0.36312  1.95381  0.03625  1.66350  0.85030  0.58772  1.84157  0.00001  1.83656  0.59613  0.84120  1.67036  0.03384  1.95100  0.37025  1.10581  1.45219  0.13536  1.99881  0.18850  1.36300  1.20233  0.29746  1.97663  0.06361  1.59476  0.93829  0.50879  1.88602  0.00433  1.78485  0.67858  0.75454  1.73333  0.01482  1.91994  0.44139  1.01749  1.52926  0.09433  1.99058  0.24334  1.27921  1.28811  0.23731  1.99181  0.09830  1.52137  1.02676  0.43372  1.92354  0.01645  1.72700  0.76354  0.66981  1.79056  0.00351  1.88169  0.51689  0.92904  1.60219  0.06040  1.97459  0.30409  1.19324  1.37163  0.18312  1.99922  0.14005  1.44390  1.11502  0.36308  1.95383  0.03627  1.66345  0.85036  0.58766  1.84160  0.00001  1.83652  0.59618  0.84114  1.67041  0.03382  1.95098  0.37030  1.10575  1.45224  0.13533  1.99880  0.18854  1.36295  1.20239  0.29742  1.97664  0.06363  1.59471  0.93835  0.50874  1.88605  0.00434  1.78481  0.67863  0.75449  1.73337  0.01481  1.91992  0.44144  1.01743  1.52931  0.09431  1.99057  0.24337  1.27916  1.28816  0.23727  1.99181  0.09833  1.52132  1.02682  0.43367  1.92356  0.01646  1.72696  0.76360  0.66975  1.79060  0.00351  1.88166  0.51695  0.92898  1.60224  0.06038  1.97458  0.30414  1.19318  1.37168  0.18308  1.99922  0.14008  1.44384  1.11508  0.36303  1.95384  0.03629  1.66341  0.85042  0.58761  1.84163  0.00001  1.83649  0.59624  0.84108  1.67045  0.03380  1.95096  0.37035  1.10569  1.45229  0.13530  1.99880  0.18857  1.36289  1.20245  0.29738  1.97666  0.06365  1.59467  0.93841  0.50869  1.88608  0.00434  1.78477  0.67869  0.75443  1.73342  0.01480  1.91990  0.44149  1.01737  1.52936  0.09428  1.99056  0.24341  1.27910  1.28822  0.23723  1.99182  0.09835  1.52127  1.02688  0.43362  1.92359  0.01647  1.72691  0.76366  0.66970  1.79064  0.00350  1.88163  0.51700  0.92892  1.60229  0.06036  1.97457  0.30418  1.19312  1.37174  0.18305  1.99922  0.14012  1.44379  1.11514  0.36298  1.95386  0.03630  1.66336  0.85048  0.58755  1.84167  0.00001  1.83646  0.59629  0.84102  1.67050  0.03379  1.95094  0.37039  1.10563  1.45235  0.13527  1.99880  0.18861  1.36283  1.20250  0.29733  1.97667  0.06368  1.59462  0.93847  0.50864  1.88611  0.00435  1.78474  0.67875  0.75437  1.73346  0.01479  1.91987  0.44154  1.01731  1.52942  0.09426  1.99055  0.24345  1.27904  1.28828  0.23719  1.99183  0.09838  1.52122  1.02694  0.43357  1.92361  0.01648  1.72687  0.76372  0.66964  1.79067  0.00350  1.88160  0.51705  0.92886  1.60234  0.06034  1.97455  0.30422  1.19306  1.37180  0.18301  1.99922  0.14015  1.44373  1.11520  0.36294  1.95388  0.03632  1.66332  0.85054  0.58750  1.84170  0.00001  1.83642  0.59635  0.84096  1.67054  0.03377  1.95092  0.37044  1.10557  1.45240  0.13524  1.99879  0.18864  1.36278  1.20256  0.29729  1.97668  0.06370  1.59457  0.93853  0.50858  1.88613  0.00436  1.78470  0.67881  0.75431  1.73350  0.01478  1.91985  0.44159  1.01725  1.52947  0.09423  1.99055  0.24349  1.27898  1.28834  0.23715  1.99184  0.09841  1.52117  1.02700  0.43352  1.92363  0.01649  1.72683  0.76378  0.66958  1.79071  0.00349  1.88157  0.51710  0.92880  1.60238  0.06032  1.97454  0.30427  1.19300  1.37185  0.18298  1.99923  0.14018  1.44368  1.11526  0.36289  1.95390  0.03633  1.66327  0.85060  0.58744  1.84173  0.00001  1.83639  0.59640  0.84090  1.67059  0.03376  1.95091  0.37049  1.10551  1.45246  0.13521  1.99879  0.18868  1.36272  1.20262  0.29725  1.97669  0.06372  1.59452  0.93859  0.50853  1.88616  0.00436  1.78466  0.67886  0.75425  1.73354  0.01477  1.91983  0.44164  1.01719  1.52952  0.09420  1.99054  0.24353  1.27892  1.28839  0.23711  1.99184  0.09843  1.52111  1.02706  0.43347  1.92366  0.01650  1.72679  0.76384  0.66953  1.79075  0.00349  1.88154  0.51716  0.92874  1.60243  0.06029  1.97453  0.30431  1.19294  1.37191  0.18294  1.99923  0.14021  1.44363  1.11532  0.36284  1.95392  0.03635  1.66323  0.85066  0.58739  1.84176  0.00001  1.83636  0.59646  0.84084  1.67063  0.03374  1.95089  0.37053  1.10545  1.45251  0.13518  1.99879  0.18871  1.36267  1.20268  0.29721  1.97671  0.06374  1.59447  0.93865  0.50848  1.88619  0.00437  1.78463  0.67892  0.75419  1.73358  0.01476  1.91980  0.44169  1.01713  1.52957  0.09418  1.99053  0.24357  1.27887  1.28845  0.23707  1.99185  0.09846  1.52106  1.02712  0.43342  1.92368  0.01652  1.72675  0.76390  0.66947  1.79078  0.00348  1.88151  0.51721  0.92868  1.60248  0.06027  1.97451  0.30435  1.19288  1.37196  0.18291  1.99923  0.14024  1.44357  1.11538  0.36280  1.95393  0.03637  1.66318  0.85072  0.58733  1.84180  0.00001  1.83633  0.59651  0.84078  1.67068  0.03373  1.95087  0.37058  1.10539  1.45256  0.13515  1.99879  0.18875  1.36261  1.20274  0.29716  1.97672  0.06376  1.59442  0.93871  0.50843  1.88622  0.00437  1.78459  0.67898  0.75413  1.73362  0.01475  1.91978  0.44174  1.01707  1.52962  0.09415  1.99052  0.24361  1.27881  1.28851  0.23703  1.99186  0.09849  1.52101  1.02718  0.43337  1.92370  0.01653  1.72671  0.76395  0.66941  1.79082  0.00348  1.88149  0.51726  0.92862  1.60253  0.06025  1.97450  0.30440  1.19282  1.37202  0.18287  1.99923  0.14027  1.44352  1.11544  0.36275  1.95395  0.03638  1.66314  0.85078  0.58728  1.84183  0.00001  1.83629  0.59657  0.84072  1.67072  0.03371  1.95085  0.37063  1.10533  1.45262  0.13512  1.99878  0.18878  1.36255  1.20280  0.29712  1.97673  0.06378  1.59438  0.93877  0.50837  1.88625  0.00438  1.78455  0.67903  0.75408  1.73366  0.01473  1.91975  0.44179  1.01701  1.52967  0.09413  1.99051  0.24365  1.27875  1.28857  0.23699  1.99187  0.09851  1.52096  1.02724  0.43332  1.92372  0.01654  1.72667  0.76401  0.66935  1.79086  0.00347  1.88146  0.51732  0.92856  1.60258  0.06023  1.97449  0.30444  1.19276  1.37208  0.18284  1.99924  0.14030  1.44346  1.11550  0.36270  1.95397  0.03640  1.66309  0.85084  0.58722  1.84186  0.00001  1.83626  0.59662  0.84066  1.67077  0.03370  1.95083  0.37067  1.10527  1.45267  0.13509  1.99878  0.18882  1.36250  1.20286  0.29708  1.97675  0.06380  1.59433  0.93883  0.50832  1.88627  0.00438  1.78451  0.67909  0.75402  1.73370  0.01472  1.91973  0.44184  1.01695  1.52972  0.09410  1.99050  0.24369  1.27869  1.28863  0.23695  1.99187  0.09854  1.52091  1.02730  0.43327  1.92375  0.01655  1.72662  0.76407  0.66930  1.79089  0.00347  1.88143  0.51737  0.92850  1.60263  0.06021  1.97447  0.30448  1.19270  1.37213  0.18281  1.99924  0.14033  1.44341  1.11556  0.36266  1.95399  0.03641  1.66305  0.85090  0.58717  1.84189  0.00001  1.83623  0.59668  0.84060  1.67081  0.03368  1.95081  0.37072  1.10521  1.45272  0.13505  1.99878  0.18885  1.36244  1.20292  0.29703  1.97676  0.06382  1.59428  0.93889  0.50827  1.88630  0.00439  1.78448  0.67915  0.75396  1.73374  0.01471  1.91971  0.44189  1.01689  1.52977  0.09408  1.99050  0.24373  1.27863  1.28868  0.23692  1.99188  0.09856  1.52086  1.02736  0.43322  1.92377  0.01656  1.72658  0.76413  0.66924  1.79093  0.00346  1.88140  0.51742  0.92844  1.60267  0.06019  1.97446  0.30453  1.19265  1.37219  0.18277  1.99924  0.14036  1.44336  1.11562  0.36261  1.95401  0.03643  1.66300  0.85096  0.58711  1.84193  0.00001  1.83619  0.59673  0.84054  1.67086
- 2   / 2:  2.84147  1.00001  2.83666  1.59596  1.84138  2.67023  1.03388  2.95105  1.37011  2.10599  2.45203  1.13545  2.99882  1.18840  2.36317  2.20215  1.29759  2.97659  1.06355  2.59491  1.93811  1.50895  2.88594  1.00432  2.78496  1.67841  1.75472  2.73321  1.01485  2.92001  1.44124  2.01767  2.52911  1.09441  2.99060  1.24322  2.27939  2.28793  1.23742  2.99178  1.09822  2.52153  2.02658  1.43387  2.92347  1.01642  2.72712  1.76337  1.66998  2.79045  1.00353  2.88177  1.51673  1.92922  2.60205  1.06046  2.97464  1.30396  2.19341  2.37146  1.18322  2.99921  1.13996  2.44406  2.11484  1.36322  2.95377  1.03622  2.66359  1.85018  1.58783  2.84150  1.00001  2.83662  1.59602  1.84132  2.67027  1.03387  2.95104  1.37016  2.10593  2.45208  1.13542  2.99881  1.18843  2.36312  2.20221  1.29755  2.97660  1.06357  2.59486  1.93817  1.50890  2.88597  1.00432  2.78492  1.67846  1.75466  2.73325  1.01484  2.91999  1.44129  2.01761  2.52916  1.09438  2.99059  1.24326  2.27933  2.28799  1.23738  2.99179  1.09825  2.52147  2.02664  1.43382  2.92349  1.01643  2.72708  1.76343  1.66992  2.79049  1.00352  2.88174  1.51679  1.92916  2.60210  1.06044  2.97462  1.30401  2.19336  2.37152  1.18319  2.99921  1.13999  2.44400  2.11490  1.36317  2.95379  1.03624  2.66354  1.85024  1.58777  2.84154  1.00001  2.83659  1.59607  1.84126  2.67032  1.03385  2.95102  1.37021  2.10587  2.45213  1.13539  2.99881  1.18847  2.36306  2.20227  1.29751  2.97662  1.06359  2.59481  1.93823  1.50885  2.88599  1.00433  2.78489  1.67852  1.75460  2.73329  1.01483  2.91997  1.44134  2.01755  2.52921  1.09436  2.99059  1.24330  2.27927  2.28805  1.23734  2.99180  1.09828  2.52142  2.02670  1.43377  2.92352  1.01644  2.72704  1.76349  1.66987  2.79053  1.00352  2.88171  1.51684  1.92910  2.60214  1.06042  2.97461  1.30405  2.19330  2.37157  1.18315  2.99921  1.14002  2.44395  2.11496  1.36312  2.95381  1.03625  2.66350  1.85030  1.58772  2.84157  1.00001  2.83656  1.59613  1.84120  2.67036  1.03384  2.95100  1.37025  2.10581  2.45219  1.13536  2.99881  1.18850  2.36300  2.20233  1.29746  2.97663  1.06361  2.59476  1.93829  1.50879  2.88602  1.00433  2.78485  1.67858  1.75454  2.73333  1.01482  2.91994  1.44139  2.01749  2.52926  1.09433  2.99058  1.24334  2.27921  2.28811  1.23731  2.99181  1.09830  2.52137  2.02676  1.43372  2.92354  1.01645  2.72700  1.76354  1.66981  2.79056  1.00351  2.88169  1.51689  1.92904  2.60219  1.06040  2.97459  1.30409  2.19324  2.37163  1.18312  2.99922  1.14005  2.44390  2.11502  1.36308  2.95382  1.03627  2.66345  1.85036  1.58766  2.84160  1.00001  2.83652  1.59618  1.84114  2.67041  1.03382  2.95098  1.37030  2.10575  2.45224  1.13533  2.99880  1.18854  2.36295  2.20239  1.29742  2.97664  1.06363  2.59471  1.93835  1.50874  2.88605  1.00434  2.78481  1.67863  1.75449  2.73337  1.01481  2.91992  1.44144  2.01743  2.52931  1.09431  2.99057  1.24337  2.27916  2.28816  1.23727  2.99181  1.09833  2.52132  2.02682  1.43367  2.92356  1.01646  2.72696  1.76360  1.66975  2.79060  1.00351  2.88166  1.51695  1.92898  2.60224  1.06038  2.97458  1.30414  2.19318  2.37168  1.18308  2.99922  1.14008  2.44384  2.11508  1.36303  2.95384  1.03629  2.66341  1.85042  1.58761  2.84163  1.00001  2.83649  1.59624  1.84108  2.67045  1.03380  2.95096  1.37035  2.10569  2.45229  1.13530  2.99880  1.18857  2.36289  2.20245  1.29738  2.97666  1.06365  2.59467  1.93841  1.50869  2.88608  1.00434  2.78477  1.67869  1.75443  2.73342  1.01480  2.91990  1.44149  2.01737  2.52936  1.09428  2.99056  1.24341  2.27910  2.28822  1.23723  2.99182  1.09836  2.52127  2.02688  1.43362  2.92359  1.01647  2.72691  1.76366  1.66970  2.79064  1.00350  2.88163  1.51700  1.92892  2.60229  1.06036  2.97457  1.30418  2.19312  2.37174  1.18305  2.99922  1.14012  2.44379  2.11514  1.36298  2.95386  1.03630  2.66336  1.85048  1.58755  2.84167  1.00001  2.83646  1.59629  1.84102  2.67050  1.03379  2.95094  1.37039  2.10563  2.45235  1.13527  2.99880  1.18861  2.36283  2.20250  1.29733  2.97667  1.06368  2.59462  1.93847  1.50864  2.88611  1.00435  2.78474  1.67875  1.75437  2.73346  1.01479  2.91987  1.44154  2.01731  2.52942  1.09426  2.99055  1.24345  2.27904  2.28828  1.23719  2.99183  1.09838  2.52122  2.02694  1.43357  2.92361  1.01648  2.72687  1.76372  1.66964  2.79067  1.00350  2.88160  1.51705  1.92886  2.60234  1.06034  2.97455  1.30422  2.19306  2.37180  1.18301  2.99922  1.14015  2.44373  2.11520  1.36294  2.95388  1.03632  2.66332  1.85054  1.58750  2.84170  1.00001  2.83642  1.59635  1.84096  2.67054  1.03377  2.95092  1.37044  2.10557  2.45240  1.13524  2.99879  1.18864  2.36278  2.20256  1.29729  2.97668  1.06370  2.59457  1.93853  1.50858  2.88613  1.00436  2.78470  1.67881  1.75431  2.73350  1.01478  2.91985  1.44159  2.01725  2.52947  1.09423  2.99055  1.24349  2.27898  2.28834  1.23715  2.99184  1.09841  2.52117  2.02700  1.43352  2.92363  1.01649  2.72683  1.76378  1.66958  2.79071  1.00349  2.88157  1.51710  1.92880  2.60239  1.06032  2.97454  1.30427  2.19300  2.37185  1.18298  2.99923  1.14018  2.44368  2.11526  1.36289  2.95390  1.03633  2.66327  1.85060  1.58744  2.84173  1.00001  2.83639  1.59640  1.84090  2.67059  1.03376  2.95091  1.37049  2.10551  2.45246  1.13521  2.99879  1.18868  2.36272  2.20262  1.29725  2.97669  1.06372  2.59452  1.93859  1.50853  2.88616  1.00436  2.78466  1.67886  1.75425  2.73354  1.01477  2.91983  1.44164  2.01719  2.52952  1.09420  2.99054  1.24353  2.27892  2.28839  1.23711  2.99184  1.09843  2.52111  2.02706  1.43347  2.92366  1.01650  2.72679  1.76384  1.66953  2.79075  1.00349  2.88154  1.51716  1.92874  2.60243  1.06029  2.97453  1.30431  2.19294  2.37191  1.18294  2.99923  1.14021  2.44363  2.11532  1.36284  2.95392  1.03635  2.66323  1.85066  1.58739  2.84176  1.00001  2.83636  1.59646  1.84084  2.67063  1.03374  2.95089  1.37053  2.10545  2.45251  1.13518  2.99879  1.18871  2.36267  2.20268  1.29721  2.97671  1.06374  2.59447  1.93865  1.50848  2.88619  1.00437  2.78463  1.67892  1.75419  2.73358  1.01476  2.91980  1.44169  2.01713  2.52957  1.09418  2.99053  1.24357  2.27887  2.28845  1.23707  2.99185  1.09846  2.52106  2.02712  1.43342  2.92368  1.01652  2.72675  1.76390  1.66947  2.79078  1.00348  2.88151  1.51721  1.92868  2.60248  1.06027  2.97451  1.30435  2.19288  2.37196  1.18291  2.99923  1.14024  2.44357  2.11538  1.36280  2.95393  1.03637  2.66318  1.85072  1.58733  2.84180  1.00001  2.83633  1.59651  1.84078  2.67068  1.03373  2.95087  1.37058  2.10539  2.45256  1.13515  2.99879  1.18875  2.36261  2.20274  1.29716  2.97672  1.06376  2.59442  1.93871  1.50843  2.88622  1.00437  2.78459  1.67898  1.75413  2.73362  1.01475  2.91978  1.44174  2.01707  2.52962  1.09415  2.99052  1.24361  2.27881  2.28851  1.23703  2.99186  1.09849  2.52101  2.02718  1.43337  2.92370  1.01653  2.72671  1.76395  1.66941  2.79082  1.00348  2.88149  1.51726  1.92862  2.60253  1.06025  2.97450  1.30440  2.19282  2.37202  1.18287  2.99923  1.14027  2.44352  2.11544  1.36275  2.95395  1.03638  2.66314  1.85078  1.58728  2.84183  1.00001  2.83629  1.59657  1.84072  2.67072  1.03371  2.95085  1.37063  2.10533  2.45262  1.13512  2.99878  1.18878  2.36255  2.20280  1.29712  2.97673  1.06378  2.59438  1.93877  1.50837  2.88625  1.00438  2.78455  1.67903  1.75408  2.73366  1.01473  2.91975  1.44179  2.01701  2.52967  1.09413  2.99051  1.24365  2.27875  2.28857  1.23699  2.99187  1.09851  2.52096  2.02724  1.43332  2.92372  1.01654  2.72667  1.76401  1.66935  2.79086  1.00347  2.88146  1.51732  1.92856  2.60258  1.06023  2.97449  1.30444  2.19276  2.37208  1.18284  2.99924  1.14030  2.44346  2.11550  1.36270  2.95397  1.03640  2.66309  1.85084  1.58722  2.84186  1.00001  2.83626  1.59662  1.84066  2.67077  1.03370  2.95083  1.37067  2.10527  2.45267  1.13509  2.99878  1.18882  2.36250  2.20286  1.29708  2.97675  1.06380  2.59433  1.93883  1.50832  2.88627  1.00438  2.78451  1.67909  1.75402  2.73370  1.01472  2.91973  1.44184  2.01695  2.52972  1.09410  2.99050  1.24369  2.27869  2.28863  1.23695  2.99187  1.09854  2.52091  2.02730  1.43327  2.92375  1.01655  2.72662  1.76407  1.66930  2.79089  1.00347  2.88143  1.51737  1.92850  2.60263  1.06021  2.97447  1.30448  2.19270  2.37213  1.18281  2.99924  1.14033  2.44341  2.11556  1.36266  2.95399  1.03641  2.66305  1.85090  1.58717  2.84189  1.00001  2.83623  1.59668  1.84060  2.67081  1.03368  2.95081  1.37072  2.10521  2.45272  1.13505  2.99878  1.18885  2.36244  2.20292  1.29703  2.97676  1.06382  2.59428  1.93889  1.50827  2.88630  1.00439  2.78448  1.67915  1.75396  2.73374  1.01471  2.91971  1.44189  2.01689  2.52977  1.09408  2.99050  1.24373  2.27863  2.28868  1.23692  2.99188  1.09856  2.52086  2.02736  1.43322  2.92377  1.01656  2.72658  1.76413  1.66924  2.79093  1.00346  2.88140  1.51742  1.92844  2.60267  1.06019  2.97446  1.30453  2.19265  2.37219  1.18277  2.99924  1.14036  2.44336  2.11562  1.36261  2.95401  1.03643  2.66300  1.85096  1.58711  2.84193  1.00001  2.83619  1.59673  1.84054  2.67086
+             SUBSET   : 5000 by 2 points (X-Y)
+      ... listing every  45th point
+              1       46       91       136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996    
+              1       46       91      136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996
+ 1   / 1:  1.84147  1.90179  1.10599  0.20957  0.06355  0.80656  1.73321  1.96379  1.27939  0.32975  0.01642  0.63686  1.60205  1.99568  1.44406  0.47087  0.00001  0.47850  1.45208  1.99647  1.59486  0.62851  0.01484  0.33643  1.28799  1.96614  1.72708  0.79776  0.06044  0.21509  1.11490  1.90563  1.83659  0.97333  0.13539  0.11827  0.93823  1.81683  1.91997  1.14973  0.23734  0.04899  0.76349  1.70252  1.97461  1.32145  0.36312  0.00942  0.59613  1.56626  1.99881  1.48313  0.50879  0.00078  0.44139  1.41231  1.99181  1.62972  0.66981  0.02336  0.30409  1.24549  1.95383  1.75664  0.84114  0.07645  0.18854  1.07099  1.88605  1.85993  1.01743  0.15838  0.09833  0.89428  1.79060  1.93636  1.19318  0.26660  0.03629  0.72087  1.67045  1.98353  1.36289  0.39774  0.00434  0.55618  1.52936  1.99999  1.52127  0.54768  0.00350  0.40536  1.37174  1.98521  1.66336  0.71175  0.03379  0.27311  1.20250  1.93965  1.78474  0.88483  0.09426  0.16356  1.02694  1.86475  1.88160  1.06150  0.18301  0.08014  0.85054  1.76283
+ 2   / 2:  2.84147  2.90179  2.10599  1.20957  1.06355  1.80656  2.73321  2.96379  2.27939  1.32975  1.01642  1.63686  2.60205  2.99568  2.44406  1.47087  1.00001  1.47850  2.45208  2.99647  2.59486  1.62851  1.01484  1.33643  2.28799  2.96614  2.72708  1.79776  1.06044  1.21509  2.11490  2.90563  2.83659  1.97333  1.13539  1.11827  1.93823  2.81683  2.91997  2.14973  1.23734  1.04899  1.76349  2.70252  2.97461  2.32145  1.36312  1.00942  1.59613  2.56626  2.99881  2.48313  1.50879  1.00078  1.44139  2.41231  2.99181  2.62972  1.66981  1.02336  1.30409  2.24549  2.95382  2.75664  1.84114  1.07645  1.18854  2.07099  2.88605  2.85993  2.01743  1.15838  1.09833  1.89428  2.79060  2.93636  2.19318  1.26660  1.03629  1.72087  2.67045  2.98353  2.36289  1.39774  1.00434  1.55618  2.52936  2.99999  2.52127  1.54768  1.00350  1.40536  2.37174  2.98521  2.66336  1.71175  1.03379  1.27311  2.20250  2.93965  2.78474  1.88483  1.09426  1.16356  2.02694  2.86475  2.88160  2.06150  1.18301  1.08014  1.85054  2.76283
  
 can mode ignore
  
@@ -44739,8 +44754,8 @@ can mode ignore
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.60  
- 	Solaris 5.6 - 04/02/04
- 	 2-Apr-04 12:53     
+ 	Solaris 5.6 - 04/09/04
+ 	21-May-04 08:38     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -44916,8 +44931,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.60  
- 	Solaris 5.6 - 04/02/04
- 	 2-Apr-04 12:54     
+ 	Solaris 5.6 - 04/09/04
+ 	21-May-04 08:38     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -45030,4 +45045,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Fri Apr 2 12:54:10 PST 2004
+Ended at Fri May 21 08:38:56 PDT 2004

@@ -1,11 +1,11 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version  /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     61663064 Apr  2 12:38 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja9/tmap/ferret/solaris/bin/ferret
+lrwxrwxrwx   1 root     other         11 Apr 13 09:07 /home/ja9/tmap/ferret/solaris/bin/ferret -> ferret_v560
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  fixes for modulo strides bugs, wide ascii listing
+Note: Official 5.6 release, with jnl directories updated
 ***** Restricting Ferret paths to bench directory *****
-PWD=/export/home/ja8/ansley/FERRET/bench
+PWD=/export/home/ja8/ansley/FERRET_v_5_6_0_release/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/solaris
 CVSROOT=/home/ja9/tmap/FERRET_ROOT
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Fri Apr 2 12:41:15 PST 2004
+Beginning at Fri May 21 08:28:11 PDT 2004
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -451,7 +451,7 @@ CONTOUR/FILL/L=1/LEV=0.01d sst
 SHADE/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
- *** NOTE: calendar attribute on axis "TIME" is not recognized: 365_DAYS
+ *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY
  *** NOTE: A dummy axis of subscripts will be used
 input.txt: No such file or directory
@@ -459,6 +459,9 @@ input.txt: No such file or directory
                 dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
+ *** NOTE: Ignored modulo length exceeding axis length: LONGITUDE
+ *** NOTE: Coordinates out of order or missing on axis TIME at subscript 26
+ *** NOTE: A dummy axis of subscripts will be used
  **ERROR: illegal limits: "DUMMY" is not in the range T=-6.3E+10
           Axis extremes are T=0.5:32
 list/t=1-jan-1990 dummy
@@ -559,4 +562,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri Apr 2 12:54:10 PST 2004
+Ended at Fri May 21 08:38:56 PDT 2004

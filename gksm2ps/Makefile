@@ -71,7 +71,7 @@ i486-linux:
 i686-cygwin:
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-cygwin/2.95.2/include/ -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
+		CFLAGS="-I/usr/lib/gcc-lib/i686-pc-cygwin/2.95.3-4/include/ -I$(TMAP_LOCAL)/xgks/port -I$(TMAP_LOCAL)/xgks/src/lib -I$(TMAP_LOCAL)/xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-L/usr/X11R6.4/lib -lX11 -lm"

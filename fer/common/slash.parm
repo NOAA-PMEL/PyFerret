@@ -16,8 +16,9 @@
 *                       slash_exit_loop
 *			slash_exit_prompt
 *			slash_exit_script
-*			slash_exit_program
-*			
+*			slash_exit_program			
+*      *sh* 11/01 - add slash_list_width
+
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -61,7 +62,8 @@
      .			slash_list_head,
      .			slash_list_nohead,
      .			slash_list_extend,
-     .			slash_list_title
+     .			slash_list_title,
+     .			slash_list_width
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -231,7 +233,8 @@
      .			slash_list_head   = 10,
      .			slash_list_nohead = 11,
      .			slash_list_title  = 17,
-     .			slash_list_extend = 19 )
+     .			slash_list_extend = 19,
+     .			slash_list_width = 1+29 )
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,

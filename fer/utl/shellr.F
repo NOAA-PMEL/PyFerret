@@ -1,7 +1,4 @@
-	SUBROUTINE SORT_LIST(n, valid_min, valid_max,
-     .			     bad_flag_in, bad_flag_out,
-     .			     list, indices, nvalid)
-
+      SUBROUTINE SHELLR(SDAT, IDAT, BAD, N)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,55 +32,55 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-* Sort an input list of values returning both the sorted list and the
-* map vector (as floats)
-* if there are missing values in the index list, sort em as if they are BIG
+*from http://www.cs.mcgill.ca/~ratzer/progs15_6.html  23-APR-1998
+*  Gerald Ratzer, McGill school of Computer Science, McGill University,
+*  Montreal, Quebec, Canada
+
+* Changed data to REAL. Added IDAT, to sort along with SDAT.  
+* Removed NCOUNTS, NCOMP, NSWAP.
+
+* V530 *sh* - based on SHELL (also in Ferret)
+* optimized for missing value flags in input (sort to end of list)
 
 
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
-* V510 *sh* 8/99
-* V530 *sh* use sorting routine SHELL for improved performance
+      REAL     SDAT(*),IDAT(*), BAD, tmp
+      INTEGER  N, M
+      INTEGER  I, J, ngd
 
-#ifdef unix
-	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-#endif
+* since the input array may be large but sparse, begin by sorting
+* the missing value flags to the end of the list
+        ngd = 0
+        DO j = 1, n
+           IF (sdat(j) .NE. bad) THEN
+              ngd = ngd + 1
+              sdat(ngd) = sdat(j)
+              idat(ngd) = idat(j)
+           ENDIF 
+        END DO
 
-* calling argument declarations:
-	INTEGER n, valid_min, valid_max, nvalid
-	REAL bad_flag_in, bad_flag_out, list(n), indices(n)
+        DO j = ngd+1, n
+           sdat(j) = bad
+           idat(j) = 0.0  ! just for house-keeping
+        END DO
 
-* internal variable declarations:
-	INTEGER i
+* now sort only the valid (non-BAD) inputs
+      M=ngd
+      DO WHILE (M .gt. 1)
+         M=(M+2)/3
+         DO I=M+1,ngd
+            DO J=I,M+1,-M
+               IF (SDAT(J-M).GE. SDAT(J)) THEN
+                 tmp = sdat(j)
+                 sdat(j) = sdat(j-m)
+                 sdat(j-m) = tmp
+                 tmp = idat(j)
+                 idat(j) = idat(j-m)
+                 idat(j-m) = tmp
+               ENDIF
+            END DO 
+         END DO 
+      END DO
+      RETURN
+      END
 
-* initialize
-	DO 10 i = 1,n
- 10	indices(i) = i
-
-* replace indices that are out of range with missing value flags
-	DO 20 i = 1, n
-	  IF (list(i) .GT. valid_max
-     .   .OR. list(i) .LT. valid_min ) list(i) = bad_flag_in
- 20	CONTINUE
-
-* shell sort
-	CALL SHELLR(list,indices,bad_flag_in,n)
-
-* count valid points
- 300	nvalid = n
-	DO 400 i = 1,n
-	   IF ( list(i) .EQ. bad_flag_in ) nvalid = nvalid - 1
- 400	CONTINUE
-
-* reconcile bad flags and count valid points
-	IF ( bad_flag_in .NE. bad_flag_out ) THEN
-	   DO 500 i = 1,n
-	      IF ( list(i).EQ.bad_flag_in ) list(i) = bad_flag_out
- 500	   CONTINUE
-	ENDIF
-
-	RETURN
-	END

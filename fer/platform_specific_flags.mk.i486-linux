@@ -71,7 +71,7 @@ LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -export-dynamic
  
 
 
-SYSLIB		= -L/usr/X11R6/lib  /usr/local/lib/libf2c.a -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc -lXm -lXt -lXext -lX11 -lXp -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/2.96/libg2c.a
+SYSLIB		= -L/usr/X11R6/lib  /usr/local/lib/libf2c.a -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/2.96/libg2c.a
 
 TMLIB		= ../lib/tmap_lib.a
 

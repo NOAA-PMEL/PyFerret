@@ -1,5 +1,7 @@
 ! test this with GO journal hello
 
+! V510: 3/00 *sh* added tests of backslash escapes and surrounding quotations
+
 set mode ignore
 message/continue $1
 
@@ -73,5 +75,13 @@ go bn_dollar.sub VAR[x=1,y=1]	! should be interpreted as a single arg
 go bn_dollar.sub VAR[x=1,g=var2[d=d1],y=1]	!  a single arg
 go bn_dollar.sub ((x+y)/(x-5))	! ignore slash, get single arg
 go bn_dollar.sub ((x+y),(x-5))	! ignore comma, get single arg
+
+! V510 3/00
+message/continue "$1"                ! final quote used to get mis-applied
+go bn_dollar.sub \"hello\"                 ! quotations as part of argument
+go bn_dollar.sub "\"hello with blanks\""   ! quotations as part of argument
+go bn_dollar.sub \"((x+y),(x-5))\"         ! quotations as part of argument
+
+
 
 set mode/last ignore

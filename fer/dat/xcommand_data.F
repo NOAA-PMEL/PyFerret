@@ -122,6 +122,8 @@
 * V530: 10/00 *sh* - added added SET DATA/EZ  /TYPE=/DELIMITERS=
 *      10/00 *acm* - added VECTOR/STREAKLINE (alias STREAKLINE)
 *      1 /01 *sh* - added PLOT/STEP[=connected]
+*       1/01 *acm* - added DEFINE AXIS/CALENDAR qualifier
+*       5/01 *acm* - added PLOT/DASH[=(dn1,up1,dn2,up2) qualifier
 *       1/01 *acm* - added /CALENDAR qualifier
 * V531: 5/01 *kob* - replace old ANIMATE alias which spawned a call
 *	             to what must be the now-defunct xds with new 
@@ -757,7 +759,7 @@
 		DATA qualifiers  (nqual_at6a+22)/ 'TITLE'/	!/title
 		DATA qualifiers  (nqual_at6a+23)/ 'STEP'/	!/step
 		DATA qualifiers  (nqual_at6a+24)/ 'NOAXES'/	!/noaxes
-		DATA qualifiers  (nqual_at6a+25)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+25)/ 'DASH'/	!/dash
 		DATA qualifiers  (nqual_at6a+26)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+27)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+28)/ '****'/	!/unused
@@ -1246,7 +1248,7 @@
 
 * POLYGON - command # 27
 	DATA commands(27)			/ 'POLYGON'	/
-	DATA num_subcommands(27)			/ nsub6		/
+	DATA num_subcommands(27)		/ nsub6		/
 	DATA subcommand_pointer(27)		/ nsub_at27	/
 * POLYGON '    '
 	   DATA subcommands      (nsub_at27 + 0)/ '    '	/

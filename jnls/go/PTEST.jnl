@@ -1,5 +1,0 @@
-! Description: create a simple test line plot
-
-! spirograph picture ...
-PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
-

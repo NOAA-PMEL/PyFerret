@@ -1,8 +1,0 @@
-cancel mode verify	! cycle through the pre-defined spectra
-
-! Description: An obsolete routine to cycle through 3 spectra
-
-ppl shaset spectrum=saz2
-ppl shaset
-ppl shaset spectrum=rnb
-set mode/last verify

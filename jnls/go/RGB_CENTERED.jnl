@@ -1,6 +1,0 @@
-CANCEL MODE VERIFY     ! ... now changing color spectrum
-! set colors to a pronounced split at zero spectrum
-
-ppl shaset spectrum=saz2
-
-SET MODE/LAST VERIFY

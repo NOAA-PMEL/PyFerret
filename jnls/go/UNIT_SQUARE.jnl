@@ -1,7 +1,0 @@
-! Description: set up the unit square as the default for abstract variables
-
-DEFINE AXIS/X=-1:1:.02 axsquare
-DEFINE GRID/X=axsquare/Y=axsquare gsquare
-
-SET REGION/X=0:1/Y=0:1
-SET GRID gsquare

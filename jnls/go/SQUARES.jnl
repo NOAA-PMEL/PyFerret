@@ -1,8 +1,0 @@
-! Ferret v3.0 *jd* 3.93/8.96
-! Description: create a filled-area test plot
-
-message/cont executing test shade
-
-! shade and fill squares
-SHADE/I=1:15/J=2:12/LEV=(3,28,2) IF MOD(I,2) EQ 0 OR MOD(J,2) EQ 1 THEN I+J-1
-

@@ -1,0 +1,20 @@
+! err580_cdb.jnl
+! bug 1207
+
+! Bug in closest distance and closest index transformations
+! Code needs range below for CDB, CIB and above for CDA, CIA.  
+! Instead it asked for a range above AND below the specified index. 
+! So result is missing when it should not be.
+
+def axis/x=1:20:1 aax
+let var = if mod(i,5) eq 1 then x[gx=aax]
+
+list var[i=15@cdb:5]
+list var[i=14@cdb:5]
+
+! These returned MISSING data with the bug, should not be missing.
+
+list var[i=15@cdb:10]
+list var[i=15@cib:10]
+list var[i=5@cda:10]
+list var[i=5@cia:10]

@@ -90,6 +90,8 @@
 *  V5.54 *acm* 2/11/04 For cellarray plots, make sure the edges of the rectangle 
 *                      of data corresponds to the correct part of the box drawn
 *                      by the axes. (/hlim or /vlim plots)
+* V5.61 *acm* 4/16/04  For cellarray plots, fix treatment of half-cells around
+*                      the edges of the plot.  
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -292,11 +294,15 @@ c*       side from xeq_shade.
 
       
 * Collect color indices in cellarray cells array.
+* Set the data rectangle to represent whole grid cells.
 
-        cx1 = uc(1)*xinv   
-        cx2 = uc(2)*xinv   
-        cy1 = uc(3)*yinv
-        cy2 = uc(4)*yinv
+        half = (xc(2) - xc(1)) / 2.
+        cx1 = (uc(1) - half)* xinv   
+        cx2 = (uc(2) + half)* xinv   
+
+        half = (yc(2) - yc(1)) / 2.
+        cy1 = (uc(3) - half)* yinv
+        cy2 = (uc(4) + half)* yinv
 
 * Get the number of grid cells to be plotted 
 
@@ -359,11 +365,12 @@ c If all the data is missing don't make the cellarray call
 * the world coordinates of the corners to match the data rectangle.
 
             half = (xc(2) - xc(1)) / 2.
-            IF (cx1 .LT. xc(1) + half) cx1 = xc(1)
-            IF (cx2 .GT. xc(nx) - half) cx2 = xc(nx)
+            IF (cx1 .LT. xc(1) - half ) cx1 = xc(1)  - half
+            IF (cx2 .GT. xc(nx) + half) cx2 = xc(nx) + half
+
             half = (yc(2) - yc(1)) / 2.
-            IF (cy1 .LT. yc(1) + half ) cy1 = yc(1)
-            IF (cx2 .GT. yc(ny) - half) cy2 = yc(ny)
+            IF (cy1 .LT. yc(1) - half ) cy1 = yc(1)  - half
+            IF (cx2 .GT. yc(ny) + half) cy2 = yc(ny) + half
 
             CALL gca (cx1, cy1, cx2, cy2, mx,my, 1,1, mx,my, cells)
          ENDIF

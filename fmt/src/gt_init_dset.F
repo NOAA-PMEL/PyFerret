@@ -214,7 +214,10 @@
 	var_cnt = var_cnt + 1
 	WRITE (reading_nml(1:18),'(''VARIABLE_RECORD '',I2)') var_cnt
 
-        istat = STR_UPCASE( ds_var_code(ivar), d_var_code )     ! 3/91
+*        istat = STR_UPCASE( ds_var_code(ivar), d_var_code )     ! 3/91
+        CALL string_array_modify_upcase(ds_var_code_head, ivar,
+     .                                  d_var_code, LEN(d_var_code))
+
 	ds_var_setnum(ivar) = dset_num
 	ds_var_type(ivar) = ptype_float
 	ds_var_units(ivar) = d_var_units

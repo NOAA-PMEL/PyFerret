@@ -343,7 +343,10 @@
 	      IF ( istat .EQ. str_eq ) GOTO 310                  ! leave as-is
  300	    CONTINUE
 * ... (finally) upcase the name
-	  istat = STR_UPCASE( ds_var_code(ivtm), ds_var_code(ivtm) )
+*	  istat = STR_UPCASE( ds_var_code(ivtm), ds_var_code(ivtm) )
+          CALL string_array_modify_upcase(ds_var_code_head,ivtm,
+     .                                    ds_var_code(ivtm),
+     .                                    LEN(ds_var_code(ivtm)))
  310    CONTINUE
 	ENDIF
 

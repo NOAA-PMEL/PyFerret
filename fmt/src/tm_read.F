@@ -99,7 +99,8 @@
 #endif
 
 * local definitions
-        INTEGER         STR_UPCASE, TM_LENSTR1
+        INTEGER         STR_UPCASE, TM_LENSTR1, n, num_indices
+
 	INTEGER		lcnt, modline, ivar, varpos, pcnt, istat,
      .			i, j, k, l, in, jn, kn, ln, vargrid, thisline,
      .			Dstart, Dend, Drange,
@@ -137,12 +138,26 @@
         upcase_var = variable     ! 7/98
 
 * check for valid variable and get variable number
-	DO 100 ivar = 1,maxvars
-	  IF ((ds_var_setnum(ivar) .EQ. dset_num) .AND.
-     .	    (ds_var_code(ivar) .EQ. upcase_var)) THEN
-	    varpos = ivar
-	    GOTO 110
-	  ENDIF
+*	DO 100 ivar = 1,maxvars
+*	  IF ((ds_var_setnum(ivar) .EQ. dset_num) .AND.
+*     .	    (ds_var_code(ivar) .EQ. upcase_var)) THEN
+*	    varpos = ivar
+*	    GOTO 110
+*	  ENDIF
+*  100	CONTINUE
+
+        CALL string_array_find_exact(ds_var_code_head,
+     .                               upcase_var,
+     .                               LEN(upcase_var),
+     .                               string_array_result1(1),
+     .                               maxvars,
+     .                               num_indices)
+        DO 100 n = 1, num_indices
+            ivar = string_array_result1(n)
+            IF ( ds_var_setnum(ivar) .EQ. dset_num) THEN
+	        varpos = ivar
+	        GOTO 110
+            ENDIF
   100	CONTINUE
 	GOTO 9000
 

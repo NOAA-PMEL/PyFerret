@@ -114,6 +114,7 @@
 	DATA	ds_time_axis		/maxdsets*int4_init/
 
 * Next clear variables associated with variable in that data set.
+        DATA    ds_var_code_head        / 0 /
 	DATA	ds_var_code		/maxvars*char_init128/
 	DATA	ds_var_title		/maxvars*char_init128/
 	DATA	ds_var_titl_mod		/maxvars*char_init128/

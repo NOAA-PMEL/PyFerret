@@ -313,7 +313,11 @@
 *
 * Load variable record now
   150     var_pos = nvar
-	  ds_var_code(nvar)	= var_names(ncnt)
+*	  ds_var_code(nvar)	= var_names(ncnt)
+          CALL string_array_modify(ds_var_code_head,
+     .                             nvar,
+     .                             var_names(ncnt),
+     .                             LEN(var_names(ncnt)))
 	  ds_var_title(nvar)	= var_names(ncnt)
 	  ds_var_titl_mod(nvar)	= ' '
 	  ds_var_units(nvar)	= ' '

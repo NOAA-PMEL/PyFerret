@@ -174,9 +174,10 @@
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
-     .                  units, since_t0
+     .                  units, since_t0, len_test, len_mchars
 
         REAL*8          TM_WW_AXLEN, axwwlen
+
 	REAL		val_buf
 	CHARACTER	title*128, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3
@@ -490,8 +491,11 @@ c *kob* 4/97
 	IF ( buff2(1:1) .EQ. '"' .AND. buff2(loc:loc) .EQ. '"'
      .	.AND. loc .GT.2  	) buff2 = buff2(2:loc-1)
 * ... identify the mode name
+        len_test = TM_LENSTR(buff1)
 	DO 810 mode = 1, max_modes
-             IF ( MATCH4( buff1, mode_name( mode ) )) THEN
+           len_mchars = TM_LENSTR(mode_name(mode)(:4))
+	   IF ( MATCH4( buff1, len_test,
+     .               mode_name( mode ),len_mchars )) THEN
 	      IF ( mode.EQ.pmode_GKS .AND. gksopn ) GOTO 5820
 * ... ignore MODE VERIFY from a GO file if MODE VERIFY:ALWAYS is set
 	      IF ( mode.EQ.pmode_verify

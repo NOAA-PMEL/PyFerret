@@ -250,7 +250,9 @@
 
 * officially claim this variable slot
 * 7/98 - save in case-sensitive form at this point -- will check over later
-        ds_var_code(ivtm) = vname
+*        ds_var_code(ivtm) = vname
+         CALL string_array_modify(ds_var_code_head, ivtm, 
+     .                            vname, LEN(vname))
 
 * successful completion - variable cataloged
  1000	status = merr_ok

@@ -149,7 +149,10 @@
 	  IF (ds_var_setnum(ivar) .NE. ds_num) GOTO 120
 * ... deallocate grids and axes used by the dat aset
 	  CALL TM_DEALLO_DYN_GRID( ds_grid_number(ivar))
-	  ds_var_code(ivar)		=	char_init128
+*	  ds_var_code(ivar)		=	char_init128
+          CALL string_array_modify(ds_var_code_head, ivar,
+     .                             char_init128,
+     .                             LEN(char_init128))
 	  ds_var_title(ivar)		=	char_init128
 	  ds_var_titl_mod(ivar)		=	char_init128
 	  ds_var_units(ivar)		=	char_init64

@@ -93,7 +93,10 @@
 	IF (units .NE. char_init16) ds_var_units(vpos) = units
 *
 * Defining variable name?
-	IF (name .NE. char_init16) ds_var_code(vpos) = name
+*	IF (name .NE. char_init16) ds_var_code(vpos) = name
+	IF (name .NE. char_init16) 
+     .      CALL string_array_modify(ds_var_code_head,
+     .                               vpos, name, LEN(name))
 *
 * Defining grid number?
 	IF (grid .NE. int4_init) THEN

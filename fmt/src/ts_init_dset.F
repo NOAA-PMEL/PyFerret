@@ -160,7 +160,9 @@
      .		 no_errstring, *9900)
 
 	ds_var_setnum(ivar) = dset_num
-        istat = STR_UPCASE( ds_var_code(ivar), d_var_code )     ! 4/91
+*        istat = STR_UPCASE( ds_var_code(ivar), d_var_code )     ! 4/91
+        CALL string_array_modify_upcase(ds_var_code_head, ivar,
+     .                                  d_var_code, LEN(d_var_code))
 	ds_var_type(ivar) = ptype_float
 	ds_var_title(ivar) = d_var_title
 	ds_var_titl_mod(ivar) = d_var_titl_mod

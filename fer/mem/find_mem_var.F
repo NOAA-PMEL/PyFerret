@@ -70,6 +70,31 @@
 * V500: 12/98 *sh* - added support for cat_const_var ("{1,3,5}") (uncached)
 *        1/99 *sh* - added support for cat_string (uncached)
 *	 4/99 *sh* - check mode_arg for mode_stupid
+* V510: 12/99 *sh* - modulo axis to not prevent uvlin_gvn_xact hit
+
+* (V510) How on cache hits on external functions (EFs) work:
+* uvar_given is used to encapsulate information about cache reuse for EF
+* results. This ensures that the information is inherited by variables that use
+* variables that use EFs. The resultant grid of an EF gets its axes from its
+* arguments and from impositions where the EF asserts that the result will have
+* a normal, abstract, or custom-imposed axis. These determine the value
+* of uvar_given as follows. If the result axis is:
+*	set to normal	-> uvlim_irrelevant (no match needed)
+*	set to ABSTRACT	-> uvlim_hidden (no match needed)
+*	set to custom   -> uvlim_hidden (no match needed)
+*	inherited	(exact match required)
+*	  with limits given in the arg definitions -> uvlim_gvn_xact
+*	  with limits missing from the arg definitions -> uvlim_needed_xact
+* Requiring an exact match means that the cached field will be reused only
+* when the lo:hi limits of the requested context exactly match the lo:hi
+* limits for this axis of the cached field. The reason that an exact match
+* is required is because, in general, the function may utilize information
+* from any part of the incoming data to effect all of the result. (For example
+* a function that multipled one argument by the maximum value along the axis
+* of another.) 
+* Some of the internal grid-changing functions (e.g. RESHAPE) require
+* slightly different rules for setting uvar_given -- see gcf_impose_axes.F
+
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -170,8 +195,12 @@
 *	  we cannot bypass this on modulo axes.
 *		e.g. x1 has I=1:10; let xgap=x1[i=3:7]
 *		then list xgap[i=1:15] should not "find" the i=3:7 result
-	      IF ( uvar_given(idim,var) .LE. uvlim_gvn_xact 
-     .		   .AND. non_modulo(idim) 		   ) GOTO 40
+* 12/99 - if uvlim_gvn_xact then modulo is never stripped in INTERP_STACK
+*	(note: when is it ever stripped for uvlim_gvn_*?. This logic looks
+*		out of date. Maybe the non_modulo restriction can be lifted)
+	      IF ( uvar_given(idim,var) .EQ. uvlim_gvn_xact 
+     .		  .OR. (uvar_given(idim,var) .LT. uvlim_gvn_xact 
+     .		        .AND. non_modulo(idim)) 		) GOTO 40
 
 * insist that the  grid stored in memory encompasses the requested data
 	      IF ( mr_lo_ww(idim,mv) .GT. cx_lo_ww(idim,cx)

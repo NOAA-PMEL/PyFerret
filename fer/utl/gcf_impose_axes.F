@@ -41,6 +41,10 @@
 
 * V4500: 10/98 - *jc* logic for context passing
 * V450: 1/97
+* V510: *sh* 12/99 - bug fixes to uvar_given associated with GC variables
+*	- 1) imposing an axis always makes limits on that axis uvlim_irrelevant
+*	- 2) context limits on axes that do inherit must match exactly (cuz
+*			we have no idea what goes on inside the EF)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -100,27 +104,29 @@
 	      GOTO 500
 	   ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
 	      imp_ax = imposed_axes(idim)
+* ... since new axis is imposed old axis need not be allocated to result
 	      IF ( imp_ax .GT. max_lines ) CALL TM_USE_LINE(imp_ax)
-          IF ( mrg_ax .GT. max_lines ) CALL
+	      IF ( mrg_ax .GT. max_lines ) CALL
      .             TM_DEALLO_DYN_LINE(mrg_ax)
 	      grid_line( idim, mrg_grd ) = imp_ax
+* ... imposing an axis implies that the gcvar doesn't depend on the axis cx
 	      IF ( imp_ax .EQ. mnormal ) THEN
 	         uvar_given(idim,uvar) = uvlim_irrelevant
+	      ELSEIF ( gcfcn .GT. gfcn_num_internal ) THEN
+	         uvar_given(idim,uvar) = uvlim_hidden	! 12/99
 	      ELSE
-* ... imposed axis has no limit info in the definition
-	         uvar_given(idim,uvar) = uvlim_needed
+	         uvar_given(idim,uvar) = uvlim_needed ! for fcns like RESHAPE
 	      ENDIF
 	   ELSE
 * ... it is evidently, a mergible axis ... continue on
 	      CONTINUE
 	   ENDIF	      
 
-* For grid-changing functions that reduce an axis range to a point
-* (as in an averaging operation) a cache hit requires an exact match
-* on the limits (Note: this is over-kill for some functions, but has
+* For grid-changing functions (that may perform operations analagous to
+* averaging) a cache hit requires an exact match on all relevant limits
+* (Note: this is over-kill for some functions, but has
 * impacts only on cache efficiency)
            IF ( gcfcn .GT. gfcn_num_internal ) THEN
-              IF ( axis_reduction(idim) .EQ. pgc_span_reduced ) THEN
                  uvg = uvar_given(idim,uvar)
                  IF (    uvg.GE.uvlim_gvn_gnl    .AND.
      .                uvg.LE.uvlim_gvn_xact) THEN
@@ -129,7 +135,6 @@
      .                   uvg.LE.uvlim_need_xact) THEN
                     uvar_given(idim,uvar) = uvlim_need_xact
                  ENDIF
-              ENDIF
            ENDIF
 
  500	CONTINUE

@@ -10,6 +10,7 @@
 * 12/98: added cat_const_var and alg_const_var
 *  1/99: added cat_string and alg_string
 *  8/99: *sh* added cat_work_mr
+* 12/99: *sh* added uvlim_hidden
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -120,6 +121,7 @@
      .			uvar_no_more_vars,
      .			cmnd_uvars_not_given,
      .			uvlim_irrelevant,
+     .			uvlim_hidden,
      .			uvlim_gvn_gnl,
      .			uvlim_gvn_lo,
      .			uvlim_gvn_lohi,
@@ -133,6 +135,7 @@
      .			uvar_no_more_vars	= -8,
      .			cmnd_uvars_not_given	= -9,
      .			uvlim_irrelevant	= -1,
+     .			uvlim_hidden		= -2,
      .			uvlim_gvn_gnl		= 0,
      .			uvlim_gvn_lo		= 1,
      .			uvlim_gvn_lohi		= 2,

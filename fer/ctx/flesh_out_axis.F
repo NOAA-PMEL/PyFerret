@@ -65,6 +65,7 @@
 * V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
 *      *sh*  5/99 - go ahead and flesh out implicit axes (to improve cache hits
 *		    when netCDF strides are invoked)
+* V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -109,7 +110,8 @@
 * ( e.g. how to handle U[K=5] - U[K=1:10] )
 	IF ( cat .EQ. cat_user_var ) THEN
 	   lim_redundant = uvar_given( idim, var ) .LE. uvlim_gvn_xact
-     .		     .OR.  uvar_given( idim, var ) .EQ. uvlim_irrelevant ! 1/97
+     .		     .OR.  uvar_given( idim, var ) .EQ. uvlim_irrelevant
+     .		     .OR.  uvar_given( idim, var ) .EQ. uvlim_hidden
 	ELSE
 	   lim_redundant = .FALSE.
 	ENDIF

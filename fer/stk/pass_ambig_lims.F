@@ -87,8 +87,7 @@
 *		        "uvar_given(idim,var) .LE. uvlim_gvn_xact"
 *		   ignores the possibility of uvlim_irrelevant
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars 
-
-
+* V510: *sh* 12/99 - support for uvlim_hiddef (EF caching)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -127,7 +126,8 @@
 
 * error checks:
 	   IF ( cx_given(idim,cx) ) THEN
-	      IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl ) THEN
+	      IF ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl
+     .	      .OR. uvar_given(idim,uvar) .EQ. uvlim_hidden ) THEN
 * ... suppose DEFINE VARIABLE NEW=TEMP[K=1:3]
 * ... then    LIST NEW[K=5] doesn't make sense
 	         IF ( mr_lo_ww(idim,mr).GT.cx_hi_ww(idim,cx)
@@ -152,7 +152,8 @@
 
 * pass limits back
 	   IF (   uvar_given(idim,uvar) .EQ. uvlim_gvn_xact
-     .	   .OR. ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl
+     .	   .OR. ( ( uvar_given(idim,uvar) .EQ. uvlim_gvn_gnl
+     .	   .OR.     uvar_given(idim,uvar) .EQ. uvlim_hidden )
      .		  .AND. .NOT.cx_given(idim,cx) )	    ) THEN
 
 	         cx_lo_ss(cx,idim) = mr_lo_ss(mr,idim)

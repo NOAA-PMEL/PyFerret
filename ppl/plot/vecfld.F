@@ -58,7 +58,8 @@ C**
 *			the modulo correction it "interpolates" between two 
 *			x values that are the same.  Also see notes in 
 *                       ~ansley/ans_ferret/curvilinear/curv_coord_sub.F
-C*      *acm* 10/01  remove VMS includes
+*       *acm* 10/01    Remove VMS includes
+*       *acm* 10/24/01 Call mark(99) to plot a point when a vector is too small.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -110,7 +111,7 @@ C     Curvilinear coordinates declarations
 
 *******************************************************************************
 
-         mypen = 1
+         mypen = 2
 	    IF(VUSER)THEN
 	    	XFUSER=1.
 		YFUSER=1.
@@ -287,7 +288,8 @@ C	IF VECTOR IS TOO SMALL PLOT A POINT
 C
            IF(VCLEN .LT. VMINLN)THEN
 	      CALL PLOT(XX1,YY1,0,0)
-	      CALL PLOT(XX1,YY1,1,0)
+c	      CALL PLOT(XX1,YY1,1,0)
+              CALL MARK(99)
 	      GOTO 100
            ENDIF
 C

@@ -57,6 +57,8 @@
 * V490:9/97 *kob* - mods to include negative time axis processing
 *   10/6/97  *sh* - added g=@xact regridding 
 * V491:4/98  *sh* - bug fix: @ASN could lead to hi<lo limits
+* V500: 2/99 *sh* - modified behavior when dest region is unspecified -- 
+*		provide full dest axis limits rather than source-data driven
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
@@ -161,10 +163,13 @@
      .                                  dst_hi_ss = dst_hi_ss - 1
 	IF ( dst_lo_ss .GT. dst_hi_ss ) dst_hi_ss = dst_lo_ss  ! bug check 5/93
 
-* if destination limits were unspecified set them equal to the available data
+* if destination limits were unspecified set them to the full axis span
  500    IF ( cx_hi_ss(dst_cx,axis) .EQ. unspecified_int4 ) THEN
-	   cx_lo_ss(dst_cx,axis) = dst_lo_ss
-	   cx_hi_ss(dst_cx,axis) = dst_hi_ss
+! pre 2/99 logic for unspecified limits
+!	   cx_lo_ss(dst_cx,axis) = dst_lo_ss
+!	   cx_hi_ss(dst_cx,axis) = dst_hi_ss
+	   cx_lo_ss(dst_cx,axis) = 1
+	   cx_hi_ss(dst_cx,axis) = CAXIS_LEN(axis, dst_cx)
 	   cx_lo_ww(axis,dst_cx) = TM_WORLD( dst_lo_ss,
      .					     dst_grid, axis, box_lo_lim )
 	   cx_hi_ww(axis,dst_cx) = TM_WORLD( dst_hi_ss,
@@ -186,6 +191,5 @@
 
 * size of working arrays needed for later regridding
 	work = dst_hi_ss - dst_lo_ss + 2
-
 	RETURN
 	END	

@@ -58,6 +58,8 @@
 *	 2/96    - issue warning that G=@NRS is not implemented
 * V490:  9/97 *kob* - mods to include negative time axis processing
 *     10/6/97 *sh*  - added g=@xact regridding 
+* V500:  2/99 *sh* - modified behavior when region is unspecified -- request
+*		full  dest axis limits of source rather than unspecified limts
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -88,7 +90,7 @@
 * internal variable declarations:
 	LOGICAL	GEOG_LABEL, ITSA_MODULO_REGRID,
      .		last_axis, src_modulo, calendar
-	INTEGER	ISUBSCRIPT, axis,
+	INTEGER	ISUBSCRIPT, CAXIS_LEN, axis,
      .		dst_grid, src_grid, src_lo_ss, src_hi_ss,
      .		src_min_ss, src_max_ss,
      .		dst_lo_ss, dst_hi_ss, where_loest, where_hiest, rgrd_trans
@@ -148,11 +150,14 @@
 
 * locate the necessary destination region (time in secs since BC)
 	IF ( cx_lo_ss(dst_cx,axis) .EQ. unspecified_int4 ) THEN
-* ... if unknown, hope they will get figured out later
-	   GOTO 1000
-* ... error (for now) if limits are unspecified
-!	   GOTO 5200
-!	   CALL GRID_SUBSCRIPT_EXTREMES(dst_lo_ss, dst_hi_ss, dst_grid, axis)
+! 2/99 - commented out earlier versions of logic
+!* ... if unknown, hope they will get figured out later <-- current on 2/99
+!	   GOTO 1000
+!* ... error (for now) if limits are unspecified	<-- old on 2/99
+!!	   GOTO 5200
+* ... always try to fill the entire destination axis
+	   dst_lo_ss = 1
+	   dst_hi_ss = CAXIS_LEN(axis, dst_cx)
 	ELSE
 	   dst_lo_ss = cx_lo_ss(dst_cx,axis)
 	   dst_hi_ss = cx_hi_ss(dst_cx,axis)

@@ -42,14 +42,15 @@
 *
 * V200:  7/21/89 - extracted from DIAG_OP
 * V230:  11/4/92 - expanded user variable name length
+* V500 *kob* 3/99- up VAR_CODE and local variable var to 64 chars
 
 * calling argument declarations:
 	INTEGER	idim, cx, out_len
 
 * internal variable declarations:
 	INTEGER	  TM_LENSTR1, slen, vlen
-	CHARACTER VAR_CODE*24, CX_DIM_STR*48,
-     .            var*24, out_buff*80, dim_str*48
+	CHARACTER VAR_CODE*64, CX_DIM_STR*48,
+     .            var*64, out_buff*80, dim_str*48
 
 #ifdef unix
 	include	'ferret.parm'

@@ -60,6 +60,7 @@
 * V450:  5/29/97 - added /NOAXES qualifier
 * V500   4.27.99 - *jd* NLINES command added to clean up after/before POLYGON
 * V510 *sh* 3/00 - added PLOT/COLOR=/SIZE= qualifiers
+* V521 6/00 *sh* - bug fix: PLOT/LINE/SYM should auto-select colors
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -179,7 +180,7 @@ CC       => Set values here instead.
 	      symbol = qual_on		! auto selection of symbols
 	   ENDIF
 	   use_line = .FALSE.		! default to no line w/ symbol
-	   color = 1			! default symbol color	      
+! 6/00	   color = 1			! default symbol color	      
 	ENDIF
 * ... PLOT/SYM_SIZE=float
 	loc = qual_given( slash_plot_symsize )

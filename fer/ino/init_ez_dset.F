@@ -62,6 +62,7 @@
 *                  datasets
 * 3/99 *kob* - nag F90 wants to use eqv for logical expressions
 * 5/99 *sh* - added arguments to EQUAL_PERMUTE call
+* V510 *sh* 3/00 - increased allowable filename length
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -97,10 +98,10 @@
      .			have_mods, already_init, by_number, swap
 	LOGICAL         have_type
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
-     .			tmap_status, loc, ivar, skip, grid, columns,
+     .			tmap_status, loc, skip, grid, columns,
      .			order(5), idim
-	CHARACTER	TM_INQ_PATH*80, var_list*256,
-     .			path_name*80, ezform*80, title*128, grid_name*16,
+	CHARACTER	TM_INQ_PATH*256, var_list*256,
+     .			path_name*256, ezform*80, title*128, grid_name*16,
      .			type*16, ctype*16
 	REAL		rval
 

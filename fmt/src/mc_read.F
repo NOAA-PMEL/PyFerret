@@ -53,6 +53,8 @@
 *                   2) minor mod to only open set entire path of cdf file if it
 *                      hasn't already been opened
 *           *sh* - added strides to CD_READ call
+* V510 *sh* 3/00 - increase allowable path name length
+
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -116,7 +118,7 @@
      .            end_read_tstep
 	INTEGER   TM_SUBSC, NCOPN, NCVID
 	LOGICAL   more_to_read, TM_FPEQ
-        CHARACTER*128   TM_INQ_PATH, tstep_file
+        CHARACTER*256   TM_INQ_PATH, tstep_file
 	CHARACTER*24 vname
 	CHARACTER*64 dim_name
 	INTEGER*4 STR_CASE_BLIND_COMPARE

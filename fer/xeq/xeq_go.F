@@ -58,6 +58,8 @@
 *		and the GO command is given from the keyboard
 *    12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V411: 9/11/95 (IBM port) variable go_help assigned to integer expression
+* V510 *sh* 3/00 -- increase allowed path name length
+
 
 ! Note: A known "bug" of the 12/94 GO_FILE symbol is that the PLOT+ symbol
 !	GO_FILE gets defined only **after** PLOT+ has already placed a window
@@ -90,9 +92,8 @@
 * internal variable declarations:
 	LOGICAL	go_help
 	INTEGER	LIB_GET_LUN, TM_LENSTR1,
-     .		temp_lun, status, TMAP_status, nlines, i
-	REAL	val
-        CHARACTER TM_INQ_PATH*80, cbuff*256
+     .		temp_lun, status, TMAP_status
+        CHARACTER TM_INQ_PATH*256, cbuff*256
 
 * internal parameter declarations
 	INTEGER     slash_go_help

@@ -114,7 +114,7 @@
 	INTEGER	  TM_LENSTR1, status, slen, sp, ipen,
      .		  ax1_blks, ax1_start, loc, sigdig,
      .		  ax2_blks, ax2_start, patt, i, nparm, num_it, 
-     .		  s1, s2, it_start(4), it_end(4), iax(4)
+     .		  s1, s2, it_start(4), it_end(4), iax(4), density
 	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
 	PARAMETER (aspect = 0.0)			!kob 12/96
 	CHARACTER TM_FMT*12, fname*128, buff*25
@@ -213,6 +213,8 @@
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+        density = 0	! not used; vec/flow needs it in set up
+
 * set up the axes and title and load the data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
      . 			 	not_vector,
@@ -222,6 +224,7 @@
      .				no_labels,
      .				no_range,
      .				only_val,
+     .                          density,
      .				is_logh, 
      .				is_logv,
      .				is_mr,		! pass list

@@ -1,6 +1,6 @@
 	SUBROUTINE DISP_SET_UP( memory,
      .				vector, aspect, overlay, transpz, no_labels, 
-     .				no_x_rng, valx1, is_logx, is_logy,
+     .				no_x_rng, valx1, density, is_logx, is_logy,
      .				mr_list, nmv, cx_list, uvar,
      .				s1_axis, s2_axis, pen, status )
 
@@ -159,7 +159,7 @@ C plus those starting w/ xbox_bounds:
 	LOGICAL		vector, overlay, transpz, no_labels, no_x_rng,
      .			is_logx, is_logy, flows
 	INTEGER		nmv, mr_list( nmv ), cx_list( nmv ), uvar,
-     .			pen, status
+     .			density, pen, status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	REAL 		aspect, valx1, s1_axis(*), s2_axis(*)
 
@@ -236,12 +236,12 @@ C plus those starting w/ xbox_bounds:
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 
 !  For flowlines, more PLOT+ memory needed; based on density parameter and
-!  grid size.  Use density=5; an upper bound for iscl in subroutine flowline.
+!  grid size.
 
         IF ( flows ) THEN
            nsiz = MAX(size1, size2)
-!           iscl = density-5 + 200/nsiz
            iscl = 200/nsiz
+           iscl = iscl + density - 5
            IF (iscl .LT. 1) iscl = 1
            IF (iscl .GT. 10) iscl = 10
 

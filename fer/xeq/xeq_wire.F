@@ -85,7 +85,7 @@
      .		  is_logh, is_logv
 	INTEGER	  status, qp,
      .		  ax1_blks, ax1_start,
-     .		  ax2_blks, ax2_start
+     .		  ax2_blks, ax2_start, density
 	REAL	  only_val, aspect
 	PARAMETER (aspect = 0.0) 		!kob 12/96
 	CHARACTER vpoint*24, zlims*24, zscale*24
@@ -146,6 +146,8 @@
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+        density = 0	! not used; vec/flow needs it in set up
+
 * set up the axes and title and load the data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
      .				not_vector,
@@ -155,6 +157,7 @@
      .				no_labels,
      .				no_range,
      .				only_val,
+     .                          density,
      .				is_logh, 
      .				is_logv,
      .				is_mr,		! pass list

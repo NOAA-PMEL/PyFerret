@@ -37,7 +37,7 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* written for VAX computer uvnder VMS operating system
 *
 * revision 0.0 - 1/7/87
 * revision 0.1 - 2/25/87 - changes for INTERPRETATION STACK
@@ -214,6 +214,24 @@
 	   ipen = ncolors*(thick-1) + ipen
 	ENDIF
 
+* for flowline plots, get the density
+        density = 0
+        IF (flows) THEN 
+	   loc = qual_given( slash_vect_density )
+	   IF ( loc .GT. 0 ) THEN
+	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   vbuf, status )
+	      IF ( status .NE. ferr_ok ) RETURN
+	      IF ( vbuf .EQ. unspecified_val4 ) THEN
+	         density = 1.
+	      ELSE
+	         density = ABS(vbuf)
+	      ENDIF
+           ELSE
+              density = 5
+           ENDIF
+        ENDIF
+
 * set up title and load the x component data into PPLUS
 	CALL DISP_SET_UP   ( 	memory,
      .				vector,
@@ -223,6 +241,7 @@
      .				no_labels,
      .				no_x_rng,
      .				only_x,
+     .                          density,
      .				is_logh, 
      .				is_logv,
      .				is_mr,
@@ -378,19 +397,6 @@ c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
         ELSE  
 
 * plot it with flowlines
-	   loc = qual_given( slash_vect_density )
-	   IF ( loc .GT. 0 ) THEN
-	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   vbuf, status )
-	      IF ( status .NE. ferr_ok ) RETURN
-	      IF ( vbuf .EQ. unspecified_val4 ) THEN
-	         density = 1.
-	      ELSE
-	         density = ABS(vbuf)
-	      ENDIF
-           ELSE
-              density = 5
-           ENDIF
 
            CALL flow_set_up (is_mr, is_cx, transpz)
 

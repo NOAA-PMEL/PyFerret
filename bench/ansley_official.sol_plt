@@ -13197,3 +13197,9 @@ SHAKEY 1,1
 shakey ,0,-.1,2,,,,,-1.4
 shade
 list shakey
+CLSPLT
+SHASET RESET
+AXLEN        8.740       5.405
+SET VP_WIDTH 10.94
+SET VP_HEIGHT 8.205
+ORIGIN        1.200       1.400

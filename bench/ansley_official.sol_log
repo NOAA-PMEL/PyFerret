@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version ~ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     59175612 Jun  2 11:20 /home/ja8/ansley//FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     59208032 Jun 11 09:59 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: repeat-loop fixes in parse_command
+Note: fix for regridding to axis from nc file with a modulo value
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Mon Jun 2 11:24:35 PDT 2003
+Beginning at Wed Jun 11 10:32:41 PDT 2003
  	NOAA/PMEL TMAP
  	FERRET v5.52  
- 	Solaris 5.6 - 06/02/03
- 	 2-Jun-03 11:24     
+ 	Solaris 5.6 - 06/11/03
+ 	11-Jun-03 10:32     
 
 yes? !bn500_all_shell
 yes? 
@@ -10120,8 +10120,8 @@ PPL$YPIXEL = "344"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.52"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 2-Jun-03"
-SESSION_TIME = "11:24"
+SESSION_DATE = "11-Jun-03"
+SESSION_TIME = "10:32"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10139,8 +10139,8 @@ PPL$YPIXEL = "344"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.52"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 2-Jun-03"
-SESSION_TIME = "11:24"
+SESSION_DATE = "11-Jun-03"
+SESSION_TIME = "10:32"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10148,8 +10148,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 2-Jun-03"
-SESSION_TIME = "11:24"
+SESSION_DATE = "11-Jun-03"
+SESSION_TIME = "10:32"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10159,13 +10159,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 2-Jun-03"
-SESSION_TIME = "11:24"
+SESSION_DATE = "11-Jun-03"
+SESSION_TIME = "10:32"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 2-Jun-03"
-SESSION_TIME = "11:24"
+SESSION_DATE = "11-Jun-03"
+SESSION_TIME = "10:32"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10199,7 +10199,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.52"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jun  2 2003 11:25:51 "
+LAB3 = "Jun 11 2003 10:34:01 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10300,8 +10300,8 @@ PPL$YPIXEL = "344"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.52"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 2-Jun-03"
-SESSION_TIME = "11:24"
+SESSION_DATE = "11-Jun-03"
+SESSION_TIME = "10:32"
  
  
 GO bn_reset
@@ -18302,7 +18302,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       17811 Jun  2 11:26 bench.mgm
+-rw-rw-r--   1 ansley   tmap       17809 Jun 11 10:35 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18321,7 +18321,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      319326 Jun  2 11:27 bench.mgm
+-rw-rw-r--   1 ansley   tmap      319259 Jun 11 10:35 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26470,7 +26470,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.52    2-Jun-03" ;
+		:history = "FERRET V5.52   11-Jun-03" ;
 data:
 
  T5 = 50757969 ;
@@ -26494,7 +26494,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.52    2-Jun-03" ;
+		:history = "FERRET V5.52   11-Jun-03" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26646,7 +26646,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Mon Jun  2 11:28:29 PDT 2003
+Wed Jun 11 10:36:48 PDT 2003
  
 GO bn_reset
 cancel mode verify
@@ -34936,7 +34936,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Jun  2 11:29 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jun 11 10:37 testa.v5d
  
 can region
 use coads_climatology
@@ -34948,7 +34948,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Jun  2 11:29 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jun 11 10:37 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35016,7 +35016,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.52    2-Jun-03" ;
+		:history = "FERRET V5.52   11-Jun-03" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35079,7 +35079,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.52    2-Jun-03" ;
+		:history = "FERRET V5.52   11-Jun-03" ;
 data:
 
  GFP3 = "" ;
@@ -35299,7 +35299,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.52    2-Jun-03" ;
+		:history = "FERRET V5.52   11-Jun-03" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -41429,6 +41429,73 @@ def sym a 0; rep/i=1:3:1 (def sym a `i`; say ($a))
  !-> MESSAGE/CONTINUE 3
 3
  
+! data from nc file with time axis modulo=value, when regridded to
+! another time axis, some times have missing data
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err551_modulo_nc_regrid.jnl
+! data from nc file with time axis having modulo=value, when regridded
+! to another time axis, some times have missing data
+ 
+! First write a file with a monthly climatology:
+ 
+use coads_vwnd
+set region/x=161w/y=39n
+use climatological_axes
+ *** NOTE: regarding ./climatological_axes.cdf ...
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, and MONTH_IRREG defined
+can data climatological_axes
+ 
+let vwnd_clim = vwnd[gt=month_reg@mod]
+ 
+save/clobber/file=clim.nc vwnd_clim
+ LISTing to file clim.nc
+ 
+! File clim.nc is a climatology with the attribute
+!		MONTH_REG:modulo = 8765.82 ;
+ 
+! The data is ok if we now regrid to the monthly_navy_winds time axis
+list/l=23:27 vwnd_clim[gt=vwnd[d=1]]
+             VARIABLE : VWND[GT=MONTH_REG@MOD]
+                        regrid: VWND
+             FILENAME : coads_vwnd.cdf
+             SUBSET   : 5 points (TIME)
+             LONGITUDE: 161W
+             LATITUDE : 39N
+                        161W    
+                         90
+ 16-NOV-1947 00 / 23: -3.07590
+ 16-DEC-1947 12 / 24:  1.67401
+ 16-JAN-1948 12 / 25:  3.42908
+ 15-FEB-1948 12 / 26:  1.95365
+ 16-MAR-1948 12 / 27:  2.76119
+ 
+! now use the climatology data file; note that when regridded to the
+! time axis of vwnd, some times have missing data
+ 
+can data/all
+can var/all
+ 
+use coads_vwnd
+use clim
+list/l=23:27 vwnd_clim[gt=vwnd[d=1]]
+             VARIABLE : VWND[GT=MONTH_REG@MOD]
+                        regrid: on T
+             FILENAME : clim.nc
+             SUBSET   : 5 points (TIME)
+             LONGITUDE: 161W
+             LATITUDE : 39N
+                        161W    
+                          1
+ 16-NOV-1947 00 / 23: -3.07544
+ 16-DEC-1947 12 / 24:  1.66995
+ 16-JAN-1948 12 / 25:  3.42770
+ 15-FEB-1948 12 / 26:  1.95491
+ 16-MAR-1948 12 / 27:  2.76047
+ 
+ 
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
@@ -41719,6 +41786,7 @@ ppl list shakey
          X LO     X HI     Y LO     Y HI
          1.20     9.94    -1.40    -1.30
  
+can view
  
  
  
@@ -41726,8 +41794,8 @@ ppl list shakey
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.52  
- 	Solaris 5.6 - 06/02/03
- 	 2-Jun-03 11:32     
+ 	Solaris 5.6 - 06/11/03
+ 	11-Jun-03 10:40     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -41903,8 +41971,8 @@ frame/file=bnplot.gif
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.52  
- 	Solaris 5.6 - 06/02/03
- 	 2-Jun-03 11:32     
+ 	Solaris 5.6 - 06/11/03
+ 	11-Jun-03 10:40     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -42017,4 +42085,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Mon Jun 2 11:32:29 PDT 2003
+Ended at Wed Jun 11 10:40:56 PDT 2003

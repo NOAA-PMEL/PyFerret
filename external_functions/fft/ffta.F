@@ -83,6 +83,7 @@
       WRITE (arg_desc, 10) 
    10 FORMAT ('Variable with regular time axis. Specify time ', 
      .         'explicitly e.g. ffta(var[l=1,120])')
+
       CALL ef_set_arg_desc(id, arg, arg_desc)
 
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, NO)
@@ -92,6 +93,75 @@
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
 ***********************************************************************
+
+      RETURN 
+      END
+
+
+      SUBROUTINE ffta_custom_axes(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INTEGER id
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+*                      
+*
+*     Use utility functions to get grid information about the 
+*     argument; use this info to determine the custom axis lo/hi/del 
+
+      INTEGER nfreq_lo_l, nfreq_hi_l
+
+      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+     .     arg_incr(4,EF_MAX_ARGS)
+
+      INTEGER arg, unspecified_int4
+      INTEGER nfreq, nd
+
+      REAL yquist, freq1, freqn
+      CHARACTER outunits*20
+
+      unspecified_int4 = -111
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+
+      arg = 1
+      IF ( arg_lo_ss(T_AXIS,arg) .EQ. unspecified_int4 ) THEN
+         nfreq_lo_l = 1
+      ELSE
+         nfreq_lo_l = arg_lo_ss(T_AXIS,arg)
+      ENDIF
+
+      IF ( arg_hi_ss(T_AXIS,arg) .EQ. unspecified_int4 ) THEN
+         nfreq_hi_l = 2		! use: size of t axis from get_arg_axis_limits
+      ELSE
+         nfreq_hi_l = arg_hi_ss(T_AXIS,arg)
+      ENDIF
+
+      arg = 1
+      nd = (arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1)
+
+      nfreq = nd/ 2
+
+*  FFT routine works on an even number of time points.
+
+      IF (nd .NE. nfreq* 2) nd = nd-1
+      nfreq = nd/ 2
+
+      yquist = 0.5              ! Nyquist frequency
+      freq1 = 1.* yquist/ float(nfreq)
+      freqn = yquist
+
+      outunits = 'FREQ'
+      CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
+     .   outunits, NO)
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
 
       RETURN 
       END
@@ -119,8 +189,7 @@
 *                                                                     |
 *                                                                     V
 
-      COMMON /fftalim/ nfreq_lo_l, nfreq_hi_l
-      INTEGER nfreq_lo_l, nfreq_hi_l
+      INTEGER ntime, nfreq
 
       INTEGER arg
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
@@ -131,77 +200,18 @@
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      nfreq_lo_l = 1
-      nfreq_hi_l = 1
-
+      nfreq = 1
 
       arg = 1
-      nfreq_hi_l = 
-     .        (arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1)/ 2
+      ntime = arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1
+      nfreq = ntime/ 2
 
-      CALL ef_set_axis_limits(id, T_AXIS, nfreq_lo_l, nfreq_hi_l)
+*  FFT routine works on an even number of time points.
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
+      IF (ntime .NE. nfreq*2) ntime = ntime-1
+      nfreq = ntime/ 2
 
-      RETURN 
-      END
-
-      SUBROUTINE ffta_custom_axes(id)
-
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INTEGER id
-
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                      
-*
-*     Use utility functions to get grid information about the 
-*     argument; use this info to determine the custom axis lo/hi/del 
-
-      COMMON /fftalim/ nfreq_lo_l, nfreq_hi_l
-      INTEGER nfreq_lo_l, nfreq_hi_l
-
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
-      INTEGER arg, unspecified_int4
-      INTEGER nfreq
-
-      REAL yquist, freq1, freqn
-      CHARACTER outunits*20
-
-      unspecified_int4 = -111
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-      arg = 1
-      IF ( arg_lo_ss(T_AXIS,arg) .EQ. unspecified_int4 ) THEN
-         nfreq_lo_l = 1
-
-      ELSE
-         nfreq_lo_l = arg_lo_ss(T_AXIS,arg)
-      ENDIF
-
-      IF ( arg_hi_ss(T_AXIS,arg) .EQ. unspecified_int4 ) THEN
-         nfreq_hi_l = 2		! use: size of t axis from get_arg_axis_limits
-
-      ELSE
-         nfreq_hi_l = arg_hi_ss(T_AXIS,arg)
-      ENDIF
-
-      arg = 1
-      nfreq = (nfreq_hi_l - nfreq_lo_l + 1)/ 2
-
-      yquist = 0.5              ! Nyquist frequency
-      freq1 = 1.* yquist/ float(nfreq)
-      freqn = yquist
-
-      outunits = 'FREQ'
-      CALL ef_set_custom_axis(id, T_AXIS, freq1, freqn, freq1, 
-     .   outunits, NO)
+      CALL ef_set_axis_limits(id, T_AXIS, 1, nfreq)
 
 *                                                                      ^
 *                                                                      |
@@ -228,11 +238,9 @@
 * 
 * Set the work arrays,  X/Y/Z/T dimensions
 *
-* ef_set_work_array_lens(id, array #, X len, Y len, Z len, T len)
+* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
 *
-      COMMON /STOR/ mtdat, mtwork
       INTEGER mtdat, mtwork
-
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
 
@@ -243,19 +251,19 @@
       mtwork = 2.5* mtdat + 15
   
 * creal
-      CALL ef_set_work_array_lens (id, 1, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
 * cimag
-      CALL ef_set_work_array_lens (id, 2, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
 * wft
-      CALL ef_set_work_array_lens (id, 3, mtwork, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, mtwork, 1, 1, 1)
 
 * ts
-      CALL ef_set_work_array_lens (id, 4, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
 * ws
-      CALL ef_set_work_array_lens (id, 5, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 5, 1, 1, 1, 1, mtdat, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -275,7 +283,7 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
-          INTEGER id
+      INTEGER id, arg
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
@@ -296,27 +304,30 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      COMMON /STOR/ mtdat, mtwork
-      INTEGER mtdat, mtwork
-
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
 
-*  Set up work arrays
+*  Dimenstion work arrays
 
-      REAL creal(1:mtdat, 1:1, 1:1, 1:1)
-      REAL cimag(1:mtdat, 1:1, 1:1, 1:1)
-      REAL wft(1:mtwork, 1:1, 1:1, 1:1)
-      REAL ts(1:mtdat, 1:1, 1:1, 1:1)
-      REAL ws(1:mtdat, 1:1, 1:1, 1:1)
+      REAL creal(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+      REAL cimag(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+      REAL wft(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+      REAL ts(wrk4lox:wrk4hix, wrk4loy:wrk4hiy,
+     .               wrk4loz:wrk4hiz, wrk4lot:wrk4hit)
+      REAL ws(wrk5lox:wrk5hix, wrk5loy:wrk5hiy,
+     .               wrk5loz:wrk5hiz, wrk5lot:wrk5hit)
 
-      COMMON /fftalim/ nfreq_lo_l, nfreq_hi_l
+      REAL rr, ri
+      INTEGER nd, nf
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
 
       CHARACTER*80 err_msg
 
-   40 FORMAT ('FFT encountered missing data at (i,j,k,l)', 4I5)
+   40 FORMAT ('FFTA encountered missing data at (i,j,k,l)', 4I5)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -324,17 +335,10 @@
 
 *  FFT routine works on an even number of time points.
 
-      nd = mtdat
+      arg = 1
+      nd = (arg_hi_ss(T_AXIS,arg) - arg_lo_ss(T_AXIS,arg) + 1)
       nf = nd/ 2
       IF (nd .NE. nf*2) nd = nd-1
-
-      nr = res_hi_ss(T_AXIS) - res_lo_ss(T_AXIS) + 1
-
-      IF (nr .ne. nf) then
-         WRITE (err_msg, *) 'Specify # of time steps explicitly',
-     .     ' e.g. LET sstfft = ffta(ssttim[l=1:120])'
-         GO TO 999
-      ENDIF
 
 *  Check that the time axis is regular.
 
@@ -413,7 +417,8 @@
 
       SUBROUTINE FOUR_RE (ND, X, CREAL, CIMAG, WFT)
       REAL X(*), WFT(*) 
-      REAL CREAL(*), CIMAG(*), CR, CI
+      REAL CREAL(*), CIMAG(*), CR, CI, CN, XN
+      INTEGER ND, NF, I, J
 
 c   uses NCAR FFT code
 
@@ -431,7 +436,7 @@ c   save X
 
       DO I = 1, NF
         J = I + I
-        CREAL(I) =X(J-1)
+        CREAL(I) = X(J-1)
         CIMAG(I) = X(J)
       ENDDO
 
@@ -444,7 +449,9 @@ c   save X
 
 c   restore X and compute complex Cn
 
-      CR = 0.5* X(2) 
+      J = 0
+      CN = 0.5* X(2) 
+
       DO I = 1, NF-1
         J = I + I
         CR = CREAL(I)
@@ -527,7 +534,8 @@ C             DESTROYED BETWEEN CALLS OF SUBROUTINE CFFTF OR CFFTB
 C***REFERENCES
 C***ROUTINES CALLED  CFFTB1
 C***END PROLOGUE  CFFTB
-      DIMENSION       C(*)       ,WSAVE(*)
+      REAL C(*) , WSAVE(*)
+      INTEGER N, IW1, IW2
 C***FIRST EXECUTABLE STATEMENT  CFFTB
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
@@ -543,7 +551,10 @@ C***BEGIN PROLOGUE  CFFTB1
 C***REFER TO CFFTB
 C***ROUTINES CALLED  PASSB,PASSB5,PASSB3,PASSB2,PASSB4
 C***END PROLOGUE  CFFTB1
-      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
+      REAL    CH(*), C(*), WA(*)
+      INTEGER N, IFAC(*)
+      INTEGER NF, NA, L1, IW, K1, IP, L2, IDO, IDOT, IDL1
+      INTEGER IX2, IX3, IX4, NAC, N2, I
 C***FIRST EXECUTABLE STATEMENT  CFFTB1
       NF = IFAC(2)
       NA = 0
@@ -668,7 +679,8 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  CFFTF1
 C***END PROLOGUE  CFFTF
-      DIMENSION       C(*)       ,WSAVE(*)
+      REAL       C(*)  , WSAVE(*)
+      INTEGER N, IW1, IW2
 C***FIRST EXECUTABLE STATEMENT  CFFTF
 
       IF (N .EQ. 1) RETURN
@@ -685,7 +697,10 @@ C***BEGIN PROLOGUE  CFFTF1
 C***REFER TO CFFTF
 C***ROUTINES CALLED  PASSF,PASSF5,PASSF3,PASSF2,PASSF4
 C***END PROLOGUE  CFFTF1
-      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
+      REAL       CH(*) , C(*)  , WA(*)
+      INTEGER IFAC(*), N
+      INTEGER NF, NA, L1, IW, K1, IP, L2, IDO, IDOT, IDL1
+      INTEGER IX2, IX3, IX4, NAC, N2, I
 C***FIRST EXECUTABLE STATEMENT  CFFTF1
       NF = IFAC(2)
       NA = 0
@@ -785,7 +800,8 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  CFFTI1
 C***END PROLOGUE  CFFTI
-      DIMENSION       WSAVE(*)
+      REAL       WSAVE(*)
+      INTEGER N, IW1, IW2
 C***FIRST EXECUTABLE STATEMENT  CFFTI
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
@@ -801,7 +817,12 @@ C***BEGIN PROLOGUE  CFFTI1
 C***REFER TO CFFTI
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  CFFTI1
-      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
+      REAL WA(*)
+      REAL TPI, ARGH, WLDC, WLDS, ARG, DL1C, DL1S, WLDCH, DC, DS
+
+      INTEGER N, IFAC(*) ,NTRYH(4)
+      INTEGER NL, NF, J, NTRY, NQ, NR, I, IB, I1, II, L1
+      INTEGER IDO, IDOT, IPM, K1, IP, LD, L2
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/3,4,2,5/
 C***FIRST EXECUTABLE STATEMENT  CFFTI1
       NL = N
@@ -967,7 +988,10 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  CFFTB,RFFTB,EZFFTI
 C***END PROLOGUE  EZFFTB
-      DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
+      REAL R(*), A(*), B(*), WSAVE(*), AZERO
+      INTEGER N
+      INTEGER NS2, MODN, IW1, NS2M, I, NM1S2, IC
+
 C***FIRST EXECUTABLE STATEMENT  EZFFTB
       IF (N .GT. 1) GO TO 101
       R(1) = AZERO
@@ -1081,7 +1105,9 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  CFFTF,RFFTF,EZFFTI
 C***END PROLOGUE  EZFFTF
-      DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
+      REAL R(*), A(*), B(*), WSAVE(*), AZERO
+      REAL CF
+      INTEGER N, NS2, MODN, IW1, NS2M, I, NM1S2
 C***FIRST EXECUTABLE STATEMENT  EZFFTF
       IF (N .GT. 1) GO TO 101
       AZERO = R(1)
@@ -1169,7 +1195,8 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  CFFTI,RFFTI
 C***END PROLOGUE  EZFFTI
-      DIMENSION       WSAVE(*)
+      REAL WSAVE(*)
+      INTEGER N, NS2, MODN, IW1
 C***FIRST EXECUTABLE STATEMENT  EZFFTI
       IF (N .LE. 2) RETURN
       NS2 = N/2
@@ -1251,9 +1278,14 @@ C***BEGIN PROLOGUE  PASSB
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSB
-      DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
-     1                C1(IDO,L1,IP)          ,WA(*)      ,C2(IDL1,IP),
-     2                CH2(IDL1,IP)
+      INTEGER NAC, IDO, IP, L1, IDL1
+      REAL CH(IDO,L1,IP), CC(IDO,IP,L1), C1(IDO,L1,IP), 
+     . WA(*), C2(IDL1,IP), CH2(IDL1,IP)
+
+      REAL WAR, WAI
+      INTEGER IDOT, NT, IPP2, IPPH, IDP, I, J, L, LC, IK, 
+     . JC, K, IDL, INC, IDLJ, IDIJ, IDJ
+
 C***FIRST EXECUTABLE STATEMENT  PASSB
       IDOT = IDO/2
       NT = IP*IDL1
@@ -1376,8 +1408,11 @@ C***BEGIN PROLOGUE  PASSB2
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSB2
-      DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1                WA1(*)
+      INTEGER IDO, L1, I
+      REAL CC(IDO,2,L1), CH(IDO,L1,2), WA1(*)
+
+      REAL TR2, TI2
+      INTEGER K
 C***FIRST EXECUTABLE STATEMENT  PASSB2
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
@@ -1408,8 +1443,11 @@ C***BEGIN PROLOGUE  PASSB3
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSB3
-      DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1                WA1(*)     ,WA2(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,3,L1), CH(IDO,L1,3), WA1(*), WA2(*)
+      REAL TAUR, TAUI, TR2, CR2, TI2, CI2, CR3, CI3, DR2, DR3, DI2, DI3
+      INTEGER K, I
+
       DATA TAUR,TAUI /-.5,.866025403784439/
 C***FIRST EXECUTABLE STATEMENT  PASSB3
       IF (IDO .NE. 2) GO TO 102
@@ -1459,8 +1497,11 @@ C***BEGIN PROLOGUE  PASSB4
 C***REFER TO CFFTB
 C***ROUTINES CALLED (NONE)
 C***END PROLOGUE  PASSB4
-      DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1                WA1(*)     ,WA2(*)     ,WA3(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,4,L1), CH(IDO,L1,4), WA1(*), WA2(*), WA3(*)
+      INTEGER K, I
+      REAL TI1, TI2, TI3, TI4, TR1, TR2, TR3, TR4
+      REAL CI2, CI3, CI4, CR2, CR3, CR4
 C***FIRST EXECUTABLE STATEMENT  PASSB4
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -1519,10 +1560,18 @@ C***BEGIN PROLOGUE  PASSB5
 C***REFER TO CFFTB
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSB5
-      DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,5,L1), CH(IDO,L1,5), WA1(*), WA2(*), WA3(*), WA4(*)
+
+      INTEGER K, I
+      REAL TI2, TI3, TI4, TI5, TR2, TR3, TR4, TR5
+      REAL CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5
+      REAL DI2, DI3, DI4, DI5, DR2, DR3, DR4, DR5
+      REAL TR11, TI11, TR12, TI12
+
       DATA TR11,TI11,TR12,TI12 /.309016994374947,.951056516295154,
      1-.809016994374947,.587785252292473/
+
 C***FIRST EXECUTABLE STATEMENT  PASSB5
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -1603,9 +1652,13 @@ C***BEGIN PROLOGUE  PASSF
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSF
-      DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
-     1                C1(IDO,L1,IP)          ,WA(*)      ,C2(IDL1,IP),
-     2                CH2(IDL1,IP)
+      INTEGER IDO, L1, IP, IDL1
+      REAL CH(IDO,L1,IP) ,CC(IDO,IP,L1), C1(IDO,L1,IP), 
+     .     WA(*), C2(IDL1,IP), CH2(IDL1,IP)
+      REAL WAR, WAI
+      INTEGER NAC
+      INTEGER IDOT, NT, IPP2, IPPH, IDP, J, JC, K, I, L, LC, IDL, INC
+      INTEGER IDLJ, IDIJ, IDJ, IK
 C***FIRST EXECUTABLE STATEMENT  PASSF
       IDOT = IDO/2
       NT = IP*IDL1
@@ -1728,8 +1781,10 @@ C***BEGIN PROLOGUE  PASSF2
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSF2
-      DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1                WA1(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,2,L1), CH(IDO,L1,2), WA1(*)
+      INTEGER K, I
+      REAL TR2, TI2
 C***FIRST EXECUTABLE STATEMENT  PASSF2
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
@@ -1760,8 +1815,13 @@ C***BEGIN PROLOGUE  PASSF3
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSF3
-      DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1                WA1(*)     ,WA2(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,3,L1), CH(IDO,L1,3), WA1(*), WA2(*)
+
+      INTEGER K, I
+      REAL TR2, CR2, TI2, CI2, CR3, CI3, DR2, DR3, DI2, DI3
+     
+      REAL TAUR, TAUI
       DATA TAUR,TAUI /-.5,-.866025403784439/
 C***FIRST EXECUTABLE STATEMENT  PASSF3
       IF (IDO .NE. 2) GO TO 102
@@ -1811,8 +1871,11 @@ C***BEGIN PROLOGUE  PASSF4
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSF4
-      DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1                WA1(*)     ,WA2(*)     ,WA3(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,4,L1), CH(IDO,L1,4), WA1(*), WA2(*), WA3(*)
+      INTEGER K, I
+      REAL TI1, TI2, TI3, TI4, TR1, TR2, TR3, TR4
+      REAL CI2, CI3, CI4, CR2, CR3, CR4
 C***FIRST EXECUTABLE STATEMENT  PASSF4
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -1871,8 +1934,15 @@ C***BEGIN PROLOGUE  PASSF5
 C***REFER TO CFFTF
 C***ROUTINES CALLED  (NONE)
 C***END PROLOGUE  PASSF5
-      DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
+      INTEGER IDO, L1
+      REAL CC(IDO,5,L1), CH(IDO,L1,5), WA1(*), WA2(*), WA3(*), WA4(*)
+
+      INTEGER K, I
+      REAL TI2, TI3, TI4, TI5, TR2, TR3, TR4, TR5
+      REAL CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5
+      REAL DI2, DI3, DI4, DI5, DR2, DR3, DR4, DR5
+ 
+      INTEGER TR11, TI11, TR12, TI12
       DATA TR11,TI11,TR12,TI12 /.309016994374947,-.951056516295154,
      1-.809016994374947,-.587785252292473/
 C***FIRST EXECUTABLE STATEMENT  PASSF5
@@ -2013,7 +2083,10 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  RFFTB1,XERROR
 C***END PROLOGUE  RFFTB
-      DIMENSION       R(2,*)     ,WSAVE(*)
+      REAL R(2,*), WSAVE(*)
+      INTEGER N
+      REAL R1
+      INTEGER IW1
 C***FIRST EXECUTABLE STATEMENT  RFFTB
       IF (N .GT. 2) GO TO 101
       R1 = R(1,1)+R(2,1)
@@ -2033,7 +2106,10 @@ C***BEGIN PROLOGUE  RFFTB1
 C***REFER TO RFFTB
 C***ROUTINES CALLED  CFFTB
 C***END PROLOGUE  RFFTB1
-      DIMENSION       X(2,*)     ,XH(2,*)    ,W(*)
+      REAL X(2,*), XH(2,*), W(*)
+      INTEGER N
+      INTEGER NS2, NS2P2, NQ, IPAR, NQM, NQP, K, KC
+      REAL XHOLD1
 C***FIRST EXECUTABLE STATEMENT  RFFTB1
       NS2 = N/2
       NS2P2 = NS2+2
@@ -2155,7 +2231,9 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  RFFTF1,XERROR
 C***END PROLOGUE  RFFTF
-      DIMENSION       R(2,*)     ,WSAVE(*)
+      REAL       R(2,*), WSAVE(*)
+      INTEGER N, IW1
+      REAL R1
 C***FIRST EXECUTABLE STATEMENT  RFFTF
       IF (N .GT. 2) GO TO 101
       R1 = 2.*(R(1,1)+R(2,1))
@@ -2175,7 +2253,10 @@ C***BEGIN PROLOGUE  RFFTF1
 C***REFER TO RFFTF
 C***ROUTINES CALLED  CFFTF
 C***END PROLOGUE  RFFTF1
-      DIMENSION       X(2,*)     ,XH(2,*)    ,W(*)
+      REAL X(2,*), XH(2,*), W(*)
+      INTEGER N
+      INTEGER NS2, NS2P2, NQ, IPAR, NQM, NQP, K, KC
+      REAL XHOLD1, XHOLD2
 C***FIRST EXECUTABLE STATEMENT  RFFTF1
       NS2 = N/2
       NS2P2 = NS2+2
@@ -2266,7 +2347,10 @@ C
 C***REFERENCES
 C***ROUTINES CALLED  CFFTI,XERROR
 C***END PROLOGUE  RFFTI
-      DIMENSION       WSAVE(*)
+      REAL WSAVE(*)
+      INTEGER N
+      INTEGER NS2,NQM, K, KC, IW1
+      REAL TPI, DT, DC, DS
 C***FIRST EXECUTABLE STATEMENT  RFFTI
       N = 2* (N/2)  ! N must be even
 
@@ -2298,7 +2382,8 @@ c   revised 1/24/96
 
 c   Calls: no subroutines
 
-      DIMENSION W(*)
+      REAL W(*), S
+      INTEGER ND, NP, I, MD, J
       REAL*8 PI, XM, CC, S1, S2, S3
 
       DO I = 1, ND
@@ -2356,6 +2441,7 @@ C  WITH OTHER WINDOWS
 
 c     revise 4/20/98
 
+      INTEGER ND, ISW, I
       REAL W(*)
       REAL*8 UN, D, U, WI
       UN = DBLE(4)/(DBLE(ND-1)* DBLE(ND-1))

@@ -3,45 +3,11 @@
 ! Benchmark for sort and sample external Functions
 ! ACM 5/99
 
-use coads_climatology
-set region/x=141/y=39/z=0/l=1:6
+go bench_sorti.jnl
 
-list sst
-list samplel({1,3,5},sst)
+go bench_sortj.jnl
 
-let tsorted_indices = sortl(sst)
-let tsorted_sst = samplel(tsorted_indices, sst)
+go bench_sortk.jnl
 
-list tsorted_indices, tsorted_sst
-
-
-
-
-can region
-use coads_climatology
-set region/x=141:151/y=39/z=0/l=2
-
-list sst
-
-let tsorted_indices = sorti( sst[i=61:66])
-let tsorted_sst = samplei(tsorted_indices,  sst)
-
-list tsorted_indices, tsorted_sst
-
-
-
-can region
-use coads_climatology
-set region/x=141/y=39:49/z=0/l=2
-
-list sst
-
-let tsorted_indices = sortj( sst[j=65:70])
-let tsorted_sst = samplej(tsorted_indices,  sst)
-
-list tsorted_indices, tsorted_sst
-
-
-can region 
-set data coads_climatology
+go bench_sortl.jnl
 

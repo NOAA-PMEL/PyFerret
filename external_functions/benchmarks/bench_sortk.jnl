@@ -1,0 +1,22 @@
+
+
+! Benchmark for sort and sample external Functions
+! ACM 5/99
+
+! test sortz, samplez
+ 
+can region
+use gt160w011
+
+set region/i=70/l=1
+shade temp
+
+let zsorted_indices = sortk(temp)
+let zsorted_temp = samplek(zsorted_indices, temp)
+shade zsorted_temp
+
+set region/j=10
+let len = zsorted_temp[k=@ngd]
+list len
+
+

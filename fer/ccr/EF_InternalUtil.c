@@ -26,10 +26,21 @@
 
 
 /* ................ Global Variables ................ */
+/*
+ * The memory_ptr, mr_list_ptr and cx_list_ptr are obtained from Ferret
+ * and cached whenever they are passed into one of the "efcn_" functions.
+ * These pointers can be accessed by the utility functions in libef_util
+ * or lib_ef_c_util.  This way the EF writer does not need to see them.
+ */
 
-static LIST *GLOBAL_ExternalFunctionList;
+static LIST  *GLOBAL_ExternalFunctionList;
+float *GLOBAL_memory_ptr;
+int   *GLOBAL_mr_list_ptr;
+int   *GLOBAL_cx_list_ptr;
+float *GLOBAL_bad_flag_ptr;
+
 static int I_have_scanned_already = FALSE;
-static int I_have_warned_already = TRUE;
+static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
 
 /* ............. Function Declarations .............. */
@@ -46,14 +57,16 @@ static int I_have_warned_already = TRUE;
 int  efcn_scan_( int * );
 int  efcn_already_have_internals_( int * );
 
-int efcn_gather_info_( int * );
-void efcn_get_axis_abstract_( int *, float *, int *, int *, int *, int *, int * );
-void efcn_get_axis_custom_( int * );
+int  efcn_gather_info_( int * );
+void efcn_get_result_lims_( int *, float *, int *, int *, int *, int *, int * );
+void ef_get_custom_axis_sub_( int *, int *, float *, float *, float *, char *, int * );
 
 void efcn_compute( int *, int *, int *, float *, int *, int *, float *);
 
 int  efcn_get_id_( char * );
 int  efcn_match_template_( char * );
+
+
 void efcn_get_name_( int *, char * );
 void efcn_get_version_( int *, float * );
 void efcn_get_descr_( int *, char * );
@@ -66,18 +79,24 @@ void efcn_get_axis_implied_from_( int *, int *, int * );
 void efcn_get_axis_extend_lo_( int *, int *, int * );
 void efcn_get_axis_extend_hi_( int *, int *, int * );
 void efcn_get_arg_name_( int *, int *, char * );
-void efcn_get_arg_units_( int *, int *, char * );
-void efcn_get_arg_descr_( int *, int *, char * );
+void efcn_get_arg_unit_( int *, int *, char * );
+void efcn_get_arg_desc_( int *, int *, char * );
 
 
 /* ... Functions called internally .... */
 
-void EF_gather_fcn_internals( ExternalFunction * );
+void EF_force_linking(void);
+
+void EF_store_globals(float *, int *, int *, float *);
+
+ExternalFunction *ef_ptr_from_id_ptr(int *);
 
 int  EF_ListTraverse_fprintf( char *, char * );
 int  EF_ListTraverse_FoundName( char *, char * );
 int  EF_ListTraverse_MatchTemplate( char *, char * );
 int  EF_ListTraverse_FoundID( char *, char * );
+
+int  EF_New( ExternalFunction * );
 
 
 /* ... FORTRAN Functions available to External Functions ... */
@@ -106,8 +125,13 @@ int efcn_scan_( int *gfcn_num_internal )
   char paths[8192]="", cmd[EF_MAX_DESCRIPTION_LENGTH]="";
   int count=0, status=LIST_OK;
 
-  /* static because it needs to exist after the return statement */
-  static int return_val=0;
+  static int return_val=0; /* static because it needs to exist after the return statement */
+
+  /*
+   * We need to generate calls to all the functions in EF_ExternalUtil.c
+   * in order to have Solaris link these symbols into the final executable.
+   */
+  EF_force_linking();
 
   if ( I_have_scanned_already ) {
     return_val = list_size(GLOBAL_ExternalFunctionList);
@@ -188,14 +212,6 @@ int efcn_scan_( int *gfcn_num_internal )
     I_have_scanned_already = TRUE;
   }
 
-  /*
-   * debugging line
-   *
-   status = list_traverse(GLOBAL_ExternalFunctionList, stderr, EF_ListTraverse_fprintf, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-   *
-   */
-
-
   return_val = count;
   return return_val;
 
@@ -213,15 +229,7 @@ int efcn_already_have_internals_( int *id_ptr )
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    return;
-  }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
 
   ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
 
@@ -242,111 +250,88 @@ int efcn_already_have_internals_( int *id_ptr )
 int efcn_gather_info_( int *id_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK, i=0, j=0;
+  ExternalFunctionInternals *i_ptr=NULL;
+  int i=0, j=0;
   char ef_object[1024]="", tempText[EF_MAX_NAME_LENGTH]="", *c;
 
-  void *handle;
-  void (*langfptr)(int *);
-  int (*fptr)(int, void *);
-  void (*finfoptr)(float *, char (*)[EF_MAX_DESCRIPTION_LENGTH], int *, int *, int (*)[4], int (*)[4]);
-  void (*farginfoptr)(int *, int (*)[4], int (*)[4], int (*)[4], char (*)[EF_MAX_NAME_LENGTH],
-		      char (*)[EF_MAX_NAME_LENGTH], char (*)[EF_MAX_DESCRIPTION_LENGTH]);
+  static int return_val=0; /* static because it needs to exist after the return statement */
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  void *handle;
+  void (*f_init_ptr)(int *);
 
   /*
-   * If the search failed, print a warning message and return.
+   * Find the external function.
    */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING in efcn_gather_info(): No external function of id %d was found.\n\n", *id_ptr);
-    return -1;
-  }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return return_val; }
 
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-
-  if ( (ef_ptr->internals_ptr = malloc(sizeof(ExternalFunctionInternals))) == NULL ) {
-    fprintf(stderr, "ERROR in efcn_gather_info(): cannot allocate ExternalFunctionInternals.\n");
-    return -1;
-  }
-
+  /*
+   * Get a handle for the shared object.
+   */
   strcat(ef_object, ef_ptr->path);
   strcat(ef_object, ef_ptr->name);
   strcat(ef_object, ".so");
 
-  strcat(tempText, ef_ptr->name);
-  strcat(tempText, "_lang_");
-
   ef_ptr->handle = dlopen(ef_object, RTLD_LAZY);
   
-  langfptr  = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
-  if (langfptr == NULL) {
-    fprintf(stderr, "ERROR in efcn_gather_info(): %s\n", dlerror());
-    return -1;
+  /*
+   * Allocate and default initialize the internal information.
+   * If anything went wrong, return the return_val.
+   */
+  return_val = EF_New(ef_ptr);
+
+  if ( return_val != 0) {
+    return return_val;
   }
 
-  (*langfptr)(&(ef_ptr->language));
+  /*
+   * Call the external function to really initialize the internal information.
+   */
+  i_ptr = ef_ptr->internals_ptr;
 
-  if ( ef_ptr->language == EF_C ) {
+  if ( i_ptr->language == EF_C ) {
 
-    fptr  = (int (*)(int, void *))dlsym(ef_ptr->handle, ef_ptr->name);
-    if (fptr == NULL) {
-      fprintf(stderr, "ERROR in efcn_gather_info(): %s\n", dlerror());
-      return -1;
-    }
+    fprintf(stderr, "\nERROR: C is not a supported language for External Functions.\n\n");
+    return_val = -1;
+    return return_val;
 
-    (*fptr)(CONFIGURE, (void *)ef_ptr);
+  } else if ( i_ptr->language == EF_F ) {
 
-  } else if ( ef_ptr->language == EF_F ) {
+    /* Information about the overall function */
 
-    ExternalFunctionInternals *ptr = ef_ptr->internals_ptr;
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
-    strcat(tempText, "_get_info_");
-    finfoptr  = (void (*)(float *, char (*)[EF_MAX_DESCRIPTION_LENGTH], int *, int *, int (*)[4], int (*)[4]))dlsym(ef_ptr->handle, tempText);
-    if (finfoptr == NULL) {
+    strcat(tempText, "_init_");
+    f_init_ptr = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
+    if (f_init_ptr == NULL) {
       fprintf(stderr, "ERROR in efcn_gather_info(): %s\n", dlerror());
       return -1;
     }
 
-    (*finfoptr)(&(ptr->version), &(ptr->description), &(ptr->num_reqd_args),
-		&(ptr->has_vari_args), &(ptr->axis_will_be), &(ptr->piecemeal_ok) );
+    (*f_init_ptr)(id_ptr);
 
     /* trim white space at the end */
-    c = &(ptr->description[EF_MAX_DESCRIPTION_LENGTH-1]); 
+    c = &(i_ptr->description[EF_MAX_DESCRIPTION_LENGTH-1]); 
     for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
       if (isspace(*c)) { c--; }
     }
     *++c = '\0';
 
-    for (i=0; i<ptr->num_reqd_args; i++) {
-      int j = i+1;
-      sprintf(tempText, "");
-      strcat(tempText, ef_ptr->name);
-      strcat(tempText, "_get_arg_info_");
-      farginfoptr = (void (*)(int *, int (*)[4], int (*)[4], int (*)[4], char (*)[EF_MAX_NAME_LENGTH],
-		     char (*)[EF_MAX_NAME_LENGTH], char (*)[EF_MAX_DESCRIPTION_LENGTH]))dlsym(ef_ptr->handle, tempText);
-      if (farginfoptr == NULL) {
-	fprintf(stderr, "ERROR in efcn_gather_info(): %s\n", dlerror());
-	return -1;
-      }
-
-      (*farginfoptr)( &j, &(ptr->axis_implied_from[i]), &(ptr->axis_extend_lo[i]), &(ptr->axis_extend_hi[i]), 
-		      &(ptr->arg_name[i]), &(ptr->arg_units[i]), &(ptr->arg_descr[i]) );
+    for (i=0; i<i_ptr->num_reqd_args; i++) {
 
       /* trim white space at the end */
-      c = &(ptr->arg_name[i][EF_MAX_NAME_LENGTH-1]); 
+      c = &(i_ptr->arg_name[i][EF_MAX_NAME_LENGTH-1]); 
       for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
 	if (isspace(*c)) { c--;	}
       }
       *++c = '\0';
 
-      c = &(ptr->arg_units[i][EF_MAX_NAME_LENGTH-1]); 
+      c = &(i_ptr->arg_unit[i][EF_MAX_NAME_LENGTH-1]); 
       for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
 	if (isspace(*c)) { c--;	}
       }
       *++c = '\0';
 
-      c = &(ptr->arg_descr[i][EF_MAX_DESCRIPTION_LENGTH-1]); 
+      c = &(i_ptr->arg_desc[i][EF_MAX_DESCRIPTION_LENGTH-1]); 
       for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
 	if (isspace(*c)) { c--;	}
       }
@@ -366,38 +351,32 @@ int efcn_gather_info_( int *id_ptr )
  * for the low and high subscripts on that axis. Pass memory,
  * mr_list and cx_list info into the external function.
  */
-void efcn_get_axis_abstract_( int *id_ptr, float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr,
+void efcn_get_result_lims_( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr,
 			      int *iaxis_ptr, int *loss_ptr, int *hiss_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   char tempText[EF_MAX_NAME_LENGTH]="";
 
-  int dummy = 19;
+  void (*fptr)(int *, int *, int *, int *);
 
-  void (*fptr)(float *, int *, int *, int *, int *, int *);
-
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  
   /*
-   * If the search failed, print a warning message and return.
+   * Store the memory pointer and various lists globally.
    */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    return;
-  }
+  EF_store_globals(memory, mr_list_ptr, cx_list_ptr, NULL);
 
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  /*
+   * Find the external function.
+   */
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  if ( ef_ptr->language == EF_F ) {
+  if ( ef_ptr->internals_ptr->language == EF_F ) {
 
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
-    strcat(tempText, "_get_axis_abstract_");
+    strcat(tempText, "_result_limits_");
 
-    fptr  = (void (*)(float *, int *, int *, int *, int *, int *))dlsym(ef_ptr->handle, tempText);
-    (*fptr)( memory_ptr, mr_list_ptr, cx_list_ptr, iaxis_ptr, loss_ptr, hiss_ptr);
+    fptr  = (void (*)(int *, int *, int *, int *))dlsym(ef_ptr->handle, tempText);
+    (*fptr)( id_ptr, iaxis_ptr, loss_ptr, hiss_ptr);
 
   } else {
 
@@ -411,25 +390,21 @@ void efcn_get_axis_abstract_( int *id_ptr, float *memory_ptr, int *mr_list_ptr, 
 
 /*
  */
-void efcn_get_axis_custom_( int *id_ptr )
+void ef_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float *hi_ptr, 
+			       float *del_ptr, char *unit, int *modulo_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
-
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
   /*
-   * If the search failed, print a warning message and return.
+   * Find the external function.
    */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    return;
-  }
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-
-  /* JC_TODO: write code for efcn_get_axis_custom. */
-  fprintf(stderr, "\nNo code written for this routine yet.\n\n");
+  strcpy(unit, ef_ptr->internals_ptr->axis[*axis_ptr-1].unit);
+  *lo_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_lo;
+  *hi_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_hi;
+  *del_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_del;
+  *modulo_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].modulo;
 
   return;
 }
@@ -441,45 +416,39 @@ void efcn_get_axis_custom_( int *id_ptr )
  * the function to calculate the result.
  */
 void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, float *bad_flag_ptr,
-		    int *mr_arg_offset_ptr, int *mr_res_offset_ptr, float *memory )
+		    int *mr_arg_offset_ptr, float *memory )
 {
   ExternalFunction *ef_ptr=NULL;
-  ComputeInfo compute_info;
-  int status=LIST_OK, xyzt=0, i=0;
+  int xyzt=0, i=0;
   int arg_points[EF_MAX_ARGS];
   char tempText[EF_MAX_NAME_LENGTH]="";
 
   int (*fptr)(int, void *);
-  void (*f1arg)(int *, float *, float *, float *, float *);
-  void (*f2arg)(int *, float *, float *, float *, float *, float*);
-  void (*f3arg)(int *, float *, float *, float *, float *, float *, float *);
-  void (*f4arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *);
-  void (*f5arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *);
+  void (*f1arg)(int *, float *, float *);
+  void (*f2arg)(int *, float *, float *, float *);
+  void (*f3arg)(int *, float *, float *, float *, float *);
+  void (*f4arg)(int *, float *, float *, float *, float *, float *);
+  void (*f5arg)(int *, float *, float *, float *, float *, float *, float *);
   void (*f6arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *);
+		float *);
   void (*f7arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *);
+		float *, float *);
   void (*f8arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *);
+		float *, float *, float *);
   void (*f9arg)(int *, float *, float *, float *, float *, float *, float *,
-		float *, float *, float *, float *, float *, float *);
-
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+		float *, float *, float *, float *);
 
   /*
-   * If the search failed, print a warning message and return.
+   * Store the memory pointer and various lists globally.
    */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    return;
-  }
+  EF_store_globals(memory, mr_arg_offset_ptr, cx_list_ptr, bad_flag_ptr);
 
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  /*
+   * Find the external function.
+   */
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-
-  if ( ef_ptr->language == EF_F ) {
+  if ( ef_ptr->internals_ptr->language == EF_F ) {
 
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
@@ -488,72 +457,72 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, float *bad_fla
     switch ( ef_ptr->internals_ptr->num_reqd_args ) {
 
     case 1:
-      f1arg  = (void (*)(int *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f1arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+1, memory + mr_arg_offset_ptr[0], 
-		memory + mr_arg_offset_ptr[1] );
+      f1arg  = (void (*)(int *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f1arg)( id_ptr, memory + mr_arg_offset_ptr[0], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 2:
-      f2arg  = (void (*)(int *, float *, float *, float *, float *, float*))dlsym(ef_ptr->handle, tempText);
-      (*f2arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+1, memory + mr_arg_offset_ptr[0],
-		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2] );
+      f2arg  = (void (*)(int *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f2arg)( id_ptr, memory + mr_arg_offset_ptr[0],
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 3:
-      f3arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f3arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+3, memory + mr_arg_offset_ptr[0],
-		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3] );
+      f3arg  = (void (*)(int *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f3arg)( id_ptr, memory + mr_arg_offset_ptr[0],
+		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 4:
-      f4arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *,
-			 float*))dlsym(ef_ptr->handle, tempText);
-      (*f4arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+4, memory + mr_arg_offset_ptr[0], 
+      f4arg  = (void (*)(int *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f4arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
-		memory + mr_arg_offset_ptr[4] );
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 5:
-      f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
-			 float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f5arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+5, memory + mr_arg_offset_ptr[0], 
+      f5arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f5arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
-		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5] );
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
        break;
 
     case 6:
       f6arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
-			 float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f6arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+6, memory + mr_arg_offset_ptr[0], 
+			 float *))dlsym(ef_ptr->handle, tempText);
+      (*f6arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
-		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6] );
+		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS+1] );
       break;
 
     case 7:
       f7arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
-			 float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f7arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+7, memory + mr_arg_offset_ptr[0], 
+			 float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f7arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
 		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
-		memory + mr_arg_offset_ptr[7] );
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 8:
       f8arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
-			 float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f8arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+8, memory + mr_arg_offset_ptr[0], 
+			 float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f8arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
 		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
-		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[8] );
+		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     case 9:
       f9arg  = (void (*)(int *, float *, float *, float *, float *, float *, float *, 
-			 float *, float *, float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
-      (*f9arg)( cx_list_ptr, bad_flag_ptr, bad_flag_ptr+9, memory + mr_arg_offset_ptr[0], 
+			 float *, float *, float *, float *))dlsym(ef_ptr->handle, tempText);
+      (*f9arg)( id_ptr, memory + mr_arg_offset_ptr[0], 
 		memory + mr_arg_offset_ptr[1], memory + mr_arg_offset_ptr[2], memory + mr_arg_offset_ptr[3], 
 		memory + mr_arg_offset_ptr[4], memory + mr_arg_offset_ptr[5], memory + mr_arg_offset_ptr[6],
-		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[8], memory + mr_arg_offset_ptr[9] );
+		memory + mr_arg_offset_ptr[7], memory + mr_arg_offset_ptr[8], 
+		memory + mr_arg_offset_ptr[EF_MAX_ARGS] );
       break;
 
     default:
@@ -562,36 +531,10 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, float *bad_fla
 
     }
 
-  } else if ( ef_ptr->language == EF_C ) {
+  } else if ( ef_ptr->internals_ptr->language == EF_C ) {
 
     fprintf(stderr, "\nERROR: EF_C is not a supported language for External Functions.\n\n");
 
-    /*
-     * Copy the data passed by reference to the 'ComputeInfo' structure.
-     */
-    /*
-    compute_info.narg = *narg_ptr;
-    compute_info.num_datapoints = 0;
-
-    for (i=0; i<*narg_ptr; i++) {
-      arg_points[i] = 1;
-      for (xyzt=0; xyzt<4; xyzt++) {
-	compute_info.loss[i][xyzt] = loss_ptr[xyzt];
-	compute_info.hiss[i][xyzt] = hiss_ptr[xyzt];
-	arg_points[i] *= (1 + compute_info.hiss[i][xyzt] - compute_info.loss[i][xyzt]);
-      }
-      compute_info.num_datapoints += arg_points[i];
-      compute_info.bad_flag[i] = bad_flag_ptr[i];
-      compute_info.data[i] = memory + mr_arg_offset_ptr[i];
-    }
-
-    compute_info.bad_flag[*narg_ptr] = bad_flag_ptr[*narg_ptr]; *//* this is the bad flag for the result *//*
-    compute_info.data[*narg_ptr] = memory + mr_arg_offset_ptr[*narg_ptr]; *//* this is the memory address for the result *//*
-
-    fptr  = (int (*)(int, void *))dlsym(ef_ptr->handle, ef_ptr->name);
-
-    (*fptr)(COMPUTE, (void *)(&compute_info));
-    */
   }
   
   return;
@@ -612,6 +555,9 @@ int efcn_get_id_( char *name )
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
+  /*
+   * Find the external function.
+   */
   status = list_traverse(GLOBAL_ExternalFunctionList, name, EF_ListTraverse_FoundName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
   /*
@@ -668,20 +614,8 @@ int efcn_match_template_( char *name )
 void efcn_get_name_( int *id_ptr, char *name )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    strcpy(name, "");
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   strcpy(name, ef_ptr->name);
 
@@ -696,20 +630,8 @@ void efcn_get_name_( int *id_ptr, char *name )
 void efcn_get_version_( int *id_ptr, float *version )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *version = 0.0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   *version = ef_ptr->internals_ptr->version;
 
@@ -724,20 +646,8 @@ void efcn_get_version_( int *id_ptr, float *version )
 void efcn_get_descr_( int *id_ptr, char *descr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    strcpy(descr, "");
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   strcpy(descr, ef_ptr->internals_ptr->description);
 
@@ -752,22 +662,10 @@ void efcn_get_descr_( int *id_ptr, char *descr )
 int efcn_get_num_reqd_args_( int *id_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    return_val = 0;
-    return return_val;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList);
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   return_val = ef_ptr->internals_ptr->num_reqd_args;
 
@@ -783,20 +681,8 @@ int efcn_get_num_reqd_args_( int *id_ptr )
 void efcn_get_has_vari_args_( int *id_ptr, int *has_vari_args_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *has_vari_args_ptr = 0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   *has_vari_args_ptr = ef_ptr->internals_ptr->has_vari_args;
 
@@ -811,20 +697,8 @@ void efcn_get_has_vari_args_( int *id_ptr, int *has_vari_args_ptr )
 void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *array_ptr = 0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   array_ptr[X_AXIS] = ef_ptr->internals_ptr->axis_will_be[X_AXIS];
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_will_be[Y_AXIS];
@@ -842,21 +716,9 @@ void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
 void efcn_get_piecemeal_ok_( int *id_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *array_ptr = 0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-  
   array_ptr[X_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[X_AXIS];
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->piecemeal_ok[Z_AXIS];
@@ -875,22 +737,10 @@ void efcn_get_piecemeal_ok_( int *id_ptr, int *array_ptr )
 void efcn_get_axis_implied_from_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *array_ptr = 0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-  
   array_ptr[X_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][X_AXIS];
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_implied_from[index][Z_AXIS];
@@ -910,22 +760,10 @@ void efcn_get_axis_implied_from_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 void efcn_get_axis_extend_lo_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *array_ptr = 0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
-  
   array_ptr[X_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][X_AXIS];
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][Y_AXIS];
   array_ptr[Z_AXIS] = ef_ptr->internals_ptr->axis_extend_lo[index][Z_AXIS];
@@ -944,21 +782,9 @@ void efcn_get_axis_extend_lo_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 void efcn_get_axis_extend_hi_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    *array_ptr = 0;
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
   
   array_ptr[X_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][X_AXIS];
   array_ptr[Y_AXIS] = ef_ptr->internals_ptr->axis_extend_hi[index][Y_AXIS];
@@ -976,22 +802,10 @@ void efcn_get_axis_extend_hi_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
   int i=0, printable=FALSE;
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    strcpy(string, "");
-    return;
-  }
-
-  ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
   
   /*
    * JC_NOTE: if the argument has no name then memory gets overwritten, corrupting
@@ -1020,26 +834,16 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
  * Find an external function based on its integer ID and
  * fill in the units for a particular argument.
  */
-void efcn_get_arg_units_( int *id_ptr, int *iarg_ptr, char *string )
+void efcn_get_arg_unit_( int *id_ptr, int *iarg_ptr, char *string )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
 
-  status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
-
-  /*
-   * If the search failed, print a warning message and return.
-   */
-  if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    strcpy(string, "");
-    return;
-  }
-
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  
   ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
   
-  strcpy(string, ef_ptr->internals_ptr->arg_units[index]);
+  strcpy(string, ef_ptr->internals_ptr->arg_unit[index]);
 
   return;
 }
@@ -1049,11 +853,147 @@ void efcn_get_arg_units_( int *id_ptr, int *iarg_ptr, char *string )
  * Find an external function based on its integer ID and
  * fill in the description of a particular argument.
  */
-void efcn_get_arg_descr_( int *id_ptr, int *iarg_ptr, char *string )
+void efcn_get_arg_desc_( int *id_ptr, int *iarg_ptr, char *string )
 {
   ExternalFunction *ef_ptr=NULL;
-  int status=LIST_OK;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  
+  strcpy(string, ef_ptr->internals_ptr->arg_desc[index]);
+
+  return;
+}
+
+
+
+/* .... Object Oriented Utility Functions .... */
+
+
+/*
+ * Allocate space for and initialize the internal
+ * information for an EF.
+ *
+ * Return values:
+ *     -1: error allocating space
+ *      0: success
+ */
+int EF_New( ExternalFunction *this )
+{
+  ExternalFunctionInternals *i_ptr=NULL;
+  int status=LIST_OK, i=0, j=0;
+
+  static int return_val=0; /* static because it needs to exist after the return statement */
+
+
+  /*
+   * Allocate space for the internals.
+   * If the allocation failed, print a warning message and return.
+   */
+
+  this->internals_ptr = malloc(sizeof(ExternalFunctionInternals));
+  i_ptr = this->internals_ptr;
+
+  if ( i_ptr == NULL ) {
+    fprintf(stderr, "ERROR in EF_New(): cannot allocate ExternalFunctionInternals.\n");
+    return_val = -1;
+    return return_val;
+  }
+
+
+  /*
+   * Initialize the internals.
+   */
+
+  /* Information about the overall function */
+
+  i_ptr->version = EF_VERSION;
+  strcpy(i_ptr->description, "");
+  i_ptr->language = EF_F;
+  i_ptr->num_reqd_args = 1;
+  i_ptr->has_vari_args = NO;
+  for (i=0; i<4; i++) {
+    i_ptr->axis_will_be[i] = IMPLIED_BY_ARGS;
+    i_ptr->piecemeal_ok[i] = NO;
+  }
+
+  /* Information specific to each argument of the function */
+
+  for (i=0; i<EF_MAX_ARGS; i++) {
+    for (j=0; j<4; j++) {
+      i_ptr->axis_implied_from[i][j] = YES;
+      i_ptr->axis_extend_lo[i][j] = 0;
+      i_ptr->axis_extend_hi[i][j] = 0;
+    }
+    strcpy(i_ptr->arg_name[i], "");
+    strcpy(i_ptr->arg_unit[i], "");
+    strcpy(i_ptr->arg_desc[i], "");
+  }
+
+  return return_val;
+
+}
+ 
+
+/* .... UtilityFunctions for dealing with GLOBAL_ExternalFunctionList .... */
+
+/*
+ * Store the global values which will be needed by utility routines
+ * in EF_ExternalUtil.c
+ */
+void EF_store_globals(float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, float *bad_flag_ptr)
+{
+  int i=0;
+
+  GLOBAL_memory_ptr = memory_ptr;
+  GLOBAL_mr_list_ptr = mr_list_ptr;
+  GLOBAL_cx_list_ptr = cx_list_ptr;
+  GLOBAL_bad_flag_ptr = bad_flag_ptr;
+
+}
+
+
+/*
+ * Generate calls to all of the EF_ExternalUtil.c code in order to 
+ * force linking of these routines on Solaris.
+ */
+void EF_force_linking(void)
+{
+  if ( FALSE ) {
+    int i = 5;
+    float f = 5.0;
+    char c = NULL;
+    ef_set_num_args_( &i, &i );
+    ef_set_num_args( &i, i );
+    ef_set_has_vari_args_( &i, &i );
+    ef_set_piecemeal_ok_( &i, &i, &i, &i, &i );
+    ef_set_axis_inheritance_( &i, &i, &i, &i, &i );
+    ef_set_axis_influence_( &i, &i, &i, &i, &i, &i );
+    ef_set_axis_extend_( &i, &i, &i, &i, &i );
+
+    ef_get_subscripts_( &i, &i, &i, &i );
+    ef_get_one_val_( &i, &i, &f );
+    ef_get_bad_flags_( &i, &f, &f );
+
+    ef_get_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
+    ef_set_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
+
+    ef_set_desc_( &i, &c);
+    ef_set_arg_desc_( &i, &i, &c);
+    ef_set_arg_name_( &i, &i, &c);
+    ef_set_arg_unit_( &i, &i, &c);
+  }
+}
+
+
+/*
+ * Find an external function based on an integer id and return
+ * the ef_ptr.
+ */
+ExternalFunction *ef_ptr_from_id_ptr(int *id_ptr)
+{
+  static ExternalFunction *ef_ptr=NULL;
+  int status=LIST_OK;
 
   status = list_traverse(GLOBAL_ExternalFunctionList, id_ptr, EF_ListTraverse_FoundID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
 
@@ -1061,21 +1001,14 @@ void efcn_get_arg_descr_( int *id_ptr, int *iarg_ptr, char *string )
    * If the search failed, print a warning message and return.
    */
   if ( status != LIST_OK ) {
-    fprintf(stderr, "\nWARNING: No external function of id %d was found.\n\n", *id_ptr);
-    strcpy(string, "");
-    return;
+    fprintf(stderr, "\nERROR: in ef_ptr_from_id_ptr: No external function of id %d was found.\n\n", *id_ptr);
+    return NULL;
   }
 
   ef_ptr=(ExternalFunction *)list_curr(GLOBAL_ExternalFunctionList); 
   
-  strcpy(string, ef_ptr->internals_ptr->arg_descr[index]);
-
-  return;
+  return ef_ptr;
 }
-
-
-
-/* .... UtilityFunctions for dealing with GLOBAL_ExternalFunctionList .... */
 
 
 int EF_ListTraverse_fprintf( char *data, char *curr )

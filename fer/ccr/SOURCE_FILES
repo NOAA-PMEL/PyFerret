@@ -1,4 +1,5 @@
 SRCS_C = \
+EF_ExternalUtil.c\
 EF_InternalUtil.c\
 batch_graphics.c\
 fermain_c.c\

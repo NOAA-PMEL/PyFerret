@@ -57,7 +57,8 @@
 * V402: 8/95 - Added support for  LET/D=dset var = ...
 *	     - Added missing data flag to outputs
 * V420:	10/95 - extended missing flag output to cover dual flags
-
+* V500: 3/99 *kob* - added check for NORMAL Axes - output only ... rather
+*                    than a 1:1 or 100:100
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -86,7 +87,7 @@
 * local variable declarations:
 	LOGICAL		first_time
 	INTEGER 	TM_LENSTR1, ivar, i, dlen, len, grid, taxis,
-     .                  slen(4)
+     .                  slen(4), tlen
 	CHARACTER	LEFINT*6, LOHI_STRING*48, TM_FMT*14, line*255
 	REAL*8		TM_WORLD, lo, hi
         CHARACTER       rbuff(8)*8
@@ -117,6 +118,15 @@
      .				        ds_var_title(ivar),
      .		(rbuff(i+4)(slen(i):),rbuff(i)(:6),i=1,4)
  4010	   FORMAT( 1X,A8,1X,A31,T42,4(A,':',A) )
+* *kob* 3/99 check for NORMAL Axis and insert ... rather than 1:1 
+*            kinda a kludge
+           DO 150 i = 1, 4
+	      IF (ds_grid_start(i,ivar) .EQ. ds_grid_end(i,ivar)) THEN
+		 tlen = 34 + (i*10)
+		 risc_buff(tlen:tlen+2) = '...'
+	      ENDIF
+ 150	   CONTINUE
+	   
  3200	FORMAT(' name',T11,'title',T45,'I',T55,'J',T65,'K',T75,'L')
 ! in V220: 4010 FORMAT( 1X,A8,1X,A29,T40,3(I5,':',A4),(I5,':',A5) )
 * ... write to array first to avoid line wraps due to blanks at end

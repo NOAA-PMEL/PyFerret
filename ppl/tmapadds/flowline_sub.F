@@ -50,6 +50,8 @@ C**
 *  ACM  From vecfld.F  9/00
 *       and from GrADS module gxstrm.c
 *       Draw flowlines based on a velocity field.
+*  ACM  June 08, 2001  remove extra declaration of i, and
+*       change MAX(1, x + 1) to MAX(1., x + 1)
 
 C
 C
@@ -132,7 +134,7 @@ C  Local declarations
      .     vel, velmean, sqsum, cos_factor
       INTEGER i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
-     .     i, jmn, j, iz, jz, iss, jss
+     .     jmn, j, iz, jz, iss, jss
       LOGICAL bflg
 
       CHARACTER*30 veclab
@@ -391,8 +393,8 @@ C  Correction for irregular grids and rectangular regions
 C  and for latitude.
 
                IF (jtype .NE. -1) THEN	! get local dx, dy
-                  mx = MAX(1, x + 1)
-                  my = MAX(1, y + 1)
+                  mx = MAX(1., x + 1)
+                  my = MAX(1., y + 1)
                   IF (mx .LT. nxs) THEN
                      dx = px(mx+1) - px(mx)
                   ELSE 
@@ -659,8 +661,8 @@ C  Correction for irregular grids and rectangular regions.
 C  and for latitude
 
                IF (jtype .NE. -1) THEN	! get local dx, dy
-                  mx = MAX(1, x + 1)
-                  my = MAX(1, y + 1)
+                  mx = MAX(1., x + 1)
+                  my = MAX(1., y + 1)
                   IF (mx .LT. nxs) THEN
                      dx = px(mx+1) - px(mx)
                   ELSE 

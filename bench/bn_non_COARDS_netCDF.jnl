@@ -1,5 +1,6 @@
 ! bn_non_COARDS_netCDF.jnl
 ! *sh* 3/99
+! *sh* 6/00 -- added true scalar variable, TRUE_SCALAR
 
 ! test robust treatment of non-standard netCDF files
 
@@ -22,6 +23,7 @@ show data
 list UNORDERED_AXIS
 list GAPPY_AXIS
 list SCALAR_VAR
+list TRUE_SCALAR
 list HAS_BACKWARDS_AXIS
 
 list/i=1:5 BIG_IRREG

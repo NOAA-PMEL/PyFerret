@@ -26,6 +26,9 @@ variables:
 		BACKWARDS_AXIS:long_name = "backwards axis" ;
 	float SCALAR_VAR(SCALAR) ;
 		SCALAR_VAR:long_name = "a good way to encode model parms" ;
+	float TRUE_SCALAR ;
+		TRUE_SCALAR:long_name = "with no dims at all" ;
+		TRUE_SCALAR:_FillValue = -99.f ;
 	float MASKED_SST(TIME, COADSY, COADSX) ;
 		MASKED_SST:missing_value = -1.e+34f ;
 		MASKED_SST:_FillValue = -1.e+34f ;

@@ -32,3 +32,11 @@ list tsorted_indices, tsorted_wnd
 
 let len = tsorted_wnd[l=@ngd]
 list len
+
+!  This illustrates a problem with BAIL OUT of the function with
+!  out-of-range indices:
+
+! let tsorted_indices = sortl(vwnd) + 90
+! let tsorted_wnd = samplel(tsorted_indices, vwnd)
+! list tsorted_indices, tsorted_wnd
+

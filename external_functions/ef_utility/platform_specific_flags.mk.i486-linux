@@ -1,5 +1,5 @@
 #
-# platform_specific_includes.mk.alpha
+# platform_specific_includes.mk.i386-linux
 #
 # This file is included in the External Function Makefiles and defines
 # platform specific macros

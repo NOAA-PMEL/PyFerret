@@ -53,6 +53,9 @@ C
 *
 *
 *	*sh* 11/97 based on SHADESUB and PLOTXY
+*
+* *kob* 3/28/99 - declare subroutine range as external, otherwise F90 tries to
+*                 use it as an intrinsic function - more cleanup work
 
 #ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -110,6 +113,9 @@ C
         INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
         INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
 #endif
+
+* 3/99 *kob*
+	EXTERNAL RANGE
 
 	INTEGER xpolybase, ypolybase, zpolybase, polysizemax, nl,
      .		nvertex, fill_ndx			! 11/97

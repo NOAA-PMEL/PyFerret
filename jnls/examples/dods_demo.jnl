@@ -124,7 +124,7 @@ PAUSE
 
 let coads_on_reynolds = sst[d=1,g=sst[d=2]]
 let warmer = IF sst_corrected[d=2] GT coads_on_reynolds THEN 1
-shade/x=80w:20e/y=0:80N/pal=black/levels/pattern=fish_scale/t="15-jun-1989"/over warmer
+shade/x=80w:20e/y=0:80N/pal=black/levels/pattern=weave/t="15-jun-1989"/over warmer
 
 
 ! Next let's look at a satellite product from NASA's Jet Propulsion Laboratory

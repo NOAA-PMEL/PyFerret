@@ -1,3 +1,39 @@
+/*
+*
+*  This software was developed by the Thermal Modeling and Analysis
+*  Project(TMAP) of the National Oceanographic and Atmospheric
+*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
+*  hereafter referred to as NOAA/PMEL/TMAP.
+*
+*  Access and use of this software shall impose the following
+*  obligations and understandings on the user. The user is granted the
+*  right, without any fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and any derivative works thereof, and
+*  its supporting documentation for any purpose whatsoever, provided
+*  that this entire notice appears in all copies of the software,
+*  derivative works and supporting documentation.  Further, the user
+*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
+*  the use of this software or in any product that includes this
+*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
+*  in any advertising or publicity to endorse or promote any products
+*  or commercial entity unless specific written permission is obtained
+*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
+*  is not obligated to provide the user with any support, consulting,
+*  training or assistance of any kind with regard to the use, operation
+*  and performance of this software nor to provide the user with any
+*  updates, revisions, new versions or "bug fixes".
+*
+*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
+*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
+*
+*/
+
 /*****************************************************************************
  *                                                                           *
  * gksm2ps - translate GKS Metafiles to PostScript                           *
@@ -20,6 +56,7 @@
  * *jd* 01.20.95  Mod: Now EPS compliant for single metafile translations    *
  * *jd* 09.15.95  Mod: Permit X window preview                               *
  * *jd* 12.23.97  Mod: Handle polyline rep setting for monochrome devices    *
+ * *jd* 10.12.98  Mod: Support fill patterns                                 *
  *                                                                           *
  *****************************************************************************/
 
@@ -30,6 +67,7 @@
  *  Mod 1.03 6.14.95    Fix BB bug, clipping bug
  *  Mod 1.04 9.21.95    Add -X preview option
  *  Mod 1.05 12.23.97   Handle polyline rep setting for monochrome devices
+ *  Mod 1.06 11.02.98   Support fill patterns
  */
 
 
@@ -197,7 +235,7 @@ initpage ()		/* Initializes PostScript */
    fprintf(ps_output, 
 	   "%%%%Title: %s\n", output_file);
    fprintf(ps_output, 
-	   "%%%%Creator: gksm2ps Mod 1.05 / XPPLP Profile F 1.0 [oX]\n" );
+	   "%%%%Creator: gksm2ps Mod 1.06 / XPPLP Profile F 1.0 [oX]\n" );
    fprintf(ps_output, 
 	   "%%%%CreationDate: %s\n", s);
 
@@ -207,6 +245,66 @@ initpage ()		/* Initializes PostScript */
 
    fprintf(ps_output, "\n" );
    fprintf(ps_output, "%% define macros\n" );
+
+   /* Pattern support macros */
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "%% Pattern support \n" );
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "/pixels { \n");
+   fprintf(ps_output, "	/size exch def \n");
+   fprintf(ps_output, "	/pattern exch def \n");
+   fprintf(ps_output, "	 \n");
+   fprintf(ps_output, "	size size  \n");
+   fprintf(ps_output, "	true \n");
+   fprintf(ps_output, "	[size 0 0 size 0 0] \n");
+   fprintf(ps_output, "	pattern \n");
+   fprintf(ps_output, "	imagemask \n");
+   fprintf(ps_output, "} def \n");
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "/showpattern { \n");
+   fprintf(ps_output, "	/ymul exch def \n");
+   fprintf(ps_output, "	/xmul exch def \n");
+   fprintf(ps_output, "	/size exch def \n");
+   fprintf(ps_output, "	/pattern exch def  \n");
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "	xmul { ymul { pattern size pixels \n");
+   fprintf(ps_output, " 		      0 1 translate \n");
+   fprintf(ps_output, "	       	    } repeat \n");
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "       	     1 ymul -1 mul translate \n");
+   fprintf(ps_output, "             } repeat \n");
+   fprintf(ps_output, "} def \n");
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "/pfill { \n");
+   fprintf(ps_output, "	/yorigin exch def \n");
+   fprintf(ps_output, "	/xorigin exch def \n");
+   fprintf(ps_output, "	/ymul exch def \n");
+   fprintf(ps_output, "	/xmul exch def \n");
+   fprintf(ps_output, "	/iscale exch def \n");
+   fprintf(ps_output, "	/size exch def \n");
+   fprintf(ps_output, "	/pattern exch def \n");
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "	gsave \n");
+   fprintf(ps_output, "	clip \n");
+   fprintf(ps_output, "	xorigin yorigin translate \n");
+   fprintf(ps_output, "	iscale iscale scale \n");
+   fprintf(ps_output, "	pattern size xmul ymul showpattern \n");
+   fprintf(ps_output, "	grestore \n");
+   fprintf(ps_output, "} def \n");
+   fprintf(ps_output, " \n");
+   fprintf(ps_output, "%% Example usage... \n");
+   fprintf(ps_output, "%% 1 o \n");
+   fprintf(ps_output, "%% np \n");
+   fprintf(ps_output, "%% 0.405230 0.352940 mv \n");
+   fprintf(ps_output, "%% 0.405230 0.392160 ln \n");
+   fprintf(ps_output, "%% 0.614380 0.392160 ln \n");
+   fprintf(ps_output, "%% 0.614380 0.352940 ln \n");
+   fprintf(ps_output, "%% cp  \n");
+   fprintf(ps_output, "%% {<8844221188442211>} 8 .01 22 5 .40 .35 pfill \n");
+   fprintf(ps_output, " \n");
+
+   /* End of Pattern support macros */
+
    fprintf(ps_output, "/inch {72 mul} def\n" );
    fprintf(ps_output, "/ln {lineto} def\n" );
    fprintf(ps_output, "/rln {rlineto} def\n" );
@@ -507,6 +605,34 @@ ps_trans_meta( meta_id )        /* translate the metafile */
    static float ha[4] = { 0.0,  0.0, -0.5, -1.0 };		/* horizontal text alignments */
    static float va[6] = { 0.0, -1.0, -1.2, -0.5, 0.0, 0.2 };	/* vertical text alignments */
 
+   /* Use with pattern support */
+   float xxmin, yymin, xxmax, yymax, xxorg, yyorg, iscale; 
+   int ixmul, iymul, psize;                        
+
+   char * pattern[] = {"",
+		       "113377ff113377ff",
+		       "ff9999ffff9999ff",
+		       "0066660000666600",
+		       "cccc3333cccc3333",
+       		       "ff000000ff000000",
+		       "8888888888888888",
+		       "00ffffff00ffffff",
+		       "eeeeeeeeeeeeeeee",
+		       "77bbddee77bbddee",
+		       "8844221188442211",
+		       "eeddbb77eeddbb77",
+		       "1122448811224488",
+       		       "ff80808080808080",
+		       "8142241818244281",
+		       "9090909090909090",
+	               "ff0000ff00000000",
+       "f1f1f1f13131eeee1f1f1f1f1313eeeef1f1f1f13131eeee1f1f1f1f1313eeee",
+       "f8f87474222247478f8f171722227171f8f87474222247478f8f171722227171",
+       "2828101010107c7c828201010101c7c72828101010107c7c828201010101c7c7",
+       "ffff080808080808ffff808080808080ffff080808080808ffff808080808080"};
+
+   /***********************************************************************/
+
    do {
       error = ggetgksm (meta_id, &gksmit);
       if (gksmit.type <= 0)		/* GKSM end record */
@@ -569,17 +695,72 @@ ps_trans_meta( meta_id )        /* translate the metafile */
             written = 1;
 	    break; 
 	 case 14:			/* fill area */
+
 	    fprintf(ps_output, "%d o\n",fill_individual.colour);
 	    point = (*(XGKSMGRAPH *)record).pts;
 	    fprintf(ps_output, "np\n");
+
+	    xxmin = 1.0;
+	    xxmax = 0.0;
+	    yymin = 1.0;
+	    yymax = 0.0;
+
 	    for ( i=0; i < (*(XGKSMGRAPH *)record).num_pts; i++ ) {
 	       fprintf(ps_output, "%f %f %s\n",
 		  point->x,
 		  point->y,
 		  i ? "ln" : "mv" );
+
+	       if (xxmin > point->x) 
+		 xxmin = point->x;
+ 
+	       if (yymin > point->y) 
+		 yymin = point->y;
+
+	       if (xxmax < point->x) 
+		 xxmax = point->x;
+
+	       if (yymax < point->y) 
+		 yymax = point->y;
+
 	       point++;
 	    }
-	    fprintf(ps_output, "cp %s\n",fill);
+
+	    /* Pattern support */
+	    if (fill_individual.inter == GHATCH)
+	    {
+	      if (strlen (pattern[(-1)*fill_individual.style]) == 16)
+	      {
+		xxorg = ((float) ( (int) (xxmin * 100.0) )) / 100.0; 
+		yyorg = ((float) ( (int) (yymin * 100.0) )) / 100.0;
+		
+		ixmul = (int) (100 * (xxmax - xxorg + .01));
+		iymul = (int) (100 * (yymax - yyorg + .01));
+		
+		psize = 8;
+		iscale = .01;
+	      }
+	      else  if (strlen (pattern[(-1)*fill_individual.style]) == 64)
+	      {
+		xxorg = ((float) ( (int) (xxmin * 50.0) )) / 50.0; 
+		yyorg = ((float) ( (int) (yymin * 50.0) )) / 50.0;
+		
+		ixmul = (int) (50 * (xxmax - xxorg + .02));
+		iymul = (int) (50 * (yymax - yyorg + .02));
+		
+		psize = 16;
+		iscale = .02;
+	      }
+	      
+	      fprintf(ps_output, "cp \n");
+	      fprintf(ps_output, 
+		      "{<%s>} %d %.2f %d %d %.2f %.2f pfill\n",
+		      pattern[(-1)*fill_individual.style], psize, iscale,
+		      ixmul, iymul, xxorg, yyorg);
+	    }
+	    else
+	      fprintf(ps_output, "cp %s\n",fill);
+	
             written = 1;
 	    break;
 	 case 21:	      	/* polyline index */
@@ -869,9 +1050,9 @@ main (argc, argv)
    int	   gks_stat;		/* The return status from gks function */
    char    *getenv();
 
-   char    *mod = "1.05";        /* Handle addition of polyline rep in Fv449 */
+   char    *mod = "1.06";       /* -X preview option added*/
    char	   *gksm2ps_version = "XPPLP Profile F 1.0 "; /* gksm2ps version # */
-   char    metafile_header[45];  /* Version of metafiles read in */
+   char    metafile_header[45];   /* Version of metafiles read in */
    char    *metafile_version;
 
    FILE    *meta_file;           /* meta file */

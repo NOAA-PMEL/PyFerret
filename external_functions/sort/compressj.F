@@ -65,7 +65,8 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns data, compressed along the J axis.')
+   10 FORMAT ('Returns data, compressed along the J axis: Missing ',
+     .        'points moved to the end')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 1)

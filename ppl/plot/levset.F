@@ -44,6 +44,9 @@ C**
 C***********************************************************************
 C**
 C**
+
+* V510 *sh* 3/00 - bug fix - "DEL" ignored because of misspelling of lwgh
+
 #ifdef unix
 	INCLUDE 'CMRDL.INC'
 #else
@@ -51,7 +54,7 @@ C**
 #endif
 	DIMENSION VAL(4),IF(4)
 	LWGH=0
-	IF(INDEX(LABEL(:IST),'DEL').NE.0)LWGT=5
+	IF(INDEX(LABEL(:IST),'DEL').NE.0)LWGH=5
 	IF(INDEX(LABEL(:IST),'PEN').NE.0)LWGH=4
 	IF(INDEX(LABEL(:IST),'DASH').NE.0)LWGH=3
 	IF(INDEX(LABEL(:IST),'DARK').NE.0)LWGH=2

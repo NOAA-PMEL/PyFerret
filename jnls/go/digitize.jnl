@@ -8,14 +8,16 @@
 ! ($xmouse) and ($ymouse) given in the units of the coordinate axes of the plot
 ! The digitized value is available in the symbol ($digitized)
 
-! Usage:                $1        $2       $3
-! yes?  GO digitize expression [output] ["quiet"]
+! Usage:                $1        $2                     $3
+! yes?  GO digitize expression ["interp" "nearest" or n] ["full" "brief" or "quiet"]
 ! $1 - the expression must match what is on the plot
 ! $2 - [optional] output may be
 !	"interpolate" - value at exact cursor location [DEFAULT]
 !	"nearest"     - value of the grid cell containing cursor
 !	n - an integer indicating a spread of data surrounding the point
-! $3 - [optional] - if "quiet" the digitized output will not be displayed
+! $3 - [optional] - if "brief" just the digitized value will be displayed
+!		    if "quiet" the digitized output will not be displayed
+!		    if "full"  the LIST command is used to display the output
 
 !	Note: if region qualifiers were given on the plotting commend, then
 !		those regions must be enclosed in square brackets on the
@@ -34,71 +36,82 @@
 !	yes? GO digitize SST[L=1] 2		! see a block of 5x5 points
 
 ! save the input expressions into simple variable definitions
-LET/QUIET DIGexpr = $1%<usage: yes? GO digitize expression [output] ["quiet"]%
+LET/QUIET DGTexpr = $1%<usage: GO digitize expression ["interpolate" "nearest" or n] ["full" "brief" or "quiet"]%
 IF $2"1|nearest>0|interpolate>1|interp>1|*>0" THEN
-  DEFINE SYMBOL DIGinterp @ITP
+  DEFINE SYMBOL DGTinterp @ITP
 ELSE
-  CANCEL SYMBOL DIGinterp	! effectly a blank symbol
+  CANCEL SYMBOL DGTinterp	! effectly a blank symbol
 ENDIF
-DEFINE SYMBOL DIGblock $2"0|nearest>0|interpolate>0|interp>0|*>1"
-DEFINE SYMBOL DIGquiet $3"0|quiet>1|<error: invalid argument 3 value"
-IF `($DIGquiet)+($DIGblock)` THEN
-  DEFINE SYMBOL DIGverify 0
-ELSE
-  DEFINE SYMBOL DIGverify 1
+DEFINE SYMBOL DGTblock $2"0|nearest>0|interpolate>0|interp>0|*>1"
+DEFINE SYMBOL DGTquiet $3"0|quiet>1|*>0"
+DEFINE SYMBOL DGTbrief_verify $3"0|brief>1|*>0|"	! default
+DEFINE SYMBOL DGTfull_verify  `1-($DGTbrief_verify)`	! default
+IF ($DGTblock) THEN
+  DEFINE SYMBOL DGTbrief_verify 1
+  DEFINE SYMBOL DGTfull_verify  0
+ENDIF
+IF ($DGTquiet) THEN
+  DEFINE SYMBOL DGTbrief_verify 0
+  DEFINE SYMBOL DGTfull_verify  0
 ENDIF
 
 ! determine the orientation of the data (and check if it is 1D or 2D)
-DEFINE SYMBOL DIGdims `DIGexpr,return=shape`
-DEFINE SYMBOL DIGndim ($DIGdims"|X>1|Y>1|Z>1|T>1|XY>2|XZ>2|XT>2|YZ>2|YT>2|ZT>2|<error: expression is not plottable -- 1D or 2D")
-IF `($DIGndim) EQ 2` THEN
-  DEFINE SYMBOL DIGax1 ($DIGdims"|XY>X|XZ>X|XT>X|YZ>Y|YT>Y|ZT>Z|")
-  DEFINE SYMBOL DIGax2 ($DIGdims"|XY>Y|XZ>Z|XT>T|YZ>Z|YT>T|ZT>T|")
+DEFINE SYMBOL DGTdims `DGTexpr,return=shape`
+DEFINE SYMBOL DGTndim ($DGTdims"|X>1|Y>1|Z>1|T>1|XY>2|XZ>2|XT>2|YZ>2|YT>2|ZT>2|<error: expression is not plottable -- 1D or 2D")
+IF `($DGTndim) EQ 2` THEN
+  DEFINE SYMBOL DGTax1 ($DGTdims"|XY>X|XZ>X|XT>X|YZ>Y|YT>Y|ZT>Z|")
+  DEFINE SYMBOL DGTax2 ($DGTdims"|XY>Y|XZ>Z|XT>T|YZ>Z|YT>T|ZT>T|")
 ENDIF
 
 ! get the digitized location on the plot
 WHERE
 
 ! get the value from the given expression and return in symbol ($digitize)
-! e.g. (1d) DIGexpr[X=133.25@ITP] or (2d) DIGexpr[X=55.3,Y=13.9]
-IF `($DIGndim) EQ 1` THEN
-  LET/QUIET DIGresult = DIGexpr[($DIGdims)=($xmouse)($DIGinterp)]
-  DEFINE SYMBOL digitize `DIGresult`
+! e.g. (1d) DGTexpr[X=133.25@ITP] or (2d) DGTexpr[X=55.3,Y=13.9]
+IF `($DGTndim) EQ 1` THEN
+  LET/QUIET DGTresult = DGTexpr[($DGTdims)=($xmouse)($DGTinterp)]
+  DEFINE SYMBOL digitize `DGTresult`
 ELSE
-  LET/QUIET DIGresult = DIGexpr[($DIGax1)=($xmouse)($DIGinterp),($DIGax2)=($ymouse)($DIGinterp)]
-  DEFINE SYMBOL digitize `DIGresult`
+  LET/QUIET DGTresult = DGTexpr[($DGTax1)=($xmouse)($DGTinterp),($DGTax2)=($ymouse)($DGTinterp)]
+  DEFINE SYMBOL digitize `DGTresult`
 ENDIF
 
-! report result
-IF ($DIGverify) THEN LIST DIGresult
+! report result - either in brief style or full [default] style
+IF ($DGTbrief_verify) THEN 
+  IF `($DGTndim) EQ 1` THEN
+     SAY "Value=($digitize)  X=($xmouse)"
+  ENDIF
+  IF `($DGTndim) EQ 2` THEN
+    SAY "Value=($digitize)  X=($xmouse)  Y=($ymouse)"
+  ENDIF
+ENDIF
+IF ($DGTfull_verify) THEN LIST DGTresult
 
 ! show a block of surrounding points ?
 ! procedure: LET ipos = I[X=xmouse]; LIST expr[I=ipos-width:ipos+width]
 IF  $2"0|nearest>0|interpolate>0|interp>0|*>1" THEN
-  LET/QUIET DIGgrid = MISSING(DIGresult,0)
-  DEFINE SYMBOL DIGwidth $2
-  IF `($DIGndim) EQ 1` THEN
-    SAY "Value=($digitize)  X=($xmouse)"
-    DEFINE SYMBOL DIGiax ($DIGdims"|X>I|Y>J|Z>K|T>L|")
-    LET/QUIET ipos = 0*DIGgrid + ($DIGiax)[($DIGdims)=($xmouse)]
-    DEFINE SYMBOL DIGilo `ipos - $2`
-    DEFINE SYMBOL DIGihi `ipos + $2`
-    LIST DIGexpr[($DIGiax)=($DIGilo):($DIGihi)]
+  LET/QUIET DGTgrid = MISSING(DGTresult,0)
+  DEFINE SYMBOL DGTwidth $2
+  IF `($DGTndim) EQ 1` THEN
+    DEFINE SYMBOL DGTiax ($DGTdims"|X>I|Y>J|Z>K|T>L|")
+    LET/QUIET ipos = 0*DGTgrid + ($DGTiax)[($DGTdims)=($xmouse)]
+    DEFINE SYMBOL DGTilo `ipos - $2`
+    DEFINE SYMBOL DGTihi `ipos + $2`
+    LIST DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
   ENDIF
-  IF `($DIGndim) EQ 2` THEN
-    SAY "Value=($digitize)  X=($xmouse)  Y=($ymouse)"
-    DEFINE SYMBOL DIGiax1 ($DIGax1"|X>I|Y>J|Z>K|T>L|")
-    DEFINE SYMBOL DIGiax2 ($DIGax2"|X>I|Y>J|Z>K|T>L|")
-    LET/QUIET ipos =  0*DIGgrid + ($DIGiax1)[($DIGax1)=($xmouse)]
-    LET/QUIET jpos =  0*DIGgrid + ($DIGiax2)[($DIGax2)=($ymouse)]
-    DEFINE SYMBOL DIGilo `ipos - $2`
-    DEFINE SYMBOL DIGihi `ipos + $2`
-    DEFINE SYMBOL DIGjlo `jpos - $2`
-    DEFINE SYMBOL DIGjhi `jpos + $2`
-    LIST DIGexpr[($DIGiax1)=($DIGilo):($DIGihi),($DIGiax2)=($DIGjlo):($DIGjhi)]
+  IF `($DGTndim) EQ 2` THEN
+    DEFINE SYMBOL DGTiax1 ($DGTax1"|X>I|Y>J|Z>K|T>L|")
+    DEFINE SYMBOL DGTiax2 ($DGTax2"|X>I|Y>J|Z>K|T>L|")
+    LET/QUIET ipos =  0*DGTgrid + ($DGTiax1)[($DGTax1)=($xmouse)]
+    LET/QUIET jpos =  0*DGTgrid + ($DGTiax2)[($DGTax2)=($ymouse)]
+    DEFINE SYMBOL DGTilo `ipos - $2`
+    DEFINE SYMBOL DGTihi `ipos + $2`
+    DEFINE SYMBOL DGTjlo `jpos - $2`
+    DEFINE SYMBOL DGTjhi `jpos + $2`
+    LIST DGTexpr[($DGTiax1)=($DGTilo):($DGTihi),($DGTiax2)=($DGTjlo):($DGTjhi)]
   ENDIF
 ENDIF
 
-cancel symbol DIG*
-cancel variable DIG*
+cancel symbol DGT*
+cancel variable DGT*
 set mode/last verify

@@ -12,3 +12,28 @@ GO err553_regionname_lengths.jnl
 GO bn_reset
 GO err553_timeregion.jnl
 
+! Contour plot on fine grid has precision problems
+GO bn_reset
+GO err553_contour_fine_grid.jnl
+
+! PLOT/SYM/SIZE= did not change the size
+GO bn_reset
+GO err553_symsize.jnl
+
+! test labels on shade keys; consistent number of digits set by 5th shakey arg 
+GO bn_reset
+GO err553_shakey_labels.jnl
+
+! couldnt set the number of small tics with arg to %xaxis, %yaxis commands
+GO bn_reset
+GO err553_xaxis_nsmtc.jnl
+
+! The defined year length was different if we used DEFINE AXIS/UNIT=year
+! vs DEFINE AXIS/UNIT=yr
+GO bn_reset
+GO err553_year_yr.jnl
+
+! When we do a DEFINE GRID/LIKE=var and then try to read the var with
+! strides, Ferret did a regridding instead.  Test the fix for this
+GO bn_reset
+GO err553_stride_def_grid.jnl

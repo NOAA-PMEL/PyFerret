@@ -11,3 +11,8 @@ GO err553_numeric_filename.jnl
 ! Make sure long string variables work
 GO bn_reset
 GO err553_long_string_var_name.jnl
+
+
+! Fixes for colorbar key labelling
+GO bn_reset
+GO err551_colorkey.jnl

@@ -5,6 +5,7 @@ clean_stack.F\
 constant_context.F\
 const_var_context.F\
 diagnostic_out.F\
+eval_context.F\
 eval_expr.F\
 explicit_uvar.F\
 gcf_arg_eval_order.F\
@@ -14,6 +15,7 @@ get_prot_cmnd_data.F\
 get_uvar_grid.F\
 hunt.F\
 i1mach.F\
+interp_context.F\
 interp_stack.F\
 is_algebra.F\
 is_calc.F\

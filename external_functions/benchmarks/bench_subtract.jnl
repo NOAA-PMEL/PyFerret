@@ -1,19 +1,21 @@
 set mode ignore_errors
 
 can region
+use ocean_atlas_temp
 use coads_climatology
+let oatemp = temp[d=ocean_atlas_temp,g=sst[d=coads_climatology]]
 set region/l=1
-let a = subtract(airt,sst)
+let a = subtract(oatemp,sst)
 shade a
-let b = airt- sst
+let b = oatemp- sst
 shade a - b
 
 can region
-let a = airt[l=1]
+let a = oatemp[l=1]
 let b = sst[l=1]
 shade subtract(a,b)
 
-let a = airt[x=180]
+let a = oatemp[x=180]
 let b = sst[x=180]
 shade subtract(a,b)
 

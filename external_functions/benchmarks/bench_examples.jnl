@@ -10,6 +10,6 @@ go bench_subtract
 
 !!!!!!!!!!!!!!!!!!!!!!
 !
-! YAY!! End of Benchmark without crashing!!!!
+! YAY!! End of bench_examples.jnl without crashing!!!!
 !
 !!!!!!!!!!!!!!!!!!!!!!

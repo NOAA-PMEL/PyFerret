@@ -159,7 +159,7 @@
 	ELSE 
 
 	CALL DO_EXTERNAL_GC_FCN( memory,
-     .			ifcn, num_com, is_cx(frame_bottom),
+     .			ifcn, num_com, com, is_cx(frame_bottom),
      .			memory(1, mr_blk1(mr1) ),   mr1,
      .			memory(1, mr_blk1(mr2) ),   mr2,
      .			memory(1, mr_blk1(mr3) ),   mr3,

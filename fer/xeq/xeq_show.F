@@ -294,9 +294,9 @@
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	      arg = cmnd_buff( item_start(i):item_end(i) )
-	      cx = REGION_NUMBER( arg(:4) )
+	      cx = REGION_NUMBER( arg )
 	      IF ( cx .EQ. unspecified_int4 ) CALL ERRMSG
-     .				( ferr_unknown_arg, status, arg(:4), *5000 )
+     .				( ferr_unknown_arg, status, arg, *5000 )
 	      CALL SHOW_REGION( cx )
  320	   CONTINUE
 	ELSEIF ( slash_all ) THEN

@@ -174,7 +174,7 @@
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
-     .                  units
+     .                  units, since_t0
 
         REAL*8          TM_WW_AXLEN, axwwlen
 	REAL		val_buf
@@ -183,7 +183,7 @@
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
-     .                  do_ez, tregular, its_changed, ok_cal, since_t0
+     .                  do_ez, tregular, its_changed, ok_cal
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -792,7 +792,7 @@ c *kob* 4/97
            IF ( status .NE. ferr_ok ) GOTO 6510
 
            since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
-           IF (since_T0) GOTO 6520
+           IF (since_T0 .GT. 0) GOTO 6520
 
            line_units(axis) = buff1
 

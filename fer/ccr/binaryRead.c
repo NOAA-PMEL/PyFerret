@@ -427,7 +427,6 @@ void FORTRAN(br_close)() {
 }
 
 void FORTRAN(br_get_error)(char *buf) {
-  assert(FFileInfo != 0);
   strcpy(buf, Errbuf);
 }
 

@@ -128,6 +128,8 @@
 * V533: 6/01 *sh* - added SET VARIABLE/NAME=
 *            *acm* - added PLOT/VLOG, PLOT/HLOG: plot qualifiers to set log,
 *                    inverse log axes and log depth axes.
+*       7/01 *acm* - added /AXES[=TOP,BOTTOM,LEFT,RIGHT]  for 
+*		     PLOT, CONTOUR, POLYGON, SHADE, VECTOR.
 * V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
 
 	include 'ferret.parm'
@@ -678,9 +680,12 @@
 		DATA qualifiers  (nqual_at4a+29)/ 'PEN'/	!/pen (denig!!)
 		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at4a+32)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+33)/ '****'/	! 
-
+		DATA qualifiers  (nqual_at4a+32)/ 'HLOG'/	! log axis horiz
+		DATA qualifiers  (nqual_at4a+33)/ 'VLOG'/	! log axis vertical
+		DATA qualifiers  (nqual_at4a+34)/ 'AXES'/	! /axes[=...]
+		DATA qualifiers  (nqual_at4a+35)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+36)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+37)/ '****'/	! 
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -758,7 +763,7 @@
 		DATA qualifiers  (nqual_at6a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at6a+25)/ 'DASH'/	!/dash
 		DATA qualifiers  (nqual_at6a+26)/ 'NOYADJUST'/	!/noyadjust
-		DATA qualifiers  (nqual_at6a+27)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+27)/ 'AXES'/	!/axes[=]
 		DATA qualifiers  (nqual_at6a+28)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+29)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+30)/ 'HLIMITS'/	! horiz
@@ -987,7 +992,7 @@
 		DATA qualifiers  (nqual_at13a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at13a+25)/ 'FLOWLINE'/	!/flowline
 		DATA qualifiers  (nqual_at13a+26)/ 'DENSITY'/	!/density=
-		DATA qualifiers  (nqual_at13a+27)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+27)/ 'AXES'/	!/axes[=]
 		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
 		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
 		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
@@ -1102,7 +1107,7 @@
 		DATA qualifiers  (nqual_at18a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at18a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at18a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at18a+23)/ '****'/	! 
+		DATA qualifiers  (nqual_at18a+23)/ 'AXES'/	!/axes[=]
 		DATA qualifiers  (nqual_at18a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at18a+25)/ 'PATTERN'/   !/pattern=
 		DATA qualifiers  (nqual_at18a+26)/ '****'/	!
@@ -1281,7 +1286,7 @@
 		DATA qualifiers  (nqual_at27a+26)/ 'FILL'/	!/fill
 		DATA qualifiers  (nqual_at27a+27)/ 'KEY'/	!/key
 		DATA qualifiers  (nqual_at27a+28)/ 'NOKEY'/	!/nokey
-		DATA qualifiers  (nqual_at27a+29)/ '****'/	!unused
+		DATA qualifiers  (nqual_at27a+29)/ 'AXES'/	!/axes[=]
 		DATA qualifiers  (nqual_at27a+30)/ 'HLIMITS'/	! horizontal
 		DATA qualifiers  (nqual_at27a+31)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at27a+32)/ 'HLOG'/	!log axis horiz

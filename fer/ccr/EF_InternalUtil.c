@@ -82,7 +82,7 @@ float *GLOBAL_bad_flag_ptr;
 
 /*
  * The jumpbuffer is used by setjmp() and longjmp().
- * setjmp() is called by efcn_compute_() in EF_InternalUtil.c and
+ * setjmp() is called by FORTRAN(efcn_compute)() in EF_InternalUtil.c and
  * saves the stack environment in jumpbuffer for later use by longjmp().
  * This allows one to bail out of external functions and still
  * return control to Ferret.
@@ -108,44 +108,44 @@ static int I_have_warned_already = TRUE; /* Warning turned off Jan '98 */
 
 /* .... Functions called by Ferret .... */
 
-int  efcn_scan_( int * );
-int  efcn_already_have_internals_( int * );
+int  FORTRAN(efcn_scan)( int * );
+int  FORTRAN(efcn_already_have_internals)( int * );
 
-int  efcn_gather_info_( int * );
-void efcn_get_custom_axes_( int *, int * );
-void efcn_get_result_limits_( int *, float *, int *, int * );
-void efcn_compute_( int *, int *, int *, int *, int *, float *, int *, float *, int * );
+int  FORTRAN(efcn_gather_info)( int * );
+void FORTRAN(efcn_get_custom_axes)( int *, int * );
+void FORTRAN(efcn_get_result_limits)( int *, float *, int *, int * );
+void FORTRAN(efcn_compute)( int *, int *, int *, int *, int *, float *, int *, float *, int * );
 
 
-void efcn_get_custom_axis_sub_( int *, int *, float *, float *, float *, char *, int * );
+void FORTRAN(efcn_get_custom_axis_sub)( int *, int *, float *, float *, float *, char *, int * );
 
-int  efcn_get_id_( char * );
-int  efcn_match_template_( int *, char * );
+int  FORTRAN(efcn_get_id)( char * );
+int  FORTRAN(efcn_match_template)( int *, char * );
 
-void efcn_get_name_( int *, char * );
-void efcn_get_version_( int *, float * );
-void efcn_get_descr_( int *, char * );
-int  efcn_get_num_reqd_args_( int * );
-void efcn_get_has_vari_args_( int *, int * );
-void efcn_get_axis_will_be_( int *, int * );
-void efcn_get_axis_reduction_( int *, int * );
-void efcn_get_piecemeal_ok_( int *, int * );
+void FORTRAN(efcn_get_name)( int *, char * );
+void FORTRAN(efcn_get_version)( int *, float * );
+void FORTRAN(efcn_get_descr)( int *, char * );
+int  FORTRAN(efcn_get_num_reqd_args)( int * );
+void FORTRAN(efcn_get_has_vari_args)( int *, int * );
+void FORTRAN(efcn_get_axis_will_be)( int *, int * );
+void FORTRAN(efcn_get_axis_reduction)( int *, int * );
+void FORTRAN(efcn_get_piecemeal_ok)( int *, int * );
 
-void efcn_get_axis_implied_from_( int *, int *, int * );
-void efcn_get_axis_extend_lo_( int *, int *, int * );
-void efcn_get_axis_extend_hi_( int *, int *, int * );
-void efcn_get_axis_limits_( int *, int *, int *, int * );
-int  efcn_get_arg_type_( int *, int *);
-void efcn_get_arg_name_( int *, int *, char * );
-void efcn_get_arg_unit_( int *, int *, char * );
-void efcn_get_arg_desc_( int *, int *, char * );
+void FORTRAN(efcn_get_axis_implied_from)( int *, int *, int * );
+void FORTRAN(efcn_get_axis_extend_lo)( int *, int *, int * );
+void FORTRAN(efcn_get_axis_extend_hi)( int *, int *, int * );
+void FORTRAN(efcn_get_axis_limits)( int *, int *, int *, int * );
+int  FORTRAN(efcn_get_arg_type)( int *, int *);
+void FORTRAN(efcn_get_arg_name)( int *, int *, char * );
+void FORTRAN(efcn_get_arg_unit)( int *, int *, char * );
+void FORTRAN(efcn_get_arg_desc)( int *, int *, char * );
 
 
 /* .... Functions called internally .... */
 
 /* Fortran routines from the efn/ directory */
-void efcn_copy_array_dims_(void);
-void efcn_get_workspace_addr_(float *, int *, float *);
+void FORTRAN(efcn_copy_array_dims)(void);
+void FORTRAN(efcn_get_workspace_addr)(float *, int *, float *);
 
 static void EF_signal_handler(int);
 static void (*fpe_handler)(int);
@@ -154,7 +154,7 @@ static void (*int_handler)(int);
 static void (*bus_handler)(int);
 
 
-void ef_err_bail_out_(int *, char *);
+void FORTRAN(ef_err_bail_out)(int *, char *);
 
 void EF_store_globals(float *, int *, int *, int *, float *);
 
@@ -185,7 +185,7 @@ int  EF_New( ExternalFunction * );
  * the names and associated directory information to the 
  * GLOBAL_ExternalFunctionList.
  */
-int efcn_scan_( int *gfcn_num_internal )
+int FORTRAN(efcn_scan)( int *gfcn_num_internal )
 {
   
   FILE *file_ptr=NULL;
@@ -300,7 +300,7 @@ int efcn_scan_( int *gfcn_num_internal )
  * Determine whether an external function has already 
  * had its internals read.
  */
-int efcn_already_have_internals_( int *id_ptr )
+int FORTRAN(efcn_already_have_internals)( int *id_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -325,7 +325,7 @@ int efcn_already_have_internals_( int *id_ptr )
  *     -1: error occurred, dynamic linking was unsuccessful
  *      0: success
  */
-int efcn_gather_info_( int *id_ptr )
+int FORTRAN(efcn_gather_info)( int *id_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   ExternalFunctionInternals *i_ptr=NULL;
@@ -473,7 +473,7 @@ Dynamic linking call dlopen() returns --\n\
  * Query the function about custom axes. Store the context
  * list information for use by utility functions.
  */
-void efcn_get_custom_axes_( int *id_ptr, int *cx_list_ptr )
+void FORTRAN(efcn_get_custom_axes)( int *id_ptr, int *cx_list_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -562,7 +562,7 @@ void efcn_get_custom_axes_( int *id_ptr, int *cx_list_ptr )
  * Query the function about abstract axes. Pass memory,
  * mr_list and cx_list info into the external function.
  */
-void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr )
+void FORTRAN(efcn_get_result_limits)( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
@@ -651,7 +651,7 @@ void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int 
  * pass the necessary information and the data and tell
  * the function to calculate the result.
  */
-void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_ptr, int *mres_ptr,
+void FORTRAN(efcn_compute)( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_ptr, int *mres_ptr,
 	float *bad_flag_ptr, int *mr_arg_offset_ptr, float *memory, int *status )
 {
   ExternalFunction *ef_ptr=NULL;
@@ -713,7 +713,7 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mr_list_p
    * Store the array dimensions for memory resident variables and for working storage.
    * Store the memory pointer and various lists globally.
    */
-  efcn_copy_array_dims_();
+  FORTRAN(efcn_copy_array_dims)();
   EF_store_globals(memory, mr_list_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
 
   /*
@@ -1120,7 +1120,7 @@ static void EF_signal_handler(int signo) {
  * Find an external function based on its name and
  * return the integer ID associated with that funciton.
  */
-int efcn_get_id_( char name[] )
+int FORTRAN(efcn_get_id)( char name[] )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -1152,7 +1152,7 @@ int efcn_get_id_( char name[] )
  * Determine whether a function name matches a template.
  * Return 1 if the name matchs.
  */
-int efcn_match_template_( int *id_ptr, char template[] )
+int FORTRAN(efcn_match_template)( int *id_ptr, char template[] )
 {
   ExternalFunction *ef_ptr=NULL;
   int status=LIST_OK;
@@ -1180,7 +1180,7 @@ int efcn_match_template_( int *id_ptr, char template[] )
 
 /*
  */
-void efcn_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float *hi_ptr, 
+void FORTRAN(efcn_get_custom_axis_sub)( int *id_ptr, int *axis_ptr, float *lo_ptr, float *hi_ptr, 
 			       float *del_ptr, char *unit, int *modulo_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
@@ -1204,7 +1204,7 @@ void efcn_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float
  * Find an external function based on its integer ID and
  * return the name.
  */
-void efcn_get_name_( int *id_ptr, char *name )
+void FORTRAN(efcn_get_name)( int *id_ptr, char *name )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1220,7 +1220,7 @@ void efcn_get_name_( int *id_ptr, char *name )
  * Find an external function based on its integer ID and
  * return the version number.
  */
-void efcn_get_version_( int *id_ptr, float *version )
+void FORTRAN(efcn_get_version)( int *id_ptr, float *version )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1236,7 +1236,7 @@ void efcn_get_version_( int *id_ptr, float *version )
  * Find an external function based on its integer ID and
  * return the description.
  */
-void efcn_get_descr_( int *id_ptr, char *descr )
+void FORTRAN(efcn_get_descr)( int *id_ptr, char *descr )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1252,7 +1252,7 @@ void efcn_get_descr_( int *id_ptr, char *descr )
  * Find an external function based on its integer ID and
  * return the number of arguments.
  */
-int efcn_get_num_reqd_args_( int *id_ptr )
+int FORTRAN(efcn_get_num_reqd_args)( int *id_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1271,7 +1271,7 @@ int efcn_get_num_reqd_args_( int *id_ptr )
  * return the flag stating whether the function has
  * a variable number of arguments.
  */
-void efcn_get_has_vari_args_( int *id_ptr, int *has_vari_args_ptr )
+void FORTRAN(efcn_get_has_vari_args)( int *id_ptr, int *has_vari_args_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1287,7 +1287,7 @@ void efcn_get_has_vari_args_( int *id_ptr, int *has_vari_args_ptr )
  * Find an external function based on its integer ID and
  * return the axis sources (merged, normal, abstract, custom).
  */
-void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
+void FORTRAN(efcn_get_axis_will_be)( int *id_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1306,7 +1306,7 @@ void efcn_get_axis_will_be_( int *id_ptr, int *array_ptr )
  * Find an external function based on its integer ID and
  * return the axis_reduction (retained, reduced) information.
  */
-void efcn_get_axis_reduction_( int *id_ptr, int *array_ptr )
+void FORTRAN(efcn_get_axis_reduction)( int *id_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1327,7 +1327,7 @@ void efcn_get_axis_reduction_( int *id_ptr, int *array_ptr )
  * know if it's ok to break up a calculation along an axis
  * for memory management reasons.
  */
-void efcn_get_piecemeal_ok_( int *id_ptr, int *array_ptr )
+void FORTRAN(efcn_get_piecemeal_ok)( int *id_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
 
@@ -1348,7 +1348,7 @@ void efcn_get_piecemeal_ok_( int *id_ptr, int *array_ptr )
  * a particular argument to find out if its axes should
  * be merged in to the result grid.
  */
-void efcn_get_axis_implied_from_( int *id_ptr, int *iarg_ptr, int *array_ptr )
+void FORTRAN(efcn_get_axis_implied_from)( int *id_ptr, int *iarg_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1371,7 +1371,7 @@ void efcn_get_axis_implied_from_( int *id_ptr, int *iarg_ptr, int *array_ptr )
  * argument which tells Ferret how much to extend axis limits
  * when providing input data (e.g. to compute a derivative).
  */
-void efcn_get_axis_extend_lo_( int *id_ptr, int *iarg_ptr, int *array_ptr )
+void FORTRAN(efcn_get_axis_extend_lo)( int *id_ptr, int *iarg_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1393,7 +1393,7 @@ void efcn_get_axis_extend_lo_( int *id_ptr, int *iarg_ptr, int *array_ptr )
  * argument which tells Ferret how much to extend axis limits
  * when providing input data (e.g. to compute a derivative).
  */
-void efcn_get_axis_extend_hi_( int *id_ptr, int *iarg_ptr, int *array_ptr )
+void FORTRAN(efcn_get_axis_extend_hi)( int *id_ptr, int *iarg_ptr, int *array_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1414,7 +1414,7 @@ void efcn_get_axis_extend_hi_( int *id_ptr, int *iarg_ptr, int *array_ptr )
  * return the 'axis_limits' information for a particular
  * argument.
  */
-void efcn_get_axis_limits_( int *id_ptr, int *axis_ptr, int *lo_ptr, int *hi_ptr )
+void FORTRAN(efcn_get_axis_limits)( int *id_ptr, int *axis_ptr, int *lo_ptr, int *hi_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *axis_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1434,7 +1434,7 @@ void efcn_get_axis_limits_( int *id_ptr, int *axis_ptr, int *lo_ptr, int *hi_ptr
  * argument which tells Ferret whether an argument is a 
  * float or a string.
  */
-int efcn_get_arg_type_( int *id_ptr, int *iarg_ptr )
+int FORTRAN(efcn_get_arg_type)( int *id_ptr, int *iarg_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   static int return_val=0; /* static because it needs to exist after the return statement */
@@ -1452,7 +1452,7 @@ int efcn_get_arg_type_( int *id_ptr, int *iarg_ptr )
  * Find an external function based on its integer ID and
  * return the name of a particular argument.
  */
-void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
+void FORTRAN(efcn_get_arg_name)( int *id_ptr, int *iarg_ptr, char *string )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1487,7 +1487,7 @@ void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
  * Find an external function based on its integer ID and
  * return the units for a particular argument.
  */
-void efcn_get_arg_unit_( int *id_ptr, int *iarg_ptr, char *string )
+void FORTRAN(efcn_get_arg_unit)( int *id_ptr, int *iarg_ptr, char *string )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1506,7 +1506,7 @@ void efcn_get_arg_unit_( int *id_ptr, int *iarg_ptr, char *string )
  * Find an external function based on its integer ID and
  * return the description of a particular argument.
  */
-void efcn_get_arg_desc_( int *id_ptr, int *iarg_ptr, char *string )
+void FORTRAN(efcn_get_arg_desc)( int *id_ptr, int *iarg_ptr, char *string )
 {
   ExternalFunction *ef_ptr=NULL;
   int index = *iarg_ptr - 1; /* C indices are 1 less than Fortran */ 
@@ -1520,7 +1520,7 @@ void efcn_get_arg_desc_( int *id_ptr, int *iarg_ptr, char *string )
 
 
 
-void ef_err_bail_out_(int *id_ptr, char *text)
+void FORTRAN(ef_err_bail_out)(int *id_ptr, char *text)
 {
   ExternalFunction *ef_ptr=NULL;
 

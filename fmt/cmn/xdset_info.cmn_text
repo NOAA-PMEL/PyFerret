@@ -40,7 +40,18 @@
      .		ds_alert_on_open(maxdsets),ds_alert_on_output(maxdsets),
      .		ds_message(maxdsets),
 **************************************************************************
-     .		ds_var_code(maxvars),ds_var_title(maxvars),
+     .
+     .          ds_var_code_head,
+     .          ds_var_code_array_size,
+     .          ds_var_code_string_size,
+     .          ds_var_code_ptr_array,
+     .          ds_var_code_hash_table,
+     .          ds_var_code_string_array,
+     .          ds_var_code_strlen_array,
+     .		ds_var_code(maxvars),
+     .          ds_var_code_strlen(maxvars),
+     .
+     .          ds_var_title(maxvars),
      .		ds_var_titl_mod(maxvars),ds_var_units(maxvars),
      .		ds_grid_number(maxvars),ds_missing_flag(maxvars),
      .          ds_var_scale(maxvars), ds_var_off(maxvars),
@@ -60,7 +71,9 @@
 **************************************************************************
      .		ds_ndataperrec(maxvars),ds_nrecpervar(maxvars),
      .		ds_nrecb4var(maxvars),ds_var_setnum(maxvars),
-     .		ds_npospervar(maxvars)
+     .		ds_npospervar(maxvars),
+**************************************************************************
+     .          string_array_result1(maxvars)
 
 * "FORMAT RECORD"
 	CHARACTER*4	ds_type,ds_format,ds_prog_rev
@@ -93,6 +106,15 @@
 *    - only in TS sets
 	INTEGER*4	min_ds_tstart,max_ds_tend,ds_tdelta
 	INTEGER*4	ds_var_type
+        INTEGER         ds_var_code_head,
+     .                  ds_var_code_array_size,
+     .                  ds_var_code_string_size,
+     .                  ds_var_code_strlen,
+     .                  string_array_result1
+        REAL*8          ds_var_code_ptr_array,
+     .                  ds_var_code_hash_table,
+     .                  ds_var_code_string_array,
+     .                  ds_var_code_strlen_array
 
 * additional calculated or derived values pertaining to data sets
 	CHARACTER*256	ds_name

@@ -75,6 +75,8 @@
 *                      to correct year-month-day
 * V500   10/98 - *jc* added @RDC
 *         1/00 - *acm* Change alg_fcn_descr to "since 1900" (was 1990)
+*         1/00 - *acm* Corrected the order of argument listing for THETA_FO to 
+*                      match how the function is actually called.
 
 #ifdef unix
 	include	'ferret.parm'
@@ -291,15 +293,15 @@
      .	     alg_fcn_descr	( 21 ) /
      .			'Fofonoff (1977) potential temperature'/,
      .	     alg_fcn_arg_ptr    ( 21 ) / 28	    /,
-     .	     alg_arg_name     ( 28 ) / 'p'	    /,
-     .	     alg_arg_units    ( 28 ) / 'decibars'   /,
-     .	     alg_arg_descr    ( 28 ) / 'pressure'   /,
+     .	     alg_arg_name     ( 28 ) / 'salt'	    /,
+     .	     alg_arg_units    ( 28 ) / 'psu'	    /,
+     .	     alg_arg_descr    ( 28 ) / 'salinity'   /,
      .	     alg_arg_name     ( 29 ) / 'temp'	    /,
      .	     alg_arg_units    ( 29 ) / 'deg. C'	    /,
      .	     alg_arg_descr    ( 29 ) / 'temperature'/,
-     .	     alg_arg_name     ( 30 ) / 'salt'	    /,
-     .	     alg_arg_units    ( 30 ) / 'psu'	    /,
-     .	     alg_arg_descr    ( 30 ) / 'salinity'   /,
+     .	     alg_arg_name     ( 30 ) / 'p'	    /,
+     .	     alg_arg_units    ( 30 ) / 'decibars'   /,
+     .	     alg_arg_descr    ( 30 ) / 'pressure'   /,
      .	     alg_arg_name     ( 31 ) / 'ref'	    /,
      .	     alg_arg_units    ( 31 ) / 'decibars'   /,
      .	     alg_arg_descr    ( 31 ) / 'reference pressure' /,

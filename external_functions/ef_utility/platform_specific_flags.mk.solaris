@@ -12,5 +12,6 @@ F77             = f77
 F77SHFLAG       = -PIC
 FFLAGS          = -c -u $(F77SHFLAG)
 LD_DYN_FLAGS    = -G -z text -z muldefs
-
+CFLAGS_DEBUG	= -g -Ddebug
+FFLAGS_DEBUG	= -g -C -Ddebug
 

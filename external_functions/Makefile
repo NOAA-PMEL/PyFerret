@@ -1,4 +1,4 @@
-e#
+#
 # Top level Makefile for Ferret External Functions
 #
 # September 09 1998

@@ -1,5 +1,9 @@
 \cancel mode verify	
-! arguments
+
+! Label a Vector plot produced using a call to poly_vectors or mp_poly_vectors
+
+! ARGUMENTS:
+
 ! 1 vector label, e.g. UWND,VWND
 ! 2 vector scale, units per half inch
 ! 3 key color, default black
@@ -7,6 +11,11 @@
 ! 5 xpos - inches from left, or C to center  	(default lower left)
 ! 6 ypos - inches from bottom, or C to center	(default lower left)
 ! 7 size - label text size in inches 		(default 0.12)
+
+! EXAMPLES (see poly_vec_demo.jnl for full examples)
+
+! GO poly_arrow_key " ", "5"   ! single black arrow labelled 5 in lower left
+! GO poly_arrow_key "Wind", "4 m/s", red, line, c, 0.2
 
 ! check arguments
 QUERY/IGNORE $2"<usage: yes? GO mp_vec_key [label] [units per half inch]"

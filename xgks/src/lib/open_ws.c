@@ -572,6 +572,12 @@ XgksXReDrawWs(ws)
 						 * non-segment primitives */
 	cnt = primi->seg_cnt;
 	while (cnt-- > 0) {
+	  /* Break out of loop if segment count (seg_cnt)
+	   * not consistent with actual length of list
+	   * js 5.99 */
+	    if (seg_ptr == 0 || seg_ptr->seg == 0){
+	        break;
+	    }
 	    XgksReDrawSeg(ws, seg_ptr->seg);
 	    seg_ptr = seg_ptr->next;
 	}

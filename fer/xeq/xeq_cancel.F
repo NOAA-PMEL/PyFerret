@@ -107,6 +107,10 @@
 * V510: 5/00 *sh* - added CANCEL AXIS and CANCEL GRID
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01 remove VMS include statements
+* v541 *acm*  6/02 Add CANCEL AXIS/ALL
+*             6/02 For irregular axes, on CANCEL AXIS axname, recover line_mem
+*                  space with call to remove_axis
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -504,7 +508,13 @@
      .                                CALL DELETE_VARIABLE( i )
               ENDIF
  1220	   CONTINUE
+
+* CANCEL AXIS/ALL
+
+        ELSE IF ( qual_given(slash_canc_axis_all) .GT. 0 ) THEN 	
+	   CALL deallo_all_axes
         ELSE
+
 * ... CANCEL AXIS
 	   num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
 	   DO 1230 item = 1, num_items
@@ -515,6 +525,7 @@
 	      line_keep_flag(axis) = .FALSE.  ! see tm_garb_col_grids.F
 	      IF (line_use_cnt(axis) .LE. 0) THEN
 	         IF ( axis .LE. max_lines ) THEN
+                    IF (.NOT. line_regular(axis)) CALL remove_axis(axis)
 		    line_name(axis) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(axis)

@@ -10,7 +10,7 @@
 !  blah blah
 
 ! Set the base DODS URL for this supplier
-DEFINE SYMBOL dods_base_url "http://ferret.pmel.noaa.gov/cgi-bin/nph-nc/data/"
+DEFINE SYMBOL dods_base_url "http://ferret.pmel.noaa.gov/cgi-bin/nph-dods/data/"
 
 ! check if data set argument was given. If not, do a query
 IF   $1"True|*>False|"  THEN

@@ -131,6 +131,7 @@
 * for averaging     we need source area   surrounding the destination area
 * for "window"ing   we need source area   containing  the destination area
 * for exact match   we need source points aligning w/ the destination points
+* for nrst match    do as for averaging
 	IF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
 	   dst_where_loest = box_middle
 	   dst_where_hiest = box_middle
@@ -148,7 +149,8 @@
      .      .OR. rgrd_trans .EQ. prgrd_variance
      .      .OR. rgrd_trans .EQ. prgrd_sum
      .      .OR. rgrd_trans .EQ. prgrd_good_pt
-     .	    .OR. rgrd_trans .EQ. prgrd_average ) THEN
+     .	    .OR. rgrd_trans .EQ. prgrd_average
+     .	    .OR. rgrd_trans .EQ. prgrd_nearest ) THEN
 	   dst_where_loest = box_lo_lim
 	   dst_where_hiest = box_hi_lim
 	   src_where_loest = box_lo_lim

@@ -22,6 +22,8 @@
 * V553 *acm*  1/04 - added slash_repeat_range, slash_repeat_name
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 * V570: *acm* 5/40 add LIST/EDGES LIST/BOUNDS for NetCDF output
+*       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
+*       *acm* 6/05 - add CANCEL AXIS/DEPTH
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -44,6 +46,7 @@
      .
      .			slash_canc_axis_modulo,
      .			slash_canc_axis_all,
+     .			slash_canc_axis_depth,
      .
      .			slash_canc_data_noerr,
      .
@@ -101,6 +104,9 @@
      .
      .			slash_set_axis_modulo,
      .			slash_set_axis_depth,
+     .			slash_set_axis_calendar,
+     .			slash_set_axis_t0,
+     .			slash_set_axis_units,
      .
      .			slash_set_memory_words
 
@@ -233,7 +239,8 @@
      .			slash_canc_list_append = 6,
      .
      .			slash_canc_axis_modulo = 1,
-     .			slash_canc_axis_all = 2,
+     .			slash_canc_axis_all    = 2,
+     .			slash_canc_axis_depth  = 3,
      .
      .			slash_canc_data_noerr  = 2,
      .
@@ -291,6 +298,9 @@
      .
      .			slash_set_axis_modulo	= 1,
      .			slash_set_axis_depth    = 2,
+     .			slash_set_axis_calendar = 3,
+     .			slash_set_axis_t0       = 4,
+     .			slash_set_axis_units    = 5,
      .
      .			slash_set_memory_words	= 1 )
 

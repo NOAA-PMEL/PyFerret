@@ -125,6 +125,7 @@
 * v553: *kob* 8/03 - need to increase size of buff1 for long numeric dataset names
 *       *kob* 9/03 - add ich for character indicies for the internal_read_format_bug
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+*       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -157,24 +158,32 @@
 	include	'SWITCH.INC'	! with deflts
         include 'LUNITS.INC'          ! with lttout
         include 'lunits_inc.decl'
-
+	include 'xunits.cmn_text'
+        include 'calendar.decl'
+        include 'calendar.cmn'
+      
 * calling argument declarations:
 	INTEGER	reconfig
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
-     .                  TM_GET_LINENUM, LIB_GET_LUN,
+     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, 
+     .                  TM_UNIT_ID, TM_GET_CALENDAR_ID,  
      .			equal_pos, colon_pos, dset_num, ich,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
-     .			cx, i, grid, axis, loc, perm(4), buff_len, TM_LENSTR
+     .			cx, i, grid, axis, loc, perm(4), buff_len, 
+     .                  cal_id, day, month, year, hour, minute, second,
+     .                  units
+
+        REAL*8          TM_WW_AXLEN, axwwlen
 	REAL		val_buf
 	CHARACTER	title*128, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
-     .                  set_last, any_delta, dset_cdf,
+     .                  TM_HAS_STRING, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
-     .                  do_ez, tregular, its_changed
+     .                  do_ez, tregular, its_changed, ok_cal, since_t0
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -681,7 +690,7 @@ c *kob* 4/97
 	mgrid_abstract = grid
 	RETURN
 
-* SET AXIS  /MODULO and /DEPTH
+* SET AXIS  /MODULO /DEPTH /CALENDAR /T0 /UNITS
  1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
         IF ( axis .EQ. unspecified_int4 ) GOTO 6210
 * /MODULO
@@ -715,6 +724,179 @@ c *kob* 4/97
 	      line_direction(axis) = 'UD'
            ENDIF
         ENDIF
+
+*/CALENDAR 
+	loc = qual_given(slash_set_axis_calendar) 
+        IF (loc .GT. 0) THEN
+           IF ( line_direction(axis) .EQ. 'TI' ) THEN
+
+	      CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff1, status )
+              IF ( status .NE. ferr_ok ) GOTO 6310
+
+              ok_cal = .FALSE.
+
+              IF (buff1(1:3) .EQ. '360') buff1 = '360_DAY' 
+              IF (buff1(1:3) .EQ. 'STA') buff1 = 'GREGORIAN' 
+              IF (buff1(1:3) .EQ. 'PRO') buff1 = 'GREGORIAN' 
+              IF (buff1(1:3) .EQ. 'COM') buff1 = 'NOLEAP' 
+              IF (buff1(1:3) .EQ. '365') buff1 = 'NOLEAP' 
+              IF (buff1(1:3) .EQ. '366') buff1 = 'ALL_LEAP' 
+
+              DO 1220 i = 1, mxcals
+                 IF (buff1(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
+                    ok_cal = .TRUE.
+                    line_cal_name(axis) = allowed_calendars(i)
+                 ENDIF
+1220         CONTINUE
+
+              IF (.NOT. ok_cal) GOTO 6320
+
+           ENDIF
+
+        ENDIF
+*  /T0 
+
+	loc = qual_given(slash_set_axis_t0) 
+        IF (loc .GT. 0 ) THEN
+           IF ( line_direction(axis) .EQ. 'TI' .OR.
+     .          line_direction(axis) .EQ. 'TT' ) THEN
+
+	      CALL EQUAL_STRING(
+     .                cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                buff1, status )
+              IF ( status .NE. ferr_ok ) GOTO 6410
+
+              CALL TM_BREAK_DATE (buff1, 1, year, month, day,
+     .				  hour, minute, second,status)
+              IF ( status .NE. ferr_ok ) GOTO 6420
+              line_t0(axis) = buff1
+              line_direction(axis) = 'TI'
+
+           ENDIF
+
+        ENDIF
+
+*  /UNITS
+* Note we do not change line direction with a resetting of units; line
+* direction UD, DU, WE, SN stay as they were when they were input.
+
+	loc = qual_given(slash_set_axis_units) 
+        IF (loc .GT. 0 ) THEN
+           IF ( num_args .EQ. 0 ) GOTO 6410
+
+	   CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   buff1, status )
+           IF ( status .NE. ferr_ok ) GOTO 6510
+
+           since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
+           IF (since_T0) GOTO 6520
+
+           line_units(axis) = buff1
+
+* ... decode the units (code lifted from cd_get_1_axis)
+
+           units = TM_UNIT_ID( line_units(axis) )
+
+* Named calendar with unit=year gets length of year in that calendar.
+
+           cal_id = TM_GET_CALENDAR_ID (line_cal_name(axis))
+           IF (units .EQ. -6 .OR. units .EQ. -10) THEN
+              IF (cal_id .EQ. d360) units = -9
+              IF (cal_id .EQ. julian) units = -12
+              IF (cal_id .EQ. noleap) units = -11
+              IF (cal_id .EQ. all_leap) units = -8
+           ENDIF
+
+           line_unit_code(axis) = units
+           IF  ( units.EQ.0 .AND. line_units(axis) .NE. ' ' ) THEN
+              CALL WARN ('Units  not recognized: '//line_units(axis))
+              CALL WARN ('They will not be convertible:')
+           ENDIF
+           IF ( units .GE. 0 ) THEN
+              line_tunit(axis) = real4_init
+           ELSE
+              line_tunit(axis) = un_convert(line_unit_code(axis))
+           ENDIF
+
+* See if we are resetting from a generic XX or YY axis to a geographic one.
+
+           IF (line_direction(axis) .EQ. 'XX') THEN
+              IF ( units .EQ. 4 .AND. 
+     .              TM_HAS_STRING(line_units(axis), 'deg')
+     .             .OR. TM_HAS_STRING(line_units(axis), 'lon') ) THEN 
+                 line_direction(axis) = 'WE'
+
+* Should we set axis to modulo?
+                 axwwlen = TM_WW_AXLEN(axis)
+                 IF ( axwwlen .LE. 360.D0 ) THEN
+                    line_modulo(axis) = .TRUE.
+                    IF (line_modulo_len(axis) .EQ. 0.0D0)
+     .                    line_modulo_len(axis) = 360.D0
+                 ENDIF
+
+              ENDIF
+           ENDIF
+
+           IF (line_direction(axis) .EQ. 'YY') THEN
+              IF ( units .EQ. 4 .AND. 
+     .                  TM_HAS_STRING(line_units(axis), 'deg')
+     .             .OR. TM_HAS_STRING(line_units(axis), 'lat') ) THEN 
+                    line_direction(axis) = 'SN'
+              ENDIF
+           ENDIF
+
+* recheck units and see if we are resetting from a geographic axis to a 
+* non-geographic one or a calendar to non-calendar.
+
+           IF (line_direction(axis) .EQ. 'WE' .OR. 
+     .         line_direction(axis) .EQ. 'XX' ) THEN
+              IF ( units .NE. 4 ) THEN 
+                 line_direction(axis) = 'XX'
+                 IF (units .LT. 0) THEN
+                    CALL WARN ('Units  not recognized for X axis: '
+     .                 //line_units(axis))
+                    CALL WARN ('They will not be convertible')
+                 ENDIF
+              ENDIF
+           ENDIF
+
+           IF (line_direction(axis) .EQ. 'SN' .OR. 
+     .         line_direction(axis) .EQ. 'YY' ) THEN
+              IF ( units .NE. 4 ) THEN 
+                 line_direction(axis) = 'YY'
+                 IF (units .LT. 0) THEN
+                    CALL WARN ('Units  not recognized for Y axis: '
+     .                 //line_units(axis))
+                    CALL WARN ('They will not be convertible')
+                 ENDIF
+              ENDIF
+           ENDIF
+
+           IF (line_direction(axis) .EQ. 'DU' .OR. 
+     .         line_direction(axis) .EQ. 'UD' ) THEN
+               IF (units .LT. 0) THEN
+                 CALL WARN ('Units  not recognized for Z axis: '
+     .                 //line_units(axis))
+                 CALL WARN ('They will not be convertible')
+              ENDIF
+           ENDIF
+
+           IF (line_direction(axis) .EQ. 'TI' .OR. 
+     .         line_direction(axis) .EQ. 'TT' ) THEN
+              IF ( units .GE. 0 ) THEN 
+                 line_direction(axis) = 'TT'
+                 CALL WARN ('Units  not recognized for T axis: '
+     .                 //line_units(axis))
+                 CALL WARN ('They will not be convertible')
+              ENDIF
+           ENDIF
+
+
+        ENDIF
+
 	RETURN
 
 * SET MEMORY/MWORDS=megawords
@@ -804,6 +986,26 @@ c *kob* 4/97
      .		     'no grid has been saved', *5000 )
  6210	CALL ERRMSG( ferr_invalid_command, status,
      .		 'unknown axis: '//cmnd_buff(item_start(1):item_end(1)),
+     .               *5000 )
+ 6310	CALL ERRMSG( ferr_invalid_command, status,
+     .	         'SET AXIS/CALENDAR=what? ', 
+     .               *5000 )
+ 6320	CALL ERRMSG( ferr_invalid_command, status,
+     .	         'invalid calendar name: '
+     .           //cmnd_buff(item_start(1):item_end(1)), 
+     .               *5000 )
+ 6410	CALL ERRMSG( ferr_invalid_command, status,
+     .	         'SET AXIS/t0= what? ', 
+     .               *5000 )
+ 6420	CALL ERRMSG( ferr_syntax, status,
+     .	         'invalid date string: '
+     .           //cmnd_buff(item_start(1):item_end(1)), 
+     .               *5000 )
+ 6510	CALL ERRMSG( ferr_invalid_command, status,
+     .	         'SET AXIS/UNITS= what? ', 
+     .               *5000 )
+ 6520	CALL ERRMSG( ferr_syntax, status,
+     .	         'specify SET AXIS/T0 separately from /UNITS ',
      .               *5000 )
 	END
 

@@ -21,7 +21,8 @@
 * V554   1/04 *acm* - increased number of quals for REPEAT command
 * V570   5/04 *acm* - increased number of qualifiers for LIST command 
 *                     for SAVE/BOUNDS, SAVE/EDGES
-
+*       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
+*       *acm* 6/05 - add CANCEL AXIS/DEPTH
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -90,7 +91,7 @@
      .			nqual1i = 5, nqual_at1j = nqual_at1i + nqual1i,	!'MOVI'
      .			nqual1j =10, nqual_at1k = nqual_at1j + nqual1j,	!'VARI'
      .			nqual1k = 2, nqual_at1l = nqual_at1k + nqual1k,	!'GRID'
-     .			nqual1l = 2, nqual_at1m = nqual_at1l + nqual1l,	!'AXIS'
+     .			nqual1l = 8, nqual_at1m = nqual_at1l + nqual1l,	!'AXIS'
      .			nqual1m = 2, nqual_at1n = nqual_at1m + nqual1m,	!'MEMO'
      .			nqual1n = 2, nqual_at1o = nqual_at1n + nqual1n,	!'****'
      .			nqual1o = 2, nqual_at1p = nqual_at1o + nqual1o,	!'****'
@@ -185,7 +186,7 @@
      .			nqual3i = 1, nqual_at3j = nqual_at3i + nqual3i,	!'MOVI'
      .			nqual3j = 1, nqual_at3k = nqual_at3j + nqual3j,	!'VIEW'
      .			nqual3k = 3, nqual_at3l = nqual_at3k + nqual3k,	!'VARI'
-     .			nqual3l = 3, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
+     .			nqual3l = 4, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
      .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
      .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'****'
      .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'

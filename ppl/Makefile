@@ -40,7 +40,7 @@ all:
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; \
         $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
         done
 
 
@@ -49,7 +49,7 @@ libraries:
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; \
         $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
+                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)"); \
         done
 
 
@@ -64,7 +64,7 @@ depend:
         do \
         (cd $$i ; echo "making" $@ "in $$i..."; \
         $(MAKE) "MFLAGS=$(MFLAGS)" "CC=$(CC)" "CFLAGS=$(CFLAGS)" \
-                "FFLAGS=$(FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
+                "FFLAGS=$(PPLUS_FFLAGS)" "PPLUS_FFLAGS=$(PPLUS_FFLAGS)" $@); \
         done
 
 

@@ -295,6 +295,9 @@ GO bn_delimited_read
 GO bn_reset
 GO bn540_bug_fixes
 
+GO bn_reset
+GO bn_cancel_axes
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

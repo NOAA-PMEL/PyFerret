@@ -107,6 +107,7 @@
 *       4/99 *sh* - added PAUSE alias
 *	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/IJ/K/L 
 *	     *sh* - added SET AXIS/DEPTH
+*	6/99 *sh* - added WHERE alias
 
 #ifdef unix
 	include 'ferret.parm'
@@ -1314,13 +1315,16 @@
      .		alias(14)	/ 'PPL PATSET PATTERN=' /
      .		alias_name(15)	/ 'PAUSE' /,
      .		alias_len(15)	/ 7 /,
-     .		alias(15)	/ 'MESSAGE' /
+     .		alias(15)	/ 'MESSAGE' /,
+     .		alias_name(16)	/ 'WHERE' /,
+     .		alias_len(16)	/ 10 /,
+     .		alias(16)	/ 'PPL %WHERE' /
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 135*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 135*4 /,
+     .                   / 134*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150)/ 134*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 135*unspecified_name4 /
+     .                   / 134*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

@@ -46,24 +46,34 @@ C**
 *
 *
 *	Mod 11.20.95 J Davison to accommodate 4 digit year, and seconds
+*       J Davison 10.15.99   Modified to support multiple calendars.
 
-
-      CHARACTER IMN(12)*3,ITIME*(*),SYM*(*)
-      DATA IMN/'JAN','FEB','MAR','APR','MAY','JUN', 
-     *'JUL','AUG','SEP','OCT','NOV','DEC'/ 
+      CHARACTER ITIME*(*),SYM*(*)
 C                                                                        
+
+#ifdef unix
+        include 'calendar.cmn'
+#else
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
+#endif
+
+
 C     THIS ROUTINE TRANSLATES enhanced WOODSHOLE FORMATTED TIME          
          
 C     INTO A PLOTABLE TYPE FORMAT.                                       
 C         IE.  77081904590118 BECOMES 4:59:01 AUG 19, 1877
-                     
+C     IN THE GREGORIAN CALENDAR, WHERE MONTH 8 IS 'AUG'. THE VALUES OF
+C     MONTH_NAMES IN THE CURRENT CALENDAR DETERMINES THE MONTH NAMES.
 C                                                                        
+
+**************************************************************************
+
       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)                   
 
-*     WRITE(SYM,40) IHR,IMIN,ISEC,IMN(IMON),IDAY,ICEN,IYR         
+*     WRITE(SYM,40) IHR,IMIN,ISEC,MONTH_NAMES(IMON),IDAY,ICEN,IYR         
 *  40 FORMAT(I2,':',I2.2,':',I2.2,' ',A3,' ',I2,',', I2.2, I2.2)
  
-      WRITE(SYM,40) IHR,IMIN,IMN(IMON),IDAY,ICEN,IYR         
+      WRITE(SYM,40) IHR,IMIN,MONTH_NAMES(IMON),IDAY,ICEN,IYR         
 
    40 FORMAT(I2,':',I2.2,' ',A3,' ',I2,',', I2.2, I2.2)
       RETURN                                                             

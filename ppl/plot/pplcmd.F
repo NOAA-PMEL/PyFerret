@@ -1,5 +1,5 @@
 	SUBROUTINE PPLCMD(FROMI,LINEI,ISI,COMBUF,ICMDIM,ICMSZE)
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -71,7 +71,9 @@ C**
 *	S Hankin  11.25.97 Mod to add commands PLOTPOL and FILLPOL
 *       kob 9.98 - add external statement to force linker to find
 *                  block data statments
+*       J Davison 10.14.99 Mod to add CALENDAR command for multiple calendars
 c
+
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
 c	isi	length of line in characters
@@ -268,13 +270,13 @@ CCCCCCC data	        tmapdebug/.false./
 	integer		nmxt,nmyt,ilen
 *	End declarations 11.30.88
 
-	integer	  ipen_save(0:nlines)
+	integer	  ipen_save(0:nlines), iend, cal_status
 	data	  ipen_save/1,nlines*1/
 
 	character strr*255
 
 	CHARACTER DTE*10,TEMP*255,TEMP2*255,FILE*81,FROM*80,LINE*255
-	CHARACTER SYM*30
+	CHARACTER SYM*30,ICOM7*7
 	CHARACTER FROMI*(*),LINEI*(*)
 	CHARACTER COMBUF(ICMDIM)*(*)
 	CHARACTER YES*3,NO*2
@@ -282,7 +284,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,LABOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(110)*7
+	CHARACTER COMM(111)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -305,11 +307,12 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TXLINT','TXNMTC','TXLABP','AUTOLAB','EVAR','DEBUG','RESET',
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
-     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET'/
+     *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
-	CHARACTER*15 TMPCHR
+	CHARACTER*15  TMPCHR
+	character*255 set_name
 
 * JD 11.29.95 Mod for century axis
 
@@ -326,6 +329,12 @@ CCCCCCC data	        tmapdebug/.false./
      .          DSFCOM_INIT,
      .          PPLDAT,
      .          WS_TYPES_INIT
+
+#ifdef unix
+        include 'tmap_errors.parm'
+#else
+        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
+#endif
 
 *****************************************************************************
 
@@ -399,8 +408,10 @@ C
 	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
 	IF (DONEF) RETURN
 
-	DO 20 I=1,110
-	    IF(ICOM.EQ.COMM(I))GOTO 21
+C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
+	ICOM7=ICOM
+	DO 20 I=1,111
+	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
 ! 	   Mod 11.9.93 to insert advanced command output into segments
@@ -431,7 +442,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174),I
+     *  9174,9175),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -443,7 +454,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174),I
+     *  9174,9175),I
         end if
         goto 10
 
@@ -1541,6 +1552,22 @@ c       area
         GOTO 6001
 
  9174	call pattern_set
+	goto 10
+
+ 9175	if(n.eq.0)then
+	   set_name='GREGORIAN'
+	else
+	   set_name=label
+	endif
+
+	call tm_set_current_calendar (set_name, cal_status)
+	if (cal_status .ne. merr_ok) then
+	   iend = lnblk (set_name,16)
+	   write (6,9176) set_name(1:iend)
+	end if
+
+ 9176	format('*** PPL+ ERROR: Calendar ',a, ' is invalid.')
+
 	goto 10
 
 #ifdef unix

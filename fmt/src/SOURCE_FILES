@@ -72,6 +72,9 @@ tm_axis_order.F\
 tm_break_date.F\
 tm_break_fmt_date.F\
 tm_break_str.F\
+tm_calendars_break_date.F\
+tm_calendars_secs_from_bc.F\
+tm_calendars_secs_to_date.F\
 tm_check_box_loc.F\
 tm_choose_read.F\
 tm_clean_filename.F\
@@ -116,6 +119,7 @@ tm_garb_col_grids.F\
 tm_garb_col_lines.F\
 tm_get_205_run_line.F\
 tm_get_205_run_parm.F\
+tm_get_calendar_id.F\
 tm_get_gridnum.F\
 tm_get_like_dyn_grid.F\
 tm_get_like_dyn_line.F\
@@ -141,6 +145,7 @@ tm_legal_unix_name.F\
 tm_lenstr.F\
 tm_lenstr1.F\
 tm_line_match.F\
+tm_load_calendar.F\
 tm_lonw2lone.F\
 tm_make_4d_grids.F\
 tm_make_basic_axis.F\
@@ -164,6 +169,7 @@ tm_same_line_def.F\
 tm_scale.F\
 tm_secs_from_bc.F\
 tm_secs_to_date.F\
+tm_set_current_calendar.F\
 tm_split_message.F\
 tm_step_to_date.F\
 tm_string.F\

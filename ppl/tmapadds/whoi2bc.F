@@ -46,6 +46,7 @@
 *
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* Mod J Davison 10.15.99 Add multi calendar support. Call new routine.
 
 * Argument definition
 	CHARACTER*(*)	whoi
@@ -53,7 +54,17 @@ C                with "*(*)" for the linux port
 * Local Definition
 	INTEGER		year, month, day, hour, minute, second
 	INTEGER		century
-	REAL*8		TM_SECS_FROM_BC
+	REAL*8		TM_CALENDARS_SECS_FROM_BC
+
+#ifdef unix
+        include 'calendar.cmn'
+#else
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
+#endif
+
+	integer         status
+
+****************************************************************************
 
 * read the WHOI-formatted string
 	READ ( whoi, 3000 ) year, month, day, hour, minute, second, century
@@ -62,7 +73,8 @@ C                with "*(*)" for the linux port
 	year = year + century*100
 
 * call TMAP library routine and convert seconds to minutes
-	WHOI2BC = TM_SECS_FROM_BC( year, month, day, hour, minute, second )
+	WHOI2BC = TM_CALENDARS_SECS_FROM_BC ( cal_id,
+     .    year, month, day, hour, minute, second )
      .		  / 60.D0
 
 	RETURN

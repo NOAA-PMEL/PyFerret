@@ -108,6 +108,7 @@ C                with "*(*)" for the linux port
         include 'shade_vars.cmn'
         include 'aline.cmn'
         include 'gkscm2.cmn'
+        include 'calendar.cmn'
 #else
         INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
         INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
@@ -137,6 +138,7 @@ C                with "*(*)" for the linux port
         INCLUDE 'tmap_pplv11inc:tmap_shade_vars.INC'
         INCLUDE 'tmap_pplv11inc:tmap_aline.INC'
         INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
+        INCLUDE 'tmap_pplv11inc:calendar.cmn'
 #endif
 
 *3/99 *kob* had to move initialization of var solid off decl. line - for linux
@@ -150,15 +152,16 @@ C                with "*(*)" for the linux port
 
 	COMMON/PLTCM2/PMODE,FILEZ,FILET
 	CHARACTER PMODE*1,FILEZ*81,FILET*81
-	CHARACTER ARG*(*),LST(23)*10,AUTO(2)*6,TYPEL(6)*12,CLEV(0:3)*4
+	CHARACTER ARG*(*),LST(24)*10,AUTO(2)*6,TYPEL(6)*12,CLEV(0:3)*4
 	CHARACTER TYPE(3)*7,JTY(-2:2)*30,TIC(-1:1)*7
 	CHARACTER LT(-1:1)*6,AT(0:2)*7,IZT(0:3)*8,TAXTYP(-1:1)*5
 	CHARACTER SYM*21,SYM2*21,SYM3*21,ONOFF(0:1)*3
+        CHARACTER POINTER1*4,POINTER2*25
 
 	DATA LST/'XAXIS','YAXIS','LINES','LABELS','STATS','LEVELS',
      *'READ','CONSET','LABSET','TAXIS','TICS','DATA','PLOT','DATPT',
      *'TRANSXY','LIMITS','VECTOR','SHASET','SHAKEY','ALINE','PLTNME',
-     *'PATSET','APATTERNS'/
+     *'PATSET','APATTERNS','CALENDAR'/
 
 	DATA AUTO/'MANUAL','AUTO'/,ONOFF/'OFF','ON'/
 	DATA TAXTYP/'YAXIS','OFF','XAXIS'/
@@ -177,7 +180,7 @@ C                with "*(*)" for the linux port
 
 	CALL UPPER(ARG,30)
 
-	DO 10 I=1,23
+	DO 10 I=1,24
            IF(ARG.EQ.LST(I))GOTO 11
  10     CONTINUE
 
@@ -186,7 +189,7 @@ C                with "*(*)" for the linux port
         GOTO 5000
 
  11     GOTO (100,200,300,400,500,600,700,800,900,1000,1100,500,1300,
-     *       1400,1500,1600,1700,1800,1900,2000,2100,2200,2300),I
+     *       1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400),I
 
 
 C     XAXIS
@@ -530,6 +533,24 @@ C	ALINE info
 10017   format (9x,a25)
 	goto 5000
 
+*       LIST CURRENT CALENDAR
+ 2400   write (llun,10018)
+10018   format (/9x,'SUPPORTED CALENDARS'/9x,'-------------------')
+
+        do 2401 i = 1, max_calendars
+           if (cal_name .eq. calendar_names(i)) then
+              pointer1 = '--> '
+              pointer2 = ' Current calendar'
+           else
+              pointer1 = ' '
+              pointer2 = ' '
+           end if
+
+        write (llun,10019) pointer1, calendar_names(i), pointer2
+ 2401   end do
+
+10019   format(9x,a,a,a)
+        goto 5000
+
 5000	RETURN
       END
-

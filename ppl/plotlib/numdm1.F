@@ -51,19 +51,51 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
+*       J Davison 10.20.99   Modified to support multiple calendars.
+
+#ifdef unix
+        include 'calendar.cmn'
+#else
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
+#endif
+
+
 C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
- 	CHARACTER*(*) IT
-      DIMENSION ID(12) 
-      DATA ID/31,28,31,30,31,30,31,31,30,31,30,31/ 
-      CALL TIME3(IT,IY,IM,IDD,IH,IX,ISEC,ICEN) 
-      NUMDM1=ID(IM) 
 
-      IF(IM.EQ.2.AND.IY.EQ.4*(IY/4)
-     .	.AND.MOD(IY,100).NE.0)  NUMDM1=29	! Centuries are not leap yrs
+ 	character*(*) it
 
-      IF(IM.EQ.2.AND.IY.EQ.400*(IY/400)) 
-     .				NUMDM1=29	! Every 400 years is tho...
+******************************************************************************
+******************************************************************************
+
+
+      call time3(it,iy,im,idd,ih,ix,isec,icen) 
+
+******************************************************************************
+* HANDLE GREGORIAN CALENDAR FIRST
+******************************************************************************
+       if (cal_id .eq. gregorian) then
+         numdm1 = days_in_month(im) 
+
+         if(im.eq.2.and.iy.eq.4*(iy/4)
+     .        .and.mod(iy,100).ne.0)  numdm1=29	! centuries are not leap yrs
+
+         if(im.eq.2.and.iy.eq.400*(iy/400)) 
+     .        numdm1=29         ! every 400 years is tho...
       
+******************************************************************************
+* ALL OTHER SUPPORTED AND REGULAR CALENDARS
+******************************************************************************
+      else if (cal_id .eq. common   .or.
+     .         cal_id .eq. leap_yr  .or. 
+     .         cal_id .eq. days_360 .or. 
+     .         cal_id .eq. tmap_360 .or. 
+     .         cal_id .eq. peculiar) then
 
-      RETURN 
-      END 
+         numdm1 = days_in_month(im) 
+      else
+         stop 'Illegal calendar in numdm1()'
+      end if
+
+      return 
+      end 
+

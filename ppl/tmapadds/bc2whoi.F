@@ -44,6 +44,7 @@
 * version 0.1 - calls TMAP library routines TM_SECS_TO_DATE and TM_BREAK_DATE
 * version 0.2 - 1/19/89: remove century from year for WHOI format
 * Mod J Davison 11.22.95 Return century, add seconds, for 4 digit year 
+* Mod J Davison 10.15.99 Add multi calendar support. Call new routine.
 
 * Argument definition
 	INTEGER		year, month, day, hour, minute, second, status
@@ -51,14 +52,22 @@
 	REAL*8		num_minutes
 
 * Local Definition
-	CHARACTER*20	TM_SECS_TO_DATE, date
+	CHARACTER*20	TM_CALENDARS_SECS_TO_DATE, date
+
+#ifdef unix
+        include 'calendar.cmn'
+#else
+        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
+#endif
+
+******************************************************************************
 
 * convert to date string of the form dd-mmm-yyyy:hh:mm:ss
-	date = TM_SECS_TO_DATE( num_minutes * 60.D0 )
+	date = TM_CALENDARS_SECS_TO_DATE ( cal_id, num_minutes * 60.D0 )
 
 * break into individual integer date values
-	CALL TM_BREAK_DATE (date, year, month, day,
-     .				  hour, minute, second, status)
+	CALL TM_CALENDARS_BREAK_DATE ( cal_id, 
+     .     date, year, month, day, hour, minute, second, status)
 
 * kludge for WHOI format limitation - year doesn't contain century
 

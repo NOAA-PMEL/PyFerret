@@ -59,6 +59,7 @@
 * V320: 1/95 - allow blanks in dates ("1-jan-1985 12:00")  TM_BREAK_DATE has
 *		a thorough parser
 * V420 (IBM/AIX port of V411): 10/5/95 - buff for "READ(var,*"
+* V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -87,7 +88,7 @@
 
 * internal variable declarations:
 	LOGICAL		TM_DIGIT, TM_DATE
-	INTEGER		TM_LENSTR1, end_pos, pbad, i
+	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, slen
 	REAL*8		SECS_FROM_BC, given_answer
 	CHARACTER	buff*32				! for AIX port 10/95
 
@@ -111,8 +112,26 @@
 	end_pos = TM_LENSTR1( string )
 	formatted = .FALSE.	! may be reset later
 
+* (6/99) check for enclosing quotes
+	DO 4 i = 1, end_pos
+	   IF (string(i:i) .EQ. '"') THEN
+	      start_pos = i + 1
+	      GOTO 6
+	   ENDIF
+ 4	CONTINUE
+	start_pos = 1
+ 6	IF (start_pos .GT. 1) THEN
+	   DO 8 i = end_pos, start_pos, -1
+	      IF (string(i:i) .EQ. '"') THEN
+	         end_pos = i - 1
+	         GOTO 9
+	      ENDIF
+ 8	   CONTINUE
+	ENDIF
+ 9	IF (start_pos .GT. end_pos) GOTO 5000
+
 * special check for embedded blanks ignoring leading and following blanks 4/94
-	DO 10 i = 1, end_pos
+	DO 10 i = start_pos, end_pos
 	   IF ( string(i:i) .NE. ' ' ) GOTO 11
  10	CONTINUE
 	pbad = 1
@@ -124,11 +143,12 @@
 	IF ( string(end_pos:end_pos) .EQ. 'd'
      .  .OR. string(end_pos:end_pos) .EQ. 'D' ) GOTO 5000
 
-	buff = string(:end_pos)			! AIX port 10/95
+	buff = string(i:end_pos)		! AIX port 10/95
+	slen = end_pos - i + 1
 	IF ( subscript ) THEN
 
 * /I /J /K or /L
-	   IF ( .NOT.TM_DIGIT(string(:end_pos)) ) GOTO 5000
+	   IF ( .NOT.TM_DIGIT(string(i:end_pos)) ) GOTO 5000
 	   READ ( buff,* , ERR=5000 ) given_answer
 * make sure the value given is integer
 	   answer = INT(given_answer)
@@ -144,17 +164,17 @@
 	ELSEIF ( idim .NE. t_dim ) THEN
 
 * /X and /Y
-	   CALL TRANSLATE_LAT_LONG ( string(1:end_pos), idim,
+	   CALL TRANSLATE_LAT_LONG ( buff(:slen), idim,
      .				     answer, formatted,status )
 	   IF ( status .NE. ferr_ok ) GOTO 5900
 
 	ELSE
 * /T
 * date/time string ?
-           IF ( TM_DATE( string ) ) THEN
+           IF ( TM_DATE( buff(:slen) ) ) THEN
 * ... time step cannot be evaluated until we know what axis this is on
 * ... save number of seconds from B.C. as a negative to flag later translation
-	      answer = -1.D0 * SECS_FROM_BC( string, status )
+	      answer = -1.D0 * SECS_FROM_BC( buff(:slen), status )
 	      formatted = .TRUE.
 	      IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE

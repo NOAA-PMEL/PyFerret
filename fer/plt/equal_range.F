@@ -46,7 +46,7 @@
 * V3.20  18/08/94 - *kob*  IBM port requires use of RISC buff for string concat's
 * 1/97 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
-
+* V500 *sh* - 6/99 check for quotations around text (e.g. date strings)
 
 * calling argument declarations
 	LOGICAL		formatted
@@ -55,9 +55,9 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations
-	LOGICAL		TM_DIGIT, has_delta, ldummy, not_by_ss
+	LOGICAL		has_delta, ldummy, not_by_ss, in_quote
 	PARAMETER 	(not_by_ss =  .FALSE.)
-	INTEGER 	equal_pos, colon1, colon2, end2, slen
+	INTEGER 	equal_pos, colon1, colon2, end2, slen, i
 	REAL*8		tmp
 
 #ifdef unix
@@ -84,15 +84,40 @@
 	   GOTO 5000				! "name ="
 	ELSEIF ( string(equal_pos+1:) .EQ. ' ' ) THEN
 	   GOTO 5000				! "name =    "
-	ELSEIF ( .NOT.TM_DIGIT(string(equal_pos+1:)) ) THEN
-	   GOTO 5000				! "name = text"
+! removed 6/99 so quotations wouldn't be trapped here
+!	ELSEIF ( .NOT.TM_DIGIT(string(equal_pos+1:)) ) THEN
+!	   GOTO 5000				! "name = text"
 	ENDIF
 
 * lo:hi:delta parsing and syntax checking
-	colon1 = equal_pos + INDEX( string(equal_pos+1:), ':' )
-	IF ( colon1 .EQ. equal_pos ) GOTO 5000
-	colon2 = colon1 + INDEX( string(colon1+1:), ':' )	
-	has_delta = colon2 .GT. colon1
+	colon1 = 0
+	in_quote = .FALSE.
+	DO 100 i = equal_pos+1, SLEN
+	   IF (string(i:i) .EQ. '"') THEN
+	      in_quote = .NOT.in_quote
+	   ELSEIF (in_quote) THEN
+	      CONTINUE	! skip text inside of quotation
+	   ELSEIF (string(i:i) .EQ. ':') THEN
+	      colon1 = i
+	      GOTO 110
+	   ENDIF
+ 100	CONTINUE
+	IF ( in_quote ) GOTO 5000
+	IF (colon1 .EQ. 0 ) GOTO 5000
+
+ 110	colon2 = colon1
+	DO 200 i = colon1+1, slen
+	   IF (string(i:i) .EQ. '"') THEN
+	      in_quote = .NOT.in_quote
+	   ELSEIF (in_quote) THEN
+	      CONTINUE	! skip text inside of quotation
+	   ELSEIF (string(i:i) .EQ. ':') THEN
+	      colon2 = i
+	      GOTO 210
+	   ENDIF
+ 200	CONTINUE
+	IF ( in_quote ) GOTO 5000
+ 210	has_delta = colon2 .GT. colon1
 	IF ( has_delta ) THEN
 	    end2 = colon2 - 1
 	    IF ( slen .LE. colon2 ) GOTO 5000

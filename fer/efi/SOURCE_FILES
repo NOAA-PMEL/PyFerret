@@ -1,0 +1,25 @@
+SRCS_F = \
+ffta.F\
+fftp.F\
+sampleij.F\
+samplet_date.F\
+samplexy.F\
+scatter2gridgauss_xy.F\
+scatter2gridgauss_xz.F\
+scatter2gridgauss_yz.F\
+scatter2gridlaplace_xy.F\
+scatter2gridlaplace_xz.F\
+scatter2gridlaplace_yz.F\
+sorti.F\
+sortj.F\
+sortk.F\
+sortl.F\
+tauto_cor.F\
+xauto_cor.F\
+day_of_year.f\
+fftsubs.f\
+gausswt.f\
+nobad.f\
+pickindex.f\
+pickoutxyz.f\
+shellsort.f

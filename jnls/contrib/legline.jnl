@@ -1,0 +1,22 @@
+
+\can mode verify
+! make a legend line and its label
+! arg1=x-value of line starting point (user units)
+! arg2=length of line (user units)
+! arg3=y-value of line
+! arg4=line type (number 1-19)
+! arg5=text character height
+! arg6=label text (in quotes if a space is included)
+! only gets label position right for positive-up axes
+
+define symbol xend `$1+$2`
+define symbol txstart `($xend)+$2/10`
+ppl %range ($ppl$ymin1) ($ppl$ymax1) 10		! get axis range user units
+define symbol drop `$5/2`			! half char hgt in inches
+define symbol txypos `($3)-(($drop))*((($ppl$range_high))-(($ppl$range_low)))/($ppl$ylen)`
+! set pen for a dummy line number (not to interfere)
+ppl pen,77,$4
+ppl aline 77 $1 $3 ($xend) $3 
+label ($txstart) ($txypos) -1 0 $5 $6
+set mode/last verify
+

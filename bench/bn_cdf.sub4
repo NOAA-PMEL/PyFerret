@@ -3,6 +3,8 @@
 ! requires version 2.30 or later
 ! 6/92
 
+! V5 *sh* 7/99 -- added /CLOBBER
+
 cancel data/all
 cancel variables/all
 cancel region
@@ -35,7 +37,7 @@ set region/l=1:2  ! i,j, and k unspecified
 
 ! a bunch of basic geometries
 ! 1d
-list/format=cdf/file=test_fil.cdf i1        ! not /APPEND - must be new
+list/format=cdf/clobber/file=test_fil.cdf i1      ! not /APPEND - must be new
 list/format=cdf/append/file=test_fil.cdf j1
 list/format=cdf/append/file=test_fil.cdf k1
 list/format=cdf/append/file=test_fil.cdf l1           ! record axis

@@ -3,6 +3,8 @@
 ! requires version 2.30 or later
 ! 6/92
 
+! V5 *sh* 7/99 added /CLOBBER
+
 cancel region
 canc var/all
 cancel data/all
@@ -39,7 +41,7 @@ let ijklave = ijkl[l=@ave]
 
 ! a bunch of basic geometries
 ! 1d
-list/format=cdf/i=1:10/file=test_abs.cdf i1        ! not /APPEND - must be new
+list/format=cdf/i=1:10/clobber/file=test_abs.cdf i1   ! not /APPEND - must be new
 list/format=cdf/j=1:20/append/file=test_abs.cdf j1
 list/format=cdf/k=1:100/append/file=test_abs.cdf k1
 list/format=cdf/l=1:10/append/file=test_abs.cdf l1           ! record axis

@@ -2,6 +2,8 @@
 ! benchmark to test netCDF input and output of TMAP data set variables
 ! this routine added 1/26/95 to test the SAVE/HEADING=enhanced option
 
+! V5 *sh* 7/99 added /CLOBBER
+
 cancel data/all
 cancel variables/all
 cancel region
@@ -34,7 +36,7 @@ set region/l=1:2  ! i,j, and k unspecified
 
 ! a bunch of basic geometries
 ! 1d
-list/format=cdf/file=test_fil0.cdf/heading="enh" i1        ! not /APPEND - must be new
+list/format=cdf/clobber/file=test_fil0.cdf/heading="enh" i1      ! not /APPEND - must be new
 list/format=cdf/append/file=test_fil0.cdf/heading="enh" j1
 list/format=cdf/append/file=test_fil0.cdf/heading="enh" k1
 list/format=cdf/append/file=test_fil0.cdf/heading="enh" l1       ! record axis

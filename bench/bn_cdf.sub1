@@ -3,9 +3,15 @@
 ! requires version 2.30 or later
 ! 6/92
 
+! V5 *sh* 7/99 -- clean up files before writing
+
 cancel region
 canc var/all
 cancel data/all
+
+! delete old ones
+sp rm -f test0[a-p].cdf
+
 ! write a bunch of em 
 list/format=cdf/append/l=1:500/file=test0a.cdf l
 list/format=cdf/append/l=1:500/file=test0b.cdf/rigid l

@@ -607,3 +607,50 @@ XcEnd(ws)
 
     return 1;
 }
+
+/*
+ * find the number of colour table entries supportted by an X server.
+ * returns the number of entries or -1 if the server does not respond.
+ *
+ * Moved from XGKS colours.c to use correct visual when determining number
+ * of available colors
+ */
+XgksMaxColours(server)
+    char           *server;
+{
+    int             i, colours;
+    Display        *dpy;
+    char           *getenv();
+
+
+    /* wait till dpy is known to turn SIGIO off  AIX PORT #d1 */
+
+    /* default server is in the Unix environment */
+    if (server == NULL)
+	server = getenv("DISPLAY");
+
+    /* check for existing connection to this server. */
+    for (i = 0; i < MAX_OPEN_WS; i++) {
+	if (xgks_state.openedws[i].ws_id == INVALID
+		|| xgks_state.openedws[i].ws->ewstype != X_WIN)
+	    continue;
+	if (STRCMP(xgks_state.openedws[i].ws->wstype, server) == 0)
+	    break;
+    }
+    if (i < MAX_OPEN_WS) {			/* found a connection */
+	dpy = xgks_state.openedws[i].ws->dpy;
+	(void) XgksSIGIO_OFF(dpy);
+	colours = xgks_state.openedws[i].ws->wscolour;
+    } else {					/* build a connection */
+	dpy = XOpenDisplay(server);
+	(void) XgksSIGIO_OFF(dpy);
+	if (dpy == NULL)
+	    return -1;
+	colours = DisplayCells(dpy, DefaultScreen(dpy));
+	XCloseDisplay(dpy);
+    }
+
+    (void) XgksSIGIO_ON(dpy);
+
+    return colours;
+}

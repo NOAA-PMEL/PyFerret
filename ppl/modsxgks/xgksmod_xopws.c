@@ -332,11 +332,9 @@ CreateWindow(name, rDB, wk)
     Display        *dpy = wk->dpy;	/* for convenience */
     XSizeHints      SizeHints;		/* window size hints */
     XSetWindowAttributes xswa;		/* window attributes */
-    XVisualInfo    *VisualList;
+    XVisualInfo    *VisualList, *theVisual;
     int visualIndex;
 
-    /* Initialize color-mapping. */
-    wk->wscolour = DisplayCells(dpy, DefaultScreen(dpy));
 
     VisualList = getBestVisual(dpy, &visualIndex);
     
@@ -345,15 +343,17 @@ CreateWindow(name, rDB, wk)
       fprintf(stderr, "The display must support an indexed visual\n");
 	status = 26;
     } else {
+      theVisual = &VisualList[visualIndex];
       /* Set the screen default colour map ID. */
-      if (VisualList[visualIndex].visual ==
-	  DefaultVisual(wk->dpy, DefaultScreen(wk->dpy))){
+      if (theVisual->visual == DefaultVisual(wk->dpy, DefaultScreen(wk->dpy))){
 	wk->dclmp = DefaultColormap(wk->dpy,
 				    DefaultScreen(wk->dpy));
       } else {
 	wk->dclmp = XCreateColormap(wk->dpy, DefaultRootWindow(wk->dpy),
-				    VisualList[visualIndex].visual, AllocNone);
+				    theVisual->visual, AllocNone);
       }
+    /* Initialize color-mapping. */
+      wk->wscolour = theVisual->colormap_size;
       wk->wclmp = wk->dclmp;
 
 	/*

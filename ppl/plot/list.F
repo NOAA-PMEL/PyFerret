@@ -58,6 +58,9 @@ C                with "*(*)" for the linux port
 * V530: *acm* 1/01- list the allowable calendar names; do not point to 
 *		    "the loaded calendar".  calendar type goes with each grid.
 * V540: *sh* 9/01 - changed LIST YAXIS output to say "YROG+" instead of "XORG="
+* 3/99  *kob* had to move initialization of var solid off decl. line - for linux
+* V552 *acm* 3/03 For SHAKEY info, write out location of key, whether it was
+*                 automatically set or set by user with SHASET
 
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
@@ -117,12 +120,9 @@ C                with "*(*)" for the linux port
         include 'calendar.decl'
         include 'calendar.cmn'
 
-*3/99 *kob* had to move initialization of var solid off decl. line - for linux
 
-*3/03 *acm* for SHAKEY info, write out location of key, whether it is 
-*           user-located or automatically set
 
-	integer		x_do_key,x_orient,solid
+	integer		x_do_key,x_orient,solid, my_loc
         DATA            solid/21/
 	logical		none
 	character*5	drafts_txt
@@ -439,20 +439,24 @@ C	SHAKEY info
 	write (llun,10004) x_do_key,x_orient,klab_size,klab_incr,
      .				klab_dig,klab_len
 10004	format (9x,i6,2x,i6,2x,f8.2,2x,i7,2x,i7,2x,i7)
-c
-c  Write out location of key, whether it is 
-c  user-located or automatically set
 
-c	if (kuser_loc) then
-	   write (llun,10005) 
-	   write (llun,10006) kx_lo/1000.0,kx_hi/1000.0,     
+c  Write out location of key, whether it was user-located or automatically set
+
+
+        IF (kuser_loc(1) .OR. kuser_loc(2) .OR.
+     .      kuser_loc(3) .OR. kuser_loc(4) ) THEN
+            WRITE (llun,10005)
+        ELSE
+	   WRITE (llun,10007) 
+        ENDIF
+
+	write (llun,10006) kx_lo/1000.0,kx_hi/1000.0,     
      .		              ky_lo/1000.0,ky_hi/1000.0
-c	else
-c	   write (llun,10007)
-c	end if
+
 10005	format (//9x,'X LO',5x,'X HI',5x,'Y LO',5x,'Y HI')
 10006	format (4x,4f9.2)
-10007	format (//9x,'DEFAULT KEY POSITIONING')
+10007	format (//9x,'DEFAULT KEY POSITIONING'/
+     .            9x,'X LO',5x,'X HI',5x,'Y LO',5x,'Y HI')
 	goto 5000
 
 C	ALINE info

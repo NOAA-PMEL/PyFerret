@@ -62,9 +62,16 @@
 *	UPPERFLG is true when the upper triangle calls drawpoly
 *	UPPER_FIRST is true when the upper triangle is first cell in a buffer
 * 
+*	*jd* 10.23.98 Add pattern support variables
+*	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
+*		ensure contiguous 8-byte organization
+* v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
+* V550 *acm*  9/02 Let SPEC_SIZE be 250, so folks can set at least as many 
+*                  colors as they can use 
 * 2/03 *kob* g77 port - move position of cont_key var in common block.  g77
 *                       complained that padding was necessary otherwise
-	
+* 4/03 V552 *acm* Shade key improvements; kuser_loc is 4-dimensional 
+
 
 	integer		spec_size,max_windows,pattern_num
 	parameter	(spec_size=250,max_windows=12,pattern_num=50)
@@ -89,7 +96,7 @@
 	real		mslvl(spec_size)
 
 	logical		fill_missing,even_histo,do_key,area_bundles
-	logical		vertical_key,kuser_loc,custom_colors
+	logical		vertical_key,kuser_loc(4),custom_colors
 	logical		protect_used_colors
 
 	logical		buffer_empty, upperflg, upper_first
@@ -101,7 +108,7 @@
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
      .			   x_lo,x_hi,y_lo,y_hi,
-     .			   bad_val,
+     .			   bad_val, 
      .			   fill_missing,even_histo,do_key,vertical_key,
      .			   kuser_loc,custom_colors,
      .			   shd_min,shd_max,shd_levels,

@@ -52,6 +52,17 @@
 *       Mod for FILLPOL *jd* 3.99
 * v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
 *                  also remove VMS INCLUDES
+* 552 *acm* 4/03 Shade key improvements: 
+* 	1) Larger default label size 
+*       2) Can change the location of the labels from right to left and
+*           top to bottom, by sending a negative value for the label size.
+* 	3) The labels are right-justified (may not look it, depending on font) 
+*           for vertical shade keys that are labelled on the left
+*       4) Do not have to set all four corners when changing the size and
+*           location of the shade key -- can reset any of the four, and
+*           others will be filled in by making the key the default size
+*           in that direction.  See shade_key.F 
+
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -82,7 +93,9 @@
 	real		xmaxx,ymaxx,vwidth,vheight,karht
 	real		xx,yy,xxx,yyy
 
-	character*12	text,tm_fmt
+        real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def
+
+	character*12	text,tm_fmt, txt_out, blanks
 	logical		ITSA_AXIS_VIEW, windof_hold
 
 	external	tm_fmt
@@ -91,6 +104,7 @@
 
 	include 	'ppl_in_ferret.cmn'	
 
+        DATA      blanks/'            '/
 
 *******************************************************************************
 
@@ -101,32 +115,66 @@
 	if (vertical_key) goto 1000
 
 *	MAKE A HORIZONTAL KEY
-	if (.not. kuser_loc) then
-           if (ppl_in_ferret) then
-              call get_view_size (vwidth,vheight)
 
-              IF (ITSA_AXIS_VIEW(1)) vheight = (ylen + yorg )* 1.15
+* Define default x and y lo and hi locations
 
-              if (vheight .le. ylen + yorg) goto 2000
+        if (ppl_in_ferret) then
+           call get_view_size (vwidth,vheight)
 
-              rem = vheight - (ylen + yorg)
-	      ymaxx = 0.25*ylen
-              kx_lo = 1000.0 *  xorg
-              kx_hi = 1000.0 * (xorg + xlen)
-              ky_lo = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
-              ky_hi = 1000.0 * min (yorg+ylen+ymaxx,vheight-0.1*rem)
-           else
-              rem = height - (ylen + yorg)
-	      ymaxx = 0.25*ylen
-              kx_lo = 1000.0 *  xorg
-              kx_hi = 1000.0 * (xorg + xlen)
-              ky_lo = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
-              ky_hi = 1000.0 * min (yorg+ylen+ymaxx,height-0.1*rem)
-           end if
+           IF (ITSA_AXIS_VIEW(1)) vheight = (ylen + yorg )* 1.15
+
+           if (vheight .le. ylen + yorg) goto 2000
+
+           rem = vheight - (ylen + yorg)
+	   ymaxx = 0.25*ylen
+           kx_lo_def = 1000.0 *  xorg
+           kx_hi_def = 1000.0 * (xorg + xlen)
+           ky_lo_def = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
+           ky_hi_def = 1000.0 * min (yorg+ylen+ymaxx,vheight-0.1*rem)
+        else
+           rem = height - (ylen + yorg)
+	   ymaxx = 0.25*ylen
+           kx_lo_def = 1000.0 *  xorg 
+           kx_hi_def = 1000.0 * (xorg + xlen)
+           ky_lo_def = 1000.0 * (yorg + ylen + 0.25*min (rem,ymaxx))
+           ky_hi_def = 1000.0 * min (yorg+ylen+ymaxx,height-0.1*rem)
         end if
+
+        IF (kuser_loc(1) .OR. kuser_loc(2) .OR. 
+     .      kuser_loc(3) .OR. kuser_loc(4)) THEN  
+
+! Some or all of kx_lo,kx_hi,ky_lo,ky_hi  are already set
+
+           IF ((.NOT.kuser_loc(1)) .AND. (.NOT.kuser_loc(2))) THEN
+              kx_lo = kx_lo_def
+              kx_hi = kx_hi_def
+           ELSEIF ((.NOT.kuser_loc(1)) .AND. kuser_loc(2) ) THEN
+              kx_lo = kx_hi - (kx_hi_def - kx_lo_def)
+           ELSEIF (kuser_loc(1) .AND. (.NOT.kuser_loc(2)) ) THEN
+              kx_hi = kx_lo + (kx_hi_def - kx_lo_def)
+           ENDIF 
+
+           IF ((.NOT.kuser_loc(3)) .AND. (.NOT.kuser_loc(4)) ) THEN
+              ky_lo = ky_lo_def
+              ky_hi = ky_hi_def
+           ELSEIF ((.NOT.kuser_loc(3)) .AND. kuser_loc(4) ) THEN
+              ky_lo = ky_hi - 0.4*(ky_hi_def - ky_lo_def)
+           ELSEIF (kuser_loc(3) .AND. (.NOT.kuser_loc(4)) ) THEN
+              ky_hi = ky_lo + 0.4*(ky_hi_def - ky_lo_def)
+           ENDIF 
+
+* When not kuser_loc, we will use the default locations
+
+        ELSE
+           kx_lo = kx_lo_def
+           kx_hi = kx_hi_def
+           ky_lo = ky_lo_def
+           ky_hi = ky_hi_def
+        ENDIF
 
 	x_inc = (kx_hi - kx_lo)/max (1.0, real (shd_levels))
 	y_inc = 0.1 * (ky_hi - ky_lo)
+
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
@@ -140,6 +188,13 @@
 	   py(2) = ky_hi - 4.0 * y_inc 
 	   py(3) = ky_hi - 4.0 * y_inc
 	   py(4) = ky_hi
+
+           IF (kuser_loc(3) .OR. kuser_loc(4)) THEN
+              py(2) = ky_lo
+              py(3) = ky_lo
+              py(1) = ky_hi
+              py(4) = ky_hi
+           ENDIF
 
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	   call set_fill_ndx (ndx)
@@ -165,10 +220,12 @@
 	end if
 
 	if (klab_size .eq. 0.0) then
-	   karht = amin1 (0.08*1000.0,
+cc	   karht = amin1 (0.08*1000.0,
+cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
+	   karht = amin1 (0.12*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
 	else
-	   karht = klab_size
+	   karht = ABS(klab_size)
 	end if
 
 	do 20 ndx = 1,shd_levels+1,incr
@@ -183,7 +240,16 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
-	   yy = (ky_hi - 5.0 * y_inc)/1000.0 - yorg - karht
+	   yy = (ky_hi - 5.0 * y_inc)/1000.0 - yorg - 1.5*karht
+           IF (kuser_loc(3) .OR. kuser_loc(4) ) 
+     .            yy = (ky_lo - y_inc)/1000.0-yorg-1.5*karht
+
+* If klab_size negative put the key labels on the top rather than the 
+* bottom of the key
+
+           IF (klab_size .LT. 0) THEN
+              yy = (ky_hi)/1000.0 - yorg + karht
+           ENDIF
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 	   if (makep .eq. 'SHADE' .or. makep .eq. 'FILLPOL') then
@@ -196,35 +262,74 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
 
 20	continue
+
+*  Set these to actual locations that were used for PPL LIST SHAKEY
+        ky_hi = py(1)
+        ky_lo = py(2)
+
 	goto 2000
 
 *	MAKE A VERTICAL KEY 
-1000	if (.not. kuser_loc) then
-           if (ppl_in_ferret) then
-              call get_view_size (vwidth,vheight)
+1000	CONTINUE
 
-              IF (ITSA_AXIS_VIEW(1)) vwidth = (xlen + xorg )* 1.15
-              if (vwidth .le. xlen + xorg) goto 2000
+* Define default x and y lo and hi locations
 
-	      rem = vwidth - (xlen + xorg)
-	      xmaxx = 0.25*xlen
+        if (ppl_in_ferret) then
+           call get_view_size (vwidth,vheight)
 
-              kx_lo = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
-              kx_hi = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
-              ky_lo = 1000.0 *  yorg
-              ky_hi = 1000.0 * (yorg + ylen)
-           else
-	      rem = width - (xlen + xorg)
-	      xmaxx = 0.25*xlen
-              kx_lo = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
-              kx_hi = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
-              ky_lo = 1000.0 *  yorg
-              ky_hi = 1000.0 * (yorg + ylen)
-           end if
+           IF (ITSA_AXIS_VIEW(1)) vwidth = (xlen + xorg )* 1.15
+           if (vwidth .le. xlen + xorg) goto 2000
+
+	   rem = vwidth - (xlen + xorg)
+	   xmaxx = 0.25*xlen
+
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
+           ky_lo_def = 1000.0 *  yorg
+           ky_hi_def = 1000.0 * (yorg + ylen)
+        else
+	   rem = width - (xlen + xorg)
+	   xmaxx = 0.25*xlen
+           kx_lo_def = 1000.0 * (xorg + xlen + 0.25*min (rem,xmaxx))
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,width-0.1*rem)
+           ky_lo_def = 1000.0 *  yorg
+           ky_hi_def = 1000.0 * (yorg + ylen)
         end if
 
+        IF (kuser_loc(1) .OR. kuser_loc(2) .OR. 
+     .      kuser_loc(3) .OR. kuser_loc(4)) THEN  
+
+! Some or all of kx_lo,kx_hi,ky_lo,ky_hi  are already set
+
+           IF ((.NOT.kuser_loc(1)) .AND. (.NOT.kuser_loc(2))) THEN
+              kx_lo = kx_lo_def
+              kx_hi = kx_hi_def
+           ELSEIF ((.NOT.kuser_loc(1)) .AND. kuser_loc(2) ) THEN
+              kx_lo = kx_hi - 0.4*(kx_hi_def - kx_lo_def)
+           ELSEIF (kuser_loc(1) .AND. (.NOT.kuser_loc(2)) ) THEN
+              kx_hi = kx_lo + 0.4*(kx_hi_def - kx_lo_def)
+           ENDIF 
+
+           IF ((.NOT.kuser_loc(3)) .AND. (.NOT.kuser_loc(4))) THEN
+              ky_lo = ky_lo_def
+              ky_hi = ky_hi_def
+           ELSEIF ((.NOT.kuser_loc(3)) .AND. kuser_loc(4) ) THEN
+              ky_lo = ky_hi - (ky_hi_def - ky_lo_def)
+           ELSEIF (kuser_loc(3) .AND. (.NOT.kuser_loc(4)) ) THEN
+              ky_hi = ky_lo + (ky_hi_def - ky_lo_def)
+           ENDIF 
+
+* When not kuser_loc, we will use the default locations
+
+        ELSE
+           kx_lo = kx_lo_def
+           kx_hi = kx_hi_def
+           ky_lo = ky_lo_def
+           ky_hi = ky_hi_def
+        ENDIF
+
 	x_inc = 0.1 * (kx_hi - kx_lo)
-	y_inc = (ky_hi - ky_lo)/max (1.0, real (shd_levels))
+	y_inc = (ky_hi - ky_lo)/max (1.0, REAL (shd_levels))
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
@@ -233,6 +338,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   px(2) = kx_lo + 4.0*x_inc
 	   px(3) = kx_lo + 4.0*x_inc
 	   px(4) = kx_lo
+
+           IF ( kuser_loc(1) .OR. kuser_loc(2)) THEN
+              px(1) = kx_lo
+              px(4) = kx_lo
+              px(2) = kx_hi
+              px(3) = kx_hi
+           ENDIF
 
 	   py(1) = ky_lo + real (ndx - 2) * y_inc
 	   py(2) = ky_lo + real (ndx - 2) * y_inc
@@ -257,9 +369,10 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
-	   karht = amin1 (0.08*1000.0,360.0*rem/real (max_len))/1000.0
+cc	   karht = amin1 (0.08*1000.0,360.0*rem/real (max_len))/1000.0
+	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
 	else
-	   karht = klab_size
+	   karht = ABS(klab_size)
 	end if
 
 	if (klab_incr .eq. 0) then
@@ -279,6 +392,26 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
+           IF (kuser_loc(1) .OR. kuser_loc(2)) 
+     .              xx = (kx_hi+0.2*x_inc)/1000 - xorg
+
+* If klab_size negative put the key labels on the left rather than 
+* the right of the key
+
+           IF (klab_size .LT. 0) THEN
+	      xx = (kx_lo)/1000.0 - xorg -(REAL(str_len)+1.)* karht
+              txt_out = text
+
+* If the key labels are to the right, right-justify them.
+
+           ELSE
+              nspace = max_len - str_len
+              txt_out = text
+              IF (nspace .GT. 0) 
+     .                txt_out = blanks(1:nspace)//text(1:str_len)
+              str_len = max_len
+           ENDIF
+
 	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg - 0.5*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
@@ -289,9 +422,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	      yyy = yy
 	   endif
 
-	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
+	   call symbel (xxx,yyy,0.0,karht,str_len,txt_out(1:str_len))
 
 1020	continue
+
+*  Set these to actual locations that were used for PPL LIST SHAKEY
+        kx_lo = px(1)
+        kx_hi = px(2)
 
 2000	windof = windof_hold
 	return

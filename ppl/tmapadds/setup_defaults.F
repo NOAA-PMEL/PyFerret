@@ -43,14 +43,9 @@
 *       *jd* Set default values for patterns 10.98
 *       *jd* Initialize rgb_mapping 10.98
 * 3/99 *kob* 	move var init off of decl list  - cleaning up after jerry.
+* V552 5/03 *acm* Move shade key setup to routine SHADE_KEY
 
-#ifdef unix
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
-
-#ifdef unix
         include         'parampl5_dat.decl'
         include         'PARAMPL5.DAT'
         include         'axis_inc.decl'
@@ -61,14 +56,6 @@
         include         'ARFILL.INC'
         include         'cont_inc.decl'
         INCLUDE         'CONT.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_parampl5.dat'
-        INCLUDE         'tmap_pplv11inc:tmap_axis.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_plt.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-        include         'pplinc:ARFILL.INC'
-        INCLUDE 	'pplinc:CONT.INC'
-#endif
 
 	real		rem
 	external	ws_types_init,pplp_ver_data
@@ -184,29 +171,8 @@
 	sg(6) = 0.0
 	sb(6) = 0.0
 
-*       DO THE KEY
-	do_key	     	= .true.
-        vertical_key 	= .false.
-	kuser_loc 	= .false.
-
-	klab_size = 0.0
-	klab_dig  = 3
-	klab_len  = 9
-	klab_incr = 0
-
-        if (vertical_key) then
-           rem = width - (xlen + xorg)
-           kx_lo = 1000.0 * (xorg + xlen + 0.25 * rem)
-           kx_hi = 1000.0 * (width - 0.1 * rem)
-           ky_lo = 1000.0 *  yorg
-           ky_hi = 1000.0 * (yorg + ylen)
-        else
-           rem = height - (ylen + yorg)
-           kx_lo = 1000.0 *  xorg
-           kx_hi = 1000.0 * (xorg + xlen)
-           ky_lo = 1000.0 * (yorg + ylen + 0.25 * rem)
-           ky_hi = 1000.0 * (height - 0.1 * rem)
-        end if
+*       DO THE KEY --- move this setup to routine SHADE_KEY; values
+*       need to be initialized with each call.
 
 *	INITIALIZE SQFFLG TO TRUE
 	sqfflg = .true.

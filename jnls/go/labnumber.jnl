@@ -1,0 +1,97 @@
+\cancel mode verify
+! labnumber
+! *10/02 *acm* 
+
+! Description: Label locations on a 2-D plot with a number and optional text
+!
+!   usage:
+!       GO labnumber xloc yloc value [size] [location] [LN_prefix] [LN_suffix]
+!   where:
+!       xloc      horizontal location of the points
+!       yloc      vertical location of the points
+!       value     function value at the points
+!       size      size of the labels (default 0.12 inches)
+!       justify   justification of the label: right, left(default), center
+!       prefix    text and/or a font setting, to preceed each label
+!       suffix    text following each label
+!       ndigits   maximum number of digits to the right of the decimal point
+!
+!
+! example:
+!       yes? USE coads_climatology
+!       yes? SET REGION/L=1/X=100:360/Y=-20:60
+!       yes? FILL sst
+!       yes? LET xpts = {123, 198, 245, 260, 330}
+!       yes? LET ypts = {-10,  10, -10,  10, -10}
+!       yes? LET vals = SAMPLEXY(sst, xpts, ypts)
+!       yes? GO labnumber.jnl xpts ypts vals 0.14 "left" " " " Deg C" 1
+!
+!       yes? ! or, to set a color and font, for example,
+!       yes? GO labnumber.jnl xpts ypts vals 0.10 "right" "@P5@TR" " C" 0
+
+! check arguments
+QUERY/IGNORE $1%<Usage: GO labnumber  xpts ypts var [size] [justify] [prefix] [suffix] [ndigits]%
+QUERY/IGNORE $2%<argument 2 is ypts %
+QUERY/IGNORE $3%<argument 3 is values%
+QUERY/IGNORE $4%0.12%
+QUERY/IGNORE $5%-1|right>1|left>-1|centered>0|*>-1|%
+
+DEFINE SYMBOL LN_prefix = "$6%  %"
+DEFINE SYMBOL LN_suffix = "$7%  %"
+LET/QUIET LN_prefix_exists = $6"0|*>1"
+LET/QUIET LN_ndig = $8%-1%
+
+LET/QUIET LN_center = $5%-1|right>1|left>-1|centered>0|*>-1|%
+LET/QUIET LN_lsiz = $4%0.2% 
+LET/QUIET LN_xpts = $1
+LET/QUIET LN_ypts = $2
+LET/QUIET LN_vals = $3
+
+LET/QUIET LN_x = XSEQUENCE(LN_xpts)
+LET/QUIET LN_y = XSEQUENCE(LN_ypts)
+LET/QUIET LN_v = XSEQUENCE(LN_vals)
+
+! Save region; we need to cancel it to get the right LN_npts
+DEFINE REGION/DEFAULT save
+CAN REGION/X/Y
+
+
+! Case where we arent fixing the formatting of the values
+
+LET/QUIET LN_npts = `LN_x,return=isize`
+IF `LN_ndig LT 0` THEN
+
+  REPEAT/j=1:`LN_npts` ( \
+    LET/QUIET LN_xval =LN_x[i=`j`];\
+    LET/QUIET LN_yval =LN_y[i=`j`];\
+    LET/QUIET LN_l = LN_v[i=`j`];\
+    LET/QUIET LN_out1 = STRCAT(($LN_prefix),"`LN_l`");\
+    LET/QUIET LN_outlab = STRCAT(LN_out1,($LN_suffix));\  
+    IF `LN_prefix_exists eq 1` then LABEL `LN_xval`, `LN_yval`, `LN_center`, 0, `LN_lsiz`, `LN_outlab`;\
+    IF `LN_prefix_exists eq 0` then LABEL `LN_xval`, `LN_yval`, `LN_center`, 0, `LN_lsiz`, "`LN_outlab`")
+
+ELSE 
+
+! Adjust format of values to show fewer digits if specified.
+
+  REPEAT/j=1:`LN_npts` ( \
+    LET/QUIET LN_xval =LN_x[i=`j`];\  
+    LET/QUIET LN_yval =LN_y[i=`j`];\
+    LET/QUIET LN_l = LN_v[i=`j`];\ 
+    LET/QUIET LN_lab = "`LN_l`";\
+    LET/QUIET LN_ndot = STRINDEX(LN_lab, ".");\ 
+    LET/QUIET LN_nlen = STRLEN(LN_lab);\
+    LET/QUIET LN_wh = LN_nlen - LN_ndot + LN_ndig;\  
+    LET/QUIET LN_out1 = SUBSTRING(LN_lab, 1, LN_wh);\
+    LET/QUIET LN_out2 = STRCAT(($LN_prefix), LN_out1);\
+    LET/QUIET LN_outlab = STRCAT(LN_out2, ($LN_suffix));\
+    IF `LN_prefix_exists eq 1` then LABEL `LN_xval`, `LN_yval`, `LN_center`, 0, `LN_lsiz`, `LN_outlab`;\
+    IF `LN_prefix_exists eq 0` then LABEL `LN_xval`, `LN_yval`, `LN_center`, 0, `LN_lsiz`, "`LN_outlab`")
+ENDIF
+
+! clean up
+SET REGION save
+CANCEL VARIABLE LN_*
+CANCEL SYMBOL LN_*
+
+SET MODE/LAST VERIFY

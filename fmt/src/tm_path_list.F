@@ -77,6 +77,7 @@
 *                    found, go back and see if adding the extension works.
 * v5.50 10/02 *acm*- path_buff longer to accomodate longer s_filename 
 *                    in descript.def
+* v5.42 10/02 *kob* - Increase size of temp_fname to 512
 
 
 * calling argument declarations:
@@ -98,7 +99,8 @@
       LOGICAL file_exist,pos_ver,zero_ver
       LOGICAL relative, dot_next_to_tilde, retry_ext
       CHARACTER  ext*8, path_buff*512,suffix*16,TM_LEFINT*8
-      CHARACTER  tilde_buff*8,vers_no*8,temp_fname*128
+      CHARACTER  tilde_buff*8,vers_no*8,temp_fname*512
+
 	
 *
 #ifdef sun

@@ -77,8 +77,12 @@
 	DATA	wn_scale  /wn_dflt_scale, mwn_maxm1 * wn_dflt_scale /
 
 * lower left default window positions
-	DATA xlowlef / .20, .004, .20,  .008, .06 , 0.09, .012, 0.10  /
-	DATA ylowlef / .20, .004, .008, .20,  .012, 0.06, .10 , 0.05  /
+*	DATA xlowlef / .20, .004, .20,  .008, .06 , 0.09, .012, 0.10  /
+*	DATA ylowlef / .20, .004, .008, .20,  .012, 0.06, .10 , 0.05  /
+* *kob* 1/00 add an extra data value because we now have 
+*        max 9 windows - not sure if .2 is the correct one to use..
+	DATA xlowlef / .20, .004, .20,  .008, .06 , 0.09, .012, 0.10,.20  /
+	DATA ylowlef / .20, .004, .008, .20,  .012, 0.06, .10 , 0.05,.20  /
 
 * various pre-programmed viewport choices
 	DATA	vp_num / mvp_dflt /

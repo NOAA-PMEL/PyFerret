@@ -70,7 +70,9 @@
 *			    complained about inconsistent datatypes
 * v491: 4/98 *kob* - had to fix incorrect array references using i1,j1,k1 for
 *                    arrays com2, com3
-* V510 *sh* 1/00 - fixed argument checks on DAYS1900 -- allow pre-1900, forbid month>12
+* V510 *sh* 1/00 - fixed argument checks on DAYS1900
+*                - allow pre-1900, forbid month>12
+*      5/00 *sh* - bug fix in line checking month>12
 
 #ifdef unix
 	include	'ferret.parm'
@@ -1136,7 +1138,7 @@
 	   IF ( com1(i1,j1,k1,l1) .EQ. bad1
      .     .OR. com2(i2,j2,k2,l2) .EQ. bad2
      .     .OR. com3(i3,j3,k3,l3) .EQ. bad3
-     .     .OR. com2(i1,j1,k1,l1) .GT. 12.0
+     .     .OR. com2(i2,j2,k2,l2) .GT. 12.0
      .     .OR. com2(i2,j2,k2,l2) .LT. 1.0
      .     .OR. com3(i3,j3,k3,l3) .LT. 0.0    ) THEN
               res(i,j,k,l) = bad_res

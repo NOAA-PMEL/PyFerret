@@ -13,4 +13,18 @@ list weight
 
 let c = SIN(x[x=0:10:.1]) + randu(x[x=0:10:.1])/5
 plot c
-plot/over convolvei(c,wnorm)
+plot/over/title="convolvei" convolvei(c,wnorm)
+
+
+let c = SIN(y[y=0:10:.1]) + randu(y[y=0:10:.1])/5
+plot c 
+plot/over/title="convolvej" convolvej(c,wnorm)
+
+let c = SIN(z[z=0:10:.1]) + randu(z[z=0:10:.1])/5
+plot c 
+plot/over/title="convolvek" convolvek(c,wnorm)
+
+let c = SIN(t[t=0:10:.1]) + randu(t[t=0:10:.1])/5
+plot c 
+plot/over/title="convolvel" convolvel(c,wnorm)
+

@@ -61,6 +61,8 @@
 *		 set based on the information in a descriptor
 
 * V510 5/00 *sh* - adapt to dynamic grids and axes for netCDF files
+*      6/00 *sh* bug fix: T axis ds_grid_start/end set only on first var using
+*		each grid
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -173,12 +175,17 @@
 * ... Set the (previously unspecified) subscript limits for the variable
 * ... Check to see if data is time-independent, if it is, both
 * ...... grid start and end are set to 1 -----------> kob 6/91
-	      ds_grid_start(4,ivar) = 1
-              IF (INDEX(temp_t0time,'INDEPENDENT') .GT. 0) THEN
-                 ds_grid_end(4,ivar) = 1
-              ELSE
-                 ds_grid_end  (4,ivar) = line_dim( ds_time_axis(dnum) )
-              ENDIF
+	      DO 120 iv =  1,maxvars
+	        IF (ds_var_setnum(ivar).EQ.dnum
+     .	     .AND.  ds_grid_number(iv) .EQ.ngrd  ) THEN
+	          ds_grid_start(4,iv) = 1
+                  IF (INDEX(temp_t0time,'INDEPENDENT') .GT. 0) THEN
+                    ds_grid_end(4,iv) = 1
+                  ELSE
+                    ds_grid_end  (4,iv) = line_dim( ds_time_axis(dnum) )
+                  ENDIF
+	        ENDIF
+ 120	      CONTINUE
 	    ELSE
 	      ext_tax = grid_line(4,ngrd)	! save external time ax #
 	    ENDIF

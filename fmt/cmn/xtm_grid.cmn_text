@@ -11,10 +11,11 @@
 *		dynamic grids was created **above** max_grids
 * see detailed description of dynamic grids in TM_ALLO_DYN_GRID 
 * 10/95 *sh*: added dynamix axes (lines) in a similar style
-
+* v500: 3/99 *kob* - up line_name to length of 64
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
-	CHARACTER*16	line_name, line_units, grid_name
+	CHARACTER*64	line_name
+	CHARACTER*16	line_units, grid_name
 	CHARACTER*2	line_direction, axis_orients
 	INTEGER		line_subsc1, line_dim, line_unit_code, grid_line,
      .			next_line_mem_pos, grid_use_cnt, grid_flink,

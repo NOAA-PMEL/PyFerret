@@ -168,18 +168,23 @@
       INTEGER id, i, j, k, l
       INTEGER j1, k1, l1
       INTEGER i2, j2, k2, l2
-      INTEGER iorder
+      INTEGER arg, iorder
       REAL aorder
 
-      INTEGER nlen(3), unspecified_int4
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4)
+
+      INTEGER nlen(3)
       CHARACTER*8 lefint, aindex(3) 
       CHARACTER*100 errtxt
-
-      unspecified_int4 = -111
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+      arg = 2
+      CALL ef_get_axis_info (id, arg, ax_name, ax_units, backward,
+     .     modulo, regular)
 
       j1 = arg_lo_ss(Y_AXIS,ARG1)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
@@ -199,7 +204,7 @@
 *  Get the index to sample, whichever axis of arg_2 it is on.
 
                    aorder = arg_2(i2,j2,k2,l2)
-                   IF (i2 .EQ. unspecified_int4) 
+                   IF (ax_name(X_AXIS) .EQ. 'normal') 
      .                  CALL pickindex(arg_2, i, aorder)
                    iorder = aorder
 

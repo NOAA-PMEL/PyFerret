@@ -35,16 +35,6 @@ extern int   *GLOBAL_cx_list_ptr;
 extern int   *GLOBAL_mres_ptr;
 extern float *GLOBAL_bad_flag_ptr;
 
-/*
- * The jumpbuffer is used by setjmp() and longjmp().
- * setjmp() is called by efcn_compute_() in EF_InternalUtil.c and
- * saves the stack environment in jimpbuffer for later use by longjmp().
- * This allows one to bail out of external functions and still
- * return control to Ferret.
- */
-/*
-extern jmp_buf jumpbuffer;
-*/
 
 /* ............. Function Declarations .............. */
 
@@ -76,9 +66,7 @@ void ef_get_mres_(int *);
 
 /* ... Functions called internally .... */
 
-ExternalFunction *ef_ptr_from_id_ptr(int *);
-
-int  EF_ListTraverse_FoundID( char *, char * );
+extern ExternalFunction *ef_ptr_from_id_ptr(int *);
 
 void ef_get_one_val_sub_(float *, int *, float *);
 

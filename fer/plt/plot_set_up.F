@@ -94,6 +94,8 @@
 *       4/99 - *jd* Ensure PPL knows plot is overlay: set SOVER flag here
 *       6/99 - *sh* added logic to permit a PLOT/VS over a time series plot
 * V510 10/99 - *sh* plot/i=1:10 i/0 is not an error -- scale axis to -1:1
+*       1/00 - *kob* - check the variable time_axis before looking at
+*                      any time-relevant variables.
 *       3/00 - *sh* added use_line and sym_size args for PLOT/COLOR=/SIZE=
 *	     - pass no_labels to AXIS_FORMAT 
 *	5/00 - added /HLIMITS and /VLIMITS (denigrating /xlimits/ylimits)
@@ -590,13 +592,18 @@
      .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
  500	   CONTINUE
 	ELSE
-* ... basic position and data set labels
-	   IF ( tstyle.EQ.'MON' .OR. tstyle.EQ.'DAY' ) THEN
-	      ppl_buff = SECS_TO_DATE( ind_min )
-	      year = ppl_buff(8:11)
-	   ELSE
-	      year = unspecified_name4
-	   ENDIF
+* *kob* 1/00 check the variable time_axis before looking at
+*            any time-relevant variables.
+* ... basic position and data set labels 
+*    ... does the year need special documentation? 
+           year = unspecified_name4    ! assume no label needed by default 
+           IF ( time_axis ) THEN 
+*    ... document the year where the axis, itself, doesn't 
+              IF ( tstyle.EQ.'MON' .OR. tstyle.EQ.'DAY' ) THEN 
+                 ppl_buff = SECS_TO_DATE( ind_min ) 
+                 year = ppl_buff(8:11) 
+              ENDIF 
+           ENDIF 
 	   CALL DISP_LABELS( cx_plot, year )
 * ... label dependent axis with units (over-written below if /vs)
 	   plot_title = VAR_UNITS( cx_list(var1) )

@@ -103,6 +103,7 @@
 * v500  2/99 - *kob* - add /QUIET to LIST command
 * V500  2/99 *sh* - added POLYGON command
 * V500  3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
+*       3/99 *jc* - added /INTERNAL to SHOW FUNCTION command
 
 
 #ifdef unix
@@ -449,16 +450,18 @@
 	   DATA subcommands      (nsub_at2 +19)	/ '****'	/
 	   DATA num_qualifs      (nsub_at2 +19)	/ nqual2t	/
 	   DATA qualifier_pointer(nsub_at2 +19)	/ nqual_at2t	/
-* SHOW FUNCTION
+* SHOW ****
 		DATA qualifiers  (nqual_at2t+0)	/ 'ALL'		/
-* SHOW FUNCTIONS
+* SHOW FUNCTION
 	   DATA subcommands      (nsub_at2 +20)	/ 'FUNCTION'	/
 	   DATA num_qualifs      (nsub_at2 +20)	/ nqual2u	/
 	   DATA qualifier_pointer(nsub_at2 +20)	/ nqual_at2u	/
-* SHOW FUNCTION / ALL / BRIEF / EXTERNAL
+* SHOW FUNCTION / ALL / BRIEF / EXTERNAL / INTERNAL
 		DATA qualifiers  (nqual_at2u+0)	/ 'ALL'		/
 		DATA qualifiers  (nqual_at2u+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2u+2)	/ 'EXTERNAL'	/
+		DATA qualifiers  (nqual_at2u+3)	/ 'INTERNAL'	/
+		DATA qualifiers  (nqual_at2u+4)	/ '****'	/
 * SHOW QUERIES							 
 	   DATA subcommands      (nsub_at2 +21)	/ 'QUERIES'	/
 	   DATA num_qualifs      (nsub_at2 +21)	/ nqual2v	/

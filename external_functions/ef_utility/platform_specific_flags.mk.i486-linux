@@ -1,0 +1,28 @@
+#
+# platform_specific_includes.mk.alpha
+#
+# This file is included in the External Function Makefiles and defines
+# platform specific macros
+
+INCLUDES        = -I. -I$(TMAP_LOCAL)/include
+
+FINCLUDES       = -I../../fmt/cmn -I../common
+
+
+CCSHFLAG        =
+CC              = cc
+RANLIB          = /usr/bin/ranlib
+CFLAGS          = -g $(CCSHFLAG) $(INCLUDES)
+FC              = f90
+F77SHFLAG       = -shared
+FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
+LD_DYN_FLAGS    = -G -shared
+SYSLIBS         = -lc
+
+CPP             = /lib/cpp
+CPP_FLAGS       = -P -traditional $(INCLUDES)
+
+.F.o:
+	rm -f $*.f
+	$(CPP) $(CPP_FLAGS) $(<F) | sed -e        's/de    /de /g' | sed -e  's/de         /de /g' > $*.f
+	$(F77) $(FFLAGS) $*.f

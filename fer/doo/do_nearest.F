@@ -15,6 +15,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V450: 8/97
+* v491 - *kob* 3.98 - modify loop @450 to use cx_lo/hi_s3 for k 
+*                     rather than s4 *kob*
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -155,7 +157,10 @@
 
 * ALONG T AXIS
 	ELSE
-	   DO 450 k = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+
+* i believe the k loop below should use cx_hi/lo_s3 rather than s4
+* *kob*
+	   DO 450 k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
 	   DO 450 j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
 	   DO 450 i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 * ... locate first valid index off edge of requested region

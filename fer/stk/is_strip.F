@@ -64,6 +64,8 @@
 *	     - *kob* replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
+* V510: *sh* 9/99 - remove warning about too-negative modulo. Change in
+*	TM_WORLD has hopefully made this a legitimate operation
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status
@@ -205,15 +207,15 @@
 
 	ELSEIF( aclass .EQ. isact_class_modulo ) THEN    ! 12/94 addition
 * SET UP TO ASSEMBLE BASE COMPONENTS ONTO A MODULO AXIS
-* Let this potentially fatal error slide through because it is often safe and
-* it is a nuisance to the user to change ... I guess (???) *sh* 
-	   IF ( cx_lo_ss(lo_cx,axis) .LE. (unspecified_int4+10) ) THEN
-	      buff = VAR_TRANS(axis, lo_cx, i )
- 	      CALL WARN('Modulo axis index is too negative: '//
-     .		buff(:i))
-	      CALL WARN('This can crash FERRET!!!'//
-     .		' --> Use higher coordinate values.')
-	   ENDIF
+!* Let this potentially fatal error slide through because it is often safe and
+!* it is a nuisance to the user to change ... I guess (???) *sh* 
+!	   IF ( cx_lo_ss(lo_cx,axis) .LE. (unspecified_int4+10) ) THEN
+!	      buff = VAR_TRANS(axis, lo_cx, i )
+! 	      CALL WARN('Modulo axis index is too negative: '//
+!     .		buff(:i))
+!	      CALL WARN('This can crash FERRET!!!'//
+!     .		' --> Use higher coordinate values.')
+!	   ENDIF
 	   npts	   = CAXIS_LEN( axis, lo_cx )
 	   IF ( cx_lo_ss(lo_cx, axis) .GE. 1 ) THEN
 	      nmod = ( cx_lo_ss(lo_cx, axis) - 1 ) / npts

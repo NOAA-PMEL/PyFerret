@@ -48,6 +48,7 @@
 * V312:  5/19/94 - changes for reconfigurable (dynamic) memory
 * V420: initialize the no-cache memory hash pointer
 * V500: 4/99 *sh* - set mode desperate while we're at it
+* V510: 2/00 *sh* initialize additional new hash piles
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -86,7 +87,7 @@
 
 * LINKS IN MEMORY VARIABLE TABLE
 * ... all hash pile start pointers point to self (empty lists)
-	DO 100 mv = pmv_nocache_pile, -1
+	DO 100 mv = pmv_lowest_head, -1
 	   mv_flink(mv) = mv
 	   mv_blink(mv) = mv
  100	CONTINUE

@@ -11,7 +11,7 @@ C
 	INTEGER SMIN,NFLAGS
 	LOGICAL SECHO,SDEBUG,SOVER,SERASE,SWAIT,SCENTR,SRIGHT,
      *	        SLEFT,SUSER,SLATCH,SQUIET,SLOG,SYAXIS,STIME,
-     *		SOFFS,SCTD,SNEXT,SVECTR
+     *		SOFFS,SCTD,SNEXT,SVECTR,SLINE,SFILL
 C
 	EQUIVALENCE ( SECHO,FLAG( 1)),(SDEBUG,FLAG( 2)),
      *		    ( SOVER,FLAG( 3)),(SERASE,FLAG( 4)),
@@ -21,7 +21,9 @@ C
      *		    (SQUIET,FLAG(11)),(  SLOG,FLAG(12)),
      *		    (SYAXIS,FLAG(13)),( STIME,FLAG(14)),
      *		    ( SOFFS,FLAG(15)),(  SCTD,FLAG(16)),
-     *		    ( SNEXT,FLAG(17)),(SVECTR,FLAG(18))
+     *		    ( SNEXT,FLAG(17)),(SVECTR,FLAG(18)),
+     *		    ( SLINE,FLAG(19)),( SFILL,FLAG(20))
+
 c
 c	switch	legal qualifiers (character*20)
 c	smin	minimum length for qualifier (integer)

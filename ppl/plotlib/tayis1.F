@@ -44,8 +44,9 @@
 * *sh*  - 1/23/89 added interrupt detection
 *		  ... no explicit declarations (too much trouble !) so it must
 *		      be compiled with /WARNINGS=NODECLARATIONS
-C *acm* 24/01/00 Y2k Bug -- Put century at start  when comparing 
+C *acm* 1/24/00 Y2k Bug -- Put century at start  when comparing 
 C                 ITIME to ITIME2 at loop 10
+C *acm* 4/25/00 Further fix to the above - .LT. test rather than .LE.
 
 C
 * *jd* Mod for 4 digit years 11.27.95
@@ -215,7 +216,7 @@ C             ELSE:
 	ITIME=ITIME3
 	T=T+TIC
 c	IF(ITIME.LT.ITIME2) GO TO 10
-        IF(ITIME(13:14)//ITIME(1:12) .LE.
+        IF(ITIME(13:14)//ITIME(1:12) .LT.
      .       ITIME2(13:14)//ITIME2(1:12)) GO TO 10
      
 	IF(IMDB.EQ.0) RETURN

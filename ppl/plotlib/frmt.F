@@ -49,6 +49,8 @@ C                with "*(*)" for the linux port
 * V530 *sh* 11/00 - added extra digits for E formats with close-spaced
 *       range -- like [9080,1020]
 *      *sh* 12/00 -- further tweak to use E format less often
+* V541 *acm* 3/02 -- bug fix: For small negative numbers, if label is negative 
+*                    need one more decimal place (ib)
 
       CHARACTER*(*) IF 
 C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD 
@@ -60,6 +62,7 @@ C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD
       ID=IP-IFIX(ALOG10(DX)+.5) 
       IF(ID.LT.0)ID=0 
       IB=IFIX(ALOG10(XX*1.00001)) 
+      IF (xmin .LT. 0 ) ib = ib + 1
       WRITE(IF,999)IB+ID+3,ID 
 999   FORMAT('(F',I2,'.',I1,')') 
       RETURN 

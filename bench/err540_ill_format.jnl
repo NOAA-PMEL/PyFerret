@@ -1,0 +1,12 @@
+! err540_ill_format.jnl
+! 3/02 *acm*
+
+!  formatting of small-magnitude negative numbers on axes is wrong
+!  e.g. -0.002 becomes ******
+!  fix in frmt.F
+
+plot/i=1:100  0.001 - 0.002/ i
+
+plot/trans/i=1:100  0.001 - 0.002/ i
+
+

@@ -1,0 +1,22 @@
+! err540_polymissing.jnl
+! 3/02 *acm*
+! A previous fix to polygon cut off loading of poly's if a vertex was
+! missing.  restore old behavior.  (polygon_set_up.F)
+
+
+use coads_climatology
+let xpts0=x[g=sst,x=110:150,y=20:40,l=1]*y[g=sst,x=110:150,y=20:40,l=1]*0+x[g=sst,x=110:150,y=20:40,l=1]
+let ypts0=x[g=sst,x=110:150,y=20:40,l=1]*y[g=sst,x=110:150,y=20:40,l=1]*0+y[g=sst,x=110:150,y=20:40,l=1]
+let values0=sst[x=110:150,y=20:40,l=1]
+LET xpts=ysequence(xpts0)
+LET ypts=ysequence(ypts0)
+LET values=ysequence(values0)
+
+LET xtriangle = {0,1,2}
+LET ytriangle = {0,2,0}
+LET xvertex = xpts+xtriangle
+LET yvertex = ypts+ytriangle
+polygon xvertex,yvertex,values
+
+let xvertex1= IF values NE -1E+34 THEN xvertex
+polygon  xvertex1,yvertex,values

@@ -1,0 +1,30 @@
+!err540_axset.jnl
+! 3/02 *acm
+! backwards compatibility: PPL AXSET settings persist, and 
+! PLOT/AXES  or PLOT/NOAXES override these, but only for one plot.
+
+! define a 6 viewport window 
+def view/xlim=   0,.333/ylim=0,.5 ll6
+def view/xlim=   0,.333/ylim=.5,1 ul6
+def view/xlim=.333,.666/ylim=0,.5 lm6
+def view/xlim=.333,.666/ylim=.5,1 um6
+def view/xlim=.666,   1/ylim=0,.5 lr6
+def view/xlim=.666,   1/ylim=.5,1 ur6  
+
+SET VIEW ul6;PLOT/NOAXES/I=1:10/TITLE="PLOT/NOAXES" 1./I
+SET VIEW um6;SHADE/I=1:10/J=1:7/TITLE="No qualifiers" I+J
+
+PPL AXSET 0,1,1,0 
+SET VIEW ur6;FILL/I=1:10/J=1:7/TITLE="with PPL AXSET 0,1,1,0" I+J
+
+SET VIEW ll6;CONTOUR/AXES=1,0,0,1/I=1:10/J=1:7/TITLE="CONTOUR/AXES=" I+J
+
+SET VIEW lm6;VECTOR/I=1:10/J=1:7/TITLE="Prev. PPL AXSET setting" I+J, I-0.5*J
+
+SET VIEW lr6;PLOT/i=1:10/SET/TITLE="plot/SET, new setting" 1./I
+PPL AXSET 0,1,0,0
+PPL PLOT
+
+PPL axset 1,1,1,1
+CAN VIEW
+

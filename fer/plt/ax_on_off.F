@@ -43,6 +43,9 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
+* v540 *acm*  2/02 save the state of the axes; so can restore PPL AXSEST settings
+
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -56,9 +59,18 @@
 	INTEGER		i, iax(4), indep_dim, dep_dim, labx, laby
 	CHARACTER*25	buff
 
+* static storage in COMMON  (see ppl_axes_off.F)
+	INTEGER save_iaxon(4)
+	COMMON /XAXIS_STATE/ save_iaxon
+
+* save previous axis state
+	DO 10 i = 1, 4
+ 10	save_iaxon(i) = iaxon(i)
+
 	WRITE (buff,90) (iax(i), i=1,4)
   90	FORMAT ('AXSET ', 3(i2,','), I2 )
 	CALL PPLCMD (from, line, 0, buff, 1, 1 )
+
 
 *  turn axis labels off or on
 

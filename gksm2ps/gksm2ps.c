@@ -112,6 +112,8 @@ int     itmp;
 int	pgwidth  = 612;			/* 8.5" page width (points) */
 int	pgheight = 792;			/* 11" page height (points) */
 
+int marksizemult = 4;
+
 enum    wktype {cps, phaser};           /* Output graphics device */
 enum    wktype device = cps;
 
@@ -444,7 +446,7 @@ out_mark_type( index )		/* output the marker type */
 out_mark_size( size )		/* output the marker size */
    float size;
 {
-   fprintf(ps_output, "/msize {%f} def\n", size );
+   fprintf(ps_output, "/msize {%f} def\n", marksizemult*size );
 }
 
 

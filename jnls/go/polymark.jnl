@@ -2,6 +2,7 @@
 ! polymark.jnl
 ! 4/99 *sh* and *jd*
 ! 10/00 *sh* bug fix to scaling algorithm
+!  3/04 *acm* bug fix in check for point data
 
 ! Description: Plot symbols colored by values of a variable along a track
 
@@ -45,7 +46,7 @@ LET/QUIET PLMpolydata = $4"0"
 
 ! determine the orientation of the data (and check that it is 1D or a point)
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
-DEFINE SYMBOL PLMpoly_ax ($PLMax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
 
 ! units/inch scale factors
 LET/QUIET PLMdefault_scale =$6"1" *  0.1

@@ -72,8 +72,10 @@
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
 *      *acm*6/01 - add arguments is_logh, is_logv to DISP_SET_UP call.
 *                  (only used for PLOT command)
-
-#ifdef unix
+*      *acm* 7/01 - Add VECTOR/AXES=TOP,BOT,LEFT,RIGHT
+*      *acm* 7/01 - Add /AXES=TOP,BOT,LEFT,RIGHT
+*		    & call ax_on_off to implement /NOAXES.
+*      *acm* 10/01  remove VMS includes
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -88,37 +90,25 @@
         include 'axis_inc.decl'       ! with axis lengths	
         include 'AXIS.INC'       ! with axis lengths	
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-	INCLUDE 'FERRET_CMN:XPPLUS.CMN'
-        INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL/LIST'       ! with axis lengths	
-        INCLUDE 'PPLV11INC:AXIS.INC/LIST'       ! with axis lengths	
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
+
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
-     .			set_up, noaxes, no_data, flows, 
+     .			set_up, noaxes, axes, no_data, flows, 
      .			is_logh, is_logv
-	INTEGER		status, cx, loc, ipen, thick,
+	INTEGER		TM_LENSTR1, status, cx, 
+     .			loc, ipen, thick,
      .			dim1, dim2, asp,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
      .			x_skip, y_skip,
-     .                  density
+     .                  density, slen, i, nparm, num_it, 
+     .			s1, s2, it_start(4), it_end(4), iax(4)
 	REAL		only_x, aspect, vbuf
+	CHARACTER	buff*25
 
 
 * internal parameter declarations:
@@ -146,6 +136,7 @@
 	transpz   = qual_given( slash_vect_transpz   ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
+	axes      = qual_given( slash_vect_axes      ).GT.0
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
 	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for vector
@@ -248,8 +239,61 @@
 	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
 	ENDIF	
 
-* turn off axes? (5/29/97)
-	IF ( noaxes ) CALL PPL_AXES_OFF(set_up)
+* turn off axes? 
+	IF ( noaxes ) THEN 
+           DO 300 i = 1, 4
+              iax(i) = 0
+ 300       ENDDO
+c          call ppl_axes_off (set_up)
+        ENDIF
+
+* turn on (one or more) axes? (7/11/01)
+
+* ... PLOT/AXES=(TOP,BOTTOM,LEFT,RIGHT)
+	loc = qual_given( slash_vect_axes )
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   IF ( buff .NE. ' ' ) THEN
+
+* Get arguments, if any.  Otherwise turn on all axes
+              slen = TM_LENSTR1(buff)
+              s1 = 1
+              s2 = slen
+              IF (buff(1:1) .EQ. '(' )THEN
+                  s1 = 2
+                  s2 = slen-1
+                  IF ( buff(slen:slen) .NE. ')' ) GOTO 5440
+              ENDIF
+              nparm = 4
+              CALL parse_comma_list ( buff, s1, s2, nparm, 
+     .             num_it, it_start, it_end, status)
+
+              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /AXES=()
+                 DO 400 i = 1, 4
+                    iax(i) = 0
+ 400             ENDDO
+              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
+                 GOTO 5440
+              ELSE
+                 DO 500 i = 1, nparm
+                    READ (buff(it_start(i):it_end(i)), *) iax(i)
+                    IF (iax(i) .LT. 0  .OR.  iax(i) .GT. 1) GOTO 5450
+ 500             CONTINUE
+              ENDIF
+           ELSE		! turn on all axes
+	      DO 600 i = 1, 4
+		 iax(i) = 1
+ 600	      CONTINUE
+           ENDIF
+
+       	ENDIF	
+
+*  Turn off or on axes, including time axes.
+        IF (axes .OR. noaxes) CALL ax_on_off (iax)
+
 
 * done now if /set_up, only
 	IF ( set_up) GOTO 1000
@@ -348,7 +392,7 @@
         ENDIF
 
 * restore axes? (5/29/97)
-	IF ( noaxes ) CALL PPL_AXES_RESTORE
+c 7/01	IF ( noaxes ) CALL PPL_AXES_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
@@ -370,4 +414,10 @@
  5400	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to 3', *5000 )
+ 5440	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	'AXES[=(TOP,BOTTOM,LEFT,RIGHT)] takes 4 arguments or no argument', *1000 )
+ 5450	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'AXES arguments must be 0 or 1', *1000 )
 	END

@@ -62,11 +62,13 @@
 * V530 *sh* 1/01 - added PLOT/STEP
 * V530 *acm* 5/01 - added PLOT/DASH
 *	            and PLOT/SYMBOL=dot
-* V533 *acm*6/01 - add arguments is_logh, is_logv to PLOT_SET_UP call, 
+* V533 *acm* 6/01 - add arguments is_logh, is_logv to PLOT_SET_UP call, 
 *                  set log axes, inverse log axes and log depth axes with
-*                  PLOT/VLOG or PLOT/HLOG
+*                  /VLOG or /HLOG
+*      *acm* 7/01 - Add /AXES=TOP,BOT,LEFT,RIGHT
+*		    & call ax_on_off to implement /NOAXES.
+*      *acm* 10/01  remove VMS includes
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -81,49 +83,27 @@
         include 'SWITCH.INC'
         include 'data_inc.decl'
         include 'DATA.INC'
-        include 'ppldat_inc.decl'
         include 'PPLDAT.INC'
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-        INCLUDE 'tmap_pplv11inc:tmap_SWITCH.INC'
-        INCLUDE 'TMAP_PPLV11INC:DATA_INC.DECL'
-        INCLUDE 'PPLV11INC:DATA.INC'
-        INCLUDE 'TMAP_PPLV11INC:PPLDAT_INC.DECL'
-        INCLUDE 'PPLV11INC:PPLDAT.INC'
-        INCLUDE 'TMAP_PPLV11INC:PARAMPL5_DAT.DECL'
-        INCLUDE 'PPLV11INC:PARAMPL5.DAT'
-        INCLUDE 'TMAP_PPLV11INC:LINES_INC.DECL'
-        INCLUDE 'PPLV11INC:LINES.INC'
-#endif
 	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
 	LOGICAL		overlay, transpz, versus,
-     .			no_labels, set_up, noaxes, use_line,
+     .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv
 	INTEGER		TM_LENSTR1, symbol, color, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start,
-     .			do_dash, it_start(4), it_end(4),
-     .			ndashparm, dot_sym, num_it, i
+     .			do_dash, s1, s2, it_start(4), it_end(4),
+     .			nparm, dot_sym, num_it, i, iax(4)
 	REAL		val, sym_size, dashstyle(4)
-	CHARACTER	LEFINT*4, buff*4, dashbuf*25
+	CHARACTER	LEFINT*4, buff*25
 
 * internal parameter declarations
 	INTEGER ncolors
@@ -156,6 +136,7 @@ CC       => Set values here instead.
 	versus    = qual_given( slash_plot_vs	     ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
 	noaxes    = qual_given( slash_noaxes         ).GT.0
+	axes      = qual_given( slash_plot_axes      ).GT.0
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0
 
@@ -165,6 +146,7 @@ CC       => Set values here instead.
 	color     = qual_on	! automatic selection as default
 	step_inc  = 1
         do_dash   = 0		! default no dashes
+
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -219,8 +201,8 @@ CC       => Set values here instead.
 	   IF ( val .NE. unspecified_val4 ) THEN
 	      IF ( val.LE. 0.0 ) GOTO 5210
 	      sym_size = val		! user-specified symbol
-              IF ( symbol .EQ. dot_sym) 
-     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
+c              IF ( symbol .EQ. dot_sym) 
+c     .           CALL WARN ('/SIZE= ignored  on /SYMBOL=DOT ')
 	   ENDIF
 	ENDIF
 * ... PLOT/COLOR=n
@@ -246,8 +228,8 @@ CC       => Set values here instead.
 	   ENDIF
 	   color = ncolors*(thick-1) + color
            IF ( symbol .EQ. dot_sym) THEN
-              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
-	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
+c              CALL WARN ('/THICKNESS ignored  on /SYMBOL=DOT ')
+c	      color = MOD(color-1,ncolors)+1  ! eliminate thickness
            ENDIF
 	ENDIF
 * ... PLOT/LINE_STYLE=n
@@ -287,27 +269,34 @@ CC       => Set values here instead.
 	loc = qual_given( slash_plot_dash )
 	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                        dashbuf, status )
+     .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
            do_dash = 1
 
-	   IF ( dashbuf .NE. ' ' ) THEN
-* Check parentheses
-              slen = TM_LENSTR1(dashbuf)
-              IF (dashbuf(1:1) .NE. '(' .OR. dashbuf(slen:slen) .NE. ')' ) 
-     .           GOTO 5420
-              ndashparm = 4
-              CALL parse_comma_list ( dashbuf, 2, slen-1, ndashparm, num_it,
+	   IF ( buff .NE. ' ' ) THEN
+* Check for optional parentheses
+
+              slen = TM_LENSTR1(buff)
+              s1 = 1
+              s2 = slen
+              IF (buff(1:1) .EQ. '(' )THEN
+                  s1 = 2
+                  s2 = slen-1
+                  IF ( buff(slen:slen) .NE. ')' ) GOTO 5420
+              ENDIF
+
+              nparm = 4
+              CALL parse_comma_list ( buff, s1, s2, nparm, num_it,
      .             it_start, it_end, status)
               IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /DASH=()
                  DO 100 i = 1, 4
                     dashstyle(i) = 0.
  100             ENDDO
-              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. ndashparm) THEN
+              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
                  GOTO 5420
               ELSE
-                 DO 200 i = 1, ndashparm
-                    READ (dashbuf(it_start(i):it_end(i)), *) dashstyle(i)
+                 DO 200 i = 1, nparm
+                    READ (buff(it_start(i):it_end(i)), *) dashstyle(i)
                     IF (dashstyle(i) .LT. 0.) GOTO 5430
  200             CONTINUE
               ENDIF
@@ -338,8 +327,61 @@ CC       => Set values here instead.
      .				status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
-* turn off axes? (5/29/97)
-	IF ( noaxes ) CALL PPL_AXES_OFF(set_up)
+
+* turn off axes? 
+	IF ( noaxes ) THEN 
+           DO 300 i = 1, 4
+              iax(i) = 0
+ 300       ENDDO
+c          call ppl_axes_off (set_up)
+        ENDIF
+
+* turn on (one or more) axes? (7/11/01)
+
+* ... PLOT/AXES=(TOP,BOTTOM,LEFT,RIGHT)
+	loc = qual_given( slash_plot_axes )
+	IF ( loc .GT. 0) THEN
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+	   IF ( buff .NE. ' ' ) THEN
+
+* Get arguments, if any.  Otherwise turn on all axes
+              slen = TM_LENSTR1(buff)
+              s1 = 1
+              s2 = slen
+              IF (buff(1:1) .EQ. '(' )THEN
+                  s1 = 2
+                  s2 = slen-1
+                  IF ( buff(slen:slen) .NE. ')' ) GOTO 5440
+              ENDIF
+
+              nparm = 4
+              CALL parse_comma_list ( buff, s1, s2, nparm, 
+     .             num_it, it_start, it_end, status)
+              IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /AXES=()
+                 DO 400 i = 1, 4
+                    iax(i) = 0
+ 400             ENDDO
+              ELSE IF (status .NE. ferr_ok .OR. num_it .LT. nparm) THEN
+                 GOTO 5440
+              ELSE
+                 DO 500 i = 1, nparm
+                    READ (buff(it_start(i):it_end(i)), *) iax(i)
+                    IF (iax(i) .LT. 0  .OR.  iax(i) .GT. 1) GOTO 5450
+ 500             CONTINUE
+              ENDIF
+           ELSE		! turn on all axes
+	      DO 600 i = 1, 4
+		 iax(i) = 1
+ 600	      CONTINUE
+           ENDIF
+              
+	ENDIF
+
+*  Turn off or on axes, including time axes.
+        IF (axes .OR. noaxes) CALL ax_on_off (iax)
 
 * /set_up only requested ?
 	IF ( set_up ) GOTO 1000
@@ -352,7 +394,7 @@ CC       => Set values here instead.
 	ENDIF
 
 * restore axes? (5/29/97)
-	IF ( noaxes ) CALL PPL_AXES_RESTORE
+c 7/01	IF ( noaxes ) CALL PPL_AXES_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
@@ -400,5 +442,11 @@ CC       => Set values here instead.
  5430	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'DASH arguments must be positive', *1000 )
+ 5440	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .	'AXES[=(TOP,BOTTOM,LEFT,RIGHT)] takes 4 arguments or no argument', *1000 )
+ 5450	CALL ERRMSG( ferr_out_of_range, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'AXES arguments must be 0 or 1', *1000 )
 
 	END

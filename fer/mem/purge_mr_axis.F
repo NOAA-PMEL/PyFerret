@@ -10,6 +10,9 @@
 * V200:  8/4/89 - from PURGE_USER_VAR
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V450: 11/14/97 - check dynamic grids as well as static grids
+*		(err450_redefine_axis_in_dyn_grid.jnl)
+
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
 #	include	"tmap_format/tmap_dset.parm"
@@ -42,7 +45,8 @@
 !	IF ( .NOT. line_regular( old_axis ) ) GOTO 5100
 
 * delete all variables in memory that are based on grids using this axis
-	DO 100 grid = 1, max_grids
+!	DO 100 grid = 1, max_grids	! pre 11/97
+	DO 100 grid = 1, max_dyn_grids
 	  IF (grid_name(grid) .EQ. char_init16) GOTO 100
 
 	  DO 50 idim = 1, 4

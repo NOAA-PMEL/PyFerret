@@ -61,7 +61,8 @@
 
 * V510 *sh* 3/00 - interrupts need to be processed in here!!
 *		   [IN FACT THIS TURNS OUT TO BE IRRELEVANT ... ]
-
+* v522 *kob* 12/00 - add xplot_setup common file to check to see if we
+*                    are animating
 
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
@@ -70,6 +71,7 @@
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40
+	INTEGER wsid, anim_id, temp_id
 
 #ifdef unix
 	include 'ferret.parm'
@@ -80,6 +82,8 @@
 	include 'xcontrol.cmn'
         include 'xrisc.cmn'
 	include 'xinterrupt.cmn'
+	include 'xplot_setup.cmn'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -91,7 +95,11 @@
 #endif
 
 	IF ( interrupted ) THEN
-
+* *kob* if we are animating, stop and reset active window
+	   IF (animate .EQ. .TRUE.) THEN
+	      animate = .FALSE.
+	      CALL SWAP_ACTIVE_WINDOW
+	   ENDIF
 	   CALL ERRMSG( ferr_interrupt,status,' ', *1000 )
 
 	ELSEIF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
@@ -101,10 +109,33 @@
 	   IF ( (cs_limit(csp)-cs_phase(csp))*cs_delta(csp)
      .          .LT. 0.0 ) THEN
 * ... yes
-	      CALL POP_CS
-	      RETURN 1
+* *kob* check to see if we need to keep looping through animation
+	      IF ( cs_loop(csp) .GT.1 ) THEN 
+		 cs_phase( csp ) = cs_start( csp ) 
+		 cs_loop( csp ) = cs_loop( csp) - 1 
+		 cmnd_line = cs_text( csp ) 
+		 CALL CS_SET_CONTEXT 
+		 RETURN 1
+	      ELSE
+* *kob* repeat loop done so we are done animating.  reset active window
+		 IF (animate .EQ. .TRUE.) THEN
+		    animate = .FALSE.
+		    CALL SWAP_ACTIVE_WINDOW
+		 ENDIF
+		 CALL POP_CS
+		 RETURN 1
+	      ENDIF
 	   ELSE
-* ... no - get the next command
+*       kob 12/00 - before we grab the next command, if we are animating lets
+*             take the snapshot here
+	      IF (animate .EQ. .TRUE.) THEN
+		 wsid = win_id9
+		 anim_id = active_win_id
+                 CALL COPY_BUFFERED_WINDOW(wsid, anim_id)
+* need to clear the double buffered unmapped window before next plot *kob*
+		 CALL CLEAR_WINDOW(wsid)
+	      ENDIF
+*       ... no - get the next command
 	      cmnd_line = cs_text( csp )
 * ... set up the default context to evaluate the command
 	      CALL CS_SET_CONTEXT

@@ -3,6 +3,7 @@
 
 ! Description: demonstrate usage of error bars
 
+cancel viewports
 set mode verify
 
 ! on an X axis
@@ -13,7 +14,7 @@ let/quiet errup = 0.6 * RANDU(xp2)
 let/quiet errdn = 0.6 * RANDU(xp2+1)
 
 plot/title="X axis plot" yp2 
-GO error_bars polygon/line=4/title="uncertainty" xp2 yp2 errup
+GO error_bars polygon/line=4/title="uncertainty" yp2 errup
 \pause
 
 ! on a time axis
@@ -23,7 +24,7 @@ let/quiet yp3 =  SIN(xp3/20)
 let/quiet errors = 0.6 * RANDU(xp3)
 
 plot/xlimits="1-jan-1990:12:00":10-JAN-1990/title="time series" yp3
-GO error_bars polygon/line=8/nolab xp3[l=1:50:5] yp3[l=1:50:5] errors[l=1:50:5]
+GO error_bars polygon/line=8/nolab yp3[l=1:50:5] errors[l=1:50:5]
 \pause
 
 ! on (vertical) Z axis
@@ -33,4 +34,21 @@ let/quiet yp4 = SIN(xp4/5)
 let/quiet errors = 0.5/(xp4+5)
 
 plot/title="vertical profile" yp4 
-GO error_bars polygon/line=8/title="variability" xp4 yp4 errors
+GO error_bars polygon/line=8/title="variability" yp4 errors
+\pause
+
+! NOTE: plot_swath is also a good way to show error limits!
+use coads_climatology
+let mean = sst[x=130e:80w,y=0,l=1:12@ave]
+let std_dev = sst[x=130e:80w,y=0,l=1:12@var] ^ 0.5
+set mode calendar:months
+
+set view upper
+plot/ylimits=21:30/title="Tropical SST variability" mean
+go plot_swath poly/over/pal=gray/nolab mean-std_dev, mean+std_dev
+plot/over/nolab/line=7 mean
+set view lower
+plot/ylimits=21:30/title="Tropical SST variability" mean
+GO error_bars polygon/line=2/nolab mean std_dev
+
+

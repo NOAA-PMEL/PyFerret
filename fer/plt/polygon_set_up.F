@@ -86,6 +86,9 @@
 *                   call PPLLDX via pplldx_envelope.c which checks pplmem_nsize 
 *                   and allocates more memory if needed.  
 *      *acm* 10/01  remove VMS includes
+* v540 *acm* 12/01  IF (missing_polygon) THEN don't call PPLLDX_envelope; calling
+*                   with missing data for time-axis data results in trying to 
+*                   compute a time axis (elsewhere) with out-of-range values.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -536,8 +539,9 @@
 	   ENDIF
 
 	   IF (missing_polygon) THEN
-	      CALL PPLLDX_envelope(0,mr_bad_data(mr_x),mr_bad_data(mr_y),
-     .    	          1, t1_date, ' ', dt_min, plot_mem_used)
+c	      CALL PPLLDX_envelope(0,mr_bad_data(mr_x),mr_bad_data(mr_y),
+c     .    	          1, t1_date, ' ', dt_min, plot_mem_used)
+              i = 1   ! dummy statememt
 	   ELSE IF ( transpz ) THEN
 	      CALL PPLLDX_envelope(0,y_dat(start),x_dat(start),npts,
      .		           t1_date, ' ', dt_min, plot_mem_used)

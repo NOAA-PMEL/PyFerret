@@ -72,10 +72,14 @@
 *         XMIN, XMAX, YMIN, YMAX. Else DAXIS plot calls are not in range.
 * *acm* - 10/02 bug fix: start index of X as the third argument to FLOWLINE
 *         was icorrect for irregular-grid case (JTYPE .ne. -1) See PPLLDC.
+* *acm*   V550 11/02 For fine grids, XLPLOT, XHPLOT, YLPLOT, YHPLOT 
+*         computations need to be done in double precision.
+
 *****************************************************
 
 * local variable declarations for PLTIT (for TMAP)
 	REAL	DIFF, x, xf, yf, xl, yl, xh, yh, xti, xtl, thi
+	REAL*8	XLPLOT,YLPLOT,XHPLOT,YHPLOT
 	real	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
 	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line
 * TMAP include files with explicit type declarations:
@@ -282,10 +286,12 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	    IF(CONTR)THEN
 		call trans (0,xmin,ymin,xtm,ytm)
 		call trans (0,xmax,ymax,xtx,ytx)
-		XL=(xtm-XLO)*XF
-		XH=XLEN+(xtx-XHI)*XF
-		YL=(ytm-YLO)*YF
-		YH=YLEN+(ytx-YHI)*YF
+
+		XLPLOT=(DBLE(xtm)-DBLE(XLO) )*DBLE(XF) 
+		XHPLOT=DBLE(XLEN)+(DBLE(xtx)-DBLE(XHI) )*DBLE(XF)
+		YLPLOT=(DBLE(ytm)-DBLE(YLO) )*DBLE(YF)
+		YHPLOT=DBLE(YLEN)+(DBLE(ytx)-DBLE(YHI) )*DBLE(YF)
+
 	    ENDIF
 	ENDIF
 
@@ -303,7 +309,7 @@ C
 	    ELSE
 		IVLOC=1
 	    ENDIF
-	    CALL PLOTZ(X(IVLOC),XF,YF,XL,YL,XH,YH)
+	    CALL PLOTZ(X(IVLOC),XF,YF,XLPLOT,YLPLOT,XHPLOT,YHPLOT)
 *!	    IF(MAKEP.EQ.'AREA') CALL DAXIS(XF,YF,NMX,NMY) NAME CHANGE *jd*
 
 C  Call WINDOW to restore values of XMIN, XMAX, YMIN, YMAX. Plot axis again

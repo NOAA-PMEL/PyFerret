@@ -74,6 +74,8 @@ C
 * V540 12/01 *acm* do NOT set LWGT, LDIG here; set them in SHADE
 * V541  5/02 *acm* Check that number levels not greater than size of 
 *                  LWGT, LDIG, and ZLEV; issue an error message.
+* V550 11/02 *acm* For fine grids, XLPLOT, XHPLOT, YLPLOT, YHPLOT computations
+*                  need to be done in double precision.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -94,6 +96,8 @@ C
 	REAL	  Z(NX,NY)
         INTEGER   status, slen1, slen2
         CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
+        REAL      XF,YF
+        REAL*8    XLPLOT,YLPLOT,XHPLOT,YHPLOT
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
@@ -385,7 +389,6 @@ C       multiplying the index value by the DX or DY delta values.
  510	   CONTINUE
 
 	ENDIF
-
 
 	 if (makep.eq.'CONTOUR') then
 c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8

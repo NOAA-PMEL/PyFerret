@@ -107,6 +107,8 @@
 *                   memory buffer, rather than in lleng.  This way the number of
 *                   polygons that may be plotted is unlimited. Mark this with the
 *                   value of icode (first argument to pplldx_envelope)
+* v554 *acm* 12/03  Bug fix: for 1-D form of polygon command, save values of context 
+*                   so they can be properly restored. (ss_x_save, ss_y_save)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -162,7 +164,8 @@
      .			plot_mem_used, pxlim, pylim, ptitl,
      .			cx_buff_x, cx_buff_y,
      .			phlim, pvlim, pxdenig, pydenig,
-     .                  cal_id, tax, x_axtyp, y_axtyp, n
+     .                  cal_id, tax, x_axtyp, y_axtyp, n,
+     .                  ss_x_save, ss_y_save
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -396,6 +399,11 @@ c	ind_dim = plot_axis(1)
 * loop through all the polygons variables loading them into PPLUS
 * construct a funky FORTRAN 77 DO-WHILE loop
 * ---- 
+        IF (oneD_form) THEN
+           ss_x_save = cx_lo_ss(cx_buff_x,coord_dim)
+           ss_y_save = cx_lo_ss(cx_buff_y,coord_dim)
+        ENDIF
+
 200	CONTINUE
 
 * ... prepare the context buffer to point to the next polygon 
@@ -408,10 +416,9 @@ c	ind_dim = plot_axis(1)
 	      IF (cx_lo_ss(cx_buff_x,coord_dim)
      .	     .GE. cx_hi_ss(cx_buff_x,coord_dim)) THEN
                 
- 	         cx_lo_ss(cx_buff_x,coord_dim) =
-     .	           cx_lo_ss(cx_buff_x,coord_dim) - end   ! restore what it was
-	         cx_lo_ss(cx_buff_y,coord_dim) =         ! so we can count npts
-     .	          cx_lo_ss(cx_buff_y,coord_dim) - end    ! in the 700 loop below
+ 	         cx_lo_ss(cx_buff_x,coord_dim) = ss_x_save   ! restore what it was
+	         cx_lo_ss(cx_buff_y,coord_dim) = ss_y_save   ! so we can count npts
+                                                             ! in the 700 loop below
                  GOTO 290 ! exit DO_WHILE loop
               ENDIF
 

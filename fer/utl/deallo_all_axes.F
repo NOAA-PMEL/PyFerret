@@ -42,7 +42,8 @@
 *
 * V5.41 7/30/02 ACM Deallocate irregular dynamic axes defined by files too,
 *               by calling remove_axis.
-* V5.42 10/31/02ACM Check to see if axes are in use, and if so dont remove!
+* V5.42 10/31/02 ACM Check to see if axes are in use, and if so dont remove!
+* V5.42 11/06/02 ACM line_keep_flag(islot) is a logical, use .FALSE. not 0.
 
 
 * Parameters and commons
@@ -50,12 +51,12 @@
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
 	include	'tmap_errors.parm'
-	include 'xtm_grid.cmn_text'
+        include 'xtm_grid.cmn_text'
         include 'ferret.parm'
 	include 'errmsg.parm'
-	external xgt_grid_data
 
 * Local declarations
+
 	INTEGER TM_GET_LINENUM, TM_GET_GRID_OF_LINE,
      .          islot, grid, status, num_protected_axes
 
@@ -67,12 +68,9 @@
      .      num_protected_axes .LE. 0) num_protected_axes = 1
 
         DO 100 islot = num_protected_axes+1, line_ceiling
-           if (islot .gt. 1000 .and. islot .lt. 1006) then
-              status = 0
-           endif
            IF (line_name(islot) .NE. char_init16) THEN
 
-              line_keep_flag(islot) = 0
+	      line_keep_flag(islot) = .FALSE.  ! see xeq_cancel.F
               IF (line_use_cnt(islot) .LE. 0) THEN
 	         IF ( islot .LE. max_lines ) THEN
                     IF (.NOT. line_regular(islot)) CALL REMOVE_AXIS(islot)

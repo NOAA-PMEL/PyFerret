@@ -2,8 +2,6 @@
      .				curvilinear, cx_curv,
      .				its_calendar, tstyle, no_labels )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -69,8 +67,8 @@
 *		added args curvilinear and cx_curv
 * V500: 6/99 *sh* - save time axis infor to be used by PLOT/VS overlays
 * V510 *sh* 3/00 - added no_labels argument so /NOLABELS avoided xlab & ylab
+* V533 *sh* 7/01 - avoid using risc_buff -- conflict with PUT_LABEL
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -84,14 +82,6 @@
 	include 'xrisc.cmn'     ! for f77 bug
         CHARACTER rbuff(4)*14
         EQUIVALENCE ( rbuff, risc_buff )
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_SETUP.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL		its_calendar, curvilinear, no_labels
@@ -108,7 +98,7 @@
 	INTEGER		TM_LENSTR1, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
-     .			fmt*4
+     .			fmt*4, buff*200
 	REAL		res_del, dt_min, time_unit
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
@@ -197,17 +187,17 @@
 * lat/long or x/y axis label
 	IF ( no_labels ) RETURN
 	IF ( curvilinear ) THEN
-	   risc_buff = VAR_TITLE( cx_curv)
-	   dlen = TM_LENSTR1(risc_buff)
+	   buff = VAR_TITLE( cx_curv)
+	   dlen = TM_LENSTR1(buff)
 	ELSE
-	   risc_buff = AX_TITLE( idim, grid, dlen )	! risc_buff as of 6/95
+	   buff = AX_TITLE( idim, grid, dlen )	! risc_buff as of 6/95
 	ENDIF
 	IF ( x_or_y .EQ. 'X' ) THEN
 	   CALL PUT_LABEL( ppl_xlab, dummy, dummy, dummy,
-     .			   0.12, risc_buff(:dlen), dummy, dummy )
+     .			   0.12, buff(:dlen), dummy, dummy )
 	ELSE
 	   CALL PUT_LABEL( ppl_ylab, dummy, dummy, dummy,
-     .			   0.12, risc_buff(:dlen), dummy, dummy )
+     .			   0.12, buff(:dlen), dummy, dummy )
 	ENDIF
 	RETURN
       END

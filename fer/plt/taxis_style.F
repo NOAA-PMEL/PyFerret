@@ -48,6 +48,7 @@
 *	      - and 4-digit PLOT+ years!!
 *	      - added "x_or_y" argument for Y axis calendar axes
 *	      - added TXTYPE MULTIYR
+* V510: 5/00 *sh* - extend formatting to 1000's of years axes
 
 #ifdef unix
 	include 'ferret.parm'
@@ -66,7 +67,7 @@
 * parameter definitions:
 	INTEGER		pmax_tax
 	REAL*8		psecs_at_2_yrs
-	PARAMETER     ( pmax_tax   = 11,
+	PARAMETER     ( pmax_tax   = 16,
      .			psecs_at_2_yrs = 60.*60.*24.*365.*2. )
 
 * internal variable declarations:
@@ -122,10 +123,30 @@
      .		tax_style(10)	/  'YR MULTIYR'	/,
      .		tax_loint(10)	/    0	/,
      .		tax_hiint(10)	/   10	/
-	DATA	tax_hours(11)	/    0.	/,	! greater than 100 yr long axis
+	DATA	tax_hours(11)	/1728000.	/, ! 100 to 200 yr long axis
      .		tax_style(11)	/  'YR MULTIYR'	/,
      .		tax_loint(11)	/    0	/,
      .		tax_hiint(11)	/   20	/
+	DATA	tax_hours(12)	/4320000.	/, ! 200 to 500 yr long axis
+     .		tax_style(12)	/  'YR MULTIYR'	/,
+     .		tax_loint(12)	/    0	/,
+     .		tax_hiint(12)	/   50	/
+	DATA	tax_hours(13)	/8640000.	/, ! 500 to 1000 yr long axis
+     .		tax_style(13)	/  'YR MULTIYR'	/,
+     .		tax_loint(13)	/    0	/,
+     .		tax_hiint(13)	/   100	/
+	DATA	tax_hours(14)	/17280000.	/, ! 1000 to 2000 yr long axis
+     .		tax_style(14)	/  'YR MULTIYR'	/,
+     .		tax_loint(14)	/    0	/,
+     .		tax_hiint(14)	/   200	/
+	DATA	tax_hours(15)	/43200000.	/, ! 2000 to 5000 yr long axis
+     .		tax_style(15)	/  'YR MULTIYR'	/,
+     .		tax_loint(15)	/    0	/,
+     .		tax_hiint(15)	/   500	/
+	DATA	tax_hours(16)	/    0.	/,    ! greater than 5000 yr long axis
+     .		tax_style(16)	/  'YR MULTIYR'	/,
+     .		tax_loint(16)	/    0	/,
+     .		tax_hiint(16)	/   1000	/
 
 * time axis orientation
 	its_x = x_or_y .EQ. 'X'
@@ -165,7 +186,7 @@
 	   tstyle = 'CLM'			  ! suppress "YEAR:" label
 	ENDIF
 	WRITE ( ppl_cmnd, 3030 ) tax_loint(itax), hi_int
- 3030	FORMAT ('TXLINT',2I3)
+ 3030	FORMAT ('TXLINT',2I6)
 	CALL PPLCMD ( from, line, 0, ppl_cmnd, 1, 1 )
 
 * eliminate small tics if they would be too dense (default is .125)

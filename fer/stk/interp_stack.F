@@ -42,6 +42,7 @@
 *		so is result (using ITS_UN_CACHED and UN_CACHE)
 * V430: 7/96  - incorporate 4D transformations
 * V450: 2/97  - Allow application of modulo to GC vars (but not other uvars)
+* V455    9/97 - added transforms @CDA,CDB,CIA,CIB
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -83,7 +84,9 @@
      .                  DO_SMTH_PARZN, DO_SMTH_WELCH, DO_SUM,
      .                  DO_DIST_LOC, DO_RUN_SUM, DO_NGOOD, DO_NBAD,
      .                  DO_VARIANCE, DO_FILL_INTERP, DO_FILL_NEAR,
-     .			DO_4D_VAR,DO_4D_NGD,DO_4D_NBD
+     .			DO_4D_VAR,DO_4D_NGD,DO_4D_NBD,
+     .			DO_NEAREST_DIST_ABOVE, DO_NEAREST_DIST_BELOW,
+     .			DO_NEAREST_INDEX_ABOVE,DO_NEAREST_INDEX_BELOW
 
 * calling arguments:
 * in	isp_base	- stack level at which to begin calculations
@@ -472,6 +475,14 @@
 	      CALL IS_TRANS( memory, DO_4D_NGD, *2500, status )
 	   ELSEIF ( act .EQ. isact_4d_bad_pt		) THEN	! 7/96
 	      CALL IS_TRANS( memory, DO_4D_NBD, *2500, status )
+	   ELSEIF ( act .EQ. isact_nrst_dist_abv	) THEN	! 9/96
+	      CALL IS_TRANS( memory, DO_NEAREST_DIST_ABOVE, *2500, status )
+	   ELSEIF ( act .EQ. isact_nrst_dist_blw	) THEN	! 9/96
+	      CALL IS_TRANS( memory, DO_NEAREST_DIST_BELOW, *2500, status )
+	   ELSEIF ( act .EQ. isact_nrst_indx_abv	) THEN	! 9/96
+	      CALL IS_TRANS( memory, DO_NEAREST_INDEX_ABOVE, *2500, status )
+	   ELSEIF ( act .EQ. isact_nrst_indx_blw	) THEN	! 9/96
+	      CALL IS_TRANS( memory, DO_NEAREST_INDEX_BELOW, *2500, status )
 	   ELSEIF ( act .EQ. isact_read			) THEN
 	      WRITE (6,*) 'Tell FERRET programmer to check INTERP_STACK'
 * ...	      could set "cat" and branch to above IS_READ

@@ -64,6 +64,7 @@ and optionally (non-ANSI cc compilers) with    -DNO_CC_PROTOTYPES
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
+#include "ferret.h"
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
 put_frame( ws_id, filename, errstr, format, status )
@@ -94,13 +95,8 @@ put_frame_( ws_id, filename, errstr, format, status )
    return;
 }
 
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-void put_frame_batch(int *ws_id, char *filename, char *format,
+void FORTRAN(put_frame_batch)(int *ws_id, char *filename, char *format,
 			       char *errmsg, int *status)
-#else
-void put_frame_batch_(int *ws_id, char *filename, char *format,
-			       char *errmsg, int *status)
-#endif
 {
   char oldfilename[BUFSIZ];
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
@@ -119,6 +115,20 @@ void put_frame_batch_(int *ws_id, char *filename, char *format,
     sprintf(errmsg, "Couldn't write out GIF file %s\n", filename);
     return;
   }
+}
+      
+void FORTRAN(put_temp_frame_batch)(int *ws_id, char *filename, int *length)
+{
+  char format[BUFSIZ], errmsg[BUFSIZ];
+  int status;
+  char *tname = tempnam("/tmp", "fer");
+  WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
+  status = 0;
+  strcpy(filename, tname);
+  strcat(filename, ".gif");
+  FORTRAN(put_frame_batch)(ws_id, filename, format, errmsg, &status);
+  *length = strlen(filename);
+  free(tname);
 }
       
 

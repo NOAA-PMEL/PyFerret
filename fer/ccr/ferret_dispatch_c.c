@@ -50,6 +50,7 @@
    11/16/94 - updated to use macro declarations from ferret_shared_buffer.h
 
    05/25/95 - added ifdef check for trailing underscores not needed on HP *kob*
+   *js* 6.99 Set line buffering if in server mode
 
 */
 
@@ -129,6 +130,9 @@ int FORTRAN(is_secure)() {
  */
 void set_server() {
   ServerFlag = 1;
+  /* Should always be line buffered */
+  setvbuf(stdout, NULL, _IOLBF, 0);
+  setvbuf(stderr, NULL, _IOLBF, 0);
 }
 
 int FORTRAN(is_server)() {

@@ -129,6 +129,8 @@
 * all stream formatted files now read with new fast binary reads
 	   IF ( ds_parm_text(1,dset_num)(:3) .eq. 'STR') THEN
 	      CALL READ_BINARY( memory, cx, is_mr(isp), status)
+	   ELSEIF ( ds_parm_text(1,dset_num)(:4) .eq. 'PERL') THEN
+	      CALL READ_PERL( memory, cx, is_mr(isp), status)
 	   ELSE
 	      CALL READ_EZ( memory, cx, is_mr(isp), status )
 	   ENDIF

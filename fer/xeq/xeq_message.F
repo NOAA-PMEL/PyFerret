@@ -69,6 +69,7 @@
 	include 'xprog_state.cmn'
         include 'xrisc.cmn'
         include 'xgui.cmn'
+	include 'xplot_state.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -86,7 +87,15 @@
      .			slash_error	  = 4 )
 	
 * local variable declarations
-	LOGICAL is_server
+	INTEGER status, wsid, slen, rlen
+	PARAMETER (slen=1024)
+	CHARACTER tmpfile*1024
+#ifdef sun
+        BYTE      ctmpfile(slen)
+#else
+        INTEGER*1 ctmpfile(slen)
+#endif
+	LOGICAL is_server, its_batch_graphics
 	INTEGER status
 
 * treat all text as a single argument
@@ -126,7 +135,24 @@
 
 * continue or wait ?
 	IF ( qual_given( slash_continue ) .GT. 0
-     .	.OR. mode_gui .OR. is_server()) RETURN
+     .	.OR. mode_gui) RETURN
+
+* Output a GIF frame if in server mode
+	IF  (IS_SERVER()) then
+	   IF (ITS_BATCH_GRAPHICS()) then
+	      DO wsid = 1, max_windows
+		 IF ( wn_active(wsid) ) then
+* output a GIF frame
+		    call PUT_TEMP_FRAME_BATCH(wsid, ctmpfile, rlen)
+		    call TM_CTOF_STRNG(ctmpfile, tmpfile, rlen)
+		    call TM_SPLIT_MESSAGE(ttout_lun,
+     1		      '<!-- ferret: gif='//tmpfile(:rlen)//' -->')
+		 endif
+	      end do
+	   endif
+ 	   return
+	end if
+
 
 * prompt for <CR> ?
 * (in gui mode ferret_dispatch will send a flag back to the GUI)

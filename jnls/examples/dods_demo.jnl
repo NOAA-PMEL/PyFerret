@@ -170,6 +170,7 @@ PAUSE
 !      *********************************************************
 
 use "http://maewest.gso.uri.edu/cgi-bin/nph-dsp/fth_sst_decloud/1995/f95018175608.fth_d.Z"
+cancel axis/modulo LON
 go basemap x=-95:-60 y=15n:40n 20
 
 ! Performance greatly enhanced through use of strides

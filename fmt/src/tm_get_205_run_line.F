@@ -58,8 +58,8 @@
 *			   an "#ifdef READONLY_ALLOWED"
 * Include files
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'
-        include 'tmap_format/xsys_names.cmn_text'
+	include 'tmap_errors.parm'
+        include 'xsys_names.cmn_text'
         external xsys_names_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'

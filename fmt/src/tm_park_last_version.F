@@ -64,9 +64,10 @@
       CHARACTER*(*) fname
 
 #ifdef unix
-      include 'tmap_format/tmap_errors.parm'
+      include 'tmap_errors.parm'
+#include "gt_lib.parm"
 #ifdef AIX_XLF
-      include 'tmap_format/xrisc_buff.cmn'
+      include 'xrisc_buff.cmn'
 #endif
 
 * internal variable declarations:
@@ -84,10 +85,10 @@
 
 * it already exists - rename it to the highest version
 * first extracting possible path out of filename  -- 10/91
-      IF ( INDEX( fname, '/') .GT. 0) THEN
+      IF ( INDEX( fname, PathSeparator) .GT. 0) THEN
          flen = TM_LENSTR1(fname)
          do 10 i = flen-1,1,-1
-            IF ( fname(i:i) .EQ. '/' ) THEN
+            IF ( fname(i:i) .EQ. PathSeparator ) THEN
                postslash = MIN(i+1,flen)     ! MIN if slash at end->dont crash
                GOTO 11
             ENDIF

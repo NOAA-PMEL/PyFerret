@@ -54,7 +54,7 @@
         LOGICAL swap
 
 #ifdef unix
-      include 'tmap_format/cpu.parm'
+      include 'cpu.parm'
 #  ifdef sun
       BYTE bb(4),bdum
 #  else

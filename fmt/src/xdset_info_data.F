@@ -58,9 +58,9 @@
 *			   tmap_dset.parm contains an ifdef
 
 #ifdef unix
-#include "tmap_format/tmap_dset.parm"		
-	include 'tmap_format/tmap_dims.parm'		! parameter definitions
-	include 'tmap_format/xdset_info.cmn_text'
+#include "tmap_dset.parm"		
+	include 'tmap_dims.parm'		! parameter definitions
+	include 'xdset_info.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! parameter definitions
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! parameter definitions

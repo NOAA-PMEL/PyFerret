@@ -47,6 +47,8 @@
 *	FORTRAN READ ERR= branches):  check for "/" following "." since
 *	path names often begin with "./name"
 
+#include "gt_lib.parm"
+
 * calling argument declarations:
 	CHARACTER*(*)	string
 
@@ -75,7 +77,7 @@
 
 * kludge check for "./name" (11/94 for AIX port)
 	IF (c.EQ.'.' .AND. LEN(string).GE.2 )
-     .		TM_DIGIT = string(2:2) .NE. '/'
+     .		TM_DIGIT = string(2:2) .NE. PathSeparator
 
 	RETURN
 

@@ -54,10 +54,10 @@
 * revision 0.00 - 03/25/91
 
 #ifdef sun
-        include 'tmap_format/xmachine_byte.cmn'
+        include 'xmachine_byte.cmn'
 #else
 #	if unix
-                include 'tmap_format/xmachine_int1.cmn'
+                include 'xmachine_int1.cmn'
 #	else
                 INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
 #	endif

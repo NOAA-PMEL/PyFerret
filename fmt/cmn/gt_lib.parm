@@ -68,5 +68,12 @@
 	PARAMETER (pdate_vax = 1,
      .		   pdate_numslashnum = 2 )
 
-
+* OS dependent stuff
+	CHARACTER EnvSeparator
+	CHARACTER PathSeparator
+#ifdef __CYGWIN__
+	PARAMETER (EnvSeparator=';', PathSeparator='\')
+#else
+	PARAMETER (EnvSeparator=' ', PathSeparator='/')
+#endif
 

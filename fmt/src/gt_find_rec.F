@@ -50,7 +50,7 @@
 * revision 1.10 - 09/12/90 - *sh* added provision for irregular time axis
 * Unix/RISC port - 3/91 *sh*: added logic to convert cpu binary representation
 * 6/91 ----> kob - Time independent data handling capability put in
-*                  Had to include file tmap_format/gt_lib.parm (as in 
+*                  Had to include file tmap_format/gt_lib.parm (as in
 *                  gt_open_step.f) in order to have unspecified_val8
 *                  declared.  
 * SUN port 2/92 - machine type word conversions
@@ -67,19 +67,19 @@
 	REAL*8		time_step
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_errors.parm'	! error code parameter defs
-        include 'tmap_format/gt_lib.parm'       ! put in 6/91 for time ind. kob
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+	include 'tmap_errors.parm'	! error code parameter defs
+#include "gt_lib.parm"
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
 * xmachine_byte.cmn on sun becauses it uses BYTE where ULTRIX uses INTEGER*1
 #ifdef sun
-      include 'tmap_format/xmachine_byte.cmn'
+      include 'xmachine_byte.cmn'
 #else
-      include 'tmap_format/xmachine_int1.cmn'
+      include 'xmachine_int1.cmn'
 #endif
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

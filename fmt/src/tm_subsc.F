@@ -58,9 +58,9 @@
 * clue		- performance assist to code - check this as possible result
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+#include "gt_lib.parm"
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

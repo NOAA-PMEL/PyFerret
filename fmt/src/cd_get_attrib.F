@@ -65,12 +65,12 @@
       CHARACTER*(*) attrib, vname, string
 
 #ifdef unix
-      include 'tmap_format/netcdf.decl'
-      include 'tmap_format/netcdf.inc'
-      include 'tmap_format/xio.cmn_text'
+      include 'netcdf.decl'
+#include "netcdf.inc"
+      include 'xio.cmn_text'
 #else
       INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-      INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
       INCLUDE 'TMAP_FORMAT:XIO.CMN'
 #endif
 

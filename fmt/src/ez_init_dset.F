@@ -74,15 +74,15 @@
 *
 * Include files
 #ifdef unix
-	include 'tmap_format/xio.parm'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/ez_lib.parm'
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xio.parm'
+#include "gt_lib.parm"
+	include 'ez_lib.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+	include 'tmap_errors.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
 #else
 	INCLUDE 'TMAP_FORMAT:XIO.PARM'
@@ -112,7 +112,7 @@
 #ifdef unix
 * Unix: find final pathname slash
             DO 77 bpos = epos, 1, -1
- 77         IF ( filename(bpos:bpos) .EQ. '/' ) GOTO 78
+ 77         IF ( filename(bpos:bpos) .EQ. PathSeparator ) GOTO 78
             bpos = 0    ! no slash
  78         bpos = bpos + 1
 #else

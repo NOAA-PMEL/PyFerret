@@ -21,7 +21,6 @@
 #		     doesn't use pre-processor
 # 08/19/97 - *kob* - added "-Dreclen_in_bytes" to aix flags
 
-F77 = f77
 
 .c.o:
 	(cc $(CFLAGS) -c $(DEBUG) $(<F))
@@ -29,30 +28,32 @@ F77 = f77
 .F.o: 
 	($(F77) -c $(DEBUG) $(FFLAGS) $(<F))
 
+.f.o: 
+	($(F77) -c $(DEBUG) $(FFLAGS) $(<F))
+
 include ./SOURCE_FILES
 include ../../fer/platform_specific_flags.mk.$(HOSTTYPE)
 
 OBJS= $(SRCS_F:.F=.o) $(SRCS_C:.c=.o) 
 
-tmap_libs/tmap_lib.a:	$(OBJS)
-		- mv tmap_libs/tmap_lib.a tmap_libs/tmap_lib.a.pre_`date +%m%d%y`
-		ar r tmap_libs/tmap_lib.a $(OBJS)
-		$(RANLIB) tmap_libs/tmap_lib.a
+LIBLOC=../../lib
+$(LIBLOC)/tmap_lib.a:	$(OBJS)
+		- mv $(LIBLOC)/tmap_lib.a $(LIBLOC)/tmap_lib.a.pre_`date +%m%d%y`
+		ar r $(LIBLOC)/tmap_lib.a $(OBJS)
+		$(RANLIB) $(LIBLOC)/tmap_lib.a
 
 debug:  
 	${MAKE} clean
-	${MAKE} DEBUG=-g tmap_libs/tmap_deblib.a
+	${MAKE} DEBUG=-g $(LIBLOC)/tmap_deblib.a
 
-tmap_libs/tmap_deblib.a:	$(OBJS)
-		- mv tmap_libs/tmap_debuglib.a tmap_libs/tmap_debuglib.a.pre_`date +%m%d%y`
-		ar r tmap_libs/tmap_debuglib.a $(OBJS)
-		$(RANLIB) tmap_libs/tmap_debuglib.a
+$(LIBLOC)/tmap_deblib.a:	$(OBJS)
+		- mv $(LIBLOC)/tmap_debuglib.a $(LIBLOC)/tmap_debuglib.a.pre_`date +%m%d%y`
+		ar r $(LIBLOC)/tmap_debuglib.a $(OBJS)
+		$(RANLIB) $(LIBLOC)/tmap_debuglib.a
 
 links:
-	/bin/rm -f tmap_libs
 	/bin/rm -f tmap_format
 	ln -s ../cmn          tmap_format
-	ln -s ../libs         tmap_libs
 
 
 

@@ -46,10 +46,10 @@
 *	          and what was being included.  removed them
 * Include files
 #ifdef unix
-#include "tmap_format/tmap_dset.parm"	
-	include 'tmap_format/tmap_dims.parm'	! 
-	include 'tmap_format/gt_lib.parm'	! 
-	include 'tmap_format/xtm_grid.cmn_text'	! pre-defined grid common
+#include "tmap_dset.parm"	
+	include 'tmap_dims.parm'	! 
+#include "gt_lib.parm"
+	include 'xtm_grid.cmn_text'	! pre-defined grid common
 	external xgt_grid_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'	! Data set constants

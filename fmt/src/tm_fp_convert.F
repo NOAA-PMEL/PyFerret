@@ -62,11 +62,11 @@
         INTEGER*4 idum, k
 
 #ifdef sun
-      include 'tmap_format/xmachine_byte.cmn'
+      include 'xmachine_byte.cmn'
       BYTE bb(4),bdum
 #else
 #	if unix
-                include 'tmap_format/xmachine_int1.cmn'
+                include 'xmachine_int1.cmn'
       		INTEGER*1 bb(4),bdum
 #	else
       		INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'

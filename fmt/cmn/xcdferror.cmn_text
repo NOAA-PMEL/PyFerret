@@ -1,5 +1,8 @@
 * error messages for netCDF error codes
 * *sh* 3/92
+* Changed range of cdferrmsg to -128:128 to account
+* for v3 change in netCDF parameters. Sigh.
+* *js* 1.99
 
-	CHARACTER*36 cdferrmsg(20)
+	CHARACTER*36 cdferrmsg(-128:128)
 	COMMON / XCDFERROR / cdferrmsg

@@ -82,10 +82,10 @@
 
 * Parameter and common files
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'		! error codes
-	include 'tmap_format/gt_lib.parm'
+	include 'tmap_errors.parm'		! error codes
+#include "gt_lib.parm"
 #ifdef AIX_XLF
-	include 'tmap_format/xrisc_buff.cmn'
+	include 'xrisc_buff.cmn'
 #endif
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
@@ -120,7 +120,7 @@
 * *** start of 5/93 addition
       IF ( fname(1:1) .EQ. '$' ) THEN
 * ... translate "$" environment variable at beginning of filename
-	 postslash = INDEX( fname ,'/' ) + 1
+	 postslash = INDEX( fname ,PathSeparator ) + 1
 	 IF ( postslash .EQ. 1 ) THEN
 	    CALL GETENV( fname(2:flen), path_list )
 	    postslash = flen + 1       ! entire filename from environment var
@@ -131,8 +131,9 @@
 	 plen = TM_LENSTR1( path_list )
 * ... transfer "morepath" info in the case of $ENVIRONMENT/morepath/filename
 	 DO 5 i = flen-1,postslash+1,-1
-	    IF ( fname(i:i) .EQ. '/' ) THEN
-	       path_list = path_list(:plen)//'/'//fname(postslash:i-1)
+	    IF ( fname(i:i) .EQ. PathSeparator ) THEN
+	       path_list = path_list(:plen)//PathSeparator
+     .              //fname(postslash:i-1)
 	       plen = TM_LENSTR1( path_list )
 	       postslash = i+1
 	       GOTO 6
@@ -147,9 +148,9 @@
       ELSEIF ( path .EQ. ' ' ) THEN
          path_list = ' '
          plen = 1
-      ELSEIF ( INDEX( fname ,'/' ) .GT. 0 ) THEN
+      ELSEIF ( INDEX( fname ,PathSeparator ) .GT. 0 ) THEN
          DO 10 i = flen-1,1,-1
-            IF ( fname(i:i) .EQ. '/' ) THEN
+            IF ( fname(i:i) .EQ. PathSeparator ) THEN
                postslash = i+1
                GOTO 11
          ENDIF

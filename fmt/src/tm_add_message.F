@@ -43,7 +43,7 @@
 * 2/28/95
 
 #ifdef unix
-	include 'tmap_format/xalt_messages.cmn_text'
+	include 'xalt_messages.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'
 #endif

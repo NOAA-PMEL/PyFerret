@@ -50,10 +50,10 @@
 *	status	- error status on completion
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'tmap_errors.parm'
+#include "tmap_dset.parm"
+	include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'

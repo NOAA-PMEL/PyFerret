@@ -66,21 +66,21 @@
 *	status	- (output) error flag 
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'	! error codes
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'tmap_errors.parm'	! error codes
+#include "tmap_dset.parm"
+	include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xio.cmn_text'
+	include 'xio.cmn_text'
 	external xio_data
-        include 'tmap_format/xsys_names.cmn_text'
+        include 'xsys_names.cmn_text'
         external xsys_names_data
 #ifdef sun
-      include 'tmap_format/xmachine_byte.cmn'
+      include 'xmachine_byte.cmn'
 #else
-      include 'tmap_format/xmachine_int1.cmn'
+      include 'xmachine_int1.cmn'
 #endif
 
 #else

@@ -69,27 +69,27 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-	include 'tmap_format/tmap_errors.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'		! data set dimension
-	include 'tmap_format/gt_lib.parm'		! axis setup params
-	include 'tmap_format/xdset_info.cmn_text'	! data set info common
+        include 'netcdf.decl'
+#include "netcdf.inc"
+	include 'tmap_errors.parm'
+#include "tmap_dset.parm"
+	include 'tmap_dims.parm'		! data set dimension
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'	! data set info common
 	external xdset_info_data
-	include 'tmap_format/xstep_files.cmn_text'	! step file common
+	include 'xstep_files.cmn_text'	! step file common
 	external xstep_files_data
-        include 'tmap_format/xdset_info.cd_equiv'
-	include 'tmap_format/xtm_grid.cmn_text'
+        include 'xdset_info.cd_equiv'
+	include 'xtm_grid.cmn_text'
 #ifdef sun
-        include 'tmap_format/xmachine_byte.cmn'
+        include 'xmachine_byte.cmn'
 #else
-        include 'tmap_format/xmachine_int1.cmn'
+        include 'xmachine_int1.cmn'
 #endif
-	include 'tmap_format/xsys_names.cmn_text'
+	include 'xsys_names.cmn_text'
 #else
         INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! err code PARM defs
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'		! Axis setup params

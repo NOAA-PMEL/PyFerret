@@ -56,7 +56,7 @@
         INTEGER TM_LENSTR1
 
 #ifdef unix
-        include 'tmap_format/tmap_errors.parm'
+        include 'tmap_errors.parm'
 #endif
 
 #ifdef unix

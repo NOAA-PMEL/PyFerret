@@ -78,24 +78,24 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/tmap_dims.parm'		! data set dimension
-	include 'tmap_format/gt_lib.parm'		! axis setup params
-	include 'tmap_format/xdset_info.cmn_text'	! data set info common
+        include 'netcdf.decl'
+#include "netcdf.inc"
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'		! data set dimension
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'	! data set info common
 	external xdset_info_data
-	include 'tmap_format/xstep_files.cmn_text'	! step file common
+	include 'xstep_files.cmn_text'	! step file common
 	external xstep_files_data
-        include 'tmap_format/xdset_info.cd_equiv'
+        include 'xdset_info.cd_equiv'
 #ifdef sun
-        include 'tmap_format/xmachine_byte.cmn'
+        include 'xmachine_byte.cmn'
 #else
-        include 'tmap_format/xmachine_int1.cmn'
+        include 'xmachine_int1.cmn'
 #endif
 #else
         INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! err code PARM defs
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'		! Axis setup params
@@ -112,8 +112,8 @@
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
      .               start(4), size(4), totsize, dim_lo(4), dim_hi(4)
 	CHARACTER*1	dimnam(4)
-	DATA  		dimnam/'I','J','K','L'/
 	CHARACTER*13	TM_STRING
+	DATA  		dimnam/'I','J','K','L'/
 
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv 
 * because "BYTE" isn't supported on DECstation)

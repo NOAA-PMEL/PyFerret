@@ -57,20 +57,20 @@
 
 * include files
 #ifdef unix
-	include 'tmap_format/netcdf.decl'
-	include 'tmap_format/netcdf.inc'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/tmap_dims.parm'
-#	include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'netcdf.decl'
+#include "netcdf.inc"
+#include "gt_lib.parm"
+	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'tmap_errors.parm'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-        include 'tmap_format/xdset_info.cd_equiv'
-	include 'tmap_format/xtm_grid.cmn_text'
-	include 'tmap_format/xstep_files.cmn_text'
+        include 'xdset_info.cd_equiv'
+	include 'xtm_grid.cmn_text'
+	include 'xstep_files.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-	INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -78,7 +78,7 @@
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
         INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
 	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT/XSTEP_FILES.CMN_TEXT'
+	INCLUDE 'XSTEP_FILES.CMN_TEXT'
 #endif
 
 * special equivalence (not in tmap_format/xdset_info.cd_equiv because "BYTE"

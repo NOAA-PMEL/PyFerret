@@ -48,10 +48,10 @@
 *	f_num	- file number within COMMON/XSTEP_FILES to leave open
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'		! error code parameter defs
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'tmap_errors.parm'		! error code parameter defs
+#include "tmap_dset.parm"
+	include 'tmap_dims.parm'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! error code PARAMETER defs

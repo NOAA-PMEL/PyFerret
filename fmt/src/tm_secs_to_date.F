@@ -54,7 +54,7 @@
 
 * Include files
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'
+	include 'tmap_errors.parm'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 #endif

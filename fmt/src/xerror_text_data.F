@@ -53,8 +53,8 @@
 * 3/12/93 *sh* : allow unlimited columns in EZ data set
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'		! parameter definitions
-	include 'tmap_format/xerror_text.cmn_text'	! common declaration
+	include 'tmap_errors.parm'		! parameter definitions
+	include 'xerror_text.cmn_text'	! common declaration
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! parameter definitions
 	INCLUDE 'TMAP_FORMAT:XERROR_TEXT.CMN_TEXT'	! COMMON declaration

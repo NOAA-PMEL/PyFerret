@@ -71,16 +71,16 @@
 
 * Parameter and common files
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'		! error codes
-#include "tmap_format/tmap_dset.parm"	
-	include 'tmap_format/tmap_dims.parm'		! data set dimensions
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xio.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_errors.parm'		! error codes
+#include "tmap_dset.parm"	
+	include 'tmap_dims.parm'		! data set dimensions
+#include "gt_lib.parm"
+	include 'xio.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'tmap_format/xdset_info.cmn_text'		! data set common
+	include 'xdset_info.cmn_text'		! data set common
 	external xdset_info_data
-	include 'tmap_format/xstep_files.cmn_text'		! var file common
+	include 'xstep_files.cmn_text'		! var file common
 	external xstep_files_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
@@ -95,7 +95,7 @@
 
 * Define variables from Set File namelist records
 #ifdef unix
-	include 'tmap_format/descript.def'
+	include 'descript.def'
 #else
 	INCLUDE 'TMAP_FORMAT:DESCRIPT.DEF'
 #endif

@@ -52,7 +52,7 @@
 * internal variable declarations:
 
 #ifdef unix
-        include 'tmap_format/xez_order.cmn_text'
+        include 'xez_order.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:XEZ_ORDER.CMN'
 #endif

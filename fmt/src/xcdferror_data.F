@@ -46,15 +46,17 @@
 *			 which was longer than the variable was declared.
 * IBM port 14apr94 *kob*: External statments in netcdf.inc caused IBM compiler
 *		        : xlf to blow up.  Same statments in also cause OSF f77
-*			: compiler to blow. So...include instead of netcdf.inc
+#include "netcdf.inc"
 *			: the hacked file netcdf.inc.no_externals
 #ifdef unix
-	include 'tmap_format/netcdf.decl'
-	include 'tmap_format/netcdf_no_externals.inc'
-	include 'tmap_format/xcdferror.cmn_text'
+	include 'netcdf.decl'
+#ifndef USE_NETCDF_V3
+	include 'netcdf_no_externals.inc'
+#endif
+	include 'xcdferror.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-	INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
 	INCLUDE 'TMAP_FORMAT:XCDFERROR.CMN_TEXT'
 #endif
 

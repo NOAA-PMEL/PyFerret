@@ -64,20 +64,20 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-        include 'tmap_format/cdf_tmap.parm'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+        include 'netcdf.decl'
+#include "netcdf.inc"
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+        include 'cdf_tmap.parm'
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 #else
-xx        include 'xxtmap_format/netcdf.decl'  ! untested
-xx        include 'xxtmap_format/netcdf.inc'
+xx        include 'netcdf.decl'  ! untested
+#include "netcdf.inc"
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
         INCLUDE 'TMAP_FORMAT:CDF_TMAP.PARM'

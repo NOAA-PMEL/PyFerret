@@ -52,12 +52,12 @@
 	INTEGER varnum
 
 #ifdef unix
-        include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-        include 'tmap_format/gt_lib.parm'
-        include 'tmap_format/xtm_grid.cmn_text'
-        include 'tmap_format/xdset_info.cmn_text'
-        include 'tmap_format/xez_order.cmn_text'
+        include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+        include 'xtm_grid.cmn_text'
+        include 'xdset_info.cmn_text'
+        include 'xez_order.cmn_text'
 #else
         INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
         INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

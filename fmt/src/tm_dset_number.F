@@ -52,10 +52,10 @@
 
 * Parameter and common files
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'		! error codes
-	include 'tmap_format/tmap_dims.parm'		! data set dimensions
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xdset_info.cmn_text'		! data set common
+	include 'tmap_errors.parm'		! error codes
+	include 'tmap_dims.parm'		! data set dimensions
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'		! data set common
 	external xdset_info_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes

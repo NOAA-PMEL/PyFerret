@@ -1,6 +1,3 @@
-#ifdef __CYGWIN__
-#include "netcdf.v3.inc"
-#else
 c      
 c     Functions in the FORTRAN interface
 
@@ -146,11 +143,9 @@ c     Not a netcdf file
       parameter(NCFOOBAR = 32)
       parameter(NCSYSERR = -1)
       
-      
 c     
 c     Global options variable. Used to determine behavior of error handler.
 c     Initialized in lerror.c
 c     
       parameter(NCFATAL = 1)
       parameter(NCVERBOS = 2)
-#endif

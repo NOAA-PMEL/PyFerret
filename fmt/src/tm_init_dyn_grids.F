@@ -43,11 +43,11 @@
 
 * Include files
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/implicit.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'implicit.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'

@@ -63,6 +63,9 @@
    you can call.  I think I have done that. */
 
 /* Remove these declarations when we have a complete libgnu.a. */
+
+#ifndef __CYGWIN__
+
 #define STATIC_MALLOC
 #ifndef STATIC_MALLOC
 extern char *xmalloc (), *xrealloc ();
@@ -1699,3 +1702,4 @@ main ()
 * compile-command: "gcc -g -DTEST -o history history.c"
 * end:
 */
+#endif /* #ifdef __CYGWIN__ */

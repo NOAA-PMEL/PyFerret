@@ -77,19 +77,19 @@
 
 * include files
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'		! data set dimension
-	include 'tmap_format/tmap_errors.parm'		! err code parm defs
-	include 'tmap_format/gt_lib.parm'		! axis setup parameters
-	include 'tmap_format/xdset_info.cmn_text'	! data set info common
+	include 'tmap_dims.parm'		! data set dimension
+	include 'tmap_errors.parm'		! err code parm defs
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'	! data set info common
 	external xdset_info_data
-	include 'tmap_format/xstep_files.cmn_text'	! step file info common
+	include 'xstep_files.cmn_text'	! step file info common
 	external xstep_files_data
-	include 'tmap_format/xio.cmn_text'		!i/o channel common
+	include 'xio.cmn_text'		!i/o channel common
 	external xio_data
 #ifdef sun
-        include 'tmap_format/xmachine_byte.cmn'
+        include 'xmachine_byte.cmn'
 #else
-        include 'tmap_format/xmachine_int1.cmn'
+        include 'xmachine_int1.cmn'
 #endif
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension

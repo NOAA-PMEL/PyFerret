@@ -43,6 +43,8 @@
 * 1/93 - based on tm_legal_name
 *
 * 2jun94 *kob* - first statement function too long  - caught by ibm compiler
+#include "gt_lib.parm"
+
 * calling argument declarations:
 	CHARACTER*(*) name
 
@@ -55,7 +57,8 @@
 	LETTER( c ) = (c.GE.'A' .AND. c.LE.'Z') .OR. 
      .                    (c.GE.'a' .AND. c.LE.'z')
 	DIGIT ( c ) = c.GE.'0' .AND. c.LE.'9'
-	PUNCT ( c ) = c.EQ.'.' .OR. c.EQ.'_' .OR.  c.EQ.'/'
+	PUNCT ( c ) = c.EQ.'.' .OR. c.EQ.'_' .OR.  
+     .            c.EQ.PathSeparator
 
 * string length
 	slen = TM_LENSTR1( name )

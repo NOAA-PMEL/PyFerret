@@ -84,19 +84,19 @@
 	INTEGER*4	status
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xio.cmn_text'
+	include 'xio.cmn_text'
 	external xio_data
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-	include 'tmap_format/xunits.cmn_text'
+	include 'xunits.cmn_text'
 	external xunits_data
-        include 'tmap_format/xsys_names.cmn_text'
+        include 'xsys_names.cmn_text'
         external xsys_names_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'

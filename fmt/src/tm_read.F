@@ -80,12 +80,12 @@
 *
 * include files
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'		! data set dimension
-	include 'tmap_format/tmap_errors.parm'		! err code parm defs
-	include 'tmap_format/gt_lib.parm'		! axis setup parameters
-	include 'tmap_format/xtm_grid.cmn_text'		! grid info
+	include 'tmap_dims.parm'		! data set dimension
+	include 'tmap_errors.parm'		! err code parm defs
+#include "gt_lib.parm"
+	include 'xtm_grid.cmn_text'		! grid info
 	external xgt_grid_data
-	include 'tmap_format/xdset_info.cmn_text'	! data set info common
+	include 'xdset_info.cmn_text'	! data set info common
 	external xdset_info_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimension

@@ -71,6 +71,7 @@
 * 7/97 *kob* Minor modification to error reporting.  Don't want to output
 *            a default extension, if an explicit extension is used.
 * 12/97 - *kob* - added check for "~/xxx" because it was cashing core dump
+*  1/99 - js - on PC's, path separator is ';' rather than ' '
 * calling argument declarations:
       LOGICAL       do_errmsg
       INTEGER       status
@@ -91,6 +92,7 @@
       LOGICAL relative, dot_next_to_tilde
       CHARACTER  ext*8, path_buff*128,suffix*16,TM_LEFINT*8
       CHARACTER  tilde_buff*8,vers_no*8,temp_fname*128
+	
 *
 #ifdef sun
       BYTE      nhol(slen), vhol(slen),fhol(slen),phol(slen)
@@ -100,8 +102,8 @@
                                 !c-type Hollerith string buffers
 #endif
 *
-      include 'tmap_format/tmap_errors.parm'
-      include 'tmap_format/gt_lib.parm'
+      include 'tmap_errors.parm'
+#include "gt_lib.parm"
 
 * initialize
 *      end = 0          10/91
@@ -190,12 +192,15 @@
  100  IF ( end .ge. plen - 2 ) GOTO 1000   ! possible path list truncation
 *      DO 101 start = end+1, plen            10/91
       DO 101 start = end+2, plen
- 101  IF ( path_list(start:start) .NE. ' ' ) GOTO 110
+ 101  IF ( path_list(start:start) .NE. EnvSeparator ) GOTO 110
 * no more paths
       GOTO 1000
 
 * find end of path name (last non-blank) (note: mandatory blank at end)
- 110  end = INDEX(path_list(start+1:plen), ' ') + start - 1
+ 110  end = INDEX(path_list(start+1:plen), EnvSeparator) + start - 1
+      if (end .lt. start) then
+         end = plen-1
+      endif
 
 * check path name and file name
 * note: FORTRAN/RISC compiler doesn't permit // with character*(*)
@@ -205,18 +210,19 @@
          path_buff = path_list(start:end)
       ELSEIF ( pos_ver) then
             IF (dot_next_to_tilde) then
-                path_buff = path_list(start:end)//'/'//fname(:flen)
-     .           //ext(:lext)//tilde_buff
+                path_buff = path_list(start:end)//PathSeparator
+     .           //fname(:flen)//ext(:lext)//tilde_buff
             ELSE
-                 path_buff = path_list(start:end)//'/'//fname(:flen)
-     .              //ext(:lext)//'.'//tilde_buff
+                 path_buff = path_list(start:end)//PathSeparator
+     .              //fname(:flen)//ext(:lext)//'.'//tilde_buff
             ENDIF
             IF (end_tilde .EQ. 0) THEN
                len_pbuff = TM_LENSTR1( path_buff )
                path_buff = path_buff(:len_pbuff)//'~'
             ENDIF
       ELSE
-         path_buff = path_list(start:end)//'/'//fname(:flen)//ext
+         path_buff = path_list(start:end)//PathSeparator
+     .              //fname(:flen)//ext
       ENDIF
 
 * for relative versions, we need to convert the tilde_buff, filename
@@ -284,7 +290,7 @@
 	 if ( lext .GT. 0 ) path_buff = path_buff(:TM_LENSTR1(path_buff))
      .				//' ('//def_ext(1:lext)//')' ! *sh* 4/94,11/94
       else 
-         path_buff = path_list(:plen-1)//'/'//fname
+         path_buff = path_list(:plen-1)//PathSeparator//fname
       endif
       len_pbuff = TM_LENSTR1(path_buff) ! *sh* 4/94
       CALL TM_ERRMSG (status, status, 'TM_PATH_LIST',

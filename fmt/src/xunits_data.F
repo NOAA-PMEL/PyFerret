@@ -56,10 +56,10 @@
 	INTEGER	i
 
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xunits.cmn_text'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
+	include 'xunits.cmn_text'
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE	'TMAP_FORMAT:TMAP_DSET.PARM'

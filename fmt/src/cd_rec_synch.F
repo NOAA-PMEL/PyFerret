@@ -66,22 +66,22 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-        include 'tmap_format/gt_lib.parm'
-        include 'tmap_format/cd_lib.parm'
-        include 'tmap_format/tmap_dims.parm'		! for warning 1/97
-        include 'tmap_format/tmap_errors.parm'
-        include 'tmap_format/xio.cmn_text'
-        include 'tmap_format/xtm_grid.cmn_text'		! for warning 1/97
+        include 'netcdf.decl'
+#include "netcdf.inc"
+#include "gt_lib.parm"
+        include 'cd_lib.parm'
+        include 'tmap_dims.parm'		! for warning 1/97
+        include 'tmap_errors.parm'
+        include 'xio.cmn_text'
+        include 'xtm_grid.cmn_text'		! for warning 1/97
         external xio_data
 
 #else
         INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
         INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
         INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-        INCLUDE 'TMAP_FORMAT/TMAP_DIMS.PARM'		! for warning 1/97
+        INCLUDE 'TMAP_DIMS.PARM'		! for warning 1/97
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
         INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
         INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'		! for warning 1/97

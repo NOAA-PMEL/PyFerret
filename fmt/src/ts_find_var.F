@@ -54,12 +54,12 @@
 	INTEGER		dset_num,vf_num,varstrt,varpos,status
 
 #ifdef unix
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xstep_files.cmn_text'
+#include "tmap_dset.parm"
+	include 'tmap_dims.parm'
+	include 'tmap_errors.parm'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

@@ -54,16 +54,16 @@
       INTEGER dset, cdfid, status
 
 #ifdef unix
-      include 'tmap_format/netcdf.decl'
-      include 'tmap_format/netcdf.inc'
-      include 'tmap_format/tmap_errors.parm'
-      include 'tmap_format/tmap_dims.parm'
-      include 'tmap_format/xdset_info.cmn_text'
+      include 'netcdf.decl'
+#include "netcdf.inc"
+      include 'tmap_errors.parm'
+      include 'tmap_dims.parm'
+      include 'xdset_info.cmn_text'
       external xdset_info_data
-      include 'tmap_format/xdset_info.cd_equiv'
+      include 'xdset_info.cd_equiv'
 #else
       INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-      INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
       INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 #endif
 

@@ -93,16 +93,16 @@
 
 * Parameter and common files
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'		! error codes
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_dims.parm'		! data set dimensions
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xio.parm'
-	include 'tmap_format/xdset_info.cmn_text'	! data set common
+	include 'tmap_errors.parm'		! error codes
+#include "tmap_dset.parm"
+	include 'tmap_dims.parm'		! data set dimensions
+#include "gt_lib.parm"
+	include 'xio.parm'
+	include 'xdset_info.cmn_text'	! data set common
 	external xdset_info_data
-        include 'tmap_format/xsys_names.cmn_text'
+        include 'xsys_names.cmn_text'
         external xsys_names_data
-        include 'tmap_format/xdiag_ctrl.cmn_text'
+        include 'xdiag_ctrl.cmn_text'
         external xdiag_ctrl_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
@@ -118,7 +118,7 @@
 
 * Define variables from Set File namelist records
 #ifdef unix
-	include 'tmap_format/descript.def'
+	include 'descript.def'
 #else
 	INCLUDE 'TMAP_FORMAT:DESCRIPT.DEF'
 #endif
@@ -248,7 +248,7 @@
 	      ELSE 
 * 7/97 *kob* if file contains a path, only that path was searched, not all 
 *            default paths
-		 IF ( INDEX(dset_name,'/') .GT. 0 ) THEN
+		 IF ( INDEX(dset_name,PathSeparator) .GT. 0 ) THEN
 		    GOTO 5500
 		 ELSE
 		    GOTO 5400

@@ -67,15 +67,15 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/cd_lib.parm'
-        include 'tmap_format/xio.cmn_text'
+        include 'netcdf.decl'
+#include "netcdf.inc"
+	include 'tmap_errors.parm'
+	include 'cd_lib.parm'
+        include 'xio.cmn_text'
         external xio_data
 #else
         INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
         INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'

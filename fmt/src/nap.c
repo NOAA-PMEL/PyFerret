@@ -64,7 +64,7 @@ unsigned n;
 
 #ifdef sgi
   sginap(10);
-#elif solaris
+#elif defined(solaris) || defined(__CYGWIN__)
   fd_set fdset;
   struct timeval time;
   FD_ZERO(&fdset);

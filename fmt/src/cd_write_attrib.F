@@ -55,20 +55,20 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/cdf_tmap.parm'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/cd_lib.parm'
-        include 'tmap_format/xio.cmn_text'
+        include 'netcdf.decl'
+#include "netcdf.inc"
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+	include 'cdf_tmap.parm'
+#include "gt_lib.parm"
+	include 'cd_lib.parm'
+        include 'xio.cmn_text'
         external xio_data
-        include 'tmap_format/xrisc_buff.cmn'
+        include 'xrisc_buff.cmn'
 #else
-xx        include 'xxtmap_format/netcdf.decl'  ! untested
-xx        include 'xxtmap_format/netcdf.inc'
+xx        include 'netcdf.decl'  ! untested
+#include "netcdf.inc"
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'

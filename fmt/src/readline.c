@@ -63,6 +63,9 @@
 /* *kob* 14apr94 : added ifdef check for aix for ferret port to ibm */
 
 /* Remove these declarations when we have a complete libgnu.a. */
+
+/* Use -lreadline for CYGWIN since this version won't compile */
+#ifndef __CYGWIN__
 #define STATIC_MALLOC
 #ifndef STATIC_MALLOC
 extern char *xmalloc (), *xrealloc ();
@@ -6036,3 +6039,5 @@ main ()
  * compile-command: "gcc -g -traditional -I. -I.. -DTEST -o readline readline.c keymaps.o funmap.o history.o -ltermcap"
  * end:
  */
+
+#endif /* #ifndef __CYGWIN__ */

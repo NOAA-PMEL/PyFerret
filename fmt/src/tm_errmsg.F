@@ -72,22 +72,22 @@
 *	found		- the value found when "expected" value was expected
 
 #ifdef unix
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/xio.cmn_text'
+	include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "gt_lib.parm"
+	include 'xio.cmn_text'
 	external xio_data
-	include 'tmap_format/xerror_text.cmn_text'
+	include 'xerror_text.cmn_text'
 	external xerror_text_data
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-	include 'tmap_format/xstep_files.cmn_text'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
-	include 'tmap_format/xdiag_ctrl.cmn_text'
+	include 'xdiag_ctrl.cmn_text'
 	external xdiag_ctrl_data
-	include 'tmap_format/xcdferror.cmn_text'
+	include 'xcdferror.cmn_text'
 	external xcdferror_data
-!	include 'tmap_format/xalt_messages.cmn_text'	! w/ alt_messages
+!	include 'xalt_messages.cmn_text'	! w/ alt_messages
 	external xalt_messages_data
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'

@@ -47,7 +47,7 @@
 * COMMON/XDIAG_CTRL.....variables to control diagnostic output
 
 #ifdef unix
-	include 'tmap_format/xdiag_ctrl.cmn_text'
+	include 'xdiag_ctrl.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:XDIAG_CTRL.CMN_TEXT'
 #endif

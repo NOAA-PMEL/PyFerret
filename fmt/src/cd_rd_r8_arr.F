@@ -61,12 +61,12 @@
       CHARACTER*(*) errstr
 
 #ifdef unix
-      include 'tmap_format/netcdf.decl'
-      include 'tmap_format/netcdf.inc'
-      include 'tmap_format/tmap_errors.parm'
+      include 'netcdf.decl'
+#include "netcdf.inc"
+      include 'tmap_errors.parm'
 #else
       INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-      INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
       INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 #endif
 

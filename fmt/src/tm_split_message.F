@@ -44,7 +44,7 @@
 * V300:  6/16/93 - for prototype GUI interface
 
 #ifdef unix
-	include 'tmap_format/xalt_messages.cmn_text'
+	include 'xalt_messages.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN_TEXT'
 #endif

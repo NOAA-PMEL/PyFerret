@@ -44,7 +44,7 @@
 
 * COMMON/XIO.....logical unit numbers for I/O
 #ifdef unix
-	include 'tmap_format/xio.cmn_text'
+	include 'xio.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
 #endif

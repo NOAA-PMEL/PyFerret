@@ -41,6 +41,8 @@
 *  written 6/92 by S.H. for PMEL/TMAP
 * 5/93 - *sh* modified so endings other than .cdf and .des are returned
 
+#include "gt_lib.parm"
+
 * argument
 	CHARACTER*(*) pathname
 
@@ -66,7 +68,7 @@
 
 * locate the last slash in the name
         DO 200 islash = plen, 1, -1
- 200    IF ( pathname(islash:islash) .EQ. '/' ) GOTO 290
+ 200    IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
         islash = 0    ! no slash
  290    islash = islash + 1
 

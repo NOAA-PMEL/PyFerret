@@ -49,10 +49,10 @@
 *	          and what was being included.  removed them
 * Parameters and commons
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/xtm_grid.cmn_text'
+	include 'tmap_dims.parm'
+#include "tmap_dset.parm"
+	include 'tmap_errors.parm'
+	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 #else
 	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'

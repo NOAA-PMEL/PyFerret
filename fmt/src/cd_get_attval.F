@@ -76,8 +76,8 @@
       REAL val(vlen)
 
 #ifdef unix
-      include 'tmap_format/netcdf.decl'
-      include 'tmap_format/netcdf.inc'
+      include 'netcdf.decl'
+#include "netcdf.inc"
 #  ifdef sun
       BYTE i1buff(132)
 #  else
@@ -86,7 +86,7 @@
 #else
       BYTE i1buff(132)
       INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-      INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
 #endif
 
 * internal variable declarations:

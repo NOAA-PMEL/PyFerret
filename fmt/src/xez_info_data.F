@@ -44,8 +44,8 @@
 
 * COMMON/XEZ_INFO.....info for EZ_ data sets
 #ifdef unix
-	include 'tmap_format/tmap_dims.parm'
-	include 'tmap_format/xez_info.cmn_text'
+	include 'tmap_dims.parm'
+	include 'xez_info.cmn_text'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:XEZ_INFO.CMN_TEXT'

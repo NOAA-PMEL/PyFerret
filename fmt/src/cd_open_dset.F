@@ -72,30 +72,30 @@
 
 * include files
 #ifdef unix
-        include 'tmap_format/netcdf.decl'
-        include 'tmap_format/netcdf.inc'
-        include 'tmap_format/tmap_errors.parm'
-	include 'tmap_format/gt_lib.parm'
-	include 'tmap_format/tmap_dims.parm'
-#include "tmap_format/tmap_dset.parm"
-	include 'tmap_format/xstep_files.cmn_text'
+        include 'netcdf.decl'
+#include "netcdf.inc"
+        include 'tmap_errors.parm'
+	include 'tmap_dims.parm'
+#include "gt_lib.parm"
+#include "tmap_dset.parm"
+	include 'xstep_files.cmn_text'
         external xstep_files_data
-	include 'tmap_format/xdset_info.cmn_text'
+	include 'xdset_info.cmn_text'
 	external xdset_info_data
-        include 'tmap_format/xio.cmn_text'
+        include 'xio.cmn_text'
         external xio_data
-        include 'tmap_format/xdset_info.cd_equiv'
+        include 'xdset_info.cd_equiv'
 ! kob 7/95
-	include 'tmap_format/xsys_names.cmn_text'	            
+	include 'xsys_names.cmn_text'	            
 #else
         INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-        INCLUDE 'TMAP_FORMAT:NETCDF.INC'
+#include "netcdf.inc"
         INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
 	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT/XSTEP_FILES.CMN'
+	INCLUDE 'XSTEP_FILES.CMN'
 	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
 	INCLUDE 'TMAP_FORMAT:XIO.CMN'
         INCLUDE 'TMAP_FORMAT:XDSET_INFO.CD_EQUIV'
@@ -145,7 +145,7 @@
 	   iout = 1				
 	   DO 10 iin = 8, dlen			! just past the "http://"
 	      ch = ds_des_name(dset)(iin:iin)	
-	      IF ( ch .EQ. '/' ) THEN
+	      IF ( ch .EQ. PathSeparator ) THEN
 	         raw_file(iout:iout) = '_'
 	      ELSE
 	         raw_file(iout:iout) = ch

@@ -47,9 +47,14 @@
 *	   Change INCLUDE statements to remove directory spec.
 * Feb 2003 Add a test that NEOF <= max_neof, which is dictated by work
 *          arrays in the solvers in TRIDIN in eofsubs.F
-
-* Compute EOF/s and time amplitude funcions from a 2-d field.  
-
+* Jun 2003 Workspace arrays need to be initialized for each vertical level.
+*
+* Compute EOF/s and time amplitude funcions from a 2-d field, or for each level 
+* of a 3-D field.  Based on programs (coadseof.f, etc.) by Dai McClurg and 
+* Ansley Manke and calls Billy Kessler's method for finding EOFs  of NON-gappy 
+* time series EOFIN, or optionally his implementation of Chelton's '82 method 
+* for finding EOFs of gappy time series.
+*
 * Return statistics: number of eof's computed, percent variance explained
 * by each EOF, and the eigenvalue for each EOF.
 * x-axis is abstract length nx*ny; listing the statistics for each EOF.
@@ -58,12 +63,6 @@
 *    2nd is the Pct variation for each eof
 *    3rd is the eigenvalue for each eof.
 *
-* Compute EOF/s and time amplitude funcions from a 2-d field.  Based on 
-* program (coadseof.f, etc.) by Dai McClurg and Ansley Manke and calls 
-* Billy Kessler's method for finding EOFs 
-* of NON-gappy time series EOFIN.for
-*
-
 *
 * In this SUBROUTINE we provide information about
 * the function.  The user configurable information 
@@ -375,75 +374,10 @@
       INTEGER neof, max_neof, ier
       CHARACTER*255 err_msg, err_out
 
-      INTEGER nx, ny, nt, i, j, k, l, k1
+      INTEGER nx, ny, nt, i, j, k, l, k1, iw, jw, kw, lw
       REAL frac_timeser
 
       DATA max_neof/4000/        ! size of work arrays within the EOF solver
-
-*  Initialize work arrays.
-
-      DO 701 i = wrk1lox,wrk1hix
-      DO 701 j = wrk1loy,wrk1hiy
-      DO 701 k = wrk1loz,wrk1hiz 
-      DO 701 l = wrk1lot,wrk1hit
-          val(i,j,k,l) = 0.
-  701 CONTINUE
-
-      DO 702 i = wrk2lox,wrk2hix
-      DO 702 j = wrk2loy,wrk2hiy
-      DO 702 k = wrk2loz,wrk2hiz 
-      DO 702 l = wrk2lot,wrk2hit
-          taf(i,j,k,l) = 0.
-  702 CONTINUE
-
-      DO 703 i = wrk3lox,wrk3hix
-      DO 703 j = wrk3loy,wrk3hiy
-      DO 703 k = wrk3loz,wrk3hiz 
-      DO 703 l = wrk3lot,wrk3hit
-          pct(i,j,k,l) = 0.
-  703 CONTINUE
-
-      DO 704 i = wrk4lox,wrk4hix
-      DO 704 j = wrk4loy,wrk4hiy
-      DO 704 k = wrk4loz,wrk4hiz 
-      DO 704 l = wrk4lot,wrk4hit
-          vec(i,j,k,l) = 0.
-  704 CONTINUE
-
-      DO 705 i = wrk5lox,wrk5hix
-      DO 705 j = wrk5loy,wrk5hiy
-      DO 705 k = wrk5loz,wrk5hiz 
-      DO 705 l = wrk5lot,wrk5hit
-          c(i,j,k,l) = 0.
-  705 CONTINUE
-
-      DO 706 i = wrk6lox,wrk6hix
-      DO 706 j = wrk6loy,wrk6hiy
-      DO 706 k = wrk6loz,wrk6hiz 
-      DO 706 l = wrk6lot,wrk6hit
-          ddat_1d(i,j,k,l) = 0.
-  706 CONTINUE
-
-      DO 707 i = wrk7lox,wrk7hix
-      DO 707 j = wrk7loy,wrk7hiy
-      DO 707 k = wrk7loz,wrk7hiz 
-      DO 707 l = wrk7lot,wrk7hit
-          isave_jsave(i,j,k,l) = 0.
-  707 CONTINUE
-
-      DO 708 i = wrk8lox,wrk8hix
-      DO 708 j = wrk8loy,wrk8hiy
-      DO 708 k = wrk8loz,wrk8hiz 
-      DO 708 l = wrk8lot,wrk8hit
-          ok(i,j,k,l) = 0.
-  708 CONTINUE
-
-      DO 709 i = wrk9lox,wrk9hix
-      DO 709 j = wrk9loy,wrk9hiy
-      DO 709 k = wrk9loz,wrk9hiz 
-      DO 709 l = wrk9lot,wrk9hit
-          eofwork(i,j,k,l) = 0.
-  709 CONTINUE
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -465,6 +399,71 @@
 
       k1 = arg_lo_ss(Z_AXIS,ARG1)
       DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+
+*  Initialize work arrays.
+
+         DO 701 iw = wrk1lox,wrk1hix
+         DO 701 jw = wrk1loy,wrk1hiy
+         DO 701 kw = wrk1loz,wrk1hiz 
+         DO 701 lw = wrk1lot,wrk1hit
+            val(iw,jw,kw,lw) = 0.
+  701    CONTINUE
+
+         DO 702 iw = wrk2lox,wrk2hix
+         DO 702 jw = wrk2loy,wrk2hiy
+         DO 702 kw = wrk2loz,wrk2hiz 
+         DO 702 lw = wrk2lot,wrk2hit
+            taf(iw,jw,kw,lw) = 0.
+  702    CONTINUE
+
+         DO 703 iw = wrk3lox,wrk3hix
+         DO 703 jw = wrk3loy,wrk3hiy
+         DO 703 kw = wrk3loz,wrk3hiz 
+         DO 703 lw = wrk3lot,wrk3hit
+            pct(iw,jw,kw,lw) = 0.
+  703    CONTINUE
+
+         DO 704 iw = wrk4lox,wrk4hix
+         DO 704 jw = wrk4loy,wrk4hiy
+         DO 704 kw = wrk4loz,wrk4hiz 
+         DO 704 lw = wrk4lot,wrk4hit
+            vec(iw,jw,kw,lw) = 0.
+  704    CONTINUE
+
+         DO 705 iw = wrk5lox,wrk5hix
+         DO 705 jw = wrk5loy,wrk5hiy
+         DO 705 kw = wrk5loz,wrk5hiz 
+         DO 705 lw = wrk5lot,wrk5hit
+            c(iw,jw,kw,lw) = 0.
+  705    CONTINUE
+
+         DO 706 iw = wrk6lox,wrk6hix
+         DO 706 jw = wrk6loy,wrk6hiy
+         DO 706 kw = wrk6loz,wrk6hiz 
+         DO 706 lw = wrk6lot,wrk6hit
+            ddat_1d(iw,jw,kw,lw) = 0.
+  706    CONTINUE
+
+         DO 707 iw = wrk7lox,wrk7hix
+         DO 707 jw = wrk7loy,wrk7hiy
+         DO 707 kw = wrk7loz,wrk7hiz 
+         DO 707 lw = wrk7lot,wrk7hit
+            isave_jsave(iw,jw,kw,lw) = 0.
+  707    CONTINUE
+
+         DO 708 iw = wrk8lox,wrk8hix
+         DO 708 jw = wrk8loy,wrk8hiy
+         DO 708 kw = wrk8loz,wrk8hiz 
+         DO 708 lw = wrk8lot,wrk8hit
+            ok(iw,jw,kw,lw) = 0.
+  708    CONTINUE
+
+         DO 709 iw = wrk9lox,wrk9hix
+         DO 709 jw = wrk9loy,wrk9hiy
+         DO 709 kw = wrk9loz,wrk9hiz 
+         DO 709 lw = wrk9lot,wrk9hit
+            eofwork(iw,jw,kw,lw) = 0.
+  709    CONTINUE
 
 *  Find the number of eofs to solve for.
 *  neof = number of (x,y) points with frac_timeser  good data.  

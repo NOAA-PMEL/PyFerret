@@ -3,7 +3,7 @@
 ! Now coordinage storage is recovered; also have the option to cancel axis/all
 
 set data/skip=4/ez/col=2/var="cnt,tim" longax.dat
-def axis/from_data/t/name=tim_ax/units=days tim
+def axis/from_data/t/units=days tim_ax=tim
 def grid/t=tim_ax tim_grd
 can grid tim_grd
 can axis tim_ax

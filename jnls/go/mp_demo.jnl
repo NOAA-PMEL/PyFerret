@@ -1,4 +1,12 @@
+! mp_demo.jnl 4/99 *JC*
+
+! Description: demo of map projection scripts, including
 !
+! mp_aspect, mp_fland, mp_land, mp_label,  mp_graticule, mp_line, 
+! mp_orthographic, mp_sinusoidal, mp_lambert_cyl, mp_bonne, mp_mcbryde_fpp,
+! mp_polyconic, mp_stereographic_eq, mp_stereographic_north, mp_hammer,
+! mp_ocean_stripmap 
+ 
 ! Here is your basic Ferret plot:
 !
 !
@@ -15,9 +23,10 @@ go fland
 !
 message
 
-set win/aspect=1:ax 2
 go mp_orthographic 210 45
 set grid sst
+go mp_aspect
+
 let masked_sst = sst * mp_mask
 ppl axlabp,0,0
 ppl axset 0, 0, 0, 0
@@ -47,7 +56,7 @@ go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
 
 let a = 204.4 + (237.7-204.4)/20 * i
 let b = 19.5 + (47.6-19.5)/20 * i
-go mp_line plot/vs/over/i=1:20 a b
+go mp_line plot/nolab/vs/over/i=1:20 a b
 
 !
 ! Now a menagerie of projections from among

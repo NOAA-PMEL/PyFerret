@@ -115,7 +115,11 @@
 *     8/22/03 *acm* New -script command-line switch: run the named script and exit.
 *                   This mode also sets -nojnl and -server, as well as the new
 *                   -noverify switch.  It also supresses the banner lines.
-*     3/24/03 *acm* The -script switch interacts with any SET MEMORY commands
+*     3/ 1/04 *acm* For -script startup option, list the script arguments in the
+*                   string script_args separated by blanks not commas.  If commas, 
+*                   then could not use commas within an argument, e.g. a region 
+*                   specification.
+*     3/24/04 *acm* The -script switch interacts with any SET MEMORY commands
 *                   within the script.  Set a flag when this occurs, so that
 *                   ferret_dispatch can be called correctly after the memory reset, 
 *                   continuing to execute the commands from the script
@@ -188,6 +192,7 @@ main (int oargc, char *oargv[])
   int verify_flag = 1;
   int len_str;
 
+
   its_script = 0;
   arg_pos = 0;
 
@@ -198,6 +203,7 @@ main (int oargc, char *oargv[])
 #ifdef __CYGWIN__
   for_rtl_init_(&argc, argv);
 #endif
+
 
   /* decode the command line options: "-memsize", and "-unmapped" */
   while (i<argc) {
@@ -245,37 +251,70 @@ main (int oargc, char *oargv[])
       }
     /* -script mode implies -server and -nojnl */
     } else if (strcmp(argv[i],"-script")==0)  {
-      char *script_name = "noscript";
+
+          char *script_name = "noscript";
 	  set_server();
 	  journalfile = 0;
 	  verify_flag = 0;
-	  strcpy( script_args, " " );
-	  if (++i < argc && argv[i][0] != '-'){
-		script_name = argv[i++];
+	
+	  /*//<YWEI> this is added because sometime string arguments are not
+	  //parsed correctly by the system*/
+          if (++i < argc){
+		script_name = argv[i];
 		its_script = 1;
 		len_str = strlen(script_name);
+
+                for(j = 0; j < len_str; j++){
+		     if(argv[i][j] == ' '){
+		         argv[i][j] = '\0';
+                         j++;
+                         break;
+		     }
+                }
+
+		arg_pos = 0;
+
+                if(j < len_str){
+		     while(j < len_str) {
+                        script_args[arg_pos++] = argv[i][j++];
+		     }
+
+		     if (i+1 < argc) {
+			   script_args[arg_pos++] = ' ';
+		     }
+		}
+
+                len_str = strlen(script_name);
+
 		FORTRAN(save_scriptfile_name)(script_name, &len_str, &its_script);
-		if (its_script != 1) {
-			help_text();
-	     }
-		 arg_pos = 0;
-		 while (i < argc && argv[i][0] != '-'){
+
+		if (its_script!=1 || strcmp(script_name,"noscript")==0) {
+
+ 			help_text();
+	        }
+
+		i++;
+
+		while (i < argc){
+
 			len_str = strlen(argv[i]);
 			j = 0;
-			while (j<len_str) {
-				script_args[arg_pos++] = argv[i][j];
-				j++;
+			while (j < len_str) {
+				script_args[arg_pos++] = argv[i][j++];
 			}
-			if (i+1 < argc && argv[i+1][0] != '-') {
-				strcat(script_args, " ");
-				arg_pos = arg_pos+1;
-		   }
-		   i = i+1;
-		 }
-		 if (strcmp(script_name,"noscript")==0 ) help_text();
+
+			if (i+1 < argc) {
+			       script_args[arg_pos++] = ' ';
+		        }
+		        i++;
+		}
+
+		/* //</YWEI> */
+
+                script_args[arg_pos]='\0';
 	  } 
 
-	  } else  /* -help also comes here */
+      } else  /* -help also comes here */
       help_text();
   }
 
@@ -323,6 +362,7 @@ main (int oargc, char *oargv[])
   /* 
    *kob* 5/97 - need to close f90 files and flush buffers.....
    */
+
 #ifdef MIXING_NAG_F90_AND_C
   f90_io_finish();
 #endif
@@ -387,6 +427,7 @@ static void command_line_run(float **memory){
   /* allocate the shared buffer */
   sBuffer = (sharedMem *)malloc(sizeof(sharedMem));
 
+ 
   /* run the initialization file
      * Note 1: do not pass a fixed string as the command - FERRET needs to blank it
      * Note 2: if not under GUI control we will not normally exit FERRET_DISPATCH

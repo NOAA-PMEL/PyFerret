@@ -18,3 +18,12 @@ GO err580_long_title.jnl
 ! Bug 1180 Allow "use filename.des" 
 GO bn_reset
 GO err580_use_des.jnl
+
+
+! Bug 1180 Allow "use filename.des" 
+GO bn_reset
+GO err580_use_des.jnl
+
+! fix for bug 1181: dataset title was limited to 80 characters.
+GO bn_reset
+GO err580_long_dsettitle.jnl

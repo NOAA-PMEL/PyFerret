@@ -59,6 +59,7 @@
 *		 - temporary variables represented via mr_protected
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
 * V510: 2/00 *sh* - free up the mr_grid pointer when variable is deleted
+* V530: 8/00 *sh* - if the variable was a string array then free the C memory
 
 #ifdef unix
 	include		'tmap_dims.parm'
@@ -76,11 +77,19 @@
 	INTEGER		mr
 
 * internal variable declarations:
-	INTEGER		idim, prev, next
+	INTEGER		MGRID_SIZE, size, idim, prev, next
+
+* if this is a srting array variable then free the "C" memory allocated
+	IF ( mr_type(mr)      .EQ. ptype_string 
+     . .AND. mr_protected(mr) .NE. mr_table_entry_only ) THEN
+	   size = MGRID_SIZE(mr)
+	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
+	ENDIF
 
 * diagnostic "delete" message
 	IF (mode_diagnostic) THEN
-	   CALL DIAGNOSTIC_OUT( '-DELETE', mr, point_to_mr )
+	   IF ( mr_protected(mr) .NE. mr_table_entry_only )
+     .			CALL DIAGNOSTIC_OUT( '-DELETE', mr, point_to_mr )
 	   DO 100 idim = 1, 4
 	      mr_lo_ss( mr, idim ) = unspecified_int4
  100	   CONTINUE

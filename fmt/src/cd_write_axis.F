@@ -57,6 +57,8 @@
 *		declaration line.
 * v4.91 *kob* 12/97 - added maxchildlen paramater for the max length of 
 *                     a child axis
+* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+*                    name to 64 from 24 to match longer line_name
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -111,8 +113,10 @@ xx        include 'netcdf.decl'  ! untested
       REAL*8 buff(100)
 !      LOGICAL condensed
 !      REAL rlen
-      CHARACTER CD_CHILDAX_NAME*24, CD_AXIS_NAME*24,
-     .          name*24, units*48
+* *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+*                    name to 64 from 24 to match longer line_name
+      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
+     .          name*64, units*48
       REAL*8 TM_WORLD
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97

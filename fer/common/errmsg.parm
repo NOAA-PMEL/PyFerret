@@ -67,7 +67,8 @@
      .			ferr_bad_delta,
      .			ferr_trans_nest,
      .			ferr_state_not_set,
-     .			ferr_unknown_command
+     .			ferr_unknown_command,
+     .			ferr_ef_error
 	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
      .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
      .			ferr_perm_var		= ferr_too_many_vars	+ 1,
@@ -103,5 +104,6 @@
      .			ferr_bad_delta		= ferr_descriptor	+ 1,
      .			ferr_trans_nest		= ferr_bad_delta	+ 1,
      .			ferr_state_not_set	= ferr_trans_nest	+ 1,
-     .			ferr_unknown_command	= ferr_state_not_set	+ 1 )
-	PARAMETER     ( gnum_report	= 36 )
+     .			ferr_unknown_command	= ferr_state_not_set + 1,
+     .			ferr_ef_error	    = ferr_unknown_command	+ 1)
+	PARAMETER     ( gnum_report	= 37 )

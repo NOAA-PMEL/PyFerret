@@ -1,7 +1,7 @@
 	SUBROUTINE PLOT_SET_UP( memory,
      .				overlay, transpz, versus, no_labels,
      .				symbol, sym_size, color, use_line,
-     .				mv_list, cx_list, nmv,
+     .				step_inc, mv_list, cx_list, nmv,
      .				indep_dat, dep_dat, status )
 
 *
@@ -102,6 +102,8 @@
 * V521	7/00 - *sh* bug fix to /TRANS/VLIMITS=... 
 *	7/00 - *sh* new argument range_rqd needed on EQUAL_RANGE
 * V530 *sh* 1/01 - change "denigrated" to "deprecated"
+*      *sh* 1/01 - added argument step_inc for PLOT/STEP
+*	         - bug fix: PLOT+ mem limit check off by x2 --  X&Y components
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -144,7 +146,7 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line
-	INTEGER		symbol, color,
+	INTEGER		symbol, color, step_inc,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		memory( mem_blk_size, max_mem_blks ), sym_size
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
@@ -155,16 +157,16 @@
      .			all_1_dep, all_1_ind, formatted, user_title
 	CHARACTER*200	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
-     .			SECS_TO_DATE*20, LEFINT*4, MERGED_WHOI_DATE*14,
+     .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14,
      .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
      .			buff1*8, buff2*8, buff3*8, t1_date*14, tref*14
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, style, justify, ndim, dims(4),
-     .			slen2, slen3, tax, plot_mem_used,
+     .			slen2, slen3, tax, plot_mem_used, nload,
      .			pxlim, pylim, ptitl, phlim, pvlim,pindeplim, pdeplim
-	REAL		only_val, val1, dt_min,
+	REAL		only_val, val1, dt_min, i,
      .			lo, hi, dep_len, ind_len,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht
 	REAL*8		TSTEP_TO_SECS, SECS_TO_TSTEP,
@@ -201,8 +203,9 @@
 * determine PLOT+ memory required
         plot_mem_used = 0
         DO 10 ipl = 1, nmv
- 10     plot_mem_used = plot_mem_used + CGRID_SIZE( cx_list(ipl) )
-        IF ( plot_mem_used .GT. 0.99*nsize ) GOTO 5150
+ 10     plot_mem_used = plot_mem_used
+     .		      + 2*step_inc*CGRID_SIZE( cx_list(ipl) )
+        IF ( plot_mem_used .GT. 0.999*nsize ) GOTO 5150
 
 * check for improper data supplied
 	IF ( versus ) THEN
@@ -389,7 +392,20 @@
      .				npts2,
      .				status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-
+* ... replicate points to create a "step" plot if requested  (1/01)
+	   nload = npts2 * step_inc
+           IF (step_inc .EQ. 2) THEN
+	      DO i = npts2, 1, -1
+	         dep_dat(2*i)   = dep_dat(i)
+	         dep_dat(2*i-1) = dep_dat(i)
+	      END DO
+           ELSEIF (step_inc .EQ. 3) THEN
+	      DO i = npts2, 1, -1
+	         dep_dat(3*i)   = mr_bad_data(mv)
+	         dep_dat(3*i-1) = dep_dat(i)
+	         dep_dat(3*i-2) = dep_dat(i)
+	      END DO
+	   ENDIF
 * set up corresponding independent axis
 * ( note - each variable may have different points on the indep. axis )
 	   IF ( versus ) THEN
@@ -399,17 +415,18 @@
 * ... in PLOT TEMP , SALT , U all vars must be along same ww dimension
 	      IF ( ndim .GT. 1 ) GOTO 5110
 	      IF ( dep_dim .NE. indep_dim ) GOTO 5140
-	      CALL MAKE_AXIS( grid, dep_dim,
+	      CALL MAKE_STEP_AXIS( grid, dep_dim, step_inc,
      .			cx_lo_ss(cx,dep_dim), cx_hi_ss(cx,dep_dim),
      .			indep_dat )
 	      IF ( time_axis ) THEN
 	         ind_min = MIN( ind_min,
      .                     TSTEP_TO_SECS(grid, DBLE(indep_dat(1)) ))
 	         ind_max = MAX( ind_max,
-     .                     TSTEP_TO_SECS(grid,DBLE(indep_dat(npts2)) ))
+     .                     TSTEP_TO_SECS(grid,
+     .		                         DBLE(indep_dat(nload)) ))
 	      ELSE
 	         ind_min = MIN( ind_min, DBLE(indep_dat(1)) )
-	         ind_max = MAX( ind_max, DBLE(indep_dat(npts2)) )
+	         ind_max = MAX( ind_max, DBLE(indep_dat(nload)) )
 	      ENDIF
 	      all_1_ind = ind_min .EQ. ind_max
 	      IF ( all_1_ind ) THEN
@@ -421,7 +438,7 @@
 * ... check that there is a range of dependent data for PLOT+ auto-scaling
 * ... when all the variables are considered together
 	all_1_dep = all_1_dep .AND. 
-     .		NO_LINE_RANGE( dep_dat, npts2, mr_bad_data(mv), val1 )
+     .		NO_LINE_RANGE( dep_dat, nload, mr_bad_data(mv), val1 )
 ! 10/99	IF ( val1 .EQ. mr_bad_data(mv) ) CALL ERRMSG( ferr_no_range, status,
 !     .		'all data points are bad: '//VAR_CODE(mr_category(mv),
 !     .						      mr_variable(mv) ),*5000)
@@ -469,9 +486,9 @@
 	   ENDIF
 
 	   IF ( flip ) THEN
-	      CALL PPLLDX(0,dep_dat,indep_dat,npts2,t1_date,tref,dt_min)
+	      CALL PPLLDX(0,dep_dat,indep_dat,nload,t1_date,tref,dt_min)
 	   ELSE
-	      CALL PPLLDX(0,indep_dat,dep_dat,npts2,t1_date,tref,dt_min)
+	      CALL PPLLDX(0,indep_dat,dep_dat,nload,t1_date,tref,dt_min)
 	   ENDIF
 * ... increment number of lines on plot
 	   nline_on     = nline_on     + 1
@@ -656,7 +673,7 @@
  5110	dep_ax = LEFINT( ndim, slen )
 	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'specified data is not a line'//pCR//
-     .			' - its a '//dep_ax//'D region: "'//
+     .			' - its a '//dep_ax(:slen)//'D region: "'//
      .			cmnd_buff(:len_cmnd)//'"', *5000 )
  5120	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'overlay is on a different axis'//pCR//
@@ -678,7 +695,7 @@
      .		'line '//buff3(:slen3)//' is on '//ww_dim_name(dep_dim)//
      .		' axis', *5000 )
         
- 5150	buff3 = LEFINT( INT(0.99*nsize), slen3 )
+ 5150	buff3 = LEFINT( INT(0.999*nsize), slen3 )
 	buff2 = LEFINT( plot_mem_used, slen2 )
 	CALL ERRMSG( ferr_prog_limit, status,
      .          'Requested '//buff2(:slen2)//' words to plot'//pCR//

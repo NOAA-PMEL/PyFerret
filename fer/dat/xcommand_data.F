@@ -121,6 +121,7 @@
 * V520: 6/00 *sh* - added MESSAGE/ERROR
 * V530: 10/00 *sh* - added added SET DATA/EZ  /TYPE=/DELIMITERS=
 *      10/00 *AM* - added VECTOR/STREAMLINE (alias STREAMLINE)
+*      1 /01 *sh* - added PLOT/STEP[=connected]
 
 #ifdef unix
 	include 'ferret.parm'
@@ -751,7 +752,7 @@
 		DATA qualifiers  (nqual_at6a+20)/ 'XLIMITS'/	!/xlimits
 		DATA qualifiers  (nqual_at6a+21)/ 'YLIMITS'/	!/ylimits
 		DATA qualifiers  (nqual_at6a+22)/ 'TITLE'/	!/title
-		DATA qualifiers  (nqual_at6a+23)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+23)/ 'STEP'/	!/step
 		DATA qualifiers  (nqual_at6a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at6a+25)/ '****'/	!/unused
 		DATA qualifiers  (nqual_at6a+26)/ '****'/	!/unused

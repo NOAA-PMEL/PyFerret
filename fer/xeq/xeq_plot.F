@@ -1,7 +1,5 @@
 	SUBROUTINE XEQ_PLOT( memory )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -61,6 +59,7 @@
 * V500   4.27.99 - *jd* NLINES command added to clean up after/before POLYGON
 * V510 *sh* 3/00 - added PLOT/COLOR=/SIZE= qualifiers
 * V521 6/00 *sh* - bug fix: PLOT/LINE/SYM should auto-select colors
+* V530 *sh* 1/01 - added PLOT/STEP
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -112,11 +111,11 @@
 	LOGICAL		overlay, transpz, versus,
      .			no_labels, set_up, noaxes, use_line
 	INTEGER		symbol, color, status,
-     .			loc, limit, slen, thick,
+     .			loc, limit, slen, thick, step_inc,
      .			ax1_blks, ax1_start,
      .			ax2_blks, ax2_start
 	REAL		val, sym_size
-	CHARACTER	LEFINT*4
+	CHARACTER	LEFINT*4, buff*4
 
 * internal parameter declarations
 	INTEGER ncolors
@@ -153,6 +152,7 @@ CC       => Set values here instead.
 	sym_size  = 0.08	! default plot mark size
 	thick	  = 1		! default thickness
 	color     = qual_on	! automatic selection as default
+	step_inc  = 1
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 	CALL DISP_PREP( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
@@ -239,6 +239,20 @@ CC       => Set values here instead.
      .	   .OR. (versus.AND.qual_given(slash_plot_symb).EQ.0) ) 
      .							symbol = qual_off
 	ENDIF
+* ... PLOT/STEP[=CONNECTED]
+	loc = qual_given( slash_plot_step )
+	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
+	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( buff(1:3) .EQ. 'con' ) THEN
+	      step_inc = 2	    
+	   ELSEIF ( buff(1:3) .EQ. ' ' ) THEN
+	      step_inc = 3
+	   ELSE
+	      GOTO 5220
+	   ENDIF
+	ENDIF	   
 
 * set up the axes and title and load the data into PPLUS
 	CALL PLOT_SET_UP   ( 	memory,
@@ -250,6 +264,7 @@ CC       => Set values here instead.
      .				sym_size,
      .				color,
      .				use_line,
+     .				step_inc,
      .				is_mr,
      .				is_cx,
      .				num_uvars_in_cmnd,
@@ -297,6 +312,9 @@ CC       => Set values here instead.
  5210	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Symbol size must be positive ', *1000 )
+ 5220	CALL ERRMSG( ferr_syntax, status, 
+     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
+     .		'optionally /STEP=connected', *1000 )
  5400	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to 3', *1000 )

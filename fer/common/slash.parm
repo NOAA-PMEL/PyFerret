@@ -3,6 +3,10 @@
 * v491:  12.98 - added pattern for contour and shade *jd*
 * v500:  03.99 - added qualifiers for polygon *jd*
 * V510 *sh* 3/00 - added slash_set_data_tregular, slash_plot_color
+* V522+ *acm* 10/00 - added VECTOR/STREAMLINE (alias STREAM)
+* V530 *sh* 10/00 - added slash_set_data_type, slash_set_data_delimiters
+*	*sh* 1/01 - added slash_plot_step
+
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -133,7 +137,8 @@
      .			slash_plot_line,
      .			slash_plot_color,
      .			slash_plot_thick,
-     .			slash_plot_symsize
+     .			slash_plot_symsize,
+     .			slash_plot_step
 
 	INTEGER		slash_wire_over,
      .			slash_wire_set_up,
@@ -279,7 +284,8 @@
      .			slash_plot_line		= 17,
      .			slash_plot_color	= 18,
      .			slash_plot_thick	= 19,
-     .			slash_plot_symsize	= 20 )
+     .			slash_plot_symsize	= 20,
+     .			slash_plot_step		= 1 + 23 )
 
 	PARAMETER     ( slash_wire_over		= 9,
      .			slash_wire_set_up	= 10,

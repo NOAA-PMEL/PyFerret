@@ -78,6 +78,7 @@ itsa_modulo_gcf.F\
 itsa_modulo_regrid.F\
 legal_chars.F\
 make_axis.F\
+make_step_axis.F\
 match4.F\
 match_name.F\
 match_quoted_name.F\

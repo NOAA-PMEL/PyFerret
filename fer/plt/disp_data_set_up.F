@@ -55,6 +55,8 @@
 *       2/99 *sh* - bug fix: plot working storage based on cx(1) only
 *			can overflow for PLOT v1,v2  if v2 is bigger
 * V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
+*	*sh* 1/01 - added PLOT/STEP with special work array needs
+*	          - also fixed apparent bug in loop over num_uvars_in_cmnd
 
 #ifdef unix
 	include	'ferret.parm'
@@ -77,12 +79,31 @@
 	REAL memory(*)
 
 * internal variable declarations:
-	INTEGER	MR_DIM_LEN, CGRID_SIZE,
-     .		idim, ndim, dim(4), mr1, ax_len, cx, ivar
+	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE,
+     .		idim, ndim, dim(4), mr1, ax_len, cx, ivar,
+     .		factor, loc
+	CHARACTER buff*4
 
 * get the requested data somehow  (and leave it protected 1/94)
 	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_float, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
+
+* PLOT/STEP needs double or triple the working storage
+*    double to make connected steps, triple for disconnected
+	factor = 1
+	IF (cmnd_num .EQ. cmnd_plot) THEN
+	   loc = qual_given( slash_plot_step )
+	   IF ( loc .GT. 0  ) THEN
+	      CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                           buff, status )
+              IF ( status .NE. ferr_ok ) RETURN
+	      IF ( buff(1:3) .EQ. 'con' ) THEN
+	         factor = 2
+	      ELSE
+	         factor = 3
+	      ENDIF
+	   ENDIF	   
+	ENDIF
 
 * compute working storage
 	IF (cmnd_num .EQ. cmnd_polygon) THEN
@@ -100,11 +121,15 @@
 *     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
 * (2/99: loop over all arguments to find largest requirement)
 * ?? why is CGRID_SIZE needed ... could get very large ??
+	   ax_len = 1
 	   DO 200 ivar = 1, num_uvars_in_cmnd
 	      mr1 = is_mr( ivar )
-	      CALL GET_CX_DIMS( is_cx(1), ndim, dim )
-	      ax_len = MAX( MR_DIM_LEN( dim(1), mr1 ),
+	      CALL GET_CX_DIMS( is_cx(ivar), ndim, dim )
+	      ax_len = MAX( ax_len,
+     .			    MR_DIM_LEN( dim(1), mr1 ),
      .		            MR_DIM_LEN( dim(2), mr1 ),
+     .			    factor*CX_DIM_LEN(dim(1), is_cx(ivar)),
+     .			    factor*CX_DIM_LEN(dim(2), is_cx(ivar)),
      .		            CGRID_SIZE( is_cx(ivar) )    )
  200	   CONTINUE
 	ENDIF

@@ -280,7 +280,7 @@
       INTEGER jmatch, kmatch
       INTEGER jbot, jtop, kbot, ktop
       REAL fbot, ftop, fbb, ftb, fbt, ftt
-      REAL ybot, ytop, zbot, ytop
+      REAL ybot, ytop, zbot, ztop
       REAL frac
       CHARACTER*255 err_msg
 
@@ -491,12 +491,12 @@ cbf                 for matching x-axis no interpolation is need
                        IF (kbot .GE. arg_lo_ss(Z_AXIS,ARG1)  .AND.
      .                     ktop .LE. arg_hi_ss(Z_AXIS,ARG1) ) THEN
                           zbot = zax(kbot,1,1,1)
-                          ytop = zax(ktop,1,1,1)
+                          ztop = zax(ktop,1,1,1)
 
                           if(kmatch.eq.0) then
                              result(i,j,k,l) = fbot
                           else
-                            frac = (zpt - zbot)/ (ytop-zbot)
+                            frac = (zpt - zbot)/ (ztop-zbot)
 
                             result(i,j,k,l) = fbot + frac* 
      .                                         (ftop - fbot)

@@ -107,7 +107,7 @@
 
       INTEGER id, arg
 
-      CHARACTER*110 descrip, descrip
+      CHARACTER*110 descrip
 c      CALL ef_version_test(ef_version)
 
 * **********************************************************************

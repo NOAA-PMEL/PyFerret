@@ -57,6 +57,8 @@
 
 /* .................... Includes .................... */
 
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include <stdio.h>
 
 #include "ferret_structures.h"

@@ -68,6 +68,8 @@
 
 
 #ifdef DESIGN_TIME
+/* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+#include <wchar.h>
 #include "veos.h"
 #include "swidget.h"
 #endif

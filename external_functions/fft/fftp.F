@@ -131,16 +131,11 @@ c      CALL ef_version_test(ef_version)
       REAL yquist, freq1, freqn
       
       CHARACTER outunits*32
-      REAL boxsize(1), small
-      REAL*8 box8
-      INTEGER ibox, places, right
-      CHARACTER*100 fmt
+      REAL boxsize(1)
          
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
-      CHARACTER*16 taxunits
-      INTEGER nch
-      
+
       arg = 1
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
@@ -170,43 +165,9 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
       freq1 = 1.* yquist/ float(nfreq)
       freqn = 1.001*yquist
 
-C  Set label for the frequency axis CYC/units, taking into acount box size.
+C  Set label for the frequency axis CYC/units.
 
-      IF (boxsize(1) .EQ. 1.) THEN
-         outunits = 'CYC/' // ax_units(T_AXIS)
-      ELSE
-      
-C  Get # of places needed to output box size, with digits right of decimal pt.
-
-         small = 0.5
-c         IF (boxsize(1) .GT. 1.) small = 1.0
-         
-         box8 = boxsize(1)
-         CALL get_prec_digits(box8, box8, small, places, right)
-        
-        
-C  Get number of characters in the axis units label
-
-         taxunits = ax_units(T_AXIS)
-         call nchar(taxunits, nch)
-         
-C  Generate a format statement and write the frequency axis label.
-     
-         IF (right .GT. 0) THEN
-           WRITE (fmt, 10) places, right, nch
-           WRITE (outunits, fmt) boxsize(1), taxunits(1:nch)
-        ELSE
-           WRITE (fmt, 12) places, nch
-           ibox = boxsize(1)
-           WRITE (outunits, fmt) ibox, taxunits(1:nch)
-        ENDIF
-
-      ENDIF
-      
-   10 FORMAT 
-     . ( '( ''CYC/('',F', I1, '.', I1, ''' '', A', I2.2,  ''')''  )' )
-   12 FORMAT 
-     . ( '( ''CYC/('',I', I1,  ''' '', A', I2.2,  ''')''  )' )
+      outunits = 'CYC/' // ax_units(T_AXIS)
 
       CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
      .   outunits, NO)

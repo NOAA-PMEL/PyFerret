@@ -57,22 +57,23 @@ void c_substr_(in_ptr, offset, length, out_ptr)
 {
   char* tmp;
   char* tmp2;
-  int i;
+  int i, int_length;
 
   if ( *out_ptr ) free(*out_ptr);
-  
-  if ( *out_ptr = (char *) malloc(sizeof(char) * (*length)+1))
+
+  int_length = (int)*length;
+  if ( *out_ptr = (char *) malloc(sizeof(char) * (int_length)+1))
     {
       /* if offset is greater than string lenght, return a null */
       if ( *offset > strlen(*in_ptr) ) {
-	**out_ptr=NULL;
+	**out_ptr=(char) NULL;
 	return;
       } else {
 	tmp = *out_ptr;
 	tmp2 = *in_ptr;
 	for (i=0; i<(*offset-1); i++) tmp2++;
 	for (i=0; i<(*length); i++) *tmp++ = *tmp2++;
-	*tmp=NULL;
+	*tmp= (char)NULL;
       }
     }
   else

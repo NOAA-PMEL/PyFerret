@@ -1,4 +1,4 @@
-\ cancel mode verify    
+\cancel mode verify    
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 ! mp_graticule.jnl --  Overlay a graticule on a map projection.  For working
 !                  with map projection scripts in Ferret v4.50
@@ -15,6 +15,10 @@
 !		   around the plot edge are complete.
 ! *acm* 11/30/2001 change the name of the local variable mp_test to mp_gtest. 
 !                  Defining and cancelling it has an impact on mp_land.jnl
+! *acm*  9/24/03   Definition of mp_xaxdel gave gaps in the plotted lines, when 
+!                  mp_xaxdel does not divide the region exactly. Fix this, and
+!                  also add an argument window_flag to turn on windowing when
+!                  desired.
 
 ! Description:  Overlay a graticule on a map.
 !
@@ -31,8 +35,8 @@
 !       x_page  field describing transformation from lat/lon to X page coordinates
 !       x_page  field describing transformation from lat/lon to Y page coordinates
 !
-! Usage:              arg1      arg2      arg3        arg4      arg5      arg6      arg7
-!  go mp_graticule [lon_min] [lon_max] [lon_delta] [lat_min] [lat_max] [lat_delta] [pen]
+! Usage:              arg1      arg2      arg3        arg4      arg5      arg6      arg7  arg8
+!  go mp_graticule [lon_min] [lon_max] [lon_delta] [lat_min] [lat_max] [lat_delta] [pen]  [winflag]
 !
 ! arg 1 - minimum longitude
 ! arg 2 - maximum longitude
@@ -41,6 +45,7 @@
 ! arg 5 - maximum latitude
 ! arg 6 - spacing for the latitude graticule
 ! arg 7 - pen number
+! arg 8 - window flag: 1 to window lines at the axes, 0 not to, default 0
 !
 ! examples:
 !         go mp_graticule                         ! default - whole world in black
@@ -60,6 +65,8 @@ let/quiet mp_y = y
 !   lines are complete around the edge of the plot.
 
 ppl window off
+IF `$8"0" eq 1` THEN ppl window on
+
 !
 ! create reasonable defaults for graticule spacing
 !
@@ -122,7 +129,14 @@ let/quiet mp_std_parallel_south = `mp_y[j=@min]`
 !define axis/x=`mp_xmin`:`mp_xmax + mp_xdel`:`mp_xdel` lon_field_i_axis
 
 ! Use delta of 1 as in Jon's original script, or mp_xdel if its smaller
-let/quiet mp_xaxdel = MIN(mp_xdel, 1)
+! let/quiet mp_xaxdel = MIN(mp_xdel, 1)
+
+! But, 9/03, This gives gaps when mp_xaxdel does not divide the region exactly
+! 
+let/quiet mp_xaxdel = mp_xdel
+repeat/k=2:5 (if `mp_xaxdel gt 1` then let/quiet mp_xaxdel = mp_xdel/`k`)
+
+
 define axis/x=`mp_xmin`:`mp_xmax + mp_xaxdel`:`mp_xaxdel` lon_field_i_axis
 define axis/y=`mp_ymin`:`mp_ymax`:`mp_ydel` lon_field_j_axis
 
@@ -147,7 +161,6 @@ let/quiet masked_x_page = mp_mask * x_page
 let/quiet masked_y_page = mp_mask * y_page
 
 plot/vs/over/nolab/line=$7"1" masked_x_page, masked_y_page
-
 
 !
 ! Now for the appropriate longitude lines:
@@ -179,8 +192,6 @@ let/quiet masked_x_page = mp_mask * x_page
 let/quiet masked_y_page = mp_mask * y_page
 
 plot/vs/over/nolab/line=$7"1" masked_x_page, masked_y_page
-
-
 !
 ! Restore all the previous settings and variables
 !

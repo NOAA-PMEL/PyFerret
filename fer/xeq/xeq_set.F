@@ -122,6 +122,7 @@
 * v540 *acm* 10/01 increase length of ds_name
 * V542: *sh* 7/02 - added support for sub-span modulo axes
 * V550: *acm*10/02- Change arg to char*24, to match longer region names (cx_name)
+* v553: *kob* 8/03 - need to increase size of buff1 for long numeric dataset names
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -167,7 +168,7 @@
      .			cx, i, grid, axis, loc, perm(4)
 	REAL		val_buf
 	CHARACTER	title*128, subtitle*64, arg*24,
-     .			buff1*24, buff2*80, data_form*3
+     .			buff1*512, buff2*80, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
@@ -371,7 +372,17 @@ c *kob* 4/97
 	   IF ( TM_DIGIT(cmnd_buff(item_start(item):item_start(item)) )) THEN
 	      buff1 = cmnd_buff(item_start(item):item_end(item))
 * *kob* 4/97
-#ifdef MANDATORY_FORMAT_WIDTHS
+#ifdef G77_INT_READ_FORMAT_BUG
+* *kob* 9/03 kludge due to g77 internal read bug which does not correctly identify
+*            a character and signal an error when doing an internal read into an
+*            integer variable - e.g. 11111112_3.nc was being read as an integer so Ferret
+*            was trying to find dataset 11111112 and reporting an error
+	      buff_len = TM_LENSTR(buff1)
+              DO 730 ch = 1, buff_len
+		IF ( .NOT. TM_DIGIT(buff1(ch:ch))) GOTO 740
+ 730	      CONTINUE
+	      READ (buff1,*) dset_num
+#else if defined MANDATORY_FORMAT_WIDTHS
 	      READ (buff1,*,ERR=740) dset_num
 #else
 	      READ (buff1,'(I)',ERR=740) dset_num

@@ -44,46 +44,46 @@ query/ignore $3%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|
 query/ignore $4%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
 set data/save
-define region/default save
-cancel region
+
 
 ! introduce the outline data set
 set data/save
 use geo_borders
 
-!*!*from land_detail: allow modulo duplications
+!*!*
+! from land_detail: allow modulo duplications 360 deg beyond 
+! data in geo_borders
+
 ! Initialize
 let landi_subx = 0
 let landi_addx = 0
 let landi_mapxmin = 0
 let landi_mapxmax = 0
-let landi_datxmin = continent_LON[x=@min]
-let landi_datxmax = continent_LON[x=@max]
+
+let landi_datxmin = 0
+let landi_datxmax = 0
 
 let landi_basemap = $2"0|basemap>1|*>0"
 
-IF `landi_basemap EQ 0` THEN
-
-   let landi_mapxmin = ($xaxis_min)
-   let landi_mapxmax = ($xaxis_max)
-
-   IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
-   IF `landi_mapxmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
-
-ELSE
-   
-   shade/pal=white/nokey/nolab x[x=28:380:1] + y[y=-90:90:1]
-   let landi_mapxmin = 20.
-   let landi_mapxmax = 380.
-
-   IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
-   IF `landi_mapxmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
-
+IF `landi_basemap EQ 1` THEN
+   GO  basemap " " " " " " white
 ENDIF
+
+let landi_mapxmin = ($xaxis_min)
+let landi_mapxmax = ($xaxis_max)
+
+define region/default save
+cancel region
+
+let landi_datxmin = continent_LON[x=@min]
+let landi_datxmax = continent_LON[x=@max]
+IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
+IF `landi_mapxmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
+
 !*!*
 
 ! always do the continents
-$1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/line=1/$2"i=1:22585/overlay|basemap>i=4886:13712|fast>i=4886:13712/overlay|*>i=1:22585/overlay" CONTINENT_LON, CONTINENT_LAT
+$1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/line=1/$2"i=1:22585/overlay|basemap>i=1:22585/overlay|fast>i=4886:13712/overlay|*>i=1:22585/overlay" CONTINENT_LON, CONTINENT_LAT
 
 ! select line style and plot
 ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
@@ -94,7 +94,6 @@ ppl yfor (I7,''LAT'')
 
 ! draw it - as an overlay or as a basemap
 $1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
-
 
 !*!*
 ! Draw any lines outside 0 to 360
@@ -158,7 +157,6 @@ ENDIF
 !*!*
 
 cancel data geo_borders
-set mode/last verify
 cancel var landi_*
 
 set region save

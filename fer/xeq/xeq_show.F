@@ -140,6 +140,7 @@
 *                  SHOW AXIS, SHOW GRID
 * V554 *acm* 9/03  Add output for SHOW AXIS in /DODS binary format, 
 *                  see the flag do_dods
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -245,7 +246,7 @@
      .       axesOrCorner(2)/'edges'/
 
 * for string passing to C function in SHOW MODE FUNCTION
-      INTEGER      slen
+      INTEGER      slen, dlen
       PARAMETER  ( slen = ef_max_description )
 #ifdef sun
       BYTE      fhol(slen)      ! c-type Hollerith string buffer
@@ -709,6 +710,9 @@
 	      show_str(36:) = meta_file			! from GKSCM2  1/94
 	   ELSEIF ( mode .EQ. pmode_STUPID ) THEN
 	      IF (mode_arg(mode,1).EQ.1) show_str(36:) = 'weak_cache'
+	   ELSEIF ( mode .EQ. pmode_grat ) THEN
+              dlen = TM_LENSTR1(mode_grat_buff)
+	      show_str(36:) = mode_grat_buff(:dlen)
 	   ELSEIF ( mode_arg( mode,1 ) .NE. unspecified_int4 ) THEN
 	      WRITE ( show_str(36:42), '(I7)' ) mode_arg( mode,1 )
 	   ENDIF

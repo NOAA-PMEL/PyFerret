@@ -112,6 +112,7 @@
 *                  space with call to remove_axis
 * v541 *acm*  7/02 Capitalize routine names in CALL REMOVE_AXIS, DEALLO_ALL_AXES.
 * v551 *acm*  1/03 Bug fix: datasets starting with digit not correctly cancelled.
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -399,6 +400,10 @@
 	            IF ( jrnl_lun .NE. 6 )
      .                  CLOSE( UNIT=lttout, ERR = 5830 )
 		    lttout = 6
+* ... mode graticule - turn off automatic graticules
+                 ELSEIF ( mode .EQ. pmode_grat ) THEN
+	            grat_on = .FALSE.
+                    mode_grat_buff = ' '
 * ... mode pplgui - close reply pipe
                  ELSEIF ( mode .EQ. pmode_gui ) THEN
 	            alt_messages = .FALSE.

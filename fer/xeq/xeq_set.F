@@ -124,6 +124,7 @@
 * V550: *acm*10/02- Change arg to char*24, to match longer region names (cx_name)
 * v553: *kob* 8/03 - need to increase size of buff1 for long numeric dataset names
 *       *kob* 9/03 - add ich for character indicies for the internal_read_format_bug
+* V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -169,7 +170,7 @@
      .			cx, i, grid, axis, loc, perm(4), buff_len, TM_LENSTR
 	REAL		val_buf
 	CHARACTER	title*128, subtitle*64, arg*24,
-     .			buff1*512, buff2*80, data_form*3
+     .			buff1*512, buff2*512, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
@@ -456,11 +457,13 @@ c *kob* 4/97
 * SET MODE mode_name argument  (or mode_name:argument)
  800	set_last = qual_given( slash_set_last ) .GT. 0
 	IF ( num_items .EQ. 0 ) GOTO 5100
+
 * identify the specified mode to SET
 * ... syntax can be SET MODE mode  or  SET MODE mode:arg  or  SET MODE mode arg
 * ... since "arg" may contain "/" for a path name treat all text after the end
 *     of the named mode as the argument  (modified this block 1/94)
 	item = 1
+
 	colon_pos = INDEX( cmnd_buff(item_start(1):item_end(1)), ':' )
 	IF ( colon_pos .GT. 0 ) THEN
 	   IF ( colon_pos .EQ. 1 ) GOTO 5010   ! colon as 1st character ???
@@ -479,7 +482,7 @@ c *kob* 4/97
      .	.AND. loc .GT.2  	) buff2 = buff2(2:loc-1)
 * ... identify the mode name
 	DO 810 mode = 1, max_modes
-	   IF ( MATCH4( buff1, mode_name( mode ) )) THEN
+             IF ( MATCH4( buff1, mode_name( mode ) )) THEN
 	      IF ( mode.EQ.pmode_GKS .AND. gksopn ) GOTO 5820
 * ... ignore MODE VERIFY from a GO file if MODE VERIFY:ALWAYS is set
 	      IF ( mode.EQ.pmode_verify
@@ -554,6 +557,10 @@ c *kob* 4/97
 	         alt_messages = .TRUE.   	! TMAP COMMON for error msgs
 !                    CALL GUI_PIPE_OPEN( status )
 !	             IF ( status .NE. ferr_ok ) GOTO 5000
+* ... mode grat sets graticules on, and saves argument
+              ELSEIF ( mode .EQ. pmode_grat ) THEN
+	         grat_on = .TRUE.
+                 mode_grat_buff = buff2
 	      ENDIF
 	      GOTO 820
 	   ENDIF

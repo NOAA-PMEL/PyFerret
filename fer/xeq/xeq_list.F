@@ -112,6 +112,11 @@
 *      12/98 *js* Disable listing to files if in secure mode
 * V500  2/99  - *kob* added LIST/QUIET
 *	5/99 - *sh- added arguments to EQUAL_PERMUTE
+* V530  8/00 *sh* - bug fix of /CLOBBER with /FORM=STREAM
+*		  - set reclen correctly for string output
+*       *sh* 9/00  - added initial data type support in get_cmnd_data 
+*	*sh* 11/00 - fixed bug: permutation for all vars written was determined
+*		     from context of first var, only
 
 #ifdef unix
         include 'tmap_errors.parm'
@@ -141,13 +146,13 @@
 * local variable declarations
 	LOGICAL		normal_file, fexist, heading, list_to_tty, do_multi,
      .			do_epic, do_gt, do_cdf, do_unform, do_stream,
-     .			do_comma_del, do_tab_del, do_cdf_cache,
+     .			do_comma_del, do_tab_del,
      .			permute, all_at_once, list_at_eof, head_enh,
      .			clobber, quiet
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
-     .                  STR_UPCASE,
+     .                  STR_UPCASE, GET_MAX_STRING_LEN,
      .			status, mr, cx, inext, ilist, wsize, vax_code,
-     .			rlen, flen, reclen, i, cx1, qfile, idim, cdfoutid,
+     .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars
 	CHARACTER	AUTO_FILENAME*200, filename*200, raw_name*200,
@@ -246,7 +251,7 @@
 
 * get the requested data somehow
 * (leave the variables flagged as "in-use" 7/92)
-	CALL GET_PROT_CMND_DATA ( memory, cx_last, status )
+	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, status )
 	IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
            list_fmt_type = plist_default ! restore for next command
 	   list_format_given = .FALSE.
@@ -377,10 +382,17 @@
 #endif
 	         fstatus = 'OLD'
 	      ELSEIF (do_stream) THEN
-	         IF ( do_stream_phase .EQ. 0 ) CALL ERRMSG
+	         IF ( do_stream_phase .EQ. 0 ) THEN
+
+	            IF ( clobber ) THEN
+	               fstatus = 'OLD'
+	            ELSE
+	               CALL ERRMSG
      .		   ( ferr_invalid_command,  status,
      .              'file already exists: '//raw_name,
      .              *1000 )
+	            ENDIF
+	         ENDIF
 	      ELSEIF ( clobber ) THEN	! 11/96
 	         faccess = 'SEQUENTIAL'
 	         fstatus = 'OLD'
@@ -441,15 +453,25 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
      .		    STATUS	= fstatus,
      .		    ERR		= 5010 )
 	   ELSEIF ( do_stream .AND. do_stream_phase.EQ.0 ) THEN	! 12/94
+	      reclen = 1  ! in bytes
+	      DO 60 i = 1, num_uvars_in_cmnd
+	         IF ( mr_type(is_mr(i)) .EQ. ptype_string ) THEN
+	            reclen = MAX(reclen,
+     .			GET_MAX_STRING_LEN(is_cx(i), is_mr(i),
+     .					   memory(1,mr_blk1(is_mr(i))))+1 )
+	         ELSE
+	            reclen = MAX(reclen,4)
+	         ENDIF
+ 60	      CONTINUE
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,
      .		    FORM	= 'UNFORMATTED',
      .		    ACCESS	= 'DIRECT',
-     .		    STATUS	= 'NEW',
+     .		    STATUS	= fstatus,
 #ifdef reclen_in_bytes
-     .	            RECL	= 4,
+     .	            RECL	= reclen,
 #else
-     .	            RECL	= 1,
+     .	            RECL	= reclen/4,
 #endif
      .		    ERR		= 5010 )
 	      do_stream_phase = 1		! for multi-variables
@@ -480,13 +502,11 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
      .		    STATUS	= 'NEW',
      .	            RECL	= 1,
      .		    ERR		= 5010 )
+	      do_stream_phase = 1		! for multi-variables
 #endif
 	   ENDIF
 	   list_lun = default_list_lun
 	ENDIF
-
-* ... if no axis order was specified use the first variable as default
-	IF ( .NOT.permute ) CALL GET_CX_DIMS( cx, ndim, perm )
 
 * reserve working arrays (different needs for each listing type)
 	IF ( do_epic ) THEN
@@ -516,6 +536,8 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
 
 * permute data to the desired output order
 	IF ( all_at_once ) THEN
+* ... if no axis order was specified determine the permutation
+	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	   DO 200 ilist = 1, num_uvars_in_cmnd
 	      CALL CREATE_PERMUTATION(	memory,
      .					is_cx  (ilist),
@@ -526,6 +548,8 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
               npermuted = npermuted + 1
  200	   CONTINUE
 	ELSE
+* ... if no axis order was specified use the first variable as default
+           IF ( .NOT.permute ) CALL GET_CX_DIMS( cx, ndim, perm )
 * ... default listing for a line of data is a column
 	   IF ( .NOT.permute .AND. ndim.EQ.1) THEN
 	      i = perm(1)
@@ -584,7 +608,8 @@ c *kob* -7/96 reclen_in_bytes not appropriate for sgi
  1000   list_fmt_type = plist_default ! restore for next command
 	list_format_given = .FALSE.
         CALL UNPROTECT_CMND_DATA
-	IF ( do_stream ) CLOSE ( UNIT = list_lun, ERR = 4999 )
+	IF ( do_stream .AND. do_stream_phase.GT.0)
+     .			CLOSE ( UNIT = list_lun, ERR = 4999 )
  4999   RETURN
 
 * error exit(s)

@@ -135,7 +135,9 @@
 * V540:	*sh* 9/01 - added DEFINE VIEWPORT/AXES
 * V540: *acm*12/01 -bug fix: consolidate arguments broken up by command parser 
 *                   back into a single arg with call to all_1_arg
-
+* V541: *acm*8/02  Changes to recover line_mem storage when irregular
+*                  axis is cancelled; redefine line_mem pointer before 
+*                  call to purge_mr_axis.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1046,6 +1048,13 @@
 	   line_direction(iline) = 'TI'
 	ENDIF
 
+* ... coordinate pointer for next line to save
+* acm move this to before purge_mr_axis, which also resets next_line_mem_pos
+*     after it deletes old_line.
+
+	IF (irreg .AND. .NOT.line_regular(iline))
+     .			next_line_mem_pos = frst_pt + 2*n + 1
+
 * check for redefinitions
 	IF ( dup_name ) THEN
 	   IF ( TM_LINE_MATCH( old_line, iline ) ) THEN
@@ -1054,6 +1063,7 @@
 * ... redefinition makes all past assumptions incorrect
 	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .			replmsg//'axis '//line_name( old_line ), 0)
+
 	      CALL PURGE_MR_AXIS( old_line, iline, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      CALL TM_DEALLO_DYN_LINE( old_line )
@@ -1062,9 +1072,6 @@
 
 * now catalog it in memory by saving its name
 	line_name( iline ) = buff3
-* ... coordinate pointer for next line to save
-	IF (irreg .AND. .NOT.line_regular(iline))
-     .			next_line_mem_pos = frst_pt + 2*n + 1
 	RETURN
 
 **************************************************************************

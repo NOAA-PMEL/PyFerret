@@ -49,7 +49,7 @@
 * revision 1.4 - 8/3/88  - Top level of help library, "FERRET", removed
 * V230: 8/26/92 - added Unix version - entirely separate from VMS
 * V320: 12/29/94 - use SPLIT_LIST to redirect tty output for GUI
-
+* v500: 1/26/99 - *kob* update help to reflect current options
 
 #ifdef unix
         include 'ferret_cmn/ferret.parm'
@@ -67,7 +67,16 @@
 
 #ifdef unix
 	CALL SPLIT_LIST(pttmode_help, ttout_lun,
-     .   ' Detailed help is available via the Unix command Fhelp.'
+     .   ' Detailed help is available from several sources:'
+     .								, 0)
+	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .   '  o The Web version of the Users Guide at www.ferret.noaa.gov'
+     .								, 0)
+	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .   '  o Hard copy of the Users Guide from directory $FER_DIR/doc'
+     .								, 0)
+	CALL SPLIT_LIST(pttmode_help, ttout_lun,
+     .   '  o Text search of the Users Guide via the Unix command Fhelp'
      .								, 0)
 	CALL SPLIT_LIST(pttmode_help, ttout_lun,
      .   ' To execute Fhelp from the "yes?" prompt type   SPAWN Fhelp'

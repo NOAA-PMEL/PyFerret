@@ -55,6 +55,8 @@
 *                         call f90_io_finish() after we are done 
 *                         to flush buffers,etc
 *    7/25/97 *js* changes to incorporate output file for -batch
+*    8/97 *kob* - had to add another ifdef check for entry_name_underscores
+*              around call to curv_coord_sub
 */
 
 
@@ -121,7 +123,11 @@ main (int argc, char *argv[])
       if (++i < argc && argv[i][0] != '-'){
 	meta_name = argv[i++];
       }
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+      set_batch_graphics(meta_name);  /* inhibit X output altogether */
+#else
       set_batch_graphics_(meta_name);  /* inhibit X output altogether */
+#endif
     } else  /* -help also comes here */
       help_text();
   }

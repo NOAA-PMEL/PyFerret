@@ -8,7 +8,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 3/5/97
-
+* 8/97 *kob* - had to add another ifdef check for entry_name_underscores
+*              around call to curv_coord_sub
 * compile with
 *    cc -g -c save_arg_pointers.c
 *  or
@@ -63,6 +64,10 @@ void curv_coord_(float *xi, float *yi, int *n,
 #endif
 {
   extern float *xpos_cache, *ypos_cache;
+#ifdef NO_ENTRY_NAME_UNDERSCORES
+  curv_coord_sub( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, status );
+#else
   curv_coord_sub_( xi, yi, n, xpos_cache, ypos_cache, xinv, yinv, status );
+#endif
   return;
 }

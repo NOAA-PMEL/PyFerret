@@ -43,7 +43,7 @@
 * written for VAX computer under VMS operating system
 *
 * V200:  3/12/90 - written to permit metafile-only output
-
+* v530: 1/00 *kob* - added info to check if animations are in progress
 #ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -52,6 +52,8 @@
 	include	'GKSCM1.INC'	! with wsid
 	include	'pltcom_dat.decl'	! with gksopn
 	include	'PLTCOM.DAT'	! with gksopn
+	include 'xplot_setup.cmn'
+
 #else
 	INCLUDE 'FERRET_CMN:FERRET.PARM'
 	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
@@ -70,7 +72,8 @@
 
 * only relevant for GKS output
 	IF ( mode_gks ) THEN
-	  IF ( wsid.EQ.0 .AND. .NOT.mode_metafile ) GOTO 5100
+	  IF ( .NOT.animate .AND. wsid.EQ.0 
+     .              .AND. .NOT.mode_metafile ) GOTO 5100
 	ENDIF
 
 * success

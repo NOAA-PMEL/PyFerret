@@ -69,6 +69,7 @@
 *		     otherwise listed, and if non-gregorian calendar.
 * V540: 11/01 *sh* - added LIST/WIDTH=
 *	           - expanded and reorganized the LIST heading
+* V552   2/03 *acm*- Increase line_buff to 10000
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -91,7 +92,7 @@
 * local parameter declarations:
 	INTEGER		 min_field_width, max_line_len
 	PARAMETER     ( min_field_width = 4,
-     .			max_line_len = 3600 )
+     .			max_line_len = 10000 )
 
 * calling argument declarations:
 	LOGICAL		heading, head_enh
@@ -120,7 +121,7 @@
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
      .			GET_STRING_ELEMENT*255,
-     .			line_buff*3600,
+     .			line_buff*10000,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32, cal_name*32
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value

@@ -1,0 +1,50 @@
+! test_legend.jnl
+! example call of the script legend.jnl
+
+! Contributed by Hein Zelle, 11-December-2003
+
+let one=3*x+2
+let two=x*x-5
+let three=0*x+3
+
+set region /x=-10:10
+
+set viewport ul
+plot /set_up /nolabel one,two,three
+ppl title "test plot"
+ppl xlab "X axis"
+ppl ylab "Y axis"
+go legend 1 "Variable one"
+go legend 2 "Variable two" 
+go legend 3 "Variable three"
+ppl plot
+
+set viewport ur
+plot /set_up /nolabel one,two,three
+ppl title "test plot"
+ppl xlab "X axis"
+ppl ylab "Y axis"
+go legend 1 "Variable one" ur
+go legend 2 "Variable two" ur
+go legend 3 "Variable three" ur
+ppl plot
+
+set viewport ll
+plot /set_up /nolabel one,two,three
+ppl title "test plot"
+ppl xlab "X axis"
+ppl ylab "Y axis"
+go legend 1 "Variable one" ll
+go legend 2 "Variable two" ll
+go legend 3 "Variable three" ll
+ppl plot
+
+set viewport lr
+plot /set_up /nolabel one,two,three
+ppl title "test plot"
+ppl xlab "X axis"
+ppl ylab "Y axis"
+go legend 1 "Variable one" lr
+go legend 2 "Variable two" lr
+go legend 3 "Variable three" lr
+ppl plot

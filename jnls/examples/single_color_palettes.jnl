@@ -1,0 +1,120 @@
+! Demonstrate single-color palettes.
+! good for backgrounds, or plotting symbols
+! with the POLYGON command.
+
+set win/asp=0.5
+
+list 1./12
+def view/xlim=0:0.08/ylim=0:0.33/axes v1_1
+def view/xlim=0:0.08/ylim=0.33:0.67/axes v1_2
+def view/xlim=0:0.08/ylim=0.67:1/axes v1_3
+
+def view/xlim=0.08:0.16/ylim=0:0.33/axes v2_1
+def view/xlim=0.08:0.16/ylim=0.33:0.67/axes v2_2
+def view/xlim=0.08:0.16/ylim=0.67:1/axes v2_3
+
+def view/xlim=0.16:0.24/ylim=0:0.33/axes v3_1
+def view/xlim=0.16:0.24/ylim=0.33:0.67/axes v3_2
+def view/xlim=0.16:0.24/ylim=0.67:1/axes v3_3
+
+def view/xlim=0.24:0.32/ylim=0:0.33/axes v4_1
+def view/xlim=0.24:0.32/ylim=0.33:0.67/axes v4_2
+def view/xlim=0.24:0.32/ylim=0.67:1/axes v4_3
+
+def view/xlim=0.32:0.40/ylim=0:0.33/axes v5_1
+def view/xlim=0.32:0.40/ylim=0.33:0.67/axes v5_2
+def view/xlim=0.32:0.40/ylim=0.67:1/axes v5_3
+
+def view/xlim=0.40:0.48/ylim=0:0.33/axes v6_1
+def view/xlim=0.40:0.48/ylim=0.33:0.67/axes v6_2
+def view/xlim=0.40:0.48/ylim=0.67:1/axes v6_3
+
+def view/xlim=0.48:0.56/ylim=0:0.33/axes v7_1
+def view/xlim=0.48:0.56/ylim=0.33:0.67/axes v7_2
+def view/xlim=0.48:0.56/ylim=0.67:1/axes v7_3
+
+def view/xlim=0.56:0.64/ylim=0:0.33/axes v8_1
+def view/xlim=0.56:0.64/ylim=0.33:0.67/axes v8_2
+def view/xlim=0.56:0.64/ylim=0.67:1/axes v8_3
+
+def view/xlim=0.64:0.72/ylim=0:0.33/axes v9_1
+def view/xlim=0.64:0.72/ylim=0.33:0.67/axes v9_2
+def view/xlim=0.64:0.72/ylim=0.67:1/axes v9_3
+
+def view/xlim=0.72:0.80/ylim=0:0.33/axes v10_1
+def view/xlim=0.72:0.80/ylim=0.33:0.67/axes v10_2
+def view/xlim=0.72:0.80/ylim=0.67:1/axes v10_3
+
+def view/xlim=0.80:0.88/ylim=0:0.33/axes v11_1
+def view/xlim=0.80:0.88/ylim=0.33:0.67/axes v11_2
+def view/xlim=0.80:0.88/ylim=0.67:1/axes v11_3
+
+def view/xlim=0.88:0.96/ylim=0:0.33/axes v12_1
+def view/xlim=0.88:0.96/ylim=0.33:0.67/axes v12_2
+def view/xlim=0.88:0.96/ylim=0.67:1/axes v12_3
+
+set view v1_1; shade/noax/nolab/nokey/pal=pink_light/title=pink_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"pink"
+set view v1_2; shade/noax/nolab/nokey/pal=pink/title=pink/i=1:2/j=1:2 i+j
+set view v1_3; shade/noax/nolab/nokey/pal=pink_dark/title=pink_dark/i=1:2/j=1:2 i+j
+
+set view v2_1; shade/noax/nolab/nokey/pal=red_light/title=red_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"red"
+set view v2_2; shade/noax/nolab/nokey/pal=red/title=red/i=1:2/j=1:2 i+j
+set view v2_3; shade/noax/nolab/nokey/pal=red_dark/title=red_dark/i=1:2/j=1:2 i+j
+
+set view v3_1; shade/noax/nolab/nokey/pal=orange_light/title=orange_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"orange"
+set view v3_2; shade/noax/nolab/nokey/pal=orange/title=orange/i=1:2/j=1:2 i+j
+set view v3_3; shade/noax/nolab/nokey/pal=orange_dark/title=orange_dark/i=1:2/j=1:2 i+j
+
+ppl shaset reset
+
+set view v4_1; shade/noax/nolab/nokey/pal=yellow_light/title=yellow_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"yellow"
+set view v4_2; shade/noax/nolab/nokey/pal=yellow/title=yellow/i=1:2/j=1:2 i+j
+set view v4_3; shade/noax/nolab/nokey/pal=yellow_dark/title=yellow_dark/i=1:2/j=1:2 i+j
+
+set view v5_1; shade/noax/nolab/nokey/pal=green_light/title=green_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"green"
+set view v5_2; shade/noax/nolab/nokey/pal=green/title=green/i=1:2/j=1:2 i+j
+set view v5_3; shade/noax/nolab/nokey/pal=green_dark/title=green_dark/i=1:2/j=1:2 i+j
+
+set view v6_1; shade/noax/nolab/nokey/pal=cyan_light/title=cyan_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"cyan"
+set view v6_2; shade/noax/nolab/nokey/pal=cyan/title=cyan/i=1:2/j=1:2 i+j
+set view v6_3; shade/noax/nolab/nokey/pal=cyan_dark/title=cyan_dark/i=1:2/j=1:2 i+j
+
+ppl shaset reset
+
+set view v7_1; shade/noax/nolab/nokey/pal=blue_light/title=blue_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"blue"
+set view v7_2; shade/noax/nolab/nokey/pal=blue/title=blue/i=1:2/j=1:2 i+j
+set view v7_3; shade/noax/nolab/nokey/pal=blue_dark/title=blue_dark/i=1:2/j=1:2 i+j
+
+set view v8_1; shade/noax/nolab/nokey/pal=purple_light/title=purple_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"purple"
+set view v8_2; shade/noax/nolab/nokey/pal=purple/title=purple/i=1:2/j=1:2 i+j
+set view v8_3; shade/noax/nolab/nokey/pal=purple_dark/title=purple_dark/i=1:2/j=1:2 i+j
+
+set view v9_1; shade/noax/nolab/nokey/pal=magenta_light/title=magenta_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"magenta"
+set view v9_2; shade/noax/nolab/nokey/pal=magenta/title=magenta/i=1:2/j=1:2 i+j
+set view v9_3; shade/noax/nolab/nokey/pal=magenta_dark/title=magenta_dark/i=1:2/j=1:2 i+j
+
+ppl shaset reset
+
+set view v10_1; shade/noax/nolab/nokey/pal=brown_light/title=brown_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"brown"
+set view v10_2; shade/noax/nolab/nokey/pal=brown/title=brown/i=1:2/j=1:2 i+j
+set view v10_3; shade/noax/nolab/nokey/pal=brown_dark/title=brown_dark/i=1:2/j=1:2 i+j
+
+set view v11_1; shade/noax/nolab/nokey/pal=tan_light/title=tan_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"tan"
+set view v11_2; shade/noax/nolab/nokey/pal=tan/title=tan/i=1:2/j=1:2 i+j
+set view v11_3; shade/noax/nolab/nokey/pal=tan_dark/title=tan_dark/i=1:2/j=1:2 i+j
+
+set view v12_1; shade/noax/nolab/nokey/pal=grey_light/title=grey_light/i=1:2/j=1:2 i+j
+label/user 1,1.5,-1,0,0.24,"grey"
+set view v12_2; shade/noax/nolab/nokey/pal=grey/title=grey/i=1:2/j=1:2 i+j
+set view v12_3; shade/noax/nolab/nokey/pal=grey_dark/title=grey_dark/i=1:2/j=1:2 i+j

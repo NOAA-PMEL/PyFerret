@@ -62,4 +62,25 @@ set reg/y=0:50/L=1
 repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
 cancel mode diag
 
-set mode verify:default
+! order of qualifiers doesnt matter
+repeat/name=a/range=1:3 say `a` 
+
+! Test using a file variable name
+use coads_climatology
+repeat/name=sst/range=1:5 (list sst)
+list/l=1/x=181/y=1 sst
+can data/all
+
+! Intentional errors 
+set mode ignore
+
+! /NAME without /RANGE
+rep/name=a say `a`  
+
+! Cannot use pseudo-variables.
+rep/range=1:3/name=l list/nohead sst[i=1,j=1]
+
+! Nested REPEAT with the same counter variable name
+repeat/range=1:4/name=a (repeat/range=3:1:-1/name=a list a)
+
+cancel mode ignore

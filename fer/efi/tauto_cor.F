@@ -37,6 +37,7 @@
 * Ansley Manke
 * July 1999
 *  Update to use abstract axis 1-feb-2000
+*  acm 11/2001 bug fix: check both arg_1(...l1+lm) and arg_1(...l1) for bad flag
 *
 * This function computes the autocorrelation for a x series.  
 *  Autocorelation formula computed directly for lags of 0, 1, ..., N-1
@@ -345,7 +346,10 @@ C  Autocorrelation returns corelations for lags of 1 to N.
                   lm = l-1
                   l1 = arg_lo_ss(T_AXIS,ARG1)
                   DO 170 m = 1, nd-lm 
-                     IF (arg_1(i1,j1,k1,l1+lm) .NE. bad_flag(ARG1)) THEN
+
+                     IF (arg_1(i1,j1,k1,l1+lm) .NE. bad_flag(ARG1) .AND.
+     .                   arg_1(i1,j1,k1,l1)    .NE. bad_flag(ARG1)) THEN
+
                         bsize = (box(m+lm,1,1,1) + box(m,1,1,1))/ 2.
                         diff = 
      .                     arg_1(i1,j1,k1,l1+lm) - pmean(l,1,1,1)

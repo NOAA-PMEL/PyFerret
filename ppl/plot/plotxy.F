@@ -59,7 +59,8 @@ C
 
 *  ACM  8-30-2000 Go back to calling the line dash subroutine.   
 
-#ifdef un        include         'xinterrupt.cmn' ! 1/89 *sh*
+#ifdef unix
+        include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
 #else
         INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*

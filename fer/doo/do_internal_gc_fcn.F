@@ -1,20 +1,18 @@
       SUBROUTINE DO_INTERNAL_GC_FCN( memory,
      .				fcn, num_com, com_cx,
-     .				com1, mr1,
-     .				com2, mr2,
-     .				com3, mr3,
-     .				com4, mr4,
-     .				com5, mr5,
-     .				com6, mr6,
-     .				com7, mr7,
-     .				com8, mr8,
-     .				com9, mr9,
-     .				res, mres,
-     .                          status )
+     .				com1, mr1, typ1,
+     .				com2, mr2, typ2,
+     .				com3, mr3, typ3,
+     .				com4, mr4, typ4,
+     .				com5, mr5, typ5,
+     .				com6, mr6, typ6,
+     .				com7, mr7, typ7,
+     .				com8, mr8, typ8,
+     .				com9, mr9, typ9,
+     .				res, mres, typr,
+     .                          res_cx, status )
 
-*
-*
-*  This software was developed by the Thermal Modeling and Analysis
+* This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
@@ -75,58 +73,59 @@
 *       3/99 - made ECHO into a 2 argument function
 * V510: 8/99 *sh* - added SAMPLE* functions (just copy arg 2 to result here --
 *               the work is done in IS_ALGEBRA and IS_SAMPLE
+* V533: *sh* 6/01 - arguments and result may be string or float
+*                 - added SPAWN function
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	fcn, num_com, com_cx(9), status,
-     .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres
+     .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, mres,
+     .          typ1, typ2,typ3,typ4,typ5,typ6,typ7,typ8,typ9,
+     .          typr, res_cx
         REAL	memory( mem_blk_size, max_mem_blks )
-	REAL    com1( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit ),
-     .		com2( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit ),
-     .		com3( m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit ),
-     .		com4( m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit ),
-     .		com5( m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit ),
-     .		com6( m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,m6lot:m6hit ),
-     .		com7( m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,m7lot:m7hit ),
-     .		com8( m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,m8lot:m8hit ),
-     .		com9( m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,m9lot:m9hit ),
-     .		 res( m10lox:m10hix,m10loy:m10hiy,
-     .					  m10loz:m10hiz,m10lot:m10hit )
+	REAL    com1(typ1,m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit),
+     .		com2(typ2,m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit),
+     .		com3(typ3,m3lox:m3hix,m3loy:m3hiy,m3loz:m3hiz,m3lot:m3hit),
+     .		com4(typ4,m4lox:m4hix,m4loy:m4hiy,m4loz:m4hiz,m4lot:m4hit),
+     .		com5(typ5,m5lox:m4hix,m5loy:m5hiy,m5loz:m5hiz,m5lot:m5hit),
+     .		com6(typ6,m6lox:m4hix,m6loy:m6hiy,m6loz:m6hiz,m6lot:m6hit),
+     .		com7(typ7,m7lox:m4hix,m7loy:m7hiy,m7loz:m7hiz,m7lot:m7hit),
+     .		com8(typ8,m8lox:m4hix,m8loy:m8hiy,m8loz:m8hiz,m8lot:m8hit),
+     .		com9(typ9,m9lox:m4hix,m9loy:m9hiy,m9loz:m9hiz,m9lot:m9hit),
+     .		 res(typr,m10lox:m10hix,m10loy:m10hiy,
+     .					  m10loz:m10hiz,m10lot:m10hit)
 
 * internal variable declarations:
 	INTEGER CX_DIM_LEN,  CGRID_SIZE, count, size,
      .		i, j, k, l, icom, idim,
      .		cx1, cx2, cx3, cx4, cx5, cx6, cx7, cx8, cx9,
-     .		i1, j1, k1, l1, i2, j2, k2, l2,
-     .		i3, j3, k3, l3, i4, j4, k4, l4,
-     .		i5, j5, k5, l5, i6, j6, k6, l6,
+     .		i1, j1,     l1, i2, j2, k2, l2,
      .		di1, dj1, dk1, dl1, di2, dj2, dk2, dl2,
      .		di3, dj3, dk3, dl3, di4, dj4, dk4, dl4,
      .		di5, dj5, dk5, dl5, di6, dj6, dk6, dl6,
      .		si1, sj1, sk1, sl1, si2, sj2, sk2, sl2,
      .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4,
      .		si5, sj5, sk5, sl5, si6, sj6, sk6, sl6
+!     .		i3, j3, k3, l3, i4, j4, k4, l4,
+!     .		i5, j5, k5, l5, i6, j6, k6, l6,
         INTEGER klo, khi, ndx_lo, wkblk
         INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
 
 	REAL    bad_res,
      .          bad1, bad2, bad3, bad4, bad5, bad6, bad7, bad8, bad9
         REAL    zval, frac
-
         REAL*8  TM_WORLD
+
+        INTEGER max_cmnd_len
+        PARAMETER ( max_cmnd_len = 500)
+        CHARACTER GET_STRING_ELEMENT*(max_cmnd_len), buff*(max_cmnd_len)
+        INTEGER nnew, slen
+
 
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
@@ -150,6 +149,9 @@
 * internal parameter declarations:
 	REAL*8          pdays_by_1900
 	PARAMETER     ( pdays_by_1900 = 59958230400.0 / (60.*60.*24.) )
+	INTEGER	    pfloat_words, pptr_words
+	PARAMETER  (pfloat_words = 1,
+     .		    pptr_words   = 2 )
 
 * initialize commonly used variables
         status = ferr_ok
@@ -197,21 +199,35 @@
      .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000
      .								  ) fcn
 
-* "XUNRAVEL" - reshape/flatten the input into a line in X
- 1100	i2 = m10lox
-	DO 1110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	 DO 1110 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1110 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	   DO 1110 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+* "XSEQUENCE" - reshape/flatten the input into a line in X
+ 1100	IF (typr .EQ. pfloat_words) THEN
+          i2 = m10lox
+	  DO 1110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1110 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1110 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1110 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(i2,m10loy,m10loz,m10lot) = bad_res
-	   ELSE
-	      res(i2,m10loy,m10loz,m10lot) = com1(i,j,k,l)
-	   ENDIF
-	   i2 = i2 + 1
+	     IF ( com1(1,i,j,k,l) .EQ. bad1 ) THEN
+	        res(1,i2,m10loy,m10loz,m10lot) = bad_res
+	     ELSE
+	        res(1,i2,m10loy,m10loz,m10lot) = com1(1,i,j,k,l)
+	     ENDIF
+	     i2 = i2 + 1
 
- 1110	CONTINUE
+ 1110     CONTINUE
+        ELSE
+          i2 = m10lox
+	  DO 1160 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1160 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1160 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1160 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+
+	        CALL COPY_C_STRING(com1(1,i,j,k,l),
+     .                             res(1,i2,m10loy,m10loz,m10lot))
+
+	     i2 = i2 + 1
+ 1160	  CONTINUE
+        ENDIF
 	RETURN
 
 * "TIMES2" (a.k.a. "ECHO") - debugging function
@@ -240,10 +256,10 @@
 	    DO 1205 k = mr_lo_s3(mres), mr_hi_s3(mres)
 	      DO 1205 j = mr_lo_s2(mres), mr_hi_s2(mres)
 	       DO 1205 i = mr_lo_s1(mres), mr_hi_s1(mres)
-	         IF ( com2(i,j,k,l) .EQ. bad2 ) THEN
-	             res(i,j,k,l) = bad_res
+	         IF ( com2(1,i,j,k,l) .EQ. bad2 ) THEN
+	             res(1,i,j,k,l) = bad_res
 	         ELSE
-	             res(i,j,k,l) = com2(i,j,k,l) * 2.0
+	             res(1,i,j,k,l) = com2(1,i,j,k,l) * 2.0
 	         ENDIF
  1205      CONTINUE
 
@@ -258,36 +274,61 @@
 * "RESHAPE" - reshape argument 1 into the grid of arg 2. Start output
 * at the i,j,k,l point given in arg 2. It is commonly useful for taking
 * monthly data and recasting it as a 12 month Z axis by a yearly axis
- 1300	DO 1310 idim = 1, 4
+ 1300      DO 1310 idim = 1, 4
  1310	ind(idim) = cx_lo_ss(cx1,idim) !i2,j2,k2,l2 <-- comp 1 start indices
 	size = CGRID_SIZE(cx1)
 	count = 0	! total points xferred - used to prevent grid overflow
 
-	DO 1350 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	 DO 1350 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 1350 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 1350 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	IF (typr .EQ. pfloat_words) THEN
 
-	   count = count + 1
-	   IF ( count .GT. size ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSEIF ( com1(i2,j2,k2,l2) .EQ. bad1 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      res(i,j,k,l) = com1(i2,j2,k2,l2)
-	   ENDIF
+	  DO 1350 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 1350 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 1350 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 1350 i = mr_lo_s1(mres), mr_hi_s1(mres)
+
+	     count = count + 1
+	     IF ( count .GT. size ) THEN
+	        res(1,i,j,k,l) = bad_res
+	     ELSEIF ( com1(1,i2,j2,k2,l2) .EQ. bad1 ) THEN
+	        res(1,i,j,k,l) = bad_res
+	     ELSE
+	        res(1,i,j,k,l) = com1(1,i2,j2,k2,l2)
+	     ENDIF
 
 * ... increment the subscripts of the input argument
-	   DO 1320 idim = 1, 4
-	      IF (ind(idim) .LT. cx_hi_ss(cx1,idim) ) THEN
-	         ind(idim) = ind(idim) + 1
-	         GOTO 1350
-	      ELSE
-	         ind(idim) =  cx_lo_ss(cx1,idim)
-	      ENDIF
- 1320	   CONTINUE
+	     DO 1320 idim = 1, 4
+	        IF (ind(idim) .LT. cx_hi_ss(cx1,idim) ) THEN
+	           ind(idim) = ind(idim) + 1
+	           GOTO 1350
+	        ELSE
+	           ind(idim) =  cx_lo_ss(cx1,idim)
+	        ENDIF
+ 1320	     CONTINUE
 
- 1350	CONTINUE
+ 1350	  CONTINUE
+
+        ELSE
+
+	  DO 1390 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO 1390 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO 1390 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO 1390 i = mr_lo_s1(mres), mr_hi_s1(mres)
+
+	     count = count + 1
+	     CALL COPY_C_STRING(com1(1,i2,j2,k2,l2), res(1,i,j,k,l))
+
+* ... increment the subscripts of the input argument
+	     DO 1360 idim = 1, 4
+	        IF (ind(idim) .LT. cx_hi_ss(cx1,idim) ) THEN
+	           ind(idim) = ind(idim) + 1
+	           GOTO 1390
+	        ELSE
+	           ind(idim) =  cx_lo_ss(cx1,idim)
+	        ENDIF
+ 1360	     CONTINUE
+
+ 1390	  CONTINUE
+        ENDIF
 	RETURN
 
 * "ZAXREPLACE(V,ZVALS,ZAX)" - regrid a sigma-coordinate-style (layered)
@@ -328,7 +369,7 @@
           IF ( klo .LT. 1 ) THEN
 * ... no valid data in component 2 at this location
 	    DO 1405 k = mr_lo_s3(mres), mr_hi_s3(mres)
- 1405          res(i,j,k,l) = bad_res
+ 1405          res(1,i,j,k,l) = bad_res
 
           ELSE
 
@@ -345,17 +386,17 @@
 
              IF ( frac .LT. 0.0 ) THEN
 * ... no luck -- the Z axis value we seek is outside the range in com2
-                res(i,j,k,l) = bad_res
-             ELSEIF ( com1(i1,j1,sk1+ndx_lo,l1) .EQ. bad1 ) THEN
-                res(i,j,k,l) = bad_res
+                res(1,i,j,k,l) = bad_res
+             ELSEIF ( com1(1,i1,j1,sk1+ndx_lo,l1) .EQ. bad1 ) THEN
+                res(1,i,j,k,l) = bad_res
              ELSEIF ( frac .EQ. 1.0 ) THEN                  ! exactly on point
-	        res(i,j,k,l) =  com1(i1,j1,sk1+ndx_lo,l1)
-             ELSEIF ( com1(i1,j1,sk1+ndx_lo+1,l1) .EQ. bad1 ) THEN
-                res(i,j,k,l) = bad_res
+	        res(1,i,j,k,l) =  com1(1,i1,j1,sk1+ndx_lo,l1)
+             ELSEIF ( com1(1,i1,j1,sk1+ndx_lo+1,l1) .EQ. bad1 ) THEN
+                res(1,i,j,k,l) = bad_res
              ELSE
 * ... interpolate data com1 field to get result
-	        res(i,j,k,l) =  frac   * com1(i1,j1,sk1+ndx_lo,  l1)
-     .			     + (1-frac)* com1(i1,j1,sk1+ndx_lo+1,l1)
+	        res(1,i,j,k,l) =  frac   * com1(1,i1,j1,sk1+ndx_lo,  l1)
+     .			     + (1-frac)* com1(1,i1,j1,sk1+ndx_lo+1,l1)
              ENDIF
  1410	    CONTINUE
 
@@ -365,78 +406,151 @@
         CALL RELEASE_WORK_SPC
         RETURN
 
-* "YUNRAVEL" - reshape/flatten the input into a line in Y
- 1500	i2 = m10loy
-	DO 1510 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	 DO 1510 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1510 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	   DO 1510 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+* "YSEQUENCE" - reshape/flatten the input into a line in Y
+ 1500	IF (typr .EQ. pfloat_words) THEN
+	  i2 = m10loy
+	  DO 1510 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1510 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1510 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1510 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+ 
+	     IF ( com1(1,i,j,k,l) .EQ. bad1 ) THEN
+	        res(1,m10lox,i2,m10loz,m10lot) = bad_res
+	     ELSE
+	        res(1,m10lox,i2,m10loz,m10lot) = com1(1,i,j,k,l)
+	     ENDIF
+	     i2 = i2 + 1
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(m10lox,i2,m10loz,m10lot) = bad_res
-	   ELSE
-	      res(m10lox,i2,m10loz,m10lot) = com1(i,j,k,l)
-	   ENDIF
-	   i2 = i2 + 1
+ 1510	  CONTINUE
+        ELSE
+	  i2 = m10loy
+	  DO 1560 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1560 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1560 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1560 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+ 
+	        CALL COPY_C_STRING(com1(1,i,j,k,l),
+     .                             res(1,m10lox,i2,m10loz,m10lot))
 
- 1510	CONTINUE
+	     i2 = i2 + 1
+
+ 1560	  CONTINUE
+        ENDIF
+
 	RETURN
 
 
-* "ZUNRAVEL" - reshape/flatten the input into a line in Z
- 1600	i2 = m10loz
-	DO 1610 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	 DO 1610 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1610 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	   DO 1610 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+* "ZSEQUENCE" - reshape/flatten the input into a line in Z
+ 1600	IF (typr .EQ. pfloat_words) THEN
+	  i2 = m10loz
+	  DO 1610 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1610 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1610 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1610 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(m10lox,m10loy,i2,m10lot) = bad_res
-	   ELSE
-	      res(m10lox,m10loy,i2,m10lot) = com1(i,j,k,l)
-	   ENDIF
-	   i2 = i2 + 1
+	     IF ( com1(1,i,j,k,l) .EQ. bad1 ) THEN
+	        res(1,m10lox,m10loy,i2,m10lot) = bad_res
+	     ELSE
+	        res(1,m10lox,m10loy,i2,m10lot) = com1(1,i,j,k,l)
+	     ENDIF
+	     i2 = i2 + 1
 
- 1610	CONTINUE
+ 1610	  CONTINUE
+        ELSE
+	  i2 = m10loz
+	  DO 1660 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1660 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1660 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1660 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+
+	        CALL COPY_C_STRING(com1(1,i,j,k,l),
+     .                             res(1,m10lox,m10loy,i2,m10lot))
+
+	     i2 = i2 + 1
+
+ 1660	  CONTINUE
+        ENDIF
 	RETURN
 
 
-* "TUNRAVEL" - reshape/flatten the input into a line in T
- 1700	i2 = m10lot
-	DO 1710 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	 DO 1710 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1710 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	   DO 1710 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+* "TSEQUENCE" - reshape/flatten the input into a line in T
+ 1700	IF (typr .EQ. pfloat_words) THEN
+	  i2 = m10lot
+	  DO 1710 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1710 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1710 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1710 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 
-	   IF ( com1(i,j,k,l) .EQ. bad1 ) THEN
-	      res(m10lox,m10loy,m10loz,i2) = bad_res
-	   ELSE
-	      res(m10lox,m10loy,m10loz,i2) = com1(i,j,k,l)
-	   ENDIF
-	   i2 = i2 + 1
+	     IF ( com1(1,i,j,k,l) .EQ. bad1 ) THEN
+	        res(1,m10lox,m10loy,m10loz,i2) = bad_res
+	     ELSE
+	        res(1,m10lox,m10loy,m10loz,i2) = com1(1,i,j,k,l)
+	     ENDIF
+	     i2 = i2 + 1
 
- 1710	CONTINUE
+ 1710	  CONTINUE
+        ELSE
+	  i2 = m10lot
+	  DO 1760 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	   DO 1760 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	    DO 1760 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	     DO 1760 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+
+	        CALL COPY_C_STRING(com1(1,i,j,k,l),
+     .                             res(1,m10lox,m10loy,m10loz,i2))
+
+	     i2 = i2 + 1
+
+ 1760	  CONTINUE
+        ENDIF
 	RETURN
 
 * "SAMPLEI" - just copy arg 2 to result
+ 1800   CONTINUE        ! SAMPLEI
  1900   CONTINUE        ! SAMPLEJ
  2000   CONTINUE        ! SAMPLEK
  2100   CONTINUE        ! SAMPLEL
- 1800	DO 1810 l = cx_lo_s4(cx2), cx_hi_s4(cx2)
-	 DO 1810 k = cx_lo_s3(cx2), cx_hi_s3(cx2)
-	  DO 1810 j = cx_lo_s2(cx2), cx_hi_s2(cx2)
-	   DO 1810 i = cx_lo_s1(cx2), cx_hi_s1(cx2)
+	IF (typr .EQ. pfloat_words) THEN
+	  DO 1810 l = cx_lo_s4(cx2), cx_hi_s4(cx2)
+	   DO 1810 k = cx_lo_s3(cx2), cx_hi_s3(cx2)
+	    DO 1810 j = cx_lo_s2(cx2), cx_hi_s2(cx2)
+	     DO 1810 i = cx_lo_s1(cx2), cx_hi_s1(cx2)
 
-	   IF ( com2(i,j,k,l) .EQ. bad2 ) THEN
-	      res(i,j,k,l) = bad_res
-	   ELSE
-	      res(i,j,k,l) = com2(i,j,k,l)
-	   ENDIF
+	     IF ( com2(1,i,j,k,l) .EQ. bad2 ) THEN
+	        res(1,i,j,k,l) = bad_res
+	     ELSE
+	        res(1,i,j,k,l) = com2(1,i,j,k,l)
+	     ENDIF
 
- 1810	CONTINUE
+ 1810	  CONTINUE
+
+        ELSE
+
+	  DO 1860 l = cx_lo_s4(cx2), cx_hi_s4(cx2)
+	   DO 1860 k = cx_lo_s3(cx2), cx_hi_s3(cx2)
+	    DO 1860 j = cx_lo_s2(cx2), cx_hi_s2(cx2)
+	     DO 1860 i = cx_lo_s1(cx2), cx_hi_s1(cx2)
+
+	     CALL COPY_C_STRING(com2(1,i,j,k,l), res(1,i,j,k,l))
+
+ 1860	  CONTINUE
+        ENDIF
 	RETURN
 
+* SPAWN function - perform a Unix system command
  2200	CONTINUE
+* ... get the command string to be executed
+          IF (CGRID_SIZE(cx1) .NE. 1)  CALL ERRMSG(ferr_invalid_command,
+     .          status, 'SPAWN can only execute a single command',*5000)
+	  buff = GET_STRING_ELEMENT(
+     .                  m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			com1,m1lox,m1loy,m1loz,m1lot,max_cmnd_len,slen )
+          IF (slen .EQ. max_cmnd_len) CALL ERRMSG(ferr_invalid_command,
+     .          status, 'SPAWN command too long -- 500 char max',*5000)
+* ... execute the command and store the results
+          CALL STORE_SYS_STRINGS(buff,  res_cx, mres, 1, nnew, status)
+          RETURN
+
  2300	CONTINUE
  2400	CONTINUE
  2500	CONTINUE
@@ -482,4 +596,3 @@
 * error exits
  5000	RETURN
 	END
-

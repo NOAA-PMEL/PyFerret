@@ -1,8 +1,6 @@
 	SUBROUTINE IS_DO_GC_FCN
-     .			( memory, alg_type, alg_text, lo_isp, status )
+     .			( memory, uvar, alg_text, lo_isp, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -46,8 +44,8 @@
 *		arguments ti internal functions.
 *		Strings may be passed only to external functions
 * V530:  8/00 *sh* - check on string data type -- not category
+* V533:  6/01 *sh* - support for args that may be string or float
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'grid_chg_fcns.parm'
@@ -58,36 +56,38 @@
 	include	'xtext_info.cmn'
 	include	'xfr_grid.cmn'	! w/ mgrid_abstract
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:RPN.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'	! W/ MGRID_ABSTRACT
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 * calling arguments
-	INTEGER		alg_type, lo_isp, status
+	INTEGER		uvar, lo_isp, status
 	REAL		memory( mem_blk_size, max_mem_blks )
 	CHARACTER*(*)	alg_text
 
 * local variables
 	LOGICAL	ITS_UN_CACHED, not_reusable
 	INTEGER	GCF_FIND_FCN, GCF_NUM_ARGS, GCF_ARG_TYPE,
-     .		ifcn, icom, num_com, mr, res_cx,
+     .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER,
+     .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
+     .		typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9, typr,
      .		frame_bottom, com_cx, res_mr, itype
 
 * convenience equivalences
-	INTEGER	com(10)
+	INTEGER	com(10), typ(9)
 	EQUIVALENCE (com(1),mr1), (com(2),mr2), (com(3),mr3), (com(4),mr4),
      .              (com(5),mr5),
      .		    (com(6),mr6), (com(7),mr7), (com(8),mr8), (com(9),mr9),
      .              (com(10),res_mr)
+	EQUIVALENCE (typ(1),typ1), (typ(2),typ2), (typ(3),typ3),
+     .		    (typ(4),typ4), (typ(5),typ5), (typ(6),typ6),
+     .		    (typ(7),typ7), (typ(8),typ8), (typ(9),typ9)
+
+* local parameter declarations
+* ... pfloat_words indicates that each float value in an array is 1 word
+* ... ptpr_words   indicates that each pointer     in an array is 2 words
+
+	INTEGER	    pfloat_words, pptr_words
+	PARAMETER  (pfloat_words = 1,
+     .		    pptr_words   = 2 )
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -96,15 +96,15 @@
 *	isp-2	<--	...	other components of this expression on stack
 *	isp-n		...
 *	lo_isp	<--	level at which expression evaluation was called
-*
-* eg. for tau ^ 2 as a part of the full expression
-*			level isp     will contain the constant 2
-*			level isp-1   will contain tau
-*		and the alg_type/alg_text will point to "^"
 
 * the "frame_bottom" is the isp level that will be left when the components of
 * the current calculation (1 to 3) are reduced to a single value.
 * on exit isp will point to the frame bottom and the result will be left there
+
+* initialize all data types to default of FLOAT
+	DO icom = 1, 9
+	  typ(icom) = pfloat_words
+	ENDDO
 
 * identify the text of the particular function
 *	(internal or external GC fcn handled the same)
@@ -119,18 +119,26 @@
 
 * trap attempts to pass arguments of the wrong type (1/99)
 	DO 100 icom = 1, num_com
-	   itype = GCF_ARG_TYPE(ifcn, icom)
+	   iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
+	   itype = GCF_ARG_TYPE(ifcn, iarg)
 	   com_cx  = is_cx(frame_bottom+icom-1)
+	   IF (cx_type(com_cx) .EQ. ptype_string) typ(icom)=pptr_words
 	   IF ( (cx_type(com_cx) .EQ. ptype_string)
      .	  .NEQV.(itype .EQ. parg_type_string)		) THEN
-! ... temporary diagnostic EF output (REMOVE THIS!!!)
-!	      CALL TEMP_SHOW_EF_STRING(is_mr(frame_bottom+icom-1))
-	      GOTO 5200
+	      IF (itype .NE. parg_type_multi)	GOTO 5200
 	   ENDIF
  100	CONTINUE
 
 !* the merged context is already nearly complete
 	res_cx = is_big_cx(lo_isp)
+
+* determine data type of result - and set corresponding word size, typr
+	cx_type(res_cx) = uvar_data_type(uvar, cx_data_set(res_cx))
+	IF (cx_type(res_cx) .EQ. ptype_string) THEN
+	   typr = pptr_words
+	ELSE
+	   typr = pfloat_words
+	ENDIF
 
 * need to fill in those axes that the function "imposes"
 	CALL GCF_IMPOSE_RESULT_LIMS( ifcn, memory, is_mr(lo_isp+1),
@@ -142,6 +150,11 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	mr_category( res_mr ) = cat_temp_var
 	mr_variable( res_mr ) = res_mr	! cat_temp_var vars point to themselves
+	IF (cx_type(res_cx) .EQ. ptype_string) THEN
+	   CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(res_mr),
+     .                               memory(1, mr_blk1(res_mr)),
+     .                               mr_c_pointer(res_mr)      )
+	ENDIF
 
 * point to the memory resident components
 * (if fewer than 9 components default extras to dummy)
@@ -157,34 +170,34 @@
 
 	IF (IFCN .LE. GFCN_NUM_INTERNAL) THEN
 
-	CALL DO_INTERNAL_GC_FCN( memory,
+	  CALL DO_INTERNAL_GC_FCN( memory,
      .			ifcn, num_com, is_cx(frame_bottom),
-     .			memory(1, mr_blk1(mr1) ),   mr1,
-     .			memory(1, mr_blk1(mr2) ),   mr2,
-     .			memory(1, mr_blk1(mr3) ),   mr3,
-     .			memory(1, mr_blk1(mr4) ),   mr4,
-     .			memory(1, mr_blk1(mr5) ),   mr5,
-     .			memory(1, mr_blk1(mr6) ),   mr6,
-     .			memory(1, mr_blk1(mr7) ),   mr7,
-     .			memory(1, mr_blk1(mr8) ),   mr8,
-     .			memory(1, mr_blk1(mr9) ),   mr9,
-     .			memory(1, mr_blk1(res_mr)), res_mr,
-     .			status )
-	IF ( status .NE. ferr_ok ) GOTO 5100
+     .			memory(1, mr_blk1(mr1) ), mr1, typ1,
+     .			memory(1, mr_blk1(mr2) ), mr2, typ2,
+     .			memory(1, mr_blk1(mr3) ), mr3, typ3,
+     .			memory(1, mr_blk1(mr4) ), mr4, typ4,
+     .			memory(1, mr_blk1(mr5) ), mr5, typ5,
+     .			memory(1, mr_blk1(mr6) ), mr6, typ6,
+     .			memory(1, mr_blk1(mr7) ), mr7, typ7,
+     .			memory(1, mr_blk1(mr8) ), mr8, typ8,
+     .			memory(1, mr_blk1(mr9) ), mr9, typ9,
+     .			memory(1, mr_blk1(res_mr)), res_mr, typr,
+     .			res_cx, status )
+	  IF ( status .NE. ferr_ok ) GOTO 5100
 
 	ELSE 
 
-	CALL DO_EXTERNAL_GC_FCN( memory,
+	  CALL DO_EXTERNAL_GC_FCN( memory,
      .			ifcn, num_com, com, is_cx(frame_bottom),
-     .			memory(1, mr_blk1(mr1) ),   mr1,
-     .			memory(1, mr_blk1(mr2) ),   mr2,
-     .			memory(1, mr_blk1(mr3) ),   mr3,
-     .			memory(1, mr_blk1(mr4) ),   mr4,
-     .			memory(1, mr_blk1(mr5) ),   mr5,
-     .			memory(1, mr_blk1(mr6) ),   mr6,
-     .			memory(1, mr_blk1(mr7) ),   mr7,
-     .			memory(1, mr_blk1(mr8) ),   mr8,
-     .			memory(1, mr_blk1(mr9) ),   mr9,
+     .			memory(1, mr_blk1(mr1) ), mr1,
+     .			memory(1, mr_blk1(mr2) ), mr2,
+     .			memory(1, mr_blk1(mr3) ), mr3,
+     .			memory(1, mr_blk1(mr4) ), mr4,
+     .			memory(1, mr_blk1(mr5) ), mr5,
+     .			memory(1, mr_blk1(mr6) ), mr6,
+     .			memory(1, mr_blk1(mr7) ), mr7,
+     .			memory(1, mr_blk1(mr8) ), mr8,
+     .			memory(1, mr_blk1(mr9) ), mr9,
      .			memory(1, mr_blk1(res_mr)), res_mr,
      .			status )
 

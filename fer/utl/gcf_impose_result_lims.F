@@ -1,8 +1,6 @@
       SUBROUTINE GCF_IMPOSE_RESULT_LIMS( gcfcn, memory, mr_list,
      .     cx_list, res_cx, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -62,26 +60,18 @@
 * V510: 9/99 *sh* - added SAMPLE* functions
 *       1/00 *sh* - RESHAPE behavior to inherit explicit cx lims from arg 2
 * V530: 10/00 *sh* - added return status to efcn_get_result_lims
+* V533: 7/01 *sh* - added SPAWN function
 
 * debug declarations for TIMES2
 !	INTEGER	n_com1, n_grid, com1_grid
 !	REAL*8	TM_WORLD, dlo_com1, dlo_grid, dhi_com1, dhi_grid
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xgrid_chg_fcns.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:GRID_CHG_FCNS.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XGRID_CHG_FCNS.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	gcfcn, cx_list(*), mr_list(*), res_cx, status
@@ -134,7 +124,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
  100	CONTINUE
 
-* *** XUNRAVEL function ***
+* *** XSEQUENCE function ***
 	IF ( gcfcn .EQ. p_xunravel ) THEN
 * X axis is imposed as ABSTRACT
 * size of output on X is total size of input of component
@@ -145,7 +135,7 @@
 	   CALL FLESH_OUT_AXIS( x_dim, res_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	
-* *** YUNRAVEL function ***
+* *** YSEQUENCE function ***
 	ELSEIF ( gcfcn .EQ. p_yunravel ) THEN
 * Y axis is imposed as ABSTRACT
 * size of output on Y is total size of input of component
@@ -157,7 +147,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 
-* *** ZUNRAVEL function ***
+* *** ZSEQUENCE function ***
 	ELSEIF ( gcfcn .EQ. p_zunravel ) THEN
 * Z axis is imposed as ABSTRACT
 * size of output on Z is total size of input of component
@@ -169,7 +159,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 
-* *** TUNRAVEL function ***
+* *** TSEQUENCE function ***
 	ELSEIF ( gcfcn .EQ. p_tunravel ) THEN
 * T axis is imposed as ABSTRACT
 * size of output on T is total size of input of component
@@ -178,6 +168,19 @@
 	   cx_hi_ss(res_cx,t_dim) = CGRID_SIZE(com1_cx)
 	   cx_by_ss(t_dim, res_cx) = .TRUE.
 	   CALL FLESH_OUT_AXIS( t_dim, res_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+
+
+* *** SPAWN function ***
+	ELSEIF ( gcfcn .EQ. p_spawn ) THEN
+* X axis is imposed as ABSTRACT
+* size of output on X is the number of strings to come from the Unix system
+* command -- an unknown value at this point. Arbitrarily we assume 2000
+* here and revise if necessary in STORE_SYS_STRINGS
+	   cx_lo_ss(res_cx,x_dim) = 1
+	   cx_hi_ss(res_cx,x_dim) = 2000 ! arbitrary
+	   cx_by_ss(x_dim, res_cx) = .TRUE.
+	   CALL FLESH_OUT_AXIS( x_dim, res_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 
@@ -341,7 +344,7 @@
 
 * If the axis is abstract ... 
 *   get the lo and hi limits for this axis
-*   create one as in UNRAVEL above
+*   create one as in *SEQUENCE above
 
 	      IF (axis_will_be(idim) .EQ. pgc_axis_is_abstract)	THEN
 

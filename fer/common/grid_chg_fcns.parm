@@ -13,10 +13,14 @@
 * V450:
 * V500: 1/99 added parg_type in support of string arguments
 * V510: 8/99 added SAMPLE* functions
+* V533: 6/01 added parg_type_string_or_float
+*            and pfcn_return_string, pfcn_return_float
+*	     and p_spawn
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
      .			p_yunravel, p_zunravel, p_tunravel,
-     .			p_samplei, p_samplej, p_samplek, p_samplel
+     .			p_samplei, p_samplej, p_samplek, p_samplel,
+     .			p_spawn
 
 	PARAMETER     ( p_xunravel = 1,
      .			p_times2   = p_xunravel + 1,
@@ -28,7 +32,8 @@
      .			p_samplei  = p_tunravel + 1,
      .			p_samplej  = p_samplei  + 1,
      .			p_samplek  = p_samplej	+ 1,
-     .			p_samplel  = p_samplek 	+ 1 )
+     .			p_samplel  = p_samplek 	+ 1,
+     .			p_spawn    = p_samplel 	+ 1 )
 
 * parameters to control the passing of context information
 	INTEGER		pset_to_unspec, ppass_along
@@ -37,7 +42,21 @@
 
 * parameters to designate the data type of arguments
 	INTEGER		parg_type_float,
-     .			parg_type_string
-
+     .			parg_type_string,
+     .			parg_type_multi
 	PARAMETER     ( parg_type_float  = 1,
-     .			parg_type_string = 2 )
+     .			parg_type_string = 2,
+     .			parg_type_multi = -1 )
+
+* parameters to designate the data type of return value of function
+	INTEGER		pfcn_rtn_string,
+     .			pfcn_rtn_float,
+     .			pfcn_rtn_arg1_type,
+     .			pfcn_rtn_arg2_type,
+     .			pfcn_rtn_arg3_type
+	PARAMETER     ( pfcn_rtn_string = 1,
+     .			pfcn_rtn_float  = 2,
+     .			pfcn_rtn_arg1_type  = -1,
+     .			pfcn_rtn_arg2_type  = -2, 
+     .			pfcn_rtn_arg3_type  = -3 )
+

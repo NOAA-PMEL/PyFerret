@@ -47,6 +47,7 @@
 *			  because it needed a preprocessor.
 * V450: 11/14/97 - check dynamic grids as well as static grids
 *		(err450_redefine_axis_in_dyn_grid.jnl)
+* V510 4/00 *sh* - netCDF data sets using dynamic grids, too
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -80,7 +81,6 @@
 !	IF ( .NOT. line_regular( old_axis ) ) GOTO 5100
 
 * delete all variables in memory that are based on grids using this axis
-!	DO 100 grid = 1, max_grids	! pre 11/97
 	DO 100 grid = 1, max_dyn_grids
 	  IF (grid_name(grid) .EQ. char_init16) GOTO 100
 
@@ -95,7 +95,9 @@
  100	CONTINUE
 
 * now we're safe from errors: replace the old axis with the new one
-	DO 250 grid = 1, max_grids
+* 4/00: - check among dynamic grids, too -- though there would at present never
+*	be a replacement of one of these axes
+	DO 250 grid = 1, max_dyn_grids
 	  IF (grid_name(grid) .EQ. char_init16) GOTO 250
 
 	  DO 200 idim = 1, 4
@@ -105,6 +107,7 @@
  200	  CONTINUE
 
  250	CONTINUE
+	line_use_cnt(new_axis) = line_use_cnt(old_axis)
 
 * delete the old axis
 	IF ( .NOT.line_regular(old_axis) ) THEN
@@ -112,6 +115,7 @@
 	   CALL WARN( I6//' words of axis coordinate storage lost' )
 	   line_subsc1( old_axis ) = unspecified_int4
 	ENDIF
+	line_use_cnt(old_axis) = 0
 	line_name( old_axis ) = char_init16
 
 	status = ferr_ok

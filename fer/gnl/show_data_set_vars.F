@@ -62,46 +62,57 @@
 *       4/99 *kob* - bug fix to above - check grid_line to see if axis is
 *                    truly normal
 * V510: 4/00 *sh* - search dynamic grids for netCDF time axis
+* V530: 10/00 *sh* - added information about data typed
 
-#ifdef unix
 	include 'tmap_dims.parm'
+#	include "tmap_dset.parm"
+	include 'ez_lib.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xez_info.cmn_text'
+	external xez_info_data
 	include	'ferret.parm'
 	include	'xvariables.cmn'
 	include	'xtext_info.cmn'
 	include	'xprog_state.cmn'
 	include	'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	full
 	INTEGER	lun, dset
 	
 * local variable declarations:
-	LOGICAL		first_time
+	LOGICAL		first_time, its_delimited
 	INTEGER 	TM_LENSTR1, ivar, i, dlen, len, grid, taxis,
-     .                  slen(4), tlen
+     .                  slen(4), tlen, nfields, kvar,
+     .			field_types(maxezvars)
 	CHARACTER	LEFINT*6, LOHI_STRING*48, TM_FMT*14, line*255
 	REAL*8		TM_WORLD, lo, hi
-        CHARACTER       rbuff(8)*8
+        CHARACTER       rbuff(8)*8, delims*128, c*1
+
+* internal parameter declarations:
+        CHARACTER*1     tab
+        PARAMETER     ( tab = CHAR(9) )
+
+* initiailze
+	its_delimited = ds_type(dset) .EQ. pds_type_ez
+     .            .AND. ds_parm_text(1,dset)(:4) .eq. 'DELI'
+
+	IF (its_delimited) THEN
+	   CALL GET_DELIMITED_INFO(nfields, field_types, delims, 
+     .				   ds_file_info_ptr(dset) )
+	ENDIF
 
 * describe the variables in the set
 	risc_buff = ' '
 	WRITE ( risc_buff, 3200 )
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+	kvar = 0
 	DO 400 ivar = 1, maxvars
 	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 400
+	   kvar = kvar + 1
            IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 400  
 * ... output variable code, title and subscript bounds within grid
            DO 100 i = 1, 4
@@ -144,6 +155,23 @@
 * "FULL" output, only below
 	   IF ( full ) THEN
 	      grid = ds_grid_number(ivar)
+
+* ... data type if interesting
+	      IF (ds_var_type(ivar) .EQ. ptype_string ) THEN
+	        CALL SPLIT_LIST(pttmode_explct, lun,
+     .		'            '//'Data type = TEXT', 28)
+	      ELSEIF (its_delimited                   ) THEN
+	        CALL SPLIT_LIST(pttmode_explct, lun,
+     .		'            '//'Data type = NUMERIC', 31)
+	      ENDIF
+
+* ... field type conversion
+	      IF (its_delimited) THEN
+	        CALL SPLIT_LIST(pttmode_explct, lun,
+     .		'            '//'Conversion /TYPE='//
+     .			     ftyp_name(field_types(kvar)), 0)
+	      ENDIF
+
 * ... "<units> on grid <name> with 1E35 & -999 for missing data"
 	      dlen = TM_LENSTR1( ds_var_units(ivar) )
 	      line = '             '//ds_var_units(ivar)(:dlen)//
@@ -235,10 +263,45 @@
 * end with a blank line
 	CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1) 
 
+* show delimiters used for delimited files
+	IF (full .AND. its_delimited) THEN
+* ... convert delimiter string into readabl;e form
+	  line = ' '
+	  len = 0
+* ... a DO-WHILE loop until the null is encountered
+	  i = 0
+ 700	  i = i + 1
+	    c = delims(i:i)
+	    IF (c.EQ.CHAR(0)) THEN
+	      len = len - 1   ! remove final comma
+	      GOTO 710
+	    ELSEIF (c.EQ.tab) THEN
+	      len = len + 2
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+              line(len-1:len) = '\'//'t'
+#else
+              line(len-1:len) = '\\'//'t'
+#endif	     
+	    ELSEIF (c.EQ.',') THEN
+	      len = len + 2
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+              line(len-1:len) = '\'//','
+#else
+              line(len-1:len) = '\\'//','
+#endif	     
+	    ELSEIF ( (c.GE.' ' .AND. c.LE.'~') )THEN
+	      len = len + 1
+	      line(len:len) = c  ! printable character
+	    ELSE
+	      len = len + 3
+	      WRITE (line(len-2:len),'(I3.3)') INT(c) 
+	    ENDIF
+	    len = len + 1
+	    line(len:len) = ','
+	  GOTO 700
+ 710	  CALL SPLIT_LIST(pttmode_explct, lun,
+     .			  ' /DELIMITERS="'//line(:len)//'"', len+15) 
+	ENDIF
+
 	RETURN
 	END
-
-
-
-
-

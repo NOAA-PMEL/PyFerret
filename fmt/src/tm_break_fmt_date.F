@@ -44,6 +44,7 @@
 * V500 *sh* 7/99 - if numslashnum reading fails, try dd-mmm-yyyy (VAX)
 *		to support LDEA files with "months since 01-jan"
 * V530 *acm* 12/00 - add cal_id for alternative calendar axes
+* V551 *acm*  2/03 - fix bug where seconds were wiped out. See cc comments
 
 * ARGUMENT DEFINITIONS
 *  form  - code for the date string format
@@ -93,13 +94,21 @@
 	   CALL TM_FTOC_STRNG( date(:dlen), dhol, slen)
 	   status = TM_BREAK_FMT_DATE_C(dhol, year, month,
      .				        day, hour, minute, fsecond)
+	   second = NINT(fsecond)	! information loss ...
+
 	   IF ( status .NE. 0 ) THEN
 * ... last attempt -- try VAX format
 	      CALL TM_BREAK_DATE( date, cal_id, year, month, day,
      .			hour, minute, second, status)
 	      IF ( status .NE. merr_ok ) GOTO 5100
 	   ENDIF
-	   second = NINT(fsecond)	! information loss ... 
+
+cc   Move this up after TM_BREAK_FMT_DATE_C -- if tm_break_fmt_date_c did 
+cc   not set fsecond, don't want to wipe out the seconds that were correctly
+cc   set by TM_BREAK_DATE
+
+cc	   second = NINT(fsecond)	! information loss ... 
+
 	ELSE
 	   STOP 'Unknown date format code'
 	ENDIF

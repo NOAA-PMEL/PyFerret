@@ -61,7 +61,8 @@
 *		rather than having to call cd_rd_r8_as_r4 
 * V510 6/00 *sh* - remove obsolete code left behind by 3/00 fix
 *		 - if variable is scalar fill in trans and grid_dims
-
+* V521 7/00 *kob* - modify calculation of totsize to take any striding into
+*                   account.
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -219,14 +220,13 @@
 	   filstride(fildim) = stride(memdim)
  100    CONTINUE
 
-        totsize = 1
-        DO 110 idim = 1, 4
- 110	totsize = totsize * (use_hi(idim)-use_lo(idim)+1)
-
 *  compute the memory array size (for cases where strides are used)
-* note: transposed compared to filsize
- 190	DO 200 idim = 1, 4
+*  note: transposed compared to filsize
+* *kob* 7/00 - totsize calculation now takes striding into account
+	totsize = 1
+	DO 200 idim = 1, 4
 	   memsize(idim) =  (use_hi(idim)-use_lo(idim))/stride(idim) + 1
+	   totsize = totsize * memsize(idim)
  200	CONTINUE
 
 * compute the map vector (for strides, reversals, and permutations)

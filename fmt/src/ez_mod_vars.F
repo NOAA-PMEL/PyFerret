@@ -43,6 +43,8 @@
 * revision 0.00 - 08/14/89
 * revision 0.10 - 10/25/89 - *sh* immediate COMMON update via EZ_UPDATE_VAR
 * revision 0.11 - 04/25/91 *sh* Unix/RISC port: longer des name
+* V530: change to xez_info.cmn requires ez_lib.parm first
+
 * Arguments:
 *	dset	- data set number
 *	vpos	- variable number within COMMON/XDSET_INFO
@@ -59,6 +61,7 @@
 * Include files
 #ifdef unix
 	include 'tmap_dims.parm'  
+	include 'ez_lib.parm'  
 #include "tmap_dset.parm"  
 #include "gt_lib.parm"
 	include 'xez_info.cmn_text'  

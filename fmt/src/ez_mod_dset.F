@@ -43,6 +43,7 @@
 * revision 0.01 - 04/25/91 *sh* Unix/RISC port: longer des name
 * revision 1.0	- 1/10/94 *kob* file/order upgrade to allow specification
 *		  of axis permutations.
+* V530: change to xez_info.cmn requires ez_lib.parm first
 
 * Arguments:
 *	dset	- data set number
@@ -61,6 +62,7 @@
 	include 'tmap_dims.parm'  
 #include "tmap_dset.parm"  
 	include 'tmap_errors.parm'
+	include 'ez_lib.parm'
 	include 'xez_info.cmn_text'  
 	external xez_info_data
 	include 'xdset_info.cmn_text'  

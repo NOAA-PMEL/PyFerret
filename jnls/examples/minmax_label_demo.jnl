@@ -1,0 +1,33 @@
+\ cancel mode verify	
+! Description: example calling label_hi_lo.jnl to label extrema 
+! 8/2001 *acm*
+
+USE coads_climatology
+SET REGION/X=100:360/Y=-20:60/L=7
+
+!  Label a map with local extrema, showing the values of the function.
+
+FILL/LINE/PAL=no_red slp; GO fland
+GO label_hi_lo.jnl slp label 5 4 green purple
+
+MESSAGE Now label a contour map with just H and L
+CONTOUR slp
+GO fland
+GO label_hi_lo.jnl slp mark 3 3 red blue
+
+! note: The first argument to label_hi_lo.jnl cannot have its
+!       region set using square brackets.  The script gets the 
+!       X and Y region information from the plotted region, and
+!       works fine without a "SET REGION/X=/Y=  having been made.
+pause
+
+CANCEL region
+SET region/l=7
+FILL/LINE/PAL=no_red slp[X=100:360,Y=-20:60]; GO fland
+GO label_hi_lo.jnl slp mark 2 2 red black
+
+message But putting region information in square brackets fails:
+
+!CANCEL region
+!FILL/LINE/PAL=no_red/L=7/X=100:360/Y=-20:60 slp; GO fland
+!GO label_hi_lo.jnl slp[l=7] label 6 3 green purple

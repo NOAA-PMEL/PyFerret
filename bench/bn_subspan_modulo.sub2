@@ -1,0 +1,124 @@
+! bn_subspan_modulo.sub
+! *sh* 11/02
+
+! subroutine for benchmark test bn_subspan_modulo.jnl
+! call with 
+!	yes? GO bn_subspan_modulo.sub vreg   ! test regular axis
+!	yes? GO bn_subspan_modulo.sub virr   ! test irregular axis
+
+define alias lsx list/order=x
+define alias lsxn list/order=x/nohead
+
+! check the modulo behavior of the X and T axes
+define symbox xaxname `$1,return=xaxis`
+show axis/x=-60:141 ($XAXNAME)
+show axis/x=-60:141:2 ($XAXNAME)
+show axis/x=-60:141:7 ($XAXNAME)
+
+define symbox taxname `$2,return=taxis`
+show axis/l=3:10 ($TAXNAME)
+show axis/l=3:10:3 ($TAXNAME)
+show axis/l=3:10:6 ($TAXNAME)
+
+set mode diag
+set mode stupid  ! always re-read and recompute
+lsx $1  ! default avoids void points
+lsxn/x=100 $1  ! void point above, alone (via "modulo-void-filling")
+lsxn/x=0 $1 ! void point below, alone (via modulo)
+lsxn/x=45:100 $1  ! void above (via subspan-fill)
+lsxn/x=0:100 $1  ! voids above & below (via modulo)
+set mode/last diag
+lsxn/x=50:160 $1  ! modulo above
+lsxn/x=-100:40 $1 ! modulo below
+lsxn/x=-100:160 $1  ! modulo above & below
+
+! end point testing
+lsxn/i=-8:-2 $1
+lsxn/i=-7:-2 $1
+lsxn/i=-6:-2 $1
+lsxn/i=17:20 $1
+lsxn/i=17:21 $1
+lsxn/i=17:22 $1
+set mode/last stupid
+
+! test smoothers - pos and neg modulo and combined mod and context edges
+lsx/x=500:600 $1_ragged
+lsxn/x=500:600 $1_ragged[x=@sbx]
+lsxn/x=500:545 $1_ragged[x=@sbx]
+lsxn/x=545:600 $1_ragged[x=@sbx]
+
+lsxn/x=-100:0 $1_ragged
+lsxn/x=-100:0    $1_ragged[x=@sbx]
+lsxn/x=-100:-55  $1_ragged[x=@sbx]
+lsxn/x=-56:0     $1_ragged[x=@sbx]
+
+lsxn/x=-100:142/wid=200 $1_ragged
+lsxn/x=-100:142/wid=200 $1_ragged[x=@sbx:3]
+lsxn/x=-100:142/wid=200 $1_ragged[x=@swl:5]
+lsxn/x=-100:142/wid=200 $1_ragged[x=@swl:35]
+
+! test fillers - pos and neg modulo and combined mod and context edges
+! @FAV
+lsx/x=500:600 $1_void
+lsxn/x=500:600 $1_void[x=@fav]
+
+lsxn/x=-100:0    $1_void
+lsxn/x=-100:0    $1_void[x=@fav]
+
+lsxn/x=-100:142/wid=200 $1_void
+lsxn/x=-100:142/wid=200 $1_void[x=@fav:3]
+lsxn/x=-100:142/wid=200 $1_void[x=@fav:5]
+lsxn/x=-100:142/wid=200 $1_void[x=@fav:35]
+
+! @FLN
+lsxn/x=500:600 $1_void
+lsxn/x=500:600 $1_void[x=@fln]
+
+lsxn/x=-100:0    $1_void
+lsxn/x=-100:0    $1_void[x=@fln]
+
+lsxn/x=-100:142/wid=200 $1_void
+lsxn/x=-100:142/wid=200 $1_void[x=@fln:35]
+
+! @FNR
+lsxn/x=500:600 $1_void
+lsxn/x=500:600 $1_void[x=@fnr]
+
+lsxn/x=-100:0    $1_void
+lsxn/x=-100:0    $1_void[x=@fnr]
+
+lsxn/x=-100:142/wid=200 $1_void
+lsxn/x=-100:142/wid=200 $1_void[x=@fnr:35]
+
+! Test 2-axis modulo (longitude and time)
+define alias l200 list/width=200
+define alias l200n list/width=200/nohead
+l200/i=1:13 $2
+l200n/l=1:12 $2
+l200n/l=1:12/i=1:11 $2
+l200n/l=12:21/i=-19:-9 $2
+l200n/l=12:21/i=-19:-9 $2_void
+l200n/l=12:21/i=-19:-9 $2_void[x=@fnr,t=@fnr]
+
+! test shift
+l200n/l=12:21/i=-19:-9 $2[x=@shf:2,t=@shf:-2]
+
+! test strides
+l200n/order=x $2[l=1,i=0:14]
+set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
+l200n/order=x $2[l=1,i=0:14:7]
+set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
+l200n $2[i=1,l=1:15:3]
+l200n $2[i=1,l=1:15:4]
+l200n $2[i=0:14:2,l=1:15:3]
+
+! test modulo regridding
+define axis/t=15-jan-1981:15-dec-1990/npoints=120 t1980s
+LET/quiet time_series = MOD(L[gt=t1980s]-1,12)+1
+list time_series[gt=($TAXNAME)@mod]
+list time_series[gt=($TAXNAME)@modngd]
+list/nohead/l=1001:1009 time_series[gt=($TAXNAME)@mod]
+
+! test modulo string arrays
+list $1_strings[i=5:7]  	! via IS_SUBSPAN_FILL
+list $1_strings[i=1013:1024] 	! via IS_MODULO

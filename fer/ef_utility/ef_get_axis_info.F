@@ -23,7 +23,7 @@ c*
       INTEGER id, iarg
       INTEGER grid, axis, idim
 
-      CHARACTER name(4)*16, units(4)*16
+      CHARACTER*(*) name(4), units(4)
       LOGICAL backward(4), modulo(4), regular(4)
       LOGICAL BKWD_AXIS
 
@@ -31,12 +31,13 @@ c*
 
 c* The context list was cached by Ferret and must be retrieved
 c* to be accessible to the external function.
-      CALL EF_GET_CX_LIST(cx_list)
 
-      grid = CX_GRID(cx_list(iarg))
+      CALL ef_get_cx_list(cx_list)
 
-      DO 100 idim=1, 4
-        axis = GRID_LINE(idim, grid) 
+      grid = cx_grid(cx_list(iarg))
+
+      do 100 idim=1, 4
+        axis = grid_line(idim, grid) 
         IF (axis .EQ. munknown) THEN
           name(idim) = 'unknown'
           units(idim) = 'none'

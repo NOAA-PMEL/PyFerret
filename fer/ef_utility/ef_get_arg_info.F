@@ -11,7 +11,7 @@ c* This returns the name, title and dataset associated
 c* with an argument.
 c*
 
-      SUBROUTINE EF_GET_ARG_INFO(id, iarg, name, title, units )
+      SUBROUTINE ef_get_arg_info(id, iarg, name, title, units )
 
       INCLUDE 'ferret.parm'
       INCLUDE 'xcontext.cmn'
@@ -20,21 +20,22 @@ c*
       INTEGER id, iarg
       INTEGER cat, var
 
-      CHARACTER name*24, title*128, units*32
-      CHARACTER VAR_CODE*24, VAR_TITLE*128, VAR_UNITS*32
+      CHARACTER*(*) name, title, units
+      CHARACTER var_code*24, var_title*128, var_units*32
 
       INTEGER cx_list(EF_MAX_ARGS)
 
 c* The context list was cached by Ferret and must be retrieved
 c* to be accessible to the external function.
-      CALL EF_GET_CX_LIST(cx_list)
 
-      cat = CX_CATEGORY(cx_list(iarg))
-      var = CX_VARIABLE(cx_list(iarg)) 
+      CALL ef_get_cx_list(cx_list)
 
-      name  = VAR_CODE(cat,var)
-      title = VAR_TITLE(cx_list(iarg))
-      units = VAR_UNITS(cx_list(iarg))
+      cat = cx_category(cx_list(iarg))
+      var = cx_variable(cx_list(iarg)) 
+
+      name  = var_code(cat,var)
+      title = var_title(cx_list(iarg))
+      units = var_units(cx_list(iarg))
 
 
       RETURN 

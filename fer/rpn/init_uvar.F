@@ -68,6 +68,8 @@
 *		 a grid-changing function
 *         7/97 - bug fix for case of GCFCN(a,b)
 * V491:   2/98 - fix to 5/97 changes: a constant is an expression, too
+* V500:  2/99 *sh* - bug fix for GC child var parsing
+*		GCFCN((a)) generated an error -- paren problem
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
@@ -151,27 +153,25 @@
 	paren_level = 1
 	DO 750 iat = child_start+2, child_end
 	   IF ( at_type(iat) .NE. alg_punctuation ) GOTO 750
-	   IF ( at_id(iat) .EQ. left_paren ) THEN
+	   IF     ( at_id(iat) .EQ. left_paren  ) THEN
 	      paren_level = paren_level + 1
-	   ELSEIF ( at_id(iat) .EQ. right_paren
-     .	       .OR. at_id(iat) .EQ. comma ) THEN
-	      IF ( at_id(iat) .EQ. right_paren )
-     .				paren_level = paren_level - 1
-	      IF ( paren_level .LE. 1 ) THEN
-* ...(2/98) ".AND.": lone constant like a "complex" argument (an expression)
-	         IF ( (iat .EQ. gc_arg_start+1)
-     .          .AND. (at_type(gc_arg_start) .NE. alg_constant) ) THEN
+	   ELSEIF ( at_id(iat) .EQ. right_paren ) THEN
+	      paren_level = paren_level - 1
+	   ENDIF
+* ... check for the end of an argument -- comma or final paren
+	   IF (  (at_id(iat).EQ.comma .AND. paren_level.EQ.1)
+     .	    .OR. paren_level .EQ. 0   ) THEN
+* ...(2/98) treat lone constant like a "complex" argument (an expression)
+	      IF ( (iat .EQ. gc_arg_start+1)
+     .       .AND. (at_type(gc_arg_start) .NE. alg_constant) ) THEN
 * ... this argument is "simple" (a single atom) 
-	            gc_arg_start = iat + 1	! look for next
-	         ELSE
+	         gc_arg_start = iat + 1	! look for next
+	      ELSE
 * ... make this (complex) argument into a seperate child variable
-	            child_start = gc_arg_start
-	            child_end = iat - 1
-	            GOTO 800
-	         ENDIF	
-	      ENDIF
-	   ELSE
-	      CALL WARN('Unknown punctuation: INIT_UVAR')  ! never called (?!)
+	         child_start = gc_arg_start
+	         child_end = iat - 1
+	         GOTO 800
+	      ENDIF	
 	   ENDIF
  750	CONTINUE
 

@@ -134,6 +134,7 @@
 *                    to EXIT command
 * V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
 *	10/01 *sh* - added alias COLUMNS for SET DATA/FORMAT=Delimited
+*	11/01 *sh* - added list/width=
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -728,7 +729,7 @@
 		DATA qualifiers  (nqual_at5a+26)/ 'TLIMITS'/
 		DATA qualifiers  (nqual_at5a+27)/ 'CLOBBER'/
 		DATA qualifiers  (nqual_at5a+28)/ 'QUIET'/
-		DATA qualifiers  (nqual_at5a+29)/ '****'/
+		DATA qualifiers  (nqual_at5a+29)/ 'WIDTH'/
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/

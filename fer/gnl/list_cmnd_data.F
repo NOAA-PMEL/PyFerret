@@ -67,8 +67,9 @@
 * V530:  8/00 *sh* - added support for string variables
 * V530:  3/01 *acm*- Put the calendar name in the heading if TIME not
 *		     otherwise listed, and if non-gregorian calendar.
+* V540: 11/01 *sh* - added LIST/WIDTH=
+*	           - expanded and reorganized the LIST heading
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -76,6 +77,7 @@
 	external xdset_info_data
 	include 'ferret.parm'
 	include 'errmsg.parm'
+	include 'slash.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xprog_state.cmn'
@@ -85,25 +87,10 @@
 	include 'xrisc.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'		! FOR LINE_UNITS and T0
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * local parameter declarations:
-	INTEGER		line_length, min_field_width, max_line_len
-	PARAMETER     ( line_length  = 130,
-     .			min_field_width = 4,
+	INTEGER		 min_field_width, max_line_len
+	PARAMETER     ( min_field_width = 4,
      .			max_line_len = 3600 )
 
 * calling argument declarations:
@@ -116,15 +103,16 @@
 	LOGICAL		GEOG_LABEL,
      .			line_too_long, del_col_changed, all_bad,
      .			valid(4), need_doc(4), span(4), do_unform,
-     .			do_stream, do_comma_del, do_tab_del, itsa_string
+     .			do_stream, do_comma_del, do_tab_del, itsa_string,
+     .			fortran_selfdoc, do_auto_fmt
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE,
      .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
      .			width, w0, grid, dlen, prec_digits,
      .			ndim, lo(4), hi(4), del(4),
-     .			i, j, k, l, npts,
+     .			i, j, k, l, npts, line_length, dset,
      .			temp, num_fld_est, nleft, nright, alen, num_fields,
-     .			idim, vlen, len_set_name, istart, iend, ifield,
+     .			idim, vlen, istart, iend, ifield,
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id
@@ -163,6 +151,8 @@
         do_stream       = list_fmt_type .EQ. plist_stream
         do_comma_del    = list_fmt_type .EQ. plist_comma_del
         do_tab_del      = list_fmt_type .EQ. plist_tab_del
+        do_auto_fmt     = list_fmt_type .EQ. plist_default
+	fortran_selfdoc = head_enh .AND. list_format_given
 	itsa_string     = mr_type(mr) .EQ. ptype_string
 
 * determine precision for outputting values
@@ -174,6 +164,17 @@
 	   prec_digits = MAX(1.,MIN(value, 16.))	! 1 to 16	   
 	ELSE
 	   prec_digits = list_digits
+	ENDIF
+
+* determine maximum width of the output records
+	lp = qual_given( slash_list_width )
+	IF ( lp .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                     value, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   line_length  = MIN(ABS(value),max_line_len)
+	ELSE
+	   line_length  = 130
 	ENDIF
 
 * determine row and column axes and how many axes are "significant"
@@ -196,56 +197,118 @@
 	vname_buff   = vname_buff(:vlen)//' '//
      .				PAREN_SURROUND(VAR_UNITS(cx), alen)
 	CALL SPLIT_LIST(pttmode_explct, list_lun,
-     .				'             '//vname_buff, 0)
+     .				'             VARIABLE : '//vname_buff, 0)
 
 * ... qualify title with modification line ?
 	vname_buff = VAR_TITLE_MOD( cx )
 	vlen   = TM_LENSTR( vname_buff )
 	IF ( vlen .GT. 0 ) CALL SPLIT_LIST( pttmode_explct, list_lun,
-     .			'             '//vname_buff(1:vlen), vlen+13)
+     .			'                        '//vname_buff(1:vlen),
+     .				      vlen+24)
 
-* ... then location information
+* ... then DATA SET
+	dset = cx_data_set(cx)
+	IF ( dset .NE. pdset_irrelevant ) THEN
+* ... title
+	   CALL GET_DSET_TITLE( cx_data_set(cx), line_buff, slen )
+	   IF (line_buff .NE. ' ') THEN
+	     CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .			'             DATA SET : '//
+     .			 line_buff(1:slen), slen+24)
+	   ENDIF
+* ... find split point between filename and path
+	   slen = TM_LENSTR1(ds_des_name(dset))
+	   DO i = slen, 1, -1
+	      IF ( ds_des_name(dset)(i:i) .EQ. '/' ) GOTO 34
+	   ENDDO
+	   i = 0
+* ... filename
+ 34	   CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .			'             FILENAME : '//
+     .			ds_des_name(dset)(i+1:slen), 24+(slen-i))
+* ... DODS URL BASE or ABSOLUTE PATH
+	   IF (i.GT.0 .AND.  ds_des_name(dset)(1:1).NE.'.')
+     .			CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .			'             FILEPATH : '//
+     .			 ds_des_name(dset)(:i), i+24)
+	ENDIF
+
+* ... BAD FLAG: xxx
+	IF (.NOT.fortran_selfdoc) THEN
+	   IF (.NOT.do_auto_fmt) THEN
+	     line_buff = ' '
+	     WRITE ( line_buff, '(1PG14.7)' ) cx_bad_data(cx)
+	     CALL SPLIT_LIST( pttmode_explct, list_lun,
+     .			'             BAD FLAG : '//
+     .		        line_buff, 38 )
+	   ENDIF
+* ... SUBSET:   e.g. "Nx by Ny (longitude-latitude)"
+	   line_buff = '             SUBSET   : '
+	   l = 24
+	   DO idim = 1, 4
+	      IF ( span(idim) ) THEN
+	         i = perm(idim)
+	         j = CX_DIM_LEN ( i, cx )
+	         line_buff = line_buff(:l)//LEFINT( j, vlen )
+	         l = l + vlen
+	         line_buff = line_buff(:l)//' by '
+	         l = l + 4
+	      ENDIF
+	   ENDDO
+	   IF ( l.GT.24) THEN
+	      line_buff(l-3:l+7) = ' points (  '
+	      l = l + 5
+	      DO idim = 1, 4
+	         IF ( span(idim) ) THEN
+	            line_buff = line_buff(:l)//
+     .				AX_TITLE(perm(idim), cx_grid(cx), vlen)
+	            l = l + vlen
+	            line_buff = line_buff(:l)//'-'
+	            l = l + 1
+	         ENDIF
+	      ENDDO
+	      line_buff(l:l) = ')'
+	      CALL SPLIT_LIST(pttmode_explct, list_lun,
+     .			      line_buff(:l), l)
+	   ENDIF
+	ENDIF
+
+* ... which axes require labels
 	DO 35 idim = 1, 4
  35	need_doc(idim) = .TRUE.
 	IF ( .NOT.(do_unform.OR.list_format_given) ) THEN
 	   DO 36 idim = 1, ndim
- 36	   need_doc(idim) = .FALSE.
-* ... kludge - if listing a column where the column heading has a transform
-	   IF ( ndim .EQ. 2 .AND. cx_trans(perm(1),cx).GT.trans_compress_code )
-     .		need_doc(1) = .TRUE.
+ 36	   need_doc(idim) = CX_DIM_LEN( perm(idim), cx ) .EQ. 1
 	ENDIF
 
+* ... if not indicated in time label show a nonstandard calendar name
 	cal_name = line_cal_name( grid_line(t_dim, grid) )
 	cal_id = TM_GET_CALENDAR_ID (cal_name)
+	DO i = 1, 4
+	   idim = perm(i)
+	   IF ( .NOT.need_doc(i) .AND. idim.EQ.t_dim .AND.
+     .	     cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
+	      slen = TM_LENSTR(cal_name)
+	      CALL SPLIT_LIST( pttmode_explct, list_lun,
+     .                  '             CALENDAR : '
+     .			//cal_name(:slen), alen+slen+24)
+	   ENDIF
+	ENDDO
 
+* ... region information
 	DO 60 i = 1, 4
 	   idim = perm(i)
 	   IF ( need_doc(i) ) THEN
 	      IF ( cx_lo_ww( idim,cx ) .NE. unspecified_val8 ) THEN 
 	         CALL ASCII_LIMITS( cx, idim, line_buff, vlen )
 	         col_head_format = AX_TITLE( idim, grid, alen )
-	         CALL SPLIT_LIST( pttmode_explct, list_lun, '             '//
-     .			col_head_format( :alen )//': '//line_buff(1:vlen),
-     .			alen+vlen+15)
+	         IF (alen .LT. 9) alen = 9
+	         CALL SPLIT_LIST( pttmode_explct, list_lun,
+     .			'             '//col_head_format( :alen )//': '
+     .			//line_buff(1:vlen), alen+vlen+15)
 	      ENDIF
-* ...    if not indicated in time label show a nonstandard calendar name
-	   ELSE IF (idim .EQ. t_dim  .AND. 
-     .	     cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
-
-	      slen = TM_LENSTR(cal_name)
-	      CALL SPLIT_LIST( pttmode_explct, list_lun, '             '//
-     .                      'Calendar: '//cal_name(:slen),
-     .			alen+slen+23)
 	   ENDIF
  60	CONTINUE
-
-* ... then data set name or names
-	IF ( cx_data_set(cx) .NE. pdset_irrelevant ) THEN
-	   CALL GET_DSET_NAME( cx_data_set(cx), line_buff, len_set_name )
-	   CALL SPLIT_LIST(pttmode_explct, list_lun,
-     .			'             DATA SET: '//
-     .			 line_buff(1:len_set_name), len_set_name+23)
-	ENDIF
 
 * * * * * DETERMINE LIST LIMITS * * *
  200	DO 210 i = 1, 4
@@ -256,10 +319,10 @@
  210	CONTINUE
 
 * * * * *  ENHANCED HEADING STUFF (10/94) * * * * *
-	IF ( head_enh ) THEN
-	   i = 1	   
+	IF ( fortran_selfdoc ) THEN
 * ... GEOMETRY: xxx
 	   line_buff = ' '
+	   i = 1	   
 	   DO 220 idim = 1, 4
 	      IF ( span(idim) ) THEN
 	         line_buff(i:i) = ww_dim_name(perm(idim))
@@ -269,6 +332,7 @@
 	   CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				'             GEOMETRY: '//
      .			 	line_buff(:i), i+23)
+
 * ... SIZE: xxx
 	   line_buff = ' '
 	   l = 1
@@ -283,6 +347,7 @@
 	   CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				'             SIZE: '//
      .			 	line_buff(:l), l+19)
+
 * ... FORTRAN FORMAT: xxx
 	   IF ( list_format .EQ. '(5(1PG12.5))' ) THEN
 	      CALL SPLIT_LIST(pttmode_explct, list_lun,
@@ -291,11 +356,13 @@
 	      CALL SPLIT_LIST(pttmode_explct, list_lun,
      .		'             FORTRAN FORMAT: '//list_format, 0)
 	   ENDIF
+
 * ... MISSING VALUE FLAG: xxx
 	   line_buff = ' '
 	   WRITE ( line_buff, 3062 ) cx_bad_data(cx)
  3062	   FORMAT( 13x,'MISSING VALUES FLAG: ',1PG14.7)
 	   CALL SPLIT_LIST( pttmode_explct, list_lun, line_buff, 0 )
+
 * ... axis COORDINATES:
 	   DO 250 idim = 1, 4
 	      IF ( span(idim) ) THEN
@@ -306,7 +373,7 @@
  3065	         FORMAT(A1,' COORDINATES: ')
 	         line_buff(16:) = line_units(axis)
 	         alen = TM_LENSTR1( line_buff )
-		 IF (  i .EQ. t_dim ) THEN		! add T0=
+	  	 IF (  i .EQ. t_dim ) THEN		! add T0=
 	            IF ( GEOG_LABEL(i,cx_grid(cx)) ) THEN 
 	               line_buff(alen+2:) =  '(T0='//line_t0(axis)
 	               alen = TM_LENSTR1( line_buff )
@@ -323,7 +390,7 @@
 	      ENDIF
  250	   CONTINUE
 * ... DATA:
-	   CALL SPLIT_LIST(pttmode_explct, list_lun, 'DATA:', 5 )
+	     CALL SPLIT_LIST(pttmode_explct, list_lun, 'DATA:', 5 )
 	ENDIF
 
 * * * * * LIST DATA UNFORMATTED OR WITH USER FORMAT (no frills)

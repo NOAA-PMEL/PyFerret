@@ -3,37 +3,22 @@
 ! Benchmark for sort and sample external Functions
 ! ACM 5/99
 
-! test sortk, samplek
+! test sortz, samplez
  
 
 !  data set  gt160w011 is in the portable benchmark data area.
 
 can region
-! use gt160w011
-! set region/i=70/l=1
+use gt160w011
 
-! shade temp
-
-! let zsorted_indices = sortk(temp)
-! let zsorted_temp = samplek(temp, zsorted_indices)
-! shade zsorted_temp
-
-! set region/j=10
-! let len = zsorted_temp[k=@ngd]
-! list len
-
-
-can region
-use "/home/ja4/kobrien/FERRET/bench/gt4d011.cdf"
-
-set region/i=100/l=1
+set region/i=70/l=1
 shade temp
 
 let zsorted_indices = sortk(temp)
 let zsorted_temp = samplek(temp, zsorted_indices)
 shade zsorted_temp
 
-set region/j=40
+set region/j=10
 let len = zsorted_temp[k=@ngd]
 list len
 

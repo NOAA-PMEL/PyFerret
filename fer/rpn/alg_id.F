@@ -52,6 +52,8 @@
 * V495: 7/7/98 - allow variable names in single quotes - bypass name check
 *     : 9/30/98 - NAG F90 (linux) received error on above change.  
 *                 need to put single  tick between double quotes  *kob*
+* V500: 12/98 - allow "{1,3,5}" notation
+*	 1/99 - allow strings in double quotes (as args to function)
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -144,6 +146,22 @@
 	   IF ( imatch .NE. atom_not_found ) THEN
 	      at_type(i) = alg_pseudo_var
 	      at_id(i)   = imatch
+	      GOTO 100
+	   ENDIF
+
+* constant array of the form "{1,3,5}" ?
+	  IF ( text(at_start(i):at_start(i)).EQ."{"
+     .	 .AND. text(at_end  (i):at_end  (i)).EQ."}" ) THEN
+	      at_type(i) = alg_const_var
+	      at_id(i)   = unspecified_int4
+	      GOTO 100
+	   ENDIF
+
+* string in double quotes? (1/99)
+	  IF ( text(at_start(i):at_start(i)).EQ."\""
+     .	 .AND. text(at_end  (i):at_end  (i)).EQ."\"" ) THEN
+	      at_type(i) = alg_string
+	      at_id(i)   = unspecified_int4
 	      GOTO 100
 	   ENDIF
 

@@ -41,13 +41,14 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
+
 * V200: 11/24/89
 * V402: 7/95 - Allow nested [] of the form vname1[G=vname2[D=dset]]
 * V495: 7/7/98 - allow variable names in single quotes - add new state S10
 *                and new character class 11 (single quote)
 *       7/23 - fixed problem missed the first time. brackets: 'X'[stuff]
+* V500: 12/98 - allow {1,3,5} notation for lists of constants
+*	 1/99 - allow strings in quoble quotes (as fcn args)
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -81,6 +82,12 @@
 *	S8 - interpreting exponent
 *	S9 - inside of nested []	(mod 7/95)
 *       S10- inside of single quote pair
+*	S11- ignoring characters inside {}
+*	S12- inside of double quote pair
+
+*	-1 ==> Syntax Error
+*	-2 ==> Illegal Character
+*	-9 ==> **lex state error
 
 * classes of characters
 *	C1 - + -
@@ -94,29 +101,37 @@
 *	C9 - E
 *	C10- .
 *       C11- '
-*	C12- all others
-*		    ... CHARACTER CLASS ...
-*             C1 C2 C3 C4 C5 C6 C7 C8 C9 C10C11 C12
+*	C12- {
+*	C13- }
+*	C14- "
+*	C15- all others
+
+*	... CHARACTER CLASS: next_state(class, last_state) ...
+*             C1 C2 C3 C4 C5 C6 C7 C8 C9 C10C11C12C13C14C15
 	DATA (next_state(i,1),i=1,num_class)
-	1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10, -2/
+	1    / 2, 3, 4,-1,-1, 5, 5, 1, 4,  3,10,11,-1,12,-2/
 	DATA (next_state(i,2),i=1,num_class)
-	1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, -2/
+	1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
 	DATA (next_state(i,3),i=1,num_class)
-	1    / 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, 7, -2/
+	1    / 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
 	DATA (next_state(i,4),i=1,num_class)
-	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, 7, -2/
+	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, 7,-1,-1, 7,-2/
 	DATA (next_state(i,5),i=1,num_class)
-	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9, -2/
+	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
 	DATA (next_state(i,6),i=1,num_class)
-	1    / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6,  6/
+	1    / 6, 6, 6, 9, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6, 6/
 	DATA (next_state(i,7),i=1,num_class)
-	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9, -2/
+	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
 	DATA (next_state(i,8),i=1,num_class)
-	1    / 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, 7, -2/
+	1    / 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
 	DATA (next_state(i,9),i=1,num_class)
-	1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9/
+	1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
 	DATA (next_state(i,10),i=1,num_class)
-	1    / 10,10,10,10,10,10,10,10,10,10, 10,10/
+	1    / 10,10,10,10,10,10,10,10,10,10,10,10,10,10,10/
+	DATA (next_state(i,11),i=1,num_class)
+	1    /11,11,-1,-1,-1,11,11,11,11, 11,11,-1, 5,11,11/
+	DATA (next_state(i,12),i=1,num_class)
+	1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
 
 
 * initialize
@@ -173,8 +188,9 @@
 	ENDIF
 
 * take appropriate action
-*		 S1  S2  S3  S4  S5  S6  S7  S8   S9  S10
-	GOTO ( 9999,100,100,100,500,100,700,100, 900,1000 ) state
+*		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11 S12
+	GOTO (9999,100,100,100,500,100,700,100, 900,1000,100,1100)
+     .								state
 
 * continue to next character
  100	GOTO 5
@@ -206,12 +222,12 @@
 * single-quoted strings (mod 7/98)
 * this probably violates the theoretical underpinnings of the finite state
 * engine but ... what the heck, it's an easy hack
-* stay in this state until the matching \" is found
+* stay in this state until the matching \' is found
 * Note: this crude code cannot deal with nested quotations or escaped quotes
 *    Also, quoted names inside of square brackets will not be handled here
  1000	IF (class .EQ. 11) THEN		! quote found
 	   IF (last_state .EQ. 10) THEN      
-	      state = 4                 ! closing quote
+	      state = 4                 ! closing quote (?why not GOTO 500?)
 *       ... note that we may still be interpreting names like 'X'[stuff]
 	   ELSE
 	      atom_open = .TRUE.        ! opening quote
@@ -220,6 +236,24 @@
 	   CONTINUE                     ! inside of quote
 	ENDIF
 	GOTO 5
+
+* double-quoted strings (mod 1/99)
+* this probably violates the theoretical underpinnings of the finite state
+* engine but ... what the heck, it's an easy hack
+* stay in this state until the matching \" is found
+* Note: this crude code cannot deal with nested quotations or escaped quotes
+ 1100	IF (class .EQ. 14) THEN		! quote found
+	   IF (last_state .EQ. 12) THEN      
+	      GOTO 500                 ! closing quote found
+*       ... note that we may still be interpreting names like 'X'[stuff]
+	   ELSE
+	      atom_open = .TRUE.        ! opening quote
+	   ENDIF
+	ELSE          
+	   CONTINUE                     ! inside of quote
+	ENDIF
+	GOTO 5
+
 
 * error exits
  5000	status = ferr_syntax

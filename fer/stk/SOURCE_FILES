@@ -1,8 +1,10 @@
 SRCS_F = \
+temp_show_ef_string.F\
 bad_edges.F\
 bad_edges_sub.F\
 clean_stack.F\
 constant_context.F\
+const_var_context.F\
 diagnostic_out.F\
 eval_expr.F\
 explicit_uvar.F\
@@ -16,6 +18,7 @@ interp_stack.F\
 is_algebra.F\
 is_calc.F\
 is_constant.F\
+is_const_var.F\
 is_do_gc_fcn.F\
 is_do_op.F\
 is_gather.F\
@@ -26,6 +29,7 @@ is_read.F\
 is_reconcile.F\
 is_regrid.F\
 is_reverse.F\
+is_string.F\
 is_strip.F\
 is_trans.F\
 is_uvar_grid.F\
@@ -44,5 +48,6 @@ regrid_lims.F\
 rqst_regrid.F\
 stack_ptr_dn.F\
 stack_ptr_up.F\
+string_context.F\
 unprotect_cmnd_data.F\
 xerror.F 

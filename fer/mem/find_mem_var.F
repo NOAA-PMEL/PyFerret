@@ -67,6 +67,8 @@
 * V420:  11/95	- speed up by bypassing NORMAL axes
 *	 	- for modulo axes uvar_given "given" is not a sufficient test
 *				to bypass checks
+* V500: 12/98 *sh* - added support for cat_const_var ("{1,3,5}") (uncached)
+*        1/99 *sh* - added support for cat_string (uncached)
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -108,6 +110,11 @@
 	IF ( defining_grid   .EQ. unspecified_int4
      .	.OR. cx_data_set(cx) .EQ. unspecified_int4
      .	.OR. var             .EQ. unspecified_int4 ) GOTO 5000
+
+* cat_const_vars are never cached (see IS_CONST_VAR)
+* ditto for cat_string (as-of 1/99)
+	IF ( cx_category(cx) .EQ. cat_const_var
+     .  .OR. cx_category(cx) .EQ. cat_string   ) GOTO 5000
 
 * are we looking for  user defined variable ?
 	itsa_uvar = cx_category(cx) .EQ. cat_user_var

@@ -7,6 +7,8 @@
 *  9/97: added @NRDA,NRDB,NRIA,NRIB transforms
 * 10/97: added prgrd_xact_pts (eliminated prgrd_nearest)
 * 10/98: *jc* added pgc_span_*, trans_reduced (for grid-changing functions)
+* 12/98: added cat_const_var and alg_const_var
+*  1/99: added cat_string and alg_string
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -95,7 +97,8 @@
      .			cat_user_var, cat_dummy_var,
      .			cat_expr_var, cat_axis_var,
      .			cat_temp_var, cat_pseudo_var,
-     .			cat_constant, cat_file_rev
+     .			cat_constant, cat_file_rev,
+     .			cat_const_var,cat_string
 	PARAMETER     ( cat_file_var = 1,
      .			cat_calc_var = 2,
      .			cat_user_var = 3,
@@ -105,7 +108,9 @@
      .			cat_temp_var = 7,
      .			cat_pseudo_var = 8,
      .			cat_constant   = 9,
-     .			cat_file_rev   = 10 )
+     .			cat_file_rev   = 10,
+     .			cat_const_var  = 11,
+     .			cat_string     = 12 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,
@@ -332,7 +337,9 @@
      .			alg_operand,
      .			alg_no_op,
      .			alg_grid_chg_fcn,
-     .			alg_child_var
+     .			alg_child_var,
+     .			alg_const_var,
+     .			alg_string
 	PARAMETER     (	alg_operator   = 1,
      .			alg_constant   = 2,
      .			alg_variable   = 3,
@@ -346,7 +353,9 @@
      .			alg_operand    = 11,
      .			alg_no_op      = 12,
      .			alg_grid_chg_fcn = 13,
-     .			alg_child_var = 14 )
+     .			alg_child_var    = 14,
+     .			alg_const_var    = 15,
+     .			alg_string	 = 16 )
 
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)

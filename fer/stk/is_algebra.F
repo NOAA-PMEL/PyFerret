@@ -55,10 +55,12 @@
 * V420:  9/95 - deallocate dynamic grid (if any) at cleanup time
 * V450:  1/97 - process alg_child_var and alg_grid_chg_fcn
 *        7/97 - generate child var name using GCF_PARENT_UVAR
-* v491   3/98 - sgi benchmarking uncovered bug in psuedo_variable processing - 
+* V491   3/98 - sgi benchmarking uncovered bug in psuedo_variable processing - 
 *               no valid "name" was being set up   *kob/sh*
 *        4/98 - pass default context (lo_cx) to MERGE_CONTEXT *jc*
-*
+* V500: 12/98 *sh* - add cat_const_var (like "{1,3,5}")
+*	 1/99 *sh* - add cat_string -- temporarily do not allow A="string"
+
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -207,6 +209,10 @@
 	   GOTO 500
 	ELSEIF ( itype .EQ. alg_grid_chg_fcn ) THEN
 	   GOTO 600
+	ELSEIF ( itype .EQ. alg_const_var ) THEN
+	   GOTO 700
+	ELSEIF ( itype .EQ. alg_string ) THEN
+	   GOTO 800
 	ELSEIF ( itype .EQ. alg_no_op ) THEN
 	   GOTO 100
 	ELSE
@@ -335,6 +341,52 @@
 	IF ( status .NE. ferr_ok ) RETURN
 	GOTO 100
 
+* "constant variable" (fixed array like "{1,3,5}")
+* ... get the context here, then RETURN 1 to evaluate
+ 700	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	hi_cx = cx_stack_ptr
+	CALL CONST_VAR_CONTEXT ( uvar_text(uvar)(start:end),
+     .				 uvar,
+     .				 item,
+     .				 lo_cx,
+     .				 hi_cx,
+     .				 status )
+	IF ( status .NE. ferr_ok ) RETURN
+* ... request this variable on the interpretation stack ( via RETURN 1 )
+	CALL PUSH_INTERP_STACK( isp, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	is_cx ( isp ) = hi_cx
+	is_obj( isp ) = lo_isp	! claimed by this level
+	IF ( cx_category(hi_cx) .EQ. cat_const_var ) THEN
+* ... special action if this component variable is user-defined (uvar)
+	   is_uvar( isp ) = cx_variable( hi_cx )
+	ENDIF
+	RETURN 1
+
+* "string"
+* ... get the context here, then RETURN 1 to evaluate
+ 800	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	hi_cx = cx_stack_ptr
+	CALL STRING_CONTEXT (	uvar,
+     .				item,
+     .				lo_cx,
+     .				hi_cx,
+     .				status )
+	IF ( status .NE. ferr_ok ) RETURN
+* ... request this variable on the interpretation stack ( via RETURN 1 )
+	CALL PUSH_INTERP_STACK( isp, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	is_cx ( isp ) = hi_cx
+	is_obj( isp ) = lo_isp	! claimed by this level
+	IF ( cx_category(hi_cx) .EQ. cat_string ) THEN
+* ... special action if this component variable is user-defined (uvar)
+	   is_uvar( isp ) = cx_variable( hi_cx )
+	ENDIF
+	RETURN 1
+
+
 * DONE - clean up
  1000	hi_cx = is_cx( isp )
 	hi_mr = is_mr( isp )
@@ -393,6 +445,9 @@
 	   CALL RE_ASSIGN_VARIABLE( hi_mr, big_cx )
 	   CALL PASS_AMBIG_LIMS( lo_cx, hi_mr, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
+	ELSEIF (mr_category(hi_mr) .EQ. cat_string) THEN
+! ... string variables not yet implemented 1/99 *sh*
+	   GOTO 5100
 	ELSEIF ( EXPLICIT_UVAR(uvar) ) THEN
 * ... result of a simple definition like DEFINE VARIABLE UAVE=U[K=@AVE]
 *	or DEFINE VARIABLE NEW=X
@@ -421,4 +476,7 @@
 
 * error exit
  5000	RETURN
+ 5100	CALL ERRMSG(ferr_not_implemented, status,
+     .		'Quoted strings may only be function arguments'
+     .		, *5000)
 	END	

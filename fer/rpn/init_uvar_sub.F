@@ -54,6 +54,8 @@
 *     : 9/30/98 - NAG F90 (linux) received error on above change.  
 *                 need to put single  tick between double quotes  *kob*
 *               - also needed a definition for HEXDF variable used
+* V500:  1/99 *sh* - don't upcase double quoted strings, either
+
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
 	include 'ferret_cmn/errmsg.parm'	
@@ -77,8 +79,13 @@
 * internal variable declarations:
 	LOGICAL inquote
 	INTEGER	STR_UPCASE, vax_code, i, natom_rpn,
-     .                  rpn_order(maxatoms), i2, is, ie
+     .                  rpn_order(maxatoms), i2, is, ie, quote_type
 	CHARACTER	err_string*255, c*1
+
+* internal parameter declarations
+	INTEGER		p_single_quote, p_double_quote
+	PARAMETER     ( p_single_quote = 1,
+     .			p_double_quote = 2 )
 
 * kob 9/30/98 This needed for 7/7/98 code addition
 #ifdef FORTRAN_90
@@ -102,9 +109,10 @@
 * kob 12/97 - natom_rpn cannot be greater than max_uvar_items
 	IF (natom_rpn .GE. max_uvar_items) GOTO 5500
 
-* copy name code and text into slot and change to all upper case
+* copy name code and text into slot and change as needed to upper case
 	vax_code = STR_UPCASE( uvar_name_code( uvar ), name )
 * (7/98) - don't upcase portions of the string inside single quotes
+* (1/99) - same deal for double quotes
 !	vax_code = STR_UPCASE( uvar_text     ( uvar ), text(txstart:txend) )
 	uvar_text(uvar) = ' '
 	i2 = 0
@@ -114,10 +122,26 @@
 	   c = text(i:i)
 * *kob* NAG f90 gave error on statement with three tick marks
 #ifdef FORTRAN_90
-	   IF ( c .EQ. "'" ) inquote = .NOT.inquote
+	   IF ( c .EQ. "'" ) THEN
 #else
-	   IF ( c .EQ. '\'' ) inquote = .NOT.inquote
+	   IF ( c .EQ. '\'' ) THEN
 #endif
+* ... single quote -- start or end of string?
+	      IF (inquote) THEN
+	        IF (quote_type.EQ.p_single_quote) inquote = .FALSE.
+	      ELSE
+		inquote = .TRUE.
+	        quote_type = p_single_quote
+	      ENDIF
+	   ELSEIF ( c .EQ. '"' ) THEN
+* ... double quote -- start or end of string?
+	      IF (inquote) THEN
+	        IF (quote_type.EQ.p_double_quote) inquote = .FALSE.
+	      ELSE
+		inquote = .TRUE.
+	        quote_type = p_double_quote
+	      ENDIF
+	   ENDIF
 	   IF ( inquote .OR. (c .LT. 'a' .OR. c .GT. 'z' ) ) THEN
 	      uvar_text(uvar)(i2:i2) = c   ! preserve case
 	   ELSE

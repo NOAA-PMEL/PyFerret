@@ -46,6 +46,9 @@
 * written for VAX computer under VMS operating system
 *
 * V200: 11/29/89
+* V500: 12/98 *sh* - update this neglected, untested routine to recognize
+*	alg_grid_chg_fcn, alg_child_var, and alg_const_var
+*        1/99 -- and alg_string
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -90,7 +93,11 @@
      .	   .OR.  atom_type(atom) .EQ. alg_variable
      .	   .OR.  atom_type(atom) .EQ. alg_pseudo_var
      .	   .OR.  atom_type(atom) .EQ. alg_function
-     .	   .OR.  atom_type(atom) .EQ. alg_operator ) THEN
+     .	   .OR.  atom_type(atom) .EQ. alg_operator
+     .	   .OR.  atom_type(atom) .EQ. alg_grid_chg_fcn
+     .	   .OR.  atom_type(atom) .EQ. alg_child_var
+     .	   .OR.  atom_type(atom) .EQ. alg_string
+     .	   .OR.  atom_type(atom) .EQ. alg_const_var ) THEN
 	   GOTO 10	
 	ENDIF
 	STOP 'NOT_RPN'

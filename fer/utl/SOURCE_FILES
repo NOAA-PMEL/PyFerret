@@ -22,6 +22,7 @@ copy_grid_trans.F\
 copy_grid_trans_sub.F\
 copy_into.F\
 copy_into_sub.F\
+count_number_list.F\
 cstring_insert.F\
 deallo_all_grids.F\
 deallo_grid.F\
@@ -31,6 +32,7 @@ extract_line_sub.F\
 extract_z_line.F\
 field_minmax.F\
 field_minmax_sub.F\
+gcf_arg_type.F\
 gcf_child_var_name.F\
 gcf_find_fcn.F\
 gcf_get_arg_lims.F\
@@ -74,6 +76,7 @@ mult_grid.F\
 no_grid_range.F\
 no_line_range.F\
 parse_nam_dset_grd.F\
+parse_number_list.F\
 permute.F\
 permute_sub.F\
 region_number.F\

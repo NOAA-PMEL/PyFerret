@@ -79,6 +79,7 @@
 * V450: 2/97  - Allow application of modulo to GC vars (but not other uvars)
 * V455    9/97 - added transforms @CDA,CDB,CIA,CIB
 * V500: 10/98 *jc* - added lines to ignore hidden @RDC
+*	12/98 - *sh* added call to IS_CONST_VAR
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -389,6 +390,16 @@
 * ... calculate from internal model-diagnostic code ?
 	ELSEIF ( cat .EQ. cat_calc_var	) THEN
 	   CALL IS_CALC   ( memory, *10, *2000, status )
+	   GOTO 5000
+
+* ... get a "constant variable" (say, "{1,3,5}")
+	ELSEIF ( cat .EQ. cat_const_var	) THEN
+	   CALL IS_CONST_VAR   ( memory, *10, *2000, status )
+	   GOTO 5000
+
+* ... get a string in qouble quotes
+	ELSEIF ( cat .EQ. cat_string	) THEN
+	   CALL IS_STRING   ( memory, *10, *2000, status )
 	   GOTO 5000
 
 	ELSE

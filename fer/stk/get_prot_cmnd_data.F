@@ -83,6 +83,9 @@
 *	        PARAMETER statement because laslen was modified in code
 *	      - Linux F90 doesn't allow SAVE statement, so put an ifdef
 *		check around it 
+* V500:  1/99 - allowing strings in quoble quotes requires fix to quote
+*		handling as in LIST "hello"
+*		Added call to ALL_1_ARG
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -128,17 +131,21 @@
 	CALL GET_NEW_CX( dflt_cx, cx_cmnd, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+* consolidate arguments broken up by command parser back into a single arg
+* ... correct mis-handling of surrounding quotation marks
+	CALL ALL_1_ARG
+
 * * * * BREAK FULL EXPRESSION INTO SUB_EXPRESSIONS * * *
 * ... and store them in the uvar list names as "EX#n"
 * ... eg. LIST U^2,V^2 breaks into "U^2" and "V^2"
 * ... or re-use the last expression ?
 	IF ( num_args .GT. 0 ) THEN
-	   IF ( last(:laslen) .NE. cmnd_buff(arg_start(1):len_cmnd) 
+	   IF ( last(:laslen) .NE. cmnd_buff(arg_start(1):arg_end(1)) 
      .	   .OR. num_uvars_in_cmnd .EQ. cmnd_uvars_not_given 		) THEN
-	      last = cmnd_buff(arg_start(1):len_cmnd)
-	      laslen = len_cmnd - arg_start(1) + 1
+	      last = cmnd_buff(arg_start(1):arg_end(1))
+	      laslen = arg_end(1) - arg_start(1) + 1
 	      CALL DELETE_OLD_EXPR
-	      CALL BREAK_UP_EXPR( cmnd_buff( arg_start(1):len_cmnd ),
+	      CALL BREAK_UP_EXPR( cmnd_buff(arg_start(1):arg_end(1)),
      .				  num_uvars_in_cmnd, status )
 	      IF ( status .NE. ferr_ok ) THEN
 	         num_uvars_in_cmnd = cmnd_uvars_not_given

@@ -50,6 +50,8 @@
 *       11/30/89 - process pseudo-variables, too
 *	 12/4/89 - moved hashing of expression to SANITARY_VAR_CODE
 * V320:  2/22/95 - added support for reverse-axis variables: cat_file_rev
+* V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
+*	 1/99 *sh8 ... and cat_string
 
 #ifdef unix
 	include	'tmap_format/tmap_dims.parm'
@@ -71,10 +73,13 @@
 * calling argument declarations:
 	INTEGER category, variable
 
+* internal variable declarations
+	INTEGER 	uvar, item, start, end
+
 	IF     ( category .EQ. cat_file_var 
      . .OR.	 category .EQ. cat_file_rev ) THEN
 
-	   VAR_CODE = ds_VAR_CODE( variable )
+	   VAR_CODE = ds_var_code( variable )
 
 	ELSEIF ( category .EQ. cat_calc_var ) THEN
 
@@ -96,9 +101,21 @@
 
 	   VAR_CODE = alg_pvar( variable )
 
+	ELSEIF ( category .EQ. cat_const_var ) THEN
+
+	   uvar = variable/1000
+           item = variable - 1000*uvar
+           start = uvar_item_start( item, uvar )
+           end   = uvar_item_end  ( item, uvar )
+	   VAR_CODE = uvar_text(uvar)(start:end)
+
 	ELSEIF ( category .EQ. cat_constant ) THEN
 
 	   VAR_CODE = 'cnst'
+
+	ELSEIF ( category .EQ. cat_string ) THEN
+
+	   VAR_CODE = 'str'
 
 	ELSE
 

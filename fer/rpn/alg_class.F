@@ -43,12 +43,14 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
+
 * V200: 11/24/89
 * V495: 7/7/98 - add single quotes as another character class (11) (old 11->12)
 *     : 9/30/98 - NAG F90 (linux) received error on above change.  
 *                 need to put single  tick between double quotes  *kob*
+* V500: 12/98 - add "{" and "}" to support "{1,3,5}" notation
+*	 1/99 - allow strings in quoble quotes (as fcn args)
+
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
 #else
@@ -74,7 +76,10 @@
 *	C9 - E e
 *	C10- .
 *       C11- '
-*	C12- all others
+*	C12- {
+*	C13- }
+*	C14- "
+*	C15- all others
 
 	IF     ( ctr.EQ.'+' .OR.  ctr.EQ.'-' ) THEN
 	   ALG_CLASS = 1
@@ -106,8 +111,14 @@
 	ELSEIF ( ctr.EQ.'\'' ) THEN
 #endif
 	   ALG_CLASS = 11
-	ELSE
+	ELSEIF ( ctr.EQ.'{' ) THEN
 	   ALG_CLASS = 12
+	ELSEIF ( ctr.EQ.'}' ) THEN
+	   ALG_CLASS = 13
+	ELSEIF ( ctr.EQ.'"' ) THEN
+	   ALG_CLASS = 14
+	ELSE
+	   ALG_CLASS = 15
 	ENDIF
 
 	RETURN

@@ -44,6 +44,8 @@
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line. used DATA rather than PARAMETER stmnt.
 * V450: 12/96 - add check for grid changing functions
+* V500: 12/98 *sh* - add check for alg_const_var (like "{1,3,5}")
+*	 1/99 *sh* - add check for alg_string
 
 #ifdef unix
 	include		'ferret_cmn/ferret.parm'
@@ -63,7 +65,7 @@
      .			3,4,9,10,9,10,9,10,9,10,9,10,7,8/
 	integer		punc_prc(2,3)
 	DATA		punc_prc/0,-999,23,0,0,-999/
-	integer		atom_prc(2,alg_child_var) ! (2,11->14) for V450 
+	integer		atom_prc(2,alg_string) ! (2,14->16) for V500 
 
 ! V450: 12/96 - added initializations for alg_grid_chg_fcn and alg_child_var
 	DATA	(atom_prc(i,alg_operator),i=1,2)/-888,-888/,
@@ -76,8 +78,9 @@
      .		(atom_prc(i,alg_operand),i=1,2)/21,22/,
      .		(atom_prc(i,alg_finished),i=1,2)/0,-999/,
      .		(atom_prc(i,alg_grid_chg_fcn),i=1,2)/17,18/,
-     .		(atom_prc(i,alg_child_var),i=1,2)/21,22/
-
+     .		(atom_prc(i,alg_child_var),i=1,2)/21,22/,
+     .		(atom_prc(i,alg_const_var),i=1,2)/21,22/,
+     .		(atom_prc(i,alg_string),i=1,2)/21,22/
 
 ********************************************************************************
 
@@ -104,8 +107,8 @@
 
 *	CHECK FOR ERRORS
 100	if (prcd .eq. -888) stop 'precedence function is fatally flawed'
-	if (prcd .eq. -999) stop 'right paren, comma, or alg_finished 
-     .                           on stack'
+	if (prcd .eq. -999) stop
+     .		'right paren, comma, or alg_finished on stack'
 	return
 
 	end

@@ -55,6 +55,7 @@
 * V450:  1/97 - process alg_child_var
 *	      - and process grid-changing variables
 *        7/97 - generate child var name using GCF_PARENT_UVAR
+* V500: *sh* 12/98 - support for cat_const_var -- fixed arrays like "{1,3,5}"
 
 * calling argument declarations:
 	INTEGER	status
@@ -122,6 +123,8 @@
 	end   = uvar_item_end  ( item, uvar )
 	IF     ( itype .EQ. alg_pseudo_var ) THEN
 	   GOTO 200
+	ELSEIF ( itype .EQ. alg_const_var   ) THEN
+	   GOTO 250
 	ELSEIF ( itype .EQ. alg_child_var   ) THEN
 	   GOTO 300
 	ELSEIF ( itype .EQ. alg_variable   ) THEN
@@ -152,6 +155,19 @@
 	   cx_stack_ptr = cx_stack_ptr - 1
 	ENDIF
 	GOTO 100
+
+* constant-array-variable (of type alg_const_var):
+ 250	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	hi_cx = cx_stack_ptr
+        CALL CONST_VAR_CONTEXT ( uvar_text(uvar)(start:end),
+     .                           uvar,
+     .                           item,
+     .                           lo_cx,
+     .                           hi_cx,
+     .                           status )
+	IF ( status .NE. ferr_ok ) RETURN
+	GOTO 500		! go merge it
 
 * child variable: treat it just like a regular variable except that 
 * its name is not found in the text. Instead generate its name from

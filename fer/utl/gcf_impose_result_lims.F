@@ -54,10 +54,15 @@
 * *jc* 12/97 adding external function capabilities
 * V491: 1/98 - added TIMES2, which imposes its T axis
 * *jc* 01/98 put includes first
+* V491+ 10/98 *sh* - the RESHAPE function failed to "confine" axes at end
+*                see err491_reshape_limits.jnl
+* V500:  1/99 *sh* remove test code regarding function TIMES2
+*       a.k.a. "ECHO"  now used for string argument testing
+
 
 * debug declarations for TIMES2
-	INTEGER	n_com1, n_grid, com1_grid
-	REAL*8	TM_WORLD, dlo_com1, dlo_grid, dhi_com1, dhi_grid
+!	INTEGER	n_com1, n_grid, com1_grid
+!	REAL*8	TM_WORLD, dlo_com1, dlo_grid, dhi_com1, dhi_grid
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'
@@ -139,7 +144,10 @@
 	
 
 * *** TIMES2 (debug) function ***
+! commented out with ifdef 1/99 *sh*
+#ifdef 0
 	ELSEIF ( gcfcn .EQ. p_times2 ) THEN
+
 * T axis gets custom-inserted
 	   com1_cx = cx_list(1) 	! only one argument to function
 	   com1_grid = cx_grid(com1_cx)
@@ -164,7 +172,7 @@
      .			CALL WARN('TIMES2 low limit mismatch')
 	   IF (dhi_com1 .NE. dhi_grid)
      .			CALL WARN('TIMES2 high limit mismatch')
-
+#endif
 
 
 * *** RESHAPE function ***
@@ -248,6 +256,8 @@
 
 * flesh out the axes
  360	   DO 370 idim = 1, 4
+              CALL CONFINE_AXIS( idim, res_cx, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000  ! added 10/98 *sh*
 	      cx_by_ss(idim, res_cx) = .TRUE.
 	      CALL FLESH_OUT_AXIS( idim, res_cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000

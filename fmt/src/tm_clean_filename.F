@@ -40,7 +40,13 @@
 
 *  written 6/92 by S.H. for PMEL/TMAP
 * 5/93 - *sh* modified so endings other than .cdf and .des are returned
-
+* v5.32 *kob* - CYGWIN Prob - when running under Win32/Cygwin, have to
+*  3/01         to check to see if file from which a clean filename is
+*               being extracted is a DODS file.  If it is, we have to use
+*               the "typical" unix path separator of "/" rather than the
+*               CYGWIN path separator of "\".  Otherwise we don't get a 
+*               clean filename extracted from the dataset.  This will 
+*               cause problems in find_dset_number and find_dset_name
 #include "gt_lib.parm"
 
 * argument
@@ -48,6 +54,13 @@
 
 * local variable
         INTEGER idot, islash, plen
+* *kob* 3/01 Insert Cygwin specific variables
+#ifdef __CYGWIN__
+	CHARACTER DODSPathSeparator
+	LOGICAL DODS_file
+	PARAMETER (DODSPathSeparator='/')
+	DATA DODS_file  / .FALSE. /
+#endif
 
 * initialize
         plen = LEN( pathname )
@@ -67,15 +80,29 @@
 	ENDIF
 
 * locate the last slash in the name
+* *kob* 3/01 - if under cygwin, have to check if the file is a DODS
+*              file - if so, use proper path separator
+#ifdef __CYGWIN__
+	DODS_file = INDEX(pathname,'://') .GT. 0
+        DO 200 islash = plen, 1, -1
+ 	   IF (DODS_file) THEN
+	      IF ( pathname(islash:islash) .EQ. DODSPathSeparator ) GOTO 290
+	   ELSE
+	      IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
+ 200	   ENDIF
+	   islash = 0		! no slash
+ 290	   islash = islash + 1
+#else   
         DO 200 islash = plen, 1, -1
  200    IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
         islash = 0    ! no slash
  290    islash = islash + 1
-
+#endif
 * check for pathological name
         IF ( islash .GT. idot ) idot = plen
-
+	
         TM_CLEAN_FILENAME = pathname(islash:idot)
 
 	RETURN
 	END
+

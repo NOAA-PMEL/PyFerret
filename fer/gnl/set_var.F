@@ -56,6 +56,9 @@
 * V533 6/01 *sh* - added SET VARIABLE/NAME
 *		 - increased units char buffer to 64
 
+* v533 9/01 *acm*- Check that SET VARIABLE/NAME doesnt give a name already in the dataset
+*                - and that not using a variable from a GT or TS data set
+
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'
@@ -73,9 +76,9 @@
 	CHARACTER	vname*(*)
 
 * internal variable declarations:
-	LOGICAL		VALID_GRID, TM_LEGAL_NAME, have_mods, ez
-	INTEGER		GRID_FROM_NAME, mod_cx, 
-     .			dset, grid, cat, var, loc, TMAP_status
+	LOGICAL		VALID_GRID, TM_LEGAL_NAME, have_mods, ez, gtts
+	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, 
+     .			dset, grid, cat, var, loc, TMAP_status, testvar
 	REAL		bad
 	CHARACTER	grid_name*16, title*128, units*64, newname*64
 
@@ -102,10 +105,26 @@
 * process qualifiers given
 	loc = qual_given( slash_set_var_name )
 	IF ( loc .GT. 0 ) THEN
+
+* SET VAR/NAME does not work for GT, TS datasets where sanity check is done
+* in gt_find_rec.F comparing var name to the name in the dataset.
+	   gtts = ( (ds_type(dset) .EQ. pds_type_gt)  .OR. 
+     .              (ds_type(dset) .EQ. pds_type_ts) )
+	   IF ( gtts ) GOTO 5600
+
 	   have_mods = .TRUE.
            CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			      newname, status )
            IF ( status .NE. ferr_ok ) RETURN
+
+* check that the name isnt already in the data set.
+           CALL FIND_VAR_NAME ( dset, newname, cat, testvar )
+	   risc_buff = newname
+	   len_rbuff = TM_LENSTR1(newname)
+           IF (  testvar .NE. munknown_var_name ) GOTO 5400
+	   risc_buff = vname
+	   len_rbuff = LEN(vname)
+
 	   IF ( .NOT.TM_LEGAL_NAME(newname) ) GOTO 5200
 	ELSE
 	   newname = char_init80
@@ -224,5 +243,12 @@
      .               'illegal new name given for '
      .			//risc_buff(:len_rbuff),
      .               						*5000 )
+ 5400	CALL ERRMSG( ferr_invalid_command, status,
+     .               'illegal new name.  Variable '
+     .			//risc_buff(:len_rbuff)//' exists in dataset ',
+     .                                                          *5000 )
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
+ 5600	CALL ERRMSG( ferr_invalid_command, status,
+     .               'Cannot SET VARIABLE/NAME= with GT or TS datasets',
+     .               						*5000 )
 	END

@@ -67,7 +67,7 @@ gui_nodebug:
 		"GUI=GUI" all
 gui_debug:
 	(cd ccr; $(CC) -g -c -I../gui $(CFLAGS) -DLINK_GUI_AS_MAIN fermain_c.c)
-	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
+	$(MAKE) "DEBUG=-g" "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
 		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
 		"MOVIELIB=$(TMAP_LOCAL)/lib/libXpm.a" "EXECNAME=ferretgui_c" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=debug" all

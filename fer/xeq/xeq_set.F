@@ -119,6 +119,7 @@
 *	4/00 *sh* - documentation enhancement, only
 * V530:10/00 *sh* - added FILE/FORMAT=delimited/TYPE=/DELIMITERS=
 * V533 6/01 *sh* - bug fix "SET GRID" w/out arg didn't check for -111
+* v540 *acm* 10/01 increase length of ds_name
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -344,7 +345,6 @@ c *kob* 4/97
 	IF ( num_items .EQ. 0 ) GOTO 5100
 	IF ( qual_given(slash_set_data_var  ) .GT. 0 
      .  .OR. qual_given(slash_set_data_grid ) .GT. 0 
-     .  .OR. qual_given(slash_set_data_title) .GT. 0 
      .  .OR. qual_given(slash_set_data_skip ) .GT. 0 ) GOTO 5700
 
 * interpret the /TREGULAR qualifier (force reg T axis) for netCDF data sets
@@ -378,7 +378,7 @@ c *kob* 4/97
 	      IF   ( dset_num .LT. 1
      .	      .OR.   dset_num .GT. maxdsets
      .	      .OR.   dset_num .GT. max_gfdl_dsets )		GOTO 5110
-	      IF ( ds_name( dset_num ) .EQ. char_init40 )	GOTO 5110
+	      IF ( ds_name( dset_num ) .EQ. char_init256)	GOTO 5110
 	      GOTO 745
 	   ENDIF
 
@@ -420,6 +420,16 @@ c *kob* 4/97
 
 * make this data set current
  745	   cx_data_set( cx_last )	=  dset_num
+
+* 10/01 allow /TITLE for NetCDF or DODS datasets.
+           IF (qual_given(slash_set_data_title) .GT. 0) THEN
+              loc = qual_given(slash_set_data_title )
+              CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   title, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+              ds_title(dset_num) = title
+           ENDIF
 
  750	CONTINUE
 	RETURN

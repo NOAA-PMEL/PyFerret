@@ -1,7 +1,7 @@
 * SLASH.PARM
 * v450:  5/29 -- added slash_noaxes
 * v491:  12.98 - added pattern for contour and shade *jd*
-
+* v500:  03.99 - added qualifiers for polygon *jd*
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -260,3 +260,10 @@
      .			slash_ylimits = 1 + 21,
      .			slash_title   = 1 + 22,
      .			slash_pen   = 1 + 23 )
+
+
+        INTEGER		slash_polygon_line,slash_polygon_fill
+
+	PARAMETER     ( slash_polygon_line = 1 + 17,
+     .                  slash_polygon_fill = 1 + 26 )
+

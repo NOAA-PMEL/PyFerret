@@ -23,7 +23,7 @@
 
 
 .c.o:
-	(cc $(CFLAGS) -c $(DEBUG) $(<F))
+	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))
 
 .F.o: 
 	($(F77) -c $(DEBUG) $(FFLAGS) $(<F))

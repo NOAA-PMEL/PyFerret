@@ -7,6 +7,7 @@
 * written for VAX computer under VMS operating system
 *
 * 7/98 *js*  First version hacked from read_ez
+* 3/99 *kob* - nag F90 wants to use eqv for logical expressions
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'
@@ -96,7 +97,8 @@
 		       cx_lo_ss( cx_stack_ptr, idim ) = ds_grid_start( idim, fvar )
 		       cx_hi_ss( cx_stack_ptr, idim ) = ds_grid_end  ( idim, fvar )
 		       cx_by_ss( idim, cx_stack_ptr ) = .TRUE.
-		       if (firstTime .eq. .TRUE.) THEN
+* 3/99 *kob* - nag F90 wants to use eqv for logical expressions
+		       if (firstTime .eqv. .TRUE.) THEN
 			  lengths(idim) = ds_grid_end(idim,fvar) - 
 	1		       ds_grid_start(idim,fvar) + 1
 		       end if

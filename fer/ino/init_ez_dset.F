@@ -60,6 +60,7 @@
 * V450 7/97 - Increase array var_list holding dset var names
 *      7/98 *js*   Mods to support new /swap and /type qualifiers for stream
 *                  datasets
+* 3/99 *kob* - nag F90 wants to use eqv for logical expressions
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -268,7 +269,8 @@ c       /swap
 	   do i=1,4
 	      if (order(i) .eq. 5) goto 5700
 	   end do
-	   if (swap .eq. .TRUE. .or. have_type .eq. .TRUE.) then
+* 3/99 *kob* - nag F90 wants to use eqv for logical expressions
+	   if (swap .eqv. .TRUE. .or. have_type .eqv. .TRUE.) then
 	      goto 5800
 	   end if
 	end if

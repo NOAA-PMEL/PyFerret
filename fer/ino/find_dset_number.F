@@ -89,13 +89,15 @@
 * *kob* 3/99 - change the err= to go to 50 rather than 500 - this is so a
 *              failed read a number is a clue that perhaps it is part of a name
 *              of a dataset (eg 5coads) rather than just an error
+* *kob* 3/30/99 - minor modification in logic forced by F90.  
 c *kob* 4/97
 #ifdef MANDATORY_FORMAT_WIDTHS
 	   READ (buff,*, ERR=50 ) dset
 #else
 	   READ (buff, '(I)', ERR=50 ) dset
 #endif
-	ELSE
+	   GOTO 200
+	ENDIF
 
 * 5/93 locate "true" end to the given filename (.des and .cdf are invisible)
 * note: filenames are always in CAPS since they may be embedded in the var defn
@@ -144,8 +146,6 @@ c *kob* 4/97
 
  100	   CONTINUE
 	   GOTO 500
-
-	ENDIF
 
 * check for valid number given
  200	IF ( dset .LT. 1 .OR. dset .GT. maxdsets ) GOTO 500

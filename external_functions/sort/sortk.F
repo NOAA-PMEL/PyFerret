@@ -156,7 +156,7 @@
       INTEGER id
       INTEGER m, nsrt
       INTEGER nbad, m_indx
-      INTEGER i, j, l
+      INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
       REAL sort_dat(100000)

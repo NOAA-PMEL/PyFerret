@@ -67,6 +67,7 @@ get_string_element.F\
 get_window_lims.F\
 getunit.F\
 gname_from_number.F\
+go_file_input.F\
 grid_from_name.F\
 grid_subscript_extremes.F\
 grid_subscript_extremes_no_mod.F\

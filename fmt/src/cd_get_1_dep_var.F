@@ -109,7 +109,7 @@
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
 
 #ifdef unix
-#ifdef sun
+#ifdef NEED_BYTE
       BYTE cd_data_type(maxvars)
 #else
       INTEGER*1 cd_data_type(maxvars)

@@ -78,7 +78,7 @@
 	INTEGER query, nflags, flags(nflags), num_strings, num_vals, ntext,
      .		nnums, qstatus
 * ... c-type Hollerith string buffers
-#ifdef sun
+#ifdef NEED_BYTE
         BYTE      ctext(ntext), arg1(*), arg2(*), arg3(*), arg4(*), arg5(*)
 #else
         INTEGER*1 ctext(ntext), arg1(*), arg2(*), arg3(*), arg4(*), arg5(*)

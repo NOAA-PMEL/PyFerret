@@ -99,7 +99,7 @@
 	INTEGER TM_LENSTR1, status, rtn_flags(pnflags), i, hlen,
      .		nrtn_chars, nrtn_errlines
 	CHARACTER*128  home_path
-#ifdef sun
+#ifdef NEED_BYTE
         BYTE      init_command(24), rtn_chars(pnchars)
 #else
         INTEGER*1 init_command(24), rtn_chars(pnchars)

@@ -172,7 +172,7 @@
 * calling argument declarations
 	INTEGER nflags, nchars, rtn_flags(nflags), nerrlines
 	REAL memory(*)
-#ifdef sun
+#ifdef NEED_BYTE
         BYTE       command(*), rtn_chars(nchars)
 #else
 #   ifdef ultrix

@@ -15,7 +15,7 @@ INCLUDES        =  -I$(XGKSHOME)/gif \
 		   -I../common \
 		   -I../../fmt/cmn \
 		   -I../../ppl/include \
-		   -I. -Ireadline \
+		   -I. -I/usr/local/include/readline \
 		   -I/usr/local/include \
 		   -I/usr/X11R6.4/include
 
@@ -23,21 +23,30 @@ FINCLUDES	= -I..\\\\..\\\\ppl\\\\tmap_inc \
 		   -I..\\\\include -I..\\\\..\\\\fmt\\\\cmn \
 		   -I..\\\\common \
 		   -I..\\\\usr\\\\local\\\\netcdf\\\\include \
-		   -I..\\\\..\\\\ppl\\\\include 
+		   -I..\\\\..\\\\ppl\\\\include \
+		   -I..\\\\..\\\\fer\\\\common  
 
 CC              = gcc
 RANLIB          = ranlib
-CFLAGS          = -Dlint  -DX_REFRESH -DXT_CODE -Dunix -Dsun4 \
+CFLAGS          =  -g -Dlint  -DX_REFRESH -DXT_CODE -Dunix -Dsun4 \
 		  $(INCLUDES)
 FPROFLAGS	= -Dunix -D__CYGWIN__ -DNO_DOUBLE_ESCAPE_SLASH \
-		  -DDEC_FORTRAN -DUSE_NETCDF_V3
-FFLAGS		= -debug:partial -nopdbfile \
-		   -iface:cref -iface:nomixed_str_len_arg -recursive\
+		  -DDEC_FORTRAN -DUSE_NETCDF_V3 -DX_REFRESH \
+		  -DNO_PREPEND_STRING
+FFLAGS		=  -nopdbfile \
+		   -iface:cref -iface:nomixed_str_len_arg /norecursive \
 		   /fpp /align:dcommons /f77rtl\
 		   /align:dcommons /align:records \
 		   -assume:nosource_include \
 		   -assume:underscore -names:lowercase \
+		   /nodebug /Extend_source:132 /real_size:32 \
+		   /integer_size:32 /math_library:fast \
 		   $(FINCLUDES)
+# debug fortran options
+#		    /math_library:check \
+#		   -debug:full /nooptimize \
+
+
 
 .c.o:
 	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))
@@ -54,7 +63,7 @@ FFLAGS		= -debug:partial -nopdbfile \
 # Below this line are macro definitions used only for the final linking of the executable
 #
 
-SYSLIB		= -lforrt -lg2c -lreadline -ltermcap -L/usr/X11R6.4/lib -lX11 -lm 
+SYSLIB		= -llist -lforrt -lg2c -lreadline -ltermcap /usr/X11R6.4/lib/libX11.a -lm 
 #SYSLIB		= -llist -lreadline -L/usr/X11R6.4/lib -lXt -lXext -lX11 -lm -ldfor -lg2c
 
 TMLIB		= ../lib/tmap_lib.a
@@ -63,8 +72,8 @@ GKSLIB		= -L/usr/local/lib -lxgks
 
 #HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
 
-CDFLIB		= -L/usr/local/lib -lnetcdf
-
+#CDFLIB		= -L/usr/local/lib -lnetcdf
+CDFLIB		= -L/usr/local/src/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++ -lrpclib -lwww  -lz -lrx 
 
 #
 # End of platform_specific_includes.mk.i486-linux

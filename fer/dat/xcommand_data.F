@@ -140,7 +140,14 @@
 * V541: 5/02 *acm* - add VECTOR/NOKEY
 *       6/02 *acm* - add CANCEL AXIS/ALL
 * V552: 4/02 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
-* V553: 7/03 *acm* - add SHOW DATA/DAS and /DDS
+* V553: 7/03 *acm* - add SHOW DATA/XML for DAS, DDS output
+* V553: 7/03 *acm* - add SHOW AXIS/XML 
+* V553: 9/03 *acm* - add SHOW AXIS/DODS for binary output of axis coordinates
+*                       also needs /FILE=  and /APPEND
+* V554: 10/03 *acm* - add SHOW AXIS/EDGES/DODS for binary output of axis coordinates
+* V554:  1/04 *acm* - add REPEAT/RANGE=/NAME= qualifiers
+* V554:  2/04 *acm* - add /HGRAT=/VGRAT qualifiers to plot commands, setting 
+*                     graticule lines at tic marks
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -373,8 +380,13 @@
 		DATA qualifiers  (nqual_at2d+7)	/ 'Z'	/
 		DATA qualifiers  (nqual_at2d+8)	/ 'T'	/
 		DATA qualifiers  (nqual_at2d+9)	/ 'XML'/
-		DATA qualifiers  (nqual_at2d+10)/ '****'/
-		DATA qualifiers  (nqual_at2d+11)/ '****'/
+		DATA qualifiers  (nqual_at2d+10)/ 'DODS'/
+		DATA qualifiers  (nqual_at2d+11)/ 'FILE'/
+		DATA qualifiers  (nqual_at2d+12)/ 'APPEND'/
+		DATA qualifiers  (nqual_at2d+13)/ 'CLOBBER'/
+		DATA qualifiers  (nqual_at2d+14)/ 'EDGES'/
+		DATA qualifiers  (nqual_at2d+15)/ '****'/
+
 * SHOW EXPRSIONION
 	   DATA subcommands      (nsub_at2 + 4)	/ 'EXPRSION'	/
 	   DATA num_qualifs      (nsub_at2 + 4)	/ nqual2e	/
@@ -699,12 +711,12 @@
 		DATA qualifiers  (nqual_at4a+29)/ 'PEN'/	!/pen (denig!!)
 		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at4a+32)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+33)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+32)/ '****'/	! HLOG (place holder, not implemented for contuor) 
+		DATA qualifiers  (nqual_at4a+33)/ '****'/	! VLOG (place holder)
 		DATA qualifiers  (nqual_at4a+34)/ 'AXES'/	! /axes[=...]
-		DATA qualifiers  (nqual_at4a+35)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+36)/ '****'/	! 
-		DATA qualifiers  (nqual_at4a+37)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+35)/ 'HGRATICULE'/	! tic liness, dash or line
+		DATA qualifiers  (nqual_at4a+36)/ 'VGRATICULE'/	! tic liness, color or pen#
+		DATA qualifiers  (nqual_at4a+37)/ 'GRATICULE'/	! 
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -783,12 +795,17 @@
 		DATA qualifiers  (nqual_at6a+25)/ 'DASH'/	!/dash
 		DATA qualifiers  (nqual_at6a+26)/ 'NOYADJUST'/	!/noyadjust
 		DATA qualifiers  (nqual_at6a+27)/ 'AXES'/	!/axes[=]
-		DATA qualifiers  (nqual_at6a+28)/ '****'/	!/unused
-		DATA qualifiers  (nqual_at6a+29)/ '****'/	!/unused
+		DATA qualifiers  (nqual_at6a+28)/ 'HGRATICULE'/	!horiz tic lines
+		DATA qualifiers  (nqual_at6a+29)/ 'VGRATICULE'/	!vert tic lines
 		DATA qualifiers  (nqual_at6a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at6a+31)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at6a+32)/ 'HLOG'/	! log axis horiz
 		DATA qualifiers  (nqual_at6a+33)/ 'VLOG'/	! log axis vert
+		DATA qualifiers  (nqual_at6a+34)/ 'GRATICULE'/	! tic lines
+		DATA qualifiers  (nqual_at6a+35)/ '****'/	! tic lines
+		DATA qualifiers  (nqual_at6a+36)/ '****'/	! tic lines
+		DATA qualifiers  (nqual_at6a+37)/ '****'/	! tic lines
+
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
@@ -1020,8 +1037,12 @@
 		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
 		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at13a+32)/ '****'/	! 
-		DATA qualifiers  (nqual_at13a+33)/ '****'/	! 
+		DATA qualifiers  (nqual_at13a+32)/ '****'/	! HLOG (place holder, not implemented for contuor) 
+		DATA qualifiers  (nqual_at13a+33)/ '****'/	! VLOG (place holder)
+		DATA qualifiers  (nqual_at13a+34)/ 'HGRATICULE'/	! horiz tic lines
+		DATA qualifiers  (nqual_at13a+35)/ 'VGRATICULE'/	! vert tic lines
+		DATA qualifiers  (nqual_at13a+36)/ 'GRATICULE'/
+		DATA qualifiers  (nqual_at13a+37)/ '****'/
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/
@@ -1069,8 +1090,12 @@
 		DATA qualifiers  (nqual_at16a+8)/ '*****' /   ! future "QUIET"
 		DATA qualifiers  (nqual_at16a+9)/ 'ANIMATE'  /
 		DATA qualifiers  (nqual_at16a+10)/ 'LOOP' /   
-		DATA qualifiers  (nqual_at16a+11)/ '*****' /   
-		DATA qualifiers  (nqual_at16a+12)/ '*****' /   
+		DATA qualifiers  (nqual_at16a+11)/ 'RANGE' /   
+		DATA qualifiers  (nqual_at16a+12)/ 'NAME' /   
+		DATA qualifiers  (nqual_at16a+13)/ '*****' /   
+		DATA qualifiers  (nqual_at16a+14)/ '*****' /   
+		DATA qualifiers  (nqual_at16a+15)/ '*****' /   
+		DATA qualifiers  (nqual_at16a+16)/ '*****' /   
 
 * STATISTICS - command # 17
 	DATA commands(17)			/ 'STAT'	/
@@ -1133,9 +1158,9 @@
 		DATA qualifiers  (nqual_at18a+23)/ 'AXES'/	!/axes[=]
 		DATA qualifiers  (nqual_at18a+24)/ 'NOAXES'/	!/noaxes
 		DATA qualifiers  (nqual_at18a+25)/ 'PATTERN'/   !/pattern=
-		DATA qualifiers  (nqual_at18a+26)/ '****'/	!
-		DATA qualifiers  (nqual_at18a+27)/ '****'/	!
-		DATA qualifiers  (nqual_at18a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+26)/ 'HGRATICULE'/!tic lines, dash or line
+		DATA qualifiers  (nqual_at18a+27)/ 'VGRATICULE'/!vert tic lines
+		DATA qualifiers  (nqual_at18a+28)/ 'GRATICULE'/	!
 		DATA qualifiers  (nqual_at18a+29)/ '****'/	!
 		DATA qualifiers  (nqual_at18a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+31)/ 'VLIMITS'/	! vertical
@@ -1201,8 +1226,8 @@
 		DATA qualifiers  (nqual_at21a+14)/ 'TRANPOSE'/  
 		DATA qualifiers  (nqual_at21a+15)/ 'NOLABEL'/   
 		DATA qualifiers  (nqual_at21a+16)/ 'ZSCALE'/ 
-		DATA qualifiers  (nqual_at21a+17)/ '****'/
-		DATA qualifiers  (nqual_at21a+18)/ '****'/
+		DATA qualifiers  (nqual_at21a+17)/ '****'/ 
+		DATA qualifiers  (nqual_at21a+18)/ '****'/ 
 		DATA qualifiers  (nqual_at21a+19)/ '****'/
 		DATA qualifiers  (nqual_at21a+20)/ '****'/
 		DATA qualifiers  (nqual_at21a+21)/ '****'/
@@ -1314,6 +1339,12 @@
 		DATA qualifiers  (nqual_at27a+31)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at27a+32)/ 'HLOG'/	!log axis horiz
 		DATA qualifiers  (nqual_at27a+33)/ 'VLOG'/	!log axis vert
+		DATA qualifiers  (nqual_at27a+34)/ 'HGRATICULE'/	!tic lines, dash or line
+		DATA qualifiers  (nqual_at27a+35)/ 'VGRATICULE'/	!vert tic lines
+		DATA qualifiers  (nqual_at27a+36)/ 'GRATICULE'/
+		DATA qualifiers  (nqual_at27a+37)/ '****'/
+		DATA qualifiers  (nqual_at27a+38)/ '****'/
+		DATA qualifiers  (nqual_at27a+39)/ '****'/
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/

@@ -19,6 +19,8 @@
 *			slash_exit_program			
 *      *sh* 11/01 - add slash_list_width
 * V552:*acm*  4/02 - add SET VARIABLE/SCALEFAC/OFFSET
+* V553 *acm*  1/04 - added slash_repeat_range, slash_repeat_name
+* v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -115,6 +117,9 @@
      .			slash_cont_spacing,
      .			slash_cont_sigdig,
      .			slash_cont_axes,
+     .                  slash_cont_hgrat,
+     .                  slash_cont_vgrat,
+     .                  slash_cont_grat,
      .
      .			slash_vect_over_plot,
      .			slash_vect_set_up,
@@ -129,6 +134,9 @@
      .			slash_vect_density,
      .			slash_vect_axes,
      .			slash_vect_nokey,
+     .			slash_vect_hgrat,
+     .			slash_vect_vgrat,
+     .			slash_vect_grat,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -151,6 +159,9 @@
      .			slash_shad_nokey,
      .			slash_shad_pattern,
      .			slash_shad_axes,
+     .			slash_shad_hgrat,
+     .			slash_shad_vgrat,
+     .			slash_shad_grat,
      .
      .			slash_plot_over_plot,
      .			slash_plot_set_up,
@@ -165,7 +176,10 @@
      .			slash_plot_symsize,
      .			slash_plot_step,
      .			slash_plot_dash,
-     .			slash_plot_axes
+     .			slash_plot_axes,
+     .			slash_plot_hgrat,
+     .			slash_plot_vgrat,
+     .			slash_plot_grat
 
 
 	INTEGER		slash_wire_over,
@@ -185,8 +199,9 @@
      .			slash_noaxes,
      .
      .			slash_repeat_animate,
-     .
      .			slash_repeat_loop,
+     .			slash_repeat_range,
+     .			slash_repeat_name,
      .
      .                  slash_exit_command,
      .                  slash_exit_loop,
@@ -290,6 +305,9 @@
      .			slash_cont_spacing	= 1+27,
      .			slash_cont_sigdig	= 1+28,
      .			slash_cont_axes		= 1+34,
+     .			slash_cont_hgrat	= 1+35,
+     .			slash_cont_vgrat	= 1+36,
+     .			slash_cont_grat	        = 1+37,
      .
      .			slash_vect_over_plot	= 9,
      .			slash_vect_set_up	= 10,
@@ -304,6 +322,9 @@
      .			slash_vect_density      = 1+26,
      .			slash_vect_axes		= 1+27,
      .			slash_vect_nokey	= 1+28,
+     .			slash_vect_hgrat	= 1+34,
+     .			slash_vect_vgrat	= 1+35,
+     .			slash_vect_grat 	= 1+36,
      .
      .			slash_strm_over_plot	= 9,
      .			slash_strm_set_up	= 10,
@@ -326,6 +347,9 @@
      .			slash_shad_nokey	= 1+18,
      .			slash_shad_pattern	= 1+25,
      .			slash_shad_axes		= 1+23,
+     .			slash_shad_hgrat	= 1+26,
+     .			slash_shad_vgrat	= 1+27,
+     .			slash_shad_grat 	= 1+28,
      .
      .			slash_plot_over_plot	= 9,
      .			slash_plot_set_up	= 10,
@@ -340,7 +364,10 @@
      .			slash_plot_symsize	= 20,
      .			slash_plot_step		= 1+23,
      .			slash_plot_axes		= 1+27,
-     .			slash_plot_dash		= 1+25 )
+     .			slash_plot_dash		= 1+25,
+     .			slash_plot_hgrat	= 1+28,
+     .			slash_plot_vgrat	= 1+29,
+     .			slash_plot_grat 	= 1+34 )
 
 	PARAMETER     ( slash_wire_over		= 9,
      .			slash_wire_set_up	= 10,
@@ -361,6 +388,8 @@
      .
      .                  slash_repeat_animate	= 9 + 1 ,
      .                  slash_repeat_loop	= 10 + 1,
+     .                  slash_repeat_range	= 11 + 1 ,
+     .                  slash_repeat_name	= 12 + 1,
      .
      .			slash_exit_command	= 0 + 1,
      .                  slash_exit_loop 	= 1 + 1,
@@ -387,7 +416,10 @@
      .			slash_polygon_nokey,
      .			slash_polygon_color,
      .			slash_polygon_thick,
-     .			slash_polygon_axes
+     .			slash_polygon_axes,
+     .			slash_polygon_hgrat,
+     .			slash_polygon_vgrat,
+     .			slash_polygon_grat
 
 	PARAMETER     ( slash_polygon_line  = 1 + 17,
      .                  slash_polygon_fill  = 1 + 26,
@@ -395,5 +427,8 @@
      .			slash_polygon_nokey = 1 + 28,
      .			slash_polygon_color = 1 + 18,
      .			slash_polygon_thick = 1 + 23,
-     .			slash_polygon_axes  = 1 + 29 )
+     .			slash_polygon_axes  = 1 + 29,
+     .			slash_polygon_hgrat  = 1 + 34,
+     .			slash_polygon_vgrat  = 1 + 35,
+     .			slash_polygon_grat  = 1 + 36 )
 

@@ -122,10 +122,11 @@
 *	4/00  *sh* - since netCDF uses dynamic grids now, DEALLOC will
 *		     deallocate axes within implicit grids. Accomodate that.
 * V520: 6/00 *sh* bug fix: cx_grid_needs_dset is not set correctly when the
-*		   - syntax is X[Gx=var[D=dset]]
+*		           syntax is X[Gx=var[D=dset]]
 * V530: 3/01 *acm* - Pass calendar ID, if available, to TRANSLATE_LIMIT
 * V532 5/01 *sh*: minor bug fix: detect extra colon in "i=1:5:2:"
-
+* V533:6/01 *sh* bug fix: cx_grid_needs_dset is not set correctly when the
+*			  g=var and var is a uvar with self-contained dset 
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -139,7 +140,6 @@
 * logical arguments:
 *	report_unknown 	  if .TRUE. then unknown specifiers are errors
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -152,22 +152,9 @@
 	include 'xalgebra.cmn'
 	include 'xprog_state.cmn'
 	include 'xcontext.cmn'
+	include 'xvariables.cmn'
 	include 'xtext_info.cmn'
 	include 'xrisc.cmn'		! for RISC/FORTRAN
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE	'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'	
-	INCLUDE 'FERRET_CMN:INTERP_STACK.PARM'	
-	INCLUDE 'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'		! for RISC/FORTRAN
-#endif
 
 * calling arguments:
 	CHARACTER*(*)	text_buff
@@ -462,6 +449,9 @@
 * ... 6/00 bug fix for syntax X[gx=var[d=dset]] -- look for [d=...]
 	            IF ( cx_grid_needs_dset )  cx_grid_needs_dset
      .					       = .NOT.gdset_included
+* ... 6/01 bug fix for grid from uvar with self-contained data set 
+	            IF (cx_grid_needs_dset .AND. category.EQ.cat_user_var)
+     .			cx_grid_needs_dset = uvar_need_dset(variable)
 * ... 8/99 -- allow G=uvar where uvar may be unknown at this point
 		    IF ( grid     .EQ. unspecified_int4
      .		   .AND. category .EQ. cat_user_var ) THEN	! g=??uvar??

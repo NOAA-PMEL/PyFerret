@@ -5,7 +5,7 @@
 ! Programmed by E. D. Cokelet, NOAA/PMEL, 11 Feb 2003
 ! Last modified 6 Mar 2003
 
-! Usage:
+! Usage: (for examples, run poly_vec_demo.jnl)
 
 ! go poly_vectors x_vect y_vect u_comp v_comp vector_scale "arrow"
 ! polygon/over/nolabel/key/pal=rainbow/line plt_x_arrow, plt_y_arrow, my_values[j=1:`num_vectors`]

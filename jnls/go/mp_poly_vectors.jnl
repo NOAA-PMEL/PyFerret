@@ -9,7 +9,7 @@
 ! Programmed by E. D. Cokelet, NOAA/PMEL, 11 Feb 2003
 ! Last modified 12 Mar 2003
 
-! Usage:
+! Usage: (for examples, run poly_vec_demo.jnl)
 
 ! go mp_poly_vectors lon_vect lat_vect u_east v_north vector_scale "arrow"
 ! polygon/over/nolabel mp_x_arrow, mp_y_arrow, my_values[j=1:`num_vectors`]

@@ -43,7 +43,8 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
-* V510: 8/99 *sh*
+* V510: 8/99
+*	 *sh* 2/00 (??) - correct improper handling of invalid indices
 
 #ifdef unix
 	include	'ferret.parm'
@@ -78,7 +79,8 @@
 	INTEGER DENSE_CONTIG_REGION
 	INTEGER chunk_mr, hold_mr, chunk_cx, hold_cx,
      .		axis, n, phase, lo_cx_lim, hi_cx_lim, mr_sorted_indices,
-     .		mr_index_map, idim, chunk_isp, hold_isp, cat, var
+     .		mr_index_map, idim, chunk_isp, hold_isp, cat, var,
+     .		nvalid
 
 
 * --- end of introductory code ---
@@ -86,8 +88,8 @@
 * initialize
 	hold_isp   = isp
 	chunk_isp  = isp + 1
-	hold_mr    = is_mr( hold_isp )
-	chunk_mr   = is_mr( chunk_isp )
+	hold_mr    = is_mr( hold_isp )		! to be filled by chunks
+	chunk_mr   = is_mr( chunk_isp )		! each invidivual chunk
 	hold_cx    = is_cx( hold_isp )
 	chunk_cx   = is_cx( chunk_isp )
 !	dflt_cx	   = is_big_cx( hold_isp )
@@ -95,17 +97,20 @@
 	phase      = is_phase(hold_isp)
 	mr_index_map      = is_sum(hold_isp)/10000
 	mr_sorted_indices = is_sum(hold_isp) - 10000*mr_index_map
+	nvalid = mr_hi_ss( mr_index_map, t_dim )	! valid indices
 	cat = cx_category(chunk_cx)
 	var = cx_variable(chunk_cx)
 
-* a new chunk of data has just arrived. Copy it into the result
+****  A NEW CHUNK OF DATA HAS JUST ARRIVED  ****
+*  Copy it into the result "holder"
 	IF ( phase .GT. 0 ) THEN
 
-* the context for the holder may be mising its limits on axes other than the
+* the context for the holder may be missing its limits on axes other than the
 * sampling axis
 	   DO 100 idim = 1, 4
-	      IF ( idim .EQ. axis ) GOTO 100
-	      CALL TRANSFER_AXIS( idim, chunk_cx, hold_cx )
+	      IF ( idim .NE. axis ) THEN
+	         CALL TRANSFER_AXIS( idim, chunk_cx, hold_cx )
+	      ENDIF
  100	   CONTINUE
 
 * create result space if this is the first chunk
@@ -121,30 +126,36 @@
 
 	   ENDIF
 
+	   IF ( nvalid .GT. 0 ) THEN
 * for optimization, make sure we are using all of the source data that we can
-	   n = phase
-	   CALL ADJUST_COPY_LIMITS(axis, chunk_mr,
-     .				   memory(1,mr_blk1(mr_sorted_indices)),
-     .                             phase, mr_hi_ss(mr_index_map,x_dim) )
-	   IF (phase .GT. n) THEN
+* the ADJUST_COPY_LIMITS routine will modify "phase" to use all available data
+	     n = phase
+	     CALL ADJUST_COPY_LIMITS(axis, chunk_mr,
+     .				     memory(1,mr_blk1(mr_sorted_indices)),
+     .				     phase, nvalid )
+	     IF (phase .GT. n) THEN
 * ... apply the optimization
-	      cx_hi_ss(chunk_cx, axis) = mr_hi_ss(chunk_mr,axis)
-	      cx_by_ss(axis,chunk_cx) = .TRUE.
-	      CALL FLESH_OUT_AXIS( axis, chunk_cx, status)
-	      IF (status .NE. ferr_ok) CALL ERRMSG( ferr_internal, status,
-     .		  'SAMPLE* optimization', *5000)
-	   ENDIF
+	        cx_hi_ss(chunk_cx, axis) = mr_hi_ss(chunk_mr,axis)
+	        cx_by_ss(axis,chunk_cx) = .TRUE.
+	        CALL FLESH_OUT_AXIS( axis, chunk_cx, status)
+	        IF (status .NE. ferr_ok) CALL ERRMSG( ferr_internal, status,
+     .		    'SAMPLE* optimization', *5000)
+	     ENDIF
 
 * copy data just received into the result
-	   CALL COPY_INTO_MAPPED(
+	     CALL COPY_INTO_MAPPED(
      .			memory(1,mr_blk1(chunk_mr)), chunk_mr, chunk_cx,
      .			memory(1,mr_blk1(mr_sorted_indices)),
      .			memory(1,mr_blk1(mr_index_map)), phase, axis,
      .			memory(1,mr_blk1(hold_mr)), hold_mr )
 
 * ... remove the component protection that signaled we needed it here
+	   ENDIF
 	   CALL MR_NOT_IN_USE( chunk_mr )
 	ENDIF
+
+
+*********  SETUP TO GRAB THE NEXT CHUNK  **********
 
 * do we want to grab the entire input as a single sample?
 	IF (cat .EQ. cat_user_var) THEN
@@ -160,20 +171,30 @@
 * ... if limits are explicit inside of the fcn call then use 'em
 	all_at_once = all_at_once .OR. cx_given(axis,chunk_cx)
 
+* total number of indices
+	n = mr_hi_ss( mr_index_map, x_dim )
+
 * determine next chunk to get
-	n = mr_hi_ss(mr_index_map,x_dim)
-	IF ( all_at_once ) THEN
+	IF ( nvalid .EQ. 0 ) THEN
 	   IF (phase .EQ. 0) THEN
-	      is_phase(hold_isp) = n
+	      lo_cx_lim = 1	! get any old point just so we can have
+	      hi_cx_lim = 1	! a complete context for the result
+	      is_phase(hold_isp) = 1
 	   ELSE
-	      is_phase(hold_isp) = -1
+	      is_phase(hold_isp) = -1  ! all done with sampling
+	   ENDIF   
+	ELSEIF ( all_at_once ) THEN
+	   IF (phase .EQ. 0) THEN
+	      is_phase(hold_isp) = nvalid
+	   ELSE
+	      is_phase(hold_isp) = -1  ! all done with sampling
 	   ENDIF
-	   lo_cx_lim = cx_lo_ss(chunk_cx,axis)
+	   lo_cx_lim = cx_lo_ss(chunk_cx,axis)  ! grab all of it at once
 	   hi_cx_lim = cx_hi_ss(chunk_cx,axis)
 	ELSE
 	   is_phase(hold_isp) = DENSE_CONTIG_REGION(
      .				memory(1,mr_blk1(mr_sorted_indices)), 
-     .				phase+1, n,
+     .				phase+1, nvalid,
      .				mr_bad_data(mr_sorted_indices),
      .				lo_cx_lim, hi_cx_lim )
 	ENDIF

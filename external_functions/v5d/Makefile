@@ -4,7 +4,10 @@
 # January 20 1998
 # Jonathan Callahan
 #
- 
+#  15-Nov-1999 Ansley Manke  
+#  remove refs to ef_utility/*.o  (now in ferret executable)
+#
+
 #
 # include platform specific macro definitions
 #
@@ -19,8 +22,6 @@ include v5d_platform_specific_flags.mk.$(HOSTTYPE)
 
 .SUFFIXES: .so
 
-EF_OBJS = ef_utility/*.o
-
 V5D_OBJS = binio.o v5d.o
 
 #
@@ -32,25 +33,22 @@ V5D_OBJS = binio.o v5d.o
 
 .F.so:
 	$(F77) $(FFLAGS) -c $<
-	$(LD) $(LD_DYN_FLAGS) $(EF_OBJS) $(V5D_OBJS) $*.o -o $*.so 
+	$(LD) $(LD_DYN_FLAGS) $(V5D_OBJS) $*.o -o $*.so 
 
 #
 # Targets
 #
 
-all:	ef_utility ferret_cmn binio.o v5d.o writev5d.so
-
-ef_utility:
-	ln -s ../ef_utility ef_utility
+all:	ferret_cmn binio.o v5d.o writev5d.so
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
-	cp *.so $(FER_EXTERNAL_FUNCTIONS)
+	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ef_utility ferret_cmn
+	-rm -f *.o *.so core a.out temp.* ferret_cmn
 
 #
 # End of Makefile

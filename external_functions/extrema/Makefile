@@ -26,7 +26,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Rules
 #
 
-.f.o: 
+.F.o: 
 	$(F77) $(FFLAGS) -g -c $<
 
 .F.so:

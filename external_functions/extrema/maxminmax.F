@@ -1,4 +1,10 @@
+
+      SUBROUTINE maxMINMAX  (Z, L, MM, NN, neigh_x, neigh_y, badz, 
+     .                      zmaxlist, nzmax)
 C
+C  based on NCAR routine MINMAX, return maxima
+C
+C-------------------------------------------------------------
 C	$Id$
 C                                                                      
 C                Copyright (C)  2000
@@ -19,13 +25,9 @@ C You should have received a copy of the GNU General Public License
 C along with this software; if not, write to the Free Software
 C Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 C USA.
-C
-      SUBROUTINE maxMINMAX  (Z, L, MM, NN, neigh_x, neigh_y, badz, 
-     .                      zmaxlist, nzmax)
-C
-C  based on NCAR routine MINMAX, return maxima
-C
-C THIS ROUTINE FINDS RELATIVE MINIMUMS AND MAXIMUMS.  A RELATIVE MINIMUM
+C-------------------------------------------------------------
+
+CC THIS ROUTINE FINDS RELATIVE MINIMUMS AND MAXIMUMS.  A RELATIVE MINIMUM
 C (OR MAXIMUM) IS DEFINED TO BE THE LOWEST (OR HIGHEST) POINT WITHIN
 C A CERTAIN NEIGHBORHOOD OF THE POINT.  THE NEIGHBORHOOD USED HERE
 C IS + OR - MN IN THE X DIRECTION AND + OR - NM IN THE Y DIRECTION.
@@ -42,9 +44,10 @@ c	    zmaxlist(1,n) = i index of zmax point
 c	    zmaxlist(2,n) = j index of zmax point
 c	    zmaxlist(3,n) = z value at zmax point
 C
-      real	Z(L,NN), aa, an, badz, zmaxlist(3,*)
-      integer	L, MM, NN, m, n, nm1, mm1, jp, im, mn, ip, is, it, ii, 
+      integer	L, MM, NN, m, n, nm1, mm1, jp, im, mn, ip, is, it, ii,
      .		js, nm, jt, jk, ik, nzmax, neigh_x, neigh_y
+
+      real	Z(L,NN), aa, an, badz, zmaxlist(3,*)
 C
       M = MM
       N = NN

@@ -166,7 +166,7 @@
 	ENDIF
 
 *  User-requested dash overrides automatic selections
-        IF (do_dash) THEN
+        IF (do_dash .EQ. 1) THEN
 	   itype = 4
 
 * communicate this to PLOT+

@@ -59,7 +59,9 @@
 * local variable declarations:
       CHARACTER CD_CHILDAX_NAME*16, dimname*16
       INTEGER NCDID, NCDDEF, cdfstat, clen, nlen, dimid
+#ifdef usingDODSf2cUnderscore
       INTEGER NF_INQ_DIMLEN_
+#endif
 
 * initialize
       dimname = CD_CHILDAX_NAME('STRING', 1, maxstrlen, nlen )
@@ -68,6 +70,7 @@
       dimid = NCDID( cdfid, dimname(:nlen), cdfstat )
       IF ( cdfstat .EQ. NCNOERR ) THEN
 * ... yes. make sure defn is consistent
+
 * v5.40 *kob* - add ifdef to check whether or not to append an underscore
 *               to the v3 routine name.  This necessary because DODS netcdf
 *               fortran jackets can be configured assuming f2c, which appends

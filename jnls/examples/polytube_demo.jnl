@@ -10,14 +10,14 @@ use polydata
 
 ! Default scale
 go basemap x=130:250 Y=20:65 20
-go polytube poly/over/key lon lat sst
+go polytube poly/over/key/title="SST along ship track" lon lat sst
 \message
 
-! A little smaller
+! A little smaller and set the palette
 go basemap x=130:250 Y=20:65 20
-go polytube poly/over/key lon lat sst .4
+go polytube poly/over/key/palette=bluescale/lev=(2,9,1)/title="Palette and levels set" lon lat sst .4
 \message
 
-! Smaller yet and outline
+! Outline and use patterns
 go basemap x=130:250 Y=20:65 20
-go polytube poly/over/key/line/fill lon lat sst .2
+go polytube poly/over/key/line=7/fill/pattern=4patterns/lev=(1,9,2)/palette=black/title="Using 4 patterns" lon lat sst 

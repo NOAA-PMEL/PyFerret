@@ -201,7 +201,7 @@
 	CHARACTER*1	tab
 	PARAMETER     ( tab = CHAR(9) )
 	INTEGER		looking_for_D, looking_for_eq, looking_for_name,
-     .			done_looking, axis, cal_id, TM_GET_CALENDAR_ID
+     .			done_looking, cal_id, TM_GET_CALENDAR_ID
 	PARAMETER     ( looking_for_D = 1,
      .			looking_for_eq = 2,
      .			looking_for_name = 3,

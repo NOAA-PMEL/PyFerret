@@ -79,6 +79,13 @@
 * V540 *acm*  2/02  restore persistence of PPL AXSET settings
 * V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
 *                   done with qualifiers /AXES= or /NOAXES
+*      *acm*  4/02  If this is an overlay, and there is no valid data, 
+*                   do not put "No Valid Data" across the middle of the plot.
+*                   Instead (in disp_set_up) add this information to the
+*                   variable name in the key below the plot.
+*      *acm*  5/02  Add /NOKEY option.  Also, if /NOLAB specifed, do not
+*                   plot a key.
+
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -102,7 +109,7 @@
 * internal variable declarations:
 	LOGICAL		overlay, transpz, no_labels, no_x_rng,
      .			set_up, noaxes, axes, no_data, flows, 
-     .			is_logh, is_logv
+     .			is_logh, is_logv, no_key
 	INTEGER		TM_LENSTR1, status, cx, 
      .			loc, ipen, thick,
      .			dim1, dim2, asp,
@@ -144,6 +151,8 @@
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 	is_logh   = qual_given( slash_is_logh        ).GT.0  ! Not valid quals
 	is_logv   = qual_given( slash_is_logv        ).GT.0  ! for vector
+	no_key    = qual_given( slash_vect_nokey     ).GT.0  ! for vector
+        IF (no_labels) no_key = .TRUE.
 
 	IF ( .NOT.overlay ) CALL DISP_INIT(no_labels,is_cx,num_uvars_in_cmnd)
 * ... default orientation for YT and ZT contours has time on horizontal
@@ -228,7 +237,12 @@
 
 * is there no valid input data?
         no_data =  no_x_rng .AND. only_x.EQ.bad_val4
-        IF (no_data) CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
+
+c When it's an overlay, 'No Valid Data' is part of the plot key, done
+c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
+
+        IF (.NOT. overlay .AND. no_data) 
+     .                  CALL PUT_LABEL( ppl_movlab, 0.5, 0.5,
      .                  ppl_centered, letsize_title,
      .                  'No Valid Data',
      .                  lab_loc_axlen_times, lab_loc_axlen_times )
@@ -237,10 +251,15 @@
 	nvect_on = nvect_on + 1
 
 * special set-up required only for the VECTOR command
-	IF ( .NOT.overlay .AND. .NOT.no_data ) THEN
+	IF ( .NOT.overlay .AND. .NOT.no_data .AND. .NOT.no_key) THEN
 * ... vector length key below plot title (overlay written as key)
 	   WRITE ( ppl_buff, '(2F6.1)' ) 3.5, -1.2
 	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
+	ENDIF	
+
+	IF (no_key) THEN
+* ... no vector-length key.  
+	   CALL PPLCMD (' ',' ',0,'VECKEY 0', 1, 1 )
 	ENDIF	
 
 * turn off axes? 
@@ -380,6 +399,11 @@
 * ... vector length key below plot title (overlay written as key)
 	   WRITE ( ppl_buff, '(2F6.1)' ) 5.5, -1.2
 	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
+
+           IF (no_key) THEN
+	      CALL PPLCMD (' ',' ',0,'VECKEY 0', 1, 1 )
+	   ENDIF	
+
 	ENDIF	
 
            WRITE (ppl_buff, '(I4)') density

@@ -991,6 +991,7 @@ c     read (UNIT) (ob_rsgm(i), i = 1, n_obs)
 c
 c     ..produce ship report
 c
+#ifdef DEBUG
       write (45, '(9x,''dtg'', 3x,''sign '', 5x,''lat'', 5x,''lon'',
      *             4x,''type'', 5x,''sst'', 4x,''clim'', 4x,''glbl'',
      *             4x,''regn'', 6x,''qc'', 4x,''csgm'', 4x,''gsgm'',
@@ -1002,6 +1003,7 @@ c
      *          ob_regn(i), ob_qc(i), ob_csgm(i), ob_gsgm(i),
      *          ob_rsgm(i), ob_wm(i), ob_scr(i), data_lbl(ob_type(i))
       enddo
+#endif
 c
       return
       end

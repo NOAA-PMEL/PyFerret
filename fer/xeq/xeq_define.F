@@ -147,11 +147,13 @@
 * v552: *acm* 4/03 Bug Fix: checking length of variable name. Length now 128
 * V553  *acm* 6/03 Use 'XX' or 'YY' for line_direction for non-lat/lon axes. 
 * v554 *acm* 11/03 reg_name had NOT been changed to *24, to match cx_name
-* v554 *acm* 11/03 Adjust definition of npoints, checking to see if the 
-*                  upper limit of the axis is include in the upper grid box.
+* v554 *acm* 11/03 Adjust definition of npoints, checking to see if the upper
+*                  limit of the axis is include in the upper grid box. (bug 673)
 * v554 *acm* 11/03 def axis/units=yr  was not the same as def axis/units=year
 *                  Change this so yr and year mean a year in whatever calendar 
 *                  we are using.
+* v554 *acm* 3/4   The adjustment in definition of npoints needs fuzzy comparison
+*                  not strict .GE. (under g77 linux)
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -257,7 +259,7 @@
 
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
-     .            micro_adj, axwwlen, rmod_len, secsperyear
+     .            micro_adj, axwwlen, rmod_len, secsperyear, small
 	CHARACTER reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
@@ -1022,9 +1024,9 @@ C /units=months  is 1/12 of the length of the year
 	       IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
 	       IF ( .NOT.its_calendar ) THEN
 	          npoints = INT(( (end - start) / delta ) + 1.9999)
-		  a = start + delta* (npoints-1)
-		  a = a - 0.5*delta
-		  IF (start + delta* (npoints-1) - 0.5*delta .GT. end) npoints = npoints-1
+                  small = MIN(1.e-9, delta)
+		  IF (start + delta* (npoints-1) - 0.5*delta .GT. end+small) 
+     .              npoints = npoints-1
 	       ENDIF
 	     ELSEIF ( npoints .EQ. 1 ) THEN
 	       IF ( end .NE. start ) GOTO 5530

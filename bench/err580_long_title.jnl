@@ -1,0 +1,6 @@
+
+ ! err580_long_title.jnl
+ ! Titles were truncated at 80 characters
+
+save/clobber/title="a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789"/file=longtitle.nc x[x=1:10]
+sp ncdump longtitle.nc

@@ -108,6 +108,12 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 * pass viewport flag to PPLUS
 	PPL_viewports_active = vp_num .NE. mvp_dflt
 
+* For viewport/AXES viewports, update ASIZE and BSIZE here,
+* or else the first viewport plotted is in the wrong place.
+        IF (vp_by_axis(vp_num)) THEN
+           CALL SIZE (width,height)
+        ENDIF
+
 * NDC space goes 0 to fctx and 0 to fcty (corresponding to PLOT+ SIZE command)
 	IF(ASIZE.GT.BSIZE)THEN
 	   FCTY=BSIZE/ASIZE

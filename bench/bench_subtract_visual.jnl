@@ -43,4 +43,4 @@ let b = sst[l=@ave]
 shade subtract(a,b)
 plot subtract(a,b)          ! DELIBERATE ERROR
 
-exit
+set mode/last ignore_errors

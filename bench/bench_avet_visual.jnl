@@ -29,3 +29,5 @@ let b = x[i=1:30,k=1:10]
 let c = avet(a)
 plot b
 plot/over c
+
+set mode/last ignore_errors

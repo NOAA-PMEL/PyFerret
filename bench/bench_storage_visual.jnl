@@ -23,3 +23,5 @@ let c = storage(b)
 shade c[k=1,l=5]
 
 shade c[x=20:380,t=15-jan-1983]          ! DELIBERATE ERROR
+
+set mode/last ignore_errors

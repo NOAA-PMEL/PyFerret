@@ -29,4 +29,4 @@ shade a                   ! DELIBERATE ERROR
 let a = add_9(a1,a2,1000,a1,a2,1000,a1,a2,1000)
 shade a
 
-
+set mode/last ignore_errors

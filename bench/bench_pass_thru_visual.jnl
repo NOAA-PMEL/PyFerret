@@ -16,3 +16,5 @@ set region/@w
 shade a                       ! DELIBERATE ERROR
 shade a[l=1]
 shade a[l=@ave,y=@sbx:11]
+
+set mode/last ignore_errors

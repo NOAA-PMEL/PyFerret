@@ -18,3 +18,5 @@ let a = x[i=1:9,k=1:5] + t[l=1:5]
 let b = x[i=1:9,k=1:5]
 let c = avet(a)
 list b, c
+
+set mode/last ignore_errors

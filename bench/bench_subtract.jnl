@@ -37,3 +37,5 @@ list/x=150:160/y=0 subtract(a,26)
 
 let b = sst[x=180,y=0,l=@ave]
 list/x=150:160/y=0  subtract(a,b)         
+
+set mode/last ignore_errors

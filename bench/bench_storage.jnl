@@ -20,3 +20,5 @@ let b = temp[x=140e:60w]
 let c = storage(b)
 list/i=11:20 c[k=1,l=5,j=44:50@ave]
 
+set mode/last ignore_errors
+

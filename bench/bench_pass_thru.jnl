@@ -20,3 +20,5 @@ let a = pass_thru(sst)
 set region/@w
 list/x=50 a[l=1]
 list/x=50 a[l=@ave,y=@sbx:11]
+
+set mode/last ignore_errors

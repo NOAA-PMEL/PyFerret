@@ -124,7 +124,6 @@ C  Internal declarations
 
 	INTEGER I, J, I1, I2, IE, IS
 	REAL TVAR
-
 C---------------------------------------------------------------------
 C.................Find mean, demean DATA.
 C.................Note PCT is used first as a dummy to save the mean.
@@ -268,7 +267,6 @@ C---------------------------------------------------------------------
 
 C---------------------------------------------------------------------
 c.............initializations.
-
 
         ier = 0
 	do 50 ix=1,nx
@@ -513,7 +511,6 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
       INTEGER nb
       REAL rnorm, eps
 
-
       nb=n
 
       CALL HOUSEH(A,N,eofwork(1,1,1,1),eofwork(1,2,1,1),NB,
@@ -539,6 +536,10 @@ c      CALL BACKS(BETA,A,N,X,N,EPS,NB)
 C**********************************************************************
 
       SUBROUTINE HOUSEH (G,N,A,B,NB, p)
+
+c  7/2002 ACM  Make the sums etc for calculating the matrix inverse
+c              double precision.
+
       INTEGER NB
       REAL G(NB,*),A(*),B(*)
 
@@ -546,7 +547,7 @@ c      DIMENSION P(2000)
       REAL P(*)
 
       INTEGER n, n2, k, k1, i, j, i1
-      REAL sum, sigma, absb, alpha, beta, gamma, t
+      REAL*8 sum, sigma, absb, alpha, beta, gamma, t
 
       N2=N-2
       IF(N2)45,44,2
@@ -604,7 +605,6 @@ C************************************************************************
 C W.KAHAN AND J.VARAH, TWO WORKING ALGORITHMS FOR THE EIGENVALUES OF A
 C SYMMETRIC TRIDIAGONAL MATRIX. TECHNICAL REPORT NO. CS43, AUGUST 11,
 C 1966. COMP.SC.DEPT. STANFORD UNIVERSITY.
-
 
       DO 2 I=1,N
       E(I)=ALPHA(I)

@@ -847,8 +847,15 @@ GIFtext(Metafile *mf, int num, Gpoint *at, Gchar *string)
     int
 GIFcellArray(Metafile *mf, int num, Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row, Gint *colour, Gipoint *dim)
 {
-	int     xx1, yy1, xx2, yy2, c;
-    int		lx, ly, index, imf;
+	int     dstX, dstY, sumX, sumY, xx2, yy2, c;
+    int		lx, ly, index, imf, srcW, srcH, dstW, dstH, npts;
+	int     x, y;
+	/* Stretch vectors; code from gdImageCopyResized */
+	int *stx;
+	int *sty;
+	double accum;
+	int tox, toy;
+	int i, j, p;
 
     mf_cgmo		**cgmo	= &mf->cgmo;
     for (imf = 0; imf < num; ++imf) {
@@ -859,21 +866,81 @@ GIFcellArray(Metafile *mf, int num, Gpoint *ll, Gpoint *ur, Gpoint *lr, Gint row
 	meta->resize = 0;	/* Not OK to resize */
 
 
-	xform(meta, ll->x, ll->y, &xx1, &yy1);
-	
-	xform(meta, ur->x, ur->y, &xx2, &yy2);
-	
+	xform(meta, ll->x, ll->y, &dstX, &yy2);
+	xform(meta, ur->x, ur->y, &xx2, &dstY);
+
+	dstW = xx2 - dstX;
+	dstH = yy2 - dstY;
+	srcW = dim->x;
+	srcH = dim->y; 
+	npts = srcW * srcH; 
+
+
+	/* More code from gdImageCopyResized. 
+	   We only need to use floating point to determine the correct
+	   stretch vector for one line's worth. */
+	stx = (int *) malloc(sizeof(int) * srcW);
+	sty = (int *) malloc(sizeof(int) * srcH);
+	accum = 0;
+	for (i=0; (i < srcW); i++) 
+	{
+		int got;
+		accum += (double)dstW/(double)srcW;
+		got = floor(accum);
+		stx[i] = got;
+		accum -= got;
+	}
+	accum = 0;
+	for (i=0; (i < srcH); i++) 
+	{
+		int got;
+		accum += (double)dstH/(double)srcH;
+		got = floor(accum);
+		sty[i] = got;
+		accum -= got;
+	}
+
 	index = 0;
-	for (ly = yy1; (ly < yy2); ly++) {
-		for (lx = xx1; (lx < xx2); lx++) {
-			c = colour[index];
-			gdImageSetPixel(meta->image, lx, ly, c);
-			index = index + 1;
-			}
-		}
-	}	
+	c = colour[index];
+	toy = dstY;
+	sumY = dstY;
+
+	for (y=0; (y < srcH); y++)                      /* cells in y */
+	{
+		    tox = dstX;
+		    sumX = dstX;
+			for (x=0; (x < srcW); x++)              /* cells in y */
+			{
+			    toy = sumY;
+				for (j=0; (j < sty[y]); j++)        /* image pixels in y */
+	            {   
+				    p = j;
+					tox = sumX;
+					for (i=0; (i < stx[x]); i++)    /* image pixels in x */
+			        {
+					   p = i;
+					   gdImageSetPixel(meta->image, tox, toy, c);
+				       tox++;
+				    }
+				   toy++;
+				}
+				index++;
+				c = 1;
+				if (index < npts) 
+				{
+				c = colour[index];
+				}
+				sumX = sumX + stx[x];
+		   }
+		   sumY = sumY + sty[y];
+	}
+
+
+	free(stx);
+	free(sty);
+    }
 		
-		return OK;
+	return OK;
 }
 
 

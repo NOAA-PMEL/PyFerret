@@ -806,7 +806,9 @@ ERROR in efcn_compute() accessing %s\n", tempText);
 
         if ( (arg_ptr[i] = (float *)malloc(size)) == NULL ) { 
           fprintf(stderr, "\n\
-ERROR in efcn_compute() allocating %d words of memory\n", size);
+ERROR in efcn_compute() allocating %d bytes of memory\n\
+      work array %d:  X=%d:%d, Y=%d:%d, Z=%d:%d, T=%d:%d\n", 
+      iarray,xlo,xhi,ylo,yhi,zlo,zhi,tlo,thi,size);
 	  *status = FERR_EF_ERROR;
 	  return;
         }

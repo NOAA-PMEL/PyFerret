@@ -1,7 +1,5 @@
 	SUBROUTINE INIT_EZ_DSET( dset_name, dset, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -64,6 +62,7 @@
 * 5/99 *sh* - added arguments to EQUAL_PERMUTE call
 * V510 *sh* 3/00 - increased allowable filename length
 *	    4/00 - bump use counts on grids and axes used by this data set
+* V530 *sh* 10/00 - added /FORMAT=delimited/TYPE=data_types
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -95,25 +94,27 @@
 	CHARACTER	dset_name*(*)
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, VALID_GRID,
+	LOGICAL		TM_DIGIT, VALID_GRID, its_delimited,
      .			have_mods, already_init, by_number, swap
 	LOGICAL         have_type
 	INTEGER		TM_LENSTR1, TM_DSET_NUMBER, GRID_FROM_NAME,
      .			tmap_status, loc, skip, grid, columns,
      .			order(5), idim
-	CHARACTER	TM_INQ_PATH*256, var_list*256,
+	CHARACTER	TM_INQ_PATH*256, var_list*500,
      .			path_name*256, ezform*80, title*128, grid_name*16,
-     .			type*16, ctype*16
+     .			type*500, ctype*16, delim*24
 	REAL		rval
+
+* local parameter declarations
+	CHARACTER*1	tab
+	PARAMETER     ( tab = CHAR(9) )
 
 * functions
 	INTEGER         br_set_type
 * initialize
-	loc = qual_given( slash_set_data_var )
 	have_mods = .FALSE.
 	swap = .FALSE.
 	have_type = .FALSE.
-	type = 'R4'
 
 * interpret the data set name or number given
 * 3 possibilities:
@@ -167,15 +168,6 @@
 	   already_init = .FALSE.
 	ENDIF
 
-* get list of variable names: SET DATA/EZ/VAR="..." name 
-	IF ( loc .EQ. 0 ) THEN
-	   var_list = 'V1'
-	ELSE
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      var_list, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	ENDIF
-
 * get number of columns if specified
 	loc = qual_given( slash_set_data_column )
 	IF ( loc .GT. 0 ) THEN
@@ -186,7 +178,73 @@
 	ELSE
 	   columns = int4_init
 	ENDIF
-	CALL EZ_INIT_DSET( path_name, var_list, columns, dset, tmap_status )
+
+* read the file format
+        loc = qual_given( slash_set_data_form )
+        IF ( loc .GT. 0 ) THEN
+           have_mods = .TRUE.
+           CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        ezform, status )
+           IF ( status .NE. ferr_ok ) RETURN
+	   its_delimited = ezform(1:4) .EQ. 'DELI'
+        ELSE
+           ezform = char_init16
+	   its_delimited = .FALSE.
+        ENDIF
+
+* the /TYPE qualifier may refer to either delimited reads or binary reads
+* Note: "?TYPE" is overloaded -- used independently for STREAM and
+* DELIMITED format reads
+        loc = qual_given( slash_set_data_type )
+	IF ( loc .EQ. 0 ) THEN
+	   IF (its_delimited) THEN
+	      type = ' '  ! to be determined in ez_init_dset
+	   ELSE
+	      type = 'R4'  ! default for stream reads
+	   ENDIF
+	ELSE
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      type, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF (.NOT.its_delimited) have_type = .TRUE. ! Joe's binary stream
+	ENDIF
+
+* /DELIMIT=
+	loc = qual_given( slash_set_data_delimiters )
+	IF ( loc .GT. 0 ) THEN
+	   IF (.NOT.its_delimited) GOTO 5450
+	   CALL EQUAL_DELIMIT(
+     .			cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			delim, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	ELSE
+	   delim = tab//','//CHAR(0)  ! NULL terminated
+	ENDIF
+
+* get list of variable names: SET DATA/EZ/VAR="..." name 
+	loc = qual_given( slash_set_data_var )
+	IF ( loc .EQ. 0 ) THEN
+	   var_list = ' '
+	ELSE
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      var_list, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	ENDIF
+
+* /SKIP
+	loc = qual_given( slash_set_data_skip )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			   rval, status )
+	   IF ( status .NE. ferr_ok ) RETURN
+	   skip = INT( rval )
+	ELSE
+	   skip = 0  ! was int4_init pre 10/00
+	ENDIF
+
+	CALL EZ_INIT_DSET( path_name, ezform, var_list, type, delim,
+     .			   skip, columns, dset, tmap_status )
 	IF ( tmap_status .NE. merr_ok ) GOTO 5900
 
 * always process any other qualifiers given
@@ -199,15 +257,6 @@
 	ELSE
 	   title = char_init80
 	ENDIF
-        loc = qual_given( slash_set_data_form )
-        IF ( loc .GT. 0 ) THEN
-           have_mods = .TRUE.
-           CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                        ezform, status )
-           IF ( status .NE. ferr_ok ) RETURN
-        ELSE
-           ezform = char_init16
-        ENDIF
 	loc = qual_given( slash_set_data_order )    ! 5/94
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -234,26 +283,7 @@
 	ELSE
 	   grid = int4_init
 	ENDIF
-	loc = qual_given( slash_set_data_skip )
-	IF ( loc .GT. 0 ) THEN
-	   have_mods = .TRUE.
-	   CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   rval, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   skip = INT( rval )
-	ELSE
-	   skip = int4_init
-	ENDIF
-	
-c       /type
-	loc = qual_given(slash_set_data_type)
-	if (loc .GT. 0) then
-	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   type, status )
-	   IF ( status .NE. ferr_ok ) RETURN
-	   have_type = .TRUE.
-	END IF
-	   
+
 c       /swap
 	loc = qual_given(slash_set_data_swap)
 	if (loc .GT. 0) then
@@ -276,12 +306,12 @@ c       /swap
 	   if (swap .eqv. .TRUE. .or. have_type .eqv. .TRUE.) then
 	      goto 5800
 	   end if
+	else
+	   call toChar(type, ctype)
+	   if (BR_SET_TYPE(ctype) .EQ. 0) goto 5600
+	   call BR_SET_ATTS(order, swap)
 	end if
 
-
-	call toChar(type, ctype)
-	if (BR_SET_TYPE(ctype) .EQ. 0) goto 5600
-	call BR_SET_ATTS(order, swap)
 
 * bump use counts on grids and axes used by this data set
 	CALL TM_DSET_USE_GRIDS( dset )
@@ -298,8 +328,10 @@ c       /swap
      .		' is not an EZ data set', *5000 )
  5300	CALL ERRMSG( ferr_unknown_data_set, status,
      .		'invalid data set number for SET DATA/EZ', *5000 )
-! 5400	CALL ERRMSG( ferr_unknown_data_set, status, dset_name, *5000 )
  5400	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
+ 5450	CALL ERRMSG(ferr_invalid_command, status,
+     .        '/DELIMIT only allowed for DELIMITED format', 
+     .        *5000)
  5500	CALL ERRMSG( ferr_grid_definition, status, grid_name, *5000 )
  5600	call errmsg(ferr_invalid_command, status,
      .        'invalid argument for /TYPE', *5000)

@@ -21,6 +21,7 @@
 * $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
+* V491: 4/98 - fix bug in check for itsa_uvar -- was bypassing ALL processing
 
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
@@ -46,7 +47,7 @@
 
 * internal variable declarations:
 !	LOGICAL lim_redundant
-	LOGICAL itsa_uvar
+	LOGICAL its_irrelevant
 	INTEGER	ISUBSCRIPT, TM_LENSTR1, ss, min_ss, max_ss, lo_ss, hi_ss,
      .		axis, grid, lenstr, slen, cat, var, istat
 	REAL*8	SECS_FROM_BC, bc_to_t0, ww, min_ww, max_ww, lo_ww, hi_ww
@@ -64,7 +65,13 @@
 	grid = cx_grid( cx )
 	cat  = cx_category(cx)
 	var  = cx_variable(cx)
-	itsa_uvar = cat .EQ. cat_user_var
+* (11/95) expressions such as "2+2"
+	IF (cat .EQ. cat_user_var) THEN
+	   its_irrelevant = uvar_given(idim,var)
+     .			.EQ. uvlim_irrelevant
+	ELSE
+	   its_irrelevant = .FALSE.
+	ENDIF
 
 * axis for this dimension
 	axis = grid_line( idim, grid )
@@ -94,8 +101,8 @@
 	   GOTO 1000
 
 * (11/95) expressions such as "2+2"
-	ELSEIF ( itsa_uvar ) THEN
-	   IF ( uvar_given(idim,var) .EQ. uvlim_irrelevant) GOTO 1000
+	ELSEIF ( its_irrelevant ) THEN
+	   GOTO 1000
 
 * positions were specified by subscript
 	ELSEIF ( cx_by_ss( idim, cx ) ) THEN

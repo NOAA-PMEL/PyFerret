@@ -68,6 +68,7 @@
 *		  instead of bytes
 * 11/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
+* V500 3/99 *kob* - Initialize buff at 610 to prevent use of previous values
 
 * Arguments:
 *	dset	- data set number
@@ -365,7 +366,11 @@
   600	READ (lunit,in_format,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
 	GOTO 690
 * ... free format data
-  610	READ (lunit,*,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
+* 3/99 *kob* - Initialize buff before reading to prevent use of previous values
+  610   do 611 rcnt = 1,ncolmn
+	   buff(rcnt) = -1.E34
+  611	continue
+	READ (lunit,*,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
 	GOTO 690
 * ... STREAM format data
 *       Normally there will be only a single variable read so vpos=1 but

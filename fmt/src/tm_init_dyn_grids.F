@@ -42,22 +42,15 @@
 * 9/13/95 for Ferret version 4.2
 * V510 *sh* 3/00 - initialize "hooks" for managing temporary grids and lines
 *      *sh* 5/00 - set line_keep_flag everywhere to FALSE
+* V570 *acm*5/04 - remove line_has_edges flag; never used.
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:IMPLICIT.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
 
 * Argument definitions
 
@@ -92,7 +85,6 @@
 * no "dynamic" lines (above max_lines) are "used" (yet)
 	DO 300 i = 1, max_dyn_lines
 	   line_use_cnt  (i) = 0
-	   line_has_edges(i) = .FALSE.
 	   line_keep_flag(i) = .FALSE.
  300	CONTINUE
 	DO 310 i = max_lines+1, max_dyn_lines

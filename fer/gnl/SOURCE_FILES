@@ -60,6 +60,7 @@ show_diag_vars.F\
 show_dyn_grids.F\
 show_grid.F\
 show_line.F\
+show_line_coords.F\
 show_mem_vars.F\
 show_region.F\
 show_regrid_transforms.F\

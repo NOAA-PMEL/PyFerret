@@ -39,7 +39,6 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
 
 * revision 0.0 - 4/3/86
 * revision 0.1 - 12/15/86
@@ -132,6 +131,7 @@
 *                   - fixed EFCN_MATCH_TEMPLATE to behave like MATCH_TEMPLATE
 *                     so that multiple functions are shown
 *       4/99 *sh* - added MODE STUPID:weak_cache
+*       4/99 *sh* - added SHOW AXIS/lims=lo:hi
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -229,7 +229,7 @@
      .		category, mods_cx, v1_blk1, v1_nblks, grid, cx,
      .		status, iqual, mode, iset, i, icmnd, isub, n,
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
-     .		vax_code, rqst_dset
+     .		vax_code, rqst_dset, tmp_grid
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
@@ -325,6 +325,26 @@
 	   RETURN
 	ENDIF
 
+* decode the limit qualifiers
+	CALL STACK_PTR_UP ( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+	mods_cx = cx_stack_ptr
+	CALL INIT_CONTEXT_MODS( mods_cx )
+	CALL GET_CONTEXT_MODS (	cx_last,
+     .				cmnd_buff,
+     .				mods_cx,
+     .				max_qual_list,
+     .				num_qualifiers,
+     .				qual_start,
+     .				qual_end,
+     .				unknown_qual_ok,
+     .				status	)
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* "allocate" (use) scratch grid
+        tmp_grid =  max_grids-2  ! see docs in TM_ALLO_DYN_GRID.F
+        CALL INIT_GRID( tmp_grid, char_init16, mnormal )
+
 * write column headings
 	WRITE ( risc_buff, 3000 )
  3000	FORMAT ( T2,'name',T13,'axis',T31,'# pts',T39,
@@ -340,8 +360,16 @@
      .			( ferr_interrupt, status, ' ', *5000 )
 * kob* 3/99 - initialiaze line_name w/ 64 char string to match new length
 	         IF ( line_name(line) .EQ. char_init64 ) GOTO 410
-	         IF (MATCH_TEMPLATE(line_name(line),name))
-     .					CALL SHOW_LINE( line, .NOT.brief )
+	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
+                   CALL SHOW_LINE( line, .NOT.brief )
+	           DO 405 i2 = 1, 4
+	             IF ( qual_given( slash_show_grid_x0+i2 ) .GT. 0
+     .              .OR.  qual_given( slash_show_grid_i0+i2 ) .GT. 0 ) THEN
+                      grid_line(i2,tmp_grid) = line
+                      CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
+                    ENDIF
+ 405               CONTINUE
+                 ENDIF
  410	      CONTINUE
  420	   CONTINUE
 	ELSE

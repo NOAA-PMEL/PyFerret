@@ -30,12 +30,17 @@ query/ignore $1%<Specify all arguments: plot_command xpos ypos%
 query/ignore $2%<Specify all arguments: plot_command xpos ypos%
 query/ignore $3%<Specify all arguments: plot_command xpos ypos%
 
-message/cont "If this script does not complete you will need to rerun the map projection script."
+!message/cont "If this script does not complete you will need to rerun the map projection script."
 !
 ! Save the region and grid
 !
 define region/default save
 set grid/save
+
+! Cancel the region because the I index info is used to restrict
+! the points to be plotted as a line.
+!
+can region/x/y
 
 !
 ! Alter the map projection equations to use xpos and ypos

@@ -58,6 +58,9 @@
 *		 of 365.2425 day year 
 *    *kob* 11/99 - add alternate unit "year" which is equal to a 
 *                  gregorian_year
+* *sh* 12/99 - add "degree" as an alternate name since exact match is now
+*	required on names
+
 * local variable declarations
 !	INTEGER	i
 
@@ -172,8 +175,8 @@
      .		un_alt_name (14) / 'year'	/,
      .		un_alt_subsc(14) / -10 /,
      .
-     .		un_alt_name (15) / char_init12 /,
-     .		un_alt_subsc(15) / 0 /,
+     .		un_alt_name (15) / 'degree'	/,
+     .		un_alt_subsc(15) / pun_degrees /,
      .
      .		un_alt_name (16) / char_init12	/,
      .		un_alt_subsc(16) / 0 /,

@@ -45,12 +45,14 @@
 * revision 1.00 - 05/26/88 - to work with TMAP routines
 * revision 1.01 - 11/21/88 - variable used check changed to specific char_initXX
 * 7/96 *sh*: check that "deg" is not hiding "degrees C" or "deg K" ...
+* V5.1 *sh* 12/99 - changed logic for matching un_name to insist on exact
+*	match with possible final "s". It was matching "Kelvin" to "in"
 
-*
 * Include files
 #ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'xunits.cmn_text'
 	external xunits_data
 #else
@@ -68,7 +70,8 @@
 
 * internal variable declarations:
 	INTEGER		iun, ideg
-	LOGICAL		TM_HAS_STRING
+	INTEGER         STR_CASE_BLIND_COMPARE, TM_LENSTR1, istat, slen
+	LOGICAL		TM_HAS_STRING, match
 	CHARACTER	deg_temp(ndeg_temp)*1
 
 * initialize characters that signal "degrees" is really temperature
@@ -76,24 +79,41 @@
 
 * check through alternate (long) names first to avoid ambiguity
 * eg. "m" is the un_name for "meters" but also exits in many other unit names
-	DO 100 iun = 1, pun_num_alt
+	DO 110 iun = 1, pun_num_alt
 
 	   IF ( un_alt_name(iun) .EQ. char_init12 ) GOTO 200
 
 	   IF ( TM_HAS_STRING( string, un_alt_name(iun) ) ) THEN
+* ... check that "deg" is not hiding "degrees C" or "deg K" ...
+	      IF ( iun .EQ. pun_degrees ) THEN
+	         DO 105 ideg = 1, ndeg_temp
+	            IF (TM_HAS_STRING(string,deg_temp(ideg))) GOTO 110
+ 105	         CONTINUE
+	      ENDIF
 	      TM_UNIT_ID = un_alt_subsc( iun )
 	      RETURN
 	   ENDIF
 
- 100	CONTINUE
+ 110	CONTINUE
 
 * now it's safe to search the list of short abbreviations
- 200	DO 210 iun = pun_1st_unit, pun_last_unit
+ 200	slen = TM_LENSTR1(string)
+	DO 210 iun = pun_1st_unit, pun_last_unit
 
 	   IF ( un_name(iun) .EQ. char_init12 .OR.
      .	        un_name(iun) .EQ. ' '             ) GOTO 210
 
-	   IF ( TM_HAS_STRING( string, un_name(iun) ) ) THEN
+* ... check for string match or possibly plural
+	   istat = STR_CASE_BLIND_COMPARE(string, un_name(iun))
+	   match = istat .EQ. str_match
+	   IF (.NOT.match .AND. slen.GT.1) THEN
+	      istat = STR_CASE_BLIND_COMPARE(string(:slen-1), un_name(iun))
+	      match = istat .EQ. str_match
+	      IF ( match ) match = string(slen:slen).EQ.'s'
+     .			      .OR. string(slen:slen).EQ.'S'
+	   ENDIF
+
+	   IF ( match ) THEN
 * ... check that "deg" is not hiding "degrees C" or "deg K" ...
 	      IF ( iun .EQ. pun_degrees ) THEN
 	         DO 205 ideg = 1, ndeg_temp

@@ -8,6 +8,7 @@
 *
 * V200:  6/28/89
 * V420:  1/95 - need to init cx_delta since it is used by dynamic axes
+* V491:  12/97 - bug fix: need to initialize 
 
 * calling argument declarations:
 	INTEGER	status
@@ -40,6 +41,8 @@
 	  cx_by_ss(idim,cx) = .TRUE.
 	  cx_trans(idim,cx) = trans_no_transform
 	  cx_given(idim,cx) = .FALSE.
+	  cx_lo_ww(idim,cx) = unspecified_val8
+	  cx_hi_ww(idim,cx) = unspecified_val8
 	  cx_delta(idim,cx) = unspecified_val8
  100	CONTINUE
 

@@ -94,6 +94,7 @@
 *	translated inside of the loop (keep copy of input in risc_buff)
 *	*sh* 3/01 - added arg1_quoted to indicate if the first arg in the list
 *		has enclosing quotes - and avoid calling PARSE_COMMA_LIST
+* V531 *sh* 4/01 - added continuation lines
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -150,7 +151,7 @@
      .		isubcmnd_pointer, iword, last_qual, iqual_word, iterm,
      .		iqual, iqual_pointer, iarg, i, nparen, nsubst_passes,
      .		grave_start, grave_end, in, out, nest,
-     .		paren_level, len_copy
+     .		paren_level
 	CHARACTER c1*1
 	CHARACTER cmnd_copy*2048  ! must match cmnd_buff_len
 
@@ -178,17 +179,27 @@
 	cmnd_len = TM_LENSTR (cmnd_buff)
 
 * ignore "yes?" at start of command
- 2	IF (cmnd_buff(1:4) .EQ. 'yes?') THEN
-	   cmnd_buff(1:4) = ' '
-	   CALL LEFT_JUST( cmnd_buff, cmnd_buff, cmnd_len )
-	   GOTO 2		! in case there are multiple "yes?"'s
+ 2	IF (cmnd_buff(1:5) .EQ. 'yes? '
+     . .OR. cmnd_buff(1:5) .EQ. '...? ' ) THEN
+	   IF ( cmnd_len .LT. 6 ) THEN
+	     cmnd_buff = ' '
+	     cmnd_len = 0
+	   ELSE
+	     cmnd_buff = cmnd_buff(6:cmnd_len)
+	     cmnd_len = cmnd_len - 5
+	     GOTO 2		! in case there are multiple "yes?"'s
+	   ENDIF
 	ENDIF
 
 * comment line ?
-	IF ( cmnd_len .LE. 0 ) RETURN
-        IF ( cmnd_buff(1:1) .EQ. '*'
-     .  .OR. cmnd_buff(1:1) .EQ. '!' ) RETURN
-	IF ( cmnd_buff(1:1) .EQ. '/' ) GOTO 5050
+	IF ( (cmnd_len .LE. 0
+     .   .OR. cmnd_buff(1:1) .EQ. '*'
+     .   .OR. cmnd_buff(1:1) .EQ. '!' ) 
+     . .AND. .NOT.has_continuation_cmnd ) THEN
+	   RETURN
+	ENDIF
+	IF ( cmnd_buff(1:1) .EQ. '/'
+     .	.AND. .NOT.has_continuation_cmnd ) GOTO 5050
 
 * find length of command line ("!" is a valid terminator to permit comments)
 	bang_position = INDEX ( cmnd_buff, '!' )
@@ -217,14 +228,41 @@
  8	IF ( bang_position .GT. 0 ) THEN
 	   DO 10 cmnd_len = bang_position-1, 1, -1
 	      IF (  cmnd_buff(cmnd_len:cmnd_len) .NE. ' '
-     .	      .AND. cmnd_buff(cmnd_len:cmnd_len) .NE. tab ) GOTO 50
+     .	      .AND. cmnd_buff(cmnd_len:cmnd_len) .NE. tab ) GOTO 15
  10	   CONTINUE
-	   RETURN	! no text before !
+	   IF (.NOT.has_continuation_cmnd) RETURN	! no text before !
+	ENDIF
+
+* prepend continuation from a previous line if any
+ 15	IF ( has_continuation_cmnd ) THEN
+	   len_cmnd_copy = len_cmnd_copy - 1  ! final char is continuation
+	   IF (len_cmnd_copy .GT. 0) THEN
+	     IF ( cmnd_len .GT. 0) THEN
+	        cmnd_buff = cmnd_copy(:len_cmnd_copy) // cmnd_buff(:cmnd_len)
+	     ELSE
+	        cmnd_buff = cmnd_copy(:len_cmnd_copy)
+	     ENDIF
+	   ENDIF
+	   cmnd_len = len_cmnd_copy + cmnd_len
+	   IF ( cmnd_len .GE. 2048 ) GOTO 5005 ! must match cmnd_buff_len
 	ENDIF
 
 * save a copy of the command with untranslated symbols for use by REPEAT
 	cmnd_copy = cmnd_buff
-	len_copy = cmnd_len
+	len_cmnd_copy = cmnd_len
+
+* is this an incomplete line requiring continuation (terminated w/ backslash)?
+	has_continuation_cmnd =
+#ifdef NO_DOUBLE_ESCAPE_SLASH
+     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\' 
+#else
+     .				cmnd_buff(cmnd_len:cmnd_len) .EQ. '\\'
+#endif
+	IF ( has_continuation_cmnd
+     . .OR. cmnd_len .EQ. 0        ) THEN
+	   cmnd_num = 0
+	   RETURN
+	ENDIF
 
 * * * * * * * * *
 * remove parens enclosing entire command or command group
@@ -244,7 +282,7 @@
 * process semicolon-separated command group  (2/93)
 * "REPEAT/L=lo:hi (command1;command2)"  is a single command (at this stage) but
 * "command1;command2" and "(command1;command2)" are command groups
- 50     IF ( INDEX(cmnd_buff(1:cmnd_len),';') .GT. 0 ) THEN
+        IF ( INDEX(cmnd_buff(1:cmnd_len),';') .GT. 0 ) THEN
 * ... it is a command group if there is a ";" NOT enclosed in parens
            nparen = 0
            surround_quote = .FALSE.
@@ -600,7 +638,7 @@
 *   ... search backwards for left paren
 	    first_paren = .TRUE.
 	    paren_level = 1
-	    DO 850 i = len_copy-1, 1, -1
+	    DO 850 i = len_cmnd_copy-1, 1, -1
 	      IF (cmnd_copy(i:i) .EQ. ')') THEN
 	        paren_level = paren_level + 1
 	        first_paren = .FALSE.
@@ -613,8 +651,8 @@
 	        ENDIF
 	        IF ( paren_level .EQ. 0 ) THEN
 *   ... found the block of REPEAT argument - replace the text with original
-	          cmnd_buff(arg_start(1):) = cmnd_copy(i:len_copy)
-	          cmnd_len = arg_start(1) + (len_copy-i)
+	          cmnd_buff(arg_start(1):) = cmnd_copy(i:len_cmnd_copy)
+	          cmnd_len = arg_start(1) + (len_cmnd_copy-i)
 	          num_args = 1
 	          arg_end(1) = cmnd_len
 	          GOTO 890
@@ -720,6 +758,10 @@
 ! 5005   risc_buff = cmnd_buff(cmnd_len-19:cmnd_len)
 ! 	CALL ERRMSG( ferr_line_too_long, status,
 !     .		     risc_buff(:20), *5000 )
+
+ 5005	CALL ERRMSG( ferr_syntax, status,
+     .			'command line too long -- exceeds 2048', *5000 )
+! 2048 must match cmnd_buff_len
 
  5010	CALL ERRMSG( ferr_syntax, status,
      .			'unpaired quotation marks, grave accent or brackets',

@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 4/29/87
+* V531 5/01 *sh* - added has_continuation_cmnd
 
 #ifdef unix
 	include 'xcontrol.cmn'
@@ -49,6 +50,11 @@
 	INCLUDE 'FERRET_CMN:XCONTROL.CMN'
 #endif
 
+* control stack pointer starts at stack bottom
 	DATA csp/ 0 /
+
+* for continuation lines on commands
+	DATA	has_continuation_cmnd / .FALSE. /
+
 
 	END

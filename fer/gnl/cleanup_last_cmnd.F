@@ -43,6 +43,7 @@
 
 * V312:  5/19/94 - with code extracted from GET_COMMAND
 * V320:  11/94   - dont process error message buffer -- done in ferret_dispatch
+* V531:  4/01 *sh* - cleanup incomplete continuation lines
 
 * calling argument declarations: (none)
 	INTEGER	control_stack_level
@@ -85,6 +86,9 @@
 
 * this needed for logic in ferret_dispatch
 	cmnd_buff = ' '
+
+* this in case there was a half completed command entry
+	has_continuation_cmnd = .FALSE.
 
 	RETURN
 	END

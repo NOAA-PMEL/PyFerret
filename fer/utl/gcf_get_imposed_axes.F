@@ -1,7 +1,5 @@
       SUBROUTINE GCF_GET_IMPOSED_AXES( gcfcn, cx_base, axes, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -53,25 +51,8 @@
 * V500: 7/99 *sh* - use of "grid_line(1,mgrid_abstract)" changed to
 *               "grid_line(1,mgrid_xabstract)" since mgrid_abstract changes
 *               with SET GRID
-
-
-* calling argument declarations
-	INTEGER	gcfcn, cx_base, axes(4), status
-
-* internal variable declarations
-	LOGICAL known_limits
-	INTEGER	CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN, CAXIS_LEN,
-     .		cx, idim, axis_will_be(4), n, grid, modulo
-	REAL*8	TM_WORLD, dlo, dhi, del
-	CHARACTER*40 GCF_NAME, buff, unit
-
-* Upon entry to this routine the context stack should be organized as
-*	 	  default context (for this uvar)
-*	 big_cx:  the merged grid context
-* -->	cx_base:  argument N context
-*		  argument N-1 context
-*		  ...
-*		  argument 1 context
+* V530: 10/00 *sh* - bug fix: need to pass an *array* of argument contexts
+*       to the C routine efcn_get_custom_axes
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -79,6 +60,7 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'grid_chg_fcns.parm'
+	include 'EF_Util.parm'
 	include 'xgrid_chg_fcns.cmn'
 	include 'xtext_info.cmn'	! w/ ww_dim_name
 	include 'xfr_grid.cmn'       ! w/ mgrid_abstract
@@ -96,6 +78,26 @@
 	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'       ! for TIMES2
 	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'     ! for TIMES2
 #endif
+
+* calling argument declarations
+	INTEGER	gcfcn, cx_base, axes(4), status
+
+* internal variable declarations
+	LOGICAL known_limits
+	INTEGER	CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN, CAXIS_LEN,
+     .          EFCN_GET_NUM_REQD_ARGS,
+     .		cx, i, idim, axis_will_be(4), n, grid, modulo
+	REAL*8	TM_WORLD, dlo, dhi, del
+	CHARACTER*40 GCF_NAME, buff, unit
+        INTEGER EF_cx_list(EF_MAX_ARGS), narg
+
+* Upon entry to this routine the context stack should be organized as
+*	 	  default context (for this uvar)
+*	 big_cx:  the merged grid context
+* -->	cx_base:  argument N context
+*		  argument N-1 context
+*		  ...
+*		  argument 1 context
 
 * initialize
 * ... consolidate info about function into local array to blur distinctions
@@ -216,11 +218,17 @@
 
 	ELSEIF (gcfcn .GT. gfcn_num_internal ) THEN
 
+*   ... create a context list array
+           narg = EFCN_GET_NUM_REQD_ARGS(gcfcn)
+           DO 300 i = 1, narg
+              EF_cx_list(i) = cx_base + narg - i
+ 300       CONTINUE
+
            IF (axis_will_be(1) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(2) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(3) .EQ. pgc_axis_supplied_herein
      .          .OR. axis_will_be(4) .EQ. pgc_axis_supplied_herein) THEN
-              CALL EFCN_GET_CUSTOM_AXES(gcfcn, cx_base)
+              CALL EFCN_GET_CUSTOM_AXES(gcfcn, EF_cx_list)
            ENDIF
 
            DO 400 idim = 1, 4

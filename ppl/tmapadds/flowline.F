@@ -62,6 +62,8 @@ C   int *shdcls, int shdcnt, int den)
 *  ACM 12/01  remove GET_MEMORY call.  This is now done, with other 
 *             PPLUS memory allocation, in disp_set_up.F on the call 
 *             from xeq_vector.  Also clean up the declarations.
+* ACM  9/9/02 Make px and py declarations px(*); for regular grids these
+*             are dummy arrays.
 
 
 	include		'parampl5_dat.decl'
@@ -99,7 +101,7 @@ C   int *shdcls, int shdcnt, int den)
 
 C  Calling argument declarations
 
-      REAL xf, yf, px(nxs),py(nys)
+      REAL xf, yf, px(*),py(*)
       REAL U(NXS,NYS),V(NXS,NYS), FLAG(*)
       INTEGER nxs, nys
 

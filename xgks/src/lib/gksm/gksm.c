@@ -58,7 +58,7 @@
 static Gint	gksm_version = 1;
 
 /* 11 bytes dummy for this implementation */
-static Gchar	dummy[] = "dummy info.";
+static Gchar	dummy[] = "           ";
 
 /* String array for formats created on the fly */
 static Gchar	fmt[80];
@@ -906,6 +906,23 @@ GMnextItem(mf)
 
 
 /*
+ * Return a string identifying the XPPLP metafile version.
+ */
+    static Gchar*
+XgksMXPPLPVersion()
+{
+    char		*xpplp_version = "XPPLP Profile F 1.0";
+    static Gchar	buffer[21];
+
+    buffer[0]	= 0;
+
+	(void) strncat(buffer, xpplp_version, sizeof(buffer) - 1);
+
+    return buffer;
+}
+
+
+/*
  * Return a string identifying the user and installation.
  */
     static Gchar*
@@ -913,7 +930,7 @@ XgksMAuthor()
 {
     char		*username	= getlogin();
     struct utsname	name;
-    static Gchar	buffer[41];
+    static Gchar	buffer[21];
 
     buffer[0]	= 0;
 
@@ -1171,8 +1188,8 @@ GMmoOpen(ws)
 	    ws->mf.gksm->fp	= fp;
 	    ws->mf.gksm->type	= MF_GKSM;
 
-	    (void) fprintf(fp, "%-4.4s%-40.40s%-8.8s", 
-			   "GKSM", XgksMAuthor(), XgksMDate());
+	    (void) fprintf(fp, "%-4.4s%-20.20s%-20.20s%-8.8s", 
+		   "GKSM", XgksMAuthor(), XgksMXPPLPVersion(), XgksMDate());
 	    (void) fprintf(fp,
 			   "%2d%2d%2d%2d%2d%2d%2d%2d",
 			   gksm_version,

@@ -47,6 +47,10 @@
 *               CYGWIN path separator of "\".  Otherwise we don't get a 
 *               clean filename extracted from the dataset.  This will 
 *               cause problems in find_dset_number and find_dset_name
+* 2/03 - *acm*  clean off .nc as well as .cdf and .des
+*               Note this may change the names of dynamic grids, which are
+*               generated from dataset names
+
 #include "gt_lib.parm"
 
 * argument
@@ -75,6 +79,8 @@
 	IF ( plen-idot .EQ. 4 ) THEN
 	   IF (   pathname(idot+1:plen) .NE. '.cdf'
      .      .AND. pathname(idot+1:plen) .NE. '.des' ) idot = plen
+	ELSEIF ( plen-idot .EQ. 3 ) THEN
+	   IF (   pathname(idot+1:plen) .NE. '.nc' ) idot = plen
 	ELSE
 	   idot = plen
 	ENDIF

@@ -53,6 +53,8 @@ C     Mod *jd* 1.10.95 To DATA KEYLN1,KEYLN2 (line 201) at *sh* request
 C     for compatibility with Ferret use of symbols.
 * V510 4/99 *jd* increased initialization sizes for bigger NLINES
 * V510 9/99 *sh* increased initialization sizes for bigger NLINES
+*      3/00 *sh* reduceded initialization sizes for NLINES variables
+*`		(except lleng())
 
 
 #ifdef unix
@@ -189,18 +191,18 @@ C	FOR NLABS = 50
 C
 	DATA LAB1,XLAB,YLAB,LABS/3*' ',50*' '/
 C
-C	FOR NLINES=30000 ! 9/99 *sh*
+C	FOR NLINES=200 ! 3/00 *sh*
 C
-	DATA IMARK/0,2,4,18,20,22,26,28,30,48,29990*0/
-	DATA HMARK,ITYPE/30000*0.08,0,9*4,29990*0/
-	DATA XOFF,YOFF,XFCT,YFCT/30001*0.,30001*0.,30001*1.0,
-     .						   30001*1.0/
-	DATA DN1/3*.15,.05,3*.15,.2,.1,.1,29990*.15/
-	DATA UP1/3*.1,.05,.05,.15,.05,.1,.05,.1,29990*.1/
-	DATA DN2/.15,.15,5*.05,3*.1,29990*.15/
-	DATA UP2/3*.1,.05,.15,.05,.05,.1,.05,.1,29990*.1/
-	DATA LLENG,LNUM,IWIND/30000*0,1,0/
-	DATA IPEN,IP/30001*1,0,1,2*0/
+	DATA IMARK/0,2,4,18,20,22,26,28,30,48,190*0/
+	DATA HMARK,ITYPE/200*0.08,0,9*4,190*0/
+	DATA XOFF,YOFF,XFCT,YFCT/201*0.,201*0.,201*1.0,
+     .						   201*1.0/
+	DATA DN1/3*.15,.05,3*.15,.2,.1,.1,190*.15/
+	DATA UP1/3*.1,.05,.05,.15,.05,.1,.05,.1,190*.1/
+	DATA DN2/.15,.15,5*.05,3*.1,190*.15/
+	DATA UP2/3*.1,.05,.15,.05,.05,.1,.05,.1,190*.1/
+	DATA LLENG,LNUM,IWIND/100000*0,1,0/   ! lleng(NPOLYGON)
+	DATA IPEN,IP/201*1,0,1,2*0/
 
 C
 C       Mod *JD* 3.91 to set default tty output to unit 6, not 5

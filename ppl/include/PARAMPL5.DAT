@@ -18,13 +18,15 @@ C
 *	on NLINES. Few of these need to go beyond, say, 300 in size, but
 *	code changes are neede to prevent out-of-bounds arrays if these
 *	limits are set smaller than NLINES.
+*	3/00 *sh* - restored NLINES to 200. Added new parameter NPOLYGON
 
 
 
 	PARAMETER (IDSFRM=38)
 	PARAMETER (ICNLEV=500)
 	PARAMETER (NMIPTS=38)
-	PARAMETER (NLINES=30000)
+	PARAMETER (NLINES=200)
+	PARAMETER (NPOLYGON=100000)	! only used by lleng ("line length")
 	PARAMETER (NLABS=50)
 C
 C

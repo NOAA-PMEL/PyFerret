@@ -53,6 +53,8 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 *	Modified to include PATTERN  parameter listing J Davison 10.26.98
 *       Modified to include RGB mapping status *jd* 10.98/1.99
+* V510: *sh* 3/00 - restrict LIST LINES to at most NLINES
+*                 - fixed up LIST STATS format
 
 #ifdef unix
         include 'parampl5_dat.decl'
@@ -230,7 +232,7 @@ C     LINES
 300   WRITE(LLUN,9996)
 9996  FORMAT(//8X,'MARK',3X,'TYPE',5X,'MARKH',3X,'DN1',
      *3X,'UP1',3X,'DN2',3X,'UP2',2X,'LEN',2X,'PEN')
-      DO 301 I=1,LNUM
+      DO 301 I=1,MIN(LNUM, NLINES)      ! 3/00 to allow large NPOLYGON
       WRITE(LLUN,9997)IMARK(I),TYPEL(ITYPE(I)+1),HMARK(I),DN1(I),
      *UP1(I),DN2(I),UP2(I),LLENG(I),IPEN(I)
 9997  FORMAT(8X,I2,1X,A12,5F6.3,I6,I4)
@@ -270,7 +272,7 @@ C     STATS
       ELSE
       WRITE(LLUN,'(9X,''LINE'',I3,'' READ'')')LINEN
       DO 501 I=1,LNUM
-      WRITE(LLUN,'(9X,''LINE='',I2,''  LEN='',I6)')I,LLENG(I)
+      WRITE(LLUN,'(9X,''LINE='',I3,'' LEN='',I6)')I,LLENG(I)
 501	CONTINUE
       END IF
 	IF(ARG.EQ.LST(12))GOTO 1200

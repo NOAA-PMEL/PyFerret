@@ -56,6 +56,10 @@ C
 *
 * *kob* 3/28/99 - declare subroutine range as external, otherwise F90 tries to
 *                 use it as an intrinsic function - more cleanup work
+* V510 *sh* 3/00 - changes to accomodate NPOLYGON > NLINES
+*		 - involved eliminating CALL TRANS, which means that there
+*			isn't a need to copy the X,y coords to x/ypolybase
+
 
 #ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -130,12 +134,10 @@ C
 	real	 	w(4),v(4),ndc(4),uc(4)
 	real		xinv,yinv
 
-	logical		valid
-
 *jd*
 	real            zzmin, zzmax
 	integer         nlm1
-	real		dx,dy,dz,znp,zmp
+	real		dz,znp,zmp
 	integer		i,j,uprdn
 	logical         line_it, fill_it
 
@@ -327,10 +329,13 @@ C ------------
 * note: all points in the polygon are guaranteed to be "valid"
 	   nvertex = 0
 	   DO 150 J=IBASE+1,IBASE+LLENG(I)
-	      CALL TRANS(I,X(J),X(IY+J),XT,YT)
+!	      CALL TRANS(I,X(J),X(IY+J),XT,YT)
+!	      nvertex = nvertex + 1
+!	      x(xpolybase+nvertex-1) = xt
+!	      x(ypolybase+nvertex-1) = yt
 	      nvertex = nvertex + 1
-	      x(xpolybase+nvertex-1) = xt
-	      x(ypolybase+nvertex-1) = yt
+	      x(xpolybase+nvertex-1) = x(j)
+	      x(ypolybase+nvertex-1) = x(iy+j)
  150	   CONTINUE
 
 	   if (fill_it) then
@@ -343,13 +348,17 @@ C ------------
 *             Draw the filled polygon
 	      CALL SET_FILL_NDX (fill_ndx)
 
-	      do 155 j = xpolybase, xpolybase+nvertex-1
-		 IF (XEQ.AND.X(J).EQ.CMXEQ) GOTO 157
- 155	      continue
+	      IF ( XEQ ) THEN 
+	         do 155 j = xpolybase, xpolybase+nvertex-1
+		    IF (X(J).EQ.CMXEQ) GOTO 157
+ 155	         continue
+	      ENDIF
 
-	      do 156 j = ypolybase, ypolybase+nvertex-1
-		 IF (YEQ.AND.X(J).EQ.CMYEQ) GOTO 157
- 156	      continue
+	      IF ( YEQ ) THEN 
+	         do 156 j = ypolybase, ypolybase+nvertex-1
+		    IF (X(J).EQ.CMYEQ) GOTO 157
+ 156	         continue
+	      ENDIF
 
 	      if (nvertex .gt. 2) then
 		 if (line_it) call gselnt (my_trans)

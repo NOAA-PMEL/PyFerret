@@ -77,7 +77,8 @@
 
 	INTEGER plist_default, plist_formatted, plist_unformatted,
      .	        plist_epic, plist_gt, plist_ts, plist_cdf, plist_stream,
-     .		plist_comma_del, plist_tab_del, plist_cdf_cache
+     .		plist_comma_del, plist_tab_del, plist_cdf_cache, 
+     .		plist_dods
 	PARAMETER     (	plist_default	= 0,
      .	 		plist_formatted	= 1,
      .			plist_unformatted = 2,
@@ -88,7 +89,8 @@
      .			plist_stream	= 7,
      .			plist_comma_del	= 8,
      .			plist_tab_del	= 9,
-     .			plist_cdf_cache	= 10 )
+     .			plist_cdf_cache	= 10,
+     .			plist_dods	= 11 )
 
 	INTEGER		pif_skip_to_endif,
      .			pif_doing_clause,

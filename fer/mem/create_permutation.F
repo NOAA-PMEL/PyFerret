@@ -48,6 +48,8 @@
 *
 * V200:  9/1/89
 * V312: 5/94 - array "memory" as a calling argument
+* V530:  8/00 *sh* - partial implementation of permuting string arrays
+*		("table only"
 
 #ifdef unix
 	include 'ferret.parm'
@@ -67,7 +69,7 @@
 
 * internal variable declarations:
 	LOGICAL	table_entry_only
-	INTEGER	CX_DIM_LEN, MR_DIM_LEN, nsrc, ndst, i, idim, dim, prm,
+	INTEGER nsrc, ndst, idim, dim, prm,
      .		src_len(4), dst_len(4), src_ax(4), dst_ax(4)
 
 * initialize
@@ -144,6 +146,7 @@
 	cx_category( cx_buff ) = cx_category( cx )
 	cx_variable( cx_buff ) = cx_variable( cx )
 	cx_grid    ( cx_buff ) = cx_grid    ( cx )
+	cx_type    ( cx_buff ) = cx_type    ( cx )
 	cx_ovsiz   ( cx_buff ) = cx_ovsiz   ( cx )
 	cx_bad_data( cx_buff ) = cx_bad_data( cx )
 
@@ -157,6 +160,7 @@
 	IF ( table_entry_only ) THEN
 * ... point to the original data using permuted limits
 	   CALL FREE_MEMORY( mr_blk1(mdst), mr_nblks(mdst) )
+	   mr_c_pointer(mdst) = mr_c_pointer(msrc)
 	   mr_blk1     (mdst) = mr_blk1(msrc)
 	   mr_nblks    (mdst) = mr_nblks(msrc)
 	   mr_protected(mdst) = mr_table_entry_only

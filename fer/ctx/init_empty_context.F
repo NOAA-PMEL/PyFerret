@@ -39,6 +39,8 @@
 
 * V450: 1/97 - part of changes to accomodate grid-changing functions
 * 9/97 *kob* - initialize cx_calendar as well
+* V530:  8/00 *sh* - initialize data type to unspecified
+
 #ifdef unix
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -72,6 +74,7 @@
 	cx_category( cx ) = unspecified_int4
 	cx_variable( cx ) = unspecified_int4
 	cx_grid    ( cx ) = unspecified_int4
+	cx_type    ( cx ) = unspecified_int4
 !	cx_ovsiz   ( cx ) = JC_TODO:  what should this be?
 	cx_bad_data( cx ) = bad_val4
 

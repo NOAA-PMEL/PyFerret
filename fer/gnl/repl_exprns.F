@@ -74,7 +74,8 @@
 * V510: 9/99 *sh* - added RETURN=XSTART (X-Y-Z-T, START-END-UNITS))
 *	3/00 *sh* - RETURN= options computed without evaluating the expression
 *		  - added RETURN=SIZE
-* V522: 6/00 *sh* added RETURN = XAXIS, YAXIS, ZAXIS, TAXIS 
+* V522: 6/00 *sh* - added RETURN = XAXIS, YAXIS, ZAXIS, TAXIS
+* V530: *sh* 9/00 - added support for string variables
 
 #ifdef unix
 	include 'ferret.parm'
@@ -112,8 +113,9 @@
      .		  qual_end, brkt, idim
 	REAL	  result
 	REAL*8 TM_WORLD, ww
-	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*128, VAR_UNITS*128,
-     .			repl*128, bad_str*128	! max_len=128
+	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
+     .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
+     .		  repl*(max_len), bad_str*(max_len)
 
 * local parameter declarations
 	CHARACTER	tab*1
@@ -369,17 +371,32 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	   CALL COPY_GRID( memory(1, mr_blk1(mr)     ), mr,
      .                     memory(1, mr_blk1(mr_temp)), mr_temp )
-	   result =  memory(1, mr_blk1(mr_temp))
-! 9/8/95 BUG.  was:  result = memory(1, mr_blk1(mr))
-	   CALL DELETE_VARIABLE( mr_temp )
+
+	   IF (mr_type(mr_temp) .EQ. ptype_string ) THEN
+
+* ... get one string
+	     repl =  GET_STRING_ELEMENT(
+     .				mr_lo_s1(mr_temp), mr_hi_s1(mr_temp),
+     .				mr_lo_s2(mr_temp), mr_hi_s2(mr_temp),
+     .				mr_lo_s3(mr_temp), mr_hi_s3(mr_temp),
+     .				mr_lo_s4(mr_temp), mr_hi_s4(mr_temp),
+     .				memory(1, mr_blk1(mr_temp)),
+     .				cx_lo_s1(cx), cx_lo_s2(cx),
+     .				cx_lo_s3(cx), cx_lo_s4(cx),
+     .				max_len, str_len)
+	   ELSE
 
 * .... convert to a formatted result with requested digits
-	   IF ( result .EQ. mr_bad_data(mr) ) THEN
-	      repl = bad_str
-	      str_len = TM_LENSTR1(bad_str)
-	   ELSE
-	      repl = TM_FMT( result, use_digits, max_len, str_len )
+	     result =  memory(1, mr_blk1(mr_temp))
+	     IF ( result .EQ. mr_bad_data(mr) ) THEN
+	        repl = bad_str
+	        str_len = TM_LENSTR1(bad_str)
+	     ELSE
+	        repl = TM_FMT( result, use_digits, max_len, str_len )
+	     ENDIF
 	   ENDIF
+* ... clean up temporary variable
+	   CALL DELETE_VARIABLE( mr_temp )
 	ENDIF
 
 * replace the expression text (incl grave accents) with the formatted string

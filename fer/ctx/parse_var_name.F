@@ -59,6 +59,7 @@
 * V450: 1/97 - use local variables instead of xPROG_STATE vars for item_start
 *		etc. to avoid conflict. (But share the max_item_list parameter
 *		from the COMMON area.
+* V530:  8/00 *sh* - set the variables data type
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -153,6 +154,15 @@
      .			    cx_category( var_cx ),
      .			    cx_variable( var_cx ) )
 	IF ( cx_variable( var_cx ) .EQ. munknown_var_name ) GOTO 5100
+
+* set the dat atype of the variable
+	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
+	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
+	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
+	   cx_type(var_cx) = ptype_float
+	ELSE
+	   cx_type(var_cx) = unspecified_int4 ! inheritedt from definition
+	ENDIF
 
 * successful completion:
 	RETURN

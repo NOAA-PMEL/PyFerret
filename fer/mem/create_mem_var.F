@@ -43,6 +43,8 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.0 - 2/19/87
+* V530   8/00 *sh* - double the memory allocation for string variables
+*			(to support 64 bit pointers)
 
 #ifdef unix
 	include 'ferret.parm'
@@ -60,10 +62,12 @@
 	INTEGER		cx, mr, status
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE, grid_size, start_block, num_blocks
+	INTEGER	CGRID_SIZE,
+     .		grid_size, start_block, num_blocks
 
 * amount of storage space required
 	grid_size = CGRID_SIZE( cx )
+	IF (cx_type(cx) .EQ. ptype_string) grid_size = grid_size*2 ! 8 byte ptr
 
 * claim the storage space
 	CALL GET_MEMORY( grid_size, start_block, num_blocks, status )
@@ -76,5 +80,7 @@
      .			num_blocks,
      .			mr,
      .			status 	)
+	IF ( status .NE. ferr_ok ) RETURN
+
 	RETURN
 	END

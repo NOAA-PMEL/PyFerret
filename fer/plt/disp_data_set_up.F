@@ -54,6 +54,7 @@
 * V500: 2/99 *sh* - added support for POLYGON command -- working storage needs
 *       2/99 *sh* - bug fix: plot working storage based on cx(1) only
 *			can overflow for PLOT v1,v2  if v2 is bigger
+* V530: *sh* 9/00 - added initial data type support in get_cmnd_data 
 
 #ifdef unix
 	include	'ferret.parm'
@@ -77,10 +78,10 @@
 
 * internal variable declarations:
 	INTEGER	MR_DIM_LEN, CGRID_SIZE,
-     .		idim, ndim, dim(4), arg_num, mr1, ax_len, cx, ivar
+     .		idim, ndim, dim(4), mr1, ax_len, cx, ivar
 
 * get the requested data somehow  (and leave it protected 1/94)
-	CALL GET_PROT_CMND_DATA ( memory, cx_last, status )
+	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_float, status )
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * compute working storage

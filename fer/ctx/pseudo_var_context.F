@@ -65,6 +65,7 @@
 *		... exit out earliy in this case
 *	12/99 *sh* - for formatted lat or lon (e.g. Y[y=0:20n:2]), set units
 *	 4/00 *sh* - all grids and axes now maintain use counts
+* V530:  8/00 *sh* - assert float data type for pseudo-variable
 
 #ifdef unix
 	include	'ferret.parm'
@@ -127,6 +128,7 @@
 * get variable and attached modifications
 	CALL PARSE_VAR_NAME ( full_pvar_name, pvar_cx, mods_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+	cx_type( pvar_cx ) = ptype_float 
 
 * axis of pseudo_var
 	pvdim = MOD( cx_variable(pvar_cx)-1, 4 ) + 1

@@ -45,6 +45,7 @@
 * revision 0.0 - 9/22/87 - code stoled from GET_CMND_DATA
 * revision 0.1 - 7/27/88 - added dflt_cx to get_context_mods call
 * V200:  5/19/89 - transforms not permitted on command line
+* V530:  8/00 *sh* - added data type sensitivity
 
 #ifdef unix
 	include	'ferret.parm'
@@ -96,6 +97,9 @@
 	CALL APPLY_CONTEXT_MODS
      .			( cmnd_mods_cx, new_cx, replace_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* set default data type
+	cx_type(new_cx) = unspecified_int4
 
 	RETURN
 

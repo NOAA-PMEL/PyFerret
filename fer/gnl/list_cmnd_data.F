@@ -2,8 +2,6 @@
      .				   ax_buff, heading, head_enh, recsofar,
      .				   perm, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -66,6 +64,7 @@
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
+* V530:  8/00 *sh* - added support for string variables
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -81,6 +80,7 @@
 	include 'xcontext.cmn'
 	include 'xtext_info.cmn'
 	include 'xinterrupt.cmn'
+	include 'xrisc.cmn'
 #else
 	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
 	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
@@ -112,20 +112,22 @@
 	LOGICAL		GEOG_LABEL,
      .			line_too_long, del_col_changed, all_bad,
      .			valid(4), need_doc(4), span(4), do_unform,
-     .			do_stream, do_comma_del, do_tab_del
+     .			do_stream, do_comma_del, do_tab_del, itsa_string
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
-     .			FIELD_WIDTH, CGRID_SIZE,
+     .			FIELD_WIDTH, MGRID_SIZE,
+     .			GET_MAX_C_STRING_LEN,
      .			width, w0, grid, dlen, prec_digits,
-     .			ndim, lo(4), hi(4), del(4), lab1,
+     .			ndim, lo(4), hi(4), del(4),
      .			i, j, k, l, npts,
      .			temp, num_fld_est, nleft, nright, alen, num_fields,
      .			idim, vlen, len_set_name, istart, iend, ifield,
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
-     .			numbers, first, idum, axis, lp
+     .			numbers, first, slen, llen, axis, lp
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
+     .			GET_STRING_ELEMENT*255,
      .			line_buff*3600,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32
@@ -157,6 +159,7 @@
         do_stream       = list_fmt_type .EQ. plist_stream
         do_comma_del    = list_fmt_type .EQ. plist_comma_del
         do_tab_del      = list_fmt_type .EQ. plist_tab_del
+	itsa_string     = mr_type(mr) .EQ. ptype_string
 
 * determine precision for outputting values
 	lp = qual_given( slash_precision )
@@ -313,6 +316,37 @@
 	   DO 300 k = lo3, hi3, del3
 	   DO 300 j = lo2, hi2, del2
 	      IF ( interrupted ) RETURN
+! ----- start string handler -------------
+	      IF (itsa_string) THEN
+	         llen = 0
+	         DO 270 i = lo1, hi1, del1
+	            line_buff(llen+1:) = GET_STRING_ELEMENT
+     .					(mr,i,j,k,l,max_line_len, slen)
+	            llen = MIN(max_line_len-1, llen+slen)
+	            IF (do_stream) THEN
+	               llen = llen + 1
+	               line_buff(llen:llen) = CHAR(0) ! NULL terminator
+	            ENDIF
+ 270		 CONTINUE
+	         IF ( do_unform ) THEN
+	            WRITE (list_lun, ERR=5010) line_buff(:llen)
+	         ELSEIF ( do_stream ) THEN
+	            recsofar = recsofar + 1
+	            WRITE (list_lun, REC=recsofar, ERR=5010)
+     .						 line_buff(:llen)
+	         ELSE
+! Note: FORMATTED output cannot be passed through SPLIT_AXIS because a
+!	single WRITE may imply many records of output
+	            DO 272 i = lo1, hi1, del1
+	               line_buff = GET_STRING_ELEMENT
+     .					(mr,i,j,k,l,max_line_len, slen)
+	               WRITE (list_lun,list_format, ERR=5010)
+     .							line_buff(:slen)
+ 272		    CONTINUE
+	         ENDIF
+	         GOTO 300
+	      ENDIF
+! ----- end string handler -------------
 	      IF ( do_unform ) THEN
 	         WRITE (list_lun, ERR=5010)
      .			( grid_data(i,j,k,l),i = lo1, hi1, del1 )
@@ -321,7 +355,7 @@
 	            recsofar = recsofar + 1
 	            WRITE (list_lun, REC=recsofar, ERR=5010)
      .						grid_data(i,j,k,l)
- 298	         CONTINUE
+ 298		 CONTINUE
 	      ELSE
 ! Note: FORMATTED output cannot be passed through SPLIT_AXIS because a
 !	single WRITE may imply many records of output
@@ -403,8 +437,13 @@
 	         ENDIF
 * ...  and append the values for this row
 	         DO 340 i = lo1, hi1, del1
-	            line_buff = line_buff(:alen)//tab_or_COMMA//
+	            IF ( itsa_string ) THEN
+	               line_buff = line_buff(:alen)//tab_or_COMMA//
+     .			GET_STRING_ELEMENT(i,j,k,l,max_line_len,vlen)
+	            ELSE
+	               line_buff = line_buff(:alen)//tab_or_COMMA//
      .			TM_FMT(grid_data(i,j,k,l),prec_digits,16,vlen)
+	            ENDIF
 	            alen = alen+vlen+1
 	            IF ( alen .GT. max_line_len ) THEN
 	               line_buff(max_line_len-18:max_line_len) = 
@@ -445,13 +484,19 @@
 
 * ... determine numeric format to fit nicely on the line
 * ... first find largest value to be printed
-	CALL MINMAX( grid_data, CGRID_SIZE(cx), bad_data, small, big )
-	all_bad = small .EQ. arbitrary_large_val4
+! bug here since the mem res data limits may not match the cx limits 8/00 *sh*
+	IF ( itsa_string ) THEN
+	   nleft = GET_MAX_C_STRING_LEN(mr_c_pointer(mr), MGRID_SIZE(mr))
+	   all_bad = .FALSE.
+	ELSE
+	   CALL MINMAX(grid_data, MGRID_SIZE(mr), bad_data, small, big)
+	   all_bad = small .EQ. arbitrary_large_val4
 
 * . . . how many digits right and left of decimal point ?
-	biggest = MAX( ABS( small ), big )
-	CALL GET_SIG_DIGITS( biggest, prec_digits, nleft, nright )
-	nleft = MAX( 1, nleft )			! at least "0" to left
+ 	   biggest = MAX( ABS( small ), big )
+	   CALL GET_SIG_DIGITS( biggest, prec_digits, nleft, nright )
+	   nleft = MAX( 1, nleft )			! at least "0" to left
+	ENDIF
 
 * . . . unreasonable line length ?
  410	IF ( ndim .EQ. 0 ) THEN
@@ -475,8 +520,12 @@
 	   WRITE ( bad_data_form, 3002 ) min_field_width
  3002	FORMAT ( '(A',I2,')' )	
 	ELSE
-	   CALL VAR_DATA_FMT( nleft, nright, prec_digits, min_field_width,
+	   IF ( itsa_string ) THEN
+	      width = nleft + 2
+	   ELSE
+	      CALL VAR_DATA_FMT( nleft, nright, prec_digits, min_field_width,
      .			      width, good_data_form, bad_data_form )
+	   ENDIF
 	ENDIF
 
 * . . . will it fit ? - if not go back and try again with a shorter line
@@ -567,11 +616,23 @@
 	         ifield = ifield + 1
 	         iend   = cleft + ifield*width
 	         istart = iend - width + 1
-	         value = grid_data(i,j,k,l)
-	         IF ( value .NE. bad_data ) THEN
-	            WRITE ( line_buff(istart:iend), good_data_form ) value
+	         IF (itsa_string) THEN
+	           line_buff(istart:istart) = '"'
+	           line_buff(istart+1:iend) = GET_STRING_ELEMENT(
+     .			m1lox,m1hix,m1loy,m1hiy,m1loz,m1hiz,m1lot,m1hit,
+     .			grid_data,i,j,k,l,width-2,slen)
+	           IF (slen .GT. width-2) THEN
+	              line_buff(iend-3:iend) = '..."'
+	           ELSE
+	              line_buff(istart+slen+1:istart+slen+1) = '"'
+	           ENDIF
 	         ELSE
-	            WRITE ( line_buff(istart:iend),  bad_data_form ) '....'
+	           value = grid_data(i,j,k,l)
+	           IF ( value .NE. bad_data ) THEN
+	              WRITE ( line_buff(istart:iend), good_data_form ) value
+	           ELSE
+	              WRITE ( line_buff(istart:iend),  bad_data_form ) '....'
+	           ENDIF
 	         ENDIF
  500	         CONTINUE
 

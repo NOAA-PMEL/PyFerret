@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 
 * V200:  6/26/89 - extracted from ASSIGN_VARIABLE
+* V530:  8/00 *sh* save data type, too
 
 #ifdef unix
 	include 'ferret.parm'
@@ -67,6 +68,7 @@
 	mr_data_set ( mr )	= cx_data_set( cx )
 	mr_category ( mr )	= cx_category( cx )
 	mr_variable ( mr )	= cx_variable( cx )
+	mr_type     ( mr )	= cx_type    ( cx )
 	mr_grid     ( mr )	= grid
 	mr_bad_data ( mr )	= cx_bad_data( cx )
 	mr_unstand_grid( mr )   = cx_unstand_grid( cx )

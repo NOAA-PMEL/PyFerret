@@ -89,6 +89,15 @@
 * V552 *acm* 6/03 - If AXIS attribute is set, put XX or YY in line_direction
 *                   at first, then determine if the axis is longitude/latitude
 * V552 *acm* 6/03 - calculate secsperyear using double precision arithmetic.
+* V553 *acm* 7/03 - New code to read files with time axis encodings of:
+*                      units: "days since -4713-01-01 00:00:00"
+*                   The code detects the -4713 and replaces the time origin
+*                   with 1-jan-1901.  Then subtract the correct number of days
+*                   from the time coordinates: 2415386.  This is a file made
+*                   by Matlab, which uses this "Julian" astromical date
+*                   convention (different from our Julian calendar).  The 
+*                   simple conversion is that May 23,1968 equals
+*                   2440000 days.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -149,12 +158,14 @@
       CHARACTER*132 buff
       CHARACTER*1 axis_dir
       CHARACTER*50 allcals
+      CHARACTER*3 dbuf
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
-     .         t0_secs, last_coord, firs_coord, secsperyear, secs2start
+     .         t0_secs, last_coord, firs_coord, secsperyear, secs2start,
+     .         days_neg4713, days_1901_may68, secs_to_1901, secs_to_1968 
 
 * parameter declarations
         REAL*8          psecs_per_day
@@ -167,6 +178,7 @@
 
 * gen; initialization
       got_torg = .FALSE.
+      days_neg4713 = 0.D0
 
 * get the vital statistics of the axis
       CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
@@ -267,14 +279,34 @@
 
       IF ( since_T0 .GT. 2 ) THEN
          line_units(iaxis) = buff(:since_T0-1)  ! just the "tunits" part 
-         IF ( TM_LENSTR1(buff) .GT. since_T0 + 5 ) THEN
+
+         istat = STR_UPCASE( dbuf, buff(1:3) )
+
+         IF ( TM_LENSTR1(buff) .GT. since_T0 + 5) THEN
+            IF (buff(since_T0+6:since_T0+10) .EQ. '-4713' .AND.
+     .          dbuf .EQ. 'DAY')  THEN
+
+c  This is the simple conversion; but we will reset the origin to 1901.
+c               buff = 'DAYS since 1968-05-23 00:00:00'
+c               days_neg4713 = 2440000.D0
+
+               buff = 'DAYS since 1900-01-01 00:00:00'
+               secs_to_1901 = TM_SECS_FROM_BC 
+     .                        (GREGORIAN, 1901,1,1,0,0,0,status)
+               secs_to_1968 = TM_SECS_FROM_BC 
+     .                        (GREGORIAN, 1968,5,23,0,0,0,status)
+               days_1901_may68 = (secs_to_1968 - secs_to_1901)/
+     .                             psecs_per_day
+               days_neg4713 = 2440000.D0 - days_1901_may68
+
+            ENDIF
             CALL TM_DATE_REFORMAT(buff(since_T0+6:),pdate_numslashnum,
      .                            cal_id, line_t0(iaxis), 
      .                            pdate_vax, status )
             IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error 
 
 *  Append calendar name to units string.
-c           IF (cal_id .GT. gregorian .AND. cal_id .le. max_calendars) THEN
+c           IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
 c                slen = TM_LENSTR1 (line_units(iaxis))
 c                len_cal = TM_LENSTR1 (line_cal_name(iaxis))
 c                line_units(iaxis) = line_units(iaxis)(:slen)//
@@ -288,7 +320,7 @@ c           ENDIF
       ELSEIF ( yyyymmdd_time ) THEN
          line_units(iaxis) = 'days'
 *  Append calendar name to units string.
-c        IF (cal_id .GT. gregorian .AND. cal_id .le. max_calendars) THEN
+c        IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
 c           slen = TM_LENSTR1 (line_units(iaxis))
 c           len_cal = TM_LENSTR1 (line_cal_name(iaxis))
 c           line_units(iaxis) = line_units(iaxis)(:slen)//
@@ -655,6 +687,11 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ELSE
             CALL CD_RD_R8_ARR( cdfid, ivar, 1, npts_cdf, vartype,
      .                         vname(:vlen), line_mem(ipt1), status )
+            IF (days_neg4713 .NE. 0.) THEN
+               DO 330 i = ipt1,ipte
+                  line_mem(i) = line_mem(i) - days_neg4713
+ 330           CONTINUE
+            ENDIF
          ENDIF
          IF ( status .NE. merr_ok ) GOTO 1000   ! 3/99 soft error
          IF ( west_lon ) THEN
@@ -715,7 +752,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * hack to cope with Gregorian/Julian calendar ambiguities (used by NOAA/CDC)
  390    IF ( (since_T0.GT.2)
      .  .AND.(line_t0(iaxis).EQ.'01-JAN-0001 00:00:00') 
-     .  .AND.(cal_id .EQ. gregorian) ) THEN
+     .  .AND.(cal_id .EQ. GREGORIAN) ) THEN
 
 * ... get time step of L=1
            IF ( line_regular(iaxis) ) THEN
@@ -727,7 +764,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * ... compute seconds from 1-jan-0001
            secs2firststep = un_convert(line_unit_code(iaxis)) * first
 * compute seconds from 1590
-           secs1590 = TM_SECS_FROM_BC (gregorian, 1590,1,1,0,0,0,status)
+           secs1590 = TM_SECS_FROM_BC (GREGORIAN, 1590,1,1,0,0,0,status)
             IF ( status .NE. merr_ok ) GOTO 5900
 
 * ... correct axis if crosses 1590 threshhold

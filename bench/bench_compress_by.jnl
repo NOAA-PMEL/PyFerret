@@ -1,0 +1,5 @@
+let mask = {1,,1,,1} + 0*L[l=101:102] + 0*K[k=10:11]
+list compressi_by({10,20,30,40,50},mask)
+let mask2 = IF J[j=201:202] eq 201 then mask else 1/(MISSING(mask,4)-1)
+list compressi_by({10,20,30,40,50},mask2)
+

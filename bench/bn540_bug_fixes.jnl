@@ -56,3 +56,6 @@ GO err540_cd_use_recdim
 
 !missing data in xpts,ypts sample points wasnt checked 
 GO err540_samplexy_missing
+
+! test the fixed delta stride bug
+GO err540_strides_rev.jnl

@@ -37,6 +37,7 @@ static LIST  *GLOBAL_ExternalFunctionList;
 float *GLOBAL_memory_ptr;
 int   *GLOBAL_mr_list_ptr;
 int   *GLOBAL_cx_list_ptr;
+int   *GLOBAL_mres_ptr;
 float *GLOBAL_bad_flag_ptr;
 
 static int I_have_scanned_already = FALSE;
@@ -58,10 +59,13 @@ int  efcn_scan_( int * );
 int  efcn_already_have_internals_( int * );
 
 int  efcn_gather_info_( int * );
-void efcn_get_result_lims_( int *, float *, int *, int *, int *, int *, int * );
-void ef_get_custom_axis_sub_( int *, int *, float *, float *, float *, char *, int * );
+void efcn_get_custom_axes_( int *, int * );
+void efcn_get_result_limits_( int *, float *, int *, int * );
+void efcn_compute_( int *, int *, int *, int *, float *, int *, float * );
 
-void efcn_compute( int *, int *, int *, float *, int *, int *, float *);
+
+void efcn_get_custom_axis_sub_( int *, int *, float *, float *, float *, char *, int * );
+
 
 int  efcn_get_id_( char * );
 int  efcn_match_template_( char * );
@@ -78,6 +82,7 @@ void efcn_get_piecemeal_ok_( int *, int * );
 void efcn_get_axis_implied_from_( int *, int *, int * );
 void efcn_get_axis_extend_lo_( int *, int *, int * );
 void efcn_get_axis_extend_hi_( int *, int *, int * );
+void efcn_get_axis_limits_( int *, int *, int *, int * );
 void efcn_get_arg_name_( int *, int *, char * );
 void efcn_get_arg_unit_( int *, int *, char * );
 void efcn_get_arg_desc_( int *, int *, char * );
@@ -87,7 +92,7 @@ void efcn_get_arg_desc_( int *, int *, char * );
 
 void EF_force_linking(int);
 
-void EF_store_globals(float *, int *, int *, float *);
+void EF_store_globals(float *, int *, int *, int *, float *);
 
 ExternalFunction *ef_ptr_from_id_ptr(int *);
 
@@ -303,41 +308,12 @@ int efcn_gather_info_( int *id_ptr )
     strcat(tempText, "_init_");
     f_init_ptr = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
     if (f_init_ptr == NULL) {
-      fprintf(stderr, "ERROR in efcn_gather_info(): %s\n", dlerror());
+      fprintf(stderr, "ERROR in efcn_gather_info(): %s is not found.\n", tempText);
+      fprintf(stderr, "  dlerror: %s\n", dlerror());
       return -1;
     }
 
     (*f_init_ptr)(id_ptr);
-
-    /* trim white space at the end */
-    c = &(i_ptr->description[EF_MAX_DESCRIPTION_LENGTH-1]); 
-    for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
-      if (isspace(*c)) { c--; }
-    }
-    *++c = '\0';
-
-    for (i=0; i<i_ptr->num_reqd_args; i++) {
-
-      /* trim white space at the end */
-      c = &(i_ptr->arg_name[i][EF_MAX_NAME_LENGTH-1]); 
-      for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
-	if (isspace(*c)) { c--;	}
-      }
-      *++c = '\0';
-
-      c = &(i_ptr->arg_unit[i][EF_MAX_NAME_LENGTH-1]); 
-      for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
-	if (isspace(*c)) { c--;	}
-      }
-      *++c = '\0';
-
-      c = &(i_ptr->arg_desc[i][EF_MAX_DESCRIPTION_LENGTH-1]); 
-      for (j=0;j<EF_MAX_DESCRIPTION_LENGTH-1; j++) {
-	if (isspace(*c)) { c--;	}
-      }
-      *++c = '\0';
-
-    }
 
   }
   
@@ -347,22 +323,20 @@ int efcn_gather_info_( int *id_ptr )
 
 /*
  * Find an external function based on its integer ID, 
- * Query the function about an axis defined as abstract and ask
- * for the low and high subscripts on that axis. Pass memory,
- * mr_list and cx_list info into the external function.
+ * Query the function about custom axes. Store the context
+ * list information for use by utility functions.
  */
-void efcn_get_result_lims_( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr,
-			      int *iaxis_ptr, int *loss_ptr, int *hiss_ptr )
+void efcn_get_custom_axes_( int *id_ptr, int *cx_list_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
   char tempText[EF_MAX_NAME_LENGTH]="";
 
-  void (*fptr)(int *, int *, int *, int *);
+  void (*fptr)(int *);
 
   /*
-   * Store the memory pointer and various lists globally.
+   * Store the context list globally.
    */
-  EF_store_globals(memory, mr_list_ptr, cx_list_ptr, NULL);
+  EF_store_globals(NULL, NULL, cx_list_ptr, NULL, NULL);
 
   /*
    * Find the external function.
@@ -373,10 +347,10 @@ void efcn_get_result_lims_( int *id_ptr, float *memory, int *mr_list_ptr, int *c
 
     sprintf(tempText, "");
     strcat(tempText, ef_ptr->name);
-    strcat(tempText, "_result_limits_");
+    strcat(tempText, "_custom_axes_");
 
-    fptr  = (void (*)(int *, int *, int *, int *))dlsym(ef_ptr->handle, tempText);
-    (*fptr)( id_ptr, iaxis_ptr, loss_ptr, hiss_ptr);
+    fptr  = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
+    (*fptr)( id_ptr );
 
   } else {
 
@@ -389,22 +363,41 @@ void efcn_get_result_lims_( int *id_ptr, float *memory, int *mr_list_ptr, int *c
 
 
 /*
+ * Find an external function based on its integer ID, 
+ * Query the function about abstract axes. Pass memory,
+ * mr_list and cx_list info into the external function.
  */
-void ef_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float *hi_ptr, 
-			       float *del_ptr, char *unit, int *modulo_ptr )
+void efcn_get_result_limits_( int *id_ptr, float *memory, int *mr_list_ptr, int *cx_list_ptr )
 {
   ExternalFunction *ef_ptr=NULL;
+  char tempText[EF_MAX_NAME_LENGTH]="";
+
+  void (*fptr)(int *);
+
+  /*
+   * Store the memory pointer and various lists globally.
+   */
+  EF_store_globals(memory, mr_list_ptr, cx_list_ptr, NULL, NULL);
 
   /*
    * Find the external function.
    */
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
-  strcpy(unit, ef_ptr->internals_ptr->axis[*axis_ptr-1].unit);
-  *lo_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_lo;
-  *hi_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_hi;
-  *del_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_del;
-  *modulo_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].modulo;
+  if ( ef_ptr->internals_ptr->language == EF_F ) {
+
+    sprintf(tempText, "");
+    strcat(tempText, ef_ptr->name);
+    strcat(tempText, "_result_limits_");
+
+    fptr  = (void (*)(int *))dlsym(ef_ptr->handle, tempText);
+    (*fptr)( id_ptr);
+
+  } else {
+
+    fprintf(stderr, "\nExternal Functions in C are not supported yet.\n\n");
+
+  }
 
   return;
 }
@@ -415,8 +408,8 @@ void ef_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float *
  * pass the necessary information and the data and tell
  * the function to calculate the result.
  */
-void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, float *bad_flag_ptr,
-		    int *mr_arg_offset_ptr, float *memory )
+void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, int *mres_ptr,
+	float *bad_flag_ptr, int *mr_arg_offset_ptr, float *memory )
 {
   ExternalFunction *ef_ptr=NULL;
   int xyzt=0, i=0;
@@ -441,7 +434,7 @@ void efcn_compute_( int *id_ptr, int *narg_ptr, int *cx_list_ptr, float *bad_fla
   /*
    * Store the memory pointer and various lists globally.
    */
-  EF_store_globals(memory, mr_arg_offset_ptr, cx_list_ptr, bad_flag_ptr);
+  EF_store_globals(memory, mr_arg_offset_ptr, cx_list_ptr, mres_ptr, bad_flag_ptr);
 
   /*
    * Find the external function.
@@ -604,6 +597,28 @@ int efcn_match_template_( char *name )
   return_val = ef_ptr->id;
 
   return return_val;
+}
+
+
+/*
+ */
+void efcn_get_custom_axis_sub_( int *id_ptr, int *axis_ptr, float *lo_ptr, float *hi_ptr, 
+			       float *del_ptr, char *unit, int *modulo_ptr )
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  /*
+   * Find the external function.
+   */
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  strcpy(unit, ef_ptr->internals_ptr->axis[*axis_ptr-1].unit);
+  *lo_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_lo;
+  *hi_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_hi;
+  *del_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].ww_del;
+  *modulo_ptr = ef_ptr->internals_ptr->axis[*axis_ptr-1].modulo;
+
+  return;
 }
 
 
@@ -797,6 +812,26 @@ void efcn_get_axis_extend_hi_( int *id_ptr, int *iarg_ptr, int *array_ptr )
 
 /*
  * Find an external function based on its integer ID and
+ * fill in the 'arg_extend_lo' information for a particular
+ * argument which tells Ferret how much to extend axis limits
+ * when providing input data (e.g. to compute a derivative).
+ */
+void efcn_get_axis_limits_( int *id_ptr, int *axis_ptr, int *lo_ptr, int *hi_ptr )
+{
+  ExternalFunction *ef_ptr=NULL;
+  int index = *axis_ptr - 1; /* C indices are 1 less than Fortran */ 
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  
+  *lo_ptr = ef_ptr->internals_ptr->axis[index].ss_lo;
+  *hi_ptr = ef_ptr->internals_ptr->axis[index].ss_hi;
+  
+  return;
+}
+
+
+/*
+ * Find an external function based on its integer ID and
  * fill in the name of a particular argument.
  */
 void efcn_get_arg_name_( int *id_ptr, int *iarg_ptr, char *string )
@@ -941,13 +976,15 @@ int EF_New( ExternalFunction *this )
  * Store the global values which will be needed by utility routines
  * in EF_ExternalUtil.c
  */
-void EF_store_globals(float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, float *bad_flag_ptr)
+void EF_store_globals(float *memory_ptr, int *mr_list_ptr, int *cx_list_ptr, 
+	int *mres_ptr, float *bad_flag_ptr)
 {
   int i=0;
 
   GLOBAL_memory_ptr = memory_ptr;
   GLOBAL_mr_list_ptr = mr_list_ptr;
   GLOBAL_cx_list_ptr = cx_list_ptr;
+  GLOBAL_mres_ptr = mres_ptr;
   GLOBAL_bad_flag_ptr = bad_flag_ptr;
 
 }
@@ -971,17 +1008,21 @@ void EF_force_linking(int I_should_do_it)
     ef_set_axis_influence_( &i, &i, &i, &i, &i, &i );
     ef_set_axis_extend_( &i, &i, &i, &i, &i );
 
-    ef_get_subscripts_( &i, &i, &i, &i );
+    ef_get_arg_subscripts_( &i, &i, &i, &i );
+    ef_get_arg_subscript_extremes_( &i, &i, &i );
     ef_get_one_val_( &i, &i, &f );
     ef_get_bad_flags_( &i, &f, &f );
 
-    ef_get_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
+    efcn_get_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
     ef_set_custom_axis_( &i, &i, &f, &f, &f, &c, &i );
 
     ef_set_desc_( &i, &c);
     ef_set_arg_desc_( &i, &i, &c);
     ef_set_arg_name_( &i, &i, &c);
     ef_set_arg_unit_( &i, &i, &c);
+
+    ef_get_coordinates_( &i, &i, &i, &i, &i, &f );
+    ef_get_box_size_( &i, &i, &i, &i, &i, &f );
   }
 }
 

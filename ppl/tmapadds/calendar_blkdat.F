@@ -11,16 +11,13 @@ C        - also don't initialize "the calendar" -- each time axis may have
 C          its own calendar ID; calendar attributes are set for a given
 C          calendar as needed.
 C
-C       0.00000000000000000000000000000000000000000000000000000000000000001
 
 C   5/1/2001  *acm* shorten data statement for cals_month_by_day for some compilers
+C  10/1/2001  *acm* change name of 360-day calendar to 360_DAY
+*      *acm* 10/01  remove VMS includes
 
-#ifdef unix
         include 'calendar.decl'
         include 'calendar.cmn'
-#else
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#endif
 
 C	*******************************************************************
 C       Calendar parameters needed by calendar.cmn
@@ -42,7 +39,7 @@ C       tm_get_calendar_id).
      1	'GREGORIAN',
      2  'NOLEAP',
      3  'JULIAN',
-     4  '360DAY'
+     4  '360_DAY'
      .  /
 
 C	Calendar index corresponding to calendar names:

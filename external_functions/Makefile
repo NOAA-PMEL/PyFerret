@@ -1,8 +1,10 @@
-#
+e#
 # Top level Makefile for Ferret External Functions
 #
 # September 09 1998
 # Jonathan Callahan
+#
+# ACM 1/2002  add fft directory back in: lsl_lowpass, inverse fcn.
 #
  
 
@@ -10,7 +12,7 @@
 # Macro Definitions
 #
 
-DIRS = examples cmprsi_by convolve date_and_time eof godae_obs sort v5d zaxr
+DIRS = cmprsi_by convolve date_and_time examples extrema fft sort v5d zaxr
 
 #
 # Targets

@@ -87,8 +87,10 @@
 * V420:  1/97 - bug fix: SHOW MEMORY/ALL is ignoring /ALL
 * V450:  7/97 - don't show child variables in SHOW VARIABLE
 *             - added SHOW FUNCTION -- with template matching (7/22)
+* 97.07.31 *jc* - added external function code to SHOW FUNCTIONS
 * *kob*  10/97 - added check for string length of zero at 1750.  This error
 *                caught by new DEC f77 version
+
 #ifdef unix
 	include 'tmap_format/tmap_dims.parm'
 #	include "tmap_format/tmap_dset.parm"
@@ -139,7 +141,8 @@
 	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
 	INCLUDE	'FERRET_CMN:XGRID_CHG_FCNS.CMN'
 	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
+
+#endif  
 
 * local parameter declarations:
 	LOGICAL	    brief
@@ -185,6 +188,8 @@
 	REAL	xtemp, ytemp
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
+
+	INTEGER efcn_scan
 
 * command given with /ALL ?
 	risc_buff = ' '
@@ -983,8 +988,10 @@
 * ... show all the external functions
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
      .		'Externally defined functions available to Ferret:', 0)
-	   CALL SPLIT_LIST(pttmode_explct, ttout_lun,
-     .			'external function info not yet available', 0)
+	      DO 2140 i = gfcn_num_internal+1, gfcn_num_internal+
+	1	efcn_scan(gfcn_num_internal)
+	         CALL SHOW_1_FUNCTION(ttout_lun, .TRUE., sbrief, i)
+ 2140	      CONTINUE
 	ENDIF
 	IF ( limited_show ) RETURN
 

@@ -11,7 +11,13 @@
 *    LET sstp = fftp(ssttim[l=1:492])
 * and the time axis must be regular.
 
-*
+*  Note current limitations as of 28-Apr-1999
+*   - result T-axis units is set to FREQ: want to get the time step units and
+*     set the frequency axis to 1./days, etc.
+*   - Will have a utility to get the length of the input time axis at the
+*     point when the custom freq axis is set up, to use in computing the
+*     length of the frequency axis.  Currently need to specify explicitly, 
+*   *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -67,7 +73,7 @@
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, CUSTOM)
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 6)
+      CALL ef_set_num_work_arrays(id, 5)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
@@ -229,8 +235,8 @@ c   10 FORMAT ('1/', A16)
 *
 * ef_set_work_array_lens(id, array #, X len, Y len, Z len, T len)
 *
-      COMMON /STOR/ mtdat, mtdat2, mtwork
-      INTEGER mtdat, mtdat2, mtwork
+      COMMON /STOR/ mtdat, mtwork
+      INTEGER mtdat, mtwork
 
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
      .     arg_incr(4,1:EF_MAX_ARGS)
@@ -239,26 +245,22 @@ c   10 FORMAT ('1/', A16)
 
       mtdat = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
-      mtdat2 = mtdat *2
       mtwork = 2.5* mtdat + 15
-  
-*  taxdat
-      CALL ef_set_work_array_lens (id, 1, mtdat2, 1, 1, 1)
 
 * creal
-      CALL ef_set_work_array_lens (id, 2, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_lens (id, 1, mtdat, 1, 1, 1)
 
 * cimag
-      CALL ef_set_work_array_lens (id, 3, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_lens (id, 2, mtdat, 1, 1, 1)
 
 * wft
-      CALL ef_set_work_array_lens (id, 4, mtwork, 1, 1, 1)
+      CALL ef_set_work_array_lens (id, 3, mtwork, 1, 1, 1)
 
 * ts
-      CALL ef_set_work_array_lens (id, 5, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_lens (id, 4, mtdat, 1, 1, 1)
 
 * ws
-      CALL ef_set_work_array_lens (id, 6, mtdat, 1, 1, 1)
+      CALL ef_set_work_array_lens (id, 5, mtdat, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -272,7 +274,8 @@ c   10 FORMAT ('1/', A16)
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE fftp_compute(id, arg_1, result)
+      SUBROUTINE fftp_compute(id, arg_1, result, creal, cimag, wft, 
+     .                ts, ws)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -298,19 +301,21 @@ c   10 FORMAT ('1/', A16)
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      COMMON /STOR/ mtdat, mtdat2, mtwork
-      INTEGER mtdat, mtdat2, mtwork
+      COMMON /STOR/ mtdat, mtwork
+      INTEGER mtdat, mtwork
       REAL rad
 
-*  Set up work arrays
+      CHARACTER ax_name(4)*16, ax_units(4)*16
+      LOGICAL backward(4), modulo(4), regular(4)
 
-      REAL*8 taxdat(1:mtdat2,1:1,1:1,1:1)
+*  Set up work arrays
 
       REAL creal(1:mtdat, 1:1, 1:1, 1:1)
       REAL cimag(1:mtdat, 1:1, 1:1, 1:1)
       REAL wft(1:mtwork, 1:1, 1:1, 1:1)
       REAL ts(1:mtdat, 1:1, 1:1, 1:1)
       REAL ws(1:mtdat, 1:1, 1:1, 1:1)
+
 
       COMMON /fftplim/ nfreq_lo_l, nfreq_hi_l
       INTEGER i,j,k,l
@@ -332,18 +337,16 @@ c   10 FORMAT ('1/', A16)
 
       nr = res_hi_ss(T_AXIS) - res_lo_ss(T_AXIS) + 1
 
-*  Check that the time axis is an even number.
+*  Check that the time axis is regular.
 
-      CALL ef_get_coordinates(id, ARG1, T_AXIS,
-     .   arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), taxdat)
+      arg = 1
+      CALL ef_get_axis_info (id, 1, ax_name, ax_units, backward,
+     .     modulo, regular)
 
-      dt = taxdat(2,1,1,1) - taxdat(1,1,1,1)
-      DO L = 2, ND
-         IF (taxdat(L,1,1,1) - taxdat(L-1,1,1,1) .NE. dt) then
+      IF (.NOT. regular(T_AXIS)) THEN
             WRITE (err_msg, *) 'Time axis must be a regular axis'
             GO TO 999
-         ENDIF
-      ENDDO
+      ENDIF
 
 *  Set WFT for fft; prime factorization of ND and trig functions.
 *  Set weights for 10%, 5%  or 1% cosine window.  

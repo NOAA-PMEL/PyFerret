@@ -144,7 +144,7 @@ aixxgks:
 	${MAKE} pplp \
 		F77=xlf \
 		CC=cc \
-		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c $(G) -DNO_ENTRY_NAME_UNDERSCORES" \
+		CFLAGS=" -Ipplinc/xgks -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c $(G) -DNO_ENTRY_NAME_UNDERSCORES" \
 		FFLAGS="$(G) -c -static" \
 		LDFLAGS= \
 		GKOBJ= \
@@ -287,7 +287,7 @@ aixxgks_compile:
 	${MAKE} do_the_compile_aix \
 		F77=xlf \
                 GK=xgks \
-		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c $(G) -DNO_ENTRY_NAME_UNDERSCORES" \
+		CFLAGS="-Ipplinc/xgks -I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm -c $(G) -DNO_ENTRY_NAME_UNDERSCORES" \
 		FFLAGS="$(G) -c -static" \
 		CPPFLAGS="-P -Dunix -DNO_PASSED_CONCAT -DNO_SNGL -DMANDATORY_FORMAT_WIDTHS -DNO_ACCESS_APPEND -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL $(GKSFFLAGS) $(MEMFLAGS) -Dxgks -Daix -DAIX_XLF"
 

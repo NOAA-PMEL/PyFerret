@@ -112,6 +112,9 @@
 *    10/19/01 *kob* fix output formatting bug which was printing memory size
 *                   (in Mwords) divided by float 1.E6 as a decimal, rather than
 *                   a float value - changed in three places
+*     8/22/03 *acm* New -script command-line switch: run the named script and exit.
+*                   This mode also sets -nojnl and -server, as well as the new
+*                   -noverify switch.  It also supresses the banner lines.
 */
 
 #include <unistd.h>
@@ -122,13 +125,16 @@
 
 void gui_run(int *, char **);
 int gui_init();
+int its_script;
+char script_args[2048];
+int arg_pos;
 float **gui_get_memory();
 static void command_line_run(float **memory);
 
 void help_text()
 {
   printf(
-	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl]\n\
+	 "Usage:  ferret [-memsize Mwords] [-batch [outfile]] [-server] [-secure] [-gif] [-gui] [-unmapped] [-help] [-nojnl] [-noverify] [-script [args]]\n\
 -memsize:  specify the memory cache size in megawords (default 3.2)\n\
 -batch:  output directly to metafile \"outfile\" w/out X windows\n\
 -unmapped:  use invisible output windows (superceded by -batch)\n\
@@ -137,9 +143,12 @@ void help_text()
 -secure:  run securely -- don't allow system commands\n\
 -server:  run in server mode -- don't stop on message commands\n\
 -help:  obtain this listing\n\
--nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n");
+-nojnl:  on startup don't open a journal file (can be turned on later with SET MODE JOURNAL\n\
+-noverify:  on startup turn off verify mode (can be turned on later with SET MODE VERIFY\n\
+-script scriptname [arguments]: execute the specified script and exit: SPECIFY THIS LAST\n");
   exit(0);
 }
+
 
 /*
  * Eliminated _NO_PROTO ifdef (are there still non-ANSI C compilers around?)
@@ -163,12 +172,18 @@ main (int oargc, char *oargv[])
   char **argv = oargv;
 
   int i=1;
+  int j=1;
   float rmem_size;
   int using_gui = 0;
   int pplmem_size;
 
   int gui_enabled = gui_init();
   int journalfile = 1;
+  int verify_flag = 1;
+  int len_str;
+
+  its_script = 0;
+  arg_pos = 0;
 
 #ifdef MIXING_NAG_F90_AND_C
   f90_io_init();
@@ -202,12 +217,18 @@ main (int oargc, char *oargv[])
       journalfile = 0;
 	  /*FORTRAN(set_start_jnl_file)(journalfile);*/ 
       ++i;
+	  
     } else if (strcmp(argv[i],"-batch")==0) {
       char *meta_name = "metafile.plt";
       if (++i < argc && argv[i][0] != '-'){
-	meta_name = argv[i++];
+	  meta_name = argv[i++];
       }
-      FORTRAN(set_batch_graphics)(meta_name);  /* inhibit X output altogether */
+      FORTRAN(set_batch_graphics)(meta_name);  /* inhibit X output altogether*/
+	  
+    } else if (strcmp(argv[i],"-noverify")==0) {
+      verify_flag = 0;    
+	  ++i;
+      
     } else if (strcmp(argv[i],"-gui")==0) {
       i++;
       if (gui_enabled){
@@ -216,7 +237,39 @@ main (int oargc, char *oargv[])
 	fprintf(stderr,
 		"Warning: the -gui flag has no effect on this platform\n");
       }
-    } else  /* -help also comes here */
+    /* -script mode implies -server and -nojnl */
+    } else if (strcmp(argv[i],"-script")==0)  {
+      char *script_name = "noscript";
+	  set_server();
+	  journalfile = 0;
+	  verify_flag = 0;
+	  strcpy( script_args, " " );
+	  if (++i < argc && argv[i][0] != '-'){
+		script_name = argv[i++];
+		its_script = 1;
+		len_str = strlen(script_name);
+		FORTRAN(save_scriptfile_name)(script_name, &len_str, &its_script);
+		if (its_script != 1) {
+			help_text();
+	     }
+		 arg_pos = 0;
+		 while (i < argc && argv[i][0] != '-'){
+			len_str = strlen(argv[i]);
+			j = 0;
+			while (j<len_str) {
+				script_args[arg_pos++] = argv[i][j];
+				j++;
+			}
+			if (i+1 < argc && argv[i+1][0] != '-') {
+				strcat(script_args, ",");
+				arg_pos = arg_pos+1;
+		   }
+		   i = i+1;
+		 }
+		 if (strcmp(script_name,"noscript")==0 ) help_text();
+	  } 
+
+	  } else  /* -help also comes here */
       help_text();
   }
 
@@ -248,11 +301,13 @@ main (int oargc, char *oargv[])
     FORTRAN(no_journal)();
   }
 
+  if ( verify_flag ==0) {
+    FORTRAN(turnoff_verify)( &status );
+  }
+
 
   /* initialize size and shape of memory and linked lists */
   FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );
-
-  
 
   if ( using_gui ) {
     gui_run(&argc, argv);
@@ -272,7 +327,11 @@ main (int oargc, char *oargv[])
 
 static void command_line_run(float **memory){
   FILE *fp = 0;
-  char init_command[128], *home = getenv("HOME");
+  char init_command[2176], script_file[2048], *home = getenv("HOME");
+  int ipath = 0;
+  int len_str = 0;
+  int j = 0;
+
 
   /* turn on ^C interrupts  */
   /* 10/97 *kob* add check for gui now that there is only one main program */
@@ -280,7 +339,7 @@ static void command_line_run(float **memory){
 
   /* program name and revision number */
   /* 10/97 *kob* add check for gui now that there is only one main program */
-  FORTRAN(proclaim_c)( &ttout_lun, "\t" );
+  if (its_script==0) FORTRAN(proclaim_c)( &ttout_lun, "\t" );
 
   /* set up to execute $HOME/.ferret if it exists: '\GO "$HOME/.ferret"' */
   /* --> need to see if it exists!!! */
@@ -296,6 +355,27 @@ static void command_line_run(float **memory){
   } else {
     strcpy( init_command, " " );
   }
+  
+  /* If Ferret was started with the -script switch, execute the script with its args. */
+  
+    if (its_script)
+    {
+	FORTRAN(get_scriptfile_name)(script_file, &ipath);
+      if ( ipath ) {
+	  strcat( init_command, "; GO \"" ); 
+	  strcat( init_command, script_file );
+	  strcat( init_command, "\ "); 
+	  } else {
+	  strcat( init_command, "; GO " ); 
+	  strcat( init_command, script_file );
+	  strcat( init_command, " "); 
+      }
+	  if (arg_pos !=0) {
+	       len_str = strlen(init_command);
+		   strcat( init_command, script_args );
+	  }
+	  strcat( init_command, "; EXIT/PROGRAM");
+    }
 
   /* allocate the shared buffer */
   sBuffer = (sharedMem *)malloc(sizeof(sharedMem));
@@ -365,5 +445,3 @@ static void command_line_run(float **memory){
     }
   }
 }
-
-

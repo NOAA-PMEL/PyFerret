@@ -37,8 +37,8 @@
 	cx_category( cx ) = unspecified_int4
 	cx_variable( cx ) = unspecified_int4
 	cx_grid    ( cx ) = unspecified_int4
-!	cx_ovsiz   ( cx ) = 
-!	cx_bad_data( cx ) = 
+!	cx_ovsiz   ( cx ) = JC_TODO:  what should this be?
+	cx_bad_data( cx ) = bad_val4
 
 	cx_unstand_grid ( cx ) = .FALSE.
 	cx_impl_grid    ( cx ) = unspecified_int4

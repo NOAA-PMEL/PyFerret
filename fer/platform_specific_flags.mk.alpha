@@ -32,8 +32,7 @@ F77 		= f77
 CC              = cc
 RANLIB          = /usr/bin/ranlib
 CFLAGS          =  $(DEBUG) -DUSG -DDEC_ALPHA -DFULL_GUI_VERSION -DXT_CODE $(INCLUDES)
-FFLAGS          = -c -extend_source -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
-		  -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -fpe2 -C $(FINCLUDES)
+FFLAGS          = -c -extend_source -align dcommons -align records -integer_size 32 -real_size 32 -cpp -u -Df7732_bug -DDEC_FORTRAN -Dxgks -DFlarge_mem -DusingDODSf2cUnderscore -fpe2 -C $(FINCLUDES)
 
 PPLUS_FFLAGS    = -align dcommons -align records -integer_size 32 -real_size 32 -cpp \
 		  -Nl160 -Dxgks -static -fpe2 $(FINCLUDES)

@@ -48,6 +48,8 @@
 *	 8/29/89 - trap pseudo-variable grid requests
 *	 3/26/90 - improved error messages
 * V230:  7/21/92 - improved error message for unknown GFDL diagnostic var
+* V510:  8/99 *sh* - bug uncovered allowing DEFINE GRID/LIKE=user_var
+*		     if GET_UVAR_GRID is called the dset returned may be 0
 
 #ifdef unix
 	include	'ferret.parm'
@@ -90,7 +92,9 @@
 	   CALL ERRMSG( ferr_internal, status, 'IGRID', *5000 )
 	ENDIF
 
-* ... allow "abstract" expressions that don't depend on data set
+* allow "abstract" expressions that don't depend on data set
+* Note (8/99): since GET_UVAR_GRID has not yet been called, we cannot assume
+*   that uvar_need_dset(variable) is known at this time. Recheck below. 
 	IF ( .NOT.uvar_need_dset(variable)
      .	   .OR. data_set .EQ. unspecified_int4 ) THEN
 	   dset = pdset_irrelevant
@@ -99,6 +103,11 @@
 	ENDIF
 
 	CALL GET_UVAR_GRID( variable, dset, status )
+
+* the variable definition may contain its data set info internally -- in which
+*  case, the dset to use is pdset_irrelevant
+	IF ( .NOT.uvar_need_dset(variable) )  dset = pdset_irrelevant
+
 	IGRID = uvar_grid( variable, dset )
 
 	RETURN

@@ -113,6 +113,8 @@
 *	 4/20/99 *sh* added DEFINE AXIS/EDGES
 *	 4/28/99 *sh* allow DEFINE AXIS with repeated values -> microadjust
 *	 7/99 *sh* - changed def'n of "month" so change warning message
+* V510 - 8/99 *sh* - allow DEFINE GRID /LIKE=user_var /X=user_var (bump use
+*			counts on dynamic axes
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -237,7 +239,7 @@
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800 ) subcmnd_num
 
-* DEFINE '    ' - (no action)
+* DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
 * and was assumed to be an argument by the command parser
  100	IF ( num_args .GE. 1 ) THEN
@@ -406,6 +408,11 @@
      .			replmsg//'grid '//grid_name(old_grid), 0)
 	      CALL PURGE_MR_GRID( old_grid, status )
 	      IF ( status .NE. merr_ok ) GOTO 5000
+* ... deallocate dynamic axes used in previous definition of this grid
+	      DO 330 idim = 1,4
+	         IF ( grid_line(idim,old_grid) .GT. max_lines ) CALL
+     .              TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
+ 330	      CONTINUE
 	      grid_name( old_grid ) = char_init16
 	   ENDIF
 	ENDIF
@@ -414,9 +421,11 @@
 	status = ALLO_MANAGED_GRID( grid )
 	IF ( status .NE. merr_ok ) GOTO 5000
 
-* save the grid and name it
- 340	CALL TM_COPY_GRID( mgrid_buff, grid )
+* save the grid and name it (8/99 - also bump use counts of dynamic axes)
+ 340	CALL TM_COPY_GRID_W_LINE_USE( mgrid_buff, grid )
+! 340	CALL TM_COPY_GRID( mgrid_buff, grid )
 	grid_name( grid ) = buff3
+
 	RETURN
 
 **************************************************************************

@@ -40,9 +40,14 @@
 * array needs to be dimensioned as 8-byte quantities
 
 * V530: 8/00 *sh*
+* V540: 1/02 *kob* - fix bug in which character array risc_buff was being
+*                    passed to tm_ctof_string, which expects an integer array
+*                    rather than a character array.  replace risc_buff and 
+*                    size_rbuff with int_buff and size_ibuff which is 
+*                    pulled from EF_Util.parm.
 
 	include 'ferret.parm'
-	include 'xrisc.cmn'
+	include 'EF_Util.parm'
 
 * calling argument declarations
 	INTEGER  lox,hix,loy,hiy,loz,hiz,lot,hit,
@@ -57,13 +62,13 @@
         slen = GET_C_STRING_LEN(ptr_array(i,j,k,l))
 
 * get the a null-terminated C string
-        CALL GET_C_STRING(ptr_array(i,j,k,l), risc_buff, slen+1)
+        CALL GET_C_STRING(ptr_array(i,j,k,l), int_buff, slen+1)
 
 * the longest length we can use ...
-        flen = MIN(slen, size_rbuff)
+        flen = MIN(slen, size_ibuff)
 
 * copy it into the FORTRAN string
-        CALL TM_CTOF_STRNG (risc_buff,locbuff, flen )
+        CALL TM_CTOF_STRNG (int_buff,locbuff, flen )
 
 	GET_STRING_ELEMENT = locbuff
 	RETURN

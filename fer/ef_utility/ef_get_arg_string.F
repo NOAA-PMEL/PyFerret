@@ -7,7 +7,9 @@ c* Mar 17th 1999
 *      10/00      - allow this routine to be called during CUSTOM AXIS time
 *                      (before evaluation of variables)
 c*
-c*
+c*v540 1/02 *kob* - fix bug which used character array risc_buff to pass
+c*                  a string into tm_ctof_string when tm_ctof_string was
+c*                  expecting an integer array.  no longer need xrisc.cmn
 
 c*
 c* This returns the (single) string which was passed as an argument
@@ -20,8 +22,6 @@ c* difficult (though not impossible). The EVAL_EXPR routine cannot safely be
 c* called since the stacks would get re-initialized and the {,,,} would need
 c* to be parsed
 c*
-c* (The maximum length of a string is CHARACTER*160 as 
-c*  declared in xvariables.cmn.)
 
       SUBROUTINE EF_GET_ARG_STRING(id, iarg, text)
 
@@ -29,7 +29,6 @@ c*  declared in xvariables.cmn.)
       INCLUDE 'errmsg.parm'
       INCLUDE 'xvariables.cmn'
       INCLUDE 'xcontext.cmn'
-      INCLUDE 'xrisc.cmn'
       INCLUDE 'EF_Util.parm'
 
       INTEGER id, iarg, mr
@@ -39,13 +38,12 @@ c*  declared in xvariables.cmn.)
      .         item, start, end
       INTEGER mr_list(EF_MAX_ARGS)
       CHARACTER buff*32
-
  
 c The memory resident list was cached by Ferret and must be retrieved
 c to be accessible to the external function.
       CALL EF_GET_MR_LIST(mr_list)
       mr = mr_list(iarg)
-
+      
       IF ( mr .EQ. 0 ) THEN
 * we must have been called during custom axis creation time. We'll need
 * to grab the string straight from the function definition
@@ -82,14 +80,14 @@ c Here's how you check the variable type.
 
 * get the a null-terminated C string
         CALL GET_OFFSET_C_STRING(mr_c_pointer(mr), 0,
-     .                  risc_buff, size_rbuff)
-
+     .                  int_buff, 2048)
+        
 * the longest length we can use ...
-        flen = MIN(slen, size_rbuff)
+        flen = MIN(slen, size_ibuff)
         flen = MIN(flen, LEN(text))
-
+        
 * copy it into the FORTRAN string
-        CALL TM_CTOF_STRNG (risc_buff, text, flen )
+        CALL TM_CTOF_STRNG (int_buff, text, flen)
 
       ENDIF
 

@@ -17,13 +17,15 @@ c*				in ferret.parm
 c*		   *ac* 9.99 Separate the parameters (previously EF_Util.cmn)  
 c*				external statements which will be included
 c*				in external functions code.
+c*		   *kob* 1/02 - add in int_buff and size_ibuff to use for
+c*                              strings being converted from c to fortran
 
 	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
      .  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9,
      .  t_axis, custom, implied_by_args, normal, abstract,
      .  retained, reduced, float_arg, string_arg, 
      .	ef_max_args, ef_max_work_arrays, ef_max_name_length, 
-     .  ef_max_description, ef_unspecified_int4
+     .  ef_max_description, ef_unspecified_int4, size_ibuff
 
 	parameter ( ef_c = 1,
      .	ef_f = 2,
@@ -54,8 +56,14 @@ c*				in external functions code.
      .	ef_max_work_arrays=9, 
      .	ef_max_name_length=40, 
      .	ef_max_description = 128, 
-     .	ef_unspecified_int4 = -111 )
+     .	ef_unspecified_int4 = -111,
+     .  size_ibuff = 2048 )
+
+	integer int_buff(size_ibuff)
 
 	real ef_version
 
 	parameter (ef_version = 1.3) 
+
+
+

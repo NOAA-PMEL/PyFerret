@@ -1,0 +1,98 @@
+\cancel mode verify
+! mask_outline.jnl
+! *sh* 1/02
+
+! Description: define a contour field with squared off lines for a 1/0 mask
+
+! Explanation:
+! A straightforward contour of a mask grid of 0's and 1's does not produce
+! a nice representation of the mask  because the contour lines do not
+! "square up" at the boundaries between grid cells. In this script we regrid
+! the mask to a new grid which when contoured produces squared off boundaries.
+
+! Note this approach works only for a mask defined on a regularly-spaced grid
+
+!usage: GO mask_outline mask
+
+! example
+!   yes? use etopo60
+!   yes? set region/x=90w:20e/y=15s:55n
+!   yes? shade rose
+!
+!   yes? let ocean_mask = IF rose LT 0 THEN 1 ELSE 0 
+!   yes? GO mask_outline ocean_mask
+!   yes? ovmo  ! think "overlay mask outline"
+
+! if the final line segments at the north and east of the plot are missing
+!   yes? cancel region
+!   yes? ovmo
+
+! use "yes? SHOW ALIAS ovmo" to see or modify the contour command
+
+! ================================================
+! The technique used is to define a modified mask grid as follows:
+! ('+' to incicate the corners of the boundaries between grid cells)
+! Say the original grid of 0's and 1's looks like this:
+!
+!       0     1     1
+!
+!    +     +     +     +
+!
+!       0     0     1
+!
+! We define a new mask which contains clusters of 4 points a small distance,
+! EPSILON, from one another immediately surrounding the cell corners.
+! (the original values are in parentheses):
+!
+!      (0)   (1)   (1)
+!     0   0 1   1 1   1
+!    +     +     +     +
+!     0   0 0   0 1   1
+!      (0)   (0)   (1)
+!
+! When the value 0.5 is contoured on this mask, the contour lines will pass
+! within EPSILON of the true corners.
+! ================================================
+
+! capture the characteristics of the native mask grid
+canc mode longitude_labels  ! get "-170" instead of "170e"
+canc mode latitude_labels   ! get "-20"  instead of "20s"
+define symbol mo_xlo `$1,return=xstart`
+define symbol mo_xhi `$1,return=xend`
+define symbol mo_xn  `$1,return=isize`
+define symbol mo_ylo `$1,return=ystart`
+define symbol mo_yhi `$1,return=yend`
+define symbol mo_yn  `$1,return=jsize`
+set mode/last longitude_labels
+set mode/last latitude_labels
+
+! define the modified X axis and cluster the mask values at the cell boundaries
+let mo_xdel = `(($mo_xhi)-($mo_xlo))/(($mo_xn)-1)`
+let mo_xdelov2 = mo_xdel/2
+let mo_xeps = mo_xdel/1e4
+define axis/x=`($mo_xlo)-mo_xdelov2`:`($mo_xhi)+mo_xdelov2`:`mo_xdelov2`/units=degrees mo_xax0
+let mo_x0 = X[gx=mo_xax0]
+let mo_x2 = IF MOD(i,2) EQ 1 THEN mo_x0+mo_xeps ELSE mo_x0+mo_xdelov2-mo_xeps
+define axis/unit=degrees/x mo_xax = mo_x2
+let $1_xmo = INT($1[gx=mo_xax]+.5)
+
+! define the modified Y axis and cluster the mask values at the cell boundaries
+let mo_ydel = `(($mo_yhi)-($mo_ylo))/(($mo_yn)-1)`
+let mo_ydelov2 = mo_ydel/2
+let mo_yeps = mo_ydel/1e4
+define axis/y=`($mo_ylo)-mo_ydelov2`:`($mo_yhi)+mo_ydelov2`:`mo_ydelov2`/units=degrees mo_yax0
+let mo_y2 = IF MOD(j,2) EQ 1 THEN mo_y0+mo_yeps ELSE mo_y0+mo_ydelov2-mo_yeps
+let mo_y0 = Y[gy=mo_yax0]
+define axis/unit=degrees/y mo_yax = mo_y2
+let $1_mo = INT($1_xmo[gy=mo_yax]+.5)
+
+! define an alias the user can type for easy plotting
+define alias ovmo cont/ov/lev=(0.5,0.5,1,-3)/nolab/color=black $1_mo
+say *** Use the command alias "ovmo" to overlay the mask outline ***
+
+! clean up
+cancel variables mo_*
+cancel symbols mo_*
+cancel axis mo_xax0
+cancel axis mo_yax0
+set mode/last verify

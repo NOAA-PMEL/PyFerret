@@ -280,8 +280,6 @@ c* *jc* 01/98 Removing this section to allow for arguments which are constants.
 c*
 	RETURN
 
-c#ifdef (0) !This doesn't compile on solaris *jc* 1/27/98
-
 ********************************
 * Reconcile the limits of the arguments with the limits of the result where
 * offsets are imposed.
@@ -299,10 +297,10 @@ c#ifdef (0) !This doesn't compile on solaris *jc* 1/27/98
 
 * is the result context incomplete?
 
-	DO 1000 idim = 1, 4
-	   IF ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8 ) THEN
+JC	DO 1000 idim = 1, 4
+JC	   IF ( cx_lo_ww(idim,res_cx) .EQ. unspecified_val8 ) THEN
 * only UVARs end up in this routine so uvar_given is available
-	      IF (uvar_given(idim,uvar).EQ.uvlim_irrelevant) GOTO 1000
+JC	      IF (uvar_given(idim,uvar).EQ.uvlim_irrelevant) GOTO 1000
 
 * ... logic for offsets not yet implemented -- take internal error
 * some ideas:
@@ -312,15 +310,13 @@ c#ifdef (0) !This doesn't compile on solaris *jc* 1/27/98
 *iii) if ambiguous at edges how to resolve??? Need to know the **requested**
 *     limits
 
-	      CALL ERRMSG( ferr_internal, status,
-     .			'gcf_get_result_lims: incomplete cx', *5000 )
+JC	      CALL ERRMSG( ferr_internal, status,
+JC     .			'gcf_get_result_lims: incomplete cx', *5000 )
 
-	   ENDIF
- 1000	CONTINUE
+JC	   ENDIF
+JC 1000	CONTINUE
 
-	RETURN
-
-c#endif !This doesn't compile on solaris *jc* 1/27/98
+JC	RETURN
 
 
 * error exit

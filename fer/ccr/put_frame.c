@@ -68,6 +68,11 @@ void put_frame_batch_(int *ws_id, char *filename, char *format,
   WS_STATE_ENTRY *ws = OPEN_WSID(*ws_id);
   *status = 0;
 
+  if (ws == 0 || ws->mf.any == 0){
+    strcpy(errmsg, "No open workstations for batch FRAME command");
+    return;
+  }
+
   if (ws->mf.any->type != MF_GIF){
     strcpy(errmsg, "Batch FRAME only works for GIF files");
     return;

@@ -5,7 +5,7 @@
 # platform specific macros
 
 
-INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include \
+INCLUDES        = -I/usr/local/lib/gcc-lib/i686-pc-linux-gnu/2.8.1/include \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I. -Ireadline \
 		  -I../../ppl/include/xgks \
@@ -18,23 +18,29 @@ INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/2.7.2.3/include \
                   -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm \
 		  -I$(TMAP_LOCAL)/include \
                   -Ipplinc/xgks \
-		  -I../common 
+		  -I../common \
+		  -I../../fmt/cmn \
+		  -I../../ppl/include \
+		  -I. -I$(TMAP_LOCAL)/include/readline
 
-FINCLUDES	= -I../tmap_inc -I../include -I../../fmt/cmn \
-		-I../../fer/common
+FINCLUDES	= -I../../ppl/tmap_inc \
+		   -I../include -I../../fmt/cmn \
+		   -I../common \
+		   -I../../ppl/include  -I../../fer/common
 
 GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
  
 
 
 CC              = cc
-F77		= f90
+F77		= /usr/local/src/NAGWare_f95/bin/f95
 RANLIB          = /usr/bin/ranlib
 CFLAGS          = -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -O2 -m486 -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
-FFLAGS          = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
-PPLUS_FFLAGS    = -132 -c -save -dusty -f77 -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
+FFLAGS          = -132 -c -save -dusty  -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES) 
+PPLUS_FFLAGS    = -132 -c -save -dusty  -fieee -Nl90 -x77 -w -mismatch $(FINCLUDES)
 CPP		= /lib/cpp
-CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
+CPP_FLAGS       = $(INCLUDES)-P -Dunix -DNEED_IAND -DFORTRAN_90 \
+		  -DNO_OPEN_SHARED \
 		  -DNO_OPEN_RECORDTYPE -DNO_SNGL -DF90_DATE_TIME \
 		  -DF90_SYSTEM_ERROR_CALLS -DMANDATORY_FORMAT_WIDTHS \
 		  -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH \
@@ -42,23 +48,31 @@ CPP_FLAGS       = -P -Dunix -DNEED_IAND -DFORTRAN_90 -DNO_OPEN_SHARED \
 		  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
 		  -DF90_NO_FPUTC -DF90_NO_UNLINK -DF90_NO_GETLOG \
 		  -DMIXING_NAG_F90_AND_C -DFULL_GUI_VERSION -DX_REFRESH \
-		  -DXT_CODE -Dsun4
+		  -DXT_CODE -Dsun4 -DLINUX 
 
 # Below this line are macro definitions used only for the final linking of the executable
 #
 
 LD		= cc
-LDFLAGS		= -v -static
+LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -export-dynamic 
+#LDFLAGS		= -v --verbose -L/lib -L/usr/X11R6/lib -static
  
-SYSLIB		= -L/usr/X11R6/lib -lX11 -static /usr/lib/libf2c.a /usr/lib/libc.a /usr/lib/libc_p.a /home/lotus/kobrien/src/f2c/libF77/libF77.a /home/lotus/kobrien/src/f2c/libI77/libI77.a /usr/local/lib/f90/libf90.a -lm -ldl $(TMAP_LOCAL)/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE 
 
-TMLIB		= ../fmt/libs/tmap_lib.a
+
+#SYSLIB		= -L/usr/X11R6/lib -lX11 /usr/lib/libf2c.a -L/usr/local/src/NAGWare_f95/lib /usr/local/src/NAGWare_f95/lib/libf95.a -lm -ldl -lXpm  $(TMAP_LOCAL)/lib/liblist.a -lXm -lXt -lXext -lX11 -lSM -lICE -lc
+SYSLIB		= -L/usr/X11R6/lib   /usr/lib/libf2c.a /usr/local/src/NAGWare_f95/lib/libf95.a -lm -ldl /usr/X11R6/lib/libXpmstatic.a $(TMAP_LOCAL)/lib/liblist.a -lc -lXmstatic -lXtstatic -lXextstatic -lX11static -lSMstatic -lICEstatic  -lc /usr/lib/libc.a
+
+TMLIB		= ../lib/tmap_lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
-HDFLIB		= -L/usr/local/lib  -ldf -ljpeg -lz
+READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
+
+HDFLIB		= -L/usr/local/lib  -ldf 
 
 CDFLIB		= -lnetcdf
+
+DODS_LIBS   	= -L$(TMAP_LOCAL)/src/DODS/lib -L$(TMAP_LOCAL)/src/DODS/packages/lib $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -ldap++  $(TMAP_LOCAL)/src/DODS/lib/libnc-dods.a -ldap++ -lwww -lstdc++ -lrx -lz -lexpect5.21 -ltcl7.6
 
 LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

@@ -34,7 +34,7 @@ LDFLAGS		=
  
 SYSLIB		= -L/usr/local/lib -L/home/e1/tmap/local/sun/lib -L/usr/lang/SC1.0/cg87 -L/usr/lang/SC1.0 -lX11 -Bstatic -lV77 -lF77 -lm
 
-TMLIB		= ../fmt/libs/tmap_lib.a
+TMLIB		= ../fmt/libs/tmap_$(DEBUG_TITLE)lib.a
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 

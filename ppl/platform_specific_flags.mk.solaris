@@ -5,7 +5,7 @@
 # platform specific macros
 
 
-INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
+INCLUDES        = -I/opt/local/netcdf-3.4/include \
 		  -I$(TMAP_LOCAL)/src/xgks/include \
 		  -I../../ppl/include/xgks \
 		  -I/usr/ucbinclude \
@@ -21,7 +21,7 @@ INCLUDES        = -I$(TMAP_LOCAL)/src/netcdf-2.3.2/include \
                   -I../common \
 		  -I../../fmt/cmn \
 		  -I../../ppl/include \
-		  -I. -Ireadline
+		  -I. -I$(TMAP_LOCAL)/include/readline
 
 FINCLUDES	= -I../../ppl/tmap_inc \
 		   -I../include -I../../fmt/cmn \
@@ -36,8 +36,8 @@ GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include  -I/usr/openwin/share/include
 CC              = cc
 RANLIB          = /bin/touch
 CFLAGS          = -Dsolaris -DUSG -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -DSOLARIS $(INCLUDES) 
-FFLAGS          = -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix
-PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
+FFLAGS          = -e -Nl160 -u -C -Dsolaris -DX_REFRESH -DACCEPTS_BYTE_DECLARATION -DNEED_BYTE -Dxgks -DFlarge_mem -Dreclen_in_bytes $(FINCLUDES) -Dunix -DNO_OPEN_SHARED -DNO_OPEN_RECORDTYPE -DusingDODSf2cUnderscore
+PPLUS_FFLAGS    = -e -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Dunix $(FINCLUDES)
 
 #
 # Below this line are macro definitions used only for the final linking of the executable
@@ -46,23 +46,37 @@ PPLUS_FFLAGS    = -Nl160 -Dxgks -DNO_OPEN_READONLY -DNO_OPEN_CARRIAGECONTROL -Du
 LD		= cc
 LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
 LD_DYN_FLAGS = -G -z text -z muldefs
+
+V77lib = /opt/SUNWspro/SC5.0/lib/libV77.a
+M77lib = /opt/SUNWspro/SC5.0/lib/libM77.a
+F77lib = /opt/SUNWspro/SC5.0/lib/libF77.a
+elflib = /usr/lib/libelf.a
+Xmlib = /opt/SUNWmotif/lib/libXm.a
+Sunmathlib = /opt/SUNWspro/SC5.0/lib/libsunmath.a
+nsllib = /usr/lib/libnsl.a
+socketlib = /usr/lib/libsocket.a
  
-SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
-		  -lV77 -lelf -lM77 -lF77 -lXm -lXt -Bdynamic -lsunmath -lm \
+SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/lib \
+		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
 		  /usr/ccs/lib/libgen.a -lc \
-		  -Bstatic /usr/ucblib/libucb.a -Bdynamic /usr/lib/libICE.so \
-                  /usr/lib/libSM.so \
-		 -lnsl -lsocket \
+		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
+		  /usr/lib/libSM.so 
+
+DODS_SYSLIB	= $(nsllib) $(socketlib) \
 		  /opt/local/hdf/lib/libz_HDF4.1r1.a
 
 TMLIB		= ../lib/tmap_lib.a
+
+READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
 
 GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 
 HDFLIB		= /opt/local/lib/libdf.a
 
 #CDFLIB		= /opt/local/lib/libnetcdf.a
-CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
+#CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
+#CDFLIB          = /opt/local/netcdf-2.4.2/lib/libnetcdf.a
+CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
 
 #
 # End of platform_specific_includes.mk.solaris

@@ -3,6 +3,9 @@
 *
 * Ansley Manke
 * June 30 1998
+
+*  8/May/99 Use REDUCED axes, 
+*  call ef_set_work_array_lens function to set gwork
 *
 * This function takes up to 8 variables from ferret data sets
 * and writes them in Vis5D format.  Send in variables to write in the
@@ -181,7 +184,7 @@
 * In this subroutine we compute the result
 *
       SUBROUTINE writev5d_compute (id, arg_1, arg_2, arg_3,
-     .      arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result)
+     .   arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, gwork)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'

@@ -79,7 +79,8 @@
 * V541: *kob* 6/02 - Add STRLEN, UPCASE,DNCASE,STRINDEX, STRRINDEX
 *                        SUBSTRING, STRCAT, STRFLOAT 
 *                    internal string handling functions   
-
+* V552: *acm* 4/02 - Allow for zero-length strings in STRRINDEX fcn:
+*                    STRRINDEX ("my string", "") had caused Ferret to hang.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -695,10 +696,18 @@
 	   i1 = i1 + di1
 	   i2 = i2 + di2
 
-	     CALL C_STRRINDEX(com1(1,i1,j1,k1,l1),
+	     CALL C_STRLEN(com2(1,i1,j1,k1,l1),
+     .                     ii)
+             IF (ii .LE. 0) THEN
+	        CALL C_STRLEN(com1(1,i1,j1,k1,l1),
+     .                     ii)
+                res(1,i,j,k,l) = float(ii)
+             ELSE
+	        CALL C_STRRINDEX(com1(1,i1,j1,k1,l1),
      .                        com2(1,i2,j2,k2,l2), ii)
-             res(1,i,j,k,l) = FLOAT(ii)
-
+                res(1,i,j,k,l) = FLOAT(ii)
+             ENDIF
+ 
            ENDDO
           ENDDO
          ENDDO

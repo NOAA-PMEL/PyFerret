@@ -290,3 +290,22 @@ void gdImageBlockFill(gdImagePtr image, int color)
     memset(image->pixels[i], color, image->sy);
   }
 }
+
+/* Set clip region */
+void gdSetClip(gdImagePtr image, int x1, int y1, int x2, int y2)
+{
+  if (x2 < x1){
+    int tmp = x1;
+    x1 = x2;
+    x2 = tmp;
+  }
+  if (y2 < y1){
+    int tmp = y1;
+    y1 = y2;
+    y2 = tmp;
+  }
+  assert(x2 > x1);
+  assert(y2 > y1);
+  image->xcmin = x1; image->xcmax = x2;
+  image->ycmin = y1; image->ycmax = y2;
+}

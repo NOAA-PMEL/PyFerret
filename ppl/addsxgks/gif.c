@@ -5,6 +5,7 @@
  *
  * umalloc(0) returns 0 on DEC alpha; eliminated assert(meta->style) in
  *  set_lineStyle to avoid this problem, since length can be 0 *js* 8.97
+ * added clipping *js* 8.97
  */
 
 /*
@@ -182,11 +183,15 @@ static void add_meta(mf_cgmo *key, GIFmetafile *value)
 static int allocate_color(GIFmetafile *meta, int idx,
 			  float r, float g, float b){
   GIFcolor *color = 0;
+  int index;
+  int ir = r * 255, ig = g * 255, ib = b * 255;
   assert(idx < meta->numcolors);
-  gdImageColorDeallocate(meta->image, idx);
+
   color = &meta->colors[idx];
+  if (color->index != -1)
+    gdImageColorDeallocate(meta->image, color->index);
   color->index =
-    gdImageColorAllocate(meta->image, 255 * r, 255 * g, 255 * b);
+    gdImageColorAllocate(meta->image, ir, ig, ib);
   color->r = r; color->g = g; color->b = b;
   return color->index;
 }
@@ -501,6 +506,7 @@ GIFmoClose(Metafile *mf)
       gdImageGif(meta->image, cgmo->fp);
       if (!ferror(cgmo->fp)){
 	status	= OK;
+	fflush(cgmo->fp);
       }
       destroy_meta(cgmo, meta);
     }
@@ -952,17 +958,18 @@ GIFsetColRep(Metafile *mf, int num, Gint idx, Gcobundl *rep)
     for (imf = 0; imf < num; ++imf) {
       float r = rep->red, g = rep->green, b = rep->blue;
       GIFmetafile *meta = find_meta(cgmo[imf]);
+      int gindex;
       assert(meta);
-
-      msgInfo("GIFsetColRep: assigning color (%f, %f, %f) to %d\n",
-	     r, g, b, idx);
 
       /* Do the color allocation -- background color */
       /* can't be reset */
-      if (idx > 0 && allocate_color(meta, idx, r, g, b) == -1){
+      if (idx > 0 && (gindex = allocate_color(meta, idx, r, g, b)) == -1){
 	msgWarn("GIFsetColRep : Can't allocate color (%f, %f, %f)\n",
 	     r, g, b);
       } else {
+	msgInfo("GIFsetColRep: assigning color (%f, %f, %f) to GKS %d GIF %d\n",
+		r, g, b, idx, gindex);
+
 	status = OK;
       }
     }
@@ -973,12 +980,17 @@ GIFsetColRep(Metafile *mf, int num, Gint idx, Gcobundl *rep)
 
 /*
  * Set the clipping rectangle in an output GIF file.
- * Unsupported.
  */
     int
 GIFsetClip(Metafile *mf, int num, Glimit *rect)
 {
-    msgWarn("GIFsetClip: Don't support this feature\n");
+    mf_cgmo *cgmo	= mf->cgmo;
+    GIFmetafile *meta = find_meta(cgmo);
+    int x1,y1,x2,y2;
+    xform(meta, rect->xmin, rect->ymin, &x1, &y1);
+    xform(meta, rect->xmax, rect->ymax, &x2, &y2);
+    gdSetClip(meta->image, x1,y1,x2,y2);
+
     return OK;
 }
 
@@ -1003,7 +1015,6 @@ GIFrenameSeg(Metafile *mf, int num, Gint old, Gint new)
     msgWarn("GIFrenameSeg: Don't support this feature\n");
     return OK;
 }
-
 
 /*
  * Set the segment transformation in an output GIF file.

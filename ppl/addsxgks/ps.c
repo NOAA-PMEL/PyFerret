@@ -281,6 +281,22 @@ PSmoOpen(WS_STATE_PTR ws)
     return status;
 }
 
+
+/* True hack here -- if aspect is > ratio of page height to page length */
+/* than use portrait, otherwise landscape. This assumes 8.5x11 */
+/* We are screwed if paper dimensions are different (i.e. A4) */
+
+void PSresize(WS_STATE_PTR ws, Gpoint size)
+{
+  float myAspect = size.y/size.x;
+  FILE	*fp	= ws->mf.any->fp;
+  if (myAspect < 1.0){
+    PSmoSetLandscape(ws->mf);
+  }
+  fprintf(fp, "gr %f center gs\n", myAspect);
+  
+}
+
 /*
  * Special function called from gescsetlandscape to set landscape mode
  */
@@ -288,7 +304,7 @@ PSmoOpen(WS_STATE_PTR ws)
 int PSmoSetLandscape(Metafile *mf)
 {
     FILE	*fp	= mf->any->fp;
-    fputs("pagewidth neg Landscape\n", fp);
+    fputs("gr pagewidth neg Landscape gs\n", fp);
     return OK;
 }
 
@@ -330,7 +346,7 @@ PSclear(Metafile *mf, int num, Gclrflag flag)
     mf_cgmo *cgmo	= mf->cgmo;
     FILE *fp = cgmo->fp;
     if (fp != NULL){
-      fprintf(fp, "clippath 1 setgray fill\n");
+      fprintf(fp, "gr gs clippath 1 setgray fill\n");
     }
   }
   return OK;
@@ -419,7 +435,7 @@ PStext(Metafile *mf, int num, Gpoint *at, Gchar *string)
 	}
 	nstr[count] = 0;
 
-	fprintf(fp,"gsave %s o %.6f %.6f m (%s) ", TEXTCOLOR, at->x, at->y, nstr);
+	fprintf(fp,"gs %s o %.6f %.6f m (%s) ", TEXTCOLOR, at->x, at->y, nstr);
 	if (up->y != 1.0 && up->x != 0.0){
 	    double angle = atan2(-up->x, up->y) * 180./M_PI;
 	    fprintf(fp, "%.0lf rotate htext ", angle);
@@ -456,7 +472,7 @@ PStext(Metafile *mf, int num, Gpoint *at, Gchar *string)
 	    fputs("PStext: Vertical alignment UNKNOWN not supported\n", stderr);
 	    break;
 	}
-	fputs("show grestore\n", fp);
+	fputs("show gr\n", fp);
     }
 #ifdef PSDEBUG
     fprintf(stderr, "PStext: text = %s at (%.6f %.6f)\n", str, at->x, at->y);
@@ -898,24 +914,23 @@ PSsetColRep(Metafile *mf, int num, Gint idx, Gcobundl *rep)
 
 /*
  * Set the clipping rectangle in an output PostScript file.
- * Disabled for now
+ * Note that an unpaired grestore
+ * is used to restore the initial clipping path before setting up the
+ * clip; this means that no other unpaired gsaves may be used.
  */
     int
 PSsetClip(Metafile *mf, int num, Glimit *rect)
 {
     int		imf;
 
-/*
+    mf_cgmo		**cgmo	= &mf->cgmo;
     for (imf = 0; imf < num; ++imf) {
-	FILE	*fp	= cgmo[imf]->fp;
-
-	(void) fprintf(fp, "%f %f %f %f b clip\n", 
-		       rect->xmin, rect->ymin,
-		       rect->xmax, rect->ymax);
+      FILE	*fp	= cgmo[imf]->fp;
+      
+      (void) fprintf(fp, "gr gs %f %f %f %f b clip n\n", 
+		     rect->xmin, rect->ymin,
+		     rect->xmax, rect->ymax);
     }
-*/
-
-    msgWarn("PSsetClip: Don't support this feature\n");
     return OK;
 }
 

@@ -43,6 +43,7 @@ typedef struct gdImageStruct {
 	int stylePos;
 	int *style;
 	int interlace;
+        int xcmin, ycmin, xcmax, ycmax;	/* Clip boundaries */
 } gdImage;
 
 typedef gdImage * gdImagePtr;

@@ -31,6 +31,7 @@ gdImagePtr gdImageCreate(int sx, int sy)
 	im->colorsTotal = 0;
 	im->transparent = (-1);
 	im->interlace = 0;
+	im->xcmin = 0; im->xcmax = sx; im->ycmin = 0; im->ycmax = sy;
 	return im;
 }
 
@@ -133,40 +134,47 @@ static int getStylePixel(gdImagePtr im, int x, int y)
 
 void gdImageSetPixel(gdImagePtr im, int x, int y, int color)
 {
-	int p;
-	switch(color) {
-		case gdStyled:
-		if (!im->style) {
-			/* Refuse to draw if no style is set. */
-			return;
-		} 
-		p = getStylePixel(im, x, y);
-		if (p != (gdTransparent)) {
-			gdImageSetPixel(im, x, y, p);
-		}
-		break;
-		case gdStyledBrushed:
-		if (!im->style) {
-			/* Refuse to draw if no style is set. */
-			return;
-		}
-		p = getStylePixel(im, x, y);
-		if ((p != gdTransparent) && (p != 0)) {
-			gdImageSetPixel(im, x, y, gdBrushed);
-		}
-		break;
-		case gdBrushed:
-		gdImageBrushApply(im, x, y);
-		break;
-		case gdTiled:
-		gdImageTileApply(im, x, y);
-		break;
-		default:
-		if (gdImageBoundsSafe(im, x, y)) {
-			 im->pixels[x][y] = color;
-		}
-		break;
-	}
+  int p;
+
+  /* Clip this puppy */
+  
+  if (x < im->xcmin || x > im->xcmax ||
+      y < im->ycmin || y > im->ycmax)
+    return;
+
+  switch(color) {
+  case gdStyled:
+    if (!im->style) {
+      /* Refuse to draw if no style is set. */
+      return;
+    } 
+    p = getStylePixel(im, x, y);
+    if (p != (gdTransparent)) {
+      gdImageSetPixel(im, x, y, p);
+    }
+    break;
+  case gdStyledBrushed:
+    if (!im->style) {
+      /* Refuse to draw if no style is set. */
+      return;
+    }
+    p = getStylePixel(im, x, y);
+    if ((p != gdTransparent) && (p != 0)) {
+      gdImageSetPixel(im, x, y, gdBrushed);
+    }
+    break;
+  case gdBrushed:
+    gdImageBrushApply(im, x, y);
+    break;
+  case gdTiled:
+    gdImageTileApply(im, x, y);
+    break;
+  default:
+    if (gdImageBoundsSafe(im, x, y)) {
+      im->pixels[x][y] = color;
+    }
+    break;
+  }
 }
 
 static void gdImageBrushApply(gdImagePtr im, int x, int y)

@@ -82,13 +82,17 @@ float *y;
       xw_event = XCheckWindowEvent (ws->dpy,ws->win,StructureNotifyMask,&evnt);
       time (tp);
     } while (xw_event && (t_now - t0 < 3));
-  } else if (ws->ewstype == MO && ws->mf.cgmo->type == MF_GIF){
-    Gpoint nsize;
-    nsize.x = ix;
-    nsize.y = iy;
-    GIFresize(ws, nsize);
+  } else if (ws->ewstype == MO){
+    int type = ws->mf.cgmo->type;
+    if (type == MF_GIF){
+      Gpoint nsize;
+      nsize.x = ix;
+      nsize.y = iy;
+      GIFresize(ws, nsize);
+    } else if (type == MF_PS){
+      PSresize(ws, size);
+    }
   }
-
 }
 
 

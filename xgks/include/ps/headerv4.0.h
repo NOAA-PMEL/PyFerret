@@ -9,6 +9,8 @@
 \n\
 % Procedures\n\
 \n\
+/gr {grestore} bind def\n\
+/gs {gsave} bind def\n\
 /sd {setdash} bind def\n\
 /w {setlinewidth} bind def\n\
 /l {doxform lineto} bind def\n\
@@ -56,11 +58,11 @@
         xform transform\n\
 } bind def\n\
         \n\
-/settransform {                         % Return xform matrix on stack\n\
+/settransform {                         % uoff voff => /xform contains matrix\n\
         localdict begin\n\
+            /voff exch def\n\
+            /uoff exch def\n\
             pagewidth pagelength lt {/psize pagewidth def} {/psize pagelength def} ifelse\n\
-            0 /uoff exch def\n\
-            0 /voff exch def\n\
             vp 0 get psize mul uoff add margin add /umin exch def\n\
             vp 1 get psize mul voff add margin add /vmin exch def\n\
             vp 2 get psize mul uoff add margin sub /umax exch def\n\
@@ -109,7 +111,25 @@
         pop /Times-Roman findfont exch scalefont setfont\n\
 } bind def\n\
 \n\
-/Landscape { 90 rotate 0 exch translate } bind def\n\
+/center {                               % Center the plot\n\
+    /aspect exch def\n\
+    aspect 1.0 gt \n\
+	{\n\
+	  1 aspect div /xfraction exch def 1 /yfraction exch def\n\
+	  pagewidth /pagexsize exch def pagelength /pageysize exch def\n\
+	}\n\
+	{\n\
+	  1 /xfraction exch def aspect /yfraction exch def\n\
+	  pagewidth /pageysize exch def pagelength /pagexsize exch def\n\
+	} ifelse\n\
+    margin 2 mul /m2 exch def\n\
+    pagewidth m2 sub /pagesize exch def\n\
+    pagexsize m2 sub pagesize xfraction mul sub 2 div /xoffset exch def\n\
+    pageysize m2 sub pagesize yfraction mul sub 2 div /yoffset exch def\n\
+    xoffset yoffset settransform\n\
+} bind def\n\
+\n\
+/Landscape { 90 rotate 0 exch translate} bind def\n\
 \n\
 % Variables\n\
 /localdict 64 dict def\n\
@@ -129,7 +149,7 @@
 1 j\n\
 [0.0 0.0 1.0 1.0] setvp\n\
 [0.0 0.0 1.0 1.0] setwindow\n\
-settransform\n\
+0 0 settransform\n\
 \n\
 %0.25 0.25 1 inch 1 inch bd stroke\n\
 %0.25 0.25 pm\n\

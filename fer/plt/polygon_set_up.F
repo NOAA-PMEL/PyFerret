@@ -99,6 +99,8 @@
 *                   vertices by -1.  Else the polygons arent plotted.
 * v541 *acm*  8/02  For "No Valid Data" the test is: 
 *                   IF (no_range .AND. (only_val.EQ.mr_bad_data(mr_color))
+* V550 *acm* 11/02  When its a 1-d form the ppl memory allocation was wrong.
+*                   (Input is 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,..)
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -373,14 +375,13 @@ c	ind_dim = plot_axis(1)
 * need number of polygons and points in each. On the first polyon we will
 * check that we have enough PPLUS memory and allocate more if needed.
 
-        npoly = 0
         first_polygon = .TRUE.
 
 * ...  point to the first polygon 
        IF ( oneD_form ) THEN
 *    ... coords are 1D arrays of p1,p1,p1,p1,BAD,p2,p2,p2,p2,BAD,...
-          npoly = cx_hi_ss(cx_buff_x,coord_dim) - 
-     .                cx_lo_ss(cx_buff_x,coord_dim)
+*    ... we will find npoly as we go through the list
+          npoly = 0
 	ELSE
 *    ... coords are 2D arrays of color_dim X coord_dim
            npoly = cx_hi_ss(cx_x,color_dim)
@@ -433,14 +434,13 @@ c	ind_dim = plot_axis(1)
      .				status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
-*  Now we have npts in each polygon; check PPLUS memory and if needed, 
+*  For 2d form, npts in each polygon; check PPLUS memory and if needed, 
 *  allocate more.  Multiply by 2 because we have X and Y vertices of 
 *  polygons, and by 2 again because the call below to 
 *       PPLLDX_envelope(2,x_dat,x_dat,ncolor...  
 *  loads polygon data after all the previous data.
-* 
 
-	   IF (first_polygon) THEN
+	   IF (first_polygon .AND. .NOT.oneD_form) THEN
               plot_mem_used = 4* npts* npoly
               CALL reallo_envelope(plot_mem_used)
 
@@ -567,9 +567,12 @@ c	ind_dim = plot_axis(1)
 
 * ... check for adequate PLOT+ memory
  250	   npts = end-start+1
-!	   plot_mem_used = plot_mem_used + npts
-!	   IF ( plot_mem_used .GT. 0.99*pplmem_nsize ) GOTO 5150  ! test is now in
-! 								    pplldx_envelope
+
+           IF (oneD_form) THEN
+              plot_mem_used = plot_mem_used + npts
+              CALL reallo_envelope(plot_mem_used)
+           ENDIF
+
 	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling

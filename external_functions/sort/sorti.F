@@ -7,6 +7,17 @@
 * This function sorts data on x axis in increasing order.
 * Returns index of sorted values.  
 *
+*  NOTE:
+*  IT IS GENERALLY ADVISABLE TO INCLUDE EXPLICIT LIMITS WHEN WORKING WITH
+*  FUNCTIONS THAT REPLACE AXES. FOR EXAMPLE, THE CONSIDER THE FUNCTION
+*  SORTL(v). THE EXPRESSION
+*  	LIST/L=6:10 SORTL(v)
+*  IS NOT EQUIVALENT TO
+*  	LIST SORTL(v[L=6:10])
+*  THE FORMER WILL LIST THE 6TH THROUGH 10TH SORTED INDICES FROM THE ENTIRE
+*  L RANGE OF VARIABLE V. THE LATTER WILL LIST ALL OF THE INDICES THAT
+*  RESULT FROM SORTING v[L=6:10].
+*  
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -55,20 +66,23 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns indices of data, sorted on the I axis')
+   10 FORMAT ('Returns indices of data, sorted on the I axis in ',
+     . 'increasing order')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 1)
-      CALL ef_set_axis_inheritance(id, ABSTRACT, IMPLIED_BY_ARGS, 
+      CALL ef_set_has_vari_args(id, NO)
+      CALL ef_set_axis_inheritance(id, ABSTRACT, IMPLIED_BY_ARGS,
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+
+      CALL ef_set_num_work_arrays(id, 2)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT')
-      CALL ef_set_arg_unit(id, arg, ' ')
       CALL ef_set_arg_desc(id, arg, 'variable to sort in I')
       CALL ef_set_axis_influence(id, arg, NO, YES, YES, YES)
-
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -91,7 +105,6 @@
       SUBROUTINE sorti_result_limits(id)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       INTEGER id
 
@@ -99,6 +112,7 @@
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
 *                                                                     V
+
       INTEGER my_lo_l, my_hi_l
 
       INTEGER arg
@@ -115,7 +129,9 @@
       my_hi_l = 1
 
       arg = 1
+
       my_hi_l = arg_hi_ss(X_AXIS,arg) - arg_lo_ss(X_AXIS,arg) + 1
+
 
       CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
 *                                                                     ^
@@ -128,18 +144,60 @@
 
 
 *
+* In this subroutine we request an amount of storage to be supplied
+* by Ferret and passed as an additional argument.
+*
+      SUBROUTINE sorti_work_size(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                            USER CONFIGURABLE PORTION |
+*                                                                      |
+* 
+* Set the work arrays,  X/Y/Z/T dimensions
+*
+* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
+*
+      INTEGER mxdat
+      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
+     .     arg_incr(4,1:EF_MAX_ARGS)
+
+      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+      mxdat = 1 + arg_hi_ss(X_AXIS,ARG1) - arg_lo_ss(X_AXIS,ARG1)
+
+
+* sort_dat
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxdat, 1, 1, 1)
+
+* sort_indx
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mxdat, 1, 1, 1)
+
+*                                                                      ^
+*                                                                      |
+*                                            USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN
+      END
+
+*
 * In this subroutine we compute the result
 *
-      SUBROUTINE sorti_compute(id, arg_1, result)
+      SUBROUTINE sorti_compute(id, arg_1, result, sort_dat, sort_indx)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .     mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
+     .           mem1loz:mem1hiz, mem1lot:mem1hit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .            memresloz:memreshiz, memreslot:memreshit)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -149,6 +207,7 @@
       INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
      .     arg_incr(4,EF_MAX_ARGS)
 
+
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |
 *                                                                     |
@@ -157,11 +216,15 @@
       INTEGER id
       INTEGER nbad, m_indx
       INTEGER m, nsrt
-      INTEGER i, j, k, l
+      INTEGER j, k, l
       INTEGER i1, j1, k1, l1
 
-      REAL sort_dat(100000)
-      INTEGER sort_indx(100000)
+*  Dimension work arrays
+
+      REAL sort_dat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+      INTEGER sort_indx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+     .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -188,8 +251,8 @@
 
                   ELSE
                      nsrt = nsrt + 1
-                     sort_dat(nsrt) = arg_1(i1,j1,k1,l1)
-                     sort_indx(nsrt) = i1
+                     sort_dat(nsrt,1,1,1) = arg_1(i1,j1,k1,l1)
+                     sort_indx(nsrt,1,1,1) = i1
 
                   END IF
 
@@ -203,7 +266,7 @@
                IF (nsrt .GT. 1) CALL shell (sort_dat, sort_indx, nsrt)
 
                DO 200 m = 1, nsrt
-                  result(m,j,k,l) = sort_indx(m)
+                  result(m,j,k,l) = sort_indx(m,1,1,1)
  200           CONTINUE
 
                DO 300 m = 1, nbad

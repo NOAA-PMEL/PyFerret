@@ -1,0 +1,38 @@
+ ! NOAA/PMEL TMAP
+ ! Program FERRET (alpha)
+ ! Version 5.33 - 07/12/01
+ ! 12-Jul-01 14:47     
+
+define axis/t=1-jan-0001:20-jan-0001:1 begtime
+let tpts = t[gt=begtime]
+set view ul
+plot/axes=1,0,0,1 sin(tpts/15)
+
+set view ur
+plot/axes=1,0,0,1/trans sin(tpts/15)
+
+set view ll
+plot/axes/trans  sin(tpts/15)
+
+set view lr
+plot/noaxes  sin(tpts/15)
+
+! contour shade and fill, with /TRANS
+
+use coads_climatology
+set view ul
+contour/l=1/axes=0,1,1,0 sst
+
+set view ur
+shade/l=1/axes=1,0,1,0/trans sst
+
+set view ll
+contour/l=1/axes=0,0,0,0/trans sst
+
+set view lr
+fill/l=1/axes sst
+
+! polygon
+
+can view
+polygon/thick/color=red/palette=blue/axes=1,0,1,0 {1,2,1}, {2,1,0.5}

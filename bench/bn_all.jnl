@@ -274,6 +274,9 @@ GO bn_axis_viewports
 GO bn_reset
 GO bn_strings
 
+GO bn_reset
+GO bn_axcontrol
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

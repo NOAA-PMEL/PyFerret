@@ -58,6 +58,7 @@
 * V500 *kob* 3/99- up VAR_CODE  to 64 chars
 * V510: *sh* 3/00 - bug fix: needless (?) reference to cx_last
 *		(see err500_2nd_try.jnl)
+* V510: 6/00 *sh* - bug fix trap /COLUMNS= >grid size
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -163,6 +164,7 @@
 * read only what will fit into smallest grid
 	   rec1 = CGRID_SIZE(cx_stack_ptr) / nrepeat
 	   rec_to_read = MIN( rec_to_read, rec1 )
+	   IF (rec_to_read .LE. 0 ) GOTO 5650
 
 * reserve and catalog space for the result
 	   CALL CREATE_MEM_VAR( cx_stack_ptr, mr20(nvar20), status )
@@ -284,6 +286,8 @@
  5600	CALL ERRMSG( ferr_limits, status,
      .		ww_dim_name(idim)//' axis of '//VAR_CODE(cat_file_var,ask_var),
      .		*5500 )
+ 5650	CALL ERRMSG( ferr_limits, status,
+     .		'/COLUMNS is impossibly large', *5500 )
  5700	CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
  6000	CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
 	END	

@@ -46,6 +46,8 @@
 * Unix/RISC port - 4/25/91 *sh*: longer ds_name
 *Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V500 *sh* 7/99 - issue warning, only, if grid is in-use in a data set
+
 #ifdef unix
 	include	'tmap_dims.parm'
 #	include	"tmap_dset.parm"
@@ -79,24 +81,37 @@
 	INTEGER	grid, status
 
 * internal variable declarations:
-	INTEGER	TM_LENSTR1, mr, ivar, cvar, dset, glen
+	INTEGER	mr, ivar, dset, glen, done_dset
+!	INTEGER	TM_LENSTR1, mr, ivar, cvar, dset, glen, done_dset
 
 * the lowest grids are protected
 	IF ( grid .LE. 6 ) GOTO 5200
+
+* initialize
+	done_dset = 0
 
 * make sure grid isn't used by any file variables
 	DO 10 ivar = 1, maxvars
 	   dset = ds_var_setnum( ivar )
 	   IF ( dset .EQ. set_not_open ) GOTO 10
-	   IF ( ds_grid_number(ivar) .EQ. grid ) GOTO 5100
+	   IF ( ds_grid_number(ivar) .EQ. grid
+     .	  .AND. dset .NE. done_dset ) THEN
+	      CALL WARN('grid '//grid_name(grid)(:glen)//
+     .		' used by data set '//ds_name(dset))
+	      CALL WARN
+     .		('Redefinition may alter apparent contents of data set')
+	      CALL PURGE_DSET(dset)
+	      done_dset = dset
+	   ENDIF
  10	CONTINUE
 
 * make sure it isn't implicitly used by a cvar that depends on file variables
-	DO 25 dset = 1, maxdsets
-	   IF ( ds_name(dset) .EQ. char_init40 ) GOTO 25
-	   DO 20 cvar = 1, num_calc_vars
- 20	   IF ( cvar_grid(cvar,dset) .EQ. grid ) GOTO 5100
- 25	CONTINUE
+* NOTE: cvars are irrelevant as of V500 ...
+!	DO 25 dset = 1, maxdsets
+!	   IF ( ds_name(dset) .EQ. char_init40 ) GOTO 25
+!	   DO 20 cvar = 1, num_calc_vars
+! 20	   IF ( cvar_grid(cvar,dset) .EQ. grid ) GOTO 5100
+! 25	CONTINUE
 
 * the coast is clear
 * ...clear out the memory variables
@@ -115,10 +130,10 @@
 
 * error exit
  5000	RETURN
- 5100	glen = TM_LENSTR1( grid_name( grid ) )
-	CALL ERRMSG( ferr_grid_definition, status,
-     .		'grid '//grid_name(grid)(:glen)//' used by data set '
-     .		//ds_name(dset), *5000 )
+! 5100	glen = TM_LENSTR1( grid_name( grid ) )
+!	CALL ERRMSG( ferr_grid_definition, status,
+!     .		'grid '//grid_name(grid)(:glen)//' used by data set '
+!     .		//ds_name(dset), *5000 )
  5200	CALL ERRMSG( ferr_grid_definition, status,
      .		'protected grid: '//grid_name(grid), *5000 )
 	END

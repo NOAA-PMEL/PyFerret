@@ -48,10 +48,10 @@ C**	Subprogram called:
 C**		CALL PARSE(LINE,ILEN,ICOM,LAB,N)
 C**
 C**	Parameters:
-C**		LINE -- Line to be parsed   (char*255)
+C**		LINE -- Line to be parsed   (char*2048)
 C**		ILEN -- Length of ILEN
-C**		ICOM -- Command from LINE   (char*255)
-C**		LAB -- rest of LINE  (char*255)
+C**		ICOM -- Command from LINE   (char*2048)
+C**		LAB -- rest of LINE  (char*2048)
 C**		N -- Length of LAB
 C**		IST -- Start position of LAB
 C**
@@ -67,6 +67,7 @@ C**
 C*
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C * v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
 	CHARACTER ICOM*(*),LAB*(*),LINE*(*)
 	ICOM=' '
@@ -82,7 +83,7 @@ C
 	IF(ICMA.EQ.0)ICMA=256
 	I=MIN0(ISPC,ICMA,256,ILEN+1)
 	ICOM=LINE(:I-1)
-	CALL UPPER(ICOM,255)
+	CALL UPPER(ICOM,2048)
 100	I=I+1
 	IF(I.GT.ILEN)RETURN
 	IF(LINE(I:I).EQ.' ')GOTO 100

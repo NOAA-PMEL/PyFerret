@@ -48,13 +48,13 @@ C**	Subprogram called:
 C**		CALL GETCMD(LINE,ILEN,COM,X,IF,M,LABEL,N,LBSTRT)
 C**
 C**	Parameters:
-C**		LINE -- Line from command input file (char*255)
+C**		LINE -- Line from command input file (char*2048)
 C**		ILEN -- Length of LINE
 C**		COM -- Command value parsed  (char*30)
 C**		X -- Numerical array
 C**		IF -- Flag array
 C**		M -- Length of numerical and flag array
-C**		LABEL -- Label part of the command line  (char*255)
+C**		LABEL -- Label part of the command line  (char*2048)
 C**		N -- Length of LABEL
 C**		LBSTRT -- Start position of LABEL
 C**
@@ -82,28 +82,23 @@ C**		      and made to support WHILE ... ENDW
 C**
 C**
 C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+
         logical         tmapdebug
         common/tmdebug/ tmapdebug
 
-#ifdef unix
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
 	INCLUDE 'LUNITS.INC'
-#else
-	INCLUDE 'PPLV11INC:CMDCOM.INC'
-	INCLUDE 'PPLV11INC:SYSTEM.INC'
-	INCLUDE 'PPLV11INC:SWITCH.INC'
-	include 'PPLV11INC:lunits.inc'
-#endif
-	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*255,FILE*80
-	CHARACTER ICOM*255
+
+	CHARACTER COM*(*),LABEL*(*),LINE*(*),SYM*30,VALUE*2048,FILE*80
+	CHARACTER ICOM*2048
 	LOGICAL RESULT,NUM
 	DIMENSION X(*),IF(*)
 	INTEGER LBSTRT,WHCNT
-#ifndef unix
 	integer*4 status,iflag
-#endif
+
 C
 C	GET NEXT COMMAND LINE
 C
@@ -115,7 +110,7 @@ C
 	    ENDIF
 	    LINE=CMDBUF(MBUFF)
 	    MBUFF=MBUFF+1
-	    ILEN=LNBLK(LINE,255)
+	    ILEN=LNBLK(LINE,2048)
 	ELSE
 	    CALL GETLIN(LINE,ILEN)
 	ENDIF
@@ -236,7 +231,7 @@ C     Brain dead exclusion of @ mod
 		I=ILEN-I-1
 	    ENDIF
 	    VALUE=FILE
-	    ivlen=lnblk(value,255)
+	    ivlen=lnblk(value,2048)
 #ifdef unix
 	    file=value
 #else
@@ -249,7 +244,7 @@ C     Brain dead exclusion of @ mod
 	ELSE IF(COM.EQ.'IF')THEN
 	    VALUE=LINE(4:ILEN)
 	    LABEL=VALUE
-	    CALL UPPER(VALUE,255)
+	    CALL UPPER(VALUE,2048)
 	    ITHEN=INDEX(VALUE,'THEN')
 	    IF(ITHEN.LE.0)THEN
 		CALL CMDERR(4,LINE,ILEN,LBSTRT)
@@ -307,7 +302,7 @@ C
 	ELSE IF(COM.EQ.'WHILE')THEN
 	    VALUE=LINE(7:ILEN)
 	    LABEL=VALUE
-	    CALL UPPER(VALUE,255)
+	    CALL UPPER(VALUE,2048)
 	    ITHEN=INDEX(VALUE,'THEN')
 	    IF(ITHEN.LE.0)THEN
 		CALL CMDERR(4,LINE,ILEN,LBSTRT)

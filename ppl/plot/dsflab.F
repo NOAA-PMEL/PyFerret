@@ -35,7 +35,7 @@
 *
 *
 C**    @(#)dsflab.F	1.1    3/10/88
-C**
+C** v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 C**
 C***********************************************************************
 C**
@@ -48,27 +48,16 @@ C
 C	DSFLAB fills the PLOT5 labels with information from the
 C	BIBO header of a DSF file.
 C
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'CMRD.INC'
 	INCLUDE 'LABELS.INC'
 	INCLUDE 'BIBO.COM'
 	INCLUDE 'TBLE.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:LABELS.INC'
-        INCLUDE 'pplinc:BIBO.COM'
-C        INCLUDE 'pplinc:BIBO.DAT'
-        INCLUDE 'pplinc:TBLE.INC'
-#endif
 C
 	REAL STR(11)
 	CHARACTER MORINT*16,LAT*11,LON*11,NS*1,EW*1,DEP*10
 	INTEGER MORLEN,LATLEN,LONLEN,DEPLEN
-#ifdef unix
 C	INCLUDE 'BIBO.DAT'
-#endif
 C
 C	fill the XLAB 
 C
@@ -78,7 +67,7 @@ C	fill the YLAB
 C
 	CALL FILL(DTTAB,NDTTAB,P(DTYPE),STR,IER)
 	WRITE(YLAB,'(6A4,1X,4A4)')(STR(I),I=1,10)
-	CALL LJUST(YLAB,255,J)
+	CALL LJUST(YLAB,2048,J)
 	WRITE(MORINT,'(4A4)')P(MOOR),P(MOOR+1),P(INST),P(INST+1)
 	CALL SQUISH(MORINT,1,16)
 	MORLEN=LNBLK(MORINT,16)
@@ -128,7 +117,7 @@ C
 #ifdef FORTRAN_90
 	character str*(*)
 #else
-	CHARACTER STR*255
+	CHARACTER STR*2048
 #endif
 
 	IF(STR.EQ.' ')THEN

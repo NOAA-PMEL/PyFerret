@@ -49,6 +49,7 @@ C**
 *	*jd* MOD 11.1.94 READ fails on IBM AIX without it.  Put back in.
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
 	LOGICAL BLNK
 	CHARACTER PRSE*(*)
@@ -63,7 +64,7 @@ C                with "*(*)" for the linux port
 	IF(ICM.EQ.0)ICM=256
 	IBL=INDEX(PRSE,' ')
 	IF(IBL.EQ.0)IBL=256
-	ISTPP=MIN0(ICM,IBL,255)
+	ISTPP=MIN0(ICM,IBL,2048)
 	BLNK=PRSE(ISTPP:ISTPP).EQ.' '
 	IF(ISTPP.NE.1)THEN
 		INTIF(I)=1
@@ -77,7 +78,7 @@ C                with "*(*)" for the linux port
 996		FORMAT(E20.0)
 	ENDIF
 20	ISTPP=ISTPP+1
-	IF(ISTPP.GT.255)GOTO 40
+	IF(ISTPP.GT.2048)GOTO 40
 	IF(PRSE(ISTPP:ISTPP).EQ.' '.OR.
      *	(BLNK.AND.PRSE(ISTPP:ISTPP).EQ.','))GOTO 20
 	PRSE=PRSE(ISTPP:)

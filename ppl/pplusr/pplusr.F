@@ -40,10 +40,11 @@ c
 c
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C v552 *acm* 3/03 Longer strings: changes for multi-line labels
 	character command*(*),msg*(*)
 	integer   ier
 c
-	character com*30,args*255
+	character com*30,args*2048
 c
 	ier=1
 	msg='usr command not implemented at this location'

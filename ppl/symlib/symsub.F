@@ -48,7 +48,7 @@ C**	Subprogram called:
 C**		CALL SYMSUB(LINE,ILEN,IER,SYM)
 C**
 C**	Parameters:
-C**		LINE -- String to have symbols substituted (char*255)
+C**		LINE -- String to have symbols substituted (char*2048)
 C**		ILEN -- length of LINE before and after substitution
 C**		IER -- error code
 C**			0 = success
@@ -70,7 +70,9 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
-	CHARACTER LINE*(*),STR*255,SYM*(*),GET*255
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+
+	CHARACTER LINE*(*),STR*2048,SYM*(*),GET*2048
 	IER=0
 	INXT=1
 100	IST=INDEX(LINE(INXT:),'''')+INXT-1

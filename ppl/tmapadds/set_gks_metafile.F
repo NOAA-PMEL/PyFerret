@@ -53,10 +53,10 @@
 *		cuckoo's egg implantation of meta_wsid in place of wsid
 *       *js* 7.25.97 Added 'C' callable save_metafile_name to save string
 *               in variable 'meta_file'
+* v552 *acm* 3/03 Longer strings.
 
 	LOGICAL		ITS_BATCH_GRAPHICS, batch
 
-#ifdef unix
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 	include 'cmrdl_inc.decl'
@@ -65,17 +65,10 @@
 	include 'GKSCM1.INC'
 	include 'gkscm2.cmn'
 	include 'ws_types.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_pltcom.dat'
-	INCLUDE 'tmap_pplv11inc:tmap_cmrdl.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm1.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
-	INCLUDE 'tmap_pplv11inc:ws_types.inc'
-#endif
 
 	integer		beg,end,defws,ndx,type,error
 	real		red,green,blue
-	character*255	str
+	character*2048	str
 	character*5	kdefws
 
 #ifdef unix

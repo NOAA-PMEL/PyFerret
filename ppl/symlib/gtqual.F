@@ -48,7 +48,7 @@ C**	Subprogram called:
 C**		CALL GTQUAL(LINE,ILEN,IER,IPOS)
 C**
 C**	Parameters:
-C**		LINE -- Input line containing qualifiers (char*255)
+C**		LINE -- Input line containing qualifiers (char*2048)
 C**		ILEN -- Length of command portion
 C**		IER  -- Error code =0 no error
 C**       =3 qualifier not found
@@ -66,19 +66,17 @@ C**
 C**
 C       Mod *JD* 3.22.91 to permit use of / in command qualifiers for unix.
 C       Not a complete fix as will screw up unix paths elsewhere in PPL
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
-#ifdef unix
 	INCLUDE 'SWITCH.INC'
-#else
-	INCLUDE 'pplv11inc:SWITCH.INC'
-#endif
+
 	CHARACTER LINE*(*)
 	LOGICAL TEST
 C
 C	SET DEFULTS
 C
 	IER=0
-	IDONE=LNBLK(LINE,255)
+	IDONE=LNBLK(LINE,2048)
 C       Mod to allow Ferret to work in Unix as is -- using "/" for
 C       qualifiers -- test mode only J Davison 3.22.91  3 ifdefs commented out
 C*JD*#ifdef unix

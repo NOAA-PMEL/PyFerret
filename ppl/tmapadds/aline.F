@@ -38,8 +38,8 @@
 *	Processes ALINE command buffer and manages aline database
 *	J Davison 10.16.89
 *	11.9.93 Mod to put immediate mode output in segments
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
-#ifdef unix
 	include 	'parampl5_dat.decl'            
 	include 	'PARAMPL5.DAT'            
 	include 	'cmrd_inc.decl'            
@@ -51,25 +51,13 @@
 	include 	'aline.cmn'            
 	include 	'switch_inc.decl'            
 	include 	'SWITCH.INC'            
-#else
-	INCLUDE 	'tmap_pplv11inc:tmap_parampl5.dat'            
-	INCLUDE 	'tmap_pplv11inc:tmap_cmrd.inc'            
-	INCLUDE 	'tmap_pplv11inc:tmap_cmrdl.inc'            
-	INCLUDE 	'tmap_pplv11inc:tmap_lines.inc'            
-	INCLUDE 	'tmap_pplv11inc:tmap_aline.inc'            
-	INCLUDE 	'tmap_pplv11inc:tmap_switch.inc'            
-#endif
 
 * special COMMON to let this routine know if FERRET is in control
-#ifdef unix
         include 'ppl_in_ferret.cmn'
-#else
-        INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
   
 	integer		nxs,end,a_line,i
 	real		x(nxs),minx,miny,maxx,maxy
-	character*255	str
+	character*2048	str
 
 ********************************************************************************
 

@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)chout.F	1.3    5/25/88
+C * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 C**
 C**
 C***********************************************************************
@@ -51,7 +52,7 @@ C**
 #endif
 #ifdef unix
 	integer chr(icnt)
-	character*255 buf
+	character*2048 buf
 #else
 	byte iosb(4),buf(80),chr(icnt)
 	include '($IODEF)'

@@ -1,9 +1,10 @@
 *	pass char variables from pplcmd.F through to pplcmd_f.F,
 *       bypassing pplcmd_c.c
 *  v5.33 acm 9/01
+*  v5.51+acm 3/03 Longer strings: changes for multi-line labels.
 
 
       CHARACTER*1 PPLFROMI, PPLLINEI
-      CHARACTER*255 PPLCOMBUF(5)
+      CHARACTER*2048 PPLCOMBUF(5)
 
       COMMON/PPLSTRINGS/ PPLFROMI, PPLLINEI, PPLCOMBUF

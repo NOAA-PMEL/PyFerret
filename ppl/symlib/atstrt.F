@@ -49,7 +49,7 @@ C**		CALL ATSTRT(FILE,LINE,LEN,IER)
 C**
 C**	Parameters:
 C**		FILE -- File to open for next command file (char*80)
-C**		LINE -- String containing symbols to be passed (char*255)
+C**		LINE -- String containing symbols to be passed (char*2048)
 C**		LEN  -- Length of LINE
 C**		IER  -- Error code
 C**			0 = success
@@ -69,6 +69,7 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
 #ifdef unix
 	INCLUDE 'CMDCOM.INC'
@@ -83,7 +84,7 @@ C                with "*(*)" for the linux port
 	INCLUDE 'cmdinc:SWITCH.INC'
 	include 'pplinc:lunits.inc'
 #endif
-	CHARACTER FILE*(*),LINE*(*),TO*80,TEMP*255
+	CHARACTER FILE*(*),LINE*(*),TO*80,TEMP*2048
 	CHARACTER SYM*30
 	INTEGER LEN
 	IER=0

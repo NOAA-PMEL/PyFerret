@@ -32,7 +32,6 @@ C**
 C**
 C     Mod *JD* 3.5.91 problems with buffered terminal output in unix
 *
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -70,7 +69,7 @@ C     Mod *JD* 3.5.91 problems with buffered terminal output in unix
 *	window is clicked with the mouse.
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
-
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
 #ifdef unix
 	include 'CMDCOM.INC'
@@ -95,7 +94,7 @@ C Leave this out JD 3.5.91	call flush(LTTOUT)
 998	format(a)
 #else
         INTEGER*2 IOSB(4)
-        BYTE INB(255),PRMTB(30)
+        BYTE INB(2048),PRMTB(30)
         INCLUDE '($IODEF)'
         STR=' '
         READ(PRMT,'(30A1)')PRMTB
@@ -103,7 +102,7 @@ C Leave this out JD 3.5.91	call flush(LTTOUT)
         CALL SYS$QIOW(,%VAL(CHAN),%VAL(IO$_READPROMPT),IOSB,,,
      *  INB,%VAL(IN),,,PRMTB,%VAL(INP))
         CALL SYS$DASSGN(%VAL(CHAN))
-        WRITE(STR,'(255A1)')(INB(I),I=1,IOSB(2))
+        WRITE(STR,'(2048A1)')(INB(I),I=1,IOSB(2))
 #endif
 	RETURN
 	END

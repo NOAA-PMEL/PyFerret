@@ -48,7 +48,7 @@ C**	Subprogram called:
 C**		CALL GETLIN(LINE,ILEN)
 C**
 C**	Parameters:
-C**		LINE -- Line from command input device   (char*255)
+C**		LINE -- Line from command input device   (char*2048)
 C**		ILEN -- Length of LINE
 C**
 C**	Description:
@@ -59,18 +59,15 @@ C**	    Written:
 C**		21-DEC-85	by Donald W. Denbo
 C**	    Modified:
 C**
+C*** v552 *acm* 3/03 Longer strings: changes for multi-line labels
 C**
-#ifdef unix
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'SYSTEM.INC'
-#else
-	INCLUDE 'cmdinc:CMDCOM.INC'
-	INCLUDE 'cmdinc:SYSTEM.INC'
-#endif
+
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
-	CHARACTER PMPT*30,LINE*(*),IN*255
+	CHARACTER PMPT*30,LINE*(*),IN*2048
 	IP=INP
 	PMPT=PRMPT
 	K=1
@@ -80,13 +77,13 @@ C                with "*(*)" for the linux port
 #else
 	if(cmdfil(1:3).eq.'TT:')then
 #endif
-	    CALL CHARIN(IN,255,PMPT,IP)
+	    CALL CHARIN(IN,2048,PMPT,IP)
 	ELSE
 	    READ(CMDLUN,999,END=901)IN
 999	    FORMAT(A)
 	    LINCNT=LINCNT+1
 	ENDIF
-	ILEN=LNBLK(IN,255)
+	ILEN=LNBLK(IN,lenlab)
 	LINE(K:K+ILEN-1)=IN(1:ILEN)
 	IF(IN(ILEN:ILEN).EQ.'-')THEN
 	    K=K+ILEN-1

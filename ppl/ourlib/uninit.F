@@ -36,7 +36,7 @@
 *
 *
 C**    @(#)uninit.f	1.1    3/10/88
-C**
+C** v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 C**
 C***********************************************************************
 C**
@@ -60,7 +60,7 @@ c	nin	- length of name
 c	nout	- number of name at output
 c
 c
-	character pname*(*),switch(ns)*1,name(nin)*(*),arg*255
+	character pname*(*),switch(ns)*1,name(nin)*(*),arg*2048
 	logical sflag(ns)
 	integer smap(ns),nmap(nin)
 c

@@ -47,32 +47,21 @@ C**
 C
 C     Mod *JD* 3.5.91 to use unit 6 rather than 5 for unix terminal lun
 C     Had problem with buffered output.  See also opnppl
+C v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
-#ifdef unix
 	INCLUDE 'PLT.INC'
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
 C
-	CHARACTER FROM*80,TEMP*255,LINE*255,TYPE*81
-	CHARACTER COMBUF(5)*255,FILE*81,DTE*24
+	CHARACTER FROM*80,TEMP*2048,LINE*2048,TYPE*81
+	CHARACTER COMBUF(5)*2048,FILE*81,DTE*24
 	DATA COMBUF/5*' '/,FILE/'echo.file'/
-#else
-        INCLUDE 'pplinc:PLT.INC'
-        INCLUDE 'PPLINC:SYSTEM.INC'
-        INCLUDE 'PPLINC:SWITCH.INC'
-C
-        CHARACTER FROM*80,TEMP*255,LINE*255,TYPE*81
-        INTEGER*4 STATUS,IFLAG,LIB$GET_SYMBOL,LEN
-        CHARACTER COMBUF(5)*255,FILE*81,DTE*10,TME*8
-        DATA COMBUF/5*' '/,FILE/'ECHO'/
-#endif
+
 C
 C	TURN ON LOGGING AND DO PPLUS LOGGING
 C
 	LOGITF=.TRUE.
-#ifndef unix
 	CALL LOGGER('PPLUS')
-#endif
 C
 C	INITIALIZE PLOT5+ AND SET LOGICAL UNITS
 C
@@ -153,7 +142,7 @@ C
 	    istp=1
 	    do 1 i=1,ic
 		call getarg(i,temp)
-		len=lnblk(temp,255)
+		len=lnblk(temp,2048)
 		if(istp.eq.1)then
 		    line=temp(:len)
 		    istp=len+1

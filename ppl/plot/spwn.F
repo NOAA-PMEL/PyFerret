@@ -44,6 +44,8 @@ C**
 C***********************************************************************
 C**
 C**
+C** v552 *acm* 3/03 Longer strings: changes for multi-line labels
+
 #ifdef unix
 	INCLUDE 'CMRDL.INC'
 	INCLUDE 'LUNITS.INC'
@@ -80,7 +82,7 @@ C
             STATUS=LIB$SPAWN()
         ELSE IF(ICOM.EQ.'DIR')THEN
             IF(QUIETF)RETURN
-            ILEN=LNBLK(LABEL,255)
+            ILEN=LNBLK(LABEL,2048)
             CALL WLDFLE('*.*;*',LABEL(:ILEN),WILDFILE,STATUS,IFLAG)
             WRITE(LTTOUT,999)WILDFILE
 999         FORMAT(/' SEARCH : ',A67/)

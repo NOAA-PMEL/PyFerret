@@ -49,7 +49,7 @@ C**		CALL PUTSYM(STR,LABEL,NC,IER)
 C**
 C**	Parameters:
 C**		STR -- Symbol name (char*30)
-C**		LABEL -- Value of symbol (char*255)
+C**		LABEL -- Value of symbol (char*2048)
 C**		NC -- length of LABEL
 C**		IER -- error code
 C**			0 = sucess
@@ -66,14 +66,11 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
-#ifdef unix
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SYMKEY.INC'
-#else
-	INCLUDE 'cmdinc:SYSTEM.INC'
-	INCLUDE 'cmdinc:SYMKEY.INC'
-#endif
+
 	LOGICAL SYS
 	INTEGER LUN
 	CHARACTER STR*(*),LABEL*(*)

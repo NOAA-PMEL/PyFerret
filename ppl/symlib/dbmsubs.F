@@ -39,6 +39,7 @@ C**
 c**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
 	character file*(*)
 	integer flen,lun
@@ -54,12 +55,12 @@ c
 	character sym*(*),value*(*)
 	integer lun,ilen,len,ier
 c
-c	have two regions of storage long (255 characters)
+c	have two regions of storage long (2048 characters)
 c	and short (132 characters),  this should minimize
 c	space requirements on a fortran system
 c
 	character syml(VLONG)*30,syms(VSHORT)*30
-	character vall(VLONG)*255,vals(VSHORT)*132
+	character vall(VLONG)*2048,vals(VSHORT)*132
 	integer lunl(VLONG),luns(VSHORT)
 	integer lenl(VLONG),lens(VSHORT)
 	logical long

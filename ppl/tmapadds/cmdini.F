@@ -27,22 +27,18 @@ C**		30-MAY-1986	by Donald W. Denbo
 C**		  Changes made for VAX/VMS version
 C**
 C**
-#ifdef unix
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SYMKEY.INC'
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'LUNITS.INC'
-#else
-	INCLUDE 'TMAP_PPLV11INC:SYSTEM.INC'
-	INCLUDE 'TMAP_PPLV11INC:SYMKEY.INC'
-	INCLUDE 'TMAP_PPLV11INC:CMDCOM.INC'
-	include 'TMAP_PPLV11INC:lunits.inc'
-#endif
-	CHARACTER FROM*80,TO*80,TEMP*255,LINE*255,CR*1,ESC*1
+
+	CHARACTER FROM*80,TO*80,TEMP*2048,LINE*2048,CR*1,ESC*1
 	INTEGER*4 STATUS,IFLAG
 
 * 1/03 *kob* - g77 port requires that equivalence line comes before 
 *              variable declaration
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+
 	EQUIVALENCE (BUF(1),LINE),(CR,CRB),(ESC,ESCB)
 
 #ifdef STAR_1_SUPPORTED
@@ -174,7 +170,7 @@ C
 		IS=0
 	    ENDIF
 	    TEMP=FROM
-	    itlen=lnblk(temp,255)
+	    itlen=lnblk(temp,2048)
 	    CALL WLDFLE('SY:.PPC',TEMP(1:itlen),FROM,STATUS,IFLAG)
 	    TERMF=.FALSE.
 	ENDIF

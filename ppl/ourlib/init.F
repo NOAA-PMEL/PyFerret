@@ -35,7 +35,7 @@
 *
 *
 C**    @(#)init.F	1.1    3/10/88
-C**
+C** v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 C**
 C***********************************************************************
 C**
@@ -50,24 +50,24 @@ c
 c	d. denbo   january 85
 c
 #ifdef unix
-	character key(1)*5,nme(1)*81,line*255,yn*3
+	character key(1)*5,nme(1)*81,line*2048,yn*3
 	ic=iargc()
 	if(ic.gt.0)then
 	call getarg(1,line)
 	else
 	line=' '
 	endif
-	istp=255
+	istp=2048
 #else
-	character key(1)*5,nme(1)*81,line*255,cr*1,esc*1,yn*3
-	byte buf(255),crb,escb
+	character key(1)*5,nme(1)*81,line*2048,cr*1,esc*1,yn*3
+	byte buf(2048),crb,escb
 	equivalence (line,buf(1)),(cr,crb),(esc,escb)
 	integer*4 lib$get_foreign,istat
 	data crb/13/,escb/27/
 	istat=lib$get_foreign(line,,)
 	istp=index(line,cr)
 	if(istp.eq.0)istp=index(line,esc)
-	if(istp.eq.0)istp=255
+	if(istp.eq.0)istp=2048
 #endif
 	line(istp:istp)=' '
 	is=1

@@ -48,8 +48,8 @@ C**	Subprogram called:
 C**		call parsev(line,upline,ilen,result,ier,ipos)
 C**
 C**	Parameters:
-C**		line -- input line (char*255)
-C**		upline -- input line capitals (char*255)
+C**		line -- input line (char*2048)
+C**		upline -- input line capitals (char*2048)
 C**		ilen -- length of line
 C** 	result -- output (logical)
 C**		ier -- error code
@@ -69,8 +69,9 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
-	CHARACTER LINE*(*),UPLINE*(*),EXP1*255,EXP2*255
+	CHARACTER LINE*(*),UPLINE*(*),EXP1*2048,EXP2*2048
 	LOGICAL RESULT,NUM1,NUM2,NUM
 	IER=0
 C
@@ -190,7 +191,7 @@ C**	Subprogram called:
 C**		call expevl(string,slen,x,num,ier)
 C**
 C**	Parameters:
-C**		string -- input expression (char*255)
+C**		string -- input expression (char*2048)
 C**		slen  -- length of string
 C**		x -- numeric result
 C**		num -- logical for number (logical)
@@ -248,7 +249,7 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
-	CHARACTER STRING*(*),TEMP*255,FRMT*30
+	CHARACTER STRING*(*),TEMP*2048,FRMT*30
 	INTEGER SLEN
 	LOGICAL NUM
 

@@ -49,7 +49,7 @@ C**		CALL LSTSYM(STR,LABEL,NC,ILST,IER)
 C**
 C**	Parameters:
 C**		STR -- Symbol name (char*30)
-C**		LABEL -- Symbol value (char*255)
+C**		LABEL -- Symbol value (char*2048)
 C**		NC -- length of LABEL
 C**		ILST -- Initially run with ILST = 0
 C**			Output is a counter
@@ -69,12 +69,10 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
-#ifdef unix
 	INCLUDE 'SYMKEY.INC'
-#else
-	INCLUDE 'cmdinc:SYMKEY.INC'
-#endif
+
 	CHARACTER STR*(*),LABEL*(*)
 	IF(ILST.EQ.0)THEN
 	    call dbmfirstkey(keyln1,str,ilen,ier)

@@ -21,7 +21,7 @@ C**
         INCLUDE 'pplinc:CMRD.INC'
         INCLUDE 'pplinc:CONT.INC'
 #endif
-	CHARACTER PRSE*255
+	CHARACTER PRSE*2048
 
 *
 *
@@ -62,6 +62,7 @@ C**
 * 	*jd* 5.6.96 Add code to fix bug in specification of levels
 *	where level should be zero but round off error results in near but
 *	non zero value.
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
 	parameter	(epsilon = 1e-6)
 
@@ -73,7 +74,7 @@ C**
 	    IAUTOC=1
 	    GOTO 10
 	ENDIF
-	CALL UPPER(LABEL,255)
+	CALL UPPER(LABEL,2048)
 C
 C	BEGIN PARSE
 C

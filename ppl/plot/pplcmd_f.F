@@ -86,6 +86,8 @@ C**
 *                  (old name was X)  is passed in rather than in PPLDAT.INC
 *      *acm* 10/01  remove VMS includes
 * v541 *acm*  5/02 add option to control outline on the shade key boxes (S_KEY)
+* v552 *acm*  3/03 Add poly
+* v552 *acm*  3/03 Longer strings: changes for multi-line labels
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -173,7 +175,6 @@ c
 	include 'calendar.cmn'
         INCLUDE 'pplcmd_strings.cmn'
 
-
 * special COMMON to let this routine know if FERRET is in control
         include 'ppl_in_ferret.cmn'
                                      
@@ -209,18 +210,18 @@ CCCCCCC data	        tmapdebug/.false./
 	integer	  ipen_save(0:nlines), iend, cal_status
 	data	  ipen_save/1,nlines*1/
 
-	character strr*255
+	character strr*2048
 
-	CHARACTER DTE*10,TEMP*255,TEMP2*255,FILE*81,FROM*80,LINE*255
+	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
 	CHARACTER SYM*30,ICOM7*7
 	CHARACTER FROMI*10,LINEI*10
-	CHARACTER COMBUF(ICMDIM)*255
+	CHARACTER COMBUF(ICMDIM)*2048
 	CHARACTER YES*3,NO*2
 	LOGICAL LEOF
 	LOGICAL IFLG1,IFLG2,LABON,LABOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(113)*7
+	CHARACTER COMM(114)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -244,12 +245,12 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
-     *  'FLOWLINE', 'S_KEY'/
+     *  'FLOWLINE', 'S_KEY', 'POLYGON'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
 	CHARACTER*15  TMPCHR
-	character*255 set_name
+	character*2048 set_name
 
 * JD 11.29.95 Mod for century axis
 
@@ -343,6 +344,7 @@ C
      .	  .or.makep .eq. 'FILL'
      .	  .or.makep .eq. 'PLOTPOL'
      .	  .or.makep .eq. 'FILLPOL'
+     .	  .or.makep .eq. 'POLYGON'
      .	  .or. icom(1:1) .eq. '%') then
              IF ( PPL_in_FERRET ) CALL SEG_ON( )
              call pplgflush
@@ -356,7 +358,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,113
+	DO 20 I=1,114
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -388,7 +390,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165),I
+     *  9174,9175,9390,9165,9183),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -400,12 +402,12 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165),I
+     *  9174,9175,9390,9165,9183),I
         end if
         goto 10
 
 C     TMDEBUG
- 98   call upper (label,255)
+ 98   call upper (label,2048)
       if (label .eq. 'ON')  tmapdebug = .true.
       if (label .eq. 'OFF') tmapdebug = .false.
       goto 10
@@ -701,7 +703,7 @@ C     ENGLISH
 5100	CALL ENGLSH
 	GOTO 10
 C     LIMITS
-5200	CALL UPPER(LABEL,255)
+5200	CALL UPPER(LABEL,2048)
 	IF(INDEX(LABEL,'XLE').NE.0)THEN
 	    XLE=.NOT.LABOFF
 	    IF(IFLG1)CMXLE=P(1)
@@ -900,7 +902,7 @@ C	PLTNME
 *	    ENDIF
 *	    CALL PLTNME(TEMP)
 *	    SYM='*PPL$PLTNME'
-*	    ISYM=LNBLK(TEMP,255)
+*	    ISYM=LNBLK(TEMP,2048)
 *	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
 8000	    IF(N.EQ.0)THEN
 		meta_file='metafile.plt'
@@ -910,7 +912,7 @@ C	PLTNME
 		TEMP=LABEL
 	    ENDIF
 	    SYM='*PPL$PLTNME'
-	    ISYM=LNBLK(TEMP,255)
+	    ISYM=LNBLK(TEMP,2048)
 	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
 	    GOTO 10
 C	HLABS
@@ -987,7 +989,7 @@ C	DFLTFNT
 	    GOTO 10
 C	GRID
 8800	    IF(N.EQ.0)CAY=ABS(CAY)
-	    CALL UPPER(LABEL,255)
+	    CALL UPPER(LABEL,2048)
 	    IF(LABEL(1:1).EQ.'L')CAY=-ABS(CAY)
 	    GOTO 10
 C	TEKNME
@@ -1002,7 +1004,7 @@ C	TEKNME
 	    ENDIF
 	    CALL TEKNME(TEMP)
 	    SYM='*PPL$TEKNME'
-	    ISYM=LNBLK(TEMP,255)
+	    ISYM=LNBLK(TEMP,2048)
 	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
 	    GOTO 10
 C	ECHO
@@ -1041,7 +1043,7 @@ C
 	    IF(IC.NE.0)IS=IS+1
 9210	    IF(LABEL(IS:IS).EQ.' ')THEN
 		IS=IS+1
-		IF(IS.GT.255)GOTO 9203
+		IF(IS.GT.2048)GOTO 9203
 		GOTO 9210
 	    ELSE IF(LABEL(IS:IS).EQ.',')THEN
 		LABEL=LABEL(IS+1:)
@@ -1073,7 +1075,7 @@ C
 	    IF(IC.NE.0)IS=IS+1
 9220	    IF(LABEL(IS:IS).EQ.' ')THEN
 		IS=IS+1
-		IF(IS.GT.255)GOTO 9203
+		IF(IS.GT.2048)GOTO 9203
 		GOTO 9220
 	    ELSE
 		LABEL=LABEL(IS:)
@@ -1094,7 +1096,7 @@ C
 9203	    TLO=1.-DIFF(IT1,ITSTRT)/DT
 	    GOTO 10
 C	TXTYPE
-9300	    CALL UPPER(LABEL,255)
+9300	    CALL UPPER(LABEL,2048)
 C
 C	IF NO FIRST PARAMETER SKIP PROCESSING
 C
@@ -1160,7 +1162,7 @@ C	AUTOLAB
 	    IF(LABON)IGTLAB=1
 	    GOTO 10
 C	EVAR
-9900	    CALL UPPER(LABEL,255)
+9900	    CALL UPPER(LABEL,2048)
 	    LSOFFS=SOFFS
 	    LSTIME=STIME
 	    LSNEXT=SNEXT
@@ -1509,6 +1511,15 @@ c       area
         if(iflg2)cangle=p(2)
         GOTO 6001
 
+ 9183	makep='POLYGON'
+        if(iflg1)then
+            ivcomp=p(1)
+        else
+            ivcomp=1
+        endif
+        if(iflg2)cangle=p(2)
+        GOTO 6001
+
  9174	call pattern_set
 	goto 10
 
@@ -1595,7 +1606,7 @@ c
 	    ENDIF
 	ELSE
 	    SYM='*PPL$INPUT_FILE'
-	    ISYM=LNBLK(LABEL,255)
+	    ISYM=LNBLK(LABEL,2048)
 	    CALL PUTSYM(SYM,LABEL,ISYM,IER)
 	    CLOSE(LUNN)
 #ifdef unix

@@ -34,6 +34,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *  v5.5  *acm* 11/2002 New symbols to save LABEL levels
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -52,7 +53,7 @@
 
       REAL zmax, zmin, dz
 
-      CHARACTER ppl_buff*255, TM_FMT*10, buff*10
+      CHARACTER ppl_buff*2048, TM_FMT*10, buff*10
       INTEGER TM_LENSTR1, i, ier, ilen, slen 
       LOGICAL TM_FPEQ, reglevs
 

@@ -14,7 +14,7 @@ C**	Subprogram called:
 C**		CALL SETSYM(LINE,ILEN,IER,IST)
 C**
 C**	Parameters:
-C**		LINE -- Line containing symbol and value (char*255)
+C**		LINE -- Line containing symbol and value (char*2048)
 C**		ILEN -- Length of LINE
 C**		IER  -- Error code
 C**			0 = success
@@ -30,8 +30,6 @@ C**	    Written:
 C**		22-DEC-85	by Donald W. Denbo
 C**	    Modified:
 C**
-C**
-
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -76,7 +74,10 @@ C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
-	CHARACTER LINE*(*),VALUE*255,SYM*30,OPR*1,ARG(4)*30
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+
+
+	CHARACTER LINE*(*),VALUE*2048,SYM*30,OPR*1,ARG(4)*30
 	CHARACTER FUNCT*30,FRMT*30
 	LOGICAL NUM,FUNC
 
@@ -293,7 +294,7 @@ C
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 
-	CHARACTER STR*(*),TEMP*255
+	CHARACTER STR*(*),TEMP*2048
 	LOGICAL BLANK
 	K=1
 	BLANK=.FALSE.

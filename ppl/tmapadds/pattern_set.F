@@ -36,10 +36,12 @@
 *       Sets the patterns for SHADE/FILL
 *       J Davison JISAO/PMEL/TMAP 10.23.98
 *
-*       *acm* 9/02 Check that the number of levels in a pattern file isn't larger
-*                  than pattern_num (see shade_vars.cmn), the number of pattern 
-*                  levels allowed to be specified in a pattern file.
-#ifdef unix
+*       *acm* 9/02 Check that the number of levels in a pattern file isn't
+*                  larger than pattern_num (see shade_vars.cmn), the number 
+*                  of pattern levels allowed to be specified in a
+*                  pattern file.
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
         include 	'CMRDL.INC'            
@@ -47,13 +49,6 @@
         include 	'GKSCM1.INC'            
         include 	'gkscm2.cmn'            
 	include		'CMRD.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE 	'tmap_pplv11inc:tmap_cmrdl.inc'            
-        INCLUDE 	'tmap_pplv11inc:tmap_gkscm1.inc'            
-        INCLUDE 	'tmap_pplv11inc:tmap_gkscm2.inc'            
-	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
-#endif
 
 #ifdef atc_gks
 #   ifdef unix
@@ -71,13 +66,13 @@
 
        	logical		there
         integer         beg,end,beg_eq                        
-        character*255   str                                
+        character*2048   str                                
 
 ******************************************************************************
 
 *	PROCESS LEVELS AS SPECIFIED
       	call upnsquish (label,str,end)
-        call squish (label,1,255)
+        call squish (label,1,2048)
         
 	if (m .eq. 1 .or. (m .eq. 0 .and. end .eq. 0)) then
 	   call pattern_levels (str,end)
@@ -128,7 +123,7 @@
         DATA            solid/21/
 
         integer         beg,end,andx
-        character*255   str   
+        character*2048   str   
         character*100   err_msg                             
 
         logical    recognized
@@ -275,7 +270,7 @@
 
 	logical		there, recognized
 	integer		beg,end,i,j,speclen,lnblk,status,ndx
-	character*255	str,sfile,instr,label,specdir,tm_inq_path
+	character*2048	str,sfile,instr,label,specdir,tm_inq_path
 
 	external 	lnblk
 
@@ -374,7 +369,7 @@
 #endif
 
 	integer		beg,end,i
-	character*255	str,sfile
+	character*2048	str,sfile
 
 *******************************************************************************
 

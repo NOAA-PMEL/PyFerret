@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)chin.F	1.1    3/10/88
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 C**
 C**
 C***********************************************************************
@@ -51,7 +52,7 @@ C**
 #endif
 #ifdef unix
 	integer IN(NCH)
-	character inc*255
+	character inc*2048
 C
 	IF(FILET(1:8).NE.'/dev/tty')RETURN
 	read(*,999)inc

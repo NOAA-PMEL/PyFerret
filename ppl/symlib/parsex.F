@@ -48,14 +48,14 @@ C**	Subprogram called:
 C**		CALL PARSEX(LINE,ILEN,X,IF,M,LABEL,N)
 C**
 C**	Parameters:
-C**		LINE -- Line to be parsed   (char*255)
+C**		LINE -- Line to be parsed   (char*2048)
 C**		ILEN -- Length of LINE
 C**		X -- Numerical array
 C**		INTIF -- Flag array
 C**			=0 X() not changed
 C**			=1 X() replaced
 C**		M -- Length of numerical and flag array
-C**		LABEL -- Character portion of LINE  (char*255)
+C**		LABEL -- Character portion of LINE  (char*2048)
 C**		N -- Length of LABEL
 C**
 C**	Description:
@@ -72,6 +72,7 @@ C**
 C*
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
 	CHARACTER LABEL*(*),LINE*(*),FRMT*30
 	DIMENSION X(*),INTIF(*)

@@ -46,9 +46,10 @@
 *	*jd* 6.94 add option to have comments in .spk files -- !-begun lines
 *       *jd* 10.98 Add control for rgb interpolation, atomic colors, or data
 *                 based levels in color bar
-*       *acm* 9/02 Check that the number of levels in a palette file isn't larger
-*                  than SPEC_SIZE (see shade_vars.cmn), the number of spectrum 
-*                  levels allowed to be specified in a palette file.
+*       *acm* 9/02 Check that the number of levels in a palette file isn't 
+*                  larger than SPEC_SIZE (see shade_vars.cmn), the number 
+*                  of spectrum levels allowed to be specified in a palette file.
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
@@ -74,12 +75,12 @@
 
        	logical		there
         integer         beg,end                            
-        character*255   str                                
+        character*2048   str                                
 
 ******************************************************************************
 
       	call upnsquish (label,str,end)
-        call squish (label,1,255)
+        call squish (label,1,2048)
 
 *	IF NO LABELS IN THE SHASET COMMAND THEN PROCESS LEVELS AS SPECIFIED
 	if (end .eq. 0) then
@@ -287,11 +288,8 @@
 
 	SUBROUTINE SHADE_DEFAULT
 
-#ifdef unix
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
+
 
 *******************************************************************************
 
@@ -314,7 +312,7 @@
         INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
 #endif
 
-        character*255   str
+        character*2048   str
 
 *******************************************************************************
 
@@ -343,23 +341,16 @@
 *	Mod *jd* 10.92 to allow memory reads
 *	Mod *jd* 3.1.93 to use tm_inq_path
 
-#ifdef unix
         include 	'tmap_errors.parm'    
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
         include         'shade_vars.cmn'
-#else
-
-        INCLUDE 	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE		'tmap_pplv11inc:tmap_cmrd.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 	logical		there
 	integer		beg,end,i,j,speclen,lnblk,status
         integer         test_end
-	character*255	str,sfile,instr,label,specdir,tm_inq_path
-        character*255   test_str
+	character*2048	str,sfile,instr,label,specdir,tm_inq_path
+        character*2048   test_str
 	external 	lnblk
 
         integer         mapping,percentage,value,level 
@@ -391,7 +382,7 @@
 ************** Modified to use tm_inq_path *jd* 3.1.93 ***************
 *#ifdef unix
 *        call getenv ('SPECTRA',specdir)
-*        speclen = lnblk (specdir,255)
+*        speclen = lnblk (specdir,2048)
 *	sfile = specdir(:speclen)//'/'//str(beg+9:end)//'.spk'
 *	inquire (file=sfile,exist=there)
 *	if (there) goto 5
@@ -495,14 +486,10 @@
 
 	SUBROUTINE SHADE_SAVE (str,beg,end)
 
-#ifdef unix
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
 	integer		beg,end,i
-	character*255	str,sfile
+	character*2048	str,sfile
 
 
 *******************************************************************************
@@ -588,19 +575,12 @@
 
 	SUBROUTINE SHADE_PROTECT_RESET (str)
 
-#ifdef unix
         include         'shade_vars.cmn'
 	include		'gkscm1_inc.decl'
 	include		'GKSCM1.INC'
         include         'gkscm2.cmn'
 
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
-
-	character*255	str
+	character*2048	str
 
 *******************************************************************************
 

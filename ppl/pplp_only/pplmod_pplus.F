@@ -50,23 +50,24 @@ C     Had problem with buffered output.  See also opnppl
 *
 *     Mod *jd* 8.3.92 to add interruptability
 * 	  *jd* 2.93 add date info to output header
+* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 
 #ifdef unix
 	INCLUDE 'PLT.INC'
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
 C
-	CHARACTER FROM*80,TEMP*255,LINE*255,TYPE*81
-	CHARACTER COMBUF(5)*255,FILE*81,DTE*24
+	CHARACTER FROM*80,TEMP*2048,LINE*2048,TYPE*81
+	CHARACTER COMBUF(5)*2048,FILE*81,DTE*24
 	DATA COMBUF/5*' '/,FILE/'echo.file'/
 #else
         INCLUDE 'pplv11inc:PLT.INC'
         INCLUDE 'PPLV11INC:SYSTEM.INC'
         INCLUDE 'PPLV11INC:SWITCH.INC'
 C
-        CHARACTER FROM*80,TEMP*255,LINE*255,TYPE*81
+        CHARACTER FROM*80,TEMP*2048,LINE*2048,TYPE*81
         INTEGER*4 STATUS,IFLAG,LIB$GET_SYMBOL,LEN
-        CHARACTER COMBUF(5)*255,FILE*81,DTE*10,TME*8
+        CHARACTER COMBUF(5)*2048,FILE*81,DTE*10,TME*8
         DATA COMBUF/5*' '/,FILE/'ECHO'/
 #endif
 
@@ -143,7 +144,7 @@ C
 	    istp=1
 	    do 1 i=1,ic
 		call getarg(i,temp)
-		len=lnblk(temp,255)
+		len=lnblk(temp,2048)
 		if(istp.eq.1)then
 		    line=temp(:len)
 		    istp=len+1

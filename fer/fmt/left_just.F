@@ -44,6 +44,8 @@
 * revision 0.0 - 7/13/87
 * revision 0.1 - 8/21/88 - returned length is measured to last non-blank
 * V510 *sh* 3/00 - skip leading tabs as well as blanks
+* 1/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
+*                         statements.  use and octal initialization instead
 
 
 * calling argument declarations:
@@ -55,7 +57,7 @@
 
 * internal parameter declarations
 	CHARACTER*1 tab
-	PARAMETER     ( tab = CHAR(9) )
+	PARAMETER     ( tab = O'011' )
 
 * how long are the strings ?
 	slen = LEN( source )

@@ -73,6 +73,8 @@ show_grid_xml.F\
 show_line.F\
 show_line_xml.F\
 show_line_coords.F\
+show_line_coords_dods.F\
+show_line_edges_dods.F\
 show_mem_vars.F\
 show_region.F\
 show_regrid_transforms.F\
@@ -86,4 +88,5 @@ translate_limit.F\
 turnoff_verify.F\
 user_sub.F\
 warn.F\
+write_dods_fmt.F \
 write_multi.F 

@@ -56,6 +56,8 @@
 *       11/4/92 - expanded user variable name length
 * V420: variable units may be modified by regrid transforms of the variable
 * V500: 12/98 *sh* - added cat_const_var ... of the form "{1,3,5}"
+* V500 *kob* 3/99- up VAR_CODE to 64 chars
+
 
 #ifdef unix
 	include	'tmap_dims.parm'
@@ -86,7 +88,8 @@
 	LOGICAL 	UNIT_CHG_AX
 	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
      .			uvar, item, start, end
-	CHARACTER	AX_TITLE*32, VAR_CODE*24, TM_FMT*10,
+* V500 *kob* 3/99- up VAR_CODE to 64 chars
+	CHARACTER	AX_TITLE*32, VAR_CODE*64, TM_FMT*10,
      .                  REPLACE_DEQ*180,   ! .GT. uvar_text_len
      .                  buff1*32, buff2*10
 

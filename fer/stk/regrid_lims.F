@@ -64,6 +64,7 @@
 *		   intermediate grid (err430_deallo_dyn_line)
 *		   Also corrected undetected bug: in intermediate grid for
 *		   XY averaging need to deallo the y_dim not the "axis"
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -87,11 +88,12 @@
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, status
 
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	ITSA_MODULO_REGRID, ITSA_MODULO_AXIS, last_axis, xy_ave
 	INTEGER	KNOWN_GRID, CAXIS_LEN,
      .		idim, axis, var_grid, src_grid, dst_grid, next_axis
-	CHARACTER*24 VAR_CODE
+	CHARACTER*64 VAR_CODE
 
 * insert source grid ( defining grid for this variable )
 	dst_grid = cx_grid( dst_cx )

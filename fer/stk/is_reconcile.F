@@ -42,7 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V420: 11/95
-
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 #ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -73,11 +73,12 @@
 *	isp+1	<--	level of last activity ( component just computed )
 *	 isp	<--	current stack level (for moduloing )
 
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	by_ss(4), given(4)
 	INTEGER i, mr, com_cx, res_cx,	com_isp, res_isp,
      .		com_lo, com_hi, res_lo(4), res_hi(4)
-	CHARACTER VAR_CODE*24, qual*1
+	CHARACTER VAR_CODE*64, qual*1
 
 * --- end of introductory code ---
 

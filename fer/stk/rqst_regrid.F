@@ -60,6 +60,7 @@
 *     10/6/97 *sh*  - added g=@xact regridding 
 * V500:  2/99 *sh* - modified behavior when region is unspecified -- request
 *		full  dest axis limits of source rather than unspecified limts
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 
 #ifdef unix
 	include 'tmap_dims.parm'
@@ -87,6 +88,7 @@
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, status
 
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * internal variable declarations:
 	LOGICAL	GEOG_LABEL, ITSA_MODULO_REGRID,
      .		last_axis, src_modulo, calendar
@@ -97,7 +99,7 @@
 	REAL*8	TWORLD, SECS_TO_TSTEP, TSTEP_TO_SECS,
      .		src_lo_ww, src_hi_ww, dst_lo_ww, dst_hi_ww,
      .          tmp_lo_ww, tmp_hi_ww
-	CHARACTER	VAR_CODE*24
+	CHARACTER	VAR_CODE*64
 
 * initialize
 	dst_grid = cx_grid( dst_cx )

@@ -55,6 +55,8 @@
 * V312: 5/94 - array "memory" as a calling argument
 * V320: 2/95 - increased number of readable vars from 10 to 20
 *	3/95 - fixed bug - reserve "buff" of size "column" instead of "nrepeat"
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars
+
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -93,7 +95,8 @@
      .			cx0, cx1, cx20(20), mr20(20), nread,
      .			mr1, ndim, las_dim, fst_dim, dims(4), col1, rec1,
      .			rec_to_read, nrepeat, columns, num_names, buffblk
-	CHARACTER	VAR_CODE*24
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars
+	CHARACTER	VAR_CODE*64
 
 * --- end of introductory code ---
 

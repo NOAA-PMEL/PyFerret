@@ -62,6 +62,8 @@
 *		   ignores the possibility of uvlim_irrelevant
 *  *KOB* 9/97    - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in 
 *                  order to use cx_calendar to determine style of taxis
+* V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
+
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -93,7 +95,8 @@
 	INTEGER	TM_LENSTR1, ISUBSCR_CX,
      .		ss, lo_ss, hi_ss, axis, grid, cat, var, slen
 	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
-	CHARACTER	VAR_TRANS*40, VAR_CODE*8, string*40
+* kob 3/99 up VAR_CODE from 8 to 64 chars
+	CHARACTER	VAR_TRANS*40, VAR_CODE*64, string*40
 
 * initialize
 	var  = cx_variable( cx )

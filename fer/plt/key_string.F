@@ -45,6 +45,7 @@
 * V200: 1/2/89
 * V230:  11/4/92 - expanded variable name length
 * V420:	 9/25/95 - comments appropriate to dynamic grids
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars and VAR_TITLE to 128
 
 #ifdef unix
 	include	'ferret.parm'
@@ -68,11 +69,12 @@
 	LOGICAL	flags(0:10)
 	INTEGER	cx, slen
 
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars
 * local variable declarations:
 	LOGICAL		save_by_ss
 	INTEGER		TM_LENSTR1, idim, maxlen, plen, categ, var, dset
-	CHARACTER 	ALG_TRANS_CODE*3, ARG_STRING*12, VAR_CODE*24,
-     .			VAR_TITLE*64, CX_DIM_STR*40, REGRID_COMMENTS*64,
+	CHARACTER 	ALG_TRANS_CODE*3, ARG_STRING*12, VAR_CODE*64,
+     .			VAR_TITLE*128, CX_DIM_STR*40, REGRID_COMMENTS*64,
      .			prefix*1, dim_name*1, name*48
 
 * local parameter declarations:

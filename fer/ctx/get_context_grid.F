@@ -119,6 +119,9 @@
 * $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
+* V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
+
+
 #ifdef unix
 	include 'errmsg.parm'
 	include 'ferret.parm'
@@ -162,7 +165,8 @@
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
      .		  base_grid, impl_grid, catlg_grid, slen
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
-	CHARACTER VAR_CODE*24
+* V500 *kob* 3/99- up VAR_CODE decl from 8 to 64 chars
+	CHARACTER VAR_CODE*64
 
 * initialize
 	cat  = cx_category( cx )

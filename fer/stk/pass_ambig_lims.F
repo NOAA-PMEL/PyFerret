@@ -86,6 +86,7 @@
 * V450:   1/97   - fix to never-observed bug: the check
 *		        "uvar_given(idim,var) .LE. uvlim_gvn_xact"
 *		   ignores the possibility of uvlim_irrelevant
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 
 
 
@@ -106,9 +107,10 @@
 * calling argument declarations
 	INTEGER	cx, mr, status
 
+* V500 *kob* 3/99- up VAR_CODE  to 64 chars 
 * local variable declarations
 	INTEGER		idim, uvar
-	CHARACTER	VAR_CODE*24
+	CHARACTER	VAR_CODE*64
 
 * initialize
 	uvar = mr_variable( mr )

@@ -55,6 +55,8 @@
 *                 need to put single  tick between double quotes  *kob*
 *               - also needed a definition for HEXDF variable used
 * V500:  1/99 *sh* - don't upcase double quoted strings, either
+*        3/99 *sh* - bug fix: pass the full error text to RPN, since
+*			at_start, at_end are relative to full text buffer
 
 #ifdef unix
 	include 'ferret_cmn/ferret.parm'	
@@ -101,7 +103,7 @@
      .		( ferr_line_too_long, status, text(txend-14:txend), *5000 )
 
 * convert to Reverse Polish (stack evaluation) order
-	CALL RPN( text(txstart:txend),
+	CALL RPN( text,
      .		  at_type, at_id, at_start, at_end,
      .            natom, natom_rpn, rpn_order,
      .            status, err_string)

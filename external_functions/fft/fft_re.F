@@ -40,6 +40,8 @@
 *
 * v5.50  *acm* 10/02 Simplify the error message for missing data when the 
 *                    input is a simple 1-D time series.
+* V5.53  *acm*  6/03 Correct the frequency axis:  why was there a factor of
+*                     1.001 in freqn = 1.001*yquist?
 *
 * This function returns the real part of the FFT transform. The result time
 * axis is a custom axis in period 1./time  The time axis must be regular.
@@ -183,21 +185,32 @@ c      CALL ef_version_test(ef_version)
 
       nd = abs(nfreq_hi_l - nfreq_lo_l) + 1
 
+
 C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
-      nfreq = nd/2	
+c      nfreq = nd/2	
+c      yquist = 1./(2.*boxsize(1))		! Nyquist frequency
+c
+c      freq1 = 1.* yquist/ float(nfreq)
+c!      freqn = 1.001*yquist  !  WHY THE 1.001???
+c      freqn = yquist
+c
+cC  Set label for the frequency axis CYC/units.
+c
+c      outunits = 'CYC/' // ax_units(T_AXIS)
+c
+c      CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
+c     .                         outunits, NO)
 
-      yquist = 1./(2.*boxsize(1))		! Nyquist frequency
 
-      freq1 = 1.* yquist/ float(nfreq)
-      freqn = 1.001*yquist
-
+C Use ef_set_freq_axis (if we could let freq1, freqn be double precision
+C in the ef_set_custom_axis call, that would be equivalent.)
+C
 C  Set label for the frequency axis CYC/units.
 
       outunits = 'CYC/' // ax_units(T_AXIS)
 
-      CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
-     .   outunits, NO)
+      CALL ef_set_freq_axis (id, T_AXIS, nd, boxsize(1), outunits, NO)
 
 *                                                                      ^
 *                                                                      |
@@ -448,4 +461,3 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
       RETURN 
       END
-      

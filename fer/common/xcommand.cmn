@@ -14,8 +14,9 @@
 * V510 5/99 *sh* - increased number of quals for all graphics commands,
 *		for SHOW FUNC
 * V530 1/01 *kob*- increased number of quals for repeat command
-* V540 10/01*acm*- increased number of qualifiers for CONTOUR  (/AXES=)
-* V540 10/01 *kob* - increase number of qualifiers for EXIT (LOOP/SCRIPT, etc)
+* V540: 10/01 *sh* - added alias COLUMNS for SET DATA/FORMAT=Delimited
+*       10/01*acm*- increased number of qualifiers for CONTOUR  (/AXES=)
+*       10/01 *kob* - increase number of qualifiers for EXIT (LOOP/SCRIPT, etc)
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -377,7 +378,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 17,
+     .	                num_predefined_alias    = 18,
      .			max_queries		= 50 )
 
 * declarations

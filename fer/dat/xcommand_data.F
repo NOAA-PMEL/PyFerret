@@ -133,6 +133,7 @@
 *       8/01 *kob* - add LOOP, PROMPT, SCRIPT, PROGRAM qualifiers 
 *                    to EXIT command
 * V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
+*	10/01 *sh* - added alias COLUMNS for SET DATA/FORMAT=Delimited
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1386,13 +1387,16 @@
      .		alias_name(17)	/ 'FLOWLINE' /,
      .		alias_len(17)	/ 17 /,
      .		alias(17)	/ 'VECTOR/FLOWLINE' /
+     .		alias_name(18)	/ 'COLUMNS' /,
+     .		alias_len(18)	/ 23 /,
+     .		alias(18)	/ 'SET DATA/FORM=delimited' /
 	
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 133*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150)/ 133*4 /,
+     .                   / 132*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150)/ 132*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 133*unspecified_name4 /
+     .                   / 132*unspecified_name4 /
 
 
 	DATA queries(1) / 'STATUS' /,

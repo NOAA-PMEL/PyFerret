@@ -57,8 +57,8 @@ C                with "*(*)" for the linux port
 *                 - fixed up LIST STATS format
 * V530: *acm* 1/01- list the allowable calendar names; do not point to 
 *		    "the loaded calendar".  calendar type goes with each grid.
+* V540: *sh* 9/01 - changed LIST YAXIS output to say "YROG+" instead of "XORG="
 
-#ifdef unix
         include 'parampl5_dat.decl'
         include 'PARAMPL5.DAT'
         include 'axis_inc.decl'
@@ -116,36 +116,6 @@ C                with "*(*)" for the linux port
 	include 'xtm_grid.cmn_text'
         include 'calendar.decl'
         include 'calendar.cmn'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_PARAMPL5.DAT'
-        INCLUDE 'tmap_pplv11inc:tmap_AXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LINES.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PEN.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LABELS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LABCOM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CONT.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_DASHZZ.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CONLAB.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PLT.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_HAB.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_DATA.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_CMRDL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_HD.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_TAXIS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_TICS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_TICS2.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_AXISL.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_XYLABP.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_MISS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_ZGRID.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LUNITS.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_VECTOR.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_SYSTEM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_shade_vars.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_aline.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
 
 *3/99 *kob* had to move initialization of var solid off decl. line - for linux
 
@@ -210,11 +180,11 @@ C     XAXIS
 9998  FORMAT(9X,A6,2X,A6,' NMTC=',I3,' LINT=',I3,' LABEL=',
      *I3,' NSIG=',I3,' NTIC=',I3)
       IF(IFRX.EQ.' ')THEN
-      WRITE(LLUN,9988) XORG
-9988  FORMAT(9X,'XORG=',1PE9.2,'  AUTO LABELLING')
+      WRITE(LLUN,9988) 'X', XORG
+9988  FORMAT(9X,A1,'ORG=',1PE9.2,'  AUTO LABELLING')
       ELSE
-      WRITE(LLUN,9987) XORG,IFRX
-9987  FORMAT(9X,'XORG=',1PE9.2,'  LABEL FORMAT=',2X,A20)
+      WRITE(LLUN,9987) 'X',XORG,IFRX
+9987  FORMAT(9X,A1,'ORG=',1PE9.2,'  LABEL FORMAT=',2X,A20)
       ENDIF
       GOTO 5000
 C     YAXIS
@@ -227,9 +197,9 @@ C     YAXIS
       WRITE(LLUN,9998)AUTO(IAUTOY+1),TYPE(ITYPEY),NMTCY,LINTY,
      *LABELY,NSIGY,NTICY
       IF(IFRY.EQ.' ')THEN
-      WRITE(LLUN,9988) YORG
+      WRITE(LLUN,9988) 'Y',YORG
       ELSE
-      WRITE(LLUN,9987) YORG,IFRY
+      WRITE(LLUN,9987) 'Y',YORG,IFRY
       ENDIF
       GOTO 5000
 C     LINES

@@ -53,7 +53,6 @@
 *		LET A=I[i=1:5:1] (dynamic axis) the expression A[I=10] should
 *		be an error
 *	      - allow explicit Z=100@ITP to pass through
-* $Id$ 
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V491: 4/98 - fix bug in check for itsa_uvar -- was bypassing ALL processing
@@ -64,6 +63,8 @@
 * V552 *acm* 4/03- up VAR_CODE and err_str to 128 chars 
 * V553 *acm* 8/03 - write an error message if time origin or time limits 
 *                   were mis-defined.
+* V554 *acm* 11/03 -Fix bug in the change just above: if times requested
+*                   are outside the data bounds, give error message.
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -173,17 +174,17 @@
               dflt_cal_id = TM_GET_CALENDAR_ID ('GREGORIAN')
               CALL reset_secs_from_bc (-cx_lo_ww(idim,cx), new_lo_ww, 
      .			dflt_cal_id, cal_id, istat)
-	      IF (istat .ne. ferr_ok) GO TO 5010
+	      IF (istat .ne. ferr_ok) GO TO 5000
               CALL reset_secs_from_bc (-cx_hi_ww(idim,cx), new_hi_ww,  
      .			dflt_cal_id, cal_id, istat)
-	      IF (istat.ne. ferr_ok) GO TO 5010
+	      IF (istat.ne. ferr_ok) GO TO 5000
 
 	      cx_lo_ww(idim,cx) = (new_lo_ww-bc_to_t0)/line_tunit(axis)
 	      cx_hi_ww(idim,cx) = (new_hi_ww-bc_to_t0)/line_tunit(axis)
 	      cx_calendar(cx) = .FALSE. 
-
+             
               status = ferr_ok
-
+              status = err_ww_lims
 	   ENDIF
 * ... confine values to the limits of the defining grid
  4000	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )
@@ -243,7 +244,8 @@
      .			'Unknown '//ww_dim_name(idim)//' axis in grid '//
      .			grid_name(grid), *5000 )
 	ELSE
-	   STOP 'CONFINE_AXIS'
+!	   STOP 'CONFINE_AXIS'
+           GO TO 5000
 	ENDIF
 
  5900	buff = CX_DIM_STR(idim, cx, ':',full_precision,slen)

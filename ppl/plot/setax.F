@@ -45,6 +45,7 @@
 *                     scale settings are made, set XAXIS_MIN, XAXIS_MAX
 *                     or YAXIS_MIN, YAXIS_MAX
 *               Also remove VMS include statements.
+* v5.41 *acm*   6/20/02 remove unneeded calls to GETSYM.
 
 
         real            x,diff,rxax,rxmon,rxchr,thi,xti,xtl,xf,xl,xh  
@@ -166,9 +167,7 @@ C	CONTOUR PLOT
 		XF=XLEN/(XHI-XLO)
 		XL=(xtm-XLO)*XF
 		XH=XLEN+(xtx-XHI)*XF
-		NMX=NMTCX
-                   CALL GETSYM('XAXIS_MAX',xaxmaxval,NC,IER)
-
+		NMX=NMTCX              
 	    ELSE
 		IF(IAUTOX.EQ.0)GOTO 100
 		IF(VECTR)THEN
@@ -238,8 +237,6 @@ C CONTOUR DATA
 			YHI=YF
 			YTIC=-YTIC
 		    ENDIF
-
-                   CALL GETSYM('YAXIS_MAX',yaxval,NC,IER)
 		ENDIF
 		YF=YLEN/(YHI-YLO)
 		YL=(ytm-YLO)*YF

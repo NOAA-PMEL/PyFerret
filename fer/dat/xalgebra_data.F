@@ -74,7 +74,7 @@
 * V491    4/98 - *kob* modified documentation order for function days1900
 *                      to correct year-month-day
 * V500   10/98 - *jc* added @RDC
-
+*         1/00 - *acm* Change alg_fcn_descr to "since 1900" (was 1990)
 
 #ifdef unix
 	include	'ferret.parm'
@@ -305,7 +305,7 @@
      .	     alg_arg_descr    ( 31 ) / 'reference pressure' /,
      .       alg_fcn		( 22 ) / 'DAYS1900'  /,
      .	     alg_num_fcn_args	( 22 ) / 3 	    /
-     .	     alg_fcn_descr	( 22 ) / 'days elapsed since 1-Jan-1990'/,
+     .	     alg_fcn_descr	( 22 ) / 'days elapsed since 1-Jan-1900'/,
      .	     alg_fcn_arg_ptr    ( 22 ) / 32	    /,
      .	     alg_arg_name     ( 32 ) / 'year'	    /,
      .	     alg_arg_units    ( 32 ) / ' '	    /,

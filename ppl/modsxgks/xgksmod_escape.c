@@ -34,9 +34,12 @@
  * Author: Yu Pan
  */
 
+/* 10/97 *kob* - had to move the include of stdlib ahead of string.h - linux
+		 gcc compiler crapped out otherwise  */
+
 #include "udposix.h"
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include "gks_implem.h"
 #include "cgm/cgm.h"		/* for public, API details */
 #include "cgm/cgm_implem.h"		/* for implementation details */

@@ -72,6 +72,9 @@ SET MODE VERIFY
 !
 ! V5.41:
 ! 3/02 *acm*-- Add bn540_bug_fixes.jnl
+!
+! V5.50:
+! 11/02 *sh*-- Add bn_subspan_modulo.jnl
 
 GO bn_reset
 GO bn_syntax
@@ -302,6 +305,11 @@ GO bn_cancel_axes
 
 GO bn_reset
 GO bn542_bug_fixes
+
+! ******** V5.50 Additions below ***********
+
+GO bn_reset
+GO bn_subspan_modulo
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

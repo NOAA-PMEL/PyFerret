@@ -52,8 +52,12 @@ forLIB   = /usr/lib/libfor.a
 FutilLIB = /usr/lib/libFutil.a
 MotifLIB = /usr/lib/libXm.a
 XtLIB    = /usr/lib/libXt.a
+SMLIB	 = /usr/lib/libSM.a
+ICELIB   = /usr/lib/libICE.a
+dnetLIB  = /usr/lib/libdnet_stub.a
+ostLIB 	 = /usr/lib/libost.a
 
-SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) -lots -lX11 -llist -ldnet_stub -lSM -lICE 
+SYSLIB		= $(MotifLIB) $(XtLIB) -lm $(UforLIB) $(forLIB) $(FutilLIB) $(otsLIB) -lX11 -llist $(dnetLIB) $(SMLIB) $(ICELIB)
 
 TMLIB		= ../lib/tmap_lib.a
 

@@ -3,6 +3,18 @@
 ! 2/05 *acm*
 !
 
-! short axis with irreg bounds seen as regular.
+! Bug 1160 short axis with irreg bounds seen as regular.
 GO bn_reset
 GO err580_irreg_bounds.jnl
+
+! Bug 1179 Cartesian_axis and positive="down" resulted in depth axis not being recognized
+GO bn_reset
+GO err580_cartesian_depth.jnl
+
+! Bug 1181 Titles were truncated at 80 characters
+GO bn_reset
+GO err580_long_title.jnl
+
+! Bug 1180 Allow "use filename.des" 
+GO bn_reset
+GO err580_use_des.jnl

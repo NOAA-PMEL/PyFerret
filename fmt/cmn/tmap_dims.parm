@@ -13,7 +13,8 @@
 * 10/95 *sh* : added dynamic line creation in a similar style
 * 11/95 *sh* : increased max_grids from 200 to 500
 * 7/97 *sh*  : increased maxvars, max_lines, and maxlinestore
-
+* 7/99 *kob* : double maxlinestore - this was done before for Ned C. but 
+*              somehow didn't get into the official cvs area
 * for TMAP formatted files:
 	INTEGER	nrec_codes,ngrid_prenamed,nvari_prenamed,maxdsets,
      .		maxstepfiles,maxvars,maxaux,max_grids,max_lines,
@@ -45,7 +46,8 @@
 !	PARAMETER (maxlinestore = 10000)! max # of coords *parmchg: pre 7/92
 !	PARAMETER (maxlinestore = 20000)! max # of coords *parmchg: pre 10/95
 !	PARAMETER (maxlinestore = 50000)! max # of coords *parmchg: pre 7/97
-	PARAMETER (maxlinestore = 100000)! max # of coords
+!	PARAMETER (maxlinestore = 100000)! max # of coords *parmchg: pre 7/99
+	PARAMETER (maxlinestore = 200000)! max # of coords
 	PARAMETER (maxgridfiles = 10)	! maximum number of grids
 	PARAMETER (max_axis_orients = 9)! maximum number of axis orients
 	PARAMETER (num_aux = 6)		! number of aux_modnum's in descriptor

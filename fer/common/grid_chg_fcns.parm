@@ -16,6 +16,7 @@
 * V533: 6/01 added parg_type_string_or_float
 *            and pfcn_return_string, pfcn_return_float
 *	     and p_spawn
+* V540: 10/01 -- more generalizable parg_type definitions
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
      .			p_yunravel, p_zunravel, p_tunravel,
@@ -43,10 +44,21 @@
 * parameters to designate the data type of arguments
 	INTEGER		parg_type_float,
      .			parg_type_string,
-     .			parg_type_multi
+     .			parg_type_double,
+     .			parg_type_byte,
+     .			parg_type_int16,
+     .			parg_type_int32,
+     .
+     .			parg_type_float_or_string
 	PARAMETER     ( parg_type_float  = 1,
      .			parg_type_string = 2,
-     .			parg_type_multi = -1 )
+     .			parg_type_double = 4,
+     .			parg_type_byte   = 8,
+     .			parg_type_int16  = 16,
+     .			parg_type_int32  = 32,
+     .
+     .			parg_type_float_or_string = IOR(parg_type_float,
+     .				                        parg_type_string) )
 
 * parameters to designate the data type of return value of function
 	INTEGER		pfcn_rtn_string,

@@ -45,6 +45,7 @@
 *		Strings may be passed only to external functions
 * V530:  8/00 *sh* - check on string data type -- not category
 * V533:  6/01 *sh* - support for args that may be string or float
+* V540: *sh* 10/01 - use improved data typing general parameter parg_type_* defs
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -125,7 +126,7 @@
 	   IF (cx_type(com_cx) .EQ. ptype_string) typ(icom)=pptr_words
 	   IF ( (cx_type(com_cx) .EQ. ptype_string)
      .	  .NEQV.(itype .EQ. parg_type_string)		) THEN
-	      IF (itype .NE. parg_type_multi)	GOTO 5200
+	      IF (itype .NE. parg_type_float_or_string)	GOTO 5200
 	   ENDIF
  100	CONTINUE
 

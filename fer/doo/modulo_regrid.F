@@ -56,6 +56,8 @@
 * kob*   9/97 - replaced call to ISUBSCRIPT w/ call to ISUBSCR_CX in order
 *               to have access to context information - needed for negative
 *               time step processing
+* *acm*  4/01 - add checks on source points when computing sum of squared deviations
+*               for MODVAR
 #ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'		! for line_dim
@@ -386,8 +388,10 @@
 * sum of squared deviations
 	         IF ( ngd(dstss,j,k,l) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-	            tmp = src(srcss,j,k,l)- ave(dstss, j, k, l)
-	            dst(dstss,j,k,l) = dst(dstss,j,k,l) + tmp*tmp
+		    IF (src(srcss,j,k,l) .NE. bad_src) THEN
+	               tmp = src(srcss,j,k,l)- ave(dstss, j, k, l)
+	               dst(dstss,j,k,l) = dst(dstss,j,k,l) + tmp*tmp
+                    ENDIF
 	         ENDIF
 
  1110	         CONTINUE
@@ -419,8 +423,10 @@
 * sum of squared deviations
 	         IF ( ngd(i,dstss,k,l) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-	            tmp = src(i,srcss,k,l)- ave(i, dstss, k, l)
-	            dst(i,dstss,k,l) = dst(i,dstss,k,l) + tmp*tmp
+		    IF (src(i,srcss,k,l) .NE. bad_src) THEN
+		        tmp = src(i,srcss,k,l)- ave(i, dstss, k, l)
+		        dst(i,dstss,k,l) = dst(i,dstss,k,l) + tmp*tmp
+		    ENDIF
 	         ENDIF
 
  1210	         CONTINUE
@@ -452,8 +458,10 @@
 * sum of squared deviations
 	         IF ( ngd(i,j,dstss,l) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-	            tmp = src(i,j,srcss,l)- ave(i, j, dstss, l)
-	            dst(i,j,dstss,l) = dst(i,j,dstss,l) + tmp*tmp
+		    IF (src(i,j,srcss,l) .NE. bad_src) THEN
+		       tmp = src(i,j,srcss,l)- ave(i, j, dstss, l)
+		       dst(i,j,dstss,l) = dst(i,j,dstss,l) + tmp*tmp
+		    ENDIF
 	         ENDIF
 
  1310	         CONTINUE
@@ -486,8 +494,10 @@
 * sum of squared deviations
 	         IF ( ngd(i,j,k,dstss) .GT. 1.0 ) THEN
 * ... must be at least 2 source points to get a variance
-	            tmp = src(i,j,k,srcss)- ave(i, j, k, dstss)
-	            dst(i,j,k,dstss) = dst(i,j,k,dstss) + tmp*tmp
+		    IF (src(i,j,k,srcss) .NE. bad_src) THEN
+		       tmp = src(i,j,k,srcss)- ave(i, j, k, dstss)
+		       dst(i,j,k,dstss) = dst(i,j,k,dstss) + tmp*tmp
+		    ENDIF
 	         ENDIF
 
  1410	         CONTINUE

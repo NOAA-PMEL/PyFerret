@@ -108,6 +108,8 @@
 *       - add check on cx_calendar rather than cx_lo/hi_ww to indicate whether time
 *         is date or timesteps
 * V491+ - 7/98 *sh* - allow case-sensitive var name in DEFINE GRID/LIKE=varname
+* V500 - 4/99 *sh* use DELETE_USER_VAR to delete old definition when uvar
+*	name is redefined ... else child vars to not get removed
 
 #ifdef unix
 	include	'tmap_errors.parm'
@@ -532,7 +534,8 @@
 	   IF ( vax_code .EQ. vms_str_success ) THEN
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
-	         uvar_num_items(i1) = uvar_deleted
+	         CALL DELETE_USER_VAR(i1)
+!  pre-4/99	         uvar_num_items(i1) = uvar_deleted
 	         IF ( qual_given(slash_let_quiet) .EQ. 0 ) THEN
 	            err_string = FULL_UVAR_NAME(i1,i2)	! buffer
 	            CALL SPLIT_LIST(pttmode_ops, ttout_lun,

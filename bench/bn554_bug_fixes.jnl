@@ -1,0 +1,14 @@
+! bn554_bug_fixes.jnl
+! test various fixes that went into version 5.54
+! 11/03 *acm*
+!
+
+! Test use of longer strings in region names
+GO bn_reset
+GO err553_regionname_lengths.jnl
+
+
+! Reqests for data at times outside range of data
+GO bn_reset
+GO err553_timeregion.jnl
+

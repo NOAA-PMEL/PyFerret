@@ -1,0 +1,12 @@
+! try to apply a region whose limits are both below, 
+! or both above, the data bounds. In v5.53 the error 
+! handling for this got broken for time axes (an error 
+! in the fix for err551_no_taxis_errmsg)
+
+SET MODE IGNORE_ERRORS
+
+	use gt4d011.cdf
+list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
+
+
+SET MODE/LAST IGNORE_ERRORS

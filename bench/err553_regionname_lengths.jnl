@@ -1,0 +1,14 @@
+! In v5.50, we upped the region name storage to 
+! allow 24-characters.  Wasnt fully implemented.
+
+SET MODE IGNORE_ERRORS
+
+def region/x=100e:150e/y=0:40 southeast_asia
+show region southeast_asia
+set region southeast_asia
+show region
+
+def region/x=150:210/y=-60:0 southwest_pacific
+show region/all
+
+SET MODE/LAST IGNORE_ERRORS

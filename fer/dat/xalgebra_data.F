@@ -73,6 +73,7 @@
 *	       - changed title for g=@ASN from "1 to 1" to "index assn"
 * V491    4/98 - *kob* modified documentation order for function days1900
 *                      to correct year-month-day
+* V500   10/98 - *jc* added @RDC
 
 
 #ifdef unix
@@ -576,6 +577,12 @@
      .		alg_trans_its_int ( 37)	/ .FALSE.		/,
      .		alg_trans_has_arg ( 37)	/ .FALSE.		/,
      .		alg_trans_dflt_arg( 37)	/ bad_val4		/
+c     .     alg_trans_text ( 38 )   / 'RDC'         /,   ! hidden
+c     .     alg_trans_title( 38 )   / 'reduced'     /,
+c     .     alg_trans_num  ( 38 )   / trans_reduced /,
+c     .     alg_trans_its_int ( 38) / .FALSE.       /,
+c     .     alg_trans_has_arg ( 38) / .FALSE.       /,
+c     .     alg_trans_dflt_arg( 38) / bad_val4      /
 
         DATA    (alg_trans_num(i),i = 38, num_transforms)
      .            /23*unspecified_int4 /

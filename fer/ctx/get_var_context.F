@@ -57,6 +57,7 @@
 * V200:  6/22/89 - eliminated GT_CONTEXT_PLANE
 *		 - added oversizing of contexts
 *		 - added test for irrelevant data set
+* V500: 10/20/98 *jc* - added ADD_RDC_XFORM
 	
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -88,6 +89,10 @@
 
 * get variable and attached modifications
 	CALL PARSE_VAR_NAME ( full_var_name, var_cx, mods_cx, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+* apply the hidden @RDC transform if appropriate
+	CALL ADD_RDC_XFORM( var_cx, status)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * insert bad data flag for variable

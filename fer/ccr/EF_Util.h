@@ -42,7 +42,9 @@ enum { EF_C=1, EF_F } EF_LANGUAGE_type;
 
 enum { X_AXIS=0, Y_AXIS, Z_AXIS, T_AXIS } EF_AXIS_type;
 
+/* The next two lines of parameters need to match numbers in ferret.parm */
 enum { CUSTOM=101, IMPLIED_BY_ARGS, NORMAL, ABSTRACT } EF_AXIS_SOURCE_type;
+enum { RETAINED=201, REDUCED } EF_AXIS_REDUCTION_type;
 
 enum { CANNOT_ALLOCATE, INSUFFICIENT_DATA } EF_ERROR_type;
 
@@ -71,6 +73,7 @@ typedef struct {
   int  num_work_arrays;
   int  work_array_len[EF_MAX_WORK_ARRAYS][4];
   int  axis_will_be[4];
+  int  axis_reduction[4];
   int  piecemeal_ok[4];
   Axis axis[4];
 

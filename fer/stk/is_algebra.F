@@ -325,7 +325,12 @@
 * ...in addition to the manipulations of IS_DO_OP above, this procedure
 * ...has the additional flexibility that the result grid need not be
 * ...inferrable from the input component grids
- 600	CALL IS_DO_GC_FCN( memory, itype, uvar_text(uvar)(start:end),
+
+* 10/98 *jc*
+* CALL ADD_RDC_XFORM is a test to see if we can get the right
+* context onto the context which will be used for the result
+ 600    CALL ADD_RDC_XFORM(is_big_cx(lo_isp), status)
+	CALL IS_DO_GC_FCN( memory, itype, uvar_text(uvar)(start:end),
      .		       lo_isp, status )
 	IF ( status .NE. ferr_ok ) RETURN
 	GOTO 100

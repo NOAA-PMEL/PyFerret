@@ -78,6 +78,7 @@
 * V430: 7/96  - incorporate 4D transformations
 * V450: 2/97  - Allow application of modulo to GC vars (but not other uvars)
 * V455    9/97 - added transforms @CDA,CDB,CIA,CIB
+* V500: 10/98 *jc* - added lines to ignore hidden @RDC
 
 #ifdef unix
 	include	'ferret_cmn/ferret.parm'
@@ -291,8 +292,10 @@
 * ... reverse loop order ensures that X transformations are done BEFORE
 * ... the Y transformations. This is necessary for accuracy wrt. COS factors.
 * ... By stripping X last it will be done first.
+* 10/98 *jc* - need to ignore trans_reduce (see info in ctx/add_rdc_xform.F)
 	DO 200 idim = 4, 1, -1
-	   IF ( cx_trans( idim, cx ) .NE. trans_no_transform ) THEN
+       IF ( cx_trans( idim, cx ) .NE. trans_no_transform
+     .          .AND. cx_trans( idim, cx ) .NE. trans_reduced ) THEN
 	      CALL IS_STRIP( isact_class_trans, idim, *10, status )
 	      GOTO 5000
 	   ENDIF

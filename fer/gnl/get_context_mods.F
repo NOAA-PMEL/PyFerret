@@ -717,7 +717,8 @@
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_int_def
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_good_pt
      .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_bad_pt
-     .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_var	) GOTO 5190
+     .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_4d_var
+     .  .OR.  cx_trans(idim,mods_cx) .EQ. trans_reduced ) GOTO 5190
 
 * flag this dimension as specified (8/92)
         first_time(idim) = .FALSE.

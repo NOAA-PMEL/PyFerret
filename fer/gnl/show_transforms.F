@@ -69,6 +69,7 @@
 	DO 110 i = 1, num_transforms
 	   IF ( alg_trans_num( i ) .EQ. unspecified_int4  ) GOTO 110
 	   IF ( alg_trans_num( i ) .EQ. trans_no_transform) GOTO 110
+       IF ( alg_trans_num( i ) .EQ. trans_reduced     ) GOTO 110
 * ... skip hidden transforms (e.g. 4D internal implementations)
 	   DO 109 i4d = 1, num_4d_trans
 	      IF (alg_trans_num( i ) .EQ. alg_4d_trans(i4d)) GOTO 110
@@ -80,6 +81,7 @@
 	DO 112 i2 = 1, num_transforms
 	   IF ( alg_trans_num( i2 ) .EQ. unspecified_int4  ) GOTO 112
 	   IF ( alg_trans_num( i2 ) .EQ. trans_no_transform) GOTO 112
+       IF ( alg_trans_num( i2 ) .EQ. trans_reduced     ) GOTO 112
 * ... skip hidden transforms (e.g. 4D internal implementations)
 	   DO 111 i4d = 1, num_4d_trans
 	      IF (alg_trans_num( i2 ) .EQ. alg_4d_trans(i4d)) GOTO 112
@@ -103,6 +105,7 @@
            DO 120 i1 = i1+1, num_transforms
               IF ( alg_trans_num( i1 ) .EQ. unspecified_int4  ) GOTO 120
 	      IF ( alg_trans_num( i1 ) .EQ. trans_no_transform) GOTO 120
+          IF ( alg_trans_num( i1 ) .EQ. trans_reduced     ) GOTO 120
 * ... skip hidden transforms (e.g. 4D internal implementations)
 	      DO 119 i4d = 1, num_4d_trans
 	         IF (alg_trans_num( i1 ) .EQ. alg_4d_trans(i4d)) GOTO 120
@@ -113,6 +116,7 @@
  121	   DO 130 i2 = i2+1, num_transforms
               IF ( alg_trans_num( i2 ) .EQ. unspecified_int4  ) GOTO 130
 	      IF ( alg_trans_num( i2 ) .EQ. trans_no_transform) GOTO 130
+          IF ( alg_trans_num( i2 ) .EQ. trans_reduced     ) GOTO 130
 * ... skip hidden transforms (e.g. 4D internal implementations)
 	      DO 129 i4d = 1, num_4d_trans
 	         IF (alg_trans_num( i2 ) .EQ. alg_4d_trans(i4d)) GOTO 130 !9/97

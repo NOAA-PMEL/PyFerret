@@ -111,7 +111,6 @@
 *                                                                     |
 *                                                                     V
 
-      COMMON / sortklim / my_lo_l, my_hi_l
       INTEGER my_lo_l, my_hi_l
 
       INTEGER arg
@@ -170,10 +169,10 @@
 
 
 * sort_dat
-      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mxdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mzdat, 1, 1, 1)
 
 * sort_indx
-      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mxdat, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mzdat, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -191,10 +190,6 @@
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
-
-      COMMON / sortklim / my_lo_l, my_hi_l
-      INTEGER my_lo_l, my_hi_l
-
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
@@ -217,8 +212,8 @@
 *                                                                     V
       INTEGER id
       INTEGER m, nsrt
-      INTEGER nbad, m_indx
-      INTEGER i, j, l
+      INTEGER nbad
+      INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
 
 *  Dimenstion work arrays
@@ -246,7 +241,7 @@
                nbad = 0
 
                k1 = arg_lo_ss(Z_AXIS,ARG1)
-               DO 100 m = my_lo_l, my_hi_l
+               DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
                   IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(1)) THEN
                      nbad = nbad + 1
@@ -267,15 +262,17 @@
 *
                IF (nsrt .GT. 1) CALL shell (sort_dat, sort_indx, nsrt)
 *
-* Put bad flags in the array first, then sorted data.
-*
+* Put sorted data in the array first, then bad flags
+* 
+               k = res_lo_ss(Z_AXIS)
                DO 200 m = 1, nsrt
-                  result(i,j,m,l) = sort_indx(m,1,1,1)
+                  result(i,j,k,l) = sort_indx(m,1,1,1)
+                  k = k + 1
  200           CONTINUE
 
                DO 300 m = 1, nbad
-                  m_indx = m + nsrt
-                  result(i,j,m_indx,l) = bad_flag_result
+                  result(i,j,k,l) = bad_flag_result
+                  k = k + 1
  300           CONTINUE
 
                l1 = l1 + arg_incr(T_AXIS, ARG1)

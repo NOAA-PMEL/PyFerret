@@ -1,0 +1,9 @@
+! From Ned Cokelet
+! First definition of axis had last grid cell completely 
+! beyond requested end.
+
+DEF AXIS/X=211:215:3 x_ax
+LIST X[GX=x_ax], XBOXLO[GX=x_ax], XBOXHI[GX=x_ax]
+
+DEF AXIS/X=211:215:2.6 x_ax
+LIST X[GX=x_ax], XBOXLO[GX=x_ax], XBOXHI[GX=x_ax]

@@ -247,7 +247,7 @@
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
-     .		  STR_CASE_BLIND_COMPARE, CX_DIM_LEN, ALIAS_ID,
+     .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
      .		  TM_GET_GRIDNUM, TM_UNIT_ID,
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
@@ -260,7 +260,8 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, s2len
+     .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, s2len,
+     .            j, num_indices
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -573,10 +574,19 @@
 * do we need to delete a previous definition of this var ?
 * Note: need to purge old defs ALSO if the same name is now redefined in a 
 *	new data set -- expressions using this name chg interpretation  
-	DO 410 i1 = 1, max_uvar
-	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
-	   vax_code = STR_CASE_BLIND_COMPARE( uvar_name_code(i1), buff1 )
-	   IF ( vax_code .EQ. vms_str_success ) THEN
+*	DO 410 i1 = 1, max_uvar
+*	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
+*	   vax_code = STR_CASE_BLIND_COMPARE( uvar_name_code(i1), buff1 )
+*	   IF ( vax_code .EQ. vms_str_success ) THEN
+        CALL string_array_find_caseblind(uvar_name_code_head,
+     .                                   buff1,
+     .                                   LEN(buff1),
+     .                                   string_array_result(1),
+     .                                   max_uvar,
+     .                                   num_indices)        
+        DO 410 j = 1, num_indices
+              i1 = string_array_result(j)
+              IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
 !	         IF ( qual_given(slash_let_quiet) .EQ. 0 ) THEN
@@ -589,7 +599,7 @@
 	      ENDIF
 * ... reuse of name  makes all past assumptions incorrect
 	      CALL PURGE_ALL_UVARS	! not done above for pdset_irrelevant
-	   ENDIF
+*	   ENDIF
  410	CONTINUE
 
 * now file the expression in the user-defined variable area
@@ -604,7 +614,9 @@
  430	IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
 
 * no - not allowed to fill the last slot !
-	uvar_num_items(uvar) = uvar_deleted
+*	uvar_num_items(uvar) = uvar_deleted
+        CALL deleted_list_modify(uvar_num_items_head, uvar,
+     .                       uvar_deleted )
 	CALL ERRMSG( ferr_prog_limit, status,
      .		'too many user-defined variables'//pCR//
      .		'cancel or redefine some variables', *5000 )

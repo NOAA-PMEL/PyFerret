@@ -53,10 +53,11 @@
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
 * V5 *kob* 3/99 - add gregorian_ye[ar], year360, year366 units and also added
-*              year356 as an alternate unit to the common year.
+*              year365 as an alternate unit to the common year.
 *    *sh* 7/99 - add alias "dbar" and change "month" definition to 1/12
 *		 of 365.2425 day year 
-
+*    *kob* 11/99 - add alternate unit "year" which is equal to a 
+*                  gregorian_year
 * local variable declarations
 !	INTEGER	i
 
@@ -168,8 +169,8 @@
      .		un_alt_name (13) / 'mbar'	/,
      .		un_alt_subsc(13) / pun_millibars /,
      .
-     .		un_alt_name (14) / char_init12	/,
-     .		un_alt_subsc(14) / 0 /,
+     .		un_alt_name (14) / 'year'	/,
+     .		un_alt_subsc(14) / -10 /,
      .
      .		un_alt_name (15) / char_init12 /,
      .		un_alt_subsc(15) / 0 /,

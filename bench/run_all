@@ -163,7 +163,7 @@ foreach file ($temp_files)
 end
 
 # 10/97 *kob* mv last created bnplot files to the last_plot directory
-mv *.plt* last_plot
+mv bn*.plt* last_plot
 mv bn*.gif* last_plot
 mv bn*.ps* last_plot
 
@@ -225,6 +225,16 @@ endif
 #clean_bench_log $log_file
 #echo "Remember to remove metafiles, if any"
 
+#rename plt and gif files - necessary for saving them under cvs
+set count = 1
+while ($count < 8)
+    mv bnplot.plt.~$count~ bnplot-$count.plt
+    @ count++
+end
+
+mv bnplot.gif.~1~ bnplot-1.gif
+mv bnplot.gif.~2~ bnplot-2.gif
+
 
 # AIX systems don't put leading zeros on numbers like 0.5
 if ( $HOSTTYPE =~ *aix* ) then
@@ -234,3 +244,8 @@ if ( $HOSTTYPE =~ *aix* ) then
   mv $log_file temp.tmp
   sed -e 's/ \.\([0-9]\)/0.\1/g' -e 's/ -\.\([0-9]\)/-0.\1/g' temp.tmp > $log_file
 endif
+
+#let's check the plt and gif and ps files to make sure they look okay
+echo "Checking PLT, GIF and PS files......."
+./check_metafiles
+

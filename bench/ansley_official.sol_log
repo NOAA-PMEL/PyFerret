@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version  /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     63975528 Feb 22 11:15 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
-Using external functions from /home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
+-rwxrwxrwx   1 ansley   tmap     64012304 Mar  1 09:48 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  fixes to EF framework, and change to argument list for scat2gridgauss* functions, minor change to bn_xml_output.jnl script"
+Note: bug fixes for 1179, 1180, 1181
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -19,12 +19,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
-Beginning at Tue Feb 22 13:55:49 PST 2005
+FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
+Beginning at Tue Mar 1 13:53:17 PST 2005
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 02/22/05
- 	22-Feb-05 13:55     
+ 	Solaris 5.6 - 03/01/05
+ 	 1-Mar-05 13:53     
 
 yes? !bn500_all_shell
 yes? 
@@ -10120,8 +10120,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "22-Feb-05"
-SESSION_TIME = "13:55"
+SESSION_DATE = " 1-Mar-05"
+SESSION_TIME = "13:53"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10139,8 +10139,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "22-Feb-05"
-SESSION_TIME = "13:55"
+SESSION_DATE = " 1-Mar-05"
+SESSION_TIME = "13:53"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10148,8 +10148,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "22-Feb-05"
-SESSION_TIME = "13:55"
+SESSION_DATE = " 1-Mar-05"
+SESSION_TIME = "13:53"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10159,13 +10159,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "22-Feb-05"
-SESSION_TIME = "13:55"
+SESSION_DATE = " 1-Mar-05"
+SESSION_TIME = "13:53"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "22-Feb-05"
-SESSION_TIME = "13:55"
+SESSION_DATE = " 1-Mar-05"
+SESSION_TIME = "13:53"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10199,7 +10199,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.80"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Feb 22 2005 13:56:45 "
+LAB3 = "Mar  1 2005 13:55:22 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10298,8 +10298,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "22-Feb-05"
-SESSION_TIME = "13:55"
+SESSION_DATE = " 1-Mar-05"
+SESSION_TIME = "13:53"
  
  
 GO bn_reset
@@ -18320,7 +18320,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23056 Feb 22 13:57 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23049 Mar  1 13:57 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18339,7 +18339,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419468 Feb 22 13:57 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419388 Mar  1 13:58 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26504,7 +26504,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  T5 = 50757969 ;
@@ -26529,7 +26529,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26681,7 +26681,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Feb 22 13:58:25 PST 2005
+Tue Mar  1 13:59:33 PST 2005
  
 GO bn_reset
 cancel mode verify
@@ -34984,7 +34984,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Feb 22 13:59 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar  1 14:01 testa.v5d
  
 can region
 use coads_climatology
@@ -34996,7 +34996,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Feb 22 13:59 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Mar  1 14:01 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35064,7 +35064,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35127,7 +35127,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  GFP3 = "" ;
@@ -35347,7 +35347,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -42417,6 +42417,10 @@ GO bn_xml_output.jnl
 ! Illustrate the SHOW commands with /XML xml-style output
 ! V5.80 11/04 new tests for SHOW VAR/XML; global variables.
  
+! 22-Feb-2005 use SHO AXIS/XML `temp,return=taxis` instead
+! of naming the axes; other axes of the same name (e.g. TIME)
+! may have been defined in other benchmark scrips.
+ 
 USE gtsa056_2.cdf
  
 SHO DATA/XML
@@ -45118,7 +45122,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -45181,7 +45185,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45239,7 +45243,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45319,7 +45323,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -45542,7 +45546,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45611,7 +45615,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45688,7 +45692,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -48047,7 +48051,7 @@ GO bn581_bug_fixes.jnl
 ! 2/05 *acm*
 !
  
-! short axis with irreg bounds seen as regular.
+! Bug 1160 short axis with irreg bounds seen as regular.
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
@@ -48092,7 +48096,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   22-Feb-05" ;
+		:history = "FERRET V5.80    1-Mar-05" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -48123,12 +48127,86 @@ yes? show grid/t a
        1>  0.5                   1         0
        2>  2                     2         1
  
+! Bug 1179 Cartesian_axis and positive="down" resulted in depth axis not being recognized
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err580_cartesian_depth.jnl
+ ! err580_cartesian_depth.jnl
+! cartesian_axis attribute
+! combined with positive="down"
+! caused the axis not to be recognized as a depth axis
+! should be i- on the axis ZT
+ 
+use a_cartesian_bug1179.nc
+sh grid temp
+    GRID GHU1
+ name       axis              # pts   start                end
+ GRID_X_T  LONGITUDE            1mr   79E                  79E
+ GRID_Y_T  LATITUDE             1 r   0.25S                0.25S
+ ZT        DEPTH (m)           10 i-  22.5                 158
+ TIME7     TIME                 1mr   15-FEB-1900 03:00    15-FEB-1900 03:00
+ 
+! Bug 1181 Titles were truncated at 80 characters
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err580_long_title.jnl
+ 
+ ! err580_long_title.jnl
+ ! Titles were truncated at 80 characters
+ 
+save/clobber/title="a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789"/file=longtitle.nc x[x=1:10]
+ LISTing to file longtitle.nc
+sp ncdump longtitle.nc
+netcdf longtitle {
+dimensions:
+	XAX1_10 = 10 ;
+variables:
+	double XAX1_10(XAX1_10) ;
+		XAX1_10:point_spacing = "even" ;
+		XAX1_10:axis = "X" ;
+	float X_(XAX1_10) ;
+		X_:missing_value = -1.e+34f ;
+		X_:_FillValue = -1.e+34f ;
+		X_:long_name = "X" ;
+		X_:long_name_mod = "axis ABSTRACT" ;
+
+// global attributes:
+		:history = "FERRET V5.80    1-Mar-05" ;
+		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
+data:
+
+ XAX1_10 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
+
+ X_ = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
+}
+ 
+! Bug 1180 Allow "use filename.des"
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err580_use_des.jnl
+! err580_use_des.jnl
+! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
+ 
+use vary_scale.des
+sh data
+     currently SET data sets:
+    1> ./vary_scale.des  (default)
+ name     title                             I         J         K         L
+ TT       1 + 0*T[GT=DAYT]                 ...       ...       ...       1:20
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 02/22/05
- 	22-Feb-05 14:02     
+ 	Solaris 5.6 - 03/01/05
+ 	 1-Mar-05 14:10     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -48311,8 +48389,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 02/22/05
- 	22-Feb-05 14:02     
+ 	Solaris 5.6 - 03/01/05
+ 	 1-Mar-05 14:10     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -48425,4 +48503,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Tue Feb 22 14:03:00 PST 2005
+Ended at Tue Mar 1 14:10:46 PST 2005

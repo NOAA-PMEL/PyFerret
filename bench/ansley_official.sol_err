@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version  /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     63975528 Feb 22 11:15 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
-Using external functions from /home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
+-rwxrwxrwx   1 ansley   tmap     64012304 Mar  1 09:48 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  fixes to EF framework, and change to argument list for scat2gridgauss* functions, minor change to bn_xml_output.jnl script"
+Note: bug fixes for 1179, 1180, 1181
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -19,8 +19,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
-Beginning at Tue Feb 22 13:55:49 PST 2005
+FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
+Beginning at Tue Mar 1 13:53:17 PST 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -616,4 +616,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Feb 22 14:03:00 PST 2005
+Ended at Tue Mar 1 14:10:46 PST 2005

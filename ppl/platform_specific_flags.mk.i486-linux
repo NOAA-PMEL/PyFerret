@@ -46,17 +46,22 @@ CPP		= /lib/cpp
 CPP_FLAGS       = $(INCLUDES) -P -Dunix  \
 		  -DNO_OPEN_SHARED \
 		  -DNO_OPEN_RECORDTYPE -DNO_SNGL \
-		  -DX_REFRESH -Dreclen_in_bytes -DNO_DOUBLE_ESCAPE_SLASH \
-		  -DNO_OPEN_READONLY \
+		  -DX_REFRESH -Dreclen_in_bytes \
+		  -DNO_OPEN_READONLY -DMANDATORY_FORMAT_WIDTHS \
 		  -DNO_OPEN_CARRIAGECONTROL -Dxgks -DSTAR_1_SUPPORTED \
 		   -DFULL_GUI_VERSION -DX_REFRESH \
 		  -DXT_CODE -Dsun4 -DLINUX -DNO_PASSED_CONCAT \
-	          -DNEED_SIGNAL_UNDERSCORE -DG77
+		  -DNEED_SIGNAL_UNDERSCORE -DG77 -DNO_INTRINSIC_IN_PARAMETER
 
-CFLAGS          = $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486 -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
-FFLAGS          =  $(CPP_FLAGS) -c -fno-backslash -fdollar-ok  -fno-second-underscore -fugly-init -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 
-PPLUS_FFLAGS    =  $(CPP_FLAGS) -c -fno-backslash -fdollar-ok -fugly-init -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
+CFLAGS          =  $(CPP_FLAGS) -Dlint -D_SSIZE_T -DVOID_SIGHANDLER -D_POSIX_VERSION -DLINUX -DFULL_GUI_VERSION -m486  -DFULL_GUI_VERSION -DX_REFRESH -DXT_CODE -Dsun4 $(INCLUDES)
+FFLAGS          =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
+PPLUS_FFLAGS    =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
+
+
+
+
+
 # Below this line are macro definitions used only for the final linking of the executable
 #
 

@@ -43,7 +43,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 6/92
-
+* V500 *kob* 3/99 - up lengths of CD_AXIS_NAME and name to correspond w/ 
+*                   longer line_name
 * argument definitions:
 *       cdfid   - returned pointer to open CDF file
 *       grid    - TMAP grid number
@@ -70,7 +71,7 @@
       LOGICAL this_ax_exists, recax_exists
       INTEGER NCDID, 
      .        ndims, nvars, ngatts, recdim, cdfstat, nlen, dimid
-      CHARACTER CD_AXIS_NAME*32, name*32
+      CHARACTER CD_AXIS_NAME*64, name*64
 
 * get the axis name
         name = CD_AXIS_NAME( grid, idim, nlen )

@@ -393,10 +393,8 @@ c         ENDIF
          IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
             line_direction(iaxis) = 'TT'  ! time
           ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
-c            line_direction(iaxis) = 'WE'
             line_direction(iaxis) = 'XX'
          ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
-c            line_direction(iaxis) = 'SN'
             line_direction(iaxis) = 'YY'
          ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
             line_direction(iaxis) = 'DU'
@@ -416,10 +414,8 @@ c            line_direction(iaxis) = 'SN'
             IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
                line_direction(iaxis) = 'TT'  ! time
             ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
-c            line_direction(iaxis) = 'WE'
             line_direction(iaxis) = 'XX'
             ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
-c            line_direction(iaxis) = 'SN'
              line_direction(iaxis) = 'YY'
             ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
                line_direction(iaxis) = 'DU'
@@ -441,12 +437,31 @@ c            line_direction(iaxis) = 'SN'
       ELSEIF ( units .EQ. 4 ) THEN     ! degrees
         IF  ( TM_HAS_STRING(line_units(iaxis), 'NORTH')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'SOUTH')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreeN')   ! Check all CF_compliant 
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesN')  ! options
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_N')  ! Case independent
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_N')
+c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches all degrees
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_S')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_S')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'LAT') ) THEN 
             line_direction(iaxis) = 'SN'
-         ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'EAST')
+        ELSEIF ( TM_HAS_STRING(line_units(iaxis), 'EAST')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'WEST')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreeE')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesE')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_E')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_E')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreeW')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesW')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degree_W')
+     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degrees_W')
      .   .OR. TM_HAS_STRING(line_units(iaxis), 'LON') ) THEN 
             line_direction(iaxis) = 'WE'
+        ELSEIF ( line_direction(iaxis) .EQ. 'XX') THEN
+                        line_direction(iaxis) = 'WE'
+        ELSEIF ( line_direction(iaxis) .EQ. 'YY') THEN
+                        line_direction(iaxis) = 'SN'
         ENDIF
 
       ELSEIF ( units .EQ. pun_millibars
@@ -505,6 +520,12 @@ c            line_direction(iaxis) = 'SN'
 *     time it may be desirable to separate these two concepts into separate
 *     variables and to make this routine (and TM_READ_GRIDFILE) sensitive to
 *     axis names X*, Y*, and Z* (among others?).
+
+* Note: 6/03 ACM  The AXIS and CARTESIAN_AXIS attributes allow us to do this.
+*     if these are present, then the line_direction is set to XX or YY or TT
+*     and then other attributes are used to determine the units and other
+*     formatting information.  See also xeq_define, as these designations are
+*     used for axes there as well.
 
 * the attribute "positive=down", etc. may help
       got_it = CD_GET_ATTRIB( cdfid, ivar, 'positive',

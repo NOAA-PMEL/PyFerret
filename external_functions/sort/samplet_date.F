@@ -57,7 +57,8 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Returns data sampled according to a set of times')
+   10 FORMAT 
+     .  ('Returns data sampled by interpolating to a set of times')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 7)
@@ -67,7 +68,7 @@
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
-      CALL ef_set_num_work_arrays(id, 2)
+      CALL ef_set_num_work_arrays(id, 3)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -76,32 +77,32 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'YR')
-      CALL ef_set_arg_desc(id, arg, 'Year yyyy')
+      CALL ef_set_arg_desc(id, arg, 'Year(s) yyyy')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 3
       CALL ef_set_arg_name(id, arg, 'MO')
-      CALL ef_set_arg_desc(id, arg, 'Month mm')
+      CALL ef_set_arg_desc(id, arg, 'Month(s), integer mm')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 4
       CALL ef_set_arg_name(id, arg, 'DAY')
-      CALL ef_set_arg_desc(id, arg, 'Day of month dd')
+      CALL ef_set_arg_desc(id, arg, 'Day(s) of month dd')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'HR')
-      CALL ef_set_arg_desc(id, arg, 'Hour hh')
+      CALL ef_set_arg_desc(id, arg, 'Hour(s) hh')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 6
       CALL ef_set_arg_name(id, arg, 'MIN')
-      CALL ef_set_arg_desc(id, arg, 'Minute mm')
+      CALL ef_set_arg_desc(id, arg, 'Minute(s) mm')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 7
       CALL ef_set_arg_name(id, arg, 'SEC')
-      CALL ef_set_arg_desc(id, arg, 'Second ss')
+      CALL ef_set_arg_desc(id, arg, 'Second(s) ss')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
 *                                                                     ^
@@ -184,7 +185,6 @@
 *
 * Set the work arrays,  X/Y/Z/T dimensions
 *
-* ef_set_work_array_lens(id, array #, X len, Y len, Z len, T len)
 *
       INTEGER mtdat, mt2, mt5
 
@@ -202,10 +202,14 @@
       mt5 = mtdat* 5	! character*20: character*1 takes 1 byte
 
 *  taxdat (real*8)
-      CALL ef_set_work_array_lens (id, 1, mt2, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, mt2, 1, 1, 1)
 
 *  datebuf (character*20)
-      CALL ef_set_work_array_lens (id, 2, mt5, 1, 1, 1)
+      CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, mt5, 1, 1, 1)
+
+*  date_axis
+      CALL ef_set_work_array_dims (id, 3, arg_lo_ss(T_AXIS,ARG1), 
+     .                   1, 1, 1, arg_hi_ss(T_AXIS, ARG1), 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -268,27 +272,27 @@
       INTEGER i6, j6, k6, l6
       INTEGER i7, j7, k7, l7
       INTEGER numtimes
-      INTEGER lyr, lmo, lda, lhr, lmn, lsc
       REAL ayr, amo, ada, ahr, amn, asc
 
       CHARACTER ax_name(4,7)*64, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
 
-      INTEGER nlen(3)
-      CHARACTER*8 lefint, aindex(3)
       CHARACTER*100 errtxt
 
 *  set work arrays
 
       REAL*8 taxdat(wrk1lox:wrk1hix/2, wrk1loy:wrk1hiy,
      .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
-      CHARACTER*20 datebuf(wrk1lox:wrk1hix/2, wrk2loy:wrk2hiy,
+      CHARACTER*20 datebuf(wrk2lox:wrk2hix/20, wrk2loy:wrk2hiy,
      .               wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+      REAL date_axis(wrk3lox:wrk3hix, wrk3loy:wrk3hiy,
+     .               wrk3loz:wrk3hiz, wrk3lot:wrk3hit)
+
       CHARACTER*3 months(12), cmon
       DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
      .            'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
- 120  FORMAT (i2, 1x, a3, 1x, i4, 3(1x,i2))
+ 120  FORMAT (f2.0, 1x, a3, 1x, f4.0, 3(1x,f2.0))
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -301,178 +305,166 @@
       numtimes = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
       CALL ef_get_axis_dates (id, ARG1, taxdat, numtimes, datebuf)
 
-      DO 90 arg = 1, 7
-        CALL ef_get_axis_info (id, arg, ax_name(1,arg), ax_units, 
-     .     backward, modulo, regular)
-  90  CONTINUE
+      l1 = arg_lo_ss(T_AXIS,ARG1)
+      DO 200 l = 1, numtimes
+         READ (datebuf(l,1,1,1), 120, err=900) bda, cmon, byr, 
+     .                                         bhr, bmn, bsc
 
-      i1 = arg_lo_ss(X_AXIS, ARG1)
-      i2 = arg_lo_ss(X_AXIS, ARG2)
-      i3 = arg_lo_ss(X_AXIS, ARG3)
-      i4 = arg_lo_ss(X_AXIS, ARG4)
-      i5 = arg_lo_ss(X_AXIS, ARG5)
-      i6 = arg_lo_ss(X_AXIS, ARG6)
-      i7 = arg_lo_ss(X_AXIS, ARG7)
-      DO 400 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
+         DO 100 m = 1, 12
+            IF (cmon .eq. months(m)) bmo = m
+ 100                  CONTINUE
+         call day_of_year(bmo, bda, byr)
+         bmn = bmn + bsc/ 60.
+         bhr = bhr + bmn/ 60.
+         bda = bda + bhr/ 24.
+         date_axis(l1,1,1,1) = byr + bda/ 365.24
+         l1 = l1 + arg_incr(T_AXIS,ARG1)
+  200  CONTINUE
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
-         j3 = arg_lo_ss(Y_AXIS,ARG3)
-         j4 = arg_lo_ss(Y_AXIS,ARG4)
-         j5 = arg_lo_ss(Y_AXIS,ARG5)
-         j6 = arg_lo_ss(Y_AXIS,ARG6)
-         j7 = arg_lo_ss(Y_AXIS,ARG7)
-         DO 300 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+       DO 300 arg = 1, 7
+          CALL ef_get_axis_info (id, arg, ax_name(1,arg), ax_units, 
+     .          backward, modulo, regular)
+  300  CONTINUE
 
-            k1 = arg_lo_ss(Z_AXIS,ARG1)
-            k2 = arg_lo_ss(Z_AXIS,ARG2)
-            k3 = arg_lo_ss(Z_AXIS,ARG3)
-            k4 = arg_lo_ss(Z_AXIS,ARG4)
-            k5 = arg_lo_ss(Z_AXIS,ARG5)
-            k6 = arg_lo_ss(Z_AXIS,ARG6)
-            k7 = arg_lo_ss(Z_AXIS,ARG7)
-            DO 200 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-               l2 = arg_lo_ss(T_AXIS,ARG2)
-               l3 = arg_lo_ss(T_AXIS,ARG3)
-               l4 = arg_lo_ss(T_AXIS,ARG4)
-               l5 = arg_lo_ss(T_AXIS,ARG5)
-               l6 = arg_lo_ss(T_AXIS,ARG6)
-               l7 = arg_lo_ss(T_AXIS,ARG7)
-               DO 100 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
+      l2 = arg_lo_ss(T_AXIS,ARG2)
+      l3 = arg_lo_ss(T_AXIS,ARG3)
+      l4 = arg_lo_ss(T_AXIS,ARG4)
+      l5 = arg_lo_ss(T_AXIS,ARG5)
+      l6 = arg_lo_ss(T_AXIS,ARG6)
+      l7 = arg_lo_ss(T_AXIS,ARG7)
+      DO  800 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
 *  Get the time to sample, whichever axis of arg_2 thru arg_7 it is on.
 
-                  ayr = arg_2(i2,j2,k2,l2)
-                  IF (ax_name(T_AXIS,2) .EQ. 'normal') 
-     .                  CALL pickindex(arg_2, l, ayr)
-                  lyr = ayr
+         CALL pickindex(arg_2, l, ayr)
+         CALL pickindex(arg_3, l, amo)
+         CALL pickindex(arg_4, l, ada)
+         CALL pickindex(arg_5, l, ahr)
+         CALL pickindex(arg_6, l, amn)
+         CALL pickindex(arg_7, l, asc)
 
-                  amo = arg_3(i3,j3,k3,l3)
-                  IF (ax_name(T_AXIS,3) .EQ. 'normal') 
-     .                  CALL pickindex(arg_3, l, amo)
-                  lmo = amo
+*  Check that we do have a valid time.
 
-                  ada = arg_4(i4,j4,k4,l4)
-                  IF (ax_name(T_AXIS,4) .EQ. 'normal') 
-     .                  CALL pickindex(arg_4, l, ada)
-                  lda = ada
+         lbot = 0
+         IF (ayr .NE. bad_flag(ARG2) .AND. 
+     .       amo .NE. bad_flag(arg3) .AND. 
+     .       ada .NE. bad_flag(arg4) .AND. 
+     .       ahr .NE. bad_flag(arg5) .AND. 
+     .       amn .NE. bad_flag(arg6) .AND. 
+     .       asc .NE. bad_flag(arg7) ) THEN
 
-                  ahr = arg_5(i5,j5,k5,l5)
-                  IF (ax_name(T_AXIS,5) .EQ. 'normal') 
-     .                  CALL pickindex(arg_5, l, ahr)
-                  lhr = ahr
+            CALL day_of_year(amo, ada, ayr)
+            amn = amn + asc/ 60.
+            ahr = ahr + amn/ 60.
+            ada = ada + ahr/ 24.
+            timepoint = ayr + ada/ 365.25
 
-                  amn = arg_6(i6,j6,k6,l6)
-                  IF (ax_name(T_AXIS,6) .EQ. 'normal') 
-     .                  CALL pickindex(arg_6, l, amn)
-                  lmn = amn
+*  Search the 1st argument for the points before and after the requested time,
+*  interpolate to set the result.
 
-                  asc = arg_7(i7,j7,k7,l7)
-                  IF (ax_name(T_AXIS,7) .EQ. 'normal') 
-     .                  CALL pickindex(arg_7, l, asc)
-                  lsc = asc
+            DO 400 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+               IF (timepoint .GE. date_axis(l1,1,1,1)) lbot = l1
+ 400        CONTINUE
+            ltop = lbot + 1
 
+            IF (lbot .GE. arg_lo_ss(T_AXIS,ARG1)  .AND. 
+     .          ltop .LE. arg_hi_ss(T_AXIS,ARG1)) THEN
 
-*  Check that we do have an valid time.
+               tbot = date_axis(lbot,1,1,1)
+               ttop = date_axis(ltop,1,1,1)
+               frac = (timepoint - tbot ) / (ttop - tbot)
+            ENDIF
 
-                  IF (ayr .EQ. bad_flag(ARG2) .OR.
-     .                amo .EQ. bad_flag(arg3) .OR. 
-     .                ada .EQ. bad_flag(arg4) .OR. 
-     .                ahr .EQ. bad_flag(arg5) .OR. 
-     .                amn .EQ. bad_flag(arg6) .OR. 
-     .                asc .EQ. bad_flag(arg7) ) THEN
-                     result(i,j,k,l) = bad_flag_result
+         ENDIF
+
+*  Loop over all space and interpolate.
+  
+         i1 = arg_lo_ss(X_AXIS, ARG1)
+         i2 = arg_lo_ss(X_AXIS, ARG2)
+         i3 = arg_lo_ss(X_AXIS, ARG3)
+         i4 = arg_lo_ss(X_AXIS, ARG4)
+         i5 = arg_lo_ss(X_AXIS, ARG5)
+         i6 = arg_lo_ss(X_AXIS, ARG6)
+         i7 = arg_lo_ss(X_AXIS, ARG7)
+         DO  700 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
+
+            j1 = arg_lo_ss(Y_AXIS,ARG1)
+            j2 = arg_lo_ss(Y_AXIS,ARG2)
+            j3 = arg_lo_ss(Y_AXIS,ARG3)
+            j4 = arg_lo_ss(Y_AXIS,ARG4)
+            j5 = arg_lo_ss(Y_AXIS,ARG5)
+            j6 = arg_lo_ss(Y_AXIS,ARG6)
+            j7 = arg_lo_ss(Y_AXIS,ARG7)
+            DO 600 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+
+               k1 = arg_lo_ss(Z_AXIS,ARG1)
+               k2 = arg_lo_ss(Z_AXIS,ARG2)
+               k3 = arg_lo_ss(Z_AXIS,ARG3)
+               k4 = arg_lo_ss(Z_AXIS,ARG4)
+               k5 = arg_lo_ss(Z_AXIS,ARG5)
+               k6 = arg_lo_ss(Z_AXIS,ARG6)
+               k7 = arg_lo_ss(Z_AXIS,ARG7)
+               DO 500 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+
+                  IF ( (lbot .GE. arg_lo_ss(T_AXIS,ARG1)   .AND. 
+     .                  ltop .LE. arg_hi_ss(T_AXIS,ARG1) ) .AND.
+     .                 (arg_1(i1,j1,k1,lbot) .NE. bad_flag(ARG1) .AND.
+     .                  arg_1(i1,j1,k1,ltop) .NE. bad_flag(ARG1)) ) THEN
+
+                     result(i,j,k,l) = arg_1(i1,j1,k1,lbot) + frac* 
+     .                   (arg_1(i1,j1,k1,ltop) - arg_1(i1,j1,k1,lbot))
+
                   ELSE
-
-*  Find the requested time in the 1st argument, set the result.
-
                      result(i,j,k,l) = bad_flag_result
-                     DO 600 l1 = arg_lo_ss(T_AXIS,ARG1), 
-     .                           arg_hi_ss(T_AXIS,ARG1)
-
-
-                        IF (arg_1(i1,j1,k1,l1) .NE. bad_flag(ARG1))THEN
-
-                           READ (datebuf(l1,1,1,1), 120, err=900) iday, 
-     .                           cmon, iyear, ihour, imin, isec
-                           IF (iyear .EQ. lyr) then
-                              DO 500 m = 1, 12
-                                 IF (cmon .eq. months(m)) imon = m
- 500                          CONTINUE
-                              IF (imon  .EQ. lmo  .AND.
-     .                            iday  .EQ. lda  .AND.
-     .                            ihour .EQ. lhr  .AND.
-     .                            imin  .EQ. lmn  .AND.
-     .                            isec  .EQ. lsc) THEN
-                                    result(i,j,k,l) = arg_1(i1,j1,k1,l1)
-                              ENDIF 
-
-                           ENDIF
- 
-                        ENDIF
- 600                 CONTINUE
                   ENDIF
 
-                  l2 = l2 + arg_incr(T_AXIS,ARG2)
-                  l2 = l2 + arg_incr(T_AXIS,ARG2)
-                  l3 = l3 + arg_incr(T_AXIS,ARG3)
-                  l4 = l4 + arg_incr(T_AXIS,ARG4)
-                  l5 = l5 + arg_incr(T_AXIS,ARG5)
-                  l6 = l6 + arg_incr(T_AXIS,ARG6)
-                  l7 = l7 + arg_incr(T_AXIS,ARG7)
- 100           CONTINUE
+                  k1 = k1 + arg_incr(Z_AXIS,ARG1)
+                  k2 = k2 + arg_incr(Z_AXIS,ARG2)
+                  k3 = k3 + arg_incr(Z_AXIS,ARG3)
+                  k4 = k4 + arg_incr(Z_AXIS,ARG4)
+                  k5 = k5 + arg_incr(Z_AXIS,ARG5)
+                  k6 = k6 + arg_incr(Z_AXIS,ARG6)
+                  k7 = k7 + arg_incr(Z_AXIS,ARG7)
+ 500           CONTINUE
 
-               k1 = k1 + arg_incr(Z_AXIS,ARG1)
-               k2 = k2 + arg_incr(Z_AXIS,ARG2)
-               k3 = k3 + arg_incr(Z_AXIS,ARG3)
-               k4 = k4 + arg_incr(Z_AXIS,ARG4)
-               k5 = k5 + arg_incr(Z_AXIS,ARG5)
-               k6 = k6 + arg_incr(Z_AXIS,ARG6)
-               k7 = k7 + arg_incr(Z_AXIS,ARG7)
- 200        CONTINUE
+               j1 = j1 + arg_incr(Y_AXIS,ARG1)
+               j2 = j2 + arg_incr(Y_AXIS,ARG2)
+               j3 = j3 + arg_incr(Y_AXIS,ARG3)
+               j4 = j4 + arg_incr(Y_AXIS,ARG4)
+               j5 = j5 + arg_incr(Y_AXIS,ARG5)
+               j6 = j6 + arg_incr(Y_AXIS,ARG6)
+               j7 = j7 + arg_incr(Y_AXIS,ARG7)
+ 600        CONTINUE
 
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
-            j3 = j3 + arg_incr(Y_AXIS,ARG3)
-            j4 = j4 + arg_incr(Y_AXIS,ARG4)
-            j5 = j5 + arg_incr(Y_AXIS,ARG5)
-            j6 = j6 + arg_incr(Y_AXIS,ARG6)
-            j7 = j7 + arg_incr(Y_AXIS,ARG7)
- 300     CONTINUE
+            i1 = i1 + arg_incr(X_AXIS,ARG1)
+            i2 = i2 + arg_incr(X_AXIS,ARG2)
+            i3 = i3 + arg_incr(X_AXIS,ARG3)
+            i4 = i4 + arg_incr(X_AXIS,ARG4)
+            i5 = i5 + arg_incr(X_AXIS,ARG5)
+            i6 = i6 + arg_incr(X_AXIS,ARG6)
+            i7 = i7 + arg_incr(X_AXIS,ARG7)
+  700    CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
-         i2 = i2 + arg_incr(X_AXIS,ARG2)
-         i3 = i3 + arg_incr(X_AXIS,ARG3)
-         i4 = i4 + arg_incr(X_AXIS,ARG4)
-         i5 = i5 + arg_incr(X_AXIS,ARG5)
-         i6 = i6 + arg_incr(X_AXIS,ARG6)
-         i7 = i7 + arg_incr(X_AXIS,ARG7)
- 400  CONTINUE
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+         l2 = l2 + arg_incr(T_AXIS,ARG2)
+         l3 = l3 + arg_incr(T_AXIS,ARG3)
+         l4 = l4 + arg_incr(T_AXIS,ARG4)
+         l5 = l5 + arg_incr(T_AXIS,ARG5)
+         l6 = l6 + arg_incr(T_AXIS,ARG6)
+         l7 = l7 + arg_incr(T_AXIS,ARG7)
+  800 CONTINUE
 
       RETURN 
 
 900   CONTINUE
 
-      WRITE (errtxt,*) 'error reading date buffer ', datebuf(l1,1,1,1)
+      WRITE (errtxt,*) 'error reading date buffer ',l, datebuf(l1,1,1,1)
 
       CALL EF_BAIL_OUT(id, errtxt)
 
       RETURN
-999   CONTINUE
 
-      aindex(1) = LEFINT(lorder,nlen(1))
-      aindex(2) = LEFINT(arg_lo_ss(T_AXIS,ARG1),nlen(2))
-      aindex(3) = LEFINT(arg_hi_ss(T_AXIS,ARG1),nlen(3))
-
-      WRITE (errtxt,*) 'Sampling index ', aindex(1)(1:nlen(1)), 
-     . ' in ARG2 is outside the range of L indices for ARG1 (', 
-     .  aindex(2)(1:nlen(2)), ':', aindex(3)(1:nlen(3)), ')'
-
-      CALL EF_BAIL_OUT(id, errtxt)
-
-      RETURN
       END
 *                                                                     ^
 *                                                                     |
@@ -490,3 +482,27 @@
 
       return
       end
+
+
+      subroutine day_of_year(amo, ada, ayr)
+
+C  Find sequential day of the year corresponding to month, day, year. 
+C  Return sequential day in variable ada.
+
+      REAL daymo(12)           ! Number of days in each month
+      DATA daymo/31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31/
+      REAL amo, ada, ayr
+      INTEGER iyr, imo
+
+      iyr = ayr
+      IF (MOD(iyr, 4) .EQ. 0) THEN
+        daymo(2) = 29
+      ENDIF
+
+      imo = amo
+      DO 100 i = 1, imo-1
+       ada = ada + daymo(i)
+  100 CONTINUE
+
+      RETURN
+      END

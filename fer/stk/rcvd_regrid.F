@@ -21,6 +21,7 @@
 *	 1/96    - shifted @SUM and @NGD to weighted calcs like @AVE
 * V490:9/97 *kob* - mods to include negative time axis processing
 *   10/6/97  *sh* - added g=@xact regridding 
+* V491:4/98  *sh* - bug fix: @ASN could lead to hi<lo limits
 
 * calling argument declarations:
 	INTEGER	src_cx, dst_cx, axis, work, ok_min, ok_max
@@ -60,6 +61,7 @@
      .                                  dst_grid, axis)
            dst_lo_ss = MAX( cx_lo_ss(src_cx,axis), dst_ss_min )
            dst_hi_ss = MIN( cx_hi_ss(src_cx,axis), dst_ss_max )
+	   IF (dst_lo_ss .GT. dst_hi_ss) dst_hi_ss = dst_lo_ss	! 4/98
            GOTO 500
 
 * ... and easy bypass for regridding by modulo

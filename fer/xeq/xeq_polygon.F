@@ -47,11 +47,9 @@
 
 * V533 *acm*6/01 - add arguments is_logh, is_logv to PLOT_SET_UP call, 
 *                  set log axes, inverse log axes and log depth axes with
-*                  /VLOG or /HLOG
-*      *acm* 7/01 - Add /AXES=TOP,BOT,LEFT,RIGHT
-*		    & call ax_on_off to implement /NOAXES.
-*      *acm* 10/01  remove VMS includes
-* V540 *acm*  2/02  restore persistence of PPL AXSET settings
+*                  PLOT/VLOG or PLOT/HLOG
+* V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
+*                   done with qualifiers /AXES= or /NOAXES.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -72,23 +70,25 @@
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
+
 	
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
 
 * internal variable declarations:
-        LOGICAL         no_range, do_key, spectrum, pattern, use_line,
-     .			overlay, transpz, no_labels, set_up, noaxes,
-     .			axes, line_it, fill_it, is_logh, is_logv
+        LOGICAL         no_range, do_key, spectrum, pattern, use_line
+	LOGICAL		overlay, transpz, no_labels, set_up, noaxes, axes
+	LOGICAL         line_it, fill_it, is_logh, is_logv
 	INTEGER         sp, patt, TM_LENSTR1
 	INTEGER		symbol, color, status,
      .			loc, limit, slen, coord_ax, thick,
-     .			ax1_blks, ax1_start, ax2_blks, ax2_start, 
+     .			ax1_blks, ax1_start,
+     .			ax2_blks, ax2_start,
      .			s1, s2, it_start(4), it_end(4),
-     .			nparm, num_it, i, iax(4)
+     .			nparm,  num_it, i, iax(4)
 	REAL		val, only_val, sym_size
 	CHARACTER	LEFINT*4, TM_FMT*12, fname*128, poly_opt*10,
-     .			buff*25
+     .                  buff*25
 
 * internal parameter declarations
 	INTEGER ncolors
@@ -119,8 +119,8 @@ CC       => Set values here instead.
 	no_labels = qual_given( slash_plot_nolabels  ).GT.0
 	transpz   = qual_given( slash_plot_transpz   ).GT.0
 	set_up	  = qual_given( slash_shad_set_up    ).GT.0
-	noaxes    = qual_given( slash_noaxes         ).GT.0
 	axes      = qual_given( slash_polygon_axes   ).GT.0
+	noaxes    = qual_given( slash_noaxes         ).GT.0
 	coord_ax  = qual_given( slash_plot_vs	     )		! integer
 	is_logh   = qual_given( slash_is_logh        ).GT.0
 	is_logv   = qual_given( slash_is_logv        ).GT.0 
@@ -266,20 +266,18 @@ CC       => Set values here instead.
 	   CALL PPL_PATSET( 'PATTERN='//fname(1:TM_LENSTR1(fname)) )
 	ENDIF
 
-
 * turn off axes? 
 	IF ( noaxes ) THEN 
            DO 300 i = 1, 4
               iax(i) = 0
  300       ENDDO
-          call ppl_axes_off (set_up)
         ENDIF
 
 * turn on (one or more) axes? (7/11/01)
 
 * ... PLOT/AXES=(TOP,BOTTOM,LEFT,RIGHT)
-	loc = qual_given( slash_polygon_axes )
-	IF ( loc .GT. 0) THEN
+	IF ( axes ) THEN
+           loc = qual_given( slash_polygon_axes )
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
@@ -299,7 +297,6 @@ CC       => Set values here instead.
               nparm = 4
               CALL parse_comma_list ( buff, s1, s2, nparm, 
      .             num_it, it_start, it_end, status)
-
               IF (status .EQ. ferr_ok .AND. it_start(1) .GT. it_end(1)) THEN	! /AXES=()
                  DO 400 i = 1, 4
                     iax(i) = 0
@@ -346,12 +343,8 @@ CC       => Set values here instead.
               CALL PPL_PATSET( 'PATTERN' )
            ENDIF
 
-* restore axes? (5/29/97  revised 2/2002)
-c 7/01	IF ( noaxes ) CALL PPL_AXES_RESTORE
-
-        IF ( noaxes ) CALL PPL_AXES_RESTORE
-	loc = qual_given( slash_polygon_axes )
-	IF ( loc .GT. 0) CALL PPL_AXES_RESTORE
+* restore axes? (5/29/97) revised 3/02
+	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000
@@ -388,7 +381,8 @@ c 7/01	IF ( noaxes ) CALL PPL_AXES_RESTORE
      .		'Legal range is 1 to 3', *1000 )
  5440	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .	'AXES[=(TOP,BOTTOM,LEFT,RIGHT)] takes 4 arguments or no argument', *1000 )
+     .'AXES[=(TOP,BOTTOM,LEFT,RIGHT)] takes 4 arguments or no argument', 
+     .		*1000 )
  5450	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'AXES arguments must be 0 or 1', *1000 )

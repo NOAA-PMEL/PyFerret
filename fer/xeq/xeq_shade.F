@@ -71,6 +71,8 @@
 *		    & call ax_on_off to implement /NOAXES.
 *      *acm* 10/01  remove VMS includes
 * V540 *acm*  2/02  restore persistence of PPL AXSET settings
+* V541 *acm*  3/02  Make PPL AXSET settings persist, but not settings
+*                   done with qualifiers /AXES= or /NOAXES
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -206,7 +208,6 @@
            DO 300 i = 1, 4
               iax(i) = 0
  300       ENDDO
-          call ppl_axes_off (set_up)
         ENDIF
 
 * turn on (one or more) axes? (7/11/01)
@@ -297,12 +298,9 @@
            ENDIF
 
 
-* restore axes? (5/29/97  revised 2/2002)
-c 7/01	IF ( noaxes ) CALL PPL_AXES_RESTORE
+* restore axes? (5/29/97  revised 3/2002
 
-        IF ( noaxes ) CALL PPL_AXES_RESTORE
-	loc = qual_given( slash_shad_axes )
-	IF ( loc .GT. 0) CALL PPL_AXES_RESTORE
+        IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

@@ -12,7 +12,7 @@ decstation:
 		LDFLAGS= \
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="-lX11 -lm"
-sun4:	
+sun4:
 	${MAKE} gksm2ps \
 		CC=gcc \
 		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm $(G)" \
@@ -58,6 +58,13 @@ hp:
 		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
 		LIB="/usr/lib/X11R5/libX11.a -lm"
 
+i486-linux:	
+	${MAKE} gksm2ps \
+		CC=gcc \
+		CFLAGS="-I$(TMAP_LOCAL)/src/xgks-2.5.5/port -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib -I$(TMAP_LOCAL)/src/xgks-2.5.5/src/lib/gksm $(G)" \
+		LDFLAGS= \
+		GKLIB="-L$(TMAP_LOCAL)/lib -lxgks" \
+		LIB="-L/usr/X11R6/lib -lX11 -lm"
 
 gksm2ps:	gksm2ps.o xpreview.o \
 	resize_xgks_window.o set_background.o gksm.o batch_graphics.o
@@ -70,7 +77,9 @@ gksm2ps:	gksm2ps.o xpreview.o \
 	$(GKLIB) $(LIB)
 	chmod +x gksm2ps
 
+
 clean:
 	rm *.o gksm2ps
+
 
 

@@ -62,7 +62,7 @@ LET ypts = y
 !  for J=2  the percent variance explained by each EOF
 !  for J=3  the eigenvalue for each EOF
 
-LET estat = eof_stat(sample_function, 2., 0.1)
+LET estat = eof_stat(sample_function, 0.1)
 
 LIST/I=1/J=1 estat
 
@@ -89,7 +89,7 @@ SET VIEW vuc; CONTOUR/TITLE="FCN2" fcn2[l=1:10@ave]
 SET VIEW vur; CONTOUR/TITLE="FCN1 + FCN2" sample_function[l=1:10@ave]
 
 
-LET exy = eof_space(sample_function, 2., 0.1)
+LET exy = eof_space(sample_function, 0.1)
 
 SET VIEW vll; CONTOUR/L=1/TITLE="EOF 1" exy
 SET VIEW vlc; CONTOUR/L=2/TITLE="EOF 2" exy
@@ -99,7 +99,7 @@ CANCEL VIEW
 
 ! Now plot the time amplitude functions.
 
-LET etim = eof_tfunc(sample_function, 2., 0.1)
+LET etim = eof_tfunc(sample_function, 0.1)
 
 SET VIEW ul
 PLOT/I=1/TITLE=taf1 etim

@@ -99,7 +99,9 @@ c
 * V540 *acm*9/01 - changes for dynamic pplus buffer, call PPLLDX via pplldx_envelope.c
 *                  which checks pplmem_nsize (new name for NSIZE) and allocates 
 *                  more if needed.
-*      *acm* 10/01  remove VMS includes
+*      *acm* 10/01 Remove VMS includes
+* V541 *acm*  4/02 Explicitly set itstart to be all 14 character places of tref:
+*                  itstrt = tref(1:14) Otherwise we only get the first 10 (why??)
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
 ! original:
@@ -184,7 +186,7 @@ c **               passing thru c routine, a blank tref is somehow different??
 
 	    if(linen.eq.1)then
 		iform='LDX'
-		if(iautot.eq.1 .AND. tref(1:1).NE.' ')itstrt=tref 
+		if(iautot.eq.1 .AND. tref(1:1).NE.' ') itstrt=tref(1:14) 
 	    endif		
 c
 c	calculate offset and rate for time data

@@ -47,7 +47,7 @@ LD		= cc
 LDFLAGS		= -L/usr/openwin/lib -z muldefs -v
 LD_DYN_FLAGS = -G -z text -z muldefs
  
-SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/SC4.0/lib \
+SYSLIB		= -lX11 -ldl -llist -Bstatic  -L/opt/SUNWspro/lib \
 		  -lV77 -lelf -lM77 -lF77 -lXm -lXt -Bdynamic -lsunmath -lm \
 		  /usr/ccs/lib/libgen.a -lc \
 		  -Bstatic /usr/ucblib/libucb.a -Bdynamic /usr/lib/libICE.so \

@@ -45,8 +45,10 @@
 * V400 - 3/95 - changed "Revision" to "Version"
 * V402 - 8/95 - use XREVISION_TYPE to automate version info
 * V510 6/00 *sh* - if revision_type is "()" ignore it
-* v533 8/01 *kob* - add platform type to proclaim message and rearrange
+* v540 10/01 *kob* - add platform type to proclaim message and rearrange
 *                   proclaim message
+*      10/01 *kob* - insert missing comma in format statement
+*                    discovered by linux compiler
 #ifdef unix
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
@@ -86,8 +88,8 @@
      .				left_margin, today_date, today_time
 
  3000	FORMAT ( 1X,A,'NOAA/PMEL TMAP'/
-     .		 1X,A,A,1X,'v'F4.2,1x,A/
-     .		 1X,A,A,1X,' - ',A/
+     .		 1X,A,A,1X,'v',F4.2,1x,A/
+     .		 1X,A,A,1X,'-',1X,A/
      .		 1X,2A,1X,A/ )
 
 	RETURN

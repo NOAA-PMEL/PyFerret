@@ -48,6 +48,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V510 8/99 *sh*
+*      2/00 *sh* bug fix - initialize mr_grid
 
 * calling argument declarations:
 	INTEGER	size, mr, status
@@ -80,6 +81,9 @@
 
 * flag it as "in progress"
 	mr_protected( mr )	= mr_in_progress
+
+* work arrays don't use any grids
+	mr_grid( mr ) = unspecified_int4
 
 * for good house-keeping, set the mr subscripts
 	mr_lo_ss(mr,x_dim) = 1

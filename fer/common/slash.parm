@@ -39,6 +39,7 @@
      .			slash_canc_list_append,
      .
      .			slash_canc_axis_modulo,
+     .			slash_canc_axis_all,
      .
      .			slash_canc_data_noerr,
      .
@@ -124,6 +125,7 @@
      .			slash_vect_flowline,
      .			slash_vect_density,
      .			slash_vect_axes,
+     .			slash_vect_nokey,
      .
      .			slash_strm_over_plot,
      .			slash_strm_set_up,
@@ -210,6 +212,7 @@
      .			slash_canc_list_append = 6,
      .
      .			slash_canc_axis_modulo = 1,
+     .			slash_canc_axis_all = 2,
      .
      .			slash_canc_data_noerr  = 2,
      .
@@ -295,6 +298,7 @@
      .			slash_vect_flowline     = 1+25,
      .			slash_vect_density      = 1+26,
      .			slash_vect_axes		= 1+27,
+     .			slash_vect_nokey	= 1+28,
      .
      .			slash_strm_over_plot	= 9,
      .			slash_strm_set_up	= 10,

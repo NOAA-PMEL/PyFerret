@@ -180,7 +180,7 @@
      .			nqual3i = 1, nqual_at3j = nqual_at3i + nqual3i,	!'MOVI'
      .			nqual3j = 1, nqual_at3k = nqual_at3j + nqual3j,	!'VIEW'
      .			nqual3k = 3, nqual_at3l = nqual_at3k + nqual3k,	!'VARI'
-     .			nqual3l = 1, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
+     .			nqual3l = 3, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
      .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
      .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'****'
      .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'

@@ -4,6 +4,7 @@
 * *sh* 2/94 - increased cs_text size to match cmnd_buff
 * *kob* 12/97 - added  logical cs_is_calendar
 * *sh* 10/0 - increased saved command buffer size - match cmnd_buff_len
+* *kob* 1/01 - added cs_start and cs_loop for animations
 
 	INTEGER		cs_max
 	PARAMETER     (	cs_max = 10 )
@@ -15,12 +16,14 @@
 	INTEGER	csp,			! control stack pointer
      .		cs_lun     ( cs_max ),
      .		cs_cmnd_num( cs_max ),
-     .		cs_axis    ( cs_max )
+     .		cs_axis    ( cs_max ),
+     .		cs_loop	   ( cs_max )
 	REAL*8	cs_limit   ( cs_max ),
      .		cs_delta   ( cs_max ),
      .		cs_phase   ( cs_max ),
      .		cs_save_lo ( cs_max ),
-     .		cs_save_hi ( cs_max )
+     .		cs_save_hi ( cs_max ),
+     .		cs_start   ( cs_max )
 	CHARACTER*2048
      .		cs_text    ( cs_max )
 
@@ -30,9 +33,11 @@
      .		cs_phase   ,
      .		cs_save_lo ,
      .		cs_save_hi ,
+     .		cs_start   ,
      .		csp	   ,
      .		cs_cmnd_num,
      .		cs_axis    ,
+     .		cs_loop    ,
      .		cs_in_control,
      .		cs_by_ss   ,
      .		cs_save_by_ss,

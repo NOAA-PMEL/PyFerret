@@ -1,7 +1,0 @@
-set data gtsa056
-set mode diag
-set reg/x=130w:125w/y=0:1.5/z=0:15/t=21-JAN-1982:24-jan-1982
-!set mode ignore - removed *sh* 10/99
-
-load temp[gx=u]
-stat temp[g=u] - temp[g=u@ave,gx=u@lin,gy=u@lin,gz=u@lin,gt=u@lin]

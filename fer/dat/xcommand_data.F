@@ -135,6 +135,10 @@
 * V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
 *	10/01 *sh* - added alias COLUMNS for SET DATA/FORMAT=Delimited
 *	11/01 *sh* - added list/width=
+* V541: 4/02 *acm* - remove CONTOUR/HLOG/VLOG; mistakenly put in here!!
+*                    note they were not used by xeq_contour...
+* V541: 5/02 *acm* - add VECTOR/NOKEY
+*       6/05 *acm* - add CANCEL AXIS/ALL
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -598,6 +602,8 @@
 	   DATA num_qualifs      (nsub_at3 +11)	/ nqual3l	/
 	   DATA qualifier_pointer(nsub_at3 +11)	/ nqual_at3l	/
 		DATA qualifiers  (nqual_at3l+0)	/ 'MODULO'	/
+		DATA qualifiers  (nqual_at3l+1)	/ 'ALL'	        /
+		DATA qualifiers  (nqual_at3l+2)	/ '****'        /
 * CANCEL GRID
 	   DATA subcommands      (nsub_at3 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/
@@ -684,8 +690,8 @@
 		DATA qualifiers  (nqual_at4a+29)/ 'PEN'/	!/pen (denig!!)
 		DATA qualifiers  (nqual_at4a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at4a+31)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at4a+32)/ 'HLOG'/	! log axis horiz
-		DATA qualifiers  (nqual_at4a+33)/ 'VLOG'/	! log axis vertical
+		DATA qualifiers  (nqual_at4a+32)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+33)/ '****'/	! 
 		DATA qualifiers  (nqual_at4a+34)/ 'AXES'/	! /axes[=...]
 		DATA qualifiers  (nqual_at4a+35)/ '****'/	! 
 		DATA qualifiers  (nqual_at4a+36)/ '****'/	! 
@@ -1001,7 +1007,7 @@
 		DATA qualifiers  (nqual_at13a+25)/ 'FLOWLINE'/	!/flowline
 		DATA qualifiers  (nqual_at13a+26)/ 'DENSITY'/	!/density=
 		DATA qualifiers  (nqual_at13a+27)/ 'AXES'/	!/axes[=]
-		DATA qualifiers  (nqual_at13a+28)/ '****'/	!
+		DATA qualifiers  (nqual_at13a+28)/ 'NOKEY'/	!/nokey
 		DATA qualifiers  (nqual_at13a+29)/ 'PEN'/	! pen (denigr!)
 		DATA qualifiers  (nqual_at13a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at13a+31)/ 'VLIMITS'/	! vertical

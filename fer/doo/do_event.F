@@ -62,7 +62,9 @@
      .		res( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,m2lot:m2hit )
 
 * internal variable declarations:
-        LOGICAL first_pt, first_lt, step_val
+        LOGICAL first_pt, first_lt
+* *kob* 6.01 - step_val needs to be integer
+	INTEGER step_val
 	INTEGER i, j, k, l, lo_sub(4), hi_sub(4)
 	REAL	bad_com
 

@@ -1,7 +1,5 @@
 	SUBROUTINE CANCEL_DATA_SET( iset, status )
 
-*
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -48,8 +46,8 @@
 *     bug fix: calling var, iset, was used as an internal loop index
 * Linux Port 1/97 *kob* - Added a preprocessor include for tmap_dset.parm
 *			  because it needed a preprocessor.
+* V533: *sh* 6/01 - close set after deletions to avoid "%%" diagnostics
 
-#ifdef unix
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
 	include 'tmap_errors.parm'
@@ -57,28 +55,12 @@
 	include 'errmsg.parm'
 	include 'xdset_parms.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XDSET_PARMS.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	iset, status
 
 * local variable declarations:
 	INTEGER	iclim, iclim_user
-
-* close and cancel the data set
-	CALL TM_CLOSE_SET( iset, status )
-	IF ( status .NE. merr_ok ) RETURN
-
-* no longer the saved data set ?
-	IF ( iset .EQ. saved_dset ) saved_dset = unspecified_int4
 
 * delete any memory variables from this data set
 * ( necessary because their pointers will lead to incorrect data set 
@@ -88,6 +70,13 @@
 * delete all user defined data from memory for similar reasons
 * (note: this is unnecessarily strict - could be refined in the future)
 	CALL PURGE_ALL_UVARS
+
+* close and cancel the data set
+	CALL TM_CLOSE_SET( iset, status )
+	IF ( status .NE. merr_ok ) RETURN
+
+* no longer the saved data set ?
+	IF ( iset .EQ. saved_dset ) saved_dset = unspecified_int4
 
 * was this a climatological air temp field ?
 	DO 100 iclim = 1, max_airt_clim

@@ -53,7 +53,8 @@
 * V510 4/00 *sh - corrected faulty logic for centered levels (delta wrong)
 * V550 11/02*acm* To use cellarray calls for rectangular shade plots, pass 
 *                 pixel in as a work array.  Remove VAX includes
-* V%50 12/02*acm* After levels are set, call setlab_syms to create the LEVELS symbols
+* V550 12/02*acm* After levels are set, call setlab_syms to create the LEVELS symbols
+* V552  3/03*acm* Check for too many levels, as is done for FILL and CONTOUR plots.
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -72,11 +73,12 @@
 	include		'ZGRID.INC'
 	include		'zgridd_inc.decl'
 	include		'ZGRIDD.INC'
+        include         'errmsg.parm'
 
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
-	integer		i,j
-	integer         pixel(*)
+	integer		i, j, pixel(*), slen1, slen2
+        CHARACTER       TM_FMT*20, buff1*20, buff2*20, err_msg*40
 
         parameter       (epsilon = 1e-6)
 
@@ -162,6 +164,9 @@ C       Handle rounding errors *jd* 6.27.95/12.30.97
 	1	      NLEV2 = NLEV2 + 1
 	      ENDIF
 
+              IF (NLEV2 .GT. ICNLEV) GO TO 5000
+
+
 C acm 12/01  Set LWGT for future contour line overlays.
 
 	      DO 100 I=1,NLEV2 
@@ -243,6 +248,17 @@ c       this bombed aix compiler, though it seems to work on others
 	ENDIF
 
 	RETURN
+
+C  Error exit when too many levels specified.
+C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
+
+ 5000   ii = ICNLEV
+        buff1 = TM_FMT (REAL(ICNLEV), 20, 20, slen1)
+        buff2 = TM_FMT (REAL(NLEV2), 20, 20, slen2)
+        err_msg = '# of shade levels > '// buff1(1:slen1) //
+     .          '  (' // buff2(1:slen2) // ')'
+        CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
+ 5002   RETURN
 	END
 
 

@@ -10,7 +10,7 @@ let xpts = i[i=1:100]
 set view left
 plot/line/vs xpts, sin(xpts/10)
 sh sym YAXIS_MAX
-!go polytube polygon/over  xpts, sin(xpts/10), sin(xpts/10)
+go polytube polygon/over  xpts, sin(xpts/10), sin(xpts/10)
 
 set view right
 
@@ -20,6 +20,6 @@ let zpts = {1,2,3,4,5,1, 2, 3, 4, 5, 1, 2, 3, 4, 5}
 
 plot/vs/trans/line xpts,ypts
 sh sym XAXIS_MAX
-!go polytube polygon/trans/over xpts,ypts,zpts
+go polytube polygon/trans/over xpts,ypts,zpts
 
 can view

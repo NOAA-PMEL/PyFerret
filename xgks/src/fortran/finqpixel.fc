@@ -34,6 +34,11 @@
  * Cambridge MA
  *
  * August 31 1988
+ *
+ * August 27, 2004 ACM Put a test in gqpxad for whether the workstation type
+ *                     is X_WIN. If not, then do not call ginqpixelarraydim.
+ *                     This lets us call the routine when in -gif  or -batch
+ *                     mode, without displaying an error message.
  */
 
 /*LINTLIBRARY*/
@@ -42,6 +47,16 @@
 #include <stdlib.h>
 #include "xgks.h"
 #include "fortxgks.h"
+
+
+/* extra definitions from inqpixel.c for skipping  
+ * the call to ginqpixelarraydim when in gif mode*/
+
+#include <wchar.h>
+#include <wchar.h>
+#include "gks_implem.h"
+
+/* end of extra definitions from inqpixel.c: */
 
 #ifndef lint
     static char afsid[] = "$__Header$";
@@ -75,6 +90,7 @@ gqpxad(
 {
     Grect           rect;
     Gipoint         dim;
+    WS_STATE_PTR    ws;
 
     debug(("Inquire Pixel Array Dimensions \n"));
 
@@ -86,6 +102,25 @@ gqpxad(
     rect.ll.y = (Gfloat) *qy;
     rect.ur.x = (Gfloat) *qx;
     rect.ur.y = (Gfloat) *py;
+
+	
+/* extra calls  from inqpixel.c for skipping  
+ * the call to ginqpixelarraydim when in gif mode*/
+
+     /* check for proper operating state */
+    GKSERROR((xgks_state.gks_state == GGKCL || xgks_state.gks_state == GGKOP), 
+	     7, errginqpixelarraydim);
+
+    /* check for invalid workstation id */
+    GKSERROR((!VALID_WSID(*wkid)), 20, errginqpixelarraydim);
+
+    /* check if this workstation is opened */
+    GKSERROR(((ws = OPEN_WSID(*wkid)) == NULL), 25, errginqpixelarraydim);
+
+    if (ws->ewstype != X_WIN)
+    return;
+
+/* end of extra code from inqpixel.c: */
 
     if (*errind = ginqpixelarraydim((Gint) *wkid, &rect, &dim))
 	return;

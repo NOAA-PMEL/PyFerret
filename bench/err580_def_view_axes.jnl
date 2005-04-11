@@ -24,3 +24,5 @@ set mode meta
 
 set view v1
 shade/i=1:12/j=1:12 i+j
+
+can view

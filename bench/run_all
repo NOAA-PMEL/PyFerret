@@ -24,6 +24,8 @@
 # *sh* 2/99 - run bn500_all by default
 # *sh* request the EF directory. Benchmark versions no longer exist -- use CVS
 # *sh* log the header information to a single benchmark history file
+# acm   4/05 added more .plt files for metafile checking, but fewer bnplot.plt files 
+#            (bn_curv now saves only one).
 
 # usage % run_all
 
@@ -235,7 +237,7 @@ endif
 
 #rename plt and gif files - necessary for saving them under cvs
 set count = 1
-while ($count < 8)
+while ($count < 5)
     mv bnplot.plt.~$count~ bnplot-$count.plt
     @ count++
 end

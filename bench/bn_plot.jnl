@@ -3,6 +3,7 @@
 ! all labels to create "master" gif and ps files to compare against
 ! *kob*
 ! V530 - added tests of PLOT/STEP[=connected] to existing plots
+! v581 - for the last set, cancel mode logo, so that .plt files are comparable.
 
 ! define a 6 viewport window (modified definitions 11/92)
 def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
@@ -146,6 +147,7 @@ plot/over/i=1:10/thick=4 i
 plot/over/i=1:10/size=-1 i
 set mode/last ignore
 
+can mode logo
 set view ur
 let eps = .1; plot/vs RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
 let eps = .2; plot/vs/over/sym=2  RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
@@ -169,3 +171,4 @@ set mode/last ignore
 set view lr
 polygon/thick/color=red/palette=blue {1,2,1}, {2,1,0.5}
 
+set mode/last logo

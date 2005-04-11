@@ -1,6 +1,7 @@
 ! /GRAT, /HGRAT and /VGRAT to set graticule lines
 ! ACM March 12, 2004
-
+! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
 
 ppl axnmtc,2,2
 
@@ -31,6 +32,9 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
 
 ! Log axes: VLOG and HLOG with large and small tics
 
+set mode meta graticules.plt
+can mode logo 
+
 set view left
 def axis/z zlog=exp(k[k=1:10])
 let fcn = k[gz=zlog]
@@ -40,6 +44,9 @@ set view right
 def axis/z/depth dlog=exp(k[k=1:20])
 let fcn = k[gz=dlog]
 plot/vlog/vlimits=1:100000/hg="large(color=red),small(color=lightblue)" fcn
+
+can  mode meta
+set mode logo
 
 can view
 

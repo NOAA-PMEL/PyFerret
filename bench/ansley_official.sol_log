@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     64383964 Apr  6 12:22 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     64377968 Apr  8 12:19 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note:  fix for bug1214; set meta_actv false on a PPL CLSPLT
+Note: new .plt files in metafile_masters_v580, includes some changes to MODE LOGO, which cause lots of changes in .sol_plt files.
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,12 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-FER_LOCAL_EXTFCNS=/home/ja8/ansley/FERRET/external_functions/ext_func_Solaris
-Beginning at Wed Apr 6 12:49:05 PDT 2005
+Beginning at Wed Apr 13 11:07:52 PDT 2005
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 04/06/05
- 	 6-Apr-05 12:49     
+ 	Solaris 5.6 - 04/08/05
+ 	13-Apr-05 11:07     
 
 yes? !bn500_all_shell
 yes? 
@@ -9788,6 +9787,7 @@ GO bn_plot		! upgraded from bn320_plot 10/1/97 *kob*
 ! all labels to create "master" gif and ps files to compare against
 ! *kob*
 ! V530 - added tests of PLOT/STEP[=connected] to existing plots
+! v581 - for the last set, cancel mode logo, so that .plt files are comparable.
  
 ! define a 6 viewport window (modified definitions 11/92)
 def view/text=.4/xlim=0,.333/ylim=0,.5    ll6
@@ -9968,6 +9968,7 @@ plot/over/i=1:10/thick=4 i
 plot/over/i=1:10/size=-1 i
 set mode/last ignore
  
+can mode logo
 set view ur
 let eps = .1; plot/vs RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
 let eps = .2; plot/vs/over/sym=2  RANDU(I[i=1:10]+eps), RANDU(I[i=1:10]+10+eps)
@@ -9992,6 +9993,7 @@ set mode/last ignore
 set view lr
 polygon/thick/color=red/palette=blue {1,2,1}, {2,1,0.5}
  
+set mode/last logo
  
  
 !added in bn450 10/97 *kob*
@@ -10011,6 +10013,9 @@ cancel mode ignore
 !			metafile checking.
 can view all
 ! 2/98 *kob* just clean up the window a bit
+! 4/05 *acm* save only one of the plots as a metafile for checking; had four of them.
+ 
+can mode meta
 set view full
 set wind/clear/asp=1
  
@@ -10023,6 +10028,7 @@ shade/nolabel sst, x_page, y_page
 !
 ! A more complex projection
 !
+set mode meta bnplot.plt
 go mp_orthographic 210 45
 set grid sst
 let masked_sst = sst * mp_mask
@@ -10042,6 +10048,7 @@ Replacing definition of axis LON_FIELD_J_AXIS
 Replacing definition of axis LAT_FIELD_I_AXIS
 Replacing definition of axis LAT_FIELD_J_AXIS
 go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
+can mode meta
  
 !
 ! What can go wrong
@@ -10075,12 +10082,13 @@ can win 1
 set win 1
  
 !2/98 *kob* - set mode meta again
-set mode meta bnplot.plt
+!sset mode meta bnplot.plt
 let phi = l * deg2rad
 shade/nolabel sst, x_page, y_page
 shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 can mode ignore
  
+set mode meta bnplot.plt
 !!!!!!!!!!!!!!!!!!!!!!
 !
 ! YAY!! End of Benchmark without crashing!!!!
@@ -10121,8 +10129,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 6-Apr-05"
-SESSION_TIME = "12:49"
+SESSION_DATE = "13-Apr-05"
+SESSION_TIME = "11:07"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10140,8 +10148,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 6-Apr-05"
-SESSION_TIME = "12:49"
+SESSION_DATE = "13-Apr-05"
+SESSION_TIME = "11:07"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10149,8 +10157,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 6-Apr-05"
-SESSION_TIME = "12:49"
+SESSION_DATE = "13-Apr-05"
+SESSION_TIME = "11:07"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10160,13 +10168,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 6-Apr-05"
-SESSION_TIME = "12:49"
+SESSION_DATE = "13-Apr-05"
+SESSION_TIME = "11:07"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 6-Apr-05"
-SESSION_TIME = "12:49"
+SESSION_DATE = "13-Apr-05"
+SESSION_TIME = "11:07"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10200,7 +10208,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.80"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Apr  6 2005 12:49:57 "
+LAB3 = "Apr 13 2005 11:08:39 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10299,8 +10307,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 6-Apr-05"
-SESSION_TIME = "12:49"
+SESSION_DATE = "13-Apr-05"
+SESSION_TIME = "11:07"
  
  
 GO bn_reset
@@ -18321,7 +18329,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23051 Apr  6 12:50 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23049 Apr 13 11:09 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18340,7 +18348,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419411 Apr  6 12:51 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419397 Apr 13 11:09 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26505,7 +26513,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  T5 = 50757969 ;
@@ -26530,7 +26538,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26682,7 +26690,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Apr  6 12:52:13 PDT 2005
+Wed Apr 13 11:10:16 PDT 2005
  
 GO bn_reset
 cancel mode verify
@@ -32958,6 +32966,12 @@ cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 GO bn_flowlines
+! bn_flowlines.jnl
+! VECTOR/FLOW
+! 6/2001
+! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
+ 
 set window/asp=1/siz=0.5
 use gtbc011
 set reg/k=1/l=1/y=0:20
@@ -32969,12 +32983,18 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+set mode meta flowlines.plt
+can mode logo
+ 
 can region
 vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
  Using every   2th vector in the X direction
  Using every   2th vector in the Y direction
 flow/i=1:50/j=1:50/over/color=blue/thick/den=1 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
 flow/i=1:50/j=1:50/over/color=green/den=4 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+ 
+can mode meta
+set mode logo
  
 ! ******** V533 Additions below ***********
  
@@ -34990,7 +35010,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr  6 12:52 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Apr 13 11:10 testa.v5d
  
 can region
 use coads_climatology
@@ -35002,7 +35022,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr  6 12:52 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Apr 13 11:10 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35070,7 +35090,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35133,7 +35153,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  GFP3 = "" ;
@@ -35353,7 +35373,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -35615,7 +35635,11 @@ GO bn_vec_curv
 !
 ! ACM  10/23/01
 !       9/12/02  vary the lengths of the vectors in 1st two plots.
+! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
  
+set mode meta vec_curv.plt
+can mode logo
 use coads_climatology
 set reg/l=1
 go mp_orthographic 230 60
@@ -35627,6 +35651,8 @@ let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
 vec/noax/xskip=6/yskip=6/len=20/title="View From Space"  sst*0,(sst*0+yy)*mp_mask, x_page,y_page
 vec/over/xskip=6/yskip=6/len=20 (sst*0+yy)*mp_mask,sst*0, x_page,y_page
 vec/over/xskip=6/yskip=6/color=blue/len=20  (sst*0+yy)*mp_mask,(sst*0+yy)*mp_mask, x_page,y_page
+ 
+can mode meta
  
 ! Sinusoidal projection; put data at the poles
  
@@ -35644,6 +35670,7 @@ vec/over/xskip=16/yskip=8/len=15 fsst*0+yy*mp_mask,fsst*0, x_page,y_page
  
 ! Irregular axes, and manual axis scaling
 set win/asp=1
+set mode meta vec_curv2.plt
  
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
 def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}
@@ -35671,6 +35698,8 @@ let mypage = my + 0*mx
 vec/title="Stretched grid" a,b,mxpage,mypage
  
 can view
+can mode meta
+set mode logo
  
 GO bn_reset
 cancel mode verify
@@ -40361,10 +40390,14 @@ cancel mode verify
 GO bn_dots
 ! PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 12/02
+! ACM 4/2005 set mode meta to save this plot for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
  
- 
+set mode meta dots.plt
+can mode logo
 plot/symbol=dot/i=1:1000 sin(62.8*i)
 plot/symbol=dot/color=red/over/i=1:1000 sin(62.8*(i+20))
+can mode meta
  
 ! test warnings
 plot/symbol=dot/thick/i=1:1000 sin(62.8*(i+10) )
@@ -40375,6 +40408,7 @@ plot/symbol=dot/size=0.5/over/i=1:1000 -0.5*sin(62.8*(i+10) )
 ! Vector plots with null-size vectors
  
 vector/i=1:5/j=1:5 0.*(i+j),0*(i+j)
+set mode logo
  
 GO bn_reset
 cancel mode verify
@@ -40516,6 +40550,8 @@ cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 GO bn_mode_logo_lab
+ 
+! bn_mode_logo_lab.jnl
 ! cancel both logo and labels
  
  
@@ -40554,7 +40590,7 @@ show modes
       DESPERATE     CANCELLED       640000
       GKS              SET
       REFRESH          SET
-      METAFILE      CANCELLED      polygon_plot.plt
+      METAFILE      CANCELLED      dots.plt
       PPLLIST       CANCELLED      ppllist.out
       GUI           CANCELLED
       LOGO          CANCELLED
@@ -40597,7 +40633,10 @@ can mode logo
 can mode labels
 polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
  
+! restore state of modes
 cancel view
+set mode logo
+set mode labels
  
 GO bn_reset
 cancel mode verify
@@ -40954,6 +40993,12 @@ plot/sym=dot/color=8/i=1:10 i
 ! ******** V5.52 Additions below ***********
  
 GO bn_multi_line_labels.jnl
+     ! bn_multi_line_labels.jnl
+! March 31, 2003
+!
+! ACM 4/2005 set mode meta to save this plot for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
+ 
  
  
 set view full
@@ -40965,6 +41010,8 @@ ppl plot
 plot/over/i=1:100 i*sin(i/8)
  
  
+set mode meta multi_line_labels.plt
+can mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
 ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
@@ -40980,7 +41027,8 @@ label 30,-70,-1,40,0.2,"first line, then blank<NL> <NL>third line, all rotated"
  
 label/nouser 6.5,6,1,90,0.2,"@p2Another @CImoveable label<nl>Set to @CRCR and @p4P4\
 <NL>at 90 degrees"
- 
+set mode/last meta
+set mode/last logo
  
 plot/title="multi-line key labels"/i=1:100 i*sin(i/12)
 plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 1" i*sin(i/6)
@@ -42977,7 +43025,8 @@ cancel mode verify
 GO bn_graticules.jnl
 ! /GRAT, /HGRAT and /VGRAT to set graticule lines
 ! ACM March 12, 2004
- 
+! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
  
 ppl axnmtc,2,2
  
@@ -43011,6 +43060,9 @@ plot/hg=small(color=red,dash,thick=1),large(color=blue,line,thick=3)/vg=large(li
  
 ! Log axes: VLOG and HLOG with large and small tics
  
+set mode meta graticules.plt
+can mode logo
+ 
 set view left
 def axis/z zlog=exp(k[k=1:10])
 let fcn = k[gz=zlog]
@@ -43020,6 +43072,9 @@ set view right
 def axis/z/depth dlog=exp(k[k=1:20])
 let fcn = k[gz=dlog]
 plot/vlog/vlimits=1:100000/hg="large(color=red),small(color=lightblue)" fcn
+ 
+can  mode meta
+set mode logo
  
 can view
  
@@ -45128,7 +45183,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -45191,7 +45246,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45249,7 +45304,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45329,7 +45384,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -45552,7 +45607,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45621,7 +45676,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45698,7 +45753,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -47986,17 +48041,23 @@ ppl list labels
  @A                                                                            
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
- LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 2  0.000E+00  6.770E+00 0.102    0  SYSTEM  @ASLATITUDE : 1N
- LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 3  0.000E+00  6.600E+00 0.102    0  SYSTEM  @ASYEAR : 1995
- LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
- LAB 4  8.000E+00  6.600E+00 0.120    0  SYSTEM  @ASDATA SET: bn_strides
- LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
- LAB 5  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 5.80
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 6  8.000E+00  6.790E+00 0.090    0  SYSTEM  @ASDODS URL: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/
+ LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASApr 13 2005 11:14:22
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 5  0.000E+00  6.770E+00 0.102    0  SYSTEM  @ASLATITUDE : 1N
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 6  0.000E+00  6.600E+00 0.102    0  SYSTEM  @ASYEAR : 1995
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
+ LAB 7  8.000E+00  6.600E+00 0.120    0  SYSTEM  @ASDATA SET: bn_strides
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
+ LAB 8  4.000E+00  6.330E+00 0.120    0  SYSTEM  @A
+ LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
+ LAB 9  8.000E+00  6.790E+00 0.090    0  SYSTEM  @ASDODS URL: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/
  LINE PT:    0.000E+00 0.000E+00  NO LINE     RIGHT  JUSTIFY LABEL
  
  
@@ -48197,7 +48258,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -48276,7 +48337,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -48356,7 +48417,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.80    6-Apr-05" ;
+		:history = "FERRET V5.80   13-Apr-05" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48500,12 +48561,35 @@ set mode meta
 set view v1
 shade/i=1:12/j=1:12 i+j
  
+can view
+ 
+! fix for bug 1205: symbol LEV_DEL wrong when single level specified
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err580_lev_del.jnl
+! err580_lev_del.jnl
+! demonstrates bug 1205; precision of LEV_DEL when single level specified.
+ 
+shade/lev=.4d/x=1:10/y=1:10 cos(i/10)*9*sin(j/5)
+sh sym lev_del
+LEV_DEL = "0.4"
+ 
+! Why does the following fail when run as part of the benchmarks?  ZMIN and ZMAX
+! computed in stmnmx have the values of  xmin and xmax instead of zmin and zmax,
+! but it works fine alone, not here at the end of the benchmarks...
+!
+! use coads_climatology
+! shade/l=1/lev=.4d sst; sho sym lev_del
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 04/06/05
- 	 6-Apr-05 12:56     
+ 	Solaris 5.6 - 04/08/05
+ 	13-Apr-05 11:14     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -48688,8 +48772,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 04/06/05
- 	 6-Apr-05 12:56     
+ 	Solaris 5.6 - 04/08/05
+ 	13-Apr-05 11:14     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -48802,4 +48886,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Apr 6 12:56:34 PDT 2005
+Ended at Wed Apr 13 11:14:44 PDT 2005

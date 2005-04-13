@@ -14,7 +14,7 @@ foreach plt_file ($plt_files)
  set size = `ls -l $plt_file | cut -b 26-32`
  set size2 = `ls -l metafile_masters_v580/$plt_file | cut -b 26-32`
  if ($size != $size2) set err_plt = 1
- if ($num_plt_files != 13 ) set err_plt = 1
+ if ($num_plt_files != 15 ) set err_plt = 1
 end
 
 set err_gif = 0

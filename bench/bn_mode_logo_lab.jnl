@@ -1,3 +1,5 @@
+
+! bn_mode_logo_lab.jnl
 ! cancel both logo and labels
 
 
@@ -47,4 +49,7 @@ can mode logo
 can mode labels
 polygon/axes=1,0,1,0 {1,2,1}, {2,1,0.5}
 
+! restore state of modes
 cancel view
+set mode logo
+set mode labels

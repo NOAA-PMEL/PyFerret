@@ -1,4 +1,10 @@
-     
+     ! bn_multi_line_labels.jnl     
+! March 31, 2003
+!
+! ACM 4/2005 set mode meta to save this plot for the metafile checks.
+!            and cancel mode logo, so that .plt files are comparable.
+
+
 
 set view full
 
@@ -9,6 +15,8 @@ ppl plot
 plot/over/i=1:100 i*sin(i/8)
 
 
+set mode meta multi_line_labels.plt
+can mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
 ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
@@ -24,7 +32,8 @@ label 30,-70,-1,40,0.2,"first line, then blank<NL> <NL>third line, all rotated"
 
 label/nouser 6.5,6,1,90,0.2,"@p2Another @CImoveable label<nl>Set to @CRCR and @p4P4\
 <NL>at 90 degrees"
- 
+set mode/last meta
+set mode/last logo
 
 plot/title="multi-line key labels"/i=1:100 i*sin(i/12)
 plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 1" i*sin(i/6)

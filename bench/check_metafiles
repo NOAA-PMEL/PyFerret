@@ -4,7 +4,8 @@
 # kob  10/97
 # acm   4/05 add more .plt files for checking, new directory metafile_masters_v580
 
-set plt_files = ( bn*.plt pattern*.plt polygon*.plt )
+set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt multi_line_labels.plt \
+pattern*.plt polygon*.plt vec_curv*.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
 set num_plt_files = `ls -l *.plt | wc -l `
@@ -14,7 +15,7 @@ foreach plt_file ($plt_files)
  set size = `ls -l $plt_file | cut -b 26-32`
  set size2 = `ls -l metafile_masters_v580/$plt_file | cut -b 26-32`
  if ($size != $size2) set err_plt = 1
- if ($num_plt_files != 15 ) set err_plt = 1
+ if ($num_plt_files != 14 ) set err_plt = 1
 end
 
 set err_gif = 0

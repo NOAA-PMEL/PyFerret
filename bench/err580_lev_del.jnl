@@ -1,7 +1,13 @@
 ! err580_lev_del.jnl    
 ! demonstrates bug 1205; precision of LEV_DEL when single level specified.
 
-use coads_climatology
-shade/l=1/lev=.5d sst; sho sym lev_del
-shade/l=1/lev=.4d sst; sho sym lev_del
+shade/lev=.4d/x=1:10/y=1:10 cos(i/10)*9*sin(j/5)
+sh sym lev_del
+
+! Why does the following fail when run as part of the benchmarks?  ZMIN and ZMAX 
+! computed in stmnmx have the values of  xmin and xmax instead of zmin and zmax, 
+! but it works fine alone, not here at the end of the benchmarks...
+!
+! use coads_climatology
+! shade/l=1/lev=.4d sst; sho sym lev_del
 

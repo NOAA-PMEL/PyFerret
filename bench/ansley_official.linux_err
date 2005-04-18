@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/stout/ansley/v_5_8_0_bug_fix_2/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     52489384 Mar 21 14:50 /home/stout/ansley/v_5_8_0_bug_fix_2/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     49937619 Apr 18 14:37 /home/stout/ansley/v_5_8_0_bug_fix_2/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/linux/ext_func/libs
 Benchmark run by ansley
-Note: fixes for bugs 1200, 1201
+Note:  fix for bug1210 (redefining the time axis of mc data), and previous checkins previous to today -see solaris logs
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -20,7 +20,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/linux/ext_func/libs
-Beginning at Mon Mar 21 14:56:54 PST 2005
+Beginning at Mon Apr 18 14:41:27 PDT 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -172,9 +172,6 @@ shade/nolabel sst, 0*x_page, y_page
 shade/nolabel sst, x_page, 0*y_page
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
- **ERROR: value out of legal range: Y coordinates
-          missing value where val is needed
-shade/nolabel sst, x_page, asin(y_page)
  **ERROR: value out of legal range: Y coordinates
           missing value where val is needed
 shade/nolabel sst, x_page, asin(y_page)
@@ -540,6 +537,10 @@ message/continue ($t2"|solong>really hello|bye|")
 list/l=1/j=40/i=0:300:0 sst
 Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
 Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
+ **ERROR: improper grid or axis definition: error in start,end,delta
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/t myt
+ **ERROR: improper grid or axis definition: error in start,end,delta
+DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -598,4 +599,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Mar 21 15:00:38 PST 2005
+Ended at Mon Apr 18 14:44:26 PDT 2005

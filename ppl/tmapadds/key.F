@@ -82,6 +82,7 @@
 *                  setting so the key labels do not go so close to the edge of the plot.
 * V580 *acm* 11/04 Fix bug 906: default number of digits did not distinguish different 
 *                  levels; got repeated labels 370, 371, 371, 372, 372,...
+* v581 *acm* 3/05 open levels (-INF) (INF)
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -106,14 +107,13 @@
 
 	include        'gkspar.inc'
 
-	integer		ndx,str_len,max_len,incr,lab_digits
+	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht
 	real		xx,yy,xxx,yyy
-
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
-     .                  val, del
+     .                  val, del, x_inc_inf, y_inc_inf, frac
         real*8          val_n, val_last
 	character*12	text,tm_fmt, TM_FMT_DIGITS, txt_out, blanks
         character*20    buff
@@ -142,8 +142,18 @@
         del = 1
         check_0 = .TRUE.
 
-        IF (shd_levels .GT. 1) del = zlev(2) - zlev(1)
+        lev1 = 1
+        levn = nlev2
+        IF (neginf) lev1 = 2
+        IF (posinf) levn = nlev2 - 1
+
+        IF (shd_levels .GT. 1) del = zlev(lev1+1) - zlev(lev1)
         IF (TM_FPEQ(del,0.)) check_0 = .FALSE.
+        
+! IF (INF) levels, will force triangles to be at least 5% of length of colorbar
+
+        frac = 0.05
+        ncount = 1./frac
 
 * See if klab_dig is enough digits to distinguish the levels. 
 
@@ -154,7 +164,7 @@
            buff = ' '
 
  	   buff = 
-     .        TM_FMT_DIGITS (zlev(1),lab_digits,klab_len+5,str_len)
+     .        TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+5,str_len)
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
@@ -233,16 +243,34 @@
            ky_hi = ky_hi_def
         ENDIF
 
-	x_inc = (kx_hi - kx_lo)/max (1.0, real (shd_levels))
+	x_inc = (kx_hi - kx_lo)/MAX (1.0, real (shd_levels))
 	y_inc = 0.1 * (ky_hi - ky_lo)
+        
+        x_inc_inf = x_inc
 
+! IF (INF) levels, force triangles to be at least 5% of length of colorbar
+
+        IF (neginf .AND. posinf) THEN
+           IF (shd_levels .GT. ncount) THEN 
+              x_inc_inf = frac* (kx_hi - kx_lo)
+              x_inc = (1.-2.*frac)*(kx_hi - kx_lo)/ REAL(shd_levels-2)
+              kx_lo = kx_lo + (x_inc_inf-x_inc)
+           ENDIF
+        ELSE IF (neginf .OR. posinf) THEN
+           IF (shd_levels .GT. ncount) THEN 
+              x_inc_inf = frac* (kx_hi - kx_lo)
+              x_inc = (1.-frac)*(kx_hi - kx_lo)/ REAL(shd_levels-1)
+              IF (neginf) kx_lo = kx_lo + (x_inc_inf-x_inc)
+           ENDIF
+        ENDIF
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
-	text = TM_FMT_DIGITS (zlev(1),lab_digits,klab_len,str_len)  
-        if (max_len .lt. str_len) max_len = str_len	   
-
-	do 10 ndx = 2, MAX(2,shd_levels + 1)
+	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len,str_len)  
+        if (max_len .lt. str_len) max_len = str_len
+        
+        nhi = MAX(2,shd_levels+1)
+	do 10 ndx = 2, nhi
 	   px(1) = kx_lo + real (ndx - 2) * x_inc
 	   px(2) = kx_lo + real (ndx - 2) * x_inc
 	   px(3) = kx_lo + real (ndx - 1) * x_inc
@@ -260,6 +288,13 @@
               py(4) = ky_hi
            ENDIF
 
+           IF (neginf .AND. (ndx .EQ. 2) ) THEN
+              CALL key_lo_inf_horz (kpx, kpy, ndx, x_inc_inf)
+
+           ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
+              CALL key_hi_inf_horz (kpx, kpy, ndx, x_inc_inf)
+           ELSE
+
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
 	   call set_fill_ndx (ndx)
 	   call gfa (4,px,py)
@@ -272,10 +307,14 @@
 	   kpy(5) = kpy(1)
 	   IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
-           val = zlev(ndx)
-           IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
-	   if (max_len .lt. str_len) max_len = str_len	   
+           ENDIF ! neginf or posinf
+
+           IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
+              val = zlev(ndx)
+              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	      text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	      if (max_len .lt. str_len) max_len = str_len
+           ENDIF
 10	continue
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
@@ -301,13 +340,15 @@ cc     .		1.0*x_inc*real(incr)/real(max_len))/1000.0
 
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
-             val = zlev(1)
+             val = zlev(lev1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+             IF (ndx .EQ. 1 .AND. neginf) text = " "
+             IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "
 	   end if
 
 	   xx = (kx_lo + x_inc*real(ndx-1))/1000.0
@@ -402,15 +443,34 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
         ENDIF
 
 	x_inc = 0.1 * (kx_hi - kx_lo)
-	y_inc = (ky_hi - ky_lo)/max (1.0, REAL (shd_levels))
+	y_inc = (ky_hi - ky_lo)/MAX (1.0, REAL (shd_levels))
+
+        y_inc_inf = y_inc
+
+! IF (INF) levels, force triangles to be at least 5% of length of colorbar
+
+        IF (neginf .AND. posinf) THEN
+           IF (shd_levels .GT. ncount) THEN 
+              y_inc_inf = frac* (ky_hi - ky_lo)
+              y_inc = (1.-2.*frac)*(ky_hi - ky_lo)/ REAL(shd_levels-2)
+              ky_lo = ky_lo + (y_inc_inf-y_inc)
+           ENDIF
+        ELSE IF (neginf .OR. posinf) THEN
+           IF (shd_levels .GT. ncount) THEN 
+              y_inc_inf = frac* (ky_hi - ky_lo)
+              y_inc = (1.-frac)*(ky_hi - ky_lo)/ REAL(shd_levels-1)
+              IF (NEGINF) ky_lo = ky_lo + (y_inc_inf-y_inc)
+           ENDIF
+        ENDIF
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
-	text = TM_FMT_DIGITS (zlev(1),lab_digits,klab_len,str_len)
+	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len,str_len)
 	if (max_len .lt. str_len) max_len = str_len	
 
-	do 1010 ndx = 2, MAX(2,shd_levels + 1)
+        nhi = MAX(2,shd_levels+1)
+	do 1010 ndx = 2, nhi
 	   px(1) = kx_lo
 	   px(2) = kx_lo + 4.0*x_inc
 	   px(3) = kx_lo + 4.0*x_inc
@@ -428,22 +488,33 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   py(3) = ky_lo + real (ndx - 1) * y_inc
 	   py(4) = ky_lo + real (ndx - 1) * y_inc
 
+           IF (neginf .AND. (ndx .EQ. 2) ) THEN
+              CALL key_lo_inf_vert (kpx, kpy, ndx, y_inc_inf)
+
+           ELSE IF (posinf .AND. (ndx .EQ. nhi) ) THEN
+              CALL key_hi_inf_vert (kpx, kpy, ndx, y_inc_inf)
+           ELSE
+
 *	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
-	   call set_fill_ndx (ndx)
-	   call gfa (4,px,py)
+	      call set_fill_ndx (ndx)
+	      call gfa (4,px,py)
 
 *	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
 *	   NDX TO PRIVATE ITEM - forget it 10.22
 *	   if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (ndx)
 
-           kpx(5) = kpx(1)
-           kpy(5) = kpy(1)
-           IF (.NOT. cont_key) call gpl (5,kpx,kpy)
+              kpx(5) = kpx(1)
+              kpy(5) = kpy(1)
+              IF (.NOT. cont_key) call gpl (5,kpx,kpy)
 
-           val = zlev(ndx)
-           IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
-	   if (max_len .lt. str_len) max_len = str_len	
+           ENDIF ! neginf or posinf
+
+           IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
+              val = zlev(ndx)
+              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
+	      text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	      if (max_len .lt. str_len) max_len = str_len
+           ENDIF
 1010	continue
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
@@ -461,18 +532,23 @@ cc	   karht = amin1 (0.12*1000.0,460.0*rem/real (max_len))/1000.0
 	   incr = klab_incr
 	end if
 
-	do 1020 ndx = 1,shd_levels+1,incr
+        ystart = 0.
+        IF (lev1 .NE. 1) ystart = y_inc
+        
+        do 1020 ndx = lev1,shd_levels+1,incr
 *	   WRITE OUT CORRESPONDING VALUE
 
 CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE		
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
-             val = zlev(1)
+             val = zlev(lev1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
 	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+             IF (ndx .EQ. 1 .AND. neginf) text = " "
+             IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 	   end if
 
 	   xx = (kx_lo + 5.0*x_inc)/1000.0 - xorg 
@@ -498,6 +574,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            ENDIF
 
 	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg - 0.5*karht
+	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg 
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 

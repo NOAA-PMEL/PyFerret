@@ -1,15 +1,4 @@
-	SUBROUTINE LEVPRS(PRSE,VAL,INTIF,IER,IPOS)
-C** 
-C**    @(#)levprs.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
+      SUBROUTINE key_hi_inf_horz (px, py, ndx, h_inc)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -44,66 +33,60 @@ C**
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* Make the top box (triangle) for the color key when the upper level is
+* value-to-infinity
 *
-*	*jd* MOD 3.29.93 READ fails on SGI with comma in string.  Eliminate.
-*	*jd* MOD 11.1.94 READ fails on IBM AIX without it.  Put back in.
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-* v552 *acm* 3/03 Longer strings: changes for multi-line labels.
-* v580 *acm* 8/04 Change use of 256 to buflen+1, 
-*                 where buflen is defined in cmndlen.inc
-* v581 *acm* 3/05 open levels (-INF) (INF)
+*  v581 *acm* 3/05 open levels (-INF) (INF)
 
-        INCLUDE 'cmndlen.inc'
-	INCLUDE 'parampl5_dat.decl'
-        INCLUDE 'PARAMPL5.DAT'
-	INCLUDE 'cont_inc.decl'
-	INCLUDE 'CONT.INC'
+      INCLUDE 	'parampl5_dat.decl'
+      INCLUDE 	'PARAMPL5.DAT'
+      INCLUDE   'cont_inc.decl'
+      INCLUDE	'CONT.INC'           ! with cont_key
 
-	LOGICAL BLNK
-	CHARACTER PRSE*(*)
+      REAL px(*),py(*), h_inc
+      INTEGER ndx
 
-*       variable IF renamed to INTIF for MAC *jd* 7.92
+      REAL x1, x2, x3, x4, y1, y2, y3, y4, dely
 
-	DIMENSION VAL(4),INTIF(4)
-	IER=0
-	IPOS=1
-	I=1
-30	ICM=INDEX(PRSE,',')
-	IF(ICM.EQ.0)ICM=buflen+1
-	IBL=INDEX(PRSE,' ')
-	IF(IBL.EQ.0)IBL=buflen+1
-	ISTPP=MIN0(ICM,IBL,buflen)
-	BLNK=PRSE(ISTPP:ISTPP).EQ.' '
-	IF(ISTPP.NE.1)THEN
-		INTIF(I)=1
-                val(i) = 0
-                IF (prse(:istpp-1) .EQ. 'INF') THEN
-                   posinf = .TRUE.
-                   RETURN
-                ENDIF
-                IF (prse(:istpp-1) .EQ. '-INF') THEN
-                   neginf = .TRUE.
-                   RETURN
-                ENDIF
-		PRSE(ISTPP:ISTPP)=','
+* save px and py values
 
-#ifdef AIX_XLF
-		READ(PRSE(:ISTPP),996,ERR=1000)VAL(I)
-#else
-		READ(PRSE(:ISTPP-1),996,ERR=1000)VAL(I)
-#endif
-996		FORMAT(E20.0)
-	ENDIF
-20	ISTPP=ISTPP+1
-	IF(ISTPP.GT.buflen)GOTO 40
-	IF(PRSE(ISTPP:ISTPP).EQ.' '.OR.
-     *	(BLNK.AND.PRSE(ISTPP:ISTPP).EQ.','))GOTO 20
-	PRSE=PRSE(ISTPP:)
-	IPOS=IPOS+ISTPP-1
-	I=I+1
-	IF(I.LE.4)GOTO 30
-40	RETURN
-1000	IER=9
-	RETURN
-	END
+      y1 = py(1)
+      y2 = py(2)
+      y3 = py(3)
+      y4 = py(4)
+
+      x1 = px(1)
+      x2 = px(2)
+      x3 = px(3)
+      x4 = px(4)
+
+* triangle
+
+      dely = y1 - y2
+
+      py(3) = y2 + dely/2.
+      px(3) = px(1) + h_inc
+
+*	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
+       call set_fill_ndx (ndx)
+       call gfa (3,px,py)
+
+* Outline
+       px(4) = px(1)
+       py(4) = py(1)
+       IF (.NOT. cont_key) call gpl (4,px,py)
+
+* Restore px, py
+
+      py(1) = y1
+      py(2) = y2
+      py(3) = y3
+      py(4) = y4
+
+      px(1) = x1
+      px(2) = x2
+      px(3) = x3
+      px(4) = x4
+
+      RETURN
+      END

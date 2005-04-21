@@ -44,6 +44,7 @@
 *           when changing the size and location of the shade key -- can 
 *           reset any of the four, and others will be filled in by making 
 *           the key the default size in that direction.  See key.F
+* v581 *acm* 3/05 put flag cont_key into common CONT.INC
 
         include         'shade_vars.cmn'
 	include		'cmrd_inc.decl'
@@ -52,6 +53,10 @@
         include         'AXIS.INC'
         include         'plt_inc.decl'
         include         'PLT.INC'
+	include 	'parampl5_dat.decl'
+	include 	'PARAMPL5.DAT'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
 
         INTEGER i
 
@@ -122,9 +127,6 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
         ENDIF
 
  2000   CONTINUE
-
-        cont_key = .FALSE.
-        IF (p(11) .eq. 1) cont_key = .TRUE.
 
         DO 3000 i = 1, 4
            iflg(i+6) = 0  ! Reset for subsequent plots

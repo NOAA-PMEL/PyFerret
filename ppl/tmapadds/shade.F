@@ -62,6 +62,7 @@
 *                 values are equal or close.  Also fixes this adjustment
 *                 when the range has negative values; was always incorrect.
 * v580  8/04*acm* Fix bug 957 shade/lev=1 of a constant field needs zlev(1) to be set.
+* v581 *acm* 3/05 open levels (-INF) (INF)
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -210,7 +211,8 @@ C       Mod 4.18.90 to allow just on level to be SHADEd
 C       CONTOUR requires more than one level to work but SHADE doesn't
 
 	   NLEV2=NLEV
-
+              IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
+              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
 	END IF  
 
 * Now that the levels are set, create the LEVELS symbols

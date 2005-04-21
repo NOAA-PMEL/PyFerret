@@ -43,17 +43,27 @@ C**                 PLOT+ Scientific Graphics System
 C**
 C***********************************************************************
 C**
-C**
-#ifdef unix
+C***
+* v581 *acm* 3/05 open levels (-INF) (INF)
+
+	INCLUDE 'parampl5_dat.decl'
 	INCLUDE 'PARAMPL5.DAT'
+        INCLUDE 'cont_inc.decl'
 	INCLUDE 'CONT.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:CONT.INC'
-#endif
+
+        integer lstart, lend
+
 	LOGICAL BLNK
+
+        lstart = 1
+        IF (neginf) lstart = lstart + 1
+        lend = nlev
+        IF (posinf) lend = lend - 1
+c        IF (lstart+1 .GT. lend) GOTO 320
+
 300	BLNK=.FALSE.
-	DO 310 I=2,NLEV
+
+	DO 310 I=lstart+1,lend
 	IF(ZLEV(I-1).GT.ZLEV(I))THEN
 		BLNK=.TRUE.
 		Z=ZLEV(I)
@@ -71,5 +81,5 @@ C**
 	ENDIF
 310	CONTINUE
 	IF(BLNK)GOTO 300
-	RETURN
+320	RETURN
 	END

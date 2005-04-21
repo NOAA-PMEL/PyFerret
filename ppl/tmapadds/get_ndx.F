@@ -52,7 +52,7 @@
 *		changed
 *  V5.71 *acm*  6/15/04 Use TM_FPEQ when checking whether a single-level zlev is
 *               the same as datum.
-
+*  v581 *acm* 3/05 open levels (-INF) (INF)
 
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
@@ -64,15 +64,24 @@
 	include		'CONT.INC'
 	include		'shade_vars.cmn'
 
+* Calling argument declarations
 	integer		ndx
+        real            datum
 
-	real		datum, test
+* Local variable declarations
+	real	        test
+	integer		lev1, levn
         logical         TM_FPEQ
 
 ********************************************************************************
 
 *	      CHECK AGAINST 'LIMITS' VALUES AND FIND COLOR INDEX
-              test = datum - zlev(1)
+
+              lev1 = 1
+              levn = nlev2
+              IF (neginf) lev1 = 2
+              IF (posinf) levn = nlev2 - 1
+
 	      if(
      .		 (zle.and.datum.le.cmzle) 	.or.
      .		 (zeq.and.datum.eq.cmzeq) 	.or.
@@ -80,26 +89,38 @@
 
 	         get_ndx = -999
 * ... 12/4/97 added range checks
-	      else if (datum .lt. zlev(1)) then
+
+	      else if (datum .lt. zlev(lev1) .AND. (.NOT.neginf) ) then
 	         get_ndx = -999
-	      else if (datum .gt. zlev(nlev2)) then
+	      else if (datum .gt. zlev(levn) .AND. (.NOT.posinf) ) then
 	         get_ndx = -999
 * ... 12/4/97
 
-	      else if (nlev2 .eq. 1) then
-		 if ( TM_FPEQ(datum, zlev(1)) ) then
+c	      else if (levn - lev1 .LE. 1) then
+	      else if (levn .LE. 1) then
+		 if ( TM_FPEQ(datum, zlev(lev1)) ) then
 		    get_ndx = 2
 		 else
 		    get_ndx = -999
 		 endif
-	      else             
-	         call locator (zlev,1,nlev2,datum,ndx)
+	      else   
+                 IF (( datum .LT. zlev(lev1) ) .AND. neginf ) THEN
+                    get_ndx = 2
+                 ELSE IF ( (datum .GT. zlev(levn) ) .AND. posinf) THEN
+                    get_ndx = nlev2
+                 ELSE
+	            call locator (zlev(lev1),lev1,levn,datum,ndx)
 
-	         if (ndx .eq. nlev2) then
-	            get_ndx = -999
-	         else
-	            get_ndx = ndx + 1
-	         end if
+	            if (ndx .eq. levn) THEN
+                       IF (posinf) then
+	                  get_ndx = nlev2
+	               else
+                          get_ndx = -999
+                       endif
+	            else
+	               get_ndx = ndx + 1
+	            end if
+                 ENDIF
 	      end if
 
 	return

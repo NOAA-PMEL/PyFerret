@@ -10,17 +10,12 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
-	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'CMRDL.INC'
-	INCLUDE 'CMRD.INC'
+	INCLUDE 'parampl5_dat.decl'
+	INCLUDE 'PARAMPL5.DAT'
+	INCLUDE 'cont_inc.decl'
 	INCLUDE 'CONT.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:CMRDL.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CONT.INC'
-#endif
+
 	CHARACTER PRSE*2048
 
 *
@@ -63,11 +58,13 @@ C**
 *	where level should be zero but round off error results in near but
 *	non zero value.
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+* v581 *acm* 3/05 open levels (-INF) (INF)
 
 	parameter	(epsilon = 1e-6)
 
 
 	DIMENSION VAL(4),INTIF(4)
+        INTEGER ntop
 
 	IF(LABEL.EQ.' ')THEN
 	    NLEV=10
@@ -78,7 +75,10 @@ C**
 C
 C	BEGIN PARSE
 C
-	ISTP=-1
+        posinf = .FALSE.
+        neginf = .FALSE.
+
+        ISTP=-1
 	IREL=0
 200	LABEL=LABEL(ISTP+2:)
 	IST=INDEX(LABEL,'(')+1
@@ -135,26 +135,37 @@ C
 		ENDIF
 		DO 100 I=1,NL
 		J=NLEV+I
-		ZLEV(J)=VAL(1)+VAL(3)*(I-1)
-		LWGT(J)=2
+                IF (J.GT.1 .AND. posinf) THEN
+                   zlev(j) = zlev(j-1) + 1.
+                ELSE 
+                   ZLEV(J)=VAL(1)+VAL(3)*(I-1)
 CC		Bug fix for non zero levels that ought to be zero *jd*
-		IF (ABS(ZLEV(J)) .LT. EPSILON*ABS(VAL(1))) ZLEV(J)=0.0	
-		IF(ZLEV(J).EQ.0.0)GOTO 100
+		   IF (ABS(ZLEV(J)) .LT. EPSILON*ABS(VAL(1))) ZLEV(J)=0.0	
+		   IF(ZLEV(J).EQ.0.0)GOTO 100
+                ENDIF
+
+		LWGT(J)=2
 		IF(ZLEV(J).GT.0)THEN
-		    LWGT(J)=1
-		ELSE
-		    LWGT(J)=3
+		   LWGT(J)=1
+	        ELSE
+		   LWGT(J)=3
 		ENDIF
 100		CONTINUE
 C
 C	FIND MIN AND MAX
 C
 		ZMIN=ZLEV(1)
+                IF (neginf) ZMIN = ZLEV(2)
 		ZMAX=ZMIN
-		DO 110 I=2,NLEV+NL
+                ntop = nlev+nl
+                IF (posinf) ntop = ntop - 1
+		DO 110 I=2,ntop
 		IF(ZLEV(I).GT.ZMAX)ZMAX=ZLEV(I)
 		IF(ZLEV(I).LT.ZMIN)ZMIN=ZLEV(I)
 110		CONTINUE
+
+                IF (neginf) zlev(1) = zmin - 1.
+
 		DZ=ZMAX-ZMIN
 		IF(DZ.EQ.0.)DZ=ABS(ZMAX)
 		IF(DZ.EQ.0.)DZ=10000.0

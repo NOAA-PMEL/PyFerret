@@ -71,6 +71,7 @@ C
 *                 Use TM_FPEQ to see if values are equal or close.  Also fixes 
 *                 this adjustment when the range has negative values; was incorrect.
 * v580  8/04*acm* Fix bug 957 poly/lev=1 of a constant field needs zlev(1) to be set.
+* v581 *acm* 3/05 open levels (-INF) (INF)
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -326,7 +327,8 @@ C       Mod 4.18.90 to allow just on level to be SHADEd
 C       CONTOUR requires more than one level to work but SHADE doesn't
 
 	   NLEV2=NLEV
-
+              IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
+              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
 	END IF 
 
 C ------------

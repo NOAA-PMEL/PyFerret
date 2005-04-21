@@ -79,6 +79,7 @@ C
 * V550 11/02 *acm* New call to create LEVELS symbols, routine setlab_syms
 * V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
 *                  curvlinear coordinates. See also pltit.F, setax.F
+* v581 *acm* 3/05 open levels (-INF) (INF)
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -223,6 +224,8 @@ C
 	      NLEV2=0
 	   ELSE
 	      NLEV2=NLEV
+              IF (neginf) zlev(1) = MIN( zlev(1), zmin-1. )
+              IF (posinf) zlev(nlev) = MAX (zlev(nlev), zmax+1. )
 	   ENDIF
 
 	END IF

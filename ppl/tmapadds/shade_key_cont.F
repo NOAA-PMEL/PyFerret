@@ -38,13 +38,24 @@
 *       Sets up for continuous SHADE key
 *
 * v541 *acm*  5/02 add option to control outline on the shade key boxes
+* v581 *acm* 3/05 put flag cont_key into common CONT.INC
 
 	include		'cmrd_inc.decl'
 	include		'CMRD.INC'
+	include 	'parampl5_dat.decl'
+	include 	'PARAMPL5.DAT'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
 *********************************************
         INTEGER icode
 
 	p(11) = icode
+
+        IF (icode .EQ. 1) THEN
+           cont_key = .TRUE.
+        ELSE
+           cont_key = .FALSE.
+        ENDIF
 
 	return
 	end

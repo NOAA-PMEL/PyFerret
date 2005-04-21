@@ -6,9 +6,6 @@
 *	*jd* 10.23.98 Add pattern support variables
 *	*sh* 12/99 - reordered COMMON (variable "pattern_list" to end) to
 *		ensure contiguous 8-byte organization
-* v541 *acm*  5/02 add option to control outline on the shade key boxes (cont_key)
-* V550 *acm*  9/02 Let SPEC_SIZE be 250, so folks can set at least as many 
-*                  colors as they can use 
 
 *	I_LO,I_HI,J_LO,J_HI are the lo and hi indices of the grid data
 *	X_LO,X_HI,Y_LO,Y_HI are the corresponding lon & lat coordinates
@@ -71,6 +68,7 @@
 * 2/03 *kob* g77 port - move position of cont_key var in common block.  g77
 *                       complained that padding was necessary otherwise
 * 4/03 V552 *acm* Shade key improvements; kuser_loc is 4-dimensional 
+* v581 *acm*  3/05 move cont_key to CONT.INC - continuous key for any color plot
 
 
 	integer		spec_size,max_windows,pattern_num
@@ -104,7 +102,7 @@
 	parameter	(buffer_max=50)
 
 	real		xbuff(4,buffer_max), ybuff(4,buffer_max)
-        logical         cont_key, use_cell
+        logical         use_cell
 
 	common/shade_vars/ i_lo,i_hi,j_lo,j_hi,
      .			   x_lo,x_hi,y_lo,y_hi,
@@ -117,7 +115,7 @@
      .			   ncl,slvl,sr,sg,sb,
      .			   lo_color_ndx(max_windows),
      .			   hi_color_ndx(max_windows),
-     .			   area_bundles,protect_used_colors,cont_key,
+     .			   area_bundles,protect_used_colors,
      .			   mncl,mslvl,msr,msg,msb,
      .			   patterns,npat,mpatterns,mnpat,
      .			   default_patterns,

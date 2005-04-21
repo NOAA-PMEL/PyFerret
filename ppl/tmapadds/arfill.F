@@ -1,4 +1,4 @@
-      subroutine arfill(z,x,y,nx,ny,zlev,nlev)
+      subroutine arfill(z,x,y,nx,ny)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -56,8 +56,6 @@ C     x      - array of grid points along the X axis
 C     y      - array of grid points along the Y axis
 C     nx     - number of X grid points
 C     ny     - number of Y grid points
-C     zlev   - array of contour level values (lo val --> hi val)
-C     nlev   - number of levels to use
 C
 C
 *	MODS JD 1.13.92 To fit into TMAP PPL+
@@ -68,33 +66,27 @@ C
 C     V4.50 *jc* 5.97 Major cleanup and commenting
 C     V4.50 *jc* 5.97 Add curvilinear coordinates code
 C     v5.00 *jd* 2.99 Add fill optimization 
+*     V5.81 ACM 3/05  Other routines (drawpoly, buffer_fillpoly, flush_buffered_fillpoly)
+*                     removed to their own files.
 
-#ifdef unix
 	include 	'ARFILL.INC'
         include         'GKSCM1.INC'
         include         'gkscm2.cmn'
         include         'miss_inc.decl'
         include         'MISS.INC'
         include         'xcurvilinear.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_miss.inc'
-	INCLUDE 	'pplinc:ARFILL.INC'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
 
-#ifdef unix
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
         include         'shade_vars.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
 
-        integer nx,ny,nlev
-        real z(nx,ny),x(nx),y(ny),zlev(nlev)
+	include		'parampl5_dat.decl'
+	include		'PARAMPL5.DAT'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
+
+        integer nx,ny
+        real z(nx,ny),x(nx),y(ny)
 
         real xt(5),yt(5),zt(5),x_extra,y_extra
         integer i,j,ii,jj,nnx,nny
@@ -104,6 +96,7 @@ C     *jd* mod to allow filling single level fields
         if (nlev .le. 1) return
 
 	shd_levels = nlev - 1
+	shd_levels = MAX(nlev2-1,1) ! this is how it is in SHADE.F
 
 C     DETERMINE PATTERNS OR COLORS TO SET BUNDLED FILL AREA REPRESENTATIONS
         call set_fill_area_rep(wsid,wstype)
@@ -191,7 +184,7 @@ c
                  xt(4)=xt(1)
                  yt(4)=yt(3)
 
-                 call drawpoly(xt,yt,zt,zlev,nlev,4)
+                 call drawpoly(xt,yt,zt,4)
 
               else
 c     
@@ -215,7 +208,7 @@ c
                  xt(3)=xt(1)
                  yt(3)=yt(2)
      
-                 call drawpoly(xt,yt,zt,zlev,nlev,3)
+                 call drawpoly(xt,yt,zt,3)
 c     
 c     do lower triangle
 c     
@@ -225,7 +218,7 @@ c
                  xt(3)=xt(2)
                  yt(3)=yt(1)
      
-                 call drawpoly(xt,yt,zt,zlev,nlev,3)
+                 call drawpoly(xt,yt,zt,3)
 
               endif
 
@@ -240,423 +233,3 @@ C
 
         return
         end
-
-
-C======================================================================
-
-c:    
-c:    Output polygon (rectangle or triangle) for contour display.
-c:    
-      subroutine drawpoly(x, y, z, zlev, nlev, nsides)
-      real x(*), y(*), z(*)
-      integer i,j,npoly,nlev,nsides
-      real zlev(nlev)
-      real xpoly(20), ypoly(20),zmin,zmax,f
-c
-
-#ifdef unix
-        include         'miss_inc.decl'
-        include         'MISS.INC'
-        include         'shade_vars.cmn'
-        include         'xcurvilinear.cmn'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_miss.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
-
-      zmin=  1e30
-      zmax= -1e30
-
-      do 10 i = 1,nsides
-         if ((zle .and. z(i) .le. cmzle)  .or.
-     .        (zeq .and. z(i) .eq. cmzeq)  .or.
-     .        (zge .and. z(i) .ge. cmzge)) then
-            
-            if (.not. buffer_empty) call flush_buffered_fillpoly
-            return
-         end if
-         
-         zmin=amin1(zmin,z(i))
-         zmax=amax1(zmax,z(i))
- 10   continue
-      
-      do 100 i = 1, nlev-1
-
-*        ENTIRE CELL IS OUTSIDE PRESET LEVELS
-         if ((zmin.gt.zlev(i+1)) .or. (zmax.lt.zlev(i))) goto 100
-
-*        ENTIRE CELL IS A SINGLE COLOR
-         if ((zmin.ge.zlev(i)) .and. (zmax.le.zlev(i+1))) then
-
-            if ((i .ne. ilast .and. .not. buffer_empty) 
-     .           .or. num_buffered .ge. buffer_max) then
-
-               call flush_buffered_fillpoly
-            end if
-
-            call buffer_fillpoly (x, y, nsides, i-1)
-            return
-         endif
-
-*        CELL IS MORE THAN ONE COLOR. FLUSH BUFFER AND FILL IN THIS CELL.
-         if (.not. buffer_empty) call flush_buffered_fillpoly
-
-         x(nsides+1)=x(1)
-         y(nsides+1)=y(1)
-         z(nsides+1)=z(1)
-         npoly=0
-c
-         do 80 j=1,nsides
-
-            if (z(j).lt.zlev(i)) then
-c
-c z(j) is below
-c
-               if (z(j+1).gt.zlev(i+1)) then
-c
-c z(j+1) is above
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i+1))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-
-               else if ((z(j+1).ge.zlev(i)) .and. 
-     *                 (z(j+1).le.zlev(i+1))) then
-c
-c z(j+1) is inside
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-c
-                  npoly=npoly+1
-                  xpoly(npoly)=x(j+1)
-                  ypoly(npoly)=y(j+1)
-
-               endif
-
-            else if (z(j).gt.zlev(i+1)) then
-c
-c z(j) is above
-c
-               if (z(j+1).lt.zlev(i)) then
-c
-c z(j+1) is below
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i+1))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-
-               else if ((z(j+1).ge.zlev(i)) .and. 
-     *                 (z(j+1).le.zlev(i+1))) then
-c
-c z(j+1) is inside
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i+1))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-c
-                  npoly=npoly+1
-                  xpoly(npoly)=x(j+1)
-                  ypoly(npoly)=y(j+1)
-
-               endif
-
-            else
-c
-c z(j) is inside
-c
-               if (z(j+1).gt.zlev(i+1)) then
-c
-c z(j+1) is above
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i+1))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-
-               else if(z(j+1).lt.zlev(i))then
-c
-c z(j+1) is below
-c
-                  npoly=npoly+1
-                  f=(z(j)-zlev(i))/(z(j)-z(j+1))
-                  xpoly(npoly)=x(j) - f*(x(j)-x(j+1))
-                  ypoly(npoly)=y(j) - f*(y(j)-y(j+1))
-
-               else
-c
-c z(j+1) is inside
-c
-                  npoly=npoly+1
-                  xpoly(npoly)=x(j+1)
-                  ypoly(npoly)=y(j+1)
-
-               endif
-
-            endif
-
- 80      continue
-
-         call fillpoly(xpoly, ypoly, npoly, i-1)
-
- 100   continue
-
-      return 
-      end
-
-
-C======================================================================
-
-      subroutine buffer_fillpoly (xarg,yarg,npts,index)
-
-#ifdef unix
-        include         'xinterrupt.cmn' ! 1/89 *sh*
-        include         'ppl_in_ferret.cmn'
-        include         'shade_vars.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-#endif
-
-*     J Davison 2.4.99
-
-*     BUFFER_FILLPOLY() called when entire grid cell is a single color; when
-*     color changes construct new polygon from individual cells and fill
-*     it in FLUSH_BUFFERED_FILLPOLY().
-
-      real xarg(*), yarg(*)
-      integer npts, index, i
-
-      buffer_empty = .false.
-      num_buffered = num_buffered + 1
-
-      if (npts .eq. 3 .and. num_buffered .eq. 1)
-     .     upper_first = upperflg
-
-      do 10 i = 1, npts
-         xbuff(i,num_buffered) = xarg(i)         
-         ybuff(i,num_buffered) = yarg(i)
- 10   end do
-
-      ilast = index + 1
-
-      return
-      end
-
-C =========================================================================
-
-      subroutine flush_buffered_fillpoly
-
-#ifdef unix
-        include         'xinterrupt.cmn' ! 1/89 *sh*
-        include         'ppl_in_ferret.cmn'
-        include         'shade_vars.cmn'
-	include 	'ARFILL.INC'
-        include         'xcurvilinear.cmn'
-#else
-        INCLUDE         'TMAP_PPLV11INC:XINTERRUPT.CMN' ! 1/89 *sh*
-        INCLUDE         'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-	INCLUDE 	'pplinc:ARFILL.INC'
-#endif
- 
-*     J Davison 2.4.99
-
-*     BUFFER_FILLPOLY() called when entire grid cell is a single color; when
-*     color changes construct new polygon from individual cells and fill
-*     it in FLUSH_BUFFERED_FILLPOLY().
-
-      real xarg(2*buffer_max+2), yarg(2*buffer_max+2)
-      integer m, ndx, neo, noe
-      logical even
-
-      if (sqfflg) then
-*        ********************* RECTANGLES ********************
-         if (curvilinear) then
-
-*           FIRST POINT IS LOWER LEFT CORNER OF FIRST RECTANGLE
-            xarg(1) = xbuff(1,1)
-            yarg(1) = ybuff(1,1)
-           
-*           FOLLOWED BY LOWER RIGHT CORNER OF ALL RECTANGLES
-            do 10 m = 1, num_buffered
-               xarg(m+1) = xbuff(2,m)
-               yarg(m+1) = ybuff(2,m)
- 10         end do
-            
-*           PICK THE UPPER RIGHT CORNER OF THE LAST RECTANGLE
-            xarg(num_buffered+2) = xbuff(3,num_buffered)
-            yarg(num_buffered+2) = ybuff(3,num_buffered)
- 
-*           THEN RETURN ALONG UPPER LEFT CORNER OF EACH RECTANGLE
-            ndx = 2*num_buffered + 3
-
-            do 20 m = num_buffered, 1, -1
-               xarg(ndx-m) = xbuff(4,m)
-               yarg(ndx-m) = ybuff(4,m)
- 20         end do
-
-            call fillpoly (xarg, yarg, 2*num_buffered+2, ilast-1)
-          else
-            xarg(1) = xbuff(1,1)
-            yarg(1) = ybuff(1,1)
-
-            xarg(2) = xbuff(2,num_buffered)
-            yarg(2) = ybuff(2,num_buffered)
-
-            xarg(3) = xbuff(3,num_buffered)
-            yarg(3) = ybuff(3,num_buffered)
-
-            xarg(4) = xbuff(4,1)
-            yarg(4) = ybuff(4,1)
-
-            call fillpoly (xarg, yarg, 4, ilast-1)
-         end if
-      else
-*        ******************* TRIANGLES *******************
-         
-         if (num_buffered .eq. 1) then
-            
-            xarg(1) = xbuff(1,1)
-            yarg(1) = ybuff(1,1)
-
-            xarg(2) = xbuff(2,1)
-            yarg(2) = ybuff(2,1)
-
-            xarg(3) = xbuff(3,1)
-            yarg(3) = ybuff(3,1)
-
-            call fillpoly (xarg, yarg, 3, ilast-1)
-            goto 1000
-         end if
-            
-         if (mod(num_buffered,2) .eq. 0) then
-            even = .true.
-         else
-            even = .false.
-         end if
-         
-         if (curvilinear) then
-
-*           INDICES DEPEND ON WHETHER THERE ARE AN EVEN OR ODD # OF PTS
-            if (even) then
-               neo = num_buffered
-               noe = num_buffered - 1
-            else
-               neo = num_buffered - 1
-               noe = num_buffered
-            end if
-
-*           FIRST POINT IS LEFT CORNER OF FIRST TRIANGLE
-            xarg(1) = xbuff(1,1)
-            yarg(1) = ybuff(1,1)
-               
-*           FOLLOWED BY RIGHT CORNER OF ALL TRIANGLES
-            do 110 m = 2, neo, 2
-               xarg(m/2+1) = xbuff(3,m)
-               yarg(m/2+1) = ybuff(3,m)
- 110        end do
-               
-*           PICK THE RIGHT CORNER OF THE LAST TRIANGLE
-            xarg(neo/2+2) = xbuff(2,num_buffered)
-            yarg(neo/2+2) = ybuff(2,num_buffered)
-               
-*           THEN RETURN ALONG LEFT CORNER OF EACH TRIANGLE
-            ndx = 2*num_buffered + 5
-            
-            do 120 m = noe, 1, -2
-               xarg((ndx-m)/2) = xbuff(3,m)
-               yarg((ndx-m)/2) = ybuff(3,m)
- 120        end do
-
-            call fillpoly (xarg, yarg, num_buffered+2, ilast-1)
-         else
-            if (upper_first .and. even) then
-               xarg(1) = xbuff(1,1)
-               yarg(1) = ybuff(1,1)
-               
-               xarg(2) = xbuff(3,num_buffered)
-               yarg(2) = ybuff(3,num_buffered)
-               
-               xarg(3) = xbuff(2,num_buffered)
-               yarg(3) = ybuff(2,num_buffered)
-               
-               xarg(4) = xbuff(3,1)
-               yarg(4) = ybuff(3,1)
-
-               call fillpoly (xarg, yarg, 4, ilast-1)
-            else if (upper_first .and. .not.even) then
-
-               xarg(1) = xbuff(1,1)
-               yarg(1) = ybuff(1,1)
-               
-               xarg(2) = xbuff(1,num_buffered)
-               yarg(2) = ybuff(1,num_buffered)
-               
-               xarg(3) = xbuff(2,num_buffered)
-               yarg(3) = ybuff(2,num_buffered)
-               
-               xarg(4) = xbuff(3,1)
-               yarg(4) = ybuff(3,1)
-
-               call fillpoly (xarg, yarg, 4, ilast-1)
-            else if (.not.upper_first .and. even) then
-
-               xarg(1) = xbuff(1,1)
-               yarg(1) = ybuff(1,1)
-               
-               xarg(2) = xbuff(1,num_buffered)
-               yarg(2) = ybuff(1,num_buffered)
-               
-               xarg(3) = xbuff(2,num_buffered)
-               yarg(3) = ybuff(2,num_buffered)
-               
-               xarg(4) = xbuff(2,1)
-               yarg(4) = ybuff(2,1)
-
-               call fillpoly (xarg, yarg, 4, ilast-1)
-            else if (.not.upper_first .and. .not.even) then
-
-               xarg(1) = xbuff(1,1)
-               yarg(1) = ybuff(1,1)
-               
-               xarg(2) = xbuff(3,num_buffered)
-               yarg(2) = ybuff(3,num_buffered)
-               
-               xarg(3) = xbuff(2,num_buffered)
-               yarg(3) = ybuff(2,num_buffered)
-               
-               xarg(4) = xbuff(2,1)
-               yarg(4) = ybuff(2,1)
-
-               call fillpoly (xarg, yarg, 4, ilast-1)
-            end if
-         end if
-      end if
-      
- 1000 buffer_empty = .true.
-      num_buffered = 0
-      
-      return
-      end
-
-           
-
-
-

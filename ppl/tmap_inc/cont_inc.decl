@@ -1,6 +1,8 @@
 * CONT_INC.DECL - converted to Unix 2.26.91           
 * COMMON for PLOT+ with all variables declared
 * created for TMAP usage by Steve Hankin 7/88
+c  v581 *acm* 3/05 add flags for use of open levels (-INF) (INF)
+
 	REAL	ZLEV,CANGLE
 	INTEGER	LDIG,IVCOMP
 	INTEGER	LWGT
@@ -13,7 +15,8 @@
 	INTEGER	NSIGC
 	
 *	Following added 8.3.95 *jd*
-	LOGICAL*4 CENTERED,SET_DELTA
+	LOGICAL*4 CENTERED,SET_DELTA,NEGINF,POSINF,CONT_KEY
 	REAL	DELTA
 
 * requires: INCLUDE 'PPLV11INC:CONT.INC'                                    
+

@@ -11,10 +11,13 @@ C**
 C***********************************************************************
 C**
 C**
+*  v581 *acm* 3/05 open levels (-INF) (INF)
 c
+
 	COMMON/CONT/ ZLEV(ICNLEV),LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
      *	NLEV,HGT,NARC,IAUTOC,NLEV2,NSIGC,CANGLE,IVCOMP,
-     *  CENTERED,SET_DELTA,DELTA
+     *  CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY
+
 
 c
 c	zlev()	array of levels to be contoured (user units)
@@ -40,6 +43,10 @@ c 	These added 8.3.95 *jd*
 c	centered 	True if levels are to be centered around zero
 c	set_delta	True if DZ will be specified by the user
 c	delta		The specified DZ value
+*       neginf          The low level is open: lowest level specified to -inf
+*       posinf          The high level is open: hithest level specified to inf
+*       cont_key        Draw continuous color key - no a outline on the key boxes 
+*                        (previously this was in shade_vars.cmn)
 
 c*******************************************************************
 

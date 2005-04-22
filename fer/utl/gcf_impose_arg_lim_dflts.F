@@ -59,6 +59,9 @@
 *		Hugely simplified this routine!
 * v580 *acm* 11/04 Reset cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
+* v581 *acm*  2/05 for axis_expand, if the requested offset is given as 
+*                  unspecified_int4 then use the full axis range, or if 
+*                  the axis is modulo, then one full modulo repetition
 
 *	Note: the "offset" code in this routine is largely untested!
 
@@ -79,7 +82,8 @@
 	INTEGER	TM_LENSTR1, ISUBSCRIPT, KNOWN_GRID,
      .		gcfcn, idim, arg_grd, mods_cx, tmp_var_cx,
      .		lo_off(4), hi_off(4), action(4), uvgrid,
-     .          WHICH_GCFCN
+     .          WHICH_GCFCN, lo, hi, ss_mid, cx_mid
+       LOGICAL ss_fix
 
 * initialize
 	CALL TRANSFER_CONTEXT ( cx_in, cx_out )
@@ -118,29 +122,95 @@
 !	      cx_trans_arg(idim,cx_out)  = bad_val4
 
 	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
-* pass along the axis limits
+* pass along the axis limits 
+                 
+              IF (lo_off(idim) .EQ. unspecified_int4 .OR.
+     .            hi_off(idim) .EQ. unspecified_int4)  
+     .           CALL GRID_SUBSCRIPT_EXTREMES_NO_MOD
+     .                             (lo, hi, uvgrid, idim)
+                 ss_mid = (hi - lo + 1)/ 2.
+
+
 	      IF ( cx_by_ss(idim,cx_out) ) THEN
-* ... expand the subscript range by the offsets requested
+* ... expand the subscript range by the offsets requested. If the
+*     requested offset is unspecified_int4 then use the full axis range,
+*     or if modulo, then use either 
+*    1) one full modulo repitition, centered on the output range, or
+*    2) the requested range, if it is larger than one modulo repetitionpetition
+
 	         IF ( cx_hi_ss(cx_out,idim).NE.unspecified_int4 ) THEN
-	            cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
+
+* special fix for modulo axes.
+                    ss_fix = ( cx_lo_ss(cx_out,idim) .LT. lo .OR.
+     .                      cx_hi_ss(cx_out,idim) .GT. hi )  ! special fix for modulo axes
+
+                    cx_mid = (1 + cx_hi_ss(cx_out,idim) +
+     .                            cx_lo_ss(cx_out,idim))/2.
+                    IF (lo_off(idim) .EQ. unspecified_int4 )  THEN
+                       IF (ss_fix) THEN
+                          cx_lo_ss(cx_out,idim) =  MIN(cx_mid - ss_mid,
+     .                                cx_lo_ss(cx_out,idim))
+                       ELSE
+                          cx_lo_ss(cx_out,idim) = lo
+                       ENDIF
+                    ELSE
+	               cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
      .					  + lo_off(idim)
-	            cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)
+                    ENDIF
+                    IF (hi_off(idim) .EQ. unspecified_int4 )  THEN
+                       IF (ss_fix) THEN
+                          cx_hi_ss(cx_out,idim) = MAX(cx_mid + ss_mid, 
+     .                                cx_hi_ss(cx_out,idim) )
+                       ELSE
+                          cx_hi_ss(cx_out,idim) = hi
+                       ENDIF
+                    ELSE
+ 	               cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)
      .					  + hi_off(idim)
+                    ENDIF
 		 ENDIF
 	      ELSE
 * ... convert the world coordinate range to subscript limits. Then
 * ... expand the subscript range by the offsets requested
 	         IF ( cx_hi_ww(idim,cx_out).NE.unspecified_val8 ) THEN
+                 
 	            cx_lo_ss(cx_out,idim) =
      .				ISUBSCRIPT(cx_lo_ww(idim,cx_out),
-     .					   uvgrid, idim, round_up)
-	            cx_hi_ss(cx_out,idim) = 
+     .		 			   uvgrid, idim, round_up)
+                    cx_hi_ss(cx_out,idim) = 
      .				ISUBSCRIPT(cx_hi_ww(idim,cx_out),
      .					   uvgrid, idim, round_dn)
-	            cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
+
+* special fix for modulo axes. 
+                    ss_fix = ( cx_lo_ss(cx_out,idim) .LT. lo .OR.
+     .                      cx_hi_ss(cx_out,idim) .GT. hi )  
+                    cx_mid = (1 + cx_hi_ss(cx_out,idim) +
+     .                            cx_lo_ss(cx_out,idim))/2.
+
+                    IF (lo_off(idim) .EQ. unspecified_int4 )  THEN
+                       IF (ss_fix) THEN
+                          cx_lo_ss(cx_out,idim) = MIN(cx_mid - ss_mid,
+     .                                cx_lo_ss(cx_out,idim))
+                       ELSE
+                          cx_lo_ss(cx_out,idim) = lo
+                       ENDIF
+                    ELSE
+	               cx_lo_ss(cx_out,idim) = cx_lo_ss(cx_out,idim)
      .					  + lo_off(idim)
-	            cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)
+                    ENDIF
+
+                    IF (hi_off(idim) .EQ. unspecified_int4 )  THEN
+                       IF (ss_fix) THEN
+                          cx_hi_ss(cx_out,idim) = MAX(cx_mid + ss_mid, 
+     .                                cx_hi_ss(cx_out,idim) )
+                       ELSE
+                          cx_hi_ss(cx_out,idim) = hi
+                       ENDIF
+                    ELSE
+	               cx_hi_ss(cx_out,idim) = cx_hi_ss(cx_out,idim)
      .					  + hi_off(idim)
+                    ENDIF
+
 		 ENDIF
 	         cx_by_ss(idim,cx_out) = .TRUE.
 	      ENDIF

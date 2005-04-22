@@ -163,6 +163,8 @@
 * V580 *acm* 10/05 correct misspelling in statement 5582
 * V580 *acm* 11/04 Use cx_cal_id to keep track of which calendar used
 *                  when cx_lo_ww and cx_hi_ww are computed.
+* V581 *acm*  3/05 Catch case where errors in def axis/start:lo:del, before
+*                  trying to call RESET_SECS_FROM_BC (bug1203)
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1073,9 +1075,11 @@ C /units=months  is 1/12 of the length of the year
 	   start = cx_lo_ww(orient,mods_cx)
 	   end   = cx_hi_ww(orient,mods_cx)
            prev_cal_id = cx_cal_id(mods_cx)
+           IF (prev_cal_id .EQ. unspecified_int4) prev_cal_id = 1
 
-	   IF ( orient .EQ. t_dim .AND. cal_id .NE. prev_cal_id 
-     .          .AND. start .LT. 0.) THEN
+	   IF ( orient .EQ. t_dim  .AND.  cal_id .NE. prev_cal_id .AND.
+     .          start .LT. 0.  .AND.  start .NE. unspecified_val8.AND.
+     .          end   .LT. 0.  .AND.  end   .NE. unspecified_val8) THEN
 	      CALL RESET_SECS_FROM_BC (-start, new_ww, prev_cal_id, 
      .                                 cal_id, status)
 	      start = -1. * new_ww

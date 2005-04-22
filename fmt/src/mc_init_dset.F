@@ -63,7 +63,8 @@
 * V500 *kob* 4/99 - removed unneeded variable_record namelista
 *	*sh* 7/99 - added perm argument needed for netCDF permutations
 * V510 *sh* 3/00 - added tregular argumant
-
+* v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
+*                     for indexing mc datasets in mc_read.
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -78,7 +79,7 @@
 	INTEGER		dset_num, lunit, perm(4), status
 
 * Parameter and common files
-#ifdef unix
+
 	include 'tmap_errors.parm'		! error codes
 #include "tmap_dset.parm"	
 	include 'tmap_dims.parm'		! data set dimensions
@@ -90,23 +91,11 @@
 	external xdset_info_data
 	include 'xstep_files.cmn_text'		! step file common
 	external xstep_files_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! Error codes
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! Data set constants
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'		! Data set dimensions
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XIO.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'		! Data set common
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'		! Step file common
-#endif
 
 * Define variables from Set File namelist records
-#ifdef unix
+
 	include 'descript.def'
-#else
-	INCLUDE 'TMAP_FORMAT:DESCRIPT.DEF'
-#endif
+
 
 * Internal declarations
 *	CHARACTER*18	reading_nml
@@ -124,7 +113,7 @@
      .			byplane, l_ivar, stp_pos, min_file, max_file,
      .			file_num, cnt_stp, nrecperstep, epos, first_file,
      .			file_cnt, stp_cnt, min_pos, max_pos,istat, lcnt,
-     .			lline, file_reclen
+     .			lline, file_reclen, prev_steps
         INTEGER*4       upstat
 	INTEGER		TM_GET_GRIDNUM, TM_LENSTR, STR_UPCASE
 	REAL*8		last_delta, file_trange, steps_in_file
@@ -193,6 +182,8 @@
 	s_regvarflag  = ' '
 	s_index       = ' '
 	s_delta	      = 0	! *sh* 9/90
+
+        prev_steps = 0
 
   170	READ (lunit, NML=STEPFILE_RECORD, END=5000, ERR=5100)
 
@@ -282,16 +273,28 @@
 	  IF (s_num_of_files .GT. 1) THEN
 	     WRITE (sf_name(stp_cnt)(epos-3:epos),1300) file_cnt
  1300	     FORMAT('.',I3.3)
-	     sf_1step(stp_cnt) = s_start +
+
+ 	     sf_1step(stp_cnt) = s_start +
      .				   file_trange*(file_cnt-first_file)
 	     sf_lastep(stp_cnt) = sf_1step(stp_cnt)+file_trange-s_delta
+
+	     sf_ndxs(stp_cnt) = 1 + steps_in_file* (file_cnt-first_file)
+	     sf_ndxe(stp_cnt) = sf_ndxs(stp_cnt) + steps_in_file - 1
+
 	  ELSEIF (INDEX(temp_t0time,'INDEPENDENT') .GT. 0) THEN  !
              sf_1step(stp_cnt) =  unspecified_val8               ! kob -            
              sf_lastep(stp_cnt) = unspecified_val8               ! 6/91
+             sf_ndxs(stp_cnt) =  unspecified_int4          
+             sf_ndxe(stp_cnt) = unspecified_int4 
           ELSE  
 	     sf_1step (stp_cnt) = s_start
 	     sf_lastep(stp_cnt) = s_end
+	     sf_ndxs (stp_cnt) = 1 + prev_steps
+c	     sf_ndxe(stp_cnt) = steps_in_file + sf_ndxs(stp_cnt) - 1 
+	     sf_ndxe(stp_cnt) =INT(steps_in_file+0.5)+sf_ndxs(stp_cnt)-1   ! rounding wierdness
+
 	  ENDIF
+          prev_steps = sf_ndxe(stp_cnt)
 	  sf_delta(stp_cnt) = s_delta
 	  sf_setnum(stp_cnt) = dset_num
 	  sf_aux_set_num(stp_cnt) = s_aux_set_num

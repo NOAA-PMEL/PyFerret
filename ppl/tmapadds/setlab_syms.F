@@ -1,4 +1,4 @@
-      SUBROUTINE setlab_syms (zlev, nlev)
+      SUBROUTINE setlab_syms (zlevels, nlevels)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,6 +35,8 @@
 *
 *  v5.5  *acm* 11/2002 New symbols to save LABEL levels
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+* V581 *acm* 3/05 fix bug 1205: If delta was set by user (with SHADE/LEV=.4d), then 
+*                 use the given delta rather than trying to compute it for LEV_DEL
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -44,10 +46,15 @@
 
 *    (LEV_TEXT - full text string of last levels used, set in routine LEV.F)
 
+	include 	'parampl5_dat.decl'
+	include 	'PARAMPL5.DAT'
+	include		'cont_inc.decl'
+	include		'CONT.INC'
+
 * Calling argument declarations
 
-      REAL zlev(*)
-      INTEGER nlev
+      REAL zlevels(*)
+      INTEGER nlevels
 
 * Internal arguments
 
@@ -59,7 +66,7 @@
 
 * Lowest and highest Z level
 
-      zmin = zlev(1)
+      zmin = zlevels(1)
       buff = TM_FMT(zmin, -2, 10, slen)
 
       ppl_buff = "LEV_MIN "//buff
@@ -68,7 +75,7 @@
       ist = 0
       CALL SETSYM (ppl_buff, ilen, ier, ist)
 
-      zmax = zlev(nlev)
+      zmax = zlevels(nlevels)
       buff = TM_FMT(zmax, -2, 10, slen)
 
       ppl_buff = "LEV_MAX "//buff
@@ -79,7 +86,7 @@
 
 * Number of levels used 
 
-      zmax = nlev
+      zmax = nlevels
       buff = TM_FMT(zmax, -2, 10, slen)
 
       ppl_buff = "LEV_NUM "//buff
@@ -88,24 +95,35 @@
       ist = 0
       CALL SETSYM (ppl_buff, ilen, ier, ist)
       
-* Check if levels are regularly spaced 
 
-      dz = zlev(2) - zlev(1)
-      
-      IF (nlev .EQ. 1) THEN
-         buff = 'none'
-      ELSE IF (nlev .EQ. 2) THEN
+* If set_delta is .true. the delta value has been set
+* elsewhere. use the delta given.
+
+      IF (set_delta) THEN
+	 dz = delta
          buff = TM_FMT(dz, -2, 10, slen)
+
+* Otherwise, check if levels are regularly spaced 
+
       ELSE
-         reglevs = .TRUE.
-         DO 100 i=3,nlev
-            IF(.NOT. TM_FPEQ(dz,(zlev(i)-zlev(i-1))) ) reglevs=.FALSE.
-  100    CONTINUE
-         IF (reglevs) THEN
+         dz = zlevels(2) - zlevels(1)
+      
+         IF (nlevels .EQ. 1) THEN
+            buff = 'none'
+         ELSE IF (nlevels .EQ. 2) THEN
             buff = TM_FMT(dz, -2, 10, slen)
          ELSE
-            buff = 'irregular'
+            reglevs = .TRUE.
+            DO 100 i=3,nlevels
+               IF(.NOT. TM_FPEQ(dz,(zlevels(i)-zlevels(i-1))) ) reglevs=.FALSE.
+  100       CONTINUE
+            IF (reglevs) THEN
+               buff = TM_FMT(dz, -2, 10, slen)
+            ELSE
+               buff = 'irregular'
+            ENDIF
          ENDIF
+
       ENDIF
 
       ppl_buff = "LEV_DEL "//buff

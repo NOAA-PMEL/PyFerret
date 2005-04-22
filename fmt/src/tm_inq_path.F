@@ -53,7 +53,7 @@
 * Unix/RISC FORTRAN port 3/7/91 *sh* - OS-specific file syntaxes
 *                          - generalized to promote VMS/Unix similarities
 * revision 1.00 - 10/17/91 - <kob>
-*                          - seperate path (if it exists) from file name
+*                          - separate path (if it exists) from file name
 *                            and pass them to tm_path_list as two unique
 *                            variables.
 * revison 1.01  - 2/13/92  - increased size of TM_PATH_LIST, path_list to 512
@@ -70,7 +70,8 @@
 * v530 *kob* 1/00 - minor mods for remote mc aggregations
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations.  Remove
 *                         ifdef AIX and just use risc_buff by default
-*
+* 2/05 *acm* V58+  increase length of path_list string for FDS and other cases
+*                  where environment variables get very long (bug 1169)
 
 * arguments:
 *	fname	   - filename - possibly lacking extension
@@ -101,9 +102,9 @@
 
 * local valiable declarations
 #ifdef AIX_XLF
-        CHARACTER TM_PATH_LIST*500, path_list*500
+        CHARACTER TM_PATH_LIST*8190, path_list*8190
 #else
-        CHARACTER TM_PATH_LIST*512, path_list*512
+        CHARACTER TM_PATH_LIST*8192, path_list*8192
 #endif
         INTEGER TM_LENSTR1, plen,flen,i,postslash
 !!!! bug 2/93        EQUIVALENCE ( path_list, risc_buff )

@@ -63,6 +63,7 @@
 * v533 *acm* 8/01 - test for calendar label had .LT. max_calendars; needs .LE.
 *      *acm* 10/01  remove VMS includes
 * V580 *acm* 11/04 - bug 1098 url is cut off; keep going to the last /
+* V581: *acm*/3/05 - increase length of strings for datset title to 1024
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -84,7 +85,7 @@
 * internal variable declarations:
 	LOGICAL		show_year
 	CHARACTER	AX_TITLE*32, TM_GET_CALENDAR_NAME*32,
-     .			line_buff*255, genl_buff*255, cal_buff*32
+     .			line_buff*1024, genl_buff*255, cal_buff*32
 	INTEGER		TM_LENSTR, idim, len, lablen,
      .			nlabs, dset_num, tlen, lab2
 	REAL 		ul_yspace, ul_labht,  ul_ypos, ul_ysqueeze

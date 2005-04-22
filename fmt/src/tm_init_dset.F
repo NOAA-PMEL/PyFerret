@@ -90,6 +90,9 @@
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * 4/03 *acm* - Use STR_SAME to compare strings
 * 5/03 *acm* - Compare ds_name to char_init256 as that is its length...
+* V581 *acm* 3/05 allow "USE myfile.des"  previously this only worked if
+*                  the file extension was left off.
+* V581: *acm*/3/05 - increase length of strings for dataset title to 1024
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -205,6 +208,7 @@
 	        explicit_ext = .TRUE.
 	   ENDIF
 	   IF (TM_HAS_STRING(dset_name(dlen-3:dlen), '.des')) THEN
+     		ds_dset_type = '  '
 	        explicit_ext = .TRUE.
 	   ENDIF
 	ENDIF

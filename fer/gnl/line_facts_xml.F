@@ -41,6 +41,8 @@
 * programmer - Ansley Manke, based on line_facts.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
+* 2/2005     bug 1171: the code checked line_regular instead
+*            of line_modulo for modulo attribute!
 
 
 	include 'tmap_dims.parm'
@@ -154,7 +156,7 @@
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * modulo ?
-	   IF ( line_regular( line ) ) THEN
+	   IF ( line_modulo( line ) ) THEN
               WRITE ( risc_buff, 2080 ) 
            ELSE
               WRITE ( risc_buff, 2090 ) 

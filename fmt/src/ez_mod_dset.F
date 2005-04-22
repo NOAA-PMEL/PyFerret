@@ -46,6 +46,7 @@
 * V530: change to xez_info.cmn requires ez_lib.parm first
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
+* V581 *acm*/3/05 - increase length of strings for dataset title to 1024 
 
 * Arguments:
 *	dset	- data set number
@@ -78,7 +79,7 @@
 	IF (ds_name(dset) .EQ. char_init256) GOTO 9000
 *
 * Defining title?
-	IF (title .NE. char_init80) ds_title(dset) = title
+	IF (title .NE. char_init1024) ds_title(dset) = title
 *
 * Defining reading format?
 	IF (ezform .NE. char_init16) THEN

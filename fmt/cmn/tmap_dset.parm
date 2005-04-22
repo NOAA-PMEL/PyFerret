@@ -8,6 +8,7 @@
 * revision 0.03 - 4/99 - *kob* added char_init256
 * V500 - 7/99 *sh* ==> changed char_init to "%%" so that all of the
 *			char_init*N are effectively the same definition
+* V581 - 3/05 *acm* add char_init_1024
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -34,7 +35,8 @@
      .			char_init20*20,	char_init23*23, char_init24*24,
      .			char_init30*30, char_init40*40, char_init60*60,
      .			char_init64*64, char_init80*80, char_init128*128,
-     .                  char_init256*256, char_init512*512
+     .                  char_init256*256, char_init512*512, 
+     .                  char_init1024*1024
 	INTEGER*2	int2_init
 	INTEGER*4	int4_init
 	REAL*4		real4_init
@@ -62,6 +64,7 @@
 	PARAMETER	(char_init128= char_init)
 	PARAMETER	(char_init256= char_init)
 	PARAMETER	(char_init512= char_init)
+	PARAMETER	(char_init1024= char_init)
 	PARAMETER	(int2_init = -7777)
 	PARAMETER	(int4_init = -7777)
 	PARAMETER	(real4_init = -7.77E-07)

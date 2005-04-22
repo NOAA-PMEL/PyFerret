@@ -6,6 +6,8 @@
 *      4/91 - increased size of sf_name to accomodate full path name
 * *kob*4/99 - further increase size of sf_name to accomodate full DODS
 *             path names
+* v5.81 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
+*                     for indexing mc datasets in mc_read.
 
 	COMMON /XSTEP_FILES/
      .				sf_name   	(maxstepfiles),	! names of 'em
@@ -25,12 +27,14 @@
      .				sf_cpu_type	(maxstepfiles),	! ieee ? vax ?
      .				sf_compress	(maxstepfiles),	! compressed ?
      .				vf_firstvar	(maxvarfiles),	! 1st var in set
-     .				vf_lastvar	(maxvarfiles)	! lst var in set
+     .				vf_lastvar	(maxvarfiles),	! lst var in set
+     .				sf_ndxs  	(maxstepfiles),	! 1st time index
+     .				sf_ndxe 	(maxstepfiles)	! last time index
 
 	CHARACTER*512	sf_name         ! same as s_filename in descript.def
 	CHARACTER*23	sf_index
 	INTEGER		sf_setnum,sf_aux_set_num,sf_skip,sf_lunit,
-     .			sf_reclen,sf_nrecperstep,sf_cpu_type
+     .			sf_reclen,sf_nrecperstep,sf_cpu_type,sf_ndxs,sf_ndxe
 	REAL*8		sf_1step,sf_lastep,sf_delta
 	LOGICAL*1	sf_valid,sf_regvars,sf_regtimes,
      .			sf_compress

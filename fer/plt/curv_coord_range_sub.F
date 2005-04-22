@@ -1,4 +1,6 @@
-	LOGICAL FUNCTION TM_CHECK_BNDS_CENTERED (nline)
+	SUBROUTINE CURV_COORD_RANGE_SUB ( uc, xfield, yfield, ilo, ihi, 
+     .              jlo, jhi, status )
+
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,49 +35,71 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* Checks whether data points are all centered within the bounds on an axis
-* Do this in single precision, as in the check for regular axis in cd_get_1_axis.
+*
+* Compute the range within X and Y coordinates actually needed for the 
+* hlimits and vlimits that were requested.
+*
+* V58+:  1/2005 ACM 
 
-* 4/2004 ACM 
-* V58+ *acm*  1/05 Fixes for irreg axes with bounds: This routine now checks
-*                  whether the coordinates are centered in the bound boxes, and 
-*                  whether the boxes are equal sized.
+	include 'ferret.parm'
+	include 'errmsg.parm'
+	include	'xvariables.cmn'
+	include	'xcurvilinear.cmn'
 
-	include 'tmap_dims.parm'
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
+* calling argument declarations:
+	INTEGER ilo, ihi, jlo, jhi, status
+	REAL    uc(*),
+     .		xfield(xpos_loss_dim1:xpos_hiss_dim1,
+     .		       xpos_loss_dim2:xpos_hiss_dim2),
+     .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
+     .		       ypos_loss_dim2:ypos_hiss_dim2)
 
-* Argument declaration
-	INTEGER nline
+* internal variable declarations:
+	INTEGER i, j
+        REAL xx, yy
 
-* Local variable declarations
-        LOGICAL TM_FPEQ
-	INTEGER ipt1, npts, ibx1, i
-        REAL diff_hi, diff_lo, diff_last
+        ilo = xpos_hiss_dim1
+        ihi = xpos_loss_dim1
 
-	ipt1 = line_subsc1(nline)
-	npts = line_dim(nline)
-	ibx1 = ipt1 + npts
+	DO 100 i = xpos_loss_dim1, xpos_hiss_dim1
+        DO 100 j = xpos_loss_dim2, xpos_hiss_dim2
+           xx = xfield(i,j)
+	   IF ( xx .EQ. badx) THEN
+              GOTO 5100 
+           ELSE
+              IF ( xx .GE. uc(1) .AND.  xx .LE. uc(2) ) THEN
+                 ilo = MIN(i,ilo)
+                 ihi = MAX(i,ihi)
+              ENDIF
+           ENDIF
+  100   CONTINUE
 
-	DO 100 i = 0, npts-1
-          diff_hi = line_mem(ibx1+i+1) - line_mem(ipt1+i)
-          diff_lo = line_mem(ipt1+i)- line_mem(ibx1+i)
+        jlo = ypos_hiss_dim2
+        jhi = ypos_loss_dim2
 
-	  IF ( .NOT. TM_FPEQ(diff_lo, diff_hi) ) THEN
-	     TM_CHECK_BNDS_CENTERED = .FALSE.
-	     RETURN
-	  ENDIF
+	DO 200 i = ypos_loss_dim1, ypos_hiss_dim1
+        DO 200 j = ypos_loss_dim2, xpos_hiss_dim2
+           yy = yfield(i,j)
+	   IF ( yy .EQ. bady) THEN
+              GOTO 5200 
+           ELSE
+              IF ( yy .GE. uc(3) .AND. yy .LE. uc(4) ) THEN
+                 jlo = MIN(j, jlo)
+                 jhi = MAX(j, jhi)
+              ENDIF
+           ENDIF
+  200   CONTINUE
 
-          IF (i .GT. 0) THEN
-             IF (diff_hi .NE. diff_last) THEN
-	        TM_CHECK_BNDS_CENTERED = .FALSE.
-	        RETURN
-             ENDIF
-	  ENDIF
-          diff_last = diff_hi
-
-  100	CONTINUE
-
-	TM_CHECK_BNDS_CENTERED = .TRUE.
+* successful completion
+	status = 0  ! (like ferr_ok but for PLOT+)
 	RETURN
-	END
+
+* error exit
+ 5000	RETURN
+ 5100	CALL ERRMSG( ferr_out_of_range, status,
+     .		'X coordinates'//pCR//
+     .		'missing value where val is needed', *5000)
+ 5200	CALL ERRMSG( ferr_out_of_range, status,
+     .		'Y coordinates'//pCR//
+     .		'missing value where val is needed', *5000)
+	END 

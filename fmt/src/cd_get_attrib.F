@@ -48,6 +48,10 @@
 *              - 8/92: fixed garbled error message text
 * V420 - 11/95 *sh* - only issue warning if non-blanks are truncated
 *		    - increase reading buffer size to 256
+* V581 -  5/05 *acm - increase reading buffer size to 1024.  Newer netCDF 
+*                     libraries have apparently lifted the restriction.
+*                     This lets us increase the size of e.g. the title attribute.
+* 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -77,7 +81,7 @@
 * internal variable declarations:
       LOGICAL too_long
       INTEGER TM_LENSTR1, lena, lenb, attype, attlen, cdfstat, i
-      CHARACTER*256 buff
+      CHARACTER*2048 buff
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -100,12 +104,12 @@
          buff = 'attribute must be a string'
          CD_GET_ATTRIB = .FALSE.
          GOTO 5000
-      ELSEIF ( attlen .GT. 256 ) THEN
-         buff = 'attribute text too long'
-         CD_GET_ATTRIB = .FALSE.
-         GOTO 5000
+!       ELSEIF ( attlen .GT. 1024 ) THEN
+!          buff = 'attribute text too long'
+!          CD_GET_ATTRIB = .FALSE.
+!          GOTO 5000
       ELSE
-         CALL NCAGTC(cdfid,varid,attrib,buff,256,cdfstat)
+         CALL NCAGTC(cdfid,varid,attrib,buff,slen,cdfstat)
 * ... f77 vs c bug:
 * ... replace trailing nulls with blanks for FORTRAN strings
             DO 100 i = attlen, 1, -1

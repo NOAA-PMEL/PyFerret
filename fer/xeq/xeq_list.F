@@ -123,6 +123,7 @@
 *                     existing file for rewrite.  This causes an F90 OPEN error
 * V554 *acm* 9/03  Add output in /DODS binary format for list/format=DODS, 
 *                  see the flag do_dods
+* V581 *acm* 3/05  Increase length of string buff so that title can be longer.
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -151,7 +152,7 @@
      .                  npermuted, recsofar, do_stream_phase, nvars, 
      .                  edges_flag
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
-     .			buff*80, fstatus*8, faccess*12, fformatted*12,
+     .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
      .			fposition*12
 

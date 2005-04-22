@@ -50,6 +50,8 @@
 * V533:  *sh* 6/01 - added @EVNT
 * v552  4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                  space for the transformation specifier)
+* V581: 3/05 *acm* Fix bug 1207: CDB, CIB, CDA, CIA are one-sided: return
+*                  offset only in one direction.
 
 * calling argument declarations:
 	INTEGER idim, cx, lo_off, hi_off, status
@@ -177,11 +179,16 @@
 	   ELSEIF ( trans .EQ. trans_shift ) THEN
 	      hi_off = ioff
 	      lo_off = ioff
-	   ELSEIF ( trans .GE. trans_nrst_dist_abv
-     .	    .AND.   trans .LE. trans_nrst_indx_blw ) THEN
+	   ELSEIF ( trans .EQ. trans_nrst_dist_abv
+     .	     .OR.   trans .EQ. trans_nrst_indx_abv ) THEN
 	      IF (ioff .LE. 0) GOTO 5100
-              hi_off = ioff                                ! past edge
-              lo_off = -hi_off
+              hi_off = ioff 
+              lo_off = 0
+	   ELSEIF ( trans .EQ. trans_nrst_dist_blw
+     .	      .OR.  trans .EQ. trans_nrst_indx_blw ) THEN
+	      IF (ioff .LE. 0) GOTO 5100
+              hi_off = 0
+              lo_off = -1*ioff
 	   ELSE
 ! temp - for debugging
 	      WRITE (6,*) 'illegal plane transform', trans

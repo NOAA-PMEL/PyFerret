@@ -116,6 +116,11 @@
 *                  on the axis, then set it to be a regular axis.  
 * V580 *acm* 11/04 further fixes for when there is just one point on an axis having bounds
 *                  first_delta is meaningless and should not be used.
+* V581 *acm*  1/05 Fixes for irreg axes with bounds: tm_check_bnds_centered now checks
+*                  whether the coordinates are centered in the bound boxes, and whether
+*                  the boxes are equal sized. Also fix def of d2e for reading axis bounds.
+* V581 *acm*  2/05 Fix bug 1179: axis_dir .EQ. 'z' needs to be done as a case-insensitve
+*                  comparison, in section testing positive=down.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -143,6 +148,7 @@
         external xunits_data
         include 'calendar.decl'
         include 'calendar.cmn'
+        include 'errmsg.parm'
 
 * argument declarations
         LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular
@@ -488,13 +494,17 @@ c         ENDIF
          got_it = CD_GET_ATTRIB(cdfid, ivar, 'cartesian_axis',
      .              do_warn, vname(:vlen), axis_dir, 1)
          IF (got_it) THEN
-            IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
+            IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
+     .          axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
                line_direction(iaxis) = 'TT'  ! time
-            ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
+            ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I' .OR.
+     .               axis_dir.eq.'x' .or. axis_dir.eq.'i') THEN
             line_direction(iaxis) = 'XX'
-            ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
+            ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J' .OR.
+     .               axis_dir.eq.'y' .or. axis_dir.eq.'j') THEN
              line_direction(iaxis) = 'YY'
-            ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K') THEN
+            ELSE IF (axis_dir.EQ.'Z' .OR. axis_dir.EQ.'K' .OR.
+     .               axis_dir.eq.'z' .or. axis_dir.eq.'k') THEN
                line_direction(iaxis) = 'DU'
             ENDIF
          ELSE
@@ -616,13 +626,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
             line_direction(iaxis) = 'WE'
          ELSEIF( STR_CASE_BLIND_COMPARE('up',buff(:2))
      .                                     .EQ.str_eq) THEN
-            IF (axis_dir  .EQ. 'Z' .OR. 
-     .      axis_dir .EQ. char_init01) line_direction(iaxis) = 'DU'
-
+            line_direction(iaxis) = 'DU'
          ELSEIF( STR_CASE_BLIND_COMPARE('down',buff(:4))
      .                                     .EQ.str_eq) THEN
-            IF (axis_dir  .EQ. 'Z' .OR. 
-     .      axis_dir .EQ. char_init01) line_direction(iaxis) = 'UD'
+            line_direction(iaxis) = 'UD'
          ENDIF
       ENDIF
 
@@ -722,6 +729,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * ============= START OF IRREGULAR AXIS PROCESSING ========================
       ELSE 
 * adequate storage for the irregular coordinates and box edges ?
+* 2*npts + 1 for edges plus coordinate values.
+
          line_start(iaxis) = unspecified_val8
          line_delta(iaxis) = unspecified_val8
          IF ((next_line_mem_pos+2*npts+1).GT.maxlinestore) GOTO 5300
@@ -944,7 +953,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         d1s = startpts(1)
         d1e = numpts(1)
         d2s = startpts(2)
-        d2s = numpts(2)
+        d2e = numpts(2)
 
         blen = TM_LENSTR1(bname)
         CALL CD_RD_R8_BNDS( cdfid, bndid, startpts, numpts, vartype, 
@@ -960,7 +969,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * check to see that each data point is contained inside its box,
 * and if the bounds are contiguous, warning user if not. Change
-* the storage from N*2 bounds to N+1 edges.    !!!!!!!!!!!!
+* the storage from N*2 bounds to N+1 edges.    
 
         IF (.NOT. TM_CHECK_BNDS(iaxis, vname) ) THEN  
 
@@ -973,11 +982,11 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         ENDIF
 
 * For axes specified with BOUNDS, check whether coordinates are also 
-* centered in the boxes
+* centered in the boxes, and whether the size of the boxes are equal.
 
         IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
-
 * It's actually regular - save it as such
+
            line_regular(iaxis) = .TRUE.
            line_start  (iaxis) = line_mem(ipt1)
            IF (npts .GT. 1) THEN
@@ -989,12 +998,14 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
            line_subsc1 (iaxis) = unspecified_int4
            last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
            firs_coord = line_start(iaxis)
+        ELSE
+           line_regular(iaxis) = .FALSE.
         ENDIF
 
  600    CONTINUE
 
 * Save the axis name (upper case) and memory storage.  For all irregular axes, 
-* we have saved N+1 edges for  the axis cells. Increment the pointer.   
+* we have saved N+1 edges for the axis cells. Increment the pointer.   
 
         line_name(iaxis) = vupcase
         IF ( .NOT.line_regular(iaxis) ) THEN
@@ -1113,7 +1124,8 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
  5300   CALL TM_ERRMSG (merr_linstorlim, status, 'CD_GET_1_AXIS',
      .                  no_descfile, no_stepfile,
      .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
-     .                  no_errstring, *1000)                    ! 3/99 soft error
+     .                  no_errstring, *1000)          ! 3/99 soft error
+
 * error exit
  5900   RETURN
         END

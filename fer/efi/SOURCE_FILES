@@ -17,6 +17,7 @@ fftsubs.F\
 ffta.F\
 fftp.F\
 gausswt.F\
+labwid.F\
 modscat.F\
 mrgrnk.F\
 nobad.F\

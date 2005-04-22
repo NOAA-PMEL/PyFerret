@@ -47,16 +47,13 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
+* v5.81 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
+*                     for indexing mc datasets in mc_read.
 
-#ifdef unix
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'
 	include 'xstep_files.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'		! parameter definitions
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN_TEXT'
-#endif
+
 
 	DATA	sf_name			/maxstepfiles*char_init512/
 	DATA	sf_setnum		/maxstepfiles*set_not_open/
@@ -72,6 +69,8 @@
 	DATA	sf_index		/maxstepfiles*char_init23/
 	DATA	sf_regvars		/maxstepfiles*.TRUE./
 	DATA	sf_regtimes		/maxstepfiles*.TRUE./
+	DATA	sf_ndxs 		/maxstepfiles*int4_init/
+	DATA	sf_ndxe 		/maxstepfiles*int4_init/
 	DATA	vf_firstvar		/maxvarfiles*int4_init/
 	DATA	vf_lastvar		/maxvarfiles*int4_init/
 

@@ -65,6 +65,7 @@
 * 4/03 *acm* - Use STR_SAME to compare strings
 * 9/04 *acm* - Fix bug 982 If same variable name in multiple descriptor files, 
 *              mc_init_stepfile needs to know which file its from.
+* V581: *acm*/3/05 - increase length of strings for dataset title to 1024 
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -225,11 +226,11 @@
 *	       from the descriptor rather than the cdf file
         IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
         	got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'title',
-     .                     .NOT.do_warn, ' ', ds_title(dset), 80 )
+     .                .NOT.do_warn, ' ', ds_title(dset), 1024)
 	ENDIF
 * title modifier ?
         got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'title_mod',
-     .                  .NOT.do_warn, ' ', ds_mod_title(dset), 80 )
+     .                .NOT.do_warn, ' ', ds_mod_title(dset), 1024)
 
 * does it have a message to display upon opening ?
         ds_alert_on_output(dset) = .FALSE.

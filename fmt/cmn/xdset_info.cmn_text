@@ -17,6 +17,7 @@
 * V540 *acm 10/01 - increase length of ds_name 
 * V552 *acm* 5/03 increase ds_var_code to 128 characters
 *                 NOTE this is the max: NetCDF parameter NC_MAX_NAME = 128
+* V581 *acm* 3/05 increase ds_title, ds_mod_title to 1024
 *                 
 
 	COMMON/XDSET_INFO/
@@ -77,7 +78,8 @@
 	CHARACTER*4	ds_expnum,ds_modnum,ds_aux_modnum
 	CHARACTER*16	ds_forcing_set
 	CHARACTER*20	ds_t0time,ds_time_run,ds_parm_name
-	CHARACTER*80	ds_title,ds_mod_title,ds_parm_text
+	CHARACTER*80	ds_parm_text
+	CHARACTER*1024	ds_title,ds_mod_title
 	INTEGER*4	ds_ntuple
 	LOGICAL		ds_time_modulo
 	REAL*4		ds_time_unit,ds_ntegrate_tstep

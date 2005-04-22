@@ -6,8 +6,9 @@
 	CHARACTER*4	d_expnum, d_modnum, d_aux_modnum(num_aux)
 	CHARACTER*16	d_forcing_set, d_who_ranit, d_who_madeit
 	CHARACTER*20	d_t0time, d_time_run, d_time_made, d_caltype
-	CHARACTER*80	d_title, d_mod_title, d_add_parm(num_parm),
+	CHARACTER*80    d_add_parm(num_parm),
      .			d_grid_filename(num_gridfiles)
+	CHARACTER*1024	d_title, d_mod_title
 	INTEGER*4	d_ntuple
 	LOGICAL		d_time_modulo
 	REAL*4		d_time_unit, d_ntegrate_tstep

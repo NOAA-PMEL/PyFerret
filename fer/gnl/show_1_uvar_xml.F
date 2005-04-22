@@ -37,6 +37,8 @@
 *
 * output some lines describing a user variable in xml-style format
 * 20-Oct-2004 acm  from show_1_uvar.F
+*  7-Feb-2005 acm  (bug 1165) fix string vars so they are output with 
+*                  surrounding &quot;
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -105,6 +107,13 @@
         vname = FULL_UVAR_NAME(uvar,slen)
 	buff = uvar_text(uvar)
         llen = TM_LENSTR1(buff)
+
+        IF ( uvar_text(uvar)(1:1) .EQ.'"' .AND.
+     .       uvar_text(uvar)(llen:llen) .EQ.'"' ) THEN
+           buff = '&quot;' // uvar_text(uvar)(2:llen-1) // '&quot;'
+           llen = TM_LENSTR1(buff)
+        ENDIF
+
         WRITE ( risc_buff, 2020 ) vname(1:slen), buff(1:llen)
 	
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

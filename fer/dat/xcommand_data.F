@@ -154,6 +154,7 @@
 *       *acm* 6/05 - add CANCEL AXIS/DEPTH
 * V580: 10/04 *acm* - add SHOW VARIABLES/XML
 * V580: 11/04 *acm* - add PLOT/NOKEY
+* V581:  2/05 *acm* - SHADE/MODULO for curvilinear plots
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -1177,7 +1178,7 @@
 		DATA qualifiers  (nqual_at18a+26)/ 'HGRATICULE'/!tic lines, dash or line
 		DATA qualifiers  (nqual_at18a+27)/ 'VGRATICULE'/!vert tic lines
 		DATA qualifiers  (nqual_at18a+28)/ 'GRATICULE'/	!
-		DATA qualifiers  (nqual_at18a+29)/ '****'/	!
+		DATA qualifiers  (nqual_at18a+29)/ 'MODULO'/	! modulo for curvilinear plots
 		DATA qualifiers  (nqual_at18a+30)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+31)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at18a+32)/ '****'/	! 

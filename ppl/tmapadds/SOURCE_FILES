@@ -57,6 +57,7 @@ setup_defaults.F\
 setup_line_bundles.F\
 shade.F\
 shade_cell.F\
+shade_fill_it.F\
 shade_key.F\
 shade_key_cont.F\
 shade_set.F\

@@ -395,6 +395,10 @@ void FORTRAN(compressl_by_init)(int *);
 void FORTRAN(compressl_by_result_limits)(int *);
 void FORTRAN(compressl_by_compute)(int *, float *, float *);
 
+void FORTRAN(labwid_init)(int *);
+void FORTRAN(labwid_result_limits)(int *);
+void FORTRAN(labwid_compute)(int *, float *, float *);
+
 /*
  *  End of declarations for internally linked external functions
  *  ------------------------------------ */
@@ -442,7 +446,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 34
+#define N_INTEF 35
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -482,6 +486,7 @@ struct {
    strcpy(I_EFnames[31].funcname, "compressj_by");
    strcpy(I_EFnames[32].funcname, "compressk_by");
    strcpy(I_EFnames[33].funcname, "compressl_by");
+   strcpy(I_EFnames[34].funcname, "labwid");
 
 
 /*    
@@ -2431,6 +2436,11 @@ else if ( !strcmp(name,"compressk_by_compute_") ) return (void *)FORTRAN(compres
 else if ( !strcmp(name,"compressl_by_init_") ) return (void *)FORTRAN(compressl_by_init);
 else if ( !strcmp(name,"compressl_by_result_limits_") ) return (void *)FORTRAN(compressl_by_result_limits);
 else if ( !strcmp(name,"compressl_by_compute_") ) return (void *)FORTRAN(compressl_by_compute);
+
+/* labwid.F */
+else if ( !strcmp(name,"labwid_init_") ) return (void *)FORTRAN(labwid_init);
+else if ( !strcmp(name,"labwid_result_limits_") ) return (void *)FORTRAN(labwid_result_limits);
+else if ( !strcmp(name,"labwid_compute_") ) return (void *)FORTRAN(labwid_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

@@ -126,6 +126,7 @@
 *       *kob* 9/03 - add ich for character indicies for the internal_read_format_bug
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
+* V581: *acm*/3/05 - increase length of strings for datset title to 1024 (leave settings alone for MOVIE)
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -179,7 +180,7 @@
         REAL*8          TM_WW_AXLEN, axwwlen
 
 	REAL		val_buf
-	CHARACTER	title*128, subtitle*64, arg*24,
+	CHARACTER	title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, set_last, any_delta, dset_cdf,

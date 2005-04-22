@@ -76,6 +76,7 @@
 * v540 *acm* 10/01 remove VMS include statements
 * v552 *acm*  3/03 bug fix: If maxstepfiles > maxvarfiles, got error on closing dataset.
 * V552 *acm*  5/03 increase size of ds_var_code from 64 to 128 chars
+* V581: *acm*/3/05 - increase length of strings for dataset title to 1024 
 *                  
 
 * arguments:
@@ -110,8 +111,8 @@
 ********************************************************************************
 	ds_expnum(ds_num)		=	char_init04
 	ds_modnum(ds_num)		=	char_init04
-	ds_title(ds_num)		=	char_init80
-	ds_mod_title(ds_num)		=	char_init80
+	ds_title(ds_num)		=	char_init1024
+	ds_mod_title(ds_num)		=	char_init1024
 	ds_forcing_set(ds_num)		=	char_init16
 	ds_t0time(ds_num)		=	char_init20
 	ds_time_unit(ds_num)		=	real4_init
@@ -153,8 +154,8 @@
           CALL string_array_modify(ds_var_code_head, ivar,
      .                             char_init128,
      .                             LEN(char_init128))
-	  ds_var_title(ivar)		=	char_init128
-	  ds_var_titl_mod(ivar)		=	char_init128
+	  ds_var_title(ivar)		=	char_init1024
+	  ds_var_titl_mod(ivar)		=	char_init1024
 	  ds_var_units(ivar)		=	char_init64
 	  ds_grid_number(ivar)		=	int4_init
 	  ds_missing_flag(ivar)		=	real4_init

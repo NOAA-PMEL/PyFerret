@@ -67,6 +67,8 @@
 * V580 10/04*acm* - Get values for scale and offset attributes in each individual 
 *                   step file.  Values returned by RETURN=nc_offset or RETURN=nc_scale 
 *                   will return the last value used.
+* v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
+*                     for indexing mc datasets in mc_read.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -116,10 +118,10 @@
      .            hi_offset,a_lo_t_offset,
      .            a_hi_t_offset, vartype, nvdims,vdims(8),nvatts,
      .		  varid, varpos,ndims,nvars, natts, recdim,
-     .            npts, var_id,index, nsteps_in_file, vlen
+     .            npts, var_id,index, nsteps_in_file, vlen, end_lstep
 	REAL*8	  TM_WORLD,start_tstep, end_tstep, start_read_tstep,
      .            end_read_tstep, epsilon
-	INTEGER   TM_SUBSC, NCOPN, NCVID, TM_LENSTR1
+	INTEGER   TM_SUBSC, NCOPN, NCVID, TM_LENSTR1, prev_steps
 	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL, CD_GET_ATTVAL, 
      .            got_scale, got_off, do_warn
         PARAMETER (do_warn = .TRUE. )
@@ -135,6 +137,7 @@
 	start_tstep = TM_WORLD(a_lo_t,ds_grid_number(ivar),4,box_middle)
 	end_tstep   = TM_WORLD(a_hi_t,ds_grid_number(ivar),4,box_middle)
 	start_read_lstep = a_lo_t
+        end_lstep = a_hi_t
 	start_read_tstep = start_tstep
 	do 10 idim=1,3
 		tmp_lo(idim) = use_lo(idim)
@@ -190,22 +193,29 @@
 
 	ELSE
 * find correct file
+           prev_steps = 0
  20	   DO 30 sfcnt = 1,maxstepfiles
 	      IF (sf_setnum(sfcnt) .NE. dset) GOTO 30 ! right dataset?
 
 c	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. ! contains timestep
 c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
 
-          ! contains timestep, to within epsilon
-	      IF (TM_DFPEQ_TOL(sf_1step(sfcnt), 
-     .                         start_read_tstep, epsilon) .OR.
-     .		  TM_DFPEQ_TOL(sf_lastep(sfcnt), 
-     .                         start_read_tstep, epsilon)) GOTO 40
+!c!c          ! contains timestep, to within epsilon
+!c!c	      IF (TM_DFPEQ_TOL(sf_1step(sfcnt), 
+!c!c     .                         start_read_tstep, epsilon) .OR.
+!c!c     .		  TM_DFPEQ_TOL(sf_lastep(sfcnt), 
+!c!c     .                         start_read_tstep, epsilon)) GOTO 40
 
-          ! stepfile does not contain timestep
-	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. 
-     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
-	      GOTO 40
+!c!c          ! stepfile does not contain timestep
+!c!c	      IF ((sf_1step(sfcnt).GT. start_read_tstep) .OR. 
+!c!c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
+!c!c	      GOTO 40
+
+! compare indices -- contains timestep
+	      IF ((sf_ndxs(sfcnt).LE. start_read_lstep) .AND. ! contains timestep
+     .		   (sf_ndxe(sfcnt) .GE. start_read_lstep)) GOTO 40
+
+
  30	   CONTINUE
 *       found it
 	   
@@ -214,13 +224,13 @@ c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
 	   end_read_lstep = TM_SUBSC (end_read_tstep, grid, t_dim,
      .		a_hi_t)     !kob 11/96
 	   
+           end_read_lstep = sf_ndxe(sfcnt) !!!
 	   nsteps_to_read = end_read_lstep - start_read_lstep + 1
 	   
-	   
 * determine the index within the file to start at
-*	grid = ds_grid_number(ivar)
-*	l_sf1 = TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1)
-	
+c!c! uncomment this...
+        grid = ds_grid_number(ivar)
+	l_sf1 = TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1)
 
 * let's open the netcdf file now
 *first make sure we have the full path set
@@ -259,10 +269,13 @@ c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
 	   ENDIF	
  
 
- 60	   offset = TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1) - 1
-	   nsteps_in_file = TM_SUBSC (sf_lastep(sfcnt), grid, t_dim,l_sf1) -
-     .		TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1) + 1 
-	   
+!c!c 60	   offset = TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1) - 1
+!c!c	   nsteps_in_file = TM_SUBSC (sf_lastep(sfcnt), grid, t_dim,l_sf1) -
+!c!c     .		TM_SUBSC (sf_1step(sfcnt), grid, t_dim,l_sf1) + 1 
+
+ 60	   offset = sf_ndxs(sfcnt) - prev_steps - 1
+	   nsteps_in_file = sf_ndxe(sfcnt) - sf_ndxs(sfcnt) + 1 
+
 *calculate offset used to read data into array, if neccessary
 	   a_lo_t_offset = start_read_lstep - offset
 	   a_hi_t_offset = end_read_lstep - offset

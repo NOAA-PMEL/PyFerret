@@ -92,6 +92,14 @@
 *                      by the axes. (/hlim or /vlim plots)
 * V5.61 *acm* 4/16/04  For cellarray plots, fix treatment of half-cells around
 *                      the edges of the plot.  
+* V5.81 *acm* 3/05     For curvilinear plots, do a partial solution for the question
+*                      of modulo longitude axes: Determine the index range needed
+*                      to plot the requested /HLIM/VLIM range. New routine SHADE_FILL_IT
+*                      uses only that range, checks to see if a branch point has been 
+*                      crossed, and makes the plot call.  For curvilinear plots, do not 
+*                      gather up whole groups of cells of the same color but do each 
+*                      separately, checking for the branch cut.  Make more calls to 
+*                      SHADE_FILL_IT as needed to fill the longitude range.
 
 	INCLUDE		'parampl5_dat.decl'
 	INCLUDE		'PARAMPL5.DAT'
@@ -114,10 +122,12 @@
 	INCLUDE 	'ppl_in_ferret.cmn'
         INCLUDE         'switch_inc.decl'
         INCLUDE         'SWITCH.INC'
+        INCLUDE         'xcurvilinear.cmn'
+        INCLUDE         'errmsg.parm'
 
 	INTEGER		error,i,j,trans_no,cflag
 
-        INTEGER         my_trans,fill_ndx,next_ndx,GET_NDX
+        INTEGER         my_trans,fill_ndx,GET_NDX
         DATA            my_trans/20/
 
 C       data statement of my_trans added for linux port *jd* 12.96
@@ -133,15 +143,13 @@ C       data statement of my_trans added for linux port *jd* 12.96
      .                  batch, irregular, plot_cell
 
 * declarations for curvilinear coordinates
-	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES, BAD_XY_COORD,
-     .			curvilinear
-	INTEGER		i1, npt, pt1
-	INTEGER		maxpts, maxpt_ov2
+	LOGICAL		ITS_CURVILINEAR, ITS_CURV_EDGES
+	INTEGER		status
+	INTEGER		maxpts, maxpt_ov2, nright, nleft, 
+     .                  ilo, ihi, jlo, jhi
 	PARAMETER     ( maxpts = 200,
      .			maxpt_ov2 = maxpts / 2 )
-	REAL		px(maxpts), py(maxpts)
-
-        INTEGER nvertex,uprdn
+	REAL		px(maxpts), py(maxpts), xadd, lmin, lmax
 
 *	PARAMETER	(my_trans = 10)
 	EXTERNAL	GET_NDX
@@ -377,105 +385,54 @@ c If all the data is missing don't make the cellarray call
 
       ELSE  ! non-cellarray:
 
-* Previous code for SHADE plot, when either a pattern is used or 
+* SHADE plot, when either a pattern is used or 
 * we have curvilinear coordinates
 
-
 *	LAY FILL DOWN ON SCREEN IN PROPER PLACE
-	DO 50 j = 1,ny
 
-! initialize these so that the check in BAD_XY_COORD doesn't get caught
-! in a loop
-           py(1) = ys(j)
-           py(2) = ys(j+1)
-           py(3) = ys(j+1)
-           py(4) = ys(j)
+* Get range of indices for the curvi X,Y coordinates actually needed for the 
+* hlimits, vlimits that were requested.
 
-* ... initialize for outer DO...WHILE loop
-	   i = 0
+        IF (curvilinear) 
+     .     CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
 
-* ... outer: DO WHILE i LE nx ...
-40	   i = i + 1					! To line 50 JD 5.16.90
-	   IF (i .EQ. nx + 1) GOTO 50
+        xadd = 0.
+        CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys, xinv, yinv, 
+     .                   xadd, lmin, lmax, ilo, ihi, jlo, jhi, status)
+        IF (status .EQ. ferr_interrupt) GOTO 3333
 
-	   IF ( interrupted ) GOTO 3333			! 1/89 - *sh*
+*	MODULO REPLICATIONS TO FILL OUT uc(1) TO uc(2)
 
-* ... initialize for inner DO...WHILE loop
-	   IF (.NOT.curvilinear) THEN
-* ... note that for curvilinear plots the screening of coordinates is NOT
-*	applied. This represents a minor bug/feature since the user might
-*	expect the PLOT+ limits command still to apply.
-*	(It was just too much trouble for the potential benefit *sh*)
-	      IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 40
-	   ENDIF
-	   fill_ndx = GET_NDX (data(i,j),fill_ndx)
-	   IF (fill_ndx .EQ. -999) GOTO 40
-	   pt1 = i
-	   npt = 1
+        IF (xmodulo .AND. curvilinear) THEN
+           nleft = 0
+           nright = 0
+           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ 360
+           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ 360
 
-* ... inner: DO WHILE fill_ndx remains unchanged ...
-* ... find the largest box from this row that is all this color (optimization)
-* ... Note: further optimization is possible (especially for very noisy fields)
-*	    for curvilinear plots. Since each polygon "tube" shares 2 vertices
-*	    with the one that preceded it on the row, we are unnecessarily
-*	    computing the curvilinear position of these points TWICE in calls
-*	    to CURV_COORD
-45	      i = i + 1
-	      IF (i .EQ. nx + 1) GOTO 48
-	      IF ( curvilinear ) THEN
-	         npt = i + 1
-	         IF ( npt .GE. maxpt_ov2 ) GOTO 48
-	      ENDIF
+           IF (nleft .GT. 0) THEN
+              xadd = 0.
+              DO 100 i = 1, nleft
+                 xadd = xadd - 360.
+                 CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys,
+     .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
+     .                         ihi, jlo, jhi, status)
+                 IF (status .EQ. ferr_interrupt) GOTO 3333
+ 100          CONTINUE
+           ENDIF
 
-              next_ndx = GET_NDX (data(i,j),next_ndx)
-	      IF (.NOT.curvilinear) THEN
-	         IF (BAD_XY_COORD(i,j,xs,py,fill_ndx)) GOTO 48
-	      ENDIF
-	      IF (fill_ndx .EQ. next_ndx) GOTO 45
-* ... inner: end loop
+           IF (nright .GT. 0) THEN
+              xadd = 0.
+              DO 110 i = 1, nright
+                 xadd = xadd + 360.
+                 CALL SHADE_FILL_IT (data, nx, ny, px, py, xs, ys,
+     .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
+     .                         ihi, jlo, jhi, status)
+                 IF (status .EQ. ferr_interrupt) GOTO 3333
+ 110          CONTINUE
+           ENDIF
 
-* found last cell in chain - now assign the vertices of the polygon
-48	   IF ( curvilinear ) THEN
-* ... after transformation this will be a curvy "tube" of one color
-	      npt = i - pt1 + 1
-* ... polygon chain begins along upper edge of row of cells
-	      DO 100 i1 = 1, npt
-	         px(i1) = xs(pt1+i1-1)
-	         py(i1) = ys(j+1)
- 100	      CONTINUE
-* ... and returns (closes) along lower edge of row of cells
-	      DO 101 i1 = npt+1, 2*npt
-	         px(i1) = px(2*npt+1-i1)
-	         py(i1) = ys(j)
- 101	      CONTINUE
-	      npt = 2*npt
-	      CALL CURV_COORD(px, py, npt, xinv, yinv, status) ! xform the pts
-	      IF ( status .NE. 0 ) RETURN
-	   ELSE
-* ... always a rectangle -- just save the corners
-	      px(1) = xs(pt1)
-	      px(2) = xs(pt1)
-	      px(3) = xs(i)
-	      px(4) = xs(i)
-	      py(1) = ys(j)
-	      py(2) = ys(j+1)
-	      py(3) = ys(j+1)
-	      py(4) = ys(j)
-	      npt = 4
-	   ENDIF
-	   pt1 = i	! index of left edge of first cell of next color
-	   i = i - 1
 
-	   CALL set_fill_ndx (fill_ndx)
-	   CALL gfa (npt,px,py)
-
-*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
-*	   FILL_NDX TO PRIVATE ITEM -- no, forget it *jd* 10.22.92
-*	   IF (meta_actv .AND. .NOT. area_bundles) 
-*     .				CALL meta_fill_ndx (fill_ndx)
-
-	   GOTO 40
-50	CONTINUE
+        ENDIF   ! xmodulo
 
       ENDIF	! use_cell
 
@@ -491,7 +448,7 @@ c If all the data is missing don't make the cellarray call
 *	DO THE KEY
 	IF (do_key .AND. .NOT.interrupted) CALL key	! 1/89 - *sh*
 
-	return
-*	FATAL ERROR
-1000	return
-	end
+	RETURN
+*	Fatal error
+1000	RETURN
+	END

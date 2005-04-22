@@ -62,6 +62,7 @@
 *                 values are equal or close.  Also fixes this adjustment
 *                 when the range has negative values; was always incorrect.
 * v580  8/04*acm* Fix bug 957 shade/lev=1 of a constant field needs zlev(1) to be set.
+* v581  4/05*acm* For cellarray plots JTYPE had erroneously been set to 1 (?!)
 * v581 *acm* 3/05 open levels (-INF) (INF)
 
 	include		'parampl5_dat.decl'
@@ -231,8 +232,10 @@ C              =-1 2-d second component of a vector regular grid
 C              =-2 2-d second component of a vector irregular grid
 C
 
-C
-        IF (use_cell) JTYPE = 1
+C  WHY WAS JTYPE SET TO 1 HERE??!!
+
+c        IF (use_cell) JTYPE = 1
+        IF (use_cell) JTYPE = 0
 
 C       If it's a 2-d irregular grid, the irregular grid values
 C       are also stored in the Z array.  Pass them to shade_sub.

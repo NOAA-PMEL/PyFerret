@@ -11,13 +11,14 @@ C**
 C***********************************************************************
 C**
 C**
+C ** v5.81 *acm* lengthen strings containing format to 40 characters.
 c
 	COMMON/VECTOR/VLEN,VUSRLN,VAUTO,VXLOC,VYLOC,VUSER,VKEY,
      *	VPOS,VFRMT,VSKPX,VSKPY,VMINLN,ARMAX,ARMIN,HFACT,DENSITY,
      *	NEED_COS,TRNSPZ
 	LOGICAL VAUTO,VKEY,VUSER
 	INTEGER VSKPX,VSKPY
-	CHARACTER VFRMT*20
+	CHARACTER VFRMT*30
 c
 c	vlen	vector length (inches) used for key length
 c	vusrln	user unit value for vlen vector

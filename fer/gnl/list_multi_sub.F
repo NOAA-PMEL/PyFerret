@@ -62,6 +62,7 @@
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
 * V530  8/00 - added support for string variables
 * V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
+* V581: *acm*/3/05 - increase length of strings for datset title to 1024
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -109,7 +110,7 @@
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*128,
-     .			buff1*16, buff2*16, buff3*16, line_buff*500,
+     .			buff1*16, buff2*16, buff3*16, line_buff*1024,
      .			row_ss_fmt*14, bad_ax*5,
      .			col_head_format*32, sep*1
 	REAL		big, small, biggest

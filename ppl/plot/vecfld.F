@@ -68,6 +68,7 @@ C**
 *                      it is drawn.
 *       *acm* 12/02    Restore call to mark(99) polymarker call when vector is
 *                      small.  Call doit_makedot after the loop, to plot points in the buffer.
+* v5.81 *acm* lengthen string containing format to 40 characters.
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -104,7 +105,7 @@ C
 
 	integer ic,i,j,lnblk,iln, overedge
 
-	CHARACTER VECLAB*20
+	CHARACTER VECLAB*40
 C
 C	VECTOR,X,Y,VFACT,LABEL
 C

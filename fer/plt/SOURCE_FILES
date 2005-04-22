@@ -11,7 +11,9 @@ choose_cx_ww.F\
 ck_gks_active.F\
 clear_window.F\
 compound_key.F\
+curv_coord_add_sub.F\
 curv_coord_sub.F\
+curv_coord_range_sub.F\
 disp_data_set_up.F\
 disp_init.F\
 disp_labels.F\

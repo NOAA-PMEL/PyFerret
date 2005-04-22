@@ -64,6 +64,8 @@
 *	            omitted from this documentation block
 * V580 *acm* 10/01  modify the kludge to restrict degrees to precision 0.001
 *                   If the calling sequence asks for more precision, allow it.
+* V581 *acm*  3/05  axis-independent time coordinates are calculated with default 
+*                   calendar, so do not get cal_id when converting to date string
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -163,7 +165,8 @@
 ! HACK! negatives time steps are formatted as valid times unless they
 ! would be negative seconds from BC for dates later than 1-jan-1500
                  line       = grid_line( t_dim, grid )
-                 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
+!                 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(line))
+                 cal_id = 1  ! axis-independent dates were calculated with dflt calendar
                  string = SECS_TO_DATE( -val, cal_id )
               ELSE
                  CALL TSTEP_TO_DATE( grid, val, decim, string )

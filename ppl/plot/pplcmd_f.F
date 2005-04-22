@@ -93,6 +93,13 @@ C**
 * v580 *acm* 8/04 Change use of 256 to buflen+1, 
 *                 where buflen is defined in cmndlen.inc
 * v580 *acm* 8/04 allow PPL POLYGON as well as PPL FILLPOL after POLY/SET
+* V581 *acm* 4/05 fix bug 1214; clsplt needs to set meta_actv to false.
+* V581 *acm* 5/05 Add simple error checking to the text with XFOR, YFOR, and VECKEY
+*                 to see if they are a valid fortran format strings(bug1215). Note
+*                 this is just a first-pass checking: if mode ignore_error is on,
+*                 or if a plot command is issued without correcting the PPL call,
+*                 the bad format string is passed on to routines like numcde or
+*                 vecfld, where it will cause a crash.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -180,6 +187,7 @@ c
 	include 'calendar.cmn'
         INCLUDE 'pplcmd_strings.cmn'
         INCLUDE 'cmndlen.inc'
+        INCLUDE 'errmsg.parm'
 
 * special COMMON to let this routine know if FERRET is in control
         include 'ppl_in_ferret.cmn'
@@ -213,8 +221,9 @@ CCCCCCC data	        tmapdebug/.false./
 	integer		nmxt,nmyt,ilen
 *	End declarations 11.30.88
 
-	integer	  ipen_save(0:nlines), iend, cal_status
+	integer	  ipen_save(0:nlines), cal_status
 	data	  ipen_save/1,nlines*1/
+        INTEGER   TM_LENSTR, TM_LENSTR1, slen
 
 	character strr*2048
 
@@ -222,7 +231,7 @@ CCCCCCC data	        tmapdebug/.false./
 	CHARACTER SYM*30,ICOM7*7
 	CHARACTER FROMI*10,LINEI*10
 	CHARACTER COMBUF(ICMDIM)*2048
-	CHARACTER YES*3,NO*2
+	CHARACTER YES*3,NO*2,err_msg*40
 	LOGICAL LEOF
 	LOGICAL IFLG1,IFLG2,LABON,LABOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
@@ -680,11 +689,24 @@ C
 	GOTO 10
 4301	IF(.NOT.QUIETF)WRITE(LTTOUT,'(1X,A30,'' NOT FOUND'')')LABEL
 	GOTO 10
+
+
+c For XFOR and YFOR, check if LABEL is a valid format: 
+c do a test write to the string err_msg, using label as a format
+
 C     XFOR
 4400	IFRX=LABEL
+        slen = TM_LENSTR(LABEL)
+        IF (slen .GT. 1) THEN
+           WRITE(err_msg,label,ERR=1999) 0
+        ENDIF
 	GOTO 10
 C     YFOR
 4500	IFRY=LABEL
+        slen = TM_LENSTR(LABEL)
+        IF (slen .GT. 1) THEN
+           WRITE(err_msg,label,ERR=1999) 0
+        ENDIF
 	GOTO 10
 C     ORIGIN
 4600	IF(IFLG1)XORG=P(1)
@@ -1205,11 +1227,14 @@ C	VPOINT
 C	CLSPLT
 9950	    CALL PLTYPE(ICODE)
 *	    MOD *JD* 1.25.90 to accomodate use of clsplt and metafiles
+*           *ACM* 4/5/05 After a set/win/clear need meta_actv false
+*                        so VIEW/AXES can reset sizing info 
 	    if (meta_open .and. .not. meta_clsplt .and. .not. first_meta) then
 	       if (meta_actv) call gdawk (meta_wsid)
 	       call gclwk (meta_wsid)
 	       close (meta_lun)
 	       meta_clsplt = .true.
+               meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
 	    end if        
 	    GOTO 10
@@ -1425,7 +1450,13 @@ C	VECKEY
 9130	IF(IFLG1)VXLOC=P(1)
 	IF(IFLG2)VYLOC=P(2)
 	IF(M.GE.3.AND.IFLG(3).NE.0)VPOS=P(3)
-	IF(N.GT.0)VFRMT=LABEL
+	IF(N.GT.0)THEN
+           VFRMT=LABEL
+c Check if LABEL is a valid format: 
+c do a test write to the string err_msg, using label as a format
+           slen = TM_LENSTR(LABEL)
+           IF (slen .GT. 1) WRITE(err_msg,label,ERR=1999) 0
+        ENDIF
 	VUSER=SUSER
 	VKEY=M.GE.2
 	GOTO 10
@@ -1543,13 +1574,7 @@ C  calendar
 	endif
 
 	call tm_set_current_calendar (set_name, cal_status)
-	if (cal_status .ne. merr_ok) then
-	   iend = lnblk (set_name,16)
-	   write (6,9176) set_name(1:iend)
-	end if
-
- 9176	format('*** PPL+ ERROR: Calendar ',a, ' is invalid.')
-
+	if (cal_status .ne. merr_ok) GOTO 2999
 	goto 10
 
 #ifdef unix
@@ -1567,6 +1592,18 @@ c sqfill
         if(laboff .or. n.eq.0)sqfflg=.false.
         goto 10
 9999	RETURN
+
+c Format errors
+1999    slen = TM_LENSTR1(LABEL)
+        err_msg = 'Invalid format specification: '//LABEL(1:slen)
+        CALL errmsg (ferr_out_of_range, status, err_msg, *9999)
+
+c Calendar errors
+2999    slen = lnblk (set_name,16)
+	WRITE (err_msg, 9176) set_name(1:slen)
+ 9176	FORMAT('Calendar "',a, '" is invalid.')
+        CALL errmsg (ferr_unknown_arg, status, err_msg, *9999)
+
 
 	END
 	SUBROUTINE OPENF(FILE,IER)

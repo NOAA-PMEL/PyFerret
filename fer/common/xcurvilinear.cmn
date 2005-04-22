@@ -21,7 +21,8 @@
      .		xspan_1_dim1,
      .		xspan_1_dim2,
      .		yspan_1_dim1,
-     .		yspan_1_dim2
+     .		yspan_1_dim2,
+     .          xmodulo
 
 	LOGICAL	curvilinear,
      .		dim1_modulo, dim2_modulo,
@@ -29,7 +30,8 @@
      .		xspan_1_dim1,
      .		xspan_1_dim2,
      .		yspan_1_dim1,
-     .		yspan_1_dim2
+     .		yspan_1_dim2,
+     .          xmodulo
 	INTEGER
      .		minss_dim1, maxss_dim1,
      .		minss_dim2, maxss_dim2,

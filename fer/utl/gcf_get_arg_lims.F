@@ -98,7 +98,9 @@
 	mabstract = grid_line( x_dim, mgrid_abstract )
 
 * get the constant parameters for the GC function
-	CALL GCF_GET_AXIS_SRCS( gcfcn, 1, axis_source )
+
+c	CALL GCF_GET_AXIS_SRCS( gcfcn, 1, axis_source )
+	CALL GCF_GET_AXIS_SRCS( gcfcn, arg, axis_source )
 
 * get the constant parameters for this argument of the function
 	CALL GCF_GET_ARG_PARMS

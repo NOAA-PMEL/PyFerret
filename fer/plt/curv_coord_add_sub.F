@@ -1,5 +1,5 @@
-	SUBROUTINE CURV_COORD_SUB( xi, yj, npt, xfield, yfield,
-     .				   xinv, yinv, status )
+	SUBROUTINE CURV_COORD_ADD_SUB( xi, yj, npt, xfield, yfield,
+     .				   xinv, yinv, xadd, status )
 
 *
 *
@@ -40,13 +40,12 @@
 * indices" into true (X,Y) world coordinates by bi-linear interpolation
 * in the coordinate arrays, xfield, yfield
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
-* V450: 
-* V58+:  1/2005 ACM see if the longitude coordinates around x have
-*                   crossed a branch cut, and if so correct the
-*                   interpolants.
+*        from curv_coord_sub
+* V58+:  1/2005 ACM see if the longitude coordinates around the
+*                   x coordinate have crossed a branch cut, and 
+*                   if so correct the interpolants. Allows the
+*                   calling routine to add a modulo offset to the
+*                   longitudes.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -60,16 +59,16 @@
      .		       xpos_loss_dim2:xpos_hiss_dim2),
      .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
      .		       ypos_loss_dim2:ypos_hiss_dim2),
-     .		xinv, yinv, xlo, xhi
+     .		xinv, yinv, xadd
 
 * internal variable declarations:
+
 	INTEGER xlo_dim1, xhi_dim1, xlo_dim2, xhi_dim2,
      .		ylo_dim1, yhi_dim1, ylo_dim2, yhi_dim2, i
 	REAL xfrac, yfrac, xit, yjt,
      .	     x11, x12, x21, x22,
-     .	     y11, y12, y21, y22, aa
+     .	     y11, y12, y21, y22
 	CHARACTER*1 dim
-        LOGICAL lo, hi
 
         REAL branch_test, lon_degrees
 
@@ -238,7 +237,6 @@ C coordinates on the same branch as x11
 
         x11 = xi(1)
         DO 108 i = 2, npt
-           aa = ABS(x11-xi(i))
            IF (ABS(x11-xi(i)) .GT. branch_test) THEN
               IF (x11 .GT. xi(i)) THEN
                  xi(i) = xi(i) + lon_degrees
@@ -257,6 +255,12 @@ C coordinates on the same branch as x11
 	   DO 120  i = 1, npt
  120	   yj(i) = -1.*yj(i)
 	ENDIF
+
+* Add the offset to the X output 
+
+	DO 130  i = 1, npt
+ 130	   xi(i) = xadd + xi(i)
+	
 
 * successful completion
 	status = 0  ! (like ferr_ok but for PLOT+)

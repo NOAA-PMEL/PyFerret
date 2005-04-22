@@ -1,0 +1,70 @@
+! Run FERRET/fer/ferretdods_gui
+! test open upper and lower levels (-INF) (INF)
+
+can mode logo
+set win/siz=0.4
+
+use coads_climatology
+
+shade/set/lev=(-inf),(4,28,2)(inf) sst[l=1]
+ppl shakey,1,0,-0.1,,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ppl shade
+
+can view
+
+! many levels: triangles forced to be 5% of total key length
+
+set view left
+fill/x=20e:150e/lev=(-inf),(4,28,0.5)(inf) sst[l=1]
+
+set view right
+shade/lev=(-inf),(4,28,0.5)(inf)/key=cont sst[l=1]
+
+can view
+
+! horizontal.
+
+set view upper
+fill/x=20e:150e/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90 sst[l=1]
+ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ppl fill
+
+set view lower
+shade/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90/key=cont sst[l=1]
+ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ppl shade
+
+! Some one-sided examples
+can view
+
+fill/lev=(-2,28,1)(inf) sst[l=1]
+
+shade/set/lev=(-inf),(4,30,0.5)/key=cont/pal=rainbow sst[l=1]
+ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ppl shade
+
+let filler = missing(sst[l=1],-999)
+shade/over/pal=black/nolab/lev=(-999,-999,-999) filler
+
+can view
+
+! polygon command
+
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+let ypts = x/10
+let xpts = cos(x/10)
+
+polygon/trans/i=1:100/nolable/lev=(-inf)(200,900,50)(inf) xpts+xsqr, ypts+ysqr, x*x/10
+
+
+use coads_climatology
+def axis/x=0:360:5 xq
+def axis/y=-90:90:4 yq
+let fsst =  sst[l=1,gx=xq,gy=yq]
+
+let lon = xsequence(x[gx=xq] + 0*y[gy=yq])
+let lat = xsequence(0*x[gx=xq] + y[gy=yq])
+shade/nokey fsst  ! set up
+go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequence(fsst), square, 0.4
+

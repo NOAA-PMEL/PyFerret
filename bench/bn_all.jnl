@@ -423,6 +423,8 @@ GO bn_reset
 GO bn580_bug_fixes.jnl
 
 ! ******** V5.81 Additions below ***********
+GO bn_reset
+GO bn_inf_levels.jnl
 
 GO bn_reset
 GO bn_curv_shade_mod.jnl

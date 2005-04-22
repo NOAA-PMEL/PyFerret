@@ -1,9 +1,9 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     64377968 Apr  8 12:19 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     62801116 Apr 21 14:36 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Benchmark run by ansley
-Note: new .plt files in metafile_masters_v580, includes some changes to MODE LOGO, which cause lots of changes in .sol_plt files.
+Note:  joined bug-fix v_5_8_0_bug_fix_2 onto main trunk
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Apr 13 11:07:52 PDT 2005
+Beginning at Fri Apr 22 10:37:52 PDT 2005
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 04/08/05
- 	13-Apr-05 11:07     
+ 	Solaris 5.6 - 04/21/05
+ 	22-Apr-05 10:37     
 
 yes? !bn500_all_shell
 yes? 
@@ -10129,8 +10129,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-Apr-05"
-SESSION_TIME = "11:07"
+SESSION_DATE = "22-Apr-05"
+SESSION_TIME = "10:37"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10148,8 +10148,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-Apr-05"
-SESSION_TIME = "11:07"
+SESSION_DATE = "22-Apr-05"
+SESSION_TIME = "10:37"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10157,8 +10157,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "13-Apr-05"
-SESSION_TIME = "11:07"
+SESSION_DATE = "22-Apr-05"
+SESSION_TIME = "10:37"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10168,13 +10168,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "13-Apr-05"
-SESSION_TIME = "11:07"
+SESSION_DATE = "22-Apr-05"
+SESSION_TIME = "10:37"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "13-Apr-05"
-SESSION_TIME = "11:07"
+SESSION_DATE = "22-Apr-05"
+SESSION_TIME = "10:37"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10208,7 +10208,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.80"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Apr 13 2005 11:08:39 "
+LAB3 = "Apr 22 2005 10:38:41 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10307,8 +10307,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-Apr-05"
-SESSION_TIME = "11:07"
+SESSION_DATE = "22-Apr-05"
+SESSION_TIME = "10:37"
  
  
 GO bn_reset
@@ -18329,7 +18329,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23049 Apr 13 11:09 bench.mgm
+-rw-rw-r--   1 ansley   tmap       24268 Apr 22 10:39 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18348,7 +18348,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419397 Apr 13 11:09 bench.mgm
+-rw-rw-r--   1 ansley   tmap      408283 Apr 22 10:39 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -26513,7 +26513,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  T5 = 50757969 ;
@@ -26538,7 +26538,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -26690,7 +26690,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Apr 13 11:10:16 PDT 2005
+Fri Apr 22 10:40:26 PDT 2005
  
 GO bn_reset
 cancel mode verify
@@ -35010,7 +35010,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr 13 11:10 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Apr 22 10:41 testa.v5d
  
 can region
 use coads_climatology
@@ -35022,7 +35022,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Apr 13 11:10 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Apr 22 10:41 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -35090,7 +35090,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -35153,7 +35153,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  GFP3 = "" ;
@@ -35373,7 +35373,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -45183,7 +45183,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -45246,7 +45246,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45304,7 +45304,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -45384,7 +45384,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -45607,7 +45607,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45676,7 +45676,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45753,7 +45753,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -48045,7 +48045,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASApr 13 2005 11:14:22
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASApr 22 2005 10:44:40
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48107,6 +48107,88 @@ POLYGON XT, YT, I[I=1:10]
 PLOT/VS XT, YT
  
 ! ******** V5.81 Additions below ***********
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_inf_levels.jnl
+! Run FERRET/fer/ferretdods_gui
+! test open upper and lower levels (-INF) (INF)
+ 
+can mode logo
+set win/siz=0.4
+ 
+use coads_climatology
+ 
+shade/set/lev=(-inf),(4,28,2)(inf) sst[l=1]
+ppl shakey,1,0,-0.1,,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ !-> ppl shakey,1,0,-0.1,,,,,,7.5
+ppl shade
+ 
+can view
+ 
+! many levels: triangles forced to be 5% of total key length
+ 
+set view left
+fill/x=20e:150e/lev=(-inf),(4,28,0.5)(inf) sst[l=1]
+ 
+set view right
+shade/lev=(-inf),(4,28,0.5)(inf)/key=cont sst[l=1]
+ 
+can view
+ 
+! horizontal.
+ 
+set view upper
+fill/x=20e:150e/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90 sst[l=1]
+ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ !-> ppl shakey,1,0,-0.1,10,,,,,3.1
+ppl fill
+ 
+set view lower
+shade/set/lev=(-inf),(4,28,0.5)(inf)/y=0:90/key=cont sst[l=1]
+ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ !-> ppl shakey,1,0,-0.1,10,,,,,3.1
+ppl shade
+ 
+! Some one-sided examples
+can view
+ 
+fill/lev=(-2,28,1)(inf) sst[l=1]
+ 
+shade/set/lev=(-inf),(4,30,0.5)/key=cont/pal=rainbow sst[l=1]
+ppl shakey,1,0,-0.1,10,,,,,`($ppl$ylen)+($ppl$yorg)+0.1`
+ !-> ppl shakey,1,0,-0.1,10,,,,,7.5
+ppl shade
+ 
+let filler = missing(sst[l=1],-999)
+shade/over/pal=black/nolab/lev=(-999,-999,-999) filler
+ 
+can view
+ 
+! polygon command
+ 
+let xsqr = YSEQUENCE({0,.1,.1,0})
+let ysqr = YSEQUENCE({0,0,.1,.1})
+let ypts = x/10
+let xpts = cos(x/10)
+ 
+polygon/trans/i=1:100/nolable/lev=(-inf)(200,900,50)(inf) xpts+xsqr, ypts+ysqr, x*x/10
+ 
+ 
+use coads_climatology
+def axis/x=0:360:5 xq
+Replacing definition of axis XQ
+def axis/y=-90:90:4 yq
+Replacing definition of axis YQ
+let fsst =  sst[l=1,gx=xq,gy=yq]
+ 
+let lon = xsequence(x[gx=xq] + 0*y[gy=yq])
+let lat = xsequence(0*x[gx=xq] + y[gy=yq])
+shade/nokey fsst  ! set up
+go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequence(fsst), square, 0.4
+ 
+ 
  
 GO bn_reset
 cancel mode verify
@@ -48207,6 +48289,80 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+GO bn_redefine_taxis_mc.jnl
+! bn_redefine_taxis_mc.jnl
+! ACM 15-Apr-2005
+ 
+! Redefine the time axis of a multi-file data set.
+! Lets us fix a time axis, which may in fact be irregular, but
+! the multi-file reading always makes into a regularly-spaced axis.
+ 
+set data coads_clim
+list/x=180/y=0 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             DATA SET : COAD
+             FILENAME : coads_clim.des
+             SUBSET   : 6 points (TIME)
+             LONGITUDE: 179E
+             LATITUDE : 1S
+                     179E     
+                      80
+ 16-JAN-1900 / 1:  283.02222
+ 15-FEB-1900 / 2:  284.64557
+ 18-MAR-1900 / 3:  284.53809
+ 17-APR-1900 / 4:  283.16498
+ 17-MAY-1900 / 5:  285.88889
+ 17-JUN-1900 / 6:  284.15555
+ 
+def sym taxisname  `sst,return=taxis`
+ !-> def sym taxisname  TIME1
+ 
+def axis/t=1-mar-1990:6-mar-1990:1/units=days ($taxisname)
+ !-> def axis/t=1-mar-1990:6-mar-1990:1/units=days TIME1
+Replacing definition of axis TIME1
+ *** NOTE: grid  used by data set coads_clim
+ *** NOTE: Redefinition may alter apparent contents of data set
+list/x=180/y=0 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             DATA SET : COAD
+             FILENAME : coads_clim.des
+             SUBSET   : 6 points (TIME)
+             LONGITUDE: 179E
+             LATITUDE : 1S
+                        179E     
+                         80
+ 01-MAR-1990 00 / 1:  283.02222
+ 02-MAR-1990 00 / 2:  284.64557
+ 03-MAR-1990 00 / 3:  284.53809
+ 04-MAR-1990 00 / 4:  283.16498
+ 05-MAR-1990 00 / 5:  285.88889
+ 06-MAR-1990 00 / 6:  284.15555
+ 
+def axis/t=1:6:1 ($taxisname)
+ !-> def axis/t=1:6:1 TIME1
+Replacing definition of axis TIME1
+ *** NOTE: grid  used by data set coads_clim
+ *** NOTE: Redefinition may alter apparent contents of data set
+list/x=180/y=0 sst
+             VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
+             DATA SET : COAD
+             FILENAME : coads_clim.des
+             SUBSET   : 6 points (T)
+             LONGITUDE: 179E
+             LATITUDE : 1S
+             179E     
+              80
+ 1   / 1:  283.02222
+ 2   / 2:  284.64557
+ 3   / 3:  284.53809
+ 4   / 4:  283.16498
+ 5   / 5:  285.88889
+ 6   / 6:  284.15555
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 GO bn581_bug_fixes.jnl
 ! bn581_bug_fixes.jnl
 ! test various fixes that went into version 5.81
@@ -48229,7 +48385,7 @@ yes? def ax/t/edge time = {0,1,3}
 Replacing definition of axis TIME
 yes? let a = t[gt=time]
 yes? show grid/t a
-    GRID (G027)
+    GRID (G022)
  name       axis              # pts   start                end
  normal    X
  normal    Y
@@ -48258,7 +48414,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -48337,7 +48493,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -48417,7 +48573,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-Apr-05" ;
+		:history = "FERRET V5.80   22-Apr-05" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48588,8 +48744,8 @@ LEV_DEL = "0.4"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 04/08/05
- 	13-Apr-05 11:14     
+ 	Solaris 5.6 - 04/21/05
+ 	22-Apr-05 10:45     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -48772,8 +48928,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 04/08/05
- 	13-Apr-05 11:14     
+ 	Solaris 5.6 - 04/21/05
+ 	22-Apr-05 10:45     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -48886,4 +49042,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Apr 13 11:14:44 PDT 2005
+Ended at Fri Apr 22 10:45:16 PDT 2005

@@ -1,0 +1,38 @@
+\ cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! mp_rotate.jnl --  Sets up variables for a Rotated projection using
+!                  'curvilinear coordinates' code in Ferret v4.50
+!		    		
+! Ansley Manke 4/28/05
+! based on other map projection scripts
+
+! Description:  Sets up variables for a Rotated map of the world
+!
+! Usage:      
+!  go mp_rotate angle
+!
+! arg 1 - angle to rotate from horizontal X axis, in degrees
+
+! Example:
+!  use coads_climatology 
+!  go mp_rotate 30
+!  set grid sst
+!  shade/noaxis sst[l=1], x_page, y_page
+!
+let/quiet mp_x = x
+let/quiet mp_y = y
+
+let/quiet Pi = 3.14159265
+let/quiet deg2rad = Pi / 180.0
+
+let/quiet mp_R = $1* deg2rad
+let/quiet mp_lambda = mp_x * deg2rad
+let/quiet mp_phi = mp_y * deg2rad
+
+let/quiet x_page = mp_lambda* cos(mp_R) - mp_phi* sin(mp_R)
+let/quiet y_page = mp_phi* cos(mp_R) + mp_lambda* sin(mp_R)
+
+let/quiet mp_mask = 1
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

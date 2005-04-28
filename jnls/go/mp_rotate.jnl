@@ -9,9 +9,11 @@
 ! Description:  Sets up variables for a Rotated map of the world
 !
 ! Usage:      
-!  go mp_rotate angle
+!  go mp_rotate angle [central meridian] [standard_parallel]
 !
 ! arg 1 - angle to rotate from horizontal X axis, in degrees
+! arg 2 - longitude used for the center of the projection, mp_central_meridian
+! arg 3 - latitude used for the center of the projection, mp_standard_parallel
 
 ! Example:
 !  use coads_climatology 
@@ -20,14 +22,21 @@
 !  shade/noaxis sst[l=1], x_page, y_page
 !
 let/quiet mp_x = x
+let/quiet mp_central_meridian = $2%(mp_x[i=@max] + mp_x[i=@min])/2%
 let/quiet mp_y = y
+let/quiet mp_standard_parallel = $3%(mp_y[j=@max] + mp_y[j=@min])/2 %  ! ???
 
 let/quiet Pi = 3.14159265
 let/quiet deg2rad = Pi / 180.0
 
 let/quiet mp_R = $1* deg2rad
-let/quiet mp_lambda = mp_x * deg2rad
-let/quiet mp_phi = mp_y * deg2rad
+
+let/quiet mp_lambda0 = mp_central_meridian * deg2rad
+
+let/quiet mp_phi0 = mp_standard_parallel * deg2rad
+
+let/quiet mp_lambda = mp_x * deg2rad - mp_lambda0
+let/quiet mp_phi = mp_y * deg2rad - mp_phi0
 
 let/quiet x_page = mp_lambda* cos(mp_R) - mp_phi* sin(mp_R)
 let/quiet y_page = mp_phi* cos(mp_R) + mp_lambda* sin(mp_R)

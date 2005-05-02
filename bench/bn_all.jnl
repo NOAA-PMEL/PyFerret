@@ -424,7 +424,8 @@ GO bn580_bug_fixes.jnl
 
 ! ******** V5.81 Additions below ***********
 GO bn_reset
-GO bn_inf_levels.jnl
+! Comment out: improvements are on the main branch and not yet merged with bug-fix branch
+! GO bn_inf_levels.jnl  
 
 GO bn_reset
 GO bn_curv_shade_mod.jnl
@@ -434,6 +435,9 @@ GO bn_labwid.jnl
 
 GO bn_reset
 GO bn_redefine_taxis_mc.jnl
+
+GO bn_reset
+GO bn_illegal_axisname.jnl
 
 GO bn_reset
 GO bn581_bug_fixes.jnl

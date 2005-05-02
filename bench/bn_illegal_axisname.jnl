@@ -1,0 +1,19 @@
+! Some OPenDAP HDF files have illegal axis names, e.g. with a dot in the name.
+! This is a test of using such names, in a redefinition of the axes of the data.
+! The file has a variable with axis names COADSX.ILLEGAL, COADSY.ILLEGAL. The axes contain 
+! just indices.  The file also has variables NEW.LONGITUDES and NEW.LATITUDES which contain 
+! geographic coordinates that we want to substitute for the axes.
+
+use illeg_axname.nc
+sh data
+list/i=1:5 x[gx=sst]
+set view upper; shade sst
+
+define axis/x/modulo/units=degrees_east 'coadsx.illegal' = XSEQUENCE('NEW.LONGITUDES')
+define axis/y/units=degrees_north 'coadsy.illegal' = XSEQUENCE('NEW.LATITUDES')
+
+list/i=1:5 x[gx=sst]
+set view lower; shade sst
+sh grid sst
+
+can view

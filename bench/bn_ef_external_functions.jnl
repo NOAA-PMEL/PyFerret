@@ -1,0 +1,15 @@
+! Jon's benchmarks
+go bench_examples
+
+!Ansley's benchmarks
+! *kob* move bench tests that test internal external functions to their
+!       own file
+
+GO bn_reset
+go bench_v5d 
+
+!!!!!!!!!!!!!!!!!!!!!!
+!
+! YAY!! End of Benchmark without crashing!!!!
+!
+!!!!!!!!!!!!!!!!!!!!!!

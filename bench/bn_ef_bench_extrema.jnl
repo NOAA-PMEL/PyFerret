@@ -1,0 +1,18 @@
+! bench_extrema.jnl
+!  benchmark tests for findhi and findlo 
+!  external functions; installed as .so files
+!  Ferret version 5.4  
+
+! ACM 28-Jan-02
+
+use coads_climatology
+set region/l=1/x=100:360/y=-20:60
+
+list/x=1:10 findhi(sst,4,4)
+list/x=1:10 findlo(sst,4,4)
+
+let a = findlo(sst,4,4)
+list a[i=@ngd]
+
+let a = findlo(sst,2,2)
+list a[i=@ngd]

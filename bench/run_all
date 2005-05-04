@@ -88,12 +88,18 @@ endif
 echo "Enter the directory containing the external function libraries"
 set efdir = $<
 
+# *acm* 4/5/05 optionally do externally-linked external function tests 
+# 
+echo "Run tests of externally-linked external functions? Enter y or n"
+set do_shared_obj = $<
+
 # background info to go in the benchmark file
 echo "Enter your name"
 set bmarker = $<
 echo "Enter comment about this benchmark or this version of Ferret"
 # *kob* 4.01 linux needs quotes around the input or spaces throw it off
 set bcomment = "$<"
+
 
 set date_stamp = `date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
 set log_file = "all_${date_stamp}.${machine}_log"
@@ -198,6 +204,10 @@ if ($status) then
     exit 1
 endif
 
+# 5/05 *acm* run tests of externally-linked external functions
+if ( $do_shared_obj == "y" ) then
+  ($fver <bn_all_ef_shell.jnl >>$log_file) >>&$err_file
+endif
 
 # Now, lets restart ferret and run the bug fix journal file
 # 3.4.98 - moved this to bn491_all *kob*

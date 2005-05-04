@@ -152,6 +152,7 @@ echo "Procedure run_all to run all FERRET benchmarks" >&$log_file
 echo "Running FERRET version $fver" >>&$log_file
 ls -l $fver >>&$log_file
 echo "Using external functions from $efdir" >>&$log_file
+echo "Running the tests of external functions $do_shared_obj" >>&$log_file
 echo "Benchmark run by $bmarker" >>&$log_file
 echo "Note: $bcomment" >>&$log_file
 

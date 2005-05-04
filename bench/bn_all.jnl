@@ -229,7 +229,7 @@ GO bn_reset
 GO bn_define_axes
 
 GO bn_reset
-GO bn_external_functions
+! GO bn_external_functions  ! move to tests of shared-obj efs.
 
 GO bn_reset
 GO bn_pattern
@@ -324,7 +324,7 @@ GO bn_reset
 GO bn_lev_symbols
 
 GO bn_reset
-GO bench_extrema
+! GO bench_extrema  ! moved to bn_ef_bench_extrema; tests of shared-obj efs.
 
 GO bn_reset
 GO bn_mode_logo_lab
@@ -366,7 +366,7 @@ GO bn_reset
 GO bn_many_polygons.jnl
 
 GO bn_reset
-GO bn_zaxr_fcns.jnl
+! GO bn_zaxr_fcns.jnl ! move to tests of shared-obj efs.
 
 GO bn_reset
 GO bn_fill_irregular.jnl
@@ -426,22 +426,22 @@ GO bn580_bug_fixes.jnl
 GO bn_reset
 ! Comment out: improvements are on the main branch and not yet merged with bug-fix branch
 ! GO bn_inf_levels.jnl  
-
-GO bn_reset
-GO bn_curv_shade_mod.jnl
-
-GO bn_reset
-GO bn_labwid.jnl
-
-GO bn_reset
-GO bn_redefine_taxis_mc.jnl
-
-GO bn_reset
-GO bn_illegal_axisname.jnl
-
-GO bn_reset
-GO bn581_bug_fixes.jnl
-
+!
+!GO bn_reset
+!GO bn_curv_shade_mod.jnl
+!
+!GO bn_reset
+!GO bn_labwid.jnl
+!
+!GO bn_reset
+!GO bn_redefine_taxis_mc.jnl
+!
+!GO bn_reset
+!GO bn_illegal_axisname.jnl
+!
+!GO bn_reset
+!GO bn581_bug_fixes.jnl
+!
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

@@ -2,6 +2,9 @@
 
 ! 7/01 - test string syntax and behaviors
 
+! 5/4/05 acm remove calls to writev5d, shared obj external function
+!            (put in separate file bn_ef_v5d_strings)
+
 ! some test files
 sp rm -f *.str_test *.string_tst
 sp touch dummy1.str_test dummy2.str_test dummy3.str_test dummy4.str_test dummy5.str_test dummy6.str_test dummy7.str_test dummy8.str_test dummy9.str_test
@@ -44,33 +47,6 @@ load d
 set mode ignore
   plot d
   define axis/x xax = d
-set mode/last ignore
-
-sp rm -f testa.v5d
-let a = "testa.v5d"
-use levitus_climatology
-load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
-sp ls -l testa.v5d
-
-can region
-use coads_climatology
-let vflag = writev5d(sst, 0, 0, 0, 0, 0, 0, 0, "vis5d_out.v5d")
-load vflag
-
-use levitus_climatology
-
-sp rm -f test.v5d
-load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
-sp ls -l test.v5d
-
-! removed because it is internal and largely unintelligible
-!show mem/all
-!cancel mem/all
-!show mem/all
-
-! test error: non-string argument passed
-set mode ignore
-  load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,55.0)
 set mode/last ignore
 
 ! netCDF file IO

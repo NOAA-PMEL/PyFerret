@@ -25,6 +25,7 @@ GO err541_cancel_axes
 
 ! Make sure delimited reads are processing dates correctly
 ! *kob*
+! 5/4/05 *acm* Move to bn_ef_err541_date_delim; pulling all jnls that call shared-obj efs out
 GO bn_reset
-GO err541_date_delim
+! GO err541_date_delim
 

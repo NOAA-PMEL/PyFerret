@@ -41,7 +41,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so subtract.so factorial.so 
+all:	ferret_cmn add_9.so avet.so pass_thru.so percent_good_t.so storage.so string_arg.so subtract.so factorial.so 
  
 new:	ferret_cmn pass_thru_string.so pick_a_string.so strings_as_args.so stringlengths.so
  

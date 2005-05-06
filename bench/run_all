@@ -126,15 +126,15 @@ ln -s $machine_stream stream_data_link.unf
 
 # set up descriptors for mc data files.  this necessary because linux/F90 
 # requires a different format of input for the namelist reads.  *kob* 4/99
-if ($machine == "linux") then
+# if ($machine == "linux") then
 #     foreach file (coads*.des_template)
 #	./linuxize_descriptors $file >! $file:r.des
 #    end
-else
+# else
     foreach file (coads*.des_template)
 	cp -f $file $file:r.des
     end
-endif
+# endif
 
 #set up proper stream testing jnl file - depends on endianness
 rm -f bn_test_stream.jnl

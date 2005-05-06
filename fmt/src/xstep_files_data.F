@@ -47,7 +47,7 @@
 * Linux port -kob - 3/97 - Modify include for tmap_dset.parm to be a
 *			   preprocessor include for F90 - needed because
 *			   tmap_dset.parm contains an ifdef
-* v5.81 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
+* v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
 
 #include "tmap_dset.parm"		

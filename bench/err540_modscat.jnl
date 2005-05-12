@@ -10,7 +10,7 @@ def axis/x=180w:180e:1/modulo xax
 def axis/y=-89:0:1 yax
 def grid/x=xax/y=yax mygrid
 
-let a  = scat2gridgauss_xy (xpts[i=1:1000], ypts[i=1:1000], sstpts, x[gx=mygrid], y[gy=mygrid], 6, 1,6,6)
+let a  = scat2gridgauss_xy (xpts[i=1:1000], ypts[i=1:1000], sstpts, x[gx=mygrid], y[gy=mygrid], 6, 1, 6)
 
 let b = if sst[l=1,gx=mygrid,gy=mygrid] then a
 

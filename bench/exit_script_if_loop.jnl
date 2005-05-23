@@ -1,0 +1,7 @@
+! test exit/script with IF clause and REPEAT loop
+
+repeat/i=3:10:2 (list/nohead i; if `i ge 6` then exit/script)
+
+say "exit/script in a REPEAT loop: should have exited from the script"
+say "these lines should not be printed"
+list a

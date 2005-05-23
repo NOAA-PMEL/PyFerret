@@ -1,0 +1,18 @@
+! bn_exit_script.jnl
+! 5/2005 ACM
+! tests of EXIT/SCRIPT command, in combination with IF and REPEAT
+
+! Simple EXIT/SCRIPT command in a script
+go exit_script_1
+
+! EXIT/SCRIPT from an IF clause
+go exit_script_if
+
+! EXIT/SCRIPT inside REPEAT loop
+go exit_script_loop
+
+! EXIT/SCRIPT with IF clause and REPEAT loop
+go exit_script_if_loop
+
+! EXIT/SCRIPT two levels down
+go exit_script_twolev

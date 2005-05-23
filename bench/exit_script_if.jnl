@@ -1,0 +1,9 @@
+! test exit/script from an IF clause
+
+let a = 1
+if `a lt 10` then exit/script
+
+say "exit/script in an IF clause: should have exited from the script"
+say "these lines should not be printed"
+list a
+

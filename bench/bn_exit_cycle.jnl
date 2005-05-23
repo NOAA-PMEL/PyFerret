@@ -1,0 +1,21 @@
+! bn_exit_cycle.jnl
+! 5/2005 ACM
+! EXIT/CYCLE skips remaining commands in this repetition of a loop
+
+can mode ver
+let a = 1
+repeat/i=1:10 (let a = `2*a`; if `a LT 20` then exit/cycle; say `a`)
+
+
+say " "
+say " test exit/loop combined with exit/cycle"
+let a = 1
+repeat/i=1:20 (let a = `2*a`; if `a LT 20` then exit/cycle; \
+ if `a gt 500` then say "say `a` if bigger than 500" ; \
+ if `a gt 10000` then exit/loop; \
+ if `a gt 2000` then exit/cycle; \
+ say `a`)
+say " "
+say "loop finished `a` gt 10000"
+
+set mode/last verify

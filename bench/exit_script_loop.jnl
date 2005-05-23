@@ -1,0 +1,7 @@
+! test exit/script inside REPEAT loop
+
+repeat/i=3:5 (list/nohead i; exit/script)
+
+say "exit/script in a REPEAT loop: should have exited from the script"
+say "these lines should not be printed"
+list a

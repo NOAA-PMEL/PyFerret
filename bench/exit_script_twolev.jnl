@@ -1,0 +1,6 @@
+! test exit/script called another level down
+
+go exit_script_if
+
+say "returned from exit_script_if"
+say "here is the next line"

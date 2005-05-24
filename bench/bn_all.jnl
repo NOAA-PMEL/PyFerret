@@ -451,6 +451,9 @@ GO bn_reset
 GO bn_curv_mod.jnl
 
 GO bn_reset
+GO bn_shade_keycont.jnl
+
+GO bn_reset
 GO bn581_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

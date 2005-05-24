@@ -2,6 +2,8 @@
 ! bn_bounds.jnl
 ! testing CDF read and write of file with irregular axes and bounds 
 ! and DEFINE AXIS/BOUNDS
+! 5/2005 made changes so the bounds coordinates {1,2} are written to the 
+!        file. If axis is Z, write attribute potitive="up". (bug 1196)
 
 
 ! Output data on irregular record axis. No need for:
@@ -26,6 +28,15 @@ sp ncdump a.nc
 ! Append later time steps: we add a void point between non-contiguous bounds
 
 save/append/file=a.nc/x=199/y=41/l=50:53 v
+sp ncdump a.nc
+can data/all
+can var/all
+
+! Depth axis; bounds {1,2} positive up
+
+define axis/z/depth/units=meters zirr = {0,10,40,70}
+let t2 = z[gz=zirr]
+save/clobber/file=a.nc t2
 sp ncdump a.nc
 can data/all
 can var/all

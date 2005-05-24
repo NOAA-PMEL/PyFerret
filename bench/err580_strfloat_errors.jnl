@@ -1,0 +1,6 @@
+! err580_strfloat_errors.jnl     
+! Previously a nonsense input gave a result of 0.
+! See bug 1174.
+
+let b = {"3.34", "0", "nonsense", "0.0", "153q51", "9..32", "7.e03", "3.2e-2"}
+list/prec=6 strfloat(b)

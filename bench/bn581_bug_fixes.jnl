@@ -51,3 +51,12 @@ GO err580_def_view_axes.jnl
 ! fix for bug 1205: symbol LEV_DEL wrong when single level specified
 GO bn_reset
 GO err580_lev_del.jnl
+
+! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
+GO bn_reset
+GO err580_strfloat_errors.jnl
+
+! Fixes for bugs 1249, 1250: uppercase not recognized for qualifier argument
+GO bn_reset
+GO err580_arg_case.jnl
+

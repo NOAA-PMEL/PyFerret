@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     64434720 May 13 09:56 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     64437228 May 24 10:31 /home/ja8/ansley/v_5_8_0_bug_fix_2/solaris/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes to EXIT/SCRIPT and addition of EXIT/CYCLE
+Note: better STRFLOAT checking, upper/lowercase on /KEY=CONT and PLOT/STEP=, changes to bn_bounds: bouds {1,2} coord written to files; also FILL/MOD, CONTOUR/MOD for curvi data
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Fri May 13 11:17:35 PDT 2005
+Beginning at Tue May 24 10:47:20 PDT 2005
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 05/13/05
- 	13-May-05 11:17     
+ 	Solaris 5.6 - 05/24/05
+ 	24-May-05 10:47     
 
 yes? !bn500_all_shell
 yes? 
@@ -10130,8 +10130,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-May-05"
-SESSION_TIME = "11:17"
+SESSION_DATE = "24-May-05"
+SESSION_TIME = "10:47"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10149,8 +10149,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-May-05"
-SESSION_TIME = "11:17"
+SESSION_DATE = "24-May-05"
+SESSION_TIME = "10:47"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10158,8 +10158,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "13-May-05"
-SESSION_TIME = "11:17"
+SESSION_DATE = "24-May-05"
+SESSION_TIME = "10:47"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10169,13 +10169,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "13-May-05"
-SESSION_TIME = "11:17"
+SESSION_DATE = "24-May-05"
+SESSION_TIME = "10:47"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "13-May-05"
-SESSION_TIME = "11:17"
+SESSION_DATE = "24-May-05"
+SESSION_TIME = "10:47"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10209,7 +10209,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.80"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "May 13 2005 11:18:24 "
+LAB3 = "May 24 2005 10:48:07 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10308,8 +10308,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = " 5.80"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-May-05"
-SESSION_TIME = "11:17"
+SESSION_DATE = "24-May-05"
+SESSION_TIME = "10:47"
  
  
 GO bn_reset
@@ -18330,7 +18330,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23066 May 13 11:19 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23055 May 24 10:49 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18349,7 +18349,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419589 May 13 11:19 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419504 May 24 10:49 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -25568,7 +25568,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  T5 = 50757969 ;
@@ -25593,7 +25593,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -25745,7 +25745,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Fri May 13 11:20:06 PDT 2005
+Tue May 24 10:49:45 PDT 2005
  
 GO bn_reset
 cancel mode verify
@@ -26438,17 +26438,17 @@ Dynamic grids:
     GRID (G014)                          use count:   1
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
- (AX003)   LATITUDE             5 r   1S                   1N
+ (AX009)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
     GRID (G021)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX003)   LATITUDE             5 r   1S                   1N
+ (AX009)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
 Dynamic axes:
-    AXIS (AX003)                         use count:   2
+    AXIS (AX009)                         use count:   2
  
 ! sampling a pseudo-variable
 list SAMPLEI(X[x=1:12],{3,4,7,15})
@@ -27232,16 +27232,16 @@ SHOW DATA
 ! basic strides
 LIST VAR[i=2:4:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G024)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:131 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:123 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -27261,12 +27261,12 @@ LIST VAR[i=2:4:2]
 ! cache hit after changes to COMPLETE_MISSING_LIMS and FLESH_OUT_AXIS
 LIST VAR[i=2:4:2]
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G024)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 28 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:123 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -27286,23 +27286,23 @@ LIST VAR[i=2:4:2]
 ! cache hit through non-file variable
 let a = VAR[i=2:4:2]
 list a
- dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M: 28 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:131 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
  eval    A        C:  6 I:    1    2  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G024)           @XACT
  rdstride VAR      C:  9 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 28 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:131 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : VAR[I=2:4:2]
              FILENAME : bn_strides.cdf
              SUBSET   : 2 by 3 by 2 points (X-Y-Z)
@@ -27320,12 +27320,12 @@ list a
 list a		! from cache ...
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
  eval    A        C:  6 I:    1    2  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G024)           @XACT
  rdstride VAR      C:  9 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:149 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:123 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : VAR[I=2:4:2]
              FILENAME : bn_strides.cdf
              SUBSET   : 2 by 3 by 2 points (X-Y-Z)
@@ -27350,7 +27350,7 @@ cancel memory/all
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 load var
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
@@ -27358,16 +27358,16 @@ load var
 LIST VAR[i=2:4:2]
  dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G024)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:123 I:    1    2  J:    1    3  K:    1    2  L:    1    1
  -DELETE VAR      M:131 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -27384,18 +27384,18 @@ LIST VAR[i=2:4:2]
  2   / 2:  1222.00  1224.00
  3   / 3:  1232.00  1234.00
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M: 28 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:131 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -27419,13 +27419,13 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G028)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G028)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G028)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: VAR --> (G028)           @XACT
@@ -27433,7 +27433,7 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
  reading VAR      M:149 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4
  regrid  VAR      M: 28 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -27454,18 +27454,18 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G028)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:123 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:149 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -27480,19 +27480,19 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  1212.00  1214.00
  3   / 2:  1232.00  1234.00
 LIST VAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_2    TAX1_1
  -DELETE VAR      M:123 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX024)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G028)          (AX023)   (AX024)   ZAX1_2    TAX1_1
- allocate dynamic grid (G028)          (AX023)   (AX024)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX025)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX024)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G028)          (AX024)   (AX025)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G028)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:123 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   (AX024)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX025)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -27509,7 +27509,7 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! deliberate error
 set mode ignore; LIST/i=2:4:2 VAR; cancel mode ignore
- dealloc  dynamic grid (G028)          (AX023)   (AX024)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G028)          (AX024)   (AX025)   ZAX1_2    TAX1_1
  -DELETE VAR      M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
@@ -27518,15 +27518,15 @@ set mode ignore; LIST/i=2:4:2 VAR; cancel mode ignore
 LIST VAR[i=2:4:2@ave]
  dealloc  dynamic grid GPC1            XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G024)           @AVE
  reading VAR      M:149 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  regrid  VAR      M:123 I:    1    2  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X@AVE
              FILENAME : bn_strides.cdf
@@ -27545,25 +27545,25 @@ LIST VAR[i=2:4:2@ave]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G024)          (AX023)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G024)          (AX024)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:123 I:    1    2  J:    1    3  K:    1    2  L:    1    1
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 I:    3    5  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C: 10 I:    1   36  J:    1    1  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M: 28 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:123 I:    1   36  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
              FILENAME : bn_strides.cdf
              SUBSET   : 3 points (X)
@@ -27577,24 +27577,24 @@ list/j=1/k=1/l=1 a[i=3:5]
  21   / 5:  1131.00
  -DELETE A        M:131 I:    1    1  J:    3    5  K:    1    1  L:    1    1
 list/k=1/l=1 a[i=3:5,j=1:8:2]
- dealloc  dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   (AX025)   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G028)          (AX024)   (AX025)   ZAX1_20   TAX1_10
- allocate dynamic grid (G028)          (AX024)   (AX025)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          (AX025)   (AX026)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          (AX025)   (AX026)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          (AX025)   (AX026)   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   (AX025)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          (AX025)   (AX026)   ZAX1_20   TAX1_10
  strip regrid on Y: A --> (G028)           @XACT
  eval    A        C:  8 I:    3    5  J:    1    7  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C: 11 I:    1   36  J:    1    7  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M:144 I:    1    8  J:    1    7  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:131 I:    1   36  J:    1    7  K:    1    1  L:    1    1
- dealloc  dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
  regrid  A        M:141 I:    3    5  J:    1    4  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX024)   (AX025)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          (AX025)   (AX026)   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -27611,7 +27611,7 @@ list/k=1/l=1 a[i=3:5,j=1:8:2]
 ! ****** unequally spaced points on parent axis
 ! reference data
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR
- dealloc  dynamic grid (G028)          (AX024)   (AX025)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          (AX025)   (AX026)   ZAX1_20   TAX1_10
  -DELETE A        M:141 I:    3    5  J:    1    4  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
@@ -27641,17 +27641,17 @@ cancel mem/all
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  dealloc  dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:144 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:149 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -27667,12 +27667,12 @@ LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:141 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:149 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -27686,26 +27686,26 @@ LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  
 ! cache hit through non-file variable
 let a = UNEVENVAR[i=2:4:2]
- dealloc  dynamic grid (G028)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:141 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:144 I:    1    2  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G024)          (AX024)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G024)          (AX025)   YAX1_30   ZAX1_20   TAX1_10
 list/order=x/j=1/k=1/l=1 a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 I:    1    2  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G024)           @XACT
  rdstride UNE-NVAR C: 10 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:141 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:144 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : UNEVENVAR[I=2:4:2]
              FILENAME : bn_strides.cdf
              SUBSET   : 2 points (X)
@@ -27719,12 +27719,12 @@ list/order=x/j=1/k=1/l=1 a		! from cache ...
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 I:    1    2  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G024)           @XACT
  rdstride UNE-NVAR C: 10 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:131 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:149 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : UNEVENVAR[I=2:4:2]
              FILENAME : bn_strides.cdf
              SUBSET   : 2 points (X)
@@ -27744,7 +27744,7 @@ cancel memory/all
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 load/k=1/l=1 UNEVENVAR
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
@@ -27753,17 +27753,17 @@ load/k=1/l=1 UNEVENVAR
 LIST/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  dealloc  dynamic grid GPC4            XUNEVEN   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G024)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:141 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:144 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -27776,19 +27776,19 @@ LIST/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
  0.3  / 1:  1112.00
  0.6  / 2:  1114.00
 LIST/j=1/k=1/l=1 UNEVENVAR[i=2:4:2,j=1:5:2]
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    5  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:131 I:    1    2  J:    1    3  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:144 I:    2    4  J:    1    5  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  doing limits reconciliation on Y axis: UNEVENVAR
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X, on Y
@@ -27812,13 +27812,13 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XUNEVEN
 LIST/order=x UNEVENVAR[I=1:30:7,j=1,k=1,l=1]    ! 1, 8, 15(5), 22(2)
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
@@ -27826,7 +27826,7 @@ LIST/order=x UNEVENVAR[I=1:30:7,j=1,k=1,l=1]    ! 1, 8, 15(5), 22(2)
  reading UNE-NVAR M:149 I:    1   10  J:    1    1  K:    1    1  L:    1    1
  doing moduloing UNEVENVAR on X axis:     1    10
  regrid  UNE-NVAR M:131 I:    1    5  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -27844,19 +27844,19 @@ cancel axis/modulo XUNEVEN
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST/k=1/l=1 UNEVENVAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    3  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:141 I:    1    2  J:    1    2  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:149 I:    2    4  J:    1    3  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X, on Y
              FILENAME : bn_strides.cdf
@@ -27868,20 +27868,20 @@ LIST/k=1/l=1 UNEVENVAR[i=2:4:2,j=1:3:2]
  0    / 1:  1112.00  1114.00
  0.95 / 2:  1132.00  1134.00
 LIST/k=1/l=1 UNEVENVAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G028)          (AX023)   (AX025)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:141 I:    1    2  J:    1    2  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   (AX027)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   (AX027)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   (AX027)   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   (AX027)   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    6  J:    1    5  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:149 I:    1    3  J:    1    3  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:141 I:    2    6  J:    1    5  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   (AX027)   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X, on Y
              FILENAME : bn_strides.cdf
@@ -27896,19 +27896,19 @@ LIST/k=1/l=1 UNEVENVAR[i=2:6:2,j=1:5:2]
  
 ! averaging causes bypass of strides
 LIST/j=1/k=1/l=1/precision=9 UNEVENVAR[i=2:8:2@ave]
- dealloc  dynamic grid (G028)          (AX024)   (AX026)   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   (AX027)   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:149 I:    1    3  J:    1    3  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @AVE
  reading UNE-NVAR M:149 I:    1    9  J:    1    1  K:    1    1  L:    1    1
  regrid  UNE-NVAR M:141 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X@AVE
              FILENAME : bn_strides.cdf
@@ -27923,20 +27923,20 @@ LIST/j=1/k=1/l=1/precision=9 UNEVENVAR[i=2:8:2@ave]
  0.78 / 3:  1115.87073
  0.9  / 4:  1117.90442
 LIST/j=1/k=1/l=1/precision=9 UNEVENVAR[i=2:8:2]		! for comparison
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:141 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX026)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX026)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX026)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX027)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX027)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX027)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX026)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX027)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    8  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:131 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:141 I:    2    8  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX026)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX027)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -27953,19 +27953,19 @@ LIST/j=1/k=1/l=1/precision=9 UNEVENVAR[i=2:8:2]		! for comparison
  
 ! test special logic in tm_world_recur for endpoints of strides on irreg axis
 LIST/j=1/k=1/l=1/precision=9 UNEVENVAR[i=1:10:2@ave]
- dealloc  dynamic grid (G028)          (AX026)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX027)   YUNEVEN   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:131 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ allocate dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G028)           @AVE
  reading UNE-NVAR M:131 I:    1   10  J:    1    1  K:    1    1  L:    1    1
  regrid  UNE-NVAR M:141 I:    1    5  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X@AVE
              FILENAME : bn_strides.cdf
@@ -27988,19 +27988,19 @@ set region/i=3:6/j=2:4/k=1:2/l=1
  
 use/order=yx bn_strides
 list bigvar[i=3:9:2]
- dealloc  dynamic grid (G028)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX025)   YUNEVEN   ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:141 I:    1    5  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX026)   YAX1_30   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G028)          (AX026)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G028)          (AX026)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          (AX027)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          (AX027)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          (AX027)   YAX1_30   ZAX1_20   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX026)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          (AX027)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    4  K:    1    2  L:    1    1
  nulrgd  BIGVAR   M:144 I:    1    4  J:    2    4  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:141 I:    3    9  J:    2    4  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          (AX026)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          (AX027)   YAX1_30   ZAX1_20   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -28017,19 +28017,19 @@ list bigvar[i=3:9:2]
  3   / 3:  1233.00  1235.00  1237.00  1239.00
  4   / 4:  1243.00  1245.00  1247.00  1249.00
 list bigvar[j=2:6:2]
- dealloc  dynamic grid (G028)          (AX026)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          (AX027)   YAX1_30   ZAX1_20   TAX1_10
  -DELETE BIGVAR   M:144 I:    1    4  J:    2    4  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          XAX1_40   (AX024)   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G028)          XAX1_40   (AX024)   ZAX1_20   TAX1_10
- allocate dynamic grid (G028)          XAX1_40   (AX024)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          XAX1_40   (AX025)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          XAX1_40   (AX025)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          XAX1_40   (AX025)   ZAX1_20   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          XAX1_40   (AX024)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G028)          XAX1_40   (AX025)   ZAX1_20   TAX1_10
  strip regrid on Y: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C:  7 I:    3    6  J:    2    6  K:    1    2  L:    1    1
  nulrgd  BIGVAR   M:141 I:    3    6  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:144 I:    3    6  J:    2    6  K:    1    2  L:    1    1
- dealloc  dynamic grid (G028)          XAX1_40   (AX024)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          XAX1_40   (AX025)   ZAX1_20   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -28046,19 +28046,19 @@ list bigvar[j=2:6:2]
  4   / 2:  1243.00  1244.00  1245.00  1246.00
  6   / 3:  1263.00  1264.00  1265.00  1266.00
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G028)          XAX1_40   (AX024)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G028)          XAX1_40   (AX025)   ZAX1_20   TAX1_10
  -DELETE BIGVAR   M:141 I:    3    6  J:    1    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX026)   (AX025)   (AX027)   TAX1_10
- dealloc  dynamic grid (G028)          (AX026)   (AX025)   (AX027)   TAX1_10
- allocate dynamic grid (G028)          (AX026)   (AX025)   (AX027)   TAX1_10
+ allocate dynamic grid (G028)          (AX027)   (AX026)   (AX028)   TAX1_10
+ dealloc  dynamic grid (G028)          (AX027)   (AX026)   (AX028)   TAX1_10
+ allocate dynamic grid (G028)          (AX027)   (AX026)   (AX028)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G028)          (AX026)   (AX025)   (AX027)   TAX1_10
+ allocate dynamic grid (G028)          (AX027)   (AX026)   (AX028)   TAX1_10
  strip regrid on X: BIGVAR --> (G028)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:141 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G028)          (AX026)   (AX025)   (AX027)   TAX1_10
+ dealloc  dynamic grid (G028)          (AX027)   (AX026)   (AX028)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28078,22 +28078,22 @@ canc data/all
  -DELETE UNE-NVAR M:131 I:    1   10  J:    1    1  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE UNE-NVAR M:149 I:    1    9  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G028)          (AX026)   (AX025)   (AX027)   TAX1_10
- dealloc  dynamic grid (G024)          (AX023)   YUNEVEN   ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G028)          (AX027)   (AX026)   (AX028)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX024)   YUNEVEN   ZAX1_6    TAX1_4
  
 use/order=zyx bn_strides
 list bigvar[i=3:9:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   YAX1_30   XAX1_40   TAX1_10
- dealloc  dynamic grid (G024)          (AX027)   YAX1_30   XAX1_40   TAX1_10
- allocate dynamic grid (G024)          (AX027)   YAX1_30   XAX1_40   TAX1_10
+ allocate dynamic grid (G024)          (AX028)   YAX1_30   XAX1_40   TAX1_10
+ dealloc  dynamic grid (G024)          (AX028)   YAX1_30   XAX1_40   TAX1_10
+ allocate dynamic grid (G024)          (AX028)   YAX1_30   XAX1_40   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G024)          (AX027)   YAX1_30   XAX1_40   TAX1_10
+ allocate dynamic grid (G024)          (AX028)   YAX1_30   XAX1_40   TAX1_10
  strip regrid on X: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    4  K:    1    2  L:    1    1
  nulrgd  BIGVAR   M:144 I:    1    4  J:    2    4  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:149 I:    3    9  J:    2    4  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   YAX1_30   XAX1_40   TAX1_10
+ dealloc  dynamic grid (G024)          (AX028)   YAX1_30   XAX1_40   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -28110,19 +28110,19 @@ list bigvar[i=3:9:2]
  3   / 3:  1332.00  1532.00  1732.00  1932.00
  4   / 4:  1342.00  1542.00  1742.00  1942.00
 list bigvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX027)   YAX1_30   XAX1_40   TAX1_10
+ dealloc  dynamic grid (G024)          (AX028)   YAX1_30   XAX1_40   TAX1_10
  -DELETE BIGVAR   M:144 I:    1    4  J:    2    4  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          ZAX1_20   (AX023)   XAX1_40   TAX1_10
- dealloc  dynamic grid (G024)          ZAX1_20   (AX023)   XAX1_40   TAX1_10
- allocate dynamic grid (G024)          ZAX1_20   (AX023)   XAX1_40   TAX1_10
+ allocate dynamic grid (G024)          ZAX1_20   (AX024)   XAX1_40   TAX1_10
+ dealloc  dynamic grid (G024)          ZAX1_20   (AX024)   XAX1_40   TAX1_10
+ allocate dynamic grid (G024)          ZAX1_20   (AX024)   XAX1_40   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G024)          ZAX1_20   (AX023)   XAX1_40   TAX1_10
+ allocate dynamic grid (G024)          ZAX1_20   (AX024)   XAX1_40   TAX1_10
  strip regrid on Y: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C:  7 I:    3    6  J:    2    6  K:    1    2  L:    1    1
  nulrgd  BIGVAR   M:149 I:    3    6  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:144 I:    3    6  J:    2    6  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          ZAX1_20   (AX023)   XAX1_40   TAX1_10
+ dealloc  dynamic grid (G024)          ZAX1_20   (AX024)   XAX1_40   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -28139,19 +28139,19 @@ list bigvar[j=2:6:2]
  4   / 2:  1342.00  1442.00  1542.00  1642.00
  6   / 3:  1362.00  1462.00  1562.00  1662.00
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G024)          ZAX1_20   (AX023)   XAX1_40   TAX1_10
+ dealloc  dynamic grid (G024)          ZAX1_20   (AX024)   XAX1_40   TAX1_10
  -DELETE BIGVAR   M:149 I:    3    6  J:    1    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_10
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_10
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_10
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_10
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_10
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_10
  strip regrid on X: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:149 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28169,21 +28169,21 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1363.00  1563.00  1763.00  1963.00
 canc data/all
  -DELETE BIGVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_10
  
 use/order=zxy bn_strides
 list bigvar[i=3:9:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   XAX1_40   YAX1_30   TAX1_10
- dealloc  dynamic grid (G024)          (AX025)   XAX1_40   YAX1_30   TAX1_10
- allocate dynamic grid (G024)          (AX025)   XAX1_40   YAX1_30   TAX1_10
+ allocate dynamic grid (G024)          (AX026)   XAX1_40   YAX1_30   TAX1_10
+ dealloc  dynamic grid (G024)          (AX026)   XAX1_40   YAX1_30   TAX1_10
+ allocate dynamic grid (G024)          (AX026)   XAX1_40   YAX1_30   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G024)          (AX025)   XAX1_40   YAX1_30   TAX1_10
+ allocate dynamic grid (G024)          (AX026)   XAX1_40   YAX1_30   TAX1_10
  strip regrid on X: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    4  K:    1    2  L:    1    1
  nulrgd  BIGVAR   M:149 I:    1    4  J:    2    4  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:144 I:    3    9  J:    2    4  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   XAX1_40   YAX1_30   TAX1_10
+ dealloc  dynamic grid (G024)          (AX026)   XAX1_40   YAX1_30   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -28200,19 +28200,19 @@ list bigvar[i=3:9:2]
  3   / 3:  1323.00  1523.00  1723.00  1923.00
  4   / 4:  1324.00  1524.00  1724.00  1924.00
 list bigvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX025)   XAX1_40   YAX1_30   TAX1_10
+ dealloc  dynamic grid (G024)          (AX026)   XAX1_40   YAX1_30   TAX1_10
  -DELETE BIGVAR   M:149 I:    1    4  J:    2    4  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          ZAX1_20   (AX026)   YAX1_30   TAX1_10
- dealloc  dynamic grid (G024)          ZAX1_20   (AX026)   YAX1_30   TAX1_10
- allocate dynamic grid (G024)          ZAX1_20   (AX026)   YAX1_30   TAX1_10
+ allocate dynamic grid (G024)          ZAX1_20   (AX027)   YAX1_30   TAX1_10
+ dealloc  dynamic grid (G024)          ZAX1_20   (AX027)   YAX1_30   TAX1_10
+ allocate dynamic grid (G024)          ZAX1_20   (AX027)   YAX1_30   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G024)          ZAX1_20   (AX026)   YAX1_30   TAX1_10
+ allocate dynamic grid (G024)          ZAX1_20   (AX027)   YAX1_30   TAX1_10
  strip regrid on Y: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C:  7 I:    3    6  J:    2    6  K:    1    2  L:    1    1
  nulrgd  BIGVAR   M:144 I:    3    6  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:149 I:    3    6  J:    2    6  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          ZAX1_20   (AX026)   YAX1_30   TAX1_10
+ dealloc  dynamic grid (G024)          ZAX1_20   (AX027)   YAX1_30   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -28229,19 +28229,19 @@ list bigvar[j=2:6:2]
  4   / 2:  1324.00  1424.00  1524.00  1624.00
  6   / 3:  1326.00  1426.00  1526.00  1626.00
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G024)          ZAX1_20   (AX026)   YAX1_30   TAX1_10
+ dealloc  dynamic grid (G024)          ZAX1_20   (AX027)   YAX1_30   TAX1_10
  -DELETE BIGVAR   M:144 I:    3    6  J:    1    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_10
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_10
  strip regrid on X: BIGVAR --> (G024)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:149 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:144 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28259,7 +28259,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1336.00  1536.00  1736.00  1936.00
 canc data/all
  -DELETE BIGVAR   M:149 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_10
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_10
  
 ! now with xytvar
 cancel region
@@ -28277,16 +28277,16 @@ show grid xytvar
 list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            XLON      YLAT      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
- dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
- allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
+ allocate dynamic grid (G024)          (AX028)   YLAT      NORMAL    TTIME
+ dealloc  dynamic grid (G024)          (AX028)   YLAT      NORMAL    TTIME
+ allocate dynamic grid (G024)          (AX028)   YLAT      NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
+ allocate dynamic grid (G024)          (AX028)   YLAT      NORMAL    TTIME
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:149 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
+ dealloc  dynamic grid (G024)          (AX028)   YLAT      NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X
              FILENAME : bn_strides.cdf
@@ -28302,19 +28302,19 @@ list xytvar[i=1:7:2]
  2N   / 2:  2021.00  2023.00  2025.00  2027.00
  1N   / 1:  2011.00  2013.00  2015.00  2017.00
 list xytvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    TTIME
+ dealloc  dynamic grid (G024)          (AX028)   YLAT      NORMAL    TTIME
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
- dealloc  dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
- allocate dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
+ allocate dynamic grid (G024)          XLON      (AX024)   NORMAL    TTIME
+ dealloc  dynamic grid (G024)          XLON      (AX024)   NORMAL    TTIME
+ allocate dynamic grid (G024)          XLON      (AX024)   NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
+ allocate dynamic grid (G024)          XLON      (AX024)   NORMAL    TTIME
  strip regrid on Y: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:144 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
+ dealloc  dynamic grid (G024)          XLON      (AX024)   NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
              FILENAME : bn_strides.cdf
@@ -28330,19 +28330,19 @@ list xytvar[j=2:6:2]
  4N   / 2:  2041.00  2042.00  2043.00  2044.00
  2N   / 1:  2021.00  2022.00  2023.00  2024.00
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
- dealloc  dynamic grid (G024)          XLON      (AX023)   NORMAL    TTIME
+ dealloc  dynamic grid (G024)          XLON      (AX024)   NORMAL    TTIME
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
- allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ allocate dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ allocate dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:149 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -28359,7 +28359,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
  
 use/order=yx bn_strides
 show grid xytvar
@@ -28374,16 +28374,16 @@ show grid xytvar
 list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            YLAT      XLON      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
- dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
- allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
+ allocate dynamic grid (G024)          (AX026)   XLON      NORMAL    TTIME
+ dealloc  dynamic grid (G024)          (AX026)   XLON      NORMAL    TTIME
+ allocate dynamic grid (G024)          (AX026)   XLON      NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
+ allocate dynamic grid (G024)          (AX026)   XLON      NORMAL    TTIME
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:144 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
+ dealloc  dynamic grid (G024)          (AX026)   XLON      NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X
              FILENAME : bn_strides.cdf
@@ -28399,19 +28399,19 @@ list xytvar[i=1:7:2]
  142   / 2:  2012.00  2032.00  2052.00  2072.00
  143   / 3:  2013.00  2033.00  2053.00  2073.00
 list xytvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    TTIME
+ dealloc  dynamic grid (G024)          (AX026)   XLON      NORMAL    TTIME
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
- dealloc  dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
- allocate dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
+ allocate dynamic grid (G024)          YLAT      (AX027)   NORMAL    TTIME
+ dealloc  dynamic grid (G024)          YLAT      (AX027)   NORMAL    TTIME
+ allocate dynamic grid (G024)          YLAT      (AX027)   NORMAL    TTIME
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
+ allocate dynamic grid (G024)          YLAT      (AX027)   NORMAL    TTIME
  strip regrid on Y: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:149 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
+ dealloc  dynamic grid (G024)          YLAT      (AX027)   NORMAL    TTIME
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
              FILENAME : bn_strides.cdf
@@ -28427,19 +28427,19 @@ list xytvar[j=2:6:2]
  144   / 2:  2014.00  2024.00  2034.00  2044.00
  146   / 3:  2016.00  2026.00  2036.00  2046.00
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
- dealloc  dynamic grid (G024)          YLAT      (AX026)   NORMAL    TTIME
+ dealloc  dynamic grid (G024)          YLAT      (AX027)   NORMAL    TTIME
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
- allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ allocate dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
+ allocate dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ allocate dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:144 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -28456,7 +28456,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  146   / 3:  5016.00  5036.00  5056.00  5076.00
 canc data/all
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
  
 use/order=tyx bn_strides
 show grid xytvar
@@ -28471,16 +28471,16 @@ show grid xytvar
 list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            TTIME     YLAT      NORMAL    XLON
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
- dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
- allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
+ allocate dynamic grid (G024)          (AX028)   YLAT      NORMAL    XLON
+ dealloc  dynamic grid (G024)          (AX028)   YLAT      NORMAL    XLON
+ allocate dynamic grid (G024)          (AX028)   YLAT      NORMAL    XLON
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
+ allocate dynamic grid (G024)          (AX028)   YLAT      NORMAL    XLON
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:149 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
+ dealloc  dynamic grid (G024)          (AX028)   YLAT      NORMAL    XLON
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X
              FILENAME : bn_strides.cdf
@@ -28496,19 +28496,19 @@ list xytvar[i=1:7:2]
  2N   / 2:  1022.00  3022.00  5022.00  7022.00
  1N   / 1:  1012.00  3012.00  5012.00  7012.00
 list xytvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX027)   YLAT      NORMAL    XLON
+ dealloc  dynamic grid (G024)          (AX028)   YLAT      NORMAL    XLON
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
- dealloc  dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
- allocate dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
+ allocate dynamic grid (G024)          TTIME     (AX024)   NORMAL    XLON
+ dealloc  dynamic grid (G024)          TTIME     (AX024)   NORMAL    XLON
+ allocate dynamic grid (G024)          TTIME     (AX024)   NORMAL    XLON
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
+ allocate dynamic grid (G024)          TTIME     (AX024)   NORMAL    XLON
  strip regrid on Y: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:144 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
+ dealloc  dynamic grid (G024)          TTIME     (AX024)   NORMAL    XLON
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
              FILENAME : bn_strides.cdf
@@ -28524,19 +28524,19 @@ list xytvar[j=2:6:2]
  4N   / 2:  1042.00  2042.00  3042.00  4042.00
  2N   / 1:  1022.00  2022.00  3022.00  4022.00
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
- dealloc  dynamic grid (G024)          TTIME     (AX023)   NORMAL    XLON
+ dealloc  dynamic grid (G024)          TTIME     (AX024)   NORMAL    XLON
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
- allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ allocate dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ allocate dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:149 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on T
              FILENAME : bn_strides.cdf
@@ -28553,7 +28553,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  2N   / 1:  1025.00  3025.00  5025.00  7025.00
 canc data/all
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   NORMAL    (AX026)
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   NORMAL    (AX027)
  
 use/order=txy bn_strides
 show grid xytvar
@@ -28568,16 +28568,16 @@ show grid xytvar
 list xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      NORMAL    YLAT
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
- dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
- allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
+ allocate dynamic grid (G024)          (AX026)   XLON      NORMAL    YLAT
+ dealloc  dynamic grid (G024)          (AX026)   XLON      NORMAL    YLAT
+ allocate dynamic grid (G024)          (AX026)   XLON      NORMAL    YLAT
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
+ allocate dynamic grid (G024)          (AX026)   XLON      NORMAL    YLAT
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:144 I:    1    7  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
+ dealloc  dynamic grid (G024)          (AX026)   XLON      NORMAL    YLAT
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X
              FILENAME : bn_strides.cdf
@@ -28593,19 +28593,19 @@ list xytvar[i=1:7:2]
  142   / 2:  1022.00  3022.00  5022.00  7022.00
  143   / 3:  1023.00  3023.00  5023.00  7023.00
 list xytvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX025)   XLON      NORMAL    YLAT
+ dealloc  dynamic grid (G024)          (AX026)   XLON      NORMAL    YLAT
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
- dealloc  dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
- allocate dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
+ allocate dynamic grid (G024)          TTIME     (AX027)   NORMAL    YLAT
+ dealloc  dynamic grid (G024)          TTIME     (AX027)   NORMAL    YLAT
+ allocate dynamic grid (G024)          TTIME     (AX027)   NORMAL    YLAT
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
+ allocate dynamic grid (G024)          TTIME     (AX027)   NORMAL    YLAT
  strip regrid on Y: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:149 I:    1    4  J:    2    6  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
+ dealloc  dynamic grid (G024)          TTIME     (AX027)   NORMAL    YLAT
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
              FILENAME : bn_strides.cdf
@@ -28621,19 +28621,19 @@ list xytvar[j=2:6:2]
  144   / 2:  1024.00  2024.00  3024.00  4024.00
  146   / 3:  1026.00  2026.00  3026.00  4026.00
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
- dealloc  dynamic grid (G024)          TTIME     (AX026)   NORMAL    YLAT
+ dealloc  dynamic grid (G024)          TTIME     (AX027)   NORMAL    YLAT
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
- allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ allocate dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
+ allocate dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ allocate dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:144 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on T
              FILENAME : bn_strides.cdf
@@ -28650,7 +28650,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   NORMAL    (AX023)
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   NORMAL    (AX024)
  
 ! map into Z instead of T
 use/order=zxy bn_strides
@@ -28666,17 +28666,17 @@ show grid xytvar
 list/k=1:2 xytvar[i=1:7:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
- dealloc  dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
- allocate dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
+ allocate dynamic grid (G024)          (AX028)   XLON      YLAT      NORMAL
+ dealloc  dynamic grid (G024)          (AX028)   XLON      YLAT      NORMAL
+ allocate dynamic grid (G024)          (AX028)   XLON      YLAT      NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    2  L:    1    2
- allocate dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
+ allocate dynamic grid (G024)          (AX028)   XLON      YLAT      NORMAL
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  8 I:    1    7  J:    1    3  K:    1    2  L: -111 -111
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
  -DELETE XYTVAR   M:149 I:    1    7  J:    1    3  K:    1    2  L: -111 -111
- dealloc  dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
+ dealloc  dynamic grid (G024)          (AX028)   XLON      YLAT      NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X
              FILENAME : bn_strides.cdf
@@ -28692,20 +28692,20 @@ list/k=1:2 xytvar[i=1:7:2]
  142   / 2:  1022.00  3022.00  5022.00  7022.00
  143   / 3:  1023.00  3023.00  5023.00  7023.00
 list/k=1:2 xytvar[j=2:6:2]
- dealloc  dynamic grid (G024)          (AX027)   XLON      YLAT      NORMAL
+ dealloc  dynamic grid (G024)          (AX028)   XLON      YLAT      NORMAL
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
- dealloc  dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
- allocate dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
+ allocate dynamic grid (G024)          TTIME     (AX024)   YLAT      NORMAL
+ dealloc  dynamic grid (G024)          TTIME     (AX024)   YLAT      NORMAL
+ allocate dynamic grid (G024)          TTIME     (AX024)   YLAT      NORMAL
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    1    4  J:    1    3  K:    1    2  L:    1    2
- allocate dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
+ allocate dynamic grid (G024)          TTIME     (AX024)   YLAT      NORMAL
  strip regrid on Y: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  8 I:    1    4  J:    2    6  K:    1    2  L: -111 -111
  nulrgd  XYTVAR   M:149 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
  -DELETE XYTVAR   M:144 I:    1    4  J:    2    6  K:    1    2  L: -111 -111
- dealloc  dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
+ dealloc  dynamic grid (G024)          TTIME     (AX024)   YLAT      NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on Y
              FILENAME : bn_strides.cdf
@@ -28721,19 +28721,19 @@ list/k=1:2 xytvar[j=2:6:2]
  144   / 2:  1024.00  2024.00  3024.00  4024.00
  146   / 3:  1026.00  2026.00  3026.00  4026.00
 list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
- dealloc  dynamic grid (G024)          TTIME     (AX023)   YLAT      NORMAL
+ dealloc  dynamic grid (G024)          TTIME     (AX024)   YLAT      NORMAL
  -DELETE XYTVAR   M:149 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   NORMAL
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   NORMAL
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   NORMAL
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   NORMAL
  strip regrid on X: XYTVAR --> (G024)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -111 -111
  nulrgd  XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
  -DELETE XYTVAR   M:149 I:    1    7  J:    2    6  K:    3    5  L: -111 -111
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
              FILENAME : bn_strides.cdf
@@ -28750,7 +28750,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
  -DELETE XYTVAR   M:144 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   NORMAL
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   NORMAL
  
  
 ! * * * * * MIXED STRIDES, PERMUTATIONS and REVERSALS * * * * *
@@ -28773,16 +28773,16 @@ cancel region; set region/l=1
 use/order=yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
  strip regrid on X: MIDVAR --> (G024)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:144 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28798,16 +28798,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_6
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_6
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_6
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_6
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_6
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_6
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_6
  strip regrid on X: MIDVAR --> (G024)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
@@ -28815,7 +28815,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:144 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28831,16 +28831,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   TAX1_6
  
 use/order=y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
  strip regrid on X: MIDVAR --> (G024)           @XACT
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    4    8  J:    2    5  K:    3    5  L:    1    1
@@ -28848,7 +28848,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:144 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28864,22 +28864,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1585.00  1545.00
 canc data/all
  -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   TAX1_6
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   TAX1_6
  
 ! reference output
 use/order=tyx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
  strip regrid on X: MIDVAR --> (G024)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:144 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28895,17 +28895,17 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:144 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
  
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
 use/order=-t-y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
  strip regrid on X: MIDVAR --> (G024)           @XACT
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    4    7  K:    3    5  L:    7    7
@@ -28913,7 +28913,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:144 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:144 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28929,22 +28929,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6745.00  2745.00
 canc data/all
  -DELETE MIDVAR   M:144 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
  
 ! reference output
 use/order=txy bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ allocate dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
  strip regrid on X: MIDVAR --> (G024)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:144 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28960,16 +28960,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX027)   (AX025)   (AX026)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX028)   (AX026)   (AX027)   ZAX1_7
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    1
- allocate dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ allocate dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
  strip regrid on X: MIDVAR --> (G024)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
@@ -28977,7 +28977,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:149 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:144 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -28993,7 +28993,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6755.00  2755.00
 canc data/all
  -DELETE MIDVAR   M:149 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G024)          (AX025)   (AX027)   (AX023)   ZAX1_7
+ dealloc  dynamic grid (G024)          (AX026)   (AX028)   (AX024)   ZAX1_7
  
 GO bn_reset
 cancel mode verify
@@ -31403,14 +31403,14 @@ show grid gg2
     GRID GG2
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX020)   LATITUDE           401 r   20S                  20N
+ (AX021)   LATITUDE           401 r   20S                  20N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
 show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX020)                         use count:   1
+    AXIS (AX021)                         use count:   1
  
 ! demonstrate proper management of dynamic axes
 DEFINE GRID/LIKE=gg2 gg3
@@ -31418,7 +31418,7 @@ show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX020)                         use count:   2
+    AXIS (AX021)                         use count:   2
 DEFINE GRID/like=temp[d=levitus_climatology] gg2
 Replacing definition of grid GG2
 show grid gg2
@@ -31432,7 +31432,7 @@ show grid/dynamic
 Dynamic grids:
     no implicit grids
 Dynamic axes:
-    AXIS (AX020)                         use count:   1
+    AXIS (AX021)                         use count:   1
  
 ! SET GRID using a user-defined variable
 let g = sst[x=0:30:.1,d=coads_climatology]
@@ -31442,7 +31442,7 @@ show grid
  Last successful data access was on grid (G021)
     GRID (G021)
  name       axis              # pts   start                end
- (AX012)   LONGITUDE          301 r   0E                   30E
+ (AX013)   LONGITUDE          301 r   0E                   30E
  COADSY    LATITUDE            90 r   89S                  89N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
@@ -31468,14 +31468,14 @@ Dynamic grids:
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
     GRID (G021)                          use count:   1
  name       axis              # pts   start                end
- (AX012)   LONGITUDE          301 r   0E                   30E
+ (AX013)   LONGITUDE          301 r   0E                   30E
  COADSY    LATITUDE            90 r   89S                  89N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
 Dynamic axes:
     AXIS (AX008)                         use count:   1
-    AXIS (AX012)                         use count:   1
-    AXIS (AX020)                         use count:   1
+    AXIS (AX013)                         use count:   1
+    AXIS (AX021)                         use count:   1
  
 ! deliberate errors
 set mode ignore
@@ -31596,7 +31596,7 @@ SHOW GRID temp[d=2,gx=sst[d=1],y=10s:2s:.2]             ! implicit Y axis
     GRID (G028)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5"
@@ -31610,14 +31610,14 @@ SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
     GRID (G024)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
 SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G028)
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]),SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])
@@ -31630,13 +31630,13 @@ SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10
     GRID (G024)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX008)   T (CYC/hour)         2 r   0.00034224           0.00068448
     GRID (G028)
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  
@@ -31657,12 +31657,12 @@ SHOW GRID
     GRID (G024)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
 list/j=1:5 j
              VARIABLE : J
-                        axis (AX001)
+                        axis (AX005)
              SUBSET   : 5 points (LATITUDE)
  9.2S   / 5:  5.00000
  9.4S   / 4:  4.00000
@@ -31675,7 +31675,7 @@ SHOW GRID MYGRID
     GRID MYGRID
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID/DYNAMIC
@@ -31683,13 +31683,13 @@ Dynamic grids:
     GRID (G024)                          use count:   1
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX005)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
 Dynamic axes:
     AXIS (AX011)                         use count:   1
-    AXIS (AX001)                         use count:   2
-    AXIS (AX020)                         use count:   1
+    AXIS (AX005)                         use count:   2
+    AXIS (AX021)                         use count:   1
  
  
 ! ******** V53 Additions below ***********
@@ -33359,13 +33359,13 @@ let b =  a[i=18:23:2]
 list/nohead b            ! using rdstride
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid B        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  eval    B        C:  6 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  strip regrid on X: A --> (G014)           @XACT
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
@@ -33376,18 +33376,18 @@ list/nohead b            ! using rdstride
  -DELETE A        M:141 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  A        M:141 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE A        M:132 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
  22   / 3:   2.0000
 list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: A --> (G032)           @XACT
@@ -33395,7 +33395,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  reading A        M:130 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     1    20
  regrid  A        M:123 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.0000
  4    / 2:   4.0000
  7    / 3:   7.0000
@@ -33406,13 +33406,13 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  22   / 8:   2.0000
  25   / 9:   5.0000
 list/nohead b            ! reuse of cached result
- dealloc  dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  -DELETE A        M:123 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  eval    B        C:  6 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  strip regrid on X: A --> (G014)           @XACT
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
@@ -33423,7 +33423,7 @@ list/nohead b            ! reuse of cached result
  -DELETE A        M:123 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  A        M:123 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE A        M:120 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
  22   / 3:   2.0000
@@ -33627,11 +33627,11 @@ list/nohead str[i=18:23:2] ! using rdstride
  dealloc  dynamic grid (G032)          (AX008)   NORMAL    NORMAL    NORMAL
  -DELETE A        M:104 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  strip regrid on X: STR --> (G014)           @XACT
  strip moduloing STR on X axis:    18    22
  rdstride STR      C:  9 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
@@ -33642,18 +33642,18 @@ list/nohead str[i=18:23:2] ! using rdstride
  -DELETE STR      M:104 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  nulrgd  STR      M:104 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
  -DELETE STR      M:101 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
  22   / 3:"b"
 list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
- dealloc  dynamic grid (G014)          (AX009)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX006)   NORMAL    NORMAL    NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
- dealloc  dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
- allocate dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ allocate dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: STR --> (G032)           @XACT
@@ -33661,7 +33661,7 @@ list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
  reading STR      M:101 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:     1    20
  regrid  STR      M: 83 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G032)          (AX021)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G032)          (AX022)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
  7    / 3:"g"
@@ -34270,7 +34270,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -34333,7 +34333,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  GFP3 = "" ;
@@ -34553,7 +34553,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -37605,7 +37605,7 @@ show axis/all
  MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
  MONTH_REG TIME                12mr   16-JAN      06:00    16-DEC      01:20
  SEASONAL_REG TIME              4mr   15-FEB      15:43    15-NOV      14:05
- (AX020)   LATITUDE           401 r   20S                  20N
+ (AX021)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
@@ -37613,6 +37613,7 @@ show axis/all
  TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
+ BNDS                           2 r   1                    2
 cancel axis month_irreg
  *** NOTE: Not deleted: MONTH_IRREG
  *** NOTE: Axis is in use by grid (G014)
@@ -37779,7 +37780,7 @@ show axis/all
  MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
  MONTH_REG TIME                12mr   16-JAN      06:00    16-DEC      01:20
  SEASONAL_REG TIME              4mr   15-FEB      15:43    15-NOV      14:05
- (AX020)   LATITUDE           401 r   20S                  20N
+ (AX021)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
@@ -37787,6 +37788,7 @@ show axis/all
  TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
+ BNDS                           2 r   1                    2
  
 ! Pre V5.42, this causes a crash: axes were cancelled, but not fully.
 cancel axis/all
@@ -37906,23 +37908,23 @@ cancel axis/all
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
- *** NOTE: Not deleted: MONTH_IRREG
- *** NOTE: Axis is in use by grid (G014)
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
- *** NOTE: Not deleted: YAXLEVITR1_90
- *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: Axis is in use by grid (G014)
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: YAXLEVITR1_90
+ *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: ZAXLEVITR1_1
  *** NOTE: Axis is in use by grid GG2
- *** NOTE: Not deleted: (AX020)
+ *** NOTE: Not deleted: (AX021)
  *** NOTE: Axis is in use by grid GG3
 show axis/all
  name       axis              # pts   start                end
@@ -37993,7 +37995,7 @@ show axis/all
  YAX       Y                   90 r   -89                  0
  XAX       LONGITUDE          361mr   180E                 180E(540)
  MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
- (AX020)   LATITUDE           401 r   20S                  20N
+ (AX021)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
@@ -38122,19 +38124,19 @@ cancel axis/all
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: TIME5
  *** NOTE: Axis is in use by grid GLB1
- *** NOTE: Not deleted: YAXLEVITR1_90
- *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
+ *** NOTE: Not deleted: YAXLEVITR1_90
+ *** NOTE: Axis is in use by grid GG2
  *** NOTE: Not deleted: COADSX
  *** NOTE: Axis is in use by grid GG
  *** NOTE: Not deleted: XAXLEVITR1_160
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: ZAXLEVITR1_1
  *** NOTE: Axis is in use by grid GG2
- *** NOTE: Not deleted: (AX020)
+ *** NOTE: Not deleted: (AX021)
  *** NOTE: Axis is in use by grid GG3
  
 show axis/all
@@ -38205,7 +38207,7 @@ show axis/all
  X10       X                  201 r   0                    10
  YAX       Y                   90 r   -89                  0
  XAX       LONGITUDE          361mr   180E                 180E(540)
- (AX020)   LATITUDE           401 r   20S                  20N
+ (AX021)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
@@ -38839,31 +38841,31 @@ set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:2]
  dealloc  dynamic grid GFJ3            XAX_SUBSPANORMAL    NORMAL    TAX_SUBSPA
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          (AX021)   NORMAL    NORMAL    TAX_SUBSPA
- dealloc  dynamic grid (G028)          (AX021)   NORMAL    NORMAL    TAX_SUBSPA
- allocate dynamic grid (G028)          (AX021)   NORMAL    NORMAL    TAX_SUBSPA
+ allocate dynamic grid (G028)          (AX022)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G028)          (AX022)   NORMAL    NORMAL    TAX_SUBSPA
+ allocate dynamic grid (G028)          (AX022)   NORMAL    NORMAL    TAX_SUBSPA
  eval    EX#1     C:  4 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G028)          (AX021)   NORMAL    NORMAL    TAX_SUBSPA
+ allocate dynamic grid (G028)          (AX022)   NORMAL    NORMAL    TAX_SUBSPA
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: V2D_REG --> (G028)           @XACT
  found   V2D_REG  M: 69 I:    0   14  J: -111 -111  K: -111 -111  L:    1    1
  regrid  V2D_REG  M: 70 I:    1    8  J: -111 -111  K: -111 -111  L:    1    1
- dealloc  dynamic grid (G028)          (AX021)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G028)          (AX022)   NORMAL    NORMAL    TAX_SUBSPA
              ....  12.0000  14.0000  16.0000  11.0000  13.0000  15.0000     ....
 l200n/order=x $2[l=1,i=0:14:7]
  !-> list/width=200/nohead/order=x v2d_reg[l=1,i=0:14:7]
         ............
 set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  !-> list/width=200/nohead v2d_reg[i=1,l=1:15:2]
- dealloc  dynamic grid (G028)          (AX001)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G028)          (AX005)   NORMAL    NORMAL    TAX_SUBSPA
  -DELETE V2D_REG  M: 71 I:    1    3  J: -111 -111  K: -111 -111  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX021)
- dealloc  dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX021)
- allocate dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX021)
+ allocate dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX022)
+ dealloc  dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX022)
+ allocate dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX022)
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    8
- allocate dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX021)
+ allocate dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX022)
  strip regrid on T: V2D_REG --> (G028)           @XACT
  strip moduloing V2D_REG on T axis:     1    15
  rdstride V2D_REG  C:  9 I:    1    1  J: -111 -111  K: -111 -111  L:    1    5
@@ -38871,7 +38873,7 @@ set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  -DELETE V2D_REG  M: 71 I:    1    1  J: -111 -111  K: -111 -111  L:    1    5
  nulrgd  V2D_REG  M: 71 I:    1    1  J: -111 -111  K: -111 -111  L:    1    8
  -DELETE V2D_REG  M: 72 I:    1    1  J: -111 -111  K: -111 -111  L:    1   15
- dealloc  dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX021)
+ dealloc  dynamic grid (G028)          XAX_SUBSPANORMAL    NORMAL    (AX022)
  16-JAN      / 1:   11.000
  16-MAR      / 2:   71.000
  15-MAY      / 3:  131.000
@@ -39370,31 +39372,31 @@ set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:2]
  dealloc  dynamic grid GFJ4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G023)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
- dealloc  dynamic grid (G023)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
- allocate dynamic grid (G023)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G023)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G023)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G023)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
  eval    EX#1     C:  4 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G023)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G023)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: V2D_IRR --> (G023)           @XACT
  found   V2D_IRR  M:146 I:    0   14  J: -111 -111  K: -111 -111  L:    1    1
  regrid  V2D_IRR  M:147 I:    1    8  J: -111 -111  K: -111 -111  L:    1    1
- dealloc  dynamic grid (G023)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G023)          (AX005)   NORMAL    NORMAL    TIRREG_SUB
              ....  12.0000  14.0000  16.0000  11.0000  12.1000  15.0000     ....
 l200n/order=x $2[l=1,i=0:14:7]
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:7]
         ............
 set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  !-> list/width=200/nohead v2d_irr[i=1,l=1:15:2]
- dealloc  dynamic grid (G023)          (AX009)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G023)          (AX006)   NORMAL    NORMAL    TIRREG_SUB
  -DELETE V2D_IRR  M:148 I:    1    3  J: -111 -111  K: -111 -111  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX001)
- dealloc  dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX001)
- allocate dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX001)
+ allocate dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX005)
+ dealloc  dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX005)
+ allocate dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX005)
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    8
- allocate dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX001)
+ allocate dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX005)
  strip regrid on T: V2D_IRR --> (G023)           @XACT
  strip moduloing V2D_IRR on T axis:     1    15
  rdstride V2D_IRR  C:  9 I:    1    1  J: -111 -111  K: -111 -111  L:    1    5
@@ -39402,7 +39404,7 @@ set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  -DELETE V2D_IRR  M:148 I:    1    1  J: -111 -111  K: -111 -111  L:    1    5
  nulrgd  V2D_IRR  M:148 I:    1    1  J: -111 -111  K: -111 -111  L:    1    8
  -DELETE V2D_IRR  M:149 I:    1    1  J: -111 -111  K: -111 -111  L:    1   15
- dealloc  dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX001)
+ dealloc  dynamic grid (G023)          XIRREG_SUBNORMAL    NORMAL    (AX005)
  16-JAN      / 1:   11.000
  15-MAR      / 2:   70.249
  15-MAY      / 3:  131.249
@@ -43033,18 +43035,18 @@ let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
- dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
- allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
+ dealloc  dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
+ allocate dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
+ allocate dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ allocate dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
  strip regrid on X: TAUX --> (G032)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:148 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:145 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
 can mem/all
  -DELETE A        M:145 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:148 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43052,28 +43054,28 @@ can mem/all
  TEMPORARY data cleared from memory
  
 def grid/like=taux agrid
- dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
  getgrid EX#1     C:  6 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
 set mode diag
 let a = taux[i=50:55:2,j=44:50:3,l=1:168:8]
  dealloc  dynamic grid PS2DU1          PSXU      PSYU      NORMAL    TIME6
- dealloc  dynamic grid (G032)          (AX026)   (AX022)   NORMAL    (AX028)
+ dealloc  dynamic grid (G032)          (AX025)   (AX012)   NORMAL    (AX030)
 load a
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
- dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
- allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
- allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
+ dealloc  dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
+ allocate dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
+ allocate dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
  eval    EX#1     C:  4 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  eval    A        C:  6 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
- allocate dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ allocate dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
  strip regrid on X: TAUX --> (G032)           @XACT
  rdstride TAUX     C:  9 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
  nulrgd  TAUX     M:145 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
  -DELETE TAUX     M:148 I:   50   54  J:   44   50  K: -111 -111  L:    1  161
- dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
  
 can mem/all
  -DELETE TAUX     M:145 I:    1    3  J:    1    3  K: -111 -111  L:    1   21
@@ -43081,8 +43083,8 @@ can mem/all
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 can data/all
- dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
- dealloc  dynamic grid (G032)          (AX022)   (AX026)   NORMAL    (AX027)
+ dealloc  dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
+ dealloc  dynamic grid (G032)          (AX012)   (AX025)   NORMAL    (AX026)
  
 ! Some tests taken from  bn_strides_revs_perms.jnl but with
 ! DEFINE GRID/LIKE= testing permuting and reversing axes
@@ -43126,16 +43128,16 @@ load var
 LIST VAR[i=2:4:2]
  dealloc  dynamic grid AGRID           XAX1_4    YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G030)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G030)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX045)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX045)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX045)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    3  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX045)   YAX1_3    ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G030)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    2    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:142 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  -DELETE VAR      M:145 I:    2    4  J:    2    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX045)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X
              FILENAME : bn_strides.cdf
@@ -43150,19 +43152,19 @@ LIST VAR[i=2:4:2]
  2   / 2:  12221.0  12241.0
  3   / 3:  12321.0  12341.0
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G030)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX045)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:142 I:    1    2  J:    2    3  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX025)   (AX044)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G030)          (AX025)   (AX044)   ZAX1_2    TAX1_1
- allocate dynamic grid (G030)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX029)   (AX046)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX029)   (AX046)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX029)   (AX046)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX029)   (AX046)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G030)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:142 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX029)   (AX046)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43185,13 +43187,13 @@ CANC MEM/ALL
 ! modulo requests cannot use strides (as this example shows)
 set axis/modulo XAX1_4
 LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
- dealloc  dynamic grid (G030)          (AX025)   (AX044)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX029)   (AX046)   ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
- dealloc  dynamic grid (G030)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
- allocate dynamic grid (G030)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX029)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX029)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX029)   YAX1_3    ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX029)   YAX1_3    ZAX1_2    TAX1_1
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: VAR --> (G030)           @XACT
@@ -43199,7 +43201,7 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
  reading VAR      M:148 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  doing moduloing VAR on X axis:     1     4
  regrid  VAR      M:142 I:    1    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G030)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX029)   YAX1_3    ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 3 delta on X
              FILENAME : bn_strides.cdf
@@ -43220,18 +43222,18 @@ cancel axis/modulo XAX1_4
  
 ! strides applied to more than one axis need special attention in IS_REGRID
 LIST VAR[i=2:4:2,j=1:3:2]
- dealloc  dynamic grid (G030)          (AX025)   YAX1_3    ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX029)   YAX1_3    ZAX1_2    TAX1_1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX044)   (AX043)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G030)          (AX044)   (AX043)   ZAX1_2    TAX1_1
- allocate dynamic grid (G030)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX046)   (AX045)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX046)   (AX045)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX046)   (AX045)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX046)   (AX045)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G030)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:148 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX046)   (AX045)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43246,19 +43248,19 @@ LIST VAR[i=2:4:2,j=1:3:2]
  1   / 1:  12121.0  12141.0
  3   / 2:  12321.0  12341.0
 LIST VAR[i=2:6:2,j=1:5:2]
- dealloc  dynamic grid (G030)          (AX044)   (AX043)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX046)   (AX045)   ZAX1_2    TAX1_1
  -DELETE VAR      M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX044)   (AX025)   ZAX1_2    TAX1_1
- dealloc  dynamic grid (G030)          (AX044)   (AX025)   ZAX1_2    TAX1_1
- allocate dynamic grid (G030)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX046)   (AX029)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX046)   (AX029)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX046)   (AX029)   ZAX1_2    TAX1_1
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ allocate dynamic grid (G030)          (AX046)   (AX029)   ZAX1_2    TAX1_1
  strip regrid on X: VAR --> (G030)           @XACT
  rdstride VAR      C:  7 I:    2    4  J:    1    3  K:    1    2  L:    1    1
  nulrgd  VAR      M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:145 I:    2    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX046)   (AX029)   ZAX1_2    TAX1_1
              VARIABLE : L*1000 + K*100 + J*10 + I
                         regrid: 2 delta on X, 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43275,24 +43277,24 @@ LIST VAR[i=2:6:2,j=1:5:2]
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
- dealloc  dynamic grid (G030)          (AX044)   (AX025)   ZAX1_2    TAX1_1
+ dealloc  dynamic grid (G030)          (AX046)   (AX029)   ZAX1_2    TAX1_1
  -DELETE VAR      M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
 list/j=1/k=1/l=1 a[i=3:5]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  getgrid A        C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
- allocate dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    1    1  K:    1    1  L:    1    1
  eval    A        C:  7 I:    3    5  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G030)           @XACT
  rdstride BIGVAR   C: 10 I:    1   36  J:    1    1  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M:145 I:    1    8  J:    1    1  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:148 I:    1   36  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
              FILENAME : bn_strides.cdf
              SUBSET   : 3 points (X)
@@ -43306,24 +43308,24 @@ list/j=1/k=1/l=1 a[i=3:5]
  21   / 5:  1131.00
  -DELETE A        M:142 I:    1    1  J:    3    5  K:    1    1  L:    1    1
 list/k=1/l=1 a[i=3:5,j=1:8:2]
- dealloc  dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G022)          (AX044)   (AX043)   ZAX1_20   TAX1_10
- dealloc  dynamic grid (G022)          (AX044)   (AX043)   ZAX1_20   TAX1_10
- allocate dynamic grid (G022)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G022)          (AX046)   (AX045)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G022)          (AX046)   (AX045)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G022)          (AX046)   (AX045)   ZAX1_20   TAX1_10
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    2    4  K:    1    1  L:    1    1
- allocate dynamic grid (G022)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ allocate dynamic grid (G022)          (AX046)   (AX045)   ZAX1_20   TAX1_10
  strip regrid on Y: A --> (G022)           @XACT
  eval    A        C:  8 I:    3    5  J:    1    7  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ allocate dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
  strip regrid on X: BIGVAR --> (G030)           @XACT
  rdstride BIGVAR   C: 11 I:    1   36  J:    1    7  K:    1    1  L:    1    1
  nulrgd  BIGVAR   M:126 I:    1    8  J:    1    7  K:    1    1  L:    1    1
  -DELETE BIGVAR   M:142 I:    1   36  J:    1    7  K:    1    1  L:    1    1
- dealloc  dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
  regrid  A        M:132 I:    3    5  J:    1    4  K:    1    1  L:    1    1
- dealloc  dynamic grid (G022)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G022)          (AX046)   (AX045)   ZAX1_20   TAX1_10
              VARIABLE : BIGVAR[I=1:40:5]
                         regrid: 2 delta on Y
              FILENAME : bn_strides.cdf
@@ -43350,19 +43352,19 @@ cancel mem/all
  
 ! basic strides
 LIST/order=x/j=1/k=1/l=1 UNEVENVAR[i=2:4:2]
- dealloc  dynamic grid (G022)          (AX044)   (AX043)   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G022)          (AX046)   (AX045)   ZAX1_20   TAX1_10
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G022)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
- dealloc  dynamic grid (G022)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
- allocate dynamic grid (G022)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G022)          (AX029)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G022)          (AX029)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G022)          (AX029)   YUNEVEN1  ZAX1_6    TAX1_4
  strip limits reconciliation : EX#1
  eval    EX#1     C:  5 I:    3    6  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G022)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ allocate dynamic grid (G022)          (AX029)   YUNEVEN1  ZAX1_6    TAX1_4
  strip regrid on X: UNEVENVAR --> (G022)           @XACT
  rdstride UNE-NVAR C:  8 I:    2    4  J:    1    1  K:    1    1  L:    1    1
  nulrgd  UNE-NVAR M:145 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  -DELETE UNE-NVAR M:148 I:    2    4  J:    1    1  K:    1    1  L:    1    1
- dealloc  dynamic grid (G022)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G022)          (AX029)   YUNEVEN1  ZAX1_6    TAX1_4
              VARIABLE : L*1000 + K*100 + J[GY=YUNEVEN]*10 + I[GX=XUNEVEN]
                         regrid: on X
              FILENAME : bn_strides.cdf
@@ -43380,19 +43382,19 @@ set region/i=3:6/j=2:4/k=1:2/l=1
  
 use/order=yx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
- dealloc  dynamic grid (G022)          (AX025)   YUNEVEN1  ZAX1_6    TAX1_4
+ dealloc  dynamic grid (G022)          (AX029)   YUNEVEN1  ZAX1_6    TAX1_4
  -DELETE UNE-NVAR M:145 I:    1    2  J:    1    1  K:    1    1  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G022)          (AX043)   (AX045)   (AX046)   TAX1_10
- dealloc  dynamic grid (G022)          (AX043)   (AX045)   (AX046)   TAX1_10
- allocate dynamic grid (G022)          (AX043)   (AX045)   (AX046)   TAX1_10
+ allocate dynamic grid (G022)          (AX045)   (AX047)   (AX048)   TAX1_10
+ dealloc  dynamic grid (G022)          (AX045)   (AX047)   (AX048)   TAX1_10
+ allocate dynamic grid (G022)          (AX045)   (AX047)   (AX048)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G022)          (AX043)   (AX045)   (AX046)   TAX1_10
+ allocate dynamic grid (G022)          (AX045)   (AX047)   (AX048)   TAX1_10
  strip regrid on X: BIGVAR --> (G022)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:145 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G022)          (AX043)   (AX045)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G022)          (AX045)   (AX047)   (AX048)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43410,22 +43412,22 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1363.00  1365.00  1367.00  1369.00
 canc data/all
  -DELETE BIGVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G022)          (AX043)   (AX045)   (AX046)   TAX1_10
- dealloc  dynamic grid (G030)          (AX044)   YAX1_30   ZAX1_20   TAX1_10
+ dealloc  dynamic grid (G022)          (AX045)   (AX047)   (AX048)   TAX1_10
+ dealloc  dynamic grid (G030)          (AX046)   YAX1_30   ZAX1_20   TAX1_10
  
 use/order=zyx bn_strides
 list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX054)   (AX044)   (AX046)   TAX1_10
- dealloc  dynamic grid (G030)          (AX054)   (AX044)   (AX046)   TAX1_10
- allocate dynamic grid (G030)          (AX054)   (AX044)   (AX046)   TAX1_10
+ allocate dynamic grid (G030)          (AX056)   (AX046)   (AX048)   TAX1_10
+ dealloc  dynamic grid (G030)          (AX056)   (AX046)   (AX048)   TAX1_10
+ allocate dynamic grid (G030)          (AX056)   (AX046)   (AX048)   TAX1_10
  eval    EX#1     C:  4 I:    3    6  J:    2    4  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX054)   (AX044)   (AX046)   TAX1_10
+ allocate dynamic grid (G030)          (AX056)   (AX046)   (AX048)   TAX1_10
  strip regrid on X: BIGVAR --> (G030)           @XACT
  rdstride BIGVAR   C:  7 I:    3    9  J:    2    6  K:    1    3  L:    1    1
  nulrgd  BIGVAR   M:145 I:    1    4  J:    1    3  K:    1    2  L:    1    1
  -DELETE BIGVAR   M:148 I:    3    9  J:    2    6  K:    1    3  L:    1    1
- dealloc  dynamic grid (G030)          (AX054)   (AX044)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G030)          (AX056)   (AX046)   (AX048)   TAX1_10
              VARIABLE : VAR
                         regrid: 2 delta on X, 2 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43443,7 +43445,7 @@ list bigvar[i=3:9:2, j=2:6:2, k=1:3:2]
  6   / 3:  1363.00  1563.00  1763.00  1963.00
 canc data/all
  -DELETE BIGVAR   M:145 I:    1    4  J:    1    3  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX054)   (AX044)   (AX046)   TAX1_10
+ dealloc  dynamic grid (G030)          (AX056)   (AX046)   (AX048)   TAX1_10
  
 ! now with xytvar
 cancel region
@@ -43452,16 +43454,16 @@ use bn_strides
  
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX053)   (AX046)   NORMAL    (AX044)
- dealloc  dynamic grid (G030)          (AX053)   (AX046)   NORMAL    (AX044)
- allocate dynamic grid (G030)          (AX053)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G030)          (AX055)   (AX048)   NORMAL    (AX046)
+ dealloc  dynamic grid (G030)          (AX055)   (AX048)   NORMAL    (AX046)
+ allocate dynamic grid (G030)          (AX055)   (AX048)   NORMAL    (AX046)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G030)          (AX053)   (AX046)   NORMAL    (AX044)
+ allocate dynamic grid (G030)          (AX055)   (AX048)   NORMAL    (AX046)
  strip regrid on X: XYTVAR --> (G030)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
  nulrgd  XYTVAR   M:148 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:145 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
- dealloc  dynamic grid (G030)          (AX053)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G030)          (AX055)   (AX048)   NORMAL    (AX046)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -43479,7 +43481,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  
 use/order=tyx bn_strides
 show grid xytvar
- dealloc  dynamic grid (G030)          (AX053)   (AX046)   NORMAL    (AX044)
+ dealloc  dynamic grid (G030)          (AX055)   (AX048)   NORMAL    (AX046)
  -DELETE XYTVAR   M:148 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  getgrid EX#1     C:  7 I:    1    1  J:    1    1  K:    1    1  L:    1    1
     GRID EGRID
@@ -43492,16 +43494,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  dealloc  dynamic grid EGRID           XLON      YLAT      NORMAL    TTIME
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX046)   (AX053)   NORMAL    (AX052)
- dealloc  dynamic grid (G030)          (AX046)   (AX053)   NORMAL    (AX052)
- allocate dynamic grid (G030)          (AX046)   (AX053)   NORMAL    (AX052)
+ allocate dynamic grid (G030)          (AX048)   (AX055)   NORMAL    (AX054)
+ dealloc  dynamic grid (G030)          (AX048)   (AX055)   NORMAL    (AX054)
+ allocate dynamic grid (G030)          (AX048)   (AX055)   NORMAL    (AX054)
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- allocate dynamic grid (G030)          (AX046)   (AX053)   NORMAL    (AX052)
+ allocate dynamic grid (G030)          (AX048)   (AX055)   NORMAL    (AX054)
  strip regrid on X: XYTVAR --> (G030)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
  nulrgd  XYTVAR   M:145 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
  -DELETE XYTVAR   M:148 I:    1    7  J:    2    6  K: -111 -111  L:    3    5
- dealloc  dynamic grid (G030)          (AX046)   (AX053)   NORMAL    (AX052)
+ dealloc  dynamic grid (G030)          (AX048)   (AX055)   NORMAL    (AX054)
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 deg on X, 2 deg on Y, 2 day on T
              FILENAME : bn_strides.cdf
@@ -43518,7 +43520,7 @@ list xytvar[i=1:7:2,j=2:6:2,l=3:5:2]
  2N   / 1:  5021.00  5023.00  5025.00  5027.00
 canc data/all
  -DELETE XYTVAR   M:145 I:    1    4  J:    1    3  K: -111 -111  L:    1    2
- dealloc  dynamic grid (G030)          (AX046)   (AX053)   NORMAL    (AX052)
+ dealloc  dynamic grid (G030)          (AX048)   (AX055)   NORMAL    (AX054)
  
 ! map into Z instead of T
 use/order=zxy bn_strides
@@ -43535,16 +43537,16 @@ show grid xytvar
 list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  dealloc  dynamic grid GPC5            TTIME     XLON      YLAT      NORMAL
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX050)   (AX052)   (AX053)   NORMAL
- dealloc  dynamic grid (G030)          (AX050)   (AX052)   (AX053)   NORMAL
- allocate dynamic grid (G030)          (AX050)   (AX052)   (AX053)   NORMAL
+ allocate dynamic grid (G030)          (AX052)   (AX054)   (AX055)   NORMAL
+ dealloc  dynamic grid (G030)          (AX052)   (AX054)   (AX055)   NORMAL
+ allocate dynamic grid (G030)          (AX052)   (AX054)   (AX055)   NORMAL
  eval    EX#1     C:  4 I:    1    4  J:    1    3  K:    1    2  L:    1    2
- allocate dynamic grid (G030)          (AX050)   (AX052)   (AX053)   NORMAL
+ allocate dynamic grid (G030)          (AX052)   (AX054)   (AX055)   NORMAL
  strip regrid on X: XYTVAR --> (G030)           @XACT
  rdstride XYTVAR   C:  7 I:    1    7  J:    2    6  K:    3    5  L: -111 -111
  nulrgd  XYTVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
  -DELETE XYTVAR   M:145 I:    1    7  J:    2    6  K:    3    5  L: -111 -111
- dealloc  dynamic grid (G030)          (AX050)   (AX052)   (AX053)   NORMAL
+ dealloc  dynamic grid (G030)          (AX052)   (AX054)   (AX055)   NORMAL
              VARIABLE : L*1000 + J*10 + I
                         regrid: 2 day on X, 2 deg on Y, 2 deg on Z
              FILENAME : bn_strides.cdf
@@ -43561,7 +43563,7 @@ list xytvar[i=1:7:2,j=2:6:2,k=3:5:2]
  146   / 3:  1056.00  3056.00  5056.00  7056.00
 canc data/all
  -DELETE XYTVAR   M:148 I:    1    4  J:    1    3  K:    1    2  L: -111 -111
- dealloc  dynamic grid (G030)          (AX050)   (AX052)   (AX053)   NORMAL
+ dealloc  dynamic grid (G030)          (AX052)   (AX054)   (AX055)   NORMAL
  
  
 cancel region; set region/l=1
@@ -43570,16 +43572,16 @@ cancel region; set region/l=1
 use/order=yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX048)   (AX053)   (AX052)   TAX1_6
- dealloc  dynamic grid (G030)          (AX048)   (AX053)   (AX052)   TAX1_6
- allocate dynamic grid (G030)          (AX048)   (AX053)   (AX052)   TAX1_6
+ allocate dynamic grid (G030)          (AX050)   (AX055)   (AX054)   TAX1_6
+ dealloc  dynamic grid (G030)          (AX050)   (AX055)   (AX054)   TAX1_6
+ allocate dynamic grid (G030)          (AX050)   (AX055)   (AX054)   TAX1_6
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX048)   (AX053)   (AX052)   TAX1_6
+ allocate dynamic grid (G030)          (AX050)   (AX055)   (AX054)   TAX1_6
  strip regrid on X: MIDVAR --> (G030)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G030)          (AX048)   (AX053)   (AX052)   TAX1_6
+ dealloc  dynamic grid (G030)          (AX050)   (AX055)   (AX054)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43595,16 +43597,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX048)   (AX053)   (AX052)   TAX1_6
+ dealloc  dynamic grid (G030)          (AX050)   (AX055)   (AX054)   TAX1_6
  
 use/order=-yx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX047)   (AX052)   (AX053)   TAX1_6
- dealloc  dynamic grid (G030)          (AX047)   (AX052)   (AX053)   TAX1_6
- allocate dynamic grid (G030)          (AX047)   (AX052)   (AX053)   TAX1_6
+ allocate dynamic grid (G030)          (AX049)   (AX054)   (AX055)   TAX1_6
+ dealloc  dynamic grid (G030)          (AX049)   (AX054)   (AX055)   TAX1_6
+ allocate dynamic grid (G030)          (AX049)   (AX054)   (AX055)   TAX1_6
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX047)   (AX052)   (AX053)   TAX1_6
+ allocate dynamic grid (G030)          (AX049)   (AX054)   (AX055)   TAX1_6
  strip regrid on X: MIDVAR --> (G030)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    1    5  J:    5    8  K:    3    5  L:    1    1
@@ -43612,7 +43614,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:145 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G030)          (AX047)   (AX052)   (AX053)   TAX1_6
+ dealloc  dynamic grid (G030)          (AX049)   (AX054)   (AX055)   TAX1_6
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43628,22 +43630,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1515.00  1555.00
 canc data/all
  -DELETE MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX047)   (AX052)   (AX053)   TAX1_6
+ dealloc  dynamic grid (G030)          (AX049)   (AX054)   (AX055)   TAX1_6
  
 ! reference output
 use/order=tyx bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX043)   (AX053)   (AX052)   ZAX1_7
- dealloc  dynamic grid (G030)          (AX043)   (AX053)   (AX052)   ZAX1_7
- allocate dynamic grid (G030)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G030)          (AX045)   (AX055)   (AX054)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX045)   (AX055)   (AX054)   ZAX1_7
+ allocate dynamic grid (G030)          (AX045)   (AX055)   (AX054)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G030)          (AX045)   (AX055)   (AX054)   ZAX1_7
  strip regrid on X: MIDVAR --> (G030)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:145 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G030)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX045)   (AX055)   (AX054)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43659,17 +43661,17 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX043)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX045)   (AX055)   (AX054)   ZAX1_7
  
 ! note the reversal on axes 1,2 and 3 (X,Y,Z in memory -- NOT T)
 use/order=-t-y-x bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX055)   (AX052)   (AX053)   ZAX1_7
- dealloc  dynamic grid (G030)          (AX055)   (AX052)   (AX053)   ZAX1_7
- allocate dynamic grid (G030)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G030)          (AX057)   (AX054)   (AX055)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX057)   (AX054)   (AX055)   ZAX1_7
+ allocate dynamic grid (G030)          (AX057)   (AX054)   (AX055)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G030)          (AX057)   (AX054)   (AX055)   ZAX1_7
  strip regrid on X: MIDVAR --> (G030)           @XACT
  strip reversing MIDVAR on X axis:     1     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    4    7  K:    3    5  L:    7    7
@@ -43677,7 +43679,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:145 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G030)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX057)   (AX054)   (AX055)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43693,22 +43695,22 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6745.00  2745.00
 canc data/all
  -DELETE MIDVAR   M:148 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX055)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX057)   (AX054)   (AX055)   ZAX1_7
  
 ! reference output
 use/order=txy bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX044)   (AX053)   (AX052)   ZAX1_7
- dealloc  dynamic grid (G030)          (AX044)   (AX053)   (AX052)   ZAX1_7
- allocate dynamic grid (G030)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G030)          (AX046)   (AX055)   (AX054)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX046)   (AX055)   (AX054)   ZAX1_7
+ allocate dynamic grid (G030)          (AX046)   (AX055)   (AX054)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ allocate dynamic grid (G030)          (AX046)   (AX055)   (AX054)   ZAX1_7
  strip regrid on X: MIDVAR --> (G030)           @XACT
  rdstride MIDVAR   C:  7 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G030)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX046)   (AX055)   (AX054)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43724,16 +43726,16 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  1155.00  5155.00
 canc data/all
  -DELETE MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX044)   (AX053)   (AX052)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX046)   (AX055)   (AX054)   ZAX1_7
  
 use/order=-t-x-y bn_strides
 list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G030)          (AX050)   (AX052)   (AX053)   ZAX1_7
- dealloc  dynamic grid (G030)          (AX050)   (AX052)   (AX053)   ZAX1_7
- allocate dynamic grid (G030)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G030)          (AX052)   (AX054)   (AX055)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX052)   (AX054)   (AX055)   ZAX1_7
+ allocate dynamic grid (G030)          (AX052)   (AX054)   (AX055)   ZAX1_7
  eval    EX#1     C:  4 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- allocate dynamic grid (G030)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ allocate dynamic grid (G030)          (AX052)   (AX054)   (AX055)   ZAX1_7
  strip regrid on X: MIDVAR --> (G030)           @XACT
  strip reversing MIDVAR on Y axis:     2     5
  rdstride MIDVAR   C:  8 I:    2    6  J:    5    8  K:    3    5  L:    7    7
@@ -43741,7 +43743,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  -DELETE MIDVAR   M:145 I:    1    5  J:    2    5  K:    3    5  L:    1    1
  nulrgd  MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE MIDVAR   M:148 I:    1    5  J:    2    5  K:    3    5  L:    1    1
- dealloc  dynamic grid (G030)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX052)   (AX054)   (AX055)   ZAX1_7
              VARIABLE : VAR
                         regrid: 4 delta on X, 3 delta on Y, 2 delta on Z
              FILENAME : bn_strides.cdf
@@ -43757,7 +43759,7 @@ list midvar[i=1:5:4, j=2:5:3, k=3:5:2]
  5   / 2:  6755.00  2755.00
 canc data/all
  -DELETE MIDVAR   M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
- dealloc  dynamic grid (G030)          (AX050)   (AX052)   (AX053)   ZAX1_7
+ dealloc  dynamic grid (G030)          (AX052)   (AX054)   (AX055)   ZAX1_7
  
 ! DEFINE AXIS can get the axis too long (bug 673)
 GO bn_reset
@@ -44168,6 +44170,8 @@ GO bn_bounds.jnl
 ! bn_bounds.jnl
 ! testing CDF read and write of file with irregular axes and bounds
 ! and DEFINE AXIS/BOUNDS
+! 5/2005 made changes so the bounds coordinates {1,2} are written to the
+!        file. If axis is Z, write attribute potitive="up". (bug 1196)
  
  
 ! Output data on irregular record axis. No need for:
@@ -44192,6 +44196,7 @@ variables:
 		MONTH_IRREG:modulo = " " ;
 		MONTH_IRREG:axis = "T" ;
 		MONTH_IRREG:bounds = "MONTH_IRREG_bnds" ;
+	double bnds(bnds) ;
 	double MONTH_IRREG_bnds(MONTH_IRREG, bnds) ;
 	float V(MONTH_IRREG) ;
 		V:missing_value = -1.e+34f ;
@@ -44199,11 +44204,13 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
     196.7425, 227.7425, 258.2425, 288.7425, 319.2425, 349.7425 ;
+
+ bnds = 1, 2 ;
 
  MONTH_IRREG_bnds =
   0, 31,
@@ -44254,6 +44261,7 @@ variables:
 		TCOADS:time_origin = "01-JAN-1700 00:00:00" ;
 		TCOADS:axis = "T" ;
 		TCOADS:bounds = "TCOADS_bnds" ;
+	double bnds(bnds) ;
 	double TCOADS_bnds(TCOADS, bnds) ;
 	float V(TCOADS, COADSY66_66, COADSX90_90) ;
 		V:missing_value = -1.e+34f ;
@@ -44262,7 +44270,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44270,6 +44278,8 @@ data:
  COADSY66_66 = 41 ;
 
  TCOADS = 91050, 91080.5, 91111, 91141.5, 91172.5 ;
+
+ bnds = 1, 2 ;
 
  TCOADS_bnds =
   91035, 91065,
@@ -44312,6 +44322,7 @@ variables:
 		TCOADS:time_origin = "01-JAN-1700 00:00:00" ;
 		TCOADS:axis = "T" ;
 		TCOADS:bounds = "TCOADS_bnds" ;
+	double bnds(bnds) ;
 	double TCOADS_bnds(TCOADS, bnds) ;
 	float V(TCOADS, COADSY66_66, COADSX90_90) ;
 		V:missing_value = -1.e+34f ;
@@ -44320,7 +44331,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44329,6 +44340,8 @@ data:
 
  TCOADS = 91050, 91080.5, 91111, 91141.5, 91172.5, 91264.5, 91355, 91384.5, 
     91415, 91445.5 ;
+
+ bnds = 1, 2 ;
 
  TCOADS_bnds =
   91035, 91065,
@@ -44353,6 +44366,51 @@ data:
   34.6,
   -37.7,
   40.4 ;
+}
+can data/all
+can var/all
+ 
+! Depth axis; bounds {1,2} positive up
+ 
+define axis/z/depth/units=meters zirr = {0,10,40,70}
+let t2 = z[gz=zirr]
+save/clobber/file=a.nc t2
+ LISTing to file a.nc
+sp ncdump a.nc
+netcdf a {
+dimensions:
+	ZIRR = 4 ;
+	bnds = 2 ;
+variables:
+	double ZIRR(ZIRR) ;
+		ZIRR:units = "METERS" ;
+		ZIRR:positive = "down" ;
+		ZIRR:point_spacing = "uneven" ;
+		ZIRR:axis = "Z" ;
+		ZIRR:bounds = "ZIRR_bnds" ;
+	double bnds(bnds) ;
+		bnds:positive = "up" ;
+	double ZIRR_bnds(ZIRR, bnds) ;
+	float T2(ZIRR) ;
+		T2:missing_value = -1.e+34f ;
+		T2:_FillValue = -1.e+34f ;
+		T2:long_name = "Z[GZ=ZIRR]" ;
+
+// global attributes:
+		:history = "FERRET V5.80   24-May-05" ;
+data:
+
+ ZIRR = 0, 10, 40, 70 ;
+
+ bnds = 1, 2 ;
+
+ ZIRR_bnds =
+  -5, 5,
+  5, 25,
+  25, 55,
+  55, 85 ;
+
+ T2 = 0, 10, 40, 70 ;
 }
 can data/all
 can var/all
@@ -44392,6 +44450,7 @@ variables:
 		MONTH_IRREG:modulo = " " ;
 		MONTH_IRREG:axis = "T" ;
 		MONTH_IRREG:bounds = "MONTH_IRREG_bnds" ;
+	double bnds(bnds) ;
 	double MONTH_IRREG_bnds(MONTH_IRREG, bnds) ;
 	float V(MONTH_IRREG, COADSY46_49, COADSX81_83) ;
 		V:missing_value = -1.e+34f ;
@@ -44400,7 +44459,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44409,6 +44468,8 @@ data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 181.7425, 
     227.7425, 258.2425 ;
+
+ bnds = 1, 2 ;
 
  MONTH_IRREG_bnds =
   0, 31,
@@ -44601,6 +44662,7 @@ variables:
 		COADSX81_81:point_spacing = "even" ;
 		COADSX81_81:axis = "X" ;
 		COADSX81_81:bounds = "COADSX81_81_bnds" ;
+	double bnds(bnds) ;
 	double COADSX81_81_bnds(COADSX81_81, bnds) ;
 	double COADSY46_46(COADSY46_46) ;
 		COADSY46_46:units = "degrees_north" ;
@@ -44623,10 +44685,12 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  COADSX81_81 = 181 ;
+
+ bnds = 1, 2 ;
 
  COADSX81_81_bnds =
   180, 182 ;
@@ -44692,7 +44756,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44752,6 +44816,7 @@ variables:
 		XAX:point_spacing = "uneven" ;
 		XAX:axis = "X" ;
 		XAX:bounds = "XAX_bnds" ;
+	double bnds(bnds) ;
 	double XAX_bnds(XAX, bnds) ;
 	double ZAX(ZAX) ;
 		ZAX:positive = "down" ;
@@ -44769,10 +44834,12 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
+
+ bnds = 1, 2 ;
 
  XAX_bnds =
   0.5, 1.5,
@@ -47061,7 +47128,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMay 13 2005 11:24:23
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMay 24 2005 10:53:53
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47514,6 +47581,29 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+GO bn_curv_mod.jnl
+! bn_curv_mod
+! Test of fill/mod and contour/mod
+! 5/24/2005 Ferret v5.81
+ 
+! The dataset is a portion of example tripolar grid.
+ 
+! use "/home/ja3/hankin/user/gfdl/tri_polar/mom4_grid_example.nc"
+! save/clobber/file=tripolar_subset.nc geolon_vert_t[j=150:174], geolat_vert_t[j=150:174], ht[j=150:173]
+ 
+! Note that this coord data is actually cell edges and so
+! isnt really what one would use for FILL and CONTOUR commands --
+ 
+use tripolar_subset.nc     ! Longitude range is -280 to 80
+ 
+fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 GO bn581_bug_fixes.jnl
 ! bn581_bug_fixes.jnl
 ! test various fixes that went into version 5.81
@@ -47536,7 +47626,7 @@ yes? def ax/t/edge time = {0,1,3}
 Replacing definition of axis TIME
 yes? let a = t[gt=time]
 yes? show grid/t a
-    GRID (G028)
+    GRID (G015)
  name       axis              # pts   start                end
  normal    X
  normal    Y
@@ -47558,6 +47648,7 @@ variables:
 	double TIME(TIME) ;
 		TIME:axis = "T" ;
 		TIME:bounds = "TIME_bnds" ;
+	double bnds(bnds) ;
 	double TIME_bnds(TIME, bnds) ;
 	float A(TIME) ;
 		A:missing_value = -1.e+34f ;
@@ -47565,10 +47656,12 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 data:
 
  TIME = 0.5, 2 ;
+
+ bnds = 1, 2 ;
 
  TIME_bnds =
   0, 1,
@@ -47644,7 +47737,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -47724,7 +47817,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.80   13-May-05" ;
+		:history = "FERRET V5.80   24-May-05" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -47894,12 +47987,56 @@ LEV_DEL = "0.4"
 ! shade/l=1/lev=.4d sst; sho sym lev_del
  
  
+! Fix for bug 1174: strfloat_c("nonsense") gave result of 0 rather than missing.
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err580_strfloat_errors.jnl
+! err580_strfloat_errors.jnl
+! Previously a nonsense input gave a result of 0.
+! See bug 1174.
+ 
+let b = {"3.34", "0", "nonsense", "0.0", "153q51", "9..32", "7.e03", "3.2e-2"}
+list/prec=6 strfloat(b)
+             VARIABLE : STRFLOAT(B)
+             SUBSET   : 8 points (X)
+ 1   / 1:     3.34
+ 2   / 2:     0.00
+ 3   / 3:     ....
+ 4   / 4:     0.00
+ 5   / 5:   153.00
+ 6   / 6:     9.00
+ 7   / 7:  7000.00
+ 8   / 8:     0.03
+ 
+! Fixes for bugs 1249, 1250: uppercase not recognized for qualifier argument
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err580_arg_case.jnl
+! err580_arg_case.jnl
+! 5/2005
+! bugs 1249, 1250
+!
+! key=CONTINUOUS and step=CONNECTED
+! were not recognized if the value was in uppercase
+ 
+shade/key=cont/i=1:10/j=1:4 i-j
+shade/key=CONT/i=1:10/j=1:4 i-j
+ 
+plot/step=conn/i=1:10 sin(i)
+plot/step=CONN/i=1:10 sin(i)
+ 
+ 
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 05/13/05
- 	13-May-05 11:24     
+ 	Solaris 5.6 - 05/24/05
+ 	24-May-05 10:54     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -48728,7 +48865,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 May 13 11:24 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 May 24 10:54 testa.v5d
  
 can region
 use coads_climatology
@@ -48740,7 +48877,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 May 13 11:24 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 May 24 10:54 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -49003,8 +49140,8 @@ stat mapped
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 05/13/05
- 	13-May-05 11:24     
+ 	Solaris 5.6 - 05/24/05
+ 	24-May-05 10:54     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -49187,8 +49324,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.80  
- 	Solaris 5.6 - 05/13/05
- 	13-May-05 11:24     
+ 	Solaris 5.6 - 05/24/05
+ 	24-May-05 10:54     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -49301,4 +49438,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Fri May 13 11:25:02 PDT 2005
+Ended at Tue May 24 10:54:34 PDT 2005

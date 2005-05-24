@@ -1,0 +1,17 @@
+! bn_curv_mod
+! Test of fill/mod and contour/mod 
+! 5/24/2005 Ferret v5.81
+
+! The dataset is a portion of example tripolar grid.
+
+! use "/home/ja3/hankin/user/gfdl/tri_polar/mom4_grid_example.nc"
+! save/clobber/file=tripolar_subset.nc geolon_vert_t[j=150:174], geolat_vert_t[j=150:174], ht[j=150:173]
+
+! Note that this coord data is actually cell edges and so
+! isnt really what one would use for FILL and CONTOUR commands --
+
+use tripolar_subset.nc     ! Longitude range is -280 to 80
+
+fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+

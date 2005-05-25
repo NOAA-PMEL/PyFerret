@@ -65,6 +65,6 @@ let fsst =  sst[l=1,gx=xq,gy=yq]
 
 let lon = xsequence(x[gx=xq] + 0*y[gy=yq])
 let lat = xsequence(0*x[gx=xq] + y[gy=yq])
-shade/nokey fsst  ! set up
+shade/nokey/pal=white/nolab/axes=0,0,0,0 fsst  ! set up
 go polymark poly/key/title="polygons"/lev=(-inf)(4,26,1)(inf), lon, lat, xsequence(fsst), square, 0.4
 

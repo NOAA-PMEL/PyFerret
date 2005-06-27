@@ -1,0 +1,31 @@
+! err580_cdc_timeaxis.jnl
+! 6/3/05
+! See comments under bug 1019.
+!
+! CDC time axes have the convention that if the start date is 1-jan-0001:00:00 then
+! a shift of 2 days is made in year 1590.  Ferret corrects for this by resetting the
+! time origin back by 2 days.  This is ok for internal time coordinate computations, 
+! but the time origin written to the user and in cdf files is incorrect: 30-dec-0000
+!
+! fix this in the RETURN=t0, SHOW AXIS, SHOW/XML AXIS and SAVE commands
+!
+! CDC file, save a  portion of it.  Check that time origin is 0001-01-01 00:00:00 
+! (it will not be unless the bug-fix version of Ferret writes the file.)
+
+
+! set data "http://www.cdc.noaa.gov/cgi-bin/nph-nc/Datasets/ncep.pac.ocean/taux.mnmean.nc"
+! save/clobber/file=cdc_timeaxis.nc/i=15/j=45 taux
+! can data/all
+
+sp ncdump -h cdc_timeaxis.nc
+use cdc_timeaxis.nc
+
+say `taux,return=t0`
+
+sh axis time
+
+sh axis/xml time
+
+save/clobber/file=my_cdc_timeaxis.nc/L=1:15 taux
+sp ncdump -h my_cdc_timeaxis.nc
+

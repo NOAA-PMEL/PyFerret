@@ -60,6 +60,10 @@
 * V542: *kob* 11/02 - bug fix - check to make sure an exit w/ no qualifiers
 *                               wasn't being called from a command file before
 *                               completely exiting out of Ferret
+* V581: *acm*  5/05 - fix bug 1233: exit/script needs to check whether there is
+*                     an IF or REPEAT in the command stack
+* V581: *acm*  5/05 - add EXIT/CYCLE to skip remaining commands in current 
+*                     repetition of the loop
 
 	include 'tmap_dims.parm'
 	include 'command.parm'
@@ -76,20 +80,35 @@
 	IF ( num_args .GT. 0 ) CALL ERRMSG( ferr_invalid_subcmnd, 
      .			status, cmnd_buff(arg_start(1):len_cmnd), *5000 )
 
-
-	IF (qual_given(slash_exit_loop) .GT. 0) THEN
-* Exit from current repeat loop
-	   pop=1
+	IF (qual_given(slash_exit_cycle) .GT. 0) THEN
+* Skip to end of current repeat loop
+	   pop=0
 	   DO 100 i = csp,1,-1
 	      IF ( cs_cmnd_num(i) .EQ. cmnd_repeat) GOTO 400
 	      pop = pop + 1 
  100	   CONTINUE
 	   RETURN        ! not in repeat loop, no need to move down stack
+
+	ELSE IF (qual_given(slash_exit_loop) .GT. 0) THEN
+* Exit from current repeat loop
+	   pop=1
+	   DO 200 i = csp,1,-1
+	      IF ( cs_cmnd_num(i) .EQ. cmnd_repeat) GOTO 400
+	      pop = pop + 1 
+ 200	   CONTINUE
+	   RETURN        ! not in repeat loop, no need to move down stack
 	ELSE IF (qual_given(slash_exit_script) .GT. 0) THEN
 * Exit from current script.  Need to do check to make sure this
 * wasn't executed from waiting Ferret prompt, ie not in a script
-	   IF (csp .GT. 0) CALL POP_CS
-	   RETURN
+	   IF (csp .GT. 0) THEN
+              pop = 1
+              DO 300 i = 1, csp
+                 IF (cs_cmnd_num(i) .EQ. cmnd_repeat) pop = pop + 1
+                 IF (cs_cmnd_num(i) .EQ. cmnd_if) pop = pop + 1
+                 IF (cs_cmnd_num(i) .EQ. cmnd_semicolon) pop = pop + 1
+ 300	      CONTINUE
+              GOTO 400
+	   ENDIF
 	ELSE IF (qual_given(slash_exit_prompt) .GT. 0) THEN
 * Exit to Ferret prompt
 	   pop = csp

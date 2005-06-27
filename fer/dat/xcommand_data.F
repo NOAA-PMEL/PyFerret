@@ -155,6 +155,8 @@
 * V580: 10/04 *acm* - add SHOW VARIABLES/XML
 * V580: 11/04 *acm* - add PLOT/NOKEY
 * V581:  2/05 *acm* - SHADE/MODULO for curvilinear plots
+* V581:  4/05 *acm* - CONTOUR/MODULO for curvilinear plots
+* V581:  5/05 *acm* - add EXIT/CYCLE
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -730,6 +732,11 @@
 		DATA qualifiers  (nqual_at4a+35)/ 'HGRATICULE'/	! tic liness, dash or line
 		DATA qualifiers  (nqual_at4a+36)/ 'VGRATICULE'/	! tic liness, color or pen#
 		DATA qualifiers  (nqual_at4a+37)/ 'GRATICULE'/	! 
+		DATA qualifiers  (nqual_at4a+38)/  'MODULO'/	! modulo for curvilinear plots
+		DATA qualifiers  (nqual_at4a+39)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+40)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+41)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+42)/ '****'/	! 
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -991,12 +998,15 @@
 	   DATA subcommands      (nsub_at11 + 0)/ '    '	/
 	   DATA num_qualifs      (nsub_at11 + 0)/ nqual11a	/
 	   DATA qualifier_pointer(nsub_at11 + 0)/ nqual_at11a	/
-* EXIT/COMMAND_FILE
+* EXIT/COMMAND_FILE etc
 		DATA qualifiers  (nqual_at11a+0)/ 'COMMAND'	/
 		DATA qualifiers  (nqual_at11a+1)/ 'LOOP'	/
 		DATA qualifiers  (nqual_at11a+2)/ 'SCRIPT'	/
 		DATA qualifiers  (nqual_at11a+3)/ 'PROMPT'	/
 		DATA qualifiers  (nqual_at11a+4)/ 'PROGRAM'	/
+		DATA qualifiers  (nqual_at11a+5)/ 'CYCLE'	/
+		DATA qualifiers  (nqual_at11a+6)/ '****'	/
+		DATA qualifiers  (nqual_at11a+7)/ '****'	/
 
 * MESSAGE	 - command # 12
 	DATA commands(12)			/ 'MESSAGE'	/

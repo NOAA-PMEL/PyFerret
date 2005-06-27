@@ -77,16 +77,19 @@ C
 C	oceanography emr  dec/1969 
 C       *jc* 5.97 Major clean up and commenting
 C       *jc* 5.97 Added code for curvilinear coordinates
+C      *acm* v581 5/2005 Add CONTOUR/MOD capability for modulo
+C                 replications on curvilinear data
 
-#ifdef unix
+
 	include 'MISS.INC'
-#else
-	include 'pplinc:miss.inc'
-#endif
-	dimension zz(57,57),z(nxs,nys),px(nx),py(ny)
+        include 'xcurvilinear.cmn'
+
+	dimension z(nxs,nys),px(nx),py(ny)
 	dimension zlev(2),ndecl(2),lwgtl(2),lclr(2)
-	izz=57 
-	lseg=(izz-1)-2 
+
+        real xadd, lmin, lmax, big
+	integer error,trans_no, ilo, ihi, jlo, jhi, status
+	real xinv,yinv,w(4),v(4),ndc(4),uc(4)
 
 C       Calculate center point about which to rotate plot
 C       Plot will be rotated by 'ang' degrees.
@@ -94,76 +97,62 @@ C       Plot will be rotated by 'ang' degrees.
 	xc = (px(1)+px(nx))*0.5
 	yc = (py(1)+py(ny))*0.5
 
-C       By the way, "if (exp) 1,2,3" means:
-C       "if (exp<0) goto 1; if (exp=0) goto 2; if (exp>0) goto 3"
+* Get range of indices for the curvi X,Y coordinates actually needed for the 
+* hlimits, vlimits that were requested.
 
-C       Calculate the beginning and ending index values (iam,ibm) and
-C       the number of index values (nxx) along the X axis in this 
-C       zz() subregion.
+*	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
+        IF (curvilinear) THEN 
+	   CALL gqcntn (error,trans_no)
+	   IF (error .NE. 0) GOTO 1000
 
-	ia = 1 
- 40	ib = min0(ia+lseg,nx) 
-	lrem = nx-ib 
-	if (lrem*(lseg-lrem)) 60,60,50 
- 50	ib = (1+ia+nx)/2 
- 60	iam = max0(ia-1,1) 
-	ibm = min0(ib+1,nx) 
-	lxm = ibm-iam 
-	iim = 1+(ia-iam)
-	nxx = (ib-ia)+1 
-	
-	
-C       Calculate the beginning and ending index values (jam,jbm) and
-C       the number of index values (nyy) along the Y axis in this 
-C       zz() subregion.
+	   CALL gqnt (trans_no,error,w,v)
+	   IF (error .NE. 0) GOTO 1000
 
-	ja=1 
- 80	jb = min0(ja+lseg,ny) 
-	lrem = ny-jb 
-	if (lrem*(lseg-lrem)) 100,100,90 
- 90	jb = (1+ja+ny)/2 
- 100	jam = max0(ja-1,1) 
-	jbm = min0(jb+1,ny) 
-	lym = jbm-jam 
-	jjm = 1+(ja-jam)
-	nyy = (jb-ja)+1 
-	
-	
-C       Check all the z values for "goodness" and replace the bad ones with 1.e35 ?
-C       Fill in the zz() subregion with values from z().
+	   CALL get_user_coords (w,v,ndc,uc,xinv,yinv)
 
-	do 130 i=iam,ibm 
-	   ii =  i-iam+1 
-	   do 120 j=jam,jbm 
-	      jj =  j-jam+1 
-	      if ((zle.and.z(i,j).le.cmzle).or.
-     1	   (zeq.and.z(i,j).eq.cmzeq).or.
-     2	   (zge.and.z(i,j).ge.cmzge)) then
-		 zz(ii,jj)=1.e35
-	      else
-		 zz(ii,jj)=z(i,j)
-	      endif
- 120	   continue
- 130	continue
-	   
+           CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+        ENDIF
+      
+        big = ABS(bad_val4)
+        lmin = big
+        lmax = -1*big
+        xadd = 0.
 
-C       Actually contour the zz() subregion.
+        CALL CONSEG_SECTION(xc, yc, nx, ny, nxs, nys, px, py, z, 
+     .    xf, xoff, yf, yoff, zlev, ndecl, lwgtl, lclr, nlev, hgt, 
+     .    narc, ang, ilo, ihi, jlo, jhi, xadd, lmin, lmax)
 
-c *kob* 8/97 had to move the continuation marker to col 5 - it was in col 8
-c       this bombed aix compiler, though it seems to work on others
-	call contur(zz,izz,izz,px(iam),py(jam),nxx,nyy,xf,xoff,yf,yoff,
-     1    zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xc,yc) 
-	
+        IF (xmodulo .AND. curvilinear) THEN
+           nleft = 0
+           nright = 0
+           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ 360
+           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ 360
 
-C       This is the Y axis loop
+           IF (nleft .GT. 0) THEN
+              xadd = 0.
+              DO 100 i = 1, nleft
+                 xadd = xadd - 360.
+                 CALL CONSEG_SECTION(xc, yc, nx, ny, nxs, nys, px, py,z,
+     .          xf, xoff, yf, yoff, zlev, ndecl, lwgtl, lclr, nlev, hgt, 
+     .          narc, ang, ilo, ihi, jlo, jhi, xadd, lmin, lmax)
 
-	ja = jb 
-	if (ja-ny) 80,160,160
+ 100          CONTINUE
+           ENDIF
 
-C       This is the X axis loop
+           IF (nright .GT. 0) THEN
+              xadd = 0.
+              DO 110 i = 1, nright
+                 xadd = xadd + 360.
+                 CALL CONSEG_SECTION(xc, yc, nx, ny, nxs, nys, px, py,z,
+     .          xf, xoff, yf, yoff, zlev, ndecl, lwgtl, lclr, nlev, hgt, 
+     .          narc, ang, ilo, ihi, jlo, jhi, xadd, lmin, lmax)
+ 110          CONTINUE
+           ENDIF
 
- 160	ia = ib 
-	if (ia-nx) 40,170,170 
 
- 170	return 
+        ENDIF   ! xmodulo
+
+
+
+1000    return 
 	end 

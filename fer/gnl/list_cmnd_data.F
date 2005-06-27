@@ -82,6 +82,8 @@
 *                   coordinates in tab and comma delimited formats.  Note that if
 *                   precision more than 0.001 is needed for longitude and latitude
 *                   axes, then a change needs to be made in translate_to_world.
+* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -403,6 +405,8 @@
 	  	 IF (  i .EQ. t_dim ) THEN		! add T0=
 	            IF ( GEOG_LABEL(i,cx_grid(cx)) ) THEN 
 	               line_buff(alen+2:) =  '(T0='//line_t0(axis)
+                       IF (line_shift_origin(axis)) 
+     .                  line_buff(alen+2:) =  '(T0=01-JAN-0001 00:00:00'
 	               alen = TM_LENSTR1( line_buff )
 	               line_buff(alen+1:) =  ')'
 	               alen = alen + 1

@@ -44,6 +44,7 @@
 * revision 0.0 - 2/92
 * V510 *sh* 3/00 - convert to dynamic grids and axes for netCDF files
 * V550 *sh* 11/02 - initialize line_modulo_len (just for good house keeping)
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 
 * argument definitions:
 *       name      - name for axis
@@ -54,7 +55,6 @@
 *	status	  - return status
 
 * include files
-#ifdef unix
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -63,13 +63,7 @@
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 
 * argument declarations
 	INTEGER	 npts, iaxis, status
@@ -95,6 +89,7 @@
       line_modulo(iaxis)    = .FALSE.
       line_modulo_len(iaxis)= 0.0D0
       line_t0(iaxis)        = char_init20
+      line_shift_origin(iaxis) = .FALSE.
       line_tunit(iaxis)     = real4_init
       line_direction(iaxis) = 'NA'
 

@@ -20,6 +20,8 @@
 *  * acm* 12/00  - add line_cal_name for alternative calendar types
 * V541 *sh* 2/01 - added line_modulo_len
 * V570 *acm* 5/04  Remove line_has_edges; never used.
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -35,7 +37,7 @@
      .                  pline_mem_init
 	LOGICAL		grid_out_prod, line_regular, line_modulo,
 !     .			line_has_edges, line_keep_flag
-     .			line_keep_flag
+     .			line_keep_flag, line_shift_origin
 	REAL		line_tunit, grid_rotation
 	REAL*8		line_start, line_delta, line_mem, line_modulo_len
 
@@ -64,6 +66,7 @@
      .			line_blink	( max_lines:line_ceiling ),
      .			line_class	( 0:line_ceiling ),
      .			line_keep_flag  ( 0:line_ceiling ),
+     .			line_shift_origin( 0:line_ceiling ),
      .			line_free_ptr,
      .			max_line_used,
      .			line_cal_name  ( 0:line_ceiling ),

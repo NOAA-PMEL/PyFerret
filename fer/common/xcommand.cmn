@@ -21,8 +21,9 @@
 * V554   1/04 *acm* - increased number of quals for REPEAT command
 * V570   5/04 *acm* - increased number of qualifiers for LIST command 
 *                     for SAVE/BOUNDS, SAVE/EDGES
-*       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
-*       *acm* 6/05 - add CANCEL AXIS/DEPTH
+*       *acm* 6/04 - add SET AXIS/CALENDAR /T0 /UNITS
+*       *acm* 6/04 - add CANCEL AXIS/DEPTH
+* V581  *acm* 5/05 *kob* - increase number of qualifiers for EXIT (adding /CYCLE)
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -201,7 +202,7 @@
 	INTEGER		nsub4      , nsub_at5 ,
      .			nqual4a    ,nqual_at5a
 	PARAMETER    (	nsub4   = 1, nsub_at5   = nsub_at4   + nsub4,
-     .			nqual4a = 38,nqual_at5a = nqual_at4a + nqual4a  )
+     .			nqual4a = 43,nqual_at5a = nqual_at4a + nqual4a  )
 
 * LIST		 - commmand # 5
 	INTEGER		nsub5      , nsub_at6  ,
@@ -257,7 +258,7 @@
 	INTEGER		nsub11      , nsub_at12  ,
      .			nqual11a    , nqual_at12a
 	PARAMETER    (	nsub11   = 1, nsub_at12   = nsub_at11   + nsub11,
-     .			nqual11a = 5, nqual_at12a = nqual_at11a + nqual11a  )
+     .			nqual11a = 8, nqual_at12a = nqual_at11a + nqual11a  )
 
 * MESSAGE	 - commmand # 12
 	INTEGER		nsub12      , nsub_at13  ,

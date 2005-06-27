@@ -61,6 +61,7 @@
 *			grid and line management
 * V530*acm* 1/01 - add line_cal_name for alternative calendar types.
 * V550 *sh* 11/02 - add initialize line_modulo_len
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -262,6 +263,9 @@
 
 	DATA	(line_t0(i),i=1,line_ceiling)
      .			/line_ceiling*char_init20/
+
+	DATA	(line_shift_origin(i),i=1,line_ceiling)
+     .			/line_ceiling*.FALSE./
 
 	DATA	(line_tunit(i),i=1,line_ceiling)
      .			/line_ceiling*real4_init/

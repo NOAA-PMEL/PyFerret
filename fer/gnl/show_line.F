@@ -45,6 +45,8 @@
 * V530:  3/01    - indicate the calendar for non-Gregorian calendar types 
 * V541 *sh*  2/02 - describe axis span and modulo length
 * V553 *acm* 6/03 - Allow for line_direction code of 'XX' or 'YY'
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -65,7 +67,7 @@
 	LOGICAL		TM_ITS_SUBSPAN_MODULO
 	INTEGER		idim, orient, slen, i
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
-	CHARACTER	TM_FMT*32, buff*80
+	CHARACTER	TM_FMT*32, buff*80, buff20*20
 	REAL*8		TM_WW_AXLEN
 
 * determine orientation
@@ -105,8 +107,13 @@
 
 * report /T0= for formatted time axis
 	IF ( line_direction(line) .EQ. 'TI' ) THEN
+            IF (line_shift_origin(line)) THEN
+               buff20 = '01-JAN-0001 00:00:00'
+            ELSE
+ 	       buff20 = line_t0(line)
+            ENDIF
 	   CALL SPLIT_LIST
-     .		(pttmode_explct, ttout_lun, 'T0 = '//line_t0(line), 0)
+     .		(pttmode_explct, ttout_lun, 'T0 = '//buff20, 0)
 
 * report the calendar of a time axis if "interesting"
 	   buff = line_cal_name (line)

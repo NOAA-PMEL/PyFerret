@@ -45,8 +45,8 @@
 *	10/23/89 - added ez_dflt
 * V300: 6/93 - lengthened axis EZ x10 so that accidental truncations were rarer
 * V500: 12/98 - added XABSTRACT, YABSTRACT, ZABSTRACT, and TABSTRACT
+* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'tmap_errors.parm'
 	include 'xunits.cmn_text'
@@ -55,14 +55,6 @@
 	external xgt_grid_data
 	include	'ferret.parm'
 	include	'xfr_grid.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-#endif
 
 * local variable declarations:
 	INTEGER	TM_FIND_LINE_SLOT, TM_FIND_GRID_SLOT,
@@ -83,6 +75,7 @@
 	line_units    ( iline ) = ' '
 	line_unit_code( iline ) = 0	! unknown units
 	line_t0       ( iline ) = ' '
+	line_shift_origin( iline ) = .FALSE.
 	line_subsc1   ( iline ) = unspecified_int4	! since regular
 	line_direction( iline ) = 'NA'
 	iline_abstract = iline
@@ -119,6 +112,7 @@
 	line_units    ( iline ) = ' '
 	line_unit_code( iline ) = 0	! unknown units
 	line_t0       ( iline ) = ' '
+	line_shift_origin( iline ) = .FALSE.
 	line_subsc1   ( iline ) = unspecified_int4	! since regular
 	line_direction( iline ) = 'NA'
 

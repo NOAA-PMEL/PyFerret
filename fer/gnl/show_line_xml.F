@@ -38,6 +38,8 @@
 * programmer - Ansley Manke, based on show_line.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -57,8 +59,8 @@
 * local variable declarations:
 	LOGICAL		TM_ITS_SUBSPAN_MODULO
 	INTEGER		idim, orient, slen
-	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
-	CHARACTER	TM_FMT*32, buff*80
+	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
+	CHARACTER	TM_FMT*32, buff*80, outbuff*20
 
  2020	FORMAT ( '<time_origin>', A, '</time_origin>' )
  2030	FORMAT ( '<calendar>', A, '</calendar>' )
@@ -102,17 +104,26 @@
 
 * report /T0= for formatted time axis
 	IF ( line_direction(line) .EQ. 'TI' ) THEN
+        
+	   buff = line_cal_name (line)
+	   cal_id = TM_GET_CALENDAR_ID (buff)
 
-           slen = TM_LENSTR1(line_t0(line))
-           WRITE ( risc_buff, 2020 ) line_t0(line)(1:slen)
+           IF (line_shift_origin(line)) THEN
+              buff = '01-JAN-0001 00:00:00'
+           ELSE
+              buff = line_t0(line)
+           ENDIF
+
+           CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2, status) 
+           slen = TM_LENSTR1(outbuff)
+           WRITE ( risc_buff, 2020 ) outbuff(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * report the calendar of a time axis if "interesting"
-	   buff = line_cal_name (line)
-	   cal_id = TM_GET_CALENDAR_ID (buff)
+
 	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
 	      slen = TM_LENSTR1(buff)
-           WRITE ( risc_buff, 2030 ) line_t0(line)(1:slen)
+           WRITE ( risc_buff, 2030 ) buff(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	   ENDIF
 	ENDIF

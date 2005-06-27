@@ -41,19 +41,42 @@
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm*  3/05 v581 - return bad_value if input cannot be converted to numeric */
 #include <wchar.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-float c_strfloat_(in_ptr, out_ptr)
+float c_strfloat_(in_ptr, out_ptr, bad_ptr)
      char** in_ptr;
      float* out_ptr;
+	 float* bad_ptr;
 {
+  double dval;
+  float fval;
+  int slen;
   
 
-  *out_ptr = atof(*in_ptr);
+  dval = atof(*in_ptr);
+  fval = dval;
 
+  *out_ptr = fval;
+
+/*  The atof function returns 0 if there is an error.  We want to return a 
+    bad-value. Concatenate the original string with a 1. If the input argument 
+	is a numeric value (zero), we will get a non-zero result from atof. If we 
+	get 0, then the original argument was not numeric.
+*/
+
+  if (fval == 0.0)
+  {
+	  dval = atof(strcat(*in_ptr,"1"));
+	  if (dval == 0.0)
+	  {
+		  *out_ptr = *bad_ptr;
+	  }
+  }
+  
   return;
 }

@@ -82,7 +82,10 @@
 * V552: *acm* 4/02 - Allow for zero-length strings in STRRINDEX fcn:
 *                    STRRINDEX ("my string", "") had caused Ferret to hang.
 * V580:10/04 *acm* Fix for bug 1037. In zaxreplace, before the loop calling 
-*                  hunt_r4, set the initial guess for ndx_lo to 1 not 0.  
+*                  hunt_r4, set the initial guess for ndx_lo to 1 not 0. 
+* V581  3/05 *acm* increase buffer length max_cmnd_len to 2048. 
+*       3/05 *acm& Change call to strfloat, to return bad-flag if input 
+*                  string cannot be converted to float.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -130,7 +133,7 @@
         REAL*8  TM_WORLD
 
         INTEGER max_cmnd_len
-        PARAMETER ( max_cmnd_len = 500)
+        PARAMETER ( max_cmnd_len = 2048)
         CHARACTER GET_STRING_ELEMENT*(max_cmnd_len), buff*(max_cmnd_len)
         INTEGER nnew, slen
 
@@ -835,7 +838,7 @@
 	   i1 = i1 + di1
 
 	     CALL C_STRFLOAT(com1(1,i1,j1,k1,l1),
-     .                       res(1,i,j,k,l))
+     .                       res(1,i,j,k,l), bad_res)
 
            ENDDO
           ENDDO

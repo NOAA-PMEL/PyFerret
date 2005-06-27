@@ -48,20 +48,15 @@
 *		this meant that "DEGREES" didn't match "LONGITUDE".
 * V541 *sh* 2/02 - check line_modulo_len
 * V551 *acm*2/03 - check calendar type
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 
 * Include files
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 
 * Argument definitions
 	INTEGER*4	line1, line2
@@ -103,6 +98,8 @@
 * Check special values for time axis
 	IF (line_direction(line1) .EQ. 'TI') THEN
 	  IF (line_t0(line1) .NE. line_t0(line2)) GOTO 110
+	  IF (line_shift_origin(line1) .NEQV. line_shift_origin(line2)) 
+     .        GOTO 110
 	  IF (line_tunit(line1) .NE. line_tunit(line2)) GOTO 110
 	ENDIF
 

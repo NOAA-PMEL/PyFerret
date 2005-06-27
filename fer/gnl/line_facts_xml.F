@@ -41,9 +41,11 @@
 * programmer - Ansley Manke, based on line_facts.F
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * 6-Aug-2003
+
 * 2/2005     bug 1171: the code checked line_regular instead
 *            of line_modulo for modulo attribute!
-
+* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -58,8 +60,10 @@
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, calendar
-	INTEGER TM_LENSTR, TM_LENSTR1, line, slen, ndec
-	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, title*32
+	INTEGER TM_LENSTR, TM_LENSTR1, TM_GET_CALENDAR_ID, 
+     .          line, slen, llen, ndec, cal_id, status
+	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
+     .            title*32, buff*20, outbuff*20
 	REAL*8	TM_WORLD, lo_val8, hi_val8
 
 * local parameter declarations:
@@ -68,7 +72,9 @@
 
  2010	FORMAT ( '<axis name="', A8, 5x, A1, '">' )
  2020	FORMAT ( '<axis name="', A, '">' )
- 2030	FORMAT ( '<units>', A, '</units>' )
+ 2030	FORMAT ( '<units>', A)
+ 2035   FORMAT ( ' since ', A, '</units>' )
+ 2036   FORMAT ( '</units>' )
  2040	FORMAT ( '<length>', A, '</length>' )
  2050	FORMAT ( '<positive>down</positive>' )
  2060	FORMAT ( '<point_spacing>even</point_spacing>' )
@@ -100,12 +106,38 @@
 	   WRITE ( risc_buff, 2020 ) line_name(line)(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-* axis units
+* axis units, including ... since start date if time axis
+
+
+* report /T0= for formatted time axis
 
            slen = TM_LENSTR(line_units(line))
            IF (line_units(line)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
+              
               WRITE ( risc_buff, 2030 ) line_units(line)(1:slen)
+              llen = TM_LENSTR1(risc_buff)
+
+              IF ( line_direction(line) .EQ. 'TI' ) THEN
+              
+	         buff = line_cal_name (line)
+	         cal_id = TM_GET_CALENDAR_ID (buff)
+
+                 IF (line_shift_origin(line)) THEN
+                    buff = '01-JAN-0001 00:00:00'
+                 ELSE
+ 	            buff = line_t0(line)
+                 ENDIF
+                 
+                 CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2,
+     .                                  status) 
+                 slen = TM_LENSTR1(outbuff)
+                 llen = TM_LENSTR1(risc_buff)
+                 WRITE (risc_buff(llen+1:), 2035) outbuff(:slen)
+              ELSE
+                 WRITE (risc_buff(llen+1:), 2036)
+              ENDIF
+
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
@@ -118,13 +150,15 @@
 * start and end
 
 	   calendar = ( idim .EQ. t_dim .AND. GEOG_LABEL(idim, grid) )
-	   lo_val8 = TM_WORLD( 1, grid, idim, box_middle )
+
+           lo_val8 = TM_WORLD( 1, grid, idim, box_middle )
 	   IF ( calendar ) THEN
 	      ndec = 5 		! accurate to minutes
 	   ELSE
 	      ndec = -sig_figs	! 5 sig places w/out extra zeros
 	   ENDIF
 	   CALL TRANSLATE_TO_WORLD( lo_val8, idim, grid, ndec, lo_str )
+
 	   hi_val8 = TM_WORLD( line_dim(line), grid, idim, box_middle )
 	   IF ( calendar ) THEN
 	      ndec = 5 
@@ -133,13 +167,31 @@
 	   ENDIF
 	   CALL TRANSLATE_TO_WORLD( hi_val8, idim, grid, ndec, hi_str )
 
-           slen = TM_LENSTR1(lo_str)
-           WRITE ( risc_buff, 2100 ) lo_str(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+* Write the start and end; if dates then format them as for time origin.
 
-           slen = TM_LENSTR1(hi_str)
-           WRITE ( risc_buff, 2110 ) hi_str(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           IF (calendar) THEN
+              CALL TM_DATE_REFORMAT (lo_str, 1, cal_id, outbuff, 2,
+     .                                  status) 
+              slen = TM_LENSTR1(outbuff)
+              WRITE ( risc_buff, 2100 ) outbuff(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+              CALL TM_DATE_REFORMAT (hi_str, 1, cal_id, outbuff, 2,
+     .                                  status) 
+              slen = TM_LENSTR1(outbuff)
+              WRITE ( risc_buff, 2110 ) outbuff(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           ELSE
+              
+              slen = TM_LENSTR1(lo_str)
+              WRITE ( risc_buff, 2100 ) lo_str(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+
+              slen = TM_LENSTR1(hi_str)
+              WRITE ( risc_buff, 2110 ) hi_str(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+           ENDIF
+
 
 * axis oriented backwards ?
 	   IF ( BKWD_AXIS(idim, grid) ) THEN

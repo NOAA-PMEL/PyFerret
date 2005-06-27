@@ -442,6 +442,7 @@ C   set up memory for the flag grid
 * do modulo replications of the data.
 
         IF (curvilinear) xmodulo = qual_given(slash_shad_mod) .GT. 0
+     .                        .OR. qual_given(slash_cont_mod) .GT. 0  
 
 * set up PLOT+ to ignore bad data flag
 	ppl_buff = ' '

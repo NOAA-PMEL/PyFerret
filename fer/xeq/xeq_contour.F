@@ -99,7 +99,9 @@
 *                    more precision. (single value data isnt contoured or filled,
 *                    but put this fix in as a parallel to what is done in shade
 *                    and polygon.)
- 
+* V581 *acm* 5/05  fix bug 1249: /KEY=CONT. Need to use EQUAL_STR to get the
+*                  argument to /KEY, then compare to see if it equals uppercase 'CON'
+
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -300,10 +302,10 @@
 * ... /KEY=continouus ?
               loc = qual_given( slash_cont_key )
               IF ( loc .GT. 0) THEN
-	         CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+	         CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
-	         IF ( buff(1:3) .EQ. 'con' ) THEN
+	         IF ( buff(1:3) .EQ. 'CON' ) THEN
                     cont_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
                  ENDIF

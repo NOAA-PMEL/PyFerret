@@ -232,7 +232,7 @@ C              =-1 2-d second component of a vector regular grid
 C              =-2 2-d second component of a vector irregular grid
 C
 
-C  WHY WAS JTYPE SET TO 1 HERE??!! 
+C  WHY HAD JTYPE BEEN SET TO 1 HERE??!! 
 
 c        IF (use_cell) JTYPE = 1
         IF (use_cell) JTYPE = 0

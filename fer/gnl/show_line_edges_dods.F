@@ -41,6 +41,9 @@
 * V554 - *acm* 9/03  from show_line_coords
 * *acm* v580 11/04 Store cal_id in cx_cal_id, the calendar ID used when  
 *                  computing world coordinates
+* V581 *acm*  6/05 Fix bug in show axis/t with non-standard calendars; RESET_SECS_FROM_BC
+* V581 *acm*  6/05 Fix call to TM_GET_CALENDAR_ID (did this ever work with the
+*                  argument grid rather than calendar name?!)
 
 
 	include 'tmap_dims.parm'
@@ -66,8 +69,10 @@
         LOGICAL  swap
 	INTEGER ISUBSCR_CX, TM_LENSTR1, TM_GET_CALENDAR_ID,
      .		lo, hi, i, line, loest, hiest, cal_id,
-     .		status, delta, slen, size, clobber_flag, swap_flag
-	REAL*8	TM_WORLD, SECS_TO_TSTEP, pt_val8
+     .		status, delta, slen, size, clobber_flag, swap_flag,
+     .          axis, prev_cal_id
+	REAL*8	TM_WORLD, SECS_TO_TSTEP,
+     .           pt_val8, start, end, new_ww
 
 
 * #ifdef for endianness info.
@@ -111,12 +116,41 @@
 *         similar to what goes on in flesh_out_axis. 
 *
 	   IF ( idim.EQ.t_dim .AND. cx_calendar(cx) ) THEN
-              cx_lo_ww(idim,cx) =
-     .          SECS_TO_TSTEP( grid, -cx_lo_ww(idim,cx) )
-              cx_hi_ww(idim,cx) =
-     .		SECS_TO_TSTEP( grid, -cx_hi_ww(idim,cx) )
-              cal_id = TM_GET_CALENDAR_ID(grid)
+              axis = grid_line(t_dim, grid)
+              cal_id = TM_GET_CALENDAR_ID(line_cal_name(axis))
               cx_cal_id(cx) = cal_id
+
+	      start = cx_lo_ww(idim,cx)
+	      end   = cx_hi_ww(idim,cx)
+              prev_cal_id = 1
+
+	      IF ( idim .EQ. t_dim  .AND.  cal_id .NE. prev_cal_id .AND.
+     .             start .LT. 0. .AND. start .NE. unspecified_val8.AND.
+     .             end   .LT. 0. .AND. end   .NE. unspecified_val8) THEN
+	         CALL RESET_SECS_FROM_BC (-start, new_ww, prev_cal_id, 
+     .                                    cal_id, status)
+	         cx_lo_ww(idim,cx) = new_ww   ! not negative as we now know the axis.
+
+	         CALL RESET_SECS_FROM_BC (-end, new_ww, prev_cal_id, 
+     .                                    cal_id, status)
+	         IF ( status .NE. ferr_ok ) RETURN
+
+	         cx_hi_ww(idim,cx) = new_ww
+                 
+              ELSE IF ( idim .EQ. t_dim  .AND. 
+     .              cal_id .EQ. prev_cal_id .AND.
+     .             start .LT. 0. .AND. start .NE. unspecified_val8.AND.
+     .             end   .LT. 0. .AND. end   .NE. unspecified_val8) THEN
+	         cx_lo_ww(idim,cx) = -1*cx_lo_ww(idim,cx)
+	         cx_hi_ww(idim,cx) = -1*cx_hi_ww(idim,cx)
+
+              ENDIF
+
+              cx_lo_ww(idim,cx) =
+     .            SECS_TO_TSTEP( grid, cx_lo_ww(idim,cx) )
+              cx_hi_ww(idim,cx) =
+     .		   SECS_TO_TSTEP( grid, cx_hi_ww(idim,cx) )
+ 
 
 * reset cx_calendar now that cx_lo/hi_ww have been converted
               cx_calendar(cx) = .FALSE.

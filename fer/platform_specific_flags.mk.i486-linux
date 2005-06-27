@@ -5,7 +5,7 @@
 	# platform specific macros
 
 
-	INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include \
+	INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.3/include \
 			  -I../xgks/include \
 			  -I. -Ireadline \
 			  -I../../ppl/include/xgks \
@@ -77,7 +77,7 @@
 	 
 
 
-	SYSLIB		= -L/usr/X11R6/lib  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.3/libg2c.a
 
 	TMLIB		= ../lib/tmap_lib.a
 
@@ -89,7 +89,8 @@
 
 	CDFLIB		= -lnetcdf
 
-	DODS_LIBS   	= -L/home/flat/kobrien/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -L/home/flat/kobrien/DODS/lib -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
+#	DODS_LIBS   	= -L/home/flat/kobrien/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -L/home/flat/kobrien/DODS/lib -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
+	DODS_LIBS   	= -L/home/flat/kobrien/DODS_v3.4.5/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -L/home/flat/kobrien/DODS_v3.4.5/DODS/lib -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

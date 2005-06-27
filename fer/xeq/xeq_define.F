@@ -165,6 +165,9 @@
 *                  when cx_lo_ww and cx_hi_ww are computed.
 * V581 *acm*  3/05 Catch case where errors in def axis/start:lo:del, before
 *                  trying to call RESET_SECS_FROM_BC (bug1203)
+* V581 *acm*  5/05 For OPeNDAP HDF files, do not check whether axis name is legal.
+*                  If it was given in quotes, skip the quotes when finding it in
+*                  the list of axis names.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -260,7 +263,7 @@
      .		  tmap_status, npoints,
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
-     .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen,
+     .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen, s1,
      .		  old_line, old_grid, frst_pt, dim(4), ndim, natom,
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
@@ -679,8 +682,14 @@
      .		.AND. pos .GT. 0)	! /NAME=XXX or "NAME= expression"
 
 * must be a unique name
-	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
-	old_line = TM_GET_LINENUM( buff3 )
+c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
+        slen = TM_LENSTR1( buff3)
+        s1 = 1
+        IF (buff3(1:1) .EQ. "'" .AND. buff3(slen:slen) .EQ. "'") THEN
+           s1 = 2
+           slen = slen - 1
+        ENDIF
+	old_line = TM_GET_LINENUM( buff3(s1:slen) )
 	dup_name = old_line .NE. unspecified_int4
 
 * get the X,Y,Z,T regions

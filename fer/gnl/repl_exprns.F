@@ -89,6 +89,8 @@
 * V570  *acm* 6/04 - Add RETURN=CALENDAR
 * V580  *acm* 8/04 - Increase the length of string repl from 128 to 2048: If using a
 *                    long string, e.g. in a label, this string can be very long. (bug 956)
+* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -329,8 +331,11 @@
 	      repl = ' '	! default
 	      axis = CGRID_AXIS ( T_dim, cx )
 	      IF ( axis.NE.mnormal) THEN
-	          IF (line_direction(axis) .EQ. 'TI')
-     .		      repl = line_T0(axis)
+	          IF (line_direction(axis) .EQ. 'TI') THEN
+    		      repl = line_T0(axis)
+                      IF (line_shift_origin(axis)) 
+     .                  repl =  '01-JAN-0001 00:00:00'
+                  ENDIF
 	      ENDIF
               
 * ... RETURN=CALENDAR

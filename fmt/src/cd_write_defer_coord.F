@@ -47,6 +47,7 @@
 * V570 *acm*   5/04 For irregular axes, write bounds coordinate variable, 
 *                   dimensioned 2xN
 
+
 * argument declarations:
 	INTEGER cdfid, status
 

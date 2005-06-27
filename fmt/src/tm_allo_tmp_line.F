@@ -39,6 +39,7 @@
 * Steve Hankin  NOAA/PMEL/TMAP
 
 * V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
+* V581*acm*  6/05 For fix to bug 1271, add flag line_shift_origin
 
 * Include files
 	include 'tmap_dims.parm'
@@ -56,6 +57,7 @@
 * initialize the line to a null content
 	line_name(line)	     = char_init16
         line_t0(line)        = char_init20
+        line_shift_origin(line) = .FALSE.
         line_tunit(line)     = real4_init
         line_parent(line)    = 0
         line_regular(line)   = .TRUE.

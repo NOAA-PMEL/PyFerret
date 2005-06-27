@@ -1,6 +1,7 @@
 * cdf_tmap.parm
 * special TMAP parameters needed for netCDF files
 
+
 	INTEGER pcd_mode_data,
      .		pcd_mode_define,
      .          pcd_reset_data,
@@ -17,7 +18,6 @@
      .		pcd_defer_points,
      .		pcd_defer_edges,
      .		pcd_defer_bounds
-
 	PARAMETER (
      .		pcd_defer_init = 0,
      .		pcd_defer_points = 1,

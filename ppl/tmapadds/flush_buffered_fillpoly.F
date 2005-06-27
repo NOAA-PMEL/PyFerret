@@ -1,5 +1,7 @@
 
-      subroutine flush_buffered_fillpoly
+C =========================================================================
+
+      subroutine flush_buffered_fillpoly (xadd, lmin, lmax)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,18 +35,23 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*     BUFFER_FILLPOLY() called when entire grid cell is a single color; when
-*     color changes construct new polygon from individual cells and fill
-*     it in FLUSH_BUFFERED_FILLPOLY().
-*
-*     J Davison 2.4.99
-* V581 ACM 3/05 removed to its own file from arfill
+c:    Extracted from arfill.F
+*     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
         include         'shade_vars.cmn'
 	include 	'ARFILL.INC'
         include         'xcurvilinear.cmn'
+
+ 
+*     J Davison 2.4.99
+
+*     BUFFER_FILLPOLY() called when entire grid cell is a single color; when
+*     color changes construct new polygon from individual cells and fill
+*     it in FLUSH_BUFFERED_FILLPOLY().
+
+      real xadd, lmin, lmax
 
       real xarg(2*buffer_max+2), yarg(2*buffer_max+2)
       integer m, ndx, neo, noe
@@ -76,7 +83,8 @@
                yarg(ndx-m) = ybuff(4,m)
  20         end do
 
-            call fillpoly (xarg, yarg, 2*num_buffered+2, ilast-1)
+            call fillpoly (xarg, yarg, 2*num_buffered+2, ilast-1, 
+     .                     xadd, lmin, lmax)
           else
             xarg(1) = xbuff(1,1)
             yarg(1) = ybuff(1,1)
@@ -90,7 +98,7 @@
             xarg(4) = xbuff(4,1)
             yarg(4) = ybuff(4,1)
 
-            call fillpoly (xarg, yarg, 4, ilast-1)
+            call fillpoly (xarg, yarg, 4, ilast-1, xadd, lmin, lmax)
          end if
       else
 *        ******************* TRIANGLES *******************
@@ -106,7 +114,7 @@
             xarg(3) = xbuff(3,1)
             yarg(3) = ybuff(3,1)
 
-            call fillpoly (xarg, yarg, 3, ilast-1)
+            call fillpoly (xarg, yarg, 3, ilast-1, xadd, lmin, lmax)
             goto 1000
          end if
             
@@ -149,7 +157,8 @@
                yarg((ndx-m)/2) = ybuff(3,m)
  120        end do
 
-            call fillpoly (xarg, yarg, num_buffered+2, ilast-1)
+            call fillpoly (xarg, yarg, num_buffered+2, ilast-1,
+     .                     xadd, lmin, lmax)
          else
             if (upper_first .and. even) then
                xarg(1) = xbuff(1,1)
@@ -164,7 +173,7 @@
                xarg(4) = xbuff(3,1)
                yarg(4) = ybuff(3,1)
 
-               call fillpoly (xarg, yarg, 4, ilast-1)
+               call fillpoly (xarg, yarg, 4, ilast-1, xadd, lmin, lmax)
             else if (upper_first .and. .not.even) then
 
                xarg(1) = xbuff(1,1)
@@ -179,7 +188,7 @@
                xarg(4) = xbuff(3,1)
                yarg(4) = ybuff(3,1)
 
-               call fillpoly (xarg, yarg, 4, ilast-1)
+               call fillpoly (xarg, yarg, 4, ilast-1, xadd, lmin, lmax)
             else if (.not.upper_first .and. even) then
 
                xarg(1) = xbuff(1,1)
@@ -194,7 +203,7 @@
                xarg(4) = xbuff(2,1)
                yarg(4) = ybuff(2,1)
 
-               call fillpoly (xarg, yarg, 4, ilast-1)
+               call fillpoly (xarg, yarg, 4, ilast-1, xadd, lmin, lmax)
             else if (.not.upper_first .and. .not.even) then
 
                xarg(1) = xbuff(1,1)
@@ -209,7 +218,7 @@
                xarg(4) = xbuff(2,1)
                yarg(4) = ybuff(2,1)
 
-               call fillpoly (xarg, yarg, 4, ilast-1)
+               call fillpoly (xarg, yarg, 4, ilast-1, xadd, lmin, lmax)
             end if
          end if
       end if

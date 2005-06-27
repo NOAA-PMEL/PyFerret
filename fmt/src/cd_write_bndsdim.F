@@ -42,6 +42,7 @@
 
 * V570 *acm* 5/04 
 
+
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
 *     status  - return status

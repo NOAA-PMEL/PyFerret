@@ -1,4 +1,4 @@
-      subroutine drawpoly(x, y, z, nsides)
+      subroutine drawpoly(x, y, z, zlev, nlev, nsides, xadd, lmin, lmax)
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -32,15 +32,15 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-*
-c:    
+c:    Extracted from arfill.F
 c:    Output polygon (rectangle or triangle) for contour display.
-c:    
-* V581 ACM 3/05 removed to its own file from arfill
-* v581 *acm* 3/05 open levels (-INF) (INF)
+c:
+*     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 
       real x(*), y(*), z(*)
-      integer i,j,npoly,nsides
+      integer i,j,npoly,nlev,nsides 
+      real xadd, lmin, lmax
+      real zlev(nlev)
       real xpoly(20), ypoly(20),zmin,zmax,f
 c
         include         'miss_inc.decl'
@@ -48,25 +48,16 @@ c
         include         'shade_vars.cmn'
         include         'xcurvilinear.cmn'
 
-	include		'parampl5_dat.decl'
-	include		'PARAMPL5.DAT'
-	include		'cont_inc.decl'
-	include		'CONT.INC'
-
       zmin=  1e30
       zmax= -1e30
-      
-      lev1 = 1
-      levn = nlev2
-      IF (neginf) lev1 = 2
-      IF (posinf) levn = nlev2 - 1
 
       do 10 i = 1,nsides
          if ((zle .and. z(i) .le. cmzle)  .or.
      .        (zeq .and. z(i) .eq. cmzeq)  .or.
      .        (zge .and. z(i) .ge. cmzge)) then
             
-            if (.not. buffer_empty) call flush_buffered_fillpoly
+            if (.not. buffer_empty) call flush_buffered_fillpoly (xadd,
+     .                    lmin, lmax)
             return
          end if
          
@@ -75,69 +66,35 @@ c
  10   continue
       
       do 100 i = 1, nlev-1
-c      do 100 i = lev1, levn-1
-         IF (i.EQ.lev1 .AND. neginf .AND.
-     .       (zmin .LT. zlev(lev1) .AND. zmax.LT.zlev(lev1)) ) THEN
 
-*        ENTIRE CELL IS BELOW MIN (-INF)
-            if ((i .ne. ilast .and. .not. buffer_empty) 
-     .           .or. num_buffered .ge. buffer_max) then
-
-               call flush_buffered_fillpoly
-            end if
-
-            ndx = lev1-2
-            call buffer_fillpoly (x, y, nsides, ndx)
-            return
-
-         ELSE IF (i.EQ.levn-1 .AND. posinf .AND.
-     .       (zmin .GT. zlev(levn) .AND. zmax.GT.zlev(levn)) ) THEN
-
-*        ENTIRE CELL IS ABOVE MAX (INF)
-            if ((i .ne. ilast .and. .not. buffer_empty) 
-     .           .or. num_buffered .ge. buffer_max) then
-
-               call flush_buffered_fillpoly
-            end if
-
-            ndx = nlev2-2
-            call buffer_fillpoly (x, y, nsides, ndx)
-            return
-         ELSE
-
-*        ENTIRE CELL IS OUTSIDE THIS LEVEL
-            if ((zmin.gt.zlev(i+1)) .or. (zmax.lt.zlev(i))) goto 100
+*        ENTIRE CELL IS OUTSIDE PRESET LEVELS
+         if ((zmin.gt.zlev(i+1)) .or. (zmax.lt.zlev(i))) goto 100
 
 *        ENTIRE CELL IS A SINGLE COLOR
-            if ((zmin.ge.zlev(i)) .and. (zmax.le.zlev(i+1))) then
+         if ((zmin.ge.zlev(i)) .and. (zmax.le.zlev(i+1))) then
 
-               if ((i .ne. ilast .and. .not. buffer_empty) 
+            if ((i .ne. ilast .and. .not. buffer_empty) 
      .           .or. num_buffered .ge. buffer_max) then
 
-                  call flush_buffered_fillpoly
-               end if
+               call flush_buffered_fillpoly (xadd, lmin, lmax)
+            end if
 
-               ndx = i-1
-               call buffer_fillpoly (x, y, nsides, ndx)
-               return
-            endif
-         ENDIF
+            call buffer_fillpoly (x, y, nsides, i-1)
+            return
+         endif
+
 *        CELL IS MORE THAN ONE COLOR. FLUSH BUFFER AND FILL IN THIS CELL.
-         if (.not. buffer_empty) call flush_buffered_fillpoly
+         if (.not. buffer_empty) call flush_buffered_fillpoly (xadd,
+     .                     lmin, lmax)
 
          x(nsides+1)=x(1)
          y(nsides+1)=y(1)
          z(nsides+1)=z(1)
          npoly=0
-         ndx = i-1
 c
          do 80 j=1,nsides
 
             if (z(j).lt.zlev(i)) then
-            IF (i .le. lev1) THEN
-              nothing = 0
-            ENDIF
- 
 c
 c z(j) is below
 c
@@ -172,9 +129,6 @@ c
                endif
 
             else if (z(j).gt.zlev(i+1)) then
-            IF (i .ge. levn) THEN
-              nothing = 0
-            ENDIF
 c
 c z(j) is above
 c
@@ -244,7 +198,7 @@ c
 
  80      continue
 
-         call fillpoly(xpoly, ypoly, npoly, ndx)
+         call fillpoly(xpoly, ypoly, npoly, i-1, xadd, lmin, lmax)
 
  100   continue
 

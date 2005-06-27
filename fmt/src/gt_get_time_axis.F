@@ -74,7 +74,8 @@
 *			   	     would give the correct integer.
 * 12/00  *acm*		add cal_id for alternative calendar axes
 * V541  4/02 *acm*      Improved error message if T0 missing or bad
-
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -101,6 +102,7 @@
 * LOCAL DEFINITIONS
 	CHARACTER*80	def_error
 	CHARACTER*13	TM_STRING
+        CHARACTER*20    buff
 	INTEGER*4	scr, nsteps, istp, cpos, cpos1, bpos, bpos0,
      .			i1, i2, i3, i4, i5, i6, iunit, nline,
      .			nsteps_in_file,i			!*kob*
@@ -210,7 +212,14 @@
 * ...Check if time/date string conversion is possible
 
         cal_id = TM_GET_CALENDAR_ID (line_cal_name(scr))
-	CALL TM_BREAK_DATE( line_t0(scr),cal_id,
+        
+        IF (line_shift_origin(scr)) THEN
+           buff = '01-JAN-0001 00:00:00'
+        ELSE
+ 	   buff = line_T0(scr)
+        ENDIF
+
+	CALL TM_BREAK_DATE( buff,cal_id,
      .                      i1,i2,i3,i4,i5,i6,status )
 	IF ( line_tunit(scr) .LE. 0       .OR.
      .	     line_t0(scr)    .EQ. ' '     .OR.

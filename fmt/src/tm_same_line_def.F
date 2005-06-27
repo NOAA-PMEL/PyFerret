@@ -59,6 +59,7 @@
 * V541 2/02 *sh* - added support for line_modulo_len
 
 * V570 5/04 *acm* - Use TM_DFPEQ to weaken  irregular coords check
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 
 * Include files
 	include 'tmap_dims.parm'
@@ -110,6 +111,8 @@
 * Check special values for time axis
 	  IF (line_direction(line2) .EQ. 'TI') THEN
 	    IF (line_t0(line2) .NE. line_t0(line1)) GOTO 1000
+	    IF (line_shift_origin(line2) .NEQV. line_shift_origin(line1))
+     .           GOTO 1000
 	    IF (line_tunit(line2) .NE. line_tunit(line1)) GOTO 1000
 	  ENDIF
 

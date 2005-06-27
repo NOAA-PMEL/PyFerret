@@ -67,8 +67,8 @@
 *	 4/00 *sh* - all grids and axes now maintain use counts
 * V530:  8/00 *sh* - assert float data type for pseudo-variable
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
+* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -82,20 +82,6 @@
 	include 'xunits.cmn_text'
 	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-	INCLUDE	'FERRET_CMN:XFR_GRID.CMN'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:IMPLICIT.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-#endif
 
 * calling argument declarations:
 	INTEGER		dflt_cx, pvar_cx, pvdim, status
@@ -238,6 +224,7 @@
 	         alloed_tmp = .TRUE.
 	         CALL TM_COPY_LINE( like, tmp )
 	         line_t0(tmp) = '1-JAN-0000'
+	         line_shift_origin(tmp) = .FALSE.
 	         line_units(tmp) = 'DAYS'
 	         line_unit_code(tmp) = -4			! days
 	         line_tunit(tmp) = daysinsecs

@@ -26,6 +26,8 @@
 *       *acm* 6/04 - add CANCEL AXIS/DEPTH
 * V580: *acm*10/04 - add SHOW VAR/XML
 * V580: *acm*11/04 - add PLOT/NOKEY
+* V581: *acm* 5/05 - add SHADE/MOD and CONTOUR/MOD
+* V581: *acm* 5/05 - add EXIT/CYCLE
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -132,6 +134,7 @@
      .                  slash_cont_hgrat,
      .                  slash_cont_vgrat,
      .                  slash_cont_grat,
+     .                  slash_cont_mod,
      .
      .			slash_vect_over_plot,
      .			slash_vect_set_up,
@@ -222,6 +225,7 @@
      .			slash_exit_script,	
      .			slash_exit_prompt,	
      .			slash_exit_program,	
+     .			slash_exit_cycle,	
      .
      .			slash_is_logh,
      .			slash_is_logv	
@@ -329,6 +333,7 @@
      .			slash_cont_hgrat	= 1+35,
      .			slash_cont_vgrat	= 1+36,
      .			slash_cont_grat	        = 1+37,
+     .			slash_cont_mod	        = 1+38,
      .
      .			slash_vect_over_plot	= 9,
      .			slash_vect_set_up	= 10,
@@ -418,7 +423,8 @@
      .                  slash_exit_loop 	= 1 + 1,
      .                  slash_exit_script 	= 2 + 1,
      .                  slash_exit_prompt 	= 3 + 1,
-     .                  slash_exit_program 	= 4 + 1)
+     .                  slash_exit_program 	= 4 + 1,
+     .                  slash_exit_cycle 	= 5 + 1)
 
 	INTEGER		slash_xlimits, slash_ylimits, slash_title,
      .			slash_pen, slash_hlimits, slash_vlimits,

@@ -447,6 +447,7 @@ c If all the data is missing don't make the cellarray call
 
 *	DO THE KEY
 	IF (do_key .AND. .NOT.interrupted) CALL key	! 1/89 - *sh*
+        CALL shade_key_cont(0)
 
 	RETURN
 *	Fatal error

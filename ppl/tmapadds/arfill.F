@@ -68,6 +68,7 @@ C     V4.50 *jc* 5.97 Add curvilinear coordinates code
 C     v5.00 *jd* 2.99 Add fill optimization 
 *     V5.81 ACM 3/05  Other routines (drawpoly, buffer_fillpoly, flush_buffered_fillpoly)
 *                     removed to their own files.
+*     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 
 	include 	'ARFILL.INC'
         include         'GKSCM1.INC'
@@ -75,22 +76,25 @@ C     v5.00 *jd* 2.99 Add fill optimization
         include         'miss_inc.decl'
         include         'MISS.INC'
         include         'xcurvilinear.cmn'
-
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
         include         'shade_vars.cmn'
-
 	include		'parampl5_dat.decl'
 	include		'PARAMPL5.DAT'
 	include		'cont_inc.decl'
 	include		'CONT.INC'
+        INCLUDE         'errmsg.parm'
 
         integer nx,ny
         real z(nx,ny),x(nx),y(ny)
 
-        real xt(5),yt(5),zt(5),x_extra,y_extra
-        integer i,j,ii,jj,nnx,nny
+        real x_extra,y_extra
+        integer i,nnx,nny
 
+        integer nnx,nny, ilo, ihi, jlo, jhi, status
+	real xadd,xinv,yinv,w(4),v(4),ndc(4),uc(4)
+
+        real lmin, lmax
 
 C     *jd* mod to allow filling single level fields
         if (nlev .le. 1) return
@@ -120,6 +124,9 @@ C     create an extra point for the end of that axis
 C     This code works properly for regularly gridded axes.  For irregular
 C     axes it is as good a guess as any.
 
+C acm 4/05 When plotting curvilinear data with FILL/MODULO put this logic into effect
+
+        IF (xmodulo) dim1_modulo = .TRUE.
         if (curvilinear .and. dim1_modulo) then
            x_extra = x(nx) + (x(nx)-x(nx-1))
            nnx = nx+1
@@ -134,102 +141,71 @@ C     axes it is as good a guess as any.
            nny = ny
         endif
 
+* Get range of indices for the curvi X,Y coordinates actually needed for the 
+* hlimits, vlimits that were requested.
 
-C     Divide the region into rectangles or triangles and feed these
-C     small elements to drawpoly()
 
-        buffer_empty = .true.
+*	GET PROPER SCALING, NDC COORDINATES, ETC FOR FILL
+	CALL gqcntn (error,trans_no)
+	IF (error .NE. 0) GOTO 1000
 
-        do 200 j=1,nny-1
-           jj = j
-           do 100 i=1,nnx-1
-              ii = i
+	CALL gqnt (trans_no,error,w,v)
+	IF (error .NE. 0) GOTO 1000
 
-              IF (interrupted) RETURN
-     
-C     For curvilinear modulo axes:
-C     Replicate the first point in a column/row if necessary
-              if (i.eq.nx) ii = 1
-              if (j.eq.ny) jj = 1
+	CALL get_user_coords (w,v,ndc,uc,xinv,yinv)
 
-              zt(1)=z(ii,jj)
-              xt(1) = x(i)
-              yt(1) = y(j)
+        IF (curvilinear) 
+     .     CALL CURV_COORD_RANGE (uc, ilo, ihi, jlo, jhi, status )
+      
+        big = ABS(bad_val4)
+        lmin = big
+        lmax = -1*big
+        xadd = 0.
 
-              if (sqfflg) then
-c     
-c     do a square
-c     
-                 zt(2)=z(ii+1,jj)
-                 if (i.eq.nx) then
-                    xt(2)=x_extra
-                 else
-                    xt(2)=x(i+1)
-                 end if
-                 yt(2)=yt(1)
-                 
-                 zt(3)=z(ii+1,jj+1)
-                 if (i.eq.nx) then
-                    xt(3) = x_extra
-                 else
-                    xt(3)=x(i+1)
-                 end if
-                 if (j.eq.ny) then
-                    yt(3)=y_extra
-                 else
-                    yt(3)=y(j+1)
-                 endif
-                 
-                 zt(4)=z(ii,jj+1)
-                 xt(4)=xt(1)
-                 yt(4)=yt(3)
+       CALL ARFILL_SECTION(x, y, z, zlev, nx, ny, nlev, nnx, nny, 
+     .       x_extra, y_extra, lmin, lmax, ilo, ihi, jlo, jhi, xadd, 
+     .       status)
 
-                 call drawpoly(xt,yt,zt,4)
+       if (status .eq. ferr_interrupt) go to 1000
 
-              else
-c     
-c     do upper triangle
-c     
-                 upperflg = .true.
+        IF (xmodulo .AND. curvilinear) THEN
+           nleft = 0
+           nright = 0
+           IF (lmin .GT. uc(1) ) nleft =  1 + INT(lmin - uc(1) )/ 360
+           IF (lmax .LT. uc(2) ) nright = 1 + INT(uc(2) - lmax )/ 360
 
-                 zt(2)=z(ii+1,jj+1)
-                 if (i.eq.nx) then
-                    xt(2) = x_extra
-                 else
-                    xt(2)=x(i+1)
-                 end if
-                 if (j.eq.ny) then
-                    yt(2)=y_extra
-                 else
-                    yt(2)=y(j+1)
-                 end if
+           IF (nleft .GT. 0) THEN
+              xadd = 0.
+              DO 100 i = 1, nleft
+                 xadd = xadd - 360.
+                 CALL ARFILL_SECTION(x, y, z, zlev, nx, ny, nlev, 
+     .               nnx, nny, x_extra, y_extra, lmin, lmax, ilo, 
+     .               ihi, jlo, jhi, xadd, status)
+                 IF (status .EQ. ferr_interrupt) GOTO 1000
+ 100          CONTINUE
+           ENDIF
 
-                 zt(3)=z(ii,jj+1)
-                 xt(3)=xt(1)
-                 yt(3)=yt(2)
-     
-                 call drawpoly(xt,yt,zt,3)
-c     
-c     do lower triangle
-c     
-                 upperflg = .false.
-
-                 zt(3)=z(ii+1,jj)
-                 xt(3)=xt(2)
-                 yt(3)=yt(1)
-     
-                 call drawpoly(xt,yt,zt,3)
-
-              endif
-
- 100        continue
-            if (.not. buffer_empty) call flush_buffered_fillpoly
- 200     continue
+           IF (nright .GT. 0) THEN
+              xadd = 0.
+              DO 110 i = 1, nright
+                 xadd = xadd + 360.
+                 CALL ARFILL_SECTION(x, y, z, zlev, nx, ny, nlev, 
+     .               nnx, nny, x_extra, y_extra, lmin, lmax, ilo, 
+     .               ihi, jlo, jhi, xadd, status)
+                 IF (status .EQ. ferr_interrupt) GOTO 1000
+ 110          CONTINUE
+           ENDIF
          
+        ENDIF   ! xmodulo
 C     
 C     Generate a color/gray scale key.
+C     Restore standard key style afterward (do this here, to 
+C     catch both contour and contour/set calls).
 C     
-        if (do_key .AND. .NOT.interrupted) call key ! 1/89 - *sh*
+        if (do_key .AND. .NOT.interrupted) THEN
+            call key ! 1/89 - *sh*
+           CALL SHADE_KEY_CONT (0)
+        ENDIF
 
-        return
+1000    return
         end

@@ -121,6 +121,10 @@
 *                  the boxes are equal sized. Also fix def of d2e for reading axis bounds.
 * V581 *acm*  2/05 Fix bug 1179: axis_dir .EQ. 'z' needs to be done as a case-insensitve
 *                  comparison, in section testing positive=down.
+* V581 *acm*  5/05 Fix bug 1231: check 'TT and 'TI' when applying tregular
+* V581 *acm*  5/05 Fix bug 1232: if tregular, then dont try to use bounds
+* V581*acm*  6/05  For fix to bug 1271, add flag line_shift_origin marking hack to shift axes 
+*                   starting on 1-1-0001 (CDC files)
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -654,7 +658,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * was a regular time axis forced on us by the user?
       IF (tregular) THEN
-        IF (line_direction(iaxis).EQ."TI") line_regular(iaxis) = .TRUE.
+        IF (line_direction(iaxis).EQ."TI" .OR.
+     .      line_direction(iaxis).EQ."TT" ) line_regular(iaxis) = .TRUE.
+        got_bnds = .FALSE.
       ENDIF
 
 
@@ -854,8 +860,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
             IF ( status .NE. merr_ok ) GOTO 5900
 
 * ... correct axis if crosses 1590 threshhold
-           IF (secs2firststep .GT. secs1590) line_t0(iaxis)
-     .                                          = '30-DEC-0000 00:00:00'
+           IF (secs2firststep .GT. secs1590) THEN
+              line_t0(iaxis) = '30-DEC-0000 00:00:00'
+              line_shift_origin(iaxis) = .TRUE.
+           ENDIF
         ENDIF
 
 *  See if there are box edges or bounds in the file.
@@ -919,9 +927,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 ****************************************************************************
 
 * the attribute "bounds=name" may point to a list of box boundaries
-500     got_bnds = CD_GET_ATTRIB( cdfid, ivar, 'bounds',
-     .                       do_warn, vname(:vlen), bname, 30 )
-        IF ( .NOT.got_bnds ) GOTO 600
+500     IF ( .NOT. got_bnds ) GOTO 600
 
 * Check the bounds variable, issue any warnings.
         CALL TM_CHECK_BNDS_ATTRIB (cdfid, iaxis, vname, vlen, bname,

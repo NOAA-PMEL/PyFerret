@@ -83,6 +83,8 @@
 * V580 *acm*11/04  (bug 1085) Allow thickness to be set when cycling through colors 
 *                  automatically. In call to line_style, when color = -11  then 
 *                  thin line, color=-21 then thick=2, when color=-31 then thick=3
+* V581 *acm* 5/05  fix bug 1250: step=connected. Need to use EQUAL_STR to get the
+*                  argument to /STEP, then compare to see if it equals uppercase 'CON'
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -182,10 +184,10 @@ CC       => Set values here instead.
 	IF ( loc .GT. 0  ) THEN
 
 *  Is it SYMBOL=DOT?
-	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF (buff .EQ. 'dot') THEN
+	   IF (buff .EQ. 'DOT') THEN
               symbol = dot_sym
            ELSE
 
@@ -286,10 +288,10 @@ CC       => Set values here instead.
 * ... PLOT/STEP[=CONNECTED]
 	loc = qual_given( slash_plot_step )
 	IF ( loc .GT. 0  .AND. .NOT.versus ) THEN
-	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( buff(1:3) .EQ. 'con' ) THEN
+	   IF ( buff(1:3) .EQ. 'CON' ) THEN
 	      step_inc = 2	    
 	   ELSEIF ( buff(1:3) .EQ. ' ' ) THEN
 	      step_inc = 3

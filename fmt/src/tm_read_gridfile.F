@@ -84,13 +84,13 @@
 *	     4/00 - netCDF files now defining dynamic grids and axes. Need
 *		to check among these for previously defined objects
 * V541: *sh* 2/02 - minor change to set line_modulo_len
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 
 * arguments
 	CHARACTER*(*)	gfile_name
 	INTEGER*4	status
 
-#ifdef unix
-	include 'tmap_errors.parm'
+        include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -104,17 +104,7 @@
 	external xunits_data
         include 'xsys_names.cmn_text'
         external xsys_names_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-        INCLUDE 'TMAP_FORMAT:XSYS_NAMES.CMN'
-#endif
+
 
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -335,6 +325,7 @@
 	  line_modulo(temp) = TM_HAS_STRING( buff(p_modulo), 'MODULO')
 	  line_modulo_len(temp) = 0.0D0
 	  line_t0(temp) = char_init20
+	  line_shift_origin(temp) = .FALSE.
 	  line_tunit(temp) = real4_init
 	  IF (reg_coords) THEN
 	    IF (line_direction(temp) .EQ. 'WE') dim = x_dim
@@ -506,6 +497,7 @@
   380	  CALL TM_TRANSLATE_AXIS(buff(p_t0),t_dim,rdummy,status)
 	  IF (status .NE. merr_ok) GOTO 9910
 	  line_t0(tline) = buff(p_t0)
+          line_shift_origin(tline) = .FALSE.
 	  line_tunit(tline) = un_convert(line_unit_code(tline))
 
 ********************************************************************************

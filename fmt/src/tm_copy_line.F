@@ -41,23 +41,19 @@
 * 10/95 - check to see if a dynamic line -- some variables don't get copied
 *  1/96 - repaired bug (incomplete test) in 10/95 check
 *  1/01 - *acm* add line_cal_name parallel with treatment of line_t0
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 
 * Arguments
 	INTEGER*4	source, dest
 *
 * Parameters and commons
-#ifdef unix
+
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 *
 	line_name(dest)      = line_name(source)
 	line_dim(dest)       = line_dim(source) 
@@ -69,6 +65,7 @@
 	line_start(dest)     = line_start(source) 
 	line_delta(dest)     = line_delta(source) 
 	line_t0(dest)        = line_t0(source) 
+	line_shift_origin(dest) = line_shift_origin(source) 
 	line_tunit(dest)     = line_tunit(source) 
 	line_cal_name(dest)  = line_cal_name(source) 
 

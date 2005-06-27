@@ -52,6 +52,7 @@
 * V533 *sh* 6/01 - save line_parent for regular stride axes, too
 *		   else the stride and delta cannot be recovered 
 * V541 *sh* 2/02 - added support for parent modulo length less than axis length
+* V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 
 * Arguments
 	INTEGER		idim, like, class, outline, status
@@ -100,6 +101,7 @@
 	   line_regular(inline)    = .TRUE.
 	   line_direction(inline) = axis_orients(idim)
 	   line_t0(inline)        = char_init20
+	   line_shift_origin(inline) = .FALSE.
 	   line_tunit(inline)     = 0
 	   line_units(inline)     = ' '
 	   line_unit_code(inline) = 0

@@ -65,6 +65,8 @@
 * v541 *sh* 2/02 - added support for line_modulo_len
 * V550 *ACM* 12/02 Write AXIS attribute to output files.
 * V570 *acm*  5/04 write bounds attribute and bounds 2xN coordinates to NetCDF files
+* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+*            and restore original t0 on output
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -104,14 +106,14 @@
       INTEGER TM_LENSTR1, CD_AXLEN, NCDID, NCVID, NCDDEF, NCVDEF,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
-      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, bndsdim
+      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id
 !      INTEGER vartype, nvdims, vdims(6), nvatts
 !      LOGICAL condensed
 !      REAL rlen
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
 *                    name to 64 from 24 to match longer line_name
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
-     .          name*64, units*48
+     .          name*64, units*48, datebuff*40
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
       INTEGER maxchildlen
@@ -213,7 +215,12 @@
      . .AND. TM_DATE_OK( line_T0(iaxis),cal_id )    ) THEN
             slen = TM_LENSTR1( line_units(iaxis) )
 	    units = line_units(iaxis)(:slen)//' since '
-	    CALL TM_DATE_REFORMAT(line_T0(iaxis),pdate_vax,cal_id,
+            IF (line_shift_origin(iaxis)) THEN
+               datebuff = '01-JAN-0001 00:00:00'
+            ELSE
+ 	       datebuff = line_T0(iaxis)
+            ENDIF
+            CALL TM_DATE_REFORMAT(datebuff,pdate_vax,cal_id,
      .				  units(slen+8:),pdate_numslashnum,
      .				  status )
 
@@ -228,9 +235,16 @@
         cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
 	IF ( line_direction(iaxis) .EQ. 'TI'
      . .AND. TM_DATE_OK( line_T0(iaxis), cal_id )    ) THEN
-            slen = TM_LENSTR1( line_T0(iaxis) )
+
+            IF (line_shift_origin(iaxis)) THEN
+               datebuff = '01-JAN-0001 00:00:00'
+            ELSE
+ 	       datebuff = line_T0(iaxis)
+            ENDIF
+
+            slen = TM_LENSTR1( datebuff )
             CALL NCAPTC( cdfid, axid, 'time_origin', NCCHAR, slen,
-     .           line_T0(iaxis)(:slen), cdfstat )
+     .           datebuff(:slen), cdfstat )
 	ENDIF
 
 !  Write the calendar name

@@ -1,5 +1,7 @@
 **   subroutine fillpoly(x,y,npts,index) *jc*
-      subroutine fillpoly(xarg,yarg,npts,index)
+
+      subroutine fillpoly(xarg,yarg,npts,index,xadd,lmin,lmax)
+
       real xarg(*),yarg(*)
       integer npts,index
 *
@@ -75,9 +77,11 @@ C
 *     v5.51 *acm* 2/3/03 Get viewport sizing as in shade routines, using
 *                        gks calls; else the clipping is wrong for fill 
 *                        plots in viewports that were defined with /AXES.
+*     v5.81 *acm* 4/05 Changes for FILL/MOD. Draw replications for curvilinear datasets
 
       real x(128),y(128),xt(128),yt(128),xc(128),yc(128),xtrns,ytrns
       integer i,nout,fill_ndx
+      real xadd, lmin, lmax
 
 	include 'PLTCOM.DAT'
 	include 'pltcom_dat.decl'
@@ -137,9 +141,19 @@ C
 
          CALL CURV_COORD(x, y, npts, 1.0, 1.0, status) ! xform the pts
 
+* add offset for modulo transformation.
+
+           DO 48, i = 1, npts
+              x(i) = x(i) + xadd
+ 48        CONTINUE
+
+* What is the max and min x coordinate value covered by this call?
+
+           DO 49, i = 1, npts
+              lmin = MIN(lmin, x(i))
+              lmax = MAX(lmax, x(i))
+ 49        CONTINUE
       ENDIF
-
-
 c
 c scale and transform the vertices
 

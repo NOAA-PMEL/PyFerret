@@ -1,5 +1,5 @@
         subroutine contur(z,nxs,nys,px,py,nx,ny,xf,xoff,yf,yoff,
-     *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xct,yct)
+     *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xct,yct,xadd,lmin,lmax)
 
 *
 *
@@ -61,6 +61,8 @@
 * *jd	- 3/29/94 fix bug where specification of zero height contour labels
 *		  bombs out on ALPHA machines (divide by zero)
 * *jc*  - 3/26/99 added transformation to curvilinear coordinates
+*  v581 5/2005 *acm* Add CONTOUR/MOD capability for modulo replications for 
+*                    curvilinear data
 
 ****************************************************************************
 C**
@@ -113,7 +115,7 @@ c     oceanography emr   dec/69
 	common/rotcon/xk,yk,snthta,csthta
 ! TMAP mod, spline fit:
 ! added gkscm2.cmn which includes spline_tension and draftsman
-#ifdef unix
+
 	include 'gkscm2.cmn'
 	include 'dashzz_inc.decl'
 	include 'DASHZZ.INC'
@@ -122,19 +124,10 @@ c     oceanography emr   dec/69
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
         include 'xcurvilinear.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_dashzz.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_conlab.inc'
-	INCLUDE 'tmap_pplv11inc:tmap_pltcom.dat'
-#endif
 
 * TMAP interrupt flag
-#ifdef unix
+
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
 
 	integer*4 ixpon,ind10,jbit,ind1,indl
 	character frmt*20,str*40
@@ -144,6 +137,7 @@ c     oceanography emr   dec/69
 ! of contour labels expected on any ONE contour line in the plot.
 	parameter (mlab=200)
 	real xlabp(mlab),ylabp(mlab),xlabc(mlab),ylabc(mlab),widthp
+        realxadd,lmin,lmax
 
 C	Place init into data stmt *jd* 12.96 linux
 	integer	nlabp,nlabc
@@ -493,8 +487,10 @@ c
            CALL CURV_COORD(x_curv, y_curv, kmax, 1.0, 1.0, status) ! xform the pts
 
            DO 724 icurv=1, kmax
-              x(icurv)=x_curv(icurv)*xf + xoff
+              x(icurv)=(x_curv(icurv)+xadd)*xf + xoff
               y(icurv)=y_curv(icurv)*yf + yoff
+              lmin = MIN(lmin, x_curv(icurv))
+              lmin = MAX(lmax, x_curv(icurv))
  724       CONTINUE
         ENDIF
 

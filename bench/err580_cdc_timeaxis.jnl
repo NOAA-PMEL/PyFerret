@@ -17,15 +17,20 @@
 ! save/clobber/file=cdc_timeaxis.nc/i=15/j=45 taux
 ! can data/all
 
-sp ncdump -h cdc_timeaxis.nc
-use cdc_timeaxis.nc
 
-say `taux,return=t0`
+def axis/t=1-jan-1990:1-feb-1990:1/units=days/t0="01-JAN-0001 00:00:00" tcdc
+let a = sin(t[gt=tcdc]/10000)
 
-sh axis time
+save/clobber/file=t0_cdc.nc a
+can var/all
+can axis tcdc
+use t0_cdc
 
-sh axis/xml time
-
-save/clobber/file=my_cdc_timeaxis.nc/L=1:15 taux
+sh axis tcdc
+save/clobber/file=my_cdc_timeaxis.nc/L=1:15 a
 sp ncdump -h my_cdc_timeaxis.nc
+say `a,return=t0`
+
+sp rm -f t0_cdc.nc
+sp rm -f my_cdc_timeaxis.nc
 

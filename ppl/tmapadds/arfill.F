@@ -89,9 +89,7 @@ C     v5.00 *jd* 2.99 Add fill optimization
         real z(nx,ny),x(nx),y(ny)
 
         real x_extra,y_extra
-        integer i,nnx,nny
-
-        integer nnx,nny, ilo, ihi, jlo, jhi, status
+        integer i,nnx,nny, ilo, ihi, jlo, jhi, status
 	real xadd,xinv,yinv,w(4),v(4),ndc(4),uc(4)
 
         real lmin, lmax

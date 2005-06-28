@@ -1,5 +1,5 @@
 
-! curv_to_rect_subset_subset.F.F  
+! curv_to_rect.F.F  
 ! From Matt Harrison hinterp.F
 ! to call only the spherical interpolation modules, and
 ! recast in F77-compileable format.
@@ -91,7 +91,7 @@
 !
 
 
-      SUBROUTINE curv_to_rect_subset_init(id)
+      SUBROUTINE curv_to_rect_init(id)
         
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
@@ -122,7 +122,7 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'mapping')
       WRITE (descr, 30)
-   30 FORMAT ('mapping computed by curv_to_rect_subset_MAP')
+   30 FORMAT ('mapping computed by curv_to_rect_MAP')
       CALL ef_set_arg_desc(id, arg, descr)
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, NO)
 
@@ -132,13 +132,13 @@
 !***********************************************************************
 
       RETURN 
-      END  ! SUBROUTINE curv_to_rect_subset_init
+      END  ! SUBROUTINE curv_to_rect_init
 
 
 !
 ! In this SUBROUTINE we compute the result
 !
-      SUBROUTINE curv_to_rect_subset_compute(id, arg_1, arg_2, result)
+      SUBROUTINE curv_to_rect_compute(id, arg_1, arg_2, result)
 
       IMPLICIT none
       
@@ -224,7 +224,7 @@
 !**********************************************************************
 
       RETURN 
-      END  ! SUBROUTINE curv_to_rect_subset_compute
+      END  ! SUBROUTINE curv_to_rect_compute
 
 !#######################################################################
             

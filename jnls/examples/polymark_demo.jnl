@@ -8,7 +8,7 @@ set mode verify
 ! Open demo ship track file with Lat, Lon, and SST
 use polydata
 
-! Default scale
+! polymark needs an underlying plot to define scaling
 go basemap x=130:250 Y=20:65 20
 go polymark poly/over/key/title="SST along track" lon lat sst star 
 \message

@@ -5,6 +5,9 @@
 !  3/04 *acm* bug fix in check for point data
 
 ! Description: Plot symbols colored by values of a variable along a track
+!
+!              Needs a basemap or other underlying plot to define scaling
+!              parameters.
 
 ! Usage:                  $1        $2    $3     $4      $5      $6
 ! Yes?	GO polymark polygon_command xpts ypts [values] [shape] [scale]

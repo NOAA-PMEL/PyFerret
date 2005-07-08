@@ -69,6 +69,7 @@
 *                   will return the last value used.
 * v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
+* v581 *acm* 7/2005  Fix bug in getting start and end indices.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -224,7 +225,10 @@ c     .		   (sf_lastep(sfcnt) .LT. start_read_tstep)) GOTO 30
 	   end_read_lstep = TM_SUBSC (end_read_tstep, grid, t_dim,
      .		a_hi_t)     !kob 11/96
 	   
-           end_read_lstep = sf_ndxe(sfcnt) !!!
+* correct indices, when there are multiple timesteps in sttepfiles/
+           end_read_lstep = MIN(end_read_lstep, sf_ndxe(sfcnt) ) 
+           end_read_lstep = MAX(start_read_lstep, end_read_lstep ) 
+
 	   nsteps_to_read = end_read_lstep - start_read_lstep + 1
 	   
 * determine the index within the file to start at

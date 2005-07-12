@@ -80,6 +80,7 @@ C
 * V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
 *                  curvlinear coordinates. See also pltit.F, setax.F
 * v581 *acm* 3/05 open levels (-INF) (INF)
+* V581 *acm* 7/05 fix bug 1279: fill/lev=(n) gave exactly N not nlev2=approx N
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -98,7 +99,7 @@ C
 
 **	DIMENSION Z(NX,NY)
 	REAL	  Z(NX,NY)
-        INTEGER   status, slen1, slen2
+        INTEGER   status, slen1, slen2, nlev1
         CHARACTER TM_FMT*20, buff1*20, buff2*20, err_msg*40
         REAL      XF,YF
         REAL*8    XLPLOT,YLPLOT,XHPLOT,YHPLOT
@@ -419,9 +420,10 @@ c       this bombed aix compiler, though it seems to work on others
      2	 NARC,CANGLE)
 
 	 else if (makep.eq.'FILL') then
-
-	    call arfill(z,xx(izlen+1),yy(izlen+1),nx,ny,
-     1	 zlev,nlev2)
+            nlev1 = nlev
+            nlev = nlev2
+	    call arfill(z,xx(izlen+1),yy(izlen+1),nx,ny)
+            nlev = nlev1
 C       CALL DAXIS(XF,YF,NMX,NMY)
 
 	 else

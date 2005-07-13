@@ -139,6 +139,18 @@ DODS_gui: .FRC
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
 		"DEBUG_TITLE=" all
 
+DODS_gui_static: .FRC
+	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
+	$(MAKE) update
+	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG="\
+		"EXECNAME=ferretdods_gui" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
+		"MOVIELIB="  \
+                "LD = g++" "LDFLAGS=-v --verbose -L/lib -L/usr/X11R6/lib  -static" \
+                "CDFLIB = $(DODS_LIBS)" \
+		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
+		"DEBUG_TITLE=" all
+
 fortran: .FRC
 	$(MAKE) "FERMAIN=special/fermain_fortran.o" "EXECNAME=ferret_fortran" all
 

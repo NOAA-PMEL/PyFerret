@@ -1,3 +1,4 @@
+
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -37,7 +38,7 @@ C  !ACM Modified to pass nxaxis, NAY dimensions of grid and wate.
 C   and to deal with nx, nz, or nm = 1.  Also to send cutoff as a parameter.
 
 C  May 26, 2000  Don't send cutoff, but xsc, ysc as parameters.
-C  June 7, 2000  Send xsc, ysc, xcutoff, ycutoff as parameters
+C  June 7, 2000  Send xsc, ysc, cutoff as parameters
 
 c.............subroutines to do gaussian-weighted mapping onto grids.
 
@@ -68,15 +69,15 @@ c  i	xsc,ysc,tsc=mapping scales (data units)
 c  i	iwflag=1 for time wrapping; 0 for no wrapping
 c--------------------------------------------------------------------------
 
-	subroutine gausswt2 (xx,yy,tt,val,grid,wate,nx,nz,nm,x1,y1,t1,
-     .             xf,yf,tf,xsc,ysc,tsc,xcutoff,ycutoff,iwflag,nax,nay)
+	subroutine gausswt (xx,yy,tt,val,grid,wate,nx,nz,nm,x1,y1,t1,
+     .             xf,yf,tf,xsc,ysc,tsc,cutoff,iwflag,nax,nay)
 
 C ACM 6/2000 Version of gausswt with two cutoff parameters.  
  
 	integer nx, nz, nm, iwflag, nax, nay, i, j, m
 	real grid(nax,nay,*), wate(nax,nay,*)
 	real xx, yy, tt, val, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc
-	real xcutoff, ycutoff, tcutoff
+	real cutoff
         real dx, dy, dt, xxg, yyg, ttg, xcut, ycut, tcut
 	real xgp, delx, ygp, dely, tgp, delt, xgas, ygas, tgas, expn
 
@@ -93,10 +94,10 @@ C ACM 6/2000 Version of gausswt with two cutoff parameters.
 	ttg=(tt-t1)/dt+1.
 
 c	cutoff=2.			  ! cutoff limits search (min wt=e**-4)
-	tcutoff=2.			  ! cutoff limits search (min wt=e**-4)
-	xcut=xcutoff*xsc/dx		  ! cutoffs scaled to grid units
-	ycut=ycutoff*ysc/dy		  ! look only cutoff* the scale width
-	tcut=tcutoff*tsc/dt		  !   from the gridbox center
+c	tcutoff=2.			  ! cutoff limits search (min wt=e**-4)
+	xcut=cutoff*xsc/dx		  ! cutoffs scaled to grid units
+	ycut=cutoff*ysc/dy		  ! look only cutoff* the scale width
+	tcut=cutoff*tsc/dt		  !   from the gridbox center
 
 	do 100 i=1,nx			  ! loop on x gridpoints
 	xgp=real(i)			  ! center of gridbox

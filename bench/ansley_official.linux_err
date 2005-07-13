@@ -1,12 +1,12 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     55597711 Jul  8 14:20 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+Running FERRET version /home/stout/ansley/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     54660370 Jul 13 13:41 /home/stout/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug Kevin found in reading mc datasets, v5.81, see mc_read.F
+Note: fixes to initial v5.81 executable: scat2gridgauss return to 9 args; 250K length of coord storage; MC file read  bug; FILL/LEV=n bug
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/linux/FERRET/bench
+PWD=/home/stout/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley/FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/linux
 FER_DIR=.
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/linux/ext_func/libs
-Beginning at Fri Jul 8 14:21:11 PDT 2005
+Beginning at Wed Jul 13 13:47:36 PDT 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -353,8 +353,6 @@ define axis/from/x/name=xax/edges {6,6,6.000001,7}
 stat i, noname(i)
  **ERROR: invalid command: delta values may only modify variable names
 LIST/i=2:4:2 VAR
- **TMAP ERR: limit on storage for coordinates has been reached
-             MAX= 250000
  *** NOTE: Coordinates out of order or missing on axis UNORDERED_AXIS at subscript 4
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
@@ -601,4 +599,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri Jul 8 14:23:02 PDT 2005
+Ended at Wed Jul 13 13:49:30 PDT 2005

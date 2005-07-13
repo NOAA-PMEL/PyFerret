@@ -26,4 +26,8 @@ list SCALAR_VAR
 list TRUE_SCALAR
 list HAS_BACKWARDS_AXIS
 
-list/i=1:5 BIG_IRREG
+! With 250000 irregular coordinate storage locations, the variable BIG_IRREG
+! is not created; if irreg axis too long for coord storage, a variable
+! is generated with its values.
+
+! list/i=1:5 BIG_IRREG

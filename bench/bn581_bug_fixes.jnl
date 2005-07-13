@@ -70,6 +70,11 @@ GO err580_cdc_timeaxis.jnl
 GO bn_reset
 GO err580_show_axis_t.jnl
 
+! Fix for bug 1279 which was only in the first iteration of v5.81 release
+GO bn_reset
+GO err581_nlev.jnl
+
+
 ! Fix for bug 1270: regridding leakage between cells: monthly-> seasonal regridding
 ! needs file short_bug1270.nc
 ! ( this fix not checked in for v5.81 release.)

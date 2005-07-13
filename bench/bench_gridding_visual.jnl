@@ -46,11 +46,11 @@ let sgrid = scat2gridlaplace_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=y
 SHADE/TITLE="Laplace Gridding (1,1) to 20x20" sgrid  
 
 set view ll
-let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 0.5, 0.5, 2)
+let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 0.5, 0.5, 2, 2)
 SHADE/TITLE="Gauss Gridding (2) to 20x20 grid" sgrid  
 
 set view lr
-let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.0, 1.0, 6)
+let sgrid = scat2gridgauss_xy (xpts, ypts, sample_function, x[gx=xax5], y[gy=yax5], 1.0, 1.0, 6,6)
 SHADE/TITLE="Gauss Gridding (6) to 20x20 grid" sgrid  
 
 set view full

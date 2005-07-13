@@ -1,0 +1,8 @@
+! err580_nlev.jnl
+! bug 1279
+
+!FILL/lev=n var 
+! gave us exactly n levels, not approximately n levels.
+
+use coads_climatology
+fill/lev=30 sst[l=2]

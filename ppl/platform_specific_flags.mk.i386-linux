@@ -5,23 +5,15 @@
 	# platform specific macros
 
 
-	INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include \
-			  -I../../xgks/include \
+	INCLUDES        = -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.3/include \
 			  -I. -Ireadline \
-			  -I../../ppl/include/xgks \
 			  -I/usr/include \
 			  -I/usr/include/X11 \
-			  -I../../xgks/gif \
-			  -I....//xgks/ps \
-			  -I../../xgks/port \
-			  -I../../xgks/src/lib \
-			  -I../../xgks/src/lib/gksm \
 			  -I$(TMAP_LOCAL)/include \
-			  -Ipplinc/xgks \
 			  -I../common \
 			  -I../../fmt/cmn \
 			  -I../../ppl/include \
-			  -I. -I$(TMAP_LOCAL)/include/readline
+			  -I. -I$(TMAP_LOCAL)/include/readline 
 
 	FINCLUDES	= -I../../ppl/tmap_inc \
 			   -I../include -I../../fmt/cmn \
@@ -30,8 +22,13 @@
 
 	GUI_INCLUDES	= -I/usr/ucbinclude -I/usr/dt/include 
 	 
+	GKS_INCLUDES	=-I../../ppl/include/xgks \
+			  -I../../xgks/src/lib \
+			  -Ipplinc/xgks \
+			  -I../../xgks/port 
+	
 	# New platform type var - *kob* 10/01
-	PLATFORM = Linux(g77) 2.4.20
+	PLATFORM = Linux(g77) 2.4.21-32.0.1.ELsmp
 
 
 
@@ -60,7 +57,7 @@
 	PPLUS_FFLAGS    =  $(CPP_FLAGS) -finit-local-zero -fno-automatic -c -fno-second-underscore  -fdollar-ok  -fintrin-case-any -ffixed-line-length-132 -malign-double $(FINCLUDES)
 
 
-
+        #PROF_FLAGS      = -pg
 
 	# Below this line are macro definitions used only for the final linking of the executable
 	#
@@ -71,19 +68,20 @@
 	 
 
 
-	SYSLIB		= -L/usr/X11R6/lib  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/libg2c.a
+	SYSLIB		= -L/usr/X11R6/lib  -lm -ldl /usr/X11R6/lib/libXpm.a $(TMAP_LOCAL)/lib/liblist.a -lc /usr/X11R6/lib/libXm.a -lXt -lXext -lX11 -lXp /usr/X11R6/lib/libXmu.a -lSM       -lICE        -lc /usr/lib/gcc-lib/i386-redhat-linux/3.2.3/libg2c.a
 
 	TMLIB		= ../lib/tmap_lib.a
 
 	GKSLIB		= ../xgks/src/lib/libxgks.a
 	#GKSLIB		= /home/l2/tmap/local/linux/src/xgks_debug/src/lib/libxgks.a
-	READLINELIB	= -L../readline-4.1 -lreadline
+	READLINELIB	= ../readline-4.1/libreadline.a 
 
 	HDFLIB		= -L/usr/local/src/HDF/lib  -ldf -ljpeg -lz
 
-	CDFLIB		= -lnetcdf
+	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
 
-	DODS_LIBS   	= -L/home/flat/kobrien/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -L/home/flat/kobrien/DODS/lib -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
+	DODS_LIBS   	= -L/home/flat/kobrien/DODS_v3.4.5/DODS/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
+ 
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

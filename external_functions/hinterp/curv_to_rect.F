@@ -1,5 +1,5 @@
 
-! curv_to_rect.F.F  
+! curv_to_rect.F
 ! From Matt Harrison hinterp.F
 ! to call only the spherical interpolation modules, and
 ! recast in F77-compileable format.

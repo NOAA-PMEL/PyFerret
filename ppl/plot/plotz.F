@@ -80,7 +80,10 @@ C
 * V554  9/03 *acm* Fix precision bug double precision, for fine grids in 
 *                  curvlinear coordinates. See also pltit.F, setax.F
 * v581 *acm* 3/05 open levels (-INF) (INF)
+* V581 *acm* 7/05 Fix bug 1278, levels specified with a number of levels (30)
+*                 used exactly 30 and not NLEV2 levels as determined by the code.
 * V581 *acm* 7/05 fix bug 1279: fill/lev=(n) gave exactly N not nlev2=approx N
+
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'

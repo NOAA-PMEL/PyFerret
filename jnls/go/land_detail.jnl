@@ -81,9 +81,6 @@ ENDIF
 let landi_mapxmin = ($xaxis_min)
 let landi_mapxmax = ($xaxis_max)
 
-define region/default save
-cancel region
-
 let landi_datxmin = continent_LON[x=@min]
 let landi_datxmax = continent_LON[x=@max]
 IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`

@@ -1,3 +1,5 @@
+\cancel mode verify
+
 ! stack_stick.jnl
 ! stack plot of stick vector plots at each depth
 ! acm 7/2005
@@ -5,11 +7,13 @@
 ! See the example in call_stack_stick.jnl
 
 ! go stack_stick uvar vvar [yaxmin] [yaxmax]
+! If arguments 3 and 4 not given, then each plot in the stack is scaled 
+! automatically
 
 ! $1 U component
 ! $2 V component
-! $3 lower limit on Y axes
-! $4 upper limit on Y axes
+! $3 lower limit on Y axes for all plots
+! $4 upper limit on Y axes for all plots
 
 QUERY/IGNORE $1%<Usage: GO stack_stick  U V [yaxmin] [yaxmax]
 QUERY/IGNORE $2%<Usage: GO stack_stick  U V [yaxmin] [yaxmax]
@@ -25,40 +29,41 @@ cancel view
 
 let zz = z[gz=$1]
 
+let ks = `zz,return=kstart`
+let ke = `zz,return=kend`
 let nz = `zz,return=ksize`
 if `nz gt 20` then
   message "too many levels: use less than 20" 
   exit/script
 endif
 
-let y1 = 0.1
+let y2 = 0.9
 let del = 0.8/`nz`
-let y2 = `y1 + del-0.02`
+let y1 = `y2 - del` + 0.02
 
 ! This viewport will be used to draw the time axis at the bottom 
 ! and to label the z axes.
 
-def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 k3
+def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 tv
 
 ! Define viewports.
 !
-! The k1_* viewports, one for each depth being plotted are used to plot the right-
+! The rt_* viewports, one for each depth being plotted are used to plot the right-
 ! hand axes giving the data range for each Z lavel.
 
-! The k2_* viewports are the same size and shape. They will be used to plot the
+! The lf_* viewports are the same size and shape. They will be used to plot the
 ! left-hand axis with the corresponding depth
 
-repeat/range=1:`nz`/name=m (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` k1_`nz-m+1`; \
-                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` k2_`nz-m+1`; \
-                          let y1 = `y1 + del`; let y2 = `y2 + del`)
-
+repeat/range=`ks`:`ke`/name=m (def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` rt_`m`; \
+                          def view/axes/xlim=0.1:0.9/ylim=`y1`:`y2` lf_`m`; \
+                          let y1 = `y1 - del`; let y2 = `y2 - del`)
 
 ! Draw the time axis by plotting a variable having no data in the vertical range.
 ! Label the vertical stacks of axes in the middle.
 
-set view k3
+set view tv
 let/bad=9999 all_zero = if missing($1,0) then 0 else 0*$1
-plot/noy/ax=0,1,0,0/nolab/k=`nz`/vlim=100:200 all_zero 
+plot/noy/ax=0,1,0,0/nolab/k=`ke`/vlim=100:200 all_zero 
 
 label/nouser `($ppl$xlen)/2`,-0.8, 0, 0, 0.14 "`$1,return=title`   `$2,return=title`"
 label/nouser -0.6, `($ppl$ylen)/2`, 0, 90, 0.12 "Depth (`$1,return=zunits`)"
@@ -80,31 +85,31 @@ IF `"$3%nothing%" eq "nothing"` THEN
 
 ! Put most of the labels on, except for the title, depth, and yaxis label.
 
-set view k1_1
-plot/noy/k=1/axes=0,0,0,1/title=" "/set $1, $2
+set view rt_`ks`
+plot/noy/k=`ks`/axes=0,0,0,1/title=" "/color=white/set $1, $2
    go unlabel 6
    ppl axatic ,3
    ppl axlabp ,1
    ppl ylab " "
 ppl plotuv 0 1 
 
-set view k2_1
+set view lf_`ks`
 ppl tics,0,0,0,0; ppl axlsze,0,0
-plot/SET_UP/noy/axes=0,0,1,0/nolab/k=1 $1, $2
+plot/SET_UP/noy/axes=0,0,1,0/nolab/k=`ks` $1, $2
   PPL PLOTUV 0 1
-let zlab = zz[k=1]
+let zlab = zz[k=`ks`]
 label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"
 ppl tics,.125,.25,.125,.25 
 ppl axlint,2,2
 ppl axlsze,0.1,0.1
 ppl axatic 5,5 
 
-repeat/range=2:`nz`/name=m (set view k1_`m`; \
+repeat/range=`ks+1`:`ke`/name=m (set view rt_`m`; \
    plot/noy/k=`m`/axes=0,0,0,1/nolab/color=white/set $1, $2; \
       ppl axatic ,3 ; ppl axlabp ,1; ppl plot; \
-   set view k2_`m`; \
+   set view lf_`m`; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; \
-   plot/SET_UP/noy/axes=0,0,1,0/nolab/k=1 $1, $2; \
+   plot/SET_UP/noy/axes=0,0,1,0/nolab/k=`ks` $1, $2; \
      PPL PLOTUV 0 1; \
    let zlab = zz[k=`m`]; \
    label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
@@ -119,33 +124,32 @@ repeat/range=2:`nz`/name=m (set view k1_`m`; \
 ELSE 
 ! Put most of the labels on , except for the title, depth, and yaxis label.
 
-set view k1_1
-set view k1_1
-plot/noy/k=1/axes=0,0,0,1/vlimits=$3:$4/color=white/set $1, $2
+set view rt_`ks`
+plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/color=white/set $1, $2
    go unlabel 6
    ppl yaxis $3 $4 `($4-$3)/4`
    ppl axlabp ,1
    ppl ylab " "
 ppl plot
 
-set view k2_1
+set view lf_`ks`
 ppl tics,0,0,0,0
 ppl axlsze,0,0
-plot/SET_UP/noy/axes=0,0,1,0/vlimits=$3:$4/nolab/k=1 $1, $2
+plot/SET_UP/noy/axes=0,0,1,0/vlimits=$3:$4/nolab/k=`ks` $1, $2
    PPL PLOTUV 0 1
-let zlab = zz[k=1]
+let zlab = zz[k=`ks`]
 label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"
 ppl tics,.125,.25,.125,.25
 ppl axlint,2,2
 ppl axlsze,0.1,0.1
 ppl axatic 5,5
 
-repeat/range=2:`nz`/name=m (set view k1_`m`; \
+repeat/range=`ks+1`:`ke`/name=m (set view rt_`m`; \
    plot/noy/k=`m`/axes=0,0,0,1/vlimits=$3:$4/nolab/color=white/set $1, $2; \
      ppl yaxis $3 $4 `($4-$3)/4` ; ppl axlabp ,1; ppl plot; \
-   set view k2_`m`; \
+   set view lf_`m`; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; \
-     plot/SET_UP/noy/axes=0,0,1,0/vlimits=$3:$4/nolab/k=1 $1, $2; \
+     plot/SET_UP/noy/axes=0,0,1,0/vlimits=$3:$4/nolab/k=`ks` $1, $2; \
      PPL PLOTUV 0 1; \
    let zlab = zz[k=`m`]; \
    label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
@@ -156,3 +160,5 @@ repeat/range=2:`nz`/name=m (set view k1_`m`; \
    )
 
 ENDIF
+
+set mode/last verify

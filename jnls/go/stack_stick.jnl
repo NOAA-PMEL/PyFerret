@@ -32,6 +32,7 @@ let zz = z[gz=$1]
 let ks = `zz,return=kstart`
 let ke = `zz,return=kend`
 let nz = `zz,return=ksize`
+
 if `nz gt 20` then
   message "too many levels: use less than 20" 
   exit/script
@@ -85,18 +86,11 @@ IF `"$3%nothing%" eq "nothing"` THEN
 
 ! Put most of the labels on, except for the title, depth, and yaxis label.
 
-set view rt_`ks`
-plot/noy/k=`ks`/axes=0,0,0,1/title=" "/color=white/set $1, $2
-   go unlabel 6
-   ppl axatic ,3
-   ppl axlabp ,1
-   ppl ylab " "
-ppl plotuv 0 1 
 
 set view lf_`ks`
 ppl tics,0,0,0,0; ppl axlsze,0,0
-plot/SET_UP/noy/axes=0,0,1,0/nolab/k=`ks` $1, $2
-  PPL PLOTUV 0 1
+plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0
+  PPL PLOT
 let zlab = zz[k=`ks`]
 label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"
 ppl tics,.125,.25,.125,.25 
@@ -104,39 +98,42 @@ ppl axlint,2,2
 ppl axlsze,0.1,0.1
 ppl axatic 5,5 
 
-repeat/range=`ks+1`:`ke`/name=m (set view rt_`m`; \
-   plot/noy/k=`m`/axes=0,0,0,1/nolab/color=white/set $1, $2; \
-      ppl axatic ,3 ; ppl axlabp ,1; ppl plot; \
+set view rt_`ks`
+plot/noy/k=`ks`/axes=0,0,0,1/title=" "/set $1, $2
+   go unlabel 6
+   ppl axatic ,3
+   ppl axlabp ,1
+   ppl ylab " "
+ppl plotuv 0 1 
+
+
+
+repeat/range=`ks+1`:`ke`/name=m (\
    set view lf_`m`; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; \
-   plot/SET_UP/noy/axes=0,0,1,0/nolab/k=`ks` $1, $2; \
-     PPL PLOTUV 0 1; \
+   plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0; \
+     PPL PLOT; \
    let zlab = zz[k=`m`]; \
    label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
    ppl tics,.125,.25,.125,.25; \ 
    ppl axlint,2,2; \
    ppl axlsze,0.1,0.1; \
-   ppl axatic 5,5 \
-   )
+   ppl axatic 5,5; \
+   ; \
+   set view rt_`m`; \
+   plot/noy/k=`m`/axes=0,0,0,1/nolab/set $1, $2; \
+      ppl axatic ,3 ; ppl axlabp ,1; PPL PLOTUV 0 1 )
 
-! vertical axis scaling given
+! case where vertical axis scaling given
 
 ELSE 
 ! Put most of the labels on , except for the title, depth, and yaxis label.
 
-set view rt_`ks`
-plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/color=white/set $1, $2
-   go unlabel 6
-   ppl yaxis $3 $4 `($4-$3)/4`
-   ppl axlabp ,1
-   ppl ylab " "
-ppl plot
-
 set view lf_`ks`
 ppl tics,0,0,0,0
 ppl axlsze,0,0
-plot/SET_UP/noy/axes=0,0,1,0/vlimits=$3:$4/nolab/k=`ks` $1, $2
-   PPL PLOTUV 0 1
+plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0
+   PPL PLOT
 let zlab = zz[k=`ks`]
 label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"
 ppl tics,.125,.25,.125,.25
@@ -144,20 +141,29 @@ ppl axlint,2,2
 ppl axlsze,0.1,0.1
 ppl axatic 5,5
 
-repeat/range=`ks+1`:`ke`/name=m (set view rt_`m`; \
-   plot/noy/k=`m`/axes=0,0,0,1/vlimits=$3:$4/nolab/color=white/set $1, $2; \
-     ppl yaxis $3 $4 `($4-$3)/4` ; ppl axlabp ,1; ppl plot; \
-   set view lf_`m`; \
+set view rt_`ks`
+plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/set $1, $2
+   go unlabel 6
+   ppl yaxis $3 $4 `($4-$3)/4`
+   ppl axlabp ,1
+   ppl ylab " "
+PPL PLOTUV 0 1
+
+repeat/range=`ks+1`:`ke`/name=m (  set view lf_`m`; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; \
-     plot/SET_UP/noy/axes=0,0,1,0/vlimits=$3:$4/nolab/k=`ks` $1, $2; \
-     PPL PLOTUV 0 1; \
+     plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0; \
+     PPL PLOT; \
    let zlab = zz[k=`m`]; \
    label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
    ppl tics,.125,.25,.125,.25; \ 
    ppl axlint,2,2; \
    ppl axlsze,0.1,0.1; \
-   ppl axatic 5,5 \
-   )
+   ppl axatic 5,5;\
+   ; \
+   set view rt_`m`; \
+   plot/noy/k=`m`/axes=0,0,0,1/vlimits=$3:$4/nolab/set $1, $2; \
+     ppl yaxis $3 $4 `($4-$3)/4` ; ppl axlabp ,1; PPL PLOTUV 0 1) 
+
 
 ENDIF
 

@@ -89,7 +89,7 @@ plot/noy/k=1/axes=0,0,0,1/title=" "/set $1
 
 
 repeat/range=`ks+1`:`ke`/name=m (set view lf_`m`; \
-   plot/noy/k=`m`/axes=0,0,1,0/nolab/color=white/set $1; \
+   plot/noy/k=`m`/axes=0,0,1,0/nolab/color=white/set 0*$1; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; ppl plot; \
    let zlab = zz[k=`m`]; \
    label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
@@ -109,7 +109,7 @@ ELSE
 ! Put most of the labels on , except for the title and the depth
 
 set view lf_`ks`
-plot/noy/k=1/axes=0,0,1,0/nolab/color=white/set $1 
+plot/noy/k=1/axes=0,0,1,0/nolab/color=white/set 0*$1 
   ppl tics,0,0,0,0 
   ppl axlsze,0,0
 ppl plot 
@@ -129,7 +129,7 @@ ppl plot
 
 
 repeat/range=`ks+1`:`ke`/name=m (set view lf_`m`; \
-   plot/noy/k=`m`/axes=0,0,1,0/nolab/set $1; \
+   plot/noy/k=`m`/axes=0,0,1,0/nolab/set 0*$1; \
    ppl tics,0,0,0,0; ppl axlsze,0,0; ppl plot; \
    let zlab = zz[k=`m`]; \
    label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \

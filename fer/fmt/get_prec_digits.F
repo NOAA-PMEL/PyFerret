@@ -44,6 +44,8 @@
 *
 * revision 0.0 - 8/18/87
 * revision 0.1 - 7/21/88  - eliminated LOG(0) error in big_10 calculation
+* V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges
+*                  Note this changes some LIST output by removing a space.
 
 * calling argument declarations:
 	INTEGER		places, right
@@ -62,6 +64,13 @@
 	   right = 0
 	ELSE
 	   right = 1 - INT( LOG10(small_val) )
+
+* Change the rounding; if small_val is exactly a power of 10, 
+* computtation just abvoe is incorrect. Say if small_val is 0.01, 
+* then the computation of right says that 3 digits to the right 
+* needed; should be 2.
+           IF (INT( LOG10(small_val) ) .EQ. LOG10(small_val) )
+     .        right = right - 1
 	ENDIF
 
 * integer places to represent the largest label

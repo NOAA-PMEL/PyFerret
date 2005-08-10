@@ -1,0 +1,15 @@
+! err581_hlim_axislab.jn
+! bug 1129
+! When longitude range is small (<0.15 deg) using /HLIMITS 
+! axis labels do not have longitude labelling
+
+def axis/x=-180:360:180/units=degrees xfull
+def axis/y=90s:90n:90/units=degrees yfull
+fill/hlim=312.23:312.380/vlim=37.03:40.91 0*x[gx=xfull] * y[gy=yfull]
+
+!  Previously, list xaxis showed LABEL FORMAT is auto, not LONE
+ppl list xaxis 
+
+! But /HLIM=312.23:312.3801/... works.
+fill/hlim=312.23:312.3801/vlim=37.03:40.91 0*x[gx=xfull] * y[gy=yfull]
+ppl list xaxis 

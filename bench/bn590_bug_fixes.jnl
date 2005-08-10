@@ -1,0 +1,20 @@
+! bn590_bug_fixes.jnl
+! test various fixes that went into version 5.90
+! 8/05 *acm*
+!
+
+! Bug 1129 axis formatting when /HLIM sets axis length < 0.15 deg
+GO bn_reset
+GO err581_hlim_axislab.jnl
+
+! Bug 1275 stray characters appear in data lines listing string data
+GO bn_reset
+GO err581_list_stray_chars.jnl
+
+! pattern matching for SHO FUNC failed to match all EF's 
+GO bn_reset
+GO err581_sho_func_pattern_match.jnl
+
+! FILL on data with subspan modulo axis, got wrong data
+GO bn_reset
+GO err581_subspanx_fill_bug.jnl

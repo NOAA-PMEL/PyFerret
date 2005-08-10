@@ -1,0 +1,14 @@
+! err581_list_stray_chars.jnl
+! 8/2005 (acm) bug 1275  stray characters in data listing 
+!   (they are leftovers from the buffer containing the header line, was not reinitialized)
+!   Also fix the header line so characters are chopped off less.
+
+let id = {1, 2, 3, 4}
+let country = {"US", "US", "XX", "CN"}
+let type = {"MOORED BUOY", "MOORED BUOY", "MOORED BUOY", "MOORED BUOY"}
+
+list/i=1:5 id, type, country
+
+list/i=1:5 id, country, type
+
+

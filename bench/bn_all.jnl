@@ -456,6 +456,16 @@ GO bn_shade_keycont.jnl
 GO bn_reset
 GO bn581_bug_fixes.jnl
 
+! ******** V5.90 Additions below ***********
+GO bn_reset
+GO bn_tab_comma_multivar.jnl
+
+GO bn_reset
+GO bn_element_functions.jnl
+
+GO bn_reset
+GO bn590_bug_fixes.jnl
+
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
 

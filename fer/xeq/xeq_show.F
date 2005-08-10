@@ -144,6 +144,9 @@
 * V580: *acm* 10/04 - add xml tags <datasets>  </datasets>, dataset name and title
 *                     <axes>  </axes> for SHOW AXIS/XML
 * V580: *acm* 10/04 - Add xml output for global and dataset variables. SHOW_1_UVAR_XML
+* V590: *acm*  7/05 Fix bug 1186: SHOW FUNC with * properly matches patterns for
+*                   external functions as well as internally linked functions.
+*                   call MATCH_TEMPLATE for all comparisons.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -238,7 +241,7 @@
 	CHARACTER EXPR_NAME*8, TM_FMT*10,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
 	CHARACTER	filename*2048,raw_name*2048,
-     .			fformatted*12
+     .			fformatted*12, efname*40, upname*40
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
 
@@ -1463,10 +1466,20 @@
      .                efcn_scan(gfcn_num_internal)
 	            IF ( interrupted ) CALL ERRMSG
      .			   ( ferr_interrupt, status, ' ', *5000 )
-                 CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
-                 IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
+
+                 CALL EFCN_GET_NAME (i2, fhol)
+                 CALL TM_CTOF_STRNG( fhol, efname, slen )
+                 i1 = STR_UPCASE(upname, efname)
+
+                 IF ( MATCH_TEMPLATE(upname,arg(:len0) )) CALL
      .               SHOW_1_FUNCTION(ttout_lun, .TRUE.,
      .                               sbrief, sdetail, i2)
+
+c                 CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
+c                 IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
+c     .               SHOW_1_FUNCTION(ttout_lun, .TRUE.,
+c     .                               sbrief, sdetail, i2)
+
  2108            CONTINUE  
               ENDIF
  2110      CONTINUE

@@ -157,6 +157,7 @@
 * V581:  2/05 *acm* - SHADE/MODULO for curvilinear plots
 * V581:  4/05 *acm* - CONTOUR/MODULO for curvilinear plots
 * V581:  5/05 *acm* - add EXIT/CYCLE
+* V590:  8/05 *acm* - add LIST/NOROWLAB
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -779,7 +780,7 @@
 		DATA qualifiers  (nqual_at5a+29)/ 'WIDTH'/
 		DATA qualifiers  (nqual_at5a+30)/ 'EDGES'/
 		DATA qualifiers  (nqual_at5a+31)/ 'BOUNDS'/
-		DATA qualifiers  (nqual_at5a+32)/ '****'/
+		DATA qualifiers  (nqual_at5a+32)/ 'NOROWLAB'/
 		DATA qualifiers  (nqual_at5a+33)/ '****'/
 
 * PLOT - command # 6

@@ -84,6 +84,8 @@
 *                   axes, then a change needs to be made in translate_to_world.
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V590: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
+*                    start each row labelling the coordinate values. (bug 1273)
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -120,7 +122,7 @@
      .			line_too_long, del_col_changed, all_bad,
      .			valid(4), need_doc(4), span(4), do_unform,
      .			do_stream, do_comma_del, do_tab_del, itsa_string,
-     .			fortran_selfdoc, do_auto_fmt, do_dods
+     .			fortran_selfdoc, do_auto_fmt, do_dods, norow
 	INTEGER		TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .			FIELD_WIDTH, MGRID_SIZE,
      .			GET_MAX_C_STRING_LEN, TM_GET_CALENDAR_ID,
@@ -155,8 +157,9 @@
      .			(del1,del(1)),(del2,del(2)),(del3,del(3)),(del4,del(4))
 
 * local parameter declarations
-	INTEGER		slash_precision
-	PARAMETER     (	slash_precision = 17+1 )
+	INTEGER		slash_precision, slash_norow
+	PARAMETER     (	slash_precision = 17+1,
+     .                  slash_norow   = 32+1 )
 
 * initialize
 	status		= ferr_ok
@@ -173,9 +176,10 @@
         do_auto_fmt     = list_fmt_type .EQ. plist_default
 	fortran_selfdoc = head_enh .AND. list_format_given
 	itsa_string     = mr_type(mr) .EQ. ptype_string
+        norow = qual_given(slash_norow) .GT. 0
 
 * determine precision for outputting values
-	lp = qual_given( slash_precision )
+	lp = qual_given( slash_precision ) 
 	IF ( lp .GT. 0 ) THEN
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
      .                     value, status )
@@ -631,6 +635,8 @@
 	   cleft = 7
 	   line_buff(:cleft) = ' '		! just 1 value to write
 	ENDIF
+        IF (norow) cleft = 0
+
 	usable_line_len = line_length - cleft
 	max_fields = usable_line_len / min_field_width
 * ... column labelling - how many decimal places for coordinate label ?
@@ -770,7 +776,8 @@
 
 	      DO 510 j = lo2, hi2, del2
 *       create carefully sized label for this row
-	         IF ( ndim .GE. 2 .AND. valid(2) ) THEN
+	         IF ( ndim .GE. 2 .AND. valid(2) .AND. 
+     .               (.NOT.norow) ) THEN
 	            CALL TRANSLATE_TO_WORLD
      .		      ( TM_WORLD( j, grid, col_ax, box_middle ),
      .			col_ax, grid, col_dec, line_buff(:row_wld) )

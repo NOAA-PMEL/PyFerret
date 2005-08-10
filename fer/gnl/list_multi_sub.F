@@ -63,6 +63,13 @@
 * V530  8/00 - added support for string variables
 * V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
 * V581: *acm*/3/05 - increase length of strings for datset title to 1024
+* V590: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
+*                    multiple variables like free-format listings, rather than 
+*                    like LIST/SINGLY. (bug 1273)
+* V590: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
+*                    start each row labelling the coordinate values. (bug 1273)
+* V590: *acm* 8/05 - fix bug 1313; reinitialize list_buffer after heading of 
+*                    variable names on columns, before listing data
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -83,6 +90,9 @@
 	INTEGER		line_length
 	PARAMETER     ( line_length  = 500,
      .			no_decims = .FALSE. )
+	INTEGER		slash_precision, slash_norow
+	PARAMETER     (	slash_precision = 17+1,
+     .                  slash_norow   = 32+1 )
 
 * calling argument declarations:
 	LOGICAL	heading
@@ -98,25 +108,26 @@
 *                  to 128 and VAR_UNITS to 64
 * V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
 * local variable declarations:
-	LOGICAL		all_bad, do_unform,ss_save
+	LOGICAL		all_bad, do_unform, ss_save, do_tab_del,
+     .                  do_comma_del, norow
 	INTEGER		TM_LENSTR1, CGRID_AXIS, GET_MAX_STRING_LEN,
      .			GET_OFFSET_C_STRING_LEN, 
      .			w0, w, data_len, nleft, nright, alen,
      .			lo(4), hi(4), del(4), pt(4), valid_ax(4),
      .			idim, vlen, cleft, col_ax, col_dec,
-     .			cx, slen1, slen2, slen3, i,
+     .			cx, slen1, slen2, slen3, i, 
      .			ivar, point, word, block, iwd, iblk, dset, ax, new_ax,
-     .			min_width, row_ww_wid
+     .			min_width, row_ww_wid, lp, prec_digits, ww
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
-     .			CX_DIM_STR*16, VAR_CODE*128,
+     .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*16,
      .			buff1*16, buff2*16, buff3*16, line_buff*1024,
      .			row_ss_fmt*14, bad_ax*5,
      .			col_head_format*32, sep*1
-	REAL		big, small, biggest
+	REAL		big, small, biggest, value
 	REAL*8		TM_WORLD
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
-     .			vcode(max_intrp)*128
+     .			vcode(max_intrp)*128, tab_or_comma*1
 #ifdef DEC_FORTRAN
 	INTEGER		ios
 #endif
@@ -133,6 +144,31 @@
 	status		= ferr_ok
         do_unform       = list_fmt_type .EQ. plist_unformatted
 	risc_buff = ' '
+
+        do_tab_del   = list_fmt_type .EQ. plist_tab_del
+        do_comma_del = list_fmt_type .EQ. plist_comma_del
+
+        norow = qual_given(slash_norow) .GT. 0
+
+        IF ( do_comma_del .OR. do_tab_del ) THEN
+* ... column headings for tab and comma-delimited output (9/95)
+	   IF ( do_comma_del ) THEN
+	      tab_or_comma = ','
+	   ELSEIF( do_tab_del ) THEN
+	      tab_or_comma = CHAR(9)
+           ENDIF
+              
+* determine precision for outputting values
+           lp = qual_given( slash_precision ) 
+	   IF ( lp .GT. 0 ) THEN
+	      CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .                     value, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+	      prec_digits = MAX(1.,MIN(value, 16.))	! 1 to 16	   
+	   ELSE
+	      prec_digits = list_digits
+	   ENDIF
+	ENDIF
 
 * determine list limits checking for conformable shapes of data to list
 * ... for each axis each var must be same size or length 1
@@ -367,6 +403,7 @@
 	CALL ROW_COORD_FMT( col_ax, cx, lo(1), hi(1), 1,
      .			    row_ss_fmt, col_dec, row_ww_wid, cleft )
 	data_len = 0
+        IF (norow) cleft = 0
 
 * ... column labelling - variable codes for headings - FORTRAN formats for data
 	DO 400 ivar = 1, num_uvars_in_cmnd
@@ -413,15 +450,60 @@
 	
 * . . . write a heading line of variable codes
 	IF ( heading ) THEN
-	   line_buff = ' '
-	   w0 = cleft
-	   DO 420 ivar = 1, num_uvars_in_cmnd
-	      slen1 = MIN( 8, TM_LENSTR1( vcode(ivar) ) )
-	      w0 = w0 + width(ivar)
-	      line_buff(w0-slen1:w0-1) = vcode(ivar)(:slen1)
- 420	   CONTINUE
+           line_buff = ' '
+
+           IF (do_comma_del .OR. do_tab_del) THEN
+
+	      w0 = cleft
+              IF (w0 .LE. 0) w0 = 1
+	      slen1 = MIN( w0, TM_LENSTR1( vcode(1) ) )
+              IF (norow) slen1 = TM_LENSTR1( vcode(1) )
+
+              line_buff(w0:w0+slen1) = vcode(1)(:slen1)
+              IF (num_uvars_in_cmnd .GT. 1) 
+     .              line_buff(w0+slen1:w0+slen1) = tab_or_comma
+              w0 = w0 + slen1 + 1
+
+              DO 420 ivar = 2, num_uvars_in_cmnd
+
+                 slen1 = TM_LENSTR1(vcode(ivar))
+                 line_buff(w0:w0+slen1) = vcode(ivar)(:slen1)
+
+                 IF (ivar .LT. num_uvars_in_cmnd)
+     .              line_buff(w0+slen1:w0+slen1) = tab_or_comma
+                 w0 = w0 + slen1 + 1
+ 420	      CONTINUE
+
+           ELSE
+* ... Not tab or comma delimited: use width of each field
+ 
+	      w0 = cleft
+	      slen1 = MIN( w0, TM_LENSTR1( vcode(1) ) )
+	      w0 = w0 + width(1)
+	      line_buff(w0-slen1:w0-1) = vcode(1)(:slen1)
+              w0 = w0 + 1
+              IF (num_uvars_in_cmnd .GT. 1) line_buff(w0:w0) = ' '
+
+	      DO 421 ivar = 2, num_uvars_in_cmnd
+                 line_buff(w0:w0) = ' '
+
+                 slen2 = 0
+                 IF ( TM_LENSTR1(vcode(ivar)) .LT. width(ivar) ) 
+     .               slen2 = (width(ivar) - TM_LENSTR1(vcode(ivar)))/2
+                 line_buff(w0+1+slen2:w0+width(ivar)) = vcode(ivar)
+
+                 IF (ivar .EQ. num_uvars_in_cmnd)
+     .              line_buff(w0+1+slen2:) = vcode(ivar)
+                 w0 = w0 + width(ivar)
+ 421	      CONTINUE
+
+           ENDIF
+
+
+           w0 = TM_LENSTR1(line_buff) 
 	   CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff(1:w0), w0)
 	ENDIF
+        line_buff = ' '
 
 * * * * *  WRITE FORMATTED DATA LINES * * * * *
 * each line has format: "coord/sub: data1 data2 data3 ..."
@@ -429,6 +511,9 @@
 * for a 2D field each block is separated by an identifier of the 3rd axis
 * for a 3D field each block of blocks is further separated and identified
 * etc. for a 4D field
+
+* If the /NOROWLAB qualifier was given, do not do the "coord/sub:" on each data line
+
 	point = -1                    ! bug fix 4/93
 	DO 600 i4 = lo4, hi4, del4
 * label the block of block of blocks (4th dimension)
@@ -457,25 +542,28 @@
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
 	DO 600 i1 = lo1, hi1, del1
-
+           line_buff = ' '
 	   IF ( interrupted ) RETURN
 
 *  create carefully sized label for this row
 	   cx = valid_ax(1)
-	   IF ( cx .GT. 0 ) THEN
-	      CALL TRANSLATE_TO_WORLD( 
+
+           IF (.NOT. norow) THEN
+	      IF ( cx .GT. 0 ) THEN
+	         CALL TRANSLATE_TO_WORLD( 
      .			TM_WORLD( i1, cx_grid(cx), perm(1), box_middle ),
      .			perm(1), cx_grid(cx), col_dec, line_buff(:row_ww_wid) )
-	      WRITE ( line_buff(row_ww_wid+1:cleft), row_ss_fmt ) i1
-	   ELSE
-	      line_buff(1:1) = ss_dim_name(perm(1))
-	      IF ( i1 .NE. unspecified_int4 ) THEN
-	         WRITE ( line_buff(2:cleft), row_ss_fmt ) i1	! e.g. "I / 15:"
+	         WRITE ( line_buff(row_ww_wid+1:cleft), row_ss_fmt ) i1
 	      ELSE
-	         line_buff(2:) = ' / *:'			! e.g. "I / *:"
-	      ENDIF 
-	   ENDIF
-	   w0 = cleft
+	         line_buff(1:1) = ss_dim_name(perm(1))
+	         IF ( i1 .NE. unspecified_int4 ) THEN
+	            WRITE ( line_buff(2:cleft), row_ss_fmt ) i1	! e.g. "I / 15:"
+	         ELSE
+	            line_buff(2:) = ' / *:'			! e.g. "I / *:"
+	         ENDIF 
+	      ENDIF
+           ENDIF
+           w0 = cleft
 
 * default memory pointer for full-region variables
 	   point = point + 1
@@ -483,33 +571,55 @@
 	   word  = point - block*mem_blk_size
 
 * loop through all variables for each record
+           ww = w0 + 1
 	   DO 550 ivar = 1, num_uvars_in_cmnd
 	      w = w0 + width(ivar) ! points to last column of field
 	      IF ( mr_type(mr_list(ivar)) .EQ. ptype_string ) THEN
 * ... string variable
-	         line_buff(w0+2:w0+2) = '"'
-	         line_buff(w0+3:w) = ' '
 	         IF ( xact_range(ivar) ) THEN
 	            iwd = point
-	         ELSE	
+                 ELSE	
 	            iwd = 0
 	            IF ( has_size(4,ivar) ) iwd = (pt(4)-lo(4))
 	            DO 530 i = 3, 1, -1
-	              iwd = iwd*size(i,ivar)
-	              IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
+                       iwd = iwd*size(i,ivar)
+                       IF ( has_size(i,ivar) ) iwd = iwd + (pt(i)-lo(i))
  530	            CONTINUE
 	         ENDIF
-	         slen1 = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr_list(ivar)),
+
+                 IF (do_comma_del .OR. do_tab_del) THEN
+* ... tab or comma formatting
+                    line_buff(ww:ww) = '"'
+	            slen1 = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr_list(ivar)),
      .					 iwd )
-	         CALL GET_OFFSET_C_STRING(mr_c_pointer(mr_list(ivar)),
+	            CALL GET_OFFSET_C_STRING(mr_c_pointer(mr_list(ivar)),
+     .				   iwd,
+     .				   line_buff(ww+1:),
+     .				   slen1    )
+                    line_buff(ww+slen1+1:ww+slen1+1) = '"'
+
+                    IF (ivar .LT. num_uvars_in_cmnd) 
+     .                 line_buff(ww+slen1+2:ww+slen1+2) = tab_or_comma
+                    ww = ww + slen1 + 3
+                    w = ww               
+                 ELSE
+* ... not tab or comma formatting
+
+	            line_buff(w0+2:w0+2) = '"'
+	            line_buff(w0+3:w) = ' '
+	            slen1 = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr_list(ivar)),
+     .		  			 iwd )
+	            CALL GET_OFFSET_C_STRING(mr_c_pointer(mr_list(ivar)),
      .				   iwd,
      .				   line_buff(w0+3:),
      .				   width(ivar)-2     )
-	         IF (slen1 .GT. width(ivar)-2) THEN
-	            line_buff(w-3:w) = '..."'
-	         ELSE
-	            line_buff(w0+slen1+3:w0+slen1+3) = '"'
-	         ENDIF
+
+	            IF (slen1 .GT. width(ivar)-2) THEN
+	               line_buff(w-3:w) = '..."'
+	            ELSE
+	               line_buff(w0+slen1+3:w0+slen1+3) = '"'
+	            ENDIF
+                 ENDIF  ! tab-or-comma
 	      ELSE
 * ... numerical variable
 * ... optimized calculation for full-region variables
@@ -531,7 +641,17 @@
 	        IF ( out(ivar) .EQ. bad(ivar) ) THEN
 	           WRITE(line_buff(w0+1:w),bad_fmt(ivar)) '....'
 	        ELSE
-	           WRITE(line_buff(w0+1:w),good_fmt(ivar)) out(ivar)
+                   IF (do_comma_del .OR. do_tab_del) THEN
+* ... tab or comma formatting
+                       line_buff = line_buff(:ww-1)//
+     .	                   TM_FMT(out(ivar),prec_digits,16,vlen)
+                       IF (ivar .LT. num_uvars_in_cmnd) 
+     .                   line_buff(ww+vlen:ww+vlen) = tab_or_COMMA
+     	               ww = ww+vlen+1
+                       w = ww
+                    ELSE
+	              WRITE(line_buff(w0+1:w),good_fmt(ivar)) out(ivar)
+                    ENDIF
 	        ENDIF
 	      ENDIF
 	      w0 = w
@@ -539,6 +659,7 @@
  550	   CONTINUE
 
 * write the fully formatted line
+           IF (do_comma_del .OR. do_tab_del) w0 = ww
 	   CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff, w0)
  600	   CONTINUE
 

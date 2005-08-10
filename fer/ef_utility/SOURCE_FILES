@@ -14,6 +14,10 @@ ef_get_coordinates.F\
 ef_get_one_val_sub.F\
 ef_get_one_val_sub_sub.F\
 ef_get_res_subscripts.F\
+ef_get_string_arg_element.F\
+ef_get_string_arg_element_len.F\
+ef_get_string_arg_element_len_sub.F\
+ef_get_string_arg_element_sub.F\
 ef_set_arg_desc.F\
 ef_set_arg_name.F\
 ef_set_arg_unit.F\

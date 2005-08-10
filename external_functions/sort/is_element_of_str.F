@@ -1,5 +1,5 @@
 *
-* element_index_str.F
+* is_element_of_str.F
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -34,10 +34,11 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke
-* July 2005
+* August 2005
 *
-*  Return index value in LIST for each grids point in V, or a
-*  missing value wherever there is no match)
+*  For string arguments, 
+*  Return logical value (integer 1 or 0); If argument 1 takes on any of 
+*  the values of the second argument, return 1, else 0.
 
 *
 *
@@ -76,7 +77,7 @@
 *
 
 
-      SUBROUTINE element_index_str_init(id)
+      SUBROUTINE is_element_of_str_init(id)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
 
@@ -88,20 +89,21 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Return index value in ARG2 for each point in ARG1')
+   10 FORMAT ('Returns 1 if first argument contains any of the ',
+     .        'values in argument 2, else 0')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+      CALL ef_set_axis_inheritance(id, ABSTRACT, 
+     .     NORMAL, NORMAL, NORMAL)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
       CALL ef_set_arg_desc(id, arg, 'data to mask')
-      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
+      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
@@ -120,16 +122,57 @@
       END
 
 *
+* In this subroutine we provide information about the lo and hi
+* limits associated with each abstract or custom axis.   The user 
+* configurable information consists of the following:
+*
+* lo_ss               lo subscript for an axis
+*
+* hi_ss               hi subscript for an axis
+*
+
+      SUBROUTINE is_element_of_str_result_limits(id)
+
+      INCLUDE 'ferret_cmn/EF_Util.cmn'
+      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+
+      INTEGER id
+
+* **********************************************************************
+*                                           USER CONFIGURABLE PORTION |
+*                                                                     |
+*                                                                     V
+      INTEGER my_lo_l, my_hi_l
+
+*
+*     Use utility functions to get context information about the arguments.
+*     Set the abstract X axis.
+*
+
+      my_lo_l = 1
+      my_hi_l = 1
+      CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
+
+*                                                                     ^
+*                                                                     |
+*                                           USER CONFIGURABLE PORTION |
+* **********************************************************************
+
+      RETURN 
+      END
+
+
+*
 * In this subroutine we compute the result
 *
-      SUBROUTINE element_index_str_compute(id, arg_1, arg_2, result)
+      SUBROUTINE is_element_of_str_compute(id, arg_1, arg_2, result)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
-*  string args need to be twice the length.
+*   string args need to be twice the length.
 
       REAL arg_1(2,mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .     mem1lot:mem1hit)
@@ -154,10 +197,10 @@
 *                                                                     V
       INTEGER id, arg
       INTEGER i, j, k, l
+      INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
       INTEGER slen1, slen2
       CHARACTER text1*20, text2*20
-
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -165,23 +208,29 @@
 
 C  Check for strings matching arg2
 
-      DO 410 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-      DO 310 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 210 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 110 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      i = res_lo_ss(X_AXIS)
+      j = res_lo_ss(Y_AXIS)
+      k = res_lo_ss(Z_AXIS)
+      l = res_lo_ss(T_AXIS)
 
-         result(i,j,k,l) = bad_flag_result
-         
-         arg = 1
-         CALL ef_get_string_arg_element(id, arg, arg_1, 
-     .                                           i,j,k,l, text1)
-         CALL ef_get_string_arg_element_len(id, arg, arg_1, 
-     .                                           i,j,k,l, slen1)
+      result(i,j,k,l) = 0.
 
-         DO 400 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
-         DO 300 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
-         DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
-         DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
+      DO 400 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
+      DO 300 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
+      DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
+      DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
+
+         DO 410 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
+         DO 310 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
+         DO 210 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
+         DO 110 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
+
+            arg = 1
+            CALL ef_get_string_arg_element(id, arg, arg_1, 
+     .                                           i1,j1,k1,l1, text1)
+            CALL ef_get_string_arg_element_len(id, arg, arg_1, 
+     .                                           i1,j1,k1,l1, slen1)
+
 
             arg = 2
             CALL ef_get_string_arg_element(id, arg, arg_2, 
@@ -190,25 +239,24 @@ C  Check for strings matching arg2
      .                                           i2,j2,k2,l2, slen2)
 
             IF (slen1 .EQ. slen2) THEN
-              IF (text1(:slen1) .EQ. text2(:slen2)) THEN
-                 result(i,j,k,l) = i2
-                 GOTO 9000
-              ENDIF
+               IF (text1(:slen1) .EQ. text2(:slen2)) THEN
+                  result(i,j,k,l) = 1.
+                  GO TO 9000
+               ENDIF
             ENDIF
 
- 100     CONTINUE
- 200     CONTINUE
- 300     CONTINUE
- 400     CONTINUE
+ 110     CONTINUE
+ 210     CONTINUE
+ 310     CONTINUE
+ 410     CONTINUE
 
-9000     CONTINUE
+ 100  CONTINUE
+ 200  CONTINUE
+ 300  CONTINUE
+ 400  CONTINUE
+      
+9000  RETURN
 
- 110  CONTINUE
- 210  CONTINUE
- 310  CONTINUE
- 410  CONTINUE
- 
-      RETURN
       END
 *                                                                     ^
 *                                                                     |

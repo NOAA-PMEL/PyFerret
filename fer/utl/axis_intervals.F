@@ -62,6 +62,9 @@
 *              or it may miss an irregular part of the grid; the calculation
 *              should be correct and not hit the subspan-modulo void point,
 *              (how to test this???)
+* V590  7/05  Fix for bug 900: If the axis is subspan modulo, and if the 
+*              region we are using extends beyond the core range of the 
+*              axis, then we need to set it to irregular within this routine.
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -92,6 +95,19 @@
 	ELSE
 	   CALL MAKE_AXIS( grid, idim, lo_ss, hi_ss, axis(lo_ss) )
 	ENDIF
+        
+* If this is a sub-span modulo axis outside its core range, treat it as
+* irregular: will need to use regridding to get the data (possibly missing
+* values).
+
+        IF (hi_cx - lo_cx .GT. 2) THEN
+           IF (axis(lo_cx+1) - axis(lo_cx) .NE. 
+     .         axis(lo_cx+2) - axis(lo_cx+1) ) 
+     .             irregular = .TRUE.
+           IF (axis(hi_cx) - axis(hi_cx-1) .NE. 
+     .         axis(hi_cx-1) - axis(hi_cx-2) ) 
+     .             irregular = .TRUE.
+        ENDIF
 
 * single point?  Fake up some reasonable values.
         IF ( lo_ss .EQ. hi_ss ) THEN
@@ -110,11 +126,6 @@
 * ... and determine smallest grid interval
 	regrid = .FALSE.		! assume it's not needed
         d_regrid = axis( lo_cx + 1 ) - axis( lo_cx )
-
-* The above calculation of d_regrid is wrong if theres a subspan-modulo void point
-
-c        IF (lo_cx + 2 .LT. hi_cx) 
-c     .      d_regrid = axis( lo_cx + 2 ) - axis( lo_cx + 1)
 
         IF (irregular) THEN
 	   DO 200 i = lo_cx+1, hi_cx-1

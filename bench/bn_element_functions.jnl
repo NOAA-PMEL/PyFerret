@@ -1,0 +1,17 @@
+ ! NOAA/PMEL TMAP
+ ! FERRET v5.81  
+ ! Solaris 5.6 - 08/08/05
+ !  9-Aug-05 14:36     
+
+use coads_climatology
+let a = x[gx=sst]*y[gy=sst]*l[gt=sst]
+list/i=1:2/j=1:2/l=3 a
+list is_element_of (a, -6003)
+ list/i=1:2/j=1:2/l=3 element_index (a, {-6003})
+use string4d.nc
+list/j=1:2/k=1:2 axy
+list is_element_of_str (axy[k=1:2,j=1:2], "a10")
+list is_element_of_str (axy[k=1:2,j=1:2], "A10")
+list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
+list element_index_str (axy[k=1:2,j=1:2], {"a10", "a2", "d4", "c5"})
+

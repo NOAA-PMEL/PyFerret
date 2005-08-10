@@ -1,0 +1,19 @@
+! bn_tab_comma_multivar.jnl
+! 
+! Fixes for bug 1273
+! v5.90 8/9/2005 
+! LIST/FORM=tab and /FORM=comma with more than one variable
+! no longer behave as if /SINGLY was specified. New qualifier 
+! LIST/NOROWLAB removes coordinate labels from the rows listing data
+
+let country =  {"JP", "JP", "US"}
+let id = {1,2,3}
+let aa = 4000* id
+let bb = 1000000* id + 500
+let newcountry = {"w", "c", "e"}
+let the_data_var = {4,5,4}
+
+
+list/format=comma country, id, aa, bb, newcountry, the_data_var
+
+list/format=tab/norow country, id, aa, bb, newcountry, the_data_var

@@ -124,6 +124,9 @@
 * V554 *acm* 9/03  Add output in /DODS binary format for list/format=DODS, 
 *                  see the flag do_dods
 * V581 *acm* 3/05  Increase length of string buff so that title can be longer.
+* V590: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
+*                    multiple variables like free-format listings, rather than 
+*                    like LIST/SINGLY. (bug 1273)
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -159,7 +162,8 @@
 * local parameter declarations
 * *kob* 2/99 - add entries for quiet qualifier 
 	INTEGER		slash_file, slash_append, slash_permute, slash_format,
-     .			slash_seqntl, slash_rigid, slash_clobber, slash_quiet
+     .			slash_seqntl, slash_rigid, slash_clobber, 
+     .                  slash_quiet
 	PARAMETER     (	slash_seqntl  = 11+1,
      .			slash_file    = 12+1,
      .			slash_append  = 13+1,
@@ -290,8 +294,8 @@
 	do_multi     = qual_given(slash_seqntl) .EQ. 0
      .		 .AND. num_uvars_in_cmnd .GT. 1
      .		 .AND. .NOT.do_stream
-     .		 .AND. .NOT.do_tab_del
-     .		 .AND. .NOT.do_comma_del
+c     .		 .AND. .NOT.do_tab_del
+c     .		 .AND. .NOT.do_comma_del
 
 	all_at_once  = do_multi.OR.do_epic.OR.do_gt.OR.do_cdf
 

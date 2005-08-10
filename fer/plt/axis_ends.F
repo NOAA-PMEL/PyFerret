@@ -53,14 +53,12 @@
 *        *kob* 9/99 - fixed minor bug in which length of val_buff was one
 *                     character too short.  this only showed up under Linux
 *        *acm* 6/01 - add logical IS_LOG  for log axis
-#ifdef unix
+* V580 *acm* 12/04 Fix bug 1129; send back correct value of delta if computed here
+
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'errmsg.parm'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-#endif
+
 
 * kob 12/96
 	EXTERNAL RANGE
@@ -123,6 +121,7 @@
 * use Denbo's PPLUS routine to calculate the tic interval, dint
 	IF ( delta .EQ. unspecified_val8 ) THEN
 	   CALL RANGE( x1, x2, 10, uminr, umaxr, dint )
+           delta = dint
 	ELSE
 	   dint = delta
 	ENDIF

@@ -133,6 +133,8 @@
 * v5.52*acm*  6/03  Restore cellarray setup. uses its_gif flag so these are
 *                   only done in -gif mode
 * v5.53*acm*  6/03  send correct axis to AXIS_INTERVALS
+* V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges:
+*                  send delta to routine AXIS_FORMAT
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -438,11 +440,7 @@ C   set up memory for the flag grid
            plot_mem_used = plot_mem_used + nsiz
         ENDIF
 
-* For 3-argument curvilinear plots, see if we want to 
-* do modulo replications of the data.
 
-        IF (curvilinear) xmodulo = qual_given(slash_shad_mod) .GT. 0
-     .                        .OR. qual_given(slash_cont_mod) .GT. 0  
 
 * set up PLOT+ to ignore bad data flag
 	ppl_buff = ' '
@@ -524,7 +522,7 @@ C   set up memory for the flag grid
               GOTO 5700
            ENDIF
 
-	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi,
+	   CALL AXIS_FORMAT( 'X', dim1, grid, xaxlo, xaxhi, delta,
      .						curvilinear, cx_xpos,
      .						time_axis,xstyle,no_labels)
 	   IF ( pylim .GT. 0 ) THEN
@@ -582,7 +580,7 @@ C ACM added 8/2001 save cal id if vertical time axis
               last  = xaxhi
               GOTO 5700
            ENDIF 
-	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, 
+	   CALL AXIS_FORMAT( 'Y', dim2, grid, yaxlo, yaxhi, delta,
      .						curvilinear, cx_ypos,
      .						time_axis,ystyle,no_labels)
 

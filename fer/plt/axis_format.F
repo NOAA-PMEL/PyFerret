@@ -1,5 +1,5 @@
 	SUBROUTINE AXIS_FORMAT( x_or_y, idim, grid, lo_val, hi_val,
-     .				curvilinear, cx_curv,
+     .				del_val, curvilinear, cx_curv,
      .				its_calendar, tstyle, no_labels )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -68,6 +68,7 @@
 * V500: 6/99 *sh* - save time axis infor to be used by PLOT/VS overlays
 * V510 *sh* 3/00 - added no_labels argument so /NOLABELS avoided xlab & ylab
 * V533 *sh* 7/01 - avoid using risc_buff -- conflict with PUT_LABEL
+* V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -87,7 +88,7 @@
 	LOGICAL		its_calendar, curvilinear, no_labels
 	INTEGER		idim, grid, cx_curv
 	CHARACTER	x_or_y*1, tstyle*3
-	REAL*8		lo_val, hi_val
+	REAL*8		lo_val, hi_val, del_val
 
 * parameter definitions:
 	INTEGER		pyear_only
@@ -102,7 +103,9 @@
 	REAL		res_del, dt_min, time_unit
 	REAL*8		TSTEP_TO_SECS
 	INTEGER		n_res
-	PARAMETER 	(n_res = 15)
+
+* Compute n_res below instead...
+!	PARAMETER 	(n_res = 15)
 
 * initiailize
 	tstyle = ' '
@@ -112,11 +115,16 @@
 *     still display the largest axis labels
 *  res_del	- labels will be accurate enough to resolve this delta value
 
+* Compute n_res; round up (hi-lo)/(2*del_val)  We label half of the tic marks...
+
+        n_res = INT(0.5+ ABS(hi_val - lo_val) / (2.D0*del_val) ) 
 	res_del = ABS( hi_val - lo_val ) / n_res
 	CALL GET_PREC_DIGITS( hi_val, lo_val, res_del, places, ndec )
 
 * format to use
-	use_nice = places .LE. 6
+* Let smaller ranges be labeled with longitude (range 161.123 to 161.130)
+*	use_nice = places .LE. 6
+	use_nice = places .LE. 7
 	IF ( use_nice ) THEN
 	   IF ( ndec .EQ. 0 ) THEN
 	      fmt = 'I7'

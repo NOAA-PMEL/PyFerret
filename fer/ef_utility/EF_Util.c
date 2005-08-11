@@ -59,7 +59,6 @@ void ef_set_axis_reduction_( int *, int *, int *, int *, int * );
 void ef_set_axis_extend_( int *, int *, int *, int *, int * );
 
 void ef_set_arg_type_( int *, int *, int *);
-void ef_set_return_type_( int *, int *);
 
 void ef_get_bad_flags_(int *, float *, float *);
 void ef_get_one_val_(int *, int *, float *);
@@ -348,17 +347,6 @@ void ef_set_arg_type_(int *id_ptr, int *arg, int *arg_type)
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   ef_ptr->internals_ptr->arg_type[*arg-1] = *arg_type;
-
-  return;
-}
-
-void ef_set_return_type_(int *id_ptr, int *return_type)
-{
-  ExternalFunction *ef_ptr=NULL;
-
-  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
-
-  ef_ptr->internals_ptr->return_type = *return_type;
 
   return;
 }

@@ -80,7 +80,6 @@ typedef struct {
   int  axis_will_be[4];
   int  axis_reduction[4];
   int  piecemeal_ok[4];
-  int  return_type;
   Axis axis[4];
 
   /* Information specific to each argument of the function */

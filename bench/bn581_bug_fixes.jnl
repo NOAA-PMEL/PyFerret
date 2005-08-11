@@ -72,7 +72,7 @@ GO err580_show_axis_t.jnl
 
 ! Fix for bug 1279 which was only in the first iteration of v5.81 release
 GO bn_reset
-GO err580_nlev.jnl
+GO err581_nlev.jnl
 
 
 ! Fix for bug 1270: regridding leakage between cells: monthly-> seasonal regridding

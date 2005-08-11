@@ -1,12 +1,12 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     54660370 Jul 13 13:41 /home/stout/ansley/FERRET/fer/ferretdods_gui
-Using external functions from /home/ja9/tmap/ferret/linux/ext_func/libs
+Running FERRET version /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     59909533 Aug 11 09:43 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/stout/ansley/linux/FERRET/ef_objs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes to initial v5.81 executable: scat2gridgauss return to 9 args; 250K length of coord storage; MC file read  bug; FILL/LEV=n bug
+Note: after checkins; fixes for bugs 900, 1129, 1186, 1273, 1275 ; new functions is_element_of_str, element_of*
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/FERRET/bench
+PWD=/home/stout/ansley/linux/FERRET/bench
 GRIB_ENV=/home/ja8/ansley/FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/ja9/tmap/ferret_link/linux
 FER_DIR=.
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/linux/ext_func/libs
-Beginning at Wed Jul 13 13:47:36 PDT 2005
+FER_EXTERNAL_FUNCTIONS=/home/stout/ansley/linux/FERRET/ef_objs
+Beginning at Thu Aug 11 10:17:03 PDT 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -599,4 +599,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Jul 13 13:49:30 PDT 2005
+Ended at Thu Aug 11 10:18:58 PDT 2005

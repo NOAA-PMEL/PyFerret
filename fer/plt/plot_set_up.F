@@ -120,6 +120,8 @@
 * V580 *acm*11/04  Allow thickness to be set when cycling through colors automatically.
 *                  In call to line_style, when color = -11  then thin line, color=-21 
 *                  then thick=2, when color=-31 then thick=3
+* V580 *acm*11/04  For /VS plots turn on lon/lat axis formatting, if lon/lat units
+*                  (as in polygon_set_up).
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges:
 *                  send delta to routine AXIS_FORMAT
 
@@ -174,6 +176,7 @@
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
+        INTEGER         TM_UNIT_ID, cx_x , cx_y, iunits	 
 	REAL		only_val, val1, dt_min, lo, hi, dep_len, 
      .			ind_len, xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, first, last
@@ -358,8 +361,27 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  last  = ind_max
                  GOTO 5170
               ENDIF
-* ... turn off axis formatting for /VS plots
-	      CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
+ * for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
+       	 
+               cx_x = cx_list(1)	 
+               cx_y = cx_list(2) 	 
+               IF (.NOT.overlay) THEN	 
+                  iunits = TM_UNIT_ID(VAR_UNITS(cx_x))	 
+                  IF (iunits .EQ. 4) THEN	 
+                     CALL PPLCMD ( from, line, 0, 'XFOR (I7,''''LONE'''')', 1, 1 )	 
+                  else	 
+                     CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
+                  endif	 
+            	 
+                  iunits = TM_UNIT_ID(VAR_UNITS(cx_y))	 
+                  IF (iunits .EQ. 4) THEN	 
+                     CALL PPLCMD ( from, line, 0, 'YFOR (I7,''''LAT'''')', 1, 1 )	 
+                  else	 
+                     CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
+                  endif	 
+               ELSE
+	          CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
+               ENDIF
 	   ENDIF
 	ELSE	! (not VERSUS)
 	   var1 = 1

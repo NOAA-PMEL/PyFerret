@@ -1,4 +1,3 @@
-
         SUBROUTINE LIST_CMND_DATA( grid_data, mr, cx,
      .                             ax_buff, heading, head_enh, recsofar,
      .                             perm, clobber, dods_file, status )

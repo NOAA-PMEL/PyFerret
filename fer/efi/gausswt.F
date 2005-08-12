@@ -1,4 +1,3 @@
-
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -69,7 +68,7 @@ c  i	xsc,ysc,tsc=mapping scales (data units)
 c  i	iwflag=1 for time wrapping; 0 for no wrapping
 c--------------------------------------------------------------------------
 
-	subroutine gausswt (xx,yy,tt,val,grid,wate,nx,nz,nm,x1,y1,t1,
+	subroutine gausswt2 (xx,yy,tt,val,grid,wate,nx,nz,nm,x1,y1,t1,
      .             xf,yf,tf,xsc,ysc,tsc,cutoff,iwflag,nax,nay)
 
 C ACM 6/2000 Version of gausswt with two cutoff parameters.  
@@ -94,7 +93,6 @@ C ACM 6/2000 Version of gausswt with two cutoff parameters.
 	ttg=(tt-t1)/dt+1.
 
 c	cutoff=2.			  ! cutoff limits search (min wt=e**-4)
-c	tcutoff=2.			  ! cutoff limits search (min wt=e**-4)
 	xcut=cutoff*xsc/dx		  ! cutoffs scaled to grid units
 	ycut=cutoff*ysc/dy		  ! look only cutoff* the scale width
 	tcut=cutoff*tsc/dt		  !   from the gridbox center

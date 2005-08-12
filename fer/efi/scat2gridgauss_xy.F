@@ -9,27 +9,27 @@
 *
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
-*  right, without any fee or cost, to use, copy, modify, alter, enhance
-*  and distribute this software, and any derivative works thereof, and
-*  its supporting documentation for any purpose whatsoever, provided
+*  right, without anx fee or cost, to use, copy, modify, alter, enhance
+*  and distribute this software, and anx derivative works thereof, and
+*  its supporting documentation for anx purpose whatsoever, provided
 *  that this entire notice appears in all copies of the software,
 *  derivative works and supporting documentation.  Further, the user
-*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
-*  the use of this software or in any product that includes this
+*  agrees to credit NOAA/PMEL/TMAP in anx publications that result from
+*  the use of this software or in anx product that includes this
 *  software. The names TMAP, NOAA and/or PMEL, however, may not be used
-*  in any advertising or publicity to endorse or promote any products
+*  in anx advertising or publicity to endorse or promote anx products
 *  or commercial entity unless specific written permission is obtained
 *  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
-*  is not obligated to provide the user with any support, consulting,
-*  training or assistance of any kind with regard to the use, operation
-*  and performance of this software nor to provide the user with any
+*  is not obligated to provide the user with anx support, consulting,
+*  training or assistance of anx kind with regard to the use, operation
+*  and performance of this software nor to provide the user with anx
 *  updates, revisions, new versions or "bug fixes".
 *
 *  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND Anx EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 *  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR Anx SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  INDIRECT OR CONSEQUENTIAL DAMAGES OR Anx DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
@@ -38,7 +38,7 @@
 * July 28 1998
 *  revised 2/00 to use work arrays
 * June 2000 ACM pass 4 gridding arguments:  y and z radius of influence,
-*               and y and z cutoffs. 
+*               and cutoff. 
 *
 * Nov 13, 2000 1) Allow modulo axes: if modulo take points from other end 
 *                 to use in gridding each end
@@ -48,22 +48,17 @@
 *                 points as modulo too.
 *
 *   12/7/2000  Add error checking on gridding parameters
-*              X and Y scattered points are 1-D lists on any axis.
+*              X and Y scattered points are 1-D lists on anx axis.
 *
 *    5/2001    Let F(x,y) be a function of Z and/or T
 * v5.41 5/02   Fix bug (typo); Gridding to modulo X axis wasnt done.
 
 *  11/12/2002  Remove option 2) above: the spatial location of the scattered points
 *              is a 1-D list.
-*   2/ 9/2005  When we fixed the argument limit machinery this fcn
-*              breaks if the output axes are limited by some context.
-*              use ef_set_axis_extend to force the regridding to be
-*              done on the unrestricted output grid.
-
 
 * Returns variable interpolated onto an equally-spaced X-Y grid.  
 * Input is scattered triples: (x, y, f(x,y)); f may be function of time, z 
-* Output is gridded data in x, y and time.  Calls routine "gausswt".
+* Output is gridded data in x, y and time.  Calls routine "gausswt2".
 *
 
 *
@@ -102,7 +97,7 @@
 *
 
 
-      SUBROUTINE scat2gridgauss_xy_init(id)
+      SUBROUTINE  scat2gridgauss_xy_init(id)
 
       INCLUDE 'EF_Util.cmn'
 
@@ -153,16 +148,12 @@
       CALL ef_set_arg_desc(id, arg, 
      .                   'X axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, YES, NO, NO, NO)
-      CALL ef_set_axis_extend (id, arg, X_AXIS, ef_unspecified_int4,
-     .                         ef_unspecified_int4)
 
       arg = 5
       CALL ef_set_arg_name(id, arg, 'YAXPTS')
       CALL ef_set_arg_desc(id, arg, 
      .                   'Y axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, YES, NO, NO)
-      CALL ef_set_axis_extend (id, arg, Y_AXIS, ef_unspecified_int4, 
-     .                         ef_unspecified_int4)
 
       arg = 6
       CALL ef_set_arg_name(id, arg, 'XSCALE')
@@ -242,14 +233,12 @@
       CALL ef_set_work_array_dims (id, 2, 1, 1, 1, 1, ny2, 1, 1, 1)
 
 * grid  work array - gridded data. 
-      CALL ef_set_work_array_dims (id, 3, 
-     .     arg_lo_ss(X_AXIS,ARG4), arg_lo_ss(Y_AXIS,ARG5), 1, 1, 
-     .     arg_hi_ss(X_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG5), 1, 1)
+      CALL ef_set_work_array_dims (id, 3, 1, 1, 1, 1, 
+     .                             nxout, nyout, 1, 1)
 
 * wate - weights.
-      CALL ef_set_work_array_dims (id, 4, 
-     .     arg_lo_ss(X_AXIS,ARG4), arg_lo_ss(Y_AXIS,ARG5), 1, 1, 
-     .     arg_hi_ss(X_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG5), 1, 1)
+      CALL ef_set_work_array_dims (id, 4, 1, 1, 1, 1, 
+     .                             nxout, nyout, 1, 1)
 
       RETURN
       END
@@ -271,6 +260,7 @@
 *  arg_6  interpolation parameter   xscale
 *  arg_7  interpolation parameter   yscale
 *  arg_8  interpolation parameter   cutoff
+*  arg_9  not used
 
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
@@ -313,7 +303,7 @@
 *                                                                      |
 *                                                                      V
       INTEGER i, j, k, l, m, n, nm
-      INTEGER i1, i2
+      INTEGER i1, i2, j1
       INTEGER i4, i4n, j5, j5n
 
       INTEGER nxpts, nypts, nscat
@@ -345,7 +335,7 @@
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloy(4), regularx(4), 
+      LOGICAL backward(4), modulox(4), moduloy(4), regularx(4)
      .        regulary(4)
 
       REAL dx, dy, xcut, ycut, xxbeg, xxend, yybeg, yyend
@@ -361,8 +351,6 @@ C  variables for checking axis characteristics (modulo axes)
      .                       modulox, regularx)
       CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
      .                       moduloy, regulary)
-
-*  Check that output axes are regular
 
       IF (.NOT. regularx(1)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
@@ -412,7 +400,7 @@ C  variables for checking axis characteristics (modulo axes)
       nxsize = nx
       nysize = ny
 
-*  Check that xax is a X axis and yax a Y axis
+*  Check that yax is a Y axis and yax a Y axis
 
       IF (i4 .EQ. ef_unspecified_int4) THEN
          WRITE (errtxt, *) 'fourth argument must be a X axis'
@@ -462,7 +450,7 @@ C  Get coordinates of output axes.
       IF (xsc .LE. 0.) GOTO 910
       IF (ysc .LE. 0.) GOTO 920
 
-*  And cutoff parameter:
+*  And cutoff parameters:
 
       cutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
      .            arg_lo_ss(Z_AXIS,ARG8), arg_lo_ss(T_AXIS,ARG8))
@@ -476,7 +464,6 @@ C  Get coordinates of output axes.
 
       i3 = arg_lo_ss(X_AXIS,ARG3)
       j3 = arg_lo_ss(Y_AXIS,ARG3)
-
       l3 = arg_lo_ss(T_AXIS,ARG3)
       DO 510 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
       k3 = arg_lo_ss(Z_AXIS,ARG3)
@@ -484,15 +471,15 @@ C  Get coordinates of output axes.
 
 *  Initialize sums of values and weights.
 
-         DO n = j5, j5n
-            DO m = i4, i4n
-               grid(m,n,1,1) = 0.
+         DO j = 1, nyaxis
+            DO i = 1, nxaxis
+               grid(i,j,1,1) = 0.
             ENDDO
          ENDDO
-
-         DO n = j5, j5n
-            DO m = i4, i4n
-               wate(m,n,1,1) = 0.
+  
+         DO j = 1, nyaxis
+            DO i = 1, nxaxis
+               wate(i,j,1,1) = 0.
             ENDDO
          ENDDO
 
@@ -507,7 +494,7 @@ C  Get coordinates of output axes.
 
             IF (arg_lo_ss(X_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
                val = arg_3(n,j3,k3,l3)
-            ELSE IF(arg_lo_ss(Y_AXIS,ARG3) .NE. ef_unspecified_int4)THEN
+            ELSE IF (arg_lo_ss(Y_AXIS,ARG3) .NE. ef_unspecified_int4) THEN
                val = arg_3(i3,n,k3,l3)
             ENDIF
 
@@ -518,7 +505,7 @@ C  Get coordinates of output axes.
             IF (moduloy(2)) CALL modscat (yax, ny, 1, yy)
 
             IF ( val  .NE. bad_flag(ARG3) ) THEN
-               CALL gausswt (xx, yy, tt, val, grid, wate, nx, ny, nm, 
+               CALL gausswt2 (xx, yy, tt, val, grid, wate, nx, ny, nm, 
      .                    x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
      .                    cutoff, iwflag, nxaxis, nyaxis)
 
@@ -533,14 +520,14 @@ C                     other end, and use in the gridding computation.
                      
                   IF ((xx-x1 .GE. 0.) .AND. (xx-x1 .LT. xcut) ) THEN
                      xxend = xf + (xx-x1)
-                     CALL gausswt(xxend, yy, tt, val, grid, wate, nx, 
+                     CALL gausswt2(xxend, yy, tt, val, grid, wate, nx, 
      .                    ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
      .                    cutoff, iwflag, nxaxis, nyaxis)
                   ENDIF
                      
                   IF ((xf-xx .GE. 0.)  .AND. (xf-xx .LT. xcut) ) THEN
                      xxbeg = x1 - (xf-xx)
-                     CALL gausswt(xxbeg, yy, tt, val, grid, wate, nx, 
+                     CALL gausswt2(xxbeg, yy, tt, val, grid, wate, nx, 
      .                    ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
      .                    cutoff, iwflag, nxaxis, nyaxis)
                   ENDIF
@@ -553,14 +540,14 @@ C                     other end, and use in the gridding computation.
 
                   IF ((yy-y1 .GE. 0.0) .AND.  (yy-y1  .LT. ycut) ) THEN
                      yyend = yf + (yy-y1)
-                     CALL gausswt(xx, yyend, tt, val, grid, wate, nx, 
+                     CALL gausswt2(xx, yyend, tt, val, grid, wate, nx, 
      .                    ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
      .                    cutoff, iwflag, nxaxis, nyaxis)
                   ENDIF
                      
                   IF ((yf-yy .LT. 0.)  .AND.  (yf-yy .LT. ycut) ) THEN
                      yybeg = y1 - (yf-yy)
-                     CALL gausswt(xx, yybeg, tt, val, grid, wate, nx, 
+                     CALL gausswt2(xx, yybeg, tt, val, grid, wate, nx, 
      .                    ny, nm, x1, y1, t1, xf, yf, tf, xsc, ysc, tsc, 
      .                    cutoff, iwflag, nxaxis, nyaxis)
                   ENDIF
@@ -573,17 +560,21 @@ C                     other end, and use in the gridding computation.
 *  Put gridded fcn into result variable, dividing by summed weights. (as in
 *  gaussfin, but indices needn't start at 1)
 
+         i1 = 1
          DO 410 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+         j1 = 1
          DO 400 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
             result(i,j,k,l) = bad_flag_result
-            IF ( wate(i,j,1,1) .gt. 0.) THEN
-               result(i,j,k,l) = grid(i,j,1,1)/ wate(i,j,1,1)
+            IF ( wate(i1,j1,1,1) .gt. 0.) THEN
+               result(i,j,k,l) = grid(i1,j1,1,1)/ wate(i1,j1,1,1)
             ELSE
                result(i,j,k,l) = bad_flag_result
             ENDIF
 
+            j1 = j1 + 1
  400        CONTINUE
+         i1 = i1 + 1
  410     CONTINUE
 
       k3 = k3 + arg_incr(Z_AXIS,ARG3)
@@ -612,9 +603,8 @@ C                     other end, and use in the gridding computation.
       GOTO 999
 
  930  CONTINUE
-      write (errtxt, 50)  8
+      write (errtxt, 50) 8
       GOTO 999
-
 
  999  CALL EF_BAIL_OUT(id, errtxt)
       RETURN

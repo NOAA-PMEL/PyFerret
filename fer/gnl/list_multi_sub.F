@@ -453,18 +453,12 @@
            line_buff = ' '
 
            IF (do_comma_del .OR. do_tab_del) THEN
+* ... Write entire variable names without cutting them off.
 
-	      w0 = cleft
-              IF (w0 .LE. 0) w0 = 1
-	      slen1 = MIN( w0, TM_LENSTR1( vcode(1) ) )
-              IF (norow) slen1 = TM_LENSTR1( vcode(1) )
-
-              line_buff(w0:w0+slen1) = vcode(1)(:slen1)
-              IF (num_uvars_in_cmnd .GT. 1) 
-     .              line_buff(w0+slen1:w0+slen1) = tab_or_comma
-              w0 = w0 + slen1 + 1
-
-              DO 420 ivar = 2, num_uvars_in_cmnd
+              slen1 = TM_LENSTR1( vcode(1) )
+	      w0 = cleft - slen1 + MIN(width(1), slen1)
+              IF (w0 .LE. 0 .OR. cleft .EQ. 0) w0 = 1
+              DO 420 ivar = 1, num_uvars_in_cmnd
 
                  slen1 = TM_LENSTR1(vcode(ivar))
                  line_buff(w0:w0+slen1) = vcode(ivar)(:slen1)

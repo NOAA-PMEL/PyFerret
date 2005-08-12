@@ -382,6 +382,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                ELSE
 	          CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
                ENDIF
+
 	   ENDIF
 	ELSE	! (not VERSUS)
 	   var1 = 1

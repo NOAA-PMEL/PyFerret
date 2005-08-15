@@ -114,7 +114,7 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'TPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .     'Y coordinates of scattered input triples')
+     .     'T coordinates of scattered input triples')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
@@ -134,7 +134,7 @@
       arg = 5
       CALL ef_set_arg_name(id, arg, 'TAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'Y axis coordinates of a regular output grid')
+     .                   'T axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 6
@@ -229,7 +229,7 @@
 * In this subroutine we compute the result
 *
 
-      SUBROUTINE scat2gridgauss_zt_compute(id, arg_1, arg_2, arg_3, 
+      SUBROUTINE  scat2gridgauss_zt_compute(id, arg_1, arg_2, arg_3, 
      .     arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
      .     zax, tax, grid, wate)
 
@@ -318,16 +318,14 @@
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), moduloz(4), modulot(4), regularz(4), 
+      LOGICAL backward(4), moduloz(4), modulot(4), regularz(4),
      .        regulart(4)
-
-      REAL dz, dt, zcut, tcut, zzbeg, zzend, ttbeg, ttend
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Get output axis characteristics
+*  Check to see if output axes are regular, and get modulo characteristics
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
      .                       moduloz, regularz)
@@ -489,6 +487,7 @@ C  Get coordinates of output axes.
             IF (modulot(4)) CALL modscat (tax, nt, 1, tt)
 
             IF ( val  .NE. bad_flag(ARG3) ) THEN
+
                CALL gausswt2 (zz, tt, xx, val, grid, wate, nz, nt, nm, 
      .                    z1, t1, x1, zf, tf, xf, zsc, tsc, xsc, 
      .                    cutoff, iwflag, nzaxis, ntaxis)
@@ -503,6 +502,7 @@ C                     other end, and use in the gridding computation.
                      
                   IF ((zz-z1 .GE. 0.) .AND. (zz-z1 .LT. zcut) ) THEN
                      zzend = zf + (zz-z1)
+
                      CALL gausswt2(zzend, tt, xx, val, grid, wate, nz, 
      .                    nt, nm, z1, t1, x1, zf, tf, xf, zsc, tsc, xsc, 
      .                    cutoff, iwflag, nzaxis, ntaxis)
@@ -510,6 +510,7 @@ C                     other end, and use in the gridding computation.
                      
                   IF ((zf-zz .GE. 0.)  .AND. (zf-zz .LT. zcut) ) THEN
                      zzbeg = z1 - (zf-zz)
+
                      CALL gausswt2(zzbeg, tt, xx, val, grid, wate, nz, 
      .                    nt, nm, z1, t1, x1, zf, tf, xf, zsc, tsc, xsc, 
      .                    cutoff, iwflag, nzaxis, ntaxis)
@@ -523,12 +524,14 @@ C                     other end, and use in the gridding computation.
 
                   IF ((tt-t1 .GE. 0.0) .AND.  (tt-t1  .LT. tcut) ) THEN
                      ttend = tf + (tt-t1)
+
                      CALL gausswt2(zz, ttend, xx, val, grid, wate, nz, 
      .                    nt, nm, z1, t1, x1, zf, tf, xf, zsc, tsc, xsc, 
      .                    cutoff, iwflag, nzaxis, ntaxis)
                   ENDIF
                      
                   IF ((tf-tt .LT. 0.)  .AND.  (tf-tt .LT. tcut) ) THEN
+
                      ttbeg = z1 - (zf-tt)
                      CALL gausswt2(zz, ttbeg, xx, val, grid, wate, nz, 
      .                    nt, nm, z1, t1, x1, zf, tf, xf, zsc, tsc, xsc, 
@@ -545,6 +548,7 @@ C                     other end, and use in the gridding computation.
 
          k1 = 1
          DO 410 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+
          L1 = 1
          DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 

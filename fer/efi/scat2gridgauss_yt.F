@@ -134,7 +134,7 @@
       arg = 5
       CALL ef_set_arg_name(id, arg, 'TAXPTS')
       CALL ef_set_arg_desc(id, arg, 
-     .                   'Y axis coordinates of a regular output grid')
+     .                   'T axis coordinates of a regular output grid')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, YES)
 
       arg = 6
@@ -224,11 +224,9 @@
       RETURN
       END
 
-
 *
 * In this subroutine we compute the result
 *
-
       SUBROUTINE scat2gridgauss_yt_compute(id, arg_1, arg_2, arg_3, 
      .     arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
      .     yax, tax, grid, wate)
@@ -286,6 +284,7 @@
       INTEGER i, j, k, l, m, n, nm
       INTEGER i1, i2, j1, L1
       INTEGER i3, j3, k3, l3
+
       INTEGER i4, i4n, j5, j5n
 
       INTEGER nypts, ntpts, nscat
@@ -326,7 +325,7 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Get output axis characteristics
+*  Check to see if output axes are regular, and get modulo characteristics
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
      .                       moduloy, regulary)
@@ -431,7 +430,7 @@ C  Get coordinates of output axes.
       IF (ysc .LE. 0.) GOTO 910
       IF (tsc .LE. 0.) GOTO 920
 
-*  And cutoff parameter:
+*  And cutoff parameters:
 
       cutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
      .            arg_lo_ss(Z_AXIS,ARG8), arg_lo_ss(T_AXIS,ARG8))
@@ -506,6 +505,7 @@ C                     other end, and use in the gridding computation.
                      CALL gausswt2(yyend, tt, xx, val, grid, wate, ny, 
      .                    nt, nm, y1, t1, x1, yf, tf, xf, ysc, tsc, ysc, 
      .                    cutoff, iwflag, nyaxis, ntaxis)
+
                   ENDIF
                      
                   IF ((yf-yy .GE. 0.)  .AND. (yf-yy .LT. ycut) ) THEN
@@ -547,7 +547,6 @@ C                     other end, and use in the gridding computation.
          DO 410 j = res_lo_ss(y_AXIS), res_hi_ss(y_AXIS)
          L1 = 1
          DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-
             result(i,j,k,l) = bad_flag_result
             IF ( wate(j1,L1,1,1) .gt. 0.) THEN
                result(i,j,k,l) = grid(j1,L1,1,1)/ wate(j1,L1,1,1)
@@ -555,7 +554,9 @@ C                     other end, and use in the gridding computation.
                result(i,j,k,l) = bad_flag_result
             ENDIF
 
+            L1 = L1 + 1
  400        CONTINUE
+         j1 = j1 + 1
  410     CONTINUE
 
       k3 = k3 + arg_incr(Z_AXIS,ARG3)
@@ -584,7 +585,7 @@ C                     other end, and use in the gridding computation.
       GOTO 999
 
  930  CONTINUE
-      write (errtxt, 50)  8
+      write (errtxt, 50) 8
       GOTO 999
 
  999  CALL EF_BAIL_OUT(id, errtxt)
@@ -598,7 +599,8 @@ C                     other end, and use in the gridding computation.
    40 FORMAT (a1,
      .    ' Mapping scale parameter must be positive. Argument', I2)
 
-   50 FORMAT (' Cutoff parameter must be positive. Argument', I2)
+   50 FORMAT ('Cutoff parameter must be positive. Argument', I2)
+
 
 *                                                                      ^
 *                                                                      |

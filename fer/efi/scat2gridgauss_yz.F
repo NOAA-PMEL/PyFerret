@@ -248,6 +248,7 @@
 
       SUBROUTINE scat2gridgauss_yz_compute(id, arg_1, arg_2, arg_3, 
      .     arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, result, 
+
      .     yax, zax, grid, wate)
 
 *  arg_1  ypts \
@@ -332,7 +333,8 @@
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), moduloy(4), moduloz(4), regular(4)
+      LOGICAL backward(4), moduloy(4), moduloz(4), regulary(4),
+     .        regularz(4)
 
       REAL dy, dz, ycut, zcut, yybeg, yyend, zzbeg, zzend
 
@@ -341,13 +343,21 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-
-*  Check to see if output axes are modulo
+*  Check to see if output axes are regular, and get modulo characteristics
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
-     .                       moduloy, regular)
+     .                       moduloy, regulary)
       CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
-     .                       moduloz, regular)
+     .                       moduloz, regularz)
+     
+      IF (.NOT. regulary(1)) then
+         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
+         GO TO 999
+      ENDIF
+      IF (.NOT. regularz(2)) then
+         WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
+         GO TO 999
+      ENDIF
 
 *  Find number of points in scattered input points.  1-D arrays defining the 
 *  scattered data points may lie on the X, Y, or Z axis of the input arguments.
@@ -390,7 +400,7 @@ C  variables for checking axis characteristics (modulo axes)
 
 *  Check that yax is a Y axis and zax a Z axis
 
-	      IF (j4 .EQ. ef_unspecified_int4) then
+      IF (j4 .EQ. ef_unspecified_int4) then
          WRITE (errtxt, *) 'fourth argument must be a Y axis'
          GO TO 999
       ENDIF
@@ -439,7 +449,7 @@ C  Get coordinates of output axes.
       IF (ysc .LE. 0.) GOTO 910
       IF (zsc .LE. 0.) GOTO 920
 
-*  And cutoff parameter:
+*  And cutoff parameters:
 
       cutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
      .            arg_lo_ss(Z_AXIS,ARG8), arg_lo_ss(T_AXIS,ARG8))
@@ -594,10 +604,6 @@ C                     other end, and use in the gridding computation.
 
  930  CONTINUE
       write (errtxt, 50) 8
-      GOTO 999
-
- 940  CONTINUE
-      write (errtxt, 50) 'Z', 9
       GOTO 999
 
  999  CALL EF_BAIL_OUT(id, errtxt)

@@ -318,6 +318,7 @@
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
+
       LOGICAL backward(4), modulox(4), modulot(4), regularx(4),
      .        regulart(4)
       REAL dx, dt, xcut, tcut, xxbeg, xxend, ttbeg, ttend
@@ -326,20 +327,19 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Get output axis characteristics
+
+*  Check to see if output axes are regular, and get modulo characteristics
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
      .                       modulox, regularx)
       CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
      .                       modulot, regulart)
 
-*  Check that output axes are regular
-
       IF (.NOT. regularx(1)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999
       ENDIF
-      IF (.NOT. regulart(4)) then
+      IF (.NOT. regulart(2)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999
       ENDIF
@@ -433,10 +433,11 @@ C  Get coordinates of output axes.
       IF (xsc .LE. 0.) GOTO 910
       IF (tsc .LE. 0.) GOTO 920
 
-*  And cutoff parameters:
+*  And cutoff parameter:
 
       cutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
      .            arg_lo_ss(Z_AXIS,ARG8), arg_lo_ss(T_AXIS,ARG8))
+
       IF (cutoff .LE. 0.) GOTO 930
 
       nxaxis = arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4) + 1
@@ -555,6 +556,7 @@ C                     other end, and use in the gridding computation.
             result(i,j,k,l) = bad_flag_result
             IF ( wate(i,L1,1,1) .GT. 0.) THEN
                result(i,j,k,l) = grid(i1,L1,1,1)/ wate(i1,L1,1,1)
+
             ELSE
                result(i,j,k,l) = bad_flag_result
             ENDIF
@@ -590,7 +592,7 @@ C                     other end, and use in the gridding computation.
       GOTO 999
 
  930  CONTINUE
-      write (errtxt, 50)  8
+      write (errtxt, 50) 8
       GOTO 999
 
  999  CALL EF_BAIL_OUT(id, errtxt)

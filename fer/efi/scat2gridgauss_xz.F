@@ -171,7 +171,6 @@
      .  ('Mapping scale in Z direction, data units (e.g. m or km)')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
-
       arg = 8
       CALL ef_set_arg_name(id, arg, 'CUTOFF')
       WRITE (buff, 50)
@@ -307,6 +306,7 @@
 *                                                                      V
       INTEGER i, j, k, l, m, n, nm
       INTEGER i1, i2, k1, i1n, i2n
+
       INTEGER nxpts, nzpts, nscat
       INTEGER i4, i4n, k5, k5n
       INTEGER nxsize, nzsize
@@ -344,7 +344,7 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*  Get output axis characteristics
+*  Check to see if output axes are regular, and get modulo characteristics
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
      .                       modulox, regularx)
@@ -438,7 +438,7 @@ C  Get coordinates of output axes.
       IF (xsc .LE. 0.) GOTO 910
       IF (zsc .LE. 0.) GOTO 920
 
-*  And cutoff parameters:
+*  And cutoff parameter:
 
       cutoff  = arg_8(arg_lo_ss(X_AXIS,ARG8), arg_lo_ss(Y_AXIS,ARG8), 
      .            arg_lo_ss(Z_AXIS,ARG8), arg_lo_ss(T_AXIS,ARG8))
@@ -523,6 +523,7 @@ C                     other end, and use in the gridding computation.
                      CALL gausswt2(xxend, zz, tt, val, grid, wate, nx, 
      .                    nz, nm, x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
      .                    cutoff, iwflag, nxaxis, nzaxis) 
+
                   ENDIF
                      
                   IF ((xf-xx .GE. 0.)  .AND. (xf-xx .LT. xcut) ) THEN
@@ -552,6 +553,7 @@ C                     other end, and use in the gridding computation.
                      CALL gausswt2(xx, zzbeg, tt, val, grid, wate, nx, 
      .                    nz, nm, x1, z1, t1, xf, zf, tf, xsc, zsc, tsc, 
      .                    cutoff, iwflag, nxaxis, nzaxis) 
+
                   ENDIF
                ENDIF
             ENDIF
@@ -560,6 +562,7 @@ C                     other end, and use in the gridding computation.
 
 *  Put gridded z into result variable, dividing by summed weights. (as in
 *  gaussfin, but indices needn't start at 1)
+
 
          i1 = 1
          DO 410 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS), 
@@ -571,11 +574,14 @@ C                     other end, and use in the gridding computation.
             result(i,j,k,l) = 0.
             IF ( wate(i1,k1,1,1) .gt. 0.) THEN
                result(i,j,k,l) = grid(i1,k1,1,1)/ wate(i1,k1,1,1)
+
             ELSE
                result(i,j,k,l) = bad_flag_result
             ENDIF
 
+            k1 = k1 + 1
  400        CONTINUE
+         i1 = i1 + 1
  410     CONTINUE
 
          j3 = j3 + arg_incr(Y_AXIS,ARG3)

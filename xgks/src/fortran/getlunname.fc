@@ -42,6 +42,25 @@ set_fname(
     fname[nchr]	= 0;
 }
 
+/*
+ * Callback routine for setting the name of the file associated with a 
+ * Fortran logical unit number.
+ */
+    void
+/*FORTRAN*/
+set_fname_(
+    char      *name)
+{
+    size_t	nchr;
+    size_t      max	= MIN(name_len, sizeof(fname)-1);
+
+    for (nchr = 0; nchr < max && name[nchr] != ' '; ++nchr)
+	/* empty */ ;
+
+    (void) strncpy(fname, name, nchr);
+    fname[nchr]	= 0;
+}
+
 
 /*
  * Get the name associated with a Fortran logical unit number.

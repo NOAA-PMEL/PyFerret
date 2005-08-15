@@ -335,7 +335,7 @@
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloy(4), regularx(4)
+      LOGICAL backward(4), modulox(4), moduloy(4), regularx(4),
      .        regulary(4)
 
       REAL dx, dy, xcut, ycut, xxbeg, xxend, yybeg, yyend

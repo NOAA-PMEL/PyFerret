@@ -335,7 +335,8 @@
 C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
-      LOGICAL backward(4), modulox(4), moduloz(4), regular(4)
+      LOGICAL backward(4), modulox(4), moduloz(4), regularx(4),
+     .        regularz(4)
 
       REAL dx, dz, xcut, zcut, xxbeg, xxend, zzbeg, zzend
 
@@ -346,9 +347,9 @@ C  variables for checking axis characteristics (modulo axes)
 *  Get output axis characteristics
 
       CALL ef_get_axis_info (id, 4, ax_name, ax_units, backward, 
-     .                       modulox, regular)
+     .                       modulox, regularx)
       CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
-     .                       moduloz, regular)
+     .                       moduloz, regularz)
 
       IF (.NOT. regularx(1)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'

@@ -65,13 +65,14 @@
 * V550 - 7/02 *sh* alpha 1
 * V551 - 2/03 *kob* beta1
 * V580 - 12/04 *acm* 
+* V581_01 8/12/05 *acm* minor revisions (not released)
 
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.81   /
+	DATA revision_level	/  5.81_01   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

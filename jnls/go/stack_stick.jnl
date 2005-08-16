@@ -33,11 +33,6 @@ let ks = `zz,return=kstart`
 let ke = `zz,return=kend`
 let nz = `zz,return=ksize`
 
-if `nz gt 20` then
-  message "too many levels: use less than 20" 
-  exit/script
-endif
-
 let y2 = 0.9
 let del = 0.8/`nz`
 let y1 = `y2 - del` + 0.02

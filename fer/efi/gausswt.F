@@ -37,7 +37,7 @@ C  !ACM Modified to pass nxaxis, NAY dimensions of grid and wate.
 C   and to deal with nx, nz, or nm = 1.  Also to send cutoff as a parameter.
 
 C  May 26, 2000  Don't send cutoff, but xsc, ysc as parameters.
-C  June 7, 2000  Send xsc, ysc, cutoff as parameters
+C  June 7, 2000  Send xsc, ysc, xcutoff, ycutoff as parameters
 
 c.............subroutines to do gaussian-weighted mapping onto grids.
 
@@ -71,7 +71,8 @@ c--------------------------------------------------------------------------
 	subroutine gausswt2 (xx,yy,tt,val,grid,wate,nx,nz,nm,x1,y1,t1,
      .             xf,yf,tf,xsc,ysc,tsc,cutoff,iwflag,nax,nay)
 
-C ACM 6/2000 Version of gausswt with two cutoff parameters.  
+C ACM 6/2000 Version of gausswt with two cutoff parameters.
+c acm 8/2005 there is just one cutoff parameter
  
 	integer nx, nz, nm, iwflag, nax, nay, i, j, m
 	real grid(nax,nay,*), wate(nax,nay,*)

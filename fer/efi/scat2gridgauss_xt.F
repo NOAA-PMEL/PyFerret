@@ -321,7 +321,6 @@ C  variables for checking axis characteristics (modulo axes)
 
       LOGICAL backward(4), modulox(4), modulot(4), regularx(4),
      .        regulart(4)
-      REAL dx, dt, xcut, tcut, xxbeg, xxend, ttbeg, ttend
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

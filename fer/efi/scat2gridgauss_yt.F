@@ -319,7 +319,6 @@ C  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), moduloy(4), modulot(4), regulary(4), 
      .        regulart(4)
-      REAL dy, dt, ycut, tcut, yybeg, yyend, ttbeg, ttend
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

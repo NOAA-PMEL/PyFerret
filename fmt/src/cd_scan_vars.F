@@ -71,6 +71,7 @@
 * V510 *sh* 3/00: added tregular argument
 *		- convert to dynamic grid and axis management
 * V552 5/03 *acm*: increase size of vname from 64 to 128 chars
+* v590 8/05 *amc*  Fix bug 1318, wrong string length of bname in last arg to CD_GET_ATTRIB
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -122,15 +123,15 @@
      .        nbvar, ivar, len_test, len_mchars
 * 4/99 *kob*
 * ?? how many bounds variables (bname) might there be ??
+
+      INTEGER max_vnamelen
+      PARAMETER (max_vnamelen = 128)
       CHARACTER    vname*128, name*16, buff*128
       CHARACTER*128 bname(30)
       REAL*4  global_bad
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
-      INTEGER max_vnamelen
-      PARAMETER (max_vnamelen = 128)
-
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv because "BYTE"
 * isn't supported on DECstation
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
@@ -209,7 +210,7 @@
 * See if it has a bounds attribute 
 
            got_it = CD_GET_ATTRIB( cdfid, ivcd, 'bounds',
-     .              do_warn, vname(:vlen), bname(nbvar+1), 30 )
+     .            do_warn, vname(:vlen), bname(nbvar+1), max_vnamelen)
            IF (got_it) THEN
               nbvar = nbvar + 1
               istat = STR_UPCASE( bname(nbvar), bname(nbvar) )

@@ -1,0 +1,10 @@
+! err581_use_bounds.jnl
+! bug 1318 Spurious error message on USE file where file has axes with bounds.
+! 8/17/05 ACM
+
+def axis/x xir = {1,4,6}
+def axis/y yir = {12,42,50}
+let aa = x[gx=xir]+ y[gy=yir]
+
+save/clobber/file=xyir.nc aa
+use xyir

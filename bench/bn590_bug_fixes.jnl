@@ -18,3 +18,7 @@ GO err581_sho_func_pattern_match.jnl
 ! FILL on data with subspan modulo axis, got wrong data
 GO bn_reset
 GO err581_subspanx_fill_bug.jnl
+
+! bug 1318 Spurious error message on USE file where file has axes with bounds.
+GO bn_reset
+GO err581_use_bounds.jnl

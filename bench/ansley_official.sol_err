@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     66909836 Aug 10 10:53 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     66911936 Aug 17 10:54 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for bugs 900, 1129, 1186, 1273, 1275 ; new functions is_element_of_str, element_of*
+Note: fix for bug 1318 Spurious error message on USE file where file has axes with bounds.
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Aug 10 11:06:28 PDT 2005
+Beginning at Wed Aug 17 11:03:10 PDT 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -363,6 +363,7 @@ define axis/from/x/name=xax/edges {6,6,6}
 define axis/from/x/name=xax {6,6,6.000001,7}
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
+rm: No match.
  **ERROR: command syntax: noname(i)
           unknown function "noname"
 stat i, noname(i)
@@ -372,6 +373,7 @@ LIST/i=2:4:2 VAR
  *** NOTE: A dummy axis of subscripts will be used
  *** NOTE: Coordinates out of order or missing on axis GAPPY_AXIS at subscript 3
  *** NOTE: A dummy axis of subscripts will be used
+rm: No match.
  **ERROR: unknown defining grid: G=NO_EXIST
 load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
  **ERROR: unknown defining grid: GX=A[D=1]
@@ -407,6 +409,7 @@ list substring("Have you fed your ferret today")
  **ERROR: command syntax: strcat ("All work and no play")
           The strcat function has an incorrect number of arguments
 list strcat ("All work and no play")
+rm: No match.
  **ERROR: command syntax: "string2"}
 list e
  **ERROR: command syntax: 5, "string2"}
@@ -460,6 +463,7 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
  *** NOTE: A dummy axis of subscripts will be used
+input.txt: No such file or directory
 input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
                 dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar
@@ -619,4 +623,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Aug 10 11:14:07 PDT 2005
+Ended at Wed Aug 17 11:11:29 PDT 2005

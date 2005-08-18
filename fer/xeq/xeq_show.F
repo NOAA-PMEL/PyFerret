@@ -147,6 +147,7 @@
 * V590: *acm*  7/05 Fix bug 1186: SHOW FUNC with * properly matches patterns for
 *                   external functions as well as internally linked functions.
 *                   call MATCH_TEMPLATE for all comparisons.
+* V590  *acm*  8/05 Allow more digits in xrevision number
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -238,7 +239,7 @@
      .          flen, wsize, wkblk, len_test, len_mchars,
      .          j, num_indices
 	REAL	xtemp, ytemp
-	CHARACTER EXPR_NAME*8, TM_FMT*10,
+	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
 	CHARACTER	filename*2048,raw_name*2048,
      .			fformatted*12, efname*40, upname*40
@@ -1057,13 +1058,14 @@
  1100	only_1 = num_args .GT. 0
 	done_1 = .FALSE.
 	IF ( .NOT.only_1 ) THEN
+           show_str = TM_FMT(revision_level, 5, 12, slen)
 	   WRITE (risc_buff, 4100)
      .				program_name(1:len_program_name),
      .				progname_mod (1:len_progname_mod),
-     .				revision_level
+     .				show_str(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   risc_buff = ' '
- 4100	   FORMAT(' Commands in Program ',A,1X,A,' version',F5.2,':')
+ 4100	   FORMAT(' Commands in Program ',A,1X,A,' version',A,':')
 	ENDIF
 * ... loop through commands
         len_test = TM_LENSTR(cmnd_buff(arg_start(1):arg_end(1)))

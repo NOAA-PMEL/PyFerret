@@ -49,25 +49,21 @@
 *                   proclaim message
 *      10/01 *kob* - insert missing comma in format statement
 *                    discovered by linux compiler
-#ifdef unix
+*       8/05 *acm* - Allow more digits in xrevision number
+
 	include 'xrevision.cmn'
 	include 'xrevision_type.cmn'
 	include 'xtoday.cmn'
 	include 'xmake_date.cmn'
 	include 'xplatform_type.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XREVISION.CMN'
-	INCLUDE 'FERRET_CMN:XREVISION_TYPE.CMN'
-	INCLUDE 'FERRET_CMN:XTODAY.CMN'
-	INCLUDE 'FERRET_CMN:XMAKE_DATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		logical_unit
 	CHARACTER*(*)	left_margin
 
 * local variable definitions
-	INTEGER TM_LENSTR1, len_platform_type
+	INTEGER TM_LENSTR1, len_platform_type, slen
+        CHARACTER*12 TM_FMT, show_str
 
 * get revision type info (8/95 - kind of a hack)
 	IF ( revision_type .EQ. '()' ) THEN
@@ -77,18 +73,19 @@
 	ENDIF
 	len_progname_mod = TM_LENSTR1(progname_mod)
 	len_platform_type = TM_LENSTR1(platform_type)
+        show_str = TM_FMT(revision_level, 5, 12, slen)
 
 	WRITE  ( logical_unit, 3000)
      .				left_margin,
      .				left_margin, program_name(1:len_program_name),
-     .                                       revision_level,
+     .                                       show_str(1:slen),
      .					     progname_mod(1:len_progname_mod), 
      .				left_margin, platform_type(1:len_platform_type),
      .                                       make_date,
      .				left_margin, today_date, today_time
 
  3000	FORMAT ( 1X,A,'NOAA/PMEL TMAP'/
-     .		 1X,A,A,1X,'v',F4.2,1x,A/
+     .		 1X,A,A,1X,'v',A,1x,A/
      .		 1X,A,A,1X,'-',1X,A/
      .		 1X,2A,1X,A/ )
 

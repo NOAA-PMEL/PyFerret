@@ -127,6 +127,7 @@
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
 * V581: *acm*/3/05 - increase length of strings for datset title to 1024 (leave settings alone for MOVIE)
+* V590 *acm*  8/05 - Allow more digits in xrevision number
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -175,13 +176,13 @@
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
-     .                  units, since_t0, len_test, len_mchars
+     .                  units, since_t0, len_test, len_mchars, slen
 
         REAL*8          TM_WW_AXLEN, axwwlen
 
 	REAL		val_buf
-	CHARACTER	title*1024, subtitle*64, arg*24,
-     .			buff1*512, buff2*512, data_form*3
+	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
+     .			buff1*512, buff2*512, data_form*3, show_str*12
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
@@ -638,10 +639,11 @@ c *kob* 4/97
 	ELSE
 	   title = 'GFDL movie output'
 	ENDIF
+        show_str = TM_FMT(revision_level, 5, 12, slen)
 	WRITE ( subtitle, 3000 ) program_name(1:len_program_name),
      .				 progname_mod(1:len_progname_mod),
-     .				 revision_level	   
- 3000	FORMAT(' Program ',A,1X,A,'  version',F5.2 )
+     .				 show_str
+ 3000	FORMAT(' Program ',A,1X,A,'  version',A )
 
 	IF ( do_laser_movie ) THEN
 	      CALL ODR_INIT

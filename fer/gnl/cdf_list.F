@@ -75,6 +75,7 @@
 *            4/16/01 properly declare TM_GET_CALENDAR_ID as integer
 * V533 *sh* 6/01 - added support for netCDF output string variables
 * V552 *acm* 4/03- up SANITARY_VAR_CODE and local variable varcode to 128 chars
+* V590 *acm* 8/05 - Allow more digits in xrevision number
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -119,6 +120,7 @@
 
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
+     .                  TM_FMT*12, 
      .                  varcode*128, buff*140, revnum*4, c1*1
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
@@ -176,9 +178,9 @@
          IF ( status .NE. merr_ok ) GOTO 5400
 
 * update history attribute in the file
-	WRITE ( revnum, '(F4.2)' ) revision_level
+	revnum = TM_FMT(revision_level, 5, 12, slen)
         CALL CD_STAMP_OUT( append, cdfid,
-     .       program_name(:len_program_name)//' V'//revnum//' '//
+     .       program_name(:len_program_name)//' V'//revnum(:slen)//' '//
      .       progname_mod(:len_progname_mod)//' '//today_date, status )
         IF ( status .NE. merr_ok ) GOTO 5800
 

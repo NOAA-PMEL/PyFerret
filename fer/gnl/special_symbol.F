@@ -49,6 +49,7 @@
 *      12/00 *sh* - added symbols SESSION_DATE and SESSION_TIME
 *      10/01 *kob*- add symbol FERRET_PLATFORM to display the platform
 *                   the executable was built on. 
+*       8/05 *acm*- Allow more digits in xrevision number
 
 * calling argument declarations:
 	INTEGER	  isym, slen
@@ -59,9 +60,10 @@
 	PARAMETER (nspecial = 7)
 
 * internal variable declarations:
-	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix, TM_LENSTR
+	INTEGER STR_UPCASE, i, ierr, wsid, nxpix, nypix, 
+     .          llen, TM_LENSTR
 	CHARACTER special(nspecial)*16, upname*16
-	CHARACTER LEFINT*16
+	CHARACTER LEFINT*16, TM_FMT*12
 
 * names of special symbols (must be upper case)
 	DATA special(1)/ 'PPL$XPIXEL' /,
@@ -141,8 +143,8 @@
 
 * FERRET_VERSION
  1400	value = ' '
-	WRITE (value,'(F5.2)') revision_level
-	slen = 5
+	WRITE TM_FMT(revision_level, 5, 12, llen)
+	slen = llen
 	RETURN
 
 * PLATFORM_TYPE  *kob* 10/01

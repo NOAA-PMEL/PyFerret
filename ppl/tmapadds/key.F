@@ -83,6 +83,8 @@
 * V580 *acm* 11/04 Fix bug 906: default number of digits did not distinguish different 
 *                  levels; got repeated labels 370, 371, 371, 372, 372,...
 * v581 *acm* 3/05 open levels (-INF) (INF)
+* v590 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
+8                 on definition of yy
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -574,7 +576,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            ENDIF
 
 	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg - 0.5*karht
-	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg 
+!	   yy = (ky_lo + y_inc*real (ndx-1))/1000.0 - yorg   (this caused bug 1330!)
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 

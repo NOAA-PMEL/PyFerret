@@ -22,3 +22,7 @@ GO err581_subspanx_fill_bug.jnl
 ! bug 1318 Spurious error message on USE file where file has axes with bounds.
 GO bn_reset
 GO err581_use_bounds.jnl
+
+! Bug 1332 variable not scaled unless it is first variable in stepfile.
+GO bn_reset
+GO err581_des_scale.jnl 

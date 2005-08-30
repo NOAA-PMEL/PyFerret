@@ -464,6 +464,9 @@ GO bn_reset
 GO bn_element_functions.jnl
 
 GO bn_reset
+GO bn_long_revision_num.jnl
+
+GO bn_reset
 GO bn590_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

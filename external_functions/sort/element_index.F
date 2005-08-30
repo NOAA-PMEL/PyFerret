@@ -105,8 +105,7 @@
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'VALUES')
-      CALL ef_set_arg_desc(id, arg, 
-     .      '1-D mask, same length as x-axis of VAR')
+      CALL ef_set_arg_desc(id, arg, 'list of values to match')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                     ^

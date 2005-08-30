@@ -88,7 +88,7 @@
 *                                                                     V
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
-   10 FORMAT ('Return index value in ARG2 for each point in ARG1')
+   10 FORMAT ('Return index value in ARG2 for each string in ARG1')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -100,14 +100,13 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
-      CALL ef_set_arg_desc(id, arg, 'data to mask')
+      CALL ef_set_arg_desc(id, arg, 'string data to mask')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
-      CALL ef_set_arg_name(id, arg, 'VALUES')
-      CALL ef_set_arg_desc(id, arg, 
-     .      '1-D mask, same length as x-axis of VAR')
+      CALL ef_set_arg_name(id, arg, 'STRINGS')
+      CALL ef_set_arg_desc(id, arg, 'list of strings to match')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 

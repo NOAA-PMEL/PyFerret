@@ -102,14 +102,13 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'VAR')
-      CALL ef_set_arg_desc(id, arg, 'data to mask')
+      CALL ef_set_arg_desc(id, arg, 'data to test')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'VALUES')
-      CALL ef_set_arg_desc(id, arg, 
-     .      '1-D mask, same length as x-axis of VAR')
+      CALL ef_set_arg_desc(id, arg, 'strings to search for')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 

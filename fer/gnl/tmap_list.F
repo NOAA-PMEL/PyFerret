@@ -55,8 +55,8 @@
 * V312: 5/94 - array "memory" as a calling argument
 * 12/96 *kob* - Linux Port - had to move variable assignments off of
 *               declaration line.
-*  8/05 *acm* - Allow more digits in xrevision number
 
+#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -76,6 +76,20 @@
         INTEGER*1 i1zero
 	PARAMETER (i1zero = 0)
 #endif
+#else
+	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
+	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
+	INCLUDE 'FERRET_CMN:FERRET.PARM'
+	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
+	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
+	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
+	INCLUDE 'FERRET_CMN:XREVISION.CMN'
+	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
+        INCLUDE 'TMAP_FORMAT:XMACHINE_BYTE.CMN'
+        EXTERNAL XMACHINE_DATA
+
+        BYTE i1zero/0/
+#endif
 
 * calling argument declarations:
 	INTEGER		lun, reclen, nvars,
@@ -86,12 +100,10 @@
 	INTEGER*2 	nvari
 	INTEGER		CX_DIM_LEN, CGRID_AXIS, 
      .			nchar64, cx, mr, cx1, mr1, dset1, grid,
-     .			nrecperstep, i, taxis, ndim, dim(4), l, recnum,
-     .                  slen
+     .			nrecperstep, i, taxis, ndim, dim(4), l, recnum
 	REAL		rec_buf(*)
 	REAL*8		TM_WORLD
-	CHARACTER	COMPOUND_KEY*255, TM_FMT*12,
-     .                  char64*128, mod_num*12, run_num*4
+	CHARACTER	COMPOUND_KEY*255, char64*128, mod_num*4, run_num*4
 
 * initialization
 	cx1	= cx_list(1)
@@ -125,7 +137,7 @@
 	ENDIF
 
 * use program revision level as mod number
- 210	mod_num = TM_FMT(revision_level, 5, 12, slen)
+ 210	WRITE ( mod_num, '(F4.2)' ) revision_level
 
 * comments for STEP record (all axes documented)
 	DO 220 i = 0, 10

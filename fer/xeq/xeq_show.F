@@ -1058,11 +1058,11 @@
  1100	only_1 = num_args .GT. 0
 	done_1 = .FALSE.
 	IF ( .NOT.only_1 ) THEN
-           show_str = TM_FMT(revision_level, 5, 12, slen)
+           show_str = TM_FMT(revision_level, 5, 12, dlen)
 	   WRITE (risc_buff, 4100)
      .				program_name(1:len_program_name),
      .				progname_mod (1:len_progname_mod),
-     .				show_str(1:slen)
+     .				show_str(1:dlen)
 	   CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
 	   risc_buff = ' '
  4100	   FORMAT(' Commands in Program ',A,1X,A,' version',A,':')

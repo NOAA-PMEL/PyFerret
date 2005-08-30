@@ -165,11 +165,10 @@
      .		nvatts,cdfstat)
            vlen = TM_LENSTR1(vname)
 
-           got_scale = CD_GET_ATTVAL( cdfid, cd_varid, 'scale_factor',
+           got_scale = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'scale_factor',
      .             do_warn,vname(:vlen),cd_scale_factor(ivar),1,status )
-           got_off = CD_GET_ATTVAL( cdfid, cd_varid, 'add_offset',
+           got_off = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'add_offset',
      .             do_warn,vname(:vlen),cd_add_offset(ivar),1,status )
-           cd_scaled(ivar) = got_scale .OR. got_scale
 
 *read the data
 	   CALL CD_READ( dset, ivar,
@@ -336,6 +335,7 @@ c!c! uncomment this...
      .             do_warn,vname(:vlen),cd_scale_factor(ivar),1,status )
            got_off = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'add_offset',
      .             do_warn,vname(:vlen),cd_add_offset(ivar),1,status )
+
            cd_scaled(ivar) = got_scale .OR. got_scale
 
 * let's read the data (finally)

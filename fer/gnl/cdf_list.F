@@ -121,7 +121,7 @@
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
      .                  TM_FMT*12, 
-     .                  varcode*128, buff*140, revnum*4, c1*1
+     .                  varcode*128, buff*140, revnum*6, c1*1
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
 

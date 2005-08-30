@@ -157,7 +157,7 @@
 
 * local parameter declarations
         INTEGER         TM_GET_CALENDAR_ID, buff_size, sslimits0, 
-     .			wwlimits0, cal_id, tax
+     .			wwlimits0, cal_id, tax, slen
         LOGICAL         full_precision, DODS_cache, range_not_rqd
         PARAMETER     ( buff_size = 140,
      .			sslimits0 = 1+19-1,

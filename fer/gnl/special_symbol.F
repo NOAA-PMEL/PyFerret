@@ -143,7 +143,7 @@
 
 * FERRET_VERSION
  1400	value = ' '
-	WRITE TM_FMT(revision_level, 5, 12, llen)
+	value = TM_FMT(revision_level, 5, 12, llen)
 	slen = llen
 	RETURN
 

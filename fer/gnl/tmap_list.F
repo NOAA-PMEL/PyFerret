@@ -86,7 +86,7 @@
 	INTEGER*2 	nvari
 	INTEGER		CX_DIM_LEN, CGRID_AXIS, 
      .			nchar64, cx, mr, cx1, mr1, dset1, grid,
-     .			nrecperstep, i, taxis, ndim, dim(4), l, recnum
+     .			nrecperstep, i, taxis, ndim, dim(4), l, recnum,
      .                  slen
 	REAL		rec_buf(*)
 	REAL*8		TM_WORLD

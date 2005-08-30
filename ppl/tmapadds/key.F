@@ -84,7 +84,7 @@
 *                  levels; got repeated labels 370, 371, 371, 372, 372,...
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * v590 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
-8                 on definition of yy
+*                 on definition of yy
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'

@@ -70,6 +70,8 @@
 * v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
 * v581 *acm* 7/2005  Fix bug in getting start and end indices.
+* V590 *acm* 8/2005  fix bug 1332, calls to  CD_GET_ATTVAL and  CD_GET_ATTVAL
+*                    need cd_varid(ivar) not cd_varid as the second argument.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -330,9 +332,9 @@ c!c! uncomment this...
 * determine local scale and offset
            vlen = TM_LENSTR1(vname)
 
-           got_scale = CD_GET_ATTVAL( cdfid, cd_varid, 'scale_factor',
+           got_scale = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'scale_factor',
      .             do_warn,vname(:vlen),cd_scale_factor(ivar),1,status )
-           got_off = CD_GET_ATTVAL( cdfid, cd_varid, 'add_offset',
+           got_off = CD_GET_ATTVAL( cdfid, cd_varid(ivar), 'add_offset',
      .             do_warn,vname(:vlen),cd_add_offset(ivar),1,status )
            cd_scaled(ivar) = got_scale .OR. got_scale
 

@@ -59,6 +59,8 @@ C**
 *	non zero value.
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 * v581 *acm* 3/05 open levels (-INF) (INF)
+* v590 *acm* 8/05 Fix bug 1335: move the initialization of LWGT(j) = 2 to 
+*                 before the possible resetting of zlev if posinf true.
 
 	parameter	(epsilon = 1e-6)
 
@@ -135,6 +137,9 @@ C
 		ENDIF
 		DO 100 I=1,NL
 		J=NLEV+I
+
+                LWGT(J)=2
+
                 IF (J.GT.1 .AND. posinf) THEN
                    zlev(j) = zlev(j-1) + 1.
                 ELSE 
@@ -144,12 +149,12 @@ CC		Bug fix for non zero levels that ought to be zero *jd*
 		   IF(ZLEV(J).EQ.0.0)GOTO 100
                 ENDIF
 
-		LWGT(J)=2
 		IF(ZLEV(J).GT.0)THEN
 		   LWGT(J)=1
 	        ELSE
 		   LWGT(J)=3
 		ENDIF
+
 100		CONTINUE
 C
 C	FIND MIN AND MAX

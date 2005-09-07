@@ -85,6 +85,8 @@
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * v590 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
 *                 on definition of yy
+* v590 *acm* 9/06 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
+*                 we had an infinite loop on DO 30. Start the loop at ndx = lev1+1, not 1.
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -170,7 +172,7 @@
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
-	   DO 30 ndx = 2, shd_levels
+	   DO 30 ndx = lev1+1, shd_levels
 	     buff = 
      .          TM_FMT_DIGITS (zlev(ndx),lab_digits,klab_len+5,str_len)
              READ (buff,*) val_n

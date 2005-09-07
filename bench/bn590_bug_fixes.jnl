@@ -26,3 +26,11 @@ GO err581_use_bounds.jnl
 ! Bug 1332 variable not scaled unless it is first variable in stepfile.
 GO bn_reset
 GO err581_des_scale.jnl 
+
+! Bug 1335 Zero-contour should be dark line.
+GO bn_reset
+GO err581_contour_zero_lev.jnl
+
+! Bug 1339, code hangs with this combination of (-INF)(INF) levels and shakey
+GO bn_reset
+GO err581_shakey_inf.jnl

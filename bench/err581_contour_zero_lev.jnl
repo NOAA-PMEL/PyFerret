@@ -1,0 +1,7 @@
+! err581_contour_zero_lev.jnl
+! acm 9/7/2005
+! See bug report 1335
+! Zero-contour should be dark line.
+
+use coads_climatology
+contour/lev=(-20,20,2) sst[L=1] - 20

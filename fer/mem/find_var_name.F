@@ -57,6 +57,10 @@
 *	Philander-Seigel
 * V554 1/04 *acm* Add category cat_counter_var
 *  ywei 05/04 change MATCH_NAME and MATCH_QUOTED_NAME function calls to speed up
+* V590 9/05 *acm* Restore the order of searching through the different lists
+*                 of variable names (the chunk of code at DO 250).  Yonghua had
+*                 moved this for efficiency but it wound up finding the wrong
+*                 variable def for user variables defined with LET/D.
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'

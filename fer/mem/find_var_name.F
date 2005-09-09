@@ -212,27 +212,6 @@
 	      RETURN
  100	      CONTINUE
 
-* ... check the global user variable definitions defined with /D
-*	DO 150 ivar = 1, max_uvar
-*	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 150
-*	   IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 150
-*           len_mchars = TM_LENSTR(uvar_name_code(ivar))
-*	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars))
-*	1	THEN
-*	      category = cat_user_var
-*	      variable = ivar
-*	      RETURN
-*	   ENDIF
-* 150	CONTINUE
-           DO 150 j = 1, num_indices
-              ivar = string_array_result(j)
-	      IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 150
-              IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 150
-              category = cat_user_var
-	      variable = ivar
-	      RETURN
- 150	      CONTINUE
-
 * check file variables from this data set
 *	DO 200 ivar = 1, maxvars
 *	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
@@ -258,6 +237,34 @@
 	   variable = ivar
            RETURN
  200	CONTINUE
+
+* ... check the global user variable definitions defined with /D
+*       CALL tm_log(my_cbuff, 255)
+        CALL string_array_find_quoted(uvar_name_code_head,
+     .                                test_name,
+     .                                len_test,
+     .                                string_array_result(1),
+     .                                max_uvar,
+     .                                num_indices)
+*	DO 250 ivar = 1, max_uvar
+*	   IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 250
+*	   IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 250
+*           len_mchars = TM_LENSTR(uvar_name_code(ivar))
+*	   IF ( MATCH_QUOTED_NAME( test_name,len_test,uvar_name_code(ivar),len_mchars))
+*	1	THEN
+*	      category = cat_user_var
+*	      variable = ivar
+*	      RETURN
+*	   ENDIF
+* 250	CONTINUE
+           DO 250 j = 1, num_indices
+              ivar = string_array_result(j)
+	      IF ( uvar_dset( ivar ) .NE. pdset_irrelevant ) GOTO 250
+              IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 250
+              category = cat_user_var
+	      variable = ivar
+	      RETURN
+ 250	      CONTINUE
 
 
 * check table of calculatable variables (padded to 8 characters)

@@ -4,6 +4,10 @@
 ! test LET definitions with the /D qualifier:  LET, SHOW, SET VAR, CANCEL
 ! .. not a particularly inspired benchmark, but, what the heck
 
+! 9/2005 acm
+! test for the behavior of bug 1336 by listing contents of variables;
+! tests with SHOW VAR did not detect the bug.
+
 sp touch snoopy.dat
 
 ! set and show 3 types of variables
@@ -87,3 +91,28 @@ let/d t2 = 2
 let/d t3 = 3
 can var/d	! implied/d/all
 show var
+
+! test for the behavior of bug 1336 by listing contents of variables;
+
+let v1 = x[x=1:8]
+let v2 = x[x=1:8] + y[y=1:3]
+save/clobber/file=v12file.nc v1, v2
+save/clobber/file=v1file.nc/i=3:8 v1
+can var v1
+can var v2
+
+use v12file
+use v1file
+
+list v1  ! from vfile
+let/d v1 = 0
+let/d v2 = 2
+
+list v1  ! v1 exists in default data set so use dataset variable
+
+list v2  ! v2 does not exist in default dset so use let/d definition
+
+let/d q = v2
+list q
+list q[d=v12file]
+

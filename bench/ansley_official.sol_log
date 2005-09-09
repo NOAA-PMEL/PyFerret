@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     66913600 Sep  7 11:12 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     66913696 Sep  9 11:37 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for bugs 1335, 1339; inf levels, contouring and shakey
+Note: fix for bug 1336 let/d, new tests in bn_letd.jnl
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Sep 7 11:41:50 PDT 2005
+Beginning at Fri Sep 9 12:00:03 PDT 2005
  	NOAA/PMEL TMAP
  	FERRET v5.8101  
- 	Solaris 5.6 - 09/07/05
- 	 7-Sep-05 11:41     
+ 	Solaris 5.6 - 09/09/05
+ 	 9-Sep-05 12:00     
 
 yes? !bn500_all_shell
 yes? 
@@ -1544,6 +1544,10 @@ GO bn_letd
 ! test LET definitions with the /D qualifier:  LET, SHOW, SET VAR, CANCEL
 ! .. not a particularly inspired benchmark, but, what the heck
  
+! 9/2005 acm
+! test for the behavior of bug 1336 by listing contents of variables;
+! tests with SHOW VAR did not detect the bug.
+ 
 sp touch snoopy.dat
  
 ! set and show 3 types of variables
@@ -1750,6 +1754,65 @@ let/d t3 = 3
 can var/d	! implied/d/all
 show var
  Created by DEFINE VARIABLE:
+ 
+! test for the behavior of bug 1336 by listing contents of variables;
+ 
+let v1 = x[x=1:8]
+let v2 = x[x=1:8] + y[y=1:3]
+save/clobber/file=v12file.nc v1, v2
+ LISTing to file v12file.nc
+save/clobber/file=v1file.nc/i=3:8 v1
+ LISTing to file v1file.nc
+can var v1
+can var v2
+ 
+use v12file
+use v1file
+ 
+list v1  ! from vfile
+             VARIABLE : X[X=1:8]
+             FILENAME : v1file.nc
+             SUBSET   : 6 points (X)
+ 3   / 1:  3.000
+ 4   / 2:  4.000
+ 5   / 3:  5.000
+ 6   / 4:  6.000
+ 7   / 5:  7.000
+ 8   / 6:  8.000
+let/d v1 = 0
+let/d v2 = 2
+ 
+list v1  ! v1 exists in default data set so use dataset variable
+             VARIABLE : X[X=1:8]
+             FILENAME : v1file.nc
+             SUBSET   : 6 points (X)
+ 3   / 1:  3.000
+ 4   / 2:  4.000
+ 5   / 3:  5.000
+ 6   / 4:  6.000
+ 7   / 5:  7.000
+ 8   / 6:  8.000
+ 
+list v2  ! v2 does not exist in default dset so use let/d definition
+             VARIABLE : 2
+             FILENAME : v1file.nc
+          2.000
+ 
+let/d q = v2
+list q
+             VARIABLE : V2
+             FILENAME : v1file.nc
+          2.000
+list q[d=v12file]
+             VARIABLE : V2
+             FILENAME : v12file.nc
+             SUBSET   : 8 by 3 points (X-Y)
+             1      2      3      4      5      6      7      8    
+             1      2      3      4      5      6      7      8
+ 1   / 1:   2.00   3.00   4.00   5.00   6.00   7.00   8.00   9.00
+ 2   / 2:   3.00   4.00   5.00   6.00   7.00   8.00   9.00  10.00
+ 3   / 3:   4.00   5.00   6.00   7.00   8.00   9.00  10.00  11.00
+ 
  
 ! added in bn430
 GO bn_reset
@@ -10130,8 +10193,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = "5.8101"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 7-Sep-05"
-SESSION_TIME = "11:41"
+SESSION_DATE = " 9-Sep-05"
+SESSION_TIME = "12:00"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10149,8 +10212,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = "5.8101"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 7-Sep-05"
-SESSION_TIME = "11:41"
+SESSION_DATE = " 9-Sep-05"
+SESSION_TIME = "12:00"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10158,8 +10221,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 7-Sep-05"
-SESSION_TIME = "11:41"
+SESSION_DATE = " 9-Sep-05"
+SESSION_TIME = "12:00"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10169,13 +10232,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 7-Sep-05"
-SESSION_TIME = "11:41"
+SESSION_DATE = " 9-Sep-05"
+SESSION_TIME = "12:00"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 7-Sep-05"
-SESSION_TIME = "11:41"
+SESSION_DATE = " 9-Sep-05"
+SESSION_TIME = "12:00"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10209,7 +10272,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.8101"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Sep  7 2005 11:42:37 "
+LAB3 = "Sep  9 2005 12:00:51 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10308,8 +10371,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = "5.8101"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 7-Sep-05"
-SESSION_TIME = "11:41"
+SESSION_DATE = " 9-Sep-05"
+SESSION_TIME = "12:00"
  
  
 GO bn_reset
@@ -12551,7 +12614,7 @@ Dynamic axes:
 ! * * * dynamic generation of pseudo-variables * * *
 list x[x=.1:1:.1]			! dynamic abstract
              VARIABLE : X
-                        axis (AX002)
+                        axis (AX003)
              SUBSET   : 10 points (X)
  0.1  /  1:  0.10000
  0.2  /  2:  0.20000
@@ -12565,7 +12628,7 @@ list x[x=.1:1:.1]			! dynamic abstract
  1    / 10:  1.00000
 list x[gx=psxu,x=130:150:2.5]		! dynamic based on named axis
              VARIABLE : X
-                        axis (AX001)
+                        axis (AX004)
              SUBSET   : 9 points (LONGITUDE)
  130E   / 1:  130.000
  132.5E / 2:  132.500
@@ -12652,20 +12715,20 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    7 r   0.1                  9.1
- (AX001)   Y                    3 r   95                   109
+ (AX002)   X                    7 r   0.1                  9.1
+ (AX004)   Y                    3 r   95                   109
  normal    Z
  normal    T
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    7 r   0.1                  9.1
- (AX002)   Y                   10 r   101                  110
+ (AX002)   X                    7 r   0.1                  9.1
+ (AX003)   Y                   10 r   101                  110
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   2
-    AXIS (AX002)                         use count:   1
+    AXIS (AX004)                         use count:   1
+    AXIS (AX002)                         use count:   2
+    AXIS (AX003)                         use count:   1
  
 ! ambiguous coordinate tests
 list/order=x  x[x=0.1:10:1.5] +  x[x=1.1:11:1.5]
@@ -12687,12 +12750,12 @@ show grid/dyn
 Dynamic grids:
     GRID (G004)                          use count:   2
  name       axis              # pts   start                end
- (AX001)   X                    7 r   0.1                  9.1
+ (AX004)   X                    7 r   0.1                  9.1
  normal    Y
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
+    AXIS (AX004)                         use count:   1
  
 ! box size on dynamic axes
 cancel region
@@ -12719,7 +12782,7 @@ show grid/x
  Last successful data access was on grid (G004)
     GRID (G004)
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
@@ -12763,7 +12826,7 @@ list x[g=temp,x=150w:130w:2.5]		! dynamic based on named variable
  130W   / 9:  230.000
 list x[gx=temp,x=150w:130w:2.5]		! dynamic based on named variable
              VARIABLE : X
-                        axis (AX002)
+                        axis (AX003)
              FILENAME : gtsa056_1.cdf
              SUBSET   : 9 points (LONGITUDE)
  150W   / 1:  210.000
@@ -12793,12 +12856,12 @@ show grid/dyn
 Dynamic grids:
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX003)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! this expression does NOT inherit the X axis -- the result is
 !	i) ambiguous X axis coordinates
@@ -12821,19 +12884,19 @@ show grid/dynamic
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   LONGITUDE            5 r   129.5W               113.5W
+ (AX004)   LONGITUDE            5 r   129.5W               113.5W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX004)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 list/j=46:50/l=1/k=1 temp[i=101:120:4]+x[g=temp,i=101:120:4]
              VARIABLE : TEMP[I=101:120:4]+X[G=TEMP,I=101:120:4]
@@ -12856,7 +12919,7 @@ SET REGION/I=101:105/J=46:50/l=1/k=1
 ! deliberate errors:  ****
 list x[i=5:1:1]		! not an error: inverted order
              VARIABLE : X
-                        axis (AX001)
+                        axis (AX004)
              SUBSET   : 5 points (X)
  1   / 1:  1.00000
  2   / 2:  2.00000
@@ -12901,19 +12964,19 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX001)   LONGITUDE            6 i   108.5W(-468.5)       98.5W(-458.5)
+ (AX004)   LONGITUDE            6 i   108.5W(-468.5)       98.5W(-458.5)
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX004)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! regular dynamic axis
 ! ... by subscript
@@ -12981,18 +13044,18 @@ Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
  PSXT      LONGITUDE          160mr   130.5E               70.5W
- (AX001)   LATITUDE             4 r   0.5S                 4N
+ (AX004)   LATITUDE             4 r   0.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX001)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX004)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! ========
 ! 2/96: repeat the very same commands using GX=lo:hi:delta notation
@@ -13155,19 +13218,19 @@ Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
  (AX005)   LONGITUDE            4 r   130W                 121W
- (AX002)   LATITUDE             4 r   0.5S                 4N
+ (AX003)   LATITUDE             4 r   0.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   X                    5 i   1                    6561
+ (AX002)   X                    5 i   1                    6561
  normal    Y
  normal    Z
  normal    T
 Dynamic axes:
-    AXIS (AX002)                         use count:   1
-    AXIS (AX005)                         use count:   1
     AXIS (AX003)                         use count:   1
+    AXIS (AX005)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! the same tests but now on a nested definition
 ! regular dynamic axis
@@ -13322,7 +13385,7 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX002)   LONGITUDE            6 r   138W                 113W
+ (AX003)   LONGITUDE            6 r   138W                 113W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
@@ -13333,7 +13396,7 @@ Dynamic grids:
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
 Dynamic axes:
-    AXIS (AX002)                         use count:   1
+    AXIS (AX003)                         use count:   1
     AXIS (AX005)                         use count:   1
  
 ! irregular dynamic axis
@@ -13479,12 +13542,12 @@ Dynamic grids:
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
  PSXT      LONGITUDE          160mr   130.5E               70.5W
- (AX003)   LATITUDE             6 r   3.5S                 4N
+ (AX002)   LATITUDE             6 r   3.5S                 4N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
 Dynamic axes:
     AXIS (AX005)                         use count:   1
-    AXIS (AX003)                         use count:   1
+    AXIS (AX002)                         use count:   1
  
 ! nested modulo (the dynamic axis is **NOT** modulo)
 ! ... by subscript
@@ -13653,19 +13716,19 @@ show grid/dyn
 Dynamic grids:
     GRID (G006)                          use count:   1
  name       axis              # pts   start                end
- (AX003)   LONGITUDE            9 r   101W                 53W
+ (AX002)   LONGITUDE            9 r   101W                 53W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
     GRID (G004)                          use count:   1
  name       axis              # pts   start                end
- (AX002)   LONGITUDE            8 r   90W                  62W
+ (AX003)   LONGITUDE            8 r   90W                  62W
  PSYT      LATITUDE           100 i   28.836S              48.567N
  PSZT      DEPTH (m)           27 i-  5                    3824
  TIME2     TIME                 5mr   15-JAN-1982 14:00    27-JAN-1982 18:00
 Dynamic axes:
-    AXIS (AX003)                         use count:   1
     AXIS (AX002)                         use count:   1
+    AXIS (AX003)                         use count:   1
  
 ! calendar axes
 list/k=1/y=0/x=180 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]   ! 6-day ave
@@ -13697,7 +13760,7 @@ list/k=1/y=0/x=180/l=1 temp[t=15-JAN-1982:11-FEB-1982:`24*6`@ave]
 list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:`24*2`]			! pseudo-var
  !-> list/l=1:3 T[t=15-JAN-1982:11-FEB-1982:48]			! pseudo-var
              VARIABLE : T
-                        axis (AX001)
+                        axis (AX004)
              SUBSET   : 3 points (TIME)
  15-JAN-1982 00 / 1:  723925.
  17-JAN-1982 00 / 2:  723927.
@@ -18326,7 +18389,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23053 Sep  7 11:43 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23054 Sep  9 12:01 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18345,7 +18408,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419468 Sep  7 11:43 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419481 Sep  9 12:01 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -25564,7 +25627,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  T5 = 50757969 ;
@@ -25589,7 +25652,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -25741,7 +25804,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Sep  7 11:44:18 PDT 2005
+Fri Sep  9 12:02:33 PDT 2005
  
 GO bn_reset
 cancel mode verify
@@ -26434,17 +26497,17 @@ Dynamic grids:
     GRID (G014)                          use count:   1
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
- (AX003)   LATITUDE             5 r   1S                   1N
+ (AX002)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
     GRID (G021)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX003)   LATITUDE             5 r   1S                   1N
+ (AX002)   LATITUDE             5 r   1S                   1N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
 Dynamic axes:
-    AXIS (AX003)                         use count:   2
+    AXIS (AX002)                         use count:   2
  
 ! sampling a pseudo-variable
 list SAMPLEI(X[x=1:12],{3,4,7,15})
@@ -31433,7 +31496,7 @@ show grid
     GRID (G022)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX003)   LATITUDE           201 r   10S                  10N
+ (AX002)   LATITUDE           201 r   10S                  10N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
 show grid/dynamic
@@ -31441,7 +31504,7 @@ Dynamic grids:
     GRID (G022)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX003)   LATITUDE           201 r   10S                  10N
+ (AX002)   LATITUDE           201 r   10S                  10N
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
     GRID (G014)                          use count:   1
@@ -31451,7 +31514,7 @@ Dynamic grids:
  normal    Z
  TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
 Dynamic axes:
-    AXIS (AX003)                         use count:   1
+    AXIS (AX002)                         use count:   1
     AXIS (AX012)                         use count:   1
     AXIS (AX020)                         use count:   1
  
@@ -31574,28 +31637,28 @@ SHOW GRID temp[d=2,gx=sst[d=1],y=10s:2s:.2]             ! implicit Y axis
     GRID (G024)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5"
     GRID (G024)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX003)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) ! imposed T axis
     GRID (G023)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
 SHOW GRID SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])      ! abstract X axis
     GRID (G024)
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]),SORTI(temp[d=2,gx=sst[d=1],y=10s:2s:.2])
@@ -31608,13 +31671,13 @@ SHOW GRID "temp[d=2,gx=sst[d=1],y=10s:2s:.2] + 5",FFTA(sst[d=1,gx=temp[d=2],y=10
     GRID (G023)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  normal    Z
- (AX003)   T (CYC/hour)         2 r   0.00034224           0.00068448
+ (AX002)   T (CYC/hour)         2 r   0.00034224           0.00068448
     GRID (G024)
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
  
@@ -31625,7 +31688,7 @@ SHOW GRID
     GRID (G024)
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX003)   LATITUDE            41 r   10S                  2S
+ (AX002)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SET GRID  FFTA(sst[d=1,gx=temp[d=2],y=10s:2s:.2,l=1:5]) + 5
@@ -31635,12 +31698,12 @@ SHOW GRID
     GRID (G023)
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
 list/j=1:5 j
              VARIABLE : J
-                        axis (AX001)
+                        axis (AX004)
              SUBSET   : 5 points (LATITUDE)
  9.2S   / 5:  5.00000
  9.4S   / 4:  4.00000
@@ -31653,7 +31716,7 @@ SHOW GRID MYGRID
     GRID MYGRID
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
  normal    T
 SHOW GRID/DYNAMIC
@@ -31661,12 +31724,12 @@ Dynamic grids:
     GRID (G023)                          use count:   1
  name       axis              # pts   start                end
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
- (AX001)   LATITUDE            41 r   10S                  2S
+ (AX004)   LATITUDE            41 r   10S                  2S
  normal    Z
  (AX011)   T (CYC/hour)         2 r   0.00034224           0.00068448
 Dynamic axes:
     AXIS (AX011)                         use count:   1
-    AXIS (AX001)                         use count:   2
+    AXIS (AX004)                         use count:   2
     AXIS (AX020)                         use count:   1
  
  
@@ -33602,7 +33665,7 @@ list/nohead a[i=106:145:5]
 !  ***** STRING TESTS *****
 set mode diag
 list/nohead str[i=18:23:2] ! using rdstride
- dealloc  dynamic grid (G028)          (AX003)   NORMAL    NORMAL    NORMAL
+ dealloc  dynamic grid (G028)          (AX002)   NORMAL    NORMAL    NORMAL
  -DELETE A        M:104 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
@@ -34248,7 +34311,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -34311,7 +34374,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  GFP3 = "" ;
@@ -34531,7 +34594,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -36434,11 +36497,11 @@ show mem/free
 use/ord=x-y test_100x100.nc
 list/prec=1 a[i=1:100:10] !  this looks just right!!
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
- dealloc  dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
- allocate dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
  eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -111 -111  L: -111 -111
- allocate dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
  strip regrid on X: A --> (G014)           @XACT
  strip reversing A on Y axis:     1   100
  rdstride A        C:  8 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
@@ -36446,7 +36509,7 @@ list/prec=1 a[i=1:100:10] !  this looks just right!!
  -DELETE A        M:  1 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
  nulrgd  A        M:  1 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
  -DELETE A        M:  2 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
              VARIABLE : IF I EQ J THEN 1 ELSE A0
                         regrid: 10 delta on X
              FILENAME : test_100x100.nc
@@ -36558,7 +36621,7 @@ show grid
  Last successful data access was on grid (G014)
     GRID (G014)
  name       axis              # pts   start                end
- (AX003)   X                   10 r   1                    91
+ (AX002)   X                   10 r   1                    91
  YAX1_100  Y                  100 r   1                    100
  normal    Z
  normal    T
@@ -36566,7 +36629,7 @@ show grid
 ! should be a diagonal path of steps all the way across the plot
 shade a[i=1:100:10]
  eval    EX#1     C:  4 I:    1  100  J:    1  100  K: -111 -111  L: -111 -111
- allocate dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
+ allocate dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
  strip regrid on X: A --> (G014)           @XACT
  strip reversing A on Y axis:     1   100
  rdstride A        C:  8 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
@@ -36574,7 +36637,7 @@ shade a[i=1:100:10]
  -DELETE A        M:  2 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
  nulrgd  A        M:  2 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
  -DELETE A        M:  3 I:    1   91  J:    1  100  K: -111 -111  L: -111 -111
- dealloc  dynamic grid (G014)          (AX003)   YAX1_100  NORMAL    NORMAL
+ dealloc  dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
 PPL plot 275  complete
@@ -37884,12 +37947,12 @@ cancel axis/all
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
- *** NOTE: Not deleted: MONTH_IRREG
- *** NOTE: Axis is in use by grid (G022)
- *** NOTE: Not deleted: TIME5
- *** NOTE: Axis is in use by grid GLB1
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: TIME5
+ *** NOTE: Axis is in use by grid GLB1
+ *** NOTE: Not deleted: MONTH_IRREG
+ *** NOTE: Axis is in use by grid (G022)
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
@@ -38098,10 +38161,10 @@ cancel axis/all
  *** NOTE: Axis is in use by grid GFORMAT
  *** NOTE: Not deleted: XAX
  *** NOTE: Axis is in use by grid GFORMAT
- *** NOTE: Not deleted: TIME5
- *** NOTE: Axis is in use by grid GLB1
  *** NOTE: Not deleted: TIME4
  *** NOTE: Axis is in use by grid GXYT
+ *** NOTE: Not deleted: TIME5
+ *** NOTE: Axis is in use by grid GLB1
  *** NOTE: Not deleted: COADSY
  *** NOTE: Axis is in use by grid GG1
  *** NOTE: Not deleted: COADSX
@@ -38834,7 +38897,7 @@ l200n/order=x $2[l=1,i=0:14:7]
         ............
 set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  !-> list/width=200/nohead v2d_reg[i=1,l=1:15:2]
- dealloc  dynamic grid (G024)          (AX001)   NORMAL    NORMAL    TAX_SUBSPA
+ dealloc  dynamic grid (G024)          (AX004)   NORMAL    NORMAL    TAX_SUBSPA
  -DELETE V2D_REG  M: 71 I:    1    3  J: -111 -111  K: -111 -111  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G024)          XAX_SUBSPANORMAL    NORMAL    (AX021)
@@ -39348,17 +39411,17 @@ set mode diag; l200n/order=x $2[l=1,i=0:14:2]; set mode/last diag
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:2]
  dealloc  dynamic grid GFJ4            XIRREG_SUBNORMAL    NORMAL    TIRREG_SUB
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G027)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
- dealloc  dynamic grid (G027)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
- allocate dynamic grid (G027)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G027)          (AX004)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G027)          (AX004)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G027)          (AX004)   NORMAL    NORMAL    TIRREG_SUB
  eval    EX#1     C:  4 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
- allocate dynamic grid (G027)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
+ allocate dynamic grid (G027)          (AX004)   NORMAL    NORMAL    TIRREG_SUB
  *** NOTE: Not using NetCDF strides for multi-cycle modulo
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: V2D_IRR --> (G027)           @XACT
  found   V2D_IRR  M:146 I:    0   14  J: -111 -111  K: -111 -111  L:    1    1
  regrid  V2D_IRR  M:147 I:    1    8  J: -111 -111  K: -111 -111  L:    1    1
- dealloc  dynamic grid (G027)          (AX001)   NORMAL    NORMAL    TIRREG_SUB
+ dealloc  dynamic grid (G027)          (AX004)   NORMAL    NORMAL    TIRREG_SUB
              ....  12.0000  14.0000  16.0000  11.0000  12.1000  15.0000     ....
 l200n/order=x $2[l=1,i=0:14:7]
  !-> list/width=200/nohead/order=x v2d_irr[l=1,i=0:14:7]
@@ -39368,11 +39431,11 @@ set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  dealloc  dynamic grid (G027)          (AX009)   NORMAL    NORMAL    TIRREG_SUB
  -DELETE V2D_IRR  M:148 I:    1    3  J: -111 -111  K: -111 -111  L:    1    1
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
- allocate dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX001)
- dealloc  dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX001)
- allocate dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX001)
+ allocate dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX004)
+ dealloc  dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX004)
+ allocate dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX004)
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L:    1    8
- allocate dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX001)
+ allocate dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX004)
  strip regrid on T: V2D_IRR --> (G027)           @XACT
  strip moduloing V2D_IRR on T axis:     1    15
  rdstride V2D_IRR  C:  9 I:    1    1  J: -111 -111  K: -111 -111  L:    1    5
@@ -39380,7 +39443,7 @@ set mode diag; l200n $2[i=1,l=1:15:2]; set mode/last diag
  -DELETE V2D_IRR  M:148 I:    1    1  J: -111 -111  K: -111 -111  L:    1    5
  nulrgd  V2D_IRR  M:148 I:    1    1  J: -111 -111  K: -111 -111  L:    1    8
  -DELETE V2D_IRR  M:149 I:    1    1  J: -111 -111  K: -111 -111  L:    1   15
- dealloc  dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX001)
+ dealloc  dynamic grid (G027)          XIRREG_SUBNORMAL    NORMAL    (AX004)
  16-JAN      / 1:   11.000
  15-MAR      / 2:   70.249
  15-MAY      / 3:  131.249
@@ -44179,7 +44242,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44242,7 +44305,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44300,7 +44363,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44362,7 +44425,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -44421,7 +44484,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44644,7 +44707,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44713,7 +44776,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44790,7 +44853,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -47082,7 +47145,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep  7 2005 11:48:30
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep  9 2005 12:06:46
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47786,7 +47849,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -47865,7 +47928,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -47945,7 +48008,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48217,7 +48280,7 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
 }
 say `a,return=t0`
  !-> MESSAGE/CONTINUE 01-JAN-0001 00:00:00
@@ -48458,7 +48521,7 @@ FERRET_VERSION = "5.8101"
 let a = 12
 save/clobber/file=revision.nc a; sp ncdump revision.nc | grep history
  LISTing to file revision.nc
-		:history = "FERRET V5.8101    7-Sep-05" ;
+		:history = "FERRET V5.8101    9-Sep-05" ;
  
 ! label in upper right
 go ptest; sh sym lab1
@@ -48841,8 +48904,8 @@ ppl fill
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.8101  
- 	Solaris 5.6 - 09/07/05
- 	 7-Sep-05 11:49     
+ 	Solaris 5.6 - 09/09/05
+ 	 9-Sep-05 12:07     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -49671,7 +49734,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Sep  7 11:49 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Sep  9 12:07 testa.v5d
  
 can region
 use coads_climatology
@@ -49683,7 +49746,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Sep  7 11:49 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Sep  9 12:07 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -49946,8 +50009,8 @@ stat mapped
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.8101  
- 	Solaris 5.6 - 09/07/05
- 	 7-Sep-05 11:49     
+ 	Solaris 5.6 - 09/09/05
+ 	 9-Sep-05 12:07     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50130,8 +50193,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.8101  
- 	Solaris 5.6 - 09/07/05
- 	 7-Sep-05 11:49     
+ 	Solaris 5.6 - 09/09/05
+ 	 9-Sep-05 12:07     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50244,4 +50307,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Sep 7 11:49:41 PDT 2005
+Ended at Fri Sep 9 12:07:59 PDT 2005

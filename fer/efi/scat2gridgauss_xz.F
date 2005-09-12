@@ -355,7 +355,7 @@ C  variables for checking axis characteristics (modulo axes)
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999
       ENDIF
-      IF (.NOT. regularz(2)) then
+      IF (.NOT. regularz(3)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999
       ENDIF

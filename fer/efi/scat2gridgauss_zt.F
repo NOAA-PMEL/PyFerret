@@ -332,11 +332,11 @@ C  variables for checking axis characteristics (modulo axes)
       CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
      .                       modulot, regulart)
 
-      IF (.NOT. regularz(1)) then
+      IF (.NOT. regularz(3)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999
       ENDIF
-      IF (.NOT. regulart(2)) then
+      IF (.NOT. regulart(4)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999
       ENDIF

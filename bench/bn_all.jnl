@@ -82,6 +82,13 @@ SET MODE VERIFY
 ! v5.53
 !  9/03 *kob* added bn_test_nan
 
+! v5.81  
+!  9/05 *acm* remove bn_curv_shade_mod.jnl which was duplicated by bn_curv_mod.jnl
+
+!  V5.90 
+!  9/05 *acm* new scripts  bn_tab_comma_multivar.jnl, bn_element_functions.jnl
+!             bn_long_revision_num.jnl
+
 GO bn_reset
 GO bn_syntax
 cancel mode metafile      !9/97

@@ -40,13 +40,9 @@ go mp_graticule 160 200 40 50 65 15 11
 go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
 
 !  Some map projections use 1-D x_page and y_page
-!  (mp_mercator, mp_plate_caree, mp_lambert_cyl). Test one of these  
-use coads_climatology
-set region/y=80s:80n
-go mp_mercator
-set grid sst
-shade sst[l=1], x_page, y_page
-
+!  (mp_mercator, mp_plate_caree, mp_lambert_cyl). Test the
+!  whole zoo of map projection scripts.  
+! go bn_mp_zoo.jnl
 
 can mode meta
 

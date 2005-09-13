@@ -221,7 +221,6 @@
      .     arg_hi_ss(X_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3), 
      .     num_nbrs, 2)
 
-
 *  Define together as one work array:
 *  real src_dist(nlon_dst, nlat_dst, num_nbrs)
 *  real map_src_dist(nlon_dst, nlat_dst, num_nbrs)
@@ -478,13 +477,17 @@ cc      max_dist = 0.17
       CALL horiz_interp_init_sphe(id, 
      .        src_grid_radians(wrk6lox,wrk6loy,1,1), 
      .        src_grid_radians(wrk6lox,wrk6loy,2,1), 
-     .        dst_grid_radians(1,1,1,1), dst_grid_radians(1,1,2,1),
-     .        i_lon_j_lat(1,1,1,1), i_lon_j_lat(1,1,1,2), 
+     .        dst_grid_radians(wrk8lox,wrk8loy,1,1), 
+     .        dst_grid_radians(wrk8lox,wrk8loy,2,1),
+     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,1), 
+     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,2), 
      .        ilon, jlat, 
      .        src_dist(wrk2lox,wrk2loy,wrk2loz,1), 
      .        src_dist(wrk2lox,wrk2loy,wrk2loz,2),
-     .        found_neighbors(1,1,1,1), map_src_add, 
-     .        found_neighbors(1,1,2,1), num_nbrs, max_dist, 
+     .        found_neighbors(wrk3lox,wrk3loy,1,wrk3lot), 
+     .        map_src_add, 
+     .        found_neighbors(wrk3lox,wrk3loy,1,wrk3lot), 
+     .        num_nbrs, max_dist, 
      .        src_modulo, nlon_src, nlat_src, nlon_dst, nlat_dst)
 
       i = res_lo_ss(X_AXIS)
@@ -493,8 +496,10 @@ cc      max_dist = 0.17
       l = res_lo_ss(T_AXIS)
 
       CALL save_mapping (src_dist, wt, 
-     .        found_neighbors(1,1,1,1), i_lon_j_lat(1,1,1,1),  
-     .        i_lon_j_lat(1,1,1,2), max_dist, nlon_src, nlat_src, 
+     .        found_neighbors(wrk3lox,wrk3loy,wrk3loz,wrk3lot), 
+     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,1), 
+     .        i_lon_j_lat(wrk1lox,wrk1loy,wrk1loz,2), 
+     .        max_dist, nlon_src, nlat_src, 
      .        nlon_dst, nlat_dst, num_nbrs, bad_flag_result,
      .        result(i,j,k,l) )
 

@@ -38,6 +38,16 @@ go mp_label 204.4 19.5 -1 0 .1 @IIHawaii
 go mp_graticule
 go mp_graticule 160 200 40 50 65 15 11
 go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
+
+!  Some map projections use 1-D x_page and y_page
+!  (mp_mercator, mp_plate_caree, mp_lambert_cyl). Test one of these  
+use coads_climatology
+set region/y=80s:80n
+go mp_mercator
+set grid sst
+shade sst[l=1], x_page, y_page
+
+
 can mode meta
 
 !
@@ -79,9 +89,3 @@ shade/nolabel sst, x_page[j=1:12], y_page ! DELIBERATE ERROR
 can mode ignore
 
 set mode meta bnplot.plt
-!!!!!!!!!!!!!!!!!!!!!!
-!
-! YAY!! End of Benchmark without crashing!!!!
-!
-!!!!!!!!!!!!!!!!!!!!!!
-

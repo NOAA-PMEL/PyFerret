@@ -39,7 +39,9 @@
 * Compute the range within X and Y coordinates actually needed for the 
 * hlimits and vlimits that were requested.
 *
-* V58+:  1/2005 ACM 
+* V581:  1/2005 ACM 
+* V590:  9/2005 acm Fix bug 1342, curvi data with 1-d coordinates.
+*                   The loop 200 controls were wrong.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -78,7 +80,7 @@
         jhi = ypos_loss_dim2
 
 	DO 200 i = ypos_loss_dim1, ypos_hiss_dim1
-        DO 200 j = ypos_loss_dim2, xpos_hiss_dim2
+        DO 200 j = ypos_loss_dim2, ypos_hiss_dim2
            yy = yfield(i,j)
 	   IF ( yy .EQ. bady) THEN
               GOTO 5200 

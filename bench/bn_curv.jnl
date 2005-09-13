@@ -42,7 +42,7 @@ go mp_label 180 45 0 -22 .15 "@p5@DRThe Bering Sea"
 !  Some map projections use 1-D x_page and y_page
 !  (mp_mercator, mp_plate_caree, mp_lambert_cyl). Test the
 !  whole zoo of map projection scripts.  
-! go bn_mp_zoo.jnl
+go bn_mp_zoo.jnl
 
 can mode meta
 

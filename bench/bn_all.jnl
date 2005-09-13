@@ -430,9 +430,6 @@ GO bn_reset
 GO bn_regulart.jnl
 
 GO bn_reset
-GO bn_curv_shade_mod.jnl
-
-GO bn_reset
 GO bn_labwid.jnl
 
 GO bn_reset

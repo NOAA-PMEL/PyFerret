@@ -12,7 +12,7 @@
 # Macro Definitions
 #
 
-DIRS = cat cmprsi_by convolve date_and_time examples extrema fft hinterp lanczos sort transpose v5d zaxr gridding obs_viz
+DIRS = cat cmprsi_by convolve date_and_time examples extrema fft hinterp lanczos ncedit sort transpose v5d zaxr gridding obs_viz
 
 #
 # Targets

@@ -1,0 +1,18 @@
+set win/siz=0.4
+can view
+
+set data "http://stout.pmel.noaa.gov/xwang_las_test-FDS/LAS/ndbc-adcp-44030/water_spd-ndbc-adcp-44030"
+set data "http://stout.pmel.noaa.gov/xwang_las_test-FDS/LAS/ndbc-adcp-44030/water_dir-ndbc-adcp-44030"
+set region/t=1-jun-2005:1-jul-2005/k=1:9
+let dd = water_dir[d=2]
+let ss = water_spd[d=1]
+set win/siz=0.4
+set mode ver
+go water_vector_stack.jnl ss dd -40 40
+
+pause
+can view
+set region/k=5:9
+
+go water_vector_stack.jnl ss dd
+

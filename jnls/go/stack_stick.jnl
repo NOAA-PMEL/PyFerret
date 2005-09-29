@@ -3,25 +3,26 @@
 ! stack_stick.jnl
 ! stack plot of stick vector plots at each depth
 ! acm 7/2005
+! acm 9/2005 remove the vertical scale on the right
+!            and instead put a stick key at the bottom
+!            showing size of a standard vector.
+!            yaxmin and yaxmax are now required.
 
 ! See the example in call_stack_stick.jnl
 
-! go stack_stick uvar vvar [yaxmin] [yaxmax]
-! If arguments 3 and 4 not given, then each plot in the stack is scaled 
-! automatically
+! go stack_stick uvar vvar yaxmin yaxmax
+! Arguments 3 and 4 are required, so we can draw a single key for 
+! the length of a standard vector at the bottom.
 
 ! $1 U component
 ! $2 V component
 ! $3 lower limit on Y axes for all plots
 ! $4 upper limit on Y axes for all plots
 
-QUERY/IGNORE $1%<Usage: GO stack_stick  U V [yaxmin] [yaxmax]
-QUERY/IGNORE $2%<Usage: GO stack_stick  U V [yaxmin] [yaxmax]
-
-
-IF `"$3%nothing%" ne "nothing"` THEN
-  QUERY/IGNORE $4%<if arg3 yaxmin given then arg4 yaxmax is required
-ENDIF
+QUERY/IGNORE $1%<Usage: GO stack_stick  U V yaxmin yaxmax
+QUERY/IGNORE $2%<Usage: GO stack_stick  U V yaxmin yaxmax
+QUERY/IGNORE $3%<Usage: GO stack_stick  U V yaxmin yaxmax
+QUERY/IGNORE $4%<Usage: GO stack_stick  U V yaxmin yaxmax
 
 cancel view
 
@@ -42,7 +43,11 @@ let y1 = `y2 - del` + 0.02
 
 def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 tv
 
-! Define viewports.
+! This viewport will contain the key with the standard arrow length.
+
+def view/axes/xlim=0.:1./ylim=0.04:`0.04+del` keyview
+
+! Define viewports for all the stacked plots.
 !
 ! The rt_* viewports, one for each depth being plotted are used to plot the right-
 ! hand axes giving the data range for each Z lavel.
@@ -63,7 +68,9 @@ plot/noy/ax=0,1,0,0/nolab/k=`ke`/vlim=100:200 all_zero
 
 label/nouser `($ppl$xlen)/2`,-0.8, 0, 0, 0.14 "`$1,return=title`   `$2,return=title`"
 label/nouser -0.6, `($ppl$ylen)/2`, 0, 90, 0.12 "Depth (`$1,return=zunits`)"
-label/nouser `($ppl$xlen)+0.7`, `($ppl$ylen)/2`, 0, 90, 0.12 "`$1,return=units`"
+
+! This label on the right, is replaced by making a key at the bottom.
+!label/nouser `($ppl$xlen)+0.7`, `($ppl$ylen)/2`, 0, 90, 0.12 "`$1,return=units`"
 
 
 ! Draw a plot for each series, labelling on the left with the depth.
@@ -75,53 +82,7 @@ label/nouser `($ppl$xlen)+0.7`, `($ppl$ylen)/2`, 0, 90, 0.12 "`$1,return=units`"
 ! ... but display it with the PLOTUV command
 !   PPL PLOTUV 0 1
 
-! automatic scaling of the vertical axes 
 
-IF `"$3%nothing%" eq "nothing"` THEN
-
-! Put most of the labels on, except for the title, depth, and yaxis label.
-
-
-set view lf_`ks`
-ppl tics,0,0,0,0; ppl axlsze,0,0
-plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0
-  PPL PLOT
-let zlab = zz[k=`ks`]
-label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"
-ppl tics,.125,.25,.125,.25 
-ppl axlint,2,2
-ppl axlsze,0.1,0.1
-ppl axatic 5,5 
-
-set view rt_`ks`
-plot/noy/k=`ks`/axes=0,0,0,1/title=" "/set $1, $2
-   go unlabel 6
-   ppl axatic ,3
-   ppl axlabp ,1
-   ppl ylab " "
-ppl plotuv 0 1 
-
-
-
-repeat/range=`ks+1`:`ke`/name=m (\
-   set view lf_`m`; \
-   ppl tics,0,0,0,0; ppl axlsze,0,0; \
-   plot/SET_UP/noy/axes=0,0,1,0/nolab/color=white/k=`ks` $1*0; \
-     PPL PLOT; \
-   let zlab = zz[k=`m`]; \
-   label/nouser `-1*0.4*($ppl$xorg)`, `($ppl$ylen)/2`, -1, 0, 0.15, "`zlab`"; \
-   ppl tics,.125,.25,.125,.25; \ 
-   ppl axlint,2,2; \
-   ppl axlsze,0.1,0.1; \
-   ppl axatic 5,5; \
-   ; \
-   set view rt_`m`; \
-   plot/noy/k=`m`/axes=0,0,0,1/nolab/set $1, $2; \
-      ppl axatic ,3 ; ppl axlabp ,1; PPL PLOTUV 0 1 )
-
-! case where vertical axis scaling given
-
-ELSE 
 ! Put most of the labels on , except for the title, depth, and yaxis label.
 
 set view lf_`ks`
@@ -138,9 +99,11 @@ ppl axatic 5,5
 
 set view rt_`ks`
 plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/set $1, $2
+   go unlabel 3
+   go unlabel 5
    go unlabel 6
    ppl yaxis $3 $4 `($4-$3)/4`
-   ppl axlabp ,1
+   ppl tics,0,0,0,0; ppl axlsze,0,0
    ppl ylab " "
 PPL PLOTUV 0 1
 
@@ -157,9 +120,23 @@ repeat/range=`ks+1`:`ke`/name=m (  set view lf_`m`; \
    ; \
    set view rt_`m`; \
    plot/noy/k=`m`/axes=0,0,0,1/vlimits=$3:$4/nolab/set $1, $2; \
-     ppl yaxis $3 $4 `($4-$3)/4` ; ppl axlabp ,1; PPL PLOTUV 0 1) 
+     ppl yaxis $3 $4 `($4-$3)/4` ;  ppl tics,0,0,0,0; ppl axlsze,0,0; PPL PLOTUV 0 1) 
 
 
-ENDIF
+! Make a key: a stick of the length of half the vertical axis; labelled with
+! the length of the corresponding vector.
+
+set mode ver
+let sticklen = `(($yaxis_max) - ($yaxis_min))/2`  ! for label
+let ylen = `($ppl$ylen)/2/($VP_WIDTH)/($VP_SCALE)`
+let xstart = ($ppl$xorg)/($VP_WIDTH)/($VP_SCALE)
+
+set view keyview
+plot/i=1:10/hlim=0:1/vlim=0:1/noax/nolab 10*i
+plot/over/vs/LINE/color=black/noax/nolab {`xstart`, `xstart+ylen`}, {0, 0}
+let keysize = 0.14
+
+def sym unlab  "`$1,return=units`"
+LABEL `xstart+ylen+keysize/10`,`0 - keysize/3`, -1, 0, `keysize`, "`sticklen` ($unlab)"
 
 set mode/last verify

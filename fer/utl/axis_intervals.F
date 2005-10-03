@@ -65,6 +65,7 @@
 * V590  7/05  Fix for bug 900: If the axis is subspan modulo, and if the 
 *              region we are using extends beyond the core range of the 
 *              axis, then we need to set it to irregular within this routine.
+* V590  10/05  change to a comment only, added when fixing bug1347.
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -99,6 +100,10 @@
 * If this is a sub-span modulo axis outside its core range, treat it as
 * irregular: will need to use regridding to get the data (possibly missing
 * values).
+* This test will mark as irregular any axis whose precision cannot be
+* resolved in single precision.  Keep this setting for now, computing
+* the grid interval.  For regular grids, reset the plot type (jtype)
+* with a call to set_regular_plot at the end of disp_set_up.
 
         IF (hi_cx - lo_cx .GT. 2) THEN
            IF (axis(lo_cx+1) - axis(lo_cx) .NE. 

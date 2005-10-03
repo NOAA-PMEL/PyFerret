@@ -135,6 +135,10 @@
 * v5.53*acm*  6/03  send correct axis to AXIS_INTERVALS
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges:
 *                  send delta to routine AXIS_FORMAT
+* V590 *acm* 10/05 Fix bug 1347; for very fine axes, set the flag irregular in
+*                  AXIS_INTERVALS, and compute the delta coordinate. Then after
+*                  the call to pplldc, reset the plot type to regular if the
+*                  grid is in fact regular.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -625,6 +629,15 @@ C ACM added 8/2001 save cal id if vertical time axis
      .		      1, size1, 1, size2, s1_axis, s2_axis, 
      .		      n1_regrid, n2_regrid, w1_lo, w2_lo,
      .		      d1_regrid, d2_regrid, plot_mem_used)
+
+* For cases where regrid was set in AXIS_INTERVALS not because of a 
+* subspan modulo axis, but because the axis precsion is too small for 
+* single precision representation, now we reset the plot type to regular 
+* if the axes are in fact regular.
+
+        IF (line_regular(axis1) .AND. line_regular(axis2)) 
+     .      CALL SET_REGULAR_PLOT
+
 	CALL DELETE_VARIABLE( mvx_temp )
 
 	IF ( vector ) THEN

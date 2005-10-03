@@ -1,4 +1,4 @@
-      SUBROUTINE NEW_GKS_WINDOW (ws_id,xname,status)
+      SUBROUTINE NEW_GKS_WINDOW (ws_id,xname,window_title,status)
 
 *
 *
@@ -41,21 +41,29 @@
 *     J Davison 5.13.91
 *     *jd* 3.26.92  Modified to accommodate ATC GKS as well as DEC
 *     *jd* 12.21.93 Modified to accommodate xgks
+*  v5.90 *acm* 9/05 append window_title to window name
 
-
+* Calling arguments
       integer         ws_id,status
-      character*(*)   xname
+      character*(*)   xname, window_title
+
+* Internal declarations
+      integer         TM_LENSTR1, nlen
       character*2     kwsid
 
 #ifdef xgks
-      character*8     window_name
+      character*88     window_name
 
       include         'gkspar.inc' 
       
       write (unit=kwsid,fmt='(i2)') ws_id
 
-      window_name = 'FERRET_' // kwsid(2:2)
-      call gesspn (window_name,8)
+      window_name = 'FERRET_'//kwsid(2:2)
+      nlen = TM_LENSTR1(window_title)
+      IF (nlen .GT. 1 .OR. window_title .NE. '_')
+     .    window_name = 'FERRET_'//kwsid(2:2)//'_'//window_title
+      nlen = TM_LENSTR1(window_name)
+      call gesspn (window_name,nlen)
       call gopwk (ws_id,6,4)
 
 *     SET DEFERRAL STATE TO GENERATE OUTPUT AS SOON AS POSSIBLE
@@ -75,15 +83,9 @@
       character*80    idr,str(1)
 #endif
 
-#ifdef unix
       include 'gkscm1_inc.decl'
       include 'GKSCM1.INC'
       include 'ws_types.cmn'
-#else
-      INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'
-      INCLUDE 'PPLV11INC:GKSCM1.INC'
-      INCLUDE 'tmap_pplv11inc:ws_types.inc'
-#endif
 
 *******************************************************************************
 

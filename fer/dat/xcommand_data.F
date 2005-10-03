@@ -158,6 +158,7 @@
 * V581:  4/05 *acm* - CONTOUR/MODULO for curvilinear plots
 * V581:  5/05 *acm* - add EXIT/CYCLE
 * V590:  8/05 *acm* - add LIST/NOROWLAB
+* V590:  9/05 *acm* - add SET WINDOW/TITLE
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -183,7 +184,7 @@
 		DATA qualifiers  (nqual_at1b+2)	/ 'LOCATION'	/
 		DATA qualifiers  (nqual_at1b+3)	/ 'ASPECT'	/
 		DATA qualifiers  (nqual_at1b+4)	/ 'CLEAR'	/
-		DATA qualifiers  (nqual_at1b+5)	/ '****'	/
+		DATA qualifiers  (nqual_at1b+5)	/ 'TITLE'	/
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/

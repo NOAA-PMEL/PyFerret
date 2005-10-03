@@ -76,8 +76,10 @@
 *      Don't set window to any number but 1 if batch graphics active
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 * V540 *sh* 9/01 - pass axis white space to SET_AX_SIZE (from PLOT_SETUP.cmn)
+* V590 *acm* 9/05  add SET WINDOW/TITLE.  If no title has been set, set it to 
+*                  the session date:time. Save window_title in xplot_setup.cmn 
+*                  for use in subsequent windows. Also define a symbol WIN_TITLE
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
@@ -93,23 +95,8 @@
 	include 'AXIS.INC'		        ! axis lengths
 !	include 'gksdefs.for'		! escape code
         include 'xplot_setup.cmn'       ! for animate boolean
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-        INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN' ! with PPL_viewports_active
-	INCLUDE	'TMAP_PPLV11INC:PLTCOM_DAT.DECL/LIST'
-	INCLUDE	'PPLV11INC:PLTCOM.DAT/LIST'	  ! with asize,bsize
-        INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'     ! with width/height
-        INCLUDE 'PPLV11INC:PLT.INC'
-	INCLUDE	'TMAP_PPLV11INC:GKSCM1_INC.DECL/LIST'	! with GKS common
-	INCLUDE	'PPLV11INC:GKSCM1.INC/LIST'	        ! with GKS common
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'		! axis lengths
-	INCLUDE 'PPLV11INC:AXIS.INC'		        ! axis lengths
-!	INCLUDE 'SYS_LIBRARY:GKSDEFS.FOR'		! escape code
-#endif
-	
+        include 'xtoday.cmn'            ! with today_date and today_time
+        
 * calling argument declarations:
 	INTEGER	status
 
@@ -117,12 +104,12 @@
 	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
      .		axis_ref, ITS_BATCH_GRAPHICS
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
-     .          qp, ivp, colon_pos
+     .          qp, ivp, colon_pos, tlen, i
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
      .		bigness, scale, xstretch, ystretch, aspect,
      .		ref_len
 	CHARACTER	UPPER_CASE*1, GKS_X_CONID*16,
-     .			arg1*1, buffer*24, xwind_id*16, short_buff*24
+     .			arg1*1, buffer*24, xwind_id*80, short_buff*24
 * ... for GKS escape call:
 	INTEGER esc_data(4), dummy
 	DATA esc_data/1,0,0,-9/				!kob 1/97
@@ -132,20 +119,58 @@
      .			slash_loc,
      .			slash_aspect,
      .			slash_clear,
-     .			slash_text
+     .			slash_title
         LOGICAL         physical
 	PARAMETER     ( slash_size   = 0+1,
      .			slash_new    = 1+1,
      .			slash_loc    = 2+1,
      .			slash_aspect = 3+1,
      .			slash_clear  = 4+1,
-     .			slash_text   = 5+1,
+     .			slash_title  = 5+1,
      .                  physical     = .TRUE. )
 
 * statement function - value between 0 and 1
 	REAL x
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
+
+* /TITLE=text
+* This text becomes the name of the workstation. The name gets truncated 
+* at the first blank space. Replace any internal spaces with underscore.
+
+	IF ( .NOT.pplus_started ) window_title = ' '
+
+        tlen = 1
+	qp = qual_given( slash_title )
+	IF (qp .GT. 0 .AND. .NOT. animate) THEN
+           CALL EQUAL_STR_LC( cmnd_buff(qual_start(qp):qual_end(qp)),
+     .			   window_title, status )
+           tlen = TM_LENSTR1(window_title)
+           DO 70 i = 1, tlen
+             IF (window_title(i:i) .EQ. ' ') window_title(i:i) = '_'
+ 70        CONTINUE
+
+* By default let the session date and time be incorporated into the name.
+
+        ELSE IF (qp .EQ. 0 .AND. window_title .EQ. ' ') THEN
+           window_title = today_date//':'//today_time
+
+* Or the directory.
+!  This works, but with slashes the path name does not get appended. 
+!  gks calls shorten FERRET_2_/home/ja8/ansley/FERRET/fer 
+!  to just the directory name.  If we do use the directory, change
+! the code in open_gks_ws.F to do it the same way.
+
+c           call getenv ('PWD',window_title)
+c           tlen = TM_LENSTR1(window_title)
+c           DO 75 i=1, tlen
+c              IF (window_title(i:i) .EQ. '/') window_title(i:i) = '_'
+c 75        CONTINUE
+
+        ENDIF
+        tlen = TM_LENSTR1(window_title)
+        ier = 0
+        CALL SETSYM ("WIN_TITLE "//window_title(:tlen), tlen+10, ier, status)
 
 * main window opened yet ?
 	IF ( .NOT.pplus_started ) THEN
@@ -230,7 +255,7 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	   IF ( scale .LE. 0.0 ) GOTO 5050
 	   wn_scale(n) = SQRT( scale )
-	ENDIF
+        ENDIF
 
 * /ASPECT=ratio[:"AXIS" or "EDGE"(default)]
 	qp = qual_given( slash_aspect )
@@ -323,7 +348,7 @@
 * create new window ?
 	IF ( .NOT. wn_open(n) ) THEN
 	   xwind_id = GKS_X_CONID( n )
-	   CALL NEW_GKS_WINDOW( n, xwind_id, status )   ! status always OK
+	   CALL NEW_GKS_WINDOW( n, xwind_id, window_title(:tlen), status )   ! status always OK
 	   physical_chg = .TRUE.
 * ... set up GKS bundles for the new "workstation" (window)
 	   CALL SETUP_LINE_BUNDLES( n, wstype )

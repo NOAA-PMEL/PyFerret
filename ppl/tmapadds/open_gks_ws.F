@@ -52,10 +52,16 @@
 *  v5.4 *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT 
 *             here  set polymarker area attributes to bundled.
 *      *acm* 10/01  remove VMS includes
+*  v5.90 *acm* 9/05 append window_title to window name. If no title
+*                   has been defined, set it to the session date:time.
+*                   Save window_title in xplot_setup.cmn for use in subsequent 
+*                   windows. Also define a symbol WIN_TITLE
 
 
-	integer 	asf(13),error
+	integer 	TM_LENSTR1, nlen, asf(13),error
 	LOGICAL         ITS_BATCH_GRAPHICS, batch
+
+        character*88    window_name
 
 	include 'pltcom_dat.decl'! with declarations    
 	include 'PLTCOM.DAT'! with declarations    
@@ -65,6 +71,8 @@
 	include 'ppl_in_ferret.cmn'
         include 'ws_types.cmn'
         include 'shade_vars.cmn'
+        include 'xtoday.cmn'            ! with today_date and today_time
+        include 'xplot_setup.cmn'
 
 #ifdef atc_gks
 #   ifdef unix
@@ -85,6 +93,15 @@
         character*80     conid_options
         character*80     conid_opt_def/' -nc 64 -ox 2 -u 2'/
 #endif
+
+#ifdef sun
+        BYTE      NULL
+        BYTE      cstring(64) ! c-type Hollerith string buffer
+#else
+        INTEGER*1 NULL
+        INTEGER*1 cstring(64) ! c-type Hollerith string buffer
+#endif
+	PARAMETER ( NULL =  0)
 
 
 ******************************************************************************** initialize
@@ -155,7 +172,22 @@ C
 	CALL GOPWK(WSID, 0, 0)
 #else
 	if (ppl_in_ferret) then
-	   call gesspn ('FERRET_1')
+
+* If the window title has not yet been initialized, do so using the
+* date and time of the Ferret session.
+
+           clen = 64
+	   CALL TM_FTOC_STRNG( window_title, cstring, clen )
+           IF (cstring(1) .EQ. NULL) 
+     .        window_title = today_date//':'//today_time
+           nlen = TM_LENSTR1(window_title)
+
+           IF (nlen .GT. 1 .OR. window_title .NE. '_')
+     .       window_name = 'FERRET_1'//'_'//window_title
+           ier = 0
+           CALL SETSYM ("WIN_TITLE "//window_title(:nlen), nlen+10, ier, status)
+
+	   call gesspn (window_name)
 	else
 	   call gesspn ('PPLP')
 	endif

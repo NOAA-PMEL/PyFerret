@@ -49,6 +49,7 @@ set_fill_ndx.F\
 set_gks_metafile.F\
 set_one_color.F\
 set_pat_size.F\
+set_regular_plot.F\
 set_window_size.F\
 setax_syms.F\
 setfont.F\

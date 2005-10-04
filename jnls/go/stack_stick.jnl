@@ -3,10 +3,6 @@
 ! stack_stick.jnl
 ! stack plot of stick vector plots at each depth
 ! acm 7/2005
-! acm 9/2005 remove the vertical scale on the right
-!            and instead put a stick key at the bottom
-!            showing size of a standard vector.
-!            yaxmin and yaxmax are now required.
 
 ! See the example in call_stack_stick.jnl
 
@@ -45,7 +41,7 @@ def view/axes/xlim=0.1:0.9/ylim=0.095:0.9 tv
 
 ! This viewport will contain the key with the standard arrow length.
 
-def view/axes/xlim=0.:1./ylim=0.04:`0.04+del` keyview
+def view/axes/xlim=0.:1./ylim=0.01:0.095 keyview
 
 ! Define viewports for all the stacked plots.
 !
@@ -126,17 +122,21 @@ repeat/range=`ks+1`:`ke`/name=m (  set view lf_`m`; \
 ! Make a key: a stick of the length of half the vertical axis; labelled with
 ! the length of the corresponding vector.
 
-set mode ver
 let sticklen = `(($yaxis_max) - ($yaxis_min))/2`  ! for label
 let ylen = `($ppl$ylen)/2/($VP_WIDTH)/($VP_SCALE)`
 let xstart = ($ppl$xorg)/($VP_WIDTH)/($VP_SCALE)
 
 set view keyview
-plot/i=1:10/hlim=0:1/vlim=0:1/noax/nolab 10*i
-plot/over/vs/LINE/color=black/noax/nolab {`xstart`, `xstart+ylen`}, {0, 0}
-let keysize = 0.14
 
+plot/i=1:10/hlim=0:1/vlim=0:1/noax/nolab 10*i
+let ypos = 0.5
+plot/over/vs/LINE/color=black/noax/nolab {`xstart`, `xstart+ylen`}, {`ypos`, `ypos`}
+
+! Center the label on the line we just drew
+
+let xpos = xstart + ylen/2
+let keysize = 0.14
 def sym unlab  "`$1,return=units`"
-LABEL `xstart+ylen+keysize/10`,`0 - keysize/3`, -1, 0, `keysize`, "`sticklen` ($unlab)"
+LABEL `xpos`, `ypos-1.2*keysize`, 0, 0, `keysize`,  "`sticklen` ($unlab)"
 
 set mode/last verify

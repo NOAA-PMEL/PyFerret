@@ -58,7 +58,7 @@
 *                   windows. Also define a symbol WIN_TITLE
 
 
-	integer 	TM_LENSTR1, nlen, asf(13),error
+	integer 	TM_LENSTR1, s1, nlen, asf(13), error
 	LOGICAL         ITS_BATCH_GRAPHICS, batch
 
         character*88    window_name
@@ -178,8 +178,12 @@ C
 
            clen = 64
 	   CALL TM_FTOC_STRNG( window_title, cstring, clen )
-           IF (cstring(1) .EQ. NULL) 
-     .        window_title = today_date//':'//today_time
+           IF (cstring(1) .EQ. NULL) THEN
+              s1 = 1
+              IF (today_date(1:1) .EQ. ' ') s1 = 2
+              nlen = TM_LENSTR1(today_date)
+              window_title = today_date(s1:nlen)//':'//today_time
+           ENDIF
            nlen = TM_LENSTR1(window_title)
 
            IF (nlen .GT. 1 .OR. window_title .NE. '_')

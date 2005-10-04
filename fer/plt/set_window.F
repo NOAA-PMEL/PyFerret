@@ -104,7 +104,7 @@
 	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
      .		axis_ref, ITS_BATCH_GRAPHICS
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
-     .          qp, ivp, colon_pos, tlen, i
+     .          qp, ivp, colon_pos, tlen, i, s1
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
      .		bigness, scale, xstretch, ystretch, aspect,
      .		ref_len
@@ -153,7 +153,10 @@
 * By default let the session date and time be incorporated into the name.
 
         ELSE IF (qp .EQ. 0 .AND. window_title .EQ. ' ') THEN
-           window_title = today_date//':'//today_time
+           s1 = 1
+           IF (today_date(1:1) .EQ. ' ') s1 = 2
+           tlen = TM_LENSTR1(today_date)
+           window_title = today_date(s1:tlen)//':'//today_time
 
 * Or the directory.
 !  This works, but with slashes the path name does not get appended. 

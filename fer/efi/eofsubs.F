@@ -246,6 +246,9 @@ C                     flag for the result.
 C  Ansley Manke 1/01  declare all variables.
 C
 C  Ansley Manke 5/01  remove pct_cutoff as a parameter
+C 
+C  Ansley Manke 9/05  Make all workspace be allocated as external function work 
+C                     arrays. Arrays in TRIDIN passed in rather than declared.
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -553,7 +556,9 @@ c      DIMENSION ALPHA(4000),BETA(4000),BB(4000)
      .            eofwork(1,3,1,1),RNORM,EPS)
 
       CALL TRIDIN(eofwork(1,1,1,1),eofwork(1,2,1,1),N,E,RNORM,
-     .            N,2.0**(-48),X,NB)
+     .            N,2.0**(-48),X,NB,eofwork(1,5,1,1),eofwork(1,6,1,1),
+     .            eofwork(1,7,1,1),eofwork(1,8,1,1),eofwork(1,9,1,1),
+     .            eofwork(1,10,1,1) )
 
       CALL BACKS(eofwork(1,2,1,1),A,N,X,N,EPS,NB)
 
@@ -737,16 +742,20 @@ C SORT
 
 C*************************************************************************
 
-      SUBROUTINE TRIDIN (C,B,N,W,NORM,M1,MACHEPS,Z,NB)
+      SUBROUTINE TRIDIN (C,B,N,W,NORM,M1,MACHEPS,Z,NB,M,P,Q,R,INT,X)
 
       INTEGER nb, nminus1, ii
-      REAL C(*),B(*),W(*),Z(NB,*)
+      REAL C(*),B(*),W(*),Z(NB,*),
+     .     M(*),P(*),Q(*),R(*),INT(*),X(*)
 
 C J.H.WILKINSON, CALCULATION OF THE EIGENVECTORS OF A SYMMETRIC
 C TRIDIAGONAL MATRIX BY INVERSE ITERATION. NUMERISCHE MATHEMATIK 4,
 C 368-376 (1962)
 
-      REAL M(4000),P(4000),Q(4000),R(4000),INT(4000),X(4002)
+* 9/05 ACM  Use a work array eofwork rather than explicitly dimensioned
+*           arrays M, P, Q, R, INT, and X
+
+c      REAL M(4000),P(4000),Q(4000),R(4000),INT(4000),X(4002)
       INTEGER N,M1
       REAL NORM,MACHEPS
 

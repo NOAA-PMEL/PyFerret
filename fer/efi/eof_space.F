@@ -48,6 +48,8 @@
 * Feb 2003 Add a test that NEOF <= max_neof, which is dictated by work
 *          arrays in the solvers in TRIDIN in eofsubs.F
 * Jun 2003 Workspace arrays need to be initialized for each vertical level.
+* Sep 2005 Remove the max_eof test; make all workspace be allocated as 
+*          external function work arrays.
 *
 * Compute EOF/s and time amplitude funcions from a 2-d field, or for each level 
 * of a 3-D field.  Based on programs (coadseof.f, etc.) by Dai McClurg and 
@@ -264,7 +266,7 @@
 *  eofwork
       iwork = 9
       CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mx, 4, 1, 1)
+     .   mx, 10, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -358,7 +360,7 @@
       INTEGER nx, ny, nt, i, j, k, l, k1, iw, jw, kw, lw
       REAL frac_timeser
 
-      DATA max_neof/4000/        ! size of work arrays within the EOF solver
+c      DATA max_neof/4000/        ! size of work arrays within the EOF solver
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -458,12 +460,12 @@
          CALL count_neof (id, arg_1, neof, ok, nx, ny,  k1, nt, mx, 
      .       bad_flag(ARG1), frac_timeser, err_msg, ier)
 
-         IF (neof .GT. max_neof) THEN
-            WRITE (err_msg, 5600) neof, max_neof 
- 5600       FORMAT ('Number of EOFs too large:', I8, 
-     .              ' Reduce NX*NY. Max is', i5)
-            ier = 1
-         ENDIF
+c         IF (neof .GT. max_neof) THEN
+c            WRITE (err_msg, 5600) neof, max_neof 
+c 5600       FORMAT ('Number of EOFs too large:', I8, 
+c     .              ' Reduce NX*NY. Max is', i5)
+c            ier = 1
+c         ENDIF
 
          IF (ier .NE. 0) then
             GOTO 5010

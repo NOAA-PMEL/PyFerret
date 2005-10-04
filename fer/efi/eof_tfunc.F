@@ -266,7 +266,7 @@
 *  eofwork
       iwork = 9
       CALL ef_set_work_array_dims (id, iwork, 1, 1, 1, 1, 
-     .   mxmy, 4, 1, 1)
+     .   mxmy, 10, 1, 1)
 
       mx = mxmy
 
@@ -361,7 +361,7 @@
       INTEGER nx, ny, nt, i, j, k, l, k1, iw, jw, kw, lw
       REAL frac_timeser
 
-      DATA max_neof/4000/        ! size of work arrays within the EOF solver
+c      DATA max_neof/4000/        ! size of work arrays within the EOF solver
 
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -460,12 +460,12 @@
          CALL count_neof (id, arg_1, neof, ok, nx, ny, k1, nt, mx, 
      .       bad_flag(ARG1), frac_timeser, err_msg, ier)
 
-         IF (neof .GT. max_neof) THEN
-            WRITE (err_msg, 5600) neof, max_neof 
- 5600       FORMAT ('Number of EOFs too large, ', I8, 
-     .              'Reduce NX*NY. Max is', i5)
-            ier = 1
-         ENDIF
+c         IF (neof .GT. max_neof) THEN
+c            WRITE (err_msg, 5600) neof, max_neof 
+c 5600       FORMAT ('Number of EOFs too large, ', I8, 
+c     .              'Reduce NX*NY. Max is', i5)
+c            ier = 1
+c         ENDIF
 
          IF (ier .ne. 0) then
             GOTO 5010

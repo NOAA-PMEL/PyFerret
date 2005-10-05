@@ -1,0 +1,19 @@
+! bn_window_title.jnl
+! Define a title for windows rather than just FERRET_1, FERRET_2, ...
+! If no title is set, use SESSION_DATE:SESSION_TIME
+
+go ptest
+sh sym win_title
+
+set win/title="set the title"
+sho sym win_title
+
+go ptest
+set win/new
+set win/title=""/new
+sho sym win_title
+
+set win/title="($sessino_date):($session_time)"
+set win/title="($session_date):($session_time)"
+sh sym win_title
+

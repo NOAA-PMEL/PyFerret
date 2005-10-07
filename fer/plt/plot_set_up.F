@@ -124,6 +124,8 @@
 *                  (as in polygon_set_up).
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges:
 *                  send delta to routine AXIS_FORMAT
+* V580 *acm* 10/05 Fix for bug 1349, longitude/latitude axis formatting. Need 
+*                  to set the format to use as well as the label.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -157,14 +159,14 @@
 * internal variable declarations:
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, flip, time_axis,
      .			all_1_dep, all_1_ind, formatted, user_title,
-     .			indep_is_log, dep_is_log
+     .			indep_is_log, dep_is_log, use_nice
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
      .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
      .			indep_ax*1, dep_ax*1, tstyle*3, year*4,
      .			buff1*16, buff2*16, buff3*8, t1_date*14, tref*14,
-     .                  cal_name*32, cal_name_new*32, val_buff*32
+     .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
@@ -214,6 +216,7 @@
 	cal_id_2 = 0
 	dep_axtyp = 1
 	indep_axtyp = 1
+        cx_x = cx_list(1)
 
 * determine PLOT+ memory required
         plot_mem_used = 0
@@ -362,25 +365,18 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  GOTO 5170
               ENDIF
 * for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
-       	 
-               cx_x = cx_list(1)	 
-               cx_y = cx_list(2) 	 
+       	  
                IF (.NOT.overlay) THEN	 
-                  iunits = TM_UNIT_ID(VAR_UNITS(cx_x))	 
-                  IF (iunits .EQ. 4) THEN	 
-                     CALL PPLCMD ( from, line, 0, 'XFOR (I7,''''LONE'''')', 1, 1 )	 
-                  else	 
-                     CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
-                  endif	 
-            	 
-                  iunits = TM_UNIT_ID(VAR_UNITS(cx_y))	 
-                  IF (iunits .EQ. 4) THEN	 
-                     CALL PPLCMD ( from, line, 0, 'YFOR (I7,''''LAT'''')', 1, 1 )	 
-                  else	 
-                     CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
-                  endif	 
-               ELSE
-	          CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
+                  iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
+                  IF (iunits .EQ. 4) THEN
+	             CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
+     .                  fmt, use_nice )
+                     IF (use_nice) THEN
+                         ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                     ',''''LONE'''')' 
+                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                     ENDIF
+                  ENDIF	 
                ENDIF
 
 	   ENDIF
@@ -486,6 +482,28 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   IF ( versus ) THEN
 * ... number of values must be equal in independ. and depend. for ordered pairs
 	      IF ( npts2 .NE. npts ) GOTO 5130
+
+* Set up the dependent axis.
+              IF (versus .AND. .NOT.overlay) THEN
+ 	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
+	         dep_min = DBLE( lo )
+	         dep_max = DBLE( hi )
+                 cx_y = cx_list(2) 	
+                 iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
+                 IF (iunits .EQ. 4) THEN
+	            CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
+     .                      delta, dep_is_log, dep_axtyp, status)
+
+	            CALL GET_AXIS_FORMAT( dep_min, dep_max, delta, 
+     .                 fmt, use_nice )
+                    IF (use_nice) THEN
+                        ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .                    ',''''LONE'''')' 
+                       CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+                    ENDIF
+                 ENDIF
+              ENDIF
+
 	   ELSE
 * ... in PLOT TEMP , SALT , U all vars must be along same ww dimension
 	      IF ( ndim .GT. 1 ) GOTO 5110

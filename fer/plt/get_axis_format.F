@@ -1,4 +1,5 @@
-	BLOCK DATA XREVISION_DATA
+	SUBROUTINE GET_AXIS_FORMAT( lo_val, hi_val, del_val, 
+     .     fmt, use_nice )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -33,46 +34,43 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* pre-defined program revision and name
+* ACM 5/2005
+* set up the format for PPLUS to properly label the axis tics
+* Extracted from axis_format.F
 
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
-*
-* V314 - 9/14/94 (extracted from ferret.F)
-* V400 - 3/16/95 (at the joining with the GUI)
-* V402 - 7/95 symbols (4.01), VAR[G=var2[d=dset]], etc. ...
-*	 8/95 - The initialization of progname_mod moved to
-*		xrevision_type_data.F for auto-configuring
-* V410 - 8/95 ... just a name change so that the anonymous ftp looks good
-* V411 - 9/95 repaired memory leaks: XGKS (clear_vp.F) and HDF (whdf.c)
-* V420 - major changes
-* V430 - added IF-THEN tests and wildcards
-* V440 - 8/29/96 linked with GUI
-* V441 - 10/15/96 identical to 4.40 but Sun and OSF V4.40's went out in debug
-*		mode. This is to differentiate from them.
-* V442 - 12/06/96 *kob* - gui bug fixes and quality control checks
-* V445 - 1/14/97 *sh* - more gui bug fixes and uniform version numbering
-* V490 - 4/5/97 *sh* - still in development at this date
-* v4.92 - 1/11/98 *kob* - upped version number from 4.91 to 4.92 for 
-*                         source code release
-* V500 - 12/98 *sh* - still in development as of this date
-* V510 - 10/99 *sh*
-* V511 - 05/00 *kob*
-* V521 - *sh* minor bug fixes from V520
-* V530 - 10/00 *sh* beta 1
-* V534 - 9/01 *sh* alpha 1
-* V550 - 7/02 *sh* alpha 1
-* V551 - 2/03 *kob* beta1
-* V580 - 12/04 *acm* 
-* V581_01 8/12/05 *acm* minor revisions (not released)
-* V591_2 10/5/05  *acm* bug fixes thru now...
+* calling argument declarations:
+	CHARACTER	fmt*4
+	REAL*8		lo_val, hi_val, del_val
+        LOGICAL         use_nice
 
-	include	'xrevision.cmn'
+* internal variable declarations:
+	INTEGER		places, ndec
+	REAL		res_del
+	INTEGER		n_res
 
-	DATA program_name	/ 'FERRET' /
-	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.812   /
-!	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
-!	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
-	END
+* decimal places needed for axis:
+* ... sufficient digits to resolve the tic interval differences and
+*     still display the largest axis labels
+*  res_del	- labels will be accurate enough to resolve this delta value
+
+* Compute n_res; round up (hi-lo)/(2*del_val)  We label half of the tic marks...
+
+        n_res = INT(0.5+ ABS(hi_val - lo_val) / (2.D0*del_val) ) 
+	res_del = ABS( hi_val - lo_val ) / n_res
+	CALL GET_PREC_DIGITS( hi_val, lo_val, res_del, places, ndec )
+
+* format to use
+* Let smaller ranges be labeled with longitude (range 161.123 to 161.130)
+*	use_nice = places .LE. 6
+	use_nice = places .LE. 7
+	IF ( use_nice ) THEN
+	   IF ( ndec .EQ. 0 ) THEN
+	      fmt = 'I7'
+	   ELSE
+	      WRITE ( fmt, 3000 ) ndec
+ 3000	      FORMAT ('F8.',I1)
+	   ENDIF
+	ENDIF
+
+        RETURN
+        END

@@ -148,7 +148,7 @@
 	REAL            only_val, dashstyle(4)
 
 * internal variable declarations:
-	LOGICAL         missing_polygon, first_polygon
+	LOGICAL         missing_polygon, first_polygon, use_nice
 	LOGICAL		NO_LINE_RANGE, ambiguous_coord_axis,
      .			formatted, user_title, oneD_form, stack_up,
      .			x_is_log, y_is_log
@@ -157,7 +157,7 @@
 	CHARACTER	VAR_UNITS*64, LEFINT*6, TM_GET_CALENDAR_NAME*32, 
      .			x_ax*1, y_ax*1,buff*8, buff2*4, t1_date*14,
      .                  cal_name*32, cal_name_saved*32, buff3*16,
-     .			buff4*16, LEFT_REAL*16
+     .			buff4*16, LEFT_REAL*16, fmt*4
 	INTEGER         TM_UNIT_ID
 	INTEGER		TM_LENSTR1, CX_DIM_LEN,	TM_GET_CALENDAR_ID, 
      .			mr_x, cx_x, mr_y, cx_y, cx_color, mr_color,
@@ -804,24 +804,10 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	makep = ' '   ! that PLOT+ kludge again
 
-* turn on lon/lat axis formatting, if lon/lat units, otherwise off
-
-	IF (.NOT.overlay) THEN
-	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
-	   IF (iunits .EQ. 4) THEN
-	      CALL PPLCMD ( from, line, 0, 'XFOR (I7,''''LONE'''')', 1, 1 )
-	   else
-	      CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
-	   endif
-	   
-	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
-	   IF (iunits .EQ. 4) THEN
-	      CALL PPLCMD ( from, line, 0, 'YFOR (I7,''''LAT'''')', 1, 1 )
-	   else
-	      CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
-	   endif
-	ENDIF
-	
+	IF ( .NOT.overlay ) THEN
+           CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
+           CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
+        ENDIF
 
 * axis scaling -- only applies if it is a fresh plot (not an overlay)
 * most of the work is avoiding an error if there is no data range with
@@ -873,7 +859,25 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      ENDIF
 
 	   ENDIF
+
+* turn on lon/lat axis formatting, if lon/lat units, otherwise off
+
+	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
+	   IF (iunits .EQ. 4) THEN
+	      CALL GET_AXIS_FORMAT( lox, hix, delta, 
+     .           fmt, use_nice )
+              IF (use_nice) THEN
+                  ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .              ',''''LONE'''')' 
+                 CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+              ENDIF
+           ELSE
+	      CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
+	   ENDIF
+
 * ... Y axis
+	   delta = unspecified_val8
+
 	   IF ( pydenig .GT. 0 ) THEN   ! explicit /XLIMITS 10/93
 	      IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
 	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
@@ -917,6 +921,19 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	   ENDIF
 
+	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
+	   IF (iunits .EQ. 4) THEN
+	       CALL GET_AXIS_FORMAT( loy, hiy, delta, 
+     .            fmt, use_nice )
+               IF (use_nice) THEN
+                   ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .               ',''''LONE'''')' 
+                  CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+               ENDIF
+           ELSE
+	      CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
+	   ENDIF
+
 *   When not an overlay, set the axis type to log or reverse log
 	   IF (is_logx .OR. is_logy) THEN
 	      WRITE (buff3, 3006) x_axtyp, y_axtyp
@@ -925,6 +942,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	      CALL PPLCMD ( from, line, 0, buff3, 1, 1)
 	   ENDIF
 
+	ELSE
 	ENDIF
 
 	IF ( no_labels ) RETURN

@@ -24,6 +24,7 @@ equal_color.F\
 equal_range.F\
 equal_range_t.F\
 flow_set_up.F\
+get_axis_format.F\
 get_frame_size.F\
 get_view_size.F\
 get_window_pixels.F\

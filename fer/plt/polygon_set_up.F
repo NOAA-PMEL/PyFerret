@@ -864,7 +864,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
 	   IF (iunits .EQ. 4) THEN
-	      CALL GET_AXIS_FORMAT( lox, hix, delta, 
+	      CALL GET_AXIS_FORMAT( DBLE(lox), DBLE(hix), delta, 
      .           fmt, use_nice )
               IF (use_nice) THEN
                   ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
@@ -923,7 +923,7 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
 	   IF (iunits .EQ. 4) THEN
-	       CALL GET_AXIS_FORMAT( loy, hiy, delta, 
+	       CALL GET_AXIS_FORMAT( DBLE(loy), DBLE(hiy), delta, 
      .            fmt, use_nice )
                IF (use_nice) THEN
                    ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//

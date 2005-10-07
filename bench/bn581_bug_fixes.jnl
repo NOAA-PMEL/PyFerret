@@ -74,9 +74,14 @@ GO err580_show_axis_t.jnl
 GO bn_reset
 GO err581_nlev.jnl
 
+! Fix for bug 1349: formatted axis labels on PLOT/VS and POLYGON plot
+! acm 8/29/2005
+GO bn_reset
+GO err581_vs_poly_axis.jnl  
 
 ! Fix for bug 1270: regridding leakage between cells: monthly-> seasonal regridding
 ! needs file short_bug1270.nc
 ! ( this fix not checked in for v5.81 release.)
 ! GO bn_reset
 ! GO err580_regrid_prec.jnl  
+

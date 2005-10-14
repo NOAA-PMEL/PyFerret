@@ -93,11 +93,12 @@ ppl axlint,2,2
 ppl axlsze,0.1,0.1
 ppl axatic 5,5
 
+
 set view rt_`ks`
-plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/set $1, $2
-   go unlabel 3
-   go unlabel 5
-   go unlabel 6
+cancel mode logo
+! Unlabel 1 removes the depth label...
+plot/noy/k=`ks`/axes=0,0,0,1/vlimits=$3:$4/title=" "/set $1, $2
+   go unlabel 1
    ppl yaxis $3 $4 `($4-$3)/4`
    ppl tics,0,0,0,0; ppl axlsze,0,0
    ppl ylab " "
@@ -126,10 +127,11 @@ let sticklen = `(($yaxis_max) - ($yaxis_min))/2`  ! for label
 let ylen = `($ppl$ylen)/2/($VP_WIDTH)/($VP_SCALE)`
 let xstart = ($ppl$xorg)/($VP_WIDTH)/($VP_SCALE)
 
+! make the key at the lower left, below any title or time axis label 
 set view keyview
 
 plot/i=1:10/hlim=0:1/vlim=0:1/noax/nolab 10*i
-let ypos = 0.5
+let ypos = 0.25
 plot/over/vs/LINE/color=black/noax/nolab {`xstart`, `xstart+ylen`}, {`ypos`, `ypos`}
 
 ! Center the label on the line we just drew
@@ -137,6 +139,6 @@ plot/over/vs/LINE/color=black/noax/nolab {`xstart`, `xstart+ylen`}, {`ypos`, `yp
 let xpos = xstart + ylen/2
 let keysize = 0.14
 def sym unlab  "`$1,return=units`"
-LABEL `xpos`, `ypos-1.2*keysize`, 0, 0, `keysize`,  "`sticklen` ($unlab)"
+LABEL `xpos`, `ypos-1.4*keysize`, 0, 0, `keysize`,  "`sticklen` ($unlab)"
 
 set mode/last verify

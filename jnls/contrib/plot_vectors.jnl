@@ -49,6 +49,7 @@
 ! Modification:
 !
 ! Ansley Manke October 2005 modify the definition of PV_nbvectors
+!                           and restore Patricks original arrow size of 0.3
 !**************************************************************
 
 query/ignore $1%<Use: go plot_vectors u v lon lat [skip] [fill]%

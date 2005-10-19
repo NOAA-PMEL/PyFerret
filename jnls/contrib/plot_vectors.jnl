@@ -109,7 +109,7 @@ def sym PV_ratio = `($PV_ratioworld)*($PV_ratioviewp)`
 !           s 
 !-----------------------
 def sym PV_head_size = 0.3                        ! in percentage
-def sym PV_head_size = 0.1                        !*ACM* 
+!def sym PV_head_size = 0.1                        !*ACM* 
 def sym PV_head_angle = `30*($PV_DEG2RAD)`            ! in degrees
 let PV_size = 0.1* ($PV_head_size) * (PV_u1^2 + (PV_v1/($PV_ratio))^2)^.5
 let PV_alpha = atan2(PV_v1/($PV_ratio),PV_u1)

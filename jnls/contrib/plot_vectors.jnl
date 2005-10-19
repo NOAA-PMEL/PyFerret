@@ -48,6 +48,7 @@
 ! History:
 ! Modification:
 !
+! Ansley Manke October 2005 modify the definition of PV_nbvectors
 !**************************************************************
 
 query/ignore $1%<Use: go plot_vectors u v lon lat [skip] [fill]%
@@ -72,7 +73,10 @@ let PV_v=xsequence (($2))
 let PV_lon=xsequence (($3))
 let PV_lat=xsequence (($4))
 
-def sym PV_nbvectors=`PV_u,return=iend - PV_u,return=istart`
+! def sym PV_nbvectors=`PV_u,return=iend - PV_u,return=istart`
+let PV_nbv = `PV_u,return=iend` - `PV_u,return=istart` + 1
+def sym PV_nbvectors=`PV_nbv`
+
 !say `($PV_nbvectors)`
 
 !-----------------------
@@ -92,7 +96,7 @@ let PV_lat1 = PV_lat * PV_select1
 def sym PV_ratioworld = `(($YAXIS_MAX) - ($YAXIS_MIN))/(($XAXIS_MAX) - ($XAXIS_MIN))`
 def sym PV_ratioviewp = `($PPL$XLEN)/($PPL$YLEN)`
 def sym PV_ratio = `($PV_ratioworld)*($PV_ratioviewp)`
-say ($PV_ratioworld) ($PV_ratioviewp) ($PV_ratio) 
+! say ($PV_ratioworld) ($PV_ratioviewp) ($PV_ratio) 
 
 !-----------------------
 ! vector points

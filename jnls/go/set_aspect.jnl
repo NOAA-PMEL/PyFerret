@@ -1,0 +1,45 @@
+\cancel mode verify	
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+! set_aspect.jnl --  Adjust the window aspect ratio for the currently
+!                    displayed plot.
+!		    		
+! Ansley Manke 10/2005
+! (see mp_aspect.jnl)
+!
+! Description:  Calculate the appropriate aspect ratio for an x-y plot
+!
+! Usage:             arg1
+!  go mp_aspect [aspect action]
+!
+! arg 1 - action to take after calculating the appropriate aspect ratio
+!         LIST - print out appropriate aspect ratio
+!         1(default) - issue SET WIN/ASPECT=`aspect_ratio`:ax command
+
+! Example 1: basic gridded field
+!
+!  use coads_climatology 
+!  set region/x=140:240/y=40n:70n/l=1
+!  set grid sst
+!  go set_aspect
+!  shade sst[l=1]
+!
+
+let/quiet ASP_xx = x
+let/quiet ASP_yy = y
+let/quiet ASP_xb = xbox
+let/quiet ASP_yb = ybox
+let/quiet x_axis_range = `ASP_xx[i=@max] - ASP_xx[i=@min] + ASP_xb[i=@min]/2 + ASP_xb[i=@max]/2`
+let/quiet y_axis_range = `ASP_yy[j=@max] - ASP_yy[j=@min] + ASP_yb[j=@min]/2 + ASP_yb[j=@max]/2`
+
+let/quiet y_over_x = y_axis_range / x_axis_range
+
+if `$1"1|PRINT>0|LIST>0|SHOW>0|DISPLAY>0|<'go mp_aspect LIST' to display the ratio without setting it" eq 0` then
+    message/cont The appropriate aspect ratio is `y_over_x`
+elif `$1"1|PRINT>0|LIST>0|SHOW>0|DISPLAY>0|<'go mp_aspect LIST' to display the ratio without setting it" eq 1` then
+    set win/aspect=`y_over_x`:axis
+endif
+
+can var ASP_*
+
+!++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
+set mode/last verify

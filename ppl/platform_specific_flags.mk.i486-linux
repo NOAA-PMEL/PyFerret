@@ -95,6 +95,15 @@
 
 	TERMCAPLIB 	=/usr/lib/libncurses.a
 
-	#
-	# End of platform_specific_includes.mk.i486-linux
+
+ 	 
+ # .IGNORE:	 
+ 	 
+ .F.o:	 
+	rm -f $*.f	 
+	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de        /de /g' | sed -e  's/de         /de /g' > $*.f	 
+	$(F77) $(FFLAGS) $*.f	 
+
+#
+# End of platform_specific_includes.mk.i386-linux
 #

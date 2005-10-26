@@ -49,6 +49,8 @@
 * V530: 1/01 *sh* - skip white space at start of line
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead
+* 10/05 *acm*  Fix bug 918, parsing immediate mode expr when they are inside
+*              a conditional, using the IF STACK.
 
 * calling argument declarations:
 	INTEGER		slen
@@ -60,19 +62,11 @@
      .		status	! not returned
 	LOGICAL its_endif, its_else, its_elif, its_if
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
 	include 'gfdl_vms.parm'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ESSMGS.PARM'
-	INCLUDE 'FERRET_CMN:COMMAND.PARM'
-	INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * internal parameter declarations:
         CHARACTER*1     tab
@@ -103,8 +97,26 @@
      .  .OR. (STR_CASE_BLIND_COMPARE(cmnd_string(ic1:ic1+2),'IF'//tab)
      .		 .EQ. vms_str_success)
 
-* always execute the IF and ENDIF statements
-	IF (its_if .OR. its_endif) RETURN
+* Fix bug 918: do NOT always execute IF and ENDIF statements!
+cc	IF (its_if .OR. its_endif) RETURN
+
+        IF ((its_if .OR. its_endif) .AND. 
+     .      if_doing(ifstk) .EQ. pif_doing_clause) RETURN
+
+	IF (if_conditional .AND. its_if) THEN		        ! nested IF?
+	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
+	      IF ( num_args .LE. 2 ) THEN		! multi-line nested IF?
+* ...       bump the IF stack - set up to skip this entire IF clause
+	         IF ( ifstk .GE. max_ifstk ) GOTO 5400
+	         ifstk = ifstk + 1
+	         if_doing(ifstk) = if_doing(ifstk-1)
+	         if_cs(ifstk) = if_cs(ifstk-1)
+                 RETURN 1
+	      ENDIF
+	   ENDIF
+	ENDIF
+        
+	IF (its_endif) RETURN  ! process the endif, always
 
 * now check each of the possible IF execution states
 	IF ( if_doing(ifstk) .EQ. pif_skip_to_endif ) THEN
@@ -136,4 +148,8 @@
 
 
  5000	CALL ERRMSG(ferr_internal, status, 'ifstk!!', *1000)
-	END
+
+ 5400	CALL ERRMSG( ferr_invalid_command, status, 'IFs nested too deep',
+     .							*5000 )
+     
+        END

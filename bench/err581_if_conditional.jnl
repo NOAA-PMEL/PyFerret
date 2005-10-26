@@ -1,0 +1,23 @@
+! err581_if_conditional.jnl  bug 918. 
+! acm 10/2005
+! Immediate mode parsing when in an IF block, and when 
+! the IF is false and therefore not being executed.
+! Ferret attempts to parse the IF `a` THEN 
+! but cannot because LET a=1 has not been executed/
+!
+
+! This should skip to the end, not trying to execute anything inside the IF 0 THEN
+
+if 0 then
+let a = 1
+  if `a` then
+  say ok
+     if 1 then 
+        say "this is an inner if."
+        say "we should NOT see these lines"
+     endif
+  endif
+endif
+
+say "finished the if block"
+

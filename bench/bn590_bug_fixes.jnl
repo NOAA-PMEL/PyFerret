@@ -38,3 +38,8 @@ GO err581_shakey_inf.jnl
 ! Bug 918, immediate mode parsing in IF blocks
 GO bn_reset
 GO err581_if_conditional.jnl
+
+! Bug 899 
+! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
+GO bn_reset
+GO err581_illegal_trans.jnl

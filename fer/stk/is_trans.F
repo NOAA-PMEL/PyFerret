@@ -71,7 +71,9 @@
 * V533:  7/01 *sh* transform @SHF supported for strings
 * v552   4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                   space for the transformation specifier)
-
+* V590  10/05 *acm* Fis bug 899: rather than the ungraceful STOP, issue an error
+*                   message if a 4-D transform was requested but the dimensions 
+*                   are not available in the grid.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -130,7 +132,7 @@
 	       IF (cx_trans(idim,com_cx).NE.trans_no_transform) GOTO 5200
 	     ENDIF
  120	   CONTINUE
-	   IF (ndim.LE.1) STOP 'is_trans:ndim = 0'
+	   IF (ndim.LE.1) GOTO 5400     !!  STOP 'is_trans:ndim = 0'
 	ELSE
 	   ndim = 1
 	   axes(1) = idim1
@@ -361,6 +363,9 @@
  5300	buff = VAR_TRANS( idim, res_cx, slen )
 	CALL ERRMSG( ferr_limits, status,
      .		     buff(:slen)//' exceeds interpolation range',
+     .		     *5000 )
+ 5400	CALL ERRMSG( ferr_trans_nest, status,
+     .		     ' not all dimensions present on grid',
      .		     *5000 )
 
 	END	

@@ -42,9 +42,10 @@
 
 * 10/3/95 for Ferret version 4.2
 * V510 *sh( 4/00 - allow deallocation of non-dynamic lines
+* V590 *acm* 10/05 Call remove_axis for irregular axes to reset coord storage.
 
 * Include files
-#ifdef unix
+
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -52,14 +53,6 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xio.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-#endif
 
 * Argument definitions
 	INTEGER line
@@ -106,6 +99,9 @@
 * internal error -- the use count is negative!!
 	   CALL TM_NOTE('Intern err: TM_DEALLO_DYN_LINE:2 !!!', lunit_errors)
 	ENDIF
+
+* Recover the coordinate storage used for an irregularly-spaced line.
+        IF ( .NOT. line_regular(line) ) CALL REMOVE_AXIS (line)
 
 * return flag to indicate if the quasi-recursive descent ends here
 * ... zero or index of parent axis to deallocate

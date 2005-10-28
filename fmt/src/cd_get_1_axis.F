@@ -125,6 +125,9 @@
 * V581 *acm*  5/05 Fix bug 1232: if tregular, then dont try to use bounds
 * V581*acm*  6/05  For fix to bug 1271, add flag line_shift_origin marking hack to shift axes 
 *                   starting on 1-1-0001 (CDC files)
+* V590 *acm* 10/05 TM_CHECK_BNDS_ATTRIB and TM_CHEC_EDGES_ATTRIB should not have 
+*                  npts as an argument; npts from axis length was being reset
+*                  as npts bounds or edges, which is npts+1
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -890,7 +893,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
       ENDIF
 
       CALL TM_CHECK_EDGES_ATTRIB (cdfid, iaxis, vname, vlen, ename, 
-     .        edgid, npts, status)
+     .        edgid, status)
 
       IF (status .EQ. pcdferr) GO TO 5100
       IF (status .NE. merr_ok) THEN
@@ -903,13 +906,13 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
         ipt1 = next_line_mem_pos
         line_subsc1(iaxis) = next_line_mem_pos
-        CALL CD_RD_R8_ARR( cdfid, edgid, 1, npts, vartype, vname(:vlen),
-     .                     line_mem(ipt1+npts-1), status )
+        CALL CD_RD_R8_ARR( cdfid, edgid, 1, npts+1, vartype,
+     .                     vname(:vlen), line_mem(ipt1+npts), status )
         IF ( status .NE. merr_ok ) GOTO 1000    ! 3/99 soft error
 
 * if the coordinates were reversed then the box bounds must be, too
          IF ( first_delta .LT. 0.0  .AND.  npts .GT. 1) THEN
-            DO 450 i=ipt1+npts-1,(ipt1+npts-1)+npts
+            DO 450 i=ipt1+npts,(ipt1+npts)+npts
  450        line_mem(i) = -1. * line_mem(i)
          ENDIF
 
@@ -931,7 +934,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * Check the bounds variable, issue any warnings.
         CALL TM_CHECK_BNDS_ATTRIB (cdfid, iaxis, vname, vlen, bname,
-     .                             bndid, npts, status)
+     .                             bndid, status)
         IF (status .EQ. pcdferr) GO TO 5100
         IF (status .NE. merr_ok) THEN
            IF (npts .EQ. 1) THEN  ! save as a regular axis, no bounds.

@@ -1,5 +1,5 @@
         SUBROUTINE TM_CHECK_EDGES_ATTRIB (cdfid, iaxis, vname, vlen, 
-     .                                    ename, edgid, npts, status)
+     .                                    ename, edgid, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,6 +35,8 @@
 *
 * V570 5/2004 *acm*
 * Check the edges attribute, issue any warnings
+* V590 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
+*                  was being reset  as npts bounds or edges, which is npts+1
 
         INCLUDE 'tmap_dims.parm'
         INCLUDE 'xtm_grid.cmn_text'

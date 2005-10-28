@@ -44,7 +44,7 @@
 *               by calling remove_axis.
 * V5.42 10/31/02 ACM Check to see if axes are in use, and if so dont remove!
 * V5.42 11/06/02 ACM line_keep_flag(islot) is a logical, use .FALSE. not 0.
-
+* V5.90 10/28/05 ACM Fix bug 1354: cancel data should recover coordinate storage
 
 * Parameters and commons
 
@@ -57,6 +57,7 @@
 
 * Local declarations
 
+        LOGICAL all_gone
 	INTEGER TM_GET_LINENUM, TM_GET_GRID_OF_LINE,
      .          islot, grid, status, num_protected_axes
 
@@ -67,6 +68,7 @@
         IF (num_protected_axes .EQ. unspecified_int4 .OR.
      .      num_protected_axes .LE. 0) num_protected_axes = 1
 
+        all_gone = .TRUE.
         DO 100 islot = num_protected_axes+1, line_ceiling
            IF (line_name(islot) .NE. char_init16) THEN
 
@@ -91,11 +93,17 @@
 	            CALL ERRMSG(ferr_internal, status,
      .				'axis use count err', *5000)
 	         ENDIF
+                 all_gone = .FALSE.
 	      ENDIF
 
            ENDIF
 
   100	CONTINUE
+
+* If all axes were deleted sucessfully, then reset the pointer into coordinate
+* storage.
+
+        IF (all_gone) next_line_mem_pos = pline_mem_init
 
 	RETURN
 

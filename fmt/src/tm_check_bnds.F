@@ -42,6 +42,7 @@
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
+        INCLUDE 'tmap_errors.parm'
 	INCLUDE 'xtm_grid.cmn_text'
 	EXTERNAL xgt_grid_data
 
@@ -51,14 +52,15 @@
 
 * Internal definitions
         LOGICAL TM_FPEQ
-	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen
+	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen, status
         REAL*8 pt, bhi, blo
         REAL blast
-        CHARACTER*128 vbuff
+        CHARACTER TM_STRING*13, vbuff*128
 
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
 	ibx1 = ipt1 + npts
+        IF (ibx1 + 2*npts .GT. maxlinestore) GOTO 5100
 
         blast = REAL(line_mem(ibx1+1))  ! First box_hi
         ngap = 0
@@ -105,5 +107,12 @@
 
         ENDIF
 
-      RETURN
+ 5000  RETURN
+ 5100  TM_CHECK_BNDS = .FALSE.
+       CALL TM_ERRMSG (merr_linstorlim, status, 'TM_CHECK_BNDS',
+     .                  no_descfile, no_stepfile,
+     .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
+     .                  no_errstring, *5000)
+
+
       END

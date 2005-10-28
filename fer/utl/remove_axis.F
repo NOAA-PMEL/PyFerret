@@ -42,6 +42,8 @@
 * V5.41 7/30/02 ACM Fix def of npoints. Also, move the pointer into 
 *                   line_mem array when the coordinates in line_mem have
 *                   been changed. 
+* V5.90 10/28/05 ACM Fix bug 1354: We were moving way more coord data than needed
+*                   
 
 * Parameters and commons
 
@@ -55,8 +57,8 @@
         INTEGER axis
 
 * Local declarations
-	INTEGER  TM_GET_LINENUM, iaxis, imem, first_pt, npoints, 
-     .           last_mem, num_protected_axes
+	INTEGER  TM_GET_LINENUM, iaxis, imem, first_pt, last_pt, 
+     .           npoints, n_to_move, num_protected_axes
 
 	num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
 
@@ -66,37 +68,42 @@
 * First index in this line, number of points in line
 
         first_pt = line_subsc1 ( axis )
-        npoints = 2*line_dim(axis) + 1
-
-        last_mem = maxlinestore - npoints
 
 *  Recover space in line_mem array that defines point locations, box sizes.
+*  If this line is the last in the coordinate storage, move the pointer only.
 
         IF (first_pt .NE. unspecified_int4  .AND. 
-     .      last_mem .NE. unspecified_int4 ) THEN
+     .      first_pt .NE. int4_init) THEN
 
-           DO 200 imem = first_pt, last_mem 
-              line_mem(imem) = line_mem(imem+npoints)
-  200      CONTINUE
+           npoints = 2*line_dim(axis) + 1
+           last_pt = first_pt + npoints
 
-        ENDIF
+           n_to_move = next_line_mem_pos - last_pt
+
+           IF (last_pt  .LT. next_line_mem_pos) THEN
+              DO 200 imem = 1, n_to_move 
+                 line_mem(first_pt+imem-1) = line_mem(last_pt+imem-1)
+  200         CONTINUE
+           ENDIF
 
 *  For all axes whose line_mem entries were moved, also move the pointer 
 *  into line_mem
 
-        DO 300 iaxis = num_protected_axes+1, line_ceiling 
-           IF ( (.NOT. line_regular(iaxis) ) .AND. 
+           DO 300 iaxis = num_protected_axes+1, line_ceiling 
+              IF ( (.NOT. line_regular(iaxis) ) .AND. 
      .              (line_subsc1(iaxis) .NE. unspecified_int4) ) THEN
 
-              IF (line_subsc1(iaxis) .GT. first_pt) 
-     .           line_subsc1(iaxis) = line_subsc1(iaxis) - npoints
+                 IF (line_subsc1(iaxis) .GT. first_pt) 
+     .            line_subsc1(iaxis) = line_subsc1(iaxis) - npoints
 
-           ENDIF
-  300   CONTINUE
+              ENDIF
+  300      CONTINUE
+  
+           line_subsc1(axis) = unspecified_int4
 
-        line_subsc1(axis) = unspecified_int4
+           next_line_mem_pos = first_pt + n_to_move 
 
-        next_line_mem_pos = next_line_mem_pos - npoints 
+        ENDIF
 
 	RETURN
 	END

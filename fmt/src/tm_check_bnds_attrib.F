@@ -1,5 +1,5 @@
         SUBROUTINE TM_CHECK_BNDS_ATTRIB (cdfid, iaxis, vname, vlen, 
-     .                                   bname, bndid, npts, status)
+     .                                   bname, bndid, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,6 +35,8 @@
 *
 * V570 5/2004 *acm*
 * Check the bounds attribute, issue any warnings
+* V590 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
+*                  was being reset  as npts bounds or edges, which is npts+1
 
 	INCLUDE 'tmap_dims.parm'
         INCLUDE 'xtm_grid.cmn_text'
@@ -42,12 +44,12 @@
         INCLUDE 'tmap_errors.parm'
 
 * argument declarations
-      INTEGER cdfid, iaxis, vlen, bndid, npts, status
+      INTEGER cdfid, iaxis, vlen, bndid, status
       CHARACTER*(*) bname, vname
 
 * Local variable declarations
       INTEGER TM_LENSTR1, NCVID
-      INTEGER blen, cdfstat, ncnoerr, soft_err, vartype, 
+      INTEGER blen, cdfstat, ncnoerr, npts, soft_err, vartype, 
      .        nvdims, vdims(8), nvatts
       CHARACTER*132 buff, vbuff
 

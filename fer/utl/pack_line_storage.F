@@ -1,5 +1,5 @@
 
-	SUBROUTINE REMOVE_AXIS (axis)
+	SUBROUTINE PACK_LINE_STORAGE (axis)
 
 *
 *
@@ -36,13 +36,14 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* Deallocates one axis (line) slot, and pack the coordinate memory array.
+* For a line (axis) that has been deallocated, pack the coordinate memory array.
 
 * ACM 6/11/2002
 * V5.41 7/30/02 ACM Fix def of npoints. Also, move the pointer into 
 *                   line_mem array when the coordinates in line_mem have
 *                   been changed. 
 * V5.90 10/28/05 ACM Fix bug 1354: We were moving way more coord data than needed
+* v5.90 10/31/05 ACM Renamed from REMOVE_AXIS.F
 *                   
 
 * Parameters and commons

@@ -48,7 +48,7 @@
 * V450: 11/14/97 - check dynamic grids as well as static grids
 *		(err450_redefine_axis_in_dyn_grid.jnl)
 * V510 4/00 *sh* - netCDF data sets using dynamic grids, too
-* V541 6/02 *acm*  call remove_axis to recover line_mem storage when irregular
+* V541 6/02 *acm*  call PACK_LINE_STORAGE to recover line_mem storage when irregular
 *                  axis is cancelled.
 
 	include	'tmap_dims.parm'
@@ -105,7 +105,7 @@
 
 * delete the old axis
 	IF ( .NOT.line_regular(old_axis) ) THEN
-           CALL remove_axis(old_axis)
+           CALL PACK_LINE_STORAGE(old_axis)
 c	   WRITE ( I6,'(I6)' ) line_dim(old_axis)
 c	   CALL WARN( I6//' words of axis coordinate storage lost' )
 c	   line_subsc1( old_axis ) = unspecified_int4

@@ -109,8 +109,8 @@
 * v540 *acm* 10/01 remove VMS include statements
 * v541 *acm*  6/02 Add CANCEL AXIS/ALL
 *             6/02 For irregular axes, on CANCEL AXIS axname, recover line_mem
-*                  space with call to remove_axis
-* v541 *acm*  7/02 Capitalize routine names in CALL REMOVE_AXIS, DEALLO_ALL_AXES.
+*                  space with call to PACK_LINE_STORAGE
+* v541 *acm*  7/02 Capitalize routine names in CALL PACK_LINE_STORAGE, DEALLO_ALL_AXES.
 * v551 *acm*  1/03 Bug fix: datasets starting with digit not correctly cancelled.
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/04 - CANCEL AXIS/DEPTH as inverse to SET AXIS/DEPTH
@@ -572,7 +572,8 @@
 	      line_keep_flag(axis) = .FALSE.  ! see tm_garb_col_grids.F
 	      IF (line_use_cnt(axis) .LE. 0) THEN
 	         IF ( axis .LE. max_lines ) THEN
-                    IF (.NOT. line_regular(axis)) CALL REMOVE_AXIS(axis)
+                    IF (.NOT. line_regular(axis))
+     .                  CALL PACK_LINE_STORAGE(axis)
 		    line_name(axis) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(axis)

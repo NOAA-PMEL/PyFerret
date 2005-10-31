@@ -41,7 +41,7 @@
 * ACM 6/11/2002
 *
 * V5.41 7/30/02 ACM Deallocate irregular dynamic axes defined by files too,
-*               by calling remove_axis.
+*               by calling PACK_LINE_STORAGE.
 * V5.42 10/31/02 ACM Check to see if axes are in use, and if so dont remove!
 * V5.42 11/06/02 ACM line_keep_flag(islot) is a logical, use .FALSE. not 0.
 * V5.90 10/28/05 ACM Fix bug 1354: cancel data should recover coordinate storage
@@ -75,7 +75,8 @@
 	      line_keep_flag(islot) = .FALSE.  ! see xeq_cancel.F
               IF (line_use_cnt(islot) .LE. 0) THEN
 	         IF ( islot .LE. max_lines ) THEN
-                    IF (.NOT. line_regular(islot)) CALL REMOVE_AXIS(islot)
+                    IF (.NOT. line_regular(islot)) 
+     .                  CALL PACK_LINE_STORAGE(islot)
 		    line_name(islot) = char_init16
 	         ELSE
 	            CALL TM_DEALLO_DYN_LINE(islot)

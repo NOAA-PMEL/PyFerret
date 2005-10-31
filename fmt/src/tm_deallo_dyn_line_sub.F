@@ -42,7 +42,7 @@
 
 * 10/3/95 for Ferret version 4.2
 * V510 *sh( 4/00 - allow deallocation of non-dynamic lines
-* V590 *acm* 10/05 Call remove_axis for irregular axes to reset coord storage.
+* V590 *acm* 10/05 Call PACK_LINE_STORAGE for irregular axes to reset coord storage.
 
 * Include files
 
@@ -101,7 +101,7 @@
 	ENDIF
 
 * Recover the coordinate storage used for an irregularly-spaced line.
-        IF ( .NOT. line_regular(line) ) CALL REMOVE_AXIS (line)
+        IF ( .NOT. line_regular(line) ) CALL PACK_LINE_STORAGE (line)
 
 * return flag to indicate if the quasi-recursive descent ends here
 * ... zero or index of parent axis to deallocate

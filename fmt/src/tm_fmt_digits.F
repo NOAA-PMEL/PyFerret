@@ -47,7 +47,8 @@
 *
 * revision 0.00 - 11/14/03
 * *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing 
-*              flag is nan)
+*              flag is NaN)
+* *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -69,7 +70,7 @@
 	CHARACTER*10	fmt
 
 * local parameters:
-	INTEGER		TM_CHECK_NAN, max_int_len, sig_min
+	INTEGER		TM_CHECK_NAN, TM_CHECK_INF, max_int_len, sig_min
 	REAL		eps, one_m_eps
 	PARAMETER     ( max_int_len = 8,
      .			sig_min     = 1,		! minimum sig. digits
@@ -91,9 +92,21 @@
 	slen = MAX( 1, slen )
 
 * If the value is NaN, set the string here
-        IF ( TM_CHECK_NAN(aval) .EQ. 1) THEN
+        IF ( TM_CHECK_NAN(aval) .EQ. 1   ) THEN
            IF (slen .GE. 3) THEN
-              TM_FMT_DIGITS = 'NaN'
+              TM_FMT_DIGITS  = 'NaN'
+              str_len = 3
+           ELSE
+              TM_FMT_DIGITS = '*'
+              str_len = 1
+           ENDIF
+	   RETURN
+        ENDIF
+
+* If the value is NaN, or Inf, set the string here
+        IF ( TM_CHECK_INF(val)  .EQ. 1   ) THEN
+           IF (slen .GE. 3) THEN
+              TM_FMT_DIGITS  = 'Inf'
               str_len = 3
            ELSE
               TM_FMT_DIGITS = '*'

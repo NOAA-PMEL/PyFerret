@@ -92,6 +92,7 @@ define symbol TLAB_tend = `TLAB_tend`
 let TLAB_tstep = int((`TLAB_tend`-`TLAB_tstart`)/4)
 define symbol TLAB_tstep = `TLAB_tstep`
 
+define region/default save
 set region/t=`($TLAB_tstart)+0*($TLAB_tstep)`:($TLAB_tend)
 define symbol day_0_fourth `$7,return=tstart,prec=3`
 
@@ -106,6 +107,8 @@ define symbol day_3_fourth `$7,return=tstart,prec=3`
 
 set region/t=`($TLAB_tstart)+4*($TLAB_tstep)`:($TLAB_tend)
 define symbol day_4_fourth `$7,return=tstart,prec=3`
+
+cancel region/T
 
 label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*0)/4-.05`,-1,0,.1 ($day_0_fourth)
 label/nouser `($ppl$xlen)+.6`,`(($ppl$ylen)*1)/4-.05`,-1,0,.1 ($day_1_fourth)

@@ -113,6 +113,8 @@
 *                   just lists on abstract axis.  Fix for bug 1066
 * V580 *acm* 12/04  Correct the syntax sending XFOR LONE to pplus when we 
 *                   turn on lon/lat formatting.
+* V590 *acm*  11/05 Fix for bug 1130, 1349: axis labels need lat/lon labels,
+*                   fixes to the precision
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -926,8 +928,8 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	       CALL GET_AXIS_FORMAT( DBLE(loy), DBLE(hiy), delta, 
      .            fmt, use_nice )
                IF (use_nice) THEN
-                   ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
-     .               ',''''LONE'''')' 
+                   ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+     .               ',''''LAT'''')' 
                   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                ENDIF
            ELSE

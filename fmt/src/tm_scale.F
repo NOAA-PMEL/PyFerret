@@ -1,4 +1,4 @@
-	SUBROUTINE TM_SCALE ( factor, offset, array, n )
+	SUBROUTINE TM_SCALE ( factor, offset, bad, array, n )
 
 *
 *
@@ -41,16 +41,17 @@
 * written for VAX computer under VMS operating system
 
 * revision 0.0 3/92 for TMAP library
+* V590 ACM fix bug 419: Do not scale bad values as prescribed by the CF standard(!) 
 
 * calling argument declarations:
       INTEGER n
-      REAL factor, offset, array(n)
+      REAL factor, offset, bad, array(n)
 
 * internal variable declarations:
       INTEGER i
 
       DO 100 i = 1, n
- 100  array(i) = array(i)*factor + offset
+ 100  IF (array(i) .NE. bad) array(i) = array(i)*factor + offset
 
       RETURN
       END

@@ -67,7 +67,6 @@ c  NNS, Jun 85.
 c
 	CHARACTER*(*) FRMTZ
 	CHARACTER*20 FRMT,STR,TEMP,STR_DMS
-        INTEGER dms
         INTEGER TM_LENSTR1, dms, imin, isec, dot
         REAL val, frac, minutes, seconds
 C

@@ -43,3 +43,8 @@ GO err581_if_conditional.jnl
 ! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
 GO bn_reset
 GO err581_illegal_trans.jnl
+
+! Bug 491
+! missing flag gets scaled by scale and offset factors!
+GO bn_reset
+GO err581_missing_scale_off.jnl

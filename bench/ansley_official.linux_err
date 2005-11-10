@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     54147210 Oct  7 13:36 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     54163349 Nov 10 09:40 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 1349: formatted axis labels on PLOT/VS and POLYGON plot
+Note: New PPL XFOR (DMS) etc for deg-min-sec, fix for bug 419: scaling missing values
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/stout/ansley/linux/FERRET/bench
 GRIB_ENV=/home/ja8/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -14,14 +14,14 @@ CVSROOT=/home/ja9/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/ja9/tmap/ferret/linux/go /home/ja9/tmap/ferret/linux/examples /home/ja9/tmap/ferret/linux/contrib /home/ja9/tmap/ferret/tmap_go
+FER_GO=. /home/ja9/tmap/ferret/linux/go /home/ja9/tmap/ferret/linux/examples /home/ja9/tmap/ferret/linux/contrib /home/ja9/tmap/ferret/tmap_go /home/raid1/data/WIND_AN
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/linux/ext_func/libs
-Beginning at Fri Oct 7 13:52:08 PDT 2005
+Beginning at Thu Nov 10 09:43:40 PST 2005
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -537,6 +537,10 @@ Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
 DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/t myt
  **ERROR: improper grid or axis definition: error in start,end,delta
 DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
+ **ERROR: illegal use of transformation:  not all dimensions present on grid
+shade sst[x=@var,k=@var]
+ **ERROR: illegal use of transformation:  not all dimensions present on grid
+shade sst[t=@AVE,Z=@ave]
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -599,4 +603,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri Oct 7 13:54:14 PDT 2005
+Ended at Thu Nov 10 09:45:45 PST 2005

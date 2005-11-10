@@ -1,4 +1,4 @@
-	SUBROUTINE NUMCDE(XZ,STR,NC,FRMTZ)
+	SUBROUTINE NUMCDE(XZ,STR,NC,FRMTZ,DMS)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -43,7 +43,7 @@
 *		  ... no explicit declarations (too much trouble !) so it must
 *		      be compiled with /WARNINGS=NODECLARATIONS
 * *acm* - 1/ 6/04 - For longitude axes, do not label 0 degrees with E
-*                   (so they are now consistent with latitude axes)
+*            (so they are now consistent with latitude axes)
 C**
 C**    @(#)numcde.f	1.1    3/10/88
 C**
@@ -66,7 +66,10 @@ c  will be of the form 165 E or 6 S, etc.
 c  NNS, Jun 85.
 c
 	CHARACTER*(*) FRMTZ
-	CHARACTER*20 FRMT,STR,TEMP
+	CHARACTER*20 FRMT,STR,TEMP,STR_DMS
+        INTEGER dms
+        INTEGER TM_LENSTR1, dms, imin, isec, dot
+        REAL val, frac, minutes, seconds
 C
 	FRMT=FRMTZ
 	TEMP=FRMTZ
@@ -151,5 +154,98 @@ C     ADD LEADING ZERO
 	    STR=TEMP
 	END IF
 	NC=LNBLK(STR,20)
+
+* Reformat the value into deg,min,sec if requested.
+* This means moving the degree symbol after the degrees
+* and putting the direction (N,S,E,W) at the end
+ 
+        STR_DMS = ' '
+        IF (dms .GE. 1) THEN
+            
+           dot = INDEX(str,'.')
+           deg = INDEX(str,'#')
+           IF (dot .EQ. 0) dot = TM_LENSTR1(str) +1
+           val = x
+           ideg = INT(val)
+           frac = val - FLOAT(ideg)
+           minutes = 60.*frac
+           imin = INT(minutes)
+           frac = minutes - FLOAT(imin)
+           seconds = 60.* frac
+           isec = INT(seconds)
+
+           IF (dms .EQ. 2) THEN  ! write as deg,min,sec
+              IF (ideg .LT. 100) THEN
+                 WRITE (STR_DMS, 1100) ideg, imin, isec,
+     .               str(deg+1:deg+1)
+              ELSE
+                 WRITE (STR_DMS, 1101) ideg, imin, isec, 
+     .               str(deg+1:deg+1)
+              ENDIF
+1100          FORMAT (I2.2, '#', I2.2, '''', I2.2, '''', '''', A1)
+1101          FORMAT (I3.3, '#', I2.2, '''', I2.2, '''', '''', A1)
+
+           ELSE IF (dms .EQ. 1) THEN  ! break into deg,min
+              IF (ideg .LT. 100) THEN
+                 WRITE (STR_DMS, 1200) ideg, imin, 
+     .               str(deg+1:deg+1)
+              ELSE
+                 WRITE (STR_DMS, 1201) ideg, imin, 
+     .               str(deg+1:deg+1)
+              ENDIF
+1200          FORMAT (I2.2, '#', I2.2, '''', A1)
+1201          FORMAT (I3.3, '#', I2.2, '''', A1)
+
+           ELSE IF (dms .EQ. 3) THEN  ! write as deg,min.frac
+
+* get number of digits from the format given by the format that came into this routine.
+* seeing if it is Fn.m.  If M=0, use minutes only. If M=1, then use one digit for the 
+* fractional part of the mintues, otherwise write two digits. Round rather than truncating
+* for degrees and fractions.
+
+              dot = INDEX(frmtz,'.')
+              READ (frmtz(dot+1:dot+1), *) digits
+              IF (digits .EQ. 0) THEN   ! degrees, minutes only
+                 imin = INT(minutes+0.5)
+                 IF (ideg .LT. 100) THEN
+                    WRITE (STR_DMS, 1300) ideg, imin,
+     .               str(deg+1:deg+1)
+                 ELSE
+                    WRITE (STR_DMS, 1301) ideg, imin, 
+     .               str(deg+1:deg+1)
+                 ENDIF
+1300             FORMAT (I2.2, '#', I2.2, '''', A1)
+1301             FORMAT (I3.3, '#', I2.2, '''', A1)
+              ELSE IF (digits .EQ. 1) THEN  ! degrees,min.f
+
+                 IF (ideg .LT. 100) THEN
+                    WRITE (STR_DMS, 1400) ideg, minutes, 
+     .               str(deg+1:deg+1)
+                 ELSE
+                    WRITE (STR_DMS, 1401) ideg, minutes, 
+     .               str(deg+1:deg+1)
+                 ENDIF
+1400             FORMAT (I2.2, '#', F4.1, '''', A1)
+1401             FORMAT (I3.3, '#', F4.1, '''', A1)
+              ELSE                          ! degrees,min.ff
+                 IF (ideg .LT. 100) THEN
+                    WRITE (STR_DMS, 1500) ideg, minutes, 
+     .               str(deg+1:deg+1)
+                 ELSE
+                    WRITE (STR_DMS, 1501) ideg, minutes, 
+     .               str(deg+1:deg+1)
+                 ENDIF
+1500             FORMAT (I2.2, '#', F5.2, '''', A1)
+1501             FORMAT (I3.3, '#', F5.2, '''', A1)
+              ENDIF
+
+           ELSE 
+              STR_DMS = str
+           ENDIF
+           str = STR_DMS
+           NC=LNBLK(STR,20)
+
+        ENDIF
+
 	RETURN
 	END

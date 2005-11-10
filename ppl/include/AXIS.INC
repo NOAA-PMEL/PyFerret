@@ -13,12 +13,14 @@ C**
 C**
 c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 c v554 *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
+c v590 *acm* 2/04 add PPL XFOR('DMS') or 'DM' sets axis format deg/min/sec or deg/min
 c
 	COMMON/AXIS/ XLO,XHI,XTIC,XLEN,XCSIZE, 
      *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG, 
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
      *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,
-     *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, HCOLOR(2), VCOLOR(2)
+     *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, HCOLOR(2), 
+     *  VCOLOR(2),XDMS,YDMS
 c
 c**	x axis variables
 c
@@ -76,5 +78,9 @@ c       HGRAT      draw horizontal tic lines across whole plot 0=no,1=dash,2=sol
 c       VGRAT      draw vertical tic lines across whole plot 0=no,1=dash,2=solid
 c       hline           flag: true if still need to draw horizontal tic lines
 c       vline           flag: true if still need to draw vertical tic lines
+c       XDMS           = 0 for degrees in decimal deg.frac
+c                      = 1 for Degrees and minutes 
+c                      = 2 for Degrees, minutes, and seconds
+c       YDMS           same as xdmx, for vertical axis
 c
 c*******************************************************************

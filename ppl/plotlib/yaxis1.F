@@ -1,5 +1,5 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
-     *    IFORMT,YFACT,CSIZE,xacross,hgrat,hcolor,hline)
+     *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline)
 
 *
 *
@@ -47,7 +47,7 @@
 *	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
 *			in small non-zero values
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
-
+C *acm* 11/05  new argument to scinot deg/min/sec labels
 
 
 C**
@@ -61,6 +61,7 @@ C**
 C***********************************************************************
 C**
 C**
+        INTEGER ydms
 * Parameters for drawing tics across plot
 
         REAL xacross, dash1, dash2, dash3, dash4
@@ -180,12 +181,14 @@ C
 		XTEMP=TLY*0.5
 	ENDIF
 	IF(LABEL.EQ.1)THEN
-		CALL NUMCDE(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT)
-		CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID,XFACT,YFACT)
-		CALL NUMCDE(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT)
-		CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID1,XFACT,YFACT)
+		CALL NUMCDE(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT,ydms)
+		CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID,
+     .             XFACT,YFACT)
+		CALL NUMCDE(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT,ydms)
+		CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID1,
+     .             XFACT,YFACT)
 		IF(YLO.LT.0..AND.YHI.GT.0.)THEN
-			CALL NUMCDE(0.,YLAB,NC,IFORMT)
+			CALL NUMCDE(0.,YLAB,NC,IFORMT,ydms)
 			CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID2,
      *			XFACT,YFACT)
 		ELSE
@@ -207,7 +210,7 @@ C
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*Y/YUNIT
-        CALL NUMCDE(TEMP,YLAB,NC,IFORMT)
+        CALL NUMCDE(TEMP,YLAB,NC,IFORMT,YDMS)
         CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
 
 CC	Original code
@@ -218,7 +221,10 @@ CC	Y=Y+YTIC*LINTY
 
 	IF(WID.GT.YWIDT)YWIDT=WID
 200	CONTINUE
-	IF(LABEL.LT.0)YWID=YWID+YWIDT
+	IF(LABEL.LT.0)THEN 
+           IF (YDMS .GE. 2) ywidt = ywidt - symwid(abssz,1,'''')
+           YWID=YWID+YWIDT
+        ENDIF
 	RETURN
 	END
 

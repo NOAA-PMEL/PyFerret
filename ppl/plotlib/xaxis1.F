@@ -1,5 +1,5 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
-     *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,vgrat,vcolor,
+     *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,vgrat,vcolor,
      *    vline)
 
 *
@@ -48,6 +48,7 @@
 *	*jd* 5.6.96 Fix axis labelling bug where roundoff at zero results 
 *			in small non-zero values
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
+C *acm* 11/05  new argument to scinot deg/min/sec labels
 
 C**
 C**    @(#)xaxis1.f	1.1    3/10/88
@@ -61,6 +62,7 @@ C***********************************************************************
 C**
 C**
 
+        INTEGER xdms
 * Parameters for drawing tics across plot
 
         REAL yacross, dash1, dash2,dash3,dash4
@@ -188,7 +190,7 @@ C
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*X/XUNIT
-        CALL NUMCDE(TEMP,XLAB,NC,IFORMT)
+        CALL NUMCDE(TEMP,XLAB,NC,IFORMT,xdms)
         CALL SCINOT(X,YTEMP,0.,ABSSZ,NC,XLAB,0,WID,XFACT,YFACT)
 
 CC	Original code

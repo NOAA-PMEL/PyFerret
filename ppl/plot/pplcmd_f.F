@@ -100,6 +100,7 @@ C**
 *                 or if a plot command is issued without correcting the PPL call,
 *                 the bad format string is passed on to routines like numcde or
 *                 vecfld, where it will cause a crash.
+C *acm* 11/05     new options for XFOR, YFOR, 'DMS' deg/min/sec or 'DM' deg/min
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -693,16 +694,46 @@ C
 
 c For XFOR and YFOR, check if LABEL is a valid format: 
 c do a test write to the string err_msg, using label as a format
+c If format is (DM), (DMS), or (DMF) then axis will be labelled with 
+c deg/min, deg/min/sec, or deg/min.ff decimal fraction of minutes.
 
 C     XFOR
-4400	IFRX=LABEL
+4400  i = STR_UPCASE (TMPCHR, LABEL(1:5))
+      IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
+           IF (TMPCHR(2:4) .EQ. 'DMS') THEN
+              XDMS = 2
+           ELSE IF (TMPCHR(2:4) .EQ. 'DMF') THEN
+              XDMS = 3
+           ELSE IF (TMPCHR(2:3) .EQ. 'DM') THEN
+              XDMS = 1
+           ELSE ! 'DD' resets to decimal degrees
+              XDMS = 0
+           ENDIF
+           GOTO 10
+        ENDIF
+        XDMS = 0
+        IFRX=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
            WRITE(err_msg,label,ERR=1999) 0
         ENDIF
 	GOTO 10
 C     YFOR
-4500	IFRY=LABEL
+4500  i = STR_UPCASE (TMPCHR, LABEL(1:15))
+      IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
+           IF (TMPCHR(2:4) .EQ. 'DMS') THEN
+              YDMS = 2
+           ELSE IF (TMPCHR(2:4) .EQ. 'DMF') THEN
+              YDMS = 3
+           ELSE IF (TMPCHR(2:3) .EQ. 'DM') THEN
+              YDMS = 1
+           ELSE ! 'DD' resets to decimal degrees
+              YDMS = 0
+           ENDIF
+           GOTO 10
+        ENDIF
+        YDMS = 0
+        IFRY=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
            WRITE(err_msg,label,ERR=1999) 0

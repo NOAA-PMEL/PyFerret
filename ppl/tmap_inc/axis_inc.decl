@@ -38,5 +38,7 @@
         INTEGER VCOLOR
         LOGICAL HLINE
         LOGICAL VLINE
+        INTEGER XDMS
+        INTEGER YDMS
 c
 * requires: INCLUDE 'PPLV11INC:AXIS.INC'                                    

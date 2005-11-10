@@ -48,6 +48,7 @@ C**    @(#)prmtiv.F	1.1    3/10/88
 *                  as @Pn. In saving info about color/font changes from
 *                  one line to the next in multi-line lables, allow for
 *                  @Cnnn syntax.  (changes also in getlabfonts)
+* v580 11/05 *acm* Send new arg to xaxis1,yaxis1 DMS (arg is 0 here)
 C**
 C**
 C***********************************************************************
@@ -151,7 +152,7 @@ C
 	LOGICAL mouse_input, need_justify, need_arrow
 	INTEGER	IGRNPT, idummy, ichoice, iat
 	REAL xp, yp, across
-        INTEGER numlines, i, j
+        INTEGER numlines, i, j, dms
         LOGICAL lineflag
 
 	EXTERNAL range, scale, size
@@ -207,7 +208,8 @@ C
 C***	XAXIS
 C
 	ELSE IF(ICOM.EQ.'%XAXIS')THEN
-        
+
+            dms = 0
             DO 100 ii = 1, 4
               hgrat(ii,1) = 0.
               hgrat(ii,2) = 0.
@@ -284,7 +286,7 @@ C
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCS,LINTT,XUNIT,
-     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,vgrat,
+     *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,dms,vgrat,
      *		vcolor,vline)
 
             CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
@@ -328,6 +330,7 @@ C***	YAXIS
 C
 	ELSE IF(ICOM.EQ.'%YAXIS')THEN
         
+            dms = 0
             DO 200 ii = 1, 4
               hgrat(ii,1) = 0.
               hgrat(ii,2) = 0.
@@ -415,7 +418,7 @@ c	    ENDIF
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
-     *		IPOS,FRMTX,YFF,CHSIZE,across,hgrat,hcolor,hline)
+     *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline)
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

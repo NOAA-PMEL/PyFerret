@@ -45,12 +45,16 @@ C***********************************************************************
 C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
+C                with "*(*)" for the linux port
+C *acm* 11/05    Changes for deg-min-sec labelling. for these long
+C                labels make the character size a bit smaller.
+        REAL charsize
 	CHARACTER STR*(*),ITMP*20,ITMP2*10,SUB*20,IC*1
 	character ESTR*1,MESTR*2,lestr*1,lmestr*2
 	data lestr,lmestr/'e','-e'/
 	DATA ESTR,MESTR/'E','-E'/
 c
+        charsize = CSZE
 	IF(NCHR.GT.20)RETURN
 	ITMP=' '
 	ITMP2=' '
@@ -109,32 +113,33 @@ c
 300	IF(L.NE.0)GOTO 1000
 	L=1
 	ITMP2='0'
-1000  C=COS(DEG*1.7453292E-2) 
+1000  IF (ns .GT. 6) charsize = 0.9* charsize
+      C=COS(DEG*1.7453292E-2) 
       S=SIN(DEG*1.7453292E-2) 
-      WID2=SYMWID(CSZE,NE,'10') 
-      WID1=SYMWID(CSZE,NC,ITMP)+WID2 
-      WID3=WID1+SYMWID(CSZE*.75,L,ITMP2) 
-      WID=WID3+SYMWID(CSZE,NS,SUB)
+      WID2=SYMWID(charsize,NE,'10') 
+      WID1=SYMWID(charsize,NC,ITMP)+WID2 
+      WID3=WID1+SYMWID(charsize*.75,L,ITMP2) 
+      WID=WID3+SYMWID(charsize,NS,SUB)
       IF(ITYPE.EQ.3)RETURN 
       GO TO (1,2,3)ITYPE+1 
-1     XL=X-WID*C*.5/XF+CSZE*.5*S/XF 
-      YL=Y-WID*S*.5/YF-CSZE*.5*C/YF 
+1     XL=X-WID*C*.5/XF+charsize*.5*S/XF 
+      YL=Y-WID*S*.5/YF-charsize*.5*C/YF 
       GOTO 400 
-2     XL=X-WID*C/XF+CSZE*.5*S/XF 
-      YL=Y-WID*S/YF-CSZE*.5*C/YF 
+2     XL=X-WID*C/XF+charsize*.5*S/XF 
+      YL=Y-WID*S/YF-charsize*.5*C/YF 
       GOTO 400 
-3     XL=X+CSZE*.5*S/XF 
-      YL=Y-CSZE*.5*C/YF 
-400   CALL SYMBEL(XL,YL,DEG,CSZE,NC,ITMP) 
+3     XL=X+charsize*.5*S/XF 
+      YL=Y-charsize*.5*C/YF 
+400   CALL SYMBEL(XL,YL,DEG,charsize,NC,ITMP) 
 	IF(NE.NE.0)THEN
       CALL SYMBEL(XL+(WID1-WID2)*C/XF,YL+(WID1-WID2)*S/YF, 
-     *DEG,CSZE,NE,'10') 
-      XLT=XL+WID1*C/XF-CSZE*.625*S/XF 
-      YLT=YL+WID1*S/YF+CSZE*.625*C/YF 
-      CALL SYMBEL(XLT,YLT,DEG,CSZE*.75,L,ITMP2) 
+     *DEG,charsize,NE,'10') 
+      XLT=XL+WID1*C/XF-charsize*.625*S/XF 
+      YLT=YL+WID1*S/YF+charsize*.625*C/YF 
+      CALL SYMBEL(XLT,YLT,DEG,charsize*.75,L,ITMP2) 
 	ENDIF
 	XL=XL+WID3*C/XF
 	YL=YL+WID3*S/YF
-	CALL SYMBEL(XL,YL,DEG,CSZE,NS,SUB)
+	CALL SYMBEL(XL,YL,DEG,charsize,NS,SUB)
       RETURN 
       END 

@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     67001772 Nov  9 14:32 /home/ja8/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     67009524 Nov 15 15:21 /home/ja8/ansley/FERRET/fer/ferretdods_gui
 Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: New PPL XFOR (DMS) etc for deg-min-sec, fix for bug 419: scaling missing values
+Note:  test new symbol FER_LAST_ERROR
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/ja8/ansley/FERRET/bench
 GRIB_ENV=/home/ja8/ansley//FERRET/external_functions/grib/grib_v3.0.0
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/ja9/tmap/model_runs
 FER_PALETTE=. /home/ja9/tmap/ferret/solaris/ppl
 FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Wed Nov 9 15:11:40 PST 2005
+Beginning at Tue Nov 15 15:24:28 PST 2005
  	NOAA/PMEL TMAP
  	FERRET v5.812  
- 	Solaris 5.6 - 11/09/05
- 	 9-Nov-05 15:11     
+ 	Solaris 5.6 - 11/15/05
+ 	15-Nov-05 15:24     
 
 yes? !bn500_all_shell
 yes? 
@@ -131,6 +131,7 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
 GO bn_syntax
 ! bn401_syntax.JNL
 ! - test syntax interpretation of Program FERRET
@@ -1048,6 +1049,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: \! "
 GO bn_dollar hello    ! test command arg
 ! test this with GO journal hello
  
@@ -1219,8 +1222,14 @@ star 41  subst 42  43-n/a
 ! deliberate errors
 set mode ignore
   say $100        ! argument number too large
+  sho sym fer_last_error
+FER_LAST_ERROR = "**ERROR: command syntax: arg number not in 1-99 range: $100 "
   say ($100)        ! argument number too large
+  sho sym fer_last_error
+FER_LAST_ERROR = "**ERROR: command syntax: arg number not in 1-99 range: $100) "
   say ($10)0      ! argument 10 not defined
+  sho sym fer_last_error
+FER_LAST_ERROR = "**ERROR: invalid command: Value needed for argument 10 in command GO bn_dollar hello "
 set mode/last ignore
  
 ! added in bn400
@@ -1228,6 +1237,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Value needed for argument 10 in command GO bn_dollar hello "
 GO bn_grave
 ! bn420_grave
 ! benchmark to test evaluation of grave accent-enclosed expressions
@@ -1544,6 +1555,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            XAX                        "
 GO bn_letd
 ! bn420_letd.jnl
 ! 9/1/95
@@ -1826,6 +1839,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: CANCEL what? "
 GO bn_if
 ! bn430_if
 ! 5/6/96
@@ -1914,6 +1929,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: ELIF can only be used between IF and ENDIF "
 GO bn_expressions
 ! bn450_expressions.JNL
 ! test all manner of expressions
@@ -2447,6 +2464,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: variable unknown or not in data set: A1 "
 GO bn_geometry
 ! bn200_geometry.JNL
 ! benchmark various geometries for accessing FERRET data
@@ -3750,6 +3769,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 set mode ignore		! needed for AIX   11/94
 GO bn_output
 ! bn200_output.JNL
@@ -6738,6 +6759,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 GO bn_in_plane
 ! bn200_in_plane.JNL
 ! benchmark various geometries with in-plane transformation applied (@SBX)
@@ -7257,6 +7280,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 GO bn_compress
 ! bn200_compress.JNL
 ! benchmark various geometries obtained by compressing FERRET data with @AVE
@@ -7770,6 +7795,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 GO bn_interpolate
 ! bn200_interpolate.JNL
 ! benchmark interpolation along various axes
@@ -8170,6 +8197,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 GO bn_regrid
 ! bn200_regrid.JNL
 ! test regridding
@@ -9429,6 +9458,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 GO bn_ez		! changed from bn200_ez 8/10/95
 ! bn401_ez.JNL
 ! test all manner of accessing non-TMAP data files
@@ -9852,6 +9883,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: X axis X[I=6:9] has 4 points (I=6:9)expression has 5 points (I=1:5) "
 GO bn_plot		! upgraded from bn320_plot 10/1/97 *kob*
 ! bn450_plot.JNL - updated 9/97 from bn320_plot.jnl
 ! upgraded from bn320 to provide method for testing batch mode.  Also remove
@@ -10073,6 +10106,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: sigdig=-1 Value must be positive "
 ! 2/98 changed bn450_curv to bn491_curv - just some cosmetic changes *kob*
 GO bn_curv
 cancel mode ignore
@@ -10264,6 +10299,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: inconsistent sizes of data regions: Y axis of X position array "
 GO bn_symbols	! added 6/22/95
 ! bn420_symbols
 ! benchmark to test machinery of symbol definition and use
@@ -10288,8 +10325,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = "5.812"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 9-Nov-05"
-SESSION_TIME = "15:11"
+SESSION_DATE = "15-Nov-05"
+SESSION_TIME = "15:24"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10307,8 +10344,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = "5.812"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 9-Nov-05"
-SESSION_TIME = "15:11"
+SESSION_DATE = "15-Nov-05"
+SESSION_TIME = "15:24"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10316,8 +10353,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 9-Nov-05"
-SESSION_TIME = "15:11"
+SESSION_DATE = "15-Nov-05"
+SESSION_TIME = "15:24"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10327,13 +10364,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 9-Nov-05"
-SESSION_TIME = "15:11"
+SESSION_DATE = "15-Nov-05"
+SESSION_TIME = "15:24"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 9-Nov-05"
-SESSION_TIME = "15:11"
+SESSION_DATE = "15-Nov-05"
+SESSION_TIME = "15:24"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10367,7 +10404,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.812"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Nov  9 2005 15:12:45 "
+LAB3 = "Nov 15 2005 15:25:34 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10466,14 +10503,15 @@ PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
 FERRET_VERSION = "5.812"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = " 9-Nov-05"
-SESSION_TIME = "15:11"
+SESSION_DATE = "15-Nov-05"
+SESSION_TIME = "15:24"
  
  
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
 GO bn_comma_delimited	! added 10/2/95
 ! bn420_comma_delimited
  
@@ -12137,6 +12175,7 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
 GO bn_dynamic_grids	! added 9/27/95, V420 ->V491 4/98
 ! bn420_dynamic_grids
 ! 9/95-9/11/95 - test the creation, destruction, and use of dynamic grids
@@ -13874,6 +13913,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: A is not in the range I=101:105 Axis extremes are I=1:8 "
 GO bn_cdf
 ! bn320_cdf
 ! benchmark to test netCDF input and output
@@ -14878,6 +14919,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_regrid_transforms
 ! bn500_regrid_transforms
 ! benchmark to test regridding transformations and syntax
@@ -18294,6 +18337,8 @@ GO bn_reset		! reordered reset before next test: 2/94
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed "
 GO bn_axis_limits	! added 10/27/93
 !bn301_axis_limits.jnl
 ! exercise the new-V301 /XLIMITS and /YLIMITS qualifiers
@@ -18462,6 +18507,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Must give a range: xlimits=5:5 "
 GO bn_movie
 ! bn301_movie.JNL
 ! - test on-HDF movie creation by Program FERRET
@@ -18484,7 +18531,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23043 Nov  9 15:13 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23034 Nov 15 15:26 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18503,13 +18550,15 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419331 Nov  9 15:13 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419123 Nov 15 15:26 bench.mgm
  
 ! added in bn311
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Must give a range: xlimits=5:5 "
 GO bn_ez_order	! was bn311 until 9/95
 ! bn420_ez_order
 ! updated from bn311_ez_order 9/95 - improved testing of /FORMAT=STREAM
@@ -19539,6 +19588,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Must give a range: xlimits=5:5 "
 ! cancel mode metafile   ! needed temporarily 6/94: PLOT+/XGKS interaction bug
 GO bn_user
 ! bn312_user.jnl
@@ -19637,6 +19688,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Must give a range: xlimits=5:5 "
 GO bn_stream
 ! bn420_stream.jnl
  
@@ -19705,6 +19758,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Must give a range: xlimits=5:5 "
 GO bn_mc
 !bn430_mc.jnl
 ! kob - 9/5/96
@@ -20152,6 +20207,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_negative_t
 ! bn450_negative_t - 10/97
  
@@ -21182,6 +21239,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_xact_regrid
 ! BN450_xact_regrid.jnl
  
@@ -22585,6 +22644,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_gc_functions
 ! bn500_gc_functions.jnl
  
@@ -23175,6 +23236,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn491_bug_fixes.jnl
 ! bn491_bug_fixes.jnl
 ! test various fixes that went into version 4.91
@@ -23220,6 +23283,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err490_command_parser
 ! err490_command_parser.jnl 12/1/98 - reported by billy kessler
  
@@ -23255,6 +23320,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err490_repeat_first_echo
 ! err490_repeat_first_echo (created later 23/98)
  
@@ -23466,6 +23533,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err490_l_ave.jnl
 ! err490_lave.jnl 12/1/97 - *sh* (reported by Weimin Wang)
 ! L=@AVE is failing to compress to a point
@@ -23555,6 +23624,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err490_neg_time_show_grid.jnl
 ! err490_neg_time_show_grid
  
@@ -23699,6 +23770,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err491_explicit_limits.jnl
 ! err491_explicit_limits
 ! 2/98 *sh*
@@ -23749,6 +23822,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err491_asn.jnl
 ! err491_asn.jnl 4/98 *sh* (extracted from bug reported by Jennifer Adams)
 ! Ferret crashes on regridding by association where destination
@@ -23830,6 +23905,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err491_attrib_dp.jnl
 ! err491_attrib_dp.jnl
 ! kob  4/23/98
@@ -23990,6 +24067,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_odd_variable_name
 use weird_name1.cdf
 sh data
@@ -24256,6 +24335,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: v2-and-minus[i=5:15@ddc] - before and is illegal "
 GO bn_test_stream
  
 canc data/all
@@ -24933,6 +25014,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: invalid argument for /TYPE "
 GO bn_define_axes
 ! bn_define_axes.jnl
 ! *sh* 5/99
@@ -25447,12 +25530,16 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 ! GO bn_external_functions  ! move to tests of shared-obj efs.
  
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO bn_pattern
 ! pattern_bench.jnl
 ! Quick demo of Ferret pattern feature *jd* 12.18.98
@@ -25502,6 +25589,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO bn_polygon
 ! Demo of new POLYGON command
 ! *jd * 3.99
@@ -25527,6 +25616,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO bn500_bug_fixes
 ! bn500_bug_fixes.jnl
 ! test various fixes that went into version 5.00
@@ -25536,6 +25627,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_RESHAPE_ctx.jnl
 ! err491_RESHAPE_ctx
  
@@ -25654,6 +25747,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_delete_child_var.jnl
 ! err491_delete_child_var.jnl
 ! *sh* 4/99
@@ -25693,6 +25788,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_dp_time_write.jnl
 ! err491_dp_time_write.jnl
 ! *sh* 10/98
@@ -25722,7 +25819,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  T5 = 50757969 ;
@@ -25747,7 +25844,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -25759,6 +25856,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_gmax.jnl
 ! err491_gmax.jnl
 ! 9 Dec. 1998 *sh*
@@ -25777,6 +25876,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_grid_from_name.jnl
 ! err491_grid_from_name.jnl
 ! *sh* 3/99
@@ -25803,6 +25904,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_let_d.jnl
 ! err491_let_d.jnl
 ! *sh* 10/98
@@ -25831,6 +25934,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_long_gif_name.jnl
 ! err491_long_gif_name.jnl
 ! *sh* 4/99 - test 175 character gif name
@@ -25856,6 +25961,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_sh_var_templates.jnl
 ! SHOW VARIABLE templates are not robust
  
@@ -25872,6 +25979,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_single_char_replace.jnl
 ! err491_single_char_replace.jnl
  
@@ -25892,6 +26001,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_spawn_quotes.jnl
 ! err491_spawn_quotes.jnl
  
@@ -25899,12 +26010,14 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Wed Nov  9 15:14:22 PST 2005
+Tue Nov 15 15:27:11 PST 2005
  
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_time_regridding.jnl
 ! err491_time_regridding.jnl
 ! from Jon 10/16/98
@@ -25945,6 +26058,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: unrepairable repeated axis coords "
 GO err491_unknown_function.jnl
 ! err491_unknown_function
 ! 3/99 *sh*
@@ -25964,6 +26079,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: noname(i) unknown function "noname" "
 GO err500_IF_THEN_ELSE_quote.jnl
 ! err500_IF_THEN_ELSE_quote.jnl
  
@@ -25981,6 +26098,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: noname(i) unknown function "noname" "
 GO bn_sample			! internal (optimized) SAMPLE* functions
 ! bn_sample.jnl
 ! 10/99 *sh*
@@ -27103,6 +27222,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: noname(i) unknown function "noname" "
 GO bn_strides_revs_perms	! netCDF fancy reads
 ! bn_strides_revs_perms.jnl
 ! *sh* 6/99
@@ -29153,6 +29274,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta values may only modify variable names "
 GO bn_non_COARDS_netCDF		! non-standard netCDF files
 ! bn_non_COARDS_netCDF.jnl
 ! *sh* 3/99
@@ -29366,6 +29489,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta values may only modify variable names "
 GO bn_cache_hits		! cache hits on unspecified (full) regions
 ! bn_cache_hits.jnl
  
@@ -31389,6 +31514,8 @@ cancel mode verify
  -DELETE str      M:128 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta values may only modify variable names "
 GO bn_regrid_to_user		! G=user_var and related
 ! bn_regrid_to_user
 ! 8/99 *sh*
@@ -31834,6 +31961,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: unknown defining grid: GX=A[D=1] "
 GO bn_calendar
 ! bn_calendar.jnl
 ! Version 5.3
@@ -32131,6 +32260,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: unknown defining grid: GX=A[D=1] "
 GO bn_dash_dot
 ! new PLOT/DASH and PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 5/01
@@ -32156,6 +32287,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: dash=(-1., 2., 3., 4.) DASH arguments must be positive "
 GO bn_flowlines
 ! bn_flowlines.jnl
 ! VECTOR/FLOW
@@ -32174,6 +32307,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: dash=(-1., 2., 3., 4.) DASH arguments must be positive "
 set mode meta flowlines.plt
 can mode logo
  
@@ -32193,6 +32328,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: dash=(-1., 2., 3., 4.) DASH arguments must be positive "
 GO bn_logaxes
 !  Test the qualifiers /HLOG and /VLOG for setting
 !  log axes.  On a depth axis, inverse log plot.
@@ -32238,6 +32375,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0. "
 GO bn_internal_external_functions
 ! test internal external functions.  These moved from bn_external_functions
 !  6/01 because on systems w/out external functions support, the internal
@@ -32252,6 +32391,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0. "
 go bench_fft
 ! Benchmark Ferret script for FFT.  Uses analytic function of time.
  
@@ -32384,6 +32525,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: error in external function. Bailing out of external function FFTA. Time axis must be a regular axis"
 go bench_gridding
 ! bench_gridding.jnl
 ! *acm* 8/99
@@ -32498,6 +32641,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: error in external function. Bailing out of external function FFTA. Time axis must be a regular axis"
 go bench_sort
  
  
@@ -33136,6 +33281,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: VWND does not contain L=102:150 Data are available in L =    1:60 "
 go bench_eof
 ! Benchmark for EOF functions
 ! Statically linked as of ferret V5.34
@@ -33187,6 +33334,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: VWND does not contain L=102:150 Data are available in L =    1:60 "
 go bench_compress_by
 let mask = {1,,1,,1} + 0*L[l=101:102] + 0*K[k=10:11]
 list compressi_by({10,20,30,40,50},mask)
@@ -33226,6 +33375,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: VWND does not contain L=102:150 Data are available in L =    1:60 "
 go bench_compress
  ! NOAA/PMEL TMAP
  ! Program FERRET
@@ -33376,6 +33527,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: VWND does not contain L=102:150 Data are available in L =    1:60 "
 GO bench_internal_string_functions
 ! test internal string functions:
 !       strlen
@@ -33471,6 +33624,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: strcat ("All work and no play") The strcat function has an incorrect number of arguments "
 GO bn_modulo_strides
 ! bn_modulo_strides.jnl
 ! 6/01 *sh*
@@ -33876,6 +34031,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: strcat ("All work and no play") The strcat function has an incorrect number of arguments "
 GO bn_axis_viewports
 ! bn_axis_viewports
 ! *sh* 9/01
@@ -34232,6 +34389,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: strcat ("All work and no play") The strcat function has an incorrect number of arguments "
 GO bn_strings
 ! bn_strings.jnl
  
@@ -34406,7 +34565,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -34469,7 +34628,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  GFP3 = "" ;
@@ -34689,7 +34848,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -34900,6 +35059,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: cant use this regrid transform on strings: @MOD "
 GO bn_axcontrol
  ! NOAA/PMEL TMAP
  ! Program FERRET (alpha)
@@ -34944,6 +35105,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: cant use this regrid transform on strings: @MOD "
 GO bn_vec_curv
 ! bn_vec_curv.jnl
 !
@@ -35021,6 +35184,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: cant use this regrid transform on strings: @MOD "
 GO bn_delimited_read
 ! bn_delimited_read.jnl
 ! 10/01 *sh*
@@ -36098,6 +36263,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO bn541_bug_fixes
 ! bn541_bug_fixes.jnl
 ! test various fixes that went into version 5.41
@@ -36107,6 +36274,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
  
 ! tics on horiz log axes were wrong; (plot only)
 ! GO bn_reset
@@ -36118,6 +36287,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_polymissing
 ! err540_polymissing.jnl
 ! 3/02 *acm*
@@ -36151,6 +36322,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_ill_format.jnl
 ! err540_ill_format.jnl
 ! 3/02 *acm*
@@ -36171,6 +36344,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_write_order
 ! err540_write_order.jnl
 ! *sh* 3/02
@@ -36253,6 +36428,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_ax_ave
 !err540_ax_ave.jnl
 ! 3/02 *acm
@@ -36272,6 +36449,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_axset
 !err540_axset.jnl
 ! 3/02 *acm
@@ -36315,6 +36494,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_vs_dash
 ! PLOT/VS/DASH  previously was not allowed.
  
@@ -36364,6 +36545,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_poly_overlay
 !overlay on polygon plots
  
@@ -36375,6 +36558,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_axis_symbols
 ! err540_axis_symbols.jnl
 ! 3/02 *acm*
@@ -36411,6 +36596,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_parse_repeat
 ! err540_parse_repeat.jnl
 ! 3/03 *acm
@@ -36458,6 +36645,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_cd_use_recdim
 ! err540_cd_use_recdim
 ! 3/02 *sh*
@@ -36504,6 +36693,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_samplexy_missing
 ! err540_samplexy_missing.jnl
 ! 3/03 *acm
@@ -36538,6 +36729,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_strides_rev.jnl
 ! err540_strides_rev.jnl
  
@@ -36971,6 +37164,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_data_type.jnl
 ! err540_data_type
 ! 2/19/02 *sh*
@@ -37006,6 +37201,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_modscat.jnl
 ! test gridding scattered points to modulo axis.
 ! Show Southern hemisphere.
@@ -37034,6 +37231,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err540_use.jnl
 ! err540_use.jnl
 !
@@ -37124,6 +37323,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO bn_cancel_axes
  
 let ind1 = 1*i
@@ -37138,6 +37339,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 ! longax cancel axis axname
 repeat/k=1:10 go bn_cancel_axes_1.sub
 !-> REPEAT: K=1
@@ -37275,6 +37478,8 @@ can data longax.dat
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 ! longax cancel axis/all
  
 ! Note: cancel axes/all tested in err541_cancel_axes.jnl
@@ -37287,6 +37492,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 define axis/x ax1={2,4,5,6,9}
 define axis/x ax2={30,60,90,100}
 sh axis/x ax2
@@ -37395,6 +37602,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO bn542_bug_fixes
 ! bn542_bug_fixes.jnl
 ! test various fixes that went into version 5.42
@@ -37406,6 +37615,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err541_fill_tics
 ! pplus tics bug - pre 5.42, fill plots overlaid interior tics.
  
@@ -37427,6 +37638,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err541_non_gregorian
 !From Andrew Wittenberg, non-Gregorian time axis bug 01 Oct 2002
 ! pre-542, second axis has just one point.
@@ -37465,6 +37678,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err541_string4d
  ! Write a 4-D NetCDF file with a string variable.
  
@@ -37569,6 +37784,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO err541_cancel_axes
 ! Check that an axis in use cannot be cancelled.
  
@@ -38358,6 +38575,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 ! GO err541_date_delim
  
  
@@ -38367,6 +38586,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: ,,: "
 GO bn_subspan_modulo
 ! bn_subspan_modulo.jnl
 ! *sh* 11/02
@@ -39636,6 +39857,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn_dots
 ! PLOT/SYMBOL=DOT  qualifiers
 ! *acm* 12/02
@@ -39663,6 +39886,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn_lev_symbols
 ! Test symbols which capture the latest LEVELS settings
 ! LEV_TEXT  The argument, if any, to the LEV qualifier
@@ -39740,12 +39965,16 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 ! GO bench_extrema  ! moved to bn_ef_bench_extrema; tests of shared-obj efs.
  
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn_mode_logo_lab
  
 ! bn_mode_logo_lab.jnl
@@ -39839,6 +40068,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn_modulo_attribute
 ! Ferret V5.50 m
  
@@ -39905,6 +40136,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn550_bug_fixes
 ! bn550_bug_fixes.jnl
 ! test various fixes that went into version 5.5
@@ -39916,6 +40149,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err542_poly_over_calendar
 ! POLY/OVER when data has a non-standard calendar caused
 ! calendar mismatch error, even on a plot with no time axis.
@@ -39931,6 +40166,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn551_bug_fixes
 ! bn551_bug_fixes.jnl
 ! test various fixes that went into version 5.51
@@ -39944,6 +40181,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_view_axes_fill.jnl
 ! err550_view_axes_fill.jnl
 ! acm 2/5/03
@@ -40029,6 +40268,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_view_axes_position.jnl
 ! err550_view_axes_position.jnl
 ! acm 2/5/03
@@ -40053,6 +40294,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_shade_limits.jnl
 ! err550_shade_limits.jnl
 ! acm 2/5/03
@@ -40071,6 +40314,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_redefine_calendar_axis.jnl
 ! err550_redefine_calendar_axis.jnl
 ! different calendar axis not recognized as a different specifier,
@@ -40098,6 +40343,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_define_axis_expression.jnl
 ! err550_define_axis_expression.jnl
 ! reported by A. Wittenberg.
@@ -40152,6 +40399,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_nc_seconds.jnl
 ! err550_nc_seconds.jnl
 ! 2/12/03 ACM
@@ -40180,6 +40429,8 @@ go bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err550_dots_thickpens.jnl
 ! err550_dots_thickpens.jnl
 ! For pen code higher than 6, get *  rather than dot.
@@ -40323,6 +40574,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO bn552_bug_fixes
 ! bn552_bug_fixes.jnl
 ! test various fixes that went into version 5.52
@@ -40335,6 +40588,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err551_axes_set.jnl
 ! Default behavior (all axes on) was not reset after a PLOT/SET/AXES=
  
@@ -40358,6 +40613,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: Axis length exceeds modulo length "
 GO err551_num_levels.jnl
 ! Test whether too many levels specified. Previous to v552, no
 ! test was made on SHADE and POLYGON plots, and these crashed Ferret.
@@ -40386,6 +40643,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: # of levels > 500  (4094) "
 GO err551_invalid_calendar.jnl
 ! check on input for invalid calendar name
 ! If file gives calendar attribute with unrecognized name,
@@ -40405,6 +40664,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: # of levels > 500  (4094) "
 GO err551_strings.jnl
  
  
@@ -40476,6 +40737,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: # of levels > 500  (4094) "
 GO err551_2dave.jnl
 ! Bug in 2-D averaging, if source data thats loaded has a
 ! larger range than the dest data, code didnt check whether
@@ -40509,6 +40772,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: value out of legal range: # of levels > 500  (4094) "
 GO err551_return_message.jnl
  ! err551_return_message.jnl
  ! 4/15/03 ACM
@@ -40534,6 +40799,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            TAX                      "
 GO err551_streamread_directory.jnl
 ! Bug: file/form=stream doesnt see file in another directory
  
@@ -40567,6 +40834,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            TAX                      "
 GO err551_regrid_undef_grid.jnl
 ! err551_regrid_undef_grid.jnl
 ! 5/03 *acm* based on bn_regrid_to_user; more testing of multi-axis GXY=var
@@ -40709,6 +40978,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            TAX                      "
 GO err551_repeat_sym.jnl
  
 ! This had worked, but stopped working in v541
@@ -40738,6 +41009,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            TAX                      "
 GO err551_modulo_nc_regrid.jnl
 ! data from nc file with time axis having modulo=value, when regridded
 ! to another time axis, some times have missing data
@@ -40804,6 +41077,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            TAX                      "
 GO err551_fft_freqaxis.jnl
  
 DEFINE AXIS/t=1:4998:1 dayt
@@ -40833,6 +41108,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,       dsetnum,dsetpath,dsettitle,*size,*start,*end,*units,*axis,nc_scale,nc_offset,user_scale,user_offset,calendar                                                              ÿÿÿ‘            TAX                      "
 GO err551_no_taxis_errmsg.jnl
 ! The time axis is bad, having repeated values, so an abstract axis is
 ! used by Ferret and the list/t=time should result in an error.
@@ -40848,6 +41125,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "DUMMY" is not in the range T=-6.3E+10 Axis extremes are T=0.5:32 "
 GO bn_set_var_scale_off.jnl
 ! Qualifiers /SCALEFACTOR=  and /OFFSET  for SET VARIABLE.
 ! Only for NetCDF datasets
@@ -40898,6 +41177,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_longvarnames.jnl
  ! variable names up to 128 characters long
  
@@ -40944,6 +41225,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
  
 LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678 = {12,14,20,28,22,10}
 SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
@@ -40954,6 +41237,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 USE longvname
 LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
              VARIABLE : {12,14,20,28,22,10}
@@ -40971,6 +41256,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 LET a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678 = I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
 SAVE/CLOBBER/FILE=longvname.nc a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
  LISTing to file longvname.nc
@@ -40979,6 +41266,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 USE longvname.nc
 lIST/I=1/J=2 a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
              VARIABLE : I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
@@ -41008,6 +41297,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_shakey.jnl
 ! Changes to shade key:
 ! - Default size is a little bigger
@@ -41140,6 +41431,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_eof_4d.jnl
  
 ! dataset with 4 dimensions; compute EOF at each vertical level.
@@ -41352,6 +41645,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_abstract_axis_names.jnl
 ! bn_abstract_axis_names.jnl
 ! acm 6/12/03
@@ -41548,6 +41843,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_many_polygons.jnl
 ! testing large number of polygons in a plot.  Map plot has
 ! 130501 polygons; previously we had an upper limit of 100K polygons
@@ -41582,12 +41879,16 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 ! GO bn_zaxr_fcns.jnl ! move to tests of shared-obj efs.
  
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_fill_irregular.jnl
 ! FILL on vars with irregular axes
  
@@ -41617,6 +41918,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets "
 GO bn_xml_output.jnl
 !bn_xml_output.jnl
 ! new-V553 output in XML-style format
@@ -41994,6 +42297,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_test_nan.jnl
 !bn_test_nan.jnl
 ! test to make sure that NaN is able to be set by user
@@ -42075,6 +42380,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn553_bug_fixes.jnl
 ! bn553_bug_fixes.jnl
 ! test various fixes that went into version 5.52
@@ -42086,6 +42393,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err553_numeric_filename.jnl
 ! err553_numeric_filename.jnl
 ! 9/03 kob
@@ -42123,6 +42432,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err553_long_string_var_name.jnl
 ! err553_long_string_var_name.jnl
 ! 9/03 kob
@@ -42148,6 +42459,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO err551_colorkey.jnl
  
 ! colorkey label bugs
@@ -42174,6 +42487,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_graticules.jnl
 ! /GRAT, /HGRAT and /VGRAT to set graticule lines
 ! ACM March 12, 2004
@@ -42293,6 +42608,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = ""
 GO bn_repeat_range.jnl
 ! REPEAT/RANGE=[/NAME=]  for looping without depending
 ! on the grid\
@@ -42796,6 +43113,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: nested REPEAT loops with the same counter name a "
 GO bn554_bug_fixes.jnl
 ! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.54
@@ -42807,6 +43126,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: nested REPEAT loops with the same counter name a "
 GO err553_regionname_lengths.jnl
 ! In v5.50, we upped the region name storage to
 ! allow 24-characters.  Wasnt fully implemented.
@@ -42855,6 +43176,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: nested REPEAT loops with the same counter name a "
 GO err553_timeregion.jnl
 ! try to apply a region whose limits are both below,
 ! or both above, the data bounds. In v5.53 the error
@@ -42875,6 +43198,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_contour_fine_grid.jnl
 ! err553_contour_find_grid.jnl
 ! 11/21/03 ACM
@@ -42914,6 +43239,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_symsize.jnl
 ! PLOT/SYM/SIZE= does not change the size from the default.
 ! acm 11/03
@@ -42926,6 +43253,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_shakey_labels.jnl
 ! The 5th argument to shakey is supposed to define
 ! number of digits in the label.
@@ -42944,6 +43273,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_xaxis_nsmtc.jnl
 ! Bug: 5th argument failed to set the number of small
 ! tics for the axis.
@@ -42962,6 +43293,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_year_yr.jnl
 ! err553_year_yr.jnl
 ! 2/2004 ACM
@@ -43161,6 +43494,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_stride_def_grid.jnl
  
 use gtsa056_2.cdf
@@ -43900,6 +44235,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_axis_too_long.jnl
 ! From Ned Cokelet
 ! First definition of axis had last grid cell completely
@@ -43933,6 +44270,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_lev_c.jnl
  ! under linux only, this has a non-centered shade key
  
@@ -43964,6 +44303,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_lon_ax_0_label.jnl
 ! Label longitude axes with the degree sign only
 ! at x=0 (previously had an E).
@@ -43979,6 +44320,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_list_string_numeric.jnl
 ! err553_list_string_numeric.jnl
 ! 2/2004 ACM
@@ -44077,6 +44420,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_set_axis_depth.jnl
  ! NOAA/PMEL TMAP
  ! FERRET v5.53
@@ -44098,6 +44443,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_symbol_lev.jnl
 ! err553_symbol_lev.jnl
 ! 2/2004 ACM
@@ -44157,6 +44504,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_stride_modulo.jnl
 ! err553_stride_modulo_neg.jnl
 ! *acm* 3/31/2004
@@ -44264,6 +44613,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO err553_list_width.jnl
 ! err553_list_width.jnl
 ! *acm* 4/1/2004
@@ -44299,6 +44650,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: "TEMP" is not in the range T=AUG-1980:JAN-1982 Axis extremes are T=AUG-1982:JAN-1983 "
 GO bn_bounds.jnl
  
 ! bn_bounds.jnl
@@ -44337,7 +44690,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44400,7 +44753,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44458,7 +44811,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44520,7 +44873,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -44579,7 +44932,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44802,7 +45155,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44871,7 +45224,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44948,7 +45301,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -45153,6 +45506,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*number of axis coordinates (7) "
 GO bn_all_leap.jnl
 ! bn_all_leap.jnl
 ! ACM 6/2004
@@ -45209,6 +45564,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO bn_reset_attributes.jnl
 ! bn_reset_attributes.jnl
 ! acm 6/14/2004
@@ -45571,6 +45928,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO bn570_bug_fixes.jnl
 ! bn554_bug_fixes.jnl
 ! test various fixes that went into version 5.70
@@ -45582,6 +45941,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err560_shade_levels.jnl
 ! err560_shade_levels.jnl  *acm* 4/28/04
 ! Missing levels on SHADE auto-level
@@ -45600,6 +45961,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err560_mc_irreg_t.jnl
 ! err560_mc_irreg_t.jnl
 ! 4/2004  ACM
@@ -45640,6 +46003,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err560_shade_noleap.jnl
 ! err560_shade_noleap.jnl
 ! 4/30/04 ACM
@@ -45662,6 +46027,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err560_regridding_gaps.jnl
 ! err560_regrid
 !
@@ -45792,6 +46159,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err560_leap_years.jnl
 ! err560_leap_years.jnl
 ! Fixes for bug 882, inconsistency in computing whether
@@ -45813,6 +46182,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err560_century
 ! err560_century.jnl.jnl  *acm* 4/28/04
 ! Century portion of years were not properly tested in numdm1.F
@@ -45838,6 +46209,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO bn_modstats.jnl
 ! bn_modstats.jnl
 ! acm 8/25/04
@@ -45992,6 +46365,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO bn_mc_vary_scale.jnl
 ! bn_mc_vary_scale.jnl
 !   Allow stepfiles to have different internal scale and offset.
@@ -46077,6 +46452,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO bn_plot_nokey.jnl
 ! bn_plot_nokey.jnl (bug 1089)
 ! 22-nov-2004
@@ -46101,6 +46478,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO bn580_bug_fixes.jnl
 ! bn580_bug_fixes.jnl
 ! test various fixes that went into version 5.80
@@ -46112,6 +46491,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err570_singlecolor.jnl
 ! err570_singlecolor.jnl
 ! 7/6/2004
@@ -46159,6 +46540,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err570_shakeylab.jnl
  
 ! err570_shakeylab.jnl
@@ -46220,6 +46603,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: Invalid calendar name. Names are, GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP "
 GO err570_null_symbol.jnl
 ! err570_null_symbol.jnl
 ! null input -- > wierd error message see bug 919
@@ -46239,6 +46624,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_parse_labelcommand.jnl
 ! err570_parse_labelcommand.jnl
 ! fix for bug 956.
@@ -46271,6 +46658,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_compressk_by.jnl
 ! err570_compress_by.jnl
 ! fix for bug 925
@@ -46369,6 +46758,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_long_label.jnl
 ! err570_long_label.jnl
 ! Fix for bug 956
@@ -46421,6 +46812,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_ppl_poly.jnl
 ! err570_ppl_poly.jnl
  
@@ -46445,6 +46838,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_list_tab_coords.jnl
 ! err570_list_tab_coords.jnl
 ! acm 9/7/04
@@ -46493,6 +46888,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_many_variables.jnl
 ! err570_many_variables.jnl
 ! 27-sep-2004  ACM
@@ -46758,6 +47155,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_cnnn_multiline.jnl
 ! Changing pen with @Cnnn did not work in
 ! multi-line labels
@@ -46774,6 +47173,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_fine_grid_list.jnl
 ! err570_fine_grid_list.jnl
 ! ACM 10/2004
@@ -46879,6 +47280,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax"
 GO err570_hlimit_onepoint
 !err570_hlimit_onepoint.jnl
 ! 15-Oct-2004  ACM
@@ -46903,6 +47306,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification "
 GO err570_index111.jnl
 ! err570_index111.jnl
 ! 3-nov-04 ACM
@@ -46951,6 +47356,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification "
 GO err570_sh_dat_nan.jnl
 ! err570_sh_dat_nan.jnl
 ! 4-Nov-2004 acm
@@ -46978,6 +47385,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification "
 GO err570_time_range.jnl
 ! err570_time_range.jnl  bug1080
 ! time request out of range with calendar axis and RETURN=
@@ -47008,6 +47417,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification "
 GO err570_poly_over_julian.jnl
 ! err570_poly_over_julian.jnl
 ! ACM 11/12/04
@@ -47032,6 +47443,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification "
 GO err570_coaching hello
 ! err570_coaching.jnl
 ! ACM 11/12/04  Bug 1077
@@ -47083,6 +47496,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Valid value needed for symbol t2 "
 GO err570_dollar_zero.jnl
 ! err570_dollar_zero.jnl
 ! (bug 485) Got a command syntax error;
@@ -47100,6 +47515,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: Valid value needed for symbol t2 "
 GO err570_illegal_stride.jnl
 ! err570_illegal_stride.jnl
 ! (bug 596) list/i=0:300:0 var crashed Ferret
@@ -47115,6 +47532,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err570_thick_colors.jnl
 ! err570_thick_colors.jnl  bug1085
 ! /THICK without color specifier causes all lines to revert to black
@@ -47142,6 +47561,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err570_digit_filename.jnl
 ! err570_digit_filename.jnl
 ! Bug 1102: under linux, var[d=filename] fails if filename
@@ -47210,6 +47631,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err570_dods_url_label.jnl
 ! err570_dods_url_label.jnl
 !
@@ -47240,7 +47663,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov  9 2005 15:18:27
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASNov 15 2005 15:31:18
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47261,6 +47684,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err570_keylabels.jnl
 ! err570_keylabels.jnl
 ! 11/2004
@@ -47278,6 +47703,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err570_poly_lonlat_axis.jnl
 ! err570_poly_lonlat_axis.jnl
 ! 12/14/04
@@ -47306,6 +47733,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_inf_levels.jnl
 ! Run FERRET/fer/ferretdods_gui
 ! test open upper and lower levels (-INF) (INF)
@@ -47389,6 +47818,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_regulart.jnl
 ! bn_regulart.jnl
 ! 5/12/2005 ACM
@@ -47438,6 +47869,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_labwid.jnl
 ! LABWID returns the length in Denbo inches of the
 ! string.  For multi-line strings, returns length of
@@ -47495,6 +47928,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_redefine_taxis_mc.jnl
 ! bn_redefine_taxis_mc.jnl
 ! ACM 15-Apr-2005
@@ -47569,6 +48004,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_illegal_axisname.jnl
 ! Some OPenDAP HDF files have illegal axis names, e.g. with a dot in the name.
 ! This is a test of using such names, in a redefinition of the axes of the data.
@@ -47637,6 +48074,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_exit_script.jnl
 ! bn_exit_script.jnl
 ! 5/2005 ACM
@@ -47699,6 +48138,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_exit_cycle.jnl
 ! bn_exit_cycle.jnl
 ! 5/2005 ACM
@@ -47732,6 +48173,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_curv_mod.jnl
 ! bn_curv_mod
 ! Test of fill/mod and contour/mod
@@ -47755,6 +48198,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn_shade_keycont.jnl
 ! Continuous shade key
 ! test setting it and whether default is restored on next command.
@@ -47855,6 +48300,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO bn581_bug_fixes.jnl
 ! bn581_bug_fixes.jnl
 ! test various fixes that went into version 5.81
@@ -47866,6 +48313,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_irreg_bounds.jnl
 ! err580_irreg_bounds.jnl
 ! Define a short irregular time axis with some time_bounds,
@@ -47906,7 +48355,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -47942,6 +48391,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_cartesian_depth.jnl
  ! err580_cartesian_depth.jnl
 ! cartesian_axis attribute
@@ -47963,6 +48414,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_long_title.jnl
  
  ! err580_long_title.jnl
@@ -47985,7 +48438,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -47999,6 +48452,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_use_des.jnl
 ! err580_use_des.jnl
 ! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
@@ -48017,6 +48472,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_use_des.jnl
 ! err580_use_des.jnl
 ! Allow "use filename.des"   (previously gave an "is this a CDF file?" error)
@@ -48034,6 +48491,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_long_dsettitle.jnl
 ! err580_long_dsettitle
 ! fix for bug 1181
@@ -48065,7 +48524,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48079,6 +48538,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_long_veckey.jnl
 ! err580_long_veckey.jnl
 ! Bug 1200 The following caused a crash due to the long veckey format spec.
@@ -48093,6 +48554,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_cal360_region.jnl
 ! err580_cal360_region.jnl
 ! Wrong output region: the set region mistakenly tranlated
@@ -48115,6 +48578,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: delta non-positive on X axis of EX#1 "
 GO err580_def_tax_norange.jnl
 ! err580_def_t_norange.jnl
 ! bug 1203. without the T range, these statements cause a STOP.
@@ -48131,6 +48596,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_cdb.jnl
 ! err580_cdb.jnl
 ! bug 1207
@@ -48176,6 +48643,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_def_view_axes.jnl
 ! err580_def_view_axes.jnl
 ! BUG 1214
@@ -48219,6 +48688,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_lev_del.jnl
 ! err580_lev_del.jnl
 ! demonstrates bug 1205; precision of LEV_DEL when single level specified.
@@ -48240,6 +48711,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_strfloat_errors.jnl
 ! err580_strfloat_errors.jnl
 ! Previously a nonsense input gave a result of 0.
@@ -48263,6 +48736,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_arg_case.jnl
 ! err580_arg_case.jnl
 ! 5/2005
@@ -48284,6 +48759,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_cdc_timeaxis.jnl
 ! err580_cdc_timeaxis.jnl
 ! 6/3/05
@@ -48337,7 +48814,7 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
 }
 say `a,return=t0`
  !-> MESSAGE/CONTINUE 01-JAN-0001 00:00:00
@@ -48353,6 +48830,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err580_show_axis_t.jnl
 ! err580_show_axis_t
 ! bug 1272: wrong range shown when nonstd calendar
@@ -48402,6 +48881,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_nlev.jnl
 ! err580_nlev.jnl
 ! bug 1279
@@ -48418,6 +48899,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_vs_poly_axis.jnl
 ! err581_vs_poly_axis.jnl
 ! Test fix of bug 1349: formatted axis labels on PLOT/VS and POLYGON plot
@@ -48450,6 +48933,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO bn_tab_comma_multivar.jnl
 ! bn_tab_comma_multivar.jnl
 !
@@ -48497,6 +48982,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO bn_element_functions.jnl
  ! NOAA/PMEL TMAP
  ! FERRET v5.81
@@ -48590,6 +49077,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO bn_long_revision_num.jnl
 ! bn_long_revision_num.jnl
 ! ACM 8/30/05
@@ -48604,7 +49093,7 @@ FERRET_VERSION = "5.812"
 let a = 12
 save/clobber/file=revision.nc a; sp ncdump revision.nc | grep history
  LISTing to file revision.nc
-		:history = "FERRET V5.812    9-Nov-05" ;
+		:history = "FERRET V5.812   15-Nov-05" ;
  
 ! label in upper right
 go ptest; sh sym lab1
@@ -48721,6 +49210,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO bn_window_title.jnl
 ! bn_window_title.jnl
 ! Define a title for windows rather than just FERRET_1, FERRET_2, ...
@@ -48733,7 +49224,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "9-Nov-05:15:11"
+WIN_TITLE = "15-Nov-05:15:24"
  
 set win/title="set the title"
 sho sym win_title
@@ -48751,17 +49242,19 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :15:11"
+ !-> set win/title=" :15:24"
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 9-Nov-05:15:11"
+ !-> set win/title="15-Nov-05:15:24"
 sh sym win_title
-WIN_TITLE = "_9-Nov-05:15:11"
+WIN_TITLE = "15-Nov-05:15:24"
  
  
 GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO bn_deg_min_sec.jnl
 ! deg_min_sec.jnl
 ! ACM 11/7/05
@@ -48825,6 +49318,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO bn590_bug_fixes.jnl
 ! bn590_bug_fixes.jnl
 ! test various fixes that went into version 5.90
@@ -48836,6 +49331,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_hlim_axislab.jnl
 ! err581_hlim_axislab.jn
 ! bug 1129
@@ -48872,6 +49369,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_list_stray_chars.jnl
 ! err581_list_stray_chars.jnl
 ! 8/2005 (acm) bug 1275  stray characters in data listing
@@ -48911,6 +49410,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_sho_func_pattern_match.jnl
 ! err581_sho_func_pattern_match.jnl
 ! bug 1186
@@ -48949,6 +49450,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_subspanx_fill_bug.jnl
 ! err581_subspanx_fill_bug.jnl
 ! bug 900: subspan longitude axis and hlimits gets wrong data
@@ -48977,6 +49480,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_use_bounds.jnl
 ! err581_use_bounds.jnl
 ! bug 1318 Spurious error message on USE file where file has axes with bounds.
@@ -48995,6 +49500,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_des_scale.jnl
 ! err581_des_scale.jnl  bug 1332. When using a descriptor file and
 ! a varriable has scale_factor and/or add_offset attributes, the
@@ -49061,6 +49568,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_contour_zero_lev.jnl
 ! err581_contour_zero_lev.jnl
 ! acm 9/7/2005
@@ -49075,6 +49584,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_shakey_inf.jnl
 ! err581_shakey_inf.jnl
 ! acm 9/7/2005
@@ -49092,6 +49603,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_if_conditional.jnl
 ! err581_if_conditional.jnl  bug 918.
 ! acm 10/2005
@@ -49118,6 +49631,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: improper grid or axis definition: error in start,end,delta "
 GO err581_illegal_trans.jnl
 ! err581_illegal_trans.jnl
 ! Ungraceful STOP if we do @VAR on an axis where there is no data
@@ -49136,6 +49651,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: illegal use of transformation:  not all dimensions present on grid "
 GO err581_missing_scale_off.jnl
 ! err581_missing_scale_off.jnl
 ! ACM 11/8/05
@@ -49169,8 +49686,8 @@ list tt
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.812  
- 	Solaris 5.6 - 11/09/05
- 	 9-Nov-05 15:19     
+ 	Solaris 5.6 - 11/15/05
+ 	15-Nov-05 15:32     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -49186,6 +49703,7 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
 GO bn_ef_external_functions.jnl
 ! Jon's benchmarks
 go bench_examples
@@ -49964,6 +50482,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: unknown region name: @w "
 go bench_v5d
 ! benchmark for Vis5D external function
 ! 5/99 ACM
@@ -49988,6 +50508,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: command syntax: unknown region name: @w "
 GO bn_ef_v5d_strings.jnl
 ! bn_ef_v5d_strings.jnl
 ! Taken out of bn_strings, because it calls so file writev5d.
@@ -49999,7 +50521,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Nov  9 15:19 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Nov 15 15:32 testa.v5d
  
 can region
 use coads_climatology
@@ -50011,7 +50533,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Nov  9 15:19 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Nov 15 15:32 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -50027,6 +50549,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: string/numeric data type mix-up: WRITEV5D "
 GO bn_ef_bench_extrema.jnl
 ! bench_extrema.jnl
 !  benchmark tests for findhi and findlo
@@ -50085,6 +50609,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: string/numeric data type mix-up: WRITEV5D "
 GO bn_ef_err541_date_delim.jnl
 ! err541_date_delim.jnl
 ! Fix errors occurring with delimted reads - four digit years were
@@ -50159,6 +50685,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: string/numeric data type mix-up: WRITEV5D "
 GO bn_ef_zaxr_fcns.jnl
 ! bn_ef_zaxr_functions.jnl
 ! 04-apr-05 *acm* move to tests of shared-obj efs.
@@ -50212,6 +50740,8 @@ GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+SHOW SYM FER_LAST_ERROR
+FER_LAST_ERROR = "**ERROR: invalid command: string/numeric data type mix-up: WRITEV5D "
 GO bn_ef_curv_to_rect.jnl
 ! bn_ef_curv_to_rect.jnl
 ! Test of curvilinear to rectilinear regridding
@@ -50274,8 +50804,8 @@ stat mapped
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.812  
- 	Solaris 5.6 - 11/09/05
- 	 9-Nov-05 15:19     
+ 	Solaris 5.6 - 11/15/05
+ 	15-Nov-05 15:32     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50458,8 +50988,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.812  
- 	Solaris 5.6 - 11/09/05
- 	 9-Nov-05 15:19     
+ 	Solaris 5.6 - 11/15/05
+ 	15-Nov-05 15:32     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50572,4 +51102,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Nov 9 15:19:40 PST 2005
+Ended at Tue Nov 15 15:32:32 PST 2005

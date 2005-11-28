@@ -47,16 +47,10 @@
 *	"date" string blanks out years 0000 and 0001 ==> cannot distinguish
 * V530: *acm* 12/00 add calendar types; cal_id
 
-#ifdef unix
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'ferret.parm'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-        INCLUDE 'FERRET_CMN:FERRET.PARM'
-#endif
 
 * calling argument declarations:
 	INTEGER	grid
@@ -94,14 +88,14 @@
 	   start_secs = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
 * If the tstep is negative, it was computed in default calendar
-
-           prev_cal_id = 1
-           tstep_new = tstep
-           IF (tstep .LT. 0) THEN
-              IF (prev_cal_id .NE. cal_id) 
-     .            CALL reset_secs_from_bc (-tstep, 
-     .		     tstep_new, prev_cal_id, cal_id, status)
-           ENDIF
+c (looked at this as part of fix to 1365, but it it correct in general?)
+c           prev_cal_id = 1
+c           tstep_new = tstep
+c           IF (tstep .LT. 0) THEN
+c              IF (prev_cal_id .NE. cal_id) 
+c     .            CALL reset_secs_from_bc (-tstep, 
+c     .		     tstep_new, prev_cal_id, cal_id, status)
+c           ENDIF
 
 * Find the number of seconds since start of data set for this time step
 	   offset_secs = tstep_new*line_tunit( axis )

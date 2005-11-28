@@ -77,6 +77,8 @@
 * 10/2001 acm -- check that jtop (box top) is within range of ARG1 y axis.
 *  2/2001 acm -- check that modulo axes are also regular, and fix delmodx, delmody
 *  2/2002 acm -- check xpt and ypt (x and y points to sample) that values arent missing.
+* 11/2005 acm -- Allow use of this on any X axis, not just regular ones 
+*                (see bug report 1358)
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -316,12 +318,13 @@
       INTEGER i2,j2,k2,l2
       INTEGER i3,j3,k3,l3
 
-      INTEGER imatch, jmatch
+      LOGICAL ok
+      INTEGER STR_UPCASE, ic, imatch, jmatch
       INTEGER ibot, itop, jbot, jtop
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt
       REAL xbot, xtop, ybot, ytop
       REAL frac
-      CHARACTER*255 err_msg
+      CHARACTER err_msg*255, test_str*16
 
 C  variables for checking axis characteristics (modulo axes)
 
@@ -391,21 +394,27 @@ C  variables for checking axis characteristics (modulo axes)
       yhi = arg_hi_ss(Y_AXIS,ARG1)
 
       IF ( modulo(1) ) THEN
-         IF (.NOT. regular(1)) THEN
+         ic = STR_UPCASE (test_str, ax_units(1))
+         ok = (test_str(1:3) .EQ. 'DEG' .OR. regular(1))
+         IF (.NOT. ok) THEN
             err_msg = 'cannot handle MODULO axis that is not regular'
             go to 999
          ELSE
             dx = xaxdat(xlo+1,1,1,1) - xaxdat(xlo,1,1,1)
             delmodx = xaxdat(xhi,1,1,1) - xaxdat(xlo,1,1,1) + dx
+            IF (ok) delmodx = 360.
          ENDIF
       ENDIF
       IF ( modulo(2) ) THEN
-         IF (.NOT. regular(2)) THEN
+         ic = STR_UPCASE (test_str, ax_units(2))
+         ok = (test_str(1:3) .EQ. 'DEG' .OR. regular(2))
+         IF (.NOT. ok) THEN
             err_msg = 'cannot handle MODULO axis that is not regular'
             go to 999
          ELSE
             dy = yaxdat(ylo+1,1,1,1) - yaxdat(ylo,1,1,1)
             delmody = yaxdat(yhi,1,1,1) - yaxdat(ylo,1,1,1)
+            IF (ok) delmodx = 360.
          ENDIF
       ENDIF
 

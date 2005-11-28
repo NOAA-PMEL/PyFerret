@@ -81,6 +81,7 @@ READLINELIB	= -L$(TMAP_LOCAL)/lib -lreadline
 
 #GKSLIB		= -L$(TMAP_LOCAL)/lib -lxgks
 GKSLIB		= ../xgks/src/lib/libxgks.a
+NCARLIB		= /home/ja8/ansley/ans_ferret/ncar/ncarg-4.3.0/ncarg2d/src/libncarg/libncarg.a
 
 HDFLIB		= /opt/local/lib/libdf.a
 

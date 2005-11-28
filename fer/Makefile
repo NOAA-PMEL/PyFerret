@@ -176,6 +176,7 @@ ferret:
 		$(CDFLIB) \
 		$(HDFLIB) \
 		$(GKSLIB) \
+		$(NCARLIB) \
 		$(SYSLIB) \
 		$(DODS_SYSLIB)
 	chmod +x $(EXECNAME)

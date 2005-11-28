@@ -63,9 +63,11 @@
 	REAL*8	tstep
 
 * internal variable declarations:
-	INTEGER		TM_GET_CALENDAR_ID, axis, status, cal_id
+	INTEGER		TM_GET_CALENDAR_ID, axis, status, cal_id,
+     .                  prev_cal_id
 !	CHARACTER*20	date
-	REAL*8		SECS_FROM_BC, start_secs, offset_secs
+	REAL*8		SECS_FROM_BC, start_secs, offset_secs,
+     .                  tstep_new
 
 * internal parameter declarations:
 	INTEGER		seconds
@@ -91,8 +93,18 @@
 * First find the offset from 01-JAN-0000 00:00:00 from the descriptor file
 	   start_secs = SECS_FROM_BC( line_t0(axis), cal_id, status )
 
+* If the tstep is negative, it was computed in default calendar
+
+           prev_cal_id = 1
+           tstep_new = tstep
+           IF (tstep .LT. 0) THEN
+              IF (prev_cal_id .NE. cal_id) 
+     .            CALL reset_secs_from_bc (-tstep, 
+     .		     tstep_new, prev_cal_id, cal_id, status)
+           ENDIF
+
 * Find the number of seconds since start of data set for this time step
-	   offset_secs = tstep*line_tunit( axis )
+	   offset_secs = tstep_new*line_tunit( axis )
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	   TSTEP_TO_SECS = start_secs + offset_secs

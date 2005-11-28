@@ -71,7 +71,7 @@ PAUSE
 SET VIEW full
 SET WIND/CLEAR
 
-USE  "/home/ja4/kobrien/FERRET/bench/coads_vwnd.cdf"
+USE  "coads_vwnd.cdf"
 SET REGION/I=90/J=65
 PLOT vwnd
 

@@ -477,6 +477,9 @@ GO bn_reset
 GO bn_deg_min_sec.jnl
 
 GO bn_reset
+GO bn_last_error.jnl
+
+GO bn_reset
 GO bn590_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

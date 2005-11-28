@@ -1,0 +1,11 @@
+! err581_noleap_mod.jnl
+! This is bug 1365: STOP on shade command  
+! when modulo-regridding a time-limited NOLEAP calendar 
+
+use gt4d011.cdf
+set axis/cal=noleap `u,return=taxis`
+let a = u[t=1-sep-1982:1-jan-1983]
+def axis/t/edge/mod/cal=noleap/unit=days/t0=1-jan-0001 mon_irreg_nlp = {0,31,59,90,120,151,181,212,243,273,304,334,365}
+
+let a_clim = a[gt=mon_irreg_nlp@mod]
+shade/y=0/k=1 a_clim

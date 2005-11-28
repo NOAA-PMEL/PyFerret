@@ -48,3 +48,13 @@ GO err581_illegal_trans.jnl
 ! missing flag gets scaled by scale and offset factors!
 GO bn_reset
 GO err581_missing_scale_off.jnl
+
+! bug 1363
+! SHOW GRID and other output have wrong dates, non-std calendar axesv  
+GO bn_reset
+GO err581_cal_dates_output.jnl
+
+! bug 1365
+! STOP on shade command when modulo-regridding a time-limited nonstd calendar 
+GO bn_reset
+GO err581_noleap_mod.jnl

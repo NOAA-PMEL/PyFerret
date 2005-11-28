@@ -258,6 +258,10 @@
 	DATA report_err_code( ferr_unknown_command - greport )
      .		/ 'unknown_command' /
 
+        
+	DATA err_text( ferr_ef_error - greport )
+     .		/ ' '	/
+
 	DATA err_text( ferr_data_type - greport )
      .		/ 'illegal data type (float,string,...) for operation'/
 	DATA report_err_code( ferr_data_type - greport )

@@ -62,6 +62,9 @@
 *			    so ifdef around it
 * V500 - *kob* 7/99 - update error codes to handle netCDF V3.4 differences
 *
+* *acm* 11/05 v5.90  -- New symbol FER_LAST_ERROR contains all the text normally
+*                       written to std out. 
+
 * arguments:
 *	status_in	- error code from calling program
 *	status_out	- error code (echoed) back to calling program
@@ -73,7 +76,6 @@
 *			  special error, this might have another value.
 *	found		- the value found when "expected" value was expected
 
-#ifdef unix
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
 #include "gt_lib.parm"
@@ -91,19 +93,6 @@
 	external xcdferror_data
 !	include 'xalt_messages.cmn_text'	! w/ alt_messages
 	external xalt_messages_data
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:XIO.CMN'
-	INCLUDE 'TMAP_FORMAT:XERROR_TEXT.CMN'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XSTEP_FILES.CMN'
-	INCLUDE 'TMAP_FORMAT:XDIAG_CTRL.CMN'
-!	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN'		! w/ alt_messages
-
-	INTEGER		fnum, rmssts, rmsstv, iunit, condval, msgvec(8)
-#endif
 
 * argument definitions
 	CHARACTER*(*)	routine, expected, found
@@ -112,13 +101,18 @@
 * local definitions
 	CHARACTER*132	TM_CMPRSS, expbuff, fndbuff
 	CHARACTER*256	errbuf	! introduced for GUI-SPLIT messages
+        CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
 	INTEGER		sf_len, des_len, TM_LENSTR1, msg_len, exp_len,
-     .			fnd_len, rtn_len, cdferr
-        INTEGER         cdfid, varid  ! cdf error bits
+     .			fnd_len, rtn_len, len_symbuf, ier, ist, cdferr
 
 * initialize
 	status_out = status_in	! transfer error code to output
 	errbuf = ' '
+
+* initialize string for symbol FER_LAST_ERROR
+
+         symbuf = ' '
+         len_symbuf = 1
 
 * print calling routine line to identify where error occured
 * (diagnostic, only - *sh* 3/15/91)
@@ -147,6 +141,9 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 	  msg_len = TM_LENSTR1(expbuff)
 	  WRITE (errbuf,1000) expbuff(:msg_len)
 	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+          msg_len = TM_LENSTR1(errbuf)
+          symbuf(len_symbuf:) = errbuf(:msg_len)
+          len_symbuf = len_symbuf + msg_len + 1
 #else
 * VMS code by Mark Renton
 	  CALL ERRSNS ( fnum, rmssts, rmsstv, iunit, condval )
@@ -166,6 +163,10 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 	  CALL SYS_PUTMSG ( msgvec, , , )
 	  WRITE (errbuf,1000) expbuff(:msg_len)
 	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+          msg_len = TM_LENSTR1(errbuf)
+          symbuf(len_symbuf:) = errbuf(:msg_len)
+          len_symbuf = len_symbuf + msg_len + 1
+
 #endif
 
 * Output the message for a regular error
@@ -175,7 +176,12 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 	  WRITE (errbuf,1000)
      .		 msg_regular(status_in - pregular)(:msg_len)
 	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+          msg_len = TM_LENSTR1(errbuf)
+          symbuf(len_symbuf:) = errbuf(:msg_len)
+          len_symbuf = len_symbuf + msg_len + 1
+
 1000	  FORMAT(' **TMAP ERR: ',A)
+
 
 * output a netCDF error (note: CDF uses error code -1)
 * *kob* 7/99 - Update for netCDF v3.4
@@ -196,24 +202,40 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
               WRITE (errbuf,1010) cdferr
            ENDIF
 	   CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+
+           msg_len = TM_LENSTR1(errbuf)
+           symbuf(len_symbuf:) = errbuf(:msg_len)
+           len_symbuf = len_symbuf + msg_len + 1
+
  1008      FORMAT(' ** netCDF error: ', A)
  1010      FORMAT(' ** unknown netCDF error code:', I4)
            IF (expected .NE. no_errstring) THEN
 	     errbuf = ' '
 	     WRITE (errbuf,*) expected
 	     CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+             msg_len = TM_LENSTR1(errbuf)
+             symbuf(len_symbuf:) = errbuf(:msg_len)
+             len_symbuf = len_symbuf + msg_len + 1
 	   ENDIF
            IF (found .NE. no_errstring) THEN
 	     errbuf = ' '
 	     WRITE (errbuf,*) found
-	     CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+	     CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)   
+             msg_len = TM_LENSTR1(errbuf)
+             symbuf(len_symbuf:) = errbuf(:msg_len)
+             len_symbuf = len_symbuf + msg_len + 1
 	   ENDIF
+
            GOTO 4000   ! bypass normal error processing
 * unrecognized error code ?
 	ELSE
 	  WRITE (errbuf,1100) status_in
 	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
 1100	  FORMAT(' *** Unknown error code:',I10,' *** ')
+          msg_len = TM_LENSTR1(errbuf)
+          symbuf(len_symbuf:) = errbuf(:msg_len)
+          len_symbuf = len_symbuf + msg_len + 1
+
 	END IF
 
 * Output any info in expected and found strings (if any present)
@@ -228,10 +250,15 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
      .				      fndbuff(1:fnd_len)
 	    CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
 1200	    FORMAT(13X,'Expected: ',A,' Found: ',A)
+            msg_len = TM_LENSTR1(errbuf)
+            symbuf(len_symbuf:) = errbuf(:msg_len)
+            len_symbuf = len_symbuf + msg_len + 1
 	  ELSE
 	    WRITE (errbuf,1300) expbuff(1:exp_len)
 	    CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
  1300       FORMAT(13X,A)
+            symbuf(len_symbuf:) = expbuff(:exp_len)
+            len_symbuf = len_symbuf + exp_len + 1
 	  ENDIF
 	ENDIF
 
@@ -242,7 +269,10 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 	  des_len = TM_LENSTR1(ds_des_name(dset_num))
 	  WRITE (errbuf,1300)
      .		 'Data set: '//ds_des_name(dset_num)(:des_len)
-	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)             
+          msg_len = TM_LENSTR1(errbuf)
+          symbuf(len_symbuf:) = errbuf(:msg_len)
+          len_symbuf = len_symbuf + msg_len + 1
 	ENDIF
 
 	IF ( sf_num .NE. no_stepfile      .AND.
@@ -252,11 +282,21 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 	  WRITE (errbuf,1300)
      .           'Data file: '//sf_name(sf_num)(:sf_len)
 	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+          msg_len = TM_LENSTR1(errbuf)
+          symbuf(len_symbuf:) = errbuf(:msg_len)
+          len_symbuf = len_symbuf + msg_len + 1
 	ENDIF
 
 * print blank line to set off error messages
 ! 4000   IF ( .NOT.alt_messages) WRITE (lunit_errors, *)
  4000	CONTINUE
+
+* Generate symbol containing the whole error message
+
+         ier = 0
+         ist = 0
+         CALL SETSYM ('FER_LAST_ERROR '//symbuf, 14+len_symbuf, 
+     .                 ier, ist)
 
 * take alternate RETURN always
 	RETURN 1

@@ -1,15 +1,24 @@
 * XERRMSG_TEXT.CMN
 * text of error messages
 * 5/87 - added codes and last_error for HELP
+* 11/05 v5.90  -- ef_errtext contains text for new symbol 
+*             FER_LAST_ERROR, which all the text normally
+*             written to std out. 
 
 	COMMON/ XERRMSG_TEXT / last_error,
+     .                             len_efname, 
+     .				   len_eftext,
      .				   err_text,
      .				   report_err_code,
      .				   noreport_err_code,
-     .				   special_err_code
+     .				   special_err_code,
+     .                             ef_errtext,
+     .                             efname
 
-	INTEGER	     last_error
+	INTEGER	     last_error, len_efname, len_eftext
 	CHARACTER*50 err_text(gnum_report)
 	CHARACTER*16 report_err_code  (gnum_report),
      .		     noreport_err_code(gnum_noreport),
      .		     special_err_code (gnum_special)
+	CHARACTER*1028	ef_errtext
+	CHARACTER*40	efname

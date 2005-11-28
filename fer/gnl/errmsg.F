@@ -85,6 +85,8 @@
 *                       checking for user variables not relevant to the context
 * *acm* 10/04 v5.80  -- New code ferr_nomessge for use when user-given error msg 
 *                       in coached string substitution
+* *acm* 11/05 v5.90  -- New symbol FER_LAST_ERROR contains all the text normally
+*                       written to std out. 
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -106,7 +108,8 @@
 * internal variable declarations:
 	LOGICAL 	help_cue, multiline
 	INTEGER		TM_LENSTR1, len_text, len_string, status,
-     .			cr_pos
+     .			cr_pos, ier, ist, len_symbuf
+        CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
 
 * see if "HELP CUE" was requested
 	help_cue = status_in .GT. ghelp_cue
@@ -121,6 +124,11 @@
 	status_out = status			! transfer error code to output
 	gui_status = status
 
+* initialize string for symbol FER_LAST_ERROR
+
+         symbuf = ' '
+         len_symbuf = 1
+
 #ifdef unix
            risc_buff = err_string     ! DEC f772.1 cannot use // with char*(*)
 ! kob 12/96					! same for SUN 11/93
@@ -132,6 +140,11 @@
 	   IF ( err_string .EQ. ' ' ) THEN
 	      CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
      .				err_text(status-greport)(:len_text) )
+     
+              symbuf(len_symbuf:) = ' **ERROR: '//
+     .				err_text(status-greport)(:len_text)
+              len_symbuf = len_symbuf + len_text + 10
+
 	   ELSE
 * ... multiple lines ?
 	      cr_pos = INDEX( err_string, pCR )
@@ -146,20 +159,50 @@
  	         CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
      .			        risc_buff(:len_string) )
 !     .				': '//err_string(:len_string) )  !11/93 SUN bug
+
+                 symbuf(len_symbuf:) = ' **ERROR: '//
+     .			        risc_buff(:len_string) 
+                 len_symbuf = len_symbuf + len_string + 10
+
               ELSE
+                 ier = status
+                 ier = greport
+                 ier = status - greport
+                 len_text = TM_LENSTR1(err_text(status-greport))
 	         CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
      .				err_text(status-greport)(:len_text)//
      .				': '//risc_buff(:len_string) )
 !     .				': '//err_string(:len_string) )  !11/93 SUN bug
+
+                 symbuf(len_symbuf:) =' **ERROR: '//
+     .				err_text(status-greport)(:len_text)//
+     .				': '//risc_buff(:len_string) 
+                 len_symbuf = len_symbuf + len_text + len_string + 13
+
               ENDIF
     
-	      IF ( multiline ) CALL WRITE_MULTI(err_lun, err_string(cr_pos+1:))
+	      IF ( multiline ) THEN
+                 CALL WRITE_MULTI(err_lun, err_string(cr_pos+1:))
+                 symbuf(len_symbuf:len_symbuf) = '.'
+                 symbuf(len_symbuf+1:) = err_string(cr_pos+1:)
+                 len_string = TM_LENSTR1(err_string(cr_pos+1:))
+                 len_symbuf = len_symbuf + len_string + 2
+                 DO WHILE (INDEX( symbuf, pCR ) .GT. 0)
+                   cr_pos = INDEX( symbuf, pCR )
+                   symbuf(cr_pos:cr_pos) = '.'
+                 ENDDO
+              ENDIF
+
 	   ENDIF
  3000	   FORMAT (' **ERROR: ',3A)
 
 	ELSEIF ( status .EQ. ferr_ODR_error ) THEN
 	   len_string = TM_LENSTR1( err_string )
 	   WRITE (err_lun,3100) err_string(:len_string)
+
+           symbuf(len_symbuf:) =err_string(:len_string)
+           len_symbuf = len_symbuf + len_string + 1
+
  3100	   FORMAT (' **Panasonic error: ',A)
 
 * error requiring no message ?
@@ -198,7 +241,12 @@
 
 	   call sys_putmsg ( msgvec, , , )	! output the message
 
-	   IF ( err_string .NE. ' ' ) WRITE (err_lun,'(1X,A)') err_string
+	   IF ( err_string .NE. ' ' ) THEN
+              WRITE (err_lun,'(1X,A)') err_string
+              
+              len_string = TM_LENSTR1( err_string )
+              symbuf(len_symbuf:) = err_string(:len_string)
+              len_symbuf = len_symbuf + len_string + 1
 #endif
 
 * interrupt processing ? Re-store ^C interrupt handler
@@ -217,7 +265,9 @@
 
 	ELSE
 * unrecognized error code ?
-	   CALL TM_SPLIT_MESSAGE( err_lun, 'unknown error code:')
+	   CALL TM_SPLIT_MESSAGE( err_lun, 'unknown error code:')              
+           symbuf(len_symbuf:) = 'unknown error code:'
+           len_symbuf = len_symbuf + 19
 
 	END IF
 
@@ -248,14 +298,36 @@
 	   ENDIF
 	ENDIF
 
-
-
 * prompt with Help cue ?
 #ifdef unix
 * HELP command doesnt function on Unix systems
 #else
 	IF ( help_cue ) WRITE (err_lun,*) 'Type HELP error for assistance'
 #endif
+
+* Generate symbol containing the whole error message
+
+* was there an external function error
+         IF ( len_eftext .GT. 0) THEN
+            symbuf(len_symbuf:) = '. Bailing out of external function '
+     .         //efname(:len_efname)//'.'
+            len_symbuf = len_symbuf + len_efname + 36
+            symbuf(len_symbuf:) = ef_errtext(:len_eftext)
+            len_symbuf = len_symbuf + len_eftext
+         ENDIF
+
+* TMAP_error was saved in FER_LAST_ERROR already. Otherwise save
+* the string in the symbol
+
+         IF (status_in .NE. ferr_TMAP_error) THEN
+            ier = 0
+            ist = 0
+            CALL SETSYM ('FER_LAST_ERROR '//symbuf, 14+len_symbuf, 
+     .                 ier, ist)
+
+         ENDIF
+
+         len_eftext = 0
 
 * take alternate RETURN always
   500	RETURN 1

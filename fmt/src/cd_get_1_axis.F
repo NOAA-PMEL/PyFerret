@@ -128,6 +128,8 @@
 * V590 *acm* 10/05 TM_CHECK_BNDS_ATTRIB and TM_CHEC_EDGES_ATTRIB should not have 
 *                  npts as an argument; npts from axis length was being reset
 *                  as npts bounds or edges, which is npts+1
+* V590 *acm* 11/05 Fix bug 1365, as already done for years, named calendar with unit=month 
+*                  gets assigned the length of month in that calendar.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -182,7 +184,7 @@
      .        edgid, spacing_atlen, epic_t2var, since_T0,
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
-     .        newaxis, d1s, d1e, d2s, d2e
+     .        newaxis, d1s, d1e, d2s, d2e, len_cal
 
 
       REAL    rbuff, delta, first_delta
@@ -391,6 +393,7 @@ c         ENDIF
       IF ( epic_time ) line_units(iaxis) = 'Days'     ! arbitrary
 
 * ... decode the units
+
       units = TM_UNIT_ID( line_units(iaxis) )
 
 * Named calendar with unit=year gets length of year in that calendar.
@@ -400,6 +403,14 @@ c         ENDIF
          IF (cal_id .EQ. julian) units = -12
 	 IF (cal_id .EQ. noleap) units = -11
 	 IF (cal_id .EQ. all_leap) units = -8
+      ENDIF
+
+* Named calendar with unit=month gets length of month in that calendar.
+
+      IF (units .EQ. -5) THEN
+         IF (cal_id .EQ. d360) units = -14
+         IF (cal_id .EQ. julian) units = -15
+	 IF (cal_id .EQ. noleap) units = -13
       ENDIF
 
       line_unit_code(iaxis) = units

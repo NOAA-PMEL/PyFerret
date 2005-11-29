@@ -128,7 +128,7 @@
 * V590 *acm* 10/05 TM_CHECK_BNDS_ATTRIB and TM_CHEC_EDGES_ATTRIB should not have 
 *                  npts as an argument; npts from axis length was being reset
 *                  as npts bounds or edges, which is npts+1
-* V590 *acm* 11/05 Fix bug 1365, as already done for years, named calendar with unit=month 
+* V590 *acm* 11/05 Fix bug 1363: As is already done for years, named calendar with unit=month 
 *                  gets assigned the length of month in that calendar.
 
 * argument definitions:

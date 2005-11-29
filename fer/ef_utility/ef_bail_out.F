@@ -29,7 +29,7 @@ c
 c     internal parameter declarations:
       INTEGER      slen
       PARAMETER  ( slen = ef_max_description )
-      CHARACTER*40 GCF_NAME, efname  ! EF_MAX_NAME_LENGTH is 40 
+      CHARACTER*40 GCF_NAME  ! EF_MAX_NAME_LENGTH is 40 
 
 #ifdef sun
       BYTE      fhol(slen)      ! c-type Hollerith string buffer

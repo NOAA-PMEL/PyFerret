@@ -98,7 +98,9 @@ c     .		     tstep_new, prev_cal_id, cal_id, status)
 c           ENDIF
 
 * Find the number of seconds since start of data set for this time step
-	   offset_secs = tstep_new*line_tunit( axis )
+
+c	   offset_secs = tstep_new*line_tunit( axis )
+	   offset_secs = tstep*line_tunit( axis )
 
 * Total seconds to this time step since 01-JAN-0000 00:00:00
 	   TSTEP_TO_SECS = start_secs + offset_secs

@@ -474,10 +474,10 @@ GO bn_reset
 GO bn_window_title.jnl
 
 GO bn_reset
-GO bn_deg_min_sec.jnl
+GO bn_last_error.jnl
 
 GO bn_reset
-GO bn_last_error.jnl
+GO bn_deg_min.jnl
 
 GO bn_reset
 GO bn590_bug_fixes.jnl

@@ -48,7 +48,7 @@
        INCLUDE 'xcurvilinear.cmn'
 
        INTEGER nxdim, nydim, status
-       REAL    data(nxdim,nydim), px(*), py(*), xs(*), ys(*), lmin, lmaxs
+       REAL    data(nxdim,nydim), px(*), py(*), xs(*), ys(*), lmin, lmax
 
 * local definitions
 

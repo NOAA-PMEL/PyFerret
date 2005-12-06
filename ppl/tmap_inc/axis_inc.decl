@@ -3,6 +3,7 @@
 * created for TMAP usage by Steve Hankin 7/88
 * v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
+* V590: *acm* 11/05 add XDMS,YDMS for deg/min/sec labels
 
 	REAL	XLO
 	REAL	XHI

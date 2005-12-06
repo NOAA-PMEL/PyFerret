@@ -157,6 +157,8 @@ C     ADD LEADING ZERO
 * Reformat the value into deg,min,sec if requested.
 * This means moving the degree symbol after the degrees
 * and putting the direction (N,S,E,W) at the end
+* For longitudes larger than 180, format them as is and
+* translate to west longitude afterwards.
  
         STR_DMS = ' '
         IF (dms .GE. 1) THEN
@@ -164,14 +166,21 @@ C     ADD LEADING ZERO
            dot = INDEX(str,'.')
            deg = INDEX(str,'#')
            IF (dot .EQ. 0) dot = TM_LENSTR1(str) +1
-           val = x
+           val = xz
+           IF (xz .LT. 0) val = x
+
            ideg = INT(val)
            frac = val - FLOAT(ideg)
            minutes = 60.*frac
-           imin = INT(minutes)
-           frac = minutes - FLOAT(imin)
-           seconds = 60.* frac
-           isec = INT(seconds)
+           imin = INT(minutes+0.1)  ! sun at least, turns 40 into 39 sometimes...
+c           frac = minutes - FLOAT(imin)
+c           seconds = 60.* frac
+c           isec = INT(seconds)
+
+           IF (xz .GT. 180.) THEN
+              ideg = 360-ideg
+              imin = 60-imin
+           ENDIF
 
            IF (dms .EQ. 2) THEN  ! write as deg,min,sec
               IF (ideg .LT. 100) THEN

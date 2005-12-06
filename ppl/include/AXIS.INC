@@ -80,7 +80,6 @@ c       hline           flag: true if still need to draw horizontal tic lines
 c       vline           flag: true if still need to draw vertical tic lines
 c       XDMS           = 0 for degrees in decimal deg.frac
 c                      = 1 for Degrees and minutes 
-c                      = 2 for Degrees, minutes, and seconds
-c       YDMS           same as xdmx, for vertical axis
+c       YDMS           same as xdms, for vertical axis
 c
 c*******************************************************************

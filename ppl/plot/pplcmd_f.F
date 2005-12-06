@@ -100,7 +100,8 @@ C**
 *                 or if a plot command is issued without correcting the PPL call,
 *                 the bad format string is passed on to routines like numcde or
 *                 vecfld, where it will cause a crash.
-C *acm* 11/05     new options for XFOR, YFOR, 'DMS' deg/min/sec or 'DM' deg/min
+C *acm* 11/05     new options for XFOR, YFOR, 'DM' deg/min deg/min
+* V590: *acm* 11/05 add xdms,ydms for deg/min labels
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -208,7 +209,7 @@ CCCCCCC data	        tmapdebug/.false./
                                                                
         real            xm,ym,xt,xdum1,xdum2,xdum3,xdum4       
         real            xdum5,zmn,zmx,p1,x1,y1,y2,x3,x4     
-        real            diff,symwid                            
+        real            diff,symwid,xmx,xmn,ymx,ymn,dd
                                                                
         external        lnblk,diff,symwid                      
                                                                
@@ -694,24 +695,26 @@ C
 
 c For XFOR and YFOR, check if LABEL is a valid format: 
 c do a test write to the string err_msg, using label as a format
-c If format is (DM), (DMS), or (DMF) then axis will be labelled with 
-c deg/min, deg/min/sec, or deg/min.ff decimal fraction of minutes.
+c If format is (DM) then axis will be labelled with 
+c deg/min, or deg/min.ff decimal fraction of minutes.
+c****If it is XFOR(DM,ddd) then we will rotate the labes by ddd degrees.****
 
 C     XFOR
 4400  i = STR_UPCASE (TMPCHR, LABEL(1:5))
+      i = TM_LENSTR1(LABEL) - 1
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
-           IF (TMPCHR(2:4) .EQ. 'DMS') THEN
-              XDMS = 2
-           ELSE IF (TMPCHR(2:4) .EQ. 'DMF') THEN
-              XDMS = 3
-           ELSE IF (TMPCHR(2:3) .EQ. 'DM') THEN
-              XDMS = 1
+           IF (TMPCHR(2:3) .EQ. 'DM') THEN
+              xdms = 1
+              CALL RANGE_DM(XLO,XHI,XTIC,xmn,xmx,dd)
+              xlo = xmn
+              xhi = xmx
+              xtic = dd
            ELSE ! 'DD' resets to decimal degrees
-              XDMS = 0
+              xdms = 0
            ENDIF
            GOTO 10
         ENDIF
-        XDMS = 0
+        xdms = 0
         IFRX=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN
@@ -720,19 +723,20 @@ C     XFOR
 	GOTO 10
 C     YFOR
 4500  i = STR_UPCASE (TMPCHR, LABEL(1:15))
+      i = TM_LENSTR1(LABEL) - 1
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
-           IF (TMPCHR(2:4) .EQ. 'DMS') THEN
-              YDMS = 2
-           ELSE IF (TMPCHR(2:4) .EQ. 'DMF') THEN
-              YDMS = 3
-           ELSE IF (TMPCHR(2:3) .EQ. 'DM') THEN
-              YDMS = 1
+           IF (TMPCHR(2:3) .EQ. 'DM') THEN
+              ydms = 1
+              CALL RANGE_DM(YLO,YHI,YTIC,ymn,ymx,dd)
+              ylo = ymn
+              yhi = ymx
+              ytic = dd
            ELSE ! 'DD' resets to decimal degrees
-              YDMS = 0
+              ydms = 0
            ENDIF
            GOTO 10
         ENDIF
-        YDMS = 0
+        ydms = 0
         IFRY=LABEL
         slen = TM_LENSTR(LABEL)
         IF (slen .GT. 1) THEN

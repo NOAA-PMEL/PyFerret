@@ -16,6 +16,7 @@ clear_vp.F\
 color.F\
 dashes.F\
 dashsz.F\
+doscale.F\
 englsh.F\
 erase.F\
 gkinit.F\
@@ -49,6 +50,7 @@ positon.F\
 prime.F\
 putchsun.F\
 range.F\
+range_dm.F\
 rangel.F\
 rotate.F\
 scale.F\

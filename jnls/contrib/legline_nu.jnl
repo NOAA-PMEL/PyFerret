@@ -16,4 +16,4 @@ let leg1 `($xaxis_min) + xrange*$1`
 let leg2 `xrange*$2`
 let leg3 `($yaxis_min) + yrange*$3`
 
-go legline.go `leg1` `leg2` `leg3` $4 $5 "$6"
+go legline `leg1` `leg2` `leg3` $4 $5 "$6"

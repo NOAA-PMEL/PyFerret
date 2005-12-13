@@ -66,13 +66,14 @@
 * V551 - 2/03 *kob* beta1
 * V580 - 12/04 *acm* 
 * V581_01 8/12/05 *acm* minor revisions (not released)
-* V591_2 10/5/05  *acm* bug fixes thru now...
+* 5.812 10/5/05  *acm* bug fixes thru now...
+* 5.813 12/13/05  *acm* fix for bug 1368
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.812   /
+	DATA revision_level	/  5.813   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

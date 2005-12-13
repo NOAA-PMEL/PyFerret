@@ -51,6 +51,7 @@
 *                         statements.  use an octal constant instead
 * 10/05 *acm*  Fix bug 918, parsing immediate mode expr when they are inside
 *              a conditional, using the IF STACK.
+* 12/05 *acm*  Fix bug 1368. if skipping commands, also skip one-line if-then-condition
 
 * calling argument declarations:
 	INTEGER		slen
@@ -60,13 +61,15 @@
 * internal variable declarations:
 	INTEGER	STR_CASE_BLIND_COMPARE, ic1,
      .		status	! not returned
-	LOGICAL its_endif, its_else, its_elif, its_if
+        INTEGER STR_UPCASE, i, end_then
+	LOGICAL its_endif, its_else, its_elif, its_if, one_liner
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'command.parm'
 	include 'gfdl_vms.parm'
 	include 'xprog_state.cmn'
+        include 'xrisc.cmn'
 
 * internal parameter declarations:
         CHARACTER*1     tab
@@ -105,7 +108,17 @@ cc	IF (its_if .OR. its_endif) RETURN
 
 	IF (if_conditional .AND. its_if) THEN		        ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
-	      IF ( num_args .LE. 2 ) THEN		! multi-line nested IF?
+
+* --- here is cause of bug 1368: if the current statement is a one-line IF statement, 
+* --- and we are skipping commands, we want to just skip this one too.
+* --- If the current command is a one-line if condition then command
+* --- and if so skip it, otherwise bump the IF stack.
+
+            i = STR_UPCASE (risc_buff, cmnd_buff)
+            end_then = INDEX(risc_buff(:slen), 'THEN') + 4
+            one_liner = (end_then .LT. slen)
+
+	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN   ! multi-line nested IF?
 * ...       bump the IF stack - set up to skip this entire IF clause
 	         IF ( ifstk .GE. max_ifstk ) GOTO 5400
 	         ifstk = ifstk + 1

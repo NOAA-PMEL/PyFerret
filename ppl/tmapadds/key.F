@@ -85,8 +85,12 @@
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * v590 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
 *                 on definition of yy
-* v590 *acm* 9/06 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
+* v590 *acm* 9/05 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
 *                 we had an infinite loop on DO 30. Start the loop at ndx = lev1+1, not 1.
+* v590 *acm* 1/06 Among the changes when we added tm_fmt_digits, when checking whether more 
+*                 digits are needed, keep track of digits added; need to increase the  
+*                 argument klab_len by the same amount in subsequent calls to TM_FMT_DIGITS  
+*                 when we are writing the numeric labels on the key. 
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -111,7 +115,8 @@
 
 	include        'gkspar.inc'
 
-	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount
+	integer		ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
+     .                  lab_add
 
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht
@@ -162,6 +167,7 @@
 * See if klab_dig is enough digits to distinguish the levels. 
 
         lab_digits = klab_dig
+        lab_add = 0
         increase_digits = .TRUE.
 
         DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len )
@@ -169,13 +175,15 @@
 
  	   buff = 
      .        TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+5,str_len)
+
            READ (buff,*) val_last
            increase_digits = .FALSE.
 
 	   DO 30 ndx = lev1+1, shd_levels
 	     buff = 
      .          TM_FMT_DIGITS (zlev(ndx),lab_digits,klab_len+5,str_len)
-             READ (buff,*) val_n
+
+              READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
              val_last = val_n
    30      CONTINUE
@@ -183,11 +191,12 @@
            IF (increase_digits) THEN
               IF (lab_digits .GT. 0) lab_digits = lab_digits + 1
               IF (lab_digits .LT. 0) lab_digits = lab_digits - 1
+              lab_add = lab_add + 1
            ENDIF
 
         ENDDO
 
-	if (vertical_key) goto 1000
+	IF (vertical_key) GOTO 1000
 
 *	MAKE A HORIZONTAL KEY
 
@@ -270,10 +279,11 @@
 
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
-	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len,str_len)  
+	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
+
 	do 10 ndx = 2, nhi
 	   px(1) = kx_lo + real (ndx - 2) * x_inc
 	   px(2) = kx_lo + real (ndx - 2) * x_inc
@@ -316,7 +326,7 @@
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
               IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	      text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
@@ -346,11 +356,13 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(lev1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. shd_levels+1 .AND. posinf) text = " "
 	   end if
@@ -470,7 +482,8 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
-	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len,str_len)
+	text = TM_FMT_DIGITS (zlev(lev1),lab_digits,klab_len+lab_add,str_len)
+
 	if (max_len .lt. str_len) max_len = str_len	
 
         nhi = MAX(2,shd_levels+1)
@@ -516,7 +529,7 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
               IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	      text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 1010	continue
@@ -546,11 +559,11 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
 	   if (shd_levels .eq. 1 .and. ndx .eq. 2) then
              val = zlev(lev1)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
 	   else
              val = zlev(ndx)
              IF (TM_FPEQ(val,0.) .AND. check_0) val = 0.
-	     text = TM_FMT_DIGITS (val,lab_digits,klab_len,str_len)
+	     text = TM_FMT_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
              IF (ndx .EQ. 1 .AND. neginf) text = " "
              IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 	   end if
@@ -599,5 +612,6 @@ CC	   FIX HERE FOR CONSTANT FIELD -- SPECIAL CASE
         kx_hi = px(2)
 
 2000	windof = windof_hold
+
 	return
 	end

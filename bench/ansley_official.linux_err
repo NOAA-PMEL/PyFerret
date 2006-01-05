@@ -1,27 +1,27 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     57790426 Dec  6 12:25 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/ja9/tmap/ferret/linux/ext_func/libs
+-rwxr-xr-x    1 ansley   tmap     59846487 Jan  5 12:13 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: ppl xfor(dm) and ppl yfor(dm) for deg/min axis labels. New script bn_deg_min.jnl
+Note: tests of trapping for LOG10(0.) 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/stout/ansley/linux/FERRET/bench
-GRIB_ENV=/home/ja8/ansley/FERRET/external_functions/grib/grib_v3.0.0
-FER_LINK_DIR=/home/ja9/tmap/ferret_link/linux
+GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
+FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
-CVSROOT=/home/ja9/tmap/FERRET_ROOT
+CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/ja9/tmap/ferret/linux/go /home/ja9/tmap/ferret/linux/examples /home/ja9/tmap/ferret/linux/contrib /home/ja9/tmap/ferret/tmap_go /home/raid1/data/WIND_AN
+FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go /home/raid1/data/WIND_AN
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
-FER_MODEL_RUNS=/home/ja9/tmap/model_runs
-FER_PALETTE=. /home/ja9/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/linux/ext_func/libs
-Beginning at Tue Dec 6 13:45:26 PST 2005
+FER_MODEL_RUNS=/home/porter/tmap/model_runs
+FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/linux/ext_func/libs
+Beginning at Thu Jan 5 12:15:08 PST 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -562,7 +562,6 @@ LOAD vw_fft
 shade sst[x=@var,k=@var]
  **ERROR: illegal use of transformation:  not all dimensions present on grid
 shade sst[t=@AVE,Z=@ave]
-STOP ,3 statement executed
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -625,4 +624,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Dec 6 13:47:32 PST 2005
+Ended at Thu Jan 5 12:17:26 PST 2006

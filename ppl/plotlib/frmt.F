@@ -51,10 +51,13 @@ C                with "*(*)" for the linux port
 *      *sh* 12/00 -- further tweak to use E format less often
 * V541 *acm* 3/02 -- bug fix: For small negative numbers, if label is negative 
 *                    need one more decimal place (ib)
+* V590 *acm* 1/06   prevent values of LOG10(0.0)
 
       CHARACTER*(*) IF 
 C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD 
-      DX=ABS(XMAX-XMIN) 
+      DX=ABS(XMAX-XMIN)
+      IF(DX.EQ.0.)DX=ABS(XMAX)
+      IF(DX.EQ.0.)DX=10000.0 
       XX=ABS(XMAX) 
       IF(XX.LT.ABS(XMIN))XX=ABS(XMIN) 
       IF(XX.GE.100000..OR.XX.LT..001)GOTO 100 
@@ -69,7 +72,7 @@ C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD
 100   IF(IPRES.LT.0)GOTO 200 
 
 * increased digits for ranges like [9080,1020] - 11/00
-        ip = MAX(ipres,
+        IF (XX .NE. 0.) ip = MAX(ipres,
      .       (IFIX(ALOG10(xx*1.00001)) +1) - IFIX(ALOG10(dx)) )
         
       ID=ip-1 

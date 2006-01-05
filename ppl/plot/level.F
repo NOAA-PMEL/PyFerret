@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)level.F	1.1    3/10/88
+C** V590:  1/06 *acm*  prevent values of LOG10(0.0)
 C**
 C**
 C***********************************************************************
@@ -44,15 +45,11 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'CMRD.INC'
 	INCLUDE 'CONT.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:CONT.INC'
-#endif
+
 	DO 2601 I=1,M 
 	IF(IFLG(I).NE.0)ZLEV(I)=P(I) 
 2601	CONTINUE 
@@ -64,8 +61,12 @@ C**
 	    GOTO 10 
 	ELSE 
 	    IAUTOC=0 
-	    JJ=NSIGC-IFIX(ALOG10(ABS(ZLEV(1)-ZLEV(NLEV)))+.5) 
-	    IF(JJ.LE.0)JJ=-1 
+            IF (ZLEV(1)-ZLEV(NLEV) .EQ. 0) THEN
+	       JJ=NSIGC
+            ELSE 
+	       JJ=NSIGC-IFIX(ALOG10(ABS(ZLEV(1)-ZLEV(NLEV)))+.5) 
+	    ENDIF
+            IF(JJ.LE.0)JJ=-1 
 	    DO 2602 I=1,NLEV 
 	    LCLR(I)=0
 	    IF(ZLEV(I).EQ.0.)THEN 

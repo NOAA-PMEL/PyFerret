@@ -81,6 +81,7 @@ C
 *                  curvlinear coordinates. See also pltit.F, setax.F
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V581 *acm* 7/05 fix bug 1279: fill/lev=(n) gave exactly N not nlev2=approx N
+* V590 *acm* 1/06 prevent values of LOG10(0.0)
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -187,8 +188,12 @@ C       JC_TODO This is where the rounding error for negative plots probably exi
 
 	      IF (ZNP + DZ*(NLEV2-1) .LT. ZMP) NLEV2 = NLEV2 + 1
 
-	      JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
-	      IF (JJ.LE.0) JJ=-1
+	      IF (ZMP-ZNP .EQ. 0) THEN
+                 JJ=NSIGC
+              ELSE
+                 JJ=NSIGC-IFIX(ALOG10(ABS(ZMP-ZNP))+.5)
+              ENDIF
+              IF (JJ.LE.0) JJ=-1
 
 C       ldig()  number of decimal places in the contour labels
 C       =0  no decimal

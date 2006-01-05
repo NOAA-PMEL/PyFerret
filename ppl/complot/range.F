@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)range.f	1.1    3/10/88
+C** V590:  1/06 *acm*  prevent values of LOG10(0.0)
 C**
 C**
 C***********************************************************************
@@ -86,7 +87,11 @@ C
 C     SCALE THE INTERVAL SIZE BY POWERS OF TEN TO A VALUE BETWEEN
 C     ONE AND TEN.
 C
-      NT = IFIX(ALOG10(TEMP))
+      IF (TEMP .EQ. 0.0) THEN
+         NT = 1
+      ELSE
+         NT = IFIX(ALOG10(TEMP))
+      ENDIF
       IF(TEMP .LT. 1.0)NT = NT - 1
       POW = 10.0 ** NT
       TEMP = TEMP / POW

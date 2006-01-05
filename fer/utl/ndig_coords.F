@@ -38,6 +38,7 @@
 * Called by list_cmnd_data.F
 *
 * Ferret v5.80 9/02/2004  ACM
+* V590:  1/06 *acm*  prevent values of LOG10(0.0)
 
       INCLUDE 'ferret.parm'
 
@@ -83,7 +84,11 @@
       IF (count .GT. 0) THEN
          diff_ave = diff_ave/count
          IF ( TM_DFPEQ(diff_min,0.D0) ) diff_min = diff_ave
-         ndig = 1 - INT(LOG10(diff_min)) 
+         IF (diff_min .NE. 0) THEN 
+            ndig = 1 - INT(LOG10(diff_min))
+         ELSE
+            ndig = 1
+         ENDIF
          ndig = MAX(ndig, ndig_default )
       ELSE
          ndig = ndig_default

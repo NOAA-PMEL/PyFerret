@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)rangel.f	1.1    3/10/88
+C** V590:  1/06 *acm*  prevent values of LOG10(0.0)
 C**
 C**
 C***********************************************************************
@@ -63,6 +64,7 @@ C     TRANSFER THE PARAMETERS TO NEW VARIABLES.
 C
       UMIN = ABS(UAMIN)
       UMAX = ABS(UAMAX)
+
 C
 C     CHECK THE PARAMETERS TO MAKE SURE THAT THEY ARE VALID.
 C
@@ -74,14 +76,22 @@ C
 C
 C     CALCULATE THE MINIMUM VALUE OF THE RANGE.
 C
-      FM = ALOG10(UMIN)
+      IF (UMIN .EQ. 0.) THEN
+         FM = 0.
+      ELSE
+         FM = ALOG10(UMIN)
+      ENDIF
       M = IFIX(FM)
       IF(FM .LT. 0.0)M = M - 1
       UMINR = 10.0 ** M
 C
 C     CALCULATE THE MAXIMUM VALUE OF THE RANGE.
 C
-      FM = ALOG10(UMAX)
+      IF (UMAX .EQ. 0.) THEN
+         FM = 0.
+      ELSE
+         FM = ALOG10(UMAX)
+      ENDIF
       M = IFIX(FM)
       IF(FM .GT. 0.0)M = M + 1
       UMAXR = 10.0 ** M

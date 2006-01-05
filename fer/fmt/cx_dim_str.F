@@ -50,6 +50,7 @@
 *                  of cx_by_ss (needed for CDF_LIST documentation)
 *        8/18/92 - eliminated string(1:) notation for MAC compatibility
 * V533:  6/01 - allow for the possibility of negative subscripts
+* V590:  1/06 *acm*  prevent values of LOG10(0.0) 
 
 	include	'ferret.parm'
 	include 'xcontext.cmn'
@@ -85,7 +86,11 @@
 	   ELSE
 * ... uses leading zeros to ensure filenames generated automatically will colate
 	      CX_DIM_STR(3:cx_dim_str_len) = '0000000000000000'
-	      ndigits = LOG10( REAL(ABS(cx_hi_ss(cx,idim))) ) + 1.00001
+              IF (REAL(ABS(cx_hi_ss(cx,idim))) .NE. 0.) THEN
+	         ndigits = LOG10( REAL(ABS(cx_hi_ss(cx,idim))) ) + 1.00001
+              ELSE
+	         ndigits = 1.00001
+              ENDIF
 	      IF ( cx_hi_ss(cx,idim) .LT. 0 ) ndigits = ndigits + 1
 	      slen = 2 + ndigits	! right-most character
 	      buff = LEFINT( cx_lo_ss(cx,idim), llen )

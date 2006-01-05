@@ -46,16 +46,12 @@
 * revision 0.0 - 3/18/88
 * 10/2/95 - bug fix:  date string was using ndec instead of ABS(dec) for
 *			determining field width
+* V590  1/06 *acm*  prevent values of LOG10(0.0) 
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'xprog_state.cmn'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
+
 
 * calling argument declarations
 	INTEGER	grid, idim, ndec, numbers
@@ -89,6 +85,7 @@
 	   left = 1
 	ELSE
 	   left = LOG10( ABS(fval) ) + 1
+           IF (fval .EQ. 0) left = 1
 	ENDIF
 	IF ( fval .LT. 0.0 ) left = left + 1	! minus sign
 

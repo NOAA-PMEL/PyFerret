@@ -67,6 +67,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
 * V570  *acm* when showing calendar, need  cal_id .LE. max_calendars, not .LT.
+* V590  *acm* 1/06  prevent values of LOG10(0.0) 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -131,7 +132,11 @@
 * ... output variable code, title and subscript bounds within grid
            DO 100 i = 1, 4
               WRITE( rbuff(i+4),'(I8)' ) ds_grid_start(i,ivar)
-              slen(i)  = LOG10( FLOAT(ds_grid_start(i,ivar)) )
+              IF (FLOAT(ds_grid_start(i,ivar)) .EQ. 0.0) THEN
+                 slen(i) = 1
+              ELSE
+                 slen(i)  = LOG10( FLOAT(ds_grid_start(i,ivar)) )
+              ENDIF
               slen(i)  = MIN( 6, 8-slen(i) )   ! last few characters in buffer
               rbuff(i) = LEFINT(ds_grid_end(i,ivar),dlen)
  100       CONTINUE

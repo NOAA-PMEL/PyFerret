@@ -61,7 +61,7 @@
 * internal variable declarations:
 	INTEGER	STR_CASE_BLIND_COMPARE, ic1,
      .		status	! not returned
-        INTEGER STR_UPCASE, i, end_then
+        INTEGER STR_UPCASE, i, end_then, cmnd_len
 	LOGICAL its_endif, its_else, its_elif, its_if, one_liner
 
 	include 'ferret.parm'
@@ -106,17 +106,29 @@ cc	IF (its_if .OR. its_endif) RETURN
         IF ((its_if .OR. its_endif) .AND. 
      .      if_doing(ifstk) .EQ. pif_doing_clause) RETURN
 
-	IF (if_conditional .AND. its_if) THEN		        ! nested IF?
+	IF (if_conditional .AND. its_if ) THEN     ! nested IF?
 	   IF (if_doing(ifstk).NE.pif_doing_clause) THEN	! skipped IF?
 
 * --- here is cause of bug 1368: if the current statement is a one-line IF statement, 
 * --- and we are skipping commands, we want to just skip this one too.
-* --- If the current command is a one-line if condition then command
+* --- Check whether the current command is a one-line IF condition THEN command
 * --- and if so skip it, otherwise bump the IF stack.
 
             i = STR_UPCASE (risc_buff, cmnd_buff)
-            end_then = INDEX(risc_buff(:slen), 'THEN') + 4
-            one_liner = (end_then .LT. slen)
+
+            one_liner = .FALSE.
+            IF (its_if) THEN
+               end_then = INDEX(risc_buff(:slen), 'THEN') + 4
+               cmnd_len = INDEX(risc_buff(:slen), '!') - 1  ! check for comment at end
+               IF (cmnd_len .EQ. -1) cmnd_len = slen
+
+* See if there is a command after the THEN
+               DO 200 i = end_then,cmnd_len
+                   IF (cmnd_string(i:i).NE. ' '
+     .           .AND. cmnd_string(ic1:ic1).NE. tab) one_liner = .TRUE.
+  200          CONTINUE
+
+            ENDIF  
 
 	    IF ( num_args .LE. 2 .AND. .NOT. one_liner) THEN   ! multi-line nested IF?
 * ...       bump the IF stack - set up to skip this entire IF clause

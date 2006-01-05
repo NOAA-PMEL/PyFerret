@@ -31,6 +31,7 @@ let key_flag = 0
 IF `($xend) GT 360` THEN
   SAY "point E1"
   IF `key_flag EQ 0` THEN SAY "point E2"
+  IF `key_flag EQ 0` THEN SAY "point E2 with a comment"   ! comment after the IF command
   SAY "point E3"
 ENDIF
 let dxymin = 0.20
@@ -60,3 +61,9 @@ if `dxymin lt 0.12` then
 elif `dxymin lt 0.25` then
   SAY "point G"
 endif
+
+
+
+! ELIF sytax
+
+go non_std_refmap 122.0 228.5 5 5 xline 0

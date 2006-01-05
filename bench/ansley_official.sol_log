@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/ja8/ansley/FERRET/fer/ferretdods_gui
--rwxrwxrwx   1 ansley   tmap     67001212 Dec 13 10:28 /home/ja8/ansley/FERRET/fer/ferretdods_gui
-Using external functions from /home/ja9/tmap/ferret/solaris/ext_func/libs
+Running FERRET version /home/porter/ansley/FERRET/fer/ferretdods_gui
+-rwxrwxrwx   1 ansley   tmap     67051920 Jan  3 13:54 /home/porter/ansley/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/tmap/ferret/solaris/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes to bugfix918 (see bug 1368) and tests of this in err581_if_conditional.jnl
+Note: test changes to key.F, tm_fmt.F, tm_fmt_digits.F for log(0) error on IRIX, and 0.0005 disappearing on key in err570_shakeylab.jnl
 ***** Restricting Ferret paths to bench directory *****
 PWD=/export/home/porter/ansley/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -20,12 +20,12 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/solaris/ppl
-FER_EXTERNAL_FUNCTIONS=/home/ja9/tmap/ferret/solaris/ext_func/libs
-Beginning at Tue Dec 13 10:41:14 PST 2005
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/solaris/ext_func/libs
+Beginning at Tue Jan 3 14:12:06 PST 2006
  	NOAA/PMEL TMAP
- 	FERRET v5.812  
- 	Solaris 5.6 - 12/13/05
- 	13-Dec-05 10:41     
+ 	FERRET v5.813  
+ 	Solaris 5.6 - 01/03/06
+ 	 3-Jan-06 14:12     
 
 yes? !bn500_all_shell
 yes? 
@@ -10286,10 +10286,10 @@ show symbols/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
-FERRET_VERSION = "5.812"
+FERRET_VERSION = "5.813"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-Dec-05"
-SESSION_TIME = "10:41"
+SESSION_DATE = " 3-Jan-06"
+SESSION_TIME = "14:12"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10305,10 +10305,10 @@ show symbol/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
-FERRET_VERSION = "5.812"
+FERRET_VERSION = "5.813"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-Dec-05"
-SESSION_TIME = "10:41"
+SESSION_DATE = " 3-Jan-06"
+SESSION_TIME = "14:12"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10316,8 +10316,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "13-Dec-05"
-SESSION_TIME = "10:41"
+SESSION_DATE = " 3-Jan-06"
+SESSION_TIME = "14:12"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10327,13 +10327,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "13-Dec-05"
-SESSION_TIME = "10:41"
+SESSION_DATE = " 3-Jan-06"
+SESSION_TIME = "14:12"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "13-Dec-05"
-SESSION_TIME = "10:41"
+SESSION_DATE = " 3-Jan-06"
+SESSION_TIME = "14:12"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10365,9 +10365,9 @@ Q23456789012345678901234567XXX = "6"
 ! show the upper left coordinate limits labels as symbols
 plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
-LAB1 = "FERRET Ver. 5.812"
+LAB1 = "FERRET Ver. 5.813"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Dec 13 2005 10:42:25 "
+LAB3 = "Jan  3 2006 14:13:11 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10464,10 +10464,10 @@ show symbols/all
 PPL$XPIXEL = "431"
 PPL$YPIXEL = "431"
 BYTEORDER = "BIG"
-FERRET_VERSION = "5.812"
+FERRET_VERSION = "5.813"
 FERRET_PLATFORM = "Solaris 5.6"
-SESSION_DATE = "13-Dec-05"
-SESSION_TIME = "10:41"
+SESSION_DATE = " 3-Jan-06"
+SESSION_TIME = "14:12"
  
  
 GO bn_reset
@@ -18484,7 +18484,7 @@ contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10)*cos(j/7+3.14/2)
 FRAME
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap       23043 Dec 13 10:44 bench.mgm
+-rw-rw-r--   1 ansley   tmap       23049 Jan  3 14:14 bench.mgm
  
 REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7); contour/i=1:100/j=1:100/lev=(-1,1,.5)/over sin(i/10-k*3.14/15)*cos(j/7+3.14/2); FRAME)
 !-> REPEAT: K=1
@@ -18503,7 +18503,7 @@ REPEAT/K=1:14 (contour/i=1:100/j=1:100/lev=(-1,1,.5) sin(i/10+k*3.14/15)*cos(j/7
 !-> REPEAT: K=14
  
 sp ls -l bench.mgm
--rw-rw-r--   1 ansley   tmap      419250 Dec 13 10:44 bench.mgm
+-rw-rw-r--   1 ansley   tmap      419343 Jan  3 14:14 bench.mgm
  
 ! added in bn311
 GO bn_reset
@@ -25722,7 +25722,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  T5 = 50757969 ;
@@ -25747,7 +25747,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -25899,7 +25899,7 @@ GO err491_spawn_quotes.jnl
  
 ! this should be a valid command
 SPAWN "date"
-Tue Dec 13 10:44:48 PST 2005
+Tue Jan  3 14:14:57 PST 2006
  
 GO bn_reset
 cancel mode verify
@@ -34406,7 +34406,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -34469,7 +34469,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  GFP3 = "" ;
@@ -34689,7 +34689,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -44337,7 +44337,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44400,7 +44400,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44458,7 +44458,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44520,7 +44520,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -44579,7 +44579,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44802,7 +44802,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44871,7 +44871,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44948,7 +44948,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -47236,11 +47236,11 @@ ppl list labels
  @A                                                                            
 
           XPOS       YPOS     HGT   ROT   UNITS
- LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 5.812
+ LAB 1  8.000E+00  7.200E+00 0.060    0  SYSTEM  @ASFERRET Ver. 5.813
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASDec 13 2005 10:49:13
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJan  3 2006 14:19:53
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47906,7 +47906,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -47985,7 +47985,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -48065,7 +48065,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48337,7 +48337,7 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
 }
 say `a,return=t0`
  !-> MESSAGE/CONTINUE 01-JAN-0001 00:00:00
@@ -48598,13 +48598,13 @@ GO bn_long_revision_num.jnl
  
 ! ferret version
 sh sym FERRET_VERSION
-FERRET_VERSION = "5.812"
+FERRET_VERSION = "5.813"
  
 ! history attribute
 let a = 12
 save/clobber/file=revision.nc a; sp ncdump revision.nc | grep history
  LISTing to file revision.nc
-		:history = "FERRET V5.812   13-Dec-05" ;
+		:history = "FERRET V5.813    3-Jan-06" ;
  
 ! label in upper right
 go ptest; sh sym lab1
@@ -48617,7 +48617,7 @@ LAB1 = "X : 0.5 to 314.5"
  
 ! show commands without an argument, lists version number at the top
 sho command
- Commands in Program FERRET   version5.812:
+ Commands in Program FERRET   version5.813:
  SET
  SET WINDOW/SIZE/NEW/LOCATION/ASPECT/CLEAR/TITLE
  SET REGION/I/J/K/L/X/Y/Z/T/DX/DY/DZ/DT/DI/DJ/DK/DL
@@ -48733,7 +48733,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "13-Dec-05:10:41"
+WIN_TITLE = "3-Jan-06:14:12"
  
 set win/title="set the title"
 sho sym win_title
@@ -48751,11 +48751,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :10:41"
+ !-> set win/title=" :14:12"
 set win/title="($session_date):($session_time)"
- !-> set win/title="13-Dec-05:10:41"
+ !-> set win/title=" 3-Jan-06:14:12"
 sh sym win_title
-WIN_TITLE = "13-Dec-05:10:41"
+WIN_TITLE = "_3-Jan-06:14:12"
  
  
 GO bn_reset
@@ -49175,6 +49175,158 @@ elif `dxymin lt 0.25` then
 point G
 endif
  
+ 
+ 
+! ELIF sytax
+ 
+go non_std_refmap 122.0 228.5 5 5 xline 0
+ 
+! std_refmap.jnl -- requires Ferret V4.3 or later
+! 5/96
+ 
+! Mods 6.98 *jd/sh* to improve the aspect ratio of the refmap for t and z
+! profiles.  Separate consideration given for each case:
+ 
+! The case of "pt_orient == tseries" which has a horizontally oriented
+! reference map, and the case of the default value for pt_orient == 0
+! (zprofile), with a vertically oriented reference map, are optimized.
+ 
+! The symbol pt_orient is set in std_gif_t.jnl.
+ 
+! 7.2004 *jmclean* add symbol and min,max functions to keep longitude region with 360 degrees
+ 
+ 
+! For example:
+!	yes? go refmap 180 230 0 20 box 1
+! and
+!	yes? go refmap 80 80 0 20 yline 2
+! and
+!	yes? go refmap 70 90 0 20 yline 2 1
+! and
+!	yes? go refmap 30 180 30 30 xline 2
+! and
+!	yes? go refmap 30 180 20 60 xline 2 0 1
+! and
+!	yes? go refmap 180 180 -40 -40 point 2
+! and
+!	yes? go refmap 20 180 -40 60 point 2 1 1
+ 
+! Description: draw a reference map with region indicated
+ 
+! arguments:	     1    2    3    4    5     6        7         8
+! Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress
+ 
+! mins and maxs should be numerical values for lat/long
+! type - may be "box", "xline", "yline", or "point" (default: "box")
+! xcompress - may be 1 (indicating that X compression is applied or 0
+!		(default: "0")
+ 
+! e.g. to indicate a Y line in which X compression has been applied send
+! type="yline" and xcompress="1"
+ 
+! this script assumes that the viewport has already been set
+ 
+! NOTE:  MAGNIFY FACTOR
+! The argument magnify determines what resolution of land mask is used.
+ 
+!       magnify = 1 - INT(LOG(fraction)/LOG(2))
+!               then clip magnify to the interval [1 to 5]
+ 
+! check the region arguments
+let refmap_xmin = $1%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+ !-> DEFINE VARIABLE refmap_xmin = 122.0
+let refmap_xmax = $2%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+ !-> DEFINE VARIABLE refmap_xmax = 228.5
+let refmap_ymin = $3%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+ !-> DEFINE VARIABLE refmap_ymin = 5
+let refmap_ymax = $4%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+ !-> DEFINE VARIABLE refmap_ymax = 5
+ 
+! set default args
+DEFINE SYMBOL refmap_type $5%box|xline|yline|box|point|%
+ !-> DEFINE SYMBOL refmap_type xline
+DEFINE SYMBOL refmap_xcompress $7%0%
+ !-> DEFINE SYMBOL refmap_xcompress 0
+DEFINE SYMBOL refmap_ycompress $8%0%
+ !-> DEFINE SYMBOL refmap_ycompress 0
+ 
+! set the layout in the viewport
+! (for performance the code from margins can be inserted in here and optimized)
+! GO margins blah blah
+ 
+! determine the lat/long limits to plot
+set region/x=$1:$2/Y=$3:$4
+ !-> set region/x=122.0:228.5/Y=5:5
+ 
+! Keep longitude region within 360 degrees. Supposes that xhi-xlo <= 360
+def sym ref_dx = `(360-ABS($2-$1))/2`
+ !-> def sym ref_dx = 126.75
+ 
+IF ($refmap_type%|box>1|*>0%) THEN    ! IF "box"
+ !-> IF 0 THEN
+ELIF ($refmap_type%|xline>1|*>0%) THEN    ! ELSE IF "xline"
+ !-> ELIF 1 THEN
+  define region/default/dy=$6"-30:30|1>-30:30|*>-20:20"/dx=$6"0:0|1>0:0|2>0:0|*>`max(-($ref_dx),-50)`:`min(($ref_dx),50)`" band
+ !-> define region/default/dy=-20:20/dx=-50:50 band
+ 
+ELIF ($refmap_type%|yline>1|*>0%) THEN    ! ELSE IF "yline"
+ !-> ELIF 0 THEN
+   ENDIF
+ENDIF
+! init the land mask data set
+set data coads_climatology
+set region/L=1
+! draw gray shaded continents
+! known potential bug: if X region begins at, say, 0E then magnification 3
+!	or greater results in negative modulo subscripts
+ 
+shade/lev=(0,10000,10000)/nokey/nolab/palette=grey/@band/set sst
+! ==> may want various IF tests to stylize plots: tics, numbering, etc.
+ 
+IF ($refmap_type%|box>1|*>0) THEN    ! IF "box"
+ !-> IF 0 THEN
+ELIF ($refmap_type%|xline>1|*>0) THEN    ! ELSE IF "xline"
+ !-> ELIF 1 THEN
+  ppl axlint 3
+  ppl shade
+  ppl axlint 2
+ELIF ($refmap_type%|yline>1|*>0) THEN    ! ELSE IF "yline"
+ !-> ELIF 0 THEN
+ENDIF
+ 
+! some clean up now to assist with repeated testing
+cancel region band
+ 
+set data coads_climatology
+set region/L=1
+ 
+! draw a thick red region marker on the reference map
+let refmap_xrng = IF i EQ 1 THEN refmap_xmin ELSE refmap_xmax
+let refmap_yrng = IF i EQ 1 THEN refmap_ymin ELSE refmap_ymax
+let refmap_xmid = ((refmap_xmin)+(refmap_xmax))/2
+let refmap_ymid = ((refmap_ymin)+(refmap_ymax))/2
+ 
+IF ($refmap_type%|box>1|*>0) THEN    ! IF "box"
+ !-> IF 0 THEN
+ELIF ($refmap_type%|xline>1|*>0) THEN    ! ELSE IF "xline"
+ !-> ELIF 1 THEN
+ 
+  IF ($refmap_ycompress) THEN
+ !-> IF 0 THEN
+  ENDIF
+ 
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xrng, refmap_ymid+(i-i)
+ 
+ELIF ($refmap_type%|yline>1|*>0) THEN    ! ELSE IF "yline"
+ !-> ELIF 0 THEN
+  ENDIF
+  ENDIF
+ENDIF
+ 
+ 
+palette rainbow
+ 
+ 
 ! Bug 899
 ! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
 GO bn_reset
@@ -49277,10 +49429,13 @@ def axis/t/edge/mod/cal=noleap/unit=days/t0=1-jan-0001 mon_irreg_nlp = {0,31,59,
  
 let a_clim = a[gt=mon_irreg_nlp@mod]
 shade/y=0/k=1 a_clim
+ 
+! version 2.3 requires exit/command *sh* 3/92
+exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.812  
- 	Solaris 5.6 - 12/13/05
- 	13-Dec-05 10:50     
+ 	FERRET v5.813  
+ 	Solaris 5.6 - 01/03/06
+ 	 3-Jan-06 14:20     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -50109,7 +50264,7 @@ let a = "testa.v5d"
 use levitus_climatology
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,a)
 sp ls -l testa.v5d
--rw-rw-r--   1 ansley   tmap       12704 Dec 13 10:50 testa.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jan  3 14:20 testa.v5d
  
 can region
 use coads_climatology
@@ -50121,7 +50276,7 @@ use levitus_climatology
 sp rm -f test.v5d
 load WRITEV5D(temp[i=1:40,j=1:40,k=1:3],1/0,1/0,1/0,1/0,1/0,1/0,1/0,"test.v5d")
 sp ls -l test.v5d
--rw-rw-r--   1 ansley   tmap       12704 Dec 13 10:50 test.v5d
+-rw-rw-r--   1 ansley   tmap       12704 Jan  3 14:20 test.v5d
  
 ! removed because it is internal and largely unintelligible
 !show mem/all
@@ -50383,9 +50538,9 @@ stat mapped
  
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.812  
- 	Solaris 5.6 - 12/13/05
- 	13-Dec-05 10:50     
+ 	FERRET v5.813  
+ 	Solaris 5.6 - 01/03/06
+ 	 3-Jan-06 14:20     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50567,9 +50722,9 @@ PPL$YPIXEL = "662"
  
 exit/command
  	NOAA/PMEL TMAP
- 	FERRET v5.812  
- 	Solaris 5.6 - 12/13/05
- 	13-Dec-05 10:50     
+ 	FERRET v5.813  
+ 	Solaris 5.6 - 01/03/06
+ 	 3-Jan-06 14:21     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50682,4 +50837,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Tue Dec 13 10:50:28 PST 2005
+Ended at Tue Jan 3 14:21:08 PST 2006

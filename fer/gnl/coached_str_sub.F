@@ -1,3 +1,4 @@
+
 	SUBROUTINE COACHED_STR_SUB( sym_name, 
      .		in_str, coaching, out_str, len_out, status ) 
 
@@ -87,6 +88,7 @@
 * 1/03 *kob* - need to accomodate g77 and it's inability to arbitrarily concatenate
 * V580 *acm* 11/04 when command contains some error text, and an error condition
 *                  is found, issue an error rather than just a note. (bug 1077)
+* V500 *acm*  1/05 Fix the above within the ifdef NO_PASSED_CONCAT too
 
 * calling argument declarations:
 	LOGICAL   err_subst
@@ -279,7 +281,9 @@
  5900   risc_buff = coaching(ostart:oend)
 	tmp_buff = sym_name
 	IF ( errtxt ) THEN
-	   CALL WARN( coaching(estart:eend) )
+	   CALL ERRMSG( ferr_nomessge, status,
+     .       coaching(estart:eend), *5000)
+!	   CALL WARN( coaching(estart:eend) )
 	ELSEIF ( options ) THEN
 	   CALL WARN
      .	('Valid '//tmp_buff(:TM_LENSTR1(tmp_buff))//' choices are: '//risc_buff)

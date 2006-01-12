@@ -4,6 +4,7 @@
 * Ansley Manke
 * 4/03 
 * ???  Note: does not currently deal with modulo data  ???
+* 1/06 Remove calls to SIGN to compile with f90 on IRIX.
 
 * This function samples 4-d curvlinear data on the x and y axes 
 * indicated by args 4 and 5
@@ -339,16 +340,22 @@ C Check that sample x and y are simple lists of points - same length
 
          DO 200 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
             i2 = arg_lo_ss(X_AXIS,ARG2)
-            icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
+c            icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
+            icross = 1
+            IF ((xpt - arg_2(i2,j2,k2,l2)) .LT. 0.) icross = -1
 
             DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-               iloc = SIGN(1, (xpt-arg_2(i2,j2,k2,l2)) )
+c               iloc = SIGN(1, (xpt-arg_2(i2,j2,k2,l2)) )
+               iloc = 1
+               IF ((xpt-arg_2(i2,j2,k2,l2)) .LT. 0. ) iloc = -1
 
-               IF (icross .NE. SIGN(1, (xpt-arg_2(i2,j2,k2,l2)) ))THEN
+               IF (icross .NE. iloc)THEN
                   nloc = nloc + 1
                   xlocations(nloc,1,1,1) = MAX(i2-1,1)
                   xlocations(nloc,2,1,1) = j2
-                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
+c                  icross = SIGN(1, (xpt - arg_2(i2,j2,k2,l2)) )
+                  icross = 1
+                  IF ((xpt - arg_2(i2,j2,k2,l2)) .LT. 0.) icross = -1
                ENDIF
 
   100       CONTINUE

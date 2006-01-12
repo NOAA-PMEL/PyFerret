@@ -35,7 +35,8 @@
 * Ansley Manke
 * From samplexy.F
 * Wednesday, May 02, 2001
-
+* 11-Jan-06 *acm* declare ylo, yhi, zlo, zhi as integer not real
+*
 * This function samples 4-d data at y and z pts indicated by args 2 and 3
 * 
 *         Result is abstract on the Y axis, normal on the z axis,
@@ -160,7 +161,9 @@
       nt = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
 
       mz_lo_l = 1
-      mz_hi_l = max(ny,nz,nz,nt)
+      mz_hi_l = max(nx,ny)
+      mz_hi_l = max(mz_hi_l,nz)
+      mz_hi_l = max(mz_hi_l,nt)
 
       CALL ef_set_axis_limits(id, Y_AXIS, mz_lo_l, mz_hi_l)
 
@@ -288,7 +291,8 @@ C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
-      REAL delmody, delmodz, ypt, zpt, ylo, yhi, zlo, zhi
+      REAL delmody, delmodz, ypt, zpt
+      INTEGER ylo, yhi, zlo, zhi
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

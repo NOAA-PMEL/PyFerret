@@ -34,10 +34,12 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Ansley Manke  from samplexy  5/15/01
-* 
+* 11-Jan-06 *acm* declare xlo, xhi, zlo, zhi  as integer not real
+*
 * This function samples 4-d data on the x and z axes indicated by args 2 and 3
 *         Result is abstract on the x axis, normal on the y axis,
 *         and keeps the z and t axes of the input 4-d data.
+*
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -110,8 +112,8 @@
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
       arg = 3
-      CALL ef_set_arg_name(id, arg, 'YPTS')
-      CALL ef_set_arg_desc(id, arg, 'Y values of sample points')
+      CALL ef_set_arg_name(id, arg, 'ZPTS')
+      CALL ef_set_arg_desc(id, arg, 'Z values of sample points')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 *                                                                     ^
 *                                                                     |
@@ -158,7 +160,9 @@
       nt = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
 
       my_lo_l = 1
-      my_hi_l = max(nx,ny,nz,nt)
+      my_hi_l = max(nx,ny)
+      my_hi_l = max(my_hi_l,nz)
+      my_hi_l = max(my_hi_l,nt)
 
       CALL ef_set_axis_limits(id, X_AXIS, my_lo_l, my_hi_l)
 
@@ -286,7 +290,8 @@ C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(4)*16, ax_units(4)*16
       LOGICAL backward(4), modulo(4), regular(4)
-      REAL delmodx, delmodz, xpt, zpt, xlo, xhi, zlo, zhi
+      REAL delmodx, delmodz, xpt, zpt
+      INTEGER xlo, xhi, zlo, zhi
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

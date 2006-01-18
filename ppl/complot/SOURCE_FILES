@@ -16,7 +16,6 @@ clear_vp.F\
 color.F\
 dashes.F\
 dashsz.F\
-doscale.F\
 englsh.F\
 erase.F\
 gkinit.F\

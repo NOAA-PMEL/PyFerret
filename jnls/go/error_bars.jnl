@@ -17,7 +17,7 @@
 !         demo script has more examples
 !       yes? go error_bars_demo
 
-! Define synthetic data
+! 1) Define synthetic data
 
 !	yes? let xpts = j[j=1:5]
 !	yes? let ypts = sin(xpts)
@@ -28,6 +28,22 @@
 !	yes? GO error_bars poly/line=2 ypts errup 
 
 !       yes? GO error_bars poly/line=3 ypts errup errdn
+
+
+! 2) Use a data set, but create some dummy error numbers
+!
+! Note that if using transformations to create a 1-dimensional variable
+! from a multi-dimensional variable, the limits must be made explicitly.
+! sst[x=@ave,y=@ave] would cause this script to fail where it uses the 
+! `var,return=shape` syntax.
+
+!	yes? use coads_climatology
+!       yes? let sst_ave = sst[x=0:360@ave,y=-60:60@ave]
+!       yes? let errup = 0.1 + 0*sst_ave
+!       yes? let errdn = 0.2 + 0*sst_ave
+!
+!	yes? plot sst_ave
+!	yes? GO error_bars poly/line=2 sst_ave, errup, errdn
 
 ! argument check
 QUERY/IGNORE $1%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%

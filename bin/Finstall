@@ -266,7 +266,9 @@ echo " Extracted FERRET executables..."
 #### *kob* 5/99 move external function .so files to fer_dir/ext_func/libs
 if (! -d $fer_dir/ext_func/libs) mkdir  $fer_dir/ext_func/libs
 if ($status != 0) goto exec_err
-mv *.so $fer_dir/ext_func/libs
+if (-e add_9.so) then
+  mv *.so $fer_dir/ext_func/libs
+endif
 if ($status != 0) goto exec_err
 
 pushd > /dev/null

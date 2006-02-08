@@ -77,6 +77,7 @@
 * v552 *acm*  3/03 bug fix: If maxstepfiles > maxvarfiles, got error on closing dataset.
 * V552 *acm*  5/03 increase size of ds_var_code from 64 to 128 chars
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024 
+* V590: *acm*/2/06 - restore default values of ds_var_scale, ds_var_off, ds_var_scaleit
 *                  
 
 * arguments:
@@ -179,6 +180,9 @@
 	  ds_nrecpervar(ivar)		=	int4_init
 	  ds_nrecb4var(ivar)		=	int4_init
 	  ds_var_setnum(ivar) 		=	set_not_open
+	  ds_var_scaleit(ivar) 		=	.FALSE.
+	  ds_var_scale(ivar) 		=	1.0
+	  ds_var_off(ivar) 		=	0.0
   120	CONTINUE
 
 * Now loop through stepfiles and initialize associated entries, closing files

@@ -67,6 +67,8 @@
 	CALL PPLCMD ( from, line, 0, 'YLAB', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'XAXIS', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'YAXIS', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'XVALOFF 0', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'YVALOFF 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'AXSET 1,1,1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'PEN 0,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'PEN 1,1', 1, 1 )

@@ -49,7 +49,9 @@
 *                  Pass new arguments to all axis routines, and set hline, vline
 *                  when done.
 C *acm* 11/05  new argument to xaxis1 and yaxis1 for deg/min/sec labels
-*
+C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
+C              (axis data was read as double precision and converted to single 
+C              after applying an offset.)
 C**
 C**    @(#)daxis.F	1.1    3/10/88
 C**
@@ -131,9 +133,9 @@ C
             hline = .FALSE.
 	  ELSE IF(ITYPEY.EQ.1)THEN
 	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
-     *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, HLINE)
+     *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF)
 	   CALL YAXIS1(XLO,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYL,IFY,YF,
-     *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, .FALSE.)
+     *	    YCSIZE,XHI,YDMS,HGRAT, HCOLOR, .FALSE., YVALOFF)
             hline = .FALSE.
 	  ELSE
             CALL YAXIS2(XLO,XF,YLO,YHI,0.,LYL,IFY,1,YF,YCSIZE,
@@ -154,9 +156,9 @@ C
            hline = .FALSE.
 	ELSE IF(ITYPEY.EQ.1)THEN
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
-     1     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, HLINE)
+     1     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, HLINE, YVALOFF)
 	    CALL YAXIS1(XHI,XF,YLO,YHI,YTIC,NMY,LINTY,1.,LYR,IFY,YF,
-     1     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, .FALSE.)
+     1     YCSIZE,XLO,YDMS,HGRAT, HCOLOR, .FALSE., YVALOFF)
            hline = .FALSE.
 	ELSE
 	   CALL YAXIS2(XHI,XF,YLO,YHI,0.,LYR,IFY,ITYPEY-1,YF,YCSIZE,
@@ -181,9 +183,9 @@ C
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1)THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
-     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, VLINE)
+     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF)
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXT,IFX,XF,YHI,YF,
-     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, .FALSE.)
+     *	       XCSIZE,YLO,XDMS,VGRAT, VCOLOR, .FALSE., XVALOFF)
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXT,IFX,1,XF,YHI,YF,XCSIZE,
@@ -204,9 +206,9 @@ C
               vline = .FALSE.
           ELSE IF (ITYPEX.EQ.1) THEN
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
-     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, VLINE)
+     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, VLINE, XVALOFF)
 	      CALL XAXIS1(XLO,XHI,XTIC,NMX,LINTX,1.,LXB,IFX,XF,YLO,YF,
-     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, .FALSE.)
+     *	      XCSIZE,YHI,XDMS,VGRAT, VCOLOR, .FALSE., XVALOFF)
               vline = .FALSE.
           ELSE
 	      CALL XAXIS2(XLO,XHI,0.,LXB,IFX,1,XF,YLO,YF,XCSIZE,

@@ -49,6 +49,9 @@ C**    @(#)prmtiv.F	1.1    3/10/88
 *                  one line to the next in multi-line lables, allow for
 *                  @Cnnn syntax.  (changes also in getlabfonts)
 * v580 11/05 *acm* Send new arg to xaxis1,yaxis1 DMS (arg is 0 here)
+C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
+C              (axis data was read as double precision and converted to single 
+C              after applying an offset.)
 C**
 C**
 C***********************************************************************
@@ -287,7 +290,7 @@ C
 	    call color(ipen(0))
 	    CALL XAXIS1(XLOW,XHIGH,XTICC,NSMTCS,LINTT,XUNIT,
      *		IPOS,FRMTX,XFF,Y,YFF,CHSIZE,across,dms,vgrat,
-     *		vcolor,vline)
+     *		vcolor,vline,xvaloff)
 
             CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
             nfont = 0
@@ -418,7 +421,8 @@ c	    ENDIF
 	    CALL SCALE(XFF,YFF,XOR,YOR,XLOW,YLOW)
 	    call color(ipen(0))
 	    CALL YAXIS1(XX,XFF,YLOW,YHIGH,YTICC,NSMTCS,LINTT,YUNIT,
-     *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline)
+     *		IPOS,FRMTX,YFF,CHSIZE,across,dms,hgrat,hcolor,hline,
+     *          yvaloff)
 
             CALL tm_break_lines (ylab, lnbeg, lnend, numlines)
             nfont = 0

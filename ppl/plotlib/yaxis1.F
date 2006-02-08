@@ -1,5 +1,6 @@
       SUBROUTINE YAXIS1(X,XFACT,YLO,YHI,YTIC,NSMTCY,LINTY,YUNIT,LABEL,
-     *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline)
+     *    IFORMT,YFACT,CSIZE,xacross,ydms,hgrat,hcolor,hline,
+     *    yvaloff)
 
 *
 *
@@ -48,7 +49,9 @@
 *			in small non-zero values
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 C *acm* 11/05  new argument to scinot deg/min/sec labels
-
+C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
+C              (axis data was read as double precision and converted to single 
+C              after applying an offset.)
 
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
@@ -181,20 +184,36 @@ C
 		XTEMP=TLY*0.5
 	ENDIF
 	IF(LABEL.EQ.1)THEN
-		CALL NUMCDE(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT,ydms)
-		CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID,
+           IF (yvaloff .EQ. 0.) THEN
+	      CALL NUMCDE(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT,ydms)
+           ELSE
+	      CALL NUMCDE_OFF(SIGSZ*YLO/YUNIT,YLAB,NC,IFORMT,ydms,
+     .              yvaloff)
+           ENDIF
+	   CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID,
      .             XFACT,YFACT)
-		CALL NUMCDE(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT,ydms)
-		CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID1,
+
+           IF (yvaloff .EQ. 0.) THEN
+	      CALL NUMCDE(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT,ydms)
+           ELSE
+	      CALL NUMCDE_OFF(SIGSZ*YHI/YUNIT,YLAB,NC,IFORMT,ydms,
+     .              yvaloff)
+           ENDIF
+	   CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID1,
      .             XFACT,YFACT)
-		IF(YLO.LT.0..AND.YHI.GT.0.)THEN
-			CALL NUMCDE(0.,YLAB,NC,IFORMT,ydms)
-			CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID2,
+
+	   IF(YLO.LT.0..AND.YHI.GT.0.)THEN
+              IF (yvaloff .EQ. 0.) THEN
+                 CALL NUMCDE(0.,YLAB,NC,IFORMT,ydms)
+              ELSE
+                 CALL NUMCDE_OFF(0.,YLAB,NC,IFORMT,ydms,yvaloff)
+              ENDIF
+	      CALL SCINOT(0.,0.,0.,ABSSZ,NC,YLAB,3,WID2,
      *			XFACT,YFACT)
-		ELSE
-			WID2=0.0
-		ENDIF
-		XTEMP=XTEMP+AMAX1(WID,WID1,WID2)
+	   ELSE
+	      WID2=0.0
+	   ENDIF
+	   XTEMP=XTEMP+AMAX1(WID,WID1,WID2)
 	ENDIF
 	YWID=0.75*ABSSZ+XTEMP
 	XTEMP=X+LABEL*YWID/XFACT
@@ -210,7 +229,11 @@ C
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*Y/YUNIT
-        CALL NUMCDE(TEMP,YLAB,NC,IFORMT,YDMS)
+        IF (yvaloff .EQ. 0) THEN
+           CALL NUMCDE(TEMP,YLAB,NC,IFORMT,YDMS)
+        ELSE
+           CALL NUMCDE_OFF(TEMP,YLAB,NC,IFORMT,YDMS,yvaloff)
+        ENDIF
         CALL SCINOT(XTEMP,Y,0.,ABSSZ,NC,YLAB,1,WID,XFACT,YFACT)
 
 CC	Original code

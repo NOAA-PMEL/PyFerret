@@ -1,6 +1,6 @@
       SUBROUTINE XAXIS1(XLO,XHI,XTIC,NSMTCX,LINTX,XUNIT,LABEL,
      *    IFORMT,XFACT,Y,YFACT,CSIZE,yacross,xdms,vgrat,vcolor,
-     *    vline)
+     *    vline, xvaloff)
 
 *
 *
@@ -49,6 +49,9 @@
 *			in small non-zero values
 * v554: *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 C *acm* 11/05  new argument to scinot deg/min/sec labels
+C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
+C              (axis data was read as double precision and converted to single 
+C              after applying an offset.)
 
 C**
 C**    @(#)xaxis1.f	1.1    3/10/88
@@ -65,7 +68,7 @@ C**
         INTEGER xdms
 * Parameters for drawing tics across plot
 
-        REAL yacross, dash1, dash2,dash3,dash4
+        REAL yacross, dash1, dash2,dash3,dash4, xvaloff
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number 
         LOGICAL vline          ! If true, do the lines across.
@@ -190,7 +193,11 @@ C
 	DO 200 I=0,ISTOP
 	IF ( interrupted ) RETURN		! TMAP interrupt
         TEMP=SIGSZ*X/XUNIT
-        CALL NUMCDE(TEMP,XLAB,NC,IFORMT,xdms)
+        IF (xvaloff .EQ. 0) THEN
+          CALL NUMCDE(TEMP,XLAB,NC,IFORMT,xdms)
+        ELSE
+          CALL NUMCDE_OFF (TEMP,XLAB,NC,IFORMT,xdms,xvaloff)
+        ENDIF
         CALL SCINOT(X,YTEMP,0.,ABSSZ,NC,XLAB,0,WID,XFACT,YFACT)
 
 CC	Original code

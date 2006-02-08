@@ -14,11 +14,12 @@ C**
 c v552 *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 c v554 *acm* 2/04 add /HGRAT /VGRAT to draw optional graticule lines at tic marks
 c v590 *acm* 2/04 add PPL XFOR('DMS') or 'DM' sets axis format deg/min/sec or deg/min
+c                 add xvaloff, yvaloff (see comments below)
 c
 	COMMON/AXIS/ XLO,XHI,XTIC,XLEN,XCSIZE, 
-     *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG, 
+     *	IAUTOX,ITYPEX,NMTCX,LINTX,LABELX,NSIGX,NTICX,XORG,XVALOFF,
      *		     YLO,YHI,YTIC,YLEN,YCSIZE, 
-     *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,
+     *	IAUTOY,ITYPEY,NMTCY,LINTY,LABELY,NSIGY,NTICY,YORG,YVALOFF,
      *	IAXON(4),IAXSET, HGRAT(4,2), VGRAT(4,2), HLINE, VLINE, HCOLOR(2), 
      *  VCOLOR(2),XDMS,YDMS
 c
@@ -42,6 +43,8 @@ c		=1  label the top axis
 c	nsigx	number of significant digits if ifrx = ' '
 c	nticx	number of large tics to try for if iautox=1
 c	xorg	position of left end of axis from left boundry (inches)
+c	xvaloff	add this amount to each x axis label. (x axis data was read as
+c               double precision and converted to single after applying an offset.)
 c	
 c**	y axis variables
 c
@@ -63,6 +66,8 @@ c		=1  label the right axis
 c	nsigy	number of significant digits if ifry = ' '
 c	nticy	number of large tics to try for if iautoy=1
 c	yorg	position of bottom end of axis from bottom boundry (inches)
+c	yvaloff	add this amount to each y axis label. (y axis data was read as
+c               double precision and converted to single after applying an offset.)
 c
 c**	axis flags
 c       iaxset          =1 if axes have been reset (needed if plot/set/axes=,

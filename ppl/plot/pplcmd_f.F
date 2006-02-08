@@ -102,6 +102,9 @@ C**
 *                 vecfld, where it will cause a crash.
 C *acm* 11/05     new options for XFOR, YFOR, 'DM' deg/min deg/min
 * V590: *acm* 11/05 add xdms,ydms for deg/min labels
+C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
+C              (axis data was read as double precision and converted to single 
+C              after applying an offset.)
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -235,10 +238,10 @@ CCCCCCC data	        tmapdebug/.false./
 	CHARACTER COMBUF(ICMDIM)*2048
 	CHARACTER YES*3,NO*2,err_msg*40
 	LOGICAL LEOF
-	LOGICAL IFLG1,IFLG2,LABON,LABOFF
+	LOGICAL IFLG1,IFLG2,LABON,VALOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(115)*7
+	CHARACTER COMM(117)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -262,7 +265,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
-     *  'FLOWLINE', 'S_KEY', 'S_CELL', 'POLYGON'/
+     *  'FLOWLINE', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -376,7 +379,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,115
+	DO 20 I=1,117
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -395,7 +398,7 @@ C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 21	IFLG1=(M.GE.1.AND.IFLG(1).NE.0)
 	IFLG2=(M.GE.2.AND.IFLG(2).NE.0)
 	LABON=(LABEL.EQ.'ON'.OR.LABEL.EQ.'on')
-	LABOFF=(INDEX(LABEL,'OFF')+INDEX(LABEL,'off')).NE.0
+	VALOFF=(INDEX(LABEL,'OFF')+INDEX(LABEL,'off')).NE.0
 C       Mod below for brain dead version *JD* 8.2.91
         if (tmapdebug) then
 	GOTO (100,200,300,500,600,700,900,1000,1100,1200,1300,
@@ -408,7 +411,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183),I
+     *  9174,9175,9390,9165,9166,9183,4401,4501),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -420,7 +423,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183),I
+     *  9174,9175,9390,9165,9166,9183,4401,4501),I
         end if
         goto 10
 
@@ -743,6 +746,24 @@ C     YFOR
            WRITE(err_msg,label,ERR=1999) 0
         ENDIF
 	GOTO 10
+        
+C     XVALOFF
+4401  XVALOFF=P(1)
+      i = XVALOFF
+      IF (FLOAT(i) .NE. XVALOFF) THEN
+         err_msg = 'Offset must be an integer'
+         CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
+      ENDIF
+      GOTO 10
+
+C     YVALOFF
+4501  YVALOFF=P(1)
+      i = YVALOFF
+      IF (FLOAT(i) .NE. YVALOFF) THEN
+         err_msg = 'Offset must be an integer'
+         CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
+      ENDIF
+
 C     ORIGIN
 4600	IF(IFLG1)XORG=P(1)
 	IF(IFLG2)YORG=P(2)
@@ -769,31 +790,31 @@ C     ENGLISH
 C     LIMITS
 5200	CALL UPPER(LABEL,2048)
 	IF(INDEX(LABEL,'XLE').NE.0)THEN
-	    XLE=.NOT.LABOFF
+	    XLE=.NOT.VALOFF
 	    IF(IFLG1)CMXLE=P(1)
 	ELSE IF(INDEX(LABEL,'XEQ').NE.0)THEN
-	    XEQ=.NOT.LABOFF
+	    XEQ=.NOT.VALOFF
 	    IF(IFLG1)CMXEQ=P(1)
 	ELSE IF(INDEX(LABEL,'XGE').NE.0)THEN
-	    XGE=.NOT.LABOFF
+	    XGE=.NOT.VALOFF
 	    IF(IFLG1)CMXGE=P(1)
 	ELSE IF(INDEX(LABEL,'YLE').NE.0)THEN
-	    YLE=.NOT.LABOFF
+	    YLE=.NOT.VALOFF
 	    IF(IFLG1)CMYLE=P(1)
 	ELSE IF(INDEX(LABEL,'YEQ').NE.0)THEN
-	    YEQ=.NOT.LABOFF
+	    YEQ=.NOT.VALOFF
 	    IF(IFLG1)CMYEQ=P(1)
 	ELSE IF(INDEX(LABEL,'YGE').NE.0)THEN
-	    YGE=.NOT.LABOFF
+	    YGE=.NOT.VALOFF
 	    IF(IFLG1)CMYGE=P(1)
 	ELSE IF(INDEX(LABEL,'ZLE').NE.0)THEN
-	    ZLE=.NOT.LABOFF
+	    ZLE=.NOT.VALOFF
 	    IF(IFLG1)CMZLE=P(1)
 	ELSE IF(INDEX(LABEL,'ZEQ').NE.0)THEN
-	    ZEQ=.NOT.LABOFF
+	    ZEQ=.NOT.VALOFF
 	    IF(IFLG1)CMZEQ=P(1)
 	ELSE IF(INDEX(LABEL,'ZGE').NE.0)THEN
-	    ZGE=.NOT.LABOFF
+	    ZGE=.NOT.VALOFF
 	    IF(IFLG1)CMZGE=P(1)
 	ENDIF
 	GOTO 10
@@ -1624,7 +1645,7 @@ C  calendar
         goto 10
 c sqfill
  9380   if(labon)sqfflg=.true.
-        if(laboff .or. n.eq.0)sqfflg=.false.
+        if(VALOFF .or. n.eq.0)sqfflg=.false.
         goto 10
 9999	RETURN
 

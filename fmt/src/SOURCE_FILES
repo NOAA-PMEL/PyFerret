@@ -248,6 +248,7 @@ xunits_data.F
 SRCS_C = \
 alloca.c\
 cd_rd_r8_as_r4.c\
+cd_read_scale.c\
 cd_read_sub.c\
 deleted_list_clear.c\
 deleted_list_get_del.c\

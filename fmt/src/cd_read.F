@@ -120,12 +120,12 @@
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-	LOGICAL      permuted
+	LOGICAL      permuted, already_scaled
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
      .               start(4), filsize(4), totsize, dim_lo(4),dim_hi(4),
      .		     imap(4), trans(4), memsize(4), count(4),
-     .		     grid_dims(4), fildim, memdim, filstride(4)
+     .		     grid_dims(4), fildim, memdim, filstride(4), oned
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
 	DATA  		dimnam/'I','J','K','L'/
@@ -282,14 +282,54 @@
 * v5.33 *sh* - actual reading is buried in a C subroutine
 * v590  *acm*- Fix bug 419 (incompletely fixed before) send missing data
 *              flag to TM_SCALE so that bad data is not scaled.
+* V590  *acm* -Hack to let us read double precision data to be used to 
+*              create an axis, by specifying an offset and reading the
+*              data as double precision, applying the offset and THEN
+*              converting to single precision.
 
-	CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
+
+        already_scaled = .FALSE.
+        status = merr_ok
+        oned = 1
+        
+        DO 230 idim = 1, 4
+           IF ( count(idim) .GT. 1 ) oned = oned + 1
+ 230    CONTINUE
+
+        IF (oned .EQ. 1 .AND. ds_var_scaleit( ivar ) ) THEN   ! reads data as double precision, if available.
+           CALL CD_READ_SCALE(cdfid, varid, ndim, 
+     .             ds_var_off(ivar), ds_var_scale(ivar), 
+     .             ds_bad_flag(ivar),
+     .             start, count,
+     .		   filstride, imap,
+     .             var(use_lo(1),
+     .                 use_lo(2),
+     .                 use_lo(3),
+     .                 use_lo(4)), cdfstat, status)
+           IF ( cdfstat .NE. NCNOERR ) GOTO 5500           
+           IF (status .EQ. merr_ok) already_scaled = .TRUE.
+
+           IF (status .NE. merr_ok) THEN   ! try to read as single precision floats
+           
+	      CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
      .		   filstride, imap,
      .             var(use_lo(1),
      .                 use_lo(2),
      .                 use_lo(3),
      .                 use_lo(4)), cdfstat)
-	IF ( cdfstat .NE. NCNOERR ) GOTO 5500	
+	      IF ( cdfstat .NE. NCNOERR ) GOTO 5500
+           ENDIF
+
+        ELSE
+
+	   CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
+     .		   filstride, imap,
+     .             var(use_lo(1),
+     .                 use_lo(2),
+     .                 use_lo(3),
+     .                 use_lo(4)), cdfstat)
+	   IF ( cdfstat .NE. NCNOERR ) GOTO 5500
+        ENDIF
 
 * if data has mean or range removed rescale it.
 * Do not scale missing data.
@@ -299,7 +339,8 @@
 
 * if user has asked for new offset and/or scale, apply those, but
 * not to any missing data.
-        IF ( ds_var_scaleit( ivar ))  CALL TM_SCALE_NOBAD(
+        IF ( ds_var_scaleit(ivar) .AND. (.NOT. already_scaled) )
+     .    CALL TM_SCALE_NOBAD(
      .       ds_var_scale(ivar), ds_var_off(ivar), var, totsize,
      .       ds_bad_flag(ivar), ds_missing_flag(ivar) )
 

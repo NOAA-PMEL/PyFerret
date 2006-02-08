@@ -134,7 +134,8 @@ cc	IF (its_if .OR. its_endif) RETURN
 * ...       bump the IF stack - set up to skip this entire IF clause
 	         IF ( ifstk .GE. max_ifstk ) GOTO 5400
 	         ifstk = ifstk + 1
-	         if_doing(ifstk) = if_doing(ifstk-1)
+cc	         if_doing(ifstk) = if_doing(ifstk-1)
+	         if_doing(ifstk) = pif_skip_to_endif
 	         if_cs(ifstk) = if_cs(ifstk-1)
                  RETURN 1
 	      ENDIF

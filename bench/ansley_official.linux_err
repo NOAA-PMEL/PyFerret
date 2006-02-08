@@ -1,12 +1,15 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     59846487 Jan  5 12:13 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     59870893 Feb  8 09:38 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tests of trapping for LOG10(0.) 
+Note:  further IF- parsing fixes, nested IF inside an IF clause that is not executed. Also: fix to restore scale defaults in tm_close_set.F (changes many bn outputs!)
+also: bug 1376, in labels and listings, if year is not listed because its modulo, remove extra spaces
+also: bug 1077 had not been fixed for linux: handle arg-tests by QUERY as errors, if the test fails
+Also: in NC reads, apply user-given offset to 1-D double precision variable, then convert to single precision
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/linux/FERRET/bench
+PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
@@ -14,14 +17,14 @@ CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go /home/raid1/data/WIND_AN
+FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/linux/ext_func/libs
-Beginning at Thu Jan 5 12:15:08 PST 2006
+Beginning at Wed Feb 8 09:48:01 PST 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -31,10 +34,20 @@ that
  **ERROR: invalid command: Value needed for argument 3 in command
           GO bn_dollar hello
 message/cont $3
+ **ERROR: my error message
+message/cont $3"<my error message"
+ **ERROR: my error message
+message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+ **ERROR: my error message
+message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+ **ERROR: my error message
+message/cont $3">greetings|hello|goodbye<my error message"
+ **ERROR: my error message
+message/cont $3">greetings|hello>replacement text|goodbye<my error message"
  **ERROR: command syntax: empty argument replacement string: $3""
 message/cont $3""
  **ERROR: command syntax: empty text string provided with ">": <
@@ -183,8 +196,12 @@ define symbol test* = hello
  **ERROR: invalid command: Value needed for argument 5 in command
           GO bn_symbols
 define symbol t$5 = hi
+ **ERROR: error message
+message/continue ($test2"<error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+ **ERROR: error message
+message/continue ($test2"|hello|bye|<error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
  **ERROR: unknown defining grid: GX=NOEXIST
@@ -518,14 +535,24 @@ Skipping namelist "EXTRA_RECORD": seeking namelist "STEPFILE_RECORD".
  
  **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
 plot/sym/siz=0.3 0*t[gt=vwnd]
+ **ERROR: First argument is a letter of the alphabet
+query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
  **ERROR: invalid command: Valid value needed for argument $2
 query/ignore $2%|a|b|c|d|%
+ **ERROR: my error message
+message/cont $1"|xxxxx|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+ **ERROR: my error message
+message/cont $3"|hello|goodbye<my error message"
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+ **ERROR: my error message
+message/continue ($test2"<my error message")
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+ **ERROR: my error message
+message/continue ($test2"|hello|bye|<my error message")
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
  **ERROR: invalid command: delta non-positive on X axis of EX#1
@@ -624,4 +651,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Thu Jan 5 12:17:26 PST 2006
+Ended at Wed Feb 8 09:50:51 PST 2006

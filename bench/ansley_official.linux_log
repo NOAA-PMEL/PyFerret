@@ -1,12 +1,16 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     59846487 Jan  5 12:13 /home/stout/ansley/linux/FERRET/fer/ferretdods_gui
+Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     59870893 Feb  8 09:38 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tests of trapping for LOG10(0.) 
+Note:  further IF- parsing fixes, nested IF inside an IF clause that is not executed. Also: fix to restore scale defaults in tm_close_set.F (changes many bn outputs!)
+also: bug 1376, in labels and listings, if year is not listed because its modulo, remove extra spaces
+also: bug 1077 had not been fixed for linux: handle arg-tests by QUERY as errors, if the test fails
+Also: in NC reads, apply user-given offset to 1-D double precision variable, then convert to single precision
+
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/stout/ansley/linux/FERRET/bench
+PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
@@ -14,18 +18,18 @@ CVSROOT=/home/porter/tmap/FERRET_ROOT
 FER_WEB_BROWSER=netscape -ncols 60
 FER_DSETS=.
 FER_DAT=.
-FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go /home/raid1/data/WIND_AN
+FER_GO=. /home/porter/tmap/ferret/linux/go /home/porter/tmap/ferret/linux/examples /home/porter/tmap/ferret/linux/contrib /home/porter/tmap/ferret/tmap_go
 FER_DATA=.
 FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/linux/ext_func/libs
-Beginning at Thu Jan 5 12:15:08 PST 2006
+Beginning at Wed Feb 8 09:48:01 PST 2006
  	NOAA/PMEL TMAP
  	FERRET v5.813  
- 	Linux(g77) 2.4.21-32 - 01/05/06
- 	 5-Jan-06 12:15     
+ 	Linux(g77) 2.4.21-32 - 02/08/06
+ 	 8-Feb-06 09:48     
 
 yes? !bn500_all_shell
 yes? 
@@ -1070,7 +1074,6 @@ here is a big hello and some text
 message/cont $3			! error - no default
  
 message/cont $3"<my error message"	! error - with message
- *** NOTE: my error message
  
 message/cont $*
  !-> message/cont hello
@@ -1108,7 +1111,6 @@ replacement text
 ! doesn't match on "hello"
  
 message/cont $1"|xxxxx|goodbye<my error message"
- *** NOTE: my error message
  
 message/cont $1"greetings|xxxxx|goodbye"
  *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
@@ -1128,7 +1130,6 @@ greetings
 ! no argument supplied
  
 message/cont $3"|hello|goodbye<my error message"
- *** NOTE: my error message
  
 message/cont $3"greetings|hello|goodbye"
  !-> message/cont greetings
@@ -1138,10 +1139,8 @@ message/cont $3">greetings|hello|goodbye"
  *** NOTE: Valid argument $3 choices are: hello|goodbye
  
 message/cont $3">greetings|hello|goodbye<my error message"
- *** NOTE: my error message
  
 message/cont $3">greetings|hello>replacement text|goodbye<my error message"
- *** NOTE: my error message
  
 ! pathological examples
 !*********
@@ -1457,8 +1456,8 @@ say `sst,return=zstart`
  !-> MESSAGE/CONTINUE *
 *
 say `sst,return=tstart`
- !-> MESSAGE/CONTINUE 16-JAN      06:00
-16-JAN      06:00
+ !-> MESSAGE/CONTINUE 16-JAN 06:00
+16-JAN 06:00
  
 say `sst,return=xend`
  !-> MESSAGE/CONTINUE 19E(379)
@@ -1470,8 +1469,8 @@ say `sst,return=zend`
  !-> MESSAGE/CONTINUE *
 *
 say `sst,return=tend`
- !-> MESSAGE/CONTINUE 17-MAR      02:58
-17-MAR      02:58
+ !-> MESSAGE/CONTINUE 17-MAR 02:58
+17-MAR 02:58
  
 say `sst,return=xunit`
  !-> MESSAGE/CONTINUE degrees_east
@@ -10293,8 +10292,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "5.813"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = " 5-Jan-06"
-SESSION_TIME = "12:15"
+SESSION_DATE = " 8-Feb-06"
+SESSION_TIME = "09:48"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10312,8 +10311,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "5.813"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = " 5-Jan-06"
-SESSION_TIME = "12:15"
+SESSION_DATE = " 8-Feb-06"
+SESSION_TIME = "09:48"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10321,8 +10320,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 5-Jan-06"
-SESSION_TIME = "12:15"
+SESSION_DATE = " 8-Feb-06"
+SESSION_TIME = "09:48"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10332,13 +10331,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 5-Jan-06"
-SESSION_TIME = "12:15"
+SESSION_DATE = " 8-Feb-06"
+SESSION_TIME = "09:48"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 5-Jan-06"
-SESSION_TIME = "12:15"
+SESSION_DATE = " 8-Feb-06"
+SESSION_TIME = "09:48"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10372,7 +10371,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.813"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jan  5 2006 12:15:24 "
+LAB3 = "Feb  8 2006 09:48:19 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10441,11 +10440,9 @@ you said: "I'm here"
 ! deliberate errors
 set mode ignore_errors
 message/continue ($test2"<error message")
- *** NOTE: error message
 message/continue ($test2"|hello|bye|")
  *** NOTE: Valid symbol test2 choices are: hello|bye|
 message/continue ($test2"|hello|bye|<error message")	! silent error
- *** NOTE: error message
 message/continue ($t2"|solong>really hello|bye|")
  *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
 set mode/last ignore_errors
@@ -10473,8 +10470,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "5.813"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = " 5-Jan-06"
-SESSION_TIME = "12:15"
+SESSION_DATE = " 8-Feb-06"
+SESSION_TIME = "09:48"
  
  
 GO bn_reset
@@ -18427,15 +18424,15 @@ contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110W:10 sin(x/3)*ABS(Y)
 set view v23
 contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110w:-9/ylimits=0:30N sin(x/3)*ABS(Y)^1.5
 set view v24
-contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:11-rw-rw-r--    1 ansley   tmap        23037 Jan  5 12:15 bench.mgm
--rw-rw-r--    1 ansley   tmap       419228 Jan  5 12:15 bench.mgm
-0w:-9/ylimits=0:30N/trans sin(x/3)*ABS(Y)^1.5
+contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110w:-9/ylimits=0:30N/trans sin(x/3)*ABS(Y)^1.5
  
 * calendar axis contours involving T
 set grid gformat
 set mode calendar
 set view v31
-contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=1-jan-1978:1-jan-1984 sin(x/3)*sin(t/100)
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-rw-rw-r--    1 ansley   tmap        23038 Feb  8 09:48 bench.mgm
+-rw-rw-r--    1 ansley   tmap       419216 Feb  8 09:48 bench.mgm
+-9/ylimits=1-jan-1978:1-jan-1984 sin(x/3)*sin(t/100)
 set view v32
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115 sin(x/3)*sin(t/100)
 set view v33
@@ -25255,25 +25252,25 @@ define axis/from_data/T/units=days/name=tax/t0=1-jan-0000/edges/modulo {`start_d
 Replacing definition of axis TAX
 show axis/l=1:6 tax
  name       axis              # pts   start                end
- TAX       TIME                 2mi   20-APR      12:00    20-OCT      02:54
+ TAX       TIME                 2mi   20-APR 12:00         20-OCT 02:54
 T0 = 1-JAN-0000
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       1>  20-APR      12:00:00  73        15-MAR      00:00:00    475.5
-       2>  20-OCT      02:54:35  292.2425  27-MAY      00:00:00    658.1212
+       1>  20-APR 12:00:00       73        15-MAR 00:00:00         475.5
+       2>  20-OCT 02:54:35       292.2425  27-MAY 00:00:00         658.1212
        3>  20-APR-0002 17:49:11  73        15-MAR-0002 05:49:11    840.7425
        4>  20-OCT-0002 08:43:47  292.2425  27-MAY-0002 05:49:11    1023.364
        5>  20-APR-0003 23:38:22  73        15-MAR-0003 11:38:22    1205.985
        6>  20-OCT-0003 14:32:58  292.2425  27-MAY-0003 11:38:22    1388.606
 show axis/l=1:6000:1200 tax
  name       axis              # pts   start                end
- TAX       TIME                 2mi   20-APR      12:00    20-OCT      02:54
+ TAX       TIME                 2mi   20-APR 12:00         20-OCT 02:54
 T0 = 1-JAN-0000
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       1>  20-APR      12:00:00  73        15-MAR      00:00:00    475.5
+       1>  20-APR 12:00:00       73        15-MAR 00:00:00         475.5
     1201>  20-APR-0601 23:53:40  73        15-MAR-0601 11:53:40    219621
     2401>  20-APR-1201 11:47:20  73        14-MAR-1201 23:47:20    438766.5
     3601>  20-APR-1801 23:41:00  73        15-MAR-1801 11:41:00    657912
@@ -25656,7 +25653,15 @@ list/l=1 out
  9    /  9:  444132.  444133.  444134.  444135.  444136.
  10   / 10:  444863.  444864.  444865.  444866.  444867.
  11   / 11:  445593.  445594.  445595.  445596.  445597.
- netcdf out {
+ 12   / 12:  446324.  446325.  446326.  446327.  446328.
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err491_delete_child_var.jnl
+! err491_delete_child_var.netcdf out {
 dimensions:
 	T5 = UNLIMITED ; // (1 currently)
 variables:
@@ -25670,7 +25675,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  T5 = 50757969 ;
@@ -25691,22 +25696,16 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  T5 = 50757969, 50757974 ;
 
  MY_VAR = 5.075797e+07, 5.075798e+07 ;
 }
-12   / 12:  446324.  446325.  446326.  446327.  446328.
- 
- 
-GO bn_reset
-cancel mode verify
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-GO err491_delete_child_var.jnl
-! err491_delete_child_var.jnl
+abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Wed Feb  8 09:49:20 PST 2006
+jnl
 ! *sh* 4/99
  
 ! when a grid-changing variable definition was redefined (replaced)
@@ -25856,9 +25855,7 @@ PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sp rm -f abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy*
  
-frame/file="abcdefghijklmnopqrstuvwxyaabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Jan  5 12:15:51 PST 2006
-bcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif"
+frame/file="abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif"
  
 spawn ls abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy*
  
@@ -26571,13 +26568,13 @@ Dynamic grids:
  ABSTRACT  X              9999999 r   1                     9999999
  (AX008)   LATITUDE             5 r   1S                   1N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
     GRID (G014)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  (AX008)   LATITUDE             5 r   1S                   1N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 Dynamic axes:
     AXIS (AX008)                         use count:   2
 cancel memory/all
@@ -26603,13 +26600,13 @@ Dynamic grids:
  ABSTRACT  X              9999999 r   1                     9999999
  (AX002)   LATITUDE             5 r   1S                   1N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
     GRID (G021)                          use count:   1
  name       axis              # pts   start                end
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  (AX002)   LATITUDE             5 r   1S                   1N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 Dynamic axes:
     AXIS (AX002)                         use count:   2
  
@@ -29287,7 +29284,7 @@ show grid MASKED_SST
  COADSX1   X                  180 r   1                    180
  COADSY1   Y                   90 r   1                    90
  normal    Z
- TIME4     TIME                 1mr   16-JAN      06:00    16-JAN      06:00
+ TIME4     TIME                 1mr   16-JAN 06:00         16-JAN 06:00
 show grid COADSX
     GRID GAB6
  name       axis              # pts   start                end
@@ -31546,7 +31543,7 @@ show grid gg1
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  COADSY    LATITUDE            90 r   89S                  89N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 let f = sst[y=20s:20n:.1,d=coads_climatology]
 DEFINE GRID/LIKE=f/x=temp[d=levitus_climatology] gg2
 cancel variable f
@@ -31556,7 +31553,7 @@ show grid gg2
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  (AX020)   LATITUDE           401 r   20S                  20N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 show grid/dynamic
 Dynamic grids:
     no implicit grids
@@ -31596,7 +31593,7 @@ show grid
  (AX012)   LONGITUDE          301 r   0E                   30E
  COADSY    LATITUDE            90 r   89S                  89N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
  
 ! The SET GRID (default) definition should be protected -- not altered
 load/d=coads_climatology sst[y=-10:10:.1,l=1,x=160e]
@@ -31608,7 +31605,7 @@ show grid
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  (AX002)   LATITUDE           201 r   10S                  10N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 show grid/dynamic
 Dynamic grids:
     GRID (G022)                          use count:   1
@@ -31616,13 +31613,13 @@ Dynamic grids:
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  (AX002)   LATITUDE           201 r   10S                  10N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
     GRID (G014)                          use count:   1
  name       axis              # pts   start                end
  (AX012)   LONGITUDE          301 r   0E                   30E
  COADSY    LATITUDE            90 r   89S                  89N
  normal    Z
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 Dynamic axes:
     AXIS (AX002)                         use count:   1
     AXIS (AX012)                         use count:   1
@@ -34126,7 +34123,34 @@ ppl list xaxis
          XAXIS QUALITIES
          LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
-         MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
+         MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIGnetcdf test_string {
+dimensions:
+	XAX1_3 = 3 ;
+	STRING1_10 = 10 ;
+	STRING1_16 = 16 ;
+variables:
+	double XAX1_3(XAX1_3) ;
+		XAX1_3:point_spacing = "even" ;
+		XAX1_3:axis = "X" ;
+	char A(XAX1_3, STRING1_10) ;
+		A:long_name = "{\"hello\",\"goodbye\", \"wave to me\"}" ;
+	char B(STRING1_16) ;
+		B:long_name = "\"one line of text\"" ;
+
+// global attributes:
+		:history = "FERRET V5.813    8-Feb-06" ;
+data:
+
+ XAX1_3 = 1, 2, 3 ;
+
+ A =
+  "hello",
+  "goodbye",
+  "wave to me" ;
+
+ B = "one line of text" ;
+}
+=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
@@ -34396,34 +34420,17 @@ sh dat test_string
  B        "one line of text"               ...       ...       ...       ...
  
 list b
-             VARIABLE : "onenetcdf test_string {
-dimensions:
-	XAX1_3 = 3 ;
-	STRING1_10 = 10 ;
-	STRING1_16 = 16 ;
-variables:
-	double XAX1_3(XAX1_3) ;
-		XAX1_3:point_spacing = "even" ;
-		XAX1_3:axis = "X" ;
-	char A(XAX1_3, STRING1_10) ;
-		A:long_name = "{\"hello\",\"goodbye\", \"wave to me\"}" ;
-	char B(STRING1_16) ;
-		B:long_name = "\"one line of text\"" ;
-
-// global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
-data:
-
- XAX1_3 = 1, 2, 3 ;
-
- A =
-  "hello",
-  "goodbye",
-  "wave to me" ;
-
- B = "one line of text" ;
-}
-netcdf test_string {
+             VARIABLE : "one line of text"
+             FILENAME : test_string.cdf
+        "one line of text"
+canc data test_string
+ 
+let a = {"hello","goodbye", "wave to me"}
+let b = "one line of text"
+save/clobber/file=test_string.cdf a,b
+ LISTing to file test_string.cdf
+sp ncdump test_string.cdf
+savnetcdf test_string {
 dimensions:
 	grid_definition = 1 ;
 	XAX1_19 = 19 ;
@@ -34447,7 +34454,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  GFP3 = "" ;
@@ -34462,17 +34469,43 @@ data:
   "dummy3.str_test",
   "dummy4.str_test" ;
 }
- line of text"
-             FILENAME : test_string.cdf
-        "one line of text"
-canc data test_string
- 
-let a = {"hello","goodbye", "wave to me"}
-let b = "one line of text"
-save/clobber/file=test_string.cdf a,b
- LISTing to file test_string.cdf
-sp ncdump test_string.cdf
-save/append/file=test_string.cdf d
+netcdf foo {
+dimensions:
+	XAX1_4 = 4 ;
+	STRING1_1 = 1 ;
+	YAX1_3 = 3 ;
+variables:
+	double XAX1_4(XAX1_4) ;
+		XAX1_4:point_spacing = "even" ;
+		XAX1_4:axis = "X" ;
+	char A(XAX1_4, STRING1_1) ;
+		A:long_name = "{\"a\",,\" \",\"\"}" ;
+	double YAX1_3(YAX1_3) ;
+		YAX1_3:point_spacing = "even" ;
+		YAX1_3:axis = "Y" ;
+	char B(YAX1_3, STRING1_1) ;
+		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
+
+// global attributes:
+		:history = "FERRET V5.813    8-Feb-06" ;
+data:
+
+ XAX1_4 = 1, 2, 3, 4 ;
+
+ A =
+  "a",
+  "",
+  " ",
+  "" ;
+
+ YAX1_3 = 1, 2, 3 ;
+
+ B =
+  "b",
+  "",
+  "a" ;
+}
+e/append/file=test_string.cdf d
  LISTing to file test_string.cdf
 let b2 = "two line of text"   ! the same string length as b
 save/append/file=test_string.cdf b2
@@ -34597,43 +34630,7 @@ list/nohead xsequence({"a","b","c","d","e"})
  5   / 5:"e"
 sh grid
  Default grid for DEFINE VARIABLE is ABSTRACT
- Last successful data access was on grid XABnetcdf foo {
-dimensions:
-	XAX1_4 = 4 ;
-	STRING1_1 = 1 ;
-	YAX1_3 = 3 ;
-variables:
-	double XAX1_4(XAX1_4) ;
-		XAX1_4:point_spacing = "even" ;
-		XAX1_4:axis = "X" ;
-	char A(XAX1_4, STRING1_1) ;
-		A:long_name = "{\"a\",,\" \",\"\"}" ;
-	double YAX1_3(YAX1_3) ;
-		YAX1_3:point_spacing = "even" ;
-		YAX1_3:axis = "Y" ;
-	char B(YAX1_3, STRING1_1) ;
-		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
-
-// global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
-data:
-
- XAX1_4 = 1, 2, 3, 4 ;
-
- A =
-  "a",
-  "",
-  " ",
-  "" ;
-
- YAX1_3 = 1, 2, 3 ;
-
- B =
-  "b",
-  "",
-  "a" ;
-}
-STRACT
+ Last successful data access was on grid XABSTRACT
     GRID XABSTRACT
  name       axis              # pts   start                end
  ABSTRACT  X              9999999 r   1                     9999999
@@ -34791,7 +34788,14 @@ list/nohead "b" LE {"a","b","c"}
 list/nohead "b" EQ {"a","b","c"}
  1   / 1:  0.00000
  2   / 2:  1.00000
- 3   / 3:  0.00000
+ 3   / 3:  0col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+.00000
 list/nohead "b" GE {"a","b","c"}
  1   / 1:  1.00000
  2   / 2:  1.00000
@@ -34929,14 +34933,7 @@ plot/axes=1,0,0,1 sin(tpts/15)
 set view ur
 plot/axes=1,0,0,1/trans sin(tpts/15)
  
-set vicol1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
-ew ll
+set view ll
 plot/axes/trans  sin(tpts/15)
  
 set view lr
@@ -35272,17 +35269,17 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 1   / 1:......  1.10000 -24.0000     ....     ....   10.000......     ....
 2   / 2:......  2.20000  24.0000     ....  -2.0000     ..........     ....
 3   / 3:......  3.30000  24.0000  130.000   3.0000    0.030......     ....
-4   / 4:......   col1,col2,col3,col4,col5
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-  ....     ....     ....     ....     ..........     ....
+4   / 4:......     ....     ....     ....     ....     ..........     ....
 5   / 5:......  4.40000 -24.0000 -130.000  91.0000 -400.000......  77.0000
 6   / 6:......     ....     ....     ....     ....     ..........     ....
  
 ! read only the first line of the file
-spawn head -1 bn_delimited_read_1.dat
+spawn head -1 bn_delimitedcol1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+_read_1.dat
 define axis/x=1:1:1 x1
 Replacing definition of axis X1
 define grid/x=x1 g1
@@ -35475,7 +35472,11 @@ show data 2
        (Time of day)
  V4       V4                               1:4       ...       ...       ...
        (Time of day)
- V5       V5                               1:4       ...       ...       ...
+ V5       V5                               1:4       ...       ...     12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+  ...
        (Time of day)
  V6       V6                               1:4       ...       ...       ...
        (Time of day)
@@ -35560,11 +35561,7 @@ list V1,V2,V3,V4
  Column  2: V2
  Column  3: V3
  Column  4: V4
- 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-             V1     V2               V3              V4
+              V1     V2               V3              V4
 1   / 1:  12.0000  1.00000 "99,1999-03-01,12:0..."  1.00000
 2   / 2:  12.0000  2.00000 "99,1999-03-02,01:0..."  2.00000
 3   / 3:  12.0000  3.00000 "99x,1999-03-03x,2:..."  3.00000
@@ -37333,45 +37330,45 @@ use climatological_axes
 cancel data climatological_axes
 sh axis/t month_irreg
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       1>  16-JAN      12:00:00  31        01-JAN      00:00:00    15.5
-       2>  15-FEB      02:54:36  28.2425   01-FEB      00:00:00    45.12125
-       3>  15-MAR      17:49:12  31        29-FEB      05:49:12    74.7425
-       4>  15-APR      05:49:12  30        31-MAR      05:49:12    105.2425
-       5>  15-MAY      17:49:12  31        30-APR      05:49:12    135.7425
-       6>  15-JUN      05:49:12  30        31-MAY      05:49:12    166.2425
-       7>  15-JUL      17:49:12  31        30-JUN      05:49:12    196.7425
-       8>  15-AUG      17:49:12  31        31-JUL      05:49:12    227.7425
-       9>  15-SEP      05:49:12  30        31-AUG      05:49:12    258.2425
-      10>  15-OCT      17:49:12  31        30-SEP      05:49:12    288.7425
-      11>  15-NOV      05:49:12  30        31-OCT      05:49:12    319.2425
-      12>  15-DEC      17:49:12  31        30-NOV      05:49:12    349.7425
+       1>  16-JAN 12:00:00       31        01-JAN 00:00:00         15.5
+       2>  15-FEB 02:54:36       28.2425   01-FEB 00:00:00         45.12125
+       3>  15-MAR 17:49:12       31        29-FEB 05:49:12         74.7425
+       4>  15-APR 05:49:12       30        31-MAR 05:49:12         105.2425
+       5>  15-MAY 17:49:12       31        30-APR 05:49:12         135.7425
+       6>  15-JUN 05:49:12       30        31-MAY 05:49:12         166.2425
+       7>  15-JUL 17:49:12       31        30-JUN 05:49:12         196.7425
+       8>  15-AUG 17:49:12       31        31-JUL 05:49:12         227.7425
+       9>  15-SEP 05:49:12       30        31-AUG 05:49:12         258.2425
+      10>  15-OCT 17:49:12       31        30-SEP 05:49:12         288.7425
+      11>  15-NOV 05:49:12       30        31-OCT 05:49:12         319.2425
+      12>  15-DEC 17:49:12       31        30-NOV 05:49:12         349.7425
  
 def axis/x ax1 = {1, 3, 4, 5, 9}
 can axis ax1
 sh axis/t month_irreg
  name       axis              # pts   start                end
- MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365.2425 (modulo length = axis span)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       1>  16-JAN      12:00:00  31        01-JAN      00:00:00    15.5
-       2>  15-FEB      02:54:36  28.2425   01-FEB      00:00:00    45.12125
-       3>  15-MAR      17:49:12  31        29-FEB      05:49:12    74.7425
-       4>  15-APR      05:49:12  30        31-MAR      05:49:12    105.2425
-       5>  15-MAY      17:49:12  31        30-APR      05:49:12    135.7425
-       6>  15-JUN      05:49:12  30        31-MAY      05:49:12    166.2425
-       7>  15-JUL      17:49:12  31        30-JUN      05:49:12    196.7425
-       8>  15-AUG      17:49:12  31        31-JUL      05:49:12    227.7425
-       9>  15-SEP      05:49:12  30        31-AUG      05:49:12    258.2425
-      10>  15-OCT      17:49:12  31        30-SEP      05:49:12    288.7425
-      11>  15-NOV      05:49:12  30        31-OCT      05:49:12    319.2425
-      12>  15-DEC      17:49:12  31        30-NOV      05:49:12    349.7425
+       1>  16-JAN 12:00:00       31        01-JAN 00:00:00         15.5
+       2>  15-FEB 02:54:36       28.2425   01-FEB 00:00:00         45.12125
+       3>  15-MAR 17:49:12       31        29-FEB 05:49:12         74.7425
+       4>  15-APR 05:49:12       30        31-MAR 05:49:12         105.2425
+       5>  15-MAY 17:49:12       31        30-APR 05:49:12         135.7425
+       6>  15-JUN 05:49:12       30        31-MAY 05:49:12         166.2425
+       7>  15-JUL 17:49:12       31        30-JUN 05:49:12         196.7425
+       8>  15-AUG 17:49:12       31        31-JUL 05:49:12         227.7425
+       9>  15-SEP 05:49:12       30        31-AUG 05:49:12         258.2425
+      10>  15-OCT 17:49:12       31        30-SEP 05:49:12         288.7425
+      11>  15-NOV 05:49:12       30        31-OCT 05:49:12         319.2425
+      12>  15-DEC 17:49:12       31        30-NOV 05:49:12         349.7425
  
 cancel axis month_irreg
  
@@ -37393,15 +37390,15 @@ sh axis/t month_irreg
  name       axis              # pts   start                end
 sh axis/t seasonal_reg
  name       axis              # pts   start                end
- SEASONAL_REG TIME              4mr   15-FEB      15:43    15-NOV      14:05
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 8765.82 (modulo length = axis span)
  
        L     T                   TBOX      TBOXLO                TSTEP (HOURS)
-       1>  15-FEB      15:43:39  2191.455  01-JAN      00:00:00   1095.728
-       2>  16-MAY      23:10:57  2191.455  01-APR      07:27:18   3287.183
-       3>  16-AUG      06:38:15  2191.455  01-JUL      14:54:36   5478.638
-       4>  15-NOV      14:05:33  2191.455  30-SEP      22:21:54   7670.092
+       1>  15-FEB 15:43:39       2191.455  01-JAN 00:00:00        1095.728
+       2>  16-MAY 23:10:57       2191.455  01-APR 07:27:18        3287.183
+       3>  16-AUG 06:38:15       2191.455  01-JUL 14:54:36        5478.638
+       4>  15-NOV 14:05:33       2191.455  30-SEP 22:21:54        7670.092
  
  
 ! ******** V5.42 Additions below ***********
@@ -37643,7 +37640,7 @@ show axis/all
  X5_EDGES  X                    6 r   0.5                  5.5
  TDAY      TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
  THOUR     TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
- TENCODING TIME               366 r   01-JAN      00:00    01-JAN-0002 00:00
+ TENCODING TIME               366 r   01-JAN 00:00         01-JAN-0002 00:00
  YAX2      LATITUDE            17 r   0                    80N
  TAX1      TIME                12 r   16-JAN-1980 05:14    16-DEC-1980 00:34
  TSRC      T                   19 r   -9                   9
@@ -37721,7 +37718,7 @@ show axis/all
  Y1        Y                    4 r   1                    4
  X2        X                    4 r   1                    7
  TMONTHS   TIME                 6 r   18-AUG-1982 00:00    18-JAN-1983 00:00
- JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
  TWEEKS    TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
  TDAYS     TIME               135 r   20-AUG-1982 00:00    01-JAN-1983 00:00
  TAX_NEG   TIME                 3 r   29-DEC-1979 00:00    31-DEC-1979 00:00
@@ -37735,14 +37732,14 @@ show axis/all
  XASN      X                    7 r   0.1                  0.7
  XXACT     X                   11 r   1                    6
  XNRST     X                   14mr   1                    6.2
- BEGTIME   TIME               457 r   01-JAN      00:00    20-JAN      00:00
+ BEGTIME   TIME               457 r   01-JAN 00:00         20-JAN 00:00
  XIRR      X                   13 i   0                    24
  YIRR      Y                   13 i   0                    18
  X1        X                    1 r   1                    1
  Y34       Y                    2 r   3                    4
  Z56       Z                    2 r   5                    6
  YAX       Y                   90 r   -89                  0
- T2        TIME                 3mr   16-JAN      06:30    17-MAR      04:30
+ T2        TIME                 3mr   16-JAN 06:30         17-MAR 04:30
  YLON      Y                   10 r   18                   342
  ZLAT      Z                   10 r   -81                  81
  TDATE     TIME                10 r   20-OCT-1904 02:24    13-MAR-1991 21:36
@@ -37753,15 +37750,15 @@ show axis/all
  Y3AX      Y                    3 r   1                    3
  Z4AX      Z                    4 r   1                    4
  T2AX      T                    2 r   1                    2
- MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
- MONTH_REG TIME                12mr   16-JAN      06:00    16-DEC      01:20
- SEASONAL_REG TIME              4mr   15-FEB      15:43    15-NOV      14:05
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
  (AX020)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
- TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
 cancel axis month_irreg
@@ -37817,7 +37814,7 @@ show axis/all
  X5_EDGES  X                    6 r   0.5                  5.5
  TDAY      TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
  THOUR     TIME                 5 r   01-JAN-1990 00:00    05-JAN-1990 00:00
- TENCODING TIME               366 r   01-JAN      00:00    01-JAN-0002 00:00
+ TENCODING TIME               366 r   01-JAN 00:00         01-JAN-0002 00:00
  YAX2      LATITUDE            17 r   0                    80N
  TAX1      TIME                12 r   16-JAN-1980 05:14    16-DEC-1980 00:34
  TSRC      T                   19 r   -9                   9
@@ -37895,7 +37892,7 @@ show axis/all
  Y1        Y                    4 r   1                    4
  X2        X                    4 r   1                    7
  TMONTHS   TIME                 6 r   18-AUG-1982 00:00    18-JAN-1983 00:00
- JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
  TWEEKS    TIME                21 r   20-AUG-1982 00:00    07-JAN-1983 00:00
  TDAYS     TIME               135 r   20-AUG-1982 00:00    01-JAN-1983 00:00
  TAX_NEG   TIME                 3 r   29-DEC-1979 00:00    31-DEC-1979 00:00
@@ -37909,14 +37906,14 @@ show axis/all
  XASN      X                    7 r   0.1                  0.7
  XXACT     X                   11 r   1                    6
  XNRST     X                   14mr   1                    6.2
- BEGTIME   TIME               457 r   01-JAN      00:00    20-JAN      00:00
+ BEGTIME   TIME               457 r   01-JAN 00:00         20-JAN 00:00
  XIRR      X                   13 i   0                    24
  YIRR      Y                   13 i   0                    18
  X1        X                    1 r   1                    1
  Y34       Y                    2 r   3                    4
  Z56       Z                    2 r   5                    6
  YAX       Y                   90 r   -89                  0
- T2        TIME                 3mr   16-JAN      06:30    17-MAR      04:30
+ T2        TIME                 3mr   16-JAN 06:30         17-MAR 04:30
  YLON      Y                   10 r   18                   342
  ZLAT      Z                   10 r   -81                  81
  TDATE     TIME                10 r   20-OCT-1904 02:24    13-MAR-1991 21:36
@@ -37927,15 +37924,15 @@ show axis/all
  Y3AX      Y                    3 r   1                    3
  Z4AX      Z                    4 r   1                    4
  T2AX      T                    2 r   1                    2
- MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
- MONTH_REG TIME                12mr   16-JAN      06:00    16-DEC      01:20
- SEASONAL_REG TIME              4mr   15-FEB      15:43    15-NOV      14:05
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
  (AX020)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
- TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
  
@@ -38138,18 +38135,18 @@ show axis/all
  ZAX       DEPTH (m)           26 r-  0                    1000
  Y1        Y                    4 r   1                    4
  X2        X                    4 r   1                    7
- JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
  MONTHT    TIME                24 r   16-JAN-1949 00:00    17-DEC-1950 01:30
  X10       X                  201 r   0                    10
  YAX       Y                   90 r   -89                  0
  XAX       LONGITUDE          361mr   180E                 180E(540)
- MONTH_IRREG TIME              12mi   16-JAN      12:00    15-DEC      17:49
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
  (AX020)   LATITUDE           401 r   20S                  20N
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
- TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
  
@@ -38351,7 +38348,7 @@ show axis/all
  ZAX       DEPTH (m)           26 r-  0                    1000
  Y1        Y                    4 r   1                    4
  X2        X                    4 r   1                    7
- JMONTHS   TIME                13mr   01-JAN      00:00    31-DEC      06:00
+ JMONTHS   TIME                13mr   01-JAN 00:00         31-DEC 06:00
  MONTHT    TIME                24 r   16-JAN-1949 00:00    17-DEC-1950 01:30
  X10       X                  201 r   0                    10
  YAX       Y                   90 r   -89                  0
@@ -38360,8 +38357,8 @@ show axis/all
  XAXLEVITR1_160 LONGITUDE     160mr   20.5E                179.5E
  YAXLEVITR1_90 LATITUDE        90 r   89.5S                0.5S
  ZAXLEVITR1_1 DEPTH (m)         1 r-  0                    0
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
- TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
  COADSX    LONGITUDE          180mr   21E                  19E(379)
  COADSY    LATITUDE            90 r   89S                  89N
  
@@ -38437,52 +38434,52 @@ def ax/t=1-jan-0000:1-apr-0000/np=3 tsub ! yes
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   01-JAN      00:00    01-APR      00:00
+ TSUB      TIME                 3mr   01-JAN 00:00         01-APR 00:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 3276 (modulo length = 8765.82)
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   01-JAN      00:00    01-APR      00:00
+ TSUB      TIME                 3mr   01-JAN 00:00         01-APR 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 3276 (modulo length = 8765.82)
 def ax/t=1-jan-0000:1-apr-0000/np=3/edge/units=days tsub ! yes
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   16-JAN      04:00    16-MAR      20:00
+ TSUB      TIME                 3mr   16-JAN 04:00         16-MAR 20:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 91 (modulo length = 365.2425)
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   16-JAN      04:00    16-MAR      19:59
+ TSUB      TIME                 3mr   16-JAN 04:00         16-MAR 19:59
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 91 (modulo length = 365.2425)
 def ax/t=1-aug-0000:1-aug-0001/np=3/edge/units=days tsub ! yes
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   30-SEP      20:00    01-JUN      04:00
+ TSUB      TIME                 3mr   30-SEP 20:00         01-JUN 04:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 365 (modulo length = 365.2425)
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   30-SEP      19:59    01-JUN      04:00
+ TSUB      TIME                 3mr   30-SEP 19:59         01-JUN 04:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 365 (modulo length = 365.2425)
 def ax/t=31-dec-0000:1-may-0001/np=3/units=days tsub ! yes
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   31-DEC      00:00    01-MAY      00:00
+ TSUB      TIME                 3mr   31-DEC 00:00         01-MAY 00:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 181.5 (modulo length = 365.2425)
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   31-DEC      00:00    01-MAY      00:00
+ TSUB      TIME                 3mr   31-DEC 00:00         01-MAY 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 181.5 (modulo length = 365.2425)
 ! the following start in year 0001
@@ -38490,26 +38487,26 @@ def ax/t=31-dec-0000:1-may-0001/np=3/edges/units=days tsub ! no
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3 r   20-JAN      04:00    10-APR      20:00
+ TSUB      TIME                 3 r   20-JAN 04:00         10-APR 20:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 121
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   20-JAN      04:00    10-APR      19:59
+ TSUB      TIME                 3mr   20-JAN 04:00         10-APR 19:59
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 121 (modulo length = 365.2425)
 def ax/t=1-jan-0001:1-sep-0001/np=3/units=days tsub ! no
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3 r   01-JAN      00:00    01-SEP      00:00
+ TSUB      TIME                 3 r   01-JAN 00:00         01-SEP 00:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 364.5
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3mr   01-JAN      00:00    01-SEP      00:00
+ TSUB      TIME                 3mr   01-JAN 00:00         01-SEP 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 364.5 (modulo length = 365.2425)
 ! the following is too long to be a climatological axis
@@ -38517,13 +38514,13 @@ def ax/t=29-dec-0000:31-dec-0001/np=3/units=days tsub ! no
 GO bn_subspan_modulo.sub1 T
 Axis as created:
  name       axis              # pts   start                end
- TSUB      TIME                 3 r   29-DEC      00:00    31-DEC      00:00
+ TSUB      TIME                 3 r   29-DEC 00:00         31-DEC 00:00
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 550.5
  LISTing to file test_mod.cdf
 Axis as inferred from netCDF file:
  name       axis              # pts   start                end
- TSUB      TIME                 3 r   29-DEC      00:00    31-DEC      00:00
+ TSUB      TIME                 3 r   29-DEC 00:00         31-DEC 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 550.5
  
@@ -38655,40 +38652,40 @@ define symbox taxname `$2,return=taxis`
 show axis/l=3:10 ($TAXNAME)
  !-> show axis/l=3:10 TAX_SUBSPAN1
  name       axis              # pts   start                end
- TAX_SUBSPAN1 TIME              5mr   16-JAN      00:00    15-MAY      00:00
+ TAX_SUBSPAN1 TIME              5mr   16-JAN 00:00         15-MAY 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 150 (modulo length = 365.2485)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       3>  16-MAR      00:00:00  30        01-MAR      00:00:00    75
-       4>  15-APR      00:00:00  30        31-MAR      00:00:00    105
-       5>  15-MAY      00:00:00  30        30-APR      00:00:00    135
-       6>  14-SEP      14:58:55  215.2485  30-MAY      00:00:00    257.6243
-       7>  15-JAN      05:57:50  30        31-DEC      05:57:50    380.2485
-       8>  14-FEB      05:57:50  30        30-JAN      05:57:50    410.2485
-       9>  16-MAR      05:57:50  30        01-MAR      05:57:50    440.2485
-      10>  15-APR      05:57:50  30        31-MAR      05:57:50    470.2485
+       3>  16-MAR 00:00:00       30        01-MAR 00:00:00         75
+       4>  15-APR 00:00:00       30        31-MAR 00:00:00         105
+       5>  15-MAY 00:00:00       30        30-APR 00:00:00         135
+       6>  14-SEP 14:58:55       215.2485  30-MAY 00:00:00         257.6243
+       7>  15-JAN 05:57:50       30        31-DEC 05:57:50         380.2485
+       8>  14-FEB 05:57:50       30        30-JAN 05:57:50         410.2485
+       9>  16-MAR 05:57:50       30        01-MAR 05:57:50         440.2485
+      10>  15-APR 05:57:50       30        31-MAR 05:57:50         470.2485
 show axis/l=3:10:3 ($TAXNAME)
  !-> show axis/l=3:10:3 TAX_SUBSPAN1
  name       axis              # pts   start                end
- TAX_SUBSPAN1 TIME              5mr   16-JAN      00:00    15-MAY      00:00
+ TAX_SUBSPAN1 TIME              5mr   16-JAN 00:00         15-MAY 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 150 (modulo length = 365.2485)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       3>  16-MAR      00:00:00  30        01-MAR      00:00:00    75
-       6>  14-SEP      14:58:55  215.2485  30-MAY      00:00:00    257.6243
-       9>  16-MAR      05:57:50  30        01-MAR      05:57:50    440.2485
+       3>  16-MAR 00:00:00       30        01-MAR 00:00:00         75
+       6>  14-SEP 14:58:55       215.2485  30-MAY 00:00:00         257.6243
+       9>  16-MAR 05:57:50       30        01-MAR 05:57:50         440.2485
 show axis/l=3:10:6 ($TAXNAME)
  !-> show axis/l=3:10:6 TAX_SUBSPAN1
  name       axis              # pts   start                end
- TAX_SUBSPAN1 TIME              5mr   16-JAN      00:00    15-MAY      00:00
+ TAX_SUBSPAN1 TIME              5mr   16-JAN 00:00         15-MAY 00:00
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 150 (modulo length = 365.2485)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       3>  16-MAR      00:00:00  30        01-MAR      00:00:00    75
-       9>  16-MAR      05:57:50  30        01-MAR      05:57:50    440.2485
+       3>  16-MAR 00:00:00       30        01-MAR 00:00:00         75
+       9>  16-MAR 05:57:50       30        01-MAR 05:57:50         440.2485
  
 set mode diag
 set mode stupid  ! always re-read and recompute
@@ -39186,40 +39183,40 @@ define symbox taxname `$2,return=taxis`
 show axis/l=3:10 ($TAXNAME)
  !-> show axis/l=3:10 TIRREG_SUBSPAN1
  name       axis              # pts   start                end
- TIRREG_SUBSPAN1 TIME           5mi   16-JAN      12:00    15-MAY      05:57
+ TIRREG_SUBSPAN1 TIME           5mi   16-JAN 12:00         15-MAY 05:57
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 150.2485 (modulo length = 365.2485)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       3>  15-MAR      17:57:50  31        29-FEB      05:57:50    74.7485
-       4>  15-APR      05:57:50  30        31-MAR      05:57:50    105.2485
-       5>  15-MAY      05:57:50  30.00001  30-APR      05:57:50    135.2485
-       6>  14-SEP      17:57:50  215       30-MAY      05:57:50    257.7485
-       7>  15-JAN      17:57:50  31        31-DEC      05:57:50    380.7485
-       8>  14-FEB      08:56:46  28.2485   31-JAN      05:57:50    410.3727
-       9>  15-MAR      23:55:41  31        28-FEB      11:55:41    439.997
-      10>  15-APR      11:55:40  30        31-MAR      11:55:40    470.497
+       3>  15-MAR 17:57:50       31        29-FEB 05:57:50         74.7485
+       4>  15-APR 05:57:50       30        31-MAR 05:57:50         105.2485
+       5>  15-MAY 05:57:50       30.00001  30-APR 05:57:50         135.2485
+       6>  14-SEP 17:57:50       215       30-MAY 05:57:50         257.7485
+       7>  15-JAN 17:57:50       31        31-DEC 05:57:50         380.7485
+       8>  14-FEB 08:56:46       28.2485   31-JAN 05:57:50         410.3727
+       9>  15-MAR 23:55:41       31        28-FEB 11:55:41         439.997
+      10>  15-APR 11:55:40       30        31-MAR 11:55:40         470.497
 show axis/l=3:10:3 ($TAXNAME)
  !-> show axis/l=3:10:3 TIRREG_SUBSPAN1
  name       axis              # pts   start                end
- TIRREG_SUBSPAN1 TIME           5mi   16-JAN      12:00    15-MAY      05:57
+ TIRREG_SUBSPAN1 TIME           5mi   16-JAN 12:00         15-MAY 05:57
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 150.2485 (modulo length = 365.2485)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       3>  15-MAR      17:57:50  31        29-FEB      05:57:50    74.7485
-       6>  14-SEP      17:57:50  215       30-MAY      05:57:50    257.7485
-       9>  15-MAR      23:55:41  31        28-FEB      11:55:41    439.997
+       3>  15-MAR 17:57:50       31        29-FEB 05:57:50         74.7485
+       6>  14-SEP 17:57:50       215       30-MAY 05:57:50         257.7485
+       9>  15-MAR 23:55:41       31        28-FEB 11:55:41         439.997
 show axis/l=3:10:6 ($TAXNAME)
  !-> show axis/l=3:10:6 TIRREG_SUBSPAN1
  name       axis              # pts   start                end
- TIRREG_SUBSPAN1 TIME           5mi   16-JAN      12:00    15-MAY      05:57
+ TIRREG_SUBSPAN1 TIME           5mi   16-JAN 12:00         15-MAY 05:57
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 150.2485 (modulo length = 365.2485)
  
        L     T                   TBOX      TBOXLO                TSTEP (DAYS)
-       3>  15-MAR      17:57:50  31        29-FEB      05:57:50    74.7485
-       9>  15-MAR      23:55:41  31        28-FEB      11:55:41    439.997
+       3>  15-MAR 17:57:50       31        29-FEB 05:57:50         74.7485
+       9>  15-MAR 23:55:41       31        28-FEB 11:55:41         439.997
  
 set mode diag
 set mode stupid  ! always re-read and recompute
@@ -39429,42 +39426,42 @@ define alias l200 list/width=200
 define alias l200n list/width=200/nohead
 l200/i=1:13 $2
  !-> list/width=200/nohead/i=1:13 v2d_irr
- 16-JAN      12 / 1:   11.000   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000   15.000   16.000
- 15-FEB      02 / 2:   42.000   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000   46.000   47.000
- 15-MAR      17 / 3:   70.249   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249   74.249   75.249
- 15-APR      05 / 4:  101.248  102.248  102.348  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248  105.248  106.248
- 15-MAY      05 / 5:  131.249  132.249  132.348  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249  135.249  136.249
+ 16-JAN 12      / 1:   11.000   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000   15.000   16.000
+ 15-FEB 02      / 2:   42.000   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000   46.000   47.000
+ 15-MAR 17      / 3:   70.249   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249   74.249   75.249
+ 15-APR 05      / 4:  101.248  102.248  102.348  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248  105.248  106.248
+ 15-MAY 05      / 5:  131.249  132.249  132.348  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249  135.249  136.249
 l200n/l=1:12 $2
  !-> list/width=200/nohead/l=1:12 v2d_irr
- 16-JAN      12 /  1:   11.000   12.000   12.100   14.000   15.000   16.000
- 15-FEB      02 /  2:   42.000   43.000   43.100   45.000   46.000   47.000
- 15-MAR      17 /  3:   70.249   71.249   71.348   73.249   74.249   75.249
- 15-APR      05 /  4:  101.248  102.248  102.348  104.248  105.248  106.248
- 15-MAY      05 /  5:  131.249  132.249  132.348  134.249  135.249  136.249
- 14-SEP      17 /  6:     ....     ....     ....     ....     ....     ....
- 15-JAN      17 /  7:   11.000   12.000   12.100   14.000   15.000   16.000
- 14-FEB      08 /  8:   42.000   43.000   43.100   45.000   46.000   47.000
- 15-MAR      23 /  9:   70.249   71.249   71.348   73.249   74.249   75.249
- 15-APR      11 / 10:  101.248  102.248  102.348  104.248  105.248  106.248
- 15-MAY      11 / 11:  131.249  132.249  132.348  134.249  135.249  136.249
- 14-SEP      23 / 12:     ....     ....     ....     ....     ....     ....
+ 16-JAN 12      /  1:   11.000   12.000   12.100   14.000   15.000   16.000
+ 15-FEB 02      /  2:   42.000   43.000   43.100   45.000   46.000   47.000
+ 15-MAR 17      /  3:   70.249   71.249   71.348   73.249   74.249   75.249
+ 15-APR 05      /  4:  101.248  102.248  102.348  104.248  105.248  106.248
+ 15-MAY 05      /  5:  131.249  132.249  132.348  134.249  135.249  136.249
+ 14-SEP 17      /  6:     ....     ....     ....     ....     ....     ....
+ 15-JAN 17      /  7:   11.000   12.000   12.100   14.000   15.000   16.000
+ 14-FEB 08      /  8:   42.000   43.000   43.100   45.000   46.000   47.000
+ 15-MAR 23      /  9:   70.249   71.249   71.348   73.249   74.249   75.249
+ 15-APR 11      / 10:  101.248  102.248  102.348  104.248  105.248  106.248
+ 15-MAY 11      / 11:  131.249  132.249  132.348  134.249  135.249  136.249
+ 14-SEP 23      / 12:     ....     ....     ....     ....     ....     ....
 l200n/l=1:12/i=1:11 $2
  !-> list/width=200/nohead/l=1:12/i=1:11 v2d_irr
- 16-JAN      12 /  1:   11.000   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000
- 15-FEB      02 /  2:   42.000   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000
- 15-MAR      17 /  3:   70.249   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249
- 15-APR      05 /  4:  101.248  102.248  102.348  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248
- 15-MAY      05 /  5:  131.249  132.249  132.348  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249
- 14-SEP      17 /  6:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
- 15-JAN      17 /  7:   11.000   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000
- 14-FEB      08 /  8:   42.000   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000
- 15-MAR      23 /  9:   70.249   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249
- 15-APR      11 / 10:  101.248  102.248  102.348  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248
- 15-MAY      11 / 11:  131.249  132.249  132.348  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249
- 14-SEP      23 / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
+ 16-JAN 12      /  1:   11.000   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000
+ 15-FEB 02      /  2:   42.000   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000
+ 15-MAR 17      /  3:   70.249   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249
+ 15-APR 05      /  4:  101.248  102.248  102.348  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248
+ 15-MAY 05      /  5:  131.249  132.249  132.348  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249
+ 14-SEP 17      /  6:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
+ 15-JAN 17      /  7:   11.000   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000
+ 14-FEB 08      /  8:   42.000   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000
+ 15-MAR 23      /  9:   70.249   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249
+ 15-APR 11      / 10:  101.248  102.248  102.348  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248
+ 15-MAY 11      / 11:  131.249  132.249  132.348  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249
+ 14-SEP 23      / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
 l200n/l=12:21/i=-19:-9 $2
  !-> list/width=200/nohead/l=12:21/i=-19:-9 v2d_irr
- 14-SEP      23 / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
+ 14-SEP 23      / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
  15-JAN-0002 23 / 13:   12.000   12.100   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000   15.000
  14-FEB-0002 14 / 14:   43.000   43.100   45.000   46.000   47.000     ....   42.000   43.000   43.100   45.000   46.000
  16-MAR-0002 05 / 15:   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249   74.249
@@ -39476,7 +39473,7 @@ l200n/l=12:21/i=-19:-9 $2
  16-MAR-0003 11 / 21:   71.249   71.348   73.249   74.249   75.249     ....   70.249   71.249   71.348   73.249   74.249
 l200n/l=12:21/i=-19:-9 $2_void
  !-> list/width=200/nohead/l=12:21/i=-19:-9 v2d_irr_void
- 14-SEP      23 / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
+ 14-SEP 23      / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
  15-JAN-0002 23 / 13:   12.000   12.100     ....     ....   16.000     ....   11.000   12.000   12.100     ....     ....
  14-FEB-0002 14 / 14:   43.000   43.100     ....     ....   47.000     ....   42.000   43.000   43.100     ....     ....
  16-MAR-0002 05 / 15:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
@@ -39488,7 +39485,7 @@ l200n/l=12:21/i=-19:-9 $2_void
  16-MAR-0003 11 / 21:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
 l200n/l=12:21/i=-19:-9 $2_void[x=@fnr,t=@fnr]
  !-> list/width=200/nohead/l=12:21/i=-19:-9 v2d_irr_void[x=@fnr,t=@fnr]
- 14-SEP      23 / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
+ 14-SEP 23      / 12:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
  15-JAN-0002 23 / 13:   12.000   12.100   12.100   16.000   16.000     ....   11.000   12.000   12.100   12.100   16.000
  14-FEB-0002 14 / 14:   43.000   43.100   43.100   47.000   47.000     ....   42.000   43.000   43.100   43.100   47.000
  16-MAR-0002 05 / 15:   72.624   72.724   72.724   76.624   76.624     ....   71.624   72.624   72.724   72.724   76.624
@@ -39502,7 +39499,7 @@ l200n/l=12:21/i=-19:-9 $2_void[x=@fnr,t=@fnr]
 ! test shift
 l200n/l=12:21/i=-19:-9 $2[x=@shf:2,t=@shf:-2]
  !-> list/width=200/nohead/l=12:21/i=-19:-9 v2d_irr[x=@shf:2,t=@shf:-2]
- 14-SEP      23 / 12:  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248  105.248  106.248     ....
+ 14-SEP 23      / 12:  104.248  105.248  106.248     ....  101.248  102.248  102.348  104.248  105.248  106.248     ....
  15-JAN-0002 23 / 13:  134.249  135.249  136.249     ....  131.249  132.249  132.348  134.249  135.249  136.249     ....
  14-FEB-0002 14 / 14:     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....     ....
  16-MAR-0002 05 / 15:   14.000   15.000   16.000     ....   11.000   12.000   12.100   14.000   15.000   16.000     ....
@@ -39591,21 +39588,21 @@ list time_series[gt=($TAXNAME)@mod]
              VARIABLE : MOD(L[GT=T1980S]-1,12)+1
                         regrid: on T@MOD
              SUBSET   : 5 points (TIME)
- 16-JAN      12 / 1:  1.00000
- 15-FEB      02 / 2:  2.00000
- 15-MAR      17 / 3:  3.00000
- 15-APR      05 / 4:  4.00000
- 15-MAY      05 / 5:  5.00000
+ 16-JAN 12      / 1:  1.00000
+ 15-FEB 02      / 2:  2.00000
+ 15-MAR 17      / 3:  3.00000
+ 15-APR 05      / 4:  4.00000
+ 15-MAY 05      / 5:  5.00000
 list time_series[gt=($TAXNAME)@modngd]
  !-> list time_series[gt=TIRREG_SUBSPAN1@modngd]
              VARIABLE : MOD(L[GT=T1980S]-1,12)+1 (# of points)
                         regrid: on T@MODNGD
              SUBSET   : 5 points (TIME)
- 16-JAN      12 / 1:  10.0000
- 15-FEB      02 / 2:  10.0000
- 15-MAR      17 / 3:  10.0000
- 15-APR      05 / 4:  10.0000
- 15-MAY      05 / 5:  10.0000
+ 16-JAN 12      / 1:  10.0000
+ 15-FEB 02      / 2:  10.0000
+ 15-MAR 17      / 3:  10.0000
+ 15-APR 05      / 4:  10.0000
+ 15-MAY 05      / 5:  10.0000
 list/nohead/l=1001:1009 time_series[gt=($TAXNAME)@mod]
  !-> list/nohead/l=1001:1009 time_series[gt=TIRREG_SUBSPAN1@mod]
  16-MAY-0166 12 / 1001:  5.00000
@@ -39877,7 +39874,8 @@ sh ax lon*
    Axis span (to cell edges) = 18.75 (modulo length = 360)
  LON_MODERR (meters)            5 r   0                    15
    Axis span (to cell edges) = 18.75
- LON_FALSE LONGITUDE            5 r   1.875W(-1.875)       13.125E
+ LON_FAL		TIME:time_origin = "10-JUN-1996 04:03:36" ;
+SE LONGITUDE            5 r   1.875W(-1.875)       13.125E
    Axis span (to cell edges) = 18.75
  LON_MOD_NOUNITS                5mr   0                    15
    Axis span (to cell edges) = 18.75 (modulo length = axis span)
@@ -39908,10 +39906,10 @@ T0 = %%
  TIME_USUAL T (days)            4mr   120                  150
 T0 = %%
    Axis span (to cell edges) = 40 (modulo length = axis span)
- TIME4     TIME                 3mr   16-JAN      06:00    17-MAR      02:58
+ TIME4     TIME                 3mr   16-JAN 06:00         17-MAR 02:58
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 2191.455 (modulo length = 8765.82)
- TIME5     TIME                 2mr   16-MAY      23:56    16-JUN      10:25
+ TIME5     TIME                 2mr   16-MAY 23:56         16-JUN 10:25
 T0 = 01-JAN-0000 00:00:00
    Axis span (to cell edges) = 1460.97 (modulo length = 8765.82)
  
@@ -40175,8 +40173,7 @@ GO err550_nc_seconds.jnl
 ! "10-JUN-1996 04:03:36", the seconds are read incorrectly.
 ! If it's written as "1996-06-10 04:03:36" it is read OK
  
-use time_axis_		TIME:time_origin = "10-JUN-1996 04:03:36" ;
-seconds.nc
+use time_axis_seconds.nc
  
 sp "ncdump time_axis_seconds.nc | grep origin"
 list t[gt=height]    ! Seconds should be 36, 37, 38...
@@ -40974,12 +40971,12 @@ LIST a234567890b234567890c234567890d234567890e234567890f234567890g234567890h2345
              VARIABLE : {12,14,20,28,22,10}
              FILENAME : longvname.nc
              SUBSET   : 6 points (X)
- 1   / 1:  121.000
- 2   / 2:  141.000
- 3   / 3:  201.000
- 4   / 4:  281.000
- 5   / 5:  221.000
- 6   / 6:  101.000
+ 1   / 1:  12.0000
+ 2   / 2:  14.0000
+ 3   / 3:  20.0000
+ 4   / 4:  28.0000
+ 5   / 5:  22.0000
+ 6   / 6:  10.0000
  
 ! save a 4-D variable
 GO bn_reset
@@ -41003,9 +41000,9 @@ lIST/I=1/J=2 a234567890b234567890c234567890d234567890e234567890f234567890g234567
              Y        : 2
               1        2        3     
               1        2        3
- 1   / 1:  31.0000  51.0000  71.0000
- 2   / 2:  41.0000  61.0000  81.0000
- 3   / 3:  51.0000  71.0000  91.0000
+ 1   / 1:  3.00000  5.00000  7.00000
+ 2   / 2:  4.00000  6.00000  8.00000
+ 3   / 3:  5.00000  7.00000  9.00000
 LIST/K=2/L=3 a234567890b234567890c234567890d234567890e234567890f234567890g234567890h234567890i234567890d234567890j234567890k234567890L2345678
              VARIABLE : I[I=1:5] * J[J=1:4] * K[K=1:3] + L[L=1:3]
              FILENAME : longvname.nc
@@ -41014,10 +41011,10 @@ LIST/K=2/L=3 a234567890b234567890c234567890d234567890e234567890f234567890g234567
              T        : 3
               1        2        3        4        5     
               1        2        3        4        5
- 1   / 1:   51.000   71.000   91.000  111.000  131.000
- 2   / 2:   71.000  111.000  151.000  191.000  231.000
- 3   / 3:   91.000  151.000  211.000  271.000  331.000
- 4   / 4:  111.000  191.000  271.000  351.000  431.000
+ 1   / 1:   5.0000   7.0000   9.0000  11.0000  13.0000
+ 2   / 2:   7.0000  11.0000  15.0000  19.0000  23.0000
+ 3   / 3:   9.0000  15.0000  21.0000  27.0000  33.0000
+ 4   / 4:  11.0000  19.0000  27.0000  35.0000  43.0000
  
 GO bn_reset
 cancel mode verify
@@ -41179,11 +41176,11 @@ list eofsp[k=1,l=1]
              T        : 1
               139.5W   138.5W   137.5W   136.5W   135.5W  
                 1        2        3        4        5
- 1.83S / 5: -224.380 -233.749 -241.382 -246.460 -249.065
- 2.17S / 4: -225.997 -235.147 -242.073 -246.740 -249.277
- 2.5S  / 3: -225.576 -234.100 -240.286 -244.517 -247.145
- 2.83S / 2: -222.354 -229.728 -234.946 -238.631 -241.393
- 3.17S / 1: -215.829 -221.693 -225.870 -229.046 -232.013
+ 1.83S / 5: -2.25380 -2.34749 -2.42382 -2.47460 -2.50064
+ 2.17S / 4: -2.26997 -2.36147 -2.43073 -2.47739 -2.50277
+ 2.5S  / 3: -2.26576 -2.35099 -2.41285 -2.45516 -2.48145
+ 2.83S / 2: -2.23354 -2.30728 -2.35946 -2.39631 -2.42393
+ 3.17S / 1: -2.16829 -2.22692 -2.26870 -2.30046 -2.33013
 set view ur
 shade eofsp[k=2,l=1]
 list eofsp[k=2,l=1]
@@ -41194,11 +41191,11 @@ list eofsp[k=2,l=1]
              T        : 1
               139.5W   138.5W   137.5W   136.5W   135.5W  
                 1        2        3        4        5
- 1.83S / 5: -227.179 -236.704 -244.447 -249.708 -252.486
- 2.17S / 4: -228.644 -237.952 -245.056 -249.887 -252.607
- 2.5S  / 3: -228.075 -236.736 -243.104 -247.452 -250.240
- 2.83S / 2: -224.743 -232.286 -237.636 -241.369 -244.233
- 3.17S / 1: -218.089 -224.118 -228.360 -231.531 -234.557
+ 1.83S / 5: -2.28179 -2.37704 -2.45447 -2.50708 -2.53486
+ 2.17S / 4: -2.29644 -2.38952 -2.46056 -2.50887 -2.53607
+ 2.5S  / 3: -2.29075 -2.37736 -2.44104 -2.48452 -2.51240
+ 2.83S / 2: -2.25743 -2.33286 -2.38636 -2.42369 -2.45233
+ 3.17S / 1: -2.19089 -2.25118 -2.29360 -2.32531 -2.35557
  
 set view ll
 shade eofsp[k=3,l=1]
@@ -41210,11 +41207,11 @@ list eofsp[k=3,l=1]
              T        : 1
               139.5W   138.5W   137.5W   136.5W   135.5W  
                 1        2        3        4        5
- 1.83S / 5: -171.333 -183.007 -193.120 -199.514 -203.715
- 2.17S / 4: -162.876 -173.435 -182.141 -187.234 -190.985
- 2.5S  / 3: -150.509 -159.488 -166.644 -170.352 -173.562
- 2.83S / 2: -134.750 -141.836 -147.145 -149.285 -151.819
- 3.17S / 1: -116.476 -121.230 -124.622 -125.294 -127.236
+ 1.83S / 5: -1.72333 -1.84007 -1.94121 -2.00514 -2.04715
+ 2.17S / 4: -1.63876 -1.74435 -1.83141 -1.88234 -1.91985
+ 2.5S  / 3: -1.51509 -1.60488 -1.67644 -1.71352 -1.74562
+ 2.83S / 2: -1.35750 -1.42836 -1.48145 -1.50285 -1.52819
+ 3.17S / 1: -1.17476 -1.22230 -1.25622 -1.26294 -1.28236
 set view lr
 shade eofsp[k=4,l=1]
 list eofsp[k=4,l=1]
@@ -41225,11 +41222,11 @@ list eofsp[k=4,l=1]
              T        : 1
               139.5W   138.5W   137.5W   136.5W   135.5W  
                 1        2        3        4        5
- 1.83S / 5: -120.576 -129.112 -136.420 -141.210 -144.249
- 2.17S / 4: -107.595 -115.417 -121.895 -125.976 -128.822
- 2.5S  / 3:  -92.683  -99.553 -104.923 -108.102 -110.580
- 2.83S / 2:  -76.184  -81.972  -85.888  -88.054  -90.114
- 3.17S / 1:  -58.936  -63.140  -65.649  -67.065  -68.951
+ 1.83S / 5: -1.21576 -1.30111 -1.37420 -1.42210 -1.45249
+ 2.17S / 4: -1.08595 -1.16417 -1.22895 -1.26976 -1.29822
+ 2.5S  / 3: -0.93683 -1.00553 -1.05922 -1.09102 -1.11580
+ 2.83S / 2: -0.77184 -0.82972 -0.86888 -0.89054 -0.91114
+ 3.17S / 1: -0.59936 -0.64140 -0.66649 -0.68065 -0.69951
  
 can data/all
  
@@ -41256,11 +41253,11 @@ list eofti[l=1:5,i=1,k=1]
              DEPTH (m): 5
                          1     
                          1
- 17-AUG-1982 12 / 1:  19.1161
- 23-AUG-1982 14 / 2:  18.5761
- 29-AUG-1982 16 / 3:  17.7763
- 04-SEP-1982 18 / 4:  16.7055
- 10-SEP-1982 20 / 5:  15.2678
+ 17-AUG-1982 12 / 1:  1.81161
+ 23-AUG-1982 14 / 2:  1.75761
+ 29-AUG-1982 16 / 3:  1.67763
+ 04-SEP-1982 18 / 4:  1.57055
+ 10-SEP-1982 20 / 5:  1.42678
 set view ur
 plot eofti[i=1,k=5], eofti[i=2,k=5], eofti[i=3,k=5]
 list eofti[l=1:5,i=1,k=5]
@@ -41272,11 +41269,11 @@ list eofti[l=1:5,i=1,k=5]
              DEPTH (m): 45
                          1     
                          1
- 17-AUG-1982 12 / 1:  23.1821
- 23-AUG-1982 14 / 2:  21.4941
- 29-AUG-1982 16 / 3:  18.7359
- 04-SEP-1982 18 / 4:  15.1208
- 10-SEP-1982 20 / 5:  11.5323
+ 17-AUG-1982 12 / 1:  2.21821
+ 23-AUG-1982 14 / 2:  2.04941
+ 29-AUG-1982 16 / 3:  1.77359
+ 04-SEP-1982 18 / 4:  1.41208
+ 10-SEP-1982 20 / 5:  1.05323
  
 set view ll
 plot eofti[i=1,k=8], eofti[i=2,k=8], eofti[i=3,k=8]
@@ -41289,11 +41286,11 @@ list eofti[l=1:5,i=1,k=8]
              DEPTH (m): 75
                          1     
                          1
- 17-AUG-1982 12 / 1:  18.7560
- 23-AUG-1982 14 / 2:  15.5491
- 29-AUG-1982 16 / 3:  13.4196
- 04-SEP-1982 18 / 4:  11.5135
- 10-SEP-1982 20 / 5:   9.4706
+ 17-AUG-1982 12 / 1:  1.77560
+ 23-AUG-1982 14 / 2:  1.45491
+ 29-AUG-1982 16 / 3:  1.24196
+ 04-SEP-1982 18 / 4:  1.05135
+ 10-SEP-1982 20 / 5:  0.84706
 set view lr
 plot eofti[i=1,k=4], eofti[i=2,k=10], eofti[i=3,k=10]
 list eofti[l=1:5,i=1,k=10]
@@ -41303,13 +41300,13 @@ list eofti[l=1:5,i=1,k=10]
              SUBSET   : 5 points (TIME)
              X        : 1
              DEPTH (m): 95
-                         1     
-                         1
- 17-AUG-1982 12 / 1:  1.03694
- 23-AUG-1982 14 / 2: -0.89177
- 29-AUG-1982 16 / 3: -1.98221
- 04-SEP-1982 18 / 4: -3.05667
- 10-SEP-1982 20 / 5: -4.17795
+                         1      
+                          1
+ 17-AUG-1982 12 / 1:  0.003693
+ 23-AUG-1982 14 / 2: -0.189179
+ 29-AUG-1982 16 / 3: -0.298223
+ 04-SEP-1982 18 / 4: -0.405668
+ 10-SEP-1982 20 / 5: -0.517797
  
 can data/all
  
@@ -41327,40 +41324,40 @@ can view
 use eofst
  
 list/nohead/i=1/j=1/k=1:10 eofst   ! # eigenfcns, same at all depths
- 5     /  1:  251.000
- 15    /  2:  251.000
- 25    /  3:  251.000
- 35    /  4:  251.000
- 45    /  5:  251.000
- 55    /  6:  251.000
- 65    /  7:  251.000
- 75    /  8:  251.000
- 85    /  9:  251.000
- 95    / 10:  251.000
+ 5     /  1:  25.0000
+ 15    /  2:  25.0000
+ 25    /  3:  25.0000
+ 35    /  4:  25.0000
+ 45    /  5:  25.0000
+ 55    /  6:  25.0000
+ 65    /  7:  25.0000
+ 75    /  8:  25.0000
+ 85    /  9:  25.0000
+ 95    / 10:  25.0000
  
 list/nohead/i=1:5/j=2 eofst[k=1:10:4]  ! pct variance explained
- 5     / 1:  993.678    7.794    1.319    1.157    1.031
- 45    / 2:  987.525   12.464    2.451    1.296    1.198
- 85    / 3:  952.217   46.699    3.195    1.744    1.084
+ 5     / 1:  99.2678   0.6794   0.0319   0.0157   0.0031
+ 45    / 2:  98.6525   1.1464   0.1451   0.0296   0.0198
+ 85    / 3:  95.1217   4.5698   0.2195   0.0744   0.0084
  
 list/nohead/i=1:5/j=3/k=1 eofst  ! eigenvalues
- 1   / 1:  139577.
- 2   / 2:     956.
- 3   / 3:      46.
- 4   / 4:      23.
- 5   / 5:       5.
+ 1   / 1:  139.576
+ 2   / 2:    0.955
+ 3   / 3:    0.045
+ 4   / 4:    0.022
+ 5   / 5:    0.004
 list/nohead/i=1:5/j=3/k=5 eofst
- 1   / 1:  10858.6
- 2   / 2:    127.2
- 3   / 3:     17.0
- 4   / 4:      4.3
- 5   / 5:      3.2
+ 1   / 1:  10.8576
+ 2   / 2:   0.1262
+ 3   / 3:   0.0160
+ 4   / 4:   0.0033
+ 5   / 5:   0.0022
 list/nohead/i=1:5/j=3/k=9 eofst
- 1   / 1:  2237.41
- 2   / 2:   108.44
- 3   / 3:     6.16
- 4   / 4:     2.75
- 5   / 5:     1.20
+ 1   / 1:  2.23641
+ 2   / 2:  0.10744
+ 3   / 3:  0.00516
+ 4   / 4:  0.00175
+ 5   / 5:  0.00020
  
  
 GO bn_reset
@@ -42118,18 +42115,18 @@ list vwnd_clim
              LATITUDE : 39N
                      161W    
                        1
- 16-JAN      /  1:  35.3667
- 15-FEB      /  2:  20.2500
- 17-MAR      /  3:  28.9000
- 16-APR      /  4:  18.9000
- 16-MAY      /  5:   9.0000
- 16-JUN      /  6:  39.0000
- 16-JUL      /  7:  -1.0000
- 16-AUG      /  8:   5.6500
- 15-SEP      /  9:  26.7250
- 16-OCT      / 10: -24.3000
- 15-NOV      / 11: -29.9000
- 16-DEC      / 12:  18.8667
+ 16-JAN      /  1:  3.43667
+ 15-FEB      /  2:  1.92500
+ 17-MAR      /  3:  2.79000
+ 16-APR      /  4:  1.79000
+ 16-MAY      /  5:  0.80000
+ 16-JUN      /  6:  3.80000
+ 16-JUL      /  7: -0.20000
+ 16-AUG      /  8:  0.46500
+ 15-SEP      /  9:  2.57250
+ 16-OCT      / 10: -2.53000
+ 15-NOV      / 11: -3.09000
+ 16-DEC      / 12:  1.78667
  
  
  
@@ -42607,11 +42604,11 @@ repeat/range=80:120:40/name=p (list/L=1/y=1 sst[x=1:360:`p`])
              TIME     : JAN
                 1N     
                 46
- 1E     / 1:  279.258
- 81E    / 2:  282.147
- 161E   / 3:  288.893
- 119W   / 4:  246.394
- 39W    / 5:  275.849
+ 1E     / 1:  27.8258
+ 81E    / 2:  28.1147
+ 161E   / 3:  28.7893
+ 119W   / 4:  24.5394
+ 39W    / 5:  27.4849
 !-> REPEAT: P:120
  !-> list/L=1/y=1 sst[x=1:360:120]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
@@ -42622,9 +42619,9 @@ repeat/range=80:120:40/name=p (list/L=1/y=1 sst[x=1:360:`p`])
              TIME     : JAN
                 1N     
                 46
- 1E     / 1:  279.258
- 121E   / 2:  286.914
- 119W   / 3:  246.394
+ 1E     / 1:  27.8258
+ 121E   / 2:  28.5914
+ 119W   / 3:  24.5394
  
 set reg/x=300:360/y=0:50
 repeat/range=1:12:4/name=m (list sst[l=`m`,x=@ave,y=@ave])
@@ -42635,7 +42632,7 @@ repeat/range=1:12:4/name=m (list sst[l=`m`,x=@ave,y=@ave])
              LONGITUDE: 60W to 0E(360) (XY ave)
              LATITUDE : 0 to 50N (XY ave)
              TIME     : JAN
-          210.844
+          20.9844
 !-> REPEAT: M:5
  !-> list sst[l=5,x=@ave,y=@ave]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
@@ -42643,7 +42640,7 @@ repeat/range=1:12:4/name=m (list sst[l=`m`,x=@ave,y=@ave])
              LONGITUDE: 60W to 0E(360) (XY ave)
              LATITUDE : 0 to 50N (XY ave)
              TIME     : JAN
-          210.844
+          20.9844
 !-> REPEAT: M:9
  !-> list sst[l=9,x=@ave,y=@ave]
              VARIABLE : SEA SURFACE TEMPERATURE (Deg C)
@@ -42651,7 +42648,7 @@ repeat/range=1:12:4/name=m (list sst[l=`m`,x=@ave,y=@ave])
              LONGITUDE: 60W to 0E(360) (XY ave)
              LATITUDE : 0 to 50N (XY ave)
              TIME     : JAN-0002
-          210.844
+          20.9844
  
 ! Look for "reading SST" lines; each has a different X range
 can data/all
@@ -42682,7 +42679,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
              LONGITUDE: 80W to 60W (XY ave)
              LATITUDE : 0 to 50N (XY ave)
              TIME     : JAN
-          208.890
+          20.7890
 !-> REPEAT: M:330
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -42703,7 +42700,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
              LONGITUDE: 80W to 30W (XY ave)
              LATITUDE : 0 to 50N (XY ave)
              TIME     : JAN
-          213.500
+          21.2500
 !-> REPEAT: M:360
  dealloc  dynamic grid GSQ1            COADSX    COADSY    NORMAL    TIME4
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
@@ -42724,7 +42721,7 @@ repeat/range=300:360:30/name=m (list sst[x=280:`m`@ave,y=@ave])
              LONGITUDE: 80W to 0E(360) (XY ave)
              LATITUDE : 0 to 50N (XY ave)
              TIME     : JAN
-          210.385
+          20.9385
 cancel mode diag
  
 ! order of qualifiers doesnt matter
@@ -42763,7 +42760,7 @@ list/l=1/x=181/y=1 sst
              LONGITUDE: 179W
              LATITUDE : 1N
              TIME     : JAN
-          283.839
+          28.2839
 can data/all
  
 ! Intentional errors
@@ -42990,13 +42987,13 @@ def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=noleap/unit=yr tax2
  !-> def ax/t=1-jan-0001:1-jan-0100:0.083333336/edge/cal=noleap/unit=yr tax2
 show axis tax1
  name       axis              # pts   start                end
- TAX1      TIME              1188 r   16-JAN      05:00    16-DEC-0099 19:01
+ TAX1      TIME              1188 r   16-JAN 05:00         16-DEC-0099 19:01
 T0 = 01-JAN-0000
 CALENDAR = NOLEAP
    Axis span (to cell edges) = 99
 show axis tax2
  name       axis              # pts   start                end
- TAX2      TIME              1188 r   16-JAN      05:00    16-DEC-0099 19:01
+ TAX2      TIME              1188 r   16-JAN 05:00         16-DEC-0099 19:01
 T0 = 01-JAN-0000
 CALENDAR = NOLEAP
    Axis span (to cell edges) = 99
@@ -43025,13 +43022,13 @@ def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=julian/unit=yr tax2
 Replacing definition of axis TAX2
 show axis tax1
  name       axis              # pts   start                end
- TAX1      TIME              1188 r   16-JAN      05:15    17-DEC-0099 12:46
+ TAX1      TIME              1188 r   16-JAN 05:15         17-DEC-0099 12:46
 T0 = 01-JAN-0000
 CALENDAR = JULIAN
    Axis span (to cell edges) = 99
 show axis tax2
  name       axis              # pts   start                end
- TAX2      TIME              1188 r   16-JAN      05:15    17-DEC-0099 12:46
+ TAX2      TIME              1188 r   16-JAN 05:15         17-DEC-0099 12:46
 T0 = 01-JAN-0000
 CALENDAR = JULIAN
    Axis span (to cell edges) = 99
@@ -43060,12 +43057,12 @@ def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=standard/unit=yr tax2
 Replacing definition of axis TAX2
 show axis tax1
  name       axis              # pts   start                end
- TAX1      TIME              1188 r   16-JAN      05:14    16-DEC-0099 18:57
+ TAX1      TIME              1188 r   16-JAN 05:14         16-DEC-0099 18:57
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 99
 show axis tax2
  name       axis              # pts   start                end
- TAX2      TIME              1188 r   16-JAN      05:14    16-DEC-0099 18:57
+ TAX2      TIME              1188 r   16-JAN 05:14         16-DEC-0099 18:57
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 99
 list/l=1186:1189 t[gt=tax1]
@@ -43089,12 +43086,12 @@ def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/unit=yr tax2
  !-> def ax/t=1-jan-0001:1-jan-0100:0.083333336/edge/unit=yr tax2
 show axis tax1
  name       axis              # pts   start                end
- TAX1      TIME              1188 r   16-JAN      05:14    16-DEC-0099 18:57
+ TAX1      TIME              1188 r   16-JAN 05:14         16-DEC-0099 18:57
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 99
 show axis tax2
  name       axis              # pts   start                end
- TAX2      TIME              1188 r   16-JAN      05:14    16-DEC-0099 18:57
+ TAX2      TIME              1188 r   16-JAN 05:14         16-DEC-0099 18:57
 T0 = 01-JAN-0000
    Axis span (to cell edges) = 99
 list/l=1186:1189 t[gt=tax1]
@@ -43123,13 +43120,13 @@ def ax/t=1-jan-0001:1-jan-0100:`1/12,p=9`/edge/cal=d360/unit=yr tax2
 Replacing definition of axis TAX2
 show axis tax1
  name       axis              # pts   start                end
- TAX1      TIME              1188 r   16-JAN      00:00    16-DEC-0099 00:01
+ TAX1      TIME              1188 r   16-JAN 00:00         16-DEC-0099 00:01
 T0 = 01-JAN-0000
 CALENDAR = 360_DAY
    Axis span (to cell edges) = 99
 show axis tax2
  name       axis              # pts   start                end
- TAX2      TIME              1188 r   16-JAN      00:00    16-DEC-0099 00:01
+ TAX2      TIME              1188 r   16-JAN 00:00         16-DEC-0099 00:01
 T0 = 01-JAN-0000
 CALENDAR = 360_DAY
    Axis span (to cell edges) = 99
@@ -43295,11 +43292,11 @@ LIST VAR[i=2:4:2]
               2        4     
               1        2
  ---- K:1 Z:   1
- 2   / 2:  11221.0  11241.0
- 3   / 3:  11321.0  11341.0
+ 2   / 2:  1122.00  1124.00
+ 3   / 3:  1132.00  1134.00
  ---- K:2 Z:   2
- 2   / 2:  12221.0  12241.0
- 3   / 3:  12321.0  12341.0
+ 2   / 2:  1222.00  1224.00
+ 3   / 3:  1232.00  1234.00
 LIST VAR[i=2:4:2,j=1:3:2]
  dealloc  dynamic grid (G032)          (AX043)   YAX1_3    ZAX1_2    TAX1_1
  -DELETE VAR      M:142 I:    1    2  J:    2    3  K:    1    2  L:    1    1
@@ -43322,11 +43319,11 @@ LIST VAR[i=2:4:2,j=1:3:2]
               2        4     
               1        2
  ---- K:1 Z:   1
- 1   / 1:  11121.0  11141.0
- 3   / 2:  11321.0  11341.0
+ 1   / 1:  1112.00  1114.00
+ 3   / 2:  1132.00  1134.00
  ---- K:2 Z:   2
- 1   / 1:  12121.0  12141.0
- 3   / 2:  12321.0  12341.0
+ 1   / 1:  1212.00  1214.00
+ 3   / 2:  1232.00  1234.00
 CANC MEM/ALL
  -DELETE VAR      M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
  -DELETE VAR      M:148 I:    3    4  J:    2    3  K:    1    2  L:    1    1
@@ -43360,10 +43357,10 @@ LIST VAR[I=1:10:3,j=1,k=1,l=1]    ! 1, 4, 7(3), 10(2)
              T        : 1
                1     
                1
- 1    / 1:  11111.0
- 4    / 2:  11141.0
- 7    / 3:  11131.0
- 10   / 4:  11121.0
+ 1    / 1:  1111.00
+ 4    / 2:  1114.00
+ 7    / 3:  1113.00
+ 10   / 4:  1112.00
 cancel axis/modulo XAX1_4
  -DELETE VAR      M:142 I:    1    4  J:    1    1  K:    1    1  L:    1    1
  -DELETE VAR      M:145 I:    1   10  J:    1    1  K:    1    1  L:    1    1
@@ -43391,11 +43388,11 @@ LIST VAR[i=2:4:2,j=1:3:2]
               2        4     
               1        2
  ---- K:1 Z:   1
- 1   / 1:  11121.0  11141.0
- 3   / 2:  11321.0  11341.0
+ 1   / 1:  1112.00  1114.00
+ 3   / 2:  1132.00  1134.00
  ---- K:2 Z:   2
- 1   / 1:  12121.0  12141.0
- 3   / 2:  12321.0  12341.0
+ 1   / 1:  1212.00  1214.00
+ 3   / 2:  1232.00  1234.00
 LIST VAR[i=2:6:2,j=1:5:2]
  dealloc  dynamic grid (G032)          (AX044)   (AX043)   ZAX1_2    TAX1_1
  -DELETE VAR      M:145 I:    1    2  J:    1    2  K:    1    2  L:    1    1
@@ -43418,11 +43415,11 @@ LIST VAR[i=2:6:2,j=1:5:2]
               2        4     
               1        2
  ---- K:1 Z:   1
- 1   / 1:  11121.0  11141.0
- 3   / 2:  11321.0  11341.0
+ 1   / 1:  1112.00  1114.00
+ 3   / 2:  1132.00  1134.00
  ---- K:2 Z:   2
- 1   / 1:  12121.0  12141.0
- 3   / 2:  12321.0  12341.0
+ 1   / 1:  1212.00  1214.00
+ 3   / 2:  1232.00  1234.00
  
 ! test sub-region selection on strides axis
 let a = bigvar[i=1:40:5]
@@ -44189,38 +44186,38 @@ list var[i=-400:-40:20]
                         regrid: 6.7 deg on X
              FILENAME : mylon.nc
              SUBSET   : 19 points (LONGITUDE)
- 113.5W  /  1:  10.7627
- 106.8W  /  2:   9.2434
- 100.2W  /  3:   6.5264
- 93.5W   /  4:   3.0069
- 86.8W   /  5:  -0.8042
- 80.2W   /  6:  -4.3531
- 73.5W   /  7:  -7.1247
- 66.8W   /  8:  -8.7159
- 60.2W   /  9:  -8.8957
- 53.5W   / 10:  -7.6380
- 46.8W   / 11:  -5.1256
- 40.2W   / 12:  -1.7234
- 33.5W   / 13:   2.0747
- 26.8W   / 14:   5.7164
- 20.2W   / 15:   8.6730
- 13.5W   / 16:  10.5151
- 6.8W    / 17:  10.9749
- 0.2W    / 18:   9.9858
- 6.5E    / 19:   7.6912
+ 113.5W  /  1:  0.976269
+ 106.8W  /  2:  0.824340
+ 100.2W  /  3:  0.552644
+ 93.5W   /  4:  0.200690
+ 86.8W   /  5: -0.180415
+ 80.2W   /  6: -0.535314
+ 73.5W   /  7: -0.812473
+ 66.8W   /  8: -0.971589
+ 60.2W   /  9: -0.989574
+ 53.5W   / 10: -0.863802
+ 46.8W   / 11: -0.612560
+ 40.2W   / 12: -0.272341
+ 33.5W   / 13:  0.107469
+ 26.8W   / 14:  0.471639
+ 20.2W   / 15:  0.767299
+ 13.5W   / 16:  0.951514
+ 6.8W    / 17:  0.997495
+ 0.2W    / 18:  0.898583
+ 6.5E    / 19:  0.669123
 list var[i=-400:-40:50]
              VARIABLE : SIN(X[GX=ROSE])
                         regrid: 17 deg on X
              FILENAME : mylon.nc
              SUBSET   : 8 points (LONGITUDE)
- 113.5W  / 1:  10.7627
- 96.8W   / 2:  -2.8371
- 80.2W   / 3:  -4.3531
- 63.5W   / 4:  10.9889
- 46.8W   / 5:  -5.1256
- 30.2W   / 6:  -1.9494
- 13.5W   / 7:  10.5151
- 3.2E    / 8:  -6.9849
+ 113.5W  / 1:  0.976269
+ 96.8W   / 2: -0.383713
+ 80.2W   / 3: -0.535314
+ 63.5W   / 4:  0.998887
+ 46.8W   / 5: -0.612560
+ 30.2W   / 6: -0.294944
+ 13.5W   / 7:  0.951514
+ 3.2E    / 8: -0.798487
  
 ! This list, using modulo-ing to go out to a second replication
 ! of the data, would have worked under previous versions but
@@ -44232,47 +44229,47 @@ list var[i=`2*1082-400`:`2*1082-40`:50]
                         regrid: 17 deg on X
              FILENAME : mylon.nc
              SUBSET   : 8 points (LONGITUDE)
- 112.2W  / 1:   9.5168
- 95.5W   / 2:   0.3957
- 78.8W   / 3:  -6.8222
- 62.2W   / 4:  10.5935
- 45.5W   / 5:  -2.2021
- 28.8W   / 6:  -4.9136
- 12.2W   / 7:  10.9979
- 4.5E    / 8:  -4.5755
+ 112.2W  / 1:  0.851678
+ 95.5W   / 2: -0.060433
+ 78.8W   / 3: -0.782221
+ 62.2W   / 4:  0.959346
+ 45.5W   / 5: -0.320211
+ 28.8W   / 6: -0.591357
+ 12.2W   / 7:  0.999787
+ 4.5E    / 8: -0.557553
  
 ! Previously also, the moduloing could return results
 ! that are one index off, also bug 841
  
 list/nohead/y=0/prec=6 var[i=1100:1400:50]
- 26.5E   / 1:  9.59313
- 43.2E   / 2: -8.12341
- 59.8E   / 3:  2.89118
- 76.5E   / 4:  7.95015
- 93.2E   / 5: -8.87803
- 109.8E  / 6:  5.40136
- 126.5E  / 7:  5.82013
+ 26.5E   / 1:  0.859313
+ 43.2E   / 2: -0.912341
+ 59.8E   / 3:  0.189118
+ 76.5E   / 4:  0.695015
+ 93.2E   / 5: -0.987803
+ 109.8E  / 6:  0.440136
+ 126.5E  / 7:  0.482013
 can mem; list/nohead/y=0/prec=6 var[i=19:319:50,y=0]
  TEMPORARY data cleared from memory
- 26.2E  / 1:  9.59313
- 42.8E  / 2: -8.12341
- 59.5E  / 3:  2.89118
- 76.2E  / 4:  7.95015
- 92.8E  / 5: -8.87803
- 109.5E / 6:  5.40136
- 126.2E / 7:  5.82013
+ 26.2E  / 1:  0.859313
+ 42.8E  / 2: -0.912341
+ 59.5E  / 3:  0.189118
+ 76.2E  / 4:  0.695015
+ 92.8E  / 5: -0.987803
+ 109.5E / 6:  0.440136
+ 126.2E / 7:  0.482013
 can mem; list/y=0 var[i=69]
  TEMPORARY data cleared from memory
              VARIABLE : SIN(X[GX=ROSE])
              FILENAME : mylon.nc
              LONGITUDE: 42.83E(42.83)
-         -8.12341
+         -0.912341
 can mem; list/y=0 var[i=68]
  TEMPORARY data cleared from memory
              VARIABLE : SIN(X[GX=ROSE])
              FILENAME : mylon.nc
              LONGITUDE: 42.5E(42.5)
-         -8.96087
+         -0.996087
  
 ! Fixes bug creating format for listing a very long line
 GO bn_reset
@@ -44302,7 +44299,7 @@ list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
       ... listing every  45th point
               1       46       91       136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996    
               1       46       91      136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996
- 1   / 1:  1.84147  1.90179  1.10599  0.20957  0.06355  0.80656  1.73321  1.96379  1.27939  0.32975  0.01642  0.63686  1.60205  1.99568  1.44406  0.47087  0.00001  0.47850  1.45208  1.99647  1.59486  0.62851  0.01484  0.33643  1.28799  1.96614  1.72708  0.79776  0.06044  0.21509  1.11490  1.90563  1.83659  0.97333  0.13539  0.11827  0.93823  1.81683  1.91997  1.14973  0.23734  0.04899  0.76349  1.70252  1.97461  1.32145  0.36312  0.00942  0.59613  1.56626  1.998netcdf a {
+ 1   / 1:  1.84147  1.90179  1.10599  0.20957  0.06355  0.80656  1.73321  1.96379  1.27939  0.32975  0.01642  0.63686  1.60205  1.99568  1.44406  0.47087  0.00001  0.47850  1.45208  1.99647  1.59486  0.62851  0.01484  0.33643  1.28799  1.96614  1.72708  0.79776  0.06044  0.21509  1.11490  1.90563  1.83659  0.97333  0.13539  0.11827  0.93823  1.81683  1.91997  1.14973  0.23734  0.04899  0.76349  1.70252  1.97461  1.32145  0.36312  0.00942  0.59613  1.56626  1.99881  1.48313  0.50879  0.00078  0.44139  1.41231  1.99181  1.62972  0.66981  0.02336  0.30409  1.24549  1.95383  1.75664  0.84114  0.07645  0.18854  1.07099  1.88605  1.85993  1.01743  0.15838  0.09833  0.89428  1.79060  1.93636  1.19318  0.26660  0.03629  0.72087  1.67045  1.98353  1.36289  0.39774  0.00434  0.55618  1.52936  1.99999  1.52127  0.54768  0.00350  0.40536  1.37174  1.98521  1.66336  0.71175  0.03379  0.27311  1.20250  1.93965  1.78474  0.8netcdf a {
 dimensions:
 	MONTH_IRREG = UNLIMITED ; // (12 currently)
 	bnds = 2 ;
@@ -44320,7 +44317,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44372,7 +44369,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44389,11 +44386,11 @@ data:
   91157, 91188 ;
 
  V =
-  41,
-  20.5,
-  43.5,
-  17.6,
-  -0.3 ;
+  4,
+  1.95,
+  4.25,
+  1.66,
+  -0.13 ;
 }
 netcdf a {
 dimensions:
@@ -44424,7 +44421,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44447,16 +44444,16 @@ data:
   91430, 91461 ;
 
  V =
-  41,
-  20.5,
-  43.5,
-  17.6,
-  -0.3,
+  4,
+  1.95,
+  4.25,
+  1.66,
+  -0.13,
   _,
-  -9.699999,
-  34.6,
-  -37.7,
-  40.4 ;
+  -1.07,
+  3.36,
+  -3.87,
+  3.94 ;
 }
 netcdf a {
 dimensions:
@@ -44476,7 +44473,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -44519,7 +44516,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44540,18 +44537,18 @@ data:
   243.2425, 273.2425 ;
 
  V =
-  283.8499, 285.1463, 280.1619,
-  280.7654, 283.5383, 283.8074,
-  283.4392, 281.6397, 285.0989,
-  279.9881, 282.0241, 278.2899,
-  285.16, 285.0182, 281.2232,
-  284.5642, 285.1167, 280.9819,
-  280.9751, 282.6391, 282.1465,
-  280.6653, 278.4977, 279.3159,
-  281.6367, 276.9066, 278.3806,
-  280.4182, 281.0354, 278.2379,
-  279.9884, 279.7297, 280.3247,
-  279.43, 279.183, 280.0892,
+  28.28499, 28.41463, 27.91619,
+  27.97654, 28.25383, 28.28074,
+  28.24392, 28.06397, 28.40989,
+  27.89881, 28.10241, 27.72899,
+  28.416, 28.40182, 28.02232,
+  28.35642, 28.41167, 27.99819,
+  27.99751, 28.16391, 28.11465,
+  27.96653, 27.74976, 27.83159,
+  28.06367, 27.59065, 27.73805,
+  27.94182, 28.00354, 27.72379,
+  27.89884, 27.87297, 27.93247,
+  27.84299, 27.8183, 27.90892,
   28, 28, 28,
   28, 28, 28,
   28, 28, 28,
@@ -44573,7 +44570,7 @@ data:
   28, 28, 28,
   28, 28, 28 ;
 }
-81  1.48313  0.50879  0.00078  0.44139  1.41231  1.99181  1.62972  0.66981  0.02336  0.30409  1.24549  1.95383  1.75664  0.84114  0.07645  0.18854  1.07099  1.88605  1.85993  1.01743  0.15838  0.09833  0.89428  1.79060  1.93636  1.19318  0.26660  0.03629  0.72087  1.67045  1.98353  1.36289  0.39774  0.00434  0.55618  1.52936  1.99999  1.52127  0.54768  0.00350  0.40536  1.37174  1.98521  1.66336  0.71175  0.03379  0.27311  1.20250  1.93965  1.78474  0.88483  0.09426  0.16356  1.02694  1.86475  1.88160  1.06150  0.18301  0.08014  0.85054  1.76283
+8483  0.09426  0.16356  1.02694  1.86475  1.88160  1.06150  0.18301  0.08014  0.85054  1.76283
  2   / 2:  2.84147  2.90179  2.10599  1.20957  1.06355  1.80656  2.73321  2.96379  2.27939  1.32975  1.01642  1.63686  2.60205  2.99568  2.44406  1.47087  1.00001  1.47850  2.45208  2.99647  2.59486  1.62851  1.01484  1.33643  2.28799  2.96614  2.72708  1.79776  1.06044  1.21509  2.11490  2.90563  2.83659  1.97333  1.13539  1.11827  1.93823  2.81683  2.91997  2.14973  1.23734  1.04899  1.76349  2.70252  2.97461  2.32145  1.36312  1.00942  1.59613  2.56626  2.99881  2.48313  1.50879  1.00078  1.44139  2.41231  2.99181  2.62972  1.66981  1.02336  1.30409  2.24549  2.95382  2.75664  1.84114  1.07645  1.18854  2.07099  2.88605  2.85993  2.01743  1.15838  1.09833  1.89428  2.79060  2.93636  2.19318  1.26660  1.03629  1.72087  2.67045  2.98353  2.36289  1.39774  1.00434  1.55618  2.52936  2.99999  2.52127  1.54768  1.00350  1.40536  2.37174  2.98521  2.66336  1.71175  1.03379  1.27311  2.20250  2.93965  2.78474  1.88483  1.09426  1.16356  2.02694  2.86475  2.88160  2.06150  1.18301  1.08014  1.85054  2.76283
  
 can mode ignore
@@ -44658,14 +44655,14 @@ list/y=3 v
              LATITUDE : 3N
                        179W     177W     175W    
                          1        2        3
- 16-JAN      12 / 1:  280.765  283.538  283.807
- 15-FEB      02 / 2:  284.564  285.117  280.982
- 15-MAR      17 / 3:  280.418  281.035  278.238
- 15-APR      05 / 4:   28.000   28.000   28.000
- 15-MAY      17 / 5:   28.000   28.000   28.000
- 30-JUN      17 / 6:     ....     ....     ....
- 15-AUG      17 / 7:   28.000   28.000   28.000
- 15-SEP      05 / 8:   28.000   28.000   28.000
+ 16-JAN 12      / 1:  27.9765  28.2538  28.2807
+ 15-FEB 02      / 2:  28.3564  28.4117  27.9982
+ 15-MAR 17      / 3:  27.9418  28.0035  27.7238
+ 15-APR 05      / 4:  28.0000  28.0000  28.0000
+ 15-MAY 17      / 5:  28.0000  28.0000  28.0000
+ 30-JUN 17      / 6:     ....     ....     ....
+ 15-AUG 17      / 7:  28.0000  28.0000  28.0000
+ 15-SEP 05      / 8:  28.0000  28.0000  28.0000
 list/x=177w v
              VARIABLE : MISSING(SST[GT=MONTH_IRREG], 28)
              FILENAME : a.nc
@@ -44673,14 +44670,14 @@ list/x=177w v
              LONGITUDE: 177W
                         1N       3N       5N       7N     
                          1        2        3        4
- 16-JAN      12 / 1:  285.146  283.538  281.640  282.024
- 15-FEB      02 / 2:  285.018  285.117  282.639  278.498
- 15-MAR      17 / 3:  276.907  281.035  279.730  279.183
- 15-APR      05 / 4:   28.000   28.000   28.000   28.000
- 15-MAY      17 / 5:   28.000   28.000   28.000   28.000
- 30-JUN      17 / 6:     ....     ....     ....     ....
- 15-AUG      17 / 7:   28.000   28.000   28.000   28.000
- 15-SEP      05 / 8:   28.000   28.000   28.000   28.000
+ 16-JAN 12      / 1:  28.4146  28.2538  28.0640  28.1024
+ 15-FEB 02      / 2:  28.4018  28.4117  28.1639  27.7498
+ 15-MAR 17      / 3:  27.5907  28.0035  27.8730  27.8183
+ 15-APR 05      / 4:  28.0000  28.0000  28.0000  28.0000
+ 15-MAY 17      / 5:  28.0000  28.0000  28.0000  28.0000
+ 30-JUN 17      / 6:     ....     ....     ....     ....
+ 15-AUG 17      / 7:  28.0000  28.0000  28.0000  28.0000
+ 15-SEP 05      / 8:  28.0000  28.0000  28.0000  28.0000
 can data/all
 can var/all
  
@@ -44758,7 +44755,21 @@ def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
  
-canetcdf a {
+cancel axis tax
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+can mode ignore
+ 
+! SAVE on regular time axis with bounds and edges attributes
+ 
+use coads_climatology
+list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
+             DATA SET: ./coads_climatology.cdf
+             TIME: JAN to APR
+             LONGITUDE: 179W
+             LATITUDE: 1N
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Colunetcdf a {
 dimensions:
 	COADSX81_81 = 1 ;
 	bnds = 2 ;
@@ -44793,7 +44804,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44814,9 +44825,9 @@ data:
   1461.7275, 2192.2125 ;
 
  SST =
-  283.8389,
-  285.1851,
-  281.468 ;
+  28.28389,
+  28.41851,
+  28.0468 ;
 }
 netcdf a {
 dimensions:
@@ -44858,7 +44869,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44874,9 +44885,9 @@ data:
  TIME4edges = 0.757499999999993, 731.2425, 1461.7275, 2192.2125 ;
 
  SST =
-  283.8389,
-  285.1851,
-  281.468 ;
+  28.28389,
+  28.41851,
+  28.0468 ;
 }
 netcdf irrxzt {
 dimensions:
@@ -44906,7 +44917,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -44964,26 +44975,12 @@ data:
   87, 88, 91, 92, 93, 94,
   132, 133, 136, 137, 138, 139 ;
 }
-ncel axis tax
- *** NOTE: Not deleted: TAX
- *** NOTE: Axis is in use by grid GFORMAT
-can mode ignore
- 
-! SAVE on regular time axis with bounds and edges attributes
- 
-use coads_climatology
-list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
-             DATA SET: ./coads_climatology.cdf
-             TIME: JAN to APR
-             LONGITUDE: 179W
-             LATITUDE: 1N
- Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
- Column  2: T is T (axis TIME4)
+mn  2: T is T (axis TIME4)
  Column  3: TBOXLO is TBOXLO (axis TIME4)
  Column  4: TBOXHI is TBOXHI (axis TIME4)
-283.84  366.0000    0.7575  731.2425
-285.19 1096.4850  731.2425 1461.7275
-281.47 1826.9700 1461.7275 2192.2124
+ 28.28  366.0000    0.7575  731.2425
+ 28.42 1096.4850  731.2425 1461.7275
+ 28.05 1826.9700 1461.7275 2192.2124
  
 save/clobber/bounds/file=a.nc/x=181/y=1 sst
  LISTing to file a.nc
@@ -45035,11 +45032,11 @@ list/x=5/t=5 v, z[gz=v] , zboxlo[gz=v], zboxhi[gz=v]
  Column  3: ZBOXLO is ZBOXLO (axis ZAX1)
  Column  4: ZBOXHI is ZBOXHI (axis ZAX1)
                  V      Z     ZBOXLO   ZBOXHI
-0     / 1:    71.00    0.000   0.0000   10.000
-20    / 2:   271.00   20.000  10.0000   30.000
-50    / 3:   571.00   50.000  30.0000   60.000
-75    / 4:   821.00   75.000  60.0000   90.000
-120   / 5:  1271.00  120.000  90.0000  150.000
+0     / 1:    7.000    0.000   0.0000   10.000
+20    / 2:   27.000   20.000  10.0000   30.000
+50    / 3:   57.000   50.000  30.0000   60.000
+75    / 4:   82.000   75.000  60.0000   90.000
+120   / 5:  127.000  120.000  90.0000  150.000
 can data/all
  
 ! RIGID/HEAD=ENHANCED works the same; issues a note
@@ -45080,13 +45077,13 @@ list v, t[gt=v], tbox[gt=v]
  Column  2: T is T (axis MONTH_REG1)
  Column  3: TBOX is TBOX (axis MONTH_REG1)
                        V      T      TBOX
-16-JAN      / 1:  2839.39   366.00   730.48
-15-FEB      / 2:  2852.85  1096.48   730.48
-17-MAR      / 3:  2815.68  1826.97   730.48
-16-APR      / 4:   281.00  2557.46  1826.21
-16-AUG      / 5:   281.00  5479.40  1826.21
-15-SEP      / 6:   281.00  6209.88   730.48
-16-OCT      / 7:   281.00  6940.37   730.48
+16-JAN      / 1:  28.2839   366.00   730.48
+15-FEB      / 2:  28.4185  1096.48   730.48
+17-MAR      / 3:  28.0468  1826.97   730.48
+16-APR      / 4:  28.0000  2557.46  1826.21
+16-AUG      / 5:  28.0000  5479.40  1826.21
+15-SEP      / 6:  28.0000  6209.88   730.48
+16-OCT      / 7:  28.0000  6940.37   730.48
 can data a
  
 ! Now save with /bounds
@@ -45113,14 +45110,14 @@ list v, t[gt=v], tbox[gt=v]
  Column  2: T is T (axis MONTH_REG1)
  Column  3: TBOX is TBOX (axis MONTH_REG1)
                        V      T      TBOX
-16-JAN      / 1:  2839.39   366.00   730.48
-15-FEB      / 2:  2852.85  1096.48   730.48
-17-MAR      / 3:  2815.68  1826.97   730.48
-16-APR      / 4:   281.00  2557.46   730.48
+16-JAN      / 1:  28.2839   366.00   730.48
+15-FEB      / 2:  28.4185  1096.48   730.48
+17-MAR      / 3:  28.0468  1826.97   730.48
+16-APR      / 4:  28.0000  2557.46   730.48
 16-JUN      / 5:     ....  4018.43  2191.46
-16-AUG      / 6:   281.00  5479.40   730.48
-15-SEP      / 7:   281.00  6209.88   730.48
-16-OCT      / 8:   281.00  6940.37   730.48
+16-AUG      / 6:  28.0000  5479.40   730.48
+15-SEP      / 7:  28.0000  6209.88   730.48
+16-OCT      / 8:  28.0000  6940.37   730.48
 can data/all
  
 ! gappy_bounds.nc has discontiguous bounds
@@ -45138,12 +45135,12 @@ list a, t[gt=a], tboxlo[gt=a], tboxhi[gt=a]
  Column  3: TBOXLO is TBOXLO (axis TGAP)
  Column  4: TBOXHI is TBOXHI (axis TGAP)
                           A      T     TBOXLO   TBOXHI
-02-JAN-1990 00 / 1:  297.970  1.00000  0.50000  1.50000
-03-JAN-1990 00 / 2:  294.710  2.00000  1.50000  2.50000
-04-JAN-1990 00 / 3:  292.157  3.00000  2.50000  3.50000
-08-JAN-1990 00 / 4:  293.921  7.00000  3.50000  7.50000
-09-JAN-1990 00 / 5:  289.983  8.00000  7.50000  8.50000
-10-JAN-1990 00 / 6:  290.383  9.00000  8.50000  9.50000
+02-JAN-1990 00 / 1:  29.6970  1.00000  0.50000  1.50000
+03-JAN-1990 00 / 2:  29.3710  2.00000  1.50000  2.50000
+04-JAN-1990 00 / 3:  29.1157  3.00000  2.50000  3.50000
+08-JAN-1990 00 / 4:  29.2920  7.00000  3.50000  7.50000
+09-JAN-1990 00 / 5:  28.8983  8.00000  7.50000  8.50000
+10-JAN-1990 00 / 6:  28.9383  9.00000  8.50000  9.50000
  
 cancel dat/all
  
@@ -45268,12 +45265,12 @@ list/l=20:25 temp
              DEPTH (m): 5
                         130.5W  
                         100
- 11-DEC-1982 02 / 20:  327.698
- 17-DEC-1982 04 / 21:  328.830
- 23-DEC-1982 06 / 22:  328.033
- 29-DEC-1982 08 / 23:  325.479
- 04-JAN-1983 10 / 24:  323.491
- 10-JAN-1983 12 / 25:  322.819
+ 11-DEC-1982 02 / 20:  32.6698
+ 17-DEC-1982 04 / 21:  32.7830
+ 23-DEC-1982 06 / 22:  32.7033
+ 29-DEC-1982 08 / 23:  32.4479
+ 04-JAN-1983 10 / 24:  32.2491
+ 10-JAN-1983 12 / 25:  32.1819
 say `temp,return=calendar`
  !-> MESSAGE/CONTINUE JULIAN
 JULIAN
@@ -45290,12 +45287,12 @@ list/l=20:25 temp
              DEPTH (m): 5
                         130.5W  
                         100
- 26-DEC-1982 02 / 20:  327.698
- 02-JAN-1983 04 / 21:  328.830
- 08-JAN-1983 06 / 22:  328.033
- 14-JAN-1983 08 / 23:  325.479
- 20-JAN-1983 10 / 24:  323.491
- 26-JAN-1983 12 / 25:  322.819
+ 26-DEC-1982 02 / 20:  32.6698
+ 02-JAN-1983 04 / 21:  32.7830
+ 08-JAN-1983 06 / 22:  32.7033
+ 14-JAN-1983 08 / 23:  32.4479
+ 20-JAN-1983 10 / 24:  32.2491
+ 26-JAN-1983 12 / 25:  32.1819
 say `temp,return=calendar`
  !-> MESSAGE/CONTINUE 360_DAY
 360_DAY
@@ -45318,12 +45315,12 @@ list/l=20:25 temp
              DEPTH (m): 5
                         130.5W  
                         100
- 12-DEC-1982 02 / 20:  327.698
- 18-DEC-1982 04 / 21:  328.830
- 24-DEC-1982 06 / 22:  328.033
- 30-DEC-1982 08 / 23:  325.479
- 05-JAN-1983 10 / 24:  323.491
- 11-JAN-1983 12 / 25:  322.819
+ 12-DEC-1982 02 / 20:  32.6698
+ 18-DEC-1982 04 / 21:  32.7830
+ 24-DEC-1982 06 / 22:  32.7033
+ 30-DEC-1982 08 / 23:  32.4479
+ 05-JAN-1983 10 / 24:  32.2491
+ 11-JAN-1983 12 / 25:  32.1819
 say `temp,return=calendar`
  !-> MESSAGE/CONTINUE NOLEAP
 NOLEAP
@@ -45349,12 +45346,12 @@ list/l=20:25 temp
              DEPTH (m): 5
                         130.5W  
                         100
- 09-DEC-1982 02 / 20:  327.698
- 15-DEC-1982 04 / 21:  328.830
- 21-DEC-1982 06 / 22:  328.033
- 27-DEC-1982 08 / 23:  325.479
- 02-JAN-1983 10 / 24:  323.491
- 08-JAN-1983 12 / 25:  322.819
+ 09-DEC-1982 02 / 20:  32.6698
+ 15-DEC-1982 04 / 21:  32.7830
+ 21-DEC-1982 06 / 22:  32.7033
+ 27-DEC-1982 08 / 23:  32.4479
+ 02-JAN-1983 10 / 24:  32.2491
+ 08-JAN-1983 12 / 25:  32.1819
  
 ! Now resetting T0
 CAN DATA/ALL
@@ -45372,12 +45369,12 @@ list/l=20:25 temp
              DEPTH (m): 5
                         130.5W  
                         100
- 11-DEC-1982 02 / 20:  327.698
- 17-DEC-1982 04 / 21:  328.830
- 23-DEC-1982 06 / 22:  328.033
- 29-DEC-1982 08 / 23:  325.479
- 04-JAN-1983 10 / 24:  323.491
- 10-JAN-1983 12 / 25:  322.819
+ 11-DEC-1982 02 / 20:  32.6698
+ 17-DEC-1982 04 / 21:  32.7830
+ 23-DEC-1982 06 / 22:  32.7033
+ 29-DEC-1982 08 / 23:  32.4479
+ 04-JAN-1983 10 / 24:  32.2491
+ 10-JAN-1983 12 / 25:  32.1819
  
 ! One day earlier
 set axis/t0="13-jan-1980:14:00" `temp,return=taxis`
@@ -45463,11 +45460,11 @@ list/x=130w/y=1/k=1/L=1:5 temp
              Z (ZORRO): 5
                        130.5W  
                        100
- 17-AUG-1982 12 / 1:  260.777
- 23-AUG-1982 14 / 2:  263.025
- 29-AUG-1982 16 / 3:  265.463
- 04-SEP-1982 18 / 4:  267.606
- 10-SEP-1982 20 / 5:  268.818
+ 17-AUG-1982 12 / 1:  25.9777
+ 23-AUG-1982 14 / 2:  26.2025
+ 29-AUG-1982 16 / 3:  26.4463
+ 04-SEP-1982 18 / 4:  26.6606
+ 10-SEP-1982 20 / 5:  26.7818
  
 ! not a geographic axis
 set axis/units=meters `temp,return=yaxis`
@@ -45481,10 +45478,10 @@ list/x=222/k=1/l=1/y=-0.5:0.5 temp
              TIME     : AUG-1982
                138.5W  
                 92
- -0.5  / 44:  264.422
- -0.17 / 45:  263.807
- 0.17  / 46:  263.649
- 0.5   / 47:  263.917
+ -0.5  / 44:  26.3422
+ -0.17 / 45:  26.2807
+ 0.17  / 46:  26.2649
+ 0.5   / 47:  26.2916
  
 set axis/units=deg `temp,return=yaxis`
  !-> set axis/units=deg PSYT
@@ -45502,10 +45499,10 @@ list/x=222/k=1/l=1/y=-0.5:0.5 temp
              TIME     : AUG-1982
                138.5W  
                 92
- 0.5N  / 47:  263.917
- 0.17N / 46:  263.649
- 0.17S / 45:  263.807
- 0.5S  / 44:  264.422
+ 0.5N  / 47:  26.2916
+ 0.17N / 46:  26.2649
+ 0.17S / 45:  26.2807
+ 0.5S  / 44:  26.3422
  
 ! inappropriate units for axis direction
 set axis/units=meters `temp,return=taxis`
@@ -45521,11 +45518,11 @@ list/x=130w/y=1/k=1/l=1:5 temp
              Z (ZORRO): 5
                 130.5W  
                 100
- 22702   / 1:  260.777
- 22848   / 2:  263.025
- 22994   / 3:  265.463
- 23140   / 4:  267.606
- 23286   / 5:  268.818
+ 22702   / 1:  25.9777
+ 22848   / 2:  26.2025
+ 22994   / 3:  26.4463
+ 23140   / 4:  26.6606
+ 23286   / 5:  26.7818
  
 set axis/units=seconds  `temp,r=yaxis`
  !-> set axis/units=seconds  PSYT
@@ -45633,7 +45630,7 @@ list/x=180/y=0/t=1-apr-1900 sst
              LONGITUDE: 179E
              LATITUDE : 1S
              TIME     : FEB-1900
-          284.646
+          28.3646
  
 can mem/all
  PERMANENT data cleared from memory
@@ -45647,7 +45644,7 @@ list/x=180/y=0/t=2000 sst
              LONGITUDE: 179E
              LATITUDE : 1S
              TIME     : FEB-1900
-          284.646
+          28.3646
  
  
 ! Crashed on SHADE of variable with NOLEAP axis, and subregion.
@@ -45878,18 +45875,18 @@ list var[gt=month_reg@mod]
              DEPTH (m): 5
                      139.5E  
                       10
- 16-JAN      /  1:  296.133
- 15-FEB      /  2:  294.766
- 17-MAR      /  3:  297.412
- 16-APR      /  4:  299.829
- 16-MAY      /  5:  299.907
- 16-JUN      /  6:  300.644
- 16-JUL      /  7:  297.085
- 16-AUG      /  8:  294.493
- 15-SEP      /  9:  297.231
- 16-OCT      / 10:  298.464
- 15-NOV      / 11:  300.058
- 16-DEC      / 12:  298.728
+ 16-JAN      /  1:  29.5559
+ 15-FEB      /  2:  29.5316
+ 17-MAR      /  3:  29.6615
+ 16-APR      /  4:  29.8829
+ 16-MAY      /  5:  29.8907
+ 16-JUN      /  6:  29.9644
+ 16-JUL      /  7:  29.6883
+ 16-AUG      /  8:     ....
+ 15-SEP      /  9:  29.6661
+ 16-OCT      / 10:  29.7464
+ 15-NOV      / 11:  29.9058
+ 16-DEC      / 12:  29.7728
  
 ! bug had values of Inf surrounding missing data
 list var[gt=month_reg@modvar]
@@ -45900,20 +45897,20 @@ list var[gt=month_reg@modvar]
              LONGITUDE: 139.5E
              LATITUDE : 0.833N
              DEPTH (m): 5
-                     139.5E  
-                      10
- 16-JAN      /  1:  0.50524
- 15-FEB      /  2:  1.16654
- 17-MAR      /  3:  1.11018
- 16-APR      /  4:  0.15034
- 16-MAY      /  5:  0.35104
- 16-JUN      /  6:  0.96970
- 16-JUL      /  7:  2.92391
- 16-AUG      /  8:  0.14148
- 15-SEP      /  9:  1.26887
- 16-OCT      / 10:  0.68063
- 15-NOV      / 11:  0.19085
- 16-DEC      / 12:  0.48345
+                      139.5E   
+                       10
+ 16-JAN      /  1:  0.0020743
+ 15-FEB      /  2:  0.0005012
+ 17-MAR      /  3:  0.0079502
+ 16-APR      /  4:  0.0015034
+ 16-MAY      /  5:  0.0035104
+ 16-JUN      /  6:  0.0096970
+ 16-JUL      /  7:  0.0188794
+ 16-AUG      /  8:       ....
+ 15-SEP      /  9:  0.0055797
+ 16-OCT      / 10:  0.0068064
+ 15-NOV      / 11:  0.0019084
+ 16-DEC      / 12:  0.0048345
 list var[gt=month_reg@modmin]
              VARIABLE : IF TEMP GT 29.5 THEN TEMP
                         regrid: 730 hour on T@MODMIN
@@ -45924,18 +45921,18 @@ list var[gt=month_reg@modmin]
              DEPTH (m): 5
                      139.5E  
                       10
- 16-JAN      /  1:  294.809
- 15-FEB      /  2:  293.102
- 17-MAR      /  3:  295.326
- 16-APR      /  4:  298.809
- 16-MAY      /  5:  298.883
- 16-JUN      /  6:  299.047
- 16-JUL      /  7:  295.046
- 16-AUG      /  8:  293.939
- 15-SEP      /  9:  295.250
- 16-OCT      / 10:  297.438
- 15-NOV      / 11:  299.575
- 16-DEC      / 12:  297.620
+ 16-JAN      /  1:  29.5018
+ 15-FEB      /  2:  29.5157
+ 17-MAR      /  3:  29.5182
+ 16-APR      /  4:  29.7809
+ 16-MAY      /  5:  29.7883
+ 16-JUN      /  6:  29.8047
+ 16-JUL      /  7:  29.5034
+ 16-AUG      /  8:     ....
+ 15-SEP      /  9:  29.5334
+ 16-OCT      / 10:  29.6438
+ 15-NOV      / 11:  29.8575
+ 16-DEC      / 12:  29.6620
 list var[gt=month_reg@modmax]
              VARIABLE : IF TEMP GT 29.5 THEN TEMP
                         regrid: 730 hour on T@MODMAX
@@ -45946,18 +45943,18 @@ list var[gt=month_reg@modmax]
              DEPTH (m): 5
                      139.5E  
                       10
- 16-JAN      /  1:  297.371
- 15-FEB      /  2:  296.474
- 17-MAR      /  3:  299.171
- 16-APR      /  4:  300.306
- 16-MAY      /  5:  300.564
- 16-JUN      /  6:  301.834
- 16-JUL      /  7:  299.189
- 16-AUG      /  8:  295.053
- 15-SEP      /  9:  298.498
- 16-OCT      / 10:  300.003
- 15-NOV      / 11:  300.684
- 16-DEC      / 12:  299.558
+ 16-JAN      /  1:  29.6371
+ 15-FEB      /  2:  29.5474
+ 17-MAR      /  3:  29.8171
+ 16-APR      /  4:  29.9306
+ 16-MAY      /  5:  29.9564
+ 16-JUN      /  6:  30.0834
+ 16-JUL      /  7:  29.8189
+ 16-AUG      /  8:     ....
+ 15-SEP      /  9:  29.7498
+ 16-OCT      / 10:  29.9003
+ 15-NOV      / 11:  29.9684
+ 16-DEC      / 12:  29.8558
 list var[gt=month_reg@modsum]
              VARIABLE : IF TEMP GT 29.5 THEN TEMP
                         regrid: 730 hour on T@MODSUM
@@ -45968,18 +45965,18 @@ list var[gt=month_reg@modsum]
              DEPTH (m): 5
                      139.5E  
                       10
- 16-JAN      /  1:  4738.14
- 15-FEB      /  2:  5895.32
- 17-MAR      /  3:  5948.24
- 16-APR      /  4:  5996.57
- 16-MAY      /  5:  5998.13
- 16-JUN      /  6:  3607.72
- 16-JUL      /  7:  2970.85
- 16-AUG      /  8:  2944.93
- 15-SEP      /  9:  2972.31
- 16-OCT      / 10:  2984.64
- 15-NOV      / 11:  3000.58
- 16-DEC      / 12:  2987.28
+ 16-JAN      /  1:  295.559
+ 15-FEB      /  2:   59.063
+ 17-MAR      /  3:  533.908
+ 16-APR      /  4:  597.657
+ 16-MAY      /  5:  597.813
+ 16-JUN      /  6:  359.572
+ 16-JUL      /  7:  207.818
+ 16-AUG      /  8:     ....
+ 15-SEP      /  9:  237.329
+ 16-OCT      / 10:  297.464
+ 15-NOV      / 11:  299.058
+ 16-DEC      / 12:  297.728
 list var[gt=month_reg@modngd]
              VARIABLE : IF TEMP GT 29.5 THEN TEMP (# of points)
                         regrid: 730 hour on T@MODNGD
@@ -45990,15 +45987,15 @@ list var[gt=month_reg@modngd]
              DEPTH (m): 5
                      139.5E  
                       10
- 16-JAN      /  1:  16.0000
- 15-FEB      /  2:  20.0000
- 17-MAR      /  3:  20.0000
+ 16-JAN      /  1:  10.0000
+ 15-FEB      /  2:   2.0000
+ 17-MAR      /  3:  18.0000
  16-APR      /  4:  20.0000
  16-MAY      /  5:  20.0000
  16-JUN      /  6:  12.0000
- 16-JUL      /  7:  10.0000
- 16-AUG      /  8:  10.0000
- 15-SEP      /  9:  10.0000
+ 16-JUL      /  7:   7.0000
+ 16-AUG      /  8:   0.0000
+ 15-SEP      /  9:   8.0000
  16-OCT      / 10:  10.0000
  15-NOV      / 11:  10.0000
  16-DEC      / 12:  10.0000
@@ -46025,26 +46022,26 @@ list tt
              DATA SET : Model Output, Daily Averages
              FILENAME : vary_scale.des
              SUBSET   : 20 points (TIME)
- 01-JAN-1990 00 /  1:   -4.000
- 02-JAN-1990 00 /  2:  -14.000
- 03-JAN-1990 00 /  3:  -24.000
- 04-JAN-1990 00 /  4:  -34.000
- 05-JAN-1990 00 /  5:  -44.000
- 06-JAN-1990 00 /  6:  -54.000
- 07-JAN-1990 00 /  7:  -64.000
- 08-JAN-1990 00 /  8:  -74.000
- 09-JAN-1990 00 /  9:  -84.000
- 10-JAN-1990 00 / 10:  -94.000
- 11-JAN-1990 00 / 11:   20.800
- 12-JAN-1990 00 / 12:   40.800
- 13-JAN-1990 00 / 13:   60.800
- 14-JAN-1990 00 / 14:   80.800
- 15-JAN-1990 00 / 15:  100.800
- 16-JAN-1990 00 / 16:  120.800
- 17-JAN-1990 00 / 17:  140.800
- 18-JAN-1990 00 / 18:  160.800
- 19-JAN-1990 00 / 19:  180.800
- 20-JAN-1990 00 / 20:  200.800
+ 01-JAN-1990 00 /  1:  -0.5000
+ 02-JAN-1990 00 /  2:  -1.5000
+ 03-JAN-1990 00 /  3:  -2.5000
+ 04-JAN-1990 00 /  4:  -3.5000
+ 05-JAN-1990 00 /  5:  -4.5000
+ 06-JAN-1990 00 /  6:  -5.5000
+ 07-JAN-1990 00 /  7:  -6.5000
+ 08-JAN-1990 00 /  8:  -7.5000
+ 09-JAN-1990 00 /  9:  -8.5000
+ 10-JAN-1990 00 / 10:  -9.5000
+ 11-JAN-1990 00 / 11:   1.9800
+ 12-JAN-1990 00 / 12:   3.9800
+ 13-JAN-1990 00 / 13:   5.9800
+ 14-JAN-1990 00 / 14:   7.9800
+ 15-JAN-1990 00 / 15:   9.9800
+ 16-JAN-1990 00 / 16:  11.9800
+ 17-JAN-1990 00 / 17:  13.9800
+ 18-JAN-1990 00 / 18:  15.9800
+ 19-JAN-1990 00 / 19:  17.9800
+ 20-JAN-1990 00 / 20:  19.9800
 list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
  !-> list/quiet/nohead 2, -0.02
 I / *:     2.00000 -0.0200000
@@ -46061,9 +46058,9 @@ list/L=2:4 tt
              DATA SET : Model Output, Daily Averages
              FILENAME : vary_scale.des
              SUBSET   : 3 points (TIME)
- 02-JAN-1990 00 / 2: -14.0000
- 03-JAN-1990 00 / 3: -24.0000
- 04-JAN-1990 00 / 4: -34.0000
+ 02-JAN-1990 00 / 2: -1.50000
+ 03-JAN-1990 00 / 3: -2.50000
+ 04-JAN-1990 00 / 4: -3.50000
 list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
  !-> list/quiet/nohead -1, 0.5
 I / *:    -1.00000  0.500000
@@ -46080,9 +46077,9 @@ list/L=12:14 tt
              DATA SET : Model Output, Daily Averages
              FILENAME : vary_scale.des
              SUBSET   : 3 points (TIME)
- 12-JAN-1990 00 / 12:  40.8000
- 13-JAN-1990 00 / 13:  60.8000
- 14-JAN-1990 00 / 14:  80.8000
+ 12-JAN-1990 00 / 12:  3.98000
+ 13-JAN-1990 00 / 13:  5.98000
+ 14-JAN-1990 00 / 14:  7.98000
 list/quiet/nohead `tt,return=nc_scale`, `tt,return=nc_offset`
  !-> list/quiet/nohead 2, -0.02
 I / *:     2.00000 -0.0200000
@@ -46702,7 +46699,58 @@ LET OFF_MASK = IF OFF_EVENTS[L=1:420@RSUM] LT 1 THEN 0.5
 LET WAVE1 = (ON_MASK+OFF_MASK)*HA_LC[L=1:420]
 LET FIRST_WAVE = WAVE1[L=1:420@MAX]*MIN_MASK
 LET FIRST_WAVE_TPLV = 500
-LET FIRST_WAVE_1DLV = 400
+LET FIRST_WAVE             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+             LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
+             LATITUDE : 19.7N to 19.7N
+             GEOMETRY: XY 
+             SIZE:  5  6  
+             FORTRAN FORMAT: (f9.5)
+             MISSING VALUES FLAG: -9.9999998E+33
+X COORDINATES: LON
+204.89923
+204.89975
+204.90025
+204.90076
+204.90126
+Y COORDINATES: LAT
+ 19.70020
+ 19.70071
+ 19.70122
+ 19.70173
+ 19.70223
+ 19.70274
+DATA:
+224.59943
+224.59995
+224.60045
+224.60095
+224.60146
+224.59995
+224.60046
+224.60097
+224.60147
+224.60197
+224.60045
+224.60097
+224.60147
+224.60197
+224.60248
+224.60097
+224.60149
+224.60199
+224.60249
+224.60300
+224.60146
+224.60197
+224.60248
+224.60298
+224.60349
+224.60197
+224.60249
+224.60300
+224.60350
+224.60400
+_1DLV = 400
 LET FIRST_WAVE_SCL = 10
 LET SIG_WAVE1 = WAVE1[L=1:420] - FIRST_WAVE
 LET FIRST_TTIME = SIG_WAVE1[L=1:420@LOC:0]
@@ -46769,58 +46817,7 @@ list str4a
  
  
 ! Fix bug in @CNNN within multi-line labels
-GO bn_re             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
-             LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
-             LATITUDE : 19.7N to 19.7N
-             GEOMETRY: XY 
-             SIZE:  5  6  
-             FORTRAN FORMAT: (f9.5)
-             MISSING VALUES FLAG: -9.9999998E+33
-X COORDINATES: LON
-204.89923
-204.89975
-204.90025
-204.90076
-204.90126
-Y COORDINATES: LAT
- 19.70020
- 19.70071
- 19.70122
- 19.70173
- 19.70223
- 19.70274
-DATA:
-224.59943
-224.59995
-224.60045
-224.60095
-224.60146
-224.59995
-224.60046
-224.60097
-224.60147
-224.60197
-224.60045
-224.60097
-224.60147
-224.60197
-224.60248
-224.60097
-224.60149
-224.60199
-224.60249
-224.60300
-224.60146
-224.60197
-224.60248
-224.60298
-224.60349
-224.60197
-224.60249
-224.60300
-224.60350
-224.60400
-set
+GO bn_reset
 cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -47062,7 +47059,6 @@ set mode ignore_errors
  
 ! incorrect argument with query/ignore
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
- *** NOTE: First argument is a letter of the alphabet
 query/ignore $2%|a|b|c|d|%
  *** NOTE: Valid argument $2 choices are: a|b|c|d|
  
@@ -47072,7 +47068,6 @@ query/ignore $2%|a|b|c|d|%
 ! uses ERROR instead of NOTE when writing my error message
  
 message/cont $1"|xxxxx|goodbye<my error message"
- *** NOTE: my error message
 message/cont $1"greetings|xxxxx|goodbye"
  *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
  
@@ -47080,18 +47075,15 @@ message/cont $1"greetings|xxxxx|goodbye"
 ! uses ERROR instead of NOTE when writing my error message
  
 message/cont $3"|hello|goodbye<my error message"
- *** NOTE: my error message
 message/cont $3">greetings|hello|goodbye"
  *** NOTE: Valid argument $3 choices are: hello|goodbye
  
 ! Here are some lines from bn_symbols; the first and third now use ERROR instead of NOTE
  
 message/continue ($test2"<my error message")
- *** NOTE: my error message
 message/continue ($test2"|hello|bye|")
  *** NOTE: Valid symbol test2 choices are: hello|bye|
 message/continue ($test2"|hello|bye|<my error message")    ! silent error
- *** NOTE: my error message
 message/continue ($t2"|solong>really hello|bye|")
  *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  
@@ -47176,18 +47168,18 @@ list a[x=1:4,d=10a]
              VARIABLE : X[I=1:10]
              FILENAME : 10a.nc
              SUBSET   : 4 points (X)
- 1   / 1:  11.000000
- 2   / 2:  21.000000
- 3   / 3:  31.000000
- 4   / 4:  41.000000
+ 1   / 1:  1.0000000
+ 2   / 2:  2.0000000
+ 3   / 3:  3.0000000
+ 4   / 4:  4.0000000
 list a[x=1:4,d=1]
              VARIABLE : X[I=1:10]
              FILENAME : 10a.nc
              SUBSET   : 4 points (X)
- 1   / 1:  11.000000
- 2   / 2:  21.000000
- 3   / 3:  31.000000
- 4   / 4:  41.000000
+ 1   / 1:  1.0000000
+ 2   / 2:  2.0000000
+ 3   / 3:  3.0000000
+ 4   / 4:  4.0000000
  
  
 use coads_climatology
@@ -47195,35 +47187,35 @@ list a[x=1:4,d=1]
              VARIABLE : X[I=1:10]
              FILENAME : 10a.nc
              SUBSET   : 4 points (X)
- 1   / 1:  11.000000
- 2   / 2:  21.000000
- 3   / 3:  31.000000
- 4   / 4:  41.000000
+ 1   / 1:  1.0000000
+ 2   / 2:  2.0000000
+ 3   / 3:  3.0000000
+ 4   / 4:  4.0000000
 list a[i=1:4,d=1]
              VARIABLE : X[I=1:10]
              FILENAME : 10a.nc
              SUBSET   : 4 points (X)
- 1   / 1:  11.000000
- 2   / 2:  21.000000
- 3   / 3:  31.000000
- 4   / 4:  41.000000
+ 1   / 1:  1.0000000
+ 2   / 2:  2.0000000
+ 3   / 3:  3.0000000
+ 4   / 4:  4.0000000
  
 list a[i=1:4,d=10a]
              VARIABLE : X[I=1:10]
              FILENAME : 10a.nc
              SUBSET   : 4 points (X)
- 1   / 1:  11.000000
- 2   / 2:  21.000000
- 3   / 3:  31.000000
- 4   / 4:  41.000000
+ 1   / 1:  1.0000000
+ 2   / 2:  2.0000000
+ 3   / 3:  3.0000000
+ 4   / 4:  4.0000000
 list a[i=1:4,d=10a.nc]
              VARIABLE : X[I=1:10]
              FILENAME : 10a.nc
              SUBSET   : 4 points (X)
- 1   / 1:  11.000000
- 2   / 2:  21.000000
- 3   / 3:  31.000000
- 4   / 4:  41.000000
+ 1   / 1:  1.0000000
+ 2   / 2:  2.0000000
+ 3   / 3:  3.0000000
+ 4   / 4:  4.0000000
  
 ! Fix for bug 1098: DODS URL label was cut off
 GO bn_reset
@@ -47260,7 +47252,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJan  5 2006 12:17:00
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASFeb  8 2006 09:50:28
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47533,12 +47525,12 @@ list/x=180/y=0 sst
              LATITUDE : 1S
                      179E     
                       80
- 16-JAN-1900 / 1:  283.02222
- 15-FEB-1900 / 2:  284.64557
- 18-MAR-1900 / 3:  284.53809
- 17-APR-1900 / 4:  283.16498
- 17-MAY-1900 / 5:  285.88889
- 17-JUN-1900 / 6:  284.15555
+ 16-JAN-1900 / 1:  28.202221
+ 15-FEB-1900 / 2:  28.364557
+ 18-MAR-1900 / 3:  28.353809
+ 17-APR-1900 / 4:  28.216499
+ 17-MAY-1900 / 5:  28.488888
+ 17-JUN-1900 / 6:  28.315556
  
 def sym taxisname  `sst,return=taxis`
  !-> def sym taxisname  TIME1
@@ -47557,12 +47549,12 @@ list/x=180/y=0 sst
              LATITUDE : 1S
                         179E     
                          80
- 01-MAR-1990 00 / 1:  283.02222
- 02-MAR-1990 00 / 2:  284.64557
- 03-MAR-1990 00 / 3:  284.53809
- 04-MAR-1990 00 / 4:  283.16498
- 05-MAR-1990 00 / 5:  285.88889
- 06-MAR-1990 00 / 6:  284.15555
+ 01-MAR-1990 00 / 1:  28.202221
+ 02-MAR-1990 00 / 2:  28.364557
+ 03-MAR-1990 00 / 3:  28.353809
+ 04-MAR-1990 00 / 4:  28.216499
+ 05-MAR-1990 00 / 5:  28.488888
+ 06-MAR-1990 00 / 6:  28.315556
  
 def axis/t=1:6:1 ($taxisname)
  !-> def axis/t=1:6:1 TIME1
@@ -47578,12 +47570,12 @@ list/x=180/y=0 sst
              LATITUDE : 1S
              179E     
               80
- 1   / 1:  283.02222
- 2   / 2:  284.64557
- 3   / 3:  284.53809
- 4   / 4:  283.16498
- 5   / 5:  285.88889
- 6   / 6:  284.15555
+ 1   / 1:  28.202221
+ 2   / 2:  28.364557
+ 3   / 3:  28.353809
+ 4   / 4:  28.216499
+ 5   / 5:  28.488888
+ 6   / 6:  28.315556
  
 GO bn_reset
 cancel mode verify
@@ -47767,7 +47759,55 @@ GO bn_curv_mod.jnl
  
 use tripolar_subset.nc     ! Longitude range is -280 to 80
  
-fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+fill/mod/hlim=-180:180 hnetcdf a {
+dimensions:
+	TIME = UNLIMITED ; // (2 currently)
+	bnds = 2 ;
+variables:
+	double TIME(TIME) ;
+		TIME:axis = "T" ;
+		TIME:bounds = "TIME_bnds" ;
+	double TIME_bnds(TIME, bnds) ;
+	float A(TIME) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "T[GT=TIME]" ;
+
+// global attributes:
+		:history = "FERRET V5.813    8-Feb-06" ;
+data:
+
+ TIME = 0.5, 2 ;
+
+ TIME_bnds =
+  0, 1,
+  1, 3 ;
+
+ A = 0.5, 2 ;
+}
+netcdf longtitle {
+dimensions:
+	XAX1_10 = 10 ;
+variables:
+	double XAX1_10(XAX1_10) ;
+		XAX1_10:point_spacing = "even" ;
+		XAX1_10:axis = "X" ;
+	float X_(XAX1_10) ;
+		X_:missing_value = -1.e+34f ;
+		X_:_FillValue = -1.e+34f ;
+		X_:long_name = "X" ;
+		X_:long_name_mod = "axis ABSTRACT" ;
+
+// global attributes:
+		:history = "FERRET V5.813    8-Feb-06" ;
+		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
+data:
+
+ XAX1_10 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
+
+ X_ = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
+}
+t, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
 contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
  
  
@@ -47894,55 +47934,7 @@ GO err580_irreg_bounds.jnl
 ! Bug 1160 reported by Andrew.
  
 yes? def ax/t/edge time = {0,1,3}
-Renetcdf a {
-dimensions:
-	TIME = UNLIMITED ; // (2 currently)
-	bnds = 2 ;
-variables:
-	double TIME(TIME) ;
-		TIME:axis = "T" ;
-		TIME:bounds = "TIME_bnds" ;
-	double TIME_bnds(TIME, bnds) ;
-	float A(TIME) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "T[GT=TIME]" ;
-
-// global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
-data:
-
- TIME = 0.5, 2 ;
-
- TIME_bnds =
-  0, 1,
-  1, 3 ;
-
- A = 0.5, 2 ;
-}
-netcdf longtitle {
-dimensions:
-	XAX1_10 = 10 ;
-variables:
-	double XAX1_10(XAX1_10) ;
-		XAX1_10:point_spacing = "even" ;
-		XAX1_10:axis = "X" ;
-	float X_(XAX1_10) ;
-		X_:missing_value = -1.e+34f ;
-		X_:_FillValue = -1.e+34f ;
-		X_:long_name = "X" ;
-		X_:long_name_mod = "axis ABSTRACT" ;
-
-// global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
-		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
-data:
-
- XAX1_10 = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
-
- X_ = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
-}
-placing definition of axis TIME
+Replacing definition of axis TIME
 yes? let a = t[gt=time]
 yes? show grid/t a
     GRID (G021)
@@ -48063,7 +48055,9 @@ GO err580_long_dsettitle.jnl
 use longtitle1000.nc
 say `a,return=dsettitle`
  !-> MESSAGE/CONTINUE 
-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789netcdf longtitle {
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+123456789012345678901234567890123456789012345678901234567890123netcdf longtitle {
 dimensions:
 	XAX1_5 = 5 ;
 variables:
@@ -48077,17 +48071,15 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
+		:history = "FERRET V5.813    8-Feb-06" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
 
- A = 11, 21, 31, 41, 51 ;
+ A = 1, 2, 3, 4, 5 ;
 }
-012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
-
-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+4567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
  
 ! Set a dataset title over 80 characters.
 save/title="a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short.  "/clobber/file=longtitle.nc a
@@ -48312,24 +48304,7 @@ GO err580_cdc_timeaxis.jnl
 ! CDC time axes have the convention that if the start date is 1-jan-0001:00:00 then
 ! a shift of 2 days is made in year 1590.  Ferret corrects for this by resetting the
 ! time origin back by 2 days.  This is ok for internal time coordinate computations,
-! but the time origin written to the user and in cnetcdf my_cdc_timeaxis {
-dimensions:
-	TCDC = UNLIMITED ; // (15 currently)
-variables:
-	double TCDC(TCDC) ;
-		TCDC:units = "DAYS since 0001-01-01 00:00:00" ;
-		TCDC:time_origin = "01-JAN-0001 00:00:00" ;
-		TCDC:axis = "T" ;
-	float A(TCDC) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "SIN(T[GT=TCDC]/10000)" ;
-		A:history = "From t0_cdc" ;
-
-// global attributes:
-		:history = "FERRET V5.813    5-Jan-06" ;
-}
-df files is incorrect: 30-dec-0000
+! but the time origin written to the user and in cdf files is incorrect: 30-dec-0000
 !
 ! fix this in the RETURN=t0, SHOW AXIS, SHOW/XML AXIS and SAVE commands
 !
@@ -48346,7 +48321,24 @@ def axis/t=1-jan-1990:1-feb-1990:1/units=days/t0="01-JAN-0001 00:00:00" tcdc
 let a = sin(t[gt=tcdc]/10000)
  
 save/clobber/file=t0_cdc.nc a
- LISTing to file t0_cdc.nc
+ LISTing to file t0_cdc.ncnetcdf my_cdc_timeaxis {
+dimensions:
+	TCDC = UNLIMITED ; // (15 currently)
+variables:
+	double TCDC(TCDC) ;
+		TCDC:units = "DAYS since 0001-01-01 00:00:00" ;
+		TCDC:time_origin = "01-JAN-0001 00:00:00" ;
+		TCDC:axis = "T" ;
+	float A(TCDC) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "SIN(T[GT=TCDC]/10000)" ;
+		A:history = "From t0_cdc" ;
+
+// global attributes:
+		:history = "FERRET V5.813    8-Feb-06" ;
+}
+
 can var/all
 can axis tcdc
 use t0_cdc
@@ -48560,8 +48552,7 @@ list/j=1:2/k=1:2 axy
  1   / 1:"alpha""a2"   
  2   / 2:"a3"   "a4"   
  ---- K:2 Z:   2
- 1   / 1:"a		:history = "FERRET V5.813    5-Jan-06" ;
-7"   "a8"   
+ 1   / 1:"a7"   "a8"   
  2   / 2:"a9"   "a10"  
  ---- L:2 T:   2
  ---- K:1 Z:   1
@@ -48580,7 +48571,8 @@ list is_element_of_str (axy[k=1:2,j=1:2], "A10")
              FILENAME : string4d.nc
              X        : 1
           0.00000000
-list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
+list is_eleme		:history = "FERRET V5.813    8-Feb-06" ;
+nt_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
              VARIABLE : IS_ELEMENT_OF_STR (AXY[K=1:2,J=1:2], {"B0", "QQ", "d4", "m5"})
              FILENAME : string4d.nc
              X        : 1
@@ -48753,7 +48745,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "5-Jan-06:12:15"
+WIN_TITLE = "8-Feb-06:09:48"
  
 set win/title="set the title"
 sho sym win_title
@@ -48771,11 +48763,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :12:15"
+ !-> set win/title=" :09:48"
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 5-Jan-06:12:15"
+ !-> set win/title=" 8-Feb-06:09:48"
 sh sym win_title
-WIN_TITLE = "_5-Jan-06:12:15"
+WIN_TITLE = "_8-Feb-06:09:48"
  
  
 GO bn_reset
@@ -49062,13 +49054,13 @@ list/i=1:5 sst
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 45.14S
              TIME     : JAN-2004 JULIAN
-                   45.1S   
-                    1
- 148.951E / 1:  2.6990399
- 148.992E / 2:  2.7990401
- 149.035E / 3:  2.6440399
- 149.076E / 4:  2.6290400
- 149.119E / 5:  2.6390400
+                   45.1S    
+                     1
+ 148.951E / 1:  0.16990399
+ 148.992E / 2:  0.17990400
+ 149.035E / 3:  0.16440399
+ 149.076E / 4:  0.16290399
+ 149.119E / 5:  0.16390400
 say `sst, return=nc_scale`
  !-> MESSAGE/CONTINUE 0.01
 0.01
@@ -49346,7 +49338,6 @@ ENDIF
  
 palette rainbow
  
- 
 ! Bug 899
 ! Ungraceful STOP if we asl for multi-var transformations on axis where there is no data
 GO bn_reset
@@ -49388,16 +49379,16 @@ list tt
              VARIABLE : 1 + 0*T[GT=DAYT]
              FILENAME : missing_scale_off.nc
              SUBSET   : 10 points (TIME)
- 01-JAN-1990 00 /  1:   2.000000
- 02-JAN-1990 00 /  2:   3.000000
- 03-JAN-1990 00 /  3:   4.000000
+ 01-JAN-1990 00 /  1:  0.1000000
+ 02-JAN-1990 00 /  2:  0.2000000
+ 03-JAN-1990 00 /  3:  0.3000000
  04-JAN-1990 00 /  4:       ....
- 05-JAN-1990 00 /  5:   6.000000
- 06-JAN-1990 00 /  6:   7.000000
- 07-JAN-1990 00 /  7:   8.000000
+ 05-JAN-1990 00 /  5:  0.5000000
+ 06-JAN-1990 00 /  6:  0.6000000
+ 07-JAN-1990 00 /  7:  0.7000000
  08-JAN-1990 00 /  8:       ....
- 09-JAN-1990 00 /  9:  10.000000
- 10-JAN-1990 00 / 10:  11.000000
+ 09-JAN-1990 00 /  9:  0.9000000
+ 10-JAN-1990 00 / 10:  1.0000000
  
  
 ! bug 1363
@@ -49454,8 +49445,8 @@ shade/y=0/k=1 a_clim
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.813  
- 	Linux(g77) 2.4.21-32 - 01/05/06
- 	 5-Jan-06 12:17     
+ 	Linux(g77) 2.4.21-32 - 02/08/06
+ 	 8-Feb-06 09:50     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -49519,7 +49510,7 @@ list a
              VARIABLE : ADD_9(A1,A2,A3,A1,A2,A3,A1,A2,A3)
              SUBSET   : 15 points (LONGITUDE)
              LATITUDE : 1S
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                 1S    
                 45
  151E   / 66:  263.6
@@ -49541,7 +49532,7 @@ list  a - 3 * sst[d=1,l=1:3@sum]
              VARIABLE : A - 3 * SST[D=coads_climatology,L=1:3@SUM]
              SUBSET   : 15 points (LONGITUDE)
              LATITUDE : 1S
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                   1S      
                   45
  151E   / 66:  0.000E+00
@@ -49600,7 +49591,7 @@ list a - sst[l=@ave]
              FILENAME : coads_climatology.cdf
              SUBSET   : 15 points (LONGITUDE)
              LATITUDE : 1S
-             TIME     : 01-JAN      00:45 to 01-APR      08:12
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
                   1S      
                   45
  151E   / 66: -1.907E-06
@@ -49706,7 +49697,7 @@ list/x=50 a
              FILENAME : coads_climatology.cdf
              SUBSET   : 90 points (LATITUDE)
              LONGITUDE: 49E
-             TIME     : 01-JAN      00:45 to 01-APR      08:12
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
                49E   
                15
  89N   / 90:   ....
@@ -49806,7 +49797,7 @@ list/x=50 a[l=1]
              FILENAME : coads_climatology.cdf
              SUBSET   : 90 points (LATITUDE)
              LONGITUDE: 49E
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                49E   
                15
  89N   / 90:   ....
@@ -49905,7 +49896,7 @@ list/x=50 a[l=@ave,y=@sbx:11]
              FILENAME : coads_climatology.cdf
              SUBSET   : 90 points (LATITUDE)
              LONGITUDE: 49E
-             TIME     : 01-JAN      00:45 to 01-APR      08:12 (averaged)
+             TIME     : 01-JAN 00:45 to 01-APR 08:12 (averaged)
                49E   
                15
  89N   / 90:   ....
@@ -50089,7 +50080,7 @@ list/x=150:160/y=0  a
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 1S
              DEPTH (m): 0
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                  1S    
                  45
  151E   / 66:  0.0233
@@ -50104,7 +50095,7 @@ list/x=150:160/y=0  a - b
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 1S
              DEPTH (m): 0
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                  1S    
                  45
  151E   / 66:  0.0000
@@ -50122,7 +50113,7 @@ list/x=150:160/y=0  subtract(a,b)
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 1S
              DEPTH (m): 0
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                  1S    
                  45
  151E   / 66:  0.0233
@@ -50162,12 +50153,12 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  5    /  5: -10.00
  6    /  6:  -9.00
  7    /  7:  -8.00
- 8    /  8:  -7-rw-rw-r--    1 ansley   tmap        12704 Jan  5 12:17 testa.v5d
--rw-rw-r--    1 ansley   tmap        12704 Jan  5 12:17 test.v5d
-.00
+ 8    /  8:  -7.00
  9    /  9:  -6.00
  10   / 10:  -5.00
- 11   / 11:  -4.00
+ 11   / 11:  -4.00-rw-rw-r--    1 ansley   tmap        12704 Feb  8 09:50 testa.v5d
+-rw-rw-r--    1 ansley   tmap        12704 Feb  8 09:50 test.v5d
+
  12   / 12:  -3.00
  13   / 13:  -2.00
  14   / 14:  -1.00
@@ -50196,7 +50187,7 @@ list/x=150:160/y=0 subtract(a,b)
              FILENAME : coads_climatology.cdf
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 1S
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                 1S    
                 45
  151E   / 66:  3.416
@@ -50209,7 +50200,7 @@ list/x=150:160/y=0 subtract(a,26)
              FILENAME : coads_climatology.cdf
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 1S
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
                 1S    
                 45
  151E   / 66:  3.416
@@ -50224,7 +50215,7 @@ list/x=150:160/y=0  subtract(a,b)
              FILENAME : coads_climatology.cdf
              SUBSET   : 5 points (LONGITUDE)
              LATITUDE : 1S
-             TIME     : 01-JAN      00:45 to 01-APR      08:12
+             TIME     : 01-JAN 00:45 to 01-APR 08:12
                 1S    
                 45
  151E   / 66:  1.109
@@ -50327,7 +50318,7 @@ list/x=1:10 findhi(sst,4,4)
              VARIABLE : FINDHI(SST,4,4)
              FILENAME : coads_climatology.cdf
              SUBSET   : 10 by 3 points (X-Y)
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
              1      2      3      4      5      6      7      8      9     10    
              1      2      3      4      5      6      7      8      9     10
  1   / 1:  335.0  359.0  269.0   57.0  195.0   73.0  101.0  209.0   87.0  167.0
@@ -50337,7 +50328,7 @@ list/x=1:10 findlo(sst,4,4)
              VARIABLE : FINDLO(SST,4,4)
              FILENAME : coads_climatology.cdf
              SUBSET   : 10 by 3 points (X-Y)
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
              1      2      3      4      5      6      7      8      9     10    
              1      2      3      4      5      6      7      8      9     10
  1   / 1:  331.0  365.0  147.0   79.0  119.0   65.0   83.0  125.0  157.0  237.0
@@ -50350,7 +50341,7 @@ list a[i=@ngd]
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (Y)
              X        : 0.5 to 16200.5 (number of valid)
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
  1   / 1:  13.00
  2   / 2:  13.00
  3   / 3:  13.00
@@ -50361,7 +50352,7 @@ list a[i=@ngd]
              FILENAME : coads_climatology.cdf
              SUBSET   : 3 points (Y)
              X        : 0.5 to 16200.5 (number of valid)
-             TIME     : 16-JAN      06:00
+             TIME     : 16-JAN 06:00
  1   / 1:  113.0
  2   / 2:  113.0
  3   / 3:  113.0
@@ -50559,8 +50550,8 @@ stat mapped
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.813  
- 	Linux(g77) 2.4.21-32 - 01/05/06
- 	 5-Jan-06 12:17     
+ 	Linux(g77) 2.4.21-32 - 02/08/06
+ 	 8-Feb-06 09:50     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50743,8 +50734,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.813  
- 	Linux(g77) 2.4.21-32 - 01/05/06
- 	 5-Jan-06 12:17     
+ 	Linux(g77) 2.4.21-32 - 02/08/06
+ 	 8-Feb-06 09:50     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50857,4 +50848,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Thu Jan 5 12:17:26 PST 2006
+Ended at Wed Feb 8 09:50:51 PST 2006

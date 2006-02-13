@@ -1,0 +1,216 @@
+
+! std_refmap.jnl -- requires Ferret V4.3 or later
+! 5/96
+
+! Mods 6.98 *jd/sh* to improve the aspect ratio of the refmap for t and z
+! profiles.  Separate consideration given for each case:
+
+! The case of "pt_orient == tseries" which has a horizontally oriented
+! reference map, and the case of the default value for pt_orient == 0 
+! (zprofile), with a vertically oriented reference map, are optimized.
+
+! The symbol pt_orient is set in std_gif_t.jnl.
+
+! 7.2004 *jmclean* add symbol and min,max functions to keep longitude region with 360 degrees
+
+
+! For example:
+!	yes? go refmap 180 230 0 20 box 1
+! and
+!	yes? go refmap 80 80 0 20 yline 2
+! and
+!	yes? go refmap 70 90 0 20 yline 2 1
+! and
+!	yes? go refmap 30 180 30 30 xline 2
+! and
+!	yes? go refmap 30 180 20 60 xline 2 0 1 
+! and
+!	yes? go refmap 180 180 -40 -40 point 2
+! and
+!	yes? go refmap 20 180 -40 60 point 2 1 1
+
+! Description: draw a reference map with region indicated
+
+! arguments:	     1    2    3    4    5     6        7         8
+! Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress
+
+! mins and maxs should be numerical values for lat/long
+! type - may be "box", "xline", "yline", or "point" (default: "box")
+! xcompress - may be 1 (indicating that X compression is applied or 0
+!		(default: "0")
+
+! e.g. to indicate a Y line in which X compression has been applied send
+! type="yline" and xcompress="1"
+
+! this script assumes that the viewport has already been set
+
+! NOTE:  MAGNIFY FACTOR
+! The argument magnify determines what resolution of land mask is used.
+
+!       magnify = 1 - INT(LOG(fraction)/LOG(2))
+!               then clip magnify to the interval [1 to 5]
+
+! check the region arguments
+let refmap_xmin = $1%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+let refmap_xmax = $2%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+let refmap_ymin = $3%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+let refmap_ymax = $4%<Usage: GO refmap xmin xmax ymin ymax type magnify xcompress ycompress%
+
+! set default args
+DEFINE SYMBOL refmap_type $5%box|xline|yline|box|point|%
+DEFINE SYMBOL refmap_xcompress $7%0%
+DEFINE SYMBOL refmap_ycompress $8%0%
+
+! set the layout in the viewport
+! (for performance the code from margins can be inserted in here and optimized)
+! GO margins blah blah
+
+! determine the lat/long limits to plot
+set region/x=$1:$2/Y=$3:$4
+
+! Keep longitude region within 360 degrees. Supposes that xhi-xlo <= 360
+def sym ref_dx = `(360-ABS($2-$1))/2`
+
+IF ($refmap_type%|box>1|*>0%) THEN    ! IF "box"
+!  *jd* 2.3.97 define region/default/dx=-130:130/y=90s:90n band
+  define region/default/dx=`max(-($ref_dx),-60)`:`min(($ref_dx),60)`/dy=-30:30 band
+
+ELIF ($refmap_type%|xline>1|*>0%) THEN    ! ELSE IF "xline"
+  define region/default/dy=$6"-30:30|1>-30:30|*>-20:20"/dx=$6"0:0|1>0:0|2>0:0|*>`max(-($ref_dx),-50)`:`min(($ref_dx),50)`" band
+
+ELIF ($refmap_type%|yline>1|*>0%) THEN    ! ELSE IF "yline"
+  define region/default/dx=$6"`max(-($ref_dx),-40)`:`min(($ref_dx),40)`|1>`max(-($ref_dx),-60)`:`min(($ref_dx),60)`|2>`max(-($ref_dx),-40)`:`min(($ref_dx),40)`|*>`max(-($ref_dx),-30)`:`min(($ref_dx),30)`"/dy=$6"0:0|1>0:0|2>0:0|*>-20:20" band
+
+ELSE				 ! "point"
+! original statement: define region/dy=-45:45/dx=-60:60 band
+
+!  Addition for tseries and zprofile (only other case)
+   IF ($pt_orient"0|tseries>1|*>0") THEN    ! ELSE IF "tseries"
+      DEFINE SYMBOL yspan = 20	! plot 20 deg. above/below point
+
+      DEFINE SYMBOL xspan = `1.0 * (($PPL$XLEN)/($PPL$YLEN)) * ($yspan)`
+      define region/default/dy=-($yspan):($yspan)/dx=-($xspan):($xspan) band
+   ELSE		! if "zprofile"
+      DEFINE SYMBOL yspan = 60	! plot 60 deg. each side of point
+
+      DEFINE SYMBOL xspan = `2 * (($PPL$XLEN)/($PPL$YLEN)) * ($yspan)`
+      define region/default/dy=-($yspan):($yspan)/dx=-($xspan):($xspan) band
+   ENDIF
+ENDIF
+! init the land mask data set
+set data coads_climatology
+set region/L=1
+! draw gray shaded continents
+! known potential bug: if X region begins at, say, 0E then magnification 3
+!	or greater results in negative modulo subscripts
+
+shade/lev=(0,10000,10000)/nokey/nolab/palette=grey/@band/set sst
+! ==> may want various IF tests to stylize plots: tics, numbering, etc.
+
+IF ($refmap_type%|box>1|*>0) THEN    ! IF "box"
+  ppl tics 0,0,0,0
+  ppl xlab; ppl ylab
+  ppl axlabp 0,0
+  ppl shade
+  ppl tics .125,.25,.125,.25
+  ppl axlabp -1,-1
+ELIF ($refmap_type%|xline>1|*>0) THEN    ! ELSE IF "xline"
+  ppl axlint 3
+  ppl shade
+  ppl axlint 2
+ELIF ($refmap_type%|yline>1|*>0) THEN    ! ELSE IF "yline"
+  ppl axlint 3
+  ppl shade
+  ppl axlint 2
+ELSE ! "point"
+  ppl tics .4
+  ppl shade
+ENDIF
+
+! some clean up now to assist with repeated testing
+cancel region band
+
+set data coads_climatology
+set region/L=1
+
+! draw a thick red region marker on the reference map
+let refmap_xrng = IF i EQ 1 THEN refmap_xmin ELSE refmap_xmax
+let refmap_yrng = IF i EQ 1 THEN refmap_ymin ELSE refmap_ymax
+let refmap_xmid = ((refmap_xmin)+(refmap_xmax))/2
+let refmap_ymid = ((refmap_ymin)+(refmap_ymax))/2
+
+IF ($refmap_type%|box>1|*>0) THEN    ! IF "box"
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xmin+(i-i),refmap_yrng
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xmax+(i-i),refmap_yrng
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xrng,refmap_ymin+(i-i)
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xrng,refmap_ymax+(i-i)
+
+ELIF ($refmap_type%|xline>1|*>0) THEN    ! ELSE IF "xline"
+
+  IF ($refmap_ycompress) THEN
+    let refmap_scale_ratio = ((($PPL$YMAX))-(($PPL$YMIN)))/((($PPL$XMAX))-(($PPL$XMIN)))
+    let refmap_arrow_out  = ((($PPL$YMAX))-(($PPL$YMIN))) *.075
+    let refmap_arrow_up = refmap_arrow_out * refmap_scale_ratio * 0.125
+    let refmap_arrow_y = IF i EQ 1 THEN refmap_ymid-refmap_arrow_out ELSE refmap_ymid+refmap_arrow_out
+    let refmap_arrow_x1 = IF i EQ 1 THEN refmap_xmid-refmap_arrow_up ELSE refmap_xmid+refmap_arrow_up
+    let refmap_arrow_x2 = IF i EQ 1 THEN refmap_xmid+refmap_arrow_up ELSE refmap_xmid-refmap_arrow_up
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xmid+(i-i),refmap_yrng
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x1,refmap_arrow_y
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x2,refmap_arrow_y
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x1,refmap_ymax+(i-i)
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x1,refmap_ymin+(i-i)
+  ENDIF
+
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xrng, refmap_ymid+(i-i)
+
+ELIF ($refmap_type%|yline>1|*>0) THEN    ! ELSE IF "yline"
+
+  IF ($refmap_xcompress) THEN
+    let refmap_scale_ratio = ((($PPL$YMAX))-(($PPL$YMIN)))/((($PPL$XMAX))-(($PPL$XMIN)))
+    let refmap_arrow_out  = ((($PPL$XMAX))-(($PPL$XMIN))) *.05
+    let refmap_arrow_up = refmap_arrow_out * refmap_scale_ratio * 0.25
+    let refmap_arrow_x = IF i EQ 1 THEN refmap_xmid-refmap_arrow_out ELSE refmap_xmid+refmap_arrow_out
+    let refmap_arrow_y1 = IF i EQ 1 THEN refmap_ymid-refmap_arrow_up ELSE refmap_ymid+refmap_arrow_up
+    let refmap_arrow_y2 = IF i EQ 1 THEN refmap_ymid+refmap_arrow_up ELSE refmap_ymid-refmap_arrow_up
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xrng,refmap_ymid+(i-i)
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x,refmap_arrow_y1
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x,refmap_arrow_y2
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xmax+(i-i),refmap_arrow_y1
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xmin+(i-i),refmap_arrow_y1
+  ENDIF
+
+  plot/over/vs/nolab/line=8/i=1:2 refmap_xmid+(i-i),refmap_yrng
+
+ELSE				 ! "point"
+  IF `($refmap_xcompress) and ($refmap_ycompress)` THEN
+    let refmap_scale_ratio = ((($PPL$YMAX))-(($PPL$YMIN)))/((($PPL$XMAX))-(($PPL$XMIN)))
+    let refmap_arrow_out  = ((($PPL$XMAX))-(($PPL$XMIN))) *.025
+    let refmap_arrow_up = refmap_arrow_out * refmap_scale_ratio * 0.5
+    let refmap_arrow_x = IF i EQ 1 THEN refmap_xmid-refmap_arrow_out ELSE refmap_xmid+refmap_arrow_out
+    let refmap_arrow_y1 = IF i EQ 1 THEN refmap_ymid-refmap_arrow_up ELSE refmap_ymid+refmap_arrow_up
+    let refmap_arrow_y2 = IF i EQ 1 THEN refmap_ymid+refmap_arrow_up ELSE refmap_ymid-refmap_arrow_up
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xrng,refmap_ymid+(i-i)
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xmax+(i-i),refmap_arrow_y1
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xmin+(i-i),refmap_arrow_y1
+
+    let refmap_arrow_up = refmap_arrow_out * refmap_scale_ratio * 0.5
+    let refmap_arrow_y = IF i EQ 1 THEN refmap_ymid-refmap_arrow_out ELSE refmap_ymid+refmap_arrow_out
+    let refmap_arrow_x1 = IF i EQ 1 THEN refmap_xmid-refmap_arrow_up ELSE refmap_xmid+refmap_arrow_up
+    let refmap_arrow_x2 = IF i EQ 1 THEN refmap_xmid+refmap_arrow_up ELSE refmap_xmid-refmap_arrow_up
+    plot/over/vs/nolab/line=8/i=1:2 refmap_xmid+(i-i),refmap_yrng
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x1,refmap_ymax+(i-i)
+    plot/over/vs/nolab/line=8/i=1:2 refmap_arrow_x1,refmap_ymin+(i-i)
+  ENDIF
+
+  define axis/x=0:720:.01 x01
+  define axis/y=-90:90:.01 y01
+  define grid/x=x01/y=y01 g01
+  set grid g01
+  ppl markh 1,.2
+  plot/sym=2/line=8/over/vs/nolab refmap_xmid, refmap_ymid   ! lat and lon position marked
+  set grid abstract     ! needless cleanup
+
+ENDIF
+
+
+palette rainbow

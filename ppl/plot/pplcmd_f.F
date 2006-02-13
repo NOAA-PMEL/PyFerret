@@ -763,6 +763,7 @@ C     YVALOFF
          err_msg = 'Offset must be an integer'
          CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
       ENDIF
+      GOTO 10
 
 C     ORIGIN
 4600	IF(IFLG1)XORG=P(1)

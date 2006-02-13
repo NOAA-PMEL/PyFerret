@@ -47,6 +47,7 @@
 * rev. 0.1 - 2/16/89 - TM_SECS_TO_DATE --> SECS_TO_DATE
 * V300 4/93 - crash if precision exceeds 6
 * V530: *acm* 12/00 add calendar types; cal_id
+* v590 - SECS_TO_DATE --> SECS_TO_DATE_OUT for better formatting
 
 * Arguments:
 *	grid	 - grid containing a time axis
@@ -55,18 +56,13 @@
 *			(use ABS(precision) - neg. indicates truncate left 0's)
 *	date	 - returned string containing date in ASCII form
 *
-#ifdef unix
+
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
+
 
 * calling argument declarations
 	CHARACTER*(*)	date
@@ -74,7 +70,7 @@
 	REAL*8		tstep
 *
 * Local definitions
-	CHARACTER*20	SECS_TO_DATE, buff
+	CHARACTER*20	SECS_TO_DATE_OUT, buff, dms
 	INTEGER		axis, status, prec,
      .                  TM_GET_CALENDAR_ID, cal_id
 	REAL*8		start_secs, offset_secs, this_secs
@@ -115,18 +111,8 @@
 !	this_secs = ( DNINT(this_secs/prec_fact(prec)) + 0.5 ) * prec_fact(prec)
 
 * Convert to date
-	buff = SECS_TO_DATE(this_secs, cal_id)
+	date = SECS_TO_DATE_OUT(this_secs, cal_id, prec)
 
-* Select the requested precision
-	IF ( prec .GT. 6 ) THEN		! full precision
-	   date = buff
-	ELSEIF ( prec .GE. 3 ) THEN	! dd-mmm-$_...
-	   date = buff( :date_str_len(prec) )
-	ELSEIF ( prec .EQ. 2 ) THEN	! mmm-$_
-	   date = buff( 4:11 )	
-	ELSE				! $_
-	   date = buff( 8:11 )	
-	ENDIF
 
 * Finished
 	RETURN

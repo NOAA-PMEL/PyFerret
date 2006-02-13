@@ -117,6 +117,7 @@ reverse_grid_axis_sub.F\
 secs_from_bc.F\
 secs_to_date.F\
 secs_to_date_c.F\
+secs_to_date_out.F\
 secs_to_tstep.F\
 sort_list.F\
 shellr.F\

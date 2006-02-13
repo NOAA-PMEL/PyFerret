@@ -62,8 +62,18 @@ elif `dxymin lt 0.25` then
   SAY "point G"
 endif
 
+! an entire IF ELSE ENDIF inside an IF clause which is not to be executed
 
+IF `($xend) GT 360` THEN
+   IF 1 THEN
+        say "this if block should not execute at all"
+   ELSE
+        say "this ELSE should ot execute either"
+   ENDIF
+ELSE
+  say "this is the ELSE that should execute"
+ENDIF
 
-! ELIF sytax
+! ELIF examples
 
 go non_std_refmap 122.0 228.5 5 5 xline 0

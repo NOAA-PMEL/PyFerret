@@ -96,6 +96,12 @@
 * ... restore context prior to REPEAT loop (along repeat axis only)
            axis = cs_axis( csp )
            cx_by_ss(axis,cx_last) = cs_save_by_ss( csp )
+
+           IF (axis .eq. t_dim) THEN
+              cx_calendar(cx) = .FALSE.
+              cx_cal_id(cx) = unspecified_int4
+           ENDIF
+
            IF ( cs_save_by_ss( csp ) ) THEN
               cx_lo_ss (cx_last,axis) = cs_save_lo( csp )
               cx_hi_ss (cx_last,axis) = cs_save_hi( csp )

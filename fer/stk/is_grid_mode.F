@@ -82,6 +82,8 @@
 	  cx_hi_ww(idim,cx) = unspecified_val8
 	  cx_delta(idim,cx) = unspecified_val8
  100	CONTINUE
+        cx_calendar(cx) = .FALSE.
+        cx_cal_id(dest_cx) = unspecified_int4
 
 * diagnostic alert
 	IF ( mode_diagnostic )

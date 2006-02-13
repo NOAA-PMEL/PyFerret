@@ -106,6 +106,7 @@
      .		    err_ww_lims = -88 )
 
 * initialize
+
 	grid = cx_grid( cx )
 	cat  = cx_category(cx)
 	var  = cx_variable(cx)
@@ -203,9 +204,10 @@ c                status = err_ww_lims
 
 * also fix the world limits for cx_cmnd, if they were originally set 
 * using default calendar
-* Fix for bug 1365: if the limits for cx_cmnd were not set, do not set them here!
+* Fix for bug 1365: if the limits for cx_cmnd were not set, do not set them here
 
-              IF ( (cx_cal_id(cx_cmnd) .NE. unspecified_int4)  .AND.
+              IF ( (cx_lo_ww(idim,cx_cmnd) .NE. unspecified_int8)  .AND.
+     .             (cx_cal_id(cx_cmnd) .NE. unspecified_int4)  .AND.
      .             (cal_id .NE. prev_cal_id) ) THEN   
                   cx_lo_ww(idim,cx_cmnd) = -1*new_lo_ww
                   cx_hi_ww(idim,cx_cmnd) = -1*new_hi_ww

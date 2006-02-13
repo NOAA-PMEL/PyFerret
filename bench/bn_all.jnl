@@ -480,6 +480,9 @@ GO bn_reset
 GO bn_deg_min.jnl
 
 GO bn_reset
+GO bn_dp_readscale.jnl
+
+GO bn_reset
 GO bn590_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92

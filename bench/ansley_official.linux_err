@@ -1,13 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     59870893 Feb  8 09:38 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     59871290 Feb 13 11:56 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  further IF- parsing fixes, nested IF inside an IF clause that is not executed. Also: fix to restore scale defaults in tm_close_set.F (changes many bn outputs!)
-also: bug 1376, in labels and listings, if year is not listed because its modulo, remove extra spaces
-also: bug 1077 had not been fixed for linux: handle arg-tests by QUERY as errors, if the test fails
-Also: in NC reads, apply user-given offset to 1-D double precision variable, then convert to single precision
+Note:  new benchmark test bn_dp_readscale tests XVALOFF and YVALOFF; a new test added to err581_if_conditional.jnl
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -24,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/linux/ext_func/libs
-Beginning at Wed Feb 8 09:48:01 PST 2006
+Beginning at Mon Feb 13 12:16:25 PST 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -651,4 +648,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Feb 8 09:50:51 PST 2006
+Ended at Mon Feb 13 12:19:11 PST 2006

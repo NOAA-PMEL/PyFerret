@@ -68,12 +68,19 @@
 * V581_01 8/12/05 *acm* minor revisions (not released)
 * 5.812 10/5/05  *acm* bug fixes thru now...
 * 5.813 12/13/05  *acm* fix for bug 1368
+* 5.814  2/08/06  *acm* Fixes:
+*                 further IF- parsing fixes, nested IF inside an IF clause that is not executed. 
+*                 fix to restore scale defaults in tm_close_set.F (changes many bn outputs!)
+*                 bug 1376, in labels and listings, if year is not listed because its modulo, remove extra spaces
+*                 bug 1077 had not been fixed for linux: handle arg-tests by QUERY as errors, if the test fails
+*                 in NC reads, apply user-given offset to 1-D double precision variable, then convert to single precision
+
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  5.813   /
+	DATA revision_level	/  5.814   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

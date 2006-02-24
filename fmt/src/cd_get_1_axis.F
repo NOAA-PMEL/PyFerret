@@ -123,7 +123,7 @@
 *                  comparison, in section testing positive=down.
 * V581 *acm*  5/05 Fix bug 1231: check 'TT and 'TI' when applying tregular
 * V581 *acm*  5/05 Fix bug 1232: if tregular, then dont try to use bounds
-* V581*acm*  6/05  For fix to bug 1271, add flag line_shift_origin marking hack to shift axes 
+* V581*acm*  6/05  Fix for bug 1271, add flag line_shift_origin marking hack to shift axes 
 *                   starting on 1-1-0001 (CDC files)
 * V590 *acm* 10/05 TM_CHECK_BNDS_ATTRIB and TM_CHEC_EDGES_ATTRIB should not have 
 *                  npts as an argument; npts from axis length was being reset

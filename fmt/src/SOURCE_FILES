@@ -118,6 +118,7 @@ tm_deallo_dyn_line_sub.F\
 tm_dfpeq.F\
 tm_dfpeq_tol.F\
 tm_digit.F\
+tm_digit_test.F\
 tm_dset_number.F\
 tm_dset_deallo_grids.F\
 tm_dset_use_grids.F\

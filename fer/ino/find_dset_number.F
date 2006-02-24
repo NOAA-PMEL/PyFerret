@@ -60,6 +60,7 @@
 * v540 *acm* 10/01  remove VMS include statements
 * v551 *acm* 1/03  Also check for extension .NC along with .DES, .CDF
 * v580 *acm*11/04  Fix bug 1102; under linux, var[d=5coads] is read as dset=5
+* v590 *acm* 2/06  fix bug 1392, cancelling datasets
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -72,15 +73,15 @@
 	CHARACTER*(*)	dname
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_HAS_STRING,
+	LOGICAL		TM_DIGIT_TEST, TM_HAS_STRING,
      .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
      .			vax_code, dset, full_len, short_len
-	CHARACTER	buff*256
+	CHARACTER	TM_INQ_PATH*256, buff*256
 	CHARACTER*13	TM_STRING, buff13, vbuff
         REAL*8          val
 
-	IF ( TM_DIGIT( dname ) ) THEN
+	IF ( TM_DIGIT_TEST( dname ) ) THEN
 
 	   buff = dname				! buffer for AIX
 * *kob* 3/99 - change the err= to go to 50 rather than 500 - this is so a
@@ -103,19 +104,22 @@ c *kob* 4/97
 	   vax_code = STR_CASE_BLIND_COMPARE( vbuff, buff(1:13) )
 	   IF (  vax_code .NE. vms_str_success ) GOTO 50
 
-	   GOTO 200
+	   GOTO 400
 	ENDIF
 
 * 5/93 locate "true" end to the given filename (.des, .cdf, and .nc are invisible)
 * note: filenames are always in CAPS since they may be embedded in the var defn
+
+           cdf_name = .FALSE.
+           des_name = .FALSE.
+           nc_name  = .FALSE.
+
  50	   full_len = TM_LENSTR1( dname )
 	   IF ( full_len .GT. 4 ) THEN
 	      cdf_name = dname(full_len-3:full_len) .EQ. '.cdf'
      .        .OR. dname(full_len-3:full_len) .EQ. '.CDF'
 	      des_name = dname(full_len-3:full_len) .EQ. '.des'
      .        .OR. dname(full_len-3:full_len) .EQ. '.DES'
-	      nc_name = dname(full_len-2:full_len) .EQ. '.nc'
-     .        .OR. dname(full_len-2:full_len) .EQ. '.NC'
 	   ELSE
 	      cdf_name = .FALSE.
 	      des_name = .FALSE.
@@ -126,6 +130,11 @@ c *kob* 4/97
 	   ELSE
 	      short_len = full_len
               full_name_used = .TRUE.
+	   ENDIF
+
+	   IF ( full_len .GT. 3 ) THEN
+	      nc_name = dname(full_len-2:full_len) .EQ. '.nc'
+     .        .OR. dname(full_len-2:full_len) .EQ. '.NC'
 	   ENDIF
 	   IF ( nc_name ) THEN
 	      short_len = full_len - 3
@@ -143,26 +152,71 @@ c *kob* 4/97
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_name(dset),
      .						    dname(1:short_len) )
 	         IF (  vax_code .EQ. vms_str_success
-     .	        .AND. (cdf_name .OR. full_name_used) ) GOTO 200
+     .	        .AND. (cdf_name .OR. full_name_used) ) GOTO 400
 
 	      ELSEIF ( TM_HAS_STRING(ds_type(dset),'GT')) THEN	
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_name(dset),
      .						    dname(1:short_len) )
 	         IF (  vax_code .EQ. vms_str_success
-     .	        .AND. (des_name .OR. full_name_used) ) GOTO 200
+     .	        .AND. (des_name .OR. full_name_used) ) GOTO 400
 
 	      ELSE     ! EZ data set - any filename extension allowed
 	         vax_code = STR_CASE_BLIND_COMPARE( ds_name(dset),
      .						    dname(1:full_len) )
-	         IF (  vax_code .EQ. vms_str_success ) GOTO 200
+	         IF (  vax_code .EQ. vms_str_success ) GOTO 400
 
 	      ENDIF
 
  100	   CONTINUE
+
+* Is the name a full path name?
+
+	   DO 200 dset = 1, maxdsets
+
+	      IF ( ds_des_name(dset) .EQ. char_init256) GOTO 200
+
+* special name match checks to account for implied .cdf or .des   5/93
+	      IF ( TM_HAS_STRING(ds_type(dset),'CDF')) THEN
+	         vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
+     .						    dname )
+	         IF (  vax_code .EQ. vms_str_success
+     .	        .AND. (cdf_name .OR. full_name_used) ) GOTO 400
+
+	      ELSEIF ( TM_HAS_STRING(ds_type(dset),'GT')) THEN	
+	         vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
+     .						    dname )
+	         IF (  vax_code .EQ. vms_str_success
+     .	        .AND. (des_name .OR. full_name_used) ) GOTO 400
+
+	      ELSE     ! EZ data set - any filename extension allowed
+	         vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
+     .						    dname(1:full_len) )
+	         IF (  vax_code .EQ. vms_str_success ) GOTO 400
+
+	      ENDIF
+
+ 200	   CONTINUE
+
+
+
+* Try TM_INQ_PATH and compare with full path names
+
+           buff = TM_INQ_PATH (dname, 'FER_DATA', '    ', .FALSE.,
+     .                              status)
+           IF (status .NE. ferr_ok) GOTO 500
+
+	   DO 300 dset = 1, maxdsets
+
+	      IF ( ds_des_name(dset) .EQ. char_init256) GOTO 300
+	      vax_code = STR_CASE_BLIND_COMPARE( ds_des_name(dset),
+     .						    buff )
+
+ 300	   CONTINUE
+
 	   GOTO 500
 
 * check for valid number given
- 200	IF ( dset .LT. 1 .OR. dset .GT. maxdsets ) GOTO 500
+ 400	IF ( dset .LT. 1 .OR. dset .GT. maxdsets ) GOTO 500
 	IF ( ds_name(dset) .EQ. char_init40 ) GOTO 500
 
 * success

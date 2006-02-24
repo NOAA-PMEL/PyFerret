@@ -52,6 +52,7 @@
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V580 9/04 *acm* - if units not given, assign general X or Y direction rather 
 *                   than WE or SN
+* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 
 * Arguments
 	LOGICAL		modulo
@@ -71,7 +72,6 @@
 * out	outline	  - returned line
 
 * INCLUDE FILES
-#ifdef unix
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -81,15 +81,7 @@
 	include 'xunits.cmn_text'
 	external xgt_grid_data
 	include 'xrisc_buff.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:IMPLICIT.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-#endif
+
 *
 * Local definitions
 	INTEGER		TM_FIND_LIKE_DYN_LINE,
@@ -125,8 +117,9 @@
 	   IF ( since_T0 .GT. 2 ) THEN
 	     line_units(inline) = units(:since_T0-1) ! just the "units" part 
 	     IF ( TM_LENSTR1(units) .GT. since_T0 + 5 ) THEN
-	       CALL TM_DATE_REFORMAT(units(since_T0+6:),pdate_numslashnum,
-     .				     line_t0(inline), pdate_vax, status )
+	       CALL TM_DATE_REFORMAT(units(since_T0+6:),
+     .				     pdate_numslashnum, line_t0(inline),
+     .                               pdate_vax, .TRUE., status )
 	       IF ( status .NE. merr_ok ) GOTO 9000
 	     ENDIF
 	   ENDIF

@@ -1,6 +1,6 @@
 	SUBROUTINE TM_BREAK_FMT_DATE (form, date, cal_id, 
      .                                year, month, day, hour, minute, 
-     .                                second, status)
+     .                                second, do_err, status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -47,6 +47,7 @@
 * 
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V551 *acm*  2/03 - fix bug where seconds were wiped out. See cc comments
+* V590 *acm* 2/06 - Fix for bug 1394, do err msg only if do_err flag true
 
 
 * ARGUMENT DEFINITIONS
@@ -60,18 +61,15 @@
      .          cal_id
 *
 * INCLUDE FILES
-#ifdef unix
+
 	include 'tmap_errors.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'xrisc_buff.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-#endif
+
 
 * internal variable declarations:
+        LOGICAL do_err
 	INTEGER slen
 	PARAMETER ( slen = 32)
 	INTEGER TM_LENSTR1, TM_BREAK_FMT_DATE_C, dlen
@@ -124,10 +122,17 @@ cc	   second = NINT(fsecond)	! information loss ...
 * error exits
  5000	RETURN
  5100	risc_buff = date(:dlen)
-        CALL TM_ERRMSG (merr_badtimedef, status, 'TM_BREAL_FMT_DATE',
+        IF (do_err) THEN
+          CALL TM_ERRMSG (merr_badtimedef, status, 'TM_BREAK_FMT_DATE',
      .			unspecified_int4, no_stepfile,
      .			'syntax error in "'//risc_buff,
      .			no_errstring, *5000)
+        ELSE
+           CALL WARN (
+     .       'cannot parse "units since date", date= "'//risc_buff//'"')
+           status = merr_badtimedef
+        ENDIF
+          
 
 	END
 

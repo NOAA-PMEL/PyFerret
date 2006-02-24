@@ -65,8 +65,9 @@
 * v541 *sh* 2/02 - added support for line_modulo_len
 * V550 *ACM* 12/02 Write AXIS attribute to output files.
 * V570 *acm*  5/04 write bounds attribute and bounds 2xN coordinates to NetCDF files
-* V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
+* V581 *acm* 6/05 - Fix for bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -222,7 +223,7 @@
             ENDIF
             CALL TM_DATE_REFORMAT(datebuff,pdate_vax,cal_id,
      .				  units(slen+8:),pdate_numslashnum,
-     .				  status )
+     .				  .TRUE., status )
 
 	    IF ( status .NE. merr_ok ) GOTO 5900
 	ENDIF

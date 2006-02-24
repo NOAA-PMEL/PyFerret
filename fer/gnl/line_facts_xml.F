@@ -46,6 +46,7 @@
 *            of line_modulo for modulo attribute!
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -130,7 +131,7 @@
                  ENDIF
                  
                  CALL TM_DATE_REFORMAT (buff, 1, cal_id, outbuff, 2,
-     .                                  status) 
+     .                                  .TRUE., status) 
                  slen = TM_LENSTR1(outbuff)
                  llen = TM_LENSTR1(risc_buff)
                  WRITE (risc_buff(llen+1:), 2035) outbuff(:slen)
@@ -171,13 +172,13 @@
 
            IF (calendar) THEN
               CALL TM_DATE_REFORMAT (lo_str, 1, cal_id, outbuff, 2,
-     .                                  status) 
+     .                               .TRUE., status) 
               slen = TM_LENSTR1(outbuff)
               WRITE ( risc_buff, 2100 ) outbuff(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               CALL TM_DATE_REFORMAT (hi_str, 1, cal_id, outbuff, 2,
-     .                                  status) 
+     .                               .TRUE., status) 
               slen = TM_LENSTR1(outbuff)
               WRITE ( risc_buff, 2110 ) outbuff(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

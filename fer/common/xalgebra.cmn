@@ -7,6 +7,7 @@
 * V510: *sh* reordered elements to avoid "padding before alg_4d_trans"
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 * V554 3/04 *acm* - reorder items in the common block to avoid warning msg when compiling
+* V591 2/06 *acm* - reorder items again, to avoid warning msg when compiling
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,
@@ -29,46 +30,50 @@
      .			offset_logic_struc = num_operators + num_functions )
 
 	COMMON / XALGEBRA /
-     .				alg_num_fcn_args, 
-     .				alg_trans_its_int,
-     .				alg_trans_has_arg,
      .				alg_trans_dflt_arg,
-     .				alg_trans_num,
+     .				alg_num_fcn_args,
+     .				alg_fcn_arg_ptr,
+     .				alg_trans_num, 
      .				alg_4d_trans,
      .				alg_1d_to_4d,
      .				num_4d_trans,
-     .                          csp_cvar,
-     .				alg_fcn_arg_ptr,
-     .				alg_op, 
-     .				alg_fcn, 
+     .				alg_pvar_head,
+     .				alg_pvar_padding,
+     .				countervar_name_head,
+     .				countervar_name_padding,
+     .				csp_cvar,
+     .				alg_trans_its_int,
+     .				alg_trans_has_arg,
+     .				alg_op,
+     .				alg_fcn,	 
+     .				alg_fcn_descr,
      .				alg_punct,
      .				alg_struct,
-     .
-     .                          alg_pvar_head,
-     .                          alg_pvar_padding,
      .				alg_pvar,
-     .
-     .				alg_trans_text,
-     .				alg_trans_title,
+     .				alg_cvar,
+     .				countervar_name,
+     .				alg_trans_text,	 
+     .				alg_trans_title,	 
      .				alg_regrid_code,
      .				alg_regrid_title,
-     .				alg_fcn_descr,
      .				alg_arg_name,
      .				alg_arg_units,
-     .				alg_arg_descr,
-     .                          alg_cvar,
-     .
-     .                          countervar_name_head,
-     .                          countervar_name_padding,
-     .                          countervar_name
+     .				alg_arg_descr
 
-
-	INTEGER		alg_num_fcn_args ( num_functions ),
+	REAL		alg_trans_dflt_arg( num_transforms )
+        INTEGER		alg_num_fcn_args ( num_functions ),
      .			alg_fcn_arg_ptr  ( num_functions )
 	INTEGER		alg_trans_num	 ( num_transforms )
+	INTEGER		alg_4d_trans	 ( max_4d_trans ),
+     .			alg_1d_to_4d	 ( max_4d_trans ),
+     .			num_4d_trans,
+     .                  alg_pvar_head,
+     .                  alg_pvar_padding,
+     .                  countervar_name_head,
+     .                  countervar_name_padding
+        INTEGER         csp_cvar         ( num_counter_vars )
 	LOGICAL		alg_trans_its_int( num_transforms ),
      .			alg_trans_has_arg( num_transforms )
-	REAL		alg_trans_dflt_arg( num_transforms )
 	CHARACTER*4	alg_op           ( num_operators )
 	CHARACTER*8	alg_fcn	         ( num_functions )
 	CHARACTER*80	alg_fcn_descr    ( num_functions )
@@ -77,24 +82,15 @@
 	CHARACTER*8	alg_pvar         ( num_pseudo_vars )
 	CHARACTER*128	alg_cvar         ( num_counter_vars )
         CHARACTER*128   countervar_name  ( num_counter_vars )
-        INTEGER         csp_cvar         ( num_counter_vars )
 	CHARACTER*3	alg_trans_text	 ( num_transforms )
 	CHARACTER*20	alg_trans_title	 ( num_transforms )
 !	CHARACTER*3	alg_regrid_code	 ( max_regrid_trans )   ! chg 11/95
 	CHARACTER*6	alg_regrid_code	 ( max_regrid_trans )
 	CHARACTER*12	alg_regrid_title ( max_regrid_trans )
-	INTEGER		alg_4d_trans	 ( max_4d_trans ),
-     .			alg_1d_to_4d	 ( max_4d_trans ),
-     .			num_4d_trans,
-     .                  alg_pvar_head,
-     .                  alg_pvar_padding,
-     .                  countervar_name_head,
-     .                  countervar_name_padding
 
 
 	CHARACTER	alg_arg_name	 ( max_fcn_args )*80,
      .			alg_arg_units	 ( max_fcn_args )*24,
      .			alg_arg_descr	 ( max_fcn_args )*64
-
 
 

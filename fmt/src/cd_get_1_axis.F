@@ -130,6 +130,8 @@
 *                  as npts bounds or edges, which is npts+1
 * V590 *acm* 11/05 Fix bug 1363: As is already done for years, named calendar with unit=month 
 *                  gets assigned the length of month in that calendar.
+* V590 *acm*  2/06 Fix bug 1394: if the time units contain a "since" but the remainder of
+*                  the string is not a date, keep the whole units string.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -323,7 +325,7 @@
 * optional units for axis (may contain "tunits since T0_date" 2/95)
       line_units(iaxis) = ' '   ! default
       got_it = CD_GET_ATTRIB( cdfid, ivar, 'units', do_warn,
-     .                        vname(:vlen), buff, 48 )
+     .                        vname(:vlen), buff, 132 )
       since_T0 = MAX( INDEX(buff,'since'), INDEX(buff,'SINCE') )
       yyyymmdd_time = buff .EQ. 'yyyymmddhhmmss'
 
@@ -332,7 +334,8 @@
 
          istat = STR_UPCASE( dbuf, buff(1:3) )
 
-         IF ( TM_LENSTR1(buff) .GT. since_T0 + 5) THEN
+         slen = TM_LENSTR1(buff)
+         IF ( slen .GT. since_T0 + 5) THEN
             IF (buff(since_T0+6:since_T0+10) .EQ. '-4713' .AND.
      .          dbuf .EQ. 'DAY')  THEN
 
@@ -350,10 +353,23 @@ c               days_neg4713 = 2440000.D0
                days_neg4713 = 2440000.D0 - days_1901_may68
 
             ENDIF
+            got_torg = .TRUE.
             CALL TM_DATE_REFORMAT(buff(since_T0+6:),pdate_numslashnum,
      .                            cal_id, line_t0(iaxis), 
-     .                            pdate_vax, status )
-            IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error 
+     .                            pdate_vax, .FALSE., status )
+
+c fix for bug 1394
+c If the part after since is not a date/time, just keep the whole
+c string as the units.  i.e., "days_since_event".
+
+c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error 
+
+            IF ( status .NE. merr_ok ) THEN   
+               line_units(iaxis) = buff(1:slen)
+               got_torg = .FALSE.
+               since_t0 = 0
+               status = merr_ok
+            ENDIF
 
 *  Append calendar name to units string.
 c           IF (cal_id .GT. GREGORIAN .AND. cal_id .le. max_calendars) THEN
@@ -363,7 +379,6 @@ c                line_units(iaxis) = line_units(iaxis)(:slen)//
 c     .                 '('//line_cal_name(iaxis)(:len_cal)//')'
 c           ENDIF
 
-            got_torg = .TRUE.
          ELSE
             since_t0 = 0        ! flag that no T0 was present
          ENDIF

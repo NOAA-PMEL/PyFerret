@@ -1,0 +1,30 @@
+! err581_cancel_data.jnl
+
+!  test fixes for bug 1392: 
+!  cancel data 0000_a.nc
+!  cancel data with a pathname, not just the dataset name
+
+let a = {1,5,6}
+save/clobber/file=0000_a.nc a
+set data 0000_a.nc
+can data 0000_a
+
+
+save/clobber/file="subdir/a.nc" a
+use "subdir/a.nc"
+sh data
+can data "subdir/a.nc"
+sh data
+save/clobber/file="subdir/0000_a.nc" a
+set data "subdir/0000_a.nc"
+sh data
+can dat 0000_a
+set data "subdir/0000_a.nc"
+can dat 0000_a.nc
+sh data
+set data "subdir/0000_a.nc"
+can dat "subdir/0000_a.nc"
+sh data
+
+sp rm -f subdir/a.nc
+sp rm -f subdir/0000_a.nc

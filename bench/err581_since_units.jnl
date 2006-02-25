@@ -1,0 +1,16 @@
+! err581_since_units.jnl
+! bug 1394: units of months_since_event 
+! the "since" causes Ferret to try to parse "event" as a 
+! date for time origin.  Change so that if its not a date,
+! we just keep the whole units string.
+! also increase length of strings in line_units array.
+
+def axis/t=1:3:1/unit="months_since_event" tax
+let a = t[gt=tax]
+save/clobber/file=a.nc a
+
+can var a
+can ax tax
+use a
+say `a,ret=tunits`
+list a

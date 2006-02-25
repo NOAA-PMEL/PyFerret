@@ -58,3 +58,15 @@ GO err581_cal_dates_output.jnl
 ! STOP on shade command when modulo-regridding a time-limited nonstd calendar 
 GO bn_reset
 GO err581_noleap_mod.jnl
+
+
+! bug 1392
+! CANCEL DATA errors
+GO bn_reset
+GO err581_cancel_data.jnl
+
+! bug 1394
+! parsing time units of "months_since_event"
+! CANCEL DATA errors
+GO bn_reset
+GO err581_since_units.jnl

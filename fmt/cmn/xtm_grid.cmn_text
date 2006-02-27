@@ -22,12 +22,13 @@
 * V570 *acm* 5/04  Remove line_has_edges; never used.
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V591 *acm* 2/06 - For bug 1394, increase size of line_units to 64
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
-	CHARACTER*64	line_name
+	CHARACTER*64	line_units, line_name
 	CHARACTER*32	line_cal_name
-	CHARACTER*16	line_units, grid_name
+	CHARACTER*16	grid_name
 	CHARACTER*2	line_direction, axis_orients
 	INTEGER		line_subsc1, line_dim, line_unit_code, grid_line,
      .			next_line_mem_pos, grid_use_cnt, grid_flink,

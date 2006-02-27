@@ -114,6 +114,7 @@
 * v551 *acm*  1/03 Bug fix: datasets starting with digit not correctly cancelled.
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/04 - CANCEL AXIS/DEPTH as inverse to SET AXIS/DEPTH
+* V590: *acm* 2/06 - fix bug 1392: cancel dataset whose name starts with digit.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -156,8 +157,8 @@
      .			idim, iqual, iset, item, ivar, nth, mr,
      .			mode, cx, axis, grid, mod_cx,
      .                  TM_LENSTR, len_test, len_mchars
-	LOGICAL		MATCH4, TM_DIGIT, IS_TEMPLATE, MATCH_TEMPLATE,
-     .			report_error,
+	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE,
+     .			MATCH_TEMPLATE, report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims
 	CHARACTER	arg*4, buff*255, arg30*30
 
@@ -284,7 +285,7 @@
 	      buff = cmnd_buff(item_start(item):item_end(item))
 	      blen = item_end(item)-item_start(item)+1
 * interpret and check the data set specified
-	      IF ( TM_DIGIT(buff) ) THEN
+	      IF ( TM_DIGIT_TEST(buff) ) THEN
 	         arg30 = buff(:blen)			! 10/95 for AIX
 
 *  (1/03 *acm*) See xeq_set

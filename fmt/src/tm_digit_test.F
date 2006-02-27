@@ -38,7 +38,7 @@
 * test to see if the string can be read as a number
 
 * Ansley Manke 10/11/05
-* from TM_DIGIT_TEST.F
+* from tm_digit.F
 
 
 #include "gt_lib.parm"

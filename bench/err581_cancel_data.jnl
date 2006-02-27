@@ -9,6 +9,8 @@ save/clobber/file=0000_a.nc a
 set data 0000_a.nc
 can data 0000_a
 
+sp rm -f subdir/a.dat
+sp mkdir -p subdir
 
 save/clobber/file="subdir/a.nc" a
 use "subdir/a.nc"

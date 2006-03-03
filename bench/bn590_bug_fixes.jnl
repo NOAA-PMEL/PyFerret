@@ -70,3 +70,10 @@ GO err581_cancel_data.jnl
 ! CANCEL DATA errors
 GO bn_reset
 GO err581_since_units.jnl
+
+
+! bug 1395
+! parsing exponent expressions: 1.0e-5+0*7 misinterpreted
+! CANCEL DATA errors
+GO bn_reset
+GO err581_exp_spaces.jnl

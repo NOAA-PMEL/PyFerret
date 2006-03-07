@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     59990020 Mar  6 12:02 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     59989544 Mar  7 09:28 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: changes to parsex.F for less-picky parsing of arguments to ppl commands. space(s) or comma and space(s) separate elements
+Note: fix for bugs 439/1390 and fix for picky ppl parsing of commas and spaces in argument lists
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -22,11 +22,11 @@ FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/linux/ext_func/libs
 FER_LOCAL_EXTFCNS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Mar 6 12:05:21 PST 2006
+Beginning at Tue Mar 7 10:15:03 PST 2006
  	NOAA/PMEL TMAP
  	FERRET v5.814  
- 	Linux(g77) 2.4.21-32 - 03/06/06
- 	 6-Mar-06 12:05     
+ 	Linux(g77) 2.4.21-32 - 03/07/06
+ 	 7-Mar-06 10:15     
 
 yes? !bn500_all_shell
 yes? 
@@ -10289,8 +10289,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "5.814"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = " 6-Mar-06"
-SESSION_TIME = "12:05"
+SESSION_DATE = " 7-Mar-06"
+SESSION_TIME = "10:15"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10308,8 +10308,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "5.814"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = " 6-Mar-06"
-SESSION_TIME = "12:05"
+SESSION_DATE = " 7-Mar-06"
+SESSION_TIME = "10:15"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10317,8 +10317,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = " 6-Mar-06"
-SESSION_TIME = "12:05"
+SESSION_DATE = " 7-Mar-06"
+SESSION_TIME = "10:15"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10328,13 +10328,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = " 6-Mar-06"
-SESSION_TIME = "12:05"
+SESSION_DATE = " 7-Mar-06"
+SESSION_TIME = "10:15"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = " 6-Mar-06"
-SESSION_TIME = "12:05"
+SESSION_DATE = " 7-Mar-06"
+SESSION_TIME = "10:15"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10368,7 +10368,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 5.814"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Mar  6 2006 12:05:38 "
+LAB3 = "Mar  7 2006 10:15:20 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10467,8 +10467,8 @@ PPL$YPIXEL = "431"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "5.814"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
-SESSION_DATE = " 6-Mar-06"
-SESSION_TIME = "12:05"
+SESSION_DATE = " 7-Mar-06"
+SESSION_TIME = "10:15"
  
  
 GO bn_reset
@@ -18427,8 +18427,8 @@ contour/x=160E:160W/y=15s:25n/lev=(-1,1,.5)/xlimits=140e:110w:-9/ylimits=0:30N/t
 set grid gformat
 set mode calendar
 set view v31
-contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-rw-rw-r--    1 ansley   tmap        23054 Mar  6 12:05 bench.mgm
--rw-rw-r--    1 ansley   tmap       419402 Mar  6 12:05 bench.mgm
+contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-rw-rw-r--    1 ansley   tmap        23052 Mar  7 10:15 bench.mgm
+-rw-rw-r--    1 ansley   tmap       419383 Mar  7 10:15 bench.mgm
 -9/ylimits=1-jan-1978:1-jan-1984 sin(x/3)*sin(t/100)
 set view v32
 contour/x=160E:160W/t=1-jan-1980:1-jan-1982/lev=(-1,1,.25)/xlimits=140e:110w:-9/ylimits=28110:29115 sin(x/3)*sin(t/100)
@@ -25672,7 +25672,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  T5 = 50757969 ;
@@ -25693,7 +25693,7 @@ variables:
 		MY_VAR:long_name = "T[GT=T5]" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  T5 = 50757969, 50757974 ;
@@ -25701,7 +25701,7 @@ data:
  MY_VAR = 5.075797e+07, 5.075798e+07 ;
 }
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Mon Mar  6 12:06:32 PST 2006
+Tue Mar  7 10:16:18 PST 2006
 jnl
 ! *sh* 4/99
  
@@ -32171,6 +32171,7 @@ GO bn_flowlines
 ! 6/2001
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+! ACM 4/2006 new qualifier /LENGTH sets the length of the arrow heads
  
 set window/asp=1/siz=0.5
 use gtbc011
@@ -32178,6 +32179,11 @@ set reg/k=1/l=1/y=0:20
 vector/aspect u,v
  Using every   2th vector in the Y direction
 vector/flow/over  u,v
+ 
+! /LEN= for setting size of arrow heads
+vector/aspect u,v
+ Using every   2th vector in the Y direction
+vector/flow/over/len=10  u,v
  
 GO bn_reset
 cancel mode verify
@@ -32191,7 +32197,25 @@ vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+
  Using every   2th vector in the X direction
  Using every   2th vector in the Y direction
 flow/i=1:50/j=1:50/over/color=blue/thick/den=1 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
-flow/i=1:50/j=1:50/over/color=green/den=4 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+flow/i=1:50/j=1:50/over/color=green/den=4/len=20 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+ 
+! curvilinear flowline plots
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ 
+use coads_climatology
+go mp_sinusoidal
+set grid sst
+ 
+ 
+let fsst = missing(sst,5)
+let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
+ 
+set reg/l=1
+vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
+vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
  
 can mode meta
 set mode logo
@@ -33515,12 +33539,12 @@ list/nohead b            ! using rdstride
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:    18    20
- -DELETE A        M:140 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:131 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  rdstride A        C: 11 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     2     2
- -DELETE A        M:140 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
- nulrgd  A        M:140 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE A        M:132 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:131 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
+ nulrgd  A        M:131 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:123 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33537,9 +33561,9 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: A --> (G028)           @XACT
  strip moduloing A on X axis:     1    25
- reading A        M:128 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
+ reading A        M:122 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     1    20
- regrid  A        M:123 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  A        M:117 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G028)          (AX021)   NORMAL    NORMAL    NORMAL
  1    / 1:   1.0000
  4    / 2:   4.0000
@@ -33552,7 +33576,7 @@ list/nohead a[i=1:25:3]  ! no strides --> reads full region without strides
  25   / 9:   5.0000
 list/nohead b            ! reuse of cached result
  dealloc  dynamic grid (G028)          (AX021)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:123 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:117 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
  eval    EX#1     C:  4 I: -111 -111  J: -111 -111  K: -111 -111  L: -111 -111
@@ -33562,12 +33586,12 @@ list/nohead b            ! reuse of cached result
  strip moduloing A on X axis:    18    22
  rdstride A        C: 11 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:    18    20
- -DELETE A        M:123 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:117 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  rdstride A        C: 11 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing A on X axis:     2     2
- -DELETE A        M:123 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
- nulrgd  A        M:123 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE A        M:120 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:117 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
+ nulrgd  A        M:117 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M:113 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
  18   / 1:  18.0000
  20   / 2:  20.0000
@@ -33770,7 +33794,7 @@ list/nohead a[i=106:145:5]
 set mode diag
 list/nohead str[i=18:23:2] ! using rdstride
  dealloc  dynamic grid (G028)          (AX002)   NORMAL    NORMAL    NORMAL
- -DELETE A        M:107 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE A        M: 89 I:    1    8  J: -111 -111  K: -111 -111  L: -111 -111
  getgrid EX#1     C:  5 I:    1    1  J:    1    1  K:    1    1  L:    1    1
  allocate dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
  dealloc  dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
@@ -33781,12 +33805,12 @@ list/nohead str[i=18:23:2] ! using rdstride
  strip moduloing STR on X axis:    18    22
  rdstride STR      C:  9 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:    18    20
- -DELETE STR      M:107 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M: 89 I:   18   20  J: -111 -111  K: -111 -111  L: -111 -111
  rdstride STR      C:  9 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:     2     2
- -DELETE STR      M:107 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
- nulrgd  STR      M:107 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
- -DELETE STR      M: 98 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M: 89 I:    2    2  J: -111 -111  K: -111 -111  L: -111 -111
+ nulrgd  STR      M: 89 I:    1    3  J: -111 -111  K: -111 -111  L: -111 -111
+ -DELETE STR      M: 79 I:   18   22  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G022)          (AX009)   NORMAL    NORMAL    NORMAL
  18   / 1:"r"
  20   / 2:"t"
@@ -33803,9 +33827,9 @@ list/nohead str[i=1:25:3]  ! no strides --> reads full region without strides
  *** NOTE: Stride value not a factor of axis length
  strip regrid on X: STR --> (G028)           @XACT
  strip moduloing STR on X axis:     1    25
- reading STR      M: 98 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
+ reading STR      M: 79 I:    1   20  J: -111 -111  K: -111 -111  L: -111 -111
  doing moduloing STR on X axis:     1    20
- regrid  STR      M: 81 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
+ regrid  STR      M: 44 I:    1    9  J: -111 -111  K: -111 -111  L: -111 -111
  dealloc  dynamic grid (G028)          (AX021)   NORMAL    NORMAL    NORMAL
  1    / 1:"a"
  4    / 2:"d"
@@ -34120,34 +34144,7 @@ ppl list xaxis
          XAXIS QUALITIES
          LO=-3.14E+02 HI= 2.52E+02 TIC= 5.00E+01 LEN= 6.13E+00 CSIZE= 1.00E-01
           TOP AXIS= ON  BOTTOM AXIS= ON 
-         MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIGnetcdf test_string {
-dimensions:
-	XAX1_3 = 3 ;
-	STRING1_10 = 10 ;
-	STRING1_16 = 16 ;
-variables:
-	double XAX1_3(XAX1_3) ;
-		XAX1_3:point_spacing = "even" ;
-		XAX1_3:axis = "X" ;
-	char A(XAX1_3, STRING1_10) ;
-		A:long_name = "{\"hello\",\"goodbye\", \"wave to me\"}" ;
-	char B(STRING1_16) ;
-		B:long_name = "\"one line of text\"" ;
-
-// global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
-data:
-
- XAX1_3 = 1, 2, 3 ;
-
- A =
-  "hello",
-  "goodbye",
-  "wave to me" ;
-
- B = "one line of text" ;
-}
-=  2 NTIC= 10
+         MANUAL  NORMAL NMTC=  0 LINT=  2 LABEL= -1 NSIG=  2 NTIC= 10
          XORG= 0.00E+00  AUTO LABELLING
 ppl list yaxis
 
@@ -34402,32 +34399,34 @@ list a
              VARIABLE : {"hello"}
              FILENAME : test_string.cdf
              X        : 1
-        "hello"
-canc data test_string
- 
-let b = "one line of text"   !  note - b is scalar
-save/clobber/file=test_string.cdf b
- LISTing to file test_string.cdf
-canc var b
-use test_string
-sh dat test_string
-     currently SET data sets:
-    1> ./test_string.cdf  (default)
- name     title                             I         J         K         L
- B        "one line of text"               ...       ...       ...       ...
- 
-list b
-             VARIABLE : "one line of text"
-             FILENAME : test_string.cdf
-        "one line of text"
-canc data test_string
- 
-let a = {"hello","goodbye", "wave to me"}
-let b = "one line of text"
-save/clobber/file=test_string.cdf a,b
- LISTing to file test_string.cdf
-sp ncdump test_string.cdf
-savnetcdf test_string {
+   netcdf test_string {
+dimensions:
+	XAX1_3 = 3 ;
+	STRING1_10 = 10 ;
+	STRING1_16 = 16 ;
+variables:
+	double XAX1_3(XAX1_3) ;
+		XAX1_3:point_spacing = "even" ;
+		XAX1_3:axis = "X" ;
+	char A(XAX1_3, STRING1_10) ;
+		A:long_name = "{\"hello\",\"goodbye\", \"wave to me\"}" ;
+	char B(STRING1_16) ;
+		B:long_name = "\"one line of text\"" ;
+
+// global attributes:
+		:history = "FERRET V5.814    7-Mar-06" ;
+data:
+
+ XAX1_3 = 1, 2, 3 ;
+
+ A =
+  "hello",
+  "goodbye",
+  "wave to me" ;
+
+ B = "one line of text" ;
+}
+netcdf test_string {
 dimensions:
 	grid_definition = 1 ;
 	XAX1_19 = 19 ;
@@ -34451,7 +34450,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  GFP3 = "" ;
@@ -34484,7 +34483,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -34502,7 +34501,32 @@ data:
   "",
   "a" ;
 }
-e/append/file=test_string.cdf d
+     "hello"
+canc data test_string
+ 
+let b = "one line of text"   !  note - b is scalar
+save/clobber/file=test_string.cdf b
+ LISTing to file test_string.cdf
+canc var b
+use test_string
+sh dat test_string
+     currently SET data sets:
+    1> ./test_string.cdf  (default)
+ name     title                             I         J         K         L
+ B        "one line of text"               ...       ...       ...       ...
+ 
+list b
+             VARIABLE : "one line of text"
+             FILENAME : test_string.cdf
+        "one line of text"
+canc data test_string
+ 
+let a = {"hello","goodbye", "wave to me"}
+let b = "one line of text"
+save/clobber/file=test_string.cdf a,b
+ LISTing to file test_string.cdf
+sp ncdump test_string.cdf
+save/append/file=test_string.cdf d
  LISTing to file test_string.cdf
 let b2 = "two line of text"   ! the same string length as b
 save/append/file=test_string.cdf b2
@@ -34762,7 +34786,14 @@ list {"a","b","c"} EQ YSEQUENCE({"A","B","C"})  ! case insensitive
              VARIABLE : {"a","b","c"} EQ YSEQUENCE({"A","B","C"})
              SUBSET   : 3 by 3 points (X-Y)
               1        2        3     
-              1        2        3
+              1col1,col2,col3,col4,col5
+one,,1.1,24S,130E,,1e1,"word 1"
+    two,,2.2,24N,130W,2S,,"word 2"
+three,,3.3,24,130,3N,3e-2," wd 3 "
+
+five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
+extra line
+        2        3
  1   / 1:  1.00000  0.00000  0.00000
  2   / 2:  0.00000  1.00000  0.00000
  3   / 3:  0.00000  0.00000  1.00000
@@ -34785,14 +34816,7 @@ list/nohead "b" LE {"a","b","c"}
 list/nohead "b" EQ {"a","b","c"}
  1   / 1:  0.00000
  2   / 2:  1.00000
- 3   / 3:  0col1,col2,col3,col4,col5
-one,,1.1,24S,130E,,1e1,"word 1"
-    two,,2.2,24N,130W,2S,,"word 2"
-three,,3.3,24,130,3N,3e-2," wd 3 "
-
-five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
-extra line
-.00000
+ 3   / 3:  0.00000
 list/nohead "b" GE {"a","b","c"}
  1   / 1:  1.00000
  2   / 2:  1.00000
@@ -35258,7 +35282,12 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
  Column  4: V4 is V4 (degrees_north)(Latitude)
  Column  5: V5 is V5 (degrees_north)(Latitude)
  Column  6: V6 is V6 (degrees_north)(Latitude)
- Column  7: V7 is V7 (degrees_north)(Latitude)
+ Column  7: V7 is V7 (degrees_north)(Latitude)col1,col2,col3,col4,col5
+12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+
  Column  8: V8 is V8 (degrees_north)(Latitude)
  Column  9: V9 is V9 (degrees_north)(Latitude)
  Column 10: V10 is V10 (degrees_north)(Latitude)
@@ -35271,12 +35300,7 @@ list v1,v2,v3,v4,v5,v6,v7,v8,v9,v10
 6   / 6:......     ....     ....     ....     ....     ..........     ....
  
 ! read only the first line of the file
-spawn head -1 bn_delimitedcol1,col2,col3,col4,col5
-12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-_read_1.dat
+spawn head -1 bn_delimited_read_1.dat
 define axis/x=1:1:1 x1
 Replacing definition of axis X1
 define grid/x=x1 g1
@@ -35455,7 +35479,11 @@ list v1,v2,v3,v4,v5,v6,v7,v8
         V1  V2    V3       V4    V5 V6    V7       V8
 1   / 1:......  12.0000  13.7601......  12.0000  13.7601
 2   / 2:......   1.0037  14.7601......   1.0037  14.7601
-3   / 3:......     ....     ..........   2.0000  15.7500
+3   / 3:.....12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
+12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
+12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
+.     ....     ..........   2.0000  15.7500
 4   / 4:......   3.0000  16.7601......   3.0000  16.7601
 show data 2
      currently SET data sets:
@@ -35469,11 +35497,7 @@ show data 2
        (Time of day)
  V4       V4                               1:4       ...       ...       ...
        (Time of day)
- V5       V5                               1:4       ...       ...     12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
-12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
-12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
-12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
-  ...
+ V5       V5                               1:4       ...       ...       ...
        (Time of day)
  V6       V6                               1:4       ...       ...       ...
        (Time of day)
@@ -36744,7 +36768,7 @@ shade a[i=1:100:10]
  dealloc  dynamic grid (G014)          (AX002)   YAX1_100  NORMAL    NORMAL
 setting up 2D plot
  -DELETE A        M:  3 I:    1   10  J:    1  100  K: -111 -111  L: -111 -111
-PPL plot 284  complete
+PPL plot 288  complete
 ppl list stats
 
 
@@ -39871,8 +39895,7 @@ sh ax lon*
    Axis span (to cell edges) = 18.75 (modulo length = 360)
  LON_MODERR (meters)            5 r   0                    15
    Axis span (to cell edges) = 18.75
- LON_FAL		TIME:time_origin = "10-JUN-1996 04:03:36" ;
-SE LONGITUDE            5 r   1.875W(-1.875)       13.125E
+ LON_FALSE LONGITUDE            5 r   1.875W(-1.875)       13.125E
    Axis span (to cell edges) = 18.75
  LON_MOD_NOUNITS                5mr   0                    15
    Axis span (to cell edges) = 18.75 (modulo length = axis span)
@@ -40163,7 +40186,8 @@ cancel mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 GO err550_nc_seconds.jnl
-! err550_nc_seconds.jnl
+! err550_n		TIME:time_origin = "10-JUN-1996 04:03:36" ;
+c_seconds.jnl
 ! 2/12/03 ACM
  
 ! When the time origin is specified in a NetCDF file as
@@ -44296,7 +44320,7 @@ list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
       ... listing every  45th point
               1       46       91       136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996    
               1       46       91      136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996
- 1   / 1:  1.84147  1.90179  1.10599  0.20957  0.06355  0.80656  1.73321  1.96379  1.27939  0.32975  0.01642  0.63686  1.60205  1.99568  1.44406  0.47087  0.00001  0.47850  1.45208  1.99647  1.59486  0.62851  0.01484  0.33643  1.28799  1.96614  1.72708  0.79776  0.06044  0.21509  1.11490  1.90563  1.83659  0.97333  0.13539  0.11827  0.93823  1.81683  1.91997  1.14973  0.23734  0.04899  0.76349  1.70252  1.97461  1.32145  0.36312  0.00942  0.59613  1.56626  1.99881  1.48313  0.50879  0.00078  0.44139  1.41231  1.99181  1.62972  0.66981  0.02336  0.30409  1.24549  1.95383  1.75664  0.84114  0.07645  0.18854  1.07099  1.88605  1.85993  1.01743  0.15838  0.09833  0.89428  1.79060  1.93636  1.19318  0.26660  0.03629  0.72087  1.67045  1.98353  1.36289  0.39774  0.00434  0.55618  1.52936  1.99999  1.52127  0.54768  0.00350  0.40536  1.37174  1.98521  1.66336  0.71175  0.03379  0.27311  1.20250  1.93965  1.78474  0.8netcdf a {
+ 1   / 1:  1.84147  1.90179  1.10599  0.20957  0.06355  0.80656  1.73321  1.96379  1.27939  0.32975  0.01642  0.63686  1.60205  1.99568  1.44406  0.47087  0.00001  0.47850  1.45208  1.99647netcdf a {
 dimensions:
 	MONTH_IRREG = UNLIMITED ; // (12 currently)
 	bnds = 2 ;
@@ -44314,7 +44338,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44366,7 +44390,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44418,7 +44442,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44470,7 +44494,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -44513,7 +44537,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44567,7 +44591,7 @@ data:
   28, 28, 28,
   28, 28, 28 ;
 }
-8483  0.09426  0.16356  1.02694  1.86475  1.88160  1.06150  0.18301  0.08014  0.85054  1.76283
+  1.59486  0.62851  0.01484  0.33643  1.28799  1.96614  1.72708  0.79776  0.06044  0.21509  1.11490  1.90563  1.83659  0.97333  0.13539  0.11827  0.93823  1.81683  1.91997  1.14973  0.23734  0.04899  0.76349  1.70252  1.97461  1.32145  0.36312  0.00942  0.59613  1.56626  1.99881  1.48313  0.50879  0.00078  0.44139  1.41231  1.99181  1.62972  0.66981  0.02336  0.30409  1.24549  1.95383  1.75664  0.84114  0.07645  0.18854  1.07099  1.88605  1.85993  1.01743  0.15838  0.09833  0.89428  1.79060  1.93636  1.19318  0.26660  0.03629  0.72087  1.67045  1.98353  1.36289  0.39774  0.00434  0.55618  1.52936  1.99999  1.52127  0.54768  0.00350  0.40536  1.37174  1.98521  1.66336  0.71175  0.03379  0.27311  1.20250  1.93965  1.78474  0.88483  0.09426  0.16356  1.02694  1.86475  1.88160  1.06150  0.18301  0.08014  0.85054  1.76283
  2   / 2:  2.84147  2.90179  2.10599  1.20957  1.06355  1.80656  2.73321  2.96379  2.27939  1.32975  1.01642  1.63686  2.60205  2.99568  2.44406  1.47087  1.00001  1.47850  2.45208  2.99647  2.59486  1.62851  1.01484  1.33643  2.28799  2.96614  2.72708  1.79776  1.06044  1.21509  2.11490  2.90563  2.83659  1.97333  1.13539  1.11827  1.93823  2.81683  2.91997  2.14973  1.23734  1.04899  1.76349  2.70252  2.97461  2.32145  1.36312  1.00942  1.59613  2.56626  2.99881  2.48313  1.50879  1.00078  1.44139  2.41231  2.99181  2.62972  1.66981  1.02336  1.30409  2.24549  2.95382  2.75664  1.84114  1.07645  1.18854  2.07099  2.88605  2.85993  2.01743  1.15838  1.09833  1.89428  2.79060  2.93636  2.19318  1.26660  1.03629  1.72087  2.67045  2.98353  2.36289  1.39774  1.00434  1.55618  2.52936  2.99999  2.52127  1.54768  1.00350  1.40536  2.37174  2.98521  2.66336  1.71175  1.03379  1.27311  2.20250  2.93965  2.78474  1.88483  1.09426  1.16356  2.02694  2.86475  2.88160  2.06150  1.18301  1.08014  1.85054  2.76283
  
 can mode ignore
@@ -44746,27 +44770,7 @@ def axis/t/bounds tax={1.2,2,3.2,5,7,8.8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.
 def axis/t/bounds tax={0.1,2,3.2,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
  
 ! Last coordinate higher than last upper bound
-def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
- 
-! Too few or too many bounds values
-def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
-def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
- 
-cancel axis tax
- *** NOTE: Not deleted: TAX
- *** NOTE: Axis is in use by grid GFORMAT
-can mode ignore
- 
-! SAVE on regular time axis with bounds and edges attributes
- 
-use coads_climatology
-list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
-             DATA SET: ./coads_climatology.cdf
-             TIME: JAN to APR
-             LONGITUDE: 179W
-             LATITUDE: 1N
- Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
- Colunetcdf a {
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5netcdf a {
 dimensions:
 	COADSX81_81 = 1 ;
 	bnds = 2 ;
@@ -44801,7 +44805,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44866,7 +44870,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -44914,7 +44918,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -44972,7 +44976,27 @@ data:
   87, 88, 91, 92, 93, 94,
   132, 133, 136, 137, 138, 139 ;
 }
-mn  2: T is T (axis TIME4)
+,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+ 
+! Too few or too many bounds values
+def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+ 
+cancel axis tax
+ *** NOTE: Not deleted: TAX
+ *** NOTE: Axis is in use by grid GFORMAT
+can mode ignore
+ 
+! SAVE on regular time axis with bounds and edges attributes
+ 
+use coads_climatology
+list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst]
+             DATA SET: ./coads_climatology.cdf
+             TIME: JAN to APR
+             LONGITUDE: 179W
+             LATITUDE: 1N
+ Column  1: SST is SEA SURFACE TEMPERATURE (Deg C)
+ Column  2: T is T (axis TIME4)
  Column  3: TBOXLO is TBOXLO (axis TIME4)
  Column  4: TBOXHI is TBOXHI (axis TIME4)
  28.28  366.0000    0.7575  731.2425
@@ -46677,26 +46701,7 @@ LET SPEED_TPLV = 40
 LET SPEED_1DLV = 16
 LET SPEED_SCL = 100
 LET MAX_SPEED = SPEED[L=1:420@MAX]
-LET MAX_SPEED_TPLV = 40
-LET MAX_SPEED_1DLV = 16
-LET MAX_SPEED_SCL = 10
-LET MAX_ALL = HA_LC[L=1:420@MAX]
-LET MIN_MASK = IF MAX_ALL GT .001 THEN 1
-LET MAX_WAVE = MAX_ALL*MIN_MASK
-LET MAX_WAVE_TPLV = 500
-LET MAX_WAVE_1DLV = 400
-LET MAX_WAVE_SCL = 10
-LET SIG_WAVE = HA_LC[L=1:420] - MAX_WAVE
-LET MAX_TTIME = SIG_WAVE[L=1:420@LOC:0]
-LET THRESHOLD_PRCNT = .30
-LET NOISE_MASK = IF HA_LC[L=1:420] LE MAX_ALL*THRESHOLD_PRCNT THEN 0 ELSE 1
-LET ON_MASK = IF NOISE_MASK[L=1:420@RSUM] GE 1 THEN 0.5
-LET OFF_EVENTS = IF NOISE_MASK - NOISE_MASK[L=1:420@SHF:-1] LT 0 THEN 1 ELSE 0
-LET OFF_MASK = IF OFF_EVENTS[L=1:420@RSUM] LT 1 THEN 0.5
-LET WAVE1 = (ON_MASK+OFF_MASK)*HA_LC[L=1:420]
-LET FIRST_WAVE = WAVE1[L=1:420@MAX]*MIN_MASK
-LET FIRST_WAVE_TPLV = 500
-LET FIRST_WAVE             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+LET MAX_SPEED_TPLV              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -46747,7 +46752,26 @@ DATA:
 224.60300
 224.60350
 224.60400
-_1DLV = 400
+= 40
+LET MAX_SPEED_1DLV = 16
+LET MAX_SPEED_SCL = 10
+LET MAX_ALL = HA_LC[L=1:420@MAX]
+LET MIN_MASK = IF MAX_ALL GT .001 THEN 1
+LET MAX_WAVE = MAX_ALL*MIN_MASK
+LET MAX_WAVE_TPLV = 500
+LET MAX_WAVE_1DLV = 400
+LET MAX_WAVE_SCL = 10
+LET SIG_WAVE = HA_LC[L=1:420] - MAX_WAVE
+LET MAX_TTIME = SIG_WAVE[L=1:420@LOC:0]
+LET THRESHOLD_PRCNT = .30
+LET NOISE_MASK = IF HA_LC[L=1:420] LE MAX_ALL*THRESHOLD_PRCNT THEN 0 ELSE 1
+LET ON_MASK = IF NOISE_MASK[L=1:420@RSUM] GE 1 THEN 0.5
+LET OFF_EVENTS = IF NOISE_MASK - NOISE_MASK[L=1:420@SHF:-1] LT 0 THEN 1 ELSE 0
+LET OFF_MASK = IF OFF_EVENTS[L=1:420@RSUM] LT 1 THEN 0.5
+LET WAVE1 = (ON_MASK+OFF_MASK)*HA_LC[L=1:420]
+LET FIRST_WAVE = WAVE1[L=1:420@MAX]*MIN_MASK
+LET FIRST_WAVE_TPLV = 500
+LET FIRST_WAVE_1DLV = 400
 LET FIRST_WAVE_SCL = 10
 LET SIG_WAVE1 = WAVE1[L=1:420] - FIRST_WAVE
 LET FIRST_TTIME = SIG_WAVE1[L=1:420@LOC:0]
@@ -47249,7 +47273,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMar  6 2006 12:07:38
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASMar  7 2006 10:17:26
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -47731,32 +47755,7 @@ say 512 if bigger than 500
 say 1024 if bigger than 500
 1024
 say 2048 if bigger than 500
-say 4096 if bigger than 500
-say 8192 if bigger than 500
-say 16384 if bigger than 500
- 
-loop finished 16384 gt 10000
- 
-GO bn_reset
-cancel mode verify
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-GO bn_curv_mod.jnl
-! bn_curv_mod
-! Test of fill/mod and contour/mod
-! 5/24/2005 Ferret v5.81
- 
-! The dataset is a portion of example tripolar grid.
- 
-! use "/home/ja3/hankin/user/gfdl/tri_polar/mom4_grid_example.nc"
-! save/clobber/file=tripolar_subset.nc geolon_vert_t[j=150:174], geolat_vert_t[j=150:174], ht[j=150:173]
- 
-! Note that this coord data is actually cell edges and so
-! isnt really what one would use for FILL and CONTOUR commands --
- 
-use tripolar_subset.nc     ! Longitude range is -280 to 80
- 
-fill/mod/hlim=-180:180 hnetcdf a {
+say 4096 if bigger thnetcdf a {
 dimensions:
 	TIME = UNLIMITED ; // (2 currently)
 	bnds = 2 ;
@@ -47771,7 +47770,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -47796,7 +47795,7 @@ variables:
 		X_:long_name_mod = "axis ABSTRACT" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -47804,7 +47803,32 @@ data:
 
  X_ = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
 }
-t, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+an 500
+say 8192 if bigger than 500
+say 16384 if bigger than 500
+ 
+loop finished 16384 gt 10000
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_curv_mod.jnl
+! bn_curv_mod
+! Test of fill/mod and contour/mod
+! 5/24/2005 Ferret v5.81
+ 
+! The dataset is a portion of example tripolar grid.
+ 
+! use "/home/ja3/hankin/user/gfdl/tri_polar/mom4_grid_example.nc"
+! save/clobber/file=tripolar_subset.nc geolon_vert_t[j=150:174], geolat_vert_t[j=150:174], ht[j=150:173]
+ 
+! Note that this coord data is actually cell edges and so
+! isnt really what one would use for FILL and CONTOUR commands --
+ 
+use tripolar_subset.nc     ! Longitude range is -280 to 80
+ 
+fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
 contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
  
  
@@ -48052,9 +48076,7 @@ GO err580_long_dsettitle.jnl
 use longtitle1000.nc
 say `a,return=dsettitle`
  !-> MESSAGE/CONTINUE 
-1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
-
-123456789012345678901234567890123456789012345678901234567890123netcdf longtitle {
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901netcdf longtitle {
 dimensions:
 	XAX1_5 = 5 ;
 variables:
@@ -48068,7 +48090,7 @@ variables:
 		A:history = "From longtitle1000" ;
 
 // global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
+		:history = "FERRET V5.814    7-Mar-06" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48076,7 +48098,9 @@ data:
 
  A = 1, 2, 3, 4, 5 ;
 }
-4567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
  
 ! Set a dataset title over 80 characters.
 save/title="a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short.  "/clobber/file=longtitle.nc a
@@ -48299,7 +48323,24 @@ GO err580_cdc_timeaxis.jnl
 ! See comments under bug 1019.
 !
 ! CDC time axes have the convention that if the start date is 1-jan-0001:00:00 then
-! a shift of 2 days is made in year 1590.  Ferret corrects for this by resetting the
+! a shift of 2 days is made in year 1590.  Ferret corrects for this by resetting tnetcdf my_cdc_timeaxis {
+dimensions:
+	TCDC = UNLIMITED ; // (15 currently)
+variables:
+	double TCDC(TCDC) ;
+		TCDC:units = "DAYS since 0001-01-01 00:00:00" ;
+		TCDC:time_origin = "01-JAN-0001 00:00:00" ;
+		TCDC:axis = "T" ;
+	float A(TCDC) ;
+		A:missing_value = -1.e+34f ;
+		A:_FillValue = -1.e+34f ;
+		A:long_name = "SIN(T[GT=TCDC]/10000)" ;
+		A:history = "From t0_cdc" ;
+
+// global attributes:
+		:history = "FERRET V5.814    7-Mar-06" ;
+}
+he
 ! time origin back by 2 days.  This is ok for internal time coordinate computations,
 ! but the time origin written to the user and in cdf files is incorrect: 30-dec-0000
 !
@@ -48318,24 +48359,7 @@ def axis/t=1-jan-1990:1-feb-1990:1/units=days/t0="01-JAN-0001 00:00:00" tcdc
 let a = sin(t[gt=tcdc]/10000)
  
 save/clobber/file=t0_cdc.nc a
- LISTing to file t0_cdc.ncnetcdf my_cdc_timeaxis {
-dimensions:
-	TCDC = UNLIMITED ; // (15 currently)
-variables:
-	double TCDC(TCDC) ;
-		TCDC:units = "DAYS since 0001-01-01 00:00:00" ;
-		TCDC:time_origin = "01-JAN-0001 00:00:00" ;
-		TCDC:axis = "T" ;
-	float A(TCDC) ;
-		A:missing_value = -1.e+34f ;
-		A:_FillValue = -1.e+34f ;
-		A:long_name = "SIN(T[GT=TCDC]/10000)" ;
-		A:history = "From t0_cdc" ;
-
-// global attributes:
-		:history = "FERRET V5.814    6-Mar-06" ;
-}
-
+ LISTing to file t0_cdc.nc
 can var/all
 can axis tcdc
 use t0_cdc
@@ -48542,7 +48566,8 @@ list/j=1:2/k=1:2 axy
              VARIABLE : RESHAPE (A,RVAR)
              FILENAME : string4d.nc
              SUBSET   : 2 by 2 by 2 by 2 points (X-Y-Z-T)
-             1      2    
+             1      		:history = "FERRET V5.814    7-Mar-06" ;
+2    
              1      2
  ---- L:1 T:   1
  ---- K:1 Z:   1
@@ -48568,8 +48593,7 @@ list is_element_of_str (axy[k=1:2,j=1:2], "A10")
              FILENAME : string4d.nc
              X        : 1
           0.00000000
-list is_eleme		:history = "FERRET V5.814    6-Mar-06" ;
-nt_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
+list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
              VARIABLE : IS_ELEMENT_OF_STR (AXY[K=1:2,J=1:2], {"B0", "QQ", "d4", "m5"})
              FILENAME : string4d.nc
              X        : 1
@@ -48742,7 +48766,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "6-Mar-06:12:05"
+WIN_TITLE = "7-Mar-06:10:15"
  
 set win/title="set the title"
 sho sym win_title
@@ -48760,11 +48784,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :12:05"
+ !-> set win/title=" :10:15"
 set win/title="($session_date):($session_time)"
- !-> set win/title=" 6-Mar-06:12:05"
+ !-> set win/title=" 7-Mar-06:10:15"
 sh sym win_title
-WIN_TITLE = "_6-Mar-06:12:05"
+WIN_TITLE = "_7-Mar-06:10:15"
  
  
 GO bn_reset
@@ -49671,12 +49695,42 @@ list 1.0e-5+0*xx
  
 can mode ignore
  
+! bugs 439,1390: applying command context
+GO bn_reset.jnl
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err581_command_cx.jnl
+! err590_command_cx.jnl
+! bugs 439 and 1390: the command context should apply to immed. mode evaluation
+! only for action commands, not for commands like define
+ 
+use gt4d011
+def ax/np=`temp,r=lsize`/t=0:100 tax
+ !-> def ax/np=25/t=0:100 tax
+Replacing definition of axis TAX
+let n = `temp,r=lsize`
+ !-> DEFINE VARIABLE n = 25
+def ax/np=`n`/t=0:100 tax
+ !-> def ax/np=25/t=0:100 tax
+ 
+ 
+! but for an action command, the /I= should apply to the grave-accent
+! expression, correctly giving an error
+ 
+set mode ignore
+plot/i=100/k=1 temp[x=`temp,r=xend`]
+ !-> plot/i=100/k=1 temp[x=122.5W]
+ *** NOTE: Invalid I axis limits ignored: TEMP
+ 
+can mode ignore
+ 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.814  
- 	Linux(g77) 2.4.21-32 - 03/06/06
- 	 6-Mar-06 12:07     
+ 	Linux(g77) 2.4.21-32 - 03/07/06
+ 	 7-Mar-06 10:17     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -50386,8 +50440,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  8    /  8:  -7.00
  9    /  9:  -6.00
  10   / 10:  -5.00
- 11   / 11:  -4.00-rw-rw-r--    1 ansley   tmap        12704 Mar  6 12:07 testa.v5d
--rw-rw-r--    1 ansley   tmap        12704 Mar  6 12:07 test.v5d
+ 11   / 11:  -4.00-rw-rw-r--    1 ansley   tmap        12704 Mar  7 10:17 testa.v5d
+-rw-rw-r--    1 ansley   tmap        12704 Mar  7 10:17 test.v5d
 
  12   / 12:  -3.00
  13   / 13:  -2.00
@@ -50780,8 +50834,8 @@ stat mapped
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.814  
- 	Linux(g77) 2.4.21-32 - 03/06/06
- 	 6-Mar-06 12:07     
+ 	Linux(g77) 2.4.21-32 - 03/07/06
+ 	 7-Mar-06 10:17     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -50964,8 +51018,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v5.814  
- 	Linux(g77) 2.4.21-32 - 03/06/06
- 	 6-Mar-06 12:08     
+ 	Linux(g77) 2.4.21-32 - 03/07/06
+ 	 7-Mar-06 10:17     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -51078,4 +51132,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Mon Mar 6 12:08:01 PST 2006
+Ended at Tue Mar 7 10:17:51 PST 2006

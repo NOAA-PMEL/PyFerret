@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     59990020 Mar  6 12:02 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     59989544 Mar  7 09:28 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/tmap/ferret/linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: changes to parsex.F for less-picky parsing of arguments to ppl commands. space(s) or comma and space(s) separate elements
+Note: fix for bugs 439/1390 and fix for picky ppl parsing of commas and spaces in argument lists
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -22,7 +22,7 @@ FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/linux/ext_func/libs
 FER_LOCAL_EXTFCNS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Mar 6 12:05:21 PST 2006
+Beginning at Tue Mar 7 10:15:03 PST 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -587,6 +587,9 @@ LOAD vw_fft
 shade sst[x=@var,k=@var]
  **ERROR: illegal use of transformation:  not all dimensions present on grid
 shade sst[t=@AVE,Z=@ave]
+ **ERROR: dimensions improperly specified: specified data is not a line
+           - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
+plot/i=100/k=1 temp[x=122.5W]
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -649,4 +652,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Mar 6 12:08:01 PST 2006
+Ended at Tue Mar 7 10:17:51 PST 2006

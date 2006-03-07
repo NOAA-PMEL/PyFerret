@@ -114,7 +114,7 @@ C  Local declarations
      .     xtx, ytx, upsv, vpsv, xup, yup, xinterp, yinterp, 
      .     vel, velmean, sqsum, cos_factor, dx, dy, count, sd, xxc, yyc,
      .     upi, upj, upij, vpi, vpj, vpij, xfuser, yfuser, ylousr,
-     .     xlousr, xt, yt, xx1, yy1, xl, yl
+     .     xlousr, xt, yt, xx1, yy1, xl, yl, vfact
       INTEGER LNBLK, i, ii, jj, ii1, ij1, i2, j2, mx, my, ipt, acnt, icol, 
      .     scol, dis, iindex, jjndex, ii1index, iacc, iisav, iscl, imn, 
      .     jmn, j, iz, jz, iss, jss, imx, jmx, iln
@@ -186,6 +186,12 @@ C  Get mean velocity for scaling the arrows
       IF (count .GT. 0.) THEN
         velmean = velmean/ count
         sd = sqrt(sqsum/ count - velmean* velmean)
+      ENDIF
+
+      IF (vauto) THEN
+         vfact = 2./velmean
+      ELSE
+         vfact = 2./vusrln
       ENDIF
 
 C  Initialize the flag grid
@@ -483,7 +489,7 @@ C  Draw arrow heads
 
                IF (acnt .GT. 20) THEN
 
-                 vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
+                 vel = SQRT(upsv*upsv + vpsv*vpsv)* vfact
                  IF (icol .GT. -1) 
      .              CALL strmar (xxsv, yysv, xx, yy, vel, xf, yf)
                   acnt = 0
@@ -751,7 +757,7 @@ C  travelling the other direction, so subtract
 
 C  Draw arrow head
                IF (acnt .GT. 20) THEN
-                 vel = sqrt(upsv*upsv + vpsv*vpsv)/ velmean
+                 vel = SQRT(upsv*upsv + vpsv*vpsv)* vfact
                  IF (icol .GT. -1) 
      .              CALL strmar(xx, yy, xxsv, yysv, vel, xf, yf)
                   acnt = 0
@@ -777,7 +783,7 @@ C  From vector
 C
 C	DRAW SCALE  make arrow scale at XT,YT
 C
-	IF(.NOT.VKEY .OR. curvilinear)THEN
+	IF(.NOT. VKEY)THEN
 	    CALL COLOR(IPEN(0))
 	    RETURN
 	ENDIF
@@ -798,19 +804,18 @@ C
 	XT=VXLOC/XFUSER+XLOUSR
 	YT=VYLOC/YFUSER+YLOUSR
         
-        XX1 = XT + 0.2/XFUSER
+        XX1 = XT + 0.1/XFUSER  
 	YY1 = YT 
 
-C  send in velocity of 1, since all arrows were scaled by vel/velmean.
+C  Make a sample line and label it with the scale factor. 
 
-        vel = 1.
-        CALL strmar(xx1-1, yy1, xx1, yy1, vel, xf, yf)
         CALL PLOT (xx1,yy1,0,0)
         CALL PLOT (xt,yy1,1,0)
+
 C	DRAW LABEL
 
 	CALL COLOR(IPEN(0))
-	WRITE (VECLAB,66) velmean
+	WRITE (VECLAB,66) 1./vfact
   66    FORMAT ('flow arrow scale', 1pg8.2)
 	ILN=LNBLK(VECLAB,30)
 c	XL = XX1 + 2.* hlabs/XF+0.2/xf

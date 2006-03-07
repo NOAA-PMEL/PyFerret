@@ -123,7 +123,7 @@
      .			s1, s2, it_start(4), it_end(4), iax(4),
      .                  loch, locv
         INTEGER   STR_UPCASE, i1
-	REAL		only_x, aspect, vbuf
+	REAL		only_x, aspect, vbuf, xloc, yloc
 	CHARACTER	buff*25
 
 
@@ -299,7 +299,9 @@ c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
 * special set-up required only for the VECTOR command
 	IF ( .NOT.overlay .AND. .NOT.no_data .AND. .NOT.no_key) THEN
 * ... vector length key below plot title (overlay written as key)
-	   WRITE ( ppl_buff, '(2F6.1)' ) 3.5, -1.2
+           xloc = (xlen/2.) - 0.5
+           yloc = -1.*yorg + 0.2
+	   WRITE ( ppl_buff, '(2F6.1)' ) xloc, yloc
 	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
 	ENDIF	
 
@@ -430,7 +432,9 @@ c in disp_set_up.  So only put 'No Valid Data' label when not an overlay.
 * special set-up required only for the VECTOR/FLOW command
 	IF ( .NOT.overlay .AND. .NOT.no_data ) THEN
 * ... vector length key below plot title (overlay written as key)
-	   WRITE ( ppl_buff, '(2F6.1)' ) 5.5, -1.2
+           xloc = (xlen/2.) - 0.5
+           yloc = -1.*yorg + 0.2
+	   WRITE ( ppl_buff, '(2F6.1)' ) xloc, yloc
 	   CALL PPLCMD (' ',' ',0,'VECKEY/NOUSER '//ppl_buff, 1, 1 )
 
            IF (no_key) THEN

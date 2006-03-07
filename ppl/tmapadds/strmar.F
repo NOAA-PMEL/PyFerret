@@ -39,12 +39,13 @@
 *                    strmar came from NCAR streamline code.
 *  *acm*  12/7/01 Trap cases with dx=dy=0; atan2 fcn returns NAN under OSF.
 *                 Declare all variables.
+*  *acm&   3/06   change the scale of arrow heads; values are actually the same.
 
 
       REAL a160
       PARAMETER (a160 = 160.0*3.1416/180.0)
       REAL xf, yf
-      REAL arrlen, vel, dir, xx1, xx2, yy1, yy2, small
+      REAL arrlen, vel, dir, xx1, xx2, yy1, yy2, small, fac
 
         include 'vector_inc.decl'
         include 'VECTOR.INC'
@@ -67,13 +68,11 @@ C     Curvilinear coordinates declarations
       dir = atan2(yy2-yy1, xx2-xx1)
 
 *  Set arrow length scale based on vel.
+*  factor of 0.2 is for the fact that the arrow is 0.2 of 
+*  the velocity arrows for regular vectors
 
-      arrlen = 0.2* vel/(xf+yf)
-
-      IF (curvilinear) THEN
-          arrlen = 5. * arrlen
-          arrlen = 5. * arrlen
-      ENDIF
+      arrlen = vel/(xf+yf)
+      IF (.NOT. curvilinear) arrlen = 0.2* arrlen
 
       addx1 = arrlen* cos(dir+a160)
       addy1 = arrlen* sin(dir+a160)

@@ -3,12 +3,17 @@
 ! 6/2001
 ! ACM 4/2005 set mode meta to save one of the plots for the metafile checks.
 !            and cancel mode logo, so that .plt files are comparable.
+! ACM 4/2006 new qualifier /LENGTH sets the length of the arrow heads
 
 set window/asp=1/siz=0.5
 use gtbc011
 set reg/k=1/l=1/y=0:20
 vector/aspect u,v
 vector/flow/over  u,v
+
+! /LEN= for setting size of arrow heads
+vector/aspect u,v
+vector/flow/over/len=10  u,v
 
 GO bn_reset
 set mode meta flowlines.plt
@@ -17,7 +22,22 @@ can mode logo
 can region
 vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
 flow/i=1:50/j=1:50/over/color=blue/thick/den=1 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
-flow/i=1:50/j=1:50/over/color=green/den=4 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+flow/i=1:50/j=1:50/over/color=green/den=4/len=20 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
+
+! curvilinear flowline plots
+go bn_reset
+
+use coads_climatology
+go mp_sinusoidal
+set grid sst
+
+
+let fsst = missing(sst,5)
+let yy =  if abs(y[gt=sst]) le 20 then 10 else  (100-abs(y[gt=sst]+1))/ 10.
+
+set reg/l=1
+vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
+vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 
 can mode meta
 set mode logo

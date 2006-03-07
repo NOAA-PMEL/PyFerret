@@ -48,16 +48,15 @@
 * V500: 12/98 - allow {1,3,5} notation for lists of constants
 *	 1/99 - allow strings in double quotes (as fcn args)
 * V530: //8/00 *sh* - allow {"string", "string"}
+* V590:  3/06 *acm* - fix bug 1395: string 1.0e-4+0*8 tried to inlcude plus sign 
+*                     and the 0 following it as part of the exponent. Define a new 
+*                     state, in which we are interpreting an exponent and getting 
+*                     the exponent value itself. Now this becomes like interpreting 
+*                     a constant.
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'rpn.parm'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-#endif
 
 * calling argument declaration:
 	INTEGER		at_start(maxatoms), at_end(maxatoms), natom, status
@@ -65,7 +64,8 @@
 
 * internal variable declarations:
 	LOGICAL		was_operand, atom_open,
-     .			requires_closure(num_state)
+     .			requires_closure(num_state),
+     .                  have_exp_digits
 	INTEGER		ALG_CLASS, TM_LENSTR1,
      .			tlen, p, state, last_state, class,
      .			i, next_state(num_class,num_state),
@@ -84,6 +84,7 @@
 *       S10- inside of single quote pair
 *	S11- ignoring characters inside {}
 *	S12- inside of double quote pair
+*	S13- interpreting exponent, found exponential value
 
 *	-1 ==> Syntax Error
 *	-2 ==> Illegal Character
@@ -123,7 +124,7 @@
 	DATA (next_state(i,7),i=1,num_class)
 	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
 	DATA (next_state(i,8),i=1,num_class)
-	1    / 8, 8, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
+	1    / 8, 13, 7, 7, 7, 7, 7, 7, 7,  7, 7, 7, 7, 7,-2/
 	DATA (next_state(i,9),i=1,num_class)
 	1    / 9, 9, 9, 9, 9, 9, 9, 9, 9,  9, 9, 9, 9, 9, 9/
 	DATA (next_state(i,10),i=1,num_class)
@@ -132,6 +133,7 @@
 	1    /11,11,11,11,11,11,11,11,11, 11,11,11, 5,11,11/
 	DATA (next_state(i,12),i=1,num_class)
 	1    / 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12/
+
 
 * which states are not valid on exit (e.g. unclosed braces)
 	DATA requires_closure(1 )/.FALSE./ !S1 - looking for start of atom
@@ -156,6 +158,7 @@
 	state = 1
 	was_operand = .FALSE.
 	atom_open = .FALSE.
+        have_exp_digits = .FALSE.
 	brkt_nest_level = 0
 
 * advance to next character
@@ -184,7 +187,7 @@
 	IF ( was_operand .AND. last_state.EQ.1 .AND. class.EQ.1 ) state = 5
 
 * will this act like an operator or an operand for the next atom ?
-	IF ( state.EQ.7 .OR. class.EQ.8 ) THEN
+	IF ( state.EQ.7 .OR. class.EQ.8 .OR. class.EQ.13) THEN
 * ... last "significant" character hasn't changed
 	   CONTINUE
 	ELSEIF ( class.EQ.1 .OR. class .EQ.6 ) THEN
@@ -202,8 +205,8 @@
 	ENDIF
 
 * take appropriate action
-*		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11 S12
-	GOTO (9999,100,100,100,500,100,700,100, 900,1000,100,1100)
+*		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11 S12 S13
+	GOTO (9999,100,100,100,500,100,700,100, 900,1000,100,1100,1300)
      .								state
 
 * continue to next character
@@ -266,6 +269,10 @@
 	ELSE          
 	   CONTINUE                     ! inside of quote
 	ENDIF
+	GOTO 5
+
+* digit part of exponent
+ 1300	state = 3
 	GOTO 5
 
 

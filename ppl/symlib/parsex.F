@@ -116,6 +116,20 @@ C
 	ICMA=INDEX(LINE(I:),',')+I-1
 	IF(ICMA.EQ.I-1) ICMA=buflen+1
 	J=MIN0(ISPC,ICMA,ILEN+1)
+
+* *acm 3/06 If i=j, see if what we have is a comma then space. 
+*           Previously a space then comma was interpreted as
+*           if it were two commas.  Check for just one comma
+*           between elements, and can have any number of spaces.
+
+        IF (i .EQ. j) THEN
+           ICMA = INDEX(line(iold:i),',')
+           IF (ICMA .NE. 0 .AND.
+     .         INDEX(line(icma+1:i),',') .EQ. 0) THEN
+              i = i + 1
+              GOTO 100
+           ENDIF
+        ENDIF
 C
 C	Try to read a number,  if it fails put the rest into
 C	LABEL if first is not true

@@ -159,6 +159,7 @@
 * V581:  5/05 *acm* - add EXIT/CYCLE
 * V590:  8/05 *acm* - add LIST/NOROWLAB
 * V590:  9/05 *acm* - add SET WINDOW/TITLE
+* V590:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -168,6 +169,7 @@
 
 * SET	 - command # 1
 	DATA commands(1)			/ 'SET '	/
+        DATA its_action_command(1)              / .FALSE.       /
 	DATA num_subcommands(1)			/ nsub1		/
 	DATA subcommand_pointer(1)		/ nsub_at1	/
 * SET '    '
@@ -362,6 +364,7 @@
 
 * SHOW	 - command # 2
 	DATA commands(2)			/ 'SHOW '	/
+        DATA its_action_command(2)              / .FALSE.       /
 	DATA num_subcommands(2)			/ nsub2		/
 	DATA subcommand_pointer(2)		/ nsub_at2	/
 * SHOW '    '
@@ -553,6 +556,7 @@
 
 * CANCEL	 - command # 3
 	DATA commands(3)			/ 'CANCEL'	/
+        DATA its_action_command(3)              / .FALSE.       /
 	DATA num_subcommands(3)			/ nsub3		/
 	DATA subcommand_pointer(3)		/ nsub_at3	/
 * CANCEL '    '
@@ -689,6 +693,7 @@
 
 * CONTOUR - command # 4
 	DATA commands(4)			/ 'CONTOUR'	/
+        DATA its_action_command(4)              / .TRUE.        /
 	DATA num_subcommands(4)			/ nsub4		/
 	DATA subcommand_pointer(4)		/ nsub_at4	/
 * CONTOUR '    '
@@ -742,6 +747,7 @@
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
+        DATA its_action_command(5)              / .TRUE.        /
 	DATA num_subcommands(5)			/ nsub5		/
 	DATA subcommand_pointer(5)		/ nsub_at5	/
 * LIST '    '
@@ -786,6 +792,7 @@
 
 * PLOT - command # 6
 	DATA commands(6)			/ 'PLOT'	/
+        DATA its_action_command(6)              / .TRUE.        /
 	DATA num_subcommands(6)			/ nsub6		/
 	DATA subcommand_pointer(6)		/ nsub_at6	/
 * PLOT '    '
@@ -835,6 +842,7 @@
 
 * GO	 - command # 7
 	DATA commands(7)			/ 'GO  '	/
+        DATA its_action_command(7)              / .FALSE.       /
 	DATA num_subcommands(7)			/ nsub7		/
 	DATA subcommand_pointer(7)		/ nsub_at7	/
 * GO '    '
@@ -854,6 +862,7 @@
 
 * HELP	 - command # 8
 	DATA commands(8)			/ 'HELP'	/
+        DATA its_action_command(8)              / .FALSE.       /
 	DATA num_subcommands(8)			/ nsub8		/
 	DATA subcommand_pointer(8)		/ nsub_at8	/
 * HELP '    '
@@ -863,6 +872,7 @@
 
 * LOAD - command # 9
 	DATA commands(9)			/ 'LOAD'	/
+        DATA its_action_command(9)              / .TRUE.        /
 	DATA num_subcommands(9)			/ nsub9		/
 	DATA subcommand_pointer(9)		/ nsub_at9	/
 * LOAD '    '
@@ -888,6 +898,7 @@
 
 * DEFINE - command # 10
 	DATA commands(10)			/ 'DEFINE'	/
+        DATA its_action_command(10)             / .FALSE.       /
 	DATA num_subcommands(10)		/ nsub10	/
 	DATA subcommand_pointer(10)		/ nsub_at10	/
 * DEFINE '    '
@@ -994,6 +1005,7 @@
 
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/
+        DATA its_action_command(11)             / .FALSE.       /
 	DATA num_subcommands(11)		/ nsub11	/
 	DATA subcommand_pointer(11)		/ nsub_at11	/
 * EXIT '    '
@@ -1012,6 +1024,7 @@
 
 * MESSAGE	 - command # 12
 	DATA commands(12)			/ 'MESSAGE'	/
+        DATA its_action_command(12)             / .FALSE.       /
 	DATA num_subcommands(12)		/ nsub12	/
 	DATA subcommand_pointer(12)		/ nsub_at12	/
 * MESSAGE '    '
@@ -1027,6 +1040,7 @@
 
 * VECTOR - command # 13
 	DATA commands(13)			/ 'VECTOR'	/
+        DATA its_action_command(13)             / .TRUE.        /
 	DATA num_subcommands(13)		/ nsub13	/
 	DATA subcommand_pointer(13)		/ nsub_at13	/
 * VECTOR '    '
@@ -1075,6 +1089,7 @@
 
 * PPLUS	 - command # 14
 	DATA commands(14)			/ 'PPLUS'	/
+        DATA its_action_command(14)             / .FALSE.       /
 	DATA num_subcommands(14)		/ nsub14	/
 	DATA subcommand_pointer(14)		/ nsub_at14	/
 * PPLUS '    '
@@ -1087,6 +1102,7 @@
 
 * FRAME	 - command # 15
 	DATA commands(15)			/ 'FRAME'	/
+        DATA its_action_command(15)             / .FALSE.       /
 	DATA num_subcommands(15)		/ nsub15	/
 	DATA subcommand_pointer(15)		/ nsub_at15	/
 * FRAME '    '
@@ -1101,6 +1117,7 @@
 
 * REPEAT - command # 16
 	DATA commands(16)			/ 'REPEAT'	/
+        DATA its_action_command(16)             / .FALSE.       /
 	DATA num_subcommands(16)		/ nsub16	/
 	DATA subcommand_pointer(16)		/ nsub_at16	/
 * REPEAT '    '
@@ -1128,6 +1145,7 @@
 
 * STATISTICS - command # 17
 	DATA commands(17)			/ 'STAT'	/
+        DATA its_action_command(17)             / .TRUE.        /
 	DATA num_subcommands(17)		/ nsub17	/
 	DATA subcommand_pointer(17)		/ nsub_at17	/
 * STAT '    '
@@ -1154,6 +1172,7 @@
 
 * SHADE - command # 18
 	DATA commands(18)			/ 'SHADE'	/
+        DATA its_action_command(18)             / .TRUE.        /
 	DATA num_subcommands(18)		/ nsub18	/
 	DATA subcommand_pointer(18)		/ nsub_at18	/
 * SHADE '    '
@@ -1198,6 +1217,7 @@
 
 * SPAWN - command # 19
 	DATA commands(19)			/ 'SPAWN'	/
+        DATA its_action_command(19)             / .FALSE.       /
 	DATA num_subcommands(19)		/ nsub19	/
 	DATA subcommand_pointer(19)		/ nsub_at19	/
 * SPAWN '    '
@@ -1207,6 +1227,7 @@
 
 * USER - command # 20
 	DATA commands(20)			/ 'USER'	/
+        DATA its_action_command(20)             / .TRUE.        /
 	DATA num_subcommands(20)		/ nsub20	/
 	DATA subcommand_pointer(20)		/ nsub_at20	/
 * USER '    '
@@ -1231,6 +1252,7 @@
 
 * WIRE - command # 21
 	DATA commands(21)			/ 'WIRE'	/
+        DATA its_action_command(21)             / .TRUE.       /
 	DATA num_subcommands(21)		/ nsub21	/
 	DATA subcommand_pointer(21)		/ nsub_at21	/
 * WIRE '    '
@@ -1266,6 +1288,7 @@
 
 * QUERY - command # 22
 	DATA commands(22)			/ 'QUERY'	/
+        DATA its_action_command(22)             / .FALSE.       /
 	DATA num_subcommands(22)		/ nsub22	/
 	DATA subcommand_pointer(22)		/ nsub_at22	/
 * QUERY '    '
@@ -1279,6 +1302,7 @@
 
 * IF - command # 23
 	DATA commands(23)			/ 'IF  '	/
+        DATA its_action_command(23)             / .FALSE.       /
 	DATA num_subcommands(23)		/ nsub23	/
 	DATA subcommand_pointer(23)		/ nsub_at23	/
 * IF '    '
@@ -1291,6 +1315,7 @@
 
 * ELSE - command # 24
 	DATA commands(24)			/ 'ELSE'	/
+        DATA its_action_command(24)             / .FALSE.       /
 	DATA num_subcommands(24)		/ nsub24	/
 	DATA subcommand_pointer(24)		/ nsub_at24	/
 * ELSE '    '
@@ -1303,6 +1328,7 @@
 
 * ELIF - command # 25
 	DATA commands(25)			/ 'ELIF'	/
+        DATA its_action_command(25)             / .FALSE.       /
 	DATA num_subcommands(25)		/ nsub25	/
 	DATA subcommand_pointer(25)		/ nsub_at25	/
 * ELIF '    '
@@ -1315,6 +1341,7 @@
 
 * ENDIF - command # 26
 	DATA commands(26)			/ 'ENDIF'	/
+        DATA its_action_command(26)             / .FALSE.       /
 	DATA num_subcommands(26)		/ nsub26	/
 	DATA subcommand_pointer(26)		/ nsub_at26	/
 * ENDIF '    '
@@ -1327,6 +1354,7 @@
 
 * POLYGON - command # 27
 	DATA commands(27)			/ 'POLYGON'	/
+        DATA its_action_command(27)             / .TRUE.        /
 	DATA num_subcommands(27)		/ nsub6		/
 	DATA subcommand_pointer(27)		/ nsub_at27	/
 * POLYGON '    '
@@ -1377,6 +1405,7 @@
 
 * **** - command # 28
 	DATA commands(28)			/ '****'	/
+        DATA its_action_command(28)             / .FALSE.       /
 	DATA num_subcommands(28)		/ nsub28	/
 	DATA subcommand_pointer(28)		/ nsub_at28	/
 * **** '   
@@ -1389,6 +1418,7 @@
 
 * **** - command # 29
 	DATA commands(29)			/ '****'	/
+        DATA its_action_command(29)             / .FALSE.       /
 	DATA num_subcommands(29)		/ nsub29	/
 	DATA subcommand_pointer(29)		/ nsub_at29	/
 * **** '    '
@@ -1401,6 +1431,7 @@
 
 * **** - command # 30
 	DATA commands(30)			/ '****'	/
+        DATA its_action_command(29)             / .FALSE.       /
 	DATA num_subcommands(30)		/ nsub30	/
 	DATA subcommand_pointer(30)		/ nsub_at30	/
 * **** '    '

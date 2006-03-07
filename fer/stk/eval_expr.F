@@ -1,4 +1,5 @@
-	SUBROUTINE EVAL_EXPR ( memory, dflt_cx, expression, status )
+	SUBROUTINE EVAL_EXPR ( memory, dflt_cx, expression, apply_cx, 
+     .              status )
 
 *
 *
@@ -60,8 +61,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V400: 3/95 - based on GET_PROT_CMND_DATA
+* V590:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+*                     to decide when the qualifiers /X=/Y=/Z=/T= apply to the evaluation
+*                     of immed. mode expressions in the command.
+* V590 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
+*                  to apply command context to grave-accent expressions.
 
-#ifdef unix
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -69,17 +74,10 @@
 	include 'xvariables.cmn'
 	include 'xprog_state.cmn'
 	include 'xfr_grid.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XFR_GRID.CMN'
-#endif
+
 
 * calling argument declarations
+        LOGICAL apply_cx
 	INTEGER	dflt_cx, status
 	REAL	memory(*) 
 	CHARACTER*(*) expression
@@ -99,7 +97,7 @@
 * * * * DETERMINE CONTEXT FOR COMMAND * * *
 * ==> this needs to be replaced with a version that can evaluate incomplete
 *	regions that have grave-accented region information
-	CALL GET_NEW_CX( dflt_cx, cx_cmnd, status )
+	CALL GET_NEW_CX( dflt_cx, cx_cmnd, apply_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * store expression in the uvar list names as "EX#1"

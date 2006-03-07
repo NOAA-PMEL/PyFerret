@@ -1,4 +1,4 @@
-	SUBROUTINE REPL_EXPRNS( memory, cmnd,    lencmnd,
+	SUBROUTINE REPL_EXPRNS( memory, cmnd, lencmnd, cmnd_num,
      .				istart, max_check,
      .				digits, did_sub, status  )
 
@@ -91,6 +91,9 @@
 *                    long string, e.g. in a label, this string can be very long. (bug 956)
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V590 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
+*                  to apply command context to grave-accent expressions.
+
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -105,7 +108,7 @@
         include 'xdset_info.cd_equiv'
 
 * calling argument declarations:
-	LOGICAL	  did_sub, info_query, itsa_subsc
+	LOGICAL	  did_sub, info_query, itsa_subsc, apply_cx
 	INTEGER	  lencmnd, istart, max_check, digits, status
 	REAL	  memory( mem_blk_size, max_mem_blks )
 	CHARACTER cmnd*(*)
@@ -279,7 +282,7 @@
  160	IF ( info_query ) THEN
 * ... evaluate the context without computing the expression
 *	this is a major performance consideration, but not 100% reliable
-	   CALL GET_NEW_CX( cx_last, cx_cmnd, status )
+	   CALL GET_NEW_CX( cx_last, cx_cmnd, apply_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
@@ -294,7 +297,7 @@
 	      IF ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
      .	    .AND. CGRID_AXIS(idim, cx) .NE. mnormal ) THEN
 	         CALL EVAL_EXPR ( memory, cx_last,
-     .				  cmnd(istart:iend), status )
+     .				  cmnd(istart:iend), apply_cx, status )
 	         IF ( status .NE. ferr_ok ) GOTO 5000
 	         cx = is_cx(1)	! always comes back as the first context
 	         GOTO 200
@@ -476,7 +479,8 @@
 	ELSE
 * single number answer desired
 * ... evaluate the expression
-	   CALL EVAL_EXPR ( memory, cx_last, cmnd(istart:iend), status )
+	   CALL EVAL_EXPR ( memory, cx_last, cmnd(istart:iend), 
+     .        .TRUE., status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   cx = is_cx(1)	! always comes back as the first context
 	   mr = is_mr(1)

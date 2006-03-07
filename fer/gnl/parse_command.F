@@ -103,6 +103,9 @@
 * V552 *acm* 6/03  The v541 fix noted above introduced bug in symbol substitution
 *                  within REPEATS: yes? def sym a 0; rep/i=1:3 (def sym a `i`; say ($a))
 *                  Fix in saving cmnd_copy.  Bugs 376 and 558 fixed.
+* V590 *acm* 3/06  fixing bugs 439&1390, pass cmnd_num to repl_exprns so we can decide
+*                  if the command is an action command, and so whether to apply command
+*                  context to grave-accent expressions.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -152,7 +155,7 @@
 	LOGICAL	TM_LEGAL_NAME, known_qualifier, atsin_qualifier,
      .          surround_quote, doub_quote, subst, first_paren,
      .          itsa_qualifier(local_max_arg_list), 
-     .          MATCH4, escape
+     .          MATCH4, escape, apply_cx
 	INTEGER TM_LENSTR
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
@@ -569,6 +572,7 @@ cc  Allow it to be zero-length
 * +++++++ COMMAND +++++++
 * first word must be command name
 * legal syntax of command ?  (avoid, e.g., "LISTX=160W")
+
  500    IF ( .NOT.TM_LEGAL_NAME(cmnd_buff(arg_start(1):arg_end(1))) )
      .                                                        THEN
            word_num = 1
@@ -602,8 +606,16 @@ cc  Allow it to be zero-length
      .			subcommands( isubcmnd_ptr),  
      .                  len_mchars)  ) THEN
 * ... legal syntax of subcommand ?  (avoid, e.g., "SET REGION@T")
+
+*     If we passed over part of the command inside the grave accents above,
+*     then pass over that part again here.  This allows
+*        LET rname = "/x=1:5"; SET REGION`rname` 
+
+              grave_start = INDEX(
+     .           cmnd_buff(arg_start(isub_word):arg_end(isub_word)),'`')
+              IF (grave_start .EQ. 0) grave_start = arg_end(isub_word)+1
               IF ( .NOT.TM_LEGAL_NAME
-     .        (cmnd_buff(arg_start(isub_word):arg_end(isub_word))) )
+     .        (cmnd_buff(arg_start(isub_word):(grave_start-1))) )
      .                                                        THEN
                  word_num = isub_word
                  GOTO 5025
@@ -754,8 +766,9 @@ cc  Allow it to be zero-length
 	   ELSE
 	      grave_end = cmnd_len
 	   ENDIF
+           apply_cx = its_action_command(cmnd_num)
 	   CALL REPL_EXPRNS( memory, cmnd_buff, cmnd_len,
-     .			     grave_start, grave_end,
+     .			     apply_cx, grave_start, grave_end,
      .                       grave_digits, subst, status  )
 	   IF ( status .NE. ferr_ok ) GOTO 5000	
 	   IF ( subst ) THEN

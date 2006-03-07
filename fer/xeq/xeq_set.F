@@ -128,6 +128,7 @@
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
 * V581: *acm*/3/05 - increase length of strings for datset title to 1024 (leave settings alone for MOVIE)
 * V590 *acm*  8/05 - Allow more digits in xrevision number
+* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -228,7 +229,7 @@
 	ENDIF
 
 * start with the default context from the last command
-	CALL GET_NEW_CX( cx_last, cx_buff, status )
+	CALL GET_NEW_CX( cx_last, cx_buff, .TRUE., status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * apply delta context specifiers (DX=,DY=, etc) if any

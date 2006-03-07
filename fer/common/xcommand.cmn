@@ -24,6 +24,7 @@
 *       *acm* 6/04 - add SET AXIS/CALENDAR /T0 /UNITS
 *       *acm* 6/04 - add CANCEL AXIS/DEPTH
 * V581  *acm* 5/05 *kob* - increase number of qualifiers for EXIT (adding /CYCLE)
+* V590:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -401,11 +402,13 @@
      .			num_qualifs       (total_num_subcommands),
      .			qualifier_pointer (total_num_subcommands),
      .			alias_len	  (total_num_alias)
+        LOGICAL         its_action_command(total_num_commands)
 	INTEGER		num_queries
 
 	COMMON /XCOMMAND/	commands,
      .				subcommands,
      .				qualifiers,
+     .				its_action_command,
      .				num_subcommands,
      .				subcommand_pointer,
      .				num_qualifs,

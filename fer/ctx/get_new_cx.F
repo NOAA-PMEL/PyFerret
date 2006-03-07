@@ -1,4 +1,4 @@
-	SUBROUTINE GET_NEW_CX ( dflt_cx, new_cx, status )
+	SUBROUTINE GET_NEW_CX ( dflt_cx, new_cx, apply_cx, status )
 
 *
 *
@@ -46,21 +46,18 @@
 * revision 0.1 - 7/27/88 - added dflt_cx to get_context_mods call
 * V200:  5/19/89 - transforms not permitted on command line
 * V530:  8/00 *sh* - added data type sensitivity
+* V590 *acm* 3/06  fixing bugs 439&1390, use apply_cx to say whether
+*                  to apply command context to grave-accent expressions.
 
-#ifdef unix
+
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER		dflt_cx, new_cx, status
+        LOGICAL         apply_cx
 
 * local variable declarations
 	INTEGER		idim, cmnd_mods_cx
@@ -93,10 +90,13 @@
  100	IF (cx_trans(idim,cmnd_mods_cx) .NE. trans_no_transform)
      .        GOTO 5010
 
+        IF (apply_cx) THEN
+
 * modify the command context with the given modifiers
-	CALL APPLY_CONTEXT_MODS
+	   CALL APPLY_CONTEXT_MODS
      .			( cmnd_mods_cx, new_cx, replace_context, status )
-	IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+        ENDIF
 
 * set default data type
 	cx_type(new_cx) = unspecified_int4

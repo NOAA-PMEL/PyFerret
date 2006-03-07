@@ -44,7 +44,8 @@
 
 * V450	11/96
 
-#ifdef unix
+* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
         include 'xdset_info.cmn_text'
@@ -55,17 +56,6 @@
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 	include 'xrisc_buff.cmn'
-#else
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-        INCLUDE 'FERRET_CMN:GFDL_VMS.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XINTERRUPT.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL clobber
@@ -85,7 +75,7 @@
 	PARAMETER     ( slash_file    = 12+1)
 
 * determine the data set in question
-        CALL GET_NEW_CX( dflt_cx, cx_cmnd, status )
+        CALL GET_NEW_CX( dflt_cx, cx_cmnd, .TRUE., status )
         IF ( status .NE. ferr_ok ) GOTO 5000
 	dset = cx_data_set(cx_cmnd)
 	IF ( dset .EQ. unspecified_int4 ) GOTO 5100

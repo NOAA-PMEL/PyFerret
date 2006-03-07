@@ -168,6 +168,7 @@
 * V581 *acm*  5/05 For OPeNDAP HDF files, do not check whether axis name is legal.
 *                  If it was given in quotes, skip the quotes when finding it in
 *                  the list of axis names.
+* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -342,7 +343,7 @@
 
 	ELSE
 * assemble the context based on the last command context
-	   CALL GET_NEW_CX( cx_last, cx_buff, status )
+	   CALL GET_NEW_CX( cx_last, cx_buff, .TRUE., status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 * ... apply delta limits to the default from last command

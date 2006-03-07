@@ -88,6 +88,7 @@
 *		  - increased size of "last" stored command
 * V540: *sh* 11/00 - "last" var init moved to DELETE_OLD_EXPR
 * v552: *acm* 4/03   Increase length of variable names to 128 characters
+* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -112,7 +113,7 @@
 	CALL DELETE_MRS_IN_PROGRESS
 
 * * * * DETERMINE CONTEXT FOR COMMAND * * *
-	CALL GET_NEW_CX( dflt_cx, cx_cmnd, status )
+	CALL GET_NEW_CX( dflt_cx, cx_cmnd, .TRUE., status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * consolidate arguments broken up by command parser back into a single arg

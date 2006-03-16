@@ -72,15 +72,9 @@
 *	    B = { (1 + tan**2) / (s**2 + tan**2) } **.5
 *	    A = s * B
 
-#ifdef unix
 	include 'ferret.parm'
 	include	'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	LOGICAL	transpz
@@ -119,9 +113,13 @@
 	DO 110 j = 1, md2
 
 * compute COS(lat) correction at this latitude
-           IF ( need_cos ) THEN
-              cos_factor = COS( deg2rad *
-     .                     SNGL( TM_WORLD(j+j0,grid,y_dim,box_middle)) )
+* 3/06 - apply Andrew*s suggested correction, bug1348
+
+	   IF ( need_cos ) THEN
+              bx = BOX_SIZE(j+j0, grid, y_dim )
+	      yh_2 = 0.5*deg2rad * bx
+              yc = deg2rad * SNGL(TM_WORLD(j+j0,grid,y_dim,box_middle))
+              cos_factor = COS(yc) * ABS( SIN(yh_2)/yh_2 )
               IF ( cos_factor .LT. 1.E-6 ) cos_factor = 1.E-6 !arbitrary fix /0
            ELSE
               cos_factor = 1.0

@@ -96,12 +96,14 @@
      .			idst_lo,idst_hi,jdst_lo,jdst_hi
 
 	REAL		AXIS_DISTANCE, xdist, ydist, area, sum, darea,
-     .			bad_src, bad_dst, cos_fact
-	REAL*8		TWORLD, xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
+     .			bad_src, bad_dst, cos_fact, bx, yc, yh_2
+	
+        REAL*8		TWORLD, xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
      .				xdst_lo, xdst_hi, ydst_lo, ydst_hi
 ********************************************************************************
 
 * initialize
+
 	src_grid = mr_grid( msrc )
 	dst_grid = mr_grid( mdst )
 	dim1     = x_dim
@@ -180,18 +182,33 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 	   xdst_lo = TWORLD(idst, dst_grid, dim1, box_lo_lim )
 	   xdst_hi = TWORLD(idst, dst_grid, dim1, box_hi_lim )
 
+* for debugging output only
+           pi = 3.141592653
+           r_earth = 6371000
+           area_earth = 4.* pi * r_earth**2
+
 * add all partial or complete boxes of data from the source grid
+* 3/06 - apply Andrew*s suggested correction, bug1348
+
 	   sum  = 0.0
 	   area = 0.0
 	   DO 51 jsrc = jsrc_lo, jsrc_hi
+	   cos_fact = 1.0
+	   IF ( need_cos ) THEN
+              cos_fact = COS(deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle)) !old method!
+              yc = TWORLD(jsrc,src_grid,dim2,box_middle)
+              bx = BOX_SIZE( jsrc, src_grid, dim2 )
+
+	      yh_2 = 0.5*deg2rad * bx
+              yc = deg2rad * yc
+              cos_fact = COS(yc) * ABS( SIN(yh_2)/yh_2 )
+	   ENDIF
+
 	   ysrc_lo = MAX( TWORLD(jsrc,src_grid,dim2,box_lo_lim), ydst_lo )
 	   ysrc_hi = MIN( TWORLD(jsrc,src_grid,dim2,box_hi_lim), ydst_hi )
 	   ydist   = AXIS_DISTANCE( ysrc_lo, ysrc_hi, dim2, src_grid )
-	   IF ( need_cos ) THEN
-	      cos_fact = COS( deg2rad*TWORLD(jsrc,src_grid,dim2,box_middle) )
-	   ELSE
-	      cos_fact = 1.0
-	   ENDIF
+
+
 	   DO 50 isrc = isrc_lo, isrc_hi
 
 * ... ignore missing source data
@@ -203,7 +220,7 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 
 * ... contribution from this source box
               IF (xdist .gt. 0.  .AND.  ydist .GT. 0) THEN
- 	         darea = ydist*(cos_fact*xdist)
+ 	         darea = ydist*(cos_fact*xdist)/area_earth
 	         area  = area + darea
 	         sum   = sum  + darea * src(isrc, jsrc, k, l)
               ENDIF
@@ -213,6 +230,7 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 * ... divide by area to get average
 	   IF ( area .GT. 0.0 ) THEN
 	      dst(idst, jdst, k, l) = sum / area
+c!c	      dst(idst, jdst, k, l) =  area
 	   ELSE
 	      dst(idst, jdst, k, l) = bad_dst
 	   ENDIF
@@ -220,6 +238,7 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
  60	CONTINUE
 
  100	CONTINUE
+c!c        print *, ' hack in xyave_regrid: return area, not sum-of-var/area'
 
 	RETURN
 	END

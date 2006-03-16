@@ -71,10 +71,9 @@
      .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
      .		cos_offset
 	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox
+     .		xbox, ybox, zbox, tbox, yc, yh_2
 	REAL*8	TM_WORLD, dsum, bsum
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
@@ -85,16 +84,7 @@
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XUNITS.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-#endif
+
 
 * calling argument declarations:
 	INTEGER	action, com_mr, com_cx, res_mr, res_cx
@@ -202,13 +192,21 @@
 
 * impose cosine factors if latitude and longitude are involved
 * 5/97 - only use COS(y) if X integration is involved and Y axis lims are VALID
+* 3/06 - apply Andrew*s suggested correction for XY integ., bug1348
+
 	need_cos = GEOG_COS_FACTOR( y_dim,grid )
      .		.AND. yes_xax
      .	 	.AND. cx_lo_s2(com_cx) .NE. unspecified_int4
 	IF ( need_cos ) THEN
+              offset = box_offset(y_dim)
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
- 120	      boxes(j+cos_offset)  = COS( deg2rad *       
-     .           SNGL( TM_WORLD(j,grid,y_dim,box_middle)) ) 
+                 boxes(j+cos_offset)  = COS(yc) 
+                 IF (yes_yax) THEN
+                    yh_2 = 0.5*deg2rad * boxes(j+offset)
+                    yc = deg2rad * SNGL( TM_WORLD(j,grid,y_dim,box_middle))
+                    boxes(j+cos_offset)  = COS(yc) * ABS( SIN(yh_2)/yh_2 )
+                 ENDIF
+ 120         CONTINUE
 	ELSE
 	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
  121	      boxes(j+cos_offset)  = 1.0

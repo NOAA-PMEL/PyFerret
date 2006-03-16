@@ -48,4 +48,4 @@ FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks &external_functions
 las -d las lasxml &xml &las_servlet
 
 # LAS 7.0 with as little as possible
-las7 -d las LBES LPS lasxml/bin lasxml/doc lasxml/packages lasxml/etc lasxml/perl &xml &las_servlet
+las7 -d las &LBES &LPS lasxml/bin lasxml/doc lasxml/packages lasxml/etc lasxml/perl &xml &las_servlet

@@ -85,6 +85,7 @@
 *                  thin line, color=-21 then thick=2, when color=-31 then thick=3
 * V581 *acm* 5/05  fix bug 1250: step=connected. Need to use EQUAL_STR to get the
 *                  argument to /STEP, then compare to see if it equals uppercase 'CON'
+* V590 *acm* 6/06  increase length of buff, for longer arugments to /DASH=
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -122,7 +123,7 @@
      .			nparm, dot_sym, num_it, i, iax(4), i1,
      .                  loch, locv
 	REAL		val, sym_size, dashstyle(4)
-	CHARACTER	LEFINT*4, buff*25
+	CHARACTER	LEFINT*4, buff*128
 
 * internal parameter declarations
 	INTEGER ncolors

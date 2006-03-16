@@ -48,4 +48,5 @@ FERRET &fer &ppl &fmt &gksm2ps &list-2.1 &readline-4.1 &xgks &external_functions
 las -d las lasxml &xml &las_servlet
 
 # LAS 7.0 with as little as possible
-las7 -d las lasxml !lasxml/contrib &xml &las_servlet &LPS &LBES
+nocontrib -a !lasxml/contrib lasxml
+las7 -d las &nocontrib &xml &las_servlet &LPS &LBES

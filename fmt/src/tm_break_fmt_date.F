@@ -128,8 +128,10 @@ cc	   second = NINT(fsecond)	! information loss ...
      .			'syntax error in "'//risc_buff,
      .			no_errstring, *5000)
         ELSE
+           dlen = TM_LENSTR1(risc_buff)
            CALL WARN (
-     .       'cannot parse "units since date", date= "'//risc_buff//'"')
+     .       'cannot parse "units since date", date= "'//
+     .        risc_buff(:dlen)//'"'//'; leaving units string')
            status = merr_badtimedef
         ENDIF
           

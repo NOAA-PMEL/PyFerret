@@ -132,6 +132,8 @@
 *                  gets assigned the length of month in that calendar.
 * V590 *acm*  2/06 Fix bug 1394: if the time units contain a "since" but the remainder of
 *                  the string is not a date, keep the whole units string.
+* V590 *acm* 3/06  Fix bug 1400: Change in the call to TM_CHECK_BNDS
+
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file
@@ -1006,7 +1008,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * and if the bounds are contiguous, warning user if not. Change
 * the storage from N*2 bounds to N+1 edges.    
 
-        IF (.NOT. TM_CHECK_BNDS(iaxis, vname) ) THEN  
+        IF (.NOT. TM_CHECK_BNDS(iaxis, 2*npts, vname) ) THEN  
 
            CALL TM_NOTE('bounds "'//bname(:blen)//
      .         '" do not enclose point on axis '//vname(:vlen), tt)

@@ -169,6 +169,10 @@
 *                  If it was given in quotes, skip the quotes when finding it in
 *                  the list of axis names.
 * V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V590 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
+*                  Bounds can be either 2*N or N+1 values.
+*                  DEFINE AXIS/X/BOUNDS xax={1,2,5}, {0.5,1.5,3,6}
+*                  DEFINE AXIS/Z/BOUNDS zax=zcoord,zbnd
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -893,10 +897,16 @@ C /units=months  is 1/12 of the length of the year
 * ... make sure it's an line (not a point,plane,etc.) of data
 	      CALL GET_CX_DIMS( cx, ndim, dim )
 	      IF ( ndim .GT. 1 ) GOTO 5580
-* ... make sure the bounds have dimension 2*N
+* ... make sure the bounds have dimension 2*N or N+1
               idim = dim(1)
               n2   = CX_DIM_LEN( idim, is_cx(2) )
-              IF (2*n .NE. n2) GOTO 5740
+              IF (n2 .EQ. 2*n) THEN
+                 n2 = 2*n
+              ELSEIF (n2 .EQ. n+1) THEN
+                 n2 = n+1
+              ELSE
+                 GOTO 5740
+              ENDIF
 	   ENDIF
 
 * ... reset cx to read the coordinates first
@@ -1024,14 +1034,14 @@ C /units=months  is 1/12 of the length of the year
 
                  cx = is_cx(2)
                  mr = is_mr(2)
-                 n2 = 2*n
+
 	         CALL EXTRACT_DP_LINE2( cx, memory(1, mr_blk1(mr)),
      .	  	    line_mem(next_line_mem_pos + n), idim, n2 )
 
 * Check that bounds enclose points, and that they are contiguous
 	         line_subsc1 ( iline ) = frst_pt
                  line_dim    ( iline ) = npoints
-                 IF (.NOT. TM_CHECK_BNDS (iline, buff3) ) GO TO 5750
+                 IF (.NOT. TM_CHECK_BNDS (iline, n2, buff3) ) GO TO 5750
 
               ELSE
 
@@ -1556,7 +1566,7 @@ C /units=months  is 1/12 of the length of the year
         buff2 = TM_FMT(FLOAT(n2), 14, 16, s2len)
         CALL ERRMSG( ferr_grid_definition, status,
      .     'dimension of bounds ('// buff2(:s2len)//
-     .     ') must be 2*number of axis coordinates ('//
+     .     ') must be 2*N or N+1, N=number of axis coordinates ('//
      .     buff1(:slen) //')', *5000 )
 
 5750	CALL ERRMSG( ferr_grid_definition, status,

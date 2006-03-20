@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION TM_CHECK_BNDS (nline, vname)
+	LOGICAL FUNCTION TM_CHECK_BNDS (nline, nb, vname)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -39,6 +39,8 @@
 * enclosed by its bounds on an axis
 
 * 4/2004 ACM from tm_check_box_loc
+* V590 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
+*                  Bounds can be either 2*N or N+1 values.
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
@@ -47,7 +49,7 @@
 	EXTERNAL xgt_grid_data
 
 * Arguments
-	INTEGER nline
+	INTEGER nline, nb
         CHARACTER*(*) vname
 
 * Internal definitions
@@ -60,52 +62,75 @@
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
 	ibx1 = ipt1 + npts
-        IF (ibx1 + 2*npts .GT. maxlinestore) GOTO 5100
+        IF (ibx1 + nb .GT. maxlinestore) GOTO 5100
 
         blast = REAL(line_mem(ibx1+1))  ! First box_hi
         ngap = 0
 
-	DO 100 i = 0, npts-1
-          pt = line_mem(ipt1+i)
-          blo = line_mem(ibx1+2*i)
-          bhi = line_mem(ibx1+2*i+1)
-	  IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-            TM_CHECK_BNDS = .FALSE.
-            RETURN
-	  ENDIF
-          IF (i .GE. 1) THEN
-             IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
-                ngap = ngap + 1
-                line_mem(ibx1+2*i) = blast
-             ENDIF
-             blast = REAL(bhi)
-          ENDIF
+        IF (nb .EQ. 2*npts) THEN
 
-  100	CONTINUE
+	   DO 100 i = 0, npts-1
+             pt = line_mem(ipt1+i)
+             blo = line_mem(ibx1+2*i)
+             bhi = line_mem(ibx1+2*i+1)
+	     IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
+                TM_CHECK_BNDS = .FALSE.
+                RETURN
+	     ENDIF
+             IF (i .GE. 1) THEN
+                IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
+                   ngap = ngap + 1
+                 line_mem(ibx1+2*i) = blast
+                ENDIF
+                blast = REAL(bhi)
+             ENDIF
+
+  100        CONTINUE
 
 *  Change from N*2 storage of bounds to N+1 edges.
 
-        DO 200 i = 0, npts-1
-          bhi = line_mem(ibx1+2*i+1)
-          line_mem(ibx1+i+1) = bhi
-  200   CONTINUE
+           DO 200 i = 0, npts-1
+              bhi = line_mem(ibx1+2*i+1)
+              line_mem(ibx1+i+1) = bhi
+  200      CONTINUE
 
-        IF (ngap .EQ. 0) THEN
-           TM_CHECK_BNDS = .TRUE.
-           RETURN
-        ELSE
+           IF (ngap .EQ. 0) THEN
+              TM_CHECK_BNDS = .TRUE.
+              RETURN
+           ELSE
 
-          vbuff = vname   
-          vlen = TM_LENSTR1(vbuff)
-          CALL WARN( 'Axis definition error on axis: ' 
+             vbuff = vname   
+             vlen = TM_LENSTR1(vbuff)
+             CALL WARN( 'Axis definition error on axis: ' 
      .               //vbuff(:vlen))
-          CALL WARN(
-     .     'Bounds given describe non-contiguous axis cells ')
-          CALL WARN(
-     .      'Using the LOWER bound specified for each axis cell')
-          TM_CHECK_BNDS = .TRUE.
+             CALL WARN(
+     .        'Bounds given describe non-contiguous axis cells ')
+             CALL WARN(
+     .         'Using the LOWER bound specified for each axis cell')
+             TM_CHECK_BNDS = .TRUE.
 
-        ENDIF
+           ENDIF
+
+       ELSE  ! bounds are already specified as N+1 values
+
+	   DO 300 i = 0, npts-1
+             pt = line_mem(ipt1+i)
+             blo = line_mem(ibx1+i)
+             bhi = line_mem(ibx1+i+1)
+	     IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
+                TM_CHECK_BNDS = .FALSE.
+                RETURN
+	     ENDIF
+             IF (i .GE. 1) THEN
+                IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
+                   ngap = ngap + 1
+                   line_mem(ibx1+i) = blast
+                ENDIF
+                blast = REAL(bhi)
+             ENDIF
+
+  300     CONTINUE
+       ENDIF
 
  5000  RETURN
  5100  TM_CHECK_BNDS = .FALSE.

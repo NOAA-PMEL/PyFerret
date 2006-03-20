@@ -1,0 +1,20 @@
+! bn_bounds_nplus1.jnl
+! allow N+1 definition of bounds, previously only allowd 2*N definition
+
+
+! Define an axis using bounds.  Note the coordinates need not be
+! centered in the axis cells.
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+
+! test of DEPTH axis
+
+def axis/x xax = {1,2,5,6,7,8}
+def axis/z/depth/bounds zax = {0,20,50,75,120}, {0,10,30,60,90,150}
+def axis/t tax = {1,2,9,10,11}
+let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
+save/clobber/file=irrxzt.nc v
+sp ncdump irrxzt.nc

@@ -81,3 +81,8 @@ GO err581_exp_spaces.jnl
 ! bugs 439,1390: applying command context
 GO bn_reset.jnl
 GO err581_command_cx.jnl
+
+! bug 1401: define 1-point axis with bounds; gets bounds wrong
+GO bn_reset.jnl
+GO err581_define_1pt_bounds.jnl
+

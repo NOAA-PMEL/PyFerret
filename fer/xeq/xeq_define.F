@@ -173,6 +173,8 @@
 *                  Bounds can be either 2*N or N+1 values.
 *                  DEFINE AXIS/X/BOUNDS xax={1,2,5}, {0.5,1.5,3,6}
 *                  DEFINE AXIS/Z/BOUNDS zax=zcoord,zbnd
+* V590 *acm* 3/06  Fix bug 1401: See the comment: a single point is always "regular" --
+*                  causes incorrect treatment of the axis if the axis has BOUNDS!!
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -891,6 +893,7 @@ C /units=months  is 1/12 of the length of the year
 
 * ... Checks on the bounds specification
            IF (has_bounds) THEN
+              its_reg = .FALSE.
 	      IF ( num_uvars_in_cmnd .NE. 2 ) GOTO 5580
               cx = is_cx(2)
 	      mr = is_mr(2)
@@ -988,8 +991,8 @@ C /units=months  is 1/12 of the length of the year
 	      CALL EXTRACT_DP_LINE( cx, memory(1, mr_blk1(mr)),
      .				 line_mem(frst_pt), idim, n )
 	      IF ( npoints .EQ. unspecified_int4 ) npoints = n
-* ... a single point is always "regular"
-	      IF (n .EQ. 1) THEN
+* ... a single point is always "regular" (unless definition has BOUNDS!!)
+	      IF (n .EQ. 1 .AND. .NOT.has_bounds) THEN
 	         start = line_mem(frst_pt)
 	         delta = 1
 	         its_reg = .TRUE.

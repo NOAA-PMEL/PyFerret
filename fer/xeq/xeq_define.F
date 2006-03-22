@@ -170,9 +170,12 @@
 *                  the list of axis names.
 * V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 * V590 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
-*                  Bounds can be either 2*N or N+1 values.
+*                  Bounds can be either 2*N or N+1 values, or three lists of length N:
+*                  coords, lo_bound, hi_bound
 *                  DEFINE AXIS/X/BOUNDS xax={1,2,5}, {0.5,1.5,3,6}
-*                  DEFINE AXIS/Z/BOUNDS zax=zcoord,zbnd
+*                  DEFINE AXIS/Z/BOUNDS zax=zcoord, zbnd
+*                  DEFINE AXIS/Z/BOUNDS zax={1,2,5}, {0.5,1.5,3}, {1.5,3,6}
+*                  
 * V590 *acm* 3/06  Fix bug 1401: See the comment: a single point is always "regular" --
 *                  causes incorrect treatment of the axis if the axis has BOUNDS!!
 
@@ -275,8 +278,8 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, s2len,
-     .            prev_cal_id, j, num_indices
+     .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, n3, 
+     .            s2len, prev_cal_id, j, num_indices
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -894,19 +897,30 @@ C /units=months  is 1/12 of the length of the year
 * ... Checks on the bounds specification
            IF (has_bounds) THEN
               its_reg = .FALSE.
-	      IF ( num_uvars_in_cmnd .NE. 2 ) GOTO 5580
+	      IF ( num_uvars_in_cmnd .LT. 2 .OR. 
+     .             num_uvars_in_cmnd .GT. 3) GOTO 5580
               cx = is_cx(2)
 	      mr = is_mr(2)
 * ... make sure it's an line (not a point,plane,etc.) of data
 	      CALL GET_CX_DIMS( cx, ndim, dim )
 	      IF ( ndim .GT. 1 ) GOTO 5580
+* ... check dimension if given as coords, lo_bnds, hi_bnds
+              cx = is_cx(3)
+	      mr = is_mr(3)
+	      CALL GET_CX_DIMS( cx, ndim, dim )
+	      IF ( ndim .GT. 1 ) GOTO 5580
 * ... make sure the bounds have dimension 2*N or N+1
               idim = dim(1)
               n2   = CX_DIM_LEN( idim, is_cx(2) )
+              IF (num_uvars_in_cmnd .EQ. 3) 
+     .           n3 = CX_DIM_LEN( idim, is_cx(3) )
               IF (n2 .EQ. 2*n) THEN
                  n2 = 2*n
               ELSEIF (n2 .EQ. n+1) THEN
                  n2 = n+1
+              ELSEIF (num_uvars_in_cmnd .EQ. 3) THEN
+                 IF (n2 .NE. n3) GOTO 5745
+                 IF (n2 .NE. n) GOTO 5745
               ELSE
                  GOTO 5740
               ENDIF
@@ -1040,6 +1054,26 @@ C /units=months  is 1/12 of the length of the year
 
 	         CALL EXTRACT_DP_LINE2( cx, memory(1, mr_blk1(mr)),
      .	  	    line_mem(next_line_mem_pos + n), idim, n2 )
+
+* If given as coords, lo_bounds, hi_bounds, then
+* 1) check that lo_bounds{i+1} = hi_bounds{i}
+* 2) If ok, add the upper high bound to the list and treat 
+*    this as the case where we give the bounds as N+1 values
+
+                 IF (num_uvars_in_cmnd .EQ. 3) THEN
+                    cx = is_cx(3)
+                    mr = is_mr(3)
+                    CALL EXTRACT_DP_LINE2( cx, memory(1, mr_blk1(mr)),
+     .	 	       line_mem(next_line_mem_pos + n+n2), idim, n3 )
+                    DO i = 1, n3-1
+                       IF (line_mem(next_line_mem_pos + n+i) .NE.
+     .                      line_mem(next_line_mem_pos + 2*n+i-1) ) 
+     .                     GOTO 5750
+                    ENDDO
+                    line_mem(next_line_mem_pos + 2*n) = 
+     .                    line_mem(next_line_mem_pos + 3*n-1)
+                    n2 = n+1
+                 ENDIF
 
 * Check that bounds enclose points, and that they are contiguous
 	         line_subsc1 ( iline ) = frst_pt
@@ -1570,6 +1604,12 @@ C /units=months  is 1/12 of the length of the year
         CALL ERRMSG( ferr_grid_definition, status,
      .     'dimension of bounds ('// buff2(:s2len)//
      .     ') must be 2*N or N+1, N=number of axis coordinates ('//
+     .     buff1(:slen) //')', *5000 )
+5745	buff1 = TM_FMT(FLOAT( n), 14, 16, slen)
+        buff2 = TM_FMT(FLOAT(n2), 14, 16, s2len)
+        CALL ERRMSG( ferr_grid_definition, status,
+     .     'dimension of upper&lower bounds ('// buff2(:s2len)//
+     .     ') must be N, N=number of axis coordinates ('//
      .     buff1(:slen) //')', *5000 )
 
 5750	CALL ERRMSG( ferr_grid_definition, status,

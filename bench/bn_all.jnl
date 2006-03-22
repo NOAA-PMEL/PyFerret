@@ -483,7 +483,7 @@ GO bn_reset
 GO bn_dp_readscale.jnl
 
 GO bn_reset
-GO bn_bounds_nplus1.jnl
+GO bn_bounds_defineax.jnl
 
 GO bn_reset
 GO bn590_bug_fixes.jnl

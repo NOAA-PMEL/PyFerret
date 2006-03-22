@@ -1,0 +1,67 @@
+! bn_bounds_defineax.jnl
+! 3/22/2006
+! Previously only allowed 2*N definition of bounds in DEFINE AXIS/BOUNDS
+! Now allow N+1 definition of bounds, or three equal-lenght lists of 
+! coords, lo_bounds, hi_bounds
+! 
+! Define an axis using bounds.  Note the coordinates need not be
+! centered in the axis cells.
+
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+
+! test of DEPTH axis
+
+def axis/x xax = {1,2,5,6,7,8}
+def axis/z/depth/bounds zax = {0,20,50,75,120}, {0,10,30,60,90,150}
+def axis/t tax = {1,2,9,10,11}
+let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
+save/clobber/file=irrxzt.nc v
+sp ncdump irrxzt.nc
+
+! 3-argument bounds definitions
+def axis/z/bounds zax={1,2,4,8,16,32,64,128}, {0.5,1.5,2.5,4.5,8.5,16.5,32.5,64.5}, {1.5,2.5,4.5,8.5,16.5,32.5,64.5,200} 
+list zboxlo[gz=zax], z[gz=zax], zboxhi[gz=zax]
+
+
+! define some new bounds by subsampling:
+
+let n = `z[gz=zax],return=ksize`
+
+! Note this syntax --let zl2 = zboxlo[gz=zax,k=1:`1+n-2`:2]--
+! creates a new axis [gz=zax,k=1:`1+n-2`:2]
+! and computes its zboxlo. Instead make varibles containing
+! the bounds and sample those variables.
+
+let boxlo = zboxlo[gz=zax]
+let boxhi = zboxhi[gz=zax]
+let zl2 = boxlo[k=1:`1+n-2`:2]
+let zh2 = boxhi[k=2:`n`:2]
+
+list  zl2,(zl2+zh2)/2,zh2
+def axis/z/bounds zax2 = (zl2+zh2)/2, zl2, zh2
+
+list zboxlo[gz=zax2], z[gz=zax2], zboxhi[gz=zax2]
+
+use gt4d011
+
+! define some new bounds by subsampling:
+
+let n = `z[gz=temp],return=ksize`
+
+let boxlo = zboxlo[gz=temp]
+let boxhi = zboxhi[gz=temp]
+let zl2 = boxlo[k=1:`1+n-2`:2]
+let zh2 = boxhi[k=2:`n`:2]
+
+list  zl2,(zl2+zh2)/2,zh2
+def axis/z/bounds zax2 = (zl2+zh2)/2, zl2, zh2
+
+! original axis
+list zboxlo[gz=temp], z[gz=temp], zboxhi[gz=temp]
+
+! sampled axis
+list zboxlo[gz=zax2], z[gz=zax2], zboxhi[gz=zax2]

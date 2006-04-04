@@ -3,6 +3,7 @@
 *
 * Ansley Manke
 * Sep 15 2004
+* 4/2006 fix ordering of loops: axis of concatenation must be outermost loop
 *
 * This function returns the Y values of the two variables,
 * concatenated into one long list on an abstract Y axis. Other 
@@ -160,11 +161,11 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      i = res_lo_ss(X_AXIS)
-      DO 400 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      j = res_lo_ss(Y_AXIS)
+      DO 400 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
 
-         j = 1 ! res_lo_ss(Y_AXIS)
-         DO 300 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+         i = res_lo_ss(X_AXIS)
+         DO 300 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
             k = res_lo_ss(Z_AXIS)
             DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
@@ -172,7 +173,11 @@
                l = res_lo_ss(T_AXIS)
                DO 100 l1 = arg_lo_ss(T_AXIS,ARG1),arg_hi_ss(T_AXIS,ARG1)
 
-                  result(i,j,k,l) = arg_1(i1,j1,k1,l1)
+                  IF (arg_1(i1,j1,k1,l1) .EQ. bad_flag(ARG1)) THEN
+                     result(i,j,k,l) = bad_flag_result
+                  ELSE
+                     result(i,j,k,l) = arg_1(i1,j1,k1,l1)
+                  ENDIF
 
                   l = l + res_incr(T_AXIS)
  100           CONTINUE
@@ -180,20 +185,18 @@
                k = k + res_incr(Z_AXIS)
  200        CONTINUE
 
-            j = j + res_incr(Y_AXIS)
+            i = i + res_incr(X_AXIS)
  300     CONTINUE
 
-         i = i + res_incr(X_AXIS)
+         j = j + res_incr(Y_AXIS)
  400  CONTINUE
       
 * concatenate in Y - dont restart count of index J
 
-      i = res_lo_ss(X_AXIS)
-      DO 410 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+      DO 410 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
 
-!  Do not resart j result index; concatenate result onto the
-!  result of the previous loops
-         DO 310 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+         i = res_lo_ss(X_AXIS)
+         DO 310 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
 
             k = res_lo_ss(Z_AXIS)
             DO 210 k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
@@ -201,7 +204,11 @@
                l = res_lo_ss(T_AXIS)
                DO 110 l2 = arg_lo_ss(T_AXIS,ARG2),arg_hi_ss(T_AXIS,ARG2)
 
-                  result(i,j,k,l) = arg_2(i2,j2,k2,l2)
+                  IF (arg_2(i2,j2,k2,l2) .EQ. bad_flag(ARG2)) THEN
+                     result(i,j,k,l) = bad_flag_result
+                  ELSE
+                     result(i,j,k,l) = arg_2(i2,j2,k2,l2)
+                  ENDIF
 
                   l = l + res_incr(T_AXIS)
  110           CONTINUE
@@ -209,11 +216,12 @@
                k = k + res_incr(Z_AXIS)
  210        CONTINUE
 
-            j = j + res_incr(Y_AXIS)
+            i = i + res_incr(X_AXIS)
  310     CONTINUE
 
-         i = i + res_incr(X_AXIS)
+         j = j + res_incr(Y_AXIS)
  410  CONTINUE
+      
       
 *                                                                      ^
 *                                                                      |

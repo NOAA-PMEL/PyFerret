@@ -36,8 +36,6 @@
 * Steve Hankin
 * Jan, 2001
 
-* This function converts a Julian day from 1-jan-1900 to a trio of 3 values
-* on the Z axis: year, month, day
 
 * In this subroutine we provide information about
 * the function.  The user configurable information 

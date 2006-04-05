@@ -29,8 +29,9 @@ include ./LIB_NAME
 # Macros
 #
 
-OBJSF = $(SRCS_F:.F=.o)
-OBJSf = $(SRCS_F:.f=.o)
+
+
+OBJS = $(SRCS_C:.c=.o) $(SRCS_F:.F=.o)
 
 
 #
@@ -39,9 +40,8 @@ OBJSf = $(SRCS_F:.f=.o)
 
 all:	ferret_cmn $(LIB)
 
-
-$(LIB): $(OBJSF) $(OBJSf)
-	$(AR) $(ARFLAGS) $@ $(OBJSF) $(OBJSf) 
+$(LIB): $(OBJS) 
+	$(AR) $(ARFLAGS) $@ $(OBJS) 
 	$(RANLIB) $@
 
 ferret_cmn:

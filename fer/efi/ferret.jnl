@@ -1,0 +1,11 @@
+ ! NOAA/PMEL TMAP
+ ! FERRET v5.813  
+ ! Linux(g77) 2.4.21-32 - 12/16/05
+ !  4-Apr-06 13:51     
+
+sho command plot
+plot/dash=(0.1,0.2,0.1,0.2)/i=1:100 sin(i)
+use etopo60
+shade rose
+    plot/vs/over/nolab/color=white xpts,ypts
+q

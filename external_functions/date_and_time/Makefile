@@ -40,7 +40,9 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 # Targets
 #
 
-all:	ferret_cmn date_decode.o time_decode.o secs_to_ymdhms.o date1900.o date1900.so minutes24.o minutes24.so days1900toymdhms.o days1900toymdhms.so
+# all:	ferret_cmn date_decode.o time_decode.o secs_to_ymdhms.o date1900.o date1900.so minutes24.o minutes24.so days1900toymdhms.o days1900toymdhms.so
+
+all:	ferret_cmn 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all

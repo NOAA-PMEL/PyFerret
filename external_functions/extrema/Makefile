@@ -37,7 +37,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:    ferret_cmn minminmax.o maxminmax.o findhi.so findlo.so
+# all:    ferret_cmn minminmax.o maxminmax.o findhi.so findlo.so
+all:    ferret_cmn 
 
 ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn

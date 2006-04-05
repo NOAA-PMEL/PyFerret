@@ -30,7 +30,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:    ferret_cmn lanczos.so
+# all:    ferret_cmn lanczos.so
+all:    ferret_cmn 
 
 
 debug:

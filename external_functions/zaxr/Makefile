@@ -33,7 +33,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn zaxreplace_avg.so zaxreplace_bin.so zaxreplace_lin.so zaxreplace_zlev.so zaxreplace_rev.so
+# all:	ferret_cmn zaxreplace_avg.so zaxreplace_bin.so zaxreplace_lin.so zaxreplace_zlev.so zaxreplace_rev.so
+all:	ferret_cmn 
 
 
 debug:

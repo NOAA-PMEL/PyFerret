@@ -28,14 +28,20 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) $<
+	rm -f $*.f
+	$(CPP) -traditional $(CPP_FLAGS) $(<F) | sed -e        's/de        /de /g' | sed -e  's/de         /de /g' > $*.f	 
+	$(F77) $(FFLAGS) $*.f
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
 
 #
 # Targets
 #
 #all:    ferret_cmn bin_index_wt.so 
-all:    ferret_cmn is_element_of.so is_element_of_str.so element_index.so element_index_str.so sampleyz.so samplexz.so samplexy_closest.so samplexy_curv.so 
+
+# all:    ferret_cmn is_element_of.so is_element_of_str.so element_index.so element_index_str.so sampleyz.so samplexz.so samplexy_closest.so samplexy_curv.so
+
+# all:    ferret_cmn is_element_of.so
+all:    ferret_cmn 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all
@@ -47,7 +53,7 @@ install:
 	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
-	-rm -f *.o *.so core a.out temp.* ferret_cmn
+	-rm -f *.o *.so *.f core a.out temp.* ferret_cmn
 
 #
 # End of Makefile

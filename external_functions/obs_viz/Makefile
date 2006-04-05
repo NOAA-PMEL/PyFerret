@@ -33,7 +33,8 @@ DAT_OBJS = flag2ddups.o
 # Targets
 #
 
-all:	ferret_cmn $(DAT_OBJS) scat2ddups.o scat2ddups.so
+# all:	ferret_cmn $(DAT_OBJS) scat2ddups.o scat2ddups.so
+all:	ferret_cmn 
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)"  all

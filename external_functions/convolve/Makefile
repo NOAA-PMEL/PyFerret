@@ -31,7 +31,8 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 # Targets
 #
 
-all:	ferret_cmn convolvei.so convolvej.so convolvek.so convolvel.so 
+# all:	ferret_cmn convolvei.so convolvej.so convolvek.so convolvel.so 
+all:	ferret_cmn 
 
 
 debug:

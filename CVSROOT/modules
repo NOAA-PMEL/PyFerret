@@ -49,4 +49,5 @@ las -d las lasxml &xml &las_servlet
 
 # LAS 7.0 with as little as possible
 nocontrib -a !lasxml/contrib lasxml
-las7 -d las &nocontrib &xml &las_servlet &LPS &LBES
+notomcat -a !las_servlet/jakarta las_servlet
+las7 -d las &nocontrib &xml &notomcat &LPS &LBES

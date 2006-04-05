@@ -1,15 +1,9 @@
 ! Jon's benchmarks
 go bench_examples
 
-!Ansley's benchmarks
-! *kob* move bench tests that test internal external functions to their
-!       own file
-
-GO bn_reset
-go bench_v5d 
-
-!!!!!!!!!!!!!!!!!!!!!!
-!
-! YAY!! End of Benchmark without crashing!!!!
-!
-!!!!!!!!!!!!!!!!!!!!!!
+! Ansley's benchmarks
+! move bench tests that test internal external functions to their
+! own .jnl file  bn_internal_external_functions
+! 
+! 4/2006 all efs distributed with Ferret except the examples tested in 
+!        bench_examples.jnl are now internally linked.

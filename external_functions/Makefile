@@ -5,7 +5,9 @@
 # Jonathan Callahan
 #
 # ACM 1/2002  add fft directory back in: lsl_lowpass, inverse fcn.
-#
+# ACM 4/2006  link all functions that are distributed statically; the
+#             directories below compile only example functions, functions
+#             under development, or used locally by PMEL/TMAP (e.g.romea fcns)
  
 
 #

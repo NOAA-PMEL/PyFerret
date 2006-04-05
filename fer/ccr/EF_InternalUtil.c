@@ -570,12 +570,6 @@ void FORTRAN(transpose_zt_init)(int *);
 void FORTRAN(transpose_zt_result_limits)(int *);
 void FORTRAN(transpose_zt_compute)(int *, float *, float *);
 
-void FORTRAN(writev5d_init)(int *);
-void FORTRAN(writev5d_work_size)(int *);
-void FORTRAN(writev5d_compute)(int *, float *, float *, float *, float *,
-                       float *, float *, float *, float *, float *, float *, 
-					   float *, float *);
-
 void FORTRAN(xcat_init)(int *);
 void FORTRAN(xcat_result_limits)(int *);
 void FORTRAN(xcat_compute)(int *, float *, float *, float *);
@@ -685,7 +679,7 @@ int FORTRAN(efcn_scan)( int *gfcn_num_internal )
       it's own, separate c routine.  So, the next time and internal 
       external function is added, please move the code to it's own routine */
 
-#define N_INTEF 89
+#define N_INTEF 88
 
 struct {
   char funcname[EF_MAX_NAME_LENGTH];
@@ -772,14 +766,13 @@ struct {
    strcpy(I_EFnames[78].funcname, "ycat");
    strcpy(I_EFnames[79].funcname, "yreverse");
    strcpy(I_EFnames[80].funcname, "xauto_cor");
-   strcpy(I_EFnames[81].funcname, "writev5d");
-   strcpy(I_EFnames[82].funcname, "zaxreplace_avg");
-   strcpy(I_EFnames[83].funcname, "zaxreplace_bin");
-   strcpy(I_EFnames[84].funcname, "zaxreplace_lin");
-   strcpy(I_EFnames[85].funcname, "zaxreplace_rev");
-   strcpy(I_EFnames[86].funcname, "zaxreplace_zlev");
-   strcpy(I_EFnames[87].funcname, "zcat");
-   strcpy(I_EFnames[88].funcname, "zreverse");
+   strcpy(I_EFnames[81].funcname, "zaxreplace_avg");
+   strcpy(I_EFnames[82].funcname, "zaxreplace_bin");
+   strcpy(I_EFnames[83].funcname, "zaxreplace_lin");
+   strcpy(I_EFnames[84].funcname, "zaxreplace_rev");
+   strcpy(I_EFnames[85].funcname, "zaxreplace_zlev");
+   strcpy(I_EFnames[86].funcname, "zcat");
+   strcpy(I_EFnames[87].funcname, "zreverse");
 /*    
  *  ------------------------------------ 
  */
@@ -2985,11 +2978,6 @@ else if ( !strcmp(name,"zaxreplace_rev_compute_") ) return (void *)FORTRAN(zaxre
 else if ( !strcmp(name,"zaxreplace_zlev_init_") ) return (void *)FORTRAN(zaxreplace_zlev_init);
 else if ( !strcmp(name,"zaxreplace_zlev_work_size_") ) return (void *)FORTRAN(zaxreplace_zlev_work_size);
 else if ( !strcmp(name,"zaxreplace_zlev_compute_") ) return (void *)FORTRAN(zaxreplace_zlev_compute);
-
-/* writev5d.F */
-else if ( !strcmp(name,"writev5d_init_") ) return (void *)FORTRAN(writev5d_init);
-else if ( !strcmp(name,"writev5d_work_size_") ) return (void *)FORTRAN(writev5d_work_size);
-else if ( !strcmp(name,"writev5d_compute_") ) return (void *)FORTRAN(writev5d_compute);
 
  }
 /*  End of function pointer list for internally-linked External Functions

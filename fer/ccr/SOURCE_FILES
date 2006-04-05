@@ -1,8 +1,8 @@
 SRCS_C = \
 add_c_pointer.c\
 backing_store_enabled.c\
-binaryRead.c\
 batch_graphics.c\
+binaryRead.c\
 c_strcmp.c\
 c_strlen.c\
 c_upcase.c\

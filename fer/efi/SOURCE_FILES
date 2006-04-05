@@ -91,7 +91,6 @@ transpose_yt.F\
 transpose_yz.F\
 transpose_zt.F\
 treverse.F\
-writev5d.F\
 xauto_cor.F\
 xcat.F\
 xreverse.F\
@@ -105,7 +104,5 @@ zaxreplace_zlev.F\
 zcat.F\
 zreverse.F
 SRCS_C = \
-binio.c\
 date_decode.c\
-time_decode.c\
-v5d.c
+time_decode.c

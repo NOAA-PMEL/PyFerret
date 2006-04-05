@@ -33,9 +33,6 @@ GO bn_reset
 go bench_v5d 
 
 GO bn_reset
-GO bn_ef_v5d_strings.jnl
-
-GO bn_reset
 GO bn_ef_bench_extrema.jnl
 
 GO bn_reset

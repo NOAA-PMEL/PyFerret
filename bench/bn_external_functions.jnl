@@ -6,13 +6,10 @@ go bench_examples
 !       own file
 
 GO bn_reset
-go bench_compress
+
+GO bn_reset
+GO bn_ef_v5d_strings.jnl
 
 GO bn_reset
 go bench_v5d 
 
-!!!!!!!!!!!!!!!!!!!!!!
-!
-! YAY!! End of Benchmark without crashing!!!!
-!
-!!!!!!!!!!!!!!!!!!!!!!

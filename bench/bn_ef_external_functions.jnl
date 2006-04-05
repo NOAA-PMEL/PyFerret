@@ -5,5 +5,11 @@ go bench_examples
 ! move bench tests that test internal external functions to their
 ! own .jnl file  bn_internal_external_functions
 ! 
-! 4/2006 all efs distributed with Ferret except the examples tested in 
-!        bench_examples.jnl are now internally linked.
+! 4/2006 all efs distributed with Ferret except writev5d and the 
+!        examples tested in bench_examples.jnl are now internally linked.
+
+GO bn_reset
+GO bn_ef_v5d_strings.jnl
+
+GO bn_reset
+go bench_v5d 

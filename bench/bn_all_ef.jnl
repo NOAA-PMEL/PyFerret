@@ -2,8 +2,11 @@ SET MODE VERIFY
 ! bn_all_ef.jnl
 ! - run all the benchmark tests for externally-linked external functions.
 
-! 4/2006 all efs distributed with Ferret except the examples tested in 
-!        bench_examples.jnl are now internally linked.
 
+GO bn_reset
+GO bn_ef_external_functions.jnl
+
+GO bn_reset
+GO bn_ef_v5d_strings.jnl
 
 exit/command

@@ -1,0 +1,754 @@
+! bn_attributes
+! test attribute handling on netcdf intput/output and
+! programatic access to attribute information
+! needs new cdf files modfalse.nc, test0.nc
+
+!-----
+
+! SHOW ATTRIBUTE examples
+
+can data/all
+can var/all
+
+use ocean_atlas_temp
+sho att/all temp
+
+show attribute temp.units
+show attribute temp.missing_value
+
+!  specifying data set
+
+use gt4d011
+use "http://ferret.pmel.noaa.gov/cgi-bin/dods/nph-dods/data/PMEL/ocean_atlas_annual.nc"
+
+sh att/all temp[d=2]
+sh att temp.units[d=1]
+
+!  global attributes
+use err491_attval     
+
+show att ..remark
+show att/all .
+
+sho att/all .[d=1]
+
+!  Now SHOW DATA/ATT
+
+can data/all
+use ocean_atlas_temp
+sho data/att 
+
+use gt4d011
+use "http://ferret.pmel.noaa.gov/cgi-bin/dods/nph-dods/data/PMEL/ocean_atlas_annual.nc"
+
+sh data/att gt4d011
+
+!  error messages
+
+set mode ignore
+
+! no argument
+sho att/all
+
+! dataset not open
+can data 2
+show att/all temp[d=2]
+
+! variable not in default dataset
+use ocean_atlas_temp
+show att/all salt
+
+! nonexistent attribute
+use gt4d011
+sho att salt.nonsense
+
+can data/all
+
+! No datasets open
+sho att/all .
+
+can mode ignore
+ 
+go bn_reset
+ 
+!-----
+! attributes of string variables 
+let/title="my strings" var_b = {"Seattle", "Skykomish", "Snoqualmie"}
+sho att/all var_b
+
+save/clobber/file=a.nc var_b
+sp ncdump a.nc
+ 
+go bn_reset
+
+!-----
+! Demonstrate `var,return=` output for attributes
+
+use gt4d011
+
+! RETURN=size gives length of attribute: 
+! # values for numeric attributes 
+! string length for string attributes
+
+show att/all temp
+
+say `temp.2,return=size`
+say `temp.6,return=size`
+
+say `..history,return=size`
+
+! test0 is from the netcdf distribution; 
+! vars and attrs of all types
+use test0
+say `broiled.acd,return=size`
+say `broiled.acf,return=size`
+ 
+go bn_reset
+
+!-----
+! define variables to contain attribute value(s) 
+
+use ocean_atlas_temp
+let a = temp.missing_value
+list a
+
+use ocean_atlas_temp
+let s = temp.units
+list s
+
+can data/all
+
+! global attribute
+use err491_attval     
+let s = ..remark
+list s
+ 
+go bn_reset
+ 
+!-----
+! Variables containing number of variables, attributes, dimensions,
+! lists of variable names, attribute names, coordinate variables,
+! global attribute names
+
+! Given a variable, return the attribute names
+use coads_climatology
+let nat = sst.natt
+let anames = sst.attnames
+list nat
+list anames
+
+! Given a variable, return the coordinate number and names
+let nd = sst.ndims
+let cnames = sst.dimnames
+list nd
+list cnames
+
+! ..varnames
+can data/all
+use gt4d011
+use coads_climatology
+
+let nv = ..nvars
+let nd = ..ndims
+let vnames = ..varnames
+list/d=1 nv, nd 
+list/d=1 vnames
+
+let vnames = ..varnames
+list/d=coads_climatology vnames
+list/d=gt4d011 vnames
+
+can data/all
+can var/all
+
+! global ..dimnames
+
+use coads_climatology
+use gt4d011
+
+let vnames = ..dimnames[d=1]
+let lnames = ..dimnames[d=2]
+list vnames 
+list lnames
+
+can var/all
+can data/all
+
+! Global attributes ..attnames
+use err491_attval
+
+let v = ..ndim
+list v
+
+let na = ..nat
+list na
+
+let gnames = ..attnames
+list gnames
+
+! attributes of variable number 2
+
+use ocean_atlas_temp
+use gt4d011
+let names = ..varnames
+let anames = `names[i=2]`.attnames
+ 
+go bn_reset
+ 
+
+!-----
+! more on number of attributes     
+
+can data/all
+can var/all
+
+use ocean_atlas_temp
+let nat = temp.natt
+list nat
+
+list (`temp,return=xaxis`).nattr
+
+use gt4d011
+say `temp.nattr[d=1]`
+
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+list `($xaxnam).nattr[d=1]`
+
+say `(yax_lev94).nattr[d=1]`
+ 
+go bn_reset
+ 
+!-----
+! more on access to attribute names and values as variables
+
+use coads_climatology
+use levitus_climatology
+use ocean_atlas_temp
+use gt4d011
+
+let a = temp.units
+list/d=3 a
+
+list temp.units[d=3]
+list/d=3 temp.history
+
+can data/all
+can var/all
+
+use test0.nc
+sh data/att
+
+let a= broiled.acl
+list a
+
+let a= broiled.acf
+list a
+
+list/i=2 a
+
+list a[i=2:3]
+
+use coads_climatology
+list sst.dimnames[i=2]
+
+list/i=3 sst.dimnames
+let a= sst.dimnames
+
+list a
+list a[i=1]
+
+go bn_reset
+
+!-----
+! keyword . to refer to global properties and attributes
+
+use gt4d011
+list ..nvars
+
+use coads_climatology
+
+list/d=1 ..nvars
+list/d=2 ..nvars
+
+sh data
+list/d=2 ..varnames
+
+list/d=2 ..dimnames
+list/d=1 ..dimnames
+
+list/d=1 ..nattr
+list/d=1 ..attnames
+
+list/d=1 ..ndims
+list/d=2 ..ndims
+
+list ..nvars[d=1]
+sh var
+
+let pp = ..varnames
+list pp[d=1]
+
+set data 1
+list/d=2 pp
+ 
+go bn_reset
+ 
+!-----
+! Editing attributes: add new attributes to a variable.
+
+use ocean_atlas_temp
+def att/type=string temp.strval = 2
+def att/type=float temp.floatval = 22
+def att temp.pp = {1.5, 1.9}
+def att temp.some_text = "some text about the TEMP variable"
+sh att/all temp
+
+! Now change some existing attributes (this redefines
+! the attribute, behaving like DEFINE AXIS...)
+
+def att temp.pp = {1.5, 1.9, 3.45, 7}
+def att temp.some_text = "some different text"
+sh att temp.pp
+let var = temp.some_text
+list/nohead var
+
+! add an attribute to a variable not in the default dataset
+
+use gt4d011
+def att/D=1 temp.morenew = 2
+sh att/all temp[d=1]
+
+go bn_reset
+
+!-----
+! Edit existing attributes on variables
+
+use ocean_atlas_temp
+sh att/all temp
+set att temp.long_name = "set title via SET ATT temp.longname"
+set att temp.units = "Centigrade"
+plot/y=0/l=1 temp
+
+! two settings of the missing value change both the missing and bad flags
+set att temp.missing_value = 12
+set att temp.missing_value = 12
+shade/L=2 temp
+
+!-----
+! access and edit attributes of coordinate variables.
+! Specify names of coord variables inside parentheses
+
+use ocean_atlas_temp
+use coads_climatology
+
+! Get attributes of a coordinate variable
+
+list (coadsx).units
+list (coadsx).modulo
+sho att/all (coadsx)
+
+! Set the attribute output flag
+
+set att/output (coadsx).modulo
+
+! Define a new attribute on a coordinate axis
+
+define att (`sst,return=xaxis`).newatt = 3
+set att/output (`sst,return=xaxis`).newatt 
+save/clobber/file=a.nc/x=130w/y=0 sst
+
+sp ncdump -c a.nc
+
+! modfalse.nc is a file with modulo attribute on x axis 
+! explicitly set to FALSE
+
+use modfalse.nc
+set att/output (`sst,return=xaxis`).modulo
+save/clobber/file=a.nc sst
+sp ncdump -c a.nc
+
+! Reset attributes as in SET AXIS
+
+use gt4d011
+set view left; shade/y=0/L=1 temp
+set att (`temp,return=zaxis`).positive="up"
+set view right; shade/y=0/L=1 temp
+can data gt4d011
+
+set data coads_climatology
+sho att (coadsx).modulo
+set att (coadsx).modulo=360
+
+! Note here that Ferret is using the name TIME1 instead of TIME. 
+! axis still found and edited.
+
+set att (`sst,return=taxis`).time_origin="1-jan-1980"
+list/x=130w/y=0 sst
+
+!(coordvar).attname[d=1]
+! Can have the parentheses included in a symbol
+
+def sym xaxnam  "(`temp[d=1],return=xaxis`)"
+list `($xaxnam).nattr[d=1]`
+
+! Or parentheses added when symbol is evaluated
+def sym yaxnam  "`temp[d=1],return=yaxis`"
+list `(($yaxnam)).nattr[d=1]`
+
+! just the name of the axis
+list (`sst,return=xaxis`).nattr[d=2]
+
+! using dimension names from the linked list structure
+
+let cnames = sst.dimnames
+list cnames
+show axis (`cnames[i=1]`)
+list (`cnames[i=1]`).natts
+
+! Intentional errors. 
+
+SET MODE IGNORE
+
+! Need parentheses around axis name.
+list coadsx.units
+sh att/all coadsy
+
+! Cannot change the direction of an axis 
+use modfalse.nc
+set att (`sst,return=xaxis`).axis = "Z"
+
+can view
+ 
+can mode ignore
+go bn_reset
+ 
+!-----
+! Edit attributes: inherit all attrs from another variable
+
+use gt4d011
+sh att/all salt
+
+set att/like=temp salt
+sh att/all salt
+
+! If a user variable is defined based on another variable,
+! it gets only default attributes. All attributes must be 
+! specified with qualifiers (/UNITS=) or with DEF ATT
+
+! Define a new attribute on a file variable, then a new var as fcn of that
+
+define attribute temp.description = "description of TEMP in gt4d011"
+let temp2 = temp*2
+sh att/all temp2
+ 
+! Can inherit attributes explicitly, either all at once or individually.
+def att temp2.units = "`temp,return=units`"
+sh att/all temp2
+
+let temp3 = temp*3
+set att/like=temp temp3
+sh att/all temp3
+
+can var temp2
+let/units="degrees C"/title="my new TEMP"/bad=`temp,return=bad` temp2 = temp*2
+sh att/all temp2
+
+go bn_reset
+ 
+!-----
+! Edit attributes, changing type
+! change values, type, and length of attributes.
+
+use ocean_atlas_temp
+def att/type=string temp.strval = 2
+def att/type=float temp.floatval = 22
+def att temp.pp = {1.5, 1.9}
+def att temp.some_text = "some text about the TEMP variable"
+sh att/all temp
+
+! Change attribute values
+
+set att temp.pp = {1.5, 1.9, 3.45, 7}
+set att temp.some_text = "some different text"
+sh att temp.pp
+let var = temp.some_text
+list/nohead var
+
+! Now change attribute types
+
+set att temp.pp = "PP now has some text."
+set att temp.some_text = 745.
+
+! Does changing the type of an attribute cause any trouble for a variable
+! defined based on that variable?
+
+list/nohead var
+let pq = temp.pp
+list pq
+
+! set an attribute when the variable is not in the default dataset.
+
+use gt4d011
+def att/d=1 temp.morenew = 33
+sho att/all temp[d=1]
+
+! Edit the text in some of the attributes, make a plot where we see 
+! the resulting change in title and units.
+
+set data ocean_atlas_temp
+set att temp.long_name = "Ocean Atlas Temperature"
+set att temp.units = "Centigrade"
+shade/L=2 temp
+
+! Define an attr that already exists: redefines 
+
+def att temp.pp = {1.5, 1.9, 3}
+let pq = temp.pp
+list pq
+ 
+go bn_reset
+
+! writing a netcdf file preserves case of variable and attribute names
+! This file has mostly lower case and some mixed-case names.
+
+use err491_attval.cdf
+sp ncdump -h err491_attval.cdf
+
+save/clobber/file=a.nc elev[i=3,j=2:4]
+
+sp ncdump -h a.nc
+ 
+go bn_reset
+ 
+!-----
+ 
+! outtput flags to control attribute output to netcdf files
+
+! SET ATT/OUTPUT varname.attname sets individual attr to be written
+! SET ATT/OUTPUT=all varname     output all attributes defined when var written
+! SET ATT/OUTPUT=default varname output default Ferret attributes
+! SET ATT/OUTPUT=none varname    output no attrbutes  
+
+let aa = 12
+let bb = {3,4.5,6,7,4}
+
+def att bb.my_title = "This is my new variable bb"
+def att bb.another_attr = 6
+
+! Output just one of these new attributes
+
+set att/output bb.my_title
+
+save/clobber/file=a.nc aa,bb
+sp ncdump -c a.nc
+
+! Output all attributes
+
+set att/output=all bb
+save/clobber/file=a.nc aa,bb
+sp ncdump -c a.nc
+
+! Just output the default attributes
+
+set att/output=default bb
+save/clobber/file=a.nc bb
+sp ncdump -c a.nc
+
+! Output none of the attributes for aa
+
+set att/output=none aa
+save/clobber/file=a.nc aa,bb
+sp ncdump -c a.nc
+
+go bn_reset
+
+
+!-----
+! CANCEL ATTRIBUTE/OUTPUT= to surpress output of attributes 
+
+use ocean_atlas_temp
+sh att/all  (`temp,return=xaxis`)
+
+! Surpress output of existing attribute
+can att/out (`temp,return=xaxis`).point_spacing
+
+! Surpress output of an attribute that Ferret would otherwise add.
+
+can att/out (`temp,return=xaxis`).axis
+save/file=a.nc/clobber temp
+sp ncdump -h a.nc
+
+! subregions create child axes with new names
+! Check that settings hold for such an output file.
+
+set reg/x=300:360/y=30:45
+sh att/all  (`temp,return=xaxis`)
+can att/out (`temp,return=xaxis`).point_spacing
+can att/out (`temp,return=xaxis`).axis
+save/file=a.nc/clobber temp
+sp ncdump -h a.nc
+
+! cancel output of attributes of the variable itself
+can region
+sh att/all  temp
+can att/out temp.history
+can att/out temp.long_name
+save/file=a.nc/clobber temp
+sp ncdump -h a.nc
+ 
+go bn_reset
+
+!-----
+! Read EZ ascii, delimited, and stream data files,
+! add attributes to their variables.
+
+! read file as an ez file
+
+file/var="a1,a2,a3" EZ.DAT
+def att a1.three={1,2,3}
+sh att/all a1
+sh dat/att
+save/file=a.nc/clobber a1,a2,a3
+sp ncdump a.nc
+
+! now read it as a delimited file
+
+can data/all
+
+columns/delim=" " EZ.DAT
+def att/type=string v1.strval = 2
+set att/output v1.strval
+sh att/all v1
+save/clobber/file=a.nc v1,v4
+sp ncdump a.nc
+
+! and a stream dataset
+
+def axis/x=1:1:1 xax
+def axis/y=1:2:1 yax
+def axis/z=1:3:1 zax
+def axis/t=1:4:1 tax
+def grid/x=xax/y=yax/z=zax/t=tax mygrid
+file/format=str/var=num,num1/grid=mygrid/order=xyztv permutedBinaryTest.dat
+
+define att/type=string num.new = "a string attribute"
+sh att/all num
+go bn_reset
+
+!-----
+! manipulate attributes of user-defined variables
+
+let a = {12,14,15}
+def att a.three={1,2,3}
+set att/output a.three
+def att a.four = {"theory"}
+set att/output a.four
+sh att/all a
+sh dat/att
+save/file=a.nc/clobber a
+sp ncdump a.nc
+
+
+!-----
+! write global attributes (Note this implementation needs work; 
+! what is the right syntax?? Perhaps an undocumented feature for 
+! the first release)
+
+use err491_attval
+set att/out=all .   ! from the default data set
+
+save/file=a.nc/clobber elev
+sp ncdump -h a.nc
+
+! Choose a single global attribute to write, from dataset 1
+can data/all
+use err491_attval
+use gt4d011
+set att/output/d=1 ..dt_internal
+save/clobber/file=a.nc elev[d=1], temp[d=2,x=130w,k=1,y=-20:20]
+
+sp ncdump -h a.nc
+
+! Note: this syntax does not work
+! use err491_attval
+! use ocean_atlas_temp
+! set att/out  ..min_slope[d=1]
+! save/file=a.nc/clobber elev[d=1]
+! sp ncdump -h a.nc
+ 
+go bn_reset
+
+!-----
+
+! File with scale_factor and add_offset
+! If we request to write the variable with its scale factor 
+! and offset attributes, then the data and its missing and fill 
+! flags are rescaled.  Lets us re-pack data on output, or specify
+! new packing.
+
+use err491_attval
+set att/output elev.scale_factor
+set att/output elev.add_offset
+set var/outtype=input elev
+
+save/clobber/file=a.nc/j=1 elev
+sp ncdump a.nc 
+
+go bn_reset
+ 
+!-----
+! Set type of data on output, uses netcdf call to output 
+! the requseted type.
+
+use gt4d011
+set var/bad=-1000 temp
+set var/outtype=int4 temp
+save/file=a.nc/clobber/y=1/k=1/L=1 temp
+sp ncdump a.nc | grep -A2 -i temp
+
+can data/all
+use gt4d011
+
+set var/outtype=double salt
+save/clobber/file=a.nc/y=1/k=1/L=1 salt
+sp ncdump a.nc | grep -A2 -i salt
+
+can data gt4d011
+
+! Force output type to equal input type (should we have a MODE setting for this??)
+
+use test0
+let nam = ..varnames
+
+repeat/range=1:4/name=m (def sym va = nam[i=`m`]; sh sym va; \
+  set var/outtype=input `($va)`;\
+  if `m eq 1` THEN save/clobber/file=a.nc `($va)` \
+  ELSE save/append/file=a.nc `($va)`)
+
+sp ncdump a.nc
+
+set var/outtype=double a_loan
+save/file=a.nc/clobber a_loan
+
+can data test0
+
+! intentional errors
+
+set mode ignore_error
+
+! missing value and fill value too large for INT output.
+
+use gt4d011
+set var/outtype=int4 temp
+save/file=a.nc/clobber/x=132w/k=1 temp
+can data gt4d011
+
+! specify incorrect output types
+
+use test0
+set var/outtype=char broiled
+
+set var/outtype=garbage broiled
+ 
+can mode ignore
+go bn_reset

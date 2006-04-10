@@ -139,6 +139,7 @@ GO bn_ez		! changed from bn200_ez 8/10/95
 ! remove bn200_budgets for portable benchmarks *kob* 5/99
 ! ****
 
+! ppl echo on turns on fort.41 to capture ppl commands.
 PPL ECHO ON		! added 10/27/93
 
 ! 10/97 *kob* now set mode metafile

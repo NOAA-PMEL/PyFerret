@@ -83,7 +83,7 @@
 *                   axes, then a change needs to be made in translate_to_world.
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
-* V590: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
+* V600: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
 *                    start each row labelling the coordinate values. (bug 1273)
 
 	include 'tmap_dims.parm'

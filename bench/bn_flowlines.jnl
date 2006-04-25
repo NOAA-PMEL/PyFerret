@@ -24,6 +24,7 @@ vector/i=1:50/j=1:50/length=50/aspect/nolabel sin(i/20)*10+j-20,-1*cos(j/10)*10+
 flow/i=1:50/j=1:50/over/color=blue/thick/den=1 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
 flow/i=1:50/j=1:50/over/color=green/den=4/len=20 sin(i/20)*10+j-20,-1*cos(j/10)*10+i-20
 
+can mode meta
 ! curvilinear flowline plots
 go bn_reset
 
@@ -39,5 +40,4 @@ set reg/l=1
 vec/noax/xskip=16/yskip=8/len=15/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 vec/over/flow/noax/xskip=16/yskip=8/len=5/title="Sinusoidal Projection" fsst*0,fsst*0+yy*mp_mask, x_page,y_page
 
-can mode meta
 set mode logo

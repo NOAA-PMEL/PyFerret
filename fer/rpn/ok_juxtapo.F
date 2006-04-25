@@ -47,6 +47,8 @@
 * V500: 12/98 *sh*  added alg_const_var -- for fixed arrays such as "{1,3,5}"
 *	 1/99 - added alg_string   
 * V554 1/04 *acm* Add category alg_counter_var for counter variables; REPEAT/RANGE=/NAME=
+* V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
+*                   varname.attname
 
 	include		'ferret.parm'
 	include		'rpn.parm'
@@ -96,7 +98,8 @@
      .	   .or.	atom_type(atom(i)) .eq. alg_string
      .	   .or.	atom_type(atom(i)) .eq. alg_child_var
      .	   .or. atom_type(atom(i)) .eq. alg_operand
-     .	   .or. atom_type(atom(i)) .eq. alg_counter_var ) then
+     .	   .or. atom_type(atom(i)) .eq. alg_counter_var
+     .	   .or. atom_type(atom(i)) .eq. alg_attrib_val ) then
 	      ndx(i) = 3
 	      goto 100
 	   end if

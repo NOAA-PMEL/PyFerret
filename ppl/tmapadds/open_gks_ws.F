@@ -52,7 +52,7 @@
 *  v5.4 *acm* 8/2001  add polymarker call for PLOT/SYMBOL=DOT 
 *             here  set polymarker area attributes to bundled.
 *      *acm* 10/01  remove VMS includes
-*  v5.90 *acm* 9/05 append window_title to window name. If no title
+*  V600 *acm* 9/05 append window_title to window name. If no title
 *                   has been defined, set it to the session date:time.
 *                   Save window_title in xplot_setup.cmn for use in subsequent 
 *                   windows. Also define a symbol WIN_TITLE

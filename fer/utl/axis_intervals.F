@@ -62,10 +62,10 @@
 *              or it may miss an irregular part of the grid; the calculation
 *              should be correct and not hit the subspan-modulo void point,
 *              (how to test this???)
-* V590  7/05  Fix for bug 900: If the axis is subspan modulo, and if the 
+* V600  7/05  Fix for bug 900: If the axis is subspan modulo, and if the 
 *              region we are using extends beyond the core range of the 
 *              axis, then we need to set it to irregular within this routine.
-* V590  10/05  change to a comment only, added when fixing bug1347.
+* V600  10/05  change to a comment only, added when fixing bug1347.
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'

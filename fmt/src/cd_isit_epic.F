@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION CD_ISIT_EPIC ( dset, cdfid, status )
+	LOGICAL FUNCTION CD_ISIT_EPIC ( dset, status )
 
 *
 *
@@ -46,14 +46,18 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 2/93
+* V600 *ACM* attribute control. 
+*             Replace NCVID with CD_GET_VAR_ID
+*             Change call to CD_GET_ATTRIB
+*             CD_GET_ATTVAL replaced by CD_GET_ATTRIB, which now returns  
+*               strings or real values according to attrib type
 
 * argument definitions:
-*	cdfid	- netCDF id number for already opened CDF file
+*	dset	- dataset pointer for already opened CDF file
 
 * argument declarations
-      INTEGER dset, cdfid, status
+      INTEGER dset, status
 
-#ifdef unix
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'tmap_errors.parm'
@@ -61,15 +65,10 @@
       include 'xdset_info.cmn_text'
       external xdset_info_data
       include 'xdset_info.cd_equiv'
-#else
-      INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
-      INTEGER NCVID, cdfstat, i, axid, attype, attlen
-      INTEGER   axnamlen(2)
+      INTEGER i, axid, attype, attlen, attoutflag
+      INTEGER axnamlen(2)
       CHARACTER*4 axname(2)
 
 * internal data statements
@@ -81,7 +80,8 @@
 
 * locate an axis that's in the file
       DO 100 i = 1, 2
-         axid = NCVID( cdfid, axname(i)(1:axnamlen(i)), cdfstat )
+         CALL CD_GET_VAR_ID ( dset, axname(i)(1:axnamlen(i)), 
+     .         axid, status )
          IF ( axid .GT. 0 ) GOTO 200
  100  CONTINUE
 
@@ -90,8 +90,9 @@
       RETURN
 
 * check for "epic_code" attribute
- 200  CALL NCAINQ( cdfid, axid, 'epic_code', attype, attlen, cdfstat )
-      CD_ISIT_EPIC =  cdfstat .EQ. NCNOERR
+ 200  CALL CD_GET_VAR_ATT_INFO (dset, axid, 'epic_code', 
+     .                          attype, attlen, attoutflag, status )
+      CD_ISIT_EPIC =  status .EQ. merr_ok
 
 * successful completion (always)
       RETURN

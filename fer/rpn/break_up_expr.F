@@ -57,19 +57,11 @@
 *                   the brackets in risc_buff
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'errmsg.parm'	
 	include 'rpn.parm'
 	include 'xprog_state.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declaration:
 	INTEGER		num_parts, status
@@ -84,8 +76,9 @@
      .		at_type  (maxatoms), at_id  (maxatoms),
      .		at_start (maxatoms), at_end (maxatoms),
      .		exp_start(max_exp), exp_end(max_exp),
-     .		atom_1   (max_exp), atom_n (max_exp)
-	CHARACTER	EXPR_NAME*8, err_string*128
+     .		atom_1   (max_exp), atom_n (max_exp),
+     .          paren, startparen
+	CHARACTER	EXPR_NAME*8, err_string*128, t2*2
 
         INTEGER ii
 
@@ -107,7 +100,42 @@ c        tlen = MIN( size_rbuff, LEN(text) )
         tlen = MIN( size_rbuff, LEN(text) )
 
 * break the expression into atoms
+
+* ----
+* When there is a .. in the expression, this will later be translated
+* as an attribute of the dataset.  Here just gloss over this by
+* temporarily replacing the two dots with a string.
+
+        t2 = text(1:2)
+        IF (t2 .EQ. '..') text(1:2) = 'aa'
+
+* a similar hack when the expression is (coordvar).attname 
+* ALG_BREAK_UP can parse this, but doesnt like more complicated expressions
+* like (coordvar).attname[d=2] Could make more cases in alg_break_up, but
+* instead avoid the confusion about the meaning of the parentheses by 
+* temporarily removing them.
+
+        paren = 0
+        IF ( INDEX(text, ').' )  .NE. 0) THEN
+           paren = INDEX(text, ').' )
+           DO 80 i = 1, paren-1
+              startparen = INDEX(text(i:paren), '(' )
+   80      CONTINUE
+           text(startparen:startparen) = 'A'
+           TEXT(paren:paren) = 'A'
+        ENDIF
+
 	CALL ALG_BREAK_UP( text,at_start,at_end,natom,err_string,status )
+
+* ----
+* Restore text before the hack
+        text(1:2) = t2
+        
+        IF (paren .GT. 0) THEN
+           text(startparen:startparen) = '('
+           text(paren:paren) = ')'
+        ENDIF
+
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 * identify the atoms

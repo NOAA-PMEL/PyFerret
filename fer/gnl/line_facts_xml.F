@@ -46,7 +46,7 @@
 *            of line_modulo for modulo attribute!
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
-* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

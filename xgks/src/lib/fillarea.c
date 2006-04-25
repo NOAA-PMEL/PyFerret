@@ -113,7 +113,7 @@ XgksInitWssFillArea(ws)
     /*
      * Set default pattern table values.
      */
-    for (i = 0; i < MAX_BUNDL_TBL; i++) {
+    for (i = 0; i < PDF_PATT_BNDLS; i++) {
 	j = xgks_xpttn[i].size.x * xgks_xpttn[i].size.y;
 	ws->ptbundl_table[i] = xgks_xpttn[i];
 	ws->ptbundl_table[i].array = (Gint *) malloc((size_t) (j*sizeof(int)));
@@ -122,7 +122,10 @@ XgksInitWssFillArea(ws)
 
 	for (k = 0; k < j; k++)
 	    ws->ptbundl_table[i].array[k] = xgks_xpttn[i].array[k];
-    }
+    }     
+
+/*    for (i = PDF_PATT_BNDLS + 1; i < MAX_BUNDL_TBL; i++) 
+	ws->ptbundl_table[i] = (what??) ;*/
     return 0;
 }
 

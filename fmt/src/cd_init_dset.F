@@ -58,6 +58,8 @@
 * V510 *sh* 3/00 - added tregular argument
 *	    3/00 - convert to using dynamic grids and axes
 * 4/03 *acm* - Use STR_SAME to compare strings
+* V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
+
 
 * argument declarations:
 	LOGICAL tregular
@@ -86,6 +88,16 @@
       CALL CD_OPEN_DSET ( dset, cdfid, remote_dods_id, status )
       IF ( status .NE. merr_ok ) GOTO 5990
 
+* Save netcdf file attribs in linked list structure
+
+      CALL CD_STORE_DSET_ATTRS ( dset, cdfid, status )
+      IF ( status .NE. merr_ok ) GOTO 5990
+
+* Use the dataset/variable/attribute data structure to load what was
+* previously done in cd_open_dset.
+
+      CALL CD_LOAD_DSET_ATTRS (dset, cdfid, status)
+
 * get "TMAP" special parameters
       CALL CD_GET_TMAP_PARMS ( dset, cdfid, status )
       IF ( status .NE. merr_ok ) GOTO 5980
@@ -101,11 +113,11 @@
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables with parent grids
-      CALL CD_GET_PARENT_GRIDS (cdfid,temp_axnams,status)
+      CALL CD_GET_PARENT_GRIDS (dset,temp_axnams,status)
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * associate the parent grids with data set variables      
-      CALL CD_ASSOC_GRIDS (dset, cdfid, reversed, temp_axnams, status)
+      CALL CD_ASSOC_GRIDS (dset, reversed, temp_axnams, status)
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * replace name linkages between axes and grids with pointers.  Delete dups

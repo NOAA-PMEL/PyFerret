@@ -1,4 +1,5 @@
-	INTEGER FUNCTION CD_ISIT_RECDIM( cdfid, grid, idim, status )
+	INTEGER FUNCTION CD_ISIT_RECDIM( cdfid, dset, grid, idim,
+     .     status )
 
 *
 *
@@ -45,36 +46,44 @@
 * revision 0.0 - 6/92
 * V500 *kob* 3/99 - up lengths of CD_AXIS_NAME and name to correspond w/ 
 *                   longer line_name
+* V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
+
 * argument definitions:
+*       dset    - dset (if netcdf file, for getting name and attribute 
+*                 info from linked-list structure  
 *       cdfid   - returned pointer to open CDF file
 *       grid    - TMAP grid number
 *       idim    - axis number (1-4)
 *	status	- return status
 
 * argument declarations:
-	INTEGER	      cdfid, grid, idim, status
+	INTEGER	      cdfid, dset, grid, idim, status
 
 * include files
-#ifdef unix
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'tmap_errors.parm'
         include 'cd_lib.parm'
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-        INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-        INCLUDE 'TMAP_FORMAT:CD_LIB.PARM'
-#endif
 
 * local variable declarations:
-      LOGICAL this_ax_exists, recax_exists
-      INTEGER NCDID, 
-     .        ndims, nvars, ngatts, recdim, cdfstat, nlen, dimid
+      LOGICAL this_ax_exists, recax_exists, coordvar
+      INTEGER ndims, nvars, ngatts, recdim, cdfstat, nlen, dimid,
+     .        varid, vartype, nvdims, vdims(8), nvatts, all_outflag
       CHARACTER CD_AXIS_NAME*64, name*64
+      EXTERNAL CD_AXIS_NAME
 
 * get the axis name
-        name = CD_AXIS_NAME( grid, idim, nlen )
+        name = CD_AXIS_NAME( dset, grid, idim, nlen )
+        
+
+* Get information, if it exists, from linked-list structure, including
+* original upper/lowercase form of axis name. (note can check for
+*   coordinate and record axis from the structure too...)
+
+      CALL CD_GET_VAR_ID (dset, name, varid, status)
+      IF (status .EQ. merr_ok) CALL CD_GET_VAR_INFO (dset, varid,
+     .   name, vartype,  nvdims, vdims, nvatts, coordvar, 
+     .   all_outflag, status)  
 
 * is there a dimension by this name?
         dimid = NCDID( cdfid, name(:nlen), cdfstat )

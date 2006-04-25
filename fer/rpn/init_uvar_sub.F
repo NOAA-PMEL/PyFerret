@@ -1,7 +1,7 @@
 	SUBROUTINE INIT_UVAR_SUB ( name, text, title, units, dset, bad,
      .                             implct_defn, uvar, parent_uvar,
      .			           at_type, at_id, at_start, at_end,
-     .			           natom, txstart, txend, status )
+     .			           natom, txstart, txend, child, status )
 
 *
 *
@@ -61,34 +61,28 @@
 * V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *            bug fix - reference to uvar_text was missing uvar reference      
-#ifdef unix
+
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
 	include 'rpn.parm'
 	include 'xvariables.cmn'
 	include 'xrisc_buff.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'	
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'	
-	INCLUDE 'FERRET_CMN:RPN.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations:
-	LOGICAL		implct_defn
+	LOGICAL		implct_defn, child
 	CHARACTER*(*)	name, text, title, units
 	INTEGER		dset, uvar, natom, txstart, txend, status,
-     .			parent_uvar,
+     .			parent_uvar, 
      .			at_type  (maxatoms), at_id  (maxatoms),
      .			at_start (maxatoms), at_end (maxatoms)
 	REAL		bad
 
 * internal variable declarations:
 	LOGICAL inquote
-	INTEGER	        i, natom_rpn,
-     .                  rpn_order(maxatoms), i2, quote_type,
-     .                  TM_LENSTR1
-	CHARACTER	err_string*255, c*1
+	INTEGER	        TM_LENSTR1, TM_LENSTR, NCF_ADD_VAR, i, 
+     .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
+     .                  dset_to_add, slen, iat, varid
+	CHARACTER	err_string*255, c*1, varname*512, attname*128
 
 * internal parameter declarations
 	INTEGER		p_single_quote, p_double_quote
@@ -167,11 +161,34 @@
  100	CONTINUE
 * (7/98) end of quote-sensitive case changing loop
 
-* copy title, units, dset, and missing flag into buffers
+c* copy title, units, dset, and missing flag into buffers
 	uvar_title( uvar ) = title
         uvar_units( uvar ) = units
         uvar_dset ( uvar ) = dset
         uvar_bad_data ( uvar ) = bad
+
+* Add variable to the user-variable dataset in the linked list structure.
+* The variable type is not known at this time - will set it later when the
+* variable gets loaded. 
+
+* Do not add EX# expressions or child variables
+
+       type = 0
+       IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
+          dset_to_add = dset
+          IF (dset .LE. 0) dset_to_add = -1
+
+          err_string = title  ! save the value and restore below
+          IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)
+
+          CALL CD_ADD_VAR( dset_to_add, name, uvar, title, units, 
+     .         type, bad, status)
+
+          title = err_string
+          IF ( status .NE. ferr_ok ) GOTO 5600
+       ENDIF
+
+* !!! All the rest of the uvar_*(uvar) properties could become attributes of this uvar !!!
 
 * save the ID of the parent variable (or zero if this is a parent, itself)
 	uvar_parent( uvar ) = parent_uvar
@@ -240,5 +257,10 @@
 * 12/97 *kob*
  5500   CALL ERRMSG( ferr_expr_too_complex, status,
      .                  text(txstart:txend), *5000 )
+ 5600   slen = TM_LENSTR1(name)
+        WRITE (risc_buff,*) 'error initializing ', name(:slen)
+        slen = TM_LENSTR1(risc_buff)
+        CALL ERRMSG( ferr_syntax, status,
+     .               risc_buff(:slen), *5000 )
 
 	END

@@ -70,7 +70,7 @@
 *                   resetting time step here, also reset the limits for cx_cmnd
 * V580 *acm* 11/04  - Use cx_cal_id to keep track of which calendar 
 *                     used when cx_lo_ww and cx_hi_ww are computed.
-* V590 *acm* 11/05  - Fix for bug 1365; do not fix the world limits for cx_cmnd
+* V600 *acm* 11/05  - Fix for bug 1365; do not fix the world limits for cx_cmnd
 *                     unless they were already set.
 
 	include 'tmap_dims.parm'

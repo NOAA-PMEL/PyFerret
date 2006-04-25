@@ -86,6 +86,11 @@
 	IF (c.EQ.'.' .AND. LEN(string).GE.2 )
      .		TM_DIGIT = string(2:2) .NE. PathSeparator
 
+* Check for .. starting a string, dataset global attributes
+
+        IF(c .EQ. '.' .AND. string(i+1:i+1) .EQ. '.') TM_DIGIT = .FALSE.
+
+
 	RETURN
 
       END

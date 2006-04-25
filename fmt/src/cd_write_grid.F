@@ -1,4 +1,4 @@
-	SUBROUTINE CD_WRITE_GRID ( cdfid, grid, lo, hi, recdim, 
+	SUBROUTINE CD_WRITE_GRID ( cdfid, dset, grid, lo, hi, recdim, 
      .                             itsa_slab, gname, edges_flag, 
      .                             do_bounds, status )
 
@@ -47,7 +47,7 @@
 *		1/95  - change in "parent" argument to cd_write_axis (now int)
 *   11/95 - *sh* use CD_AXIS_NAME rather than line_name for dynamic lines
 *    2/96 - *sh* same deal for dynamic grids ... a quick fix right here
-* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    lname to 64 from 24 to match longer line_name
 * v570 *acm*  6/04 - changes to use bounds attribute
 
@@ -75,14 +75,14 @@
 
 * argument declarations
       LOGICAL itsa_slab, do_bounds
-      INTEGER cdfid, grid, lo(4), hi(4), recdim, edges_flag, status
+      INTEGER cdfid, dset, grid, lo(4), hi(4), recdim, edges_flag, status
       CHARACTER*(*) gname
 
 * local variable declarations:
       LOGICAL gmod
-      INTEGER TM_LENSTR1, NCDID, NCVID, NCVDEF, NCDDEF,
+      INTEGER TM_LENSTR1, 
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
-* *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+* *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    lname to 64 from 24 to match longer line_name
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
      .		names*132, lname*64
@@ -116,7 +116,8 @@
       nlen = 1
       DO 50 idim = 1, 4
          iaxis = grid_line(idim, grid)
-         lname = CD_AXIS_NAME(grid, idim, slen )
+
+         lname = CD_AXIS_NAME(dset, grid, idim, slen)
          IF ( iaxis .EQ. mpsnorm ) THEN
             names = names(:nlen)//' '//'NORMAL'
          ELSEIF ( lo(idim) .EQ. unspecified_int4 ) THEN
@@ -155,9 +156,11 @@
  100  DO 200 idim = 1, 4
          IF ( grid_line(idim, grid) .NE. mpsnorm
      .  .AND. lo(idim) .NE. unspecified_int4     ) THEN
-            CALL CD_WRITE_AXIS( cdfid, grid, idim, idim.EQ.recdim,
+            CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, 
+     .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
      .           edges_flag, do_bounds, status ) 
+
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF
  200  CONTINUE

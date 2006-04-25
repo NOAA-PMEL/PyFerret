@@ -24,7 +24,10 @@
 *       *acm* 6/04 - add SET AXIS/CALENDAR /T0 /UNITS
 *       *acm* 6/04 - add CANCEL AXIS/DEPTH
 * V581  *acm* 5/05 *kob* - increase number of qualifiers for EXIT (adding /CYCLE)
-* V590:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+* V600  *acm* 5/05 - add SHOW ATTRIBUTE
+*       *acm* 8/05 - add DEFINE ATTRIBUTE
+*       *acm* 9/05 - add SET ATTRIBUTE
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -32,7 +35,7 @@
 * subcommands and qualifiers may be added without manually recomputing the
 * pointer values.
 
-* parameter naming:
+* parameter naming:cvs ci -m "for attribute access "
 *	nsubN		- number of subcommands of command N (always > 0 since
 *			  "    " is always regarded as a subcommand
 *	nqualNx		- number of qualifiers for command N, subcommand x
@@ -81,7 +84,7 @@
      .			nqual1r    , nqual_at1s,
      .			nqual1s    , nqual_at1t,
      .			nqual1t    , nqual_at2a
-	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
+	PARAMETER    (	nsub1   =21, nsub_at2   = nsub_at1   + nsub1,
      .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
      .			nqual1b = 6, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
      .			nqual1c =18, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
@@ -95,7 +98,7 @@
      .			nqual1k = 2, nqual_at1l = nqual_at1k + nqual1k,	!'GRID'
      .			nqual1l = 8, nqual_at1m = nqual_at1l + nqual1l,	!'AXIS'
      .			nqual1m = 2, nqual_at1n = nqual_at1m + nqual1m,	!'MEMO'
-     .			nqual1n = 2, nqual_at1o = nqual_at1n + nqual1n,	!'****'
+     .			nqual1n = 8, nqual_at1o = nqual_at1n + nqual1n,	!'ATTR'
      .			nqual1o = 2, nqual_at1p = nqual_at1o + nqual1o,	!'****'
      .			nqual1p = 2, nqual_at1q = nqual_at1p + nqual1p,	!'****'
      .			nqual1q = 2, nqual_at1r = nqual_at1q + nqual1q,	!'****'
@@ -146,8 +149,8 @@
      .			nqual2n = 3, nqual_at2o = nqual_at2n + nqual2n,	!'VIEW'
      .			nqual2o = 1, nqual_at2p = nqual_at2o + nqual2o,	!'TRAN'
      .			nqual2p = 1, nqual_at2q = nqual_at2p + nqual2p,	!'ALIA'
-     .			nqual2q = 1, nqual_at2r = nqual_at2q + nqual2q,	!'****'
-     .			nqual2r = 1, nqual_at2s = nqual_at2r + nqual2r,	!'****'
+     .			nqual2q = 1, nqual_at2r = nqual_at2q + nqual2q,	!'ATTR'
+     .			nqual2r = 2, nqual_at2s = nqual_at2r + nqual2r,	!'****'
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'****'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'****'
      .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u,	!'FUNC'
@@ -176,7 +179,7 @@
      .			nqual3r    , nqual_at3s,
      .			nqual3s    , nqual_at3t,
      .			nqual3t    , nqual_at4a
-	PARAMETER    (	nsub3   =20, nsub_at4   = nsub_at3   + nsub3,
+	PARAMETER    (	nsub3   =21, nsub_at4   = nsub_at3   + nsub3,
      .			nqual3a = 0, nqual_at3b = nqual_at3a + nqual3a,	!'    '
      .			nqual3b = 1, nqual_at3c = nqual_at3b + nqual3b,	!'WIND'
      .			nqual3c = 9, nqual_at3d = nqual_at3c + nqual3c,	!'REGI'
@@ -190,7 +193,7 @@
      .			nqual3k = 3, nqual_at3l = nqual_at3k + nqual3k,	!'VARI'
      .			nqual3l = 4, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
      .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
-     .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'****'
+     .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'ATTR'
      .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'****'
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'****'
@@ -244,16 +247,18 @@
      .			nqual10e    , nqual_at10f,
      .			nqual10f    , nqual_at10g,
      .			nqual10g    , nqual_at10h,
-     .			nqual10h    , nqual_at11a
-	PARAMETER    (	nsub10   = 8, nsub_at11   = nsub_at10   + nsub10,
+     .			nqual10h    , nqual_at10i,
+     .			nqual10i    , nqual_at11a
+	PARAMETER    (	nsub10   = 9, nsub_at11   = nsub_at10   + nsub10,
      .			nqual10a = 0, nqual_at10b = nqual_at10a + nqual10a,!'  '
      .			nqual10b =18, nqual_at10c = nqual_at10b + nqual10b,!REGI
      .			nqual10c =11, nqual_at10d = nqual_at10c + nqual10c,!GRID
      .			nqual10d = 6, nqual_at10e = nqual_at10d + nqual10d,!VARI
      .			nqual10e =15, nqual_at10f = nqual_at10e + nqual10e,!AXIS
      .			nqual10f = 8, nqual_at10g = nqual_at10f + nqual10f,!VIEW
-     .			nqual10g = 2, nqual_at10h = nqual_at10g + nqual10g,!****
-     .			nqual10h = 2, nqual_at11a = nqual_at10h + nqual10h !****
+     .			nqual10g = 2, nqual_at10h = nqual_at10g + nqual10g,!ALIAS
+     .			nqual10h = 2, nqual_at10i = nqual_at10h + nqual10h,!SYMB
+     .			nqual10i = 4, nqual_at11a = nqual_at10i + nqual10i !ATTR
      .		      )
 * EXIT		 - commmand # 11
 	INTEGER		nsub11      , nsub_at12  ,

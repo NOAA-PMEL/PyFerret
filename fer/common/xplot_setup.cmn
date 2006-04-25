@@ -13,7 +13,7 @@
 * *sh* 9/01 - added white space defaults -- distance above/below axis ends
 *		to window or viewport edge (below == PLOT+ origin)
 * *acm* v552 3/03 Longer strings: changes for multi-line labels.
-* *acm* v590 9/05 window title: either set with SET WIN/TITLE or use 
+* *acm* V600 9/05 window title: either set with SET WIN/TITLE or use 
 *                 session date/time.
 
 	LOGICAL	key_doc(0:10),

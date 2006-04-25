@@ -66,7 +66,7 @@
 * v531 5/01 *kob* - fix erroneous error report referencing cd_rd_r8_as_r4
 * v552 4/03 *acm* - Changes for SET VAR/SCALEFAC/OFFSET: apply new scale
 *                   and offset.
-* V590 11/05 *acm*  Fix bug 491 properly -- send missing value to tm_scale
+* V600 11/05 *acm*  Fix bug 491 properly -- send missing value to tm_scale
 *                   so that missing data is NOT scaled by scale and offset attrs.
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -280,9 +280,9 @@
 *               and underscore.  The real solution is to configure dods 
 *               correctly, but for now, this kludge is applied
 * v5.33 *sh* - actual reading is buried in a C subroutine
-* v590  *acm*- Fix bug 419 (incompletely fixed before) send missing data
+* V600  *acm*- Fix bug 419 (incompletely fixed before) send missing data
 *              flag to TM_SCALE so that bad data is not scaled.
-* V590  *acm* -Hack to let us read double precision data to be used to 
+* V600  *acm* -Hack to let us read double precision data to be used to 
 *              create an axis, by specifying an offset and reading the
 *              data as double precision, applying the offset and THEN
 *              converting to single precision.

@@ -59,7 +59,6 @@
 * *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
 * *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes crash on IRIX;
 *              take care of val=0 case individually.
-* 
 
 * calling arguments:
 * val		- REAL*4 value to be converted

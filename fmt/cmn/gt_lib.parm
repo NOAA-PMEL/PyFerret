@@ -11,9 +11,12 @@
 *		     and nautical miles, was not accurate since conversion 
 *                    from degrees to nautical mile is not well definied 
 *                    due to the non-spherical earth
+* V600 *acm* 5/05    Attribute control: Add atom_not_found, must match the value 
+*                    in netcdf.h and ferret.parm.
+
 * Function return codes
-	INTEGER*4	str_match
-	PARAMETER	(str_match = 0)
+	INTEGER*4	str_match, atom_not_found
+	PARAMETER	(str_match = 0, atom_not_found = 0)
 
 * numerical constants
         REAL            deg2rad, radius, deg2km, deg2m, m_radius

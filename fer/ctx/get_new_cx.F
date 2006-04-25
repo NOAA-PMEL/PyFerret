@@ -46,7 +46,7 @@
 * revision 0.1 - 7/27/88 - added dflt_cx to get_context_mods call
 * V200:  5/19/89 - transforms not permitted on command line
 * V530:  8/00 *sh* - added data type sensitivity
-* V590 *acm* 3/06  fixing bugs 439&1390, use apply_cx to say whether
+* V600 *acm* 3/06  fixing bugs 439&1390, use apply_cx to say whether
 *                  to apply command context to grave-accent expressions.
 
 

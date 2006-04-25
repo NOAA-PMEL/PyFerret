@@ -41,7 +41,7 @@
 *     J Davison 5.13.91
 *     *jd* 3.26.92  Modified to accommodate ATC GKS as well as DEC
 *     *jd* 12.21.93 Modified to accommodate xgks
-*  v5.90 *acm* 9/05 append window_title to window name
+*  V600 *acm* 9/05 append window_title to window name
 
 * Calling arguments
       integer         ws_id,status

@@ -76,7 +76,7 @@
 *      Don't set window to any number but 1 if batch graphics active
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 * V540 *sh* 9/01 - pass axis white space to SET_AX_SIZE (from PLOT_SETUP.cmn)
-* V590 *acm* 9/05  add SET WINDOW/TITLE.  If no title has been set, set it to 
+* V600 *acm* 9/05  add SET WINDOW/TITLE.  If no title has been set, set it to 
 *                  the session date:time. Save window_title in xplot_setup.cmn 
 *                  for use in subsequent windows. Also define a symbol WIN_TITLE
 

@@ -127,8 +127,8 @@
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
 * V581: *acm*/3/05 - increase length of strings for datset title to 1024 (leave settings alone for MOVIE)
-* V590 *acm*  8/05 - Allow more digits in xrevision number
-* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V600 *acm*  8/05 - Allow more digits in xrevision number
+* V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -172,22 +172,25 @@
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, 
-     .                  TM_UNIT_ID, TM_GET_CALENDAR_ID,  
+     .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, FIND_DSET_NUMBER, 
      .			equal_pos, colon_pos, dset_num, ich,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,
      .			cx, i, grid, axis, loc, perm(4), buff_len, 
      .                  cal_id, day, month, year, hour, minute, second,
-     .                  units, since_t0, len_test, len_mchars, slen
-
+     .                  units, since_t0, len_test, len_mchars, slen,
+     .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
+     .                  ivar, dot
         REAL*8          TM_WW_AXLEN, axwwlen
-
 	REAL		val_buf
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
-     .			buff1*512, buff2*512, data_form*3, show_str*12
+     .			buff1*512, buff2*512, data_form*3, show_str*12,
+     .                  varname*512, attname*128
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
-     .                  TM_HAS_STRING, set_last, any_delta, dset_cdf,
+     .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
+     .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
-     .                  do_ez, tregular, its_changed, ok_cal
+     .                  do_ez, tregular, its_changed, ok_cal,
+     .                  coordvar
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -201,7 +204,7 @@
 
 * select subcommand
 	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300 ) subcmnd_num
+     .        1100,1200,1300,1400 ) subcmnd_num
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
@@ -933,6 +936,233 @@ c *kob* 4/97
  1310	CONTINUE
 	CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .			' Cached data cleared from memory', 0)
+
+        RETURN
+
+* SET ATTRIBUTE/TYPE= /DATASET= /OUTPUT[=] /LIKE=
+ 1400 IF ( num_args .LT. 1 ) GOTO 5900
+      CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
+      IF ( status .NE. ferr_ok )  GOTO 5000
+
+      loc = qual_given( slash_set_attr_like ) 
+
+*     Inherit all attributes from another variable.
+* ... SET ATT/LIKE=var1 var2
+      loc = qual_given( slash_set_attr_like ) 
+      IF ( loc .GT. 0 ) THEN
+	 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      buff2, status )
+         CALL INHERIT_ATTRS (buff2, buff1, status)
+
+         RETURN
+      ENDIF
+
+
+* ... SET ATT/OUTPUT varname.attname
+* ... SET ATT/OUTPUT=all varname
+* ... SET ATT/OUTPUT=default varname
+* ... SET ATT/OUTPUT=none varname
+
+      buff2 = ' '
+      loc = qual_given( slash_set_attr_output ) 
+      IF ( loc .GT. 0 ) THEN
+	 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      buff2, status )
+         GOTO 1410
+      ENDIF
+
+      IF ( pos.EQ.0) GOTO 5100
+      IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
+
+* SET ATRIBUTE/TYPE=  varname.attname
+* types are: BYTE, CHAR or STRING, SHORT or INT2, INT or INT4, FLOAT, DOUBLE
+* From netcdf.inc:
+*   typedef enum {
+*   	NC_NAT =	0,	/* NAT = 'Not A Type' (c.f. NaN) */
+*   	NC_BYTE =	1,	/* signed 1 byte integer */
+*   	NC_CHAR =	2,	/* ISO/ASCII character */
+*   	NC_SHORT =	3,	/* signed 2 byte integer */
+*   	NC_INT =	4,	/* signed 4 byte integer */
+*   	NC_FLOAT =	5,	/* single precision floating point number */
+*   	NC_DOUBLE =	6	/* double precision floating point number */
+*   } nc_type;
+
+      attype_spec = ptype_unknown
+      loc = qual_given(slash_set_attr_type)
+      IF ( loc .GT. 0 ) THEN
+         CALL EQUAL_STRING(
+     .      cmnd_buff(qual_start(loc):qual_end(loc)),
+     .             buff2, status )
+         IF ( status .NE. ferr_ok ) RETURN
+
+         IF (buff2(1:4) .EQ. 'BYTE'  .OR.  
+     .       buff2(1:4) .EQ. 'INT1') THEN
+            attype_spec = ptype_int1
+         ELSE IF (buff2(1:4) .EQ. 'SHOR' .OR. 
+     .            buff2(1:4) .EQ. 'INT2') THEN
+            attype_spec = ptype_int2
+         ELSE IF (buff2(1:4) .EQ. 'INT4' .OR.
+     .       (buff2(1:3) .EQ. 'INT' .AND. 
+     .        TM_LENSTR(buff2) .EQ. 3) ) THEN
+            attype_spec = ptype_int4
+         ELSE IF (buff2(1:4) .EQ. 'FLOA') THEN
+            attype_spec = ptype_float
+         ELSE IF (buff2(1:4) .EQ. 'DOUB') THEN
+            attype_spec = ptype_double
+         ELSE IF (buff2(1:4) .EQ. 'STRI' .OR.  
+     .            buff2(1:4) .EQ. 'CHAR') THEN
+             attype_spec = ptype_string
+         ENDIF
+      ENDIF
+
+* ... get dset number if present:  SET ATT/D=dset varname.attname
+        dset_num = pdset_irrelevant
+	loc = qual_given( slash_set_attr_dset ) 
+        IF ( loc .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      buff2, status )  
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( buff2 .NE. ' ' ) THEN
+	      dset_num = FIND_DSET_NUMBER( buff2 )
+	      IF ( dset_num .EQ. unspecified_int4) THEN
+	         CALL WARN('Unknown data set: '
+     .		 //buff2(:TM_LENSTR(buff2)))
+	         RETURN
+	      ENDIF
+	   ENDIF
+	ENDIF
+
+* get dataset from varname.attname
+* evaluate the context without computing the expression to get the dataset
+
+ 1410   CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+        IF ( status .NE. ferr_ok ) GOTO 5000
+ 
+        IF (buff1(1:1) .EQ. '(') THEN
+           dset_num = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+           CALL ISIT_COORD_VAR ( buff1, dset_num, 
+     .            varname, coordvar, status )
+           IF ( status .NE. ferr_ok ) GOTO 5920
+
+        ELSEIF (buff1(1:1) .EQ. '.') THEN
+           dset_num = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+
+        ELSE
+* See if the variable is a user-defined variable.
+
+           varname = buff1
+           dot = INDEX(buff1,'.')
+           IF (dot .GT. 0) varname = buff1(1:dot-1)
+           CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, ivar)
+           IF (  ivar .NE. munknown_var_name .AND.
+     .           cat .EQ. cat_user_var) THEN
+              dset_num = -1
+           ENDIF
+    
+           IF (dset_num .EQ. pdset_irrelevant .OR. 
+     .         dset_num .EQ. unspecified_int4) THEN
+              CALL EVAL_CONTEXT ( cx_cmnd, buff1, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+              cx = is_cx( 1 )
+              dset_num = cx_data_set(cx) 
+           ENDIF
+
+	ENDIF
+
+        IF (buff1(1:1) .EQ. '.') dset_num = cx_data_set(cx_cmnd)
+
+        IF (dset_num .EQ. pdset_irrelevant) THEN
+           dset_num = cx_data_set(cx_last) 
+           cx = cx_last
+        ENDIF
+
+        IF (dset_num .EQ. unspecified_int4) dset_num = -1 ! user variables
+
+* change an existing attribute
+* get the data for the new value
+
+        IF (qual_given( slash_set_attr_output ) .GT. 0) THEN
+           iflag = 1
+        ELSE
+           IF (arg_start(1) .LT. pos) arg_start(1) = pos
+           CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, 
+     .              status )
+           IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
+              list_fmt_type = plist_default ! restore for next command
+              list_format_given = .FALSE.
+              RETURN
+           ENDIF
+        ENDIF
+
+* Process SET ATT/OUTPUT=all varname, SET ATT/OUTPUT=default varname, SET ATT/OUTPUT=none varname
+* flag = 0 output no attributes, 
+*        1 check individual attribute output flags (default)
+*        2 write all attributes
+*        3 reset attr flags to Ferret netcdf defaults
+
+        slen = TM_LENSTR(buff2)
+        IF (slen .GT. 0) THEN
+           iflag = 1
+           IF (buff2(1:3) .EQ. 'NON') iflag = 0
+           IF (buff2(1:3) .EQ. 'ALL') iflag = 2
+           IF (buff2(1:3) .EQ. 'DEF') iflag = 3 
+        ELSE
+           iflag = 1  
+        ENDIF
+
+* break up varname.attname.  Check that varname is in the dset
+
+        varid = 0
+
+        CALL BREAK_VARNAME( buff1, dset_num, varname, attname, 
+     .                         varid,  status )
+
+        IF (status .NE. ferr_ok) goto 5920
+
+        IF (varid .EQ. 0) CALL CD_GET_VAR_ID (dset_num, varname, varid,
+     .       status )
+        IF (status .NE. ferr_ok) goto 5920
+
+* Changing the attribute output flag
+
+        IF (qual_given( slash_set_attr_output ) .GT. 0) THEN
+
+           CALL CD_SET_ATT_FLAG(dset_num, varid, attname, iflag, status)
+
+* If it is the offset or scale attribute, set the output flag for both
+
+           slen = TM_LENSTR1(attname)
+           IF (MATCH_NAME (attname,  slen, 'ADD_OFFSET', 10) ) THEN
+              CALL CD_SET_ATT_FLAG(dset_num, varid, 'ADD_OFFSET', 
+     .               iflag, status)
+              CALL CD_SET_ATT_FLAG(dset_num, varid, 'SCALE_FACTOR', 
+     .               iflag, status)
+           ENDIF
+
+           IF (MATCH_NAME (attname,  slen, 'SCALE_FACTOR', 10) ) THEN
+              CALL CD_SET_ATT_FLAG(dset_num, varid, 'ADD_OFFSET', 
+     .               iflag, status)
+              CALL CD_SET_ATT_FLAG(dset_num, varid, 'SCALE_FACTOR', 
+     .               iflag, status)
+           ENDIF
+
+
+        ELSE
+
+* Change attribute value
+           mr = is_mr( 1 )
+           CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
+     .               buff1, dset_num, attype_spec, status )
+
+           IF (status .EQ. ferr_ok) THEN
+
+* Update attribute information used by plotting etc (ds_units, ...)
+              CALL FIND_VAR_NAME (dset_num, varname, cat, uvar)
+              IF (cat .EQ. cat_user_var .OR. cat .EQ. cat_file_var)
+     .           CALL UPDATE_ATTRIBUTES (dset_num, uvar)
+           ENDIF
+        ENDIF
+
 	RETURN
 
 * error exits
@@ -1015,5 +1245,15 @@ c *kob* 4/97
  6520	CALL ERRMSG( ferr_syntax, status,
      .	         'specify SET AXIS/T0 separately from /UNITS ',
      .               *5000 )
-	END
 
+ 5900 CALL ERRMSG( ferr_invalid_command, status,
+     .		'SET what name.attribute?', *5000 )
+ 5920 slen = TM_LENSTR(buff1)
+      CALL ERRMSG( ferr_invalid_command, status,
+     .   'variable or attribute does not exist in dset'//
+     .    buff1(:slen), *5000 )
+ 5930 slen = TM_LENSTR(buff1)
+      CALL ERRMSG( ferr_invalid_command, status,
+     .   'attribute name missing. SET ATT varname.attname'//
+     .    buff1(:slen), *5000 )
+	END

@@ -71,7 +71,7 @@
 * V533:  7/01 *sh* transform @SHF supported for strings
 * v552   4/03 *acm* up VAR_TRANS to 150 characters (variables are up to 128, plus
 *                   space for the transformation specifier)
-* V590  10/05 *acm* Fis bug 899: rather than the ungraceful STOP, issue an error
+* V600  10/05 *acm* Fis bug 899: rather than the ungraceful STOP, issue an error
 *                   message if a 4-D transform was requested but the dimensions 
 *                   are not available in the grid.
 

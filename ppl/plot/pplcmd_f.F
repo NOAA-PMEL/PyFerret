@@ -101,7 +101,7 @@ C**
 *                 the bad format string is passed on to routines like numcde or
 *                 vecfld, where it will cause a crash.
 C *acm* 11/05     new options for XFOR, YFOR, 'DM' deg/min deg/min
-* V590: *acm* 11/05 add xdms,ydms for deg/min labels
+* V600: *acm* 11/05 add xdms,ydms for deg/min labels
 C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)

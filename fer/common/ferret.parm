@@ -22,6 +22,7 @@
 * V550: *acm*9/02 - Increase max_gfdl_dsets to 100, along with maxdsets.
 *       *acm*10/02- Increase max_cx_predefined to 100: more user-defined regions.
 * V554 1/04 *acm* Add category cat_counter_var, and param alg_counter_var
+* V600 8/05 *acm* Add category cat_attrib_val, and param alg_attrib_val
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -120,8 +121,8 @@
      .			cat_expr_var, cat_axis_var,
      .			cat_temp_var, cat_pseudo_var,
      .			cat_constant, cat_file_rev,
-     .			cat_const_var,cat_string,
-     .                  cat_counter_var
+     .			cat_const_var,   cat_string,
+     .                  cat_counter_var, cat_attrib_val
 	PARAMETER     ( cat_work_mr  = -9,
      .			cat_file_var = 1,
      .			cat_calc_var = 2,
@@ -135,7 +136,8 @@
      .			cat_file_rev   = 10,
      .			cat_const_var  = 11,
      .			cat_string     = 12,
-     .			cat_counter_var= 13 )
+     .			cat_counter_var= 13,
+     .			cat_attrib_val= 14 )
 
 * codes referring to the user-defined variables
 	INTEGER		uvar_deleted,
@@ -374,7 +376,8 @@
      .			alg_child_var,
      .			alg_const_var,
      .			alg_string,
-     .                  alg_counter_var
+     .                  alg_counter_var,
+     .                  alg_attrib_val
 	PARAMETER     (	alg_operator   = 1,
      .			alg_constant   = 2,
      .			alg_variable   = 3,
@@ -392,7 +395,8 @@
      .			alg_child_var    = 14,
      .			alg_const_var    = 15,
      .			alg_string	 = 16,
-     .                  alg_counter_var  = 17 )
+     .                  alg_counter_var  = 17,
+     .                  alg_attrib_val   = 18 )
 
 * codes to distinguish between context choices
 * (contexts describe space/time/variable/transformation/data_set,etc.)

@@ -40,8 +40,11 @@
 * hlimits and vlimits that were requested.
 *
 * V581:  1/2005 ACM 
-* V590:  9/2005 acm Fix bug 1342, curvi data with 1-d coordinates.
+* V600:  9/2005 acm Fix bug 1342, curvi data with 1-d coordinates.
 *                   The loop 200 controls were wrong.
+* V690:  4/2006 fix bug where if an axis is reversed (depth axis) the
+*               comparisons also need to be reversed.
+
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -58,10 +61,12 @@
 
 * internal variable declarations:
 	INTEGER i, j
-        REAL xx, yy
+        REAL xx, yy, up, dn
 
-        ilo = xpos_hiss_dim1
-        ihi = xpos_loss_dim1
+        ilo = MAX(xpos_hiss_dim1, xpos_loss_dim1)
+        ihi = MIN(xpos_hiss_dim1, xpos_loss_dim1)
+        up = MAX(uc(1), uc(2))
+        dn = MIN(uc(1), uc(2))
 
 	DO 100 i = xpos_loss_dim1, xpos_hiss_dim1
         DO 100 j = xpos_loss_dim2, xpos_hiss_dim2
@@ -69,15 +74,17 @@
 	   IF ( xx .EQ. badx) THEN
               GOTO 5100 
            ELSE
-              IF ( xx .GE. uc(1) .AND.  xx .LE. uc(2) ) THEN
+              IF ( xx .GE. dn.AND.  xx .LE. up ) THEN
                  ilo = MIN(i,ilo)
                  ihi = MAX(i,ihi)
               ENDIF
            ENDIF
   100   CONTINUE
 
-        jlo = ypos_hiss_dim2
-        jhi = ypos_loss_dim2
+        jlo = MAX(ypos_hiss_dim2, ypos_loss_dim2)
+        jhi = MIN(ypos_hiss_dim2, ypos_loss_dim2)
+        up = MAX(uc(3), uc(4))
+        dn = MIN(uc(3), uc(4))
 
 	DO 200 i = ypos_loss_dim1, ypos_hiss_dim1
         DO 200 j = ypos_loss_dim2, ypos_hiss_dim2
@@ -85,7 +92,7 @@
 	   IF ( yy .EQ. bady) THEN
               GOTO 5200 
            ELSE
-              IF ( yy .GE. uc(3) .AND. yy .LE. uc(4) ) THEN
+              IF ( yy .GE. dn .AND. yy .LE. up ) THEN
                  jlo = MIN(j, jlo)
                  jhi = MAX(j, jhi)
               ENDIF

@@ -364,6 +364,7 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                  last  = ind_max
                  GOTO 5170
               ENDIF
+
 * for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
        	  
                IF (.NOT.overlay) THEN	 
@@ -377,6 +378,28 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
                         CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                      ENDIF
                   ENDIF	 
+               ENDIF
+
+* for /VS plots turn on lon/lat axis formatting, if lon/lat units	 
+       	 
+               cx_x = cx_list(1)	 
+               cx_y = cx_list(2) 	 
+               IF (.NOT.overlay) THEN	 
+                  iunits = TM_UNIT_ID(VAR_UNITS(cx_x))	 
+                  IF (iunits .EQ. 4) THEN	 
+                     CALL PPLCMD ( from, line, 0, 'XFOR (I7,''''LONE'''')', 1, 1 )	 
+                  else	 
+                     CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
+                  endif	 
+            	 
+                  iunits = TM_UNIT_ID(VAR_UNITS(cx_y))	 
+                  IF (iunits .EQ. 4) THEN	 
+                     CALL PPLCMD ( from, line, 0, 'YFOR (I7,''''LAT'''')', 1, 1 )	 
+                  else	 
+                     CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
+                  endif	 
+               ELSE
+	          CALL PPLCMD ( from, line, 0, indep_ax//'FOR 0', 1, 1 )
                ENDIF
 
 	   ENDIF

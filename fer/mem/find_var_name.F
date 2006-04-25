@@ -57,8 +57,11 @@
 *	Philander-Seigel
 * V554 1/04 *acm* Add category cat_counter_var
 *  ywei 05/04 change MATCH_NAME and MATCH_QUOTED_NAME function calls to speed up
-* V590 9/05 *acm* Restore the order of searching through the different lists
-*                 of variable names (the chunk of code at DO 250).  Yonghua had
+* V600 *acm* 6/05 attribute control.  If the variable contains a dot (e.g. varname.attname
+*                 or varname.attnum) then find and use just the varname.
+* V600 9/05 *acm* Fix bug 1336: 
+*                 Restore the order of searching through the different lists
+*                 of variable names (the chunk of code now at DO 250).  Yonghua had
 *                 moved this for efficiency but it wound up finding the wrong
 *                 variable def for user variables defined with LET/D.
 
@@ -72,6 +75,7 @@
 	include	'xalgebra.cmn'
 	include	'xdset_parms.cmn'
         include 'xcontrol.cmn'
+        include 'errmsg.parm'
 
 * calling argument declarations:
 	INTEGER		dset_num, category, variable
@@ -79,12 +83,36 @@
 
 * internal variable declarations:
 	INTEGER		TM_LENSTR, ivar, uvdset, len_test, len_mchars,
-     .                  j, num_indices, cat_test, var_test
-	LOGICAL		MATCH_NAME, MATCH_QUOTED_NAME, single_dset
+     .                  j, num_indices, varid, status
+	LOGICAL		MATCH_QUOTED_NAME, single_dset, do_err
+        CHARACTER       varname*512, attname*128
+        CHARACTER*258   buff
 
 * initialize
+        buff = test_name
 	single_dset = dset_num .NE. unspecified_int4
         len_test = TM_LENSTR(test_name)
+
+        IF (INDEX(test_name, '.') .GT. 0) THEN
+           do_err = .TRUE.
+           CALL BREAK_VARATTNAME ( test_name, dset_num, varname, 
+     .                             attname, varid, do_err, status )
+           IF (status .EQ. ferr_ok) THEN
+              category = cat_attrib_val
+              RETURN
+
+* String marked as not being a varname.attname, perhaps a string in
+* quotes that may contain a dot.
+
+           ELSE IF (status .EQ. ferr_not_attribute) THEN
+              GOTO 500 
+
+           ELSE 
+              variable = munknown_var_name
+              RETURN
+           ENDIF
+        ENDIF
+*
 
 *                  CALL tm_log( test_name, len_test) 
 
@@ -99,7 +127,7 @@
 *	   ENDIF
 * 10	CONTINUE
 
- 	CALL string_array_find(countervar_name_head,
+ 500 	CALL string_array_find(countervar_name_head,
      .                         test_name,
      .                         len_test,
      .                         string_array_result(1),
@@ -109,6 +137,7 @@
               ivar = string_array_result(1)
 	      category = cat_counter_var
 	      variable = ivar
+              test_name = buff
 	      RETURN
         ENDIF
 
@@ -133,6 +162,7 @@
               ivar = string_array_result(1)
 	      category = cat_pseudo_var
 	      variable = ivar
+              test_name = buff
 	      RETURN
         ENDIF
 
@@ -165,6 +195,7 @@
               IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 40
               category = cat_user_var
 	      variable = ivar
+              test_name = buff
 	      RETURN
  40	      CONTINUE
 
@@ -190,6 +221,7 @@
               IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 60
               category = cat_user_var
 	      variable = ivar
+              test_name = buff
 	      RETURN
  60	      CONTINUE
 	   ENDIF
@@ -213,6 +245,7 @@
               IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 100
               category = cat_user_var
 	      variable = ivar
+              test_name = buff
 	      RETURN
  100	      CONTINUE
 
@@ -239,8 +272,10 @@
 	   IF ( single_dset .AND. ds_var_setnum( ivar ) .NE. dset_num ) GOTO 200
  	   category = cat_file_var
 	   variable = ivar
+           test_name = buff
            RETURN
  200	CONTINUE
+
 
 * ... check the global user variable definitions defined with /D
 *       CALL tm_log(my_cbuff, 255)
@@ -267,9 +302,9 @@
               IF ( uvar_num_items( ivar ) .EQ. uvar_deleted ) GOTO 250
               category = cat_user_var
 	      variable = ivar
+              test_name = buff
 	      RETURN
  250	      CONTINUE
-
 
 * check table of calculatable variables (padded to 8 characters)
 *   but only if this is a Philander-Seigle model output
@@ -281,6 +316,7 @@
 	1	      THEN
 	            category = cat_calc_var
 	            variable = ivar
+                    test_name = buff
 	            RETURN
 	         ENDIF
  300	      CONTINUE
@@ -289,6 +325,8 @@
 
 * not found
 	variable = munknown_var_name
+        test_name = buff
+
 	RETURN
 
 	END

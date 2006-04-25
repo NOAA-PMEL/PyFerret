@@ -45,7 +45,7 @@ depend:
  
 
 clean:
-	rm -f core *.o
+	rm -f core *.o *.f
 
 
 #

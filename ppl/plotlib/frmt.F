@@ -51,7 +51,7 @@ C                with "*(*)" for the linux port
 *      *sh* 12/00 -- further tweak to use E format less often
 * V541 *acm* 3/02 -- bug fix: For small negative numbers, if label is negative 
 *                    need one more decimal place (ib)
-* V590 *acm* 1/06   prevent values of LOG10(0.0)
+* V600 *acm* 1/06   prevent values of LOG10(0.0)
 
       CHARACTER*(*) IF 
 C     THIS SUBROUTINE CHOOSE THE FORMAT   NOT ANSI STANDARD 

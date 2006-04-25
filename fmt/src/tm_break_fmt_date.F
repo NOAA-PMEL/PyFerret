@@ -47,7 +47,7 @@
 * 
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V551 *acm*  2/03 - fix bug where seconds were wiped out. See cc comments
-* V590 *acm* 2/06 - Fix for bug 1394, do err msg only if do_err flag true
+* V600 *acm* 2/06 - Fix for bug 1394, do err msg only if do_err flag true
 
 
 * ARGUMENT DEFINITIONS

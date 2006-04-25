@@ -46,7 +46,7 @@
 * revision 0.0 - 3/18/88
 * 10/2/95 - bug fix:  date string was using ndec instead of ABS(dec) for
 *			determining field width
-* V590  1/06 *acm*  prevent values of LOG10(0.0) 
+* V600  1/06 *acm*  prevent values of LOG10(0.0) 
 
 	include	'ferret.parm'
 	include 'xprog_state.cmn'

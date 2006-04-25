@@ -48,11 +48,13 @@
 * V500: 12/98 - allow {1,3,5} notation for lists of constants
 *	 1/99 - allow strings in double quotes (as fcn args)
 * V530: //8/00 *sh* - allow {"string", "string"}
-* V590:  3/06 *acm* - fix bug 1395: string 1.0e-4+0*8 tried to inlcude plus sign 
+* V600:  3/06 *acm* - fix bug 1395: string 1.0e-4+0*8 tried to inlcude plus sign 
 *                     and the 0 following it as part of the exponent. Define a new 
 *                     state, in which we are interpreting an exponent and getting 
 *                     the exponent value itself. Now this becomes like interpreting 
 *                     a constant.
+* V600:  5/05  *acm* For attribute control, allow . inside names: 
+*                    change next_stat(10,4) to 4 -- 
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -63,7 +65,7 @@
 	CHARACTER*(*)	text, err_string
 
 * internal variable declarations:
-	LOGICAL		was_operand, atom_open,
+	LOGICAL		TM_DIGIT_TEST, was_operand, atom_open,
      .			requires_closure(num_state),
      .                  have_exp_digits
 	INTEGER		ALG_CLASS, TM_LENSTR1,
@@ -114,9 +116,9 @@
 	DATA (next_state(i,2),i=1,num_class)
 	1    / 7, 3, 7, 7, 7, 7, 7, 7, 7,  3, 7, 7, 7, 7,-2/
 	DATA (next_state(i,3),i=1,num_class)
-	1    / 7, 3,-1,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
+	1    / 7, 3,3,-1,-1, 7, 7, 7, 8,  3, 7,-1,-1, 7,-2/
 	DATA (next_state(i,4),i=1,num_class)
-	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, -1, 7,-1,-1, 7,-2/
+	1    / 7, 4, 4, 6,-1, 7, 7, 7, 4, 4, 7,-1,-1, 7,-2/
 	DATA (next_state(i,5),i=1,num_class)
 	1    /-9,-9,-9,-9,-9,-9,-9,-9,-9, -9,-9,-9,-9,-9,-2/
 	DATA (next_state(i,6),i=1,num_class)
@@ -199,9 +201,17 @@
 * begin new atom, possibly.
 	IF ( .NOT.atom_open ) THEN
 	   IF ( natom .EQ. maxatoms-1 ) GOTO 5300
-	   natom = natom + 1
-	   at_start(natom) = p
-	   atom_open = .TRUE.
+           IF (class .EQ. 10 ) THEN  ! var.attribute?
+              atom_open = .TRUE.
+              IF ( TM_DIGIT_TEST(text(p:p+1)) ) THEN
+                natom = natom + 1
+                at_start(natom) = p
+              ENDIF
+           ELSE
+              natom = natom + 1
+              at_start(natom) = p
+              atom_open = .TRUE.
+           ENDIF
 	ENDIF
 
 * take appropriate action
@@ -283,7 +293,7 @@
 	GOTO 5000 
  5200	err_string = text(MAX(1,p-6):MIN(tlen,p+2))
 	GOTO 5000
- 5300	err_string = '['//text(MAX(1,p-8):p)//'\\\]'
+ 5300	err_string = '['//text(MAX(1,p-8):p)//' ]'
 	status = ferr_expr_too_complex
 	GOTO 5005
  5400	err_string = 'unclosed quotation, parenthesis, or bracket'

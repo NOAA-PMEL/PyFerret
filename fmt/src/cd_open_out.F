@@ -75,7 +75,7 @@
 
 * local variable declarations:
       LOGICAL file_exists, do_append
-      INTEGER NCOPN, NCCRE, cdfstat, cstat, clobber_mode
+      INTEGER cdfstat, cstat, clobber_mode
 
 * initialize netCDF
       CALL NCPOPT(0)  ! no error processing by netCDF

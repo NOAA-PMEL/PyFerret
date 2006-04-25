@@ -76,6 +76,7 @@
 * V541  4/02 *acm*      Improved error message if T0 missing or bad
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
+* V600 *acm* 6/05 new flag line_fixname stores whether axis name is changed on input.
 
 * CALLING ARGUMENTS
 *	dset_num - the data set fow which a time axis is desired
@@ -188,6 +189,8 @@
 
 * Time axis created, fill in the missing pieces
 * ... name?
+        line_fixname(scr) = .FALSE.
+        IF (line_name(scr) .EQ. 'TIME') line_fixname(scr) = .TRUE.
 	CALL TM_NEW_LINE_NAME('TIME',line_name(scr))
 
 * ... calendar name?

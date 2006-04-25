@@ -118,7 +118,7 @@
 
 * local variable declarations:
 	LOGICAL	GKS_WINDOWS, fexist
-	INTEGER	TM_LENSTR1, ito, ifrom, mem_blk, mr, status
+	INTEGER	TM_LENSTR1, ito, ifrom, mem_blk, mr, iset, status
 	REAL	radian, cm2deg
 	CHARACTER TM_INQ_PATH*128
 
@@ -185,6 +185,13 @@
 	CALL GET_DATE_AND_TIME (today_date, today_time)
 #endif
 	today_time = today_time(:5)	! w/out seconds
+
+* initialize pseudo-dataset iun linked-list structure
+* which will contain all user variables and their attributes.
+
+        iset  = -1;
+        CALL ncf_init_uvar_dset( iset )
+
 
 *************** STATE VARIABLES ************************************************
 * see BLOCK DATA initialization of COMMON/ XPROG_STATE /

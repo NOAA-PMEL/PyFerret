@@ -32,7 +32,7 @@ all:	$(OBJS)
 
 
 clean:
-	rm -f core *.o
+	rm -f core *.o *.a *.f
 
 
 #

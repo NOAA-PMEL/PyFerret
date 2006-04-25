@@ -81,7 +81,7 @@ C
 *                  curvlinear coordinates. See also pltit.F, setax.F
 * v581 *acm* 3/05 open levels (-INF) (INF)
 * V581 *acm* 7/05 fix bug 1279: fill/lev=(n) gave exactly N not nlev2=approx N
-* V590 *acm* 1/06 prevent values of LOG10(0.0)
+* V600 *acm* 1/06 prevent values of LOG10(0.0)
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'

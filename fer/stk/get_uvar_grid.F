@@ -64,7 +64,6 @@
 * internal variable declarations:
 	INTEGER		isp_orig, cx_orig, cx, idim
 
-#ifdef unix
 
 ! debug includes 11/6/94 *sh*
         include 'tmap_errors.parm'
@@ -77,13 +76,6 @@
 	include	'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * pre-load the variable info onto the CX stack
 	cx_orig = cx_stack_ptr
@@ -103,6 +95,7 @@
 	is_act  ( isp ) = isact_get_grid	! temp diagnostic
 
 * initialize the stacks - (repeated for each component)
+
  100	CALL IS_GRID_MODE( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 

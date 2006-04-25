@@ -157,9 +157,17 @@
 * V581:  2/05 *acm* - SHADE/MODULO for curvilinear plots
 * V581:  4/05 *acm* - CONTOUR/MODULO for curvilinear plots
 * V581:  5/05 *acm* - add EXIT/CYCLE
-* V590:  8/05 *acm* - add LIST/NOROWLAB
-* V590:  9/05 *acm* - add SET WINDOW/TITLE
-* V590:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+
+* V600:  8/05 *acm* - add LIST/NOROWLAB
+* V600:  9/05 *acm* - add SET WINDOW/TITLE
+* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+* V600   6/05 *acm* - SHOW ATTRIBUTE[/ALL][/DATA=] var 
+*                   - SHOW DATA/ATTR output all attributes for nc files
+* V600:  8/05 *acm* - add LIST/NOROWLAB
+*       *acm* 8/05 - add DEFINE ATTRIBUTE
+*       *acm* 9/05 - add SET ATTRIBUTE
+*       *acm*10/05 - add CANCEL ATTRIBUTE
+* V600: 2/06 *acm* - add SET VARIABLE/OUTTYPE for attribute-handling additions
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -270,7 +278,7 @@
 	   DATA subcommands      (nsub_at1 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at1 + 9)	/ nqual1j	/
 	   DATA qualifier_pointer(nsub_at1 + 9)	/ nqual_at1j	/
-* SET VARIABLE/TITLE/UNIT/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET
+* SET VARIABLE/TITLE/UNIT/GRID/BAD/DATASET/NAME/SCALEFAC/OFFSET/OUTTYPE
 		DATA qualifiers  (nqual_at1j+0)	/ 'TITLE'	/
 		DATA qualifiers  (nqual_at1j+1)	/ 'UNIT'	/
 		DATA qualifiers  (nqual_at1j+2)	/ 'GRID'	/
@@ -279,7 +287,7 @@
 		DATA qualifiers  (nqual_at1j+5)	/ 'NAME'	/
 		DATA qualifiers  (nqual_at1j+6)	/ 'SCALEFAC'	/
 		DATA qualifiers  (nqual_at1j+7)	/ 'OFFSET'	/
-		DATA qualifiers  (nqual_at1j+8)	/ '****'	/
+		DATA qualifiers  (nqual_at1j+8)	/ 'OUTTYPE'	/
 		DATA qualifiers  (nqual_at1j+9)	/ '****'	/
 * SET GRID
 	   DATA subcommands      (nsub_at1 +10)	/ 'GRID'	/
@@ -308,13 +316,19 @@
 * SET MEMO / MWORDS
 		DATA qualifiers  (nqual_at1m+0)	/ 'SIZE'	/
 		DATA qualifiers  (nqual_at1m+1)	/ '****'	/
-* SET ****							  ! unused (n)
-	   DATA subcommands      (nsub_at1 +13)	/ '****'	/
+* SET ATTRIBUTE
+	   DATA subcommands      (nsub_at1 +13)	/ 'ATTRIBUTE'	/
 	   DATA num_qualifs      (nsub_at1 +13)	/ nqual1n	/
 	   DATA qualifier_pointer(nsub_at1 +13)	/ nqual_at1n	/
-* SET **** / ****
-		DATA qualifiers  (nqual_at1n+0)	/ '****'	/
-		DATA qualifiers  (nqual_at1n+1)	/ '****'	/
+* SET ATRR /TYPE /DATASET /OUTPUT /LIKE 
+		DATA qualifiers  (nqual_at1n+0)	/ 'TYPE'	/
+		DATA qualifiers  (nqual_at1n+1)	/ 'DATASET'	/
+		DATA qualifiers  (nqual_at1n+2)	/ 'OUTPUT'	/
+		DATA qualifiers  (nqual_at1n+3)	/ 'LIKE'	/
+		DATA qualifiers  (nqual_at1n+4)	/ '****'	/
+		DATA qualifiers  (nqual_at1n+5)	/ '****'	/
+		DATA qualifiers  (nqual_at1n+6)	/ '****'	/
+		DATA qualifiers  (nqual_at1n+7)	/ '****'	/
 * SET ****							  ! unused (o)
 	   DATA subcommands      (nsub_at1 +14)	/ '****'	/
 	   DATA num_qualifs      (nsub_at1 +14)	/ nqual1o	/
@@ -423,14 +437,14 @@
 	   DATA subcommands      (nsub_at2 + 6)	/ 'DATA'	/
 	   DATA num_qualifs      (nsub_at2 + 6)	/ nqual2g	/
 	   DATA qualifier_pointer(nsub_at2 + 6)	/ nqual_at2g	/
-* SHOW DATA_SET /ALL/BRIEF
+* SHOW DATA_SET /ALL/BRIEF/FULL/VAR/FILE/XML/ATTR
 		DATA qualifiers  (nqual_at2g+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2g+1)	/ 'BRIEF'	/
 		DATA qualifiers  (nqual_at2g+2)	/ 'FULL'	/
 		DATA qualifiers  (nqual_at2g+3)	/ 'VARIABLE'	/
 		DATA qualifiers  (nqual_at2g+4)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at2g+5)	/ 'XML'		/
-		DATA qualifiers  (nqual_at2g+6)	/ '****'	/
+		DATA qualifiers  (nqual_at2g+6)	/ 'ATTR'	/
 		DATA qualifiers  (nqual_at2g+7)	/ '****'	/
 		DATA qualifiers  (nqual_at2g+8)	/ '****'	/
 		DATA qualifiers  (nqual_at2g+9)	/ '****'	/
@@ -450,7 +464,7 @@
 	   DATA subcommands      (nsub_at2 + 9)	/ 'VARIABLE'	/
 	   DATA num_qualifs      (nsub_at2 + 9)	/ nqual2j	/
 	   DATA qualifier_pointer(nsub_at2 + 9)	/ nqual_at2j	/
-* SHOW VARIABLES /ALL /DIAGNOSTIC /USER /XML
+* SHOW VARIABLES /ALL /DATASET /DIAGNOSTIC /USER /XML
 		DATA qualifiers  (nqual_at2j+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2j+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at2j+2)	/ 'DIAG'	/
@@ -515,12 +529,13 @@
 	   DATA qualifier_pointer(nsub_at2 +16)	/ nqual_at2q	/
 * SHOW SYMBOL / ALL
 		DATA qualifiers  (nqual_at2q+0)	/ 'ALL'		/
-* SHOW ****							  ! unused(r)
-	   DATA subcommands      (nsub_at2 +17)	/ '****'	/
+* SHOW ATTRIBUTE
+	   DATA subcommands      (nsub_at2 +17)	/ 'ATTRIBUTE'	/
 	   DATA num_qualifs      (nsub_at2 +17)	/ nqual2r	/
 	   DATA qualifier_pointer(nsub_at2 +17)	/ nqual_at2r	/
-* SHOW **** / ****
+* SHOW ATTRIBUTE / ALL /DATASET
 		DATA qualifiers  (nqual_at2r+0)	/ 'ALL'		/
+		DATA qualifiers  (nqual_at2r+1)	/ 'DATASET'	/
 * SHOW ****							  ! unused(s)
 	   DATA subcommands      (nsub_at2 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at2 +18)	/ nqual2s	/
@@ -651,11 +666,11 @@
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/
 	   DATA qualifier_pointer(nsub_at3 +12)	/ nqual_at3m	/
 		DATA qualifiers  (nqual_at3m+0)	/ '****'	/
-* CANCEL ****							  ! unused(n)
-	   DATA subcommands      (nsub_at3 +13)	/ '****'	/
+* CANCEL ATTRIBUTE /OUTPUT
+	   DATA subcommands      (nsub_at3 +13)	/ 'ATTRIBUTE'	/
 	   DATA num_qualifs      (nsub_at3 +13)	/ nqual3n	/
 	   DATA qualifier_pointer(nsub_at3 +13)	/ nqual_at3n	/
-		DATA qualifiers  (nqual_at3n+0)	/ '****'	/
+		DATA qualifiers  (nqual_at3n+0)	/ 'OUTPUT'	/
 * CANCEL ****							  ! unused(o)
 	   DATA subcommands      (nsub_at3 +14)	/ '****'	/
 	   DATA num_qualifs      (nsub_at3 +14)	/ nqual3o	/
@@ -1002,6 +1017,15 @@
 * DEFINE SYMBOL / ****
 		DATA qualifiers  (nqual_at10h+ 0)/ '****' /
 		DATA qualifiers  (nqual_at10h+ 1)/ '****' /
+* DEFINE ATTRIBUTE
+	   DATA subcommands      (nsub_at10 + 8)/ 'ATTRIBUTE'	/
+	   DATA num_qualifs      (nsub_at10 + 8)/ nqual10i	/
+	   DATA qualifier_pointer(nsub_at10 + 8)/ nqual_at10i	/
+* DEFINE ATTRIBUTE /D /TYPE /OUTPUT ****
+		DATA qualifiers  (nqual_at10i+ 0)/ 'D' /
+		DATA qualifiers  (nqual_at10i+ 1)/ 'TYPE' /
+		DATA qualifiers  (nqual_at10i+ 2)/ 'OUTPUT' /
+		DATA qualifiers  (nqual_at10i+ 3)/ '****' /
 
 * EXIT	 - command # 11
 	DATA commands(11)			/ 'EXIT'	/

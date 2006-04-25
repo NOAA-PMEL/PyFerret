@@ -349,7 +349,7 @@ C  variables for checking axis characteristics (modulo axes)
      .                       moduloy, regulary)
       CALL ef_get_axis_info (id, 5, ax_name, ax_units, backward, 
      .                       moduloz, regularz)
-     
+
       IF (.NOT. regulary(2)) then
          WRITE (errtxt, *) 'output axes must be REGULARLY spaced'
          GO TO 999

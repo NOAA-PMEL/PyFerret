@@ -17,7 +17,6 @@
 #
 
 include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
- 
 
 #
 # Macros
@@ -32,9 +31,10 @@ SUB_OBJS = eofsubs.o
 #
 
 #   once eof_space etc are linked into Ferret dont need SUB_OBJS
-.f.so:
-	$(F77) $(FFLAGS)  $<
-	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
+
+.F.so:
+	$(F77) $(FFLAGS) $<
+	$(LD) $(LD_DYN_FLAGS) $*.o -o $*.so 
 
 
 #.f.so:
@@ -46,7 +46,7 @@ SUB_OBJS = eofsubs.o
 #
 
 # all:	ferret_cmn eofsubs.o eoft.so eof_space.so eof_tfunc.so eof_stat.so
-all:	ferret_cmn 
+all:	ferret_cmn eofsvd_space.so eof_space_fix.so eof_tfunc_fix.so eof_stat_fix.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

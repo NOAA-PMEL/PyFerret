@@ -3,6 +3,8 @@
 
 * V530: *sh* 9/00 - added ferr_data_type
 * V580: *am*11/04 - added ferr_nomessge
+* V600: *am* 6/05 - added ferr_unknown_attribute
+* V600: *am* 2/06 - added ferr_not_attribute
 
 * error coding:
 *	gspecial +1--> gnoreport	- error codes requiring special action
@@ -74,7 +76,9 @@
      .			ferr_unknown_command,
      .			ferr_ef_error,
      .			ferr_data_type,
-     .			ferr_nomessge
+     .			ferr_nomessge,
+     .			ferr_unknown_attribute,
+     .			ferr_not_attribute
 	PARAMETER     ( ferr_insuff_memory	= greport		+ 1,
      .			ferr_too_many_vars	= ferr_insuff_memory	+ 1,
      .			ferr_perm_var		= ferr_too_many_vars	+ 1,
@@ -113,5 +117,7 @@
      .			ferr_unknown_command	= ferr_state_not_set    + 1,
      .			ferr_ef_error	        = ferr_unknown_command	+ 1,
      .			ferr_data_type	        = ferr_ef_error 	+ 1,
-     .			ferr_nomessge	        = ferr_data_type 	+ 1)
-	PARAMETER     ( gnum_report	= 39 )
+     .			ferr_nomessge	        = ferr_data_type 	+ 1,
+     .                  ferr_unknown_attribute  = ferr_nomessge         + 1,
+     .                  ferr_not_attribute      = ferr_unknown_attribute+ 1)
+	PARAMETER     ( gnum_report	= 40 )

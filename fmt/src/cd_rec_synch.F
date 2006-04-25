@@ -91,7 +91,7 @@
 
 * local variable declarations:
       LOGICAL CD_GET_ATTRIB, TM_DFPEQ, got_bnds
-      INTEGER TM_LENSTR1, NCVID,
+      INTEGER TM_LENSTR1, 
      .        alen, look, hi_look, lo_look,
      .        ndims, nvars, cdfstat,
      .        nvdim, vdims(6), nvatts,

@@ -238,6 +238,12 @@ static int allocate_color(GIFmetafile *meta, int idx,
   color->index =
     gdImageColorAllocate(meta->image, ir, ig, ib);
   color->r = r; color->g = g; color->b = b;
+
+/* test transparency...*/
+/*
+  if (color->index == 22)
+	   gdImageColorTransparent (meta->image, color->index); */
+ 
   return color->index;
 }
 

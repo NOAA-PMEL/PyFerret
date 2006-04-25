@@ -91,11 +91,15 @@
 *                    long string, e.g. in a label, this string can be very long. (bug 956)
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
-* V590 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
+* V600 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
 *                  to apply command context to grave-accent expressions.
+* V600 *acm* 6/05 - Attribute control, RETURN= attribute information.
 
 
-	include 'ferret.parm'
+
+        include 'netcdf.decl'
+#include "netcdf.inc"
+        include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
@@ -116,21 +120,29 @@
 * local parameter declarations
 	INTEGER	   max_len
 	PARAMETER (max_len = 2048)
-!	INTEGER	   fmt_len
+!	INTEGER	   fmt_lenH
 !	PARAMETER (fmt_len = 64 )
 
 * internal variable declarations:
-	LOGICAL   need_formatting, zero_fill
+	LOGICAL   need_formatting, zero_fill, coordvar,
+     .            got_it, do_err
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
-     .		  str_len, lenbuff, iend, itmp, axis,
+     .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
-     .		  qual_end, brkt, idim, use_width
-	REAL	  result, val
+     .		  qual_end, brkt, idim, use_width, dset, varid, 
+     .            vartype, nvdims, vdims(8), nvatts, ist, ind,
+     .            attype, attlen, w, inxt, ndims, nvars, ngatts,
+     .            recdim, len_attbuff, attoutflag, all_outflag,
+     .            outflag, fertype
+	REAL	  result, val, vals(10)
 	REAL*8 TM_WORLD, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
-     .		  repl*(max_len), bad_str*(max_len), return_errmsg*256
+     .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
+     .            buff*128, varname*512, attname*128, attbuff*2048
 !	CHARACTER fmt*(max_len)
+        CHARACTER*6 typstring(0:6)
+        PARAMETER       (len_attbuff = 2048)
 
 * local parameter declarations
 	CHARACTER	tab*1
@@ -140,6 +152,8 @@
 	PARAMETER     ( tab = CHAR(9))
 #endif
 
+        DATA typstring/
+     .  'Notype', 'BYTE', 'CHAR', 'SHORT', 'INT4', 'FLOAT', 'DOUBLE' /
 
 * initialize
 	did_sub = .FALSE.    	! any substitutions done?
@@ -150,6 +164,11 @@
 	use_width = 0
 	zero_fill = .FALSE.
 	info_query = .FALSE.
+        coordvar = .FALSE.
+        apply_cx = .FALSE.
+
+* do_err: issue error message if attrib does not exist on varname.attname
+        do_err = .TRUE.
 
 * begin the search/replace at the point specified in the call.  (This is done
 * to facilitate double grave accents condensed into single accents so they
@@ -200,12 +219,28 @@
 	   ELSEIF (cmnd(i:i).EQ.']') THEN
 	      brkt = brkt - 1
 	   ELSEIF (cmnd(i:i).EQ.'=') THEN
-	      IF ( brkt .EQ. 0 ) GOTO 99
+	      IF ( brkt .EQ. 0 ) GOTO 98
 	   ENDIF
  90	CONTINUE
 	GOTO 149	! nope - no equal sign
+* ... see if the first part of the expression is a d=dsetnum or d=dsetname
+ 98	inxt = i
+        IF (cmnd(i-1:i-1).EQ.'d') THEN
+           inxt = i+1
+           DO 91 i = inxt,iend
+              IF ( cmnd(i:i) .EQ. ',' ) GOTO 94
+ 91        CONTINUE
+ 94        dset = FIND_DSET_NUMBER(cmnd(inxt:i-1))
+       ENDIF
+
+* ... hunt for the next equal sign 
+	DO 93 i = inxt, iend
+           IF (cmnd(i:i).EQ.'=') GOTO 99
+ 93	CONTINUE
+	GOTO 149	! nope - no equal sign
+
 * ... locate the comma following the mathematical expression
- 99	DO 100 i = i, istart, -1
+  99	DO 100 i = i, istart, -1
  100	IF ( cmnd(i:i) .EQ. ',' ) GOTO 101
 	GOTO 5500			! no comma ???
  101	iend = i - 1
@@ -284,34 +319,50 @@
 *	this is a major performance consideration, but not 100% reliable
 	   CALL GET_NEW_CX( cx_last, cx_cmnd, apply_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   cx = is_cx(1)	! always comes back as the first context
+           ist = istart
+           ind = iend 
+
+	   IF (cmnd(istart:istart) .EQ. '(') THEN
+              dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+              CALL ISIT_COORD_VAR ( cmnd(istart:iend), dset, 
+     .            buff, coordvar, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+
+           ELSE
+* ... context meaningless for d=1,return=varnames
+              IF (cmnd(istart:istart+1) .NE. 'd=') THEN
+                 CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+
+                 cx = is_cx(1)	! always comes back as the first context
 
 * ... if the result has any axes with unknown limits then we have to do a
 *	full evaluation. This happens (only?) from grid-changing fcns that
 *	return ABSTRACT axes, on which limits may depend on data values
 * NOTE THE POTENTIAL FOR WRONG RESULTS WITH OPERATIONS SUCH AS MATRIX
 * TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
-	   DO 190 idim = 1, 4
-	      IF ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
-     .	    .AND. CGRID_AXIS(idim, cx) .NE. mnormal ) THEN
-	         CALL EVAL_EXPR ( memory, cx_last,
-     .				  cmnd(istart:iend), apply_cx, status )
-	         IF ( status .NE. ferr_ok ) GOTO 5000
-	         cx = is_cx(1)	! always comes back as the first context
-	         GOTO 200
-	      ENDIF
- 190	   CONTINUE
 
+                 DO 190 idim = 1, 4
+	            IF ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
+     .	           .AND. CGRID_AXIS(idim, cx) .NE. mnormal ) THEN
+	               CALL EVAL_EXPR ( memory, cx_last,
+     .		                     cmnd(istart:iend), apply_cx, status )
+	               IF ( status .NE. ferr_ok ) GOTO 5000
+	               cx = is_cx(1)	! always comes back as the first context
+	              GOTO 200
+	            ENDIF
+ 190	         CONTINUE
+              ENDIF  ! `d=1,return=varnames`
+
+	   ENDIF
 * ... RETURN= information request: "repl" contains the keyword
 *     Add to this error string when adding new arguments:
 
            WRITE (return_errmsg,*)  
      .       'use RETURN= shape,size,grid,title,bad,t0,units,dset, '//pCR//
-     .	     '      dsetnum,dsetpath,dsettitle,*size,*start,*end,',
-     .       '*units,*axis,nc_scale,nc_offset,user_scale,user_offset,',
-     .       'calendar'
+     .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
+     .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
+     .       '  calendar,dtype'
 
 * ... RETURN=SHAPE
 
@@ -384,7 +435,8 @@
 	      ENDIF
 
 * ... RETURN=SIZE
-	   ELSEIF ( repl .EQ. "SIZE" ) THEN
+	   ELSEIF ( repl .EQ. "SIZE"  .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
 	      i2 = CGRID_SIZE ( cx )
 	      repl = LEFINT(i2, str_len)
 
@@ -414,6 +466,104 @@
 	         GOTO 5520
 	      ENDIF
 	      repl = TM_FMT( result, use_digits, max_len, str_len )
+
+* ... varname ,RETURN=dtype
+	   ELSEIF ( repl .EQ. "DTYPE" .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
+              dset = cx_data_set(cx)
+              IF (dset .EQ. pdset_irrelevant .OR. 
+     .            dset .EQ. unspecified_int4) dset = -1  ! try user vars
+
+              varid = 0
+              vartype = 0
+
+              CALL CD_GET_VAR_ID(dset, cmnd(istart:iend), varid, status)
+
+              IF (status .EQ. ferr_ok)  
+     .          CALL CD_GET_VAR_INFO (dset, varid, cmnd(istart:iend), 
+     .                              vartype, nvdims, vdims, nvatts,
+     .                              coordvar, outflag, status )
+
+              IF (vartype.EQ.0 ) THEN  
+
+*  evaluate expr to get type and translate ferret type to netcdf
+
+	         CALL EVAL_EXPR ( memory, cx_last,
+     .		                     cmnd(istart:iend), apply_cx, status )
+	         IF ( status .NE. ferr_ok ) GOTO 5000
+                 fertype = cx_type(cx)
+
+                 IF (fertype .EQ. ptype_unknown) THEN
+                    vartype = 0  ! NAT = 'Not A Type' (c.f. NaN) 
+                 ELSE IF (fertype .EQ. ptype_float) THEN
+                    vartype = 5    ! NC_FLOAT
+                 ELSE IF (fertype .EQ. ptype_int4) THEN
+                    vartype = 4     ! NC_INT
+                 ELSE IF (fertype .EQ. ptype_int2) THEN
+                    vartype = 3     ! NC_SHORT
+                 ELSE IF (fertype .EQ. ptype_int1) THEN
+                    vartype = 1     ! NC_BYTE
+                 ELSE IF (fertype .EQ. ptype_char) THEN
+                    vartype = 2     ! NC_CHAR
+                 ELSE IF (fertype .EQ. ptype_string) THEN
+                    vartype = 2   ! NC_CHAR
+                 ELSE IF (fertype .EQ. ptype_double) THEN
+                    vartype = 6   ! NC_DOUBLE
+                 ELSE
+                    vartype = 0
+                 ENDIF
+              ENDIF
+              repl = typstring(vartype)
+
+* ... varname.atttnum,RETURN=dtype  or varname.attname, RETURN=dtype
+	   ELSEIF ( repl .EQ. "DTYPE" .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+              attype = 0
+              dset = cx_data_set(cx)
+              IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = -1  ! user vars
+              CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, 
+     .                    varname, attname, varid, do_err, status )
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
+     .                                  attype, attlen, attoutflag,
+     .                                  status )
+              IF (status .EQ. ferr_ok) THEN
+                 repl = typstring(attype)
+	      ELSE 
+	         GOTO 5520
+              ENDIF
+
+* ... varname.atttnum,RETURN=size  or varname.attname, RETURN=size
+	   ELSEIF ( repl .EQ. "SIZE" .AND. 
+     .              INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+              IF (.NOT. coordvar) dset = cx_data_set(cx)
+              IF (dset .GE. 1) THEN
+                 IF (coordvar) THEN
+
+                    IF (INDEX(buff,'.') .GT. 0)
+     .              CALL BREAK_VARATTNAME( buff, dset, varname, 
+     .                              attname,  varid, do_err, status )
+
+                 ELSE
+                    CALL CD_GET_VAR_ID (dset, cmnd(istart:iend), varid,
+     .                  status)
+                    
+                    IF (status .NE. ferr_ok .AND. 
+     .                  INDEX(cmnd(istart:iend),'.') .GT. 0)
+     .              CALL BREAK_VARATTNAME( cmnd(istart:iend), dset,
+     .                         varname, attname, varid, do_err, status )
+
+                 ENDIF
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
+     .                                     attype, attlen, attoutflag,
+     .                                     status )
+
+                 IF (status .EQ. ferr_ok) THEN
+                    result = attlen
+                    repl = TM_FMT( result, use_digits, max_len, str_len )
+	         ELSE 
+	            GOTO 5520
+                 ENDIF
+              ENDIF
 
 * ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
 	   ELSE	

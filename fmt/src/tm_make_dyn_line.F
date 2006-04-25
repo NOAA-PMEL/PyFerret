@@ -52,7 +52,7 @@
 * 1/03 - *kob* g77 port - Need to use risc_buff for arbitrary concatenations
 * V580 9/04 *acm* - if units not given, assign general X or Y direction rather 
 *                   than WE or SN
-* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 
 * Arguments
 	LOGICAL		modulo

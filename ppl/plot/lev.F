@@ -59,7 +59,7 @@ C**
 *	non zero value.
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
 * v581 *acm* 3/05 open levels (-INF) (INF)
-* v590 *acm* 8/05 Fix bug 1335: move the initialization of LWGT(j) = 2 to 
+* V600 *acm* 8/05 Fix bug 1335: move the initialization of LWGT(j) = 2 to 
 *                 before the possible resetting of zlev if posinf true.
 
 	parameter	(epsilon = 1e-6)

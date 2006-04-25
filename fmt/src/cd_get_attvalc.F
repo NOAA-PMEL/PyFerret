@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION CD_GET_ATTVALC ( cdfid, varid, attrib,
+	LOGICAL FUNCTION CD_GET_ATTVALC ( dset, varid, attrib,
      .                                    do_warn, vname,
      .                                    val, blank_val )
 
@@ -55,9 +55,15 @@
 *      returns an error and goes to 5000 if the contents of buff is not  
 *      a number.  For OSF, reads anyway, returning -1 when the character 
 *      string is T, or 0 for all other characters. 
+* V600 *ACM* attribute control. 
+*             Replace NCAINQ with CD_GET_VAR_ATT_INFO
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from linked list structure
+*             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
+*               strings or real values according to attrib type
+
 
 * argument definitions:
-*	cdfid	 - netCDF id number for already opened CDF file
+*	dset	 - dataset id number for already opened CDF file
 *       varid    - variable id in netCDF file
 *       attrib   - attribute to search for
 *	do_warn	 - logical flag to issue warning if invalid attribute
@@ -67,31 +73,34 @@
 
 * argument declarations
       LOGICAL       do_warn
-      INTEGER	    cdfid, varid
+      INTEGER	    dset, varid
       CHARACTER*(*) attrib, vname
       REAL	    val, blank_val
 
       include 'xio.parm'
       include 'netcdf.decl'
 #include "netcdf.inc"
+      include 'tmap_errors.parm'
 
 * internal variable declarations:
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL
-      INTEGER vback
-      INTEGER TM_LENSTR1, lena, attype, cdfstat
+      LOGICAL NC_GET_ATTRIB
+      INTEGER attlen, attoutflag
+      INTEGER TM_LENSTR1, lena, attype, status
+      REAL tmp
       CHARACTER buff*132
-
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
-      CALL NCAINQ(cdfid, varid, attrib(:lena), attype, vback, cdfstat )
+      CALL CD_GET_VAR_ATT_INFO (dset, varid, attrib(:lena), attype, 
+     .     attlen, attoutflag, status )
 
-      IF ( cdfstat .EQ. NCNOERR ) THEN
+      IF ( status .EQ. merr_ok ) THEN
 	IF (attype .EQ. NCCHAR) THEN
 * get a text attribute as a value
 
-	   CD_GET_ATTVALC = CD_GET_ATTRIB(cdfid,varid,attrib(:lena),
-     .                                    do_warn,vname,buff,132 )
+	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset,varid,attrib(:lena),
+     .                            do_warn,vname,132, attlen,  
+     .                            attoutflag, buff, tmp )
 	   IF (.NOT.CD_GET_ATTVALC) THEN
 	     RETURN
 	   ELSEIF (buff .EQ. ' ') THEN
@@ -101,8 +110,9 @@
 	   ENDIF 
 	 ELSE
 * get a value attribute
-	   CD_GET_ATTVALC = CD_GET_ATTVAL(cdfid,varid,attrib(:lena),
-     .                                    do_warn,vname,val,1,vback )
+	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset, varid, attrib(:lena),
+     .                                    do_warn, vname, 1, attlen,
+     .                                    attoutflag,  buff, val )
 	 ENDIF
       ELSE
 * didnt get nothin

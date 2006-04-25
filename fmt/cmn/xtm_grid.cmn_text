@@ -22,7 +22,9 @@
 * V570 *acm* 5/04  Remove line_has_edges; never used.
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
-* V591 *acm* 2/06 - For bug 1394, increase size of line_units to 64
+* V600 *acm* 2/06 - For bug 1394, increase size of line_units to 64
+* V600 *acm* 6/05  Attribute control. New flag line_fixname to let us restore the
+*                  original name on output if it was changed on input. (cd_axis_name.F)
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -37,8 +39,8 @@
      .			line_class, line_free_ptr, max_line_used,
      .                  pline_mem_init
 	LOGICAL		grid_out_prod, line_regular, line_modulo,
-!     .			line_has_edges, line_keep_flag
-     .			line_keep_flag, line_shift_origin
+!     .			line_has_edges, line_keep_flag,
+     .			line_keep_flag, line_shift_origin, line_fixname
 	REAL		line_tunit, grid_rotation
 	REAL*8		line_start, line_delta, line_mem, line_modulo_len
 
@@ -67,6 +69,7 @@
      .			line_blink	( max_lines:line_ceiling ),
      .			line_class	( 0:line_ceiling ),
      .			line_keep_flag  ( 0:line_ceiling ),
+     .			line_fixname    ( 0:line_ceiling ),
      .			line_shift_origin( 0:line_ceiling ),
      .			line_free_ptr,
      .			max_line_used,

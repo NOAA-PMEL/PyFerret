@@ -85,9 +85,12 @@ SET MODE VERIFY
 ! v5.81  
 !  9/05 *acm* remove bn_curv_shade_mod.jnl which was duplicated by bn_curv_mod.jnl
 
-!  V5.90 
-!  9/05 *acm* new scripts  bn_tab_comma_multivar.jnl, bn_element_functions.jnl
-!             bn_long_revision_num.jnl
+!  V6.00
+!  9/05 *acm* new scripts  bn_tab_comma_multivar.jnl, bn_element_functions.jnl,
+!             bn_long_revision_num.jnl, bn_window_title.jnl, bn_last_error.jnl,
+!             bn_deg_min.jnl, bn_dp_readscale.jnl, bn_bounds_defineax.jnl,
+!              bn_attributes.jnl, n600_bug_fixes.jnl
+
 
 GO bn_reset
 GO bn_syntax
@@ -461,7 +464,7 @@ GO bn_shade_keycont.jnl
 GO bn_reset
 GO bn581_bug_fixes.jnl
 
-! ******** V5.90 Additions below ***********
+! ******** V6.00 Additions below ***********
 GO bn_reset
 GO bn_tab_comma_multivar.jnl
 
@@ -486,8 +489,11 @@ GO bn_dp_readscale.jnl
 GO bn_reset
 GO bn_bounds_defineax.jnl
 
+go bn_reset
+go bn_attributes.jnl
+
 GO bn_reset
-GO bn590_bug_fixes.jnl
+GO bn600_bug_fixes.jnl
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

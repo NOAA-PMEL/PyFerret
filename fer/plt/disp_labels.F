@@ -63,7 +63,7 @@
 * v533 *acm* 8/01 - test for calendar label had .LT. max_calendars; needs .LE.
 *      *acm* 10/01  remove VMS includes
 * V580 *acm* 11/04 - bug 1098 url is cut off; keep going to the last /
-* V581: *acm*/3/05 - increase length of strings for datset title to 1024
+* V581: *acm*/3/05 - increase length of strings for dataset title to 1024
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'

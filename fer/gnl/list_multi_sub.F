@@ -62,13 +62,13 @@
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's from 8 to 64 chars
 * V530  8/00 - added support for string variables
 * V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
-* V581: *acm*/3/05 - increase length of strings for datset title to 1024
-* V590: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
+* V581: *acm*/3/05 - increase length of strings for dataset title to 1024
+* V600: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
 *                    multiple variables like free-format listings, rather than 
 *                    like LIST/SINGLY. (bug 1273)
-* V590: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
+* V600: *acm* 8/05 - Add new qualifier LIST/NOROWHEAD to remove labels that
 *                    start each row labelling the coordinate values. (bug 1273)
-* V590: *acm* 8/05 - fix bug 1313; reinitialize list_buffer after heading of 
+* V600: *acm* 8/05 - fix bug 1313; reinitialize list_buffer after heading of 
 *                    variable names on columns, before listing data
 
 	include 'tmap_dims.parm'

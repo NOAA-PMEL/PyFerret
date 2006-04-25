@@ -168,16 +168,19 @@
 * V581 *acm*  5/05 For OPeNDAP HDF files, do not check whether axis name is legal.
 *                  If it was given in quotes, skip the quotes when finding it in
 *                  the list of axis names.
-* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
-* V590 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
+* V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V600 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
 *                  Bounds can be either 2*N or N+1 values, or three lists of length N:
 *                  coords, lo_bound, hi_bound
 *                  DEFINE AXIS/X/BOUNDS xax={1,2,5}, {0.5,1.5,3,6}
 *                  DEFINE AXIS/Z/BOUNDS zax=zcoord, zbnd
 *                  DEFINE AXIS/Z/BOUNDS zax={1,2,5}, {0.5,1.5,3}, {1.5,3,6}
 *                  
-* V590 *acm* 3/06  Fix bug 1401: See the comment: a single point is always "regular" --
+* V600 *acm* 3/06  Fix bug 1401: See the comment: a single point is always "regular" --
 *                  causes incorrect treatment of the axis if the axis has BOUNDS!!
+* V600 *acm*  8/05 DEFINE ATTRIBUTE[/type=][/D=] varname[d=].attname = <numeric scalar or 
+*                  vector, or string>
+
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -198,6 +201,7 @@
 	include 'xcommand.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'	
+        include 'netcdf.inc'
 
 * local parameter declarations:
 	INTEGER	    slash_dflt,
@@ -225,7 +229,10 @@
      .		    slash_let_dset,
      .		    slash_let_bad,
      .		    slash_define_vp_by_ax,
-     .              slash_bounds
+     .              slash_bounds,
+     .              slash_type,
+     .              slash_dset,
+     .              slash_output
 
 	LOGICAL	    explct_defn
 	PARAMETER ( slash_dflt   = 9,
@@ -254,6 +261,9 @@
      .		    slash_let_bad    = 1 + 4,
      .		    slash_define_vp_by_ax = 1 + 6,
      .              slash_bounds     = 1+14,
+     .              slash_type       = 1+1,
+     .              slash_dset       = 1+0,
+     .              slash_output     = 1+2,
      .		    explct_defn  = .FALSE. )
 
 * calling argument declarations:
@@ -263,13 +273,14 @@
 	LOGICAL	  TM_DIGIT, TM_LEGAL_NAME, TM_LINE_MATCH, TM_GRID_MATCH,
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, 
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
-     .            its_calendar, its_modulo, has_repeated, has_bounds
+     .            its_calendar, its_modulo, has_repeated, has_bounds,
+     .            coordvar, new_att
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
      .		  TM_GET_GRIDNUM, TM_UNIT_ID,
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
-     .            TM_GET_CALENDAR_ID,
+     .            TM_GET_CALENDAR_ID, STR_SAME,
      .		  tmap_status, npoints,
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
@@ -278,8 +289,9 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal, i, n2, n3, 
-     .            s2len, prev_cal_id, j, num_indices
+     .            mon_by_d(366), d_in_mon(12), len_cal, n2, s2len,
+     .            prev_cal_id, j, num_indices, varid, attype_spec,
+     .            mr_perm(max_intrp), attoutflag
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
@@ -288,10 +300,11 @@
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small
-	CHARACTER TM_FMT*16, reg_name*24, buff1*128, buff2*128, buff3*128, 
-     .            buff30*30, cal_name*32,
+	CHARACTER TM_FMT*16, 
+     .            reg_name*24, buff1*128, buff2*128, buff3*128, 
+     .            buff30*30, cal_name*32, buff*512,
      .            basic_orients(4)*2, err_string*255, replmsg*24,
-     .		  mon_names(12)*3
+     .		  mon_names(12)*3, varname*512, attname*128, t2*2
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -308,10 +321,8 @@
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
-
-
 * select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800 ) subcmnd_num
+	GOTO ( 100,200,300,400,500,600,700,800,900 ) subcmnd_num
 
 * DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
@@ -567,8 +578,13 @@
 	ENDIF
 
 * break the expression into atoms and identify them
+
+        t2 = cmnd_buff(pos:pos+1)
+        IF (t2 .EQ. '..') cmnd_buff(pos:pos+1) = 'aa'
 	CALL ALG_BREAK_UP( cmnd_buff(pos:len_cmnd),at_start,at_end,natom,
      .			   err_string,status )
+        cmnd_buff(pos:pos+1) = t2
+
 	IF ( status .NE. ferr_ok ) GOTO 5440
 	CALL ALG_ID( cmnd_buff(pos:len_cmnd), natom, at_start, at_end,
      .		     at_type, at_id, status )
@@ -1523,6 +1539,124 @@ C /units=months  is 1/12 of the length of the year
 ! ... no check on returned error code (could be "internal error")
 	RETURN
 
+**************************************************************************
+* DEFINE ATTRIBUTE /D= /TYPE= /OUTPUT
+ 900	IF ( num_args .LT. 1 ) GOTO 5900
+	CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
+	IF ( status .NE. ferr_ok )  GOTO 5000
+	IF ( pos .EQ. 0 ) GOTO 5400
+	IF ( .NOT.TM_LEGAL_NAME(buff1) ) GOTO 5100
+
+* ... get dset number if present:  DEF ATT/D=dset ...
+	iqual = qual_given( slash_dset ) 
+        IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      buff2, status )  
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( buff2 .NE. ' ' ) THEN
+	      dset = FIND_DSET_NUMBER( buff2 )
+	      IF ( dset .EQ. unspecified_int4) THEN
+	         CALL WARN('Unknown data set: '
+     .		 //buff2(:TM_LENSTR1(buff2)))
+	         RETURN
+	      ENDIF
+	   ENDIF
+	ENDIF
+
+*...DEF ATT/TYPE=string or float  get attribute type if present 
+*   (??? or other types on output?)
+	iqual = qual_given( slash_type) 
+        attype_spec = ptype_unknown
+        IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      buff2, status )  
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( STR_SAME (buff2, 'string') .EQ. 0) THEN
+	      attype_spec = ptype_string
+           ELSE
+              attype_spec = ptype_float
+	   ENDIF
+	ENDIF
+
+        
+* ... DEFINE ATT/OUTPUT varname.attname
+      attoutflag = 0
+      iqual = qual_given( slash_output ) 
+      IF ( iqual .GT. 0 ) attoutflag = 1 
+
+* get the requested data somehow
+
+        IF (arg_start(1) .LT. pos) arg_start(1) = pos
+	CALL GET_PROT_CMND_DATA ( memory, cx_last, ptype_native, status )
+        mr = is_mr(1)
+
+        IF ( status .NE. ferr_ok ) THEN      ! 8/6/92
+           list_fmt_type = plist_default ! restore for next command
+	   list_format_given = .FALSE.
+           RETURN
+        ENDIF
+
+!! ?? get dataset from varname.attname
+* ... evaluate the context without computing the expression to get the dataset
+
+        buff = cmnd_buff(item_start(1):item_end(1)) ! same as buff1?
+
+	CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+        IF ( status .NE. ferr_ok ) GOTO 5000
+ 
+        IF (buff(1:1) .EQ. '(') THEN
+           dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+           CALL ISIT_COORD_VAR ( buff, dset, varname, coordvar, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+        ELSE
+
+* Get the dataset if given as [d=]
+            IF (iqual .EQ. 0) iqual = 1
+	    IF ( INDEX(buff,'[') .GT. 0 ) THEN
+               dset = pdset_irrelevant	! default (not used ...)
+               CALL PARSE_NAM_DSET(buff,
+     .			 cx_last, dset, cat, var, mods_cx, status)
+            ELSE
+              cx = is_cx( 1 )
+              IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
+     .             cx = cx_cmnd
+             dset = cx_data_set(cx)
+          ENDIF
+	ENDIF
+
+* See if the variable is a user-defined variable.
+        IF (dset .EQ. pdset_irrelevant .OR. 
+     .     dset .EQ. unspecified_int4) THEN
+
+           varname = buff1(1:INDEX(buff1,".")-1)
+           CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, var)
+           IF (  var .NE. munknown_var_name .AND.
+     .           cat .EQ. cat_user_var) THEN
+              dset = -1
+           ELSE
+              dset = cx_data_set(cx_cmnd) 
+           ENDIF
+        ENDIF
+
+*  break up varname.attname.  
+
+        CALL BREAK_VARNAME( buff1, dset, varname, attname, 
+     .                               varid, status )
+        IF (status .NE. ferr_ok) goto 5920
+
+        CALL ADD_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
+     .         buff1, dset, attype_spec, attoutflag, new_att, status )
+
+* Change attribute value
+        IF (.NOT. new_att) THEN
+           CALL EDIT_ATTRIBUTE(  memory(1, mr_blk1(mr)), mr, 
+     .               buff1, dset, attype_spec, status )
+        ENDIF
+
+
+	RETURN
+
 * error exit
  5000	RETURN
  5100 	CALL ERRMSG( ferr_syntax,status,'illegal name: '//buff3,*5000 )
@@ -1614,5 +1748,22 @@ C /units=months  is 1/12 of the length of the year
 
 5750	CALL ERRMSG( ferr_grid_definition, status,
      .     'BOUNDS specified do not enclose coordinate points', *5000 )
+
+5900	CALL ERRMSG( ferr_invalid_command, status,
+     .		'DEFINE what name.attribute?', *5000 )
+5920    slen = TM_LENSTR1(varname)
+        buff1 = TM_FMT(FLOAT(dset), 14, 16, s2len)
+        CALL ERRMSG( ferr_invalid_command, status,
+     .		'variable does not exist in dset'//
+     .           buff1(:s2len)//varname(:slen), *5000 )
+5930    buff1 = 'string'
+        IF (at_type(1) .EQ.ptype_float) buff1 = 'float'
+        slen = 6
+        buff2 = 'string'
+        if (attype_spec .EQ. ptype_float) buff2 = 'float'
+        CALL ERRMSG( ferr_invalid_command, status,
+     .		'TYPE specified does not match type of values'//
+     .           cmnd_buff(pos:len_cmnd)//' is '// buff1(:slen)//
+     .           'TYPE given is '// buff2(:slen), *5000 )
 
 	END

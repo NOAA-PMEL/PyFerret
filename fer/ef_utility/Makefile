@@ -39,7 +39,7 @@ tmap_format:
 	ln -s ../../fmt/cmn ./tmap_format
 
 clean:
-	rm -f core *.o *.a ferret_cmn tmap_format
+	rm -f core *.o *.a *.f ferret_cmn tmap_format
 
 #
 # End of Makefile

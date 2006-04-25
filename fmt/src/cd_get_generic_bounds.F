@@ -80,7 +80,7 @@
 
 * local variable declarations:
       LOGICAL CD_USE_RECDIM, TM_FPEQ, no_file_coords
-      INTEGER TM_LENSTR1, TM_SUBSC, NCVID, 
+      INTEGER TM_LENSTR1, TM_SUBSC, 
      .        idim, vartyp, nvdim,
      .        ndims, cdfstat, vdims(6), nvatts,
      .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset

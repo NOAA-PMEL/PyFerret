@@ -104,6 +104,9 @@
 	external xstep_files_data
 	include 'xez_info.cmn_text'
 	external xez_info_data
+        include 'netcdf.decl'
+#include "netcdf.inc"
+
 *
 * Local definitions
         LOGICAL         TM_LEGAL_NAME, vars_gvn, its_delimited
@@ -113,7 +116,7 @@
      .			set_cnt, bpos, epos, ncnt, var_pos, num_names,
      .			nvar, jcnt, stp_cnt, nstp, field_type(maxezvars),
      .			num_types, i, j, name_limit, idummy(maxezvars),
-     .			l1, l2
+     .			l1, l2, ivar, vartype
 	CHARACTER	TM_STRING*13, TM_LEFINT*4, buff*48, 
      .			line_buff*2048
 
@@ -405,6 +408,26 @@
 	ENDIF
 
 *
+* Put the information into the linked-list strucure for the dataset
+* and its variables
+        CALL CD_STORE_DSET (dset, status)
+        DO 200 ivar = 1, nvar
+        
+	   IF (ds_var_type(nvar) .EQ. ptype_float) THEN
+	      vartype = NCFLOAT
+	   ELSEIF  (ds_var_type(nvar) .EQ. ptype_string) THEN
+	      vartype = NCCHAR
+	   ELSE
+              vartype = NCFLOAT
+           ENDIF
+
+          CALL CD_ADD_VAR( dset, ds_var_code(ivar), ivar, 
+     .       ds_var_title(ivar), ds_var_units(ivar), vartype,
+     .       ds_bad_flag(ivar), status)
+  200   CONTINUE
+
+
+
 * All done
 	status = merr_ok
 	GOTO 9999

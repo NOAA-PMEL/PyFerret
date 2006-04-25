@@ -41,7 +41,7 @@
 * written for VAX computer under VMS operating system
 
 * revision 0.0 3/92 for TMAP library
-* V590 ACM fix bug 419: Do not scale bad values as prescribed by the CF standard(!) 
+* V600 ACM fix bug 419: Do not scale bad values as prescribed by the CF standard(!) 
 
 * calling argument declarations:
       INTEGER n

@@ -88,6 +88,8 @@
 * v552: 5/03 *acm*  Use just the current item when dealing w/ G=uvar with 
 *                   target grid not yet known (intermediate variable buff)
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
+* V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
+*                   varname.attname
 
 * calling argument declarations:
 	INTEGER	status
@@ -97,15 +99,20 @@
 
 * internal variable declarations:
 	LOGICAL	ITSA_GCVAR, its_dynamic, its_gc, need_another_pass,
-     .		saved_ifthen_type
-	INTEGER KNOWN_GRID,
+     .		saved_ifthen_type, do_err
+	INTEGER KNOWN_GRID, STR_SAME,
      .		TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR, 
      .		 hi_cx, lo_cx, big_cx, start, end, grid,
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
-     .		ifthen_data_type
-	CHARACTER VAR_CODE*4, name*150, buff*2048
+     .		ifthen_data_type, varid, alen, attype, attlen,
+     .          attoutflag
 
+	CHARACTER VAR_CODE*4, name*512, buff*2048, varname*512, 
+     .            attname*128
+
+        include 'netcdf.decl'
+#include "netcdf.inc"
 	include	'tmap_errors.parm'
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -157,6 +164,8 @@
 	   GOTO 300
 	ELSEIF ( itype .EQ. alg_variable    ) THEN
 	   GOTO 305
+	ELSEIF ( itype .EQ. alg_attrib_val  ) THEN
+	   GOTO 315
 	ELSEIF ( itype .EQ. alg_string      ) THEN
 	   GOTO 400
 	ELSEIF ( itype .EQ. alg_constant    ) THEN
@@ -253,6 +262,94 @@
 	ELSE
 	   GOTO 9000	! err: grid for non-user vars should always be known
 	ENDIF
+
+* variable.attname: parse name, get needed parts of context for attribute
+
+ 315	name = uvar_text(uvar)(start:end)
+	len_name = end-start+1
+
+
+ 	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+	hi_cx = cx_stack_ptr
+	CALL GET_VAR_CONTEXT (  name(:len_name),
+     .				lo_cx,
+     .				hi_cx,
+     .				status )
+	IF ( status .NE. ferr_ok ) GOTO 5000
+
+        dset = cx_data_set(hi_cx)
+        IF (dset .EQ. pdset_irrelevant) dset = -1
+        do_err = .TRUE.
+        attname = ' '
+        name = ' '
+        CALL  BREAK_VARATTNAME (  uvar_text(uvar)(start:end), dset, 
+     .                            varname, attname, varid, do_err, status )
+
+* Get attribute type and length
+        
+* See if it is a pseudo-attribute attnames, ndims, etc.
+
+        attype = NCFLOAT
+
+        IF (STR_SAME(attname(:4), 'attn') .EQ. 0  .OR. 
+     .       STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN
+           attype = NCCHAR
+        ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0  .OR.
+     .      STR_SAME(attname(:4), 'type') .EQ. 0  .OR.
+     .      STR_SAME(attname(:4), 'nvar') .EQ. 0  .OR.
+     .      STR_SAME(attname(:4), 'natt') .EQ. 0 ) THEN
+           attype = NCFLOAT
+
+        ELSE IF (STR_SAME (varname, '.') .EQ. 0) THEN
+           IF (STR_SAME(attname(:4), 'varn') .EQ. 0   .OR.
+     .         STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN
+              attype = NCCHAR
+
+           ELSE IF (STR_SAME(attname(:3), 'att') .EQ. 0   .OR.
+     .           STR_SAME(attname(:4), 'ndim') .EQ. 0  .OR.
+     .           STR_SAME(attname(:3), 'nat') .EQ. 0  .OR.
+     .           STR_SAME(attname(:4), 'nvar') .EQ. 0 ) THEN
+              attype = NCFLOAT
+           ENDIF
+
+* Otherwise get att type from the linked-list structure
+
+        ELSE
+           CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, attype,
+     .           attlen, attoutflag, status)
+        ENDIF
+
+        IF (attype .EQ. NCCHAR) THEN
+           cx_type(hi_cx) = ptype_string
+	ELSE
+	   cx_type(hi_cx) = ptype_float
+	ENDIF
+        
+* set the X axis limits equal to the length of the array
+c	cx_lo_ss(hi_cx, x_dim) = 1
+c	cx_hi_ss(hi_cx, x_dim) = attlen !!
+        IF (attype .EQ. NCCHAR) cx_hi_ss(hi_cx, x_dim) = 1
+
+* The grid is abstract 
+
+	var = cx_variable(hi_cx)
+        uv_grd = KNOWN_GRID( cx_data_set(hi_cx), cat_attrib_val, var )
+
+	IF ( cx_unstand_grid(hi_cx)
+     . .AND. cx_grid(hi_cx) .LT. unspecified_int4 ) GOTO 800
+
+
+* do we know the defining grid for the component ?
+* (not necessarily the same as the returned grid --> there may be a regrid )
+
+	IF ( cx_grid(hi_cx) .NE. unspecified_int4 ) THEN
+	   GOTO 500	! know grid --> merge it
+	ELSE
+	   GOTO 9000	! err: grid for varname.attname is known
+	ENDIF
+
+        GOTO 500
 
 * string constant
  400	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
@@ -464,11 +561,17 @@
         IF ( uvar_dset(uvar).EQ.unspecified_int4 )
      .            uvar_need_dset(uvar) = .NOT.cx_dset_gvn(big_cx)
 
+c        IF ( itype .EQ. alg_attrib_val  ) THEN
+c           uvar_dset(uvar) = dset
+c           uvar_need_dset(uvar) = .TRUE.
+c        ENDIF
+
 	IF ( uvar_need_dset(uvar) .AND. dset .NE. unspecified_int4) THEN
 	   this_dset = dset
 	ELSE
 	   this_dset = pdset_irrelevant
 	ENDIF
+
 	uvar_grid( uvar, this_dset ) = gnum
 	uvar_data_type(uvar, this_dset) = cx_type(big_cx)
 
@@ -512,6 +615,10 @@
 	isp = isp - 1
 	CALL DEALLO_GRID( status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+c        IF ( itype .EQ. alg_attrib_val  ) THEN
+c           uvar_dset(uvar) = unspecified_int4  ! or irrelevant??
+c        ENDIF
+
 	RETURN 2
 
 * error exit
@@ -529,4 +636,5 @@
      .               'no grid for GFDL diagnostic variable '
      .               //VAR_CODE(cat_calc_var, cx_variable(hi_cx)),
      .               *5000 )
+
 	END	

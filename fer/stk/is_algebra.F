@@ -89,7 +89,11 @@
 *                   (variables are up to 128, so **name** needs extra space
 *                   i.e. for a transformation specifier)
 * v554: 1/04 *acm* Counter variables for REPEAT/RANGE=/NAME=
+* V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
+*                   varname.attname
 
+        include 'netcdf.decl'
+#include "netcdf.inc"
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -100,7 +104,6 @@
         include 'xcontrol.cmn'
         include 'xalgebra.cmn'
 
-
 * calling argument declarations:
 	INTEGER	isp_base, status
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -109,17 +112,21 @@
 * exit #2 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, its_gc, its_sample,
-     .		start_sampling
+	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, NC_GET_ATTRIB, 
+     .          its_gc, its_sample, start_sampling, got_it, coordvar,
+     .          reset_ss, do_err
 	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR,
      .		GCF_FIND_FCN, GCF_ARG_EVAL_ORDER, GET_VAR_GRID,
-     .		MGRID_SIZE, hi_mr, hi_cx, lo_cx, big_cx, dflt_cx,
-     .		start, end, saved_grid, ifcn, size,
+     .		MGRID_SIZE, STR_SAME, hi_mr, hi_cx, lo_cx, big_cx,
+     .		dflt_cx, start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
-     .		nitem, new_mr, len_name, idig, csp1, cat, cvar
-        REAL    counter_const
+     .		nitem, new_mr, len_name, idig, csp1, cat, cvar, 
+     .          varid, attlen, attype, maxlen, attoutflag,
+     .          ndims, nvars, ngatts, recdim, ivar, vartype, 
+     .          nvdims, vdims(8), nvatts, nv, iatt, all_outflag
+        REAL    counter_const, val
 
-	CHARACTER TM_FMT*150,name*150
+	CHARACTER TM_FMT*150, name*150, attname*128, buff*10
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -260,7 +267,9 @@
 	   GOTO 600
 	ELSEIF ( itype .EQ. alg_const_var ) THEN
 	   GOTO 700
-	ELSEIF ( itype .EQ. alg_string ) THEN
+	ELSEIF ( itype .EQ. alg_attrib_val ) THEN
+	   GOTO 750
+        ELSEIF ( itype .EQ. alg_string ) THEN
 	   GOTO 800
 	ELSEIF ( itype .EQ. alg_if_marker
      .	    .OR. itype .EQ. alg_then_marker ) THEN
@@ -472,6 +481,265 @@
 	IF ( start_sampling ) GOTO 900
 	RETURN 1
 
+* "attrib_val" a string or float value or array of strings or floats.
+* ... get the context here, then RETURN 1 to evaluate
+ 750	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
+
+	IF ( status .NE. ferr_ok ) RETURN
+	hi_cx = cx_stack_ptr
+
+        
+* set these to unspecified.  If they get set in GET_VAR_CONTEXT, 
+* then do not set them to 1:attlen below.
+
+ 	cx_lo_ss(hi_cx, x_dim) = unspecified_int4
+ 	cx_hi_ss(hi_cx, x_dim) = unspecified_int4
+
+	CALL GET_VAR_CONTEXT (  uvar_text(uvar),
+     .				lo_cx,
+     .				hi_cx,
+     .				status )
+	IF ( status .NE. ferr_ok ) RETURN
+
+* Flag to set the limits. They were not set by GET_VAR_CONTEXT, so use the
+* attribute size
+
+        reset_ss = (cx_lo_ss(hi_cx, x_dim) .EQ. unspecified_int4  .OR.
+     .              cx_hi_ss(hi_cx, x_dim) .EQ. unspecified_int4 ) 
+
+        dset = cx_data_set(hi_cx)
+        IF (dset .NE. unspecified_int4 .AND. 
+     .      dset .NE. pdset_irrelevant) THEN
+
+* do_err: issue error message if attrib does not exist on varname.attname
+           do_err = .TRUE.
+           CALL  BREAK_VARATTNAME (  uvar_text(uvar), dset, 
+     .                            name, attname, varid, do_err, status )
+
+* Is the *attr name* a pseudo-name for a variable: attnames, dimnames,
+*  natts, type, ...
+
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_INFO (dset, varid, name, vartype,
+     .                nvdims, vdims, nvatts, coordvar, all_outflag, 
+     .                status)
+
+* attribute names
+              IF (STR_SAME(attname(:4), 'attn') .EQ. 0 ) THEN  ! attnames
+                 cx_type(hi_cx) = ptype_string
+                 IF (reset_ss) THEN
+                    cx_lo_ss(hi_cx, x_dim) = 1
+                    cx_hi_ss(hi_cx, x_dim) = nvatts
+                 ELSE
+                    cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                    cx_hi_ss(hi_cx, x_dim) = MIN(nvatts, cx_hi_ss(hi_cx, x_dim))
+                 ENDIF
+
+* dimension names
+              ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
+                 cx_type(hi_cx) = ptype_string
+                 IF (reset_ss) THEN
+                    cx_lo_ss(hi_cx, x_dim) = 1
+                    cx_hi_ss(hi_cx, x_dim) = nvdims
+                 ELSE
+                    cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                    cx_hi_ss(hi_cx, x_dim) = MIN(nvdims, cx_hi_ss(hi_cx, x_dim))
+                 ENDIF
+ 
+* # of dimensions for variable 
+              ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
+                 cx_type(hi_cx) = ptype_float
+                 cx_lo_ss(hi_cx, x_dim) = 1
+                 cx_hi_ss(hi_cx, x_dim) = 1
+
+*  variable types
+              ELSE IF (STR_SAME(attname(:4), 'type') .EQ. 0 ) THEN
+                 cx_type(hi_cx) = ptype_float
+                 cx_lo_ss(hi_cx, x_dim) = 1
+                 cx_hi_ss(hi_cx, x_dim) = 1
+
+* # of attributes
+               ELSE IF (STR_SAME(attname(:4), 'natt') .EQ. 0 ) THEN  ! natts
+                cx_type(hi_cx) = ptype_float
+                 cx_lo_ss(hi_cx, x_dim) = 1
+                 cx_hi_ss(hi_cx, x_dim) = 1
+
+               ELSE
+           
+* General attribute.
+* Get attribute type and length
+        
+                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, attype,
+     .                attlen, attoutflag, status)
+     
+                  IF (status .NE. ferr_ok) THEN
+                     RETURN ! ?? error message
+                  ENDIF
+
+                  IF (attype .EQ. NCCHAR) THEN
+                     cx_type(hi_cx) = ptype_string
+	          ELSE
+	             cx_type(hi_cx) = ptype_float
+	          ENDIF
+
+* If the attribute we are asking for is the bad-data flag, set 
+* cx_bad_data to something else, so that the value will be displayed.
+
+                  IF (STR_SAME (attname, 'missing_value') .EQ. 0 .OR.
+     .               STR_SAME (attname, '_FillValue') .EQ. 0) THEN
+                     maxlen = 1
+                     got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+     .                                .TRUE., name, maxlen, attlen, 
+     .                                attoutflag, buff, val)
+                     IF (got_it) cx_bad_data(hi_cx) = val/2. + 1.
+                  ENDIF
+
+                  IF (attype .EQ. NCCHAR) THEN
+                     cx_lo_ss(hi_cx, x_dim) = 1
+                     cx_hi_ss(hi_cx, x_dim) = 1
+                  ELSE
+ 
+* If they were not set by the var context, set the X axis limits equal 
+* to the length of the array. 
+
+                    IF (reset_ss) THEN
+                        cx_lo_ss(hi_cx, x_dim) = 1
+                        cx_hi_ss(hi_cx, x_dim) = attlen
+                    ELSE
+                       cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                       cx_hi_ss(hi_cx, x_dim) = MIN(attlen, cx_hi_ss(hi_cx, x_dim))
+                    ENDIF
+                 ENDIF
+
+               ENDIF  ! general attribute
+
+* If the varname is ., referring to the dataset itself, then the varid = 0. These are
+* dataset attributes: varnames, attnames, dimnames, ndims, nvars, ...
+
+           ELSE 
+              IF (varid .EQ. 0) THEN
+                 CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
+     .               recdim, status)
+     
+* Count number of non-coordinate variables.
+                 nv = 0
+                 DO 760 ivar = 1, nvars
+                    CALL CD_GET_VAR_INFO (dset, ivar, name, vartype,
+     .                  nvdims, vdims, nvatts, coordvar, all_outflag, 
+     .                  status)
+                    IF (.NOT. coordvar) nv = nv + 1
+ 760             CONTINUE
+
+                 IF (STR_SAME(attname(:4), 'varn') .EQ. 0 ) THEN  ! varnames
+                    cx_type(hi_cx) = ptype_string
+                    IF (reset_ss) THEN
+                       cx_lo_ss(hi_cx, x_dim) = 1
+                       cx_hi_ss(hi_cx, x_dim) = nv
+                    ELSE
+                       cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                       cx_hi_ss(hi_cx, x_dim) = MIN(nv, cx_hi_ss(hi_cx, x_dim))
+                    ENDIF
+
+* Global attributes
+                 ELSE IF (STR_SAME(attname(:3), 'att') .EQ. 0 ) THEN  ! gattnames
+                    cx_type(hi_cx) = ptype_string
+                    IF (reset_ss) THEN
+                       cx_lo_ss(hi_cx, x_dim) = 1
+                       cx_hi_ss(hi_cx, x_dim) = ngatts
+                    ELSE
+                       cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                       cx_hi_ss(hi_cx, x_dim) = MIN(ngatts, cx_hi_ss(hi_cx, x_dim))
+                    ENDIF
+                    
+* # of dimensions
+                 ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
+                    cx_type(hi_cx) = ptype_float
+                    cx_lo_ss(hi_cx, x_dim) = 1
+                    cx_hi_ss(hi_cx, x_dim) = 1
+   
+* dimension names
+                 ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
+                    cx_type(hi_cx) = ptype_string
+
+
+* Count number of coordinate variables. (file may list more dimensions than
+* coordinates, e.g. a dimension for the grid definition, which is not a coord.)
+                    nv = 0
+                    DO 770 ivar = 1, nvars
+                       CALL CD_GET_VAR_INFO (dset, ivar, name, vartype,
+     .                     nvdims, vdims, nvatts, coordvar, all_outflag, 
+     .                     status)
+                       IF (coordvar) nv = nv + 1
+ 770                CONTINUE
+
+                    IF (reset_ss) THEN
+                       cx_lo_ss(hi_cx, x_dim) = 1
+                       cx_hi_ss(hi_cx, x_dim) = nv
+                    ELSE
+                       cx_lo_ss(hi_cx, x_dim) = MAX(1, cx_lo_ss(hi_cx, x_dim))
+                       cx_hi_ss(hi_cx, x_dim) = MIN(ndims, cx_hi_ss(hi_cx, x_dim))
+                    ENDIF
+
+* # variables 
+                 ELSE IF (STR_SAME(attname(:4), 'nvar') .EQ. 0 ) THEN  ! nvars
+                    cx_type(hi_cx) = ptype_float
+                    cx_lo_ss(hi_cx, x_dim) = 1
+                    cx_hi_ss(hi_cx, x_dim) = 1
+
+* # of global attributes
+                 ELSE IF (STR_SAME(attname(:3), 'nat') .EQ. 0 ) THEN  ! ngatts
+                    cx_type(hi_cx) = ptype_float
+                    cx_lo_ss(hi_cx, x_dim) = 1
+                    cx_hi_ss(hi_cx, x_dim) = 1
+
+* Is the reference to a global attribute? If so get its type and length
+
+                 ELSE
+                    CALL CD_GET_VAR_ID (dset, '.', varid, status)
+                    CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
+     .               recdim, status)
+
+                    DO 790 iatt = 1, ngatts
+                       CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, name, 
+     .                    status)
+                       IF (STR_SAME(name, attname) .EQ. 0) THEN
+
+                          CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
+     .                       attype, attlen, attoutflag, status)
+
+                          cx_type(hi_cx) = ptype_float
+                          cx_lo_ss(hi_cx, x_dim) = 1
+                          cx_hi_ss(hi_cx, x_dim) = attlen
+
+                          IF (attype .EQ. NCCHAR) THEN
+                             cx_type(hi_cx) = ptype_string
+                             cx_hi_ss(hi_cx, x_dim) = 1
+                          ENDIF
+
+                       ENDIF
+
+ 790                CONTINUE
+
+                 ENDIF
+              ENDIF
+           ENDIF
+
+        ELSE
+           CALL TRANSFER_CONTEXT (lo_cx, hi_cx)
+        ENDIF
+
+* ... request this variable on the interpretation stack ( via RETURN 1 )
+	CALL PUSH_INTERP_STACK( isp, status )
+	IF ( status .NE. ferr_ok ) RETURN
+	is_cx ( isp ) = hi_cx
+	is_obj( isp ) = lo_isp	! claimed by this level
+	IF ( cx_category(hi_cx) .EQ. cat_user_var ) THEN
+* ... special action if this component variable is user-defined (uvar)
+	   is_uvar( isp ) = cx_variable( hi_cx )
+	ENDIF
+	IF ( start_sampling ) GOTO 900
+	RETURN 1
+
 * "string" in quotes in variable definition
 * ... get the context here, then RETURN 1 to evaluate
  800	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
@@ -575,6 +843,9 @@
 !	ELSEIF (mr_category(hi_mr) .EQ. cat_string) THEN
 !! ... string variables not yet implemented 1/99 *sh*
 !	   GOTO 5100
+        ELSEIF  (mr_category(hi_mr) .EQ. cat_attrib_val) THEN  ! like the final ELSE below
+           CALL MR_NOT_IN_USE(hi_mr)
+	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
 	ELSEIF ( EXPLICIT_UVAR(uvar) ) THEN
 * ... result of a simple definition like DEFINE VARIABLE UAVE=U[K=@AVE]
 *	or DEFINE VARIABLE NEW=X
@@ -608,7 +879,8 @@
 	ENDIF
 
 * if user set the missing value flag make sure it is used
-	IF ( cx_bad_data(lo_cx) .NE. mr_bad_data(is_mr(lo_isp)) ) THEN
+	IF ( cx_bad_data(lo_cx) .NE. mr_bad_data(is_mr(lo_isp)) .AND.
+     .       mr_category(hi_mr) .NE. cat_attrib_val) THEN  
 	   new_mr = is_mr(lo_isp)
 	   size = MGRID_SIZE( new_mr )
 	   CALL REPLACE_BAD_DATA_SUB ( mr_bad_data(new_mr),

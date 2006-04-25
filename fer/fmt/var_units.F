@@ -54,8 +54,8 @@
 *                  g77 bug would cause crash when trying to prepend chars
 *                  onto CHAR function variable 
 * v554 *acm* 1/04 - add variable category cat_counter_var
+* V600 *acm* 3/06 - add variable category cat_attrib_val
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
@@ -66,16 +66,6 @@
 	include	'xcontext.cmn'
 	include	'xcalc_vars.cmn'
 	include	'xvariables.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XTEXT_INFO.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	cx
@@ -106,7 +96,8 @@
      .	   .OR.  category .EQ. cat_constant
      .	   .OR.  category .EQ. cat_string
      .	   .OR.  category .EQ. cat_const_var
-     .	   .OR.  category .EQ. cat_counter_var ) THEN
+     .	   .OR.  category .EQ. cat_counter_var
+     .	   .OR.  category .EQ. cat_attrib_val ) THEN
 
 	   VAR_UNITS = ' '
 

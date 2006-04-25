@@ -39,7 +39,7 @@
 * enclosed by its bounds on an axis
 
 * 4/2004 ACM from tm_check_box_loc
-* V590 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
+* V600 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
 *                  Bounds can be either 2*N or N+1 values.
 
         INCLUDE 'xio.cmn_text'
@@ -138,6 +138,5 @@
      .                  no_descfile, no_stepfile,
      .                  'MAX='//TM_STRING(DBLE(maxlinestore)),
      .                  no_errstring, *5000)
-
 
       END

@@ -58,7 +58,7 @@
 
 * local variable declarations:
       CHARACTER CD_CHILDAX_NAME*16, dimname*16
-      INTEGER NCDID, NCDDEF, cdfstat, clen, nlen, dimid
+      INTEGER cdfstat, clen, nlen, dimid
 #ifdef usingDODSf2cUnderscore
       INTEGER NF_INQ_DIMLEN_
 #endif

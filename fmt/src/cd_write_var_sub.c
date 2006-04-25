@@ -94,6 +94,11 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 
      V542: 11/02 *acm*  Need start and count to be length [5] to allow for
 			string dimension.
+
+     V600:  2/06 *acm* Write more data types to netcdf files : Note that compiler
+                       warnings may be seen about data type inconsistencies in the
+					   calls to nc_put_vara_float. This is ok; see the comments at
+					   the end of this file
   */
 
   size_t start[5], count[5];
@@ -126,7 +131,11 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
   }
 
   /* write out the data */
-  if (*vartyp == NC_CHAR) {
+
+
+  switch (*vartyp) {
+  case NC_CHAR:
+
     /* Create a buffer area with the multi-dimensiona array of strings
        packed into a block.
        The "dat" variables is a pointer to an array of string pointers
@@ -147,13 +156,81 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
       *cdfstat = nc_put_vara_text(*cdfid, vid,
 				 start, count, pbuff);
       free(pbuff);
+  break;
 
+
+  /* DOUBLE data */
+  case NC_DOUBLE:
+    *cdfstat = nc_put_vara_float(*cdfid, vid,
+				 start, count, (double*) dat);
+  break;
 
   /* FLOAT data */
-  } else
+  case NC_FLOAT:
     *cdfstat = nc_put_vara_float(*cdfid, vid,
 				 start, count, (float*) dat);
+  break;
+
+  /* INT data */
+  case NC_INT:
+    *cdfstat = nc_put_vara_float(*cdfid, vid,
+				 start, count, (int*) dat);
+  break;
+
+  /* SHORT data */
+  case NC_SHORT:
+    *cdfstat = nc_put_vara_float(*cdfid, vid,
+				 start, count, (short*) dat);
+  break;
+
+  /* BYTE data */
+  case NC_BYTE:
+    *cdfstat = nc_put_vara_float(*cdfid, vid,
+				 start, count, (char*) dat);
+  break;
+
+  default:
+  break;
+  }
 
   return;
 }
 
+/*
+From a netcdf man page found on-line at
+
+http://129.89.70.230/cgi-bin/IMT/wwwman?topic=netcdf(3)&msection=1
+
+  int nc_put_vara_text(int ncid,  int  varid,  const  size_t  start[],	const
+       size_t count[], const char out[])
+
+  int nc_put_vara_uchar(int ncid, int  varid,  const  size_t  start[],	const
+       size_t count[], const unsigned char out[])
+
+  int nc_put_vara_schar(int ncid, int  varid,  const  size_t  start[],	const
+       size_t count[], const signed char out[])
+
+  int nc_put_vara_short(int ncid, int  varid,  const  size_t  start[],	const
+       size_t count[], const short out[])
+
+  int nc_put_vara_int(int ncid, int varid, const size_t start[], const size_t
+       count[], const int out[])
+
+  int nc_put_vara_long(int ncid,  int  varid,  const  size_t  start[],	const
+       size_t count[], const long out[])
+
+  int nc_put_vara_float(int ncid, int  varid,  const  size_t  start[],	const
+       size_t count[], const float out[])
+
+  int nc_put_vara_double(int ncid, int varid,  const  size_t  start[],	const
+       size_t count[], const double out[])
+
+       Writes an array section of values into a netCDF variable	 of  an	 open
+       netCDF  dataset,	 which	must  be  in data mode.	 The array section is
+       specified by the start and count vectors, which give the starting  in-
+       dex  and	 count	of values along each dimension of the specified vari-
+       able.  The type of the data is specified in the function name  and  is
+       converted to the external type of the specified variable, if possible,
+       otherwise an NC_ERANGE error is returned.
+
+*/

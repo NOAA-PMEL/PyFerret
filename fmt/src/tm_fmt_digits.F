@@ -49,8 +49,9 @@
 * *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing 
 *              flag is NaN)
 * *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
-* *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes crash on IRIX;
+* *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes trouble on IRIX;
 *              take care of val=0 case individually.
+
 
 * calling arguments:
 * val		- REAL*4 value to be converted
@@ -237,7 +238,6 @@
 	   aval = NINT(aval)
 	   l10      = LOG10(aval)
            IF (aval .EQ. 0.) l10 = 0.
-
 	   IF ( l10 .GE. 0.0 ) THEN
 	      chk10 = INT(l10) + 1
 	   ELSE

@@ -60,7 +60,6 @@
 *	changing variables deleting a user variable must also remove the name
 *	of the (child) variable
 
-#ifdef unix
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
@@ -69,25 +68,24 @@
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-        INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN_TEXT'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:INTERP_STACK.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XRISC.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	uvar
 
 * internal variable declarations:
-	INTEGER		STR_UPCASE,
+	INTEGER		STR_UPCASE, TM_LENSTR, TM_LENSTR1,
      .			du_list( max_uvar ), ndu, kdu, uv, vax_code, ind,
-     .			i, j, num_indices
+     .			i, j, num_indices, dset_uvars, slen
 	CHARACTER*24	check_name
+
+      PARAMETER (flen=128)      ! size of variable name string
+
+#ifdef sun
+      BYTE      fhol(flen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
+#endif 
+
 
 * procedure:
 *	generate a list of all user variables depending on the named uvar
@@ -145,6 +143,17 @@
 * eliminate the named variable from the list of uvars
 *	uvar_num_items( uvar ) = uvar_deleted
         CALL deleted_list_modify(uvar_num_items_head,uvar,uvar_deleted)
+
+* Remove from linked-list structure, the user-variables dataset
+
+        slen = TM_LENSTR( uvar_name_code(uvar)  )
+        IF (slen .GT. 0) THEN
+           slen = TM_LENSTR1( uvar_name_code(uvar)  )
+           CALL TM_FTOC_STRNG( uvar_name_code(uvar)(1:slen), fhol, flen )
+
+           dset_uvars = -1
+           CALL NCF_DELETE_VAR (dset_uvars, fhol )
+        ENDIF
 
 *	uvar_name_code( uvar ) = " "
         CALL string_array_modify(uvar_name_code_head, uvar, " ", 1 )

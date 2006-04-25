@@ -58,6 +58,9 @@
 *	     3/00 - convert to dynamic grids and axes
 * V533: *sh* 6/01 - support for string variable input
 * V552 *acm* 5/03   increase vname to 128 chars 
+* V600 *ACM* attribute control. 
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib 
+*             from linked list structure
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -95,15 +98,17 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved them to parameter line 10/96
-      LOGICAL CD_GET_ATTRIB,
-     .        got_it, do_warn, centers
+      LOGICAL NC_GET_ATTRIB,
+     .        got_it, do_warn, centers, coordvar
       PARAMETER (do_warn = .TRUE. )
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
-     .        NCVID, igrid, iaxis, grid_cnt, cdfstat, istat, idim,
+     .        igrid, iaxis, grid_cnt, istat, idim,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
-     .        axid, tmvar, tmpgrid, npts, dim, tmplines(4), ndim,
-     .	      grid_dims(4), trans(4), indices(4), i
+     .        tmvar, tmpgrid, npts, dim, tmplines(4), ndim,
+     .	      grid_dims(4), trans(4), indices(4), i, maxlen, attlen,
+     .        attoutflag, all_outflag
+      REAL    tmp
       CHARACTER name*64, vname*128
 
       INTEGER tt  ! nice short name
@@ -121,15 +126,18 @@
            ivar = cd_varid(tmvar)
 
 * does it point explicitly to a parent grid ?
-          got_it = CD_GET_ATTRIB( cdfid, ivar, 'parent_grid',
-     .                       .NOT.do_warn, ' ', name, 16 )  !linenamlen
+          maxlen = 16   !linenamlen
+          got_it = NC_GET_ATTRIB( dset, ivar, 'parent_grid',
+     .                       .NOT.do_warn, ' ', maxlen, attlen, 
+     .                       attoutflag, name, tmp )
           IF ( got_it ) GOTO 500  ! yes - already has a pointer
 
 * get the vital statistics for this variable
-           CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdims, vdims,
-     .                 nvatts,cdfstat)
-           IF (cdfstat.NE.NCNOERR) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+           CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
+     .                 vdims, nvatts, coordvar, all_outflag, istat)
+
+           IF (istat.NE.merr_ok) CALL TM_ERRMSG
+     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
      .       no_errstring, no_errstring, *5900 )
            vlen = TM_LENSTR1(vname)
 
@@ -154,9 +162,9 @@
            DO 200 idim = 1, nvdims
 
 * ... get name of dimension
-              CALL NCDINQ( cdfid, vdims(idim), name, npts, cdfstat )
-              IF (cdfstat.NE.NCNOERR) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+              CALL CD_GET_DS_DIMS( dset, vdims(idim), name, npts, istat )
+              IF (istat.NE.merr_ok) CALL TM_ERRMSG
+     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
      .       vname(:vlen), 'cant get dimensions', *5900 )
  
 * ... locate the axis by that name (processed in CD_GET_AXES)

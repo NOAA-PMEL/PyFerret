@@ -44,7 +44,7 @@
 
 * V450	11/96
 
-* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'

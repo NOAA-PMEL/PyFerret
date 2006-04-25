@@ -113,7 +113,7 @@
 *                   just lists on abstract axis.  Fix for bug 1066
 * V580 *acm* 12/04  Correct the syntax sending XFOR LONE to pplus when we 
 *                   turn on lon/lat formatting.
-* V590 *acm*  11/05 Fix for bug 1130, 1349: axis labels need lat/lon labels,
+* V600 *acm*  11/05 Fix for bug 1130, 1349: axis labels need lat/lon labels,
 *                   fixes to the precision
 
 	include 'tmap_dims.parm'
@@ -810,6 +810,24 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
            CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
            CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
         ENDIF
+
+* turn on lon/lat axis formatting, if lon/lat units, otherwise off
+
+	IF (.NOT.overlay) THEN
+	   iunits = TM_UNIT_ID(VAR_UNITS(cx_x))
+	   IF (iunits .EQ. 4) THEN
+	      CALL PPLCMD ( from, line, 0, 'XFOR (I7,''''LONE'''')', 1, 1 )
+	   else
+	      CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )
+	   endif
+	   
+	   iunits = TM_UNIT_ID(VAR_UNITS(cx_y))
+	   IF (iunits .EQ. 4) THEN
+	      CALL PPLCMD ( from, line, 0, 'YFOR (I7,''''LAT'''')', 1, 1 )
+	   else
+	      CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )
+	   endif
+	ENDIF
 
 * axis scaling -- only applies if it is a fresh plot (not an overlay)
 * most of the work is avoiding an error if there is no data range with

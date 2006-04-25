@@ -135,7 +135,7 @@
 * v5.53*acm*  6/03  send correct axis to AXIS_INTERVALS
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges:
 *                  send delta to routine AXIS_FORMAT
-* V590 *acm* 10/05 Fix bug 1347; for very fine axes, set the flag irregular in
+* V600 *acm* 10/05 Fix bug 1347; for very fine axes, set the flag irregular in
 *                  AXIS_INTERVALS, and compute the delta coordinate. Then after
 *                  the call to pplldc, reset the plot type to regular if the
 *                  grid is in fact regular.

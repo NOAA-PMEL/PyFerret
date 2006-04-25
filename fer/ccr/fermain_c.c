@@ -191,7 +191,7 @@ main (int oargc, char *oargv[])
   int journalfile = 1;
   int verify_flag = 1;
   int len_str;
-
+  int uvar_dset;
 
   its_script = 0;
   arg_pos = 0;
@@ -351,7 +351,6 @@ main (int oargc, char *oargv[])
   if ( verify_flag ==0) {
     FORTRAN(turnoff_verify)( &status );
   }
-
 
   /* initialize size and shape of memory and linked lists */
   FORTRAN(init_memory)( &mem_blk_size, &max_mem_blks );

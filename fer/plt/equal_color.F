@@ -108,7 +108,7 @@
 	IF ( TM_DIGIT(str) ) THEN 
 * ... color and thickness by number
            READ ( str, *, ERR=5000 ) val
-	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
+cc	   IF ( val.LE. 0.0 .OR. val.GT.num_fancy_lines+1 ) GOTO 5200
 	   icolor = NINT( val )	! user-specified line style
 	 ELSE
 * ... compare with allowable colors

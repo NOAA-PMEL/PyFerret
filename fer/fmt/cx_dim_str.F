@@ -50,7 +50,7 @@
 *                  of cx_by_ss (needed for CDF_LIST documentation)
 *        8/18/92 - eliminated string(1:) notation for MAC compatibility
 * V533:  6/01 - allow for the possibility of negative subscripts
-* V590:  1/06 *acm*  prevent values of LOG10(0.0) 
+* V600:  1/06 *acm*  prevent values of LOG10(0.0) 
 
 	include	'ferret.parm'
 	include 'xcontext.cmn'

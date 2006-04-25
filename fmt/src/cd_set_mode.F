@@ -71,6 +71,7 @@
       SAVE cdf_mode
 
       IF ( mode .EQ. cdf_mode ) THEN
+         status = merr_ok
          RETURN      ! no change requested
       ELSEIF ( mode .EQ. pcd_mode_define ) THEN
 * ... enter define mode

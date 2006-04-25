@@ -58,7 +58,7 @@ links:
 
 
 clean:
-	/bin/rm *.o
+	/bin/rm *.o *.f
 
 
 

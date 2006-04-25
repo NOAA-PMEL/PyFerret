@@ -47,7 +47,7 @@
 * rev. 0.1 - 2/16/89 - TM_SECS_TO_DATE --> SECS_TO_DATE
 * V300 4/93 - crash if precision exceeds 6
 * V530: *acm* 12/00 add calendar types; cal_id
-* v590 - SECS_TO_DATE --> SECS_TO_DATE_OUT for better formatting
+* V600 - SECS_TO_DATE --> SECS_TO_DATE_OUT for better formatting
 
 * Arguments:
 *	grid	 - grid containing a time axis

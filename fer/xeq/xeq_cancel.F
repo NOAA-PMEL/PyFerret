@@ -114,7 +114,9 @@
 * v551 *acm*  1/03 Bug fix: datasets starting with digit not correctly cancelled.
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
 *       *acm* 6/04 - CANCEL AXIS/DEPTH as inverse to SET AXIS/DEPTH
-* V590: *acm* 2/06 - fix bug 1392: cancel dataset whose name starts with digit.
+* V600: *acm* 2/06 - fix bug 1392: cancel dataset whose name starts with digit.
+* V600 *acm* 10/05 CANCEL ATTRIBUTE[/ALL][/OUTPUT] varname.attname
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -156,11 +158,13 @@
      .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
      .			mode, cx, axis, grid, mod_cx,
-     .                  TM_LENSTR, len_test, len_mchars
-	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE,
-     .			MATCH_TEMPLATE, report_error,
-     .			slash_all, del_perm, del_temp, perm_var, all_dims
-	CHARACTER	arg*4, buff*255, arg30*30
+     .                  TM_LENSTR, len_test, len_mchars, varid,
+     .                  dset, cat, var, mods_cx, iflag
+	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
+     .			report_error,
+     .			slash_all, del_perm, del_temp, perm_var, all_dims,
+     .                  coordvar, do_err, canout
+	CHARACTER	arg*4, buff*512, arg30*30, varname*512, attname*128
 
 * local parameter declarations:
 	INTEGER		slash_del_temp, slash_del_perm
@@ -628,8 +632,93 @@
  1330	CONTINUE
 	RETURN
 
-* unused subcommands
- 1400   CONTINUE
+
+* CANCEL ATTRIBUTE  /OUTPUT
+ 1400	 IF ( num_args .LT. 1 ) GOTO 5010
+* /OUTPUT
+
+* ... CANCEL ATT/OUTPUT varname.attname
+
+       canout = ( qual_given( slash_canc_attr_output )  .GT. 0 ) 
+
+* Get varname.attname and see if a dataset is specified
+
+        buff = cmnd_buff(item_start(1):item_end(1))
+
+!! get dataset from varname.attname
+* ... evaluate the context without computing the expression to get the dataset
+
+	CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+        IF ( status .NE. ferr_ok ) GOTO 5000
+ 
+        IF (buff(1:1) .EQ. '(') THEN
+           dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+           CALL ISIT_COORD_VAR ( buff, dset, 
+     .            varname, coordvar, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+
+        ELSE
+
+* Get the dataset if given as [d=]
+
+	    IF ( INDEX(buff,'[') .GT. 0 ) THEN
+               dset = pdset_irrelevant	! default (not used ...)
+               CALL PARSE_NAM_DSET(buff, cx_last, dset,
+     .				     cat, var, mods_cx, status)
+           ELSE
+              cx = is_cx( 1 )
+              IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
+     .             cx = cx_cmnd
+             dset = cx_data_set(cx)
+          ENDIF
+	ENDIF
+
+        IF (dset .EQ. pdset_irrelevant .OR. dset .EQ. unspecified_int4)
+     .        dset = cx_data_set(cx_cmnd) 
+
+* Check that the variable exists in the dataset
+        CALL BREAK_VARNAME( buff, dset, varname, attname, 
+     .                      varid, status )
+        IF (status .NE. ferr_ok) GOTO 6220
+
+
+* If cancel/output varname.attname, set the attribute output flag to 0
+
+        IF (canout) THEN
+           iflag = 0
+
+* See if this attribute exists.  The user may be wanting to turn off writing of
+* an attribute that Ferret creates, like the AXIS attribute, or bounds...
+           
+           CALL BREAK_VARATTNAME (buff, dset, varname, 
+     .           attname, i, .FALSE., status)
+
+           IF (status .NE. ferr_ok) THEN
+              CALL CD_PUT_NEW_ATTR (dset, varid, attname, 5, 1, iflag,
+     .           buff, 1., status)
+           ELSE
+
+* Reset an existing attribute output flag to 0
+              CALL CD_SET_ATT_FLAG(dset, varid, attname, iflag, status)
+           ENDIF
+
+* Or, delete the attribute
+
+        ELSE
+
+* See if the attribute  exists for the variable
+           do_err = .TRUE.
+           CALL BREAK_VARATTNAME ( buff, dset, varname, 
+     .              attname, varid, do_err, status )
+
+           IF (status .NE. ferr_ok) GOTO 6220 
+           CALL CD_DELETE_ATTRIBUTE (dset, varid, attname, status )
+        ENDIF
+
+	RETURN
+        
+* unused subcommand
+
  1500   CONTINUE
 	RETURN
 
@@ -680,6 +769,7 @@
 	ENDIF
 	RETURN
 
+
 * error exits
  5000	RETURN
  5010	CALL ERRMSG( ferr_invalid_command, status,
@@ -712,6 +802,9 @@
      .		     cmnd_buff(item_start(item):item_end(item)), *5000 )
  6215	CALL ERRMSG( ferr_unknown_grid, status,
      .		     cmnd_buff(item_start(item):item_end(item)), *5000 )
+ 6220 CALL ERRMSG( ferr_unknown_variable, status, 
+     .               'unknown variable or attribute: '//
+     .		     cmnd_buff(item_start(1):item_end(1)), *5000 )
 
 	END
 

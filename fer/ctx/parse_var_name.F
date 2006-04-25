@@ -62,32 +62,29 @@
 * V530:  8/00 *sh* - set the variables data type
 * V550: 10/02 *acm*- Look for @ in full_var_name when determining name_len
 * V554 1/04 *acm* - add category cat_counter_var
+* V600: 9/05 *acm* - add category cat_attrib_val
 
-#ifdef unix
 	include	'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE	'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-#endif
+        include 'netcdf.decl'
+#include "netcdf.inc"
 
 * calling argument declarations:
 	CHARACTER*(*)	full_var_name
 	INTEGER		var_cx, mods_cx, status
 
-* internal variable decalrations:
-	INTEGER		full_name_len, left_bracket, right_bracket, name_len,
-     .			atsign, idim,  brac_nest, i
- 	LOGICAL		name_only
+* internal variable declarations:
+	INTEGER		STR_SAME,
+     .                  full_name_len, left_bracket, right_bracket, 
+     .			name_len, atsign, idim,  brac_nest, i,
+     .                  dset, varid, attype, attlen, attoutflag 
+ 	LOGICAL		name_only, do_err
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
-
+        CHARACTER varname*512, attname*128
 
 * separate simple name from possible modifiers
 	full_name_len = LEN   ( full_var_name )
@@ -160,24 +157,70 @@
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
 * identify the simple variable name
-	CALL FIND_VAR_NAME( cx_data_set( var_cx ),
+
+        CALL FIND_VAR_NAME( cx_data_set( var_cx ),
      .			    full_var_name(1:name_len),
      .			    cx_category( var_cx ),
      .			    cx_variable( var_cx ) )
+
 	IF ( cx_variable( var_cx ) .EQ. munknown_var_name ) GOTO 5100
 
-* set the dat atype of the variable
+* set the data type of the variable
 	IF ( cx_category(var_cx) .EQ. cat_file_var ) THEN
 	   cx_type(var_cx) = ptype_float   ! TO BE GENERALIZED LATER (8/00)
 	ELSEIF (cx_category(var_cx) .EQ. cat_calc_var ) THEN
 	   cx_type(var_cx) = ptype_float
 	ELSEIF (cx_category(var_cx) .EQ. cat_counter_var ) THEN
 	   cx_type(var_cx) = ptype_float
+        ELSEIF (cx_category(var_cx) .EQ. cat_attrib_val) THEN
+
+           do_err = .TRUE.
+           dset = cx_data_set(var_cx)
+           IF (dset .EQ. unspecified_int4) dset = -1  
+           CALL  BREAK_VARATTNAME ( full_var_name(1:name_len),
+     .                              dset, varname, 
+     .                              attname, varid, do_err, status )
+
+           IF (status .NE. ferr_ok) GOTO 5100
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .                              attname, attype, attlen, 
+     .                              attoutflag, status)
+
+              IF (status .NE. ferr_ok) THEN
+* Is it a pseudo-attribute for the variable?
+
+                 IF (STR_SAME(attname, 'attnames') .EQ. 0 .OR. 
+     .               STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+                    cx_type(var_cx) = ptype_string
+                 ELSEIF (STR_SAME(attname, 'ndims') .EQ. 0 .OR. 
+     .                   STR_SAME(attname, 'type')  .EQ. 0 .OR. 
+     .                   STR_SAME(attname, 'natts') .EQ. 0) THEN
+                    cx_type(var_cx) = ptype_float
+                 ELSE
+                    GOTO 5100
+                 ENDIF
+              ELSE
+
+                 cx_type(var_cx) = ptype_float
+                 IF (attype .EQ. NCCHAR) cx_type(var_cx) = ptype_string
+              ENDIF
+
+           ELSE
+
+* Is it a pseudo-attribute at the dataset level?
+              cx_type(var_cx) = ptype_float
+              IF (STR_SAME (attname, 'varnames')  .EQ. 0 .OR.
+     .            STR_SAME (attname, 'dimnames')  .EQ. 0 .OR.
+     .            STR_SAME (attname, 'attnames')  .EQ. 0 )
+     .         cx_type(var_cx) = ptype_string
+           ENDIF
 	ELSE
 	   cx_type(var_cx) = unspecified_int4 ! inheritedt from definition
 	ENDIF
 
 * successful completion:
+        status = ferr_ok
 	RETURN
 
 * error exits:

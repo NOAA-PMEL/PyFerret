@@ -28,6 +28,7 @@
 * V580: *acm*11/04 - add PLOT/NOKEY
 * V581: *acm* 5/05 - add SHADE/MOD and CONTOUR/MOD
 * V581: *acm* 5/05 - add EXIT/CYCLE
+* V600: *acm* 2/06 - add SET VARIABLE/OUTTYPE
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -55,6 +56,8 @@
      .			slash_canc_data_noerr,
      .
      .			slash_canc_var_data,
+     .
+     .			slash_canc_attr_output,
      .
      .			slash_set_movie_out,
      .			slash_set_movie_compress,
@@ -103,6 +106,7 @@
      .			slash_set_var_name,
      .			slash_set_var_scale,
      .			slash_set_var_offset,
+     .			slash_set_var_outtype,
      .
      .			slash_set_grid_save,
      .			slash_set_grid_restore,
@@ -113,7 +117,11 @@
      .			slash_set_axis_t0,
      .			slash_set_axis_units,
      .
-     .			slash_set_memory_words
+     .			slash_set_memory_words,
+     .                  slash_set_attr_type,
+     .                  slash_set_attr_dset,
+     .                  slash_set_attr_output,
+     .                  slash_set_attr_like 
 
 	INTEGER		slash_cont_over_plot,
      .			slash_cont_set_up,
@@ -255,6 +263,8 @@
      .
      .			slash_canc_var_data	= 2,
      .
+     .			slash_canc_attr_output	= 1,
+     .
      .			slash_set_movie_out    = 1,
      .			slash_set_movie_compress = 2,
      .			slash_set_movie_laser  = 3,
@@ -302,6 +312,7 @@
      .			slash_set_var_name	= 6,
      .			slash_set_var_scale	= 7,
      .			slash_set_var_offset	= 8,
+     .			slash_set_var_outtype	= 9,
      .
      .			slash_set_grid_save	= 1,
      .			slash_set_grid_restore	= 2,
@@ -312,7 +323,12 @@
      .			slash_set_axis_t0       = 4,
      .			slash_set_axis_units    = 5,
      .
-     .			slash_set_memory_words	= 1 )
+     .			slash_set_memory_words	= 1,
+     .
+     .                  slash_set_attr_type     = 1,
+     .                  slash_set_attr_dset     = 2,
+     .                  slash_set_attr_output   = 3,
+     .                  slash_set_attr_like     = 4)
 
 	PARAMETER     ( slash_cont_over_plot	= 9,
      .			slash_cont_set_up	= 10,

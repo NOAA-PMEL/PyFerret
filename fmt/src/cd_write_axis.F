@@ -1,4 +1,4 @@
-	SUBROUTINE CD_WRITE_AXIS ( cdfid, grid, idim, recdim,
+	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
      .                             loss, hiss, ax_type, 
      .                             edges_flag, do_bounds, status )
 
@@ -67,9 +67,12 @@
 * V570 *acm*  5/04 write bounds attribute and bounds 2xN coordinates to NetCDF files
 * V581 *acm* 6/05 - Fix for bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
-* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V600 *acm* 6/05 attribute control. 
 
 * argument definitions:
+*     dset    - dset (if netcdf file, for getting name and attribute 
+*               info from linked-list structure  
 *     cdfid   - netCDF id number for already opened CDF file
 *     grid    - TMAP grid id
 *     idim    - axis orientation (1-4)
@@ -97,24 +100,33 @@
 
 * argument declarations
       LOGICAL recdim, do_bounds
-      INTEGER cdfid, grid, idim, loss, hiss, ax_type, edges_flag, status
+      INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
+     .        edges_flag, status
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, abstract, do_warn
+      LOGICAL TM_ABSTRACT_AXIS, TM_DATE_OK, MATCH_NAME, NC_GET_ATTRIB,
+     .       abstract, do_warn, got_modulo, got_calendar, got_units, 
+     .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
+     .       coordvar
       PARAMETER (do_warn = .TRUE. )
-      INTEGER TM_LENSTR1, CD_AXLEN, NCDID, NCVID, NCDDEF, NCVDEF,
+      INTEGER TM_LENSTR1, CD_AXLEN,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
-      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id
-!      INTEGER vartype, nvdims, vdims(6), nvatts
+      INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
+     .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
+     .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag
+      REAL vals(10)
+
 !      LOGICAL condensed
 !      REAL rlen
-* *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+* *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
-     .          name*64, units*48, datebuff*40
+     .       name*64, name_in*64, units*48, datebuff*40, 
+     .       buff*140, attname*128
+
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
       INTEGER maxchildlen
@@ -122,9 +134,14 @@
 
 * initialize
       iaxis = grid_line(idim, grid)
-      name = CD_AXIS_NAME( grid, idim, nlen )
+      name = CD_AXIS_NAME( dset, grid, idim, nlen )
+
+      name_in = name
+
       npts = line_dim(iaxis)
       abstract = TM_ABSTRACT_AXIS( iaxis )
+
+      bndid = -1
 
 * determine lo/hi limits of the axis to be written
       IF ( abstract ) THEN
@@ -139,7 +156,7 @@
       ENDIF
 !      condensed = line_regular(iaxis) .AND. (hi-lo).GT.3000
 
-* dimension name and size for this axis
+* dimension and size for this axis
       axlen = hi - lo + 1
       IF ( abstract .OR. ax_type.NE.pcdf_full_span ) THEN
          name = CD_CHILDAX_NAME( name, lo, hi, nlen )
@@ -190,6 +207,10 @@
       axid = NCVDEF(cdfid, name(:nlen), NCDOUBLE, 1, dimid, cdfstat)
       IF ( cdfstat .NE. NCNOERR ) GOTO 5200
 
+
+* check: can we get the coord var id back??
+         newid = NCVID( cdfid, name(:nlen), cdfstat )
+
 * assign its attributes
       IF (ax_type .EQ. pcdf_child_span) THEN
          CALL NCAPTC( cdfid, axid, 'child_axis', NCCHAR, 1, ' ',
@@ -199,8 +220,75 @@
 !         CALL NCAPT( cdfid, axid, 'true_size', NCLONG, 1, npts,
 !     .        cdfstat )
 !      ENDIF
-      
-      IF ( line_units(iaxis) .NE. ' ' ) THEN
+
+      got_modulo = .FALSE.
+      got_calendar = .FALSE.
+      got_units = .FALSE.
+      got_positive = .FALSE.
+      got_spacing = .FALSE.
+      got_axis = .FALSE.
+      got_cartesian = .FALSE.
+
+! get whatever attributes are available in the linked-list structure.
+! use the name of the parent axis.
+
+      CALL CD_GET_VAR_ID (dset, name_in, varid, status)
+      IF (varid .GT. 0) THEN
+
+* Get axis name into original upper/lowercase form, and get nvatts.
+
+         CALL CD_GET_VAR_INFO (dset, varid, name_in, vartype, 
+     .                   nvdims, vdims, nvatts, coordvar, 
+     .                   all_outflag, status) 
+         
+         DO 200 iatt = 1, nvatts
+            CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
+     .                                        attname, status)
+                    
+            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat )
+
+            maxlen = 140
+            got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+     .               do_warn, name_in, maxlen, attlen, attoutflag, 
+     .               buff, vals)
+
+            IF (attype .EQ. NCCHAR .AND. attoutflag .EQ. 1) THEN
+               llen = TM_LENSTR1(buff)
+               CALL CD_WRITE_ATTRIB (cdfid, name(:nlen), attname,
+     .                               buff(:llen), .FALSE., status )
+            ELSE IF (attoutflag .EQ. 1) THEN
+               CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+     .                              vals, attlen, attype, status )
+            ENDIF
+
+            slen = TM_LENSTR1(attname)
+            IF (MATCH_NAME (attname,  slen, 'UNITS', 5 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_units = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'CALENDAR', 8 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_units = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'MODULO', 6 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_modulo = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'POSITIVE', 8 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_positive = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'POINT_SPACING', 13) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_positive = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'AXIS', 4 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_axis = .TRUE.
+            IF (MATCH_NAME (attname,  slen, 'CARTESIAN_AXIS', 14 ) .AND. 
+     .          attoutflag .EQ. 1)
+     .                got_cartesian = .TRUE.
+
+ 200     CONTINUE
+      ENDIF
+
+      IF ( line_units(iaxis) .NE. ' ' .AND. (.NOT.got_units) ) THEN
 	 units = line_units(iaxis)	 
 
          IF ( line_direction(iaxis) .EQ. 'TI') 
@@ -228,11 +316,21 @@
 	    IF ( status .NE. merr_ok ) GOTO 5900
 	ENDIF
         slen = TM_LENSTR1( units )
-        CALL NCAPTC( cdfid, axid, 'units', NCCHAR, slen,
+
+        attname = 'units' 
+        IF (varid .GT. 0) THEN
+           CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+        ELSE
+           attoutflag = 1
+        ENDIF
+
+        IF (attoutflag .EQ. 1) 
+     .     CALL NCAPTC( cdfid, axid, 'units', NCCHAR, slen,
      .        	      units(:slen), cdfstat )
 
       ENDIF
-      IF ( idim .EQ. t_dim ) THEN                  ! 4/93 update
+      IF ( idim .EQ. t_dim .AND. (.NOT.got_calendar) ) THEN                  ! 4/93 update
         cal_id = TM_GET_CALENDAR_ID (line_cal_name(iaxis))
 	IF ( line_direction(iaxis) .EQ. 'TI'
      . .AND. TM_DATE_OK( line_T0(iaxis), cal_id )    ) THEN
@@ -244,7 +342,17 @@
             ENDIF
 
             slen = TM_LENSTR1( datebuff )
-            CALL NCAPTC( cdfid, axid, 'time_origin', NCCHAR, slen,
+            
+            attname = 'time_origin' 
+            IF (varid .GT. 0) THEN
+               CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+            ELSE 
+               attoutflag = 1
+            ENDIF
+
+            IF (attoutflag .EQ. 1) 
+     .         CALL NCAPTC( cdfid, axid, 'time_origin', NCCHAR, slen,
      .           datebuff(:slen), cdfstat )
 	ENDIF
 
@@ -252,32 +360,99 @@
 
         IF (cal_id .NE. 1) THEN
           slen = TM_LENSTR1( line_cal_name(iaxis) )
-          CALL NCAPTC( cdfid, axid, 'calendar', NCCHAR, slen,
+
+          attname = 'calendar' 
+          IF (varid .GT. 0) THEN
+             CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+          ELSE
+             attoutflag = 1
+          ENDIF
+
+          IF (attoutflag .EQ. 1) 
+     .      CALL NCAPTC( cdfid, axid, 'calendar', NCCHAR, slen,
      .        	      line_cal_name(iaxis)(:slen), cdfstat )
         ENDIF
       ENDIF
 
-      IF ( line_modulo(iaxis) ) THEN
+
+      IF ( line_modulo(iaxis) .AND. (.NOT.got_calendar) ) THEN
 	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
-           CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
+           attname = 'modulo' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+     .       CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
 	 ELSE
-           CALL NCAPT( cdfid,axid,'modulo',NCDOUBLE,1,
+           attname = 'modulo' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+     .       CALL NCAPT( cdfid,axid,'modulo',NCDOUBLE,1,
      .		       line_modulo_len(iaxis), cdfstat )
 	 ENDIF
+
+      ELSE IF (got_modulo .AND. varid .GT. 0) THEN  !user wants to write modulo=false to the file
+            attname = 'modulo'
+            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat )
+
+            maxlen = 140
+            got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+     .               do_warn, name_in, maxlen, attlen, attoutflag, 
+     .               buff, vals)
+
+            IF (attype .EQ. NCCHAR .AND. attoutflag .EQ. 1) THEN
+               llen = TM_LENSTR1(buff)
+               CALL CD_WRITE_ATTRIB(cdfid, name(:nlen), attname,
+     .                               'false', .FALSE., status )
+            ELSE IF (attoutflag .EQ. 1) THEN
+
+               CALL CD_WRITE_ATTVAL(cdfid, name(:nlen), attname,
+     .                              vals, attlen, attype, status )
+            ENDIF
+
+
       ENDIF
-      IF ( idim.EQ.z_dim .AND. line_direction(iaxis).EQ.'UD') THEN
-         CALL NCAPTC( cdfid, axid, 'positive', NCCHAR, 4,
+
+      IF ( idim.EQ.z_dim .AND. line_direction(iaxis).EQ.'UD' .AND.
+     .     (.NOT.got_positive) ) THEN
+           attname = 'positive' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+     .       CALL NCAPTC( cdfid, axid, 'positive', NCCHAR, 4,
      .                'down', cdfstat )
       ENDIF
 
-* record axis (time, usually) doesn't get cooridnate spacing or any
+* record axis (time, usually) doesn't get coordinate spacing or any
 * coordinates inserted at creation time
       IF ( recdim ) THEN
 
          CONTINUE
       ELSE
-        IF ( line_regular(iaxis) ) THEN
-           CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 4,
+        IF ( line_regular(iaxis) .AND. (.NOT.got_spacing) ) THEN
+           attname = 'point_spacing' 
+           IF (varid .GT. 0) THEN
+              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+           ELSE
+              attoutflag = 1
+           ENDIF
+           IF (attoutflag .EQ. 1) 
+     .       CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 4,
      .             'even', cdfstat )
         ELSE
 * sub-span axis may not have irregular spacing just cuz parent does
@@ -286,7 +461,15 @@
 *	appear to be regular, but their box limits are not necessarily so
            IF ( ax_type .EQ. pcdf_full_span
      .     .OR. ax_type .EQ. pcdf_sub_span ) THEN
-              CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 6,
+              attname = 'point_spacing' 
+              IF (varid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+              ELSE 
+                 attoutflag = 1
+              ENDIF
+              IF (attoutflag .EQ. 1) 
+     .          CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 6,
      .             'uneven', cdfstat )
            ENDIF
         ENDIF
@@ -299,30 +482,40 @@
 
 * Write AXIS attribute
 
-      slen = TM_LENSTR1( 'X' )
-      IF (idim .eq. x_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
-     .        	      slen, 'X', cdfstat )
-      ENDIF
-      IF (idim .eq. y_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
-     .        	      slen, 'Y', cdfstat )
-      ENDIF
-      IF (idim .eq. z_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
-     .        	      slen, 'Z', cdfstat )
-      ENDIF
-      IF (idim .eq. t_dim) THEN
-          CALL NCAPTC( cdfid, axid, 'axis', NCCHAR, 
-     .        	      slen, 'T', cdfstat )
-      ENDIF
+      IF (.NOT. got_axis) THEN
+
+           attname = 'axis' 
+           IF (varid .GT. 0) THEN
+             CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+           ELSE
+              attoutflag = 1
+           ENDIF
+            
+          slen = TM_LENSTR1( 'X' )
+          IF (idim .eq. x_dim) THEN
+             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
+     .        	      'axis', NCCHAR, slen, 'X', cdfstat )
+          ENDIF
+          IF (idim .eq. y_dim) THEN
+             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
+     .        	      'axis', NCCHAR, slen, 'Y', cdfstat )
+          ENDIF
+          IF (idim .eq. z_dim) THEN
+             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
+     .        	      'axis', NCCHAR, slen, 'Z', cdfstat )
+          ENDIF
+          IF (idim .eq. t_dim) THEN
+             IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
+     .        	      'axis', NCCHAR, slen, 'T', cdfstat )
+          ENDIF
+       ENDIF
 
 * does it need axis bounds definitions ?
 
       IF (  (ax_type.EQ.pcdf_full_span .OR. ax_type.EQ.pcdf_sub_span)
      .  .AND. ( .NOT.line_regular(iaxis) .OR. do_bounds) 
      .  .AND. ( edges_flag .EQ. 0) ) THEN
-         IF ( status .NE. merr_ok ) RETURN
 
          name = name(:nlen)//'_bnds'
          elen = nlen + 5
@@ -336,19 +529,32 @@
 * ... second dimension of bounds coordinate variable is 2
          dim2d(1) = CD_WRITE_BNDSDIM(cdfid, status)
 
-* ... create the bounds variable
-         bndid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 2, dim2d, cdfstat)
+* ... create the bounds variable, if it has not been created.
+         IF (bndid .EQ. -1) 
+     .    bndid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 2, dim2d, cdfstat)
+         IF ( cdfstat .NE. NCNOERR ) GOTO 5220
 
-* ... point to it from axis coordinates definitioncd
-         CALL NCAPTC( cdfid, axid, 'bounds', NCCHAR, elen,
+* ... point to it from axis coordinates definition
+
+         attname = 'bounds' 
+         IF (varid .GT. 0) THEN
+            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+         ELSE
+            attoutflag = 1
+         ENDIF
+
+         IF (attoutflag .EQ. 1) THEN
+            CALL NCAPTC( cdfid, axid, 'bounds', NCCHAR, elen,
      .                name(:elen), cdfstat )
 
-* set up for deferred writing of edge coordinate values (12/00)
+* set up for deferred writing of bounds coordinate values (12/00)
 * Record axis and bounds are written when variable written.
 
-        IF ( .NOT.recdim ) 
-     .    CALL CD_DEFER_COORD_WRITE(bndid, grid, idim, lo, hi,
+           IF ( .NOT.recdim ) 
+     .       CALL CD_DEFER_COORD_WRITE(bndid, grid, idim, lo, hi,
      .				  pcd_defer_bounds)
+         ENDIF
 
       ENDIF
 
@@ -367,14 +573,23 @@
          elen = nlen + 5
          dimid = NCDDEF( cdfid, name(:elen), axlen+1, cdfstat )
          edgid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 1, dimid, cdfstat)
-         CALL NCAPTC( cdfid, edgid, 'edges', NCCHAR, 1, ' ', cdfstat )
+         attname = 'edges' 
+         IF (varid .GT. 0) THEN
+            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+         ELSE
+            attoutflag = 1
+         ENDIF
+         IF (attoutflag .EQ. 1) THEN
+            CALL NCAPTC( cdfid, edgid, 'edges', NCCHAR, 1, ' ', cdfstat )
 * ... point to it from axis coordinates definition
-         CALL NCAPTC( cdfid, axid, 'edges', NCCHAR, elen,
+            CALL NCAPTC( cdfid, axid, 'edges', NCCHAR, elen,
      .                name(:elen), cdfstat )
 
 * set up for deferref writing of edge coordinate values (12/00)
-	CALL CD_DEFER_COORD_WRITE(edgid, grid, idim, lo, hi,
+	    CALL CD_DEFER_COORD_WRITE(edgid, grid, idim, lo, hi,
      .				  pcd_defer_edges)
+         ENDIF
 
       ENDIF
 
@@ -389,9 +604,15 @@
      .  'axis '//name(:nlen)//' doesnt match CDF file',
      .  no_errstring, *5900 )
 
- 5200        CALL TM_ERRMSG
+ 5200 CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
      .       unspecified_int4, 'Failed creating coord variable '
+     .       //name(:nlen), no_errstring, *5900 )
+
+ 5220 CALL TM_ERRMSG
+     .     ( cdfstat+pcdferr, status, 'CD_WRITE_AXIS', cdfid,
+     .       unspecified_int4, 
+     .       'Failed creating bounds for coord variable '
      .       //name(:nlen), no_errstring, *5900 )
 
  5300 CALL TM_ERRMSG

@@ -49,6 +49,10 @@
 * revision 0.0 - 3/92
 * 10/96 *kob* - Linux port - had to move variable assignments off of
 *		declaration line.
+* V600 *ACM* attribute control. 
+*             Replace NCINQ with NCF_INQ_DS
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib 
+*             from linked list structure
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -56,10 +60,10 @@
 *	status	- return status
 
 * argument declarations:
-	INTEGER	      dset, cdfid, status
+	INTEGER	      dset, cdfid, dset_num, status
 
 * include files
-#ifdef unix
+
         include 'netcdf.decl'
 #include "netcdf.inc"
 #include "gt_lib.parm"
@@ -70,27 +74,19 @@
 	external xdset_info_data
         include 'xio.cmn_text'
         external xio_data
-#else
-        INCLUDE 'TMAP_FORMAT:NETCDF.DECL'
-#include "netcdf.inc"
-	INCLUDE 'TMAP_FORMAT:GT_LIB.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_DSET.PARM'
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-	INCLUDE 'TMAP_FORMAT:XDSET_INFO.CMN'
-        INCLUDE 'TMAP_FORMAT:XIO.CMN_TEXT'
-#endif
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      LOGICAL CD_GET_ATTRIB, got_it,
-     .        do_warn
-      PARAMETER (do_warn = .TRUE. )
-      INTEGER nparm, iatt,
-     .        ndims, nvars, ngatts, recdim, cdfstat, i
+      LOGICAL NC_GET_ATTRIB, got_it, do_warn
+      PARAMETER (do_warn = .TRUE.)
+
+      INTEGER NCF_INQ_DS,
+     .        nparm, iatt,  ndims, nvars, ngatts, recdim, 
+     .        i, varid, maxlen, attlen, attoutflag
       CHARACTER*13 TM_STRING
-      CHARACTER    name*64, tmap_att*64, right_side*132
+      CHARACTER    name*64, tmap_att*64, buff*2048
+      REAL vals(10)
 
       INTEGER tt                ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -107,38 +103,51 @@
 	ds_expnum(dset)		= ' '
 	ds_modnum(dset)		= ' '
 
-* get vital file statistics (cdfstat checked in last call)
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
+* get number of global attributes from stored linked list structure
+
+        dset_num = dset
+        IF (dset_num .LT. -1) dset_num = -1
+        status = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
+
+* get global attribute pseudo-variable id
+
+        IF (ngatts .GT. 0) THEN
+           CALL CD_GET_VAR_ID (dset, '.', varid, status)
 
 * loop through global attributes looking for ones beginning with TMAP
-        DO 100 iatt = 1, ngatts
+           DO 100 iatt = 1, ngatts
 
-* get its name
-           CALL NCANAM( cdfid, NCGLOBAL, iatt, name, cdfstat )
-           IF ( name(:5) .NE. 'TMAP_' ) GOTO 100
+* get global attribute name
+              name = ' '
+              CALL CD_GET_VAR_ID (dset, '.', varid, status )
+              CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, name, status)
+              IF ( name(:5) .NE. 'TMAP_' ) GOTO 100
 
 * get its value
-           got_it = CD_GET_ATTRIB ( cdfid, NCGLOBAL, name, do_warn,
-     .          'TMAP*', right_side, 132 )
+              maxlen = 2048
+              got_it = NC_GET_ATTRIB ( dset, varid, name, do_warn, 
+     .                      '.', maxlen, attlen, attoutflag, 
+     .                      buff, vals)
 
 * what is it ?
-           tmap_att = name(6:)
-           IF ( tmap_att(:6) .EQ. 'expnum' ) THEN
-              ds_expnum(dset) = right_side
-           ELSEIF ( tmap_att(:5) .EQ. 'slice' ) THEN    ! "modnum" in GT sets
-              ds_modnum(dset) = right_side
-           ELSEIF ( tmap_att(:6) .EQ. 'source' ) THEN
-              ds_source(dset) = right_side
-           ELSEIF ( tmap_att(:9) .EQ. 'subsource' ) THEN
-              ds_subsource(dset) = right_side
-           ELSE
-              nparm = nparm + 1
-              IF ( nparm .GT. num_parm ) GOTO 5100
-              ds_parm_name(nparm, dset) = tmap_att
-              ds_parm_text(nparm, dset) = right_side
-           ENDIF
+              tmap_att = name(6:)
+              IF ( tmap_att(:6) .EQ. 'expnum' ) THEN
+                 ds_expnum(dset) = buff
+              ELSEIF ( tmap_att(:5) .EQ. 'slice' ) THEN    ! "modnum" in GT sets
+                 ds_modnum(dset) = buff
+              ELSEIF ( tmap_att(:6) .EQ. 'source' ) THEN
+                 ds_source(dset) = buff
+              ELSEIF ( tmap_att(:9) .EQ. 'subsource' ) THEN
+                 ds_subsource(dset) = buff
+              ELSE
+                 nparm = nparm + 1
+                 IF ( nparm .GT. num_parm ) GOTO 5100
+                 ds_parm_name(nparm, dset) = tmap_att
+                 ds_parm_text(nparm, dset) = buff
+              ENDIF
 
- 100    CONTINUE
+ 100       CONTINUE
+        ENDIF
 
 * successful completion
  1000   status = merr_ok
@@ -148,5 +157,7 @@
  5100      CALL TM_NOTE( 'maximum number of TMAP CDF attributes '
      .          //'exceeded: '//TM_STRING(DBLE(num_parm)), tt )
            GOTO 1000   ! not fatal
+ 5200      CALL TM_NOTE( 'dataset not found', tt )
+           RETURN
 
            END

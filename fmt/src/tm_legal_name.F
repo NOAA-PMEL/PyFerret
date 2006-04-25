@@ -45,13 +45,15 @@
 * TM_:	 12/06/89
 * IBM port 14apr94  *kob* : "Letter(c)=...." line to long for IBM compiler
 * 6/95 *sh* - allow "$" as a legal symbol since it is used by PLOT+ symbols
+* V600 6/05 *acm* Attribute control. Allow "." in a name, and allow ( ) for
+*                 the syntax (coordname).attname
 
 * calling argument declarations:
 	CHARACTER*(*) name
 *
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, slen, i
-	LOGICAL	LETTER, DIGIT
+	LOGICAL	LETTER, DIGIT, paren
 	CHARACTER c*1
 *
 * statement functions
@@ -63,16 +65,33 @@
 	slen = TM_LENSTR1( name )
 *
 * first character must be a letter (also catches 0 length strings)
-	IF ( .NOT.LETTER(name(1:1)) ) GOTO 5000
+* First letter may be an opening parentheses for (coordname).attname
+
+	IF ( .NOT.LETTER(name(1:1)) ) THEN
+           IF ( name(1:1) .EQ. '(' ) THEN
+              IF ( INDEX(name(2:slen), '.' ) .EQ. 0) GOTO 5000
+              paren = .TRUE.
+           ELSE
+              GOTO 5000
+           ENDIF
+        ENDIF
 *
 * all other characters must be letters, digits, "_", or "$"
+* "." and ")" for attribute specifiers.
 	DO 100 i = 2, slen
 	   c = name(i:i)
 	   IF ( .NOT.(LETTER(c)
      .	         .OR. DIGIT(c)
      .	         .OR. c.EQ.'_'
-     .	         .OR. c.EQ.'$')    ) GOTO 5000
+     .	         .OR. c.EQ.'$'
+     .	         .OR. c.EQ.')'
+     .	         .OR. c.EQ.'.')    ) GOTO 5000
  100	CONTINUE
+
+*  dot indicates an attribute. It cannot end the name.
+
+        IF (c .EQ. '.') GOTO 5000
+
 *
 * it's ok
 	TM_LEGAL_NAME = .TRUE.

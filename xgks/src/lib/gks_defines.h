@@ -105,7 +105,8 @@
 #define MAX_ACTIVE_WS	10
 #define	MAX_ASSOC_WS	10
 
-#define MAX_BUNDL_TBL	21  		/* Legal bundle table range 1-20 */
+#define MAX_PATT_TBL	21  		/* Legal patterns table range 1-20 */
+#define MAX_BUNDL_TBL	41  		/* Legal line bundle table range 1-40 */
 					/* entry 0 will be initialized */
 					/* however */
 
@@ -116,6 +117,7 @@
 #define PDF_LINE_BNDLS	5		/* # of predef line rep bundles */
 #define PDF_MARK_BNDLS	5		/* # of predef marker rep bundles */
 #define PDF_TEXT_BNDLS	6		/* # of predef text rep bundles */
+#define PDF_PATT_BNDLS 21		/* # of predef pattern bundles */
 
 #define DEFINED_FONT_TYPE 9		/* number of defined font type XGKS */
 					/* system */

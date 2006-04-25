@@ -144,10 +144,13 @@
 * V580: *acm* 10/04 - add xml tags <datasets>  </datasets>, dataset name and title
 *                     <axes>  </axes> for SHOW AXIS/XML
 * V580: *acm* 10/04 - Add xml output for global and dataset variables. SHOW_1_UVAR_XML
-* V590: *acm*  7/05 Fix bug 1186: SHOW FUNC with * properly matches patterns for
+* V600: *acm*  7/05 Fix bug 1186: SHOW FUNC with * properly matches patterns for
 *                   external functions as well as internally linked functions.
 *                   call MATCH_TEMPLATE for all comparisons.
-* V590  *acm*  8/05 Allow more digits in xrevision number
+* V600  *acm*  8/05 Allow more digits in xrevision number
+* V600: *acm*  6/05 - Attribute control: SHOW ATT varname[d=].attname SHOW ATT/ALL varname[d=]
+*                     SHOW DATA/ATTR [d=]
+
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -175,6 +178,7 @@
 	include	'xgrid_chg_fcns.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
         include 'EF_Util.cmn'
+        include 'netcdf.inc'
 
 * local parameter declarations:
 	LOGICAL	    brief
@@ -186,18 +190,22 @@
      .		    slash_full,
      .		    slash_vars,
      .		    slash_file,
+     .		    slash_att,
      .		    slash_grid_dyn,
      .		    slash_var_dset,
      .		    slash_external,
      .		    slash_internal,
      .		    slash_xml,
+     .		    slash_attr,
      .              slash_grid_xml,
      .              slash_axis_xml,
      .              slash_axis_dods,
      .              slash_axis_file,
      .              slash_axis_append,
      .              slash_axis_clobber,
-     .              slash_axis_shedges
+     .              slash_axis_shedges,
+     .              slash_attr_dset,
+     .              slash_attr_output
 	PARAMETER ( len_show_str = 132,		! length of output line buffer
      .		    brief	 = .TRUE.,
      .		    slash_mem_temp = 1 + 2,
@@ -207,28 +215,32 @@
      .		    slash_full     = 1 + 2,
      .		    slash_vars     = 1 + 3,
      .		    slash_file     = 1 + 4,
+     .		    slash_att      = 1 + 5,
      .		    slash_grid_dyn = 1 + 9,
      .		    slash_var_dset = 1 + 1,
      .		    slash_external = 1 + 2,
      .		    slash_internal = 1 + 3,
      .		    slash_xml      = 1 + 5,
+     .		    slash_attr     = 1 + 6,
      .		    slash_grid_xml = 1 + 10,
      .		    slash_axis_xml = 1 + 9,
      .		    slash_axis_dods = 1 + 10,
      .		    slash_axis_file = 1 + 11,
      .		    slash_axis_append = 1 + 12,
      .		    slash_axis_clobber = 1 + 13,
-     .		    slash_axis_shedges = 1 + 14 )
+     .		    slash_axis_shedges = 1 + 14,
+     .		    slash_attr_dset = 1 + 1,
+     .		    slash_attr_output = 1 + 2 )
 
 * calling argument declarations:
 	REAL memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
-	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE,
-     .		slash_all, limited_show, nothing, sdetail,
+	LOGICAL	MATCH4, MATCH_TEMPLATE, IS_TEMPLATE, TM_HAS_STRING,
+     .		NC_GET_ATTRIB, slash_all, limited_show, nothing, sdetail,
      .		only_1, done_1, sfull, svars, sfile, sbrief, first,
      .          sxml, do_dods, clobber, fexist, list_at_eof, sho_edges,
-     .          firstxml
+     .          firstxml, got_it, coordvar, sattr, do_err, sho_out
 	INTEGER TM_LENSTR1, TM_LENSTR, UVAR_NUMBER, STR_UPCASE,
      .		REGION_NUMBER, GRID_FROM_NAME, FIND_DSET_NUMBER,
      .		EFCN_MATCH_TEMPLATE, TM_GET_LINENUM,
@@ -237,12 +249,16 @@
      .		len, len0, iuvar, ivar, dset, line, ivp, i1, i2,
      .		rqst_dset, tmp_grid, num_predefined_axes, qfile, 
      .          flen, wsize, wkblk, len_test, len_mchars,
-     .          j, num_indices
-	REAL	xtemp, ytemp
+     .          j, num_indices, varid, attlen, maxlen, attype,
+     .          vtype, nvdims, vdims(8), nvatts, iatt, dset_last,
+     .          llen, loc, cat, var, attoutflag, all_outflag, dot
+	REAL	xtemp, ytemp, attvals(10)
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
-	CHARACTER	filename*2048,raw_name*2048,
-     .			fformatted*12, efname*40, upname*40
+	CHARACTER	filename*2048, raw_name*2048, varatt*641,
+     .			fformatted*12, varname*512, attname*128,
+     .			efname*40, upname*40
+
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
 
@@ -260,7 +276,6 @@
 #else
       INTEGER*1 fhol(slen)      ! c-type Hollerith string buffer
 #endif
-
 
 * command given with /ALL ?
 	risc_buff = ' '
@@ -660,6 +675,8 @@
 	sfull  = qual_given( slash_full  ) .GT. 0
 	svars  = qual_given( slash_vars  ) .GT. 0   .OR. sfull
  	sfile  = qual_given( slash_file  ) .GT. 0   .OR. sfull
+ 	sattr  = qual_given( slash_attr  ) .GT. 0  
+        IF (sattr) sbrief = .TRUE.
  	sxml  = qual_given( slash_xml  ) .GT. 0   
 	only_1 = num_args .GT. 0
 	IF ( only_1 ) THEN
@@ -733,6 +750,8 @@
 	      IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS
      .                             (ttout_lun, iset, svars)
 	      IF ( sfile       ) CALL SHOW_DATA_FILES      
+     .                             (ttout_lun, iset)
+	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
      .                             (ttout_lun, iset)
            ENDIF
            IF (sxml) THEN
@@ -877,13 +896,49 @@
 	   IF ( num_args .GT. 0 ) THEN
 	      DO 1020 i = 1, num_items
 	         i1 = STR_UPCASE(arg,cmnd_buff(item_start(i):item_end(i)))
+
 	         IF ( INDEX(arg,'[') .GT. 0 ) THEN
 * ... bug (minor): square brackets **may** not contain D=dset information
 * 	a work-around: pass a context with data set info (instead of cx_last)
 		    dset = pdset_irrelevant	! default (not used ...)
                     CALL PARSE_NAM_DSET(arg, cx_last, dset,
      .				     category, ivar, mods_cx, status)
-	            IF (status .EQ. ferr_ok) THEN
+	            IF (status .EQ. ferr_ok) THEN 
+                       IF (category .EQ. cat_user_var) THEN
+                          IF (sxml) THEN
+	                     CALL SHOW_1_UVAR_XML 
+     .                         (ttout_lun,ivar,show_str,firstxml)
+                          ELSE
+	                    CALL SHOW_1_UVAR
+     .                      (ttout_lun,ivar,show_str,' ',.TRUE.)
+                          ENDIF
+
+*  if not a user var, see if its a dataset variable from a nc file.
+                       ELSE
+                         len = INDEX(arg,'[') - 1
+                         IF (INDEX(arg,'.') .NE. 0) GOTO 5100
+                         CALL CD_GET_VAR_SEQ( dset, arg(:len), varid )
+                         IF (varid .GT. 0) CALL SHOW_1_DSVAR(
+     .                         ttout_lun, dset, arg, varid, show_str)
+                       ENDIF
+
+                    ENDIF
+	         ELSEIF (  rqst_dset .NE. unspecified_int4) THEN
+		    CALL FIND_VAR_NAME(rqst_dset,arg,category,ivar)
+	            IF ( ivar .EQ. munknown_var_name
+     .		        .OR. category .NE. cat_user_var ) THEN
+     
+*  if not a user var, see if its a dataset variable from a nc file.
+                       len = TM_LENSTR1(arg)
+                       IF (INDEX(arg,'.') .NE. 0) GOTO 5100
+                       CALL cd_get_var_seq( rqst_dset, arg(:len), varid )
+                       IF (varid .GT. 0) THEN
+                          CALL SHOW_1_DSVAR( ttout_lun, 
+     .                      rqst_dset, arg, varid, show_str)
+                       ELSE 
+                          GOTO 5100
+                       ENDIF
+                    ELSE
                        IF (sxml) THEN
 	                  CALL SHOW_1_UVAR_XML 
      .                      (ttout_lun,ivar,show_str,firstxml)
@@ -891,18 +946,6 @@
 	                 CALL SHOW_1_UVAR
      .                      (ttout_lun,ivar,show_str,' ',.TRUE.)
                        ENDIF
-
-                    ENDIF
-	         ELSEIF (  rqst_dset .NE. unspecified_int4) THEN
-		    CALL FIND_VAR_NAME(rqst_dset,arg,category,ivar)
-	            IF ( ivar .EQ. munknown_var_name
-     .		    .OR. category .NE. cat_user_var ) GOTO 5100
-                    IF (sxml) THEN
-	               CALL SHOW_1_UVAR_XML 
-     .                      (ttout_lun,ivar,show_str,firstxml)
-                    ELSE
-	              CALL SHOW_1_UVAR
-     .                   (ttout_lun,ivar,show_str,' ',.TRUE.)
                     ENDIF
 	         ELSE
 * ... show ALL user variables matching this name (or name template 4/96)
@@ -1051,6 +1094,19 @@
            risc_buff = '</global>'
            CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
         ENDIF
+
+* ... Show variables from the current data set, not user-defined.
+c
+c why!! SHOW VAR has never done this...
+c
+c        dset = cx_data_set(cx_last)
+c
+c        IF (dset .GE. 1) THEN
+c           CALL cd_get_var_seq( dset, arg(:len), varid )
+c           IF (varid .GT. 0) CALL SHOW_1_DSVAR( ttout_lun, dset, arg, 
+c     .                    varid, show_str)
+c        ENDIF
+c
 
 	IF ( limited_show ) RETURN
 
@@ -1425,8 +1481,242 @@
 * successful completion
  	RETURN
 
-* SHOW ****
+* SHOW ATTRIBUTE
  1800   CONTINUE
+
+* 
+* ... SHOW ATT varname.att ... various cases of how to show:
+*       SHOW ATT/ALL varname    - show all attributes for var in current dset
+*       SHOW ATT/ALL varname[D=n]
+*	SHOW ATT varname.attrib	- show attrib on variable in current dset
+*	SHOW ATT name[D=n]	- show attrib on variable from named data set
+*	SHOW ATT/D=n varname.attrib - show attrib on variable from named data set
+*	SHOW ATT/OUTPUT also list the output flag for the attribute
+
+        sho_out = qual_given( slash_attr_output )  .GT. 0
+
+        dset = cx_data_set(cx_last)
+        dset_last = pdset_irrelevant
+
+* ... get dset number if present:  SHOW ATT/D=dset ...
+	iqual = qual_given( slash_attr_dset ) 
+        IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      show_str, status )  ! show_str is just a buffer
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( show_str .NE. ' ' ) THEN
+	      dset = FIND_DSET_NUMBER( show_str )
+	      IF ( dset .EQ. unspecified_int4) THEN
+	         CALL WARN('Unknown data set: '
+     .		 //show_str(:TM_LENSTR1(show_str)))
+	         RETURN
+	      ENDIF
+	   ENDIF
+
+        ELSE  ! get dataset from context or from [d=]
+           show_str = cmnd_buff(item_start(1):item_end(1))
+
+           CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+ 
+           IF (show_str(1:1) .EQ. '(') THEN
+              dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+              CALL ISIT_COORD_VAR ( show_str, dset, 
+     .              varname, coordvar, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+
+           ELSE
+
+* Get the dataset if given as [d=]
+
+	      IF ( INDEX(show_str,'[') .GT. 0 ) THEN
+                 dset = pdset_irrelevant	! default (not used ...)
+                 CALL PARSE_NAM_DSET(show_str, cx_last, dset, cat, var,
+     .                 mods_cx, status)
+              ELSE
+                 cx = is_cx( 1 )
+                 IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
+     .                cx = cx_cmnd
+                dset = cx_data_set(cx)
+             ENDIF
+	   ENDIF
+
+
+* See if the variable is a user-defined variable.
+
+           varname = show_str
+           dot = INDEX(show_str,'.')
+           IF (dot .GT. 0) varname = show_str(1:dot-1)
+           CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, var)
+           IF (  var .NE. munknown_var_name .AND.
+     .            cat .EQ. cat_user_var) dset = -1
+
+* Or use command context to get data set
+
+           IF (dset .EQ. pdset_irrelevant .OR. 
+     .        dset .EQ. unspecified_int4) dset = cx_data_set(cx_cmnd) 
+
+	ENDIF
+
+	IF ( num_args .EQ. 0  ) GOTO 5060
+        
+        IF ( slash_all ) THEN
+
+           DO 1820 i = 1, num_items
+
+	      varname = cmnd_buff( item_start(i):item_end(i) )
+              IF(TM_HAS_STRING(varname, '.') ) THEN
+                 varid = 0
+                 CALL CD_GET_VAR_INFO (dset, varid, varname, vtype,
+     .                              nvdims, vdims, nvatts, coordvar, 
+     .                              all_outflag, status)
+              ENDIF
+
+              IF (dset .EQ. pdset_irrelevant .OR. 
+     .            dset .EQ. unspecified_int4) GO TO 5072
+
+              CALL CD_GET_VAR_ID (dset, varname, varid, status)
+              IF (status .NE. ferr_ok .OR. dset .EQ. unspecified_int4 .OR.
+     .           (varid .EQ. 0 .AND.
+     .           .NOT.TM_HAS_STRING(varname, '.')) ) GOTO 5200
+
+* Header line
+
+              IF (.NOT. sxml) THEN
+                 IF (dset .NE. dset_last ) THEN
+                    IF (dset .EQ. -1) THEN
+                       risc_buff = 
+     .                   '     attributes for user-defined variables'
+                    ELSE
+                       llen = TM_LENSTR1(ds_des_name(dset))
+                       WRITE ( risc_buff, 4800 ) ds_des_name(dset)(:llen)
+                    ENDIF
+                    CALL SPLIT_LIST(pttmode_explct, ttout_lun, 
+     .                     risc_buff, 0) 
+                 ENDIF
+                 dset_last = dset
+              ENDIF
+
+              CALL CD_GET_VAR_INFO (dset, varid, varname, vtype,
+     .                              nvdims, vdims, nvatts, coordvar, 
+     .                              all_outflag, status)
+
+              DO 1810 iatt = 1, nvatts
+
+                 CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, attname, 
+     .                                     status)
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
+     .                                     attype, attlen, attoutflag,
+     .                                     status) 
+
+                 IF (status .NE. ferr_ok) GOTO 5100
+
+                 maxlen = size_rbuff
+                 IF (attype .NE. NCCHAR) maxlen = 10
+                 got_it = NC_GET_ATTRIB ( dset, varid, attname,
+     .                                   .TRUE., varname, maxlen,
+     .                                   attlen, attoutflag, risc_buff, 
+     .                                   attvals )
+
+                 IF (got_it) THEN
+                    IF (.NOT. sxml) 
+     .                 CALL SHOW_ATTRIBUTE (varname, attname, attype,
+     .                              attlen, risc_buff, attvals, 
+     .                              attoutflag, sho_out)  
+
+                 ENDIF
+1810          CONTINUE
+
+1820       CONTINUE 
+        ELSE
+	   DO 1830 i = 1, num_items
+	      IF ( interrupted ) CALL ERRMSG
+     .			( ferr_interrupt, status, ' ', *5000 )
+
+	      varatt = cmnd_buff( item_start(i):item_end(i) )
+
+              IF (INDEX(varatt,'.') .EQ. 0) GOTO 5100
+
+              IF ( INDEX(varatt,'[') .GT. 0 ) THEN
+
+* ... bug (minor): square brackets **may** not contain D=dset information
+* 	a work-around: pass a context with data set info (instead of cx_last)
+
+                 dset = pdset_irrelevant	! default (not used ...)
+                 CALL PARSE_NAM_DSET(varatt, cx_last, dset,
+     .				     category, ivar, mods_cx, status)   
+
+                 IF (dset .EQ. pdset_irrelevant .OR. 
+     .               dset .EQ. unspecified_int4) THEN
+                       varname = varatt
+                       GO TO 5072
+                  ENDIF
+              ENDIF
+
+* do_err: issue error message if attrib does not exist on varname.attname
+              do_err = .TRUE.  
+              CALL BREAK_VARATTNAME ( varatt, dset, varname, 
+     .                  attname, varid, do_err, status )
+
+              IF(TM_HAS_STRING(varname, '.') ) THEN
+                 varid = 0
+                 CALL CD_GET_VAR_INFO (dset, varid, varname, vtype,
+     .                              nvdims, vdims, nvatts, coordvar, 
+     .                              all_outflag, status)
+              ENDIF
+
+
+              IF (status .NE. ferr_ok) GOTO 5000
+
+* get var name in the same case as in the file, and get coordvar,
+* flag for whether the var is a coordinate axis
+
+              CALL CD_GET_VAR_INFO (dset, varid, varname, vtype,
+     .                              nvdims, vdims, nvatts, coordvar, 
+     .                              all_outflag, status)
+
+              IF (.NOT. coordvar) THEN
+
+* Write header line
+                 IF (.NOT. sxml) THEN
+                    IF (dset .NE. dset_last ) THEN
+                       llen = TM_LENSTR1(ds_des_name(dset))
+                       WRITE (risc_buff, 4800) ds_des_name(dset)(:llen)
+                       CALL SPLIT_LIST(pttmode_explct, ttout_lun, 
+     .                     risc_buff, 0) 
+                    ENDIF
+                    dset_last = dset
+                 ENDIF
+
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
+     .                                     attype, attlen, attoutflag,
+     .                                     status) 
+
+                 maxlen = size_rbuff
+                 IF (attype .NE. NCCHAR) maxlen = 10
+                 got_it = NC_GET_ATTRIB ( dset, varid, attname,
+     .                           .TRUE., varname, maxlen,
+     .                           attlen, attoutflag, risc_buff, 
+     .                           attvals )
+
+                 IF (varid .EQ. 0) THEN
+                    loc = INDEX(varatt, ".") - 1
+                    varname = varatt(1:loc)
+                 ENDIF
+
+                 IF (got_it) CALL SHOW_ATTRIBUTE (varname, attname,
+     .                          attype, attlen, risc_buff, attvals, 
+     .                              attoutflag, sho_out)
+              ENDIF
+
+1830	   CONTINUE 
+        ENDIF
+        
+4800	FORMAT (T6,'attributes for dataset: ', A)
+
+* successful completion
+ 	RETURN
+
 * SHOW ****
  1900   CONTINUE
 * SHOW ****
@@ -1542,11 +1832,18 @@ c     .                               sbrief, sdetail, i2)
      .			//raw_name, *1000 )
  5071	CALL ERRMSG( ferr_unknown_data_set, status,
      .			name(:TM_LENSTR1(name)), *5000 )
+ 5072	CALL ERRMSG( ferr_invalid_command, status,
+     .         'dataset not found for varname.attname '//
+     .         varname(:TM_LENSTR1(varname)), *5000 )
  5100	CALL ERRMSG( ferr_unknown_variable, status, arg, *5000 )
+ 5200	CALL ERRMSG( ferr_unknown_variable, status, varname, *5000 )
  5300   CALL ERRMSG( ferr_invalid_command, status, 'grid for '//
      .              cmnd_buff(item_start(ivar):item_end(ivar))
      .              //' is not available.'//pCR//
      .              '(LOAD this variable and try SHOW GRID again.)',
      .              *5000  )
+ 5060	CALL ERRMSG( ferr_invalid_command, status,
+     .			'SHOW ATTRIBUTE given with no argument '
+     .			, *5000 )
 	END
 

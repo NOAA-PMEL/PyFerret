@@ -1,4 +1,4 @@
-        SUBROUTINE CD_GET_1_AXIS(cdfid, ivar, iaxis, its_epic,
+        SUBROUTINE CD_GET_1_AXIS(dset, cdfid, ivar, iaxis, its_epic,
      .                           reversed, tregular, status)
 
 
@@ -125,18 +125,25 @@
 * V581 *acm*  5/05 Fix bug 1232: if tregular, then dont try to use bounds
 * V581*acm*  6/05  Fix for bug 1271, add flag line_shift_origin marking hack to shift axes 
 *                   starting on 1-1-0001 (CDC files)
-* V590 *acm* 10/05 TM_CHECK_BNDS_ATTRIB and TM_CHEC_EDGES_ATTRIB should not have 
+* V600 *acm* 10/05 TM_CHECK_BNDS_ATTRIB and TM_CHEC_EDGES_ATTRIB should not have 
 *                  npts as an argument; npts from axis length was being reset
 *                  as npts bounds or edges, which is npts+1
-* V590 *acm* 11/05 Fix bug 1363: As is already done for years, named calendar with unit=month 
+* V600 *acm* 11/05 Fix bug 1363: As is already done for years, named calendar with unit=month 
 *                  gets assigned the length of month in that calendar.
-* V590 *acm*  2/06 Fix bug 1394: if the time units contain a "since" but the remainder of
+* V600 *acm*  2/06 Fix bug 1394: if the time units contain a "since" but the remainder of
 *                  the string is not a date, keep the whole units string.
-* V590 *acm* 3/06  Fix bug 1400: Change in the call to TM_CHECK_BNDS
-
+* V600 *acm* 3/06  Fix bug 1400: Change in the call to TM_CHECK_BNDS
+* V600 *acm* 8/05  attribute control. 
+*                  Replace NCVID with CD_GET_VAR_ID
+*                  Replace NCVINQ for variables, with CD_GET_VAR_INFO
+*                  Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
+*                  linked list structure
+*                  CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
+*                  strings or real values according to attrib type
 
 * argument definitions:
-*       cdfid    - netCDF id number for already opened CDF file
+*       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
+*       dset     - dataset number for already opened CDF file
 *       ivar     - netCDF variable id number
 *       iaxis    - returned pointer to the axis created
 *       its_epic - flags an EPIC netCDF data set
@@ -165,34 +172,34 @@
 
 * argument declarations
         LOGICAL  its_epic, reversed(max_lines:line_ceiling), tregular
-        INTEGER  cdfid, ivar, iaxis, status
+        INTEGER  cdfid, dset, ivar, iaxis, status
 
 * local parameter definitions:
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
 
 * local variable declarations:
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
+      LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
      .        TM_HAS_STRING, TM_FPEQ, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
-     .        got_edges, got_bnds
+     .        got_edges, got_bnds, coordvar
 
       INTEGER TM_UNIT_ID, TM_LENSTR1,TM_GET_CALENDAR_ID,      
-     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCVID, 
-     .        soft_err,
+     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
+     .        soft_err, 
      .        ipt1, ipte, vartype, vback, npts, vlen, cdfstat, istat,
      .        nvdims, vdims(8), nvatts, i, units, npts_cdf, elen, 
      .        edgid, spacing_atlen, epic_t2var, since_T0,
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
-     .        newaxis, d1s, d1e, d2s, d2e, len_cal
+     .        newaxis, d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
+     .        all_outflag, dir
 
-
-      REAL    rbuff, delta, first_delta
-      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen, tmp
+      REAL    rbuff, delta, first_delta, val
+      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*30, vupcase*128, words(8)*24,
      .        spacing_attr*14, bname*30
@@ -201,6 +208,7 @@
       CHARACTER*1 axis_dir
       CHARACTER*50 allcals
       CHARACTER*3 dbuf
+      CHARACTER*2 dcode
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -208,6 +216,7 @@
       REAL*8   TM_SECS_FROM_BC, first, secs2firststep, secs1590,
      .         t0_secs, last_coord, firs_coord, secsperyear, secs2start,
      .         days_neg4713, days_1901_may68, secs_to_1901, secs_to_1968 
+
 
 * parameter declarations
         REAL*8          psecs_per_day
@@ -219,14 +228,17 @@
       iaxis = 0
 
 * gen; initialization
+ 
       got_torg = .FALSE.
       days_neg4713 = 0.D0
       next_line_storage = next_line_mem_pos
 
-* get the vital statistics of the axis
-      CALL NCVINQ(cdfid, ivar, vname, vartype, nvdims, vdims,
-     .            nvatts,cdfstat)
-      IF (cdfstat.NE.NCNOERR) GOTO 5100
+* get the vital statistics of the axis 
+
+      CALL CD_GET_VAR_INFO (dset, ivar, vname, vartype, 
+     .            nvdims, vdims, nvatts, coordvar, all_outflag, status)
+
+      IF (status .NE. merr_ok) GOTO 5100
       vlen = TM_LENSTR1(vname)
       istat = STR_UPCASE( vupcase, vname )
 !      IF ( nvdims .NE. 1 ) CALL TM_ERRMSG
@@ -234,8 +246,10 @@
 !     .     vname(:vlen), 'not a 1D variable', *5900 )
 
 * get axis length:
-      CALL NCDINQ( cdfid, vdims, buff, npts_cdf, cdfstat )
-      IF (cdfstat.NE.NCNOERR) GOTO 5100
+
+      CALL CD_GET_DS_DIMS (dset, vdims(1), buff, npts_cdf, status)
+      IF (status .NE. ferr_ok) GOTO 5100
+
 ! removed 3/93          IF ( npts_cdf .EQ. 0 ) GOTO 5150
       npts = npts_cdf      ! differ only if "true_size" is used
 
@@ -251,8 +265,10 @@
          spacing_attr = 'point_spacing' ! point_spacing = "even"
          spacing_atlen = 13
       ENDIF
-      got_it = CD_GET_ATTRIB(cdfid,ivar,spacing_attr(1:spacing_atlen),
-     .                       do_warn,vname(:vlen),buff,132 )
+      maxlen = 132
+      got_it = NC_GET_ATTRIB(dset, ivar, spacing_attr(1:spacing_atlen),
+     .                       do_warn, vname(:vlen), maxlen, attlen, 
+     .                       attoutflag, buff, val)
       IF ( got_it ) THEN
          line_regular(iaxis) = buff(1:1).EQ.'e' .OR. buff(1:1).EQ.'E'
       ELSE
@@ -261,22 +277,27 @@
 
 * Bounds or edges attribute?
 
-      got_bnds = CD_GET_ATTRIB( cdfid, ivar, 'bounds',
-     .                       do_warn, vname(:vlen), bname, 30 )
+      maxlen = 30
+      got_bnds = NC_GET_ATTRIB( dset, ivar, 'bounds',
+     .                       do_warn, vname(:vlen), maxlen, 
+     .                       attlen, attoutflag, bname, val)
      
-      got_edges = CD_GET_ATTRIB( cdfid, ivar, 'edges',
-     .                       do_warn, vname(:vlen), ename, 30 )
+      got_edges = NC_GET_ATTRIB( dset, ivar, 'edges',
+     .                       do_warn, vname(:vlen), maxlen,
+     .                       attlen, attoutflag, ename, val)
 
 * optional "true_size" parameter for 2 point representations of even axes
       IF ( line_regular(iaxis) ) THEN
-         got_it = CD_GET_ATTVAL(cdfid,ivar,'true_size',
-     .                          do_warn,vname(:vlen),rbuff,1,vback)
+         maxlen = 1
+         got_it = NC_GET_ATTRIB( dset, ivar, 'true_size', 
+     .                          do_warn, vname(:vlen), maxlen, 
+     .                          attlen, attoutflag, buff, val)
          IF ( got_it ) THEN
             IF ( npts_cdf .NE. 2 ) THEN
                soft_err = 1
                GOTO 5000
             ENDIF
-            npts = rbuff
+            npts = tmp
          ENDIF
       ENDIF
       line_dim( iaxis ) = npts
@@ -286,8 +307,10 @@
 * *ACM get the calendar name.
 
       line_cal_name(iaxis) = 'GREGORIAN'   ! default
-      got_it = CD_GET_ATTRIB( cdfid, ivar, 'calendar', do_warn,
-     .                        vname(:vlen), buff, 48 )
+      maxlen = 48
+      got_it = NC_GET_ATTRIB( dset, ivar, 'calendar', do_warn,
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, val)
       IF (got_it) then
          istat = STR_UPCASE (buff, buff)
 
@@ -326,10 +349,12 @@
 
 * optional units for axis (may contain "tunits since T0_date" 2/95)
       line_units(iaxis) = ' '   ! default
-      got_it = CD_GET_ATTRIB( cdfid, ivar, 'units', do_warn,
-     .                        vname(:vlen), buff, 132 )
+      maxlen = 48
+      got_it = NC_GET_ATTRIB( dset, ivar, 'units', do_warn,
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, val)
       since_T0 = MAX( INDEX(buff,'since'), INDEX(buff,'SINCE') )
-      yyyymmdd_time = buff .EQ. 'yyyymmddhhmmss'
+      yyyymmdd_time = buff(1:15) .EQ. 'yyyymmddhhmmss'
 
       IF ( since_T0 .GT. 2 ) THEN
          line_units(iaxis) = buff(:since_T0-1)  ! just the "tunits" part 
@@ -396,14 +421,14 @@ c         ENDIF
          line_t0(iaxis) = ' ' ! to be determined when coords are read
          got_torg = .TRUE.
       ELSE
-         line_units(iaxis) = buff
+         IF (got_it) line_units(iaxis) = buff
          got_torg = .FALSE.
       ENDIF
 
 * EPIC time axes are encoded as 2 integers in variables TIME and TIME2
       IF ( its_epic .AND.  vupcase .EQ. 'TIME' ) THEN
-         epic_t2var = NCVID( cdfid, 'time2', cdfstat )
-         epic_time  = cdfstat .EQ. NCNOERR
+         CALL CD_GET_VAR_ID ( dset, 'time2', epic_t2var, status)
+         epic_time  = epic_t2var .NE. atom_not_found
       ELSE
          epic_time  = .FALSE.
       ENDIF
@@ -453,7 +478,7 @@ c         ENDIF
 *      linux, if the value of the attribue is non-numeric string, returns 
 *      false, and rbuff=0. For OSF, returns true and rbuff = 0 or -1.
 
-      line_modulo(iaxis) = CD_GET_ATTVALC( cdfid, ivar, 'modulo',
+      line_modulo(iaxis) = CD_GET_ATTVALC( dset, ivar, 'modulo',
      .                             do_warn, vname(:vlen), rbuff, 0.0 )
       line_modulo_len(iaxis) = rbuff
       IF (line_modulo_len(iaxis) .LT. 0.) line_modulo_len(iaxis) = 0.
@@ -465,7 +490,7 @@ c         ENDIF
 
       IF (.NOT. line_modulo(iaxis) .OR. 
      .     line_modulo_len(iaxis) .LE. 0.) THEN
-         got_mod = CD_GET_ATTVAL_L( cdfid, ivar, 'modulo',
+         got_mod = CD_GET_ATTVAL_L( dset, ivar, 'modulo',
      .                             do_warn, vname(:vlen),mod_tf)
          IF (got_mod) line_modulo(iaxis) = mod_tf
 
@@ -474,8 +499,10 @@ c         ENDIF
 
 * optional time_origin and time_unit values for time axis
 * (time origin could have been set by the units "... since time_origin")
-      IF (.NOT.got_torg) got_torg = CD_GET_ATTRIB( cdfid, ivar,
-     .          'time_origin', do_warn, vname(:vlen), line_t0(iaxis), 20 )
+      maxlen = 20
+      IF (.NOT.got_torg) got_torg = NC_GET_ATTRIB( dset, ivar,
+     .          'time_origin', do_warn, vname(:vlen), maxlen, attlen, 
+     .          attoutflag, line_t0(iaxis), val)
       IF ( .NOT.got_torg ) THEN
          IF ( epic_time ) THEN
             line_t0(iaxis) = '15-JAN-1901' ! arbitrary
@@ -486,9 +513,12 @@ c         ENDIF
 
 * a user can impose non-standard time units by setting the time_unit attribute
 * (not fully tested, I suspect - *sh* 4/93)
-      got_it = CD_GET_ATTVAL(cdfid,ivar,'time_unit',
-     .           do_warn,vname(:vlen),line_tunit(iaxis),1,vback)
-*!      got_it = CD_GET_ATTVAL(cdfid,ivar,'month_lengths',do_warn,
+      maxlen = 1
+      got_it = NC_GET_ATTRIB( dset,ivar,'time_unit',
+     .           do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
+     .           buff, line_tunit(iaxis))
+
+*!      got_it = NC_GET_ATTRIB( dset,ivar,'month_lengths',do_warn,
 
 * if a time_origin was given then some units are required (4/93)
 * default to "seconds" if no units were specified
@@ -505,11 +535,13 @@ c         ENDIF
 * ... First check for an AXIS attribute
 
       axis_dir = char_init01
-      got_it = CD_GET_ATTRIB(cdfid, ivar, 'axis',
-     .              do_warn, vname(:vlen), axis_dir, 1)
+      maxlen = 1
+      got_it = NC_GET_ATTRIB(dset, ivar, 'axis',
+     .             do_warn, vname(:vlen), maxlen, attlen, 
+     .             attoutflag, axis_dir, val)
       IF (got_it) THEN
          IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L') THEN 
-            line_direction(iaxis) = 'TT'  ! time
+            line_direction(iaxis) = 'TI'  ! time
           ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I') THEN
             line_direction(iaxis) = 'XX'
          ELSE IF (axis_dir.EQ.'Y' .OR. axis_dir.EQ.'J') THEN
@@ -526,12 +558,14 @@ c         ENDIF
 
       IF (line_direction(iaxis) .EQ. 'NA') THEN
 
-         got_it = CD_GET_ATTRIB(cdfid, ivar, 'cartesian_axis',
-     .              do_warn, vname(:vlen), axis_dir, 1)
+         maxlen = 1
+         got_it = NC_GET_ATTRIB(dset, ivar, 'cartesian_axis',
+     .              do_warn, vname(:vlen), maxlen, attlen, 
+     .              attoutflag, axis_dir, val)
          IF (got_it) THEN
             IF (axis_dir.EQ.'T' .OR. axis_dir.EQ.'L' .OR.
      .          axis_dir.EQ.'t' .or. axis_dir.eq.'l') THEN 
-               line_direction(iaxis) = 'TT'  ! time
+               line_direction(iaxis) = 'TI'  ! time
             ELSE IF (axis_dir.EQ.'X' .OR. axis_dir.EQ.'I' .OR.
      .               axis_dir.eq.'x' .or. axis_dir.eq.'i') THEN
             line_direction(iaxis) = 'XX'
@@ -649,8 +683,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 *     used for axes there as well.
 
 * the attribute "positive=down", etc. may help
-      got_it = CD_GET_ATTRIB( cdfid, ivar, 'positive',
-     .                        do_warn, vname(:vlen), buff, 6 )
+      maxlen = 6
+      got_it = NC_GET_ATTRIB( dset, ivar, 'positive', do_warn, 
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, val)
       IF ( got_it ) THEN
          IF (STR_CASE_BLIND_COMPARE('west',buff(:4))
      .                                     .EQ.str_eq) THEN
@@ -958,10 +994,12 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 ****************************************************************************
 
 * the attribute "bounds=name" may point to a list of box boundaries
-500     IF ( .NOT. got_bnds ) GOTO 600
+
+500     maxlen = 30
+        IF ( .NOT.got_bnds ) GOTO 600
 
 * Check the bounds variable, issue any warnings.
-        CALL TM_CHECK_BNDS_ATTRIB (cdfid, iaxis, vname, vlen, bname,
+        CALL TM_CHECK_BNDS_ATTRIB (dset, iaxis, vname, vlen, bname,
      .                             bndid, status)
         IF (status .EQ. pcdferr) GO TO 5100
         IF (status .NE. merr_ok) THEN
@@ -1120,6 +1158,16 @@ c           secsperyear = cals_yeardays(cal_id)* 24*60*60
             line_regular(newaxis) = line_regular(iaxis) 
             reversed(newaxis) = reversed(iaxis)
          ENDIF
+
+* Save the line direction in the linked-list structure for the coordinate variable
+
+         dir = 0
+         dcode = line_direction(iaxis)
+         IF (dcode .EQ. 'XX' .OR. dcode .EQ. 'WE') dir = 1
+         IF (dcode .EQ. 'YY' .OR. dcode .EQ. 'SN') dir = 2
+         IF (dcode .EQ. 'ZZ' .OR. dcode .EQ. 'UD' .OR. dcode .EQ. 'DU') dir = 3
+         IF (dcode .EQ. 'TT' .OR. dcode .EQ. 'TI') dir = 4
+         CALL CD_SET_ATT_AXDIR (dset, ivar, dir, status)
 
 * successful completion
         status = merr_ok

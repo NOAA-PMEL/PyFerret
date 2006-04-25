@@ -94,6 +94,10 @@
 
 	   KNOWN_GRID = mgrid_xabstract
 
+	ELSEIF ( category .EQ. cat_attrib_val ) THEN  
+
+	   KNOWN_GRID = mgrid_xabstract
+
 	ELSE
 
 	   STOP 'KNOWN_GR'

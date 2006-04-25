@@ -38,7 +38,7 @@
 * Called by list_cmnd_data.F
 *
 * Ferret v5.80 9/02/2004  ACM
-* V590:  1/06 *acm*  prevent values of LOG10(0.0)
+* V600:  1/06 *acm*  prevent values of LOG10(0.0)
 
       INCLUDE 'ferret.parm'
 

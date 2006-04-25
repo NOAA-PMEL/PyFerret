@@ -43,7 +43,7 @@ $(LIB): $(OBJS)
 #	cc -g -c perl_read.c `perl -MExtUtils::Embed -e ccopts`
 
 clean:
-	rm -f core *.o *.a
+	rm -f core *.o *.a *.f
 
 #
 # End of Makefile

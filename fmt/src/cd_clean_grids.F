@@ -52,6 +52,8 @@
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
 *		 - use TM_GET_LINEMATCH to ensure that renamed axes also match
 * V552 *acm* 5/03   increase vname and buff to 128 chars 
+* V600 *ACM* attribute control. 
+*             Replace NCDINQ with CD_GET_DS_DIMS
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -82,10 +84,10 @@
 
 * local variable declarations:
       LOGICAL TM_SAME_GRID_DEF,
-     .        dup_name, dup_guts, fix_axnam(max_lines:line_ceiling)
+     .        dup_name, dup_guts
       INTEGER  TM_GET_LINEMATCH,  TM_GET_LINENUM, TM_GET_GRIDNUM,
      .        igrid, iaxis, count, idim, i_dup, ivar,
-     .        npts, cdfstat,  reused(max_lines:line_ceiling)
+     .        npts, istat,  reused(max_lines:line_ceiling)
 * upped vname to 64 - also removed the *24 from the CHARACTER
 * upped vname to 128 
       CHARACTER vname*128, buff*128
@@ -98,9 +100,9 @@
  100	CALL TM_NEXT_TMP_LINE( iaxis, *110)
 	  reused(iaxis) = TM_GET_LINEMATCH( iaxis, dup_name, dup_guts )
 	  IF ( dup_name .AND. .NOT.dup_guts ) THEN
-	     fix_axnam(iaxis) = .TRUE.	  ! new definition reuses old name
+	     line_fixname(iaxis) = .TRUE.	  ! new definition reuses old name
 	  ELSE
-	     fix_axnam(iaxis) = .FALSE.
+	     line_fixname(iaxis) = .FALSE.
 	  ENDIF
 	GOTO 100  ! like  100   CONTINUE
 
@@ -178,7 +180,8 @@
  400	CALL TM_NEXT_TMP_LINE( iaxis, *402)
 	  IF ( reused(iaxis) .NE. unspecified_int4 ) THEN
 	    line_name(iaxis) = char_init16   ! destroy new duplicate defn
-          ELSEIF ( fix_axnam(iaxis) ) THEN
+	    line_fixname(iaxis) = .FALSE.  
+          ELSEIF ( line_fixname(iaxis) ) THEN
             CALL TM_NEW_LINE_NAME( line_name(iaxis), buff )
             line_name(iaxis) = buff
           ENDIF
@@ -188,7 +191,8 @@
  402	IF ( ds_time_axis(dset) .LT. 1 ) THEN
              ds_time_axis(dset) = unspecified_int4
         ELSE
-           CALL NCDINQ( cdfid,ds_time_axis(dset),vname,npts,cdfstat )
+           CALL CD_GET_DS_DIMS( dset, ds_time_axis(dset), vname, 
+     .                          npts, istat )
            ds_time_axis(dset) = TM_GET_LINENUM( vname )
         ENDIF
 

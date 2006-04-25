@@ -61,6 +61,8 @@
 * V552: 4/03 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
 * v552: 4/03 *acm*  Increase length of variable names to 128 characters
 * v553: 7/03 *kob* - Add SET VARIABLE/bad=NaN ability
+* V600:11/05 *acm* - issue error for SET VAR/SCALE/OFFSET if dset = -111 
+* V600: 2/06 *adm* - For attribute-access additions, add new SET VAR/OUTTYPE=
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -70,6 +72,7 @@
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
+        include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
 	include 'xrisc.cmn'
@@ -80,12 +83,16 @@
 
 * internal variable declarations:
 	LOGICAL		VALID_GRID, TM_LEGAL_NAME, TM_HAS_STRING,
-     .                  have_mods, ez, gtts, ncfile
-	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, 
-     .			dset, grid, cat, var, loc, TMAP_status, testvar
-	REAL		bad, scalefac, offset, set_nan
+     .                  have_mods, ez, gtts, ncfile, coordvar
+	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, i, 
+     .			dset, grid, cat, var, loc, TMAP_status, testvar,
+     .                  outtype_flag, varid, attype, attlen, attoutflag,
+     .                  vartype, nvdims, nvatts, vdims(8), varoutflag
+	REAL		bad, scalefac, offset, set_nan, val
+
 	CHARACTER	grid_name*16, title*128, units*64, newname*128,
-     .                  is_nan*3
+     .                  is_nan*3, flag*10, typflag*10, varattname*512,
+     .                  varname*128, attname*128
 
 * Initialize
 
@@ -123,6 +130,9 @@
 	ENDIF
 
 * process qualifiers given
+
+* SET VAR/NAME=
+
 	loc = qual_given( slash_set_var_name )
 	IF ( loc .GT. 0 ) THEN
 
@@ -151,12 +161,12 @@
 	   newname = char_init80
 	ENDIF
 
-
 * SET VAR/SCALEFAC only for NetCDF datasets
 
 	loc = qual_given( slash_set_var_scale )
 	IF ( loc .GT. 0 ) THEN
 
+           IF (dset .EQ. unspecified_int4) GOTO 5700
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
@@ -175,6 +185,7 @@
 	loc = qual_given( slash_set_var_offset )
 	IF ( loc .GT. 0 ) THEN
 
+           IF (dset .EQ. unspecified_int4) GOTO 5700
 	   ncfile = (TM_HAS_STRING(ds_type(dset), 'CDF') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'MC') .OR.
      .               TM_HAS_STRING(ds_type(dset), 'GT')  )
@@ -188,6 +199,8 @@
 	   offset = real4_init
 	ENDIF
 
+* SET VAR/TITLE=
+
 	loc = qual_given( slash_set_var_title )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -197,6 +210,9 @@
 	ELSE
 	   title = char_init80
 	ENDIF
+
+* SET VAR/UNITS=
+
 	loc = qual_given( slash_set_var_unit )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -206,6 +222,9 @@
 	ELSE
 	   units = char_init16
 	ENDIF
+
+* SET VAR/GRID=
+
 	loc = qual_given( slash_set_var_grid )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -218,6 +237,9 @@
 	ELSE
 	   grid = int4_init
 	ENDIF
+
+* SET VAR/BAD=
+
 	loc = qual_given( slash_set_var_bad )
 	IF ( loc .GT. 0 ) THEN
 	   have_mods = .TRUE.
@@ -234,6 +256,90 @@
 	ELSE
 	   bad = real4_init
 	ENDIF
+
+* SET VAR/OUTTYPE= INTYPE, FLOAT, INT, SHORT
+
+	loc = qual_given( slash_set_var_outtype )
+	IF ( loc .GT. 0 ) THEN
+	   have_mods = .TRUE.
+           CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			      flag, status )
+           IF ( status .NE. ferr_ok ) RETURN
+           i = STR_UPCASE (typflag, flag)
+
+           IF (typflag(1:5) .EQ. 'INPUT'  ) THEN   ! input type
+              outtype_flag = 99  ! do not change from incoming type
+           ELSE IF (typflag(1:3) .EQ. 'BYT' .OR. typflag(1:4) .EQ. 'INT1') THEN
+              outtype_flag = 1   ! NC_BYTE
+           ELSE IF (typflag(1:3) .EQ. 'SHO' .OR. typflag(1:4) .EQ. 'INT2') THEN
+              outtype_flag = 3   ! NC_SHORT
+           ELSE IF (typflag(1:3) .EQ. 'INT' .OR. typflag(1:4) .EQ. 'INT4') THEN
+              outtype_flag = 4   ! NC_INT (4-byte integer)
+           ELSE IF (typflag(1:3) .EQ. 'FLO' .OR. typflag(1:3) .EQ. 'REA') THEN
+              outtype_flag = 5   ! NC_FLOAT
+           ELSE IF (typflag(1:3) .EQ. 'DOU') THEN
+              CALL WARN 
+     .         ('Converting single precision variable to double on output')
+              outtype_flag = 6   ! NC_DOUBLE
+
+           ELSE
+              GOTO 5900
+           ENDIF
+
+* get dataset from varname.attname
+* evaluate the context without computing the expression to get the dataset
+
+           varattname = vname(1:TM_LENSTR1(vname))//'.type'
+           status = ferr_ok + 1
+           IF (dset .NE. unspecified_int4) CALL BREAK_VARATTNAME( 
+     .      varattname, dset, varname, attname, varid, .FALSE., status)
+
+           IF (status .NE. ferr_ok) THEN
+              CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+ 
+              CALL EVAL_CONTEXT ( cx_cmnd, varattname, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+
+              cx = is_cx( 1 )
+              dset = cx_data_set(cx) 
+              IF (dset .EQ. pdset_irrelevant) THEN
+                 dset = cx_data_set(cx_last) 
+                 cx = cx_last
+              ENDIF
+
+              IF (dset .EQ. unspecified_int4) dset = -1 ! user variables
+
+           ENDIF
+
+* Make sure we have varid for varname.type, then reset the variable type.
+
+           CALL BREAK_VARNAME( varattname, dset, varname, attname, 
+     .                         varid, status )
+
+* When the user requests double precision output, write an attribute to the
+* file explaning that it contains data converted from float.
+
+           IF (typflag(1:3) .EQ. 'DOU')
+     .       CALL CD_PUT_NEW_ATTR (dset, varid, 
+     .        'Ferret_Precision_Note', 2, 61, 1, 
+     .        'This variable written by Ferret was converted from '//
+     .        'FLOAT to DOUBLE', 1, status )
+
+           IF (status .NE. ferr_ok) GOTO 5000
+
+* Get input type, store in variable outtype_flag
+           IF (outtype_flag .EQ. 99) THEN
+              CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, 
+     .                  nvdims, vdims, nvatts, coordvar, varoutflag, 
+     .                  status) 
+              outtype_flag = vartype 
+           ENDIF
+
+           CALL CD_SET_VAR_TYPE (dset, varid, outtype_flag, status )
+           IF (status .NE. ferr_ok) GOTO 5000
+
+        ENDIF
 
 * note on EZ vars:
 * modifying the variable info invalidates data in memory
@@ -344,4 +450,9 @@
  5800	CALL ERRMSG( ferr_invalid_command, status,
      .           'Can SET VARIABLE/OFFSET= only with NetCDF datasets',
      .               						*5000 )
+     
+ 5900	CALL ERRMSG( ferr_unknown_arg, status,
+     .      'Can SET VARIABLE/OUTTYPE=INPUT, FLOAT, BYTE, INT, SHORT',
+     .               						*5000 )
+
 	END

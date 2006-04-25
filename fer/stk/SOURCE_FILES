@@ -20,6 +20,7 @@ interp_context.F\
 interp_stack.F\
 is_algebra.F\
 is_calc.F\
+is_attrib_val.F\
 is_constant.F\
 is_const_var.F\
 is_counter_var.F\

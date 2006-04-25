@@ -1,6 +1,4 @@
-* *kob* 2/23/99 v3.4 of netcdf include file - upgraded from 2.3.2 
-! *kob* 10.21.99 - had to comment out EXTERNAL statements for compiling on
-!		   DEC systems
+!
 ! netcdf version 3 fortran interface:
 !
 
@@ -61,6 +59,8 @@
       integer nf_nofill
       integer nf_lock
       integer nf_share
+      integer nf_sizehint_default
+      integer nf_align_chunk
 
       parameter (nf_nowrite = 0)
       parameter (nf_write = 1)
@@ -70,6 +70,8 @@
       parameter (nf_nofill = 256)
       parameter (nf_lock = 1024)
       parameter (nf_share = 2048)
+      parameter (nf_sizehint_default = 0)
+      parameter (nf_align_chunk = -1)
 
 !
 ! size argument for defining an unlimited dimension:
@@ -92,9 +94,9 @@
       integer nf_max_name
       integer nf_max_var_dims
 
-      parameter (nf_max_dims = 100)
-      parameter (nf_max_attrs = 2000)
-      parameter (nf_max_vars = 2000)
+      parameter (nf_max_dims = 512)
+      parameter (nf_max_attrs = 4096)
+      parameter (nf_max_vars = 4096)
       parameter (nf_max_name = 128)
       parameter (nf_max_var_dims = nf_max_dims)
 
@@ -129,6 +131,7 @@
       integer nf_estride
       integer nf_ebadname
       integer nf_erange
+      integer nf_enomem
 
       parameter (nf_noerr = 0)
       parameter (nf_ebadid = -33)
@@ -158,6 +161,7 @@
       parameter (nf_estride = -58)
       parameter (nf_ebadname = -59)
       parameter (nf_erange = -60)
+      parameter (nf_enomem = -61)
 
 !
 ! error handling modes:
@@ -185,6 +189,15 @@
 !
 ! control routines:
 !
+      integer         nf_inq_base_pe
+!                         (integer             ncid,
+!                          integer             pe)
+!      external        nf_inq_base_pe
+
+      integer         nf_set_base_pe
+!                         (integer             ncid,
+!                          integer             pe)
+!      external        nf_set_base_pe
 
       integer         nf_create
 !                         (character*(*)       path,
@@ -200,6 +213,15 @@
 !                          integer             ncid)
 !      external        nf__create
 
+      integer         nf__create_mp
+!                         (character*(*)       path,
+!                          integer             cmode,
+!                          integer             initialsz,
+!                          integer             basepe,
+!                          integer             chunksizehint,
+!                          integer             ncid)
+!      external        nf__create_mp
+
       integer         nf_open
 !                         (character*(*)       path,
 !                          integer             mode,
@@ -212,6 +234,14 @@
 !                          integer             chunksizehint,
 !                          integer             ncid)
 !      external        nf__open
+
+      integer         nf__open_mp
+!                         (character*(*)       path,
+!                          integer             mode,
+!                          integer             basepe,
+!                          integer             chunksizehint,
+!                          integer             ncid)
+!      external        nf__open_mp
 
       integer         nf_set_fill
 !                         (integer             ncid,
@@ -1063,30 +1093,23 @@
 !      
 ! functions in the fortran interface
 !
-!* This block of external declarations was added when netCDF upgraded
-* from version 1 to version 2.x.  Since these declarations exist
-* explicitly where they are needed in the individual TMAP library source
-* modules their presence here causes "multiple declaration" warnings.
-* *sh* and *kob* 4/94
-* *kob*  2/23/99 - these still need to be commented out in v3.4 
+      integer nccre
+      integer ncopn
+      integer ncddef
+      integer ncdid
+      integer ncvdef
+      integer ncvid
+      integer nctlen
+      integer ncsfil
 
-*      integer nccre
-*      integer ncopn
-*      integer ncddef
-*      integer ncdid
-*      integer ncvdef
-*      integer ncvid
-*      integer nctlen
-*      integer ncsfil
-
-!*      external nccre
-!*      external ncopn
-!*      external ncddef
-!*      external ncdid
-!*      external ncvdef
-!*      external ncvid
-!*      external nctlen
-!*      external ncsfil
+!      external nccre
+!      external ncopn
+!      external ncddef
+!      external ncdid
+!      external ncvdef
+!      external ncvid
+!      external nctlen
+!      external ncsfil
 
 
       integer ncrdwr

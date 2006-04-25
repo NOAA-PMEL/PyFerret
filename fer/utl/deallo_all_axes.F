@@ -44,7 +44,7 @@
 *               by calling PACK_LINE_STORAGE.
 * V5.42 10/31/02 ACM Check to see if axes are in use, and if so dont remove!
 * V5.42 11/06/02 ACM line_keep_flag(islot) is a logical, use .FALSE. not 0.
-* V5.90 10/28/05 ACM Fix bug 1354: cancel data should recover coordinate storage
+* V600 10/28/05 ACM Fix bug 1354: cancel data should recover coordinate storage
 
 * Parameters and commons
 

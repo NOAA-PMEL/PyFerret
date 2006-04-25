@@ -57,6 +57,8 @@
 * V553:1/04   - check variable to see if its a counter_var.
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 *      6/04 ywei - change MATCH_NAME function
+* V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
+*                   varname.attname
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -72,9 +74,12 @@
 
 * internal variable declarations:
 	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, MATCH_NAME
-	INTEGER		STR_MATCH, GCF_FIND_FCN,
-     .			imatch, i, i2, j, brac_pos, aend
-        INTEGER         num_indices
+	INTEGER		STR_MATCH, GCF_FIND_FCN, TM_LENSTR1,
+     .			imatch, i, i2, j, brac_pos, aend,
+     .			num_indices, dot, new_nat
+        CHARACTER*128   varname
+        
+        new_nat = 0
 
 	DO 100 i = 1, natom
 
@@ -174,8 +179,56 @@
 	      GOTO 100
 	   ENDIF
 
+* attribute value variable.attname (will check later whether the
+* variable is in a netCDF dataset and whether the attribute exists)
+
+           IF (INDEX(text(at_start(i):at_end(i)), '.') .GT. 0 
+     .          .AND. INDEX(text(at_start(i):at_end(i)), '.') .LT.
+     .          at_end(i) - at_start(i)+1 ) THEN
+              
+* Is the dot a decimal point within an expression, as in LIST a[y=0.5:9.5]
+* or LIST a[gx=sst[d=1],y=1.5]. Look for opening bracket before the dot and 
+* closing bracket after the dot
+
+              dot = INDEX(text(at_start(i):at_end(i)), '.')
+
+              IF ((INDEX(text(at_start(i):dot-1),'[') .GT. 0) .AND. 
+     .            (INDEX(text(dot+1:at_end(i)),']') .GT. 0) ) GOTO 99
+
+* is the name in quotations? If so then it may contain a dot and not
+* be varname.attname. See if its all within quotes, if so this is a 
+* variable name containg a dot.
+
+              first = INDEX(text(at_start(i):at_end(i)), "'" )
+              second = INDEX(text(at_start(i)+1:at_end(i)), "'" )
+              
+              IF (first .GT. 0 .AND. second .GT. 0 .AND. 
+     .            dot .GT. first .AND. dot .LT. second) GOTO 99
+
+* Otherwise this is a varname.attname
+              at_type(i) = alg_attrib_val
+	      at_id(i)   = unspecified_int4
+
+* Is the end of varname a parentheses? Then is this part of (axisname).attname
+              IF ( INDEX(text(at_start(i):at_end(i)), ")" ) .GT. 0) THEN
+                 j = i - 1
+                 new_nat = 0
+                 DO WHILE (j .GT. 0 .AND. new_nat .EQ. 0 ) 
+                    IF (INDEX(text(at_start(j):at_end(j)), "(" ) .GT. 0) THEN
+                       at_type(j) = at_type(i)
+                       at_end(j) = at_end(i)
+                       at_id(j) = at_id(i)
+                       new_nat = j
+                    ENDIF
+                    j = j - 1
+                 ENDDO
+              ENDIF
+
+              GOTO 100
+	   ENDIF
+
 * cant identify it - we will call it an variable for now
-	   IF (text(at_start(i):at_start(i)) .NE. "'" ) THEN
+  99	   IF (text(at_start(i):at_start(i)) .NE. "'" ) THEN
 * (7/98) only check name if it is not in quotation marks
 	     IF ( .NOT.TM_LEGAL_NAME(text(at_start(i):aend)) ) GOTO 5100
 	   ENDIF
@@ -183,6 +236,8 @@
 	   at_id(i)   = unspecified_int4
 
  100	CONTINUE
+
+        IF (new_nat .NE. 0) natom = new_nat
 
 * A function name not followed by a left paren is actually a variable (12/96)
 	DO 200  i = 1, natom

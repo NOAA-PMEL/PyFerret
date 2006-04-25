@@ -1,5 +1,5 @@
-	SUBROUTINE CD_MAKE_VAR ( cdfid, varname, type, maxstrlen, grid,
-     .                           lo, hi, recdim, enhead, new, 
+	SUBROUTINE CD_MAKE_VAR ( cdfid, dset, varname, type, maxstrlen,
+     .                           grid, lo, hi, recdim, enhead, new, 
      .                           edges_flag, do_bounds, status )
 
 *
@@ -59,6 +59,7 @@
 * V533 *sh* 6/01 - added support for netCDF output string variables
 *		 - check for consistency of data type on APPEND operations
 * V552 *acm* 5/03   increase vname to 128 chars 
+* V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -89,16 +90,15 @@
 	include 'xio.cmn_text'
 
 * argument declarations
-      LOGICAL enhead, new, do_bounds
-      INTEGER cdfid, type, maxstrlen, grid, lo(4), hi(4), recdim, 
-     .        edges_flag, status
+      LOGICAL enhead, new, do_bounds, edges_flag
+      INTEGER cdfid, dset, type, maxstrlen, grid, lo(4), hi(4),
+     .        recdim, status
       CHARACTER*(*) varname
 
 * local variable declarations:
       LOGICAL TM_ABSTRACT_AXIS, CD_USE_RECDIM, 
      .        itsa_slab, need_child(4), itsa_strvar
       INTEGER TM_LENSTR1, CD_ISIT_RECDIM, CD_WRITE_STRDIM,
-     .        NCDID, NCVID, NCVDEF,
      .        dimid(5), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(6), nvatts, nlen, glen, vlen, ax_type,
      .        lo2(4), hi2(4), what_recdim, strdim
@@ -159,7 +159,7 @@
 * if the time axis of this variable has already been created IT will 
 * determine whether this variable uses the record dimension.  The request
 * from the user will be over-ruled
-      what_recdim = CD_ISIT_RECDIM( cdfid, grid, t_dim, status )
+      what_recdim = CD_ISIT_RECDIM( cdfid, dset, grid, t_dim, status )
       IF ( what_recdim .EQ. pcdf_yes ) THEN
          recdim = t_dim
       ELSEIF ( what_recdim .EQ. pcdf_no ) THEN
@@ -195,14 +195,14 @@
 
       IF ( enhead ) THEN
 * create the parent grid needed for this variable
-         CALL CD_WRITE_GRID( cdfid, grid, lo, hi, recdim, itsa_slab,
+         CALL CD_WRITE_GRID( cdfid, dset, grid, lo, hi, recdim, itsa_slab,
      .                       gname,  edges_flag, do_bounds, status )
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
          DO 250 idim = 1, 4
             IF ( need_child(idim) ) THEN
-               CALL CD_WRITE_AXIS( cdfid, grid, idim, .FALSE.,
+               CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
      .                   .FALSE., .FALSE., status)
                IF ( status .NE. merr_ok ) GOTO 5900
@@ -220,9 +220,9 @@
 	      ELSE
 	         ax_type = pcdf_full_span
 	      ENDIF
-              CALL CD_WRITE_AXIS( cdfid, grid, idim, idim.EQ.recdim,
-     .			        lo(idim), hi(idim), ax_type, edges_flag,
-     .                          do_bounds, status ) 
+              CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, 
+     .			       idim.EQ.recdim, lo(idim), hi(idim), 
+     .			       ax_type, edges_flag, do_bounds, status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
@@ -239,7 +239,7 @@
       ENDIF
       DO 300 idim = 1, 4
          iaxis = grid_line(idim,grid)
-         lname = CD_AXIS_NAME(grid, idim, nlen )
+         lname = CD_AXIS_NAME( dset, grid, idim, nlen )
          IF ( iaxis .EQ. mpsnorm
      .   .OR. lo(idim) .EQ. unspecified_int4 ) GOTO 300
          dims = dims + 1

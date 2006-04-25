@@ -35,7 +35,7 @@
 *
 * V570 5/2004 *acm*
 * Check the edges attribute, issue any warnings
-* V590 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
+* V600 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
 *                  was being reset  as npts bounds or edges, which is npts+1
 
         INCLUDE 'tmap_dims.parm'

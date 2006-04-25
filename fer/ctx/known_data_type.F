@@ -88,6 +88,12 @@
 
 	   cx_type(cx) = ptype_float
 
+	ELSEIF ( category .EQ. cat_attrib_val ) THEN  !should have been set elsewhere
+
+	   IF (cx_type(cx) .EQ. 0 .OR. 
+     .         cx_type(cx) .EQ. unspecified_int4 ) 
+     .        STOP 'unknown var.att in KNOWN_DATA_TYPE'
+
 	ELSE
 
 	   STOP 'KNOWN_TYP'

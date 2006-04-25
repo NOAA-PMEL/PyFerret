@@ -88,7 +88,7 @@
 *		  - increased size of "last" stored command
 * V540: *sh* 11/00 - "last" var init moved to DELETE_OLD_EXPR
 * v552: *acm* 4/03   Increase length of variable names to 128 characters
-* V590 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'

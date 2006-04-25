@@ -48,6 +48,13 @@
 * V542 11/02*acm*  For 4-D string NetCDF files, allow nvdim to be 5 when
 *                  code checks for "Unsupported netCDF # of axes".
 * V552 5/03 *acm*: increase size of vname from 64 to 128 chars
+* V600 *ACM* attribute control. 
+*             Replace NCAINQ with CD_GET_VAR_ATT_INFO
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
+*               linked list structure
+*             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
+*               strings or real values according to attrib type
+
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -78,16 +85,16 @@
         external xio_data
 
 
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, CD_GET_BOUNDS,
-     .        TM_LEGAL_NAME,
+      LOGICAL NC_GET_ATTRIB, CD_GET_BOUNDS,
      .        got_it, got_bad, got_missing, tf2,
-     .        do_warn
+     .        do_warn, coordvar
       PARAMETER (do_warn = .TRUE. )
-      INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
-     .	      TM_FERRET_VARTYPE,
-     .        ndims, nvars, cdfstat, first_pos, idim,
-     .        vartyp, nvdim, vdims(6), nvatts, i, vlen,
-     .        ngatts, recdim, istat, npts, lasdim, attype
+      INTEGER TM_LENSTR1, TM_FERRET_VARTYPE, 
+     .        cdfstat, idim,
+     .        vartyp, nvdim, vdims(6), nvatts, vlen,
+     .        recdim, istat, lasdim, attype, attlen, attoutflag, 
+     .        maxlen, all_outflag
+      REAL    tmp
 * 4/99 *kob* increase size of vname
       CHARACTER    vname*128, buff*128
       CHARACTER*13 TM_STRING
@@ -100,15 +107,14 @@
 * isn't supported on DECstation
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
 
-#ifdef unix
+
 #ifdef NEED_BYTE
       BYTE cd_data_type(maxvars)
 #else
       INTEGER*1 cd_data_type(maxvars)
 #endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
+
+
       EQUIVALENCE ( ds_precision, cd_data_type )
       REAL    r4_grid_start(4,maxvars),
      .        r4_grid_end(4,maxvars)
@@ -116,9 +122,11 @@
      .            ( r4_grid_start, ds_grid_start )
 
 * get the vital statistics for this variable
-           CALL NCVINQ(cdfid, ivcd, vname, vartyp, nvdim, vdims,
-     .                 nvatts,cdfstat)
-           IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+
+           CALL CD_GET_VAR_INFO(dset, ivcd, vname, vartyp, 
+     .                 nvdim, vdims, nvatts, coordvar, 
+     .                 all_outflag, status)
+           IF ( status .NE. merr_ok ) GOTO 5200
            vlen = TM_LENSTR1(vname)
 
 * find the next storage position in TMAP common
@@ -158,95 +166,128 @@
           ENDIF
 
 * see what generic attributes can be read: long_name, units, missing_value
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'long_name',
-     .                      .NOT.do_warn, ' ', ds_var_title(ivtm), 128 )
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'long_name_mod',
-     .                  .NOT.do_warn, ' ', ds_var_titl_mod(ivtm), 128 )
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'units',
-     .                 do_warn, vname(:vlen), ds_var_units(ivtm), 64 )
-          got_it = CD_GET_ATTVAL( cdfid, ivcd, 'scale_factor',
-     .             do_warn,vname(:vlen),cd_scale_factor(ivtm),1,istat )
-          tf2    = CD_GET_ATTVAL( cdfid, ivcd, 'add_offset',
-     .             do_warn,vname(:vlen),cd_add_offset(ivtm),1,istat )
-          cd_scaled(ivtm) = got_it .OR. tf2
+
+          IF (nvatts .GT. 0) THEN
+             maxlen = 128
+             got_it = NC_GET_ATTRIB( dset, ivcd, 'long_name',
+     .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, ds_var_title(ivtm), val)
+
+             maxlen = 128
+             got_it = NC_GET_ATTRIB( dset, ivcd, 'long_name_mod',
+     .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, ds_var_titl_mod(ivtm), val)
+
+             maxlen = 64
+             got_it = NC_GET_ATTRIB( dset, ivcd, 'units',
+     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, ds_var_units(ivtm), val)
+
+             maxlen = 1
+             got_it = NC_GET_ATTRIB( dset, ivcd, 'scale_factor',
+     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, buff, cd_scale_factor(ivtm))
+
+             maxlen = 1
+             tf2    = NC_GET_ATTRIB( dset, ivcd, 'add_offset',
+     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, buff, cd_add_offset(ivtm))
+
+             cd_scaled(ivtm) = got_it .OR. tf2
 
 * netCDF files may use "standard" attributes missing_value and/or
 * _FillValue to flag bad data
 * For the NOAA COOP standard the missing_value flag must be stored in the
 * packed data type.  If so it must be unpacked.  (2/95)
-          got_bad = CD_GET_ATTVAL( cdfid, ivcd, 'missing_value',
-     .             do_warn, vname(:vlen), ds_bad_flag(ivtm), 1, istat )
-          got_missing = CD_GET_ATTVAL( cdfid, ivcd, '_FillValue',
-     .             do_warn, vname(:vlen), ds_missing_flag(ivtm),1,istat)
+
+             maxlen = 1
+             got_bad = NC_GET_ATTRIB( dset, ivcd, 'missing_value',
+     .                do_warn, vname(:vlen), maxlen, attlen,
+     .                attoutflag, buff,  ds_bad_flag(ivtm))
+
+             maxlen = 1
+             got_missing = NC_GET_ATTRIB( dset, ivcd, '_FillValue',
+     .                do_warn, vname(:vlen),  maxlen, attlen, 
+     .                attoutflag, buff, ds_missing_flag(ivtm))
+
 * ... need to unpack the missing_value flag?
 *     (note that the netCDF library insists on _FillValue's data type)
-          IF ( vartyp.LE.NCLONG .AND. cd_scaled(ivtm) ) THEN
-             IF ( got_bad ) THEN
-	        CALL NCAINQ(cdfid, ivcd, 'missing_value', attype,
-     .			    i, istat )
-	        IF ( attype .EQ. vartyp ) ds_bad_flag(ivtm) =
+             IF ( vartyp.LE.NCLONG .AND. cd_scaled(ivtm) ) THEN
+                IF ( got_bad ) THEN
+	           CALL CD_GET_VAR_ATT_INFO(dset, ivcd, 'missing_value',
+     .			    attype, attlen, attoutflag, istat )
+	           IF ( attype .EQ. vartyp ) ds_bad_flag(ivtm) =
      .			ds_bad_flag(ivtm)*cd_scale_factor(ivtm)
      .			+ cd_add_offset(ivtm)
-	     ENDIF
+	        ENDIF
+
 * ... *kob* Also need to see about unpacking _FillValue
-             IF ( got_missing ) THEN
-	        CALL NCAINQ(cdfid, ivcd, '_FillValue', attype,
-     .			    i, istat )
-	        IF ( attype .EQ. vartyp ) ds_missing_flag(ivtm) =
-     .			ds_missing_flag(ivtm)*cd_scale_factor(ivtm)
+                IF ( got_missing ) THEN
+	           CALL CD_GET_VAR_ATT_INFO(dset, ivcd, '_FillValue',
+     .	   		    attype, attlen, attoutflag, istat )
+	           IF ( attype .EQ. vartyp ) ds_missing_flag(ivtm) =
+     .	   		ds_missing_flag(ivtm)*cd_scale_factor(ivtm)
      .			+ cd_add_offset(ivtm)
-	     ENDIF
-          ENDIF
-          IF ( got_bad .AND. .NOT.got_missing )
-     .        ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
-          IF ( got_missing .AND. .NOT.got_bad )
-     .        ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
+	        ENDIF
+             ENDIF
+             IF ( got_bad .AND. .NOT.got_missing )
+     .           ds_missing_flag(ivtm) =  ds_bad_flag(ivtm)
+             IF ( got_missing .AND. .NOT.got_bad )
+     .           ds_bad_flag(ivtm) =  ds_missing_flag(ivtm)
+
 
 *  *kob* call SWITCH_NAN to make sure if NaN exisits, its in ds_missing_flag
-	  CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))
+	     CALL SWITCH_NAN(ds_bad_flag(ivtm), ds_missing_flag(ivtm))
 
 * see what special FERRET attributes can be read: axis ordering and
 * sub-hyperslab bounds
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'axis_order',
-     .             do_warn,vname(:vlen),buff,4 )
-          lasdim = 0
-          IF (got_it) THEN
-             DO 170 idim = 1, 4
-               IF ( buff(idim:idim) .EQ. ' ' ) THEN
-                  ds_ordering(idim,ivtm) = 0
-                  GOTO 170
-               ELSEIF ( buff(idim:idim) .EQ. 'T' ) THEN
-                  ds_ordering(idim,ivtm) = 4
-               ELSE
-                  ds_ordering(idim,ivtm) = ICHAR(buff(idim:idim))-87 ! XYZ->123
-               ENDIF
-               IF ( ds_ordering(idim,ivtm) .LT. 0
-     .         .OR. ds_ordering(idim,ivtm) .GT. 4 ) THEN 
-                  CALL TM_NOTE(
-     .                  'Illegal netCDF "axis_order" for variable '
-     .                  //vname(:vlen), tt )
-		  GOTO 200
-                ENDIF
-                IF ( ds_ordering(idim,ivtm) .LE. lasdim ) THEN
-                   CALL TM_NOTE(
-     .                     '"axis_order" permutations not supported: '
+             maxlen = 4
+             got_it = NC_GET_ATTRIB( dset, ivcd, 'axis_order',
+     .                do_warn, vname(:vlen), maxlen, attlen, 
+     .                attoutflag, buff, val)
+             lasdim = 0
+             IF (got_it) THEN
+                DO 170 idim = 1, 4
+                   IF ( buff(idim:idim) .EQ. ' ' ) THEN
+                     ds_ordering(idim,ivtm) = 0
+                     GOTO 170
+                  ELSEIF ( buff(idim:idim) .EQ. 'T' ) THEN
+                     ds_ordering(idim,ivtm) = 4
+                  ELSE
+                     ds_ordering(idim,ivtm) = ICHAR(buff(idim:idim))-87 ! XYZ->123
+                  ENDIF
+                  IF ( ds_ordering(idim,ivtm) .LT. 0
+     .            .OR. ds_ordering(idim,ivtm) .GT. 4 ) THEN 
+                     CALL TM_NOTE(
+     .                     'Illegal netCDF "axis_order" for variable '
      .                     //vname(:vlen), tt )
-                   GOTO 200
-                ENDIF
-                lasdim = ds_ordering(idim,ivtm)
- 170         CONTINUE
-          ENDIF
+		     GOTO 200
+                   ENDIF
+                   IF ( ds_ordering(idim,ivtm) .LE. lasdim ) THEN
+                      CALL TM_NOTE(
+     .                     '"axis_order" permutations not supported: '
+     .                        //vname(:vlen), tt )
+                      GOTO 200
+                   ENDIF
+                   lasdim = ds_ordering(idim,ivtm)
+ 170            CONTINUE
+             ENDIF
 
 * does this variable have a FERRET "parent grid" ?
 * if so check for explicit hyperslab limits
-          buff = ' '   ! problems from characters beyond 16
-          got_it = CD_GET_ATTRIB( cdfid, ivcd, 'parent_grid',
-     .                           do_warn, vname(:vlen), buff, 16 )!gridnamlen
-          IF ( got_it ) THEN
-             got_it = CD_GET_BOUNDS(cdfid, ivcd, ds_grid_start(1,ivtm),
-     .                           ds_grid_end(1,ivtm), recdim, status )
-             IF ( status .NE. merr_ok ) GOTO 5900
-          ENDIF
+             buff = ' '   ! problems from characters beyond 16
+             maxlen = 16 !gridnamlen
+             got_it = NC_GET_ATTRIB( dset, ivcd, 'parent_grid',
+     .                           do_warn, vname(:vlen), maxlen, attlen, 
+     .                           attoutflag, buff, val)
+             IF ( got_it ) THEN
+                got_it = CD_GET_BOUNDS(cdfid, ivcd, 
+     .                     ds_grid_start(1,ivtm), ds_grid_end(1,ivtm), 
+     .                     recdim, status )
+                IF ( status .NE. merr_ok ) GOTO 5900
+             ENDIF
+
+          ENDIF ! nvatts > 0
 
 * officially claim this variable slot
 * 7/98 - save in case-sensitive form at this point -- will check over later

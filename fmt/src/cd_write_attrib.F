@@ -44,6 +44,10 @@
 
 * revision 0.0 - 3/92
 *               10/92: set into define mode
+* 10/2005 NOTE: do not change this for the attribute-access changes. 
+*               This routine accesses the newly-created file using 
+*               netcdf calls as always. The values sent in come from
+*               the linked-list structure but output is all the same.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -86,7 +90,7 @@ xx        include 'netcdf.decl'  ! untested
       CHARACTER*(*) vname, att, string
 
 * local variable declarations:
-      INTEGER TM_LENSTR1, NCVID,
+      INTEGER TM_LENSTR1, 
      .        vlen, alen, slen, cdfstat, varid, attype, attlen
       CHARACTER buff*256
 

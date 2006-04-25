@@ -62,7 +62,7 @@
 *			    so ifdef around it
 * V500 - *kob* 7/99 - update error codes to handle netCDF V3.4 differences
 *
-* *acm* 11/05 v5.90  -- New symbol FER_LAST_ERROR contains all the text normally
+* *acm* 11/05 V600  -- New symbol FER_LAST_ERROR contains all the text normally
 *                       written to std out. 
 
 * arguments:

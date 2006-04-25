@@ -83,11 +83,11 @@
 * V580 *acm* 11/04 Fix bug 906: default number of digits did not distinguish different 
 *                  levels; got repeated labels 370, 371, 371, 372, 372,...
 * v581 *acm* 3/05 open levels (-INF) (INF)
-* v590 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
+* V600 *acm* 8/05 fix bug 1330; vertical position of key labels, -0.5*karht was missing 
 *                 on definition of yy
-* v590 *acm* 9/05 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
+* V600 *acm* 9/05 fix bug 1339, with (-inf) (inf) levels and the shakey setting klab_dig=0,
 *                 we had an infinite loop on DO 30. Start the loop at ndx = lev1+1, not 1.
-* v590 *acm* 1/06 Among the changes when we added tm_fmt_digits, when checking whether more 
+* V600 *acm* 1/06 Among the changes when we added tm_fmt_digits, when checking whether more 
 *                 digits are needed, keep track of digits added; need to increase the  
 *                 argument klab_len by the same amount in subsequent calls to TM_FMT_DIGITS  
 *                 when we are writing the numeric labels on the key. 

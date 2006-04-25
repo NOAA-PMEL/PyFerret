@@ -7,7 +7,7 @@
 * V510: *sh* reordered elements to avoid "padding before alg_4d_trans"
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 * V554 3/04 *acm* - reorder items in the common block to avoid warning msg when compiling
-* V591 2/06 *acm* - reorder items again, to avoid warning msg when compiling
+* V600 2/06 *acm* - reorder items again, to avoid warning msg when compiling
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,

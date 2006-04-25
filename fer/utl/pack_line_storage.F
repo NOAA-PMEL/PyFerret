@@ -42,8 +42,8 @@
 * V5.41 7/30/02 ACM Fix def of npoints. Also, move the pointer into 
 *                   line_mem array when the coordinates in line_mem have
 *                   been changed. 
-* V5.90 10/28/05 ACM Fix bug 1354: We were moving way more coord data than needed
-* v5.90 10/31/05 ACM Renamed from REMOVE_AXIS.F
+* V600 10/28/05 ACM Fix bug 1354: We were moving way more coord data than needed
+* V600 10/31/05 ACM Renamed from REMOVE_AXIS.F
 *                   
 
 * Parameters and commons

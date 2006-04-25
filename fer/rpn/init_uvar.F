@@ -114,7 +114,7 @@
 	INTEGER		max_gcf_stack
 	PARAMETER     ( max_gcf_stack = 15 )
 * internal variable declarations:
-	LOGICAL		has_children
+	LOGICAL		has_children, child
 	INTEGER		tlen, iat, paren_level, atoms_lost, uvar_child, gcfstk, 
      .			child_start, child_end, gc_arg_start, istart, iend,
      .			parent,
@@ -249,7 +249,8 @@
 	ENDIF
 
 * initialize the child variable
- 860	CALL INIT_UVAR_SUB (
+ 860	child = .TRUE.
+        CALL INIT_UVAR_SUB (
      .			     child_name,
      .			     text, ' ', ' ', dset, bad,
      .                       implct_defn, uvar_child,parent,
@@ -257,7 +258,7 @@
      .			     at_start(child_start), at_end(child_start),
      .			     child_end-child_start+1,
      .			     at_start(child_start), at_end(child_end),
-     .			     status )
+     .			     child, status )
 	IF ( status .NE. ferr_OK ) GOTO 5900
 
 * ... if the child we just created was a GC then pop the gc stack
@@ -283,10 +284,11 @@
 *============================================================
 
 * initialize the parent user variable, "uvar"
- 1000	CALL INIT_UVAR_SUB ( name, text, title, units, dset, bad,
+ 1000	child = .FALSE.
+        CALL INIT_UVAR_SUB ( name, text, title, units, dset, bad,
      .                         implct_defn, uvar, 0,
      .			       at_type, at_id, at_start, at_end,
-     .			       natom, txstart, txend, status )
+     .			       natom, txstart, txend, child, status )
 
 	IF ( status .NE. ferr_OK ) GOTO 5900
 

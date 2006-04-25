@@ -60,7 +60,7 @@
 * v540 *acm* 10/01  remove VMS include statements
 * v551 *acm* 1/03  Also check for extension .NC along with .DES, .CDF
 * v580 *acm*11/04  Fix bug 1102; under linux, var[d=5coads] is read as dset=5
-* v590 *acm* 2/06  fix bug 1392, cancelling datasets
+* V600 *acm* 2/06  fix bug 1392, cancelling datasets
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

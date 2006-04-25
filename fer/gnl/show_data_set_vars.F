@@ -67,7 +67,7 @@
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
 * V570  *acm* when showing calendar, need  cal_id .LE. max_calendars, not .LT.
-* V590  *acm* 1/06  prevent values of LOG10(0.0) 
+* V600  *acm* 1/06  prevent values of LOG10(0.0) 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"

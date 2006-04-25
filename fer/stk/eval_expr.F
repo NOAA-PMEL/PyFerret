@@ -61,10 +61,10 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V400: 3/95 - based on GET_PROT_CMND_DATA
-* V590:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
 *                     to decide when the qualifiers /X=/Y=/Z=/T= apply to the evaluation
 *                     of immed. mode expressions in the command.
-* V590 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
+* V600 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
 *                  to apply command context to grave-accent expressions.
 
 	include 'tmap_dims.parm'

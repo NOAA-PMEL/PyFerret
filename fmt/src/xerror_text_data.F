@@ -52,14 +52,10 @@
 *                                     - and merr_gridpredef
 * 3/12/93 *sh* : allow unlimited columns in EZ data set
 * 11/99 *sh* - change "grid lines" to "axes" in error message
+* V600 6/05 *acm* new error merr_attalready; attribute already defined
 
-#ifdef unix
 	include 'tmap_errors.parm'		! parameter definitions
 	include 'xerror_text.cmn_text'	! common declaration
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'		! parameter definitions
-	INCLUDE 'TMAP_FORMAT:XERROR_TEXT.CMN_TEXT'	! COMMON declaration
-#endif
 
 * special error messages
 	DATA
@@ -149,5 +145,7 @@
      .	msg_regular(merr_stepnf-pregular)
      .		/'No stepfiles found for requested data set         '/,
      .	msg_regular(merr_badcolmn-pregular)
-     .		/'# of columns not a multiple of # of vars          '/
+     .		/'# of columns not a multiple of # of vars          '/,
+     .	msg_regular(merr_attalready-pregular)
+     .		/'attribute already defined                         '/
 	END

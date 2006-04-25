@@ -42,7 +42,7 @@
 
 * 10/3/95 for Ferret version 4.2
 * V510 *sh( 4/00 - allow deallocation of non-dynamic lines
-* V590 *acm* 10/05 Call PACK_LINE_STORAGE for irregular axes to reset coord storage.
+* V600 *acm* 10/05 Call PACK_LINE_STORAGE for irregular axes to reset coord storage.
 
 * Include files
 

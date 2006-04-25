@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION CD_GET_ATTVAL_L ( cdfid, varid, attrib,
+	LOGICAL FUNCTION CD_GET_ATTVAL_L ( dset, varid, attrib,
      .                                     do_warn, vname, val )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -45,9 +45,15 @@
 * 
 * 1/03 - *kob* g77 port - need to use risc_buff and also local var 
 *                         tmp_buff for arbitrary  string concats 
+* V600 *ACM* attribute control. 
+*             Replace NCAINQ with CD_GET_VAR_ATT_INFO
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
+*               linked list structure
+*             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
+*               strings or real values according to attrib type
  
 * argument definitions:
-*	cdfid	 - netCDF id number for already opened CDF file
+*	dset	 - dataset number for already opened CDF file
 *       varid    - variable id in netCDF file
 *       attrib   - attribute to search for
 *	do_warn	 - logical flag to issue warning if invalid attribute
@@ -56,7 +62,7 @@
 
 * argument declarations
       LOGICAL       do_warn
-      INTEGER	    cdfid, varid
+      INTEGER	    dset, varid
       CHARACTER*(*) attrib, vname
       LOGICAL       val
 
@@ -64,25 +70,30 @@
       include 'netcdf.decl'
 #include "netcdf.inc"
       include 'xrisc_buff.cmn'         !1/03 *kob*
+      include 'tmap_errors.parm'
 
 * internal variable declarations:
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL
-      INTEGER vback
-      INTEGER TM_LENSTR1, TM_LENSTR, lena, attype, cdfstat
+      LOGICAL NC_GET_ATTRIB
+      INTEGER TM_LENSTR1, lena, attype, attlen, attoutflag, status
+      REAL tmp
       CHARACTER buff*132, upbuff*132
       CHARACTER tmp_buff*2048          !1/03 *kob*	
 
 * inquire about the attribute by name
       lena = TM_LENSTR1( attrib )
-      CALL NCAINQ(cdfid, varid, attrib(:lena), attype, vback, cdfstat )
+      CALL CD_GET_VAR_ATT_INFO (dset, varid, attrib(:lena), attype, 
+     .     attlen, attoutflag, status )
 
-      IF ( cdfstat .EQ. NCNOERR ) THEN
+      IF ( status .EQ. merr_ok ) THEN
+
 	IF (attype .EQ. NCCHAR) THEN
 
 * get a text attribute
 
-	   CD_GET_ATTVAL_L = CD_GET_ATTRIB(cdfid,varid,attrib(:lena),
-     .                                     do_warn,vname,buff,132 )
+	   CD_GET_ATTVAL_L = NC_GET_ATTRIB(dset, varid, attrib(:lena),
+     .                            do_warn, vname, 132, attlen,
+     .                            attoutflag, buff, tmp)
+
 	   IF (.NOT.CD_GET_ATTVAL_L) THEN
 	     RETURN
 
@@ -113,9 +124,8 @@
 	   CD_GET_ATTVAL_L = .FALSE.
 	 ENDIF
 
-      ELSE
+      ELSE ! no attribute found
 
-* didnt get nothin
 	 CD_GET_ATTVAL_L = .FALSE.
       ENDIF
 

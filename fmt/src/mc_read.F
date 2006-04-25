@@ -70,7 +70,7 @@
 * v581 *acm* 4/2005  Add sf_ndxs and sf_ndxe to use indices rather than timesteps
 *                     for indexing mc datasets in mc_read.
 * v581 *acm* 7/2005  Fix bug in getting start and end indices.
-* V590 *acm* 8/2005  fix bug 1332, calls to  CD_GET_ATTVAL and  CD_GET_ATTVAL
+* V600 *acm* 8/2005  fix bug 1332, calls to  CD_GET_ATTVAL and  CD_GET_ATTVAL
 *                    need cd_varid(ivar) not cd_varid as the second argument.
 
 * arguments:
@@ -124,7 +124,7 @@
      .            npts, var_id,index, nsteps_in_file, vlen, end_lstep
 	REAL*8	  TM_WORLD,start_tstep, end_tstep, start_read_tstep,
      .            end_read_tstep, epsilon
-	INTEGER   TM_SUBSC, NCOPN, NCVID, TM_LENSTR1, prev_steps
+	INTEGER   TM_SUBSC, TM_LENSTR1, prev_steps
 	LOGICAL   more_to_read, TM_FPEQ, TM_DFPEQ_TOL, CD_GET_ATTVAL, 
      .            got_scale, got_off, do_warn
         PARAMETER (do_warn = .TRUE. )

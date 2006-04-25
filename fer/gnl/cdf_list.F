@@ -74,8 +74,10 @@
 * V530 *acm* 3/01 pass calendar ID to EQUAL_RANGE
 *            4/16/01 properly declare TM_GET_CALENDAR_ID as integer
 * V533 *sh* 6/01 - added support for netCDF output string variables
+* V600 *acm* 8/05 - Allow more digits in xrevision number
 * V552 *acm* 4/03- up SANITARY_VAR_CODE and local variable varcode to 128 chars
-* V590 *acm* 8/05 - Allow more digits in xrevision number
+* V600 *acm* 6/06  Attribute control; get information for output from  
+*                  linked-list structure.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -104,7 +106,7 @@
         CHARACTER*1     crecdim
 
 * internal variable declarations:
-        LOGICAL         TM_LEGAL_NAME,
+        LOGICAL         TM_LEGAL_NAME, MATCH_NAME, 
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
@@ -112,18 +114,25 @@
      .			cx, mr, dset, grid, cdfid, ivar, nready,
      .                  lbuff, cdfstat, idim, i, loc, errloc,
      .                  recdim, cat, var, cat1, var1, iaxis,
-     .			final_status, type, maxstrlen,
-     .			write_lo(4), write_hi(4), make_lo(4), make_hi(4)
+     .			final_status, type, maxstrlen, 
+     .			write_lo(4), write_hi(4), make_lo(4), make_hi(4),
+     .                  dset_last	
+
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
 * V552 *acm* 4/03- up SANITARY_VAR_CODE and local variable varcode to 128 chars
 
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
-     .                  TM_FMT*12, 
-     .                  varcode*128, buff*140, revnum*6, c1*1
+     .                  TM_FMT*12,
+     .                  varcode*128, buff*140, revnum*12, c1*1
+
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
+* For error messages
+      CHARACTER*9 typnam(6)
+      DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
+     .            'NC_FLOAT', 'NC_DOUBLE'/
 
 * special equivalence (not in tmap_format/xdset_info.cd_equiv because 
 * "BYTE" isnt supported on DECstation)
@@ -151,26 +160,37 @@
 #else
       BYTE ibuff1
 #endif
-	REAL*4		rbuff4
+	REAL*4		rbuff4, vals, bad
+        REAL*8          dvals, scalefac, addoff
 	INTEGER*4	ibuff4
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
 * local parameter declarations
-        INTEGER         TM_GET_CALENDAR_ID, buff_size, sslimits0, 
-     .			wwlimits0, cal_id, tax, slen
-        LOGICAL         full_precision, DODS_cache, range_not_rqd
+
+        INTEGER         TM_GET_CALENDAR_ID, 
+     .                  buff_size, sslimits0, 
+     .			wwlimits0, cal_id, tax, varid, vartype, nvdims, 
+     .                  nvatts, vdims(8), iatt, slen, alen, istat, 
+     .                  attype, attlen, attoutflag, all_outflag,
+     .                  outtype
+        LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP,
+     .                  full_precision, DODS_cache, range_not_rqd,
+     .                  got_it, got_title, got_units, do_warn, coordvar
+
         PARAMETER     ( buff_size = 140,
      .			sslimits0 = 1+19-1,
      .			wwlimits0 = 1+23-1,
      .                  full_precision = .TRUE.,
-     .			 range_not_rqd = .FALSE. )
-	CHARACTER*32	cal_name
+     .			range_not_rqd = .FALSE. )
+	CHARACTER	cal_name*32 , attname*128, buff1*128, buff2*128
 
 * initialize
 	 ivar = 1  ! just house-keeping -- make sure all is init'ed
 	 flushed = .FALSE. ! on error, whether OK variables were written
 	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
+         do_warn = .TRUE.
+
          CALL CD_DEFER_COORD_WRITE(0,0,0,0,0,pcd_defer_init)
 
 * open/create the file
@@ -178,7 +198,8 @@
          IF ( status .NE. merr_ok ) GOTO 5400
 
 * update history attribute in the file
-	revnum = TM_FMT(revision_level, 5, 12, slen)
+        revnum = TM_FMT(revision_level, 5, 12, slen)
+
         CALL CD_STAMP_OUT( append, cdfid,
      .       program_name(:len_program_name)//' V'//revnum(:slen)//' '//
      .       progname_mod(:len_progname_mod)//' '//today_date, status )
@@ -193,7 +214,7 @@
 
 * DODS URL saved as a global attribute (11/96)
 	IF ( DODS_cache ) THEN
-! note that routine CDF_PREP_CACHE is assumed to have checked the validity
+! note that routine CDF_PREP_CACHE is assumore med to have checked the validity
 !      of the data set as a DODS data set
            dset = cx_data_set(cx_list(1))
 	   CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'DODS_URL',
@@ -201,8 +222,22 @@
            IF ( status .NE. merr_ok ) GOTO 5800
 	ENDIF
 
-*
-*  Loop tp create all of the variables and their metadata
+* Other global attributes, if they have been marked for output.
+* Mark global attrs for output with SET ATT/OUT=ALL .
+
+        varid = 0      
+	cx  = cx_list(1)
+        dset = cx_data_set( cx )
+        IF (dset .GE. 1) THEN
+          IF (ds_type(dset) .EQ. 'CDF' .OR. ds_type(dset) .EQ. ' MC')
+     .       CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
+        ENDIF
+        dset_last = dset
+        scalefac = 1.
+        addoff = 0.
+
+
+*  Loop to create all of the variables and their metadata
 *  (defer writing of binary data until end) 
 *
        DO 100 ivar = 1, nvars
@@ -210,13 +245,41 @@
 	   mr  = mr_list(ivar)
 	   grid	= cx_grid( cx )
            dset = cx_data_set( cx )
+           IF (dset_last .NE. dset) THEN
+              IF (dset .GE. 1) THEN
+                 IF (ds_type(dset) .EQ. 'CDF' .OR. 
+     .               ds_type(dset) .EQ. ' MC')
+     .          CALL CDF_LIST_GLOBAL_ATTS (dset, cdfid, status)
+              ENDIF
+              dset_last = dset
+           ENDIF
            cat = cx_category(cx)
            var = cx_variable(cx)
            varcode = SANITARY_VAR_CODE( cat, var )
+           got_title = .FALSE.
+           got_units = .FALSE.
+	   itsa_string = cx_type(cx) .EQ. ptype_string
+
+! is it in the linked-list for dset. If so get attr info, including original 
+! upper/lowercase form of the name.
+           itsa_uvar = cat .EQ. cat_user_var
+           IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = -1
+           CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+
+           vartype = 0
+           IF (status .EQ. ferr_ok) THEN
+              CALL CD_GET_VAR_INFO (dset, varid, varcode, vartype, nvdims, 
+     .            vdims, nvatts, coordvar, all_outflag, status) 
+              IF (dset .EQ. -1) THEN  !for user vars type not known in attrib structure
+                 vartype = 5
+                 IF (itsa_string) vartype = 2
+              ENDIF
+              CALL CD_GET_VAR_OUTTYPE (dset, varid, outtype, status) 
+              IF (outtype .EQ. 0) outtype = vartype
+           ENDIF
+
            IF ( cat .EQ. cat_pseudo_var ) varcode =
      .                            varcode(:TM_LENSTR1(varcode))//"_"
-           itsa_uvar = cat .EQ. cat_user_var
-	   itsa_string = cx_type(cx) .EQ. ptype_string
 
            tax = grid_line(t_dim,grid)
            cal_name = line_cal_name(tax)
@@ -317,33 +380,199 @@
 	      CALL WARN('Internal err: unknown data type')
 	      type = NCFLOAT
 	   ENDIF
+           IF (type .NE. 0 .AND. varid .GT. 0) type = outtype
+           IF (type .EQ. 0) outtype = vartype
 
 * create the variable and its grid (coordinate output gets deferred)
-           CALL CD_MAKE_VAR( cdfid, varcode, type, maxstrlen, grid,
-     .               make_lo, make_hi, recdim, enhead, new, 
+           CALL CD_MAKE_VAR( cdfid, dset, varcode, type, maxstrlen,
+     .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, status )
+
            IF ( status .NE. merr_ok ) GOTO 5800
 
 * if its a newly-created variable write attributes
-           IF ( new ) THEN
-* bad data flag
-	      IF ( .NOT.itsa_string ) THEN
-                 CALL CD_WRITE_ATTVAL(cdfid,varcode,'missing_value',
-     .                          mr_bad_data(mr), 1, NCFLOAT, status )
-                 IF ( status .NE. merr_ok ) GOTO 5800
+           IF ( new  .AND. all_outflag .GT. 0) THEN
 
-* fill value for uninitialized regions of output file
-                 CALL CD_WRITE_ATTVAL(cdfid,varcode,'_FillValue',
-     .                          mr_bad_data(mr), 1, NCFLOAT, status )
-                 IF ( status .NE. merr_ok ) GOTO 5800
-	      ENDIF
+* Write missing value and fill flag here; if writing the scale and
+* offset attributes, then un-scale the missing and fill flags, using
+* potentially double precision scale and offset from the linked-list
+* structure.
+
+              IF (varid .GT. 0) THEN
+                 scalefac = 1.
+                 attname = 'scale_factor'
+                 CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+                 IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
+                    IF (attype .EQ. nf_double) THEN
+                       got_it = NC_GET_ATTRIB_DP (dset, varid,
+     .                     attname, do_warn, varcode, attlen, 
+     .                     attoutflag, dvals)
+                       scalefac = dvals
+
+                    ELSE
+                       got_it = NC_GET_ATTRIB (dset, varid, attname,
+     .                    do_warn, varcode, buff_size, attlen, 
+     .                    attoutflag, buff, vals)
+                       scalefac = vals
+
+                    ENDIF
+                 ENDIF
+
+                 addoff = 0.
+                 attname = 'add_offset'
+                 CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat ) 
+                 IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
+                    IF (attype .EQ. nf_double) THEN
+                      got_it = NC_GET_ATTRIB_DP (dset, varid,
+     .                     attname, do_warn, varcode, attlen, 
+     .                     attoutflag, dvals)
+                      addoff = dvals
+
+                    ELSE
+                       got_it = NC_GET_ATTRIB (dset, varid, attname,
+     .                    do_warn, varcode, attlen, buff_size, 
+     .                    attoutflag, buff, vals)
+                      addoff = vals
+                    ENDIF
+                 ENDIF
+
+* Output the bad flag used by Ferret (and _FillValue which has been made  
+* the same as missing_flag)
+
+                 bad = mr_bad_data(mr)
+                 dvals = bad
+                 attlen = 1
+
+* Get attype for missing flag
+
+                 istat = ferr_ok
+                 attoutflag = 0
+                 CALL CD_GET_VAR_ATT_INFO(dset, varid, 'missing_value',
+     .			    attype, attlen, attoutflag, istat ) 
+
+* If the data is numeric, see if the missing flag needs to be rescaled, 
+* or converted to the output type
+
+                 IF (istat .EQ. ferr_ok .AND. outtype .NE. NCCHAR) THEN
+
+* If un-scaling on output, will also un-scale the missing flag.
+                    IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
+                       dvals = dvals/scalefac - add_offset
+                       vals = dvals
+
+* Otherwise convert missing flag to requested output type for the variable
+                    ELSE
+                       IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
+                          alen = TM_LENSTR1(typnam(attype))
+                          slen = TM_LENSTR1(typnam(outtype))
+                          CALL WARN (
+     .                      'Converting data type of missing_value '//
+     .                       typnam(attype)(1:alen)//
+     .                      ' to match output type of variable '//
+     .                      typnam(outtype)(1:slen) )
+                       ENDIF
+                       attype = outtype
+                    ENDIF
+   
+                    IF (attoutflag .EQ. 1) THEN
+                       CALL CD_WRITE_ATTVAL_DP(cdfid, varcode, 
+     .                   'missing_value', dvals, attlen, attype, status )
+                       IF (status .NE. ferr_ok) GOTO 5400
+                       CALL CD_WRITE_ATTVAL_DP(cdfid, varcode, 
+     .                   '_FillValue', dvals, attlen, attype, status )
+
+                    ENDIF
+                 ENDIF ! istat 
+
+                 got_title = .FALSE.
+
+* Get varcode into original upper/lowercase form
+
+                 CALL CD_GET_VAR_INFO (dset, varid, varcode, vartype, 
+     .                   nvdims, vdims, nvatts, coordvar, all_outflag, 
+     .                   status) 
+
+                 DO 200 iatt = 1, nvatts
+                    CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
+     .                                        attname, status)
+                    slen = TM_LENSTR1(attname)
+                    IF ( MATCH_NAME (attname,  slen,
+     .                               'MISSING_VALUE', 13 ) .OR. 
+     .                   MATCH_NAME (attname,  slen,
+     .                               '_FILLVALUE', 10 ) ) THEN
+                       slen = 0   ! done already
+
+                    ELSE IF ( MATCH_NAME (attname,  slen,
+     .                               'SCALE_FACTOR', 13 ) .OR. 
+     .                   MATCH_NAME (attname,  slen,
+     .                               'ADD_OFFSET', 10 ) ) THEN
+                       got_it = NC_GET_ATTRIB_DP (dset, varid, attname,
+     .                    do_warn, varcode, attlen, attoutflag, dvals)
+                       IF (attoutflag  .EQ. 1) 
+     .                    CALL CD_WRITE_ATTVAL_DP (cdfid, varcode,
+     .                          attname, dvals, attlen, attype, status )
+                          IF (status .NE. ferr_ok) GOTO 5400
+                    ELSE
+	               CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
+     .			    attype, attlen, attoutflag, istat )
+
+                       got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+     .                       do_warn, varcode, buff_size, attlen,
+     .                       attoutflag, buff, vals)
+
+                       IF (attype .EQ. NCCHAR .AND. attoutflag.EQ.1) THEN
+                          lbuff = TM_LENSTR1(buff)
+                          CALL CD_WRITE_ATTRIB(cdfid, varcode,
+     .                         attname, buff(:lbuff), .FALSE., status )
+                       ELSE IF (attoutflag.EQ.1) THEN
+                          CALL CD_WRITE_ATTVAL(cdfid, varcode,
+     .                          attname, vals, attlen, attype, status )
+                          IF (status .NE. ferr_ok) GOTO 5400
+
+                       ENDIF
+
+                       IF (MATCH_NAME (attname,  slen,
+     .                           'LONG_NAME', 9 )) got_title = .TRUE.
+
+                       IF (MATCH_NAME (attname,  slen,
+     .                           'UNITS', 5 )) got_units = .TRUE.
+
+                       IF (MATCH_NAME (attname,  slen,
+     .                           'SCALE_FACTOR', 12 )) THEN
+                          got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+     .                       do_warn, varcode, buff_size, attlen,
+     .                       attoutflag, buff, vals)
+                       ENDIF
+
+                       IF (MATCH_NAME (attname,  slen,
+     .                           'ADD_OFFSET', 10 )) THEN
+                          got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+     .                       do_warn, varcode, buff_size, attlen,
+     .                       attoutflag, buff, vals)
+                       ENDIF
+
+                    ENDIF
+
+ 200             CONTINUE
+! done getting attributes from linked-list structure
+
+              ENDIF ! varid GT 0
 
 * variable title
-              buff = VAR_TITLE( cx )
-              lbuff = TM_LENSTR1( buff )
-              CALL CD_WRITE_ATTRIB( cdfid, varcode, 'long_name',
+              IF (.NOT. got_title) THEN
+                 buff = VAR_TITLE( cx )
+                 lbuff = TM_LENSTR1( buff )
+                 
+                 attoutflag = 1
+                 IF (varid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .             'long_name',  attype,  attlen, attoutflag, status )
+                 IF (attoutflag .EQ. 1) 
+     .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
      .                              buff(:lbuff), .FALSE., status )
-              IF ( status .NE. merr_ok ) GOTO 5800
+                 IF ( status .NE. merr_ok ) GOTO 5800
+              ENDIF
 
 * modifier to variable title
 * ..."compressing" transforms and limits not given in definitions
@@ -373,28 +602,112 @@
                  buff = buff(:lbuff)//VAR_TITLE_MOD( cx )
                  lbuff = TM_LENSTR1( buff )
               ENDIF
+
 * ... write it to the file
-              IF ( lbuff .GE. 2 ) THEN
-                 CALL CD_WRITE_ATTRIB( cdfid, varcode, 'long_name_mod', 
-     .                              buff(2:lbuff), .FALSE., status )
+              IF ( lbuff .GE. 2 .AND. all_outflag .NE. 0) THEN
+
+* ..... unless the user has created a long_name_mod attribute, or asked that writing
+*       it be turned off. See if long_name_mod attribute has been created.
+
+                 attoutflag = 1
+                 slen = TM_LENSTR1(varcode)
+                 buff2 = varcode(1:slen)//'.long_name_mod'
+                 IF (varid .GT. 0) THEN
+                    CALL BREAK_VARATTNAME (buff2, dset, 
+     .               buff1, attname, varid, .FALSE., status)
+
+                    IF (status .EQ. ferr_ok) THEN
+                       CALL CD_GET_VAR_ATT_INFO(dset, varid,
+     .			  'long_name_mod', attype, attlen,
+     .			   attoutflag, istat )
+                       IF (attoutflag .EQ. 1) got_it = NC_GET_ATTRIB 
+     .                     ( dset, varid, attname, .FALSE., varcode, 
+     .                      buff_size, attlen, attoutflag, 
+     .                      buff(2:), vals)
+                       lbuff = TM_LENSTR1( buff )
+                    ENDIF
+                 ENDIF
+                 status = ferr_ok
+
+                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
+     .              CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name_mod',  
+     .                buff(2:lbuff), .FALSE., status )
+
                  IF ( status .NE. merr_ok ) GOTO 5800
               ENDIF
 
 * data set of origin
-              IF ( dset .NE. pdset_irrelevant ) THEN
-                 buff = 'From '
-                 CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
-                 lbuff = TM_LENSTR1( buff )
-                 CALL CD_WRITE_ATTRIB( cdfid, varcode, 'history', 
+              IF ( dset .NE. pdset_irrelevant .AND. dset.NE.-1) THEN
+       
+* ..... unless the user has created a history attribute, or asked that writing
+*       it be turned off. See if there is a history attribute
+
+                 attoutflag = 1
+                 IF (varid .GT. 0) THEN
+                    slen = TM_LENSTR1(varcode)
+                    buff2 = varcode(1:slen)//'.history'
+                    CALL BREAK_VARATTNAME (buff2, dset, buff1, attname,
+     .                   varid, .FALSE., status)
+
+                    IF (status .EQ. ferr_ok) THEN
+                       CALL CD_GET_VAR_ATT_INFO(dset, varid, 'history',
+     .		  	    attype, attlen, attoutflag, istat )
+                       IF (attoutflag .EQ. 1) got_it = NC_GET_ATTRIB (
+     .		  	     dset, varid, attname, .FALSE., varcode,
+     .		  	     buff_size, attlen, attoutflag, 
+     .                       buff, vals)
+                       lbuff = TM_LENSTR1( buff )
+                       IF (buff .EQ. ' ') THEN
+                          buff = 'From '
+                          CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
+                          lbuff = TM_LENSTR1( buff )
+                       ENDIF
+
+                    ELSE
+                       buff = 'From '
+                       CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
+                       lbuff = TM_LENSTR1( buff )
+                    ENDIF
+                 
+                 ELSE
+                    buff = 'From '
+                    CALL GET_SHORT_DSET_NAME( cx_data_set(cx), 
+     .                        buff(6:), lbuff)
+                    lbuff = TM_LENSTR1( buff )
+                 ENDIF ! varid .gt. 0
+
+
+                 status = ferr_ok
+
+                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
+     .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
      .                              buff(:lbuff), .FALSE., status )
                  IF ( status .NE. merr_ok ) GOTO 5800
+
+              ELSEIF ( cx_data_set(cx) .NE. pdset_irrelevant .AND.
+     .                 cx_data_set(cx) .NE. -1) THEN
+* data set of origin for user variable
+
+                 attoutflag = 1
+                 buff = 'From '
+                 CALL GET_SHORT_DSET_NAME(cx_data_set(cx), buff(6:), lbuff)
+                 lbuff = TM_LENSTR1( buff )
+                 status = ferr_ok
+
+                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
+     .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
+     .                              buff(:lbuff), .FALSE., status )
+                 IF ( status .NE. merr_ok ) GOTO 5800
+
               ENDIF
 
 * units
               buff = VAR_UNITS( cx )
               lbuff = TM_LENSTR1( buff )
-              IF ( buff .NE. ' ' ) THEN
-                 CALL CD_WRITE_ATTRIB( cdfid, varcode, 'units',
+
+              IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND. 
+     .          .NOT.got_units ) THEN
+                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'units',
      .                              buff(:lbuff), .FALSE., status )
                  IF ( status .NE. merr_ok ) GOTO 5800
               ENDIF
@@ -402,16 +715,51 @@
 * NetCDF variable IDs - additional information needed for DODS caching (11/96)
 	      IF ( DODS_cache ) THEN
 	         ibuff4 = cd_varid(var)		! for F90 data type checks
-	         CALL CD_WRITE_ATTVAL(cdfid,varcode,'netcdf_var_id',
-     .                          rbuff4, 1, NCLONG, status )
+	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
+     .                     'netcdf_var_id',rbuff4, 1, NCLONG, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
 	         ibuff1 = cd_data_type(var)	! for F90 data type checks
-	         CALL CD_WRITE_ATTVAL(cdfid,varcode,'netcdf_data_type',
-     .                          rbuff4, 1, NCBYTE, status )
+	         CALL CD_WRITE_ATTVAL(cdfid, varcode,
+     .                  'netcdf_data_type', rbuff4, 1, NCBYTE, status )
                  IF ( status .NE. merr_ok ) GOTO 5800
 	      ENDIF
 
            ENDIF
+
+* Write attributes for psuedo-variables
+           IF (cat .EQ. cat_pseudo_var) THEN  
+
+	      CALL CD_WRITE_ATTVAL(cdfid, varcode,
+     .          'missing_value', bad, 1, type, status )
+              IF ( status .NE. merr_ok ) GOTO 5800
+
+              CALL CD_WRITE_ATTVAL(cdfid, varcode,
+     .          '_FillValue', bad, 1, type, status )
+              IF ( status .NE. merr_ok ) GOTO 5800
+
+              buff = VAR_TITLE( cx )
+              lbuff = TM_LENSTR1( buff )
+                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
+     .                              buff(:lbuff), .FALSE., status )
+              IF ( status .NE. merr_ok ) GOTO 5800
+
+* ...other variable modifiers
+              c1 = VAR_TITLE_MOD( cx )
+              IF ( c1 .NE. ' ' ) THEN
+                 IF ( lbuff .GT. 1 ) THEN
+                    buff = buff(:lbuff)//', '
+                    lbuff = MIN( 140, lbuff+2)
+                 ENDIF
+                 buff = buff(:lbuff)//VAR_TITLE_MOD( cx )
+                 lbuff = TM_LENSTR1( buff )
+              ENDIF
+* ... write it to the file
+              IF ( lbuff .GE. 2 ) THEN
+                 CALL CD_WRITE_ATTRIB( cdfid, varcode, 'long_name_mod', 
+     .                              buff(2:lbuff), .FALSE., status )
+                 IF ( status .NE. merr_ok ) GOTO 5800
+              ENDIF
+           ENDIF  ! pseudo-variables
 
  100    CONTINUE
 	nready = nvars
@@ -433,9 +781,21 @@
 	   cx  = cx_list(ivar)
 	   mr  = mr_list(ivar)
 	   grid	= cx_grid( cx )
+           dset = cx_data_set( cx )
            cat = cx_category(cx)
            var = cx_variable(cx)
            varcode = SANITARY_VAR_CODE( cat, var )
+           
+           CALL CD_GET_VAR_ID (dset, varcode, varid, status)  ! is it in the linked-list for dset
+           IF (status .NE. ferr_ok .AND. itsa_uvar ) THEN
+              dset = -1    ! is it a user var based on a var in dset
+              CALL CD_GET_VAR_ID (dset, varcode, varid, status) 
+           ENDIF
+* Get varcode into original upper/lowercase form
+           IF (status .EQ. ferr_ok) CALL CD_GET_VAR_INFO (dset, 
+     .                  varid, varcode, vartype,  nvdims, vdims,
+     .                  nvatts, coordvar, all_outflag, status) 
+
            IF ( cat .EQ. cat_pseudo_var ) varcode =
      .                            varcode(:TM_LENSTR1(varcode))//"_"
 
@@ -449,9 +809,10 @@
            IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
 
 * write the data for this variable
-           CALL CD_WRITE_VAR ( memory, cdfid, varcode, grid, write_lo, write_hi,
-     .                         memory(1,mr_blk1(mr)), edges_flag, do_bounds, 
-     .                         status )
+
+           CALL CD_WRITE_VAR ( memory, cdfid, dset, varcode, grid, write_lo, 
+     .                        write_hi, memory(1,mr_blk1(mr)), edges_flag,
+     .                        do_bounds, scalefac, addoff, bad, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

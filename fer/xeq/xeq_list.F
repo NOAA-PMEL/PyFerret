@@ -124,7 +124,7 @@
 * V554 *acm* 9/03  Add output in /DODS binary format for list/format=DODS, 
 *                  see the flag do_dods
 * V581 *acm* 3/05  Increase length of string buff so that title can be longer.
-* V590: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
+* V600: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
 *                    multiple variables like free-format listings, rather than 
 *                    like LIST/SINGLY. (bug 1273)
 

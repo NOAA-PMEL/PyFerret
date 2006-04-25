@@ -103,7 +103,7 @@
 * V552 *acm* 6/03  The v541 fix noted above introduced bug in symbol substitution
 *                  within REPEATS: yes? def sym a 0; rep/i=1:3 (def sym a `i`; say ($a))
 *                  Fix in saving cmnd_copy.  Bugs 376 and 558 fixed.
-* V590 *acm* 3/06  fixing bugs 439&1390, pass cmnd_num to repl_exprns so we can decide
+* V600 *acm* 3/06  fixing bugs 439&1390, pass cmnd_num to repl_exprns so we can decide
 *                  if the command is an action command, and so whether to apply command
 *                  context to grave-accent expressions.
 

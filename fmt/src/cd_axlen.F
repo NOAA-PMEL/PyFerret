@@ -67,7 +67,7 @@
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line
       LOGICAL CD_GET_ATTVAL, got_it, do_warn
       PARAMETER (do_warn = .TRUE.)
-      INTEGER NCVID, TM_LENSTR1, cdfstat, nval, npts, nlen, axid
+      INTEGER TM_LENSTR1, cdfstat, nval, npts, nlen, axid
       CHARACTER*24 axname
       REAL rlen
 

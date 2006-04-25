@@ -98,6 +98,7 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xinterrupt.cmn'
+	include	'xfr_grid.cmn'
 
 * calling argument declarations:
 	INTEGER		isp_base, dflt_cx, status
@@ -279,7 +280,8 @@
 	ELSEIF ( cat .EQ. cat_counter_var ) THEN
 	   CALL IS_COUNTER_VAR   (var, memory, *2000, status )
 	   GOTO 5000
-	ENDIF
+
+        ENDIF
 
 * 3/99 complete missing context limits as full-span: to improve cache hits
 	CALL COMPLETE_MISSING_LIMITS( cx )
@@ -428,6 +430,11 @@
 * ... get a string in qouble quotes
 	ELSEIF ( cat .EQ. cat_string	) THEN
 	   CALL IS_STRING   ( memory, *10, *2000, status )
+	   GOTO 5000
+
+* ... get an attribute value
+	ELSEIF ( cat .EQ. cat_attrib_val ) THEN
+	   CALL IS_ATTRIB_VAL   ( memory, *10, *2000, status )
 	   GOTO 5000
 
 * ... get a counter variable

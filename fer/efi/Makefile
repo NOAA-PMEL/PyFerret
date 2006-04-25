@@ -48,7 +48,7 @@ ferret_cmn:
 	ln -s ../common ferret_cmn
 
 clean:
-	rm -f core *.o ferret_cmn
+	rm -f core *.o *.a *.f ferret_cmn
 
 #
 # End of Makefile

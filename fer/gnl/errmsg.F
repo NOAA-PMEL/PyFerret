@@ -85,7 +85,7 @@
 *                       checking for user variables not relevant to the context
 * *acm* 10/04 v5.80  -- New code ferr_nomessge for use when user-given error msg 
 *                       in coached string substitution
-* *acm* 11/05 v5.90  -- New symbol FER_LAST_ERROR contains all the text normally
+* *acm* 11/05 V600   -- New symbol FER_LAST_ERROR contains all the text normally
 *                       written to std out. 
 
 	include 'ferret.parm'

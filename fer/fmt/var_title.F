@@ -63,9 +63,10 @@
 *                  g77 bug would cause crash when trying to prepend chars
 *                  onto CHAR function variable 
 * v554 *acm* 1/04 - add variable category cat_counter_var
+* V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
+*                   varname.attname
 
-#ifdef unix
-	include	'tmap_dims.parm'
+        include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
@@ -75,27 +76,19 @@
 	include	'xcalc_vars.cmn'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
-#else
-	INCLUDE	'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE	'TMAP_FORMAT:XDSET_INFO.CMN'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XCALC_VARS.CMN'
-	INCLUDE	'FERRET_CMN:XCONTEXT.CMN'
-	INCLUDE	'FERRET_CMN:XALGEBRA.CMN'
-#endif
 
 * calling argument declarations
 	INTEGER	cx
 
 * internal variable declarations
-	LOGICAL 	UNIT_CHG_AX
+	LOGICAL 	UNIT_CHG_AX, NC_GET_ATTRIB, got_it
 	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
-     .			uvar, item, start, end, slen
-	CHARACTER	AX_TITLE*32, VAR_CODE*128, TM_FMT*10,
-     .                  REPLACE_DEQ*180,   ! .GT. uvar_text_len
-     .                  buff1*32, buff2*10, buff*2048
+     .			uvar, item, start, end, slen, dset, varid,
+     .                  attlen, attoutflag
+        REAL            vals
+	CHARACTER	AX_TITLE*32, VAR_CODE*128, SANITARY_VAR_CODE*128, 
+     .                  TM_FMT*10, REPLACE_DEQ*180,   ! .GT. uvar_text_len
+     .                  buff1*32, buff2*10, buff*2048, varname*128
 
 * initialize
 	var = cx_variable( cx )
@@ -106,21 +99,45 @@
 	   IF ( ds_var_title( var )(1:1) .NE. ' ' ) THEN
 	      var_title = ds_var_title( var )
 	   ELSE
-	      var_title = VAR_CODE( cat, var )
-!	      var_title = '"'//var_title(:TM_LENSTR1(var_title))//'"'
+              dset = cx_data_set(cx)
+              IF (dset .NE. pdset_irrelevant .AND. 
+     .            dset .NE. unspecified_int4) THEN
+! is it in the linked-list for dset. If so get attr info, including original 
+                 varname = SANITARY_VAR_CODE( cat, var )
+                 CALL CD_GET_VAR_ID (dset, varname, varid, status)
+                 got_it = status .EQ. ferr_ok .AND.
+     .              NC_GET_ATTRIB (dset, varid, 'long_name',
+     .             .TRUE., varname, 2048, attlen, attoutflag,
+     .             buff, vals)
+                 var_title = buff
+              ELSE
+                 var_title = VAR_CODE( cat, var )
+!	         var_title = '"'//var_title(:TM_LENSTR1(var_title))//'"'
+              ENDIF
 	   ENDIF
 
 	ELSEIF ( cat .EQ. cat_calc_var ) THEN
 
 	   var_title = cvar_primary_name( var )
 
-	ELSEIF ( cat .EQ. cat_user_var ) THEN
+	ELSEIF ( cat .EQ. cat_user_var  ) THEN
 
 	   IF ( uvar_title( var ) .EQ. ' ' ) THEN
 	      var_title = REPLACE_DEQ(
      .             uvar_text(var)(:TM_LENSTR1(uvar_text(var)) ))
 	   ELSE
 	      var_title = uvar_title( var )
+	   ENDIF
+
+
+	ELSEIF ( cat .EQ. cat_attrib_val  ) THEN
+
+	   uvar = cx_variable(cx)
+	   var_title = uvar_text(uvar)
+
+	   IF ( uvar_title( uvar ) .EQ. ' ' ) THEN
+	      var_title = REPLACE_DEQ(
+     .             uvar_text(uvar)(:TM_LENSTR1(uvar_text(uvar)) ))
 	   ENDIF
 
 	ELSEIF ( cat .EQ. cat_pseudo_var ) THEN

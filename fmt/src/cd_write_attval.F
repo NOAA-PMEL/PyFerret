@@ -45,6 +45,10 @@
 
 * revision 0.0 - 3/92
 *               10/92: set into define mode
+* 10/2005 NOTE: do not change this for the attribute-access changes. 
+*               This routine accesses the newly-created file using 
+*               netcdf calls as always. The values sent in come from
+*               the linked-list structure but output is all the same.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -76,13 +80,29 @@ xx        include 'netcdf.decl'  ! untested
 #endif
 
 * argument declarations
-      INTEGER cdfid, nval, type, status
+      INTEGER cdfid, nval, type, i4(10), i, status
+      INTEGER*2 i2(10)
+      BYTE i1
       CHARACTER*(*) vname, att
-      INTEGER val(*)
+      REAL val(*)
 
 * local variable declarations:
-      INTEGER TM_LENSTR1, NCVID,
-     .        vlen, alen, cdfstat, varid, attype, attlen
+      INTEGER TM_LENSTR1, NC_PUT_ATT_FLOAT,
+     .        vlen, alen, cdfstat, varid, attype, attlen      
+      CHARACTER*128 abuff     ! needed because of fussy compilers and // concatenation
+
+      PARAMETER (flen=512)      ! size of variable name string
+
+#ifdef sun
+      BYTE      fhol(flen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
+#endif 
+
+* For error message
+      CHARACTER*9 typnam(6)
+      DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
+     .            'NC_FLOAT', 'NC_DOUBLE'/
 
 * initialize
       vlen = TM_LENSTR1( vname )
@@ -104,9 +124,38 @@ xx        include 'netcdf.decl'  ! untested
       CALL CD_SET_MODE(cdfid, pcd_mode_define, status)
       IF ( status .NE. merr_ok ) RETURN
 
-* write the attribute
-      CALL NCAPT( cdfid, varid, att(:alen), type, nval,
-     .            val, cdfstat )
+* Convert to the requested type and write the attribute
+* nc_put_att_float converts types if the pointer points to a different
+* type than that specified by type
+
+      CALL TM_FTOC_STRNG( att(1:alen), fhol, flen )
+
+      status = merr_ok
+      CALL CD_WRITE_ATT_SUB(cdfid, varid, fhol, type, nval, val, status)
+
+      IF ( status .EQ. -60) GOTO 5300
+
+
+c*      IF (type .EQ. NCLONG) THEN
+c*         DO i = 1,nval
+c*           i4(i) = NINT(val(i))
+c*         ENDDO
+c*         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
+c*     .            i4, cdfstat )
+c*      ELSE IF (type .EQ. NCSHORT) THEN
+c*         DO i = 1,nval
+c*           i2(i) = NINT(val(i))
+c*         ENDDO
+c*         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
+c*     .            i2, cdfstat )
+c*c      ELSE IF (type .EQ. NCBYTE) THEN
+c*c         i1 = INT(val)
+c*c         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
+c*c     .            i1, cdfstat )
+c*      ELSE
+c*         CALL NCAPT( cdfid, varid, att(:alen), type, nval,
+c*     .           val, cdfstat )
+c*      ENDIF
 
 * successful completion
  1000 status = merr_ok
@@ -123,6 +172,13 @@ xx        include 'netcdf.decl'  ! untested
      .   unspecified_int4,
      .  'incompatible data type of CDF attribute',
      .  att(:alen), *5900 )
+
+ 5300  abuff = att
+       CALL TM_ERRMSG (status+pcdferr, status, 'CD_WRITE_ATTVAL',
+     .     no_descfile, no_stepfile, 
+     .    'data in attribute '//abuff(:alen)//
+     .    ' not representable in output type '//typnam(type),
+     .     no_errstring, *5900 )
 
 * error exit
  5900   RETURN

@@ -1,5 +1,6 @@
-	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, vname, grid, lo, hi, 
-     .                            dat, edges_flag, do_bounds, status )
+	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
+     .                            hi, dat, edges_flag, do_bounds, 
+     .                            scalefac, addoff, bad, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -53,9 +54,12 @@
 * V533 *sh* 6/01 - add support for string variables (NCCHAR)
 * V552 *acm* 5/03   increase vbuff to 128 chars 
 * V570 *acm*  5/04 write bounds 2xN coordinates when record axis is irregular.
+* V600 *acm*  6/05 Attribute control. Get info from linked-list structure.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
+*     dset    - dset (if netcdf file, for getting name and attribute 
+*               info from linked-list structure  
 *     vname   - name of variable
 *     grid    - defining grid for variable
 *     lo      - low indices of variable hyperslab
@@ -80,25 +84,28 @@
 
 * argument declarations
       LOGICAL do_bounds
-      INTEGER cdfid, grid, lo(4), hi(4), edges_flag, status
+      INTEGER cdfid, dset, grid, lo(4), hi(4), edges_flag, status
       CHARACTER*(*) vname
-      REAL dat(*)
+      REAL dat(*), bad
+      REAL*8 scalefac, addoff
       REAL memory( mem_blk_size, max_mem_blks )
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      INTEGER TM_LENSTR1, NCVID,
+      INTEGER TM_LENSTR1, 
      .        start(4), count(4), idim, iaxis, cdfstat, vlen,
      .        slab_min(4), slab_max(4), tmrecax, cdrecax, dims, varid,
      .        hilim, i100, i, j, k, l, recaxvar, lorec, hirec, rectyp,
      .	      vartyp, nvdim, vdims(6), nvatts, bndstart(2), bndcount(2),
      .        mblk1, nblks, npts, savecount
-      LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, got_it
+      LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, 
+     .        got_it, scaled
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(4)
       DATA  	   dimnam/'I','J','K','L'/
       CHARACTER*128 vbuff     ! needed because of fussy f772.1 DEC compiler
+      REAL   r_scale, r_offset
       REAL*8 r100_8(200)
       REAL*8 TM_WORLD
       
@@ -108,6 +115,12 @@
       REAL*4 r100_4(200)
       REAL*8 new_box_lo, old_box_hi, reset_bnd_lo, missflag
 c      EQUIVALENCE (r100_8, r100_4)
+
+* For error message
+      CHARACTER*9 typnam(6)
+      DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
+     .            'NC_FLOAT', 'NC_DOUBLE'/
+
 
 * initialize
       vlen = TM_LENSTR1( vname )
@@ -312,7 +325,7 @@ c      EQUIVALENCE (r100_8, r100_4)
          IF ( (.NOT.line_regular(iaxis) .OR. do_bounds) 
      .         .AND. (edges_flag .EQ. 0) ) THEN
 
-            name = CD_AXIS_NAME( grid, tmrecax, nlen )
+            name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
 
             name = name(:nlen)//'_bnds'
             elen = nlen + 5
@@ -347,9 +360,37 @@ c      EQUIVALENCE (r100_8, r100_4)
 
       ENDIF
 
+* if data was scaled on input, rescale it. This also rescales data containing
+* the missing value flag, as on input.
+
+      IF ( .NOT. TM_DFPEQ(scalefac, 1.D0) .OR. 
+     .     .NOT. TM_DFPEQ(addoff, 0.D0) ) THEN
+
+         IF (.NOT. TM_DFPEQ(scalefac, 0.D0) ) r_scale = 1.D0/scalefac
+         r_offset = -1.D0* addoff
+
+         npts = 1
+         DO 250  idim = 1, 4
+            IF ( count(idim) .GT. 0 ) npts = npts* count(idim)
+ 250     CONTINUE
+         CALL TM_SCALE( r_scale, r_offset, dat, bad, npts )
+
+         scaled = .TRUE.
+      ENDIF
+
 * write the slab
       CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start, count, 
      .	vdims(1), dat, cdfstat )
+
+* If rescaled above, restore it to previous values
+
+      IF ( scaled ) THEN
+         r_scale = scalefac
+         r_offset = addoff
+         CALL TM_SCALE( r_scale, r_offset, dat, bad, npts )
+      ENDIF
+
+      IF ( cdfstat .EQ. -60) GOTO 5260
       IF ( cdfstat .NE. NCNOERR ) GOTO 5300
 !      CALL NCVPT( cdfid, varid, start,count, dat, cdfstat )
 !      IF ( cdfstat .NE. NCNOERR ) GOTO 5300
@@ -381,6 +422,14 @@ c      EQUIVALENCE (r100_8, r100_4)
      .     no_descfile, no_stepfile, 
      .    'inconsistent '//dimnam(idim)//' axis length for '//
      .     vbuff(:vlen), no_errstring, *5900 )
+     
+
+ 5260 vbuff = vname 
+      CALL TM_ERRMSG (cdfstat+pcdferr, status, 'CD_WRITE_VAR',
+     .     no_descfile, no_stepfile, 
+     .    'data in variable '//vbuff(:vlen)//
+     .    ' not representable in output type '//typnam(vartyp),
+     .     no_errstring, *5900 )
 
  5300 CALL TM_ERRMSG
      . ( cdfstat+pcdferr, status, 'CD_WRITE_VAR', unspecified_int4,
@@ -390,3 +439,4 @@ c      EQUIVALENCE (r100_8, r100_4)
 * error exit
  5900   RETURN
 	END
+

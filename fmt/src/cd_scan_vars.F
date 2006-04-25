@@ -13,7 +13,7 @@
 *  and distribute this software, and any derivative works thereof, and
 *  its supporting documentation for any purpose whatsoever, provided
 *  that this entire notice appears in all copies of the software,
-*  derivative works and supporting documentation.  Further, the user
+*  derivative works and supporting documentation.  Further, the user5/4/2005
 *  agrees to credit NOAA/PMEL/TMAP in any publications that result from
 *  the use of this software or in any product that includes this
 *  software. The names TMAP, NOAA and/or PMEL, however, may not be used
@@ -71,8 +71,19 @@
 * V510 *sh* 3/00: added tregular argument
 *		- convert to dynamic grid and axis management
 * V552 5/03 *acm*: increase size of vname from 64 to 128 chars
-* v590 8/05 *amc*  Fix bug 1318, wrong string length of bname in last arg to CD_GET_ATTRIB
+* V600 8/05 *amc*  Fix bug 1318, wrong string length of bname in last arg to CD_GET_ATTRIB
+* V600 *ACM* attribute control. 
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
+*               linked list structure
+*             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
+*               strings or real values according to attrib type
+*             Replace NCINQ with NCF_INQ_DS
+*             Replace NCVINQ for variables, with CD_GET_VAR_INFO
+*             Replace NCDID with CD_GET_DIM_ID
+*             Replace NCDINQ with CD_GET_DS_DIMS
 
+* argument definitions:
+* argument definitions:
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -110,18 +121,24 @@
 * local variable declarations:
 *  ivtm - TMAP library variable ID
 *  ivcd - netCDF file variable ID
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL, 
+      LOGICAL NC_GET_ATTRIB, 
      .        TM_LEGAL_NAME, MATCH_NAME,
      .        got_it, got_bad, its_epic, 
-     .        got_a_variable, failed_axis
-      INTEGER NCVID,
-     .	      STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, NCDID,
-     .        TM_LENSTR, 
-     .        ndims, nvars, cdfstat, las_pos, first_pos, iaxis,
+     .        got_a_variable, failed_axis, coordvar
+      INTEGER STR_UPCASE, STR_CASE_BLIND_COMPARE, TM_LENSTR1, 
+     .        TM_LENSTR, NCF_INQ_DS, 
+     .        nvars,  ndims, ngatts, recdim, 
+     .        cdfstat, las_pos, first_pos, iaxis,
      .        ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, i, vlen,
-     .        ngatts, recdim, istat, npts, epic_t2,
-     .        nbvar, ivar, len_test, len_mchars
-* 4/99 *kob*
+     .        istat, npts, epic_t2,
+     .        nbvar, ivar, len_test, len_mchars, 
+     .        attype, attlen, attoutflag, maxlen, iatt, 
+     .        varid, all_outflag, dset_num
+
+      REAL vals  ! potential numerical attributes
+      CHARACTER*128 attname
+
+
 * ?? how many bounds variables (bname) might there be ??
 
       INTEGER max_vnamelen
@@ -129,6 +146,8 @@
       CHARACTER    vname*128, name*16, buff*128
       CHARACTER*128 bname(30)
       REAL*4  global_bad
+c      REAL*8  dg_bad
+      REAL dg_bad
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -145,6 +164,8 @@
 #else
       BYTE cd_data_type(maxvars)
 #endif
+
+
       EQUIVALENCE ( ds_precision, cd_data_type )
       REAL    r4_grid_start(4,maxvars),
      .        r4_grid_end(4,maxvars)
@@ -169,20 +190,46 @@
 !        lastax = firstax - 1
 !	IF (status .NE. merr_ok) GOTO 5900
 
-* get the vital statistics for the CDF file
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+* get the vital statistics for the data set 
+
+        dset_num = dset
+        IF (dset_num .LT. -1) dset_num = -1
+        istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
+
         its_epic = ds_type(dset) .EQ. 'ECDF'
 
 * get the global bad data flag (used by EPIC but sometimes missing)
-        got_bad = CD_GET_ATTVAL( cdfid, NCGLOBAL, 'missing_value',
-     .             do_warn, ' ', global_bad, 1, istat )
-        IF ( .NOT.got_bad ) THEN
-           IF ( its_epic ) THEN
-              global_bad = 1.E35     ! default for EPIC
-           ELSE
-              global_bad = -1.E34    ! default for FERRET
-           ENDIF
+
+* get global attribute pseudo-variable id
+
+        IF (ngatts .GT. 0) THEN
+           CALL CD_GET_VAR_ID (dset, '.', varid, status)
+
+* loop through global attributes looking for missing-value attrib
+           DO 20 iatt = 1, ngatts
+
+* get global attribute name
+              name = ' '
+              CALL CD_GET_VAR_ID (dset, '.', varid, status)
+              CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, name, status)
+              maxlen = 128
+              IF ( name .EQ. 'missing_value' .OR. 
+     .             name .EQ. 'MISSING_VALUE')
+     .           got_bad = NC_GET_ATTRIB ( dset, varid, name, do_warn, 
+     .                       '.', maxlen, attlen, attoutflag, 
+     .                       buff, dg_bad)
+
+              IF (got_bad) THEN
+                 global_bad = dg_bad
+              ELSE
+                 IF ( its_epic ) THEN
+                    global_bad = 1.E35     ! default for EPIC
+                 ELSE
+                    global_bad = -1.E34    ! default for FERRET
+                 ENDIF
+              ENDIF
+  20       CONTINUE
+
         ENDIF
 
 *   * * * loop through all variables in the net CDF file * * *
@@ -194,9 +241,11 @@
         DO 2000 ivcd = 1,nvars
 
 * get the vital statistics for this variable
-           CALL NCVINQ(cdfid, ivcd, vname, vartyp, nvdim, vdims,
-     .                 nvatts,cdfstat)
-           IF ( cdfstat .NE. NCNOERR ) GOTO 5200
+
+           CALL CD_GET_VAR_INFO (dset, ivcd, vname, vartyp,
+     .                 nvdim, vdims, nvatts, coordvar, 
+     .                 all_outflag, status)
+           IF ( status .NE. merr_ok ) GOTO 5200
            vlen = TM_LENSTR1(vname)
 
 *** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
@@ -204,16 +253,23 @@
 	   IF ( nvdim .NE. 1 ) GOTO 400
 
 * if var name doesn't match a dim name it isn't a coordinate var
-	   i = NCDID( cdfid, vname(:vlen), cdfstat )
-           IF (cdfstat .NE. NCNOERR ) GOTO 400
+           CALL CD_GET_DIM_ID (dset, vname(:vlen), i)
+           IF (i .EQ. atom_not_found) GOTO 400
 
 * See if it has a bounds attribute 
 
-           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'bounds',
-     .            do_warn, vname(:vlen), bname(nbvar+1), max_vnamelen)
-           IF (got_it) THEN
-              nbvar = nbvar + 1
-              istat = STR_UPCASE( bname(nbvar), bname(nbvar) )
+           maxlen = 128
+           got_it = NC_GET_ATTRIB( dset, ivcd, 'bounds',
+     .              do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
+     .              bname(nbvar+1), vals )
+
+           IF (got_it ) THEN
+	      CALL CD_GET_VAR_ATT_INFO(dset, ivcd, 'bounds',
+     .			    attype, attlen, attoutflag, istat )
+              IF (attype .EQ. nf_char) THEN
+                 nbvar = nbvar + 1
+                 istat = STR_UPCASE( bname(nbvar), bname(nbvar) )
+              ENDIF
            ENDIF
 
   400      CONTINUE
@@ -233,15 +289,18 @@
 	   failed_axis = .FALSE.
 
 * get the vital statistics for this variable
-           CALL NCVINQ(cdfid, ivcd, vname, vartyp, nvdim, vdims,
-     .                 nvatts,cdfstat)
-           IF ( cdfstat .NE. NCNOERR ) GOTO 5200
-           vlen = TM_LENSTR1(vname)
 
+           CALL CD_GET_VAR_INFO (dset, ivcd, vname, vartyp, nvdim,
+     .                 vdims, nvatts, coordvar, all_outflag, status)
+           IF ( status .NE. merr_ok ) GOTO 5200
+           vlen = TM_LENSTR1(vname)
 
 *** CHECK A NUMBER OF REASONS TO IGNORE THIS VARIABLE
 * is the dimension name "grid_definition" ? If so, handled elsewhere
-	   CALL NCDINQ( cdfid, vdims, buff, npts, cdfstat )
+
+           CALL CD_GET_DS_DIMS (dset, vdims(1), buff, npts, istat)
+           IF ( istat .NE. merr_ok ) GOTO 5200
+
            istat = STR_CASE_BLIND_COMPARE('grid_definition', buff(:15) )
            IF ( istat .EQ. str_eq ) GOTO 1000
 
@@ -249,23 +308,28 @@
            IF ( its_epic .AND. vname(:vlen).EQ.'time2' ) GOTO 1000
 
 * Is it an edge definition ? If so, process w/ corresponding axis
-           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'edges', do_warn, 
-     .                            vname(:vlen), buff, max_vnamelen ) !linenamlen
+           maxlen = max_vnamelen 
+           got_it = NC_GET_ATTRIB( dset, ivcd, 'edges', do_warn, 
+     .                            vname(:vlen), maxlen, attlen,
+     .                            attoutflag, buff, vals)
+
            IF ( got_it .AND. buff.EQ.' ' ) GOTO 1000
 
 * or is it really a child axis (avail for. generic CDF apps but not needed) ?
-           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'child_axis',
-     .                            do_warn, vname(:vlen), name, 16 ) !linenamlen
+           maxlen = 16  !linenamlen
+           got_it = NC_GET_ATTRIB( dset, ivcd, 'child_axis',
+     .                            do_warn, vname(:vlen), maxlen, attlen,
+     .                            attoutflag, name, vals ) 
            IF ( got_it ) GOTO 1000
 
 * or is it really a bounds variable for an axis?  If so it is processed with the axis.
 
            len_test = TM_LENSTR(vname)
            IF (nbvar .GT. 0) then 
-              DO 20 ivar = 1, nbvar
+              DO 30 ivar = 1, nbvar
                  len_mchars = TM_LENSTR(bname(ivar))
                  IF (MATCH_NAME(vname, len_test, bname(ivar), len_mchars )) GOTO 1000
-   20         CONTINUE
+   30         CONTINUE
            ENDIF
 
 *** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
@@ -274,16 +338,19 @@
 
 * if for some reason it is desirable for an axis name not to match its dim
 * name then the "parent_axis" attribute can flag that it is a parent axis 
-           got_it = CD_GET_ATTRIB( cdfid, ivcd, 'parent_axis',
-     .                            do_warn, vname(:vlen), name, 16 )
+           maxlen = 16  !linenamlen
+           got_it = NC_GET_ATTRIB( dset, ivcd, 'parent_axis',
+     .                            do_warn, vname(:vlen), maxlen,
+     .                            attlen, attoutflag, name, vals )
+
            IF ( got_it ) GOTO 100
 
 * if var name doesn't match a dim name it isn't a coordinate var
-	   i = NCDID( cdfid, vname(:vlen), cdfstat )
-           IF (cdfstat .NE. NCNOERR ) GOTO 500
+           CALL CD_GET_DIM_ID (dset, vname(:vlen), i)
+           IF (i .EQ. atom_not_found) GOTO 500
 
 * PROCESS AN AXIS	   
- 100        CALL CD_GET_1_AXIS(cdfid, ivcd, iaxis,
+ 100        CALL CD_GET_1_AXIS(dset, cdfid, ivcd, iaxis,
      .                         its_EPIC, reversed, tregular, status)
            IF ( status .NE. merr_ok ) GOTO 5900
 	   IF (iaxis .NE. 0) GOTO 1000		! iaxis>0 if axis was made
@@ -292,7 +359,8 @@
 * PROCESS A DEPENDENT VARIANLE
  500	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
      .				   ivtm, status )
-	   IF (status .NE. merr_ok) GOTO 5900
+
+           IF (status .NE. merr_ok) GOTO 5900
 	   IF ( ivtm .NE. 0 ) THEN
 	      las_pos = ivtm	! optimizes next hunt for slot
 	      IF (.NOT.got_a_variable) THEN
@@ -306,8 +374,8 @@
 * EPIC KLUDGE: if an EPIC file has an invalid "TIME" axis we want, not only
 * "TIME" as a dependent variable, but also "TIME2"
 	   IF ( its_epic .AND. vname(:vlen).EQ.'time' ) THEN
-	      epic_t2 = NCVID( cdfid, 'time2', cdfstat )
-	      IF ( cdfstat .EQ. NCNOERR ) THEN
+	      CALL CD_GET_VAR_ID ( dset, 'time2', epic_t2, status )
+	      IF ( epic_t2 .GT. 0 ) THEN
 	        CALL CD_GET_1_DEP_VAR (dset,cdfid, epic_t2,
      .			las_pos, global_bad, ivtm, status )
 	        IF (status .NE. merr_ok) GOTO 5900

@@ -1,5 +1,6 @@
 SRCS_F = \
 cd_abort_grids.F\
+cd_add_var.F\
 cd_assoc_grids.F\
 cd_axis_name.F\
 cd_axlen.F\
@@ -7,6 +8,7 @@ cd_childax_name.F\
 cd_clean_grids.F\
 cd_close_set.F\
 cd_defer_coord_write.F\
+cd_delete_attribute.F\
 cd_dods_control.F\
 cd_get_1_axis.F\
 cd_get_1_dep_var.F\
@@ -15,18 +17,31 @@ cd_get_attval.F\
 cd_get_attvalc.F\
 cd_get_attval_l.F\
 cd_get_bounds.F\
+cd_get_dim_id.F\
+cd_get_ds_dims.F\
+cd_get_ds_info.F\
 cd_get_generic_bounds.F\
 cd_get_generic_grids.F\
 cd_get_missing_flag.F\
 cd_get_parent_grids.F\
 cd_get_time_axis.F\
 cd_get_tmap_parms.F\
+cd_get_var_att_info.F\
+cd_get_var_att_name.F\
+cd_get_var_id.F\
+cd_get_var_info.F\
+cd_get_var_outflag.F\
+cd_get_var_outtype.F\
+cd_get_var_seq.F\
 cd_init_dset.F\
+cd_isit_another_dset.F\
 cd_isit_epic.F\
 cd_isit_recdim.F\
+cd_load_dset_attrs.F\
 cd_make_var.F\
 cd_open_dset.F\
 cd_open_out.F\
+cd_put_new_attr.F\
 cd_rd_ep_1.F\
 cd_rd_ep_arr.F\
 cd_rd_r8_1.F\
@@ -36,19 +51,26 @@ cd_rd_ymd_1.F\
 cd_rd_ymd_arr.F\
 cd_read.F\
 cd_rec_synch.F\
+cd_replace_attr.F\
 cd_scan_vars.F\
+cd_set_att_axdir.F\
+cd_set_att_flag.F\
 cd_set_mode.F\
+cd_set_var_type.F\
 cd_stamp_out.F\
+cd_store_dset.F\
+cd_store_dset_attrs.F\
+cd_transfer_attribute.F\
 cd_use_recdim.F\
 cd_write_attrib.F\
 cd_write_attval.F\
+cd_write_attval_dp.F\
 cd_write_axis.F\
 cd_write_bndsdim.F\
 cd_write_defer_coord.F\
 cd_write_grid.F\
 cd_write_strdim.F\
 cd_write_var.F\
-cd_write_var_sub.F\
 ez_delimited_read.F\
 ez_init_dset.F\
 ez_init_permute.F\
@@ -72,6 +94,8 @@ mc_read.F\
 str_case_blind_compare.F\
 str_same.F\
 str_upcase.F\
+nc_get_attrib.F\
+nc_get_attrib_dp.F\
 tm_abstract_axis.F\
 tm_add_message.F\
 tm_allo_dyn_grid.F\
@@ -95,6 +119,8 @@ tm_check_bnds.F\
 tm_check_bnds_attrib.F\
 tm_check_bnds_centered.F\
 tm_check_edges_attrib.F\
+tm_check_inf.F\
+tm_check_nan.F\
 tm_choose_read.F\
 tm_clean_filename.F\
 tm_close_set.F\
@@ -251,6 +277,9 @@ alloca.c\
 cd_rd_r8_as_r4.c\
 cd_read_scale.c\
 cd_read_sub.c\
+cd_write_att_sub.c\
+cd_write_att_dp_sub.c\
+cd_write_var_sub.c\
 deleted_list_clear.c\
 deleted_list_get_del.c\
 deleted_list_get_undel.c\
@@ -260,6 +289,7 @@ my_close.c\
 my_open.c\
 my_readline.c\
 nap.c\
+NCF_Util.c\
 str_case_blind_compare_sub.c\
 str_upcase_sub.c\
 string_array_clear.c\
@@ -290,4 +320,4 @@ tm_unix_versions.c\
 tm_world_recur.c \
 tm_check_inf.c\
 tm_check_nan.c\
-tm_switch_nan.c
+tm_switch_nan.c\

@@ -46,7 +46,8 @@
 * revision 0.1 - 7/21/88  - eliminated LOG(0) error in big_10 calculation
 * V580 *acm* 12/04 Fix bug 1129; formatting axis for small lon/lat ranges
 *                  Note this changes some LIST output by removing a space.
-* V590:  1/06 *acm*  prevent values of LOG10(0.0) if small_val = 0 
+* V600:  1/06 *acm*  prevent values of LOG10(0.0) if small_val = 0 
+
 
 * calling argument declarations:
 	INTEGER		places, right

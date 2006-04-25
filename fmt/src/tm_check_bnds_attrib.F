@@ -1,4 +1,4 @@
-        SUBROUTINE TM_CHECK_BNDS_ATTRIB (cdfid, iaxis, vname, vlen, 
+        SUBROUTINE TM_CHECK_BNDS_ATTRIB (dset, iaxis, vname, vlen, 
      .                                   bname, bndid, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,51 +35,63 @@
 *
 * V570 5/2004 *acm*
 * Check the bounds attribute, issue any warnings
-* V590 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
+* V600 *acm* 10/05 should not have npts as an argument; npts from cd_get_1_axis
 *                  was being reset  as npts bounds or edges, which is npts+1
+* V600 *ACM* attribute control. 
+*             Replace NCVID with CD_GET_VAR_ID
+*             Replace NCVINQ for variables, with CD_GET_VAR_INFO
+*             Replace NCDINQ with CD_GET_DS_DIMS
+
 
 	INCLUDE 'tmap_dims.parm'
         INCLUDE 'xtm_grid.cmn_text'
         INCLUDE 'xio.cmn_text'
         INCLUDE 'tmap_errors.parm'
+        INCLUDE 'errmsg.parm'
 
 * argument declarations
-      INTEGER cdfid, iaxis, vlen, bndid, status
+
+      INTEGER dset, iaxis, vlen, bndid, status
       CHARACTER*(*) bname, vname
 
 * Local variable declarations
-      INTEGER TM_LENSTR1, NCVID
-      INTEGER blen, cdfstat, ncnoerr, npts, soft_err, vartype, 
-     .        nvdims, vdims(8), nvatts
+      LOGICAL coordvar
+      INTEGER TM_LENSTR1
+      INTEGER blen, soft_err, vartype, ivar, npts, 
+     .        nvdims, vdims(8), nvatts, all_outflag
       CHARACTER*132 buff, vbuff
 
 * does the bounds variable pointed to really exist ?
         blen = TM_LENSTR1(bname)
-        bndid = NCVID( cdfid, bname(:blen), cdfstat )
-        IF (cdfstat.NE.NCNOERR) THEN
+        CALL CD_GET_VAR_ID (dset, bname, bndid, status)
+
+        IF (bndid .LE. 0) THEN
            soft_err = 21
            GOTO 6000
         ENDIF
 
 * get the vital statistics of the bounds variable
-        CALL NCVINQ(cdfid, bndid, bname(:blen), vartype, nvdims,
-     .               vdims, nvatts,cdfstat)
+
+        CALL CD_GET_VAR_INFO (dset, bndid, bname, vartype, 
+     .            nvdims, vdims, nvatts, coordvar, all_outflag, status)
+
         IF ( nvdims .NE. 2 ) THEN
            soft_err = 22
            GOTO 6000
         ENDIF
 
 * get axis length: 
-        CALL NCDINQ( cdfid, vdims(1), buff, npts, cdfstat )
-        IF (cdfstat.NE.NCNOERR) GOTO 5100   ! should never happen
+        
+        CALL CD_GET_DS_DIMS (dset, vdims(1), buff, npts, status)
+        IF (status.NE.ferr_ok) GOTO 5100   ! should never happen
 
 * check for error conditions: bounds is 2 by N
         IF ( npts .NE. 2 ) THEN
            soft_err = 23
            GOTO 6000
         ENDIF
-        CALL NCDINQ( cdfid, vdims(2), buff, npts, cdfstat )
-        IF (cdfstat.NE.NCNOERR) GOTO 5100   ! should never happen
+        CALL CD_GET_DS_DIMS (dset, vdims(2), buff, npts, status)
+        IF (status.NE.ferr_ok) GOTO 5100   ! should never happen
 
 * check for error conditions: 2nd dimension of bounds is N
         IF ( npts .NE. line_dim(iaxis) ) THEN

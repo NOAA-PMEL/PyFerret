@@ -1,7 +1,7 @@
 * XERRMSG_TEXT.CMN
 * text of error messages
 * 5/87 - added codes and last_error for HELP
-* 11/05 v5.90  -- ef_errtext contains text for new symbol 
+* 11/05 V600  -- ef_errtext contains text for new symbol 
 *             FER_LAST_ERROR, which all the text normally
 *             written to std out. 
 

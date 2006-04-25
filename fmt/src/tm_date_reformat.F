@@ -40,7 +40,7 @@
 
 * *sh* 2/13/95
 * *acm* needs cal_id to pass to tm_break_fmt_date
-* V590 *acm* 2/06 - Fix for bug 1394, send do_err flag to tm_break_date
+* V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to tm_break_date
 *
 * Arguments:
 *	indate	 - input date string

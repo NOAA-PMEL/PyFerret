@@ -1,4 +1,4 @@
-	SUBROUTINE CD_GET_PARENT_GRIDS (cdfid,temp_axnams,status)
+	SUBROUTINE CD_GET_PARENT_GRIDS (dset,temp_axnams,status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -48,9 +48,17 @@
 * V500: 4/99 *kob* - increase size of temp_axnams and vname to 64
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
 * V552 *acm* 5/03   increase vnameto 128 chars 
+* V600 *ACM* attribute control. 
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB - get attrib from 
+*               linked list structure
+*             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
+*               strings or real values according to attrib type
+*             Replace NCINQ with NCF_INQ_DS
+*             Replace NCVINQ for variables, with CD_GET_VAR_INFO
+*             Replace NCDINQ with CD_GET_DS_DIMS
 
 * argument definitions:
-*	cdfid	       - netCDF id number for already opened CDF file
+*	dset	       - Ferret dataset number for already opened CDF file
 *       temp_axnams    - 4 axis names per grid: temp until grids are assembled
 *	status	       - return status
 
@@ -72,7 +80,7 @@
 	external xunits_data
 
 * argument declarations
-	INTEGER	 cdfid, status
+	INTEGER	 dset, status
 * 4/99 *kob*
         CHARACTER*64 temp_axnams(4,max_temp_grid)
 
@@ -83,15 +91,17 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      LOGICAL CD_GET_ATTRIB, CD_GET_ATTVAL,
-     .        got_it, do_warn, centers
+      LOGICAL NC_GET_ATTRIB, 
+     .        got_it, do_warn, centers, coordvar
       PARAMETER (do_warn = .TRUE. ) 
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1,
-     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, 
-     .        ndims, nvars, ngatts, recdim, igrid, vback,
+     .        STR_CASE_BLIND_COMPARE, STR_UPCASE, NCF_INQ_DS,
+     .        ndims, nvars, ngatts, recdim, igrid, 
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
-     .        grid_cnt, cdfstat, istat, idim, npts
+     .        grid_cnt, istat, idim, npts, maxlen, attlen,
+     .        attoutflag, all_outflag, dset_num
+      REAL    tmps
 * 4/99 *kob*
       CHARACTER vname*128, words(8)*24
       CHARACTER*132 TM_CMPRSS, buff, cbuff
@@ -99,31 +109,33 @@
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
-* get the vital statistics for this netCDF file
-        CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CD_GET_PARENT_GRIDS', cdfid,
-     .        no_varid, no_errstring, no_errstring, *5900 )
+* get the vital statistics for the data set 
 
-!* is it a FERRET standard file ?
-!        got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'DATA_TYPE',
-!     .                        .NOT.do_warn, ' ', data_type, 24 )
-!        IF (.NOT.got_it .OR. data_type.NE.'FERRET') RETURN 
+        dset_num = dset
+        IF (dset_num .LT. -1) dset_num = -1
+        istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
+
+        IF ( istat .NE. merr_ok ) CALL TM_ERRMSG
+     .     ( istat+pcdferr, status, 'CD_GET_PARENT_GRIDS', dset,
+     .        no_varid, no_errstring, no_errstring, *5900 )
 
 * * * * loop through all variables in the net CDF file * * *
         DO 500 ivar = 1,nvars
       
 * get the vital statistics about this variable
-           CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdims, vdims,
-     .                 nvatts,cdfstat)
-           IF (cdfstat.NE.NCNOERR) CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr,status,'CD_GET_PARENT_GRIDS',cdfid,ivar,
+
+           CALL CD_GET_VAR_INFO (dset, ivar, vname, vartyp, nvdims,
+     .                 vdims, nvatts, coordvar, all_outflag, istat)
+           IF ( istat .NE. merr_ok ) CALL TM_ERRMSG
+     .     ( istat+pcdferr,status,'CD_GET_PARENT_GRIDS',dset,ivar,
      .       no_errstring, no_errstring, *5900 )
            vlen = TM_LENSTR1(vname)
 
 * is it a definition for a parent grid ? (1D based on 'grid_definition' )
           IF ( nvdims .NE. 1 ) GOTO 500
-          CALL NCDINQ( cdfid, vdims, buff, npts, cdfstat )
+
+          CALL CD_GET_DS_DIMS (dset, vdims(1), buff, npts, istat)
+
           istat = STR_CASE_BLIND_COMPARE('grid_definition', buff(:15) )
           IF ( istat .NE. str_eq ) GOTO 500
 
@@ -132,8 +144,10 @@
 	  IF (status .NE. merr_ok) GOTO 5900
 
 * get the mandatory list of axis names for this grid
-          got_it = CD_GET_ATTRIB( cdfid, ivar, 'axes',
-     .                            do_warn, vname(:vlen), buff, 132 )
+          maxlen = 132
+          got_it = NC_GET_ATTRIB( dset, ivar, 'axes', do_warn, 
+     .                          vname(:vlen), maxlen, attlen, 
+     .                          attoutflag, buff, tmp)
           IF ( .NOT.got_it ) THEN
              CALL TM_NOTE(
      .            '"axes" attribute missing from grid definition', tt)
@@ -163,8 +177,11 @@
  186      CONTINUE
 
 * get optional rotation parameter (not a string parameter)
-          got_it = CD_GET_ATTVAL( cdfid, ivar, 'rotation', do_warn,
-     .                      vname(:vlen), grid_rotation(igrid),1,vback )
+          maxlen = 1
+          got_it = NC_GET_ATTRIB( dset, ivar,  'rotation', do_warn, 
+     .                          vname(:vlen), maxlen, attlen, attoutflag, 
+     .                          buff, grid_rotation(igrid))
+
           IF ( got_it .AND. grid_rotation(igrid).NE.0.0) THEN
              CALL TM_NOTE ('rotated grids not supported - using 0.0: '
      .                      //vname(:vlen), tt)
@@ -174,8 +191,10 @@
           ENDIF
 
 * get optional inner/outer product list
-          got_it = CD_GET_ATTRIB( cdfid, ivar, 'axis_assn',
-     .                        do_warn, vname(:vlen), buff, 132 )
+          maxlen = 132
+          got_it = NC_GET_ATTRIB( dset, ivar, 'axis_assn', do_warn, 
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        buff, tmp)
           IF ( got_it ) THEN
 * ... parse the inner/outer list and store it in the grid definition
 	     cbuff = TM_CMPRSS(buff)

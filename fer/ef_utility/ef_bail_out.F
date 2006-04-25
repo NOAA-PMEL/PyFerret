@@ -4,7 +4,7 @@ c
 c     Jonathan Callahan
 c     Feb 19th 1998
 c
-c *acm* 11/05 v5.90  -- New symbol FER_LAST_ERROR contains all the text normally
+c *acm* 11/05 V600  -- New symbol FER_LAST_ERROR contains all the text normally
 c                       written to std out, put error text in common to save it
 c             
 c     

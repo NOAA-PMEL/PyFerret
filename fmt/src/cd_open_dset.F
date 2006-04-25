@@ -66,6 +66,9 @@
 * 9/04 *acm* - Fix bug 982 If same variable name in multiple descriptor files, 
 *              mc_init_stepfile needs to know which file its from.
 * V581: *acm*/3/05 - increase length of strings for dataset title to 1024 
+* V600 *acm* 6/05 - Attribute control. just open the dataset here; getting info
+*                   is done in cd_load_dset_attrs. See sequence of calls in 
+*                   cd_init_dset.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -97,13 +100,14 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-      LOGICAL CD_GET_ATTRIB, CD_ISIT_EPIC, TM_HAS_STRING, got_it,
+
+      LOGICAL TM_HAS_STRING, got_it,
      .        do_warn, file_exists
       PARAMETER (do_warn = .TRUE. )
-      INTEGER TM_HASH_NAME, NCOPN, TM_LENSTR1, STR_SAME,
+      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
       INTEGER flen, iin, iout, ilast, dlen
-      CHARACTER    TM_STRING*13, ch*1
+      CHARACTER ch*1
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
       CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
@@ -186,111 +190,11 @@
 	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
 	endif
 	        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
- 110    CALL NCINQ( cdfid, ndims, nvars, ngatts, recdim, cdfstat )
-        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
+ 110   CONTINUE
 
-* Default contents as per TMAP "Background record"
-* if this is a MC data set, we don't want to reset these values
-        IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
-		ds_title(dset)		= ' '
-		ds_mod_title(dset)	= ' '
-		ds_forcing_set(dset)	= ' '
-		ds_t0time(dset)		= ' '
-		ds_ntegrate_tstep(dset)	= 1
-		ds_time_run(dset)	= ' '
-		DO 120 i = 1,num_aux
-  120		cd_what_isit(i,dset)= ' '
-	ENDIF
+       status = merr_ok
 
-* time axis
-	ds_time_axis(dset) = unspecified_int4
-
-* Load message record
-	ds_alert_on_open(dset) 	= .FALSE.
-	ds_alert_on_output(dset)= .FALSE.
-	ds_message(dset)	= ' '
-
-* initialize incidental variables
-        ds_basic_axes(1,dset) = mpsxt
-        ds_basic_axes(2,dset) = mpsxu
-        ds_basic_axes(3,dset) = mpsyt
-        ds_basic_axes(4,dset) = mpsyu
-        ds_basic_axes(5,dset) = mpszt
-        ds_basic_axes(6,dset) = mpszw
-
-* save the "record" axis
-        ds_time_axis(dset) = recdim
-
-* does it have a (readable) title ?
-* *kob* 6/96 - don't do this if we have a mc dataset - title comes
-*	       from the descriptor rather than the cdf file
-        IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
-        	got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'title',
-     .                .NOT.do_warn, ' ', ds_title(dset), 1024)
-	ENDIF
-* title modifier ?
-        got_it = CD_GET_ATTRIB( cdfid, NCGLOBAL, 'title_mod',
-     .                .NOT.do_warn, ' ', ds_mod_title(dset), 1024)
-
-* does it have a message to display upon opening ?
-        ds_alert_on_output(dset) = .FALSE.
-        ds_alert_on_open(dset) = 
-     .       CD_GET_ATTRIB( cdfid, NCGLOBAL, 'message',
-     .                  .NOT.do_warn, ' ', ds_message(dset), 80 )
-* holler the message
-        IF ( ds_alert_on_open(dset) ) THEN
-	   CALL TM_NOTE('regarding '//
-     .		ds_des_name(dset)(:TM_LENSTR1(ds_des_name(dset)))
-     .		//' ...', tooplu)
-	   CALL TM_NOTE(ds_message(dset), tooplu)
-	ENDIF
-
-* special TMAP parameters ?
-* ... read global attributes beginning with "TMAP"
-
-* Default contents as per TMAP "Format record" (is it EPIC? 3/93)
-* -kob- only set ds_type to cdf if it isn't already set to MC 7/95
-
-        IF ( CD_ISIT_EPIC(dset, cdfid, status) ) THEN
-           ds_type(dset) = 'ECDF'
-        ELSEIF ( ds_type(dset) .NE. '  MC' ) THEN
-           ds_type(dset) = 'CDF'
-        ENDIF
-	ds_format(dset)	= '  1A'
-
-* "unique" 2 letter code for this data set
-        ds_prog_rev(dset) = ' '
-        i = TM_HASH_NAME( ds_name(dset), 26*26-1 )
-#ifdef FORTRAN_90
-        ds_prog_rev(dset)(1:1) = CHAR( IOR(HEX40,i/26 + 1  ) )
-        ds_prog_rev(dset)(2:2) = CHAR( IOR(HEX40,MOD(i,26) + 1 ) )
-#else
-        ds_prog_rev(dset)(1:1) = CHAR( IOR('40'X,i/26 + 1  ) )
-        ds_prog_rev(dset)(2:2) = CHAR( IOR('40'X,MOD(i,26) + 1 ) )
-#endif
-* Allocate a "step file" slot to save CDF id and filename
-* Find the next storage position for stepfiles in common
-* only if the file is not a multi-file netcdf dataset
-        IF (STR_SAME(ds_type(dset), '  MC') .NE. 0) THEN
-c commented out diagnostic write statements
-c	  write(6,*) 'sf_setnum......',sf_setnum(1)
-c	  write(6,*) 'set_not_open...',set_not_open
-          DO 190 istep = 1,maxstepfiles
-            IF (sf_setnum(istep) .EQ. set_not_open) GOTO 200
- 190      CONTINUE
-* No room left for new stepfiles
-          GOTO 5200
-
- 200      sf_lunit ( istep ) = cdfid
-          sf_setnum( istep ) = dset
-          sf_name  ( istep ) = ds_des_name(dset) 
-          cd_stepfile( dset ) = istep    ! step file containing desired data
-          ds_open  ( dset )   = istep    ! which step file is currently open
-	ENDIF
-
-* successful completion
-	status = merr_ok
-	RETURN
+       RETURN
 
 * error messages
  5100   CALL TM_ERRMSG
@@ -301,12 +205,6 @@ c	  write(6,*) 'set_not_open...',set_not_open
      .     ( cdfstat+pcdferr, status, 'CD_OPEN_DSET', cdfid,
      .        no_varid, 'Unable to access remote URL', no_errstring,
      .		*5900 )
-
- 5200   CALL TM_ERRMSG ( merr_filim, status, 'CD_OPEN_DSET',
-     .                     dset, no_stepfile,
-     .                     'MAX='//TM_STRING(DBLE(maxstepfiles)),
-     .                     no_errstring, *5900)
-
 *kob* 9/18
  5300  CALL TM_ERRMSG (merr_notmounted,status, 'CD_OPEN_DSET',dset,
      .                     no_stepfile,

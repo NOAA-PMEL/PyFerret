@@ -1,4 +1,4 @@
-	SUBROUTINE CD_ASSOC_GRIDS (dset, cdfid, reversed, 
+	SUBROUTINE CD_ASSOC_GRIDS (dset, reversed, 
      .				   temp_axnams, status)
 
 
@@ -51,10 +51,13 @@
 * V510 *sh* 3/00 - convert to use of dynamic grids and axes
 * V533 *sh* 6/01 - support for string variables
 * V552:  3/03 *acm* - increase size of vname to 128
+* V600 *ACM* attribute control. 
+*             NCVINQ replaced by CD_GET_VAR_INFO
+*             NCDINQ replaced by CD_GET_DS_DIMS
+*             Change call to CD_GET_ATTRIB to NC_GET_ATTRIB
 
 * argument definitions:
 *       dset        - TMAP data set pointer
-*	cdfid	    - netCDF id number for already opened CDF file
 *       reversed    - logical array to record which axes have reversed coords
 *       temp_axnams - temporary storage of axis names to construct grids
 *	status	    - return status
@@ -74,7 +77,7 @@
         include 'xdset_info.cd_equiv'
 
 * argument declarations
-	INTEGER	 dset, cdfid, status
+	INTEGER	 dset, status
         LOGICAL  reversed(max_lines:line_ceiling)
 * 4/99 *kob* 
 	CHARACTER*64 temp_axnams(4,max_temp_grid)
@@ -85,16 +88,20 @@
 
 * local variable declarations:
 * move do_warn assignment to paramater for linux *kob*
-      LOGICAL CD_GET_ATTRIB,
+      LOGICAL NC_GET_ATTRIB,
      .        got_it, do_warn
       PARAMETER (do_warn = .TRUE.)
       INTEGER STR_CASE_BLIND_COMPARE,
-     .        igrid, iaxis, istat, tmvar, ivar, ndim, idim
+     .        igrid, iaxis, istat, tmvar, ivar, ndim, idim,
+     .        maxlen, attlen, attoutflag, all_outflag
+      REAL    tmp
       CHARACTER*16 gname
 * variables for final (unnecessary?) check
       CHARACTER TM_STRING*13, vname*128, buff*128
       INTEGER TM_LENSTR1,
      .        vartyp, nvdim, vdims(6), nvatts, dim, npts, vlen
+      LOGICAL coordvar
+
 * *kob* explicit definitions not allowed on decl line in linux...moved it to parameter line
       CHARACTER*1     dimnam(4)
       DATA dimnam/'I', 'J', 'K', 'L'/
@@ -108,8 +115,10 @@
            ivar = cd_varid(tmvar)
 
 * does it point explicitly to a parent grid ?
-          got_it = CD_GET_ATTRIB( cdfid, ivar, 'parent_grid',
-     .                         .NOT.do_warn, ' ', gname, 16 )   !gridnamlen
+          maxlen = 16  !gridnamlen
+          got_it = NC_GET_ATTRIB( dset, ivar, 'parent_grid',
+     .                         .NOT.do_warn, ' ', maxlen, attlen,
+     .                         attoutflag, gname, tmp )  
           IF ( .NOT.got_it ) THEN
 * ... check that it is a current temporary grid -- should ALWAYS be true
 	     IF (ds_grid_number(tmvar) .LT. max_grids    ) GOTO 5100
@@ -165,9 +174,11 @@
           ENDIF
 
 * check that the parent lo/hi limits are consistent with the variable slab size
-          CALL NCVINQ(cdfid, ivar, vname, vartyp, nvdim, vdims,
-     .                 nvatts,istat)
+
+          CALL CD_GET_VAR_INFO (dset, ivar, vname, vartyp, nvdim, vdims,
+     .                 nvatts, coordvar, all_outflag, istat)
           vlen = TM_LENSTR1(vname)
+
 * ... if a string variable, the first dimension is the string axis (ignore it)
 	  IF (vartyp .EQ. NCCHAR) THEN
 	     nvdim = nvdim - 1
@@ -180,7 +191,7 @@
              dim = ds_ordering(idim,tmvar)
              IF ( dim .EQ. 0 ) GOTO 500
 !             IF ( dim .EQ. unspecified_int4 ) dim = idim
-             CALL NCDINQ( cdfid, vdims(idim), buff, npts, istat )
+             CALL CD_GET_DS_DIMS ( dset, vdims(idim), buff, npts, istat )
              IF ( npts .NE.
      .          ds_grid_end(dim,tmvar)-ds_grid_start(dim,tmvar)+1 )
      .               GOTO 5200

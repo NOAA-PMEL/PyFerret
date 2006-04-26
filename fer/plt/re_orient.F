@@ -51,6 +51,8 @@
 * V420	 2/96 - calling args changed so /XLIMITS and /YLIMITS can be passed
 *	      - also sout, the returned scale factor, was wrong on plots
 *		that used the COS factor - was based on "s" instead of "s0"
+* V600  4/06 *acm* - make refinement to cos(lat) factor as suggested by A. Wittenberg
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 * procedure:	at each point
 *	   x --> xprime = A * x
@@ -87,7 +89,7 @@
         LOGICAL need_cos, GEOG_COS_FACTOR, TM_FPEQ
 	INTEGER	grid, i, j, j0
 	REAL	AXIS_DISTANCE, s0, s, a, b, tan, tansq, ssq, dx, dy,
-     .          bad_x, bad_y, cos_factor
+     .          bad_x, bad_y, cos_factor, bx, box_size, yh_2, yc
 	REAL*8	TM_WORLD
 
 * initialize

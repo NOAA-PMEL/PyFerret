@@ -36,8 +36,10 @@
 * Return the varname part of an varattname, without any parentheses or brackets
 
 * V600 6/05 *acm* Attribute control.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
         INCLUDE 'xrisc.cmn'
+        INCLUDE 'errmsg.parm'
 
 * calling argument declarations
 
@@ -45,7 +47,7 @@
 
 * local variable declarations
 
-      INTEGER TM_LENSTR1, slen, itmp
+      INTEGER TM_LENSTR1, slen, itmp, status
 
       slen = TM_LENSTR1(varattname)
       IF (varattname(1:1) .EQ. '(' .AND.

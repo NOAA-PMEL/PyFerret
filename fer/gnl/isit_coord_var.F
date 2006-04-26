@@ -39,6 +39,7 @@
 * is not in parentheses, it is not treated as a variable name.
 
 * V600 6/05 *acm* Attribute control.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
         INCLUDE	'ferret.parm'
 	INCLUDE 'errmsg.parm'
@@ -105,7 +106,7 @@ c               buff = '('//varname(1:ic-1)//')'
 
                IF (varid .GT. 0) THEN
 * Remove the digit 
-                  buff(ic:llen) = ' '
+                  buff(ic:slen) = ' '
                   GOTO 90
 
                ENDIF

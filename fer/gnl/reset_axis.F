@@ -40,12 +40,14 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA 
 * 3/20/2006
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 *
 * Set axis attributes as in SET AXIS; called by edit_attribute.F
 * doing SET ATT axname.attribute=
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
+#	include "tmap_dset.parm"
         include 'xtm_grid.cmn_text'
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -63,9 +65,9 @@
 * Internal declarations
 
       REAL*8  TM_WW_AXLEN, axwwlen
-      INTEGER STR_SAME, TM_GET_LINENUM, TM_LENSTR1, axis, i, since_T0, 
-     .        cunits, al_id, year, month, day, hour, minute, second, 
-     .        slen
+      INTEGER STR_SAME, TM_GET_LINENUM, TM_LENSTR1, TM_UNIT_ID, 
+     .        TM_GET_CALENDAR_ID, axis, i, since_T0, units, cal_id, 
+     .        year, month, day, hour, minute, second, slen
       LOGICAL TM_HAS_STRING, its_changed, ok_cal
       CHARACTER*128 buff1
 

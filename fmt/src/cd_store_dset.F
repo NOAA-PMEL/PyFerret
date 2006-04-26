@@ -40,6 +40,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP 
 
 * V600 6/05 *acm* Attribute control.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -83,7 +84,7 @@
       llen = TM_LENSTR1( ds_des_name(dset) )
       CALL TM_FTOC_STRNG( ds_des_name(dset)(1:llen), fhol_dspath, slen2 )
 
-      cdfstat = NCF_INIT_OTHER_DSET (dset, fhol_dsname, fhol_dspath) 
+      status = NCF_INIT_OTHER_DSET (dset, fhol_dsname, fhol_dspath) 
 
 * successful completion
 	

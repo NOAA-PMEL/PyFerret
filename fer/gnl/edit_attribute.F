@@ -40,7 +40,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 * 9/2005
 * 3/2006 Allow commands equivalent to SET AXIS/modulo/depth/units etc.
-
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -76,8 +76,9 @@
       INTEGER MR_DIM_LEN, TM_LENSTR1, STR_SAME, varid, idim, ndims,
      .        attlen, attype, span, lo(4), hi(4), del(4), slen, vlen, 
      .        attlen_old, attype_old, attoutflag, vartype, nvdims,
-     .        nvatts, vdims(8), all_outflag, cat, var, tmap_status
-      REAL dummy
+     .        nvatts, vdims(8), all_outflag, cat, var, tmap_status,
+     .        grid, mod_cx
+      REAL dummy, bad, scalefac, offset
       CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
      .          errbuff*256, varname*512, attname*128
 

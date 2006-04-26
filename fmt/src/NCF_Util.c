@@ -37,6 +37,7 @@
  *
  * Ansley Manke
  * Ferret V600 April 26, 2005
+ * V5600 *acm* fix declarations of fillc and my_len as required by solaris compiler
  *
  * This file contains all the utility functions which Ferret
  * needs in order to do attribute handling. Based on code for EF's.
@@ -799,6 +800,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 
 /* code lifted liberally from ncdump.c Calls in nc library.*/
 
+	char fillc;
     int i;				/* loop controls */
 	int ia;
 	int iv;
@@ -960,7 +962,6 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 		    var.has_fillval = TRUE;
 			if(var.type == NC_CHAR) {
 				att.outtype = NC_CHAR;
-				char fillc;
 				nc_status = nc_get_att_text(*ncid, iv, _FillValue,
 						  &fillc );
 		    } else {
@@ -1305,6 +1306,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], cha
   static int return_val;
   int *i;
   int newvar;
+  int my_len;
   LIST *vlist=NULL;
 
    /*
@@ -1403,7 +1405,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], cha
 		att.string = (char *) malloc((att.len+1)* sizeof(char*));
 		strcpy(att.string, units);
 
-        int my_len = 1;
+        my_len = 1;
 	    att.vals = (double *) malloc(my_len * sizeof(double)); 
         att.vals[0] = 0;
 

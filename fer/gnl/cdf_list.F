@@ -78,6 +78,7 @@
 * V552 *acm* 4/03- up SANITARY_VAR_CODE and local variable varcode to 128 chars
 * V600 *acm* 6/06  Attribute control; get information for output from  
 *                  linked-list structure.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -459,7 +460,7 @@
 
 * If un-scaling on output, will also un-scale the missing flag.
                     IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
-                       dvals = dvals/scalefac - add_offset
+                       dvals = dvals/scalefac - addoff
                        vals = dvals
 
 * Otherwise convert missing flag to requested output type for the variable

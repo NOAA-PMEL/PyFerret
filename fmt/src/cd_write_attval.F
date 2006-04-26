@@ -49,6 +49,7 @@
 *               This routine accesses the newly-created file using 
 *               netcdf calls as always. The values sent in come from
 *               the linked-list structure but output is all the same.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -88,7 +89,7 @@ xx        include 'netcdf.decl'  ! untested
 
 * local variable declarations:
       INTEGER TM_LENSTR1, NC_PUT_ATT_FLOAT,
-     .        vlen, alen, cdfstat, varid, attype, attlen      
+     .        vlen, alen, cdfstat, varid, attype, attlen, flen      
       CHARACTER*128 abuff     ! needed because of fussy compilers and // concatenation
 
       PARAMETER (flen=512)      ! size of variable name string

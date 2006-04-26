@@ -62,7 +62,8 @@
 * v552: 4/03 *acm*  Increase length of variable names to 128 characters
 * v553: 7/03 *kob* - Add SET VARIABLE/bad=NaN ability
 * V600:11/05 *acm* - issue error for SET VAR/SCALE/OFFSET if dset = -111 
-* V600: 2/06 *adm* - For attribute-access additions, add new SET VAR/OUTTYPE=
+* V600: 2/06 *acm* - For attribute-access additions, add new SET VAR/OUTTYPE=
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -84,10 +85,11 @@
 * internal variable declarations:
 	LOGICAL		VALID_GRID, TM_LEGAL_NAME, TM_HAS_STRING,
      .                  have_mods, ez, gtts, ncfile, coordvar
-	INTEGER		GRID_FROM_NAME, TM_LENSTR1, mod_cx, i, 
-     .			dset, grid, cat, var, loc, TMAP_status, testvar,
-     .                  outtype_flag, varid, attype, attlen, attoutflag,
-     .                  vartype, nvdims, nvatts, vdims(8), varoutflag
+	INTEGER		GRID_FROM_NAME, TM_LENSTR1, STR_UPCASE, mod_cx,
+     .			i, dset, grid, cat, var, loc, TMAP_status, 
+     .			testvar, outtype_flag, varid, attype, attlen, 
+     .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
+     .			varoutflag, cx
 	REAL		bad, scalefac, offset, set_nan, val
 
 	CHARACTER	grid_name*16, title*128, units*64, newname*128,

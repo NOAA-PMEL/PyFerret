@@ -35,6 +35,8 @@
 
 * Get all attributes from varname1, a variable in dataset dset1, and assign to the 
 * variable in varname2, dataset dset2.  dset2 has been determined in xeq_set.F
+* V600  4/06 *acm*   attribute handling
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
       INCLUDE 'ferret.parm'
       INCLUDE 'errmsg.parm'      
@@ -51,7 +53,7 @@
       INTEGER TM_LENSTR, slen, tlen, dset1, dset2, 
      .  varid1, varid2, vtype, nvdims, nvatts1, nvatts2,
      .  vdims(8), iatt, first_quote, next_quote, dot, mr, cx, 
-     .  all_outflag
+     .  all_outflag, cat
       CHARACTER*128 attname, buff1, buff2
 
 * Check that neither buffer contains varname.attname (If it is in 

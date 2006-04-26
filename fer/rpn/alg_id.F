@@ -59,6 +59,7 @@
 *      6/04 ywei - change MATCH_NAME function
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -76,7 +77,7 @@
 	LOGICAL		TM_DIGIT, TM_LEGAL_NAME, MATCH_NAME
 	INTEGER		STR_MATCH, GCF_FIND_FCN, TM_LENSTR1,
      .			imatch, i, i2, j, brac_pos, aend,
-     .			num_indices, dot, new_nat
+     .			num_indices, dot, new_nat, first, second
         CHARACTER*128   varname
         
         new_nat = 0

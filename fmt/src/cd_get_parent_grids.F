@@ -56,6 +56,7 @@
 *             Replace NCINQ with NCF_INQ_DS
 *             Replace NCVINQ for variables, with CD_GET_VAR_INFO
 *             Replace NCDINQ with CD_GET_DS_DIMS
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 * argument definitions:
 *	dset	       - Ferret dataset number for already opened CDF file
@@ -101,7 +102,7 @@
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
      .        grid_cnt, istat, idim, npts, maxlen, attlen,
      .        attoutflag, all_outflag, dset_num
-      REAL    tmps
+      REAL    tmp
 * 4/99 *kob*
       CHARACTER vname*128, words(8)*24
       CHARACTER*132 TM_CMPRSS, buff, cbuff

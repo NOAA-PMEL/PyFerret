@@ -43,6 +43,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V600 6/05 *acm* Attribute control.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -59,7 +60,7 @@
         LOGICAL coordvar
 	INTEGER	TM_LENSTR, TM_LENSTR1, STR_SAME,
      .         dset, tlen, vlen, dot, vartype, nvdims, nvatts, 
-     .         vdims(8), all_outflag, first, second
+     .         vdims(8), all_outflag, first, second, dotdot
         CHARACTER*128 err_string
 
 * Break text at dot: varname.attname

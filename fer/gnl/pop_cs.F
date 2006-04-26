@@ -58,6 +58,7 @@
 * v5.80 *acm* 11/04 use cx_cal_id to store the calender used when
 *                   computing world coordinates; restore cx_cal_id
 *                   along with  the rest of the context after a REPEAT
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 * internal variable declarations:
 	INTEGER	LIB_FREE_LUN,stat,axis,ivar,cvar
@@ -98,8 +99,8 @@
            cx_by_ss(axis,cx_last) = cs_save_by_ss( csp )
 
            IF (axis .eq. t_dim) THEN
-              cx_calendar(cx) = .FALSE.
-              cx_cal_id(cx) = unspecified_int4
+              cx_calendar(cx_last) = .FALSE.
+              cx_cal_id(cx_last) = unspecified_int4
            ENDIF
 
            IF ( cs_save_by_ss( csp ) ) THEN

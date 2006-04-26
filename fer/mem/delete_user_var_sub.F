@@ -59,6 +59,10 @@
 * V510 2/00 *sh* - with the advent of "child variables" created by grid
 *	changing variables deleting a user variable must also remove the name
 *	of the (child) variable
+* V600  4/06 *acm* - remove deleted variable defs from the linked-list structure
+*                    that does attribute handling
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
+
 
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'
@@ -75,7 +79,7 @@
 * internal variable declarations:
 	INTEGER		STR_UPCASE, TM_LENSTR, TM_LENSTR1,
      .			du_list( max_uvar ), ndu, kdu, uv, vax_code, ind,
-     .			i, j, num_indices, dset_uvars, slen
+     .			i, j, num_indices, dset_uvars, slen, flen
 	CHARACTER*24	check_name
 
       PARAMETER (flen=128)      ! size of variable name string

@@ -33,6 +33,12 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
+* programmer - Ansley Manke
+* NOAA/PMEL, Seattle, WA - TMAP
+* Write global attributes to netcdf file
+
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
+
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'cd_lib.parm'
@@ -42,7 +48,7 @@
         INTEGER dset, cdfid, status
         
 * internal variable declarations:
-        LOGICAL MATCH_NAME, coordvar, do_warn
+        LOGICAL MATCH_NAME, NC_GET_ATTRIB, coordvar, do_warn, got_it
         INTEGER TM_LENSTR1, varid, vartype, nvdims, vdims(8), nvatts, 
      .          all_outflag, iatt, slen, attype, attlen, attoutflag, bufflen
 	REAL*4	vals(10)

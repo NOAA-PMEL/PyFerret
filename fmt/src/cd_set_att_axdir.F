@@ -39,10 +39,10 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 12/05 *acm* Attribute control.
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 * Argument declarations
 
-      CHARACTER*(*) attname
       INTEGER dset, varid, axdir, status
 
 * Internal declarations

@@ -72,6 +72,7 @@
 *                     used when cx_lo_ww and cx_hi_ww are computed.
 * V600 *acm* 11/05  - Fix for bug 1365; do not fix the world limits for cx_cmnd
 *                     unless they were already set.
+* V600 *acm*  4/06  - correct typo unspecified_val8
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -206,7 +207,7 @@ c                status = err_ww_lims
 * using default calendar
 * Fix for bug 1365: if the limits for cx_cmnd were not set, do not set them here
 
-              IF ( (cx_lo_ww(idim,cx_cmnd) .NE. unspecified_int8)  .AND.
+              IF ( (cx_lo_ww(idim,cx_cmnd) .NE. unspecified_val8)  .AND.
      .             (cx_cal_id(cx_cmnd) .NE. unspecified_int4)  .AND.
      .             (cal_id .NE. prev_cal_id) ) THEN   
                   cx_lo_ww(idim,cx_cmnd) = -1*new_lo_ww

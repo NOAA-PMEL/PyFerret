@@ -60,7 +60,8 @@
 *	12/99 *sh* - initialize uvar_lo/hi*
 * V510: 5/00 *sh* - added "bad" (missing value flag) to arguments
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
-*            bug fix - reference to uvar_text was missing uvar reference      
+*            bug fix - reference to uvar_text was missing uvar reference 
+* V600  4/06 *acm* - additional declarations found by Solaris compiler     
 
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
@@ -81,7 +82,7 @@
 	LOGICAL inquote
 	INTEGER	        TM_LENSTR1, TM_LENSTR, NCF_ADD_VAR, i, 
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
-     .                  dset_to_add, slen, iat, varid
+     .                  dset_to_add, slen, iat, varid, type
 	CHARACTER	err_string*255, c*1, varname*512, attname*128
 
 * internal parameter declarations

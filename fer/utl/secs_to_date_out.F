@@ -52,7 +52,7 @@
 	INTEGER		cal_id, prec
 
 * internal variable declarations
-	INTEGER		year
+	INTEGER		year, month, day, hour, minute, second, status
 	CHARACTER	TM_SECS_TO_DATE*20, temp_str*20
         CHARACTER*3     month_names(12)
         DATA month_names/

@@ -196,9 +196,9 @@
      .        cal_id, year, month, day, hour, minute, second, slen, nc,
      .        blen, bndid, startpts(2), numpts(2), next_line_storage,
      .        newaxis, d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
-     .        all_outflag, dir
+     .        all_outflag, dir, attlen
 
-      REAL    rbuff, delta, first_delta, val
+      REAL    rbuff, delta, first_delta, val, tmp
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*30, vupcase*128, words(8)*24,

@@ -44,6 +44,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 8/18/05
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -67,7 +68,7 @@
      .          varid, attype, attlen, ndims, nvars, 
      .          ngatts, recdim, ivar, vartype, nvdims,
      .          vdims(8), iatt, nvatts, idim, nd, vd, na,
-     .          attoutflag, all_outflag, xdim, i1, i2, sqlen,
+     .          attoutflag, all_outflag, xdim, i1, i2, slen,
      .          i, indx, nv
 
 * --- end of introductory code ---

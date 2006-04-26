@@ -54,6 +54,7 @@
 *               linked list structure
 *             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *               strings or real values according to attrib type
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 
 * argument definitions:
@@ -94,7 +95,7 @@
      .        vartyp, nvdim, vdims(6), nvatts, vlen,
      .        recdim, istat, lasdim, attype, attlen, attoutflag, 
      .        maxlen, all_outflag
-      REAL    tmp
+      REAL    val
 * 4/99 *kob* increase size of vname
       CHARACTER    vname*128, buff*128
       CHARACTER*13 TM_STRING

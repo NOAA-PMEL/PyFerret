@@ -45,6 +45,7 @@
 * V420:  1/95 - need to init cx_delta since it is used by dynamic axes
 * V491:  12/97 - bug fix: need to initialize 
 * V510: *sh* 4/00 - initialize the grid that is allocated to 
+* V600  4/06 *acm* - misspelled variable found by Solaris compiler
 
 * calling argument declarations:
 	INTEGER	status
@@ -83,7 +84,7 @@
 	  cx_delta(idim,cx) = unspecified_val8
  100	CONTINUE
         cx_calendar(cx) = .FALSE.
-        cx_cal_id(dest_cx) = unspecified_int4
+        cx_cal_id(cx) = unspecified_int4
 
 * diagnostic alert
 	IF ( mode_diagnostic )

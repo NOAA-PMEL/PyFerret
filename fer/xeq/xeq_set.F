@@ -171,7 +171,7 @@
 
 * local variable declarations:
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
-     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, 
+     .                  TM_GET_LINENUM, LIB_GET_LUN, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_GET_CALENDAR_ID, FIND_DSET_NUMBER, 
      .			equal_pos, colon_pos, dset_num, ich,
      .			status, tmap_status, mode, idim, iarg, item, lp, iv,

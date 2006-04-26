@@ -281,7 +281,7 @@
      .		  TM_GET_GRIDNUM, TM_UNIT_ID,
      .		  ALLO_MANAGED_AXIS, ALLO_MANAGED_GRID, FIND_DSET_NUMBER,
      .            TM_GET_CALENDAR_ID, STR_SAME,
-     .		  tmap_status, npoints,
+     .		  tmap_status, npoints, i, 
      .		  status, idim, vax_code, islot, iunit, iline, cat, var,
      .		  orient, mods_cx, cx, mr, n, i1, i2, i3, i4, i5, i6, pos,
      .		  grid, iqual, ax_grid, ivp, qp, iseg, uvar, dset, slen, s1,
@@ -289,7 +289,7 @@
      .		  at_type  (maxatoms), at_id  (maxatoms),
      .		  at_start (maxatoms), at_end (maxatoms), cal_id, 
      .            dflt_cal_id, nmonths, ndays, d_before_mon(12), 
-     .            mon_by_d(366), d_in_mon(12), len_cal, n2, s2len,
+     .            mon_by_d(366), d_in_mon(12), len_cal, n2, n3, s2len,
      .            prev_cal_id, j, num_indices, varid, attype_spec,
      .            mr_perm(max_intrp), attoutflag
 

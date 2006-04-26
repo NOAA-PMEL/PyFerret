@@ -94,8 +94,7 @@
 * V600 *acm* 3/06  fixing bugs 439&1390, pass apply_cx to get_new_cx to say whether
 *                  to apply command context to grave-accent expressions.
 * V600 *acm* 6/05 - Attribute control, RETURN= attribute information.
-
-
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -113,7 +112,7 @@
 
 * calling argument declarations:
 	LOGICAL	  did_sub, info_query, itsa_subsc, apply_cx
-	INTEGER	  lencmnd, istart, max_check, digits, status
+	INTEGER	  cmnd_num, lencmnd, istart, max_check, digits, status
 	REAL	  memory( mem_blk_size, max_mem_blks )
 	CHARACTER cmnd*(*)
 

@@ -62,6 +62,7 @@
 * v581 *acm*  2/05 for axis_expand, if the requested offset is given as 
 *                  unspecified_int4 then use the full axis range, or if 
 *                  the axis is modulo, then one full modulo repetition
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 *	Note: the "offset" code in this routine is largely untested!
 
@@ -121,7 +122,7 @@
 !	      cx_trans (idim,cx_out)     = trans_no_transform
 !	      cx_trans_arg(idim,cx_out)  = bad_val4  
 	      IF (idim .eq. t_dim) 
-     .                cx_calendar(cx) = .FALSE.
+     .                cx_calendar(cx_out) = .FALSE.
 
 	   ELSEIF (lo_off(idim).NE.0 .OR. hi_off(idim).NE.0) THEN
 * pass along the axis limits 

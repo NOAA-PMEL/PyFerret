@@ -73,6 +73,8 @@
 *                 -111 among them. Allow regridding, using the flags 
 *                 ok_negi111, ok_negj111 to distinguish this case from 
 *                 the flag unspecified_int4.
+* V600  4/06 *acm* - make refinement to cos(lat) factor as suggested by A. Wittenberg
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -95,8 +97,9 @@
 	INTEGER	     	isrc_lo,isrc_hi,jsrc_lo,jsrc_hi,
      .			idst_lo,idst_hi,jdst_lo,jdst_hi
 
-	REAL		AXIS_DISTANCE, xdist, ydist, area, sum, darea,
-     .			bad_src, bad_dst, cos_fact, bx, yc, yh_2
+	REAL		AXIS_DISTANCE, BOX_SIZE, xdist, ydist, area, sum, 
+     .			darea, bad_src, bad_dst, cos_fact, bx, yc, yh_2,
+     .                  pi, r_earth, area_earth
 	
         REAL*8		TWORLD, xsrc_lo, xsrc_hi, ysrc_lo, ysrc_hi,
      .				xdst_lo, xdst_hi, ydst_lo, ydst_hi
@@ -182,7 +185,7 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 	   xdst_lo = TWORLD(idst, dst_grid, dim1, box_lo_lim )
 	   xdst_hi = TWORLD(idst, dst_grid, dim1, box_hi_lim )
 
-* for debugging output only
+
            pi = 3.141592653
            r_earth = 6371000
            area_earth = 4.* pi * r_earth**2

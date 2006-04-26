@@ -65,6 +65,7 @@
 * v554 *acm* 1/04 - add variable category cat_counter_var
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
         include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -76,6 +77,7 @@
 	include	'xcalc_vars.cmn'
 	include	'xcontext.cmn'
 	include	'xalgebra.cmn'
+        include 'errmsg.parm'
 
 * calling argument declarations
 	INTEGER	cx
@@ -84,7 +86,7 @@
 	LOGICAL 	UNIT_CHG_AX, NC_GET_ATTRIB, got_it
 	INTEGER 	TM_LENSTR1, cat, var, idim, tlen, llen, trans,
      .			uvar, item, start, end, slen, dset, varid,
-     .                  attlen, attoutflag
+     .                  attlen, attoutflag, status
         REAL            vals
 	CHARACTER	AX_TITLE*32, VAR_CODE*128, SANITARY_VAR_CODE*128, 
      .                  TM_FMT*10, REPLACE_DEQ*180,   ! .GT. uvar_text_len

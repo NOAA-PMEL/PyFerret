@@ -61,6 +61,7 @@
 * v551 *acm* 1/03  Also check for extension .NC along with .DES, .CDF
 * v580 *acm*11/04  Fix bug 1102; under linux, var[d=5coads] is read as dset=5
 * V600 *acm* 2/06  fix bug 1392, cancelling datasets
+* V600  4/06 *acm* - additional declarations found by Solaris compiler
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -68,6 +69,7 @@
 	external xdset_info_data
 	include	'ferret.parm'
 	include 'gfdl_vms.parm'	
+        include 'errmsg.parm'
 
 * calling argument declarations:
 	CHARACTER*(*)	dname
@@ -76,7 +78,7 @@
 	LOGICAL		TM_DIGIT_TEST, TM_HAS_STRING,
      .		        cdf_name, des_name, full_name_used, nc_name
 	INTEGER		STR_CASE_BLIND_COMPARE, TM_LENSTR1,
-     .			vax_code, dset, full_len, short_len
+     .			vax_code, dset, full_len, short_len, status
 	CHARACTER	TM_INQ_PATH*256, buff*256
 	CHARACTER*13	TM_STRING, buff13, vbuff
         REAL*8          val

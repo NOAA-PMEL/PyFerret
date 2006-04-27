@@ -105,6 +105,7 @@ C *acm* 11/05     new options for XFOR, YFOR, 'DM' deg/min deg/min
 C        1/06  xvaloff,yvaloff add this amount to each x or y axis label. 
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
+C V600: *acm* 4/06 Change how RANGE_DM is applied when using DM or DMS axis labelling.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -702,6 +703,12 @@ c If format is (DM) then axis will be labelled with
 c deg/min, or deg/min.ff decimal fraction of minutes.
 c****If it is XFOR(DM,ddd) then we will rotate the labes by ddd degrees.****
 
+C   RANGE_DM recomputes axis range and delta, so that it has
+C   good intervals when expressed as deg-min-sec (A previous 
+C   call to RANGE sets intervals based on degrees and decimal 
+C   fractions of degrees.) Reset only the delta, as the user may
+C   have explicitly set the lo and hi limit
+
 C     XFOR
 4400  i = STR_UPCASE (TMPCHR, LABEL(1:5))
       i = TM_LENSTR1(LABEL) - 1
@@ -709,8 +716,8 @@ C     XFOR
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
               xdms = 1
               CALL RANGE_DM(XLO,XHI,XTIC,xmn,xmx,dd)
-              xlo = xmn
-              xhi = xmx
+c              xlo = xmn
+c              xhi = xmx
               xtic = dd
            ELSE ! 'DD' resets to decimal degrees
               xdms = 0
@@ -725,14 +732,15 @@ C     XFOR
         ENDIF
 	GOTO 10
 C     YFOR
+
 4500  i = STR_UPCASE (TMPCHR, LABEL(1:15))
       i = TM_LENSTR1(LABEL) - 1
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
               ydms = 1
               CALL RANGE_DM(YLO,YHI,YTIC,ymn,ymx,dd)
-              ylo = ymn
-              yhi = ymx
+c              ylo = ymn
+c              yhi = ymx
               ytic = dd
            ELSE ! 'DD' resets to decimal degrees
               ydms = 0

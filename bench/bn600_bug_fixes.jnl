@@ -86,3 +86,8 @@ GO err581_command_cx.jnl
 GO bn_reset.jnl
 GO err581_define_1pt_bounds.jnl
 
+! Bug in strrindex when 1st argument is a list of strings
+GO bn_reset.jnl
+GO err581_strrindex.jnl
+
+

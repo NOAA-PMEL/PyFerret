@@ -35,13 +35,15 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* describe the attributes in the named data set
+* describe the attributes in the named nc data set
 
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * - based on SHOW_DATA_SET_VARS 
 * V600 6/05 *acm* Attribute control.
+* V600 4/08 SHOW DATA/ATT only for nc data so far; var info not in 
+*           the linked list structure.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -88,7 +90,15 @@
      .           'FLOAT',        ! single precision floating point number
      .           'DOUBLE'/       ! double precision floating point number
 
-* describe the variables in the set
+* describe the variables in the set, only for datasets originating 
+* as netcdf data.
+
+        IF (dset .LE. 0) RETURN
+        IF ( ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.' MC') THEN
+           WRITE (lun,*) 
+     .        'dataset is not netcdf: SHOW DATA/ATTRIBUTE not available'
+           RETURN
+        ENDIF
 
         status = NCF_INQ_DS (dset, ndims, nvars, ngatts, recdim )
 
@@ -105,9 +115,7 @@
 
 * Write global atttributes
 
-        IF (dset .GT. 0) THEN
-           IF ( (ds_type(dset) .EQ. 'CDF' .OR. ds_type(dset) .EQ. ' MC')
-     .           .AND. ngatts .GE. 1) THEN
+        IF ( ngatts .GE. 1) THEN
    
 	      varname = '.'
 	      CALL CD_GET_VAR_ID (dset, varname, varid, status)
@@ -152,7 +160,7 @@
                  varname = ' '
  100         CONTINUE
              WRITE (lun, *) ' '
-           ENDIF
+
         ENDIF
 
 * Write attributes for all variables

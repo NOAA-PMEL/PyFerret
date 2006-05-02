@@ -1573,8 +1573,10 @@ C /units=months  is 1/12 of the length of the year
 	   IF ( status .NE. ferr_ok ) RETURN
 	   IF ( STR_SAME (buff2, 'string') .EQ. 0) THEN
 	      attype_spec = ptype_string
-           ELSE
+           ELSE IF (STR_SAME (buff2, 'float') .EQ. 0) THEN
               attype_spec = ptype_float
+           ELSE 
+              GO TO 5940
 	   ENDIF
 	ENDIF
 
@@ -1765,5 +1767,9 @@ C /units=months  is 1/12 of the length of the year
      .		'TYPE specified does not match type of values'//
      .           cmnd_buff(pos:len_cmnd)//' is '// buff1(:slen)//
      .           'TYPE given is '// buff2(:slen), *5000 )
+
+5940    slen = TM_LENSTR1(buff2)
+        CALL ERRMSG( ferr_invalid_command, status,
+     .		'attribute type must be string or float'// buff2(:slen), *5000 )
 
 	END

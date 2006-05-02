@@ -29,8 +29,6 @@ GO bn_reset
 GO bench_internal_string_functions
 
 ! 4/2006 these functions now are also internally linked
-GO bn_reset
-go bench_v5d 
 
 GO bn_reset
 GO bn_ef_bench_extrema.jnl

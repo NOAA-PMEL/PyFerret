@@ -86,6 +86,9 @@
 * V581  3/05 *acm* increase buffer length max_cmnd_len to 2048. 
 *       3/05 *acm& Change call to strfloat, to return bad-flag if input 
 *                  string cannot be converted to float.
+* V600  5/06 *acm* In the fix to STRRINDEX, wrong indices in com2 
+*                  CALL C_STRLEN(com2(1,i2,j2,k2,l2),ii) led to a crash
+*                  when applying STRRINDEX to a list of strings.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -704,7 +707,7 @@
 	   i1 = i1 + di1
 	   i2 = i2 + di2
 
-	     CALL C_STRLEN(com2(1,i1,j1,k1,l1),
+	     CALL C_STRLEN(com2(1,i2,j2,k2,l2),
      .                     ii)
              IF (ii .LE. 0) THEN
 	        CALL C_STRLEN(com1(1,i1,j1,k1,l1),

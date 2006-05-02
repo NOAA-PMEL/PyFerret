@@ -123,6 +123,9 @@
 *                   within the script.  Set a flag when this occurs, so that
 *                   ferret_dispatch can be called correctly after the memory reset, 
 *                   continuing to execute the commands from the script
+*     4/28/06 *acm* When a script specified with -script has a pathname, we need
+*                   quotes around it.  The syntax for putting together the command string
+*                   GO "/pathname/scriptname.jnl"; EXIT/PROGRAM was missing the closing quote
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
@@ -412,6 +415,7 @@ static void command_line_run(float **memory){
       if ( ipath ) {
 	  strcat( init_command, "; GO \"" ); 
 	  strcat( init_command, script_file );
+	  strcat( init_command, "\"" ); 
 	  strcat( init_command, "\ "); 
 	  } else {
 	  strcat( init_command, "; GO " ); 

@@ -134,7 +134,6 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*      CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
       INTEGER numtimes
@@ -165,8 +164,13 @@
 
                 DO 99 iun=pun_1st_time, pun_last_time 
 *                  print *, un_name(iun)
+
                   CALL LOWER(axunits(4))
-                  IF( un_name(iun) .EQ. axunits(4)) THEN
+                  IF( ( un_name(iun) .EQ. axunits(4))           .OR.
+     .                ( un_name(iun)(1:2) .EQ. axunits(4)(1:2)) .OR.
+     .                ( (un_name(iun) .EQ. 'yr')                .AND. 
+     .                  (axunits(4) .EQ. 'year') ) )THEN
+
                     result(i,j,k,l) = un_convert(iun) 
 *                    print *, un_name(iun) 
                   END IF

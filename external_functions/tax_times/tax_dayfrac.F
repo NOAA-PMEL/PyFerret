@@ -121,8 +121,6 @@
 
       array_num = 1
       nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-*      print *, nt
-*      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nt,1,1,1)
       CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt) 
 
 *                                                                      ^
@@ -138,8 +136,6 @@
       SUBROUTINE tax_dayfrac_compute(id, arg_1, arg_2, result, 
      .                              taxdat)
 
-*      INCLUDE 'tax.h'
-      
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
@@ -170,7 +166,6 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*      REAL*8 vtax(MAXTIMES)
       CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       INTEGER ihour, iminute, isec
@@ -192,7 +187,6 @@
 *     Get time axis coordinates for second variable.
       CALL ef_get_coordinates (id, ARG2, T_AXIS, 
      .     arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), taxdat)
-*      print *, (vtax(1,1,1,L), L=1,numtimes)
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -245,8 +239,6 @@
       WRITE (err_msg,*) 
      .  'Error assigning dates/times to timestamp for tax_dayfrac',  
      .  datebuf
-
-  999 ier = 0
 
       RETURN
       END

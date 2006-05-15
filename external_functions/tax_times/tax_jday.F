@@ -170,13 +170,9 @@
       INTEGER iyear, imon, day_of_mon, day_of_year
       CHARACTER*3 cmon
       INTEGER numtimes
-*     CHARACTER*3 months(12)
 
       INTEGER i,j,k,l,m 
       INTEGER i2, j2, k2, l2
-
-*      DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
-*     .            'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

@@ -136,8 +136,6 @@
 *
       SUBROUTINE tax_jday1900_compute(id, arg_1, arg_2, result, taxdat)
 
-*      INCLUDE 'tax.h'
-      
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
@@ -237,8 +235,6 @@
       WRITE (err_msg,*) 
      .  'Error assigning dates/times to timestamp for tax_jday1900',  
      .  datebuf
-
-  999 ier = 0
 
       RETURN
       END

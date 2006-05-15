@@ -60,8 +60,6 @@
 
       CALL ef_set_desc(id,
      . 'Returns fraction of day of time axis cooedinate values' )
-   
-      CALL ef_set_num_work_arrays(id,1)
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -72,14 +70,14 @@
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
 
-      CALL ef_set_arg_desc(id, arg, 'this arg is passed through')
+      CALL ef_set_arg_desc(id, arg, 'time steps to convert')
       CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
 
       arg = 2
       CALL ef_set_arg_name(id, arg, 'B')
       CALL ef_set_arg_unit(id, arg, ' ')
 
-      CALL ef_set_arg_desc(id, arg, 'this arg is passed through')
+      CALL ef_set_arg_desc(id, arg, 'variable with reference time axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                      ^
@@ -89,52 +87,11 @@
 
       RETURN 
       END
-*
-* In this subroutine we request an amount of storage to be supplied
-* by Ferret and passed as an additional argument.
-*
-      SUBROUTINE tax_dayfrac_work_size(id)
-
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
-
-      INTEGER id
-
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
-
-*
-* Set the work array X/Y/Z/T dimensions
-*
-* ef_set_work_array_lens(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
-*
-      INTEGER array_num, nt
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-* This is going to be a double precision array, the time axis coordinates
-* so allocate 2* the size of the time axis
-
-      array_num = 1
-      nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt) 
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* ********************************************************************** 
-      RETURN
-      END
 
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_dayfrac_compute(id, arg_1, arg_2, result, 
-     .                              taxdat)
+      SUBROUTINE tax_dayfrac_compute(id, arg_1, arg_2, result) 
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -149,10 +106,6 @@
 
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
-
-      REAL*8 taxdat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .              wrk1loz:wrk1hiz, wrk1lot:wrk1hit/2) 
-
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -171,52 +124,51 @@
       INTEGER ihour, iminute, isec
       CHARACTER*3 cmon
 
+      REAL*8 ddate
+
       INTEGER i,j,k,l
-      INTEGER i2, j2, k2, l2
+      INTEGER i1, j1, k1, l1
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-*     Get time axis coordinates for second variable.
-      CALL ef_get_coordinates (id, ARG2, T_AXIS, 
-     .     arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), taxdat)
-
-      i2 = arg_lo_ss(X_AXIS,ARG2)
+      i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
+         j1 = arg_lo_ss(Y_AXIS,ARG1)
          DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-           k2 = arg_lo_ss(Z_AXIS,ARG2)
+           k1 = arg_lo_ss(Z_AXIS,ARG1)
            DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-              l2 = arg_lo_ss(T_AXIS,ARG2)
+              l1 = arg_lo_ss(T_AXIS,ARG1)
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
+                ddate = arg_1(i1,j1,k1,l1)
+
 *     Get the string-date for each time
-                CALL ef_get_axis_dates(id,ARG2,
-     .               taxdat(1,1,1,arg_1(i,j,k,l)),1,datebuf)
+                CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
+*                print *, datebuf
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read time.
-                READ (datebuf,120,err=900)
-     .               ihour, iminute, isec
+                READ (datebuf,120,err=900) ihour, iminute, isec
 
-                result(i,j,k,l)=(isec/3600+iminute/60+ihour)/24.0      
+                result(i,j,k,l)=(isec/3600.0+iminute/60.0+ihour)/24.0  
 
-                l2 = l2 + arg_incr(T_AXIS,ARG2)
+                l1 = l1 + arg_incr(T_AXIS,ARG1)
  100          CONTINUE
 
-               k2 = k2 + arg_incr(Z_AXIS,ARG2)
+               k1 = k1 + arg_incr(Z_AXIS,ARG1)
  200        CONTINUE
 
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
+            j1 = j1 + arg_incr(Y_AXIS,ARG1)
  300     CONTINUE
 
-         i2 = i2 + arg_incr(X_AXIS,ARG2)
+         i1 = i1 + arg_incr(X_AXIS,ARG1)
  400  CONTINUE
 
- 110  FORMAT (i2, 1x, a3, 1x, i4) 
+* 110  FORMAT (i2, 1x, a3, 1x, i4) 
  120  FORMAT (11x, 3(1x,i2))
 
 *                                                                      ^
@@ -232,5 +184,4 @@
      .  datebuf
 
       RETURN
-      END
       END

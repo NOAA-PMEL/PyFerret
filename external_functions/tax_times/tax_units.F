@@ -74,7 +74,7 @@
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
 
-      CALL ef_set_arg_desc(id, arg, 'this arg is passed through')
+      CALL ef_set_arg_desc(id, arg, 'time steps to convert')
 *      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
@@ -82,7 +82,7 @@
       CALL ef_set_arg_name(id, arg, 'B')
       CALL ef_set_arg_unit(id, arg, ' ')
 
-      CALL ef_set_arg_desc(id, arg, 'this arg is passed through')
+      CALL ef_set_arg_desc(id, arg, 'variable with reference time axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
 *                                                                      ^
@@ -117,8 +117,6 @@
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
 
-      REAL*8 taxdat(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .              wrk1loz:wrk1hiz, wrk1lot:wrk1hit/2) 
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -134,12 +132,11 @@
 *                                                                      V
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
-      INTEGER numtimes
       CHARACTER*16 axname(4), axunits(4)
       LOGICAL bkw2(4), mod2(4), reg2(4)
 
       INTEGER i,j,k,l
-      INTEGER i2, j2, k2, l2
+      INTEGER i1, j1, k1, l1
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -148,16 +145,16 @@
 *     Get axis information
       CALL ef_get_axis_info(id, ARG2, axname, axunits, bkw2, mod2, reg2)
 
-      i2 = arg_lo_ss(X_AXIS,ARG2)
+      i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
+         j1 = arg_lo_ss(Y_AXIS,ARG1)
          DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-           k2 = arg_lo_ss(Z_AXIS,ARG2)
+           k1 = arg_lo_ss(Z_AXIS,ARG1)
            DO 200 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
-              l2 = arg_lo_ss(T_AXIS,ARG2)
+              l1 = arg_lo_ss(T_AXIS,ARG1)
               DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
                 DO 99 iun=pun_1st_time, pun_last_time 
@@ -173,16 +170,16 @@
                   END IF
  99             CONTINUE
 
-                l2 = l2 + arg_incr(T_AXIS,ARG2)
+                l1 = l1 + arg_incr(T_AXIS,ARG1)
  100          CONTINUE
 
-               k2 = k2 + arg_incr(Z_AXIS,ARG2)
+               k1 = k1 + arg_incr(Z_AXIS,ARG1)
  200        CONTINUE
 
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
+            j1 = j1 + arg_incr(Y_AXIS,ARG1)
  300     CONTINUE
 
-         i2 = i2 + arg_incr(X_AXIS,ARG2)
+         i1 = i1 + arg_incr(X_AXIS,ARG1)
  400  CONTINUE
 
 
@@ -190,9 +187,6 @@
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
 * **********************************************************************
-
-      RETURN 
-  900 CONTINUE
 
       RETURN
       END

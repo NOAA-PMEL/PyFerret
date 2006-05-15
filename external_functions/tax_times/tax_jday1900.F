@@ -168,7 +168,6 @@
       CHARACTER*20 datebuf
       INTEGER iyear, imon, day_of_mon, day_since_1900
       CHARACTER*3 cmon
-      INTEGER numtimes
 
       INTEGER i,j,k,l,m 
       INTEGER i2, j2, k2, l2
@@ -176,11 +175,6 @@
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-
-*     Get number of time of variable 2 
-      numtimes = 
-     .     (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)/
-     .     arg_incr(T_AXIS,ARG2)
 
 *     Get time axis coordinates for second variable.
       CALL ef_get_coordinates (id, ARG2, T_AXIS, 
@@ -204,8 +198,7 @@
      .               taxdat(1,1,1,arg_1(i,j,k,l)),1,datebuf)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date and time.
-               READ (datebuf, 110, err=900) 
-     .              day_of_mon, cmon, iyear
+               READ (datebuf, 110, err=900)  day_of_mon, cmon, iyear
 
                CALL juldate1900(cmon, day_of_mon, iyear, day_since_1900)
                result(i,j,k,l) = day_since_1900 

@@ -61,8 +61,6 @@
       CALL ef_set_desc(id,
      . 'Returns years of time axis coordinate values' )
    
-*      CALL ef_set_num_work_arrays(id,1)
-
       CALL ef_set_num_args(id, 2)
 
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -172,7 +170,6 @@
      .                  (axunits(4) .EQ. 'year') ) )THEN
 
                     result(i,j,k,l) = un_convert(iun) 
-*                    print *, un_name(iun) 
                   END IF
  99             CONTINUE
 
@@ -200,51 +197,17 @@
       RETURN
       END
 
-C 
-C Subroutine file 'length.for' to facilitate string manipulation.
-C
-C Version: 5.20
-C Date: 1998, March 6
-C
-C Coded by: Ludek Klimes
-C     Department of Geophysics, Charles University Prague,
-C     Ke Karlovu 3, 121 16 Praha 2, Czech Republic,
-C     E-mail: klimes@seis.karlov.mff.cuni.cz
-C
-C.......................................................................
-C
-C This file consists of the following external procedures:
-C     LOWER...Subroutine changing a given character string to lowercase.
-C             LOWER
-C     LENGTH..Integer function to determine the length of a string
-C             without trailing blanks.
-C             LENGTH
-C
-C=======================================================================
-C
-C     
-C
+****************************************************************
+*
       SUBROUTINE LOWER(TEXT)
       CHARACTER*(*) TEXT
-C
-C Subroutine changing a given character string to lowercase.
-C
-C Input:
-C     TEXT... A given string.
-C
-C Output:
-C     TEXT... The given string converted to lowercase.
-C
-C-----------------------------------------------------------------------
-C
+*
+*     Converts a string to lowercase.
+*
       EXTERNAL LENGTH
       INTEGER  LENGTH
-C
-C-----------------------------------------------------------------------
-C
       CHARACTER*1 LETTER
       INTEGER ISHIFT,I
-C
       ISHIFT=ICHAR('a')-ICHAR('A')
       DO 10 I=1,LENGTH(TEXT)
         LETTER=TEXT(I:I)
@@ -254,35 +217,16 @@ C
    10 CONTINUE
       RETURN
       END
-C
-C=======================================================================
-C
-C     
-C
+
+***************************************************************
+*
       INTEGER FUNCTION LENGTH(TEXT)
       CHARACTER*(*) TEXT
-C
-C Subroutine to determine the length of a string without trailing
-C blanks.
-C
-C Input:
-C     TEXT... Character string.
-C
-C Output:
-C     LENGTH..Length of the string without trailing blanks.
-C             LENGTH=1 for a blank string.
-C
-C No subroutines and external functions required.
-C
-C Date: 1995, August 18
-C Coded by Ludek Klimes
-C
-C-----------------------------------------------------------------------
-C
+*
+*     Computes the length of a string without trailing blanks.
+*
       INTEGER I
-C
-C.......................................................................
-C
+
       DO 1 I=LEN(TEXT),1,-1
         IF(TEXT(I:I).NE.' ') THEN
           GO TO 2
@@ -291,10 +235,7 @@ C
       I=1
     2 CONTINUE
       LENGTH=I
-C
+
       RETURN
       END
-C
-C=======================================================================
-C                                                                 
 

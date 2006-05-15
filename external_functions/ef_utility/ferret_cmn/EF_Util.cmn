@@ -40,3 +40,4 @@ c*                           EXTERNAL statements, to be included in EF code.
       EXTERNAL ef_set_arg_unit
       EXTERNAL ef_set_custom_axis
       EXTERNAL ef_set_desc
+      EXTERNAL ef_set_result_type

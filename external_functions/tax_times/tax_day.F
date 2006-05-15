@@ -121,8 +121,6 @@
 
       array_num = 1
       nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-*      print *, nt
-*      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nt,1,1,1)
       CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt) 
      
 *                                                                      ^
@@ -137,8 +135,6 @@
 *
       SUBROUTINE tax_day_compute(id, arg_1, arg_2, result, taxdat)
 
-*      INCLUDE 'tax.h'
-      
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
@@ -169,7 +165,6 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*      REAL*8 vtax(MAXTIMES)
       CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
@@ -208,8 +203,7 @@
      .               taxdat(1,1,1,arg_1(i,j,k,l)),1,datebuf)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date and time.
-                READ (datebuf,110,err=900) 
-     .               day_of_mon, cmon, iyear
+                READ (datebuf,110,err=900) day_of_mon, cmon, iyear
      
                 result(i,j,k,l) = day_of_mon 
 
@@ -238,8 +232,6 @@
       WRITE (err_msg,*) 
      .  'Error assigning dates/times to timestamp for tax_day',  
      .  datebuf
-
-  999 ier = 0
 
       RETURN
       END

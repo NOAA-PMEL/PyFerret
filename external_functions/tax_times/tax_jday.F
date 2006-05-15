@@ -121,8 +121,6 @@
 
       array_num = 1
       nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-*      print *, nt
-*      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nt,1,1,1)
       CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt) 
 
 *                                                                      ^
@@ -138,8 +136,6 @@
       SUBROUTINE tax_jday_compute(id, arg_1, arg_2, result, 
      .                            taxdat)
 
-*      INCLUDE 'tax.h'
-      
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
@@ -170,18 +166,17 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*      REAL*8 vtax(MAXTIMES)
       CHARACTER*20 datebuf
       INTEGER iyear, imon, day_of_mon, day_of_year
       CHARACTER*3 cmon
       INTEGER numtimes
-      CHARACTER*3 months(12)
+*     CHARACTER*3 months(12)
 
       INTEGER i,j,k,l,m 
       INTEGER i2, j2, k2, l2
 
-      DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
-     .            'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
+*      DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
+*     .            'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -245,8 +240,6 @@
       WRITE (err_msg,*) 
      .  'Error assigning dates/times to timestamp for tax_jday',  
      .  datebuf
-
-  999 ier = 0
 
       RETURN
       END

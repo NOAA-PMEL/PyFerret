@@ -121,8 +121,6 @@
 
       array_num = 1
       nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-*      print *, nt
-*      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nt,1,1,1)
       CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt) 
      
 *                                                                      ^
@@ -135,11 +133,8 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_month_compute(id, arg_1, arg_2, result, 
-     .                             taxdat)
+      SUBROUTINE tax_month_compute(id, arg_1, arg_2, result, taxdat)
 
-*      INCLUDE 'tax.h'
-      
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
@@ -169,7 +164,6 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-*      REAL*8 vtax(MAXTIMES)
       CHARACTER*20 datebuf
       INTEGER iyear, imon, day_of_mon
       CHARACTER*3 cmon
@@ -189,16 +183,11 @@
 *     Get number of time of variable 2 
       numtimes = 
      .     (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)/
-     .     arg_incr(T_AXIS,ARG2)
+     .      arg_incr(T_AXIS,ARG2)
 
 *     Get time axis coordinates for second variable.
       CALL ef_get_coordinates (id, ARG2, T_AXIS, 
      .   arg_lo_ss(T_AXIS, ARG2), arg_hi_ss(T_AXIS, ARG2), taxdat)
-*      print *, (vtax(1,1,1,L), L=1,numtimes)
-
-*     Get the string-date for each time
-*      CALL ef_get_axis_dates(id,ARG2,taxdat,numtimes,datebuf)
-
 
       imon = 0
       i2 = arg_lo_ss(X_AXIS,ARG2)
@@ -216,11 +205,9 @@
 *     Get the string-date for each time
               CALL ef_get_axis_dates(id,ARG2,
      .             taxdat(1,1,1,arg_1(i,j,k,l)),1,datebuf)
-*      print *, datebuf(1)
 
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date and time.
-                READ (datebuf,110,err=900) 
-     .               day_of_mon, cmon, iyear
+                READ (datebuf,110,err=900) day_of_mon, cmon, iyear
 
                 DO 50 m=1,12
                   IF (cmon .EQ. months(m)) imon=m
@@ -253,8 +240,6 @@
       WRITE (err_msg,*) 
      .  'Error assigning dates/times to timestamp for tax_year',  
      .  datebuf
-
-  999 ier = 0
 
       RETURN
       END

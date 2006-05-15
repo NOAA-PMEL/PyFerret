@@ -61,7 +61,7 @@
       CALL ef_set_desc(id,
      . 'Returns fraction of year of time axis cooedinate values' )
    
-      CALL ef_set_num_work_arrays(id,2)
+      CALL ef_set_num_work_arrays(id,1)
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
@@ -112,7 +112,7 @@
 *
       INTEGER array_num, nt
       INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
+     .        arg_incr(4,1:EF_MAX_ARGS)
 
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
@@ -121,16 +121,8 @@
 
       array_num = 1
       nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-*      print *, nt
-*      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nt,1,1,1)
       CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt) 
      
-       array_num = 2
-      nt = 2*(arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)
-*      print *, nt
-*      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, nt,1,1,1)
-      CALL ef_set_work_array_dims(id, array_num, 1,1,1,1, 1,1,1,nt)
-
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |
@@ -141,8 +133,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_yearfrac_compute(id, arg_1, arg_2, result, 
-     . taxdat, datebuf)
+      SUBROUTINE tax_yearfrac_compute(id, arg_1, arg_2, result, taxdat) 
       
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -176,7 +167,6 @@
       CHARACTER*20 datebuf
       INTEGER iyear, imon, day_of_mon, day_of_year, days_this_year
       CHARACTER*3 cmon
-      INTEGER numtimes
 
       INTEGER i,j,k,l,m 
       INTEGER i2, j2, k2, l2
@@ -184,11 +174,6 @@
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-
-*     Get number of time of variable 2 
-      numtimes = 
-     .     (arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1)/
-     .     arg_incr(T_AXIS,ARG2)
 
 *     Get time axis coordinates for second variable.
       CALL ef_get_coordinates (id, ARG2, T_AXIS, 
@@ -246,11 +231,10 @@
      .  'Error assigning dates/times to timestamp for tax_yearfrac',  
      .  datebuf
 
-  999 ier = 0
-
       RETURN
       END
-      
+
+************************************************************************      
 *     This subroutine returns day number of current year and the total 
 *     number of days of current year.
       SUBROUTINE juldate(cmon, day_of_mon, iyear, day_of_year, 

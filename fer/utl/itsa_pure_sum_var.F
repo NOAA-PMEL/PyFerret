@@ -87,7 +87,8 @@
      .	  .OR.   itype .EQ. alg_variable   
      .	  .OR.   itype .EQ. alg_grid_chg_fcn 
      .	  .OR.   itype .EQ. alg_const_var
-     .	  .OR.   itype .EQ. alg_string      ) THEN
+     .	  .OR.   itype .EQ. alg_string    
+     .	  .OR.   itype .EQ. alg_attrib_val  ) THEN
 	     GOTO 100
 
 	  ELSEIF ( itype .EQ. alg_if_marker

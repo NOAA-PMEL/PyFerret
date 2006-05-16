@@ -189,24 +189,29 @@
               
 * Is the dot a decimal point within an expression, as in LIST a[y=0.5:9.5]
 * or LIST a[gx=sst[d=1],y=1.5]. Look for opening bracket before the dot and 
-* closing bracket after the dot
+* closing bracket after the dot. Use varname as a temporary buffer to avoid
+* confusion between indices within the whole buffer -text- and indices within 
+* the atom we are now looking at.
 
-              dot = INDEX(text(at_start(i):at_end(i)), '.')
+              varname = text(at_start(i):at_end(i))
+              slen = TM_LENSTR1(varname)
+              dot = INDEX(varname, '.')
 
-              IF ((INDEX(text(at_start(i):dot-1),'[') .GT. 0) .AND. 
-     .            (INDEX(text(dot+1:at_end(i)),']') .GT. 0) ) GOTO 99
+              IF ((INDEX(varname(1:dot-1),'[') .GT. 0) .AND. 
+     .            (INDEX(varname(dot+1:slen),']') .GT. 0) ) GOTO 99
 
 * is the name in quotations? If so then it may contain a dot and not
 * be varname.attname. See if its all within quotes, if so this is a 
 * variable name containg a dot.
 
-              first = INDEX(text(at_start(i):at_end(i)), "'" )
-              second = INDEX(text(at_start(i)+1:at_end(i)), "'" )
+              first = INDEX(varname, "'" )
+              second = 0
+              IF (slen .GT. 1) second = INDEX(varname(2:at_end(i)), "'" )
               
               IF (first .GT. 0 .AND. second .GT. 0 .AND. 
      .            dot .GT. first .AND. dot .LT. second) GOTO 99
 
-* Otherwise this is a varname.attname
+* Otherwise this is a varname.attname  
               at_type(i) = alg_attrib_val
 	      at_id(i)   = unspecified_int4
 

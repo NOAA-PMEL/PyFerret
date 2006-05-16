@@ -94,12 +94,6 @@
 * as netcdf data.
 
         IF (dset .LE. 0) RETURN
-        IF ( ds_type(dset).NE.'CDF' .AND. ds_type(dset).NE.' MC') THEN
-           WRITE (lun,*) 
-     .        'dataset is not netcdf: SHOW DATA/ATTRIBUTE not available'
-           RETURN
-        ENDIF
-
         status = NCF_INQ_DS (dset, ndims, nvars, ngatts, recdim )
 
 	risc_buff = ' '

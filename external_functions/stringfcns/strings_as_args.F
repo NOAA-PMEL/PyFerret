@@ -58,7 +58,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     .  'Prepend first NCHAR characters of string 1 onto string2')
+     .  'Demo Function: Prepend first NCHAR characters of string 1 onto string2')
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

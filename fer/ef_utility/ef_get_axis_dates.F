@@ -5,49 +5,6 @@ c* Ansley Manke
 c* Dec 9 1998
 c*
 c*
-
-c*
-c* This returns the date buffer associated with the 
-c* time axis of an argument.
-c*
-
-      SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
-
-      INCLUDE 'ferret.parm'
-      INCLUDE 'xcontext.cmn'
-      INCLUDE 'EF_Util.parm'
-      INCLUDE 'tmap_dims.parm'
-      INCLUDE 'xtm_grid.cmn_text'
-
-      INTEGER id, iarg, l
-      INTEGER grid
-      INTEGER numtimes, seconds
-
-      PARAMETER (seconds=6)
-
-      CHARACTER*(*) datebuf(*)
-      REAL*8  tax(*), tstep_r8
-
-      INTEGER cx_list(EF_MAX_ARGS)
-
-c* The context list was cached by Ferret and must be retrieved
-c* to be accessible to the external function.
-
-      CALL EF_GET_CX_LIST(cx_list)
-      grid = CX_GRID(cx_list(iarg))
-
-      DO 100 l = 1, numtimes
-         tstep_r8 = tax(l)
-         CALL TSTEP_TO_DATE_OLD ( grid, tstep_r8, seconds, datebuf(l) )
-100   CONTINUE
-
-
-      RETURN 
-      END
-
-	SUBROUTINE TSTEP_TO_DATE_OLD ( grid, tstep, precision, date )
-
-*
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -81,20 +38,54 @@ c* to be accessible to the external function.
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+c*
+c* This returns the date buffer associated with the 
+c* time axis of an argument.
+c*
+
+      SUBROUTINE EF_GET_AXIS_DATES(id, iarg, tax, numtimes, datebuf )
+
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xcontext.cmn'
+      INCLUDE 'EF_Util.parm'
+      INCLUDE 'tmap_dims.parm'
+      INCLUDE 'xtm_grid.cmn_text'
+
+
+      INTEGER id, iarg, numtimes
+      REAL*8 tax(*)
+      CHARACTER*(*) datebuf(*)
+
+      INTEGER l, grid, seconds
+      PARAMETER (seconds=6)
+      REAL*8  tstep_r8, test(5)
+      INTEGER cx_list(EF_MAX_ARGS)
+
+c* The context list was cached by Ferret and must be retrieved
+c* to be accessible to the external function.
+
+      CALL EF_GET_CX_LIST(cx_list)
+      grid = CX_GRID(cx_list(iarg))
+
+      DO 100 L = 1, numtimes
+         tstep_r8 = tax(L)
+         CALL TSTEP_TO_DATE_OLD ( grid, tstep_r8, seconds, datebuf(l) )
+100   CONTINUE
+
+
+      RETURN 
+      END
+
+	SUBROUTINE TSTEP_TO_DATE_OLD ( grid, tstep, precision, date )
 *
 * Return a string giving the date for a particular timestep
 * This is done by figuring the offset from
 * 01-JAN-0000 00:00:00 in seconds, and then calculating the date.
 *
-* programmer - steve hankin
-* NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-* written for VAX computer under VMS operating system
+* This is an older version of TSTEP_TO_DATE which was revised for better
+* output formatting in Ferret v6.0.  This version gives a fixed unchanging
+* format.
 *
-* rev. 0.0 3/17/88 - based on TM_STEP_TO_DATE by *mv*
-* rev. 0.1 - 2/16/89 - TM_SECS_TO_DATE --> SECS_TO_DATE
-* V300 4/93 - crash if precision exceeds 6
-* V530: *acm* 12/00 add calendar types; cal_id
-
 * Arguments:
 *	grid	 - grid containing a time axis
 *	tstep    - time step
@@ -102,18 +93,12 @@ c* to be accessible to the external function.
 *			(use ABS(precision) - neg. indicates truncate left 0's)
 *	date	 - returned string containing date in ASCII form
 *
-#ifdef unix
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'ferret.parm'
 	include 'xtext_info.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE 'TMAP_FORMAT:XTM_GRID.CMN'
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XTEXT_INFO.CMN'
-#endif
+
 
 * calling argument declarations
 	CHARACTER*(*)	date

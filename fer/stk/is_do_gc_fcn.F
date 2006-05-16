@@ -47,6 +47,7 @@
 * V533:  6/01 *sh* - support for args that may be string or float
 * V540: *sh* 10/01 - use improved data typing general parameter parg_type_* defs
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
+*  V6.0 *acm*  5/06 string results for external functions, set return type.
 
 	include	'ferret.parm'
 	include	'errmsg.parm'
@@ -68,7 +69,7 @@
 * local variables
 	LOGICAL	ITS_UN_CACHED, not_reusable
 	INTEGER	GCF_FIND_FCN, GCF_NUM_ARGS, GCF_ARG_TYPE,
-     .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER,
+     .		MGRID_SIZE_DELTA, GCF_ARG_EVAL_ORDER, EFCN_GET_RTN_TYPE,
      .		ifcn, icom, iarg, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, mr5, mr6, mr7, mr8, mr9, impl_grid,
      .		typ1, typ2, typ3, typ4, typ5, typ6, typ7, typ8, typ9, typr,
@@ -137,7 +138,16 @@
 
 * determine data type of result - and set corresponding word size, typr
 	cx_type(res_cx) = uvar_data_type(uvar, cx_data_set(res_cx))
-	IF (cx_type(res_cx) .EQ. ptype_string) THEN
+
+	IF (ifcn .GT. GFCN_NUM_INTERNAL) THEN
+          typr = EFCN_GET_RTN_TYPE (ifcn)
+          IF (typr .EQ. pptr_words)   cx_type(res_cx) = ptype_string
+          IF (typr .EQ. pfloat_words) cx_type(res_cx) = ptype_float
+          
+          uvar_data_type(uvar, cx_data_set(res_cx)) = cx_type(res_cx) 
+        ENDIF
+
+        IF (cx_type(res_cx) .EQ. ptype_string) THEN
 	   typr = pptr_words
 	ELSE
 	   typr = pfloat_words
@@ -147,6 +157,7 @@
 	CALL GCF_IMPOSE_RESULT_LIMS( ifcn, memory, is_mr(lo_isp+1),
      .			 is_cx(lo_isp+1), res_cx, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
+        
 
 * allocate memory space for result
 	CALL CREATE_MEM_VAR( res_cx, res_mr, status )

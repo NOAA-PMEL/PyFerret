@@ -24,6 +24,10 @@
 * 1/03: *kob* -- hardcode value for parg_type_float_or_string to 3 which
 *                is the value of ior(parg_type_float,parg_type_string).
 *                g77 won't allow intrinsic function in paramter stmt
+*  V6.0 *acm*  5/06 string results for external functions
+*                make pfcn_rtn_float = 1, pfcn_rtn_string  = 2, so they
+*                are compatible with parg_type_float=1, parg_type_string=2
+
 
 	INTEGER		p_xunravel, p_times2, p_reshape, p_zlayer,
      .			p_yunravel, p_zunravel, p_tunravel,
@@ -83,8 +87,8 @@
      .			pfcn_rtn_arg1_type,
      .			pfcn_rtn_arg2_type,
      .			pfcn_rtn_arg3_type
-	PARAMETER     ( pfcn_rtn_string = 1,
-     .			pfcn_rtn_float  = 2,
+	PARAMETER     ( pfcn_rtn_float = 1,
+     .			pfcn_rtn_string  = 2,
      .			pfcn_rtn_arg1_type  = -1,
      .			pfcn_rtn_arg2_type  = -2, 
      .			pfcn_rtn_arg3_type  = -3 )

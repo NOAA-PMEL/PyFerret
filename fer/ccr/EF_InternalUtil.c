@@ -67,6 +67,8 @@
  * statically linked 
 
 * V5.4 *acm* 10/01 add compress* to the statically linked fcns 
+* V6.0 *acm*  5/06 string results for external functions
+
 /* .................... Includes .................... */
  
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
@@ -162,6 +164,7 @@ int  FORTRAN(efcn_get_arg_type)( int *, int *);
 void FORTRAN(efcn_get_arg_name)( int *, int *, char * );
 void FORTRAN(efcn_get_arg_unit)( int *, int *, char * );
 void FORTRAN(efcn_get_arg_desc)( int *, int *, char * );
+int  FORTRAN(efcn_get_rtn_type)( int *);
 
 
 /* .... Functions called internally .... */
@@ -946,6 +949,7 @@ int FORTRAN(efcn_gather_info)( int *id_ptr )
 
   static int return_val=0; /* static because it needs to exist after the return statement */
 
+  
   void *handle;
   void (*f_init_ptr)(int *);
 
@@ -2152,6 +2156,24 @@ int FORTRAN(efcn_get_arg_type)( int *id_ptr, int *iarg_ptr )
 
 /*
  * Find an external function based on its integer ID and
+ * return the 'rtn_type' information for the result which
+ * tells Ferret whether an argument is a float or a string.
+ */
+int FORTRAN(efcn_get_rtn_type)( int *id_ptr )
+{
+  ExternalFunction *ef_ptr=NULL;
+  static int return_val=0; /* static because it needs to exist after the return statement */
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  
+  return_val = ef_ptr->internals_ptr->return_type;
+  
+  return return_val;
+}
+
+
+/*
+ * Find an external function based on its integer ID and
  * return the name of a particular argument.
  */
 void FORTRAN(efcn_get_arg_name)( int *id_ptr, int *iarg_ptr, char *string )
@@ -2283,6 +2305,7 @@ int EF_New( ExternalFunction *this )
   i_ptr->num_reqd_args = 1;
   i_ptr->has_vari_args = NO;
   i_ptr->num_work_arrays = 0;
+  i_ptr->return_type = FLOAT_RETURN;
   for (i=0; i<4; i++) {
     for (j=0; j<EF_MAX_WORK_ARRAYS; j++) {
       i_ptr->work_array_lo[j][i] = 1;

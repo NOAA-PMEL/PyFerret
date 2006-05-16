@@ -1,7 +1,5 @@
       SUBROUTINE ef_get_string_arg_element_len 
      .            (id, iarg, arg, i,j,k,l, slen)
-
-
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -35,9 +33,6 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* This will be in fer/ef_utility.  For now, compile as part of
-* the examples/ external functions for faster re-compiling (and while
-* stout is offline for its upgrade)
 *
 *  acm 12/03  
 *

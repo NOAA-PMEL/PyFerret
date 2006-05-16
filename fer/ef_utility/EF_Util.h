@@ -7,7 +7,8 @@
  * are part of the Ferret External Function library.
  *
  * 990422 *jc* Changed "work_array_len" to "work_array_lo/hi"
- */
+*  V6.0 *acm*  5/06 string results for external functions
+*/
  
  
 #ifndef	_EF_UTIL_H
@@ -50,6 +51,9 @@ enum { RETAINED=201, REDUCED } EF_AXIS_REDUCTION_type;
 /* These parameters need to match numbers in grid_chg_fcns.parm */
 enum { FLOAT_ARG=1, STRING_ARG } EF_ARG_type;
 
+/* These parameters need to match numbers in grid_chg_fcns.parm */
+enum { FLOAT_RETURN=1, STRING_RETURN } EF_RETURN_type;
+
 enum { CANNOT_ALLOCATE, INSUFFICIENT_DATA } EF_ERROR_type;
 
 /* .................... Typedefs .................... */
@@ -80,6 +84,7 @@ typedef struct {
   int  axis_will_be[4];
   int  axis_reduction[4];
   int  piecemeal_ok[4];
+  int  return_type;
   Axis axis[4];
 
   /* Information specific to each argument of the function */

@@ -1,7 +1,10 @@
-      SUBROUTINE ef_get_string_arg_elem_len_sub (lox, hix, loy, hiy,
-     .                     loz, hiz, lot, hit, arg, i, j, k, l, 
-     .			   max_line_len, slen )
-*
+c*
+c* ef_get_axis_calendar.F
+c*
+c* Ansley Manke * 
+c* 5/2006
+c*
+c*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -34,27 +37,70 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
-* ef_get_string_arg_elem_len_sub.F
-*
-* Called by ef_get_string_arg_element_len.
-*
-* Inside this subroutine arg is a 4-D real*8 array of pointers, and
-* we can call GET_STRING_ELEMENT to get the length of a string element.
 
-*  acm 12/03  from ef_get_arg_string
-*
-*
-      INTEGER i, j, k, l, lox, hix, loy, hiy, loz, hiz, lot, hit, 
-     .  slen, max_line_len
-      CHARACTER*512 text
-      REAL*8 arg(lox:hix, loy:hiy, loz:hiz, lot:hit)
+c*
+c* This routine returns the calendar name, days in year, number of 
+c* months and days in each month of a time axis
+c*
 
-      CHARACTER	GET_STRING_ELEMENT*512
-    
-      text = GET_STRING_ELEMENT (lox, hix, loy, hiy, loz, hiz, lot, hit,
-     .			         arg, i, j, k, l, max_line_len, slen)
+      SUBROUTINE EF_GET_AXIS_CALENDAR(id, iarg, calname, yrdays, 
+     .               mnths, d_in_month)
 
-      RETURN
+      INCLUDE 'ferret.parm'
+      INCLUDE 'xcontext.cmn'
+      INCLUDE 'EF_Util.parm'
+      INCLUDE 'tmap_dims.parm'
+      INCLUDE 'xtm_grid.cmn_text'
+      INCLUDE 'calendar.decl'
+      INCLUDE 'calendar.cmn'
 
+* argument declarations
+      INTEGER id, iarg
+      INTEGER grid, axis, idim
+
+      CHARACTER*(*) calname
+      REAL yrdays
+      INTEGER mnths, d_in_month(*)
+
+* Internal declarations
+      INTEGER cx_list(EF_MAX_ARGS), cal_id, i
+
+* Initialize
+      yrdays = 0.
+      mnths = 0.
+      DO 100 i = 1, 12
+         d_in_month(i) = 0
+100   CONTINUE
+
+c* The context list was cached by Ferret and must be retrieved
+c* to be accessible to the external function.
+
+      CALL ef_get_cx_list(cx_list)
+
+* Get the grid and if it has a time axis get the calendar info
+
+      grid = cx_grid(cx_list(iarg))
+      idim = t_dim
+      axis = grid_line(idim, grid) 
+
+      IF (axis .EQ. munknown) THEN
+         calname = 'none'
+
+      ELSE IF (axis .EQ. mnormal) THEN
+         calname = 'none'
+
+      ELSE
+         calname  = line_cal_name(axis)
+         cal_id = TM_GET_CALENDAR_ID (calname)
+         yrdays = cals_yeardays(cal_id)      
+         mnths = cals_num_months(cal_id)
+
+         DO 110 i = 1, mnths
+           d_in_month(i) = cals_days_in_month(i,cal_id)
+110      CONTINUE
+
+      ENDIF
+
+
+      RETURN 
       END
-

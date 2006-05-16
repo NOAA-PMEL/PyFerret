@@ -226,16 +226,12 @@ C  Check for strings matching arg2
 
             arg = 1
             CALL ef_get_string_arg_element(id, arg, arg_1, 
-     .                                           i1,j1,k1,l1, text1)
-            CALL ef_get_string_arg_element_len(id, arg, arg_1, 
-     .                                           i1,j1,k1,l1, slen1)
+     .                                     i1,j1,k1,l1, slen1, text1)
 
 
             arg = 2
             CALL ef_get_string_arg_element(id, arg, arg_2, 
-     .                                           i2,j2,k2,l2, text2)
-            CALL ef_get_string_arg_element_len(id, arg, arg_2, 
-     .                                           i2,j2,k2,l2, slen2)
+     .                                     i2,j2,k2,l2, slen2, text2)
 
             IF (slen1 .EQ. slen2) THEN
                IF (text1(:slen1) .EQ. text2(:slen2)) THEN

@@ -6,6 +6,7 @@
  * Revisions:
  * for V530 of Ferret - Oct, 2000 *sh* -- make ef_get_mr_list more robust
  *      so it can be called during custom axis creation
+ *  V6.0 *acm*  5/06 string results for external functions
 
  * This file contains all the utility functions which
  * External Functions need in order to interact with
@@ -16,7 +17,8 @@
 /* .................... Includes .................... */
 
 #include <stdlib.h> 		/* for convenience */
-#include <stdio.h>	 	/* for convenience */
+#include <assert.h>
+#include <stdio.h>	 	    /* for convenience */
 #include <string.h> 		/* for convenience */
 
 #include <sys/types.h> 	        /* required for "NULL" */
@@ -53,6 +55,7 @@ void ef_set_work_array_dims_( int *, int *, int *, int *, int *, int *, int *, i
 void ef_set_has_vari_args_( int *, int * );
 void ef_set_axis_inheritance_( int *, int *, int *, int *, int * );
 void ef_set_piecemeal_ok_( int *, int *, int *, int *, int * );
+void ef_set_result_type_(int *, int *);
 
 void ef_set_axis_influence_( int *, int *, int *, int *, int *, int * );
 void ef_set_axis_reduction_( int *, int *, int *, int *, int * );
@@ -61,7 +64,13 @@ void ef_set_axis_extend_( int *, int *, int *, int *, int * );
 void ef_set_arg_type_( int *, int *, int *);
 
 void ef_get_bad_flags_(int *, float *, float *);
+void ef_get_arg_type_(int *, int *, int *);
+void ef_get_result_type_(int *, int *);
+
 void ef_get_one_val_(int *, int *, float *);
+
+void ef_put_string_(char* , int* , char** );
+void ef_put_string_ptr_(char**, char**);
 
 void ef_get_cx_list_(int *);
 void ef_get_mr_list_(int *);
@@ -358,6 +367,60 @@ void ef_get_one_val_(int *id_ptr, int *arg_ptr, float *val_ptr)
 }
 
 
+
+
+/* 
+   Put a string into the output pointer.
+
+    554: *acm* 12/03 - see copy_c_string and save_c_string
+*/
+
+void ef_put_string_(char* text, int* inlen, char** out_ptr)
+{
+  int i;
+  char* ptr;
+
+  if ( *out_ptr ) free(*out_ptr);
+
+  if ( ptr = (char *) malloc(sizeof(char) * (*inlen+1)) )
+    {
+      /*      strcpy(ptr, text); */
+       for (i=0; i<*inlen; i++)
+	  ptr[i] = text[i];
+      ptr[*inlen] = 0;    /* null-terminate the stored string */
+
+    }
+    *out_ptr = ptr;
+
+   return;
+
+}
+
+/* 
+   Put a string pointer into the output pointer.
+
+    600: *acm* - see copy_c_string
+*/
+
+void ef_put_string_ptr_(in_ptr, out_ptr)
+     char** out_ptr;
+     char** in_ptr;
+{
+
+  if ( *out_ptr ) free(*out_ptr);
+
+  if ( *out_ptr = (char *) malloc(sizeof(char) * (strlen(*in_ptr)+1)) )
+    {
+      strcpy(*out_ptr, *in_ptr);
+    }
+  else
+    assert(*out_ptr);
+
+   return;
+
+}
+      
+
 void ef_get_cx_list_(int *cx_list)
 {
   int i=0;
@@ -401,6 +464,36 @@ void ef_get_bad_flags_(int *id_ptr, float *bad_flag, float *bad_flag_result)
   *bad_flag_result = GLOBAL_bad_flag_ptr[EF_MAX_ARGS];
 }
 
+void ef_get_result_type_(int *id_ptr, int *type)
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  *type = ef_ptr->internals_ptr->return_type;
+
+  return;
+}  
+
+
+/*
+ * Find an external function based on its integer ID and
+ * return the 'arg_type' information for a particular
+ * argument which tells Ferret whether an argument is a 
+ * float or a string.
+ */
+void FORTRAN(ef_get_arg_type)( int *id_ptr, int *iarg_ptr, int *type)
+{
+  ExternalFunction *ef_ptr=NULL;
+  static int return_val=0; 
+  int index = *iarg_ptr - 1; 
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+  
+  *type = ef_ptr->internals_ptr->arg_type[index];
+  
+  return;
+}
 
 void ef_set_desc_sub_(int *id_ptr, char *text)
 {
@@ -409,6 +502,18 @@ void ef_set_desc_sub_(int *id_ptr, char *text)
   if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
 
   strcpy(ef_ptr->internals_ptr->description, text);
+
+  return;
+}  
+
+
+void ef_set_result_type_(int *id_ptr, int *type)
+{
+  ExternalFunction *ef_ptr=NULL;
+
+  if ( (ef_ptr = ef_ptr_from_id_ptr(id_ptr)) == NULL ) { return; }
+
+  ef_ptr->internals_ptr->return_type = *type;
 
   return;
 }  

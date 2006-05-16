@@ -17,6 +17,7 @@ c*				in ferret.parm
 c*                 *ac* 9.99 Separate EF_Util.parm which is all that's needed 
 c*                           in the utility fcns in fer/ef_utility and the 
 c*                           EXTERNAL statements, to be included in EF code.
+c*                 *ac* 5/06 Add ef_set_result_type
 
       INCLUDE 'EF_Util.parm'
 
@@ -40,3 +41,4 @@ c*                           EXTERNAL statements, to be included in EF code.
       EXTERNAL ef_set_arg_unit
       EXTERNAL ef_set_custom_axis
       EXTERNAL ef_set_desc
+      EXTERNAL ef_set_result_type

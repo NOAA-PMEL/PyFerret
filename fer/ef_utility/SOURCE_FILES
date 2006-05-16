@@ -4,6 +4,7 @@ ef_get_arg_info.F\
 ef_get_arg_string.F\
 ef_get_arg_subscripts.F\
 ef_get_arg_ss_extremes.F\
+ef_get_axis_calendar.F\
 ef_get_axis_dates.F\
 ef_get_axis_info.F\
 ef_get_box_hi_lim.F\
@@ -11,6 +12,7 @@ ef_get_box_limits.F\
 ef_get_box_lo_lim.F\
 ef_get_box_size.F\
 ef_get_coordinates.F\
+ef_get_one_arg_string.F\
 ef_get_one_val_sub.F\
 ef_get_one_val_sub_sub.F\
 ef_get_res_subscripts.F\
@@ -18,6 +20,7 @@ ef_get_string_arg_element.F\
 ef_get_string_arg_element_len.F\
 ef_get_string_arg_elem_len_sub.F\
 ef_get_string_arg_element_sub.F\
+ef_get_string_arg_max_len.F\
 ef_set_arg_desc.F\
 ef_set_arg_name.F\
 ef_set_arg_unit.F\

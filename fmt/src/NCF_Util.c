@@ -1140,6 +1140,9 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
 		  att.len = strlen(name);
           strcpy(att.name, name );
 
+	      att.string = (char *) malloc((att.len+1)* sizeof(char*));
+		  strcpy(att.string, name );
+
       /*Save attribute in linked list of attributes for variable .*/	
        if (!var.attrs_list_initialized) {
           if ( (var.varattlist = list_init()) == NULL ) {

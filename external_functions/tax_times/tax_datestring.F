@@ -4,7 +4,7 @@
 * Jing Y. Li 
 * May 2006
 *
-* Returns A testing additional string capabilities
+* Returns string of dates 
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -44,12 +44,6 @@
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_result_type(id, STRING_RETURN)
 
-      CALL ef_set_num_work_arrays(id, 1)
-
-*      arg = 1
-*      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
-*      CALL ef_set_arg_type (id, arg, STRING_ARG)
-
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
@@ -65,6 +59,7 @@
       CALL ef_set_arg_desc(id, arg, 'variable with reference time axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
+*     Set data type as string
       arg = 3
       CALL ef_set_arg_type (id, arg, STRING_ARG)
 
@@ -82,57 +77,10 @@
       RETURN 
       END
 
-
-*
-* In this subroutine we request an amount of storage to be supplied
-* by Ferret and passed as an additional argument.
-*
-      SUBROUTINE tax_datestring_work_size(id)
-
-      INCLUDE 'ferret_cmn/EF_Util.cmn'
-      INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
-
-      INTEGER id
-
-* **********************************************************************
-*                                            USER CONFIGURABLE PORTION |
-*                                                                      |
-*                                                                      V
-
-*
-* Set the work array X/Y/Z/T dimensions
-*
-* ef_set_work_array_dims(id,array #,xlo,ylo,zlo,tlo,xhi,yhi,zhi,thi)
-*
-      INTEGER iarg, ns
-      INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
-     .     arg_incr(4,1:EF_MAX_ARGS)
-
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-      iarg = 1
-      ns = arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1) + 1
-
-      CALL ef_set_work_array_dims(id, iarg, 1,1,1,1, 1,1,1,2*ns)
-
-      iarg = 2
-      CALL ef_set_work_array_dims(id, iarg, 1,1,1,1, 1,1,1,20*ns)
-
-
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
-      END
-
-
-
 * In this subroutine we compute the result
 *
       SUBROUTINE tax_datestring_compute(id, arg_1, arg_2, arg_3, 
-     .           result, tax)
+     .           result)
 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
@@ -150,8 +98,6 @@
       REAL result(2,memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 
-      REAL*8 tax(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
-     .               wrk1loz:wrk1hiz, wrk1lot:wrk1hit/2)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -170,9 +116,9 @@
       INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
       INTEGER i3, j3, k3, l3
-      INTEGER rtype, iarg, slen
-      CHARACTER*20 textstring, datestring
-      CHARACTER*3 short
+      INTEGER rtype, slen
+      CHARACTER*20 datestring
+      CHARACTER*5 precistring
       REAL*8 ddate
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -181,22 +127,17 @@
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
-      CALL ef_get_coordinates (id, ARG1, T_AXIS, 
-     .       arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), tax)
-
-
 *     Get the precision for output
       i3=arg_lo_ss(X_AXIS, ARG3)
       j3=arg_lo_ss(Y_AXIS, ARG3)
       k3=arg_lo_ss(Z_AXIS, ARG3)
       l3=arg_lo_ss(T_AXIS, ARG3)
 
+*     Get the output presicion (string)
       CALL ef_get_string_arg_element(id, ARG3, arg_3,
-     .     i3,j3,k3,l3,slen,textstring)
+     .     i3,j3,k3,l3,slen,precistring)
 
-      print *, slen, textstring
-
-      CALL LOWER(textstring)
+      CALL LOWER(precistring)
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -213,36 +154,36 @@
 
                  ddate =  arg_1(i1,j1,k1,l1)
 
-C Get the string value of dates and put them in the result.
+C     Get the string value of dates and put them in the result.
                  CALL EF_GET_AXIS_DATES 
      .                (id, ARG2, ddate, 1, datestring)
 
-                 If(textstring .EQ. 'seconds') THEN
+                 If(precistring .EQ. 'seconds') THEN
                      slen = 20
                      CALL EF_PUT_STRING (datestring, slen,
      .                    result(1,i,j,k,l))
                  
-                 ELSE If(textstring .EQ. 'minutes') THEN
+                 ELSE If(precistring .EQ. 'minutes') THEN
                      slen = 17
                      CALL EF_PUT_STRING (datestring(1:17), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE If(textstring .EQ. 'hours') THEN
+                 ELSE If(precistring .EQ. 'hours') THEN
                      slen = 14
                      CALL EF_PUT_STRING (datestring(1:14), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE If(textstring .EQ. 'days') THEN
+                 ELSE If(precistring .EQ. 'days') THEN
                      slen = 11
                      CALL EF_PUT_STRING (datestring(1:11), slen, 
      .                    result(1,i,j,k,l))
 
-                 ELSE IF(textstring .EQ. 'months') THEN
+                 ELSE IF(precistring .EQ. 'months') THEN
                      slen = 8
                      CALL EF_PUT_STRING (datestring(4:11), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE IF(textstring .EQ. 'years') THEN
+                 ELSE IF(precistring .EQ. 'years') THEN
                      slen = 4
                      CALL EF_PUT_STRING (datestring(8:11), slen,
      .                    result(1,i,j,k,l))

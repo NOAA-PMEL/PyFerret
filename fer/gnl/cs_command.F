@@ -68,6 +68,7 @@
 * v541 *kob* 8/02 - for animating, check for Xserver backingstore and
 *                   don't animate if it's not set
 * V554 1/04 *acm* - add cs_repeatname for named /RANGE loop control
+* V600 5/06 *acm* - the call to new_gks_window needs window_title.
 
 * calling argument declarations:
 	CHARACTER*(*)	cmnd_line
@@ -76,7 +77,7 @@
 * internal variable declarations:
 	INTEGER	prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40,anim_win_id*16,GKS_X_CONID*16
-	INTEGER  TM_LENSTR1, slen, anim_id, bs, ws_id
+	INTEGER  TM_LENSTR1, slen, anim_id, bs, ws_id, tlen
         CHARACTER*10 TM_FMT, out_buff
         REAL    val
         LOGICAL range
@@ -151,8 +152,10 @@
 		       IF (.NOT. wn_open(win_id9)) THEN 
 *       * open an unmapped window
 			  CALL UNMAP_ANIMATE_WINDOW
-			  anim_win_id = GKS_X_CONID( win_id9 )
-			  CALL NEW_GKS_WINDOW( win_id9, anim_win_id, status ) 
+			  anim_win_id = GKS_X_CONID( win_id9 ) 
+                          tlen = TM_LENSTR1(window_title)
+			  CALL NEW_GKS_WINDOW( win_id9, anim_win_id, 
+     .                       window_title(:tlen), status ) 
 			  if (status .EQ. ferr_ok) wn_open(win_id9) = .TRUE.
 			  CALL SETUP_LINE_BUNDLES( win_id9, wstype )
 *       swap active windows so the unampped window becomes the active

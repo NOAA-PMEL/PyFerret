@@ -3,6 +3,7 @@
 *
 * Jing Y. Li 
 * May 2006
+* 18-may-2006 ACM change to compare only the first 3 characters of the precision string.
 *
 * Returns string of dates 
 *
@@ -118,7 +119,7 @@
       INTEGER i3, j3, k3, l3
       INTEGER rtype, slen
       CHARACTER*20 datestring
-      CHARACTER*5 precistring
+      CHARACTER*3 precistring
       REAL*8 ddate
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -158,32 +159,32 @@ C     Get the string value of dates and put them in the result.
                  CALL EF_GET_AXIS_DATES 
      .                (id, ARG2, ddate, 1, datestring)
 
-                 If(precistring .EQ. 'seconds') THEN
+                 If(precistring .EQ. 'sec') THEN
                      slen = 20
                      CALL EF_PUT_STRING (datestring, slen,
      .                    result(1,i,j,k,l))
                  
-                 ELSE If(precistring .EQ. 'minutes') THEN
+                 ELSE If(precistring .EQ. 'min') THEN
                      slen = 17
                      CALL EF_PUT_STRING (datestring(1:17), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE If(precistring .EQ. 'hours') THEN
+                 ELSE If(precistring .EQ. 'hou') THEN
                      slen = 14
                      CALL EF_PUT_STRING (datestring(1:14), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE If(precistring .EQ. 'days') THEN
+                 ELSE If(precistring .EQ. 'day') THEN
                      slen = 11
                      CALL EF_PUT_STRING (datestring(1:11), slen, 
      .                    result(1,i,j,k,l))
 
-                 ELSE IF(precistring .EQ. 'months') THEN
+                 ELSE IF(precistring .EQ. 'mon') THEN
                      slen = 8
                      CALL EF_PUT_STRING (datestring(4:11), slen,
      .                    result(1,i,j,k,l))
 
-                 ELSE IF(precistring .EQ. 'years') THEN
+                 ELSE IF(precistring .EQ. 'yea') THEN
                      slen = 4
                      CALL EF_PUT_STRING (datestring(8:11), slen,
      .                    result(1,i,j,k,l))

@@ -149,7 +149,7 @@
 
 *     Get the datebuf corresponding to time ddate for the variable ARG2
                   CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
-                  print *, datebuf
+*                  print *, datebuf
                   
 *     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date and time.
                   READ (datebuf,110,err=900) day_of_mon, cmon, iyear

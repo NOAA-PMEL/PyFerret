@@ -59,7 +59,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns years of time axis coordinate values' )
+     . 'Returns units of time axis coordinate values, in seconds' )
    
       CALL ef_set_num_args(id, 2)
 
@@ -73,15 +73,6 @@
       arg = 1
       CALL ef_set_arg_name(id, arg, 'A')
       CALL ef_set_arg_unit(id, arg, ' ')
-
-      CALL ef_set_arg_desc(id, arg, 'time steps to convert')
-*      CALL ef_set_axis_influence(id, arg, YES, YES, YES, YES)
-      CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
-
-      arg = 2
-      CALL ef_set_arg_name(id, arg, 'B')
-      CALL ef_set_arg_unit(id, arg, ' ')
-
       CALL ef_set_arg_desc(id, arg, 'variable with reference time axis')
       CALL ef_set_axis_influence(id, arg, NO, NO, NO, NO)
 
@@ -96,7 +87,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE tax_units_compute(id, arg_1, arg_2, result)
+      SUBROUTINE tax_units_compute(id, arg_1, result)
 
 *      INCLUDE 'tax.h' 
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -111,8 +102,6 @@
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
-     .           mem2loz:mem2hiz, mem2lot:mem2hit)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
@@ -232,4 +221,6 @@
 
       RETURN
       END
+
+
 

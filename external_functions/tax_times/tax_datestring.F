@@ -38,7 +38,8 @@
 *                                                                      |
 *                                                                      V
 
-      CALL ef_set_desc(id,'Demo Function: tests string utilities' )
+      CALL ef_set_desc(id,
+     . 'Returns date string for time axis coordinate values' )
 
       CALL ef_set_num_args(id, 3)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

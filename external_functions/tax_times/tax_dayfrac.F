@@ -59,7 +59,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns fraction of day of time axis cooedinate values' )
+     . 'Returns fraction of day of time axis coordinate values' )
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

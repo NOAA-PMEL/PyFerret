@@ -60,7 +60,7 @@
 *                                                                      V
 
       CALL ef_set_desc(id,
-     . 'Returns days since 1900 of time axis cooedinate values' )
+     . 'Returns days since 1900 of time axis coordinate values' )
    
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 

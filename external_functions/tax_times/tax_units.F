@@ -122,7 +122,7 @@
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
       CHARACTER*16 axname(4), axunits(4)
-      LOGICAL bkw2(4), mod2(4), reg2(4)
+      LOGICAL bkw1(4), mod1(4), reg1(4)
 
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
@@ -132,7 +132,7 @@
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *     Get axis information
-      CALL ef_get_axis_info(id, ARG2, axname, axunits, bkw2, mod2, reg2)
+      CALL ef_get_axis_info(id, ARG1, axname, axunits, bkw1, mod1, reg1)
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)

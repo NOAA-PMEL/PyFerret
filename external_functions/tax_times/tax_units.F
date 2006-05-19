@@ -61,7 +61,7 @@
       CALL ef_set_desc(id,
      . 'Returns units of time axis coordinate values, in seconds' )
    
-      CALL ef_set_num_args(id, 2)
+      CALL ef_set_num_args(id, 1)
 
       CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)

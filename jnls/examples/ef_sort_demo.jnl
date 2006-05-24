@@ -2,7 +2,9 @@ set MODE VERIFY
 !     
 ! ******************************************************************** 
 ! ef_sort_demo.jnl *acm* 9/98 - EF sorting and sampling demo
-!                  *ACM* 5/00 -  correct the order of args to sample*
+!                  *ACM* 5/00 - correct the order of args to sample*
+!                  *ACM* 5/06 - use square brackets to choose region on 
+!                               args to SORT, SAMPLE grid-changing functions
 
 ! Description: examples of the sorting external functions for FERRET.
 ! SORTI, SORTJ, SORTK, SORTL to obtain lists of indices of sorted data
@@ -19,8 +21,7 @@ MESSAGE
 !         A first simple example of sorting: Sort a list of data.
 
 USE coads_climatology
-SET REGION/x=19e/y=77n/z=0/l=1:6
-LIST sst
+LIST sst[x=19e,y=77n,l=1:6]
 
 !         The sequence of calls is:  Compute the sorted indices, then sample 
 !         the data using the new order of indices.  This is COADS sea surface 
@@ -30,15 +31,15 @@ MESSAGE
 
 !       Show the indices and the sorted temperatures
 
-LET tsorted_indices = sortl(sst[l=1:6])
+LET tsorted_indices = sortl(sst[x=19e,y=77n,l=1:6])
 
-LET tsorted_sst = samplel(sst[l=1:6], tsorted_indices)
+LET tsorted_sst = samplel(sst[x=19e,y=77n,l=1:6], tsorted_indices)
 LIST tsorted_indices, tsorted_sst
 
 !       We can also use the constant-array notation to pick out a couple
 !       of points:
 
-list samplel(sst, {1,5})
+list samplel(sst[x=19e,y=77n,l=1:6], {1,5})
 
 
 
@@ -49,7 +50,6 @@ MESSAGE
 !         Temperature in a region 3 months after the strongest winds 
 !         elsewhere?  Use the COADS monthly climatology data set.
 
-CAN REGION 
 SET DATA coads_climatology
 
 !         Choose a region in the Pacific, and define the westerly_wind 

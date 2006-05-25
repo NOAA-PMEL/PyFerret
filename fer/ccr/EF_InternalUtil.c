@@ -3002,6 +3002,16 @@ else if ( !strcmp(name,"zaxreplace_zlev_init_") ) return (void *)FORTRAN(zaxrepl
 else if ( !strcmp(name,"zaxreplace_zlev_work_size_") ) return (void *)FORTRAN(zaxreplace_zlev_work_size);
 else if ( !strcmp(name,"zaxreplace_zlev_compute_") ) return (void *)FORTRAN(zaxreplace_zlev_compute);
 
+/* nco.F */
+else if ( !strcmp(name,"nco_init_") ) return (void *)FORTRAN(nco_init);
+else if ( !strcmp(name,"nco_result_limits_") ) return (void *)FORTRAN(nco_result_limits);
+else if ( !strcmp(name,"nco_compute_") ) return (void *)FORTRAN(nco_compute);
+
+/* nco_attr.F */
+else if ( !strcmp(name,"nco_attr_init_") ) return (void *)FORTRAN(nco_attr_init);
+else if ( !strcmp(name,"nco_attr_result_limits_") ) return (void *)FORTRAN(nco_attr_result_limits);
+else if ( !strcmp(name,"nco_attr_compute_") ) return (void *)FORTRAN(nco_attr_compute);
+
  }
 /*  End of function pointer list for internally-linked External Functions
  *  ------------------------------------ */

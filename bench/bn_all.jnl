@@ -492,6 +492,9 @@ GO bn_bounds_defineax.jnl
 go bn_reset
 go bn_attributes.jnl
 
+go bn_reset
+go bn_linecolors.jnl
+
 GO bn_reset
 GO bn600_bug_fixes.jnl
 

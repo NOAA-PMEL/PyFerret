@@ -1,0 +1,40 @@
+! bn_linecolors.jnl
+! 5/2006 ACM
+! test setting more line colors
+
+can win/all
+set win/new
+
+set mode linec:12
+sho mode linecolors
+ppl color,7,100,50,0   ! orange
+ppl color,8,0,55,0     ! dark green
+ppl color,9,60,0,100   ! purple
+ppl color,10,100,60,70 ! pink
+ppl color,11,80,70,60  ! tan
+ppl color,12,100,75,0  ! yellow
+plot/thick/line/i=1:100 \
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+
+can mode linecolors
+sho mode linecolors
+
+! resetting line colors with cancel mode does not 
+! take effect until we do a SET WIN/NEW
+
+plot/line/i=1:100 \
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+
+set win/new
+plot/line/i=1:100\
+ cos(i/20), cos(i/24), cos(i/28), cos(i/32), \
+ cos(i/36), cos(i/40), cos(i/44), cos(i/48), \
+ cos(i/52), cos(i/56), cos(i/60), cos(i/64)
+
+can win/all
+set win/new
+

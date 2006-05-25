@@ -166,7 +166,12 @@
               vlen = TM_LENSTR1(varname)
 
               IF (nvatts .EQ. 0) THEN
-                 WRITE (risc_buff, 3300) varname(1:vlen)
+                 IF (coordvar) THEN
+                    WRITE (risc_buff, 3400) varname(1:vlen)
+                 ELSE
+                    WRITE (risc_buff, 3300) varname(1:vlen)
+                 ENDIF
+
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
               ENDIF
 

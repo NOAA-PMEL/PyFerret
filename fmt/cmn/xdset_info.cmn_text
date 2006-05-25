@@ -56,6 +56,7 @@
      .		ds_precision(maxvars),
 **************************************************************************
      .		ds_aux_set_num(maxvars), ds_var_scaleit(maxvars),
+     .          is_mc,
 **************************************************************************
      .		min_ds_tstart,max_ds_tend,ds_tdelta,
 **************************************************************************
@@ -110,7 +111,7 @@
 	CHARACTER*256	ds_name
 	CHARACTER*256	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
-	LOGICAL		ds_regsteps, ds_var_scaleit
+	LOGICAL		ds_regsteps, ds_var_scaleit, is_mc
 	REAL*8		ds_1step,ds_lastep,ds_delstep,
      .			ds_file_info_ptr
         REAL            ds_var_scale, ds_var_off

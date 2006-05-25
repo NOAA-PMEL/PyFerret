@@ -120,14 +120,17 @@
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-	LOGICAL      permuted, already_scaled
+	LOGICAL      NC_GET_ATTRIB, 
+     .               permuted, do_warn, already_scaled, got_it, tf2
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
      .               start(4), filsize(4), totsize, dim_lo(4),dim_hi(4),
      .		     imap(4), trans(4), memsize(4), count(4),
-     .		     grid_dims(4), fildim, memdim, filstride(4), oned
+     .		     grid_dims(4), fildim, memdim, filstride(4), oned,
+     .               maxlen, attlen, attoutflag
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
+        CHARACTER*128   buff, vname
 	DATA  		dimnam/'I','J','K','L'/
 
 	INTEGER  NF_GET_VARM_REAL_
@@ -160,6 +163,7 @@
         dim_hi(3) = a_hi_z
         dim_hi(4) = a_hi_t
 	permuted  = .FALSE.
+        do_warn = .TRUE.
 
 * check for error conditions
         DO 10 idim = 1, 4
@@ -333,9 +337,29 @@
 
 * if data has mean or range removed rescale it.
 * Do not scale missing data.
+
+* Check for the scale factors again here (done on SET DATA in cd_get_1_dep_var,
+* but the user may have reset the attributes by now.) If this is a file in a 
+* descriptor file, and if scaling values exist for the variable, then do not reset 
+* scale factors again here.
+
+        IF (.NOT.is_mc .OR. .NOT.cd_scaled(ivar)) THEN
+           maxlen = 1
+           got_it = NC_GET_ATTRIB( dset, varid, 'scale_factor',
+     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, buff, cd_scale_factor(ivar))
+
+           maxlen = 1
+           tf2    = NC_GET_ATTRIB( dset, varid, 'add_offset',
+     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     attoutflag, buff, cd_add_offset(ivar))
+
+           cd_scaled(ivar) = got_it .OR. tf2
+        ENDIF
+
         IF ( cd_scaled( ivar ) ) CALL TM_SCALE(
-     .       cd_scale_factor(ivar),cd_add_offset(ivar),
-     .       ds_bad_flag(ivar),var,totsize )
+     .       cd_scale_factor(ivar), cd_add_offset(ivar),
+     .       ds_bad_flag(ivar), var, totsize )
 
 * if user has asked for new offset and/or scale, apply those, but
 * not to any missing data.

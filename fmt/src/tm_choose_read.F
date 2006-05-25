@@ -86,6 +86,8 @@
 	INTEGER*4	tmp_lo(4), tmp_hi(4)
 	REAL*8		tstep, TM_WORLD
 
+        is_mc = .FALSE.
+
 * Is it a GT data set?
   110	IF (STR_SAME(ds_type(dset_num), '  GT') .EQ. 0) THEN
 	  DO 120 pcnt = 1,3
@@ -105,6 +107,7 @@
   130	  CONTINUE
 * Is it a MC data set?
 	ELSEIF (STR_SAME(ds_type(dset_num), '  MC') .EQ. 0) THEN
+            is_mc = .TRUE.
 	    CALL MC_READ  ( dset_num, varpos,
      .			    a_lo_x, a_lo_y, a_lo_z, a_lo_t,
      .			    a_hi_x, a_hi_y, a_hi_z, a_hi_t,

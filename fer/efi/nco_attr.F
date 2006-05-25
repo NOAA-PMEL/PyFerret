@@ -303,34 +303,3 @@
 * int    32-bit signed integers.
 * float  real 32-bit IEEE floating-point.
 * double 64-bit IEEE floating-point. 
-
-
-	INTEGER FUNCTION STRINGLEN (strin)
-
-* determine the length of a character string as the position of the last 
-* non-blank character 
-
-* from tm_lenstr (use tm_lenstr if this is ever converted to an
-* internally-linked function)
-
-* calling argument declarations:
-	CHARACTER*(*) strin
-
-* internal variable declarations:
-	INTEGER	mright, i
-
-* initialize: find highest possible right hand limit of string
-	mright = LEN(strin)
-
-        DO 100 i = mright,1,-1	
-           IF (strin(i:i) .NE. ' ') GOTO 200	 
-  100   CONTINUE
-
-* for all blanks
-        STRINGLEN = 0
-
-* Found non-blank
-  200   STRINGLEN = i
-
-	RETURN
-	END

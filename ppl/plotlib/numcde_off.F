@@ -41,6 +41,7 @@
 C**
 C**    from numcde.f
 C 1/2006 acm Add an offset to the value before formatting it 
+C V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
 C**
 C**
 C***********************************************************************
@@ -163,9 +164,9 @@ C     ADD LEADING ZERO
            frac = val - FLOAT(ideg)
            minutes = 60.*frac
            imin = INT(minutes+0.1)  ! sun at least, turns 40 into 39 sometimes...
-c           frac = minutes - FLOAT(imin)
-c           seconds = 60.* frac
-c           isec = INT(seconds)
+           frac = minutes - FLOAT(imin)
+           seconds = 60.* frac
+           isec = INT(seconds+0.1)
 
            IF (ideg .GT. 180.) THEN
               ideg = 360-ideg

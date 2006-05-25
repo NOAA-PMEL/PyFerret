@@ -44,6 +44,9 @@
 *		      be compiled with /WARNINGS=NODECLARATIONS
 * *acm* - 1/ 6/04 - For longitude axes, do not label 0 degrees with E
 *            (so they are now consistent with latitude axes)
+* V600: *acm* 11/05 add xdms,ydms for deg/min labels
+* V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
+
 C**
 C**    @(#)numcde.f	1.1    3/10/88
 C**
@@ -173,9 +176,9 @@ C     ADD LEADING ZERO
            frac = val - FLOAT(ideg)
            minutes = 60.*frac
            imin = INT(minutes+0.1)  ! sun at least, turns 40 into 39 sometimes...
-c           frac = minutes - FLOAT(imin)
-c           seconds = 60.* frac
-c           isec = INT(seconds)
+           frac = minutes - FLOAT(imin)
+           seconds = 60.* frac
+           isec = INT(seconds+0.1)
 
            IF (xz .GT. 180.) THEN
               ideg = 360-ideg

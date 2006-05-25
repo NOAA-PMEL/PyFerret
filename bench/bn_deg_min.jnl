@@ -1,5 +1,6 @@
 ! bn_deg_min.jnl
 ! label axes with degrees and minutes rather than degrees and decimal degrees.
+! 19-May-06 add seconds as well...
 
 use ss_small.nc
 
@@ -21,4 +22,9 @@ ppl xfor (dm)
 ppl yfor (dm)
 ppl plot
 
-
+! DMS degrees-minutes-seconds
+plot/vs/set xpts, ypts
+ppl xfor (dms)
+ppl yfor (dms)
+ppl axlint,3,1
+ppl plot

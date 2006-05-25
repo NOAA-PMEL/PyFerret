@@ -66,8 +66,10 @@
  * add EOF_SPACE, EOF_STAT, EOF_TFUNC to the functions that are
  * statically linked 
 
-* V5.4 *acm* 10/01 add compress* to the statically linked fcns 
+* V5.4 *acm* 10/01 add compress* to the statically linked fcns
+* v6.0 *acm*  5/06 many more functions internally linked.
 * V6.0 *acm*  5/06 string results for external functions
+* v6.0 *acm*  5/06 internal_dlsym was missing the nco functions.
 
 /* .................... Includes .................... */
  

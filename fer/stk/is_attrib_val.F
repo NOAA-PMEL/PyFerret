@@ -62,6 +62,7 @@
 * internal variable declarations:
         CHARACTER*512 varname, name
         CHARACTER*128 attname, dname
+        CHARACTER*128 err_string
         LOGICAL coordvar, do_err
 	INTEGER	CGRID_SIZE, STR_SAME, TM_LENSTR1,
      .		mr, cx, size, uvar, n, dset, 
@@ -80,6 +81,8 @@
         xdim = 1
         i1 = cx_lo_ss(cx,xdim)
         i2 = cx_hi_ss(cx,xdim)
+
+        IF (i2 .LT. i1) GOTO 5100
         
         IF (dset .LE. 0 .OR. (.NOT.cx_dset_gvn(cx) )) 
      .      dset = cx_data_set( is_cx(isp-1) )
@@ -321,5 +324,8 @@
 
 * error exit
  5000	RETURN
+ 5100   status = ferr_out_of_range
+        err_string = "invalid dataset attribute index"
+        CALL ERRMSG( status, status, err_string, *5000 )
 	END	
 

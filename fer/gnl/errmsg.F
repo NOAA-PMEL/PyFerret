@@ -87,6 +87,7 @@
 *                       in coached string substitution
 * *acm* 11/05 V600   -- New symbol FER_LAST_ERROR contains all the text normally
 *                       written to std out. 
+* *acm*  5/06 V600   -- Concatenate multiple lines for FER_LAST_ERROR with backslash.
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -183,13 +184,13 @@
     
 	      IF ( multiline ) THEN
                  CALL WRITE_MULTI(err_lun, err_string(cr_pos+1:))
-                 symbuf(len_symbuf:len_symbuf) = '.'
+                 symbuf(len_symbuf:len_symbuf) = '\\'
                  symbuf(len_symbuf+1:) = err_string(cr_pos+1:)
                  len_string = TM_LENSTR1(err_string(cr_pos+1:))
                  len_symbuf = len_symbuf + len_string + 2
                  DO WHILE (INDEX( symbuf, pCR ) .GT. 0)
                    cr_pos = INDEX( symbuf, pCR )
-                   symbuf(cr_pos:cr_pos) = '.'
+                   symbuf(cr_pos:cr_pos) = '\\'
                  ENDDO
               ENDIF
 
@@ -310,7 +311,7 @@
 * was there an external function error
          IF ( len_eftext .GT. 0) THEN
             symbuf(len_symbuf:) = '. Bailing out of external function '
-     .         //efname(:len_efname)//'.'
+     .         //efname(:len_efname)//'\\'
             len_symbuf = len_symbuf + len_efname + 36
             symbuf(len_symbuf:) = ef_errtext(:len_eftext)
             len_symbuf = len_symbuf + len_eftext

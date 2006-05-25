@@ -106,6 +106,8 @@ C        1/06  xvaloff,yvaloff add this amount to each x or y axis label.
 C              (axis data was read as double precision and converted to single 
 C              after applying an offset.)
 C V600: *acm* 4/06 Change how RANGE_DM is applied when using DM or DMS axis labelling.
+C V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
+C V600 *acm* 5/2006 LINECOLORS User can change the number of line colors.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -242,7 +244,7 @@ CCCCCCC data	        tmapdebug/.false./
 	LOGICAL IFLG1,IFLG2,LABON,VALOFF
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
-	CHARACTER COMM(117)*7
+	CHARACTER COMM(118)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
      *		(HLAB1,Y2(1))
@@ -266,7 +268,8 @@ CCCCCCC data	        tmapdebug/.false./
      *  'TITLE','VPOINT','CLSPLT','VECTOR','VECSET','VECKEY','USR',
      *  'SHADE','SHAKEY','SHASET','PIXMAP','ALINE','TMDEBUG','COLOR',
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDAR',
-     *  'FLOWLINE', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF'/
+     *  'FLOWLINE', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
+     *  'LINECOL'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -380,7 +383,7 @@ C
 
 C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,117
+	DO 20 I=1,118
 	    IF(ICOM7.EQ.COMM(I))GOTO 21
 20	CONTINUE
 	IF(ICOM(1:1).EQ.'%')THEN
@@ -412,7 +415,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183,4401,4501),I
+     *  9174,9175,9390,9165,9166,9183,4401,4501,9192),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -424,7 +427,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183,4401,4501),I
+     *  9174,9175,9390,9165,9166,9183,4401,4501,9192),I
         end if
         goto 10
 
@@ -715,6 +718,7 @@ C     XFOR
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
               xdms = 1
+              IF (TMPCHR(2:4) .EQ. 'DMS') xdms = 2 
               CALL RANGE_DM(XLO,XHI,XTIC,xmn,xmx,dd)
 c              xlo = xmn
 c              xhi = xmx
@@ -738,6 +742,7 @@ C     YFOR
       IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
               ydms = 1
+              IF (TMPCHR(2:4) .EQ. 'DMS') ydms = 2 
               CALL RANGE_DM(YLO,YHI,YTIC,ymn,ymx,dd)
 c              ylo = ymn
 c              yhi = ymx
@@ -1650,7 +1655,11 @@ C  calendar
         goto 10                                                    
 9190	call aline (pplmem,pplmem_nsize)
 	goto 10
+c COLOR
 9191    call set_one_color
+        goto 10
+c LINECOLORS
+9192    call set_num_linecolors
         goto 10
 c sqfill
  9380   if(labon)sqfflg=.true.

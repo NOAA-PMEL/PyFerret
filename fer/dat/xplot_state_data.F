@@ -65,6 +65,8 @@
 	DATA	ppl_interrupted / .FALSE. /
 
 	DATA curr_seg_name / 0 /	! to be incremented for each new sgmt
+        
+        DATA no_plot_yet/.TRUE./
 
 	DATA	wn_open	  / max_windows * .FALSE. /
 	DATA	wn_active / max_windows * .FALSE. /

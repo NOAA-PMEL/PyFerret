@@ -47,6 +47,7 @@ set_default_colors.F\
 set_fill_area_rep.F\
 set_fill_ndx.F\
 set_gks_metafile.F\
+set_num_linecolors.F\
 set_one_color.F\
 set_pat_size.F\
 set_regular_plot.F\

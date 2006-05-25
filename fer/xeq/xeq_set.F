@@ -129,6 +129,7 @@
 * V581: *acm*/3/05 - increase length of strings for datset title to 1024 (leave settings alone for MOVIE)
 * V600 *acm*  8/05 - Allow more digits in xrevision number
 * V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
+* V600 *acm* 5/2006 MODE LINECOLORS User can change the number of line colors.
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -580,11 +581,29 @@ c *kob* 4/97
               ELSEIF ( mode .EQ. pmode_grat ) THEN
 	         grat_on = .TRUE.
                  mode_grat_buff = buff2
+
+* ... mode linecolors sets the number of line colors on the next new window
+* If there is no plot drawn yet, go ahead reset the number of colors now.
+              ELSEIF ( mode .EQ. pmode_linecolors ) THEN
+
+                 WRITE (show_str, 2000) mode_arg(pmode_linecolors, 1)
+ 2000            FORMAT (I3)
+                 IF (no_plot_yet) THEN
+                    CALL START_PPLUS
+                    CALL PPLCMD (from, line, 0, 
+     .                'LINECOLORS '//show_str(1:3)//' 1', 1, 1)
+                    CALL DISP_RESET
+                 ELSE
+                    CALL PPLCMD (from, line, 0, 
+     .                'LINECOLORS '//show_str(1:3)//' 0', 1, 1)
+                    CALL WARN ('New number of line colors will take '//
+     .                'effect on next new window: SET WIN/NEW')
+                 ENDIF
+
 	      ENDIF
 	      GOTO 820
 	   ENDIF
  810	CONTINUE
-* unidentifiable mode name
 	   GOTO 5020
  820	RETURN
 

@@ -15,7 +15,7 @@
 *  that this entire notice appears in all copies of the software,
 *  derivative works and supporting documentation.  Further, the user
 *  agrees to credit NOAA/PMEL/TMAP in any publications that result from
-*  the use of this software or in any product that includes this
+*  the use of this software or in any product that INCLUDEs this
 *  software. The names TMAP, NOAA and/or PMEL, however, may not be used
 *  in any advertising or publicity to endorse or promote any products
 *  or commercial entity unless specific written permission is obtained
@@ -54,6 +54,14 @@
 *              ferret metafiles transformed to postscript, from 
 *              "ferret -batch" output, and gif files.
 *       *acm* 2/2003 polymarker dot line bundles had not been set for pen > 6
+*  v600 *acm* 5/2006 User can change the number of line colors.
+
+        INCLUDE 'parampl5_dat.decl'
+        INCLUDE 'PARAMPL5.DAT'
+        INCLUDE 'plt_inc.decl'
+        INCLUDE 'PLT.INC'
+        INCLUDE 'pen_inc.decl'  ! with num_line_colors
+        INCLUDE 'PEN.INC'
 
 	integer		zwsid,zwstype,i,j
 
@@ -67,9 +75,10 @@
 
 	integer		max_pline,max_pmark,max_text,max_fill_area
 	integer		max_pattern,max_color,error
-	integer		fktr, marktype
+	integer		fktr, marktype, index
                                        
-	real		thickness, dotsize
+	real		thickness, dotsize, grey, frac
+        real a, b, c
 
 *******************************************************************************
 
@@ -86,19 +95,37 @@
 
 *	COLOR WORKSTATIONS:
 #ifdef xgks
-        call gscr (zwsid,2,1.0,0.0,0.0)
+        call gscr (zwsid,2,1.0,0.0,0.0)   ! pre-defined colors
         call gscr (zwsid,3,0.0,1.0,0.0)
         call gscr (zwsid,4,0.0,0.0,1.0)
         call gscr (zwsid,5,0.0,1.0,1.0)
         call gscr (zwsid,6,1.0,0.0,1.0)
+        
+! Set up initial values for further colors as grey
+! range them between 0.6,0.6,0.6 and 0.9,0.9,0.9
+
+        IF (num_line_colors .GT. 6) THEN
+           frac = (0.9-0.6)/FLOAT(num_line_colors - 6)
+           grey = 0.6
+           IF (num_line_colors .EQ. 1) grey = 0.8
+
+           do 40 j = 7, num_line_colors     
+              call gscr (zwsid,j,grey,grey,grey)
+  40       continue
+           grey = grey + frac
+        ENDIF
 #endif
 
-	do 20 j = 1,6           ! colors
+! Set line bundles
+
+	do 20 j = 1, num_line_colors
 	    
 	   do 10 fktr = 1,3     ! thickness
+              index = (fktr-1)*num_line_colors+j
               thickness = real(fktr)
-	      call gspmr (zwsid,(fktr-1)*6+j,marktype,dotsize,j)
-	      call gsplr (zwsid,(fktr-1)*6+j,1,thickness,j)
+
+	      call gspmr (zwsid,index,marktype,dotsize,j)
+	      call gsplr (zwsid,index,1,thickness,j)
        
 10	   continue
 20	continue
@@ -109,8 +136,8 @@
 100	do 120 j = 1,3
 	   thickness = real (j)
 	   do 110 i = 1,6
-	      call gsplr (zwsid,i+6*(j-1),ltype(i),thickness,1)
-	      call gspmr (zwsid, i, marktype, dotsize, 1)
+	      call gspmr (zwsid,i+6*(j-1),ltype(i),thickness,1)
+	      call gsplr (zwsid, i, marktype, dotsize, 1)
 110	   continue
 120	continue                   
 

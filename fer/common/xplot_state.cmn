@@ -7,6 +7,8 @@
 * 1/00 *acm* - add saved_calendar_id with the time axis info
 * 6/01 *acm* - add h_logaxis, v_logaxis
 * 9/01 V540 *sh* - add vp_by_axis
+* 5/06 v600 *acm*  Flag no_plot_yet: changes so user can change the number of 
+*                  line colors.
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -27,7 +29,8 @@
      .			ppl_interrupted,
      .			has_time_axis,
      .			h_logaxis, 
-     .			v_logaxis
+     .			v_logaxis,
+     .                  no_plot_yet
 
 	INTEGER		vp_num,
      .			vp_seg0,
@@ -74,5 +77,6 @@
      .			has_time_axis,
      .			h_logaxis, 
      .			v_logaxis,
+     .                  no_plot_yet,
      .			saved_dt_min,
      .			saved_t1_date

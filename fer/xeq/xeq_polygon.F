@@ -58,6 +58,7 @@
 *                    more precision.
 * V581 *acm* 5/05  fix bug 1249: /KEY=CONT. Need to use EQUAL_STR to get the
 *                  argument to /KEY, then compare to see if it equals uppercase 'CON'
+* V600 *acm* 5/06  with MODE LINECOLORS, number of lines not limited to num_fancy_lines
 
 
 	include 'tmap_dims.parm'
@@ -186,7 +187,8 @@ CC       => Set values here instead.
      .			      val, status )	! syntax check
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( val .NE. unspecified_val4 ) THEN
-	      limit = num_fancy_lines 			!was num_plain 1/94
+c	      limit = num_fancy_lines 			!was num_plain 1/94
+              limit = 3*mode_arg(pmode_linecolors,1)
 	      IF ( val.LE. 0.0 .OR. val.GT.limit ) GOTO 5200
 	      color = NINT( val )	! user-specified line style
 	   ELSEIF ( color .EQ. unspecified_int4 ) THEN

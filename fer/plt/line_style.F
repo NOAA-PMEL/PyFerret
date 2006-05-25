@@ -62,6 +62,7 @@
 * V580 *acm*11/04  Allow thickness to be set when cycling through colors automatically.
 *                  When color = -11  then thin line, color=-21 then thick=2, when 
 *                  color=-31 then thick=3
+* V590 *acm* 5/06  settable number of line colors, no longer hard-wired to 6 colors.
                  
 	include	'slash.parm'
 	include	'plot_setup.parm'
@@ -70,6 +71,7 @@
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
+	include 'xprog_state.cmn'
         include 'ppl_dash_save.cmn'
 
 * calling argument declarations
@@ -83,8 +85,8 @@
         SAVE sym_so_far     ! # symbols on the screen ... *sh* 10/91
 
 * internal parameter declarations
-	INTEGER	num_line, ncolors
-	PARAMETER     ( num_line = num_plain*num_sym, ncolors=6)
+	INTEGER	num_line, ncolors, num_linebundles
+c	PARAMETER     ( num_line = num_plain*num_sym, ncolors=6)
 
 * internal variable declarations
 	INTEGER	ityp, imrk, style0, sym(num_sym)
@@ -92,6 +94,14 @@
 	DATA	sym/1,3,17,19,21,23,25,27,29,31,33,35,39,41,43,47,51/
 
 * initialize
+
+* num_plain colors was in common as 6, now use line_colors from mode setting
+* Use num_linebundles in place of hardwired num_fancy_lines
+
+        ncolors = mode_arg(pmode_linecolors,1)
+        num_linebundles = 3 * ncolors
+        num_line = ncolors*num_sym
+
         IF ( so_far .EQ. 1 ) sym_so_far = 0      ! first line on screen
 * ... each line needs a new symbol for /SYMBOL or /LINE=n/SYMBOL
         unique_symbol = ( symbol.EQ.qual_on
@@ -107,7 +117,7 @@
 	ENDIF
 	IF ( symbol .EQ. qual_on ) THEN
 * ... bypass plain lines
-	   style = so_far + num_plain
+	   style = so_far + ncolors
 	ELSE
 	   style = so_far		! default: no qualifiers
 	ENDIF
@@ -121,16 +131,16 @@
 	   ENDIF
            imrk = MOD(sym_so_far,num_sym) + 1
            sym_so_far = sym_so_far + 1
-	ELSEIF ( select_lines .AND. style .LE. num_fancy_lines ) THEN  ! 1/94
+	ELSEIF ( select_lines .AND. style .LE. num_linebundles ) THEN  ! 1/94
 	   ityp = style
 	   imrk = 0
-	ELSEIF ( style .LE. num_plain ) THEN
+	ELSEIF ( style .LE. ncolors ) THEN
 	   ityp = style
 	   imrk = 0
 	ELSEIF ( style .LE. num_line ) THEN
-	   style0 = (style-num_plain) - 1
-	   ityp  = MOD(style0,num_plain) + 1
-	   imrk  = MOD(style0/num_plain,num_sym) + 1
+	   style0 = (style-ncolors) - 1
+	   ityp  = MOD(style0,ncolors) + 1
+	   imrk  = MOD(style0/ncolors,num_sym) + 1
            sym_so_far = MAX( sym_so_far, imrk )    ! ... *sh* 10/91
 	ELSE
 	   ityp = 1

@@ -79,6 +79,8 @@
 * V600 *acm* 9/05  add SET WINDOW/TITLE.  If no title has been set, set it to 
 *                  the session date:time. Save window_title in xplot_setup.cmn 
 *                  for use in subsequent windows. Also define a symbol WIN_TITLE
+*  v600 *acm* 5/2006 Flag no_plot_yet: changes so user can change the number of 
+*                  line colors.
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -355,6 +357,7 @@ c 75        CONTINUE
 	   physical_chg = .TRUE.
 * ... set up GKS bundles for the new "workstation" (window)
 	   CALL SETUP_LINE_BUNDLES( n, wstype )
+           no_plot_yet = .TRUE.
 	ELSE
 	   CONTINUE
 ! ... doesn't work:

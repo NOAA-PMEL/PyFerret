@@ -45,15 +45,18 @@
 * V230:  11/4/92 - call SET_VIEWPORT(dflt_vp)
 *        11/9/92 - unprotect all colors
 * V540:  *sh* 9/01 - grab the PLOT+ origin from COMMON
+* V600 *acm* 5/2006 LINECOLORS User can change the number of line colors.
 
 	include 'ferret.parm'
 	include 'plot_setup.parm'
 	include 'xplot_setup.cmn'
 	include 'xplot_state.cmn'
+        include 'xprog_state.cmn'
 	include 'xrevision.cmn'
 
 * local variable declarations
 	CHARACTER buff*24
+	LOGICAL		ITS_BATCH_GRAPHICS, batch
 
 * local parameters
         LOGICAL     physical
@@ -72,6 +75,11 @@
 	CALL PPLCMD ( from, line, 0, 'AXSET 1,1,1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'PEN 0,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'PEN 1,1', 1, 1 )
+
+        WRITE (buff, 100) mode_arg(pmode_linecolors, 1)
+  100   FORMAT (I3)
+        CALL PPLCMD (from, line, 0, 'LINECOLORS '//buff(1:3)//' 1', 1, 1)
+
 	buff = ' '
 	WRITE ( buff, 3000 ) xwhitelo, ywhitelo
  3000	FORMAT(F9.3,F9.3)

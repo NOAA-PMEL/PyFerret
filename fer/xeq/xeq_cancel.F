@@ -116,6 +116,7 @@
 *       *acm* 6/04 - CANCEL AXIS/DEPTH as inverse to SET AXIS/DEPTH
 * V600: *acm* 2/06 - fix bug 1392: cancel dataset whose name starts with digit.
 * V600 *acm* 10/05 CANCEL ATTRIBUTE[/ALL][/OUTPUT] varname.attname
+* V600 *acm* 5/2006 MODE LINECOLORS User can change the number of line colors.
 
 
 	include 'tmap_dims.parm'
@@ -164,7 +165,8 @@
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims,
      .                  coordvar, do_err, canout
-	CHARACTER	arg*4, buff*512, arg30*30, varname*512, attname*128
+	CHARACTER	arg*4, buff*512, arg30*30, varname*512, 
+     .                  attname*128, show_str*12
 
 * local parameter declarations:
 	INTEGER		slash_del_temp, slash_del_perm
@@ -413,6 +415,28 @@
                  ELSEIF ( mode .EQ. pmode_grat ) THEN
 	            grat_on = .FALSE.
                     mode_grat_buff = ' '
+* ... mode linecolors - resets number of line colors to 6
+*                       the mode itself is always .TRUE.
+                 ELSEIF ( mode .EQ. pmode_linecolors ) THEN
+                    num_linecolors  = 6
+		    mode_arg( mode,1 ) = num_linecolors
+		    mode_state( mode,1 ) = .TRUE.
+
+                    WRITE (show_str, 2000) mode_arg(pmode_linecolors, 1)
+ 2000               FORMAT (I3)
+                    IF (no_plot_yet) THEN
+                       CALL START_PPLUS
+                       CALL PPLCMD (from, line, 0, 
+     .                   'LINECOLORS '//show_str(1:3)//' 1', 1, 1)
+                       CALL DISP_RESET
+                    ELSE
+                       CALL PPLCMD (from, line, 0, 
+     .                   'LINECOLORS '//show_str(1:3)//' 0', 1, 1)
+                       CALL WARN ('New number of line colors will take '//
+     .                  'effect on next new window: SET WIN/NEW or '//
+     .                  'SET WIN/CLEAR')
+                    ENDIF
+
 * ... mode pplgui - close reply pipe
                  ELSEIF ( mode .EQ. pmode_gui ) THEN
 	            alt_messages = .FALSE.

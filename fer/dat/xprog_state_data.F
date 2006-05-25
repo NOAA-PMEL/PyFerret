@@ -95,6 +95,7 @@
 * v580 10/04 *acm* - add flag silent_err for SHOW VAR/XML This is set for  
 *                    SHOW VAR/XML when checking for user variables not  
 *                    relevant to the context
+* V600: *acm* 5/06 - add new MODE LINECOLORS:[arg],Flag no_plot_yet
 
 	include 'ferret.parm'
 	include 'movies.parm'
@@ -182,7 +183,9 @@
      .		(mode_state( pmode_labels      ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /,
      .		(mode_state( pmode_grat      ,i), i=1,mode_stack_size)
-     .					/ mode_stack_size*.FALSE.   /
+     .					/ mode_stack_size*.FALSE.   /,
+     .		(mode_state( pmode_linecolors,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
      .		mode_name ( pmode_interpolate )	/ 'INTERPOLATE ' /,
@@ -206,8 +209,10 @@
      .		mode_name ( pmode_gui         )	/ 'GUI'          /,
      .		mode_name ( pmode_logo        )	/ 'LOGO'         /,
      .		mode_name ( pmode_labels      )	/ 'LABELS'       /,
-     .		mode_name ( pmode_grat      )	/ 'GRATICULE'    /
-	DATA  ( mode_name(i),i=pmode_grat+1,max_modes)/3*pmode_unused/
+     .		mode_name ( pmode_grat        )	/ 'GRATICULE'    /,
+     .		mode_name ( pmode_linecolors  )	/ 'LINECOLORS'   /
+	DATA  ( mode_name(i),i=pmode_linecolors+1,max_modes)/
+     .            2*pmode_unused/
 
 
 	DATA	(mode_arg  ( pmode_diagnostic  ,i), i=1,mode_stack_size)
@@ -249,15 +254,17 @@
      .		(mode_arg  ( pmode_metafile    ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_ppllist     ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*unspecified_int4 /,
-     .		(mode_arg  ( pmode_gui        ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /
+	DATA	(mode_arg  ( pmode_gui        ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_logo        ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_labels      ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_grat      ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*unspecified_int4 /
+     .				/ mode_stack_size*unspecified_int4 /,
+     .		(mode_arg  ( pmode_linecolors,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*6 /
 
 * for MODE WAIT
 	DATA	ppl_wait / 'NOWAIT' /
@@ -301,5 +308,7 @@
 	DATA	xwind_node		/ ' ' /
 	DATA	mode_grat_buff		/ ' ' /
         DATA    silent_err              / .FALSE. /  ! will set true for SHOW VAR/XML
+        DATA    grat_on                 / .FALSE. /
+        DATA    num_linecolors          / 6 /
 
 	END

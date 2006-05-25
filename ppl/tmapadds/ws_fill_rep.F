@@ -46,31 +46,20 @@
 *			the metafile, error messages are emitted when trying
 *			to setup the color table for the closed ws
 *       *js* 7.31.97 mod to change call to gqlwk to query_xgks_wkstn
+* V600 *acm* 5/06  num_line_colors for MODE LINECOLORS. Number of line colors 
+*                  no longer fixed at 6.
 
-#ifdef unix
         include         'shade_vars.cmn'
         include         'gkscm1_inc.decl'
         include         'gkscm2.cmn'
         include         'GKSCM1.INC'
-#else
-        INCLUDE         'tmap_pplv11inc:tmap_shade_vars.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm1.inc'
-        INCLUDE         'tmap_pplv11inc:tmap_gkscm2.inc'
-#endif
-
-#ifdef atc_gks
-#   ifdef unix
-	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
-#else
-#   ifdef unix
-  	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
-#endif
+	include         'gkspar.inc'
+        include         'parampl5_dat.decl'
+        include         'PARAMPL5.DAT'
+        include         'plt_inc.decl'
+        include         'PLT.INC'
+	include		'pen_inc.decl'
+        include         'PEN.INC'  ! with num_linecolors
 
 	integer		zwsid,zwstype,error
 	integer		patt,ndx
@@ -78,12 +67,15 @@
 	integer		max_pattern,max_color,usable_colors
 
 	integer		wsmgr_reserve,line_color_reserve
-	data		wsmgr_reserve/6/,line_color_reserve/6/
+C	data		wsmgr_reserve/6/,line_color_reserve/6/
 
 C	data stmt added for linux *jd* 12.96
 
 
 *******************************************************************************
+
+        line_color_reserve = num_line_colors
+        wsmgr_reserve = num_line_colors
 
 *	WHAT IS AVAILABLE ON THIS WORKSTATION?
 	call query_xgks_wkstn (zwstype,error,max_pline,max_pmark,

@@ -60,6 +60,7 @@
 *		   (bug fix for MODE VERIFY:garbage error msgs 2/3/95)
 * V500: 4/99 *sh* - added MODE STUPID:weak_cache
 * V570: *acm* 5/04 - add MODE GRATICULE[:argument] 
+* V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
 
 	include	'ferret.parm'
 	include 'errmsg.parm'
@@ -145,6 +146,12 @@
 * ... SET MODE GRAT:graticule argument
 	ELSEIF ( mode .EQ. pmode_grat ) THEN
             mode_grat_buff = text
+            
+	ELSEIF ( mode .EQ. pmode_linecolors ) THEN
+	   READ ( text, '(BN,I10)', ERR=5010 ) iarg
+	   IF ( iarg.LT.6 ) GOTO 5010
+	   arg = iarg
+
         ELSE
 	   GOTO 5010	! mode does not accept argument
 	ENDIF
@@ -157,12 +164,12 @@
 #ifdef NO_PASSED_CONCAT	
  5010   tlen = TM_LENSTR1(text)
 	risc_buff = text(:tlen)
-	CALL ERRMSG( ferr_syntax, status,
-     .		     'illegal mode argument: '//risc_buff, *5500 )
+	CALL ERRMSG( ferr_out_of_range, status,
+     .		     'illegal mode argument < 6'//risc_buff, *5500 )
 #else
  5010   tlen = TM_LENSTR1(text)
-	CALL ERRMSG( ferr_syntax, status,
-     .		     'illegal mode argument: '//text(:tlen), *5500 )
+	CALL ERRMSG( ferr_out_of_range, status,
+     .		     'illegal mode argument < 6 '//text(:tlen), *5500 )
 #endif
  5500	IF ( mode .EQ. pmode_verify ) CALL WARN(
      .		'Legal VERIFY arguments are DEFAULT, ALL, and ALWAYS')

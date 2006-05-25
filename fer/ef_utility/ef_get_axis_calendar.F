@@ -63,7 +63,7 @@ c*
       INTEGER mnths, d_in_month(*)
 
 * Internal declarations
-      INTEGER cx_list(EF_MAX_ARGS), cal_id, i
+      INTEGER TM_GET_CALENDAR_ID, cx_list(EF_MAX_ARGS), cal_id, i
 
 * Initialize
       yrdays = 0.

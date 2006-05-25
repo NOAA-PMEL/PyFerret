@@ -106,7 +106,7 @@
 #define	MAX_ASSOC_WS	10
 
 #define MAX_PATT_TBL	21  		/* Legal patterns table range 1-20 */
-#define MAX_BUNDL_TBL	41  		/* Legal line bundle table range 1-40 */
+#define MAX_BUNDL_TBL	250  		/* Legal line bundle table range 1-251 */
 					/* entry 0 will be initialized */
 					/* however */
 

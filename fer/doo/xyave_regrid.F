@@ -75,6 +75,7 @@
 *                 the flag unspecified_int4.
 * V600  4/06 *acm* - make refinement to cos(lat) factor as suggested by A. Wittenberg
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 
 	include 'ferret.parm'
 	include 'xcontext.cmn'
@@ -204,7 +205,7 @@ c        jsrc_hi = mr_hi_ss(msrc,dim2)
 
 	      yh_2 = 0.5*deg2rad * bx
               yc = deg2rad * yc
-              cos_fact = COS(yc) * ABS( SIN(yh_2)/yh_2 )
+              cos_fact = COS(yc) * 2.*ABS( SIN(yh_2) )
 	   ENDIF
 
 	   ysrc_lo = MAX( TWORLD(jsrc,src_grid,dim2,box_lo_lim), ydst_lo )

@@ -53,6 +53,7 @@
 *		that used the COS factor - was based on "s" instead of "s0"
 * V600  4/06 *acm* - make refinement to cos(lat) factor as suggested by A. Wittenberg
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 
 * procedure:	at each point
 *	   x --> xprime = A * x
@@ -121,7 +122,7 @@
               bx = BOX_SIZE(j+j0, grid, y_dim )
 	      yh_2 = 0.5*deg2rad * bx
               yc = deg2rad * SNGL(TM_WORLD(j+j0,grid,y_dim,box_middle))
-              cos_factor = COS(yc) * ABS( SIN(yh_2)/yh_2 )
+              cos_factor = COS(yc) * 2.*ABS( SIN(yh_2) )
               IF ( cos_factor .LT. 1.E-6 ) cos_factor = 1.E-6 !arbitrary fix /0
            ELSE
               cos_factor = 1.0

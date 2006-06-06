@@ -62,6 +62,8 @@
 * V450: 5/97 -  only apply COS(y) if X integration is involved and Y axis
 *		limits are valid (abstract expressions like Z[G=temp] can
 *		have a geog Y axis that isn't actually used
+* 3/06 - apply Andrew*s suggested correction for XY integ., bug1348
+* 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 
 * internal variable declarations:
 	LOGICAL GEOG_COS_FACTOR, point, yes_ax(4), no_ax(4),
@@ -71,7 +73,7 @@
      .		com_lo(4), com_hi(4), box_offset(4), offset, ind_lo, ind_hi,
      .		cos_offset
 	REAL	BOX_SIZE, unit, bad_com, bad_res, box, mean, diff,
-     .		xbox, ybox, zbox, tbox, yc, yh_2
+     .		xbox, ybox, zbox, tbox, yc, yh_2, bb
 	REAL*8	TM_WORLD, dsum, bsum
 
 	include	'ferret.parm'
@@ -193,6 +195,8 @@
 * impose cosine factors if latitude and longitude are involved
 * 5/97 - only use COS(y) if X integration is involved and Y axis lims are VALID
 * 3/06 - apply Andrew*s suggested correction for XY integ., bug1348
+* 6/06   fix the correction; boxes(i+offset) is in meters, so convert back to 
+*        degrees, then radians. Compute the factor, and then convert to meters.
 
 	need_cos = GEOG_COS_FACTOR( y_dim,grid )
      .		.AND. yes_xax
@@ -200,11 +204,15 @@
 	IF ( need_cos ) THEN
               offset = box_offset(y_dim)
 	      DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-                 boxes(j+cos_offset)  = COS(yc) 
+                 boxes(j+cos_offset)  = COS( deg2rad * 
+     .              SNGL( TM_WORLD(j,grid,y_dim,box_middle)) )
                  IF (yes_yax) THEN
-                    yh_2 = 0.5*deg2rad * boxes(j+offset)
-                    yc = deg2rad * SNGL( TM_WORLD(j,grid,y_dim,box_middle))
-                    boxes(j+cos_offset)  = COS(yc) * ABS( SIN(yh_2)/yh_2 )
+                    unit = 1.
+	            IF ( at_din ) unit = 
+     .                un_convert( line_unit_code(grid_line(y_dim,grid)) )
+                    yh_2 = 0.5*deg2rad * boxes(j+offset)/unit
+                    boxes(j+offset)  = 2.*ABS( SIN(yh_2) ) * unit/deg2rad
+
                  ENDIF
  120         CONTINUE
 	ELSE

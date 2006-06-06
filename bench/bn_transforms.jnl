@@ -1,0 +1,27 @@
+! Test the transforms 
+
+use coads_climatology
+
+list/L=1/prec=7 sst[x=100:120@ave,y=10:30@ave]
+
+list/L=1/prec=7 sst[x=100:120@din,y=10:30@din]
+
+list/L=1/y=0/x=83w:49w sst,sst[x=@cda], sst[x=@cdb], sst[x=@cia], sst[x=@cib]
+
+list/L=1/y=10:33/x=93w sst, sst[y=@ddb], sst[y=@ddc], sst[y=@ddf]
+
+list/L=1/y=10:33/x=93w sst, sst[y=@evnt:23.84]
+
+list/L=1/y=23:51/x=93w sst, sst[y=@fav], sst[y=@fln], sst[y=@fnr]
+
+list/L=1/y=23:51/x=93w sst[y=23:51@min], sst[y=23:51@max]
+
+list/L=1/y=23:51/x=93w sst[y=23:51@nbd], sst[y=23:51@ngd]
+
+list/L=1/y=1:11/x=93w sst, sst[y=@iin]
+
+list/L=1/y=23:25/x=93w sst, sst[y=24@itp]
+
+list/L=1/y=11:23/x=93w sst, sst[y=@rsum], sst[y=@sbn], sst[y=@sbx], sst[y=@shf:-1]
+
+list/L=1/y=11:23/x=93w sst, sst[y=@shn] , sst[y=@spz], sst[y=@sum], sst[y=@swl], sst[y=@weq:26]

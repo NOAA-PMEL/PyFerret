@@ -148,11 +148,9 @@
       k2 = arg_lo_ss(Z_AXIS, ARG2)
       l2 = arg_lo_ss(T_AXIS, ARG2)
  
+*     Get the desired time origin
       CALL ef_get_string_arg_element(id, ARG2, arg_2,
      .     i2, j2, k2, l2, slen, t0string)
-
-*     Get t0's year, month, and day
-      READ (t0string, 110, err=800) t0day, t0mon, t0year
 
 *     Get time axis unit
       CALL ef_get_axis_info(id, ARG1, axname, axunits, bkw1, mod1, reg1)
@@ -181,8 +179,7 @@
 
                 tunit = axunits(4)
 
-                CALL time_since_t0(t0day, t0mon, t0year, datebuf, 
-     .                             tunit, timesincet0)
+                CALL time_since_t0(t0string,datebuf,tunit,timesincet0)
  
                 result(i,j,k,l) = timesincet0
 
@@ -221,120 +218,243 @@
 *     Compute the time since desired t0
 *
 *********************************************************************
-      SUBROUTINE time_since_t0(t0day, t0mon, t0year, 
-     .                         datebuf, tunit, timesincet0)
+      SUBROUTINE time_since_t0(t0string, datebuf, tunit, timesincet0)
       
-      INTEGER t0day, t0year, dayofmon
-      CHARACTER*3 t0mon
-      CHARACTER*20 datebuf
+      CHARACTER*20 t0string, datebuf
       CHARACTER*16 tunit
       REAL timesincet0
-      INTEGER daysincet0
 
-      INTEGER iyear, hour, minute, second
-      CHARACTER*3 cmon
-
-      CHARACTER*3 months(12)
-      INTEGER it0mon, imon
-
-      DATA months/'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
-     .            'AUG', 'SEP', 'OCT', 'NOV', 'DEC'/
-
-      print *, datebuf
-
-*     Get current date
-      READ (datebuf,110,err=900) dayofmon, cmon, iyear
-      READ (datebuf,120,err=900) hour, minute, second
-
-*     Convert a month to a number
-      DO 50 m=1,12
-          IF (t0mon .EQ. months(m)) it0mon=m
-          IF (cmon .EQ. months(m)) imon=m
- 50   CONTINUE
-
-      print *, iyear
+      INTEGER secondsincet0, minutesincet0, hoursincet0
+      INTEGER daysincet0, monthsincet0, yearsincet0
 
       CALL LOWER(tunit)
 
-      print *, tunit
-
 *     Compute time since t0, check time axis unit
       IF( tunit(1:3) .EQ. 'sec') THEN
-          timesincet0=10.
+          CALL second_since_t0(t0string, datebuf, secondsincet0)
+          timesincet0 = secondsincet0
       ELSE IF(tunit(1:3) .EQ. 'min') THEN
-          timesincet0=20.
+          CALL minute_since_t0(t0string, datebuf, minutesincet0)
+          timesincet0 = minutesincet0
       ELSE IF(tunit(1:3) .EQ. 'hou') THEN
-          timesincet0=30.
-
+          CALL hour_since_t0(t0string, datebuf, hoursincet0)
+          timesincet0 = hoursincet0
       ELSE IF(tunit(1:3) .EQ. 'day') THEN
-          CALL days_since_t0(dayofmon, imon, iyear, t0day,
-     .                       it0mon, t0year,daysincet0)
-          timesincet0=daysincet0
-
+          CALL day_since_t0(t0string, datebuf, daysincet0)
+          timesincet0 = daysincet0
       ELSE IF(tunit(1:3) .EQ. 'mon') THEN
-
-          timesincet0= (12-it0mon) + (iyear-t0year-1)*12 + imon
-
+          CALL month_since_t0(t0string, datebuf, monthsincet0)
+          timesincet0 = monthsincet0
       ELSE IF(tunit(1:3) .EQ. 'yea') THEN
-
-          timesincet0 = iyear-t0year
-
+          CALL year_since_t0(t0string, datebuf, yearsincet0)
+          timesincet0 = yearsincet0
       ELSE 
           timesincet0=0.
       ENDIF
-
- 110  FORMAT (i2, 1x, a3, 1x, i4)
- 120  FORMAT (11x,3(1x,i2))
-
-      RETURN
-
- 900  CONTINUE
-
-      WRITE (err_msg,*)
-     .  'Error assigning dates/times in tax_step ',
-     .  datebuf
 
       RETURN
       END
 
 *******************************************************************
-*     Compute the days since t0
-*     t0 may be before or after the current year
-*
-      SUBROUTINE days_since_t0(dayofmon, imon, iyear, t0day, 
-     .                         it0mon, t0year, daysincet0)
+*     Compute second since t0
+*******************************************************************
+      SUBROUTINE second_since_t0(t0string, datebuf, secondsincet0)
 
-      INTEGER i, j
+      CHARACTER*20 t0string, datebuf
+      INTEGER minutesincet0, secondsincet0
+
+      INTEGER isecond, t0second
+
+      t0hour = 0
+
+      CALL minute_since_t0(t0string, datebuf, minutesincet0)
+      secondsincet0 = 60*minutesincet0
+
+*     Get t0's minute
+      READ (t0string, 110, err=800) t0second
+
+*     Get current minute
+      READ (datebuf, 110, err=900) isecond
+
+ 110  FORMAT (18x, i2)
+
+*     Adjust minutes of current date
+      secondsincet0 = secondsincet0 - (60-isecond)
+
+*     Adjust minutes of t0
+      secondsincet0 = secondsincet0 + (60 - t0second)
+
+      RETURN
+*-------------
+ 800  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for t0 date in tax_tstep',
+     .  datebuf
+      RETURN
+
+*-------------
+ 900  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for current date in tax_tstep',
+     .  datebuf
+      RETURN
+
+      END
+
+
+*******************************************************************
+*     Compute minutes since t0
+*******************************************************************
+      SUBROUTINE minute_since_t0(t0string, datebuf, minutesincet0)
+
+      CHARACTER*20 t0string, datebuf
+      INTEGER minutesincet0, hoursincet0
+
+      INTEGER iminute, t0minute
+
+      t0hour = 0
+
+      CALL hour_since_t0(t0string, datebuf, hoursincet0)
+      minutesincet0 = 60*hoursincet0
+
+*     Get t0's minute
+      READ (t0string, 110, err=800) t0minute
+
+*     Get current minute
+      READ (datebuf, 110, err=900) iminute
+
+ 110  FORMAT (15x, i2, 3x)
+
+*     Adjust minutes of current date
+      minutesincet0 = minutesincet0 - (60-iminute)
+
+*     Adjust minutes of t0
+      minutesincet0 = minutesincet0 + (60 - t0minute)
+
+      RETURN
+*-------------
+ 800  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for t0 date in tax_tstep',
+     .  datebuf
+      RETURN
+
+*-------------
+ 900  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for current date in tax_tstep',
+     .  datebuf
+      RETURN
+
+      END
+
+*******************************************************************
+*     Compute hours since t0
+*******************************************************************
+      SUBROUTINE hour_since_t0(t0string, datebuf, hoursincet0)
+
+      CHARACTER*20 t0string, datebuf
+      INTEGER hoursincet0, daysincet0
+       
+      INTEGER ihour, t0hour      
+
+      t0hour = 0
+
+      CALL day_since_t0(t0string, datebuf, daysincet0)
+      hoursincet0 = 24*daysincet0
+
+      print *, daysincet0
+
+*     Get t0's hour
+      READ (t0string, 110, err=800) t0hour
+
+*     Get current hour
+      READ (datebuf, 110, err=900) ihour
+
+ 110  FORMAT (12x, i2, 6x)
+
+*     Adjust hours of current date
+      hoursincet0 = hoursincet0 - (24-ihour)
+
+*     Adjust hours of t0
+      hoursincet0 = hoursincet0 + (24 - t0hour)
+      RETURN
+*-------------
+ 800  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for t0 date in tax_tstep',
+     .  datebuf
+      RETURN
+
+*-------------
+ 900  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for current date in tax_tstep',
+     .  datebuf
+      RETURN
+
+      END
+*******************************************************************
+*     Compute the days since t0
+*     Assume that t0 is before the current year
+*******************************************************************
+      SUBROUTINE day_since_t0(t0string, datebuf, daysincet0)
+
+      CHARACTER*20 t0string, datebuf
+      INTEGER daysincet0
+
+      INTEGER t0day, t0year
+      CHARACTER*3 t0mon
+
+      INTEGER dayofmon, iyear 
+      CHARACTER*3 cmon
+
+      CHARACTER*3 months(12)
+      INTEGER it0mon, imon
+      INTEGER i, j, m
       INTEGER yrstart,yrend
-      LOGICAL isaftert0
-      INTEGER dayofmon, imon, iyear
-      INTEGER it0mon, t0day, t0year
-      INTEGER dayofyear,daysincet0, ndaymo(12)
+      INTEGER dayofyear, ndaymo(12)
 
       DATA ndaymo/31,28,31,30,31,30,31,31,30,31,30,31/
 
+      DATA months/'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
+     .            'aug', 'sep', 'oct', 'nov', 'dec'/
+
+*     Get t0's year, month, and day
+      READ (t0string, 110, err=800) t0day, t0mon, t0year
+      
+*     Get current date
+      READ (datebuf, 110, err=900) dayofmon, cmon, iyear
+   
+ 110  FORMAT (i2, 1x, a3, 1x, i4)
+
+      CALL LOWER(t0mon)
+      CALL LOWER(cmon)
+
+      print *, t0mon, cmon
+
+*     Convert a month from string to number
+      DO 50 m=1,12
+          IF (t0mon .EQ. months(m)) it0mon=m
+          IF (cmon .EQ. months(m)) imon=m
+ 50   CONTINUE
+
+      print *, imon, it0mon
+
       yrstart = t0year
       yrend = iyear-1
-      isaftert0 = .TRUE.
-      daysincet0 = -1
-
-      IF(iyear .LT. t0year) THEN
-          yrstart = iyear+1
-          yrend = t0year-1
-          isaftert0 = .FALSE.
-          daysincet0 = 0
-      ENDIF
+      daysincet0 = 0
 
 *     Total days between yrstart and yrend
       DO 200 i = yrstart, yrend
 
 *     Check if it is a leap year
           IF ( ((mod(i,4) .EQ. 0) .AND. (mod(i,100) .NE. 0))
-     .     .OR.
-     .     (mod(i, 400) .EQ. 0)) THEN
-              ndaymo(2) = 29
+     .       .OR.
+     .       (mod(i, 400) .EQ. 0)) THEN
+                ndaymo(2) = 29
           ELSE
-              ndaymo(2) = 28
+                ndaymo(2) = 28
           ENDIF
 
           daysincet0 = daysincet0 + (ndaymo(2) + 7*31 + 4*30)
@@ -345,8 +465,8 @@
 *     Adjust days of current year
 *     ***************************
       IF ( ((mod(iyear,4) .EQ. 0) .AND. (mod(iyear,100) .NE. 0))
-     .     .OR.
-     .     (mod(iyear, 400) .EQ. 0)) THEN
+     .       .OR.
+     .       (mod(iyear, 400) .EQ. 0)) THEN
           ndaymo(2) = 29
       ELSE
           ndaymo(2) = 28
@@ -355,24 +475,18 @@
 *     Compute day of current year
       dayofyear = dayofmon
       DO 300 j =1, imon -1
-              dayofyear = dayofyear + ndaymo(j)
- 300      CONTINUE
+          dayofyear = dayofyear + ndaymo(j)
+ 300  CONTINUE
 
-      IF(isaftert0) THEN
-*     For year after t0, add days of current year 
+*     Add days of current year 
           daysincet0 = daysincet0 + dayofyear
-      ELSE
-*     For year before t0, subtract days of current year
-          daysincet0 = -1*(daysincet0 +
-     .                     ndaymo(2) + 7*31 + 4*30- dayofyear+1)
-      ENDIF
 
 *     *****************************
 *     Adjust days in the year of t0
 *     *****************************
       IF ( ((mod(t0year,4) .EQ. 0) .AND. (mod(t0year,100) .NE. 0))
-     .     .OR.
-     .     (mod(t0year, 400) .EQ. 0)) THEN
+     .       .OR.
+     .       (mod(t0year, 400) .EQ. 0)) THEN
           ndaymo(2) = 29
       ELSE
           ndaymo(2) = 28
@@ -381,20 +495,111 @@
 *     Compute day of current year
       dayofyear = t0day
       DO 400 j =1, it0mon -1
-              dayofyear = dayofyear + ndaymo(j)
- 400      CONTINUE
+          dayofyear = dayofyear + ndaymo(j)
+ 400  CONTINUE
 
-      IF(isaftert0) THEN
-*     For year after t0, subtract days of year t0
-          daysincet0 = daysincet0 - dayofyear
-      ELSE
-*     For year before t0, add days of year t0
-          daysincet0 = -1*(daysincet0 +
-     .                     ndaymo(2) + 7*31 + 4*30 + dayofyear + 1)
-      ENDIF
+*     Subtract days of year t0
+      daysincet0 = daysincet0 - dayofyear
 
       RETURN
+
+*-------------
+ 800  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for timr origin in tax_tstep',
+     .  t0string
+      RETURN
+
+*-------------
+ 900  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for current date in tax_tstep',
+     .  datebuf
+      RETURN
+
       END
+
+*******************************************************************
+*     Compute month since t0
+*******************************************************************
+      SUBROUTINE month_since_t0(t0string, datebuf, monthsincet0)
+
+      CHARACTER*20 t0string, datebuf
+      INTEGER monthsincet0
+      CHARACTER*3 t0mon, cmon
+      CHARACTER*3 months(12)
+      INTEGER iyear, t0year, it0mon, imon
+      INTEGER m
+
+      DATA months/'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
+     .            'aug', 'sep', 'oct', 'nov', 'dec'/
+
+*     Get t0's year, month, and day
+      READ (t0string, 110, err=800) t0mon, t0year
+*     Get current date
+      READ (datebuf, 110, err=900) cmon, iyear
+
+ 110  FORMAT (3x, a3, 1x, i4)
+
+      CALL LOWER(t0mon)
+      CALL LOWER(cmon)
+*     Convert a month from string to number
+      DO 50 m=1,12
+          IF (t0mon .EQ. months(m)) it0mon=m
+          IF (cmon .EQ. months(m)) imon=m
+ 50   CONTINUE
+
+      monthsincet0= (12-it0mon) + (iyear-t0year-1)*12 + imon
+
+      RETURN
+*-------------
+ 800  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for time origin in tax_tstep: ',
+     .  t0string
+      RETURN
+*-------------
+ 900  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for current date in tax_tstep: ',
+     .  datebuf
+      RETURN
+
+      END
+
+*******************************************************************
+*     Compute year since t0
+*******************************************************************
+      SUBROUTINE year_since_t0(t0string, datebuf, yearsincet0)
+
+      CHARACTER*20 t0string, datebuf
+      INTEGER yearsincet0
+      INTEGER iyear, t0year
+
+*     Get t0's year, month, and day
+      READ (t0string, 110, err=800) t0year
+*     Get current date
+      READ (datebuf, 110, err=900) iyear
+ 110  FORMAT (7x, i4)
+
+      yearsincet0 = iyear - t0year 
+
+      RETURN
+*-------------
+ 800  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for time origin in tax_tstep: ',
+     .  t0string
+      RETURN
+*-------------
+ 900  CONTINUE
+      WRITE (err_msg,*)
+     .  'Error assigning dates/times for current date in tax_tstep: ',
+     .  datebuf
+      RETURN
+
+      END
+
 
 ****************************************************************
 *

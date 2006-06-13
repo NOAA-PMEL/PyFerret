@@ -1125,6 +1125,9 @@ c *kob* 4/97
            IF (buff2(1:3) .EQ. 'NON') iflag = 0
            IF (buff2(1:3) .EQ. 'ALL') iflag = 2
            IF (buff2(1:3) .EQ. 'DEF') iflag = 3 
+           IF (INDEX(varname,'.') .NE. 0) THEN 
+              IF (iflag.EQ.0 .OR.iflag.EQ.2) GOTO 5940
+           ENDIF
         ELSE
            iflag = 1  
         ENDIF
@@ -1135,7 +1138,6 @@ c *kob* 4/97
 
         CALL BREAK_VARNAME( buff1, dset_num, varname, attname, 
      .                         varid,  status )
-
         IF (status .NE. ferr_ok) goto 5920
 
         IF (varid .EQ. 0) CALL CD_GET_VAR_ID (dset_num, varname, varid,
@@ -1274,5 +1276,10 @@ c *kob* 4/97
  5930 slen = TM_LENSTR(buff1)
       CALL ERRMSG( ferr_invalid_command, status,
      .   'attribute name missing. SET ATT varname.attname'//
+     .    buff1(:slen), *5000 )
+ 5940 slen = TM_LENSTR(buff1)
+      CALL ERRMSG( ferr_invalid_command, status,
+     .   'SET ATT/OUT=[all or none] varname should NOT '//
+     .   'include attribute. '//
      .    buff1(:slen), *5000 )
 	END

@@ -26,6 +26,7 @@ cd_get_missing_flag.F\
 cd_get_parent_grids.F\
 cd_get_time_axis.F\
 cd_get_tmap_parms.F\
+cd_get_var_att_id.F\
 cd_get_var_att_info.F\
 cd_get_var_att_name.F\
 cd_get_var_id.F\

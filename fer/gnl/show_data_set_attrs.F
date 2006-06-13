@@ -74,10 +74,10 @@
      .                  nvars, ngatts, recdim, iatt, attype, attlen,
      .                  slen,  llen, vlen, vtype, nvdims,
      .                  vdims(8),  nvatts, status, blen, i, len_attbuff,
-     .                  attoutflag, all_outflag
+     .                  attoutflag, all_outflag, attid
         REAL            vals(10)
 	CHARACTER	TM_FMT*14, varname*512, attname*128, 
-     .                  buff*14, attbuff*2048
+     .                  buff*14, attbuff*2048, oflag*1
         CHARACTER*6     typ(0:6)
         PARAMETER       (len_attbuff = 2048)
         
@@ -98,13 +98,16 @@
 
 	risc_buff = ' '
 	WRITE ( risc_buff, 3200 )
- 3200	FORMAT(' variable',T25,'attribute name',T45,'type',T55,'length',
-     .         T65,'value')
- 3300	FORMAT(' ',A,T25,A,T45,A,T55,A,T65,A)
- 3400	FORMAT('(',A,')',T25,A,T45,A,T55,A,T65,A)
- 3500	FORMAT(T25,A,T45,A,T55,A,T65,A)
+ 3200	FORMAT(' VARIABLE',T25,'ATTRIBUTE NAME',T45,'TYPE',T53,'SIZE',
+     .         T58,'OUTFLAG',T66,'VALUE')
+ 3201	FORMAT('----------------------------------------',
+     .         '----------------------------------------')
+ 3300	FORMAT(' ',A,T25,A,T45,A,T53,A,T58,A,T65,A)
+ 3400	FORMAT('(',A,')',T25,A,T45,A,T53,A,T58,A,T65,A)
+ 3500	FORMAT(T25,A,T45,A,T53,A,T58,A,T65,A)
 
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+        WRITE (lun, 3201) 
         WRITE (lun, *) ' '
 
 * Write global atttributes
@@ -116,18 +119,16 @@
               
 	      vlen = TM_LENSTR1(varname)
 	      DO 100 iatt = 1, ngatts
-	         CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, 
-     .                                  attname, status)
-	         CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, 
-     .                                  attype, attlen, attoutflag,
-     .                                  status)
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
+
 	         blen = len_attbuff
 	         got_it = NC_GET_ATTRIB (dset, varid, attname, 
      .                                .TRUE., varname, blen, attlen, 
      .                                attoutflag, attbuff, vals)
 
 	         IF (got_it) THEN
-	         IF (attype .NE. NCCHAR) THEN
+	            IF (attype .NE. NCCHAR) THEN
                        blen = 1
                        attbuff = ' '
                        DO 50 i = 1, attlen
@@ -138,15 +139,18 @@
                     ELSE 
                        blen = TM_LENSTR1(attbuff)
                     ENDIF
+                    oflag = 'F'
+                    IF (attoutflag .EQ. 1) oflag = 'T'
                  ELSE
                     attbuff = ' '
                     blen = 1
+                    oflag = ' '
                  ENDIF
 
                  slen = TM_LENSTR1(attname)
                  buff = TM_FMT (FLOAT(attlen),7,14,llen) 
                  WRITE (risc_buff, 3300) varname(1:vlen), 
-     .              attname(1:slen), typ(attype), buff(1:llen),
+     .              attname(1:slen), typ(attype), buff(1:llen), oflag,
      .              attbuff(1:blen)
 
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
@@ -176,11 +180,8 @@
               ENDIF
 
               DO 200 iatt = 1, nvatts
-                 CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, 
-     .                                     attname, status)
-                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, 
-     .                                     attype, attlen, attoutflag,
-     .                                     status)
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, attname, 
+     .              attype, attlen, attoutflag, status )
 
                  blen = len_attbuff
                  got_it = NC_GET_ATTRIB (dset, varid, attname, 
@@ -199,9 +200,12 @@
                     ELSE 
                        blen = TM_LENSTR1(attbuff)
                     ENDIF
+                    oflag = 'F'
+                    IF (attoutflag .EQ. 1) oflag = 'T'
                  ELSE
                     attbuff = ' '
                     blen = 1
+                    oflag = ' '
                  ENDIF
 
                  slen = TM_LENSTR1(attname)
@@ -211,16 +215,16 @@
                     IF (coordvar) THEN
                        WRITE (risc_buff, 3400) varname(1:vlen), 
      .                    attname(1:slen), typ(attype), buff(1:llen),
-     .                    attbuff(1:blen)
+     .                    oflag, attbuff(1:blen)
                     ELSE
                        WRITE (risc_buff, 3300) varname(1:vlen), 
      .                    attname(1:slen), typ(attype), buff(1:llen),
-     .                    attbuff(1:blen)
+     .                    oflag, attbuff(1:blen)
                     ENDIF
                  ELSE 
                     WRITE (risc_buff, 3500) 
      .                  attname(1:slen), typ(attype), buff(1:llen),
-     .                  attbuff(1:blen)
+     .                  oflag, attbuff(1:blen)
                  ENDIF
 
                  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 

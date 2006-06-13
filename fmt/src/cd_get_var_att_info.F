@@ -1,4 +1,4 @@
-      SUBROUTINE CD_GET_VAR_ATT_INFO (dset, ivar, attname, attype, 
+      SUBROUTINE CD_GET_VAR_ATT_INFO (dset, varid, attid, attname, attype, 
      .     attlen, attoutflag, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -35,7 +35,7 @@
 *
 *
 * Read the linked list structure for netcdf variable information: 
-* given dset, ivar, and attname, return attribute type and dimensions
+* given dset, varid, and attid, return attribute name, type, and dimensions
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
@@ -45,15 +45,16 @@
 * Argument declarations
 
       CHARACTER*(*) attname
-      INTEGER dset, ivar, attype, attlen, attoutflag, status
+      INTEGER dset, varid, attid, attype, attlen, attoutflag, status
 
 * Internal declarations
 
 c        include 'netcdf.decl'
 c#include "netcdf.inc"
+         include 'tmap_errors.parm'
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR_ATT,
-     .        dset_num, slen, flen
+     .        dset_num, alen, flen
 
       PARAMETER (flen=512)      ! size of variable name string
 
@@ -66,11 +67,11 @@ c#include "netcdf.inc"
       dset_num = dset
       IF (dset_num .LT. -1) dset_num = -1
 
-      slen = TM_LENSTR1( attname )
-      CALL TM_FTOC_STRNG( attname(1:slen), fhol, flen )
-
-      status = NCF_INQ_VAR_ATT(dset_num, ivar, fhol, attype, 
+      status = NCF_INQ_VAR_ATT(dset_num, varid, attid, fhol, alen, attype, 
      .    attlen, attoutflag)
+
+      attname = ' '
+      IF (status .EQ. merr_ok) CALL TM_CTOF_STRNG (fhol, attname, alen)
 
       RETURN
       END

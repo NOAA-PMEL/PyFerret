@@ -123,10 +123,11 @@
      .		nitem, new_mr, len_name, idig, csp1, cat, cvar, 
      .          varid, attlen, attype, maxlen, attoutflag,
      .          ndims, nvars, ngatts, recdim, ivar, vartype, 
-     .          nvdims, vdims(8), nvatts, nv, iatt, all_outflag
+     .          nvdims, vdims(8), nvatts, nv, iatt, all_outflag, dot,
+     .          attid, slen
         REAL    counter_const, val
 
-	CHARACTER TM_FMT*150, name*150, attname*128, buff*10
+	CHARACTER TM_FMT*150, name*150, attname*128, aname*128, buff*10
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -508,6 +509,15 @@
      .              cx_hi_ss(hi_cx, x_dim) .EQ. unspecified_int4 ) 
 
         dset = cx_data_set(hi_cx)
+
+! See if this is a user variable and set dataset number accordingly
+
+        dot = INDEX(uvar_text(uvar),'.')
+        IF (dot .GT. 0) name = uvar_text(uvar)(1:dot-1)
+        CALL FIND_VAR_NAME(pdset_irrelevant, name, cat, ivar)
+        IF (  ivar .NE. munknown_var_name .AND.
+     .        cat .EQ. cat_user_var) dset = -1
+
         IF (dset .NE. unspecified_int4 .AND. 
      .      dset .NE. pdset_irrelevant) THEN
 
@@ -525,7 +535,7 @@
      .                status)
 
 * attribute names
-              IF (STR_SAME(attname(:4), 'attn') .EQ. 0 ) THEN  ! attnames
+              IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
                  cx_type(hi_cx) = ptype_string
                  IF (reset_ss) THEN
                     cx_lo_ss(hi_cx, x_dim) = 1
@@ -536,7 +546,7 @@
                  ENDIF
 
 * dimension names
-              ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
+              ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN 
                  cx_type(hi_cx) = ptype_string
                  IF (reset_ss) THEN
                     cx_lo_ss(hi_cx, x_dim) = 1
@@ -547,19 +557,19 @@
                  ENDIF
  
 * # of dimensions for variable 
-              ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
+              ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
                  cx_type(hi_cx) = ptype_float
                  cx_lo_ss(hi_cx, x_dim) = 1
                  cx_hi_ss(hi_cx, x_dim) = 1
 
 *  variable types
-              ELSE IF (STR_SAME(attname(:4), 'type') .EQ. 0 ) THEN
+              ELSE IF (STR_SAME(attname, 'nctype') .EQ. 0 ) THEN
                  cx_type(hi_cx) = ptype_float
                  cx_lo_ss(hi_cx, x_dim) = 1
                  cx_hi_ss(hi_cx, x_dim) = 1
 
 * # of attributes
-               ELSE IF (STR_SAME(attname(:4), 'natt') .EQ. 0 ) THEN  ! natts
+               ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
                 cx_type(hi_cx) = ptype_float
                  cx_lo_ss(hi_cx, x_dim) = 1
                  cx_hi_ss(hi_cx, x_dim) = 1
@@ -569,9 +579,11 @@
 * General attribute.
 * Get attribute type and length
         
-                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, attype,
-     .                attlen, attoutflag, status)
-     
+                  CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .               status)
+                  IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,  
+     .              attid, aname, attype, attlen, attoutflag, status )
+
                   IF (status .NE. ferr_ok) THEN
                      RETURN ! ?? error message
                   ENDIF
@@ -630,7 +642,7 @@
                     IF (.NOT. coordvar) nv = nv + 1
  760             CONTINUE
 
-                 IF (STR_SAME(attname(:4), 'varn') .EQ. 0 ) THEN  ! varnames
+                 IF (STR_SAME(attname, 'varnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1
@@ -641,7 +653,7 @@
                     ENDIF
 
 * Global attributes
-                 ELSE IF (STR_SAME(attname(:3), 'att') .EQ. 0 ) THEN  ! gattnames
+                 ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
                     IF (reset_ss) THEN
                        cx_lo_ss(hi_cx, x_dim) = 1
@@ -652,13 +664,13 @@
                     ENDIF
                     
 * # of dimensions
-                 ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
+                 ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_float
                     cx_lo_ss(hi_cx, x_dim) = 1
                     cx_hi_ss(hi_cx, x_dim) = 1
    
 * dimension names
-                 ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
+                 ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_string
 
 
@@ -681,13 +693,13 @@
                     ENDIF
 
 * # variables 
-                 ELSE IF (STR_SAME(attname(:4), 'nvar') .EQ. 0 ) THEN  ! nvars
+                 ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_float
                     cx_lo_ss(hi_cx, x_dim) = 1
                     cx_hi_ss(hi_cx, x_dim) = 1
 
 * # of global attributes
-                 ELSE IF (STR_SAME(attname(:3), 'nat') .EQ. 0 ) THEN  ! ngatts
+                 ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
                     cx_type(hi_cx) = ptype_float
                     cx_lo_ss(hi_cx, x_dim) = 1
                     cx_hi_ss(hi_cx, x_dim) = 1
@@ -699,13 +711,26 @@
                     CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
      .               recdim, status)
 
+* If the attribute name is in quotes remove them. Perhaps the user
+* is looking for a global file attribute named the same as one of our
+* pseudo- attribute names 
+* (Logic for case-sensitive searching will go here...)
+
+                    slen = TM_LENSTR1(attname)
+                    IF (attname(1:1) .EQ. "'" .AND. 
+     .                   attname(slen:slen) .EQ. "'" ) THEN
+                       attname = attname(2:slen-1)
+                       attname(slen-1:slen) = ""
+                    ENDIF
+
+
                     DO 790 iatt = 1, ngatts
                        CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, name, 
      .                    status)
                        IF (STR_SAME(name, attname) .EQ. 0) THEN
 
-                          CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
-     .                       attype, attlen, attoutflag, status)
+                          CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, 
+     .                        name, attype, attlen, attoutflag, status )
 
                           cx_type(hi_cx) = ptype_float
                           cx_lo_ss(hi_cx, x_dim) = 1

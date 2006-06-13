@@ -106,10 +106,10 @@
      .		i, dset, uvar, item, itype, idim, gnum, nitem, uv_grd,
      .		var, len_name, pass_number, cx_save, this_dset,
      .		ifthen_data_type, varid, alen, attype, attlen,
-     .          attoutflag
+     .          attoutflag, attid
 
 	CHARACTER VAR_CODE*4, name*512, buff*2048, varname*512, 
-     .            attname*128
+     .            attname*128, aname*128
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -292,32 +292,34 @@
 
         attype = NCFLOAT
 
-        IF (STR_SAME(attname(:4), 'attn') .EQ. 0  .OR. 
-     .       STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN
+        IF (STR_SAME(attname, 'attnames') .EQ. 0  .OR. 
+     .       STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
            attype = NCCHAR
-        ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0  .OR.
-     .      STR_SAME(attname(:4), 'type') .EQ. 0  .OR.
-     .      STR_SAME(attname(:4), 'nvar') .EQ. 0  .OR.
-     .      STR_SAME(attname(:4), 'natt') .EQ. 0 ) THEN
+        ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0  .OR.
+     .      STR_SAME(attname, 'type') .EQ. 0  .OR.
+     .      STR_SAME(attname, 'nvars') .EQ. 0  .OR.
+     .      STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
            attype = NCFLOAT
 
         ELSE IF (STR_SAME (varname, '.') .EQ. 0) THEN
-           IF (STR_SAME(attname(:4), 'varn') .EQ. 0   .OR.
-     .         STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN
+           IF (STR_SAME(attname, 'varnames') .EQ. 0   .OR.
+     .         STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
               attype = NCCHAR
 
-           ELSE IF (STR_SAME(attname(:3), 'att') .EQ. 0   .OR.
-     .           STR_SAME(attname(:4), 'ndim') .EQ. 0  .OR.
-     .           STR_SAME(attname(:3), 'nat') .EQ. 0  .OR.
-     .           STR_SAME(attname(:4), 'nvar') .EQ. 0 ) THEN
+           ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0   .OR.
+     .           STR_SAME(attname, 'ndims') .EQ. 0  .OR.
+     .           STR_SAME(attname, 'nattrs') .EQ. 0  .OR.
+     .           STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
               attype = NCFLOAT
            ENDIF
 
 * Otherwise get att type from the linked-list structure
 
         ELSE
-           CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, attype,
-     .           attlen, attoutflag, status)
+           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .               status)
+           IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .        attid, aname, attype, attlen, attoutflag, status )
         ENDIF
 
         IF (attype .EQ. NCCHAR) THEN

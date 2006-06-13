@@ -132,7 +132,7 @@ go bn_reset
 
 ! Given a variable, return the attribute names
 use coads_climatology
-let nat = sst.natt
+let nat = sst.nattrs
 let anames = sst.attnames
 list nat
 list anames
@@ -177,10 +177,10 @@ can data/all
 ! Global attributes ..attnames
 use err491_attval
 
-let v = ..ndim
+let v = ..ndims
 list v
 
-let na = ..nat
+let na = ..nattrs
 list na
 
 let gnames = ..attnames
@@ -203,18 +203,18 @@ can data/all
 can var/all
 
 use ocean_atlas_temp
-let nat = temp.natt
+let nat = temp.nattrs
 list nat
 
-list (`temp,return=xaxis`).nattr
+list (`temp,return=xaxis`).nattrs
 
 use gt4d011
-say `temp.nattr[d=1]`
+say `temp.nattrs[d=1]`
 
 def sym xaxnam  "(`temp[d=1],return=xaxis`)"
-list `($xaxnam).nattr[d=1]`
+list `($xaxnam).nattrs[d=1]`
 
-say `(yax_lev94).nattr[d=1]`
+say `(yax_lev94).nattrs[d=1]`
  
 go bn_reset
  
@@ -276,7 +276,7 @@ list/d=2 ..varnames
 list/d=2 ..dimnames
 list/d=1 ..dimnames
 
-list/d=1 ..nattr
+list/d=1 ..nattrs
 list/d=1 ..attnames
 
 list/d=1 ..ndims
@@ -389,21 +389,21 @@ list/x=130w/y=0 sst
 ! Can have the parentheses included in a symbol
 
 def sym xaxnam  "(`temp[d=1],return=xaxis`)"
-list `($xaxnam).nattr[d=1]`
+list `($xaxnam).nattrs[d=1]`
 
 ! Or parentheses added when symbol is evaluated
 def sym yaxnam  "`temp[d=1],return=yaxis`"
-list `(($yaxnam)).nattr[d=1]`
+list `(($yaxnam)).nattrs[d=1]`
 
 ! just the name of the axis
-list (`sst,return=xaxis`).nattr[d=2]
+list (`sst,return=xaxis`).nattrs[d=2]
 
 ! using dimension names from the linked list structure
 
 let cnames = sst.dimnames
 list cnames
 show axis (`cnames[i=1]`)
-list (`cnames[i=1]`).natts
+list (`cnames[i=1]`).nattrs
 
 ! Intentional errors. 
 

@@ -125,7 +125,16 @@
 * Check that the dset contains the variable (varid=0 refers to . the 
 * pseudovariable that refers to global attributes)
         
-        CALL CD_GET_VAR_ID (dset, varname, varid, status)
+* Is the variable name in quotations? If so test var name without them,
+* in a case-sensitive test.
+        
+        vlen = TM_LENSTR1(varname)
+        IF (varname(1:1) .EQ. "'" .AND. varname(vlen:vlen) .EQ. "'") THEN
+           CALL CD_GET_VAR_ID (dset, varname, varid, status)
+        ELSE
+           CALL CD_GET_VAR_ID (dset, varname, varid, status)
+        ENDIF 
+
         IF (status .NE. ferr_ok) THEN
            status = ferr_unknown_variable
            GOTO 5200

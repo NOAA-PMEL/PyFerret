@@ -42,6 +42,8 @@
 *                except it will use cx_calendar to determine if t dimension
 *                is a date or a time step.
 * V541: *sh* 2/02 - added support for subspan modulo axes
+* V600: *acm*6/06 - fix bug1419. for modulo axes, index at the end of the last 
+*                   cell may round up to the next modulo replication 
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -60,6 +62,9 @@
 	REAL 	subsc
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
      .		wwindex, wcoord, half_way, start, aend, span, first, last
+
+* initialize
+        isubsc = 0
 
 * which axis are we on ?
 	axis    = grid_line ( idim, grid )
@@ -129,7 +134,8 @@
 	ENDIF
 
 * get positions of first and last points on axis
-	IF ( regular ) THEN
+        
+        IF ( regular ) THEN
 	   first = line_start( axis )
 	   last  = first + line_delta(axis) * (line_len-1) !4/94 was *line_len
         ELSE
@@ -138,9 +144,9 @@
 	ENDIF
 
 * immediate solutions for given point beyond axis ends
-	IF ( wcoord .LE. first ) THEN
+	IF ( wcoord .LE. first .AND. (.NOT.line_modulo(axis)) ) THEN
 	   isubsc = 1
-	ELSEIF ( wcoord .GE. last) THEN
+	ELSEIF ( wcoord .GE. last .AND. (.NOT.line_modulo(axis)) ) THEN
 	   isubsc = line_len
 
 * quick sol'n if axis points are regularly spaced
@@ -223,7 +229,17 @@
 	   ISUBSCR_CX = isubsc + num_mod*line_len
 	ELSE
 	   ISUBSCR_CX = isubsc
+           IF (isubxc .GT. line_len) ISUBSCR_CX = line-len
 	ENDIF
+        
+* If still not found, apply quick solutions for given point beyond axis ends
+        IF (isubsc .EQ. 0) THEN
+	   IF ( wcoord .LE. first ) THEN
+	      ISUBSCR_CX = 1
+	   ELSEIF ( wcoord .GE. last) THEN
+	      ISUBSCR_CX = line_len
+	   ENDIF
+        ENDIF
 
 	RETURN
 	END

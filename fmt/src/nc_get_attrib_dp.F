@@ -72,7 +72,8 @@
 * internal variable declarations:
       LOGICAL too_long
       INTEGER TM_LENSTR1, NCF_GET_VAR_ATTR,
-     .        lena, lenb, attype, status, i, dset_num
+     .        lena, lenb, attype, status, i, dset_num, attid
+      CHARACTER*128 aname
 
       INTEGER slen, flen
       PARAMETER (flen=nf_max_attrs)        ! size of attribute NC_GET_ATTRIB_DP
@@ -89,18 +90,20 @@
 * initialize
        too_long = .FALSE.
 
-* inquire about the attribute by name
 
-      lena = TM_LENSTR1( attrib )
-      CALL TM_FTOC_STRNG (attrib(:lena), ghol, flen)
+* inquire about the attribute by name, using its id number
 
-      CALL CD_GET_VAR_ATT_INFO (dset, varid, attrib(:lena), attype, 
-     .     attlen, attoutflag, status )
+      CALL CD_GET_VAR_ATT_ID (dset, varid, attrib, attid, status)
+      IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, attid,
+     .                   aname, attype, attlen, attoutflag, istat )
 
       IF ( status .NE. merr_ok ) THEN
          NC_GET_ATTRIB_DP = .FALSE.
          RETURN  ! doesn't exist
       ENDIF
+
+      lena = TM_LENSTR1( aname )
+      CALL TM_FTOC_STRNG (aname(:lena), ghol, flen)
 
 * Get attribute length and value
 
@@ -118,10 +121,8 @@
 
       IF ( attype .EQ. NCCHAR ) THEN
          NC_GET_ATTRIB_DP = .FALSE.
-
       ELSE
          NC_GET_ATTRIB_DP = .TRUE.
-
       ENDIF
 
       RETURN

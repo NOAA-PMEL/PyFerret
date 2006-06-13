@@ -77,8 +77,8 @@
 * internal variable declarations:
       LOGICAL too_long
       INTEGER TM_LENSTR1, NCF_GET_VAR_ATTR,
-     .        lena, lenb, attype, status, i, dset_num
-c      CHARACTER*2048 buff
+     .        lena, lenb, attype, status, i, dset_num, attid
+      CHARACTER*128 aname
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -99,18 +99,19 @@ c      CHARACTER*2048 buff
        string(:slen) = ' '
        too_long = .FALSE.
 
-* inquire about the attribute by name
+* inquire about the attribute by name, using its id number
 
-      lena = TM_LENSTR1( attrib )
-      CALL TM_FTOC_STRNG (attrib(:lena), ghol, flen)
-
-      CALL CD_GET_VAR_ATT_INFO (dset, varid, attrib(:lena), attype, 
-     .     attlen, attoutflag, status )
+      CALL CD_GET_VAR_ATT_ID (dset, varid, attrib, attid, status)
+      IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, attid,
+     .                   aname, attype, attlen, attoutflag, istat )
 
       IF ( status .NE. merr_ok ) THEN
          NC_GET_ATTRIB = .FALSE.
          RETURN  ! doesn't exist
       ENDIF
+
+      lena = TM_LENSTR1( aname )
+      CALL TM_FTOC_STRNG (aname(:lena), ghol, flen)
 
 * Get attribute length and value
 
@@ -127,18 +128,16 @@ c      CHARACTER*2048 buff
 
       IF ( attype.EQ.NCCHAR ) THEN
 
-c         CALL TM_CTOF_STRNG ( fhol, buff, attlen )
          CALL TM_CTOF_STRNG ( fhol, string, attlen )
 
          IF ( attlen .GT. maxlen ) THEN
             too_long = .TRUE.
-c            buff(maxlen-20:maxlen) = 'attribute truncated'	! warning msg
+
             string(maxlen-20:maxlen) = 'attribute truncated'	! warning msg
             GOTO 5000
 	 ENDIF
 
          NC_GET_ATTRIB = .TRUE.
-c         string = buff
 
       ELSE
 

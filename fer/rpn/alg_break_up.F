@@ -71,7 +71,7 @@
 	INTEGER		ALG_CLASS, TM_LENSTR1,
      .			tlen, p, state, last_state, class,
      .			i, next_state(num_class,num_state),
-     .			brkt_nest_level
+     .			brkt_nest_level, pn
 
 * possible states of lexical analysis
 *	S1 - looking for start of atom
@@ -203,9 +203,15 @@
 	   IF ( natom .EQ. maxatoms-1 ) GOTO 5300
            IF (class .EQ. 10 ) THEN  ! var.attribute?
               atom_open = .TRUE.
-              IF ( TM_DIGIT_TEST(text(p:p+1)) ) THEN
-                natom = natom + 1
-                at_start(natom) = p
+              pn = MIN(p+1,tlen)
+	      IF ( TM_DIGIT_TEST(text(p:pn)) ) THEN  ! looks like a number...
+                 natom = natom + 1
+                 at_start(natom) = p 
+              ELSE
+* this is a var.attr, so continue as though we are parsing a string
+                 class = 3
+                 state = 4
+                 last_state = 4
               ENDIF
            ELSE
               natom = natom + 1

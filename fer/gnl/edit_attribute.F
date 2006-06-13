@@ -77,10 +77,10 @@
      .        attlen, attype, span, lo(4), hi(4), del(4), slen, vlen, 
      .        attlen_old, attype_old, attoutflag, vartype, nvdims,
      .        nvatts, vdims(8), all_outflag, cat, var, tmap_status,
-     .        grid, mod_cx
+     .        grid, mod_cx, attid
       REAL dummy, bad, scalefac, offset
       CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
-     .          errbuff*256, varname*512, attname*128
+     .          errbuff*256, varname*512, attname*128, aname*128
 
       CHARACTER	grid_name*16, title*128, units*64, newname*128
 
@@ -141,9 +141,9 @@
 
 !  If attribute already exists, change it.
 
-      CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
-     .                         attype_old, attlen_old, attoutflag,
-     .                         status)
+      CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+      IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             aname, attype_old, attlen_old, attoutflag, status )
 
       errbuff = varattname
       IF (attype .EQ. NCCHAR ) THEN

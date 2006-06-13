@@ -117,7 +117,7 @@
      .                  recdim, cat, var, cat1, var1, iaxis,
      .			final_status, type, maxstrlen, 
      .			write_lo(4), write_hi(4), make_lo(4), make_hi(4),
-     .                  dset_last	
+     .                  dset_last, attid
 
 * *kob* 3/99- up SANITARY_VAR_CODE and local variable varcode to 64 chars
 *             and VAR_UNITS to 64
@@ -126,7 +126,7 @@
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
      .                  TM_FMT*12,
-     .                  varcode*128, buff*140, revnum*12, c1*1
+     .                  varcode*128, buff*140, revnum*12, c1*1, aname*128
 
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
@@ -402,17 +402,21 @@
               IF (varid .GT. 0) THEN
                  scalefac = 1.
                  attname = 'scale_factor'
-                 CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .              varid, attid, aname, attype, attlen, attoutflag, 
+     .              istat )
+
                  IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
                     IF (attype .EQ. nf_double) THEN
                        got_it = NC_GET_ATTRIB_DP (dset, varid,
-     .                     attname, do_warn, varcode, attlen, 
+     .                     aname, do_warn, varcode, attlen, 
      .                     attoutflag, dvals)
                        scalefac = dvals
 
                     ELSE
-                       got_it = NC_GET_ATTRIB (dset, varid, attname,
+                       got_it = NC_GET_ATTRIB (dset, varid, aname,
      .                    do_warn, varcode, buff_size, attlen, 
      .                    attoutflag, buff, vals)
                        scalefac = vals
@@ -422,17 +426,21 @@
 
                  addoff = 0.
                  attname = 'add_offset'
-                 CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                  varid, attid, aname, attype, attlen, attoutflag, 
+     .                  istat )
+
                  IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
                     IF (attype .EQ. nf_double) THEN
                       got_it = NC_GET_ATTRIB_DP (dset, varid,
-     .                     attname, do_warn, varcode, attlen, 
+     .                     aname, do_warn, varcode, attlen, 
      .                     attoutflag, dvals)
                       addoff = dvals
 
                     ELSE
-                       got_it = NC_GET_ATTRIB (dset, varid, attname,
+                       got_it = NC_GET_ATTRIB (dset, varid, aname,
      .                    do_warn, varcode, attlen, buff_size, 
      .                    attoutflag, buff, vals)
                       addoff = vals
@@ -450,8 +458,11 @@
 
                  istat = ferr_ok
                  attoutflag = 0
-                 CALL CD_GET_VAR_ATT_INFO(dset, varid, 'missing_value',
-     .			    attype, attlen, attoutflag, istat ) 
+                 attname = 'missing_value'
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                  istat)
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                attid, aname, attype, attlen, attoutflag, istat )
 
 * If the data is numeric, see if the missing flag needs to be rescaled, 
 * or converted to the output type
@@ -516,10 +527,10 @@
      .                          attname, dvals, attlen, attype, status )
                           IF (status .NE. ferr_ok) GOTO 5400
                     ELSE
-	               CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat )
 
-                       got_it = NC_GET_ATTRIB ( dset, varid, attname, 
+                       CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt,
+     .                    aname, attype, attlen, attoutflag, istat )
+                       got_it = NC_GET_ATTRIB ( dset, varid, aname, 
      .                       do_warn, varcode, buff_size, attlen,
      .                       attoutflag, buff, vals)
 
@@ -567,8 +578,14 @@
                  lbuff = TM_LENSTR1( buff )
                  
                  attoutflag = 1
-                 IF (varid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
-     .             'long_name',  attype,  attlen, attoutflag, status )
+                 IF (varid .GT. 0) THEN
+                    CALL CD_GET_VAR_ATT_ID (dset, varid, 'long_name', 
+     .                     attid, istat)
+                    IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                     varid, attid, aname, attype, attlen, 
+     .                     attoutflag, istat )
+                 ENDIF
+
                  IF (attoutflag .EQ. 1) 
      .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
      .                              buff(:lbuff), .FALSE., status )
@@ -618,9 +635,13 @@
      .               buff1, attname, varid, .FALSE., status)
 
                     IF (status .EQ. ferr_ok) THEN
-                       CALL CD_GET_VAR_ATT_INFO(dset, varid,
-     .			  'long_name_mod', attype, attlen,
-     .			   attoutflag, istat )
+
+                       CALL CD_GET_VAR_ATT_ID (dset, varid,
+     .                     'long_name_mod', attid, istat)
+                       IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                     varid, attid, aname, attype, attlen, 
+     .                     attoutflag, istat )
+
                        IF (attoutflag .EQ. 1) got_it = NC_GET_ATTRIB 
      .                     ( dset, varid, attname, .FALSE., varcode, 
      .                      buff_size, attlen, attoutflag, 
@@ -651,8 +672,12 @@
      .                   varid, .FALSE., status)
 
                     IF (status .EQ. ferr_ok) THEN
-                       CALL CD_GET_VAR_ATT_INFO(dset, varid, 'history',
-     .		  	    attype, attlen, attoutflag, istat )
+                       CALL CD_GET_VAR_ATT_ID (dset, varid, 'history', 
+     .                     attid, istat)
+                       IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                     varid, attid, aname, attype, attlen, 
+     .                     attoutflag, istat )
+
                        IF (attoutflag .EQ. 1) got_it = NC_GET_ATTRIB (
      .		  	     dset, varid, attname, .FALSE., varcode,
      .		  	     buff_size, attlen, attoutflag, 

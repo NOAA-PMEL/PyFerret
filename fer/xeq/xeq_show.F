@@ -251,13 +251,14 @@
      .          flen, wsize, wkblk, len_test, len_mchars,
      .          j, num_indices, varid, attlen, maxlen, attype,
      .          vtype, nvdims, vdims(8), nvatts, iatt, dset_last,
-     .          llen, loc, cat, var, attoutflag, all_outflag, dot
+     .          llen, loc, cat, var, attoutflag, all_outflag, dot, 
+     .          vseq, attid
 	REAL	xtemp, ytemp, attvals(10)
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
      .		default*10, show_str*255, arg*24, name*32, arg30*30
 	CHARACTER	filename*2048, raw_name*2048, varatt*641,
      .			fformatted*12, varname*512, attname*128,
-     .			efname*40, upname*40
+     .			efname*40, upname*40, aname*128
 
 * 10/01 *kob* had to change decl of axesOrCorner for picky f95
         CHARACTER*6 axesOrCorner(2)
@@ -918,7 +919,7 @@
                          len = INDEX(arg,'[') - 1
                          IF (INDEX(arg,'.') .NE. 0) GOTO 5100
                          CALL CD_GET_VAR_SEQ( dset, arg(:len), varid )
-                         IF (varid .GT. 0) CALL SHOW_1_DSVAR(
+                         IF (varid .GT. 0) CALL SHOW_1_DSVAR (
      .                         ttout_lun, dset, arg, varid, show_str)
                        ENDIF
 
@@ -1094,19 +1095,6 @@
            risc_buff = '</global>'
            CALL SPLIT_LIST(pttmode_explct, ttout_lun, risc_buff, 0)
         ENDIF
-
-* ... Show variables from the current data set, not user-defined.
-c
-c why!! SHOW VAR has never done this...
-c
-c        dset = cx_data_set(cx_last)
-c
-c        IF (dset .GE. 1) THEN
-c           CALL cd_get_var_seq( dset, arg(:len), varid )
-c           IF (varid .GT. 0) CALL SHOW_1_DSVAR( ttout_lun, dset, arg, 
-c     .                    varid, show_str)
-c        ENDIF
-c
 
 	IF ( limited_show ) RETURN
 
@@ -1603,25 +1591,22 @@ c
 
               DO 1810 iatt = 1, nvatts
 
-                 CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, attname, 
-     .                                     status)
-                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
-     .                                     attype, attlen, attoutflag,
-     .                                     status) 
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
+     .               attype, attlen, attoutflag, status )
 
                  IF (status .NE. ferr_ok) GOTO 5100
 
                  maxlen = size_rbuff
                  IF (attype .NE. NCCHAR) maxlen = 10
-                 got_it = NC_GET_ATTRIB ( dset, varid, attname,
+                 got_it = NC_GET_ATTRIB ( dset, varid, aname,
      .                                   .TRUE., varname, maxlen,
      .                                   attlen, attoutflag, risc_buff, 
      .                                   attvals )
 
                  IF (got_it) THEN
                     IF (.NOT. sxml) 
-     .                 CALL SHOW_ATTRIBUTE (varname, attname, attype,
-     .                              attlen, risc_buff, attvals, 
+     .                 CALL SHOW_ATTRIBUTE (varname, coordvar, aname, 
+     .                              attype, attlen, risc_buff, attvals, 
      .                              attoutflag, sho_out)  
 
                  ENDIF
@@ -1635,7 +1620,7 @@ c
 
 	      varatt = cmnd_buff( item_start(i):item_end(i) )
 
-              IF (INDEX(varatt,'.') .EQ. 0) GOTO 5100
+              IF (INDEX(varatt,'.') .EQ. 0) GOTO 5070
 
               IF ( INDEX(varatt,'[') .GT. 0 ) THEN
 
@@ -1675,39 +1660,37 @@ c
      .                              nvdims, vdims, nvatts, coordvar, 
      .                              all_outflag, status)
 
-              IF (.NOT. coordvar) THEN
-
 * Write header line
-                 IF (.NOT. sxml) THEN
-                    IF (dset .NE. dset_last ) THEN
-                       llen = TM_LENSTR1(ds_des_name(dset))
-                       WRITE (risc_buff, 4800) ds_des_name(dset)(:llen)
-                       CALL SPLIT_LIST(pttmode_explct, ttout_lun, 
+              IF (.NOT. sxml) THEN
+                 IF (dset .NE. dset_last ) THEN
+                    llen = TM_LENSTR1(ds_des_name(dset))
+                    WRITE (risc_buff, 4800) ds_des_name(dset)(:llen)
+                    CALL SPLIT_LIST(pttmode_explct, ttout_lun, 
      .                     risc_buff, 0) 
-                    ENDIF
-                    dset_last = dset
                  ENDIF
-
-                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
-     .                                     attype, attlen, attoutflag,
-     .                                     status) 
-
-                 maxlen = size_rbuff
-                 IF (attype .NE. NCCHAR) maxlen = 10
-                 got_it = NC_GET_ATTRIB ( dset, varid, attname,
-     .                           .TRUE., varname, maxlen,
-     .                           attlen, attoutflag, risc_buff, 
-     .                           attvals )
-
-                 IF (varid .EQ. 0) THEN
-                    loc = INDEX(varatt, ".") - 1
-                    varname = varatt(1:loc)
-                 ENDIF
-
-                 IF (got_it) CALL SHOW_ATTRIBUTE (varname, attname,
-     .                          attype, attlen, risc_buff, attvals, 
-     .                              attoutflag, sho_out)
+                 dset_last = dset
               ENDIF
+
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .               status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .               attid, aname, attype, attlen, attoutflag, status )
+
+              maxlen = size_rbuff
+              IF (attype .NE. NCCHAR) maxlen = 10
+              got_it = NC_GET_ATTRIB ( dset, varid, aname,
+     .                        .TRUE., varname, maxlen,
+     .                        attlen, attoutflag, risc_buff, 
+     .                        attvals )
+
+              IF (varid .EQ. 0) THEN
+              loc = INDEX(varatt, ".") - 1
+                 varname = varatt(1:loc)
+              ENDIF
+
+              IF (got_it) CALL SHOW_ATTRIBUTE (varname, coordvar, aname,
+     .                       attype, attlen, risc_buff, attvals, 
+     .                       attoutflag, sho_out)
 
 1830	   CONTINUE 
         ENDIF
@@ -1834,8 +1817,8 @@ c     .                               sbrief, sdetail, i2)
      .			name(:TM_LENSTR1(name)), *5000 )
  5072	CALL ERRMSG( ferr_invalid_command, status,
      .         'dataset not found for varname.attname '//
-     .         varname(:TM_LENSTR1(varname)), *5000 )
- 5100	CALL ERRMSG( ferr_unknown_variable, status, arg, *5000 )
+     .          varname(:TM_LENSTR1(varname)), *5000 )
+ 5100   CALL ERRMSG( ferr_unknown_variable, status, arg, *5000)
  5200	CALL ERRMSG( ferr_unknown_variable, status, varname, *5000 )
  5300   CALL ERRMSG( ferr_invalid_command, status, 'grid for '//
      .              cmnd_buff(item_start(ivar):item_end(ivar))
@@ -1844,6 +1827,10 @@ c     .                               sbrief, sdetail, i2)
      .              *5000  )
  5060	CALL ERRMSG( ferr_invalid_command, status,
      .			'SHOW ATTRIBUTE given with no argument '
+     .			, *5000 )
+ 5070	CALL ERRMSG( ferr_invalid_command, status,
+     .	    'SHOW ATTRIBUTE given with no attribute: '//
+     .	    'Use SHOW ATT/ALL varname, or SHOW ATT varname.attname '
      .			, *5000 )
 	END
 

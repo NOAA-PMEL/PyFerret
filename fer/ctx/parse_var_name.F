@@ -80,7 +80,8 @@
 	INTEGER		STR_SAME,
      .                  full_name_len, left_bracket, right_bracket, 
      .			name_len, atsign, idim,  brac_nest, i,
-     .                  dset, varid, attype, attlen, attoutflag 
+     .                  dset, varid, attype, attlen, attoutflag,
+     .                  attid
  	LOGICAL		name_only, do_err
 * 1/97 addition
 	INTEGER	num_it, it_start(max_item_list), it_end(max_item_list)
@@ -183,9 +184,10 @@
 
            IF (status .NE. ferr_ok) GOTO 5100
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_INFO (dset, varid,
-     .                              attname, attype, attlen, 
-     .                              attoutflag, status)
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .               status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .           attid, attname, attype, attlen, attoutflag, status )
 
               IF (status .NE. ferr_ok) THEN
 * Is it a pseudo-attribute for the variable?
@@ -195,7 +197,7 @@
                     cx_type(var_cx) = ptype_string
                  ELSEIF (STR_SAME(attname, 'ndims') .EQ. 0 .OR. 
      .                   STR_SAME(attname, 'type')  .EQ. 0 .OR. 
-     .                   STR_SAME(attname, 'natts') .EQ. 0) THEN
+     .                   STR_SAME(attname, 'nattrs') .EQ. 0) THEN
                     cx_type(var_cx) = ptype_float
                  ELSE
                     GOTO 5100

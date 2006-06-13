@@ -68,6 +68,8 @@
 #endif 
 
       varid = 0
+      status = atom_not_found
+
       dset_num = dset
       IF (dset_num .LT. -1) dset_num = -1
 
@@ -82,10 +84,21 @@
          IF (status .NE. merr_ok) GOTO 5000
       ENDIF
 
-      slen = TM_LENSTR1( buff )
-      CALL TM_FTOC_STRNG( buff(1:slen), fhol, flen )
+* If the name is in quotes, remove them and do a case-sensive search
+* for the name.
 
-      status = NCF_GET_VAR_ID(dset_num, varid, fhol)
+      slen = TM_LENSTR1( buff )
+      IF (buff(1:1) .EQ. "'" .AND. buff(slen:slen) .EQ. "'" ) THEN
+         buff = buff(2:slen-1)
+         buff(slen-1:slen) = ""
+         slen = slen - 2
+       
+         CALL TM_FTOC_STRNG( buff(1:slen), fhol, flen )
+         status = NCF_GET_VAR_ID_CASE(dset_num, varid, fhol)
+      ELSE
+         CALL TM_FTOC_STRNG( buff(1:slen), fhol, flen )
+         status = NCF_GET_VAR_ID(dset_num, varid, fhol)
+      ENDIF
 
  5000 RETURN
       END

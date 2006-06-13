@@ -61,16 +61,16 @@
 
 * internal variable declarations:
         CHARACTER*512 varname, name
-        CHARACTER*128 attname, dname
+        CHARACTER*128 attname, dname, aname
         CHARACTER*128 err_string
-        LOGICAL coordvar, do_err
+        LOGICAL coordvar, do_err, got_it
 	INTEGER	CGRID_SIZE, STR_SAME, TM_LENSTR1,
      .		mr, cx, size, uvar, n, dset, 
      .          varid, attype, attlen, ndims, nvars, 
      .          ngatts, recdim, ivar, vartype, nvdims,
      .          vdims(8), iatt, nvatts, idim, nd, vd, na,
      .          attoutflag, all_outflag, xdim, i1, i2, slen,
-     .          i, indx, nv
+     .          i, indx, nv, dot, cat, attid
 
 * --- end of introductory code ---
 * initialize
@@ -81,10 +81,11 @@
         xdim = 1
         i1 = cx_lo_ss(cx,xdim)
         i2 = cx_hi_ss(cx,xdim)
+        got_it = .FALSE.
 
         IF (i2 .LT. i1) GOTO 5100
         
-        IF (dset .LE. 0 .OR. (.NOT.cx_dset_gvn(cx) )) 
+        IF (dset .LT. -1 .OR. (.NOT.cx_dset_gvn(cx) )) 
      .      dset = cx_data_set( is_cx(isp-1) )
 
 * reserve and catalog space for the result
@@ -100,6 +101,14 @@
 
 	uvar = cx_variable(cx)
 
+! See if this is a user variable and set dataset number accordingly
+
+        dot = INDEX(uvar_text(uvar),'.')
+        IF (dot .GT. 0) varname = uvar_text(uvar)(1:dot-1)
+        CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, ivar)
+        IF (  ivar .NE. munknown_var_name .AND.
+     .         cat .EQ. cat_user_var) dset = -1
+
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE. 
         CALL BREAK_VARATTNAME ( uvar_text(uvar), dset, varname, 
@@ -110,7 +119,7 @@
            CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
      .               recdim, status)
 
-           IF (STR_SAME(attname(:4), 'varn') .EQ. 0 ) THEN  ! varnames
+           IF (STR_SAME(attname, 'varnames') .EQ. 0 ) THEN
 
 * Get and store the variable names.
 
@@ -133,9 +142,10 @@
                        n = n + 1
                     ENDIF
                  ENDIF
- 120          CONTINUE                
+ 120          CONTINUE
+              got_it = .TRUE.
  
-           ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
+           ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
 
 * Get and store the coordinate variable names.
 
@@ -158,9 +168,10 @@
                        n = n + 1
                     ENDIF
                  ENDIF
- 220          CONTINUE                
+ 220          CONTINUE
+              got_it = .TRUE.
 
-           ELSE IF (STR_SAME(attname(:3), 'att') .EQ. 0 ) THEN  ! attnames
+           ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
               IF (ngatts .GT. 0) THEN
                  CALL CD_GET_VAR_ID (dset, '.', varid, status)
 
@@ -176,14 +187,17 @@
                  n = n + 1
  300          CONTINUE
               ENDIF
+              got_it = .TRUE.
 
-           ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
+           ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
               memory( 1, mr_blk1(mr)) = ndims
+              got_it = .TRUE.
 
-           ELSE IF (STR_SAME(attname(:3), 'nat') .EQ. 0 ) THEN   ! natts
+           ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
               memory( 1, mr_blk1(mr)) = ngatts
+              got_it = .TRUE.
 
-           ELSE IF (STR_SAME(attname(:4), 'nvar') .EQ. 0 ) THEN  ! nvars
+           ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
 
 * Count number of non-coordinate variables.
               n = 0
@@ -194,19 +208,22 @@
                  IF (.NOT. coordvar) n = n + 1
  400          CONTINUE
               memory( 1, mr_blk1(mr)) = n
-
+              got_it = .TRUE.
            ENDIF
 
 * Is the user asking for the value of a global attribute?
 
+           IF (got_it) GOTO 1000
+
            CALL CD_GET_VAR_ID (dset, '.', varid, status)
+
            DO 500 iatt = 1, ngatts
               CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, name, 
      .                    status)
               IF (STR_SAME(name, attname) .EQ. 0) THEN 
 
-                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, 
-     .             attype, attlen, attoutflag, status)
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, 
+     .                 name, attype, attlen, attoutflag, status )
 
 	         IF ( attype .EQ. NCCHAR ) THEN
 
@@ -225,13 +242,32 @@
      .                size, n, dset, varid, varname, attname, status)
 	         ENDIF
                  IF ( status .NE. ferr_ok ) GOTO 5000
+              ELSE
+
+* If the attribute name is in quotes try to get it anyway, as a numeric or
+* string attribute. Perhaps the user is looking for a file attribute named 
+* the same as one of our pseudo-attribute names 
+* (Logic for case-sensitive searching will go here...)
+
+                 slen = TM_LENSTR1(attname)
+                 IF (attname(1:1) .EQ. "'" .AND. 
+     .               attname(slen:slen) .EQ. "'" ) THEN
+
+	            CALL ATTRIB_VALS (memory( 1, mr_blk1(mr)), 
+     .                 size, n, dset, varid, varname, attname, status)
+                    IF (status .NE. ferr_ok ) CALL ATTRIB_STRING (cx, mr, 
+     .	                      dset, varid,  varname, attname, status)
+                 ENDIF
+
               ENDIF
  500          CONTINUE
 
-        ELSE
+        ELSE  ! variable name is not '.'
 
-           CALL CD_GET_VAR_ATT_INFO (dset, varid, attname, attype, attlen, 
-     .          attoutflag, status)
+           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .               status)
+           IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .        attid, aname, attype, attlen, attoutflag, status )
 
            IF (status .NE. ferr_ok) THEN
 
@@ -240,54 +276,79 @@
      .                nvdims, vdims, nvatts, coordvar, all_outflag, 
      .                status)
 
-             IF (STR_SAME(attname(:4), 'attn') .EQ. 0 ) THEN  ! attnames
-              IF (nvatts .GT. 0) THEN
+              IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
+                 IF (nvatts .GT. 0) THEN
 
-	         CALL INIT_C_STRING_ARRAY( nvatts,
+	           CALL INIT_C_STRING_ARRAY( nvatts,
      .				     memory(1,mr_blk1(mr)),
      .				     mr_c_pointer(mr)    )
-                 n = 0
-                 DO 600 iatt = i1, i2
-                 CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, name, 
+                   n = 0
+                   DO 600 iatt = i1, i2
+                      CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, name, 
      .                    status)
-                 slen = TM_LENSTR1(name)
-                 CALL STORE_STRING(name(1:slen), mr, n, status)
-                 n = n + 1
- 600          CONTINUE
-              ENDIF
+                      slen = TM_LENSTR1(name)
+                      CALL STORE_STRING(name(1:slen), mr, n, status)
+                      n = n + 1
+ 600               CONTINUE
+                ENDIF
+                got_it = .TRUE.
 
-             ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
-              IF (nvdims .GT. 0) THEN
+             ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+                IF (nvdims .GT. 0) THEN
 
-	         CALL INIT_C_STRING_ARRAY( nvdims,
+	           CALL INIT_C_STRING_ARRAY( nvdims,
      .				     memory(1,mr_blk1(mr)),
      .				     mr_c_pointer(mr)    )
-                 n = 0
-                 DO 700 idim = i1, i2
-                    CALL CD_GET_VAR_INFO (dset, vdims(idim), dname, 
-     .                 vartype, nd, vd, na, coordvar, all_outflag, 
-     .                 status)
-                    slen = TM_LENSTR1(dname)
-                    CALL STORE_STRING(dname(1:slen), mr, n, status)
-                    n = n + 1
- 700             CONTINUE
-              ENDIF
+                   n = 0
+                   DO 700 idim = i1, i2
+                      CALL CD_GET_VAR_INFO (dset, vdims(idim), dname, 
+     .                   vartype, nd, vd, na, coordvar, all_outflag, 
+     .                   status)
+                      slen = TM_LENSTR1(dname)
+                      CALL STORE_STRING(dname(1:slen), mr, n, status)
+                      n = n + 1
+ 700               CONTINUE
+                ENDIF
+                got_it = .TRUE.
 
-             ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
+             ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
                 memory( 1, mr_blk1(mr)) = nvdims
+                got_it = .TRUE.
 
-             ELSE IF (STR_SAME(attname(:4), 'type') .EQ. 0 ) THEN
+             ELSE IF (STR_SAME(attname, 'nctype') .EQ. 0 ) THEN
                 memory( 1, mr_blk1(mr)) = vartype
+                got_it = .TRUE.
 
-             ELSE IF (STR_SAME(attname(:4), 'natt') .EQ. 0 ) THEN  ! natts
+             ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
                 memory( 1, mr_blk1(mr)) = nvatts
+                got_it = .TRUE.
+
              ENDIF
+             IF (got_it) GOTO 1000
+
+* If the attribute name is in quotes remove them. Perhaps the user
+* is looking for a file attribute named the same as one of our pseudo-
+* attribute names 
+* (Logic for case-sensitive searching will go here...)
+
+             slen = TM_LENSTR1(attname)
+             IF (attname(1:1) .EQ. "'" .AND. attname(slen:slen) .EQ. "'" ) THEN
+                attname = attname(2:slen-1)
+                attname(slen-1:slen) = ""
+             ENDIF
+
+             CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .               status)
+             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .          attid, aname, attype, attlen, attoutflag, status )
+
+             IF (status .EQ. ferr_ok) GOTO 900
 
            ELSE
 
-* a regular attribute from the file or a definition
+* Is it a regular attribute from the file or a definition
 
-	      IF ( attype .EQ. NCCHAR ) THEN
+ 900	      IF ( attype .EQ. NCCHAR ) THEN
 * ... set up FORTRAN-independent pointer
 	         CALL INIT_C_STRING_ARRAY( 1,
      .				     memory(1,mr_blk1(mr)),
@@ -314,7 +375,8 @@
 
         ENDIF
 * result is ready to return to the stack
-	is_mr( isp ) = mr
+1000    CONTINUE
+        is_mr( isp ) = mr
         mr_bad_data(mr) = cx_bad_data(cx)
 
 * got the requested component

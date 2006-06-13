@@ -80,7 +80,7 @@ int  FORTRAN(ncf_inq_ds)( int *, int *, int *, int *, int *);
 int  FORTRAN(ncf_inq_ds_dims)( int *, int *, char *, int *, int *);
 int  FORTRAN(ncf_inq_var) (int *, int *, char *, int *, int *, int *, int *, int *, int *, int * );
 
-int  FORTRAN(ncf_inq_var_att)( int *, int *, char *, int *, int *, int *);
+int  FORTRAN(ncf_inq_var_att)( int *, int *, int *, char *, int *, int *, int *, int *);
 
 int  FORTRAN(ncf_get_dsnum)( char * );
 int  FORTRAN(ncf_get_dsname)( int *, char *);
@@ -88,9 +88,12 @@ int  FORTRAN(ncf_get_dim_id)( int *, char *);
 
 int  FORTRAN(ncf_get_var_name)( int *, int *, char *);
 int  FORTRAN(ncf_get_var_id)( int *, int*, char *); 
+int  FORTRAN(ncf_get_var_id_case)( int *, int*, char *); 
 int  FORTRAN(ncf_get_var_axflag)( int *, int *, int *, int *); 
 int  FORTRAN(ncf_get_var_seq)( int *, char *); 
 int  FORTRAN(ncf_get_var_attr_name) (int *, int *, int *, int *, char*);
+int  FORTRAN(ncf_get_var_attr_id) (int *, int *, char* , int*);
+int  FORTRAN(ncf_get_var_attr_id_case) (int *, int *, char* , int*);
 int  FORTRAN(ncf_get_var_attr) (int *, int *, char* , char* , int *, double *);
 int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
 int  FORTRAN(ncf_get_var_outtype) (int *, int *,  int *);
@@ -124,8 +127,10 @@ int initialize_output_flag (char *);
 int NCF_ListTraverse_FoundDsetName( char *, char * );
 int NCF_ListTraverse_FoundDsetID( char *, char * );
 int NCF_ListTraverse_FoundVarName( char *, char * );
+int NCF_ListTraverse_FoundVarNameCase( char *, char * );
 int NCF_ListTraverse_FoundVarID( char *, char * );
 int NCF_ListTraverse_FoundVarAttName( char *, char * );
+int NCF_ListTraverse_FoundVarAttNameCase( char *, char * );
 int NCF_ListTraverse_FoundVarAttID( char *, char * );
 
 void list_free(LIST *, int ); 
@@ -272,7 +277,7 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
  * Find a variable attribute based on its variable ID and dataset ID, and attribute name
  * Return the attribute name, type, length, and output flag
  */
-int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, char attname[], int *attype, int *attlen, int *attoutflag)
+int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, int *attid, char attname[], int *namelen, int *attype, int *attlen, int *attoutflag)
 
 {
   ncatt *att_ptr=NULL;
@@ -299,7 +304,7 @@ int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, char attname[], int *attyp
    */
   varattlist = ncf_get_ds_var_attlist(dset, varid);
 
-  status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  status = list_traverse(varattlist, attid, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
@@ -307,6 +312,8 @@ int  FORTRAN(ncf_inq_var_att)( int *dset, int *varid, char attname[], int *attyp
 
   att_ptr=(ncatt *)list_curr(varattlist); 
 
+  strcpy(attname, att_ptr->name);
+  *namelen = strlen(attname);
   *attype = att_ptr->type; 
   *attlen = att_ptr->len;
   *attoutflag = att_ptr->outflag;
@@ -439,7 +446,6 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 {
   ncdset *nc_ptr=NULL;
   ncvar *var_ptr=NULL;
-  int i;
   int status=LIST_OK;
   int return_val;
   LIST *varlist;
@@ -450,6 +456,7 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
    /*
    * Get the list of variables.  
    */
+
   varlist = ncf_get_ds_varlist(dset);
   status = list_traverse(varlist, string, NCF_ListTraverse_FoundVarName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
@@ -463,7 +470,39 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 
   return return_val;
 }
+/* ----
+ * Find a variable in a dataset based on the dataset integer ID and 
+ * variable name. Return the variable id, or NOT FOUND if it does not exist
+ */
+ int FORTRAN(ncf_get_var_id_case) (int *dset, int *varid, char string[])
 
+{
+  ncdset *nc_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  LIST *varlist;
+
+  return_val = ATOM_NOT_FOUND;  
+  if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
+
+   /*
+   * Get the list of variables.  
+   */
+
+  varlist = ncf_get_ds_varlist(dset);
+  status = list_traverse(varlist, string, NCF_ListTraverse_FoundVarNameCase, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+  }
+  
+  var_ptr=(ncvar *)list_curr(varlist); 
+  *varid = var_ptr->varid;
+  return_val = FERR_OK;
+
+  return return_val;
+}
 /* ----
  * Find a variable in a dataset based on the dataset integer ID and 
  * variable ID. Return the coordinate-axis flag.
@@ -586,6 +625,100 @@ int FORTRAN(ncf_get_dim_id)( int *dset, char dname[])
 
   free(dummy);
   return seq;
+}
+
+/* ----
+ * Find a variable attribute based on the dataset ID and variable ID and attribute name
+ * Return the attribute ID
+ */
+ int FORTRAN(ncf_get_var_attr_id) (int *dset, int *varid, char* attname, int* attid)
+
+{
+  ncdset *nc_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  ncatt *att_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varattlist;
+  LIST *dummy;
+
+   /*
+   * Get the list of variables.  
+   */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+  if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
+
+   /*
+   * Get the list of attributes for the variable in the dataset. find attname.
+   */
+  varattlist = ncf_get_ds_var_attlist(dset, varid);
+
+  status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+    }
+
+  att_ptr=(ncatt *)list_curr(varattlist); 
+  *attid = att_ptr->attid;
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ----
+ * Find a variable attribute based on the dataset ID and variable ID and attribute name
+ * Return the attribute ID
+ */
+ int FORTRAN(ncf_get_var_attr_id_case) (int *dset, int *varid, char* attname, int* attid)
+
+{
+  ncdset *nc_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  ncatt *att_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varattlist;
+  LIST *dummy;
+
+   /*
+   * Get the list of variables.  
+   */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+  if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
+
+   /*
+   * Get the list of attributes for the variable in the dataset. find attname.
+   */
+  varattlist = ncf_get_ds_var_attlist(dset, varid);
+
+  status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttNameCase, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+    }
+
+  att_ptr=(ncatt *)list_curr(varattlist); 
+  *attid = att_ptr->attid;
+
+  return_val = FERR_OK;
+  return return_val;
 }
 
 /* ----
@@ -1399,7 +1532,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], cha
 		{
 		var.natts = var.natts+1;
 
-		att.attid = 4;
+		att.attid = var.natts;
 		strcpy(att.name, "units");
 		att.len = strlen(units);
 		att.outflag = 1;
@@ -2293,20 +2426,32 @@ int NCF_ListTraverse_FoundDsetID( char *data, char *curr )
 
 /* ---- 
  * See if the name in data matches the variable name in 
- * curr. Ferret always capitalizes everything so be case INsensitive.
+ * curr. Ferret always capitalizes everything so be case INsensitive,
+ * unless the string has been passed in inside single quotes.
  */
 int NCF_ListTraverse_FoundVarName( char *data, char *curr )
 {
-  int icomp;
-  ncvar *var_ptr=(ncvar*)curr; 
+  ncvar *var_ptr=(ncvar*)curr;
 
-  icomp = strcasecmp(data, var_ptr->name);
   if ( !strcasecmp(data, var_ptr->name) ) {
     return FALSE; /* found match */
   } else
     return TRUE;
 }
 
+/* ---- 
+ * See if the name in data matches the variable name in 
+ * curr. Make the string comparison case-sensive.
+ */
+int NCF_ListTraverse_FoundVarNameCase( char *data, char *curr )
+{
+  ncvar *var_ptr=(ncvar*)curr;
+
+  if ( !strcmp(data, var_ptr->name) ) {
+    return FALSE; /* found match */
+  } else
+    return TRUE;
+}
 
 /* ---- 
  * See if the ID in data matches the variable ID in curr. 
@@ -2336,9 +2481,21 @@ int NCF_ListTraverse_FoundVarAttName( char *data, char *curr )
     return TRUE;
 }
 
-
 /* ---- 
- * See if there is an ID in data matches the attribute name in curr.
+ * See if the name in data matches the attribute name in curr. 
+ * Make the string comparison case-sensive.
+ */
+int NCF_ListTraverse_FoundVarAttNameCase( char *data, char *curr )
+{
+  ncatt *att_ptr=(ncatt *)curr;
+
+  if ( !strcmp(data, att_ptr->name) ) {
+    return FALSE; /* found match */
+  } else
+    return TRUE;
+}
+/* ---- 
+ * See if there is an ID in data matches the attribute id in curr.
  */
 int NCF_ListTraverse_FoundVarAttID( char *data, char *curr )
 {

@@ -67,7 +67,7 @@
       include 'xdset_info.cd_equiv'
 
 * internal variable declarations:
-      INTEGER i, axid, attype, attlen, attoutflag
+      INTEGER i, axid, attype, attlen, attoutflag, attid
       INTEGER axnamlen(2)
       CHARACTER*4 axname(2)
 
@@ -90,8 +90,8 @@
       RETURN
 
 * check for "epic_code" attribute
- 200  CALL CD_GET_VAR_ATT_INFO (dset, axid, 'epic_code', 
-     .                          attype, attlen, attoutflag, status )
+ 200  CALL CD_GET_VAR_ATT_ID (dset, axid, 'epic_code', attid, status)
+
       CD_ISIT_EPIC =  status .EQ. merr_ok
 
 * successful completion (always)

@@ -85,20 +85,22 @@
 * internal variable declarations:
       LOGICAL NC_GET_ATTRIB
       INTEGER attlen, attoutflag
-      INTEGER TM_LENSTR1, lena, attype, status
+      INTEGER TM_LENSTR1, lena, attype, attid, status
       REAL tmp
-      CHARACTER buff*132
+      CHARACTER buff*132, aname*132
 
-* inquire about the attribute by name
-      lena = TM_LENSTR1( attrib )
-      CALL CD_GET_VAR_ATT_INFO (dset, varid, attrib(:lena), attype, 
-     .     attlen, attoutflag, status )
+* inquire about the attribute by name, getting its id number
+
+      CALL CD_GET_VAR_ATT_ID (dset, varid, attrib, attid, status)
+      IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .                  aname, attype, attlen, attoutflag, status )
+      lena = TM_LENSTR1( aname )
 
       IF ( status .EQ. merr_ok ) THEN
 	IF (attype .EQ. NCCHAR) THEN
 * get a text attribute as a value
 
-	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset,varid,attrib(:lena),
+	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset,varid,aname(:lena),
      .                            do_warn,vname,132, attlen,  
      .                            attoutflag, buff, tmp )
 	   IF (.NOT.CD_GET_ATTVALC) THEN
@@ -110,7 +112,7 @@
 	   ENDIF 
 	 ELSE
 * get a value attribute
-	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset, varid, attrib(:lena),
+	   CD_GET_ATTVALC = NC_GET_ATTRIB(dset, varid, aname(:lena),
      .                                    do_warn, vname, 1, attlen,
      .                                    attoutflag,  buff, val )
 	 ENDIF

@@ -74,15 +74,19 @@
 
 * internal variable declarations:
       LOGICAL NC_GET_ATTRIB
-      INTEGER TM_LENSTR1, lena, attype, attlen, attoutflag, status
+      INTEGER TM_LENSTR1, lena, attype, attlen, attoutflag,
+     .        attid, status
       REAL tmp
-      CHARACTER buff*132, upbuff*132
+      CHARACTER buff*132, upbuff*132, aname*128
       CHARACTER tmp_buff*2048          !1/03 *kob*	
 
-* inquire about the attribute by name
-      lena = TM_LENSTR1( attrib )
-      CALL CD_GET_VAR_ATT_INFO (dset, varid, attrib(:lena), attype, 
-     .     attlen, attoutflag, status )
+* inquire about the attribute by name and id
+
+      CALL CD_GET_VAR_ATT_ID (dset, varid, attrib, attid, status)
+      IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, attid,
+     .                  aname, attype, attlen, attoutflag, status )
+
+      lena = TM_LENSTR1( aname )
 
       IF ( status .EQ. merr_ok ) THEN
 
@@ -90,7 +94,7 @@
 
 * get a text attribute
 
-	   CD_GET_ATTVAL_L = NC_GET_ATTRIB(dset, varid, attrib(:lena),
+	   CD_GET_ATTVAL_L = NC_GET_ATTRIB(dset, varid, aname(:lena),
      .                            do_warn, vname, 132, attlen,
      .                            attoutflag, buff, tmp)
 

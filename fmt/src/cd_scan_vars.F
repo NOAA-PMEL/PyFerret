@@ -133,10 +133,10 @@
      .        istat, npts, epic_t2,
      .        nbvar, ivar, len_test, len_mchars, 
      .        attype, attlen, attoutflag, maxlen, iatt, 
-     .        varid, all_outflag, dset_num
+     .        varid, all_outflag, dset_num, attid
 
       REAL vals  ! potential numerical attributes
-      CHARACTER*128 attname
+      CHARACTER*128 aname
 
 
 * ?? how many bounds variables (bname) might there be ??
@@ -264,8 +264,12 @@ c      REAL*8  dg_bad
      .              bname(nbvar+1), vals )
 
            IF (got_it ) THEN
-	      CALL CD_GET_VAR_ATT_INFO(dset, ivcd, 'bounds',
-     .			    attype, attlen, attoutflag, istat )
+
+              CALL CD_GET_VAR_ATT_ID (dset, ivcd, 'bounds', attid, 
+     .              status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, ivcd, 
+     .              attid, aname, attype, attlen, attoutflag, istat )
+
               IF (attype .EQ. nf_char) THEN
                  nbvar = nbvar + 1
                  istat = STR_UPCASE( bname(nbvar), bname(nbvar) )

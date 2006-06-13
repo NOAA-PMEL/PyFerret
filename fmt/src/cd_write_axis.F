@@ -116,7 +116,8 @@
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, cal_id, varid,
      .        llen, vartype, nvdims, nvatts, iatt, attype, attlen,
-     .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag
+     .        attoutflag, istat, maxlen, vdims(8), newid, all_outflag,
+     .        attid
       REAL vals(10)
 
 !      LOGICAL condensed
@@ -243,10 +244,9 @@
          
          DO 200 iatt = 1, nvatts
             CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
-     .                                        attname, status)
-                    
-            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat )
+     .                                attname, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .               iatt, attname, attype, attlen, attoutflag, status )
 
             maxlen = 140
             got_it = NC_GET_ATTRIB ( dset, varid, attname, 
@@ -319,14 +319,16 @@
 
         attname = 'units' 
         IF (varid .GT. 0) THEN
-           CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+           CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                 status)
+           IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .         attid, attname,  attype, attlen, attoutflag, istat )
         ELSE
            attoutflag = 1
         ENDIF
 
         IF (attoutflag .EQ. 1) 
-     .     CALL NCAPTC( cdfid, axid, 'units', NCCHAR, slen,
+     .     CALL NCAPTC( cdfid, axid, attname, NCCHAR, slen,
      .        	      units(:slen), cdfstat )
 
       ENDIF
@@ -345,14 +347,16 @@
             
             attname = 'time_origin' 
             IF (varid .GT. 0) THEN
-               CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .                 status)
+               IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .             attid, attname, attype, attlen, attoutflag, istat )
             ELSE 
                attoutflag = 1
             ENDIF
 
             IF (attoutflag .EQ. 1) 
-     .         CALL NCAPTC( cdfid, axid, 'time_origin', NCCHAR, slen,
+     .         CALL NCAPTC( cdfid, axid, attname, NCCHAR, slen,
      .           datebuff(:slen), cdfstat )
 	ENDIF
 
@@ -363,14 +367,15 @@
 
           attname = 'calendar' 
           IF (varid .GT. 0) THEN
-             CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+             CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .                attid, attname, attype, attlen, attoutflag, istat )
           ELSE
              attoutflag = 1
           ENDIF
 
           IF (attoutflag .EQ. 1) 
-     .      CALL NCAPTC( cdfid, axid, 'calendar', NCCHAR, slen,
+     .      CALL NCAPTC( cdfid, axid, attname, NCCHAR, slen,
      .        	      line_cal_name(iaxis)(:slen), cdfstat )
         ENDIF
       ENDIF
@@ -380,30 +385,33 @@
 	 IF (line_modulo_len(iaxis) .EQ. 0.0D0 ) THEN
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPTC( cdfid,axid,'modulo',NCCHAR,1,' ', cdfstat )
+     .       CALL NCAPTC( cdfid, axid, attname, NCCHAR, 1, ' ', cdfstat )
 	 ELSE
            attname = 'modulo' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .               attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPT( cdfid,axid,'modulo',NCDOUBLE,1,
+     .       CALL NCAPT( cdfid, axid, attname, NCDOUBLE, 1,
      .		       line_modulo_len(iaxis), cdfstat )
 	 ENDIF
 
       ELSE IF (got_modulo .AND. varid .GT. 0) THEN  !user wants to write modulo=false to the file
             attname = 'modulo'
-            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat )
+            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
 
             maxlen = 140
             got_it = NC_GET_ATTRIB ( dset, varid, attname, 
@@ -427,13 +435,14 @@
      .     (.NOT.got_positive) ) THEN
            attname = 'positive' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPTC( cdfid, axid, 'positive', NCCHAR, 4,
+     .       CALL NCAPTC( cdfid, axid, attname, NCCHAR, 4,
      .                'down', cdfstat )
       ENDIF
 
@@ -446,13 +455,14 @@
         IF ( line_regular(iaxis) .AND. (.NOT.got_spacing) ) THEN
            attname = 'point_spacing' 
            IF (varid .GT. 0) THEN
-              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+              CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid,status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
            ENDIF
            IF (attoutflag .EQ. 1) 
-     .       CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 4,
+     .       CALL NCAPTC( cdfid, axid, attname, NCCHAR, 4,
      .             'even', cdfstat )
         ELSE
 * sub-span axis may not have irregular spacing just cuz parent does
@@ -463,13 +473,15 @@
      .     .OR. ax_type .EQ. pcdf_sub_span ) THEN
               attname = 'point_spacing' 
               IF (varid .GT. 0) THEN
-                 CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, 
+     .                  attid, status)
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .               attid, attname, attype, attlen, attoutflag, istat )
               ELSE 
                  attoutflag = 1
               ENDIF
               IF (attoutflag .EQ. 1) 
-     .          CALL NCAPTC( cdfid, axid, 'point_spacing', NCCHAR, 6,
+     .          CALL NCAPTC( cdfid, axid, attname, NCCHAR, 6,
      .             'uneven', cdfstat )
            ENDIF
         ENDIF
@@ -486,8 +498,10 @@
 
            attname = 'axis' 
            IF (varid .GT. 0) THEN
-             CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid,
+     .                  status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .             attid, attname, attype, attlen, attoutflag, istat )
            ELSE
               attoutflag = 1
            ENDIF
@@ -495,19 +509,19 @@
           slen = TM_LENSTR1( 'X' )
           IF (idim .eq. x_dim) THEN
              IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      'axis', NCCHAR, slen, 'X', cdfstat )
+     .        	      attname, NCCHAR, slen, 'X', cdfstat )
           ENDIF
           IF (idim .eq. y_dim) THEN
              IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      'axis', NCCHAR, slen, 'Y', cdfstat )
+     .        	      attname, NCCHAR, slen, 'Y', cdfstat )
           ENDIF
           IF (idim .eq. z_dim) THEN
              IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      'axis', NCCHAR, slen, 'Z', cdfstat )
+     .        	      attname, NCCHAR, slen, 'Z', cdfstat )
           ENDIF
           IF (idim .eq. t_dim) THEN
              IF (attoutflag .EQ. 1) CALL NCAPTC( cdfid, axid, 
-     .        	      'axis', NCCHAR, slen, 'T', cdfstat )
+     .        	      attname, NCCHAR, slen, 'T', cdfstat )
           ENDIF
        ENDIF
 
@@ -538,14 +552,15 @@
 
          attname = 'bounds' 
          IF (varid .GT. 0) THEN
-            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat)
          ELSE
             attoutflag = 1
          ENDIF
 
          IF (attoutflag .EQ. 1) THEN
-            CALL NCAPTC( cdfid, axid, 'bounds', NCCHAR, elen,
+            CALL NCAPTC( cdfid, axid, attname, NCCHAR, elen,
      .                name(:elen), cdfstat )
 
 * set up for deferred writing of bounds coordinate values (12/00)
@@ -568,22 +583,22 @@
      .         .NOT.line_regular(iaxis) .AND. 
      .         .NOT.recdim)) ) THEN
 
-         IF ( status .NE. merr_ok ) RETURN
          name = name(:nlen)//'edges'
          elen = nlen + 5
          dimid = NCDDEF( cdfid, name(:elen), axlen+1, cdfstat )
          edgid = NCVDEF(cdfid, name(:elen), NCDOUBLE, 1, dimid, cdfstat)
          attname = 'edges' 
          IF (varid .GT. 0) THEN
-            CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .			    attype, attlen, attoutflag, istat ) 
+            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, attname, attype, attlen, attoutflag, istat )
          ELSE
             attoutflag = 1
          ENDIF
          IF (attoutflag .EQ. 1) THEN
-            CALL NCAPTC( cdfid, edgid, 'edges', NCCHAR, 1, ' ', cdfstat )
+            CALL NCAPTC( cdfid, edgid, attname, NCCHAR, 1, ' ', cdfstat )
 * ... point to it from axis coordinates definition
-            CALL NCAPTC( cdfid, axid, 'edges', NCCHAR, elen,
+            CALL NCAPTC( cdfid, axid, attname, NCCHAR, elen,
      .                name(:elen), cdfstat )
 
 * set up for deferref writing of edge coordinate values (12/00)

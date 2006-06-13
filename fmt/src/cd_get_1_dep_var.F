@@ -55,7 +55,7 @@
 *             CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *               strings or real values according to attrib type
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
-
+* V600  6/06 *acm*   CD_GET_VAR_ATT_INFO uses varid and attid rather than attname.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -94,10 +94,10 @@
      .        cdfstat, idim,
      .        vartyp, nvdim, vdims(6), nvatts, vlen,
      .        recdim, istat, lasdim, attype, attlen, attoutflag, 
-     .        maxlen, all_outflag
+     .        maxlen, all_outflag, attid
       REAL    val
 * 4/99 *kob* increase size of vname
-      CHARACTER    vname*128, buff*128
+      CHARACTER    vname*128, aname*128, buff*128
       CHARACTER*13 TM_STRING
 
       INTEGER tt  ! nice short name
@@ -215,8 +215,11 @@
 *     (note that the netCDF library insists on _FillValue's data type)
              IF ( vartyp.LE.NCLONG .AND. cd_scaled(ivtm) ) THEN
                 IF ( got_bad ) THEN
-	           CALL CD_GET_VAR_ATT_INFO(dset, ivcd, 'missing_value',
-     .			    attype, attlen, attoutflag, istat )
+                   CALL CD_GET_VAR_ATT_ID (dset, ivcd, 'missing_value', 
+     .                  attid, istat)
+                   IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                 ivcd, attid, aname, attype, attlen, attoutflag, 
+     .                 istat)
 	           IF ( attype .EQ. vartyp ) ds_bad_flag(ivtm) =
      .			ds_bad_flag(ivtm)*cd_scale_factor(ivtm)
      .			+ cd_add_offset(ivtm)
@@ -224,8 +227,11 @@
 
 * ... *kob* Also need to see about unpacking _FillValue
                 IF ( got_missing ) THEN
-	           CALL CD_GET_VAR_ATT_INFO(dset, ivcd, '_FillValue',
-     .	   		    attype, attlen, attoutflag, istat )
+                   CALL CD_GET_VAR_ATT_ID (dset, ivcd, '_FillValue', 
+     .                  attid, istat)
+                   IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+     .                  ivcd, attid, aname, attype, attlen, attoutflag, 
+     .                  istat )
 	           IF ( attype .EQ. vartyp ) ds_missing_flag(ivtm) =
      .	   		ds_missing_flag(ivtm)*cd_scale_factor(ivtm)
      .			+ cd_add_offset(ivtm)

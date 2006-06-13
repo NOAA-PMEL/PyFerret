@@ -28,3 +28,6 @@ ppl xfor (dms)
 ppl yfor (dms)
 ppl axlint,3,1
 ppl plot
+
+! Restore the default settings
+ppl axlint,2,2

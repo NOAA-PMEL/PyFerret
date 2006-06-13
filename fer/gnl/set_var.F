@@ -291,12 +291,8 @@
 * get dataset from varname.attname
 * evaluate the context without computing the expression to get the dataset
 
-           varattname = vname(1:TM_LENSTR1(vname))//'.type'
-           status = ferr_ok + 1
-           IF (dset .NE. unspecified_int4) CALL BREAK_VARATTNAME( 
-     .      varattname, dset, varname, attname, varid, .FALSE., status)
+           IF (dset .EQ. unspecified_int4) THEN
 
-           IF (status .NE. ferr_ok) THEN
               CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
               IF ( status .NE. ferr_ok ) GOTO 5000
  
@@ -314,10 +310,9 @@
 
            ENDIF
 
-* Make sure we have varid for varname.type, then reset the variable type.
+* Make sure we have varid for varname, then reset the variable type.
 
-           CALL BREAK_VARNAME( varattname, dset, varname, attname, 
-     .                         varid, status )
+           CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
 * When the user requests double precision output, write an attribute to the
 * file explaning that it contains data converted from float.

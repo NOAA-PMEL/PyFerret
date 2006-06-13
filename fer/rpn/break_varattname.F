@@ -125,59 +125,87 @@
            GOTO 1000
         ENDIF
 
+* If attname has brackets on it, remove this part for the next tests
+
+       alen = TM_LENSTR1(attname)
+       end_att = alen
+       IF (INDEX(attname,'[') .GT. 0) THEN
+          end_att = INDEX(attname,'[')
+          attname(end_att:alen) = ' '
+       ENDIF
+
 * Is the varname the keyword ., representing the dataset? Check that the 
 * attname request is valid.
 
-        IF (STR_SAME (varname, '.') .EQ. 0) THEN
-           attok = .FALSE.
-           IF (STR_SAME(attname(:4), 'varn') .EQ. 0 ) THEN
-              attok = .TRUE.
-              attname = 'varnames'
-           ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN
-              attok = .TRUE.
-              attname = 'dimnames'
-           ELSE IF (STR_SAME(attname(:3), 'att') .EQ. 0 ) THEN
-              attok = .TRUE.
-              attname = 'attnames'
-           ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN
-              attok = .TRUE.
-              attname = 'ndims'
-           ELSE IF (STR_SAME(attname(:3), 'nat') .EQ. 0 ) THEN
-              attok = .TRUE.
-              attname = 'natts'
-           ELSE IF (STR_SAME(attname(:4), 'nvar') .EQ. 0 ) THEN
-              attok = .TRUE.
-              attname = 'nvars'
+       IF (STR_SAME (varname, '.') .EQ. 0) THEN
+          attok = .FALSE.
+          IF (STR_SAME(attname, 'varnames') .EQ. 0 ) THEN
+             attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+             attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN
+             attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
+             attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
+             attok = .TRUE.
+          ELSE IF (STR_SAME(attname, 'nvars') .EQ. 0 ) THEN
+             attok = .TRUE. 
 
 * Is the reference to a global attribute?
 
-           ELSE
-              CALL CD_GET_VAR_ID (dset, '.', varid, status)
-              CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
+          ELSE
+             CALL CD_GET_VAR_ID (dset, '.', varid, status)
+             CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
      .               recdim, status)
 
-              DO 100 iatt = 1, ngatts
-                 CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, buff, 
+             DO 100 iatt = 1, ngatts
+                CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, buff, 
      .                    status)
-                 IF (STR_SAME(buff, attname) .EQ. 0) attok = .TRUE.
- 100          CONTINUE
-           ENDIF
+                IF (STR_SAME(buff, attname) .EQ. 0) attok = .TRUE.
+ 100         CONTINUE
+          ENDIF
 
-           IF (attok) THEN
-              varid = 0
-              GOTO 1000
-           ELSE
-              varid = -1
-              status = ferr_unknown_attribute
-              err_string = "invalid dataset attribute requested"
-              GOTO 5200
-           ENDIF
-        ENDIF
+          IF (attok) THEN
+             varid = 0
+             GOTO 1000
+          ELSE
+
+* is the attribute name in quotations? If so then test without them now: When the
+* above keywords, attnames, etc, are in the file as attribute names, then 
+* they must be enclosed in quotes
+
+             tlen = TM_LENSTR1(attname)
+             IF  (attname(1:1) .EQ. "'" .AND. 
+     .            attname(tlen:tlen) .EQ. "'") THEN
+
+                CALL CD_GET_VAR_ATT_ID (dset, varid, attname, 
+     .              attid, status)
+                IF (status .EQ. ferr_ok) GOTO 1000
+             ENDIF
+ 
+             attok = .FALSE.
+             IF (status .EQ. atom_not_found) status = 
+     .               ferr_unknown_attribute
+             vlen = TM_LENSTR1(varname)
+             err_string = 'attribute '//attname//
+     .                       ' not found for dataset '
+             GOTO 5200
+
+          ENDIF
+
+       ENDIF
           
 * Check that the dset contains the variable; . is varid=0
         
-        CALL CD_GET_VAR_ID (dset, varname, varid, status)
+* Is the variable name in quotations?
+        
         vlen = TM_LENSTR1(varname)
+        IF (varname(1:1) .EQ. "'" .AND. varname(vlen:vlen) .EQ. "'") THEN
+           status = 3  ! just for debugging
+        ENDIF 
+
+        CALL CD_GET_VAR_ID (dset, varname, varid, status)
 
 * If this is a coord var and the name matched an existing different axis 
 * name on input, then Ferret appends a digit to the name. 
@@ -222,17 +250,8 @@
            err_string = "enclose coordinate variable name in parentheses"
            GOTO 5300
         ENDIF
-
-* If attname has brackets on it, remove this part for the next tests
-
-       alen = TM_LENSTR1(attname)
-       end_att = alen
-       IF (INDEX(attname,'[') .GT. 0) THEN
-          end_att = INDEX(attname,'[')
-          attname(end_att:alen) = ' '
-       ENDIF
-
-       err_string = 'attribute '//attname//
+ 
+        err_string = 'attribute '//attname//
      .              ' not found for variable '// varname(:vlen)
 
 * Is the attribute specified by a number? (check as in find_dset_number)
@@ -257,32 +276,47 @@
      .              status)
 	ELSE
 
-           CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .        attype, attlen, attoutflag, status )
-           IF (status .NE. ferr_ok) THEN
+           CALL CD_GET_VAR_ATT_ID(dset, varid, attname, attid, status)
+           IF (status .NE. ferr_ok .OR. attid .EQ. 0) THEN
 
 * See if it is a pseudo-attribute attnames, ndims, etc.
 
-             IF (STR_SAME(attname(:4), 'attn') .EQ. 0 ) THEN  ! attnames
-                attname = 'attnames'
-             ELSE IF (STR_SAME(attname(:4), 'dimn') .EQ. 0 ) THEN  ! dimnames
-                attname = 'dimnames'
-             ELSE IF (STR_SAME(attname(:4), 'ndim') .EQ. 0 ) THEN  ! ndims
-                attname = 'ndims'
-             ELSE IF (STR_SAME(attname(:4), 'type') .EQ. 0 ) THEN
-                attname = 'type'
-              ELSE IF (STR_SAME(attname(:4), 'natt') .EQ. 0 ) THEN  ! natts
-                attname = 'natts'
-             ELSE
-                IF (status .EQ. atom_not_found) status = 
+              IF (STR_SAME(attname, 'attnames') .EQ. 0 ) THEN 
+                 attok = .TRUE.
+              ELSE IF (STR_SAME(attname, 'dimnames') .EQ. 0 ) THEN
+                 attok = .TRUE.
+              ELSE IF (STR_SAME(attname, 'ndims') .EQ. 0 ) THEN
+                 attok = .TRUE.
+              ELSE IF (STR_SAME(attname, 'nctype') .EQ. 0 ) THEN
+                 attok = .TRUE.
+              ELSE IF (STR_SAME(attname, 'nattrs') .EQ. 0 ) THEN
+                 attok = .TRUE.
+              ELSE
+
+* is the attribute name in quotations? If so then remove them, and test
+* for the name with case-sensitivity. When the above keywords, attnames, 
+* etc, are in the file as attribute names, then they must be enclosed in 
+* quotes to be accessed.
+
+                 tlen = TM_LENSTR1(attname)
+                 IF  (attname(1:1) .EQ. "'" .AND. 
+     .                attname(tlen:tlen) .EQ. "'") THEN
+                    
+                    CALL CD_GET_VAR_ATT_ID (dset, varid, attname,
+     .                 attid, status ) 
+                    IF (status .EQ. ferr_ok) GOTO 1000
+                 ENDIF
+ 
+                 attok = .FALSE.
+                 IF (status .EQ. atom_not_found) status = 
      .               ferr_unknown_attribute
-                vlen = TM_LENSTR1(varname)
-                err_string = 'attribute '//attname//
+                 vlen = TM_LENSTR1(varname)
+                 err_string = 'attribute '//attname//
      .                       ' not found for variable '//
      .                        varname(:vlen)
-                GOTO 5200
-             ENDIF
-          ENDIF
+                 GOTO 5200
+              ENDIF
+           ENDIF
 
        ENDIF
 

@@ -47,6 +47,7 @@
 	CHARACTER*(*)	string
 
 * internal variable declarations:
+        LOGICAl         maybe
 	INTEGER		TM_LENSTR1, i, j
 	CHARACTER*1	c
 	
@@ -85,6 +86,7 @@
 * Check further characters.  There may be an E for exponent or a D for a double precision 
 
         IF (TM_LENSTR1(string) .LE. i) RETURN
+        maybe = .FALSE.
 	DO 300 j = i+1, TM_LENSTR1(string)
 	   c = string(j:j)
            TM_DIGIT_TEST =   c .EQ. '+'
@@ -96,7 +98,22 @@
      .		.OR. c .EQ. 'D'
      .		.OR. c .EQ. 'd'
            IF (.NOT. TM_DIGIT_TEST) RETURN
+
+           IF (maybe) THEN  ! previously hit an E or D, see if this next char is numeric
+              TM_DIGIT_TEST =   c .EQ. '+'
+     .		.OR. c .EQ. '-'
+     .		.OR. c .EQ. '.'
+     .		.OR. c .GE. '0' .AND. c .LE. '9'
+              maybe = .FALSE.
+              IF (.NOT. TM_DIGIT_TEST) RETURN
+           ENDIF
+
+           maybe = c .EQ. 'E'
+     .		.OR. c .EQ. 'e'
+     .		.OR. c .EQ. 'D'
+     .		.OR. c .EQ. 'd'
  300	CONTINUE
+        IF (maybe) TM_DIGIT_TEST = .FALSE.   ! ended with D or E
 
 	RETURN
 

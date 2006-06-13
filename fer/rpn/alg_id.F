@@ -183,9 +183,11 @@
 * attribute value variable.attname (will check later whether the
 * variable is in a netCDF dataset and whether the attribute exists)
 
-           IF (INDEX(text(at_start(i):at_end(i)), '.') .GT. 0 
-     .          .AND. INDEX(text(at_start(i):at_end(i)), '.') .LT.
-     .          at_end(i) - at_start(i)+1 ) THEN
+c           IF (INDEX(text(at_start(i):at_end(i)), '.') .GT. 0 
+c     .          .AND. INDEX(text(at_start(i):at_end(i)), '.') .LT.
+c     .          at_end(i) - at_start(i)+1 ) THEN
+
+           IF (INDEX(text(at_start(i):at_end(i)), '.') .GT. 0 ) THEN
               
 * Is the dot a decimal point within an expression, as in LIST a[y=0.5:9.5]
 * or LIST a[gx=sst[d=1],y=1.5]. Look for opening bracket before the dot and 
@@ -199,6 +201,14 @@
 
               IF ((INDEX(varname(1:dot-1),'[') .GT. 0) .AND. 
      .            (INDEX(varname(dot+1:slen),']') .GT. 0) ) GOTO 99
+
+* Is this just a number in parentheses?
+              IF ( (INDEX(varname(1:1),'(') .GT. 0)  .AND. 
+     .             TM_DIGIT(varname(2:slen)) ) GOTO 99
+
+              IF ( (INDEX(varname(1:1),'(') .GT. 0)   .AND. 
+     .             (INDEX(varname(slen:slen),')') .GT. 0) .AND. 
+     .             TM_DIGIT(varname(2:slen-1)) ) GOTO 99
 
 * is the name in quotations? If so then it may contain a dot and not
 * be varname.attname. See if its all within quotes, if so this is a 
@@ -228,6 +238,17 @@
                     ENDIF
                     j = j - 1
                  ENDDO
+              ENDIF
+
+* Is the dot at the end of varname? if so then merge the next atom with this one.
+
+              IF ( text(at_end(i):at_end(i)) .EQ. "." ) THEN
+                 new_nat = natom-1
+                 at_end(i) = at_end(i+1)
+                 DO 110 j = i+1, natom
+                    at_start(j) = at_start(j-1)
+                    at_end(j) = at_end(j-1)
+  110            CONTINUE
               ENDIF
 
               GOTO 100

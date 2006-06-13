@@ -1,5 +1,5 @@
-	SUBROUTINE SHOW_ATTRIBUTE ( varname, attname, attype, attlen, 
-     .                              attstr, attvals, attoutflag, sho_out) 
+	SUBROUTINE SHOW_ATTRIBUTE ( varname, coordvar, attname, attype, 
+     .                    attlen, attstr, attvals, attoutflag, sho_out) 
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -50,7 +50,7 @@
         include 'netcdf.inc'
 
 * calling argument declarations
-        LOGICAL sho_out
+        LOGICAL coordvar, sho_out
 	INTEGER	attype, attlen, attoutflag
 	REAL attvals(*)
 	CHARACTER varname*(*), attname*(*), attstr*(*)
@@ -72,6 +72,10 @@
         llen = TM_LENSTR1(attname)
         buff = ' '//varname(:vlen)//'.'//attname(:llen)//' '
         slen = slen + llen + vlen + 1
+        IF (coordvar) THEN
+           buff = ' ('//varname(:vlen)//').'//attname(:llen)//' '
+           slen = slen + 2
+        ENDIF
 
 * if character type, write the attribute name with its string value
 

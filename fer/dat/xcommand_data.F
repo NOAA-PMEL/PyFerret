@@ -533,9 +533,10 @@
 	   DATA subcommands      (nsub_at2 +17)	/ 'ATTRIBUTE'	/
 	   DATA num_qualifs      (nsub_at2 +17)	/ nqual2r	/
 	   DATA qualifier_pointer(nsub_at2 +17)	/ nqual_at2r	/
-* SHOW ATTRIBUTE / ALL /DATASET
+* SHOW ATTRIBUTE / ALL /DATASET /OUTPUT
 		DATA qualifiers  (nqual_at2r+0)	/ 'ALL'		/
 		DATA qualifiers  (nqual_at2r+1)	/ 'DATASET'	/
+		DATA qualifiers  (nqual_at2r+2)	/ 'OUTPUT'	/
 * SHOW ****							  ! unused(s)
 	   DATA subcommands      (nsub_at2 +18)	/ '****'	/
 	   DATA num_qualifs      (nsub_at2 +18)	/ nqual2s	/

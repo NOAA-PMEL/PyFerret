@@ -132,13 +132,14 @@
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
      .            attype, attlen, w, inxt, ndims, nvars, ngatts,
      .            recdim, len_attbuff, attoutflag, all_outflag,
-     .            outflag, fertype
+     .            outflag, fertype, attid
 	REAL	  result, val, vals(10)
 	REAL*8 TM_WORLD, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
-     .            buff*128, varname*512, attname*128, attbuff*2048
+     .            buff*128, varname*512, attname*128, aname*128, 
+     .            attbuff*2048
 !	CHARACTER fmt*(max_len)
         CHARACTER*6 typstring(0:6)
         PARAMETER       (len_attbuff = 2048)
@@ -224,6 +225,7 @@
 	GOTO 149	! nope - no equal sign
 * ... see if the first part of the expression is a d=dsetnum or d=dsetname
  98	inxt = i
+        ieq = i
         IF (cmnd(i-1:i-1).EQ.'d') THEN
            inxt = i+1
            DO 91 i = inxt,iend
@@ -233,7 +235,7 @@
        ENDIF
 
 * ... hunt for the next equal sign 
-	DO 93 i = inxt, iend
+	DO 93 i = ieq, iend
            IF (cmnd(i:i).EQ.'=') GOTO 99
  93	CONTINUE
 	GOTO 149	! nope - no equal sign
@@ -522,9 +524,11 @@
               IF (cx_data_set(cx) .EQ. pdset_irrelevant) dset = -1  ! user vars
               CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, 
      .                    varname, attname, varid, do_err, status )
-              CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
-     .                                  attype, attlen, attoutflag,
-     .                                  status )
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .              status)
+              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+     .              attid, aname, attype, attlen, attoutflag, status )
+
               IF (status .EQ. ferr_ok) THEN
                  repl = typstring(attype)
 	      ELSE 
@@ -552,9 +556,11 @@
      .                         varname, attname, varid, do_err, status )
 
                  ENDIF
-                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attname,
-     .                                     attype, attlen, attoutflag,
-     .                                     status )
+                 
+                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .               status)
+                 IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid,
+     .               attid, aname,  attype, attlen, attoutflag, status )
 
                  IF (status .EQ. ferr_ok) THEN
                     result = attlen

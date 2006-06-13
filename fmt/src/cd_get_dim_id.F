@@ -48,7 +48,7 @@
 * Argument declarations
 
       CHARACTER*(*) dname
-      INTEGER NCF_GET_VAR_ID, dset, dimid
+      INTEGER dset, dimid
 
 * Internal declarations
 

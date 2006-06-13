@@ -91,6 +91,9 @@ SET MODE VERIFY
 !             bn_deg_min.jnl, bn_dp_readscale.jnl, bn_bounds_defineax.jnl,
 !              bn_attributes.jnl, n600_bug_fixes.jnl
 
+! 6/06  *acm* add bn_transforms.jnl -- there was a benchmark testing regridding
+!             transforms but not the others: smoothers, fillers, etc.
+
 
 GO bn_reset
 GO bn_syntax
@@ -501,6 +504,9 @@ go bn_transforms.jnl
 
 go bn_reset
 go bn_linecolors.jnl
+
+go bn_reset
+go bn_transforms.jnl
 
 GO bn_reset
 GO bn600_bug_fixes.jnl

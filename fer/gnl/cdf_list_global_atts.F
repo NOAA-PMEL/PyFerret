@@ -51,8 +51,9 @@
         LOGICAL MATCH_NAME, NC_GET_ATTRIB, coordvar, do_warn, got_it
         INTEGER TM_LENSTR1, varid, vartype, nvdims, vdims(8), nvatts, 
      .          all_outflag, iatt, slen, attype, attlen, attoutflag, bufflen
+     .          attid
 	REAL*4	vals(10)
-        CHARACTER*128 varname, attname
+        CHARACTER*128 varname, attname, aname
         CHARACTER*2048 buff
 
         bufflen = 2048
@@ -73,19 +74,19 @@
      .          MATCH_NAME (attname,  slen, 'TITLE', 5 ) ) THEN
               slen = 0   ! done elsewhere
            ELSE
-              CALL CD_GET_VAR_ATT_INFO(dset, varid, attname,
-     .           attype, attlen, attoutflag, status )
+              CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
+     .                  attype, attlen, attoutflag, istat )
 
-              got_it = NC_GET_ATTRIB ( dset, varid, attname, do_warn, 
+              got_it = NC_GET_ATTRIB ( dset, varid, aname, do_warn, 
      .           varname, bufflen, attlen, attoutflag, buff, vals)
 
               IF (attype .EQ. NCCHAR .AND. attoutflag.EQ.1) THEN
                  slen = TM_LENSTR1(buff)
                  CALL CD_WRITE_ATTRIB(cdfid, pcdf_global,
-     .              attname, buff(:slen), .FALSE., status )
+     .              aname, buff(:slen), .FALSE., status )
               ELSE IF (attoutflag.EQ.1) THEN
                  CALL CD_WRITE_ATTVAL(cdfid, pcdf_global,
-     .              attname, vals, attlen, attype, status )
+     .              aname, vals, attlen, attype, status )
 
               ENDIF
            ENDIF

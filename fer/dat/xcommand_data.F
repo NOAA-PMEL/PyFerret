@@ -157,6 +157,7 @@
 * V581:  2/05 *acm* - SHADE/MODULO for curvilinear plots
 * V581:  4/05 *acm* - CONTOUR/MODULO for curvilinear plots
 * V581:  5/05 *acm* - add EXIT/CYCLE
+* V590:  8/05 *acm* - add LIST/NOROWLAB
 
 * V600:  8/05 *acm* - add LIST/NOROWLAB
 * V600:  9/05 *acm* - add SET WINDOW/TITLE

@@ -42,6 +42,8 @@
    v542 *kob* 10/02 - fix up FTYP_DATE and FTYP_EURODATE so that it can
                       handle four digit years.  Also allow date in euro
 		      format yyyyddmm to be acceptable
+   v600 *acm* 4/06   change call to days_from_day0 in DecodeRec becaues of
+                     problems with 64-bit build
 */
 
 /*
@@ -345,7 +347,10 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
   float dummy;
   int idummy1, idummy2, idummy3, i;
   char blankstr[] = " ";
-  double days_1900 = 59958230400.0 / (60.*60.*24.);
+  double days_1900 = 59958230400.0 / (60.*60.*24.); 
+/*  int days_1900 = 693961;  */
+  float rdum;
+
   int pinc = 8/sizeof(char*);  /* pointers spacd 8 bytes apart */
   int slen;     /* kob 12/01 needed to check for numberical string ending in e/E */
   p = recptr;
@@ -399,6 +404,8 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
       case FTYP_DATE:
 	if (sscanf(p,"%d/%d/%d%1s",
 		   &idummy1,&idummy2,&idummy3,errstr) == 3) {
+	   
+      /*printf("%d %d %d \n", idummy1,idummy2,idummy3); */
 	  /* need to check for 4 digit year - mm/dd/yyyy *kob* */
 	  if (idummy3 < 100) {
 	    if (idummy3 < 20)   /* will break after 2019 or before 1920 */
@@ -407,18 +414,24 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      idummy3 += 1900;
 	  }
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2);
+	    days_from_day0_(&days_1900,&idummy3,&idummy1,&idummy2,&rdum);
+	  (*(numeric_fields+i))[rec] = rdum;
+
 	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
-			  &idummy1,&idummy2,&idummy3,errstr) == 3) 
+			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum);
+	  (*(numeric_fields+i))[rec] = rdum;
+	  }
 	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
 	      && idummy1>0
 	      && idummy2>=1 && idummy2<=12
-	      && idummy3>=1 && idummy3<=31 )
+	      && idummy3>=1 && idummy3<=31 ) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum);
+	  (*(numeric_fields+i))[rec] = rdum;
+	  }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;
@@ -435,19 +448,22 @@ int decodeRec(char *recptr, char *delims, int* nfields, int field_type[],
 	      idummy3 += 1900;
 	  }
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1);
+	    days_from_day0_(&days_1900,&idummy3,&idummy2,&idummy1,&rdum);
+	  (*(numeric_fields+i))[rec] = rdum;
 	  /* force dates with dashes "-" to be in yyyy-mm-dd format *kob* */
 	} else if (sscanf(p,"%4d-%2d-%2d%1s",
-			  &idummy1,&idummy2,&idummy3,errstr) == 3)
+			  &idummy1,&idummy2,&idummy3,errstr) == 3) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3);
+	    days_from_day0_(&days_1900,&idummy1,&idummy2,&idummy3,&rdum);
+	  (*(numeric_fields+i))[rec] = rdum; }
 	/* add check for yyyyddmm euro date *kob* */
 	else if ( (sscanf(p,"%4d%2d%2d%1s",&idummy1,&idummy2,&idummy3,str1)==3)
 	      && idummy1>0
 	      && idummy3>=1 && idummy3<=12
-	      && idummy2>=1 && idummy2<=31 )
+	      && idummy2>=1 && idummy2<=31 ) {
 	  (*(numeric_fields+i))[rec] =
-	    days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2);
+	    days_from_day0_(&days_1900,&idummy1,&idummy3,&idummy2,&rdum);
+	  (*(numeric_fields+i))[rec] = rdum; }
 	else
 	  (*(numeric_fields+i))[rec] = bad_flags[i];
 	break;

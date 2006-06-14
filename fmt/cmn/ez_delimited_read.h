@@ -5,6 +5,7 @@
  *
  * Header file information needed for spreadsheet-style delimited reads
  * by the Ferret program
+ * v600 *acm* change call to days_from_da0 needed for 64-bit build
  *
  */
 
@@ -44,8 +45,7 @@ int decode_file (char* fname, char *recptr, char *delims, int* skip,
 	       int* nrec,
 	       float** numeric_fields, char*** text_fields, float bad_flags[]);
 
-float FORTRAN(days_from_day0) (double* days_1900, int* iyr, int* imon,
-			       int* iday);
+float FORTRAN(days_from_day0) (double *days1900, int* iyr, int* imon, int* iday, float* rdum);
 
 void FORTRAN(decode_file_jacket)
 		( char* fname, char *recptr, char *delims, int *skip,

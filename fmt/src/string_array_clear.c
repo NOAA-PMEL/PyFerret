@@ -36,16 +36,17 @@
 /*
    06/04 *ywei* -Created to clean the allocated memory used by string_array
                  functiions
+    4/06 *kob*  change type of argument to double, for 64-bit build
  */
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_clear_(int * string_array_header)
+void string_array_clear_(double * string_array_header)
 {
     int i;
     SA_Head * head; 
 
-    if(*string_array_header){
+    if(*(SA_Head**)string_array_header){
        head = *((SA_Head**)string_array_header);
        for(i=0;i<head->array_size;i++) {
 	 free(head->ptr_array[i]);

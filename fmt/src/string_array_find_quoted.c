@@ -39,11 +39,12 @@
                 if the test name is quoted, then match should be exact;
                 if the test name is not quoted, then the test name can
                 be case blind, but the model name should be upper-case.
+    4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_find_quoted_(  int *string_array_header,
+void string_array_find_quoted_(  double *string_array_header,
 			         char *test_string,
                                  int *test_len,
                                  int *result_array,
@@ -61,7 +62,7 @@ void string_array_find_quoted_(  int *string_array_header,
 
 FILE *fp;
    
-   if(*string_array_header){
+   if(*(SA_Head**)string_array_header){
       head = *((SA_Head**)string_array_header);
       array_size = head->array_size;
       string_size = head->string_size;

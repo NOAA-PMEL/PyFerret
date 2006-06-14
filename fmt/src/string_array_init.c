@@ -36,11 +36,12 @@
 /*
   06/04 *ywei* -Created to initialize data structure for a string_array
                 function group.
+    4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_init_(int *string_array_header,
+void string_array_init_( double *string_array_header,
                          int  *array_size,
                          int  *string_size,
                          char *string_array

@@ -36,11 +36,12 @@
 /*
   06/04 *ywei* Created to find a string in a string array fast.
                The matching method is exactly equal.
+    4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_find_exact_(    int *string_array_header,
+void string_array_find_exact_(    double *string_array_header,
 			          char *test_string,
                                   int *test_len,
                                   int *result_array,
@@ -57,7 +58,7 @@ void string_array_find_exact_(    int *string_array_header,
    int match=0;
 
  
-   if(*string_array_header){
+   if(*(SA_Head**)string_array_header){
       head = *((SA_Head**)string_array_header);
       array_size = head->array_size;
       string_size = head->string_size;

@@ -36,17 +36,18 @@
 /*
   06/04 *ywei* -Created to get the string length fast.
                 The function is the same as TM_LENSTR1.
+    4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_get_strlen1_( int * string_array_header, 
+void string_array_get_strlen1_( double * string_array_header, 
                                 int * index,
                                 int * true_strlen )
 {
    SA_Head * head;
   
-   if(*string_array_header){
+   if(*(SA_Head**)string_array_header){
       head = *((SA_Head**) string_array_header);
       *true_strlen = head->strlen_array[*index-1];
       if(*true_strlen ==0)

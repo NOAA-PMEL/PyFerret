@@ -37,11 +37,12 @@
    06/04 *ywei* -Created to modify a string inside a string array.
                  This function should be used to keep the hashtable
                  up to date.
+    4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
 #include <stdio.h>
 #include "string_array.h"
 
-void string_array_modify_(   int  *string_array_header,
+void string_array_modify_(    double  *string_array_header,
                               int  *index,
                               char *new_string,
                               int  *new_string_size){
@@ -55,7 +56,7 @@ void string_array_modify_(   int  *string_array_header,
    List_Node * p;
  FILE *fp;
 
-   if(*string_array_header) {
+   if(*(SA_Head**)string_array_header) {
       head = *((SA_Head**)string_array_header);
       array_size = head->array_size;
       string_size = head->string_size;

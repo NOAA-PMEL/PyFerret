@@ -127,6 +127,7 @@
 * V600: *acm* 8/05 - make multi-variable tab and comma-delimited listings of
 *                    multiple variables like free-format listings, rather than 
 *                    like LIST/SINGLY. (bug 1273)
+* V600  *acm* 4/06 change how mr_perm is passed to LIST_CMND_DATA,due to 64-bit problems  
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -153,7 +154,7 @@
      .			rlen, flen, reclen, i, cx1, qfile, idim,
      .			ndim, wkblk, perm(5), mr_perm(max_intrp),
      .                  npermuted, recsofar, do_stream_phase, nvars, 
-     .                  edges_flag
+     .                  edges_flag, nn
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
@@ -628,10 +629,11 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
      .			    wsize, memory(1, wkblk), clobber, status )
 	ELSE
 	   CALL NON_ARRAY_SUBSC( mr_perm, 1 )
-	   CALL LIST_CMND_DATA( memory(1, mr_blk1(mr_perm(1))), mr_perm,
-     .				cx, memory(1, wkblk), heading, head_enh,
-     .				recsofar, perm, clobber, raw_name, 
-     .                          status)
+           nn = mr_perm(1)
+	   CALL LIST_CMND_DATA( memory(1, mr_blk1(mr_perm(1))),
+     .                          nn, cx, memory(1, wkblk), 
+     .                          heading, head_enh, recsofar, perm, 
+     .                          clobber, raw_name, status)
 	ENDIF
 
 * EXIT sequence

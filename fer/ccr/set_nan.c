@@ -40,6 +40,8 @@
        set variable/bad=nan var_name
       
    kob - 05/03
+* v600  4/06 *acm* - Change set_nan from a float function to void, passing
+*                    back the result as an argument. Needed for port to 64-bit 
 
 */
 
@@ -50,13 +52,12 @@
 #include <stdio.h>
 #include <math.h>
 
-float set_nan_ ()
+void set_nan_ (float *val)
 
 
 {
 
   sigset_t block_fpe;
-  float val;
 
   /* initialize the signal mask */
   sigemptyset(&block_fpe);
@@ -69,12 +70,12 @@ float set_nan_ ()
   /* calculating the inverse hyperbolic cosine of a value less
      than 1 will result in NaN - seems better than doing a divide
      by 0 */
-  val = acosh(.2);
+  *val = acosh(.2);  
+  /*val = 1./0.; */
 
   /* unblock SIGFPE */
   sigprocmask (SIG_UNBLOCK, &block_fpe, NULL); 
 
-  /* return the NaN value */
-  return val;
+  return;
   
 }

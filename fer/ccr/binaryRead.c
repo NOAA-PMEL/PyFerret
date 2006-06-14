@@ -7,6 +7,7 @@
 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *kob*  4/06 v600 - changes for 64-bit build */
 #include <wchar.h>
 #include "binaryRead.h"
 #include <stdlib.h>
@@ -344,17 +345,20 @@ static int readVars(FileInfo *file) {
 	      default:
 		assert(0);
 	      }
-	      
-#if 0	    
+#ifdef DEBUG_MEy	      
 	      printf("%f at (%d,%d,%d,%d,%d)\n", *dst, i, j, k, l, v);
 #endif
 	    }
 	    src = nextMemory(file, dataSize);
+
 	  }
 	}
       }
     }
   }
+  /* Need to add a positive return here, because readBinary expects it and the 64bit version requires an explicit return of 1 for
+     some reason  *kob* 2.2006 */
+  return 1;
 }
 
 static int readBinary(FileInfo *file){

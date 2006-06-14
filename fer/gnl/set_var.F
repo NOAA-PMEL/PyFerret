@@ -64,6 +64,8 @@
 * V600:11/05 *acm* - issue error for SET VAR/SCALE/OFFSET if dset = -111 
 * V600: 2/06 *acm* - For attribute-access additions, add new SET VAR/OUTTYPE=
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* v600  4/06 *acm* - Change the call to set_nan from a float function to void, passing
+*                    back the result as an argument. Needed for port to 64-bit 
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -90,8 +92,7 @@
      .			testvar, outtype_flag, varid, attype, attlen, 
      .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
      .			varoutflag, cx
-	REAL		bad, scalefac, offset, set_nan, val
-
+	REAL		bad, scalefac, offset, val
 	CHARACTER	grid_name*16, title*128, units*64, newname*128,
      .                  is_nan*3, flag*10, typflag*10, varattname*512,
      .                  varname*128, attname*128
@@ -249,7 +250,7 @@
 	   CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
      .                         is_nan, status)
 	   IF (TM_HAS_STRING(is_nan, 'NaN')) THEN
-	      bad = set_nan()
+              CALL SET_NAN(bad)
 	   ELSE
 	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
      .			   bad, status )
@@ -453,3 +454,4 @@
      .               						*5000 )
 
 	END
+

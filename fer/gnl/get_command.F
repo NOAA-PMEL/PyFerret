@@ -85,6 +85,7 @@
 *	*sh* 5/01 - ignore DOS carriage returns in journal files
 * *kob* 2/03 - replace call to intrinsic func CHAR with its octal
 *              constant equivalent - needed for g77 port
+* *kob* 4/06 - back off my_readline call - needed for 64-bit port
 
 #ifdef MIXING_NAG_F90_AND_C
 	USE F90_UNIX
@@ -212,9 +213,9 @@
 
 *************** COMMAND FILE AS SOURCE OF COMMAND LINE ***********************
 
-* 200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
- 200	CALL my_readline(cmnd_lun,cmnd_buff,LEN(cmnd_buff),has_more)
-        IF(has_more.NE.1) goto 210
+ 200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
+c 200	CALL my_readline(cmnd_lun,cmnd_buff,LEN(cmnd_buff),has_more)
+c        IF(has_more.NE.1) goto 210
 
 	cmnd_len = TM_LENSTR1( cmnd_buff )
 	IF (cmnd_buff(cmnd_len:cmnd_len) .EQ. pCR ) THEN

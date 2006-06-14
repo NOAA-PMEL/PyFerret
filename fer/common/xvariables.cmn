@@ -43,8 +43,9 @@
 *	7/01 *sh* added variable uvar_data_type
 * V534: 9/01 *sh* doubled default memory size
 * v5.50 *acm*9/02 - up max_uvar from 400 to 2000
-
 * v552  *acm4/03 - increase uvar_name_code to 128 (also change test in xeq_define)
+* V600 2/06 *kob* - declare uvar_name_code_head etc as double, for 64-bit build
+
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -333,11 +334,11 @@
      .			uvar_need_dset,
      .			uvar_mod_pseudo,
      .			uvar_by_ss
-	INTEGER         uvar_name_code_head,
+	REAL*8          uvar_name_code_head,
      .                  uvar_name_code_padding,       
      .                  uvar_num_items_head,
-     .                  uvar_num_items_padding,
-     .   		uvar_num_items  ,
+     .                  uvar_num_items_padding
+        INTEGER		uvar_num_items  ,
      .			uvar_grid	,
      .			uvar_data_type	,
      .			uvar_item_start	,

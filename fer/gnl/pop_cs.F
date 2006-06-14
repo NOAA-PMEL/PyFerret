@@ -90,9 +90,10 @@
 * clean up old level
 	IF ( cs_cmnd_num( csp ) .EQ. cmnd_go ) THEN
 * ... close input GO file
-*	   CLOSE( UNIT = cmnd_lun, ERR = 10 )
-* 10	   stat = LIB_FREE_LUN( cmnd_lun )
-           CALL my_close(cmnd_lun)
+* back out of yonghua's routine call because of 64bit problems *kob**     
+*      CALL my_close(cmnd_lun)
+	   CLOSE( UNIT = cmnd_lun, ERR = 10 )
+ 10	   stat = LIB_FREE_LUN( cmnd_lun )
 	ELSEIF ( cs_cmnd_num( csp ) .EQ. cmnd_repeat ) THEN
 * ... restore context prior to REPEAT loop (along repeat axis only)
            axis = cs_axis( csp )

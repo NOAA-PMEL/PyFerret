@@ -1,4 +1,5 @@
-	REAL FUNCTION DAYS_FROM_DAY0( date0_days, year, month, day )
+	REAL FUNCTION DAYS_FROM_DAY0( date0_days, year, month, day,
+     .       rdum)
 
 
 *
@@ -45,10 +46,12 @@
 * V320 11/94 - in order to implement the DAY1900 function
 *		based on tm_secs_from_bc by Mark Verschell
 * V530 12/00 *sh* - bug fix: avoid crash if month is not in [1,12]
+* V600 4/06  *acm*  return the result in rdum as well, for 64-bit build
 
 * calling argument declarations:
 	REAL*8 date0_days
 	INTEGER year, month, day
+        REAL rdum
 
 * Local Definition
 	INTEGER		days_in_month(12), mnth
@@ -96,6 +99,8 @@
 * convert to days and return result
 	DAYS_FROM_DAY0 = SNGL(total_secs/secs_in_day - date0_days)
 
-	RETURN
+        rdum = DAYS_FROM_DAY0
+
+        RETURN
 	END
 

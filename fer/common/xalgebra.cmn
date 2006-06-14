@@ -8,6 +8,7 @@
 * V554 1/04 *acm* - add counter variables for named REPEAT/RANGE control
 * V554 3/04 *acm* - reorder items in the common block to avoid warning msg when compiling
 * V600 2/06 *acm* - reorder items again, to avoid warning msg when compiling
+* V600 2/06 *kob* - declare alg_pvar_head as double, for 64-bit build
 
 	INTEGER		num_operators ,num_functions, num_pseudo_vars,
      .			num_log_structs, num_punctuations,
@@ -60,17 +61,17 @@
      .				alg_arg_units,
      .				alg_arg_descr
 
+        REAL*8          alg_pvar_head,
+     .                  alg_pvar_padding,
+     .                  countervar_name_head,
+     .                  countervar_name_padding
 	REAL		alg_trans_dflt_arg( num_transforms )
         INTEGER		alg_num_fcn_args ( num_functions ),
      .			alg_fcn_arg_ptr  ( num_functions )
 	INTEGER		alg_trans_num	 ( num_transforms )
 	INTEGER		alg_4d_trans	 ( max_4d_trans ),
      .			alg_1d_to_4d	 ( max_4d_trans ),
-     .			num_4d_trans,
-     .                  alg_pvar_head,
-     .                  alg_pvar_padding,
-     .                  countervar_name_head,
-     .                  countervar_name_padding
+     .			num_4d_trans
         INTEGER         csp_cvar         ( num_counter_vars )
 	LOGICAL		alg_trans_its_int( num_transforms ),
      .			alg_trans_has_arg( num_transforms )
@@ -87,7 +88,6 @@
 !	CHARACTER*3	alg_regrid_code	 ( max_regrid_trans )   ! chg 11/95
 	CHARACTER*6	alg_regrid_code	 ( max_regrid_trans )
 	CHARACTER*12	alg_regrid_title ( max_regrid_trans )
-
 
 	CHARACTER	alg_arg_name	 ( max_fcn_args )*80,
      .			alg_arg_units	 ( max_fcn_args )*24,

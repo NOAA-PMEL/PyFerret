@@ -74,20 +74,13 @@
 *                - allow pre-1900, forbid month>12
 *      5/00 *sh* - bug fix in line checking month>12
 * v5.40*acm* add comment: days1900 returns days since 1-jan-1900, STANDARD CALENDAR
+* V600 4/06  *acm*  return the result from days_from_day0 in dummy, for 64-bit build
 
-#ifdef unix
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE	'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE	'FERRET_CMN:XMEM_SUBSC.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER	operation, num_com, com_cx(4), mr1, mr2, mr3, mr4, mres
@@ -108,7 +101,7 @@
      .		si3, sj3, sk3, sl3, si4, sj4, sk4, sl4
 	REAL	RANDU, RANDN, RHO_UNESCO, THETA_FOFF,
      .		DAYS_FROM_DAY0,
-     .          bad1, bad2, bad3, bad4, bad_res
+     .          bad1, bad2, bad3, bad4, bad_res, dummy
 
 * equivalence conveniences
 * "inc" is the increments for each axis of each component
@@ -1149,7 +1142,8 @@
               res(i,j,k,l) = DAYS_FROM_DAY0( pdays_by_1900,
      .					     INT(com1(i1,j1,k1,l1)),
      .                                       INT(com2(i2,j2,k2,l2)),
-     .                                       INT(com3(i3,j3,k3,l3)) )
+     .                                       INT(com3(i3,j3,k3,l3)),
+     .                                       dummy)
            ENDIF
 
  4010	CONTINUE

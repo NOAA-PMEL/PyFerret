@@ -55,6 +55,7 @@
 
       INTEGER TM_LENSTR1, TM_LENSTR, NCF_ADD_VAR, slen, flen, dset_num
       REAL*8 badd
+      CHARACTER*2048 buff
 
       PARAMETER (flen=2048)
 #ifdef sun
@@ -63,20 +64,23 @@
       BYTE      uhol(flen)
 #else
       INTEGER*1 vhol(flen)      ! c-type Hollerith string buffer
-      INTEGER*1 yhol(flen)
+      INTEGER*1 thol(flen)
       INTEGER*1 uhol(flen)
 #endif 
 
 * translate strings for C routine
 
-      slen = TM_LENSTR1( varname )
-      CALL TM_FTOC_STRNG( varname(1:slen), vhol, flen )
+      buff = varname
+      slen = TM_LENSTR1( buff )
+      CALL TM_FTOC_STRNG( buff(1:slen), vhol, flen )
 
-      slen = TM_LENSTR1( title )
-      CALL TM_FTOC_STRNG( title(1:slen), thol, flen )
+      buff = title
+      slen = TM_LENSTR1( buff )
+      CALL TM_FTOC_STRNG( buff(1:slen), thol, flen )
 
-      slen = TM_LENSTR( units )
-      CALL TM_FTOC_STRNG( units(1:slen), uhol, flen )
+      buff = units
+      slen = TM_LENSTR( buff )
+      CALL TM_FTOC_STRNG( buff(1:slen), uhol, flen )
 
 * attribute structure has missing data flag as double precision
 

@@ -200,8 +200,6 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
   return_val = ATOM_NOT_FOUND;  
   if ( (nc_ptr = ncf_ptr_from_dset(dset)) == NULL )return return_val;
 
-  if (*varid > nc_ptr->nvars+1) return return_val;
-
    /*
    * Get the list of variables.  
    */
@@ -941,6 +939,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	ncdim fdims;		/* name and size of dimension */
     ncatt att;			/* attribute */
     ncvar var;			/* variable */
+	int bad_file_attr = 243; /* matches merr_badfileatt in tmap_errors.parm*/
 	
 	strcpy(nc.fername, name);
     strcpy(nc.fullpath, path);
@@ -951,7 +950,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
      * atts, and dimension id of unlimited dimension, if any
      */
     nc_status = nc_inq(*ncid, &nc.ndims, &nc.nvars, &nc.ngatts, &nc.recdim) ;
-    if (nc_status != NC_NOERR) return return_val;
+    if (nc_status != NC_NOERR) return nc_status;
 
     /* get dimension info */
     if (nc.ndims > 0) {
@@ -966,6 +965,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	}
 
      nc.vars_list_initialized = FALSE;
+	 nc_status = NC_NOERR;
 
    /* get info on global attributes, treat as pseudo-variable . list of attributes*/
 
@@ -993,11 +993,11 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	   var.attrs_list_initialized = FALSE;
        for (i = 0; i < nc.ngatts; i++)
           {
-          nc_status = nc_inq_attname(*ncid, DATSET, i, att.name);
+          nc_status = nc_inq_attname(*ncid, NC_GLOBAL, i, att.name);
           if (nc_status != NC_NOERR) return nc_status;
 
           att.attid = i+1;
-          nc_status = nc_inq_att(*ncid, DATSET, att.name, &att.type, &att.len);
+          nc_status = nc_inq_att(*ncid, NC_GLOBAL, att.name, &att.type, &att.len);
           if (nc_status != NC_NOERR) return nc_status;
 
     /* Set output flag. By default only the global history attribute is written.
@@ -1018,14 +1018,14 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
           case NC_CHAR:
 	      att.string = (char *) malloc((att.len+1)* sizeof(char*));
 
-          nc_status = nc_get_att_text(*ncid, DATSET, att.name, att.string );
+          nc_status = nc_get_att_text(*ncid, NC_GLOBAL, att.name, att.string );
           if (nc_status != NC_NOERR) return nc_status;
 
           break;
           default:
           att.vals = (double *) malloc(att.len * sizeof(double));
 
-          nc_status = nc_get_att_double(*ncid, DATSET, att.name, att.vals );
+          nc_status = nc_get_att_double(*ncid, NC_GLOBAL, att.name, att.vals );
           if (nc_status != NC_NOERR) return nc_status;
 
           break;
@@ -1097,9 +1097,21 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				att.outtype = NC_CHAR;
 				nc_status = nc_get_att_text(*ncid, iv, _FillValue,
 						  &fillc );
+				if (nc_status != NC_NOERR)  /* on error set attr to empty string */
+				{ att.type = NC_CHAR;
+				  att.outtype = NC_CHAR;
+				  att.len = 1;
+				  att.string = (char *) malloc((att.len+1)* sizeof(char*));
+				  strcpy (att.string," ");
+                  att.vals = (double *) malloc(1 * sizeof(double));
+				  att.vals[0] = 0;
+				  return_val = bad_file_attr;
+				}
 		    } else {
 				nc_status = nc_get_att_double(*ncid, iv, _FillValue,
 						    &var.fillval ); }
+				att.string = (char *) malloc(2*sizeof(char*));
+				strcpy(att.string," ");
 		    }
 		  else  /* set to default NC value*/ 
 			  {
@@ -1126,6 +1138,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			 break;
 		     default:
 			 break;
+			 att.string = (char *) malloc(2*sizeof(char*));
+			 strcpy (att.string, " ");
 		     }
 		  }
 
@@ -1159,7 +1173,17 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	      att.string = (char *) malloc((att.len+1)* sizeof(char*));
 
           nc_status = nc_get_att_text(*ncid, iv, att.name, att.string );
-          if (nc_status != NC_NOERR) return nc_status;
+          if (nc_status != NC_NOERR) /* on error set attr to empty string*/
+			  {att.type = NC_CHAR;
+			   att.outtype = NC_CHAR;
+			   att.len = 1;
+			   att.string = (char *) malloc((att.len+1)* sizeof(char*));
+			   strcpy (att.string, " ");
+			   return_val = bad_file_attr;
+			   }
+			   
+          att.vals = (double *) malloc(1 * sizeof(double));
+          att.vals[0] = 0;
 
           break;
           default:
@@ -1167,8 +1191,16 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
           att.vals = (double *) malloc(att.len * sizeof(double));
 
           nc_status = nc_get_att_double(*ncid, iv, att.name, att.vals );
-          if (nc_status != NC_NOERR) return nc_status;
-
+          if (nc_status != NC_NOERR) /* on error set attr to empty string*/
+			  {att.type = NC_CHAR;
+			   att.outtype = NC_CHAR;
+			   att.len = 1;
+			   att.string = (char *) malloc((att.len+1)* sizeof(char*));
+			   strcpy (att.string, " ");
+			   return_val = bad_file_attr;
+			  }
+          att.string = (char *) malloc(2*sizeof(char*));
+		  strcpy(att.string, " ");
           break;
           }
 
@@ -1217,7 +1249,6 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
   }
 
   list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
-  return_val = FERR_OK;
   return return_val;
   }
 
@@ -1574,7 +1605,7 @@ int  FORTRAN(ncf_add_var)( int *dset, int *varid, int *type, char varname[], cha
       /*Save attribute in linked list of attributes for this variable */	
 		if (!var.attrs_list_initialized) {
 		  if ( (var.varattlist = list_init()) == NULL ) {
-            fprintf(stderr, "ERROR: ncf_add_var: Unable to initialize variable attributes list.\n");
+            fprintf(stderr, "ERROR: add_var: Unable to initialize variable attributes list.\n");
             return_val = -1;
             return return_val; 
           }
@@ -1694,7 +1725,7 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
       /*Save attribute in linked list of attributes for variable */	
   if (!var_ptr->attrs_list_initialized) {
     if ( (var_ptr->varattlist = list_init()) == NULL ) {
-      fprintf(stderr, "ERROR: ncf_add_var_str_att: Unable to initialize attributes list.\n");
+      fprintf(stderr, "ERROR: add_var_str_att: Unable to initialize attributes list.\n");
       return_val = -1;
       return return_val; 
      }

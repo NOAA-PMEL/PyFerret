@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     63719333 Jun 13 11:36 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     63718481 Jun 20 16:13 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: after checkins 6/13/06: case-sensitive searches for varnames, attnames in quotes; bug fixes 1419,1423
+Note: fix for bug1427, variable ID when adding user-defined variables to the user-var pseudo-dataset
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -22,7 +22,7 @@ FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 FER_LOCAL_EXTFCNS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Tue Jun 13 11:59:32 PDT 2006
+Beginning at Wed Jun 21 08:11:52 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -680,4 +680,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Jun 13 12:02:22 PDT 2006
+Ended at Wed Jun 21 08:15:48 PDT 2006

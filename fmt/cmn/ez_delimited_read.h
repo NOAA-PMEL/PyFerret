@@ -5,7 +5,7 @@
  *
  * Header file information needed for spreadsheet-style delimited reads
  * by the Ferret program
- * v600 *acm* change call to days_from_da0 needed for 64-bit build
+ * v600 *acm* change call to days_from_day0 needed for 64-bit build
  *
  */
 

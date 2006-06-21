@@ -732,6 +732,19 @@ save/file=a.nc/clobber a_loan
 
 can data test0
 
+go bn_reset
+ 
+!-----
+! More tests of user-defined variables. Bug 1427, now fixed, problem with varid of user vars
+
+let v = {1,2,3,4}
+let a = is_element_of(1,v)
+let/title="hello" b = 1
+save/clobber/file=a.nc b 
+sp ncdump a.nc
+
+
+
 ! intentional errors
 
 set mode ignore_error

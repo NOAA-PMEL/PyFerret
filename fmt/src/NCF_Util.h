@@ -55,7 +55,7 @@
 
 #define ATOM_NOT_FOUND 0  /* This should match the atom_not_found parameter in ferret.parm. */
 #define FERR_OK 3  /* This should match the ferr_ok parameter in errmsg.parm. */
-#define DATSET -1  /* This should match the NC_GLOBAL parameter in netcdf.h */
+#define NC_GLOBAL -1  /* This should match the NC_GLOBAL parameter in netcdf.h */
 
 #define MAX_PATH_NAME	2048	 /* max length of a path */
 #define MAX_FER_SETNAME	256	 /* max length of a path */
@@ -121,6 +121,7 @@ typedef struct {			/* attribute */
 	int attid;
 	int outflag;        /* 1 to write this attr, 0 to not write */
     size_t len;
+	void *inval;        /* for inputting attributes of all types*/
     char *string;       /* for text attributes (type = NC_CHAR) */
     double *vals;       /* for numeric attributes of all types */
 } ncatt;

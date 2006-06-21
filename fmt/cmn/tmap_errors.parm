@@ -13,7 +13,8 @@
 *
 * revision 0.00 - 05/07/87 - By Mark Verschell for PMEL/TMAP
 * revision 0.01 - 05/04/88 - *sh* added merr_no_action
-* V600 6/05 *acm* Attribute control. Add new merr_attalready
+* V600 6/06 *acm* Attribute control. Add new merr_attalready
+* V600 6/06 *acm* Attribute control. Add new merr_badfileatt
 *
 
 * internally used PARAMETERS:
@@ -55,7 +56,7 @@
      .			merr_syntax, merr_undefline,merr_notimeinfo,
      .			merr_varform, merr_varmtch, merr_badtimedef,
      .			merr_dsetnf, merr_stepnf, merr_badcolmn,
-     .                  merr_attalready
+     .                  merr_attalready, merr_badfileatt
 	PARAMETER      (merr_notsupport	= 1 + pregular,
      .			merr_filpos	= 1 + merr_notsupport,
      .			merr_tstep	= 1 + merr_filpos,
@@ -98,4 +99,5 @@
      .			merr_dsetnf	= 1 + merr_varmtch,
      .			merr_stepnf	= 1 + merr_dsetnf,
      .			merr_badcolmn	= 1 + merr_stepnf,
-     .			merr_attalready	= 1 + merr_badcolmn )
+     .			merr_attalready	= 1 + merr_badcolmn,
+     .			merr_badfileatt = 1 + merr_attalready )

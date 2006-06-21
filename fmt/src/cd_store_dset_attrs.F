@@ -75,7 +75,7 @@
       BYTE      fhol_dspath(slen2)
 #else
       INTEGER*1 fhol_dsname(slen1)      ! c-type Hollerith string buffer
-      INTEGER*1 sfhol_dspath(slen2)
+      INTEGER*1 fhol_dspath(slen2)
 #endif
 
 * Successfully opened the dataset (stepfile). 
@@ -87,7 +87,13 @@
       CALL TM_FTOC_STRNG( ds_des_name(dset)(1:llen), fhol_dspath, slen2 )
 
       cdfstat = NCF_ADD_DSET (cdfid, dset, fhol_dsname, fhol_dspath) 
-      IF ( cdfstat .NE. merr_ok ) GOTO 5100
+      IF ( cdfstat .EQ. merr_badfileatt ) THEN
+         CALL WARN (
+     .   'attribute type mismatch or other attribute reading error '//
+     .    ds_des_name(dset)(1:llen)) 
+      ELSE IF ( cdfstat .NE. merr_ok ) THEN
+         GOTO 5100
+      ENDIF
 
 * successful completion
 	status = merr_ok

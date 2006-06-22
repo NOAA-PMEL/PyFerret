@@ -29,6 +29,7 @@
 * V580: *acm*10/04 - add silent_err, to be set true for SHOW VAR/XML when
 *                    checking for user variables not relevant to the context
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
+* V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -53,7 +54,7 @@
      .			pmode_wait, pmode_reject, pmode_desparate, pmode_rpn,
      .			pmode_gks, pmode_xwindows, pmode_metafile,
      .			pmode_ppllist, pmode_gui, pmode_logo, pmode_labels,
-     .                  pmode_grat, pmode_linecolors
+     .                  pmode_grat, pmode_linecolors, pmode_upcase_output
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -79,7 +80,8 @@
      .			pmode_logo		= 22,
      .			pmode_labels		= 23,
      .			pmode_grat		= 24,
-     .                  pmode_linecolors        = 25)
+     .                  pmode_linecolors        = 25,
+     .                  pmode_upcase_output     = 26)
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
 
@@ -205,7 +207,7 @@
      .			mode_wait, mode_reject, mode_desparate, mode_rpn,
      .			mode_gks, mode_xwindows, mode_metafile,
      .			mode_ppllist, mode_gui, mode_logo, mode_labels,
-     .                  mode_grat, mode_linecolors
+     .                  mode_grat, mode_linecolors, mode_upcase_output
 	EQUIVALENCE
      .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
      .		( mode_state( pmode_verify      ,1), mode_verify      ),
@@ -231,7 +233,8 @@
      .		( mode_state( pmode_logo        ,1), mode_logo        ),
      .		( mode_state( pmode_labels      ,1), mode_labels      ),
      .		( mode_state( pmode_grat        ,1), mode_grat        ),
-     .		( mode_state( pmode_linecolors   ,1), mode_linecolors  )
+     .		( mode_state( pmode_linecolors  ,1), mode_linecolors  ),
+     .		( mode_state( pmode_upcase_output,1),mode_upcase_output)
 
 * axis label modes
 	LOGICAL		ax_fmt(4)

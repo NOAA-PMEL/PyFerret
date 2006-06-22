@@ -1,6 +1,6 @@
 	SUBROUTINE CD_WRITE_AXIS ( cdfid, dset, grid, idim, recdim,
-     .                             loss, hiss, ax_type, 
-     .                             edges_flag, do_bounds, status )
+     .                           loss, hiss, ax_type,  edges_flag, 
+     .                           do_bounds, mode_upcase_output, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -99,7 +99,7 @@
 
 
 * argument declarations
-      LOGICAL recdim, do_bounds
+      LOGICAL recdim, do_bounds, mode_upcase_output
       INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
      .        edges_flag, status
 
@@ -124,8 +124,9 @@
 !      REAL rlen
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
+* *acm* 6/06 - change axis name lengths to 128
       CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
-     .       name*64, name_in*64, units*48, datebuff*40, 
+     .       name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, attname*128
 
 !      REAL*8 val8_cdf, val8_tmap
@@ -138,6 +139,14 @@
       name = CD_AXIS_NAME( dset, grid, idim, nlen )
 
       name_in = name
+
+* If mode upcase_output is set, then upcase both name and name_in which is 
+* being stored for later use.
+
+      IF (mode_upcase_output) THEN
+         CALL STR_UPCASE( name_in, name)
+         CALL STR_UPCASE( name, name_in)
+      ENDIF
 
       npts = line_dim(iaxis)
       abstract = TM_ABSTRACT_AXIS( iaxis )
@@ -238,10 +247,15 @@
 
 * Get axis name into original upper/lowercase form, and get nvatts.
 
-         CALL CD_GET_VAR_INFO (dset, varid, name_in, vartype, 
+         CALL CD_GET_VAR_INFO (dset, varid, buff, vartype, 
      .                   nvdims, vdims, nvatts, coordvar, 
      .                   all_outflag, status) 
-         
+
+* If mode upcase_output is set, then upcase the name.
+
+         name_in = buff
+         IF (mode_upcase_output) CALL STR_UPCASE( name_in, buff)
+
          DO 200 iatt = 1, nvatts
             CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
      .                                attname, status)

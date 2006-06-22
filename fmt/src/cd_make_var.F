@@ -1,6 +1,7 @@
 	SUBROUTINE CD_MAKE_VAR ( cdfid, dset, varname, type, maxstrlen,
      .                           grid, lo, hi, recdim, enhead, new, 
-     .                           edges_flag, do_bounds, status )
+     .                           edges_flag, do_bounds, mode_upcase_output,
+     .                           status )
 
 *
 *
@@ -60,6 +61,8 @@
 *		 - check for consistency of data type on APPEND operations
 * V552 *acm* 5/03   increase vname to 128 chars 
 * V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
+* V600 *acm* 6/06 - New MODE upcase_output controls whether axis names and variable in
+*                   names are upcased cdf output.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -90,7 +93,7 @@
 	include 'xio.cmn_text'
 
 * argument declarations
-      LOGICAL enhead, new, do_bounds, edges_flag
+      LOGICAL enhead, new, do_bounds, edges_flag, mode_upcase_output
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(4), hi(4),
      .        recdim, status
       CHARACTER*(*) varname
@@ -105,8 +108,8 @@
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
 * acm* vname to 128
-      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64, lname*64,
-     .		cdfname*64, vname*128, gname*64
+      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, lname*128,
+     .		cdfname*128, vname*128, gname*64, buff*128
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
       CHARACTER*1     dimnam(4)
@@ -196,7 +199,8 @@
       IF ( enhead ) THEN
 * create the parent grid needed for this variable
          CALL CD_WRITE_GRID( cdfid, dset, grid, lo, hi, recdim, itsa_slab,
-     .                       gname,  edges_flag, do_bounds, status )
+     .                       gname,  edges_flag, do_bounds, 
+     .                       mode_upcase_output, status )
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
@@ -204,7 +208,7 @@
             IF ( need_child(idim) ) THEN
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
-     .                   .FALSE., .FALSE., status)
+     .                   .FALSE., .FALSE., mode_upcase_output, status)
                IF ( status .NE. merr_ok ) GOTO 5900
             ENDIF
  250     CONTINUE
@@ -222,7 +226,8 @@
 	      ENDIF
               CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, 
      .			       idim.EQ.recdim, lo(idim), hi(idim), 
-     .			       ax_type, edges_flag, do_bounds, status )
+     .			       ax_type, edges_flag, do_bounds, 
+     .                         mode_upcase_output, status )
               IF ( status .NE. merr_ok ) GOTO 5900
 	    ENDIF
  260     CONTINUE
@@ -237,9 +242,15 @@
       ELSE
         dims = 0
       ENDIF
+
+* get axis name. If mode upcase_output is set, then upcase the name.
+
       DO 300 idim = 1, 4
          iaxis = grid_line(idim,grid)
-         lname = CD_AXIS_NAME( dset, grid, idim, nlen )
+         buff = CD_AXIS_NAME( dset, grid, idim, nlen )
+         lname = buff
+         IF (mode_upcase_output) CALL STR_UPCASE( lname, buff)
+
          IF ( iaxis .EQ. mpsnorm
      .   .OR. lo(idim) .EQ. unspecified_int4 ) GOTO 300
          dims = dims + 1

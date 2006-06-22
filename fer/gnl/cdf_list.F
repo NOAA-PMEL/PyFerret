@@ -126,7 +126,8 @@
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
      .                  TM_FMT*12,
-     .                  varcode*128, buff*140, revnum*12, c1*1, aname*128
+     .                  varcode*128, varname*128, buff*140, revnum*12, 
+     .                  c1*1, aname*128
 
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
 
@@ -261,16 +262,20 @@
            got_units = .FALSE.
 	   itsa_string = cx_type(cx) .EQ. ptype_string
 
-! is it in the linked-list for dset. If so get attr info, including original 
-! upper/lowercase form of the name.
+* is it in the linked-list for dset. If so get attr info, including original 
+* upper/lowercase form of the name. If mode upcase_output is set, then upcase 
+* the variable name.
+
            itsa_uvar = cat .EQ. cat_user_var
            IF (itsa_uvar .OR. dset .EQ. pdset_irrelevant) dset = -1
            CALL CD_GET_VAR_ID (dset, varcode, varid, status)
 
            vartype = 0
            IF (status .EQ. ferr_ok) THEN
-              CALL CD_GET_VAR_INFO (dset, varid, varcode, vartype, nvdims, 
-     .            vdims, nvatts, coordvar, all_outflag, status) 
+              CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
+     .            vdims, nvatts, coordvar, all_outflag, status)
+              varcode = varname
+              IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
               IF (dset .EQ. -1) THEN  !for user vars type not known in attrib structure
                  vartype = 5
                  IF (itsa_string) vartype = 2
@@ -387,7 +392,7 @@
 * create the variable and its grid (coordinate output gets deferred)
            CALL CD_MAKE_VAR( cdfid, dset, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
-     .               edges_flag, do_bounds, status )
+     .               edges_flag, do_bounds, mode_upcase_output, status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 
@@ -500,11 +505,15 @@
 
                  got_title = .FALSE.
 
-* Get varcode into original upper/lowercase form
+* Get varcode into original upper/lowercase form. If mode upcase_output is set, 
+* then upcase the variable name.
 
-                 CALL CD_GET_VAR_INFO (dset, varid, varcode, vartype, 
+                 CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, 
      .                   nvdims, vdims, nvatts, coordvar, all_outflag, 
      .                   status) 
+                 varcode = varname
+                 IF (mode_upcase_output) CALL STR_UPCASE( varcode, 
+     .                 varname)
 
                  DO 200 iatt = 1, nvatts
                     CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
@@ -817,10 +826,17 @@
               dset = -1    ! is it a user var based on a var in dset
               CALL CD_GET_VAR_ID (dset, varcode, varid, status) 
            ENDIF
-* Get varcode into original upper/lowercase form
-           IF (status .EQ. ferr_ok) CALL CD_GET_VAR_INFO (dset, 
-     .                  varid, varcode, vartype,  nvdims, vdims,
+
+* Get varcode into original upper/lowercase form. If mode upcase_output is set, 
+* then upcase the variable name.
+
+           IF (status .EQ. ferr_ok) THEN
+              CALL CD_GET_VAR_INFO (dset, 
+     .                  varid, varname, vartype,  nvdims, vdims,
      .                  nvatts, coordvar, all_outflag, status) 
+              varcode = varname
+              IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
+           ENDIF
 
            IF ( cat .EQ. cat_pseudo_var ) varcode =
      .                            varcode(:TM_LENSTR1(varcode))//"_"

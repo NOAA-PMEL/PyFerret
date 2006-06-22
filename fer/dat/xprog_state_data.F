@@ -96,6 +96,7 @@
 *                    SHOW VAR/XML when checking for user variables not  
 *                    relevant to the context
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg],Flag no_plot_yet
+* V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
 
 	include 'ferret.parm'
 	include 'movies.parm'
@@ -185,6 +186,8 @@
      .		(mode_state( pmode_grat      ,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.FALSE.   /,
      .		(mode_state( pmode_linecolors,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.   /,
+     .		(mode_state( pmode_upcase_output,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
@@ -210,10 +213,10 @@
      .		mode_name ( pmode_logo        )	/ 'LOGO'         /,
      .		mode_name ( pmode_labels      )	/ 'LABELS'       /,
      .		mode_name ( pmode_grat        )	/ 'GRATICULE'    /,
-     .		mode_name ( pmode_linecolors  )	/ 'LINECOLORS'   /
-	DATA  ( mode_name(i),i=pmode_linecolors+1,max_modes)/
-     .            2*pmode_unused/
-
+     .		mode_name ( pmode_linecolors  )	/ 'LINECOLORS'   /,
+     .		mode_name ( pmode_upcase_output) / 'UPCASE_OUTPUT' /
+	DATA  ( mode_name(i),i=pmode_upcase_output+1,max_modes)/
+     .            pmode_unused/
 
 	DATA	(mode_arg  ( pmode_diagnostic  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*99 /,
@@ -264,7 +267,9 @@
      .		(mode_arg  ( pmode_grat      ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_linecolors,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*6 /
+     .				/ mode_stack_size*6 /,
+     .		(mode_arg  ( pmode_upcase_output,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /
 
 * for MODE WAIT
 	DATA	ppl_wait / 'NOWAIT' /

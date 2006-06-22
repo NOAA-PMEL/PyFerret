@@ -508,16 +508,21 @@ list pq
  
 go bn_reset
 
-! writing a netcdf file preserves case of variable and attribute names
-! This file has mostly lower case and some mixed-case names.
+! When we CANCEL MODE upcase_output, writing a netcdf file preserves 
+! case of variable and axis names. This file has lower case and some
+! mixed-case names.
 
 use err491_attval.cdf
 sp ncdump -h err491_attval.cdf
-
 save/clobber/file=a.nc elev[i=3,j=2:4]
-
 sp ncdump -h a.nc
- 
+
+cancel mode upcase_output
+save/clobber/file=a.nc elev[i=3,j=2:4]
+sp ncdump -h a.nc
+
+set mode/last upcase_output
+
 go bn_reset
  
 !-----

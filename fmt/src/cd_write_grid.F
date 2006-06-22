@@ -1,6 +1,6 @@
 	SUBROUTINE CD_WRITE_GRID ( cdfid, dset, grid, lo, hi, recdim, 
-     .                             itsa_slab, gname, edges_flag, 
-     .                             do_bounds, status )
+     .                           itsa_slab, gname, edges_flag, 
+     .                           do_bounds, mode_upcase_output, status )
 
 *
 *
@@ -74,7 +74,7 @@
 
 
 * argument declarations
-      LOGICAL itsa_slab, do_bounds
+      LOGICAL itsa_slab, do_bounds, mode_upcase_output
       INTEGER cdfid, dset, grid, lo(4), hi(4), recdim, edges_flag, status
       CHARACTER*(*) gname
 
@@ -159,7 +159,8 @@
             CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, 
      .           idim.EQ.recdim,
      .           lo(idim), hi(idim), pcdf_full_span, 
-     .           edges_flag, do_bounds, status ) 
+     .           edges_flag, do_bounds, mode_upcase_output,
+     .           status ) 
 
             IF ( status .NE. merr_ok ) GOTO 5900
          ENDIF

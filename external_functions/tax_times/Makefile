@@ -45,7 +45,7 @@ ferret_cmn:
 	ln -s ../ef_utility/ferret_cmn ferret_cmn
 
 install:
-	cp *.so $(MY_LOCAL_EXTFCNS)
+	cp *.so $(FER_LOCAL_EXTFCNS)
 
 clean:
 	-rm -f *.o *.so core a.out temp.* ferret_cmn

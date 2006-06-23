@@ -45,6 +45,7 @@
 *                     Replace NCAGTC with CD_GET_VAR_ATTR
 *                     This routine now returns both character and real results,
 *                     so it replaces CD_GET_ATTVAL.
+*         6/06 *acm*  replace istat with status
 *
 * argument definitions:
 *	dset	 - dataset number
@@ -90,12 +91,11 @@
 * initialize
        too_long = .FALSE.
 
-
 * inquire about the attribute by name, using its id number
 
       CALL CD_GET_VAR_ATT_ID (dset, varid, attrib, attid, status)
       IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, attid,
-     .                   aname, attype, attlen, attoutflag, istat )
+     .                   aname, attype, attlen, attoutflag, status )
 
       IF ( status .NE. merr_ok ) THEN
          NC_GET_ATTRIB_DP = .FALSE.

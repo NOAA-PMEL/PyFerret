@@ -68,6 +68,8 @@
 *                   and offset.
 * V600 11/05 *acm*  Fix bug 491 properly -- send missing value to tm_scale
 *                   so that missing data is NOT scaled by scale and offset attrs.
+* V600  6/06 *acm*  needed call to CD_GET_VAR_INFO to define vname for NC_GET_ATTRIB
+
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
 *	ivar        - position in common of variable information
@@ -121,13 +123,16 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
 	LOGICAL      NC_GET_ATTRIB, 
-     .               permuted, do_warn, already_scaled, got_it, tf2
+     .               permuted, do_warn, already_scaled, got_it, tf2, 
+     .               coordvar
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
      .               start(4), filsize(4), totsize, dim_lo(4),dim_hi(4),
      .		     imap(4), trans(4), memsize(4), count(4),
      .		     grid_dims(4), fildim, memdim, filstride(4), oned,
-     .               maxlen, attlen, attoutflag
+     .               maxlen, attlen, attoutflag, vtype, nvdims, nvatts, 
+     .               outflag
+        REAL vdims(10)
 	CHARACTER*1	dimnam(4)
 	CHARACTER*13	TM_STRING
         CHARACTER*128   buff, vname
@@ -345,13 +350,14 @@
 
         IF (.NOT.is_mc .OR. .NOT.cd_scaled(ivar)) THEN
            maxlen = 1
+           CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims,
+     .         vdims, nvatts, coordvar, outflag, status)
            got_it = NC_GET_ATTRIB( dset, varid, 'scale_factor',
-     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, cd_scale_factor(ivar))
-
            maxlen = 1
            tf2    = NC_GET_ATTRIB( dset, varid, 'add_offset',
-     .                     do_warn, vname(:vlen), maxlen, attlen, 
+     .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, cd_add_offset(ivar))
 
            cd_scaled(ivar) = got_it .OR. tf2

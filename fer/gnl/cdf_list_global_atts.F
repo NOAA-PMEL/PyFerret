@@ -38,6 +38,7 @@
 * Write global attributes to netcdf file
 
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V600  6/06 *acm* - additional declarations found by Solaris compiler
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -50,8 +51,8 @@
 * internal variable declarations:
         LOGICAL MATCH_NAME, NC_GET_ATTRIB, coordvar, do_warn, got_it
         INTEGER TM_LENSTR1, varid, vartype, nvdims, vdims(8), nvatts, 
-     .          all_outflag, iatt, slen, attype, attlen, attoutflag, bufflen
-     .          attid
+     .          all_outflag, iatt, slen, attype, attlen, attoutflag,
+     .          bufflen
 	REAL*4	vals(10)
         CHARACTER*128 varname, attname, aname
         CHARACTER*2048 buff
@@ -75,7 +76,7 @@
               slen = 0   ! done elsewhere
            ELSE
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
-     .                  attype, attlen, attoutflag, istat )
+     .                  attype, attlen, attoutflag, status )
 
               got_it = NC_GET_ATTRIB ( dset, varid, aname, do_warn, 
      .           varname, bufflen, attlen, attoutflag, buff, vals)

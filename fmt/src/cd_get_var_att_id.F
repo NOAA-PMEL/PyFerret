@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - TMAP
 
 * V600 6/05 *acm* Attribute control.
+*      6/06 *acm* missing declarations of ncf functions
 
 
 * include files
@@ -59,7 +60,8 @@
 
       CHARACTER*512 abuff
       LOGICAL coordvar
-      INTEGER TM_LENSTR1, NCF_GET_VAR_ID, STR_SAME, 
+      INTEGER TM_LENSTR1, NCF_GET_VAR_ID, NCF_GET_VAR_ATTR_ID, 
+     .        NCF_GET_VAR_ATTR_ID_CASE, STR_SAME, 
      .        slen, flen, dset_num
       PARAMETER (flen=512)      ! size of variable name string
 

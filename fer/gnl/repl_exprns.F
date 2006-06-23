@@ -95,6 +95,7 @@
 *                  to apply command context to grave-accent expressions.
 * V600 *acm* 6/05 - Attribute control, RETURN= attribute information.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V600  6/06 *acm* - additional declarations found by Solaris compiler
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -124,25 +125,22 @@
 
 * internal variable declarations:
 	LOGICAL   need_formatting, zero_fill, coordvar,
-     .            got_it, do_err
+     .            do_err
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid, 
      .            vartype, nvdims, vdims(8), nvatts, ist, ind,
-     .            attype, attlen, w, inxt, ndims, nvars, ngatts,
-     .            recdim, len_attbuff, attoutflag, all_outflag,
-     .            outflag, fertype, attid
-	REAL	  result, val, vals(10)
+     .            attype, attlen, inxt, attoutflag,outflag, fertype, 
+     .            attid, ieq
+	REAL	  result, val
 	REAL*8 TM_WORLD, ww
 	CHARACTER TM_FMT*16, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
-     .            buff*128, varname*512, attname*128, aname*128, 
-     .            attbuff*2048
+     .            buff*128, varname*512, attname*128, aname*128
 !	CHARACTER fmt*(max_len)
         CHARACTER*6 typstring(0:6)
-        PARAMETER       (len_attbuff = 2048)
 
 * local parameter declarations
 	CHARACTER	tab*1

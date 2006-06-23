@@ -116,7 +116,8 @@
 *       *acm* 6/04 - CANCEL AXIS/DEPTH as inverse to SET AXIS/DEPTH
 * V600: *acm* 2/06 - fix bug 1392: cancel dataset whose name starts with digit.
 * V600 *acm* 10/05 CANCEL ATTRIBUTE[/ALL][/OUTPUT] varname.attname
-* V600 *acm* 5/2006 MODE LINECOLORS User can change the number of line colors.
+* V600 *acm* 5/06 MODE LINECOLORS User can change the number of line colors.
+* V600 *acm* 6/06 additional declarations found by Solaris compiler
 
 
 	include 'tmap_dims.parm'
@@ -161,7 +162,8 @@
      .			mode, cx, axis, grid, mod_cx,
      .                  TM_LENSTR, len_test, len_mchars, varid,
      .                  dset, cat, var, mods_cx, iflag, loc, 
-     .                  nvdims, vdims(8), nvatts, vtype, all_outflag
+     .                  nvdims, vdims(8), nvatts, vtype, all_outflag, 
+     .                  slen, iatt
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims,

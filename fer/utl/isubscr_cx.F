@@ -44,6 +44,7 @@
 * V541: *sh* 2/02 - added support for subspan modulo axes
 * V600: *acm*6/06 - fix bug1419. for modulo axes, index at the end of the last 
 *                   cell may round up to the next modulo replication 
+* V600 *acm* 6/06 - fix declarations, found by solaris compiler
 
 	include 'tmap_dims.parm'
 	include	'xtm_grid.cmn_text'
@@ -229,7 +230,7 @@
 	   ISUBSCR_CX = isubsc + num_mod*line_len
 	ELSE
 	   ISUBSCR_CX = isubsc
-           IF (isubxc .GT. line_len) ISUBSCR_CX = line-len
+           IF (isubsc .GT. line_len) ISUBSCR_CX = line_len
 	ENDIF
         
 * If still not found, apply quick solutions for given point beyond axis ends

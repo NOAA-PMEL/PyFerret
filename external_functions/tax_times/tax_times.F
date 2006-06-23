@@ -1,14 +1,6 @@
 *
 * tax_times.F
 *
-* Jonathan Callahan
-* Feb 19th 1998
-*
-* This function checks the input variable for bad data
-* and returns 0 (no bad flags) or 1 (bad flags found)
-*
-
-
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 

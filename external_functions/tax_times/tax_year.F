@@ -122,11 +122,12 @@
       CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
+      CHARACTER*80 err_msg
 
       REAL*8 ddate
 
       INTEGER i,j,k,l
-      INTEGER i1, j1, k1, l1
+      INTEGER i1, j1, k1, l1 
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)

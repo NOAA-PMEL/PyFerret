@@ -124,6 +124,7 @@
       INTEGER iyear, imon, day_of_mon
       CHARACTER*3 cmon
       CHARACTER*3 months(12)
+      CHARACTER*80 err_msg
 
       REAL*8 ddate
 

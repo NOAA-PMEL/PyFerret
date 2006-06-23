@@ -124,6 +124,7 @@
       CHARACTER*20 datebuf
       INTEGER iyear, day_of_mon
       CHARACTER*3 cmon
+      CHARACTER*80 err_msg
       REAL*8 ddate
 
       INTEGER i,j,k,l

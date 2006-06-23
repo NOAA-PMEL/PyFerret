@@ -121,6 +121,7 @@
       CHARACTER*20 datebuf
       INTEGER iyear, dayofmon, hour, minute, second
       CHARACTER*3 cmon
+      CHARACTER*80 err_msg
       
       CHARACTER*20 t0string
       INTEGER t0year, t0day

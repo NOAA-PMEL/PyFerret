@@ -124,6 +124,7 @@
       CHARACTER*20 datebuf
       INTEGER iyear, imon, day_of_mon, day_since_1900
       CHARACTER*3 cmon
+      CHARACTER*80 err_msg
 
       REAL*8 ddate
 

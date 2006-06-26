@@ -78,9 +78,10 @@
 
 	HDFLIB		= -L/usr/local/src/HDF4.2r1/NewHDF/lib  -ldf -ljpeg -lz
 
-	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
+#	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
 
 #	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/linux/DODS/lib   -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
+
 	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/x86_64-linux/lib -lnc-dap -ldap -lnc-dap -ldap -L/home/porter/kobrien/OPeNDAP/x86_64-linux/lib -L/usr/lib64 -L/usr/kerberos/lib -L/usr/kerberos/lib64 /home/porter/kobrien/OPeNDAP/x86_64-linux//lib/libdap.so -lcurl /usr/lib64/libidn.so -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl /usr/lib64/libxml2.so -lz -lm -lpthread -Wl,--rpath -Wl,/home/porter/kobrien/OPeNDAP/x86_64-linux/lib -Wl,--rpath -Wl,/home/porter/kobrien/OPeNDAP/x86_64-linux/lib
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o

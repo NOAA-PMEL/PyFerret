@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     63720459 Jun 23 09:01 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     63720459 Jun 23 12:10 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: add declarations to some subroutines, noticed by solaris compiler
+Note: initialize category in mem/find_var_name.F
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
 GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
@@ -22,11 +22,11 @@ FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 FER_LOCAL_EXTFCNS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Fri Jun 23 10:48:43 PDT 2006
+Beginning at Fri Jun 23 12:16:41 PDT 2006
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.4.21-32 - 06/23/06
- 	23-Jun-06 10:48     
+ 	23-Jun-06 12:16     
 
 yes? !bn500_all_shell
 yes? 
@@ -10305,7 +10305,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "23-Jun-06"
-SESSION_TIME = "10:48"
+SESSION_TIME = "12:16"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10324,7 +10324,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "23-Jun-06"
-SESSION_TIME = "10:48"
+SESSION_TIME = "12:16"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10333,7 +10333,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "23-Jun-06"
-SESSION_TIME = "10:48"
+SESSION_TIME = "12:16"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10344,12 +10344,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "23-Jun-06"
-SESSION_TIME = "10:48"
+SESSION_TIME = "12:16"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "23-Jun-06"
-SESSION_TIME = "10:48"
+SESSION_TIME = "12:16"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10383,7 +10383,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jun 23 2006 10:49:01 "
+LAB3 = "Jun 23 2006 12:17:05 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10483,7 +10483,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "23-Jun-06"
-SESSION_TIME = "10:48"
+SESSION_TIME = "12:16"
  
  
 GO bn_reset
@@ -18425,8 +18425,8 @@ contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
 set view v13
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150 sin(x/6)*cos(y/9)
 set view v14
-contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--    1 ansley   tmap        23224 Jun 23 10:49 bench.mgm
--rw-rw-r--    1 ansley   tmap       415604 Jun 23 10:49 bench.mgm
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--    1 ansley   tmap        23221 Jun 23 12:17 bench.mgm
+-rw-rw-r--    1 ansley   tmap       415537 Jun 23 12:17 bench.mgm
 150/trans sin(x/6)*cos(y/9)
  
 * formatted XY contours
@@ -25700,7 +25700,7 @@ data:
  MY_VAR = 5.075797e+07, 5.075798e+07 ;
 }
 abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Fri Jun 23 10:50:01 PDT 2006
+Fri Jun 23 12:18:18 PDT 2006
 .  440483.  440484.
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
@@ -47552,7 +47552,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJun 23 2006 10:51:18
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJun 23 2006 12:19:54
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -49051,7 +49051,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "23-Jun-06:10:48"
+WIN_TITLE = "23-Jun-06:12:16"
  
 set win/title="set the title"
 sho sym win_title
@@ -49069,11 +49069,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :10:48"
+ !-> set win/title=" :12:16"
 set win/title="($session_date):($session_time)"
- !-> set win/title="23-Jun-06:10:48"
+ !-> set win/title="23-Jun-06:12:16"
 sh sym win_title
-WIN_TITLE = "23-Jun-06:10:48"
+WIN_TITLE = "23-Jun-06:12:16"
  
  
 GO bn_reset
@@ -53522,7 +53522,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.4.21-32 - 06/23/06
- 	23-Jun-06 10:51     
+ 	23-Jun-06 12:20     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -54231,8 +54231,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  6    /  6:  -9.00
  7    /  7:  -8.00
  8    /  8:  -7.00
- 9    /-rw-rw-r--    1 ansley   tmap        12704 Jun 23 10:51 testa.v5d
--rw-rw-r--    1 ansley   tmap        12704 Jun 23 10:51 test.v5d
+ 9    /-rw-rw-r--    1 ansley   tmap        12704 Jun 23 12:20 testa.v5d
+-rw-rw-r--    1 ansley   tmap        12704 Jun 23 12:20 test.v5d
   9:  -6.00
  10   / 10:  -5.00
  11   / 11:  -4.00
@@ -54377,7 +54377,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.4.21-32 - 06/23/06
- 	23-Jun-06 10:51     
+ 	23-Jun-06 12:20     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54561,7 +54561,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.4.21-32 - 06/23/06
- 	23-Jun-06 10:51     
+ 	23-Jun-06 12:20     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54674,4 +54674,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Fri Jun 23 10:51:50 PDT 2006
+Ended at Fri Jun 23 12:20:48 PDT 2006

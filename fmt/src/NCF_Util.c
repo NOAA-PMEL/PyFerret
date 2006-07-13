@@ -990,6 +990,9 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	   var.is_axis = FALSE;
 	   var.axis_dir = 0;
 
+		  int *atp; 
+		  int *atl;
+
 	   var.attrs_list_initialized = FALSE;
        for (i = 0; i < nc.ngatts; i++)
           {
@@ -1085,7 +1088,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 		  }
 
 		  /* get _FillValue attribute */
-		  nc_status =  nc_inq_att(*ncid,iv,_FillValue,&att.type,&att.len);
+
+		  nc_status =  nc_inq_att(*ncid,iv,"_FillValue",&att.type,&att.len);
 
 		  if(nc_status == NC_NOERR &&
 		   att.type == var.type && att.len == 1) {
@@ -1095,7 +1099,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 		    var.has_fillval = TRUE;
 			if(var.type == NC_CHAR) {
 				att.outtype = NC_CHAR;
-				nc_status = nc_get_att_text(*ncid, iv, _FillValue,
+				nc_status = nc_get_att_text(*ncid, iv, "_FillValue",
 						  &fillc );
 				if (nc_status != NC_NOERR)  /* on error set attr to empty string */
 				{ att.type = NC_CHAR;
@@ -1108,7 +1112,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				  return_val = bad_file_attr;
 				}
 		    } else {
-				nc_status = nc_get_att_double(*ncid, iv, _FillValue,
+				nc_status = nc_get_att_double(*ncid, iv, "_FillValue",
 						    &var.fillval ); }
 				att.string = (char *) malloc(2*sizeof(char*));
 				strcpy(att.string," ");
@@ -1142,7 +1146,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 			 strcpy (att.string, " ");
 		     }
 		  }
-
+ 
 		  var.all_outflag = 1;
 
           /* get all variable attributes 

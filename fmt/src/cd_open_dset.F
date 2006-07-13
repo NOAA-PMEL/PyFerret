@@ -69,6 +69,9 @@
 * V600 *acm* 6/05 - Attribute control. just open the dataset here; getting info
 *                   is done in cd_load_dset_attrs. See sequence of calls in 
 *                   cd_init_dset.
+* V600 *acm* 7/06 - To return correct netCDF error messages, call NF_OPEN and
+*                   NF_STRERROR instead of NCOPN. Requires DODS library v3.5.2 or
+*                   higher.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -96,6 +99,10 @@
 ! kob 7/95
 	include 'xsys_names.cmn_text'	            
 
+#ifdef usingDODSf2cUnderscore
+	INTEGER NF_OPEN_
+	CHARACTER*80 NF_STRERROR_
+#endif 
 
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
@@ -111,6 +118,7 @@
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
       CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
+      CHARACTER*80 buff  ! for nf_ error message
 
 #ifdef FORTRAN_90
 	INTEGER HEX40
@@ -161,9 +169,17 @@
 * This time penalty is unavoidable (though HTTP caching may eliminate it)
 * Using the cache file will remove the need to read remote coordinates
 	   CALL TM_NOTE( 'Using cache '//cdf_file, tooplu)
-	   remote_dods_id = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
+cc	   remote_dods_id = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
+
+#ifdef usingDODSf2cUnderscore 
+           cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#else
+           cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#endif 
+
 	   IF ( cdfstat .NE. NCNOERR ) GOTO 5150
-	   ds_des_name(dset) = cdf_file	! replace remote with cache!
+           
+           ds_des_name(dset) = cdf_file	! replace remote with cache!
 	ENDIF
 ****** END DODS *********
 
@@ -178,17 +194,35 @@
 		     cdf_file = TM_INQ_PATH(sf_name(i),tmap_tsteps,
      .                                      ' ',.FALSE., status)
 		     IF (status .EQ. merr_ok)  THEN
-	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
+cc	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
+
+#ifdef usingDODSf2cUnderscore 
+			 cdfstat = NF_OPEN_(cdf_file, NF_NOWRITE, cdfid)
+#else
+			 cdfstat = NF_OPEN(cdf_file, NF_NOWRITE, cdfid) 
+#endif 
+
 			 mc_init_stepfile(dset) = i
 			 IF ( cdfstat .EQ. NCNOERR) GOTO 110
 		     ENDIF
  100	        CONTINUE
+
+#endif 
+
 * error exit now.....no file on line found after looping through
 * all stepfiles
-		GOTO 5300		
-	else
-	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
-	endif
+		GOTO 5300
+                
+	ELSE
+cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
+                
+#ifdef usingDODSf2cUnderscore 
+	   	cdfstat = NF_OPEN_(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#else
+	   	cdfstat = NF_OPEN(ds_des_name(dset), NF_NOWRITE, cdfid) 
+#endif 
+
+	ENDIF
 	        IF ( cdfstat .NE. NCNOERR ) GOTO 5100
  110   CONTINUE
 
@@ -197,20 +231,33 @@
        RETURN
 
 * error messages
- 5100   CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CD_OPEN_DSET', cdfid,
-     .        no_varid, 'is this a CDF file ?', no_errstring, *5900 )
+ 5100   CONTINUE
+#ifdef usingDODSf2cUnderscore 
+        buff =  NF_STRERROR_(cdfstat)
+#else
+        buff =  NF_STRERROR(cdfstat)
+#endif
+        CALL TM_ERRMSG
+     .     ( merr_nc_open, status, 'CD_OPEN_DSET', dset,
+     .        no_stepfile, buff, no_errstring, *5900 )
 
  5150   CALL TM_ERRMSG
-     .     ( cdfstat+pcdferr, status, 'CD_OPEN_DSET', cdfid,
+     .     ( merr_nc_open, status, 'CD_OPEN_DSET', dset,
      .        no_varid, 'Unable to access remote URL', no_errstring,
      .		*5900 )
 *kob* 9/18
- 5300  CALL TM_ERRMSG (merr_notmounted,status, 'CD_OPEN_DSET',dset,
-     .                     no_stepfile,
-     .                    'No files on-line from data set',
-     .			   no_errstring,
-     .                     *5900)
+ 5300  CONTINUE
+#ifdef usingDODSf2cUnderscore 
+        buff =  NF_STRERROR_(cdfstat)
+#else
+        buff =  NF_STRERROR(cdfstat)
+#endif
+       dlen = TM_LENSTR1(buff)
+       CALL TM_ERRMSG (merr_notmounted,status, 'CD_OPEN_DSET',dset,
+     .    no_stepfile,
+     .    'No files on-line from data set. '//buff(1:dlen),
+     .    no_errstring,
+     .    *5900)
 * erase any record of tampering with this data set
  5900   CALL TM_CLOSE_SET( dset, i )
 

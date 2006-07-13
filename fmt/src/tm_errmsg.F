@@ -64,6 +64,9 @@
 *
 * *acm* 11/05 V600  -- New symbol FER_LAST_ERROR contains all the text normally
 *                       written to std out. 
+* V600 *acm* 7/06 Using NetCDF-3 calls in cd_open_dset, if an error is found,
+*                 the correct error message is passed in here. Process these under
+*                 merr_nc_open, separately from other netcdf errors.
 
 * arguments:
 *	status_in	- error code from calling program
@@ -169,18 +172,31 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
 
 #endif
 
-* Output the message for a regular error
+* Output the message for a regular error; errors from cd_open_dset
+* are treated here.
 	ELSE IF ( (status_in .GT. pregular) .AND.
      .		  (status_in .LE. pregular + num_regular + 1) ) THEN
-	  msg_len = TM_LENSTR1(msg_regular(status_in - pregular))
-	  WRITE (errbuf,1000)
-     .		 msg_regular(status_in - pregular)(:msg_len)
-	  CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
-          msg_len = TM_LENSTR1(errbuf)
-          symbuf(len_symbuf:) = errbuf(:msg_len)
-          len_symbuf = len_symbuf + msg_len + 1
 
-1000	  FORMAT(' **TMAP ERR: ',A)
+          IF (status_in .EQ. merr_nc_open) THEN
+	     msg_len = TM_LENSTR1(expected)
+	     WRITE (errbuf,1001) 
+	     CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+             msg_len = TM_LENSTR1(errbuf)
+             symbuf(len_symbuf:) = errbuf(:msg_len)
+             len_symbuf = len_symbuf + msg_len + 1
+1001	     FORMAT(' **netCDF error: ')
+          ELSE
+
+             msg_len = TM_LENSTR1(msg_regular(status_in - pregular))
+             WRITE (errbuf,1000)
+     .		 msg_regular(status_in - pregular)(:msg_len)
+             CALL TM_SPLIT_MESSAGE(lunit_errors, errbuf)
+             msg_len = TM_LENSTR1(errbuf)
+             symbuf(len_symbuf:) = errbuf(:msg_len)
+             len_symbuf = len_symbuf + msg_len + 1
+
+1000	     FORMAT(' **TMAP ERR: ',A)
+          ENDIF
 
 
 * output a netCDF error (note: CDF uses error code -1)

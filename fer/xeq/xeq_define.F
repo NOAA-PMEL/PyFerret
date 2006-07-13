@@ -303,7 +303,7 @@
 	CHARACTER TM_FMT*16, 
      .            reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32, buff*512,
-     .            basic_orients(4)*2, err_string*255, replmsg*24,
+     .            basic_orients(4)*2, err_string*2048, replmsg*24,
      .		  mon_names(12)*3, varname*512, attname*128, t2*2
 
         CHARACTER*1 tab
@@ -1530,8 +1530,8 @@ C /units=months  is 1/12 of the length of the year
 	CALL GETSYM( buff30, err_string, i2, i1 )
 	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
 
-* remove backslash escape characters
-	err_string = cmnd_buff(pos:arg_end(num_args))   ! exactly 255 for PPL
+* remove backslash escape characters                    ! setting err_string to 2048, was:
+	err_string = cmnd_buff(pos:arg_end(num_args))   ! exactly 255 for PPL (why?)
 	CALL DE_ESCAPE_STRING( err_string, slen )
 
 * define the symbol

@@ -16,7 +16,7 @@ define axis/x=-180:181:1/units=longitude/edges xsub ! no
 GO bn_subspan_modulo.sub1 X
 
 ! not allowed for axis length to exceed modulo length
-set mode ignoretest_nomod.cd
+set mode ignore
   define axis/x=130e:500:10/modulo=360 xsub
 canc mode ignore
 

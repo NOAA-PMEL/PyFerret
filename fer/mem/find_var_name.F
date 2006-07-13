@@ -64,6 +64,7 @@
 *                 of variable names (the chunk of code now at DO 250).  Yonghua had
 *                 moved this for efficiency but it wound up finding the wrong
 *                 variable def for user variables defined with LET/D.
+* v600 6/06 *acm* initialize category to 0 (needed for solaris)
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -92,6 +93,7 @@
         buff = test_name
 	single_dset = dset_num .NE. unspecified_int4
         len_test = TM_LENSTR(test_name)
+        category = 0
 
         IF (INDEX(test_name, '.') .GT. 0) THEN
            do_err = .TRUE.

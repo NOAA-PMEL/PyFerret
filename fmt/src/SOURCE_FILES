@@ -166,6 +166,7 @@ tm_fmt.F\
 tm_fmt_digits.F\
 tm_fp_convert.F\
 tm_fpeq.F\
+tm_fpeq_eps.F\
 tm_friendly_read.F\
 tm_ftoc_strng.F\
 tm_garb_col_grids.F\

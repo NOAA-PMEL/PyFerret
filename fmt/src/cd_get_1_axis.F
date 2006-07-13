@@ -45,7 +45,7 @@
 *   8/19/92: search for "LAT" in axis units was setup wrong
 *  10/20/92: a more systematic approach to identifying the axis orientation
 *  11/30/92:  changed Z axis orientation "UP" to "DU"
-* 12/92: use TM_FPEQ to test regularity of axes
+* 12/92: use TM_FPEQ_EPS to test regularity of axes
 *  1/93: special error message for npts=0 (for UNLIMITED time axis in CDL)
 *  2/93: allow zero length axis and out of order axes by substituting dummies
 *  3/93: added EPIC support
@@ -140,6 +140,7 @@
 *                  linked list structure
 *                  CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *                  strings or real values according to attrib type
+* V600 *acm* 6/06  use TM_FPEQ_EPS to compare coordinates.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -177,10 +178,12 @@
 * local parameter definitions:
       INTEGER     str_eq
       PARAMETER ( str_eq = 0 )
+      REAL epsilon_23
+c      PARAMETER (epsilon_23 =  2**(-23) )
 
 * local variable declarations:
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL, TM_CHECK_BOX_LOC,
-     .        TM_HAS_STRING, TM_FPEQ, TM_DFPEQ, CD_GET_ATTVALC, 
+     .        TM_HAS_STRING, TM_FPEQ_EPS, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
@@ -198,7 +201,7 @@
      .        newaxis, d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
      .        all_outflag, dir, attlen
 
-      REAL    rbuff, delta, first_delta, val, tmp
+      REAL    rbuff, delta, first_delta, val, tmp, epsilon
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*30, vupcase*128, words(8)*24,
@@ -232,6 +235,7 @@
       got_torg = .FALSE.
       days_neg4713 = 0.D0
       next_line_storage = next_line_mem_pos
+      epsilon_23 =  2.**(-23) 
 
 * get the vital statistics of the axis 
 
@@ -847,14 +851,14 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
  345        CONTINUE
          ENDIF
             
-* Check for non-monotonic ordering of data
+* Check for non-monoto   //vnanic ordering of data
          DO 350 i=ipt1+1,ipte
            IF (line_mem(i) .LE. line_mem(i-1) ) THEN
 * out of order axis coordinates
               words(1) = TM_LEFINT(i-ipt1+1, istat)
               CALL TM_NOTE(
-     .             'Coordinates out of order or missing on axis '
-     .              //vname(:vlen)//' at subscript '//words(1), tt)
+     .             'Coordinates out of order or missing on axis '//
+     .           vname(:vlen)//' at subscript '//words(1), tt)
               CALL TM_NOTE(
      .             'A dummy axis of subscripts will be used', tt)
               GOTO 1000
@@ -865,9 +869,13 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
         last_coord = line_mem(ipte)
         firs_coord = line_mem(ipt1)
-        delta = line_mem(ipt1+1) - line_mem(ipt1)  ! sing. prec., only
+
+        delta = line_mem(ipt1+1) - line_mem(ipt1)
+        tmp = MAX(SNGL(firs_coord),SNGL(last_coord) )
+        epsilon = epsilon_23 * 2.*(ABS(tmp) / delta )
+
         DO 360 i=ipt1+2,ipte
-           IF (.NOT. TM_FPEQ( delta,
+           IF (.NOT. TM_FPEQ_EPS(epsilon, delta, 
      .                   SNGL(line_mem(i)-line_mem(i-1))) ) GOTO 380
   360   CONTINUE
 

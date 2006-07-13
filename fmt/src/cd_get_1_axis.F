@@ -851,7 +851,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
  345        CONTINUE
          ENDIF
             
-* Check for non-monoto   //vnanic ordering of data
+* Check for non-monotonic ordering of data
          DO 350 i=ipt1+1,ipte
            IF (line_mem(i) .LE. line_mem(i-1) ) THEN
 * out of order axis coordinates

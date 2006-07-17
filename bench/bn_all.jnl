@@ -504,6 +504,9 @@ go bn_transforms.jnl
 go bn_reset
 go bn_linecolors.jnl
 
+go bn_reset
+go bn_cdf_errmsg.jnl
+
 GO bn_reset
 GO bn600_bug_fixes.jnl
 

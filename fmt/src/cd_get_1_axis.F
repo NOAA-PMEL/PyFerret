@@ -292,7 +292,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
 
 * optional "true_size" parameter for 2 point representations of even axes
       IF ( line_regular(iaxis) ) THEN
-         maxlen = 1
+         maxlen = 2
          got_it = NC_GET_ATTRIB( dset, ivar, 'true_size', 
      .                          do_warn, vname(:vlen), maxlen, 
      .                          attlen, attoutflag, buff, val)
@@ -517,7 +517,7 @@ c         ENDIF
 
 * a user can impose non-standard time units by setting the time_unit attribute
 * (not fully tested, I suspect - *sh* 4/93)
-      maxlen = 1
+      maxlen = 2
       got_it = NC_GET_ATTRIB( dset,ivar,'time_unit',
      .           do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .           buff, line_tunit(iaxis))
@@ -539,7 +539,7 @@ c         ENDIF
 * ... First check for an AXIS attribute
 
       axis_dir = char_init01
-      maxlen = 1
+      maxlen = 2
       got_it = NC_GET_ATTRIB(dset, ivar, 'axis',
      .             do_warn, vname(:vlen), maxlen, attlen, 
      .             attoutflag, axis_dir, val)
@@ -562,7 +562,7 @@ c         ENDIF
 
       IF (line_direction(iaxis) .EQ. 'NA') THEN
 
-         maxlen = 1
+         maxlen = 2
          got_it = NC_GET_ATTRIB(dset, ivar, 'cartesian_axis',
      .              do_warn, vname(:vlen), maxlen, attlen, 
      .              attoutflag, axis_dir, val)

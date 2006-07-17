@@ -349,13 +349,13 @@
 * scale factors again here.
 
         IF (.NOT.is_mc .OR. .NOT.cd_scaled(ivar)) THEN
-           maxlen = 1
+           maxlen = 2
            CALL CD_GET_VAR_INFO (dset, varid, vname, vtype, nvdims,
      .         vdims, nvatts, coordvar, outflag, status)
            got_it = NC_GET_ATTRIB( dset, varid, 'scale_factor',
      .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, cd_scale_factor(ivar))
-           maxlen = 1
+           maxlen = 2
            tf2    = NC_GET_ATTRIB( dset, varid, 'add_offset',
      .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, cd_add_offset(ivar))

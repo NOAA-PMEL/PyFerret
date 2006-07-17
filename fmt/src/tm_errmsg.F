@@ -66,7 +66,8 @@
 *                       written to std out. 
 * V600 *acm* 7/06 Using NetCDF-3 calls in cd_open_dset, if an error is found,
 *                 the correct error message is passed in here. Process these under
-*                 merr_nc_open, separately from other netcdf errors.
+*                 merr_nc_open, separately from other netcdf errors. Report the
+*                 netCDF / OPeNDAP error code.
 
 * arguments:
 *	status_in	- error code from calling program
@@ -184,7 +185,7 @@ D        TMAP_diag_on = .TRUE.     ! compile if "-d_lines"-----Emacs:
              msg_len = TM_LENSTR1(errbuf)
              symbuf(len_symbuf:) = errbuf(:msg_len)
              len_symbuf = len_symbuf + msg_len + 1
-1001	     FORMAT(' **netCDF error: ')
+1001	     FORMAT(' **netCDF error')
           ELSE
 
              msg_len = TM_LENSTR1(msg_regular(status_in - pregular))

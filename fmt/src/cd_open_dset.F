@@ -111,6 +111,7 @@
       LOGICAL TM_HAS_STRING, got_it,
      .        do_warn, file_exists
       PARAMETER (do_warn = .TRUE. )
+      REAL val
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
       INTEGER flen, iin, iout, ilast, dlen
@@ -118,7 +119,8 @@
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets
       CHARACTER*512 TM_INQ_PATH, cdf_file, raw_file
-      CHARACTER*80 buff  ! for nf_ error message
+      CHARACTER*80 TM_FMT, buff  ! for nf_ error message
+      CHARACTER*10 errcode
 
 #ifdef FORTRAN_90
 	INTEGER HEX40
@@ -236,7 +238,15 @@ cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
         buff =  NF_STRERROR_(cdfstat)
 #else
         buff =  NF_STRERROR(cdfstat)
-#endif
+#endif  
+        dlen = TM_LENSTR1(buff)
+        val = cdfstat
+        errcode = TM_FMT(val, 0, 10, len)
+        buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
+     .      errcode(1:TM_LENSTR1(errcode))//')'
+        dlen = TM_LENSTR1(buff)
+
+
         CALL TM_ERRMSG
      .     ( merr_nc_open, status, 'CD_OPEN_DSET', dset,
      .        no_stepfile, buff, no_errstring, *5900 )
@@ -246,14 +256,21 @@ cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
      .        no_varid, 'Unable to access remote URL', no_errstring,
      .		*5900 )
 *kob* 9/18
- 5300  CONTINUE
+ 5300   CONTINUE
+
 #ifdef usingDODSf2cUnderscore 
         buff =  NF_STRERROR_(cdfstat)
 #else
         buff =  NF_STRERROR(cdfstat)
 #endif
-       dlen = TM_LENSTR1(buff)
-       CALL TM_ERRMSG (merr_notmounted,status, 'CD_OPEN_DSET',dset,
+        dlen = TM_LENSTR1(buff)
+        val = cdfstat
+        errcode = TM_FMT(val, 0, 10, len)
+        buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
+     .      errcode(1:TM_LENSTR1(errcode))//')'
+        dlen = TM_LENSTR1(buff)
+
+        CALL TM_ERRMSG (merr_notmounted,status, 'CD_OPEN_DSET',dset,
      .    no_stepfile,
      .    'No files on-line from data set. '//buff(1:dlen),
      .    no_errstring,

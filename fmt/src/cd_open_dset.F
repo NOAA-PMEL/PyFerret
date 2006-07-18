@@ -209,8 +209,6 @@ cc	   	         cdfid = NCOPN(cdf_file, NCNOWRIT, cdfstat)
 		     ENDIF
  100	        CONTINUE
 
-#endif 
-
 * error exit now.....no file on line found after looping through
 * all stepfiles
 		GOTO 5300
@@ -241,7 +239,7 @@ cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
 #endif  
         dlen = TM_LENSTR1(buff)
         val = cdfstat
-        errcode = TM_FMT(val, 0, 10, len)
+        errcode = TM_FMT(val, 0, 10, dlen)
         buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
      .      errcode(1:TM_LENSTR1(errcode))//')'
         dlen = TM_LENSTR1(buff)
@@ -265,7 +263,7 @@ cc	   	cdfid = NCOPN(ds_des_name(dset), NCNOWRIT, cdfstat)
 #endif
         dlen = TM_LENSTR1(buff)
         val = cdfstat
-        errcode = TM_FMT(val, 0, 10, len)
+        errcode = TM_FMT(val, 0, 10, dlen)
         buff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
      .      errcode(1:TM_LENSTR1(errcode))//')'
         dlen = TM_LENSTR1(buff)

@@ -1,13 +1,12 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/linux64/v600_13jul/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 36356424 Jun 14 10:43 /home/porter/ansley/linux64/v600_13jul/FERRET/fer/ferretdods_gui
-Using external functions from none
-Running the tests of external functions no
+Running FERRET version /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 27315444 Jul 18 12:58 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
+Running the tests of external functions y
 Benchmark run by ansley
-Note: merge latest code and 64-bit changes
+Note: this should be it for v6.0 release; compiled w/o debug flag (calls to v5d fcn commented out on linuxthis should be it for v6.0 release; compiled w/o debug flag (calls to v5d fcn commented out on linux64 benchmark run)
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/linux64/v600_13jul/FERRET/bench
-GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
+PWD=/home/porter/ansley/linux64/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,9 +19,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=none
-Beginning at Wed Jun 14 11:46:01 PDT 2006
-ls: none/: No such file or directory
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
+Beginning at Tue Jul 18 14:42:23 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -365,6 +363,8 @@ define axis/from/x/name=xax/edges {6,6,6}
 define axis/from/x/name=xax {6,6,6.000001,7}
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
+sh: /home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump out.cdf: No such file or directory
+sh: /home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump out.cdf: No such file or directory
  **ERROR: command syntax: noname(i)
           unknown function "noname"
 stat i, noname(i)
@@ -447,6 +447,7 @@ SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
+sh: /home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump time_axis_seconds.nc | grep origin: No such file or directory
  **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/L=1/LEV=0.01d sst
  **ERROR: value out of legal range: # of contour levels > 500  (3283)
@@ -458,7 +459,6 @@ POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, 
  *** NOTE: calendar attribute on axis "TIME" is not recognized: BADNAME
  *** NOTE: Valid calendars are GREGORIAN NOLEAP    JULIAN    360_DAY   ALL_LEAP
  *** NOTE: A dummy axis of subscripts will be used
-rm: cannot remove `input.txt': No such file or directory
 ls: input.txt: No such file or directory
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
@@ -612,6 +612,21 @@ LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
 set var/outtype=char broiled
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, FLOAT, BYTE, INT, SHORT
 set var/outtype=garbage broiled
+ **TMAP ERR: non-existent or not on line
+             this_is_not_a_file.nc
+SET DAT/FORM=CDF this_is_not_a_file.nc
+ **netCDF error
+             No(OPeNDAP/netCDF Error code 2)
+             Data set: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf
+SET DAT/FORM=CDF  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+ **netCDF error
+             OPeND(OPeNDAP/netCDF Error code 1001)
+             Data set: http://noserver/a/nofile.cdf
+SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
+ **netCDF error
+             Not (OPeNDAP/netCDF Error code -51)
+             Data set: ./asc.nc
+SET DAT/FORM=CDF asc.nc
  **ERROR: illegal use of transformation:  not all dimensions present on grid
 shade sst[x=@var,k=@var]
  **ERROR: illegal use of transformation:  not all dimensions present on grid
@@ -619,7 +634,8 @@ shade sst[t=@AVE,Z=@ave]
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
-ls: none/: No such file or directory
+ **ERROR: command syntax: unknown region name: @w
+set region/@w
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -648,7 +664,6 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-ls: none/: No such file or directory
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
@@ -679,4 +694,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Jun 14 11:47:16 PDT 2006
+Ended at Tue Jul 18 14:43:39 PDT 2006

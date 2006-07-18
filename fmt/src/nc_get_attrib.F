@@ -80,7 +80,6 @@
       INTEGER TM_LENSTR1, NCF_GET_VAR_ATTR,
      .        lena, lenb, attype, status, i, dset_num, attid
       CHARACTER*128 aname
-      CHARACTER*250 buff
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -88,9 +87,9 @@
       INTEGER slen, flen
       PARAMETER (flen=nf_max_attrs)        ! size of attribute string
 #ifdef sun
-      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string $ferret_poly_scaleer
+      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
 #else
-      INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string $ferret_poly_scaleer
+      INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string buffer
 #endif 
 
        NC_GET_ATTRIB = .FALSE.
@@ -98,7 +97,7 @@
        IF (varid .LT. 0) RETURN
 
 * initialize
-       string(:maxlen) = ' '
+       string(:slen) = ' '
        too_long = .FALSE.
 
 * inquire about the attribute by name, using its id number
@@ -113,7 +112,7 @@
       ENDIF
 
       lena = TM_LENSTR1( aname )
-      CALL TM_FTOC_STRNG (aname(:lena), ghol, lena+1)
+      CALL TM_FTOC_STRNG (aname(:lena), ghol, flen)
 
 * Get attribute length and value
 
@@ -130,15 +129,17 @@
 
       IF ( attype.EQ.NCCHAR ) THEN
 
-         IF (attlen .GE. maxlen) fhol(maxlen) = 0  ! null terminator
-         CALL TM_CTOF_STRNG ( fhol, string, MIN(attlen,maxlen) )
-
-         IF ( attlen .GT. maxlen ) THEN
+         lena = attlen
+         IF (attlen .GE. maxlen) THEN
+            fhol(maxlen) = 0
+            lena = maxlen
             too_long = .TRUE.
-            GOTO 5000
-	 ENDIF
+         ENDIF
+
+         CALL TM_CTOF_STRNG ( fhol, string, lena )
 
          NC_GET_ATTRIB = .TRUE.
+         IF ( too_long ) GOTO 5000
 
       ELSE
 
@@ -152,25 +153,13 @@
 
 * warning exit
 
- 5000 IF (do_warn) THEN
-         IF (vname .EQ. '.') THEN
-           buff = 'String too long for global attribute '//
-     .        attrib(:lena)// 
-     .        '. String truncated; Maximum characters: '
-         ELSE
-           buff = 'String too long for attribute '//attrib(:lena)//
-     .        ' of netCDF variable: '//vname // 
-     .        '. String truncated; Maximum characters: '
-         ENDIF
-         lenb = TM_LENSTR1( buff )
-         WRITE (buff(lenb:) ,'(1X,I5)') maxlen
-         lenb = lenb + 5
-         IF ( do_warn ) CALL TM_NOTE( buff(:lenb), tt )
-      ENDIF
-
-* Still return the partial string
-
-      NC_GET_ATTRIB = .TRUE.
-
+ 5000 lenb = TM_LENSTR1( string )
+      string = string(:lenb)//': "'//attrib(:lena)//
+     .             '" in netCDF variable: '//vname
+      lenb = TM_LENSTR1( string )
+      IF ( do_warn ) CALL TM_NOTE( string(:lenb), tt )
+      IF ( do_warn.AND.too_long ) WRITE (tt,'(1X,A,I4)')
+     .                       'Maximum characters: ',maxlen
       RETURN
+
       END

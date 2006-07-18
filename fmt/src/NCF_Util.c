@@ -1004,9 +1004,6 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	   var.is_axis = FALSE;
 	   var.axis_dir = 0;
 
-		  int *atp; 
-		  int *atl;
-
 	   var.attrs_list_initialized = FALSE;
        for (i = 0; i < nc.ngatts; i++)
           {

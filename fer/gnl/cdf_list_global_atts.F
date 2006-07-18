@@ -43,6 +43,7 @@
         include 'netcdf.decl'
 #include "netcdf.inc"
         include 'cd_lib.parm'
+        include 'ferret.parm'
 
 
 * calling argument declarations:
@@ -53,7 +54,7 @@
         INTEGER TM_LENSTR1, varid, vartype, nvdims, vdims(8), nvatts, 
      .          all_outflag, iatt, slen, attype, attlen, attoutflag,
      .          bufflen
-	REAL*4	vals(10)
+	REAL*4	vals(100)
         CHARACTER*128 varname, attname, aname
         CHARACTER*2048 buff
 
@@ -78,6 +79,8 @@
               CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
      .                  attype, attlen, attoutflag, status )
 
+              IF (attlen .GT. 100 .AND. attype .NE. ptype_char) 
+     .            attlen = 100
               got_it = NC_GET_ATTRIB ( dset, varid, aname, do_warn, 
      .           varname, bufflen, attlen, attoutflag, buff, vals)
 

@@ -126,7 +126,7 @@
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
      .                  TM_FMT*12,
-     .                  varcode*128, varname*128, buff*140, revnum*12, 
+     .                  varcode*128, varname*128, buff*2048, revnum*12, 
      .                  c1*1, aname*128
 
 	REAL*8		user_lo, user_hi, delta, loest_ww, hiest_ww
@@ -162,8 +162,8 @@
 #else
       BYTE ibuff1
 #endif
-	REAL*4		rbuff4, vals, bad
-        REAL*8          dvals, scalefac, addoff
+	REAL*4		rbuff4, vals(100), bad
+        REAL*8          dvals(100), scalefac, addoff
 	INTEGER*4	ibuff4
 	EQUIVALENCE (rbuff4, ibuff4), (rbuff4, ibuff1)
 
@@ -418,13 +418,13 @@
                        got_it = NC_GET_ATTRIB_DP (dset, varid,
      .                     aname, do_warn, varcode, attlen, 
      .                     attoutflag, dvals)
-                       scalefac = dvals
+                       scalefac = dvals(1)
 
                     ELSE
                        got_it = NC_GET_ATTRIB (dset, varid, aname,
      .                    do_warn, varcode, buff_size, attlen, 
      .                    attoutflag, buff, vals)
-                       scalefac = vals
+                       scalefac = vals(1)
 
                     ENDIF
                  ENDIF
@@ -442,13 +442,13 @@
                       got_it = NC_GET_ATTRIB_DP (dset, varid,
      .                     aname, do_warn, varcode, attlen, 
      .                     attoutflag, dvals)
-                      addoff = dvals
+                      addoff = dvals(1)
 
                     ELSE
                        got_it = NC_GET_ATTRIB (dset, varid, aname,
      .                    do_warn, varcode, attlen, buff_size, 
      .                    attoutflag, buff, vals)
-                      addoff = vals
+                      addoff = vals(1)
                     ENDIF
                  ENDIF
 
@@ -456,7 +456,7 @@
 * the same as missing_flag)
 
                  bad = mr_bad_data(mr)
-                 dvals = bad
+                 dvals(1) = bad
                  attlen = 1
 
 * Get attype for missing flag
@@ -476,8 +476,8 @@
 
 * If un-scaling on output, will also un-scale the missing flag.
                     IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
-                       dvals = dvals/scalefac - addoff
-                       vals = dvals
+                       dvals(1) = dvals(1)/scalefac - addoff
+                       vals(1) = dvals(1)
 
 * Otherwise convert missing flag to requested output type for the variable
                     ELSE
@@ -539,6 +539,16 @@
 
                        CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt,
      .                    aname, attype, attlen, attoutflag, istat )
+     
+                       IF (attype .NE. nf_char .AND.
+     .                     attlen .GT. 100) THEN
+                          attlen = 100
+                          alen = TM_LENSTR1(aname)
+                          CALL WARN 
+     .                ('writing only first 100 elements of attribute'//
+     .                  aname(1:alen))
+                       ENDIF
+
                        got_it = NC_GET_ATTRIB ( dset, varid, aname, 
      .                       do_warn, varcode, buff_size, attlen,
      .                       attoutflag, buff, vals)

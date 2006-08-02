@@ -1594,7 +1594,7 @@
                  CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
      .               attype, attlen, attoutflag, status )
 
-                 IF (status .NE. ferr_ok) GOTO 5100
+                 IF (status .NE. ferr_ok) GOTO 1810
 
                  maxlen = size_rbuff
                  IF (attype .NE. NCCHAR) maxlen = 10

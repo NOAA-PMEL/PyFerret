@@ -28,6 +28,7 @@
 * V600  *acm* 5/05 - add SHOW ATTRIBUTE
 *       *acm* 8/05 - add DEFINE ATTRIBUTE
 *       *acm* 9/05 - add SET ATTRIBUTE
+*       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -193,7 +194,7 @@
      .			nqual3k = 3, nqual_at3l = nqual_at3k + nqual3k,	!'VARI'
      .			nqual3l = 4, nqual_at3m = nqual_at3l + nqual3l,	!'AXIS'
      .			nqual3m = 1, nqual_at3n = nqual_at3m + nqual3m,	!'GRID'
-     .			nqual3n = 1, nqual_at3o = nqual_at3n + nqual3n,	!'ATTR'
+     .			nqual3n = 2, nqual_at3o = nqual_at3n + nqual3n,	!'ATTR'
      .			nqual3o = 1, nqual_at3p = nqual_at3o + nqual3o,	!'****'
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'****'
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'****'

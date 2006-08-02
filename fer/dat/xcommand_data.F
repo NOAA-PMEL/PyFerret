@@ -169,6 +169,7 @@
 *       *acm* 9/05 - add SET ATTRIBUTE
 *       *acm*10/05 - add CANCEL ATTRIBUTE
 * V600: 2/06 *acm* - add SET VARIABLE/OUTTYPE for attribute-handling additions
+*       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
@@ -668,11 +669,12 @@
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/
 	   DATA qualifier_pointer(nsub_at3 +12)	/ nqual_at3m	/
 		DATA qualifiers  (nqual_at3m+0)	/ '****'	/
-* CANCEL ATTRIBUTE /OUTPUT
+* CANCEL ATTRIBUTE /OUTPUT /DATA
 	   DATA subcommands      (nsub_at3 +13)	/ 'ATTRIBUTE'	/
 	   DATA num_qualifs      (nsub_at3 +13)	/ nqual3n	/
 	   DATA qualifier_pointer(nsub_at3 +13)	/ nqual_at3n	/
 		DATA qualifiers  (nqual_at3n+0)	/ 'OUTPUT'	/
+		DATA qualifiers  (nqual_at3n+1)	/ 'DATA'	/
 * CANCEL ****							  ! unused(o)
 	   DATA subcommands      (nsub_at3 +14)	/ '****'	/
 	   DATA num_qualifs      (nsub_at3 +14)	/ nqual3o	/

@@ -662,6 +662,54 @@
 
 * CANCEL ATTRIBUTE  /OUTPUT[=all]
  1400	 IF ( num_args .LT. 1 ) GOTO 5010
+
+!
+* ... get dset number if present:  CANCEL ATT/D=dset ...
+	iqual = qual_given( slash_canc_attr_data ) 
+        IF ( iqual .GT. 0 ) THEN
+	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
+     .			      show_str, status )  ! show_str is just a buffer
+	   IF ( status .NE. ferr_ok ) RETURN
+	   IF ( show_str .NE. ' ' ) THEN
+	      dset = FIND_DSET_NUMBER( show_str )
+	      IF ( dset .EQ. unspecified_int4) THEN
+	         CALL WARN('Unknown data set: '
+     .		 //show_str(:TM_LENSTR1(show_str)))
+	         RETURN
+	      ENDIF
+	   ENDIF
+
+        ELSE  ! get dataset from context or from [d=]
+           buff = cmnd_buff(item_start(1):item_end(1))
+
+           CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+ 
+           IF (buff(1:1) .EQ. '(') THEN
+              dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
+              CALL ISIT_COORD_VAR ( buff, dset, 
+     .              varname, coordvar, status )
+              IF ( status .NE. ferr_ok ) GOTO 5000
+
+           ELSE
+
+* Get the dataset if given as [d=]
+
+	      IF ( INDEX(buff,'[') .GT. 0 ) THEN
+                 dset = pdset_irrelevant	! default (not used ...)
+                 CALL PARSE_NAM_DSET(buff, cx_last, dset, cat, var,
+     .                 mods_cx, status)
+              ELSE
+                 cx = is_cx( 1 )
+                 IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
+     .                cx = cx_cmnd
+                dset = cx_data_set(cx)
+             ENDIF
+	   ENDIF
+        ENDIF
+
+!---------
+
 * /OUTPUT
 
 * ... CANCEL ATT/OUTPUT varname.attname
@@ -688,22 +736,23 @@
            CALL ISIT_COORD_VAR ( buff, dset, 
      .            varname, coordvar, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
-
-        ELSE
-
-* Get the dataset if given as [d=]
-
-	   IF ( INDEX(buff,'[') .GT. 0 ) THEN
-               dset = pdset_irrelevant	! default (not used ...)
-               CALL PARSE_NAM_DSET(buff, cx_last, dset,
-     .				     cat, var, mods_cx, status)
-           ELSE
-              cx = is_cx( 1 )
-              IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
-     .             cx = cx_cmnd
-             dset = cx_data_set(cx)
-          ENDIF
-	ENDIF
+        ENDIF
+c
+c        ELSE
+c
+c* Get the dataset if given as [d=]
+c
+c	   IF ( INDEX(buff,'[') .GT. 0 ) THEN
+c               dset = pdset_irrelevant	! default (not used ...)
+c               CALL PARSE_NAM_DSET(buff, cx_last, dset,
+c     .				     cat, var, mods_cx, status)
+c           ELSE
+c              cx = is_cx( 1 )
+c              IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
+c     .             cx = cx_cmnd
+c             dset = cx_data_set(cx)
+c          ENDIF
+c	ENDIF
 
         IF (dset .EQ. pdset_irrelevant .OR. dset .EQ. unspecified_int4)
      .        dset = cx_data_set(cx_cmnd) 

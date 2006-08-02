@@ -29,7 +29,7 @@
 * V581: *acm* 5/05 - add SHADE/MOD and CONTOUR/MOD
 * V581: *acm* 5/05 - add EXIT/CYCLE
 * V600: *acm* 2/06 - add SET VARIABLE/OUTTYPE
-
+*       *acm* 7/06 - add CANCEL ATTRIBUTE /OUTPUT /DATA
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -58,6 +58,7 @@
      .			slash_canc_var_data,
      .
      .			slash_canc_attr_output,
+     .			slash_canc_attr_data,
      .
      .			slash_set_movie_out,
      .			slash_set_movie_compress,
@@ -264,6 +265,7 @@
      .			slash_canc_var_data	= 2,
      .
      .			slash_canc_attr_output	= 1,
+     .			slash_canc_attr_data	= 2,
      .
      .			slash_set_movie_out    = 1,
      .			slash_set_movie_compress = 2,

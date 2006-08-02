@@ -450,7 +450,7 @@
      .               						*5000 )
      
  5900	CALL ERRMSG( ferr_unknown_arg, status,
-     .      'Can SET VARIABLE/OUTTYPE=INPUT, FLOAT, BYTE, INT, SHORT',
+     .'Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE',
      .               						*5000 )
 
 	END

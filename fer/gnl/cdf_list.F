@@ -537,6 +537,8 @@
                           IF (status .NE. ferr_ok) GOTO 5400
                     ELSE
 
+                       attype = 0
+                       attlen = 0
                        CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt,
      .                    aname, attype, attlen, attoutflag, istat )
      

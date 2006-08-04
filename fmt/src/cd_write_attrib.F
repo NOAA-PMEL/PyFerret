@@ -101,6 +101,9 @@ xx        include 'netcdf.decl'  ! untested
       vlen = TM_LENSTR1( vname )
       alen = TM_LENSTR1( att )
       slen = LEN( string )
+      attype = 0 
+      attlen = 0 
+      cdfstat = NCNOERR
       
 * locate the variable id
       IF ( vname .EQ. pcdf_global ) THEN
@@ -154,11 +157,13 @@ xx        include 'netcdf.decl'  ! untested
      .  'variable doesnt exist in CDF file',
      .  vname(:vlen), *5900 )
 
- 5200 CALL TM_ERRMSG
+ 5200 WRITE (risc_buff, *) 'incompatible data type of CDF attribute ',
+     .                      att(:alen)
+      alen = TM_LENSTR1(risc_buff)
+      CALL TM_ERRMSG
      . ( merr_gridpredef, status, 'CD_WRITE_ATTRIB', unspecified_int4,
-     .   unspecified_int4,
-     .  'incompatible data type of CDF attribute',
-     .  att(:alen), *5900 )
+     .   unspecified_int4, risc_buff(:alen), 
+     .   no_errstring, *5900 )
 
  5300 CALL TM_ERRMSG
      . ( cdfstat+pcdferr, status, 'CD_WRITE_ATTRIB', unspecified_int4,

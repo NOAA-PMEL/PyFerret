@@ -97,7 +97,7 @@
        IF (varid .LT. 0) RETURN
 
 * initialize
-       string(:slen) = ' '
+       string(:maxlen) = ' '
        too_long = .FALSE.
 
 * inquire about the attribute by name, using its id number

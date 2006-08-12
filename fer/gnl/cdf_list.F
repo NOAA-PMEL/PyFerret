@@ -596,16 +596,21 @@
 * variable title
               IF (.NOT. got_title) THEN
                  buff = VAR_TITLE( cx )
-                 lbuff = TM_LENSTR1( buff )
                  
                  attoutflag = 1
                  IF (varid .GT. 0) THEN
                     CALL CD_GET_VAR_ATT_ID (dset, varid, 'long_name', 
      .                     attid, istat)
-                    IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
+                    IF (attid .GT. 0) THEN
+                       CALL CD_GET_VAR_ATT_INFO (dset, 
      .                     varid, attid, aname, attype, attlen, 
      .                     attoutflag, istat )
+                    ELSE
+                       attoutflag = 1
+                       buff = varcode
+                    ENDIF
                  ENDIF
+                 lbuff = TM_LENSTR1( buff )
 
                  IF (attoutflag .EQ. 1) 
      .               CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',

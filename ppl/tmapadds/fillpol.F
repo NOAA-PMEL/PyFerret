@@ -72,6 +72,8 @@ C
 *                 this adjustment when the range has negative values; was incorrect.
 * v580  8/04*acm* Fix bug 957 poly/lev=1 of a constant field needs zlev(1) to be set.
 * v581 *acm* 3/05 open levels (-INF) (INF)
+* V600 *acm* 8/06 Fix bugs 843, 844: poly/line and reversed axes. Apply xinv and
+*                 yinv to coordinates when drawing the lines.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -422,10 +424,10 @@ C ------------
 		 else
 		    uprdn = 1
 		 end if
-		 call plot (x(xvertexbase+nvertex-1),
-     .	                    x(ypolybase+nvertex-1),uprdn,0)
+		 call plot (xinv*x(xvertexbase+nvertex-1),
+     .	                    yinv*x(ypolybase+nvertex-1),uprdn,0)
  160	      continue
-	      call plot (x(xvertexbase),x(ypolybase),1,0)
+	      call plot (xinv*x(xvertexbase), yinv*x(ypolybase),1,0)
 	   end if
 
 	   if (interrupted) go to 1000 !*jd* 8.3.92

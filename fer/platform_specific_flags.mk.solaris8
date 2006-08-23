@@ -58,7 +58,7 @@ Sunmathlib = /opt/SUNWspro/SC5.0/lib/libsunmath.a
 nsllib = -lnsl
 socketlib = /usr/lib/libsocket.a
 
-SYSLIB		= -lX11  -ldl $(Xpmlib) -llist -Bstatic  -L/opt/SUNWspro/lib \
+SYSLIB		= -lX11  -ldl $(Xpmlib)  ../list-2.1/liblist.a -Bstatic  -L/opt/SUNWspro/lib \
 		  $(V77lib) $(elflib) $(M77lib) $(F77lib) $(Xmlib) -lXt -Bdynamic $(Sunmathlib) -lm \
 		  /usr/ccs/lib/libgen.a -lc \
 		  -Bstatic  -Bdynamic /usr/lib/libICE.so \
@@ -79,15 +79,24 @@ HDFLIB		= /opt/local/lib/libdf.a
 #CDFLIB		= $(TMAP_LOCAL)/src/netcdf-2.3.2/lib/libnetcdf.a
 #CDFLIB          = /opt/local/netcdf-2.4.2/lib/libnetcdf.a
 #CDFLIB          = /opt/local/netcdf-3.4/lib/libnetcdf.a
-CDFLIB          = /home/porter/kobrien/src/solaris/netcdf-3.5.0/lib/libnetcdf.a
+#CDFLIB          = /home/porter/kobrien/src/solaris/netcdf-3.5.0/lib/libnetcdf.a
 
 #DODS_LIBS       = -L$(TMAP_LOCAL)/src/DODS-release-3-4/lib  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz
-DODS_LIBS       = -L/home/porter/kobrien/solaris8/DODS  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz
+#DODS_LIBS       = -L/home/porter/kobrien/solaris8/DODS  -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lcurl /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a -lrx -lz
+
+#DODS_LIBS       =  /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a   /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a /usr/lib/libcrypt.a -lpthread /usr/lib/libcrypt.a
+
+# Lots of library specs from the MAKE of dncdump in 
+#    /home/porter/tmap/OPeNDAP/solaris/v362/libnc-dap-3.6.0/ncdump
+# Also some libraries e.g./usr/local/BerkeleyDB.4.2/lib because they
+# are listed as required by libiconv.so, see /usr/local/lib/libiconv.la
+
+DODS_LIBS       =  -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libnc-dap.a /home/porter/tmap/OPeNDAP/solaris/v362/lib/libdap.a -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libcurl.a -lssl -lcrypto -ldl -lsocket -lnsl -lz -L/home/porter/tmap/OPeNDAP/solaris/v362/lib /home/porter/tmap/OPeNDAP/solaris/v362/lib/libxml2.a -lz -lpthread -lssl -lcrypto  -ldl -lz -L/usr/local/lib  -L/usr/local/BerkeleyDB.4.2/lib -L/usr/local/ssl/lib -L/usr/openwin/lib -L/usr/lib /usr/local/lib/libiconv.so -lm -lsocket -lnsl -lpthread /usr/local/lib/libgcc_s.so.1
 
 TERMCAPLIB      =-ltermcap
 
 
 #
-# End of platform_specific_includes.mk.solaris
+# End of platform_specific_includes.mk.solaris8
 #
 

@@ -9,4 +9,7 @@ GO bn_ef_external_functions.jnl
 GO bn_reset
 GO bn_ef_v5d_strings.jnl
 
+go bn_reset
+go bn_fcn_calls.jnl
+
 exit/command

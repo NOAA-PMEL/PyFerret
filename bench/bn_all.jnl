@@ -507,9 +507,6 @@ go bn_linecolors.jnl
 go bn_reset
 go bn_cdf_errmsg.jnl
 
-go bn_reset
-go bn_fcn_calls.jnl
-
 GO bn_reset
 GO bn600_bug_fixes.jnl
 

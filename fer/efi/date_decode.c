@@ -39,6 +39,8 @@
 /*
   Code to perform decoding of formatted dates and times
   called by date1900.F
+  8/2006 *acm* add dummy 5th argument to days_from_day0,
+               needed by ez_delimited_read for 64-big build.
  */
 
 #ifdef NO_ENTRY_NAME_UNDERSCORES
@@ -48,7 +50,7 @@
 #endif
 
 float FORTRAN(days_from_day0) (double* days_1900, int* iyr, int* imon,
-                               int* iday);
+                               int* iday, float* rdum);
 
 #include <stdlib.h>
 #include <string.h>
@@ -61,6 +63,7 @@ float FORTRAN(date_decode) (char *strdate)
   int id,im,iy, ok;
   char str3[4],str1[2];
   char months[13][4] = {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"};
+  float rdum;
   double days_1900 = 59958230400.0 / (60.*60.*24.);
 
   if (sscanf(strdate,"%d/%d/%d%1s",&im,&id,&iy,str1) == 3)
@@ -100,7 +103,7 @@ float FORTRAN(date_decode) (char *strdate)
     }    
 
   if (ok)
-    return  days_from_day0_(&days_1900,&iy,&im,&id);
+    return  days_from_day0_(&days_1900,&iy,&im,&id,&rdum);
   else
     return -1.e34;
 

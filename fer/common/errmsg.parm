@@ -98,8 +98,9 @@
      .			ferr_grid_definition	= ferr_dim_underspec	+ 1,
      .			ferr_internal		= ferr_grid_definition	+ 1,
      .			ferr_line_too_long	= ferr_internal		+ 1,
-     .			ferr_inconsist_plane	= ferr_line_too_long	+ 1,
-     .			ferr_inconsist_grid	= ferr_inconsist_plane	+ 1,
+     .			ferr_inconsist_plane	= ferr_line_too_long	+ 1)
+
+	PARAMETER     ( ferr_inconsist_grid	= ferr_inconsist_plane	+ 1,
      .			ferr_expr_too_complex	= ferr_inconsist_grid	+ 1,
      .			ferr_stack_ovfl		= ferr_expr_too_complex + 1,
      .			ferr_stack_undfl	= ferr_stack_ovfl	+ 1,
@@ -120,4 +121,4 @@
      .			ferr_nomessge	        = ferr_data_type 	+ 1,
      .                  ferr_unknown_attribute  = ferr_nomessge         + 1,
      .                  ferr_not_attribute      = ferr_unknown_attribute+ 1)
-	PARAMETER     ( gnum_report	= 40 )
+	PARAMETER     ( gnum_report	= 41 )

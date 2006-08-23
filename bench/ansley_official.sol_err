@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/solaris8/FERRET/fer/ferretdods_gui
--rwxr-xr-x   1 ansley   tmap     55526360 Aug  4 14:17 /home/porter/ansley/solaris8/FERRET/fer/ferretdods_gui
+-rwxr-xr-x   1 ansley   tmap     55526448 Aug 23 14:59 /home/porter/ansley/solaris8/FERRET/fer/ferretdods_gui
 Using external functions from  /home/porter/ansley/solaris8/FERRET/external_functions/ext_func_solaris8
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Ferret v6.0 release for solaris8
+Note:  Ferret v6.0 release for solaris8; new bn_fcn_calls tests efs previously left out of benchmarks
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/solaris8/FERRET/bench
 FER_DIR=.
@@ -17,7 +17,7 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_PALETTE=. /opt/local/ferret/ferret/ppl
 FER_DAT=.
-Beginning at Fri Aug 4 14:36:02 PDT 2006
+Beginning at Wed Aug 23 15:17:56 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -692,4 +692,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri Aug 4 14:40:17 PDT 2006
+Ended at Wed Aug 23 15:22:28 PDT 2006

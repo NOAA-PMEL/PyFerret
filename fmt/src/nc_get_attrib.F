@@ -48,6 +48,7 @@
 *                     This routine now returns both character and real results,
 *                     so it replaces CD_GET_ATTVAL.
 *         6/06 *acm*  replace istat with status
+*         8/06 *acm*  test for too_long should be .GT. IF (attlen .GT. maxlen) THEN
 *
 * argument definitions:
 *	dset	 - dataset number
@@ -130,7 +131,7 @@
       IF ( attype.EQ.NCCHAR ) THEN
 
          lena = attlen
-         IF (attlen .GE. maxlen) THEN
+         IF (attlen .GT. maxlen) THEN
             fhol(maxlen) = 0
             lena = maxlen
             too_long = .TRUE.

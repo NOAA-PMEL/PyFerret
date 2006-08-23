@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 27315444 Jul 18 12:58 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 27315648 Aug 23 14:58 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
 Running the tests of external functions y
 Benchmark run by ansley
-Note: this should be it for v6.0 release; compiled w/o debug flag (calls to v5d fcn commented out on linuxthis should be it for v6.0 release; compiled w/o debug flag (calls to v5d fcn commented out on linux64 benchmark run)
+Note: Ferret v6.0 release for 64-bit
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux64/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
@@ -20,11 +20,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
-Beginning at Tue Jul 18 14:42:23 PDT 2006
+Beginning at Wed Aug 23 15:02:29 PDT 2006
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.6.9-22. - 07/18/06
- 	18-Jul-06 14:42     
+ 	Linux(g77) 2.6.9-22. - 08/23/06
+ 	23-Aug-06 15:02     
 
 yes? !bn500_all_shell
 yes? 
@@ -10302,8 +10302,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "18-Jul-06"
-SESSION_TIME = "14:42"
+SESSION_DATE = "23-Aug-06"
+SESSION_TIME = "15:02"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10321,8 +10321,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "18-Jul-06"
-SESSION_TIME = "14:42"
+SESSION_DATE = "23-Aug-06"
+SESSION_TIME = "15:02"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10330,8 +10330,8 @@ NUM = "3"
 T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
-SESSION_DATE = "18-Jul-06"
-SESSION_TIME = "14:42"
+SESSION_DATE = "23-Aug-06"
+SESSION_TIME = "15:02"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10341,13 +10341,13 @@ S2 = ""hello""
 ! exercise CANCEL SYMBOL
 cancel symbol s2
 show symbol s*
-SESSION_DATE = "18-Jul-06"
-SESSION_TIME = "14:42"
+SESSION_DATE = "23-Aug-06"
+SESSION_TIME = "15:02"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
-SESSION_DATE = "18-Jul-06"
-SESSION_TIME = "14:42"
+SESSION_DATE = "23-Aug-06"
+SESSION_TIME = "15:02"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10381,7 +10381,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Jul 18 2006 14:42:31 "
+LAB3 = "Aug 23 2006 15:02:36 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10480,8 +10480,8 @@ PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
-SESSION_DATE = "18-Jul-06"
-SESSION_TIME = "14:42"
+SESSION_DATE = "23-Aug-06"
+SESSION_TIME = "15:02"
  
  
 GO bn_reset
@@ -18423,8 +18423,8 @@ contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
 set view v13
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150 sin(x/6)*cos(y/9)
 set view v14
-contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--  1 ansley tmap 23213 Jul 18 14:42 bench.mgm
--rw-rw-r--  1 ansley tmap 415458 Jul 18 14:42 bench.mgm
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--  1 ansley tmap 23231 Aug 23 15:02 bench.mgm
+-rw-rw-r--  1 ansley tmap 415722 Aug 23 15:02 bench.mgm
 150/trans sin(x/6)*cos(y/9)
  
 * formatted XY contours
@@ -25723,11 +25723,11 @@ LET my_var = t[gt=t5]
  
 save/clobber/file=out.cdf my_var[l=1]
  LISTing to file out.cdf
-spawn ""/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" out.cdf"
+spawn ""/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" out.cdf"
  
 save/append/file=out.cdf my_var[l=2]
  LISTing to file out.cdf
-spawn ""/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" out.cdf"
+spawn ""/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" out.cdf"
  
 GO bn_reset
 cancel mode verify
@@ -25800,11 +25800,11 @@ stat/i=1:3/j=1:3 a
  Mean    value: 4 (unweighted average)
  Standard deviation: 1.2247
  
-! 3/01 *kob* uncomment the below - seems to run on all systabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Tue Jul 18 14:42:43 PDT 2006
-ems
+! 3/01 *kob* uncomment the below - seems to run on all systems
 GO bn_reset
-cancel mode verify
+cancabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
+Wed Aug 23 15:02:48 PDT 2006
+el mode verify
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 GO err491_long_gif_name.jnl
@@ -34562,7 +34562,8 @@ list d
              VARIABLE : {"INITIALIZE", SPAWN:"ls *.str_test", "INSERT", SPAWN:"ls *.string_tst"}
              SUBSET   : 19 points (X)
  1    /  1:"INITIALIZE"       
- 2    /  2:"dummy1netcdf test_string {
+ 2    /  2:"dummy1.str_test"  
+ 3    /netcdf test_string {
 dimensions:
 	XAX1_3 = 3 ;
 	STRING1_10 = 10 ;
@@ -34577,7 +34578,7 @@ variables:
 		B:long_name = "\"one line of text\"" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -34613,7 +34614,7 @@ variables:
 		D:history = "From test_string" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  GFP3 = "" ;
@@ -34628,8 +34629,7 @@ data:
   "dummy3.str_test",
   "dummy4.str_test" ;
 }
-.str_test"  
- 3    /  3:"dummy2.str_test"  
+  3:"dummy2.str_test"  
  4    /  4:"dummy3.str_test"  
  5    /  5:"dummy4.str_test"  
  6    /  6:"dummy5.str_test"  
@@ -34703,7 +34703,7 @@ let a = {"hello","goodbye", "wave to me"}
 let b = "one line of text"
 save/clobber/file=test_string.cdf a,b
  LISTing to file test_string.cdf
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" test_string.cdf
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" test_string.cdf
 save/append/file=test_string.cdf d
  LISTing to file test_string.cdf
 let b2 = "two line of text"   ! the same string length as b
@@ -34730,7 +34730,7 @@ list/nohead b
 set var/title="partial filename list" d
 save/clobber/file=test_string.cdf/heading=enhanced d[i=2:5]
  LISTing to file test_string.cdf
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" test_string.cdf
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" test_string.cdf
 canc data/all
 use test_string
 show data test_string
@@ -34907,7 +34907,7 @@ list/nohead  samplek(ZSEQUENCE({"a","b",,"d","e","f"}),{3,2,,1})
  2   / 2:"b"
  3   / 3:"" 
  4   / 4:"a"
-list/nohead  sampnetcdf foo {
+list/nohead  samplel(TSEQUENCE({"a","b",,"d","e","f"}),{3netcdf foo {
 dimensions:
 	XAX1_4 = 4 ;
 	STRING1_1 = 1 ;
@@ -34925,7 +34925,7 @@ variables:
 		B:long_name = "SAMPLEJ(YSEQUENCE({\"a\",\"b\",,\"d\",\"e\",\"f\"}),{2,,1})" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_4 = 1, 2, 3, 4 ;
@@ -34943,7 +34943,7 @@ data:
   "",
   "a" ;
 }
-lel(TSEQUENCE({"a","b",,"d","e","f"}),{3,2,,1})
+,2,,1})
  1   / 1:"" 
  2   / 2:"b"
  3   / 3:"" 
@@ -34953,7 +34953,7 @@ let a = {"a",," ",""}
 let b = samplej(YSEQUENCE({"a","b",,"d","e","f"}),{2,,1})
 save/clobber/file=foo.cdf a,b
  LISTing to file foo.cdf
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" foo.cdf
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" foo.cdf
  
 let a =  RESHAPE({"a","b",,"d","e","f"},I[i=1:3]+j[j=1:2])
 list  a
@@ -35237,16 +35237,16 @@ set win/asp=1
 set mode meta vec_curv2.plt
  
 def axis/from_data/x/name=xirr {0,1,2,4,6,7,8,10,14,16,20,23,24}
-def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14col1,col2,col3,col4,col5
+def axis/from_data/y/name=yirr {0,2,4,5,6,7,8,9,12,13,14,15,18}
+let a = 0.1*x[gx=xirr] + 4*y[gy=yirr]
+let col1,col2,col3,col4,col5
 one,,1.1,24S,130E,,1e1,"word 1"
     two,,2.2,24N,130W,2S,,"word 2"
 three,,3.3,24,130,3N,3e-2," wd 3 "
 
 five,,4.4,-24,-130,91, -4e2  ,  "word 4"  ,  aa  , 77
 extra line
-,15,18}
-let a = 0.1*x[gx=xirr] + 4*y[gy=yirr]
-let b = 3*x[gx=xirr] + y[gy=yirr]
+b = 3*x[gx=xirr] + y[gy=yirr]
 set view ul
 vec a,b
  
@@ -35456,9 +35456,9 @@ list a1,a2,a3,a4,a5
  Column  4: A4
  Column  5: A5
                   A1   A2   A3    A4    A5
-1   / 1: "oncol1,col2,col3,col4,col5
-e"        " " "1.1" "24S" "130E"
-2   / 2: "two"        " " "2.2" "24N" "130W"
+1   / 1: "one"        " " "1.1" "24S" "130E"
+2   / 2: "two"   col1,col2,col3,col4,col5
+     " " "2.2" "24N" "130W"
 3   / 3: "three"      " " "3.3" "24"  "130" 
 4   / 4: " "          " " " "   " "   " "   
 5   / 5: "five"       " " "4.4" "-24" "-130"
@@ -35562,12 +35562,12 @@ show data
      currently SET data sets:
     1> ./bn_delimited_read_2.dat  (default)
  name     title                             I         J         K         L
- V1       V1                               1:20480   ...      12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+ V1       V1                               1:20480   ...       ...       ...
+       (Julian days since 1-Jan-19012/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
- ...       ...
-       (Julian days since 1-Jan-1900)
+0)
  V2       V2                               1:20480   ...       ...       ...
        (Time of day)
  V3       V3                               1:20480   ...       ...       ...
@@ -35741,12 +35741,12 @@ show data 2
  name     title                             I         J         K         L
  V1       V1                               1:4       ...       ...       ...
        (Julian days since 1-Jan-1900)
- V2       V2                              12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
+ V2       V2                               1:4       ...       ...       ...
+       (Julian 12/1/99,1999-03-01,12:00, 13:45:36.5,12/1/99,1999-03-01,12:00, 13:45:36.5
 12/2/99,1999-03-02,01:00:13.5, 14:45:36.5,12/2/99,1999-03-02,01:00:13.5, 14:45:36.5
 12/3/99x,1999-03-03x,2:00x, 15:45x,12/3/99,1999-03-03,2:00, 15:45
 12/4/99,1999-03-04,03:00, 16:45:36.5, 12/4/99,1999-03-04,03:00, 16:45:36.5
- 1:4       ...       ...       ...
-       (Julian days since 1-Jan-1900)
+days since 1-Jan-1900)
  V3       V3                               1:4       ...       ...       ...
        (Time of day)
  V4       V4                               1:4       ...       ...       ...
@@ -40328,7 +40328,8 @@ can view
 ! Redefining an axis with a new calendar definition
 go bn_reset
 cancel mode verify
- PERMANENT data cleared from memory
+ PERMANENT data cl		TIME:time_origin = "10-JUN-1996 04:03:36" ;
+eared from memory
  TEMPORARY data cleared from memory
 GO err550_redefine_calendar_axis.jnl
 ! err550_redefine_calendar_axis.jnl
@@ -40421,7 +40422,7 @@ GO err550_nc_seconds.jnl
  
 use time_axis_seconds.nc
  
-sp ""/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" time_axis_seconds.nc | grep origin"
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump time_axis_seconds.nc | grep origin"
 list t[gt=height]    ! Seconds should be 36, 37, 38...
              VARIABLE : T
                         axis TIME3
@@ -44550,7 +44551,7 @@ list/wid=1024/y=1:2 sin(x[gx=xax]) + y[gy=yax]
               1       46       91       136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996    
               1       46       91      136      181      226      271      316      361      406      451      496      541      586      631      676      721      766      811      856      901      946      991     1036     1081     1126     1171     1216     1261     1306     1351     1396     1441     1486     1531     1576     1621     1666     1711     1756     1801     1846     1891     1936     1981     2026     2071     2116     2161     2206     2251     2296     2341     2386     2431     2476     2521     2566     2611     2656     2701     2746     2791     2836     2881     2926     2971     3016     3061     3106     3151     3196     3241     3286     3331     3376     3421     3466     3511     3556     3601     3646     3691     3736     3781     3826     3871     3916     3961     4006     4051     4096     4141     4186     4231     4276     4321     4366     4411     4456     4501     4546     4591     4636     4681     4726     4771     4816     4861     4906     4951     4996
  1   / 1:  1.84147  1.90179  1.10599  0.20957  0.06355  0.80656  1.73321  1.96379  1.27939  0.32975  0.01642  0.63686  1.60205  1.99568  1.44406  0.47087  0.00001  0.47850  1.45208  1.99647  1.59486  0.62851  0.01484  0.33643  1.28799  1.96614  1.72708  0.79776  0.06044  0.21509  1.11490  1.90563  1.83659  0.97333  0.13539  0.11827  0.93823  1.81683  1.91997  1.14973  0.23734  0.04899  0.76349  1.70252  1.97461  1.32145  0.36312  0.00942  0.59613  1.56626  1.99881  1.48313  0.50879  0.00078  0.44139  1.41231  1.99181  1.62972  0.66981  0.02336  0.30409  1.24549  1.95383  1.75664  0.84114  0.07645  0.18854  1.07099  1.88605  1.85993  1.01743  0.15838  0.09833  0.89428  1.79060  1.93636  1.19318  0.26660  0.03629  0.72087  1.67045  1.98353  1.36289  0.39774  0.00434  0.55618  1.52936  1.99999  1.52127  0.54768  0.00350  0.40536  1.37174  1.98521  1.66336  0.71175  0.03379  0.27311  1.20250  1.93965  1.78474  0.88483  0.09426  0.16356  1.02694  1.86475  1.88160  1.06150  0.18301  0.08014  0.85054  1.76283
- 2   / 2:  2.84147  2.90179  2.10599  1.20957  1.06355  1.80656  2.73321  2.96379  2.27939  1.32975  1.01642  1.63686  2.60205  2.99568  2.44406  1.47087  1.00001  1.47850  2.45208  2.99647  2.59486  1.62851  1.01484  1.33643  2.28799  2.96614  2.72708  1.79776  1.06044  1.21509  2.11490  2.90563  2.83659  1.97333  1.13539  1.11827  1.93823  2.81683  2.91997  2.14973  1.23734  1.04899  1.76349  2.70252  2.97461  2.32145  1.36312  1.00942  1.59613  2.56626  2.99881  2.48313  1.50879  1.00078  1.44139  2.41231  2.99181  2.62972  1.66981  1.02336  1.30409  2.24549  2.95382  2.75664  1.84114  1.07645  1.18854  2.07099  2.88605  2.85993  2.01743  1.15838netcdf a {
+ 2   / 2:  2.84147  2.90179  2.10599  1.20957  1.06355  1.80656  2.73321  2.96379  2.27939  1.32975  1.01642  1.63686  2.60205  2.99568  2.44406  1.47087  1.00001  1.47850  2.45208  2.99647  2.59486  1.62851  1.01484  1.33643  2.28799  2.96614  2.72708  1.79776  1.06044  1.21509  2.11490  2.90563  2.83659  1.97333  1.13539  1.11827  1.93823  2.81683  2.91997  2.14973  1.23734  1.04899  1.76349  2.70252  2.97461  2.32145  1.36312  1.00942  1.59613  2.56626  2.99881  2.48313  1.50879  1.00078  1.44139  2.41231  2.99181  2.62972  1.66981  1.02336  1.30409  2.24549  2.95382  2.75664  1.84114  1.07645  1.18854  2.07099  2.88605  2.85993  2.01743  1.15838  1.09833  1.89428  2.79060  2.93636  2.19318  1.26660  1.0362netcdf a {
 dimensions:
 	MONTH_IRREG = UNLIMITED ; // (12 currently)
 	bnds = 2 ;
@@ -44568,7 +44569,7 @@ variables:
 		V:long_name = "T[GT=MONTH_IRREG]" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  MONTH_IRREG = 15.5, 45.12125, 74.7425, 105.2425, 135.7425, 166.2425, 
@@ -44620,7 +44621,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44672,7 +44673,7 @@ variables:
 		V:history = "From coads_vwnd" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  COADSX90_90 = 199 ;
@@ -44724,7 +44725,7 @@ variables:
 		T2:long_name = "Z[GZ=ZIRR]" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  ZIRR = 0, 10, 40, 70 ;
@@ -44767,7 +44768,7 @@ variables:
 		V:history = "From coads_climatology" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  COADSX81_83 = 181, 183, 185 ;
@@ -44821,7 +44822,7 @@ data:
   28, 28, 28,
   28, 28, 28 ;
 }
-  1.09833  1.89428  2.79060  2.93636  2.19318  1.26660  1.03629  1.72087  2.67045  2.98353  2.36289  1.39774  1.00434  1.55618  2.52936  2.99999  2.52127  1.54768  1.00350  1.40536  2.37174  2.98521  2.66336  1.71175  1.03379  1.27311  2.20250  2.93965  2.78474  1.88483  1.09426  1.16356  2.02694  2.86475  2.88160  2.06150  1.18301  1.08014  1.85054  2.76283
+9  1.72087  2.67045  2.98353  2.36289  1.39774  1.00434  1.55618  2.52936  2.99999  2.52127  1.54768  1.00350  1.40536  2.37174  2.98521  2.66336  1.71175  1.03379  1.27311  2.20250  2.93965  2.78474  1.88483  1.09426  1.16356  2.02694  2.86475  2.88160  2.06150  1.18301  1.08014  1.85054  2.76283
  
 can mode ignore
  
@@ -44851,7 +44852,7 @@ let v = t[gt=month_irreg]
 save/clobber/file=a.nc v
  LISTing to file a.nc
  
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
 can data/all
 can var v
  
@@ -44862,13 +44863,13 @@ use coads_vwnd
 let v = missing(vwnd,28.5)
 save/clobber/file=a.nc/x=199/y=41/l=40:44 v
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 ! Append later time steps: we add a void point between non-contiguous bounds
  
 save/append/file=a.nc/x=199/y=41/l=50:53 v
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
 can data/all
 can var/all
  
@@ -44878,7 +44879,7 @@ define axis/z/depth/units=meters zirr = {0,10,40,70}
 let t2 = z[gz=zirr]
 save/clobber/file=a.nc t2
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
 can data/all
 can var/all
  
@@ -44894,7 +44895,7 @@ save/clobber/x=181:185/y=1:7/L=1:5/file=a.nc v
  LISTing to file a.nc
 save/append/x=181:185/y=1:7/L=8:9/file=a.nc v
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
 can var v
  
 use a.nc
@@ -44934,7 +44935,67 @@ can var/all
 ! Define an axis using edges
 def axis/t/edges tax={0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
 Replacing definition of axis TAX
-list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
+list tnetcdf a {
+dimensions:
+	COADSX81_81 = 1 ;
+	bnds = 2 ;
+	COADSY46_46 = 1 ;
+	TIME = UNLIMITED ; // (3 currently)
+variables:
+	double COADSX81_81(COADSX81_81) ;
+		COADSX81_81:units = "degrees_east" ;
+		COADSX81_81:modulo = 360. ;
+		COADSX81_81:point_spacing = "even" ;
+		COADSX81_81:axis = "X" ;
+		COADSX81_81:bounds = "COADSX81_81_bnds" ;
+	double COADSX81_81_bnds(COADSX81_81, bnds) ;
+	double COADSY46_46(COADSY46_46) ;
+		COADSY46_46:units = "degrees_north" ;
+		COADSY46_46:point_spacing = "even" ;
+		COADSY46_46:axis = "Y" ;
+		COADSY46_46:bounds = "COADSY46_46_bnds" ;
+	double COADSY46_46_bnds(COADSY46_46, bnds) ;
+	double TIME(TIME) ;
+		TIME:units = "hour since 0000-01-01 00:00:00" ;
+		TIME:time_origin = "01-JAN-0000 00:00:00" ;
+		TIME:modulo = 8765.81982421875 ;
+		TIME:axis = "T" ;
+		TIME:bounds = "TIME_bnds" ;
+	double TIME_bnds(TIME, bnds) ;
+	float SST(TIME, COADSY46_46, COADSX81_81) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+
+// global attributes:
+		:history = "FERRET V6   23-Aug-06" ;
+data:
+
+ COADSX81_81 = 181 ;
+
+ COADSX81_81_bnds =
+  180, 182 ;
+
+ COADSY46_46 = 1 ;
+
+ COADSY46_46_bnds =
+  0, 2 ;
+
+ TIME = 366, 1096.485, 1826.97 ;
+
+ TIME_bnds =
+  0.757499999999993, 731.2425,
+  731.2425, 1461.7275,
+  1461.7275, 2192.2125 ;
+
+ SST =
+  28.28389,
+  28.41851,
+  28.0468 ;
+}
+[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
              T: 0.5 to 9.5
  Column  1: T is T (axis TAX)
  Column  2: TBOXLO is TBOXLO (axis TAX)
@@ -45028,67 +45089,11 @@ list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst
  
 save/clobber/bounds/file=a.nc/x=181/y=1 sst
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/srcnetcdf a {
-dimensions:
-	COADSX81_81 = 1 ;
-	bnds = 2 ;
-	COADSY46_46 = 1 ;
-	TIME = UNLIMITED ; // (3 currently)
-variables:
-	double COADSX81_81(COADSX81_81) ;
-		COADSX81_81:units = "degrees_east" ;
-		COADSX81_81:modulo = 360. ;
-		COADSX81_81:point_spacing = "even" ;
-		COADSX81_81:axis = "X" ;
-		COADSX81_81:bounds = "COADSX81_81_bnds" ;
-	double COADSX81_81_bnds(COADSX81_81, bnds) ;
-	double COADSY46_46(COADSY46_46) ;
-		COADSY46_46:units = "degrees_north" ;
-		COADSY46_46:point_spacing = "even" ;
-		COADSY46_46:axis = "Y" ;
-		COADSY46_46:bounds = "COADSY46_46_bnds" ;
-	double COADSY46_46_bnds(COADSY46_46, bnds) ;
-	double TIME(TIME) ;
-		TIME:units = "hour since 0000-01-01 00:00:00" ;
-		TIME:time_origin = "01-JAN-0000 00:00:00" ;
-		TIME:modulo = 8765.81982421875 ;
-		TIME:axis = "T" ;
-		TIME:bounds = "TIME_bnds" ;
-	double TIME_bnds(TIME, bnds) ;
-	float SST(TIME, COADSY46_46, COADSX81_81) ;
-		SST:missing_value = -1.e+34f ;
-		SST:_FillValue = -1.e+34f ;
-		SST:long_name = "SEA SURFACE TEMPERATURE" ;
-		SST:history = "From coads_climatology" ;
-		SST:units = "Deg C" ;
-
-// global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
-data:
-
- COADSX81_81 = 181 ;
-
- COADSX81_81_bnds =
-  180, 182 ;
-
- COADSY46_46 = 1 ;
-
- COADSY46_46_bnds =
-  0, 2 ;
-
- TIME = 366, 1096.485, 1826.97 ;
-
- TIME_bnds =
-  0.757499999999993, 731.2425,
-  731.2425, 1461.7275,
-  1461.7275, 2192.2125 ;
-
- SST =
-  28.28389,
-  28.41851,
-  28.0468 ;
-}
-netcdf a {
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
+ 
+save/clobber/edges/file=a.nc/x=181/y=1 sst
+ LISTing to file a.nc
+sp "/home/porter/kobrien/OPeNDAP/xnetcdf a {
 dimensions:
 	COADSX81_81 = 1 ;
 	COADSX81_81edges = 2 ;
@@ -45128,7 +45133,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -45176,7 +45181,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -45234,11 +45239,7 @@ data:
   87, 88, 91, 92, 93, 94,
   132, 133, 136, 137, 138, 139 ;
 }
-/ncdump/ncdump" a.nc
- 
-save/clobber/edges/file=a.nc/x=181/y=1 sst
- LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 ! Intentional errors; combinations of qualifiers on SAVE
 set mode ignore
@@ -45267,7 +45268,7 @@ Replacing definition of axis TAX
 let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
 save/clobber/file=irrxzt.nc v
  LISTing to file irrxzt.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" irrxzt.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" irrxzt.nc
  
 can data/all
 can var/all
@@ -47033,7 +47034,12 @@ label 0.1, 0.3, 0, 0, 0.2, "greek<NL>@SGt@SR_y<NL<NL>works"
  
 ! For a very fine grid, coordinates not listed with enough precision.
 GO bn_reset
-cancel              VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err570_fine_grid_list.jnl
+! err570_fine_grid_list.jnl
+!             VARIABLE : X[GX=XFINE] + Y[GY=YFINE]
              LONGITUDE: 155.1W(204.9) to 155.1W(204.9)
              LATITUDE : 19.7N to 19.7N
              GEOMETRY: XY 
@@ -47084,12 +47090,7 @@ DATA:
 224.60300
 224.60350
 224.60400
-mode verify
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-GO err570_fine_grid_list.jnl
-! err570_fine_grid_list.jnl
-! ACM 10/2004
+ ACM 10/2004
  
 ! For a very fine grid in longitude and latitude, the coordinates
 ! are not listed with enough precision to resolve them.
@@ -47502,7 +47503,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASJul 18 2006 14:43:24
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASAug 23 2006 15:03:26
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48010,7 +48011,14 @@ GO bn_curv_mod.jnl
 use tripolar_subset.nc     ! Longitude range is -280 to 80
  
 fill/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
-contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolnetcdf a {
+contour/over/mod/hlim=-180:180 ht, geolon_vert_t[i=1:180,j=1:24], geolat_vert_t[i=1:180,j=1:24]
+ 
+ 
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO bn_shanetcdf a {
 dimensions:
 	TIME = UNLIMITED ; // (2 currently)
 	bnds = 2 ;
@@ -48025,7 +48033,7 @@ variables:
 		A:long_name = "T[GT=TIME]" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  TIME = 0.5, 2 ;
@@ -48036,14 +48044,7 @@ data:
 
  A = 0.5, 2 ;
 }
-at_vert_t[i=1:180,j=1:24]
- 
- 
-GO bn_reset
-cancel mode verify
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-GO bn_shade_keycont.jnl
+de_keycont.jnl
 ! Continuous shade key
 ! test setting it and whether default is restored on next command.
 ! also whether behavior consistent when we call shakey
@@ -48178,7 +48179,7 @@ yes? show grid/t a
  
 yes? save/clob/file=a.nc a
  LISTing to file a.nc
-yes? sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+yes? sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 can data/all
 can var/all
@@ -48189,7 +48190,13 @@ can mem
 yes? use a.nc
 yes? show grid/t a
     GRID GSI1
- name       axis              # pnetcdf longtitle {
+ name       axis              # pts   start                end
+ normal    X
+ normal    Y
+ normal    Z
+ TIME7     T                    2 i   0.5                  2
+ 
+       L     T      netcdf longtitle {
 dimensions:
 	XAX1_10 = 10 ;
 variables:
@@ -48203,7 +48210,7 @@ variables:
 		X_:_FillValue = -1.e+34f ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 		:title = "a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789" ;
 data:
 
@@ -48211,13 +48218,7 @@ data:
 
  X_ = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ;
 }
-ts   start                end
- normal    X
- normal    Y
- normal    Z
- TIME7     T                    2 i   0.5                  2
- 
-       L     T                   TBOX      TBOXLO
+             TBOX      TBOXLO
        1>  0.5                   1         0
        2>  2                     2         1
  
@@ -48254,7 +48255,7 @@ GO err580_long_title.jnl
  
 save/clobber/title="a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789"/file=longtitle.nc x[x=1:10]
  LISTing to file longtitle.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" longtitle.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" longtitle.nc
  
 ! Bug 1180 Allow "use filename.des"
 GO bn_reset
@@ -48307,7 +48308,7 @@ say `a,return=dsettitle`
  !-> MESSAGE/CONTINUE 
 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 
-12345678901234567890123456789012345678901netcdf longtitle {
+12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123netcdf longtitle {
 dimensions:
 	XAX1_5 = 5 ;
 variables:
@@ -48321,7 +48322,7 @@ variables:
 		A:history = "From x" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 		:title = "a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short." ;
 data:
 
@@ -48329,12 +48330,12 @@ data:
 
  A = 1, 2, 3, 4, 5 ;
 }
-23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+45678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
  
 ! Set a dataset title over 80 characters.
 save/title="a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short.  "/clobber/file=longtitle.nc a
  LISTing to file longtitle.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" longtitle.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" longtitle.nc
  
 ! fix for bug 1200:crash due to the long veckey format spec.
 GO bn_reset
@@ -48567,7 +48568,17 @@ GO err580_cdc_timeaxis.jnl
 ! can data/all
  
  
-def axis/t=1-jan-1990:1-feb-1990:1/units=days/t0="01-JAN-0001 00:netcdf my_cdc_timeaxis {
+def axis/t=1-jan-1990:1-feb-1990:1/units=days/t0="01-JAN-0001 00:00:00" tcdc
+let a = sin(t[gt=tcdc]/10000)
+ 
+save/clobber/file=t0_cdc.nc a
+ LISTing to file t0_cdc.nc
+can var/all
+can axis tcdc
+use t0_cdc
+ 
+sh axis tcdc
+ name       axis   netcdf my_cdc_timeaxis {
 dimensions:
 	TCDC = UNLIMITED ; // (15 currently)
 variables:
@@ -48582,25 +48593,15 @@ variables:
 		A:history = "From t0_cdc" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 }
-00:00" tcdc
-let a = sin(t[gt=tcdc]/10000)
- 
-save/clobber/file=t0_cdc.nc a
- LISTing to file t0_cdc.nc
-can var/all
-can axis tcdc
-use t0_cdc
- 
-sh axis tcdc
- name       axis              # pts   start                end
+           # pts   start                end
  TCDC      TIME                32 r   30-DEC-1989 00:00    30-JAN-1990 00:00
 T0 = 01-JAN-0001 00:00:00
    Axis span (to cell edges) = 32
 save/clobber/file=my_cdc_timeaxis.nc/L=1:15 a
  LISTing to file my_cdc_timeaxis.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h my_cdc_timeaxis.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h my_cdc_timeaxis.nc
 say `a,return=t0`
  !-> MESSAGE/CONTINUE 01-JAN-0001 00:00:00
 01-JAN-0001 00:00:00
@@ -48816,13 +48817,13 @@ list is_element_of_str (axy[k=1:2,j=1:2], "a10")
              FILENAME : string4d.nc
              X        : 1
           1.0000000
-list is_element_of_str (axy[k=1:2,j		:history = "FERRET V6   18-Jul-06" ;
-=1:2], "A10")
+list is_element_of_str (axy[k=1:2,j=1:2], "A10")
              VARIABLE : IS_ELEMENT_OF_STR (AXY[K=1:2,J=1:2], "A10")
              FILENAME : string4d.nc
              X        : 1
           0.00000000
-list is_element_of_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
+list is_element_o		:history = "FERRET V6   23-Aug-06" ;
+f_str (axy[k=1:2,j=1:2], {"B0", "QQ", "d4", "m5"})
              VARIABLE : IS_ELEMENT_OF_STR (AXY[K=1:2,J=1:2], {"B0", "QQ", "d4", "m5"})
              FILENAME : string4d.nc
              X        : 1
@@ -48865,7 +48866,7 @@ FERRET_VERSION = "6"
  
 ! history attribute
 let a = 12
-save/clobber/file=revision.nc a; sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" revision.nc | grep history
+save/clobber/file=revision.nc a; sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" revision.nc | grep history
  LISTing to file revision.nc
  
 ! label in upper right
@@ -48929,7 +48930,7 @@ sho command
  CANCEL VARIABLE/ALL/DATASET
  CANCEL AXIS/MODULO/ALL/DEPTH/        
  CANCEL GRID
- CANCEL ATTRIBUT/OUTPUT
+ CANCEL ATTRIBUT/OUTPUT/DATA
  CANCEL ALIAS/ALL
  CANCEL SYMBOL/ALL
  CANCEL         
@@ -49001,7 +49002,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "18-Jul-06:14:42"
+WIN_TITLE = "23-Aug-06:15:02"
  
 set win/title="set the title"
 sho sym win_title
@@ -49019,11 +49020,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :14:42"
+ !-> set win/title=" :15:02"
 set win/title="($session_date):($session_time)"
- !-> set win/title="18-Jul-06:14:42"
+ !-> set win/title="23-Aug-06:15:02"
 sh sym win_title
-WIN_TITLE = "18-Jul-06:14:42"
+WIN_TITLE = "23-Aug-06:15:02"
  
  
 GO bn_reset
@@ -49216,7 +49217,12 @@ list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
 1.2 / 1:  1.200  0.500  1.500  1.000
 2   / 2:  2.000  1.500  2.500  1.000
 3.2 / 3:  3.200  2.500  3.500  1.000
-5   / 4:  5.000  3.500  6.500  3.00netcdf irrxzt {
+5   / 4:  5.000  3.500  6.500  3.000
+7   / 5:  7.000  6.500  7.500  1.000
+8.4 / 6:  8.400  7.500  8.500  1.000
+9   / 7:  9.000  8.500  9.500  1.000
+ 
+def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5,2.5,3.5,6.5,netcdf irrxzt {
 dimensions:
 	XAX = 6 ;
 	bnds = 2 ;
@@ -49244,7 +49250,7 @@ variables:
 		V:long_name = "X[GX=XAX] +Z[GZ=ZAX] + T[GT=TAX]" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX = 1, 2, 5, 6, 7, 8 ;
@@ -49302,12 +49308,7 @@ data:
   87, 88, 91, 92, 93, 94,
   132, 133, 136, 137, 138, 139 ;
 }
-0
-7   / 5:  7.000  6.500  7.500  1.000
-8.4 / 6:  8.400  7.500  8.500  1.000
-9   / 7:  9.000  8.500  9.500  1.000
- 
-def axis/t/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+7.5,8.5,9.5}
 list t[gt=tax], tboxlo[gt=tax], tboxhi[gt=tax], tbox[gt=tax]
              T: 0.5 to 9.5
  Column  1: T is T (axis TAX)
@@ -49334,7 +49335,7 @@ Replacing definition of axis TAX
 let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
 save/clobber/file=irrxzt.nc v
  LISTing to file irrxzt.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" irrxzt.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" irrxzt.nc
  
 ! 3-argument bounds definitions
 def axis/z/bounds zax={1,2,4,8,16,32,64,128}, {0.5,1.5,2.5,4.5,8.5,16.5,32.5,64.5}, {1.5,2.5,4.5,8.5,16.5,32.5,64.5,200}
@@ -49724,7 +49725,29 @@ sh data/att gt4d011
 (PSZW)                  units               CHAR    6    T      METERS
                         positive            CHAR    4    T      down
                         point_spacing       CHAR    6    T      uneven
-                        edges               CHAR    9    F      PSZWedges
+                        edges          netcdf a {
+dimensions:
+	XAX1_3 = 3 ;
+	STRING1_10 = 10 ;
+variables:
+	double XAX1_3(XAX1_3) ;
+		XAX1_3:point_spacing = "even" ;
+		XAX1_3:axis = "X" ;
+	char VAR_B(XAX1_3, STRING1_10) ;
+		VAR_B:long_name = "my strings" ;
+
+// global attributes:
+		:history = "FERRET V6   23-Aug-06" ;
+data:
+
+ XAX1_3 = 1, 2, 3 ;
+
+ VAR_B =
+  "Seattle",
+  "Skykomish",
+  "Snoqualmie" ;
+}
+     CHAR    9    F      PSZWedges
   
 (PSZWedges)             edges               CHAR    1    F
   
@@ -49818,29 +49841,7 @@ sho att/all var_b
  
 save/clobber/file=a.nc var_b
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/nenetcdf a {
-dimensions:
-	XAX1_3 = 3 ;
-	STRING1_10 = 10 ;
-variables:
-	double XAX1_3(XAX1_3) ;
-		XAX1_3:point_spacing = "even" ;
-		XAX1_3:axis = "X" ;
-	char VAR_B(XAX1_3, STRING1_10) ;
-		VAR_B:long_name = "my strings" ;
-
-// global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
-data:
-
- XAX1_3 = 1, 2, 3 ;
-
- VAR_B =
-  "Seattle",
-  "Skykomish",
-  "Snoqualmie" ;
-}
-tcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 go bn_reset
 cancel mode verify
@@ -50515,7 +50516,16 @@ set att temp.missing_value = 12
 shade/L=2 temp
  
 !-----
-! access and netcdf a {
+! access and edit attributes of coordinate variables.
+! Specify names of coord variables inside parentheses
+ 
+use ocean_atlas_temp
+use coads_climatology
+ 
+! Get attributes of a coordinate variable
+ 
+list (coadsx).units
+ netcdf a {
 dimensions:
 	COADSX105_105 = 1 ;
 	COADSY45_45 = 1 ;
@@ -50544,7 +50554,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  COADSX105_105 = 229 ;
@@ -50581,7 +50591,7 @@ variables:
 		SST:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  COADSX81_81 = 181 ;
@@ -50591,16 +50601,7 @@ data:
  TIME = 366, 1096.485, 1826.97, 2557.455, 3287.94, 4018.425, 4748.91, 
     5479.395, 6209.88, 6940.365, 7670.85, 8401.335 ;
 }
-edit attributes of coordinate variables.
-! Specify names of coord variables inside parentheses
- 
-use ocean_atlas_temp
-use coads_climatology
- 
-! Get attributes of a coordinate variable
- 
-list (coadsx).units
-             VARIABLE : (COADSX).UNITS
+            VARIABLE : (COADSX).UNITS
              FILENAME : coads_climatology.cdf
         "degrees_east"
 list (coadsx).modulo
@@ -50626,7 +50627,7 @@ set att/output (`sst,return=xaxis`).newatt
 save/clobber/file=a.nc/x=130w/y=0 sst
  LISTing to file a.nc
  
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -c a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -c a.nc
  
 ! modfalse.nc is a file with modulo attribute on x axis
 ! explicitly set to FALSE
@@ -50636,7 +50637,7 @@ set att/output (`sst,return=xaxis`).modulo
  !-> set att/output (COADSX81_81).modulo
 save/clobber/file=a.nc sst
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -c a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -c a.nc
  
 ! Reset attributes as in SET AXIS
  
@@ -50872,7 +50873,15 @@ let pq = temp.pp
 list pq
              VARIABLE : TEMP.PP
              FILENAME : ocean_atlas_temp.cdf
-        "PP now hanetcdf err491_attval {
+        "PP now has some text."
+ 
+! set an attribute when the variable is not in the default dataset.
+ 
+use gt4d011
+def att/d=1 temp.morenew = 33
+sho att/all temp[d=1]
+     attributes for dataset: ./ocean_atlas_temp.cdf
+ TEMP.missing_value = -1.netcdf err491_attval {
 dimensions:
 	Ti = UNLIMITED ; // (1 currently)
 	Yc = 127 ;
@@ -50962,7 +50971,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 }
 netcdf a {
 dimensions:
@@ -50996,7 +51005,7 @@ variables:
 		Elev:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 }
 netcdf a {
 dimensions:
@@ -51016,7 +51025,7 @@ variables:
 		BB:my_title = "This is my new variable bb" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -51040,7 +51049,7 @@ variables:
 		BB:another_attr = 6.f ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -51058,7 +51067,7 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -51077,20 +51086,12 @@ variables:
 		BB:long_name = "{3,4.5,6,7,4}" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
 }
-s some text."
- 
-! set an attribute when the variable is not in the default dataset.
- 
-use gt4d011
-def att/d=1 temp.morenew = 33
-sho att/all temp[d=1]
-     attributes for dataset: ./ocean_atlas_temp.cdf
- TEMP.missing_value = -1.000000E+34
+000000E+34
  TEMP._FillValue = -1.000000E+34
  TEMP.long_name = Temperature 
  TEMP.history = From ocean_atlas_monthly 
@@ -51135,17 +51136,17 @@ cancel mode verify
 ! mixed-case names.
  
 use err491_attval.cdf
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h err491_attval.cdf
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h err491_attval.cdf
 save/clobber/file=a.nc elev[i=3,j=2:4]
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 cancel mode upcase_output
 save/clobber/file=a.nc elev[i=3,j=2:4]
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 set mode/last upcase_output
  
@@ -51175,28 +51176,28 @@ set att/output bb.my_title
  
 save/clobber/file=a.nc aa,bb
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -c a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -c a.nc
  
 ! Output all attributes
  
 set att/output=all bb
 save/clobber/file=a.nc aa,bb
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -c a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -c a.nc
  
 ! Just output the default attributes
  
 set att/output=default bb
 save/clobber/file=a.nc bb
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -c a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -c a.nc
  
 ! Output none of the attributes for aa
  
 set att/output=none aa
 save/clobber/file=a.nc aa,bb
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -c a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -c a.nc
  
 go bn_reset
 cancel mode verify
@@ -51216,7 +51217,16 @@ sh att/all  (`temp,return=xaxis`)
  (XAX_LEV9421_380).point_spacing = even 
  
 ! Surpress output of existing attribute
-can att/out (`temp,return=xaxis`).point_spnetcdf a {
+can att/out (`temp,return=xaxis`).point_spacing
+ !-> can att/out (XAX_LEV9421_380).point_spacing
+ 
+! Surpress output of an attribute that Ferret would otherwise add.
+ 
+can att/out (`temp,return=xaxis`).axis
+ !-> can att/out (XAX_LEV9421_380).axis
+save/file=a.nc/clobber temp
+ LISTing to file a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linetcdf a {
 dimensions:
 	XAX_LEV9421_380 = 360 ;
 	YAX_LEV94 = 180 ;
@@ -51248,7 +51258,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 }
 netcdf a {
 dimensions:
@@ -51282,7 +51292,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 }
 netcdf a {
 dimensions:
@@ -51314,7 +51324,7 @@ variables:
 		TEMP:units = "Deg C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 }
 netcdf a {
 dimensions:
@@ -51340,7 +51350,7 @@ variables:
 		A3:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -51371,7 +51381,7 @@ variables:
 		V4:history = "From EZ.DAT" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_5 = 1, 2, 3, 4, 5 ;
@@ -51380,16 +51390,7 @@ data:
 
  V4 = 0.7597, 0.6455, 0.5935, 0.5458, 0.5147 ;
 }
-acing
- !-> can att/out (XAX_LEV9421_380).point_spacing
- 
-! Surpress output of an attribute that Ferret would otherwise add.
- 
-can att/out (`temp,return=xaxis`).axis
- !-> can att/out (XAX_LEV9421_380).axis
-save/file=a.nc/clobber temp
- LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+nux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 ! subregions create child axes with new names
 ! Check that settings hold for such an output file.
@@ -51408,7 +51409,7 @@ can att/out (`temp,return=xaxis`).axis
  !-> can att/out (XAX_LEV9421_380).axis
 save/file=a.nc/clobber temp
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 ! cancel output of attributes of the variable itself
 can region
@@ -51423,7 +51424,7 @@ can att/out temp.history
 can att/out temp.long_name
 save/file=a.nc/clobber temp
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 go bn_reset
 cancel mode verify
@@ -51463,7 +51464,7 @@ sh dat/att
   
 save/file=a.nc/clobber a1,a2,a3
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 ! now read it as a delimited file
  
@@ -51479,7 +51480,7 @@ sh att/all v1
  V1.strval = 2 
 save/clobber/file=a.nc v1,v4
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 ! and a stream dataset
  
@@ -51509,7 +51510,22 @@ cancel mode verify
 !-----
 ! manipulate attributes of user-defined variables
  
-let a = {12netcdf a {
+let a = {12,14,15}
+def att a.three={1,2,3}
+set att/output a.three
+def att a.four = {"theory"}
+set att/output a.four
+sh att/all a
+     attributes for user-defined variables
+ A.long_name = {12,14,15} 
+ A.missing_value = -1.000000E+34
+ A.three = 1, 2, 3
+ A.four = theory 
+sh dat/att
+     currently SET data sets:
+save/file=a.nc/clobber a
+ LISTing to file a.nc
+snetcdf a {
 dimensions:
 	XAX1_3 = 3 ;
 variables:
@@ -51524,7 +51540,7 @@ variables:
 		A:four = "theory" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XAX1_3 = 1, 2, 3 ;
@@ -51563,7 +51579,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 		:simulation = "K-Bay OAR3d model (200m)" ;
 		:start_date = "980105000000" ;
 		:option = 1 ;
@@ -51659,7 +51675,7 @@ variables:
 		TEMP:units = "deg. C" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 		:dt_internal = 15. ;
 }
 netcdf a {
@@ -51696,7 +51712,7 @@ variables:
 		ELEV:history = "From err491_attval" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  XC = -135.50957036625, -135.496120344706, -135.482670323162, 
@@ -51747,22 +51763,7 @@ data:
  SALT =
   0.00016033259453252, 0.000142609584145248, 0.000126281287521124, 
     0.000120904369396158, 0.000120412340038456, 0.000123045203508809, 
-,14,15}
-def att a.three={1,2,3}
-set att/output a.three
-def att a.four = {"theory"}
-set att/output a.four
-sh att/all a
-     attributes for user-defined variables
- A.long_name = {12,14,15} 
- A.missing_value = -1.000000E+34
- A.three = 1, 2, 3
- A.four = theory 
-sh dat/att
-     currently SET data sets:
-save/file=a.nc/clobber a
- LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+p "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
  
 !-----
@@ -51776,7 +51777,7 @@ set att/out=all .   ! from the default data set
 save/file=a.nc/clobber elev
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 ! Choose a single global attribute to write, from dataset 1
 can data/all
@@ -51787,14 +51788,14 @@ save/clobber/file=a.nc elev[d=1], temp[d=2,x=130w,k=1,y=-20:20]
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_SHORT to match output type of variable NC_FLOAT
  
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 ! Note: this syntax does not work
 ! use err491_attval
 ! use ocean_atlas_temp
 ! set att/out  ..min_slope[d=1]
 ! save/file=a.nc/clobber elev[d=1]
-! sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" -h a.nc
+! sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" -h a.nc
  
 go bn_reset
 cancel mode verify
@@ -51816,7 +51817,7 @@ set var/outtype=input elev
  
 save/clobber/file=a.nc/j=1 elev
  LISTing to file a.nc
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 go bn_reset
 cancel mode verify
@@ -51833,7 +51834,7 @@ set var/outtype=int4 temp
 save/file=a.nc/clobber/y=1/k=1/L=1 temp
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_INT
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc | grep -A2 -i temp
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc | grep -A2 -i temp
  
 can data/all
 use gt4d011
@@ -51843,7 +51844,7 @@ set var/outtype=double salt
 save/clobber/file=a.nc/y=1/k=1/L=1 salt
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc | grep -A2 -i salt
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc | grep -A2 -i salt
  
 can data gt4d011
  
@@ -51869,7 +51870,20 @@ VA = "nam[i=1]"
 VA = "nam[i=2]"
  !-> set var/outtype=input the_bullet
  !-> if 0 THEN save/clobber/file=a.nc `nam[i=2]`   ELSE save/append/file=a.nc `nam[i=2]`
- !-> LIST/FORMAnetcdf a {
+ !-> LIST/FORMAT=CDF/append/file=a.nc the_bullet
+ LISTing to file a.nc
+!-> REPEAT: M:3
+ !-> def sym va = nam[i=3]
+VA = "nam[i=3]"
+ !-> set var/outtype=input order
+ !-> if 0 THEN save/clobber/file=a.nc `nam[i=3]`   ELSE save/append/file=a.nc `nam[i=3]`
+ !-> LIST/FORMAT=CDF/append/file=a.nc order
+ LISTing to file a.nc
+!-> REPEAT: M:4
+ !-> def sym va = nam[i=4]
+VA = "nam[i=4]"
+ !-> set var/outtype=input rigue
+ !-> if 0 THEN save/clnetcdf a {
 dimensions:
 	J = 3 ;
 	I = 2 ;
@@ -51882,20 +51896,20 @@ variables:
 		I:point_spacing = "even" ;
 		I:axis = "Y" ;
 	char BROILED(I, J, STRING1_3) ;
-		BROILED:long_name = "IF TEMP GT 29.5 THEN TEMP" ;
+		BROILED:long_name = "BROILED" ;
 		BROILED:history = "From test0" ;
 	byte THE_BULLET(I, J) ;
-		THE_BULLET:long_name = "IF TEMP GT 29.5 THEN TEMP" ;
+		THE_BULLET:long_name = "THE_BULLET" ;
 		THE_BULLET:history = "From test0" ;
 	short ORDER(I, J) ;
-		ORDER:long_name = "IF TEMP GT 29.5 THEN TEMP" ;
+		ORDER:long_name = "ORDER" ;
 		ORDER:history = "From test0" ;
 	int RIGUE(I, J) ;
-		RIGUE:long_name = "IF TEMP GT 29.5 THEN TEMP" ;
+		RIGUE:long_name = "RIGUE" ;
 		RIGUE:history = "From test0" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  J = 2, 4, 6 ;
@@ -51930,29 +51944,16 @@ variables:
 		B:long_name = "hello" ;
 
 // global attributes:
-		:history = "FERRET V6   18-Jul-06" ;
+		:history = "FERRET V6   23-Aug-06" ;
 data:
 
  B = 1 ;
 }
-T=CDF/append/file=a.nc the_bullet
- LISTing to file a.nc
-!-> REPEAT: M:3
- !-> def sym va = nam[i=3]
-VA = "nam[i=3]"
- !-> set var/outtype=input order
- !-> if 0 THEN save/clobber/file=a.nc `nam[i=3]`   ELSE save/append/file=a.nc `nam[i=3]`
- !-> LIST/FORMAT=CDF/append/file=a.nc order
- LISTing to file a.nc
-!-> REPEAT: M:4
- !-> def sym va = nam[i=4]
-VA = "nam[i=4]"
- !-> set var/outtype=input rigue
- !-> if 0 THEN save/clobber/file=a.nc `nam[i=4]`   ELSE save/append/file=a.nc `nam[i=4]`
+obber/file=a.nc `nam[i=4]`   ELSE save/append/file=a.nc `nam[i=4]`
  !-> LIST/FORMAT=CDF/append/file=a.nc rigue
  LISTing to file a.nc
  
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
 set var/outtype=double a_loan
  *** NOTE: Converting single precision variable to double on output
@@ -51975,7 +51976,7 @@ let/title="hello" b = 1
 save/clobber/file=a.nc b
  LISTing to file a.nc
  *** NOTE: Converting data type of missing_value NC_FLOAT to match output type of variable NC_DOUBLE
-sp "/home/porter/ansley/ans_ferret/nc_attributes/netcdf/netcdf-3.5.1/src/ncdump/ncdump" a.nc
+sp "/home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump" a.nc
  
  
  
@@ -52295,6 +52296,104 @@ sp mv asc.dat asc.nc
 use asc.nc
  
 set mode/last ignore
+ 
+go bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+go bn_fcn_calls.jnl
+! Simple tests of external functions
+! these are not otherwise tested in the benchmarkd
+! ACM 23-Aug-2006
+ 
+list date1900("23-aug-06")
+             VARIABLE : DATE1900("23-aug-06")
+          0.0000
+ 
+! tax_ functions
+use gt4d011
+ 
+let tt = t[gt=temp]
+let tvar = temp[x=136w,y=3.2]
+ 
+list/L=15:20 tax_datestring(tt,tvar,"hour")
+             VARIABLE : TAX_DATESTRING(TT,TVAR,"hour")
+             FILENAME : gt4d011.cdf
+             SUBSET   : 6 points (TIME)
+ 10-NOV-1982 16 / 15:"10-NOV-1982 16"
+ 16-NOV-1982 18 / 16:"16-NOV-1982 18"
+ 22-NOV-1982 20 / 17:"22-NOV-1982 20"
+ 28-NOV-1982 22 / 18:"28-NOV-1982 22"
+ 05-DEC-1982 00 / 19:"05-DEC-1982 00"
+ 11-DEC-1982 02 / 20:"11-DEC-1982 02"
+list/L=15:20 tax_datestring(tt,tvar,"day")
+             VARIABLE : TAX_DATESTRING(TT,TVAR,"day")
+             FILENAME : gt4d011.cdf
+             SUBSET   : 6 points (TIME)
+ 10-NOV-1982 16 / 15:"10-NOV-1982"
+ 16-NOV-1982 18 / 16:"16-NOV-1982"
+ 22-NOV-1982 20 / 17:"22-NOV-1982"
+ 28-NOV-1982 22 / 18:"28-NOV-1982"
+ 05-DEC-1982 00 / 19:"05-DEC-1982"
+ 11-DEC-1982 02 / 20:"11-DEC-1982"
+list/L=15:20 tax_dayfrac(tt,tvar), tax_dayfrac(tt,tvar)*24.
+             DATA SET: ./gt4d011.cdf
+             TIME: NOV-1982 to DEC-1982
+ Column  1: EX#1 is TAX_DAYFRAC(TT,TVAR)
+ Column  2: EX#2 is TAX_DAYFRAC(TT,TVAR)*24.
+                       EX#1   EX#2
+10-NOV-1982 16 / 15:  0.6667  16.00
+16-NOV-1982 18 / 16:  0.7500  18.00
+22-NOV-1982 20 / 17:  0.8333  20.00
+28-NOV-1982 22 / 18:  0.9167  22.00
+05-DEC-1982 00 / 19:  0.0000   0.00
+11-DEC-1982 02 / 20:  0.0833   2.00
+list/L=15:20 tax_day(tt,tvar), tax_jday(tt,tvar)
+             DATA SET: ./gt4d011.cdf
+             TIME: NOV-1982 to DEC-1982
+ Column  1: EX#1 is TAX_DAY(TT,TVAR)
+ Column  2: EX#2 is TAX_JDAY(TT,TVAR)
+                      EX#1   EX#2
+10-NOV-1982 16 / 15:  10.00  314.0
+16-NOV-1982 18 / 16:  16.00  320.0
+22-NOV-1982 20 / 17:  22.00  326.0
+28-NOV-1982 22 / 18:  28.00  332.0
+05-DEC-1982 00 / 19:   5.00  339.0
+11-DEC-1982 02 / 20:  11.00  345.0
+list/L=15:20 tax_month(tt,tvar), tax_yearfrac(tt,tvar)
+             DATA SET: ./gt4d011.cdf
+             TIME: NOV-1982 to DEC-1982
+ Column  1: EX#1 is TAX_MONTH(TT,TVAR)
+ Column  2: EX#2 is TAX_YEARFRAC(TT,TVAR)
+                      EX#1    EX#2
+10-NOV-1982 16 / 15:  11.00  0.8603
+16-NOV-1982 18 / 16:  11.00  0.8767
+22-NOV-1982 20 / 17:  11.00  0.8932
+28-NOV-1982 22 / 18:  11.00  0.9096
+05-DEC-1982 00 / 19:  12.00  0.9288
+11-DEC-1982 02 / 20:  12.00  0.9452
+list/L=15:20 tax_year(tt,tvar)
+             VARIABLE : TAX_YEAR(TT,TVAR)
+             FILENAME : gt4d011.cdf
+             SUBSET   : 6 points (TIME)
+ 10-NOV-1982 16 / 15:  1982.
+ 16-NOV-1982 18 / 16:  1982.
+ 22-NOV-1982 20 / 17:  1982.
+ 28-NOV-1982 22 / 18:  1982.
+ 05-DEC-1982 00 / 19:  1982.
+ 11-DEC-1982 02 / 20:  1982.
+list tax_units(tvar)
+             VARIABLE : TAX_UNITS(TVAR)
+             FILENAME : gt4d011.cdf
+          3600.
+ 
+! fill_xy
+can data/all
+use coads_climatology
+let mask = 0*x[gx=sst] + y[gy=sst]  + 1
+shade fill_xy(sst[l=1], mask[l=1], 1)
+shade fill_xy(sst[l=1], mask[l=1], 4)
+ 
  
 GO bn_reset
 cancel mode verify
@@ -53143,14 +53242,65 @@ list strrindex(var,"s")
  4   / 4:  0.000
  5   / 5:  8.000
  
+! POLYGON/LINE over a depth axis.
+GO bn_reset.jnl
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err581_poly_rev.jnl
+! err581_poly_rev.jnl
+! POLYGON/LINE mis-locates the line when there is a depth or
+! other reversed axis. Bugs 842, 843, 844
+! ACM 8/10/2006
+ 
+! From Patrick, polygon/line on a depth axis
+ 
+use gt4d011
+ 
+shade temp[i=@ave,l=1]
+ 
+let v1={-3,2,0.5,2}
+let v2={20,80,50,30}
+let v3={10,-3,16,3}
+ 
+! Overlay sample data over a variable with a depth axis
+! /line=1 did not work
+ 
+go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 2
+ 
+ 
+! XZ plot
+shade temp[j=@ave,l=1]
+let v1={221,225,232,235}
+let v2={20,80,50,30}
+let v3={10,-3,16,3}
+ 
+go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 2
+ 
+ 
+! ZT plot
+shade temp[i=@ave,j=@ave]
+let v1={22800,23500,24800,26000}
+let v2={20,80,50,30}
+let v3={10,-3,16,3}
+ 
+go polymark poly/lev=(-5,30,1)/pal=white/fill/line=1/nolab/over v1 v2 v3 circle 2
+ 
+ 
+! And, from Andrew with other reversed axes.
+ 
+yes? ppl cross 1
+yes? plot/vl=4:-4/hl=4:-4/vs/line/title="there should be just one triangle" {1,2,3,1},{0,2,1,0}
+yes? poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
+ 
  
  
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.6.9-22. - 07/18/06
- 	18-Jul-06 14:43     
+ 	Linux(g77) 2.6.9-22. - 08/23/06
+ 	23-Aug-06 15:03     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -53959,8 +54109,8 @@ cancel mode verify
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.6.9-22. - 07/18/06
- 	18-Jul-06 14:43     
+ 	Linux(g77) 2.6.9-22. - 08/23/06
+ 	23-Aug-06 15:03     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54143,8 +54293,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.6.9-22. - 07/18/06
- 	18-Jul-06 14:43     
+ 	Linux(g77) 2.6.9-22. - 08/23/06
+ 	23-Aug-06 15:03     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54257,4 +54407,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Tue Jul 18 14:43:39 PDT 2006
+Ended at Wed Aug 23 15:03:41 PDT 2006

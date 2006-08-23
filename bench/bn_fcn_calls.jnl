@@ -1,0 +1,27 @@
+! Simple tests of external functions 
+! these are not otherwise tested in the benchmarkd
+! ACM 23-Aug-2006
+
+list date1900("23-aug-06")
+
+! tax_ functions 
+use gt4d011
+
+let tt = t[gt=temp]
+let tvar = temp[x=136w,y=3.2]
+
+list/L=15:20 tax_datestring(tt,tvar,"hour")
+list/L=15:20 tax_datestring(tt,tvar,"day")
+list/L=15:20 tax_dayfrac(tt,tvar), tax_dayfrac(tt,tvar)*24.
+list/L=15:20 tax_day(tt,tvar), tax_jday(tt,tvar) 
+list/L=15:20 tax_month(tt,tvar), tax_yearfrac(tt,tvar)
+list/L=15:20 tax_year(tt,tvar)
+list tax_units(tvar)
+
+! fill_xy
+can data/all
+use coads_climatology
+let mask = 0*x[gx=sst] + y[gy=sst]  + 1
+shade fill_xy(sst[l=1], mask[l=1], 1)
+shade fill_xy(sst[l=1], mask[l=1], 4)
+

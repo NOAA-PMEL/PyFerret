@@ -1,13 +1,12 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     63720459 Jun 23 12:10 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+-rwxr-xr-x    1 ansley   tmap     41140641 Aug 23 12:28 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/
 Running the tests of external functions y
-Benchmark run by ansley
-Note: initialize category in mem/find_var_name.F
+Benchmark run by ansleyh
+Note: fix one line in nc_get_attrib.F that broke too_long test for Kevins file. new tests of previously untested functions date1900, tax_*
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
-GRIB_ENV=/home/porter/ansley/FERRET/external_functions/grib/grib_v3.0.0
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,9 +19,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-FER_LOCAL_EXTFCNS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Fri Jun 23 12:16:41 PDT 2006
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/
+Beginning at Wed Aug 23 12:40:53 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -607,10 +605,25 @@ set att (COADSX81_81).axis = "Z"
  ** netCDF error:                                     
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
- **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, FLOAT, BYTE, INT, SHORT
+ **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
- **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, FLOAT, BYTE, INT, SHORT
+ **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=garbage broiled
+ **TMAP ERR: non-existent or not on line
+             this_is_not_a_file.nc
+SET DAT/FORM=CDF this_is_not_a_file.nc
+ **netCDF error
+             No(OPeNDAP/netCDF Error code 2)
+             Data set: http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf
+SET DAT/FORM=CDF  "http://www.ferret.noaa.gov/cgi-bin/nph-nc/data/nofile.cdf"
+ **netCDF error
+             OPeND(OPeNDAP/netCDF Error code 1001)
+             Data set: http://noserver/a/nofile.cdf
+SET DAT/FORM=CDF  "http://noserver/a/nofile.cdf"
+ **netCDF error
+             Not (OPeNDAP/netCDF Error code -51)
+             Data set: ./asc.nc
+SET DAT/FORM=CDF asc.nc
  **ERROR: illegal use of transformation:  not all dimensions present on grid
 shade sst[x=@var,k=@var]
  **ERROR: illegal use of transformation:  not all dimensions present on grid
@@ -680,4 +693,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri Jun 23 12:20:48 PDT 2006
+Ended at Wed Aug 23 12:44:45 PDT 2006

@@ -32,7 +32,7 @@ include ../ef_utility/platform_specific_flags.mk.$(HOSTTYPE)
 #
 
 # all:	ferret_cmn expndi_by.so expndi_by_z.so expndi_by_t.so
-all:	ferret_cmn 
+all:	ferret_cmn cmprsi_by.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

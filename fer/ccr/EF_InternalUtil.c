@@ -2896,6 +2896,11 @@ else if ( !strcmp(name,"lanczos_init_") ) return (void *)FORTRAN(lanczos_init);
 else if ( !strcmp(name,"lanczos_work_size_") ) return (void *)FORTRAN(lanczos_work_size);
 else if ( !strcmp(name,"lanczos_compute_") ) return (void *)FORTRAN(lanczos_compute);
 
+/* lsl_lowpass.F */
+else if ( !strcmp(name,"lsl_lowpass_init_") ) return (void *)FORTRAN(lsl_lowpass_init);
+else if ( !strcmp(name,"lsl_lowpass_work_size_") ) return (void *)FORTRAN(lsl_lowpass_work_size);
+else if ( !strcmp(name,"lsl_lowpass_compute_") ) return (void *)FORTRAN(lsl_lowpass_compute);
+
 /* scat2grid_t.F */
 else if ( !strcmp(name,"scat2grid_t_init_") ) return (void *)FORTRAN(scat2grid_t_init);
 else if ( !strcmp(name,"scat2grid_t_work_size_") ) return (void *)FORTRAN(scat2grid_t_work_size);

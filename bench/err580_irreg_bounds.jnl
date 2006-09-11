@@ -9,7 +9,8 @@ yes? let a = t[gt=time]
 yes? show grid/t a
 
 yes? save/clob/file=a.nc a
-yes? sp ncdump a.nc
+sp echo "err580_irreg_bounds.jnl --- " >> all_ncdump.out
+yes? sp ncdump a.nc >> all_ncdump.out; sp sleep 1
 
 can data/all
 can var/all

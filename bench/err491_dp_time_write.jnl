@@ -10,7 +10,9 @@ define axis/t="18-jul-1997:14:09":"20-jul-1997:00:09":5/units=min t5
 LET my_var = t[gt=t5]
 
 save/clobber/file=out.cdf my_var[l=1]
-spawn "ncdump out.cdf"
+sp echo "err491_dp_time_write.jnl --- 1 original file" >> all_ncdump.out
+sp ncdump out.cdf >> all_ncdump.out; sp sleep 1
 
 save/append/file=out.cdf my_var[l=2]
-spawn "ncdump out.cdf"
+sp echo "err491_dp_time_write.jnl --- 2 after append" >> all_ncdump.out
+sp ncdump out.cdf >> all_ncdump.out; sp sleep 1

@@ -3,8 +3,9 @@
 
 ! Write a file -- see that it has the attribute AXIS = 
 use coads_climatology
-save/x=180/y=0/file=ax_att.cdf sst
-sp ncdump -c ax_att.cdf | grep "axis ="
+save/clobber/x=180/y=0/file=ax_att.cdf sst
+sp echo "bn_ax_att.jnl --- attribute AXIS=" >> all_ncdump.out
+sp ncdump -c ax_att.cdf | grep "axis ="  >> all_ncdump.out; sp sleep 1
 
 ! Read the file
 can data/all

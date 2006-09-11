@@ -17,10 +17,12 @@ let status = nco_attr("x.nc", "B", "units", "c", "o", "lon")
 load status
 let status = nco_attr("x.nc", "global", "history", "c","a"," Add text to history attribute")
 load status
-sp ncdump -h x.nc
+sp echo "bn_nco_functions.jnl --- original file" >> all_ncdump.out
+sp ncdump -h x.nc >> all_ncdump.out; sp sleep 1
 let status = nco_attr("x.nc", "global", "history", "c","a","\nAdd a new line  to the history")
 load status
-sp ncdump -h x.nc
+sp echo "bn_nco_functions.jnl --- add line to history" >> all_ncdump.out
+sp ncdump -h x.nc >> all_ncdump.out; sp sleep 1
 
 use coads_climatology
 save/clobber/file=s1.nc/L=1/x=181:185/y=9 sst
@@ -32,6 +34,7 @@ can data coads_climatology
 
 let status = nco("ncrcat", "s1.nc s2.nc s3.nc s123.nc")
 load status
-sp ncdump -h s123.nc
+sp echo "bn_nco_functions.jnl --- ncrcat call" >> all_ncdump.out
+sp ncdump -h s123.nc >> all_ncdump.out; sp sleep 1
 use s123.nc
 list/i=1 sst

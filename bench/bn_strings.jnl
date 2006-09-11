@@ -69,9 +69,11 @@ canc data test_string
 let a = {"hello","goodbye", "wave to me"}
 let b = "one line of text"
 save/clobber/file=test_string.cdf a,b
-sp ncdump test_string.cdf
+sp echo "bn_strings.jnl --- 1 original file" >> all_ncdump.out
+sp ncdump test_string.cdf >> all_ncdump.out; sp sleep 1
 save/append/file=test_string.cdf d
 let b2 = "two line of text"   ! the same string length as b
+sp echo "bn_strings.jnl --- 2 append to file" >> all_ncdump.out
 save/append/file=test_string.cdf b2
 canc var/all
 use test_string.cdf
@@ -81,7 +83,8 @@ list/nohead b
 
 set var/title="partial filename list" d
 save/clobber/file=test_string.cdf/heading=enhanced d[i=2:5]
-sp ncdump test_string.cdf
+sp echo "bn_strings.jnl --- 3 enhanced heading" >> all_ncdump.out
+sp ncdump test_string.cdf >> all_ncdump.out; sp sleep 1
 canc data/all
 use test_string
 show data test_string
@@ -128,7 +131,8 @@ list/nohead  samplel(TSEQUENCE({"a","b",,"d","e","f"}),{3,2,,1})
 let a = {"a",," ",""}
 let b = samplej(YSEQUENCE({"a","b",,"d","e","f"}),{2,,1})
 save/clobber/file=foo.cdf a,b
-sp ncdump foo.cdf
+sp echo "bn_strings.jnl --- 4 sample and ysequence functions on string var" >> all_ncdump.out
+sp ncdump foo.cdf >> all_ncdump.out; sp sleep 1
 
 let a =  RESHAPE({"a","b",,"d","e","f"},I[i=1:3]+j[j=1:2])
 list  a

@@ -26,6 +26,8 @@
 # *sh* log the header information to a single benchmark history file
 # acm   4/05 added more .plt files for metafile checking, but fewer bnplot.plt files 
 #            (bn_curv now saves only one).
+# acm   9/06 Change so that all ncdump output is directed to a file all_ncdump.out. 
+#            append this to the log file 
 
 # usage % run_all
 
@@ -69,6 +71,10 @@ else if ( $HOSTTYPE =~ *iris* ) then
    set machine = "sgi"
 else if ( $HOSTTYPE =~ *hp* ) then
    set machine = "hp"
+else if ( $HOSTTYPE =~ *ia64-linux*) then
+    set machine = "ia64-linux"
+else if ( $HOSTTYPE =~ *x86_64-linux*) then
+    set machine = "x86_64-linux"
 else if ( $HOSTTYPE =~ *linux*) then
     set machine = "linux"
 else
@@ -105,7 +111,8 @@ set date_stamp = `date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
 set log_file = "all_${date_stamp}.${machine}_log"
 set err_file = "all_${date_stamp}.${machine}_err"
 set plt_file = "all_${date_stamp}.${machine}_plt"
-
+set ncdump_file = "all_ncdump.out"
+rm -f ncdump_file $ncdump_file
 
 #set up external functions search path
 setenv FER_EXTERNAL_FUNCTIONS $efdir
@@ -155,6 +162,7 @@ echo "Using external functions from $efdir" >>&$log_file
 echo "Running the tests of external functions $do_shared_obj" >>&$log_file
 echo "Benchmark run by $bmarker" >>&$log_file
 echo "Note: $bcomment" >>&$log_file
+echo "ncdump output will be in $ncdump_file, and appended to this log file " >>&$log_file
 
 #set up a generic data environment
 echo "***** Restricting Ferret paths to bench directory *****" >>&$log_file
@@ -209,6 +217,15 @@ endif
 if ( $do_shared_obj == "y" ) then
   ($fver <bn_all_ef_shell.jnl >>$log_file) >>&$err_file
 endif
+
+# Append the ncdump output file to the log file
+echo  " " >>&$log_file
+echo  "-----" >>&$log_file
+echo  "Appending ncdump output" >>&$log_file
+cat  $ncdump_file >>& $log_file
+echo  "-----" >>&$log_file
+echo  "end of ncdump output" >>&$log_file
+echo  " " >>&$log_file
 
 # Now, lets restart ferret and run the bug fix journal file
 # 3.4.98 - moved this to bn491_all *kob*

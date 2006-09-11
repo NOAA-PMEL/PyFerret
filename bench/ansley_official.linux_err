@@ -1,10 +1,11 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     41140641 Aug 23 12:28 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/
+-rwxr-xr-x    1 ansley   tmap     47704727 Sep  7 10:44 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
-Benchmark run by ansleyh
-Note: fix one line in nc_get_attrib.F that broke too_long test for Kevins file. new tests of previously untested functions date1900, tax_*
+Benchmark run by ansley
+Note: rework run_all and benchmarks so ncdump output goes to a separate file and is appended to the log file at the end.
+ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
@@ -19,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux/
-Beginning at Wed Aug 23 12:40:53 PDT 2006
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
+Beginning at Mon Sep 11 11:16:12 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -693,4 +694,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Aug 23 12:44:45 PDT 2006
+Ended at Mon Sep 11 11:20:10 PDT 2006

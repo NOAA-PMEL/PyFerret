@@ -5,7 +5,8 @@
 * the CHAR*(*) string
 
 	INTEGER     size_rbuff
-	PARAMETER ( size_rbuff = 256 )
+*	PARAMETER ( size_rbuff = 256 )
+	PARAMETER ( size_rbuff = 2048 )  ! Increased ferret 6.01 8/2006
 
 	COMMON/ XRISC_BUFF / len_rbuff, risc_buff
 	CHARACTER  risc_buff*(size_rbuff)

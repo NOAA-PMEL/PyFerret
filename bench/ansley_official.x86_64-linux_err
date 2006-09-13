@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 29005681 Sep 11 14:54 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 28993881 Sep 13 08:12 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
 Running the tests of external functions y
 Benchmark run by ansley
-Note: reorganize benchmarks so all ncdump output goes to a single file, which is appended to the log file at the end.
+Note: build ferret with .a files rather than .so files in the DODS_LIBS
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux64/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
-Beginning at Tue Sep 12 08:42:30 PDT 2006
+Beginning at Wed Sep 13 08:20:28 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -692,4 +692,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Tue Sep 12 08:44:28 PDT 2006
+Ended at Wed Sep 13 08:22:27 PDT 2006

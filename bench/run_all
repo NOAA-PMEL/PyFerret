@@ -145,7 +145,7 @@ ln -s $machine_stream stream_data_link.unf
 
 #set up proper stream testing jnl file - depends on endianness
 rm -f bn_test_stream.jnl
-if ($machine == "linux" || $machine == "alp") then
+if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux") then
     cp bn_test_stream_little.jnl bn_test_stream.jnl
 else
     cp bn_test_stream_big.jnl bn_test_stream.jnl

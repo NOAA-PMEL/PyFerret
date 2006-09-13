@@ -10,24 +10,24 @@
 
 set list/prec=8
 
-use adbl
+use adouble.nc
 
-list xax,yvar
+list xax
 let xlon = 140
 
 ! Now read xax with an offset
 set var/offset=`-1*xlon` xax
 can mem
 
-list/i=1:5 xax,yax
+list xax
 
 ! define an axis from xax
 define axis/x/units=lon xir = xax
 let pvar = yvar[gx=xir@asn]
 
 ! Plot with offset added back for axis labels.
-
-plot/vs/set/color=red/line/sym=22 pvar
+set view upper
+plot/set/color=red/line/sym=22 pvar
 ppl xvaloff `xlon`
 ppl plot
 

@@ -46,10 +46,11 @@
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <wchar.h>
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void c_substr_(in_ptr, offset, length, out_ptr)
      char** in_ptr;

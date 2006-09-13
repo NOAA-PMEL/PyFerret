@@ -65,8 +65,10 @@
 */ 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
+                      Other changes to correctly deal with the scalar case dim=0 */ 
 #include <wchar.h>
-#include <stdio.h>
+/*#include <stdio.h>*/
 #include <stdlib.h>
 #include <netcdf.h>
 #include <assert.h>
@@ -93,51 +95,59 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
      *kob* need start,count,stride and imap variables of the same type
            as is predfined for each O.S.
   */
-
   size_t start[5], count[5];
-  ptrdiff_t stride[5], imap[5];
+  ptrdiff_t stride[5], imap[5], tmp_ptrdiff_t;
 
-  int tmp, i, maxstrlen, ndimsp, *dimids;
-  size_t bufsiz;
+  int i, ndimsp, *dimids;
+  size_t bufsiz, tmp, tmpstride, maxstrlen;
   char *pbuff;
-  int ndim = *dims - 1; /* C referenced to zero */
+  int ndim = 0;
+  int indim = *dims;
   int vid = *varid;
   nc_type vtyp;
 
+	if (*dims > 0)
+		ndim = *dims - 1; /* C referenced to zero */
 
   /* cast passed in int values (from fortran) to proper types, which can
      be different depending on o.s       *kob* 11/01 */
-  for (i=0; i<=ndim; i++) {
+  for (i=0; i<5; i++) {
     start[i] = (size_t)tmp_start[i];
     count[i] = (size_t)tmp_count[i];
     stride[i] = (ptrdiff_t)tmp_stride[i];
     imap[i] = (ptrdiff_t)tmp_imap[i];
   }
 
-
   /* change FORTRAN indexing and offsets to C */
   vid--;
   for (i=0; i<=ndim; i++)
-    start[i]--;
-  for (i=0; i<=ndim/2; i++) {
-    tmp = count[i];
-    count[i] = count[ndim-i];
-    count[ndim-i] = tmp;
-    tmp = start[i];
-    start[i] = start[ndim-i];
-    start[ndim-i] = tmp;
-    tmp = stride[i];
-    stride[i] = stride[ndim-i];
-    stride[ndim-i] = tmp;
-    tmp = imap[i];
-    imap[i] = imap[ndim-i];
-    imap[ndim-i] = tmp;
-  }
+		{
+			if (start[i] > 0)
+				start[i]--;
+		}
 
+	if (ndim > 0)
+		{
+			for (i=0; i<=ndim/2; i++) 
+				{
+					tmp = count[i];
+					count[i] = count[ndim-i];
+					count[ndim-i] = tmp;
+					tmp = start[i];
+					start[i] = start[ndim-i];
+					start[ndim-i] = tmp;
+					
+					tmp_ptrdiff_t = stride[i];
+					stride[i] = stride[ndim-i];
+					stride[ndim-i] = tmp_ptrdiff_t;
+					tmp_ptrdiff_t = imap[i];
+					imap[i] = imap[ndim-i];
+					imap[ndim-i] = tmp_ptrdiff_t;
+				}
+		}
   /* get the type of the variable on disk */
   *cdfstat = nc_inq_vartype(*cdfid, vid, &vtyp);
   if (*cdfstat != NC_NOERR) return;
-
   /* write out the data */
   if (vtyp == NC_CHAR) {
     /* Read into a buffer area with the multi-dimensiona array of strings
@@ -145,7 +155,6 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
        The "dat" variables is a pointer to an array of string pointers
        where the string pointers are spaced 8 bytes apart
     */
-    
       *cdfstat = nc_inq_varndims (*cdfid, vid, &ndimsp);
       if (*cdfstat != NC_NOERR) return;
       dimids =  (int *) malloc(sizeof(int) * ndimsp);
@@ -157,28 +166,27 @@ void FORTRAN(cd_read_sub) (int *cdfid, int *varid, int *dims,
       if (*cdfstat != NC_NOERR) return;
       free(dimids);
       maxstrlen = bufsiz;
-      for (i=0; i<=ndim; i++) bufsiz *= count[i];
+      if (indim > 0) {
+         for (i=0; i<=ndim; i++) bufsiz *= count[i];
+	 }
       pbuff = (char *) malloc(sizeof(char) * bufsiz);
       assert(pbuff);
-
       /* update variable dimensions to include string dimension */
       start[ndimsp]  = 0;
       count[ndimsp]  = maxstrlen;
       stride[ndimsp] = 1;
-      for (i=0; i<=ndim; i++) imap[i] *= maxstrlen;      
+      for (i=0; i<=ndim; i++) imap[i] *= (ptrdiff_t)maxstrlen;      
       imap[ndimsp] = 1;
 
       *cdfstat = nc_get_varm_text (*cdfid, vid, start,
 				    count, stride, imap, pbuff);
-      tm_unblockify_ferret_strings(dat, pbuff, bufsiz, maxstrlen);
+      tm_unblockify_ferret_strings(dat, pbuff, bufsiz, (int)maxstrlen);
       free(pbuff);
-
 
   /* FLOAT data */
   } else
     *cdfstat = nc_get_varm_float (*cdfid, vid, start,
-				  count, stride, imap, (float*) dat);
-
+															count, stride, imap, (float*) dat);
   return;
 }
 

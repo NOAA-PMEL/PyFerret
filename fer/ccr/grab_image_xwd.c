@@ -56,7 +56,7 @@
         cc -DSGI_SIGNALS -g -c -I/home/rogue/hankin/fer/src/common grab_image_xwd.c 
 
  May. '96 - *kob* added free commands for arrays r,g,b
-
+ Sep 2006   *acm* add stdlib.h for ia64-linux build 
 */ 
    
 /* $XConsortium: xwd.c,v 1.56 91/07/25 18:00:15 rws Exp $ */
@@ -108,9 +108,11 @@
 %*/
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <wchar.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h> 
 #include <errno.h>
 /* #include <endian.h> */
 
@@ -169,7 +171,9 @@ static long parse_long (s)
  *              writting.
  */
 
-char *calloc();
+/* calloc defined in stdlib.h 
+  char *calloc();
+  */
 
 /* #include "X11/XWDFile.h" */
 

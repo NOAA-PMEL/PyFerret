@@ -74,10 +74,11 @@
 /* .................... Includes .................... */
  
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
-#include <stdio.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
+#include <stdio.h>		/* for convenience */
 #include <string.h>		/* for convenience */
 #include <fcntl.h>		/* for fcntl() */
 #include <dlfcn.h>		/* for dynamic linking */

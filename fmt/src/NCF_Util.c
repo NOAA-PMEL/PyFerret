@@ -44,10 +44,12 @@
  * calls are made to nc_ routines from netcdf library.
  */
 
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */
+
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
-#include <stdio.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
+#include <stdio.h>		/* for convenience */
 #include <string.h>		/* for convenience */
 #include <fcntl.h>		/* for fcntl() */
 #include <assert.h>

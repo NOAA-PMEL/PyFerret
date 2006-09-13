@@ -50,7 +50,10 @@
    from tmap library - modified readline include to that end */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+ 
 #include <wchar.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
 #include "readline.h"

@@ -40,9 +40,10 @@
 */
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <wchar.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void get_sys_cmnd_(fer_ptr, nlines, cmd, stat)
      char*** fer_ptr; /* output: char** pointer to strings */

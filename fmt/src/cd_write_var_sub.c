@@ -65,6 +65,9 @@
 */ 
 
 /* *kob* 10/03 v553 - gcc v3.x needs wchar.h included */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build
+                      Other changes to correctly deal with the scalar case dim=0 */ 
+
 #include <stdlib.h>
 #include <wchar.h>
 #include <stdio.h>
@@ -101,40 +104,49 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
 					   the end of this file
   */
 
-  size_t start[5], count[5];
-  int tmp, i, maxstrlen;
-  size_t bufsiz;
+  size_t start[5], count[5], tmp;
+  int i;
+  size_t bufsiz, maxstrlen;
   char *pbuff;
-  int ndim = *dims - 1; /* C referenced to zero */  
-/*  int ndim = *dims ; /* C referenced to zero */
+  int ndim = 0;
+  int indim = *dims;
   int vid = *varid;
   int did = *strdim;
   vid--;
   did--;
 
+	if (*dims > 0)
+		ndim = *dims - 1; /* C referenced to zero */  
+
   /* cast passed in int values (from fortran) to proper types, which can
      be different depending on o.s       *kob* 11/01 */
-  for (i=0;i<=ndim+1;i++) {
+  for (i=0;i<5;i++) {
     start[i] = (size_t)tmp_start[i];
     count[i] = (size_t)tmp_count[i];
   }
 
   for (i=0; i<=ndim; i++)
-    start[i]--;
-  for (i=0; i<=ndim/2; i++) {
-    tmp = count[i];
-    count[i] = count[ndim-i];
-    count[ndim-i] = tmp;
-    tmp = start[i];
-    start[i] = start[ndim-i];
-    start[ndim-i] = tmp;
-  }
+		{
+			if (start[i] > 0)
+				start[i]--;
+		}
+
+	if (ndim > 0)
+		{
+			for (i=0; i<=ndim/2; i++) {
+				tmp = count[i];
+				count[i] = count[ndim-i];
+				count[ndim-i] = tmp;
+
+				tmp = start[i];
+				start[i] = start[ndim-i];
+				start[ndim-i] = tmp;
+			}
+		}
 
   /* write out the data */
-
-
-  switch (*vartyp) {
-  case NC_CHAR:
+  if (*vartyp == NC_CHAR)
+		{
 
     /* Create a buffer area with the multi-dimensiona array of strings
        packed into a block.
@@ -144,54 +156,26 @@ void FORTRAN(cd_write_var_sub) (int *cdfid, int *varid, int *vartyp,
       *cdfstat = nc_inq_dimlen (*cdfid, did, &bufsiz);
       if (*cdfstat != NC_NOERR) return;
       maxstrlen = bufsiz;
-      for (i=0; i<=ndim; i++) bufsiz *= count[i];
+      if (indim > 0) {
+         for (i=0; i<=ndim; i++) bufsiz *= count[i];
+       }
       pbuff = (char *) malloc(sizeof(char) * bufsiz);
       assert(pbuff);
-      tm_blockify_ferret_strings(dat, pbuff, bufsiz, maxstrlen);
+      tm_blockify_ferret_strings(dat, pbuff, (int)bufsiz, (int)maxstrlen);
 
       /* update variable dimensions to include string dimension */
-      start[*dims] = 0;
+      start[*dims] = (size_t)0;
       count[*dims] = maxstrlen;
 
       *cdfstat = nc_put_vara_text(*cdfid, vid,
 				 start, count, pbuff);
       free(pbuff);
-  break;
-
-
-  /* DOUBLE data */
-  case NC_DOUBLE:
-    *cdfstat = nc_put_vara_float(*cdfid, vid,
-				 start, count, (double*) dat);
-  break;
-
-  /* FLOAT data */
-  case NC_FLOAT:
-    *cdfstat = nc_put_vara_float(*cdfid, vid,
-				 start, count, (float*) dat);
-  break;
-
-  /* INT data */
-  case NC_INT:
-    *cdfstat = nc_put_vara_float(*cdfid, vid,
-				 start, count, (int*) dat);
-  break;
-
-  /* SHORT data */
-  case NC_SHORT:
-    *cdfstat = nc_put_vara_float(*cdfid, vid,
-				 start, count, (short*) dat);
-  break;
-
-  /* BYTE data */
-  case NC_BYTE:
-    *cdfstat = nc_put_vara_float(*cdfid, vid,
-				 start, count, (char*) dat);
-  break;
-
-  default:
-  break;
-  }
+		} else
+		{
+			/* FLOAT data */
+			*cdfstat = nc_put_vara_float(*cdfid, vid,
+																	 start, count, (float*) dat);
+		}
 
   return;
 }

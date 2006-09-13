@@ -51,6 +51,8 @@
  *                         buffers,etc
  */
 
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
+
 /*-----------------------------------------------------------
  * This is the project main program file for Xt generated 
  * code. You may add application dependent source code 
@@ -67,6 +69,7 @@
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include <X11/Xlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 /*---------------------------------------------------- 

@@ -38,7 +38,9 @@
                 function group.
     4/06 *kob*  change type of 1st argument to double, for 64-bit build
  */
+/* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build*/ 
 #include <stdio.h>
+#include <stdlib.h>
 #include "string_array.h"
 
 void string_array_init_( double *string_array_header,

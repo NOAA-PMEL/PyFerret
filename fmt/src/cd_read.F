@@ -69,6 +69,7 @@
 * V600 11/05 *acm*  Fix bug 491 properly -- send missing value to tm_scale
 *                   so that missing data is NOT scaled by scale and offset attrs.
 * V600  6/06 *acm*  needed call to CD_GET_VAR_INFO to define vname for NC_GET_ATTRIB
+* V601  9/06 *acm*  fix test for whether to call cd_read_scale.
 
 * arguments:
 *	dset        - internal data set # (from GT_INIT_DSET)
@@ -129,7 +130,7 @@
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
      .               start(4), filsize(4), totsize, dim_lo(4),dim_hi(4),
      .		     imap(4), trans(4), memsize(4), count(4),
-     .		     grid_dims(4), fildim, memdim, filstride(4), oned,
+     .		     grid_dims(4), fildim, memdim, filstride(4), 
      .               maxlen, attlen, attoutflag, vtype, nvdims, nvatts, 
      .               outflag
         REAL vdims(10)
@@ -299,13 +300,8 @@
 
         already_scaled = .FALSE.
         status = merr_ok
-        oned = 1
         
-        DO 230 idim = 1, 4
-           IF ( count(idim) .GT. 1 ) oned = oned + 1
- 230    CONTINUE
-
-        IF (oned .EQ. 1 .AND. ds_var_scaleit( ivar ) ) THEN   ! reads data as double precision, if available.
+        IF (ds_var_scaleit( ivar ) ) THEN   ! reads data as double precision, if available.
            CALL CD_READ_SCALE(cdfid, varid, ndim, 
      .             ds_var_off(ivar), ds_var_scale(ivar), 
      .             ds_bad_flag(ivar),

@@ -68,7 +68,9 @@
 * V581 *acm* 6/05 - Fix for bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
-* V600 *acm* 6/05 attribute control. 
+* V600 *acm* 6/06 attribute control.
+* V601 *acm* 9/06 Fix bug 1440: Remove stray "IF (attid .GT. 0) " before call to 
+*                 CD_GET_VAR_ATT_INFO just after DO 200
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -259,7 +261,7 @@
          DO 200 iatt = 1, nvatts
             CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
      .                                attname, status)
-            IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, varid, 
+            CALL CD_GET_VAR_ATT_INFO (dset, varid, 
      .               iatt, attname, attype, attlen, attoutflag, status )
 
             maxlen = 140

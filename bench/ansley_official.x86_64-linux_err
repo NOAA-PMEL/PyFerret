@@ -1,10 +1,11 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 36860006 Aug 25 09:15 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+-rwxr-xr-x  1 ansley tmap 29005681 Sep 11 14:54 /home/porter/ansley/linux64/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
 Running the tests of external functions y
 Benchmark run by ansley
-Note: built with OPeNDAP libraries as .a rather than .so files
+Note: reorganize benchmarks so all ncdump output goes to a single file, which is appended to the log file at the end.
+ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux64/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
@@ -19,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
-Beginning at Fri Aug 25 10:40:21 PDT 2006
+FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux64/FERRET/external_functions/ext_func_linux64
+Beginning at Tue Sep 12 08:42:30 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -363,8 +364,6 @@ define axis/from/x/name=xax/edges {6,6,6}
 define axis/from/x/name=xax {6,6,6.000001,7}
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6.000001,7}
-sh: /home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump out.cdf: No such file or directory
-sh: /home/porter/kobrien/OPeNDAP/x86_64-linux/libnc-dap-3.5.2/ncdump/dncdump out.cdf: No such file or directory
  **ERROR: command syntax: noname(i)
           unknown function "noname"
 stat i, noname(i)
@@ -693,4 +692,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Fri Aug 25 10:41:43 PDT 2006
+Ended at Tue Sep 12 08:44:28 PDT 2006

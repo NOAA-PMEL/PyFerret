@@ -1,7 +1,7 @@
 ! bn_dp_readscale.jnl
 ! 9-Feb-2006 ACM
 
-! When there is a double precision 1-D variable, 
+! When there is a double precision variable, 
 ! and when the user specifies an offset, read the
 ! variable in double precision, apply the offset and
 ! then convert to single precision.  When plotting
@@ -10,26 +10,25 @@
 
 set list/prec=8
 
-use adouble
-list/i=1:5 xax,yax
+use adbl
 
-! Compute the desired offsets
+list xax,yvar
+let xlon = 140
 
-let xlon = INT(`xax[x=@min]`)
-let ylat = INT(`yax[x=@min]`)
+! Now read xax with an offset
 set var/offset=`-1*xlon` xax
-set var/offset=`-1*ylat` yax
 can mem
 
 list/i=1:5 xax,yax
 
-! Plot with offsets added back for axis labels.
+! define an axis from xax
+define axis/x/units=lon xir = xax
+let pvar = yvar[gx=xir@asn]
 
-plot/vs/set xax,yax
+! Plot with offset added back for axis labels.
+
+plot/vs/set/color=red/line/sym=22 pvar
 ppl xvaloff `xlon`
-ppl yvaloff `ylat`
-ppl xfor (dm)
-ppl yfor (dm)
 ppl plot
 
 cancel list/precision

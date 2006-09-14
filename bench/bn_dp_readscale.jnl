@@ -25,10 +25,15 @@ list xax
 define axis/x/units=lon xir = xax
 let pvar = yvar[gx=xir@asn]
 
-! Plot with offset added back for axis labels.
-set view upper
+! Plot, adding back the offset on axis labels.
 plot/set/color=red/line/sym=22 pvar
 ppl xvaloff `xlon`
 ppl plot
+
+! Test a 2-D double precision variable
+can data/all
+use adouble_2D.nc
+set var/offset=`-1*xlon` xax
+list xax
 
 cancel list/precision

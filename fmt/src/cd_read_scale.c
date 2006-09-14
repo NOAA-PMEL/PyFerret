@@ -39,9 +39,8 @@
     precision, if that is how they are in the file, and apply the
     scale and offset values before converting to single precision.
     
-
-    compile this with
-    cc -c -g -I/opt/local/netcdf-3.4/include cd_read_scale.c
+  v6.01 9/06 *acm* use a malloc rather than a fixed buffer -> the data
+              does not need to be 1-D
 */ 
 
 #include <wchar.h>
@@ -57,15 +56,15 @@
 #endif
 
 /* prototype */
-void tm_scale_buffer(float dat[100], double dbuff[100],
+void tm_scale_buffer(float *dat, double *dbuff,
 			   float *offset, float *scale, float *bad,
-			   int start, int nscale);
+			   int ntotal);
 
 void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims, 
 			   float *offset, float *scale, float* bad,
 			   int *tmp_start, int *tmp_count, 
 			   int *tmp_stride, int *tmp_imap,
-			   void *dat, int *cdfstat, int *status)
+			   void *dat, int *already_scaled, int *cdfstat, int *status)
 
 {
 
@@ -81,22 +80,21 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 
   int tmp, i, maxstrlen, ndimsp, *dimids;
   size_t bufsiz;
-  char *pbuff;
   int ndim = *dims - 1; /* C referenced to zero */
   int vid = *varid;
   nc_type vtyp;
   int n_sections;
-  int count_save;
-  int start_save;
-  int nget;
-  int ngot;
-  double dbuff[100];
+  int ntotal;
+  int scale_it;
+  double *data_double;
 
   /* cast passed in int values (from fortran) to proper types, which can
      be different depending on o.s       *kob* 11/01 */
+  ntotal = 1;
   for (i=0; i<=ndim; i++) {
     start[i] = (size_t)tmp_start[i];
     count[i] = (size_t)tmp_count[i];
+	ntotal = ntotal * count[i];
     stride[i] = (ptrdiff_t)tmp_stride[i];
     imap[i] = (ptrdiff_t)tmp_imap[i];
   }
@@ -133,46 +131,32 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 	  *status = 111;
 	  return;
 	}
-  if (vtyp == NC_DOUBLE) 
+
+  scale_it = 0;
+  if (*offset != 0 || *scale != 1)
+  { scale_it = 1;
+  }
+  if (vtyp == NC_DOUBLE && scale_it) 
   {
 
-    /* If 1-D, read into a buffer area as double precision,
+    /* Read into a buffer area as double precision,
 	   and apply the scaling before converting to single precision 
 	   in variable dat
     */
 
-	  count_save = count[0];
-	  start_save = start[0];
-	  n_sections = count[0]/ 100. + 1;
-	  if (n_sections* 100 < count[0])
-	  {
-		  n_sections = n_sections - 1;
-		}
+      data_double = (double *) malloc(ntotal * sizeof(double));
+      assert(data_double);
 
-	  ngot = 0;
-	  for (i=0; i<= n_sections; i++ )
-		{
-		  nget = 100; 
-		  if (ngot+nget > count_save )
-		  {
-			  nget = count_save - ngot;
-		  }
-		  count[0] = nget;
+	  *cdfstat = nc_get_varm_double (*cdfid, vid, start,
+				  count, stride, imap, data_double);
 
-		  *cdfstat = nc_get_varm_double (*cdfid, vid, start,
-				  count, stride, imap, dbuff);
+      tm_scale_buffer ((float*) dat, data_double, offset,
+         scale, bad, ntotal);
+	  *already_scaled = 1;
 
-		  tm_scale_buffer ((float*) dat, dbuff, offset,
-			   scale, bad, ngot, nget);
-		  
-		  ngot = ngot + nget;
-		  start[0] = ngot;
-		}
-		  
-	  count[0] = count_save; 
-	  start[0] = start_save;
-	}
-    
+	  free(data_double);
+                  
+  }
    
   /* read float data */
   else
@@ -185,23 +169,23 @@ void FORTRAN(cd_read_scale) (int *cdfid, int *varid, int *dims,
 }
 
 /*  */
-void tm_scale_buffer(float dat[100], double dbuff[100],
-			   float *offset, float *scale, float *bad,
-			   int start, int nscale)
+void tm_scale_buffer(float *dat, double *dbuff,
+                     float *offset, float *scale, float *bad,
+                     int ntotal)
 
 {
-	int j;
-	double dbad;
+        int j;
+        double dbad;
 
-	dbad = (double)*bad;
-	for (j=0; j<nscale; j++ )
-	{
-		if (dbuff[j] == dbad)
-			{ dat[j+start] = *bad;
-			}
-		else
-			{dat[j+start] = dbuff[j] * *scale + *offset;
-		}
-	}
+        dbad = (double)*bad;
+        for (j=0; j<ntotal; j++ )
+        {
+                if (dbuff[j] == dbad)
+                        { dat[j] = *bad;
+                        }
+                else
+                        {dat[j] = dbuff[j] * *scale + *offset;
+                }
+        }
     return;
 }

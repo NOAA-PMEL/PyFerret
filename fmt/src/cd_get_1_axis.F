@@ -6,7 +6,7 @@
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
 *  hereafter referred to as NOAA/PMEL/TMAP.
-*
+*.
 *  Access and use of this software shall impose the following
 *  obligations and understandings on the user. The user is granted the
 *  right, without any fee or cost, to use, copy, modify, alter, enhance
@@ -141,6 +141,8 @@
 *                  CD_GET_ATTVAL replaced by NC_GET_ATTRIB, which now returns  
 *                  strings or real values according to attrib type
 * V600 *acm* 6/06  use TM_FPEQ_EPS to compare coordinates.
+* V601 *acm* 9/19  Fix bug 1443; MAXLEN of bounds name should be NF_MAX_NAME from netcdf.inc
+* V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -154,6 +156,7 @@
 * include files
         include 'netcdf.decl'
 #include "netcdf.inc"
+
         include 'tmap_errors.parm'
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -204,8 +207,8 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
       REAL    rbuff, delta, first_delta, val, tmp, epsilon
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen
       CHARACTER*12 TM_LEFINT
-      CHARACTER vname*128, ename*30, vupcase*128, words(8)*24,
-     .        spacing_attr*14, bname*30
+      CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
+     .        spacing_attr*14, bname*128
       CHARACTER*13 TM_STRING
       CHARACTER*132 buff
       CHARACTER*1 axis_dir
@@ -269,7 +272,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
          spacing_attr = 'point_spacing' ! point_spacing = "even"
          spacing_atlen = 13
       ENDIF
-      maxlen = 132
+      maxlen = nf_max_name ! from netcdf.inc
       got_it = NC_GET_ATTRIB(dset, ivar, spacing_attr(1:spacing_atlen),
      .                       do_warn, vname(:vlen), maxlen, attlen, 
      .                       attoutflag, buff, val)
@@ -281,7 +284,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
 
 * Bounds or edges attribute?
 
-      maxlen = 30
+      maxlen = nf_max_name ! from netcdf.inc
       got_bnds = NC_GET_ATTRIB( dset, ivar, 'bounds',
      .                       do_warn, vname(:vlen), maxlen, 
      .                       attlen, attoutflag, bname, val)
@@ -1003,7 +1006,7 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
 * the attribute "bounds=name" may point to a list of box boundaries
 
-500     maxlen = 30
+500     maxlen = nf_max_name ! from netcdf.inc
         IF ( .NOT.got_bnds ) GOTO 600
 
 * Check the bounds variable, issue any warnings.
@@ -1069,18 +1072,19 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 
         IF (TM_CHECK_BNDS_CENTERED(iaxis)) THEN
 * It's actually regular - save it as such
-
-           line_regular(iaxis) = .TRUE.
-           line_start  (iaxis) = line_mem(ipt1)
-           IF (npts .GT. 1) THEN
-              line_delta  (iaxis) = 
-     .            (line_mem(ipte)-line_mem(ipt1))/(npts-1)
-           ELSE
-              line_delta(iaxis) = 1
-           endif
-           line_subsc1 (iaxis) = unspecified_int4
-           last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
-           firs_coord = line_start(iaxis)
+           IF (.NOT. line_regular(iaxis)) THEN
+              line_regular(iaxis) = .TRUE.
+              line_start  (iaxis) = line_mem(ipt1)
+              IF (npts .GT. 1) THEN
+                 line_delta  (iaxis) = 
+     .               (line_mem(ipte)-line_mem(ipt1))/(npts-1)
+              ELSE
+                 line_delta(iaxis) = 1
+              ENDIF
+              line_subsc1 (iaxis) = unspecified_int4
+              last_coord = line_start(iaxis) + (npts-1)*line_delta(iaxis)
+              firs_coord = line_start(iaxis)
+           ENDIF
         ELSE
            line_regular(iaxis) = .FALSE.
         ENDIF
@@ -1099,7 +1103,8 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 * if it is a longitude axis of 360 degrees or less let it default to MODULO
 * unless user has set it explicitly to false.
         
- 400    axwwlen = TM_WW_AXLEN(iaxis)
+ 400    axwwlen = 0.
+        axwwlen = TM_WW_AXLEN(iaxis)
 
         IF ( line_direction(iaxis).EQ.'WE'
      . .AND. units.EQ.4

@@ -184,6 +184,7 @@
 *                  for a regular axis. Here we need to set line_regular to false when
 *                  defining the axis from data. It may later be set to true if the data is
 *                  in fact regular.
+* 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of err_string to 2048
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -1534,8 +1535,9 @@ C /units=months  is 1/12 of the length of the year
 	CALL GETSYM( buff30, err_string, i2, i1 )
 	IF ( i1 .EQ. 0 ) CALL DELSYM(buff30,i1)
 
-* remove backslash escape characters                    ! setting err_string to 2048, was:
-	err_string = cmnd_buff(pos:arg_end(num_args))   ! exactly 255 for PPL (why?)
+* remove backslash escape characters 
+! OLD COMMENT: exactly 255 for PPL; no longer the case as of Ferret v6.01
+	err_string = cmnd_buff(pos:arg_end(num_args))   
 	CALL DE_ESCAPE_STRING( err_string, slen )
 
 * define the symbol

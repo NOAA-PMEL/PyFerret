@@ -150,6 +150,7 @@
 * V600  *acm*  8/05 Allow more digits in xrevision number
 * V600: *acm*  6/05 - Attribute control: SHOW ATT varname[d=].attname SHOW ATT/ALL varname[d=]
 *                     SHOW DATA/ATTR [d=]
+* 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of show_str to 2048
 
 
 	include 'tmap_dims.parm'
@@ -206,7 +207,7 @@
      .              slash_axis_shedges,
      .              slash_attr_dset,
      .              slash_attr_output
-	PARAMETER ( len_show_str = 132,		! length of output line buffer
+	PARAMETER ( len_show_str = 2048,		! length of output line buffer
      .		    brief	 = .TRUE.,
      .		    slash_mem_temp = 1 + 2,
      .		    slash_mem_perm = 1 + 3,
@@ -255,7 +256,7 @@
      .          vseq, attid
 	REAL	xtemp, ytemp, attvals(10)
 	CHARACTER EXPR_NAME*8, TM_FMT*12,
-     .		default*10, show_str*255, arg*24, name*32, arg30*30
+     .		default*10, show_str*2048, arg*24, name*32, arg30*30
 	CHARACTER	filename*2048, raw_name*2048, varatt*641,
      .			fformatted*12, varname*512, attname*128,
      .			efname*40, upname*40, aname*128

@@ -71,6 +71,7 @@
 *	         - call upon the new routine SPECIAL_SYMBOL
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an octal constant instead 
+* 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of symval to 2048
 
 * calling argument declarations:
 	LOGICAL	  did_sub
@@ -88,7 +89,8 @@
 	INTEGER	STR_UPCASE, lenbuff, spos, epos, nchar, ierr,
      .		i, i2, coach_start, coach_end, sym_end
 	CHARACTER symname*30, c1*1,
-     .					symval*255	! to match PPLUS
+     .					symval*2048
+!     .					symval*255 ! to match PPLUS
 
 * internal parameter declarations:
 	CHARACTER*1     tab

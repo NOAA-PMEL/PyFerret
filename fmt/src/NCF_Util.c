@@ -1014,12 +1014,12 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 	      att = att0;*/
 
           nc_status = nc_inq_attname(*ncid, NC_GLOBAL, i, att.name);            
-		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute id %d from file %s\n", i, nc.fullpath);
+/*		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute id %d from file %s\n", i, nc.fullpath);  */
           if (nc_status == NC_NOERR) {
 
             att.attid = i+1;
             nc_status = nc_inq_att(*ncid, NC_GLOBAL, att.name, &att.type, &att.len);
-            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute %s from file %s\n",att.name, nc.fullpath);
+/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute %s from file %s\n",att.name, nc.fullpath); */
             if (nc_status == NC_NOERR) {
 
     /* Set output flag. By default only the global history attribute is written.
@@ -1035,6 +1035,8 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
   	          att.type = NC_CHAR;
 	          att.outtype = NC_CHAR;
 	          att.len = 1;
+	          att.string = (char *) malloc(1* sizeof(char*));
+              strcpy (att.string," ");
               }
               switch (att.type) {
               case NC_CHAR:
@@ -1184,19 +1186,21 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
     /* initialize
 	      att = att0; */
 
-          nc_status = nc_inq_attname(*ncid, iv, ia, att.name);          
-		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute id %d for variable %s, file %s\n", ia, var.name, nc.fullpath);
+          nc_status = nc_inq_attname(*ncid, iv, ia, att.name);
+/*		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute id %d for variable %s, file %s\n", ia, var.name, nc.fullpath); */
           if (nc_status == NC_NOERR) {
 		    att.attid = ia+1;
 
             nc_status = nc_inq_att(*ncid, iv, att.name, &att.type, &att.len);
-            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute %s for variable %s, file %s\n",att.name, var.name, nc.fullpath);
+/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute %s for variable %s, file %s\n",att.name, var.name, nc.fullpath); */
             if (nc_status == NC_NOERR) {
 
               if (att.len == 0) {	/* set 0-length attributes to empty strings */
 	          att.type = NC_CHAR;
 	          att.outtype = NC_CHAR;
 	          att.len = 1;
+	          att.string = (char *) malloc(1* sizeof(char*));
+              strcpy (att.string," ");
               }
               switch (att.type) {
               case NC_CHAR:

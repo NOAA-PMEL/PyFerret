@@ -111,6 +111,7 @@ set date_stamp = `date +'%d%h%yAT%H%M'|tr '[A-Z]' '[a-z]'`
 set log_file = "all_${date_stamp}.${machine}_log"
 set err_file = "all_${date_stamp}.${machine}_err"
 set plt_file = "all_${date_stamp}.${machine}_plt"
+set ncdump_log = "all_${date_stamp}.${machine}_ncdump"
 set ncdump_file = "all_ncdump.out"
 rm -f ncdump_file $ncdump_file
 
@@ -226,6 +227,7 @@ cat  $ncdump_file >>& $log_file
 echo  "-----" >>&$log_file
 echo  "end of ncdump output" >>&$log_file
 echo  " " >>&$log_file
+mv $ncdump_file $ncdump_log
 
 # Now, lets restart ferret and run the bug fix journal file
 # 3.4.98 - moved this to bn491_all *kob*

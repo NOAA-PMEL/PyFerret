@@ -180,7 +180,10 @@
 *                  causes incorrect treatment of the axis if the axis has BOUNDS!!
 * V600 *acm*  8/05 DEFINE ATTRIBUTE[/type=][/D=] varname[d=].attname = <numeric scalar or 
 *                  vector, or string>
-
+* V600 *acm*  9/06 Fixes to bug 1443; tm_check_bnds is changed so it works differently
+*                  for a regular axis. Here we need to set line_regular to false when
+*                  defining the axis from data. It may later be set to true if the data is
+*                  in fact regular.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -898,6 +901,7 @@ C /units=months  is 1/12 of the length of the year
 
 * GET THE AXIS POINTS: IRREGULAR (from_variable) or regular
 	IF ( irreg ) THEN
+           line_regular( iline ) = .FALSE.  ! this may be reset to true later.
 * ... get axis points from a memory variable
 	   CALL GET_CMND_DATA ( memory, cx_last, ptype_float, status )
 	   IF ( status .NE. ferr_ok ) RETURN

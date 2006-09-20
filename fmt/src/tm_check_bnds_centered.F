@@ -40,6 +40,7 @@
 * V58+ *acm*  1/05 Fixes for irreg axes with bounds: This routine now checks
 *                  whether the coordinates are centered in the bound boxes, and 
 *                  whether the boxes are equal sized.
+* V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -52,29 +53,58 @@
         LOGICAL TM_FPEQ
 	INTEGER ipt1, npts, ibx1, i
         REAL diff_hi, diff_lo, diff_last
+        REAL pt, del
 
 	ipt1 = line_subsc1(nline)
 	npts = line_dim(nline)
 	ibx1 = ipt1 + npts
 
-	DO 100 i = 0, npts-1
-          diff_hi = line_mem(ibx1+i+1) - line_mem(ipt1+i)
-          diff_lo = line_mem(ipt1+i)- line_mem(ibx1+i)
+        IF (line_regular(nline)) THEN
+           pt = line_start(nline)
+           del = line_delta(nline) 
 
-	  IF ( .NOT. TM_FPEQ(diff_lo, diff_hi) ) THEN
-	     TM_CHECK_BNDS_CENTERED = .FALSE.
-	     RETURN
-	  ENDIF
+	   DO 100 i = 0, npts-1
+             diff_hi = line_mem(ibx1+i+1) - pt
+             diff_lo = pt - line_mem(ibx1+i)
 
-          IF (i .GT. 0) THEN
-             IF (diff_hi .NE. diff_last) THEN
+	     IF ( .NOT. TM_FPEQ(diff_lo, diff_hi) ) THEN
 	        TM_CHECK_BNDS_CENTERED = .FALSE.
 	        RETURN
-             ENDIF
-	  ENDIF
-          diff_last = diff_hi
+	     ENDIF
 
-  100	CONTINUE
+             IF (i .GT. 0) THEN
+                IF (diff_hi .NE. diff_last) THEN
+	           TM_CHECK_BNDS_CENTERED = .FALSE.
+	           RETURN
+                ENDIF
+	     ENDIF
+             diff_last = diff_hi
+             pt = float(i+1) * del + line_start(nline)
+
+  100	   CONTINUE
+
+        ELSE  ! not line_regular
+   
+	   DO 200 i = 0, npts-1
+             diff_hi = line_mem(ibx1+i+1) - line_mem(ipt1+i)
+             diff_lo = line_mem(ipt1+i)- line_mem(ibx1+i)
+
+	     IF ( .NOT. TM_FPEQ(diff_lo, diff_hi) ) THEN
+	        TM_CHECK_BNDS_CENTERED = .FALSE.
+	        RETURN
+	     ENDIF
+
+             IF (i .GT. 0) THEN
+                IF (diff_hi .NE. diff_last) THEN
+	           TM_CHECK_BNDS_CENTERED = .FALSE.
+	           RETURN
+                ENDIF
+	     ENDIF
+             diff_last = diff_hi
+
+  200	   CONTINUE
+
+        ENDIF
 
 	TM_CHECK_BNDS_CENTERED = .TRUE.
 	RETURN

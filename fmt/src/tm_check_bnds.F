@@ -41,6 +41,7 @@
 * 4/2004 ACM from tm_check_box_loc
 * V600 *acm* 3/06  Fix bug 1400: Add more convenient syntax for user-specified bounds:
 *                  Bounds can be either 2*N or N+1 values.
+* V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
 
         INCLUDE 'xio.cmn_text'
 	INCLUDE 'tmap_dims.parm'
@@ -55,7 +56,7 @@
 * Internal definitions
         LOGICAL TM_FPEQ
 	INTEGER TM_LENSTR1, npts, ipt1, ibx1, i, ngap, vlen, status
-        REAL*8 pt, bhi, blo
+        REAL*8 pt, del, bhi, blo
         REAL blast
         CHARACTER TM_STRING*13, vbuff*128
 
@@ -69,30 +70,48 @@
 
         IF (nb .EQ. 2*npts) THEN
 
-	   DO 100 i = 0, npts-1
-             pt = line_mem(ipt1+i)
-             blo = line_mem(ibx1+2*i)
-             bhi = line_mem(ibx1+2*i+1)
-	     IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                TM_CHECK_BNDS = .FALSE.
-                RETURN
-	     ENDIF
-             IF (i .GE. 1) THEN
-                IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
-                   ngap = ngap + 1
-                 line_mem(ibx1+2*i) = blast
-                ENDIF
-                blast = REAL(bhi)
-             ENDIF
+           IF (line_regular(nline)) THEN
 
-  100        CONTINUE
+              pt = line_start(nline)
+              del = line_delta(nline)
+	      DO 100 i = 0, npts-1
+                 blo = line_mem(ibx1+2*i)
+                 bhi = line_mem(ibx1+2*i+1)
+	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
+                   TM_CHECK_BNDS = .FALSE.
+                   RETURN
+                ENDIF
+	        pt = line_start(nline) + FLOAT(i+1)* del
+
+  100           CONTINUE
+
+            ELSE ! line_regular
+
+	      DO 200 i = 0, npts-1
+                pt = line_mem(ipt1+i)
+                blo = line_mem(ibx1+2*i)
+                bhi = line_mem(ibx1+2*i+1)
+	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
+                   TM_CHECK_BNDS = .FALSE.
+                   RETURN
+	        ENDIF
+                IF (i .GE. 1) THEN
+                   IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
+                      ngap = ngap + 1
+                      line_mem(ibx1+2*i) = blast
+                   ENDIF
+                   blast = REAL(bhi)
+                ENDIF
+
+  200        CONTINUE
+           ENDIF ! line_regular
 
 *  Change from N*2 storage of bounds to N+1 edges.
 
-           DO 200 i = 0, npts-1
+           DO 300 i = 0, npts-1
               bhi = line_mem(ibx1+2*i+1)
               line_mem(ibx1+i+1) = bhi
-  200      CONTINUE
+  300      CONTINUE
 
            IF (ngap .EQ. 0) THEN
               TM_CHECK_BNDS = .TRUE.
@@ -113,23 +132,41 @@
 
        ELSE  ! bounds are already specified as N+1 values
 
-	   DO 300 i = 0, npts-1
-             pt = line_mem(ipt1+i)
-             blo = line_mem(ibx1+i)
-             bhi = line_mem(ibx1+i+1)
-	     IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
-                TM_CHECK_BNDS = .FALSE.
-                RETURN
-	     ENDIF
-             IF (i .GE. 1) THEN
-                IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
-                   ngap = ngap + 1
-                   line_mem(ibx1+i) = blast
-                ENDIF
-                blast = REAL(bhi)
-             ENDIF
+          IF (line_regular(nline)) THEN
+             pt = line_start(nline)
+             del = line_delta(nline)
+             DO 400 i = 0, npts-1
+                blo = line_mem(ibx1+i)
+                bhi = line_mem(ibx1+i+1)
+	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
+                   TM_CHECK_BNDS = .FALSE.
+                   RETURN
+	        ENDIF
+                pt = line_start(nline) + FLOAT(i+1)* del
 
-  300     CONTINUE
+  400        CONTINUE
+
+          ELSE ! line_regular
+  
+	     DO 500 i = 0, npts-1
+                pt = line_mem(ipt1+i)
+                blo = line_mem(ibx1+i)
+                bhi = line_mem(ibx1+i+1)
+	        IF ( (pt .LT. blo) .OR.  (pt .GT. bhi) ) THEN
+                   TM_CHECK_BNDS = .FALSE.
+                   RETURN
+	        ENDIF
+                IF (i .GE. 1) THEN
+                   IF (.NOT. TM_FPEQ(blast, REAL(blo)) ) THEN
+                      ngap = ngap + 1
+                      line_mem(ibx1+i) = blast
+                   ENDIF
+                   blast = REAL(bhi)
+                ENDIF
+
+  500        CONTINUE
+          ENDIF ! line_regular
+
        ENDIF
 
  5000  RETURN

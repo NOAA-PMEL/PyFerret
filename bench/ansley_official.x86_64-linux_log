@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 43955634 Sep 20 08:03 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 43955666 Sep 20 15:27 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fixes for bug 1443, 1434,and new benchmarks scripts testing the fixes.
+Note:  fix for bug 1439, length of string value of symbols.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
-Beginning at Wed Sep 20 08:04:21 PDT 2006
+Beginning at Wed Sep 20 15:33:06 PDT 2006
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.6.9-22. - 09/20/06
- 	20-Sep-06 08:04     
+ 	20-Sep-06 15:33     
 
 yes? !bn500_all_shell
 yes? 
@@ -10304,7 +10304,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = "20-Sep-06"
-SESSION_TIME = "08:04"
+SESSION_TIME = "15:33"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10323,7 +10323,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = "20-Sep-06"
-SESSION_TIME = "08:04"
+SESSION_TIME = "15:33"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10332,7 +10332,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "20-Sep-06"
-SESSION_TIME = "08:04"
+SESSION_TIME = "15:33"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10343,12 +10343,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "20-Sep-06"
-SESSION_TIME = "08:04"
+SESSION_TIME = "15:33"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "20-Sep-06"
-SESSION_TIME = "08:04"
+SESSION_TIME = "15:33"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10382,7 +10382,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Sep 20 2006 08:04:28 "
+LAB3 = "Sep 20 2006 15:33:14 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10482,7 +10482,7 @@ BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.6.9-22."
 SESSION_DATE = "20-Sep-06"
-SESSION_TIME = "08:04"
+SESSION_TIME = "15:33"
  
  
 GO bn_reset
@@ -18424,8 +18424,8 @@ contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
 set view v13
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150 sin(x/6)*cos(y/9)
 set view v14
-contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--  1 ansley tmap 19090 Sep 20 08:04 bench.mgm
--rw-rw-r--  1 ansley tmap 341094 Sep 20 08:04 bench.mgm
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--  1 ansley tmap 19094 Sep 20 15:33 bench.mgm
+-rw-rw-r--  1 ansley tmap 341146 Sep 20 15:33 bench.mgm
 150/trans sin(x/6)*cos(y/9)
  
 * formatted XY contours
@@ -25804,7 +25804,7 @@ stat/i=1:3/j=1:3 a
  Standard deviation: 1.2247
  
 ! 3/01 *kob* uncommeabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Wed Sep 20 08:04:42 PDT 2006
+Wed Sep 20 15:33:26 PDT 2006
 nt the below - seems to run on all systems
 GO bn_reset
 cancel mode verify
@@ -46938,7 +46938,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep 20 2006 08:05:34
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep 20 2006 15:34:21
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48356,7 +48356,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "20-Sep-06:08:04"
+WIN_TITLE = "20-Sep-06:15:33"
  
 set win/title="set the title"
 sho sym win_title
@@ -48374,11 +48374,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :08:04"
+ !-> set win/title=" :15:33"
 set win/title="($session_date):($session_time)"
- !-> set win/title="20-Sep-06:08:04"
+ !-> set win/title="20-Sep-06:15:33"
 sh sym win_title
-WIN_TITLE = "20-Sep-06:08:04"
+WIN_TITLE = "20-Sep-06:15:33"
  
  
 GO bn_reset
@@ -51737,7 +51737,7 @@ yes? poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
 GO bn601_bug_fixes.jnl
 ! bn601_bug_fixes.jnl
 ! test various fixes that went into version 6.01
-! 9/06 *acm*
+! 20-Sep-2006 ACM
 !
 ! Long name for bounds attribute was not read by Ferret
 ! Bug 1443
@@ -51749,6 +51749,8 @@ GO err600_long_bounds_name
 ! err600_long_bounds_name.jnl
 ! Long name for bounds attribute was not read by Ferret
 ! Bug 1443
+! 20-Sep-2006 ACM
+ 
  
 def axis/x/bounds layer_between_two_pressure_difference_from_ground = {0,3,5},{-6,2,2,4.5,4.5,9}
 let var = x[gx=layer_between_two_pressure_difference_from_ground] + 1
@@ -51783,6 +51785,8 @@ GO err600_check_bounds_regular.jnl
 ! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
 ! bug1434
  
+! 19-Sep-2006 ACM
+ 
 use coads_climatology
 save/clobber/l=1/j=45/file=b.nc/bounds sst
  LISTing to file b.nc
@@ -51793,13 +51797,57 @@ use b
 ! bounds COADSX_bnds do not enclose point on axis COADSX
 ! Substituting coordinate midpoints
  
+! Long values for symbols: previously symbol strings were cut off at 255 characters.
+! Bug 1439
+GO bn_reset
+cancel mode verify
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+GO err600_long_symbol_string.jnl
+! err600_longsym_symbol_string.jnl
+! Long values for symbols: previously strings were cut off at 255 characters.
+! Bug 1439
+! 20-Sep-2006 ACM
+ 
+! Define a long symbol and use it in a function call
+ 
+DEFINE SYMBOL longsym_a = "........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170.......180.......190.......200.......210.......220.......230.......240.......250.......260.......270.......280.......290.......300.......310"
+DEFINE SYMBOL longsym_b = "300.......310"
+SHOW SYMBOL longsym_a, longsym_b
+LONGSYM_A = ""........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170.......180.......190.......200.......210.......220.......230.......240.......250.......260.......270.......280.......290.......300.......310""
+LONGSYM_B = ""300.......310""
+ 
+LIST STRINDEX(($longsym_a),($longsym_b))
+ !-> LIST STRINDEX("........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170.......180.......190.......200.......210.......220.......230.......240.......250.......260.......270.......280.......290.......300.......310","300.......310")
+             VARIABLE : STRINDEX("........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170
+          298.0
+ 
+! Now define a symbol from a file variable
+use "longtitle1000.nc"
+DEFINE SYMBOL longsym_1000 = "`a,return=dsettitle`"
+ !-> DEFINE SYMBOL longsym_1000 = "
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+ 
+SHOW SYMBOL longsym_1000
+LONGSYM_1000 = ""
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890""
+ 
+DEFINE SYMBOL longsym_very_long = strcat (($longsym_a), ($longsym_1000))
+ !-> DEFINE SYMBOL longsym_very_long = strcat ("........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170.......180.......190.......200.......210.......220.......230.......240.......250.......260.......270.......280.......290.......300.......310", "
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
+SHOW SYMBOL longsym_very_long
+LONGSYM_VERY_LONG = "strcat ("........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170.......180.......190.......200.......210.......220.......230.......240.......250.......260.......270.......280.......290.......300.......310", "
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")"
+ 
+CANCEL SYMBOL longsym*
+ 
  
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.6.9-22. - 09/20/06
- 	20-Sep-06 08:06     
+ 	20-Sep-06 15:35     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -52508,8 +52556,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  6    /  6:  -9.00
  7    /  7:  -8.00
  8    /  8:  -7.00
- 9    /-rw-rw-r--  1 ansley tmap 12704 Sep 20 08:06 testa.v5d
--rw-rw-r--  1 ansley tmap 12704 Sep 20 08:06 test.v5d
+ 9    /-rw-rw-r--  1 ansley tmap 12704 Sep 20 15:35 testa.v5d
+-rw-rw-r--  1 ansley tmap 12704 Sep 20 15:35 test.v5d
   9:  -6.00
  10   / 10:  -5.00
  11   / 11:  -4.00
@@ -54401,7 +54449,7 @@ end of ncdump output
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.6.9-22. - 09/20/06
- 	20-Sep-06 08:06     
+ 	20-Sep-06 15:35     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54585,7 +54633,7 @@ exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
  	Linux(g77) 2.6.9-22. - 09/20/06
- 	20-Sep-06 08:06     
+ 	20-Sep-06 15:35     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54698,4 +54746,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Wed Sep 20 08:06:17 PDT 2006
+Ended at Wed Sep 20 15:35:05 PDT 2006

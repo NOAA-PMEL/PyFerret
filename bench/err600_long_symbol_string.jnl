@@ -1,0 +1,23 @@
+! err600_longsym_symbol_string.jnl
+! Long values for symbols: previously strings were cut off at 255 characters.
+! Bug 1439
+! 20-Sep-2006 ACM
+
+! Define a long symbol and use it in a function call
+
+DEFINE SYMBOL longsym_a = "........10........20........30........40........50........60........70........80........90.......100.......110.......120.......130.......140.......150.......160.......170.......180.......190.......200.......210.......220.......230.......240.......250.......260.......270.......280.......290.......300.......310"
+DEFINE SYMBOL longsym_b = "300.......310"
+SHOW SYMBOL longsym_a, longsym_b
+
+LIST STRINDEX(($longsym_a),($longsym_b))
+
+! Now define a symbol from a file variable
+use "longtitle1000.nc"
+DEFINE SYMBOL longsym_1000 = "`a,return=dsettitle`"
+
+SHOW SYMBOL longsym_1000
+
+DEFINE SYMBOL longsym_very_long = strcat (($longsym_a), ($longsym_1000))
+SHOW SYMBOL longsym_very_long
+
+CANCEL SYMBOL longsym*

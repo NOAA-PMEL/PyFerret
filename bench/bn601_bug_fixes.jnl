@@ -1,6 +1,6 @@
 ! bn601_bug_fixes.jnl
 ! test various fixes that went into version 6.01
-! 9/06 *acm*
+! 20-Sep-2006 ACM
 !
 ! Long name for bounds attribute was not read by Ferret
 ! Bug 1443
@@ -11,3 +11,8 @@ GO err600_long_bounds_name
 ! bug1434
 GO bn_reset
 GO err600_check_bounds_regular.jnl
+
+! Long values for symbols: previously symbol strings were cut off at 255 characters.
+! Bug 1439
+GO bn_reset
+GO err600_long_symbol_string.jnl

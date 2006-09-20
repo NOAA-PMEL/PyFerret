@@ -1,0 +1,13 @@
+! bn601_bug_fixes.jnl
+! test various fixes that went into version 6.01
+! 9/06 *acm*
+!
+! Long name for bounds attribute was not read by Ferret
+! Bug 1443
+GO bn_reset
+GO err600_long_bounds_name
+
+! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
+! bug1434
+GO bn_reset
+GO err600_check_bounds_regular.jnl

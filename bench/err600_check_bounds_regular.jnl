@@ -2,6 +2,8 @@
 ! Previously TM_CHECK_BNDS had not been used to check bounds on regular axes.
 ! bug1434
 
+! 19-Sep-2006 ACM
+
 use coads_climatology
 save/clobber/l=1/j=45/file=b.nc/bounds sst
 can data/all

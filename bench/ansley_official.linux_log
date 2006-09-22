@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     47711212 Sep 20 16:09 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     46982528 Sep 21 15:13 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for bug 1439, length of string value of symbols.
+Note: changed xgks directory, copying include/ps and include/gif to src/lib and commenting out gksdemo in the progs Makefile.in. Relink ferret
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,11 +21,11 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Thu Sep 21 09:42:51 PDT 2006
+Beginning at Thu Sep 21 15:14:32 PDT 2006
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.4.21-32 - 09/20/06
- 	21-Sep-06 09:42     
+ 	Linux(g77) 2.4.21-32 - 09/21/06
+ 	21-Sep-06 15:14     
 
 yes? !bn500_all_shell
 yes? 
@@ -10298,13 +10298,13 @@ GO bn_symbols	! added 6/22/95
  
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "358"
-PPL$YPIXEL = "358"
+PPL$XPIXEL = "430"
+PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "21-Sep-06"
-SESSION_TIME = "09:42"
+SESSION_TIME = "15:14"
  
 ! define some symbols ... syntax variations
 define symbol s1 = hello
@@ -10317,13 +10317,13 @@ define symbol t_($s1) = hi	! define "t_hello" as a symbol
  
 ! exercise SHOW SYMBOL
 show symbol/all
-PPL$XPIXEL = "358"
-PPL$YPIXEL = "358"
+PPL$XPIXEL = "430"
+PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "21-Sep-06"
-SESSION_TIME = "09:42"
+SESSION_TIME = "15:14"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10332,7 +10332,7 @@ T$DOLLAR = "hi"
 T_HELLO = "hi"
 show symbol s*
 SESSION_DATE = "21-Sep-06"
-SESSION_TIME = "09:42"
+SESSION_TIME = "15:14"
 S1 = "hello"
 S2 = ""hello""
 S3 = "hello and goodbye"
@@ -10343,12 +10343,12 @@ S2 = ""hello""
 cancel symbol s2
 show symbol s*
 SESSION_DATE = "21-Sep-06"
-SESSION_TIME = "09:42"
+SESSION_TIME = "15:14"
 S1 = "hello"
 S3 = "hello and goodbye"
 show symbol S*
 SESSION_DATE = "21-Sep-06"
-SESSION_TIME = "09:42"
+SESSION_TIME = "15:14"
 S1 = "hello"
 S3 = "hello and goodbye"
 cancel symbol s2	! already deleted
@@ -10382,7 +10382,7 @@ plot/i=1:100/y=10/z=5/set_up SIN(I/6)+Y+Z
 show symbol lab*
 LAB1 = "FERRET Ver. 6"
 LAB2 = "NOAA/PMEL TMAP"
-LAB3 = "Sep 21 2006 09:43:12 "
+LAB3 = "Sep 21 2006 15:14:52 "
 LABX = "X"
 LAB4 = "Y : 10"
 LABNUM_Y = "4"
@@ -10476,13 +10476,13 @@ say ($delayed_eval)         ! translate symbol and then evaluate
 ! cleanup
 cancel symbols/all
 show symbols/all
-PPL$XPIXEL = "358"
-PPL$YPIXEL = "358"
+PPL$XPIXEL = "430"
+PPL$YPIXEL = "430"
 BYTEORDER = "LITTLE"
 FERRET_VERSION = "6"
 FERRET_PLATFORM = "Linux(g77) 2.4.21-32"
 SESSION_DATE = "21-Sep-06"
-SESSION_TIME = "09:42"
+SESSION_TIME = "15:14"
  
  
 GO bn_reset
@@ -18424,8 +18424,8 @@ contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200 sin(x/6)*cos(y/9)
 set view v13
 contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:150 sin(x/6)*cos(y/9)
 set view v14
-contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--    1 ansley   tmap        19083 Sep 21 09:43 bench.mgm
--rw-rw-r--    1 ansley   tmap       341025 Sep 21 09:43 bench.mgm
+contour/x=1:100/y=101:200/lev=(-1,1,.5)/xlimits=-100:200:-30/ylimits=250:-rw-rw-r--    1 ansley   tmap        23219 Sep 21 15:15 bench.mgm
+-rw-rw-r--    1 ansley   tmap       415651 Sep 21 15:15 bench.mgm
 150/trans sin(x/6)*cos(y/9)
  
 * formatted XY contours
@@ -25657,7 +25657,7 @@ list/l=1 out
  2    /  2:  439019.  439020.  439021.  439022.  439023.
  3    /  3:  439750.  439751.  439752.  439753.  439754.
  4    /  4:  440480.  440481.  440482abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy.gif
-Thu Sep 21 09:44:25 PDT 2006
+Thu Sep 21 15:15:57 PDT 2006
 .  440483.  440484.
  5    /  5:  441211.  441212.  441213.  441214.  441215.
  6    /  6:  441941.  441942.  441943.  441944.  441945.
@@ -46944,7 +46944,7 @@ ppl list labels
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 2  8.000E+00  7.100E+00 0.060    0  SYSTEM  @ASNOAA/PMEL TMAP
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
- LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep 21 2006 09:46:11
+ LAB 3  8.000E+00  7.000E+00 0.060    0  SYSTEM  @ASSep 21 2006 15:17:30
  LINE PT:    0.000E+00 0.000E+00  NO LINE     CENTER JUSTIFY LABEL
  LAB 4  0.000E+00  6.940E+00 0.102    0  SYSTEM  @ASLONGITUDE : 141E
  LINE PT:    0.000E+00 0.000E+00  NO LINE     LEFT   JUSTIFY LABEL
@@ -48362,7 +48362,7 @@ go ptest
 PLOT/VS/LINE/I=1:314 i*cos(i/20),i*sin(i/20)
  
 sh sym win_title
-WIN_TITLE = "21-Sep-06:09:42"
+WIN_TITLE = "21-Sep-06:15:14"
  
 set win/title="set the title"
 sho sym win_title
@@ -48380,11 +48380,11 @@ sho sym win_title
 WIN_TITLE = "_"
  
 set win/title="($sessino_date):($session_time)"
- !-> set win/title=" :09:42"
+ !-> set win/title=" :15:14"
 set win/title="($session_date):($session_time)"
- !-> set win/title="21-Sep-06:09:42"
+ !-> set win/title="21-Sep-06:15:14"
 sh sym win_title
-WIN_TITLE = "21-Sep-06:09:42"
+WIN_TITLE = "21-Sep-06:15:14"
  
  
 GO bn_reset
@@ -51852,8 +51852,8 @@ CANCEL SYMBOL longsym*
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.4.21-32 - 09/20/06
- 	21-Sep-06 09:47     
+ 	Linux(g77) 2.4.21-32 - 09/21/06
+ 	21-Sep-06 15:18     
 
 yes? ! bn_all_ef_shell.jnl
 yes? ! 5/05 *acm*
@@ -52562,8 +52562,8 @@ list/y=15 subtract(a,b)  ! pre: V550 this gave a valid MARCH. Valid behavior chg
  6    /  6:  -9.00
  7    /  7:  -8.00
  8    /  8:  -7.00
- 9    /-rw-rw-r--    1 ansley   tmap        12704 Sep 21 09:47 testa.v5d
--rw-rw-r--    1 ansley   tmap        12704 Sep 21 09:47 test.v5d
+ 9    /-rw-rw-r--    1 ansley   tmap        12704 Sep 21 15:18 testa.v5d
+-rw-rw-r--    1 ansley   tmap        12704 Sep 21 15:18 test.v5d
   9:  -6.00
  10   / 10:  -5.00
  11   / 11:  -4.00
@@ -54424,8 +54424,8 @@ end of ncdump output
  
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.4.21-32 - 09/20/06
- 	21-Sep-06 09:47     
+ 	Linux(g77) 2.4.21-32 - 09/21/06
+ 	21-Sep-06 15:18     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54608,8 +54608,8 @@ PPL$YPIXEL = "662"
 exit/command
  	NOAA/PMEL TMAP
  	FERRET v6  
- 	Linux(g77) 2.4.21-32 - 09/20/06
- 	21-Sep-06 09:47     
+ 	Linux(g77) 2.4.21-32 - 09/21/06
+ 	21-Sep-06 15:18     
 
 yes? ! this "shell" is used because the Unix redirection fails to echo commands
 yes? ! from the top level command file
@@ -54722,4 +54722,4 @@ set mode ignore
 frame/file=bnplot.ps    ! DELIBERATE ERROR MESSAGE
 can mode ignore
 exit/command
-Ended at Thu Sep 21 09:47:26 PDT 2006
+Ended at Thu Sep 21 15:18:33 PDT 2006

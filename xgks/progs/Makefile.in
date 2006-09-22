@@ -2,6 +2,8 @@
 #
 # Makefile for the "demonstration programs" subdirectory of the XGKS package.
 # add tmapadds object files for linking *kob* 9/98
+# *acm* 9/2006 comment out refs to gksdemo; havent been able to build it for a while
+#              (not needed for Ferret, its just a demo)
 
 DEFINES		=
 CPP_X11		= @CPP_X11@
@@ -10,7 +12,8 @@ CPPFLAGS	= @CPPFLAGS@
 CFLAGS		= $(INCLUDES) $(DEFINES) @CFLAGS@
 prefix		= ..
 CSRCS		= defcolors.c font.c hanoi.c mi.c pline.c pmark.c
-FSRCS		= gksdemo.f star.f
+#FSRCS		= gksdemo.f star.f
+FSRCS		= star.f
 SHELL		= /bin/sh
 #LD_SOCKET	= @LD_SOCKET@
 LD_X11		= @LD_X11@
@@ -31,7 +34,8 @@ CPROGS		= defcolors font hanoi mi pline pmark
 #	(especially "gksdemo", which is an excellent example of a very
 #	interactive program) but not particularly useful.
 #
-FPROGS		= star gksdemo
+#FPROGS		= star gksdemo
+FPROGS		= star
 
 PROGRAMS	= $(CPROGS) $(FPROGS)
 GARBAGE		= $(PROGRAMS) *.gksm *.cgm
@@ -56,8 +60,8 @@ pmark:		pmark.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
 star:		star.o
 	$(FC) $(FFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
-gksdemo:	gksdemo.o
-	$(FC) $(FFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
+#gksdemo:	gksdemo.o
+#	$(FC) $(FFLAGS) $(LDFLAGS) $? $(LIBS) -o $@
 
 
 # The following rule is for debugging using the CodeCenter 
@@ -65,13 +69,13 @@ gksdemo:	gksdemo.o
 #
 .SUFFIXES:	.saber .o .c
 
-gksdemo.saber:	gksdemo.o
-	#setopt path . ../src/lib ../src/lib/cgm ../src/lib/gksm ../src/lib/x
-	#setopt ansi
-	#setopt load_flags -C $(CFLAGS) -I/usr/5include -DDEBUG
-	#load -C $(CFLAGS) -I/usr/5include -DDEBUG gksdemo.o $(OBJS) \
-	    $(LIBS_F77) -L/usr/local/lang/SC0.0 -lF77 -lc
-	#ignore IO
+#gksdemo.saber:	gksdemo.o
+#	#setopt path . ../src/lib ../src/lib/cgm ../src/lib/gksm ../src/lib/x
+#	#setopt ansi
+#	#setopt load_flags -C $(CFLAGS) -I/usr/5include -DDEBUG
+#	#load -C $(CFLAGS) -I/usr/5include -DDEBUG gksdemo.o $(OBJS) \
+#	    $(LIBS_F77) -L/usr/local/lang/SC0.0 -lF77 -lc
+#	#ignore IO
 
 .o.saber:
 	#setopt path . ../src/lib ../src/lib/cgm ../src/lib/gksm ../src/lib/x
@@ -107,7 +111,7 @@ test:		all
 	./font -o font.cgm
 	./mi font.cgm
 	-test -f star && ./star
-	-test -f gksdemo && ./gksdemo
+#	-test -f gksdemo && ./gksdemo
 
 include ../port/master.mk
 

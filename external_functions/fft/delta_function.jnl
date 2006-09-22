@@ -1,0 +1,16 @@
+! delta_function.jnl
+! Description: Defines a Dirac delta function at central point in time
+
+! Programmed by E. D. Cokelet, NOAA/PMEL, 30 Nov 1999
+
+! Usage:  go delta_function central_point_index_number output_function_name
+! The output delta function's time range will be 2*(central_point_index_number)
+
+can mode verify
+
+define axis/units=hours/t=1:`2*$1`:1 t_ax_delta
+let tim_delta = t[gt=t_ax_delta]
+define grid/t=t_ax_delta grid_delta
+
+let delta_delta = if tim_delta eq `$1` then 1 else 0
+let $2 = delta_delta[g=grid_delta]

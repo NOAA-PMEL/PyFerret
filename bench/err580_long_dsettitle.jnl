@@ -10,4 +10,4 @@ say `a,return=dsettitle`
 save/title="a long title, longer than the previous limit of 80 characters.  Previously various buffers were set to 80, and storage in ds_title was also too short.  "/clobber/file=longtitle.nc a
 
 sp echo "err580_long_dsettitle.jnl --- " >> all_ncdump.out
-sp ncdump longtitle.nc >> all_ncdump.out; sp sleep 1
+sp ncdump longtitle.nc >> all_ncdump.out

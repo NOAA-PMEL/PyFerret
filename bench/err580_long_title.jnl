@@ -5,4 +5,4 @@
 save/clobber/title="a long title longer than 80 characters a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789"/file=longtitle.nc x[x=1:10]
 
 sp echo "err580_long_title.jnl --- " >> all_ncdump.out
-sp ncdump longtitle.nc >> all_ncdump.out; sp sleep 1
+sp ncdump longtitle.nc >> all_ncdump.out

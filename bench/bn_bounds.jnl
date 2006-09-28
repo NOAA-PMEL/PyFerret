@@ -14,7 +14,7 @@ let v = t[gt=month_irreg]
 save/clobber/file=a.nc v
 
 sp echo "bn_bounds.jnl --- 1 output of bounds on irreg axes." >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 can data/all
 can var v
 
@@ -31,7 +31,7 @@ sp ncdump a.nc >> all_ncdump.out
 
 save/append/file=a.nc/x=199/y=41/l=50:53 v
 sp echo "bn_bounds.jnl --- 3 Append later time steps, adding a void point" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 can data/all
 can var/all
 
@@ -41,7 +41,7 @@ define axis/z/depth/units=meters zirr = {0,10,40,70}
 let t2 = z[gz=zirr]
 save/clobber/file=a.nc t2
 sp echo "bn_bounds.jnl --- 4 depth axis, bounds positive up" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 can data/all
 can var/all
 
@@ -54,7 +54,7 @@ let v = missing(sst[gt=month_irreg], 28)
 save/clobber/x=181:185/y=1:7/L=1:5/file=a.nc v
 save/append/x=181:185/y=1:7/L=8:9/file=a.nc v
 sp echo "bn_bounds.jnl --- 5 SAVE on irregular time axis, multi-dimensional save." >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 can var v
 
 use a.nc
@@ -102,11 +102,11 @@ list/x=181/y=1/form=(f6.2, 3f10.4) sst, t[gt=sst], tboxlo[gt=sst], tboxhi[gt=sst
 
 save/clobber/bounds/file=a.nc/x=181/y=1 sst
 sp echo "bn_bounds.jnl --- 6 SAVE on regular time axis with bounds attribute" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 save/clobber/edges/file=a.nc/x=181/y=1 sst
 sp echo "bn_bounds.jnl --- 7 SAVE on regular time axis with edges attributes" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 ! Intentional errors; combinations of qualifiers on SAVE
 set mode ignore
@@ -127,7 +127,7 @@ def axis/t tax = {1,2,9,10,11}
 let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
 save/clobber/file=irrxzt.nc v
 sp echo "bn_bounds.jnl --- 8 outputting bounds on all irregular axes, depth axis" >> all_ncdump.out
-sp ncdump irrxzt.nc >> all_ncdump.out; sp sleep 1
+sp ncdump irrxzt.nc >> all_ncdump.out
 
 can data/all
 can var/all

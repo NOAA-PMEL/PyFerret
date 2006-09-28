@@ -84,7 +84,7 @@ sho att/all var_b
 
 save/clobber/file=a.nc var_b
 sp echo "bn_attributes.jnl --- 1 attributes of string variables" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
  
 go bn_reset
 
@@ -365,7 +365,7 @@ set att/output (`sst,return=xaxis`).newatt
 save/clobber/file=a.nc/x=130w/y=0 sst
 
 sp echo "bn_attributes.jnl --- 2 access and edit attributes of coordinate variables." >> all_ncdump.out
-sp ncdump -c a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -c a.nc >> all_ncdump.out
 
 ! modfalse.nc is a file with modulo attribute on x axis 
 ! explicitly set to FALSE
@@ -374,7 +374,7 @@ use modfalse.nc
 set att/output (`sst,return=xaxis`).modulo
 save/clobber/file=a.nc sst
 sp echo "bn_attributes.jnl --- 3 modulo set to false" >> all_ncdump.out
-sp ncdump -c a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -c a.nc >> all_ncdump.out
 
 ! Reset attributes as in SET AXIS
 
@@ -523,15 +523,15 @@ go bn_reset
 
 use err491_attval.cdf
 sp echo "bn_attributes.jnl --- 4 CANCEL MODE upcase_output; original file:" >> all_ncdump.out
-sp ncdump -h err491_attval.cdf >> all_ncdump.out; sp sleep 1
+sp ncdump -h err491_attval.cdf >> all_ncdump.out
 save/clobber/file=a.nc elev[i=3,j=2:4]
 sp echo "bn_attributes.jnl --- 5 before CANCEL MODE upcase_output" >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
 
 cancel mode upcase_output
 save/clobber/file=a.nc elev[i=3,j=2:4]
 sp echo "bn_attributes.jnl --- 6 after CANCEL MODE upcase_output" >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
 
 set mode/last upcase_output
 
@@ -558,28 +558,28 @@ set att/output bb.my_title
 
 save/clobber/file=a.nc aa,bb
 sp echo "bn_attributes.jnl --- 7 outtput flags to control attribute output" >> all_ncdump.out
-sp ncdump -c a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -c a.nc >> all_ncdump.out
 
 ! Output all attributes
 
 set att/output=all bb
 save/clobber/file=a.nc aa,bb
 sp echo "bn_attributes.jnl --- 8 outtput all flags" >> all_ncdump.out
-sp ncdump -c a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -c a.nc >> all_ncdump.out
 
 ! Just output the default attributes
 
 set att/output=default bb
 save/clobber/file=a.nc bb
 sp echo "bn_attributes.jnl --- 9 Just output the default attributes" >> all_ncdump.out
-sp ncdump -c a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -c a.nc >> all_ncdump.out
 
 ! Output none of the attributes for aa
 
 set att/output=none aa
 save/clobber/file=a.nc aa,bb
 sp echo "bn_attributes.jnl --- 10 Output none of the attributes for aa" >> all_ncdump.out
-sp ncdump -c a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -c a.nc >> all_ncdump.out
 
 go bn_reset
 
@@ -598,7 +598,7 @@ can att/out (`temp,return=xaxis`).point_spacing
 can att/out (`temp,return=xaxis`).axis
 save/file=a.nc/clobber temp
 sp echo "bn_attributes.jnl --- 11 Surpress output of an attribute that Ferret would otherwise add." >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
 
 ! subregions create child axes with new names
 ! Check that settings hold for such an output file.
@@ -609,7 +609,7 @@ can att/out (`temp,return=xaxis`).point_spacing
 can att/out (`temp,return=xaxis`).axis
 save/file=a.nc/clobber temp
 sp echo "bn_attributes.jnl --- 12 Check that settings hold for child axis." >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
 
 ! cancel output of attributes of the variable itself
 can region
@@ -618,7 +618,7 @@ can att/out temp.history
 can att/out temp.long_name
 save/file=a.nc/clobber temp
 sp echo "bn_attributes.jnl --- 13 cancel output of attributes of the variable." >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
  
 go bn_reset
 
@@ -634,7 +634,7 @@ sh att/all a1
 sh dat/att
 save/file=a.nc/clobber a1,a2,a3
 sp echo "bn_attributes.jnl --- 14 attributes of data from ez data." >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 ! now read it as a delimited file
 
@@ -646,7 +646,7 @@ set att/output v1.strval
 sh att/all v1
 save/clobber/file=a.nc v1,v4
 sp echo "bn_attributes.jnl --- 15 attributes of data from delimited data." >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 ! and a stream dataset
 
@@ -673,7 +673,7 @@ sh att/all a
 sh dat/att
 save/file=a.nc/clobber a
 sp echo "bn_attributes.jnl --- 16 attributes of user vars" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 
 !-----
@@ -686,7 +686,7 @@ set att/out=all .   ! from the default data set
 
 save/file=a.nc/clobber elev
 sp echo "bn_attributes.jnl --- 17 global attrs." >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
 
 ! Choose a single global attribute to write, from dataset 1
 can data/all
@@ -696,7 +696,7 @@ set att/output/d=1 ..dt_internal
 save/clobber/file=a.nc elev[d=1], temp[d=2,x=130w,k=1,y=-20:20]
 
 sp echo "bn_attributes.jnl --- 18 choose global attr to write" >> all_ncdump.out
-sp ncdump -h a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h a.nc >> all_ncdump.out
 
 ! Note: this syntax does not work
 ! use err491_attval
@@ -721,7 +721,7 @@ set var/outtype=input elev
 
 save/clobber/file=a.nc/j=1 elev
 sp echo "bn_attributes.jnl --- 19 scale and offset attr." >> all_ncdump.out
-sp ncdump a.nc  >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc  >> all_ncdump.out
 
 go bn_reset
  
@@ -734,7 +734,7 @@ set var/bad=-1000 temp
 set var/outtype=int4 temp
 save/file=a.nc/clobber/y=1/k=1/L=1 temp
 sp echo "bn_attributes.jnl --- 20 set data type on output int4" >> all_ncdump.out
-sp ncdump a.nc | grep -A2 -i temp >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc | grep -A2 -i temp >> all_ncdump.out
 
 can data/all
 use gt4d011
@@ -742,7 +742,7 @@ use gt4d011
 set var/outtype=double salt
 save/clobber/file=a.nc/y=1/k=1/L=1 salt
 sp echo "bn_attributes.jnl --- 21 set data type on output double" >> all_ncdump.out
-sp ncdump a.nc | grep -A2 -i salt >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc | grep -A2 -i salt >> all_ncdump.out
 
 can data gt4d011
 
@@ -757,7 +757,7 @@ repeat/range=1:4/name=m (def sym va = nam[i=`m`]; sh sym va; \
   ELSE save/append/file=a.nc `($va)`)
 
 sp echo "bn_attributes.jnl --- 22 outtype=input" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 set var/outtype=double a_loan
 save/file=a.nc/clobber a_loan
@@ -774,7 +774,7 @@ let a = is_element_of(1,v)
 let/title="hello" b = 1
 save/clobber/file=a.nc b 
 sp echo "bn_attributes.jnl --- 23 more user-defined vars" >> all_ncdump.out
-sp ncdump a.nc >> all_ncdump.out; sp sleep 1
+sp ncdump a.nc >> all_ncdump.out
 
 
 

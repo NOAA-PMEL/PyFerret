@@ -8,5 +8,5 @@
 use time_axis_seconds.nc
 
 sp echo "err550_nc_seconds.jnl --- seconds of time axis" >> all_ncdump.out
-sp ncdump time_axis_seconds.nc | grep origin >> all_ncdump.out; sp sleep 1
+sp ncdump time_axis_seconds.nc | grep origin >> all_ncdump.out
 list t[gt=height]    ! Seconds should be 36, 37, 38...

@@ -29,7 +29,7 @@ use t0_cdc
 sh axis tcdc
 save/clobber/file=my_cdc_timeaxis.nc/L=1:15 a
 sp echo "err580_cdc_timeaxis.jnl --- " >> all_ncdump.out
-sp ncdump -h my_cdc_timeaxis.nc >> all_ncdump.out; sp sleep 1
+sp ncdump -h my_cdc_timeaxis.nc >> all_ncdump.out
 say `a,return=t0`
 
 sp rm -f t0_cdc.nc

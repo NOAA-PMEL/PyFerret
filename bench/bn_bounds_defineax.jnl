@@ -21,7 +21,7 @@ def axis/t tax = {1,2,9,10,11}
 let v = x[gx=xax] +z[gz=zax] + t[gt=tax]
 save/clobber/file=irrxzt.nc v
 sp echo "bn_bounds_defineax.jnl --- N+1 def of bounds." >> all_ncdump.out
-sp ncdump irrxzt.nc >> all_ncdump.out; sp sleep 1
+sp ncdump irrxzt.nc >> all_ncdump.out
 
 ! 3-argument bounds definitions
 def axis/z/bounds zax={1,2,4,8,16,32,64,128}, {0.5,1.5,2.5,4.5,8.5,16.5,32.5,64.5}, {1.5,2.5,4.5,8.5,16.5,32.5,64.5,200} 

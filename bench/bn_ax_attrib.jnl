@@ -5,7 +5,7 @@
 use coads_climatology
 save/clobber/x=180/y=0/file=ax_att.cdf sst
 sp echo "bn_ax_att.jnl --- attribute AXIS=" >> all_ncdump.out
-sp ncdump -c ax_att.cdf | grep "axis ="  >> all_ncdump.out; sp sleep 1
+sp ncdump -c ax_att.cdf | grep "axis ="  >> all_ncdump.out
 
 ! Read the file
 can data/all

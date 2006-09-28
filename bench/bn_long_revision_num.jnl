@@ -9,7 +9,7 @@ sh sym FERRET_VERSION
 ! history attribute
 let a = 12
 sp echo "bn_long_revision_num.jnl --- history attribute" >> all_ncdump.out
-save/clobber/file=revision.nc a; sp ncdump revision.nc | grep history >> all_ncdump.out; sp sleep 1
+save/clobber/file=revision.nc a; sp ncdump revision.nc | grep history >> all_ncdump.out
 
 ! label in upper right
 go ptest; sh sym lab1

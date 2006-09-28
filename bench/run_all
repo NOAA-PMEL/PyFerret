@@ -114,6 +114,7 @@ set plt_file = "all_${date_stamp}.${machine}_plt"
 set ncdump_log = "all_${date_stamp}.${machine}_ncdump"
 set ncdump_file = "all_ncdump.out"
 rm -f ncdump_file $ncdump_file
+echo " " > $ncdump_file
 
 #set up external functions search path
 setenv FER_EXTERNAL_FUNCTIONS $efdir

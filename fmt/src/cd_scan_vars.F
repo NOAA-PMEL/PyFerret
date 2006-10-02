@@ -81,9 +81,11 @@
 *             Replace NCVINQ for variables, with CD_GET_VAR_INFO
 *             Replace NCDID with CD_GET_DIM_ID
 *             Replace NCDINQ with CD_GET_DS_DIMS
-
-* argument definitions:
-* argument definitions:
+* V601 *acm*  Fix bug 1445: if there were no global attributes, then the flag 
+*             global_bad was not set (defaulted to 0). so for a netcdf file 
+*             without global attributes, variables having no missing value 
+*             flags got bad-flag of 0.
+*
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
@@ -198,9 +200,14 @@ c      REAL*8  dg_bad
 
         its_epic = ds_type(dset) .EQ. 'ECDF'
 
-* get the global bad data flag (used by EPIC but sometimes missing)
+* set the  default value of the global_bad flag (used by EPIC but sometimes missing)
+        IF ( its_epic ) THEN
+           global_bad = 1.E35     ! default for EPIC
+        ELSE
+           global_bad = -1.E34    ! default for FERRET
+        ENDIF
 
-* get global attribute pseudo-variable id
+* See fi there is a global attribute missing_value in the file
 
         IF (ngatts .GT. 0) THEN
            CALL CD_GET_VAR_ID (dset, '.', varid, status)

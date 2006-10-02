@@ -16,3 +16,11 @@ GO err600_check_bounds_regular.jnl
 ! Bug 1439
 GO bn_reset
 GO err600_long_symbol_string.jnl
+
+! Global missing-value flag was set to 0 when there is no global 
+! attribute in the file 
+! bug 1445
+GO bn_reset
+GO err600_missing_flag.jnl
+
+

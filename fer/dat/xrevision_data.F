@@ -77,12 +77,14 @@
 *                 if the test fails
 *                 in NC reads, apply user-given offset to 1-D double precision variable, then 
 *                 convert to single precision
+* V6.00  4/25/06  Version 6.0
+* V6.01  9/29/06  Version 6.01
 
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  6.0   /
+	DATA revision_level	/  6.01   /
 !	DATA progname_mod	/ '(GUI BETA v1)' / ! ==> xrevision_type_data.F
 !	DATA len_progname_mod	/  13       /	    ! ==> xrevision_type_data.F
 	END

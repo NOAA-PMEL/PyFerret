@@ -94,14 +94,14 @@ gui_nodebug: .FRC
 	(cd ccr; $(CC) -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
 	$(MAKE) "CFLAGS = $(CFLAGS) -DLINK_GUI_AS_MAIN" \
-		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
 		"MOVIELIB=" "EXECNAME=ferretgui_c" "GUI_FAKES=" \
 		"GUI=GUI" all
 gui_debug: .FRC
 	(cd ccr; $(CC) -g -c $(CFLAGS) -DLINK_GUI_AS_MAIN gui_init.c)
 	$(MAKE) update
 	$(MAKE) "CFLAGS = -g $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
-		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
 		"MOVIELIB=" "EXECNAME=ferretgui_c" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI=GUI" "DEBUG_TITLE=alpha" \
 		"GUI_FAKES="  all
@@ -111,7 +111,7 @@ DODS_gui_debug: .FRC
 	$(MAKE) update
 	$(MAKE) "CFLAGS = -g $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
 		"EXECNAME=ferretdods_gui" \
-		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
 		"MOVIELIB="  \
                 "LD = g++" "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS) -Ddebug" "GUI_FAKES=" \
@@ -122,7 +122,7 @@ profiling: .FRC
 	$(MAKE) update
 	$(MAKE) "CFLAGS = -g $(PROF_FLAGS) $(CFLAGS) -DLINK_GUI_AS_MAIN" "DEBUG=-g "\
 		"EXECNAME=ferretdods_gui" \
-		"GUILIB = -L../lib -lgui $(TMAP_LOCAL)/lib/liblist.a" \
+		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
 		"MOVIELIB="  \
                 "LD = g++ $(PROF_FLAGS) " "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(PROF_FLAGS) $(FFLAGS) -Ddebug" "GUI_FAKES=" \
@@ -146,7 +146,7 @@ DODS_gui_static: .FRC
 		"EXECNAME=ferretdods_gui" \
 		"GUILIB = -L../lib -lgui ../list-2.1/liblist.a" \
 		"MOVIELIB="  \
-                "LD = g++" "LDFLAGS=-v --verbose -L/lib -L/usr/X11R6/lib  -static" \
+                "LD = g++" "LDFLAGS=-v --verbose -L/lib -L/usr/X11R6/lib64  -static" \
                 "CDFLIB = $(DODS_LIBS)" \
 		"FFLAGS = $(FFLAGS)" "GUI_FAKES=" \
 		"DEBUG_TITLE=" all

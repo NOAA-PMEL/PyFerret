@@ -96,6 +96,8 @@
 * V600 *acm* 6/05 - Attribute control, RETURN= attribute information.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * V600  6/06 *acm* - additional declarations found by Solaris compiler
+* V601 10/06 *acm* - fix bug 1447, where say `var[d=fname.cdf],return=size` failed
+*            parsing error, confusing the dot in the filename with `var.att,return=size`
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -541,7 +543,7 @@
                  IF (coordvar) THEN
 
                     IF (INDEX(buff,'.') .GT. 0)
-     .              CALL BREAK_VARATTNAME( buff, dset, varname, 
+     .              CALL BREAK_VARATTNAME( cmnd(istart:iend), dset, varname, 
      .                              attname,  varid, do_err, status )
 
                  ELSE
@@ -549,9 +551,14 @@
      .                  status)
                     
                     IF (status .NE. ferr_ok .AND. 
-     .                  INDEX(cmnd(istart:iend),'.') .GT. 0)
-     .              CALL BREAK_VARATTNAME( cmnd(istart:iend), dset,
+     .                  INDEX(cmnd(istart:iend),'.') .GT. 0) THEN
+                       CALL BREAK_VARATTNAME( cmnd(istart:iend), dset,
      .                         varname, attname, varid, do_err, status )
+                    ELSE
+                       i2 = CGRID_SIZE ( cx )
+                       repl = LEFINT(i2, str_len) 
+                       GOTO 500
+                    ENDIF
 
                  ENDIF
                  
@@ -561,8 +568,10 @@
      .               attid, aname,  attype, attlen, attoutflag, status )
 
                  IF (status .EQ. ferr_ok) THEN
-                    result = attlen
-                    repl = TM_FMT( result, use_digits, max_len, str_len )
+                    IF (attlen .GT. 0) THEN
+                       result = attlen
+                       repl = TM_FMT( result, use_digits, max_len, str_len )
+                    ENDIF
 	         ELSE 
 	            GOTO 5520
                  ENDIF

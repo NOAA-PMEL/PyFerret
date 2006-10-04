@@ -52,6 +52,8 @@
 * 10/05 *acm*  Fix bug 918, parsing immediate mode expr when they are inside
 *              a conditional, using the IF STACK.
 * 12/05 *acm*  Fix bug 1368. if skipping commands, also skip one-line if-then-condition
+* V6.01 10/06 *acm*  Fix bug 1446 in the loop DO 200 when testing for a tab character, the
+*              index should be i not ic1. The perils of cut-and-pasting text from elsewhere!
 
 * calling argument declarations:
 	INTEGER		slen
@@ -125,7 +127,7 @@ cc	IF (its_if .OR. its_endif) RETURN
 * See if there is a command after the THEN
                DO 200 i = end_then,cmnd_len
                    IF (cmnd_string(i:i).NE. ' '
-     .           .AND. cmnd_string(ic1:ic1).NE. tab) one_liner = .TRUE.
+     .           .AND. cmnd_string(i:i).NE. tab) one_liner = .TRUE.
   200          CONTINUE
 
             ENDIF  

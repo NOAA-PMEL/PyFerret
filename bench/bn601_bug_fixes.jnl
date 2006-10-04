@@ -17,10 +17,20 @@ GO err600_check_bounds_regular.jnl
 GO bn_reset
 GO err600_long_symbol_string.jnl
 
-! Global missing-value flag was set to 0 when there is no global 
-! attribute in the file 
+! Global missing-value flag for dataset was not initialized and so was 
+! set to 0 when there was no global attribute in the file 
 ! bug 1445
 GO bn_reset
 GO err600_missing_flag.jnl
 
+! err600_returnsize.jnl
+! bug 1447, where say `var[d=fname.cdf],return=size` failed
+! ( a parsing error, confusing the dot in the filename with dot in `var.att,return=size` )
+GO bn_reset
+GO err600_returnsize.jnl
 
+! err600_if_comments_tab.jnl
+! bug 1446  When there is a tab before a comment, the parsing gets 
+! thrown off and we got an error about an invalid ENDIF
+GO bn_reset
+GO err600_if_comments_tab.jnl

@@ -1,0 +1,13 @@
+! err600_returnsize.jnl
+! ACM 10-4-2006
+! bug 1447, where say `var[d=fname.cdf],return=size` failed
+! ( a parsing error, confusing the dot in the filename with dot in `var.att,return=size` )
+
+
+use coads_climatology.cdf
+
+say `sst[d=coads_climatology.cdf],return=size`
+say `sst.units,return=size`
+
+define symbol the_x_axis = `sst,return=xaxis`
+say `(($the_x_axis)).units,return=size`

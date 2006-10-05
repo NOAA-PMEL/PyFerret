@@ -45,6 +45,7 @@ isit_coord_var.F\
 line_facts.F\
 line_facts_xml.F\
 list_cmnd_data.F\
+list_cmnd_data_xml.F\
 list_multi.F\
 list_multi_sub.F\
 mouse_command.F\

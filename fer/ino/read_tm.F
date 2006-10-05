@@ -76,7 +76,7 @@
      .			sf_num, tmap_status, lo_ss(4), hi_ss(4),
      .			lo_s1, lo_s2, lo_s3, lo_s4, 
      .			hi_s1, hi_s2, hi_s3, hi_s4,
-     .			stride(4)
+     .			stride(4), lo_ss_ds,hi_ss_ds
 * V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
 	CHARACTER*128	VAR_CODE, variable_code
 
@@ -103,19 +103,24 @@
 	   cx_type(cx) = ds_var_type(variable)
 	ENDIF
 
+* jli: replace the following cx_delta logic by the line_delta
+
 * strides indicated in cx_delta e.g. SST[I=110:180:10] ?
 * If so, transfer this info to the stride array
 	has_a_stride = .FALSE.
-	DO 100 idim = 1, 4
-	   has_strides(idim) =  cx_delta(idim,cx) .NE. unspecified_val8
-     .			 .AND.  cx_delta(idim,cx) .NE. 1 
-	   IF (has_strides(idim)) THEN
-	      stride(idim) = NINT(cx_delta(idim,cx))
-	      has_a_stride = .TRUE.
-	   ELSE
-	      stride(idim) = 1
-	   ENDIF
- 100	CONTINUE
+!	DO 100 idim = 1, 4
+!	   has_strides(idim) =  cx_delta(idim,cx) .NE. unspecified_val8
+!     .			 .AND.  cx_delta(idim,cx) .NE. 1 
+!           line = grid_line(idim, grid)
+!           print *, line_parent(line)
+!	   IF (has_strides(idim)) THEN
+!	      stride(idim) = NINT(cx_delta(idim,cx))
+!              print *, '00000', stride(idim)
+!	      has_a_stride = .TRUE.
+!	   ELSE
+!	      stride(idim) = 1
+!	   ENDIF
+! 100	CONTINUE
 
 ! not required 6/01 when CREATE_MEM_VAR became sensitive to cx_delta
 !* if strides are invloved the memory requirement is less ...
@@ -148,13 +153,108 @@
 
 * set up array of subscripts
 	DO 300 idim = 1, 4
-	   IF ( grid_line( idim, grid ) .EQ. mnormal ) THEN
-	      lo_ss( idim ) = 1
-	      hi_ss( idim ) = 1
-	   ELSE
-	      lo_ss( idim ) = cx_lo_ss( cx, idim )
-	      hi_ss( idim ) = cx_hi_ss( cx, idim )
-	   ENDIF
+*<jli
+           line = grid_line(idim, grid)
+
+*          For strides indicated in cx_delta e.g. SST[I=110:180:10]
+*          use cx_delta logic
+
+           IF(line_parent(line) .EQ. 0) THEN
+              has_strides(idim) =  cx_delta(idim,cx) .NE. unspecified_val8
+     .                  .AND.  cx_delta(idim,cx) .NE. 1 
+              IF (has_strides(idim)) THEN
+                stride(idim) = NINT(cx_delta(idim,cx))
+                has_a_stride = .TRUE.
+              ELSE
+                stride(idim) = 1
+              ENDIF
+     
+              IF ( grid_line( idim, grid ) .EQ. mnormal ) THEN
+                 lo_ss( idim ) = 1
+                 hi_ss( idim ) = 1
+              ELSE
+                 lo_ss( idim ) = cx_lo_ss( cx, idim )
+                 hi_ss( idim ) = cx_hi_ss( cx, idim )
+              ENDIF
+           
+           ELSE
+
+*             For strides specified in SET AXIS/STRIDE
+*             Use line_delta logic
+
+!             has_a_stride = .FALSE.
+!             line = grid_line(idim, grid) 
+              has_strides(idim) = .TRUE.
+
+	      IF ( grid_line( idim, grid ) .EQ. mnormal ) THEN
+	         lo_ss( idim ) = 1
+	         hi_ss( idim ) = 1
+                 stride( idim ) = 1
+
+              ELSEIF ( line_regular(line) ) THEN
+              
+                 IF (has_strides(idim)) THEN
+                    stride(idim) = line_delta(line)/line_delta(line_parent(line))+0.5
+                    has_a_stride = .TRUE.
+                 ELSE
+                    stride(idim) =1 
+                 ENDIF
+
+!                get size of the native axis
+                 CALL VAR_SS_LIMS(idim, cx,lo_ss_ds,hi_ss_ds)
+
+!                 lo_ss(idim) = (cx_lo_ss( cx, idim )-1)*stride(idim) +1
+!                  hi_ss(idim) = (cx_hi_ss( cx, idim )-1)*stride(idim) +1
+                 lo_ss(idim) = (cx_lo_ss( cx, idim )-1)*stride(idim) + 
+     .                         line_offset(line)
+
+                 hi_ss(idim) = (cx_hi_ss( cx, idim )-1)*stride(idim) +
+     .                         line_offset(line) 
+
+!                for a reversed axis
+                 IF( line_reversed(line)) THEN
+!                   must compute hi_ss first and then lo_ss
+                    hi_ss(idim) = hi_ss_ds - 
+     .                         (line_dim(line)-cx_hi_ss( cx, idim ))*stride(idim) -
+     .                         line_offset(line) + 1
+  
+                    lo_ss(idim) = hi_ss(idim) - 
+     .                         (cx_hi_ss(cx,idim)-cx_lo_ss(cx,idim))*stride(idim)
+                 ENDIF
+
+!                for nested stride
+                 IF( (cx_delta(idim,cx) .NE. unspecified_val8)
+     .                  .AND.  (cx_delta(idim,cx) .NE. 1) ) THEN
+                    stride(idim) = stride(idim)*cx_delta(idim,cx)
+                 ENDIF
+
+
+              ELSE
+*             Irregular line
+
+                 IF (has_strides(idim)) THEN
+                    has_a_stride = .TRUE.
+                    stride(idim) = line_delta(line)
+
+!                   Nested strided, e.g.,i=1:20:2      
+                    IF( (cx_delta(idim,cx) .NE. unspecified_val8)
+     .                  .AND.  (cx_delta(idim,cx) .NE. 1) ) THEN
+                       stride(idim) = stride(idim)*cx_delta(idim,cx)
+                    ENDIF
+
+                    lo_ss(idim)  = line_start(line) +  
+     .                             (cx_lo_ss( cx, idim )-1)*stride(idim)
+                    hi_ss(idim)  = line_start(line) +  
+     .                             (cx_hi_ss( cx, idim )-1)*stride(idim)
+                 ELSE
+                    lo_ss( idim ) = cx_lo_ss( cx, idim )
+                    hi_ss( idim ) = cx_hi_ss( cx, idim )
+                    stride(idim) = 1 
+                 ENDIF 
+
+	      ENDIF
+           
+           ENDIF
  300	CONTINUE
 
 * diagnostic output

@@ -118,7 +118,7 @@
 * V600 *acm* 10/05 CANCEL ATTRIBUTE[/ALL][/OUTPUT] varname.attname
 * V600 *acm* 5/06 MODE LINECOLORS User can change the number of line colors.
 * V600 *acm* 6/06 additional declarations found by Solaris compiler
-
+*      *jli* 7/06 added CANCEL AXIS/STRIDE
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -163,7 +163,7 @@
      .                  TM_LENSTR, len_test, len_mchars, varid,
      .                  dset, cat, var, mods_cx, iflag, loc, 
      .                  nvdims, vdims(8), nvatts, vtype, all_outflag, 
-     .                  slen, iatt
+     .                  slen, iatt, igrd, iline
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims,
@@ -592,6 +592,56 @@
 
  1222	   CONTINUE
 
+* CANCEL AXIS/STRIDE
+        ELSE IF ( qual_given(slash_canc_axis_stride) .GT. 0 ) THEN
+           
+* ...   Elimate all cached memory
+           CALL PURGE_ALL_MEMORY
+
+* ...   Eliminate all memory-resident user-defined vars and their
+*       uvar_grid 's 
+           CALL PURGE_ALL_UVARS
+* ...   
+           DO 1223 item = 1, num_items 
+              axis = TM_GET_LINENUM(
+     .                          cmnd_buff(item_start(item):item_end(item)) )
+
+* ...   Check it is legal to issue CANCEL AXIS/STRIDE
+              IF ( axis .EQ. unspecified_int4 ) GOTO 6210
+ 
+*       not legal if axis no longer exists
+              IF( line_name(axis) .EQ. char_init16) GOTO 6310
+
+*       not legal if this is not a strided axis
+              IF( line_parent(axis) .EQ. 0) GOTO 6320
+
+              igrd = 0
+              iline= 0
+
+* ...   Loop through all dynamic grids and find which uses this axis
+
+ 6001         CALL TM_NEXT_DYN_GRID( igrd, *6199)
+
+                 DO 6002 idim=1,4
+                    iline = grid_line(idim,igrd)
+
+                    IF ( iline .EQ. axis ) THEN
+
+* ...   Reinsert the native axis (the parent of this axis)
+                       grid_line(idim,igrd) = line_parent(axis)
+
+                    ENDIF
+ 6002            CONTINUE
+
+              GOTO 6001
+ 6199         CONTINUE 
+
+* ...   Deallocate this axis
+           line_keep_flag(axis) = .FALSE. 
+           CALL TM_DEALLO_DYN_LINE(axis)
+
+ 1223      CONTINUE 
+
         ELSE
 
 * ... CANCEL AXIS
@@ -928,5 +978,11 @@ c	ENDIF
      .	    'CANCEL ATTRIBUTE/ALL varname.attname: '//
      .	    'cannot specify attribute name '
      .			, *5000 )
+ 6310   CALL ERRMSG( ferr_invalid_command, status, 'axis no longer exists: '//
+     .               cmnd_buff(item_start(item):item_end(item)), *5000 )
+
+ 6320   CALL ERRMSG( ferr_invalid_command, status, 'not a strided axis: '//
+     .               cmnd_buff(item_start(item):item_end(item)), *5000 )
+ 
 	END
 

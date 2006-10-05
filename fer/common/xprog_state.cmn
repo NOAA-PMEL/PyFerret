@@ -30,6 +30,7 @@
 *                    checking for user variables not relevant to the context
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
 * V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
+*       *jli* 8/06 - add plist_xml
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -88,7 +89,7 @@
 	INTEGER plist_default, plist_formatted, plist_unformatted,
      .	        plist_epic, plist_gt, plist_ts, plist_cdf, plist_stream,
      .		plist_comma_del, plist_tab_del, plist_cdf_cache, 
-     .		plist_dods
+     .		plist_dods, plist_xml
 	PARAMETER     (	plist_default	= 0,
      .	 		plist_formatted	= 1,
      .			plist_unformatted = 2,
@@ -100,7 +101,8 @@
      .			plist_comma_del	= 8,
      .			plist_tab_del	= 9,
      .			plist_cdf_cache	= 10,
-     .			plist_dods	= 11 )
+     .			plist_dods	= 11,
+     .                  plist_xml       = 12 )
 
 	INTEGER		pif_skip_to_endif,
      .			pif_doing_clause,

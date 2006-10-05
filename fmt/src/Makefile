@@ -26,10 +26,10 @@
 	($(CC) $(CFLAGS) -c $(DEBUG) $(<F))
 
 .F.o: 
-	($(F77) -c $(DEBUG) $(FFLAGS) $(<F))
+	($(FC) -c $(DEBUG) $(FFLAGS) $(<F))
 
 .f.o: 
-	($(F77) -c $(DEBUG) $(FFLAGS) $(<F))
+	($(FC) -c $(DEBUG) $(FFLAGS) $(<F))
 
 include ./SOURCE_FILES
 include ../../fer/platform_specific_flags.mk.$(HOSTTYPE)
@@ -73,7 +73,7 @@ comp_nocpp:
 		touch `echo $${file} | sed -e 's/.F/.f/g'`; \
 		rm `echo $${file} | sed -e 's/.F/.f/g'`; \
                 /lib/cpp ${CPPFLAGS} -traditional $${file} > `echo $${file} | sed -e 's/.F/.f/g'`; \
-                ${F77} $(FFLAGS) $(DEBUG) `echo $${file} | sed -e 's/.F/.f/g'`; \
+                ${FC} $(FFLAGS) $(DEBUG) `echo $${file} | sed -e 's/.F/.f/g'`; \
 	done
 	$(CC) $(CCFLAGS) $(DEBUG) *.c
 

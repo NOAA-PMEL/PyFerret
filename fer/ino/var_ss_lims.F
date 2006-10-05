@@ -106,6 +106,6 @@
 
 * return subscript limits
  110	lo_ss = ds_grid_start(idim, var)
-	hi_ss = ds_grid_end  (idim, var)
+	hi_ss = ds_grid_end(idim, var)
  1000	RETURN
 	END

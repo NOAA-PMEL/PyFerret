@@ -25,6 +25,7 @@
 * V600 *acm* 2/06 - For bug 1394, increase size of line_units to 64
 * V600 *acm* 6/05  Attribute control. New flag line_fixname to let us restore the
 *                  original name on output if it was changed on input. (cd_axis_name.F)
+*      *jli* 9/06  add line_reversed, for striding on a reversed axis
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -38,7 +39,7 @@
      .			line_parent, line_use_cnt, line_flink, line_blink,
      .			line_class, line_free_ptr, max_line_used,
      .                  pline_mem_init
-	LOGICAL		grid_out_prod, line_regular, line_modulo,
+	LOGICAL		grid_out_prod, line_regular, line_modulo, line_reversed,
 !     .			line_has_edges, line_keep_flag,
      .			line_keep_flag, line_shift_origin, line_fixname
 	REAL		line_tunit, grid_rotation
@@ -87,7 +88,9 @@
      .			max_grid_used,
      .
      .			line_direction	( 0:line_ceiling ),
-     .			axis_orients	( 0:max_axis_orients )
+     .			axis_orients	( 0:max_axis_orients ),
+     .                  line_reversed   ( 0:line_ceiling),
+     .                  line_offset     ( 0:line_ceiling)
 
 * note: the zero subscript is a scratch buffer
 

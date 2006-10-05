@@ -169,6 +169,8 @@
 *       *acm* 9/05 - add SET ATTRIBUTE
 *       *acm*10/05 - add CANCEL ATTRIBUTE
 * V600: 2/06 *acm* - add SET VARIABLE/OUTTYPE for attribute-handling additions
+*       7/06 *jli* - add SET AXIS/STRIDE /OFFSET for grid striding
+*       7/06 *jli* - add CANCEL AXIS/STRIDES
 *       *acm* 7/06 -     CANCEL ATTRIBUTE /OUTPUT /DATA
 
 	include 'ferret.parm'
@@ -234,7 +236,7 @@
 	   DATA subcommands      (nsub_at1 + 5)	/ 'LIST'	/
 	   DATA num_qualifs      (nsub_at1 + 5)	/ nqual1f	/
 	   DATA qualifier_pointer(nsub_at1 + 5)	/ nqual_at1f	/
-* SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND
+* SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND, /XML
 		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISON'	/
 		DATA qualifiers  (nqual_at1f+1)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at1f+2)	/ 'FORMAT'	/
@@ -302,14 +304,14 @@
 	   DATA subcommands      (nsub_at1 +11)	/ 'AXIS'	/
 	   DATA num_qualifs      (nsub_at1 +11)	/ nqual1l	/
 	   DATA qualifier_pointer(nsub_at1 +11)	/ nqual_at1l	/
-* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0
+* SET AXIS / MODULO /DEPTH /CALENDAR /UNITS /T0 /STRIDE /OFFSET
 		DATA qualifiers  (nqual_at1l+0)	/ 'MODULO'	/
 		DATA qualifiers  (nqual_at1l+1)	/ 'DEPTH'	/
 		DATA qualifiers  (nqual_at1l+2)	/ 'CALENDAR'	/
 		DATA qualifiers  (nqual_at1l+3)	/ 'T0'	/
 		DATA qualifiers  (nqual_at1l+4)	/ 'UNITS'	/
-		DATA qualifiers  (nqual_at1l+5)	/ '****'	/
-		DATA qualifiers  (nqual_at1l+6)	/ '****'	/
+		DATA qualifiers  (nqual_at1l+5)	/ 'STRIDE'	/
+		DATA qualifiers  (nqual_at1l+6)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1l+7)	/ '****'	/
 * SET MEMO							
 	   DATA subcommands      (nsub_at1 +12)	/ 'MEMORY'	/
@@ -664,6 +666,7 @@
 		DATA qualifiers  (nqual_at3l+0)	/ 'MODULO'	/
 		DATA qualifiers  (nqual_at3l+1)	/ 'ALL'	        /
 		DATA qualifiers  (nqual_at3l+2)	/ 'DEPTH'       /
+		DATA qualifiers  (nqual_at3l+3) / 'STRIDE'       /
 * CANCEL GRID
 	   DATA subcommands      (nsub_at3 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at3 +12)	/ nqual3m	/
@@ -773,7 +776,7 @@
 	   DATA subcommands      (nsub_at5 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at5 + 0)	/ nqual5a	/
 	   DATA qualifier_pointer(nsub_at5 + 0)	/ nqual_at5a	/
-* LIST/I/J/K/L/X/Y/Z/T/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET
+* LIST/I/J/K/L/X/Y/Z/T/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET 
 		DATA qualifiers  (nqual_at5a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at5a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at5a+2)	/ 'K'	/

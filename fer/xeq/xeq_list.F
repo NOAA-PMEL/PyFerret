@@ -145,7 +145,7 @@
 * local variable declarations
 	LOGICAL		normal_file, fexist, heading, list_to_tty, do_multi,
      .			do_epic, do_gt, do_cdf, do_unform, do_stream,
-     .			do_comma_del, do_tab_del, do_dods,
+     .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
      .			clobber, quiet, do_bounds
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
@@ -218,6 +218,7 @@
         do_tab_del   = list_fmt_type .EQ. plist_tab_del
         do_comma_del = list_fmt_type .EQ. plist_comma_del
         do_stream_phase = 0		! for multi-variable stream
+        do_xml       = list_fmt_type .EQ. plist_xml
 	list_to_tty  = qual_given( slash_file ) .EQ. 0
      .            .AND. .NOT.(do_epic.OR.do_gt.OR.do_unform
      .			  .OR.do_cdf.OR.do_stream .OR. do_dods)
@@ -618,6 +619,14 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	IF ( do_gt ) THEN
 	   CALL TMAP_LIST( memory, list_lun, reclen, num_uvars_in_cmnd,
      .			   is_mr, is_cx, memory(1, wkblk), status )
+        ELSEIF (do_xml) THEN
+           CALL NON_ARRAY_SUBSC( mr_perm, 1 )
+           nn = mr_perm(1)
+           CALL LIST_CMND_DATA_XML( memory(1, mr_blk1(mr_perm(1))),
+     .                          nn, cx, memory(1, wkblk), 
+     .                          heading, head_enh, recsofar, perm, 
+     .                          clobber, raw_name, status)
+
 	ELSEIF ( do_cdf ) THEN
 	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,

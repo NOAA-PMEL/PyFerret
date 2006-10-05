@@ -83,7 +83,8 @@
      .		trans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
      .		cxsize, split_ax, split_ax_len, frag, var, ss, lo_ss,
-     .		hi_ss, nmod, nmodhi, npts, xlate, dup_cx, i4d
+     .		hi_ss, nmod, nmodhi, npts, xlate, dup_cx, i4d,
+     .          line
 
 	REAL	ax_frac
 	REAL*8	TM_WORLD, ww_given, ww_nrst
@@ -97,6 +98,7 @@
 	include	'xprog_state.cmn'
 	include	'xalgebra.cmn'
 	include	'xax_speed.cmn'
+        include 'xtm_grid.cmn_text'
 
 * --- end of introductory code ---
 * initiailize - ! temp:always called at bottom of stack frame for transform
@@ -321,8 +323,17 @@
 	      axis = reversed(i)
 	      CALL VAR_SS_LIMS( axis, lo_cx, lo_ss, hi_ss )
 	      xlate = cx_lo_ss(hi_cx, axis)
+
+!             for a strided axis
+              line = grid_line(axis,grid)
+              IF(line_parent(line) .NE. 0) THEN 
+                  hi_ss = line_dim(grid_line(axis,grid))
+                  lo_ss = 1
+              ENDIF
+
 	      cx_lo_ss(hi_cx, axis) = hi_ss + lo_ss - cx_hi_ss(hi_cx,axis) 
 	      cx_hi_ss(hi_cx, axis) = hi_ss + lo_ss - xlate
+
 * ... don't rebuild the axis: the world coords are for unreversed axis
 	      cx_by_ss(axis,hi_cx) = .TRUE.
  250	   CONTINUE	         

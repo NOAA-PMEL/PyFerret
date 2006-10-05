@@ -130,9 +130,12 @@
 * V600 *acm*  8/05 - Allow more digits in xrevision number
 * V600 *acm* 3/06  fixing bugs 439&1390, new arg to get_new_cx.
 * V600 *acm* 5/2006 MODE LINECOLORS User can change the number of line colors.
+*      *jli* 7/2006 added 'implicit.parm' for pline_class_stride
+*      *jli* added SET AXIS/STRIDE/OFFSET/
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
+        include 'implicit.parm'
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
@@ -180,8 +183,9 @@
      .                  cal_id, day, month, year, hour, minute, second,
      .                  units, since_t0, len_test, len_mchars, slen,
      .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
-     .                  ivar, dot
+     .                  ivar, dot, strided_axis, igrd, offset
         REAL*8          TM_WW_AXLEN, axwwlen
+        REAL*8          delta, dlo, dhi
 	REAL		val_buf
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
@@ -924,6 +928,160 @@ c *kob* 4/97
               ENDIF
            ENDIF
 
+        ENDIF
+
+*  /STRIDE and /OFFSET
+
+        loc = qual_given(slash_set_axis_stride)
+        IF (loc .GT. 0 ) THEN
+
+!            CALL EQUAL_STRING(
+!     .                cmnd_buff(qual_start(loc):qual_end(loc)),
+!     .                buff1, status )
+!            print *, cmnd_buff(qual_start(loc):qual_end(loc))
+!            IF ( status .NE. ferr_ok ) GOTO 6610
+
+*       Get the stride value
+           IF ( loc .GT. 0 ) THEN
+              CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                     val_buf, status )
+              IF ( status .NE. ferr_ok ) RETURN
+           ELSE
+              val_buf = 0
+           ENDIF
+
+           IF ( val_buf .GT. 0.0 ) THEN
+              delta = val_buf
+           ENDIF
+
+* ...   Elimate all cached memory                                     (II.1)
+           CALL PURGE_ALL_MEMORY
+
+* ...   Eliminate all memory-resident user-defined vars and their 
+*       uvar_grid 's (II.1)
+           CALL PURGE_ALL_UVARS
+ 
+* ...   Check that it's legal to issue SET AXIS/STRIDE for this axis  (II.2.a)
+
+*       not legal if this is a non-dynamic axis
+           IF(axis .LE. max_lines) GOTO 6620           
+
+*       not legal if it is a child axis already
+           IF(line_parent(axis) .NE. 0) GOTO 6630
+
+* ...   Check that the /stride and /offset values given are legal      (II.2.b)
+           loc = qual_given(slash_set_axis_offset)
+           IF (loc .GT. 0) THEN
+              CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                     val_buf, status )
+              IF ( status .NE. ferr_ok ) RETURN
+              offset = INT(val_buf)
+           ELSE
+              offset = 1
+           ENDIF
+
+* ...   If STRIDE value is 1 -- ignore the command.                    (II.2.c)
+           IF( delta .EQ. 1) RETURN 
+
+* ...   offset should be less than the stride value
+           IF(offset .GE. delta) GOTO 6640 
+
+* jli: is there a function to get the line orientation idim ?
+
+            igrd=0
+ 6300      CALL TM_NEXT_DYN_GRID( igrd, *6399)
+              DO 6301 i=1,4
+                 IF ( grid_line(i, igrd) .EQ. axis ) THEN
+                    idim=i
+                 ENDIF
+ 6301         CONTINUE
+           GOTO 6300
+ 6399      CONTINUE
+
+!           IF(line_direction(axis) .EQ. 'WE') THEN
+!              idim = 1
+!           ELSE IF(line_direction(axis) .EQ. 'SN') THEN
+!              idim = 2
+!           ELSE IF(line_direction(axis) .EQ. 'DU') THEN
+!              idim = 3
+!           ELSE IF(line_direction(axis) .EQ. 'TI') THEN
+!              idim = 4
+!           ENDIF
+
+           
+* ...   Check that this native axis is used only for variables from 
+*       netCDF datasets                                                (II.3)  
+
+*       loop through all dynamic grids
+
+           igrd = 0
+ 6000      CALL TM_NEXT_DYN_GRID( igrd, *6099)
+              IF ( grid_line(idim, igrd) .EQ. axis ) THEN
+*       loop through all of the file variables
+                 DO 6010 i = 1, maxvars
+                    IF((ds_grid_number(i) .EQ. igrd) .AND. 
+     .                 (ds_type(ds_var_setnum(i)) .NE. 'CDF') ) 
+     .              GOTO 6088
+ 6010            CONTINUE
+              ENDIF
+           GOTO 6000
+ 6099      CONTINUE
+
+
+* ...   Define the new strided axis                                    (II.4)
+
+           dlo = offset      
+           dhi = line_dim(axis)
+ 
+           CALL TM_GET_LIKE_DYN_LINE( idim,
+     .                                 dlo,
+     .                                 dhi,
+     .                                 delta,
+     .                                 axis,   ! original axis
+     .                                 pline_class_stride,
+     .                                 strided_axis,  ! your new native-stride axis 
+     .                                 status)
+            IF ( status .NE. ferr_ok ) GOTO 6650
+
+        line_offset(strided_axis) = offset
+
+        line_reversed(strided_axis) = .FALSE.
+
+*       Check if the native axis is reversed
+        IF( (perm(idim) .LT. 0) .AND. 
+     .      (perm(idim) .NE. unspecified_int4) ) THEN
+            line_reversed(strided_axis) = .TRUE. 
+        ENDIF
+
+*       set modulo property
+        IF(line_modulo(axis)) THEN
+           IF(MOD(dhi,delta) .EQ. 0) THEN
+              line_modulo(strided_axis) = .TRUE.
+              line_modulo_len(strided_axis) = line_modulo_len(axis) 
+           ELSE
+              CALL WARN('Lose modulo property')
+           ENDIF
+        ENDIF
+
+* ...   Replace the original axis with the new dynamic axis in 
+*       all grids where it is used                                      (II.5)
+
+*       loop through all dynamic grids  
+
+           igrd = 0
+
+ 6001      CALL TM_NEXT_DYN_GRID( igrd, *6199)
+               IF ( grid_line(idim, igrd) .EQ. axis ) THEN
+                  grid_line(idim,igrd) = strided_axis
+                  CALL TM_USE_LINE(strided_axis)
+*                   DO 6011 i = 1, maxvars
+*                    IF(ds_grid_number(i) .EQ. igrd) THEN
+*                        ds_grid_end(idim,i) = 18
+*                    ENDIF
+* 6011              CONTINUE
+               ENDIF
+           GOTO 6001        
+ 6199      CONTINUE
 
         ENDIF
 
@@ -1241,6 +1399,9 @@ c *kob* 4/97
  5850	CALL ERRMSG( ferr_erreq, status, 
      .               'Unable to open '//ppllist_file,
      .			*5000 )
+ 6088   CALL ERRMSG( ferr_invalid_command, status,
+     .           'it is not a netcdf dataset',
+     .               *5000 )
  6110	CALL ERRMSG( ferr_invalid_command, status,
      .		     'no grid has been saved', *5000 )
  6210	CALL ERRMSG( ferr_invalid_command, status,
@@ -1266,7 +1427,22 @@ c *kob* 4/97
  6520	CALL ERRMSG( ferr_syntax, status,
      .	         'specify SET AXIS/T0 separately from /UNITS ',
      .               *5000 )
-
+ 6610   CALL ERRMSG( ferr_invalid_command, status,
+     .           'SET AXIS/stride= what? ',
+     .               *5000 )
+ 6620   CALL ERRMSG( ferr_invalid_command, status,
+     .           'illegal operation for a non-dynamic axis',
+     .               *5000 )
+ 6630   CALL ERRMSG( ferr_invalid_command, status,
+     .           'it is a child axis already',
+     .               *5000 )
+ 6640   CALL ERRMSG( ferr_invalid_command, status,
+     .           'offset should be less than stride value',
+     .               *5000 )
+ 6650   CALL ERRMSG( ferr_invalid_command, status,
+     .           'fail to create a strided axis',
+     .               *5000 )
+ 
  5900 CALL ERRMSG( ferr_invalid_command, status,
      .		'SET what name.attribute?', *5000 )
  5920 slen = TM_LENSTR(buff1)

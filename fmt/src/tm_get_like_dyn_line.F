@@ -130,6 +130,7 @@
 	   ENDIF
 * ... every nth index of parent line
 	ELSEIF ( class .EQ. pline_class_stride ) THEN
+
 	   IF ( line_regular(inline) ) THEN
 	      line_parent(inline)    = like
 	      line_start(inline)     = line_start(like)

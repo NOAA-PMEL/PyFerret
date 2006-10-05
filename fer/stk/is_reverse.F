@@ -53,6 +53,12 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 
+        include 'tmap_dims.parm'
+!        include 'tmap_errors.parm'
+!        include 'implicit.parm'
+        include 'xtm_grid.cmn_text'
+        external xgt_grid_data
+
 * calling argument declarations:
 	INTEGER	status
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -68,7 +74,8 @@
 * internal variable declarations:
 	INTEGER TM_AXES_REVERSED, nrev,
      .		com_mr, res_mr, com_cx, res_cx,	com_isp, res_isp,
-     .		axis, i, var, hi_ss, lo_ss, itmp, reversed(4)
+     .		axis, i, var, hi_ss, lo_ss, itmp, reversed(4),
+     .          grid, line
 
 * --- end of introductory code ---
 
@@ -126,13 +133,26 @@
 	DO 300 i = 1, nrev
 	   axis = reversed(i)
 !	   IF (has_strides(axis)) GOTO 300	  ! already handled above
+
+
 	   CALL VAR_SS_LIMS( axis, res_cx, lo_ss, hi_ss )
+
+!      for a strided axis
+           grid = cx_grid(res_cx)
+           line = grid_line(axis,grid)
+           IF( line_parent(line) .NE. 0 ) THEN
+              lo_ss=line_dim(line)
+              hi_ss=1
+           ENDIF
+
 	   itmp = mr_lo_ss( com_mr, axis )
 	   mr_lo_ss(com_mr,axis) = hi_ss + lo_ss - mr_hi_ss(com_mr,axis)
 	   mr_hi_ss(com_mr,axis) = hi_ss + lo_ss - itmp
+ 
 	   itmp = cx_lo_ss( com_cx, axis )
 	   cx_lo_ss(com_cx,axis) = hi_ss + lo_ss - cx_hi_ss(com_cx,axis)
 	   cx_hi_ss(com_cx,axis) = hi_ss + lo_ss - itmp
+ 
  300	CONTINUE
 
 * copy the source data into the result

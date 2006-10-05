@@ -29,7 +29,9 @@
 * V581: *acm* 5/05 - add SHADE/MOD and CONTOUR/MOD
 * V581: *acm* 5/05 - add EXIT/CYCLE
 * V600: *acm* 2/06 - add SET VARIABLE/OUTTYPE
+*       *jli* 7/06 - add SET AXIS /STRIDE /OFFSET
 *       *acm* 7/06 - add CANCEL ATTRIBUTE /OUTPUT /DATA
+
 * command qualifier states
 	INTEGER		qual_on,
      .			qual_off
@@ -52,6 +54,7 @@
      .			slash_canc_axis_modulo,
      .			slash_canc_axis_all,
      .			slash_canc_axis_depth,
+     .                  slash_canc_axis_stride,
      .
      .			slash_canc_data_noerr,
      .
@@ -117,6 +120,8 @@
      .			slash_set_axis_calendar,
      .			slash_set_axis_t0,
      .			slash_set_axis_units,
+     .                  slash_set_axis_stride,
+     .                  slash_set_axis_offset,
      .
      .			slash_set_memory_words,
      .                  slash_set_attr_type,
@@ -259,6 +264,7 @@
      .			slash_canc_axis_modulo = 1,
      .			slash_canc_axis_all    = 2,
      .			slash_canc_axis_depth  = 3,
+     .                  slash_canc_axis_stride = 4,
      .
      .			slash_canc_data_noerr  = 2,
      .
@@ -324,6 +330,8 @@
      .			slash_set_axis_calendar = 3,
      .			slash_set_axis_t0       = 4,
      .			slash_set_axis_units    = 5,
+     .                  slash_set_axis_stride   = 6,
+     .                  slash_set_axis_offset   = 7,
      .
      .			slash_set_memory_words	= 1,
      .

@@ -129,8 +129,9 @@
 	ENDIF
 
 * release bulk memory that the variable used
-	IF ( mr_protected( mr ) .NE. mr_table_entry_only )
-     .		CALL FREE_MEMORY( mr_blk1(mr), mr_nblks(mr) )
+	IF ( mr_protected( mr ) .NE. mr_table_entry_only ) 
+
+     . 		CALL FREE_MEMORY( mr_blk1(mr), mr_nblks(mr) )
 
 
 * eliminate any stray indications that this variable points to a grid

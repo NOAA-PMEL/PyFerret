@@ -81,12 +81,28 @@
 
 	HDFLIB		= -L/usr/local/src/HDF/lib  -ldf -ljpeg -lz
 
+#<<<<<<< platform_specific_flags.mk.i386-linux
+	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
+#	CDFLIB          = /home/porter/jing/netcdf/netcdf-3.6.1/lib/libnetcdf.a
+#=======
 #	CDFLIB		= /home/ja4/kobrien/src/linux/netcdf-3.5.0/lib/libnetcdf.a
 #	CDFLIB          = /home/porter/jing/netcdf/netcdf-3.6.1/lib/libnetcdf.a
 
 #	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/linux/DODS/lib -lnc-dods -ldap++ -lnc-dods -ldap++  -lnc-dods -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a 
+#>>>>>>> 1.9
 
+#<<<<<<< platform_specific_flags.mk.i386-linux
+#	DODS_LIBS   	= -L/home/porter/kobrien/OPeNDAP/linux/DODS/lib   -lnc-dods -ldap++ -lnc-dods -ldap++ -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a -lrx /usr/lib/libz.a
+ 
+#	DODS_LIBS       = -L/home/porter/jing/OPeNDAP/linux/DODS_v3.6.2/lib -lnc-dap -ldap -lnc-dap -ldap -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
+
+#	DODS_LIBS       = -L/home/porter/kobrien/OPeNDAP/linux/DODS_v3.6.2/lib -lnc-dap -ldap -lnc-dap -ldap -lxml2  -lz -lpthread -lm -lcurl -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
+
+#	DODS_LIBS       = -L/home/porter/kobrien/OPeNDAP/linux/DODS_v3.6.2/lib -lnc-dap -ldap -lnc-dap -ldap -lxml2  -lz -lpthread -lm /home/porter/kobrien/OPeNDAP/linux/DODS_v3.6.2/lib/libcurl.a -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
+#	CDFLIB          = /home/porter/jing/netcdf/netcdf-3.6.1/lib/libnetcdf.a
+#=======
        DODS_LIBS       = -L/home/porter/kobrien/OPeNDAP/linux/DODS_v3.6.2/lib -lnc-dap -ldap -lnc-dap -ldap -lxml2  -lz -lpthread -lm /home/porter/kobrien/OPeNDAP/linux/DODS_v3.6.2/lib/libcurl.a -L/usr/kerberos/lib /usr/lib/libz.a  /usr/lib/libssl.a /usr/lib/libcrypto.a -ldl /usr/lib/libssl.a /usr/lib/libcrypto.a /usr/kerberos/lib/libgssapi_krb5.a /usr/kerberos/lib/libkrb5.a /usr/kerberos/lib/libcom_err.a /usr/kerberos/lib/libk5crypto.a /usr/lib/libresolv.a -ldl /usr/lib/libz.a  /usr/lib/libpthread.a /usr/lib/libz.a
+#>>>>>>> 1.9
 
 	LINUX_OBJS  = special/linux_routines.o dat/*.o ../fmt/src/x*.o ../ppl/plot/ppldata.o
 

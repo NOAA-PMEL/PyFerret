@@ -44,6 +44,7 @@ purge_file_var.F\
 purge_mr_axis.F\
 purge_mr_grid.F\
 purge_user_var.F\
+purge_all_memory.F\
 re_assign_variable.F\
 release_work_spc.F\
 un_cache.F\

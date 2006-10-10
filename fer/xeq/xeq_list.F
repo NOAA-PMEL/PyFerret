@@ -619,13 +619,14 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	IF ( do_gt ) THEN
 	   CALL TMAP_LIST( memory, list_lun, reclen, num_uvars_in_cmnd,
      .			   is_mr, is_cx, memory(1, wkblk), status )
-        ELSEIF (do_xml) THEN
-           CALL NON_ARRAY_SUBSC( mr_perm, 1 )
-           nn = mr_perm(1)
-           CALL LIST_CMND_DATA_XML( memory(1, mr_blk1(mr_perm(1))),
-     .                          nn, cx, memory(1, wkblk), 
-     .                          heading, head_enh, recsofar, perm, 
-     .                          clobber, raw_name, status)
+!jli: for list in xml
+*        ELSEIF (do_xml) THEN
+*           CALL NON_ARRAY_SUBSC( mr_perm, 1 )
+*           nn = mr_perm(1)
+*           CALL LIST_CMND_DATA_XML( memory(1, mr_blk1(mr_perm(1))),
+*     .                          nn, cx, memory(1, wkblk), 
+*     .                          heading, head_enh, recsofar, perm, 
+*     .                          clobber, raw_name, status)
 
 	ELSEIF ( do_cdf ) THEN
 	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 

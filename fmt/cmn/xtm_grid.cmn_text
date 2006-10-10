@@ -38,7 +38,7 @@
      .			grid_blink, grid_free_ptr, max_grid_used,
      .			line_parent, line_use_cnt, line_flink, line_blink,
      .			line_class, line_free_ptr, max_line_used,
-     .                  pline_mem_init
+     .                  pline_mem_init, line_offset
 	LOGICAL		grid_out_prod, line_regular, line_modulo, line_reversed,
 !     .			line_has_edges, line_keep_flag,
      .			line_keep_flag, line_shift_origin, line_fixname

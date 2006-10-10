@@ -76,7 +76,7 @@
      .			sf_num, tmap_status, lo_ss(4), hi_ss(4),
      .			lo_s1, lo_s2, lo_s3, lo_s4, 
      .			hi_s1, hi_s2, hi_s3, hi_s4,
-     .			stride(4), lo_ss_ds,hi_ss_ds
+     .			stride(4), lo_ss_ds,hi_ss_ds, line
 * V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
 	CHARACTER*128	VAR_CODE, variable_code
 

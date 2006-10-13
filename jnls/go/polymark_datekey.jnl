@@ -1,7 +1,11 @@
 \cancel mode verify
 ! polymark_datekey.jnl
 ! 11/05 ACM 
-
+!
+! 10/06 ACM Fix bug with the last label on the axis: rounding error between the 
+! time region setting and the time coordinate used to form the label: use tend 
+! instead.
+!
 ! Description: Plot symbols colored by values of a variable along a track
 !              and labelled with dates from a time axis
 !
@@ -107,8 +111,8 @@ define symbol day_2_fourth `$7,return=tstart,prec=3`
 set region/t=`($TLAB_tstart)+3*($TLAB_tstep)`:($TLAB_tend)
 define symbol day_3_fourth `$7,return=tstart,prec=3`
 
-set region/t=`($TLAB_tstart)+4*($TLAB_tstep)`:($TLAB_tend)
-define symbol day_4_fourth `$7,return=tstart,prec=3`
+cancel region/t
+define symbol day_4_fourth `$7,return=tend,prec=3`
 
 CANCEL REGION/T
 SET REGION SAVE

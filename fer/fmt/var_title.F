@@ -66,6 +66,8 @@
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V601 10/06 *acm* fix bug 1422. plot and listing titles should show the 
+*                  variable title, or if no title, the variable name.
 
         include	'tmap_dims.parm'
 	include	'xdset_info.cmn_text'
@@ -112,11 +114,13 @@
      .             .TRUE., varname, 2048, attlen, attoutflag,
      .             buff, vals)
                  var_title = buff
+                 IF (var_title .EQ. ' ') var_title = varname
               ELSE
                  var_title = VAR_CODE( cat, var )
 !	         var_title = '"'//var_title(:TM_LENSTR1(var_title))//'"'
               ENDIF
 	   ENDIF
+
 
 	ELSEIF ( cat .EQ. cat_calc_var ) THEN
 

@@ -66,7 +66,7 @@
 * V600 8/05 *acm* - Add variable type attrib_val for definitions of the form
 *                   varname.attname
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
-* V601 10/06 *acm* fix bug 1422. plot and listing titles should show the 
+* V601 10/06 *acm* fix bug 1442. plot and listing titles should show the 
 *                  variable title, or if no title, the variable name.
 
         include	'tmap_dims.parm'

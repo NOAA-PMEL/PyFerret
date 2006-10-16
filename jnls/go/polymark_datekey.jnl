@@ -85,7 +85,7 @@ ppl fillpol/over
 
 
 ! set up the date/time labels for the color key
-! (see insitu_setup.jnl)
+
 
 let TLAB_tstart = `$7[L=@min]`
 define symbol TLAB_tstart = `TLAB_tstart`

@@ -79,6 +79,9 @@
 * V600 *acm* 6/06  Attribute control; get information for output from  
 *                  linked-list structure.
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* V601 10/06 *acm* Fix bug, bug 1454 if the user has set title or units, the users
+*                  value is written, previously had always only got these from the
+*                  attribute structure, so the new values were not saved.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -109,7 +112,7 @@
 * internal variable declarations:
         LOGICAL         TM_LEGAL_NAME, MATCH_NAME, 
      .			itsa_uvar, need_doc, new, formatted, flushed,
-     .			itsa_string
+     .			itsa_string, output_units, output_title
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
      .			MGRID_SIZE,
      .			cx, mr, dset, grid, cdfid, ivar, nready,
@@ -238,7 +241,6 @@
         scalefac = 1.
         addoff = 0.
 
-
 *  Loop to create all of the variables and their metadata
 *  (defer writing of binary data until end) 
 *
@@ -260,6 +262,8 @@
            varcode = SANITARY_VAR_CODE( cat, var )
            got_title = .FALSE.
            got_units = .FALSE.
+           output_title = .FALSE.
+           output_units = .FALSE.
 	   itsa_string = cx_type(cx) .EQ. ptype_string
 
 * is it in the linked-list for dset. If so get attr info, including original 
@@ -503,7 +507,6 @@
                     ENDIF
                  ENDIF ! istat 
 
-                 got_title = .FALSE.
 
 * Get varcode into original upper/lowercase form. If mode upcase_output is set, 
 * then upcase the variable name.
@@ -567,10 +570,16 @@
                        ENDIF
 
                        IF (MATCH_NAME (attname,  slen,
-     .                           'LONG_NAME', 9 )) got_title = .TRUE.
+     .                           'LONG_NAME', 9 )) THEN
+                          got_title = .TRUE.
+                          output_title = (attoutflag.EQ.1)
+                       ENDIF
 
                        IF (MATCH_NAME (attname,  slen,
-     .                           'UNITS', 5 )) got_units = .TRUE.
+     .                           'UNITS', 5 )) THEN
+                          got_units = .TRUE.
+                          output_units = (attoutflag.EQ.1)
+                       ENDIF
 
                        IF (MATCH_NAME (attname,  slen,
      .                           'SCALE_FACTOR', 12 )) THEN
@@ -594,8 +603,22 @@
               ENDIF ! varid GT 0
 
 * variable title
+* First get from Ferret variables by means of VAR_TITLE, and
+* only if this fails from attribute structure.
+
+              got_title = .FALSE.
+              buff = VAR_TITLE( cx ) !!
+              lbuff = TM_LENSTR1( buff )
+
+              IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND.
+     .             output_title ) THEN
+                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
+     .                              buff(:lbuff), .FALSE., status )
+                 IF ( status .NE. merr_ok ) GOTO 5800
+                 got_title = .TRUE.
+              ENDIF
+
               IF (.NOT. got_title) THEN
-                 buff = VAR_TITLE( cx )
                  
                  attoutflag = 1
                  IF (varid .GT. 0) THEN
@@ -758,7 +781,7 @@
               lbuff = TM_LENSTR1( buff )
 
               IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND. 
-     .          .NOT.got_units ) THEN
+     .             output_units ) THEN
                  CALL CD_WRITE_ATTRIB(cdfid, varcode, 'units',
      .                              buff(:lbuff), .FALSE., status )
                  IF ( status .NE. merr_ok ) GOTO 5800

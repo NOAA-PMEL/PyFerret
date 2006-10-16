@@ -45,7 +45,10 @@
  */
 
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */
-
+/* *acm  10/06 v601 - workaround for bug 1455, altix
+                      compare the actual string length after call to nc_get_att_text
+					  Example file has an attribute units="m" but gets att.len = 128 from 
+					  previous call to nc_inq_att */
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
@@ -937,6 +940,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
     int i;				/* loop controls */
 	int ia;
 	int iv;
+	int ilen;
     int nc_status;		/* return from netcdf calls */
 	ncdim fdims;		/* name and size of dimension */
     ncatt att;			/* attribute */
@@ -1205,8 +1209,19 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
               switch (att.type) {
               case NC_CHAR:
 	          att.string = (char *) malloc((att.len+1)* sizeof(char*));
-
+			  strcpy (att.string, " ");
               nc_status = nc_get_att_text(*ncid, iv, att.name, att.string );
+
+			  /* Check the actual string length (one example file has
+			     attribute units="m" but gets att.len = 128 from nc_inq_att above)*/
+			  ilen = strlen(att.string);
+              if (ilen < att.len)
+              { free (att.string);
+                att.len = ilen;
+                att.string = (char *) malloc((att.len+1)* sizeof(char*));
+                nc_status = nc_get_att_text(*ncid, iv, att.name, att.string );
+              }
+
               if (nc_status != NC_NOERR) /* on error set attr to empty string*/
 			      {att.type = NC_CHAR;
 			       att.outtype = NC_CHAR;

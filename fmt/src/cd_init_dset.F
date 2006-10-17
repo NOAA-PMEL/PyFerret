@@ -59,7 +59,8 @@
 *	    3/00 - convert to using dynamic grids and axes
 * 4/03 *acm* - Use STR_SAME to compare strings
 * V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
-
+* V601 *acm* 6/06 - Fix bug 1459: when closing a stepfile that may be open,
+*                   reset the sf_lunit flag for cd_stepfile(dset), not for dset.
 
 * argument declarations:
 	LOGICAL tregular
@@ -141,9 +142,12 @@
 ! *kob* 11/97 - close cdf files which are a part of a multi-file netcdf set
 !* close the netCDF file
 ! 5/98 *kob* - reset sf_lunit as well
+! 10/06 *acm*  bug 1459 sf_lunit of the correct stepfile...
+
       IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
         CALL NCCLOS( cdfid, istat )
-	sf_lunit(dset) = file_not_open
+c	sf_lunit(dset) = file_not_open
+        sf_lunit( cd_stepfile(dset) ) = file_not_open
       ENDIF
 * successful completion
       status = merr_ok

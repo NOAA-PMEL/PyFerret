@@ -34,3 +34,14 @@ GO err600_returnsize.jnl
 ! thrown off and we got an error about an invalid ENDIF
 GO bn_reset
 GO err600_if_comments_tab.jnl
+
+! err600_set_var_title.jnl
+! Bug 1454 Settings made by SET VAR/TITLE=/UNITS= were not saved in output file
+GO bn_reset
+GO err600_set_var_title.jnl
+
+! err600_var_label.jnl
+! bug1442 If there is no long_name attribute, the plot should
+! be labelled with the var name but it only has units label
+GO bn_reset
+GO err600_var_label.jnl

@@ -1,0 +1,20 @@
+! err600_var_label.jnl
+! bug1442
+! If there is no long_name attribute, the plot or listing
+! should be labeled with the var name but it has only the units
+
+use gtbc011
+
+! line VARIABLE has longname (units)  which is TEMPERATURE (deg. C)
+list/i=70/l=1/j=30/k=1 temp
+
+! Write, without the long_name attribute.
+can att/output temp.long_name
+save/file=a.nc/clobber temp
+
+can data/all
+use a.nc
+sh att/all temp
+
+! Label should be variablename (units) which is TEMP (deg. C)
+list/i=70/l=1/j=30/k=1 temp

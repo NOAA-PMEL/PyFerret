@@ -40,7 +40,8 @@ LET DS_str3 = strcat(DS_str2,"-")
 LET DS_str4 = strcat(DS_str3,"`DS_year`")
 LET date_string = DS_str4
 
-IF `DS_hour GT 0` THEN
+!IF `DS_hour GT 0` THEN
+IF `DS_hour GE 0` THEN
    LET DS_str5 = strcat(DS_str4," ")
    IF `DS_hour LT 10` THEN LET DS_str5 = strcat(DS_str4," 0")
    LET DS_str6 = strcat(DS_str5, "`DS_hour`")
@@ -55,7 +56,7 @@ IF `DS_hour GT 0` THEN
 
       IF `DS_sec GE 0` THEN
          LET DS_str9 = strcat(DS_str8,":")
-         IF `DS_min LT 10` THEN LET DS_str9 = strcat(DS_str8,":0")
+         IF `DS_sec LT 10` THEN LET DS_str9 = strcat(DS_str8,":0")
          LET DS_str10 = strcat(DS_str9, "`DS_sec`")
          LET date_string = DS_str10
 

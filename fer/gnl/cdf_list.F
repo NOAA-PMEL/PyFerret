@@ -82,6 +82,11 @@
 * V601 10/06 *acm* Fix bug, bug 1454 if the user has set title or units, the users
 *                  value is written, previously had always only got these from the
 *                  attribute structure, so the new values were not saved.
+* V601 10/06 *acm* Fix bug 1460; for value of string attributes, buff is 2048, 
+*                  so set buff_size to match. Also, when looping through attributes
+*                  (DO 200 loop) only get attribute values from the linked list structure
+*                  if they are to be written to the output file.
+* V601 10/06 *acm* fix bug 1451, cd_write_var needs the value of mode_upcase_output.
 
         include 'netcdf.decl'
 #include "netcdf.inc"
@@ -182,7 +187,7 @@
      .                  full_precision, DODS_cache, range_not_rqd,
      .                  got_it, got_title, got_units, do_warn, coordvar
 
-        PARAMETER     ( buff_size = 140,
+        PARAMETER     ( buff_size = 2048,
      .			sslimits0 = 1+19-1,
      .			wwlimits0 = 1+23-1,
      .                  full_precision = .TRUE.,
@@ -554,15 +559,17 @@
      .                  aname(1:alen))
                        ENDIF
 
-                       got_it = NC_GET_ATTRIB ( dset, varid, aname, 
+                       IF (attype .EQ. NCCHAR .AND. attoutflag.EQ.1) THEN
+                          got_it = NC_GET_ATTRIB ( dset, varid, aname, 
      .                       do_warn, varcode, buff_size, attlen,
      .                       attoutflag, buff, vals)
-
-                       IF (attype .EQ. NCCHAR .AND. attoutflag.EQ.1) THEN
                           lbuff = TM_LENSTR1(buff)
                           CALL CD_WRITE_ATTRIB(cdfid, varcode,
      .                         attname, buff(:lbuff), .FALSE., status )
                        ELSE IF (attoutflag.EQ.1) THEN
+                          got_it = NC_GET_ATTRIB ( dset, varid, aname, 
+     .                       do_warn, varcode, buff_size, attlen,
+     .                       attoutflag, buff, vals)
                           CALL CD_WRITE_ATTVAL(cdfid, varcode,
      .                          attname, vals, attlen, attype, status )
                           IF (status .NE. ferr_ok) GOTO 5400
@@ -894,7 +901,8 @@
 
            CALL CD_WRITE_VAR ( memory, cdfid, dset, varcode, grid, write_lo, 
      .                        write_hi, memory(1,mr_blk1(mr)), edges_flag,
-     .                        do_bounds, scalefac, addoff, bad, status )
+     .                        do_bounds, scalefac, addoff, bad, 
+     .                        mode_upcase_output, status )
            IF ( status .NE. merr_ok ) GOTO 5800
  500	CONTINUE
 

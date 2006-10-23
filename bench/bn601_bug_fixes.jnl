@@ -45,3 +45,8 @@ GO err600_set_var_title.jnl
 ! be labelled with the var name but it only has units label
 GO bn_reset
 GO err600_var_label.jnl
+
+! err600_upcase.jnl
+! But 1461 upcasing of axis name on creating bounds variable for output
+GO bn_reset
+GO err600_upcase.jnl

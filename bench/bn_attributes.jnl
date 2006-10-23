@@ -139,13 +139,10 @@ go bn_reset
 
 ! Given a variable, return the attribute names
 use coads_climatology
-!<<<<<<< bn_attributes.jnl
-!---jli---let nat = sst.natt
-!=======
 let nat = sst.nattrs
-!>>>>>>> 1.5
+
 let anames = sst.attnames
-!---jli---list nat
+list nat
 list anames
 
 ! Given a variable, return the coordinate number and names

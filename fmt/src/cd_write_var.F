@@ -1,6 +1,7 @@
 	SUBROUTINE CD_WRITE_VAR ( memory, cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
-     .                            scalefac, addoff, bad, status )
+     .                            scalefac, addoff, bad, mode_upcase_output, 
+     .                            status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -55,6 +56,9 @@
 * V552 *acm* 5/03   increase vbuff to 128 chars 
 * V570 *acm*  5/04 write bounds 2xN coordinates when record axis is irregular.
 * V600 *acm*  6/05 Attribute control. Get info from linked-list structure.
+* V601 *acm* 10/06 Fix bug 1461: bounds variable was created for output in cd_write_axis
+*                  with an upcased variable name, e.g. TIME_bnds. Here we need to upcase
+*                  as well when finding bndid (if mode upcase_output is set).
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -83,7 +87,7 @@
 
 
 * argument declarations
-      LOGICAL do_bounds
+      LOGICAL do_bounds, mode_upcase_output
       INTEGER cdfid, dset, grid, lo(4), hi(4), edges_flag, status
       CHARACTER*(*) vname
       REAL dat(*), bad
@@ -110,7 +114,7 @@
       REAL*8 TM_WORLD
       
       INTEGER bndid, nlen, elen, reset
-      CHARACTER name*64, CD_AXIS_NAME*64
+      CHARACTER name*128, buff*128, CD_AXIS_NAME*128
 
       REAL*4 r100_4(200)
       REAL*8 new_box_lo, old_box_hi, reset_bnd_lo, missflag
@@ -120,7 +124,6 @@ c      EQUIVALENCE (r100_8, r100_4)
       CHARACTER*9 typnam(6)
       DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
      .            'NC_FLOAT', 'NC_DOUBLE'/
-
 
 * initialize
       vlen = TM_LENSTR1( vname )
@@ -326,6 +329,13 @@ c      EQUIVALENCE (r100_8, r100_4)
      .         .AND. (edges_flag .EQ. 0) ) THEN
 
             name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
+
+* If mode upcase_output is set, then upcase axis name.
+
+            IF (mode_upcase_output) THEN
+               CALL STR_UPCASE( buff, name)
+               name = buff
+            ENDIF
 
             name = name(:nlen)//'_bnds'
             elen = nlen + 5

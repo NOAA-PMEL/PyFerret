@@ -94,6 +94,8 @@ SET MODE VERIFY
 ! 6/06  *acm* add bn_transforms.jnl -- there was a benchmark testing regridding
 !             transforms but not the others: smoothers, fillers, etc.
 
+! 10/06 *acm* Remove tests of nco funcions: we dont want to require them to be installed
+!             on a system in order for it to pass the benchmarks.
 
 GO bn_reset
 GO bn_syntax
@@ -495,13 +497,11 @@ GO bn_bounds_defineax.jnl
 go bn_reset
 go bn_attributes.jnl
 
-! jli------>
-!<<<<<<< bn_all.jnl
-!GO bn_reset
-!GO bn600_bug_fixes.jnl
 !=======
-go bn_reset
-go bn_nco_functions.jnl
+! 10/06 *acm* Remove tests of nco funcions: we dont want to require them to be installed
+!             on a system in order for it to pass the benchmarks.
+!go bn_reset
+!go bn_nco_functions.jnl
 
 go bn_reset
 go bn_transforms.jnl
@@ -514,7 +514,6 @@ go bn_cdf_errmsg.jnl
 
 GO bn_reset
 GO bn600_bug_fixes.jnl
-!>>>>>>> 1.69
 
 ! ******** V6.01 Additions below ***********
 GO bn601_bug_fixes.jnl

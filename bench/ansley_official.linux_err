@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     47002921 Oct 23 10:11 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     47002917 Oct 25 14:27 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix bug 1461, new benchmark script err600_upcase.jnl, remove tests of nco functions from bn_all.jnl
+Note: Further fixes for bug 1455 by Remik, in NCF_Util.c
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Mon Oct 23 10:32:06 PDT 2006
+Beginning at Wed Oct 25 15:08:07 PDT 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -694,4 +694,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Mon Oct 23 10:35:21 PDT 2006
+Ended at Wed Oct 25 15:11:33 PDT 2006

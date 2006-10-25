@@ -1,3 +1,4 @@
+
 /*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -45,10 +46,11 @@
  */
 
 /* *acm   9/06 v600 - add stdlib.h wherever there is stdio.h for altix build */
-/* *acm  10/06 v601 - workaround for bug 1455, altix
-                      compare the actual string length after call to nc_get_att_text
-					  Example file has an attribute units="m" but gets att.len = 128 from 
-					  previous call to nc_inq_att */
+/* *acm  10/06 v601 - Fix by Remik for bug 1455, altix. For string attributes, 
+                      allocate one more than the att.len, presumably for the null 
+					  terminator for the string. Also double check the string length
+					  that is returned from the call to nc_inq_att, and make sure
+					  we allocate the correct amount of memory for the string.*/
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
@@ -933,349 +935,352 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 {
   ncdset nc; 
   static int return_val=FERR_OK; /* static because it needs to exist after the return statement */
-
-/* code lifted liberally from ncdump.c Calls in nc library.*/
-
+	
+	/* code lifted liberally from ncdump.c Calls in nc library.*/
+	
 	char fillc;
-    int i;				/* loop controls */
+	int i;				/* loop controls */
 	int ia;
 	int iv;
 	int ilen;
-    int nc_status;		/* return from netcdf calls */
+	int nc_status;		/* return from netcdf calls */
 	ncdim fdims;		/* name and size of dimension */
-    ncatt att;			/* attribute */
-    ncatt att0;			/* initialize attribute */
-    ncvar var;			/* variable */
+	ncatt att;			/* attribute */
+	ncatt att0;			/* initialize attribute */
+	ncvar var;			/* variable */
 	int bad_file_attr = 243; /* matches merr_badfileatt in tmap_errors.parm*/
 	
 	strcpy(nc.fername, name);
-    strcpy(nc.fullpath, path);
-    nc.fer_dsetnum = *setnum;
-
+	strcpy(nc.fullpath, path);
+	nc.fer_dsetnum = *setnum;
+	
 	/* Set attribute with initialization values*/
-
+	
 	strcpy(att0.name, " ");
 	att0.type = NC_CHAR;
 	att0.outtype = NC_CHAR;
 	att0.attid = 0;
 	att0.outflag = 0;
 	att0.len = 1;
-    att0.string = (char *) malloc((att0.len+1)* sizeof(char*));
-    strcpy (att0.string," ");
-    att0.vals = (double *) malloc(1 * sizeof(double));
-    att0.vals[0] = 0;
-
-    /*
-     * get number of dimensions, number of variables, number of global
-     * atts, and dimension id of unlimited dimension, if any
-     */
-    nc_status = nc_inq(*ncid, &nc.ndims, &nc.nvars, &nc.ngatts, &nc.recdim) ;
-    if (nc_status != NC_NOERR) return nc_status;
-
-    /* get dimension info */
-    if (nc.ndims > 0) {
-       for (i = 0; i < nc.ndims; i++) {
-	   nc_status = nc_inq_dim(*ncid, i, fdims.name, &fdims.size); 
-       if (nc_status != NC_NOERR) return nc_status;
-
-	   if (nc_status != NC_NOERR) return nc_status;
-	   strcpy (nc.dims[i].name, fdims.name);
-	   nc.dims[i].size = fdims.size;
-       }
+	att0.string = (char *) malloc((att0.len+1)* sizeof(char*));
+	strcpy (att0.string," ");
+	att0.vals = (double *) malloc(1 * sizeof(double));
+	att0.vals[0] = 0;
+	
+	/*
+	 * get number of dimensions, number of variables, number of global
+	 * atts, and dimension id of unlimited dimension, if any
+	 */
+	nc_status = nc_inq(*ncid, &nc.ndims, &nc.nvars, &nc.ngatts, &nc.recdim) ;
+	if (nc_status != NC_NOERR) return nc_status;
+	
+	/* get dimension info */
+	if (nc.ndims > 0) {
+		for (i = 0; i < nc.ndims; i++) {
+			nc_status = nc_inq_dim(*ncid, i, fdims.name, &fdims.size); 
+			if (nc_status != NC_NOERR) return nc_status;
+			
+			if (nc_status != NC_NOERR) return nc_status;
+			strcpy (nc.dims[i].name, fdims.name);
+			nc.dims[i].size = fdims.size;
+		}
 	}
-
-     nc.vars_list_initialized = FALSE;
-	 nc_status = NC_NOERR;
-
-   /* get info on global attributes, treat as pseudo-variable . list of attributes*/
-
-
-    /* get global attributes */
-
+	
+	nc.vars_list_initialized = FALSE;
+	nc_status = NC_NOERR;
+	
+	/* get info on global attributes, treat as pseudo-variable . list of attributes*/
+	
+	
+	/* get global attributes */
+	
 	if (nc.ngatts > 0)
-	{
-       strcpy(var.name, ".");
-
-       var.attrs_list_initialized = FALSE;
-
-       var.type = NC_CHAR;
-       var.outtype = NC_CHAR;
-       var.varid = 0;
-	   var.natts = nc.ngatts;
-	   var.ndims = 1;
-	   var.dims[0] = 1;
-       var.has_fillval = FALSE;
-       var.fillval = NC_FILL_FLOAT;
-	   var.all_outflag = 1;
-	   var.is_axis = FALSE;
-	   var.axis_dir = 0;
-
-	   var.attrs_list_initialized = FALSE;
-       for (i = 0; i < nc.ngatts; i++)
-          {
-
-    /* initialize 
-	      att = att0;*/
-
+		{
+			strcpy(var.name, ".");
+			
+			var.attrs_list_initialized = FALSE;
+			
+			var.type = NC_CHAR;
+			var.outtype = NC_CHAR;
+			var.varid = 0;
+			var.natts = nc.ngatts;
+			var.ndims = 1;
+			var.dims[0] = 1;
+			var.has_fillval = FALSE;
+			var.fillval = NC_FILL_FLOAT;
+			var.all_outflag = 1;
+			var.is_axis = FALSE;
+			var.axis_dir = 0;
+			
+			var.attrs_list_initialized = FALSE;
+			for (i = 0; i < nc.ngatts; i++)
+				{
+					
+					/* initialize 
+						 att = att0;*/
+					
           nc_status = nc_inq_attname(*ncid, NC_GLOBAL, i, att.name);            
-/*		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute id %d from file %s\n", i, nc.fullpath);  */
+					/*		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute id %d from file %s\n", i, nc.fullpath);  */
           if (nc_status == NC_NOERR) {
-
+						
             att.attid = i+1;
             nc_status = nc_inq_att(*ncid, NC_GLOBAL, att.name, &att.type, &att.len);
-/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute %s from file %s\n",att.name, nc.fullpath); */
+						/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading global attribute %s from file %s\n",att.name, nc.fullpath); */
             if (nc_status == NC_NOERR) {
-
-    /* Set output flag. By default only the global history attribute is written.
-     *  For string attributes, allocate one more than the att.len, 
-     *  presumably for the null terminator for the string (?) */
-
-   	 	      att.outflag = 0;
-		      if (strcmp(att.name,"history")==0)
-		      {att.outflag = 1;
-		      }
-
+							
+							/* Set output flag. By default only the global history attribute is written.
+							 *  For string attributes, allocate one more than the att.len, 
+							 *  presumably for the null terminator for the string (?) */
+							
+							att.outflag = 0;
+							if (strcmp(att.name,"history")==0)
+								{att.outflag = 1;
+								}
+							
               if (att.len == 0) {	/* show 0-length attributes as empty strings */
-  	          att.type = NC_CHAR;
-	          att.outtype = NC_CHAR;
-	          att.len = 1;
-	          att.string = (char *) malloc(1* sizeof(char*));
-              strcpy (att.string," ");
+								att.type = NC_CHAR;
+								att.outtype = NC_CHAR;
+								att.len = 1;
+								att.string = (char *) malloc(1* sizeof(char*));
+								strcpy (att.string," ");
               }
               switch (att.type) {
               case NC_CHAR:
-	          att.string = (char *) malloc((att.len+1)* sizeof(char*));
-  
-              nc_status = nc_get_att_text(*ncid, NC_GLOBAL, att.name, att.string );
-              if (nc_status != NC_NOERR) return nc_status;
- 
-              break;
+								att.string = (char *) malloc((att.len+1)* sizeof(char*));
+								
+								nc_status = nc_get_att_text(*ncid, NC_GLOBAL, att.name, att.string );
+								if (nc_status != NC_NOERR) return nc_status;
+								
+								break;
               default:
-              att.vals = (double *) malloc(att.len * sizeof(double));
-
-              nc_status = nc_get_att_double(*ncid, NC_GLOBAL, att.name, att.vals );
-              if (nc_status != NC_NOERR) return nc_status;
- 
-              break;
+								att.vals = (double *) malloc(att.len * sizeof(double));
+								
+								nc_status = nc_get_att_double(*ncid, NC_GLOBAL, att.name, att.vals );
+								if (nc_status != NC_NOERR) return nc_status;
+								
+								break;
               }
-
-              }  /* end of the  if (nc_status == NC_NOERR) */
-              }
-      /*Save attribute in linked list of attributes for variable . (global attributes)*/	
-           if (!var.attrs_list_initialized) {
-              if ( (var.varattlist = list_init()) == NULL ) {
-                fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize GLOBAL attributes list.\n");
-                return_val = -1;
-                return return_val; 
-              }
+							
+						}  /* end of the  if (nc_status == NC_NOERR) */
+					}
+					/*Save attribute in linked list of attributes for variable . (global attributes)*/	
+					if (!var.attrs_list_initialized) {
+						if ( (var.varattlist = list_init()) == NULL ) {
+							fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize GLOBAL attributes list.\n");
+							return_val = -1;
+							return return_val; 
+						}
             var.attrs_list_initialized = TRUE;
   	      }
-   
-           list_insert_after(var.varattlist, &att, sizeof(ncatt));
-       }    /* global attributes list complete */
-
+					
+					list_insert_after(var.varattlist, &att, sizeof(ncatt));
+				}    /* global attributes list complete */
+			
       /*Save variable in linked list of variables for this dataset */	
-       if (!nc.vars_list_initialized) {
-          if ( (nc.dsetvarlist = list_init()) == NULL ) {
-            fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable list.\n");
-            return_val = -1;
-            return return_val; 
-          }
-          nc.vars_list_initialized = TRUE;
-        }
-
-       list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
-
-     }    
-
-    /* get info on variables */
+			if (!nc.vars_list_initialized) {
+				if ( (nc.dsetvarlist = list_init()) == NULL ) {
+					fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable list.\n");
+					return_val = -1;
+					return return_val; 
+				}
+				nc.vars_list_initialized = TRUE;
+			}
+			
+			list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+			
+		}    
+	
+	/* get info on variables */
 	
 	if (nc.nvars > 0)
-       for (iv = 0; iv < nc.nvars; iv++)
-          {
-		  nc_status = nc_inq_var(*ncid, iv, var.name, &var.type, &var.ndims,
-			     var.dims, &var.natts);
-          if (nc_status != NC_NOERR) return nc_status;
-
-          var.varid = iv+1;  
-		  var.outtype = NC_FLOAT;
-		  if (var.type == NC_CHAR) var.outtype = NC_CHAR;
-
-		  /* is this a coordinate variable? 
-		  */
-          if (nc.ndims > 0) {
-			 var.is_axis = FALSE;
-	         var.axis_dir = 0;
-			 i = 0;
-             while (i < nc.ndims && var.is_axis == FALSE) {
-	            if  (strcasecmp(var.name, nc.dims[i].name) == 0) var.is_axis = TRUE;
-				i = i + 1;
-			 }
-		  }
-
-		  /* get _FillValue attribute */
-
-		  nc_status =  nc_inq_att(*ncid,iv,"_FillValue",&att.type,&att.len);
-
-		  if(nc_status == NC_NOERR &&
-		   att.type == var.type && att.len == 1) {
-			  
-			att.outflag = 1;
-			att.outtype = NC_FLOAT;
-		    var.has_fillval = TRUE;
-			if(var.type == NC_CHAR) {
-				att.outtype = NC_CHAR;
-				nc_status = nc_get_att_text(*ncid, iv, "_FillValue",
-						  &fillc );
-				if (nc_status != NC_NOERR)  /* on error set attr to empty string */
-				{ att.type = NC_CHAR;
-				  att.outtype = NC_CHAR;
-				  att.len = 1;
-				  att.string = (char *) malloc((att.len+1)* sizeof(char*));
-				  strcpy (att.string," ");
-                  att.vals = (double *) malloc(1 * sizeof(double));
-				  att.vals[0] = 0;
-				  return_val = bad_file_attr;
+		for (iv = 0; iv < nc.nvars; iv++)
+			{
+				nc_status = nc_inq_var(*ncid, iv, var.name, &var.type, &var.ndims,
+															 var.dims, &var.natts);
+				if (nc_status != NC_NOERR) return nc_status;
+				
+				var.varid = iv+1;  
+				var.outtype = NC_FLOAT;
+				if (var.type == NC_CHAR) var.outtype = NC_CHAR;
+				
+				/* is this a coordinate variable? 
+				 */
+				if (nc.ndims > 0) {
+					var.is_axis = FALSE;
+					var.axis_dir = 0;
+					i = 0;
+					while (i < nc.ndims && var.is_axis == FALSE) {
+						if  (strcasecmp(var.name, nc.dims[i].name) == 0) var.is_axis = TRUE;
+						i = i + 1;
+					}
 				}
-		    } else {
-				nc_status = nc_get_att_double(*ncid, iv, "_FillValue",
-						    &var.fillval ); }
-				att.string = (char *) malloc(2*sizeof(char*));
-				strcpy(att.string," ");
+				
+				/* get _FillValue attribute */
+				
+				nc_status =  nc_inq_att(*ncid,iv,"_FillValue",&att.type,&att.len);
+				
+				if(nc_status == NC_NOERR &&
+					 att.type == var.type && att.len == 1) {
+					
+					att.outflag = 1;
+					att.outtype = NC_FLOAT;
+					var.has_fillval = TRUE;
+					if(var.type == NC_CHAR) {
+						att.outtype = NC_CHAR;
+						nc_status = nc_get_att_text(*ncid, iv, "_FillValue",
+																				&fillc );
+						if (nc_status != NC_NOERR)  /* on error set attr to empty string */
+							{ att.type = NC_CHAR;
+								att.outtype = NC_CHAR;
+								att.len = 1;
+								att.string = (char *) malloc((att.len+1)* sizeof(char*));
+								strcpy (att.string," ");
+								att.vals = (double *) malloc(1 * sizeof(double));
+								att.vals[0] = 0;
+								return_val = bad_file_attr;
+							}
+					} else {
+						nc_status = nc_get_att_double(*ncid, iv, "_FillValue",
+																					&var.fillval ); }
+					att.string = (char *) malloc(2*sizeof(char*));
+					strcpy(att.string," ");
 		    }
-		  else  /* set to default NC value*/ 
-			  {
-			 var.has_fillval = FALSE;
-		     switch (var.type) {
-		     case NC_BYTE:
-			/* don't do default fill-values for bytes, too risky */
-			    var.has_fillval = 0;
-			 break;
-		     case NC_CHAR:
-		 	 var.fillval = NC_FILL_CHAR;
-			 break;
-		     case NC_SHORT:
-			 var.fillval = NC_FILL_SHORT;
-			 break;
-		     case NC_INT:
-			 var.fillval = NC_FILL_INT;
-			 break;
-		     case NC_FLOAT:
-			 var.fillval = NC_FILL_FLOAT;
-			 break;
-		     case NC_DOUBLE:
-			 var.fillval = NC_FILL_DOUBLE;
-			 break;
-		     default:
-			 break;
-			 att.string = (char *) malloc(2*sizeof(char*));
-			 strcpy (att.string, " ");
-		     }
-		  }
- 
-		  var.all_outflag = 1;
-
-          /* get all variable attributes 
-           *  For string attributes, allocate one more than the att.len, 
-           *  presumably for the null terminator for the string (?)
-		   */
-		  var.attrs_list_initialized = FALSE;
-
-          if (var.natts > 0)
+				else  /* set to default NC value*/ 
+					{
+						var.has_fillval = FALSE;
+						switch (var.type) {
+						case NC_BYTE:
+							/* don't do default fill-values for bytes, too risky */
+							var.has_fillval = 0;
+							break;
+						case NC_CHAR:
+							var.fillval = NC_FILL_CHAR;
+							break;
+						case NC_SHORT:
+							var.fillval = NC_FILL_SHORT;
+							break;
+						case NC_INT:
+							var.fillval = NC_FILL_INT;
+							break;
+						case NC_FLOAT:
+							var.fillval = NC_FILL_FLOAT;
+							break;
+						case NC_DOUBLE:
+							var.fillval = NC_FILL_DOUBLE;
+							break;
+						default:
+							break;
+							att.string = (char *) malloc(2*sizeof(char*));
+							strcpy (att.string, " ");
+						}
+					}
+				
+				var.all_outflag = 1;
+				
+				/* get all variable attributes 
+				 *  For string attributes, allocate one more than the att.len, 
+				 *  presumably for the null terminator for the string. See Netcdf User's Guide, nc_get_att_text.
+				 */
+				var.attrs_list_initialized = FALSE;
+				
+				if (var.natts > 0)
           {
-          for (ia = 0; ia < var.natts; ia++)
-
-          {
-
-    /* initialize
-	      att = att0; */
-
-          nc_status = nc_inq_attname(*ncid, iv, ia, att.name);
-/*		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute id %d for variable %s, file %s\n", ia, var.name, nc.fullpath); */
-          if (nc_status == NC_NOERR) {
-		    att.attid = ia+1;
-
-            nc_status = nc_inq_att(*ncid, iv, att.name, &att.type, &att.len);
-/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute %s for variable %s, file %s\n",att.name, var.name, nc.fullpath); */
-            if (nc_status == NC_NOERR) {
-
-              if (att.len == 0) {	/* set 0-length attributes to empty strings */
-	          att.type = NC_CHAR;
-	          att.outtype = NC_CHAR;
-	          att.len = 1;
-	          att.string = (char *) malloc(1* sizeof(char*));
-              strcpy (att.string," ");
-              }
-              switch (att.type) {
-              case NC_CHAR:
-	          att.string = (char *) malloc((att.len+1)* sizeof(char*));
-			  strcpy (att.string, " ");
-              nc_status = nc_get_att_text(*ncid, iv, att.name, att.string );
-
-			  /* Check the actual string length (one example file has
-			     attribute units="m" but gets att.len = 128 from nc_inq_att above)*/
-			  ilen = strlen(att.string);
-              if (ilen < att.len)
-              { free (att.string);
-                att.len = ilen;
-                att.string = (char *) malloc((att.len+1)* sizeof(char*));
-                nc_status = nc_get_att_text(*ncid, iv, att.name, att.string );
-              }
-
-              if (nc_status != NC_NOERR) /* on error set attr to empty string*/
-			      {att.type = NC_CHAR;
-			       att.outtype = NC_CHAR;
-			       att.len = 1;
-			       att.string = (char *) malloc((att.len+1)* sizeof(char*));
-			       strcpy (att.string, " ");
-			       return_val = bad_file_attr;
-			       }
-			   
-              att.vals = (double *) malloc(1 * sizeof(double));
-              att.vals[0] = 0;
-
-              break;
-              default:
-		      att.outtype = NC_FLOAT;
-              att.vals = (double *) malloc(att.len * sizeof(double));
-
-              nc_status = nc_get_att_double(*ncid, iv, att.name, att.vals );
-              if (nc_status != NC_NOERR) /* on error set attr to empty string*/
-	             {att.type = NC_CHAR;
-	             att.outtype = NC_CHAR;
-	             att.len = 1;
-	             att.string = (char *) malloc((att.len+1)* sizeof(char*));
-	             strcpy (att.string, " ");
-	             return_val = bad_file_attr;
-	             }
-	          att.string = (char *) malloc(2*sizeof(char*));
-		      strcpy(att.string, " ");
-              break;
-              }
-
-    /* Initialize output flag. Attributes written by default by Ferret
-	   will be set to outflag = 1. 
-	*/
-              att.outflag = initialize_output_flag (att.name);
-
-              } /* end of the if (nc_status == NC_NOERR)  */
-              }
-      /*Save attribute in linked list of attributes for this variable */	
-           if (!var.attrs_list_initialized) {
-              if ( (var.varattlist = list_init()) == NULL ) {
-                fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
-                return_val = -1;
-                return return_val; 
-              }
-              var.attrs_list_initialized = TRUE;
-            }
-
-           list_insert_after(var.varattlist, &att, sizeof(ncatt));
-       }    /* variable attributes list complete */
-     }  /* if var.natts > 0*/ 
-
-      /*Save variable in linked list of variables for this dataset */	
-       if (!nc.vars_list_initialized) {
+						for (ia = 0; ia < var.natts; ia++)
+							
+							{
+								
+								/* initialize
+									 att = att0; */
+								
+								nc_status = nc_inq_attname(*ncid, iv, ia, att.name);
+								/*		  if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute id %d for variable %s, file %s\n", ia, var.name, nc.fullpath); */
+								if (nc_status == NC_NOERR) {
+									att.attid = ia+1;
+									
+									nc_status = nc_inq_att(*ncid, iv, att.name, &att.type, &att.len);
+									/*            if (nc_status != NC_NOERR) fprintf(stderr, " ***NOTE: error reading attribute %s for variable %s, file %s\n",att.name, var.name, nc.fullpath); */
+									if (nc_status == NC_NOERR) {
+										
+										if (att.len == 0) {	/* set 0-length attributes to empty strings */
+											att.type = NC_CHAR;
+											att.outtype = NC_CHAR;
+											att.len = 1;
+											att.string = (char *) malloc(2*sizeof(char));
+											strcpy (att.string," ");
+										}
+										switch (att.type) {
+										case NC_CHAR:
+											/* Plus one for end-of-string delimiter. */
+											att.string = (char *) malloc((att.len+1)*sizeof(char));
+											strcpy (att.string, " ");
+											nc_status = nc_get_att_text(*ncid, iv, att.name, att.string );											
+											
+											if (nc_status != NC_NOERR) /* on error set attr to empty string*/
+												{att.type = NC_CHAR;
+													att.outtype = NC_CHAR;
+													att.len = 1;
+													att.string = (char *) malloc((att.len+1)*sizeof(char));
+													strcpy (att.string, " ");
+													return_val = bad_file_attr;
+												} else {
+												/* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
+												att.string[att.len] = '\0';
+												
+												/* Check the actual string length (one example file has
+													 attribute units="m" but gets att.len = 128 from nc_inq_att above) because user probably used some arbitrarily large string buffer and partially populated the string leaving the remainder filled with '\0'.
+												*/
+												ilen = strlen(att.string);
+												if (ilen < att.len)
+													{ 
+														att.len = ilen;
+													}											
+											}
+											
+											att.vals = (double *) malloc(1 * sizeof(double));
+											att.vals[0] = 0;
+											
+											break;
+										default:
+											att.outtype = NC_FLOAT;
+											att.vals = (double *) malloc(att.len * sizeof(double));
+											
+											nc_status = nc_get_att_double(*ncid, iv, att.name, att.vals );
+											if (nc_status != NC_NOERR) /* on error set attr to empty string*/
+												{att.type = NC_CHAR;
+													att.outtype = NC_CHAR;
+													att.len = 1;
+													att.string = (char *) malloc((att.len+1)* sizeof(char*));
+													strcpy (att.string, " ");
+													return_val = bad_file_attr;
+												}
+											att.string = (char *) malloc(2*sizeof(char*));
+											strcpy(att.string, " ");
+											break;
+										}
+										
+										/* Initialize output flag. Attributes written by default by Ferret
+											 will be set to outflag = 1. 
+										*/
+										att.outflag = initialize_output_flag (att.name);
+										
+									} /* end of the if (nc_status == NC_NOERR)  */
+								}
+								/*Save attribute in linked list of attributes for this variable */	
+								if (!var.attrs_list_initialized) {
+									if ( (var.varattlist = list_init()) == NULL ) {
+										fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
+										return_val = -1;
+										return return_val; 
+									}
+									var.attrs_list_initialized = TRUE;
+								}
+								
+								list_insert_after(var.varattlist, &att, sizeof(ncatt));
+							}    /* variable attributes list complete */
+					}  /* if var.natts > 0*/ 
+				
+				/*Save variable in linked list of variables for this dataset */	
+				if (!nc.vars_list_initialized) {
           if ( (nc.dsetvarlist = list_init()) == NULL ) {
             fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable list.\n");
             return_val = -1;
@@ -1283,24 +1288,24 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
           }
           nc.vars_list_initialized = TRUE;
         }
-
-       list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
-
-     }    /* variables list complete */
-
-/* Add dataset to global nc dataset linked list*/ 
+				
+				list_insert_after(nc.dsetvarlist, &var, sizeof(ncvar));
+				
+			}    /* variables list complete */
+	
+	/* Add dataset to global nc dataset linked list*/ 
   if (!list_initialized) {
     if ( (GLOBAL_ncdsetList = list_init()) == NULL ) {
       fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize GLOBAL_ncDsetList.\n");
       return_val = -1;
       return return_val; 
-	}
+		}
     list_initialized = TRUE;
   }
-
+	
   list_insert_after(GLOBAL_ncdsetList, &nc, sizeof(ncdset));
   return return_val;
-  }
+}
 
 /* ----
  * Initialize new dataset to contain a non-netcdf dataset 

@@ -47,6 +47,6 @@ GO bn_reset
 GO err600_var_label.jnl
 
 ! err600_upcase.jnl
-! But 1461 upcasing of axis name on creating bounds variable for output
+! Bug 1461 upcasing of axis name on creating bounds variable for output
 GO bn_reset
 GO err600_upcase.jnl

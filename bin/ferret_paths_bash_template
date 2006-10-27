@@ -45,7 +45,8 @@ export FER_DSETS=my_big_data_disk/fer_dsets
 # If you prefer not to modify PATH here you may comment out the following few
 # lines and execute the file $FER_DIR/bin/install_ferret_links wich will
 # create ferret links in /usr/local/bin.
-export PATH="$PATH $FER_DIR/bin"
+# 10/06 acm add : in the following command as suggested by user Fabian Lienert
+export PATH="$PATH:$FER_DIR/bin"
 # *** end of PATH modifications
  
 # =========== Initially make no modifications below this line ===========

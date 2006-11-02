@@ -58,18 +58,13 @@
 * V510: 2/00 *sh* - free up the mr_grid pointer when variable is deleted
 * V530: 8/00 *sh* - if the variable was a string array then free the C memory
 * V533: 6/01 *sh* - allow for string variables with strides
+* V601 11/06 *acm*- fix bug 1466: memory for string vars is NOT allocated via malloc,
+*                   so do not FREE it here. 
 
-#ifdef unix
 	include		'tmap_dims.parm'
 	include		'ferret.parm'
 	include 	'xvariables.cmn'
 	include		'xprog_state.cmn'
-#else
-	INCLUDE		'TMAP_FORMAT:TMAP_DIMS.PARM'
-	INCLUDE		'FERRET_CMN:FERRET.PARM'
-	INCLUDE 	'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE		'FERRET_CMN:XPROG_STATE.CMN'
-#endif
 
 * calling argument declarations:
 	INTEGER		mr
@@ -81,7 +76,7 @@
 	IF ( mr_type(mr)      .EQ. ptype_string 
      . .AND. mr_protected(mr) .NE. mr_table_entry_only ) THEN
 	   size = MGRID_SIZE_DELTA(mr)
-	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
+c	   CALL FREE_C_STRING_ARRAY(mr_c_pointer(mr), size)
 	ENDIF
 
 * diagnostic "delete" message

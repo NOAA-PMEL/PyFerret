@@ -41,7 +41,9 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
-
+* V602 *acm*11/06 - Fix bug 1468, wrong string was written instead of the
+*                   calendar name.
+ 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -124,9 +126,10 @@
 * report the calendar of a time axis if "interesting"
 
 	   IF (cal_id .GT. gregorian .AND. cal_id .LE. max_calendars) THEN
+              buff = line_cal_name(line)
 	      slen = TM_LENSTR1(buff)
-           WRITE ( risc_buff, 2030 ) buff(1:slen)
-	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+              WRITE ( risc_buff, 2030 ) buff(1:slen)
+	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	   ENDIF
 	ENDIF
 

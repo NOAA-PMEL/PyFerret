@@ -86,16 +86,21 @@ SET MODE VERIFY
 !  9/05 *acm* remove bn_curv_shade_mod.jnl which was duplicated by bn_curv_mod.jnl
 
 !  V6.00
-!  9/05 *acm* new scripts  bn_tab_comma_multivar.jnl, bn_element_functions.jnl,
+!  9/06 *acm* new scripts  bn_tab_comma_multivar.jnl, bn_element_functions.jnl,
 !             bn_long_revision_num.jnl, bn_window_title.jnl, bn_last_error.jnl,
 !             bn_deg_min.jnl, bn_dp_readscale.jnl, bn_bounds_defineax.jnl,
 !              bn_attributes.jnl, n600_bug_fixes.jnl
+!
+! 9/06 *acm* New bn601_bug_fixes for version 6.02
 
 ! 6/06  *acm* add bn_transforms.jnl -- there was a benchmark testing regridding
 !             transforms but not the others: smoothers, fillers, etc.
 
 ! 10/06 *acm* Remove tests of nco funcions: we dont want to require them to be installed
 !             on a system in order for it to pass the benchmarks.
+!
+! 11/06 *acm* New bn602_bug_fixes for version 6.02
+
 
 GO bn_reset
 GO bn_syntax
@@ -518,6 +523,10 @@ GO bn600_bug_fixes.jnl
 ! ******** V6.01 Additions below ***********
 GO bn601_bug_fixes.jnl
 
+! ******** V6.02 Additions below ***********
+GO bn_set_strides.jnl
+
+GO bn602_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92
 exit/command

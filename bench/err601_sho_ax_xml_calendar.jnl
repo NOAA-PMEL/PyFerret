@@ -1,0 +1,10 @@
+! err601_sho_ax_xml_calendar.jnl
+! 11/8/2006 ACM
+! bug 1468: SHOW AXIS/XML listed the wrong info for the calendar
+! when a time axis has a non-standard calendar.
+
+def axis/cal=noleap/t=1-jan-2000:1-jan-2002:1/units=days timenoleap
+let v = sin(t[gt=timenoleap]/100)
+save/clobber/file=noleap.nc v
+use noleap.nc
+sh axis/xml timenoleap

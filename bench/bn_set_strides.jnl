@@ -1,0 +1,144 @@
+set mode ignore_error
+
+!..............1. ignore STRIDE = 1                             
+use coads
+show axis/all
+set axis/stride=1/offset=1 `sst, return=xaxis`
+show axis/all
+cancel data/all
+
+!..............2. illegal to stride an already strided axis   
+use coads
+set axis/stride=2/offset=1 `sst, return=xaxis`
+show axis/all
+!can't stride it again
+set axis/stride=2/offset=1 `sst, return=xaxis`
+show axis/all
+cancel data/all
+
+!..............3. only set STRIDE                                 
+use coads
+
+! --- before striding
+
+list sst[i=21:30,j=50,k=1,l=50]
+
+! --- after set striding
+
+set axis/stride=2 `sst, return=xaxis`
+list sst[i=11:15,j=50,k=1,l=50]
+
+
+! --- after cancel striding
+cancel axis/stride `sst,return=xaxis`
+list sst[i=21:30,j=50,k=1,l=50]
+cancel data/all
+
+!.............4. only set OFFSET                               
+! ingored if you only set OFFSET
+
+use coads
+set axis/offset=1 `sst, return=xaxis`
+show axis/all
+cancel axis/stride `sst,return=xaxis`
+cancel data/all
+
+
+!.............5. OFFSET .LE. STRIDE
+use coads
+set axis/stride=2/offset=4 `sst, return=xaxis`
+cancel data/all
+
+!.............6. SHOW GRID/DYNAMIC          
+use coads
+set axis/stride=4/offset=2 `sst, return=xaxis`
+show grid/dynamic
+cancel data/all
+
+!.............7. cancel stride on a non-strided axis
+use coads
+cancel axis/stride `sst,return=xaxis`
+cancel data/all
+
+!.............8. striding on a modulo axis
+
+! --- 8.1 stride value is an integer factor of the axis length 
+! the strided axis will inherit the modulo property of its parent
+
+use coads
+set axis/stride=6/offset=5 `sst,return=xaxis`
+show axis/all
+cancel axis/stride `sst,return=xaxis`
+
+!--- 8.2 stride value is not an integer factor of the axis length
+! warning: it may lose modulo property
+set axis/stride=7/offset=5 `sst,return=xaxis`
+show axis/all
+cancel axis/stride `sst,return=xaxis`
+cancel data/all
+
+! --- 8.3 testing strided modulo axis
+use coads
+set axis/stride=2/offset=1 `sst,return=xaxis`
+shade/i=-180:180/j=30:90/l=20 sst
+cancel axis/stride `sst,return=xaxis`
+cancel data/all
+
+!.............9. two datasets share the same grid
+
+! --- 9.1 test: use A - use B - stride
+! use A; use B; set axis/stride=2 `var[d=A], return=axis` 
+! -- will affect variables in B
+use d1
+use d2
+list/i=1:20/j=30 sst[d=d2]
+set axis/stride=2 `sst[d=d1], return=xaxis`
+list/i=1:10/j=30 sst[d=d2]
+
+cancel data/all
+
+! --- 9.2 test: use A -stride -useB
+! use A; set axis/stride=2 `var[d=A], return=xaxis`; use B
+! -- will not affect variables in B
+use d1
+set axis/stride=2 `sst[d=d1], return=xaxis`
+list/i=1:10/j=30 sst[d=d1]
+use d2
+list/i=1:10/j=30 sst[d=d2]
+
+can data/all
+
+!.............10. strides on permuted and reversed axes
+
+! --- 10.1 stride on a permuted axis
+use/order=yzt coads_climatology
+show data/all
+set axis/stride=5 `sst,return=yaxis`
+show axis/all
+
+can data/all
+
+! --- 10.2 stride on a reversed axis -- YAXIS
+use/order=x-yt coads_climatology
+list/x=180/l=5 sst[j=1:30]
+set axis/stride=5/offset=3 `sst,return=yaxis`
+list/x=180/l=5  sst
+list/x=180/l=5 sst[j=3:14:2]
+
+cancel data/all
+
+!.............11. stride on all axes
+use coads
+set axis/stride=2 `sst, return=xaxis`
+set axis/stride=2 `sst, return=yaxis`
+set axis/stride=2 `sst, return=taxis`
+show axis/all
+
+can data/all
+
+!.............12. stride on a NORMAL axis
+set mode ignore_error
+use coads
+set axis/stride=2 `sst,return=zaxis`
+set mode/last ignore_error
+

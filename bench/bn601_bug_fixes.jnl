@@ -50,3 +50,9 @@ GO err600_var_label.jnl
 ! Bug 1461 upcasing of axis name on creating bounds variable for output
 GO bn_reset
 GO err600_upcase.jnl
+
+! err600_let_d.jnl
+! Making a LET/D= assignment caused the return of dimension names from the attribute 
+! structure fail, and the list of variable names was incorrect.
+GO bn_reset
+GO err600_let_d.jnl

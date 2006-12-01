@@ -51,6 +51,15 @@
 					  terminator for the string. Also double check the string length
 					  that is returned from the call to nc_inq_att, and make sure
 					  we allocate the correct amount of memory for the string.*/
+/* *acm  11/06 v601 - ncf_delete_var_att didnt reset the attribute id's.  Fix this. */
+
+/* *acm  11/06 v601 - new routine ncf_add_var_num_att_dp */
+/* *acm  11/06 v601 - new routine ncf_repl_var_att_dp */
+/* *acm  11/06 v601 - in ncf_init_other_dset, set the name of the global attribute 
+                      to history, and define its attribute type and outflag.*/
+/* *acm  11/06 v601 - new routine ncf_rename_var, for fix of bug 1471 */
+/* *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes. */
+
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
 #include <stdlib.h>		/* for convenience */
@@ -115,9 +124,12 @@ int  FORTRAN(ncf_delete_var)( int *, char *);
 int  FORTRAN(ncf_add_var)( int *, int *, int *, char *, char *, char *, double *);
 
 int  FORTRAN(ncf_add_var_num_att)( int *, int *, char *, int *, int *, int *, float *);
+int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *, double *);
 int  FORTRAN(ncf_add_var_str_att)( int *, int *, char *, int *, int *, int *, char *);
 
+int  FORTRAN(ncf_rename_var)( int *, int *, char *);
 int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, float *, char *);
+int  FORTRAN(ncf_repl_var_att_dp)( int *, int *, char *, int *, int *, double *, char *);
 int  FORTRAN(ncf_set_att_flag)( int *, int *, char *, int *);
 int  FORTRAN(ncf_set_var_out_flag)( int *, int *, int *);
 int  FORTRAN(ncf_set_var_outtype)( int *, int *, int *);
@@ -190,7 +202,7 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
    case form), type, nvdims, vdims, nvatts.
  */
 
- int FORTRAN(ncf_inq_var) (int *dset, int *varid, char vname[], int *len_vname, int *vtype, int *nvdims,
+ int FORTRAN(ncf_inq_var) (int *dset, int *varid, char newvarname[], int *len_newvarname, int *vtype, int *nvdims,
      int *nvatts, int* coord_var, int *outflag, int *vdims)
 
 {
@@ -219,8 +231,8 @@ int  FORTRAN(ncf_inq_ds_dims)( int *dset, int *idim, char dname[], int *namelen,
   
   var_ptr=(ncvar *)list_curr(varlist); 
 
-  strcpy(vname, var_ptr->name);
-  *len_vname = strlen(vname);
+  strcpy(newvarname, var_ptr->name);
+  *len_newvarname = strlen(newvarname);
   *vtype = var_ptr->type;
   *nvdims = var_ptr->ndims;
   *nvatts = var_ptr->natts;
@@ -1183,6 +1195,7 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 				 */
 				var.attrs_list_initialized = FALSE;
 				
+				ia = 0;
 				if (var.natts > 0)
           {
 						for (ia = 0; ia < var.natts; ia++)
@@ -1276,9 +1289,52 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 								}
 								
 								list_insert_after(var.varattlist, &att, sizeof(ncatt));
-							}    /* variable attributes list complete */
+							}    /* variable attributes from file complete */
 					}  /* if var.natts > 0*/ 
 				
+/*                    /* If this is a coordinate variable, add an attribute orig_file_axname which 
+/*				          contains the axis name, and is used to preserve the original name if 
+/*						  Ferret detects a duplicate axis name and changes the axis name.*/
+/*					if (var.is_axis)
+/*					{
+/*
+/*
+/*						/* initialize
+/*									 att = att0; */
+/*								
+/*						var.natts = var.natts + 1;
+/*						strcpy (att.name, "orig_file_axname");
+/*						att.attid = ia+1;
+/*						att.type = NC_CHAR;
+/*						att.len = strlen(var.name);
+/*						att.string = (char *) malloc((att.len+1)*sizeof(char));
+/*
+/*						strcpy (att.string,var.name);
+/*		                                
+/*						/* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
+/*						att.string[att.len] = '\0';
+/*											
+/*						att.vals = (double *) malloc(1 * sizeof(double));
+/*						att.vals[0] = 0;
+/*								
+/*						/* Output flag always false for this attribute */
+/*						att.outflag = -1;
+/*	
+/*						/*Save attribute in linked list of attributes for this variable */	
+/*						if (!var.attrs_list_initialized) 
+/*							{
+/*							if ( (var.varattlist = list_init()) == NULL ) 
+/*								{
+/*								fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
+/*								return_val = -1;
+/*								return return_val; 
+/*								}
+/*							var.attrs_list_initialized = TRUE;
+/*							}
+/*								
+/*							list_insert_after(var.varattlist, &att, sizeof(ncatt));
+/*					}
+
 				/*Save variable in linked list of variables for this dataset */	
 				if (!nc.vars_list_initialized) {
           if ( (nc.dsetvarlist = list_init()) == NULL ) {
@@ -1335,7 +1391,7 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
 	nc.ndims = 4;   
     nc.vars_list_initialized = FALSE;
 
-   /* set one global attribute, treat as pseudo-variable . the list of variables */
+   /* set up pseudo-variable . the list of variables */
 
        strcpy(var.name, ".");
 
@@ -1353,11 +1409,15 @@ int FORTRAN(ncf_init_other_dset)(int *setnum, char name[], char path[])
 
 	   var.attrs_list_initialized = FALSE; 
 
+   /* set one global attribute, history */
+
 		  att.outflag = 1;
           att.type = NC_CHAR;
           att.outtype = NC_CHAR;
+          att.outflag = 0;
+          att.attid = 1;
 		  att.len = strlen(name);
-          strcpy(att.name, name );
+          strcpy(att.name, "history" );
 
 	      att.string = (char *) malloc((att.len+1)* sizeof(char*));
 		  strcpy(att.string, name );
@@ -1749,6 +1809,76 @@ int  FORTRAN(ncf_add_var_num_att)( int *dset, int *varid, char attname[], int *a
 }
 
 /* ----
+ * Find a variable based on its variable ID and dataset ID
+ * Add a new numeric attribute.
+ */
+int  FORTRAN(ncf_add_var_num_att_dp)( int *dset, int *varid, char attname[], int *attype, int *attlen, int *outflag, double *vals)
+
+{
+  ncatt *att_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  ncatt att;
+  int status=LIST_OK;
+  static int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varattlist;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+  if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
+
+    /*
+    * Get the list of attributes for the variable in the dataset
+    * If the attribute is already defined, return -1* attid
+    */
+  varattlist = ncf_get_ds_var_attlist(dset, varid);
+
+  status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status == LIST_OK ) {\
+    att_ptr=(ncatt *)list_curr(varattlist); 
+    return_val = -1* att_ptr->attid; 
+    return return_val;
+    }
+
+   /* Increment number of attributes.  
+   */
+
+  var_ptr->natts = var_ptr->natts + 1;
+
+   /*
+    * Set attribute structure and insert the new attribute at 
+	* the end of the attribute list. 
+    */
+
+  strcpy(att.name,attname);
+  att.attid = var_ptr->natts;
+  att.type = *attype;
+  att.outtype = NC_FLOAT;
+  att.len = *attlen;
+  att.outflag = *outflag;
+  att.vals = (double *) malloc(*attlen * sizeof(double));
+
+  for (i = 0; i<*attlen;i++ )
+  {att.vals[i] = vals[i];
+  }
+
+   /*Save attribute in linked list of attributes for this variable */	
+
+  list_insert_after(var_ptr->varattlist, &att, sizeof(ncatt));
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ----
  * Find a variable  based on its variable ID and dataset ID
  * Add a new string attribute.
  */
@@ -1832,12 +1962,139 @@ int  FORTRAN(ncf_add_var_str_att)( int *dset, int *varid, char attname[], int *a
   return return_val;
 }
 
+/* ----
+ * Find a variable based on its variable ID and dataset ID
+ * Replace the variable name with the new one passed in.
+ */
+
+int  FORTRAN(ncf_rename_var)( int *dset, int *varid, char newvarname[])
+
+{
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  int i;
+  LIST *varlist;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+
+  /* Insert the new name. */
+  strcpy( var_ptr->name, newvarname); 
+
+  return_val = FERR_OK;
+  return return_val;
+}
 
 /* ----
  * Find an attribute based on its variable ID and dataset ID
  * Replace the type, length, and/or value(s).
  */
 int  FORTRAN(ncf_repl_var_att)( int *dset, int *varid, char attname[], int *attype, int *attlen, float *vals, char attstring[])
+
+{
+  ncatt *att_ptr=NULL;
+  ncvar *var_ptr=NULL;
+  int status=LIST_OK;
+  int return_val;
+  int i;
+  LIST *varlist;
+  LIST *varattlist;
+
+   /*
+    * Get the list of variables, find pointer to variable varid.
+    */
+  varlist = ncf_get_ds_varlist(dset);
+
+  status = list_traverse(varlist, varid, NCF_ListTraverse_FoundVarID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) return;
+
+  var_ptr=(ncvar *)list_curr(varlist); 
+  if (var_ptr->natts < 1) return ATOM_NOT_FOUND;
+
+   /*
+    * Get the list of attributes for the variable in the dataset
+    * If the attribute is not defined, return
+    */
+  varattlist = ncf_get_ds_var_attlist(dset, varid);
+
+  status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+    }
+
+   /*
+    * Get the attribute.
+    */
+  att_ptr=(ncatt *)list_curr(varattlist); 
+
+   /*
+    * Free the memory used by the string or values 
+    */
+  if (att_ptr->type == NC_CHAR)
+  {
+	  free(att_ptr->string);
+  }
+  else
+  {
+	  free(att_ptr->vals);
+  }
+  
+
+   /*
+    * Keep the name and ID. Reset type, length, and values
+    *  For string attributes, allocate one more than the att.len, 
+    *  presumably for the null terminator for the string (?)
+    */
+
+  att_ptr->type = *attype;
+  att_ptr->outtype = NC_FLOAT;
+  att_ptr->len = *attlen;
+
+  if (*attlen == 0) /* set 0-length attributes to empty strings */
+	  {
+		  att_ptr->type = NC_CHAR;
+		  att_ptr->outtype = NC_CHAR;
+		  att_ptr->len = 1;
+		  strcpy(att_ptr->string," ");
+	  }
+   else
+	  {
+	   switch (*attype) 
+		   {
+		   case NC_CHAR:
+			   i = (*attlen+1);   /* this line for debugging*/
+	        att_ptr->string = (char *) malloc((*attlen+1)* sizeof(char*));
+            strcpy(att_ptr->string,attstring);
+            break;
+			
+		   default:
+            att_ptr->vals = (double *) malloc(*attlen * sizeof(double));
+	        for (i = 0; i<*attlen;i++ )
+            {
+				att_ptr->vals[i] = vals[i];
+            }
+            break;
+         }
+	  }
+
+  return_val = FERR_OK;
+  return return_val;
+}
+
+/* ----
+ * Find an attribute based on its variable ID and dataset ID
+ * Replace the type, length, and/or value(s).
+ */
+int  FORTRAN(ncf_repl_var_att_dp)( int *dset, int *varid, char attname[], int *attype, int *attlen, double *vals, char attstring[])
 
 {
   ncatt *att_ptr=NULL;
@@ -1942,6 +2199,7 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
   int status=LIST_OK;
   int return_val;
   int i;
+  int att_to_remove;
   LIST *varlist;
   LIST *varattlist;
 
@@ -1962,22 +2220,56 @@ int  FORTRAN(ncf_delete_var_att)( int *dset, int *varid, char attname[])
     */
   varattlist = ncf_get_ds_var_attlist(dset, varid);
 
+   /*
+    * Get the attribute.
+    */
+
   status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
   if ( status != LIST_OK ) {
     return_val = ATOM_NOT_FOUND;
     return return_val;
     }
 
+	  att_ptr=(ncatt *)list_curr(varattlist); 
+      att_to_remove = att_ptr->attid;
+
+  /* 
+   * reset the attribute id for remaining attributes
+   */
+
+  for (i = 1; i <= var_ptr->natts; i++ )
+	  {
+
+	  status = list_traverse(varattlist, &i, NCF_ListTraverse_FoundVarAttID, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+	  if ( status != LIST_OK ) 
+		  {
+		  return_val = ATOM_NOT_FOUND;
+		  return return_val;
+		  }
+
+	  att_ptr=(ncatt *)list_curr(varattlist); 
+
+	  /*
+	  * Reset the attribute id?
+	  */
+
+	  if (i > att_to_remove) att_ptr->attid = att_ptr->attid -1;
+
+	  }  /* end of iatt loop*/   
+
    /*
-    * Get the attribute.
+    * Now get and remove the attribute.
     */
 
-/* Remove it
- */
-  list_remove_curr(varattlist);
+  status = list_traverse(varattlist, attname, NCF_ListTraverse_FoundVarAttName, (LIST_FRNT | LIST_FORW | LIST_ALTR));
+  if ( status != LIST_OK ) {
+    return_val = ATOM_NOT_FOUND;
+    return return_val;
+    }
 
+  list_remove_curr(varattlist);
   
-   /* Decrement number of attributes.  
+   /* Decrement number of attributes for the variable.  
    */
 
   var_ptr->natts = var_ptr->natts - 1;
@@ -2049,7 +2341,8 @@ int  FORTRAN(ncf_set_att_flag)( int *dset, int *varid, char attname[], int *atto
  * Change the variable flag: 
  * 1=output no attributes, 
    0=check individual attribute output flags,
-   2=write all attributes
+   2=write all attributes, except any internal Ferret
+     attributes, marked with outflag=-1.
 *  3=reset attr flags to defaults
  */
 int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
@@ -2158,7 +2451,8 @@ int  FORTRAN(ncf_set_var_out_flag)( int *dset, int *varid, int *all_outflag)
 	  * Reset the attribute output flag.
 	  */
 
-	  att_ptr->outflag = 1;
+	  if (att_ptr->outflag != -1) att_ptr->outflag = 1;
+
 
 	  }  /* end of iatt loop*/   
 

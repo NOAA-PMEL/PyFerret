@@ -149,9 +149,10 @@
         CALL deleted_list_modify(uvar_num_items_head,uvar,uvar_deleted)
 
 * Remove from linked-list structure, the user-variables dataset
+* No need to check for  EX# expressions
 
         slen = TM_LENSTR( uvar_name_code(uvar)  )
-        IF (slen .GT. 0) THEN
+        IF (slen .GT. 0 .AND. uvar_name_code(uvar)(1:3) .NE. 'EX#') THEN
            slen = TM_LENSTR1( uvar_name_code(uvar)  )
            CALL TM_FTOC_STRNG( uvar_name_code(uvar)(1:slen), fhol, flen )
 

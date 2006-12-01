@@ -3,6 +3,7 @@ cd_abort_grids.F\
 cd_add_var.F\
 cd_assoc_grids.F\
 cd_axis_name.F\
+cd_axis_outname.F\
 cd_axlen.F\
 cd_childax_name.F\
 cd_clean_grids.F\
@@ -43,6 +44,7 @@ cd_make_var.F\
 cd_open_dset.F\
 cd_open_out.F\
 cd_put_new_attr.F\
+cd_put_new_attr_dp.F\
 cd_rd_ep_1.F\
 cd_rd_ep_arr.F\
 cd_rd_r8_1.F\
@@ -52,7 +54,9 @@ cd_rd_ymd_1.F\
 cd_rd_ymd_arr.F\
 cd_read.F\
 cd_rec_synch.F\
+cd_rename_var.F\
 cd_replace_attr.F\
+cd_replace_attr_dp.F\
 cd_scan_vars.F\
 cd_set_att_axdir.F\
 cd_set_att_flag.F\

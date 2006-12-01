@@ -132,6 +132,12 @@
 * V600 *acm* 5/2006 MODE LINECOLORS User can change the number of line colors.
 *      *jli* 7/2006 added 'implicit.parm' for pline_class_stride
 *      *jli* added SET AXIS/STRIDE/OFFSET/
+* V601 *acm*11/06 Fix bug 1470: on a SET AXIS command which redefines attributes of an axis, change
+*                 values in the attribute structure for the axis.
+* V601 *acm*11/06 Fix bug 1438: A request for rediculously large memory results in an
+*                 overflow in setting reconfig, so it looks like a negative number of words 
+*                 requested. This should result in an error message.
+
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -184,18 +190,19 @@
      .                  units, since_t0, len_test, len_mchars, slen,
      .                  attype_spec, pos, mr, varid, uvar, cat, iflag, 
      .                  ivar, dot, strided_axis, igrd, offset
-        REAL*8          TM_WW_AXLEN, axwwlen
+        REAL*8          TM_WW_AXLEN, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi
 	REAL		val_buf
 	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
-     .                  varname*512, attname*128
+     .                  varname*512, attname*128, new_att_calendar*10, 
+     .                  new_att_t0*128, new_att_units*128
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
      .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
-     .                  coordvar
+     .                  coordvar, new_att_modulo
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -728,6 +735,8 @@ c *kob* 4/97
  1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
         IF ( axis .EQ. unspecified_int4 ) GOTO 6210
 * /MODULO
+        new_att_modulo = .FALSE.
+        new_att_modulo_len = 0.D0
 	lp = qual_given(slash_set_axis_modulo)
 	IF ( lp .GT. 0 ) THEN
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
@@ -742,6 +751,9 @@ c *kob* 4/97
      .		    .OR.  val_buf .NE. line_modulo_len(axis)
            line_modulo( axis ) = .TRUE.
 	   line_modulo_len( axis ) = val_buf
+
+           new_att_modulo = .TRUE.
+           new_att_modulo_len = val_buf
 
 * ... wipe memory clear of stored variables - this could change all definitions
 *      ( could be more selective for efficiency by checking to see where this
@@ -760,6 +772,7 @@ c *kob* 4/97
         ENDIF
 
 */CALENDAR 
+        new_att_calendar = ' '
 	loc = qual_given(slash_set_axis_calendar) 
         IF (loc .GT. 0) THEN
            IF ( line_direction(axis) .EQ. 'TI' ) THEN
@@ -786,12 +799,13 @@ c *kob* 4/97
 1220         CONTINUE
 
               IF (.NOT. ok_cal) GOTO 6320
+              new_att_calendar = line_cal_name(axis)
 
            ENDIF
 
         ENDIF
 *  /T0 
-
+        new_att_t0 = ' '
 	loc = qual_given(slash_set_axis_t0) 
         IF (loc .GT. 0 ) THEN
            IF ( line_direction(axis) .EQ. 'TI' .OR.
@@ -806,6 +820,7 @@ c *kob* 4/97
      .				  hour, minute, second,status)
               IF ( status .NE. ferr_ok ) GOTO 6420
               line_t0(axis) = buff1
+              new_att_t0 = buff1
               line_direction(axis) = 'TI'
 
            ENDIF
@@ -816,6 +831,7 @@ c *kob* 4/97
 * Note we do not change line direction with a resetting of units; line
 * direction UD, DU, WE, SN stay as they were when they were input.
 
+        new_att_units = ' '
 	loc = qual_given(slash_set_axis_units) 
         IF (loc .GT. 0 ) THEN
            IF ( num_args .EQ. 0 ) GOTO 6410
@@ -829,6 +845,7 @@ c *kob* 4/97
            IF (since_T0 .GT. 0) GOTO 6520
 
            line_units(axis) = buff1
+           new_att_units = buff1
 
 * ... decode the units (code lifted from cd_get_1_axis)
 
@@ -928,7 +945,7 @@ c *kob* 4/97
               ENDIF
            ENDIF
 
-        ENDIF
+        ENDIF  ! set axis/units
 
 *  /STRIDE and /OFFSET
 
@@ -1085,6 +1102,14 @@ c *kob* 4/97
 
         ENDIF
 
+* ... Check the attribute structure for this axis name and change 
+*     attribute values as needed.
+
+       CALL RESET_AX_ATT (line_name(axis), new_att_units, 
+     .           new_att_t0, new_att_calendar, new_att_modulo,
+     .           new_att_modulo_len, line_direction(iline), 
+     .           line_regular(iline) )
+
 	RETURN
 
 * SET MEMORY/MWORDS=megawords
@@ -1104,8 +1129,19 @@ c *kob* 4/97
 	ENDIF
 	IF ( val_buf .GT. 0.0 ) THEN
 * for neatness make mem_blk_size always be a multiple of 100
-	   reconfig = INT(val_buf*1E6/(max_mem_blks*100))
+* When val_buf is large, the calculation can overflow.
+* Check for this...
+
+c	   reconfig = INT(val_buf*1E6/(max_mem_blks*100))
+c     .					* max_mem_blks*100
+	   reconfig = INT(val_buf*1E4/(max_mem_blks))
      .					* max_mem_blks*100
+           IF (reconfig .LT. 0) THEN
+              reconfig = 0
+              CALL WARN('internal overflow expressing '//
+     .          cmnd_buff(qual_start(lp)+4:qual_end(lp))//
+     .		' Mwords as words. Restoring previous memory size.')
+           ENDIF
 	ENDIF
 * clear the current contents of memory
 	DO 1310 i = 1,max_mr_avail

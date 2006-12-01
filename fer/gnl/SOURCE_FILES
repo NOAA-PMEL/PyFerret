@@ -59,8 +59,10 @@ pop_cs.F\
 process_if.F\
 proclaim.F\
 proclaim_c.F\
+redefine_ax_att.F\
 repl_exprns.F\
 reset_axis.F\
+reset_ax_att.F\
 sample.F\
 sample_sub.F\
 save_ppl_memory_size.F\

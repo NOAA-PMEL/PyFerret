@@ -119,6 +119,8 @@
 * V600 *acm* 5/06 MODE LINECOLORS User can change the number of line colors.
 * V600 *acm* 6/06 additional declarations found by Solaris compiler
 *      *jli* 7/06 added CANCEL AXIS/STRIDE
+* V601 *acm*11/06 Fix bug 1470: on a CANCEL AXIS/MODULO or CANCEL AXIS/DEPTH, change
+*                 values in the attribute structure for the axis.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -167,7 +169,7 @@
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims,
-     .                  coordvar, do_err, canout
+     .                  coordvar, do_err, canout, new_att, new_att_modulo
 	CHARACTER	arg*4, buff*512, arg30*30, varname*512, 
      .                  attname*128, show_str*12, buff2*3
 
@@ -558,6 +560,10 @@
 
 * CANCEL AXIS/MODULO
  1200	IF ( qual_given(slash_canc_axis_modulo) .GT. 0 ) THEN
+
+           new_att_modulo = .FALSE.
+           new_att_modulo_len = 0.
+
 	   DO 1220 item = 1, num_items
               axis = TM_GET_LINENUM(
      .				cmnd_buff(item_start(item):item_end(item)) )
@@ -674,6 +680,16 @@
 	      ENDIF
  1230	   CONTINUE
         ENDIF
+
+* ... Check the attribute structure for this axis name and change 
+*     attribute values as needed.
+
+       buff2 = ' '
+       CALL RESET_AX_ATT (line_name(axis), buff2, 
+     .           buff2, buff2, new_att_modulo,
+     .           new_att_modulo_len, line_direction(axis), 
+     .           line_regular(axis) )
+
 	RETURN
 
 * CANCEL GRID

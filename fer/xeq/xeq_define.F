@@ -184,7 +184,9 @@
 *                  for a regular axis. Here we need to set line_regular to false when
 *                  defining the axis from data. It may later be set to true if the data is
 *                  in fact regular.
-* 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of err_string to 2048
+* V601 *acm* 9/06  fixing bug 1439 long symbol values; change length of err_string to 2048
+* V601 *acm*11/06 Fix bug 1470: on a DEFINE AXIS command which is redefining an axis, change
+*                 values in the attribute structure for the axis.
 
 	include	'tmap_errors.parm'
 #	include	"tmap_dset.parm"
@@ -278,7 +280,7 @@
      .		  TM_FPEQ, TM_DFPEQ, TM_CHECK_BNDS, 
      .            dup_name, delta_given, create, irreg, its_reg, its_edges, 
      .            its_calendar, its_modulo, has_repeated, has_bounds,
-     .            coordvar, new_att
+     .            coordvar, new_att, new_att_modulo
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID,
      .		  TM_GET_LINENUM, TM_LENSTR1,
@@ -299,16 +301,19 @@
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            xlovp, ylovp,  xhivp, yhivp,
-     .            xoei,  yoei,   xcei,  ycei, scale
+     .            xoei,  yoei,   xcei,  ycei, scale, val
 
 	REAL*8	  SECS_FROM_BC, TM_WW_AXLEN,
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
-     .            micro_adj, axwwlen, rmod_len, secsperyear, small
+     .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
+     .            new_att_modulo_len
 	CHARACTER TM_FMT*16, 
      .            reg_name*24, buff1*128, buff2*128, buff3*128, 
      .            buff30*30, cal_name*32, buff*512,
      .            basic_orients(4)*2, err_string*2048, replmsg*24,
-     .		  mon_names(12)*3, varname*512, attname*128, t2*2
+     .		  mon_names(12)*3, varname*512, attname*128, t2*2,
+     .            new_att_units*128, new_att_calendar*128,
+     .            new_att_t0*128
 
         CHARACTER*1 tab
 #ifdef NO_INTRINSIC_IN_PARAMETER
@@ -692,8 +697,11 @@
 
 * DEFINE AXIS - modulo ?
 	iqual = qual_given( slash_modulo )
+        new_att_modulo = .FALSE.
+        new_att_modulo_len = -1.
 	its_modulo = iqual .GT. 0 
 	IF ( its_modulo ) THEN
+           new_att_modulo = .TRUE.
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      rbuff, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -701,6 +709,7 @@
 	      rmod_len = 0.0D0
 	   ELSE
 	      rmod_len = ABS(rbuff)  ! ABS to tolerate negatives
+              new_att_modulo_len = rmod_len
 	   ENDIF
 	ELSE
 	   rmod_len = 0.0D0
@@ -773,11 +782,15 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
         IF (has_bounds .AND. its_edges) GOTO 5730
 
 * /UNITS = DEGREES,METERS, ... SECONDS (or supply defaults)
+        buff1 = ' '
+        new_att_units = " "
 	iqual = qual_given( slash_units )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff1, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+           new_att_units = buff1
+
 	ELSEIF ( cx_formatted(orient)
      .	   .AND. (orient.EQ.x_dim .OR. orient.EQ.y_dim) ) THEN
 	   buff1 = 'degrees'	! infer from input like "X=130E:80W"
@@ -789,6 +802,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	ELSE
 	   buff1 = 'NONE'
 	ENDIF
+
 * is it a calendar axis definition?
 	its_calendar =  orient.EQ.t_dim .AND. cx_calendar(mods_cx)
 
@@ -798,12 +812,14 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 *       ALL_LEAP may also be called 366_DAY
 
         cal_name = 'GREGORIAN'		! default
+        new_att_calendar = " "
         dflt_cal_id = TM_GET_CALENDAR_ID (cal_name)
 	iqual = qual_given( slash_calendar )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      cal_name, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+           new_att_calendar = cal_name
 	ELSEIF ( orient .EQ. t_dim  .AND.  
      .         ( qual_given(slash_T0) .GT. 0  .OR. 
      .           cx_calendar(mods_cx)) ) THEN
@@ -823,6 +839,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
         CALL TM_GET_CALENDAR_ATTRIBUTES (cal_id, nmonths, 
      .                 ndays, yeardays, mon_names, d_in_mon, 
      .                 d_before_mon, mon_by_d)
+        IF (new_att_calendar .NE. " ") new_att_calendar = cal_name
 
 * interpret the line units
 	IF ( buff1 .EQ. 'NONE' .OR. buff1 .EQ. ' ' ) THEN
@@ -1217,6 +1234,7 @@ C /units=months  is 1/12 of the length of the year
 
 * /T0 = date (or supply default)
 	iqual = qual_given( slash_T0 )
+        new_att_t0 = " "
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff2, status )
@@ -1224,6 +1242,8 @@ C /units=months  is 1/12 of the length of the year
 	   CALL TM_BREAK_DATE( buff2, cal_id, i1,i2,i3,i4,i5,i6, 
      .                         status )
 	   IF ( buff2 .EQ. ' ' .OR. status .NE. ferr_ok ) GOTO 5540
+           new_att_t0 = buff2
+
 	ELSE
 	   WRITE (buff2,3550) mon_names(1)
  3550      FORMAT ('15-', A3, '-1901')		! default
@@ -1295,6 +1315,9 @@ C /units=months  is 1/12 of the length of the year
 	  IF (axwwlen .LE. 360.D0) THEN
 	     its_modulo = .TRUE.
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len = 360.D0
+	     new_att_modulo = .TRUE.
+	     new_att_modulo_len = rmod_len
+
 	  ENDIF
 *  automatic calendar modulo
 	ELSEIF (line_direction(iline) .EQ. 'TI' ) THEN
@@ -1307,6 +1330,8 @@ C /units=months  is 1/12 of the length of the year
 	     its_modulo = .TRUE.
 	     IF (rmod_len .EQ. 0.0D0)  rmod_len =
      .				       secsperyear/line_tunit(iline)
+	     new_att_modulo = .TRUE.
+	     new_att_modulo_len = rmod_len
 	  ENDIF
 	ENDIF
 * set modulo and sanity check it
@@ -1332,9 +1357,18 @@ C /units=months  is 1/12 of the length of the year
 	      CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .			replmsg//'axis '//line_name( old_line ), 0)
 
+* ... Check the attribute structure for this axis name and change 
+*     attribute values as needed.
+
+	      CALL REDEFINE_AX_ATT (line_name(old_line), new_att_units, 
+     .           new_att_t0, new_att_calendar, new_att_modulo,
+     .           new_att_modulo_len, line_direction(iline), 
+     .           line_regular(iline) )
+
 	      CALL PURGE_MR_AXIS( old_line, iline, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      CALL TM_DEALLO_DYN_LINE( old_line )
+
 	   ENDIF
 	ENDIF
 

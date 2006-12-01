@@ -46,22 +46,26 @@
 * V200:   6/9/89 - deleted variables flagged in mr_protected
 *	10/25/89 - moved memory-resident purging to PURGE_DSET
 * V411:  7/95 - Delete variables created with  LET/D=this_dset
+* V601  11/06 - Also need to delete LET/D= variables from the linked-
+*               list attribute structure.
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-	INCLUDE 'FERRET_CMN:XCONTEXT.CMN'
-#endif
+
 
 * calling argument declarations:
 	INTEGER	dset
 
 * local variable declarations:
-	INTEGER mr, ii
+	INTEGER TM_LENSTR, mr, ii, slen, flen, dset_uvars
+
+      PARAMETER (flen=128)      ! size of variable name string
+#ifdef sun
+      BYTE      fhol(flen)      ! c-type Hollerith string buffer
+#else
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
+#endif 
 
 * eliminate memory resident data
 	CALL PURGE_DSET( dset )
@@ -70,9 +74,22 @@
 	DO 100 ii = 1, max_uvar
 *	   IF (uvar_dset(ii) .EQ. dset) uvar_num_items(ii) =
 *     .					uvar_deleted
-	   IF (uvar_dset(ii) .EQ. dset) 
-     .        CALL deleted_list_modify(uvar_num_items_head, ii,
+	   IF (uvar_dset(ii) .EQ. dset) THEN
+              CALL deleted_list_modify(uvar_num_items_head, ii,
      .	            uvar_deleted)
+
+* Remove variable from linked-list structure, the user-variables dataset
+
+              slen = TM_LENSTR( uvar_name_code(ii)  )
+              IF (slen .GT. 0 .AND. uvar_name_code(ii)(1:3) .NE. 'EX#') THEN
+                 CALL TM_FTOC_STRNG( uvar_name_code(ii)(1:slen), fhol, flen )
+
+                 dset_uvars = -1
+                 CALL NCF_DELETE_VAR (dset_uvars, fhol )
+              ENDIF
+
+           ENDIF
+
  100	CONTINUE
 
 

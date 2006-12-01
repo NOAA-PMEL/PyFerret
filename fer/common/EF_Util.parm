@@ -20,6 +20,8 @@ c*				in external functions code.
 c*		   *kob* 1/02 - add in int_buff and size_ibuff to use for
 c*                              strings being converted from c to fortran
 c*                 *acm* 1/03 - Add float_return and string_return
+c*           V6.02 *acm*11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
+c*                              where an index value of -111 was confused with this flag
 
 	integer ef_c, ef_f, yes, no, x_axis, y_axis, z_axis,
      .  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9,
@@ -58,7 +60,7 @@ c*                 *acm* 1/03 - Add float_return and string_return
      .	ef_max_work_arrays=9, 
      .	ef_max_name_length=40, 
      .	ef_max_description = 128, 
-     .	ef_unspecified_int4 = -111,
+     .	ef_unspecified_int4 = -999,
      .  size_ibuff = 2048,
      .  float_return = 1,
      .  string_return = 2)

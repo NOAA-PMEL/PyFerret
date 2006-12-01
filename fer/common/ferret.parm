@@ -23,6 +23,8 @@
 *       *acm*10/02- Increase max_cx_predefined to 100: more user-defined regions.
 * V554 1/04 *acm* Add category cat_counter_var, and param alg_counter_var
 * V600 8/05 *acm* Add category cat_attrib_val, and param alg_attrib_val
+* V602 11/06 *acm* - Change unspecified_int4 to -999. Fixes bug 1463 where
+*                    where an index value of -111 was confused with this flag
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -69,7 +71,7 @@
      .		arbitrary_large_int4	=  2147483647, ! INT_MAX
      .		arbitrary_small_int4	= (-2147483647-1), ! INT_MIN
      .			ambiguous_val8		= -2.1E33,
-     .			unspecified_int4	= -111 ,
+     .			unspecified_int4	= -999 ,
      .			ambiguous_int4		= -8888 ,
      .			bad_val4		= -1.E34,
      .			unspecified_name4	= '&&&&',

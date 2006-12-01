@@ -13,6 +13,8 @@
 *                    due to the non-spherical earth
 * V600 *acm* 5/05    Attribute control: Add atom_not_found, must match the value 
 *                    in netcdf.h and ferret.parm.
+* V6.02 *acm*11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
+*                    where an index value of -111 was confused with this flag
 
 * Function return codes
 	INTEGER*4	str_match, atom_not_found
@@ -34,7 +36,7 @@
 	REAL*8		  unspecified_val8
 	INTEGER		  unspecified_int4
 	PARAMETER	( unspecified_val8	= -2E34)
-	PARAMETER	( unspecified_int4	= -111)
+	PARAMETER	( unspecified_int4	= -999)
 
 * pre-defined grids:.....
 * define "lines" (1 dimensional components of which grids are assembled)

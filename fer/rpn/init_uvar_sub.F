@@ -62,6 +62,8 @@
 * 1/03 *kob* g77 port - requires use of risc_buff for concats
 *            bug fix - reference to uvar_text was missing uvar reference 
 * V600  4/06 *acm* - additional declarations found by Solaris compiler     
+* V601 11/06 *acm* - add user variables always to dataset -1. Previously
+*                    variables defined with LET/D= were added to that dataset.
 
 	include 'ferret.parm'	
 	include 'errmsg.parm'	
@@ -176,8 +178,7 @@ c* copy title, units, dset, and missing flag into buffers
 
        type = 0
        IF (name(1:3) .NE. 'EX#' .AND. .NOT.child) THEN
-          dset_to_add = dset
-          IF (dset .LE. 0) dset_to_add = -1
+          dset_to_add = -1  ! user-variable dataset.
 
           err_string = title  ! save the value and restore below
           IF (TM_LENSTR(title) .LT. 1) title = uvar_text(uvar)

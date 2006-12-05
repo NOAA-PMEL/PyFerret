@@ -54,6 +54,8 @@
 * V600  4/06 *acm* - make refinement to cos(lat) factor as suggested by A. Wittenberg
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
+*12/06 - Fix to cos_factor calculation was STILL wrong. Try VEC/ASPECT plots 
+*        to see the error.
 
 * procedure:	at each point
 *	   x --> xprime = A * x
@@ -119,10 +121,17 @@
 * 3/06 - apply Andrew*s suggested correction, bug1348
 
 	   IF ( need_cos ) THEN
+
+c Previous calculation
+              cos_factor = COS( deg2rad *
+     .                     SNGL( TM_WORLD(j+j0,grid,y_dim,box_middle)) )
+  
+c Correction
               bx = BOX_SIZE(j+j0, grid, y_dim )
 	      yh_2 = 0.5*deg2rad * bx
               yc = deg2rad * SNGL(TM_WORLD(j+j0,grid,y_dim,box_middle))
-              cos_factor = COS(yc) * 2.*ABS( SIN(yh_2) )
+              cos_factor = cos_factor * ABS( SIN(yh_2) )/yh_2
+
               IF ( cos_factor .LT. 1.E-6 ) cos_factor = 1.E-6 !arbitrary fix /0
            ELSE
               cos_factor = 1.0

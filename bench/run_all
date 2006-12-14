@@ -54,7 +54,7 @@
 
 umask 002     #  make all files group deletable  3/16
 
-# corona has HOSTTYPE=sun, dread has HOSTTYPE=solaris
+# Solaris may have HOSTTYPE=sun, or HOSTTYPE=solaris
 if ( $HOSTTYPE =~ *sun* ) then
    if ( `uname -r` =~ *5*  ) then
       set machine = "sol"
@@ -71,14 +71,14 @@ else if ( $HOSTTYPE =~ *iris* ) then
    set machine = "sgi"
 else if ( $HOSTTYPE =~ *hp* ) then
    set machine = "hp"
-else if ( $HOSTTYPE =~ *ia64-linux*) then
+else if ( $HOSTTYPE =~ *ia64*) then
     set machine = "ia64-linux"
 else if ( $HOSTTYPE =~ *x86_64-linux*) then
     set machine = "x86_64-linux"
 else if ( $HOSTTYPE =~ *linux*) then
     set machine = "linux"
 else
-   set machine = "dec"
+   set machine = "unknown_host"
 endif
 
 echo "Enter the path (including filename) to the FERRET version of choice"
@@ -147,7 +147,7 @@ ln -s $machine_stream stream_data_link.unf
 
 #set up proper stream testing jnl file - depends on endianness
 rm -f bn_test_stream.jnl
-if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux") then
+if ($machine == "linux" || $machine == "alp" || $machine == "x86_64-linux" || $machine == "ia64-linux") then
     cp bn_test_stream_little.jnl bn_test_stream.jnl
 else
     cp bn_test_stream_big.jnl bn_test_stream.jnl

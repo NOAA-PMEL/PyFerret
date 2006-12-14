@@ -43,6 +43,10 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V600 6/05 *acm* Attribute control.
+* V601 11/06*acm* Instead of looking to see if the Ferret axis name and the
+*                 axis name in the attribute structure differ because Ferret
+*                 needed to rename an axis on file initialization for uniqueness;
+*                 we use the Ferret name throughout, restoring it only on output.
 
 	include	'ferret.parm'
 	include 'errmsg.parm'	
@@ -210,25 +214,30 @@
 * If this is a coord var and the name matched an existing different axis 
 * name on input, then Ferret appends a digit to the name. 
 
-        buff = varname
-
-        IF (status .NE. ferr_ok .AND. 
-     .      varname(1:1) .EQ. '('  .AND.
-     .      varname(vlen:vlen) .EQ. ')' ) THEN
+cc  ACM 11/2006 V6.01:  Instead, we will use the ferret internal axis names 
+cc  everywhere, except on output, where we will get the original axis name 
+cc  from the attribute orig_file_axname, which is created when needed on 
+cc  dataset initialization...
+cc
+c        buff = varname
+c
+c        IF (status .NE. ferr_ok .AND. 
+c     .      varname(1:1) .EQ. '('  .AND.
+c     .      varname(vlen:vlen) .EQ. ')' ) THEN
 
 * test that only extra digits were added
-            DO 80 ic = vlen, 1, -1
-	       c = varname(ic:ic)
-	       IF (  c .LT. '0' .OR. c .GT. '9' ) GOTO 90
-
-* axis names must be enclosed in parentheses to get a varid returned from cd_get_var_id
-               buff = varname(1:ic-1)//')'
-               CALL CD_GET_VAR_ID (dset, buff, varid, status)
-
-               IF (varid .GT. 0) GOTO 90
-
- 80	    CONTINUE
-        ENDIF
+c            DO 80 ic = vlen, 1, -1
+c	       c = varname(ic:ic)
+c	       IF (  c .LT. '0' .OR. c .GT. '9' ) GOTO 90
+c
+c* axis names must be enclosed in parentheses to get a varid returned from cd_get_var_id
+c               buff = varname(1:ic-1)//')'
+c               CALL CD_GET_VAR_ID (dset, buff, varid, status)
+c
+c               IF (varid .GT. 0) GOTO 90
+c
+c 80	    CONTINUE
+c        ENDIF
 
         IF (status .NE. ferr_ok .AND. 
      .      (STR_SAME(varname(:vlen), '.') .NE. 0) ) THEN

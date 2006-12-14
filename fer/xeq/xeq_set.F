@@ -138,7 +138,6 @@
 *                 overflow in setting reconfig, so it looks like a negative number of words 
 *                 requested. This should result in an error message.
 
-
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
         include 'implicit.parm'
@@ -1099,8 +1098,15 @@ c *kob* 4/97
                ENDIF
            GOTO 6001        
  6199      CONTINUE
+       ENDIF
 
-        ENDIF
+* ... Check the attribute structure for this axis name and change 
+*     attribute values as needed.
+
+       CALL RESET_AX_ATT (line_name(axis), new_att_units, 
+     .           new_att_t0, new_att_calendar, new_att_modulo,
+     .           new_att_modulo_len, line_direction(iline), 
+     .           line_regular(iline) )
 
 * ... Check the attribute structure for this axis name and change 
 *     attribute values as needed.
@@ -1494,4 +1500,5 @@ c     .					* max_mem_blks*100
      .   'SET ATT/OUT=[all or none] varname should NOT '//
      .   'include attribute. '//
      .    buff1(:slen), *5000 )
+
 	END

@@ -118,7 +118,7 @@
 * V600 *acm* 10/05 CANCEL ATTRIBUTE[/ALL][/OUTPUT] varname.attname
 * V600 *acm* 5/06 MODE LINECOLORS User can change the number of line colors.
 * V600 *acm* 6/06 additional declarations found by Solaris compiler
-*      *jli* 7/06 added CANCEL AXIS/STRIDE
+* V602 *jli* 7/06 added CANCEL AXIS/STRIDE
 * V601 *acm*11/06 Fix bug 1470: on a CANCEL AXIS/MODULO or CANCEL AXIS/DEPTH, change
 *                 values in the attribute structure for the axis.
 

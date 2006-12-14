@@ -13,7 +13,7 @@
 *                    due to the non-spherical earth
 * V600 *acm* 5/05    Attribute control: Add atom_not_found, must match the value 
 *                    in netcdf.h and ferret.parm.
-* V6.02 *acm*11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
+* V602 *acm* 11/06 - Change unspecified_int4 to -999. Fixes bug 1463 where
 *                    where an index value of -111 was confused with this flag
 
 * Function return codes

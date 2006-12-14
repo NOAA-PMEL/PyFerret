@@ -59,7 +59,8 @@
 * V581 *acm* 5/05  fix bug 1249: /KEY=CONT. Need to use EQUAL_STR to get the
 *                  argument to /KEY, then compare to see if it equals uppercase 'CON'
 * V600 *acm* 5/06  with MODE LINECOLORS, number of lines not limited to num_fancy_lines
-
+* V602 *acm* 11/06 Fix bug 1472: Where single-level color plot is requested, use levels (1) 
+*                  setting rather than sending the data value; avoids precision problems.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -80,6 +81,8 @@
         include 'PARAMPL5.DAT'
         include 'lines_inc.decl'
         include 'LINES.INC'
+        include 'cont_inc.decl' ! with iautoc and nlev
+        include 'CONT.INC'
 
 	
 * calling argument declarations:
@@ -103,7 +106,7 @@
 * internal parameter declarations
 	INTEGER ncolors
 	PARAMETER (ncolors = 6)
-        LOGICAL cont_key
+        LOGICAL continuous_key
 
 * set up the graphics environment and get the data
 	CALL START_PPLUS
@@ -258,9 +261,18 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 * But, do not let this be rounded off, or we cannot find the color when matching 
 * this value in get_ndx, called by fillpol
 
-	IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
-     .          CALL PPLCMD ( from, line, 0, 
-     .          'LEV () ('//TM_FMT(only_val, 8, 20, slen)//')' , 1, 1 )
+* The initial fix below had precision problems when the value in only_val was
+* of high precision, sometimes causing polygons to go unfilled (bug 1472).  
+* Instead, make a ppl lev 1 setting, as is done in disp_prep.F
+
+c     IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 )
+c    .          CALL PPLCMD ( from, line, 0, 
+c    .          'LEV () ('//TM_FMT(only_val, 8, 20, slen)//')' , 1, 1 )
+
+      IF ( no_range .AND. qual_given( slash_shad_lev_same ) .EQ. 0 ) THEN
+           iautoc = 1  
+c           nlev = 1   
+      ENDIF
 
 * default key
 
@@ -279,7 +291,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
      .                        buff, status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
 	         IF ( buff(1:3) .EQ. 'CON' ) THEN
-                    cont_key = .TRUE.
+                    continuous_key = .TRUE.
                     CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
                  ENDIF
               ENDIF
@@ -393,7 +405,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 	IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
 
 * restore default (non-continuous) key style?
-        IF (cont_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
+        IF (continuous_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )
 
 * interrupt occurred during plot ?
 	IF ( ppl_interrupted ) GOTO 1000

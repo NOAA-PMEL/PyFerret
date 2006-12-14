@@ -56,3 +56,43 @@ GO err600_upcase.jnl
 ! structure fail, and the list of variable names was incorrect.
 GO bn_reset
 GO err600_let_d.jnl
+
+! err600_nc_des_order.jnl
+! Bug 1459 order of multiple descriptor file opening causes netCDF error
+GO bn_reset
+GO err600_nc_des_order.jnl
+
+! Bug 1470; redefine or reset attributes of an axis
+! should change the axis definition and its attributes
+! in the attribute structure.
+GO bn_reset
+GO err600_reset_redefine_axis.jnl
+
+! err600_ferret_axis_names.jnl
+! If Ferret needed to rename an axis on file initialization for uniqueness,
+! we now keep that new name in the attr structure, and an attribute 
+! orig_file_axname keeps the input name. 
+GO bn_reset
+GO err600_ferret_axis_names.jnl
+
+! err600_tab_comma_missingdat.jnl
+! when data contains missing values list/format=comma or list/format=tab
+! should output a comma or tab as placeholder for the missing value
+GO bn_reset
+GO err600_tab_comma_missingdat.jnl
+
+! err600_vec_aspect.jnl
+! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
+GO bn_reset
+GO err600_vec_aspect.jnl
+
+! err600_save_two.jnl 
+! Bug 1478: save two variables with the same time axis to a file, error
+! when checking whether 2nd variable has same grid.
+GO bn_reset
+GO err600_save_two.jnl 
+
+! err600_nc_des_order.jnl
+! Bug 1459 order of multiple descriptor file opening causes netCDF error
+GO bn_reset
+GO err600_nc_des_order.jnl

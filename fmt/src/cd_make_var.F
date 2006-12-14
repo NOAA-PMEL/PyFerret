@@ -63,6 +63,9 @@
 * V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
 * V600 *acm* 6/06 - New MODE upcase_output controls whether axis names and variable in
 *                   names are upcased cdf output.
+* V601 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
+*                    output axis name.
+* V602 *acm*12/06 - Bug 1478: cd_isit_recdim needs mode_upcase_output.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -108,7 +111,7 @@
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
 * acm* vname to 128
-      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, lname*128,
+      CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, lname*128,
      .		cdfname*128, vname*128, gname*64, buff*128
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
@@ -162,7 +165,8 @@
 * if the time axis of this variable has already been created IT will 
 * determine whether this variable uses the record dimension.  The request
 * from the user will be over-ruled
-      what_recdim = CD_ISIT_RECDIM( cdfid, dset, grid, t_dim, status )
+      what_recdim = CD_ISIT_RECDIM( cdfid, dset, grid, t_dim, 
+     .               mode_upcase_output, status )
       IF ( what_recdim .EQ. pcdf_yes ) THEN
          recdim = t_dim
       ELSEIF ( what_recdim .EQ. pcdf_no ) THEN
@@ -247,7 +251,7 @@
 
       DO 300 idim = 1, 4
          iaxis = grid_line(idim,grid)
-         buff = CD_AXIS_NAME( dset, grid, idim, nlen )
+         buff = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
          lname = buff
          IF (mode_upcase_output) CALL STR_UPCASE( lname, buff)
 

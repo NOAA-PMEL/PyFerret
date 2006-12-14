@@ -1,5 +1,5 @@
 	INTEGER FUNCTION CD_ISIT_RECDIM( cdfid, dset, grid, idim,
-     .     status )
+     .     mode_upcase_output, status )
 
 *
 *
@@ -47,6 +47,7 @@
 * V500 *kob* 3/99 - up lengths of CD_AXIS_NAME and name to correspond w/ 
 *                   longer line_name
 * V600 *acm* 6/05 - Attribute control. Get information from linked-list structure.
+* V602 *acm*12/06 - Bug 1478: Correct the treatment of uppercasing names.
 
 * argument definitions:
 *       dset    - dset (if netcdf file, for getting name and attribute 
@@ -66,27 +67,25 @@
         include 'cd_lib.parm'
 
 * local variable declarations:
-      LOGICAL this_ax_exists, recax_exists, coordvar
+      LOGICAL this_ax_exists, recax_exists, coordvar, mode_upcase_output
       INTEGER ndims, nvars, ngatts, recdim, cdfstat, nlen, dimid,
      .        varid, vartype, nvdims, vdims(8), nvatts, all_outflag
-      CHARACTER CD_AXIS_NAME*64, name*64
-      EXTERNAL CD_AXIS_NAME
+      CHARACTER CD_AXIS_OUTNAME*128, name*128, name_in*128
 
 * get the axis name
-        name = CD_AXIS_NAME( dset, grid, idim, nlen )
-        
+        name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
 
-* Get information, if it exists, from linked-list structure, including
-* original upper/lowercase form of axis name. (note can check for
-*   coordinate and record axis from the structure too...)
+* If mode upcase_output is set, then the axis name
+* has been written to the file upcased.
 
-      CALL CD_GET_VAR_ID (dset, name, varid, status)
-      IF (status .EQ. merr_ok) CALL CD_GET_VAR_INFO (dset, varid,
-     .   name, vartype,  nvdims, vdims, nvatts, coordvar, 
-     .   all_outflag, status)  
+         IF (mode_upcase_output) THEN
+            name_in = name
+            CALL STR_UPCASE( name, name_in)
+         ENDIF
 
 * is there a dimension by this name?
         dimid = NCDID( cdfid, name(:nlen), cdfstat )
+
         this_ax_exists = cdfstat .EQ. NCNOERR
 
 * get vital statistics of file

@@ -143,11 +143,15 @@
 !* close the netCDF file
 ! 5/98 *kob* - reset sf_lunit as well
 ! 10/06 *acm*  bug 1459 sf_lunit of the correct stepfile...
+! 11/06 *acm   no... It turns out that sf_lunit is set in cd_load_dset_attrs 
+!              only if the dataset is NOT a mc dataset; it's a "place-holder" 
+!              setting for single-file datasets. sf_lunit should NOT be reset
+!              here for mc datasets at all.
 
       IF (STR_SAME(ds_type(dset), '  MC') .EQ. 0) THEN
         CALL NCCLOS( cdfid, istat )
 c	sf_lunit(dset) = file_not_open
-        sf_lunit( cd_stepfile(dset) ) = file_not_open
+c        sf_lunit( cd_stepfile(dset) ) = file_not_open
       ENDIF
 * successful completion
       status = merr_ok

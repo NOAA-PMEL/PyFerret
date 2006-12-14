@@ -51,6 +51,7 @@
 					  terminator for the string. Also double check the string length
 					  that is returned from the call to nc_inq_att, and make sure
 					  we allocate the correct amount of memory for the string.*/
+
 /* *acm  11/06 v601 - ncf_delete_var_att didnt reset the attribute id's.  Fix this. */
 
 /* *acm  11/06 v601 - new routine ncf_add_var_num_att_dp */
@@ -59,6 +60,7 @@
                       to history, and define its attribute type and outflag.*/
 /* *acm  11/06 v601 - new routine ncf_rename_var, for fix of bug 1471 */
 /* *acm  11/06 v601 - in ncf_delete_var_att, renumber the attid for the remaining attributes. */
+/* *acm* 12/06 v602 - new attribute assigned to coordinate vars on input, orig_file_axname */
 
 #include <wchar.h>
 #include <unistd.h>		/* for convenience */
@@ -1295,45 +1297,45 @@ int FORTRAN(ncf_add_dset)(int *ncid, int *setnum, char name[], char path[])
 /*                    /* If this is a coordinate variable, add an attribute orig_file_axname which 
 /*				          contains the axis name, and is used to preserve the original name if 
 /*						  Ferret detects a duplicate axis name and changes the axis name.*/
-/*					if (var.is_axis)
-/*					{
-/*
-/*
-/*						/* initialize
-/*									 att = att0; */
-/*								
-/*						var.natts = var.natts + 1;
-/*						strcpy (att.name, "orig_file_axname");
-/*						att.attid = ia+1;
-/*						att.type = NC_CHAR;
-/*						att.len = strlen(var.name);
-/*						att.string = (char *) malloc((att.len+1)*sizeof(char));
-/*
-/*						strcpy (att.string,var.name);
-/*		                                
-/*						/* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
-/*						att.string[att.len] = '\0';
-/*											
-/*						att.vals = (double *) malloc(1 * sizeof(double));
-/*						att.vals[0] = 0;
-/*								
-/*						/* Output flag always false for this attribute */
-/*						att.outflag = -1;
-/*	
-/*						/*Save attribute in linked list of attributes for this variable */	
-/*						if (!var.attrs_list_initialized) 
-/*							{
-/*							if ( (var.varattlist = list_init()) == NULL ) 
-/*								{
-/*								fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
-/*								return_val = -1;
-/*								return return_val; 
-/*								}
-/*							var.attrs_list_initialized = TRUE;
-/*							}
-/*								
-/*							list_insert_after(var.varattlist, &att, sizeof(ncatt));
-/*					}
+					if (var.is_axis)
+					{
+
+
+						/* initialize
+									 att = att0; */
+								
+						var.natts = var.natts + 1;
+						strcpy (att.name, "orig_file_axname");
+						att.attid = ia+1;
+						att.type = NC_CHAR;
+						att.len = strlen(var.name);
+						att.string = (char *) malloc((att.len+1)*sizeof(char));
+
+						strcpy (att.string,var.name);
+		                                
+						/* Ensure end-of-string delimiter because Netcdf API doesn't store automatically; it's up to the file's author. */
+						att.string[att.len] = '\0';
+											
+						att.vals = (double *) malloc(1 * sizeof(double));
+						att.vals[0] = 0;
+								
+						/* Output flag always false for this attribute */
+						att.outflag = -1;
+	
+						/*Save attribute in linked list of attributes for this variable */	
+						if (!var.attrs_list_initialized) 
+							{
+							if ( (var.varattlist = list_init()) == NULL ) 
+								{
+								fprintf(stderr, "ERROR: ncf_add_dset: Unable to initialize variable attributes list.\n");
+								return_val = -1;
+								return return_val; 
+								}
+							var.attrs_list_initialized = TRUE;
+							}
+								
+							list_insert_after(var.varattlist, &att, sizeof(ncatt));
+					}
 
 				/*Save variable in linked list of variables for this dataset */	
 				if (!nc.vars_list_initialized) {

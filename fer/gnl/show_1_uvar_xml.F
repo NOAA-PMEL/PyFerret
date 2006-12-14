@@ -39,8 +39,9 @@
 * 20-Oct-2004 acm  from show_1_uvar.F
 *  7-Feb-2005 acm  (bug 1165) fix string vars so they are output with 
 *                  surrounding &quot;
+* V602 12/06 *acm* remove extra call to GRID_FROM_NAME_XML
 
-	include 'tmap_dims.parm'
+        include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include	'ferret.parm'
@@ -140,9 +141,6 @@
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * ... grid
-
-        grid= GRID_FROM_NAME_XML(vname, cx_last, cx_expr, 
-     .       status)
 
         IF (grid .NE. unspecified_int4) 
      .          CALL SHOW_GRID_XML (lun, grid, cx_expr)

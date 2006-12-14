@@ -43,6 +43,10 @@
 * revision 0.0 - 6/92
 * V4.20  11/95 - remove parentheses surrounding dynamic axis names
 * V600  *acm* 6/05 Attribute control. Get information from linked-list structure.
+* V602 11/06*acm* Instead of looking to see if the Ferret axis name and the
+*                 axis name in the attribute structure differ because Ferret
+*                 needed to rename an axis on file initialization for uniqueness;
+*                 we use the Ferret name throughout, restoring it only on output.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -86,29 +90,7 @@
       CALL CD_GET_VAR_ID (dset, CD_AXIS_NAME, varid, status)  ! is it in the linked-list for dset
 
       IF (status .NE. merr_ok) THEN
-         IF (line_fixname (iaxis) ) THEN
-            llen = TM_LENSTR1(CD_AXIS_NAME)
-* test that only extra digits were added
-            DO 90 ic = llen, 1, -1
-	       c = CD_AXIS_NAME(ic:ic)
-	       IF (  c .LT. '0' .OR. c .GT. '9' ) GOTO 100
-
-* axis names must be enclosed in parentheses to get a varid returned from cd_get_var_id
-               buff = '('//CD_AXIS_NAME(1:ic-1)//')'
-               CALL CD_GET_VAR_ID (dset, buff, varid, status)
-
-               IF (varid .GT. 0) THEN
-* Remove the digit and get axis name into original upper/lowercase form.
-                  CD_AXIS_NAME(ic:llen) = ' '
-                  CALL CD_GET_VAR_INFO (dset, varid, CD_AXIS_NAME, 
-     .               vartype, nvdims, vdims, nvatts, coordvar, 
-     .               all_outflag,status) 
-                  GOTO 100
-
-               ENDIF
-
- 90	    CONTINUE
-         ENDIF
+         nlen = TM_LENSTR1( CD_AXIS_NAME )
 
       ELSE
 

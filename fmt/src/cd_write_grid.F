@@ -50,6 +50,8 @@
 * v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    lname to 64 from 24 to match longer line_name
 * v570 *acm*  6/04 - changes to use bounds attribute
+* V602 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
+*                    output axis name.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -84,7 +86,7 @@
      .        defid, defdim, nlen, slen, cdfstat, iaxis, idim, glen, i
 * *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    lname to 64 from 24 to match longer line_name
-      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
+      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_OUTNAME*64,
      .		names*132, lname*64
       CHARACTER*1 ww_dim_name(4)
       DATA ww_dim_name/'X', 'Y', 'Z', 'T'/
@@ -117,7 +119,7 @@
       DO 50 idim = 1, 4
          iaxis = grid_line(idim, grid)
 
-         lname = CD_AXIS_NAME(dset, grid, idim, slen)
+         lname = CD_AXIS_OUTNAME(dset, grid, idim, slen)
          IF ( iaxis .EQ. mpsnorm ) THEN
             names = names(:nlen)//' '//'NORMAL'
          ELSEIF ( lo(idim) .EQ. unspecified_int4 ) THEN

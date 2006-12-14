@@ -59,6 +59,8 @@
 * V601 *acm* 10/06 Fix bug 1461: bounds variable was created for output in cd_write_axis
 *                  with an upcased variable name, e.g. TIME_bnds. Here we need to upcase
 *                  as well when finding bndid (if mode upcase_output is set).
+* V602 *acm* 11/06 - Fix bug 1471; new routine CD_AXIS_OUTNAME gets correct 
+*                    output axis name.
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -114,7 +116,7 @@
       REAL*8 TM_WORLD
       
       INTEGER bndid, nlen, elen, reset
-      CHARACTER name*128, buff*128, CD_AXIS_NAME*128
+      CHARACTER name*128, buff*128, CD_AXIS_OUTNAME*128
 
       REAL*4 r100_4(200)
       REAL*8 new_box_lo, old_box_hi, reset_bnd_lo, missflag
@@ -328,7 +330,7 @@ c      EQUIVALENCE (r100_8, r100_4)
          IF ( (.NOT.line_regular(iaxis) .OR. do_bounds) 
      .         .AND. (edges_flag .EQ. 0) ) THEN
 
-            name = CD_AXIS_NAME( dset, grid, tmrecax, nlen )
+            name = CD_AXIS_OUTNAME( dset, grid, tmrecax, nlen )
 
 * If mode upcase_output is set, then upcase axis name.
 

@@ -521,11 +521,14 @@ GO bn_reset
 GO bn600_bug_fixes.jnl
 
 ! ******** V6.01 Additions below ***********
+GO bn_reset
 GO bn601_bug_fixes.jnl
 
 ! ******** V6.02 Additions below ***********
+GO bn_reset
 GO bn_set_strides.jnl
 
+GO bn_reset
 GO bn602_bug_fixes
 
 ! version 2.3 requires exit/command *sh* 3/92

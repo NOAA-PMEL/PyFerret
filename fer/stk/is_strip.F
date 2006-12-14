@@ -68,6 +68,7 @@
 * V533: *sh* 6/01 - support for combined netCDF strides (cx_delta) and modulo
 * V541: *sh* 2/02 - support for modulo axis lengtha
 * 560: *acm* 4/04 - stride/modulo fixes: use NINT to convert REAL*8 to integer
+* V602  8/06 *jli* chages for native strides 
 
 * calling argument declarations:
 	INTEGER	act_class, idim, status

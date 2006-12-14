@@ -45,6 +45,7 @@
 *	handling of the limits
 * V541: 2/02 *sh* - bug fix -- 6/01 changes in the handling of delta strides
 *			(see read_tm.F) were not propagated to this routine
+* V602  8/06 *jli* chages for native strides 
 
 	include	'ferret.parm'
 	include	'errmsg.parm'

@@ -52,6 +52,7 @@
 * V533: 6/01 - *sh* initialize string input variable
 * v552: 4/03 - *acm* up VAR_CODE and local var variable_code to 128 chars
 * V556  4/04 - *acm* stride/modulo fixes: use NINT to convert REAL*8 to integer
+* v602  8/06 - *jli* native strides  replace cx_delta logic by the line_delta
 
 	include	'tmap_errors.parm'
 	include	'tmap_dims.parm'

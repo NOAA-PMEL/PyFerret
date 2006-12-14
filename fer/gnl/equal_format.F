@@ -52,7 +52,7 @@
 * V420:  9/95 - added /FORMAT=COMMA-DELIMITED and /FORMAT=TAB-DELIMITED
 * V450: 11/96 - added /FORMAT=CACHE for DODS caching
 * V554   9/03 *acm* - add output in /DODS binary format
-
+* V602 *jli* 8/06 - add plist_xml
 
 * calling argument declarations
 	INTEGER		status

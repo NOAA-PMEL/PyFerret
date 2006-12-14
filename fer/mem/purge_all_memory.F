@@ -41,14 +41,10 @@
 * written for VAX computer under VMS operating system
 *
 * JLI: 7/18/06 - based on PURGE_DSET.F
+*                called by xeq_set.F for native strides 
 
-#ifdef unix
 	include	'ferret.parm'
 	include 'xvariables.cmn'
-#else
-	INCLUDE	'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:XVARIABLES.CMN'
-#endif
 
 * local variable declarations:
 	INTEGER mr

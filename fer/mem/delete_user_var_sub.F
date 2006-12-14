@@ -62,7 +62,8 @@
 * V600  4/06 *acm* - remove deleted variable defs from the linked-list structure
 *                    that does attribute handling
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
-
+* V602 12/06 *acm* - When removeing var from the user-variables dataset in
+*                    linked-list structure, no need to check for  EX# expressions
 
 	include 'tmap_dims.parm'
         include 'xtm_grid.cmn_text'

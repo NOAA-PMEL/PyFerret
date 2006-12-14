@@ -57,7 +57,7 @@
 *		declaration line.
 * v4.91 *kob* 12/97 - added maxchildlen paramater for the max length of 
 *                     a child axis
-* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,,
+* v500 *kob*  3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
 * V530 *sh* 12/00 - avoid performance problems of switching between netCDF
 *	DEFINE and DATA mode by deferring actual coordinate writes until later
@@ -71,6 +71,8 @@
 * V600 *acm* 6/06 attribute control.
 * V601 *acm* 9/06 Fix bug 1440: Remove stray "IF (attid .GT. 0) " before call to 
 *                 CD_GET_VAR_ATT_INFO just after DO 200
+* V602 *acm*11/06 Fix bug 1471; new routine CD_AXIS_OUTNAME
+* V602 *acm*12/06 Correct the setting of got_calendar 
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -127,7 +129,7 @@
 * *kob* 3/99 - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME,
 *                    name to 64 from 24 to match longer line_name
 * *acm* 6/06 - change axis name lengths to 128
-      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_NAME*64,
+      CHARACTER CD_CHILDAX_NAME*64, CD_AXIS_OUTNAME*64,
      .       name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, attname*128
 
@@ -138,7 +140,7 @@
 
 * initialize
       iaxis = grid_line(idim, grid)
-      name = CD_AXIS_NAME( dset, grid, idim, nlen )
+      name = CD_AXIS_OUTNAME( dset, grid, idim, nlen )
 
       name_in = name
 
@@ -181,6 +183,7 @@
       IF ( cdfstat .EQ. NCNOERR ) THEN
 * ... is there a coordinate variable by the same name ?
          axid = NCVID( cdfid, name(:nlen), cdfstat )
+
          IF ( cdfstat .NE. NCNOERR ) GOTO 5300
          IF ( .NOT.recdim ) THEN
 * ... check the length
@@ -218,7 +221,6 @@
 * create the coordinate variable (12/92 -> double precision)
       axid = NCVDEF(cdfid, name(:nlen), NCDOUBLE, 1, dimid, cdfstat)
       IF ( cdfstat .NE. NCNOERR ) GOTO 5200
-
 
 * check: can we get the coord var id back??
          newid = NCVID( cdfid, name(:nlen), cdfstat )
@@ -284,7 +286,7 @@
      .                got_units = .TRUE.
             IF (MATCH_NAME (attname,  slen, 'CALENDAR', 8 ) .AND. 
      .          attoutflag .EQ. 1)
-     .                got_units = .TRUE.
+     .                got_calendar = .TRUE.
             IF (MATCH_NAME (attname,  slen, 'MODULO', 6 ) .AND. 
      .          attoutflag .EQ. 1)
      .                got_modulo = .TRUE.
@@ -303,6 +305,11 @@
 
  200     CONTINUE
       ENDIF
+
+* write modulo, point_spacing etc as attributes if they exist in Ferret 
+* variables line_modulo etc. This is consistent with previous Ferret behavior.
+
+      attoutflag = 1  
 
       IF ( line_units(iaxis) .NE. ' ' .AND. (.NOT.got_units) ) THEN
 	 units = line_units(iaxis)	 

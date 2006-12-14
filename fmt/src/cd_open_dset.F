@@ -114,7 +114,7 @@
       REAL val
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME,
      .        ndims, nvars, ngatts, recdim, cdfstat, i, istep
-      INTEGER flen, iin, iout, ilast, dlen, len
+      INTEGER flen, iin, iout, ilast, dlen
       CHARACTER ch*1
 * *kob* 4/99
 * *kob* 11/00 - increase size of below to accomidate DODS files in mc sets

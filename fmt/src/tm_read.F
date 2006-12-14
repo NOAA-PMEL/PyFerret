@@ -61,6 +61,7 @@
 * V500 4/99 *kob*: increase upcase_var 24 --> 64 chars matching passed vname
 *      5/99 *sh* - added strides to CD_READ call
 * V552 5/03 *acm*: increase size of upcase_var from 64 to 128 chars
+* V602 9/06 *jli*  Changes for native strides
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)

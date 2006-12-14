@@ -54,6 +54,14 @@
 * V552 *acm* 5/03   increase vname and buff to 128 chars 
 * V600 *ACM* attribute control. 
 *             Replace NCDINQ with CD_GET_DS_DIMS
+* V601 *acm* 11/06 If there is a new axis name, save the original axis name of 
+*                  the axis as an attribute of the coordinate variable in the 
+*                  linked-list attribute structure, and change the axis name itself
+*                  in the attribute structure.
+* V602 *acm* 12/06 When replacing or resetting an axis, test for the existence of
+*                  the attribute orig_file_axname. If it already exists, call the
+*                  routine to replace the attribute rather than trying to add a new
+*                  attribute.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -71,6 +79,8 @@
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
         include 'xdset_info.cmn_text'
+        include 'netcdf.decl'
+#include "netcdf.inc"
 
 
 * argument declarations
@@ -83,14 +93,17 @@
       PARAMETER ( max_grd_per_cdf = 40 )
 
 * local variable declarations:
-      LOGICAL TM_SAME_GRID_DEF,
+      LOGICAL TM_SAME_GRID_DEF, 
      .        dup_name, dup_guts
-      INTEGER  TM_GET_LINEMATCH,  TM_GET_LINENUM, TM_GET_GRIDNUM,
+      INTEGER TM_GET_LINEMATCH,  TM_GET_LINENUM, TM_GET_GRIDNUM, 
+     .        TM_LENSTR1, STR_SAME,
      .        igrid, iaxis, count, idim, i_dup, ivar,
-     .        npts, istat,  reused(max_lines:line_ceiling)
+     .        npts, istat,  reused(max_lines:line_ceiling),
+     .        varid, attid, attype, attlen, attoutflag, len 
 * upped vname to 64 - also removed the *24 from the CHARACTER
 * upped vname to 128 
-      CHARACTER vname*128, buff*128
+      CHARACTER vname*128, buff*128, attname*128
+      REAL dummy
 
 ***** AXES ******
 * check for duplicate name / guts of axes
@@ -176,14 +189,65 @@
 
 * destroy any axis names that are duplicates both in name and defn
 * make unique any axis names that are duplicates but with new guts
+
+* If there is a new name, save the original axis name of the axis as an
+* attribute of the coordinate variable in the linked-list attribute structure,
+* and change the axis name itself.
+
  301	iaxis = 0		! to get start of linked list
  400	CALL TM_NEXT_TMP_LINE( iaxis, *402)
+          vname = line_name(iaxis)
+          len = TM_LENSTR1(vname)
+          CALL CD_GET_VAR_ID (dset, vname, varid, status)
+
 	  IF ( reused(iaxis) .NE. unspecified_int4 ) THEN
 	    line_name(iaxis) = char_init16   ! destroy new duplicate defn
 	    line_fixname(iaxis) = .FALSE.  
+            
+            buff = line_name(reused(iaxis))
+
+            IF (status .EQ. merr_ok .AND. 
+     .          STR_SAME(vname, buff) .NE. 0) THEN
+               CALL CD_RENAME_VAR (dset, varid, buff, status)
+               
+* Replace or add the orig_file_axname attribute
+               attname = 'orig_file_axname'
+               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .              status)
+               IF (attid .GT. 0) THEN 
+                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, attname,
+     .               attype, attlen, attoutflag, status)
+                  CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+     .               len, vname, dummy, status)
+               ELSE
+                  CALL CD_PUT_NEW_ATTR (dset, varid, 'orig_file_axname',
+     .               NCCHAR, len, -1, vname, dummy, status)
+               ENDIF
+            ENDIF
+
           ELSEIF ( line_fixname(iaxis) ) THEN
             CALL TM_NEW_LINE_NAME( line_name(iaxis), buff )
             line_name(iaxis) = buff
+
+            IF (status .EQ. merr_ok .AND. 
+     .          STR_SAME(vname, buff) .NE. 0) THEN
+               CALL CD_RENAME_VAR (dset, varid, buff, status)
+
+* Replace or add the orig_file_axname attribute
+               attname = 'orig_file_axname'
+               CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
+     .              status)
+               IF (attid .GT. 0) THEN 
+                  CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, attname,
+     .               attype, attlen, attoutflag, status)
+                  CALL CD_REPLACE_ATTR (dset, varid, attname, NCCHAR, 
+     .               len, vname, dummy, status)
+               ELSE
+                  CALL CD_PUT_NEW_ATTR (dset, varid, 'orig_file_axname',
+     .                NCCHAR, len, -1, vname, dummy, status)
+               ENDIF
+            ENDIF
+
           ENDIF
 	GOTO 400	! like  400    CONTINUE
 

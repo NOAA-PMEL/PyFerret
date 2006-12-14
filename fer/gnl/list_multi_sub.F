@@ -70,6 +70,9 @@
 *                    start each row labelling the coordinate values. (bug 1273)
 * V600: *acm* 8/05 - fix bug 1313; reinitialize list_buffer after heading of 
 *                    variable names on columns, before listing data
+* V602: *acm 11/06 - fix bug 1451 when list/form=comma or /format=tab,
+*                    and there is missing data, output a comma or tab
+*                    placeholder for the missing values
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -634,6 +637,10 @@
 	        ENDIF
 	        IF ( out(ivar) .EQ. bad(ivar) ) THEN
 	           WRITE(line_buff(w0+1:w),bad_fmt(ivar)) '....'
+                   IF (do_comma_del .OR. do_tab_del) THEN
+                      line_buff(w0+1:w0+1) = tab_or_COMMA
+                      IF (ivar .LT. num_uvars_in_cmnd) ww = ww+1
+                   ENDIF
 	        ELSE
                    IF (do_comma_del .OR. do_tab_del) THEN
 * ... tab or comma formatting

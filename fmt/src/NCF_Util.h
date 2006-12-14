@@ -80,11 +80,11 @@ typedef struct  {			/* dimension */
 
 typedef struct  {
 	char fullpath[MAX_PATH_NAME];
-    char fername[MAX_FER_SETNAME];
+	char fername[MAX_FER_SETNAME];
 	LIST *dsetvarlist;
-    ncdim dims[NC_MAX_DIMS];
+	ncdim dims[NC_MAX_DIMS];
 	int ndims;
-    int ngatts;
+	int ngatts;
 	int recdim;
 	int nvars;
 	int vars_list_initialized;
@@ -94,36 +94,36 @@ typedef struct  {
 } ncdset;
 
 typedef struct  {          /* variable */
-    char name[NC_MAX_NAME];
+	char name[NC_MAX_NAME];
 	LIST *varattlist;
 	nc_type type;
 	int outtype;
-    int ndims;
-    int dims[MAX_VAR_DIMS];
-    int natts;
+	int ndims;
+	int dims[MAX_VAR_DIMS];
+	int natts;
 	int varid;
 	int is_axis;           /* coordinate variable */
 	int axis_dir;          /* coordinate direction 1,2,3,4 for X,Y,Z,T */
-    int has_fillval;
+	int has_fillval;
 	int all_outflag;       /* 0 write no attrs, 
 	                          1 check individual attr flags
-							  2 write all attrs,
+	                          2 write all attrs,
 	                          3 reset attr flags to Ferret defaults
                            */
-    double fillval;
+	double fillval;
 	int attrs_list_initialized;
 } ncvar;
 
 typedef struct {			/* attribute */
-    char name[NC_MAX_NAME];
-    nc_type type;
-    int outtype;
+	char name[NC_MAX_NAME];
+	nc_type type;
+	int outtype;
 	int attid;
 	int outflag;        /* 1 to write this attr, 0 to not write */
-    size_t len;
+	size_t len;
 	void *inval;        /* for inputting attributes of all types*/
-    char *string;       /* for text attributes (type = NC_CHAR) */
-    double *vals;       /* for numeric attributes of all types */
+	char *string;       /* for text attributes (type = NC_CHAR) */
+	double *vals;       /* for numeric attributes of all types */
 } ncatt;
 
 

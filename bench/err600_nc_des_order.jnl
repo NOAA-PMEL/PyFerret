@@ -1,0 +1,22 @@
+! err600_nc_des_order.jnl
+! 11/07/2006 ACM
+!
+! Bug 1459 order of multiple descriptor file opening causes netCDF error
+! The bug results in:
+!  ** netCDF error: NCSYSERR
+! Due to incorrect resetting of sf_lunit in cd_init_dset.F
+
+set data tok_short.des
+set data ss_small.nc
+set data mc_test.des
+set data sstok_short.nc
+
+stat rose[d=2]
+
+can data/all
+
+set data/form=cdf "ss_small.nc"
+set data/form=cdf "sstok_short.nc"
+SET DAT/FORM=CDF "mc_test.des"
+
+stat rose[j=12,d=1]

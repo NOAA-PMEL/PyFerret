@@ -1,0 +1,16 @@
+! err600_vec_aspect.jnl
+! VECTOR/ASPECT plots are wrong (incorrect fix for bug 1348)
+! 12/04/2006
+
+use gt4d011.cdf
+vec/k=1/l=1 u,v
+vec/over/asp/k=1/l=1 u,v
+
+! Irregular axes
+
+def axis/from_data/x/name=xirr/units=deg/modulo  {0,1,2,4,6,7,8,10,14,16,20,23,24}
+def axis/from_data/y/name=yirr/units=deg  {0,2,4,5,6,7,8,9,12,13,14,15,18}
+let a = 0.1*x[gx=xirr] + 4*y[gy=yirr]
+let b = 3*x[gx=xirr] + y[gy=yirr]
+vec a,b
+vec/asp/over a,b

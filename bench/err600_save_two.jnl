@@ -1,0 +1,11 @@
+! err600_save_two.jnl
+! 12/11/2006
+! Bug 1478: save two variables with the same time axis to a file.
+! got error attempt to redefine line; axis TIME doesnt match CDF file
+! This was due to upcasing of output axis TIME, which needed to be upcased
+! before checking whether record axis of the second variable matched the
+! one just written to the output file.
+
+use "a1478.nc"
+use "b1478.nc"
+save/clobber/file="out.nc" olr[d=1], swdn_toa[d=2]

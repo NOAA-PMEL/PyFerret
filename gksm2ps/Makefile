@@ -63,7 +63,7 @@ hp:
 i386-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS=" -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/ -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
+		CFLAGS="-g -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.3/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6/lib -lX11 -lm"
@@ -71,7 +71,7 @@ i386-linux:
 i486-linux:	
 	${MAKE} gksm2ps \
 		CC=gcc \
-		CFLAGS=" -I/usr/lib/gcc-lib/i386-redhat-linux/2.96/include/ -I$(TMAP_LOCAL)/src/xgks/port -I$(TMAP_LOCAL)/src/xgks/src/lib -I$(TMAP_LOCAL)/src/xgks/src/lib/gksm $(G)" \
+		CFLAGS="-g -I/usr/lib/gcc-lib/i386-redhat-linux/3.2.3/include -I../xgks/port -I../xgks/src/lib -I../xgks/src/lib/gksm $(G)" \
 		LDFLAGS= \
 		GKLIB="../xgks/src/lib/libxgks.a" \
 		LIB="-L/usr/X11R6/lib -lX11 -lm"

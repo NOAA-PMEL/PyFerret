@@ -53,6 +53,7 @@
 * V450: 11/96 - added /FORMAT=CACHE for DODS caching
 * V554   9/03 *acm* - add output in /DODS binary format
 * V602 *jli* 8/06 - add plist_xml
+* V602 *acm* 1/07 - use risc_buff rather than local variable buff, for solution to bug 1482
 
 * calling argument declarations
 	INTEGER		status
@@ -60,20 +61,21 @@
 
 * internal variable declarations
 	INTEGER	STR_UPCASE, vax_code
-	CHARACTER buff*80, upcase3*3
+	CHARACTER upcase3*3
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
+        include 'xrisc.cmn'
 
 * SET LIST/FORMAT=(FORTRAN_FORMAT),'UNFORMATTED','EPIC','TMAP','GT','STREAM', 'DODS'
 
 * remove old specs
 	list_format_given = .FALSE.
 
-        CALL EQUAL_STR_LC( string, buff, status )   ! lower case 11/92
+        CALL EQUAL_STR_LC( string, risc_buff, status )   ! lower case 11/92
         IF ( status .NE. ferr_ok ) RETURN
-	IF ( buff .NE. ' ' ) list_format = buff
+	IF ( risc_buff .NE. ' ' ) list_format = risc_buff
 
 * special interpretations
         vax_code = STR_UPCASE( upcase3, list_format(1:3) )

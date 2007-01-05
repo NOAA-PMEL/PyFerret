@@ -31,6 +31,7 @@
 * V600: *acm* 5/06 - add new MODE LINECOLORS:[arg]
 * V600  *acm* 6/06 - add new MODE UPCASE_OUTPUT
 *       *jli* 8/06 - add plist_xml
+* V602 *acm*  1/07 - increase length of string list_format to resolve bug 1482
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -150,7 +151,7 @@
      .		cmnd_buff*2048,
      .		last_cmnd_buff*2048,
      .		prompt*8,
-     .		list_format*200, list_file*200,
+     .		list_format*2048, list_file*2048,
      .		mode_name( max_modes )*12,
      .		frame_file*200,
      .		ppl_wait*6,

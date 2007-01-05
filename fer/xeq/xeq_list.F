@@ -128,6 +128,8 @@
 *                    multiple variables like free-format listings, rather than 
 *                    like LIST/SINGLY. (bug 1273)
 * V600  *acm* 4/06 change how mr_perm is passed to LIST_CMND_DATA,due to 64-bit problems  
+* V602  *acm* 1/07 Use risc_buff rather than the local variable buff for reading inputs 
+*                  and for the title - fixing bug 1482
 
         include 'tmap_errors.parm'
 	include	'ferret.parm'
@@ -138,6 +140,7 @@
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
 	include 'xinterrupt.cmn'
+        include 'xrisc.cmn'
 
 * calling argument declarations:
 	REAL	memory( mem_blk_size, max_mem_blks )
@@ -156,7 +159,7 @@
      .                  npermuted, recsofar, do_stream_phase, nvars, 
      .                  edges_flag, nn
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
-     .			buff*2048, fstatus*8, faccess*12, fformatted*12,
+     .			fstatus*8, faccess*12, fformatted*12,
      .			cdf_recax*1,
      .			fposition*12
 
@@ -321,7 +324,7 @@ c     .		 .AND. .NOT.do_comma_del
 
 * ... determine heading request
 	heading  = list_heading    ! default from SET LIST
-	buff = ' '
+	risc_buff = ' '
 	IF ( qual_given( slash_list_nohead ) .GT. 0 ) heading = .FALSE.
 * did they request an "enhanced" heading?
 	i = qual_given( slash_list_head )
@@ -329,10 +332,10 @@ c     .		 .AND. .NOT.do_comma_del
 	   heading = .TRUE.
 	   CALL EQUAL_STRING(
      .                  cmnd_buff(qual_start(i):qual_end(i)),
-     .                  buff, status )
+     .                  risc_buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   head_enh = INDEX(buff,"ENH") .GT. 0
-	   IF ( .NOT.head_enh .AND. buff.NE.' ' ) THEN
+	   head_enh = INDEX(risc_buff,"ENH") .GT. 0
+	   IF ( .NOT.head_enh .AND. risc_buff.NE.' ' ) THEN
 	      CALL WARN('Unrecognized option /'//
      .		         cmnd_buff(qual_start(i):qual_end(i)) )
 	      CALL WARN('Valid option is /HEADING=ENHANCED')
@@ -348,10 +351,10 @@ c     .		 .AND. .NOT.do_comma_del
 	IF ( i .GT. 0 ) THEN
 	   CALL EQUAL_STR_LC(
      .                  cmnd_buff(qual_start(i):qual_end(i)),
-     .                  buff, status )
+     .                  risc_buff, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSE
-	   buff = ' '
+	   risc_buff = ' '
 	ENDIF
 
 * set up the output device
@@ -631,7 +634,7 @@ c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
 	ELSEIF ( do_cdf ) THEN
 	   CALL CDF_LIST( memory, raw_name( 1:TM_LENSTR1(raw_name)), 
      .                    list_at_eof, cdf_recax, num_uvars_in_cmnd,
-     .			  mr_perm, is_cx, buff, head_enh,
+     .			  mr_perm, is_cx, risc_buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
      .                    status )
 	ELSEIF( all_at_once ) THEN

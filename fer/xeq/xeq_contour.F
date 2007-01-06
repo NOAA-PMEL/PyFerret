@@ -306,7 +306,7 @@ c           nlev = 1
       ENDIF
 
 * default key
-	   do_key =  (qual_given(slash_continuous_key)  .GT. 0)
+	   do_key =  (qual_given(slash_cont_key)  .GT. 0)
      .		.OR. (.NOT.usa_line .AND. .NOT.overlay)
 	   IF ( no_data ) do_key = .FALSE.
 	   IF (qual_given(slash_cont_nokey) .GT. 0) do_key = .FALSE.
@@ -314,7 +314,7 @@ c           nlev = 1
               CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
 
 * ... /KEY=continouus ?
-              loc = qual_given( slash_continuous_key )
+              loc = qual_given( slash_cont_key )
               IF ( loc .GT. 0) THEN
 	         CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        buff, status )

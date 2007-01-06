@@ -1105,16 +1105,16 @@ c *kob* 4/97
 
        CALL RESET_AX_ATT (line_name(axis), new_att_units, 
      .           new_att_t0, new_att_calendar, new_att_modulo,
-     .           new_att_modulo_len, line_direction(iline), 
-     .           line_regular(iline) )
+     .           new_att_modulo_len, line_direction(axis), 
+     .           line_regular(axis) )
 
 * ... Check the attribute structure for this axis name and change 
 *     attribute values as needed.
 
        CALL RESET_AX_ATT (line_name(axis), new_att_units, 
      .           new_att_t0, new_att_calendar, new_att_modulo,
-     .           new_att_modulo_len, line_direction(iline), 
-     .           line_regular(iline) )
+     .           new_att_modulo_len, line_direction(axis), 
+     .           line_regular(axis) )
 
 	RETURN
 

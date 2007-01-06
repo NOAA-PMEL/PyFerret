@@ -56,7 +56,7 @@
       include 'xrisc_buff.cmn'
 
       LOGICAL cv
-      INTEGER TM_LENSTR1, NCF_ADD_VAR_NUM_ATT, NCF_ADD_VAR_STR_ATT,
+      INTEGER TM_LENSTR1, NCF_ADD_VAR_NUM_ATT_DP, NCF_ADD_VAR_STR_ATT,
      .        flen, slen, wlen, vdims(8), vartype, nvdims, nvatts, 
      .        all_outflag, dset_num
 

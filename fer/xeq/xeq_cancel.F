@@ -165,11 +165,11 @@
      .                  TM_LENSTR, len_test, len_mchars, varid,
      .                  dset, cat, var, mods_cx, iflag, loc, 
      .                  nvdims, vdims(8), nvatts, vtype, all_outflag, 
-     .                  slen, iatt, igrd, iline
+     .                  slen, iatt, igrd, iline, new_att_modulo_len
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims,
-     .                  coordvar, do_err, canout, new_att, new_att_modulo
+     .                  coordvar, do_err, canout, new_att_modulo
 	CHARACTER	arg*4, buff*512, arg30*30, varname*512, 
      .                  attname*128, show_str*12, buff2*3
 

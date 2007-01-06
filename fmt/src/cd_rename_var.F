@@ -57,7 +57,7 @@
         include 'netcdf.decl'
 #include "netcdf.inc"
 
-      INTEGER TM_LENSTR1, NCF_RENAME_VAR
+      INTEGER TM_LENSTR1, NCF_RENAME_VAR,
      .        slen, flen, dset_num
       PARAMETER (flen=512)      ! size of variable name string
 

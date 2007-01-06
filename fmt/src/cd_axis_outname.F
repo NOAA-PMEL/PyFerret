@@ -66,6 +66,7 @@
       LOGICAL TM_ABSTRACT_AXIS, NC_GET_ATTRIB, coordvar, got_it
       INTEGER TM_LENSTR1, iaxis, varid, nvatts, status, attlen, 
      .  maxlen, attoutflag, alen
+      REAL val
 
       CHARACTER*1 ww_dim_name(4)
       CHARACTER varname*130, buff*130, attname*128

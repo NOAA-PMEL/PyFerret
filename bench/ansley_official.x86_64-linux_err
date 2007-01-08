@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 46282523 Oct 26 10:00 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 41826066 Dec 29 09:11 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: built with updates to DODS libraries: libdap-3.7.2 and libnd-dap-3.6.2 for reading HDF files correctly. Also fixes for clipping opendap errors, bugs 1442,1454,1461 prev. tested just under 32-bit
+Note: fresh checkout 12/28/06
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
-Beginning at Thu Oct 26 10:05:57 PDT 2006
+Beginning at Fri Dec 29 09:24:45 PST 2006
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -632,6 +632,111 @@ shade sst[t=@AVE,Z=@ave]
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=1/offset=1 `sst, return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2/offset=1 `sst, return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2/offset=1 `sst, return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST[I=21:30,J=50,K=1,L=50]
+list sst[i=21:30,j=50,k=1,l=50]
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2 `sst, return=xaxis`
+ **ERROR: variable unknown or not in data set: SST[I=11:15,J=50,K=1,L=50]
+list sst[i=11:15,j=50,k=1,l=50]
+ **ERROR: variable unknown or not in data set: SST
+cancel axis/stride `sst,return=xaxis`
+ **ERROR: variable unknown or not in data set: SST[I=21:30,J=50,K=1,L=50]
+list sst[i=21:30,j=50,k=1,l=50]
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/offset=1 `sst, return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+cancel axis/stride `sst,return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2/offset=4 `sst, return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=4/offset=2 `sst, return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+cancel axis/stride `sst,return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=6/offset=5 `sst,return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+cancel axis/stride `sst,return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=7/offset=5 `sst,return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+cancel axis/stride `sst,return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2/offset=1 `sst,return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+shade/i=-180:180/j=30:90/l=20 sst
+ **ERROR: variable unknown or not in data set: SST
+cancel axis/stride `sst,return=xaxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for d1(.des,.cdf,.nc)
+SET DAT/FORM=CDF d1
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for d2(.des,.cdf,.nc)
+SET DAT/FORM=CDF d2
+ **ERROR: unknown data set: D=D2
+list/i=1:20/j=30 sst[d=d2]
+ **ERROR: unknown data set: D=D1
+set axis/stride=2 `sst[d=d1], return=xaxis`
+ **ERROR: unknown data set: D=D2
+list/i=1:10/j=30 sst[d=d2]
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for d1(.des,.cdf,.nc)
+SET DAT/FORM=CDF d1
+ **ERROR: unknown data set: D=D1
+set axis/stride=2 `sst[d=d1], return=xaxis`
+ **ERROR: unknown data set: D=D1
+list/i=1:10/j=30 sst[d=d1]
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for d2(.des,.cdf,.nc)
+SET DAT/FORM=CDF d2
+ **ERROR: unknown data set: D=D2
+list/i=1:10/j=30 sst[d=d2]
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2 `sst, return=xaxis`
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2 `sst, return=yaxis`
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2 `sst, return=taxis`
+ **TMAP ERR: non-existent or not on line
+             Searched $FER_DESCR and $FER_DATA for coads(.des,.cdf,.nc)
+SET DAT/FORM=CDF coads
+ **ERROR: variable unknown or not in data set: SST
+set axis/stride=2 `sst,return=zaxis`
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -694,4 +799,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Thu Oct 26 10:07:12 PDT 2006
+Ended at Fri Dec 29 09:25:56 PST 2006

@@ -660,6 +660,11 @@ ps_trans_meta( meta_id )        /* translate the metafile */
             written = 0;
 */
 	    break;
+/* ACM 1/2007
+   Ignore case 3; written by metafile batch but harmless
+   */
+	 case  3:
+	    break;
 	 case  4:
 	    break;
 	 case 11:			/* polyline */

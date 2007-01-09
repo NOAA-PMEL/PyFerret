@@ -1,19 +1,30 @@
+! bn_set_strides.jnl
+! Jing Li, 11/2006
+! tests for SET AXIS/STRIDES 
+
+! 1/2007 ACM change show axis/all to show commands for individual axes;
+!            When run among other benchmark tests, there are a bunch of
+!            unrelated axes already defined, which get in the way of 
+!            seeing the desired output.
+
 set mode ignore_error
 
 !..............1. ignore STRIDE = 1                             
 use coads
-show axis/all
+show axis `sst,return=xaxis`
+show axis `sst,return=yaxis`
+show axis `sst,return=taxis`
 set axis/stride=1/offset=1 `sst, return=xaxis`
-show axis/all
+show axis `sst,return=xaxis`
 cancel data/all
 
 !..............2. illegal to stride an already strided axis   
 use coads
 set axis/stride=2/offset=1 `sst, return=xaxis`
-show axis/all
+show axis `sst,return=xaxis`
 !can't stride it again
 set axis/stride=2/offset=1 `sst, return=xaxis`
-show axis/all
+show axis `sst,return=xaxis`
 cancel data/all
 
 !..............3. only set STRIDE                                 
@@ -39,7 +50,7 @@ cancel data/all
 
 use coads
 set axis/offset=1 `sst, return=xaxis`
-show axis/all
+show axis `sst,return=xaxis`
 cancel axis/stride `sst,return=xaxis`
 cancel data/all
 
@@ -67,13 +78,13 @@ cancel data/all
 
 use coads
 set axis/stride=6/offset=5 `sst,return=xaxis`
-show axis/all
+show axis `sst,return=xaxis`
 cancel axis/stride `sst,return=xaxis`
 
 !--- 8.2 stride value is not an integer factor of the axis length
 ! warning: it may lose modulo property
 set axis/stride=7/offset=5 `sst,return=xaxis`
-show axis/all
+show axis `sst,return=xaxis`
 cancel axis/stride `sst,return=xaxis`
 cancel data/all
 
@@ -114,7 +125,7 @@ can data/all
 use/order=yzt coads_climatology
 show data/all
 set axis/stride=5 `sst,return=yaxis`
-show axis/all
+show axis `sst,return=yaxis`
 
 can data/all
 
@@ -132,7 +143,10 @@ use coads
 set axis/stride=2 `sst, return=xaxis`
 set axis/stride=2 `sst, return=yaxis`
 set axis/stride=2 `sst, return=taxis`
-show axis/all
+
+show axis `sst,return=xaxis`
+show axis `sst,return=yaxis`
+show axis `sst,return=taxis`
 
 can data/all
 
@@ -142,3 +156,6 @@ use coads
 set axis/stride=2 `sst,return=zaxis`
 set mode/last ignore_error
 
+show axis `sst,return=xaxis`
+show axis `sst,return=yaxis`
+show axis `sst,return=taxis`

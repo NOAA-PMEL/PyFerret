@@ -70,5 +70,5 @@ else
 endif
 
 if ($any_error) then
-	echo "  if ImageMagick is available, run check_files_ImageMagick to see plot differences"
+	echo "  if ImageMagick is available, run check_metafiles_ImageMagick to see plot differences"
 endif

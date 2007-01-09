@@ -47,6 +47,7 @@
 * V581*acm*  6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
+* V602 *acm* 1/07 - add <direction> output -- I J K L for the axis.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -65,26 +66,29 @@
      .          line, slen, llen, ndec, cal_id, status
 	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
      .            title*32, buff*20, outbuff*20
+        CHARACTER*1 idir(4)
 	REAL*8	TM_WORLD, lo_val8, hi_val8
 
 * local parameter declarations:
 	INTEGER		sig_figs
 	PARAMETER     ( sig_figs = 5 )
+        DATA idir/'I', 'J', 'K', 'L'/
 
  2010	FORMAT ( '<axis name="', A8, 5x, A1, '">' )
  2020	FORMAT ( '<axis name="', A, '">' )
- 2030	FORMAT ( '<units>', A)
- 2035   FORMAT ( ' since ', A, '</units>' )
- 2036   FORMAT ( '</units>' )
- 2040	FORMAT ( '<length>', A, '</length>' )
- 2050	FORMAT ( '<positive>down</positive>' )
- 2060	FORMAT ( '<point_spacing>even</point_spacing>' )
- 2070	FORMAT ( '<point_spacing>uneven</point_spacing>' )
+ 2030	FORMAT ( '<direction>', A, '</direction>' )
+ 2040	FORMAT ( '<units>', A)
+ 2045   FORMAT ( ' since ', A, '</units>' )
+ 2046   FORMAT ( '</units>' )
+ 2050	FORMAT ( '<length>', A, '</length>' )
+ 2060	FORMAT ( '<positive>down</positive>' )
+ 2070	FORMAT ( '<point_spacing>even</point_spacing>' )
+ 2080	FORMAT ( '<point_spacing>uneven</point_spacing>' )
 
- 2080	FORMAT ( '<modulo>yes</modulo>' )
- 2090	FORMAT ( '<modulo>no</modulo>' )
- 2100	FORMAT ( '<start>', A, '</start>' )
- 2110	FORMAT ( '<end>', A, '</end>' )
+ 2090	FORMAT ( '<modulo>yes</modulo>' )
+ 2100	FORMAT ( '<modulo>no</modulo>' )
+ 2110	FORMAT ( '<start>', A, '</start>' )
+ 2120	FORMAT ( '<end>', A, '</end>' )
 
 * pull line from grid table
 	line = grid_line( idim, grid )
@@ -109,6 +113,10 @@
 
 * axis units, including ... since start date if time axis
 
+* direction I,J,K, or L
+
+           WRITE (risc_buff, 2030) idir(idim)
+	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * report /T0= for formatted time axis
 
@@ -116,7 +124,7 @@
            IF (line_units(line)(1:2) .NE. char_init 
      .           .AND. slen.GT.0) THEN
               
-              WRITE ( risc_buff, 2030 ) line_units(line)(1:slen)
+              WRITE ( risc_buff, 2040 ) line_units(line)(1:slen)
               llen = TM_LENSTR1(risc_buff)
 
               IF ( line_direction(line) .EQ. 'TI' ) THEN
@@ -134,9 +142,9 @@
      .                                  .TRUE., status) 
                  slen = TM_LENSTR1(outbuff)
                  llen = TM_LENSTR1(risc_buff)
-                 WRITE (risc_buff(llen+1:), 2035) outbuff(:slen)
+                 WRITE (risc_buff(llen+1:), 2045) outbuff(:slen)
               ELSE
-                 WRITE (risc_buff(llen+1:), 2036)
+                 WRITE (risc_buff(llen+1:), 2046)
               ENDIF
 
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
@@ -145,7 +153,7 @@
 * line dimension
 
            show_str = TM_FMT(FLOAT(line_dim(line)), 16,16,slen)
-           WRITE ( risc_buff, 2040 ) show_str(1:slen)
+           WRITE ( risc_buff, 2050 ) show_str(1:slen)
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * start and end
@@ -174,45 +182,45 @@
               CALL TM_DATE_REFORMAT (lo_str, 1, cal_id, outbuff, 2,
      .                               .TRUE., status) 
               slen = TM_LENSTR1(outbuff)
-              WRITE ( risc_buff, 2100 ) outbuff(1:slen)
+              WRITE ( risc_buff, 2110 ) outbuff(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               CALL TM_DATE_REFORMAT (hi_str, 1, cal_id, outbuff, 2,
      .                               .TRUE., status) 
               slen = TM_LENSTR1(outbuff)
-              WRITE ( risc_buff, 2110 ) outbuff(1:slen)
+              WRITE ( risc_buff, 2120 ) outbuff(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ELSE
               
               slen = TM_LENSTR1(lo_str)
-              WRITE ( risc_buff, 2100 ) lo_str(1:slen)
+              WRITE ( risc_buff, 2110 ) lo_str(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
               slen = TM_LENSTR1(hi_str)
-              WRITE ( risc_buff, 2110 ) hi_str(1:slen)
+              WRITE ( risc_buff, 2120 ) hi_str(1:slen)
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
            ENDIF
 
 
 * axis oriented backwards ?
 	   IF ( BKWD_AXIS(idim, grid) ) THEN
-              WRITE ( risc_buff, 2050 ) 
+              WRITE ( risc_buff, 2060 ) 
 	      CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 	   ENDIF
 
 * regularly spaced ?
 	   IF ( line_regular( line ) ) THEN
-              WRITE ( risc_buff, 2060 ) 
-           ELSE
               WRITE ( risc_buff, 2070 ) 
+           ELSE
+              WRITE ( risc_buff, 2080 ) 
            ENDIF
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 * modulo ?
 	   IF ( line_modulo( line ) ) THEN
-              WRITE ( risc_buff, 2080 ) 
-           ELSE
               WRITE ( risc_buff, 2090 ) 
+           ELSE
+              WRITE ( risc_buff, 2100 ) 
            ENDIF
            CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 

@@ -35,11 +35,16 @@
 *
 *	Ansley Manke PMEL/TMAP
 *	8/2003
+
+* V602 1/07 Fix bug 1410: If the script name contains a relative path name,
+*           it was not recognized as a valid path/filename.  Need to check for
+*           PathSeparator in the filename.  (previously looked for 1st character /)
 *
 * Get script file name from common, for running with the comand line option
 *  ferret -script 
 * 
 	INCLUDE 'xprog_state.cmn'
+#include "gt_lib.parm"
 
 * calling argument declarations:
 	CHARACTER*2048	name
@@ -48,7 +53,8 @@
 * Get the name and set a flag if the name begins with a path.
 
         name = scriptfile_name
-        IF (scriptfile_name(1:1) .EQ. '/') ipath = 1
+        ipath = 0
+        IF ( INDEX( scriptfile_name, PathSeparator) .GT. 0) ipath = 1
 
 	RETURN
 	END

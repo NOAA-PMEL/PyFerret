@@ -153,7 +153,10 @@ else
     cp bn_test_stream_big.jnl bn_test_stream.jnl
 endif
 
-
+#Set up for metafile/gif testing
+if ($machine == "linux" || $machine == "ia64-linux") then
+   cp -f check_metafiles_linux check_metafiles
+endif
 
 echo "Log output in $log_file  Errors in $err_file" 
 echo "Procedure run_all to run all FERRET benchmarks" >&$log_file

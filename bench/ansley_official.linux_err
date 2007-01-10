@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x    1 ansley   tmap     47002917 Oct 25 14:27 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
+-rwxr-xr-x    1 ansley   tmap     43845237 Jan 10 07:58 /home/porter/ansley/linux/FERRET/fer/ferretdods_gui
 Using external functions from /home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
 Running the tests of external functions y
 Benchmark run by ansley
-Note: Further fixes for bug 1455 by Remik, in NCF_Util.c
+Note: fixes to bn_set_strides.jnl
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/linux/FERRET/bench
@@ -21,7 +21,7 @@ FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/linux/ppl
 FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/linux/FERRET/external_functions/ext_func_linux
-Beginning at Wed Oct 25 15:08:07 PDT 2006
+Beginning at Wed Jan 10 08:49:47 PST 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -632,6 +632,16 @@ shade sst[t=@AVE,Z=@ave]
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
+ **ERROR: invalid command: it is a child axis already
+set axis/stride=2/offset=1 (AX055)
+ **ERROR: invalid command: not a strided axis: COADSX
+cancel axis/stride COADSX
+ **ERROR: invalid command: offset should be less than stride value
+set axis/stride=2/offset=4 COADSX
+ **ERROR: invalid command: not a strided axis: COADSX
+cancel axis/stride COADSX
+ **ERROR: invalid command: unknown axis: NORMAL
+set axis/stride=2 NORMAL
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -694,4 +704,4 @@ vector/i=1:10/j=1:20/nolabel i/j
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
  **ERROR: invalid command: Batch FRAME only works for GIF files
 frame/file=bnplot.ps
-Ended at Wed Oct 25 15:11:33 PDT 2006
+Ended at Wed Jan 10 08:53:58 PST 2007

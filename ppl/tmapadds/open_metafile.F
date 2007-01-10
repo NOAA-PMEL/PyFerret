@@ -51,8 +51,9 @@
 *                           ws_xwindow
 *       2.20.98 *kob* - moved query_xgks_wkstn to its own routine.  causing
 *                       problems when trying to link gksm2ps
+* V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
+*         distinguises this case from other batch modes.
 
-#ifdef unix
 	include 'pltcom_dat.decl'! with declarations    
 	include 'PLTCOM.DAT'! with declarations    
 	include 'gkscm1_inc.decl'! with declarations    
@@ -60,32 +61,14 @@
 	include 'gkscm2.cmn'! with declarations    
 	include 'ppl_in_ferret.cmn'
 	include 'ws_types.cmn'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'! with declarations    
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'! with declarations    
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'! with declarations    
-	INCLUDE 'PPLV11INC:GKSCM1.INC'! with declarations    
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'! WITH DECLARATIONS    
-	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-	INCLUDE 'TMAP_PPLV11INC:WS_TYPES.CMN'
-#endif
 
-#ifdef unix
         integer       park_stat
-#endif
+
 
 #ifdef atc_gks
-#   ifdef unix
 	include        'gkspar.inc'
-#   else
-	INCLUDE        'atc_gksdir:gkspar.inc'
-#   endif
 #else
-#   ifdef unix
   	include        'gkspar.inc'
-#   else
-  	INCLUDE        'sys$library:gksdefs.bnd'
-#   endif
 #endif
 
 	integer 	ndx,type,error,len,tm_lenstr
@@ -93,6 +76,10 @@
 
 	integer		errind,errnr,fctid
 	integer         theWsType
+
+
+	LOGICAL ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL its_gif, batch, meta_batch
 
 C	XGKS DOESN'T DEFINE GMOUTP 
 	integer		gmoutp
@@ -125,6 +112,7 @@ C	XGKS DOESN'T DEFINE GMOUTP
 #else
 	theWsType = gmoutp
 #endif
+
 	call gopwk(meta_wsid,meta_lun,theWsType)
 *	call gsds (meta_wsid,gasap,gsuppd) !Better to be 'At Some TIme'
 	call gsds (meta_wsid,gasti,gsuppd) 
@@ -141,8 +129,12 @@ C	XGKS DOESN'T DEFINE GMOUTP
 	meta_open = .true.
 !	meta_actv = .false.
 
+        its_gif = ITS_GIF_GRAPHICS()
+        batch = ITS_BATCH_GRAPHICS()
+        meta_batch = batch .AND. (.NOT. its_gif)
+
 #ifdef xgks
-	if (meta_actv) then
+	if (meta_actv .OR. meta_batch) then
 *		ALLOW NO WHITE LINES IN METAFILE (FOR NOW)
                 call gqcr (wsid,1,type,error,red,green,blue)
                 if (error .eq. 0) then

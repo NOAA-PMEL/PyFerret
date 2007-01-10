@@ -79,6 +79,8 @@
 * *sh* 4/9/97
 *	- check to make sure only GKSM metafiles (not CGM) get
 *	  workstation sizing information
+* *am* 1/07 V6.02 true batch mode for metafiles; flag meta_batch
+*         distinguises this case from other batch modes.
 
 *     PLOTTER DEPENDENT ROUTINE
 *     CONTAINS PHYSICAL CHARACTERISTICS OF ALL LEGAL DEVICES.
@@ -140,19 +142,13 @@ C     THEY WERE WIDTH INCHES (OR MM) WIDE AND HEIGHT INCHES (OR
 C     MM) HIGH.
 C
 C
-#ifdef unix
+
    	include 'pltcom_dat.decl'	! with declarations
 	include 'PLTCOM.DAT'	! with declarations
 	include 'gkscm1_inc.decl'	! with declarations
 	include 'GKSCM1.INC'	! with declarations
 	include 'gkscm2.cmn'	! metafile info
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'	! with declarations
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'	! with declarations
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'	! with declarations
-	INCLUDE 'PPLV11INC:GKSCM1.INC'	! with declarations
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc'	! Metafile info
-#endif
+
 
 #ifdef atc_gks
 #   ifdef unix
@@ -183,8 +179,9 @@ C
 #endif
 	REAL width, height
 
-	LOGICAL clip
-	INTEGER ITS_GKSM
+	LOGICAL ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL clip, its_gif, batch, meta_batch
+	INTEGER ITS_GKSM 
 	INTEGER ier, id, itype, imeter, irx, iry
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx, t,
      .		bigness, scale,
@@ -194,6 +191,11 @@ C
         SAVE fctx,fcty !Needed for Ultrix
 C
       IF(WIDTH .EQ. 0.0 .OR. HEIGHT .EQ. 0.0)RETURN
+
+      its_gif = ITS_GIF_GRAPHICS()
+      batch = ITS_BATCH_GRAPHICS()
+      meta_batch = batch .AND. (.NOT. its_gif)
+
 C
 C     INSURE THAT THE PARAMETERS ARE POSITIVE AND CONVERT THEM
 C     TO INTERNAL INCREMENTS.
@@ -202,14 +204,14 @@ C
       BNEW = FACTOR * ABS(HEIGHT)
 	IF(ANEW.EQ.ASIZE.AND.BNEW.EQ.BSIZE) then
 #ifdef xgks
-	   if (meta_actv) then
+	   if (meta_actv .OR. meta_batch) then
 	      IF (ITS_GKSM(meta_wsid) .EQ. 1) THEN	! *sh* 4/97
 	         call gswkwn (meta_wsid,0.0,fctx,0.0,fcty)
 	         call gswkvp (meta_wsid,0.0,asize/factor,0.0,bsize/factor)
 	      ENDIF
 	   end if
 #else
-	   if (meta_actv) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
+	   if (meta_actv .OR. meta_batch call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
 #endif
 	   RETURN
 	end if
@@ -394,14 +396,15 @@ C	SET THE NDC WINDOW
 
 C
 *		CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY) Mod below made JD 3.22.90
-		if (wsid .gt. 0) CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
+		if (wsid .gt. 0 .AND. (.NOT.meta_batch)) 
+     .              CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
 #ifdef xgks
-	   if (meta_actv) then
+	   if (meta_actv .OR. meta_batch) then
 	      call gswkwn (meta_wsid,0.0,fctx,0.0,fcty)
 	      call gswkvp (meta_wsid,0.0,asize/factor,0.0,bsize/factor)
 	   end if
 #else
-	   if (meta_actv) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
+	   if (meta_actv .OR. meta_batch) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
 #endif
 C
 C	SET DEVICE (WORKSTATION) VIEWPORT
@@ -426,15 +429,16 @@ C	IF NOT AUTO WKXMN AND WKXMX ETC ARE FRACTIONS OF DMAXX
 C	AND DMAXY
 C
 *		CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY) Mod JD 3.22.90
-		if (wsid .gt. 0) CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
+		if (wsid .gt. 0 .AND. (.NOT.meta_batch)) 
+     .             CALL GSWKWN(WSID,0.0,FCTX,0.0,FCTY)
 
 #ifdef xgks
-	   if (meta_actv) then
+	   if (meta_actv .OR. meta_batch) then
 	      call gswkwn (meta_wsid,0.0,fctx,0.0,fcty)
 	      call gswkvp (meta_wsid,0.0,asize/factor,0.0,bsize/factor)
 	   end if
 #else
-	   if (meta_actv) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
+	   if (meta_actv .OR. meta_batch) call meta_ws_xform (fctx,fcty,asize,bsize) ! JD
 #endif
 		XMN=DMAXX*WKXMN
 		XMX=DMAXX*WKXMX
@@ -449,7 +453,7 @@ C
 
 * FERRET mod: force immediate update of display
 *	   CALL GUWK( wsid, 1 ) Mod JD 3.22.90
-	   if (wsid .gt. 0) CALL GUWK( wsid, 1 )
+	   if (wsid .gt. 0 .AND. (.NOT.meta_batch) ) CALL GUWK( wsid, 1 )
 	ENDIF
 C
 C     CALCULATE THE OFF-SCREEN FLAG.

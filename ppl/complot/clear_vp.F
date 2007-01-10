@@ -50,20 +50,23 @@
 *        doesn't delete metafile segments, and it avoids gdelseg warnings
 *        1.30.99 *js* Eliminated change of 9/9/97, since it caused memory
 *          leak and we don't seem to get warnings anymore.
+* V602:  1/2007 *acm* When writing metafiles in batch mode, we do want to
+*        skip the call to GDSG. The segments are in fact deleted by gclosews 
+*        (gclwk called in pltit when closing one plot and opening a new one)
+*        and that results in the error message when gdsg is called here.
 
-#ifdef unix
 	include 'xplot_state.cmn'		! viewport info
 	include 'gkscm1_inc.decl'	! with wsid
 	include 'GKSCM1.INC'	! with wsid
-#else
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'		! viewport info
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'	! with WSID
-	INCLUDE 'PPLV11INC:GKSCM1.INC'	! with WSID
-#endif
 
 * internal variable declarations:
 	INTEGER	ivp, iseg
-	LOGICAL ITS_BATCH_GRAPHICS
+	LOGICAL ITS_BATCH_GRAPHICS, ITS_GIF_GRAPHICS,
+     .   its_gif, batch, meta_batch
+
+        its_gif = ITS_GIF_GRAPHICS()
+        batch = ITS_BATCH_GRAPHICS()
+        meta_batch = batch .AND. (.NOT. its_gif)
 
 	IF ( vp_num .EQ. mvp_dflt ) THEN
 
@@ -71,7 +74,7 @@
 	   IF ( wsid .NE. 0 ) THEN
 * explicitly delete segments to avoid XGKS memory leak
 	      DO 110 ivp =  mvp_dflt, max_viewport
-		 if ( vp_seg0(ivp) .NE. 0 ) THEN 
+		 if (.NOT.meta_batch .AND. vp_seg0(ivp) .NE. 0 ) THEN 
 	            DO 100 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
  100	            CALL GDSG( iseg ) 
 	         ENDIF

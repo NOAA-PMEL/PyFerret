@@ -83,6 +83,8 @@
 *                  (like 4000) and xhi, xlo are in the final curvilinear 
 *                  coordinates (like 0.0218) so adding xtm+xlo as R*4 loses 
 *                  the precision in xtm. See also plotz.F, setax.F
+* V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
+*         distinguises this case from other batch modes.
 
 *****************************************************
 
@@ -163,41 +165,26 @@
 	include 'xinterrupt.cmn'	! 1/89 *sh* - interrupts
 
 * special COMMON to let this routine know if FERRET is in control
-#ifdef unix
+
 	include 'ppl_in_ferret.cmn'
 	include 'aline.cmn'	! jd for aline call
 	include 'gkscm2.cmn' 
 	include 'shade_vars.cmn' 
-#else
-	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-	INCLUDE 'tmap_pplv11inc:tmap_aline.inc'	! JD For ALINE call
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' 
-	INCLUDE 'tmap_pplv11inc:tmap_shade_vars.inc' 
-#endif
 
-!	INCLUDE 'pplinc:PARAMPL5.DAT'
-!	VIRTUAL X(NXS)
-!	INCLUDE 'pplinc:LINES.INC'
-!	INCLUDE 'pplinc:PEN.INC'
-!	INCLUDE 'pplinc:AXIS.INC'
-!    	INCLUDE 'pplinc:HD.INC'
-!	INCLUDE 'pplinc:TAXIS.INC'
-!	INCLUDE 'pplinc:AXISL.INC'
-!	INCLUDE 'pplinc:PLT.INC'
-!	INCLUDE 'pplinc:PLTL.INC'
-!	INCLUDE 'pplinc:MPLOT.INC'
-!	INCLUDE 'pplinc:CMRD.INC'
-!	INCLUDE 'PPLINC:PRMCOM.INC'
-!	INCLUDE 'cmdinc:SWITCH.INC'
-!	INCLUDE 'cmdinc:SYSTEM.INC'
 
 	LOGICAL CLEAR,CONTR,no_vpt_flag
+
+	LOGICAL ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL its_gif, batch, meta_batch
 
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
+        its_gif = ITS_GIF_GRAPHICS()
+        batch = ITS_BATCH_GRAPHICS()
+        meta_batch = batch .AND. (.NOT. its_gif)
 
 	IF(((MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.
      *     makep.eq.'FILL'.or.makep.eq.'PIXEL'.or.
@@ -225,7 +212,9 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 *	   protect_used_colors = .true.
 *	endif
 
-	if (.not. meta_actv .or. first_meta) goto 10		!12.1.89 JD
+	if ( 
+     .      ((.not.meta_actv).AND. (.not.meta_batch) ) .or.
+     .      first_meta) goto 10		!12.1.89 JD
 
 *	VPT_WAS_SET is used to check whether viewports were set the last time
 *	Ferret made a plot call. It is however cleared, when CLSPLT is invoked,
@@ -247,10 +236,10 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 #ifndef xgks
 	   call meta_version					!2.24.93
 #endif
-	   meta_actv = .true.					!11.6.89 JD
+	   IF (.NOT. meta_batch) meta_actv = .true.					!11.6.89 JD
 	   meta_clsplt = .false.				!1.25.90 JD
 	end if							!11.6.89 JD
-10      if (meta_actv) then ! Put both following stmts in if section
+10      if (meta_actv.OR. meta_batch) then ! Put both following stmts in if section
            first_meta = .false.                                 !12.1.89 JD
            vpt_was_set = ppl_viewports_active                   !12.1.89 JD
         end if              ! to fix viewport metafile bug 11.4.93

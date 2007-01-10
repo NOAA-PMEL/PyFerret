@@ -108,6 +108,8 @@ C              after applying an offset.)
 C V600: *acm* 4/06 Change how RANGE_DM is applied when using DM or DMS axis labelling.
 C V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
 C V600 *acm* 5/2006 LINECOLORS User can change the number of line colors.
+C V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
+C         distinguises this case from other batch modes.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -234,6 +236,10 @@ CCCCCCC data	        tmapdebug/.false./
         INTEGER   TM_LENSTR, TM_LENSTR1, slen
 
 	character strr*2048
+
+* *acm*  For batch metafile 
+	LOGICAL ITS_BATCH_GRAPHICS, ITS_GIF_GRAPHICS,
+     .          its_gif, batch, meta_batch
 
 	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
 	CHARACTER SYM*30,ICOM7*7
@@ -1299,8 +1305,13 @@ C	CLSPLT
 *	    MOD *JD* 1.25.90 to accomodate use of clsplt and metafiles
 *           *ACM* 4/5/05 After a set/win/clear need meta_actv false
 *                        so VIEW/AXES can reset sizing info 
+
+	    its_gif = ITS_GIF_GRAPHICS()
+	    batch = ITS_BATCH_GRAPHICS()
+	    meta_batch = batch .AND. (.NOT. its_gif)
+
 	    if (meta_open .and. .not. meta_clsplt .and. .not. first_meta) then
-	       if (meta_actv) call gdawk (meta_wsid)
+	       if (meta_actv .OR. meta_batch) call gdawk (meta_wsid)
 	       call gclwk (meta_wsid)
 	       close (meta_lun)
 	       meta_clsplt = .true.

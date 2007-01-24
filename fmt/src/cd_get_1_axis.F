@@ -143,6 +143,8 @@
 * V600 *acm* 6/06  use TM_FPEQ_EPS to compare coordinates.
 * V601 *acm* 9/19  Fix bug 1443; MAXLEN of bounds name should be NF_MAX_NAME from netcdf.inc
 * V601 *acm* 9/19  Fix bug 1434; check bounds for regularly-spaced axes 
+* V602 *acm* 1/07  Fix bug 1483; checking for irregularly spaced axis failed if the delta-coordinates
+*                  on the axis varied by orders of magnitude.
 
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -204,8 +206,8 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
      .        newaxis, d1s, d1e, d2s, d2e, len_cal, attoutflag, maxlen,
      .        all_outflag, dir, attlen
 
-      REAL    rbuff, delta, first_delta, val, tmp, epsilon
-      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, axwwlen
+      REAL    rbuff, delta, first_delta, val, epsilon
+      REAL*8  TM_LONW2LONE, TM_WW_AXLEN, tmp8, axwwlen
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
      .        spacing_attr*14, bname*128
@@ -304,7 +306,7 @@ c      PARAMETER (epsilon_23 =  2**(-23) )
                soft_err = 1
                GOTO 5000
             ENDIF
-            npts = tmp
+            npts = val
          ENDIF
       ENDIF
       line_dim( iaxis ) = npts
@@ -789,10 +791,10 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
 *     (the variable line_delta actually contains line_end at this moment)
             reversed(iaxis) = line_delta(iaxis) .LT. line_start(iaxis)
             IF ( reversed(iaxis) ) THEN
-               tmp = line_delta(iaxis)
+               tmp8 = line_delta(iaxis)
                line_delta(iaxis) =
      .           (line_start(iaxis)-line_delta(iaxis))/(npts-1)
-               line_start(iaxis) = tmp
+               line_start(iaxis) = tmp8
             ELSE
                line_delta(iaxis) =
      .           (line_delta(iaxis)-line_start(iaxis))/(npts-1)
@@ -848,9 +850,9 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
          ENDIF
          IF ( reversed(iaxis) ) THEN
             DO 345 i=ipt1,ipt1+npts/2-1
-               tmp = line_mem(i)
+               tmp8 = line_mem(i)
                line_mem(i) = line_mem(ipte+ipt1-i)
-               line_mem(ipte+ipt1-i) = tmp
+               line_mem(ipte+ipt1-i) = tmp8
  345        CONTINUE
          ENDIF
             
@@ -869,17 +871,16 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
   350   CONTINUE
 
 * Check if axis is actually regularly spaced (though not flagged as "even")
+* Fix bug 1483; look at each delta rather than trying to compare with first delta.
 
         last_coord = line_mem(ipte)
         firs_coord = line_mem(ipt1)
-
-        delta = line_mem(ipt1+1) - line_mem(ipt1)
-        tmp = MAX(SNGL(firs_coord),SNGL(last_coord) )
-        epsilon = epsilon_23 * 2.*(ABS(tmp) / delta )
+        first_delta = line_mem(ipt1+1) - line_mem(ipt1)
 
         DO 360 i=ipt1+2,ipte
-           IF (.NOT. TM_FPEQ_EPS(epsilon, delta, 
-     .                   SNGL(line_mem(i)-line_mem(i-1))) ) GOTO 380
+           delta = line_mem(i) - line_mem(i-1)
+           epsilon = epsilon_23 * 2.*(ABS(line_mem(i)) / delta )
+           IF (.NOT. TM_FPEQ_EPS(epsilon, first_delta, delta) ) GOTO 380
   360   CONTINUE
 
 * yes, it's actually regular - save it as such
@@ -1121,14 +1122,14 @@ c     .   .OR. TM_HAS_STRING(line_units(iaxis), 'degreesS') ! But this matches a
         IF (got_torg) THEN
            line_direction(iaxis) = 'TI'
 c           secsperyear = cals_yeardays(cal_id)* 24*60*60
-           tmp = cals_yeardays(cal_id)
-           secsperyear = tmp * (24.D0*60.D0*60.D0)
+           tmp8 = cals_yeardays(cal_id)
+           secsperyear = tmp8 * (24.D0*60.D0*60.D0)
 
            CALL TM_BREAK_DATE(line_t0(iaxis), cal_id, year, month, day,
      .                       hour, minute, second, istat)
            t0_secs = TM_SECS_FROM_BC (cal_id, year, month, day,
      .                               hour, minute, second, status)
-           CALL TM_WW_AX_1_N(iaxis, first, tmp)
+           CALL TM_WW_AX_1_N(iaxis, first, tmp8)
  	   secs2start = t0_secs + first*line_tunit(iaxis)
            IF ( (secs2start .LE.  2*secsperyear)
      .	    .AND. (axwwlen*line_tunit(iaxis) .LE. secsperyear) ) THEN

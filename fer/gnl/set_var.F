@@ -66,6 +66,8 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * v600  4/06 *acm* - Change the call to set_nan from a float function to void, passing
 *                    back the result as an argument. Needed for port to 64-bit 
+* V601 10/06 *acm* - When units, title, or missing is set, change the corresponding
+*                    value or string in the attribute linked-list structure.
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -89,13 +91,13 @@
      .                  have_mods, ez, gtts, ncfile, coordvar
 	INTEGER		GRID_FROM_NAME, TM_LENSTR1, STR_UPCASE, mod_cx,
      .			i, dset, grid, cat, var, loc, TMAP_status, 
-     .			testvar, outtype_flag, varid, attype, attlen, 
+     .			testvar, outtype_flag, varid, attid, attype, attlen, 
      .			attoutflag, vartype, nvdims, nvatts, vdims(8), 
-     .			varoutflag, cx
-	REAL		bad, scalefac, offset, val
-	CHARACTER	grid_name*16, title*128, units*64, newname*128,
+     .			varoutflag, cx, idum
+	REAL		bad, scalefac, offset, val, dummy
+	CHARACTER	grid_name*16, title*128, units*128, newname*128,
      .                  is_nan*3, flag*10, typflag*10, varattname*512,
-     .                  varname*128, attname*128
+     .                  varname*128, attname*128, buf*2, newname_lc*128
 
 * Initialize
 
@@ -122,7 +124,7 @@
 	IF ( status .NE. ferr_ok ) RETURN
 	IF ( var .EQ. munknown_var_name ) GOTO 5005
 
-* must be an EZ or user-defined variable
+* May be an EZ or user-defined variable
 	IF ( cat .EQ. cat_file_var ) THEN
 	   ez = ds_type(dset) .EQ. pds_type_ez
 !	   IF ( .NOT. ez ) GOTO 5010		! removed restriction 10/95
@@ -147,19 +149,22 @@
 	   IF ( gtts ) GOTO 5600
 
 	   have_mods = .TRUE.
-           CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			      newname, status )
+           CALL EQUAL_STR_LC 
+     .             ( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .               newname_lc, status )
            IF ( status .NE. ferr_ok ) RETURN
+	   status = STR_UPCASE (newname, newname_lc)
 
 * check that the name isnt already in the data set.
-           CALL FIND_VAR_NAME ( dset, newname, cat, testvar )
-	   risc_buff = newname
+           CALL FIND_VAR_NAME ( dset, newname, idum, testvar )
 	   len_rbuff = TM_LENSTR1(newname)
            IF (  testvar .NE. munknown_var_name ) GOTO 5400
-	   risc_buff = vname
-	   len_rbuff = LEN(vname)
 
-	   IF ( .NOT.TM_LEGAL_NAME(newname) ) GOTO 5200
+	   IF ( .NOT.TM_LEGAL_NAME(newname) ) THEN
+	      risc_buff = vname
+	      len_rbuff = LEN(vname)
+              GOTO 5200
+           ENDIF
 	ELSE
 	   newname = char_init128
 	ENDIF
@@ -316,7 +321,7 @@
            CALL CD_GET_VAR_ID (dset, vname, varid, status)
 
 * When the user requests double precision output, write an attribute to the
-* file explaning that it contains data converted from float.
+* file explaining that it contains data converted from float.
 
            IF (typflag(1:3) .EQ. 'DOU')
      .       CALL CD_PUT_NEW_ATTR (dset, varid, 
@@ -339,6 +344,11 @@
 
         ENDIF
 
+* Apply the changes in Ferret structures, and in the linked-list structure.
+
+        IF (dset .EQ. unspecified_int4) dset = -1 ! user variable
+        CALL CD_GET_VAR_ID (dset, vname, varid, status)
+
 * note on EZ vars:
 * modifying the variable info invalidates data in memory
 *        the purging of memory variables below is unnecessarily strict in both
@@ -357,21 +367,67 @@
 	         RETURN
 	      ENDIF
 	   ENDIF
+
 	ELSEIF ( cat .EQ. cat_file_var ) THEN
 * ... other file variables (10/95)
 	   IF ( grid .NE. int4_init   ) GOTO 5112
 	   IF ( bad  .NE. real4_init  ) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
 	      CALL PURGE_ALL_UVARS	 ! delete (possibly dependent) uvars
-	      ds_missing_flag(var) = ds_bad_flag(var)
-	      ds_bad_flag    (var) = bad
+	      ds_missing_flag(var) = ds_bad_flag(var)	      
+              ds_bad_flag    (var) = bad
+
+              attlen = 1
+              attname = 'missing_value'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           buf, bad, status)
+              ENDIF
+              attname = '_FillValue'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           buf, bad, status)
+              ENDIF
+
 	   ENDIF
 *	   IF (newname.NE. char_init16 ) ds_var_code ( var ) = newname
 	   IF (newname.NE. char_init128 )
      .         CALL string_array_modify( ds_var_code_head, var,
      .                                   newname, LEN(newname))
-	   IF ( units .NE. char_init16 ) ds_var_units( var ) = units
-	   IF ( title .NE. char_init80 ) ds_var_title( var ) = title
+
+	   IF ( units .NE. char_init16 ) THEN
+              ds_var_units( var ) = units
+
+              attlen = TM_LENSTR1(units)
+              attname = 'units'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           units, dummy, status)
+              ENDIF
+           ENDIF
+
+	   IF ( title .NE. char_init80 ) THEN
+              ds_var_title( var ) = title
+
+              attlen = TM_LENSTR1(title)
+              attname = 'long_name'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           title, dummy, status)
+              ENDIF
+           ENDIF
 
            IF (scalefac .NE. real4_init .AND. ncfile) THEN
 	      CALL PURGE_FILE_VAR( var ) ! remove memory-resident variables
@@ -386,6 +442,7 @@
               ds_var_scaleit(var)       = .TRUE.
            ENDIF
 	ELSE
+
 * ... user-defined var
 	   IF ( grid .NE. int4_init   ) GOTO 5110
 *	   IF (newname.NE. char_init16 ) uvar_name_code(var)= newname
@@ -394,14 +451,66 @@
      .                                  var,
      .                                  newname,
      .                                  LEN(newname))
-	   IF ( units .NE. char_init16 ) uvar_units( var )  = units
-	   IF ( title .NE. char_init80 ) uvar_title( var )  = title
+
+           dset = -1 ! user variables
+
+	   IF ( units .NE. char_init16 ) THEN
+              uvar_units( var )  = units
+
+              attlen = TM_LENSTR1(units)
+              attname = 'units'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           units, dummy, status)
+              ENDIF
+           ENDIF
+     
+	   IF ( title .NE. char_init128 ) THEN
+              uvar_title( var ) = title
+
+              attlen = TM_LENSTR1(title)
+              attname = 'long_name'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           title, dummy, status)
+              ENDIF
+           ENDIF
+
 	   IF ( bad  .NE. real4_init  ) THEN
 	      CALL PURGE_ALL_UVARS	 ! delete invalidated uvars
 	      uvar_bad_data(var) = bad
+
+              attlen = 1
+              attname = 'missing_value'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           buf, bad, status)
+              ENDIF
+
+              attname = '_FillValue'
+              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
+              IF (attid .GT. 0) THEN
+                 CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .             attname, attype, attlen, attoutflag, status )
+                 CALL CD_REPLACE_ATTR (dset, varid, attname, attype, attlen, 
+     .           buf, bad, status)
+              ENDIF
 	   ENDIF
 
 	ENDIF
+
+! Replace the name in the linked-list structure.
+	IF (newname .NE. char_init128 ) 
+     .      CALL CD_RENAME_VAR (dset, varid, newname_lc, status)
 
 * successful completion
 	status = ferr_ok

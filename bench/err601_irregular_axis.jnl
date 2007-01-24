@@ -1,0 +1,7 @@
+! err601_irregular_axis.jnl
+! V6.0 had a new scheme to check for irregular axes; for an axis
+! whose delta-coordinates vary widely this failed.  See bug 1483
+! The axis should be 6.792e-10, 1.368e-09, ..., 800, 1100, 1400
+
+USE z_wide_variation.nc
+SHOW GRID/Z atmos

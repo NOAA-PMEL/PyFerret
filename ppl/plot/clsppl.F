@@ -39,7 +39,8 @@
 *	to close GKS properly if it is opened.
 *	J Davison 11.28.88 modified for compatibility to v1.1 PPL
 *	k obrien 3.11.97 added ifdef for linux port to ignore "unlink"
-#ifdef unix
+* V602: *acm* 1/07 Changes for metafile-batch mode
+
 	include 'symkey_inc.decl'
 	include 'SYMKEY.INC'
 	include 'cmdcom_inc.decl'
@@ -48,16 +49,7 @@
 	include 'LUNITS.INC'
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
-#else
-	INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
-	INCLUDE 'PPLV11INC:SYMKEY.INC'
-	INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
-	INCLUDE 'PPLV11INC:CMDCOM.INC'
-	INCLUDE 'TMAP_PPLV11INC:LUNITS_INC.DECL'
-	INCLUDE 'PPLV11INC:LUNITS.INC'
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'
-#endif
+
 #ifdef core
         include 'CORECM.INC'
 #endif
@@ -105,28 +97,34 @@ C
         INCLUDE         'PPLV11INC:pltcom.dat'
 #endif
 
-        integer         member,er_status,num_active,rmember,i,j,num_open
+        integer         member,er_status,num_active,rmember,i,j,
+     .                  num_open, istate
 
 ********************************************************************************
 
-        if (gksopn) then
-	   member = 1
-           call gqacwk (member,er_status,num_active,rmember)
-           if (num_active .lt. 1) goto 20
 
-           do 10 i = 1,num_active
-              call gqacwk (1,er_status,j,rmember)
-              call gdawk (rmember)
-10         continue
+        CALL GQOPS (istate)  ! In batch mode the graphics may not be active now. 
 
-20         call gqopwk (member,er_status,num_open,rmember)
-           if (num_open .lt. 1) goto 40
+        if (gksopn) then 
+           if ( istate .GE. 2 ) then
+	      member = 1
+              call gqacwk (member,er_status,num_active,rmember)
+              if (num_active .lt. 1) goto 20
 
-           do 30 i = 1,num_open
-              call gqopwk (1,er_status,j,rmember)
-              call gclwk (rmember)
-30         continue
+              do 10 i = 1,num_active
+                 call gqacwk (1,er_status,j,rmember)
+                 call gdawk (rmember)
+10            continue
 
+20            call gqopwk (member,er_status,num_open,rmember)
+              if (num_open .lt. 1) goto 40
+
+              do 30 i = 1,num_open
+                 call gqopwk (1,er_status,j,rmember)
+                 call gclwk (rmember)
+30            continue
+
+           endif    ! istate
 40         call gclks ()
         end if
 

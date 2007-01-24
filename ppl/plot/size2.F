@@ -80,7 +80,7 @@
 *	- check to make sure only GKSM metafiles (not CGM) get
 *	  workstation sizing information
 * *am* 1/07 V6.02 true batch mode for metafiles; flag meta_batch
-*         distinguises this case from other batch modes.
+*	  distinguises this case from other batch modes.
 
 *     PLOTTER DEPENDENT ROUTINE
 *     CONTAINS PHYSICAL CHARACTERISTICS OF ALL LEGAL DEVICES.
@@ -179,8 +179,8 @@ C
 #endif
 	REAL width, height
 
-	LOGICAL ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS
-        LOGICAL clip, its_gif, batch, meta_batch
+	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL clip, its_meta, batch, meta_batch
 	INTEGER ITS_GKSM 
 	INTEGER ier, id, itype, imeter, irx, iry
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx, t,
@@ -192,9 +192,9 @@ C
 C
       IF(WIDTH .EQ. 0.0 .OR. HEIGHT .EQ. 0.0)RETURN
 
-      its_gif = ITS_GIF_GRAPHICS()
+      its_meta = ITS_META_GRAPHICS()
       batch = ITS_BATCH_GRAPHICS()
-      meta_batch = batch .AND. (.NOT. its_gif)
+      meta_batch = batch .AND. its_meta
 
 C
 C     INSURE THAT THE PARAMETERS ARE POSITIVE AND CONVERT THEM

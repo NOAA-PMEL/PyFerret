@@ -108,8 +108,8 @@ C              after applying an offset.)
 C V600: *acm* 4/06 Change how RANGE_DM is applied when using DM or DMS axis labelling.
 C V600: *acm* 5/06 Allow seconds in DMS axis labelling; had removed this.
 C V600 *acm* 5/2006 LINECOLORS User can change the number of line colors.
-C V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
-C         distinguises this case from other batch modes.
+C V602  1/07 *acm* true batch mode for metafiles; flag meta_batch
+C                  distinguises this case from other batch modes.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -238,8 +238,8 @@ CCCCCCC data	        tmapdebug/.false./
 	character strr*2048
 
 * *acm*  For batch metafile 
-	LOGICAL ITS_BATCH_GRAPHICS, ITS_GIF_GRAPHICS,
-     .          its_gif, batch, meta_batch
+	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
+     .          its_meta, batch, meta_batch
 
 	CHARACTER DTE*10,TEMP*2048,TEMP2*2048,FILE*81,FROM*80,LINE*2048
 	CHARACTER SYM*30,ICOM7*7
@@ -1306,9 +1306,9 @@ C	CLSPLT
 *           *ACM* 4/5/05 After a set/win/clear need meta_actv false
 *                        so VIEW/AXES can reset sizing info 
 
-	    its_gif = ITS_GIF_GRAPHICS()
+	    its_meta = ITS_META_GRAPHICS()
 	    batch = ITS_BATCH_GRAPHICS()
-	    meta_batch = batch .AND. (.NOT. its_gif)
+	    meta_batch = batch .AND. its_meta
 
 	    if (meta_open .and. .not. meta_clsplt .and. .not. first_meta) then
 	       if (meta_actv .OR. meta_batch) call gdawk (meta_wsid)
@@ -1317,7 +1317,15 @@ C	CLSPLT
 	       meta_clsplt = .true.
                meta_actv = .false.     ! mode state is still saved in mode_metafile
 	       vpt_was_set = .false.
+	    elseif (meta_batch .and. vpt_was_set ) then
+	       call gdawk (meta_wsid)
+	       call gclwk (meta_wsid)
+	       close (meta_lun)
+	       meta_clsplt = .true.
+               meta_actv = .false.
+	       vpt_was_set = .false.
 	    end if        
+
 	    GOTO 10
 C     RWDSEQ & RWD
 600	    CALL OPENF(FILE,IERR)

@@ -137,6 +137,8 @@
 * V601 *acm*11/06 Fix bug 1438: A request for rediculously large memory results in an
 *                 overflow in setting reconfig, so it looks like a negative number of words 
 *                 requested. This should result in an error message.
+* V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
+*                  ignore CANCEL MODE META
 
 	include 'tmap_dims.parm'
 	include 'tmap_errors.parm'
@@ -198,10 +200,11 @@
      .                  new_att_t0*128, new_att_units*128
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME,
+     .                  ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .                  set_last, any_delta, dset_cdf,
      .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
-     .                  coordvar, new_att_modulo
+     .                  coordvar, new_att_modulo, batch, its_gif
 
 * local parameter declarations:
 	INTEGER		slash_set_last
@@ -556,10 +559,21 @@ c *kob* 4/97
 	         CALL TM_SET_FREE_EVENT(1)
 * ... mode metafile may require immediate communication with PPLUS
 	      ELSEIF ( mode .EQ. pmode_metafile ) THEN
-	         IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94
-	  	 IF ( buff2 .NE. ' ' ) CALL PPLCMD
+*     When in gif mode or batch mode, ignore SET MODE META
+	         its_gif = ITS_GIF_GRAPHICS()
+	         batch = ITS_BATCH_GRAPHICS()
+                 IF ( its_gif ) THEN
+                    CALL WARN ('in GIF mode: ignoring SET MODE METAFILE')
+                    mode_metafile = .FALSE.
+                 ELSE IF ( batch ) THEN
+                    CALL WARN ('in batch mode: ignoring SET MODE METAFILE')
+                    mode_metafile = .FALSE.
+                 ELSE
+ 	            IF ( .NOT.pplus_started ) CALL START_PPLUS     ! 1/94
+	  	    IF ( buff2 .NE. ' ' ) CALL PPLCMD
      .			( from, line, 0, 'PLTNME '//buff2, 1, 1 )
-!	         CALL SEND_PLTYPE( mode_metafile )    ! done in DISP_INIT
+!	            CALL SEND_PLTYPE( mode_metafile )    ! done in DISP_INIT
+                 ENDIF
 * ... mode diagnostic sends message to TMAP library
 	      ELSEIF ( mode .EQ. pmode_diagnostic ) THEN
 	         tmap_diag_on = .TRUE.
@@ -1075,7 +1089,10 @@ c *kob* 4/97
               line_modulo(strided_axis) = .TRUE.
               line_modulo_len(strided_axis) = line_modulo_len(axis) 
            ELSE
-              CALL WARN('Lose modulo property')
+
+              CALL WARN(
+     . 'Stride value not an integer factor of axis length: '//
+     . 'Axis loses modulo property')
            ENDIF
         ENDIF
 

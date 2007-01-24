@@ -49,6 +49,7 @@
 *        3/29/93 - restore the old-style functioning of DEFINE VIEW/SIZE
 * V540: 9/01 *sh* - DEF VIEW/AXES: viewports based on *axis* positions
 * V580: 11/04 *acm* New symbols for viewport scaling
+* V602: *acm* 1/07 Changes for metafile-batch mode
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -112,7 +113,8 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 * For viewport/AXES viewports, update ASIZE and BSIZE here,
 * or else the first viewport plotted is in the wrong place.
         IF (vp_by_axis(vp_num)) THEN
-           CALL SIZE (width,height)
+           CALL GQOPS (istate)  ! In batch mode the graphics may not be active now. 
+           IF (istate .GE. 2) CALL SIZE (width,height)
         ENDIF
 
 * NDC space goes 0 to fctx and 0 to fcty (corresponding to PLOT+ SIZE command)

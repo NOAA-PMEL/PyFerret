@@ -1,4 +1,4 @@
-	SUBROUTINE PLTIT(X,NXS)
+ 	SUBROUTINE PLTIT(X,NXS)
 *   
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -83,8 +83,8 @@
 *                  (like 4000) and xhi, xlo are in the final curvilinear 
 *                  coordinates (like 0.0218) so adding xtm+xlo as R*4 loses 
 *                  the precision in xtm. See also plotz.F, setax.F
-* V602  1/07 *acm*  true batch mode for metafiles; flag meta_batch
-*         distinguises this case from other batch modes.
+* V602  1/07 *acm* true batch mode for metafiles; flag meta_batch
+*                  distinguises this case from other batch modes.
 
 *****************************************************
 
@@ -174,17 +174,17 @@
 
 	LOGICAL CLEAR,CONTR,no_vpt_flag
 
-	LOGICAL ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS
-        LOGICAL its_gif, batch, meta_batch
+	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL its_meta, batch, meta_batch
 
 *	*jd* linux port 12.96 Add external stmt below
 	external size, scale
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-        its_gif = ITS_GIF_GRAPHICS()
+        its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. (.NOT. its_gif)
+        meta_batch = batch .AND. its_meta
 
 	IF(((MAKEP.EQ.'CONTOUR'.OR.MAKEP.EQ.'VIEW'.or.
      *     makep.eq.'FILL'.or.makep.eq.'PIXEL'.or.

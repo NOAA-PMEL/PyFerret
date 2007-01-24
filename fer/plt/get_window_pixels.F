@@ -54,11 +54,15 @@
 *              When in gif or batch mode, these will be values of symbols PPL$XPIXEL 
 *              and PPL$YPIXEL.  If not in gif  or batch mode, we get the window size 
 *              from a GKS call.
+* V602: *acm* 1/07 Changes for metafile-batch mode
 
         include 'pltcom_dat.decl'
         include 'PLTCOM.DAT'
 
 
+        logical         ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS, 
+     .                  ITS_GIF_GRAPHICS, batch, its_meta, its_gif,  
+     .                  meta_batch
 	integer		error_status,transno,ws_id
 	integer		x_pixel_dim,y_pixel_dim
 	integer		new_trans
@@ -68,6 +72,13 @@
 	real		world(4),ndc(4),x_minw,x_maxw,y_minw,y_maxw
 
 ******************************************************************************
+
+* meta_batch flag is true when making metafiles in batch mode.
+
+	its_meta = its_meta_GRAPHICS()
+	batch = ITS_BATCH_GRAPHICS()
+	its_gif = ITS_GIF_GRAPHICS()
+	meta_batch = batch .AND. its_meta
 
 * initialize in case of error (not an adequate response, really)
 	x_pixel_dim = 1
@@ -100,9 +111,10 @@
 
         CALL get_pix(ws_id,x_pixel_dim, y_pixel_dim)
 
-! If not a gif window get pixel workstation from gks
+! If not a gif or metafile batch window get pixel workstation from gks
 
-     	CALL gqpxad(ws_id,x_minw,y_maxw,
+        IF ((.NOT.meta_batch) .AND. (.NOT.its_gif)) 
+     .	CALL gqpxad(ws_id,x_minw,y_maxw,
      .	x_maxw,y_minw,error_status,x_pixel_dim,y_pixel_dim)
 
  1000	call gselnt (transno)

@@ -61,12 +61,12 @@
 
 * internal variable declarations:
 	INTEGER	ivp, iseg
-	LOGICAL ITS_BATCH_GRAPHICS, ITS_GIF_GRAPHICS,
-     .   its_gif, batch, meta_batch
+	LOGICAL ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
+     .   its_meta, batch, meta_batch
 
-        its_gif = ITS_GIF_GRAPHICS()
+        its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. (.NOT. its_gif)
+        meta_batch = batch .AND. its_meta
 
 	IF ( vp_num .EQ. mvp_dflt ) THEN
 

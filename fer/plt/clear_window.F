@@ -45,17 +45,13 @@
 * V230: 11/19/92 - clear protected colors
 * V411:  9/5/95 - explicitly delete each segment before calling GCLRWK
 *	to avoid XGKS memory leak in that routine
+* V602: *acm* 1/07 Changes for metafile-batch mode
 
-#ifdef unix
 	include 'plot_setup.parm'
 	include 'xplot_state.cmn'		! viewport info
-#else
-	INCLUDE 'FERRET_CMN:PLOT_SETUP.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'	
-#endif
 
 * calling argument declarations:
-	INTEGER	wid, ivp, iseg
+	INTEGER	wid, ivp, iseg, istate
 
 * internal variable declarations:
 
@@ -73,7 +69,9 @@
 ! --- end of 9/95 addition
 
 * tell GKS to clear the named "workstation" (window)
-	CALL GCLRWK(wid,0)
+
+        CALL GQOPS (istate)
+	IF (istate .GE. 2) CALL GCLRWK(wid,0)
 
 * tell PPLUS to close the metafile if it's open
 	CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )

@@ -78,8 +78,8 @@
 	integer         theWsType
 
 
-	LOGICAL ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS
-        LOGICAL its_gif, batch, meta_batch
+	LOGICAL ITS_META_GRAPHICS, ITS_BATCH_GRAPHICS
+        LOGICAL its_meta, batch, meta_batch
 
 C	XGKS DOESN'T DEFINE GMOUTP 
 	integer		gmoutp
@@ -129,9 +129,9 @@ C	XGKS DOESN'T DEFINE GMOUTP
 	meta_open = .true.
 !	meta_actv = .false.
 
-        its_gif = ITS_GIF_GRAPHICS()
+        its_meta = ITS_META_GRAPHICS()
         batch = ITS_BATCH_GRAPHICS()
-        meta_batch = batch .AND. (.NOT. its_gif)
+        meta_batch = batch .AND. its_meta
 
 #ifdef xgks
 	if (meta_actv .OR. meta_batch) then

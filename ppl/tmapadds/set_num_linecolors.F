@@ -36,6 +36,7 @@
 *
 *  5/2006 ACM
 *  v6.00 Sets the number of line colors that will be allowed.
+* V602: *acm* 1/07 Changes for metafile-batch mode
 
 	INCLUDE 'cmrd_inc.decl'
         INCLUDE 'CMRD.INC'
@@ -70,8 +71,8 @@
 * For metafiles, setup line bundles here so we can 
 * save the color definitions.
 
-        IF (gks_open .AND. no_plots_yet.EQ.1) 
-     .     CALL SETUP_LINE_BUNDLES (wsid, wstype)
+        IF (gks_open .AND. .NOT.meta_clsplt .AND. no_plots_yet.EQ.1) 
+     .      CALL SETUP_LINE_BUNDLES (wsid, wstype)
 
         RETURN
 	END

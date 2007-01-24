@@ -81,6 +81,7 @@
 *                  for use in subsequent windows. Also define a symbol WIN_TITLE
 *  v600 *acm* 5/2006 Flag no_plot_yet: changes so user can change the number of 
 *                  line colors.
+* V602: *acm* 1/07 Changes for metafile-batch mode
 
 	include 'ferret.parm'
 	include 'xprog_state.cmn'
@@ -104,9 +105,10 @@
 
 * internal variable declarations:
 	LOGICAL TM_DIGIT, physical_chg, relocate, chg_window,
-     .		axis_ref, ITS_BATCH_GRAPHICS
+     .		axis_ref, ITS_BATCH_GRAPHICS, ITS_META_GRAPHICS,
+     .          its_meta, batch, meta_batch
 	INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, wn, n,
-     .          qp, ivp, colon_pos, tlen, i, s1
+     .          qp, ivp, colon_pos, tlen, i, s1, idone
 	REAL	dmaxx, dmaxy, fcty, fctx, xln, yln, xmn, xmx, ymn, ymx,
      .		bigness, scale, xstretch, ystretch, aspect,
      .		ref_len
@@ -135,6 +137,12 @@
 	REAL x
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
+
+* meta_batch flag is true when making metafiles in batch mode.
+
+	its_meta = its_meta_GRAPHICS()
+	batch = ITS_BATCH_GRAPHICS()
+	meta_batch = batch .AND. its_meta
 
 * /TITLE=text
 * This text becomes the name of the workstation. The name gets truncated 
@@ -240,7 +248,8 @@ c 75        CONTINUE
 * clear the screen ? (which deletes all segments from window)
 * (moved from near end of routine 
 	IF ( qual_given( slash_clear ) .GT. 0 .AND. .NOT.animate) THEN
-	   CALL CLEAR_WINDOW( n )
+        
+           CALL CLEAR_WINDOW( n )
 ! segments already deleted inside CLEAR_WINDOW 9/95
 !	   DO 1010 ivp = mvp_dflt, max_viewport
 !	      vp_seg0(ivp) = 0
@@ -248,13 +257,16 @@ c 75        CONTINUE
 ! 1010	   CONTINUE
 	   vp_seg0( vp_num ) = curr_seg_name	! no segments left in viewport
 	   vp_segn( vp_num ) = curr_seg_name
+c           ENDIF
+
 	ENDIF
 	   
 * /SIZE=q
 	qp = qual_given( slash_size )
-	physical_chg = qp .GT. 0
+	physical_chg = ( (qp .GT. 0) .AND. (.NOT.meta_batch) )
 * *kob* 1/01 - no changing of size if we are in the middle of animating
-	IF ( physical_chg .AND. .NOT.animate) THEN
+	IF ( physical_chg .AND. .NOT.animate ) THEN
+
 	   CALL EQUAL_VAL( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   scale, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -325,7 +337,7 @@ c 75        CONTINUE
 * lower left location specified ?
 	qp = qual_given( slash_loc )
 	relocate = qp .GT. 0
-	IF ( relocate ) THEN
+	IF ( relocate .AND. .NOT.meta_batch) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(qp):qual_end(qp)),
      .			   buffer, status )
 	   IF ( status .NE. ferr_ok ) RETURN
@@ -368,15 +380,16 @@ c 75        CONTINUE
 	ENDIF
 
 * deactivate previously active window
-	DO 100 wn = 1, max_windows
-	   IF ( wn_active( wn ) ) THEN
-	      CALL GDAWK( wn )
+
+        DO 100 wn = 1, max_windows
+           IF ( wn_active( wn ) ) THEN
+              IF (.NOT.meta_batch) CALL GDAWK( wn )
 	      wn_active( wn ) = .FALSE.
 	   ENDIF
  100	CONTINUE
 
 * activate window
-	 CALL GACWK(n)
+	IF (.NOT.meta_batch) CALL GACWK(n)
 
 *set up sizing
 * (capitalized code from Denbo's SUBROUTINE COLOR )

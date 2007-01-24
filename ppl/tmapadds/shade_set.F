@@ -50,6 +50,7 @@
 *                  larger than SPEC_SIZE (see shade_vars.cmn), the number 
 *                  of spectrum levels allowed to be specified in a palette file.
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels.
+* V602: *acm* 1/07 Changes for metafile-batch mode
 
         include         'shade_vars.cmn'
         include 	'cmrdl_inc.decl'            
@@ -123,20 +124,24 @@
 	   return
 	end if
 
+10      CALL GQOPS (istate)  ! In batch mode the graphics may not be active now. 
+        IF (istate .GE. 2) THEN
+
 *       SET THE SHADES                                                
 #ifdef atc_gks
-10	call gsds (wsid,gasti,gallow) !This action necessary?
-	if (.not. protect_used_colors) call set_fill_area_rep (wsid,wstype)
-	call gsds (wsid,gasap,gsuppd)   
+	   call gsds (wsid,gasti,gallow) !This action necessary?
+	   if (.not. protect_used_colors) call set_fill_area_rep (wsid,wstype)
+	   call gsds (wsid,gasap,gsuppd)   
                                                           
 #else
- 10	if (.not. protect_used_colors) 
-     .	call set_fill_area_rep (wsid,wstype)
-        call guwk (wsid,gpostp)	
+ 	   if (.not. protect_used_colors) 
+     .   	call set_fill_area_rep (wsid,wstype)
+           call guwk (wsid,gpostp)	
 
 #endif
 *4.91   if (meta_actv) call set_fill_area_rep (meta_wsid,meta_wstype)
 
+        ENDIF
 	return
 	end
 

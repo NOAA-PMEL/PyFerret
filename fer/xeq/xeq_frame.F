@@ -53,29 +53,31 @@
 * V320: 1/95 - use gif_frame routine for both HDF and GIF
 *	call TM_PARK_LAST_VERSION for names
 * V500: 4/99 *sh* increased filename string length from 128 to 255
+* V602: *acm* 1/07 Changes for metafile-batch mode: Ignore FRAME in 
+*                  batch mode, except when in batch GIF mode.
 
-#ifdef unix
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'slash.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:FERRET.PARM'
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:SLASH.PARM'
-	INCLUDE 'FERRET_CMN:XPROG_STATE.CMN'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
 * internal variable declarations:
-	LOGICAL		is_format, is_file
+	LOGICAL		ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
+     .                  is_format, is_file, its_gif, batch
 	INTEGER		TM_LENSTR1, status, loc, flen
 	CHARACTER	format*3, filename*255
 
 * initialize
 	is_format = qual_given( slash_frame_format ).GT.0
 	is_file   = qual_given( slash_frame_file   ).GT.0
+
+* Ignore FRAME in batch mode, except when in batch GIF mode.
+
+	its_gif = ITS_GIF_GRAPHICS()
+	batch = ITS_BATCH_GRAPHICS()
+
+        IF (batch .AND. .NOT.its_gif) RETURN
 
 * decode the qualifiers, if any
 * FRAME/FORMAT="HDF" or "GIF"

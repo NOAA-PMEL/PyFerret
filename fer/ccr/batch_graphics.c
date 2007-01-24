@@ -48,7 +48,9 @@
 
 * revision 0.0 - 3/5/97
 * v552 *acm* 6/5/03 check for the new flag its_gif
-
+* v602 *acm*  12/07 additions for metafile batch mode; new flag its_meta
+*                   and routine its_meta_graphics to check for it
+*
 * compile with
 *    cc -g -c batch_graphics.c
 *  or
@@ -73,6 +75,8 @@
 /* local static variable to contain the state */
 static int its_batch=0;
 static int its_gif=0;
+static int its_ps=0;
+static int its_meta=0;
 
 /* set_batch_graphics */
 void FORTRAN(set_batch_graphics)(char *outfile)
@@ -85,9 +89,17 @@ void FORTRAN(set_batch_graphics)(char *outfile)
   FORTRAN(save_metafile_name)(outfile, &length);
   its_batch = -1;
 
-  result = strstr(outfile,"gif"); 
+  result = strstr(outfile,".gif"); 
   if (result)  {
       its_gif = -1;
+   }
+  result = strstr(outfile,".ps"); 
+  if (result)  {
+      its_ps = -1;
+   }
+  result = strstr(outfile,".plt"); 
+  if (result)  {
+      its_meta = -1;
    }
   return;
 }
@@ -98,11 +110,22 @@ int FORTRAN(its_batch_graphics)()
    return (its_batch);
 }
 
-
       /* its_gif_graphics */
 int FORTRAN(its_gif_graphics)()
 {
    return (its_gif);
+}
+
+      /* its_ps_graphics */
+int FORTRAN(its_ps_graphics)()
+{
+   return (its_ps);
+}
+
+      /* its_meta_graphics */
+int FORTRAN(its_meta_graphics)()
+{
+   return (its_meta);
 }
 
 

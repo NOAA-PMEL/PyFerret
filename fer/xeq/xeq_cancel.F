@@ -121,6 +121,8 @@
 * V602 *jli* 7/06 added CANCEL AXIS/STRIDE
 * V601 *acm*11/06 Fix bug 1470: on a CANCEL AXIS/MODULO or CANCEL AXIS/DEPTH, change
 *                 values in the attribute structure for the axis.
+* V602: *acm* 1/07 Changes for metafile-batch mode: When in gif mode or batch mode, 
+*                  ignore CANCEL MODE META
 
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -167,9 +169,12 @@
      .                  nvdims, vdims(8), nvatts, vtype, all_outflag, 
      .                  slen, iatt, igrd, iline, new_att_modulo_len
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
+     .			ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
      .			report_error,
      .			slash_all, del_perm, del_temp, perm_var, all_dims,
-     .                  coordvar, do_err, canout, new_att_modulo
+     .                  coordvar, do_err, canout, new_att_modulo, its_gif,
+     .                  batch
+
 	CHARACTER	arg*4, buff*512, arg30*30, varname*512, 
      .                  attname*128, show_str*12, buff2*3
 
@@ -396,10 +401,21 @@
 	            IF ( status .NE. ferr_ok ) RETURN
 * ... mode metafile may require immediate communication with PPLUS
 	         ELSEIF ( mode .EQ. pmode_metafile ) THEN
-	            IF ( gksopn ) THEN
-                       CALL SEND_PLTYPE( mode_metafile )
-                       CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
+                 
+*     When in gif mode or batch mode, ignore CANCEL MODE META
+	            its_gif = ITS_GIF_GRAPHICS()
+	            batch = ITS_BATCH_GRAPHICS()
+                    IF ( its_gif ) THEN
+                       mode_metafile = .FALSE.
+                    ELSE IF ( batch ) THEN
+                       mode_metafile = .FALSE.
+                    ELSE
+ 	               IF ( gksopn ) THEN
+                          CALL SEND_PLTYPE( mode_metafile )
+                          CALL PPLCMD ( from, line, 0, 'CLSPLT', 1, 1 )  ! 2/93
+                       ENDIF
                     ENDIF
+
 * ... mode REFRESH sends message to gnu READLINE routine to turn off refresh
 	         ELSEIF ( mode .EQ. pmode_Xwindows ) THEN
 	            CALL TM_SET_FREE_EVENT(0)

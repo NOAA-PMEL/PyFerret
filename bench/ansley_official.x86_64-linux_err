@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 32672969 Jan 10 07:45 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
+-rwxr-xr-x  1 ansley tmap 41846455 Jan 23 15:30 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
+Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  fresh checkout v6.02 ; minor fixes in declarations for Solaris, addition of <direction> for show axis/xml; fixes to bn_set_strides.jnl
+Note:  test fix for bug 1483: cd_get_1_axis test for irregular
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/ansley/x86_64-linux/FERRET/external_functions/ext_func_x86_64_linux
-Beginning at Wed Jan 10 08:42:39 PST 2007
+FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Beginning at Wed Jan 24 09:04:40 PST 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -702,6 +702,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
- **ERROR: invalid command: Batch FRAME only works for GIF files
-frame/file=bnplot.ps
-Ended at Wed Jan 10 08:43:53 PST 2007
+Ended at Wed Jan 24 09:06:11 PST 2007

@@ -12,3 +12,8 @@ GO err601_sho_ax_xml_calendar.jnl
 ! with unspecified_int4.
 GO bn_reset
 GO err601_index_111.jnl
+
+! err601_irregular_axis.jnl
+! Check for irregular axis actually being irregular failed; bug 1483
+GO bn_reset
+GO err601_irregular_axis.jnl

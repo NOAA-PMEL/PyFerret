@@ -45,7 +45,7 @@ def axis/z/depth dlog=exp(k[k=1:20])
 let fcn = k[gz=dlog]
 plot/vlog/vlimits=1:100000/hg="large(color=red),small(color=lightblue)" fcn
 
-can  mode meta
+can mode meta
 set mode logo
 
 can view

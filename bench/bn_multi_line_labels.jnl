@@ -1,12 +1,11 @@
      ! bn_multi_line_labels.jnl     
 ! March 31, 2003
 !
-! ACM 4/2005 set mode meta to save this plot for the metafile checks.
-!            and cancel mode logo, so that .plt files are comparable.
+! ACM 4/2005 ! set mode meta to save this plot for the metafile checks.
+!            and ! cancel mode logo, so that .plt files are comparable.
+! ACM 1/2007 Change from a bunch of plot items in a viewport, to separate
+!            plots; for better checking of batch mode
 
-
-
-set view full
 
 plot/i=1:100/title="multi line title<nl>with the second line pretty long: \
 so Ferret will resize the entire title. Titles are sized according to the\
@@ -14,9 +13,8 @@ so Ferret will resize the entire title. Titles are sized according to the\
 ppl plot
 plot/over/i=1:100 i*sin(i/8)
 
-
 set mode meta multi_line_labels.plt
-can mode logo
+cancel mode logo
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
 ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
@@ -83,6 +81,7 @@ processing in 4 dimensions."
 
 
 set win/clear
+plot/sym/i=1:5/nolab/noaxes i
 ppl ylab "@CRlong y label<NL>@p2line 2 in red, longer than the other lines."
 ppl xlab "@p4Tests using the %xaxis and %yaxis commands<NL>@p5@CItwo lines<NL>center a@P1 long third line too"
 ppl %yaxis/nouser,0,50,4,1, , , ,-1

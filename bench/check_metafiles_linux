@@ -10,6 +10,7 @@ set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt multi_line_label
 pattern*.plt polygon*.plt vec_curv*.plt)
 set gif_files = ( bn*.gif )
 set ps_files = (bn*.ps)
+set mb_files = (bat.plt_*)
 set num_plt_files = `ls -l *.plt | wc -l `
 
 set err_plt = 0
@@ -49,6 +50,18 @@ foreach ps_file ($ps_files)
    endif
 end
 
+set err_mb = 0
+foreach mb_file ($mb_files)
+   set size = `ls -l $mb_file | cut -b 21-27`
+   set size2 = `ls -l metafile_masters_v600/$mb_file | cut -b 21-27`
+   set size = `ls -l $mb_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_v600/$mb_file | awk '{print $5}'`
+   if ($size != $size2) then
+      set err_mb = 1
+      echo "metafile batch files differ $mb_file size $size metafile_masters_v600/ size $size2" 
+   endif
+end
+
 set any_error = 0
 if ($err_plt) then
 	echo "CHECK PLT FILES - THERE HAS BEEN AN ERROR"
@@ -67,6 +80,12 @@ if ($err_ps) then
         set any_error = 1
 else
 	echo "    PS files look good......"
+endif
+if ($err_mb) then
+	echo "CHECK metafile batch FILES - THERE HAS BEEN AN ERROR"
+        set any_error = 1
+else
+	echo "    metafile batch files look good......"
 endif
 
 if ($any_error) then

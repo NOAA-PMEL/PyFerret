@@ -46,9 +46,29 @@ foreach ps_file ($ps_files)
     set size = `ls -l $ps_file | awk '{print $5}'`
     set size2 = `ls -l metafile_masters_v580/$ps_file | awk '{print $5}'`
     if ("$size" != "$size2") then
-       echo "plt files differ $plt_file size $size metafile_masters_v580/ size $size2" 
+       echo "plt files differ $ps_file size $size metafile_masters_v580/ size $size2" 
+       rm -f $ps_file.diff_ps.ps
+       compare $ps_file metafile_masters_v580/$ps_file $ps_file.diff_ps.ps
+       display $ps_file.diff_ps.ps
        set err_ps = 1
     endif
+end
+
+set err_mb = 0
+foreach mb_file ($mb_files)
+   set size = `ls -l $mb_file | cut -b 21-27`
+   set size2 = `ls -l metafile_masters_v600/$mb_file | cut -b 21-27`
+   set size = `ls -l $mb_file | awk '{print $5}'`
+   set size2 = `ls -l metafile_masters_v600/$mb_file | awk '{print $5}'`
+   if ($size != $size2) then
+      set err_mb = 1
+      echo "metafile batch files differ $mb_file size $size metafile_masters_v600/ size $size2" 
+       rm -f bat.ps master_bat.ps diff_bat.ps 
+       Fprint -R -o bat.ps $mb_file
+       Fprint -R -o master_bat.ps metafile_masters_v600/$mb_file
+       compare bat.ps master_bat.ps diff_bat.ps 
+       display diff_bat.ps 
+   endif
 end
 
 if ($err_plt) then

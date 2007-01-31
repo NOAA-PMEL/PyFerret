@@ -251,6 +251,8 @@ echo "Display no longer set, about to run batch gif test"
 ($fver -gif <bn_gif_shell.jnl >> $log_file) >>& $err_file
 echo "Display still not set, about to run batch ps test"
 ($fver -batch bnplot.ps <bn_ps_shell.jnl >> $log_file) >>& $err_file
+echo "Display still not set, about to run batch metafile test"
+($fver -batch bat.plt <bn_batch_metafile_shell.jnl >> $log_file) >>& $err_file
 setenv DISPLAY $hold_display
 #echo "Display now set to "$DISPLAY >>&$log_file
 
@@ -279,6 +281,12 @@ end
 mv bnplot.gif.~1~ bnplot-1.gif
 mv bnplot.gif.~2~ bnplot-2.gif
 
+mv bat.plt bat.plt_9
+set count = 1
+while ($count < 9)
+    mv bat.plt.~$count~ bat.plt_$count
+    @ count++
+end
 
 # AIX systems don't put leading zeros on numbers like 0.5
 if ( $HOSTTYPE =~ *aix* ) then

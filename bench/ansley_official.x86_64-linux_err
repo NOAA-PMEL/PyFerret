@@ -1,13 +1,13 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
--rwxr-xr-x  1 ansley tmap 41846455 Jan 23 15:30 /home/porter/ansley/x86_64-linux/FERRET/fer/ferretdods_gui
-Using external functions from /home/porter/tmap/ferret/x86_64-linux/ext_func/libs
+Running FERRET version ../fer/ferretdods_gui
+-rwxr-xr-x  1 ansley tmap 31241411 Jan 31 11:01 ../fer/ferretdods_gui
+Using external functions from ../external_functions/ext_func_v602/
 Running the tests of external functions y
 Benchmark run by ansley
-Note:  test fix for bug 1483: cd_get_1_axis test for irregular
+Note: fresh checkout and build under x86_64-linux, Ferret v6.02
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
-PWD=/home/porter/ansley/x86_64-linux/FERRET/bench
+PWD=/home/porter/ansley/v602/FERRET/bench
 FER_LINK_DIR=/home/porter/tmap/ferret_link/linux
 FER_DIR=.
 CVSROOT=/home/porter/tmap/FERRET_ROOT
@@ -20,8 +20,8 @@ FER_DESCR=.
 FER_GRIDS=.
 FER_MODEL_RUNS=/home/porter/tmap/model_runs
 FER_PALETTE=. /home/porter/tmap/ferret/x86_64-linux/ppl
-FER_EXTERNAL_FUNCTIONS=/home/porter/tmap/ferret/x86_64-linux/ext_func/libs
-Beginning at Wed Jan 24 09:04:40 PST 2007
+FER_EXTERNAL_FUNCTIONS=../external_functions/ext_func_v602/
+Beginning at Wed Jan 31 11:46:31 PST 2007
  **ERROR: unknown command qualifier: help
 MESSAGE/CONTINUE /help
  **ERROR: unknown command: that
@@ -642,6 +642,8 @@ set axis/stride=2/offset=4 COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: unknown axis: NORMAL
 set axis/stride=2 NORMAL
+ *** NOTE: Units on axis "ALTITUDE" are not recognized: Pa
+ *** NOTE: They will not be convertible:
  **ERROR: command syntax: unknown region name: @w
 set region/@w
  **ERROR: invalid command: string/numeric data type mix-up: WRITEV5D
@@ -702,4 +704,4 @@ contour/i=1:10/j=1:20/nolabel i/j,j/i
 vector/i=1:10/j=1:20/nolabel i/j
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
-Ended at Wed Jan 24 09:06:11 PST 2007
+Ended at Wed Jan 31 11:47:50 PST 2007

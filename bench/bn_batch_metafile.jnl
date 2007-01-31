@@ -61,9 +61,9 @@ pplus/reset
 
 set mode metafile new.plt
 
-plot/i=1:12 1./i
-
 cancel mode metafile
+
+plot/i=1:12/title="after cancel mode metafile in batch mode" 1./i
 
 ! set window commands are ignored, except for set window/aspect
 set window/new

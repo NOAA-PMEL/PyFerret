@@ -52,7 +52,8 @@ set grid/save
 
 set data etopo$1"60"
 
-IF ($mp_grid_variable"1|0|*>1) THEN
+show symbol mp_grid_variable
+IF ($mp_grid_variable"0|*>1) THEN
   go mp_grid rose
 ELSE
   set grid rose
